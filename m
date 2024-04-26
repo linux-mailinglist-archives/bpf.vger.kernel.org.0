@@ -1,239 +1,284 @@
-Return-Path: <bpf+bounces-27942-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-27943-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2E5A98B3CC2
-	for <lists+bpf@lfdr.de>; Fri, 26 Apr 2024 18:27:02 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 798248B3D36
+	for <lists+bpf@lfdr.de>; Fri, 26 Apr 2024 18:52:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5335D1C22647
-	for <lists+bpf@lfdr.de>; Fri, 26 Apr 2024 16:27:01 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 304A728833D
+	for <lists+bpf@lfdr.de>; Fri, 26 Apr 2024 16:52:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA164156C65;
-	Fri, 26 Apr 2024 16:26:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 546C315B551;
+	Fri, 26 Apr 2024 16:51:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YpgAQJLl"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ODrLedtY"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f42.google.com (mail-pj1-f42.google.com [209.85.216.42])
+Received: from mail-pl1-f175.google.com (mail-pl1-f175.google.com [209.85.214.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF93C15686F;
-	Fri, 26 Apr 2024 16:26:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 621B415B120
+	for <bpf@vger.kernel.org>; Fri, 26 Apr 2024 16:51:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714148816; cv=none; b=t0pBum8hgl9ScCjK4O+TeIiyv3dGjQr8sQDRa8y8cAN4ePdBbnGBD32jpAYLaxHbeMzsct9esgF5VAYXAWFXnzk8RvxVnehRy/8SahbEGjunC6pDeFdXePROivy5LTd18dcoTiG5DRDFa0agxLbsQAGnRlfyOf6sRvp9+sSmYJk=
+	t=1714150266; cv=none; b=iuoNa7c53m8u90S3NMslo69hBO5/lHZFChgJM16EhyTppsPQbvZS/cqA7algWi1zhGucFP2u8nPG7DjX1Je28UE20DHk0WJ5e1f0zkBc5SpUWsvWz4H4TEh7bRPYvp3QVMLPZHmSdpgPFgCZdRLnjZXN4rwWe852fpZPqUnwJzk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714148816; c=relaxed/simple;
-	bh=lorYvYgo5IXa066vwzcU4pNV6jM1EDwnv91nHO/Ds0M=;
+	s=arc-20240116; t=1714150266; c=relaxed/simple;
+	bh=ZhwNCHCPbwknUA/AAko94NLtIwae7LasoKSgGPeSiTs=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=uP1TW32Iek1qdtscVKn+mdvjHhIrwVv46yehSoisPP2WLqpsfrDwKXuW5cFIwOwPoyxkFDOuwBFCdKT9wt+z1MqDtA4Dr1mXFGvUInJ9MMiF2a+Qkj7kl1JUi6RM5LSuoafPqWSX9iBOUunuLOe05/Dt+CEJz4GktNcIJOcTB/4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=YpgAQJLl; arc=none smtp.client-ip=209.85.216.42
+	 To:Cc:Content-Type; b=muHClw2L9SOZ1QGdyBs+wYEPJn3/zV9uOfJvL6pTZCyDozb9FOMtAHQXGKaLGr+nhX8tK8ii8wOZh8VQHdKlMTW/gJx8N1z9QELoBYYN3UZprth/Z7fQCst+rkydZYnL/B9vyb94viop9vPrJ0wiV/XHb9HrqsJwRxVFp8fKZn4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ODrLedtY; arc=none smtp.client-ip=209.85.214.175
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f42.google.com with SMTP id 98e67ed59e1d1-2a7e19c440dso1826326a91.3;
-        Fri, 26 Apr 2024 09:26:54 -0700 (PDT)
+Received: by mail-pl1-f175.google.com with SMTP id d9443c01a7336-1e3ca546d40so19688745ad.3
+        for <bpf@vger.kernel.org>; Fri, 26 Apr 2024 09:51:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714148814; x=1714753614; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1714150265; x=1714755065; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=7F6VSCpFiJAuhOg5TQ3LJ1rWu2w2/9qSNziUYNfTrUs=;
-        b=YpgAQJLljIWPgjBUQWkMa29Ht+Hs/3ve9emVnpmAv/3xzx95e4tyy0S71rI8LQxs7/
-         z6wI6XV/iQM3+1gzAu0Umzkeu0BDba6xevoJw7jLuNH4h/tePDSOxn1xM/Rsue2/oz1T
-         IzaNOU4IWcH6t3GqmEenvJfJ9Mz1FHLxz30RyN3fCr3KP1851KyNxHbsLBYcnJTPylM0
-         ktVWTGAv426kXLf/f2KkCx3tfae6spPlYm+W/i04h0Z8qcHAeF3+6h0lgIgFP0iTe10y
-         GMvmg3a7esFZlrRLaaqA30DYtYBQrm/aLV0lwi7qIj5OlaP+5SCu6iuuek1VtCnXlVjJ
-         cbow==
+        bh=sDNR/ANTiY/ndkKCEL6bJgdb8SU5EqrTQJtdJEN/adA=;
+        b=ODrLedtY8Xq0DwzgPrMANqWiiFTge7voRaQScGbuX9orPbVGjTA8FWaf0i1JG5tT25
+         HZ4/Qy3nKcGz6oLftrvnvNfm9zqUpXav2IkaLwaM6tIFmWFPJgUU8RRfztKf3P73l9Wh
+         6jd4RATyUPvNpk+A/drdT+L/nsvDFRvruh6MhyhuMh+JtWN3Yk2Kzhk3ytq2Ix8VJVSn
+         Unj4PWlL8vqTCZ/rfJOD+qkilse3TqmVb2/Zutunah2IF7RyZPAuxCAz8k7J7kS+i2KU
+         NvQbtytUL1s+hlz1rfeQ3MrkTAXJLu9mUVPoAQtKJixm3XtkKaJt9EYcR9WNhd2TaH4/
+         ujQQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714148814; x=1714753614;
+        d=1e100.net; s=20230601; t=1714150265; x=1714755065;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=7F6VSCpFiJAuhOg5TQ3LJ1rWu2w2/9qSNziUYNfTrUs=;
-        b=aEW0kUka/qRnxuHajO5QI5QvZvsAZE2zbls9pwTevTE2+u1bTnNBHvf6VhlGvZqIJM
-         xyObyIPZ9cUXduZ9v7x1VGDlsgJVQ+5ReQC8C9OVYF8ZnNa29Pt8L36mc8GfEJuSBQRV
-         wlsp8yaX32vUBinUA2cp3yW5Vv1icNhIA6mdEJ+huHlh41CQ5pXoFUvTJxy/H2xqoCZr
-         lk70z5rTHRhKLSNtTWKBErOLjRQhSpBdDXRimFAnNuJs47v6HpxNXH/D2xKr45U7AJj4
-         FJpBdlRhSGa5yKBlKDfTaC5brNtF/EuWXUmYmZ7nSp6U2xPPwGcVbit6c1uapL8RxK3K
-         8RjQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVLmSx9zH6E6/dBSps4t1Tfllm6Jv/ncaSpReNxMoysQa069vaYBUFvVoMUA/gvbZ/hlrmteXETXN4UUTarAZVasZLN/u6ShOv1dPkvf/Bm4omJI1+dHGDIZmgt318x7x6i
-X-Gm-Message-State: AOJu0Yz20udgxBuB2swfzCJqMmj5T0hX/3R8HYlLgGlrvyDIFHwX7dm3
-	e4K3a4jCRgYWoBbRDTdbtT4Z4KtCg9v3bX9MeRvugqw1YMXX12SOrttLBdd3tO+FN9YWzD1qh1X
-	9xYa7gw8ZtiHVtnb3H9jVbshv71s=
-X-Google-Smtp-Source: AGHT+IGu4GRGYVOdPGc3A474j1UuojtMDmM+IwnLOxDpKwjsEPtu6sZypVBrCcksdi4s4CzHpIfUJFJmvdV1m+wY8JI=
-X-Received: by 2002:a17:90b:3692:b0:2af:3088:e36f with SMTP id
- mj18-20020a17090b369200b002af3088e36fmr3049385pjb.7.1714148814036; Fri, 26
- Apr 2024 09:26:54 -0700 (PDT)
+        bh=sDNR/ANTiY/ndkKCEL6bJgdb8SU5EqrTQJtdJEN/adA=;
+        b=gdO+voQRe5mdBDF58fPQAUsEprbFP8wY9PyA67T5ssmTL2YsfbHtC67uoaHc3aghGm
+         UXq1A1BemE3jqg3TDBO0AXaRlKigOhcj/qCVmDjj1+JMHSSV8+t4nrtyAQuhNb+wH+oH
+         Ow0d6MfH/H/NsJ7pdqVYUiTGaQSH5V2L1P3mSW9APEBd3tEaAfw8WWl9biWsI+fFMic1
+         crxIP2jNEmJkU+i1Oo9HzzIaiVul5gMKZY2DZRCiwzsGWvglpBPfYAv1FTtR1RneiZzX
+         qLveL7a8gM+XUSUKFbPwv4CKMucczVWHlyOFf1iuI3AsbWFBfdoLsWTvUiJeHHBfvCgL
+         QfYw==
+X-Forwarded-Encrypted: i=1; AJvYcCXGBzuY1QFLkUVsRYgwBNPDfTeWSCHq8xVEiEqWLpwndpk6hiFgOxeARCeUA1St9TdP6qMJ9TiovKNJp1x4G1/VWVFE
+X-Gm-Message-State: AOJu0YxlspKAdwvr41u33WCcy2MfhX6nT+8AP2ory8HoUAOhfQFz85HI
+	vlpqqCn9o2p79wq1x6kCbwM2iEdqHIR5g/uCU7+RJOp+E7Ut0BaE6OGalt/aE8FYz4Fhl0PhBMK
+	5OKQ34BBL3RR5wQWr8VB+M+DcJiM=
+X-Google-Smtp-Source: AGHT+IE0oxn3tz8O8obeD38eXFd6FN4mskMqurJ+SfUy+7WENZixTnq5xlTIT0/wUf1NbZnnf4Zi+NZLvPZ1zA4duyE=
+X-Received: by 2002:a17:903:11c3:b0:1e5:5bd7:87a4 with SMTP id
+ q3-20020a17090311c300b001e55bd787a4mr3628816plh.16.1714150264625; Fri, 26 Apr
+ 2024 09:51:04 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240426121349.97651-1-puranjay@kernel.org> <20240426121349.97651-3-puranjay@kernel.org>
-In-Reply-To: <20240426121349.97651-3-puranjay@kernel.org>
+References: <20240411131127.73098-1-laoar.shao@gmail.com> <CALOAHbCBxGbLH0+1fSTQtt3K8yXX9oG4utkiHn=+dxpKZ+64cw@mail.gmail.com>
+ <CAEf4BzbynKkK_sct2WdTrF2F+RJ1tD3F6nYAew+Gq82qokgQGA@mail.gmail.com>
+ <CALOAHbBBDwxBGOrDWqGf2b8bRRii8DnBHCU9cAbp_Sw-Q6XKBA@mail.gmail.com>
+ <CAEf4BzZDUQextxUZGVDsctUhM718nvq+XX=HQSbUVaRkxXi3Tg@mail.gmail.com> <CALOAHbDQEaSncsAAt7_JGU_nXWBjp=4o-zgXxiy0kSZPg93cgQ@mail.gmail.com>
+In-Reply-To: <CALOAHbDQEaSncsAAt7_JGU_nXWBjp=4o-zgXxiy0kSZPg93cgQ@mail.gmail.com>
 From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Fri, 26 Apr 2024 09:26:42 -0700
-Message-ID: <CAEf4BzaNM5H3Ad2=Syhhq1cbfuB5FrtuFTZHPTdQP3QME3naKA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 2/2] bpf, arm64: inline bpf_get_smp_processor_id()
- helper
-To: Puranjay Mohan <puranjay@kernel.org>
-Cc: Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
-	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
-	Jiri Olsa <jolsa@kernel.org>, Zi Shen Lim <zlim.lnx@gmail.com>, Xu Kuohai <xukuohai@huawei.com>, 
-	Florent Revest <revest@chromium.org>, linux-arm-kernel@lists.infradead.org, 
-	linux-kernel@vger.kernel.org, bpf@vger.kernel.org, puranjay12@gmail.com
+Date: Fri, 26 Apr 2024 09:50:51 -0700
+Message-ID: <CAEf4BzZbWTM-NtpEHM-c8z01YQrTCJX9VuWBViR1K5Fo-1Tt5A@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v6 0/2] bpf: Add a generic bits iterator
+To: Yafang Shao <laoar.shao@gmail.com>
+Cc: ast@kernel.org, daniel@iogearbox.net, john.fastabend@gmail.com, 
+	andrii@kernel.org, martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org, 
+	yonghong.song@linux.dev, kpsingh@kernel.org, sdf@google.com, 
+	haoluo@google.com, jolsa@kernel.org, bpf@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Apr 26, 2024 at 5:14=E2=80=AFAM Puranjay Mohan <puranjay@kernel.org=
-> wrote:
+On Thu, Apr 25, 2024 at 10:05=E2=80=AFPM Yafang Shao <laoar.shao@gmail.com>=
+ wrote:
 >
-> As ARM64 JIT now implements BPF_MOV64_PERCPU_REG instruction, inline
-> bpf_get_smp_processor_id().
+> On Fri, Apr 26, 2024 at 2:15=E2=80=AFAM Andrii Nakryiko
+> <andrii.nakryiko@gmail.com> wrote:
+> >
+> > On Wed, Apr 24, 2024 at 10:37=E2=80=AFPM Yafang Shao <laoar.shao@gmail.=
+com> wrote:
+> > >
+> > > On Thu, Apr 25, 2024 at 8:34=E2=80=AFAM Andrii Nakryiko
+> > > <andrii.nakryiko@gmail.com> wrote:
+> > > >
+> > > > On Thu, Apr 11, 2024 at 6:51=E2=80=AFAM Yafang Shao <laoar.shao@gma=
+il.com> wrote:
+> > > > >
+> > > > > On Thu, Apr 11, 2024 at 9:11=E2=80=AFPM Yafang Shao <laoar.shao@g=
+mail.com> wrote:
+> > > > > >
+> > > > > > Three new kfuncs, namely bpf_iter_bits_{new,next,destroy}, have=
+ been
+> > > > > > added for the new bpf_iter_bits functionality. These kfuncs ena=
+ble the
+> > > > > > iteration of the bits from a given address and a given number o=
+f bits.
+> > > > > >
+> > > > > > - bpf_iter_bits_new
+> > > > > >   Initialize a new bits iterator for a given memory area. Due t=
+o the
+> > > > > >   limitation of bpf memalloc, the max number of bits to be iter=
+ated
+> > > > > >   over is (4096 * 8).
+> > > > > > - bpf_iter_bits_next
+> > > > > >   Get the next bit in a bpf_iter_bits
+> > > > > > - bpf_iter_bits_destroy
+> > > > > >   Destroy a bpf_iter_bits
+> > > > > >
+> > > > > > The bits iterator can be used in any context and on any address=
+.
+> > > > > >
+> > > > > > Changes:
+> > > > > > - v5->v6:
+> > > > > >   - Add positive tests (Andrii)
+> > > > > > - v4->v5:
+> > > > > >   - Simplify test cases (Andrii)
+> > > > > > - v3->v4:
+> > > > > >   - Fix endianness error on s390x (Andrii)
+> > > > > >   - zero-initialize kit->bits_copy and zero out nr_bits (Andrii=
+)
+> > > > > > - v2->v3:
+> > > > > >   - Optimization for u64/u32 mask (Andrii)
+> > > > > > - v1->v2:
+> > > > > >   - Simplify the CPU number verification code to avoid the fail=
+ure on s390x
+> > > > > >     (Eduard)
+> > > > > > - bpf: Add bpf_iter_cpumask
+> > > > > >   https://lwn.net/Articles/961104/
+> > > > > > - bpf: Add new bpf helper bpf_for_each_cpu
+> > > > > >   https://lwn.net/Articles/939939/
+> > > > > >
+> > > > > > Yafang Shao (2):
+> > > > > >   bpf: Add bits iterator
+> > > > > >   selftests/bpf: Add selftest for bits iter
+> > > > > >
+> > > > > >  kernel/bpf/helpers.c                          | 120 ++++++++++=
++++++++
+> > > > > >  .../selftests/bpf/prog_tests/verifier.c       |   2 +
+> > > > > >  .../selftests/bpf/progs/verifier_bits_iter.c  | 127 ++++++++++=
+++++++++
+> > > > > >  3 files changed, 249 insertions(+)
+> > > > > >  create mode 100644 tools/testing/selftests/bpf/progs/verifier_=
+bits_iter.c
+> > > > > >
+> > > > > > --
+> > > > > > 2.39.1
+> > > > > >
+> > > > >
+> > > > > It appears that the test case failed on s390x when the data is
+> > > > > a u32 value because we need to set the higher 32 bits.
+> > > > > will analyze it.
+> > > > >
+> > > >
+> > > > Hey Yafang, did you get a chance to debug and fix the issue?
+> > > >
+> > >
+> > > Hi Andrii,
+> > >
+> > > Apologies for the delay; I recently returned from an extended holiday=
+.
+> > >
+> > > The issue stems from the limitations of bpf_probe_read_kernel() on
+> > > s390 architecture. The attachment provides a straightforward example
+> > > to illustrate this issue. The observed results are as follows:
+> > >
+> > >     Error: #463/1 verifier_probe_read/probe read 4 bytes
+> > >     8897 run_subtest:PASS:obj_open_mem 0 nsec
+> > >     8898 run_subtest:PASS:unexpected_load_failure 0 nsec
+> > >     8899 do_prog_test_run:PASS:bpf_prog_test_run 0 nsec
+> > >     8900 run_subtest:FAIL:659 Unexpected retval: 2817064 !=3D 512
+> > >
+> > >     Error: #463/2 verifier_probe_read/probe read 8 bytes
+> > >     8903 run_subtest:PASS:obj_open_mem 0 nsec
+> > >     8904 run_subtest:PASS:unexpected_load_failure 0 nsec
+> > >     8905 do_prog_test_run:PASS:bpf_prog_test_run 0 nsec
+> > >     8906 run_subtest:FAIL:659 Unexpected retval: 0 !=3D 512
+> > >
+> > > More details can be found at:  https://github.com/kernel-patches/bpf/=
+pull/6872
+> > >
+> > > Should we consider this behavior of bpf_probe_read_kernel() as
+> > > expected, or is it something that requires fixing?
+> > >
+> >
+> > I might be missing something, but there is nothing wrong with
+> > bpf_probe_read_kernel() behavior. In "read 4" case you are overwriting
+> > only upper 4 bytes of u64, so lower 4 bytes are garbage. In "read 8"
+> > you are reading (upper) 4 bytes of garbage from uninitialized
+> > data_dst.
 >
-> ARM64 uses the per-cpu variable cpu_number to store the cpu id.
->
-> Here is how the BPF and ARM64 JITed assembly changes after this commit:
->
->                                          BPF
->                                         =3D=3D=3D=3D=3D
->               BEFORE                                       AFTER
->              --------                                     -------
->
-> int cpu =3D bpf_get_smp_processor_id();           int cpu =3D bpf_get_smp=
-_processor_id();
-> (85) call bpf_get_smp_processor_id#229032       (18) r0 =3D 0xffff8000820=
-72008
->                                                 (bf) r0 =3D &(void __perc=
-pu *)(r0)
->                                                 (61) r0 =3D *(u32 *)(r0 +=
-0)
->
->                                       ARM64 JIT
->                                      =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
->
->               BEFORE                                       AFTER
->              --------                                     -------
->
-> int cpu =3D bpf_get_smp_processor_id();           int cpu =3D bpf_get_smp=
-_processor_id();
-> mov     x10, #0xfffffffffffff4d0                mov     x7, #0xffff8000ff=
-ffffff
-> movk    x10, #0x802b, lsl #16                   movk    x7, #0x8207, lsl =
-#16
-> movk    x10, #0x8000, lsl #32                   movk    x7, #0x2008
-> blr     x10                                     mrs     x10, tpidr_el1
-> add     x7, x0, #0x0                            add     x7, x7, x10
->                                                 ldr     w7, [x7]
->
-> Performance improvement using benchmark[1]
->
->              BEFORE                                       AFTER
->             --------                                     -------
->
-> glob-arr-inc   :   23.817 =C2=B1 0.019M/s      glob-arr-inc   :   24.631 =
-=C2=B1 0.027M/s
-> arr-inc        :   23.253 =C2=B1 0.019M/s      arr-inc        :   23.742 =
-=C2=B1 0.023M/s
-> hash-inc       :   12.258 =C2=B1 0.010M/s      hash-inc       :   12.625 =
-=C2=B1 0.004M/s
->
-> [1] https://github.com/anakryiko/linux/commit/8dec900975ef
->
-> Signed-off-by: Puranjay Mohan <puranjay@kernel.org>
-> Acked-by: Andrii Nakryiko <andrii@kernel.org>
-> ---
->  kernel/bpf/verifier.c | 24 +++++++++++++++++-------
->  1 file changed, 17 insertions(+), 7 deletions(-)
->
-> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> index 4e474ef44e9c..6ff4e63b2ef2 100644
-> --- a/kernel/bpf/verifier.c
-> +++ b/kernel/bpf/verifier.c
-> @@ -20273,20 +20273,31 @@ static int do_misc_fixups(struct bpf_verifier_e=
-nv *env)
->                         goto next_insn;
->                 }
->
-> -#ifdef CONFIG_X86_64
->                 /* Implement bpf_get_smp_processor_id() inline. */
->                 if (insn->imm =3D=3D BPF_FUNC_get_smp_processor_id &&
->                     prog->jit_requested && bpf_jit_supports_percpu_insn()=
-) {
->                         /* BPF_FUNC_get_smp_processor_id inlining is an
-> -                        * optimization, so if pcpu_hot.cpu_number is eve=
-r
-> +                        * optimization, so if cpu_number_addr is ever
->                          * changed in some incompatible and hard to suppo=
-rt
->                          * way, it's fine to back out this inlining logic
->                          */
-> -                       insn_buf[0] =3D BPF_MOV32_IMM(BPF_REG_0, (u32)(un=
-signed long)&pcpu_hot.cpu_number);
-> -                       insn_buf[1] =3D BPF_MOV64_PERCPU_REG(BPF_REG_0, B=
-PF_REG_0);
-> -                       insn_buf[2] =3D BPF_LDX_MEM(BPF_W, BPF_REG_0, BPF=
-_REG_0, 0);
-> -                       cnt =3D 3;
-> +                       u64 cpu_number_addr;
->
-> +#if defined(CONFIG_X86_64)
-> +                       cpu_number_addr =3D (u64)&pcpu_hot.cpu_number;
-> +#elif defined(CONFIG_ARM64)
-> +                       cpu_number_addr =3D (u64)&cpu_number;
-> +#else
-> +                       goto next_insn;
-> +#endif
-> +                       struct bpf_insn ld_cpu_number_addr[2] =3D {
-> +                               BPF_LD_IMM64(BPF_REG_0, cpu_number_addr)
-> +                       };
+> The issue doesn't lie with the dst but rather with the src. Even after
+> initializing the destination, the operation still fails. You can find
 
-here we are violating C89 requirement to have a single block of
-variable declarations by mixing variables and statements. I'm
-surprised this is not triggering any build errors on !arm64 &&
-!x86_64.
+Are you sure the operation "fails"? If it would fail, you'd get a
+negative error code, but you are getting zero. Which actually makes
+sense.
 
-I think we can declare this BPF_LD_IMM64 instruction with zero "addr".
-And then update
+I think you are just getting confused by big endianness of s390x, and
+there is nothing wrong with bpf_probe_read_kernel().
 
-ld_cpu_number_addr[0].imm =3D (u32)cpu_number_addr;
-ld_cpu_number_addr[1].imm =3D (u32)(cpu_number_addr >> 32);
+In both of your tests (I pasted your code below, it would be better if
+you did it in your initial emails) you end up with 0x200 in *upper* 32
+bits (on big endian) and lower bits are zeros. And __retval thing is
+32-bit (despite BPF program returning long), so this return value is
+truncated to *lower* 32-bits, which are, expectedly, zeroes.
 
-WDYT?
+So I think everything works as expected, but your tests (at least)
+don't handle the big-endian arch well.
 
-nit: I'd rename ld_cpu_number_addr to ld_insn or something short like that
+__description("probe read 4 bytes")
+__success __retval(0x200)
+long probe_read_4(void)
+{
+    int data =3D 0x200;
+    long data_dst =3D 0;
+    int err;
 
-> +                       insn_buf[0] =3D ld_cpu_number_addr[0];
-> +                       insn_buf[1] =3D ld_cpu_number_addr[1];
-> +                       insn_buf[2] =3D BPF_MOV64_PERCPU_REG(BPF_REG_0, B=
-PF_REG_0);
-> +                       insn_buf[3] =3D BPF_LDX_MEM(BPF_W, BPF_REG_0, BPF=
-_REG_0, 0);
-> +                       cnt =3D 4;
+    err =3D bpf_probe_read_kernel(&data_dst, 4, &data);
+    if (err)
+        return err;
 
-nit: we normally have an empty line here to separate setting up
-replacement instructions from actual patching
+    return data_dst;
+}
 
->                         new_prog =3D bpf_patch_insn_data(env, i + delta, =
-insn_buf, cnt);
->                         if (!new_prog)
->                                 return -ENOMEM;
-> @@ -20296,7 +20307,6 @@ static int do_misc_fixups(struct bpf_verifier_env=
- *env)
->                         insn      =3D new_prog->insnsi + i + delta;
->                         goto next_insn;
->                 }
-> -#endif
->                 /* Implement bpf_get_func_arg inline. */
->                 if (prog_type =3D=3D BPF_PROG_TYPE_TRACING &&
->                     insn->imm =3D=3D BPF_FUNC_get_func_arg) {
+SEC("syscall")
+__description("probe read 8 bytes")
+__success __retval(0x200)
+long probe_read_8(void)
+{
+    int data =3D 0x200;
+    long data_dst =3D 0;
+    int err;
+
+    err =3D bpf_probe_read_kernel(&data_dst, 8, &data);
+    if (err)
+        return err;
+
+    return data_dst;
+
+}
+
+> more details in the following link:
+> https://github.com/kernel-patches/bpf/pull/6882. It appears that
+> bpf_probe_read_kernel() encounters difficulties when dealing with
+> non-long-aligned source addresses.
+>
+> >
+> > So getting back to iter implementation. Make sure you are
+> > zero-initializing that u64 value you are reading into?
+> >
+>
+> It has been zero-initialized:
+>
+> + kit->nr_bits =3D 0;
+> + kit->bits_copy =3D 0;
+>
+
+ok, then the problem is somewhere else, but it doesn't seem to be in
+bpf_probe_read_kernel(). I'm forgetting what was the original test
+failure for your patch set, but please double check again, taking into
+account the big endianness of s390x.
+
 > --
-> 2.40.1
->
+> Regards
+> Yafang
 
