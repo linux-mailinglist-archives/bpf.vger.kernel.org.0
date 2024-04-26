@@ -1,117 +1,172 @@
-Return-Path: <bpf+bounces-27988-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-27989-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 609FB8B421C
-	for <lists+bpf@lfdr.de>; Sat, 27 Apr 2024 00:17:21 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id E7F048B424D
+	for <lists+bpf@lfdr.de>; Sat, 27 Apr 2024 00:43:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B3185B22791
-	for <lists+bpf@lfdr.de>; Fri, 26 Apr 2024 22:17:18 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9DC0F1F222C2
+	for <lists+bpf@lfdr.de>; Fri, 26 Apr 2024 22:43:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 838AF38DD6;
-	Fri, 26 Apr 2024 22:17:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 784373A1B9;
+	Fri, 26 Apr 2024 22:42:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="Zv8HME6W"
+	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="G1m5msKm"
 X-Original-To: bpf@vger.kernel.org
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E095374CC;
-	Fri, 26 Apr 2024 22:17:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 85EB43BBE6;
+	Fri, 26 Apr 2024 22:42:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.133.104.62
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714169826; cv=none; b=amGqJ1y+GkIRIp474VGblWytt0mREegO+veffeQusw/o8p8Z4k2GNy7VHbfMy6zB+tAsOw9oU0wkJT+Dghz7Finx3hMYuvsJZsniFAjO7Dhn6p6vsGYFthnPHM2XwdZwZb/6GIb5cN3INttDvDd+ILaFdPbIIBlNC1kDvNTvB/s=
+	t=1714171375; cv=none; b=pwECL0NE6qFeT/JIzPAGe4MPcY/inlKPa4KmOE+PhzonxXEZ9rANTcGmY3kC9gyn+8ctejkZ9B5inkztgjdebprsMTiTfoCPdvNtOV5n6EgYQz9Rv4zN/HfxCtbYN7/WWhwLyN2Q4Ih818zbznqIBk+BUTLfUbmrRwswvShVRTQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714169826; c=relaxed/simple;
-	bh=2mPzRah3Wm9xdrDA65IUWBsFdPpbm+E8qeM6+YgkocQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=R4rnd3EAk7UxJCwSKghagKbCm5P1CoJCGzY+ynpMVqwCrlR/qQv3yN4AWC4+QGzx9J1jswXZAcJynj0oTAaHGC5jv4pFNJeMGght66BSEaKlHNyffK62VVDLnU9ngQCW0U3bfLrI85JiIXxzNM7dy68ZxDpYevh4MdpCpP/4jJ4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=Zv8HME6W; arc=none smtp.client-ip=198.137.202.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+	s=arc-20240116; t=1714171375; c=relaxed/simple;
+	bh=1T9WPb0ShseSt6MCLsMq6ZrJl4sruiRMyFdv22QrfLY=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=rybmZ/MUa9KCBZaSf37kmdWJ0n1dUvRHMocD/HGAxn6pDlk76iCVqxl9CPzzg1lPSSmgsrbj28VzGlJyjxPeF3htYd1QfS1gzv7BkRHftqIFX7whgWCRga5k4p2GlRDfpQTvWrpakQngaPALJWvfJlifjGCXB5jVwNCKgHB2AGk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=G1m5msKm; arc=none smtp.client-ip=213.133.104.62
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iogearbox.net
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:Content-Type:
-	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=cTQ9xerQdOeH4jXMbGtf6cI/Y+VdXzSArGlGz80aHAI=; b=Zv8HME6WgWAowWyjCUeyLO5IYe
-	9GvjlhE8hKbAu7zINfW50IO7YqF/KISlrxBvJvIpW/1NtSBxHBP8e1bGCKQWgIg6Zu49N0IXokQx1
-	ejexzw/XGdbOekwVMtqdb6v4W/qk9C97w9f+sYd9IkC7gqC5uoJSUH1JKMEv13teK8gpd/uDPxzpZ
-	upDMrwC30rkgH2OGFFi22R/M3snVkVRHN8+4FXWSFFmYGruiSFkjuXd5PJCh82iTsEdt7OuWfutIa
-	2sabrXg/46pbOGj5UHrMk8kWQruxRwF8WwtxW1F4txOzN8uKgtgEqY/iGEC+uHjpLgVSi2SF33Q91
-	UXWXhQKg==;
-Received: from mcgrof by bombadil.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1s0TsG-0000000ECRx-3CkI;
-	Fri, 26 Apr 2024 22:16:56 +0000
-Date: Fri, 26 Apr 2024 15:16:56 -0700
-From: Luis Chamberlain <mcgrof@kernel.org>
-To: Mike Rapoport <rppt@kernel.org>
-Cc: linux-kernel@vger.kernel.org, Alexandre Ghiti <alexghiti@rivosinc.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	=?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@kernel.org>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Christophe Leroy <christophe.leroy@csgroup.eu>,
-	"David S. Miller" <davem@davemloft.net>,
-	Dinh Nguyen <dinguyen@kernel.org>,
-	Donald Dutile <ddutile@redhat.com>,
-	Eric Chanudet <echanude@redhat.com>,
-	Heiko Carstens <hca@linux.ibm.com>, Helge Deller <deller@gmx.de>,
-	Huacai Chen <chenhuacai@kernel.org>,
-	Kent Overstreet <kent.overstreet@linux.dev>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Michael Ellerman <mpe@ellerman.id.au>,
-	Nadav Amit <nadav.amit@gmail.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Rick Edgecombe <rick.p.edgecombe@intel.com>,
-	Russell King <linux@armlinux.org.uk>,
-	Sam Ravnborg <sam@ravnborg.org>, Song Liu <song@kernel.org>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	Thomas Gleixner <tglx@linutronix.de>, Will Deacon <will@kernel.org>,
-	bpf@vger.kernel.org, linux-arch@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
-	linux-mm@kvack.org, linux-modules@vger.kernel.org,
-	linux-parisc@vger.kernel.org, linux-riscv@lists.infradead.org,
-	linux-s390@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
-	linuxppc-dev@lists.ozlabs.org, loongarch@lists.linux.dev,
-	netdev@vger.kernel.org, sparclinux@vger.kernel.org, x86@kernel.org
-Subject: Re: [PATCH v6 00/16] mm: jit/text allocator
-Message-ID: <Ziwn2Nqrf3PWxVTd@bombadil.infradead.org>
-References: <20240426082854.7355-1-rppt@kernel.org>
+	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
+	MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:In-Reply-To:References;
+	bh=+DLaccrhT7k3iqNDz0dREoZuUXR57sjg+S8VyePm5mQ=; b=G1m5msKmAfBf9ZNueJ+c/Ji6BO
+	Yj6fnJV/s5myjTAETURpRbLGNB7kzaZIbnBth+ttT3hBkdWw5WcPnuAxSUiamGBJ1/OcTsgTW51+L
+	D02A5wLJHqdo6aotTVu+Mt/lplr5lyra6A8uZ+cOEwU9Fn4skXDvkmMRuMsK2bFBctngphVpVD3sG
+	ygQWk0W3KSXvO4RN8cCSo+FW0rmC60v18VsxF3FEM09YkiLqfHLM5T26y2NqQk+MGVIWqqy+SFU5S
+	10rDPC/wfJAkgI7SNeZ+FONEOt2nWa9fl1tHKrIQNAi3/KZPrZYQr8w/mDkdfgWajAIF1JDr34oQg
+	s/Kv7d7Q==;
+Received: from 19.249.197.178.dynamic.dsl-lte-bonding.lssmb00p-msn.res.cust.swisscom.ch ([178.197.249.19] helo=localhost)
+	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <daniel@iogearbox.net>)
+	id 1s0UHJ-000EB8-5k; Sat, 27 Apr 2024 00:42:49 +0200
+From: Daniel Borkmann <daniel@iogearbox.net>
+To: davem@davemloft.net
+Cc: kuba@kernel.org,
+	pabeni@redhat.com,
+	edumazet@google.com,
+	daniel@iogearbox.net,
+	ast@kernel.org,
+	andrii@kernel.org,
+	martin.lau@linux.dev,
+	netdev@vger.kernel.org,
+	bpf@vger.kernel.org
+Subject: pull-request: bpf 2024-04-26
+Date: Sat, 27 Apr 2024 00:42:48 +0200
+Message-Id: <20240426224248.26197-1-daniel@iogearbox.net>
+X-Mailer: git-send-email 2.21.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240426082854.7355-1-rppt@kernel.org>
-Sender: Luis Chamberlain <mcgrof@infradead.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.10/27257/Fri Apr 26 10:25:03 2024)
 
-On Fri, Apr 26, 2024 at 11:28:38AM +0300, Mike Rapoport wrote:
-> From: "Mike Rapoport (IBM)" <rppt@kernel.org>
-> 
-> Hi,
-> 
-> The patches are also available in git:
-> https://git.kernel.org/pub/scm/linux/kernel/git/rppt/linux.git/log/?h=execmem/v6
-> 
-> v6 changes:
-> * restore patch "arm64: extend execmem_info for generated code
->   allocations" that disappeared in v5 rebase
-> * update execmem initialization so that by default it will be
->   initialized early while late initialization will be an opt-in
+Hi David, hi Jakub, hi Paolo, hi Eric,
 
-I've taken this new iteration again through modules-next so to help get
-more testing exposure to this. If we run into conflicts again with mm
-we can see if Andrew is willing to take this in through there. However,
-it may make sense to only consider up to "mm: introduce execmem_alloc() and
-execmem_free()" for v6.10 given we're bound to likely find more issues
-and we are already at rc5.
+The following pull-request contains BPF updates for your *net* tree.
 
-  Luis
+We've added 12 non-merge commits during the last 22 day(s) which contain
+a total of 14 files changed, 168 insertions(+), 72 deletions(-).
+
+The main changes are:
+
+1) Fix BPF_PROBE_MEM in verifier and JIT to skip loads from vsyscall page, from Puranjay Mohan.
+
+2) Fix a crash in XDP with devmap broadcast redirect when the latter map is in process
+   of being torn down, from Toke Høiland-Jørgensen.
+
+3) Fix arm64 and riscv64 BPF JITs to properly clear start time for BPF program runtime
+   stats, from Xu Kuohai.
+
+4) Fix a sockmap KCSAN-reported data race in sk_psock_skb_ingress_enqueue, from Jason Xing.
+
+5) Fix BPF verifier error message in resolve_pseudo_ldimm64, from Anton Protopopov.
+
+6) Fix missing DEBUG_INFO_BTF_MODULES Kconfig menu item, from Andrii Nakryiko.
+
+Please consider pulling these changes from:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git tags/for-netdev
+
+Thanks a lot!
+
+Also thanks to reporters, reviewers and testers of commits in this pull-request:
+
+Björn Töpel, Breno Leitao, Daniel Borkmann, Hangbin Liu, Ilya 
+Leoshkevich, Ivan Babrou, Jesper Dangaard Brouer, John Fastabend, Pu 
+Lehui, Russell King (Oracle), Stanislav Fomichev, Vincent Li
+
+----------------------------------------------------------------
+
+The following changes since commit c88b9b4cde17aec34fb9bfaf69f9f72a1c44f511:
+
+  Merge tag 'net-6.9-rc3' of git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net (2024-04-04 14:49:10 -0700)
+
+are available in the Git repository at:
+
+  https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git tags/for-netdev
+
+for you to fetch changes up to a86538a2efb826b9a62c7b41e0499948b04aec7d:
+
+  Merge branch 'bpf-prevent-userspace-memory-access' (2024-04-26 09:45:19 -0700)
+
+----------------------------------------------------------------
+bpf-for-netdev
+
+----------------------------------------------------------------
+Alexei Starovoitov (1):
+      Merge branch 'bpf-prevent-userspace-memory-access'
+
+Andrii Nakryiko (1):
+      bpf, kconfig: Fix DEBUG_INFO_BTF_MODULES Kconfig definition
+
+Anton Protopopov (1):
+      bpf: Fix a verifier verbose message
+
+Björn Töpel (1):
+      MAINTAINERS: bpf: Add Lehui and Puranjay as riscv64 reviewers
+
+Jason Xing (1):
+      bpf, skmsg: Fix NULL pointer dereference in sk_psock_skb_ingress_enqueue
+
+Puranjay Mohan (5):
+      MAINTAINERS: Update email address for Puranjay Mohan
+      arm32, bpf: Reimplement sign-extension mov instruction
+      bpf: verifier: prevent userspace memory access
+      bpf, x86: Fix PROBE_MEM runtime load check
+      selftests/bpf: Test PROBE_MEM of VSYSCALL_ADDR on x86-64
+
+Toke Høiland-Jørgensen (1):
+      xdp: use flags field to disambiguate broadcast redirect
+
+Xu Kuohai (2):
+      bpf, arm64: Fix incorrect runtime stats
+      riscv, bpf: Fix incorrect runtime stats
+
+ .mailmap                                           |  1 +
+ MAINTAINERS                                        |  8 +--
+ arch/arm/net/bpf_jit_32.c                          | 56 ++++++++++++++-----
+ arch/arm64/net/bpf_jit_comp.c                      |  6 +--
+ arch/riscv/net/bpf_jit_comp64.c                    |  6 +--
+ arch/x86/net/bpf_jit_comp.c                        | 63 +++++++++++-----------
+ include/linux/filter.h                             |  1 +
+ include/linux/skmsg.h                              |  2 +
+ kernel/bpf/core.c                                  |  9 ++++
+ kernel/bpf/verifier.c                              | 33 +++++++++++-
+ lib/Kconfig.debug                                  |  5 +-
+ net/core/filter.c                                  | 42 +++++++++++----
+ net/core/skmsg.c                                   |  5 +-
+ .../selftests/bpf/bpf_testmod/bpf_testmod.c        |  3 ++
+ 14 files changed, 168 insertions(+), 72 deletions(-)
 
