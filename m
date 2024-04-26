@@ -1,101 +1,123 @@
-Return-Path: <bpf+bounces-27993-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-27994-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8ED5D8B4292
-	for <lists+bpf@lfdr.de>; Sat, 27 Apr 2024 01:16:39 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 645258B4294
+	for <lists+bpf@lfdr.de>; Sat, 27 Apr 2024 01:16:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EDE8AB21277
-	for <lists+bpf@lfdr.de>; Fri, 26 Apr 2024 23:16:36 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 242781F22728
+	for <lists+bpf@lfdr.de>; Fri, 26 Apr 2024 23:16:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 000E93B2A2;
-	Fri, 26 Apr 2024 23:16:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E99F93C463;
+	Fri, 26 Apr 2024 23:16:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="T96rcwpG"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="YlGRMXrl"
 X-Original-To: bpf@vger.kernel.org
 Received: from mail-yw1-f202.google.com (mail-yw1-f202.google.com [209.85.128.202])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C6D43C092
-	for <bpf@vger.kernel.org>; Fri, 26 Apr 2024 23:16:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 35AAA3B78B
+	for <bpf@vger.kernel.org>; Fri, 26 Apr 2024 23:16:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714173385; cv=none; b=OOI5epdqmdIyb0SHH0/CVwLRtwzHcS+EXbz8u3VUBJyA9Js22cDF5eID8ql+f7tYIDtT2PjpovUMkCFwzIA9stuuThgmCi+0Tx3OflnVRF6WMQvh0htJtSlyjqKfucXZR8P3mYCjeWF8Nf00PRZpyMHInySQBaK9jfIgMvmU9mI=
+	t=1714173387; cv=none; b=oeFPQEZzcj/H4fMsHLEJR1GpasEz2SKrEEqk/U08YJnTtowhjH9LU1UEyu5W4P9SVzKFwPmUBMyINSbKo+SLStcd1ZWLhaNXHRpIdHscdGBkmRd4jbH4Q1JNs0g6UqNe9/1X28RtvcItfsipwppEC5rWYr6zpo1St4V2ua4YRlk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714173385; c=relaxed/simple;
-	bh=Hw/Vm6LZ8E8f3p/6pvkT071TnyXIs5Nkopf7kc1tD7Y=;
-	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=GCvpCvqEYe4pYq/Blgo9EfqBvr043Yw23j0dN8OTrRG4E029k1ppecYCZgBnKfDrTGo+DM5YQU0LMQdHeAv/LzfFFegs+rkNpb+irOmxcZZrpMaJndeP9d3pPLCl66ykX3rmiY3dLBDhoemz1ETjxaWpONvSgFjia80bXMiTb2g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--sdf.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=T96rcwpG; arc=none smtp.client-ip=209.85.128.202
+	s=arc-20240116; t=1714173387; c=relaxed/simple;
+	bh=4Qqd8JwEjPySj3HwDqz7sWAvOHtJzeDDUNVyCwWcnE4=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=a79zVKycMNg13R/KFklq61NZADU+47JhRLjBkmmHqrg5Ok+lIBrhYEQvzPKIWVUiYKovEIz83CWErkJWsDvwi3fr71CEqFOxgR9nyNt2taa373aVvsuRxt5wJQNfUzrVV1VHJUT9k1qcOBzsqS++apr64QJ9rwiJjg956JAlC6A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--sdf.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=YlGRMXrl; arc=none smtp.client-ip=209.85.128.202
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--sdf.bounces.google.com
-Received: by mail-yw1-f202.google.com with SMTP id 00721157ae682-61510f72bb3so52550157b3.0
-        for <bpf@vger.kernel.org>; Fri, 26 Apr 2024 16:16:24 -0700 (PDT)
+Received: by mail-yw1-f202.google.com with SMTP id 00721157ae682-6167463c60cso31398577b3.1
+        for <bpf@vger.kernel.org>; Fri, 26 Apr 2024 16:16:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1714173383; x=1714778183; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=6hE36stZFSpFdLbNBoVyWYgwDMImxgjqRQJEYsVAq9Q=;
-        b=T96rcwpGEMOfZWDx/uX36rJ9L7M2iDywlMio2ROYutMlJjdYdGYpEd3j+bhPt3lm4C
-         fK6fLGapJZ3by+JjwZqpwayJNSWsvx4Fm4pPKYd0lCojovd3wSDn7uIWrtVVdWZWjY2l
-         9xNvrFAjcGV5iMir7Gruc4lJPmCpdcCGqOkv9nvltFOZBusucoO1F0OHocT6ke7EnQEN
-         8bRWCpslPDp2czhVOhuRiytGHqmLvnS1YIWe+WQSYGz3N7R3zqMzxp2jOGyIEo52SXt9
-         iaPSELk/ah9pgc1AkDjYGa4upAmgXYohQiEhvERs2F8xO8VDJHxtTAC6lo50iQWa9cMA
-         BUog==
+        d=google.com; s=20230601; t=1714173385; x=1714778185; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=DK6THD+vyoriOh5CJBKICwH66WGUIvDpFL35bEBRuig=;
+        b=YlGRMXrlYvmyfMBXyEzrxqTSp9QXgZfemVuJPG38+gqMBXPXD/xt8lHMYgmqHbfFaG
+         pY0Ya8BvcUuMcHyeFy1A2Bwu3wuXxao6m+DqxLeOZa75O/DnJZ45htwPxEGj0Vjt+g5F
+         kv3KvdxPY22UHqXy32DSLxYVVBYOvsOfMAuTdK43iG0G6bihqs9XWSGaBi/XbOOGf11C
+         y4jgKe2Z2GTz3JbrtKc3IFBNGyKt+MyFioTlrar4jmhWFzPGSn8tbkCJHiQ7WHkxpAOW
+         p9Eoe14f7/nhv+2mbUXktxE/rSDawrQmDWb0blg59b4XdCjpkw9bj6D8Xm3Hn7VV0JUq
+         FUnw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714173383; x=1714778183;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=6hE36stZFSpFdLbNBoVyWYgwDMImxgjqRQJEYsVAq9Q=;
-        b=edLF42xo4Mgmp6xXQZ1cfBDl97Q0f2dKRk/FLjGnDL8T6HGfZq0AufEksiR0T+Cmgw
-         Jp0gFUu33QazjwdXfGDluOiMPuVPUOBQCQt6Y1zWFBlGj2ZiXhAwdQRBvPY058GfoFVL
-         H919WSn4X8lJqA8jWipdDy8nLCYx1CcDt7tVHdFV3FlneFvKPnmDJwXzEGMSqyx71da4
-         8rwiJIQHAk8PMcGbqXmcksiXPmyDUJ6BugOO1S0krbjypSDp3fMydCSn/E7Amg63BPy0
-         8AklyDEw9wPviWpuFSeLXuafOy/Ze2ATFEY/7nLq2NFvbnMpFAlQvR5ktDtFB9Rd4G4N
-         +3ng==
-X-Gm-Message-State: AOJu0YwLJz08WvYilCW1r3KW85gqmO8DYiPdj7ENveGH5IXHx2SiNQK1
-	bWqt+npagrgB6J7/+iMFc/w9gsxHzigJUOTZg8Z5Ee27Odgx6vZLBta52xnXdEKETgVwx8TPuHW
-	+a2rswk7y+5qeNvBGnsybmxKN0O+jgcpU76VXAVxH4EQjFqDvr7aolWIVUeYtXM9gic0nNc72lk
-	FtgjgtQO+P8V07
-X-Google-Smtp-Source: AGHT+IFBo8RF51gRGqri0rLARvh73ixOcb8Mq3xEpt0vPf3CxbirCHkuIF+JsoDbSRswMgqKXkYV9MI=
+        d=1e100.net; s=20230601; t=1714173385; x=1714778185;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=DK6THD+vyoriOh5CJBKICwH66WGUIvDpFL35bEBRuig=;
+        b=owdkGLnSCswIZ6REw8PMvmeeKzJNHNACzCsk1ruM2/BAGgymU4ypy29czI/6rLAZUI
+         lALklAzsNhdEN1t2eUue482w2GjUU+RSScHCgeJ9cib687uKxc3STcFZ35A4iAzom15q
+         FwHOQRDApfodYLM2LchMkiJDGhJZdpiL+XWaDBdgmUehnDi3ZXg4oekrwDtf/mYIfsP8
+         F6plPEbtYZnXzw4GyjdAOFoHNauv1XYagMZGCqHz46f3X3RINLrLEnbAbtQ9uwkAnrKe
+         10wOBasR7iJGqrCI/8SB43sXglMJFspaJ60jKt18iQexqLiuGWLM8u7U5qxgKG8l4FUx
+         XxTQ==
+X-Gm-Message-State: AOJu0Ywi5Yty15+oMW1IB8hySVy4xIpIqSnN7ggYsNmGYT54RUPdmqQt
+	p9Jjt4+qNrZfAkB+HZaP9Qui37ixQY6/S+LqeU4VA+SiIC2qwKtOLNwfT7gvpX/pYqLD7S4oJGR
+	ZUMA4URLSgG0Pd12qL4+2fvAHtMTvwowlDGAz1ZLfyY0AJkvLBJPknEw7deYVOsgQZiocziSLiY
+	tb7T6SQ1lT/K4q
+X-Google-Smtp-Source: AGHT+IH3BVfF3g96jN9u0G0SP1OivHgL+ixqAxgGZebYhsNCd0ainZZ2bnrIxHUju3h6EUXev9TyBaM=
 X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
- (user=sdf job=sendgmr) by 2002:a05:6902:72b:b0:de5:319b:a226 with SMTP id
- l11-20020a056902072b00b00de5319ba226mr1212592ybt.1.1714173383019; Fri, 26 Apr
- 2024 16:16:23 -0700 (PDT)
-Date: Fri, 26 Apr 2024 16:16:17 -0700
+ (user=sdf job=sendgmr) by 2002:a0d:ca47:0:b0:611:5a9d:bb0e with SMTP id
+ m68-20020a0dca47000000b006115a9dbb0emr277747ywd.4.1714173384994; Fri, 26 Apr
+ 2024 16:16:24 -0700 (PDT)
+Date: Fri, 26 Apr 2024 16:16:18 -0700
+In-Reply-To: <20240426231621.2716876-1-sdf@google.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
+References: <20240426231621.2716876-1-sdf@google.com>
 X-Mailer: git-send-email 2.44.0.769.g3c40516874-goog
-Message-ID: <20240426231621.2716876-1-sdf@google.com>
-Subject: [PATCH bpf 0/3] bpf: Add BPF_PROG_TYPE_CGROUP_SKB attach type
+Message-ID: <20240426231621.2716876-2-sdf@google.com>
+Subject: [PATCH bpf 1/3] bpf: Add BPF_PROG_TYPE_CGROUP_SKB attach type
  enforcement in BPF_LINK_CREATE
 From: Stanislav Fomichev <sdf@google.com>
 To: bpf@vger.kernel.org, netdev@vger.kernel.org
 Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, 
 	martin.lau@linux.dev, song@kernel.org, yhs@fb.com, john.fastabend@gmail.com, 
-	kpsingh@kernel.org, sdf@google.com, haoluo@google.com, jolsa@kernel.org
+	kpsingh@kernel.org, sdf@google.com, haoluo@google.com, jolsa@kernel.org, 
+	syzbot+838346b979830606c854@syzkaller.appspotmail.com
 Content-Type: text/plain; charset="UTF-8"
 
-Syzkaller found a case where it's possible to attach cgroup_skb program
-to the sockopt hooks. Apparently it's currently possible to do that,
-but only when using BPF_LINK_CREATE API. The first patch in the series
-has more info on why that happens.
+bpf_prog_attach uses attach_type_to_prog_type to enforce proper
+attach type for BPF_PROG_TYPE_CGROUP_SKB. link_create uses
+bpf_prog_get and relies on bpf_prog_attach_check_attach_type
+to properly verify prog_type <> attach_type association.
 
-Stanislav Fomichev (3):
-  bpf: Add BPF_PROG_TYPE_CGROUP_SKB attach type enforcement in
-    BPF_LINK_CREATE
-  selftests/bpf: Extend sockopt tests to use BPF_LINK_CREATE
-  selftests/bpf: Add sockopt case to verify prog_type
+Add missing attach_type enforcement for the link_create case.
+Otherwise, it's currently possible to attach cgroup_skb prog
+types to other cgroup hooks.
 
- kernel/bpf/syscall.c                          |  5 ++
- .../selftests/bpf/prog_tests/sockopt.c        | 65 ++++++++++++++++---
- 2 files changed, 62 insertions(+), 8 deletions(-)
+Fixes: af6eea57437a ("bpf: Implement bpf_link-based cgroup BPF program attachment")
+Link: https://lore.kernel.org/bpf/0000000000004792a90615a1dde0@google.com/
+Reported-by: syzbot+838346b979830606c854@syzkaller.appspotmail.com
+Signed-off-by: Stanislav Fomichev <sdf@google.com>
+---
+ kernel/bpf/syscall.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
+diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+index c287925471f6..cb61d8880dbe 100644
+--- a/kernel/bpf/syscall.c
++++ b/kernel/bpf/syscall.c
+@@ -3985,6 +3985,11 @@ static int bpf_prog_attach_check_attach_type(const struct bpf_prog *prog,
+ 			 * check permissions at attach time.
+ 			 */
+ 			return -EPERM;
++
++		ptype = attach_type_to_prog_type(attach_type);
++		if (prog->type != ptype)
++			return -EINVAL;
++
+ 		return prog->enforce_expected_attach_type &&
+ 			prog->expected_attach_type != attach_type ?
+ 			-EINVAL : 0;
 -- 
 2.44.0.769.g3c40516874-goog
 
