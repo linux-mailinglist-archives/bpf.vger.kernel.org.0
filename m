@@ -1,118 +1,169 @@
-Return-Path: <bpf+bounces-27968-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-27970-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id BE9618B3FD7
-	for <lists+bpf@lfdr.de>; Fri, 26 Apr 2024 21:02:01 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 499558B4019
+	for <lists+bpf@lfdr.de>; Fri, 26 Apr 2024 21:22:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1584AB22353
-	for <lists+bpf@lfdr.de>; Fri, 26 Apr 2024 19:01:59 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0074B282A0F
+	for <lists+bpf@lfdr.de>; Fri, 26 Apr 2024 19:22:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8320814287;
-	Fri, 26 Apr 2024 19:01:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 056F4171A1;
+	Fri, 26 Apr 2024 19:22:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="u1J8gS6e"
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ietf.org header.i=@ietf.org header.b="bm6lSssQ";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ietf.org header.i=@ietf.org header.b="vm1p+Km3";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TGJWpitD"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mail.ietf.org (mail.ietf.org [50.223.129.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C3F231C06;
-	Fri, 26 Apr 2024 19:01:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 29C621173F
+	for <bpf@vger.kernel.org>; Fri, 26 Apr 2024 19:22:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=50.223.129.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714158108; cv=none; b=W6HD41fQz19sweJgwEJ7EYqIaTLo9/32ZjmbPalPqYI4rRBRpWWipZDtA3AmAtb0KjhboJrcLpzp1i2kA7bcOcLKdIerYONNNzOz/m3i9R8OCsTc8NeO9hoOUGY2To7hf/8Hb/0NPp46hywRGydNPK+KNu4u2b1qSNFlnVZwRdo=
+	t=1714159358; cv=none; b=fV3KKPiiXiv9E3DmzkTiptFTMFjemqq7xlmZJzZON2+VcoBELDe9YYoMHaahLcEfAu7BFOakDZ1B7zN1Bj4Ds4MiWoi65B2nMeiiC0yMlw9KKfSyXKjU799B2NvXB4Q5IqILwCHeQfWwGuPmoLaLsqBA2/JmhyRVa5ZAoH/zSAw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714158108; c=relaxed/simple;
-	bh=spHwlcTCpaNA543nwyK0H2eAD2T0c3htMv4UjyBqffA=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=RhdvC1F4R4e3uvxGNnkx3a5KQr3e8bp8ki0aLHO7xtNRl4F3FBkh3MRRYzDgD+oUgMeSL2sVjQ93FK3x9FvSdCu2JIzqn9xv3aZ4l74MXhCVFwgCNRn3ed4mfMPi4n5wx0Vs/wd6c/rncLGmsB99ky4cqNSkQ0uz8pc4DRD1BWU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=u1J8gS6e; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4D934C4AF0B;
-	Fri, 26 Apr 2024 19:01:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714158107;
-	bh=spHwlcTCpaNA543nwyK0H2eAD2T0c3htMv4UjyBqffA=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=u1J8gS6el0nAxFSbvhUmiteeeXNoJZJN5MPZ60QK8xy+IuJlkTXsHsNrzkbPy5TqD
-	 de39M5yXbq+ntNG1c/6nbsdwkYXeDFX1MSl+Fi0o2O9vI1Qd0a43krhnD8x6h+FV0m
-	 wlO6PXD2h3aPbk1x/4BZ7QoDsjaeDob+jGsSj+rmBEO15awWX82WHpVByDcK/7srXO
-	 ZSQDUE3BCOcr85i/+vlQyfSOR0XhzCaCfEOgUJDjSgUS6O0kiXb7ZAZne92g7psDMZ
-	 DVcXQzkfK3TKHln6vD5/6f1ZlTR1cK6SRZi9YHQAfiSfJAxBcBY+UqW5ezGHDQjaaF
-	 pbTgvfRBhCTeA==
-Received: by mail-lf1-f49.google.com with SMTP id 2adb3069b0e04-51ac5923ef6so2266102e87.0;
-        Fri, 26 Apr 2024 12:01:47 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCXv8pxNSWqRXzdQ9G76oELuSMmA5ZFIlKT4vxK5ksqnk6ZYTE2tcW0E/2KmtMBHb0bg5+DgxJCjjVAc0AYY0KuJOIMjrn1f/POQ2t3w1u8h0+v2bJS6LJgRf13SVvbnvJb0RqzVHlQUoOf+2R231l1BJpSJXOSEM/iGAcYOZWYlv710cZYY2EmUAAUZKBJQYESduiBpOqICtdkQx80HUwyGl9nncqu6SlK/LwugCoab+5CEkwAON6Crp5j/Qpu4sx5HqLfh71Iqhvsqn/wBf91CZMhVsUN38HzsPS3M23OBN9pJw21DKsQP1tg9EO+12j0gtaZsUO0Bty0pVxtlp2XSu5gIWAw2Drkx2eLS0ALFz7EMSv976hGLtmS0yLo5y1AVZ0RQywRwpexkIo4=
-X-Gm-Message-State: AOJu0YzeamOqJfgHaiNFAFTc75ZvDN7CvcR1I9Tcr0KrQOg6ZMWUUo8t
-	4cLLMKqy9j8L3V/5vBpRNP4O+BHS0Q8nNtyhwthsncMEeR95E+mQeWS6j01P48Hinoh+APKwzot
-	ZwcMX9BesBaQDLTzIu/xvWnE0R6E=
-X-Google-Smtp-Source: AGHT+IF/3UI9Cwbb8z8OI8jFmskqzepU4aeg2+YglDD7FKhfHPiRdUcmMxLF73Ba/yVMMyprkxylEY00eIaasdUhAvE=
-X-Received: by 2002:a05:6512:151:b0:513:c1a2:d380 with SMTP id
- m17-20020a056512015100b00513c1a2d380mr1420572lfo.31.1714158105499; Fri, 26
- Apr 2024 12:01:45 -0700 (PDT)
+	s=arc-20240116; t=1714159358; c=relaxed/simple;
+	bh=GdPaJ/JGG+iFCX15+UUXcM5jfPBJzeCVOe5YAN+bdN4=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:To:Cc:
+	 Subject:Content-Type; b=Lq60STsTiOsVPVuHHtfP9nTi1fMjOeEILoFSdX5Da704F8fbXqRZhhOb5kCEARn7XIv6RW0uyf7sEG/XwmIMs3DuXNtukT5HPGw1Pyw2x9vRRzBZGP/Kv1tTCFQnQgCDmMvd1lb13gX/UIkvhowIuG1mavWp3G7BtJYcMEWRMWc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=ietf.org; dkim=pass (1024-bit key) header.d=ietf.org header.i=@ietf.org header.b=bm6lSssQ; dkim=pass (1024-bit key) header.d=ietf.org header.i=@ietf.org header.b=vm1p+Km3; dkim=fail (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=TGJWpitD reason="signature verification failed"; arc=none smtp.client-ip=50.223.129.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ietf.org
+Received: from ietfa.amsl.com (localhost [IPv6:::1])
+	by ietfa.amsl.com (Postfix) with ESMTP id 1543FC1840CD
+	for <bpf@vger.kernel.org>; Fri, 26 Apr 2024 12:22:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ietf.org; s=ietf1;
+	t=1714159356; bh=GdPaJ/JGG+iFCX15+UUXcM5jfPBJzeCVOe5YAN+bdN4=;
+	h=References:In-Reply-To:From:Date:To:Cc:Subject:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe;
+	b=bm6lSssQAhi2D+nDLj/wPNFE5XOWcaV8+mTvd6kjWfZohK8yL+pPWDAcbHl9Np14l
+	 i4nIO2ChN3zdqsIAwFlU0q9o234eEv3owfDtFCDlo94aWqTPEeIsRtsOdOSy9cCwJ9
+	 vJ3ZDdAMLEnD/VnZhaV0z3iC67RdS9H95QBF0cUg=
+X-Mailbox-Line: From bpf-bounces@ietf.org  Fri Apr 26 12:22:36 2024
+Received: from ietfa.amsl.com (localhost [IPv6:::1])
+	by ietfa.amsl.com (Postfix) with ESMTP id DC16BC14F73E;
+	Fri, 26 Apr 2024 12:22:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ietf.org; s=ietf1;
+	t=1714159355; bh=GdPaJ/JGG+iFCX15+UUXcM5jfPBJzeCVOe5YAN+bdN4=;
+	h=References:In-Reply-To:From:Date:To:Cc:Subject:List-Id:
+	 List-Unsubscribe:List-Archive:List-Post:List-Help:List-Subscribe;
+	b=vm1p+Km3Q8hWGygajD1mcj1kctNVaVkrFd1JDXnwG8HNbUJPPUYodGEcbsRaY4QGi
+	 K0N9TYbQPgl1CYnDH3pcGpFXEdViNdaAYRMdBdO62LSxk+7GjtLxGAbvvMrzYeNMHS
+	 xg9GG5KRJind+O3iTtVNOD3e+Cn5Nt7w6Ehy7PfE=
+X-Original-To: bpf@ietfa.amsl.com
+Delivered-To: bpf@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+ by ietfa.amsl.com (Postfix) with ESMTP id 6C206C14F6A4
+ for <bpf@ietfa.amsl.com>; Fri, 26 Apr 2024 12:22:34 -0700 (PDT)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: -7.098
+X-Spam-Level: 
+Authentication-Results: ietfa.amsl.com (amavisd-new); dkim=pass (2048-bit key)
+ header.d=gmail.com
+Received: from mail.ietf.org ([50.223.129.194])
+ by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id W6b9578N1aAj for <bpf@ietfa.amsl.com>;
+ Fri, 26 Apr 2024 12:22:32 -0700 (PDT)
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com
+ [IPv6:2a00:1450:4864:20::32a])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ (No client certificate requested)
+ by ietfa.amsl.com (Postfix) with ESMTPS id BBC8CC180B71
+ for <bpf@ietf.org>; Fri, 26 Apr 2024 12:21:57 -0700 (PDT)
+Received: by mail-wm1-x32a.google.com with SMTP id
+ 5b1f17b1804b1-41b782405d5so12743485e9.2
+ for <bpf@ietf.org>; Fri, 26 Apr 2024 12:21:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=gmail.com; s=20230601; t=1714159315; x=1714764115; darn=ietf.org;
+ h=content-transfer-encoding:cc:to:subject:message-id:date:from
+ :in-reply-to:references:mime-version:from:to:cc:subject:date
+ :message-id:reply-to;
+ bh=zvXnIn/XDuJAQsm3VwD/VgmBSl2ZQcQJR0lrhNHqgko=;
+ b=TGJWpitDOwRPMOcBAONI2/FL/pj0X6LriLlYEog00o+rjvCTkHqKguLI8BqPBMivvb
+ 8wKRWwaA1tB5YZ8N4YqD1fcO3NnBkZIop/XW/bLJ5HLZINEMuHZcS7x5+iDTo5IBYRcN
+ 7Crrgxfd2TLrYABbqb0lmCN2BY2vFw9RYIqTYEiyN+O2CZsy9Lb2B1i0WvhmYukZHAR8
+ ToAGKcXWM3rZfqVLvyAexbxv+uzoX58ACac9CGr++5bJizLPFT3MdVi1EvrbDRJh6rU8
+ dtxxO1wcBf9l6O6JM46SbjURwZ22l7T2BZ9pz+uNRpqnzwu6S2qAwjSFvBdgDAYTMPS3
+ ejDg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20230601; t=1714159315; x=1714764115;
+ h=content-transfer-encoding:cc:to:subject:message-id:date:from
+ :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+ :subject:date:message-id:reply-to;
+ bh=zvXnIn/XDuJAQsm3VwD/VgmBSl2ZQcQJR0lrhNHqgko=;
+ b=C96HfA/+m9rlNzw6S0bwLaAg+aflb/6ywFQTIUML1byFrrI3Xq4XGowgF+dn0g/dFL
+ E+10Am6cPVTDZdtswANra5DwNr2TBqENwxwXpYfwiKgA6gFWbhM7WrOt6EHt0pJjRq+4
+ pbcTy5JrKdmCm2+WlvVYOLIghfEAU7Hk679vHb0TCbqUe2iPyte9m8dR3/w//HYpSOie
+ SN++b+OGNj2uKuQ4Ttgz5cfWIEsCk3vVbgDpLe13IWAqj5iNwrq7DWgd6uCLbIl6htXG
+ gnRsj2z3knpfgyPXGXf2cO+NcRJTLTWke3beGrKvIzng+AT2ZslxaTMq7uN8rvpzbLv1
+ LUig==
+X-Forwarded-Encrypted: i=1;
+ AJvYcCUz4DLIPNPZssRSOT9PI/ohztnBU7Yc9Q1v4HlhD6uQHIQjuXNs+mPk+yrY4dtDVehFvNxXyy/AJBPiX7Q=
+X-Gm-Message-State: AOJu0YyroccmcBhGqvH0ul2K+3jscNe1ce7d9RxSVzrpVf2jPdj/LSST
+ x6F2Aaqw8i9rp7IPYeudwWc/yQ1mlwQlun2kd7lVbPPBHZ0mzPA9jeRYSG9Ni6NDtqaFAbiSrOD
+ HZSlLGqlvMRIsH2YVT6p0Q2YmNiY=
+X-Google-Smtp-Source: AGHT+IH0MLG0SVP4mrXSBuAu8KABnzQTBrtqHEbXi4UMP6EvI2jnDFoYCj5B9kf3O7PRo8R7RKIqh13ChOAsi9o5Vk0=
+X-Received: by 2002:a5d:6306:0:b0:34c:7410:d6c8 with SMTP id
+ i6-20020a5d6306000000b0034c7410d6c8mr1837093wru.49.1714159315386; Fri, 26 Apr
+ 2024 12:21:55 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240426082854.7355-1-rppt@kernel.org> <20240426082854.7355-9-rppt@kernel.org>
-In-Reply-To: <20240426082854.7355-9-rppt@kernel.org>
-From: Song Liu <song@kernel.org>
-Date: Fri, 26 Apr 2024 12:01:34 -0700
-X-Gmail-Original-Message-ID: <CAPhsuW52MYy4Md5O=7XVGvkw395-LB+BiSadxoDdw8CrLw5t7A@mail.gmail.com>
-Message-ID: <CAPhsuW52MYy4Md5O=7XVGvkw395-LB+BiSadxoDdw8CrLw5t7A@mail.gmail.com>
-Subject: Re: [PATCH v6 08/16] mm/execmem, arch: convert remaining overrides of
- module_alloc to execmem
-To: Mike Rapoport <rppt@kernel.org>
-Cc: linux-kernel@vger.kernel.org, Alexandre Ghiti <alexghiti@rivosinc.com>, 
-	Andrew Morton <akpm@linux-foundation.org>, =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>, 
-	Catalin Marinas <catalin.marinas@arm.com>, Christophe Leroy <christophe.leroy@csgroup.eu>, 
-	"David S. Miller" <davem@davemloft.net>, Dinh Nguyen <dinguyen@kernel.org>, 
-	Donald Dutile <ddutile@redhat.com>, Eric Chanudet <echanude@redhat.com>, 
-	Heiko Carstens <hca@linux.ibm.com>, Helge Deller <deller@gmx.de>, Huacai Chen <chenhuacai@kernel.org>, 
-	Kent Overstreet <kent.overstreet@linux.dev>, Luis Chamberlain <mcgrof@kernel.org>, 
-	Mark Rutland <mark.rutland@arm.com>, Masami Hiramatsu <mhiramat@kernel.org>, 
-	Michael Ellerman <mpe@ellerman.id.au>, Nadav Amit <nadav.amit@gmail.com>, 
-	Palmer Dabbelt <palmer@dabbelt.com>, Peter Zijlstra <peterz@infradead.org>, 
-	Rick Edgecombe <rick.p.edgecombe@intel.com>, Russell King <linux@armlinux.org.uk>, 
-	Sam Ravnborg <sam@ravnborg.org>, Steven Rostedt <rostedt@goodmis.org>, 
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>, Thomas Gleixner <tglx@linutronix.de>, 
-	Will Deacon <will@kernel.org>, bpf@vger.kernel.org, linux-arch@vger.kernel.org, 
-	linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org, 
-	linux-mm@kvack.org, linux-modules@vger.kernel.org, 
-	linux-parisc@vger.kernel.org, linux-riscv@lists.infradead.org, 
-	linux-s390@vger.kernel.org, linux-trace-kernel@vger.kernel.org, 
-	linuxppc-dev@lists.ozlabs.org, loongarch@lists.linux.dev, 
-	netdev@vger.kernel.org, sparclinux@vger.kernel.org, x86@kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+References: <20240426171103.3496-1-dthaler1968@gmail.com>
+In-Reply-To: <20240426171103.3496-1-dthaler1968@gmail.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Fri, 26 Apr 2024 12:21:43 -0700
+Message-ID: <CAADnVQLmu-v30D=JP75Cd0qBhDXm8izAnUnyZZ4-QwyM67nNww@mail.gmail.com>
+To: Dave Thaler <dthaler1968@googlemail.com>
+Cc: bpf <bpf@vger.kernel.org>, bpf@ietf.org,
+ Dave Thaler <dthaler1968@gmail.com>
+Archived-At: <https://mailarchive.ietf.org/arch/msg/bpf/ruB01SVBL_mhM4hAI0DNNElqAjY>
+Subject: Re: [Bpf] [PATCH bpf-next] bpf,
+ docs: Clarify PC use in instruction-set.rst
+X-BeenThere: bpf@ietf.org
+X-Mailman-Version: 2.1.39
+Precedence: list
+List-Archive: <https://mailarchive.ietf.org/arch/browse/bpf/>
+List-Post: <mailto:bpf@ietf.org>
+List-Help: <mailto:bpf-request@ietf.org?subject=help>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Errors-To: bpf-bounces@ietf.org
+Sender: "Bpf" <bpf-bounces@ietf.org>
 
-On Fri, Apr 26, 2024 at 1:30=E2=80=AFAM Mike Rapoport <rppt@kernel.org> wro=
-te:
->
-> From: "Mike Rapoport (IBM)" <rppt@kernel.org>
->
-> Extend execmem parameters to accommodate more complex overrides of
-> module_alloc() by architectures.
->
-> This includes specification of a fallback range required by arm, arm64
-> and powerpc, EXECMEM_MODULE_DATA type required by powerpc, support for
-> allocation of KASAN shadow required by s390 and x86 and support for
-> late initialization of execmem required by arm64.
->
-> The core implementation of execmem_alloc() takes care of suppressing
-> warnings when the initial allocation fails but there is a fallback range
-> defined.
->
-> Signed-off-by: Mike Rapoport (IBM) <rppt@kernel.org>
-> Acked-by: Will Deacon <will@kernel.org>
-
-nit: We should probably move the logic for ARCH_WANTS_EXECMEM_LATE
-to a separate patch.
-
-Otherwise,
-
-Acked-by: Song Liu <song@kernel.org>
+T24gRnJpLCBBcHIgMjYsIDIwMjQgYXQgMTA6MTHigK9BTSBEYXZlIFRoYWxlciA8ZHRoYWxlcjE5
+NjhAZ29vZ2xlbWFpbC5jb20+IHdyb3RlOgo+Cj4gVGhpcyBwYXRjaCBlbGFib3JhdGVzIG9uIHRo
+ZSB1c2Ugb2YgUEMgYnkgZXhwYW5kaW5nIHRoZSBQQyBhY3JvbnltLAo+IGV4cGxhaW5pbmcgdGhl
+IHVuaXRzLCBhbmQgdGhlIHJlbGF0aXZlIHBvc2l0aW9uIHRvIHdoaWNoIHRoZSBvZmZzZXQKPiBh
+cHBsaWVzLgo+Cj4gU2lnbmVkLW9mZi1ieTogRGF2ZSBUaGFsZXIgPGR0aGFsZXIxOTY4QGdvb2ds
+ZW1haWwuY29tPgo+IC0tLQo+ICBEb2N1bWVudGF0aW9uL2JwZi9zdGFuZGFyZGl6YXRpb24vaW5z
+dHJ1Y3Rpb24tc2V0LnJzdCB8IDUgKysrKysKPiAgMSBmaWxlIGNoYW5nZWQsIDUgaW5zZXJ0aW9u
+cygrKQo+Cj4gZGlmZiAtLWdpdCBhL0RvY3VtZW50YXRpb24vYnBmL3N0YW5kYXJkaXphdGlvbi9p
+bnN0cnVjdGlvbi1zZXQucnN0IGIvRG9jdW1lbnRhdGlvbi9icGYvc3RhbmRhcmRpemF0aW9uL2lu
+c3RydWN0aW9uLXNldC5yc3QKPiBpbmRleCBiNDRiZGFjZDAuLjU1OTI2MjBjZiAxMDA2NDQKPiAt
+LS0gYS9Eb2N1bWVudGF0aW9uL2JwZi9zdGFuZGFyZGl6YXRpb24vaW5zdHJ1Y3Rpb24tc2V0LnJz
+dAo+ICsrKyBiL0RvY3VtZW50YXRpb24vYnBmL3N0YW5kYXJkaXphdGlvbi9pbnN0cnVjdGlvbi1z
+ZXQucnN0Cj4gQEAgLTQ2OSw2ICs0NjksMTEgQEAgSlNMVCAgICAgIDB4YyAgICBhbnkgICAgICBQ
+QyArPSBvZmZzZXQgaWYgZHN0IDwgc3JjICAgICAgICAgIHNpZ25lZAo+ICBKU0xFICAgICAgMHhk
+ICAgIGFueSAgICAgIFBDICs9IG9mZnNldCBpZiBkc3QgPD0gc3JjICAgICAgICAgc2lnbmVkCj4g
+ID09PT09PT09ICA9PT09PSAgPT09PT09PSAgPT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09ICA9PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0K
+Pgo+ICt3aGVyZSAnUEMnIGRlbm90ZXMgdGhlIHByb2dyYW0gY291bnRlciwgYW5kIHRoZSBvZmZz
+ZXQgdG8gaW5jcmVtZW50IGJ5Cj4gK2lzIGluIHVuaXRzIG9mIDY0LWJpdCBpbnN0cnVjdGlvbnMg
+cmVsYXRpdmUgdG8gdGhlIGluc3RydWN0aW9uIGZvbGxvd2luZwo+ICt0aGUganVtcCBpbnN0cnVj
+dGlvbi4gIFRodXMgJ1BDICs9IDEnIHJlc3VsdHMgaW4gdGhlIG5leHQgaW5zdHJ1Y3Rpb24KPiAr
+dG8gZXhlY3V0ZSBiZWluZyB0d28gNjQtYml0IGluc3RydWN0aW9ucyBsYXRlci4KClRoZSBsYXN0
+IHBhcnQgaXMgY29uZnVzaW5nLgoidHdvIDY0LWJpdCBpbnN0cnVjdGlvbnMgbGF0ZXIiCkknbSBz
+dHJ1Z2dsaW5nIHRvIHVuZGVyc3RhbmQgdGhhdC4KTWF5YmUgc2F5IHRoYXQgJ1BDICs9IDEnIHNr
+aXBzIGV4ZWN1dGlvbiBvZiB0aGUgbmV4dCBpbnNuPwoKLS0gCkJwZiBtYWlsaW5nIGxpc3QKQnBm
+QGlldGYub3JnCmh0dHBzOi8vd3d3LmlldGYub3JnL21haWxtYW4vbGlzdGluZm8vYnBmCg==
 
