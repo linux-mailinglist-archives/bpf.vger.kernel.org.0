@@ -1,45 +1,45 @@
-Return-Path: <bpf+bounces-27881-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-27882-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id DDF238B2F16
-	for <lists+bpf@lfdr.de>; Fri, 26 Apr 2024 05:40:00 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0F1FA8B2F19
+	for <lists+bpf@lfdr.de>; Fri, 26 Apr 2024 05:40:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 53DC61F216BE
-	for <lists+bpf@lfdr.de>; Fri, 26 Apr 2024 03:40:00 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9FBE6B21A7D
+	for <lists+bpf@lfdr.de>; Fri, 26 Apr 2024 03:40:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4645278C9D;
-	Fri, 26 Apr 2024 03:39:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2538F7AE43;
+	Fri, 26 Apr 2024 03:39:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="oYTYBjmO"
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="L/YHtgJ/"
 X-Original-To: bpf@vger.kernel.org
 Received: from out30-133.freemail.mail.aliyun.com (out30-133.freemail.mail.aliyun.com [115.124.30.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 58EC277F15;
-	Fri, 26 Apr 2024 03:39:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A22E878C84;
+	Fri, 26 Apr 2024 03:39:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714102778; cv=none; b=st+uPiE7A5od/FqBbA6i3f4p7gp9yCdKgEhlbeQ4lA98pavAUynTgL5UEp72fIr6wibB7BB8HHUY/0NoP7xgrIBL3TQBuOFh7u38NIFwwWC20580tPtRP7ydOo5eBPl9klhncC5H6BIJbYKg65mFwxOde1Y8D2F+XEIv5RUAO3g=
+	t=1714102779; cv=none; b=aPeCcFExNmOwDbZZdL7GaqqYuiwvTIqCo9ZwX7gaHF96cso24MECFhZTe5lPPCmHrENj93YTkne83q64XqIyhpcUbpRUkWm4cYvtdmWyZqwlY/GLwwM/pOohpVhCE8UvUb84J3RUO3AJXc1tZVY21fFiduZEIj2sAJzf9wZ6AQE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714102778; c=relaxed/simple;
-	bh=TodF9TeWMpxYPKN93QRWe7nG2Pyh1EhsKHXuleHLSnA=;
+	s=arc-20240116; t=1714102779; c=relaxed/simple;
+	bh=xLtm8dXxF6BJ1LExmMurLPtBZcyitBt5lsiSWVTnbJc=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=sfx2qRh4FSGzhLNMKV6nZ9sU1YFusWK8BJ9OpgRYyEgrArlno0WNR5jwx4sZ8cKkx4JsS/LyuWtN39ZamoMLdOWKeECVj/p1rw2vMswGVy09dAUIgkOCBRq10ga3iIskaxly8pD+SF7lC22QEhLyvud8oJbaO/wQvGwGYaK6KXU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=oYTYBjmO; arc=none smtp.client-ip=115.124.30.133
+	 MIME-Version; b=ldSUL1r7otc7rbaQVxcw1+oExoJfxY+aNdKW38yGiYd22TtSmzKx7LNy11+9Io95IPbSYdHkInUAYGyVtcKqzOLY+dneYIc/B6G5MYuDTVkqK8/M6k+u6Aae3sVNGD+PCMHimoXMytmS3elI+H3RRYFkO/VKcR1JlfzVuchec0Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=L/YHtgJ/; arc=none smtp.client-ip=115.124.30.133
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
 DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
 	d=linux.alibaba.com; s=default;
-	t=1714102774; h=From:To:Subject:Date:Message-Id:MIME-Version;
-	bh=//wF16EoJK4cWrREf4HMlhdqrpAHbS60oTEaoobU9Xs=;
-	b=oYTYBjmO/vi7cEFjbwNfOiXeYqjdgzmOlBwHfJtLkpZNiAxOFICwoKg4a0fZty1zw2IP/d/OULf/IFB9yaTR2yvnB0tWoRGYtmb3wjZy+pf9pFy6fF2o0ONWvXV/l2OV62TKdY5KQDSvqa75oUISY7q9tCsH8kUXjqClBv7sVvw=
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R151e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=maildocker-contentspam033037067112;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=19;SR=0;TI=SMTPD_---0W5Hk9cZ_1714102771;
-Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0W5Hk9cZ_1714102771)
+	t=1714102775; h=From:To:Subject:Date:Message-Id:MIME-Version;
+	bh=Xa9VbW5IwfAC2YERlSMaByqxHGgwyE2WfygYL/+cYAw=;
+	b=L/YHtgJ/CX18MqMaclNAw7LCFgykJXspv+AvrsDR1I6gZfqtoRMNFJ5gXr0HOaE+qC9eLy7zk7+ZdBBQUA0nyjQnXeHzCSyEvLz9ddf5hh9lJ7tNYIH5DgL8s9t071RJmuqcPGg5/UrdQPZkBzUVnu0aqHVtnbzb7SrJCKN0HZk=
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R181e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=maildocker-contentspam033045046011;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=19;SR=0;TI=SMTPD_---0W5Hk9dF_1714102773;
+Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0W5Hk9dF_1714102773)
           by smtp.aliyun-inc.com;
-          Fri, 26 Apr 2024 11:39:32 +0800
+          Fri, 26 Apr 2024 11:39:34 +0800
 From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
 To: netdev@vger.kernel.org
 Cc: "David S. Miller" <davem@davemloft.net>,
@@ -60,9 +60,9 @@ Cc: "David S. Miller" <davem@davemloft.net>,
 	Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
 	virtualization@lists.linux.dev,
 	bpf@vger.kernel.org
-Subject: [PATCH net-next v7 2/8] virtio_net: introduce device stats feature and structures
-Date: Fri, 26 Apr 2024 11:39:22 +0800
-Message-Id: <20240426033928.77778-3-xuanzhuo@linux.alibaba.com>
+Subject: [PATCH net-next v7 3/8] virtio_net: remove "_queue" from ethtool -S
+Date: Fri, 26 Apr 2024 11:39:23 +0800
+Message-Id: <20240426033928.77778-4-xuanzhuo@linux.alibaba.com>
 X-Mailer: git-send-email 2.32.0.3.g01195cf9f
 In-Reply-To: <20240426033928.77778-1-xuanzhuo@linux.alibaba.com>
 References: <20240426033928.77778-1-xuanzhuo@linux.alibaba.com>
@@ -75,177 +75,43 @@ MIME-Version: 1.0
 X-Git-Hash: 435b736161fa
 Content-Transfer-Encoding: 8bit
 
-The virtio-net device stats spec:
+The key size of ethtool -S is controlled by this macro.
 
-https://github.com/oasis-tcs/virtio-spec/commit/42f389989823039724f95bbbd243291ab0064f82
+ETH_GSTRING_LEN 32
 
-We introduce the relative feature and structures.
+That includes the \0 at the end. So the max length of the key name must
+is 31. But the length of the prefix "rx_queue_0_" is 11. If the queue
+num is larger than 10, the length of the prefix is 12. So the
+key name max is 19. That is too short. We will introduce some keys
+such as "gso_packets_coalesced". So we should change the prefix
+to "rx0_".
 
 Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
 Acked-by: Jason Wang <jasowang@redhat.com>
 ---
- include/uapi/linux/virtio_net.h | 143 ++++++++++++++++++++++++++++++++
- 1 file changed, 143 insertions(+)
+ drivers/net/virtio_net.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/include/uapi/linux/virtio_net.h b/include/uapi/linux/virtio_net.h
-index cc65ef0f3c3e..ac9174717ef1 100644
---- a/include/uapi/linux/virtio_net.h
-+++ b/include/uapi/linux/virtio_net.h
-@@ -56,6 +56,7 @@
- #define VIRTIO_NET_F_MQ	22	/* Device supports Receive Flow
- 					 * Steering */
- #define VIRTIO_NET_F_CTRL_MAC_ADDR 23	/* Set MAC address */
-+#define VIRTIO_NET_F_DEVICE_STATS 50	/* Device can provide device-level statistics. */
- #define VIRTIO_NET_F_VQ_NOTF_COAL 52	/* Device supports virtqueue notification coalescing */
- #define VIRTIO_NET_F_NOTF_COAL	53	/* Device supports notifications coalescing */
- #define VIRTIO_NET_F_GUEST_USO4	54	/* Guest can handle USOv4 in. */
-@@ -406,4 +407,146 @@ struct  virtio_net_ctrl_coal_vq {
- 	struct virtio_net_ctrl_coal coal;
- };
+diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
+index 3bc9b1e621db..8aa03625ab6c 100644
+--- a/drivers/net/virtio_net.c
++++ b/drivers/net/virtio_net.c
+@@ -3317,13 +3317,13 @@ static void virtnet_get_strings(struct net_device *dev, u32 stringset, u8 *data)
+ 	case ETH_SS_STATS:
+ 		for (i = 0; i < vi->curr_queue_pairs; i++) {
+ 			for (j = 0; j < VIRTNET_RQ_STATS_LEN; j++)
+-				ethtool_sprintf(&p, "rx_queue_%u_%s", i,
++				ethtool_sprintf(&p, "rx%u_%s", i,
+ 						virtnet_rq_stats_desc[j].desc);
+ 		}
  
-+/*
-+ * Device Statistics
-+ */
-+#define VIRTIO_NET_CTRL_STATS         8
-+#define VIRTIO_NET_CTRL_STATS_QUERY   0
-+#define VIRTIO_NET_CTRL_STATS_GET     1
-+
-+struct virtio_net_stats_capabilities {
-+
-+#define VIRTIO_NET_STATS_TYPE_CVQ       (1ULL << 32)
-+
-+#define VIRTIO_NET_STATS_TYPE_RX_BASIC  (1ULL << 0)
-+#define VIRTIO_NET_STATS_TYPE_RX_CSUM   (1ULL << 1)
-+#define VIRTIO_NET_STATS_TYPE_RX_GSO    (1ULL << 2)
-+#define VIRTIO_NET_STATS_TYPE_RX_SPEED  (1ULL << 3)
-+
-+#define VIRTIO_NET_STATS_TYPE_TX_BASIC  (1ULL << 16)
-+#define VIRTIO_NET_STATS_TYPE_TX_CSUM   (1ULL << 17)
-+#define VIRTIO_NET_STATS_TYPE_TX_GSO    (1ULL << 18)
-+#define VIRTIO_NET_STATS_TYPE_TX_SPEED  (1ULL << 19)
-+
-+	__le64 supported_stats_types[1];
-+};
-+
-+struct virtio_net_ctrl_queue_stats {
-+	struct {
-+		__le16 vq_index;
-+		__le16 reserved[3];
-+		__le64 types_bitmap[1];
-+	} stats[1];
-+};
-+
-+struct virtio_net_stats_reply_hdr {
-+#define VIRTIO_NET_STATS_TYPE_REPLY_CVQ       32
-+
-+#define VIRTIO_NET_STATS_TYPE_REPLY_RX_BASIC  0
-+#define VIRTIO_NET_STATS_TYPE_REPLY_RX_CSUM   1
-+#define VIRTIO_NET_STATS_TYPE_REPLY_RX_GSO    2
-+#define VIRTIO_NET_STATS_TYPE_REPLY_RX_SPEED  3
-+
-+#define VIRTIO_NET_STATS_TYPE_REPLY_TX_BASIC  16
-+#define VIRTIO_NET_STATS_TYPE_REPLY_TX_CSUM   17
-+#define VIRTIO_NET_STATS_TYPE_REPLY_TX_GSO    18
-+#define VIRTIO_NET_STATS_TYPE_REPLY_TX_SPEED  19
-+	__u8 type;
-+	__u8 reserved;
-+	__le16 vq_index;
-+	__le16 reserved1;
-+	__le16 size;
-+};
-+
-+struct virtio_net_stats_cvq {
-+	struct virtio_net_stats_reply_hdr hdr;
-+
-+	__le64 command_num;
-+	__le64 ok_num;
-+};
-+
-+struct virtio_net_stats_rx_basic {
-+	struct virtio_net_stats_reply_hdr hdr;
-+
-+	__le64 rx_notifications;
-+
-+	__le64 rx_packets;
-+	__le64 rx_bytes;
-+
-+	__le64 rx_interrupts;
-+
-+	__le64 rx_drops;
-+	__le64 rx_drop_overruns;
-+};
-+
-+struct virtio_net_stats_tx_basic {
-+	struct virtio_net_stats_reply_hdr hdr;
-+
-+	__le64 tx_notifications;
-+
-+	__le64 tx_packets;
-+	__le64 tx_bytes;
-+
-+	__le64 tx_interrupts;
-+
-+	__le64 tx_drops;
-+	__le64 tx_drop_malformed;
-+};
-+
-+struct virtio_net_stats_rx_csum {
-+	struct virtio_net_stats_reply_hdr hdr;
-+
-+	__le64 rx_csum_valid;
-+	__le64 rx_needs_csum;
-+	__le64 rx_csum_none;
-+	__le64 rx_csum_bad;
-+};
-+
-+struct virtio_net_stats_tx_csum {
-+	struct virtio_net_stats_reply_hdr hdr;
-+
-+	__le64 tx_csum_none;
-+	__le64 tx_needs_csum;
-+};
-+
-+struct virtio_net_stats_rx_gso {
-+	struct virtio_net_stats_reply_hdr hdr;
-+
-+	__le64 rx_gso_packets;
-+	__le64 rx_gso_bytes;
-+	__le64 rx_gso_packets_coalesced;
-+	__le64 rx_gso_bytes_coalesced;
-+};
-+
-+struct virtio_net_stats_tx_gso {
-+	struct virtio_net_stats_reply_hdr hdr;
-+
-+	__le64 tx_gso_packets;
-+	__le64 tx_gso_bytes;
-+	__le64 tx_gso_segments;
-+	__le64 tx_gso_segments_bytes;
-+	__le64 tx_gso_packets_noseg;
-+	__le64 tx_gso_bytes_noseg;
-+};
-+
-+struct virtio_net_stats_rx_speed {
-+	struct virtio_net_stats_reply_hdr hdr;
-+
-+	/* rx_{packets,bytes}_allowance_exceeded are too long. So rename to
-+	 * short name.
-+	 */
-+	__le64 rx_ratelimit_packets;
-+	__le64 rx_ratelimit_bytes;
-+};
-+
-+struct virtio_net_stats_tx_speed {
-+	struct virtio_net_stats_reply_hdr hdr;
-+
-+	/* tx_{packets,bytes}_allowance_exceeded are too long. So rename to
-+	 * short name.
-+	 */
-+	__le64 tx_ratelimit_packets;
-+	__le64 tx_ratelimit_bytes;
-+};
-+
- #endif /* _UAPI_LINUX_VIRTIO_NET_H */
+ 		for (i = 0; i < vi->curr_queue_pairs; i++) {
+ 			for (j = 0; j < VIRTNET_SQ_STATS_LEN; j++)
+-				ethtool_sprintf(&p, "tx_queue_%u_%s", i,
++				ethtool_sprintf(&p, "tx%u_%s", i,
+ 						virtnet_sq_stats_desc[j].desc);
+ 		}
+ 		break;
 -- 
 2.32.0.3.g01195cf9f
 
