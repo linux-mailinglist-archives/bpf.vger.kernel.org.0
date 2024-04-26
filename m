@@ -1,253 +1,175 @@
-Return-Path: <bpf+bounces-27949-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-27951-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4DB148B3D98
-	for <lists+bpf@lfdr.de>; Fri, 26 Apr 2024 19:07:05 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C86E78B3DA4
+	for <lists+bpf@lfdr.de>; Fri, 26 Apr 2024 19:11:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 694D5B221B1
-	for <lists+bpf@lfdr.de>; Fri, 26 Apr 2024 17:07:02 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id ED2411C21ECA
+	for <lists+bpf@lfdr.de>; Fri, 26 Apr 2024 17:11:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 594EC15B579;
-	Fri, 26 Apr 2024 17:06:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C59515ADBE;
+	Fri, 26 Apr 2024 17:11:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XcUaN9qs"
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ietf.org header.i=@ietf.org header.b="KnOGF2d6";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ietf.org header.i=@ietf.org header.b="OKki465a";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=googlemail.com header.i=@googlemail.com header.b="Wk5W7ttl"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mail.ietf.org (mail.ietf.org [50.223.129.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CDE4615A4BE;
-	Fri, 26 Apr 2024 17:06:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0FEB2230C
+	for <bpf@vger.kernel.org>; Fri, 26 Apr 2024 17:11:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=50.223.129.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714151214; cv=none; b=G6EqKaWlLDX/az60WElUzdFuBVDWpt4yc1Wu3oFQFLE3YK+UHgjnRH33y+ymahleR5a9KVvIoOeW5tQio6yjOMt3CHgrBCeMhRpPuSD64yclDgpL5GExrvMKw/MmPFojCu0+MZxotELw85WY1ekhucVKtbcL3llqjxLXRgcVJZg=
+	t=1714151481; cv=none; b=miW+TISWYfKMW+DZSR3IebrUzwiZuiS0eJi3ghxwuuePS70EpLJbXZ9fb0MNs0KNBWn0DgTyirXRj+gK2fR96AZVBEO+2qPDB+egcIEx37V9CTrtBF7mNkg4yvdeFrX4PBu4CNgNfhHno7kq9H/3/csClCiNDPxUh1lVQ6iMz0I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714151214; c=relaxed/simple;
-	bh=09NdAbWR/BLtK6lbUCey7vstmTIMgsOSSq3Yz9q528c=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=TsRWJB6ox4Ve0doRImsPR8x38QUgRTm2Mj+jejywju1LV7SJAViMEYndi3WtO1u/80xkFlL9t9wfR/rYFU3BHAifLXXNNKHeo8PbE5x+XEjSxlM8NOpumZ9Q5ETknNY+NX04wfiyrOV/xvVWfxvkX9Xgh14Hwcj1z1FbNmR0/q4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XcUaN9qs; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0D857C116B1;
-	Fri, 26 Apr 2024 17:06:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714151214;
-	bh=09NdAbWR/BLtK6lbUCey7vstmTIMgsOSSq3Yz9q528c=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-	b=XcUaN9qshZw1p9fPgu+96aFUN619FikB2yN0B0sbB6zqz5ientRrM+j2M6bfYAxDz
-	 jDQmc8jTsMe51HVJH7QrZPSo1yNawnWcnQsmLr1/Rzenjb1669QGNKl7gY5PV+WXIs
-	 X1XlKQoD6jK5OANOk42v3gDLQOGtqlwa7LlAsl029gzhMiFWtS165mtrlyUjwwSB+n
-	 ByJvXQO2YlTq1/xUn63kqrNk42eBPmC+nbgQQx6iBdFV6JPF6rjr6F0g8GZcrFaKmB
-	 XWpDP8neWaOA/cqvabzHOF6WB+6hzBYTZxZ2PS7kMujUFpm52XuSyD0RFl1m7mqAE1
-	 8jZ/nQOnfLPYw==
-From: Puranjay Mohan <puranjay@kernel.org>
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: Catalin Marinas <catalin.marinas@arm.com>, Will Deacon
- <will@kernel.org>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann
- <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, Martin KaFai
- Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu
- <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, John Fastabend
- <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, Stanislav
- Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa
- <jolsa@kernel.org>, Zi Shen Lim <zlim.lnx@gmail.com>, Xu Kuohai
- <xukuohai@huawei.com>, Florent Revest <revest@chromium.org>,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
- bpf@vger.kernel.org
-Subject: Re: [PATCH bpf-next v3 2/2] bpf, arm64: inline
- bpf_get_smp_processor_id() helper
-In-Reply-To: <CAEf4BzaNM5H3Ad2=Syhhq1cbfuB5FrtuFTZHPTdQP3QME3naKA@mail.gmail.com>
-References: <20240426121349.97651-1-puranjay@kernel.org>
- <20240426121349.97651-3-puranjay@kernel.org>
- <CAEf4BzaNM5H3Ad2=Syhhq1cbfuB5FrtuFTZHPTdQP3QME3naKA@mail.gmail.com>
-Date: Fri, 26 Apr 2024 17:06:51 +0000
-Message-ID: <mb61pplucvys4.fsf@kernel.org>
+	s=arc-20240116; t=1714151481; c=relaxed/simple;
+	bh=7F83scvny5HLxbKUxWo8/UgBnoadOaVIdCLLaSNSKWU=;
+	h=To:Cc:Date:Message-Id:MIME-Version:Subject:Content-Type:From; b=OHYJyXv8k3MXtpfrC1O8eWj05tBdOeNTc0qDkeI58uhawbGYY3dfiQbuwHOj1F+3V2a5z4f7w7JIlGrs7swoVUqf0WVCGOirvZH+a7Ocyi5po+1r8wRI7bLJvSUcTSCKalwlGUyMBqktyOOjS06fAeT33RPWcBqHuK7tnF38Z4M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=dmarc.ietf.org; spf=pass smtp.mailfrom=ietf.org; dkim=pass (1024-bit key) header.d=ietf.org header.i=@ietf.org header.b=KnOGF2d6; dkim=fail (1024-bit key) header.d=ietf.org header.i=@ietf.org header.b=OKki465a reason="signature verification failed"; dkim=fail (2048-bit key) header.d=googlemail.com header.i=@googlemail.com header.b=Wk5W7ttl reason="signature verification failed"; arc=none smtp.client-ip=50.223.129.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=dmarc.ietf.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ietf.org
+Received: from ietfa.amsl.com (localhost [IPv6:::1])
+	by ietfa.amsl.com (Postfix) with ESMTP id 3A463C169433
+	for <bpf@vger.kernel.org>; Fri, 26 Apr 2024 10:11:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ietf.org; s=ietf1;
+	t=1714151473; bh=7F83scvny5HLxbKUxWo8/UgBnoadOaVIdCLLaSNSKWU=;
+	h=To:Cc:Date:Subject:List-Id:List-Unsubscribe:List-Archive:
+	 List-Post:List-Help:List-Subscribe:From;
+	b=KnOGF2d6mB76ZB/HVGkvOhsH11h2q+IAB2pnigViaGPI6MvfMxQ9Tibwn4e+opgot
+	 OsfrWB54I6zqFJqrQ8LVQpWpto8upkYl9fD3kIAolX/Nwgx2Yl5VezLS7q8yXBtSCf
+	 SFwaRh0RmDgGSQVekh8YPlZ9fVnfcX7lYvSKSJc4=
+Received: from ietfa.amsl.com (localhost [IPv6:::1])
+ by ietfa.amsl.com (Postfix) with ESMTP id 172D1C14F738;
+ Fri, 26 Apr 2024 10:11:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ietf.org; s=ietf1;
+ t=1714151473; bh=7F83scvny5HLxbKUxWo8/UgBnoadOaVIdCLLaSNSKWU=;
+ h=From:To:Cc:Date:Subject:List-Id:List-Unsubscribe:List-Archive:
+ List-Post:List-Help:List-Subscribe;
+ b=OKki465ahnZRoJJM07xNHT3RAs1JWZi4dsmF4R28dTHehNKs3a54+HzulGtvKudHz
+ Arw/919hlUXHSsKAM2aWwuksp8hlQNwxLrPI9Ef7nelBzWwiJ5SN5ex2gf+JkDzMPc
+ LAo+2G6gZj2FuEaMo98cM1UlRU8XO0MyQXwOYksU=
+X-Original-To: bpf@ietfa.amsl.com
+Delivered-To: bpf@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+ by ietfa.amsl.com (Postfix) with ESMTP id EEC0CC14F738
+ for <bpf@ietfa.amsl.com>; Fri, 26 Apr 2024 10:11:11 -0700 (PDT)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: -6.845
+X-Spam-Level: 
+Authentication-Results: ietfa.amsl.com (amavisd-new); dkim=pass (2048-bit key)
+ header.d=googlemail.com
+Received: from mail.ietf.org ([50.223.129.194])
+ by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id EEylUXgC4zCZ for <bpf@ietfa.amsl.com>;
+ Fri, 26 Apr 2024 10:11:08 -0700 (PDT)
+Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com
+ [IPv6:2607:f8b0:4864:20::631])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+ (No client certificate requested)
+ by ietfa.amsl.com (Postfix) with ESMTPS id 306F4C14F6F7
+ for <bpf@ietf.org>; Fri, 26 Apr 2024 10:11:08 -0700 (PDT)
+Received: by mail-pl1-x631.google.com with SMTP id
+ d9443c01a7336-1e8bbcbc2b7so22153025ad.0
+ for <bpf@ietf.org>; Fri, 26 Apr 2024 10:11:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=googlemail.com; s=20230601; t=1714151467; x=1714756267; darn=ietf.org;
+ h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+ :to:from:from:to:cc:subject:date:message-id:reply-to;
+ bh=hdvIkzQYL0QUQIUZDBpESmAbo+26vKvrycV4Z6MfDZw=;
+ b=Wk5W7ttl33Wzaf6/OSRz0e0wDCMPBuM9cCZ0Gc9kmIacBL7DzDG1U97zZuGkE/fS+I
+ 4uIvTpF0Fqqb6IQ4JduBlD6ZrjV8QJO2tVCMhILL2BvsIbuGCiknM1VDBG+4xZdpooei
+ YAwigFaW4e2RZX5nRfYiGHWpKOG4GS5bpK6nXNAd7e3RkqRwcOgJ248bxlEmAIJoSMbu
+ 8A4nmwWK+oBd5yfMeQkNDY1iPggDMkZmfqqRxYv87I3HRhxsg3JbQtQSgaNVVpNKILOG
+ P4d/SdhQLic4PlJ1HK8NoPuufQkQOQCUpIC+HNYeE9VQVMaSbt2VAOevpKW94a1bKmLY
+ yGCQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20230601; t=1714151467; x=1714756267;
+ h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+ :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+ :reply-to;
+ bh=hdvIkzQYL0QUQIUZDBpESmAbo+26vKvrycV4Z6MfDZw=;
+ b=RZueJ9xYtxSzaPhyNzq4oWnb4FS71ZOCsr+FjOxGwMPOy7RxzFydBqe40Ne5aE1p+F
+ bYTMAs+swgyvo6AG8g7Tpmlx5teW3G0A4lM95d9KexEUZdIjJ4IVnnbHptc4rvOfsHBy
+ mGi6B445X7VG4FeKUd+UyDmBVC5bD9ViQAuYbpShAuT5xPqlBc7GUsJhFQr3kRaIcjic
+ YbqqVwx1ro8C5wUbQ4gftciX5agiiGpldpqgDVDiXift9JlwuRkHM1PUsElOQra745q9
+ KPLzXGazAVRfwOc84mOeW50jv8B/t0G3NDb//WjsoqlR9zVE8kBwgcZp1LePfmjDvMXy
+ FX7Q==
+X-Gm-Message-State: AOJu0Yyim8DSf2IAzo96hvxb2iGZDb6Bikqx6ndm05oQe8xXfbrLYtYP
+ ee4mb2afMQsfBTwQ0QQCDJ7spCa/LCsBct/OjR5PE/So8orcdP0h
+X-Google-Smtp-Source: AGHT+IElEKZ8x0CBcgq/KkKh2SpyS80PR7LG5hgyM43/sAPnP0ZwsNN8Dr+kPqnGunXRe4lnmJwEUg==
+X-Received: by 2002:a17:902:cec3:b0:1e4:48e7:3dab with SMTP id
+ d3-20020a170902cec300b001e448e73dabmr5051864plg.38.1714151467302; 
+ Fri, 26 Apr 2024 10:11:07 -0700 (PDT)
+Received: from ubuntu2310.lan (c-67-170-74-237.hsd1.wa.comcast.net.
+ [67.170.74.237]) by smtp.gmail.com with ESMTPSA id
+ n10-20020a170902d2ca00b001e27dcfdf15sm15664394plc.145.2024.04.26.10.11.06
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Fri, 26 Apr 2024 10:11:06 -0700 (PDT)
+X-Google-Original-From: Dave Thaler <dthaler1968@gmail.com>
+To: bpf@vger.kernel.org
+Cc: bpf@ietf.org, Dave Thaler <dthaler1968@gmail.com>,
+ Dave Thaler <dthaler1968@googlemail.com>
+Date: Fri, 26 Apr 2024 10:11:03 -0700
+Message-Id: <20240426171103.3496-1-dthaler1968@gmail.com>
+X-Mailer: git-send-email 2.40.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Archived-At: <https://mailarchive.ietf.org/arch/msg/bpf/zP-PrOsUbOkqgFybS_6rTGpuxhQ>
+Subject: [Bpf] [PATCH bpf-next] bpf,
+ docs: Clarify PC use in instruction-set.rst
+X-BeenThere: bpf@ietf.org
+X-Mailman-Version: 2.1.39
+Precedence: list
+List-Archive: <https://mailarchive.ietf.org/arch/browse/bpf/>
+List-Post: <mailto:bpf@ietf.org>
+List-Help: <mailto:bpf-request@ietf.org?subject=help>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Errors-To: bpf-bounces@ietf.org
+Sender: "Bpf" <bpf-bounces@ietf.org>
+X-Original-From: Dave Thaler <dthaler1968@googlemail.com>
+From: Dave Thaler <dthaler1968=40googlemail.com@dmarc.ietf.org>
 
-Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
+This patch elaborates on the use of PC by expanding the PC acronym,
+explaining the units, and the relative position to which the offset
+applies.
 
-> On Fri, Apr 26, 2024 at 5:14=E2=80=AFAM Puranjay Mohan <puranjay@kernel.o=
-rg> wrote:
->>
->> As ARM64 JIT now implements BPF_MOV64_PERCPU_REG instruction, inline
->> bpf_get_smp_processor_id().
->>
->> ARM64 uses the per-cpu variable cpu_number to store the cpu id.
->>
->> Here is how the BPF and ARM64 JITed assembly changes after this commit:
->>
->>                                          BPF
->>                                         =3D=3D=3D=3D=3D
->>               BEFORE                                       AFTER
->>              --------                                     -------
->>
->> int cpu =3D bpf_get_smp_processor_id();           int cpu =3D bpf_get_sm=
-p_processor_id();
->> (85) call bpf_get_smp_processor_id#229032       (18) r0 =3D 0xffff800082=
-072008
->>                                                 (bf) r0 =3D &(void __per=
-cpu *)(r0)
->>                                                 (61) r0 =3D *(u32 *)(r0 =
-+0)
->>
->>                                       ARM64 JIT
->>                                      =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
->>
->>               BEFORE                                       AFTER
->>              --------                                     -------
->>
->> int cpu =3D bpf_get_smp_processor_id();           int cpu =3D bpf_get_sm=
-p_processor_id();
->> mov     x10, #0xfffffffffffff4d0                mov     x7, #0xffff8000f=
-fffffff
->> movk    x10, #0x802b, lsl #16                   movk    x7, #0x8207, lsl=
- #16
->> movk    x10, #0x8000, lsl #32                   movk    x7, #0x2008
->> blr     x10                                     mrs     x10, tpidr_el1
->> add     x7, x0, #0x0                            add     x7, x7, x10
->>                                                 ldr     w7, [x7]
->>
->> Performance improvement using benchmark[1]
->>
->>              BEFORE                                       AFTER
->>             --------                                     -------
->>
->> glob-arr-inc   :   23.817 =C2=B1 0.019M/s      glob-arr-inc   :   24.631=
- =C2=B1 0.027M/s
->> arr-inc        :   23.253 =C2=B1 0.019M/s      arr-inc        :   23.742=
- =C2=B1 0.023M/s
->> hash-inc       :   12.258 =C2=B1 0.010M/s      hash-inc       :   12.625=
- =C2=B1 0.004M/s
->>
->> [1] https://github.com/anakryiko/linux/commit/8dec900975ef
->>
->> Signed-off-by: Puranjay Mohan <puranjay@kernel.org>
->> Acked-by: Andrii Nakryiko <andrii@kernel.org>
->> ---
->>  kernel/bpf/verifier.c | 24 +++++++++++++++++-------
->>  1 file changed, 17 insertions(+), 7 deletions(-)
->>
->> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
->> index 4e474ef44e9c..6ff4e63b2ef2 100644
->> --- a/kernel/bpf/verifier.c
->> +++ b/kernel/bpf/verifier.c
->> @@ -20273,20 +20273,31 @@ static int do_misc_fixups(struct bpf_verifier_=
-env *env)
->>                         goto next_insn;
->>                 }
->>
->> -#ifdef CONFIG_X86_64
->>                 /* Implement bpf_get_smp_processor_id() inline. */
->>                 if (insn->imm =3D=3D BPF_FUNC_get_smp_processor_id &&
->>                     prog->jit_requested && bpf_jit_supports_percpu_insn(=
-)) {
->>                         /* BPF_FUNC_get_smp_processor_id inlining is an
->> -                        * optimization, so if pcpu_hot.cpu_number is ev=
-er
->> +                        * optimization, so if cpu_number_addr is ever
->>                          * changed in some incompatible and hard to supp=
-ort
->>                          * way, it's fine to back out this inlining logic
->>                          */
->> -                       insn_buf[0] =3D BPF_MOV32_IMM(BPF_REG_0, (u32)(u=
-nsigned long)&pcpu_hot.cpu_number);
->> -                       insn_buf[1] =3D BPF_MOV64_PERCPU_REG(BPF_REG_0, =
-BPF_REG_0);
->> -                       insn_buf[2] =3D BPF_LDX_MEM(BPF_W, BPF_REG_0, BP=
-F_REG_0, 0);
->> -                       cnt =3D 3;
->> +                       u64 cpu_number_addr;
->>
->> +#if defined(CONFIG_X86_64)
->> +                       cpu_number_addr =3D (u64)&pcpu_hot.cpu_number;
->> +#elif defined(CONFIG_ARM64)
->> +                       cpu_number_addr =3D (u64)&cpu_number;
->> +#else
->> +                       goto next_insn;
->> +#endif
->> +                       struct bpf_insn ld_cpu_number_addr[2] =3D {
->> +                               BPF_LD_IMM64(BPF_REG_0, cpu_number_addr)
->> +                       };
->
-> here we are violating C89 requirement to have a single block of
-> variable declarations by mixing variables and statements. I'm
-> surprised this is not triggering any build errors on !arm64 &&
-> !x86_64.
->
-> I think we can declare this BPF_LD_IMM64 instruction with zero "addr".
-> And then update
->
-> ld_cpu_number_addr[0].imm =3D (u32)cpu_number_addr;
-> ld_cpu_number_addr[1].imm =3D (u32)(cpu_number_addr >> 32);
->
-> WDYT?
->
-> nit: I'd rename ld_cpu_number_addr to ld_insn or something short like that
+Signed-off-by: Dave Thaler <dthaler1968@googlemail.com>
+---
+ Documentation/bpf/standardization/instruction-set.rst | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-I agree with you,
-What do you think about the following diff:
-
---- 8< ---
-
--#ifdef CONFIG_X86_64
-                /* Implement bpf_get_smp_processor_id() inline. */
-                if (insn->imm =3D=3D BPF_FUNC_get_smp_processor_id &&
-                    prog->jit_requested && bpf_jit_supports_percpu_insn()) {
-                        /* BPF_FUNC_get_smp_processor_id inlining is an
--                        * optimization, so if pcpu_hot.cpu_number is ever
-+                        * optimization, so if cpu_number_addr is ever
-                         * changed in some incompatible and hard to support
-                         * way, it's fine to back out this inlining logic
-                         */
--                       insn_buf[0] =3D BPF_MOV32_IMM(BPF_REG_0, (u32)(unsi=
-gned long)&pcpu_hot.cpu_number);
--                       insn_buf[1] =3D BPF_MOV64_PERCPU_REG(BPF_REG_0, BPF=
-_REG_0);
--                       insn_buf[2] =3D BPF_LDX_MEM(BPF_W, BPF_REG_0, BPF_R=
-EG_0, 0);
--                       cnt =3D 3;
-+                       u64 cpu_number_addr;
-+                       struct bpf_insn ld_insn[2] =3D {
-+                               BPF_LD_IMM64(BPF_REG_0, 0)
-+                       };
+diff --git a/Documentation/bpf/standardization/instruction-set.rst b/Documentation/bpf/standardization/instruction-set.rst
+index b44bdacd0..5592620cf 100644
+--- a/Documentation/bpf/standardization/instruction-set.rst
++++ b/Documentation/bpf/standardization/instruction-set.rst
+@@ -469,6 +469,11 @@ JSLT      0xc    any      PC += offset if dst < src          signed
+ JSLE      0xd    any      PC += offset if dst <= src         signed
+ ========  =====  =======  =================================  ===================================================
+ 
++where 'PC' denotes the program counter, and the offset to increment by
++is in units of 64-bit instructions relative to the instruction following
++the jump instruction.  Thus 'PC += 1' results in the next instruction
++to execute being two 64-bit instructions later.
 +
-+#if defined(CONFIG_X86_64)
-+                       cpu_number_addr =3D (u64)&pcpu_hot.cpu_number;
-+#elif defined(CONFIG_ARM64)
-+                       cpu_number_addr =3D (u64)&cpu_number;
-+#else
-+                       goto next_insn;
-+#endif
-+                       ld_insn[0].imm =3D (u32)cpu_number_addr;
-+                       ld_insn[1].imm =3D (u32)(cpu_number_addr >> 32);
-+                       insn_buf[0] =3D ld_insn[0];
-+                       insn_buf[1] =3D ld_insn[1];
-+                       insn_buf[2] =3D BPF_MOV64_PERCPU_REG(BPF_REG_0, BPF=
-_REG_0);
-+                       insn_buf[3] =3D BPF_LDX_MEM(BPF_W, BPF_REG_0, BPF_R=
-EG_0, 0);
-+                       cnt =3D 4;
+ The BPF program needs to store the return value into register R0 before doing an
+ ``EXIT``.
+ 
+-- 
+2.40.1
 
-                        new_prog =3D bpf_patch_insn_data(env, i + delta, in=
-sn_buf, cnt);
-                        if (!new_prog)
-@@ -20296,7 +20310,6 @@ static int do_misc_fixups(struct bpf_verifier_env *=
-env)
-                        insn      =3D new_prog->insnsi + i + delta;
-                        goto next_insn;
-                }
--#endif
-                /* Implement bpf_get_func_arg inline. */
-
---- >8---
-
-Thanks,
-Puranjay
+-- 
+Bpf mailing list
+Bpf@ietf.org
+https://www.ietf.org/mailman/listinfo/bpf
 
