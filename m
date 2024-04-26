@@ -1,336 +1,232 @@
-Return-Path: <bpf+bounces-27937-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-27938-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 817F58B3C78
-	for <lists+bpf@lfdr.de>; Fri, 26 Apr 2024 18:12:16 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id ECA208B3C94
+	for <lists+bpf@lfdr.de>; Fri, 26 Apr 2024 18:15:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 398202823A3
-	for <lists+bpf@lfdr.de>; Fri, 26 Apr 2024 16:12:15 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 63DEE1F24045
+	for <lists+bpf@lfdr.de>; Fri, 26 Apr 2024 16:15:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5FF6E14EC5C;
-	Fri, 26 Apr 2024 16:12:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B8C0152DED;
+	Fri, 26 Apr 2024 16:15:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gaoVYbDG"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TLJbSRWb"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f175.google.com (mail-pf1-f175.google.com [209.85.210.175])
+Received: from mail-pj1-f44.google.com (mail-pj1-f44.google.com [209.85.216.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6509C1DDD6
-	for <bpf@vger.kernel.org>; Fri, 26 Apr 2024 16:12:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 96C031FC4
+	for <bpf@vger.kernel.org>; Fri, 26 Apr 2024 16:15:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714147926; cv=none; b=dOiVlnNn1eoe0MaTo9HSYL4dnhw1RmL2jQd0rsBoJccgjjLrpIcf/drDbudSHpeKfvjh1gvrZv/Y9U7CniNNfnxA56mZAa39YRDWYp4Fl/GgKV9GlD0T/nDetAUmYCbxYk2U7im9DJgcHFVcAd63dt+pNkEXhznxp/znXtJMCSE=
+	t=1714148139; cv=none; b=h3NGI36UdrT39LgBwaAx4tz+D283OiRdBtqt9nxxHvGDW15NVx3xSJ2tQux6BybWMmptZLDRKz3IytDwcEpbT2wwkKMhXfss4mb3ubfZ9R150bIv9QUWMJn5b3X0QEhaoWj+iSGgI8t+0MRRQMURlPMV5mKAsxNlDXnpzHzGXHc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714147926; c=relaxed/simple;
-	bh=5Gh39NfwYqwAAhBB9s8bqxMJop/xa+U0T9V1g5gcm+4=;
+	s=arc-20240116; t=1714148139; c=relaxed/simple;
+	bh=U7cy+aH+Xnpdl6uTCa30erNHs3pZf5sgjvSPJZEIrA8=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=N9CP+gTTOdjhLxZ856mVWHhuHURGemyH/E89z9y4yGMAH2441RWukhFZretdfQG28agYgRbrrF6lvDcZfQyWKoiz88203be6XBROF2dsmJiqFH/lHYgj81bnNUshFDT+gzgk1mNbyULN1q0qY5OHC0VhHu1PGGSrwUlkRMwR9P8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gaoVYbDG; arc=none smtp.client-ip=209.85.210.175
+	 To:Cc:Content-Type; b=PZfxCy2rxYSomaMzzVvO9SOdElAY2gmkAMS1mKV/ftBHmNHbVKe6DNibiKC8xQPs8S5uLZ7IUPIZdG5goBMQPagZ21fl2hmPO7h/69dgDW8R1t9uPqGEus7QzOKmNOsjktw9/4vd59kUQnfford5rx7O8xOlA4tZQkHV8zm4qLA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=TLJbSRWb; arc=none smtp.client-ip=209.85.216.44
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f175.google.com with SMTP id d2e1a72fcca58-6ee13f19e7eso2242200b3a.1
-        for <bpf@vger.kernel.org>; Fri, 26 Apr 2024 09:12:05 -0700 (PDT)
+Received: by mail-pj1-f44.google.com with SMTP id 98e67ed59e1d1-2a5ef566c7aso2063611a91.1
+        for <bpf@vger.kernel.org>; Fri, 26 Apr 2024 09:15:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714147924; x=1714752724; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1714148137; x=1714752937; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=HoILQSVXehITz/Mgv4zNItjqU7klAbC5u4uWau3oCjk=;
-        b=gaoVYbDGfwWNAiLIwPM3abSpnlQXhKMjWCdCzBWAbOA0Zkdy0eWODRSb86QU6EeE+e
-         8fAy2uYU81sT4mVPUyOoKnOA6vj/iqIhXdcnpq/1OJMxFk3VoSHQ4DR7d3Aw6XDOCPi3
-         Acl3iCdUx7ySMtbVQ8KMoRintpVegrP6DNiHbhy9CFwtHgbr3Hs5j9Gwcj/su7tMKUsY
-         PiJ8s9wtyfVqVO3Eqc9vvpqpVzpidZOs5lNhh57kHdHxbuMKIA8Rwkmma0EPGsC72W7V
-         xbqeMIusaDRpTTspKjLOtlC+eHqLsata/LWLIQ5suorh/ElZmqcEg8rFDo/4w+HAEwBw
-         3gpw==
+        bh=pMWebnNi5NyPAzc9VdFdPOGHvE+7IdjLUrW+F6tSl0w=;
+        b=TLJbSRWbAtpJuzIohaXSrNZyln3vjX5jin1Z691wi1D5/V9V/C7GoOWUMH7jJgtqc/
+         1TXChpE5RxatsR1CU2J7XKzeE4kSBtEM7YlwYm9VA8sSymBy7UG9GQi00I3BpbaQUV9m
+         xUHyOvy+1lleOZKB/Tj4+9LZ9dDakzgMvNV1b1bUG73HMShZZgmstgfm8oP6Gwu60R9g
+         T+WB7t53FYpkE5FUPln2X7Y8PjMiUsaK4dkRFpRSTwmbZDUu/h5OokmITFc+yvma9QL+
+         rFRZsO2gFPXsa2hBcbGbSH5pELkk9PWsbxRaEW9+7AP3dB0gu190dDPe+6OlrsQmryxm
+         vDdA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714147924; x=1714752724;
+        d=1e100.net; s=20230601; t=1714148137; x=1714752937;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=HoILQSVXehITz/Mgv4zNItjqU7klAbC5u4uWau3oCjk=;
-        b=Oc/CHp1ggqNw3RTGR18kDXbF8YnKtLZgd6i+ov6hl1R6Q8hzvghpIG6AENbXEEwDK3
-         d9VzDFS9Jms56e14ZuKKuNsk3X/qq51eWOhGbzUveKKB+OrcR1c4kfg1NH7epcq+yNTT
-         5824C6OsPVUhKGu0YALB1ST4/MMHQnnV80ZrADCJS4s8kC3o639IM7N71kSXwFQg3JtV
-         ImwO1Q1Cvd/v0itm9p7pGbMBnjafp6G1lPkCN6+ExH31+T1JZblRXErxiMAsFGczFcut
-         8QN3csVTXtEOVI5sJeSzAi09ZtUosGYv289gKbsehoKHfjlvQpwcgHD2WgU0rL3V/qtG
-         N6pA==
-X-Gm-Message-State: AOJu0Yyt1BFNbS8NNjlV8fIxUM9JWtAhc5nZ17V8cnAVEktsneOPfCeS
-	fe48vM1hWbj9vekieHnQpCumTAJdvvMLPu3LMsM2v6XF4/LRlppZvN4aoB6JMgIbUDJ8aSzA1Kg
-	nJocbjyK95aPk/oHMzCTJgAYyAEs=
-X-Google-Smtp-Source: AGHT+IHB2pQ0H8bl/ngqAE7HBt2+4GrpjdTUH5RiHQkxejLW0pEFgIeEHohAciib/Wr5nds8iAyxU2pOZbslRPzjkTk=
-X-Received: by 2002:a05:6a21:4995:b0:1a7:64dd:ebe8 with SMTP id
- ax21-20020a056a21499500b001a764ddebe8mr3496750pzc.49.1714147924596; Fri, 26
- Apr 2024 09:12:04 -0700 (PDT)
+        bh=pMWebnNi5NyPAzc9VdFdPOGHvE+7IdjLUrW+F6tSl0w=;
+        b=Htsx/i/GQoCWNKyknPcxk0eA63DRmg3Rif7BvbP2qOqv1th0BHW9hdLN7wviVlBkrM
+         +fvgE43mK6gmc2Eb38o6GVrmz7xPEn0xwsUfrIFx4qpcRAAZnGxfzYSEn/Z9Jx2FVoIp
+         aUW/cZ3WOcYv0N7UuSZG5N7UYDZhqFkL09bOB5QoN/ArRSi52NMdHFyOI/4RuHqnpZk9
+         VXyuyE8XoIZfs6KHpGgpOUlXIlNP79CgfIp8c9GHq25RKTToSD9qOlSAm4GzJP0/GQ0d
+         dcCKHyj24UakX5UXQSTuABOhC/SztSZj5VibP8xBzl+yqlnUHT+dQn2XOLnP2hCfIzvC
+         B3/A==
+X-Gm-Message-State: AOJu0Yw8ICAlAWQAe6Qdg87IN4qT5aeodicvEmGe+/eB2lfsgP5k/BAR
+	CxHGykD58SWa+wTPYLVN82Z0nE9r3NGbg6wV4Y/SaDumtUT0N0PiPFYLLn7lTGoMdYkBNMpS3j7
+	4c5DDAlMqaBsCHVJ+Oeun1r0UlNK14Hya
+X-Google-Smtp-Source: AGHT+IFR/6hHY9XVSJnJ7bQTm0+1zTfz6x550vOHwsrLvmUcW2z60ASzr+W/byX6hQhS1XLGil4Cazx3qOPMBy5UxIw=
+X-Received: by 2002:a17:90a:ed03:b0:2ab:a825:ae5 with SMTP id
+ kq3-20020a17090aed0300b002aba8250ae5mr3074350pjb.22.1714148136794; Fri, 26
+ Apr 2024 09:15:36 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240424224053.471771-1-cupertino.miranda@oracle.com>
- <20240424224053.471771-3-cupertino.miranda@oracle.com> <CAEf4BzYuHv7QnSAFVX0JH2YQd8xAR5ZKzWxEY=8yongH9kepng@mail.gmail.com>
- <87edasmnlr.fsf@oracle.com>
-In-Reply-To: <87edasmnlr.fsf@oracle.com>
+References: <20240426092214.16426-1-jose.marchesi@oracle.com>
+In-Reply-To: <20240426092214.16426-1-jose.marchesi@oracle.com>
 From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Fri, 26 Apr 2024 09:11:52 -0700
-Message-ID: <CAEf4BzazPWOgXFco=PJnGEAaJgjr2MG12=3Sr3=9gMckwTSDLg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 2/6] bpf/verifier: refactor checks for range computation
-To: Cupertino Miranda <cupertino.miranda@oracle.com>
-Cc: bpf@vger.kernel.org, Yonghong Song <yonghong.song@linux.dev>, 
-	Alexei Starovoitov <alexei.starovoitov@gmail.com>, David Faust <david.faust@oracle.com>, 
-	Jose Marchesi <jose.marchesi@oracle.com>, Elena Zannoni <elena.zannoni@oracle.com>
+Date: Fri, 26 Apr 2024 09:15:24 -0700
+Message-ID: <CAEf4BzY14jZkUUgkZb3A88KguX6=7pJLhNZ3T1H-Hde7raLb6A@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] bpf: avoid casts from pointers to enums in bpf_tracing.h
+To: "Jose E. Marchesi" <jose.marchesi@oracle.com>
+Cc: bpf@vger.kernel.org, david.faust@oracle.com, cupertino.miranda@oracle.com
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Apr 26, 2024 at 3:20=E2=80=AFAM Cupertino Miranda
-<cupertino.miranda@oracle.com> wrote:
+On Fri, Apr 26, 2024 at 2:22=E2=80=AFAM Jose E. Marchesi
+<jose.marchesi@oracle.com> wrote:
 >
+> The BPF_PROG, BPF_KPROBE and BPF_KSYSCALL macros defined in
+> tools/lib/bpf/bpf_tracing.h use a clever hack in order to provide a
+> convenient way to define entry points for BPF programs as if they were
+> normal C functions that get typed actual arguments, instead of as
+> elements in a single "context" array argument.
 >
-> Andrii Nakryiko writes:
+> For example, PPF_PROGS allows writing:
 >
-> > On Wed, Apr 24, 2024 at 3:41=E2=80=AFPM Cupertino Miranda
-> > <cupertino.miranda@oracle.com> wrote:
-> >>
-> >> Split range computation checks in its own function, isolating pessimit=
-ic
-> >> range set for dst_reg and failing return to a single point.
-> >>
-> >> Signed-off-by: Cupertino Miranda <cupertino.miranda@oracle.com>
-> >> Cc: Yonghong Song <yonghong.song@linux.dev>
-> >> Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-> >> Cc: David Faust <david.faust@oracle.com>
-> >> Cc: Jose Marchesi <jose.marchesi@oracle.com>
-> >> Cc: Elena Zannoni <elena.zannoni@oracle.com>
-> >> ---
-> >>  kernel/bpf/verifier.c | 141 +++++++++++++++++++++++------------------=
--
-> >>  1 file changed, 77 insertions(+), 64 deletions(-)
-> >>
-> >
-> > I know you are moving around pre-existing code, so a bunch of nits
-> > below are to pre-existing code, but let's use this as an opportunity
-> > to clean it up a bit.
-> >
-> >> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> >> index 6fe641c8ae33..829a12d263a5 100644
-> >> --- a/kernel/bpf/verifier.c
-> >> +++ b/kernel/bpf/verifier.c
-> >> @@ -13695,6 +13695,82 @@ static void scalar_min_max_arsh(struct bpf_re=
-g_state *dst_reg,
-> >>         __update_reg_bounds(dst_reg);
-> >>  }
-> >>
-> >> +static bool is_const_reg_and_valid(struct bpf_reg_state reg, bool alu=
-32,
-> >
-> > hm.. why passing reg_state by value? Use pointer?
-> >
-> Someone mentioned this in a review already and I forgot to change it.
-> Apologies if I did not reply on this.
+>   SEC("struct_ops/cwnd_event")
+>   void BPF_PROG(cwnd_event, struct sock *sk, enum tcp_ca_event event)
+>   {
+>         bbr_cwnd_event(sk, event);
+>         dctcp_cwnd_event(sk, event);
+>         cubictcp_cwnd_event(sk, event);
+>   }
 >
-> The reason why I pass by value, is more of an approach to programming.
-> I do it as guarantee to the caller that there is no mutation of
-> the value.
-> If it is better or worst from a performance point of view it is
-> arguable, since although it might appear to copy the value it also provid=
-es
-> more information to the compiler of the intent of the callee function,
-> allowing it to optimize further.
-> I personally would leave the copy by value, but I understand if you want
-> to keep having the same code style.
+> That expands into a pair of functions:
+>
+>   void ____cwnd_event (unsigned long long *ctx, struct sock *sk, enum tcp=
+_ca_event event)
+>   {
+>         bbr_cwnd_event(sk, event);
+>         dctcp_cwnd_event(sk, event);
+>         cubictcp_cwnd_event(sk, event);
+>   }
+>
+>   void cwnd_event (unsigned long long *ctx)
+>   {
+>         _Pragma("GCC diagnostic push")
+>         _Pragma("GCC diagnostic ignored \"-Wint-conversion\"")
+>         return ____cwnd_event(ctx, (void*)ctx[0], (void*)ctx[1]);
+>         _Pragma("GCC diagnostic pop")
+>   }
+>
+> Note how the 64-bit unsigned integers in the incoming CTX get casted
+> to a void pointer, and then implicitly converted to whatever type of
+> the actual argument in the wrapped function.  In this case:
+>
+>   Arg1: unsigned long long -> void * -> struct sock *
+>   Arg2: unsigned long long -> void * -> enum tcp_ca_event
+>
+> The behavior of GCC and clang when facing such conversions differ:
+>
+>   pointer -> pointer
+>
+>     Allowed by the C standard.
+>     GCC: no warning nor error.
+>     clang: no warning nor error.
+>
+>   pointer -> integer type
+>
+>     [C standard says the result of this conversion is implementation
+>      defined, and it may lead to unaligned pointer etc.]
+>
+>     GCC: error: integer from pointer without a cast [-Wint-conversion]
+>     clang: error: incompatible pointer to integer conversion [-Wint-conve=
+rsion]
+>
+>   pointer -> enumerated type
+>
+>     GCC: error: incompatible types in assigment (*)
+>     clang: error: incompatible pointer to integer conversion [-Wint-conve=
+rsion]
+>
+> These macros work because converting pointers to pointers is allowed,
+> and converting pointers to integers also works provided a suitable
+> integer type even if it is implementation defined, much like casting a
+> pointer to uintptr_t is guaranteed to work by the C standard.  The
+> conversion errors emitted by both compilers by default are silenced by
+> the pragmas.
+>
+> However, the GCC error marked with (*) above when assigning a pointer
+> to an enumerated value is not associated with the -Wint-conversion
+> warning, and it is not possible to turn it off.
+>
+> This is preventing building the BPF kernel selftests with GCC.
+>
+> This patch fixes this by avoiding intermediate casts to void*,
+> replaced with casts to `uintptr', which is an integer type capable of
+> safely store a BPF pointer, much like the standard uintptr_t.
+>
+> Tested in bpf-next master.
+> No regressions.
+>
+> Signed-off-by: Jose E. Marchesi <jose.marchesi@oracle.com>
+> Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+> Cc: david.faust@oracle.com
+> Cc: cupertino.miranda@oracle.com
+> ---
+>  tools/lib/bpf/bpf_tracing.h | 80 ++++++++++++++++++++-----------------
+>  1 file changed, 43 insertions(+), 37 deletions(-)
+>
+> diff --git a/tools/lib/bpf/bpf_tracing.h b/tools/lib/bpf/bpf_tracing.h
+> index 1c13f8e88833..1098505a89c7 100644
+> --- a/tools/lib/bpf/bpf_tracing.h
+> +++ b/tools/lib/bpf/bpf_tracing.h
+> @@ -4,6 +4,12 @@
+>
+>  #include "bpf_helpers.h"
+>
+> +/* The following integer unsigned type must be able to hold a pointer.
+> +   It is used in the macros below in order to avoid eventual casts
+> +   from pointers to enum values, since these are rejected by GCC.  */
+> +
+> +typedef unsigned long long uintptr;
+> +
 
-It's a pretty big 120-byte structure, so maybe the compiler can
-optimize it very well, but I'd still be concerned. Hopefully it can
-optimize well even with (const) pointer, if inlining.
+hold on, we didn't talk about adding new typedefs. This bpf_tracing.h
+header is included into tons of user code, so we should avoid adding
+extra global definitions and typedes. Please just use (unsigned long
+long) explicitly everywhere.
 
-But I do insist, if you look at (most? I haven't checked every single
-function, of course) other uses in verifier.c, we pass things like
-that by pointer. I understand the desire to specify the intent to not
-modify it, but that's why you are passing `const struct bpf_reg_state
-*reg`, so I think you don't lose anything with that.
+Also please check CI failures ([0]).
+
+  [0] https://github.com/kernel-patches/bpf/actions/runs/8846180836/job/242=
+91582343
+
+pw-bot: cr
+
+>  /* Scan the ARCH passed in from ARCH env variable (see Makefile) */
+>  #if defined(__TARGET_ARCH_x86)
+>         #define bpf_target_x86
+> @@ -523,9 +529,9 @@ struct pt_regs;
+>  #else
+>
+>  #define BPF_KPROBE_READ_RET_IP(ip, ctx)                                 =
+           \
+> -       ({ bpf_probe_read_kernel(&(ip), sizeof(ip), (void *)PT_REGS_RET(c=
+tx)); })
+> +       ({ bpf_probe_read_kernel(&(ip), sizeof(ip), (uintptr)PT_REGS_RET(=
+ctx)); })
+>  #define BPF_KRETPROBE_READ_RET_IP(ip, ctx)                              =
+   \
+> -       ({ bpf_probe_read_kernel(&(ip), sizeof(ip), (void *)(PT_REGS_FP(c=
+tx) + sizeof(ip))); })
+> +       ({ bpf_probe_read_kernel(&(ip), sizeof(ip), (uintptr)(PT_REGS_FP(=
+ctx) + sizeof(ip))); })
+
+these are passing pointers, please don't just do a blind find&replace
 
 >
->
-> >> +                                  bool *valid)
-> >> +{
-> >> +       s64 smin_val =3D reg.smin_value;
-> >> +       s64 smax_val =3D reg.smax_value;
-> >> +       u64 umin_val =3D reg.umin_value;
-> >> +       u64 umax_val =3D reg.umax_value;
-> >> +
-> >
-> > don't add empty line between variable declarations, all variables
-> > should be in a single continuous block
-> >
-> >> +       s32 s32_min_val =3D reg.s32_min_value;
-> >> +       s32 s32_max_val =3D reg.s32_max_value;
-> >> +       u32 u32_min_val =3D reg.u32_min_value;
-> >> +       u32 u32_max_val =3D reg.u32_max_value;
-> >> +
-> >
-> > but see below, I'm not sure we even need these local variables, they
-> > don't save all that much typing
-> >
-> >> +       bool known =3D alu32 ? tnum_subreg_is_const(reg.var_off) :
-> >> +                            tnum_is_const(reg.var_off);
-> >
-> > "known" is a misnomer, imo. It's `is_const`.
-> >
-> >> +
-> >> +       if (alu32) {
-> >> +               if ((known &&
-> >> +                    (s32_min_val !=3D s32_max_val || u32_min_val !=3D=
- u32_max_val)) ||
-> >> +                     s32_min_val > s32_max_val || u32_min_val > u32_m=
-ax_val)
-> >> +                       *valid =3D false;
-> >> +       } else {
-> >> +               if ((known &&
-> >> +                    (smin_val !=3D smax_val || umin_val !=3D umax_val=
-)) ||
-> >> +                   smin_val > smax_val || umin_val > umax_val)
-> >> +                       *valid =3D false;
-> >> +       }
-> >> +
-> >> +       return known;
-> >
-> >
-> > The above is really hard to follow, especially how known && !known
-> > cases are being handled is very easy to misinterpret. How about we
-> > rewrite the equivalent logic in a few steps:
-> >
-> > if (alu32) {
-> >     if (tnum_subreg_is_const(reg.var_off)) {
-> >         return reg->s32_min_value =3D=3D reg->s32_max_value &&
-> >                reg->u32_min_value =3D=3D reg->u32_max_value;
-> >     } else {
-> >         return reg->s32_min_value <=3D reg->s32_max_value &&
-> >                reg->u32_min_value <=3D reg->u32_max_value;
-> >     }
-> > } else {
-> >    /* same as above for 64-bit bounds */
-> > }
-> >
-> > And you don't even need any local variables, while all the important
-> > conditions are a bit more easy to follow? Or is it just me?
-> >
->
-> With current state of the code, indeed, it seems you don't need the extra
-> valid argument to pass the extra information.
-> Considering that the KNOWN value is now only used in the shift
-> operators, it seems now safe to merge both valid and the return value
-> from the function, since the logic will result in the same behaviour.
+>  #endif
 >
 
-cool, let's do it then
-
-> >> +}
-> >> +
-> >> +static bool is_safe_to_compute_dst_reg_range(struct bpf_insn *insn,
-> >> +                                            struct bpf_reg_state src_=
-reg)
-> >> +{
-> >> +       bool src_known;
-> >> +       u64 insn_bitness =3D (BPF_CLASS(insn->code) =3D=3D BPF_ALU64) =
-? 64 : 32;
-> >
-> > whole u64 for this seems like an overkill, I'd just stick to `int`
-> >
-> >> +       bool alu32 =3D (BPF_CLASS(insn->code) !=3D BPF_ALU64);
-> >
-> > insn_bitness =3D=3D 32 ?
-> >
-> >> +       u8 opcode =3D BPF_OP(insn->code);
-> >> +
-> >
-> > nit: don't split variables block with empty line
-> >
-> >> +       bool valid_known =3D true;
-> >
-> > need an empty line between variable declarations and the rest
-> >
-> >> +       src_known =3D is_const_reg_and_valid(src_reg, alu32, &valid_kn=
-own);
-> >> +
-> >> +       /* Taint dst register if offset had invalid bounds
-> >> +        * derived from e.g. dead branches.
-> >> +        */
-> >> +       if (valid_known =3D=3D false)
-> >
-> > nit: !valid_known
-> >
-> >> +               return false;
-> >
-> > given this logic/handling, why not just return false from
-> > is_const_reg_and_valid() if it's a constant, but it's not
-> > valid/consistent? It's simpler and fits the logic and function's name,
-> > no? See my suggestion above
-> >
-> >> +
-> >> +       switch (opcode) {
-> >
-> > inline opcode variable here, you use it just once
-> >
-> >> +       case BPF_ADD:
-> >> +       case BPF_SUB:
-> >> +       case BPF_AND:
-> >> +               return true;
-> >> +
-> >> +       /* Compute range for the following only if the src_reg is know=
-n.
-> >> +        */
-> >> +       case BPF_XOR:
-> >> +       case BPF_OR:
-> >> +       case BPF_MUL:
-> >> +               return src_known;
-> >> +
-> >> +       /* Shift operators range is only computable if shift dimension=
- operand
-> >> +        * is known. Also, shifts greater than 31 or 63 are undefined.=
- This
-> >> +        * includes shifts by a negative number.
-> >> +        */
-> >> +       case BPF_LSH:
-> >> +       case BPF_RSH:
-> >> +       case BPF_ARSH:
-> >
-> > preserve original comment?
-> >
-> >> -                       /* Shifts greater than 31 or 63 are undefined.
-> >> -                        * This includes shifts by a negative number.
-> >> -                        */
-> >
-> >> +               return (src_known && src_reg.umax_value < insn_bitness=
-);
-> >
-> > nit: unnecessary ()
-> >
-> >> +       default:
-> >> +               break;
-> >
-> > return false here, and drop return below
-> >
-> >> +       }
-> >> +
-> >> +       return false;
-> >> +}
-> >> +
-> >>  /* WARNING: This function does calculations on 64-bit values, but the=
- actual
-> >>   * execution may occur on 32-bit values. Therefore, things like bitsh=
-ifts
-> >>   * need extra checks in the 32-bit case.
-> >
-> > [...]
->
-> Apart from the obvious coding style problems I will address those optimiz=
-ations
-> in an independent patch in the end, if you agree with. I would prefer to
-> separate the improvements to avoid to change semantics in the
-> refactoring patch, as previously requested by Yonghong.
-
-sure
+[...]
 
