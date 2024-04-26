@@ -1,126 +1,116 @@
-Return-Path: <bpf+bounces-27975-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-27976-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id DACAB8B4058
-	for <lists+bpf@lfdr.de>; Fri, 26 Apr 2024 21:48:03 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id ECCD98B40BB
+	for <lists+bpf@lfdr.de>; Fri, 26 Apr 2024 22:18:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4352CB24642
-	for <lists+bpf@lfdr.de>; Fri, 26 Apr 2024 19:48:01 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D19011C227A5
+	for <lists+bpf@lfdr.de>; Fri, 26 Apr 2024 20:18:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 989A72263E;
-	Fri, 26 Apr 2024 19:47:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F96B2231F;
+	Fri, 26 Apr 2024 20:18:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="l870A80H"
+	dkim=pass (2048-bit key) header.d=googlemail.com header.i=@googlemail.com header.b="DEL8kQ5+"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
+Received: from mail-pl1-f175.google.com (mail-pl1-f175.google.com [209.85.214.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EDAB223758
-	for <bpf@vger.kernel.org>; Fri, 26 Apr 2024 19:47:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D7B391D54A
+	for <bpf@vger.kernel.org>; Fri, 26 Apr 2024 20:18:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714160859; cv=none; b=LxYG1x7W99sIjkjO6OPG76/owfZTODwPx5CvLevAEgWOXXCNUb63ayabLDZ0KIQuQeItl7tPXxdMUlpjeZWZGWd5uNDKnRgrKsaUh4ZAv6XwGx0aZlQ1jNOVo3TI1rUrySWdwOhtVRX9Gh5VG+IJKH71xRps04nIlnm8Yp01SbY=
+	t=1714162714; cv=none; b=fSIfIsLtmKRBoCGvJB9HvdaJGY1Bc5pQ+lLdK5NT/FqQNl7+Fa9FdlT8lowUGaWekUTJAfJB4eb7blMB0rC9qFf7GZkBl1UNAX6LGWtPw00d0Wc6CO1Ow2WFkL6tAFU85ZP+6bleWldo1zQsMSM9nGcq+KbK4lxzic84s2cPMHE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714160859; c=relaxed/simple;
-	bh=WULB3rXefBMZZbYX2AVjlRfPAvcI27FOLHfTP4djEz0=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=bxRXhK3pq0bcn/H+CuF+OkPvRwYLyAosfqetWrqbAFHMsn8YHbXvoBo967+qmRwf7H4fPewIWKI/alyYuoI2YtCgOXqjz/bZkNosC00USTBRTk1iN1Q5zzUf6lRfVXMB3uUNz9727Q01d5ds38+spxIkd2Rbz2qeQRS+FCIaRaU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=l870A80H; arc=none smtp.client-ip=209.85.214.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-1e2c725e234so29107875ad.1
-        for <bpf@vger.kernel.org>; Fri, 26 Apr 2024 12:47:37 -0700 (PDT)
+	s=arc-20240116; t=1714162714; c=relaxed/simple;
+	bh=UYEkUea1x+S9fs7ZUvLvRMDcE6jTtBqu2ecV7A3IOwE=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=n6bhprTXOZbWg/PKpKbBW39ZjNPN1nGv8pyapBs9RLicmSp/ss+eeiTb+RC7QjAKyRxGNsByu0suQduDJp8p204ZG6kPz71xtQwBV+X0LgPcu+myywF2oKRHXF1G9byQm88k7hT0jwINwh9ZAc+XKCVqzf+qqGEAaAuyktY+TqA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=googlemail.com; spf=pass smtp.mailfrom=googlemail.com; dkim=pass (2048-bit key) header.d=googlemail.com header.i=@googlemail.com header.b=DEL8kQ5+; arc=none smtp.client-ip=209.85.214.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=googlemail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=googlemail.com
+Received: by mail-pl1-f175.google.com with SMTP id d9443c01a7336-1e834159f40so20761225ad.2
+        for <bpf@vger.kernel.org>; Fri, 26 Apr 2024 13:18:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714160857; x=1714765657; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=5meOlh6CXHxdnQGA/DTqdv672zk0oJ7XiNRKIDd9fBw=;
-        b=l870A80HUvWKMuaBrX1gxtUfpZWBa+le1bwLIAA0AR5OYUiptkSWoVUKD4+6OArwFo
-         DlOnPu+MdGnMwdAOS5VDWvj6mWcMA2eMmLwwQYHs8N7lQR+EkWX836BHzldrLowJEQ8K
-         qsE3V7vyG050kDV0FdXnRiYvzi6j3wpl1snO3tZjW5rXcwhgUmykJhT5jaa6TdlpGBWb
-         c296YXUZdznEUIpiiaDpktyzThTd9u1gJREUDKvParUjhii9psh8c7g61xUsB8X4YPKL
-         dYfJFv2zbZGrkhlgAhcFxEbGbz6pPShoKtH9fLeE0PnLb1vzxzPKcJgM/+1WXgQw6tpA
-         jd2Q==
+        d=googlemail.com; s=20230601; t=1714162712; x=1714767512; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=JgDBU2AIbrsQ47mDrqYmZTI1+5aWSHVonXPYPQDCiIc=;
+        b=DEL8kQ5+OtRnnEl3v6Lo+Vqi0ofzjdfgto94Zo5yxcotblVvXBFjUhKxowtnW9238Q
+         chWnCOs7/wcIY1oyEirvXhpgnvT6XB8Dv8aGWy86JQI3P69b6DPeTVXyWP2Jf2NW4frL
+         ctwK7zIBvoGQAK5h6f4hCEy0NpRPkRgVa00/mB6QvTajYpvadcKJ2+u59POmqJJ0Lruf
+         fftAZT6nO8I6d92qSWAGsndGFAO8BvTj+U+z4PYATVfA7VKEYeFbjHjAz1F4HkRfinNt
+         xn9RDVzSIwvG5S9E66YCBlgFdZiVlsO4rOxf9TdvjojfNPN4aTMLYAclOSTB511tWZpl
+         WFiA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714160857; x=1714765657;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=5meOlh6CXHxdnQGA/DTqdv672zk0oJ7XiNRKIDd9fBw=;
-        b=sKVX5IrJtGkuIIisj+snSi++DDb8qEaDRaPneyx0eEj+Kj+7F7SoM2pkyi5C0hbBQd
-         DyYVXfrHGgXKz8ZPsCP4aRKCiUNkjK6FMVkT7fG4/whqmiFZomazdhJNHggb1tRn1EAO
-         we5cYTJ+oPA3UweNKvMBQmT9qlBE6h1M2whQXoaogu4h/2DOrKHZDZOdWgS3vyGqO35U
-         1u832LWikGI9uceI9ReURAHtaC3SNMHn7QBiDMJQmUdE1M5phFEAlmmOhxDm1MNmV8kP
-         mYtYZIyn0fTzdtzYVzgAm2qIbSUoJqRxng5NFnNOvNZQXGnSkj0yqNZnMbujNQjzHc8U
-         UWXQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWLIQ4Iw6vMa1iUTAYKRYcsb3mP0+KPVwU16ptqlZFMh5TwOyTaBuv3p0WwNDEW0rafw8O7VFhS8wIoMOwbwx/St4D9
-X-Gm-Message-State: AOJu0Yx30gSwAs0ijkRCdPiubDjh3gzohi8Z9Ixslxb0ZRm+6rXRcUkN
-	f0+Z2Mr+ANs9xhwS2wJIQQr7rvsI5X0m58FLBQ41runsGcVpCRmm
-X-Google-Smtp-Source: AGHT+IEZkv3vQG7rfbAJV7HAcV2adUlLOGIwY7LbyOmXub8ZG7xJ6KzJ99eu5t1l7lgK46cf10jp3g==
-X-Received: by 2002:a17:903:1c3:b0:1e5:1041:7ed4 with SMTP id e3-20020a17090301c300b001e510417ed4mr965160plh.14.1714160857089;
-        Fri, 26 Apr 2024 12:47:37 -0700 (PDT)
-Received: from ?IPv6:2604:3d08:9880:5900:89b8:4c93:e351:1831? ([2604:3d08:9880:5900:89b8:4c93:e351:1831])
-        by smtp.gmail.com with ESMTPSA id p2-20020a1709027ec200b001e5c6c399d7sm16130355plb.180.2024.04.26.12.47.36
+        d=1e100.net; s=20230601; t=1714162712; x=1714767512;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=JgDBU2AIbrsQ47mDrqYmZTI1+5aWSHVonXPYPQDCiIc=;
+        b=gXTDnrv05caFqgZJonXoxeOJDdVRkejmO1XjYfF7YJlj7+Ozm7qi2+C4WX89D4PjG6
+         tsS2cklaJaElw1fd8QGE7xU4t+YGkHiUkyb7kX/DmPurWCyi7UG8+O3iW0iiBDONNZqL
+         rf85BDyOfbRxAvJl2nyyX1dBz1nsHaDESfq5RE9tiNjfLSg2frbzwfheaGFJAMnXJZoQ
+         io9zyQHJP6VXH5Dv4tDtJQE5PrIcTN0jkVvODsZ+17npqNrR0y7YZm+7r3CokvLcwSI2
+         0ZUv1/ejG6u/x4ocVJFGjCP1tzW9l7aTFpY6PVAinVwiX48vzcRE8ypTmVEpIEtNkavh
+         gx8g==
+X-Gm-Message-State: AOJu0Yy6TmpoEd0ni5ANqrK5za67MEgDqPiLyfJLWlWRryOn2Wq2DZNT
+	09O6vYNvVyWzIgZOLTeIm4GQU0c+CTYv6VlFaSc9/JQ/n8g8N6RcIV6R4iY7
+X-Google-Smtp-Source: AGHT+IFcugFxNmWYS5Fjcq6LQ/oo/4JK/R6yk3ortBJ9ZyHMCFC4U60fdngNGe6gzqmQVyqQOx02mg==
+X-Received: by 2002:a17:902:c947:b0:1e9:519:7dc6 with SMTP id i7-20020a170902c94700b001e905197dc6mr4391629pla.55.1714162711749;
+        Fri, 26 Apr 2024 13:18:31 -0700 (PDT)
+Received: from ubuntu2310.lan (c-67-170-74-237.hsd1.wa.comcast.net. [67.170.74.237])
+        by smtp.gmail.com with ESMTPSA id q7-20020a170902a3c700b001e434b1c6a6sm16200996plb.58.2024.04.26.13.18.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Apr 2024 12:47:36 -0700 (PDT)
-Message-ID: <c046da5cec91dec15958c894d9a9cb7d7091659c.camel@gmail.com>
-Subject: Re: [PATCH dwarves v8 3/3] pahole: Inject kfunc decl tags into BTF
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Daniel Xu <dxu@dxuuu.xyz>, acme@kernel.org, jolsa@kernel.org, 
-	quentin@isovalent.com, alan.maguire@oracle.com
-Cc: andrii.nakryiko@gmail.com, ast@kernel.org, daniel@iogearbox.net, 
-	bpf@vger.kernel.org
-Date: Fri, 26 Apr 2024 12:47:35 -0700
-In-Reply-To: <1f82795e9ae651a3d303d498e2ce71540170b781.1714091281.git.dxu@dxuuu.xyz>
-References: <cover.1714091281.git.dxu@dxuuu.xyz>
-	 <1f82795e9ae651a3d303d498e2ce71540170b781.1714091281.git.dxu@dxuuu.xyz>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.44.4-0ubuntu2 
+        Fri, 26 Apr 2024 13:18:31 -0700 (PDT)
+From: Dave Thaler <dthaler1968@googlemail.com>
+X-Google-Original-From: Dave Thaler <dthaler1968@gmail.com>
+To: bpf@vger.kernel.org
+Cc: bpf@ietf.org,
+	Dave Thaler <dthaler1968@gmail.com>,
+	Dave Thaler <dthaler1968@googlemail.com>
+Subject: [PATCH bpf-next v2] bpf, docs: Clarify PC use in instruction-set.rst
+Date: Fri, 26 Apr 2024 13:18:28 -0700
+Message-Id: <20240426201828.4365-1-dthaler1968@gmail.com>
+X-Mailer: git-send-email 2.40.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 
-On Thu, 2024-04-25 at 18:28 -0600, Daniel Xu wrote:
-> This commit teaches pahole to parse symbols in .BTF_ids section in
-> vmlinux and discover exported kfuncs. Pahole then takes the list of
-> kfuncs and injects a BTF_KIND_DECL_TAG for each kfunc.
->=20
-> Example of encoding:
->=20
->         $ bpftool btf dump file .tmp_vmlinux.btf | rg "DECL_TAG 'bpf_kfun=
-c'" | wc -l
->         121
->=20
->         $ bpftool btf dump file .tmp_vmlinux.btf | rg 56337
->         [56337] FUNC 'bpf_ct_change_timeout' type_id=3D56336 linkage=3Dst=
-atic
->         [127861] DECL_TAG 'bpf_kfunc' type_id=3D56337 component_idx=3D-1
->=20
-> This enables downstream users and tools to dynamically discover which
-> kfuncs are available on a system by parsing vmlinux or module BTF, both
-> available in /sys/kernel/btf.
->=20
-> This feature is enabled with --btf_features=3Ddecl_tag,decl_tag_kfuncs.
+This patch elaborates on the use of PC by expanding the PC acronym,
+explaining the units, and the relative position to which the offset
+applies.
 
-I tried to double-check results produced by this patch and found that
-decl_tag for one kfunc is missing, namely, the following function:
+v1->v2: reword per feedback from Alexei
 
-[66020] FUNC 'update_socket_protocol' type_id=3D66018 linkage=3Dstatic
+Signed-off-by: Dave Thaler <dthaler1968@googlemail.com>
+---
+ Documentation/bpf/standardization/instruction-set.rst | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-And it is present in symbols table (15 is a number of the .BTF_ids section)=
-:
+diff --git a/Documentation/bpf/standardization/instruction-set.rst b/Documentation/bpf/standardization/instruction-set.rst
+index b44bdacd0..766f57636 100644
+--- a/Documentation/bpf/standardization/instruction-set.rst
++++ b/Documentation/bpf/standardization/instruction-set.rst
+@@ -469,6 +469,12 @@ JSLT      0xc    any      PC += offset if dst < src          signed
+ JSLE      0xd    any      PC += offset if dst <= src         signed
+ ========  =====  =======  =================================  ===================================================
+ 
++where 'PC' denotes the program counter, and the offset to increment by
++is in units of 64-bit instructions relative to the instruction following
++the jump instruction.  Thus 'PC += 1' skips execution of the next
++instruction if it's a basic instruction and fails verification if the
++next instruction is a 128-bit wide instruction.
++
+ The BPF program needs to store the return value into register R0 before doing an
+ ``EXIT``.
+ 
+-- 
+2.40.1
 
-60433: ffffffff8293a7fc     4 OBJECT  LOCAL  DEFAULT   15 __BTF_ID__func__u=
-pdate_socket_protocol__78624
-
-Interestingly, this is the last symbol printed for the section.
-I'll try to debug this issue.
 
