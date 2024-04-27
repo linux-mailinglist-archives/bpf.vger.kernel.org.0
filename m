@@ -1,73 +1,73 @@
-Return-Path: <bpf+bounces-28022-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-28023-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4F2198B4582
-	for <lists+bpf@lfdr.de>; Sat, 27 Apr 2024 12:20:14 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id E30658B462B
+	for <lists+bpf@lfdr.de>; Sat, 27 Apr 2024 13:37:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0DD47282806
-	for <lists+bpf@lfdr.de>; Sat, 27 Apr 2024 10:20:13 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 69F721F262B9
+	for <lists+bpf@lfdr.de>; Sat, 27 Apr 2024 11:37:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C025F481DF;
-	Sat, 27 Apr 2024 10:20:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E30048CFC;
+	Sat, 27 Apr 2024 11:36:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="bVobT105"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="UprG36up"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f52.google.com (mail-pj1-f52.google.com [209.85.216.52])
+Received: from mail-pf1-f175.google.com (mail-pf1-f175.google.com [209.85.210.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1452047F7C
-	for <bpf@vger.kernel.org>; Sat, 27 Apr 2024 10:20:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9CD791E889
+	for <bpf@vger.kernel.org>; Sat, 27 Apr 2024 11:36:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714213206; cv=none; b=gOSSigMYO31J/FV8Xqm74IKvJh/AaUgZyaxrXhpYEI9FkkFqlt6HGKKjRFI6HYdC4AK7+bZv4HvZgtb8IjmbeeIm0JUKWEaFAwX9uTcxYWuY7iTZ6r6LbY61Qh4DhmsUHi0HhmYKYZFu1Mm6w1lCplD7u9eYH+du/WjcUlyKifk=
+	t=1714217815; cv=none; b=VnDW5ZC4C44WoEYA0TcHxD+ehsOOKNzMoAMRL8eoYqTUcJ53mhlSedQJxupTlvUBZQN6HSmcaEorEiEZ4CojzCpChT6fPHFiuLPOHPyPvLJBIwMvqkfYf8aoKXS2Sb+460/UAljHKEnkzQnPnWJxyUWLNXi4onb6DN447ZZdO7g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714213206; c=relaxed/simple;
-	bh=JWA6+ZKwW4Es+WCjLsw/Bewv+NoSaEScYh68o7FE5Gc=;
+	s=arc-20240116; t=1714217815; c=relaxed/simple;
+	bh=4ZrINV4KLgHRlvgk/hu79PRnd4meIKu7L4pWkSEktc4=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=tXbqxmEFJVMLq7X7v3zqYLJ3XrKT2m1Z2RBQFtU8+D+fyYG1dPQsA66T5YHs4bu4dcuAumuPMdaMaPHXLKemW9Nvjw8wJY/pkF0durdNxc0BZE2AG0yPDXHn3s4MNHijdEjD+ixglokqLMfIKyDQvczDUigLegdUDaV/9VsQnoA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=bVobT105; arc=none smtp.client-ip=209.85.216.52
+	 Content-Type:Content-Disposition:In-Reply-To; b=RGkLze10l7x/xzzu7FlCckOhY0mEXBErLjbM44wR0Z8rJr7jWPguvT3cFNCTO8ohIMSEIlQ1tOQzRMZuqDkqzR3nRwMEgLu7A4dJHz6GS62HNGTmz/3ItG2S6fMWWzN/yTVIQKuvCfJrkx+942kzPFZpncez20D6GTW7Hg3jUxc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=UprG36up; arc=none smtp.client-ip=209.85.210.175
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-pj1-f52.google.com with SMTP id 98e67ed59e1d1-2a2da57ab3aso2582326a91.3
-        for <bpf@vger.kernel.org>; Sat, 27 Apr 2024 03:20:03 -0700 (PDT)
+Received: by mail-pf1-f175.google.com with SMTP id d2e1a72fcca58-6ed3cafd766so2805076b3a.0
+        for <bpf@vger.kernel.org>; Sat, 27 Apr 2024 04:36:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1714213203; x=1714818003; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1714217813; x=1714822613; darn=vger.kernel.org;
         h=in-reply-to:content-transfer-encoding:content-disposition
          :mime-version:references:message-id:subject:cc:to:from:date:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=f7+iFYpps1zeYEBYcKhOBHRNG0fMT263PpJq0n4u0EE=;
-        b=bVobT105MOR23WJztzNbcBOJDermDa88yZnDdtNPRDpG+U/1JMuCGw1MCA7AbW3EaH
-         QfwqM/nnbZKfDajiMyEyapSr9t92gRXXVfdlxw+2sgJs5cAAixLXBX2o6ogiW5js0v1b
-         BOjE4aytDnCXSddi2t8ySYbs1HOw9qJfEwzOqLadYhpT2KPZdyqiKb4bxpynVeDxK0xD
-         smt+v2JQ+vtefSknFfK608FWXCPvKyO6quQ+uXmNHDnqevBxugvkdivFvwsMixC+Y/XA
-         8fVSG0z9NhxejwFWzvQAL8hUiPNlbTJUBN1sG1zSyYw8yHQ/BAAWmbHkKL/kZkMmjjMi
-         FS3A==
+        bh=Jp4hRN3U63+VTp/kbaxaSBNFon3bWbhJwCyaL1wC8dE=;
+        b=UprG36upcSxmUcaOso/Qv5/e7kS9Aoi9uslK1U6aLKfMvkyxMxOL1ugL3aJGXaKj5P
+         trmZ19yQw0KqHHPNy+4aH0z6l1vLyX0VYs8VFfLONaLHPjp5vQFMt6t0yMxNjnsA+xfG
+         6iQnyQkO31/q7hWWPNe8IVGekOCShLRokqUclF8FAkFHNOu/viwHGwrZ1FdMAmzNXWCd
+         UNxU2y7EttbHBWIoqF89niBIpJ3bXr9L5wIFzKb1CqjBQF0eKbxFweDm/mKSNkpv1CEO
+         8t9mxoRj9npgiexXTwZ8dUT5CLklgtNIEhM6z5W7XCLZ1TQ7IFfPwc2j+qZwzn6VodZY
+         bFuw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714213203; x=1714818003;
+        d=1e100.net; s=20230601; t=1714217813; x=1714822613;
         h=in-reply-to:content-transfer-encoding:content-disposition
          :mime-version:references:message-id:subject:cc:to:from:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=f7+iFYpps1zeYEBYcKhOBHRNG0fMT263PpJq0n4u0EE=;
-        b=o2Y7fkhUgbh9Q3Y7bu28JuRB5sExH633vmlS03M0oVAO610eNMDjsqCMZxlHncyJN2
-         n6SFKL6sEtpD+gHleLoIYlms4RXa6xUxlLjqZeyEec7kGfTd50Jh9DnqWwZgchTjyqGT
-         CE8P9RF0818cYQN/UJXj3eE0zbU3B0x7zcXR84LN3hmF6zoN41Nc3Yg/46j+NN5xb5iC
-         qWpDFFQBqErPzvMwgsUr/AR08FH2epcFL7JpsNpzZ9DEQhb849N1RAAUWOdWUHSXBjyE
-         E8RsE3KSaBaG6AiBW757nOq/mrXgmRloER8ivmzn3pWGHpvEbydf7TMCTD+q6YUInEyk
-         8hqQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUv+4OHA1lJmxZ4D01qNoi64+0zW9snK5uKMBQs4rkML/WrmRdYUUTu9StstLRzBfHDJXZ+T6LF8+91I6zKhiLvjkox
-X-Gm-Message-State: AOJu0Yw2bo14CP9TJW48PtZQPrwY0an/VEMQ9QTj+Fuetiysz7+iulyi
-	4/9Lz0NROWp4RQAa2SldA9Ql7GAGcMn2hMK3M5FI656t8dx51ox0prUUT2tfvg==
-X-Google-Smtp-Source: AGHT+IEYOZapJrU/m4SmvbbkI2Rqw/VHSc6hVCsBseOgu88lyFU9KKkSvde7eKI7fVNOcnbI0UpRCA==
-X-Received: by 2002:a17:90b:1d89:b0:2af:53c6:5fb0 with SMTP id pf9-20020a17090b1d8900b002af53c65fb0mr4651141pjb.28.1714213202995;
-        Sat, 27 Apr 2024 03:20:02 -0700 (PDT)
+        bh=Jp4hRN3U63+VTp/kbaxaSBNFon3bWbhJwCyaL1wC8dE=;
+        b=uPatRRgLu9gXCgM/cAt5HUKCct/eTZIQq95dOedR7u99b18/6/diERU3O0hHzOgGsQ
+         Nh819nXR56LOVy/S/elph41zil4YgBhbVSjSlAM5KrMlqoTozLGrp7/Waee5a8GcRR7y
+         KAo/xRByT1dyyynQT3BOWYJ7c3Alwf90dR93IzMsg7R+jALH7AjtuYXx0MkO6R+VS5EB
+         LaxJszsH6M+iBrSaVQCWAyhtLnutNA3nkJcS3uOQfUqBmWNlnfWhp5bXsotghA8UDPyU
+         qA3aej91OJ32TGXbZ/IrzSp6FhiVDDDN1Mo9z3UjtwPC0sUlEnpTjBLrBCO2Ji92iHpv
+         u0IA==
+X-Forwarded-Encrypted: i=1; AJvYcCWBeU/usCetjLqoux6g4zKEi9SFz21GEFM9D2vpGLpbgrq9XlGB30grW+9CyAw5JWLjHu74X4dx25kcHfp2Bw/2AD2R
+X-Gm-Message-State: AOJu0Yxg9EzR5BRqgnKmLxSyFL01UDCBnn1RbdpSQ6iuG8/BnrBNjExF
+	HqoNiaDqC83FFiUgY0qjpFRXEbF9wr1Jv6u/qmZw+80fR9jXyEfbGFDANL6FUQ==
+X-Google-Smtp-Source: AGHT+IFPz6Ruq5+jtEUhJad2ZGgPJk+uB6ynLPk+rZsXWFAqu91AklU9J738m/6o+4YI5RYMxlBsTg==
+X-Received: by 2002:a05:6a00:ace:b0:6e7:b3c4:43a4 with SMTP id c14-20020a056a000ace00b006e7b3c443a4mr6315088pfl.25.1714217812667;
+        Sat, 27 Apr 2024 04:36:52 -0700 (PDT)
 Received: from thinkpad ([117.213.97.210])
-        by smtp.gmail.com with ESMTPSA id e7-20020a17090a7c4700b002ad6b1e5b6fsm11013594pjl.56.2024.04.27.03.19.54
+        by smtp.gmail.com with ESMTPSA id s6-20020aa78286000000b006f0aea608efsm15463745pfm.143.2024.04.27.04.36.46
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 27 Apr 2024 03:20:02 -0700 (PDT)
-Date: Sat, 27 Apr 2024 15:49:50 +0530
+        Sat, 27 Apr 2024 04:36:52 -0700 (PDT)
+Date: Sat, 27 Apr 2024 17:06:43 +0530
 From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
 To: Frank Li <Frank.Li@nxp.com>
 Cc: Richard Zhu <hongxing.zhu@nxp.com>,
@@ -88,11 +88,11 @@ Cc: Richard Zhu <hongxing.zhu@nxp.com>,
 	imx@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
 	linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
 	devicetree@vger.kernel.org
-Subject: Re: [PATCH v3 07/11] PCI: imx: Simplify switch-case logic by involve
- core_reset callback
-Message-ID: <20240427101950.GL1981@thinkpad>
+Subject: Re: [PATCH v3 08/11] PCI: imx: Config look up table(LUT) to support
+ MSI ITS and IOMMU for i.MX95
+Message-ID: <20240427113643.GM1981@thinkpad>
 References: <20240402-pci2_upstream-v3-0-803414bdb430@nxp.com>
- <20240402-pci2_upstream-v3-7-803414bdb430@nxp.com>
+ <20240402-pci2_upstream-v3-8-803414bdb430@nxp.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -102,232 +102,278 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240402-pci2_upstream-v3-7-803414bdb430@nxp.com>
+In-Reply-To: <20240402-pci2_upstream-v3-8-803414bdb430@nxp.com>
 
-On Tue, Apr 02, 2024 at 10:33:43AM -0400, Frank Li wrote:
-> Instead of using the switch case statement to assert/dassert the core reset
-> handled by this driver itself, let's introduce a new callback core_reset()
-> and define it for platforms that require it. This simplifies the code.
+PCI: imx6: Add support for configuring BDF to SID mapping for i.MX95
+
+On Tue, Apr 02, 2024 at 10:33:44AM -0400, Frank Li wrote:
+> i.MX95 need config LUT to convert bpf to stream id. IOMMU and ITS use the
+
+Did you mean BDF? Here and everywhere.
+
+> same stream id. Check msi-map and smmu-map and make sure the same PCI bpf
+> map to the same stream id. Then config LUT related registers.
 > 
+
+These DT properties not documented in the binding.
+
 > Signed-off-by: Frank Li <Frank.Li@nxp.com>
 > ---
->  drivers/pci/controller/dwc/pcie-imx.c | 131 ++++++++++++++++++----------------
->  1 file changed, 68 insertions(+), 63 deletions(-)
+>  drivers/pci/controller/dwc/pcie-imx.c | 175 ++++++++++++++++++++++++++++++++++
+>  1 file changed, 175 insertions(+)
 > 
 > diff --git a/drivers/pci/controller/dwc/pcie-imx.c b/drivers/pci/controller/dwc/pcie-imx.c
-> index 77dae5c3f7057..af0f960f28757 100644
+> index af0f960f28757..653d8e8ee1abc 100644
 > --- a/drivers/pci/controller/dwc/pcie-imx.c
 > +++ b/drivers/pci/controller/dwc/pcie-imx.c
-> @@ -104,6 +104,7 @@ struct imx_pcie_drvdata {
->  	const struct pci_epc_features *epc_features;
->  	int (*init_phy)(struct imx_pcie *pcie);
->  	int (*set_ref_clk)(struct imx_pcie *pcie, bool enable);
-> +	int (*core_reset)(struct imx_pcie *pcie, bool assert);
->  };
+> @@ -55,6 +55,22 @@
+>  #define IMX95_PE0_GEN_CTRL_3			0x1058
+>  #define IMX95_PCIE_LTSSM_EN			BIT(0)
 >  
->  struct imx_pcie {
-> @@ -671,35 +672,72 @@ static void imx_pcie_clk_disable(struct imx_pcie *imx_pcie)
->  	clk_bulk_disable_unprepare(imx_pcie->drvdata->clks_cnt, imx_pcie->clks);
+> +#define IMX95_PE0_LUT_ACSCTRL			0x1008
+> +#define IMX95_PEO_LUT_RWA			BIT(16)
+> +#define IMX95_PE0_LUT_ENLOC			GENMASK(4, 0)
+> +
+> +#define IMX95_PE0_LUT_DATA1			0x100c
+> +#define IMX95_PE0_LUT_VLD			BIT(31)
+> +#define IMX95_PE0_LUT_DAC_ID			GENMASK(10, 8)
+> +#define IMX95_PE0_LUT_STREAM_ID			GENMASK(5, 0)
+> +
+> +#define IMX95_PE0_LUT_DATA2			0x1010
+> +#define IMX95_PE0_LUT_REQID			GENMASK(31, 16)
+> +#define IMX95_PE0_LUT_MASK			GENMASK(15, 0)
+> +
+> +#define IMX95_SID_MASK				GENMASK(5, 0)
+> +#define IMX95_MAX_LUT				32
+> +
+>  #define to_imx_pcie(x)	dev_get_drvdata((x)->dev)
+>  
+>  enum imx_pcie_variants {
+> @@ -217,6 +233,159 @@ static int imx95_pcie_init_phy(struct imx_pcie *imx_pcie)
+>  	return 0;
 >  }
 >  
-> +static int imx6sx_pcie_core_reset(struct imx_pcie *imx_pcie, bool assert)
-> +{
-> +	regmap_update_bits(imx_pcie->iomuxc_gpr, IOMUXC_GPR12, IMX6SX_GPR12_PCIE_TEST_POWERDOWN,
-> +			   assert ? IMX6SX_GPR12_PCIE_TEST_POWERDOWN : 0);
-
-Earlier, this register was not cleared during deassert. Is if fine?
-
-> +	/* Force PCIe PHY reset */
-> +	regmap_update_bits(imx_pcie->iomuxc_gpr, IOMUXC_GPR5, IMX6SX_GPR5_PCIE_BTNRST_RESET,
-> +			   assert ? IMX6SX_GPR5_PCIE_BTNRST_RESET : 0);
-> +	return 0;
-> +}
-> +
-> +static int imx6qp_pcie_core_reset(struct imx_pcie *imx_pcie, bool assert)
-> +{
-> +	regmap_update_bits(imx_pcie->iomuxc_gpr, IOMUXC_GPR1, IMX6Q_GPR1_PCIE_SW_RST,
-> +			   assert ? IMX6Q_GPR1_PCIE_SW_RST : 0);
-> +	if (!assert)
-> +		usleep_range(200, 500);
-> +
-> +	return 0;
-> +}
-> +
-> +static int imx6q_pcie_core_reset(struct imx_pcie *imx_pcie, bool assert)
-> +{
-> +	regmap_update_bits(imx_pcie->iomuxc_gpr, IOMUXC_GPR1, IMX6Q_GPR1_PCIE_TEST_PD,
-> +			   assert ? IMX6Q_GPR1_PCIE_TEST_PD : 0);
-> +
-> +	regmap_update_bits(imx_pcie->iomuxc_gpr, IOMUXC_GPR1, IMX6Q_GPR1_PCIE_REF_CLK_EN,
-> +			   assert ? 0 : IMX6Q_GPR1_PCIE_REF_CLK_EN);
-> +
-
-Same comment as above.
-
-> +	return 0;
-> +}
-> +
-> +static int imx7d_pcie_core_reset(struct imx_pcie *imx_pcie, bool assert)
+> +static int imx_pcie_update_lut(struct imx_pcie *imx_pcie, int index, u16 reqid, u16 mask, u8 sid)
 > +{
 > +	struct dw_pcie *pci = imx_pcie->pci;
 > +	struct device *dev = pci->dev;
+> +	u32 data1, data2;
 > +
-> +	if (assert)
-> +		return 0;
-> +
-> +	/*
-> +	 * Workaround for ERR010728, failure of PCI-e PLL VCO to oscillate, especially when cold.
+> +	if (sid >= 64) {
+> +		dev_err(dev, "Too big stream id: %d\n", sid);
 
-What does 'especially when cold' means? I know it is an old comment, but still
-it is not very clear.
+'Invalid SID for index (%d): %d\n', index, sid
 
-> +	 * This turns off "Duty-cycle Corrector" and other mysterious undocumented things.
-
-Same comment as previous patch.
-
-> +	 */
-> +
-> +	if (likely(imx_pcie->phy_base)) {
-> +		/* De-assert DCC_FB_EN */
-> +		writel(PCIE_PHY_CMN_REG4_DCC_FB_EN, imx_pcie->phy_base + PCIE_PHY_CMN_REG4);
-> +		/* Assert RX_EQS and RX_EQS_SEL */
-> +		writel(PCIE_PHY_CMN_REG24_RX_EQ_SEL | PCIE_PHY_CMN_REG24_RX_EQ,
-> +		       imx_pcie->phy_base + PCIE_PHY_CMN_REG24);
-> +		/* Assert ATT_MODE */
-> +		writel(PCIE_PHY_CMN_REG26_ATT_MODE, imx_pcie->phy_base + PCIE_PHY_CMN_REG26);
-
-Why does this workaround a part of core_reset handling? This function doesn't
-look like performing reset at all.
-
-- Mani
-
-> +	} else {
-> +		dev_warn(dev, "Unable to apply ERR010728 workaround. DT missing fsl,imx7d-pcie-phy phandle ?\n");
+> +		return -EINVAL;
 > +	}
-> +	imx7d_pcie_wait_for_phy_pll_lock(imx_pcie);
+> +
+> +	data1 = FIELD_PREP(IMX95_PE0_LUT_DAC_ID, 0);
+> +	data1 |= FIELD_PREP(IMX95_PE0_LUT_STREAM_ID, sid);
+> +	data1 |= IMX95_PE0_LUT_VLD;
+> +
+> +	regmap_write(imx_pcie->iomuxc_gpr, IMX95_PE0_LUT_DATA1, data1);
+> +
+> +	data2 = mask;
+> +	data2 |= FIELD_PREP(IMX95_PE0_LUT_REQID, reqid);
+> +
+> +	regmap_write(imx_pcie->iomuxc_gpr, IMX95_PE0_LUT_DATA2, data2);
+> +
+> +	regmap_write(imx_pcie->iomuxc_gpr, IMX95_PE0_LUT_ACSCTRL, index);
+> +
 > +	return 0;
 > +}
 > +
->  static void imx_pcie_assert_core_reset(struct imx_pcie *imx_pcie)
+> +struct imx_of_map {
+
+imx_iommu_map
+
+> +	u32 bdf;
+> +	u32 phandle;
+> +	u32 sid;
+> +	u32 sid_len;
+> +};
+> +
+> +static int imx_check_msi_and_smmmu(struct imx_pcie *imx_pcie,
+> +				   struct imx_of_map *msi_map, u32 msi_size, u32 msi_map_mask,
+> +				   struct imx_of_map *smmu_map, u32 smmu_size, u32 smmu_map_mask)
+> +{
+> +	struct dw_pcie *pci = imx_pcie->pci;
+> +	struct device *dev = pci->dev;
+> +	int i;
+> +
+
+	if (!msi_map || !smmu_map)
+		return 0;
+
+> +	if (msi_map && smmu_map) {
+> +		if (msi_size != smmu_size)
+> +			return -EINVAL;
+> +		if (msi_map_mask != smmu_map_mask)
+> +			return -EINVAL;
+
+	if (msi_size != smmu_size || msi_map_mask != smmu_map_mask)
+		return -EINVAL;
+
+> +
+> +		for (i = 0; i < msi_size / sizeof(*msi_map); i++) {
+> +			if (msi_map->bdf != smmu_map->bdf) {
+> +				dev_err(dev, "bdf setting is not match\n");
+
+'BDF mismatch between msi-map and iommu-map'
+
+> +				return -EINVAL;
+> +			}
+> +			if ((msi_map->sid & IMX95_SID_MASK) != smmu_map->sid) {
+> +				dev_err(dev, "sid setting is not match\n");
+
+'SID mismatch between msi-map and iommu-map'
+
+> +				return -EINVAL;
+> +			}
+> +			if ((msi_map->sid_len & IMX95_SID_MASK) != smmu_map->sid_len) {
+> +				dev_err(dev, "sid_len setting is not match\n");
+
+'SID length  mismatch between msi-map and iommu-map'
+
+> +				return -EINVAL;
+> +			}
+> +		}
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +/*
+> + * Simple static config lut according to dts settings DAC index and stream ID used as a match result
+> + * of LUT pre-allocated and used by PCIes.
+> + *
+
+Please reword the above sentence.
+
+> + * Currently stream ID from 32-64 for PCIe.
+> + * 32-40: first PCI bus.
+> + * 40-48: second PCI bus.
+
+I believe this is an SoC specific info. So better not add it here. It belongs to
+DT.
+
+> + *
+> + * DAC_ID is index of TRDC.DAC index, start from 2 at iMX95.
+> + * ITS [pci(2bit): streamid(6bits)]
+> + *	pci 0 is 0
+> + *	pci 1 is 3
+> + */
+> +static int imx_pcie_config_sid(struct imx_pcie *imx_pcie)
+> +{
+> +	struct imx_of_map *msi_map = NULL, *smmu_map = NULL, *cur;
+> +	int i, j, lut_index, nr_map, msi_size = 0, smmu_size = 0;
+> +	u32 msi_map_mask = 0xffff, smmu_map_mask = 0xffff;
+> +	struct dw_pcie *pci = imx_pcie->pci;
+> +	struct device *dev = pci->dev;
+> +	u32 mask;
+> +	int size;
+> +
+> +	of_get_property(dev->of_node, "msi-map", &msi_size);
+> +	if (msi_size) {
+
+You mentioned in the commit message that msi-map and iommu-map needs to be the
+same for this SoC. But here you are just ignoring the absence of 'msi-map'
+property.
+
+> +		msi_map = devm_kzalloc(dev, msi_size, GFP_KERNEL);
+> +		if (!msi_map)
+> +			return -ENOMEM;
+> +
+> +		if (of_property_read_u32_array(dev->of_node, "msi-map", (u32 *)msi_map,
+> +					       msi_size / sizeof(u32)))
+> +			return -EINVAL;
+> +
+> +		of_property_read_u32(dev->of_node, "msi-map-mask", &msi_map_mask);
+> +	}
+> +
+> +	cur = msi_map;
+> +	size = msi_size;
+> +	mask = msi_map_mask;
+> +
+> +	of_get_property(dev->of_node, "iommu-map", &smmu_size);
+
+Same comment as above.
+
+> +	if (smmu_size) {
+> +		smmu_map = devm_kzalloc(dev, smmu_size, GFP_KERNEL);
+> +		if (!smmu_map)
+> +			return -ENOMEM;
+> +
+> +		if (of_property_read_u32_array(dev->of_node, "iommu-map", (u32 *)smmu_map,
+> +					       smmu_size / sizeof(u32)))
+> +			return -EINVAL;
+> +
+> +		of_property_read_u32(dev->of_node, "iommu_map_mask", &smmu_map_mask);
+> +	}
+> +
+> +	if (imx_check_msi_and_smmmu(imx_pcie, msi_map, msi_size, msi_map_mask,
+> +				     smmu_map, smmu_size, smmu_map_mask))
+> +		return -EINVAL;
+> +
+
+Hmm, so you want to continue even if the 'msi-map' and 'iommu-map' properties
+don't exist i.e., for old platforms?
+
+> +	if (!cur) {
+> +		cur = smmu_map;
+> +		size = smmu_size;
+> +		mask = smmu_map_mask;
+> +	}
+> +
+> +	nr_map = size / (sizeof(*cur));
+> +
+> +	lut_index = 0;
+
+Just initialize it while defining itself.
+
+> +	for (i = 0; i < nr_map; i++) {
+> +		for (j = 0; j < cur->sid_len; j++) {
+> +			imx_pcie_update_lut(imx_pcie, lut_index, cur->bdf + j, mask,
+> +					    (cur->sid + j) & IMX95_SID_MASK);
+> +			lut_index++;
+> +		}
+> +		cur++;
+> +
+> +		if (lut_index >= IMX95_MAX_LUT) {
+> +			dev_err(dev, "its-map/iommu-map exceed HW limiation\n");
+
+'Too many msi-map/iommu-map entries'
+
+But I think you can just continue to use the allowed entries.
+
+> +			return -EINVAL;
+> +		}
+> +	}
+> +
+> +	devm_kfree(dev, smmu_map);
+> +	devm_kfree(dev, msi_map);
+
+Please don't explicitly free the devm_ managed resources unless really needed.
+Else don't use devm_ at all.
+
+> +
+> +	return 0;
+> +}
+> +
+>  static void imx_pcie_configure_type(struct imx_pcie *imx_pcie)
 >  {
->  	reset_control_assert(imx_pcie->pciephy_reset);
->  	reset_control_assert(imx_pcie->apps_reset);
+>  	const struct imx_pcie_drvdata *drvdata = imx_pcie->drvdata;
+> @@ -950,6 +1119,12 @@ static int imx_pcie_host_init(struct dw_pcie_rp *pp)
+>  		goto err_phy_off;
+>  	}
 >  
-> -	switch (imx_pcie->drvdata->variant) {
-> -	case IMX6SX:
-> -		regmap_update_bits(imx_pcie->iomuxc_gpr, IOMUXC_GPR12,
-> -				   IMX6SX_GPR12_PCIE_TEST_POWERDOWN,
-> -				   IMX6SX_GPR12_PCIE_TEST_POWERDOWN);
-> -		/* Force PCIe PHY reset */
-> -		regmap_update_bits(imx_pcie->iomuxc_gpr, IOMUXC_GPR5,
-> -				   IMX6SX_GPR5_PCIE_BTNRST_RESET,
-> -				   IMX6SX_GPR5_PCIE_BTNRST_RESET);
-> -		break;
-> -	case IMX6QP:
-> -		regmap_update_bits(imx_pcie->iomuxc_gpr, IOMUXC_GPR1,
-> -				   IMX6Q_GPR1_PCIE_SW_RST,
-> -				   IMX6Q_GPR1_PCIE_SW_RST);
-> -		break;
-> -	case IMX6Q:
-> -		regmap_update_bits(imx_pcie->iomuxc_gpr, IOMUXC_GPR1,
-> -				   IMX6Q_GPR1_PCIE_TEST_PD, 1 << 18);
-> -		regmap_update_bits(imx_pcie->iomuxc_gpr, IOMUXC_GPR1,
-> -				   IMX6Q_GPR1_PCIE_REF_CLK_EN, 0 << 16);
-> -		break;
-> -	default:
-> -		break;
-> -	}
-> +	if (imx_pcie->drvdata->core_reset)
-> +		imx_pcie->drvdata->core_reset(imx_pcie, true);
->  
->  	/* Some boards don't have PCIe reset GPIO. */
->  	if (gpio_is_valid(imx_pcie->reset_gpio))
-> @@ -709,47 +747,10 @@ static void imx_pcie_assert_core_reset(struct imx_pcie *imx_pcie)
->  
->  static int imx_pcie_deassert_core_reset(struct imx_pcie *imx_pcie)
->  {
-> -	struct dw_pcie *pci = imx_pcie->pci;
-> -	struct device *dev = pci->dev;
-> -
->  	reset_control_deassert(imx_pcie->pciephy_reset);
->  
-> -	switch (imx_pcie->drvdata->variant) {
-> -	case IMX7D:
-> -		/* Workaround for ERR010728, failure of PCI-e PLL VCO to
-> -		 * oscillate, especially when cold.  This turns off "Duty-cycle
-> -		 * Corrector" and other mysterious undocumented things.
-> -		 */
-> -		if (likely(imx_pcie->phy_base)) {
-> -			/* De-assert DCC_FB_EN */
-> -			writel(PCIE_PHY_CMN_REG4_DCC_FB_EN,
-> -			       imx_pcie->phy_base + PCIE_PHY_CMN_REG4);
-> -			/* Assert RX_EQS and RX_EQS_SEL */
-> -			writel(PCIE_PHY_CMN_REG24_RX_EQ_SEL
-> -				| PCIE_PHY_CMN_REG24_RX_EQ,
-> -			       imx_pcie->phy_base + PCIE_PHY_CMN_REG24);
-> -			/* Assert ATT_MODE */
-> -			writel(PCIE_PHY_CMN_REG26_ATT_MODE,
-> -			       imx_pcie->phy_base + PCIE_PHY_CMN_REG26);
-> -		} else {
-> -			dev_warn(dev, "Unable to apply ERR010728 workaround. DT missing fsl,imx7d-pcie-phy phandle ?\n");
-> -		}
-> -
-> -		imx7d_pcie_wait_for_phy_pll_lock(imx_pcie);
-> -		break;
-> -	case IMX6SX:
-> -		regmap_update_bits(imx_pcie->iomuxc_gpr, IOMUXC_GPR5,
-> -				   IMX6SX_GPR5_PCIE_BTNRST_RESET, 0);
-> -		break;
-> -	case IMX6QP:
-> -		regmap_update_bits(imx_pcie->iomuxc_gpr, IOMUXC_GPR1,
-> -				   IMX6Q_GPR1_PCIE_SW_RST, 0);
-> -
-> -		usleep_range(200, 500);
-> -		break;
-> -	default:
-> -		break;
-> -	}
-> +	if (imx_pcie->drvdata->core_reset)
-> +		imx_pcie->drvdata->core_reset(imx_pcie, false);
->  
->  	/* Some boards don't have PCIe reset GPIO. */
->  	if (gpio_is_valid(imx_pcie->reset_gpio)) {
-> @@ -1447,6 +1448,7 @@ static const struct imx_pcie_drvdata drvdata[] = {
->  		.mode_mask[0] = IMX6Q_GPR12_DEVICE_TYPE,
->  		.init_phy = imx_pcie_init_phy,
->  		.set_ref_clk = imx6q_pcie_set_ref_clk,
-> +		.core_reset = imx6q_pcie_core_reset,
->  	},
->  	[IMX6SX] = {
->  		.variant = IMX6SX,
-> @@ -1462,6 +1464,7 @@ static const struct imx_pcie_drvdata drvdata[] = {
->  		.mode_mask[0] = IMX6Q_GPR12_DEVICE_TYPE,
->  		.init_phy = imx6sx_pcie_init_phy,
->  		.set_ref_clk = imx6sx_pcie_set_ref_clk,
-> +		.core_reset = imx6sx_pcie_core_reset,
->  	},
->  	[IMX6QP] = {
->  		.variant = IMX6QP,
-> @@ -1478,6 +1481,7 @@ static const struct imx_pcie_drvdata drvdata[] = {
->  		.mode_mask[0] = IMX6Q_GPR12_DEVICE_TYPE,
->  		.init_phy = imx_pcie_init_phy,
->  		.set_ref_clk = imx6q_pcie_set_ref_clk,
-> +		.core_reset = imx6qp_pcie_core_reset,
->  	},
->  	[IMX7D] = {
->  		.variant = IMX7D,
-> @@ -1491,6 +1495,7 @@ static const struct imx_pcie_drvdata drvdata[] = {
->  		.mode_mask[0] = IMX6Q_GPR12_DEVICE_TYPE,
->  		.init_phy = imx7d_pcie_init_phy,
->  		.set_ref_clk = imx7d_pcie_set_ref_clk,
-> +		.core_reset = imx7d_pcie_core_reset,
->  	},
->  	[IMX8MQ] = {
->  		.variant = IMX8MQ,
-> 
-> -- 
-> 2.34.1
-> 
+> +	ret = imx_pcie_config_sid(imx_pcie);
+> +	if (ret < 0) {
+> +		dev_err(dev, "failed to config sid:%d\n", ret);
+
+'Failed to config BDF to SID mapping: %d\n'
+
+- Mani
 
 -- 
 மணிவண்ணன் சதாசிவம்
