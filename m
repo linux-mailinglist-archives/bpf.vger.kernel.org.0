@@ -1,92 +1,119 @@
-Return-Path: <bpf+bounces-28008-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-28009-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6ED8D8B4361
-	for <lists+bpf@lfdr.de>; Sat, 27 Apr 2024 02:50:41 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DD5818B438A
+	for <lists+bpf@lfdr.de>; Sat, 27 Apr 2024 03:36:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 603A4B212E1
-	for <lists+bpf@lfdr.de>; Sat, 27 Apr 2024 00:50:38 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 92A532836BE
+	for <lists+bpf@lfdr.de>; Sat, 27 Apr 2024 01:36:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F5732D03B;
-	Sat, 27 Apr 2024 00:50:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 23C4D383A0;
+	Sat, 27 Apr 2024 01:36:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PUQ4soM7"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="crPCgKfT"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0396125777;
-	Sat, 27 Apr 2024 00:50:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9670629409;
+	Sat, 27 Apr 2024 01:36:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714179031; cv=none; b=hOxeNFl269BRncjL2aTxdmQdBmbd9ICdJmAi9uS7pSqK9i8v9fCyUtIhXj8J8ycF0JvFGAWNHkGjmIWCxz3+vn2fo/ypbBmgim+P/8zUNE95Ld9JCjB4+/QWuIxxkH2e5LnZyeJW4UvnegYxQfhKhLpjaZsnqfXFbVKYbeg+K2A=
+	t=1714181762; cv=none; b=j0oN+MVezT/h5nL5NVxgimxaasAtB2u6mcy9YQisAc4TCpWIw257/Tc6DhaW+nnkMGnKcjWN8/uGkbP6QcT4MgWfRI0etiYpIgAsG8feRvSjTJjA7o5mlpsnJgrLsFaQO+rDFnAkhOi2CyzOd51QkFQrPFRLJ4jdhNi0H7zbkuA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714179031; c=relaxed/simple;
-	bh=P96LIyKxtIrsWgmiG6zRSg5cbZDa2HTn5zzVCWMvjOI=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=aNXDxlWLQZJeP3v8NVVOo9LU+wJ74Xpn5FyqvMGvBPo4QqOGeU1OT8m31FAvjFuyNti9klE9SKV30GbvfmnYwC4Ftvdd5IskhTKZKsBNfDwsBjmj1YXCdBLpZcRQWzrb3ilt8EH2qy6F9+SUSYOHXgIDnFAC72u4CvO32YaAHWQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PUQ4soM7; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 777F9C2BD11;
-	Sat, 27 Apr 2024 00:50:30 +0000 (UTC)
+	s=arc-20240116; t=1714181762; c=relaxed/simple;
+	bh=FgfvRvIIdKg5M8VTG3GygY/t5MgGGpquPipWcwa1BbY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=t+48JnWoMarxgQuLl/RV6ZF38S7Zg8irtvAngLh92yFJNCXxhTT9xBDnZaa5PlhdXF0hCWzuyGdoChS3/zu3kw8guOxxsHc69msP+LMQ8CUifzdRdoB1aiPvliUUK+ptcPjp5jHpLWxHU/+cBy9cLixF2q8W05h/8rJXOZDnLGY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=crPCgKfT; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C975BC113CD;
+	Sat, 27 Apr 2024 01:36:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714179030;
-	bh=P96LIyKxtIrsWgmiG6zRSg5cbZDa2HTn5zzVCWMvjOI=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=PUQ4soM7o1C1hzZ1XWJ8q2VVyNErFrVQ/cqyrrNkViI7Sg/dGqKmIlI/50iPu+hnJ
-	 ffX/igqSOh1ZmeKgwU3ma/yabPwaELcBGSkww7tJMfIGOAAO8D187WVFxPi22YSWEU
-	 0TYBfxHXaW4hfB3cWjINY9lFWeVD5BjMfNY/nx3TQAgfQIuN/RSHwv/a85JgOuS321
-	 2UMnq+L1eZ6er6Bh2hY7awXJOmRjRjRJLg/A25R2CcfnPIlvKIDsCpjdGp5JCXGvuh
-	 wiuVwhgGOg2brvZX2YSPurhVR01eaEDSAQTnSsbszT7gyQkl82y7EA2djtni5+s7g/
-	 vA+HY/Nk5pj7Q==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 67666C32761;
-	Sat, 27 Apr 2024 00:50:30 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=k20201202; t=1714181762;
+	bh=FgfvRvIIdKg5M8VTG3GygY/t5MgGGpquPipWcwa1BbY=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=crPCgKfTrZI69WjN8uB5eiXzpb46kN+36v9HtC11O3fsfXHLHCxx4LumYSIVXGZpT
+	 GFChac4esj36x6sTMDjqAysyEJsaPuTEWkvtMccXpAwwU2Yh4ruGaPZGnI6HxnewQ/
+	 4dG4NxFuN2z88eMrNpP8EYtaBiUiWizerlJcCqv18uLVpMpU/8g16sknhT9VI/24Ak
+	 Bn7vtTKjfPi8C9KApCmf86JnFIDRAamOCKfy9dkblIZz+ZUA0//6+pxHIh2L3fBbVm
+	 em9eaZqR8Re8l806rzxaBfTFvzK9UVPHTY9YCJgEp2XqpNaxm6v6aom0dn0Dh31pAu
+	 vg7ungBkC2sTg==
+Date: Fri, 26 Apr 2024 22:35:59 -0300
+From: Arnaldo Carvalho de Melo <acme@kernel.org>
+To: Ian Rogers <irogers@google.com>
+Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
+	Namhyung Kim <namhyung@kernel.org>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Adrian Hunter <adrian.hunter@intel.com>,
+	Kan Liang <kan.liang@linux.intel.com>,
+	James Clark <james.clark@arm.com>, linux-perf-users@vger.kernel.org,
+	linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+	Atish Patra <atishp@rivosinc.com>, linux-riscv@lists.infradead.org,
+	Beeman Strong <beeman@rivosinc.com>
+Subject: Re: [PATCH v2 11/16] perf parse-events: Improve error message for
+ bad numbers
+Message-ID: <ZixWfypP4FtKgv0F@x1>
+References: <20240416061533.921723-1-irogers@google.com>
+ <20240416061533.921723-12-irogers@google.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: pull-request: bpf 2024-04-26
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <171417903042.26055.11087226285223760685.git-patchwork-notify@kernel.org>
-Date: Sat, 27 Apr 2024 00:50:30 +0000
-References: <20240426224248.26197-1-daniel@iogearbox.net>
-In-Reply-To: <20240426224248.26197-1-daniel@iogearbox.net>
-To: Daniel Borkmann <daniel@iogearbox.net>
-Cc: davem@davemloft.net, kuba@kernel.org, pabeni@redhat.com,
- edumazet@google.com, ast@kernel.org, andrii@kernel.org, martin.lau@linux.dev,
- netdev@vger.kernel.org, bpf@vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240416061533.921723-12-irogers@google.com>
 
-Hello:
-
-This pull request was applied to netdev/net.git (main)
-by Jakub Kicinski <kuba@kernel.org>:
-
-On Sat, 27 Apr 2024 00:42:48 +0200 you wrote:
-> Hi David, hi Jakub, hi Paolo, hi Eric,
+On Mon, Apr 15, 2024 at 11:15:27PM -0700, Ian Rogers wrote:
+> Use the error handler from the parse_state to give a more informative
+> error message.
 > 
-> The following pull-request contains BPF updates for your *net* tree.
+> Before:
+> ```
+> $ perf stat -e 'cycles/period=99999999999999999999/' true
+> event syntax error: 'cycles/period=99999999999999999999/'
+>                                   \___ parser error
+> Run 'perf list' for a list of valid events
 > 
-> We've added 12 non-merge commits during the last 22 day(s) which contain
-> a total of 14 files changed, 168 insertions(+), 72 deletions(-).
+>  Usage: perf stat [<options>] [<command>]
 > 
-> [...]
+>     -e, --event <event>   event selector. use 'perf list' to list available events
+> ```
+> 
+> After:
+> ```
+> $ perf stat -e 'cycles/period=99999999999999999999/' true
+> event syntax error: 'cycles/period=99999999999999999999/'
+>                                   \___ parser error
+> 
 
-Here is the summary with links:
-  - pull-request: bpf 2024-04-26
-    https://git.kernel.org/netdev/net/c/b2ff42c6d3ab
+This ended up in perf-tools-next, will have to look at what this problem
+is:
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+   9    11.46 amazonlinux:2                 : FAIL gcc version 7.3.1 20180712 (Red Hat 7.3.1-17) (GCC) 
+     yy_size_t parse_events_get_leng (yyscan_t yyscanner );
+               ^~~~~~~~~~~~~~~~~~~~~
+    util/parse-events.l:22:5: note: previous declaration of 'parse_events_get_leng' was here
+     int parse_events_get_leng(yyscan_t yyscanner);
+         ^~~~~~~~~~~~~~~~~~~~~
+     yy_size_t parse_events_get_leng  (yyscan_t yyscanner)
+               ^~~~~~~~~~~~~~~~~~~~~
+    util/parse-events.l:22:5: note: previous declaration of 'parse_events_get_leng' was here
+     int parse_events_get_leng(yyscan_t yyscanner);
+         ^~~~~~~~~~~~~~~~~~~~~
+    make[3]: *** [util] Error 2
 
 
+Unsure if this will appear on the radar on other distros, maybe this is
+just something that pops up with older distros...
+
+Ran out of time today...
+
+- Arnaldo
 
