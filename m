@@ -1,332 +1,344 @@
-Return-Path: <bpf+bounces-28032-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-28033-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6FAED8B48DC
-	for <lists+bpf@lfdr.de>; Sun, 28 Apr 2024 00:52:11 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9D3778B48E8
+	for <lists+bpf@lfdr.de>; Sun, 28 Apr 2024 01:13:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 59266B21517
-	for <lists+bpf@lfdr.de>; Sat, 27 Apr 2024 22:52:08 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 075632821A4
+	for <lists+bpf@lfdr.de>; Sat, 27 Apr 2024 23:13:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 72BA214264A;
-	Sat, 27 Apr 2024 22:52:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="H1GZZ15W";
-	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="Unbs5fen"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 27C2C148853;
+	Sat, 27 Apr 2024 23:13:36 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
+Received: from mail114-241.sinamail.sina.com.cn (mail114-241.sinamail.sina.com.cn [218.30.114.241])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 00E7650A73
-	for <bpf@vger.kernel.org>; Sat, 27 Apr 2024 22:51:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.177.32
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714258322; cv=fail; b=DK7PkU9C+J3ntDIzzTdDYSM7eHQGhdJ/GYCxc4l9qYJTGDv6caNqaj3P+7iFO5evA2YpciYGbMrkFURqDK1LnwFW+Sxyr0X41iaHlXxZG/dVspsXeGxUBD+hL6k6nlfpVKr5RjpC0iPlvV0z/C8RXrAQ4+tHlvrXMNqfot6E2a0=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714258322; c=relaxed/simple;
-	bh=bvjbjpISXOxvnXGfR2AaaJsG2llv45xw9g04VJOE6hY=;
-	h=References:From:To:Cc:Subject:In-reply-to:Date:Message-ID:
-	 Content-Type:MIME-Version; b=MLkm7r1PLWD7D4mqMKy8X+DzhnDlbaNPVaj1UTXB8aBeFDKUh93uAmc05I7ULry8m/3cz48pMM7BGLz05ljkGyKKF0hAxCEVilfAolumGK1CJ59++5zuQ7lJSMQ0WvPqySEfuVxaJlw3C2/q/aCOGFeIEwZktrutYhUQQyTsmvI=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=H1GZZ15W; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=Unbs5fen; arc=fail smtp.client-ip=205.220.177.32
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=oracle.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
-Received: from pps.filterd (m0246631.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 43RMmkdc002856;
-	Sat, 27 Apr 2024 22:51:52 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=references : from :
- to : cc : subject : in-reply-to : date : message-id : content-type :
- content-transfer-encoding : mime-version; s=corp-2023-11-20;
- bh=BCTXbIcy+cAGZuXhwvvwfj9jMOebQX66oY/wvDPKPnU=;
- b=H1GZZ15W5l7LezxYvRdl2kLNFbYTDNlPlDGDJ6b3W6LX2eqeRgQZrMSa9j0u8oUX5/HI
- J4W56ivF4lAuTc762I2OIapXsVDOehbS1q3SKM8D6hLXP4x+PzAAEzU3rGNptmsCbzVh
- yN6F8sf0AFVgpaXJj6B6OBQ/35AvKWjbzF9hT4tWUMqMyCWzM1JpR9ulJnH49N4F5CUH
- s5j+6eVp9M0YJkIKWzRKZkDnuyXZygISndVV/bx2zdK0nvDuTl9UAJt3f89XQwmeDg6C
- 3HhiK9O8WoG0siRdj8YCIg//bmfLjT3AmtgK6A0138vbE7AFTr/J3neHlXxEfnTS0eua /Q== 
-Received: from phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta03.appoci.oracle.com [138.1.37.129])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3xrr548mqa-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Sat, 27 Apr 2024 22:51:52 +0000
-Received: from pps.filterd (phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-	by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 43RLiVb8008552;
-	Sat, 27 Apr 2024 22:51:51 GMT
-Received: from nam11-co1-obe.outbound.protection.outlook.com (mail-co1nam11lp2169.outbound.protection.outlook.com [104.47.56.169])
-	by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3xrqt4jxxd-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Sat, 27 Apr 2024 22:51:51 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=eHxHY7t2p/38nT5aynnl2GQ1srIOC4LhqLXjEYHL51+3CIIiTQ7wMt9J9DrjeZ1um8YPgV4u2s6lGnlS3zzcXZwYLUCa8rCGRQSGx1JLLIcfnjfXP0RmoxngcVWI56Vr1OgPXW/wGRwzgmJG9p97cdCK3HD7K6mGPsWh48fuuCW5n8sGNFgcjdLX4KkvhnhimKDmhJAN39IdmEk46S0Mvb2XM96okUISOz5qB1GzeUl5y2vrBK/NBk6lf7IT0Ed+nE1W2slF77Ek5CxpRq1dR1Zr9l8KiXD0WPdX8TNm9JY76hy4erk5ZQuFRtb4V/kq+LdKbi4iXxZ8HMBauU+R/w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=BCTXbIcy+cAGZuXhwvvwfj9jMOebQX66oY/wvDPKPnU=;
- b=SpkBKAb4P69oFzuLbdWs+/QqwU1C6+XrkDLqhjh24JBDydmP975PzBoS9YxV5jkEyoH1o06MqLkJXZC34JNIgfB9B+tD6Kdf0zfPZKMYvqI/Qcm6TzWnd/Wo7YrcqATpcog3sXPGWjNnqZ92Jmq7ihZrmouEaLEnzBdAnUAiXxtPjjMNal/bcR3q2qLFPAah6y7XX+rgFwFa2xYe1tXMJ/xFlqf1ixsQECVPyOZD4MszDsdiXrhAvVAFipp0xnEHQgmJx5LBWKNsjEoPtpxuDMCv/1UM5Lq6r9EN2haM9ATaug1d8e27aVBB/QIlt1znT5cfTtE+Tu7S2V7BOK7xEw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=BCTXbIcy+cAGZuXhwvvwfj9jMOebQX66oY/wvDPKPnU=;
- b=Unbs5fen3/IzAfAcUlmfojVvSiL6HKHOvnHmNAyhR+1B2Kw/OJFJ4pEhNV68VM+CM71XgbhJLexwDwLipHxN3SceOOempGYCp9sCVHoyRor4YiIDZfqBhJCd+uWR4PJxVbXgNbnrJyt2N5sZ+oOs+AQSMP7CVX4Dgch2jizMPMk=
-Received: from MN2PR10MB4382.namprd10.prod.outlook.com (2603:10b6:208:1d7::13)
- by DM3PR10MB7948.namprd10.prod.outlook.com (2603:10b6:8:1af::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.46; Sat, 27 Apr
- 2024 22:51:49 +0000
-Received: from MN2PR10MB4382.namprd10.prod.outlook.com
- ([fe80::1e11:7917:d2c:e44c]) by MN2PR10MB4382.namprd10.prod.outlook.com
- ([fe80::1e11:7917:d2c:e44c%4]) with mapi id 15.20.7519.030; Sat, 27 Apr 2024
- 22:51:49 +0000
-References: <20240424224053.471771-1-cupertino.miranda@oracle.com>
- <20240424224053.471771-3-cupertino.miranda@oracle.com>
- <CAEf4BzYuHv7QnSAFVX0JH2YQd8xAR5ZKzWxEY=8yongH9kepng@mail.gmail.com>
- <87edasmnlr.fsf@oracle.com>
- <CAEf4BzazPWOgXFco=PJnGEAaJgjr2MG12=3Sr3=9gMckwTSDLg@mail.gmail.com>
- <CAADnVQ+mSfUbtgk9pD+j6b3XLZJ1w7mGzbh2+t40Q81jB==wLg@mail.gmail.com>
-User-agent: mu4e 1.4.15; emacs 28.1
-From: Cupertino Miranda <cupertino.miranda@oracle.com>
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>, bpf <bpf@vger.kernel.org>,
-        Yonghong Song <yonghong.song@linux.dev>,
-        David Faust
- <david.faust@oracle.com>,
-        Jose Marchesi <jose.marchesi@oracle.com>,
-        Elena
- Zannoni <elena.zannoni@oracle.com>
-Subject: Re: [PATCH bpf-next v3 2/6] bpf/verifier: refactor checks for range
- computation
-In-reply-to: <CAADnVQ+mSfUbtgk9pD+j6b3XLZJ1w7mGzbh2+t40Q81jB==wLg@mail.gmail.com>
-Date: Sat, 27 Apr 2024 23:51:44 +0100
-Message-ID: <87a5lemnb3.fsf@oracle.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-ClientProxiedBy: LO4P123CA0259.GBRP123.PROD.OUTLOOK.COM
- (2603:10a6:600:194::12) To MN2PR10MB4382.namprd10.prod.outlook.com
- (2603:10b6:208:1d7::13)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6FFA94E1BE
+	for <bpf@vger.kernel.org>; Sat, 27 Apr 2024 23:13:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=218.30.114.241
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1714259615; cv=none; b=aLzEQ+ovpxDtWfrCqA+n8KjrjeYpBpfqYRTiUJqND15kI3TTnhwrU1ZpCDu3/UoReW6TWeqpI9rBfyiV0907wFTTc12nplbgEwBIpYr0iboyPLvxMNSH6yX2KLGbfbGnqWluNqjHFoN5okeo1mwSeg+LXe3FMMO9Dw1qicWY3Yw=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1714259615; c=relaxed/simple;
+	bh=y+QRLam02NW1uPP1WZwE61r/KLw1npBwsoCk+hSYxQM=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=q80pGyaVgAwt1nwOIjNXZq7j0+UwKfncV2xzqvEgHAfc6bW7h6FjFWWcVNgUqZaqTR+IZl8OZmmMNxwiBNgLoz4HuO+oQ/ms2qG72UimTgHz7T08wuadBQcgIuLyNVvDfQq57aFDSxdr4gLVd/iDQuE+QzVb7QNCWAAqVC/s5Lo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sina.com; spf=pass smtp.mailfrom=sina.com; arc=none smtp.client-ip=218.30.114.241
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sina.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sina.com
+X-SMAIL-HELO: localhost.localdomain
+Received: from unknown (HELO localhost.localdomain)([116.24.9.116])
+	by sina.com (172.16.235.24) with ESMTP
+	id 662D868D00003731; Sat, 28 Apr 2024 07:13:19 +0800 (CST)
+X-Sender: hdanton@sina.com
+X-Auth-ID: hdanton@sina.com
+Authentication-Results: sina.com;
+	 spf=none smtp.mailfrom=hdanton@sina.com;
+	 dkim=none header.i=none;
+	 dmarc=none action=none header.from=hdanton@sina.com
+X-SMAIL-MID: 72443545089003
+X-SMAIL-UIID: 93DD673A60A64942830F4ED5CEF4F06C-20240428-071319-1
+From: Hillf Danton <hdanton@sina.com>
+To: syzbot <syzbot+83e7f982ca045ab4405c@syzkaller.appspotmail.com>
+Cc: andrii@kernel.org,
+	bpf@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Linus Torvalds <torvalds@linux-foundation.org>,
+	syzkaller-bugs@googlegroups.com
+Subject: Re: [syzbot] [bpf?] [trace?] possible deadlock in force_sig_info_to_task
+Date: Sun, 28 Apr 2024 07:13:21 +0800
+Message-Id: <20240427231321.3978-1-hdanton@sina.com>
+In-Reply-To: <0000000000009dfa6d0617197994@google.com>
+References: 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MN2PR10MB4382:EE_|DM3PR10MB7948:EE_
-X-MS-Office365-Filtering-Correlation-Id: f4d2b723-3075-4b35-fae6-08dc670c9f62
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 
-	=?utf-8?B?Q2o1cHJ5anBqYWFRdXltdi9qVkZTL1hkd0hvVXYwbWdrcW13ajcreE8xR3FQ?=
- =?utf-8?B?K2QxUTVmallkYzAxRkRNV3lvaVV4TWYzbUlJREtlYlgxZEpLMW41MlIrVHEr?=
- =?utf-8?B?U2FEMDZBSzIxUG5VS1dvNDQwbVp3RjFjbGJ4a21HYzhLMlRSYzNSVHNxd0xL?=
- =?utf-8?B?VE1jVTB6aUNQUnliejZMRldYcktadDNBcjI4aHBCQTkrdzdCVndVVW90Sm5T?=
- =?utf-8?B?OUo2THROK05kRzBFNTlIUCsvY0NuSXNOWmw1eU50dVlRamlaNVgyZXNwWVp4?=
- =?utf-8?B?cnF0djJRRkRyREJSdlcrcXRHdlN4MDFZTUl4ZHFUZThCeGxDaVVlcGkySFox?=
- =?utf-8?B?OWVSMmFuRW5pby8zRng3QXhrN21kNXVBZzg4WTU1Y0xZeUxmbjgzZ085d2FC?=
- =?utf-8?B?VWVIdWM5S0JIZW9tb0VOV0Q4YUdlczhjYmZLL3E5SnFHWU9SNEhiM3pwc0ts?=
- =?utf-8?B?WGJDTnRyMW0zQldSOFR0NXFDbVBNMW5TbTBiZm1JbHA5WTFGZDhsRVZrQzdT?=
- =?utf-8?B?dnVhOThPN1NPQ0FJOUtPUk1lV01aWUxJRVF5dU5wWTZqbElpNU44Z2dpSHlZ?=
- =?utf-8?B?YTFSdzF5ODJrUUZ6NXV5ZktGcGJNOGxoeFgzLzBPcTc4K3EyWFcvOG1DZHNS?=
- =?utf-8?B?ZzJuZkJVL0M4bjI5ZVBIeU5pUVVOcnEwbVBhVGNmZFJJK1VhdFZsU0E1akU5?=
- =?utf-8?B?MXptbkUrWkdCYmtsM0U2MGlyb1BKUHE2UE9tTUNoblBrZEJOcEhhNXBoMnJu?=
- =?utf-8?B?WU5TRjRrdVZwbmpYaWEvVU01SHF0Y2duS3hHUFk5UXB5dlFEVDZRUDNodEMw?=
- =?utf-8?B?Q2I4eEorMFR0UVFEc0xEbGNUMmNYR2tjMDhXc29NQTROZWgyWVI5MHEzL1J3?=
- =?utf-8?B?QisyNk90ZUNSZDc5TFJpdzZIbHJSMVpzWXBTRjNIUFRudVJ1Slg4ZW5ueG81?=
- =?utf-8?B?TlZwZW1tZXZZM05CRDNra1VxZlVSQWpQakJwVlJac0orZDZFSUdwT0grR3J6?=
- =?utf-8?B?WC8xMVp0V2E1aW0rd3MrdURaQVR3TGw1d20xZXNJckpsQjVjS0NHN1B2dzZI?=
- =?utf-8?B?Qzc0dmtqamRsQVZoN01SbUdNaGNpSktzd05OeG85eERBelVka2ZQYVpCcnVI?=
- =?utf-8?B?M2tXUnNUSjFnL0k5cWNWSkpFMzZ3enlhVEV3VHk2RGtwemtkZmFvY2U3VVlY?=
- =?utf-8?B?TzBscTlJMVdGVVFTSjR5M04ycGdsckRpUjgvOXpvclF3YjY5V2RXQXpCR0Va?=
- =?utf-8?B?NjM3Z3FYRG13V1JsZElLZjJSOTVjOFhZSUd6NXFlaDcrQUVjVkpOYTdVZFkw?=
- =?utf-8?B?SkFCb00yV0tIZlMvVG9NSkgvN25DRnhQVWF0TEZZa2ZFR29pWWd3ZlQzODY2?=
- =?utf-8?B?OUtlSjl4am9JdDlHQkdZNlZLUlc0dzYzTVBUNXBOOGtQNGszRDZQdnNrV2p6?=
- =?utf-8?B?OVZMUC9scFBaREExNFM3ZGZGL3FoSm9DWTZaNjhhbVUxQ1N4Y0MwcmpsTXFQ?=
- =?utf-8?B?RUUwU0dFTmVCckNxQytrV1dkcldqU25WOS9NcWFNVHZBMnJreG1JNWxRczZO?=
- =?utf-8?B?NFVPWDNvWEFwYnErVXFtSUo1OVFtakNnWUF1RGRSaTBYRGJlTGxJQVpraXFp?=
- =?utf-8?B?elpNbG9GWTFuYTJjcUQzeWNlc0FPK0xSMElEdSt1Y3h3N3plU0ZMcGpTQTJn?=
- =?utf-8?B?RzNEYWNzcjMrQ0diMnpoNFRjNE1VSWlXc05obm1td2dhb1pycGxYY1FnPT0=?=
-X-Forefront-Antispam-Report: 
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR10MB4382.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(366007)(1800799015);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: 
-	=?utf-8?B?UXZkclBsMnFMTFY2QXl1NDh0WG5IMkFMZVhQQVY1UittdGlVdGRIVTRZR2NQ?=
- =?utf-8?B?NWZSbG83dmZ5cnZaRmdETDFuNkFjWUU0U0huZWUyZzkxREdxM3c2SW5DbW9L?=
- =?utf-8?B?N0ZmZmxNMDN2dmJsd2lxNEs0Z3VLMmlvMSs0NXVlL0ViTkdMNTZEaHhUR1Ey?=
- =?utf-8?B?WC8rNXhtT09iNXE5WmpkSnU0TjMxU2ZZQVlFWllpd0twcXc2QnU5eUtvNXVh?=
- =?utf-8?B?R0RDcHhoNXNGbnFJWjBHak5td2FpY3RJRUhsa2ROQVEyVXQ4ZWlBZjc4OFdI?=
- =?utf-8?B?Nm1PZkx2TEIrdk52VytzSGtHdUcxREp3Q1dhL0dFZjdIekgvdHNVZytZUHlT?=
- =?utf-8?B?d1dKWW1JQmVsK3g4cStkZ0k5aXhPVEdwRWlqZTBsdGF2TGE4YmNvT0RQNWc5?=
- =?utf-8?B?bWdkMVF4cFBMTjgwdW1XdkJ2TTFsNjFJYm9mNW4zcHlRY0dlenlpZHFBTStU?=
- =?utf-8?B?VXc0Y2JBeWhPcU8vL3hCaU95eEpweWVTNDYxU0paT2dERHRraXN0bktCQlA2?=
- =?utf-8?B?WmpDTHlaQUJyRmtLVXZMdDMxQ2xRakxiM0M0UnVoeGNaQVkxMy9obzNmUS9V?=
- =?utf-8?B?bWRPSGoydjNJTkJIQUU4QW9wcVpxUkNoaTI4VGdQeksvak5jaDQ0NVJvTi9l?=
- =?utf-8?B?Sjd2a056TTFHbXlTSVVUdjNSZG90KzM3Mm1WS3dYZHhHeExRNTJtVmxHSDFl?=
- =?utf-8?B?Wk5Tb3VNOU9GRHRjMCtCVHc3ekJFMWZmalgzeVJNSWFFMFZoa29Ick9TWTJT?=
- =?utf-8?B?ellST0F5aW9nWWxCbFVFRGo5VUcyTWdnazJjMkI3K1U4OVJSVk55dlhVOVg3?=
- =?utf-8?B?VTQ0M1ZYdU83NDV0bXcwZkFaRzVTaldEWFEyWmVYbmVWRHdWemRla1M0djJG?=
- =?utf-8?B?bkx2bFVsZ3U5YnpVUE1wZjdZb1FLaTAvbGRmU2RYL0hUWEdnTXpWOGFhVW1p?=
- =?utf-8?B?YVBjRWpBdUd5citYQmh1azR1SEE2akxXUlRaUmN1WWI2ZUlNYms4UWZnZTFX?=
- =?utf-8?B?M0lnL21TMmo4WFJNUUJRemk4NkRsaDNwTEZLVlg0M01UcGtidEdRdFlhZlpI?=
- =?utf-8?B?bmRsSjd0S1hzVTIxS2xadzkyS1RvVy9iaDgwS1B0aWd2UkZtWWF6TmxSQjR6?=
- =?utf-8?B?QW9jMjZoT0doN0xuYkZzWWlUeEJsZTNJNnNtL3dlaTk2RmZkdklkcS82ZXA2?=
- =?utf-8?B?dm9UQzA0bXV3S01VWEgybnBzZzQ4Rkl1d0tZYlo0SUFYeHZpM0hNRmFxaU1a?=
- =?utf-8?B?VThqaFBFeTRBVEJKdUZGdnRPSnRMV2MvaHd4WGdaQjFkTnowUWJvVGRQanZZ?=
- =?utf-8?B?Q0R4ck16emFjK21YUnNoRzJyVVplRVNTT21FNStkZ2hEVHlMSlFvb01MQ1p1?=
- =?utf-8?B?Q3ZCbTBrWXNjemhiYmRWaDhxYSs1SW5HRnFtekNKcDdHN1dOVTJab2p6QTk1?=
- =?utf-8?B?WlNwUjk2N2RJTzV1T1JhTFVscldaU0lENzJMMDQ4TnlvOEQyb3l2MVdCM0RO?=
- =?utf-8?B?ZkVYYUo1NUs4ZDQwSTIrVFNYSVViSVhWSDhNZ202VURZVEkxa0tja1JUWWZ0?=
- =?utf-8?B?T2FXVDBnRWZndDFDWG8xOUgxTDlMUkJFckdhQ0JRbk9xRnJzdVlUNStmSFE1?=
- =?utf-8?B?QUVOZlZqNVRvU0FGc3ZKS0tPaVMxdDIyRUJuZkhOQW95UTMrY3dLczVyUWxV?=
- =?utf-8?B?akZUZWVDWDdEemxrRXhKN0tFQyt0bGs3aVp2czYvNHRWRFBlKzRpaDhzUjc2?=
- =?utf-8?B?Z0RiM2Q1TkZSOHZsUnp6Zlk2S3MzL3prZEZkd1JxM1ZmeHhaMVZPaTlFdkpU?=
- =?utf-8?B?U2RIUWt4UE9SdFJaOWEzNjBLOTBKQ2pRcjFoTWZkVTNpakJiR3IrRTdkeG5n?=
- =?utf-8?B?UHJKQnowSnNaM2lmamk5Y2dwZjRtMGhVKzVIR0J1b3pNTU14ZDd4eVVJMTRx?=
- =?utf-8?B?RVIwaVZzYTNnVjZrWEV0NlNydEpmcDhkZmlZdXdwUWord1FQanJBU1lVckFE?=
- =?utf-8?B?c1A5dExObUM1N3psTU9RNEY0S0dRV3hod0tvRm1RLzFxYm1mZVdzLzQ4YnZj?=
- =?utf-8?B?dFE4NUZvdTlDOUlXeTBWU2RUMm9TNFZ1dVVYeWVlWVJyNDhBaTJLcDlLQXV2?=
- =?utf-8?B?WWVOMXJQL3MweTNjQTRiTXdMWUxPZXUvTkVRUURoK1pRVVRhMTlrcm5KaFVD?=
- =?utf-8?Q?UaCvor2hYDaLom1naKgU4Z8=3D?=
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: 
-	BGFvVU07lDoA+/uIAJSIdzAgpP942A3LX6ea7+/GBOwbP6w1nr57hcRMQQjSHSRSBHisk5LJMZrCOYR/y959sJ7n1/hKYWlX9V4hTWdB0M+U+yv/KJM3QKCaMODZ+2TMSTvLvcsa/saJ25Ke05l/kcx/5f/8jiRcWOnjdAuko9ciF12akXB+UR5A8ql/BwKLXd0yAe48xzl5Y7SG9Ocj2X6PaxvF0Ilm+zbl75Qn9JsyMrYs5uMJDqyFn80T0k3h3SX2PSOe+8qiFBnX48LEwGt/CcE3JmnCknqTirqOCjvGSoNUyPZSyd9sqMn7xMInJSG8Em62lKjzL/P2/9le6uhMD1Tlro5G4etjhdjmMb4zbY1p3PGGFcUkvlfogA/m4/qf5nbptN8lQ7YXq1Ekr42TD9lYD/avD2SlD6mRNu6OBLlcojZ9nizmLeM7j8si5asiy8hqrP1u54R23igXG8f4vipX3c9zClBBA+I/mXd0v2x+dn9Zv1qvwuD9ftPbIRZoqerxEKGIkCh+iHAW8ouOM/vDO325NjiNREJ5AbUxc72h95Bso/QL/pKvRCIC0Sv/UXUXvtdWLWczzxNehErfofl7OA+jWyG1ztTaLP4=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: f4d2b723-3075-4b35-fae6-08dc670c9f62
-X-MS-Exchange-CrossTenant-AuthSource: MN2PR10MB4382.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Apr 2024 22:51:49.4336
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: iJq0ClY2w2jU7tz1V6j5mBRlPfGeOz1WXQzbl8HopBMM56p1j3SnhjSqQO2zFB2XGUeaxtxHyE7/XV/AbH3ZKCPWXloEQ4GQFRSN+8RKp+c=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM3PR10MB7948
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.650,FMLib:17.11.176.26
- definitions=2024-04-27_22,2024-04-26_02,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 malwarescore=0
- mlxlogscore=999 bulkscore=0 suspectscore=0 adultscore=0 phishscore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2404010000 definitions=main-2404270170
-X-Proofpoint-ORIG-GUID: DXLh4vIXQUWum7uA71dSFjah-U0AJvBn
-X-Proofpoint-GUID: DXLh4vIXQUWum7uA71dSFjah-U0AJvBn
+Content-Transfer-Encoding: 8bit
 
+On Sat, 27 Apr 2024 13:00:42 -0700
+> syzbot has found a reproducer for the following issue on:
+> 
+> HEAD commit:    5eb4573ea63d Merge tag 'soc-fixes-6.9-2' of git://git.kern..
+> git tree:       upstream
+> console+strace: https://syzkaller.appspot.com/x/log.txt?x=17b2b240980000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=3d46aa9d7a44f40d
+> dashboard link: https://syzkaller.appspot.com/bug?extid=83e7f982ca045ab4405c
+> compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=120f79ef180000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=13a1cd27180000
+> 
+> Downloadable assets:
+> disk image: https://storage.googleapis.com/syzbot-assets/d647177a878d/disk-5eb4573e.raw.xz
+> vmlinux: https://storage.googleapis.com/syzbot-assets/977f32ca169c/vmlinux-5eb4573e.xz
+> kernel image: https://storage.googleapis.com/syzbot-assets/67f3b92c1012/bzImage-5eb4573e.xz
+> 
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+83e7f982ca045ab4405c@syzkaller.appspotmail.com
+> 
+> ======================================================
+> WARNING: possible circular locking dependency detected
+> 6.9.0-rc5-syzkaller-00296-g5eb4573ea63d #0 Not tainted
+> ------------------------------------------------------
+> syz-executor324/5151 is trying to acquire lock:
+> ffff88802a6c8018 (&sighand->siglock){....}-{2:2}, at: force_sig_info_to_task+0x68/0x580 kernel/signal.c:1334
+> 
+> but task is already holding lock:
+> ffff8880b943e658 (&rq->__lock){-.-.}-{2:2}, at: raw_spin_rq_lock_nested+0x2a/0x140 kernel/sched/core.c:559
+> 
+> which lock already depends on the new lock.
+> 
+> 
+> the existing dependency chain (in reverse order) is:
+> 
+> -> #2 (&rq->__lock){-.-.}-{2:2}:
+>        lock_acquire+0x1ed/0x550 kernel/locking/lockdep.c:5754
+>        _raw_spin_lock_nested+0x31/0x40 kernel/locking/spinlock.c:378
+>        raw_spin_rq_lock_nested+0x2a/0x140 kernel/sched/core.c:559
+>        raw_spin_rq_lock kernel/sched/sched.h:1387 [inline]
+>        rq_lock kernel/sched/sched.h:1701 [inline]
+>        task_fork_fair+0x61/0x1e0 kernel/sched/fair.c:12635
+>        sched_cgroup_fork+0x37c/0x410 kernel/sched/core.c:4845
+>        copy_process+0x2217/0x3df0 kernel/fork.c:2499
+>        kernel_clone+0x223/0x870 kernel/fork.c:2797
+>        user_mode_thread+0x132/0x1a0 kernel/fork.c:2875
+>        rest_init+0x23/0x300 init/main.c:704
+>        start_kernel+0x47a/0x500 init/main.c:1081
+>        x86_64_start_reservations+0x2a/0x30 arch/x86/kernel/head64.c:507
+>        x86_64_start_kernel+0x99/0xa0 arch/x86/kernel/head64.c:488
+>        common_startup_64+0x13e/0x147
+> 
+> -> #1 (&p->pi_lock){-.-.}-{2:2}:
+>        lock_acquire+0x1ed/0x550 kernel/locking/lockdep.c:5754
+>        __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:110 [inline]
+>        _raw_spin_lock_irqsave+0xd5/0x120 kernel/locking/spinlock.c:162
+>        class_raw_spinlock_irqsave_constructor include/linux/spinlock.h:553 [inline]
+>        try_to_wake_up+0xb0/0x1470 kernel/sched/core.c:4262
+>        signal_wake_up_state+0xb4/0x120 kernel/signal.c:773
+>        signal_wake_up include/linux/sched/signal.h:448 [inline]
+>        complete_signal+0x94a/0xcf0 kernel/signal.c:1065
+>        __send_signal_locked+0xb1b/0xdc0 kernel/signal.c:1185
+>        do_notify_parent+0xd96/0x10a0 kernel/signal.c:2143
+>        exit_notify kernel/exit.c:757 [inline]
+>        do_exit+0x1811/0x27e0 kernel/exit.c:898
+>        do_group_exit+0x207/0x2c0 kernel/exit.c:1027
+>        __do_sys_exit_group kernel/exit.c:1038 [inline]
+>        __se_sys_exit_group kernel/exit.c:1036 [inline]
+>        __x64_sys_exit_group+0x3f/0x40 kernel/exit.c:1036
+>        do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+>        do_syscall_64+0xf5/0x240 arch/x86/entry/common.c:83
+>        entry_SYSCALL_64_after_hwframe+0x77/0x7f
+> 
+> -> #0 (&sighand->siglock){....}-{2:2}:
+>        check_prev_add kernel/locking/lockdep.c:3134 [inline]
+>        check_prevs_add kernel/locking/lockdep.c:3253 [inline]
+>        validate_chain+0x18cb/0x58e0 kernel/locking/lockdep.c:3869
+>        __lock_acquire+0x1346/0x1fd0 kernel/locking/lockdep.c:5137
+>        lock_acquire+0x1ed/0x550 kernel/locking/lockdep.c:5754
+>        __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:110 [inline]
+>        _raw_spin_lock_irqsave+0xd5/0x120 kernel/locking/spinlock.c:162
+>        force_sig_info_to_task+0x68/0x580 kernel/signal.c:1334
+>        force_sig_fault_to_task kernel/signal.c:1733 [inline]
+>        force_sig_fault+0x12c/0x1d0 kernel/signal.c:1738
+>        __bad_area_nosemaphore+0x127/0x780 arch/x86/mm/fault.c:814
+>        handle_page_fault arch/x86/mm/fault.c:1505 [inline]
 
-Alexei Starovoitov writes:
+Given page fault with runqueue locked, bpf makes trouble instead of
+helping anything in this case.
 
-> On Fri, Apr 26, 2024 at 9:12=E2=80=AFAM Andrii Nakryiko
-> <andrii.nakryiko@gmail.com> wrote:
->>
->> On Fri, Apr 26, 2024 at 3:20=E2=80=AFAM Cupertino Miranda
->> <cupertino.miranda@oracle.com> wrote:
->> >
->> >
->> > Andrii Nakryiko writes:
->> >
->> > > On Wed, Apr 24, 2024 at 3:41=E2=80=AFPM Cupertino Miranda
->> > > <cupertino.miranda@oracle.com> wrote:
->> > >>
->> > >> Split range computation checks in its own function, isolating pessi=
-mitic
->> > >> range set for dst_reg and failing return to a single point.
->> > >>
->> > >> Signed-off-by: Cupertino Miranda <cupertino.miranda@oracle.com>
->> > >> Cc: Yonghong Song <yonghong.song@linux.dev>
->> > >> Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>
->> > >> Cc: David Faust <david.faust@oracle.com>
->> > >> Cc: Jose Marchesi <jose.marchesi@oracle.com>
->> > >> Cc: Elena Zannoni <elena.zannoni@oracle.com>
->> > >> ---
->> > >>  kernel/bpf/verifier.c | 141 +++++++++++++++++++++++---------------=
-----
->> > >>  1 file changed, 77 insertions(+), 64 deletions(-)
->> > >>
->> > >
->> > > I know you are moving around pre-existing code, so a bunch of nits
->> > > below are to pre-existing code, but let's use this as an opportunity
->> > > to clean it up a bit.
->> > >
->> > >> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
->> > >> index 6fe641c8ae33..829a12d263a5 100644
->> > >> --- a/kernel/bpf/verifier.c
->> > >> +++ b/kernel/bpf/verifier.c
->> > >> @@ -13695,6 +13695,82 @@ static void scalar_min_max_arsh(struct bpf=
-_reg_state *dst_reg,
->> > >>         __update_reg_bounds(dst_reg);
->> > >>  }
->> > >>
->> > >> +static bool is_const_reg_and_valid(struct bpf_reg_state reg, bool =
-alu32,
->> > >
->> > > hm.. why passing reg_state by value? Use pointer?
->> > >
->> > Someone mentioned this in a review already and I forgot to change it.
->> > Apologies if I did not reply on this.
->> >
->> > The reason why I pass by value, is more of an approach to programming.
->> > I do it as guarantee to the caller that there is no mutation of
->> > the value.
->> > If it is better or worst from a performance point of view it is
->> > arguable, since although it might appear to copy the value it also pro=
-vides
->> > more information to the compiler of the intent of the callee function,
->> > allowing it to optimize further.
->> > I personally would leave the copy by value, but I understand if you wa=
-nt
->> > to keep having the same code style.
->>
->> It's a pretty big 120-byte structure, so maybe the compiler can
->> optimize it very well, but I'd still be concerned. Hopefully it can
->> optimize well even with (const) pointer, if inlining.
->>
->> But I do insist, if you look at (most? I haven't checked every single
->> function, of course) other uses in verifier.c, we pass things like
->> that by pointer. I understand the desire to specify the intent to not
->> modify it, but that's why you are passing `const struct bpf_reg_state
->> *reg`, so I think you don't lose anything with that.
-Well, the const will only guard the pointer from mutating, not the data
-pointed by it.
-
->
-> +1
-> that "struct bpf_reg_state src_reg" code was written 7 years ago
-> when bpf_reg_state was small.
-> We definitely need to fix it. It might even bring
-> a noticeable runtime improvement.
-
-I forgot to reply to Andrii.
-
-I will change the function prototype to pass the pointer instead.
-In any case, please allow me to express my concerns once again, and
-explain why I do it.
-
-As a general practice, I personally will only copy a pointer to a
-function if there is the intent to allow the function to change the
-content of the pointed data.
-
-In my understanding, it is easier for the compiler to optimize both the
-caller and the callee when there are less side-effects from that
-function call such as a possible memory clobbering.
-
-Since these particular functions are leaf functions (not calling anywhere),
-it should be relatively easy for the compiler to infer that the actual
-copy is not needed and will likely just inline those calls, resulting in
-lots of code being eliminated, which will remove any apparent copies.
-
-I checked the asm file for verifier.c and everything below
-adjust_scalar_min_max_vals including itself is inlined, making it
-totally irrelevant if you copy the data or the pointer, since the
-compiler will identify that the content refers to the same data and all
-copies will be classified and removed as dead-code.
-
-All the pointer passing in any context in verifier.c, to my eyes, is more
-of a software defect then a virtue.
-When there is an actual proven benefit, I am all for it, but not in all
-cases.
-
-I had to express my concerns on this and will never speak of it again.
-:)
-
-Thanks you all for the reviews. I will prepare a new version on Monday.
+>        exc_page_fault+0x612/0x8e0 arch/x86/mm/fault.c:1563
+>        asm_exc_page_fault+0x26/0x30 arch/x86/include/asm/idtentry.h:623
+>        rep_movs_alternative+0x22/0x70 arch/x86/lib/copy_user_64.S:48
+>        copy_user_generic arch/x86/include/asm/uaccess_64.h:110 [inline]
+>        raw_copy_from_user arch/x86/include/asm/uaccess_64.h:125 [inline]
+>        __copy_from_user_inatomic include/linux/uaccess.h:87 [inline]
+>        copy_from_user_nofault+0xbc/0x150 mm/maccess.c:125
+>        bpf_probe_read_user_common kernel/trace/bpf_trace.c:179 [inline]
+>        ____bpf_probe_read_compat kernel/trace/bpf_trace.c:292 [inline]
+>        bpf_probe_read_compat+0xe9/0x180 kernel/trace/bpf_trace.c:288
+>        bpf_prog_1878750df62aa1fb+0x48/0x4a
+>        bpf_dispatcher_nop_func include/linux/bpf.h:1234 [inline]
+>        __bpf_prog_run include/linux/filter.h:657 [inline]
+>        bpf_prog_run include/linux/filter.h:664 [inline]
+>        __bpf_trace_run kernel/trace/bpf_trace.c:2381 [inline]
+>        bpf_trace_run4+0x25a/0x490 kernel/trace/bpf_trace.c:2422
+>        __traceiter_sched_switch+0x98/0xd0 include/trace/events/sched.h:222
+>        trace_sched_switch include/trace/events/sched.h:222 [inline]
+>        __schedule+0x2535/0x4a00 kernel/sched/core.c:6743
+>        preempt_schedule_common+0x84/0xd0 kernel/sched/core.c:6925
+>        preempt_schedule+0xe1/0xf0 kernel/sched/core.c:6949
+>        preempt_schedule_thunk+0x1a/0x30 arch/x86/entry/thunk_64.S:12
+>        __raw_spin_unlock_irqrestore include/linux/spinlock_api_smp.h:152 [inline]
+>        _raw_spin_unlock_irqrestore+0x130/0x140 kernel/locking/spinlock.c:194
+>        spin_unlock_irqrestore include/linux/spinlock.h:406 [inline]
+>        force_sig_info_to_task+0x41c/0x580 kernel/signal.c:1356
+>        force_sig_fault_to_task kernel/signal.c:1733 [inline]
+>        force_sig_fault+0x12c/0x1d0 kernel/signal.c:1738
+>        __bad_area_nosemaphore+0x127/0x780 arch/x86/mm/fault.c:814
+>        handle_page_fault arch/x86/mm/fault.c:1505 [inline]
+>        exc_page_fault+0x612/0x8e0 arch/x86/mm/fault.c:1563
+>        asm_exc_page_fault+0x26/0x30 arch/x86/include/asm/idtentry.h:623
+>        __put_user_handle_exception+0x0/0x10
+>        __do_sys_gettimeofday kernel/time/time.c:147 [inline]
+>        __se_sys_gettimeofday+0xd9/0x240 kernel/time/time.c:140
+>        emulate_vsyscall+0xe23/0x1290 arch/x86/entry/vsyscall/vsyscall_64.c:247
+>        do_user_addr_fault arch/x86/mm/fault.c:1346 [inline]
+>        handle_page_fault arch/x86/mm/fault.c:1505 [inline]
+>        exc_page_fault+0x160/0x8e0 arch/x86/mm/fault.c:1563
+>        asm_exc_page_fault+0x26/0x30 arch/x86/include/asm/idtentry.h:623
+>        _end+0x6a9da000/0x0
+> 
+> other info that might help us debug this:
+> 
+> Chain exists of:
+>   &sighand->siglock --> &p->pi_lock --> &rq->__lock
+> 
+>  Possible unsafe locking scenario:
+> 
+>        CPU0                    CPU1
+>        ----                    ----
+>   lock(&rq->__lock);
+>                                lock(&p->pi_lock);
+>                                lock(&rq->__lock);
+>   lock(&sighand->siglock);
+> 
+>  *** DEADLOCK ***
+> 
+> 2 locks held by syz-executor324/5151:
+>  #0: ffff8880b943e658 (&rq->__lock){-.-.}-{2:2}, at: raw_spin_rq_lock_nested+0x2a/0x140 kernel/sched/core.c:559
+>  #1: ffffffff8e334d20 (rcu_read_lock){....}-{1:2}, at: rcu_lock_acquire include/linux/rcupdate.h:329 [inline]
+>  #1: ffffffff8e334d20 (rcu_read_lock){....}-{1:2}, at: rcu_read_lock include/linux/rcupdate.h:781 [inline]
+>  #1: ffffffff8e334d20 (rcu_read_lock){....}-{1:2}, at: __bpf_trace_run kernel/trace/bpf_trace.c:2380 [inline]
+>  #1: ffffffff8e334d20 (rcu_read_lock){....}-{1:2}, at: bpf_trace_run4+0x16e/0x490 kernel/trace/bpf_trace.c:2422
+> 
+> stack backtrace:
+> CPU: 0 PID: 5151 Comm: syz-executor324 Not tainted 6.9.0-rc5-syzkaller-00296-g5eb4573ea63d #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/27/2024
+> Call Trace:
+>  <TASK>
+>  __dump_stack lib/dump_stack.c:88 [inline]
+>  dump_stack_lvl+0x241/0x360 lib/dump_stack.c:114
+>  check_noncircular+0x36a/0x4a0 kernel/locking/lockdep.c:2187
+>  check_prev_add kernel/locking/lockdep.c:3134 [inline]
+>  check_prevs_add kernel/locking/lockdep.c:3253 [inline]
+>  validate_chain+0x18cb/0x58e0 kernel/locking/lockdep.c:3869
+>  __lock_acquire+0x1346/0x1fd0 kernel/locking/lockdep.c:5137
+>  lock_acquire+0x1ed/0x550 kernel/locking/lockdep.c:5754
+>  __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:110 [inline]
+>  _raw_spin_lock_irqsave+0xd5/0x120 kernel/locking/spinlock.c:162
+>  force_sig_info_to_task+0x68/0x580 kernel/signal.c:1334
+>  force_sig_fault_to_task kernel/signal.c:1733 [inline]
+>  force_sig_fault+0x12c/0x1d0 kernel/signal.c:1738
+>  __bad_area_nosemaphore+0x127/0x780 arch/x86/mm/fault.c:814
+>  handle_page_fault arch/x86/mm/fault.c:1505 [inline]
+>  exc_page_fault+0x612/0x8e0 arch/x86/mm/fault.c:1563
+>  asm_exc_page_fault+0x26/0x30 arch/x86/include/asm/idtentry.h:623
+> RIP: 0010:rep_movs_alternative+0x22/0x70 arch/x86/lib/copy_user_64.S:50
+> Code: 90 90 90 90 90 90 90 90 f3 0f 1e fa 48 83 f9 40 73 40 83 f9 08 73 21 85 c9 74 0f 8a 06 88 07 48 ff c7 48 ff c6 48 ff c9 75 f1 <c3> cc cc cc cc 66 0f 1f 84 00 00 00 00 00 48 8b 06 48 89 07 48 83
+> RSP: 0000:ffffc90004137468 EFLAGS: 00050002
+> RAX: ffffffff8205ce4e RBX: dffffc0000000000 RCX: 0000000000000002
+> RDX: 0000000000000000 RSI: 0000000000000900 RDI: ffffc900041374e8
+> RBP: ffff88802d039784 R08: 0000000000000005 R09: ffffffff8205ce37
+> R10: 0000000000000003 R11: ffff88802d038000 R12: 1ffff11005a072f0
+> R13: 0000000000000900 R14: 0000000000000002 R15: ffffc900041374e8
+>  copy_user_generic arch/x86/include/asm/uaccess_64.h:110 [inline]
+>  raw_copy_from_user arch/x86/include/asm/uaccess_64.h:125 [inline]
+>  __copy_from_user_inatomic include/linux/uaccess.h:87 [inline]
+>  copy_from_user_nofault+0xbc/0x150 mm/maccess.c:125
+>  bpf_probe_read_user_common kernel/trace/bpf_trace.c:179 [inline]
+>  ____bpf_probe_read_compat kernel/trace/bpf_trace.c:292 [inline]
+>  bpf_probe_read_compat+0xe9/0x180 kernel/trace/bpf_trace.c:288
+>  bpf_prog_1878750df62aa1fb+0x48/0x4a
+>  bpf_dispatcher_nop_func include/linux/bpf.h:1234 [inline]
+>  __bpf_prog_run include/linux/filter.h:657 [inline]
+>  bpf_prog_run include/linux/filter.h:664 [inline]
+>  __bpf_trace_run kernel/trace/bpf_trace.c:2381 [inline]
+>  bpf_trace_run4+0x25a/0x490 kernel/trace/bpf_trace.c:2422
+>  __traceiter_sched_switch+0x98/0xd0 include/trace/events/sched.h:222
+>  trace_sched_switch include/trace/events/sched.h:222 [inline]
+>  __schedule+0x2535/0x4a00 kernel/sched/core.c:6743
+>  preempt_schedule_common+0x84/0xd0 kernel/sched/core.c:6925
+>  preempt_schedule+0xe1/0xf0 kernel/sched/core.c:6949
+>  preempt_schedule_thunk+0x1a/0x30 arch/x86/entry/thunk_64.S:12
+>  __raw_spin_unlock_irqrestore include/linux/spinlock_api_smp.h:152 [inline]
+>  _raw_spin_unlock_irqrestore+0x130/0x140 kernel/locking/spinlock.c:194
+>  spin_unlock_irqrestore include/linux/spinlock.h:406 [inline]
+>  force_sig_info_to_task+0x41c/0x580 kernel/signal.c:1356
+>  force_sig_fault_to_task kernel/signal.c:1733 [inline]
+>  force_sig_fault+0x12c/0x1d0 kernel/signal.c:1738
+>  __bad_area_nosemaphore+0x127/0x780 arch/x86/mm/fault.c:814
+>  handle_page_fault arch/x86/mm/fault.c:1505 [inline]
+>  exc_page_fault+0x612/0x8e0 arch/x86/mm/fault.c:1563
+>  asm_exc_page_fault+0x26/0x30 arch/x86/include/asm/idtentry.h:623
+> RIP: 0010:__put_user_handle_exception+0x0/0x10 arch/x86/lib/putuser.S:125
+> Code: 90 90 90 90 90 90 90 90 90 90 f3 0f 1e fa 0f 01 cb 48 89 01 31 c9 0f 01 ca c3 cc cc cc cc 66 2e 0f 1f 84 00 00 00 00 00 66 90 <0f> 01 ca b9 f2 ff ff ff c3 cc cc cc cc 0f 1f 00 90 90 90 90 90 90
+> RSP: 0000:ffffc90004137d98 EFLAGS: 00050202
+> RAX: 00000000662d5943 RBX: 0000000000000000 RCX: 0000000000000019
+> RDX: 0000000000000000 RSI: ffffffff8bcaca20 RDI: ffffffff8c1eaba0
+> RBP: ffffc90004137e50 R08: ffffffff8fa7cd6f R09: 1ffffffff1f4f9ad
+> R10: dffffc0000000000 R11: fffffbfff1f4f9ae R12: ffffc90004137de0
+> R13: dffffc0000000000 R14: 1ffff92000826fb8 R15: 0000000000000019
+>  __do_sys_gettimeofday kernel/time/time.c:147 [inline]
+>  __se_sys_gettimeofday+0xd9/0x240 kernel/time/time.c:140
+>  emulate_vsyscall+0xe23/0x1290 arch/x86/entry/vsyscall/vsyscall_64.c:247
+>  do_user_addr_fault arch/x86/mm/fault.c:1346 [inline]
+>  handle_page_fault arch/x86/mm/fault.c:1505 [inline]
+>  exc_page_fault+0x160/0x8e0 arch/x86/mm/fault.c:1563
+>  asm_exc_page_fault+0x26/0x30 arch/x86/include/asm/idtentry.h:623
+> RIP: 0033:_end+0x6a9da000/0x0
+> Code: Unable to access opcode bytes at 0xffffffffff5fffd6.
+> RSP: 002b:00007fbb40c81c78 EFLAGS: 00010246
+> RAX: ffffffffffffffda RBX: 00007fbb40d73418 RCX: 00007fbb40ce97d9
+> RDX: 00007fbb40c81c80 RSI: 00007fbb40c81db0 RDI: 0000000000000019
+> RBP: 00007fbb40d73410 R08: 0000000000000000 R09: 0000000000000000
+> R10: 0000000000000007 R11: 0000000000000246 R12: 00007fbb40d402b0
+> R13: 77735f6465686373 R14: 66aa589070d556b8 R15: 0400000000000004
+>  </TASK>
+> syz-executor324[5151] vsyscall fault (exploit attempt?) ip:ffffffffff600000 cs:33 sp:7fbb40c81c78 ax:ffffffffffffffda si:7fbb40c81db0 di:19
+> ----------------
+> Code disassembly (best guess):
+>    0:	90                   	nop
+>    1:	90                   	nop
+>    2:	90                   	nop
+>    3:	90                   	nop
+>    4:	90                   	nop
+>    5:	90                   	nop
+>    6:	90                   	nop
+>    7:	90                   	nop
+>    8:	f3 0f 1e fa          	endbr64
+>    c:	48 83 f9 40          	cmp    $0x40,%rcx
+>   10:	73 40                	jae    0x52
+>   12:	83 f9 08             	cmp    $0x8,%ecx
+>   15:	73 21                	jae    0x38
+>   17:	85 c9                	test   %ecx,%ecx
+>   19:	74 0f                	je     0x2a
+>   1b:	8a 06                	mov    (%rsi),%al
+>   1d:	88 07                	mov    %al,(%rdi)
+>   1f:	48 ff c7             	inc    %rdi
+>   22:	48 ff c6             	inc    %rsi
+>   25:	48 ff c9             	dec    %rcx
+>   28:	75 f1                	jne    0x1b
+> * 2a:	c3                   	ret <-- trapping instruction
+>   2b:	cc                   	int3
+>   2c:	cc                   	int3
+>   2d:	cc                   	int3
+>   2e:	cc                   	int3
+>   2f:	66 0f 1f 84 00 00 00 	nopw   0x0(%rax,%rax,1)
+>   36:	00 00
+>   38:	48 8b 06             	mov    (%rsi),%rax
+>   3b:	48 89 07             	mov    %rax,(%rdi)
+>   3e:	48                   	rex.W
+>   3f:	83                   	.byte 0x83
+> 
+> 
+> ---
+> If you want syzbot to run the reproducer, reply with:
+> #syz test: git://repo/address.git branch-or-commit-hash
+> If you attach or paste a git patch, syzbot will apply it before testing.
+> 
 
