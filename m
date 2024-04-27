@@ -1,163 +1,163 @@
-Return-Path: <bpf+bounces-28015-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-28016-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2F7028B4523
-	for <lists+bpf@lfdr.de>; Sat, 27 Apr 2024 10:34:31 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1964F8B453D
+	for <lists+bpf@lfdr.de>; Sat, 27 Apr 2024 11:01:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A53321F21EC2
-	for <lists+bpf@lfdr.de>; Sat, 27 Apr 2024 08:34:30 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 37F6F1C21ADD
+	for <lists+bpf@lfdr.de>; Sat, 27 Apr 2024 09:01:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B778742073;
-	Sat, 27 Apr 2024 08:34:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D0DB345944;
+	Sat, 27 Apr 2024 09:01:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Pl0qkU7o"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-io1-f70.google.com (mail-io1-f70.google.com [209.85.166.70])
+Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 04A47376EC
-	for <bpf@vger.kernel.org>; Sat, 27 Apr 2024 08:34:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.70
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E6F0542062
+	for <bpf@vger.kernel.org>; Sat, 27 Apr 2024 09:01:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714206863; cv=none; b=qBOFiW87EDxEZboTT3t1rXeYiRJA0gwfR5FUdpOYE5vHBCMzTI79zQOuhhMVVzDhVz9fjRMqijmpKQhonjDdrXfsjaxN+JjoKMK+EQvMF/Lyrwht4icEXgir3FekEejJiQdA7x0wtHftXBbMZ8oRzbP8A/i56cS1qRDHzGyn4sQ=
+	t=1714208468; cv=none; b=paU9LnZYm2xt0VD/6nWG78dT77zdFJMeYd+5VWR+4d5ci+w7x8bUivk+0mbxbd7plpfW+7x5k3YlRtbl8Vd3cXpXsbwy46l7QQ23Jh3NSHgrogF0/wuA0f+XuZZFKqqkSLp5UFPA0hStPpgpqES6ulrUHR0JhrYKq6BwNFYGBdQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714206863; c=relaxed/simple;
-	bh=cSO2S2dJuN37y2idSF+/sz44TSy22LF4xPFz7e51S5g=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=ebOB2wBsxGAt3UMAi6i2xmkZ7UxVPpCG73ot2SgElXrMoc/wbBO0GrXGK2KFk2B9UL35Mxr8ASe7Y9uCG0qO0O8U/USyFhMkIKMgx71T/SAkLmdbcpOdk2VH+mxKt+E9Xydyas7YgrtowQcfKveUBbdSqJGrwfLMUyrelmozX3U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.70
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f70.google.com with SMTP id ca18e2360f4ac-7dda529a35cso315716839f.3
-        for <bpf@vger.kernel.org>; Sat, 27 Apr 2024 01:34:21 -0700 (PDT)
+	s=arc-20240116; t=1714208468; c=relaxed/simple;
+	bh=QKT7BbT0qdBcKFjzr1eNmhMAp51nbEYUTEgPS9pJd/c=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=kmCLRg1spY9O3Qe9+iRUdEPh614K5W0nlQm1AFcJUiJ/5LFLmN9nI74E6A6w0Lo76ZDbVSCB/exCQ8EPmAN+EubHpP9sfcezUF/hWE3+O1bjbJb77v/tb5KQOb6gHO9MlK4Ln+QFW/F1fMOrBjzwGb/KgBVEuoNoPPOCexFQNyw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Pl0qkU7o; arc=none smtp.client-ip=209.85.214.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-pl1-f173.google.com with SMTP id d9443c01a7336-1e3ca546d40so24598005ad.3
+        for <bpf@vger.kernel.org>; Sat, 27 Apr 2024 02:01:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1714208466; x=1714813266; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=8Vr7JWEB2T4GWYXcygc/EdGZmH7vUwdeKPTcNVaexOg=;
+        b=Pl0qkU7oeaDmIiRWWY5jRf6WfYYn1jbkwJ32SVPZzHZGJGBwk1C1oPQ+XCq8lGntJ/
+         R73Lv5z0HoWntj5NJ2i7yDJudOF+TmCJ2AHtZmQ70mvs4extWUToWt6IvqEiwEJaEnuz
+         NbNlB+PRPDV7vQeSNaGuqH/vbtvmL+STcOmzCshb6mhiaFZZG+wcD5oBhrtifoz1PyDc
+         abOv26ligdQCuipvgzpLpujw5YgydBxA9buh9GkDGjJDdaRoNTanZrVoUkwdnHmrO8ID
+         HJdQudCCe02/g9G15Xw594mtYcYOHg0tmQetibfY2hkyoUyERiJ4tdfyHQGwEyUwyqph
+         Bhzg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714206861; x=1714811661;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=DUTysr2v1XWCj7QjU/AZJKX+wld8PVoAJIV9qfiq2GI=;
-        b=AnLtzHYau9I22U+EvcygvWryG7bcayrzDTDMjt+s+UF4OQ3UsHOXM1NEtbK0I2hSom
-         wfJyaLFBSFK6KB/hg5LnuMhq/cCYzVBHw8LYtjg3DYG2PE3P8pNRPUjWT6AXyk8hP5eb
-         PTH18B7AqkiKNAZBChSMYBT8f3l9zy95G8zDVsj8GEX7fld7wMgAjDYiCUPCUVBNxTF8
-         rMyG9VnKEc/12ONnNT9wrjVzkLvOYWNpdaKrgUBDQBuiqyxHOgZ+OCdSYeElP218dCRs
-         9K4x93X3v2T2wr2ZB6Qnk1ysIPXIgXc57z8gxkzJpBKtCKc0DqAuvcgoI7pif6aHvIbl
-         IZkQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUvDQxuBJdzR4ZlG4M/Gcdez8lQEgv3RtcxSgil2S4QcFJLSAn5NOKbEN6QgsBOyXySTSnYY3KYZiKUbuTA7nDOLkVF
-X-Gm-Message-State: AOJu0YyUA7lzs0PSTtJduFo4+ZwhWajcYyJuvjnzBApA2LLsqs/maV1S
-	HO3bTkwGfTq03TQQ6iEsVpoNj2Z5oO5U3jrHNKt4mTWVheB+S5D/n5QZfc5MNINLejqYV8Asy+D
-	tr8d9gn205ggiHsO/G1Bi2nkwDbw+xEHpzeXIJvUETYUXAYWocja55sk=
-X-Google-Smtp-Source: AGHT+IFI2OHiqMbfz0pasQdW3gF+IFIr60PkBgZ87TP4EPk84SdAObClUHvdIUvXry+eqSEdADXxuEbtI1txMh3AGEahQo9k+cXG
+        d=1e100.net; s=20230601; t=1714208466; x=1714813266;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=8Vr7JWEB2T4GWYXcygc/EdGZmH7vUwdeKPTcNVaexOg=;
+        b=YQCMHJIrEmmeytiwz1eyWUFmD5xFvLnmffRPEqmnVWBuzeQXehTF4GYcMesnDIKux2
+         ljgvAi09xj3czQgrSWDjRsmdXAKlC1CEVvXlnLurySrBJfvKxIlyBQbN5AenkX/92Ucm
+         Q1IyDv+Db//th1K6AxY55qrdK1wip147PgIMOhngKGBnOd75jjN6kkO2WevTcZGLSSIb
+         /GNWjK6tApisDQ8md8Il5hU5EzvoLWq3MgzTO0YOlPfxJIlu6plAqnbnD1Q/4mXLSxSZ
+         RC9LI1eFdTVZZNK34B2+ETkZj9IQfmUtYfQfyO3ZIWq2B71HxXU5f8RSQ83nnQ39Gm55
+         KC2w==
+X-Forwarded-Encrypted: i=1; AJvYcCWuEvD9ny65rjApdESnNlmjxRIdp8N+GCm3o2t6yFNjtqnCkbPdmpbDkMKVNXw3yOu5R3DdvIn5XEFYZga43664ppVE
+X-Gm-Message-State: AOJu0YwEyg+tos+bW7ZSdzeS1d5PxwdOy1IsM3O6J0Xsed52UaR2DqH6
+	biGvCh7/SwJexGUH6aKUw5ifwR2wPlhXb1cY5auKRku6xko3MGaZNEZat2O19w==
+X-Google-Smtp-Source: AGHT+IHkIXGWPg97/VUL48rQXl/r6tasTmDAIegAIO6ujBMNWegRRUnBy7wEvErIfoXUBhtG5bde6A==
+X-Received: by 2002:a17:903:234b:b0:1e7:d482:9e32 with SMTP id c11-20020a170903234b00b001e7d4829e32mr5854001plh.7.1714208465952;
+        Sat, 27 Apr 2024 02:01:05 -0700 (PDT)
+Received: from thinkpad ([120.60.53.237])
+        by smtp.gmail.com with ESMTPSA id h15-20020a170902680f00b001e89e7b2b74sm16138858plk.235.2024.04.27.02.00.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 27 Apr 2024 02:01:05 -0700 (PDT)
+Date: Sat, 27 Apr 2024 14:30:57 +0530
+From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To: Frank Li <Frank.Li@nxp.com>
+Cc: Richard Zhu <hongxing.zhu@nxp.com>,
+	Lucas Stach <l.stach@pengutronix.de>,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
+	Shawn Guo <shawnguo@kernel.org>,
+	Sascha Hauer <s.hauer@pengutronix.de>,
+	Pengutronix Kernel Team <kernel@pengutronix.de>,
+	Fabio Estevam <festevam@gmail.com>,
+	NXP Linux Team <linux-imx@nxp.com>,
+	Philipp Zabel <p.zabel@pengutronix.de>,
+	Liam Girdwood <lgirdwood@gmail.com>,
+	Mark Brown <broonie@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>, linux-pci@vger.kernel.org,
+	imx@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+	devicetree@vger.kernel.org
+Subject: Re: [PATCH v3 01/11] PCI: imx6: Fix PCIe link down when i.MX8MM and
+ i.MX8MP PCIe is EP mode
+Message-ID: <20240427090057.GF1981@thinkpad>
+References: <20240402-pci2_upstream-v3-0-803414bdb430@nxp.com>
+ <20240402-pci2_upstream-v3-1-803414bdb430@nxp.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:408e:b0:485:658c:7623 with SMTP id
- m14-20020a056638408e00b00485658c7623mr380242jam.5.1714206861211; Sat, 27 Apr
- 2024 01:34:21 -0700 (PDT)
-Date: Sat, 27 Apr 2024 01:34:21 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000008ce5306170fe347@google.com>
-Subject: [syzbot] [bpf?] KMSAN: uninit-value in htab_map_delete_elem
-From: syzbot <syzbot+9b0b6780e063c00f1453@syzkaller.appspotmail.com>
-To: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org, 
-	daniel@iogearbox.net, eddyz87@gmail.com, haoluo@google.com, 
-	john.fastabend@gmail.com, jolsa@kernel.org, kpsingh@kernel.org, 
-	linux-kernel@vger.kernel.org, martin.lau@linux.dev, sdf@google.com, 
-	song@kernel.org, syzkaller-bugs@googlegroups.com, yonghong.song@linux.dev
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240402-pci2_upstream-v3-1-803414bdb430@nxp.com>
 
-Hello,
+On Tue, Apr 02, 2024 at 10:33:37AM -0400, Frank Li wrote:
+> From: Richard Zhu <hongxing.zhu@nxp.com>
+> 
+> Both IMX8MM_EP and IMX8MP_EP have the "IMX6_PCIE_FLAG_HAS_APP_RESET"
+> set indeed. Otherwise, the LTSSM_EN bit wouldn't be asserted anymore.
+> That's the root cause that PCIe link is down when i.MX8MM and i.MX8MP
+> PCIe are in the EP mode.
+> 
 
-syzbot found the following issue on:
+This commit message is difficult to understand. I think the issue you are fixing
+is that these 2 SoCs do not control the 'apps_reset', due to which the LTSSM
+state is not configured properly.
 
-HEAD commit:    e88c4cfcb7b8 Merge tag 'for-6.9-rc5-tag' of git://git.kern..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=16672c08980000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=776c05250f36d55c
-dashboard link: https://syzkaller.appspot.com/bug?extid=9b0b6780e063c00f1453
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=11d6807b180000
+Referring Link Down is confusing at its best. Is the link training happens first
+of all?
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/76771e00ba79/disk-e88c4cfc.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/c957ed943a4f/vmlinux-e88c4cfc.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/e719306ed8e3/bzImage-e88c4cfc.xz
+- Mani
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+9b0b6780e063c00f1453@syzkaller.appspotmail.com
+> Fixes: 0c9651c21f2a ("PCI: imx6: Simplify reset handling by using *_FLAG_HAS_*_RESET")
+> Signed-off-by: Richard Zhu <hongxing.zhu@nxp.com>
+> Signed-off-by: Frank Li <Frank.Li@nxp.com>
+> ---
+>  drivers/pci/controller/dwc/pci-imx6.c | 6 ++++--
+>  1 file changed, 4 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/pci/controller/dwc/pci-imx6.c b/drivers/pci/controller/dwc/pci-imx6.c
+> index 99a60270b26cd..e43eda6b33ca7 100644
+> --- a/drivers/pci/controller/dwc/pci-imx6.c
+> +++ b/drivers/pci/controller/dwc/pci-imx6.c
+> @@ -1568,7 +1568,8 @@ static const struct imx6_pcie_drvdata drvdata[] = {
+>  	},
+>  	[IMX8MM_EP] = {
+>  		.variant = IMX8MM_EP,
+> -		.flags = IMX6_PCIE_FLAG_HAS_PHYDRV,
+> +		.flags = IMX6_PCIE_FLAG_HAS_APP_RESET |
+> +			 IMX6_PCIE_FLAG_HAS_PHYDRV,
+>  		.mode = DW_PCIE_EP_TYPE,
+>  		.gpr = "fsl,imx8mm-iomuxc-gpr",
+>  		.clk_names = imx8mm_clks,
+> @@ -1579,7 +1580,8 @@ static const struct imx6_pcie_drvdata drvdata[] = {
+>  	},
+>  	[IMX8MP_EP] = {
+>  		.variant = IMX8MP_EP,
+> -		.flags = IMX6_PCIE_FLAG_HAS_PHYDRV,
+> +		.flags = IMX6_PCIE_FLAG_HAS_APP_RESET |
+> +			 IMX6_PCIE_FLAG_HAS_PHYDRV,
+>  		.mode = DW_PCIE_EP_TYPE,
+>  		.gpr = "fsl,imx8mp-iomuxc-gpr",
+>  		.clk_names = imx8mm_clks,
+> 
+> -- 
+> 2.34.1
+> 
 
-=====================================================
-BUG: KMSAN: uninit-value in lookup_elem_raw kernel/bpf/hashtab.c:642 [inline]
-BUG: KMSAN: uninit-value in htab_map_delete_elem+0x492/0xaf0 kernel/bpf/hashtab.c:1427
- lookup_elem_raw kernel/bpf/hashtab.c:642 [inline]
- htab_map_delete_elem+0x492/0xaf0 kernel/bpf/hashtab.c:1427
- ____bpf_map_delete_elem kernel/bpf/helpers.c:77 [inline]
- bpf_map_delete_elem+0x5c/0x80 kernel/bpf/helpers.c:73
- ___bpf_prog_run+0x13fe/0xe0f0 kernel/bpf/core.c:1997
- __bpf_prog_run160+0xb5/0xe0 kernel/bpf/core.c:2236
- bpf_dispatcher_nop_func include/linux/bpf.h:1234 [inline]
- __bpf_prog_run include/linux/filter.h:657 [inline]
- bpf_prog_run include/linux/filter.h:664 [inline]
- __bpf_trace_run kernel/trace/bpf_trace.c:2381 [inline]
- bpf_trace_run4+0x150/0x340 kernel/trace/bpf_trace.c:2422
- __bpf_trace_ext4_writepages_result+0x3c/0x50 include/trace/events/ext4.h:542
- __traceiter_ext4_writepages_result+0xad/0x160 include/trace/events/ext4.h:542
- trace_ext4_writepages_result include/trace/events/ext4.h:542 [inline]
- ext4_do_writepages+0x6109/0x62e0 fs/ext4/inode.c:2747
- ext4_writepages+0x312/0x830 fs/ext4/inode.c:2768
- do_writepages+0x427/0xc30 mm/page-writeback.c:2612
- __writeback_single_inode+0x10d/0x12c0 fs/fs-writeback.c:1650
- writeback_sb_inodes+0xb48/0x1be0 fs/fs-writeback.c:1941
- __writeback_inodes_wb+0x14c/0x440 fs/fs-writeback.c:2012
- wb_writeback+0x4da/0xdf0 fs/fs-writeback.c:2119
- wb_check_old_data_flush fs/fs-writeback.c:2223 [inline]
- wb_do_writeback fs/fs-writeback.c:2276 [inline]
- wb_workfn+0x110c/0x1940 fs/fs-writeback.c:2304
- process_one_work kernel/workqueue.c:3254 [inline]
- process_scheduled_works+0xa81/0x1bd0 kernel/workqueue.c:3335
- worker_thread+0xea5/0x1560 kernel/workqueue.c:3416
- kthread+0x3e2/0x540 kernel/kthread.c:388
- ret_from_fork+0x6d/0x90 arch/x86/kernel/process.c:147
- ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
-
-Local variable stack created at:
- __bpf_prog_run160+0x45/0xe0 kernel/bpf/core.c:2236
- bpf_dispatcher_nop_func include/linux/bpf.h:1234 [inline]
- __bpf_prog_run include/linux/filter.h:657 [inline]
- bpf_prog_run include/linux/filter.h:664 [inline]
- __bpf_trace_run kernel/trace/bpf_trace.c:2381 [inline]
- bpf_trace_run4+0x150/0x340 kernel/trace/bpf_trace.c:2422
-
-CPU: 0 PID: 60 Comm: kworker/u8:5 Not tainted 6.9.0-rc5-syzkaller-00042-ge88c4cfcb7b8 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/27/2024
-Workqueue: writeback wb_workfn (flush-8:0)
-=====================================================
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
+-- 
+மணிவண்ணன் சதாசிவம்
 
