@@ -1,278 +1,188 @@
-Return-Path: <bpf+bounces-28047-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-28048-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 53A478B4D93
-	for <lists+bpf@lfdr.de>; Sun, 28 Apr 2024 21:03:32 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0D0A98B4DB4
+	for <lists+bpf@lfdr.de>; Sun, 28 Apr 2024 22:01:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 76C7B1C20EB1
-	for <lists+bpf@lfdr.de>; Sun, 28 Apr 2024 19:03:31 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B0E692815DD
+	for <lists+bpf@lfdr.de>; Sun, 28 Apr 2024 20:01:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C0A074410;
-	Sun, 28 Apr 2024 19:03:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 99E2A745E4;
+	Sun, 28 Apr 2024 20:01:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="kvH9hdNy";
-	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="MzwoKTi0"
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="NAbcl/g2"
 X-Original-To: bpf@vger.kernel.org
-Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-lf1-f41.google.com (mail-lf1-f41.google.com [209.85.167.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E2A310F1
-	for <bpf@vger.kernel.org>; Sun, 28 Apr 2024 19:03:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.177.32
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714331007; cv=fail; b=sN4bVxOYKkc4eTyquYk6D+C4BoR1Cny9ks9iM16jPxgOFXPEU3HAgIR5oolw7sSveGfk2ADI7CmkUKviXPvFgDMh5jteKQI4mL2xMKN07TJmsSh2CvDIv4v1RMsU2VNobFy8LMb8uHgXuXTT+1hdblsXO04dI6cGB8naDZ2HmeE=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714331007; c=relaxed/simple;
-	bh=NW2LDc5dL8GZrwMc8JfQYjs+tSXNuQb02NMG7ZOOjXQ=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 Content-Type:MIME-Version; b=QKNeqYbnM0ZV6UPGDezgNOJfEoT7hDWFDaGcG45dffqZBdakNt0woDmX2lqwXLilqlV5uCmfnLWlcB2BggVscvbe8FuLw7D4B6nrlIqMvCqpAJyr3c7c2CryTLDPuZrooYolGQpV3p1Ak2+t4+JXGBoEeK14XCbQer+xuGU5keI=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=kvH9hdNy; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=MzwoKTi0; arc=fail smtp.client-ip=205.220.177.32
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=oracle.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
-Received: from pps.filterd (m0246632.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 43SIct3U026822;
-	Sun, 28 Apr 2024 19:03:22 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : in-reply-to : references : date : message-id : content-type :
- mime-version; s=corp-2023-11-20;
- bh=7SI87LiCNRgrvg6MwwOwWTOtNEnW6TuRF5rHg/UNhSg=;
- b=kvH9hdNyUQWcXNnLdSxbepkhrsbHOpIuxmKUvcikpV4fuV6D7CRqu5vZQjNcZFZw3tbI
- P8tqIN4CpEkgoCKtM/HgvQh8H89vbR/GEVz9BVFqxAIKkuSQuF5UWwPfJu92sVg4laSn
- PMv4GX9+1eiFEMsfLV/GrZzrCMBPdxj+rR7CQbgnFAEZXx9n19rfpR7nC6HwqcooG/Oo
- kO0jLPSXG32vKj7uDctu0aLQS5MyJUVk1a1R+Jr1ap/sxh2M+4Tqe3lghqLS4Nwnmv10
- FTk8/STvSl8lku8vb1aNNnbt5bm2FaQ3G0b+uQ9HoAU/U1MN9zf4SsRYzeSqDJvGPppl xA== 
-Received: from iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta02.appoci.oracle.com [147.154.18.20])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3xrryv1c42-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Sun, 28 Apr 2024 19:03:21 +0000
-Received: from pps.filterd (iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-	by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 43SDwQNH033247;
-	Sun, 28 Apr 2024 19:03:21 GMT
-Received: from nam12-dm6-obe.outbound.protection.outlook.com (mail-dm6nam12lp2169.outbound.protection.outlook.com [104.47.59.169])
-	by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3xrqt569y9-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Sun, 28 Apr 2024 19:03:21 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=eEXr84FIsVR5gHVA87y6teQ/5tzB4bJu/8VXs7tQlFrKYhapQqbMfe3DkMvf6qhLCEJANBYXehB2dRBG+8I5enb8p2cuKAr7arXGKkev87s93600U76jrYJj0KzwUvWwE5esZY0Z/7oD/PEOhYp7nOQ+NthlwmjA0iVZ8aj58yzdNYjtUm79oFJjZtsAnV2aEPrJBezA4yNE5xF7Mm3HqAiqLl5bXYZW8o6Sd5qr5pBpdQBv96DZRC3UF7KL2wZV0v9EpFBOHt6HKbqolQOhJBmYfkGcoYWhOLQahFTcrKm0Nl0TN2ZWKMtqtD4xvwRcj/7F+OgPMfDe3L96HexYKg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=7SI87LiCNRgrvg6MwwOwWTOtNEnW6TuRF5rHg/UNhSg=;
- b=Ae5NkqMxMCAn34u4NtG5MzmnheUYddloeLpHogwgrUA85twcv8jYaAS9eb/O+JcOaxRlX2UdPuvNg1lnIfHYwLXA+QBvME17TICWrQXbaEweq0fKKEWWd8X3cjnkh/qKmC56n7X733meAXdaelcdcFidmWqUpwFGsaaxOk6y4rTqns0vhatDt42BvlCzZfryAfGSMmApyvQJRZd2q6HM7rx508rMPQwqxa8QFgbzrrwh5OM/lf7JflDgGVAFyQq0hwWW3eFgc4T7IrwE3akkbZbB2UvFPWH0zZCIs+tHzd8HBFb4IajU/OG4koQ9QMwhKHn8V+mTKZyEyDd4y0+pLQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 09E1056B60
+	for <bpf@vger.kernel.org>; Sun, 28 Apr 2024 20:01:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.41
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1714334502; cv=none; b=n5bExfR1kFcKFdscsvK6Wc0eU7ByM+QFldNR1H9hryuRVd0WjJ5YWthhQtJoHOfIpkTSb8iovZTvFGUCF1cIWzei9EUkBuOf+TAwkSafyFKM6VRHMunIuzyd33CR8x53PKX7hLE1/8m+x6xywb5FkcwSNtaLT5ckWGSikI++ecg=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1714334502; c=relaxed/simple;
+	bh=/Q+bDcW8FGbBSw2YCBIscaZoTZy5JAddruxkYSnGwj8=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=LaH/xu18fAuzPQ237xFeQZKKmV4IcT84Qr/ZsVW3ycddvgXA9GUqdrY3eIGfyx7k3Kej2abq9jyDPfjEXk3q98eCPkD05CoULm6EL0jsx0eVz5cPj+0fqe5Z8+lmesIiv+cT4Ys7DpAxkV5qNRUIIRR3hjKswdJ63SufRiJ3SQc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=NAbcl/g2; arc=none smtp.client-ip=209.85.167.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
+Received: by mail-lf1-f41.google.com with SMTP id 2adb3069b0e04-51d2047220cso1286440e87.1
+        for <bpf@vger.kernel.org>; Sun, 28 Apr 2024 13:01:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=7SI87LiCNRgrvg6MwwOwWTOtNEnW6TuRF5rHg/UNhSg=;
- b=MzwoKTi0338RJTOoMC40Amo9UOwfbtQr0ZtuUydVF3X35GAHEPE+AMh597wOz1B7Rmz0qaKPb6qw2VGDW4gUjDoItqv0X9c9J9L0IOsLVkn/JK6rH4odmQDydE6jnox/k7o+5STIPjLlLHdeoyOoazb6q4w+ZzGNLnOy5uQv63Q=
-Received: from BN8PR10MB3107.namprd10.prod.outlook.com (2603:10b6:408:c2::18)
- by SJ0PR10MB6326.namprd10.prod.outlook.com (2603:10b6:a03:44c::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7519.34; Sun, 28 Apr
- 2024 19:03:10 +0000
-Received: from BN8PR10MB3107.namprd10.prod.outlook.com
- ([fe80::fd9:73ad:dfb6:d931]) by BN8PR10MB3107.namprd10.prod.outlook.com
- ([fe80::fd9:73ad:dfb6:d931%4]) with mapi id 15.20.7519.031; Sun, 28 Apr 2024
- 19:03:09 +0000
-From: "Jose E. Marchesi" <jose.marchesi@oracle.com>
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: bpf@vger.kernel.org, david.faust@oracle.com, cupertino.miranda@oracle.com
-Subject: Re: [PATCH bpf-next] bpf: avoid casts from pointers to enums in
- bpf_tracing.h
-In-Reply-To: <87h6fo0zq7.fsf@oracle.com> (Jose E. Marchesi's message of "Fri,
-	26 Apr 2024 20:02:08 +0200")
-References: <20240426092214.16426-1-jose.marchesi@oracle.com>
-	<CAEf4BzY14jZkUUgkZb3A88KguX6=7pJLhNZ3T1H-Hde7raLb6A@mail.gmail.com>
-	<87h6fo0zq7.fsf@oracle.com>
-Date: Sun, 28 Apr 2024 21:03:04 +0200
-Message-ID: <87zftdwbrr.fsf@oracle.com>
-User-Agent: Gnus/5.13 (Gnus v5.13)
-Content-Type: text/plain
-X-ClientProxiedBy: FR3P281CA0195.DEUP281.PROD.OUTLOOK.COM
- (2603:10a6:d10:a4::7) To BN8PR10MB3107.namprd10.prod.outlook.com
- (2603:10b6:408:c2::18)
+        d=linux-foundation.org; s=google; t=1714334498; x=1714939298; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=yAlWMFpu06lOa2HCRJcPKhFggZdYhuIIy04Pcfhn4Io=;
+        b=NAbcl/g2vi8Ka51B1vsuUciX7tTbQQyj5e6joMpnQ7aLvqRA33y4a/zCz38l1cox4F
+         yXah57HQfnauETg56EE4ORorycdj4o8u3SZtcz6yHjUZ0WfbhP+ygMvkvsJcb7qbHIH8
+         je0L3wd37n+VMZg7nIxo4NinojPlJvdSwRyU8=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714334498; x=1714939298;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=yAlWMFpu06lOa2HCRJcPKhFggZdYhuIIy04Pcfhn4Io=;
+        b=bXFbYxQdBJ2cgKmUzSyXqSQ35Zrc+BOQyrouVDjSzlgwWeaVHSXv86Mq0ngPzvF8va
+         bVLFngTsLaSn68/bWPZeaoLaOnYdziSfFdCDpFRwzAxOWcTQRJdy8cCE2D5SkKvQ/0vv
+         ZjDzplzxAA7+q0j3g0w/lxoDi0BBwXUhMYh3mEUhNm0PTFzoMJbfQvANkreo0n+387Wq
+         s33TgvmBibYY5SceOTv32yZj6km+uBZnohOnRYa2oAdmB/iw49JU1nDT1xVAIRxFXtkf
+         cZTgdFqzLdH7seMoMRxkT2Xj24buFpx2q6AUB9Ep4Q2KqE8Xu/9SvuedD84kd0FtA1Lo
+         eg1w==
+X-Forwarded-Encrypted: i=1; AJvYcCWbv3G0s5FQMEGKVJ8vaciPFlssEacJ4o9f5lLeJtYm4RLVpsa1ZKxNWykvFuXBZ6qA7UPvPCRr7XMtzV9hnrJy0pdM
+X-Gm-Message-State: AOJu0Yz3HI00Va9Dd3okRfTssIw0wIlbMK2rhmA9KRpZitu85u/8obe2
+	hv9vykTDXUq7nWOdK7rSWsZwSeMxAzknLibIfmYQNxw0kK0U7lmXRCmRjNiskaY1x+UgjAYK+a9
+	dft77rw==
+X-Google-Smtp-Source: AGHT+IGN352vLTECkj3LKl4vhkvChUSW2XOj3SG4l0bW1h9U5s0OwY0bBSVAmPJhcMp3K1XY7WWTMA==
+X-Received: by 2002:a05:6512:684:b0:518:17ad:a6e0 with SMTP id t4-20020a056512068400b0051817ada6e0mr5712202lfe.51.1714334497780;
+        Sun, 28 Apr 2024 13:01:37 -0700 (PDT)
+Received: from mail-lf1-f44.google.com (mail-lf1-f44.google.com. [209.85.167.44])
+        by smtp.gmail.com with ESMTPSA id s8-20020a197708000000b00516cef1f1casm3929875lfc.181.2024.04.28.13.01.37
+        for <bpf@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 28 Apr 2024 13:01:37 -0700 (PDT)
+Received: by mail-lf1-f44.google.com with SMTP id 2adb3069b0e04-5194cebd6caso4223561e87.0
+        for <bpf@vger.kernel.org>; Sun, 28 Apr 2024 13:01:37 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCWpJ6VVZAVEaxdxpq7vtH12RfWxjhV6BqApHwtie/2+xCzQsbmlceIG8QC4XUzbpNuOxxDszW3huf90NHTSztT8PNYX
+X-Received: by 2002:a05:6512:3a85:b0:51b:58c7:d04d with SMTP id
+ q5-20020a0565123a8500b0051b58c7d04dmr6353661lfu.0.1714334496870; Sun, 28 Apr
+ 2024 13:01:36 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BN8PR10MB3107:EE_|SJ0PR10MB6326:EE_
-X-MS-Office365-Filtering-Correlation-Id: a929c634-791c-4d50-d345-08dc67b5d7b3
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230031|1800799015|376005|366007;
-X-Microsoft-Antispam-Message-Info: 
-	=?us-ascii?Q?YU0LN5bgMhpx+yzXsjcEGg5sWQV7kO6xDoWc0a8W7iCaAL9qG7Sg7ua1IDgv?=
- =?us-ascii?Q?9JgfzscXc6hYa0mcFiH/RCmcYRdq/g+FMVNic+xadzdAYMGYWt0yMbEDcQwz?=
- =?us-ascii?Q?OPkIO+SblTadY8nv9nLxSKa1DBgmKR2Ki8R+JzsD/7xcXjQHrELPCkaQLUvA?=
- =?us-ascii?Q?dLKuq2ktofg55YCbj0ZIgepRLjEQtJvmbk5Os56Xz/Wsv9gBmknkJAPdEWbw?=
- =?us-ascii?Q?xzAjasFSQWNlFNGfVyxFKZlCgXBgZGD+8XvP2OAAeCjymjtOi6OLwyFSi9C9?=
- =?us-ascii?Q?x3Wu2XGYj5ChdleJeZ1BGazJMswKJGxw6MG0LVbJhlD3Gf/y9lg8lFSRSvGZ?=
- =?us-ascii?Q?FjNasFqAriJ8P7E7aDqjRBNdj9/6wtAIyD8HhSI4G10f2GfDRtUEYMjtJAzr?=
- =?us-ascii?Q?XBV5G7T2xUd8c0uwkgKW5SkRPQvpqxG+jmErNtxNLt6xqzYtcZnPWWNdiUdc?=
- =?us-ascii?Q?PQd30v6MSq0KFWFYd8FT6sJbxeZ+7PgycJgSE7wmhzyxRuAIVyJ/ByEEGhdi?=
- =?us-ascii?Q?RfMKBMMDZXzj7QIPMl5NG+mlBfVNp8OshCWhw28kpA59FMeukzyFcxiMJFBp?=
- =?us-ascii?Q?S+p0FsUwyDFp9ZRoxdixSkm4A8m4+D/iwVVBjvTFAJRKgpr+rSq7RllvKHgn?=
- =?us-ascii?Q?i1bCkSrd2O9Vsvt2bmAZT1I9xq10EbtodtS1fHtFAY6wcRa0G4wwu7R6/pqr?=
- =?us-ascii?Q?u5ki1iA0baHyqv7RRMV+v+SjSdCbQBhxa1h8muEnK0XriNYrDIwS49fjhArW?=
- =?us-ascii?Q?tVe3oZ+fnOBDfwFK1T4vJNUT5w70zk9SNWEopOl7VTp6V0GYhQdQLkG+cT3F?=
- =?us-ascii?Q?/TEZpwhCkF+3UVL+ZXGU8VvOAO+JoOAV+a5/50Jjw5zWcO9Cq+3Vl0IVMgwf?=
- =?us-ascii?Q?960Vk9xMm/RlZUB9zL1TFcALKsBkAyb0njRtP5um5PIdz9xpuUO4aLoMjCHB?=
- =?us-ascii?Q?Q9MJl7ZaOWcDXkeMt6pYGVEDnbXtHB72HRi8LpAroiUDhPyNBYrdtB0wVy7N?=
- =?us-ascii?Q?WN211AZ1oQiYsVOm8gswjI5Yp5/bF9l8cyi7KCSa6V34pODvBBikptKNXaZs?=
- =?us-ascii?Q?57FoeL/a1aeLsmJG9iLFPHUDR803RbvvudnwMuwfhYrVoh3LrFgBATg8jX+Q?=
- =?us-ascii?Q?CbwtVEYJxIhPk3qqPLOHW2/nwG5s9GJmkV6GRZf2fj3LG3XmyX6BBN+0ng2w?=
- =?us-ascii?Q?HRuYuS/VrD5rhz9H0ruF66DiTuoQcWZl5k9Fg/FmLTgW4DMaN5BmrsAAd+Zz?=
- =?us-ascii?Q?wWLw0QPohNe7zFgr0AKQq3Fu0UBUes0KRDJxbN1+8g=3D=3D?=
-X-Forefront-Antispam-Report: 
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN8PR10MB3107.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(1800799015)(376005)(366007);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: 
-	=?us-ascii?Q?6LG55E8cHjHACe/wNtO4Y7gd/SlgCvF+mnxLwFUjAT/idkVRYBH5SDQljp+C?=
- =?us-ascii?Q?H1KZdzmCb0SOI9jFP3sZF/dOMx95xSSz8BDzG9idJ+bTW1o6K9Geab11XThi?=
- =?us-ascii?Q?5iJcLr4VUrzNPFkicJpvtTjqna+7mwy9rT6sZLHSgle73t0P9Ml4k6v8M+AP?=
- =?us-ascii?Q?lnrey6zShFLAStoB4InaJENfKw0qZLdxCD53mHmvoyf1v1ACysTZl4MlBc4b?=
- =?us-ascii?Q?0h8ziUrioxO0YMCTl5Ag9SvCQhGrg20gnqNNDX79MKYkgsZl9pBAlpE52ywk?=
- =?us-ascii?Q?uLhUJt1DuaRlp8nM2KZLfnl1Q+1fxabOZAdouIQMA4y5r6UrulfE8rHKJ9TP?=
- =?us-ascii?Q?fNJFW6dB7AB2uEvBn+8i647vXUCBJt1sCjidudJrEwMOB1DnyOiU2t2vQ/k0?=
- =?us-ascii?Q?L4zRWI2clJ/ANk1PN4Zt2edGLPyC0fkIMo5qP2+H8NB02tNIcB2VFOmeLpWh?=
- =?us-ascii?Q?vweB26375JMR99O2NhP6XAWln/MRqpCII4tH97U48fetkjIb78WKuu5WAMLO?=
- =?us-ascii?Q?ja/xnF+dgMScLJ5XccVAowcTUZ+w9Fhq8Ap5X38oLrgsRsKoyqmVqc6DO18R?=
- =?us-ascii?Q?l0agpmBZl6crryFdf6HbhsDbUwV2DgcqaG1LYaR6TnoFbz2YIpjJWtaJtqrJ?=
- =?us-ascii?Q?g8J3t2ZAWZfHQUe6rbPQiGMyDKq6X0E6TK5Y6cFccqP0dHIgqlZjZp4yBWzK?=
- =?us-ascii?Q?WN3GJKq3BZYEm0XVmL1qKnTSdLvtasd6aOxS90noddtfPAT2L9TqeQUXVeIj?=
- =?us-ascii?Q?REllvYUuaa3NqG+uSwi3ybbDgjRoR6hItNAswEH4w6Z8O3LmRHUQmFcBIQbf?=
- =?us-ascii?Q?KC4FpDLUknaxiTwEEulGcETLXM1IO6wsVg3/d2YwqkVdwJwArHg3A/OhtkH6?=
- =?us-ascii?Q?/Perg5es4/VGDg3c+c9t+dSQbgi+soKeS5rPOvO4X9DsaTDajTw+gU0A2UAh?=
- =?us-ascii?Q?KtdjERoO65DI1107zpAGqOZGNmrC+JePTQIrA1PoN9tqHfcOl3Hfarhf2+m9?=
- =?us-ascii?Q?pl6SmLnqZnaqajPo8UVp7bDrjqxXUEQ3xd1kni3yD33E4I2qqZ2t1QGrVSTz?=
- =?us-ascii?Q?szjjsm5JoncBDbs4ifgB9iAGT4WPnjuVOyu9TaPFbYUYoFg6UO8eRyc9KX4u?=
- =?us-ascii?Q?/Bp7qqE/QzMjINGtT6KjFYZbwXUnye8Od7+3Iek43fA1SMLj4f32Eo9agU3D?=
- =?us-ascii?Q?cv0aBYwALlGAmfwCU0dfktX2EEfvbka1oipS+DRbHZZ5iGqWdpvtGbdesRhv?=
- =?us-ascii?Q?dLG0RXK1bPF1zpkplSkvXX07a+YQP+b3zyE3pNOzvyXux63nB4+ZiEpZy22o?=
- =?us-ascii?Q?wOhzCM4ZyE8rSUHR9aRrz688Sne1tXLQam4a9HogdZtkE4X+ER2v0KZBGtFH?=
- =?us-ascii?Q?PnCpjNQCLxOc0qltKf7XIZkNEYYTKnzYOID0i0VGX0HGOIOjPmlVFfm/rI6V?=
- =?us-ascii?Q?5c3iphERYZOfuqGQsHzm++FsKv1foSggZZ0znRGt0VhxQmA4re9M7TTIjd/z?=
- =?us-ascii?Q?Jvh1W1dUbF/jXwx+ni2MD8Zhp07g15VS3TpDW/faqSNj5ERmoiYAhfLHt1g2?=
- =?us-ascii?Q?nPmwxy5xI6yAxSILKk9jBlMEzL+YGWk0Y/6xz2DwuJTaCz1LtJoKbmdevexH?=
- =?us-ascii?Q?Qg=3D=3D?=
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: 
-	/friFtz7HBCm66o+y86ml29gaRLkY6PmG18PaJ6J4DRGCpBytu0NeAcnkWFA9epKuoPf0HhDG6luS2dvra6KgR5VGeBqgXVTA0NYhC3jAhrsjqoP1gMORNxoxGv9u/8kwEXysnkClUq0XA2in0bgxtOlCaliaHiXDtAIjE0QVOvMwdnluKfpnVEOE2UivvERZ+7Wa2SzJjIKw3rt5nM3i7biQAT25WvyHOVfGzqUnjNhjNCwGNbolPslNo3ZSSaL8da+I3W3+hhWuqwKkpDyFRYYzKvFKAKB5S86cCs/BDy0jIQyy9O/nhO5uxINWgvhp4obFNjnq8VNmDT3c8HQFlleK5hmngj/IrVlzQG8W7oisRgLDLAq2VcU2dPH2obntKzNHh0ZcNcA7Z8WnL2VdxvU2njycjWLJT0c+mOAT88zUm7D3h8p5Yyujw2tcsFF8wHkY9YCXNapoqLtz+GUOPwT2skEEUOyc0D/ZL2jCbBpM054fgoULQ/qOsmzGQbkzLqN97suLyO5brbrgsjdDdg+JZL0L0gnanAJwCTWNy8O+8ouvzfz1c2I0+zZ9B21km9zljhfoY5+VaJBYIv9fnSrIVkTnE04jnJjNPcTYiU=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: a929c634-791c-4d50-d345-08dc67b5d7b3
-X-MS-Exchange-CrossTenant-AuthSource: BN8PR10MB3107.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Apr 2024 19:03:09.0999
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: LJQGUJqodbXZegxns+LvhkYwoCp5qPsOVzZ9G9SNKSnxyvGS/QsHernbO6wuxwWfLXBunCDUgjImRWQWRnN3xwucOSBAnkirYs4syag3/RM=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR10MB6326
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.650,FMLib:17.11.176.26
- definitions=2024-04-28_14,2024-04-26_02,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 phishscore=0 bulkscore=0
- suspectscore=0 malwarescore=0 spamscore=0 adultscore=0 mlxlogscore=999
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2404010000
- definitions=main-2404280136
-X-Proofpoint-GUID: DyJmjoP8DfbIlGXDZZcs3e_7MYsaQga4
-X-Proofpoint-ORIG-GUID: DyJmjoP8DfbIlGXDZZcs3e_7MYsaQga4
+References: <0000000000009dfa6d0617197994@google.com> <20240427231321.3978-1-hdanton@sina.com>
+In-Reply-To: <20240427231321.3978-1-hdanton@sina.com>
+From: Linus Torvalds <torvalds@linux-foundation.org>
+Date: Sun, 28 Apr 2024 13:01:19 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wjBvNvVggy14p9rkHA8W1ZVfoKXvW0oeX5NZWxWUv8gfQ@mail.gmail.com>
+Message-ID: <CAHk-=wjBvNvVggy14p9rkHA8W1ZVfoKXvW0oeX5NZWxWUv8gfQ@mail.gmail.com>
+Subject: Re: [syzbot] [bpf?] [trace?] possible deadlock in force_sig_info_to_task
+To: Hillf Danton <hdanton@sina.com>
+Cc: syzbot <syzbot+83e7f982ca045ab4405c@syzkaller.appspotmail.com>, 
+	andrii@kernel.org, bpf@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-
->> Also please check CI failures ([0]).
->>
->>   [0] https://github.com/kernel-patches/bpf/actions/runs/8846180836/job/24291582343
+On Sat, 27 Apr 2024 at 16:13, Hillf Danton <hdanton@sina.com> wrote:
 >
-> How weird.  This means something is going on in my local testing
-> environment.
+> > -> #0 (&sighand->siglock){....}-{2:2}:
+> >        check_prev_add kernel/locking/lockdep.c:3134 [inline]
+> >        check_prevs_add kernel/locking/lockdep.c:3253 [inline]
+> >        validate_chain+0x18cb/0x58e0 kernel/locking/lockdep.c:3869
+> >        __lock_acquire+0x1346/0x1fd0 kernel/locking/lockdep.c:5137
+> >        lock_acquire+0x1ed/0x550 kernel/locking/lockdep.c:5754
+> >        __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:110 [inline]
+> >        _raw_spin_lock_irqsave+0xd5/0x120 kernel/locking/spinlock.c:162
+> >        force_sig_info_to_task+0x68/0x580 kernel/signal.c:1334
+> >        force_sig_fault_to_task kernel/signal.c:1733 [inline]
+> >        force_sig_fault+0x12c/0x1d0 kernel/signal.c:1738
+> >        __bad_area_nosemaphore+0x127/0x780 arch/x86/mm/fault.c:814
+> >        handle_page_fault arch/x86/mm/fault.c:1505 [inline]
+>
+> Given page fault with runqueue locked, bpf makes trouble instead of
+> helping anything in this case.
 
-Ok, I think I know what is going on: the CI failures had nothing to do
-with the patch changes per-se, but with the fact the patch changes
-bpf_tracing.h and a little problem in the build system.
+That's not the odd thing here.
 
-If I change tools/lib/bpf/bpf_tracing.h in bpf-next master, then
-execute:
+Look, the callchain is:
 
- $ cd bpf-next/
- $ git clean -xf
- $ cd tools/testing/selftests/bpf/
- $ ./vmtest.sh -- ./test_progs
+> >        exc_page_fault+0x612/0x8e0 arch/x86/mm/fault.c:1563
+> >        asm_exc_page_fault+0x26/0x30 arch/x86/include/asm/idtentry.h:623
+> >        rep_movs_alternative+0x22/0x70 arch/x86/lib/copy_user_64.S:48
+> >        copy_user_generic arch/x86/include/asm/uaccess_64.h:110 [inline]
+> >        raw_copy_from_user arch/x86/include/asm/uaccess_64.h:125 [inline]
+> >        __copy_from_user_inatomic include/linux/uaccess.h:87 [inline]
+> >        copy_from_user_nofault+0xbc/0x150 mm/maccess.c:125
 
-in tools/testing/sefltests/bpf, I get this:
+IOW, this is all doing a copy from user with page faults disabled, and
+it shouldn't have caused a signal to be sent, so the whole
+__bad_area_nosemaphore -> force_sig_fault path is bad.
 
-  make[2]: *** No rule to make target '/home/jemarch/gnu/src/bpf-next/tools/testing/selftests/bpf/tools/build/libbpflibbpfbpf_helper_defs.h', needed by '/home/jemarch/gnu/src/bpf-next/tools/testing/selftests/bpf/tools/build/libbpf/include/bpf/libbpfbpf_helper_defs.h'.  Stop.
+The *problem* here is that the page fault doesn't actually happen on a
+user access, it happens on the *ret* instruction in
+rep_movs_alternative itself (which doesn't have a exception fixup,
+obviously, because no exception is supposed to happen there!):
 
+  RIP: 0010:rep_movs_alternative+0x22/0x70 arch/x86/lib/copy_user_64.S:50
+  Code: 90 90 90 90 90 90 90 90 f3 0f 1e fa 48 83 f9 40 73 40 83 f9 08
+73 21 85 c9 74 0f 8a 06 88 07 48 ff c7 48 ff c6 48 ff c9 75 f1 <c3> cc
+cc cc cc 66 0f 1f 84 00 00 0$
+  RSP: 0000:ffffc90004137468 EFLAGS: 00050002
+  RAX: ffffffff8205ce4e RBX: dffffc0000000000 RCX: 0000000000000002
+  RDX: 0000000000000000 RSI: 0000000000000900 RDI: ffffc900041374e8
+  RBP: ffff88802d039784 R08: 0000000000000005 R09: ffffffff8205ce37
+  R10: 0000000000000003 R11: ffff88802d038000 R12: 1ffff11005a072f0
+  R13: 0000000000000900 R14: 0000000000000002 R15: ffffc900041374e8
 
-Same thing happens if I have a built tree and I do `make' in
-tools/testing/selftests/bpf.
+where decoding that "Code:" line gives this:
 
-In tools/lib/bpf/Makefile there is:
+   0: f3 0f 1e fa          endbr64
+   4: 48 83 f9 40          cmp    $0x40,%rcx
+   8: 73 40                jae    0x4a
+   a: 83 f9 08              cmp    $0x8,%ecx
+   d: 73 21                jae    0x30
+   f: 85 c9                test   %ecx,%ecx
+  11: 74 0f                je     0x22
+  13: 8a 06                mov    (%rsi),%al
+  15: 88 07                mov    %al,(%rdi)
+  17: 48 ff c7              inc    %rdi
+  1a: 48 ff c6              inc    %rsi
+  1d: 48 ff c9              dec    %rcx
+  20: 75 f1                jne    0x13
+  22:* c3                    ret <-- trapping instruction
 
-  BPF_HELPER_DEFS	:= $(OUTPUT)bpf_helper_defs.h
+but I have no idea why the 'ret' instruction would take a page fault.
+It really shouldn't.
 
-which assumes OUTPUT always has a trailing slash, which seems to be a
-common expectation for OUTPUT among all the Makefiles.
+Now, it's not like 'ret' instructions can't take page faults, but it
+sure shouldn't happen in the *kernel*. The reasons for page faults on
+'ret' instructions are:
 
-In tools/bpf/runqslower/Makefile we find:
+ - the instruction itself takes a page fault
 
-  BPFTOOL_OUTPUT := $(OUTPUT)bpftool/
-  DEFAULT_BPFTOOL := $(BPFTOOL_OUTPUT)bootstrap/bpftool
-  [...]
-  $(BPFOBJ): $(wildcard $(LIBBPF_SRC)/*.[ch] $(LIBBPF_SRC)/Makefile) | $(BPFOBJ_OUTPUT)
-	$(Q)$(MAKE) $(submake_extras) -C $(LIBBPF_SRC) OUTPUT=$(BPFOBJ_OUTPUT) \
-		    DESTDIR=$(BPFOBJ_OUTPUT) prefix= $(abspath $@) install_headers
+ - the stack pointer is bogus
 
-which is ok because BPFTOOL_OUTPUT is defined with a trailing slash.
+ - possibly because the stack *contents* are bogus (at least some x86
+instructions that jump will check the destination in the jump
+instruction itself, although I didn't think 'ret' was one of them)
 
-However in tools/testing/selftests/bpf/Makefile an explicit value for
-BPFTOOL_OUTPUT is specified, that lacks a trailing slash:
+but for the kernel, none of these actually seem to be the case
+normally. And even abnormally I don't see this being an issue, since
+the exception backtrace is happily shown (ie the stack looks all
+good).
 
-  $(OUTPUT)/runqslower: $(BPFOBJ) | $(DEFAULT_BPFTOOL) $(RUNQSLOWER_OUTPUT)
-	$(Q)$(MAKE) $(submake_extras) -C $(TOOLSDIR)/bpf/runqslower	       \
-		    OUTPUT=$(RUNQSLOWER_OUTPUT) VMLINUX_BTF=$(VMLINUX_BTF)     \
-		    BPFTOOL_OUTPUT=$(HOST_BUILD_DIR)/bpftool/		       \
-		    BPFOBJ_OUTPUT=$(BUILD_DIR)/libbpf			       \
-		    BPFOBJ=$(BPFOBJ) BPF_INCLUDE=$(INCLUDE_DIR)		       \
-		    EXTRA_CFLAGS='-g $(OPT_FLAGS) $(SAN_CFLAGS)'	       \
-		    EXTRA_LDFLAGS='$(SAN_LDFLAGS)' &&			       \
-		    cp $(RUNQSLOWER_OUTPUT)runqslower $@
+So this dump is just *WEIRD*.
 
-This results in a malformed
+End result: the problem is not about any kind of deadlock on circular
+locking. That's just the symptom of that odd page fault that shouldn't
+have happened, and that I don't quite see how it happened.
 
-  BPF_HELPER_DEFS	:= $(OUTPUT)bpf_helper_defs.h
-
-in tools/lib/bpf/Makefile.
-
-The patch below fixes this, but there are other many possible fixes
-(like changing tools/bpf/runqslower/Makefile in order to pass
-OUTPUT=$(BPFOBJ_OUTPUT)/, or changing tools/lib/bpf/Makefile to use
-$(OUTPUT)/bpf_helper_defs.h) and I don't know which one you would
-prefer.
-
-Also, since the involved rules have not been changed recently, I am
-wondering why this is being noted only now.  Is people using another
-set-up/workflow that somehow doesn't trigger this?
-
-diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
-index ca8b73f7c774..665a5c1e9b8e 100644
---- a/tools/testing/selftests/bpf/Makefile
-+++ b/tools/testing/selftests/bpf/Makefile
-@@ -274,7 +274,7 @@ $(OUTPUT)/runqslower: $(BPFOBJ) | $(DEFAULT_BPFTOOL) $(RUNQSLOWER_OUTPUT)
- 	$(Q)$(MAKE) $(submake_extras) -C $(TOOLSDIR)/bpf/runqslower	       \
- 		    OUTPUT=$(RUNQSLOWER_OUTPUT) VMLINUX_BTF=$(VMLINUX_BTF)     \
- 		    BPFTOOL_OUTPUT=$(HOST_BUILD_DIR)/bpftool/		       \
--		    BPFOBJ_OUTPUT=$(BUILD_DIR)/libbpf			       \
-+		    BPFOBJ_OUTPUT=$(BUILD_DIR)/libbpf/			       \
- 		    BPFOBJ=$(BPFOBJ) BPF_INCLUDE=$(INCLUDE_DIR)		       \
- 		    EXTRA_CFLAGS='-g $(OPT_FLAGS) $(SAN_CFLAGS)'	       \
- 		    EXTRA_LDFLAGS='$(SAN_LDFLAGS)' &&			       \
+               Linus
 
