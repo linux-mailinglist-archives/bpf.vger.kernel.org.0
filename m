@@ -1,352 +1,322 @@
-Return-Path: <bpf+bounces-28042-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-28043-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 396AB8B4C08
-	for <lists+bpf@lfdr.de>; Sun, 28 Apr 2024 15:47:58 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4E0DF8B4C5A
+	for <lists+bpf@lfdr.de>; Sun, 28 Apr 2024 17:16:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5C3641C20EB9
-	for <lists+bpf@lfdr.de>; Sun, 28 Apr 2024 13:47:57 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 05596281981
+	for <lists+bpf@lfdr.de>; Sun, 28 Apr 2024 15:15:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D8DE6D1C1;
-	Sun, 28 Apr 2024 13:47:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="K5gmsV61"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 487B16EB64;
+	Sun, 28 Apr 2024 15:15:51 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-qv1-f43.google.com (mail-qv1-f43.google.com [209.85.219.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 656A76BFB8
-	for <bpf@vger.kernel.org>; Sun, 28 Apr 2024 13:47:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 30D4D1BC40;
+	Sun, 28 Apr 2024 15:15:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714312072; cv=none; b=ovdL61BKll0SsmAm2en2I+brG8VQ+BayN1JQ9IUs3Q/5mqnGVlKcrKmBfUF8U1EZmSwyzAsCddeNnonFzK5geSd9NPe4gXzudznUAKUcm0ZNQmao4nuvFKZmoHyZwytrNLV+b55kJ9iYHUeZ5QkpYGSQG4D6O8hJdKMR/fRlU34=
+	t=1714317351; cv=none; b=kZU5hNlnzF3/rzsEFWfLFmqIzy/7XPTjzOU1c2CV0V/eo3KwUGM/0nnB/azYMYHuO+VPkquXkBD/B64yRmI7xj2V+xnGgYZmjVHDl1n1rbyoICVFmm0mQ6mygnxtoV0wgdGiUxMx1VLMrHMODpu+hkqB88cCob9m/yPQ+fdqKWM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714312072; c=relaxed/simple;
-	bh=bU4+I/eFdS1jIyrsQE2mqkAxH1L4Satcme182lXSyFg=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=fsVk4Rfze0yoOkque1yhgfBePuUVmmY16TXatunYVBGd8yo5HB9ptE4D5HTjXqN7LLhp5C/s/kkN7FY9KEXydRdwKH06z6voWRmQ26t0vG0b5yEzzXTiXCMAmsiGlwlm1gCNqWAheWd5/YOBDKWoxKvL1VewmVbRaIknQM6pO0Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=K5gmsV61; arc=none smtp.client-ip=209.85.219.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qv1-f43.google.com with SMTP id 6a1803df08f44-6a06b12027cso43089296d6.0
-        for <bpf@vger.kernel.org>; Sun, 28 Apr 2024 06:47:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714312069; x=1714916869; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=0pf/HGfSdQeM6WuZVJk21HlwzQqGln6MV1mh+8KUlFs=;
-        b=K5gmsV61iC3Mpe7HYkL0jtfEnzSFox6Lln7wwq6WXe/uYNiQRFQMBsAoWIpk/+20/l
-         YJr300AxPz4DvB1eVzUJ/NOu2b2XgIf9mDXC5xEcC4tTYKgilTtG+KqALINiiG5T3ql/
-         klC88SxdkQa9SfgW1qNCBS52tDfoG9ibmOZrvnK6MU/gyJ+zrFGzkGYvdEZ6kSEsRhOC
-         r9DUDCAnWmx5t35yBO+Jl/yEwixvi25YkVTQwnBYGEosa3Lk3C78kI7amGQ6P70FB5fc
-         SKIIhLqfxr0oOhPI6hj1CvkQSzhPY5lz4QS4Vns2hipYF4g8TSxxIfyH39sKjpSA6pNS
-         64lw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714312069; x=1714916869;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=0pf/HGfSdQeM6WuZVJk21HlwzQqGln6MV1mh+8KUlFs=;
-        b=XnYqxrWnSyU5T5aNfibn7c2LHtCq53kAQcoSXYAz35UVJbz4KuFZCdYoR+mlPGa11a
-         XBKPC1+l2J+8iGGFDu6MkBRn776RpiPq2wbxIlMQx9GgkAZiAW2CXU9loRUyseCxwLlk
-         beVrXZ1/QkuZHfk0yyfXAozhkTEiXVWivtNO8vJv4vHpZKeShamH+SAux7kmcD2u76Pu
-         Xca2dumM9+QFidbY+YCaAuvGIVCmGfvtVEhMpT8CJAZWZxqKt2N1CWWAdYDjOhUryQ8e
-         +Sr/8HrOlkMxa2m9779GRaF3KXKAI6qGAfzXhug2tMKlGuuq+ohXT0HJmOLh/3xIVTbq
-         ur8w==
-X-Forwarded-Encrypted: i=1; AJvYcCUQ0h1bE2nelnrzi7UG1wvAfJ6Hd5ac5T4pAaM9+HjwogMYXqfYxDdY03SRKyHqrrjZLgBgQAR99pNVYv4L+Ph6k0ll
-X-Gm-Message-State: AOJu0YwPJ8A76fRujow2NHfbiKyh0qeQKiSPK7tyEYfKxgHxfuSfAjXM
-	YXvWlkPtkV0B9+bHdlruYansUbq5D0OQzBIhORbhOz8fa1wRozgEKJ7lrdIfH9ukF9i3iCW492y
-	p+cCQwPUHRRXRPyYPClQmIYwxass=
-X-Google-Smtp-Source: AGHT+IHYlBV23PW3Z/lnThO/598p95pPXzo9WTayT2uJtYgSNsOLvyRVGL5QcZjkq3ny4xAP9yAOhOwmkkJkX2QExdU=
-X-Received: by 2002:a05:6214:248b:b0:6a0:ce01:e9d with SMTP id
- gi11-20020a056214248b00b006a0ce010e9dmr1199547qvb.30.1714312069077; Sun, 28
- Apr 2024 06:47:49 -0700 (PDT)
+	s=arc-20240116; t=1714317351; c=relaxed/simple;
+	bh=ufQehwoOP8I5WnKH2epn1XxVgLfPaCl2twGWpKmEu7U=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=YpSZUZxvYnNfdEYEpSL81xAWFi7UWE9uPnBQ72WSiLoUqJX3O1U505Yatc3gBTFbUQj3RmHEny+8PFL8yQixWRqq033577lVbp2eWr8yE0uJAerCDG6vlbhGzewKQmzaSiPcq1LWuM6MmT6HIfEPfQWy8/zMBTJhjG3Pjb+42I0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.93.142])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4VS956682Bz4f3jkC;
+	Sun, 28 Apr 2024 23:15:38 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.128])
+	by mail.maildlp.com (Postfix) with ESMTP id CEC8E1A0179;
+	Sun, 28 Apr 2024 23:15:43 +0800 (CST)
+Received: from [10.67.111.192] (unknown [10.67.111.192])
+	by APP4 (Coremail) with SMTP id gCh0CgDXTnEcaC5mZeugLQ--.61138S2;
+	Sun, 28 Apr 2024 23:15:41 +0800 (CST)
+Message-ID: <4fbce978-9687-48a9-be2a-1c4d76790f7d@huaweicloud.com>
+Date: Sun, 28 Apr 2024 23:15:40 +0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240411131127.73098-1-laoar.shao@gmail.com> <CALOAHbCBxGbLH0+1fSTQtt3K8yXX9oG4utkiHn=+dxpKZ+64cw@mail.gmail.com>
- <CAEf4BzbynKkK_sct2WdTrF2F+RJ1tD3F6nYAew+Gq82qokgQGA@mail.gmail.com>
- <CALOAHbBBDwxBGOrDWqGf2b8bRRii8DnBHCU9cAbp_Sw-Q6XKBA@mail.gmail.com>
- <CAEf4BzZDUQextxUZGVDsctUhM718nvq+XX=HQSbUVaRkxXi3Tg@mail.gmail.com>
- <CALOAHbDQEaSncsAAt7_JGU_nXWBjp=4o-zgXxiy0kSZPg93cgQ@mail.gmail.com> <CAEf4BzZbWTM-NtpEHM-c8z01YQrTCJX9VuWBViR1K5Fo-1Tt5A@mail.gmail.com>
-In-Reply-To: <CAEf4BzZbWTM-NtpEHM-c8z01YQrTCJX9VuWBViR1K5Fo-1Tt5A@mail.gmail.com>
-From: Yafang Shao <laoar.shao@gmail.com>
-Date: Sun, 28 Apr 2024 21:47:12 +0800
-Message-ID: <CALOAHbC8k6B4mbp-7YPQ9Q8QP+HAKt6oexZm9vdUVe6+Z8shHA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v6 0/2] bpf: Add a generic bits iterator
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH bpf-next v3 07/11] bpf: Fix a false rejection caused by
+ AND operation
+Content-Language: en-US
 To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: ast@kernel.org, daniel@iogearbox.net, john.fastabend@gmail.com, 
-	andrii@kernel.org, martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org, 
-	yonghong.song@linux.dev, kpsingh@kernel.org, sdf@google.com, 
-	haoluo@google.com, jolsa@kernel.org, bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Cc: Yonghong Song <yonghong.song@linux.dev>,
+ Eduard Zingerman <eddyz87@gmail.com>, bpf@vger.kernel.org,
+ netdev@vger.kernel.org, linux-security-module@vger.kernel.org,
+ linux-kselftest@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+ Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
+ John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
+ Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
+ Jiri Olsa <jolsa@kernel.org>, Matt Bobrowski <mattbobrowski@google.com>,
+ Brendan Jackman <jackmanb@chromium.org>, Paul Moore <paul@paul-moore.com>,
+ James Morris <jmorris@namei.org>, "Serge E . Hallyn" <serge@hallyn.com>,
+ Khadija Kamran <kamrankhadijadj@gmail.com>,
+ Casey Schaufler <casey@schaufler-ca.com>,
+ Ondrej Mosnacek <omosnace@redhat.com>, Kees Cook <keescook@chromium.org>,
+ John Johansen <john.johansen@canonical.com>,
+ Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+ Roberto Sassu <roberto.sassu@huawei.com>,
+ Shung-Hsi Yu <shung-hsi.yu@suse.com>
+References: <20240411122752.2873562-1-xukuohai@huaweicloud.com>
+ <20240411122752.2873562-8-xukuohai@huaweicloud.com>
+ <e62e2971301ca7f2e9eb74fc500c520285cad8f5.camel@gmail.com>
+ <f80991aa-3a49-451a-9a82-ac57982dcb28@huaweicloud.com>
+ <bdc84c6c-7415-4b84-a883-1988cb5f77d1@linux.dev>
+ <576c7c44-d1b4-42c8-8b6e-2e6b93d7547a@huaweicloud.com>
+ <CAEf4BzZTzftrOCFsfBd81sHDBpmNK+4Jefqa3SSS6NiuncO0tQ@mail.gmail.com>
+From: Xu Kuohai <xukuohai@huaweicloud.com>
+In-Reply-To: <CAEf4BzZTzftrOCFsfBd81sHDBpmNK+4Jefqa3SSS6NiuncO0tQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:gCh0CgDXTnEcaC5mZeugLQ--.61138S2
+X-Coremail-Antispam: 1UD129KBjvJXoW3Wr4Uuw43XF4fuw13WrWfXwb_yoWfCFy5pF
+	Z8JFnFvr4kZ3yUZw1qqw4DArZYqF18JF18u34kA34IyrnFqFy5tr13KFyjkF9xArs7Cr4f
+	XF13WrW7tw4qqrJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUk0b4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxAIw28IcxkI
+	7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxV
+	Cjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVW8ZVWrXwCIc40Y0x0EwIxGrwCI42IY
+	6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6x
+	AIw20EY4v20xvaj40_WFyUJVCq3wCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv
+	6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUFYFCUUUUU
+X-CM-SenderInfo: 50xn30hkdlqx5xdzvxpfor3voofrz/
 
-On Sat, Apr 27, 2024 at 12:51=E2=80=AFAM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
->
-> On Thu, Apr 25, 2024 at 10:05=E2=80=AFPM Yafang Shao <laoar.shao@gmail.co=
-m> wrote:
-> >
-> > On Fri, Apr 26, 2024 at 2:15=E2=80=AFAM Andrii Nakryiko
-> > <andrii.nakryiko@gmail.com> wrote:
-> > >
-> > > On Wed, Apr 24, 2024 at 10:37=E2=80=AFPM Yafang Shao <laoar.shao@gmai=
-l.com> wrote:
-> > > >
-> > > > On Thu, Apr 25, 2024 at 8:34=E2=80=AFAM Andrii Nakryiko
-> > > > <andrii.nakryiko@gmail.com> wrote:
-> > > > >
-> > > > > On Thu, Apr 11, 2024 at 6:51=E2=80=AFAM Yafang Shao <laoar.shao@g=
-mail.com> wrote:
-> > > > > >
-> > > > > > On Thu, Apr 11, 2024 at 9:11=E2=80=AFPM Yafang Shao <laoar.shao=
-@gmail.com> wrote:
-> > > > > > >
-> > > > > > > Three new kfuncs, namely bpf_iter_bits_{new,next,destroy}, ha=
-ve been
-> > > > > > > added for the new bpf_iter_bits functionality. These kfuncs e=
-nable the
-> > > > > > > iteration of the bits from a given address and a given number=
- of bits.
-> > > > > > >
-> > > > > > > - bpf_iter_bits_new
-> > > > > > >   Initialize a new bits iterator for a given memory area. Due=
- to the
-> > > > > > >   limitation of bpf memalloc, the max number of bits to be it=
-erated
-> > > > > > >   over is (4096 * 8).
-> > > > > > > - bpf_iter_bits_next
-> > > > > > >   Get the next bit in a bpf_iter_bits
-> > > > > > > - bpf_iter_bits_destroy
-> > > > > > >   Destroy a bpf_iter_bits
-> > > > > > >
-> > > > > > > The bits iterator can be used in any context and on any addre=
-ss.
-> > > > > > >
-> > > > > > > Changes:
-> > > > > > > - v5->v6:
-> > > > > > >   - Add positive tests (Andrii)
-> > > > > > > - v4->v5:
-> > > > > > >   - Simplify test cases (Andrii)
-> > > > > > > - v3->v4:
-> > > > > > >   - Fix endianness error on s390x (Andrii)
-> > > > > > >   - zero-initialize kit->bits_copy and zero out nr_bits (Andr=
-ii)
-> > > > > > > - v2->v3:
-> > > > > > >   - Optimization for u64/u32 mask (Andrii)
-> > > > > > > - v1->v2:
-> > > > > > >   - Simplify the CPU number verification code to avoid the fa=
-ilure on s390x
-> > > > > > >     (Eduard)
-> > > > > > > - bpf: Add bpf_iter_cpumask
-> > > > > > >   https://lwn.net/Articles/961104/
-> > > > > > > - bpf: Add new bpf helper bpf_for_each_cpu
-> > > > > > >   https://lwn.net/Articles/939939/
-> > > > > > >
-> > > > > > > Yafang Shao (2):
-> > > > > > >   bpf: Add bits iterator
-> > > > > > >   selftests/bpf: Add selftest for bits iter
-> > > > > > >
-> > > > > > >  kernel/bpf/helpers.c                          | 120 ++++++++=
-+++++++++
-> > > > > > >  .../selftests/bpf/prog_tests/verifier.c       |   2 +
-> > > > > > >  .../selftests/bpf/progs/verifier_bits_iter.c  | 127 ++++++++=
-++++++++++
-> > > > > > >  3 files changed, 249 insertions(+)
-> > > > > > >  create mode 100644 tools/testing/selftests/bpf/progs/verifie=
-r_bits_iter.c
-> > > > > > >
-> > > > > > > --
-> > > > > > > 2.39.1
-> > > > > > >
-> > > > > >
-> > > > > > It appears that the test case failed on s390x when the data is
-> > > > > > a u32 value because we need to set the higher 32 bits.
-> > > > > > will analyze it.
-> > > > > >
-> > > > >
-> > > > > Hey Yafang, did you get a chance to debug and fix the issue?
-> > > > >
-> > > >
-> > > > Hi Andrii,
-> > > >
-> > > > Apologies for the delay; I recently returned from an extended holid=
-ay.
-> > > >
-> > > > The issue stems from the limitations of bpf_probe_read_kernel() on
-> > > > s390 architecture. The attachment provides a straightforward exampl=
-e
-> > > > to illustrate this issue. The observed results are as follows:
-> > > >
-> > > >     Error: #463/1 verifier_probe_read/probe read 4 bytes
-> > > >     8897 run_subtest:PASS:obj_open_mem 0 nsec
-> > > >     8898 run_subtest:PASS:unexpected_load_failure 0 nsec
-> > > >     8899 do_prog_test_run:PASS:bpf_prog_test_run 0 nsec
-> > > >     8900 run_subtest:FAIL:659 Unexpected retval: 2817064 !=3D 512
-> > > >
-> > > >     Error: #463/2 verifier_probe_read/probe read 8 bytes
-> > > >     8903 run_subtest:PASS:obj_open_mem 0 nsec
-> > > >     8904 run_subtest:PASS:unexpected_load_failure 0 nsec
-> > > >     8905 do_prog_test_run:PASS:bpf_prog_test_run 0 nsec
-> > > >     8906 run_subtest:FAIL:659 Unexpected retval: 0 !=3D 512
-> > > >
-> > > > More details can be found at:  https://github.com/kernel-patches/bp=
-f/pull/6872
-> > > >
-> > > > Should we consider this behavior of bpf_probe_read_kernel() as
-> > > > expected, or is it something that requires fixing?
-> > > >
-> > >
-> > > I might be missing something, but there is nothing wrong with
-> > > bpf_probe_read_kernel() behavior. In "read 4" case you are overwritin=
-g
-> > > only upper 4 bytes of u64, so lower 4 bytes are garbage. In "read 8"
-> > > you are reading (upper) 4 bytes of garbage from uninitialized
-> > > data_dst.
-> >
-> > The issue doesn't lie with the dst but rather with the src. Even after
-> > initializing the destination, the operation still fails. You can find
->
-> Are you sure the operation "fails"? If it would fail, you'd get a
-> negative error code, but you are getting zero. Which actually makes
-> sense.
->
-> I think you are just getting confused by big endianness of s390x, and
-> there is nothing wrong with bpf_probe_read_kernel().
->
-> In both of your tests (I pasted your code below, it would be better if
-> you did it in your initial emails) you end up with 0x200 in *upper* 32
-> bits (on big endian) and lower bits are zeros. And __retval thing is
-> 32-bit (despite BPF program returning long), so this return value is
-> truncated to *lower* 32-bits, which are, expectedly, zeroes.
-
-Thank you for clarifying. The presence of the 32-bit __retval led to
-my misunderstanding :(
-
->
-> So I think everything works as expected, but your tests (at least)
-> don't handle the big-endian arch well.
-
-The issue arises when the dst and src have different sizes, causing
-bpf_probe_read_kernel_common() to handle them poorly on big-endian
-machines. To address this, we need to calculate the offset for
-copying, as demonstrated by the following
-
-   bpf_probe_read_kernel_common(&kit->bits_copy + offset, size,
-unsafe_ptr__ign);
-
-One might wonder why this calculation is not incorporated directly
-into the implementation of bpf_probe_read_kernel_common() ?
-
->
-> __description("probe read 4 bytes")
-> __success __retval(0x200)
-> long probe_read_4(void)
-> {
->     int data =3D 0x200;
->     long data_dst =3D 0;
->     int err;
->
->     err =3D bpf_probe_read_kernel(&data_dst, 4, &data);
->     if (err)
->         return err;
->
->     return data_dst;
-> }
->
-> SEC("syscall")
-> __description("probe read 8 bytes")
-> __success __retval(0x200)
-> long probe_read_8(void)
-> {
->     int data =3D 0x200;
->     long data_dst =3D 0;
->     int err;
->
->     err =3D bpf_probe_read_kernel(&data_dst, 8, &data);
->     if (err)
->         return err;
->
->     return data_dst;
->
-> }
->
-> > more details in the following link:
-> > https://github.com/kernel-patches/bpf/pull/6882. It appears that
-> > bpf_probe_read_kernel() encounters difficulties when dealing with
-> > non-long-aligned source addresses.
-> >
-> > >
-> > > So getting back to iter implementation. Make sure you are
-> > > zero-initializing that u64 value you are reading into?
-> > >
-> >
-> > It has been zero-initialized:
-> >
-> > + kit->nr_bits =3D 0;
-> > + kit->bits_copy =3D 0;
-> >
->
-> ok, then the problem is somewhere else, but it doesn't seem to be in
-> bpf_probe_read_kernel(). I'm forgetting what was the original test
-> failure for your patch set, but please double check again, taking into
-> account the big endianness of s390x.
+On 4/27/2024 4:36 AM, Andrii Nakryiko wrote:
+> On Tue, Apr 23, 2024 at 7:26 PM Xu Kuohai <xukuohai@huaweicloud.com> wrote:
+>>
+>> On 4/24/2024 5:55 AM, Yonghong Song wrote:
+>>>
+>>> On 4/20/24 1:33 AM, Xu Kuohai wrote:
+>>>> On 4/20/2024 7:00 AM, Eduard Zingerman wrote:
+>>>>> On Thu, 2024-04-11 at 20:27 +0800, Xu Kuohai wrote:
+>>>>>> From: Xu Kuohai <xukuohai@huawei.com>
+>>>>>>
+>>>>>> With lsm return value check, the no-alu32 version test_libbpf_get_fd_by_id_opts
+>>>>>> is rejected by the verifier, and the log says:
+>>>>>>
+>>>>>>     0: R1=ctx() R10=fp0
+>>>>>>     ; int BPF_PROG(check_access, struct bpf_map *map, fmode_t fmode) @ test_libbpf_get_fd_by_id_opts.c:27
+>>>>>>     0: (b7) r0 = 0                        ; R0_w=0
+>>>>>>     1: (79) r2 = *(u64 *)(r1 +0)
+>>>>>>     func 'bpf_lsm_bpf_map' arg0 has btf_id 916 type STRUCT 'bpf_map'
+>>>>>>     2: R1=ctx() R2_w=trusted_ptr_bpf_map()
+>>>>>>     ; if (map != (struct bpf_map *)&data_input) @ test_libbpf_get_fd_by_id_opts.c:29
+>>>>>>     2: (18) r3 = 0xffff9742c0951a00       ; R3_w=map_ptr(map=data_input,ks=4,vs=4)
+>>>>>>     4: (5d) if r2 != r3 goto pc+4         ; R2_w=trusted_ptr_bpf_map() R3_w=map_ptr(map=data_input,ks=4,vs=4)
+>>>>>>     ; int BPF_PROG(check_access, struct bpf_map *map, fmode_t fmode) @ test_libbpf_get_fd_by_id_opts.c:27
+>>>>>>     5: (79) r0 = *(u64 *)(r1 +8)          ; R0_w=scalar() R1=ctx()
+>>>>>>     ; if (fmode & FMODE_WRITE) @ test_libbpf_get_fd_by_id_opts.c:32
+>>>>>>     6: (67) r0 <<= 62                     ; R0_w=scalar(smax=0x4000000000000000,umax=0xc000000000000000,smin32=0,smax32=umax32=0,var_off=(0x0; 0xc000000000000000))
+>>>>>>     7: (c7) r0 s>>= 63                    ; R0_w=scalar(smin=smin32=-1,smax=smax32=0)
+>>>>>>     ;  @ test_libbpf_get_fd_by_id_opts.c:0
+>>>>>>     8: (57) r0 &= -13                     ; R0_w=scalar(smax=0x7ffffffffffffff3,umax=0xfffffffffffffff3,smax32=0x7ffffff3,umax32=0xfffffff3,var_off=(0x0; 0xfffffffffffffff3))
+>>>>>>     ; int BPF_PROG(check_access, struct bpf_map *map, fmode_t fmode) @ test_libbpf_get_fd_by_id_opts.c:27
+>>>>>>     9: (95) exit
+> 
+> [...]
+> 
+>>
+>>       As suggested by Eduard, this patch makes a special case for source
+>>       or destination register of '&=' operation being in range [-1, 0].
+>>
+>>       Meaning that one of the '&=' operands is either:
+>>       - all ones, in which case the counterpart is the result of the operation;
+>>       - all zeros, in which case zero is the result of the operation.
+>>
+>>       And MIN and MAX values could be derived based on above two observations.
+>>
+>>       [0] https://lore.kernel.org/bpf/e62e2971301ca7f2e9eb74fc500c520285cad8f5.camel@gmail.com/
+>>       [1] https://github.com/llvm/llvm-project/blob/4523a267829c807f3fc8fab8e5e9613985a51565/llvm/lib/CodeGen/SelectionDAG/DAGCombiner.cpp
+>>
+>>       Suggested-by: Eduard Zingerman <eddyz87@gmail.com>
+>>       Signed-off-by: Xu Kuohai <xukuohai@huawei.com>
+>>
+>> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+>> index 640747b53745..30c551d39329 100644
+>> --- a/kernel/bpf/verifier.c
+>> +++ b/kernel/bpf/verifier.c
+>> @@ -13374,6 +13374,24 @@ static void scalar32_min_max_and(struct bpf_reg_state *dst_reg,
+>>           dst_reg->u32_min_value = var32_off.value;
+>>           dst_reg->u32_max_value = min(dst_reg->u32_max_value, umax_val);
+>>
+>> +       /* Special case: src_reg is known and dst_reg is in range [-1, 0] */
+>> +       if (src_known &&
+>> +               dst_reg->s32_min_value == -1 && dst_reg->s32_max_value == 0 &&
+>> +               dst_reg->smin_value == -1 && dst_reg->smax_value == 0) {
+> 
+> please keep if () condition aligned across multiple lines, it's super
+> confusing this way
 >
 
-If we aim to make it compatible with s390, we need to introduce some
-constraints regarding the bits iteration.
+OK, will update the align style
 
-1. We must replace nr_bits with size:
+>> +               dst_reg->s32_min_value = min_t(s32, src_reg->s32_min_value, 0);
+>> +               dst_reg->s32_max_value = max_t(s32, src_reg->s32_min_value, 0);
+> 
+> do we need to update tnum parts as well (or reset and re-derive, probably)?
+> 
+> btw, can't we support src being a range here? the idea is that dst_reg
+> either all ones or all zeros. For and it means that it either stays
+> all zero, or will be *exactly equal* to src, right? So I think the
+> logic would be:
+> 
+> a) if [s32_min, s32_max] is on the same side of zero, then resulting
+> range would be [min(s32_min, 0), max(s32_max, 0)], just like you have
+> here
+> 
+> b) if [s32_min, s32_max] contains zero, then resulting range will be
+> exactly [s32_min, s32_max]
+> 
+> Or did I make a mistake above?
+>
 
-  bpf_iter_bits_new(struct bpf_iter_bits *it, const void
-*unsafe_ptr__ign, u32 size)
+Totally agree, the AND of any set with the range [-1,0] is equivalent
+to adding number 0 to the set!
 
-2. The size must adhere to alignment requirements:
+Based on this observation, I've rewritten the patch as follows.
 
-        if (size <=3D sizeof(u64)) {
-                int offset =3D IS_ENABLED(CONFIG_S390) ? sizeof(u64) - size=
- : 0;
+diff --git a/include/linux/tnum.h b/include/linux/tnum.h
+index 3c13240077b8..5e795d728b9f 100644
+--- a/include/linux/tnum.h
++++ b/include/linux/tnum.h
+@@ -52,6 +52,9 @@ struct tnum tnum_mul(struct tnum a, struct tnum b);
+  /* Return a tnum representing numbers satisfying both @a and @b */
+  struct tnum tnum_intersect(struct tnum a, struct tnum b);
 
-                switch (size) {
-                case 1:
-                case 2:
-                case 4:
-                case 8:
-                        break;
-                default:
-                        return -EINVAL;
-                }
++/* Return a tnum representing numbers satisfying either @a or @b */
++struct tnum tnum_union(struct tnum a, struct tnum b);
++
+  /* Return @a with all but the lowest @size bytes cleared */
+  struct tnum tnum_cast(struct tnum a, u8 size);
 
-                err =3D bpf_probe_read_kernel_common(((char
-*)&kit->bits_copy) + offset, size, unsafe_ptr__ign);
-                if (err)
-                        return -EFAULT;
+diff --git a/kernel/bpf/tnum.c b/kernel/bpf/tnum.c
+index 9dbc31b25e3d..9d4480a683ca 100644
+--- a/kernel/bpf/tnum.c
++++ b/kernel/bpf/tnum.c
+@@ -150,6 +150,29 @@ struct tnum tnum_intersect(struct tnum a, struct tnum b)
+         return TNUM(v & ~mu, mu);
+  }
 
-                kit->size =3D size;
-                kit->bit =3D -1;
-                return 0;
-        }
++/*
++ * Each bit has 3 states: unkown, known 0, known 1. If using x to represent
++ * unknown state, the result of the union of two bits is as follows:
++ *
++ *         | x    0    1
++ *    -----+------------
++ *     x   | x    x    x
++ *     0   | x    0    x
++ *     1   | x    x    1
++ *
++ * For tnum a and b, only the bits that are both known 0 or known 1 in a
++ * and b are known in the result of union a and b.
++ */
++struct tnum tnum_union(struct tnum a, struct tnum b)
++{
++       u64 v0, v1, mu;
++
++       mu = a.mask | b.mask; // unkown bits either in a or b
++       v1 = (a.value & b.value) & ~mu; // "known 1" bits in both a and b
++       v0 = (~a.value & ~b.value) & ~mu; // "known 0" bits in both a and b
++       return TNUM(v1, mu | ~(v0 | v1));
++}
++
+  struct tnum tnum_cast(struct tnum a, u8 size)
+  {
+         a.value &= (1ULL << (size * 8)) - 1;
+  {
+         a.value &= (1ULL << (size * 8)) - 1;
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index 8f0f2e21699e..b69c89bc5cfc 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -13478,6 +13478,28 @@ static void scalar32_min_max_and(struct bpf_reg_state *dst_reg,
+                 return;
+         }
 
-        /* Not long-aligned */
-        if (size & (sizeof(unsigned long) - 1))
-                return -EINVAL;
++       /* Special case: dst_reg is in range [-1, 0] */
++       if (dst_reg->s32_min_value == -1 && dst_reg->s32_max_value == 0) {
++               var32_off = tnum_union(src_reg->var_off, tnum_const(0));
++               dst_reg->var_off = tnum_with_subreg(dst_reg->var_off, var32_off);
++               dst_reg->u32_min_value = var32_off.value;
++               dst_reg->u32_max_value = min(dst_reg->u32_max_value, umax_val);
++               dst_reg->s32_min_value = min_t(s32, src_reg->s32_min_value, 0);
++               dst_reg->s32_max_value = max_t(s32, src_reg->s32_max_value, 0);
++               return;
++       }
++
++       /* Special case: src_reg is in range [-1, 0] */
++       if (src_reg->s32_min_value == -1 && src_reg->s32_max_value == 0) {
++               var32_off = tnum_union(dst_reg->var_off, tnum_const(0));
++               dst_reg->var_off = tnum_with_subreg(dst_reg->var_off, var32_off);
++               dst_reg->u32_min_value = var32_off.value;
++               dst_reg->u32_max_value = min(dst_reg->u32_max_value, umax_val);
++               dst_reg->s32_min_value = min_t(s32, dst_reg->s32_min_value, 0);
++               dst_reg->s32_max_value = max_t(s32, dst_reg->s32_max_value, 0);
++               return;
++       }
++
+         /* We get our minimum from the var_off, since that's inherently
+          * bitwise.  Our maximum is the minimum of the operands' maxima.
+          */
+@@ -13508,6 +13530,26 @@ static void scalar_min_max_and(struct bpf_reg_state *dst_reg,
+                 return;
+         }
 
-        ....
++       /* Special case: dst_reg is in range [-1, 0] */
++       if (dst_reg->smin_value == -1 && dst_reg->smax_value == 0) {
++               dst_reg->var_off = tnum_union(src_reg->var_off, tnum_const(0));
++               dst_reg->umin_value = dst_reg->var_off.value;
++               dst_reg->umax_value = min(dst_reg->umax_value, umax_val);
++               dst_reg->smin_value = min_t(s64, src_reg->smin_value, 0);
++               dst_reg->smax_value = max_t(s64, src_reg->smax_value, 0);
++               return;
++       }
++
++       /* Special case: src_reg is in range [-1, 0] */
++       if (src_reg->smin_value == -1 && src_reg->smax_value == 0) {
++               dst_reg->var_off = tnum_union(dst_reg->var_off, tnum_const(0));
++               dst_reg->umin_value = dst_reg->var_off.value;
++               dst_reg->umax_value = min(dst_reg->umax_value, umax_val);
++               dst_reg->smin_value = min_t(s64, dst_reg->smin_value, 0);
++               dst_reg->smax_value = max_t(s64, dst_reg->smax_value, 0);
++               return;
++       }
++
 
-Does this meet your expectations?
+>> +               return;
+>> +       }
+>> +
+>> +       /* Special case: dst_reg is known and src_reg is in range [-1, 0] */
+>> +       if (dst_known &&
+>> +               src_reg->s32_min_value == -1 && src_reg->s32_max_value == 0 &&
+>> +               src_reg->smin_value == -1 && src_reg->smax_value == 0) {
+>> +               dst_reg->s32_min_value = min_t(s32, dst_reg->s32_min_value, 0);
+>> +               dst_reg->s32_max_value = max_t(s32, dst_reg->s32_min_value, 0);
+>> +               return;
+>> +       }
+>> +
+>>           /* Safe to set s32 bounds by casting u32 result into s32 when u32
+>>            * doesn't cross sign boundary. Otherwise set s32 bounds to unbounded.
+>>            */
+> 
+> [...]
+> 
 
---
-Regards
-
-
-
-Yafang
 
