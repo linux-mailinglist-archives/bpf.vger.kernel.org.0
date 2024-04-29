@@ -1,161 +1,169 @@
-Return-Path: <bpf+bounces-28057-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-28058-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 93EAF8B4F49
-	for <lists+bpf@lfdr.de>; Mon, 29 Apr 2024 03:49:54 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id CFA828B5022
+	for <lists+bpf@lfdr.de>; Mon, 29 Apr 2024 06:06:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4A5A7281FF5
-	for <lists+bpf@lfdr.de>; Mon, 29 Apr 2024 01:49:53 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F3ADB1C2148A
+	for <lists+bpf@lfdr.de>; Mon, 29 Apr 2024 04:06:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D44117FD;
-	Mon, 29 Apr 2024 01:49:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E58108F6C;
+	Mon, 29 Apr 2024 04:06:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="bM5GcVQ1"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="AChBo93C"
 X-Original-To: bpf@vger.kernel.org
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f44.google.com (mail-wr1-f44.google.com [209.85.221.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC5937F;
-	Mon, 29 Apr 2024 01:49:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC398257B
+	for <bpf@vger.kernel.org>; Mon, 29 Apr 2024 04:06:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714355384; cv=none; b=fUaRPhxc+LOAlisQ87j5saVMOAfvZ4vcqhQIH38Yr6t8tVk3+XH3eD7TlfLIQUfQVPiRgP2+dhrQF4KeEi097tNeaAC1AlTmsROLAhwTBc7RDBJmjusIcUf6AplPsGdRIaJoKfsG+DgWab/9/+nUlzyxktUgI7098LOBxG889n0=
+	t=1714363574; cv=none; b=KTyjEsXB9ToyT+hp4GLZDqmSMfAAPNSUfbbaUnqbxl8kZlV9hOVfZz0FMtMFtv2EkwH1yojFLWixmhNqAORT+XB0VVSSvGjDEsySy9KJNToQTaBAeElWmNPvqWXFTNrWRuZF7Uv5KURSut76gT47WwjLtOVLSF8NIWDhL56ai/c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714355384; c=relaxed/simple;
-	bh=w9r09G9ouq8go6rLsCNNHrKjBjY+D3CT2rZRkIVGUJs=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=P+BL/EfJUz4crCiRG4mYTtpSg8ahTtZVZUJJD+V/dLNSzRcPBth2mmo5bOx915WRoDs2Og9iFLXaHI1Vgd4WWqnYhklweD5HSPP7AZ7dYRyAsqndEuA7YQ/CDUZhEFxs2OTHwAL0pSbovLX/y3WzXHXKgbL494rduGcl6tzomiA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=bM5GcVQ1; arc=none smtp.client-ip=150.107.74.76
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-	s=201702; t=1714355381;
-	bh=w2cdMhiy6tblzMZH6pdXm9gKC5PfIyxq9cFSsg19XLQ=;
-	h=Date:From:To:Cc:Subject:From;
-	b=bM5GcVQ1AhKIBQJ3MzaxJC/EoReRipzmeaf60UNqtNomiNStEligZcDmFI112k7KO
-	 ujT4e9DNDy2/02ZyrlPU36xdjQYtQmtTa9yyxg/yiYWq+KUkebKJXrKDP5nXV5CLuc
-	 YbGODr7g6n2ZvDht26n2kU3hKFKT2Gcfc+NTMCj+6M4LMQ/SdPm/6AORcEFKyKh0pK
-	 /70PIlS5KFkUJsQ6SjaiQpAzUOwQAC21oHptJhLYbX0fRs92hCOn6VL3gSOgD3DLFI
-	 p12lc6Nqx8MovmueLptZLl6IWax01I4MmbTn+yJNMqQTTPSpyNKrLG5dNmdbF38KTI
-	 ndNHpYsq3pAdw==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.ozlabs.org (Postfix) with ESMTPSA id 4VSR8h522vz4wyk;
-	Mon, 29 Apr 2024 11:49:40 +1000 (AEST)
-Date: Mon, 29 Apr 2024 11:49:39 +1000
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-To: Daniel Borkmann <daniel@iogearbox.net>, Alexei Starovoitov
- <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, David Miller
- <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni
- <pabeni@redhat.com>
-Cc: bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>, Linux
- Kernel Mailing List <linux-kernel@vger.kernel.org>, Linux Next Mailing List
- <linux-next@vger.kernel.org>, Martin KaFai Lau <martin.lau@kernel.org>,
- Puranjay Mohan <puranjay12@gmail.com>, Puranjay Mohan <puranjay@kernel.org>
-Subject: linux-next: manual merge of the bpf-next tree with the net tree
-Message-ID: <20240429114939.210328b0@canb.auug.org.au>
+	s=arc-20240116; t=1714363574; c=relaxed/simple;
+	bh=Bj++74XUw5MNjMM3kwACECsNbBT3w0YLTdee/vtGfCs=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=rVK/dBDthb9HeZeF2nwNoeyCzbkbgTCKHF1cfr3fRqpRsF5w16+3rAnapXhOlxn52Deiz2b8Kn9mJNach9QVjVjf71ej1BvFDNZimcAifLcOeYH0IZbBeJ2akixDRuyAX843d3BVisR5CJ0syNrmvc7XaNZOWkwNplDUV7eefrc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=AChBo93C; arc=none smtp.client-ip=209.85.221.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f44.google.com with SMTP id ffacd0b85a97d-346359c8785so3517223f8f.0
+        for <bpf@vger.kernel.org>; Sun, 28 Apr 2024 21:06:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1714363571; x=1714968371; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=lDt/zrDDTe2u1D66GSuafdEHTflggIlTXAijnvI3p8I=;
+        b=AChBo93CI8I0OS4dSkUsiF9bRh5TuIQRhUbLwRezSf0jLW1a9Ih1V6jwg6urpEJTPc
+         /CocIoBWVt/hCxnr5kVccDX5uyL0AJmL6R0sB6ZuquWY1C7jDaSfvwcVMo72sDhzTeox
+         jl15/Jnf/8tuLzJY1XxFfuw2vyeAsXBRIaEGVXE8ZKKT9ZpdCLyQOT4xS+aAMzdYgxsO
+         Wt7DmOLpp8Lkh4R4BQL/zKMgt7FNiJdbWmhQwtEIfF19aBHEuwRgmgxjDrrJhwh4WXMc
+         nkRxiCq+4Wysed3psj6r31ZSnY7jlBQUZOPMCoQSoLZzcfXkKcHUprCZUUga57Jc4MkK
+         iASg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714363571; x=1714968371;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=lDt/zrDDTe2u1D66GSuafdEHTflggIlTXAijnvI3p8I=;
+        b=MoGJBvTRkJ3mJwNYjzcFrMSIaY+/jPpUuCz19S5NAn8UqQRUOPiSCJWnDNXhjKFNo4
+         a8lGazMdIG2VLt20DJEFOpTStBxtHUFxMYBtCO8tXC4hdA6B791yl/2YmiJvxBQQeT58
+         qV9F/tHcp/tVOL+50EBEkYy98QwecpxpEPmE5g2EqKctVh8ycOv9+S3leMdShA/VhTM3
+         9tBLwLeTK1g3bBVn/Ab+ufnaX3fHTL25olezPd/vjOJWRBeJ0qoLOEbuUwsGJuDt8nHU
+         PESKtk/c5KtOh+/H6KZtmeTlDCR5O3/lGpX4SBloy179E4c0kaZ9SF/6cwRS4X2DXmS2
+         XafA==
+X-Forwarded-Encrypted: i=1; AJvYcCXvTVnszbx3u04+p+h6G0A1BkKm/tEA7kOvPTg+I7TCAFVXFEAZW2ZdcSskksPIz7m0im1yb/k/FVaEGXAY4y2Ba0Dw
+X-Gm-Message-State: AOJu0YwuEY4/swPGo/XA2MztpNGnw+/XL99aKsNpguppGA5WjgUe7jQ4
+	hBkoLTt16BQ8eh/iSaSbVtYPgu5dOmlRfdJFhlfrLo7iyvZeN+f4G1YeVzgc5DdvAR66cF30fxo
+	unhKlP4fgqCHUwl3AdveXHiWgs5s=
+X-Google-Smtp-Source: AGHT+IGyZDG4cV7UN0t+gJR4hEdYYr2I2b/Cs2AtB+1kfi4p2ytzd6+nHFzGT+Vpq6/BVKD5qvvpkr8ISHkBpBkVXYY=
+X-Received: by 2002:adf:f5cb:0:b0:342:a8db:603f with SMTP id
+ k11-20020adff5cb000000b00342a8db603fmr6004640wrp.26.1714363570833; Sun, 28
+ Apr 2024 21:06:10 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/=4d1luGBKfxf+mOMcFr0nF.";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-
---Sig_/=4d1luGBKfxf+mOMcFr0nF.
-Content-Type: text/plain; charset=US-ASCII
+References: <5c5936c9-f44c-45ba-920f-b07625b29071.bugreport@ubisectech.com>
+In-Reply-To: <5c5936c9-f44c-45ba-920f-b07625b29071.bugreport@ubisectech.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Sun, 28 Apr 2024 21:05:59 -0700
+Message-ID: <CAADnVQ+EwjtL=OdSrhEHyXPuxdEStV4BQOS0ScN9KhFB2T03dA@mail.gmail.com>
+Subject: Re: WARNING in bpf_map_delete_elem
+To: Ubisectech Sirius <bugreport@ubisectech.com>, bpf <bpf@vger.kernel.org>
+Cc: security <security@kernel.org>, ast <ast@kernel.org>, daniel <daniel@iogearbox.net>, 
+	andrii <andrii@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-Hi all,
+On Sun, Apr 28, 2024 at 6:12=E2=80=AFPM Ubisectech Sirius
+<bugreport@ubisectech.com> wrote:
+>
+> Hello.
+> We are Ubisectech Sirius Team, the vulnerability lab of China ValiantSec.=
+ Recently, our team has discovered a issue in Linux kernel 6.7. Attached to=
+ the email were a PoC file of the issue.
 
-Today's linux-next merge of the bpf-next tree got conflicts in:
+This is not a vulnerability and not a security bug.
+Cc-ing public bpf@vger list.
 
-  include/linux/filter.h
-  kernel/bpf/core.c
+root triggering a warn at kernel/bpf/helpers.c:73
+        WARN_ON_ONCE(!rcu_read_lock_held() && !rcu_read_lock_trace_held() &=
+&
+                     !rcu_read_lock_bh_held());
+is just a bug,
+and in this case it feels that it's a bug with your config,
+since bpf_prog_test_run_syscall further down the stack does:
+        rcu_read_lock_trace();
+        retval =3D bpf_prog_run_pin_on_cpu(prog, ctx);
+        rcu_read_unlock_trace();
 
-between commit:
+so it shouldn't warn.
 
-  66e13b615a0c ("bpf: verifier: prevent userspace memory access")
-
-from the net tree and commit:
-
-  d503a04f8bc0 ("bpf: Add support for certain atomics in bpf_arena to x86 J=
-IT")
-
-from the bpf-next tree.
-
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc include/linux/filter.h
-index 42dbceb04ca6,7a27f19bf44d..000000000000
---- a/include/linux/filter.h
-+++ b/include/linux/filter.h
-@@@ -975,7 -1000,7 +1000,8 @@@ bool bpf_jit_supports_far_kfunc_call(vo
-  bool bpf_jit_supports_exceptions(void);
-  bool bpf_jit_supports_ptr_xchg(void);
-  bool bpf_jit_supports_arena(void);
- +u64 bpf_arch_uaddress_limit(void);
-+ bool bpf_jit_supports_insn(struct bpf_insn *insn, bool in_arena);
-  void arch_bpf_stack_walk(bool (*consume_fn)(void *cookie, u64 ip, u64 sp,=
- u64 bp), void *cookie);
-  bool bpf_helper_changes_pkt_data(void *func);
- =20
-diff --cc kernel/bpf/core.c
-index a04695ca82b9,95c7fd093e55..000000000000
---- a/kernel/bpf/core.c
-+++ b/kernel/bpf/core.c
-@@@ -2958,15 -2965,11 +2965,20 @@@ bool __weak bpf_jit_supports_arena(void
-  	return false;
-  }
- =20
- +u64 __weak bpf_arch_uaddress_limit(void)
- +{
- +#if defined(CONFIG_64BIT) && defined(CONFIG_ARCH_HAS_NON_OVERLAPPING_ADDR=
-ESS_SPACE)
- +	return TASK_SIZE;
- +#else
- +	return 0;
- +#endif
- +}
- +
-+ bool __weak bpf_jit_supports_insn(struct bpf_insn *insn, bool in_arena)
-+ {
-+ 	return false;
-+ }
-+=20
-  /* Return TRUE if the JIT backend satisfies the following two conditions:
-   * 1) JIT backend supports atomic_xchg() on pointer-sized words.
-   * 2) Under the specific arch, the implementation of xchg() is the same
-
---Sig_/=4d1luGBKfxf+mOMcFr0nF.
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmYu/LMACgkQAVBC80lX
-0GxRbgf+OGy7yQHWICx3VdFZX+/3+CmXwEHaKe0hVPbQXhuGGT2ZekkGCbqyNS5+
-6/ilo+mZMpwXT2R1ZgnWbVdD86hFum2sOW4xNUwyK+6XbpKZ/l893x0NXg1JHYbE
-OOQGvMpR/A58980zb4JeVOXb8UIYcsrX3KpG9tA8/kyNgogl5y8NxwcYtSi8sPhf
-gFRcSCL3APSfy/qoPCFsbpT01gzLbvDu0GJ2Gg6Vx695agS3/vwXd6U0dGA2YTRh
-oU8CQpEE/fHQNdBl9qBN7NQhpqAThKHphgR7Ep7RqqrYpKDKSMgD/9Ysw7ARZVFK
-aEXu2EbkL1XKXdWB6/FFJ5gJMLbw8w==
-=nPAe
------END PGP SIGNATURE-----
-
---Sig_/=4d1luGBKfxf+mOMcFr0nF.--
+> Stack dump:
+> ------------[ cut here ]------------
+> WARNING: CPU: 0 PID: 16824 at kernel/bpf/helpers.c:73 ____bpf_map_delete_=
+elem kernel/bpf/helpers.c:73 [inline]
+> WARNING: CPU: 0 PID: 16824 at kernel/bpf/helpers.c:73 bpf_map_delete_elem=
++0x94/0xb0 kernel/bpf/helpers.c:71
+> Modules linked in:
+> CPU: 0 PID: 16824 Comm: syz-executor.3 Not tainted 6.7.0 #2
+> Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.15.0-1 04/0=
+1/2014
+> RIP: 0010:____bpf_map_delete_elem kernel/bpf/helpers.c:73 [inline]
+> RIP: 0010:bpf_map_delete_elem+0x94/0xb0 kernel/bpf/helpers.c:71
+> Code: 89 ef 5b 5d 41 5c ff e0 cc 66 90 e8 66 04 e7 ff e8 a1 11 ce ff 31 f=
+f 89 c3 89 c6 e8 f6 ff e6 ff 85 db 75 99 e8 4d 04 e7 ff 90 <0f> 0b 90 eb 8e=
+ 48 89 ef e8 3f bd 3d 00 eb a0 e8 38 bd 3d 00 eb b8
+> RSP: 0018:ffffc90001ee7a90 EFLAGS: 00010212
+> RAX: 0000000000000369 RBX: 0000000000000000 RCX: ffffc90011f07000
+> RDX: 0000000000040000 RSI: ffffffff81a2f203 RDI: 0000000000000005
+> RBP: ffff88801a226000 R08: 0000000000000005 R09: 0000000000000000
+> R10: 0000000000000000 R11: 0000000000000000 R12: ffffc90001ee7b50
+> R13: ffffffff81a2f170 R14: 0000000000000000 R15: 0000000000000000
+> FS:  00007f1c460de640(0000) GS:ffff88802c600000(0000) knlGS:0000000000000=
+000
+> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> CR2: 0000001b2c923000 CR3: 0000000053eec000 CR4: 0000000000750ef0
+> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> PKRU: 55555554
+> Call Trace:
+>  <TASK>
+>  ___bpf_prog_run+0x335f/0x95e0 kernel/bpf/core.c:1962
+>  __bpf_prog_run32+0x9d/0xe0 kernel/bpf/core.c:2201
+>  bpf_dispatcher_nop_func include/linux/bpf.h:1196 [inline]
+>  __bpf_prog_run include/linux/filter.h:651 [inline]
+>  bpf_prog_run include/linux/filter.h:658 [inline]
+>  bpf_prog_run_pin_on_cpu include/linux/filter.h:675 [inline]
+>  bpf_prog_test_run_syscall+0x3b5/0x790 net/bpf/test_run.c:1496
+>  bpf_prog_test_run kernel/bpf/syscall.c:4040 [inline]
+>  __sys_bpf+0x1295/0x4e00 kernel/bpf/syscall.c:5401
+>  __do_sys_bpf kernel/bpf/syscall.c:5487 [inline]
+>  __se_sys_bpf kernel/bpf/syscall.c:5485 [inline]
+>  __x64_sys_bpf+0x78/0xc0 kernel/bpf/syscall.c:5485
+>  do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+>  do_syscall_64+0x43/0x120 arch/x86/entry/common.c:83
+>  entry_SYSCALL_64_after_hwframe+0x6f/0x77
+> RIP: 0033:0x7f1c4529002d
+> Code: c3 e8 97 2b 00 00 0f 1f 80 00 00 00 00 f3 0f 1e fa 48 89 f8 48 89 f=
+7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff=
+ ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
+> RSP: 002b:00007f1c460de028 EFLAGS: 00000246 ORIG_RAX: 0000000000000141
+> RAX: ffffffffffffffda RBX: 00007f1c453cbf80 RCX: 00007f1c4529002d
+> RDX: 000000000000000c RSI: 00000000200004c0 RDI: 000000000000000a
+> RBP: 00007f1c452f14d0 R08: 0000000000000000 R09: 0000000000000000
+> R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+> R13: 000000000000000b R14: 00007f1c453cbf80 R15: 00007f1c460be000
+>  </TASK>
+>
+> Thank you for taking the time to read this email and we look forward to w=
+orking with you further.
 
