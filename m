@@ -1,75 +1,75 @@
-Return-Path: <bpf+bounces-28148-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-28149-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 153268B62F9
-	for <lists+bpf@lfdr.de>; Mon, 29 Apr 2024 21:57:50 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 98B8C8B62FB
+	for <lists+bpf@lfdr.de>; Mon, 29 Apr 2024 21:58:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 46ECA1C21BF3
-	for <lists+bpf@lfdr.de>; Mon, 29 Apr 2024 19:57:49 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2941A2821EF
+	for <lists+bpf@lfdr.de>; Mon, 29 Apr 2024 19:58:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E3D213F439;
-	Mon, 29 Apr 2024 19:57:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ECAF113F439;
+	Mon, 29 Apr 2024 19:58:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dm4OSSI3"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="i6SisbN3"
 X-Original-To: bpf@vger.kernel.org
 Received: from mail-pf1-f179.google.com (mail-pf1-f179.google.com [209.85.210.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 00E6212B14F;
-	Mon, 29 Apr 2024 19:57:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5439D13C3D3;
+	Mon, 29 Apr 2024 19:58:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714420664; cv=none; b=sbosfEc0G0WZgQ2yVTAHf4Q9NLVNtYogPn1azpPtUc/GohmQnKqkOO9pRtX5H4prCBqIxJT+AsFx5ydSz4aLjjvuUUJfLNzQnj8Cb8fBTYSHR2raVc9FJv5JxqluwNvgGVhVdReaUYl8ih40sxSC5Mj0MiinFLD4wo3n2vFjZKU=
+	t=1714420693; cv=none; b=gC335b8tLuzEHWRxDEDwlwk5a24RiSVcJfVlNB6xrMtf4PwBj9s4S3ges1iDQ0w083b3GYwFZs8EqfomOFgAovG+btPKphkwgkHse1kVa89i0m9n293+BH/tJoa11cGiVqyy9hF6VJD+KUIzrQLh0JBkySifjRhQ+GwEmpgcy4U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714420664; c=relaxed/simple;
-	bh=jxQQzLxtQWppXiluZ4oXuKycDQUP4fDPnIUHJxz3R68=;
+	s=arc-20240116; t=1714420693; c=relaxed/simple;
+	bh=uarQwPLkIzrmtboAHMQub7EbDIvk4lc3rgqCGLvSJhY=;
 	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=oRj/PbP34WWrMIojRTZjaFhhs610DJY3abVNXTYMzts63L5byBGDyMjQpg2CaKjkZUlP0w+ZAOF/uRCRakpZN+Rprs7Iub8HGT+g6ufyuUYPHP1H+TlMUJNmgz6b6ZifweVSBp88kbbflMY6y/3Te3iii0MdL2IvF67uSjYFUfk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=dm4OSSI3; arc=none smtp.client-ip=209.85.210.179
+	 Content-Type:MIME-Version; b=gdCUqV7pniD9l1IdyVMH1mcKDwzBw6yqO55DEiZTOS6MF/5AqUgBOFPrex7foYXxOI8FhybFwt0UTqao6cZNJ2MEsDg3v3J8yKWj7pwsiOxHlNSU4j2nmSUWdS4sffM/aypz9z/X4erWY0UVCOnFJOamRLZGBfzFDiXLdkbGxjQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=i6SisbN3; arc=none smtp.client-ip=209.85.210.179
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f179.google.com with SMTP id d2e1a72fcca58-6f28bb6d747so4179765b3a.3;
-        Mon, 29 Apr 2024 12:57:42 -0700 (PDT)
+Received: by mail-pf1-f179.google.com with SMTP id d2e1a72fcca58-6ece8991654so4590079b3a.3;
+        Mon, 29 Apr 2024 12:58:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714420662; x=1715025462; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1714420691; x=1715025491; darn=vger.kernel.org;
         h=mime-version:user-agent:content-transfer-encoding:references
          :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
          :date:message-id:reply-to;
-        bh=jxQQzLxtQWppXiluZ4oXuKycDQUP4fDPnIUHJxz3R68=;
-        b=dm4OSSI3TXFN7au+ezhc8Q4hg5ComNeAYDFZd38/Xrw5WIdqt5+SwBIF2iuUF9aDkw
-         ZSPOBh1kIlGgB/Atx4ThiECiiUfCFSetMgnvc3QIt6xPkh2Wh9YwN3e2odL1W6c/t15e
-         U9F5CkHtnuDZ/m4bdpPuTJ7LZ+QV+HkAQ+4mSwthCnMUbYJPx1JREKTgFV+ijhXREGkG
-         7bqfSwhM0bWQVedZ1r2BPlS0sm4NrqDIejAuMU//AbF7NqXVkKXoc70Tn64z3qJKCaiL
-         lyPcMzcz1hkDsoIt9T3OV0GHZfcbXahceSs5Hl1sws5woOw/FL4bH9etgWWg4AhwgTlp
-         nSDw==
+        bh=uarQwPLkIzrmtboAHMQub7EbDIvk4lc3rgqCGLvSJhY=;
+        b=i6SisbN3ENSIZZkCwiWt4Ic5wQ31oDPkKiXdqbolwEolF1k1ZvvjygcKUyh5kWsO+v
+         u3m5PTZeyo+n1RXhSfFsEHuHC5AfdsQAjN9MLyc5ge7Pt3UxnAowy0vRgjseatywWHIV
+         otyWbSnedWBMlPDSvch8antQAsRgmmzEBv/aEhgTZAn/rbyJDf2Xq53oELxRU/zC1onV
+         06FHmCHc832dQZNURlkfJfABpiA7wDJkonOpGLsUiHEfpEG5aUiXojlz40MH8b7W2ltD
+         YRoUCzz0WnjhofKq48SvGFfPR3EqAjq1Yqc4cFMFTCJPWBtew5IPOChORVpoh9DpxZFH
+         pmkg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714420662; x=1715025462;
+        d=1e100.net; s=20230601; t=1714420691; x=1715025491;
         h=mime-version:user-agent:content-transfer-encoding:references
          :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=jxQQzLxtQWppXiluZ4oXuKycDQUP4fDPnIUHJxz3R68=;
-        b=P4bj3vRynJtb+DMhj5K2VoivUSZVXe90w9io0fEHPMvbGVuXPQfhph4zX7Rilo1J5a
-         B3XtIrW6hZ/+77SLVPaBPEXVFUIYL4TogZqVMRiN/d/xOJcMXqGLlM5aT/ka0y1LKPvZ
-         SwJkS5MhROO1xQuFXiQWlTf8e/ypqA2zDUR8MWS+QI9xm2dA7a5EHGngmVnDfocYtwx6
-         uS98v6lR9SvuOOI/LNuO5VVr4FyVKb9KJQttMnW0ZANbz5s7bL7BeTUwFvuOLiUHunxW
-         c11nKy2rWxbJu+8wiVJuHXuF6fwTL7nX107sLW2S/WGn1/Q0zKp5rmrH38jVmckAQO5v
-         Aj2g==
-X-Forwarded-Encrypted: i=1; AJvYcCVEHuF3STY3M675FiCbV2YtQEtusqGp30KO4c0LDS4AUa2OsstE1xIJKWuw0oNK5VimC14GTjhGJ4T3Ydqx3xR2d7na1f/1I3aGzs06bN1gRMaJVuzEThtCboXv
-X-Gm-Message-State: AOJu0YxZnfgpA+YdX+cdAeos6EwvWkXEJF9TDsSWZjOVIf6ukXBF2zRg
-	ffP/+0+DvOqv1shS7trtt6+AfnwVbGgkZhHpgNJfup9IexR3icjy
-X-Google-Smtp-Source: AGHT+IEpFtXh9owW8iOqvqX/rZsYtvVrG+3oPiRKhH8jK4tTpxMaFQvdnU4puhPcHIbmpCKXISoF5w==
-X-Received: by 2002:a05:6a00:1791:b0:6ea:914e:a108 with SMTP id s17-20020a056a00179100b006ea914ea108mr13739750pfg.12.1714420662125;
-        Mon, 29 Apr 2024 12:57:42 -0700 (PDT)
+        bh=uarQwPLkIzrmtboAHMQub7EbDIvk4lc3rgqCGLvSJhY=;
+        b=YppQRqSaTPb6kozByxWTpv8eR3bgYJZygxHIqaZgchCvZSpmydSh4q5mhoJwVcgBQw
+         m8Ir5gw/ejHP69Q79GruRpCUXRaja+/ooK13UPKdKpKvys2oNAn6CGv4zaL1Wj533Caf
+         2C+dADGt1dw9NklVQDtbw2ze7wTLmX9z2HMz+X1Qwr5erKydWvoE3RpA6w38Se0ziHy0
+         mhNixbstK+iMdyaLpx6qbr/tRdFgpHzePNrcpZ4zXYTk2xvMaRL7JmO+4W7Z4gyHMa9M
+         6R3sVnn1SG8V/drIaROj9Ltd+UAa2dmW5V3L2kHf8TW9paeEQ1oUtId0wrecFRgQgo0C
+         J4vA==
+X-Forwarded-Encrypted: i=1; AJvYcCXyLy70Tc/+cZs2Th5obh66W/Cgm1jeEAjjLpSK2I+alEYXYzvShK1EodU0jfYLz4TEcTcyLslurPrtXu4mCGyI+1kJlPnVMKmUYFsqf+tXff8dEh1/QzOYMhP2
+X-Gm-Message-State: AOJu0YzYwioQyrB7pv2G+Eeln1EAi3eCXLd3SSqHQB3AUmCthQQRNbLl
+	ZUhH3AaamB67g5/UPt4lIpcPK778ZN1eRvZxoAa+66CfD2JG8J9Q
+X-Google-Smtp-Source: AGHT+IEPfmB4SjZ76nyXE/HvH55UAdeNhhgyHpiEyrFWyGcvBgornzH01bcIOFrQQikdaYu9riyKtw==
+X-Received: by 2002:a05:6a00:23cb:b0:6ea:e841:5889 with SMTP id g11-20020a056a0023cb00b006eae8415889mr15492752pfc.33.1714420691623;
+        Mon, 29 Apr 2024 12:58:11 -0700 (PDT)
 Received: from ?IPv6:2604:3d08:9880:5900:a18e:a67:fdb6:1a18? ([2604:3d08:9880:5900:a18e:a67:fdb6:1a18])
-        by smtp.gmail.com with ESMTPSA id fv3-20020a056a00618300b006eb3c3db4afsm19644085pfb.186.2024.04.29.12.57.40
+        by smtp.gmail.com with ESMTPSA id r3-20020aa79883000000b006f3fc8f143asm2952372pfl.139.2024.04.29.12.58.10
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Apr 2024 12:57:40 -0700 (PDT)
-Message-ID: <dd4c47a93ac3459d912eb3c4c77e08d8c431d164.camel@gmail.com>
-Subject: Re: [PATCH bpf 2/3] selftests/bpf: Extend sockopt tests to use
- BPF_LINK_CREATE
+        Mon, 29 Apr 2024 12:58:10 -0700 (PDT)
+Message-ID: <13e873af1e2397fa7a9c3e19989784dccab27dcb.camel@gmail.com>
+Subject: Re: [PATCH bpf 3/3] selftests/bpf: Add sockopt case to verify
+ prog_type
 From: Eduard Zingerman <eddyz87@gmail.com>
 To: Stanislav Fomichev <sdf@google.com>, bpf@vger.kernel.org, 
 	netdev@vger.kernel.org
@@ -77,10 +77,10 @@ Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
  martin.lau@linux.dev,  song@kernel.org, yhs@fb.com,
  john.fastabend@gmail.com, kpsingh@kernel.org,  haoluo@google.com,
  jolsa@kernel.org
-Date: Mon, 29 Apr 2024 12:57:39 -0700
-In-Reply-To: <20240426231621.2716876-3-sdf@google.com>
+Date: Mon, 29 Apr 2024 12:58:09 -0700
+In-Reply-To: <20240426231621.2716876-4-sdf@google.com>
 References: <20240426231621.2716876-1-sdf@google.com>
-	 <20240426231621.2716876-3-sdf@google.com>
+	 <20240426231621.2716876-4-sdf@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 User-Agent: Evolution 3.44.4-0ubuntu2 
@@ -92,9 +92,8 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 
 On Fri, 2024-04-26 at 16:16 -0700, Stanislav Fomichev wrote:
-> Run all existing test cases with the attachment created via
-> BPF_LINK_CREATE. Next commit will add extra test cases to verify
-> link_create attach_type enforcement.
+> Make sure only sockopt programs can be attached to the setsockopt
+> and getsockopt hooks.
 >=20
 > Signed-off-by: Stanislav Fomichev <sdf@google.com>
 > ---
