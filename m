@@ -1,84 +1,83 @@
-Return-Path: <bpf+bounces-28121-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-28122-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id E25E48B5F47
-	for <lists+bpf@lfdr.de>; Mon, 29 Apr 2024 18:42:17 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A21488B5F53
+	for <lists+bpf@lfdr.de>; Mon, 29 Apr 2024 18:45:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 115711C217FD
-	for <lists+bpf@lfdr.de>; Mon, 29 Apr 2024 16:42:17 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C28BC1C218E0
+	for <lists+bpf@lfdr.de>; Mon, 29 Apr 2024 16:45:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 992B885C76;
-	Mon, 29 Apr 2024 16:42:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 50B668612E;
+	Mon, 29 Apr 2024 16:45:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YwtcTq69"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bC2j9zaz"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f182.google.com (mail-pg1-f182.google.com [209.85.215.182])
+Received: from mail-pg1-f176.google.com (mail-pg1-f176.google.com [209.85.215.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE0B31DA23;
-	Mon, 29 Apr 2024 16:42:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C7EF84D15;
+	Mon, 29 Apr 2024 16:45:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714408928; cv=none; b=hIHeNtk0FSLUYfNqPaKm4rxb+ShUq1JCIMH+xX4WXuGKCUDj7a2gBqk/kgHSyDpDUe40AcPJkj7lvrdbmSaeXijRHt66d/KpfsdTc67Gc6bbhszIwBwEfEy9w20YLvhA1MhWT9T88BADP1BS2hNJ9gahCcvOmrY2VDGuFR7Nxt8=
+	t=1714409103; cv=none; b=hiGXx6WFcUTQ+l2uaJ0oTrPe+jYp03n06j/X9xnGZ7iDaS8K/LYjgLoEyujNi9/ghtfOuBqtNHGZJhp3F1wU8xbQAL/UQBPTvjOBVYJxNFvMowBe2nBJKhcxPThsCzwOHaANDKmz4AYlZc/TxPmI9RpxxnZhZqCUUqawX7stK2Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714408928; c=relaxed/simple;
-	bh=UhXiadpeGI3efarCSZ4ivzcXZaiIy+ZRiyi3kVtsmMQ=;
+	s=arc-20240116; t=1714409103; c=relaxed/simple;
+	bh=zI0dXaWwW2H477UXrfRvW/LEn5xqCYL9yuMn0epTlnQ=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=sw5nmJgIgsmxq7WvvWnYNr4tSkbbd9c0T1nYzIFJ1g53ppPH5JIaAzsnTOeBHaO9Jyw+W6wkir5Sj735ZT9dXOKQKiHGHyFRN/oEfqvJEd+/ZkX91tL/fuDZpLzbI2++p+jNHLk1PSJkjspi2PRSBtJg2Ik8WPsx4TPfTi94gZc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=YwtcTq69; arc=none smtp.client-ip=209.85.215.182
+	 To:Cc:Content-Type; b=L6wX9n40Q34byiPLn3qbf4feYLQt7aOGvGl9PmlWKm4xBVRwngK6wNda1rn0thYrENHko9UFNpKJV/2cYfQJBVtxhAIqnr5xh6BBAIuFi2Tx1bFDSafIw1enisdhAAMFIAZ4S6VyGrfUeTepsJZICCtPQjC5Lmw9DlorAKN4Svw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=bC2j9zaz; arc=none smtp.client-ip=209.85.215.176
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f182.google.com with SMTP id 41be03b00d2f7-6082fd3e96eso3332122a12.1;
-        Mon, 29 Apr 2024 09:42:06 -0700 (PDT)
+Received: by mail-pg1-f176.google.com with SMTP id 41be03b00d2f7-5c6bd3100fcso3145793a12.3;
+        Mon, 29 Apr 2024 09:45:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714408926; x=1715013726; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1714409102; x=1715013902; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=9Jd7Oanm4nSiWiwnB9IwoLbTq10zAou5UxTuvdRgHBc=;
-        b=YwtcTq69BLrnegOzbP0ZHEsAbgDVTfh1D8rmsZrBj0Y0iXaqLGRNNjE7pgbhPwxdgE
-         +Xsvx3i2jAGHgdO1Ytbk+lzWIQCO/PBHTl0TOrE7zwRixbaBB7+qHBu0j5sfECjMBOhj
-         QHyYJDewiagQo5rZTLQQUll7XCDZU/MoG/EgFIQny2+/OuPN8UyAdobppuVMUtUuEjwI
-         zLIWFYTz/OHQmnc42rhuaasj6xE+V+rNKfgrqY3MtOyvurcXfILdexOm0Sm8tlDYT5ZA
-         UYd/PbckhzF5rhaOBPD8xqjy8uuOfuFHXnshf5MufDuepSOYAXyxGBho7/UW5HZLYzV1
-         OOZg==
+        bh=V+KuYncKCMIQks9fs4VyYRoQJJHDbH+WTIrj3yfpnG4=;
+        b=bC2j9zazdkM2QJZxDgAkKgtMBRn3WT/p5QUOMG/IAoQAkjCmNBrGJoxwy48ELUyz+N
+         +aZqi0n2Y5xfnIvgkZ6RR6ZOYF7vxBD6lADP65/9ZCf/vehFbWHRwv00ntPxJM1PtVbQ
+         7T5gAOXDKWZXCsWa1ppmV0aBP34AlB3LWd01BSzYmpQRYZmZPXJ/6kLkaQUZvjUyevjs
+         QMekB4kPY1gniiLvzOi6XIWdXk1Wc2k3H/w/EVqIJI/KXRdu+jDiLCYYAkSOF6TwBK0r
+         D3qSItEJk6RVuhkurXham9anF+hX7lech3TSFpzAqcYFpz5vl6CHhzbU2kxqgLV9IRLY
+         GOxQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714408926; x=1715013726;
+        d=1e100.net; s=20230601; t=1714409102; x=1715013902;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=9Jd7Oanm4nSiWiwnB9IwoLbTq10zAou5UxTuvdRgHBc=;
-        b=X0+jBWh2+o+ZapjgZWvavk93V6Esnm6Q2d0ytRjOZ47GVUeL4f78FCVk9yRYHURrEY
-         hOSIiGskWmcxJeBNUMaAjbRGdAca4jDRAENrBIAaUXkJJBsT1AS9eTF8eAborBLJYjaa
-         Qo2yc/IlG1N29bgRoAHDxK2J2/yjqBZKz2yJXaBYzggah9Eq4ybP57+lZrkC/UfeEBzg
-         hAPhY7nGCI8Jr4Xarn1nbwr5RYHnbKgfEO/OFkxKvBEmftPF6dnrec5oJcQjAAPZV1UB
-         /WOqUsXw3NSqNqt24wvBZzzPOorfTmj9XGHSAfPejQU/lUHGI2ToFlAtFOX4936r8gMB
-         iLWg==
-X-Forwarded-Encrypted: i=1; AJvYcCUE9Fo8gV36+gQS1yViSYqZ7R+CFHbI266kxLc4H4YC3qa8f61kb+eumkmCPW6o23wHxgzz5Iil92D02iqZOWZc64DfFHI2mqUmn3FJS7SIuHe7FD2ESUOYMolKvY26K1DQ+kkLq4F71TfKzA9ZD5SXQS6PQFN7Iaa3jT6LocxRAHdC2QxL8t62CZk/NTGIKkv4lBOSdZnlslihkSJWPjws
-X-Gm-Message-State: AOJu0YwVKi04TnE6NZzPz8cclDUaVQL7r9apxXOajrwI9x8EZAWPGDAD
-	K1tzWBR+MhV1TtR7GONP8PczBl7KVq5pBO5tyOILxZJAJ9jh8hdcN3j7NAnNECi6M3vhCOJGzY9
-	orBtiFroZsAq9rY2LeUvVnHEzsQs=
-X-Google-Smtp-Source: AGHT+IE4IxzjkZnZxeSMThIyMWUmuVBhMxbEPOeKEToWqcmhE/J9jTcxCoAmje/rhqZ2jx6YJT0zAmHXpRs/eYj05/A=
-X-Received: by 2002:a17:90a:df02:b0:2ad:fa29:3989 with SMTP id
- gp2-20020a17090adf0200b002adfa293989mr9166083pjb.19.1714408926072; Mon, 29
- Apr 2024 09:42:06 -0700 (PDT)
+        bh=V+KuYncKCMIQks9fs4VyYRoQJJHDbH+WTIrj3yfpnG4=;
+        b=pEGt0Djr6B7NYC6hAuOCGQwRjyMm9KEQ6TvM2NNABgMVo6O7pg6GexGwC+dhA1z13y
+         MuMuSi39EoZYpzR/NCC6ff/2Ac+XHyIMN6o/ujCImwDkOhMQqQKthcEZJqGGWHkS+rlU
+         9uIO41TrVZyuoi5LjSGKBfCCc83+B3kDOYYs1jVfEbXRuUo7lYwFoOiE4k8KtAQBkW4E
+         Dc4/WYpCA5Nk4LAeiUjarg8WtQO3cLI6l0soBLsgONSHstG0Qx5Tz60Ew7DXLCmJ0CFi
+         Lk+lPl3mZR4YLzYncvrljP36Iv9wL2fRLVl3JuzufyxviMtZBFQUVi5a3/RAYUkAiUZQ
+         ybmg==
+X-Forwarded-Encrypted: i=1; AJvYcCUh3dQbbudMM1klOfgmLTWGdgpUhxYRRnKoLHd2UT6zvTjrjuns+F5Fxl8/2x5OshNCptpPERN0FjiS7YXvd26o0i5jM5++ePPXkdUrwDVbCsU9J/kN1LWaTZoYQ9ljP93CyLQHA8MY+GZSXb9qZ7aK/IlMLJQvJM4BcJpMbSBmqGB1CQyvRKK4oNghYSHiGbR1AfL5jdKXeQT9lBwW4d46
+X-Gm-Message-State: AOJu0YzzaZOKr3xVVpufanHcMMeLwn9/s6H3ORhYoaIcsQf67XgK/fgb
+	/p2V5s27iAO+/GJhcXWo/kkDbhiMbb3/eT7+Tw0ruudk1kDPV2a9nHqm0JoAKxNP6BpvAQpk4Yh
+	25Gc0WAeGwfqHezhysddd3/Ask5s=
+X-Google-Smtp-Source: AGHT+IFEBjjOgIZI69S9O+DPbxRJS29XWyaWX2RRt0TM1E47XRESlvdqoITxR7rPoljfCms3ptvnuElmViiIbq0BAf0=
+X-Received: by 2002:a17:90b:3e89:b0:2b0:d163:3131 with SMTP id
+ rj9-20020a17090b3e8900b002b0d1633131mr6513981pjb.17.1714409101691; Mon, 29
+ Apr 2024 09:45:01 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240421194206.1010934-1-jolsa@kernel.org> <20240421194206.1010934-6-jolsa@kernel.org>
- <CAEf4BzbWr9s2HiWU=7=okwH7PR8LHGFj2marmaOxKW61BWKHGg@mail.gmail.com> <Zi9NPfII8I7nWz6O@krava>
-In-Reply-To: <Zi9NPfII8I7nWz6O@krava>
+References: <20240421194206.1010934-1-jolsa@kernel.org> <20240421194206.1010934-7-jolsa@kernel.org>
+ <CAEf4BzYU-y+vptqXpuALYecJJgPt+CTcbo+=Q9QXnu4vNwem+g@mail.gmail.com> <Zi9OwCwluxTo-Azd@krava>
+In-Reply-To: <Zi9OwCwluxTo-Azd@krava>
 From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Mon, 29 Apr 2024 09:41:53 -0700
-Message-ID: <CAEf4BzY8K6GXtdRkmo3b=ZnW=6jQZnDMtBbGOQpP8m7boTJRpg@mail.gmail.com>
-Subject: Re: [PATCHv3 bpf-next 5/7] selftests/bpf: Add uretprobe syscall call
- from user space test
+Date: Mon, 29 Apr 2024 09:44:49 -0700
+Message-ID: <CAEf4Bzb6M=8x6=WMZq8GDB3gS4kejsB9QaVSNEc1MwWbX_vvUQ@mail.gmail.com>
+Subject: Re: [PATCHv3 bpf-next 6/7] selftests/bpf: Add uretprobe compat test
 To: Jiri Olsa <olsajiri@gmail.com>
 Cc: Steven Rostedt <rostedt@goodmis.org>, Masami Hiramatsu <mhiramat@kernel.org>, 
 	Oleg Nesterov <oleg@redhat.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
@@ -91,103 +90,184 @@ Cc: Steven Rostedt <rostedt@goodmis.org>, Masami Hiramatsu <mhiramat@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Apr 29, 2024 at 12:33=E2=80=AFAM Jiri Olsa <olsajiri@gmail.com> wro=
+On Mon, Apr 29, 2024 at 12:39=E2=80=AFAM Jiri Olsa <olsajiri@gmail.com> wro=
 te:
 >
-> On Fri, Apr 26, 2024 at 11:03:29AM -0700, Andrii Nakryiko wrote:
+> On Fri, Apr 26, 2024 at 11:06:53AM -0700, Andrii Nakryiko wrote:
 > > On Sun, Apr 21, 2024 at 12:43=E2=80=AFPM Jiri Olsa <jolsa@kernel.org> w=
 rote:
 > > >
-> > > Adding test to verify that when called from outside of the
-> > > trampoline provided by kernel, the uretprobe syscall will cause
-> > > calling process to receive SIGILL signal and the attached bpf
-> > > program is no executed.
+> > > Adding test that adds return uprobe inside 32 bit task
+> > > and verify the return uprobe and attached bpf programs
+> > > get properly executed.
 > > >
 > > > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 > > > ---
-> > >  .../selftests/bpf/prog_tests/uprobe_syscall.c | 92 +++++++++++++++++=
+> > >  tools/testing/selftests/bpf/.gitignore        |  1 +
+> > >  tools/testing/selftests/bpf/Makefile          |  6 ++-
+> > >  .../selftests/bpf/prog_tests/uprobe_syscall.c | 40 +++++++++++++++++=
 ++
-> > >  .../selftests/bpf/progs/uprobe_syscall_call.c | 15 +++
-> > >  2 files changed, 107 insertions(+)
+> > >  .../bpf/progs/uprobe_syscall_compat.c         | 13 ++++++
+> > >  4 files changed, 59 insertions(+), 1 deletion(-)
 > > >  create mode 100644 tools/testing/selftests/bpf/progs/uprobe_syscall_=
-call.c
+compat.c
 > > >
+> > > diff --git a/tools/testing/selftests/bpf/.gitignore b/tools/testing/s=
+elftests/bpf/.gitignore
+> > > index f1aebabfb017..69d71223c0dd 100644
+> > > --- a/tools/testing/selftests/bpf/.gitignore
+> > > +++ b/tools/testing/selftests/bpf/.gitignore
+> > > @@ -45,6 +45,7 @@ test_cpp
+> > >  /veristat
+> > >  /sign-file
+> > >  /uprobe_multi
+> > > +/uprobe_compat
+> > >  *.ko
+> > >  *.tmp
+> > >  xskxceiver
+> > > diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/sel=
+ftests/bpf/Makefile
+> > > index edc73f8f5aef..d170b63eca62 100644
+> > > --- a/tools/testing/selftests/bpf/Makefile
+> > > +++ b/tools/testing/selftests/bpf/Makefile
+> > > @@ -134,7 +134,7 @@ TEST_GEN_PROGS_EXTENDED =3D test_sock_addr test_s=
+kb_cgroup_id_user \
+> > >         xskxceiver xdp_redirect_multi xdp_synproxy veristat xdp_hw_me=
+tadata \
+> > >         xdp_features bpf_test_no_cfi.ko
+> > >
+> > > -TEST_GEN_FILES +=3D liburandom_read.so urandom_read sign-file uprobe=
+_multi
+> > > +TEST_GEN_FILES +=3D liburandom_read.so urandom_read sign-file uprobe=
+_multi uprobe_compat
 > >
-> > See nits below, but overall LGTM
+> > you need to add uprobe_compat to TRUNNER_EXTRA_FILES as well, no?
+>
+> ah right
+>
+> > > diff --git a/tools/testing/selftests/bpf/prog_tests/uprobe_syscall.c =
+b/tools/testing/selftests/bpf/prog_tests/uprobe_syscall.c
+> > > index 9233210a4c33..3770254d893b 100644
+> > > --- a/tools/testing/selftests/bpf/prog_tests/uprobe_syscall.c
+> > > +++ b/tools/testing/selftests/bpf/prog_tests/uprobe_syscall.c
+> > > @@ -11,6 +11,7 @@
+> > >  #include <sys/wait.h>
+> > >  #include "uprobe_syscall.skel.h"
+> > >  #include "uprobe_syscall_call.skel.h"
+> > > +#include "uprobe_syscall_compat.skel.h"
+> > >
+> > >  __naked unsigned long uretprobe_regs_trigger(void)
+> > >  {
+> > > @@ -291,6 +292,35 @@ static void test_uretprobe_syscall_call(void)
+> > >                  "read_trace_pipe_iter");
+> > >         ASSERT_EQ(found, 0, "found");
+> > >  }
+> > > +
+> > > +static void trace_pipe_compat_cb(const char *str, void *data)
+> > > +{
+> > > +       if (strstr(str, "uretprobe compat") !=3D NULL)
+> > > +               (*(int *)data)++;
+> > > +}
+> > > +
+> > > +static void test_uretprobe_compat(void)
+> > > +{
+> > > +       struct uprobe_syscall_compat *skel =3D NULL;
+> > > +       int err, found =3D 0;
+> > > +
+> > > +       skel =3D uprobe_syscall_compat__open_and_load();
+> > > +       if (!ASSERT_OK_PTR(skel, "uprobe_syscall_compat__open_and_loa=
+d"))
+> > > +               goto cleanup;
+> > > +
+> > > +       err =3D uprobe_syscall_compat__attach(skel);
+> > > +       if (!ASSERT_OK(err, "uprobe_syscall_compat__attach"))
+> > > +               goto cleanup;
+> > > +
+> > > +       system("./uprobe_compat");
+> > > +
+> > > +       ASSERT_OK(read_trace_pipe_iter(trace_pipe_compat_cb, &found, =
+1000),
+> > > +                "read_trace_pipe_iter");
 > >
-> > Acked-by: Andrii Nakryiko <andrii@kernel.org>
+> > why so complicated? can't you just set global variable that it was call=
+ed
+>
+> hm, we execute separate uprobe_compat (32bit) process that triggers the b=
+pf
+> program, so we can't use global variable.. using the trace_pipe was the o=
+nly
+> thing that was easy to do
+
+you need child process to trigger uprobe, but you could have installed
+BPF program from parent process (you'd need to make child wait for
+parent to be ready, with normal pipe() like we do in other places).
+
+I think generally the less work forked child process does, the better.
+All those ASSERT() failures won't produce any output in child process,
+unless you run tests in verbose mode, because we haven't implemented
+some form of sending all the logs back to the parent process and so
+they are completely lost. But that's a separate topic.
+
+Either way, consider using pipe() to coordinate waiting from child on
+parent being ready, but otherwise do all the BPF-related heavy lifting
+from parent (you can attach BPF programs to specific PID using
+bpf_program__attach_uprobe() easily, it's not declarative, but simple
+enough).
+
+>
+> jirka
+>
 > >
-> > [...]
-> >
-> > > @@ -219,6 +301,11 @@ static void test_uretprobe_regs_change(void)
+> > > +       ASSERT_EQ(found, 1, "found");
+> > > +
+> > > +cleanup:
+> > > +       uprobe_syscall_compat__destroy(skel);
+> > > +}
+> > >  #else
+> > >  static void test_uretprobe_regs_equal(void)
+> > >  {
+> > > @@ -306,6 +336,11 @@ static void test_uretprobe_syscall_call(void)
 > > >  {
 > > >         test__skip();
 > > >  }
 > > > +
-> > > +static void test_uretprobe_syscall_call(void)
+> > > +static void test_uretprobe_compat(void)
 > > > +{
 > > > +       test__skip();
 > > > +}
 > > >  #endif
 > > >
 > > >  void test_uprobe_syscall(void)
-> > > @@ -228,3 +315,8 @@ void test_uprobe_syscall(void)
-> > >         if (test__start_subtest("uretprobe_regs_change"))
-> > >                 test_uretprobe_regs_change();
+> > > @@ -320,3 +355,8 @@ void serial_test_uprobe_syscall_call(void)
+> > >  {
+> > >         test_uretprobe_syscall_call();
 > > >  }
 > > > +
-> > > +void serial_test_uprobe_syscall_call(void)
+> > > +void serial_test_uprobe_syscall_compat(void)
 > >
-> > does it need to be serial? non-serial are still run sequentially
-> > within a process (there is no multi-threading), it's more about some
-> > global effects on system.
->
-> plz see below
->
+> > and then no need for serial_test?
 > >
 > > > +{
-> > > +       test_uretprobe_syscall_call();
+> > > +       test_uretprobe_compat();
 > > > +}
-> > > diff --git a/tools/testing/selftests/bpf/progs/uprobe_syscall_call.c =
-b/tools/testing/selftests/bpf/progs/uprobe_syscall_call.c
+> > > diff --git a/tools/testing/selftests/bpf/progs/uprobe_syscall_compat.=
+c b/tools/testing/selftests/bpf/progs/uprobe_syscall_compat.c
 > > > new file mode 100644
-> > > index 000000000000..5ea03bb47198
+> > > index 000000000000..f8adde7f08e2
 > > > --- /dev/null
-> > > +++ b/tools/testing/selftests/bpf/progs/uprobe_syscall_call.c
-> > > @@ -0,0 +1,15 @@
+> > > +++ b/tools/testing/selftests/bpf/progs/uprobe_syscall_compat.c
+> > > @@ -0,0 +1,13 @@
 > > > +// SPDX-License-Identifier: GPL-2.0
-> > > +#include "vmlinux.h"
+> > > +#include <linux/bpf.h>
 > > > +#include <bpf/bpf_helpers.h>
-> > > +#include <string.h>
-> > > +
-> > > +struct pt_regs regs;
+> > > +#include <bpf/bpf_tracing.h>
 > > > +
 > > > +char _license[] SEC("license") =3D "GPL";
 > > > +
-> > > +SEC("uretprobe//proc/self/exe:uretprobe_syscall_call")
-> > > +int uretprobe(struct pt_regs *regs)
+> > > +SEC("uretprobe.multi/./uprobe_compat:main")
+> > > +int uretprobe_compat(struct pt_regs *ctx)
 > > > +{
-> > > +       bpf_printk("uretprobe called");
-> >
-> > debugging leftover? we probably don't want to pollute trace_pipe from t=
-est
->
-> the reason for this is to make sure the bpf program was not executed,
->
-> the test makes sure the child gets killed with SIGILL and also that
-> the bpf program was not executed by checking the trace_pipe and
-> making sure nothing was received
->
-> the trace_pipe reading is also why it's serial
-
-you could have attached BPF program from parent process and use a
-global variable (and thus eliminate all the trace_pipe system-wide
-dependency), but ok, it's fine by me the way this is done
-
->
-> jirka
->
-> >
+> > > +       bpf_printk("uretprobe compat\n");
 > > > +       return 0;
 > > > +}
 > > > --
