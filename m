@@ -1,96 +1,103 @@
-Return-Path: <bpf+bounces-28208-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-28210-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9A6B68B662B
-	for <lists+bpf@lfdr.de>; Tue, 30 Apr 2024 01:20:51 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 24CB38B663A
+	for <lists+bpf@lfdr.de>; Tue, 30 Apr 2024 01:29:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5685D283078
-	for <lists+bpf@lfdr.de>; Mon, 29 Apr 2024 23:20:50 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5FA111C21490
+	for <lists+bpf@lfdr.de>; Mon, 29 Apr 2024 23:29:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D514194C84;
-	Mon, 29 Apr 2024 23:20:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B7CB51836D1;
+	Mon, 29 Apr 2024 23:29:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OVILryaw"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="h91cri4t"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF83914291E;
-	Mon, 29 Apr 2024 23:20:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1237617BCA
+	for <bpf@vger.kernel.org>; Mon, 29 Apr 2024 23:29:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714432831; cv=none; b=dcs8vmwc+o9YlZVsKwiEMyYVuxjoRaOXWfuDbMQQXjkUychfeCOe0a78+U2zL5wP6GzpY/w4bePgFvt9VQyId4/5C3X7VAd+69iBfFnGJ4xFLd30ebLhCyYW2+b/O/TE7dX2DJ6HKbzw+4zIjcADZWEa0yUnt48GNTGms4FLDrE=
+	t=1714433373; cv=none; b=CTpVUoz+RqBDvbQQFGKNBoRjhlRF4eGlDgjSN1D7kgiza9ama3nLjIlWVtg2EyVBmsH6/TRJFKaS8OyJ+B30Qri8O7rwr4baf5D/9SWVBZBtrWsiXuhRZrp0t/ZMAdkNeQVEgGWQlMec1f44hpyfkD0R2jUP5+uSwXASbi+p0WQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714432831; c=relaxed/simple;
-	bh=aWlqmfsjdDprFD1QPHeYvmyvfs26WsVNyAegz3z+Sz4=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=iuZaPUkjy/KwaXotrKAS8uu+lR2M6JQkw2FvWf+Wk3Zq55s9wrCIWDHKWeKC8OUAisR0yMZ3vPvJvMhRtvM1snJzl7CR1OsSWtd2akHVSmy4tyL6fjtlLw5MXTfZltoKSr57P5l6MfSmFMIvcFE49bPKdvj4ZByuLzvEQGSZmOc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OVILryaw; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 7C313C4AF1A;
-	Mon, 29 Apr 2024 23:20:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714432830;
-	bh=aWlqmfsjdDprFD1QPHeYvmyvfs26WsVNyAegz3z+Sz4=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=OVILryaw2x3rvars8w+/RnZlFd+RjOVwnHts3BoHgtWUvyt6mxP3G8VItJo7IJp2q
-	 mYY4mMzF18Ly0/gYQAJQknJ0YP3eUvnCofI8mvGxgWwgmhBQEJwyd15rNwiyZmX6nF
-	 0k8qVAkFMn/2adgiDT2+GxAqqfiNXpSQqTKPArskgD/4ZHdMN9TomZDYXG7iWH5x1R
-	 3wK2VFPE8uJxFgMCYHDO685Kj6xxpX/oA0OEDK2SpPgfpmHUke1CsmtiAAzNTIfCOt
-	 qVGm2amt45s7VBoug/Vq3llMKZ04vOWgD7YPERSZVBI86dddmwLdInTwUGP3+7WN4/
-	 RBAhU7Wz+/agw==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 6AF7FC54BA4;
-	Mon, 29 Apr 2024 23:20:30 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1714433373; c=relaxed/simple;
+	bh=qXWUQkel7tZvE0bdHFz7udj9Ssh0vjqklajMxlPD3/Y=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=FeAaRYnh+fKdVbtZzHiOhpRiKB+m8OGGTXLn7bn/2k6hsO7MMZIHo6US/D4vvfrkrsgGx6PJ9b1KvjThg9n6GqVYbygZL6pVMIWoSMHdEFaDC1lNDebP7hqtW1zRipDtBdbzkFYJlhvJPbYwtSBlFE3VfuwYMvMc9q1c9zZ6FMg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=h91cri4t; arc=none smtp.client-ip=209.85.214.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f180.google.com with SMTP id d9443c01a7336-1e4c4fb6af3so34578375ad.0
+        for <bpf@vger.kernel.org>; Mon, 29 Apr 2024 16:29:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1714433371; x=1715038171; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=qXWUQkel7tZvE0bdHFz7udj9Ssh0vjqklajMxlPD3/Y=;
+        b=h91cri4tjtzRzvNAO0wVEx6sqfuEiZ9TV6b/cnqnHI8HVIgjOHy46ZIAnweZj2U5a/
+         9f20tUT6DVdKkUM7wHO/IqUX0yRKohxmnXP8lpNlGtAkLviCbzq/hqUn8EhtMhVSpc6/
+         Vmig72N63C2HoT5ttHBw/FxeFO1nDxW3UzVfE3Xv2Ze+j6PB2l9uHrRBx9JJKk7Nv5OQ
+         pjptZP1jLf0BCKCDbvuJFnRSnjT8by8N+bdwlgAlgO0AWE1TsAZJOIBcEufMvYYy+sIm
+         LlCy0ioF1lgddTRwORatwTapWAbK1ZN/tuyxXu09bFJ8ms53gcU+QO4lN6KLQx5W4ZOT
+         MDoQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714433371; x=1715038171;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=qXWUQkel7tZvE0bdHFz7udj9Ssh0vjqklajMxlPD3/Y=;
+        b=EjgB6OsHkKQLId35ftZO42nXt79/G8kGl8TRS0U6jejmgoVFlPxgfuUAh8ReYMM6Ul
+         OBTn+gaumki0eWwbb266eH3EYKRZt5Wck0CIoaF//aqzLgylJMf1TMXIeRVpyvFt4HAQ
+         9U5yajWqaX2znkD/2LHwy4L7c2F1bEOTVDf6nFMAqA4a3lVqb18z/7N088FC8Huwm11W
+         oJFV77v8a0K0f5Y5T56DodQAXGLRQOR/Dd+IjzU0t2ue+iDYHf/dXbOHNsiBKQQ6hwdE
+         lVR+IKx1I1u2HR/naRMOnCWo0BMC5n9wC//5KoermyKLHE5tuZDkeiVeLOy9tyu9HmCx
+         uqOg==
+X-Forwarded-Encrypted: i=1; AJvYcCWxuyuLqKO2Tf3wEs7Dd+9pVpESck3SOqDeRxGV4JMgCrSQ4iauPnRBULv4DKQYqFWOpF4tV5L1q4xx3YntYnerPtm8
+X-Gm-Message-State: AOJu0Yy/qqAYTEK5NrCt2lh4BNlWlONlZN6smWRtLkYUiVIf4QsuTEW2
+	Sns0dkdLHfTtUHJkz4q0RL9SKah0WBF98sXD1plSTWDKzyFj/Sp0UtXpascS
+X-Google-Smtp-Source: AGHT+IFO7O1Cnof3JWT3O+GsGHvHEXp2LyY03KHL0R7W3DuDPqFSome3js8jklzuFOAAUShd+G0BPQ==
+X-Received: by 2002:a17:903:228c:b0:1eb:7162:82c7 with SMTP id b12-20020a170903228c00b001eb716282c7mr1469356plh.18.1714433371235;
+        Mon, 29 Apr 2024 16:29:31 -0700 (PDT)
+Received: from ?IPv6:2604:3d08:9880:5900:a18e:a67:fdb6:1a18? ([2604:3d08:9880:5900:a18e:a67:fdb6:1a18])
+        by smtp.gmail.com with ESMTPSA id e2-20020a170902784200b001e797d4b8acsm21398417pln.174.2024.04.29.16.29.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 29 Apr 2024 16:29:30 -0700 (PDT)
+Message-ID: <c1d17ea3c74e7cec4ba2457e2d6b88d324064af9.camel@gmail.com>
+Subject: Re: [PATCH bpf-next v4 7/7] bpf/verifier: improve code after range
+ computation recent changes.
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Cupertino Miranda <cupertino.miranda@oracle.com>, bpf@vger.kernel.org
+Cc: Yonghong Song <yonghong.song@linux.dev>, Alexei Starovoitov
+ <alexei.starovoitov@gmail.com>, David Faust <david.faust@oracle.com>, Jose
+ Marchesi <jose.marchesi@oracle.com>, Elena Zannoni
+ <elena.zannoni@oracle.com>, Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Mon, 29 Apr 2024 16:29:29 -0700
+In-Reply-To: <e0aa743fd6044691d0b30e7b2761c8085a28bb0b.camel@gmail.com>
+References: <20240429212250.78420-1-cupertino.miranda@oracle.com>
+	 <20240429212250.78420-8-cupertino.miranda@oracle.com>
+	 <e0aa743fd6044691d0b30e7b2761c8085a28bb0b.camel@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.44.4-0ubuntu2 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH] samples: bpf: Add valid info for VMLINUX_BTF
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <171443283043.1398.11744904571177428676.git-patchwork-notify@kernel.org>
-Date: Mon, 29 Apr 2024 23:20:30 +0000
-References: <20240428161032.239043-1-chen.dylane@gmail.com>
-In-Reply-To: <20240428161032.239043-1-chen.dylane@gmail.com>
-To: Tao Chen <chen.dylane@gmail.com>
-Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
- martin.lau@linux.dev, song@kernel.org, bpf@vger.kernel.org,
- linux-kernel@vger.kernel.org
 
-Hello:
+On Mon, 2024-04-29 at 16:16 -0700, Eduard Zingerman wrote:
+[...]
 
-This patch was applied to bpf/bpf-next.git (master)
-by Andrii Nakryiko <andrii@kernel.org>:
+> Still, I'm not sure if we want to remove this safety check.
 
-On Mon, 29 Apr 2024 00:10:32 +0800 you wrote:
-> When i use the command 'make M=samples/bpf' to compile samples/bpf code
-> in ubuntu 22.04, the error info occured:
-> Cannot find a vmlinux for VMLINUX_BTF at any of "  /home/ubuntu/code/linux/vmlinux",
-> build the kernel or set VMLINUX_BTF or VMLINUX_H variable
-> 
-> Others often encounter this kind of issue, new kernel has the vmlinux, so we can
-> set the path in error info which seems more intuitive, like:
-> Cannot find a vmlinux for VMLINUX_BTF at any of "  /home/ubuntu/code/linux/vmlinux",
-> buiild the kernel or set VMLINUX_BTF like "VMLINUX_BTF=/sys/kernel/btf/vmlinux" or
-> VMLINUX_H variable
-> 
-> [...]
-
-Here is the summary with links:
-  - samples: bpf: Add valid info for VMLINUX_BTF
-    https://git.kernel.org/bpf/bpf-next/c/397658ddc88c
-
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+... and if we are going to remove the safety check,
+then at-least there should be a warning like there was before the
+commit from 2018. Which is almost the same amount of code as current
+'check + invalid flag'.
 
