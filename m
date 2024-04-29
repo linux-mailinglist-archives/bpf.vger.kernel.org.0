@@ -1,48 +1,48 @@
-Return-Path: <bpf+bounces-28207-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-28209-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 96B6C8B6628
-	for <lists+bpf@lfdr.de>; Tue, 30 Apr 2024 01:20:48 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 232318B662A
+	for <lists+bpf@lfdr.de>; Tue, 30 Apr 2024 01:20:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4D2C51F220EB
-	for <lists+bpf@lfdr.de>; Mon, 29 Apr 2024 23:20:48 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D371E2831C7
+	for <lists+bpf@lfdr.de>; Mon, 29 Apr 2024 23:20:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 62F9D194C7C;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 68F81194C83;
 	Mon, 29 Apr 2024 23:20:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Mc9oAzJX"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lxpNpnUs"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF8C4177983
-	for <bpf@vger.kernel.org>; Mon, 29 Apr 2024 23:20:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF87F143C7B;
+	Mon, 29 Apr 2024 23:20:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714432831; cv=none; b=eQqVAPZQ+yjy6+h3/woFAUZX8zSihqiYpkkm1GQORNSv8rzwhmbTSsNS6UhRJ3OPHZMeDs4q7RdeLBZN2y6jykzw2ZD78RHswsboTt+7YeL7KpmHyJqm9PkkwdarqtoCj+GZYbghkOLLfqDdlhKe/3tagGn0bzCGOhnUNio0tZw=
+	t=1714432831; cv=none; b=I1kdrfzUvJwLhlRfL+Njw05Y16GIen0Oj0EFP8U9OZ9xpgnMJ+nsq4o3Yg9jdRtYjlXeseu5Qubn/Y/+zSGXBHC/Sy9Eo4vNeLbCDnNS4JhwLEqYVMEtRS9lVMgXryxgtqbHyAUfs009hkySuTcl2fjJlZ9mh2jlMhjCyQScJF4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1714432831; c=relaxed/simple;
-	bh=aMbXvQ9pL0wyHSaPEYfZLrE/9Eq9+BWGlCblioYsTDA=;
+	bh=LElMbMggq3zSz6XdauPhawjeA3vLA+Bs6XRdTckMpR0=;
 	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=kxQpJPm9c0H/IBs9GxIpDSVFiCv+kY7Cwg75wV+uEJn8kvPU5RqHjX7Upu1t8kJ29vluEusbOvZk0Ecb+GF5nlNadXpKM0QDlP4vVnlKuW8kLHXsKTjAj78gOmrnak63bl7ce5OUPiYspuHOKbUZ2jP7RB6bUWdNiAl7nv3857U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Mc9oAzJX; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 9199FC4AF4D;
+	 In-Reply-To:To:Cc; b=YdFPgcp3yWOKVINpznast1g+Gff1p1gnKsomoWGt176Pow/CdbiB38AwqAZRObNZ/g9inxVYpJt/MZRLFnxpm6bRKHXkzikdj02Uh5qV2hADECoaw+hNl2nfOAFuLKufzeAPinwaLac4HVKgy0bG5MzkqCp7IaJbqXEfwtbhV+4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lxpNpnUs; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 873CFC4AF1D;
 	Mon, 29 Apr 2024 23:20:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1714432830;
-	bh=aMbXvQ9pL0wyHSaPEYfZLrE/9Eq9+BWGlCblioYsTDA=;
+	bh=LElMbMggq3zSz6XdauPhawjeA3vLA+Bs6XRdTckMpR0=;
 	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=Mc9oAzJXdguqtVEtn98QDOViABvfmnA5cu7caU0snUY9vCdqLohDmZG1Xfw+afD6O
-	 3TjYbk27KzM1HP9FHVyAFFZVtkFm6uZJVB4Yv3wJJ25x51v3JJTFkBB1zWs2QX66vI
-	 gX21yTAr+rZywE0x7rGylU0YJIN8BgoAigy8+/vDVAjNZleGwTVLzC9PMMdcROpUPk
-	 6M3gBgRkSoRHoU7qlD9L/GZ6tmfglcom8UTbfU1JBwKKW2nHMh/qLwvUSkVjCZ1wql
-	 pIqxxMCJ8z0kkhnL/5rycNrQNOz/EuYYaIx351o2D/0Tb5dp300Y9CxaNT7br+iaYK
-	 n3PlKZWdRQtcQ==
+	b=lxpNpnUs5k+0rmKYl+7415cmxk8U6tWW9TmVUmo6eAavi7l/XG81oO30qYDDOTcs2
+	 VYM2C6rjr9gfwO20uomeURMjiss7OH+NSGfcEqUCqg/Ynhe18BzcWRlJpY/pQHhzr1
+	 RAqoc+NAyCQm/SXDv+XrMuoBo0pWmRTaMcQKRRZ8H7y2Mn+YUWRVe4t1SYyTXi8rLS
+	 eXrJjWdKqpFHVGIdPSG2ziSGtIzb43zGzDAAX1uCIqx8y8EDJWYUe78wTCFtFw+5Kz
+	 2XmokUgp8sKEWbQsA8g2MD/pjD110wSXP8fYuvWUR/qqPLu96usOVAL/zcwTgTBHmr
+	 0LRLe8gvTwgCw==
 Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 84248C43613;
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 78098C54BAF;
 	Mon, 29 Apr 2024 23:20:30 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
@@ -52,53 +52,37 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next] selftests/bpf: run cgroup1_hierarchy test in own
- mount namespace
+Subject: Re: [PATCH v1 1/1] bpf: Switch to krealloc_array()
 From: patchwork-bot+netdevbpf@kernel.org
 Message-Id: 
- <171443283053.1398.6063083961990796968.git-patchwork-notify@kernel.org>
+ <171443283048.1398.3977777743158984889.git-patchwork-notify@kernel.org>
 Date: Mon, 29 Apr 2024 23:20:30 +0000
-References: <20240429112311.402497-1-vmalik@redhat.com>
-In-Reply-To: <20240429112311.402497-1-vmalik@redhat.com>
-To: Viktor Malik <vmalik@redhat.com>
-Cc: bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
- andrii@kernel.org, martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org,
- yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org,
- sdf@google.com, haoluo@google.com, jolsa@kernel.org, mykolal@fb.com,
- shuah@kernel.org, laoar.shao@gmail.com
+References: <20240429120005.3539116-1-andriy.shevchenko@linux.intel.com>
+In-Reply-To: <20240429120005.3539116-1-andriy.shevchenko@linux.intel.com>
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: ast@kernel.org, bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+ daniel@iogearbox.net, john.fastabend@gmail.com, andrii@kernel.org,
+ martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org,
+ yonghong.song@linux.dev, kpsingh@kernel.org, sdf@google.com,
+ haoluo@google.com, jolsa@kernel.org
 
 Hello:
 
 This patch was applied to bpf/bpf-next.git (master)
 by Andrii Nakryiko <andrii@kernel.org>:
 
-On Mon, 29 Apr 2024 13:23:11 +0200 you wrote:
-> The cgroup1_hierarchy test uses setup_classid_environment to setup
-> cgroupv1 environment. The problem is that the environment is set in
-> /sys/fs/cgroup and therefore, if not run under an own mount namespace,
-> effectively deletes all system cgroups:
+On Mon, 29 Apr 2024 15:00:05 +0300 you wrote:
+> Let the krealloc_array() copy the original data and
+> check for a multiplication overflow.
 > 
->     $ ls /sys/fs/cgroup | wc -l
->     27
->     $ sudo ./test_progs -t cgroup1_hierarchy
->     #41/1    cgroup1_hierarchy/test_cgroup1_hierarchy:OK
->     #41/2    cgroup1_hierarchy/test_root_cgid:OK
->     #41/3    cgroup1_hierarchy/test_invalid_level:OK
->     #41/4    cgroup1_hierarchy/test_invalid_cgid:OK
->     #41/5    cgroup1_hierarchy/test_invalid_hid:OK
->     #41/6    cgroup1_hierarchy/test_invalid_cgrp_name:OK
->     #41/7    cgroup1_hierarchy/test_invalid_cgrp_name2:OK
->     #41/8    cgroup1_hierarchy/test_sleepable_prog:OK
->     #41      cgroup1_hierarchy:OK
->     Summary: 1/8 PASSED, 0 SKIPPED, 0 FAILED
->     $ ls /sys/fs/cgroup | wc -l
->     1
-> 
-> [...]
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> ---
+>  kernel/bpf/core.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 
 Here is the summary with links:
-  - [bpf-next] selftests/bpf: run cgroup1_hierarchy test in own mount namespace
-    https://git.kernel.org/bpf/bpf-next/c/19468ed51488
+  - [v1,1/1] bpf: Switch to krealloc_array()
+    https://git.kernel.org/bpf/bpf-next/c/a3034872cd90
 
 You are awesome, thank you!
 -- 
