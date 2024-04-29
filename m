@@ -1,158 +1,262 @@
-Return-Path: <bpf+bounces-28098-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-28099-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id D61DD8B5A8E
-	for <lists+bpf@lfdr.de>; Mon, 29 Apr 2024 15:52:05 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id E8E538B5A94
+	for <lists+bpf@lfdr.de>; Mon, 29 Apr 2024 15:52:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 744621F21C35
-	for <lists+bpf@lfdr.de>; Mon, 29 Apr 2024 13:52:05 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 787D71F20F60
+	for <lists+bpf@lfdr.de>; Mon, 29 Apr 2024 13:52:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6FEF97BAF0;
-	Mon, 29 Apr 2024 13:51:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 801FC757E5;
+	Mon, 29 Apr 2024 13:51:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="h5c61wun"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Oi7Xwlvi"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed1-f42.google.com (mail-ed1-f42.google.com [209.85.208.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E112A79950;
-	Mon, 29 Apr 2024 13:51:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F565657D4;
+	Mon, 29 Apr 2024 13:51:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714398687; cv=none; b=tCrKyBjbWhBfNJMzSZgxOEBJxkk8q9Ip+DIKRZqVenaqbThaV5z0fC/NxPIhB2WYPEfWfARVlbBKYk6+H9hESLrlZoQ6TB4UPRZ/8M2HRf/wzOatIkacF0dmD/edcfy0EekmJDMNEqbY/3If+zNybHCecCES068RgFc5uvCFbHU=
+	t=1714398714; cv=none; b=B1vrqlx7B60AChN0PsLDoXLj+Vu7acyTfd6D58DjNjy82T/YKksasEdyWgfIT2WNNE4+8iFRw3y3WvnEPt5JRjAVgzQHhTqaZLgeDxoZ+ZWLjLO2jXU9RGA8GCYiBeOYdQh5CYA9u85qg7S84uFondp/aqZuDNjspmxdSqC+bNY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714398687; c=relaxed/simple;
-	bh=odyPaTA/NBNHAchzjVqJiP2jl0Yo6XGZMxvJSgkgKFc=;
-	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
-	 Mime-Version:Content-Type; b=g8ctb78tfi21m7vlAcrHG4t++pja60ZAEvK9hOrpMMHGwVN2ufL4/nNf/nM3PNoAZkjtjuUQEC0E4X6H3XuIOqsozxEvzle0eHGm1ZaAowhN/veBw8wtDjmfktD9G46XVE+ky9hysArqGteqKXbrUuh5iGGkosVpBvlmMjGyxyc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=h5c61wun; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 68756C4AF17;
-	Mon, 29 Apr 2024 13:51:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714398686;
-	bh=odyPaTA/NBNHAchzjVqJiP2jl0Yo6XGZMxvJSgkgKFc=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=h5c61wunqAacEMS3E6c8pNczBD1EAXrrSWT+ABXr2u4rRtaVqjCFUafYO5SbXFmxW
-	 Y5buu4FvNHaCyPhdBzpUso/RVCKbtdw4HqV6cN/z8KHV/EQx9G6ALNK/Hzd+kBad0w
-	 UU2XvMzysLvE3rbyR2yfbwooMG7W0tgXR4lsmkwLrh/mgnRxA0fYzSk9sK2lkbpZy0
-	 Dmw9lA+ExiYpXRJfxa0eHYG5dGPsM1Cm75UZwVdPwHL1p+tCApfzHQUdGGQipGLt60
-	 CZjwEEn7rgh6WjCPg0gwv/tRxfyl/y3DxJ99izTnj1eI3STNvt64Ah8GaT9xckdkH8
-	 f6rd46qSLti6w==
-Date: Mon, 29 Apr 2024 22:51:19 +0900
-From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, Steven Rostedt
- <rostedt@goodmis.org>, Florent Revest <revest@chromium.org>,
- linux-trace-kernel@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
- Martin KaFai Lau <martin.lau@linux.dev>, bpf <bpf@vger.kernel.org>, Sven
- Schnelle <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>, Jiri
- Olsa <jolsa@kernel.org>, Arnaldo Carvalho de Melo <acme@kernel.org>, Daniel
- Borkmann <daniel@iogearbox.net>, Alan Maguire <alan.maguire@oracle.com>,
- Mark Rutland <mark.rutland@arm.com>, Peter Zijlstra <peterz@infradead.org>,
- Thomas Gleixner <tglx@linutronix.de>, Guo Ren <guoren@kernel.org>
-Subject: Re: [PATCH v9 00/36] tracing: fprobe: function_graph:
- Multi-function graph and fprobe on fgraph
-Message-Id: <20240429225119.410833c12d9f6fbcce0a58db@kernel.org>
-In-Reply-To: <CAEf4BzYMToveELxsOJ9dXz3H-9omhxRLKgGK-ppYvmK8pgDsfA@mail.gmail.com>
-References: <171318533841.254850.15841395205784342850.stgit@devnote2>
-	<CAEf4BzYMToveELxsOJ9dXz3H-9omhxRLKgGK-ppYvmK8pgDsfA@mail.gmail.com>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1714398714; c=relaxed/simple;
+	bh=e49NOt2GVVU+FTbdBwqIZXJOMOkE6tmLHI8TTI3eSTE=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=mmXaJ7GwXZYxSxElAtwUclzac5gKLmDcPfHTZQWL0h0Ij/xex0l2ql6nX43ZeKHB9bSwvv8KR+3uIYSMGbvrnbBbBujYwCOXwFR4Yu3DbXvvhnWIoKvGe6Cf0rAnI7xyuNQnwbAs9uyYu71OeFMtHkFmk6P4ZCMQ9UlGPAQrZWo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Oi7Xwlvi; arc=none smtp.client-ip=209.85.208.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f42.google.com with SMTP id 4fb4d7f45d1cf-56e48d0a632so6956851a12.2;
+        Mon, 29 Apr 2024 06:51:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1714398710; x=1715003510; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=WYX0X6pbfizvC4oo2kjnxKoSIPTNaayha5yZW/AwVEU=;
+        b=Oi7XwlviBnxZOrXDFCAUTQTsBeF/3ft7ZswRwidczjTcCERmRiGt0WKRaNsbDm/9MD
+         82ChuVYxZwG6GjtHEY6SVmkI9Vj0A6reVHStf3rkmjtiYgqaG3i1cmX6cL1AO3yFMTok
+         gIAQbxUzF1wW7bwf2ZJACem/FTJJnNfsjh0Lwhlf79/dasFeXImTqhLOsNlLJENV0P8B
+         j9pYeYVyRGz2pTdQtf4ZmwbX3OUM4oRguX0rgf0DIfenxkW1gFP0Czn3kXv7O2Ek2B9e
+         FFfBmzQIsn7DsWj5Gmv5w2Jmd0CkWEVFWG7W7aep/OCXBbm6aJdzPkT5Y8PIUNdHeMWC
+         llrQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714398710; x=1715003510;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=WYX0X6pbfizvC4oo2kjnxKoSIPTNaayha5yZW/AwVEU=;
+        b=U1Sst1mhfQ/cJHluy6tJpkcJurQt8gZzJo5kjS6Ze7Eeazv/GH6LdoA9f6uZ/8Uoot
+         yUHAxsmEcSilAiqabSKsFteK4CPTQCQPnx84drjGMy7iYodZ2WqitStjVIrdgB+HgAik
+         rvT8qg4Kxej8yu85KgNx9UXTyrs2IoMLscnUm88eSmjm/Z1Advm4nz77ktknH6ojzC1k
+         EW8rByBFOGUaASsA5k5tI1lLxhiacaYh78gMu8yug/5B3Za6LyX38OWVi076FlAosdlG
+         Wp/5c+DiWz+MPFunvwMNBOc3qzjxUHsPYrVBTKtTPB7gBXmcZtxhP9hPr6zAHQpqL14Y
+         NnCQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUnSaXhMkAjR65POA7MgNX40cuZb/B8+eR74ic003f4leaPRMnkF29vyxALLAyfSN7qoPfUtk2nEfJB5xHTFJAyFay2JShqiEzo4ACAcCNgTIIQiVXTzBleBS+sFpsaQ0n9
+X-Gm-Message-State: AOJu0YyrbGwslOLoHr56SGJV3zXH4uSjCqAiEYieMN4f7hqPREiCQylc
+	VocBffC+KM/igLfqA5fmK6/JU1OXLdkWFZVS06IJHGIxr6e2us/E
+X-Google-Smtp-Source: AGHT+IGMIjFVUQLQ3SYJFBmyCh6Th4YjbgO+QtQAMEV1CdaGAPtjurOXaW/PI9GDqdTNVOZ3Eq0X2A==
+X-Received: by 2002:a50:8e5e:0:b0:570:5b3d:4f60 with SMTP id 30-20020a508e5e000000b005705b3d4f60mr8003113edx.25.1714398710224;
+        Mon, 29 Apr 2024 06:51:50 -0700 (PDT)
+Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
+        by smtp.gmail.com with ESMTPSA id y20-20020a056402271400b00572300f0768sm6019931edd.79.2024.04.29.06.51.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 29 Apr 2024 06:51:49 -0700 (PDT)
+From: Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date: Mon, 29 Apr 2024 15:51:47 +0200
+To: Ingo Molnar <mingo@kernel.org>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>,
+	Hillf Danton <hdanton@sina.com>,
+	Andy Lutomirski <luto@amacapital.net>, Peter Anvin <hpa@zytor.com>,
+	Adrian Bunk <bunk@kernel.org>,
+	syzbot <syzbot+83e7f982ca045ab4405c@syzkaller.appspotmail.com>,
+	Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+	andrii@kernel.org, bpf@vger.kernel.org,
+	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Subject: Re: [PATCH] x86/mm: Remove broken vsyscall emulation code from the
+ page fault code
+Message-ID: <Zi-l8xKhMbdJ-NBo@krava>
+References: <0000000000009dfa6d0617197994@google.com>
+ <20240427231321.3978-1-hdanton@sina.com>
+ <CAHk-=wjBvNvVggy14p9rkHA8W1ZVfoKXvW0oeX5NZWxWUv8gfQ@mail.gmail.com>
+ <20240428232302.4035-1-hdanton@sina.com>
+ <CAHk-=wjma_sSghVTgDCQxHHd=e2Lqi45PLh78oJ4WeBj8erV9Q@mail.gmail.com>
+ <CAHk-=wh9D6f7HUkDgZHKmDCHUQmp+Co89GP+b8+z+G56BKeyNg@mail.gmail.com>
+ <Zi9Ts1HcqiKzy9GX@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Zi9Ts1HcqiKzy9GX@gmail.com>
 
-Hi Andrii,
+On Mon, Apr 29, 2024 at 10:00:51AM +0200, Ingo Molnar wrote:
 
-On Thu, 25 Apr 2024 13:31:53 -0700
-Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
+SNIP
 
-> Hey Masami,
+> The attached patch looks like the ObviouslyCorrect(tm) thing to do.
 > 
-> I can't really review most of that code as I'm completely unfamiliar
-> with all those inner workings of fprobe/ftrace/function_graph. I left
-> a few comments where there were somewhat more obvious BPF-related
-> pieces.
+> NOTE! This broken code goes back to this commit in 2011:
 > 
-> But I also did run our BPF benchmarks on probes/for-next as a baseline
-> and then with your series applied on top. Just to see if there are any
-> regressions. I think it will be a useful data point for you.
-
-Thanks for testing!
-
+>   4fc3490114bb ("x86-64: Set siginfo and context on vsyscall emulation faults")
 > 
-> You should be already familiar with the bench tool we have in BPF
-> selftests (I used it on some other patches for your tree).
-
-What patches we need?
-
+> ... and back then the reason was to get all the siginfo details right. 
+> Honestly, I do not for a moment believe that it's worth getting the siginfo 
+> details right here, but part of the commit says:
 > 
-> BASELINE
-> ========
-> kprobe         :   24.634 ± 0.205M/s
-> kprobe-multi   :   28.898 ± 0.531M/s
-> kretprobe      :   10.478 ± 0.015M/s
-> kretprobe-multi:   11.012 ± 0.063M/s
+>     This fixes issues with UML when vsyscall=emulate.
 > 
-> THIS PATCH SET ON TOP
-> =====================
-> kprobe         :   25.144 ± 0.027M/s (+2%)
-> kprobe-multi   :   28.909 ± 0.074M/s
-> kretprobe      :    9.482 ± 0.008M/s (-9.5%)
-> kretprobe-multi:   13.688 ± 0.027M/s (+24%)
-
-This looks good. Kretprobe should also use kretprobe-multi (fprobe)
-eventually because it should be a single callback version of
-kretprobe-multi.
-
+> ... and so my patch to remove this garbage will probably break UML in this 
+> situation.
 > 
-> These numbers are pretty stable and look to be more or less representative.
+> I do not believe that anybody should be running with vsyscall=emulate in 
+> 2024 in the first place, much less if you are doing things like UML. But 
+> let's see if somebody screams.
 > 
-> As you can see, kprobes got a bit faster, kprobe-multi seems to be
-> about the same, though.
+> Not-Yet-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+> Signed-off-by: Ingo Molnar <mingo@kernel.org>
+> Link: https://lore.kernel.org/r/CAHk-=wh9D6f7HUkDgZHKmDCHUQmp+Co89GP+b8+z+G56BKeyNg@mail.gmail.com
+
+fwiw I can no longer trigger the invalid wait context bug
+with this change
+
+Tested-by: Jiri Olsa <jolsa@kernel.org>
+
+jirka
+
+> ---
+>  arch/x86/entry/vsyscall/vsyscall_64.c | 25 ++-----------------------
+>  arch/x86/include/asm/processor.h      |  1 -
+>  arch/x86/mm/fault.c                   | 33 +--------------------------------
+>  3 files changed, 3 insertions(+), 56 deletions(-)
 > 
-> Then (I suppose they are "legacy") kretprobes got quite noticeably
-> slower, almost by 10%. Not sure why, but looks real after re-running
-> benchmarks a bunch of times and getting stable results.
-
-Hmm, kretprobe on x86 should use ftrace + rethook even with my series.
-So nothing should be changed. Maybe cache access pattern has been
-changed?
-I'll check it with tracefs (to remove the effect from bpf related changes)
-
+> diff --git a/arch/x86/entry/vsyscall/vsyscall_64.c b/arch/x86/entry/vsyscall/vsyscall_64.c
+> index a3c0df11d0e6..3b0f61b2ea6d 100644
+> --- a/arch/x86/entry/vsyscall/vsyscall_64.c
+> +++ b/arch/x86/entry/vsyscall/vsyscall_64.c
+> @@ -98,11 +98,6 @@ static int addr_to_vsyscall_nr(unsigned long addr)
+>  
+>  static bool write_ok_or_segv(unsigned long ptr, size_t size)
+>  {
+> -	/*
+> -	 * XXX: if access_ok, get_user, and put_user handled
+> -	 * sig_on_uaccess_err, this could go away.
+> -	 */
+> -
+>  	if (!access_ok((void __user *)ptr, size)) {
+>  		struct thread_struct *thread = &current->thread;
+>  
+> @@ -123,7 +118,6 @@ bool emulate_vsyscall(unsigned long error_code,
+>  	struct task_struct *tsk;
+>  	unsigned long caller;
+>  	int vsyscall_nr, syscall_nr, tmp;
+> -	int prev_sig_on_uaccess_err;
+>  	long ret;
+>  	unsigned long orig_dx;
+>  
+> @@ -234,12 +228,8 @@ bool emulate_vsyscall(unsigned long error_code,
+>  		goto do_ret;  /* skip requested */
+>  
+>  	/*
+> -	 * With a real vsyscall, page faults cause SIGSEGV.  We want to
+> -	 * preserve that behavior to make writing exploits harder.
+> +	 * With a real vsyscall, page faults cause SIGSEGV.
+>  	 */
+> -	prev_sig_on_uaccess_err = current->thread.sig_on_uaccess_err;
+> -	current->thread.sig_on_uaccess_err = 1;
+> -
+>  	ret = -EFAULT;
+>  	switch (vsyscall_nr) {
+>  	case 0:
+> @@ -262,23 +252,12 @@ bool emulate_vsyscall(unsigned long error_code,
+>  		break;
+>  	}
+>  
+> -	current->thread.sig_on_uaccess_err = prev_sig_on_uaccess_err;
+> -
+>  check_fault:
+>  	if (ret == -EFAULT) {
+>  		/* Bad news -- userspace fed a bad pointer to a vsyscall. */
+>  		warn_bad_vsyscall(KERN_INFO, regs,
+>  				  "vsyscall fault (exploit attempt?)");
+> -
+> -		/*
+> -		 * If we failed to generate a signal for any reason,
+> -		 * generate one here.  (This should be impossible.)
+> -		 */
+> -		if (WARN_ON_ONCE(!sigismember(&tsk->pending.signal, SIGBUS) &&
+> -				 !sigismember(&tsk->pending.signal, SIGSEGV)))
+> -			goto sigsegv;
+> -
+> -		return true;  /* Don't emulate the ret. */
+> +		goto sigsegv;
+>  	}
+>  
+>  	regs->ax = ret;
+> diff --git a/arch/x86/include/asm/processor.h b/arch/x86/include/asm/processor.h
+> index 811548f131f4..78e51b0d6433 100644
+> --- a/arch/x86/include/asm/processor.h
+> +++ b/arch/x86/include/asm/processor.h
+> @@ -472,7 +472,6 @@ struct thread_struct {
+>  	unsigned long		iopl_emul;
+>  
+>  	unsigned int		iopl_warn:1;
+> -	unsigned int		sig_on_uaccess_err:1;
+>  
+>  	/*
+>  	 * Protection Keys Register for Userspace.  Loaded immediately on
+> diff --git a/arch/x86/mm/fault.c b/arch/x86/mm/fault.c
+> index 6b2ca8ba75b8..f26ecabc9424 100644
+> --- a/arch/x86/mm/fault.c
+> +++ b/arch/x86/mm/fault.c
+> @@ -724,39 +724,8 @@ kernelmode_fixup_or_oops(struct pt_regs *regs, unsigned long error_code,
+>  	WARN_ON_ONCE(user_mode(regs));
+>  
+>  	/* Are we prepared to handle this kernel fault? */
+> -	if (fixup_exception(regs, X86_TRAP_PF, error_code, address)) {
+> -		/*
+> -		 * Any interrupt that takes a fault gets the fixup. This makes
+> -		 * the below recursive fault logic only apply to a faults from
+> -		 * task context.
+> -		 */
+> -		if (in_interrupt())
+> -			return;
+> -
+> -		/*
+> -		 * Per the above we're !in_interrupt(), aka. task context.
+> -		 *
+> -		 * In this case we need to make sure we're not recursively
+> -		 * faulting through the emulate_vsyscall() logic.
+> -		 */
+> -		if (current->thread.sig_on_uaccess_err && signal) {
+> -			sanitize_error_code(address, &error_code);
+> -
+> -			set_signal_archinfo(address, error_code);
+> -
+> -			if (si_code == SEGV_PKUERR) {
+> -				force_sig_pkuerr((void __user *)address, pkey);
+> -			} else {
+> -				/* XXX: hwpoison faults will set the wrong code. */
+> -				force_sig_fault(signal, si_code, (void __user *)address);
+> -			}
+> -		}
+> -
+> -		/*
+> -		 * Barring that, we can do the fixup and be happy.
+> -		 */
+> +	if (fixup_exception(regs, X86_TRAP_PF, error_code, address))
+>  		return;
+> -	}
+>  
+>  	/*
+>  	 * AMD erratum #91 manifests as a spurious page fault on a PREFETCH
 > 
-> On the other hand, multi-kretprobes got significantly faster (+24%!).
-> Again, I don't know if it is expected or not, but it's a nice
-> improvement.
-
-Thanks!
-
-> 
-> If you have any idea why kretprobes would get so much slower, it would
-> be nice to look into that and see if you can mitigate the regression
-> somehow. Thanks!
-
-OK, let me check it.
-
-Thank you!
-
-> 
-> 
-> >  51 files changed, 2325 insertions(+), 882 deletions(-)
-> >  create mode 100644 tools/testing/selftests/ftrace/test.d/dynevent/add_remove_fprobe_repeat.tc
-> >
-> > --
-> > Masami Hiramatsu (Google) <mhiramat@kernel.org>
-> >
-
-
--- 
-Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
