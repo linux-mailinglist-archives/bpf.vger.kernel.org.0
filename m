@@ -1,558 +1,150 @@
-Return-Path: <bpf+bounces-28202-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-28203-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8CD748B65E6
-	for <lists+bpf@lfdr.de>; Tue, 30 Apr 2024 00:46:35 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id A2E4D8B6615
+	for <lists+bpf@lfdr.de>; Tue, 30 Apr 2024 01:16:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 432E2283204
-	for <lists+bpf@lfdr.de>; Mon, 29 Apr 2024 22:46:34 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CF5001C21A65
+	for <lists+bpf@lfdr.de>; Mon, 29 Apr 2024 23:16:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D65352561F;
-	Mon, 29 Apr 2024 22:46:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A2ECE126F07;
+	Mon, 29 Apr 2024 23:16:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b="JM1hvzsK";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="G1xl6sko"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="T2HO6PqL"
 X-Original-To: bpf@vger.kernel.org
-Received: from wfhigh4-smtp.messagingengine.com (wfhigh4-smtp.messagingengine.com [64.147.123.155])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f179.google.com (mail-pl1-f179.google.com [209.85.214.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A4C218C1F
-	for <bpf@vger.kernel.org>; Mon, 29 Apr 2024 22:46:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.155
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED7F477F10
+	for <bpf@vger.kernel.org>; Mon, 29 Apr 2024 23:16:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714430789; cv=none; b=ps67/DJ0a8zSFOwNoV1l+p0fY5QctlX0sW2cKXQvp8IN3tcSXGJw8hvB4agPDaaCRzYAf4HfuU3pBOIXHmg+kL2wcntYqZGH+o+vLYFhBP/KDA6tBlprdes+hrcayj+jIxj2lZJHIU24xVzVaQGFnjFwety+i2Ii3dXxxjRgrTE=
+	t=1714432581; cv=none; b=mnBNwjz31f6kuBrGF440XC3dgxKCnGYdfLANy0udvDXqkPSaGKUwvnufVmOXsyV8vKoDi2ZEem5qgJ7Z4SH1EsGsGoi3XS7L+yOHRNkIlluVG9nmNDj8zReO4fkEvrXQ6BkK15qrlrwFOXTGQ/qx6Jo0EfFZOR2c9KI4ohtcpl8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714430789; c=relaxed/simple;
-	bh=VA1CmiFy4gKsCoOZM/fBiBUGSj7d/GaT8Wcfc8c98pw=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Qx85+v0EhBoA25YKIrkn5ly5p/tEeTDcfK64kz37jigEmElEbU3QzyCXl9Gq5QokfDPNDN7CNoQCuFhim2lwBDIZ+bKcrqb0EnGOXPGpT7hHkUFDsneAkjasQz4fpA6dTwWV52hP2ybdrpLWIcrj+JD1KNrr/LybbCYrODg5euo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz; spf=pass smtp.mailfrom=dxuuu.xyz; dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b=JM1hvzsK; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=G1xl6sko; arc=none smtp.client-ip=64.147.123.155
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dxuuu.xyz
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-	by mailfhigh.west.internal (Postfix) with ESMTP id 1ACD1180018D;
-	Mon, 29 Apr 2024 18:46:26 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute1.internal (MEProxy); Mon, 29 Apr 2024 18:46:26 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
-	:cc:content-transfer-encoding:content-type:date:date:from:from
-	:in-reply-to:in-reply-to:message-id:mime-version:references
-	:reply-to:subject:subject:to:to; s=fm2; t=1714430785; x=
-	1714517185; bh=iUxJ1AXeKAumBghb7XYqyLbgXhR3FVd2SdPo64+eEG0=; b=J
-	M1hvzsKP/aqKGnMFWyKjC4hgBiM9AmPi1WcIXa1oumI+ZaNtuMPSvu2TcusmtGrN
-	LIVpeBxcN1qXwbFPBWN3UHlRKtWBJwmHhoIXF3/2hKbC2A41VATGXW9x32wtsL9g
-	1rvmBqD1X4S2cMrsThvW3QibS3pNNBtoZdXkB+lxFkba1op0h6q4EI8l7vhipETD
-	1D3wZJ2efMMwFrnbPCHaNVmA9FDOCbzIO3X1X6nS0PV8IO8g+ya1xNqFSd+XBNeL
-	9XzHIX8KVOAZgfsuVxqkK9Og8ZNfSWMdMorPeVcgfo4bpz6m2HsdH0FYdtkYzXTQ
-	sZKYbbS7YBKFpvRasTxmA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:date:date:feedback-id:feedback-id:from:from
-	:in-reply-to:in-reply-to:message-id:mime-version:references
-	:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=1714430785; x=
-	1714517185; bh=iUxJ1AXeKAumBghb7XYqyLbgXhR3FVd2SdPo64+eEG0=; b=G
-	1xl6skoxL5g6QjiZw2Lg1mUHzy4r6Qmz7Eypib8PQl6OS1K+l9v1haSSXU0PZvWK
-	8uvZ6tI6hsHUJS3S9HZYgxbwqMCMxPQmx3QsULvsbo7I3LTekZcPhmAN2LRVmPeu
-	u75BJL5f/UGQ4FUDyVfrtZgGzQH/XE6ExAagL4Zf1z5AL6LMlKy/kFBZk3Zq/3qv
-	r/oiAhgwWjbzSQ67/kubwgSCaqDkFjlOWmMb05x3YKCSSFT2OTzkDnG4HVUMGQCD
-	/W5DzsYIoiZkqmVeZpUGmlP9QObMqd3AL/a5CwP11pftW2nkNL6SqpmJltIVqhPB
-	egQhGbNNgwUz1qP7TeK0Q==
-X-ME-Sender: <xms:QSMwZljkZpsraBSRvMd4EdI9ArNsuvpX2loTG8huLr2ydJteyN1nHg>
-    <xme:QSMwZqBlDLX07y49IpnWtvPEY48RFEYFr47WnMb3Sn7_gOWrWND2ugvY1egdN9G7q
-    1Mi1M7AC3i4spvwvg>
-X-ME-Received: <xmr:QSMwZlFddaBdpZ8SjVQtAmvxQJUO_r3CiWtUHs9TsRxencEsCFtK_jXEw2IhBFhuwlRWUzoZQQO-IDaMMmJq3iqRxMUTMo98v-u1hZXne50>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrvdduvddgudefucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucgfrhhlucfvnfffucdlvdefmdenucfjughrpefhvf
-    evufffkffojghfggfgsedtkeertdertddtnecuhfhrohhmpeffrghnihgvlhcuighuuceo
-    ugiguhesugiguhhuuhdrgiihiieqnecuggftrfgrthhtvghrnhepgfefgfegjefhudeike
-    dvueetffelieefuedvhfehjeeljeejkefgffeghfdttdetnecuvehluhhsthgvrhfuihii
-    vgeptdenucfrrghrrghmpehmrghilhhfrhhomhepugiguhesugiguhhuuhdrgiihii
-X-ME-Proxy: <xmx:QSMwZqTtXk0p_TjyBUwG7YJ2vTN85w7q0uDfXGCgHuVL7FLtJUcJMg>
-    <xmx:QSMwZixLYMJ2PuDBnl9eLERm_PombgFsq3e8zl_WN2a0j8W3GYRs-w>
-    <xmx:QSMwZg4mADy5-3lSgRjSiJ8tDirC5kWQ4iD0J1OZ0ZZpVI8JIf0pQA>
-    <xmx:QSMwZnxZxlmnI5Bz3IKSfRDsf7hSJhBhoxvCe1Jfw8ymyTUS581ikA>
-    <xmx:QSMwZme_Wq4FUF_z_OpfsfskGHpNpQ93722Ziwfucv7v9TpjPO2cGzBw>
-Feedback-ID: i6a694271:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
- 29 Apr 2024 18:46:24 -0400 (EDT)
-From: Daniel Xu <dxu@dxuuu.xyz>
-To: acme@kernel.org,
-	jolsa@kernel.org,
-	quentin@isovalent.com,
-	alan.maguire@oracle.com,
-	eddyz87@gmail.com
-Cc: andrii.nakryiko@gmail.com,
-	ast@kernel.org,
-	daniel@iogearbox.net,
-	bpf@vger.kernel.org
-Subject: [PATCH dwarves v9 3/3] pahole: Inject kfunc decl tags into BTF
-Date: Mon, 29 Apr 2024 16:46:00 -0600
-Message-ID: <26ec519a00aa47f25bc6b4c7e4e15e5191ba4d45.1714430735.git.dxu@dxuuu.xyz>
-X-Mailer: git-send-email 2.44.0
-In-Reply-To: <cover.1714430735.git.dxu@dxuuu.xyz>
-References: <cover.1714430735.git.dxu@dxuuu.xyz>
+	s=arc-20240116; t=1714432581; c=relaxed/simple;
+	bh=UQKuPdlcEh4mzc0AlCjS7Xe5vuWy0hk4iyvHd+736zg=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=hichOtZXqNbAGMCeGe7Fv9h2+0+OYjq3nPeZXghJ4+QmoKqWnyV9MynU6U4oAOKc7BjjF7sqpbu7PCx0rjKVmX1fZ0yWyBzljGqZETz4S9E/pF8CJpWvULWY0SHVnhCFsgwPIXzHkNEolEEeIYsjvH4ldW09YvY+GJJTmibLN94=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=T2HO6PqL; arc=none smtp.client-ip=209.85.214.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f179.google.com with SMTP id d9443c01a7336-1e65a1370b7so47240645ad.3
+        for <bpf@vger.kernel.org>; Mon, 29 Apr 2024 16:16:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1714432579; x=1715037379; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=cmndnruLHm02k0e6EzxsbB5vw5A9XTkrALA/8hULO5w=;
+        b=T2HO6PqLNnp5izR2bWdc5WGkf9Ru4GIVeTUSzhavFlFs26+cOMi62TGVzbpw6GR2sP
+         bQA6lhX8ReUfjjsIsaj/SrVKHuyaVB2DvyZVe5eDUZZBur8fznuBEoPTV/9rgMTN71RC
+         xg1jaj51UlhQJOiYHPk2G5TLxUyj94u7iY4JJy9g0X8poJINt7SMOT+1IlOMQiRbhKge
+         EXwOMPUgjn2TvcHK8MBV9vpA0oE6Z0czJRixUZAEG5949nQvNuLn95zLG6S4NVfix+xO
+         pC8XLZfiASRpdiP4yGV1KuQW0ZH5q9sco0QiXTNW5vkqgXsIAASyZlQSxbo+kbiDlxo4
+         FvJw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714432579; x=1715037379;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=cmndnruLHm02k0e6EzxsbB5vw5A9XTkrALA/8hULO5w=;
+        b=imfqOFVgYfzHfYSsfhM/F1NKTugrgooUS+jwqrS8ViLEvWX+zPF5XOkVg8zlozslZC
+         fnPmO03evQV1vOqZaKtM0k+sdG/Gd7uopOVLlitTxkvptI7n620ioEjVXb3V22xn3aTP
+         1EtHs4OXnUvYwQE+QWXGvD7JViySLUHgN5BPmtPMACoiS2a0yng/cqUdNGDZ1RSMokly
+         mjJBy8NTZdaFigTi7SPsmSXmwwf/MkG1ARpJ1EPbMFcY7jK7qtV7+xEwIw9Vb5uqMU6H
+         9ZBCJKub3vELKyP7H/2MQ6su4d7S9pVMRdcXGWP2WSXSftIZa8kUxLaRpEweicMZv1Xy
+         F5CA==
+X-Forwarded-Encrypted: i=1; AJvYcCWCgRz57WKT6a9Th42HgVPDX5HH8N8m6sfzsVPIPZQEQyYYMQJnbfa3hA8S4YWCsJJCLbhruJh6CmnO2rljzDHbkpbD
+X-Gm-Message-State: AOJu0Yxe2npPFpYvQSDOKA1hh34djxxK7wucngieDc2HW85f5lBDJjA9
+	VVBmPT/P9wvdQYv7u1Dr1GcXQa6s/o2nXwSkMCDUwe91KfU0srHO8GeAUiVC
+X-Google-Smtp-Source: AGHT+IGpXewEZG8wZajU4dP7pLmrotZAO4yMpI3ra54aqrqA235fzkqSlLGSqLGFWtOoEKjnQte0ZA==
+X-Received: by 2002:a17:903:2444:b0:1eb:60ec:32d0 with SMTP id l4-20020a170903244400b001eb60ec32d0mr10382413pls.5.1714432579150;
+        Mon, 29 Apr 2024 16:16:19 -0700 (PDT)
+Received: from ?IPv6:2604:3d08:9880:5900:a18e:a67:fdb6:1a18? ([2604:3d08:9880:5900:a18e:a67:fdb6:1a18])
+        by smtp.gmail.com with ESMTPSA id kh5-20020a170903064500b001e47bf10536sm20927608plb.69.2024.04.29.16.16.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 29 Apr 2024 16:16:18 -0700 (PDT)
+Message-ID: <e0aa743fd6044691d0b30e7b2761c8085a28bb0b.camel@gmail.com>
+Subject: Re: [PATCH bpf-next v4 7/7] bpf/verifier: improve code after range
+ computation recent changes.
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Cupertino Miranda <cupertino.miranda@oracle.com>, bpf@vger.kernel.org
+Cc: Yonghong Song <yonghong.song@linux.dev>, Alexei Starovoitov
+ <alexei.starovoitov@gmail.com>, David Faust <david.faust@oracle.com>, Jose
+ Marchesi <jose.marchesi@oracle.com>, Elena Zannoni
+ <elena.zannoni@oracle.com>, Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Mon, 29 Apr 2024 16:16:17 -0700
+In-Reply-To: <20240429212250.78420-8-cupertino.miranda@oracle.com>
+References: <20240429212250.78420-1-cupertino.miranda@oracle.com>
+	 <20240429212250.78420-8-cupertino.miranda@oracle.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.44.4-0ubuntu2 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 
-This commit teaches pahole to parse symbols in .BTF_ids section in
-vmlinux and discover exported kfuncs. Pahole then takes the list of
-kfuncs and injects a BTF_KIND_DECL_TAG for each kfunc.
+[...]
 
-Example of encoding:
 
-        $ bpftool btf dump file .tmp_vmlinux.btf | rg "DECL_TAG 'bpf_kfunc'" | wc -l
-        121
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index b6344cead2e2..a6fd10b119ba 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -13695,33 +13695,19 @@ static void scalar_min_max_arsh(struct bpf_reg_=
+state *dst_reg,
+>  	__update_reg_bounds(dst_reg);
+>  }
+> =20
+> -static bool is_const_reg_and_valid(const struct bpf_reg_state *reg, bool=
+ alu32,
+> -				   bool *valid)
+> -{
+> -	s64 smin_val =3D reg->smin_value;
+> -	s64 smax_val =3D reg->smax_value;
+> -	u64 umin_val =3D reg->umin_value;
+> -	u64 umax_val =3D reg->umax_value;
+> -	s32 s32_min_val =3D reg->s32_min_value;
+> -	s32 s32_max_val =3D reg->s32_max_value;
+> -	u32 u32_min_val =3D reg->u32_min_value;
+> -	u32 u32_max_val =3D reg->u32_max_value;
+> -	bool is_const =3D alu32 ? tnum_subreg_is_const(reg->var_off) :
+> -				tnum_is_const(reg->var_off);
+> -
+> +static bool is_valid_const_reg(const struct bpf_reg_state *reg, bool alu=
+32)
+> +{
+>  	if (alu32) {
+> -		if ((is_const &&
+> -		     (s32_min_val !=3D s32_max_val || u32_min_val !=3D u32_max_val)) |=
+|
+> -		      s32_min_val > s32_max_val || u32_min_val > u32_max_val)
+> -			*valid =3D false;
 
-        $ bpftool btf dump file .tmp_vmlinux.btf | rg 56337
-        [56337] FUNC 'bpf_ct_change_timeout' type_id=56336 linkage=static
-        [127861] DECL_TAG 'bpf_kfunc' type_id=56337 component_idx=-1
+This check first originated in the following commit from 2018:
 
-This enables downstream users and tools to dynamically discover which
-kfuncs are available on a system by parsing vmlinux or module BTF, both
-available in /sys/kernel/btf.
+6f16101e6a8b ("bpf: mark dst unknown on inconsistent {s, u}bounds adjustmen=
+ts")
 
-This feature is enabled with --btf_features=decl_tag,decl_tag_kfuncs.
+Back then it was added to handle the following program:
 
-Acked-by: Jiri Olsa <jolsa@kernel.org>
-Tested-by: Jiri Olsa <jolsa@kernel.org>
-Reviewed-by: Alan Maguire <alan.maguire@oracle.com>
-Tested-by: Alan Maguire <alan.maguire@oracle.com>
-Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
----
- btf_encoder.c | 372 ++++++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 372 insertions(+)
+  0: (b7) r0 =3D 0
+  1: (d5) if r0 s<=3D 0x0 goto pc+0          <---- note pc+0 here
+   R0=3Dinv0 R1=3Dctx(id=3D0,off=3D0,imm=3D0) R10=3Dfp0
+  2: (1f) r0 -=3D r1
+   R0=3Dinv0 R1=3Dctx(id=3D0,off=3D0,imm=3D0) R10=3Dfp0
+  verifier internal error: known but bad sbounds
 
-diff --git a/btf_encoder.c b/btf_encoder.c
-index f0ef20a..6cb0c8f 100644
---- a/btf_encoder.c
-+++ b/btf_encoder.c
-@@ -34,6 +34,21 @@
- #include <pthread.h>
- 
- #define BTF_ENCODER_MAX_PROTO	512
-+#define BTF_IDS_SECTION		".BTF_ids"
-+#define BTF_ID_FUNC_PFX		"__BTF_ID__func__"
-+#define BTF_ID_SET8_PFX		"__BTF_ID__set8__"
-+#define BTF_SET8_KFUNCS		(1 << 0)
-+#define BTF_KFUNC_TYPE_TAG	"bpf_kfunc"
-+
-+/* Adapted from include/linux/btf_ids.h */
-+struct btf_id_set8 {
-+        uint32_t cnt;
-+        uint32_t flags;
-+        struct {
-+                uint32_t id;
-+                uint32_t flags;
-+        } pairs[];
-+};
- 
- /* state used to do later encoding of saved functions */
- struct btf_encoder_state {
-@@ -76,6 +91,7 @@ struct btf_encoder {
- 			  verbose,
- 			  force,
- 			  gen_floats,
-+			  skip_encoding_decl_tag,
- 			  tag_kfuncs,
- 			  is_rel;
- 	uint32_t	  array_index_id;
-@@ -95,6 +111,17 @@ struct btf_encoder {
- 	} functions;
- };
- 
-+struct btf_func {
-+	const char *name;
-+	int	    type_id;
-+};
-+
-+/* Half open interval representing range of addresses containing kfuncs */
-+struct btf_kfunc_set_range {
-+	uint64_t start;
-+	uint64_t end;
-+};
-+
- static LIST_HEAD(encoders);
- static pthread_mutex_t encoders__lock = PTHREAD_MUTEX_INITIALIZER;
- 
-@@ -1364,8 +1391,343 @@ out:
- 	return err;
- }
- 
-+/* Returns if `sym` points to a kfunc set */
-+static int is_sym_kfunc_set(GElf_Sym *sym, const char *name, Elf_Data *idlist, size_t idlist_addr)
-+{
-+	void *ptr = idlist->d_buf;
-+	struct btf_id_set8 *set;
-+	int off;
-+
-+	/* kfuncs are only found in BTF_SET8's */
-+	if (!strstarts(name, BTF_ID_SET8_PFX))
-+		return false;
-+
-+	off = sym->st_value - idlist_addr;
-+	if (off >= idlist->d_size) {
-+		fprintf(stderr, "%s: symbol '%s' out of bounds\n", __func__, name);
-+		return false;
-+	}
-+
-+	/* Check the set8 flags to see if it was marked as kfunc */
-+	set = ptr + off;
-+	return set->flags & BTF_SET8_KFUNCS;
-+}
-+
-+/*
-+ * Parse BTF_ID symbol and return the func name.
-+ *
-+ * Returns:
-+ *	Caller-owned string containing func name if successful.
-+ *	NULL if !func or on error.
-+ */
-+static char *get_func_name(const char *sym)
-+{
-+	char *func, *end;
-+
-+	/* Example input: __BTF_ID__func__vfs_close__1
-+	 *
-+	 * The goal is to strip the prefix and suffix such that we only
-+	 * return vfs_close.
-+	 */
-+
-+	if (!strstarts(sym, BTF_ID_FUNC_PFX))
-+		return NULL;
-+
-+	/* Strip prefix and handle malformed input such as  __BTF_ID__func___ */
-+	func = strdup(sym + sizeof(BTF_ID_FUNC_PFX) - 1);
-+	if (!strstr(func, "__")) {
-+                free(func);
-+                return NULL;
-+        }
-+
-+	/* Strip suffix */
-+	end = strrchr(func, '_');
-+	if (!end || *(end - 1) != '_') {
-+		free(func);
-+		return NULL;
-+	}
-+	*(end - 1) = '\0';
-+
-+	return func;
-+}
-+
-+static int btf_func_cmp(const void *_a, const void *_b)
-+{
-+	const struct btf_func *a = _a;
-+	const struct btf_func *b = _b;
-+
-+	return strcmp(a->name, b->name);
-+}
-+
-+/*
-+ * Collects all functions described in BTF.
-+ * Returns non-zero on error.
-+ */
-+static int btf_encoder__collect_btf_funcs(struct btf_encoder *encoder, struct gobuffer *funcs)
-+{
-+	struct btf *btf = encoder->btf;
-+	int nr_types, type_id;
-+	int err = -1;
-+
-+	/* First collect all the func entries into an array */
-+	nr_types = btf__type_cnt(btf);
-+	for (type_id = 1; type_id < nr_types; type_id++) {
-+		const struct btf_type *type;
-+		struct btf_func func = {};
-+		const char *name;
-+
-+		type = btf__type_by_id(btf, type_id);
-+		if (!type) {
-+			fprintf(stderr, "%s: malformed BTF, can't resolve type for ID %d\n",
-+				__func__, type_id);
-+			err = -EINVAL;
-+			goto out;
-+		}
-+
-+		if (!btf_is_func(type))
-+			continue;
-+
-+		name = btf__name_by_offset(btf, type->name_off);
-+		if (!name) {
-+			fprintf(stderr, "%s: malformed BTF, can't resolve name for ID %d\n",
-+				__func__, type_id);
-+			err = -EINVAL;
-+			goto out;
-+		}
-+
-+		func.name = name;
-+		func.type_id = type_id;
-+		err = gobuffer__add(funcs, &func, sizeof(func));
-+		if (err < 0)
-+			goto out;
-+	}
-+
-+	/* Now that we've collected funcs, sort them by name */
-+	gobuffer__sort(funcs, sizeof(struct btf_func), btf_func_cmp);
-+
-+	err = 0;
-+out:
-+	return err;
-+}
-+
-+static int btf_encoder__tag_kfunc(struct btf_encoder *encoder, struct gobuffer *funcs, const char *kfunc)
-+{
-+	struct btf_func key = { .name = kfunc };
-+	struct btf *btf = encoder->btf;
-+	struct btf_func *target;
-+	const void *base;
-+	unsigned int cnt;
-+	int err = -1;
-+
-+	base = gobuffer__entries(funcs);
-+	cnt = gobuffer__nr_entries(funcs);
-+	target = bsearch(&key, base, cnt, sizeof(key), btf_func_cmp);
-+	if (!target) {
-+		fprintf(stderr, "%s: failed to find kfunc '%s' in BTF\n", __func__, kfunc);
-+		goto out;
-+	}
-+
-+	/* Note we are unconditionally adding the btf_decl_tag even
-+	 * though vmlinux may already contain btf_decl_tags for kfuncs.
-+	 * We are ok to do this b/c we will later btf__dedup() to remove
-+	 * any duplicates.
-+	 */
-+	err = btf__add_decl_tag(btf, BTF_KFUNC_TYPE_TAG, target->type_id, -1);
-+	if (err < 0) {
-+		fprintf(stderr, "%s: failed to insert kfunc decl tag for '%s': %d\n",
-+			__func__, kfunc, err);
-+		goto out;
-+	}
-+
-+	err = 0;
-+out:
-+	return err;
-+}
-+
-+static int btf_encoder__tag_kfuncs(struct btf_encoder *encoder)
-+{
-+	const char *filename = encoder->source_filename;
-+	struct gobuffer btf_kfunc_ranges = {};
-+	struct gobuffer btf_funcs = {};
-+	Elf_Data *symbols = NULL;
-+	Elf_Data *idlist = NULL;
-+	Elf_Scn *symscn = NULL;
-+	int symbols_shndx = -1;
-+	size_t idlist_addr = 0;
-+	int fd = -1, err = -1;
-+	int idlist_shndx = -1;
-+	size_t strtabidx = 0;
-+	Elf_Scn *scn = NULL;
-+	Elf *elf = NULL;
-+	GElf_Shdr shdr;
-+	size_t strndx;
-+	char *secname;
-+	int nr_syms;
-+	int i = 0;
-+
-+	fd = open(filename, O_RDONLY);
-+	if (fd < 0) {
-+		fprintf(stderr, "Cannot open %s\n", filename);
-+		goto out;
-+	}
-+
-+	if (elf_version(EV_CURRENT) == EV_NONE) {
-+		elf_error("Cannot set libelf version");
-+		goto out;
-+	}
-+
-+	elf = elf_begin(fd, ELF_C_READ, NULL);
-+	if (elf == NULL) {
-+		elf_error("Cannot update ELF file");
-+		goto out;
-+	}
-+
-+	/* Locate symbol table and .BTF_ids sections */
-+	if (elf_getshdrstrndx(elf, &strndx) < 0)
-+		goto out;
-+
-+	while ((scn = elf_nextscn(elf, scn)) != NULL) {
-+		Elf_Data *data;
-+
-+		i++;
-+		if (!gelf_getshdr(scn, &shdr)) {
-+			elf_error("Failed to get ELF section(%d) hdr", i);
-+			goto out;
-+		}
-+
-+		secname = elf_strptr(elf, strndx, shdr.sh_name);
-+		if (!secname) {
-+			elf_error("Failed to get ELF section(%d) hdr name", i);
-+			goto out;
-+		}
-+
-+		data = elf_getdata(scn, 0);
-+		if (!data) {
-+			elf_error("Failed to get ELF section(%d) data", i);
-+			goto out;
-+		}
-+
-+		if (shdr.sh_type == SHT_SYMTAB) {
-+			symbols_shndx = i;
-+			symscn = scn;
-+			symbols = data;
-+			strtabidx = shdr.sh_link;
-+		} else if (!strcmp(secname, BTF_IDS_SECTION)) {
-+			idlist_shndx = i;
-+			idlist_addr = shdr.sh_addr;
-+			idlist = data;
-+		}
-+	}
-+
-+	/* Cannot resolve symbol or .BTF_ids sections. Nothing to do. */
-+	if (symbols_shndx == -1 || idlist_shndx == -1) {
-+		err = 0;
-+		goto out;
-+	}
-+
-+	if (!gelf_getshdr(symscn, &shdr)) {
-+		elf_error("Failed to get ELF symbol table header");
-+		goto out;
-+	}
-+	nr_syms = shdr.sh_size / shdr.sh_entsize;
-+
-+	err = btf_encoder__collect_btf_funcs(encoder, &btf_funcs);
-+	if (err) {
-+		fprintf(stderr, "%s: failed to collect BTF funcs\n", __func__);
-+		goto out;
-+	}
-+
-+	/* First collect all kfunc set ranges.
-+	 *
-+	 * Note we choose not to sort these ranges and accept a linear
-+	 * search when doing lookups. Reasoning is that the number of
-+	 * sets is ~O(100) and not worth the additional code to optimize.
-+	 */
-+	for (i = 0; i < nr_syms; i++) {
-+		struct btf_kfunc_set_range range = {};
-+		const char *name;
-+		GElf_Sym sym;
-+
-+		if (!gelf_getsym(symbols, i, &sym)) {
-+			elf_error("Failed to get ELF symbol(%d)", i);
-+			goto out;
-+		}
-+
-+		if (sym.st_shndx != idlist_shndx)
-+			continue;
-+
-+		name = elf_strptr(elf, strtabidx, sym.st_name);
-+		if (!is_sym_kfunc_set(&sym, name, idlist, idlist_addr))
-+			continue;
-+
-+		range.start = sym.st_value;
-+		range.end = sym.st_value + sym.st_size;
-+		gobuffer__add(&btf_kfunc_ranges, &range, sizeof(range));
-+	}
-+
-+	/* Now inject BTF with kfunc decl tag for detected kfuncs */
-+	for (i = 0; i < nr_syms; i++) {
-+		const struct btf_kfunc_set_range *ranges;
-+		unsigned int ranges_cnt;
-+		char *func, *name;
-+		GElf_Sym sym;
-+		bool found;
-+		int err;
-+		int j;
-+
-+		if (!gelf_getsym(symbols, i, &sym)) {
-+			elf_error("Failed to get ELF symbol(%d)", i);
-+			goto out;
-+		}
-+
-+		if (sym.st_shndx != idlist_shndx)
-+			continue;
-+
-+		name = elf_strptr(elf, strtabidx, sym.st_name);
-+		func = get_func_name(name);
-+		if (!func)
-+			continue;
-+
-+		/* Check if function belongs to a kfunc set */
-+		ranges = gobuffer__entries(&btf_kfunc_ranges);
-+		ranges_cnt = gobuffer__nr_entries(&btf_kfunc_ranges);
-+		found = false;
-+		for (j = 0; j < ranges_cnt; j++) {
-+			size_t addr = sym.st_value;
-+
-+			if (ranges[j].start <= addr && addr < ranges[j].end) {
-+				found = true;
-+				break;
-+			}
-+		}
-+		if (!found) {
-+			free(func);
-+			continue;
-+		}
-+
-+		err = btf_encoder__tag_kfunc(encoder, &btf_funcs, func);
-+		if (err) {
-+			fprintf(stderr, "%s: failed to tag kfunc '%s'\n", __func__, func);
-+			free(func);
-+			goto out;
-+		}
-+		free(func);
-+	}
-+
-+	err = 0;
-+out:
-+	__gobuffer__delete(&btf_funcs);
-+	__gobuffer__delete(&btf_kfunc_ranges);
-+	if (elf)
-+		elf_end(elf);
-+	if (fd != -1)
-+		close(fd);
-+	return err;
-+}
-+
- int btf_encoder__encode(struct btf_encoder *encoder)
- {
-+	bool should_tag_kfuncs;
- 	int err;
- 
- 	/* for single-threaded case, saved funcs are added here */
-@@ -1378,6 +1740,15 @@ int btf_encoder__encode(struct btf_encoder *encoder)
- 	if (btf__type_cnt(encoder->btf) == 1)
- 		return 0;
- 
-+	/* Note vmlinux may already contain btf_decl_tag's for kfuncs. So
-+	 * take care to call this before btf_dedup().
-+	 */
-+	should_tag_kfuncs = encoder->tag_kfuncs && !encoder->skip_encoding_decl_tag;
-+	if (should_tag_kfuncs && btf_encoder__tag_kfuncs(encoder)) {
-+		fprintf(stderr, "%s: failed to tag kfuncs!\n", __func__);
-+		return -1;
-+	}
-+
- 	if (btf__dedup(encoder->btf, NULL)) {
- 		fprintf(stderr, "%s: btf__dedup failed!\n", __func__);
- 		return -1;
-@@ -1662,6 +2033,7 @@ struct btf_encoder *btf_encoder__new(struct cu *cu, const char *detached_filenam
- 		encoder->force		 = conf_load->btf_encode_force;
- 		encoder->gen_floats	 = conf_load->btf_gen_floats;
- 		encoder->skip_encoding_vars = conf_load->skip_encoding_btf_vars;
-+		encoder->skip_encoding_decl_tag	 = conf_load->skip_encoding_btf_decl_tag;
- 		encoder->tag_kfuncs	 = conf_load->btf_decl_tag_kfuncs;
- 		encoder->verbose	 = verbose;
- 		encoder->has_index_type  = false;
--- 
-2.44.0
+Apparently, verifier visited both conditional branches for this program
+deducing impossible bounds for the 'false' branch.
+Nowadays is_scalar_branch_taken() should handle such situations w/o issues.
+Still, I'm not sure if we want to remove this safety check.
 
+[...]
 
