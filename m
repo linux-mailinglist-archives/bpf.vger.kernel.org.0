@@ -1,163 +1,133 @@
-Return-Path: <bpf+bounces-28139-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-28140-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 548508B60DF
-	for <lists+bpf@lfdr.de>; Mon, 29 Apr 2024 20:07:36 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 56C028B615F
+	for <lists+bpf@lfdr.de>; Mon, 29 Apr 2024 20:49:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0907E2819C0
-	for <lists+bpf@lfdr.de>; Mon, 29 Apr 2024 18:07:35 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 79D971C216E2
+	for <lists+bpf@lfdr.de>; Mon, 29 Apr 2024 18:49:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 42B6F127E24;
-	Mon, 29 Apr 2024 18:07:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 02DB213B7A4;
+	Mon, 29 Apr 2024 18:48:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="D9ByUOg/"
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="QNuqpqc7"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yw1-f181.google.com (mail-yw1-f181.google.com [209.85.128.181])
+Received: from mail-lf1-f45.google.com (mail-lf1-f45.google.com [209.85.167.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5FDB48614C
-	for <bpf@vger.kernel.org>; Mon, 29 Apr 2024 18:07:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 82E5613AA39
+	for <bpf@vger.kernel.org>; Mon, 29 Apr 2024 18:48:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714414050; cv=none; b=KXW0pVxp/dxIeirJ9ghVSxqTMEPOpQEDyxcsPrXAzKSmGu8KhM/hzeWJmGb/091uQQvpjd1AKsPWc6spUaVV3vuwEiEdX743tMQ4fRBcN+U1ZamtyQ1eMIDQx0/f5/WkQ4XsY8yQ81lgribno2tNzgn4UkkFu3afLZzb7tA9ZIE=
+	t=1714416482; cv=none; b=ucqysdSE8VpHoGpdnipEVpZ7K6ZOg2T+JBwc8BfOhq1k9NnCFDrr0RygvM8VXbEfUfNjortkk1J5MxoD7s/heOjklZgEhsNFbGQiXGfgTdoCBg97Ez6rF836022RpdZ3hzIJv2PNSsinjpXe0qItqL12wnNI5TSblDSvvNHFPjY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714414050; c=relaxed/simple;
-	bh=GhrT+EmUwZ+izili30YpiHfd93a5lJ7mOC/TDq2aFvA=;
+	s=arc-20240116; t=1714416482; c=relaxed/simple;
+	bh=u7kw+FkzxObVPiQnaVCOnkmZSnrlks2HiY7Vm3Bnv1Y=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=XEwilhuIF7sUh+zoQlMmlReCJjB5LhfW0V19xS+iU/HEvFtH2icoN5S/YibUQ+QzBDYSGdROwoq//JMiEGyyxoK4wKQseoDm+e/tnFJGD/p+3h+bSo+jqwknLJcHikS2n/JfQPrO33Lid9pjp2nA2L3p61jrULFbosXqApaMpEQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=D9ByUOg/; arc=none smtp.client-ip=209.85.128.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f181.google.com with SMTP id 00721157ae682-61be4b986aaso5865167b3.3
-        for <bpf@vger.kernel.org>; Mon, 29 Apr 2024 11:07:29 -0700 (PDT)
+	 To:Cc:Content-Type; b=HcNEQos/Vx4a365KB/XNAFkxG95wbTbm6yfIUrNRkQsnuwCPgTgVoLVWtbUoycXDg4ggVY6hG7fVw7CAT9GPLKKis0Sn8R5qhMrNhAE8LrqQ1zposmkD5mRVvmPPk7iGTY/ts9mtyvI5t5ppjNc7o6HOAqsIe8Bgk16fRqEM9u8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=QNuqpqc7; arc=none smtp.client-ip=209.85.167.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
+Received: by mail-lf1-f45.google.com with SMTP id 2adb3069b0e04-51b526f0fc4so6040159e87.1
+        for <bpf@vger.kernel.org>; Mon, 29 Apr 2024 11:48:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714414048; x=1715018848; darn=vger.kernel.org;
+        d=linux-foundation.org; s=google; t=1714416478; x=1715021278; darn=vger.kernel.org;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=HNs6JOErxbYp4BQ1eukryQa+GtJ9vcKKvZg4SDyxGKU=;
-        b=D9ByUOg/V7VUtVNUktO51DpRBV6feducB6/20lQMYf/oQQNBolWzOAXnqsr4CDcug3
-         i1Z/GkAMT4iUSw1fXQRAaZg0bHM8wwzU5DexpgSiiWBcNxQKsXQysVapiAF3a4KAdprf
-         xwhqvQ9x6i/MyS1N/Tt67Qyvnvi8LN6lQVx2btRbI+eTztTzlLdp1ydcUSJa3s4zl592
-         TuyKtl3nWG7C83/7hYtvNMYU3MZHya/ljTKvrChNx6kH0ycQboc2eEGa+OMlyhcS3wZt
-         eputa4JzYpI1qLbMQzvHJjhJBun7kPye+p0sMMSgdkTtOF7V77LXlTpubG2HPElXNXg5
-         22QQ==
+        bh=gYXEmIPmKlUCv4MlmDP09ZBKONhIZhGPFSWq4/CxW8A=;
+        b=QNuqpqc7MZiW3zymXcmJ8YgRB+LOc87CAuDuZ+W7xJyKe+fwYcztXxTDb38aw5rv72
+         0JXtZC5ojVMR7qjz8JSROu3AZh4BRIxPU710+0Vyy7RICQIwCHFGH8a6nVxr5kyYXgFL
+         hhnrTD4zdkS3Wph0m7Y5LtzDBjQ2GZ6Sq2nZY=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714414048; x=1715018848;
+        d=1e100.net; s=20230601; t=1714416478; x=1715021278;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=HNs6JOErxbYp4BQ1eukryQa+GtJ9vcKKvZg4SDyxGKU=;
-        b=RqqzxbbzstE8KxXisNmBnctZRYiRBr6zZoZ09xS7ockmDul0txX1R87AvAT30JIYUl
-         aVZDWDgTGP3no93hKlVrqZPhvzAWHfBS1lbzGV6OM71TIHWlx0fcXLVwXx7gdZF2Tr1d
-         opUQSkIv8QFB24sfHqnOqLyE0MpkdhJVjIaVh/5hwMWyQEOG5EOL0SUYem1+GNQ+UcTT
-         qLQjE7O3xEZfA9RyMnLfFLz6fBKFofsAHKRznsoVw6EscZfk1dD7n7rCCpPwKyU1w4qB
-         B1VWmyg3xxJbTYs74YbGmLw9l0vFpKMPMBpaIR+ClDopDZfThiFU4hMfflTCpS8Vvp6G
-         iiIA==
-X-Gm-Message-State: AOJu0YzvfRRecIwHMqA1cZHyPjRQPNY7uVqRVGelSmdf0WOwOJRURf+9
-	AsJ6MSn6EYeg05fBGPt8GaWw9uYGMSlgVU4RAzKdVvo72XbLXY75ksTIztKwIoqgzeg0CB38pPD
-	A1OvDGsCtHxsR5tz0XvlFu5uVDr8=
-X-Google-Smtp-Source: AGHT+IH2eMwvAgyt+HrWavjhoYfFX95HYDZ5f9NGvyTpT0IPOA8rPEuWU72HOSxy3Tv6Fc00GFeT/OHvsJZlI+ag2wc=
-X-Received: by 2002:a05:690c:6413:b0:61a:e50c:1940 with SMTP id
- hr19-20020a05690c641300b0061ae50c1940mr12060257ywb.7.1714414048315; Mon, 29
- Apr 2024 11:07:28 -0700 (PDT)
+        bh=gYXEmIPmKlUCv4MlmDP09ZBKONhIZhGPFSWq4/CxW8A=;
+        b=V3dE9QO+A8z9xVjaelPsJkPwR2twIqM2tPB4Kzsn3B8FV7fMvYZQWWwlHQJbsAZtDD
+         iIPwIrQ6SvTnFJ9fM9e2XWZrqCeuPMme83djr2kg7osrzYWh0gkjz1cYDzjrgDu61L/r
+         MJaC4Dq2u1OJeNoM9IAh3gUfJsRvz8VbfMO01/uQ3domB/nDV0NnjIRIybTx7L523oEr
+         PZDn8wXCks/buZC0Om1X2jaWbOk7XxEn0FA9a2UYuZliLOpCCthyGhmoldHeWvDPTu00
+         bHBRIpKcgy3Je0CWlPX+OKhAcZ9opIB3Mn6WVyqpvEYpo32IgW8ISDgT4gKnSSeQn8dV
+         xNiw==
+X-Forwarded-Encrypted: i=1; AJvYcCVC1W7rodcqpSq8AOFGHev5B3q5v/ZfYCqTDWV8XTCnYm5+kezYv43b6S6RizawfTk1TtXIDdS0O3NnN517GN+5EvrA
+X-Gm-Message-State: AOJu0YwSgOYfeTVlq7017ItuNV7drve5mptx8d9HozA2tfo0Plv6WTiT
+	OePjtR+OgWt3C+noeesCZD89kCrczD40XWxIi77FHBbebUZIkyBK7415Ok/RLq1dKdY3GkOP61n
+	rIfykSA==
+X-Google-Smtp-Source: AGHT+IEvHEkEgLWUU8WBQCA2xtaBeT0qqGgNi1D27oJWtpfGPPq6xtdTbnns2IaBkKfJUKDsB+0cbw==
+X-Received: by 2002:a19:5f45:0:b0:51b:58c7:d050 with SMTP id a5-20020a195f45000000b0051b58c7d050mr296680lfj.33.1714416478261;
+        Mon, 29 Apr 2024 11:47:58 -0700 (PDT)
+Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com. [209.85.218.45])
+        by smtp.gmail.com with ESMTPSA id p23-20020aa7cc97000000b0056fede24155sm13321347edt.89.2024.04.29.11.47.57
+        for <bpf@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 29 Apr 2024 11:47:57 -0700 (PDT)
+Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-a58e7628aeaso291742366b.2
+        for <bpf@vger.kernel.org>; Mon, 29 Apr 2024 11:47:57 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCW29nd7xtao9pU5jkh4DQ9Lbw3rjFpPsGoihQFNCoiNfY5dAAaG5XnfUxan1Y6JEsCGjOLzhqZJpz914hrWcr8W6Vfq
+X-Received: by 2002:a17:906:c252:b0:a52:6fcb:564a with SMTP id
+ bl18-20020a170906c25200b00a526fcb564amr321186ejb.9.1714416477325; Mon, 29 Apr
+ 2024 11:47:57 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240429165658.1305969-1-sidchintamaneni@gmail.com>
- <20240429165658.1305969-2-sidchintamaneni@gmail.com> <CAP01T75xFSzFw1FjRmmNY42LtJh9abndNY=4TE+5=DcA3Lh6qw@mail.gmail.com>
-In-Reply-To: <CAP01T75xFSzFw1FjRmmNY42LtJh9abndNY=4TE+5=DcA3Lh6qw@mail.gmail.com>
-From: Siddharth Chintamaneni <sidchintamaneni@gmail.com>
-Date: Mon, 29 Apr 2024 14:07:17 -0400
-Message-ID: <CAE5sdEiNH6=GfMag8qCQbun3XmvLunVLmK2ab-1XjvjP1dUFiA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 2/2] Added selftests to check deadlocks in queue
- and stack map
-To: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Cc: bpf@vger.kernel.org, alexei.starovoitov@gmail.com, daniel@iogearbox.net, 
-	olsajiri@gmail.com, andrii@kernel.org, yonghong.song@linux.dev, rjsu26@vt.edu, 
-	sairoop@vt.edu, Siddharth Chintamaneni <sidchintamaneni@vt.edu>
+References: <0000000000009dfa6d0617197994@google.com> <20240427231321.3978-1-hdanton@sina.com>
+ <CAHk-=wjBvNvVggy14p9rkHA8W1ZVfoKXvW0oeX5NZWxWUv8gfQ@mail.gmail.com>
+ <20240428232302.4035-1-hdanton@sina.com> <CAHk-=wjma_sSghVTgDCQxHHd=e2Lqi45PLh78oJ4WeBj8erV9Q@mail.gmail.com>
+ <CAHk-=wh9D6f7HUkDgZHKmDCHUQmp+Co89GP+b8+z+G56BKeyNg@mail.gmail.com>
+ <Zi9Ts1HcqiKzy9GX@gmail.com> <CAHk-=wj9=+4k+sY6hNsQy2oQA4HABNA369cBPSgBNaeRHbbTZg@mail.gmail.com>
+In-Reply-To: <CAHk-=wj9=+4k+sY6hNsQy2oQA4HABNA369cBPSgBNaeRHbbTZg@mail.gmail.com>
+From: Linus Torvalds <torvalds@linux-foundation.org>
+Date: Mon, 29 Apr 2024 11:47:40 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wg63NPb-cEL7NTFTKN2=uM6Lygg_CcXwwDBTVCg=PeSRg@mail.gmail.com>
+Message-ID: <CAHk-=wg63NPb-cEL7NTFTKN2=uM6Lygg_CcXwwDBTVCg=PeSRg@mail.gmail.com>
+Subject: Re: [PATCH] x86/mm: Remove broken vsyscall emulation code from the
+ page fault code
+To: Ingo Molnar <mingo@kernel.org>
+Cc: Hillf Danton <hdanton@sina.com>, Andy Lutomirski <luto@amacapital.net>, Peter Anvin <hpa@zytor.com>, 
+	Adrian Bunk <bunk@kernel.org>, 
+	syzbot <syzbot+83e7f982ca045ab4405c@syzkaller.appspotmail.com>, 
+	Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>, andrii@kernel.org, bpf@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
 
-On Mon, 29 Apr 2024 at 13:55, Kumar Kartikeya Dwivedi <memxor@gmail.com> wrote:
+On Mon, 29 Apr 2024 at 08:51, Linus Torvalds
+<torvalds@linux-foundation.org> wrote:
 >
-> On Mon, 29 Apr 2024 at 18:57, Siddharth Chintamaneni
-> <sidchintamaneni@gmail.com> wrote:
-> >
-> > From: Siddharth Chintamaneni <sidchintamaneni@vt.edu>
-> >
-> >  Added selftests to check for nested deadlocks in queue
-> >  and stack maps.
-> >
-> > Signed-off-by: Siddharth Chintamaneni <sidchintamaneni@vt.edu>
-> > ---
->
-> Forgot to remind in the previous reply, but:
-> For the patch subject, use 'bpf:' prefix for kernel patches, and
-> 'selftests/bpf:' for selftests, see the commit logs in bpf-next for
-> examples.
+> Well, Hilf had it go through the syzbot testing, and Jiri seems to
+> have tested it on his setup too, so it looks like it's all good, and
+> you can change the "Not-Yet-Signed-off-by" to be a proper sign-off
+> from me.
 
-Thanks, I will do that in the revision.
+Side note: having looked more at this, I suspect we have room for
+further cleanups in this area.
 
->
-> >  .../prog_tests/test_queue_stack_nested_map.c  | 48 ++++++++++++++
-> >  .../bpf/progs/test_queue_stack_nested_map.c   | 62 +++++++++++++++++++
-> >  2 files changed, 110 insertions(+)
-> >  create mode 100644 tools/testing/selftests/bpf/prog_tests/test_queue_stack_nested_map.c
-> >  create mode 100644 tools/testing/selftests/bpf/progs/test_queue_stack_nested_map.c
-> >
-> > diff --git a/tools/testing/selftests/bpf/prog_tests/test_queue_stack_nested_map.c b/tools/testing/selftests/bpf/prog_tests/test_queue_stack_nested_map.c
-> > new file mode 100644
-> > index 000000000000..731e958419eb
-> > --- /dev/null
-> > +++ b/tools/testing/selftests/bpf/prog_tests/test_queue_stack_nested_map.c
-> > @@ -0,0 +1,48 @@
-> > +// SPDX-License-Identifier: GPL-2.0
-> > +#include <test_progs.h>
-> > +#include <network_helpers.h>
-> > +
-> > +#include "test_queue_stack_nested_map.skel.h"
-> > +
-> > +
-> > +static void test_map_queue_stack_nesting_success(bool is_map_queue)
-> > +{
-> > +       struct test_queue_stack_nested_map *skel;
-> > +       int err;
-> > +       int prog_fd;
-> > +
-> > +       LIBBPF_OPTS(bpf_test_run_opts, ropts);
-> > +
-> > +       skel = test_queue_stack_nested_map__open_and_load();
-> > +       if (!ASSERT_OK_PTR(skel, "test_queue_stack_nested_map__open_and_load"))
-> > +               goto out;
-> > +
-> > +       err = test_queue_stack_nested_map__attach(skel);
-> > +       if (!ASSERT_OK(err, "test_queue_stack_nested_map__attach"))
-> > +               goto out;
-> > +
-> > +       if (is_map_queue) {
-> > +               prog_fd = bpf_program__fd(skel->progs.test_queue_nesting);
-> > +               err = bpf_prog_test_run_opts(prog_fd, &ropts);
-> > +               ASSERT_OK(err, "test_nested_queue_map_run");
->
-> Maybe you can also check the ropts.optval to ensure we get -EBUSY?
-> I.e. return the value of map push/pop from the program and then check
-> it here?
+In particular, I think the page fault emulation code should be moved
+from do_user_addr_fault() to do_kern_addr_fault(), and the horrible
+hack that is fault_in_kernel_space() should be removed (it is what now
+makes a vsyscall page fault be treated as a user address, and the only
+_reason_ for that is that we do the vsyscall handling in the wrong
+place).
 
-make sense.I will do that.
+I also think that the vsyscall emulation code should just be cleaned
+up - instead of looking up the system call number and then calling the
+__x64_xyz() system call stub, I think we should just write out the
+code in-place. That would get the SIGSEGV cases right too, and I think
+it would actually clean up the code. We already do almost everything
+but the (trivial) low-level ops anyway.
 
-> It can be set in a global variable from the program triggering the
-> deadlock, and then you could return the value back as the return value
-> of the program.
-> If fentry has restrictions on the return code, you could try other
-> program types which work in test_run_opts (like SEC("tc")), there are
-> many examples in selftests using such programs.
->
-> > [...]
-> >
-> >
+But I think my patch to remove the 'sig_on_uaccess_err' should just go
+in first, since it fixes a real and present issue. And then if
+somebody has the energy - or if it turns out that we actually need to
+get the SIGSEGV siginfo details right - we can do the other cleanups.
+They are mostly unrelated, but the current sig_on_uaccess_err code
+just makes everything more complicated and needs to go.
+
+                     Linus
 
