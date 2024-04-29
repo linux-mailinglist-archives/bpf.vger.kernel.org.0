@@ -1,239 +1,404 @@
-Return-Path: <bpf+bounces-28159-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-28160-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7A79C8B63E0
-	for <lists+bpf@lfdr.de>; Mon, 29 Apr 2024 22:53:18 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id E7D428B63EE
+	for <lists+bpf@lfdr.de>; Mon, 29 Apr 2024 22:58:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E3C101F22886
-	for <lists+bpf@lfdr.de>; Mon, 29 Apr 2024 20:53:17 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 16A8C1C211BE
+	for <lists+bpf@lfdr.de>; Mon, 29 Apr 2024 20:58:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA5451411EF;
-	Mon, 29 Apr 2024 20:52:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 79376178CDE;
+	Mon, 29 Apr 2024 20:58:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="uzWh9Rro"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="nE1CYrNE"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-173.mta0.migadu.com (out-173.mta0.migadu.com [91.218.175.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pg1-f172.google.com (mail-pg1-f172.google.com [209.85.215.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D73E178CC4
-	for <bpf@vger.kernel.org>; Mon, 29 Apr 2024 20:52:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6211433C0;
+	Mon, 29 Apr 2024 20:58:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714423979; cv=none; b=SPO85ooFfwkKRf/toKQmmZgmLStmT+8iI4MOlOfDKukQR9pacDJDZ5mN6QDuKyGitnDasWF91bF5Oc6+hd+IlpEtWGzcijEDms3x4IUTvVI5YX+oeqszalQCW0YPttgVf/b5kV9cmV7aE9IEVKKqN1CCHUderfQfSCCivpJCNUo=
+	t=1714424315; cv=none; b=ewpR8JPr4zxg0kPVfphBLZLc9sfR6jqZqJXmcmjmvdgJrZnFd2gcTE7lYWu05+B8BEYkwuQV6Qeourv8FdFQJMh7bhU1xmoCB/WINAUgIEyrd08Avu4IUeWC6+zJIn9Y92aEOnO7fwJs74/6GNDxZFu6kCZ9WE0jLg+VatFFR+c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714423979; c=relaxed/simple;
-	bh=peoGXzXlulRjYIhPHPlekn/MzNMhxO20n8iawvLF7+4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=L0V8CQddhizZx7mXU2fP8LP2yT2uQh+XE09m2VFnoOVz+jOPxNacCyeRqMB8ftO2dzn7Tss9f0DClHeAZj+llixIM6q/o7+kPYvgrlFbiFGcswGuNUMb7poCXHEJXZjAKLa7CUi/H5Zx4vwlo5bRowPxIZBkqrsrSjOgm7ANYrc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=uzWh9Rro; arc=none smtp.client-ip=91.218.175.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <c4d99195-f000-47f2-b167-12e76b705dc9@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1714423975;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=vq4bHF/aIWwzza6UHgmuWcUb2lBm4T0y/dplEW0rLRs=;
-	b=uzWh9Rroe9EmdBRf2vTp1Qqv0BD020yiynBrgJzXam2GDym0EYQQsxhpJzI2U5/HtF7lEb
-	LyrkZeJBUwWKSDfROj7apXa4ZXxd7OGGP2ryP6qwLrie0CFefAOXbDofvK2x1J3vyixC/r
-	An0DDsMygDvnAS0HR4++FhdtbCBY4fE=
-Date: Mon, 29 Apr 2024 13:52:48 -0700
+	s=arc-20240116; t=1714424315; c=relaxed/simple;
+	bh=5mvG4EYEAZeLF9c6C4QFkFlDPc0X9iZzL+sBI6lVlmY=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=TAVFIvvtEQfA4wGo/JC05rFTfW3AKOV69vAf9jBiSiAwUsRmp3hqPrNXr5n07dTO00P5F07CjlVbxrZFUPntKVc3oqhZriHPHj81RXQbFerb9QFSUza99KSACKGVhJXUTABRj4v0NvVjTvzH/OnDMo0A5H3FEG1GntALJ48QpFo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=nE1CYrNE; arc=none smtp.client-ip=209.85.215.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f172.google.com with SMTP id 41be03b00d2f7-613a6bb2947so943136a12.3;
+        Mon, 29 Apr 2024 13:58:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1714424312; x=1715029112; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=lzV2KrdONyufwu1s+mZDUMueihdf/aasQ5Pvlp/Y8XQ=;
+        b=nE1CYrNEOVOSf9XWjDtubdjoy5/bgd7FGu/6IHC7o2ADmE6MDBgEDQ3to6N862j3N1
+         ehWfhTMcATkGIGxbWpiI71RYVNckO/ogbTYuE+t1nWzkXJMuEMnuLaWMhevwb7/56jAm
+         ybEiceW/hYWz2sMGEFVimwc2JUnlqKcwVEKWQJB3UAA6YcOozwIpQTxLR186cuGFfk75
+         veeq2OHVSc52HzA8zcgYtJsLbFzeMi9+gNmEnFLDJQlzKJ/0MgSBNFDuJ3RQOY17jULN
+         hQU1xeCkepuYyVtpi4YBZCpKzgiF3KtQb3IT/HyAzj4j6Xuh86WUmkZ2bigFZVca6Jp0
+         zpsQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714424312; x=1715029112;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=lzV2KrdONyufwu1s+mZDUMueihdf/aasQ5Pvlp/Y8XQ=;
+        b=H2jeSXMjYFHP50T13ttf6APBVH0RU2ZrhJoDHnQDzpz3/XUcbALtbW/O5BRPcOLlTw
+         +sYAZwNH7b3v/Z+7yKPoUHkl3gnwLg6imq6mIIqPhdmDxs4TnWNz1+v1CVofc1WbbcUj
+         vT30qSNvFq9fnVBZjNcoY4ncWYHuOCyeLVKEYWmAPjl2BcvwavMpoZtbqOHy1cHI8ecN
+         eYr5h4RCNEKs0m8MX3D2kMwL3Q4hyFbc3YhwEWIoAs0fpu3oZAZJryQkfAxCWBxeynII
+         CfSfgKBYCGV/SrFzwNKSMb0NsHvdW17HJ7TITRCL/bGXrSaJgYTRDCr1yHyonl2owGkj
+         7kzg==
+X-Forwarded-Encrypted: i=1; AJvYcCWOurk4rYyCYWa1iP3oYCOo7HfETe+YZ7qRADFECtIO1XEwiCWqkOSmInUhFTzpbA9f91UMG3O+hF3kGst6UbStR2sZc1CmGwTz1zZsfe94wquqZRgYs2tVTWCmqizr4oUcVH9Giym5GidXG2GzCz7mcoJgQrtp+TiFo7xbJoq76xL9kj4A3oUSNJuF2kx8fTh37TfuVAbpdWFNOT+n4NaQembn
+X-Gm-Message-State: AOJu0Yy4J1zbp6/GzRJ9bV6nylSoFT+Wg0tCZxCxD2s1lNnF6I0YeQGz
+	ewBLPms7GjEsueaQ8LgwRRJqEAF9curOKsRo6jU22WS227ulCuv7jAT5s0CAk1dTnxNuKd+gQUJ
+	Z0W1jHIpEd4PIQy7swG6fgslHluM=
+X-Google-Smtp-Source: AGHT+IElwXHig1wb13RauvtvskTgZgfBJUKBrwvlpcxzAMzvrzcNDyYGFdrbdp8s+IkxA0LBd/hL7tdBliiuCo5wFIA=
+X-Received: by 2002:a17:90a:fa8e:b0:2ae:b8df:89e7 with SMTP id
+ cu14-20020a17090afa8e00b002aeb8df89e7mr770373pjb.38.1714424312532; Mon, 29
+ Apr 2024 13:58:32 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next] bpf: fix bpf_ksym_exists in GCC
-Content-Language: en-GB
-To: "Jose E. Marchesi" <jose.marchesi@oracle.com>, bpf@vger.kernel.org
-Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
- david.faust@oracle.com, cupertino.miranda@oracle.com
-References: <20240428112559.10518-1-jose.marchesi@oracle.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Yonghong Song <yonghong.song@linux.dev>
-In-Reply-To: <20240428112559.10518-1-jose.marchesi@oracle.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+References: <20240411122752.2873562-1-xukuohai@huaweicloud.com>
+ <20240411122752.2873562-8-xukuohai@huaweicloud.com> <e62e2971301ca7f2e9eb74fc500c520285cad8f5.camel@gmail.com>
+ <f80991aa-3a49-451a-9a82-ac57982dcb28@huaweicloud.com> <bdc84c6c-7415-4b84-a883-1988cb5f77d1@linux.dev>
+ <576c7c44-d1b4-42c8-8b6e-2e6b93d7547a@huaweicloud.com> <CAEf4BzZTzftrOCFsfBd81sHDBpmNK+4Jefqa3SSS6NiuncO0tQ@mail.gmail.com>
+ <4fbce978-9687-48a9-be2a-1c4d76790f7d@huaweicloud.com>
+In-Reply-To: <4fbce978-9687-48a9-be2a-1c4d76790f7d@huaweicloud.com>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Mon, 29 Apr 2024 13:58:20 -0700
+Message-ID: <CAEf4BzZb38EemdD8ahX4Px3vWCp=ani6vcX71Z-1_MLeATNjwQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 07/11] bpf: Fix a false rejection caused by
+ AND operation
+To: Xu Kuohai <xukuohai@huaweicloud.com>, Edward Cree <ecree.xilinx@gmail.com>
+Cc: Yonghong Song <yonghong.song@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, bpf@vger.kernel.org, 
+	netdev@vger.kernel.org, linux-security-module@vger.kernel.org, 
+	linux-kselftest@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>, 
+	Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
+	John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
+	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Matt Bobrowski <mattbobrowski@google.com>, Brendan Jackman <jackmanb@chromium.org>, 
+	Paul Moore <paul@paul-moore.com>, James Morris <jmorris@namei.org>, 
+	"Serge E . Hallyn" <serge@hallyn.com>, Khadija Kamran <kamrankhadijadj@gmail.com>, 
+	Casey Schaufler <casey@schaufler-ca.com>, Ondrej Mosnacek <omosnace@redhat.com>, 
+	Kees Cook <keescook@chromium.org>, John Johansen <john.johansen@canonical.com>, 
+	Lukas Bulwahn <lukas.bulwahn@gmail.com>, Roberto Sassu <roberto.sassu@huawei.com>, 
+	Shung-Hsi Yu <shung-hsi.yu@suse.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+On Sun, Apr 28, 2024 at 8:15=E2=80=AFAM Xu Kuohai <xukuohai@huaweicloud.com=
+> wrote:
+>
+> On 4/27/2024 4:36 AM, Andrii Nakryiko wrote:
+> > On Tue, Apr 23, 2024 at 7:26=E2=80=AFPM Xu Kuohai <xukuohai@huaweicloud=
+.com> wrote:
+> >>
+> >> On 4/24/2024 5:55 AM, Yonghong Song wrote:
+> >>>
+> >>> On 4/20/24 1:33 AM, Xu Kuohai wrote:
+> >>>> On 4/20/2024 7:00 AM, Eduard Zingerman wrote:
+> >>>>> On Thu, 2024-04-11 at 20:27 +0800, Xu Kuohai wrote:
+> >>>>>> From: Xu Kuohai <xukuohai@huawei.com>
+> >>>>>>
+> >>>>>> With lsm return value check, the no-alu32 version test_libbpf_get_=
+fd_by_id_opts
+> >>>>>> is rejected by the verifier, and the log says:
+> >>>>>>
+> >>>>>>     0: R1=3Dctx() R10=3Dfp0
+> >>>>>>     ; int BPF_PROG(check_access, struct bpf_map *map, fmode_t fmod=
+e) @ test_libbpf_get_fd_by_id_opts.c:27
+> >>>>>>     0: (b7) r0 =3D 0                        ; R0_w=3D0
+> >>>>>>     1: (79) r2 =3D *(u64 *)(r1 +0)
+> >>>>>>     func 'bpf_lsm_bpf_map' arg0 has btf_id 916 type STRUCT 'bpf_ma=
+p'
+> >>>>>>     2: R1=3Dctx() R2_w=3Dtrusted_ptr_bpf_map()
+> >>>>>>     ; if (map !=3D (struct bpf_map *)&data_input) @ test_libbpf_ge=
+t_fd_by_id_opts.c:29
+> >>>>>>     2: (18) r3 =3D 0xffff9742c0951a00       ; R3_w=3Dmap_ptr(map=
+=3Ddata_input,ks=3D4,vs=3D4)
+> >>>>>>     4: (5d) if r2 !=3D r3 goto pc+4         ; R2_w=3Dtrusted_ptr_b=
+pf_map() R3_w=3Dmap_ptr(map=3Ddata_input,ks=3D4,vs=3D4)
+> >>>>>>     ; int BPF_PROG(check_access, struct bpf_map *map, fmode_t fmod=
+e) @ test_libbpf_get_fd_by_id_opts.c:27
+> >>>>>>     5: (79) r0 =3D *(u64 *)(r1 +8)          ; R0_w=3Dscalar() R1=
+=3Dctx()
+> >>>>>>     ; if (fmode & FMODE_WRITE) @ test_libbpf_get_fd_by_id_opts.c:3=
+2
+> >>>>>>     6: (67) r0 <<=3D 62                     ; R0_w=3Dscalar(smax=
+=3D0x4000000000000000,umax=3D0xc000000000000000,smin32=3D0,smax32=3Dumax32=
+=3D0,var_off=3D(0x0; 0xc000000000000000))
+> >>>>>>     7: (c7) r0 s>>=3D 63                    ; R0_w=3Dscalar(smin=
+=3Dsmin32=3D-1,smax=3Dsmax32=3D0)
+> >>>>>>     ;  @ test_libbpf_get_fd_by_id_opts.c:0
+> >>>>>>     8: (57) r0 &=3D -13                     ; R0_w=3Dscalar(smax=
+=3D0x7ffffffffffffff3,umax=3D0xfffffffffffffff3,smax32=3D0x7ffffff3,umax32=
+=3D0xfffffff3,var_off=3D(0x0; 0xfffffffffffffff3))
+> >>>>>>     ; int BPF_PROG(check_access, struct bpf_map *map, fmode_t fmod=
+e) @ test_libbpf_get_fd_by_id_opts.c:27
+> >>>>>>     9: (95) exit
+> >
+> > [...]
+> >
+> >>
+> >>       As suggested by Eduard, this patch makes a special case for sour=
+ce
+> >>       or destination register of '&=3D' operation being in range [-1, =
+0].
+> >>
+> >>       Meaning that one of the '&=3D' operands is either:
+> >>       - all ones, in which case the counterpart is the result of the o=
+peration;
+> >>       - all zeros, in which case zero is the result of the operation.
+> >>
+> >>       And MIN and MAX values could be derived based on above two obser=
+vations.
+> >>
+> >>       [0] https://lore.kernel.org/bpf/e62e2971301ca7f2e9eb74fc500c5202=
+85cad8f5.camel@gmail.com/
+> >>       [1] https://github.com/llvm/llvm-project/blob/4523a267829c807f3f=
+c8fab8e5e9613985a51565/llvm/lib/CodeGen/SelectionDAG/DAGCombiner.cpp
+> >>
+> >>       Suggested-by: Eduard Zingerman <eddyz87@gmail.com>
+> >>       Signed-off-by: Xu Kuohai <xukuohai@huawei.com>
+> >>
+> >> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> >> index 640747b53745..30c551d39329 100644
+> >> --- a/kernel/bpf/verifier.c
+> >> +++ b/kernel/bpf/verifier.c
+> >> @@ -13374,6 +13374,24 @@ static void scalar32_min_max_and(struct bpf_r=
+eg_state *dst_reg,
+> >>           dst_reg->u32_min_value =3D var32_off.value;
+> >>           dst_reg->u32_max_value =3D min(dst_reg->u32_max_value, umax_=
+val);
+> >>
+> >> +       /* Special case: src_reg is known and dst_reg is in range [-1,=
+ 0] */
+> >> +       if (src_known &&
+> >> +               dst_reg->s32_min_value =3D=3D -1 && dst_reg->s32_max_v=
+alue =3D=3D 0 &&
+> >> +               dst_reg->smin_value =3D=3D -1 && dst_reg->smax_value =
+=3D=3D 0) {
+> >
+> > please keep if () condition aligned across multiple lines, it's super
+> > confusing this way
+> >
+>
+> OK, will update the align style
+>
+> >> +               dst_reg->s32_min_value =3D min_t(s32, src_reg->s32_min=
+_value, 0);
+> >> +               dst_reg->s32_max_value =3D max_t(s32, src_reg->s32_min=
+_value, 0);
+> >
+> > do we need to update tnum parts as well (or reset and re-derive, probab=
+ly)?
+> >
+> > btw, can't we support src being a range here? the idea is that dst_reg
+> > either all ones or all zeros. For and it means that it either stays
+> > all zero, or will be *exactly equal* to src, right? So I think the
+> > logic would be:
+> >
+> > a) if [s32_min, s32_max] is on the same side of zero, then resulting
+> > range would be [min(s32_min, 0), max(s32_max, 0)], just like you have
+> > here
+> >
+> > b) if [s32_min, s32_max] contains zero, then resulting range will be
+> > exactly [s32_min, s32_max]
+> >
+> > Or did I make a mistake above?
+> >
+>
+> Totally agree, the AND of any set with the range [-1,0] is equivalent
+> to adding number 0 to the set!
+>
+> Based on this observation, I've rewritten the patch as follows.
+>
+> diff --git a/include/linux/tnum.h b/include/linux/tnum.h
+> index 3c13240077b8..5e795d728b9f 100644
+> --- a/include/linux/tnum.h
+> +++ b/include/linux/tnum.h
+> @@ -52,6 +52,9 @@ struct tnum tnum_mul(struct tnum a, struct tnum b);
+>   /* Return a tnum representing numbers satisfying both @a and @b */
+>   struct tnum tnum_intersect(struct tnum a, struct tnum b);
+>
+> +/* Return a tnum representing numbers satisfying either @a or @b */
+> +struct tnum tnum_union(struct tnum a, struct tnum b);
+> +
+>   /* Return @a with all but the lowest @size bytes cleared */
+>   struct tnum tnum_cast(struct tnum a, u8 size);
+>
+> diff --git a/kernel/bpf/tnum.c b/kernel/bpf/tnum.c
+> index 9dbc31b25e3d..9d4480a683ca 100644
+> --- a/kernel/bpf/tnum.c
+> +++ b/kernel/bpf/tnum.c
+> @@ -150,6 +150,29 @@ struct tnum tnum_intersect(struct tnum a, struct tnu=
+m b)
+>          return TNUM(v & ~mu, mu);
+>   }
+>
+> +/*
+> + * Each bit has 3 states: unkown, known 0, known 1. If using x to repres=
+ent
+> + * unknown state, the result of the union of two bits is as follows:
+> + *
+> + *         | x    0    1
+> + *    -----+------------
+> + *     x   | x    x    x
+> + *     0   | x    0    x
+> + *     1   | x    x    1
+> + *
+> + * For tnum a and b, only the bits that are both known 0 or known 1 in a
+> + * and b are known in the result of union a and b.
+> + */
+> +struct tnum tnum_union(struct tnum a, struct tnum b)
+> +{
+> +       u64 v0, v1, mu;
+> +
+> +       mu =3D a.mask | b.mask; // unkown bits either in a or b
+> +       v1 =3D (a.value & b.value) & ~mu; // "known 1" bits in both a and=
+ b
+> +       v0 =3D (~a.value & ~b.value) & ~mu; // "known 0" bits in both a a=
+nd b
 
-On 4/28/24 4:25 AM, Jose E. Marchesi wrote:
-> The macro bpf_ksym_exists is defined in bpf_helpers.h as:
->
->    #define bpf_ksym_exists(sym) ({								\
->    	_Static_assert(!__builtin_constant_p(!!sym), #sym " should be marked as __weak");	\
->    	!!sym;											\
->    })
->
-> The purpose of the macro is to determine whether a given symbol has
-> been defined, given the address of the object associated with the
-> symbol.  It also has a compile-time check to make sure the object
-> whose address is passed to the macro has been declared as weak, which
-> makes the check on `sym' meaningful.
->
-> As it happens, the check for weak doesn't work in GCC in all cases,
-> because __builtin_constant_p not always folds at parse time when
-> optimizing.  This is because optimizations that happen later in the
-> compilation process, like inlining, may make a previously non-constant
-> expression a constant.  This results in errors like the following when
-> building the selftests with GCC:
->
->    bpf_helpers.h:190:24: error: expression in static assertion is not constant
->    190 |         _Static_assert(!__builtin_constant_p(!!sym), #sym " should be marked as __weak");       \
->        |                        ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
->
-> Fortunately recent versions of GCC support a __builtin_has_attribute
-> that can be used to directly check for the __weak__ attribute.  This
-> patch changes bpf_helpers.h to use that builtin when building with a
-> recent enough GCC, and to omit the check if GCC is too old to support
-> the builtin.
->
-> The macro used for GCC becomes:
->
->    #define bpf_ksym_exists(sym) ({									\
-> 	_Static_assert(__builtin_has_attribute (*sym, __weak__), #sym " should be marked as __weak");	\
-> 	!!sym;												\
->    })
->
-> Note that since bpf_ksym_exists is designed to get the address of the
-> object associated with symbol SYM, we pass *sym to
-> __builtin_has_attribute instead of sym.  When an expression is passed
-> to __builtin_has_attribute then it is the type of the passed
-> expression that is checked for the specified attribute.  The
-> expression itself is not evaluated.  This accommodates well with the
-> existing usages of the macro:
->
-> - For function objects:
->
->    struct task_struct *bpf_task_acquire(struct task_struct *p) __ksym __weak;
->    [...]
->    bpf_ksym_exists(bpf_task_acquire)
->
-> - For variable objects:
->
->    extern const struct rq runqueues __ksym __weak; /* typed */
->    [...]
->    bpf_ksym_exists(&runqueues)
->
-> Note also that BPF support was added in GCC 10 and support for
-> __builtin_has_attribute in GCC 9.
+no C++-style comments, please
 
-It would be great if you can share details with asm code and
-BTF so we can understand better. I am not 100% sure about
-whether __builtin_has_attribute builtin can help to do
-run-time ksym resolution with libbpf.
+> +       return TNUM(v1, mu | ~(v0 | v1));
+> +}
+> +
 
-The following is what clang does:
+I've CC'ed Edward, hopefully he can take a look as well. Please CC him
+on future patches touching tnum as well.
 
-For example, for progs/test_ksyms_weak.c, we have
-  43         if (rq && bpf_ksym_exists(&runqueues))
-  44                 out__existing_typed = rq->cpu;
-...
-  56         if (!bpf_ksym_exists(bpf_task_acquire))
-  57                 /* dead code won't be seen by the verifier */
-  58                 bpf_task_acquire(0);
-
-The asm code:
-
-         .loc    0 42 20 prologue_end            # progs/test_ksyms_weak.c:42:20
-.Ltmp0:
-         r6 = runqueues ll
-         r1 = runqueues ll
-         w2 = 0
-         call 153
-.Ltmp1:
-.Ltmp2:
-         #DEBUG_VALUE: pass_handler:rq <- $r0
-         .loc    0 43 9                          # progs/test_ksyms_weak.c:43:9
-.Ltmp3:
-         if r0 == 0 goto LBB0_3
-.Ltmp4:
-.Ltmp5:
-# %bb.1:                                # %entry
-         #DEBUG_VALUE: pass_handler:rq <- $r0
-         if r6 == 0 goto LBB0_3
-...
-LBB0_5:                                 # %if.end4
-         .loc    0 56 6 is_stmt 1                # progs/test_ksyms_weak.c:56:6
-.Ltmp25:
-         r1 = bpf_task_acquire ll
-         if r1 != 0 goto LBB0_7
-# %bb.6:                                # %if.then9
-
-Here, 'runqueues' and 'bpf_task_acquire' will be changed by libbpf
-based on the *current* kernel state. The BTF datasec encodes such ksym
-information like below which will be used by libbpf:
-
-         .long   13079                           # BTF_KIND_DATASEC(id = 395)
-         .long   251658247                       # 0xf000007
-         .long   0
-         .long   377
-         .long   bpf_task_acquire
-         .long   0
-         .long   379
-         .long   bpf_testmod_test_mod_kfunc
-         .long   0
-         .long   381
-         .long   invalid_kfunc
-         .long   0
-         .long   387
-         .long   runqueues
-         .long   3264
-         .long   388
-         .long   bpf_prog_active
-         .long   1
-         .long   389
-         .long   bpf_link_fops1
-         .long   1
-         .long   391
-         .long   bpf_link_fops2
-         .long   4
-
-What gcc generates for the above example? It would be great
-if this can be put in the commit message.
-
+>   struct tnum tnum_cast(struct tnum a, u8 size)
+>   {
+>          a.value &=3D (1ULL << (size * 8)) - 1;
+>   {
+>          a.value &=3D (1ULL << (size * 8)) - 1;
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index 8f0f2e21699e..b69c89bc5cfc 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -13478,6 +13478,28 @@ static void scalar32_min_max_and(struct bpf_reg_=
+state *dst_reg,
+>                  return;
+>          }
 >
-> Locally tested in bpf-next master branch.
-> No regressions.
->
-> Signed-of-by: Jose E. Marchesi <jose.marchesi@oracle.com>
-> Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-> Cc: david.faust@oracle.com
-> Cc: cupertino.miranda@oracle.com
-> ---
->   tools/lib/bpf/bpf_helpers.h | 9 +++++++++
->   1 file changed, 9 insertions(+)
->
-> diff --git a/tools/lib/bpf/bpf_helpers.h b/tools/lib/bpf/bpf_helpers.h
-> index 62e1c0cc4a59..a720636a87d9 100644
-> --- a/tools/lib/bpf/bpf_helpers.h
-> +++ b/tools/lib/bpf/bpf_helpers.h
-> @@ -186,10 +186,19 @@ enum libbpf_tristate {
->   #define __kptr __attribute__((btf_type_tag("kptr")))
->   #define __percpu_kptr __attribute__((btf_type_tag("percpu_kptr")))
->   
-> +#if defined (__clang__)
->   #define bpf_ksym_exists(sym) ({									\
->   	_Static_assert(!__builtin_constant_p(!!sym), #sym " should be marked as __weak");	\
->   	!!sym;											\
->   })
-> +#elif __GNUC__ > 8
+> +       /* Special case: dst_reg is in range [-1, 0] */
+> +       if (dst_reg->s32_min_value =3D=3D -1 && dst_reg->s32_max_value =
+=3D=3D 0) {
+> +               var32_off =3D tnum_union(src_reg->var_off, tnum_const(0))=
+;
+> +               dst_reg->var_off =3D tnum_with_subreg(dst_reg->var_off, v=
+ar32_off);
+> +               dst_reg->u32_min_value =3D var32_off.value;
+> +               dst_reg->u32_max_value =3D min(dst_reg->u32_max_value, um=
+ax_val);
 
-| +#define bpf_ksym_exists(sym) ({									\
+can you explain the logic behing u32 min/max updates, especially that
+we use completely different values for min/max and it's not clear why
+u32_min <=3D u32_max invariant will always hold. Same below
 
-> +	_Static_assert(__builtin_has_attribute (*sym, __weak__), #sym " should be marked as __weak");	\
-> +	!!sym;												\
-> +})
-> +#else
-> +#define bpf_ksym_exists(sym) !!sym
-> +#endif
->   
->   #define __arg_ctx __attribute__((btf_decl_tag("arg:ctx")))
->   #define __arg_nonnull __attribute((btf_decl_tag("arg:nonnull")))
+> +               dst_reg->s32_min_value =3D min_t(s32, src_reg->s32_min_va=
+lue, 0);
+> +               dst_reg->s32_max_value =3D max_t(s32, src_reg->s32_max_va=
+lue, 0);
+> +               return;
+> +       }
+> +
+> +       /* Special case: src_reg is in range [-1, 0] */
+> +       if (src_reg->s32_min_value =3D=3D -1 && src_reg->s32_max_value =
+=3D=3D 0) {
+> +               var32_off =3D tnum_union(dst_reg->var_off, tnum_const(0))=
+;
+> +               dst_reg->var_off =3D tnum_with_subreg(dst_reg->var_off, v=
+ar32_off);
+> +               dst_reg->u32_min_value =3D var32_off.value;
+> +               dst_reg->u32_max_value =3D min(dst_reg->u32_max_value, um=
+ax_val);
+> +               dst_reg->s32_min_value =3D min_t(s32, dst_reg->s32_min_va=
+lue, 0);
+> +               dst_reg->s32_max_value =3D max_t(s32, dst_reg->s32_max_va=
+lue, 0);
+> +               return;
+> +       }
+> +
+>          /* We get our minimum from the var_off, since that's inherently
+>           * bitwise.  Our maximum is the minimum of the operands' maxima.
+>           */
+> @@ -13508,6 +13530,26 @@ static void scalar_min_max_and(struct bpf_reg_st=
+ate *dst_reg,
+>                  return;
+>          }
+>
+> +       /* Special case: dst_reg is in range [-1, 0] */
+> +       if (dst_reg->smin_value =3D=3D -1 && dst_reg->smax_value =3D=3D 0=
+) {
+> +               dst_reg->var_off =3D tnum_union(src_reg->var_off, tnum_co=
+nst(0));
+> +               dst_reg->umin_value =3D dst_reg->var_off.value;
+> +               dst_reg->umax_value =3D min(dst_reg->umax_value, umax_val=
+);
+> +               dst_reg->smin_value =3D min_t(s64, src_reg->smin_value, 0=
+);
+> +               dst_reg->smax_value =3D max_t(s64, src_reg->smax_value, 0=
+);
+> +               return;
+> +       }
+> +
+> +       /* Special case: src_reg is in range [-1, 0] */
+> +       if (src_reg->smin_value =3D=3D -1 && src_reg->smax_value =3D=3D 0=
+) {
+> +               dst_reg->var_off =3D tnum_union(dst_reg->var_off, tnum_co=
+nst(0));
+> +               dst_reg->umin_value =3D dst_reg->var_off.value;
+> +               dst_reg->umax_value =3D min(dst_reg->umax_value, umax_val=
+);
+> +               dst_reg->smin_value =3D min_t(s64, dst_reg->smin_value, 0=
+);
+> +               dst_reg->smax_value =3D max_t(s64, dst_reg->smax_value, 0=
+);
+> +               return;
+> +       }
+> +
+>
+> >> +               return;
+> >> +       }
+> >> +
+> >> +       /* Special case: dst_reg is known and src_reg is in range [-1,=
+ 0] */
+> >> +       if (dst_known &&
+> >> +               src_reg->s32_min_value =3D=3D -1 && src_reg->s32_max_v=
+alue =3D=3D 0 &&
+> >> +               src_reg->smin_value =3D=3D -1 && src_reg->smax_value =
+=3D=3D 0) {
+> >> +               dst_reg->s32_min_value =3D min_t(s32, dst_reg->s32_min=
+_value, 0);
+> >> +               dst_reg->s32_max_value =3D max_t(s32, dst_reg->s32_min=
+_value, 0);
+> >> +               return;
+> >> +       }
+> >> +
+> >>           /* Safe to set s32 bounds by casting u32 result into s32 whe=
+n u32
+> >>            * doesn't cross sign boundary. Otherwise set s32 bounds to =
+unbounded.
+> >>            */
+> >
+> > [...]
+> >
+>
 
