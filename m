@@ -1,305 +1,193 @@
-Return-Path: <bpf+bounces-28182-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-28183-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id DC6448B64B4
-	for <lists+bpf@lfdr.de>; Mon, 29 Apr 2024 23:36:36 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9BFA98B64CA
+	for <lists+bpf@lfdr.de>; Mon, 29 Apr 2024 23:45:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0C3921C21907
-	for <lists+bpf@lfdr.de>; Mon, 29 Apr 2024 21:36:36 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AB90CB20A95
+	for <lists+bpf@lfdr.de>; Mon, 29 Apr 2024 21:45:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1350B18412D;
-	Mon, 29 Apr 2024 21:36:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5474718411A;
+	Mon, 29 Apr 2024 21:45:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LdkMAbnP"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="aTmRqZtO"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-oi1-f177.google.com (mail-oi1-f177.google.com [209.85.167.177])
+Received: from mail-yb1-f202.google.com (mail-yb1-f202.google.com [209.85.219.202])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B885184124
-	for <bpf@vger.kernel.org>; Mon, 29 Apr 2024 21:36:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D1B7184109
+	for <bpf@vger.kernel.org>; Mon, 29 Apr 2024 21:45:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714426581; cv=none; b=Z+cZuEY+V7iERSqmLMNK5796PuYUEi+3bUO+GsrCw9/rijQmoiFyljDGvemMDKLPlG6VFyuy77e1gbb1Q1JQLQJKlBnLSSxwgnBz/83THQS2eBY7TaL2X6SR9BmpciTBAzAQm/C8WacnF/yFN5H5vyn70vvPTEY30ll77/guqnI=
+	t=1714427139; cv=none; b=qsQJqbPNtQ7if9n7uxW3Gz7BuLjF8bLwxtFvRIf7c6PekNNARCncVvI8rTnTita+esyKJExXiMV45ys+kkscbvyGwpwF/qleCfF2rznjFsBWDP6F/eSl5t01iVa95fnvxKLqQzLXYX1qQ8jwVSiSKaEeW4z8WtNk97+0tI+sZ+s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714426581; c=relaxed/simple;
-	bh=I/HQdIzxClxpiYMOP+mYxG3ROF0r7hwbDSt5dUNidLo=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=ByeO4Rcv0M1HEGwOViK2wiy0RCY0kBbG+oJwC6g8k0IgasYTCULU34JGibL3wGttqOm7rFxTnObydjX75n3zVn6TsDwQNLIMJbqEDKbbrCBksZTwby4gx9wuzIiUCCPVBGWzKvsAHXXvmPTReInvN4G8o6rUxG4YnukJGEhs/Zs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=LdkMAbnP; arc=none smtp.client-ip=209.85.167.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oi1-f177.google.com with SMTP id 5614622812f47-3c844b6edbbso3018420b6e.1
-        for <bpf@vger.kernel.org>; Mon, 29 Apr 2024 14:36:20 -0700 (PDT)
+	s=arc-20240116; t=1714427139; c=relaxed/simple;
+	bh=CXdGvTleMNIv4GYdc9ZhHcot4PSSombN20TNzZWr8UI=;
+	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=br/T/xQeY0KYwRF/u+Pv/Gd+0869IajlQfzAhU74D2JQQJ9ZVwzTUhW+0+h2D0SYD05HuXgioRAoIsOxxdiSHrgcFn5QV1vALR+e9PQSAxQD/UOYd1NY8fzh5B//2/qvnj+QbOfzNfT4ugNzjFFwRveyYiAlFaijzVP9VM+S6i8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--jrife.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=aTmRqZtO; arc=none smtp.client-ip=209.85.219.202
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--jrife.bounces.google.com
+Received: by mail-yb1-f202.google.com with SMTP id 3f1490d57ef6-ddaf2f115f2so7723271276.3
+        for <bpf@vger.kernel.org>; Mon, 29 Apr 2024 14:45:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714426579; x=1715031379; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=TQI0s/zOku12P4kv+jI56KO8d44pJV8Wjk4rHVkZmnw=;
-        b=LdkMAbnPV8Eo7XQh9+TvAabeCeeMsCEroVVvGGIwjBD9ZbrRGPnWKcPdH5UMWtWSqD
-         5n8zHl3XIkh16dhhp+LwxzQHYwrR8Ov8QU3RUe5hbkFarSiRJJ88tTttF9A68KKOtcga
-         3CwUC0lcECNZHNrk87Wtes3KB5DYSMtzQrtZqN23SXZmaqzpLlq/cy2GBr6hSaOYwLEh
-         sVwrDXrf33rj/C+yj9UzBUNlN2q2h5zHDD2bhV9zF4MLMPXNtBCeBAkb/WawBeoRoMwr
-         eM+//yjRSWHLJwQ7SwAAu/0sBtktIkQA5FYrYbWgNBao+/bcQwfynJMjjgS//LIwGe6U
-         crKg==
+        d=google.com; s=20230601; t=1714427137; x=1715031937; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=/r6j/W9mUWONQY7ovRYyi9uqUz9mWwrTm/AdOjdCX/U=;
+        b=aTmRqZtOVSXV1y9fbysvl58xEMBmjBCCn/C6gvqq+WtcFkLq45ouCNdx1toBHuQJK/
+         x6uJtavnxcB5MnzD13FfWUWK3abEhPpaMsCulU6W5JBQnQZWmMsHAsXtjHmY4CNRAXf7
+         n0xBNohwEkTJaUmiRpOY59DG1G98jP6HqDsDk5xYtfhhyvl0UK4eCN/5YdTZicPAMS3h
+         gm/Yr47FiBUh2C56vgURKHYV1V/lKerm/yTO237gEME9IGQn65e+57evPdwB6Igzz8gf
+         mTqYFyjKhp42lOKTLIhzF6tBUXuHcFV3n1dnl5q4f0nBa5KB8hSZZ7jckudugjkqEghy
+         Ac0A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714426579; x=1715031379;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=TQI0s/zOku12P4kv+jI56KO8d44pJV8Wjk4rHVkZmnw=;
-        b=DyacqcIii/GUFiZ41JZOF9iT7hAvLhCWgXBhA4V7KCZA4xihO6vSlSwjE7DADYCZRJ
-         XdHf1HuKtC5M1cHcCHyXCnhnaai12Zxc9YHV3Zxqp5zO5YOtAz2z+Vqgk5cPVzd1a/AT
-         7Pxz+cpknwj0W9ijns7Ijjggy5fnVIZ1Zh4TlD6/ixlH7LllKUhEcauIuxrzxmkLzWvP
-         ZenxJOu9UPaYdLichD6tYoUHsg2bSFMjiZxvD5ImbxdBocmhQ/4OoAaDPo7cr0vgOa3t
-         /SQ9mGieJFJ6mA67q6N+V8tDC/TR1H0/aTgpUTb5bbJN2co4Pugda3tJnaz0sjOE9UkX
-         Ljiw==
-X-Gm-Message-State: AOJu0YymVrhVm7erDz+4/45SJ4aIfK8BbG+59DirhwPe66dZZIqVdmdO
-	7QazfuNDLkxcVLMqQo9g7DJ2pcgOrhC3D/AXqB2W/kZ1JiW2bTxpfpEXZA==
-X-Google-Smtp-Source: AGHT+IFYonbBO6nCTjwLruMcb9WeXKTbPlfMQwIOOppMX1c+zlfzWKL9z1JA1P8m6D2LqPqEtUjV3Q==
-X-Received: by 2002:a05:6808:211d:b0:3c8:5493:e25f with SMTP id r29-20020a056808211d00b003c85493e25fmr14579023oiw.12.1714426578955;
-        Mon, 29 Apr 2024 14:36:18 -0700 (PDT)
-Received: from kickker.attlocal.net ([2600:1700:6cf8:1240:b805:4ca7:fd75:4bf])
-        by smtp.gmail.com with ESMTPSA id x5-20020a05680801c500b003c8642321c9sm714034oic.50.2024.04.29.14.36.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Apr 2024 14:36:18 -0700 (PDT)
-From: Kui-Feng Lee <thinker.li@gmail.com>
-To: bpf@vger.kernel.org,
-	ast@kernel.org,
-	martin.lau@linux.dev,
-	song@kernel.org,
-	kernel-team@meta.com,
-	andrii@kernel.org
-Cc: sinquersw@gmail.com,
-	kuifeng@meta.com,
-	Kui-Feng Lee <thinker.li@gmail.com>
-Subject: [PATCH bpf-next 6/6] selftests/bpf: test detaching struct_ops links.
-Date: Mon, 29 Apr 2024 14:36:09 -0700
-Message-Id: <20240429213609.487820-7-thinker.li@gmail.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240429213609.487820-1-thinker.li@gmail.com>
-References: <20240429213609.487820-1-thinker.li@gmail.com>
+        d=1e100.net; s=20230601; t=1714427137; x=1715031937;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=/r6j/W9mUWONQY7ovRYyi9uqUz9mWwrTm/AdOjdCX/U=;
+        b=d67Az+hfzv3GPR6bO2gOGRmJUF2qAo5IjvHZf4r9dEgK8ZIPkw5dl3wfe3joG+Uhq+
+         nVgv8jY0wJox5ugsP4esLygqsS2XHD0P+0J/liu61KrQrlsHUwFKOiuP9sHFsJtzBNI+
+         +5eTiz0iiVBz+2MIu52HL9CsTZQxE4BlD5nUsS2xeUUO0gX08zyZM+wlisXm7KF4GgVG
+         hT5OLSqXtTxrpHOGUid8TZUKot757mlj5rnBTUB/XugNb/4/H9p0aVzOTqnz3mn1+nDS
+         PWyqyuGAl54/FXvHrnsLGBxEMZnkHNeJtwfNvpRD2PhgCDSDut6XLfyzgpXhu9Iwrm3C
+         XZEg==
+X-Gm-Message-State: AOJu0YxyOf36y8lldaBDu1UwZm/5Q3kXYiiu0phzdB8N1yF2cnCDYsLR
+	ddMRJszO2gq96gg8KGt1EZB/H5scL8vSIxhE229eqKv+RRkO16kUWgIQT0BRvKgawOiBvwRVTWo
+	s0HX/+8UoMd7kD69qqGqbxYWk7bF8HfO6Bs65oEOqZFw3u4ac80wJ3QrtjB7UR8/CV7PBDsOoWu
+	JE52G2/G44cAl+0GgQDEo7b1w=
+X-Google-Smtp-Source: AGHT+IEAAO56xjTLfoNQSFLAwnATKrv+gLtp1W9DP3wLkwXTGkheUj3EN6qI3g4PUDC20KIcGFPosz2rsw==
+X-Received: from jrife.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:9f])
+ (user=jrife job=sendgmr) by 2002:a25:d8d1:0:b0:de5:5304:3206 with SMTP id
+ p200-20020a25d8d1000000b00de553043206mr756562ybg.11.1714427136747; Mon, 29
+ Apr 2024 14:45:36 -0700 (PDT)
+Date: Mon, 29 Apr 2024 16:45:17 -0500
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.44.0.769.g3c40516874-goog
+Message-ID: <20240429214529.2644801-1-jrife@google.com>
+Subject: [PATCH v3 bpf-next 0/6] selftests/bpf: Add sockaddr tests for kernel networking
+From: Jordan Rife <jrife@google.com>
+To: bpf@vger.kernel.org
+Cc: Jordan Rife <jrife@google.com>, linux-kselftest@vger.kernel.org, 
+	netdev@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>, 
+	Kui-Feng Lee <thinker.li@gmail.com>, Artem Savkov <asavkov@redhat.com>, 
+	Dave Marchevsky <davemarchevsky@fb.com>, Menglong Dong <imagedong@tencent.com>, Daniel Xu <dxu@dxuuu.xyz>, 
+	David Vernet <void@manifault.com>, Daan De Meyer <daan.j.demeyer@gmail.com>, 
+	Benjamin Tissoires <bentiss@kernel.org>, Hou Tao <houtao1@huawei.com>, 
+	Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 
-Verify whether a user space program is informed through epoll with EPOLLHUP
-when a struct_ops object is detached or unregistered using the function
-bpf_struct_ops_kvalue_unreg() or BPF_LINK_DETACH.
+This patch series adds test coverage for BPF sockaddr hooks and their
+interactions with kernel socket functions (i.e. kernel_bind(),
+kernel_connect(), kernel_sendmsg(), sock_sendmsg(),
+kernel_getpeername(), and kernel_getsockname()) while also rounding out
+IPv4 and IPv6 sockaddr hook coverage in prog_tests/sock_addr.c.
 
-Signed-off-by: Kui-Feng Lee <thinker.li@gmail.com>
----
- .../selftests/bpf/bpf_testmod/bpf_testmod.c   |  18 ++-
- .../selftests/bpf/bpf_testmod/bpf_testmod.h   |   1 +
- .../bpf/prog_tests/test_struct_ops_module.c   | 104 ++++++++++++++++++
- .../selftests/bpf/progs/struct_ops_module.c   |   7 ++
- 4 files changed, 126 insertions(+), 4 deletions(-)
+As with v1 of this patch series, we add regression coverage for the
+issues addressed by these patches,
 
-diff --git a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
-index 39ad96a18123..e526ccfad8bf 100644
---- a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
-+++ b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
-@@ -539,16 +539,20 @@ static int bpf_testmod_ops_init_member(const struct btf_type *t,
- 				       const struct btf_member *member,
- 				       void *kdata, const void *udata)
- {
-+	struct bpf_testmod_ops *ops = kdata;
-+
- 	if (member->offset == offsetof(struct bpf_testmod_ops, data) * 8) {
- 		/* For data fields, this function has to copy it and return
- 		 * 1 to indicate that the data has been handled by the
- 		 * struct_ops type, or the verifier will reject the map if
- 		 * the value of the data field is not zero.
- 		 */
--		((struct bpf_testmod_ops *)kdata)->data = ((struct bpf_testmod_ops *)udata)->data;
--		return 1;
--	}
--	return 0;
-+		ops->data = ((struct bpf_testmod_ops *)udata)->data;
-+	} else if (member->offset == offsetof(struct bpf_testmod_ops, do_unreg) * 8) {
-+		ops->do_unreg = ((struct bpf_testmod_ops *)udata)->do_unreg;
-+	} else
-+		return 0;
-+	return 1;
- }
- 
- static const struct btf_kfunc_id_set bpf_testmod_kfunc_set = {
-@@ -572,6 +576,12 @@ static int bpf_dummy_reg(void *kdata)
- 	if (ops->test_2)
- 		ops->test_2(4, ops->data);
- 
-+	if (ops->do_unreg) {
-+		rcu_read_lock();
-+		bpf_struct_ops_kvalue_unreg(kdata);
-+		rcu_read_unlock();
-+	}
-+
- 	return 0;
- }
- 
-diff --git a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.h b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.h
-index 23fa1872ee67..ee8d4a2cd187 100644
---- a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.h
-+++ b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.h
-@@ -43,6 +43,7 @@ struct bpf_testmod_ops {
- 		int b;
- 	} unsupported;
- 	int data;
-+	bool do_unreg;
- 
- 	/* The following pointers are used to test the maps having multiple
- 	 * pages of trampolines.
-diff --git a/tools/testing/selftests/bpf/prog_tests/test_struct_ops_module.c b/tools/testing/selftests/bpf/prog_tests/test_struct_ops_module.c
-index 7cf2b9ddd3e1..b4d3b29114ca 100644
---- a/tools/testing/selftests/bpf/prog_tests/test_struct_ops_module.c
-+++ b/tools/testing/selftests/bpf/prog_tests/test_struct_ops_module.c
-@@ -3,6 +3,8 @@
- #include <test_progs.h>
- #include <time.h>
- 
-+#include <sys/epoll.h>
-+
- #include "struct_ops_module.skel.h"
- 
- static void check_map_info(struct bpf_map_info *info)
-@@ -160,6 +162,104 @@ static void test_struct_ops_incompatible(void)
- 	struct_ops_module__destroy(skel);
- }
- 
-+static void test_detach_link(void)
-+{
-+	struct epoll_event ev, events[2];
-+	struct struct_ops_module *skel;
-+	struct bpf_link *link = NULL;
-+	int fd, epollfd = -1, nfds;
-+	int err;
-+
-+	skel = struct_ops_module__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "open_and_load"))
-+		return;
-+
-+	link = bpf_map__attach_struct_ops(skel->maps.testmod_1);
-+	if (!ASSERT_OK_PTR(link, "attach_struct_ops"))
-+		goto cleanup;
-+
-+	fd = bpf_link__fd(link);
-+	if (!ASSERT_GE(fd, 0, "link_fd"))
-+		goto cleanup;
-+
-+	epollfd = epoll_create1(0);
-+	if (!ASSERT_GE(epollfd, 0, "epoll_create1"))
-+		goto cleanup;
-+
-+	ev.events = EPOLLHUP;
-+	ev.data.fd = fd;
-+	err = epoll_ctl(epollfd, EPOLL_CTL_ADD, fd, &ev);
-+	if (!ASSERT_OK(err, "epoll_ctl"))
-+		goto cleanup;
-+
-+	err = bpf_link__detach(link);
-+	if (!ASSERT_OK(err, "detach_link"))
-+		goto cleanup;
-+
-+	nfds = epoll_wait(epollfd, events, 2, 500);
-+	if (!ASSERT_EQ(nfds, 1, "epoll_wait"))
-+		goto cleanup;
-+
-+	if (!ASSERT_EQ(events[0].data.fd, fd, "epoll_wait_fd"))
-+		goto cleanup;
-+	if (!ASSERT_TRUE(events[0].events & EPOLLHUP, "events[0].events"))
-+		goto cleanup;
-+
-+cleanup:
-+	close(epollfd);
-+	bpf_link__destroy(link);
-+	struct_ops_module__destroy(skel);
-+}
-+
-+/* Test bpf_struct_ops_kvalue_unreg() */
-+static void test_do_unreg(void)
-+{
-+	struct epoll_event ev, events[2];
-+	struct struct_ops_module *skel;
-+	struct bpf_link *link = NULL;
-+	int fd, epollfd = -1, nfds;
-+	int err;
-+
-+	skel = struct_ops_module__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "open_and_load"))
-+		return;
-+
-+	/* bpf_testmod will unregister this map immediately through the
-+	 * function bpf_struct_ops_kvalue_unreg() since "do_unreg" is true.
-+	 */
-+	link = bpf_map__attach_struct_ops(skel->maps.testmod_do_unreg);
-+	if (!ASSERT_OK_PTR(link, "attach_struct_ops"))
-+		goto cleanup;
-+
-+	fd = bpf_link__fd(link);
-+	if (!ASSERT_GE(fd, 0, "link_fd"))
-+		goto cleanup;
-+
-+	epollfd = epoll_create1(0);
-+	if (!ASSERT_GE(epollfd, 0, "epoll_create1"))
-+		goto cleanup;
-+
-+	ev.events = EPOLLHUP;
-+	ev.data.fd = fd;
-+	err = epoll_ctl(epollfd, EPOLL_CTL_ADD, fd, &ev);
-+	if (!ASSERT_OK(err, "epoll_ctl"))
-+		goto cleanup;
-+
-+	nfds = epoll_wait(epollfd, events, 2, 500);
-+	if (!ASSERT_EQ(nfds, 1, "epoll_wait"))
-+		goto cleanup;
-+
-+	if (!ASSERT_EQ(events[0].data.fd, fd, "epoll_wait_fd"))
-+		goto cleanup;
-+	if (!ASSERT_TRUE(events[0].events & EPOLLHUP, "events[0].events"))
-+		goto cleanup;
-+
-+cleanup:
-+	close(epollfd);
-+	bpf_link__destroy(link);
-+	struct_ops_module__destroy(skel);
-+}
-+
- void serial_test_struct_ops_module(void)
- {
- 	if (test__start_subtest("test_struct_ops_load"))
-@@ -168,5 +268,9 @@ void serial_test_struct_ops_module(void)
- 		test_struct_ops_not_zeroed();
- 	if (test__start_subtest("test_struct_ops_incompatible"))
- 		test_struct_ops_incompatible();
-+	if (test__start_subtest("test_detach_link"))
-+		test_detach_link();
-+	if (test__start_subtest("test_do_unreg"))
-+		test_do_unreg();
- }
- 
-diff --git a/tools/testing/selftests/bpf/progs/struct_ops_module.c b/tools/testing/selftests/bpf/progs/struct_ops_module.c
-index 63b065dae002..7a697a7dd0ac 100644
---- a/tools/testing/selftests/bpf/progs/struct_ops_module.c
-+++ b/tools/testing/selftests/bpf/progs/struct_ops_module.c
-@@ -81,3 +81,10 @@ struct bpf_testmod_ops___incompatible testmod_incompatible = {
- 	.test_2 = (void *)test_2,
- 	.data = 3,
- };
-+
-+SEC(".struct_ops.link")
-+struct bpf_testmod_ops testmod_do_unreg = {
-+	.test_1 = (void *)test_1,
-+	.test_2 = (void *)test_2,
-+	.do_unreg = true,
-+};
+- commit 0bdf399342c5("net: Avoid address overwrite in kernel_connect")
+- commit 86a7e0b69bd5("net: prevent rewrite of msg_name in sock_sendmsg()")
+- commit c889a99a21bf("net: prevent address rewrite in kernel_bind()")
+- commit 01b2885d9415("net: Save and restore msg_namelen in sock_sendmsg")
+
+but broaden the focus a bit.
+
+In order to extend prog_tests/sock_addr.c to test these kernel
+functions, we add a set of new kfuncs that wrap individual socket
+operations to bpf_testmod and invoke them through set of corresponding
+SYSCALL programs (progs/sock_addr_kern.c). Each test case can be
+configured to use a different set of "sock_ops" depending on whether it
+is testing kernel calls (kernel_bind(), kernel_connect(), etc.) or
+system calls (bind(), connect(), etc.).
+
+=======
+Patches
+=======
+* Patch 1 fixes the sock_addr bind test program to work for big endian
+  architectures such as s390x.
+* Patch 2 introduces the new kfuncs to bpf_testmod.
+* Patch 3 introduces the BPF program which allows us to invoke these
+  kfuncs invividually from the test program.
+* Patch 4 lays the groundwork for IPv4 and IPv6 sockaddr hook coverage
+  by migrating much of the environment setup logic from
+  bpf/test_sock_addr.sh into prog_tests/sock_addr.c and moves test cases
+  to cover bind4/6, connect4/6, sendmsg4/6 and recvmsg4/6 hooks.
+* Patch 5 makes the set of socket operations for each test case
+  configurable, laying the groundwork for Patch 6.
+* Patch 6 introduces two sets of sock_ops that invoke the kernel
+  equivalents of connect(), bind(), etc. and uses these to add coverage
+  for the kernel socket functions.
+
+=======
+Changes
+=======
+v2->v3
+------
+* Renamed bind helpers. Dropped "_ntoh" suffix.
+* Added guards to kfuncs to make sure addrlen and msglen do not exceed
+  the buffer capacity.
+* Added KF_SLEEPABLE flag to kfuncs.
+* Added a mutex (sock_lock) to kfuncs to serialize access to sock.
+* Added NULL check for sock to each kfunc.
+* Use the "sock_addr" networking namespace for all network interface
+  setup and testing.
+* Use "nodad" when calling "ip -6 addr add" during interface setup to
+  avoid delays and remove ping loop.
+* Removed test cases from test_sock_addr.c to make it clear what remains
+  to be migrated.
+* Removed unused parameter (expect_change) from sock_addr_op().
+
+Link: https://lore.kernel.org/bpf/20240412165230.2009746-1-jrife@google.com/T/#u
+
+v1->v2
+------
+* Dropped test_progs/sock_addr_kern.c and the sock_addr_kern test module
+  in favor of simply expanding bpf_testmod and test_progs/sock_addr.c.
+* Migrated environment setup logic from bpf/test_sock_addr.sh into
+  prog_tests/sock_addr.c rather than invoking the script from the test
+  program.
+* Added kfuncs to bpf_testmod as well as the sock_addr_kern BPF program
+  to enable us to invoke kernel socket functions from
+  test_progs/sock_addr.c.
+* Added test coverage for kernel socket functions to
+  test_progs/sock_addr.c.
+
+Link: https://lore.kernel.org/bpf/20240329191907.1808635-1-jrife@google.com/T/#u
+
+Jordan Rife (6):
+  selftests/bpf: Fix bind program for big endian systems
+  selftests/bpf: Implement socket kfuncs for bpf_testmod
+  selftests/bpf: Implement BPF programs for kernel socket operations
+  selftests/bpf: Move IPv4 and IPv6 sockaddr test cases
+  selftests/bpf: Make sock configurable for each test case
+  selftests/bpf: Add kernel socket operation tests
+
+ .../selftests/bpf/bpf_testmod/bpf_testmod.c   | 255 +++++
+ .../bpf/bpf_testmod/bpf_testmod_kfunc.h       |  27 +
+ .../selftests/bpf/prog_tests/sock_addr.c      | 939 +++++++++++++++---
+ .../testing/selftests/bpf/progs/bind4_prog.c  |  18 +-
+ .../testing/selftests/bpf/progs/bind6_prog.c  |  18 +-
+ tools/testing/selftests/bpf/progs/bind_prog.h |  19 +
+ .../selftests/bpf/progs/sock_addr_kern.c      |  65 ++
+ tools/testing/selftests/bpf/test_sock_addr.c  | 192 ----
+ 8 files changed, 1192 insertions(+), 341 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/progs/bind_prog.h
+ create mode 100644 tools/testing/selftests/bpf/progs/sock_addr_kern.c
+
 -- 
-2.34.1
+2.44.0.769.g3c40516874-goog
 
 
