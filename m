@@ -1,350 +1,472 @@
-Return-Path: <bpf+bounces-28137-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-28138-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id C81958B60D3
-	for <lists+bpf@lfdr.de>; Mon, 29 Apr 2024 19:58:04 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6C2B48B60DD
+	for <lists+bpf@lfdr.de>; Mon, 29 Apr 2024 20:02:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BB4B8B2175F
-	for <lists+bpf@lfdr.de>; Mon, 29 Apr 2024 17:58:01 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8FEA71C21193
+	for <lists+bpf@lfdr.de>; Mon, 29 Apr 2024 18:02:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 61C76128801;
-	Mon, 29 Apr 2024 17:57:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C8B6F127E2A;
+	Mon, 29 Apr 2024 18:02:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="m6Jyhjr6"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="eRlmc4la"
 X-Original-To: bpf@vger.kernel.org
-Received: from EUR05-AM6-obe.outbound.protection.outlook.com (mail-am6eur05on2057.outbound.protection.outlook.com [40.107.22.57])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pg1-f182.google.com (mail-pg1-f182.google.com [209.85.215.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD5301272D3;
-	Mon, 29 Apr 2024 17:57:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.22.57
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714413434; cv=fail; b=tw4DLTXJQKOps0yRqE+2fQ3gS+AL5sZGiEvc9EhTlN58TchfX4Nxzflrk0AGziUZgguYv2ApPsuKToUnlORHrtJy4ISkwIsHSCTwfMSGTl4LQmHQIqLHjt3fxxa6wBQYzPNCZZ/tqFqyrAybnZaOGAL4sZijwOGgXfG1YpWvWP8=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714413434; c=relaxed/simple;
-	bh=knpCj5KrQ3FTVNinEpcCU8fvK3p37XvYXEuB591dlkg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=r4KUh6gVIr+oKKvZ4Fsl94U53H1VE/P6O1UDZ5SJgaSdK04D3wxlyfYeov3POiqEAuAdSnCkDJsFiRzrW4TcZwk6xDzERR2Z1Iv85RfGqBiT0LmqwEY+NAlsqbrZ+5PXnZkrXdwlIW4vcxcGlDwsVh7d0raLiMYc3gOyCI1qyXo=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com; spf=pass smtp.mailfrom=nxp.com; dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b=m6Jyhjr6; arc=fail smtp.client-ip=40.107.22.57
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=jBolvVx8XiGr02FLXOt7Zbyhbbx+3fmqT+OvAyYEVnT3j6xhKPnEXiH3r8KkP3uTXIgUrzBg6HU4kiY+4RT605QiUZIVhfK589+c0+oEo7Ag2SDlnMF5cEvHa+F7PXcAcQrmu8Wk4C8DrABxtvjjVvuWCdIkVY4rhfM+CnFyozzZxHrhSMYm2KilFbAW+95DWH3IqWcKALYR1P7rjRlo4HMAz0pJCOUL0oEAJ952CEedib9vG3FY0zhR06DCXI/oj0OBK13TMnIQ5+SvaRKVlCKB2i3b6hsBzePylrh9GmQJqK50uaailw/hhO6P2aoi3QuCvrMds4BCiYFRBXAWHg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=2pVIPnL1T+VffhrUBtg4XejujOxKRvuuxGNxIYcivlg=;
- b=Ys5xfqoSIWWhQ0dAYw5RUMOQbH8tdGEFOAMeOAsmDYAYQ06zIRD45LoIQ41odpLvKVTGx3wlRHXcLGCfn3UIn0DkTfjZNOgU3WBpNSHpwi+q8viaHCWGFkj5XEEGi+CjTqd2JkTBKH4wTfU442qyohBbmWYVTVbSHnozVEpqPq8bYm4rE8PXFX7YBOhl1K/ubjnySB+bTCQ6pRxfycK1XjIr/iMTjXzu3Jqa7rIZTcUD0a4RXNu4yLme9u9M2LFyMAqblH5CYr47GP56pS8iVvM1PSnez5MG8bqd3lajofeMuVwvHIJVxaaMbVT8glS58eXbStQLucvkVfEY1AMOhw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=2pVIPnL1T+VffhrUBtg4XejujOxKRvuuxGNxIYcivlg=;
- b=m6Jyhjr6JSKf6Vef4Xi3kFS5qTr7oPOGdZOpI9Gj45Qy+VY/PVCZ/iU9WFuHF2ZyDXHEpsX8cw0UDO2kAOvGBjsKoim1iD1NMTrmOD3eeWybvi3PIIaG4P/tkrNPpy4syoVe3q9iH6J2ewnGBLte+zZBdwt5el+DB7Yw6JCHNAc=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-Received: from PAXPR04MB9642.eurprd04.prod.outlook.com (2603:10a6:102:240::14)
- by DBBPR04MB8042.eurprd04.prod.outlook.com (2603:10a6:10:1e3::6) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7519.34; Mon, 29 Apr
- 2024 17:57:08 +0000
-Received: from PAXPR04MB9642.eurprd04.prod.outlook.com
- ([fe80::1e67:dfc9:d0c1:fe58]) by PAXPR04MB9642.eurprd04.prod.outlook.com
- ([fe80::1e67:dfc9:d0c1:fe58%7]) with mapi id 15.20.7519.031; Mon, 29 Apr 2024
- 17:57:08 +0000
-Date: Mon, 29 Apr 2024 13:56:58 -0400
-From: Frank Li <Frank.li@nxp.com>
-To: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Cc: Richard Zhu <hongxing.zhu@nxp.com>,
-	Lucas Stach <l.stach@pengutronix.de>,
-	Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
-	Shawn Guo <shawnguo@kernel.org>,
-	Sascha Hauer <s.hauer@pengutronix.de>,
-	Pengutronix Kernel Team <kernel@pengutronix.de>,
-	Fabio Estevam <festevam@gmail.com>,
-	NXP Linux Team <linux-imx@nxp.com>,
-	Philipp Zabel <p.zabel@pengutronix.de>,
-	Liam Girdwood <lgirdwood@gmail.com>,
-	Mark Brown <broonie@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>, linux-pci@vger.kernel.org,
-	imx@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-	devicetree@vger.kernel.org
-Subject: Re: [PATCH v3 11/11] PCI: imx6: Add i.MX8Q PCIe support
-Message-ID: <Zi/faud9ZrlsA9us@lizhi-Precision-Tower-5810>
-References: <20240402-pci2_upstream-v3-0-803414bdb430@nxp.com>
- <20240402-pci2_upstream-v3-11-803414bdb430@nxp.com>
- <20240427114736.GO1981@thinkpad>
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240427114736.GO1981@thinkpad>
-X-ClientProxiedBy: BYAPR02CA0066.namprd02.prod.outlook.com
- (2603:10b6:a03:54::43) To PAXPR04MB9642.eurprd04.prod.outlook.com
- (2603:10a6:102:240::14)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 88B6186655
+	for <bpf@vger.kernel.org>; Mon, 29 Apr 2024 18:02:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.182
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1714413763; cv=none; b=JvFwGL7SzWXlKHrnJ3SwksIB+0v0dn1EdoCKiJGlScU18/TuVG/fzX18+b+37cc8vNzhXmSAGMVvJiV14z/jwUBuPPOTUBgzeVNIi3Xnr4pCs2Oc2KQ7kDBKFTxIhc0B+5phcLIOISpfSjtf53rxaISouhTwOCDfo0y3mCIEMmU=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1714413763; c=relaxed/simple;
+	bh=OAkT+SwWnq8VVwO2gPgZm1Is3873Er6ooHHIcuwpm14=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=rLMCAk2zJvPGyS+TTpOSimQXcYG/h00Z3sj0YqdF7wp+wjVG6+b35ijmeqC3HQvhNzst91vq+gYzGhVHGtJ+D47Jad7RS3kvPJQc/CbG9Z4xkQw51M9okv8SDH5Loau02McGIrUBbzPhjjBttdv17o4blX6tzJUYY6E4IeezTIY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=eRlmc4la; arc=none smtp.client-ip=209.85.215.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f182.google.com with SMTP id 41be03b00d2f7-5d4d15ec7c5so3751381a12.1
+        for <bpf@vger.kernel.org>; Mon, 29 Apr 2024 11:02:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1714413761; x=1715018561; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=0HlFNHJ5Q1zhV+p/aiU79rc+HHZskwCiIgsh7MpQCL0=;
+        b=eRlmc4laz6btLYi/lBuHAS3RovlTkj1RaEdIMFU31o6eY0uu3QFh6dkocdTWFS80Q7
+         KfKbMHn9dCoumVeIA8FPTZRq5p8ZaitOK0mz2CzTvyLcTanKOWG1rlxgfEm3pbhXEJIp
+         o5tqKVFlrAmIC/dzS7CUFCSgT82Ep+9dHUpoq+sqY/w3fdJcKWZKwgDB99B4mb/mv7Ah
+         AQk+AD8EybcYQ2W4rOXH3Whuyv+cOs090ZMVfXZngS/nHSiI58hs4MgnIkJ653VxPu5z
+         SI2pURxzj7TXbQKN6M5hNXMUJsimMzoxpFSY272YwCZ7YAJ/bxrt8ZaVubjNRJEy8sDq
+         Y4vg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714413761; x=1715018561;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=0HlFNHJ5Q1zhV+p/aiU79rc+HHZskwCiIgsh7MpQCL0=;
+        b=M4Cme9D1tGwaq+OK7i5jwYbSiiP8NHOsi+1/v3U801gsZ0EcoMh7flYpr3+sWEPMdh
+         Z6PWRpgDHH9BVNOeLEHWPW7Hj8Z0f83oRce6ale+EEo9cJW48KHe2BDPtyN5q2k3M1tz
+         Ae+iyE8nHOG01E3dsCoYSxkk2D2Zzk1osWQ8aLeEcPyQ/A6r2PD4pjDCLi4yUYwsPqcb
+         rONToIbmmS0MVyzi/44u+z55RxX4EEhoNO3yHV7F7D6kqOJ9QsUB+XgpCtR2r2V2Oj3L
+         IgLCXwBacyk/3FtD8c2ye134nA6lRkLBQbPHKA5NsOmWLmjzcYhVvMC3HgKOxD2ne6EF
+         NE5A==
+X-Forwarded-Encrypted: i=1; AJvYcCUZajdinu1X4m2Gcav5H5EVq/Pi1lkmRmL/iYINyFSPu9LIJMuzkw7CbYgeCv0Tn44jjhRHZpN0JlFQ7ih/cJHjHJAV
+X-Gm-Message-State: AOJu0YwhEjhlIPsFxd2oU5YInQzORHgkdeoLjG91GUD5jcGntpnhYttf
+	71WuYu30xCj/DwoXKoW5sr08WEP0GxUXuKjx7OdXmO1fie9Jg60tzH2wrdQ8VFSg/JytrBtNaKM
+	A9Aj2+wIWmoYgX+bu4LTu82rmQo4=
+X-Google-Smtp-Source: AGHT+IF+9Pkn5P+Cw86GC1bTjbVGPQQMqFBuHuj72030wpySOV5k/o8wAka3ZRVNZ8OOq/rUKgtfNNYqH6kxzJt9690=
+X-Received: by 2002:a17:90a:af97:b0:2ab:d82e:1afb with SMTP id
+ w23-20020a17090aaf9700b002abd82e1afbmr10580219pjq.16.1714413760567; Mon, 29
+ Apr 2024 11:02:40 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PAXPR04MB9642:EE_|DBBPR04MB8042:EE_
-X-MS-Office365-Filtering-Correlation-Id: a44e171c-6efb-4571-69aa-08dc6875c9b3
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam:
-	BCL:0;ARA:13230031|52116005|1800799015|7416005|376005|366007|38350700005;
-X-Microsoft-Antispam-Message-Info:
-	=?utf-8?B?WjVaL0hTZDhyc3pPNG51MVAwNXY3cElodHFMdXhSUC9GTGNaMWRSKzFNVXhm?=
- =?utf-8?B?M3N1RHpIaWpDdzlucVpsVVFWRnVxN1FOYTQ3QWc5NE5MVWVtbXl1aVZ3WUtE?=
- =?utf-8?B?ckR2QmpCczJZcjJPeVRnN1VVUUhRK0tDdS9jdTVrWUlYc0NNVFMzcWRVcXpM?=
- =?utf-8?B?UWJLR2JkK2lZOGtWQ2FlM3pvaHkxemE0OTVXc0pqOHQ5RjRNZlFGQlE1OWp6?=
- =?utf-8?B?ZXhmNWVrRlpLQU5ucDI3RWR3S0VnYmxRYml2cnpCMnBCT21SNHAxa0R6SnlN?=
- =?utf-8?B?dzZiMVRjRCtIcndoblNvR011a1pxbUFkRzdLNGdSUlVQUmY1NEtzenJuME1k?=
- =?utf-8?B?b1FxTUdpUTloMUtyRkM4N3cwL0kvanpvNjhXY29DTVRzc21YbW1uaEQ2MHho?=
- =?utf-8?B?TVpjcWNhdkRhcWtGK25wUlI5YXRwc284MUdaVVkxZG5BM0dRVFVPNFNoTHUw?=
- =?utf-8?B?empSbzFBb3Q3c2wyd0ZrRWY2NHNBL1Z5SC9tSXJYelBTOXRJMXVGT21tL0hT?=
- =?utf-8?B?bEYwSXd3MkEzQzhrc1hYdWMzeG94MGpXbjVrWElrdFlxWG1wU2lLem03RkhM?=
- =?utf-8?B?ZWlhSlJ5eHRQZkhFeTFTM3pxYUlML2hTOW5Ccnh3SkpXRlBsZENmYnR6NEFJ?=
- =?utf-8?B?OTFOYzFEVU9KUWVDMXB6L0pobnRRcDhYZC9CWXM5Wmg3VmVJeVpNa0Rwd2FM?=
- =?utf-8?B?RFkxSDM3Ti91YStKSGJQZ3lldlhXTWdCdWRyYXE2UU91TkZZTjZ3TmhUdmJz?=
- =?utf-8?B?VXIySllJSmpJZFEzNE01dkZUaUxacFJtOExQL0hkai9vVy93NlNpRlpZdnpE?=
- =?utf-8?B?OEN0N2p3aFFUWDJ2M0lXZUhEN3ZtNVlDTGVBaU5pSUN3RFFCK3BQampBMkhy?=
- =?utf-8?B?bXdlWTh0d1RmSkg2Y3hzd215b3Rqczc5TnNYZ0JhS2RDU0NlVDAyMGNoaEpO?=
- =?utf-8?B?UEx0M2RVUWlKVG44bTZITUNXaTVka1E0c2lYTFo3S2lra3JEWUF0Ni8wVUlT?=
- =?utf-8?B?c1JvOGhuUW1QQ3JuQXFWREtUaUNScCtLbEtHYVFBVGY5MDdldzZqT0lhMHh6?=
- =?utf-8?B?RWhCNDZNeWZ4U0NJVEI2Nm9Fa2UvZldPMkJqUGlYYmZyemJKNVRneHpBUjZD?=
- =?utf-8?B?Rk1PQ09mWjBBSXVTcmpvMmhvMjZtY01HaXR5NlBid0R4Y2FtQkU5cG5aemZp?=
- =?utf-8?B?WmJkb2ppNHhPZk9NYmFYaGpwK1krd0h1QWRpV3Y1WTNLNmhueTlONDczSUd6?=
- =?utf-8?B?WDE3R2w5dFFyZmpmVmRoNjFDY0o2NG9qc2JpSEh3bUw0MFdYY0kzMC8yL3BR?=
- =?utf-8?B?MHVFZ0c2anNQSmZ4bW9BMFFjdXQwM1dzY3FKNFBrTGpxb0x3WTNwRWtEUjJn?=
- =?utf-8?B?U2pyd0hob05STGI0MmhEaVN1VHBIVlhmQ3JabmEvMGJNdTh3Sm5LMGp2NDZT?=
- =?utf-8?B?N3hoRUVodERjanRCbU1XRDgzU1RoellIMFRxdEtmSy9MQXZZanBnSXFiNS93?=
- =?utf-8?B?L2xKbHYzMWxWcFdYQU1RcGVKOURGeFdBR1JsWmtEaVJGcmozWGdFbU5jVDlZ?=
- =?utf-8?B?WDF6bVJON2V2ejRtdm5GQmR6NWc0NWdCYjZFQkZkc1Y0RlNsOXNHTGdWYU9r?=
- =?utf-8?B?SUI2and0eTUyVTFTd0lGVFdRaGtjRVBWY3dhcURWZ20rUzRtVkoxY3JPNjNO?=
- =?utf-8?B?NWx1UlFoTTNESmM1RGZ2ZmNlZmp5Ymtwdy9FZ3JXd25aMzQzamZPM3lhWG0w?=
- =?utf-8?B?WTRZRnRoY081TkRRQ2dmTFFhZjZRQlZiWU1Vd1QrS1orT3BXMWtmQXEvazFL?=
- =?utf-8?B?dFVaU01ub3RHcE1waHJ3dz09?=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PAXPR04MB9642.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(52116005)(1800799015)(7416005)(376005)(366007)(38350700005);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?VmRDM3dQYUpta09zUVJPT0src1JRQjQ1aUdrYlc3V29HSjhPUWN3QWxtcFNZ?=
- =?utf-8?B?SGlncCtKNkJRMHduTDg3ajdVVlRKdHh4b2NDTXpsOFFac0RHTlpjZXVtbWJD?=
- =?utf-8?B?TG9LeENZclVINWU1bldHZUZaeHRIY2hBOXZIVjZ5UktPS1pVbXBCb0NCUzZE?=
- =?utf-8?B?cUYyNUJoZFlYZUNYcmZYdEU5TCtxMUd2UDcwYUFrZnZva0o1YSsxMm1yMEJs?=
- =?utf-8?B?dURkQUJpOXE0Y2l4dm5helNkQ2RLN2s2VzFmQVV5djF4QzZDU0NBSWNyTHUv?=
- =?utf-8?B?WTNicEU1TVJyNHpLT2JOTmNpOFcrbm40QUJoRm04L3RkL2tIWUV6d05VTkor?=
- =?utf-8?B?WTZDYnJZd0ljNmJ4alprSzJBOWFQYjlqNlhVZmE2WXdiWUU2QlYvTzVJb1Bp?=
- =?utf-8?B?c21QNW1nQWd2ZFRpYkJva3V6SkwrWUFvek5UalBTcWJkZ1FJY1N6ZlJlQXBv?=
- =?utf-8?B?Mk9Pa0RiUnh1ZXRxbUwwL1JXMkhqOGtnbjRycFFLaEc2ZEYvWEhTNDVkZTdu?=
- =?utf-8?B?U053RnpLTzZrMDVsQXVOMzQwSGlxVjR5b1dzTk1lZUYxQUNQNGlUSWwraHJI?=
- =?utf-8?B?QVQ5b2d2VlFQQ2NKTnp5YzVOd2VaeW9YYmJncUR5YUpxOHdJRnQ3VUpFRGJJ?=
- =?utf-8?B?NnFJQklFRGtoVUtuTWhueGQrZStIWkg4dXQyZ0NVUEZ6YXA3eVNScXlrTkVs?=
- =?utf-8?B?eXJjVmpqOWpkYWZ3RE85STBsdmZkM1FyS0J0NFVqTElyVEl4NlZ6YzR6UTBG?=
- =?utf-8?B?VzZqZldWMGd1aXM1ZUhOQVg4dU5tYzArVDlma1JuNkdrR2I2Y2xCczBCVGNK?=
- =?utf-8?B?M2RjUWlZWUdhelBRb3ZqUTBlZ3B0eFJiRm4zTk95Q1g2dFpyYkNKSEF3NkhT?=
- =?utf-8?B?ZEVrTnFlWXZ3dVRGNUZMRmFKN0dBc3F0NTZyeEMwLzF2NFhmMVo3RTRDOFM3?=
- =?utf-8?B?NzlCTGxTR3BkTXBEM29zNStNeGhOQnNMRTFzcTE3SDlGQ3VNbnhFc2wvMWlS?=
- =?utf-8?B?MHgxRERuNDJwbHI2UzlyM1kwWmtkTkI0cDd5UnJDdGhEdk1ZbWJvSTRPWThl?=
- =?utf-8?B?TVJTcjN6OUR4bUJtYmNWVjVRK0NydVZkQnErcW41dVc1K2JKajJFTThOU1Bh?=
- =?utf-8?B?T1RrNVJvWGZseUY3clVkSmlMcExqN0xGbnJtM3Q3N0lOb0tPQjkyRjNEMUN0?=
- =?utf-8?B?TVNCQ3QzZ2lUdnVtdEFsd1dnL1ZBR0JZRzFXTkRmWHNZTnhPMGRrRE10MGZK?=
- =?utf-8?B?ZmtJRU4zdXlRMk9COHNYeHZVMUJBMDN3UnlTRHNmNUprd0xISVk5NlF3eUZw?=
- =?utf-8?B?M0VOVGZLY0x4NkV4Q3NvQnZDcGsvSFJhSXVWWW5aN3MxaHdVYWlvMDdQOEM2?=
- =?utf-8?B?UHg2ektrZFViUS9scEJLUm9wT1RoZ0xqa2NZN3E4aXhQNDhac2JOWVRWSUdM?=
- =?utf-8?B?amdNYU1rMHdFWjVjTnd4L3JVZkhaUndvWlBPV2locGNaZlhZdHB2N0FNek9y?=
- =?utf-8?B?TEEvT1JESEVUYmhhbEZ5MHJmRk15VVVNZUU0c1dUdHpkQ1JPVjlMME1XbWE4?=
- =?utf-8?B?aW5Ia09BWnR5Slc0SDZVcVNzL0Y0RkxKeC81c0hOY0s1Y2prZzl5cFY4Sld3?=
- =?utf-8?B?NURpemZhWlgxRmpaUnRjeEtLcXRJSjFHNFVqTVk3WStvdXFrSHZRcXpFZ2RO?=
- =?utf-8?B?aFdpeURpbWFJcU0xYXJpa1QvRkg0dFRBSzVHajd0OWxYU2d1eGZ2VDZ4K3BW?=
- =?utf-8?B?SmpOL0k0T2E2MFF6YjNobWhlMlRpSVZ4WVZlQzlraCtWS0NiTHlwbGxQeUZP?=
- =?utf-8?B?cC9ueCtlTmxhYlk1VkNyTlJUUGpqNzkrU05XaTV2Y05kRHhyZmRoTVVZcXps?=
- =?utf-8?B?UWsxNWxPYnlaREFSU3d6ZEdKb3hkcGRtTHlWb25YL2FlalZxdU9WbmlHbThs?=
- =?utf-8?B?NVRwUHpoU1JUSVhhTHhVNGdYaGFhWHV1VzROY2VTZnVuTEtFUTh1a29weXVx?=
- =?utf-8?B?V1JZcUlFNE5vdnI3cnhVdXhUa3JvaS83YmxyVnRxZm4zd1BsTGJCYkovWWEz?=
- =?utf-8?B?aEV4ZjdxMThKcnBtbGwvQ3ZqR0FIempQa25ab1lTbC9NY1JCNmZUNmhXQmc5?=
- =?utf-8?Q?aCDw=3D?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: a44e171c-6efb-4571-69aa-08dc6875c9b3
-X-MS-Exchange-CrossTenant-AuthSource: PAXPR04MB9642.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Apr 2024 17:57:08.5190
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 08yrVakjn/kK0Bj6sqdoVZY5AUEROAfewkmPL3bEwe5Ixwps5vx8YP0YmQPGfkVbbDH4t4BRhyJsFIbSC7W/eA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DBBPR04MB8042
+References: <20240424154806.3417662-1-alan.maguire@oracle.com>
+ <CAEf4BzavgDXC2fM43+20wvHdXbaHRNQLWmWhtzyUh_57UYTc6Q@mail.gmail.com>
+ <CAEf4BzY-P3rdV1LeJFBO_zVMn7pr+b166BOaGZEO4ZQrLdPqKA@mail.gmail.com>
+ <e08937ac-c329-4a72-9a6e-8fbc36a740b5@oracle.com> <CAEf4BzZ=uMh4gW8O20-hZV1njJTAN4afQBKzFHro5A6ym-3FBg@mail.gmail.com>
+ <f05afb12-5ec8-47d7-bcd6-a0d6b913b38c@oracle.com>
+In-Reply-To: <f05afb12-5ec8-47d7-bcd6-a0d6b913b38c@oracle.com>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Mon, 29 Apr 2024 11:02:28 -0700
+Message-ID: <CAEf4BzY__EKpsdxqw+CiUQ=oe8CLtsVwP3nQgqTZ7eCBzxTr4w@mail.gmail.com>
+Subject: Re: [PATCH v2 bpf-next 00/13] bpf: support resilient split BTF
+To: Alan Maguire <alan.maguire@oracle.com>
+Cc: andrii@kernel.org, ast@kernel.org, jolsa@kernel.org, acme@redhat.com, 
+	quentin@isovalent.com, eddyz87@gmail.com, mykolal@fb.com, 
+	daniel@iogearbox.net, martin.lau@linux.dev, song@kernel.org, 
+	yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org, 
+	sdf@google.com, haoluo@google.com, houtao1@huawei.com, bpf@vger.kernel.org, 
+	masahiroy@kernel.org, mcgrof@kernel.org, nathan@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Sat, Apr 27, 2024 at 05:17:36PM +0530, Manivannan Sadhasivam wrote:
-> On Tue, Apr 02, 2024 at 10:33:47AM -0400, Frank Li wrote:
-> > From: Richard Zhu <hongxing.zhu@nxp.com>
-> > 
-> > Add i.MX8Q (i.MX8QM, i.MX8QXP and i.MX8DXL) PCIe support.
-> > 
-> 
-> Add some info like IP version, PCIe Gen, how different the code support
-> comparted to previous SoCs etc...
-> 
-> > Signed-off-by: Richard Zhu <hongxing.zhu@nxp.com>
-> > Signed-off-by: Frank Li <Frank.Li@nxp.com>
-> > ---
-> >  drivers/pci/controller/dwc/pcie-imx.c | 54 +++++++++++++++++++++++++++++++++++
-> >  1 file changed, 54 insertions(+)
-> > 
-> > diff --git a/drivers/pci/controller/dwc/pcie-imx.c b/drivers/pci/controller/dwc/pcie-imx.c
-> > index 378808262d16b..af7c79e869e70 100644
-> > --- a/drivers/pci/controller/dwc/pcie-imx.c
-> > +++ b/drivers/pci/controller/dwc/pcie-imx.c
-> > @@ -30,6 +30,7 @@
-> >  #include <linux/interrupt.h>
-> >  #include <linux/reset.h>
-> >  #include <linux/phy/phy.h>
-> > +#include <linux/phy/pcie.h>
-> >  #include <linux/pm_domain.h>
-> >  #include <linux/pm_runtime.h>
-> >  
-> > @@ -81,6 +82,7 @@ enum imx_pcie_variants {
-> >  	IMX8MQ,
-> >  	IMX8MM,
-> >  	IMX8MP,
-> > +	IMX8Q,
-> >  	IMX95,
-> >  	IMX8MQ_EP,
-> >  	IMX8MM_EP,
-> > @@ -96,6 +98,7 @@ enum imx_pcie_variants {
-> >  #define IMX_PCIE_FLAG_HAS_PHY_RESET		BIT(5)
-> >  #define IMX_PCIE_FLAG_HAS_SERDES		BIT(6)
-> >  #define IMX_PCIE_FLAG_SUPPORT_64BIT		BIT(7)
-> > +#define IMX_PCIE_FLAG_CPU_ADDR_FIXUP		BIT(8)
-> >  
-> >  #define imx_check_flag(pci, val)     (pci->drvdata->flags & val)
-> >  
-> > @@ -132,6 +135,7 @@ struct imx_pcie {
-> >  	struct regmap		*iomuxc_gpr;
-> >  	u16			msi_ctrl;
-> >  	u32			controller_id;
-> > +	u32			local_addr;
-> >  	struct reset_control	*pciephy_reset;
-> >  	struct reset_control	*apps_reset;
-> >  	struct reset_control	*turnoff_reset;
-> > @@ -402,6 +406,10 @@ static void imx_pcie_configure_type(struct imx_pcie *imx_pcie)
-> >  	if (!drvdata->mode_mask[id])
-> >  		id = 0;
-> >  
-> > +	/* If mode_mask is 0, means use phy driver to set mode */
-> > +	if (!drvdata->mode_mask[id])
-> > +		return;
-> 
-> There is already a check above for 0 mode_mask. Please consolidate.
-> 
-> > +
-> >  	mask = drvdata->mode_mask[id];
-> >  	val = mode << (ffs(mask) - 1);
-> >  
-> > @@ -957,6 +965,7 @@ static void imx_pcie_ltssm_enable(struct device *dev)
-> >  	struct imx_pcie *imx_pcie = dev_get_drvdata(dev);
-> >  	const struct imx_pcie_drvdata *drvdata = imx_pcie->drvdata;
-> >  
-> > +	phy_set_speed(imx_pcie->phy, PCI_EXP_LNKCAP_SLS_2_5GB);
-> >  	if (drvdata->ltssm_mask)
-> >  		regmap_update_bits(imx_pcie->iomuxc_gpr, drvdata->ltssm_off, drvdata->ltssm_mask,
-> >  				   drvdata->ltssm_mask);
-> > @@ -969,6 +978,7 @@ static void imx_pcie_ltssm_disable(struct device *dev)
-> >  	struct imx_pcie *imx_pcie = dev_get_drvdata(dev);
-> >  	const struct imx_pcie_drvdata *drvdata = imx_pcie->drvdata;
-> >  
-> > +	phy_set_speed(imx_pcie->phy, 0);
-> >  	if (drvdata->ltssm_mask)
-> >  		regmap_update_bits(imx_pcie->iomuxc_gpr, drvdata->ltssm_off,
-> >  				   drvdata->ltssm_mask, 0);
-> > @@ -1104,6 +1114,12 @@ static int imx_pcie_host_init(struct dw_pcie_rp *pp)
-> >  			goto err_clk_disable;
-> >  		}
-> >  
-> > +		ret = phy_set_mode_ext(imx_pcie->phy, PHY_MODE_PCIE, PHY_MODE_PCIE_RC);
-> > +		if (ret) {
-> > +			dev_err(dev, "unable to set pcie PHY mode\n");
-> > +			goto err_phy_off;
-> > +		}
-> 
-> This is not i.MX8Q specific. Please add it in a separate patch.
-> 
-> > +
-> >  		ret = phy_power_on(imx_pcie->phy);
-> >  		if (ret) {
-> >  			dev_err(dev, "waiting for PHY ready timeout!\n");
-> > @@ -1154,6 +1170,28 @@ static void imx_pcie_host_exit(struct dw_pcie_rp *pp)
-> >  		regulator_disable(imx_pcie->vpcie);
-> >  }
-> >  
-> > +static u64 imx_pcie_cpu_addr_fixup(struct dw_pcie *pcie, u64 cpu_addr)
-> > +{
-> > +	struct imx_pcie *imx_pcie = to_imx_pcie(pcie);
-> > +	struct dw_pcie_ep *ep = &pcie->ep;
-> > +	struct dw_pcie_rp *pp = &pcie->pp;
-> > +	struct resource_entry *entry;
-> > +	unsigned int offset;
-> > +
-> > +	if (!(imx_pcie->drvdata->flags & IMX_PCIE_FLAG_CPU_ADDR_FIXUP))
-> 
-> This flag should be documented in the commit message.
-> 
-> > +		return cpu_addr;
-> > +
-> > +	if (imx_pcie->drvdata->mode == DW_PCIE_EP_TYPE) {
-> > +		offset = ep->phys_base;
-> > +	} else {
-> > +		entry = resource_list_first_type(&pp->bridge->windows,
-> > +						 IORESOURCE_MEM);
-> 
-> Check for NULL entry.
-> 
-> > +		offset = entry->res->start;
-> > +	}
-> > +
-> > +	return (cpu_addr + imx_pcie->local_addr - offset);
-> > +}
-> > +
-> >  static const struct dw_pcie_host_ops imx_pcie_host_ops = {
-> >  	.init = imx_pcie_host_init,
-> >  	.deinit = imx_pcie_host_exit,
-> > @@ -1162,6 +1200,7 @@ static const struct dw_pcie_host_ops imx_pcie_host_ops = {
-> >  static const struct dw_pcie_ops dw_pcie_ops = {
-> >  	.start_link = imx_pcie_start_link,
-> >  	.stop_link = imx_pcie_stop_link,
-> > +	.cpu_addr_fixup = imx_pcie_cpu_addr_fixup,
-> >  };
-> >  
-> >  static void imx_pcie_ep_init(struct dw_pcie_ep *ep)
-> > @@ -1481,6 +1520,12 @@ static int imx_pcie_probe(struct platform_device *pdev)
-> >  					     "Failed to get PCIEPHY reset control\n");
-> >  	}
-> >  
-> > +	if (imx_check_flag(imx_pcie, IMX_PCIE_FLAG_CPU_ADDR_FIXUP)) {
-> > +		ret = of_property_read_u32(node, "fsl,local-address", &imx_pcie->local_addr);
-> > +		if (ret)
-> > +			return dev_err_probe(dev, ret, "Failed to get local-address");
-> 
-> Is it OK to continue?
+On Mon, Apr 29, 2024 at 10:31=E2=80=AFAM Alan Maguire <alan.maguire@oracle.=
+com> wrote:
+>
+> On 29/04/2024 18:05, Andrii Nakryiko wrote:
+> > On Mon, Apr 29, 2024 at 8:25=E2=80=AFAM Alan Maguire <alan.maguire@orac=
+le.com> wrote:
+> >>
+> >> On 27/04/2024 01:24, Andrii Nakryiko wrote:
+> >>> On Fri, Apr 26, 2024 at 3:56=E2=80=AFPM Andrii Nakryiko
+> >>> <andrii.nakryiko@gmail.com> wrote:
+> >>>>
+> >>>> On Wed, Apr 24, 2024 at 8:48=E2=80=AFAM Alan Maguire <alan.maguire@o=
+racle.com> wrote:
+> >>>>>
+> >>>>> Split BPF Type Format (BTF) provides huge advantages in that kernel
+> >>>>> modules only have to provide type information for types that they d=
+o not
+> >>>>> share with the core kernel; for core kernel types, split BTF refers=
+ to
+> >>>>> core kernel BTF type ids.  So for a STRUCT sk_buff, a module that
+> >>>>> uses that structure (or a pointer to it) simply needs to refer to t=
+he
+> >>>>> core kernel type id, saving the need to define the structure and it=
+s many
+> >>>>> dependents.  This cuts down on duplication and makes BTF as compact
+> >>>>> as possible.
+> >>>>>
+> >>>>> However, there is a downside.  This scheme requires the references =
+from
+> >>>>> split BTF to base BTF to be valid not just at encoding time, but at=
+ use
+> >>>>> time (when the module is loaded).  Even a small change in kernel ty=
+pes
+> >>>>> can perturb the type ids in core kernel BTF, and due to pahole's
+> >>>>> parallel processing of compilation units, even an unchanged kernel =
+can
+> >>>>> have different type ids if BTF is re-generated.  So we have a robus=
+tness
+> >>>>> problem for split BTF for cases where a module is not always compil=
+ed at
+> >>>>> the same time as the kernel.  This problem is particularly acute fo=
+r
+> >>>>> distros which generally want module builders to be able to compile =
+a
+> >>>>> module for the lifetime of a Linux stable-based release, and have i=
+t
+> >>>>> continue to be valid over the lifetime of that release, even as cha=
+nges
+> >>>>> in data structures (and hence BTF types) accrue.  Today it's not
+> >>>>> possible to generate BTF for modules that works beyond the initial
+> >>>>> kernel it is compiled against - kernel bugfixes etc invalidate the =
+split
+> >>>>> BTF references to vmlinux BTF, and BTF is no longer usable for the
+> >>>>> module.
+> >>>>>
+> >>>>> The goal of this series is to provide options to provide additional
+> >>>>> context for cases like this.  That context comes in the form of
+> >>>>> distilled base BTF; it stands in for the base BTF, and contains
+> >>>>> information about the types referenced from split BTF, but not thei=
+r
+> >>>>> full descriptions.  The modified split BTF will refer to type ids i=
+n
+> >>>>> this .BTF.base section, and when the kernel loads such modules it
+> >>>>> will use that base BTF to map references from split BTF to the
+> >>>>> current vmlinux BTF - a process of relocating split BTF with the
+> >>>>> currently-running kernel's vmlinux base BTF.
+> >>>>>
+> >>>>> A module builder - using this series along with the pahole changes =
+-
+> >>>>> can then build a module with distilled base BTF via an out-of-tree
+> >>>>> module build, i.e.
+> >>>>>
+> >>>>> make -C . M=3Dpath/2/module
+> >>>>>
+> >>>>> The module will have a .BTF section (the split BTF) and a
+> >>>>> .BTF.base section.  The latter is small in size - distilled base
+> >>>>> BTF does not need full struct/union/enum information for named
+> >>>>> types for example.  For 2667 modules built with distilled base BTF,
+> >>>>> the average size observed was 1556 bytes (stddev 1563).
+> >>>>>
+> >>>>> Note that for the in-tree modules, this approach is not needed as
+> >>>>> split and base BTF in the case of in-tree modules are always built
+> >>>>> and re-built together.
+> >>>>>
+> >>>>> The series first focuses on generating split BTF with distilled bas=
+e
+> >>>>> BTF, and provides btf__parse_opts() which allows specification
+> >>>>> of the section name from which to read BTF data, since we now have
+> >>>>> both .BTF and .BTF.base sections that can contain such data.
+> >>>>>
+> >>>>> Then we add support to resolve_btfids for generating the .BTF.ids
+> >>>>> section with reference to the .BTF.base section - this ensures the
+> >>>>> .BTF.ids match those used in the split/base BTF.
+> >>>>>
+> >>>>> Finally the series provides the mechanism for relocating split BTF =
+with
+> >>>>> a new base; the distilled base BTF is used to map the references to=
+ base
+> >>>>> BTF in the split BTF to the new base.  For the kernel, this relocat=
+ion
+> >>>>> process happens at module load time, and we relocate split BTF
+> >>>>> references to point at types in the current vmlinux BTF.  As part o=
+f
+> >>>>> this, .BTF.ids references need to be mapped also.
+> >>>>>
+> >>>>> So concretely, what happens is
+> >>>>>
+> >>>>> - we generate split BTF in the .BTF section of a module that refers=
+ to
+> >>>>>   types in the .BTF.base section as base types; these are not full
+> >>>>>   type descriptions but provide information about the base type.  S=
+o
+> >>>>>   a STRUCT sk_buff would be represented as a FWD struct sk_buff in
+> >>>>>   distilled base BTF for example.
+> >>>>> - when the module is loaded, the split BTF is relocated with vmlinu=
+x
+> >>>>>   BTF; in the case of the FWD struct sk_buff, we find the STRUCT sk=
+_buff
+> >>>>>   in vmlinux BTF and map all split BTF references to the distilled =
+base
+> >>>>>   FWD sk_buff, replacing them with references to the vmlinux BTF
+> >>>>>   STRUCT sk_buff.
+> >>>>>
+> >>>>> Support is also added to bpftool to be able to display split BTF
+> >>>>> relative to its .BTF.base section, and also to display the relocate=
+d
+> >>>>> form via the "-R path_to_base_btf".
+> >>>>>
+> >>>>> A previous approach to this problem [1] utilized standalone BTF for=
+ such
+> >>>>> cases - where the BTF is not defined relative to base BTF so there =
+is no
+> >>>>> relocation required.  The problem with that approach is that from
+> >>>>> the verifier perspective, some types are special, and having a cust=
+om
+> >>>>> representation of a core kernel type that did not necessarily match=
+ the
+> >>>>> current representation is not tenable.  So the approach taken here =
+was
+> >>>>> to preserve the split BTF model while minimizing the representation=
+ of
+> >>>>> the context needed to relocate split and current vmlinux BTF.
+> >>>>>
+> >>>>> To generate distilled .BTF.base sections the associated dwarves
+> >>>>> patch (to be applied on the "next" branch there) is needed.
+> >>>>> Without it, things will still work but bpf_testmod will not be buil=
+t
+> >>>>> with a .BTF.base section.
+> >>>>>
+> >>>>> Changes since RFC [2]:
+> >>>>>
+> >>>>> - updated terminology; we replace clunky "base reference" BTF with
+> >>>>>   distilling base BTF into a .BTF.base section. Similarly BTF
+> >>>>>   reconcilation becomes BTF relocation (Andrii, most patches)
+> >>>>> - add distilled base BTF by default for out-of-tree modules
+> >>>>>   (Alexei, patch 8)
+> >>>>> - distill algorithm updated to record size of embedded struct/union
+> >>>>>   by recording it as a 0-vlen STRUCT/UNION with size preserved
+> >>>>>   (Andrii, patch 2)
+> >>>>> - verify size match on relocation for such STRUCT/UNIONs (Andrii,
+> >>>>>   patch 9)
+> >>>>> - with embedded STRUCT/UNION recording size, we can have bpftool
+> >>>>>   dump a header representation using .BTF.base + .BTF sections
+> >>>>>   rather than special-casing and refusing to use "format c" for
+> >>>>>   that case (patch 5)
+> >>>>> - match enum with enum64 and vice versa (Andrii, patch 9)
+> >>>>> - ensure that resolve_btfids works with BTF without .BTF.base
+> >>>>>   section (patch 7)
+> >>>>> - update tests to cover embedded types, arrays and function
+> >>>>>   prototypes (patches 3, 12)
+> >>>>>
+> >>>>> One change not made yet is adding anonymous struct/unions that the =
+split
+> >>>>> BTF references in base BTF to the module instead of adding them to =
+the
+> >>>>> .BTF.base section.  That would involve having to maintain two pipes=
+ for
+> >>>>> writing BTF, one for the .BTF.base and one for the split BTF.  It w=
+ould
+> >>>>> be possible, but there are I think some edge cases that might make =
+it
+> >>>>> tricky.  For example consider a split BTF reference to a base BTF
+> >>>>> ARRAY which in turn referenced an anonymous STRUCT as type.  In suc=
+h a
+> >>>>> case, it wouldn't make sense to have the array in the .BTF.base sec=
+tion
+> >>>>> while having the STRUCT in the module.  The general concern is that=
+ once
+> >>>>
+> >>>> Hm.. not really? ARRAY is a reference type (and anonymous at that), =
+so
+> >>>> it would have to stay in module's BTF, no? I'll go read the patch
+> >>>> series again, but let me know if I'm missing something.
+> >>>>
+> >>
+> >> The way things currently work, we preserve all relationships prior to
+> >> distilling base BTF. That is, if a type was in split BTF prior to
+> >> calling btf__distill_base(), it will stay in split BTF afterwards. Dit=
+to
+> >> for base types. This is true for reference types as well as named type=
+s.
+> >> So in the case of the above array for example, prior to distilling typ=
+es
+> >> it is in base BTF. If it in turn then referred to a base anonymous
+> >> struct, both would be in the base and thus the distilled base BTF. In
+> >> the above case, I was suggesting the array itself was referred to from
+> >> split BTF, but not in split BTF, sorry if that wasn't clearer.
+> >>
+> >> So the problem comes if we moved the anon struct to the module; then w=
+e
+> >> also need to move types that depend on it there. This means we'd need =
+to
+> >> make the move recursive. That seems doable; the only question is aroun=
+d
+> >
+> > Yep, it should be very doable. We just mark everything used from
+> > "to-be-moved-to-new-split-BTF" types recursively, unless it's
+> > "qualified named type", where we stop. You have a pass to mark
+> > embedded types, here it might be another pass to mark
+> > "used-by-split-BTF-types-but-not-distillable" types.
+> >
+> >> the logistics and the effects of doing so. At one extreme we might end
+> >> up with something that resembles standalone BTF (many/most types in th=
+e
+> >
+> > My hypothesis is that it is very unlikely that there will be a lot of
+> > types that have to be copied into split BTF.
+> >
+> >> split BTF). That seems unlikely in most cases. I examined one module's
+> >> BTF base for example, and the only anon structs arose from typedef
+> >> references possible_net_t, sockptr_t, rwlock_t and atomic_t. These in
+> >> turn were only referenced once elsewhere in distilled base BTF; a
+> >> sockptr was in a FUNC_PROTO, but aside from that the typedefs were not
+> >> otherwise referenced in distilled base BTF, they were referenced in
+> >> split BTF as embeeded struct field types.
+> >>
+> >> So moving all of this to the split BTF seems possible; what I think we
+> >> probably need to think on a bit is how to handle relocation.  Is there=
+ a
+> >> need to relocate these module types too, or can we live with having
+> >> duplicate atomic_t/sockptr_t typedefs in the module? Currently
+> >> relocation is simplified by the fact that we only need to relocate the
+> >> types prior to the module's start id. All we need to do is rewrite typ=
+e
+> >> references in split BTF to base ids. If we were relocating split types
+> >> too we'd need to remove them from split BTF.
+> >
+> > I think anything that is not in distilled base should not be
+> > relocated, so current simplicity is remapping distilled BTF IDs will
+> > remain. It's ok to have clones/copies of some simple typedefs,
+> > probably.
+> >
+> > We have a few somewhat competing goals here and we need to make a
+> > tradeoff between them:
+> >
+> >   a) minimizing split BTF size (or rather not making it too large)
+> >   b) making sure PTR_TO_BTF_ID types work (so module kfuncs can accept
+> > task_struct and others)
+> >   c) keeping relocation simple, fast, and reliable/unambiguous
+> >
+> > By copying anonymous types we potentially hurt a) (but presumably not
+> > a lot to worry about), and we significantly improve c) by making
+> > relocation simple/fast/reliably (to the extent possible with "by name"
+> > lookups). And we (presumably) don't change b), it still works for all
+> > existing and future cases.
+> >
+>
+> Yeah, case b) is the only lingering concern I have, but in practice it
+> seems unlikely to arise. One point of clarification - we've discussed so
+> far mostly anonymous STRUCTs and UNIONs; do you think there are other
+> anonymous types we should consider, ARRAYs for example?
 
-No, if no "fsl,local-address" for iMX8QM/QXP, address map will be wrong. 
+Everything is technically possible, but I'd be surprised if anything
+but STRUCT/UNION is referred to by PTR_TO_BTF_ID for kfunc. But let's
+get there first.
 
-Frank
-
-> 
-> - Mani
-> 
-> -- 
-> மணிவண்ணன் சதாசிவம்
+> > If we ever need to pass anonymous typedef'ed types to kfunc, we'll
+> > need to think how to represent them in distilled base BTF. But it most
+> > probably won't be TYPEDEF -> STRUCT chain, but rather empty STRUCT
+> > with the name of original TYPEDEF + some bit to specify that we are
+> > looking for a TYPEDEF in real base BTF; I think we have a pass forward
+> > here, and that's the main thing, but I don't think it's a problem
+> > worth solving now (or ever).
+> >
+> > WDYT?
+>
+> Agreed. I think (hope) it's unlikely to arise.
+>
+> >
+> >>
+> >>>>> we move a type to the module we would need to also ensure any base =
+types
+> >>>>> that refer to it move there too.  For now it is I think simpler to
+> >>>>> retain the existing split/base type classifications.
+> >>>>
+> >>>> We would have to finalize this part before landing, as it has big
+> >>>> implications on the relocation process.
+> >>>
+> >>> Ran out of time, sorry, will continue on Monday. But please consider,
+> >>> meanwhile, what I mentioned about only having named
+> >>> structs/unions/enums in distilled base BTF.
+> >>>
+> >>
+> >> Sure, I'll dig into it further. FWIW I agree with the goal of moving
+> >> anonymous structs/unions if it's doable. I can't see any blocking issu=
+es
+> >> thus far.
+> >
+> > Yep, please give it a go, and I'll try to finish the review today, than=
+ks.
+> >
+> >>
+> >>>>
+> >>>>
+> >>>>>
+> >>>>> [1] https://lore.kernel.org/bpf/20231112124834.388735-14-alan.magui=
+re@oracle.com/
+> >>>>> [2] https://lore.kernel.org/bpf/20240322102455.98558-1-alan.maguire=
+@oracle.com/
+> >>>>>
+> >>>>>
+> >>>>>
+> >>>>> Alan Maguire (13):
+> >>>>>   libbpf: add support to btf__add_fwd() for ENUM64
+> >>>>>   libbpf: add btf__distill_base() creating split BTF with distilled=
+ base
+> >>>>>     BTF
+> >>>>>   selftests/bpf: test distilled base, split BTF generation
+> >>>>>   libbpf: add btf__parse_opts() API for flexible BTF parsing
+> >>>>>   bpftool: support displaying raw split BTF using base BTF section =
+as
+> >>>>>     base
+> >>>>>   kbuild,bpf: switch to using --btf_features for pahole v1.26 and l=
+ater
+> >>>>>   resolve_btfids: use .BTF.base ELF section as base BTF if -B optio=
+n is
+> >>>>>     used
+> >>>>>   kbuild, bpf: add module-specific pahole/resolve_btfids flags for
+> >>>>>     distilled base BTF
+> >>>>>   libbpf: split BTF relocation
+> >>>>>   module, bpf: store BTF base pointer in struct module
+> >>>>>   libbpf,bpf: share BTF relocate-related code with kernel
+> >>>>>   selftests/bpf: extend distilled BTF tests to cover BTF relocation
+> >>>>>   bpftool: support displaying relocated-with-base split BTF
+> >>>>>
+> >>>>>  include/linux/btf.h                           |  32 +
+> >>>>>  include/linux/module.h                        |   2 +
+> >>>>>  kernel/bpf/Makefile                           |   8 +
+> >>>>>  kernel/bpf/btf.c                              | 227 +++++--
+> >>>>>  kernel/module/main.c                          |   5 +-
+> >>>>>  scripts/Makefile.btf                          |  12 +-
+> >>>>>  scripts/Makefile.modfinal                     |   4 +-
+> >>>>>  .../bpf/bpftool/Documentation/bpftool-btf.rst |  15 +-
+> >>>>>  tools/bpf/bpftool/bash-completion/bpftool     |   7 +-
+> >>>>>  tools/bpf/bpftool/btf.c                       |  20 +-
+> >>>>>  tools/bpf/bpftool/main.c                      |  14 +-
+> >>>>>  tools/bpf/bpftool/main.h                      |   2 +
+> >>>>>  tools/bpf/resolve_btfids/main.c               |  22 +-
+> >>>>>  tools/lib/bpf/Build                           |   2 +-
+> >>>>>  tools/lib/bpf/btf.c                           | 561 +++++++++++---=
+--
+> >>>>>  tools/lib/bpf/btf.h                           |  61 ++
+> >>>>>  tools/lib/bpf/btf_common.c                    | 146 ++++
+> >>>>>  tools/lib/bpf/btf_relocate.c                  | 630 ++++++++++++++=
+++++
+> >>>>>  tools/lib/bpf/libbpf.map                      |   3 +
+> >>>>>  tools/lib/bpf/libbpf_internal.h               |   2 +
+> >>>>>  .../selftests/bpf/prog_tests/btf_distill.c    | 298 +++++++++
+> >>>>>  21 files changed, 1864 insertions(+), 209 deletions(-)
+> >>>>>  create mode 100644 tools/lib/bpf/btf_common.c
+> >>>>>  create mode 100644 tools/lib/bpf/btf_relocate.c
+> >>>>>  create mode 100644 tools/testing/selftests/bpf/prog_tests/btf_dist=
+ill.c
+> >>>>>
+> >>>>> --
+> >>>>> 2.31.1
+> >>>>>
+> >>>
 
