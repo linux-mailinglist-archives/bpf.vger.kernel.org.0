@@ -1,276 +1,192 @@
-Return-Path: <bpf+bounces-28122-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-28123-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A21488B5F53
-	for <lists+bpf@lfdr.de>; Mon, 29 Apr 2024 18:45:13 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1161C8B5F55
+	for <lists+bpf@lfdr.de>; Mon, 29 Apr 2024 18:46:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C28BC1C218E0
-	for <lists+bpf@lfdr.de>; Mon, 29 Apr 2024 16:45:12 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1ABC4B2488F
+	for <lists+bpf@lfdr.de>; Mon, 29 Apr 2024 16:46:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 50B668612E;
-	Mon, 29 Apr 2024 16:45:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E5DE86136;
+	Mon, 29 Apr 2024 16:46:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bC2j9zaz"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Lddsnsx4"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f176.google.com (mail-pg1-f176.google.com [209.85.215.176])
+Received: from mail-pg1-f178.google.com (mail-pg1-f178.google.com [209.85.215.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C7EF84D15;
-	Mon, 29 Apr 2024 16:45:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D225839FD;
+	Mon, 29 Apr 2024 16:46:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714409103; cv=none; b=hiGXx6WFcUTQ+l2uaJ0oTrPe+jYp03n06j/X9xnGZ7iDaS8K/LYjgLoEyujNi9/ghtfOuBqtNHGZJhp3F1wU8xbQAL/UQBPTvjOBVYJxNFvMowBe2nBJKhcxPThsCzwOHaANDKmz4AYlZc/TxPmI9RpxxnZhZqCUUqawX7stK2Q=
+	t=1714409177; cv=none; b=ApxV2rWlVTdRKenZQLCmCRmurE4EpPHYLpMcCiSN34nbqsiuuBkr19Bu3uLnUsEGjq/DCjMLRBOVUt3Hb8mOW6WOzVU4GkR31bbgy3ATXHwDqgUG0f5819ALmNpUmcMyUN77zSF3La66q6Zv1ZDgd2L+tQA8uQXuwKZ8Y5mISyk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714409103; c=relaxed/simple;
-	bh=zI0dXaWwW2H477UXrfRvW/LEn5xqCYL9yuMn0epTlnQ=;
+	s=arc-20240116; t=1714409177; c=relaxed/simple;
+	bh=kJl1Pvf+QmsGXRQsPFm/qZRAd1kGgTvi2ktcaHWotR0=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=L6wX9n40Q34byiPLn3qbf4feYLQt7aOGvGl9PmlWKm4xBVRwngK6wNda1rn0thYrENHko9UFNpKJV/2cYfQJBVtxhAIqnr5xh6BBAIuFi2Tx1bFDSafIw1enisdhAAMFIAZ4S6VyGrfUeTepsJZICCtPQjC5Lmw9DlorAKN4Svw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=bC2j9zaz; arc=none smtp.client-ip=209.85.215.176
+	 To:Cc:Content-Type; b=Z3j44QP6KyYE8CVwXJdVnKLjD0zKPXWfDNb5Wd4OKeKkjh/ZLQCDOM60K2WhjEFYi81fkZ5mnXaqnWu4jyZl08LZBBoL5fqrKViSJJGKtySAS+gjLUPm7CYBgTOhwWsyTgz96Y2YsNNFscd6eVBjzB1YoBWPogVjwVCrJFxkvYw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Lddsnsx4; arc=none smtp.client-ip=209.85.215.178
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f176.google.com with SMTP id 41be03b00d2f7-5c6bd3100fcso3145793a12.3;
-        Mon, 29 Apr 2024 09:45:02 -0700 (PDT)
+Received: by mail-pg1-f178.google.com with SMTP id 41be03b00d2f7-5e8470c1cb7so3190351a12.2;
+        Mon, 29 Apr 2024 09:46:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714409102; x=1715013902; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1714409175; x=1715013975; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=V+KuYncKCMIQks9fs4VyYRoQJJHDbH+WTIrj3yfpnG4=;
-        b=bC2j9zazdkM2QJZxDgAkKgtMBRn3WT/p5QUOMG/IAoQAkjCmNBrGJoxwy48ELUyz+N
-         +aZqi0n2Y5xfnIvgkZ6RR6ZOYF7vxBD6lADP65/9ZCf/vehFbWHRwv00ntPxJM1PtVbQ
-         7T5gAOXDKWZXCsWa1ppmV0aBP34AlB3LWd01BSzYmpQRYZmZPXJ/6kLkaQUZvjUyevjs
-         QMekB4kPY1gniiLvzOi6XIWdXk1Wc2k3H/w/EVqIJI/KXRdu+jDiLCYYAkSOF6TwBK0r
-         D3qSItEJk6RVuhkurXham9anF+hX7lech3TSFpzAqcYFpz5vl6CHhzbU2kxqgLV9IRLY
-         GOxQ==
+        bh=U80iD/8RiPpwGxO+V9WytMLR2ZFEkdHXCUuK39Xo+ek=;
+        b=Lddsnsx4U9ohZjNogCh/D2rsyVc7+lL6meln6Vd/zbqQmDLQFV3WtG05YWTNWrJhO2
+         PJnuoRmiT3CGthmHnXNRjOeJrBxMEgAzDC4S2jtdQArzQEnfl3gqKzCSj9+ozgkQTboB
+         vpP3ljRAwx+D6gxZKHRajRhzrZQRKLthudNlWly083LeJEh0v4lLNmT5scgW34hx7vPs
+         LFrEvExrqBRMuMNkHoQgtc3rCBYebISi4k6TH7LhNAyNs0C7X7qbmTczjRia40ayIbyT
+         Vwvv2SNdeBFsw3mdZCyBTkr9sWkjsfAAh6TdEznKgo7TBHIZRulPo5XMzmwHYD5r0BrQ
+         8fSg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714409102; x=1715013902;
+        d=1e100.net; s=20230601; t=1714409175; x=1715013975;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=V+KuYncKCMIQks9fs4VyYRoQJJHDbH+WTIrj3yfpnG4=;
-        b=pEGt0Djr6B7NYC6hAuOCGQwRjyMm9KEQ6TvM2NNABgMVo6O7pg6GexGwC+dhA1z13y
-         MuMuSi39EoZYpzR/NCC6ff/2Ac+XHyIMN6o/ujCImwDkOhMQqQKthcEZJqGGWHkS+rlU
-         9uIO41TrVZyuoi5LjSGKBfCCc83+B3kDOYYs1jVfEbXRuUo7lYwFoOiE4k8KtAQBkW4E
-         Dc4/WYpCA5Nk4LAeiUjarg8WtQO3cLI6l0soBLsgONSHstG0Qx5Tz60Ew7DXLCmJ0CFi
-         Lk+lPl3mZR4YLzYncvrljP36Iv9wL2fRLVl3JuzufyxviMtZBFQUVi5a3/RAYUkAiUZQ
-         ybmg==
-X-Forwarded-Encrypted: i=1; AJvYcCUh3dQbbudMM1klOfgmLTWGdgpUhxYRRnKoLHd2UT6zvTjrjuns+F5Fxl8/2x5OshNCptpPERN0FjiS7YXvd26o0i5jM5++ePPXkdUrwDVbCsU9J/kN1LWaTZoYQ9ljP93CyLQHA8MY+GZSXb9qZ7aK/IlMLJQvJM4BcJpMbSBmqGB1CQyvRKK4oNghYSHiGbR1AfL5jdKXeQT9lBwW4d46
-X-Gm-Message-State: AOJu0YzzaZOKr3xVVpufanHcMMeLwn9/s6H3ORhYoaIcsQf67XgK/fgb
-	/p2V5s27iAO+/GJhcXWo/kkDbhiMbb3/eT7+Tw0ruudk1kDPV2a9nHqm0JoAKxNP6BpvAQpk4Yh
-	25Gc0WAeGwfqHezhysddd3/Ask5s=
-X-Google-Smtp-Source: AGHT+IFEBjjOgIZI69S9O+DPbxRJS29XWyaWX2RRt0TM1E47XRESlvdqoITxR7rPoljfCms3ptvnuElmViiIbq0BAf0=
-X-Received: by 2002:a17:90b:3e89:b0:2b0:d163:3131 with SMTP id
- rj9-20020a17090b3e8900b002b0d1633131mr6513981pjb.17.1714409101691; Mon, 29
- Apr 2024 09:45:01 -0700 (PDT)
+        bh=U80iD/8RiPpwGxO+V9WytMLR2ZFEkdHXCUuK39Xo+ek=;
+        b=h6gv/HtYuLZBoyAQ75ieG3evODafw91ExZYeOJ+04xi53G/+0gwrVUqOaqeYc3e2ib
+         Sr8d1EcKqxUPxKOD1I3jn0da3+Ag0bBSgLbTcJdenDGuRWcp80IBbHO7AuQrG4vCBfKf
+         t4HYr8nkND1qR9js2rI5OGP7XrNHfR7nTOE6jZYOBTU/lVZ+Q4RfSlTTwNnTm7+lZssq
+         PK6gkxgG7x6bNcEF+tyJVDmSabEJlaaiK8LxgP/jCZTLj4zniUovbro0N0Rxx66HSwyT
+         xlc65JTwqUACqsVafPaXTKHZo2LwHlBWd8iZvev0vIpp6d/+GstUTU+0xEgyuAyDnFlh
+         P1Yw==
+X-Forwarded-Encrypted: i=1; AJvYcCXdv2IfaB3xj/3x1x65A0Eb6kvIF3PHObGX74F/SJTCJrajJKKcOl3IrYvafLQSwF1FvqKk1YpjTcqdlaovnkPvm43/yRO//wUSFYAgX5nhsNL7WrBf1a2yERPt9g==
+X-Gm-Message-State: AOJu0Yzg40ayajD4J4rA35cZWFDef4iOKqK9jQqrXt88Q4JEh+tF0Kzj
+	AaeHNUWlX8tPoAhkVzLmhIEPI+CnHA41zV4gcrKcr2y+OX45sLJvbKygiE03bUEHe/xLVJSmOlG
+	FFqXhyst2/5odlVB/8PUp9gokISU=
+X-Google-Smtp-Source: AGHT+IFNZO7Q+MdhTCB1a2y7mXmghJBWFR1TC8XTJCVVLTFi+M0Smd0LV+32Y3/e/zimcG9/Zdp8VekjmX4SKlXw2z0=
+X-Received: by 2002:a17:90a:4a90:b0:2ae:7f27:82cd with SMTP id
+ f16-20020a17090a4a9000b002ae7f2782cdmr6428137pjh.7.1714409173155; Mon, 29 Apr
+ 2024 09:46:13 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240421194206.1010934-1-jolsa@kernel.org> <20240421194206.1010934-7-jolsa@kernel.org>
- <CAEf4BzYU-y+vptqXpuALYecJJgPt+CTcbo+=Q9QXnu4vNwem+g@mail.gmail.com> <Zi9OwCwluxTo-Azd@krava>
-In-Reply-To: <Zi9OwCwluxTo-Azd@krava>
+References: <20240419205747.1102933-1-acme@kernel.org> <20240419205747.1102933-3-acme@kernel.org>
+ <CAEf4Bzb0pyc_0AuP3O6wekpR3YcfEkk5bPGOOmS6_yJ3G5bKwQ@mail.gmail.com>
+ <ZiwS0_O_CTesvjLC@x1> <d9e3a7ab-9799-42b0-9c6f-1809a0527867@oracle.com>
+In-Reply-To: <d9e3a7ab-9799-42b0-9c6f-1809a0527867@oracle.com>
 From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Mon, 29 Apr 2024 09:44:49 -0700
-Message-ID: <CAEf4Bzb6M=8x6=WMZq8GDB3gS4kejsB9QaVSNEc1MwWbX_vvUQ@mail.gmail.com>
-Subject: Re: [PATCHv3 bpf-next 6/7] selftests/bpf: Add uretprobe compat test
-To: Jiri Olsa <olsajiri@gmail.com>
-Cc: Steven Rostedt <rostedt@goodmis.org>, Masami Hiramatsu <mhiramat@kernel.org>, 
-	Oleg Nesterov <oleg@redhat.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, linux-kernel@vger.kernel.org, 
-	linux-trace-kernel@vger.kernel.org, linux-api@vger.kernel.org, x86@kernel.org, 
-	bpf@vger.kernel.org, Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>, 
-	John Fastabend <john.fastabend@gmail.com>, Peter Zijlstra <peterz@infradead.org>, 
-	Thomas Gleixner <tglx@linutronix.de>, "Borislav Petkov (AMD)" <bp@alien8.de>, Ingo Molnar <mingo@redhat.com>, 
-	Andy Lutomirski <luto@kernel.org>
+Date: Mon, 29 Apr 2024 09:46:01 -0700
+Message-ID: <CAEf4Bzb4Yw7GyyhdMu7fbPQSHE5PumRWB4nRaoi=BYax57hSTg@mail.gmail.com>
+Subject: Re: [PATCH 2/2] pahole: Allow asking for extra features using the '+'
+ prefix in --btf_features
+To: Alan Maguire <alan.maguire@oracle.com>
+Cc: Arnaldo Carvalho de Melo <acme@kernel.org>, dwarves@vger.kernel.org, Jiri Olsa <jolsa@kernel.org>, 
+	Clark Williams <williams@redhat.com>, Kate Carcia <kcarcia@redhat.com>, bpf@vger.kernel.org, 
+	Arnaldo Carvalho de Melo <acme@redhat.com>, Daniel Xu <dxu@dxuuu.xyz>, Eduard Zingerman <eddyz87@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Apr 29, 2024 at 12:39=E2=80=AFAM Jiri Olsa <olsajiri@gmail.com> wro=
-te:
+On Mon, Apr 29, 2024 at 4:16=E2=80=AFAM Alan Maguire <alan.maguire@oracle.c=
+om> wrote:
 >
-> On Fri, Apr 26, 2024 at 11:06:53AM -0700, Andrii Nakryiko wrote:
-> > On Sun, Apr 21, 2024 at 12:43=E2=80=AFPM Jiri Olsa <jolsa@kernel.org> w=
-rote:
-> > >
-> > > Adding test that adds return uprobe inside 32 bit task
-> > > and verify the return uprobe and attached bpf programs
-> > > get properly executed.
-> > >
-> > > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> > > ---
-> > >  tools/testing/selftests/bpf/.gitignore        |  1 +
-> > >  tools/testing/selftests/bpf/Makefile          |  6 ++-
-> > >  .../selftests/bpf/prog_tests/uprobe_syscall.c | 40 +++++++++++++++++=
-++
-> > >  .../bpf/progs/uprobe_syscall_compat.c         | 13 ++++++
-> > >  4 files changed, 59 insertions(+), 1 deletion(-)
-> > >  create mode 100644 tools/testing/selftests/bpf/progs/uprobe_syscall_=
-compat.c
-> > >
-> > > diff --git a/tools/testing/selftests/bpf/.gitignore b/tools/testing/s=
-elftests/bpf/.gitignore
-> > > index f1aebabfb017..69d71223c0dd 100644
-> > > --- a/tools/testing/selftests/bpf/.gitignore
-> > > +++ b/tools/testing/selftests/bpf/.gitignore
-> > > @@ -45,6 +45,7 @@ test_cpp
-> > >  /veristat
-> > >  /sign-file
-> > >  /uprobe_multi
-> > > +/uprobe_compat
-> > >  *.ko
-> > >  *.tmp
-> > >  xskxceiver
-> > > diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/sel=
-ftests/bpf/Makefile
-> > > index edc73f8f5aef..d170b63eca62 100644
-> > > --- a/tools/testing/selftests/bpf/Makefile
-> > > +++ b/tools/testing/selftests/bpf/Makefile
-> > > @@ -134,7 +134,7 @@ TEST_GEN_PROGS_EXTENDED =3D test_sock_addr test_s=
-kb_cgroup_id_user \
-> > >         xskxceiver xdp_redirect_multi xdp_synproxy veristat xdp_hw_me=
-tadata \
-> > >         xdp_features bpf_test_no_cfi.ko
-> > >
-> > > -TEST_GEN_FILES +=3D liburandom_read.so urandom_read sign-file uprobe=
-_multi
-> > > +TEST_GEN_FILES +=3D liburandom_read.so urandom_read sign-file uprobe=
-_multi uprobe_compat
+> On 26/04/2024 21:47, Arnaldo Carvalho de Melo wrote:
+> > On Fri, Apr 26, 2024 at 01:26:40PM -0700, Andrii Nakryiko wrote:
+> >> On Fri, Apr 19, 2024 at 1:58=E2=80=AFPM Arnaldo Carvalho de Melo
+> >> <acme@kernel.org> wrote:
+> >>>
+> >>> From: Arnaldo Carvalho de Melo <acme@redhat.com>
+> >>>
+> >>> Instead of the somewhat confusing:
+> >>>
+> >>>   --btf_features=3Dall,reproducible_build
+> >>>
+> >>> That means "'all' the standard BTF features plus the 'reproducible_bu=
+ild'
+> >>> extra BTF feature", use + directly, making it more compact:
+> >>>
+> >>>   --btf_features=3D+reproducible_build
+> >>>
+> >>
+> >> for older paholes that don't yet know about + syntax, but support
+> >> --btf_features, will this effectively disable all features or how will
+> >> it work?
+> >>
+> >> I'm thinking from the perspective of using +reproducible_build
+> >> unconditionally in kernel's build scripts, will it regress something
+> >> for current pahole versions?
 > >
-> > you need to add uprobe_compat to TRUNNER_EXTRA_FILES as well, no?
->
-> ah right
->
-> > > diff --git a/tools/testing/selftests/bpf/prog_tests/uprobe_syscall.c =
-b/tools/testing/selftests/bpf/prog_tests/uprobe_syscall.c
-> > > index 9233210a4c33..3770254d893b 100644
-> > > --- a/tools/testing/selftests/bpf/prog_tests/uprobe_syscall.c
-> > > +++ b/tools/testing/selftests/bpf/prog_tests/uprobe_syscall.c
-> > > @@ -11,6 +11,7 @@
-> > >  #include <sys/wait.h>
-> > >  #include "uprobe_syscall.skel.h"
-> > >  #include "uprobe_syscall_call.skel.h"
-> > > +#include "uprobe_syscall_compat.skel.h"
-> > >
-> > >  __naked unsigned long uretprobe_regs_trigger(void)
-> > >  {
-> > > @@ -291,6 +292,35 @@ static void test_uretprobe_syscall_call(void)
-> > >                  "read_trace_pipe_iter");
-> > >         ASSERT_EQ(found, 0, "found");
-> > >  }
-> > > +
-> > > +static void trace_pipe_compat_cb(const char *str, void *data)
-> > > +{
-> > > +       if (strstr(str, "uretprobe compat") !=3D NULL)
-> > > +               (*(int *)data)++;
-> > > +}
-> > > +
-> > > +static void test_uretprobe_compat(void)
-> > > +{
-> > > +       struct uprobe_syscall_compat *skel =3D NULL;
-> > > +       int err, found =3D 0;
-> > > +
-> > > +       skel =3D uprobe_syscall_compat__open_and_load();
-> > > +       if (!ASSERT_OK_PTR(skel, "uprobe_syscall_compat__open_and_loa=
-d"))
-> > > +               goto cleanup;
-> > > +
-> > > +       err =3D uprobe_syscall_compat__attach(skel);
-> > > +       if (!ASSERT_OK(err, "uprobe_syscall_compat__attach"))
-> > > +               goto cleanup;
-> > > +
-> > > +       system("./uprobe_compat");
-> > > +
-> > > +       ASSERT_OK(read_trace_pipe_iter(trace_pipe_compat_cb, &found, =
-1000),
-> > > +                "read_trace_pipe_iter");
+> > Well, I think it will end up being discarded just like "all" or
+> > "default", no? I.e. those were keywords not grokked by older pahole
+> > versions, so ignored as we're not using --btf_features_strict, right?
 > >
-> > why so complicated? can't you just set global variable that it was call=
-ed
+> > Alan?
+> >
 >
-> hm, we execute separate uprobe_compat (32bit) process that triggers the b=
-pf
-> program, so we can't use global variable.. using the trace_pipe was the o=
-nly
-> thing that was easy to do
+> Yep, it would just be ignored, so wouldn't have the desired behaviour
+> of enabling defaults + reproducible build option.
+>
+> > But then we're not yet using --btf_features in scripts/Makefile.btf,
+> > right?
+> >
+> > But as Daniel pointed out and Alan (I think) agreed, for things like
+> > scripts we probably end up using the most verbose thing as:
+> >
+> >       --btf_features=3Ddefault,reproducible_build
+> >
+> > to mean a set (the default set of BTF options) + an optional/extra
+> > feature (reproducibe_build), that for people not used to the + syntax
+> > may be more descriptive (I really think that both are confusing for
+> > beginners knowing nothing about BTF and its evolution, etc).
+> >
+> > Alan, also we released 1.26 with "all" meaning what we now call
+> > "default", so we need to keep both meaning the same thing, right?
+> >
+>
+> I might be missing something here, but I think we should always call out
+> explicitly the set of features we want in the kernel Makefile.btf
+> (something like [1]). The reason for this is that the concept of what is
+> "default" may evolve over time; for example it's going to include
+> Daniel's kfunc definitions for soon. That's a good thing, but it could
+> conceivably cause problems down the line. Consider a newer pahole - with
+> a newer set of defaults - running on an older kernel. In that case, we
+> could end up encoding BTF features we don't want.  By contrast, if we
+> always call out the full set of BTF features we want via
+> --btf_features=3Dfeature1,feature2 etc we'll always get the expected set.
+> Plus for folks consulting the code, it's much clearer which BTF features
+> are in use when they look at the Makefiles for a particular kernel.
+> So my sense of the value of "default" is as a shortcut for testing the
+> latest and greatest set of BTF feature encoding, but not for use in the
+> kernel tree Makefiles. Thanks!
 
-you need child process to trigger uprobe, but you could have installed
-BPF program from parent process (you'd need to make child wait for
-parent to be ready, with normal pipe() like we do in other places).
-
-I think generally the less work forked child process does, the better.
-All those ASSERT() failures won't produce any output in child process,
-unless you run tests in verbose mode, because we haven't implemented
-some form of sending all the logs back to the parent process and so
-they are completely lost. But that's a separate topic.
-
-Either way, consider using pipe() to coordinate waiting from child on
-parent being ready, but otherwise do all the BPF-related heavy lifting
-from parent (you can attach BPF programs to specific PID using
-bpf_program__attach_uprobe() easily, it's not declarative, but simple
-enough).
+Yep, I agree, the whole point was to not regress older kernel builds
+with newer pahole, so we need to explicitly list used features.
 
 >
-> jirka
+> Alan
 >
+> [1]
+> https://lore.kernel.org/bpf/20240424154806.3417662-7-alan.maguire@oracle.=
+com/
+>
+> > - Arnaldo
 > >
-> > > +       ASSERT_EQ(found, 1, "found");
-> > > +
-> > > +cleanup:
-> > > +       uprobe_syscall_compat__destroy(skel);
-> > > +}
-> > >  #else
-> > >  static void test_uretprobe_regs_equal(void)
-> > >  {
-> > > @@ -306,6 +336,11 @@ static void test_uretprobe_syscall_call(void)
-> > >  {
-> > >         test__skip();
-> > >  }
-> > > +
-> > > +static void test_uretprobe_compat(void)
-> > > +{
-> > > +       test__skip();
-> > > +}
-> > >  #endif
-> > >
-> > >  void test_uprobe_syscall(void)
-> > > @@ -320,3 +355,8 @@ void serial_test_uprobe_syscall_call(void)
-> > >  {
-> > >         test_uretprobe_syscall_call();
-> > >  }
-> > > +
-> > > +void serial_test_uprobe_syscall_compat(void)
-> >
-> > and then no need for serial_test?
-> >
-> > > +{
-> > > +       test_uretprobe_compat();
-> > > +}
-> > > diff --git a/tools/testing/selftests/bpf/progs/uprobe_syscall_compat.=
-c b/tools/testing/selftests/bpf/progs/uprobe_syscall_compat.c
-> > > new file mode 100644
-> > > index 000000000000..f8adde7f08e2
-> > > --- /dev/null
-> > > +++ b/tools/testing/selftests/bpf/progs/uprobe_syscall_compat.c
-> > > @@ -0,0 +1,13 @@
-> > > +// SPDX-License-Identifier: GPL-2.0
-> > > +#include <linux/bpf.h>
-> > > +#include <bpf/bpf_helpers.h>
-> > > +#include <bpf/bpf_tracing.h>
-> > > +
-> > > +char _license[] SEC("license") =3D "GPL";
-> > > +
-> > > +SEC("uretprobe.multi/./uprobe_compat:main")
-> > > +int uretprobe_compat(struct pt_regs *ctx)
-> > > +{
-> > > +       bpf_printk("uretprobe compat\n");
-> > > +       return 0;
-> > > +}
-> > > --
-> > > 2.44.0
-> > >
+> >>> In the future we may want the '-' counterpart as a way to _remove_ so=
+me
+> >>> of the standard set of BTF features.
+> >>>
+> >>> Cc: Alan Maguire <alan.maguire@oracle.com>
+> >>> Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+> >>> Cc: Daniel Xu <dxu@dxuuu.xyz>
+> >>> Cc: Eduard Zingerman <eddyz87@gmail.com>
+> >>> Cc: Jiri Olsa <jolsa@kernel.org>
+> >>> Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+> >>> ---
+> >>>  man-pages/pahole.1          | 6 ++++++
+> >>>  pahole.c                    | 6 ++++++
+> >>>  tests/reproducible_build.sh | 2 +-
+> >>>  3 files changed, 13 insertions(+), 1 deletion(-)
+> >>>
+> >>
+> >> [...]
 
