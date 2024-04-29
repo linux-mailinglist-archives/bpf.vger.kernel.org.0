@@ -1,53 +1,84 @@
-Return-Path: <bpf+bounces-28073-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-28074-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id AB0D58B570E
-	for <lists+bpf@lfdr.de>; Mon, 29 Apr 2024 13:47:14 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id D82398B5748
+	for <lists+bpf@lfdr.de>; Mon, 29 Apr 2024 14:00:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2C377286CBF
-	for <lists+bpf@lfdr.de>; Mon, 29 Apr 2024 11:47:13 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8B1411F21D50
+	for <lists+bpf@lfdr.de>; Mon, 29 Apr 2024 12:00:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1BFEA4C63D;
-	Mon, 29 Apr 2024 11:46:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B4C40535AA;
+	Mon, 29 Apr 2024 12:00:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="V1rWMRgP"
 X-Original-To: bpf@vger.kernel.org
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.20])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CCBD747A5C;
-	Mon, 29 Apr 2024 11:46:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.188
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA1BB4D5A2;
+	Mon, 29 Apr 2024 12:00:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.20
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714391205; cv=none; b=m/zdKh+dY6uC9MIwuQbvcat3c/J00nS+OGsSsGuLjip1rm1knE+Hn7GcYhZlRhksoVvJf5dqq4Yfh+u33DcNO/Asb1VSEL8h2lCe2iXB/nFEm8S6b5ZtYNA09ZEbE8Y2dzUhv9mpdnvEkR3DDIaCDFVm6nr2P7smpuFy3KpWCdI=
+	t=1714392026; cv=none; b=C8Yyo9gwM0Zk/JjC8noMe+tzzrN1TjKDUt2r5+XVPS4y0R1Y7YHtanjT7HVqKM/Dn2nqUh7PCP2lEjiBpuPGGAtBnrgvYT8gG6yq80ioOAocvTOCfiqsC8FuKRVF/e/HLYv7ykbDcI+ZyvWE89FcXQmjyJZnSve2+QtbnqS+q70=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714391205; c=relaxed/simple;
-	bh=ITYF6YQ6atV387lGaOq8pM/DKovLv/P+pLmkVn+3D5c=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=VqVemaMl6L6yxFt9U33wrpXwa8ANI4+9OWRbDzSZPnNyNMwQJ1VqEUWIOXsysQXl0VaLuF96nCD9LtbZybbWvx4SYTM/2RNLcZHzIJ1feqhNFK5TNV7qlai+n0gAq0Fl/PoVLzxQtHDCT7egUi8MhRsU7UtyDWpp8osCYvY9vvk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.188
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.252])
-	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4VShNB3rkQzccJ0;
-	Mon, 29 Apr 2024 19:45:30 +0800 (CST)
-Received: from dggpemd500003.china.huawei.com (unknown [7.185.36.29])
-	by mail.maildlp.com (Postfix) with ESMTPS id 715DC180A9F;
-	Mon, 29 Apr 2024 19:46:37 +0800 (CST)
-Received: from huawei.com (10.67.108.248) by dggpemd500003.china.huawei.com
- (7.185.36.29) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1258.28; Mon, 29 Apr
- 2024 19:46:37 +0800
-From: felix <fuzhen5@huawei.com>
-To: <paul@paul-moore.com>, <casey@schaufler-ca.com>,
-	<roberto.sassu@huawei.com>, <stefanb@linux.ibm.com>, <zohar@linux.ibm.com>,
-	<kamrankhadijadj@gmail.com>, <andrii@kernel.org>, <omosnace@redhat.com>
-CC: <linux-kernel@vger.kernel.org>, <bpf@vger.kernel.org>,
-	<xiujianfeng@huawei.com>, <wangweiyang2@huawei.com>
-Subject: [PATCH -next] lsm: fix default return value for inode_set(remove)xattr
-Date: Mon, 29 Apr 2024 19:46:36 +0800
-Message-ID: <20240429114636.123395-1-fuzhen5@huawei.com>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1714392026; c=relaxed/simple;
+	bh=hNReNeYTpfIULcJuF2gEsqCmdOprPMwUabi9ZhnESwQ=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=r/1/Fqfe4wXdDOIyjxRQa/MLTKymDjSHocD61qgXXonzN3xrOar0U8WhZ5p/mWyqzMxxKuzisRnP9sMhICyAvxeAmtH/o/J4OUbFjAjHh3YDk7dCr56ehUA/6GqaPwiAPDY2BriUZgjSuvUThpjcRrZXNbSY18zyz1zCLnN8n4o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=V1rWMRgP; arc=none smtp.client-ip=198.175.65.20
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1714392025; x=1745928025;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=hNReNeYTpfIULcJuF2gEsqCmdOprPMwUabi9ZhnESwQ=;
+  b=V1rWMRgPTAPI59RwBaLA/IndQl+PzAGD0ls4+8TPg0xemW71ytaLi8nH
+   MiYkGv0nIj6EUle8jUjj9q20OYs+dE1tmX2VxiyiT13j+jxrZ7tAjX9md
+   65m5X7yWUbur02/iDdjjeDEqafLbWPOVROQBcXYMwDsvNioauzmQCdmuM
+   zkrAI9y1dDgT3S6waLK2R6+52HBmb3yJfIb3OvL0wO/jSFl0YP1rroHKc
+   6/G/9047W8jJsTRA9NVAbtcwkfPaTvqHqzWzG9CFkW/qUhQcYiYR8Hzvz
+   yP7z65tka7qNUMlBbdaHot6Cex73TYiQn3I0jXiPTby4p+WKW5HTsw5iY
+   w==;
+X-CSE-ConnectionGUID: IQ7jTKWuTeyZ4+Qpx/LOuA==
+X-CSE-MsgGUID: WhU1MuiIQNWI8/hJXa98wg==
+X-IronPort-AV: E=McAfee;i="6600,9927,11057"; a="9876776"
+X-IronPort-AV: E=Sophos;i="6.07,239,1708416000"; 
+   d="scan'208";a="9876776"
+Received: from fmviesa002.fm.intel.com ([10.60.135.142])
+  by orvoesa112.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Apr 2024 05:00:21 -0700
+X-CSE-ConnectionGUID: guqDvAGkROiAQGdhFIY/lA==
+X-CSE-MsgGUID: OotK0ZcCQbiSV6fjkutl2g==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,239,1708416000"; 
+   d="scan'208";a="49300112"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by fmviesa002.fm.intel.com with ESMTP; 29 Apr 2024 05:00:09 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+	id 3CBA215B; Mon, 29 Apr 2024 15:00:06 +0300 (EEST)
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Alexei Starovoitov <ast@kernel.org>,
+	bpf@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: Daniel Borkmann <daniel@iogearbox.net>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	KP Singh <kpsingh@kernel.org>,
+	Stanislav Fomichev <sdf@google.com>,
+	Hao Luo <haoluo@google.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Subject: [PATCH v1 1/1] bpf: Switch to krealloc_array()
+Date: Mon, 29 Apr 2024 15:00:05 +0300
+Message-ID: <20240429120005.3539116-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.43.0.rc1.1336.g36b5255a03ac
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -55,51 +86,29 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- dggpemd500003.china.huawei.com (7.185.36.29)
 
-From: Felix Fu <fuzhen5@huawei.com>
+Let the krealloc_array() copy the original data and
+check for a multiplication overflow.
 
-The return value of security_inode_set(remove)xattr should
-be 1. If it return 0, cap_inode_setxattr would not be
-executed when no lsm exist, which is not what we expected,
-any user could set some security.* xattr for a file.
-
-Before commit 260017f31a8c ("lsm: use default hook return
-value in call_int_hook()") was approved, this issue would
-still happened when lsm only include bpf, because bpf_lsm_
-inode_setxattr return 0 by default which cause cap_inode_set
-xattr to be not executed.
-
-Fixes: 260017f31a8c ("lsm: use default hook return value in call_int_hook()")
-Signed-off-by: Felix Fu <fuzhen5@huawei.com>
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 ---
- include/linux/lsm_hook_defs.h | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ kernel/bpf/core.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/include/linux/lsm_hook_defs.h b/include/linux/lsm_hook_defs.h
-index f804b76cde44..9c768b954264 100644
---- a/include/linux/lsm_hook_defs.h
-+++ b/include/linux/lsm_hook_defs.h
-@@ -144,14 +144,14 @@ LSM_HOOK(int, 0, inode_setattr, struct mnt_idmap *idmap, struct dentry *dentry,
- LSM_HOOK(void, LSM_RET_VOID, inode_post_setattr, struct mnt_idmap *idmap,
- 	 struct dentry *dentry, int ia_valid)
- LSM_HOOK(int, 0, inode_getattr, const struct path *path)
--LSM_HOOK(int, 0, inode_setxattr, struct mnt_idmap *idmap,
-+LSM_HOOK(int, 1, inode_setxattr, struct mnt_idmap *idmap,
- 	 struct dentry *dentry, const char *name, const void *value,
- 	 size_t size, int flags)
- LSM_HOOK(void, LSM_RET_VOID, inode_post_setxattr, struct dentry *dentry,
- 	 const char *name, const void *value, size_t size, int flags)
- LSM_HOOK(int, 0, inode_getxattr, struct dentry *dentry, const char *name)
- LSM_HOOK(int, 0, inode_listxattr, struct dentry *dentry)
--LSM_HOOK(int, 0, inode_removexattr, struct mnt_idmap *idmap,
-+LSM_HOOK(int, 1, inode_removexattr, struct mnt_idmap *idmap,
- 	 struct dentry *dentry, const char *name)
- LSM_HOOK(void, LSM_RET_VOID, inode_post_removexattr, struct dentry *dentry,
- 	 const char *name)
+diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
+index 466c2deeecff..778775bdbb2e 100644
+--- a/kernel/bpf/core.c
++++ b/kernel/bpf/core.c
+@@ -849,7 +849,7 @@ int bpf_jit_add_poke_descriptor(struct bpf_prog *prog,
+ 		return -EINVAL;
+ 	}
+ 
+-	tab = krealloc(tab, size * sizeof(*poke), GFP_KERNEL);
++	tab = krealloc_array(tab, size, sizeof(*poke), GFP_KERNEL);
+ 	if (!tab)
+ 		return -ENOMEM;
+ 
 -- 
-2.34.1
+2.43.0.rc1.1336.g36b5255a03ac
 
 
