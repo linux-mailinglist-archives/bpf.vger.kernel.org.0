@@ -1,44 +1,45 @@
-Return-Path: <bpf+bounces-28257-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-28258-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B2A0F8B7593
-	for <lists+bpf@lfdr.de>; Tue, 30 Apr 2024 14:18:26 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id CCCA48B7594
+	for <lists+bpf@lfdr.de>; Tue, 30 Apr 2024 14:18:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6F33228393A
-	for <lists+bpf@lfdr.de>; Tue, 30 Apr 2024 12:18:25 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 81DFD1F22FEE
+	for <lists+bpf@lfdr.de>; Tue, 30 Apr 2024 12:18:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0053213DB90;
-	Tue, 30 Apr 2024 12:18:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4EAA113F44D;
+	Tue, 30 Apr 2024 12:18:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="l29fQI9B"
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="mPbi54UZ"
 X-Original-To: bpf@vger.kernel.org
-Received: from out30-110.freemail.mail.aliyun.com (out30-110.freemail.mail.aliyun.com [115.124.30.110])
+Received: from out30-133.freemail.mail.aliyun.com (out30-133.freemail.mail.aliyun.com [115.124.30.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 315D012D755
-	for <bpf@vger.kernel.org>; Tue, 30 Apr 2024 12:18:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.110
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DBD6F12D765
+	for <bpf@vger.kernel.org>; Tue, 30 Apr 2024 12:18:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714479498; cv=none; b=jevpq5nJXF47A+4cWHbNqUbaqkJo/acvUfj+eRw9VnsV9PlBbrfBVKXBPhIGFZLATO+EIAbwfWCS19CktDqWIs+MZsRzizoHinMN6XhWxg6irf9R1ta2RO4aRMMDkWtfGJetU2j3sJ2mlZ1nfVkEXDyuxAMicqrCjZE4x2g3Czs=
+	t=1714479499; cv=none; b=MfFSh5L0qZE7i7ar67rY6vYw0X730I2bDxOzF/+vlj32TFvZq7UT1VsEsANEnRNgBDNBtdfKFzAd/WGd+52/VJ63fZhLDA9yuWA7vmsj371UjU9RQ20hcH/on1c9zRUl/POY/BOzNLYNVB1w3y0GOwp48ES5ArS97oLsfnAdeWE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714479498; c=relaxed/simple;
-	bh=dPSsH0GZNtnWu2NW2iWIhhOkmqNFgSQujrGR/iDYe7c=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=qURpJJuWcRRMjKvbUUXyjOdji9Aek3Y7AYEkiihwmG54BGdbP1houNUYUtOdfU4LPkgiWyKU7jKryOdGqz20bJbwS+ym3ODRjE54pC2WKjaPBjebVPD9bgPP3ax5s4joqZn0Ib3gUcx7OXBsq9jQIhQMS17pfmmBk0UWMHFcSvU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=l29fQI9B; arc=none smtp.client-ip=115.124.30.110
+	s=arc-20240116; t=1714479499; c=relaxed/simple;
+	bh=JlDUkXQ4Ad/UDrFPJrhCz5Hzi4+XTnh6WHeQgz/yc6o=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=i2gU+4KPc4KlZIcwFua0Pzu3rX0hTpejClAYwJtzQCDx7ft7VS2S1uCypPvFQGczeHvYjarT7PQRZX+27twk4PERwGDZtstJ/dr4NxdzZLbpcGNXj9rLVLUW5YH3ahP029u0SWYPtCHGdBb1gcSKhxS4mYPbabctTz10uDnn0kc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=mPbi54UZ; arc=none smtp.client-ip=115.124.30.133
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
 DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
 	d=linux.alibaba.com; s=default;
-	t=1714479488; h=From:To:Subject:Date:Message-Id:MIME-Version;
-	bh=trZpt6kGsrKog7Y0eP2zTn1GwQfgMxFjWiztnpqSft0=;
-	b=l29fQI9BUOlNha9GZtBduSkX1v4BAoWHx9tVvZjBbM9gq1c5JeiP7a5ytJwwb1fiOKgnBouBnl0sdLxh56f5D6ODhzDBarnV/QPPpH60QIdGCI+L2LqfzMVTFN8GvRyptHOHP46XtRb9RkNLWZuaY/Q44PmJg9WPWhEWYzbB2a0=
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R121e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=maildocker-contentspam033037067109;MF=lulie@linux.alibaba.com;NM=1;PH=DS;RN=21;SR=0;TI=SMTPD_---0W5cFrMK_1714479485;
-Received: from localhost(mailfrom:lulie@linux.alibaba.com fp:SMTPD_---0W5cFrMK_1714479485)
+	t=1714479490; h=From:To:Subject:Date:Message-Id:MIME-Version;
+	bh=kcQeThUMr+D776DE706wmtmLubbhjUt/tZV3QB7MQdo=;
+	b=mPbi54UZEbxVJbZihKAVhpl7D0UEvPjUTdOzPfhv2rn3zcfZWlxypdWOhPyacoyusgxbN5upSHQwmTfFXKWl6K9AZshRxpG/e+32bZAUCA5kcTrmimhUCe2qIQ0bZrn+/0OOhWo3OveNZRzOqIwZbq/sCQKRUVImnvLcR2Sbw7w=
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R121e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=maildocker-contentspam033068173054;MF=lulie@linux.alibaba.com;NM=1;PH=DS;RN=21;SR=0;TI=SMTPD_---0W5cHy9g_1714479487;
+Received: from localhost(mailfrom:lulie@linux.alibaba.com fp:SMTPD_---0W5cHy9g_1714479487)
           by smtp.aliyun-inc.com;
-          Tue, 30 Apr 2024 20:18:07 +0800
+          Tue, 30 Apr 2024 20:18:09 +0800
 From: Philo Lu <lulie@linux.alibaba.com>
 To: bpf@vger.kernel.org
 Cc: martin.lau@linux.dev,
@@ -61,10 +62,12 @@ Cc: martin.lau@linux.dev,
 	shuah@kernel.org,
 	drosen@google.com,
 	xuanzhuo@linux.alibaba.com
-Subject: [PATCH bpf-next 0/2] bpf: Allow skb dynptr for tp_btf
-Date: Tue, 30 Apr 2024 20:18:03 +0800
-Message-Id: <20240430121805.104618-1-lulie@linux.alibaba.com>
+Subject: [PATCH bpf-next 1/2] bpf: Allow bpf_dynptr_from_skb() for tp_btf
+Date: Tue, 30 Apr 2024 20:18:04 +0800
+Message-Id: <20240430121805.104618-2-lulie@linux.alibaba.com>
 X-Mailer: git-send-email 2.32.0.3.g01195cf9f
+In-Reply-To: <20240430121805.104618-1-lulie@linux.alibaba.com>
+References: <20240430121805.104618-1-lulie@linux.alibaba.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -73,33 +76,44 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-This makes bpf_dynptr_from_skb usable for tp_btf, so that we can easily
-parse skb in tracepoints. This has been discussed in [0], and Martin
-suggested to use dynptr (instead of helpers like bpf_skb_load_bytes).
+Making tp_btf able to use bpf_dynptr_from_skb(), which is useful for skb
+parsing, especially for non-linear paged skb data. This is achieved by
+adding KF_TRUSTED_ARGS flag to bpf_dynptr_from_skb and registering it
+for TRACING progs. With KF_TRUSTED_ARGS, args from fentry/fexit are
+excluded, so that unsafe progs like fexit/__kfree_skb are not allowed.
 
-For safety, skb dynptr shouldn't be used in fentry/fexit. This is achieved
-by add KF_TRUSTED_ARGS flag in bpf_dynptr_from_skb defination. IIUC, the
-flag can be added to current defination directly, because skb is always
-passed from ctx. But I'm not definitely sure about this. Please tell me if
-there is any problem. Thanks in advance.
+We also need the skb dynptr to be read-only in tp_btf. Because
+may_access_direct_pkt_data() returns false by default when checking
+bpf_dynptr_from_skb, there is no need to add BPF_PROG_TYPE_TRACING to it
+explicitly.
 
-Selftests are expanded with skb dynptr used in tp_btf. They also make sure
-that skb dynptr cannot be used in fentry/fexit.
+Signed-off-by: Philo Lu <lulie@linux.alibaba.com>
+---
+ net/core/filter.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-[0]
-https://lore.kernel.org/all/20240205121038.41344-1-lulie@linux.alibaba.com/T/
-
-Philo Lu (2):
-  bpf: Allow bpf_dynptr_from_skb() for tp_btf
-  selftests/bpf: Expand skb dynptr selftests for tp_btf
-
- net/core/filter.c                             |  3 +-
- .../testing/selftests/bpf/prog_tests/dynptr.c | 36 +++++++++++++++++--
- .../testing/selftests/bpf/progs/dynptr_fail.c | 25 +++++++++++++
- .../selftests/bpf/progs/dynptr_success.c      | 23 ++++++++++++
- 4 files changed, 84 insertions(+), 3 deletions(-)
-
---
+diff --git a/net/core/filter.c b/net/core/filter.c
+index 786d792ac816..399492970b8c 100644
+--- a/net/core/filter.c
++++ b/net/core/filter.c
+@@ -11990,7 +11990,7 @@ int bpf_dynptr_from_skb_rdonly(struct sk_buff *skb, u64 flags,
+ }
+ 
+ BTF_KFUNCS_START(bpf_kfunc_check_set_skb)
+-BTF_ID_FLAGS(func, bpf_dynptr_from_skb)
++BTF_ID_FLAGS(func, bpf_dynptr_from_skb, KF_TRUSTED_ARGS)
+ BTF_KFUNCS_END(bpf_kfunc_check_set_skb)
+ 
+ BTF_KFUNCS_START(bpf_kfunc_check_set_xdp)
+@@ -12039,6 +12039,7 @@ static int __init bpf_kfunc_init(void)
+ 	ret = ret ?: register_btf_kfunc_id_set(BPF_PROG_TYPE_LWT_XMIT, &bpf_kfunc_set_skb);
+ 	ret = ret ?: register_btf_kfunc_id_set(BPF_PROG_TYPE_LWT_SEG6LOCAL, &bpf_kfunc_set_skb);
+ 	ret = ret ?: register_btf_kfunc_id_set(BPF_PROG_TYPE_NETFILTER, &bpf_kfunc_set_skb);
++	ret = ret ?: register_btf_kfunc_id_set(BPF_PROG_TYPE_TRACING, &bpf_kfunc_set_skb);
+ 	ret = ret ?: register_btf_kfunc_id_set(BPF_PROG_TYPE_XDP, &bpf_kfunc_set_xdp);
+ 	ret = ret ?: register_btf_kfunc_id_set(BPF_PROG_TYPE_CGROUP_SOCK_ADDR,
+ 					       &bpf_kfunc_set_sock_addr);
+-- 
 2.32.0.3.g01195cf9f
 
 
