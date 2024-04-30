@@ -1,93 +1,93 @@
-Return-Path: <bpf+bounces-28300-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-28301-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id A28128B81D3
-	for <lists+bpf@lfdr.de>; Tue, 30 Apr 2024 23:17:05 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B944E8B81D4
+	for <lists+bpf@lfdr.de>; Tue, 30 Apr 2024 23:20:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 430641F2468F
-	for <lists+bpf@lfdr.de>; Tue, 30 Apr 2024 21:17:05 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8A3B2B20920
+	for <lists+bpf@lfdr.de>; Tue, 30 Apr 2024 21:20:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD27C1A38DF;
-	Tue, 30 Apr 2024 21:16:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A5C1B179B2;
+	Tue, 30 Apr 2024 21:19:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Tq1m/I6u"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RAMQaj4l"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-f67.google.com (mail-ed1-f67.google.com [209.85.208.67])
+Received: from mail-ej1-f67.google.com (mail-ej1-f67.google.com [209.85.218.67])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB35412C819
-	for <bpf@vger.kernel.org>; Tue, 30 Apr 2024 21:16:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.67
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BAA4A19DF6B
+	for <bpf@vger.kernel.org>; Tue, 30 Apr 2024 21:19:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.67
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714511819; cv=none; b=VpxugZh4uZWw8iY8v3R4QAlJZuHECfGtnb+AtOzHXYqLBZiDkamo7c/kFBL2WlaYcdmWKxXmcM8N5YKBVf+VPIifMxIq8SxifRHdsSb83iLmwtA8i/OhNXL1pBimxFX44xR4nMt6CXlrnFDqwZ2MWyrcHIh6xm1fTBLE0IMZKlo=
+	t=1714511998; cv=none; b=ggOixzFIxS6BXcUb58YoOvhh2MI54OxIzTZvjyX6eWsYCKQ28o+i5T2rDskkKlHy0Uuku0DutXBtAo6doOxJ3n8zSxRfC+Ax9Zpy9A9SAcpuPJ6CeIZdnHa+SEV9s+X/FTwERzzW2ar5lgqDoshv+xTlykxgJ1Prrn0Ku23Iqdc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714511819; c=relaxed/simple;
-	bh=9Mwv1ful8+4xT+Y5jGCN+FVviNYq6kBfVRPNYxC7Wmw=;
+	s=arc-20240116; t=1714511998; c=relaxed/simple;
+	bh=nbhg+FtJ+rzaLBEkfGphqAzbuTdb8Sqf3FsUE3wlhgE=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=csxCSnnwtTntFKN68IoYEtDvwvoGfqSCjsqfUa3XlmbpesX+VON2zf+eHsfR8Dds/PlJK5Fe8NWcLURRTGPZyOu8nnEKrEdUtI1/ubzAGxInHZfKdieC4Zxbbc1ODso8O1c1MPCu6St1wvCmBM1vICpiLdR5v5EQOzE6H8rOPIA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Tq1m/I6u; arc=none smtp.client-ip=209.85.208.67
+	 To:Cc:Content-Type; b=gXJfzSpzxN6smbbebcOCJ7kQcpQFIcm/C9gE8W+Mrw6Gxq2ip9bJtpHH5FJCAYARpC8Y+MCnCLAANeXN+diLi6H69m0yXmx5jssOMMZzXVKoGk/xS/F21wbh6zibfYewsRNS70n5nPi34UlA9i//M7N4OvYmxxoYV2vvu/KCthY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=RAMQaj4l; arc=none smtp.client-ip=209.85.218.67
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f67.google.com with SMTP id 4fb4d7f45d1cf-57225322312so8220137a12.1
-        for <bpf@vger.kernel.org>; Tue, 30 Apr 2024 14:16:57 -0700 (PDT)
+Received: by mail-ej1-f67.google.com with SMTP id a640c23a62f3a-a524ecaf215so779987966b.2
+        for <bpf@vger.kernel.org>; Tue, 30 Apr 2024 14:19:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714511816; x=1715116616; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1714511995; x=1715116795; darn=vger.kernel.org;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=9Mwv1ful8+4xT+Y5jGCN+FVviNYq6kBfVRPNYxC7Wmw=;
-        b=Tq1m/I6u/8Wd4uwcmZ2kw/K1bAO18iLh7rYomeqI4G2cWEOf/N138JACla6Kkzye3i
-         uQWJL41bqCwJOE9dUqMNeUL7AtNCF/QUNttBk4WJSWD078PDVu1ucYTmaf371YFUMonk
-         waeFr+ubnfpTs0h2kv3/9b+sy/0dgzDwLI0wGRITAwcqbAL7+fzhts8yTmvYeRCnVHKm
-         MLdJxJgB4kbaM7VfTDOGn7y+3Yfh53EN1yO8OcihMsbV80S0TEMk7vtRZSFwsuZfXre7
-         np8a2Y9WzLJlwa9LhSpCO0XLfpilECg6UbeVSTh2AK3AgOHoFj+qTqy0+Wtr1jrvx/Xq
-         2SxA==
+        bh=nbhg+FtJ+rzaLBEkfGphqAzbuTdb8Sqf3FsUE3wlhgE=;
+        b=RAMQaj4lgsTIqoGCwZZrVf0jtt/FK35kwjwV1vW3Ln0KLGEg7hC7NiDMt7nNvA1DM3
+         Jhm25juOkZ1U6QILpWwwBQjkR+i71C+n5DQOq8tL+M88/ltTCPtT0VZUkAcODvhBcQYN
+         xa8Qwms4yIxWUVGDZATSzdVAyKa/p0248C/FsHmtllKdvs7GtWdhfzDEKe0aEGA9IIAs
+         0hjCMBcZGxj4R09Ux1+IhNwZqbeSuS8ShaoTNs4OuShMAxwFdJBN4BAvDhn1zKaqESSq
+         Z7K7KhrwAWKbno4HjEc0lv7Pd3Vs54otRBMP06Rzk8vqR72z8nmSB+9CvCbHjV/iEa4D
+         nQzw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714511816; x=1715116616;
+        d=1e100.net; s=20230601; t=1714511995; x=1715116795;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=9Mwv1ful8+4xT+Y5jGCN+FVviNYq6kBfVRPNYxC7Wmw=;
-        b=UaXnpJBN/Zy29MSn6n/nhxL2haOZPLT53ZpK1bgKsFt25OBfiOPj50CqrUc8Cf5t3F
-         mGWPhqN2kcNXsmgU/UAj8tL47HTabbzvMNRcbYprxqtpa9OXVLqXub2LWNVFF4BuTRKN
-         ABqNW61d5LTGzxHr+XseD06HpyzHJTO0k3fxxpXeGFnL41vLrQ44ZxkXemkjEETfDch/
-         hEl1iBCHiE9pTam/velMOnSlkSuL5ZN1yTkJTT38SEOo3GGcsouQcI2cvnpMeOx+b4Gq
-         imoDB0LMyV2+KLaCKNH0yGD7K1T9rdE9u16KScwdWT058pul7YeZYlu7HT7TA3C/srxh
-         Kqzw==
-X-Gm-Message-State: AOJu0YxyGOZh1iRu49EZJyEjQzwk32gALGvf+jxPqkX5ViHW/Y9cbxe1
-	qrDYsk8jI5XCXBuOVl2rVYtJPEfiTB381Ub1/nWYyhkfvnzAFdNorGAmI3MxwOHmunRFqkYk+AE
-	pZJNHSSnlzUHzrCGWfU5xJFs3zr3LVRsn
-X-Google-Smtp-Source: AGHT+IHeNFWeoniYzxVmGpKyl9Il+8hslKmHWLS2mZTT2SVWgJXc0J/6WMlDAcMMkuiZLQhsvjDR+WE2egiDpuddIkY=
-X-Received: by 2002:a50:8e55:0:b0:572:a731:dd14 with SMTP id
- 21-20020a508e55000000b00572a731dd14mr308792edx.28.1714511815996; Tue, 30 Apr
- 2024 14:16:55 -0700 (PDT)
+        bh=nbhg+FtJ+rzaLBEkfGphqAzbuTdb8Sqf3FsUE3wlhgE=;
+        b=mqipHnp10pFme3EWLn7x/Fkox4X8Pqkuf35MPaKfLM0IowXUNWBE21BMxK9wQStecN
+         YPLwTjaukZ04eNTghCptgkGUR6U58o7cgVfQEr27w7YBF/HIJ9lziBKM2DjigEw2yVAH
+         lapMXABvcd4mXoQYPnAvOoNLOm47k75QMXqvHIR8RpZXoZckXXH3EapckjTkDXvIDZ5H
+         pmOYtaclAVzNexv9ZvCn3GhTpfF+LTR1rHljoQNFgDTWbRphctI4HPlLRbtw8x7Jn3R/
+         du9s62gfcNACGjkaSXg/9WN9KmKFJCT4ZFDFufE6RNIZgaV6gvKbnZQc/cMWW7jkeSZM
+         lUkg==
+X-Gm-Message-State: AOJu0Yzo/VhuLA7FMzTVD8kzE8IPV65cUDWOA4DLScSfU+vWH+xcznIt
+	PwAERsA/AjWcENu8Loq6Y8n9CRBgkXivACF4CrQZPELxVuw0SYMTHdva09zPeDSlov6ozk6kpQb
+	MajeO117RxdLZCgszcEAJG+nNVFM=
+X-Google-Smtp-Source: AGHT+IHtp3zYER1zgzVW1n/H9LmPhoDIRMfznFyHkEyAJ2zB9F+x88Q/GAsPCegJXHQY4t3BBpHJxRyaamtW07vG8yM=
+X-Received: by 2002:a17:906:b1c2:b0:a58:bdfa:c2b1 with SMTP id
+ bv2-20020a170906b1c200b00a58bdfac2b1mr583967ejb.9.1714511994379; Tue, 30 Apr
+ 2024 14:19:54 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240430201952.888293-1-andrii@kernel.org>
-In-Reply-To: <20240430201952.888293-1-andrii@kernel.org>
+References: <20240430201952.888293-1-andrii@kernel.org> <20240430201952.888293-2-andrii@kernel.org>
+In-Reply-To: <20240430201952.888293-2-andrii@kernel.org>
 From: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Date: Tue, 30 Apr 2024 23:16:19 +0200
-Message-ID: <CAP01T75gN8US6BZXa5K6wOsEJdOqc0N=mUUNBeXDYrgFzKUM-A@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 1/2] libbpf: fix potential overflow in ring__consume_n()
+Date: Tue, 30 Apr 2024 23:19:18 +0200
+Message-ID: <CAP01T75HvUJe9RvdSGP1WdmWhgsWiqEY2QRZtHqZEop42MT=wQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 2/2] libbpf: fix ring_buffer__consume_n() return
+ result logic
 To: Andrii Nakryiko <andrii@kernel.org>
 Cc: bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net, 
 	martin.lau@kernel.org, kernel-team@meta.com
 Content-Type: text/plain; charset="UTF-8"
 
-On Tue, 30 Apr 2024 at 22:24, Andrii Nakryiko <andrii@kernel.org> wrote:
+On Tue, 30 Apr 2024 at 22:31, Andrii Nakryiko <andrii@kernel.org> wrote:
 >
-> ringbuf_process_ring() return int64_t, while ring__consume_n() assigns
-> it to int. It's highly unlikely, but possible for ringbuf_process_ring()
-> to return value larger than INT_MAX, so use int64_t. ring__consume_n()
-> does check INT_MAX before returning int result to the user.
+> Add INT_MAX check to ring_buffer__consume_n(). We do the similar check
+> to handle int return result of all these ring buffer APIs in other APIs
+> and ring_buffer__consume_n() is missing one. This patch fixes this
+> omission.
 >
-> Fixes: 4d22ea94ea33 ("libbpf: Add ring__consume_n / ring_buffer__consume_n")
 > Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
 > ---
 
