@@ -1,209 +1,285 @@
-Return-Path: <bpf+bounces-28273-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-28274-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8267F8B7BFD
-	for <lists+bpf@lfdr.de>; Tue, 30 Apr 2024 17:42:30 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2A3DB8B7CDD
+	for <lists+bpf@lfdr.de>; Tue, 30 Apr 2024 18:30:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A12A01C2319F
-	for <lists+bpf@lfdr.de>; Tue, 30 Apr 2024 15:42:29 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 91BE71F21AFB
+	for <lists+bpf@lfdr.de>; Tue, 30 Apr 2024 16:30:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C99117335B;
-	Tue, 30 Apr 2024 15:42:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 331A8179965;
+	Tue, 30 Apr 2024 16:29:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="E3pHu9FG";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="NYopViYX";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="E3pHu9FG";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="NYopViYX"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iTtPhhGV"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+Received: from mail-pj1-f52.google.com (mail-pj1-f52.google.com [209.85.216.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A6FE7172BBF
-	for <bpf@vger.kernel.org>; Tue, 30 Apr 2024 15:42:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F4F1175554;
+	Tue, 30 Apr 2024 16:29:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714491742; cv=none; b=QYJLMAcyjs1Rr/wN5rRBL+H11Hu28tVppfczujkYPj/3WmKJRK0OA1hIFMkgFDlmwbduX7i1e0mhwio5Pw20oZrgTWYd2ROdisSjQN0UVQJqX0DFk1Leu4Up6JRyTPyrcWf5+Na9KlngCZY90JYzxfFKeiHGLuyucrApWGgeC7M=
+	t=1714494594; cv=none; b=EJxTUj0LJzWCoxdgh4zCsDSZEINHJ13iI+o6YPA93bz0Ptuy8HFpxqjawDWKHxdyvzQy0Cgg3TWT4TC+HGt+6uYo6JONIzLG6RM6AtMKomLtmf3aamaZp5l2wDWX1E49No5bcOh8rj/GGnFpbGeWmgTvKrIFuoSiDpbP0bCG70I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714491742; c=relaxed/simple;
-	bh=rQAzw/Rtcq7+lv47nkP1QBTcsSLXuiCBqzoJXM0+yhg=;
-	h=Message-ID:Date:MIME-Version:From:Subject:To:Content-Type; b=Wbx9N2unELyBPadLCNwRSM3ZZm0mI/8Q3E4IwYaMFQgDv0taCvfKTbmOoN7g8M05Khto9KsU2wrP0AnQ8v0fMoFab4+2JDztd9H+9G3OQ5PS8kbxSTbxTUHVbSxmDa7EErAofMAG52qJ1VkTdLroxjYz3nVvfmnGXKDtUaSHeII=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=E3pHu9FG; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=NYopViYX; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=E3pHu9FG; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=NYopViYX; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id A3CED1F7E6;
-	Tue, 30 Apr 2024 15:42:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1714491738; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:autocrypt:autocrypt;
-	bh=rQAzw/Rtcq7+lv47nkP1QBTcsSLXuiCBqzoJXM0+yhg=;
-	b=E3pHu9FGw6VO8B4h1Bz6veAcVWs5qg9ssgtDhSfuTz/JQH1C8vo68LMFMQjMDfKCWyPctN
-	iIW5Iq9vHXWjZ6V63apRxasoi/4WWLSSlqz5fD5owDPnc6DzF+6nzQAbH9MKhjNADaqyXZ
-	5AiXQtUeJdYdkP/vQtS/N8DLDq1Z1Go=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1714491738;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:autocrypt:autocrypt;
-	bh=rQAzw/Rtcq7+lv47nkP1QBTcsSLXuiCBqzoJXM0+yhg=;
-	b=NYopViYXgbXYqF6am7icG+CXaqNiLsgTNIsD/SSUZdfNha8S6iF7gF+NvKHh+tkzabgVrB
-	57oym8J6ysbw/KAQ==
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=E3pHu9FG;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=NYopViYX
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1714491738; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:autocrypt:autocrypt;
-	bh=rQAzw/Rtcq7+lv47nkP1QBTcsSLXuiCBqzoJXM0+yhg=;
-	b=E3pHu9FGw6VO8B4h1Bz6veAcVWs5qg9ssgtDhSfuTz/JQH1C8vo68LMFMQjMDfKCWyPctN
-	iIW5Iq9vHXWjZ6V63apRxasoi/4WWLSSlqz5fD5owDPnc6DzF+6nzQAbH9MKhjNADaqyXZ
-	5AiXQtUeJdYdkP/vQtS/N8DLDq1Z1Go=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1714491738;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:autocrypt:autocrypt;
-	bh=rQAzw/Rtcq7+lv47nkP1QBTcsSLXuiCBqzoJXM0+yhg=;
-	b=NYopViYXgbXYqF6am7icG+CXaqNiLsgTNIsD/SSUZdfNha8S6iF7gF+NvKHh+tkzabgVrB
-	57oym8J6ysbw/KAQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 9946C133A7;
-	Tue, 30 Apr 2024 15:42:18 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id zuwPJVoRMWY/YQAAD6G6ig
-	(envelope-from <vbabka@suse.cz>); Tue, 30 Apr 2024 15:42:18 +0000
-Message-ID: <b929d5fb-8e88-4f23-8ec7-6bdaf61f84f9@suse.cz>
-Date: Tue, 30 Apr 2024 17:42:18 +0200
+	s=arc-20240116; t=1714494594; c=relaxed/simple;
+	bh=nz+VaBU6RtPqdW451GEPI/aHEIuxOlomtq0gZmOR5zM=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=uo5gUCdvQVHqwBUMiKWxAEE0AAkRVcwkAQOHR7HSCR/4kQWccVVfKlXsby7iMYqpI0A+MzwrnLJ2/QeOUfvnQanrmDXiWO8fy6iO0mh2h1W0z8b8G+W08KemI9WYMkY5lSqhgUsr0SCXklVy5ytHXfvhf2iB6J/gp60cJ7q3kKI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=iTtPhhGV; arc=none smtp.client-ip=209.85.216.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f52.google.com with SMTP id 98e67ed59e1d1-2a4b457769eso4920673a91.2;
+        Tue, 30 Apr 2024 09:29:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1714494592; x=1715099392; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=K9EaAPDvr92t3gXHQnvo1ngk0g+MSCmUHMmnShhgOnA=;
+        b=iTtPhhGV5fWEl7e+QKrwb/zJfHsEkjuZbAE9A+L6jVrKkpyZQfbWiykbg6bTabMaOv
+         zmvj8gZ2UXwZ/L3jESx1UGiF52Zv37uq9rj5TW+8VxgKBt6lUbxfPNpfack5Xpm+DjtO
+         ITP06sS/zbsQJhuMMSkHRogSoqTWxaMe7tIyE/C0v7X0/NJd+WoD+K06N82VXr8j6q9R
+         CbjEmx1bgJExO6QzenLrhQCJxTvONuPB8HYTghfVyw0ZEZ0a3S++v/LhzNxNQR0yKmKY
+         veA9RgfQX6AI+CbJ5BoR4p6TfLuhBZUFeGzqzuB+fLnWn6rPjgNH/G0nKO2BMcKSGyNM
+         tjdg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714494592; x=1715099392;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=K9EaAPDvr92t3gXHQnvo1ngk0g+MSCmUHMmnShhgOnA=;
+        b=Kvkoh0uld4DeJaqEhtj9sbrogVOlYqvJQ0tDbnFYOnBd1zSkoiXJ4jtZbF489/ExXo
+         PXS/oPY2JbBA+QO+kaBISR3+MT1uP9kYhaYeQHlTVMXyM7r4pyAZiheqnt5V/2bexw0i
+         4NsO1dhE6SutQgtSPaKaoE424XN5sJR7dS2lFs/n1k4ZfIUbSVd0ynJq5Qddt1+BBvPt
+         oeUtvsfdDx1qRL4NuuKXRFwMtfRI3g4/BI805FKAs9j1/UZlFVtciq6kWMwX1SHR+KeE
+         7R+eRghinisSLd7vqydDl5EJAlMH2lz+c3FY+NkfN91sLNxJ9I5gzWfkmpbXYlGhpBCK
+         vp4w==
+X-Forwarded-Encrypted: i=1; AJvYcCWlfmnY0vLMcgMT+yXLwPRDrW+xBIZAcBWk15XUq7jUCm+swuLiXnNB/sxSOOuXXp5TQJCuJ7R5LnVgyYLP+oOBOk5KfM21tjLMOvsCJ5EO/EdOS/IfOMQPnLk1GrDR0Yyfyh1fdLfsLiIMMmI3rmSdcSIqSfq/kcFrmzit7wTPgrOytcny
+X-Gm-Message-State: AOJu0YyJHMA/b71fWFV2rQ34AclWZqL+O3wqguWodsCaQ+1SnswhL5Iy
+	warAXXRonPBiacLcoFbGJE/QeVmCTfd53Wl3qbo5plU0eeH6rYhTKAbFncZrfFB5catSqY8jIj7
+	l6scmodYtq1HgODTk4Tg3qtadLUXpqqm/
+X-Google-Smtp-Source: AGHT+IG86XdZ6k/BeO+ngAp+nqWg9VwdFEyoOuJNHEuvGMjdevq6xJDE40lZ4lICPs2AgNN+c8w8m/aWm10nDV5tsbM=
+X-Received: by 2002:a17:90b:19d0:b0:2af:ff3:e14a with SMTP id
+ nm16-20020a17090b19d000b002af0ff3e14amr2988226pjb.16.1714494592488; Tue, 30
+ Apr 2024 09:29:52 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-From: Vlastimil Babka <vbabka@suse.cz>
-Subject: [LSF/MM/BPF TOPIC] SLUB: what's next?
-To: lsf-pc@lists.linux-foundation.org, linux-mm@kvack.org,
- bpf <bpf@vger.kernel.org>
-Content-Language: en-US
-Autocrypt: addr=vbabka@suse.cz; keydata=
- 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
- EP+ylKVEKb0Q2A==
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Flag: NO
-X-Spam-Score: -3.10
-X-Rspamd-Action: no action
-X-Rspamd-Queue-Id: A3CED1F7E6
-X-Spam-Level: 
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-3.10 / 50.00];
-	BAYES_HAM(-2.60)[98.23%];
-	SUBJECT_ENDS_QUESTION(1.00)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	XM_UA_NO_VERSION(0.01)[];
-	MX_GOOD(-0.01)[];
-	MIME_TRACE(0.00)[0:+];
-	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	ARC_NA(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	TO_DN_SOME(0.00)[];
-	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	RCVD_TLS_ALL(0.00)[];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	RCPT_COUNT_THREE(0.00)[3];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	MID_RHS_MATCH_FROM(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.cz:dkim];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	DKIM_TRACE(0.00)[suse.cz:+]
+References: <171318533841.254850.15841395205784342850.stgit@devnote2>
+ <CAEf4BzYMToveELxsOJ9dXz3H-9omhxRLKgGK-ppYvmK8pgDsfA@mail.gmail.com>
+ <20240429225119.410833c12d9f6fbcce0a58db@kernel.org> <CAEf4BzZDqD4fyLpoq9r2M0HnES7aO7YW=ZNH-k8uPJWd_VbAJg@mail.gmail.com>
+ <20240430223217.fd375d57d130a4207be18e94@kernel.org>
+In-Reply-To: <20240430223217.fd375d57d130a4207be18e94@kernel.org>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Tue, 30 Apr 2024 09:29:40 -0700
+Message-ID: <CAEf4BzZQLPL7419W1=yNw6gzB4gquiXfeANbUKbUL8bK+5if=w@mail.gmail.com>
+Subject: Re: [PATCH v9 00/36] tracing: fprobe: function_graph: Multi-function
+ graph and fprobe on fgraph
+To: Masami Hiramatsu <mhiramat@kernel.org>
+Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, Steven Rostedt <rostedt@goodmis.org>, 
+	Florent Revest <revest@chromium.org>, linux-trace-kernel@vger.kernel.org, 
+	LKML <linux-kernel@vger.kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
+	bpf <bpf@vger.kernel.org>, Sven Schnelle <svens@linux.ibm.com>, 
+	Alexei Starovoitov <ast@kernel.org>, Jiri Olsa <jolsa@kernel.org>, 
+	Arnaldo Carvalho de Melo <acme@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Alan Maguire <alan.maguire@oracle.com>, Mark Rutland <mark.rutland@arm.com>, 
+	Peter Zijlstra <peterz@infradead.org>, Thomas Gleixner <tglx@linutronix.de>, Guo Ren <guoren@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi,
+On Tue, Apr 30, 2024 at 6:32=E2=80=AFAM Masami Hiramatsu <mhiramat@kernel.o=
+rg> wrote:
+>
+> On Mon, 29 Apr 2024 13:25:04 -0700
+> Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
+>
+> > On Mon, Apr 29, 2024 at 6:51=E2=80=AFAM Masami Hiramatsu <mhiramat@kern=
+el.org> wrote:
+> > >
+> > > Hi Andrii,
+> > >
+> > > On Thu, 25 Apr 2024 13:31:53 -0700
+> > > Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
+> > >
+> > > > Hey Masami,
+> > > >
+> > > > I can't really review most of that code as I'm completely unfamilia=
+r
+> > > > with all those inner workings of fprobe/ftrace/function_graph. I le=
+ft
+> > > > a few comments where there were somewhat more obvious BPF-related
+> > > > pieces.
+> > > >
+> > > > But I also did run our BPF benchmarks on probes/for-next as a basel=
+ine
+> > > > and then with your series applied on top. Just to see if there are =
+any
+> > > > regressions. I think it will be a useful data point for you.
+> > >
+> > > Thanks for testing!
+> > >
+> > > >
+> > > > You should be already familiar with the bench tool we have in BPF
+> > > > selftests (I used it on some other patches for your tree).
+> > >
+> > > What patches we need?
+> > >
+> >
+> > You mean for this `bench` tool? They are part of BPF selftests (under
+> > tools/testing/selftests/bpf), you can build them by running:
+> >
+> > $ make RELEASE=3D1 -j$(nproc) bench
+> >
+> > After that you'll get a self-container `bench` binary, which has all
+> > the self-contained benchmarks.
+> >
+> > You might also find a small script (benchs/run_bench_trigger.sh inside
+> > BPF selftests directory) helpful, it collects final summary of the
+> > benchmark run and optionally accepts a specific set of benchmarks. So
+> > you can use it like this:
+> >
+> > $ benchs/run_bench_trigger.sh kprobe kprobe-multi
+> > kprobe         :   18.731 =C2=B1 0.639M/s
+> > kprobe-multi   :   23.938 =C2=B1 0.612M/s
+> >
+> > By default it will run a wider set of benchmarks (no uprobes, but a
+> > bunch of extra fentry/fexit tests and stuff like this).
+>
+> origin:
+> # benchs/run_bench_trigger.sh
+> kretprobe :    1.329 =C2=B1 0.007M/s
+> kretprobe-multi:    1.341 =C2=B1 0.004M/s
+> # benchs/run_bench_trigger.sh
+> kretprobe :    1.288 =C2=B1 0.014M/s
+> kretprobe-multi:    1.365 =C2=B1 0.002M/s
+> # benchs/run_bench_trigger.sh
+> kretprobe :    1.329 =C2=B1 0.002M/s
+> kretprobe-multi:    1.331 =C2=B1 0.011M/s
+> # benchs/run_bench_trigger.sh
+> kretprobe :    1.311 =C2=B1 0.003M/s
+> kretprobe-multi:    1.318 =C2=B1 0.002M/s s
+>
+> patched:
+>
+> # benchs/run_bench_trigger.sh
+> kretprobe :    1.274 =C2=B1 0.003M/s
+> kretprobe-multi:    1.397 =C2=B1 0.002M/s
+> # benchs/run_bench_trigger.sh
+> kretprobe :    1.307 =C2=B1 0.002M/s
+> kretprobe-multi:    1.406 =C2=B1 0.004M/s
+> # benchs/run_bench_trigger.sh
+> kretprobe :    1.279 =C2=B1 0.004M/s
+> kretprobe-multi:    1.330 =C2=B1 0.014M/s
+> # benchs/run_bench_trigger.sh
+> kretprobe :    1.256 =C2=B1 0.010M/s
+> kretprobe-multi:    1.412 =C2=B1 0.003M/s
+>
+> Hmm, in my case, it seems smaller differences (~3%?).
+> I attached perf report results for those, but I don't see large differenc=
+e.
 
-I'd like to propose a session about the next steps for SLUB. This is
-different from the BOF about sheaves that Matthew suggested, which would be
-not suitable for the whole group due to being not fleshed out enough yet.
-But the session could be scheduled after the BOF so if we do brainstorm
-something promising there, the result could be discussed as part of the full
-session.
+I ran my benchmarks on bare metal machine (and quite powerful at that,
+you can see my numbers are almost 10x of yours), with mitigations
+disabled, no retpolines, etc. If you have any of those mitigations it
+might result in smaller differences, probably. If you are running
+inside QEMU/VM, the results might differ significantly as well.
 
-Aside from that my preliminary plan is to discuss:
-
-- what was made possible by reducing the slab allocators implementations to
-a single one, and what else could be done now with a single implementation
-
-- the work-in-progress work (for now in the context of maple tree) on SLUB
-per-cpu array caches and preallocation
-
-- what functionality would SLUB need to gain so the extra caching done by
-bpf allocator on top wouldn't be necessary? (kernel/bpf/memalloc.c)
-
-- similar wrt lib/objpool.c (did you even noticed it was added? :)
-
-- maybe the mempool functionality could be better integrated as well?
-
-- are there more cases where people have invented layers outside mm and that
-could be integrated with some effort? IIRC io_uring also has some caching on
-top currently...
-
-- better/more efficient memcg integration?
-
-- any other features people would like SLUB to have?
-
-Thanks,
-Vlastimil
+>
+> > > >
+> > > > BASELINE
+> > > > =3D=3D=3D=3D=3D=3D=3D=3D
+> > > > kprobe         :   24.634 =C2=B1 0.205M/s
+> > > > kprobe-multi   :   28.898 =C2=B1 0.531M/s
+> > > > kretprobe      :   10.478 =C2=B1 0.015M/s
+> > > > kretprobe-multi:   11.012 =C2=B1 0.063M/s
+> > > >
+> > > > THIS PATCH SET ON TOP
+> > > > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> > > > kprobe         :   25.144 =C2=B1 0.027M/s (+2%)
+> > > > kprobe-multi   :   28.909 =C2=B1 0.074M/s
+> > > > kretprobe      :    9.482 =C2=B1 0.008M/s (-9.5%)
+> > > > kretprobe-multi:   13.688 =C2=B1 0.027M/s (+24%)
+> > >
+> > > This looks good. Kretprobe should also use kretprobe-multi (fprobe)
+> > > eventually because it should be a single callback version of
+> > > kretprobe-multi.
+>
+> I ran another benchmark (prctl loop, attached), the origin kernel result =
+is here;
+>
+> # sh ./benchmark.sh
+> count =3D 10000000, took 6.748133 sec
+>
+> And the patched kernel result;
+>
+> # sh ./benchmark.sh
+> count =3D 10000000, took 6.644095 sec
+>
+> I confirmed that the parf result has no big difference.
+>
+> Thank you,
+>
+>
+> > >
+> > > >
+> > > > These numbers are pretty stable and look to be more or less represe=
+ntative.
+> > > >
+> > > > As you can see, kprobes got a bit faster, kprobe-multi seems to be
+> > > > about the same, though.
+> > > >
+> > > > Then (I suppose they are "legacy") kretprobes got quite noticeably
+> > > > slower, almost by 10%. Not sure why, but looks real after re-runnin=
+g
+> > > > benchmarks a bunch of times and getting stable results.
+> > >
+> > > Hmm, kretprobe on x86 should use ftrace + rethook even with my series=
+.
+> > > So nothing should be changed. Maybe cache access pattern has been
+> > > changed?
+> > > I'll check it with tracefs (to remove the effect from bpf related cha=
+nges)
+> > >
+> > > >
+> > > > On the other hand, multi-kretprobes got significantly faster (+24%!=
+).
+> > > > Again, I don't know if it is expected or not, but it's a nice
+> > > > improvement.
+> > >
+> > > Thanks!
+> > >
+> > > >
+> > > > If you have any idea why kretprobes would get so much slower, it wo=
+uld
+> > > > be nice to look into that and see if you can mitigate the regressio=
+n
+> > > > somehow. Thanks!
+> > >
+> > > OK, let me check it.
+> > >
+> > > Thank you!
+> > >
+> > > >
+> > > >
+> > > > >  51 files changed, 2325 insertions(+), 882 deletions(-)
+> > > > >  create mode 100644 tools/testing/selftests/ftrace/test.d/dyneven=
+t/add_remove_fprobe_repeat.tc
+> > > > >
+> > > > > --
+> > > > > Masami Hiramatsu (Google) <mhiramat@kernel.org>
+> > > > >
+> > >
+> > >
+> > > --
+> > > Masami Hiramatsu (Google) <mhiramat@kernel.org>
+>
+>
+> --
+> Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
