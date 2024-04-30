@@ -1,104 +1,108 @@
-Return-Path: <bpf+bounces-28237-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-28238-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 351E18B6E99
-	for <lists+bpf@lfdr.de>; Tue, 30 Apr 2024 11:38:57 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 71CFE8B6EA6
+	for <lists+bpf@lfdr.de>; Tue, 30 Apr 2024 11:40:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DF9851F249FE
-	for <lists+bpf@lfdr.de>; Tue, 30 Apr 2024 09:38:56 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A40CC1C22CB8
+	for <lists+bpf@lfdr.de>; Tue, 30 Apr 2024 09:40:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD96D1A0B17;
-	Tue, 30 Apr 2024 09:36:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 35962129E7E;
+	Tue, 30 Apr 2024 09:38:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KUv5qPYQ"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="RawAErIn"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3029E1A0B06;
-	Tue, 30 Apr 2024 09:36:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 50C9C127E0D
+	for <bpf@vger.kernel.org>; Tue, 30 Apr 2024 09:38:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714469793; cv=none; b=rs2VOdlKmIw6IHpJXrBwqYvg7/EXlNy57y4AyITq4R3iOYFBkgbk/1xlQZ7e8G7S5bk0SJxftnPcHINMlrW6DMT0U+056EVXAv9hlxIde/wlvrv5LxeMt/EK2vHZ3L650gf/r7/gwMkwCfoOXtGU5IYEKwwg5iusAWAWesDKHkQ=
+	t=1714469903; cv=none; b=rO8DZ0XGj3y6SWUrGbW+jUN5AKHmOsRySzx7Pj0dgEVg2CG4CAkUGCnvCSB5DHFRf1FxEUVHnNwqCyJ18OjRPGA/cFuAmowzDMq0TdVjINnYgewM0ac5szEfd0M29ABJZcvRXXoMpkTMVTPJ5WaCCmbI6P5vMOLx16J1tQdJW+Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714469793; c=relaxed/simple;
-	bh=bhzZtbW8vADrbyYDpEyoD631jxsaMcAgBlvgv/dK/J4=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=RQDKS4v0R+QsqZ74QxV00VFNDdhdrPrnx/ZOcMl5D6g7QrLT/0kJlmiFqiD4iYJOTAmPslnaw+X6m0lNQBBItHhEZF6nuBcAPx9ppICXyy/7sPHWxozJTGEyFcoQJdu8BwQ/fsKevsrAIJ6FYyWcVZbGo/vm2Jea039cdYEt0DI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KUv5qPYQ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B165EC4AF19;
-	Tue, 30 Apr 2024 09:36:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714469793;
-	bh=bhzZtbW8vADrbyYDpEyoD631jxsaMcAgBlvgv/dK/J4=;
-	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-	b=KUv5qPYQE65E6OtMiIdMBYO6aBSQUK+DK2gfLswwPV68AlPrJUwVEZRA6+9jw7IDW
-	 Y6n0al0Jt38Lu6ww3ijeOEAVwTYPfW1Foawdl4fbt4p6LlyOd1m9dI4VDgU0akIrhp
-	 f6pXJGsqBjG/8Wrq5PxbypdLpt6FZHvbTGofuJNo3ryZjgTEYwl+68Wk2UjrDAMHbN
-	 zhvIO92nOcOJj79myHtAbvVOXQUZKXGB5fmsfUP0FBezfJsUNBNj8EHTzNH3+8r2yQ
-	 306vqNOIqB5rpoZPLmB53SLSO1njcXdlwwMPMHUxLnsJbRV5HC2yr5f//OrvGCP3/A
-	 HeFuIgcD3cBeA==
-From: Benjamin Tissoires <bentiss@kernel.org>
-Date: Tue, 30 Apr 2024 11:36:12 +0200
-Subject: [PATCH v2 3/3] selftests/bpf: drop an unused local variable
+	s=arc-20240116; t=1714469903; c=relaxed/simple;
+	bh=wl+C/hXKLC78LuOi56vuvV1Lot2kfxIGTOapKIGI9Xk=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=SRQpMqjvBoT5yvkkq0iof6V7i5OTsQ9NWh9f1U7eO8xXFi/Ai0KEhfcJCo1oao6b2tocEGDxZdSyMf32euNbzTlb9bxMuNgrEW5i3iFEeQweWPXo8bZDsaxcC/r+fWryxTh0UEYdMCqs4LgJ4w8smIAB0OPpTSelFKzQoHCGbxE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=RawAErIn; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1714469901;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=DY7uXL09OgeHU2tU9VHIsDtKDedgRxDA9XzGKzTBd7w=;
+	b=RawAErInfNTNW6r7LHuJC5DXcT3dhc7px7PDAHPmouDqFSOoAwDnJkQZHxKdlYyH+q9iBn
+	oQQBKa5pat4YlA019D3BBD1bTMtrV849TsOkkxd+Fn3ZVekEbDcwc0kK6+0P4pSWbDjJx7
+	AVKFksFqqBeHmomgWrAxpk7bNrbuTgA=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-451-0Oc1B0RCOoCc1_XoVNLUoA-1; Tue, 30 Apr 2024 05:38:15 -0400
+X-MC-Unique: 0Oc1B0RCOoCc1_XoVNLUoA-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 8C15A80591B;
+	Tue, 30 Apr 2024 09:38:14 +0000 (UTC)
+Received: from vmalik-fedora.redhat.com (unknown [10.45.226.51])
+	by smtp.corp.redhat.com (Postfix) with ESMTPS id 498202166B31;
+	Tue, 30 Apr 2024 09:38:11 +0000 (UTC)
+From: Viktor Malik <vmalik@redhat.com>
+To: bpf@vger.kernel.org
+Cc: Andrii Nakryiko <andrii@kernel.org>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>,
+	Stanislav Fomichev <sdf@google.com>,
+	Hao Luo <haoluo@google.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Viktor Malik <vmalik@redhat.com>
+Subject: [PATCH bpf-next v2 0/2] libbpf: support "module:function" syntax for tracing programs
+Date: Tue, 30 Apr 2024 11:38:05 +0200
+Message-ID: <cover.1714469650.git.vmalik@redhat.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240430-bpf-next-v2-3-140aa50f0f19@kernel.org>
-References: <20240430-bpf-next-v2-0-140aa50f0f19@kernel.org>
-In-Reply-To: <20240430-bpf-next-v2-0-140aa50f0f19@kernel.org>
-To: Alexei Starovoitov <ast@kernel.org>, 
- Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
- Martin KaFai Lau <martin.lau@linux.dev>, 
- Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
- Yonghong Song <yonghong.song@linux.dev>, 
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
- Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
- Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>, 
- Shuah Khan <shuah@kernel.org>
-Cc: bpf@vger.kernel.org, linux-kernel@vger.kernel.org, 
- linux-kselftest@vger.kernel.org, Benjamin Tissoires <bentiss@kernel.org>
-X-Mailer: b4 0.12.4
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1714469778; l=720;
- i=bentiss@kernel.org; s=20230215; h=from:subject:message-id;
- bh=bhzZtbW8vADrbyYDpEyoD631jxsaMcAgBlvgv/dK/J4=;
- b=YmoD9kZN4gNX/W8LY6WLJWW3Y5qI5CxWasAbaHC4nBctmuFGROznShnN1hKzrua6UdQI4w0fd
- UdrcC2YzSwhAiWKYSvSKsDodXjLbiBwYwiyL2dQIh5ocnIyvurk4FZz
-X-Developer-Key: i=bentiss@kernel.org; a=ed25519;
- pk=7D1DyAVh6ajCkuUTudt/chMuXWIJHlv2qCsRkIizvFw=
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.6
 
-Some copy/paste leftover, this is never used
+In some situations, it is useful to explicitly specify a kernel module
+to search for a tracing program target (e.g. when a function of the same
+name exists in multiple modules or in vmlinux).
 
-Fixes: e3d9eac99afd ("selftests/bpf: wq: add bpf_wq_init() checks")
-Signed-off-by: Benjamin Tissoires <bentiss@kernel.org>
+This change enables that by allowing the "module:function" syntax for
+the find_kernel_btf_id function. Thanks to this, the syntax can be used
+both from a SEC macro (i.e. `SEC(fentry/module:function)`) and via the
+bpf_program__set_attach_target API call.
 
----
+--- 
 
-no changes in v2
----
- tools/testing/selftests/bpf/prog_tests/wq.c | 2 --
- 1 file changed, 2 deletions(-)
+Changes in v2:
+- stylistic changes (suggested by Andrii)
+- added Andrii's ack to the second patch
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/wq.c b/tools/testing/selftests/bpf/prog_tests/wq.c
-index c4bacd3160e1..99e438fe12ac 100644
---- a/tools/testing/selftests/bpf/prog_tests/wq.c
-+++ b/tools/testing/selftests/bpf/prog_tests/wq.c
-@@ -36,7 +36,5 @@ void serial_test_wq(void)
- 
- void serial_test_failures_wq(void)
- {
--	LIBBPF_OPTS(bpf_test_run_opts, topts);
--
- 	RUN_TESTS(wq_failures);
- }
+Viktor Malik (2):
+  libbpf: support "module:function" syntax for tracing programs
+  selftests/bpf: add tests for the "module:function" syntax
+
+ tools/lib/bpf/libbpf.c                        | 35 ++++++++++++++-----
+ .../selftests/bpf/prog_tests/module_attach.c  |  6 ++++
+ .../selftests/bpf/progs/test_module_attach.c  | 23 ++++++++++++
+ 3 files changed, 55 insertions(+), 9 deletions(-)
 
 -- 
 2.44.0
