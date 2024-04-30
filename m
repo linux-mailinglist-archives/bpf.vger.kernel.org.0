@@ -1,105 +1,130 @@
-Return-Path: <bpf+bounces-28260-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-28261-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2FD6F8B75DD
-	for <lists+bpf@lfdr.de>; Tue, 30 Apr 2024 14:38:21 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id E3FBE8B75EE
+	for <lists+bpf@lfdr.de>; Tue, 30 Apr 2024 14:41:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C2A541F22A06
-	for <lists+bpf@lfdr.de>; Tue, 30 Apr 2024 12:38:20 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 76E6F1F22767
+	for <lists+bpf@lfdr.de>; Tue, 30 Apr 2024 12:41:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C9E4F171094;
-	Tue, 30 Apr 2024 12:38:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 632FB17164C;
+	Tue, 30 Apr 2024 12:41:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="msr+qTsQ"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="rCUkLJkh"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f65.google.com (mail-ej1-f65.google.com [209.85.218.65])
+Received: from mail-lf1-f43.google.com (mail-lf1-f43.google.com [209.85.167.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D5C6212D214;
-	Tue, 30 Apr 2024 12:38:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.65
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 17E56171098
+	for <bpf@vger.kernel.org>; Tue, 30 Apr 2024 12:41:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714480692; cv=none; b=ayQF/uWzX75K8h2KFDvfuZlafOJdBVI12J9CF70TdwZB84m6VbucB9RrMG/kXYJaQcbtMCuASK1Llv/3G7X37knRzakQ6/8l65eRaUN5zkSTiBTnGaBDHKH2UZyr9dhceZ4LbTk3XzGAk5IZ0UYdebtPpl3u9ZzBoM69mLDFLYg=
+	t=1714480890; cv=none; b=HhOyuSUBZ36K86VeMLTrKgO+8KADISKR09YRvCzYXgNUtWu2SHoOYMt7+jAFtgEgKcfBXl6qWXlFwtsEygmjt0hpAkzVNxeyDO5p8yvDx208F8eEWsMQU1i3OdV2gjbgyco661jy1Pu0XaM1w90XBGHuOmvE8CeLj4oeQ9ESy7M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714480692; c=relaxed/simple;
-	bh=UxkGHkyOV2QivS5ID0u+KA+og8PhR5pbstf9U27sdBk=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=lxRQP8Er34s61Qf7/HbmVlZ/ThF/R2XDLTgcchVh8nfxSV8v872/aEY8M/q0UfFIbktG1YsRzWKtgAWnECn0CSsLULXNkOXKpAsr1pHKigC/Iw2SdKJbdIgEILBVVnBMgp3KFKLdNvf6snxGltJYjraaHBQEsPgy5ybrgun47Us=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=msr+qTsQ; arc=none smtp.client-ip=209.85.218.65
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f65.google.com with SMTP id a640c23a62f3a-a55bf737cecso667462966b.0;
-        Tue, 30 Apr 2024 05:38:10 -0700 (PDT)
+	s=arc-20240116; t=1714480890; c=relaxed/simple;
+	bh=EAkzlUPf87vK95pHRAftB3pj+wg3xtsMqv6zZ2xItvQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=kZHL0sdplzLQYC08ELClKxFjy1h36IoAiTy6og3UNa2yxs+0yuF27QxQf0Hi+i4K8AvGLozQpt/a6BSNI/SkqG0w8SEaDdeYGDAhNaDpc/XvSJMqV/1N5FT6vLPGCG/YIwuqgvknnPkREWoyPDdoSbnyZkBJiNE031afwIjrxzg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=rCUkLJkh; arc=none smtp.client-ip=209.85.167.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lf1-f43.google.com with SMTP id 2adb3069b0e04-5176f217b7bso9887272e87.0
+        for <bpf@vger.kernel.org>; Tue, 30 Apr 2024 05:41:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714480689; x=1715085489; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=UxkGHkyOV2QivS5ID0u+KA+og8PhR5pbstf9U27sdBk=;
-        b=msr+qTsQbSq2YbUnRrG3UixUxW0BILDkm5/M0fzbPXNcpnoz1RxWIdy5v2MjcemIap
-         EsoB1DIiIa2IfQvw5Yejwg2RdtqC/kU4VQ2HFOm2mmnwPd4mUP9s+KMDJx1uOvG/6WHH
-         P8ECnVlxjRq11BQAg7EgJJ39JOk7I+JnTHOXjfLBzHsVEF/DKBtvsLodQEyLN6kvPR+D
-         ZZZm9GKoBjnsb2ROAAiHweknYJ7Ff+wcWxyzPnjLLFpa7Qy0o8XK75k6/hBrY7BavWgn
-         Xa+WN1so4W4UTcl558L1QY0BvxjX/1ayG2c9es7JhfH64yiToNiuvi41YBihapxLq1bf
-         k3dw==
+        d=linaro.org; s=google; t=1714480887; x=1715085687; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Z1zoRl9JNX91wxTFZ95WC2aOVdcvQqQ9ebO1YgbX9Wg=;
+        b=rCUkLJkhLTkgj0vZihEKMMlayMlyQ0cFd5TjQa4r0Jddy9PM8aCO1E3l7kk3Jz+SUF
+         GTxeTJy6Av4km5bpOTg+yOSdPvXLSxOOjQOnHQ2TvI4NWTmDRXUzyCtCI6w4n7BCRqGX
+         v4+oj/UExjkdmINHO5kKztJkDTG3sBR9dELu5NYmlYuEYKnM0rCgpyyvYeDrL9ZYplzq
+         iS3G0yI2yJVRGCkMXuuwWC4nn+VzEi5zzi8/pE6CeziV9EPrz4BvedgrUJ9mrXQ5Csgr
+         13a2BhyUlVwR/HKh44guz0Y+9aQRhc91cb/h1t+FvIAqWHgb/xjcLN8z5V0kus9g72LW
+         4QRA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714480689; x=1715085489;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=UxkGHkyOV2QivS5ID0u+KA+og8PhR5pbstf9U27sdBk=;
-        b=xJB4mYyGVTqRkjCZjSNA6GZL/Bxu7HAolYiMK1WHGgF3YRuUn44Rh+zx5lBbTNHbQw
-         XH+V6ebnYtiBnjMCVRVOqIbeuBAAzOloDE+6XJVERBe4OMcqSu/Ixk4gfGF4MZhKpNg4
-         SVoou4GrsMC++YjrPAKQxKt28ZEnnHRdOlUx5NcsHIpFTKkgV5v/j0Pw3Sv0nVi3lHfj
-         rwxhEGKmKV45q54EaVbwu+6XuRo49rcZ0VKka5JUQNZ5Nm6INnAYgxSpgOLmyPuvnfXi
-         VbKrodXanYUSbJpWo/W+EybMGeQg0kU+vuHTYJeDbhiJ1dzzpQ5VqquAQ0ixwBhgViL6
-         t4Pg==
-X-Forwarded-Encrypted: i=1; AJvYcCWKacGA7AkoLIsiiHtrYyAaVFQ4l2E0deLvpvzNzc97e5p9iRZn/bfjSWonaK3tieUNx8UArszJjojqJxtL1BteBMX2lepg6QaA/cveVyuStdYx+8Z2kGidJMbT8LBmffMX2RaoByTO+kLnmSN+/E8ABVMjO/3uW6QUC5xxdtFoznQ6
-X-Gm-Message-State: AOJu0Yw3Vnugf20/wF71mXqWAlR9+id9GAcUxqFG2MPHMjgLYGp+13Yk
-	4Ce4CT/EchvwlYFygmocGcflB4p2LTFigATz8pBgDXpTCNCJo85fSeefi9VCZj6Jcn2iYa3GOiJ
-	TEIJJ8Tbb1ROW4LrHuiQ6ZrN055E=
-X-Google-Smtp-Source: AGHT+IH27RdWC5FSjhJY1OjL9ydhwSJgYHblvsxBFlka0WMmUZVYC+Xsw4NlWhQFVJQq1AKM2GpwEwM3xszNOJjFhnU=
-X-Received: by 2002:a17:906:f292:b0:a55:90c8:774f with SMTP id
- gu18-20020a170906f29200b00a5590c8774fmr9271117ejb.16.1714480689062; Tue, 30
- Apr 2024 05:38:09 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1714480887; x=1715085687;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Z1zoRl9JNX91wxTFZ95WC2aOVdcvQqQ9ebO1YgbX9Wg=;
+        b=H3pwBY7gZzrVoJiT9mCsvqeBE1x99hnlJrxEVBSqsuo88ZTRa25zVaG7MCplQV+0/V
+         MrQrHsSr3SeHPeRBcA98TzwL0ODyMxXyCs00DX408VEDYo82rqqzisxau5omigIOGetb
+         /LFeRocdkhayWHQ5YiaIa2z3jG3l1Q2zXYhrF7p/RMu7Wo6pKOiLJa/cKSAcpJxb0OtS
+         PxDnFT/VLr+gHAz3t8wDjBqw3wF+uIZmq5c9VnwEBjoxR5xU57ElPwCxRRdNOf0AXAJK
+         k9Vb0s3KM6UwpLAv5dwpcXpRJzVCR5LzlcaWsSMGpmpu+z1+hQ4KWm+bh0F9vZQ83dy+
+         zb3g==
+X-Forwarded-Encrypted: i=1; AJvYcCUlOZyq/HUs2tvppUnIQ4m82lqNc8PL6vJAXx1Q+TX2xMHFf6hPc/1C0qdzRKUtCqPu1boJnmGXbuIbm3qKatDChlSn
+X-Gm-Message-State: AOJu0Yzvmqe+Gabg2TdevK6kXiV2wKi0pYmjI+7J56CXHr3UUINAE9JA
+	C55QZbabTtr/LPrW04UpSqG+ECSztZM4tSBjXH5kAHxPhqQVgWcezR4F50eosl8=
+X-Google-Smtp-Source: AGHT+IE/W9/dkxBso0irV5VrVX3LkNO5o5h+kLfYM+38G90SJ9h02blz/dj31DJFXSXcVMXms6NQew==
+X-Received: by 2002:a05:6512:45c:b0:51c:2c7e:ac92 with SMTP id y28-20020a056512045c00b0051c2c7eac92mr11527071lfk.23.1714480887229;
+        Tue, 30 Apr 2024 05:41:27 -0700 (PDT)
+Received: from [192.168.69.100] (mab78-h01-176-184-55-179.dsl.sta.abo.bbox.fr. [176.184.55.179])
+        by smtp.gmail.com with ESMTPSA id i27-20020a17090639db00b00a58eab2bf0fsm3928326eje.179.2024.04.30.05.41.23
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 30 Apr 2024 05:41:26 -0700 (PDT)
+Message-ID: <c5248d22-672d-4acc-9b12-86815d6e22dc@linaro.org>
+Date: Tue, 30 Apr 2024 14:41:22 +0200
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240430-bpf-next-v3-0-27afe7f3b17c@kernel.org> <20240430-bpf-next-v3-3-27afe7f3b17c@kernel.org>
-In-Reply-To: <20240430-bpf-next-v3-3-27afe7f3b17c@kernel.org>
-From: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Date: Tue, 30 Apr 2024 14:37:32 +0200
-Message-ID: <CAP01T74gBChGdVWXKWro_vJ_B5jwEtstUMx41U+y+wbXy8VBXg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 3/3] selftests/bpf: drop an unused local variable
-To: Benjamin Tissoires <bentiss@kernel.org>
-Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
-	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
-	Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>, 
-	bpf@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-kselftest@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v7 05/16] module: make module_memory_{alloc,free} more
+ self-contained
+To: Mike Rapoport <rppt@kernel.org>, linux-kernel@vger.kernel.org
+Cc: Alexandre Ghiti <alexghiti@rivosinc.com>,
+ Andrew Morton <akpm@linux-foundation.org>, =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?=
+ <bjorn@kernel.org>, Catalin Marinas <catalin.marinas@arm.com>,
+ Christophe Leroy <christophe.leroy@csgroup.eu>,
+ "David S. Miller" <davem@davemloft.net>, Dinh Nguyen <dinguyen@kernel.org>,
+ Donald Dutile <ddutile@redhat.com>, Eric Chanudet <echanude@redhat.com>,
+ Heiko Carstens <hca@linux.ibm.com>, Helge Deller <deller@gmx.de>,
+ Huacai Chen <chenhuacai@kernel.org>,
+ Kent Overstreet <kent.overstreet@linux.dev>,
+ Luis Chamberlain <mcgrof@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
+ Masami Hiramatsu <mhiramat@kernel.org>, Michael Ellerman
+ <mpe@ellerman.id.au>, Nadav Amit <nadav.amit@gmail.com>,
+ Palmer Dabbelt <palmer@dabbelt.com>, Peter Zijlstra <peterz@infradead.org>,
+ Rick Edgecombe <rick.p.edgecombe@intel.com>,
+ Russell King <linux@armlinux.org.uk>, Sam Ravnborg <sam@ravnborg.org>,
+ Song Liu <song@kernel.org>, Steven Rostedt <rostedt@goodmis.org>,
+ Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+ Thomas Gleixner <tglx@linutronix.de>, Will Deacon <will@kernel.org>,
+ bpf@vger.kernel.org, linux-arch@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
+ linux-mm@kvack.org, linux-modules@vger.kernel.org,
+ linux-parisc@vger.kernel.org, linux-riscv@lists.infradead.org,
+ linux-s390@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+ linuxppc-dev@lists.ozlabs.org, loongarch@lists.linux.dev,
+ netdev@vger.kernel.org, sparclinux@vger.kernel.org, x86@kernel.org
+References: <20240429121620.1186447-1-rppt@kernel.org>
+ <20240429121620.1186447-6-rppt@kernel.org>
+Content-Language: en-US
+From: =?UTF-8?Q?Philippe_Mathieu-Daud=C3=A9?= <philmd@linaro.org>
+In-Reply-To: <20240429121620.1186447-6-rppt@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Tue, 30 Apr 2024 at 12:44, Benjamin Tissoires <bentiss@kernel.org> wrote:
->
-> Some copy/paste leftover, this is never used
->
-> Fixes: e3d9eac99afd ("selftests/bpf: wq: add bpf_wq_init() checks")
-> Signed-off-by: Benjamin Tissoires <bentiss@kernel.org>
->
+On 29/4/24 14:16, Mike Rapoport wrote:
+> From: "Mike Rapoport (IBM)" <rppt@kernel.org>
+> 
+> Move the logic related to the memory allocation and freeing into
+> module_memory_alloc() and module_memory_free().
+> 
+> Signed-off-by: Mike Rapoport (IBM) <rppt@kernel.org>
 > ---
->
-> no changes in v3
->
-> no changes in v2
-> ---
+>   kernel/module/main.c | 64 +++++++++++++++++++++++++++-----------------
+>   1 file changed, 39 insertions(+), 25 deletions(-)
 
-Acked-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Nice code simplification.
+
+Reviewed-by: Philippe Mathieu-Daudé <philmd@linaro.org>
+
 
