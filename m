@@ -1,46 +1,46 @@
-Return-Path: <bpf+bounces-28307-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-28308-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 359348B831F
-	for <lists+bpf@lfdr.de>; Wed,  1 May 2024 01:48:18 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id C0C2B8B8321
+	for <lists+bpf@lfdr.de>; Wed,  1 May 2024 01:48:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E7AD728508E
-	for <lists+bpf@lfdr.de>; Tue, 30 Apr 2024 23:48:16 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C54C4B2166F
+	for <lists+bpf@lfdr.de>; Tue, 30 Apr 2024 23:48:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD5241C230D;
-	Tue, 30 Apr 2024 23:48:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 131391C2331;
+	Tue, 30 Apr 2024 23:48:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tSA+FgDi"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OW15PHNu"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2ECAC1C0DD6;
-	Tue, 30 Apr 2024 23:48:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B2961C2327;
+	Tue, 30 Apr 2024 23:48:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714520884; cv=none; b=s/WqerhFmUn5BAOLs1b3IYZtUR188qHvgz+T8kSmWMg6XAUK/R8SCypr8ezDoh9Bum22Ho4k16CQdBHTRNYGckkemkURPH1T2xf7Yh1obqvW5qzv7DPb4+8Wl28EourGFpr0ysMoRmYuFq52nL9b72cT3wo8Z6c9u40Ed14vO4Y=
+	t=1714520887; cv=none; b=CJjMJGFZAE0qVRPKv+vafEhAx1EEiTPnQK3hMug9YOATJ/oqroTYy/7rTdLTYtUVoup3EiCyEMzCNchwOrec2FDQjGzgsTdNi5XQlwDW1Rdt0ncU4dho+dIsjX0caS1lnCPlBy9qJb4t1n3beOY86iGCB5USANvzVB1tDi9Xytw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714520884; c=relaxed/simple;
-	bh=TbPOTBmS82ynsL8h5jbyPu2ZW+Geh2onSqdzZPRv0KM=;
+	s=arc-20240116; t=1714520887; c=relaxed/simple;
+	bh=CJftWXVNhPrzRJ8tO7vV2W8FE8qYON08xPmi6fVAAdI=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=kwZ6FvzAR94qjDMxvS1TPi9+7WgPPNxVVnetmsukzzMbomjzP76e+L206h1F7wUki9ojiyiLOXEolXqlG9bSA/F8Srq7VCUHj8zSrZtYruntaSu9EbxsraKehkridBlfKPAIo1XmdBfzsEM6WpQ+NQfCiOd8QlRpUr7Ds0rNo1M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tSA+FgDi; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5121CC2BBFC;
-	Tue, 30 Apr 2024 23:48:03 +0000 (UTC)
+	 MIME-Version:Content-Type; b=gPB78mJDXaeKGGwrOFi7X2dMxJtDDNbAF/hifBhaxoqaQbcmxGt21HqeVPUX/w1eY/EgYxZg3IhzVwTgmM1Xn/Oybvp5KRGfdHHe3XXJepJKP4JpHEbEzeX+EjNpf1GaWT916BGH4ZjhZB2r+MkOFTG7VWq/M1WaMlvLBaagU+E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OW15PHNu; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CF3EFC4AF1B;
+	Tue, 30 Apr 2024 23:48:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714520883;
-	bh=TbPOTBmS82ynsL8h5jbyPu2ZW+Geh2onSqdzZPRv0KM=;
+	s=k20201202; t=1714520887;
+	bh=CJftWXVNhPrzRJ8tO7vV2W8FE8qYON08xPmi6fVAAdI=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=tSA+FgDi+93WO+AFQJliW6fz07aPhOuPF3H2U+c9iHEUTs8IdNonD5Nryx+QQYDyW
-	 3UJni0G5GvaP455JRIG2yJyaN8i1FzTO9j/VLBbbVkx+O0itXnRVZwJ1qjBSeKWQ6g
-	 1lSHCQ7k7q/ITIAcOJe7nfUQiNc7eOUl1n12R7UElCLp/jiadB6ncVGUJG3rqWbx5Z
-	 pp+njNfqGUeHYTFeBpVeb/aKhm2ByJUsLSU3noLHUwltQcSBbD+FQzV/nWcTDf5oqb
-	 oGGlEI7IUIMo+Hs9iUDdv7eoXJbO06sWhua7lV6mpBtFZcj/KW09ix8BUY+Jjozzb3
-	 iaBTbY7Hq3VOg==
+	b=OW15PHNubEu4xCwocIM+Qm5Bb70vBbuA9qr4coQ00C6pV9cKp8NBbJOiSJDcEnlx+
+	 /itoRLDRYZPh2QCIk+9VEZ0O3IGWVfrLoUCq4NJ4avE4j3HztGFDAzcAvWEydVV3lE
+	 zpzf3hCSrPuEpZq7wXe2KyGZ8HOXO0Y1Dpru4FOXF3pZ5+uJqQRiLDM27DNO3WGNBl
+	 aZcROQfzDsb7UjCZuvlX4uJA8ofTIOc0ZFITL5bsa1Q9r8kXgv4n76a/qnTGvdsavj
+	 RNp4CbyoAyFtmbu1iDGVdoFJrmz03MNMnS7RlExPXRpOSbM7ABgGQSSclqkVQTb3+Q
+	 bfmnrQPYBgc4Q==
 From: Puranjay Mohan <puranjay@kernel.org>
 To: Catalin Marinas <catalin.marinas@arm.com>,
 	Will Deacon <will@kernel.org>,
@@ -64,9 +64,9 @@ To: Catalin Marinas <catalin.marinas@arm.com>,
 	bpf@vger.kernel.org,
 	Kumar Kartikeya Dwivedi <memxor@gmail.com>
 Cc: puranjay12@gmail.com
-Subject: [PATCH bpf-next v5 1/2] arm64, bpf: add internal-only MOV instruction to resolve per-CPU addrs
-Date: Tue, 30 Apr 2024 23:47:38 +0000
-Message-Id: <20240430234739.79185-2-puranjay@kernel.org>
+Subject: [PATCH bpf-next v5 2/2] bpf, arm64: inline bpf_get_smp_processor_id() helper
+Date: Tue, 30 Apr 2024 23:47:39 +0000
+Message-Id: <20240430234739.79185-3-puranjay@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20240430234739.79185-1-puranjay@kernel.org>
 References: <20240430234739.79185-1-puranjay@kernel.org>
@@ -79,134 +79,108 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-From: Puranjay Mohan <puranjay12@gmail.com>
+Inline calls to bpf_get_smp_processor_id() helper in the JIT by emitting
+a read from struct thread_info. The SP_EL0 system register holds the
+pointer to the task_struct and thread_info is the first member of this
+struct. We can read the cpu number from the thread_info.
 
-Support an instruction for resolving absolute addresses of per-CPU
-data from their per-CPU offsets. This instruction is internal-only and
-users are not allowed to use them directly. They will only be used for
-internal inlining optimizations for now between BPF verifier and BPF
-JITs.
+Here is how the ARM64 JITed assembly changes after this commit:
 
-Since commit 7158627686f0 ("arm64: percpu: implement optimised pcpu
-access using tpidr_el1"), the per-cpu offset for the CPU is stored in
-the tpidr_el1/2 register of that CPU.
+                                      ARM64 JIT
+                                     ===========
 
-To support this BPF instruction in the ARM64 JIT, the following ARM64
-instructions are emitted:
+              BEFORE                                    AFTER
+             --------                                  -------
 
-mov dst, src		// Move src to dst, if src != dst
-mrs tmp, tpidr_el1/2	// Move per-cpu offset of the current cpu in tmp.
-add dst, dst, tmp	// Add the per cpu offset to the dst.
+int cpu = bpf_get_smp_processor_id();        int cpu = bpf_get_smp_processor_id();
 
-To measure the performance improvement provided by this change, the
-benchmark in [1] was used:
+mov     x10, #0xfffffffffffff4d0             mrs     x10, sp_el0
+movk    x10, #0x802b, lsl #16                ldr     w7, [x10, #24]
+movk    x10, #0x8000, lsl #32
+blr     x10
+add     x7, x0, #0x0
 
-Before:
-glob-arr-inc   :   23.597 ± 0.012M/s
-arr-inc        :   23.173 ± 0.019M/s
-hash-inc       :   12.186 ± 0.028M/s
+               Performance improvement using benchmark[1]
 
-After:
-glob-arr-inc   :   23.819 ± 0.034M/s
-arr-inc        :   23.285 ± 0.017M/s
-hash-inc       :   12.419 ± 0.011M/s
+./benchs/run_bench_trigger.sh glob-arr-inc arr-inc hash-inc
+
++---------------+-------------------+-------------------+--------------+
+|      Name     |      Before       |        After      |   % change   |
+|---------------+-------------------+-------------------+--------------|
+| glob-arr-inc  | 23.380 ± 1.675M/s | 25.893 ± 0.026M/s |   + 10.74%   |
+| arr-inc       | 23.928 ± 0.034M/s | 25.213 ± 0.063M/s |   + 5.37%    |
+| hash-inc      | 12.352 ± 0.005M/s | 12.609 ± 0.013M/s |   + 2.08%    |
++---------------+-------------------+-------------------+--------------+
 
 [1] https://github.com/anakryiko/linux/commit/8dec900975ef
 
-Signed-off-by: Puranjay Mohan <puranjay12@gmail.com>
+Signed-off-by: Puranjay Mohan <puranjay@kernel.org>
 ---
- arch/arm64/include/asm/insn.h |  7 +++++++
- arch/arm64/lib/insn.c         | 11 +++++++++++
- arch/arm64/net/bpf_jit.h      |  6 ++++++
- arch/arm64/net/bpf_jit_comp.c | 14 ++++++++++++++
- 4 files changed, 38 insertions(+)
+ arch/arm64/include/asm/insn.h |  1 +
+ arch/arm64/net/bpf_jit.h      |  2 ++
+ arch/arm64/net/bpf_jit_comp.c | 23 +++++++++++++++++++++++
+ 3 files changed, 26 insertions(+)
 
 diff --git a/arch/arm64/include/asm/insn.h b/arch/arm64/include/asm/insn.h
-index db1aeacd4cd9..8de0e39b29f3 100644
+index 8de0e39b29f3..8c0a36f72d6f 100644
 --- a/arch/arm64/include/asm/insn.h
 +++ b/arch/arm64/include/asm/insn.h
-@@ -135,6 +135,11 @@ enum aarch64_insn_special_register {
- 	AARCH64_INSN_SPCLREG_SP_EL2	= 0xF210
+@@ -138,6 +138,7 @@ enum aarch64_insn_special_register {
+ enum aarch64_insn_system_register {
+ 	AARCH64_INSN_SYSREG_TPIDR_EL1	= 0x4684,
+ 	AARCH64_INSN_SYSREG_TPIDR_EL2	= 0x6682,
++	AARCH64_INSN_SYSREG_SP_EL0	= 0x4208,
  };
  
-+enum aarch64_insn_system_register {
-+	AARCH64_INSN_SYSREG_TPIDR_EL1	= 0x4684,
-+	AARCH64_INSN_SYSREG_TPIDR_EL2	= 0x6682,
-+};
-+
  enum aarch64_insn_variant {
- 	AARCH64_INSN_VARIANT_32BIT,
- 	AARCH64_INSN_VARIANT_64BIT
-@@ -686,6 +691,8 @@ u32 aarch64_insn_gen_cas(enum aarch64_insn_register result,
- }
- #endif
- u32 aarch64_insn_gen_dmb(enum aarch64_insn_mb_type type);
-+u32 aarch64_insn_gen_mrs(enum aarch64_insn_register result,
-+			 enum aarch64_insn_system_register sysreg);
- 
- s32 aarch64_get_branch_offset(u32 insn);
- u32 aarch64_set_branch_offset(u32 insn, s32 offset);
-diff --git a/arch/arm64/lib/insn.c b/arch/arm64/lib/insn.c
-index a635ab83fee3..b008a9b46a7f 100644
---- a/arch/arm64/lib/insn.c
-+++ b/arch/arm64/lib/insn.c
-@@ -1515,3 +1515,14 @@ u32 aarch64_insn_gen_dmb(enum aarch64_insn_mb_type type)
- 
- 	return insn;
- }
-+
-+u32 aarch64_insn_gen_mrs(enum aarch64_insn_register result,
-+			 enum aarch64_insn_system_register sysreg)
-+{
-+	u32 insn = aarch64_insn_get_mrs_value();
-+
-+	insn &= ~GENMASK(19, 0);
-+	insn |= sysreg << 5;
-+	return aarch64_insn_encode_register(AARCH64_INSN_REGTYPE_RT,
-+					    insn, result);
-+}
 diff --git a/arch/arm64/net/bpf_jit.h b/arch/arm64/net/bpf_jit.h
-index 23b1b34db088..b627ef7188c7 100644
+index b627ef7188c7..b22ab2f97a30 100644
 --- a/arch/arm64/net/bpf_jit.h
 +++ b/arch/arm64/net/bpf_jit.h
-@@ -297,4 +297,10 @@
- #define A64_ADR(Rd, offset) \
- 	aarch64_insn_gen_adr(0, offset, Rd, AARCH64_INSN_ADR_TYPE_ADR)
+@@ -302,5 +302,7 @@
+ 	aarch64_insn_gen_mrs(Rt, AARCH64_INSN_SYSREG_TPIDR_EL1)
+ #define A64_MRS_TPIDR_EL2(Rt) \
+ 	aarch64_insn_gen_mrs(Rt, AARCH64_INSN_SYSREG_TPIDR_EL2)
++#define A64_MRS_SP_EL0(Rt) \
++	aarch64_insn_gen_mrs(Rt, AARCH64_INSN_SYSREG_SP_EL0)
  
-+/* MRS */
-+#define A64_MRS_TPIDR_EL1(Rt) \
-+	aarch64_insn_gen_mrs(Rt, AARCH64_INSN_SYSREG_TPIDR_EL1)
-+#define A64_MRS_TPIDR_EL2(Rt) \
-+	aarch64_insn_gen_mrs(Rt, AARCH64_INSN_SYSREG_TPIDR_EL2)
-+
  #endif /* _BPF_JIT_H */
 diff --git a/arch/arm64/net/bpf_jit_comp.c b/arch/arm64/net/bpf_jit_comp.c
-index 76b91f36c729..ed8f9716d9d5 100644
+index ed8f9716d9d5..8084f3e61e0b 100644
 --- a/arch/arm64/net/bpf_jit_comp.c
 +++ b/arch/arm64/net/bpf_jit_comp.c
-@@ -877,6 +877,15 @@ static int build_insn(const struct bpf_insn *insn, struct jit_ctx *ctx,
- 			emit(A64_ORR(1, tmp, dst, tmp), ctx);
- 			emit(A64_MOV(1, dst, tmp), ctx);
- 			break;
-+		} else if (insn_is_mov_percpu_addr(insn)) {
-+			if (dst != src)
-+				emit(A64_MOV(1, dst, src), ctx);
-+			if (cpus_have_cap(ARM64_HAS_VIRT_HOST_EXTN))
-+				emit(A64_MRS_TPIDR_EL2(tmp), ctx);
-+			else
-+				emit(A64_MRS_TPIDR_EL1(tmp), ctx);
-+			emit(A64_ADD(1, dst, dst, tmp), ctx);
+@@ -1215,6 +1215,19 @@ static int build_insn(const struct bpf_insn *insn, struct jit_ctx *ctx,
+ 		const u8 r0 = bpf2a64[BPF_REG_0];
+ 		bool func_addr_fixed;
+ 		u64 func_addr;
++		u32 cpu_offset = offsetof(struct thread_info, cpu);
++
++		/* Implement helper call to bpf_get_smp_processor_id() inline */
++		if (insn->src_reg == 0 && insn->imm == BPF_FUNC_get_smp_processor_id) {
++			emit(A64_MRS_SP_EL0(tmp), ctx);
++			if (is_lsi_offset(cpu_offset, 2)) {
++				emit(A64_LDR32I(r0, tmp, cpu_offset), ctx);
++			} else {
++				emit_a64_mov_i(1, tmp2, cpu_offset, ctx);
++				emit(A64_LDR32(r0, tmp, tmp2), ctx);
++			}
 +			break;
- 		}
- 		switch (insn->off) {
- 		case 0:
-@@ -2527,6 +2536,11 @@ bool bpf_jit_supports_arena(void)
++		}
+ 
+ 		ret = bpf_jit_get_func_addr(ctx->prog, insn, extra_pass,
+ 					    &func_addr, &func_addr_fixed);
+@@ -2541,6 +2554,16 @@ bool bpf_jit_supports_percpu_insn(void)
  	return true;
  }
  
-+bool bpf_jit_supports_percpu_insn(void)
++bool bpf_jit_inlines_helper_call(s32 imm)
 +{
-+	return true;
++	switch (imm) {
++	case BPF_FUNC_get_smp_processor_id:
++		return true;
++	}
++
++	return false;
 +}
 +
  void bpf_jit_free(struct bpf_prog *prog)
