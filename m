@@ -1,139 +1,210 @@
-Return-Path: <bpf+bounces-28302-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-28303-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EC21A8B82D7
-	for <lists+bpf@lfdr.de>; Wed,  1 May 2024 01:01:07 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9A7678B82DE
+	for <lists+bpf@lfdr.de>; Wed,  1 May 2024 01:06:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 188061C22E32
-	for <lists+bpf@lfdr.de>; Tue, 30 Apr 2024 23:01:07 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D65F92855D0
+	for <lists+bpf@lfdr.de>; Tue, 30 Apr 2024 23:06:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CBE131BF6F2;
-	Tue, 30 Apr 2024 23:00:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D14B11A0B05;
+	Tue, 30 Apr 2024 23:06:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b="hX1qX7ai";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="SyMENwyv"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="F+d8Jm3J"
 X-Original-To: bpf@vger.kernel.org
-Received: from wfout2-smtp.messagingengine.com (wfout2-smtp.messagingengine.com [64.147.123.145])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f180.google.com (mail-pf1-f180.google.com [209.85.210.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8AA1D17B4FA
-	for <bpf@vger.kernel.org>; Tue, 30 Apr 2024 23:00:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.145
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1DEDE17BB15
+	for <bpf@vger.kernel.org>; Tue, 30 Apr 2024 23:06:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714518054; cv=none; b=orlhJVZ8/KZ0qMKG/jMFOSpw2DFonSeH3SGVMZlhiUaWwn5VubQ53Pr+ULwlalItALjRGYWnvrrt6jBi00VUOGeUIr1t7W75TJa1HlgHSFFNgCHUpnJVJ9dQT2tlulhNiiELkLOgL2kXBjryOZfUuu/PjEhROW7Fb0+UWQ69GKM=
+	t=1714518388; cv=none; b=g89YTX+rHXyDa4Wace+Z4WXYHlIfcS8W3xV3tjQnkjM7k6dnlrZXYGofNwCDJZfVkME92bbNkZUzw1GnqnP3M3bL98BKHhaZp+g7y8pvjHfm/nf4LTxRaVMMvvLKXRDa+x56qnwSWUXxJr78ep13Sr3f2leMWPAX/j8VN4y4j5M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714518054; c=relaxed/simple;
-	bh=aELafpbYvo/cFxDBfNrZ7m8L8Vy/aL+jyZUuUzB1wZ8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=nLhFSAR7b/hQGJwZ4lr9fJ/4Ctl7OEhRpXfNeBLJen5ztp2LomjBw8Nyy3kZB1KWNMS62756NENaj4SCDx+nwfNWiqsxW0lh4Z16qSPg/es5poWDHWLsM25Ssp7Gz+vYF1JSYw0faOTO7V2oJx0lh8iZtIpsBTFtXXxguwCl/NM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz; spf=pass smtp.mailfrom=dxuuu.xyz; dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b=hX1qX7ai; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=SyMENwyv; arc=none smtp.client-ip=64.147.123.145
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dxuuu.xyz
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
-	by mailfout.west.internal (Postfix) with ESMTP id F32751C00149;
-	Tue, 30 Apr 2024 19:00:50 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute2.internal (MEProxy); Tue, 30 Apr 2024 19:00:51 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
-	:cc:content-type:content-type:date:date:from:from:in-reply-to
-	:in-reply-to:message-id:mime-version:references:reply-to:subject
-	:subject:to:to; s=fm2; t=1714518050; x=1714604450; bh=geVDjfASgd
-	GSB4HZBVN5ET7ikX2oNVxiA8NL3nV8zr8=; b=hX1qX7aiwHnei7YtBVtZGOVOaw
-	pQDPAKpRWK6SrPyJykHPFfEc+PAJYa+ltnvFM0y1k1yismFmomIMkKyrnOgd2DYX
-	yhhPR1q4CDDgLkQQdzUhQh4o25JJhU4/sye0HgjDU+ejJ6MODVAMVGG+85Byu+NF
-	iV5DPvEAK436DMFNaSF/9ykOzpVT+lEQig1PRWfAl/Qv1JjdfvJtvz9t+ovtg8H7
-	T961f629AkMBt/w5NYHGYEFczTJ3HNA97dZfA0IAYETkKEj22adLgu+Z+FvJL5be
-	xHYk/GI8pj5y++mIiQHGL+GrggnpHicrYVavH/dc4pwdLWwfnlrm3yzsgBXw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm3; t=1714518050; x=1714604450; bh=geVDjfASgdGSB4HZBVN5ET7ikX2o
-	NVxiA8NL3nV8zr8=; b=SyMENwyvv5Z/PKNG84rVessxHUCWhb+uDcAOUrM8PPOe
-	L1RCSPaXoAssJlSZKWAva+UR8azCyuz/HwJWndfUdi4xICo6o25kJDiixNSSDKhG
-	DNDN17I2fhPc1PpMM9ipha8BqGzIYJ72n9eG1cgV+yHkzQUfg6zmSDHUov1ID9+P
-	VZmPrwmSg0kz+KeEMl7m/Dnt9CQMMzii/HeCn5Uf/FeDd5uvAoCOIPL2XC4bs1eJ
-	3wweH5AJZCESMYrhpnh6APoonr41m3HdtJsjJcCbR2yhiBP6jMStnvDfwzAlF4v6
-	Py9Zbysq2MQfAo46j2z81Gm6LexoY+0M49pngrqOBQ==
-X-ME-Sender: <xms:IXgxZnq6jzHkiPPl8nMkK1WYwk7PcjN58AkSwfyebTmBMRN2zVoR2Q>
-    <xme:IXgxZhoeKjhTq2gzJDbj4yxM7f4oGAw1VSig59OA-5sQD41_jRjZPbiFLpZF30USQ
-    Mx_JBC17uD5PWt4bw>
-X-ME-Received: <xmr:IXgxZkOFUgSiYNZHdJulg8m9Di90-TMgUVQDwUnALPHIoPdlldTXioWqxxb7MPFr5VXmsAh11z-IrHDtjIfbo4TVmaojSuyZ-YBA>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrvddugedgudejucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucgfrhhlucfvnfffucdlfeehmdenucfjughrpeffhf
-    fvvefukfhfgggtuggjsehttdfstddttddvnecuhfhrohhmpeffrghnihgvlhcuighuuceo
-    ugiguhesugiguhhuuhdrgiihiieqnecuggftrfgrthhtvghrnhepvdefkeetuddufeeige
-    dtheefffekuedukeehudffudfffffggeeitdetgfdvhfdvnecuvehluhhsthgvrhfuihii
-    vgeptdenucfrrghrrghmpehmrghilhhfrhhomhepugiguhesugiguhhuuhdrgiihii
-X-ME-Proxy: <xmx:IngxZq5bhDPvdwA6rJIMaSK_qlgQWTGU8bNtyAUVoKIpONZ1wlbeeA>
-    <xmx:IngxZm4hZX7XU4iNsyNraJ4WPBqW5mPjTMy3MkGFbZORJLK_6-qbyA>
-    <xmx:IngxZiisZmMZhMH5yknmkGrEDpYWFOljCKygj3SIy1GbixkrfLPGtg>
-    <xmx:IngxZo7O4Ggcd8y3bVfcpnEngH-3oYqpp3pMgHd5Mr6dTWlTHqJJnA>
-    <xmx:IngxZvHDPwVV9fF4BKYStUWxLjAjv_Vx-b2wa86Oo66Rf8lea1Rb902s>
-Feedback-ID: i6a694271:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 30 Apr 2024 19:00:49 -0400 (EDT)
-Date: Tue, 30 Apr 2024 17:00:47 -0600
-From: Daniel Xu <dxu@dxuuu.xyz>
-To: Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc: jolsa@kernel.org, quentin@isovalent.com, alan.maguire@oracle.com, 
-	eddyz87@gmail.com, andrii.nakryiko@gmail.com, ast@kernel.org, daniel@iogearbox.net, 
-	bpf@vger.kernel.org
-Subject: Re: [PATCH dwarves v9 2/3] pahole: Add --btf_feature=decl_tag_kfuncs
- feature
-Message-ID: <2jjkwylnz7rjqkjpjb5li3n7g32uhrhx2uzwwthtgfqdf6bwzl@yjmuy24buoyl>
-References: <cover.1714430735.git.dxu@dxuuu.xyz>
- <6d69d6dce917475ffe9c1bd7bc53358904f60915.1714430735.git.dxu@dxuuu.xyz>
- <ZjE85q0SJ1sve25u@x1>
+	s=arc-20240116; t=1714518388; c=relaxed/simple;
+	bh=wJ8uo401jXzpZUreepaoNEzriXyVrR2X4lrzmowaz7I=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=CjpPaaPsuK5Xm3VUGpSSLkZWAQldN2RO/b/qnt7VljODToE1nWF0oNXWikmAQhkSkqR8dX5rjFZ3gwiWfcc24Ohn5Gg3TDdjGjujspRPf09ucULMJRWi6dWw778zwT4SJ154tCuG5IvbeVSwfHpnpxEiMxjHwFgRR3BwBRLBHCU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=F+d8Jm3J; arc=none smtp.client-ip=209.85.210.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f180.google.com with SMTP id d2e1a72fcca58-6eff2be3b33so5796757b3a.2
+        for <bpf@vger.kernel.org>; Tue, 30 Apr 2024 16:06:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1714518385; x=1715123185; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=VlKZ6oSsRHedgBhpd+fMTTEMq/zIjw3X+k/7V706s4c=;
+        b=F+d8Jm3JOMc/zW8Y9mGz+rp03DAs7b0UuKKQa48ItfmQ4mRswsUqk6HirifC6+KBvc
+         DCgqK9+wmWE0zdfolJ/qdxMc2OytsuCQ8krGv09SmHntNkzg9z9rnDiXNiTMSYKIgo7i
+         HVCzKZIaUKM2OqstzzS9yhnAJN9ndD3AtBLmrKXDzGrOhvq/EcZuEr/2nsk6cbE+5vla
+         UVoZ6EAiKRyAp5MDYtZmc3cMLsU8MfMRntM3HPRKZMHgmcG5NdW0ATohWU55IhvF8dbH
+         PdOKfqEIU1AMny2MJL1UWY/4zB18qde3xnMvCN6qWzOo6WcwCuL1a6UkMePFBn63dDeU
+         q6Xw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714518385; x=1715123185;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=VlKZ6oSsRHedgBhpd+fMTTEMq/zIjw3X+k/7V706s4c=;
+        b=QwetdfZYWfOMCp66SkxVEZ5dNMkhOqCwV+SvZzE4RKf0utSREpBa+KtcsMV7lUy6Ow
+         K/EXjo6ufffCDBVvTcPwc0FXP1dSaLgaf9D2/qxdn77gZuOb8vST6xP1QPU25M6xJY/5
+         QJ/KXE4FNT+STTBtJ9TEeo/GOVT+rGouZlAU9TwvcwL7H2SRgV9jed3RYfa7PP8nkaUt
+         Z3ory5C0RQ0A6cXxAH9WqeemMwtForDbJ5qq6j7PrSp9gKvLVSGc0fq9rkvzeaeBV+Km
+         MZM7tQddKu5zESvk+bDtqpac5Pqapk/A64yIwwcn9Px6rw5kEvjuLm8T49rCcpVoT59E
+         5r1w==
+X-Forwarded-Encrypted: i=1; AJvYcCUwB8p7VyMyqoRQZWLVKFAkJxHcAtWTxL43XuDDywUJa6NpQ7ImqY0xYJOlLtYbqZ2Uva72c/GkyynvWBm4VagS0CHS
+X-Gm-Message-State: AOJu0YyOeX01+BDW8LvZbMO7Ruj8bRbACpcEYoLbKlirFFJoh1WqR3UX
+	O7gzplH4CFLcP/1q8w0pDHI0sUDUuP+8JGxoRWVrpqNICKeAa/Bc
+X-Google-Smtp-Source: AGHT+IHRLt2XQdqEDwJk5fGqIoLUqE4YFO3koEPBNR4bKn3SdTCydqXNPZL3V3pC0WuCU1uKSKXPfQ==
+X-Received: by 2002:a05:6a20:a11a:b0:1af:6164:7c35 with SMTP id q26-20020a056a20a11a00b001af61647c35mr1643632pzk.17.1714518385139;
+        Tue, 30 Apr 2024 16:06:25 -0700 (PDT)
+Received: from ?IPv6:2604:3d08:6979:1160:313a:f4fd:13d2:b9eb? ([2604:3d08:6979:1160:313a:f4fd:13d2:b9eb])
+        by smtp.gmail.com with ESMTPSA id r7-20020a17090ad40700b002acf260e82bsm132602pju.57.2024.04.30.16.06.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 30 Apr 2024 16:06:24 -0700 (PDT)
+Message-ID: <c3564a5e0b159d559ecd72ad0849aabfb54a672c.camel@gmail.com>
+Subject: Re: [PATCH v2 bpf-next 02/13] libbpf: add btf__distill_base()
+ creating split BTF with distilled base BTF
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Alan Maguire <alan.maguire@oracle.com>, andrii@kernel.org, ast@kernel.org
+Cc: jolsa@kernel.org, acme@redhat.com, quentin@isovalent.com,
+ mykolal@fb.com,  daniel@iogearbox.net, martin.lau@linux.dev,
+ song@kernel.org,  yonghong.song@linux.dev, john.fastabend@gmail.com,
+ kpsingh@kernel.org,  sdf@google.com, haoluo@google.com, houtao1@huawei.com,
+ bpf@vger.kernel.org,  masahiroy@kernel.org, mcgrof@kernel.org,
+ nathan@kernel.org
+Date: Tue, 30 Apr 2024 16:06:23 -0700
+In-Reply-To: <20240424154806.3417662-3-alan.maguire@oracle.com>
+References: <20240424154806.3417662-1-alan.maguire@oracle.com>
+	 <20240424154806.3417662-3-alan.maguire@oracle.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.44.4-0ubuntu2 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZjE85q0SJ1sve25u@x1>
 
-Hi Arnaldo,
+On Wed, 2024-04-24 at 16:47 +0100, Alan Maguire wrote:
 
-On Tue, Apr 30, 2024 at 03:48:06PM GMT, Arnaldo Carvalho de Melo wrote:
-> On Mon, Apr 29, 2024 at 04:45:59PM -0600, Daniel Xu wrote:
-> > Add a feature flag to guard tagging of kfuncs. The next commit will
-> > implement the actual tagging.
-> > 
-> > Reviewed-by: Alan Maguire <alan.maguire@oracle.com>
-> > Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
-> 
-> Also 'decl_tag_kfuncs' is not enabled when using --btf_features=default,
-> right? as:
-> 
->         BTF_DEFAULT_FEATURE(decl_tag_kfuncs, btf_decl_tag_kfuncs, false),
-> 
-> And that false is .default_enabled=false.
+Hi Alan,
 
-I think that `false` is for `initial_value`, isn't it? The macro sets
-the `default_enabled` field.
+Looked through the patch, noted a few minor logical inconsistencies.
+Agree with Andrii's comments about memory size allocated for dist.ids.
+Otherwise this patch makes sense to me.
 
-Building with this seems to tag the kfuncs for me:
+[...]
 
-diff --git a/scripts/Makefile.btf b/scripts/Makefile.btf                                                                                                                                                                 
-index 82377e470aed..7128dc25ba29 100644                                                                                                                                                                                  
---- a/scripts/Makefile.btf                                                                                                                                                                                               
-+++ b/scripts/Makefile.btf                                                                                                                                                                                               
-@@ -16,4 +16,6 @@ pahole-flags-$(CONFIG_PAHOLE_HAS_LANG_EXCLUDE)                += --lang_exclude=rust                                                                                                                   
-                                                                                                                                                                                                                         
- pahole-flags-$(call test-ge, $(pahole-ver), 125)       += --skip_encoding_btf_inconsistent_proto --btf_gen_optimized                                                                                                    
-                                                                                                                                                                                                                         
-+pahole-flags-$(call test-ge, $(pahole-ver), 126)       = -j --lang_exclude=rust --btf_features=default                                                                                                                  
-+                                                                                                                                                                                                                        
- export PAHOLE_FLAGS := $(pahole-flags-y)
+> @@ -5217,3 +5223,301 @@ int btf_ext_visit_str_offs(struct btf_ext *btf_ex=
+t, str_off_visit_fn visit, void
+> =20
+>  	return 0;
+>  }
+> +
+> +struct btf_distill_id {
+> +	int id;
+> +	bool embedded;		/* true if id refers to a struct/union in base BTF
+> +				 * that is embedded in a split BTF struct/union.
+> +				 */
+> +};
+> +
+> +struct btf_distill {
+> +	struct btf_pipe pipe;
+> +	struct btf_distill_id *ids;
+> +	__u32 query_id;
+> +	unsigned int nr_base_types;
+> +	unsigned int diff_id;
+> +};
+> +
+> +/* Check if a member of a split BTF struct/union refers to a base BTF
+> + * struct/union.  Members can be const/restrict/volatile/typedef
+> + * reference types, but if a pointer is encountered, type is no longer
+> + * considered embedded.
+> + */
+> +static int btf_find_embedded_composite_type_ids(__u32 *id, void *ctx)
+> +{
+> +	struct btf_distill *dist =3D ctx;
+> +	const struct btf_type *t;
+> +	__u32 next_id =3D *id;
+> +
+> +	do {
+> +		if (next_id =3D=3D 0)
+> +			return 0;
+> +		t =3D btf_type_by_id(dist->pipe.src, next_id);
+> +		switch (btf_kind(t)) {
+> +		case BTF_KIND_CONST:
+> +		case BTF_KIND_RESTRICT:
+> +		case BTF_KIND_VOLATILE:
+> +		case BTF_KIND_TYPEDEF:
 
-Thanks,
-Daniel
+I think BTF_KIND_TYPE_TAG is missing.
+
+> +			next_id =3D t->type;
+> +			break;
+> +		case BTF_KIND_ARRAY: {
+> +			struct btf_array *a =3D btf_array(t);
+> +
+> +			next_id =3D a->type;
+> +			break;
+> +		}
+> +		case BTF_KIND_STRUCT:
+> +		case BTF_KIND_UNION:
+> +			dist->ids[next_id].embedded =3D next_id > 0 &&
+> +						      next_id <=3D dist->nr_base_types;
+
+I think next_id can't be zero, otherwise it's kind would be UNKN.
+Also, should this be 'next_id < dist->nr_base_types'?
+
+__u32 btf__type_cnt(const struct btf *btf)
+{
+	return btf->start_id + btf->nr_types;
+}
+
+static struct btf *btf_new(const void *data, __u32 size, struct btf *base_b=
+tf)
+{
+	...
+	btf->nr_types =3D 0;
+	btf->start_id =3D 1;
+	...
+	if (base_btf) {
+		...
+		btf->start_id =3D btf__type_cnt(base_btf);
+		...
+	}
+	...
+}
+
+int btf__distill_base(const struct btf *src_btf, struct btf **new_base_btf,
+		      struct btf **new_split_btf)
+{
+	...
+	dist.nr_base_types =3D btf__type_cnt(btf__base_btf(src_btf));
+	...
+}
+
+So, suppose there is only one base type:
+- it's ID would be 1;
+- nr_types would be 1;
+- nr_base_types would be 2;
+- meaning that split BTF ids would start from 2.
+
+Maybe use .split_start_id instead of .nr_base_types to avoid confusion?
+
+> +			return 0;
+> +		default:
+> +			return 0;
+> +		}
+> +
+> +	} while (next_id !=3D 0);
+> +
+> +	return 0;
+> +}
 
