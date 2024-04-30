@@ -1,122 +1,160 @@
-Return-Path: <bpf+bounces-28286-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-28287-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 04B3D8B7FF0
-	for <lists+bpf@lfdr.de>; Tue, 30 Apr 2024 20:42:56 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id BA2E68B800F
+	for <lists+bpf@lfdr.de>; Tue, 30 Apr 2024 20:48:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3481D1C223E0
-	for <lists+bpf@lfdr.de>; Tue, 30 Apr 2024 18:42:55 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 47D0F1F22D0D
+	for <lists+bpf@lfdr.de>; Tue, 30 Apr 2024 18:48:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F155819DF51;
-	Tue, 30 Apr 2024 18:41:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B0B2B194C96;
+	Tue, 30 Apr 2024 18:48:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AI2AzxV2"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lXDmZTRo"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 73901199EA1
-	for <bpf@vger.kernel.org>; Tue, 30 Apr 2024 18:41:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D149184139;
+	Tue, 30 Apr 2024 18:48:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714502466; cv=none; b=JNmiXlepxogo8hJcxrd3DXvqgsPZP8gmedhQ4Z7hiXngtREsTwSY5akv2xs1vkR4d98tIyoB4kAn+2Tk26+fav9nELkh/vdmdQgcJnTkCdXSoymcWSY/rjQs4rNz1OpkJnJnky4BTwFWvaZufS4NrZz9/0leah3FYPgvD0Of9fI=
+	t=1714502884; cv=none; b=HHcdN4JrKFTdNUmhCn+dH2WWgdZ4faRupQkGh38/EeBUIo7HA7h4ox3oBd1on3aM3/dB/7QnAQbX1z9BBNcnqkiXuTV29XjY1K4t9U9VQUW4RqU20GF1lqSQGn9kijjlhxp1vRQXM3cuxBqLJ43l/Da83fhG4F0hCDR1AaiMvic=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714502466; c=relaxed/simple;
-	bh=HmON3sbiUOKgL1fwstYhTYWvynHxPbwhZXOPd/eEYYc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Arx3nIUZ/9n87JglUGX/Kn/jJqOTGc1dPKN5jmSlJy7rgAumgHOZhsF8+kDSIRAwmb8RMxmmIFFMNhrvsKWgD0q5+eRc7f5k2MCVKPRrdKS2MKPWgwmTitwTR6h6OsC3qBSsau7VzKA/ZnqXIcvfYVSbWtAzYoVowQwKWlHrdcg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AI2AzxV2; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1B8CDC2BBFC;
-	Tue, 30 Apr 2024 18:41:04 +0000 (UTC)
+	s=arc-20240116; t=1714502884; c=relaxed/simple;
+	bh=HPzjuRJ5yCLBNuv1aWWG9npK5939ao9xZ9NGuQ/3nUI=;
+	h=From:To:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=KMZDpYrjbVPNlcKeXYzvYNaVjth3VwI4AKvcdZEcvP6lx+4F7AoBQCjDhzTFFiAUv/obqEGZ6IWw5F0OPAGDvAsQjw2qNnC7eUwIG4/qp2JMR+MFZz5Vxd1LXdt3eB2rSfL58PSPqljj0y3a/NmWtVyeqM/C4EG/8mSApUJk+R0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lXDmZTRo; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 60731C2BBFC;
+	Tue, 30 Apr 2024 18:48:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714502466;
-	bh=HmON3sbiUOKgL1fwstYhTYWvynHxPbwhZXOPd/eEYYc=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=AI2AzxV27W4l+JqY2ixG1pnMmcUOQHpu6YyFfoCdu72U4CSYTLjKUQSJFlPOfkzSw
-	 xGeIZpQlqrovqW5xnCT99TrUKSQlFIky4p6awurgVnL47vAnWd6jgV+0y3f60+dqDS
-	 0760Q9qpV5q0l7/t9G4S3ay4WIzZbUjJSWe7x1Lu5EUk/7bESnSOu97u8HER+/lUsa
-	 xnM31/cSoWV0FMiAMFXskXmGrbAxFsQI+XXTxWTGTvjX5kXK0FPDxrlgdICDziK4Gj
-	 NrcoICxMLD2QqBjevN5wz9AFXLB8KWIlqTQrZG7iu7RayJDf9Ij4s2AVva8SUnrayX
-	 cJD7jOuBCBIhg==
-Date: Tue, 30 Apr 2024 15:41:01 -0300
-From: Arnaldo Carvalho de Melo <acme@kernel.org>
-To: Daniel Xu <dxu@dxuuu.xyz>
-Cc: jolsa@kernel.org, quentin@isovalent.com, alan.maguire@oracle.com,
-	eddyz87@gmail.com, andrii.nakryiko@gmail.com, ast@kernel.org,
-	daniel@iogearbox.net, bpf@vger.kernel.org
-Subject: Re: [PATCH dwarves v9 1/3] pahole: Save input filename separate from
- output
-Message-ID: <ZjE7PUSvpHRJGNgK@x1>
-References: <cover.1714430735.git.dxu@dxuuu.xyz>
- <1728b8d941d2658b310457b6c59d97f102aaf66d.1714430735.git.dxu@dxuuu.xyz>
+	s=k20201202; t=1714502883;
+	bh=HPzjuRJ5yCLBNuv1aWWG9npK5939ao9xZ9NGuQ/3nUI=;
+	h=From:To:Subject:In-Reply-To:References:Date:From;
+	b=lXDmZTRouHLCs4AdMqtuDYka9dsVcqIW1NW+vdeMs8J0ylDQMwhfA5I4PM+uVm+Xm
+	 s6rr3M61nsxv1ffqEI8k0X6v9oJ7YeZdmJj2kz0688kVEsd5ydMRjYBeZGKFfSjL6Q
+	 yFSXUq1KiUZU4684hU59BKpvKPwvdOYlt94xrPoyl88wPUay5Z8AUXpScb/OfSl1i5
+	 chH8ORZ4moLQgAklWzQXpZYrAXAGSHxdqKntBpOzpGrfYiFA3tJL8EDj2CP++8VRub
+	 4zSfvqkpMcV2PP88PQJ8Zf+HUljRxgSJ6MWy29q8WyJfKSJlrUYEUqAzK7nc8ZUcD4
+	 vY5teNHhL4haA==
+From: Puranjay Mohan <puranjay@kernel.org>
+To: Catalin Marinas <catalin.marinas@arm.com>, Will Deacon
+ <will@kernel.org>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann
+ <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, Martin KaFai
+ Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu
+ <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, John Fastabend
+ <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, Stanislav
+ Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa
+ <jolsa@kernel.org>, Zi Shen Lim <zlim.lnx@gmail.com>, Xu Kuohai
+ <xukuohai@huawei.com>, Florent Revest <revest@chromium.org>,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+ bpf@vger.kernel.org
+Subject: Re: [PATCH bpf-next v4 2/2] bpf, arm64: inline
+ bpf_get_smp_processor_id() helper
+In-Reply-To: <20240429131647.50165-3-puranjay@kernel.org>
+References: <20240429131647.50165-1-puranjay@kernel.org>
+ <20240429131647.50165-3-puranjay@kernel.org>
+Date: Tue, 30 Apr 2024 18:48:00 +0000
+Message-ID: <mb61pzfta1ycf.fsf@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1728b8d941d2658b310457b6c59d97f102aaf66d.1714430735.git.dxu@dxuuu.xyz>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Apr 29, 2024 at 04:45:58PM -0600, Daniel Xu wrote:
-> During detached BTF encoding, the input file is not necessarily the same
-> as the output file. So save them separately. This matters when we need
-> to look at the input file again, such as for kfunc tagging.
+Puranjay Mohan <puranjay@kernel.org> writes:
 
-You forgot to check a strdup(), I added this on top of this patch:
+> As ARM64 JIT now implements BPF_MOV64_PERCPU_REG instruction, inline
+> bpf_get_smp_processor_id().
+>
+> ARM64 uses the per-cpu variable cpu_number to store the cpu id.
+
+While implementing this on the RISC-V JIT[1], I realized that reading the
+cpu_number from the per-cpu variable is not the best way to do this on
+arm64.
+
+arm64 now has the cpu number in the thread_info and reading that would
+be more efficient.
+
+Implementation in this patch is emitting:
+
+; int cpu =3D bpf_get_smp_processor_id();
+mov     x7, #0xffff8000ffffffff
+movk    x7, #0x8207, lsl #16=20=20=20
+movk    x7, #0x2008=20=20=20=20=20=20=20=20=20=20=20=20
+mrs     x10, tpidr_el1=20=20=20=20=20=20=20=20=20
+add     x7, x7, x10=20=20=20=20=20=20=20=20=20=20=20=20
+ldr     w7, [x7]=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20
+
+If we do this in the JIT like I did for RISC-V[1]
+We can emit:
+
+; int cpu =3D bpf_get_smp_processor_id();
+mrs     x10, sp_el0
+ldr     w7, [x10, #24]
+
+This gives ~ 10% improvement on glob-arr-inc and hash-inc compared to
+3-4 % which this patch is providing.=20
+
+I will send v5 using this approach.
+
+[1] https://lore.kernel.org/all/20240430175834.33152-3-puranjay@kernel.org/
+
+> Here is how the BPF and ARM64 JITed assembly changes after this commit:
+>
+>                                          BPF
+>          		                =3D=3D=3D=3D=3D
+>               BEFORE                                       AFTER
+>              --------                                     -------
+>
+> int cpu =3D bpf_get_smp_processor_id();           int cpu =3D bpf_get_smp=
+_processor_id();
+> (85) call bpf_get_smp_processor_id#229032       (18) r0 =3D 0xffff8000820=
+72008
+>                                                 (bf) r0 =3D &(void __perc=
+pu *)(r0)
+>                                                 (61) r0 =3D *(u32 *)(r0 +=
+0)
+>
+> 				      ARM64 JIT
+> 				     =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+>
+>               BEFORE                                       AFTER
+>              --------                                     -------
+>
+> int cpu =3D bpf_get_smp_processor_id();           int cpu =3D bpf_get_smp=
+_processor_id();
+> mov     x10, #0xfffffffffffff4d0                mov     x7, #0xffff8000ff=
+ffffff
+> movk    x10, #0x802b, lsl #16                   movk    x7, #0x8207, lsl =
+#16
+> movk    x10, #0x8000, lsl #32                   movk    x7, #0x2008
+> blr     x10                                     mrs     x10, tpidr_el1
+> add     x7, x0, #0x0                            add     x7, x7, x10
+>                                                 ldr     w7, [x7]
+>
+> Performance improvement using benchmark[1]
+>
+>              BEFORE                                       AFTER
+>             --------                                     -------
+>
+> glob-arr-inc   :   23.817 =C2=B1 0.019M/s      glob-arr-inc   :   24.631 =
+=C2=B1 0.027M/s [+ 3.41%]
+> arr-inc        :   23.253 =C2=B1 0.019M/s      arr-inc        :   23.742 =
+=C2=B1 0.023M/s [+ 2.10%]
+> hash-inc       :   12.258 =C2=B1 0.010M/s      hash-inc       :   12.625 =
+=C2=B1 0.004M/s [+ 3.00%]
+>
+> [1] https://github.com/anakryiko/linux/commit/8dec900975ef
 
 
-diff --git a/btf_encoder.c b/btf_encoder.c
-index 5ffaf5d969c9bc49..8aa2a7709dc1555f 100644
---- a/btf_encoder.c
-+++ b/btf_encoder.c
-@@ -1651,7 +1651,7 @@ struct btf_encoder *btf_encoder__new(struct cu *cu, const char *detached_filenam
- 		encoder->raw_output = detached_filename != NULL;
- 		encoder->source_filename = strdup(cu->filename);
- 		encoder->filename = strdup(encoder->raw_output ? detached_filename : cu->filename);
--		if (encoder->filename == NULL)
-+		if (encoder->source_filename == NULL || encoder->filename == NULL)
- 			goto out_delete;
- 
- 		encoder->btf = btf__new_empty_split(base_btf);
- 
-> Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
-> ---
->  btf_encoder.c | 3 +++
->  1 file changed, 3 insertions(+)
-> 
-> diff --git a/btf_encoder.c b/btf_encoder.c
-> index 19e9d90..5ffaf5d 100644
-> --- a/btf_encoder.c
-> +++ b/btf_encoder.c
-> @@ -64,6 +64,7 @@ struct btf_encoder {
->  	struct btf        *btf;
->  	struct cu         *cu;
->  	struct gobuffer   percpu_secinfo;
-> +	const char	  *source_filename;
->  	const char	  *filename;
->  	struct elf_symtab *symtab;
->  	uint32_t	  type_id_off;
-> @@ -1648,6 +1649,7 @@ struct btf_encoder *btf_encoder__new(struct cu *cu, const char *detached_filenam
->  
->  	if (encoder) {
->  		encoder->raw_output = detached_filename != NULL;
-> +		encoder->source_filename = strdup(cu->filename);
->  		encoder->filename = strdup(encoder->raw_output ? detached_filename : cu->filename);
->  		if (encoder->filename == NULL)
->  			goto out_delete;
-> @@ -1730,6 +1732,7 @@ void btf_encoder__delete(struct btf_encoder *encoder)
->  	btf_encoders__delete(encoder);
->  	__gobuffer__delete(&encoder->percpu_secinfo);
->  	zfree(&encoder->filename);
-> +	zfree(&encoder->source_filename);
->  	btf__free(encoder->btf);
->  	encoder->btf = NULL;
->  	elf_symtab__delete(encoder->symtab);
-> -- 
-> 2.44.0
+Thanks,
+Puranjay
 
