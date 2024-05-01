@@ -1,359 +1,137 @@
-Return-Path: <bpf+bounces-28322-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-28323-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7BC478B8639
-	for <lists+bpf@lfdr.de>; Wed,  1 May 2024 09:44:26 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 92C6E8B8681
+	for <lists+bpf@lfdr.de>; Wed,  1 May 2024 09:55:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9F0831C21310
-	for <lists+bpf@lfdr.de>; Wed,  1 May 2024 07:44:25 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 489871F236DB
+	for <lists+bpf@lfdr.de>; Wed,  1 May 2024 07:55:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 269944D9F2;
-	Wed,  1 May 2024 07:44:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BBAF25025E;
+	Wed,  1 May 2024 07:54:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=meta.com header.i=@meta.com header.b="nyGLb6cT"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="bfGhnYDC"
 X-Original-To: bpf@vger.kernel.org
-Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F33D14CDE0
-	for <bpf@vger.kernel.org>; Wed,  1 May 2024 07:44:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.153.30
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7DF564F5FA;
+	Wed,  1 May 2024 07:54:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714549456; cv=none; b=LuXMs2Nv7JwaIAKNtthxTcP/pZMa1WdrEGhtuzu7Ntpr3BJ9V+ckeBO81AZinLXjNRht5ilM8L1ZWEgeMlNgKSV9Oqn9DRsKSXlHsI99tIEljEJUuUIRqe5hathR/81KRW2s4pT0C5od0sMldY0N3NwhuOJ9AzX0vgjmdo0RmOM=
+	t=1714550099; cv=none; b=rjdCquukknCfDz29ADYnVcV8mc1T3W8O/EvXQ0bz8iwSx6nh3jxHBmIn/qlZKdTD3Pb/14dNsB1UCbXYa/asjAiHhk92IQQ51SrkqbAqW49hVY7kk2pb3fwTo+YVBgr2VCaAmWbxGJvNgrchFsFb/u4aFRIARGpwAXMc8rccYXY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714549456; c=relaxed/simple;
-	bh=md6jVbAS5qS0rwyKif0UFiJ92p+UOungs2JrhrKKl4E=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=DiFrJ5kqAvn0JgoVENc850Y/nMepJTudVD1psJof4Et3tnEeFvK7lqv6wbxscjp3J/ZTaWFHLQYUvePx2Xm/dTHMoxqGJDwipyJlJO/FzboDSa98aOiKKUlDBKimrtmv2Anrek9ODAwlsmkoE1CC02Zgc2DsK5OK9IXauKKYX0A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=meta.com; spf=pass smtp.mailfrom=meta.com; dkim=pass (2048-bit key) header.d=meta.com header.i=@meta.com header.b=nyGLb6cT; arc=none smtp.client-ip=67.231.153.30
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=meta.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=meta.com
-Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
-	by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 44101Kbw002498
-	for <bpf@vger.kernel.org>; Wed, 1 May 2024 00:44:13 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=meta.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=s2048-2021-q4;
- bh=4lF8F4Lq71XKAlTdvWul2zbc0f5YYEDVLLeJgnkIzrg=;
- b=nyGLb6cT24nIXN0FCGkKfhn1Jdy11hdM1MdhYbsPCKMZkhN/aCgUYVttZdc29eJvgsLd
- VUSLDaUC+BVUqhZLrcoDfJclzrBFsQztc4mfWAoFFNAnU9E5UkIJcqQiR+RVA5+NHMn+
- o172uECYF8eI+yK9zZaIniHaxJwGaFdyZwKbApU6u/j6uvkHx4KmpWE9I1/UsdnZ8Bls
- TO1i6313sTfpcg7pNBRAmvH/a2hlxWsDK2ArGWLnEtLfDDtGizfj1uVUW0GVMg/zYHTz
- UDTVjEUxHGNEPWkY0PvQ58DOR2QNrPnHzpT5qv19kVa+mLoZEHVGLb6qTdPWjKvw0kme Og== 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3xtxh3dube-15
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-	for <bpf@vger.kernel.org>; Wed, 01 May 2024 00:44:13 -0700
-Received: from twshared12096.14.prn3.facebook.com (2620:10d:c0a8:1c::11) by
- mail.thefacebook.com (2620:10d:c0a8:82::b) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Wed, 1 May 2024 07:44:11 +0000
-Received: by devvm15954.vll0.facebook.com (Postfix, from userid 420730)
-	id 49C06CA32C04; Wed,  1 May 2024 00:44:06 -0700 (PDT)
-From: Miao Xu <miaxu@meta.com>
-To: Eric Dumazet <edumazet@google.com>,
-        "David S . Miller"
-	<davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, Paolo Abeni
-	<pabeni@redhat.com>,
-        David Ahern <dsahern@kernel.org>, Martin Lau
-	<kafai@meta.com>
-CC: <netdev@vger.kernel.org>, <bpf@vger.kernel.org>, Miao Xu <miaxu@meta.com>
-Subject: [PATCH net-next v2 3/3] Add test for the use of new args in cong_control
-Date: Wed, 1 May 2024 00:43:38 -0700
-Message-ID: <20240501074338.362361-3-miaxu@meta.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240501074338.362361-1-miaxu@meta.com>
-References: <20240501074338.362361-1-miaxu@meta.com>
+	s=arc-20240116; t=1714550099; c=relaxed/simple;
+	bh=8sTLmBe4e6NEzE5W91OaWrAkBkkpZr1qotPYVHDkhKw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=BGujQ0JVbADiNrPSQQToPEbzRCzw93yUbGEhHmIbbMObrys3ZKFpnF8YmLZ/2rmNwGAoBzN9S+l6ih5IW+yiCBsMtLkotiU5iA0bKZNHDi1Z7XC7WF4Prr2CVpsiksd6oAuQsbkBBFKErb0YMHBura9cD+Xp9ez3zbGI5WsprQk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=bfGhnYDC; arc=none smtp.client-ip=198.137.202.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Transfer-Encoding
+	:Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+	Sender:Reply-To:Content-ID:Content-Description;
+	bh=aBV+1nnc4nEQPCYOtpvvVf+o4bvFOap0m5gmh/nCYCg=; b=bfGhnYDCggaTx9oehvzxFbXZrH
+	ZqN7cmIAB1BbFtRc1wHMmVusw6cJUlB1NhMP5Dv9X2RjN2QTpx0PK4oFkz9ZGdl187+6ZNQoywux3
+	YaswCMA448yCQjeTjqLvziQtoTm2XxogyzKlXiOR33bwaVqdb+dUgagWMMtAGzbvM5VW2eYbMPBp5
+	UZmgpSzzglnokVtmBzlR/PGhMgzd2ozpXwfaB65HARTyYzFd0mcijD9gKhI++AXS/jl1oL1qBWOYh
+	FhcojGxJt4eoAXXvprPABlnDQp25Z3AMOSchEbU7ghrBQivczGlag9TchdpTxarWXXcZG0Z6+9nxL
+	nvVbtMrg==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1s24nZ-00000008nfR-35ld;
+	Wed, 01 May 2024 07:54:41 +0000
+Date: Wed, 1 May 2024 00:54:41 -0700
+From: Christoph Hellwig <hch@infradead.org>
+To: Mina Almasry <almasrymina@google.com>
+Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-doc@vger.kernel.org, linux-alpha@vger.kernel.org,
+	linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
+	sparclinux@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+	linux-arch@vger.kernel.org, bpf@vger.kernel.org,
+	linux-kselftest@vger.kernel.org, linux-media@vger.kernel.org,
+	dri-devel@lists.freedesktop.org,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Richard Henderson <richard.henderson@linaro.org>,
+	Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+	Matt Turner <mattst88@gmail.com>,
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	"James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+	Helge Deller <deller@gmx.de>, Andreas Larsson <andreas@gaisler.com>,
+	Jesper Dangaard Brouer <hawk@kernel.org>,
+	Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Arnd Bergmann <arnd@arndb.de>, Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
+	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+	Steffen Klassert <steffen.klassert@secunet.com>,
+	Herbert Xu <herbert@gondor.apana.org.au>,
+	David Ahern <dsahern@kernel.org>,
+	Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+	Shuah Khan <shuah@kernel.org>,
+	Sumit Semwal <sumit.semwal@linaro.org>,
+	Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+	Amritha Nambiar <amritha.nambiar@intel.com>,
+	Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+	Alexander Mikhalitsyn <alexander@mihalicyn.com>,
+	Kaiyuan Zhang <kaiyuanz@google.com>,
+	Christian Brauner <brauner@kernel.org>,
+	Simon Horman <horms@kernel.org>,
+	David Howells <dhowells@redhat.com>,
+	Florian Westphal <fw@strlen.de>,
+	Yunsheng Lin <linyunsheng@huawei.com>,
+	Kuniyuki Iwashima <kuniyu@amazon.com>, Jens Axboe <axboe@kernel.dk>,
+	Arseniy Krasnov <avkrasnov@salutedevices.com>,
+	Aleksander Lobakin <aleksander.lobakin@intel.com>,
+	Michael Lass <bevan@bi-co.net>, Jiri Pirko <jiri@resnulli.us>,
+	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+	Lorenzo Bianconi <lorenzo@kernel.org>,
+	Richard Gobert <richardbgobert@gmail.com>,
+	Sridhar Samudrala <sridhar.samudrala@intel.com>,
+	Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+	Johannes Berg <johannes.berg@intel.com>,
+	Abel Wu <wuyun.abel@bytedance.com>,
+	Breno Leitao <leitao@debian.org>,
+	Pavel Begunkov <asml.silence@gmail.com>, David Wei <dw@davidwei.uk>,
+	Jason Gunthorpe <jgg@ziepe.ca>,
+	Shailend Chand <shailend@google.com>,
+	Harshitha Ramamurthy <hramamurthy@google.com>,
+	Shakeel Butt <shakeel.butt@linux.dev>,
+	Jeroen de Borst <jeroendb@google.com>,
+	Praveen Kaligineedi <pkaligineedi@google.com>
+Subject: Re: [RFC PATCH net-next v8 02/14] net: page_pool: create hooks for
+ custom page providers
+Message-ID: <ZjH1QaSSQ98mw158@infradead.org>
+References: <20240403002053.2376017-1-almasrymina@google.com>
+ <20240403002053.2376017-3-almasrymina@google.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-GUID: 8KuE1zeeV5SiLX43I4EflFNVd0xDNP82
-X-Proofpoint-ORIG-GUID: 8KuE1zeeV5SiLX43I4EflFNVd0xDNP82
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.650,FMLib:17.11.176.26
- definitions=2024-05-01_06,2024-04-30_01,2023-05-22_02
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240403002053.2376017-3-almasrymina@google.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 
-This patch adds a selftest to show the usage of the new arguments in
-cong_control. For simplicity's sake, the testing example reuses cubic's
-kernel functions.
---
-Changes in v2:
-* Added highlights to explain major differences between the bpf program
-and tcp_cubic.c.
-* bpf_tcp_helpers.h should not be further extended, so remove the
-  dependency on this file. Use vmlinux.h instead.
-* Minor changes such as indentation.
-
-Signed-off-by: Miao Xu <miaxu@meta.com>
----
- .../bpf/progs/bpf_cubic_cong_control.c        | 207 ++++++++++++++++++
- .../selftests/bpf/progs/bpf_tracing_net.h     |  10 +
- 2 files changed, 217 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/progs/bpf_cubic_cong_cont=
-rol.c
-
-diff --git a/tools/testing/selftests/bpf/progs/bpf_cubic_cong_control.c b=
-/tools/testing/selftests/bpf/progs/bpf_cubic_cong_control.c
-new file mode 100644
-index 000000000000..7ec9da0356c3
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/bpf_cubic_cong_control.c
-@@ -0,0 +1,207 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+
-+/* Highlights:
-+ * 1. The major difference between this bpf program and tcp_cubic.c
-+ *    is that this bpf program relies on `cong_control` rather than
-+ *    `cong_avoid` in the struct tcp_congestion_ops.
-+ * 2. Logic such as tcp_cwnd_reduction, tcp_cong_avoid, and
-+ *    tcp_update_pacing_rate is bypassed when `cong_control` is
-+ *    defined, so moving these logic to `cong_control`.
-+ * 3. WARNING: This bpf program is NOT the same as tcp_cubic.c.
-+ *    The main purpose is to show use cases of the arguments in
-+ *    `cong_control`. For simplicity's sake, it reuses tcp cubic's
-+ *    kernel functions.
-+ */
-+
-+#include "vmlinux.h"
-+
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_tracing.h>
-+#include "bpf_tracing_net.h"
-+
-+#define BPF_STRUCT_OPS(name, args...) \
-+SEC("struct_ops/"#name) \
-+BPF_PROG(name, args)
-+
-+
-+#define min(a, b) ((a) < (b) ? (a) : (b))
-+#define max(a, b) ((a) > (b) ? (a) : (b))
-+
-+static __always_inline struct inet_connection_sock *inet_csk(const struc=
-t sock *sk)
-+{
-+	return (struct inet_connection_sock *)sk;
-+}
-+
-+static __always_inline struct tcp_sock *tcp_sk(const struct sock *sk)
-+{
-+	return (struct tcp_sock *)sk;
-+}
-+
-+static __always_inline bool before(__u32 seq1, __u32 seq2)
-+{
-+	return (__s32)(seq1-seq2) < 0;
-+}
-+#define after(seq2, seq1) before(seq1, seq2)
-+
-+char _license[] SEC("license") =3D "GPL";
-+
-+extern void cubictcp_init(struct sock *sk) __ksym;
-+extern void cubictcp_cwnd_event(struct sock *sk, enum tcp_ca_event event=
-) __ksym;
-+extern __u32 cubictcp_recalc_ssthresh(struct sock *sk) __ksym;
-+extern void cubictcp_state(struct sock *sk, __u8 new_state) __ksym;
-+extern __u32 tcp_reno_undo_cwnd(struct sock *sk) __ksym;
-+extern void cubictcp_acked(struct sock *sk, const struct ack_sample *sam=
-ple) __ksym;
-+extern void cubictcp_cong_avoid(struct sock *sk, __u32 ack, __u32 acked)=
- __ksym;
-+
-+
-+void BPF_STRUCT_OPS(bpf_cubic_init, struct sock *sk)
-+{
-+	cubictcp_init(sk);
-+}
-+
-+void BPF_STRUCT_OPS(bpf_cubic_cwnd_event, struct sock *sk, enum tcp_ca_e=
-vent event)
-+{
-+	cubictcp_cwnd_event(sk, event);
-+}
-+
-+#define USEC_PER_SEC 1000000UL
-+#define TCP_PACING_SS_RATIO (200)
-+#define TCP_PACING_CA_RATIO (120)
-+#define TCP_REORDERING (12)
-+#define likely(x) (__builtin_expect(!!(x), 1))
-+
-+static __always_inline __u64 div64_u64(__u64 dividend, __u64 divisor)
-+{
-+	return dividend / divisor;
-+}
-+
-+static __always_inline void tcp_update_pacing_rate(struct sock *sk)
-+{
-+	const struct tcp_sock *tp =3D tcp_sk(sk);
-+	__u64 rate;
-+
-+	/* set sk_pacing_rate to 200 % of current rate (mss * cwnd / srtt) */
-+	rate =3D (__u64)tp->mss_cache * ((USEC_PER_SEC / 100) << 3);
-+
-+	/* current rate is (cwnd * mss) / srtt
-+	 * In Slow Start [1], set sk_pacing_rate to 200 % the current rate.
-+	 * In Congestion Avoidance phase, set it to 120 % the current rate.
-+	 *
-+	 * [1] : Normal Slow Start condition is (tp->snd_cwnd < tp->snd_ssthres=
-h)
-+	 *	 If snd_cwnd >=3D (tp->snd_ssthresh / 2), we are approaching
-+	 *	 end of slow start and should slow down.
-+	 */
-+	if (tp->snd_cwnd < tp->snd_ssthresh / 2)
-+		rate *=3D TCP_PACING_SS_RATIO;
-+	else
-+		rate *=3D TCP_PACING_CA_RATIO;
-+
-+	rate *=3D max(tp->snd_cwnd, tp->packets_out);
-+
-+	if (likely(tp->srtt_us))
-+		rate =3D div64_u64(rate, (__u64)tp->srtt_us);
-+
-+	sk->sk_pacing_rate =3D min(rate, sk->sk_max_pacing_rate);
-+}
-+
-+static __always_inline void tcp_cwnd_reduction(
-+		struct sock *sk,
-+		int newly_acked_sacked,
-+		int newly_lost,
-+		int flag) {
-+	struct tcp_sock *tp =3D tcp_sk(sk);
-+	int sndcnt =3D 0;
-+	__u32 pkts_in_flight =3D tp->packets_out - (tp->sacked_out + tp->lost_o=
-ut) + tp->retrans_out;
-+	int delta =3D tp->snd_ssthresh - pkts_in_flight;
-+
-+	if (newly_acked_sacked <=3D 0 || !tp->prior_cwnd)
-+		return;
-+
-+	__u32 prr_delivered =3D tp->prr_delivered + newly_acked_sacked;
-+
-+	if (delta < 0) {
-+		__u64 dividend =3D
-+			(__u64)tp->snd_ssthresh * prr_delivered + tp->prior_cwnd - 1;
-+		sndcnt =3D (__u32)div64_u64(dividend, (__u64)tp->prior_cwnd) - tp->prr=
-_out;
-+	} else {
-+		sndcnt =3D max(prr_delivered - tp->prr_out, newly_acked_sacked);
-+		if (flag & FLAG_SND_UNA_ADVANCED && !newly_lost)
-+			sndcnt++;
-+		sndcnt =3D min(delta, sndcnt);
-+	}
-+	/* Force a fast retransmit upon entering fast recovery */
-+	sndcnt =3D max(sndcnt, (tp->prr_out ? 0 : 1));
-+	tp->snd_cwnd =3D pkts_in_flight + sndcnt;
-+}
-+
-+/* Decide wheather to run the increase function of congestion control. *=
-/
-+static __always_inline bool tcp_may_raise_cwnd(
-+		const struct sock *sk,
-+		const int flag) {
-+	if (tcp_sk(sk)->reordering > TCP_REORDERING)
-+		return flag & FLAG_FORWARD_PROGRESS;
-+
-+	return flag & FLAG_DATA_ACKED;
-+}
-+
-+void BPF_STRUCT_OPS(bpf_cubic_cong_control, struct sock *sk, __u32 ack, =
-int flag,
-+		const struct rate_sample *rs)
-+{
-+	struct tcp_sock *tp =3D tcp_sk(sk);
-+
-+	if (((1<<TCP_CA_CWR) | (1<<TCP_CA_Recovery)) &
-+			(1 << inet_csk(sk)->icsk_ca_state)) {
-+		/* Reduce cwnd if state mandates */
-+		tcp_cwnd_reduction(sk, rs->acked_sacked, rs->losses, flag);
-+
-+		if (!before(tp->snd_una, tp->high_seq)) {
-+			/* Reset cwnd to ssthresh in CWR or Recovery (unless it's undone) */
-+			if (tp->snd_ssthresh < TCP_INFINITE_SSTHRESH &&
-+					inet_csk(sk)->icsk_ca_state =3D=3D TCP_CA_CWR) {
-+				tp->snd_cwnd =3D tp->snd_ssthresh;
-+				tp->snd_cwnd_stamp =3D tcp_jiffies32;
-+			}
-+			// __cwnd_event(sk, CA_EVENT_COMPLETE_CWR);
-+		}
-+	} else if (tcp_may_raise_cwnd(sk, flag)) {
-+		/* Advance cwnd if state allows */
-+		cubictcp_cong_avoid(sk, ack, rs->acked_sacked);
-+		tp->snd_cwnd_stamp =3D tcp_jiffies32;
-+	}
-+
-+	tcp_update_pacing_rate(sk);
-+}
-+
-+__u32 BPF_STRUCT_OPS(bpf_cubic_recalc_ssthresh, struct sock *sk)
-+{
-+	return cubictcp_recalc_ssthresh(sk);
-+}
-+
-+void BPF_STRUCT_OPS(bpf_cubic_state, struct sock *sk, __u8 new_state)
-+{
-+	cubictcp_state(sk, new_state);
-+}
-+
-+void BPF_STRUCT_OPS(bpf_cubic_acked, struct sock *sk,
-+		const struct ack_sample *sample)
-+{
-+	cubictcp_acked(sk, sample);
-+}
-+
-+__u32 BPF_STRUCT_OPS(bpf_cubic_undo_cwnd, struct sock *sk)
-+{
-+	return tcp_reno_undo_cwnd(sk);
-+}
-+
-+
-+SEC(".struct_ops")
-+struct tcp_congestion_ops cubic =3D {
-+	.init		=3D (void *)bpf_cubic_init,
-+	.ssthresh	=3D (void *)bpf_cubic_recalc_ssthresh,
-+	.cong_control	=3D (void *)bpf_cubic_cong_control,
-+	.set_state	=3D (void *)bpf_cubic_state,
-+	.undo_cwnd	=3D (void *)bpf_cubic_undo_cwnd,
-+	.cwnd_event	=3D (void *)bpf_cubic_cwnd_event,
-+	.pkts_acked     =3D (void *)bpf_cubic_acked,
-+	.name		=3D "bpf_cubic",
-+};
-diff --git a/tools/testing/selftests/bpf/progs/bpf_tracing_net.h b/tools/=
-testing/selftests/bpf/progs/bpf_tracing_net.h
-index 7001965d1cc3..f9ec630dfcd5 100644
---- a/tools/testing/selftests/bpf/progs/bpf_tracing_net.h
-+++ b/tools/testing/selftests/bpf/progs/bpf_tracing_net.h
-@@ -80,6 +80,14 @@
- #define TCP_INFINITE_SSTHRESH	0x7fffffff
- #define TCP_PINGPONG_THRESH	3
-=20
-+#define FLAG_DATA_ACKED 0x04 /* This ACK acknowledged new data.		*/
-+#define FLAG_SYN_ACKED 0x10 /* This ACK acknowledged SYN.		*/
-+#define FLAG_DATA_SACKED 0x20 /* New SACK.				*/
-+#define FLAG_SND_UNA_ADVANCED \
-+	0x400 /* Snd_una was changed (!=3D FLAG_DATA_ACKED) */
-+#define FLAG_ACKED (FLAG_DATA_ACKED | FLAG_SYN_ACKED)
-+#define FLAG_FORWARD_PROGRESS (FLAG_ACKED | FLAG_DATA_SACKED)
-+
- #define fib_nh_dev		nh_common.nhc_dev
- #define fib_nh_gw_family	nh_common.nhc_gw_family
- #define fib_nh_gw6		nh_common.nhc_gw.ipv6
-@@ -119,4 +127,6 @@
- #define tw_v6_daddr		__tw_common.skc_v6_daddr
- #define tw_v6_rcv_saddr		__tw_common.skc_v6_rcv_saddr
-=20
-+#define tcp_jiffies32 ((__u32)bpf_jiffies64())
-+
- #endif
---=20
-2.43.0
+Still NAK to creating aⅺbitrary hooks here.  This should be a page or
+dmabuf pool and not an indirect call abstraction allowing random
+crap to hook into it.
 
 
