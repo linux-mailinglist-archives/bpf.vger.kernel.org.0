@@ -1,72 +1,72 @@
-Return-Path: <bpf+bounces-28339-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-28340-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 84CAE8B8C8C
-	for <lists+bpf@lfdr.de>; Wed,  1 May 2024 17:15:33 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id EFCA48B8C8E
+	for <lists+bpf@lfdr.de>; Wed,  1 May 2024 17:15:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 369CE283536
-	for <lists+bpf@lfdr.de>; Wed,  1 May 2024 15:15:32 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1C0DC1C22712
+	for <lists+bpf@lfdr.de>; Wed,  1 May 2024 15:15:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 36D7012F5A7;
-	Wed,  1 May 2024 15:13:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C52E1311BA;
+	Wed,  1 May 2024 15:13:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="l2dONXVn"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YWL4fQJZ"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f181.google.com (mail-pg1-f181.google.com [209.85.215.181])
+Received: from mail-pf1-f182.google.com (mail-pf1-f182.google.com [209.85.210.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 23E8C130E26;
-	Wed,  1 May 2024 15:13:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A20551311A3;
+	Wed,  1 May 2024 15:13:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714576416; cv=none; b=Ws8POKMeHr8jRj+abyeq29udgQ5Ai8NbDt810aTzpVE+Y3VRz9EYr6sGu3yUe4M1z2bZxv2jPl3odlLlojHkON5+tdcQIKLT/H8fpnq6LPUdqXzwGWAjWu041Y7Ki1MPMHk1Ljkd7v15X1Z4SyemGwJTBZF5MhnUSEUo0BvXb60=
+	t=1714576420; cv=none; b=miPmJPu7HcFN4rDN81wTCaHw3Dl6/zW3VFZi3qfPuogjLhq51TVEYvv0ezSybFYM1DVJgkNhfjgvV5hqwK2IIGTlMENXe1UZYeijLQjdVKX+ogvNX1s+Bk6CylSOG4xqZP29uTLUCI+z6gftiEzQCL2pltEdIll/9sbSWo6zA9s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714576416; c=relaxed/simple;
-	bh=Oq87g67GCGStGDVeIyUo3bWV71vCw1fl3T2B6oBFcwM=;
+	s=arc-20240116; t=1714576420; c=relaxed/simple;
+	bh=P0O+cHVKqzmeTTfPHOScr8Fm/OW2mvaU5BrHKVks43A=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=RGPieBhSWdWGt9Bhtv6j7ExR5UWf1aKGlZ2eq0e9jeh+ZeU0Lkn7YZpj4MEHImC6h35GKCXx7PFVdrQew3yRpwaSlzRnMm3zwFpt4xRVMZtrbRS2ryGs69JhspbPvXF3EVw/XwOjq9mX9DZ9vRO8wb9PvmyaVWVS9adJhZwl7ac=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=l2dONXVn; arc=none smtp.client-ip=209.85.215.181
+	 MIME-Version; b=l2JyiURTesc6NuqvVmpQ2KDHuURRi7yjFl0QBm5vbG8LhoR469fTolqMsFqJFrX4VXQKuptKFkmw/ZffHY27rVC/UVDhXlQ9Pfhbf6BhoTnfO9z8e2vTvhUI9ANCSTGbuxL1iHG38Xy2L7K5tWSgYiVmoyRHjVgSYhyl3qMODJ4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=YWL4fQJZ; arc=none smtp.client-ip=209.85.210.182
 Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f181.google.com with SMTP id 41be03b00d2f7-5dca1efad59so4925598a12.2;
-        Wed, 01 May 2024 08:13:34 -0700 (PDT)
+Received: by mail-pf1-f182.google.com with SMTP id d2e1a72fcca58-6f3e3d789cdso4672720b3a.1;
+        Wed, 01 May 2024 08:13:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714576414; x=1715181214; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1714576418; x=1715181218; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:sender:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=aDNAT/kHF5gec+qhYsHCKIcwgrbw46YxZbI7N/jB1Ok=;
-        b=l2dONXVndOQ16FQfC2LFH8ATUaH1hYKByjiVpJX8rriGxuh+raWoHrarbElfGnfX2S
-         oRM5aj1vQH3cjfcVEAKBwpJ8k2gP2dAKw3gUscR/o28c+AnKIrmPSkCSgCAD4fGz0ZJ4
-         KPslMbyn2SPquZa7Vkpai5mN4teNxgtq12fAbDwSEMCwUywsYhCu0TEw/sEY4SBmqifY
-         sfR5fyDpDK2aGr5utwFZtJCiCy042jjIyJZ+289ZCKOZ1jdHeT12kCyw2zf9CuQ91m2S
-         xvAoPlLRf7dtNpeS91Yjut7/GEyfUtLdaUMaFdzkHsUKMJaed58h4RPPlxQ+K8L0JeYQ
-         fQ5g==
+        bh=ICIINeNNGIWapDIPelhrVVJQptAEolERW6ebpcBXUO4=;
+        b=YWL4fQJZ+1XlG4XMrjOfTOSze1g0LlErCTRydlzUrxo6OSMFlIG1MEvCglYSx6JVYM
+         eh0P9QF/tHTH33xXYsXsjb7FeQR0gXDhZ9IkekHMNq2h/AWvviBlGjLylq/EepRgiqEs
+         lVfp1zofbKSo2pfhvOe0v1GvvTXD1idoTUxUdA26uySnGlGEOoKoRFkKy6CKjzA86+0O
+         zXa4aFShjpkj936A/5CKTCYNMTkEXMntVRVHu2VCGziG9IzrJFqTxV3Ou8tVmFeeA8EF
+         uo+h0ARzxlytyLylx+6irauY28YyBzQl4jT0BVjp9c7vRJxnq634SUUrhwRNDSZYF0r+
+         H99g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714576414; x=1715181214;
+        d=1e100.net; s=20230601; t=1714576418; x=1715181218;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:sender:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=aDNAT/kHF5gec+qhYsHCKIcwgrbw46YxZbI7N/jB1Ok=;
-        b=ngna8aNYyCQP0/4UvYJlOAshuw+mdR+0B37suTFVD6mtO0vq0kDoA+Ou7X0xYB9lVZ
-         p5z5dJc+9VULhD2vyDO8/MlZAmaaLFLYo0ldmYJE7FsNaOvoeHj0o5uAtOaWmucghv3+
-         WB48/OmV9w0fyrl+cksta7jSSh37iyBphDDDVXyIkBjk4wrVBSVOIKdsUGCQbbIEvqv3
-         vdKChMBqCfCaDrSik6hr52RkmpZxknqxwWeI9rWy0YxbWBbmW9ix5jAMMGu52xqkHTHx
-         9RC8Dzu6k7IOyR+7pCgsFs9kJ2+l16nxaDgvxuOACRVlNSjEdXBpvEIV3I8VeA0YHKUT
-         7QfA==
-X-Forwarded-Encrypted: i=1; AJvYcCXzwim/a6oLwHFHzVWvwQTE3xbZruKYgbMlRykIT2nl99OT2v4cq6KWqIRz0+ADPhxxCz8KKrQqlBQrGDH8cUKNp4e/
-X-Gm-Message-State: AOJu0YwLOT1iDb3crEMubwCvfuTvU4Sjfp5tTtNiC4efZJN18i9rSu11
-	AYLQ1v/kYAMXudT7N6RuC815a0T1t3wDsNlX99NdtIe5qbfjp21+
-X-Google-Smtp-Source: AGHT+IGLJElPH88+HyT1S744nn8nSse2luaIsH+YecHTw6prNRYijKVqcJJDa6aOPzfJcGSY2wEVzg==
-X-Received: by 2002:a05:6a20:438f:b0:1a9:b207:d228 with SMTP id i15-20020a056a20438f00b001a9b207d228mr4185976pzl.38.1714576414261;
-        Wed, 01 May 2024 08:13:34 -0700 (PDT)
+        bh=ICIINeNNGIWapDIPelhrVVJQptAEolERW6ebpcBXUO4=;
+        b=PKNLonFBEXewLe7M8FOfJz9dGCnwpKfC9OF8+zBY19vglSHW1OUwMoBmntlRoqw5ba
+         GKgS+QwH3FcxyNZheiDi+lJb6pEzA+lEwgPE5wbtPu9H0NDAxUI6kCKWth0P0MqoaeuU
+         7X+9Fco4ODXe2d3yu8OKI0ZTExz2IrXT3MtZWZRbHAfop3wT6UEJM8M4VKDUHt4nDif4
+         xXC/nv019UNyakBZ0E0rUksvM/s8Jn33YgMwjVzyL4AnlbCD83vIrft62wgpN9KEagBT
+         NQpqHiSNFPvchb78jPEM3z78SRYy3l0NniusA8gLhVgBcwkGAbebyimX5p6OxW2i6lym
+         nmtA==
+X-Forwarded-Encrypted: i=1; AJvYcCVMjZvh18jN6IF0+ZVAXeGLW+EH3rxhlmsesvR/rEm4Sqo0ZHvN6wkDVXxa/5hsdV+QF8Vn6k4iUF5PLzHI/QIuvb50
+X-Gm-Message-State: AOJu0YxmNVFudSzBaeuoofGI7WyKAmbkqX7wHQ0iImdbocC6i00ItMun
+	b9NCCc/Fb0qOgnAgCxgQ29Pt141zMExcEJ/J8fph93hIzQLAd62a
+X-Google-Smtp-Source: AGHT+IHMbK2Aho62n+b9/PEQylKkvQ0C7iHMAsGU4fHU3JDoQJ2yB9XMM/aXrs/pWGxerLdX28XpWA==
+X-Received: by 2002:a05:6a20:394c:b0:1aa:755f:1746 with SMTP id r12-20020a056a20394c00b001aa755f1746mr4212661pzg.22.1714576415939;
+        Wed, 01 May 2024 08:13:35 -0700 (PDT)
 Received: from localhost (dhcp-141-239-159-203.hawaiiantel.net. [141.239.159.203])
-        by smtp.gmail.com with ESMTPSA id m4-20020aa78a04000000b006f3e3d9b4f2sm8748721pfa.4.2024.05.01.08.13.33
+        by smtp.gmail.com with ESMTPSA id b12-20020a056a00114c00b006ecfc3a8d6csm22645257pfm.124.2024.05.01.08.13.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 01 May 2024 08:13:33 -0700 (PDT)
+        Wed, 01 May 2024 08:13:35 -0700 (PDT)
 Sender: Tejun Heo <htejun@gmail.com>
 From: Tejun Heo <tj@kernel.org>
 To: torvalds@linux-foundation.org,
@@ -102,9 +102,9 @@ Cc: linux-kernel@vger.kernel.org,
 	bpf@vger.kernel.org,
 	kernel-team@meta.com,
 	Tejun Heo <tj@kernel.org>
-Subject: [PATCH 09/39] sched: Add @reason to sched_class->rq_{on|off}line()
-Date: Wed,  1 May 2024 05:09:44 -1000
-Message-ID: <20240501151312.635565-10-tj@kernel.org>
+Subject: [PATCH 10/39] sched: Factor out update_other_load_avgs() from __update_blocked_others()
+Date: Wed,  1 May 2024 05:09:45 -1000
+Message-ID: <20240501151312.635565-11-tj@kernel.org>
 X-Mailer: git-send-email 2.44.0
 In-Reply-To: <20240501151312.635565-1-tj@kernel.org>
 References: <20240501151312.635565-1-tj@kernel.org>
@@ -116,211 +116,110 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-->rq_{on|off}line are called either during CPU hotplug or cpuset partition
-updates. A planned BPF extensible sched_class wants to tell the BPF
-scheduler progs about CPU hotplug events in a way that's synchronized with
-rq state changes.
+RT, DL, thermal and irq load and utilization metrics need to be decayed and
+updated periodically and before consumption to keep the numbers reasonable.
+This is currently done from __update_blocked_others() as a part of the fair
+class load balance path. Let's factor it out to update_other_load_avgs().
+Pure refactor. No functional changes.
 
-As the BPF scheduler progs aren't necessarily affected by cpuset partition
-updates, we need a way to distinguish the two types of events. Let's add an
-argument to tell them apart.
-
-v2: Patch description updated to detail the expected use.
+This will be used by the new BPF extensible scheduling class to ensure that
+the above metrics are properly maintained.
 
 Signed-off-by: Tejun Heo <tj@kernel.org>
 Reviewed-by: David Vernet <dvernet@meta.com>
-Acked-by: Josh Don <joshdon@google.com>
-Acked-by: Hao Luo <haoluo@google.com>
-Acked-by: Barret Rhoden <brho@google.com>
 ---
- kernel/sched/core.c     | 12 ++++++------
- kernel/sched/deadline.c |  4 ++--
- kernel/sched/fair.c     |  4 ++--
- kernel/sched/rt.c       |  4 ++--
- kernel/sched/sched.h    | 13 +++++++++----
- kernel/sched/topology.c |  4 ++--
- 6 files changed, 23 insertions(+), 18 deletions(-)
+ kernel/sched/core.c  | 19 +++++++++++++++++++
+ kernel/sched/fair.c  | 16 +++-------------
+ kernel/sched/sched.h |  3 +++
+ 3 files changed, 25 insertions(+), 13 deletions(-)
 
 diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index e48af9fbbd71..90b505fbb488 100644
+index 90b505fbb488..7542a39f1fde 100644
 --- a/kernel/sched/core.c
 +++ b/kernel/sched/core.c
-@@ -9593,7 +9593,7 @@ static inline void balance_hotplug_wait(void)
+@@ -7486,6 +7486,25 @@ int sched_core_idle_cpu(int cpu)
+ #endif
  
- #endif /* CONFIG_HOTPLUG_CPU */
- 
--void set_rq_online(struct rq *rq)
-+void set_rq_online(struct rq *rq, enum rq_onoff_reason reason)
- {
- 	if (!rq->online) {
- 		const struct sched_class *class;
-@@ -9603,12 +9603,12 @@ void set_rq_online(struct rq *rq)
- 
- 		for_each_class(class) {
- 			if (class->rq_online)
--				class->rq_online(rq);
-+				class->rq_online(rq, reason);
- 		}
- 	}
- }
- 
--void set_rq_offline(struct rq *rq)
-+void set_rq_offline(struct rq *rq, enum rq_onoff_reason reason)
- {
- 	if (rq->online) {
- 		const struct sched_class *class;
-@@ -9616,7 +9616,7 @@ void set_rq_offline(struct rq *rq)
- 		update_rq_clock(rq);
- 		for_each_class(class) {
- 			if (class->rq_offline)
--				class->rq_offline(rq);
-+				class->rq_offline(rq, reason);
- 		}
- 
- 		cpumask_clear_cpu(rq->cpu, rq->rd->online);
-@@ -9712,7 +9712,7 @@ int sched_cpu_activate(unsigned int cpu)
- 	rq_lock_irqsave(rq, &rf);
- 	if (rq->rd) {
- 		BUG_ON(!cpumask_test_cpu(cpu, rq->rd->span));
--		set_rq_online(rq);
-+		set_rq_online(rq, RQ_ONOFF_HOTPLUG);
- 	}
- 	rq_unlock_irqrestore(rq, &rf);
- 
-@@ -9756,7 +9756,7 @@ int sched_cpu_deactivate(unsigned int cpu)
- 	rq_lock_irqsave(rq, &rf);
- 	if (rq->rd) {
- 		BUG_ON(!cpumask_test_cpu(cpu, rq->rd->span));
--		set_rq_offline(rq);
-+		set_rq_offline(rq, RQ_ONOFF_HOTPLUG);
- 	}
- 	rq_unlock_irqrestore(rq, &rf);
- 
-diff --git a/kernel/sched/deadline.c b/kernel/sched/deadline.c
-index a04a436af8cc..010d1dc5f918 100644
---- a/kernel/sched/deadline.c
-+++ b/kernel/sched/deadline.c
-@@ -2607,7 +2607,7 @@ static void set_cpus_allowed_dl(struct task_struct *p,
- }
- 
- /* Assumes rq->lock is held */
--static void rq_online_dl(struct rq *rq)
-+static void rq_online_dl(struct rq *rq, enum rq_onoff_reason reason)
- {
- 	if (rq->dl.overloaded)
- 		dl_set_overload(rq);
-@@ -2618,7 +2618,7 @@ static void rq_online_dl(struct rq *rq)
- }
- 
- /* Assumes rq->lock is held */
--static void rq_offline_dl(struct rq *rq)
-+static void rq_offline_dl(struct rq *rq, enum rq_onoff_reason reason)
- {
- 	if (rq->dl.overloaded)
- 		dl_clear_overload(rq);
+ #ifdef CONFIG_SMP
++/*
++ * Load avg and utiliztion metrics need to be updated periodically and before
++ * consumption. This function updates the metrics for all subsystems except for
++ * the fair class. @rq must be locked and have its clock updated.
++ */
++bool update_other_load_avgs(struct rq *rq)
++{
++	u64 now = rq_clock_pelt(rq);
++	const struct sched_class *curr_class = rq->curr->sched_class;
++	unsigned long thermal_pressure = arch_scale_thermal_pressure(cpu_of(rq));
++
++	lockdep_assert_rq_held(rq);
++
++	return update_rt_rq_load_avg(now, rq, curr_class == &rt_sched_class) |
++		update_dl_rq_load_avg(now, rq, curr_class == &dl_sched_class) |
++		update_thermal_load_avg(rq_clock_thermal(rq), rq, thermal_pressure) |
++		update_irq_load_avg(rq, 0);
++}
++
+ /*
+  * This function computes an effective utilization for the given CPU, to be
+  * used for frequency selection given the linear relation: f = u * f_max.
 diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 5d7cffee1a4e..8032256d3972 100644
+index 8032256d3972..51301ae13725 100644
 --- a/kernel/sched/fair.c
 +++ b/kernel/sched/fair.c
-@@ -12446,14 +12446,14 @@ void trigger_load_balance(struct rq *rq)
- 	nohz_balancer_kick(rq);
+@@ -9283,28 +9283,18 @@ static inline void update_blocked_load_status(struct rq *rq, bool has_blocked) {
+ 
+ static bool __update_blocked_others(struct rq *rq, bool *done)
+ {
+-	const struct sched_class *curr_class;
+-	u64 now = rq_clock_pelt(rq);
+-	unsigned long thermal_pressure;
+-	bool decayed;
++	bool updated;
+ 
+ 	/*
+ 	 * update_load_avg() can call cpufreq_update_util(). Make sure that RT,
+ 	 * DL and IRQ signals have been updated before updating CFS.
+ 	 */
+-	curr_class = rq->curr->sched_class;
+-
+-	thermal_pressure = arch_scale_thermal_pressure(cpu_of(rq));
+-
+-	decayed = update_rt_rq_load_avg(now, rq, curr_class == &rt_sched_class) |
+-		  update_dl_rq_load_avg(now, rq, curr_class == &dl_sched_class) |
+-		  update_thermal_load_avg(rq_clock_thermal(rq), rq, thermal_pressure) |
+-		  update_irq_load_avg(rq, 0);
++	updated = update_other_load_avgs(rq);
+ 
+ 	if (others_have_blocked(rq))
+ 		*done = false;
+ 
+-	return decayed;
++	return updated;
  }
  
--static void rq_online_fair(struct rq *rq)
-+static void rq_online_fair(struct rq *rq, enum rq_onoff_reason reason)
- {
- 	update_sysctl();
- 
- 	update_runtime_enabled(rq);
- }
- 
--static void rq_offline_fair(struct rq *rq)
-+static void rq_offline_fair(struct rq *rq, enum rq_onoff_reason reason)
- {
- 	update_sysctl();
- 
-diff --git a/kernel/sched/rt.c b/kernel/sched/rt.c
-index 3261b067b67e..8620474d117d 100644
---- a/kernel/sched/rt.c
-+++ b/kernel/sched/rt.c
-@@ -2426,7 +2426,7 @@ static void task_woken_rt(struct rq *rq, struct task_struct *p)
- }
- 
- /* Assumes rq->lock is held */
--static void rq_online_rt(struct rq *rq)
-+static void rq_online_rt(struct rq *rq, enum rq_onoff_reason reason)
- {
- 	if (rq->rt.overloaded)
- 		rt_set_overload(rq);
-@@ -2437,7 +2437,7 @@ static void rq_online_rt(struct rq *rq)
- }
- 
- /* Assumes rq->lock is held */
--static void rq_offline_rt(struct rq *rq)
-+static void rq_offline_rt(struct rq *rq, enum rq_onoff_reason reason)
- {
- 	if (rq->rt.overloaded)
- 		rt_clear_overload(rq);
+ #ifdef CONFIG_FAIR_GROUP_SCHED
 diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-index 0b6a34ba2457..bcc8056acadb 100644
+index bcc8056acadb..ccf2fff0e2ae 100644
 --- a/kernel/sched/sched.h
 +++ b/kernel/sched/sched.h
-@@ -2271,6 +2271,11 @@ extern const u32		sched_prio_to_wmult[40];
- 
- #define RETRY_TASK		((void *)-1UL)
- 
-+enum rq_onoff_reason {
-+	RQ_ONOFF_HOTPLUG,		/* CPU is going on/offline */
-+	RQ_ONOFF_TOPOLOGY,		/* sched domain topology update */
-+};
-+
- struct affinity_context {
- 	const struct cpumask *new_mask;
- 	struct cpumask *user_mask;
-@@ -2309,8 +2314,8 @@ struct sched_class {
- 
- 	void (*set_cpus_allowed)(struct task_struct *p, struct affinity_context *ctx);
- 
--	void (*rq_online)(struct rq *rq);
--	void (*rq_offline)(struct rq *rq);
-+	void (*rq_online)(struct rq *rq, enum rq_onoff_reason reason);
-+	void (*rq_offline)(struct rq *rq, enum rq_onoff_reason reason);
- 
- 	struct rq *(*find_lock_rq)(struct task_struct *p, struct rq *rq);
+@@ -3042,6 +3042,7 @@ static inline void cpufreq_update_util(struct rq *rq, unsigned int flags) {}
  #endif
-@@ -2853,8 +2858,8 @@ static inline void double_rq_unlock(struct rq *rq1, struct rq *rq2)
- 	raw_spin_rq_unlock(rq1);
+ 
+ #ifdef CONFIG_SMP
++bool update_other_load_avgs(struct rq *rq);
+ unsigned long effective_cpu_util(int cpu, unsigned long util_cfs,
+ 				 unsigned long *min,
+ 				 unsigned long *max);
+@@ -3084,6 +3085,8 @@ static inline unsigned long cpu_util_rt(struct rq *rq)
+ {
+ 	return READ_ONCE(rq->avg_rt.util_avg);
  }
++#else
++static inline bool update_other_load_avgs(struct rq *rq) { return false; }
+ #endif
  
--extern void set_rq_online (struct rq *rq);
--extern void set_rq_offline(struct rq *rq);
-+extern void set_rq_online (struct rq *rq, enum rq_onoff_reason reason);
-+extern void set_rq_offline(struct rq *rq, enum rq_onoff_reason reason);
- extern bool sched_smp_initialized;
- 
- #else /* CONFIG_SMP */
-diff --git a/kernel/sched/topology.c b/kernel/sched/topology.c
-index 99ea5986038c..12501543c56d 100644
---- a/kernel/sched/topology.c
-+++ b/kernel/sched/topology.c
-@@ -497,7 +497,7 @@ void rq_attach_root(struct rq *rq, struct root_domain *rd)
- 		old_rd = rq->rd;
- 
- 		if (cpumask_test_cpu(rq->cpu, old_rd->online))
--			set_rq_offline(rq);
-+			set_rq_offline(rq, RQ_ONOFF_TOPOLOGY);
- 
- 		cpumask_clear_cpu(rq->cpu, old_rd->span);
- 
-@@ -515,7 +515,7 @@ void rq_attach_root(struct rq *rq, struct root_domain *rd)
- 
- 	cpumask_set_cpu(rq->cpu, rd->span);
- 	if (cpumask_test_cpu(rq->cpu, cpu_active_mask))
--		set_rq_online(rq);
-+		set_rq_online(rq, RQ_ONOFF_TOPOLOGY);
- 
- 	rq_unlock_irqrestore(rq, &rf);
- 
+ #ifdef CONFIG_UCLAMP_TASK
 -- 
 2.44.0
 
