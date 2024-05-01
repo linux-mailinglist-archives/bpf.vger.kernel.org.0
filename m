@@ -1,72 +1,72 @@
-Return-Path: <bpf+bounces-28361-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-28362-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7675F8B8CBE
-	for <lists+bpf@lfdr.de>; Wed,  1 May 2024 17:20:37 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 125368B8CC0
+	for <lists+bpf@lfdr.de>; Wed,  1 May 2024 17:20:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 03F241F21A62
-	for <lists+bpf@lfdr.de>; Wed,  1 May 2024 15:20:37 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 359C11C21EA6
+	for <lists+bpf@lfdr.de>; Wed,  1 May 2024 15:20:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C2A21386A5;
-	Wed,  1 May 2024 15:14:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F48A1386D5;
+	Wed,  1 May 2024 15:14:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ce4UMnsj"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YrWlml9Z"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f49.google.com (mail-pj1-f49.google.com [209.85.216.49])
+Received: from mail-pf1-f175.google.com (mail-pf1-f175.google.com [209.85.210.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4118F137C2D;
-	Wed,  1 May 2024 15:14:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 26C591384A3;
+	Wed,  1 May 2024 15:14:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714576464; cv=none; b=ApIUwT22g26ZaRYv4Q/M+V0u1FQBbecZR97H8SITTyjwIfToIGwmL5Mkug5TXr6u85WQMNwuGGedROFFumNsqDyrQSuqrBp/wHYuT5P+4GvBNyQ39TBG19nJmUYfZhISGgbjzkrg8HPP7LCosbe/F730md6Vy2Cj+Tq8cCmaB3c=
+	t=1714576466; cv=none; b=cKQwq9T90GiuHKigQUVEaaewPmOMM7s1B742NEU0D5wV8L0aQP5h/G/5VnLN51kPVASdCEgZgwjoThzw91QOJDt3qPNmqstFTJs+2NdNB1QzKz+7jDZjO30E02DJg8HnrRID2OpLJpcpfFvKMs3AoZkSix6MTe0kLCTXvq/+YkU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714576464; c=relaxed/simple;
-	bh=/kWH+N9xmCh61LnCDruQP5XYz2s7cScXsbdYShAU0zk=;
+	s=arc-20240116; t=1714576466; c=relaxed/simple;
+	bh=retGCjtTk4hGf8NTfQt1bFjJN8vEYhewsVdL9WPuRIk=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=BxjMJVO6PLXLcv4qr8FPb+zBX+OgxxJlGG71UOiYcVKVnOKwfKMFNz9aosVg48YyZGbrUTbT3UTQPE3+dJkOWtzYkBr9Y3TbpapxOynqdKb0l9tTB+kxGoZioe1fJfmcEZkbe+Yq2TU/Nklxll/nilErJlQZNImspS0GuWZsxAg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ce4UMnsj; arc=none smtp.client-ip=209.85.216.49
+	 MIME-Version; b=vCydV0GoBFbSiMSogrndlTWSOlfW9Lu/M14T7W/MwZbSvd+qMl9WCri3bhKRY5WeNe4lRuquAykCUiu7AZ9MTmfvCdeIEFxsY/f5Z66VSxQ+DH4tjsM7FkiaeFPlmCBZ6XF6cS/btiWb+10kt9asbfAPE/Q8gRKQOhdOm/IJlLQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=YrWlml9Z; arc=none smtp.client-ip=209.85.210.175
 Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f49.google.com with SMTP id 98e67ed59e1d1-2ac16b59fbeso5778927a91.2;
-        Wed, 01 May 2024 08:14:22 -0700 (PDT)
+Received: by mail-pf1-f175.google.com with SMTP id d2e1a72fcca58-6edb76d83d0so5946427b3a.0;
+        Wed, 01 May 2024 08:14:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714576461; x=1715181261; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1714576463; x=1715181263; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:sender:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=766b5bClntbBxqoKi1dHB4ZDApJIXfDdY9Swg4OphH0=;
-        b=ce4UMnsj2jFkURGr2wtyuGmdsSttgv3vUrGv99NgqcSoKRy1ZKSlXZKKXKffPlE/uT
-         jAb0xVcB/MmTd2bO7wtKwr/rovWr3NYNkUrVqjvuKQ7WxCMYWS4yJ8FIFE0CiRlhW7Yj
-         +7BQUUr4JEggNnBeeEBfiK+w7cd7Sf1E+aDErIkSgMJ+N0gIiymeikt4QiI24TH0b+6J
-         ROLCOx85W8y05zG3TRm5lGRBXyS9birkWe3Fz0sDiQtW1sKwGqPzS5xuE8qrgBLgYy4T
-         YxsOPcSbiO0+vK8j0m3h5T5tut2hJ73s5tQatNJZK89sRV8fbQnnacr4wxNnFdaH01az
-         mAyg==
+        bh=oNU6AB23Y7SjdFetr5oMDfmCIpiADScOnXYt4JvzS9c=;
+        b=YrWlml9Z90NEaPm4ahI1EK+ocyAl/gzuaZOYWvL+Rmnnc80EwsNkBTy0AC4ASE0YvK
+         Y3mDc2OeO9TzjaN6rZQlA2QM2XSmdQB8T/GjoP2GxxhHQ2T0iowniOUGJkrImDZXA91O
+         sH7m8Mo1l9Dn+O0r0t68vVyo6ih3QQfgx9HpZLpup1N3w9+szMfDZhBVibpfWbU6Eoew
+         5pka0WobpGwMd/Mj8CgTdV7W5EwQXlj4cCopyE1kid4Tf5NwCDoMdf+doFOiD+ZmxA5C
+         uq/h2r2Aieph4YLG/kxy97a14uNJ14prfz9HqvXdi8ajLdpbXED4MgId/ZnL3pWHrm4D
+         b8YA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714576461; x=1715181261;
+        d=1e100.net; s=20230601; t=1714576463; x=1715181263;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:sender:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=766b5bClntbBxqoKi1dHB4ZDApJIXfDdY9Swg4OphH0=;
-        b=VGX+f9TUKdV3QmzqfB6DEb1NLFLl4zxOJldfsy2mFIl0PTfmwlI2G48y/KHHqVeWCk
-         h1XzjKPjPq52MjYLcXoUPoTF55BOpF17Th9gcq0DduuDKuKTOvCBtUbn8a7uRot9Qjtt
-         V2HY5n8CYQqQZi/022CHKBBYcikumbYKJ8EWJLnr3j2LOy1oz0xWhCCbExT/jJFl2LRs
-         KB+YsoQ8hwvGcisuMLa+TW5wUSa5ofQjW86D+z4cAZeP5aMgNzta0cmtpQqk2hd8DWxG
-         9neCqGC9H2My56WIvcAnOiMgluXZd56cG7oMBUP/ZlruqWlIAzjM56GZ9C1QrmRxVQhN
-         d6hg==
-X-Forwarded-Encrypted: i=1; AJvYcCX2SP1SiWxQat9HLN347t71ZwucIi9fP6H7pQL2jBjEDMVOr2UnXfnYFBWj86JYU9lIXNQfKF45Njqwp3KtjV0Hx569
-X-Gm-Message-State: AOJu0YzPJPj5hNgOC+8jBP7QzrRcQT0Ls8lbVvfj4S3XX6tlAEvTZ8Nl
-	5ZFlJisTtx8IrMt3RIR0J93LAH2Ayk1g+p15FQCNVUP3TYyQrGlP
-X-Google-Smtp-Source: AGHT+IE5Zuj8NNdRdBKenkFK0j46IkRQeUfX/UBHpxWBiflH0XCucimFEYEECacJx8DwxXvlAFwynA==
-X-Received: by 2002:a17:90a:d44c:b0:2a5:badb:30ea with SMTP id cz12-20020a17090ad44c00b002a5badb30eamr2609182pjb.36.1714576461373;
-        Wed, 01 May 2024 08:14:21 -0700 (PDT)
+        bh=oNU6AB23Y7SjdFetr5oMDfmCIpiADScOnXYt4JvzS9c=;
+        b=XXq0CbBS4UDVFRiUF4yqjCJTVvwe5ISG0UEsO28CLOfznWsfpTZBAePAl6t2FJAKOc
+         OUA9imOUry/RdhE1QMlHA5LAMZxpxxZXRIDOIWK/Dd43Qgjp3d6+EBl25hYzIubjNS/c
+         /Zy4ucIofEJcvqg2X5gf1EhHaHDGsGcORlYwtYyRCJZeZODErZiczEC0S9gIAKfGqTD5
+         7ktR6P7QZiWySbFsZ+L9hR7bSMxxcgYWS4YRUDbgK5hAihOMMWfP3RUn+G/+jVixtsL4
+         h0IkdxuiINTF0+XXcXoQKbhxOZsIjET2pzmEUtTqXIDOKIvyKwtn7TACZsv/xmuhTgQz
+         3OAQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWtNrpfAfdkm+/NSiR6aoyn4DNvS5Cr43WepcfvihDcVarYNkhpOEg2DZsjQj85hDEytF9dncPx3YDddnk/fej3UYAg
+X-Gm-Message-State: AOJu0YzE7z3FB69cR1fztiy79nLvhunPy6CWoamN87/T0JpxUlPB6A7m
+	9MdkvH6Apla1zxz+VNfPgJJ9eU9C9PPaygQPCOfqadsKeMFSujKu
+X-Google-Smtp-Source: AGHT+IHEb0GWcUEsY7tnpDz3GSxxsi7W1HczzGpwRqpg2ywDtzZO9ExMmzNl3lUe/VMKY71oHx5thg==
+X-Received: by 2002:a05:6a00:10d0:b0:6f0:b53c:dfb4 with SMTP id d16-20020a056a0010d000b006f0b53cdfb4mr3413710pfu.22.1714576463173;
+        Wed, 01 May 2024 08:14:23 -0700 (PDT)
 Received: from localhost (dhcp-141-239-159-203.hawaiiantel.net. [141.239.159.203])
-        by smtp.gmail.com with ESMTPSA id f22-20020a17090ace1600b002a67079c3absm1437217pju.42.2024.05.01.08.14.20
+        by smtp.gmail.com with ESMTPSA id n7-20020aa78a47000000b006edd9339917sm22718281pfa.58.2024.05.01.08.14.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 01 May 2024 08:14:21 -0700 (PDT)
+        Wed, 01 May 2024 08:14:22 -0700 (PDT)
 Sender: Tejun Heo <htejun@gmail.com>
 From: Tejun Heo <tj@kernel.org>
 To: torvalds@linux-foundation.org,
@@ -102,9 +102,9 @@ Cc: linux-kernel@vger.kernel.org,
 	bpf@vger.kernel.org,
 	kernel-team@meta.com,
 	Tejun Heo <tj@kernel.org>
-Subject: [PATCH 31/39] sched_ext: Implement sched_ext_ops.cpu_acquire/release()
-Date: Wed,  1 May 2024 05:10:06 -1000
-Message-ID: <20240501151312.635565-32-tj@kernel.org>
+Subject: [PATCH 32/39] sched_ext: Implement sched_ext_ops.cpu_online/offline()
+Date: Wed,  1 May 2024 05:10:07 -1000
+Message-ID: <20240501151312.635565-33-tj@kernel.org>
 X-Mailer: git-send-email 2.44.0
 In-Reply-To: <20240501151312.635565-1-tj@kernel.org>
 References: <20240501151312.635565-1-tj@kernel.org>
@@ -116,522 +116,580 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-From: David Vernet <dvernet@meta.com>
+Add ops.cpu_online/offline() which are invoked when CPUs come online and
+offline respectively. As the enqueue path already automatically bypasses
+tasks to the local dsq on a deactivated CPU, BPF schedulers are guaranteed
+to see tasks only on CPUs which are between online() and offline().
 
-Scheduler classes are strictly ordered and when a higher priority class has
-tasks to run, the lower priority ones lose access to the CPU. Being able to
-monitor and act on these events are necessary for use cases includling
-strict core-scheduling and latency management.
+If the BPF scheduler doesn't implement ops.cpu_online/offline(), the
+scheduler is automatically exited with SCX_ECODE_RESTART |
+SCX_ECODE_RSN_HOTPLUG. Userspace can implement CPU hotpplug support
+trivially by simply reinitializing and reloading the scheduler.
 
-This patch adds two operations ops.cpu_acquire() and .cpu_release(). The
-former is invoked when a CPU becomes available to the BPF scheduler and the
-opposite for the latter. This patch also implements
-scx_bpf_reenqueue_local() which can be called from .cpu_release() to trigger
-requeueing of all tasks in the local dsq of the CPU so that the tasks can be
-reassigned to other available CPUs.
+scx_qmap is updated to print out online CPUs on hotplug events. Other
+schedulers are updated to restart based on ecode.
 
-scx_pair is updated to use .cpu_acquire/release() along with
-%SCX_KICK_WAIT to make the pair scheduling guarantee strict even when a CPU
-is preempted by a higher priority scheduler class.
+v2: - To accommodate lock ordering change between scx_cgroup_rwsem and
+      cpus_read_lock(), CPU hotplug operations are put into its own SCX_OPI
+      block and enabled eariler during scx_ope_enable() so that
+      cpus_read_lock() can be dropped before acquiring scx_cgroup_rwsem.
 
-scx_qmap is updated to use .cpu_acquire/release() to empty the local
-dsq of a preempted CPU. A similar approach can be adopted by BPF schedulers
-that want to have a tight control over latency.
+    - Auto exit with ECODE added.
 
-v4: Use the new SCX_KICK_IDLE to wake up a CPU after re-enqueueing.
-
-v3: Drop the const qualifier from scx_cpu_release_args.task. BPF enforces
-    access control through the verifier, so the qualifier isn't actually
-    operative and only gets in the way when interacting with various
-    helpers.
-
-v2: Add p->scx.kf_mask annotation to allow calling scx_bpf_reenqueue_local()
-    from ops.cpu_release() nested inside ops.init() and other sleepable
-    operations.
-
-Signed-off-by: David Vernet <dvernet@meta.com>
-Reviewed-by: Tejun Heo <tj@kernel.org>
 Signed-off-by: Tejun Heo <tj@kernel.org>
+Reviewed-by: David Vernet <dvernet@meta.com>
 Acked-by: Josh Don <joshdon@google.com>
 Acked-by: Hao Luo <haoluo@google.com>
 Acked-by: Barret Rhoden <brho@google.com>
 ---
- include/linux/sched/ext.h                |   4 +-
- kernel/sched/ext.c                       | 200 ++++++++++++++++++++++-
- kernel/sched/ext.h                       |   2 +
- kernel/sched/sched.h                     |   1 +
- tools/sched_ext/include/scx/common.bpf.h |   1 +
- tools/sched_ext/scx_qmap.bpf.c           |  37 ++++-
- tools/sched_ext/scx_qmap.c               |   4 +-
- 7 files changed, 242 insertions(+), 7 deletions(-)
+ kernel/sched/ext.c                           | 135 ++++++++++++++++++-
+ tools/sched_ext/include/scx/compat.h         |  29 ++++
+ tools/sched_ext/include/scx/user_exit_info.h |  28 ++++
+ tools/sched_ext/scx_central.c                |   9 +-
+ tools/sched_ext/scx_flatcg.c                 |   8 +-
+ tools/sched_ext/scx_qmap.bpf.c               |  60 +++++++++
+ tools/sched_ext/scx_qmap.c                   |   4 +
+ tools/sched_ext/scx_simple.c                 |   8 +-
+ 8 files changed, 271 insertions(+), 10 deletions(-)
 
-diff --git a/include/linux/sched/ext.h b/include/linux/sched/ext.h
-index 0a9f8e5a46af..1dc0182fb1c8 100644
---- a/include/linux/sched/ext.h
-+++ b/include/linux/sched/ext.h
-@@ -98,13 +98,15 @@ enum scx_kf_mask {
- 	SCX_KF_UNLOCKED		= 0,	  /* not sleepable, not rq locked */
- 	/* all non-sleepables may be nested inside SLEEPABLE */
- 	SCX_KF_SLEEPABLE	= 1 << 0, /* sleepable init operations */
-+	/* ENQUEUE and DISPATCH may be nested inside CPU_RELEASE */
-+	SCX_KF_CPU_RELEASE	= 1 << 1, /* ops.cpu_release() */
- 	/* ops.dequeue (in REST) may be nested inside DISPATCH */
- 	SCX_KF_DISPATCH		= 1 << 2, /* ops.dispatch() */
- 	SCX_KF_ENQUEUE		= 1 << 3, /* ops.enqueue() and ops.select_cpu() */
- 	SCX_KF_SELECT_CPU	= 1 << 4, /* ops.select_cpu() */
- 	SCX_KF_REST		= 1 << 5, /* other rq-locked operations */
- 
--	__SCX_KF_RQ_LOCKED	= SCX_KF_DISPATCH |
-+	__SCX_KF_RQ_LOCKED	= SCX_KF_CPU_RELEASE | SCX_KF_DISPATCH |
- 				  SCX_KF_ENQUEUE | SCX_KF_SELECT_CPU | SCX_KF_REST,
- 	__SCX_KF_TERMINAL	= SCX_KF_ENQUEUE | SCX_KF_SELECT_CPU | SCX_KF_REST,
- };
 diff --git a/kernel/sched/ext.c b/kernel/sched/ext.c
-index 91c3d1851b45..9bc03533cf5e 100644
+index 9bc03533cf5e..ed2452d42862 100644
 --- a/kernel/sched/ext.c
 +++ b/kernel/sched/ext.c
-@@ -126,6 +126,32 @@ struct scx_cgroup_init_args {
- 	u32			weight;
+@@ -30,6 +30,29 @@ enum scx_exit_kind {
+ 	SCX_EXIT_ERROR_STALL,	/* watchdog detected stalled runnable tasks */
  };
  
-+enum scx_cpu_preempt_reason {
-+	/* next task is being scheduled by &sched_class_rt */
-+	SCX_CPU_PREEMPT_RT,
-+	/* next task is being scheduled by &sched_class_dl */
-+	SCX_CPU_PREEMPT_DL,
-+	/* next task is being scheduled by &sched_class_stop */
-+	SCX_CPU_PREEMPT_STOP,
-+	/* unknown reason for SCX being preempted */
-+	SCX_CPU_PREEMPT_UNKNOWN,
++/*
++ * An exit code can be specified when exiting with scx_bpf_exit() or
++ * scx_ops_exit(), corresponding to exit_kind UNREG_BPF and UNREG_KERN
++ * respectively. The codes are 64bit of the format:
++ *
++ *   Bits: [63  ..  48 47   ..  32 31 .. 0]
++ *         [ SYS ACT ] [ SYS RSN ] [ USR  ]
++ *
++ *   SYS ACT: System-defined exit actions
++ *   SYS RSN: System-defined exit reasons
++ *   USR    : User-defined exit codes and reasons
++ *
++ * Using the above, users may communicate intention and context by ORing system
++ * actions and/or system reasons with a user-defined exit code.
++ */
++enum scx_exit_code {
++	/* Reasons */
++	SCX_ECODE_RSN_HOTPLUG	= 1LLU << 32,
++
++	/* Actions */
++	SCX_ECODE_ACT_RESTART	= 1LLU << 48,
++};
++
+ /*
+  * scx_exit_info is passed to ops.exit() to describe why the BPF scheduler is
+  * being disabled.
+@@ -504,7 +527,29 @@ struct sched_ext_ops {
+ #endif	/* CONFIG_CGROUPS */
+ 
+ 	/*
+-	 * All online ops must come before ops.init().
++	 * All online ops must come before ops.cpu_online().
++	 */
++
++	/**
++	 * cpu_online - A CPU became online
++	 * @cpu: CPU which just came up
++	 *
++	 * @cpu just came online. @cpu doesn't call ops.enqueue() or run tasks
++	 * associated with other CPUs beforehand.
++	 */
++	void (*cpu_online)(s32 cpu);
++
++	/**
++	 * cpu_offline - A CPU is going offline
++	 * @cpu: CPU which is going offline
++	 *
++	 * @cpu is going offline. @cpu doesn't call ops.enqueue() or run tasks
++	 * associated with other CPUs afterwards.
++	 */
++	void (*cpu_offline)(s32 cpu);
++
++	/*
++	 * All CPU hotplug ops must come before ops.init().
+ 	 */
+ 
+ 	/**
+@@ -543,6 +588,15 @@ struct sched_ext_ops {
+ 	 */
+ 	u32 exit_dump_len;
+ 
++	/**
++	 * hotplug_seq - A sequence number that may be set by the scheduler to
++	 * detect when a hotplug event has occurred during the loading process.
++	 * If 0, no detection occurs. Otherwise, the scheduler will fail to
++	 * load if the sequence number does not match @scx_hotplug_seq on the
++	 * enable path.
++	 */
++	u64 hotplug_seq;
++
+ 	/**
+ 	 * name - BPF scheduler's name
+ 	 *
+@@ -556,7 +610,9 @@ struct sched_ext_ops {
+ enum scx_opi {
+ 	SCX_OPI_BEGIN			= 0,
+ 	SCX_OPI_NORMAL_BEGIN		= 0,
+-	SCX_OPI_NORMAL_END		= SCX_OP_IDX(init),
++	SCX_OPI_NORMAL_END		= SCX_OP_IDX(cpu_online),
++	SCX_OPI_CPU_HOTPLUG_BEGIN	= SCX_OP_IDX(cpu_online),
++	SCX_OPI_CPU_HOTPLUG_END		= SCX_OP_IDX(init),
+ 	SCX_OPI_END			= SCX_OP_IDX(init),
+ };
+ 
+@@ -746,6 +802,7 @@ static atomic_t scx_exit_kind = ATOMIC_INIT(SCX_EXIT_DONE);
+ static struct scx_exit_info *scx_exit_info;
+ 
+ static atomic_long_t scx_nr_rejected = ATOMIC_LONG_INIT(0);
++static atomic_long_t scx_hotplug_seq = ATOMIC_LONG_INIT(0);
+ 
+ /*
+  * The maximum amount of time in jiffies that a task may be runnable without
+@@ -2172,7 +2229,8 @@ static int balance_scx(struct rq *rq, struct task_struct *prev,
+ 		 * emitted in scx_next_task_picked().
+ 		 */
+ 		if (SCX_HAS_OP(cpu_acquire))
+-			SCX_CALL_OP(0, cpu_acquire, cpu_of(rq), NULL);
++			SCX_CALL_OP(SCX_KF_UNLOCKED, cpu_acquire, cpu_of(rq),
++				    NULL);
+ 		rq->scx.cpu_released = false;
+ 	}
+ 
+@@ -2700,6 +2758,34 @@ void __scx_update_idle(struct rq *rq, bool idle)
+ #endif
+ }
+ 
++static void handle_hotplug(struct rq *rq, bool online)
++{
++	int cpu = cpu_of(rq);
++
++	atomic_long_inc(&scx_hotplug_seq);
++
++	if (online && SCX_HAS_OP(cpu_online))
++		SCX_CALL_OP(SCX_KF_REST, cpu_online, cpu);
++	else if (!online && SCX_HAS_OP(cpu_offline))
++		SCX_CALL_OP(SCX_KF_REST, cpu_offline, cpu);
++	else
++		scx_ops_exit(SCX_ECODE_ACT_RESTART | SCX_ECODE_RSN_HOTPLUG,
++			     "cpu %d going %s, exiting scheduler", cpu,
++			     online ? "online" : "offline");
++}
++
++static void rq_online_scx(struct rq *rq, enum rq_onoff_reason reason)
++{
++	if (reason == RQ_ONOFF_HOTPLUG)
++		handle_hotplug(rq, true);
++}
++
++static void rq_offline_scx(struct rq *rq, enum rq_onoff_reason reason)
++{
++	if (reason == RQ_ONOFF_HOTPLUG)
++		handle_hotplug(rq, false);
++}
++
+ #else	/* CONFIG_SMP */
+ 
+ static bool test_and_clear_cpu_idle(int cpu) { return false; }
+@@ -3328,6 +3414,9 @@ DEFINE_SCHED_CLASS(ext) = {
+ 	.balance		= balance_scx,
+ 	.select_task_rq		= select_task_rq_scx,
+ 	.set_cpus_allowed	= set_cpus_allowed_scx,
++
++	.rq_online		= rq_online_scx,
++	.rq_offline		= rq_offline_scx,
+ #endif
+ 
+ 	.task_tick		= task_tick_scx,
+@@ -3584,10 +3673,18 @@ static ssize_t scx_attr_nr_rejected_show(struct kobject *kobj,
+ }
+ SCX_ATTR(nr_rejected);
+ 
++static ssize_t scx_attr_hotplug_seq_show(struct kobject *kobj,
++					 struct kobj_attribute *ka, char *buf)
++{
++	return sysfs_emit(buf, "%ld\n", atomic_long_read(&scx_hotplug_seq));
++}
++SCX_ATTR(hotplug_seq);
++
+ static struct attribute *scx_global_attrs[] = {
+ 	&scx_attr_state.attr,
+ 	&scx_attr_switch_all.attr,
+ 	&scx_attr_nr_rejected.attr,
++	&scx_attr_hotplug_seq.attr,
+ 	NULL,
+ };
+ 
+@@ -4110,6 +4207,25 @@ static struct kthread_worker *scx_create_rt_helper(const char *name)
+ 	return helper;
+ }
+ 
++static void check_hotplug_seq(const struct sched_ext_ops *ops)
++{
++	unsigned long long global_hotplug_seq;
++
++	/*
++	 * If a hotplug event has occurred between when a scheduler was
++	 * initialized, and when we were able to attach, exit and notify user
++	 * space about it.
++	 */
++	if (ops->hotplug_seq) {
++		global_hotplug_seq = atomic_long_read(&scx_hotplug_seq);
++		if (ops->hotplug_seq != global_hotplug_seq) {
++			scx_ops_exit(SCX_ECODE_ACT_RESTART | SCX_ECODE_RSN_HOTPLUG,
++				     "expected hotplug seq %llu did not match actual %llu",
++				     ops->hotplug_seq, global_hotplug_seq);
++		}
++	}
++}
++
+ static int validate_ops(const struct sched_ext_ops *ops)
+ {
+ 	/*
+@@ -4192,6 +4308,10 @@ static int scx_ops_enable(struct sched_ext_ops *ops)
+ 		}
+ 	}
+ 
++	for (i = SCX_OPI_CPU_HOTPLUG_BEGIN; i < SCX_OPI_CPU_HOTPLUG_END; i++)
++		if (((void (**)(void))ops)[i])
++			static_branch_enable_cpuslocked(&scx_has_op[i]);
++
+ 	cpus_read_unlock();
+ 
+ 	ret = validate_ops(ops);
+@@ -4239,6 +4359,8 @@ static int scx_ops_enable(struct sched_ext_ops *ops)
+ 	cpus_read_lock();
+ 	scx_cgroup_lock();
+ 
++	check_hotplug_seq(ops);
++
+ 	for (i = SCX_OPI_NORMAL_BEGIN; i < SCX_OPI_NORMAL_END; i++)
+ 		if (((void (**)(void))ops)[i])
+ 			static_branch_enable_cpuslocked(&scx_has_op[i]);
+@@ -4563,6 +4685,9 @@ static int bpf_scx_init_member(const struct btf_type *t,
+ 		ops->exit_dump_len =
+ 			*(u32 *)(udata + moff) ?: SCX_EXIT_DUMP_DFL_LEN;
+ 		return 1;
++	case offsetof(struct sched_ext_ops, hotplug_seq):
++		ops->hotplug_seq = *(u64 *)(udata + moff);
++		return 1;
+ 	}
+ 
+ 	return 0;
+@@ -4659,6 +4784,8 @@ static void cgroup_move_stub(struct task_struct *p, struct cgroup *from, struct
+ static void cgroup_cancel_move_stub(struct task_struct *p, struct cgroup *from, struct cgroup *to) {}
+ static void cgroup_set_weight_stub(struct cgroup *cgrp, u32 weight) {}
+ #endif
++static void cpu_online_stub(s32 cpu) {}
++static void cpu_offline_stub(s32 cpu) {}
+ static s32 init_stub(void) { return -EINVAL; }
+ static void exit_stub(struct scx_exit_info *info) {}
+ 
+@@ -4689,6 +4816,8 @@ static struct sched_ext_ops __bpf_ops_sched_ext_ops = {
+ 	.cgroup_cancel_move = cgroup_cancel_move_stub,
+ 	.cgroup_set_weight = cgroup_set_weight_stub,
+ #endif
++	.cpu_online = cpu_online_stub,
++	.cpu_offline = cpu_offline_stub,
+ 	.init = init_stub,
+ 	.exit = exit_stub,
+ };
+diff --git a/tools/sched_ext/include/scx/compat.h b/tools/sched_ext/include/scx/compat.h
+index 2be79bd88a25..7155b69150ff 100644
+--- a/tools/sched_ext/include/scx/compat.h
++++ b/tools/sched_ext/include/scx/compat.h
+@@ -8,6 +8,9 @@
+ #define __SCX_COMPAT_H
+ 
+ #include <bpf/btf.h>
++#include <fcntl.h>
++#include <stdlib.h>
++#include <unistd.h>
+ 
+ struct btf *__COMPAT_vmlinux_btf __attribute__((weak));
+ 
+@@ -120,6 +123,28 @@ static inline bool __COMPAT_struct_has_field(const char *type, const char *field
+ #define __COMPAT_HAS_CPUMASKS							\
+ 	__COMPAT_has_ksym("scx_bpf_nr_cpu_ids")
+ 
++static inline long scx_hotplug_seq(void)
++{
++	int fd;
++	char buf[32];
++	ssize_t len;
++	long val;
++
++	fd = open("/sys/kernel/sched_ext/hotplug_seq", O_RDONLY);
++	if (fd < 0)
++		return -ENOENT;
++
++	len = read(fd, buf, sizeof(buf) - 1);
++	SCX_BUG_ON(len <= 0, "read failed (%ld)", len);
++	buf[len] = 0;
++	close(fd);
++
++	val = strtoul(buf, NULL, 10);
++	SCX_BUG_ON(val < 0, "invalid num hotplug events: %lu", val);
++
++	return val;
++}
++
+ /*
+  * struct sched_ext_ops can change over time. If compat.bpf.h::SCX_OPS_DEFINE()
+  * is used to define ops and compat.h::SCX_OPS_LOAD/ATTACH() are used to load
+@@ -128,12 +153,16 @@ static inline bool __COMPAT_struct_has_field(const char *type, const char *field
+  *
+  * - ops.tick(): Ignored on older kernels with a warning.
+  * - ops.exit_dump_len: Cleared to zero on older kernels with a warning.
++ * - ops.hotplug_seq: Ignored on older kernels.
+  */
+ #define SCX_OPS_OPEN(__ops_name, __scx_name) ({					\
+ 	struct __scx_name *__skel;						\
+ 										\
+ 	__skel = __scx_name##__open();						\
+ 	SCX_BUG_ON(!__skel, "Could not open " #__scx_name);			\
++										\
++	if (__COMPAT_struct_has_field("sched_ext_ops", "hotplug_seq"))		\
++		__skel->struct_ops.__ops_name->hotplug_seq = scx_hotplug_seq();	\
+ 	__skel; 								\
+ })
+ 
+diff --git a/tools/sched_ext/include/scx/user_exit_info.h b/tools/sched_ext/include/scx/user_exit_info.h
+index cf4293cb250e..2d86d01a9575 100644
+--- a/tools/sched_ext/include/scx/user_exit_info.h
++++ b/tools/sched_ext/include/scx/user_exit_info.h
+@@ -77,7 +77,35 @@ struct user_exit_info {
+ 	if (__uei->msg[0] != '\0')						\
+ 		fprintf(stderr, " (%s)", __uei->msg);				\
+ 	fputs("\n", stderr);							\
++	__uei->exit_code;							\
+ })
+ 
++/*
++ * We can't import vmlinux.h while compiling user C code. Let's duplicate
++ * scx_exit_code definition.
++ */
++enum scx_exit_code {
++	/* Reasons */
++	SCX_ECODE_RSN_HOTPLUG		= 1LLU << 32,
++
++	/* Actions */
++	SCX_ECODE_ACT_RESTART		= 1LLU << 48,
++};
++
++enum uei_ecode_mask {
++	UEI_ECODE_USER_MASK		= ((1LLU << 32) - 1),
++	UEI_ECODE_SYS_RSN_MASK		= ((1LLU << 16) - 1) << 32,
++	UEI_ECODE_SYS_ACT_MASK		= ((1LLU << 16) - 1) << 48,
 +};
 +
 +/*
-+ * Argument container for ops->cpu_acquire(). Currently empty, but may be
-+ * expanded in the future.
++ * These macro interpret the ecode returned from UEI_REPORT().
 + */
-+struct scx_cpu_acquire_args {};
++#define UEI_ECODE_USER(__ecode)		((__ecode) & UEI_ECODE_USER_MASK)
++#define UEI_ECODE_SYS_RSN(__ecode)	((__ecode) & UEI_ECODE_SYS_RSN_MASK)
++#define UEI_ECODE_SYS_ACT(__ecode)	((__ecode) & UEI_ECODE_SYS_ACT_MASK)
 +
-+/* argument container for ops->cpu_release() */
-+struct scx_cpu_release_args {
-+	/* the reason the CPU was preempted */
-+	enum scx_cpu_preempt_reason reason;
++#define UEI_ECODE_RESTART(__ecode)	(UEI_ECODE_SYS_ACT((__ecode)) == SCX_ECODE_ACT_RESTART)
 +
-+	/* the task that's going to be scheduled on the CPU */
-+	struct task_struct *task;
-+};
-+
- /**
-  * struct sched_ext_ops - Operation table for BPF scheduler implementation
-  *
-@@ -339,6 +365,28 @@ struct sched_ext_ops {
- 	 */
- 	void (*update_idle)(s32 cpu, bool idle);
- 
-+	/**
-+	 * cpu_acquire - A CPU is becoming available to the BPF scheduler
-+	 * @cpu: The CPU being acquired by the BPF scheduler.
-+	 * @args: Acquire arguments, see the struct definition.
-+	 *
-+	 * A CPU that was previously released from the BPF scheduler is now once
-+	 * again under its control.
-+	 */
-+	void (*cpu_acquire)(s32 cpu, struct scx_cpu_acquire_args *args);
-+
-+	/**
-+	 * cpu_release - A CPU is taken away from the BPF scheduler
-+	 * @cpu: The CPU being released by the BPF scheduler.
-+	 * @args: Release arguments, see the struct definition.
-+	 *
-+	 * The specified CPU is no longer under the control of the BPF
-+	 * scheduler. This could be because it was preempted by a higher
-+	 * priority sched_class, though there may be other reasons as well. The
-+	 * caller should consult @args->reason to determine the cause.
-+	 */
-+	void (*cpu_release)(s32 cpu, struct scx_cpu_release_args *args);
-+
- 	/**
- 	 * init_task - Initialize a task to run in a BPF scheduler
- 	 * @p: task to initialize for BPF scheduling
-@@ -534,6 +582,17 @@ enum scx_enq_flags {
- 	 */
- 	SCX_ENQ_PREEMPT		= 1LLU << 32,
- 
-+	/*
-+	 * The task being enqueued was previously enqueued on the current CPU's
-+	 * %SCX_DSQ_LOCAL, but was removed from it in a call to the
-+	 * bpf_scx_reenqueue_local() kfunc. If bpf_scx_reenqueue_local() was
-+	 * invoked in a ->cpu_release() callback, and the task is again
-+	 * dispatched back to %SCX_LOCAL_DSQ by this current ->enqueue(), the
-+	 * task will not be scheduled on the CPU until at least the next invocation
-+	 * of the ->cpu_acquire() callback.
-+	 */
-+	SCX_ENQ_REENQ		= 1LLU << 40,
-+
- 	/*
- 	 * The task being enqueued is the only task available for the cpu. By
- 	 * default, ext core keeps executing such tasks but when
-@@ -677,6 +736,7 @@ static bool scx_warned_zero_slice;
- 
- static DEFINE_STATIC_KEY_FALSE(scx_ops_enq_last);
- static DEFINE_STATIC_KEY_FALSE(scx_ops_enq_exiting);
-+DEFINE_STATIC_KEY_FALSE(scx_ops_cpu_preempt);
- static DEFINE_STATIC_KEY_FALSE(scx_builtin_idle_enabled);
- 
- struct static_key_false scx_has_op[SCX_OPI_END] =
-@@ -913,6 +973,12 @@ static __always_inline bool scx_kf_allowed(u32 mask)
- 	 * inside ops.dispatch(). We don't need to check the SCX_KF_SLEEPABLE
- 	 * boundary thanks to the above in_interrupt() check.
- 	 */
-+	if (unlikely(highest_bit(mask) == SCX_KF_CPU_RELEASE &&
-+		     (current->scx.kf_mask & higher_bits(SCX_KF_CPU_RELEASE)))) {
-+		scx_ops_error("cpu_release kfunc called from a nested operation");
-+		return false;
-+	}
-+
- 	if (unlikely(highest_bit(mask) == SCX_KF_DISPATCH &&
- 		     (current->scx.kf_mask & higher_bits(SCX_KF_DISPATCH)))) {
- 		scx_ops_error("dispatch kfunc called from a nested operation");
-@@ -2097,6 +2163,19 @@ static int balance_scx(struct rq *rq, struct task_struct *prev,
- 	lockdep_assert_rq_held(rq);
- 	scx_rq->flags |= SCX_RQ_BALANCING;
- 
-+	if (static_branch_unlikely(&scx_ops_cpu_preempt) &&
-+	    unlikely(rq->scx.cpu_released)) {
-+		/*
-+		 * If the previous sched_class for the current CPU was not SCX,
-+		 * notify the BPF scheduler that it again has control of the
-+		 * core. This callback complements ->cpu_release(), which is
-+		 * emitted in scx_next_task_picked().
-+		 */
-+		if (SCX_HAS_OP(cpu_acquire))
-+			SCX_CALL_OP(0, cpu_acquire, cpu_of(rq), NULL);
-+		rq->scx.cpu_released = false;
-+	}
-+
- 	if (prev_on_scx) {
- 		WARN_ON_ONCE(prev->scx.flags & SCX_TASK_BAL_KEEP);
- 		update_curr_scx(rq);
-@@ -2104,7 +2183,9 @@ static int balance_scx(struct rq *rq, struct task_struct *prev,
- 		/*
- 		 * If @prev is runnable & has slice left, it has priority and
- 		 * fetching more just increases latency for the fetched tasks.
--		 * Tell put_prev_task_scx() to put @prev on local_dsq.
-+		 * Tell put_prev_task_scx() to put @prev on local_dsq. If the
-+		 * BPF scheduler wants to handle this explicitly, it should
-+		 * implement ->cpu_released().
- 		 *
- 		 * See scx_ops_disable_workfn() for the explanation on the
- 		 * bypassing test.
-@@ -2324,6 +2405,20 @@ static struct task_struct *pick_next_task_scx(struct rq *rq)
- 	return p;
- }
- 
-+static enum scx_cpu_preempt_reason
-+preempt_reason_from_class(const struct sched_class *class)
-+{
-+#ifdef CONFIG_SMP
-+	if (class == &stop_sched_class)
-+		return SCX_CPU_PREEMPT_STOP;
-+#endif
-+	if (class == &dl_sched_class)
-+		return SCX_CPU_PREEMPT_DL;
-+	if (class == &rt_sched_class)
-+		return SCX_CPU_PREEMPT_RT;
-+	return SCX_CPU_PREEMPT_UNKNOWN;
-+}
-+
- void scx_next_task_picked(struct rq *rq, struct task_struct *p,
- 			  const struct sched_class *active)
+ #endif	/* __bpf__ */
+ #endif	/* __USER_EXIT_INFO_H */
+diff --git a/tools/sched_ext/scx_central.c b/tools/sched_ext/scx_central.c
+index 2908add16880..df692dc0ccb1 100644
+--- a/tools/sched_ext/scx_central.c
++++ b/tools/sched_ext/scx_central.c
+@@ -46,14 +46,14 @@ int main(int argc, char **argv)
  {
-@@ -2339,6 +2434,40 @@ void scx_next_task_picked(struct rq *rq, struct task_struct *p,
- 	 */
- 	smp_store_release(&rq->scx.pnt_seq, rq->scx.pnt_seq + 1);
- #endif
-+	if (!static_branch_unlikely(&scx_ops_cpu_preempt))
-+		return;
+ 	struct scx_central *skel;
+ 	struct bpf_link *link;
+-	__u64 seq = 0;
++	__u64 seq = 0, ecode;
+ 	__s32 opt;
+ 	cpu_set_t *cpuset;
+ 
+ 	libbpf_set_print(libbpf_print_fn);
+ 	signal(SIGINT, sigint_handler);
+ 	signal(SIGTERM, sigint_handler);
+-
++restart:
+ 	skel = SCX_OPS_OPEN(central_ops, scx_central);
+ 
+ 	skel->rodata->central_cpu = 0;
+@@ -126,7 +126,10 @@ int main(int argc, char **argv)
+ 	}
+ 
+ 	bpf_link__destroy(link);
+-	UEI_REPORT(skel, uei);
++	ecode = UEI_REPORT(skel, uei);
+ 	scx_central__destroy(skel);
 +
-+	/*
-+	 * The callback is conceptually meant to convey that the CPU is no
-+	 * longer under the control of SCX. Therefore, don't invoke the
-+	 * callback if the CPU is is staying on SCX, or going idle (in which
-+	 * case the SCX scheduler has actively decided not to schedule any
-+	 * tasks on the CPU).
-+	 */
-+	if (likely(active >= &ext_sched_class))
-+		return;
-+
-+	/*
-+	 * At this point we know that SCX was preempted by a higher priority
-+	 * sched_class, so invoke the ->cpu_release() callback if we have not
-+	 * done so already. We only send the callback once between SCX being
-+	 * preempted, and it regaining control of the CPU.
-+	 *
-+	 * ->cpu_release() complements ->cpu_acquire(), which is emitted the
-+	 *  next time that balance_scx() is invoked.
-+	 */
-+	if (!rq->scx.cpu_released) {
-+		if (SCX_HAS_OP(cpu_release)) {
-+			struct scx_cpu_release_args args = {
-+				.reason = preempt_reason_from_class(active),
-+				.task = p,
-+			};
-+
-+			SCX_CALL_OP(SCX_KF_CPU_RELEASE,
-+				    cpu_release, cpu_of(rq), &args);
-+		}
-+		rq->scx.cpu_released = true;
-+	}
++	if (UEI_ECODE_RESTART(ecode))
++		goto restart;
+ 	return 0;
  }
+diff --git a/tools/sched_ext/scx_flatcg.c b/tools/sched_ext/scx_flatcg.c
+index bb0a832a0cfd..20c5a132b610 100644
+--- a/tools/sched_ext/scx_flatcg.c
++++ b/tools/sched_ext/scx_flatcg.c
+@@ -127,11 +127,12 @@ int main(int argc, char **argv)
+ 	__u64 last_stats[FCG_NR_STATS] = {};
+ 	unsigned long seq = 0;
+ 	__s32 opt;
++	__u64 ecode;
  
- #ifdef CONFIG_SMP
-@@ -3735,6 +3864,7 @@ static void scx_ops_disable_workfn(struct kthread_work *work)
- 		static_branch_disable_cpuslocked(&scx_has_op[i]);
- 	static_branch_disable_cpuslocked(&scx_ops_enq_last);
- 	static_branch_disable_cpuslocked(&scx_ops_enq_exiting);
-+	static_branch_disable_cpuslocked(&scx_ops_cpu_preempt);
- 	static_branch_disable_cpuslocked(&scx_builtin_idle_enabled);
- 	synchronize_rcu();
+ 	libbpf_set_print(libbpf_print_fn);
+ 	signal(SIGINT, sigint_handler);
+ 	signal(SIGTERM, sigint_handler);
+-
++restart:
+ 	skel = SCX_OPS_OPEN(flatcg_ops, scx_flatcg);
  
-@@ -3894,9 +4024,10 @@ static void scx_dump_state(struct scx_exit_info *ei, size_t dump_len)
- 		    rq->curr->sched_class == &idle_sched_class)
- 			goto next;
+ 	skel->rodata->nr_cpus = libbpf_num_possible_cpus();
+@@ -219,7 +220,10 @@ int main(int argc, char **argv)
+ 	}
  
--		seq_buf_printf(&s, "\nCPU %-4d: nr_run=%u flags=0x%x ops_qseq=%lu pnt_seq=%lu\n",
-+		seq_buf_printf(&s, "\nCPU %-4d: nr_run=%u flags=0x%x cpu_rel=%d ops_qseq=%lu pnt_seq=%lu\n",
- 			       cpu, rq->scx.nr_running, rq->scx.flags,
--			       rq->scx.ops_qseq, rq->scx.pnt_seq);
-+			       rq->scx.cpu_released, rq->scx.ops_qseq,
-+			       rq->scx.pnt_seq);
- 		seq_buf_printf(&s, "          curr=%s[%d] class=%ps\n",
- 			       rq->curr->comm, rq->curr->pid,
- 			       rq->curr->sched_class);
-@@ -4117,6 +4248,8 @@ static int scx_ops_enable(struct sched_ext_ops *ops)
- 
- 	if (ops->flags & SCX_OPS_ENQ_EXITING)
- 		static_branch_enable_cpuslocked(&scx_ops_enq_exiting);
-+	if (scx_ops.cpu_acquire || scx_ops.cpu_release)
-+		static_branch_enable_cpuslocked(&scx_ops_cpu_preempt);
- 
- 	if (!ops->update_idle || (ops->flags & SCX_OPS_KEEP_BUILTIN_IDLE)) {
- 		reset_idle_masks();
-@@ -4512,6 +4645,8 @@ static bool yield_stub(struct task_struct *from, struct task_struct *to) { retur
- static void set_weight_stub(struct task_struct *p, u32 weight) {}
- static void set_cpumask_stub(struct task_struct *p, const struct cpumask *mask) {}
- static void update_idle_stub(s32 cpu, bool idle) {}
-+static void cpu_acquire_stub(s32 cpu, struct scx_cpu_acquire_args *args) {}
-+static void cpu_release_stub(s32 cpu, struct scx_cpu_release_args *args) {}
- static s32 init_task_stub(struct task_struct *p, struct scx_init_task_args *args) { return -EINVAL; }
- static void exit_task_stub(struct task_struct *p, struct scx_exit_task_args *args) {}
- static void enable_stub(struct task_struct *p) {}
-@@ -4540,6 +4675,8 @@ static struct sched_ext_ops __bpf_ops_sched_ext_ops = {
- 	.set_weight = set_weight_stub,
- 	.set_cpumask = set_cpumask_stub,
- 	.update_idle = update_idle_stub,
-+	.cpu_acquire = cpu_acquire_stub,
-+	.cpu_release = cpu_release_stub,
- 	.init_task = init_task_stub,
- 	.exit_task = exit_task_stub,
- 	.enable = enable_stub,
-@@ -5068,6 +5205,61 @@ static const struct btf_kfunc_id_set scx_kfunc_set_dispatch = {
- 
- __bpf_kfunc_start_defs();
- 
-+/**
-+ * scx_bpf_reenqueue_local - Re-enqueue tasks on a local DSQ
-+ *
-+ * Iterate over all of the tasks currently enqueued on the local DSQ of the
-+ * caller's CPU, and re-enqueue them in the BPF scheduler. Returns the number of
-+ * processed tasks. Can only be called from ops.cpu_release().
-+ */
-+__bpf_kfunc u32 scx_bpf_reenqueue_local(void)
-+{
-+	u32 nr_enqueued, i;
-+	struct rq *rq;
-+	struct scx_rq *scx_rq;
+ 	bpf_link__destroy(link);
+-	UEI_REPORT(skel, uei);
++	ecode = UEI_REPORT(skel, uei);
+ 	scx_flatcg__destroy(skel);
 +
-+	if (!scx_kf_allowed(SCX_KF_CPU_RELEASE))
-+		return 0;
-+
-+	rq = cpu_rq(smp_processor_id());
-+	lockdep_assert_rq_held(rq);
-+	scx_rq = &rq->scx;
-+
-+	/*
-+	 * Get the number of tasks on the local DSQ before iterating over it to
-+	 * pull off tasks. The enqueue callback below can signal that it wants
-+	 * the task to stay on the local DSQ, and we want to prevent the BPF
-+	 * scheduler from causing us to loop indefinitely.
-+	 */
-+	nr_enqueued = scx_rq->local_dsq.nr;
-+	for (i = 0; i < nr_enqueued; i++) {
-+		struct task_struct *p;
-+
-+		p = first_local_task(rq);
-+		WARN_ON_ONCE(atomic_long_read(&p->scx.ops_state) !=
-+			     SCX_OPSS_NONE);
-+		WARN_ON_ONCE(!(p->scx.flags & SCX_TASK_QUEUED));
-+		WARN_ON_ONCE(p->scx.holding_cpu != -1);
-+		dispatch_dequeue(scx_rq, p);
-+		do_enqueue_task(rq, p, SCX_ENQ_REENQ, -1);
-+	}
-+
-+	return nr_enqueued;
-+}
-+
-+__bpf_kfunc_end_defs();
-+
-+BTF_KFUNCS_START(scx_kfunc_ids_cpu_release)
-+BTF_ID_FLAGS(func, scx_bpf_reenqueue_local)
-+BTF_KFUNCS_END(scx_kfunc_ids_cpu_release)
-+
-+static const struct btf_kfunc_id_set scx_kfunc_set_cpu_release = {
-+	.owner			= THIS_MODULE,
-+	.set			= &scx_kfunc_ids_cpu_release,
-+};
-+
-+__bpf_kfunc_start_defs();
-+
- /**
-  * scx_bpf_kick_cpu - Trigger reschedule on a CPU
-  * @cpu: cpu to kick
-@@ -5563,6 +5755,8 @@ static int __init scx_init(void)
- 					     &scx_kfunc_set_enqueue_dispatch)) ||
- 	    (ret = register_btf_kfunc_id_set(BPF_PROG_TYPE_STRUCT_OPS,
- 					     &scx_kfunc_set_dispatch)) ||
-+	    (ret = register_btf_kfunc_id_set(BPF_PROG_TYPE_STRUCT_OPS,
-+					     &scx_kfunc_set_cpu_release)) ||
- 	    (ret = register_btf_kfunc_id_set(BPF_PROG_TYPE_STRUCT_OPS,
- 					     &scx_kfunc_set_any)) ||
- 	    (ret = register_btf_kfunc_id_set(BPF_PROG_TYPE_TRACING,
-diff --git a/kernel/sched/ext.h b/kernel/sched/ext.h
-index 5db35f627ea3..10f4717839c0 100644
---- a/kernel/sched/ext.h
-+++ b/kernel/sched/ext.h
-@@ -24,6 +24,8 @@ DECLARE_STATIC_KEY_FALSE(__scx_switched_all);
- #define scx_enabled()		static_branch_unlikely(&__scx_ops_enabled)
- #define scx_switched_all()	static_branch_unlikely(&__scx_switched_all)
- 
-+DECLARE_STATIC_KEY_FALSE(scx_ops_cpu_preempt);
-+
- static inline bool task_on_scx(const struct task_struct *p)
- {
- 	return scx_enabled() && p->sched_class == &ext_sched_class;
-diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-index c8cf6fbaed07..e8ef7309f347 100644
---- a/kernel/sched/sched.h
-+++ b/kernel/sched/sched.h
-@@ -732,6 +732,7 @@ struct scx_rq {
- 	u64			extra_enq_flags;	/* see move_task_to_local_dsq() */
- 	u32			nr_running;
- 	u32			flags;
-+	bool			cpu_released;
- 	cpumask_var_t		cpus_to_kick;
- 	cpumask_var_t		cpus_to_kick_if_idle;
- 	cpumask_var_t		cpus_to_preempt;
-diff --git a/tools/sched_ext/include/scx/common.bpf.h b/tools/sched_ext/include/scx/common.bpf.h
-index f0dbaa1826a7..a3979e13aade 100644
---- a/tools/sched_ext/include/scx/common.bpf.h
-+++ b/tools/sched_ext/include/scx/common.bpf.h
-@@ -34,6 +34,7 @@ void scx_bpf_dispatch(struct task_struct *p, u64 dsq_id, u64 slice, u64 enq_flag
- u32 scx_bpf_dispatch_nr_slots(void) __ksym;
- void scx_bpf_dispatch_cancel(void) __ksym;
- bool scx_bpf_consume(u64 dsq_id) __ksym;
-+u32 scx_bpf_reenqueue_local(void) __ksym;
- void scx_bpf_kick_cpu(s32 cpu, u64 flags) __ksym;
- s32 scx_bpf_dsq_nr_queued(u64 dsq_id) __ksym;
- void scx_bpf_destroy_dsq(u64 dsq_id) __ksym;
++	if (UEI_ECODE_RESTART(ecode))
++		goto restart;
+ 	return 0;
+ }
 diff --git a/tools/sched_ext/scx_qmap.bpf.c b/tools/sched_ext/scx_qmap.bpf.c
-index 812004bf027a..7c3b0dcae1e0 100644
+index 7c3b0dcae1e0..c2edc080d7e5 100644
 --- a/tools/sched_ext/scx_qmap.bpf.c
 +++ b/tools/sched_ext/scx_qmap.bpf.c
-@@ -11,6 +11,8 @@
-  *
-  * - BPF-side queueing using PIDs.
-  * - Sleepable per-task storage allocation using ops.prep_enable().
-+ * - Using ops.cpu_release() to handle a higher priority scheduling class taking
-+ *   the CPU away.
-  *
-  * This scheduler is primarily for demonstration and testing of sched_ext
-  * features and unlikely to be useful for actual workloads.
-@@ -90,7 +92,7 @@ struct {
- } cpu_ctx_stor SEC(".maps");
- 
- /* Statistics */
--u64 nr_enqueued, nr_dispatched, nr_dequeued;
-+u64 nr_enqueued, nr_dispatched, nr_reenqueued, nr_dequeued;
- 
- s32 BPF_STRUCT_OPS(qmap_select_cpu, struct task_struct *p,
- 		   s32 prev_cpu, u64 wake_flags)
-@@ -164,6 +166,22 @@ void BPF_STRUCT_OPS(qmap_enqueue, struct task_struct *p, u64 enq_flags)
- 		return;
- 	}
- 
-+	/*
-+	 * If the task was re-enqueued due to the CPU being preempted by a
-+	 * higher priority scheduling class, just re-enqueue the task directly
-+	 * on the global DSQ. As we want another CPU to pick it up, find and
-+	 * kick an idle CPU.
-+	 */
-+	if (enq_flags & SCX_ENQ_REENQ) {
-+		s32 cpu;
-+
-+		scx_bpf_dispatch(p, SHARED_DSQ, 0, enq_flags);
-+		cpu = scx_bpf_pick_idle_cpu(p->cpus_ptr, 0);
-+		if (cpu >= 0)
-+			scx_bpf_kick_cpu(cpu, __COMPAT_SCX_KICK_IDLE);
-+		return;
-+	}
-+
- 	ring = bpf_map_lookup_elem(&queue_arr, &idx);
- 	if (!ring) {
- 		scx_bpf_error("failed to find ring %d", idx);
-@@ -257,6 +275,22 @@ void BPF_STRUCT_OPS(qmap_dispatch, s32 cpu, struct task_struct *prev)
- 	}
+@@ -308,11 +308,69 @@ s32 BPF_STRUCT_OPS(qmap_init_task, struct task_struct *p,
+ 		return -ENOMEM;
  }
  
-+void BPF_STRUCT_OPS(qmap_cpu_release, s32 cpu, struct scx_cpu_release_args *args)
++/*
++ * Print out the online and possible CPU map using bpf_printk() as a
++ * demonstration of using the cpumask kfuncs and ops.cpu_on/offline().
++ */
++static void print_cpus(void)
 +{
-+	u32 cnt;
++	const struct cpumask *possible, *online;
++	s32 cpu;
++	char buf[128] = "", *p;
++	int idx;
 +
-+	/*
-+	 * Called when @cpu is taken by a higher priority scheduling class. This
-+	 * makes @cpu no longer available for executing sched_ext tasks. As we
-+	 * don't want the tasks in @cpu's local dsq to sit there until @cpu
-+	 * becomes available again, re-enqueue them into the global dsq. See
-+	 * %SCX_ENQ_REENQ handling in qmap_enqueue().
-+	 */
-+	cnt = scx_bpf_reenqueue_local();
-+	if (cnt)
-+		__sync_fetch_and_add(&nr_reenqueued, cnt);
++	if (!__COMPAT_HAS_CPUMASKS)
++		return;
++
++	possible = scx_bpf_get_possible_cpumask();
++	online = scx_bpf_get_online_cpumask();
++
++	idx = 0;
++	bpf_for(cpu, 0, scx_bpf_nr_cpu_ids()) {
++		if (!(p = MEMBER_VPTR(buf, [idx++])))
++			break;
++		if (bpf_cpumask_test_cpu(cpu, online))
++			*p++ = 'O';
++		else if (bpf_cpumask_test_cpu(cpu, possible))
++			*p++ = 'X';
++		else
++			*p++ = ' ';
++
++		if ((cpu & 7) == 7) {
++			if (!(p = MEMBER_VPTR(buf, [idx++])))
++				break;
++			*p++ = '|';
++		}
++	}
++	buf[sizeof(buf) - 1] = '\0';
++
++	scx_bpf_put_cpumask(online);
++	scx_bpf_put_cpumask(possible);
++
++	bpf_printk("CPUS: |%s", buf);
 +}
 +
- s32 BPF_STRUCT_OPS(qmap_init_task, struct task_struct *p,
- 		   struct scx_init_task_args *args)
++void BPF_STRUCT_OPS(qmap_cpu_online, s32 cpu)
++{
++	bpf_printk("CPU %d coming online", cpu);
++	/* @cpu is already online at this point */
++	print_cpus();
++}
++
++void BPF_STRUCT_OPS(qmap_cpu_offline, s32 cpu)
++{
++	bpf_printk("CPU %d going offline", cpu);
++	/* @cpu is still online at this point */
++	print_cpus();
++}
++
+ s32 BPF_STRUCT_OPS_SLEEPABLE(qmap_init)
  {
-@@ -292,6 +326,7 @@ SCX_OPS_DEFINE(qmap_ops,
- 	       .enqueue			= (void *)qmap_enqueue,
- 	       .dequeue			= (void *)qmap_dequeue,
+ 	if (!switch_partial)
+ 		__COMPAT_scx_bpf_switch_all();
+ 
++	print_cpus();
++
+ 	return scx_bpf_create_dsq(SHARED_DSQ, -1);
+ }
+ 
+@@ -328,6 +386,8 @@ SCX_OPS_DEFINE(qmap_ops,
  	       .dispatch		= (void *)qmap_dispatch,
-+	       .cpu_release		= (void *)qmap_cpu_release,
+ 	       .cpu_release		= (void *)qmap_cpu_release,
  	       .init_task		= (void *)qmap_init_task,
++	       .cpu_online		= (void *)qmap_cpu_online,
++	       .cpu_offline		= (void *)qmap_cpu_offline,
  	       .init			= (void *)qmap_init,
  	       .exit			= (void *)qmap_exit,
+ 	       .timeout_ms		= 5000U,
 diff --git a/tools/sched_ext/scx_qmap.c b/tools/sched_ext/scx_qmap.c
-index 36254631589e..048b31eed17d 100644
+index 048b31eed17d..e82f58b5c131 100644
 --- a/tools/sched_ext/scx_qmap.c
 +++ b/tools/sched_ext/scx_qmap.c
-@@ -109,9 +109,9 @@ int main(int argc, char **argv)
- 		long nr_enqueued = skel->bss->nr_enqueued;
- 		long nr_dispatched = skel->bss->nr_dispatched;
+@@ -119,5 +119,9 @@ int main(int argc, char **argv)
+ 	bpf_link__destroy(link);
+ 	UEI_REPORT(skel, uei);
+ 	scx_qmap__destroy(skel);
++	/*
++	 * scx_qmap implements ops.cpu_on/offline() and doesn't need to restart
++	 * on CPU hotplug events.
++	 */
+ 	return 0;
+ }
+diff --git a/tools/sched_ext/scx_simple.c b/tools/sched_ext/scx_simple.c
+index 9ffa8d084228..acee683a3ec9 100644
+--- a/tools/sched_ext/scx_simple.c
++++ b/tools/sched_ext/scx_simple.c
+@@ -62,11 +62,12 @@ int main(int argc, char **argv)
+ 	struct scx_simple *skel;
+ 	struct bpf_link *link;
+ 	__u32 opt;
++	__u64 ecode;
  
--		printf("stats  : enq=%lu dsp=%lu delta=%ld deq=%"PRIu64"\n",
-+		printf("stats  : enq=%lu dsp=%lu delta=%ld reenq=%"PRIu64" deq=%"PRIu64"\n",
- 		       nr_enqueued, nr_dispatched, nr_enqueued - nr_dispatched,
--		       skel->bss->nr_dequeued);
-+		       skel->bss->nr_reenqueued, skel->bss->nr_dequeued);
- 		fflush(stdout);
- 		sleep(1);
+ 	libbpf_set_print(libbpf_print_fn);
+ 	signal(SIGINT, sigint_handler);
+ 	signal(SIGTERM, sigint_handler);
+-
++restart:
+ 	skel = SCX_OPS_OPEN(simple_ops, scx_simple);
+ 
+ 	while ((opt = getopt(argc, argv, "vh")) != -1) {
+@@ -93,7 +94,10 @@ int main(int argc, char **argv)
  	}
+ 
+ 	bpf_link__destroy(link);
+-	UEI_REPORT(skel, uei);
++	ecode = UEI_REPORT(skel, uei);
+ 	scx_simple__destroy(skel);
++
++	if (UEI_ECODE_RESTART(ecode))
++		goto restart;
+ 	return 0;
+ }
 -- 
 2.44.0
 
