@@ -1,150 +1,145 @@
-Return-Path: <bpf+bounces-28370-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-28371-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id CAEBF8B8D62
-	for <lists+bpf@lfdr.de>; Wed,  1 May 2024 17:43:49 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 094208B8D9B
+	for <lists+bpf@lfdr.de>; Wed,  1 May 2024 18:02:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 075741C20F3C
-	for <lists+bpf@lfdr.de>; Wed,  1 May 2024 15:43:49 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1646DB21EF7
+	for <lists+bpf@lfdr.de>; Wed,  1 May 2024 16:02:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A574712FF9B;
-	Wed,  1 May 2024 15:43:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF32212FB39;
+	Wed,  1 May 2024 16:02:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="th6c1+mm"
+	dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b="P1YcI/de"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yw1-f180.google.com (mail-yw1-f180.google.com [209.85.128.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2748312FF78;
-	Wed,  1 May 2024 15:43:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CAD79502A9
+	for <bpf@vger.kernel.org>; Wed,  1 May 2024 16:02:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714578204; cv=none; b=FEKb1HAUfk2fXpnyox1NHPoOvVbvRZg31JDL5RLrmsri3VKhj7z/UT3VaaoPtqH+RGm7eNPVdgotBjWH2JCcLcrcFvW0AznyI/XEZ6XE8bVxrTAQjJK5lA95JzN59ZTEgC9aU6U75/8nfDjWbtdYGeQ6z5HktY4JtKj7782IuKk=
+	t=1714579359; cv=none; b=vB10aZibS9NHmfK3WyFwlbu1SD1l/rrapA7mmx2IeqBPcjsf6nkeUodNser1/Wrwpwk1EmtM/92jjEUeNEiuGfl3kPkjSLMBD1yrWuJ5/eNNdDrJH16OCAvHeXWyfVGQb2Qso3Qp7QAl2SKHd9emrFIemz5duHfomVFI0NwOpaU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714578204; c=relaxed/simple;
-	bh=KALlXTVUTaG7KIY4xfSeGKWZAwSJ5/dytvx09z4PAuA=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=RNahXCpZnbDLqOh90aD5nZEn8GAZkbKVwVVY1nsH6vTBYOHQoC4yLZJQypfyD9dulGJa8Y7MMS7inW3OO78ROfwwQhW+7ui+VTyjb7JuVGkGR6nOwRpmIf2+knCjVunFyk+ueD0qH2V/Bh/cCT+GoFxIQKi2SdXtNLgaKPEtCw4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=th6c1+mm; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6A5EFC072AA;
-	Wed,  1 May 2024 15:43:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714578203;
-	bh=KALlXTVUTaG7KIY4xfSeGKWZAwSJ5/dytvx09z4PAuA=;
-	h=From:To:Cc:Subject:Date:From;
-	b=th6c1+mm5tEOQDCQZKB6/0pXmDxMTXaBzvR1lpXEFQJPkq9GJSEKcwTW2jyNHYjr7
-	 TfGDpwsO2mcdGdRbuwZigx9Qvocz20fn2W+ubLTx30PXku5RilOYMB2Pm2QSC6NIK8
-	 W/P0Cd93k5yfwdAzOyNsRifq291WpbE2ZPbL7m+Fp44F+Q4gcMs+qhHNtAzUdnSsN+
-	 WBTDTW0CerAW/OQ1YH4uUi43tiRvR/8jNPJ8S3A6q84o/5GXHwi6/sliWmj/b1HgT2
-	 TlLIyU76GEGF6bQNrV9tHqkhDRtg6xiA7qsYh2XZynGE1eOyxQe0xEgGqwOzMhFrR2
-	 +y4cw2FaaZ90A==
-From: Puranjay Mohan <puranjay@kernel.org>
-To: Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>,
-	Sumit Garg <sumit.garg@linaro.org>,
-	Stephen Boyd <swboyd@chromium.org>,
-	Douglas Anderson <dianders@chromium.org>,
-	"Peter Zijlstra (Intel)" <peterz@infradead.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Mark Rutland <mark.rutland@arm.com>,
-	linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	bpf@vger.kernel.org
-Cc: puranjay12@gmail.com
-Subject: [PATCH] arm64: implement raw_smp_processor_id() using thread_info
-Date: Wed,  1 May 2024 15:42:36 +0000
-Message-Id: <20240501154236.10236-1-puranjay@kernel.org>
-X-Mailer: git-send-email 2.40.1
+	s=arc-20240116; t=1714579359; c=relaxed/simple;
+	bh=GIg0qqxY8IGXzYWeoYuXFScFx99CyexVXC/du3NFi4g=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=mErNHrtpyMvHdlzmGrzOMkV/dd9iXWMDKAhcmykF+Hsm+gYAE+PzWCu9wzEbql+4vlUzwQi32yzKQTTZr3/i/JKx2cic9m1OflfABX/WqX5Wspfymqkx4P4Mp2oZvaqCVH16MBV5jXcF8pi5wTQkG/bZ6ILNSIQVVoJx716zezg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com; spf=pass smtp.mailfrom=paul-moore.com; dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b=P1YcI/de; arc=none smtp.client-ip=209.85.128.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=paul-moore.com
+Received: by mail-yw1-f180.google.com with SMTP id 00721157ae682-615019cd427so55280237b3.3
+        for <bpf@vger.kernel.org>; Wed, 01 May 2024 09:02:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paul-moore.com; s=google; t=1714579357; x=1715184157; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=cuTSwyg4Duor6hNxagd4NLjWGY2C1Kh2NptH/U7fxFA=;
+        b=P1YcI/dem4TRC4j5+FEOVVmy1k7Gt8gMWaFa6DR/9SVJeRjicoNaEQCQVMzn1oNHBD
+         z0Dp8S6oBaPuxUEkhALGNvzdBHH0JrqKliWUoscGUAzGRGUp/e081f7qNDokqODU7uv/
+         kYmCgiUJ/pMKp8EMeba/cDuDhEmbM7IcK2Ijk1NaflsxBqhQkSSkOy4QsFQjIJKl9zzr
+         yz9A6wXnlqR84x+ayJ3AJ5YbdrEovDtmmHXOfI8OH1HdK17+3dI2FZLiUlaEszLexg9w
+         ITtukCHBAu5jgQMhxyIDEIfiHcRciLu3OuHmC5ZMHQXm87dEKE/YAtz77jH7reGs1ZXa
+         o56A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714579357; x=1715184157;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=cuTSwyg4Duor6hNxagd4NLjWGY2C1Kh2NptH/U7fxFA=;
+        b=O31hH+YJKu4OxhWlKpD9s2fUSXVnOB/Ik3hUeFFY5YorBIGJjCHPWsGADTzhmerUmR
+         Evl+KuSoGWSLP7KBqaQfTfQihLGtpDEer6YjNYvE9JrGQBHmFi4TdgDVG/7Z96fhVuSP
+         id3fsEgYvlr1qb97Kpu0kGPlvDuzrXak4hXIIR3zM2tiudJ9DmDRV0we2BqmGhEvL/d1
+         U1yDZEZqwfH4QssI7kMiY/h8rYYcAzuvzxTGlFBhmrtXHJCDxEYubCZFYQlXuf/+xlx0
+         odrvyMg6iHOQLdTwoUDaKgi2vwlonmJ9DC6XavsDmabF1PRo5hrWMAgjF4jyjNLTc7my
+         uhLQ==
+X-Forwarded-Encrypted: i=1; AJvYcCX4ydjkuCvSZAFve7v2VoCoV4E5+UGegO4CVkKGJbnBKVK7Vs5DL0YELD2hp48hQljhB5nWuJDTCwPFtKA6G647Nk+t
+X-Gm-Message-State: AOJu0YyIKpwe9xQuYDe6lluXtUhRm/aB27FMbWpDZceYIcjD7/DWXlNi
+	P84uz0BKFyZ4IhKGrBSblLlo20GphFr4sEQ3klYERWici4wH3/7Ot4mTGNhJ5YVUD85yhhcaL3k
+	5K7ByLcJN1b8u+12LgeyW3ljq+8kNY48/mR5j
+X-Google-Smtp-Source: AGHT+IH43KKvgq5pfK+zLJrg5zNUpKsT1cly8y7M41qu+UjyduRLJHzscgOqbVjTe8DbGTiF22UP57FY9wim6c+i6ZY=
+X-Received: by 2002:a05:690c:3586:b0:61a:edf1:da55 with SMTP id
+ fr6-20020a05690c358600b0061aedf1da55mr2907562ywb.47.1714579356786; Wed, 01
+ May 2024 09:02:36 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20240429114636.123395-1-fuzhen5@huawei.com>
+In-Reply-To: <20240429114636.123395-1-fuzhen5@huawei.com>
+From: Paul Moore <paul@paul-moore.com>
+Date: Wed, 1 May 2024 12:02:25 -0400
+Message-ID: <CAHC9VhTCFOCE0E-en3HnNkPVRumzWRPcrJMF-=dxke53dOv1Gg@mail.gmail.com>
+Subject: Re: [PATCH -next] lsm: fix default return value for inode_set(remove)xattr
+To: felix <fuzhen5@huawei.com>, linux-security-module@vger.kernel.org
+Cc: casey@schaufler-ca.com, roberto.sassu@huawei.com, stefanb@linux.ibm.com, 
+	zohar@linux.ibm.com, kamrankhadijadj@gmail.com, andrii@kernel.org, 
+	omosnace@redhat.com, linux-kernel@vger.kernel.org, bpf@vger.kernel.org, 
+	xiujianfeng@huawei.com, wangweiyang2@huawei.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-ARM64 defines THREAD_INFO_IN_TASK which means the cpu id can be found
-from current_thread_info()->cpu.
+On Mon, Apr 29, 2024 at 7:47=E2=80=AFAM felix <fuzhen5@huawei.com> wrote:
+>
+> From: Felix Fu <fuzhen5@huawei.com>
+>
+> The return value of security_inode_set(remove)xattr should
+> be 1. If it return 0, cap_inode_setxattr would not be
+> executed when no lsm exist, which is not what we expected,
+> any user could set some security.* xattr for a file.
+>
+> Before commit 260017f31a8c ("lsm: use default hook return
+> value in call_int_hook()") was approved, this issue would
+> still happened when lsm only include bpf, because bpf_lsm_
+> inode_setxattr return 0 by default which cause cap_inode_set
+> xattr to be not executed.
+>
+> Fixes: 260017f31a8c ("lsm: use default hook return value in call_int_hook=
+()")
+> Signed-off-by: Felix Fu <fuzhen5@huawei.com>
+> ---
+>  include/linux/lsm_hook_defs.h | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
 
-Implement raw_smp_processor_id() using the above. This decreases the
-number of emitted instructions like in the following example:
+Adding the LSM list as that is the important list for this patch.  I'm
+also just realizing we don't include lsm_hook_defs.h in the LSM
+MAINTAINERS entry, I'll submit a patch for that shortly.
 
-Dump of assembler code for function bpf_get_smp_processor_id:
-   0xffff8000802cd608 <+0>:     nop
-   0xffff8000802cd60c <+4>:     nop
-   0xffff8000802cd610 <+8>:     adrp    x0, 0xffff800082138000
-   0xffff8000802cd614 <+12>:    mrs     x1, tpidr_el1
-   0xffff8000802cd618 <+16>:    add     x0, x0, #0x8
-   0xffff8000802cd61c <+20>:    ldrsw   x0, [x0, x1]
-   0xffff8000802cd620 <+24>:    ret
+> diff --git a/include/linux/lsm_hook_defs.h b/include/linux/lsm_hook_defs.=
+h
+> index f804b76cde44..9c768b954264 100644
+> --- a/include/linux/lsm_hook_defs.h
+> +++ b/include/linux/lsm_hook_defs.h
+> @@ -144,14 +144,14 @@ LSM_HOOK(int, 0, inode_setattr, struct mnt_idmap *i=
+dmap, struct dentry *dentry,
+>  LSM_HOOK(void, LSM_RET_VOID, inode_post_setattr, struct mnt_idmap *idmap=
+,
+>          struct dentry *dentry, int ia_valid)
+>  LSM_HOOK(int, 0, inode_getattr, const struct path *path)
+> -LSM_HOOK(int, 0, inode_setxattr, struct mnt_idmap *idmap,
+> +LSM_HOOK(int, 1, inode_setxattr, struct mnt_idmap *idmap,
+>          struct dentry *dentry, const char *name, const void *value,
+>          size_t size, int flags)
+>  LSM_HOOK(void, LSM_RET_VOID, inode_post_setxattr, struct dentry *dentry,
+>          const char *name, const void *value, size_t size, int flags)
+>  LSM_HOOK(int, 0, inode_getxattr, struct dentry *dentry, const char *name=
+)
+>  LSM_HOOK(int, 0, inode_listxattr, struct dentry *dentry)
+> -LSM_HOOK(int, 0, inode_removexattr, struct mnt_idmap *idmap,
+> +LSM_HOOK(int, 1, inode_removexattr, struct mnt_idmap *idmap,
+>          struct dentry *dentry, const char *name)
+>  LSM_HOOK(void, LSM_RET_VOID, inode_post_removexattr, struct dentry *dent=
+ry,
+>          const char *name)
+> --
+> 2.34.1
 
-After this patch:
-
-Dump of assembler code for function bpf_get_smp_processor_id:
-   0xffff8000802c9130 <+0>:     nop
-   0xffff8000802c9134 <+4>:     nop
-   0xffff8000802c9138 <+8>:     mrs     x0, sp_el0
-   0xffff8000802c913c <+12>:    ldr     w0, [x0, #24]
-   0xffff8000802c9140 <+16>:    ret
-
-A microbenchmark[1] was built to measure the performance improvement
-provided by this change. It calls the following function given number of
-times and finds the runtime overhead:
-
-static noinline int get_cpu_id(void)
-{
-	return smp_processor_id();
-}
-
-Run the benchmark like:
- modprobe smp_processor_id nr_function_calls=1000000000
-
-      +--------------------------+------------------------+
-      |        | Number of Calls |    Time taken          |
-      +--------+-----------------+------------------------+
-      | Before |   1000000000    |   1602888401ns         |
-      +--------+-----------------+------------------------+
-      | After  |   1000000000    |   1206212658ns         |
-      +--------+-----------------+------------------------+
-      |  Difference (decrease)   |   396675743ns (24.74%) |
-      +---------------------------------------------------+
-
-This improvement is in this very specific microbenchmark but it proves
-the point.
-
-The percpu variable cpu_number is left as it is because it is used in
-set_smp_ipi_range()
-
-[1] https://github.com/puranjaymohan/linux/commit/77d3fdd
-
-Signed-off-by: Puranjay Mohan <puranjay@kernel.org>
----
- arch/arm64/include/asm/smp.h | 8 ++------
- 1 file changed, 2 insertions(+), 6 deletions(-)
-
-diff --git a/arch/arm64/include/asm/smp.h b/arch/arm64/include/asm/smp.h
-index efb13112b408..88fd2ab805ec 100644
---- a/arch/arm64/include/asm/smp.h
-+++ b/arch/arm64/include/asm/smp.h
-@@ -34,13 +34,9 @@
- DECLARE_PER_CPU_READ_MOSTLY(int, cpu_number);
- 
- /*
-- * We don't use this_cpu_read(cpu_number) as that has implicit writes to
-- * preempt_count, and associated (compiler) barriers, that we'd like to avoid
-- * the expense of. If we're preemptible, the value can be stale at use anyway.
-- * And we can't use this_cpu_ptr() either, as that winds up recursing back
-- * here under CONFIG_DEBUG_PREEMPT=y.
-+ * This relies on THREAD_INFO_IN_TASK, but arm64 defines that unconditionally.
-  */
--#define raw_smp_processor_id() (*raw_cpu_ptr(&cpu_number))
-+#define raw_smp_processor_id() (current_thread_info()->cpu)
- 
- /*
-  * Logical CPU mapping.
--- 
-2.40.1
-
+--=20
+paul-moore.com
 
