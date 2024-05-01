@@ -1,130 +1,97 @@
-Return-Path: <bpf+bounces-28327-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-28328-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 94C778B8926
-	for <lists+bpf@lfdr.de>; Wed,  1 May 2024 13:21:14 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id A5D508B8B26
+	for <lists+bpf@lfdr.de>; Wed,  1 May 2024 15:27:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4A1FE1F21756
-	for <lists+bpf@lfdr.de>; Wed,  1 May 2024 11:21:14 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3EF121F22A1A
+	for <lists+bpf@lfdr.de>; Wed,  1 May 2024 13:27:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A8BF06166E;
-	Wed,  1 May 2024 11:21:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 32F5F12E1D1;
+	Wed,  1 May 2024 13:26:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fW2nEUfX"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mUlKzNyC"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com [209.85.128.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B329D48CE0;
-	Wed,  1 May 2024 11:21:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ABB3E80BEC;
+	Wed,  1 May 2024 13:26:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714562464; cv=none; b=rFn2NMbh+DBbbJQFRbU3AjONgKFfW/WFX4SD8hTF6NNaa/hn4DoOYLi031YAd1gri31kKbsON6jn8RlRw8ZRoccHk2Je32YFDAlfFWVckg+h77h4L+uwkvBKJstb1QU495MiXcFf81rFvSsHFsvZDO4CTmY3MGjeRPUITdv/BM4=
+	t=1714570015; cv=none; b=Lq3yUq1WL7RA1l7Bzi0aX4bI+sQgiwQSyW/hgnj4FwRcJq5ikAzZFFUf7G0TlXtCzizUtDyZf+t22ba/Gx2LLNybb3SkT/+QTGMRiRc/xRWy0QowcuOio+F7xso187K7XOcasYxKE9LIPCahp9JGFBGygPFVjdi1Nejg84rXbPs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714562464; c=relaxed/simple;
-	bh=3M3Wnl/h2raSpsy6VCZxZzdAzQMNJsqJJU3/6NMSVjQ=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=Cj+hdZsmMdFGZYuGzgOZxXe4ulFZn9JC/p52JHpWiHzyOe1VJ07TC3EbBEXZpfVgnfkVOk/z7I9qWBVYu2VQ0asSzZCLIbqUGYIxESrkWMuyFwkkoJ1LEEV6PopbofixDRNltkg3E4J8RjFoytcGg7fbt7/DNns2JxqcPhxcwv8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=fW2nEUfX; arc=none smtp.client-ip=209.85.128.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f45.google.com with SMTP id 5b1f17b1804b1-41b2119da94so51980205e9.0;
-        Wed, 01 May 2024 04:21:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714562461; x=1715167261; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=qq4XqB6hBIbawz6bEQ9yMFUln9F1VDqBqpK6RBvlwPM=;
-        b=fW2nEUfXzIjViKuY77EqD0IqkrAV4DNJZMKaWzvbLU/2Ryw5p6GRCxbrOd/uEcalRE
-         oP9XrSwrCCEZQtUFZko9UL4cZb1rucUCYKjHy0qkj4XU52l5JP3tSG+sLBVdPE0rAfAq
-         Fefen3lHRGy7mhwzctqPcsiDDg8EsUSQx98dMDc5hdBkjZYHRDSb4NkbIuaVyoNTt5Ej
-         k9YiB2/Z8STkO8/CIMqO46J00VanmEPDza0u0mNx3BV2a+2U2vCmZp5HrondkocFqP/0
-         dw1cE1SrNueiuTIwyMWRJrt3+eRyQPVV/qyGW+UD676ZFiZCI8vh8ffTmWEv9Xcd+mC4
-         Qxdw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714562461; x=1715167261;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=qq4XqB6hBIbawz6bEQ9yMFUln9F1VDqBqpK6RBvlwPM=;
-        b=pT/da/WohQ2IGD4KYvWdssTyH4gw4S8JF/qVQ6iS5X0wqPYOY0oBEF1iet9eWPKBVB
-         g/qo5tWlmeYP1OIIRxJLVUZHuoN54wuDn8tJ//khre/PI6pigyEcWIj/wPGl5DxmPBTO
-         PACwA1SaEwjKluElGwOjGGE/fuj4hK8UT+Xbp78QwVY7IW39MQG7UrTjp0ZAgh6jxuTn
-         xcCyDPAlnMfIJW3lUARsDSykWcPeVYLCIPgWF+trHW1V1UdvvN6SHueVyEWh5gv8URmt
-         N/f0kKIW3RqVlKjHP7kWrZoA5pt8Ajkn0WaDbYHSI9TUXpaw7sjL0ApPOGAWwIPYIKwN
-         jAAA==
-X-Forwarded-Encrypted: i=1; AJvYcCXWeCX+hZtczUfY2ZDluHLjfdUt0bKSemT8db7jHVakmK5t3s7Qz6lIb5dGCBqErNhlNLSzBe36FyFXCx2OsEZBLzvgfok3NnsW4XCmSGB92TD2IVFtFdmrp7+HXPgKrgVqhKUigufgtmRVt/SeBF74oKu/coHLYl+5g4uEdfMX65n1
-X-Gm-Message-State: AOJu0Yy7LnE87JOfoHE5SG0U25iYwrH69hZcriM2jovsInSz+N3seNtR
-	bEjIrtVwrOtomty8xzbGFoBZTYhEfI4FSBPdTKRAN8g4pHk4Ip+h
-X-Google-Smtp-Source: AGHT+IH6M5+jC4MHPn/cHXX4xJnlJS7nu6wiILZSJkRaZS8YtKJ8bZOzpCSMaw/rWyJBWAI4FuqZ6g==
-X-Received: by 2002:a05:600c:1e09:b0:41a:7065:430a with SMTP id ay9-20020a05600c1e0900b0041a7065430amr1702106wmb.41.1714562460801;
-        Wed, 01 May 2024 04:21:00 -0700 (PDT)
-Received: from localhost (craw-09-b2-v4wan-169726-cust2117.vm24.cable.virginm.net. [92.238.24.70])
-        by smtp.gmail.com with ESMTPSA id hn25-20020a05600ca39900b00419f419236fsm1864481wmb.41.2024.05.01.04.20.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 01 May 2024 04:20:59 -0700 (PDT)
-From: Colin Ian King <colin.i.king@gmail.com>
-To: Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Song Liu <song@kernel.org>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>,
-	Stanislav Fomichev <sdf@google.com>,
-	Hao Luo <haoluo@google.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Mykola Lysenko <mykolal@fb.com>,
-	Shuah Khan <shuah@kernel.org>,
-	bpf@vger.kernel.org,
-	linux-kselftest@vger.kernel.org
-Cc: kernel-janitors@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH][next] selftests/bpf: Fix spelling mistake "{GET|SET}SOCKOP" -> "{GET|SET}SOCKOPT"
-Date: Wed,  1 May 2024 12:20:59 +0100
-Message-Id: <20240501112059.1348423-1-colin.i.king@gmail.com>
-X-Mailer: git-send-email 2.39.2
+	s=arc-20240116; t=1714570015; c=relaxed/simple;
+	bh=fnbRykZBbCXxmETKh5yzbpToIkxW2eRTG33Vqk3lVuo=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=swHzI9l+xFVhryUoS3eHsuUz/MASlbwN181Nn6Fds21GKnT4cYazcfyv0gVzyue8F20fKrV+wUycRRUvxKujUT3bTfo6q5ht+fq9hjleyOgA8rPK3QVR/90wRclJQ60fqobMMkH+gKkShz+pPwORZ8P4eHBkK1DhN7/RZv82vV8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mUlKzNyC; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E4801C113CC;
+	Wed,  1 May 2024 13:26:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1714570015;
+	bh=fnbRykZBbCXxmETKh5yzbpToIkxW2eRTG33Vqk3lVuo=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=mUlKzNyCbRBlBY0nRtNxZ09lGrvKjK1seskIAN49XY+MLEDKLZobHzwO5GzJO41Rd
+	 M5zbGL5gfZdqJlijhlNqEvmGRSf+7BMarDoPubokXvVQoEtqWZLQj8htjFNQeMWIWR
+	 0CWiVY+yc0lFPhNCrVkItetFvHZWfNRZTmzrC/0SUEBpVaCizCscZrB9z+nE30V0f0
+	 3BpzDSoShRIi5oUxShohZwatqwfLTW5NQUd4N3w08d8m4FPtt5dmuo6JSnmJINmcwq
+	 pm5OxsGBxJ71DoTb/wVSmcAt/cZgjcu89JRdT4BzhS/k/wzeAxqjDejA1dnUEIrffr
+	 X1Tx/gzPQKfaQ==
+Date: Wed, 1 May 2024 06:26:53 -0700
+From: Jakub Kicinski <kuba@kernel.org>
+To: Miao Xu <miaxu@meta.com>
+Cc: Eric Dumazet <edumazet@google.com>, "David S . Miller"
+ <davem@davemloft.net>, Paolo Abeni <pabeni@redhat.com>, David Ahern
+ <dsahern@kernel.org>, Martin Lau <kafai@meta.com>,
+ <netdev@vger.kernel.org>, <bpf@vger.kernel.org>
+Subject: Re: [PATCH net-next v2 1/3] Add new args for cong_control in
+ tcp_congestion_ops
+Message-ID: <20240501062653.09abec31@kernel.org>
+In-Reply-To: <20240501074338.362361-1-miaxu@meta.com>
+References: <20240501074338.362361-1-miaxu@meta.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-There are two spelling mistakes in .descr literal strings. Fix them.
+On Wed, 1 May 2024 00:43:36 -0700 Miao Xu wrote:
+> This patch adds two new arguments for cong_control of struct
+> tcp_congestion_ops:
+>  - ack
+>  - flag
+> These two arguments are inherited from the caller tcp_cong_control in
+> tcp_intput.c. One use case of them is to update cwnd and pacing rate
+> inside cong_control based on the info they provide. For example, the
+> flag can be used to decide if it is the right time to raise or reduce a
+> sender's cwnd.
+> 
+> Reviewed-by: Eric Dumazet <edumazet@google.com>
+> --
 
-Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
----
- tools/testing/selftests/bpf/prog_tests/sockopt.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+three dashes here ---
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/sockopt.c b/tools/testing/selftests/bpf/prog_tests/sockopt.c
-index eaac83a7f388..ecf5a7a047a4 100644
---- a/tools/testing/selftests/bpf/prog_tests/sockopt.c
-+++ b/tools/testing/selftests/bpf/prog_tests/sockopt.c
-@@ -933,7 +933,7 @@ static struct sockopt_test {
- 	/* ==================== prog_type ====================  */
- 
- 	{
--		.descr = "can attach only BPF_CGROUP_SETSOCKOP",
-+		.descr = "can attach only BPF_CGROUP_SETSOCKOPT",
- 		.insns = {
- 			/* return 1 */
- 			BPF_MOV64_IMM(BPF_REG_0, 1),
-@@ -947,7 +947,7 @@ static struct sockopt_test {
- 	},
- 
- 	{
--		.descr = "can attach only BPF_CGROUP_GETSOCKOP",
-+		.descr = "can attach only BPF_CGROUP_GETSOCKOPT",
- 		.insns = {
- 			/* return 1 */
- 			BPF_MOV64_IMM(BPF_REG_0, 1),
--- 
-2.39.2
+> Changes in v2:
+> * Split the v1 patch into 2 separate patches. In particular, spin out
+> bpf_tcp_ca.c as a separate patch because it is bpf specific.
+> 
+> Signed-off-by: Miao Xu <miaxu@meta.com>
 
+This goes after Eric's review tag.
+
+Looks like you need to adjust one of the BPF selftests:
+
+Error: #29/14 bpf_tcp_ca/tcp_ca_kfunc
+  Error: #29/14 bpf_tcp_ca/tcp_ca_kfunc
+  libbpf: extern (func ksym) 'bbr_main': func_proto [213] incompatible with vmlinux [48152]
+  libbpf: failed to load object 'tcp_ca_kfunc'
+  libbpf: failed to load BPF skeleton 'tcp_ca_kfunc': -22
+  test_tcp_ca_kfunc:FAIL:tcp_ca_kfunc__open_and_load unexpected error: -22
 
