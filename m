@@ -1,124 +1,134 @@
-Return-Path: <bpf+bounces-28407-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-28408-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9A0DD8B90D6
-	for <lists+bpf@lfdr.de>; Wed,  1 May 2024 22:48:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 07B088B9130
+	for <lists+bpf@lfdr.de>; Wed,  1 May 2024 23:54:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B68751C21819
-	for <lists+bpf@lfdr.de>; Wed,  1 May 2024 20:48:09 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3751C1C21797
+	for <lists+bpf@lfdr.de>; Wed,  1 May 2024 21:54:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 68A61165FCA;
-	Wed,  1 May 2024 20:47:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 13193165FCA;
+	Wed,  1 May 2024 21:54:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b="gpgH3Rvt"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jveuSoGy"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yw1-f176.google.com (mail-yw1-f176.google.com [209.85.128.176])
+Received: from mail-oa1-f47.google.com (mail-oa1-f47.google.com [209.85.160.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E1F2165FBA
-	for <bpf@vger.kernel.org>; Wed,  1 May 2024 20:47:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 509954F898;
+	Wed,  1 May 2024 21:54:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714596470; cv=none; b=GjDcy0ZgrPIFuA5aTC4qISNQAIac+go6cgXtRCD7sK9f05byAbAO5Hjm6gs8VtSDJjgP/1bAGwNS9LMyYmvPSdIk6C036DlYwj/VLvQayTMN3+ShqT+RErW1VdJ9CELLEom9e6WxYYqL1x3Rp/fmmt4PFVWmZXfA7ydYK5L3IDs=
+	t=1714600488; cv=none; b=c1t5WmeF3fB4L9Nlj+x0Y2XOvfusGhQnUR5I7oZ1Y+QHYWwp0PBUCd0hyProjR8viehc4tq8C7o/3z2HyouHFn4YKfKxRzI+xFpJ7n6yCYrcm4U1c99sMNIL9P08V3HJUZDJxdSXytqG3MHZEPvHZIb3cimfzLL+idbMrdydMZI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714596470; c=relaxed/simple;
-	bh=ra1d6k+dPLwUnrnNIckVGDJJ8lliajlQVTK90DkxH3k=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=a3A2UeGnd81QRjaIh9GRU1iLMGDrnZP3j6Cmvh4LCicrCL3a34yHqPobMfYK2tqblx/e93vFR3H6dxjM3eTJpY5nERORraWoQn763UyWzgavW/jbwJf74DWwFQIgzHwudHJEdM/eFzXkELGCqzZM3Mqn/E3TNyGawIrZF7gyG7Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com; spf=pass smtp.mailfrom=paul-moore.com; dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b=gpgH3Rvt; arc=none smtp.client-ip=209.85.128.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=paul-moore.com
-Received: by mail-yw1-f176.google.com with SMTP id 00721157ae682-61be4b986aaso35003967b3.3
-        for <bpf@vger.kernel.org>; Wed, 01 May 2024 13:47:49 -0700 (PDT)
+	s=arc-20240116; t=1714600488; c=relaxed/simple;
+	bh=vb9in9s6Q1Mtnu2Ihn9CCHnWHAXkzsDtiAI+wblForU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=jiEDZWFhtU1yCt7+ADFqATAYVM8iQxq6a6tqBI5mNrLyKz7eMtK3Mk/wm6ZTY1OlRa4DcDCargg7vRFFoBDMB5/+8R9kI9PNWE3XQQZzkVrPyJN1GVDq83tzdzQmI6wxXdvGa0CTfK+wvNAr0T/00Ga3lzrCob60+72JR7eDE+o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jveuSoGy; arc=none smtp.client-ip=209.85.160.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oa1-f47.google.com with SMTP id 586e51a60fabf-233f389a61eso3750055fac.3;
+        Wed, 01 May 2024 14:54:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore.com; s=google; t=1714596468; x=1715201268; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=5+PTRDKy8eCh7IoM5KV0mi1ceXwqoykRHY4lJtZB0kY=;
-        b=gpgH3RvtZYGw+ehS9sDjZywyTGvxgtr+CsG/iYIp1RP2kH9I5ZGN4Iirt8M6IbLEDd
-         bS0N+UYIhG6F/JmgoaA1EyvpyN7jV/5HCgLSVhOSbcgJqIP1RhEOHICKCUY/gbHVzta6
-         nfw+cRGHAWNv/p5i2tsDwfk8Klj+48tJnTmK21WsKLMCcnIWDz6HCVEbX4NVX88Ps/fB
-         oNPigxEi3/l14dujgguG9nykyLMMekTAuW9pyaRhQ5KMPIvVmYj8VIA5JHtxqhx7c8IR
-         WRrNqZG4YPacFIV4AiN95uj8cBb94VRX9LK5BGKvSCOu5kMF+fb7ZLAm34Jmh1XvjFaR
-         BDGA==
+        d=gmail.com; s=20230601; t=1714600485; x=1715205285; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=cnvecM6tvfavb6wTS4XHWVRtX0gJEo2oQRcyz49gnfg=;
+        b=jveuSoGy4trzx4kMouwUt5dL4OhObevY6vSufVP3R6v7LJofNionI/YiV1AuGLi9ly
+         xk/kV6KuH/IhwNw9QhjtY3BXls+Cw890vWqR3aZ47YxgzAhkR+m7/qSDW7DxgAIYidbf
+         PRWmbV1AoLQ32gVsMbXr9NZDqSkxfSoJjbK//RpHePtRXvlXBEhEKaP3+3n9RIt8v8/r
+         toMhDIdHCielMwRkmDGiq/Hw1MkA1+mmbtHcDm6VgcgBiczeDk9qKDkwsbE5YUsPF0Gk
+         Fft65vsq/bnYXLPkOf6AJIUpAp0VeAqhUi7nQk+TVfaANkwkbXjctvGqlH/u4T09LIk/
+         psWQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714596468; x=1715201268;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=5+PTRDKy8eCh7IoM5KV0mi1ceXwqoykRHY4lJtZB0kY=;
-        b=a0cmXcYlbMlIJk7SqJiXPPgC8x4mT2vmaGBl0VIWAp4eHGDgLJZhuxe2m6PhSvL5wT
-         bh29t0fywf/eDi0iPHHlrGSKVMq/o2frMcQyb3K6QRFTkOK1cGAgaLiw95I0KinF+WAz
-         5EklMTln3tNexaiC7FFnqTj6DTqd3P73JLpHenTWW/Zld9hQCPKYGYMTisAxXjmEEzNg
-         G8CY/0qI4eSDcXD7qrZMjIjNHDsXnYV0jltDdquHK7lyQQzsGJn+LA/iJo11oocttBVm
-         3YUBBZm62jqzFkXQiY+kGx5uvW0B2VtEFIz5zZEP7ELi/SgBKb1oe6Sf+yud09U3UTKX
-         CrXA==
-X-Forwarded-Encrypted: i=1; AJvYcCWPA9s6zmCf18/NIgIY7wNbydigJvcVcXx4lM/Wp/JqSzOsHgcKpeHx4du7U3xSYCiE4cLtArbsGex28HZb71yC1IEp
-X-Gm-Message-State: AOJu0YxqHF58vHogItC54SSeR80fnANtkgvDGu/ub5ZeTb5fEkG7KSP1
-	0dQZSJm10E6D6q7LHgWeBCu8LN1VXSX7yDBhYi2Xg/c4mQ9gF9UKYaALwycaFD8H91nomFD/cjt
-	YB/RMB0dnmgnvSrAnftJHNRZ9+Nd+cPppuOzh
-X-Google-Smtp-Source: AGHT+IHOwjK39aAkCf1U1a1zITPFDSZFgBnRkiLpnvhJSWgbMTwWHIaF/yZdq1CGwHLPTrZin8UvRonaWrA3BNBSiHg=
-X-Received: by 2002:a05:690c:dc3:b0:61b:3356:a679 with SMTP id
- db3-20020a05690c0dc300b0061b3356a679mr69311ywb.17.1714596468387; Wed, 01 May
- 2024 13:47:48 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1714600485; x=1715205285;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=cnvecM6tvfavb6wTS4XHWVRtX0gJEo2oQRcyz49gnfg=;
+        b=RIMrBBntJ+0iQear6b5chsXU+izNJneoh8NXhv+RPjfekQENUDcc5+SGxokO78U84r
+         hViyPA3J9aawhTz6ad1GEYpatTNuzRU2wVPr3k1l+IP8LGA89SXEKuY8Qv76vm4cu2xw
+         vr8pYqtFnwl8FQVu5pErv8fyAQ0+j7kKRNUafzJhaTh86k6axownlhJfGWorwnpTwMQ7
+         wQAKmmZdgMs9w3VWR49KmPWtfdZxp5KQoJSH8/a28pey8lOO0Xh+z9coBzJqVmZ8SPzO
+         Z+Ac422vAmeg/8emLfdOwvh8ULSL+5FniTkfFZT9pqBn/65nzDDhcD3w6IPRafew+NsI
+         +6dw==
+X-Forwarded-Encrypted: i=1; AJvYcCXxzOCeUXV/6/WhgwVMT3JD0eSs579jnndSmiJ8rBdnbv4a8SloU0TBXE0b11aM8Lu7QToeD1JOgrQU/aE0zjqgBVf8aCYpQkoLRS+AJ5YZBulYMBZ0j1TINYHbZdADdbpq4Vlimji0
+X-Gm-Message-State: AOJu0YxRlmKG8JS7YfmbHQuUB0lhJ4fV9O2qqLITqtwiqpaT/p10UJQn
+	aDtsxrQHoxdlHHi5wgELLU5QAn/GUska/pzJgFSXB9kmp2EooOxN
+X-Google-Smtp-Source: AGHT+IF8BlRUoALXfW94X/abjm9dkiv3mju5tMrDxGRlU8xO58yd2zEjCeXyeTuZ8mod5xDmpMwsRw==
+X-Received: by 2002:a05:6871:5389:b0:23b:34e9:9772 with SMTP id hy9-20020a056871538900b0023b34e99772mr284357oac.39.1714600485178;
+        Wed, 01 May 2024 14:54:45 -0700 (PDT)
+Received: from ?IPV6:2600:1700:6cf8:1240:22b9:2301:860f:eff6? ([2600:1700:6cf8:1240:22b9:2301:860f:eff6])
+        by smtp.gmail.com with ESMTPSA id bw3-20020a0568300dc300b006ee5b409f23sm978168otb.22.2024.05.01.14.54.43
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 01 May 2024 14:54:44 -0700 (PDT)
+Message-ID: <e27fc683-29e2-4a35-b43e-2679b6d0592f@gmail.com>
+Date: Wed, 1 May 2024 14:54:42 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240429114636.123395-1-fuzhen5@huawei.com> <CAHC9VhTCFOCE0E-en3HnNkPVRumzWRPcrJMF-=dxke53dOv1Gg@mail.gmail.com>
-In-Reply-To: <CAHC9VhTCFOCE0E-en3HnNkPVRumzWRPcrJMF-=dxke53dOv1Gg@mail.gmail.com>
-From: Paul Moore <paul@paul-moore.com>
-Date: Wed, 1 May 2024 16:47:37 -0400
-Message-ID: <CAHC9VhT0=Useuop92s4J9CGNpXa54r4NYnY9DOTnGmoo0hNv5w@mail.gmail.com>
-Subject: Re: [PATCH -next] lsm: fix default return value for inode_set(remove)xattr
-To: felix <fuzhen5@huawei.com>, linux-security-module@vger.kernel.org
-Cc: casey@schaufler-ca.com, roberto.sassu@huawei.com, stefanb@linux.ibm.com, 
-	zohar@linux.ibm.com, kamrankhadijadj@gmail.com, andrii@kernel.org, 
-	omosnace@redhat.com, linux-kernel@vger.kernel.org, bpf@vger.kernel.org, 
-	xiujianfeng@huawei.com, wangweiyang2@huawei.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 bpf-next 2/6] selftests/bpf: Implement socket kfuncs
+ for bpf_testmod
+To: Jordan Rife <jrife@google.com>, Martin KaFai Lau <martin.lau@linux.dev>
+Cc: bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
+ netdev@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
+ Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
+ Yonghong Song <yonghong.song@linux.dev>,
+ John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
+ Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
+ Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>,
+ Shuah Khan <shuah@kernel.org>, Kui-Feng Lee <thinker.li@gmail.com>,
+ Artem Savkov <asavkov@redhat.com>, Dave Marchevsky <davemarchevsky@fb.com>,
+ Menglong Dong <imagedong@tencent.com>, Daniel Xu <dxu@dxuuu.xyz>,
+ David Vernet <void@manifault.com>, Daan De Meyer <daan.j.demeyer@gmail.com>,
+ Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+References: <20240412165230.2009746-1-jrife@google.com>
+ <20240412165230.2009746-3-jrife@google.com>
+ <65b2f4a3-bd8e-495b-adca-1e7adce5301d@linux.dev>
+ <CADKFtnRYnJG0dk53erhuEK8Ew148nuTRwFgbUxkV6LRZQ=y+Hw@mail.gmail.com>
+Content-Language: en-US
+From: Kui-Feng Lee <sinquersw@gmail.com>
+In-Reply-To: <CADKFtnRYnJG0dk53erhuEK8Ew148nuTRwFgbUxkV6LRZQ=y+Hw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Wed, May 1, 2024 at 12:02=E2=80=AFPM Paul Moore <paul@paul-moore.com> wr=
-ote:
-> On Mon, Apr 29, 2024 at 7:47=E2=80=AFAM felix <fuzhen5@huawei.com> wrote:
-> >
-> > From: Felix Fu <fuzhen5@huawei.com>
-> >
-> > The return value of security_inode_set(remove)xattr should
-> > be 1. If it return 0, cap_inode_setxattr would not be
-> > executed when no lsm exist, which is not what we expected,
-> > any user could set some security.* xattr for a file.
-> >
-> > Before commit 260017f31a8c ("lsm: use default hook return
-> > value in call_int_hook()") was approved, this issue would
-> > still happened when lsm only include bpf, because bpf_lsm_
-> > inode_setxattr return 0 by default which cause cap_inode_set
-> > xattr to be not executed.
-> >
-> > Fixes: 260017f31a8c ("lsm: use default hook return value in call_int_ho=
-ok()")
-> > Signed-off-by: Felix Fu <fuzhen5@huawei.com>
-> > ---
-> >  include/linux/lsm_hook_defs.h | 4 ++--
-> >  1 file changed, 2 insertions(+), 2 deletions(-)
->
-> Adding the LSM list as that is the important list for this patch.
 
-It's also worth noting the discussion below from earlier this year.  I
-just spent a little bit of time working on a different solution which
-I personally find more acceptable; I'm building a test kernel now,
-assuming it works I'll post it as a RFC.
 
-https://lore.kernel.org/linux-security-module/20240129133058.1627971-1-omos=
-nace@redhat.com/
+On 4/17/24 09:59, Jordan Rife wrote:
+>> nit. Can "struct sockaddr_storage addr;" be directly used instead of a char array?
+> When using "struct sockaddr_storage addr;" directly, the BPF program
+> fails to load with the following error message.
+> 
+>> libbpf: prog 'kernel_connect': BPF program load failed: Invalid argument
+>> libbpf: prog 'kernel_connect': -- BEGIN PROG LOAD LOG --
+>> 0: R1=ctx() R10=fp0
+>> ; return bpf_kfunc_call_kernel_connect(args); @ sock_addr_kern.c:26
+>> 0: (85) call bpf_kfunc_call_kernel_connect#99994
+>> arg#0 pointer type STRUCT addr_args must point to scalar, or struct with scalar
+>> processed 1 insns (limit 1000000) max_states_per_insn 0 total_states 0 peak_states 0 mark_read 0
+>> -- END PROG LOAD LOG --
+>> libbpf: prog 'kernel_connect': failed to load: -22
+>> libbpf: failed to load object 'sock_addr_kern'
+>> libbpf: failed to load BPF skeleton 'sock_addr_kern': -22
+>> load_sock_addr_kern:FAIL:skel unexpected error: -22
+>> test_sock_addr:FAIL:load_sock_addr_kern unexpected error: -1 (errno 22)
+>> #288 sock_addr:FAIL
 
---=20
-paul-moore.com
+I just looked into the definition of struct __kernel_sockaddr_sotrage
+and the change log of this type. It has a pointer in it, causing this
+error. According to the commit log, the pointer is there to fix an
+alignment issue. I am curious if we can replace the pointer with
+intptr_t to fix this error.
+
+Of course, this should not block this patch set.
 
