@@ -1,43 +1,43 @@
-Return-Path: <bpf+bounces-28318-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-28317-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 14D468B853A
-	for <lists+bpf@lfdr.de>; Wed,  1 May 2024 07:11:51 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 69FFA8B8536
+	for <lists+bpf@lfdr.de>; Wed,  1 May 2024 07:04:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A65F01F23967
-	for <lists+bpf@lfdr.de>; Wed,  1 May 2024 05:11:50 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 11EE01F2367F
+	for <lists+bpf@lfdr.de>; Wed,  1 May 2024 05:04:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 835893FB3B;
-	Wed,  1 May 2024 05:11:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB0DE45034;
+	Wed,  1 May 2024 05:04:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=faucet.nz header.i=@faucet.nz header.b="w86L0Mfe"
+	dkim=pass (1024-bit key) header.d=faucet.nz header.i=@faucet.nz header.b="qNM2WUAc"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.forwardemail.net (smtp.forwardemail.net [149.28.215.223])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9189A3E47B
-	for <bpf@vger.kernel.org>; Wed,  1 May 2024 05:11:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD00A446A1
+	for <bpf@vger.kernel.org>; Wed,  1 May 2024 05:04:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=149.28.215.223
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714540306; cv=none; b=k1tg+V91n7U3LEo+m/TmUR5sXFfZr9BOmZKcNo1mGAS8fOjbZb4L6OID5cFaXJQhBto2wDCug+t2ctw4/MeIlyYV2qu6EYm3bIMN9i4A6aNwA+S1tudoyfgbQJ/I2P2RfTxChXdTfvlDhut/bp5pPRUcZMcPyXTQa8BE2iKau+Q=
+	t=1714539859; cv=none; b=UxoAsMLGTyj5AcBv6WPzM5QfZmL5qOMInStTL4LUfiSOpWpBsGvVmBQnO8scZx1OUlyOg0JF5r4h8hnbtmYR1gff+cnwC4xkyaLQ8xVcBvthN3le5sxXSugRP+yUsHG+VTeV2cvyY3clT6+dxEmqaNrXvVnjgunCgh6IDGfs6xY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714540306; c=relaxed/simple;
-	bh=pEAY0QWRsLB9JluX8XvvnxaNOrBWmNrSqSwEC+UUzo4=;
+	s=arc-20240116; t=1714539859; c=relaxed/simple;
+	bh=bwiq97hl0ulqMWBNQjmyB2B12PjF7UwQ9e34FplS5vI=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=ulXtNW/jhRoTe6B0pyRSHUwxWtRPDCdgrOUm2Z3KY0eJ0nTPLaEIWvc93zWr6BCd74o0NJ7Oka6zZ3uShmUDGcYawNyaPJqxYQVE5TICe8hWcfeMX78lzaUzhsoVxrawnbMPclhtxCgxgLNKtxoCM0MhAVqajRgA60VvBCT7n2s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=faucet.nz; spf=pass smtp.mailfrom=fe-bounces.faucet.nz; dkim=pass (1024-bit key) header.d=faucet.nz header.i=@faucet.nz header.b=w86L0Mfe; arc=none smtp.client-ip=149.28.215.223
+	 MIME-Version; b=bNfE4nAqYTSZPyChGx/3PrlEjY2W8Mpw8oeLqL3ixZse7d0tgVEJBLCJk6XfwsYu2uYfYt/BJBSHe2aWQo5rmSsjbqGwgLjtqqOxD4b3YnU9YWWB20x+8gMgZUI2+mrBHNLsOZha58HNDwRTvfRBJeCT7avbj5chdy5/hyxxto4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=faucet.nz; spf=pass smtp.mailfrom=fe-bounces.faucet.nz; dkim=pass (1024-bit key) header.d=faucet.nz header.i=@faucet.nz header.b=qNM2WUAc; arc=none smtp.client-ip=149.28.215.223
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=faucet.nz
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fe-bounces.faucet.nz
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=faucet.nz;
  h=Content-Transfer-Encoding: MIME-Version: References: In-Reply-To:
  Message-Id: Date: Subject: Cc: To: From; q=dns/txt; s=fe-4ed8c67516;
- t=1714540290; bh=enGl1EWAiYGXFruQwU3JI5/BpgRyOA/UsoNJoaKWqB4=;
- b=w86L0Mfe+WJFVWiWNrrNu0ODPXsyWWzvqRW+Uzcgxusf/o77gdOlU1ZCiVVU2w+pkx/h1ZToi
- 5jy2mcyQmMfXDMTTc6zDaG9UpqgwIx/2JMw8AJlHnT6avQC8uKwBo0ProRmuCaBiWQC76dW2z2Q
- ZflksCjEN0XinwYMcSjenq0=
+ t=1714539842; bh=RsrIq7/ZvC8loumi0io1jOngwJSiw32p9ZnpvFMQJ4o=;
+ b=qNM2WUAc04iwfGRh77R6k6MWdN/xaaYZUpHqLLMLm7vfH6dzrzrL63SG/IMRRyVrs+Ky5xAAy
+ 9zVBsRixF7DV4Xwza+O64bAM5mQYOzwZzsyZ03jQdPorEmSZREaVlRFmnvMwRkQAGAoraEk3z9G
+ FJHrSUOs45rvYeH4l7atJWw=
 From: Brad Cowie <brad@faucet.nz>
 To: martin.lau@linux.dev
 Cc: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org, brad@faucet.nz,
@@ -46,12 +46,12 @@ Cc: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org, brad@faucet.nz,
  lorenzo@kernel.org, memxor@gmail.com, netdev@vger.kernel.org,
  netfilter-devel@vger.kernel.org, pabeni@redhat.com, pablo@netfilter.org,
  sdf@google.com, song@kernel.org
-Subject: Re: [PATCH bpf-next v2 1/2] net: netfilter: Make ct zone opts configurable for bpf ct helpers
-Date: Wed,  1 May 2024 16:59:31 +1200
-Message-Id: <20240501045931.157041-1-brad@faucet.nz>
+Subject: Re: [PATCH bpf-next v2 2/2] selftests/bpf: Update tests for new ct zone opts for nf_conntrack kfuncs
+Date: Wed,  1 May 2024 17:03:21 +1200
+Message-Id: <20240501050321.157531-1-brad@faucet.nz>
 X-Mailer: git-send-email 2.34.1
-In-Reply-To: <463c8ea7-08cf-412e-bb31-6fbb15b4df8b@linux.dev>
-References: <463c8ea7-08cf-412e-bb31-6fbb15b4df8b@linux.dev>
+In-Reply-To: <288b0d96-d5a8-4d81-9302-32b0d414a983@linux.dev>
+References: <288b0d96-d5a8-4d81-9302-32b0d414a983@linux.dev>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -65,66 +65,62 @@ X-Complaints-To: abuse@forwardemail.net
 X-ForwardEmail-Version: 0.4.40
 X-ForwardEmail-Sender: rfc822; brad@faucet.nz, smtp.forwardemail.net,
  149.28.215.223
-X-ForwardEmail-ID: 6631cc4e257562284fbdc957
+X-ForwardEmail-ID: 6631cd401fff278fe661f725
 
-On Fri, 26 Apr 2024 at 11:27, Martin KaFai Lau <martin.lau@linux.dev> wrote:
+On Fri, 26 Apr 2024 at 11:34, Martin KaFai Lau <martin.lau@linux.dev> wrote:
 > On 4/23/24 8:00 PM, Brad Cowie wrote:
-> >   };
-> >
-> >   static int bpf_nf_ct_tuple_parse(struct bpf_sock_tuple *bpf_tuple,
-> > @@ -104,11 +107,13 @@ __bpf_nf_ct_alloc_entry(struct net *net, struct bpf_sock_tuple *bpf_tuple,
-> >   			u32 timeout)
-> >   {
-> >   	struct nf_conntrack_tuple otuple, rtuple;
-> > +	struct nf_conntrack_zone ct_zone;
-> >   	struct nf_conn *ct;
-> >   	int err;
-> >
-> > -	if (!opts || !bpf_tuple || opts->reserved[0] || opts->reserved[1] ||
-> > -	    opts_len != NF_BPF_CT_OPTS_SZ)
-> > +	if (!opts || !bpf_tuple)
-> > +		return ERR_PTR(-EINVAL);
-> > +	if (!(opts_len == NF_BPF_CT_OPTS_SZ || opts_len == NF_BPF_CT_OPTS_OLD_SZ))
-> >   		return ERR_PTR(-EINVAL);
-> >
-> >   	if (unlikely(opts->netns_id < BPF_F_CURRENT_NETNS))
-> > @@ -130,7 +135,16 @@ __bpf_nf_ct_alloc_entry(struct net *net, struct bpf_sock_tuple *bpf_tuple,
-> >   			return ERR_PTR(-ENONET);
+> >   } __attribute__((preserve_access_index));
+> >   
+> >   struct nf_conn *bpf_xdp_ct_alloc(struct xdp_md *, struct bpf_sock_tuple *, u32,
+> > @@ -84,16 +90,6 @@ nf_ct_test(struct nf_conn *(*lookup_fn)(void *, struct bpf_sock_tuple *, u32,
+> >   	else
+> >   		test_einval_bpf_tuple = opts_def.error;
+> >   
+> > -	opts_def.reserved[0] = 1;
+> > -	ct = lookup_fn(ctx, &bpf_tuple, sizeof(bpf_tuple.ipv4), &opts_def,
+> > -		       sizeof(opts_def));
+> > -	opts_def.reserved[0] = 0;
+> > -	opts_def.l4proto = IPPROTO_TCP;
+> > -	if (ct)
+> > -		bpf_ct_release(ct);
+> > -	else
+> > -		test_einval_reserved = opts_def.error;
+> > -
+> >   	opts_def.netns_id = -2;
+> >   	ct = lookup_fn(ctx, &bpf_tuple, sizeof(bpf_tuple.ipv4), &opts_def,
+> >   		       sizeof(opts_def));
+> > @@ -220,10 +216,77 @@ nf_ct_test(struct nf_conn *(*lookup_fn)(void *, struct bpf_sock_tuple *, u32,
 > >   	}
-> >
-> > -	ct = nf_conntrack_alloc(net, &nf_ct_zone_dflt, &otuple, &rtuple,
-> > +	if (opts_len == NF_BPF_CT_OPTS_SZ) {
-> > +		if (opts->ct_zone_dir == 0)
+> >   }
+> >   
+> > +static __always_inline void
+> > +nf_ct_zone_id_test(struct nf_conn *(*lookup_fn)(void *, struct bpf_sock_tuple *, u32,
+> > +						struct bpf_ct_opts___local *, u32),
+> > +		   struct nf_conn *(*alloc_fn)(void *, struct bpf_sock_tuple *, u32,
+> > +					       struct bpf_ct_opts___local *, u32),
+> > +		   void *ctx)
+> > +{
+> > +	struct bpf_ct_opts___local opts_def = { .l4proto = IPPROTO_TCP, .netns_id = -1 };
+> > +	struct bpf_sock_tuple bpf_tuple;
+> > +	struct nf_conn *ct;
+> > +
+> > +	__builtin_memset(&bpf_tuple, 0, sizeof(bpf_tuple.ipv4));
+> > +
+> > +	bpf_tuple.ipv4.saddr = bpf_get_prandom_u32(); /* src IP */
+> > +	bpf_tuple.ipv4.daddr = bpf_get_prandom_u32(); /* dst IP */
+> > +	bpf_tuple.ipv4.sport = bpf_get_prandom_u32(); /* src port */
+> > +	bpf_tuple.ipv4.dport = bpf_get_prandom_u32(); /* dst port */
+> > +
+> > +	/* use non-default ct zone */
+> > +	opts_def.ct_zone_id = 10;
 >
-> I don't know the details about the dir in ct_zone, so a question: a 0 
-> ct_zone_dir is invalid and can be reused to mean NF_CT_DEFAULT_ZONE_DIR?
+> Can the ct_zone_flags and ct_zone_dir be tested also?
 
-ct_zone_dir is a bitmask that can have two different bits set,
-NF_CT_ZONE_DIR_ORIG (1) and NF_CT_ZONE_DIR_REPL (2).
+I have added an additional test for ct_zone_dir, this will be included
+in my v3 patchset.
 
-The comparison function nf_ct_zone_matches_dir() in nf_conntrack_zones.h
-checks if ct_zone_dir & (1 << ip_conntrack_dir dir). ip_conntrack_dir
-has two possible values IP_CT_DIR_ORIGINAL (0) and IP_CT_DIR_REPLY (1).
-
-If ct_zone_dir has a value of 0, this makes nf_ct_zone_matches_dir()
-always return false which makes nf_ct_zone_id() always return
-NF_CT_DEFAULT_ZONE_ID instead of the specified ct zone id.
-
-I chose to override ct_zone_dir here and set NF_CT_DEFAULT_ZONE_DIR (3),
-to make the behaviour more obvious when a user calls the bpf ct helper
-kfuncs while only setting ct_zone_id but not ct_zone_dir.
-
-> > +			opts->ct_zone_dir = NF_CT_DEFAULT_ZONE_DIR;
-> > +		nf_ct_zone_init(&ct_zone,
-> > +				opts->ct_zone_id, opts->ct_zone_dir, opts->ct_zone_flags);
-> > +	} else {
->
-> Better enforce "ct_zone_id == 0" also instead of ignoring it.
-
-Could I ask for clarification here, do you mean changing this
-else statement to:
-
-+	} else if (opts->ct_zone_id == 0) {
-
-Or should I be setting opts->ct_zone_id = 0 inside the else block?
+While writing a test for ct_zone_flags, I realised this option is not
+used for the conntrack functions that the bpf ct helper functions call,
+nf_conntrack_alloc() and nf_conntrack_find_get(), it is only used by
+nf_conntrack_in(), so I will remove ct_zone_flags from my v3 patchset.
 
