@@ -1,180 +1,193 @@
-Return-Path: <bpf+bounces-28373-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-28374-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 296298B8E2D
-	for <lists+bpf@lfdr.de>; Wed,  1 May 2024 18:28:16 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id A8F5E8B8E5A
+	for <lists+bpf@lfdr.de>; Wed,  1 May 2024 18:40:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id AAABD1F2215A
-	for <lists+bpf@lfdr.de>; Wed,  1 May 2024 16:28:15 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5EE3A2812AB
+	for <lists+bpf@lfdr.de>; Wed,  1 May 2024 16:40:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 94C4412FF9B;
-	Wed,  1 May 2024 16:28:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF43BDDAB;
+	Wed,  1 May 2024 16:39:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RJ+Tj+9e"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fM1BnQVT"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f50.google.com (mail-pj1-f50.google.com [209.85.216.50])
+Received: from mail-pg1-f170.google.com (mail-pg1-f170.google.com [209.85.215.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BCFFD12F378
-	for <bpf@vger.kernel.org>; Wed,  1 May 2024 16:28:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1EAE6D52F;
+	Wed,  1 May 2024 16:39:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714580890; cv=none; b=BnpQysUUyvvNoCyvUgHTPTGekyqX7/epRxZqLq98XZrr2g4V8GgLQAIp9vyrhZIvAhn15TZfIEEKy/iCQH1/MmMlcrxIayiQj/DZFx7oqnF1sdTyq1xGGLgTHTVA2Cp6sS+gTcuNma3YWAT3Ozc88tkDZrQ5NeAZ7hV0pD7HT88=
+	t=1714581596; cv=none; b=Psahx+cvlOJTP6ilvmz/jfY9lUrSEETDCqYoh3JhscusSoqF++ehGed+gU4aAFwgru7A8jZMT7EvGTFWY5/cplBh/HKsQQ/YyIyBHptB6ITGwq3foxnMDPsF9nPzGIzpzE4FfP1TRtew8kNeVttQ4keZR0q3nFvPMioqahMTNoU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714580890; c=relaxed/simple;
-	bh=Iv+l90f54I9fdk4Xi4a/kktc6fcFfO1PLlI0GSnpIx4=;
+	s=arc-20240116; t=1714581596; c=relaxed/simple;
+	bh=ZYdw7J+75stn6+70oRojpwEq9vNtS8PPF98TkRRX+GY=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=A17xv7+MNybu6AGBFNnxPzF7OKm5WWoNAEkkQ43Ywz3XVLumbg+HSzzGQz+5Dh1B48a/6XG66S4JS9lS9rAmKhWW3ye5ESU2M/Oui2K9wEGn46+Cb1+brcJe7M1fnb04rNcynM+V3G3ykvXbOuCZBpYc3HQRkH/q7nPkgz6ASho=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=RJ+Tj+9e; arc=none smtp.client-ip=209.85.216.50
+	 To:Cc:Content-Type; b=NZ9pwLKrobLHHRW1IMNfwrDV5owAtBOtwA/6PuUuLvM4DEPpyBDR2PvBnnEBbriX6DCDIsi5FhWjiWhlF7RZWc3ou7AHJc+uZSxTKh70r05Cp+rqOwrCgvWh9JEB+eh82+ILVTrvV8RQjbqRRI1YPPhRVR16rbw02OeCB3LchMc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=fM1BnQVT; arc=none smtp.client-ip=209.85.215.170
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f50.google.com with SMTP id 98e67ed59e1d1-2b2b02d4148so1375616a91.1
-        for <bpf@vger.kernel.org>; Wed, 01 May 2024 09:28:08 -0700 (PDT)
+Received: by mail-pg1-f170.google.com with SMTP id 41be03b00d2f7-5f415fd71f8so5523347a12.3;
+        Wed, 01 May 2024 09:39:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714580888; x=1715185688; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1714581594; x=1715186394; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=sJJ/jHeU087S/X1BAT097bglao6JTBJ/hGhps/E7HEE=;
-        b=RJ+Tj+9emhJwsPQdBI8pT2DvTSUWITjvDFgYiIp3HEphYNwwOQrFVDEbjxYvOAQAe5
-         LV0UPBxz46gm3TZJIhDJj+o441xMviAVP2k+k4N314eS7OW2eKWDXCuWG4XqwMtyNIF/
-         g3VeWAqJvaTKhZrxxG+ZnGvkC9B6+oAjnEFaIqGV3vo0st6IVWwH6E9nkLgbB3WrN8tR
-         wddrucwaEY4ZQMOdERA3Mrffx5Y2tfawyLL8YFKy6DE6fFr+gba8gTohIvHVHNS9gudb
-         L4DSslPOT+D6HMhTXNspUvvdPa+Wz9XwX96/iVtZ96WLZ5X/fwOyLw2gz7WYEhR2ZHv4
-         2MOg==
+        bh=atYkm9Bv1WMdbMlr9D036H2OQplmZ+kaXzy56fOOTJk=;
+        b=fM1BnQVTw0yF7Ej1tlPf1Q0hlEwGceAd356U+ynYaG55OAVPmOIBKrunHlgePwunaM
+         UDtbl9jlDNf2gTNSw+NzPt3MQef04XVX4bZu72pNdrkZ80u8THejIz1VFS+yGU+tMqfr
+         QuOPrrXRxpjUbTtzw2I6Yl3dBGM+GXYcMSVP2k4KKpgMAYgJJkMpaNGGsCmlU3IP0pRY
+         YFjvLBYBI1VMon8cT4m5bdBrnCYN6LrWkt9jUp4sFuqnJpgmkQxwj3KUkQatw2eFIzeV
+         9lgu5cC7Y7TjxymGUhKVmqMD8nofor3QuICZv1JGQQgRCrMavT6O7g2KW/z3CKXRoim5
+         +Gaw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714580888; x=1715185688;
+        d=1e100.net; s=20230601; t=1714581594; x=1715186394;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=sJJ/jHeU087S/X1BAT097bglao6JTBJ/hGhps/E7HEE=;
-        b=HVZU9o0ghALqqmbasY/eUI3ipOLzLiH7COCtvwntDRdKsTa+BRWhlrPdVNRaPIGKsh
-         LxwMuzrutZ1bQkTYsDvJkeT8l41gSn2zvjxQqdoeDETvLHjGYjfj0YOd0pwPPPMLPey8
-         Ze1XAmV0ojd0x8hPHNMN1mBtStFH3lmorhlnr8e3yvUfA5CHerZPEz65Anono9Pjfjiq
-         Efw6QDAGvwKkqLhyQXW480epsek4UErPhxn7CJmwmkr6GXRT2Fle4HAtyiFyKxwd10+S
-         rxvRdCdrSsFMN7KeP+wUN32I8QK3lCfwcXIZHyS9lQ/JvWQRaJYL3YHEYtMYAn7KXK1c
-         940w==
-X-Forwarded-Encrypted: i=1; AJvYcCX4/ufiDAORKYzjRfa5Y5ZOtkOZRNPOACiTrwxu+oBVlzD3cT+cPG860OXO3aQUYwjwnjtXpBDE4lTTstVcODUUV0AI
-X-Gm-Message-State: AOJu0Yw4hVCMFsTSThQ1OeLIh6w36K/bJfyS1JZM10OfYScm8V3obNEL
-	LW9auL2SxXh/zdoq2Urztb5MQlHM4RMgQ2SobcrOV0Yd8RAFb3rRx8PewyjkcqZf3Ytf/gwOD7N
-	0zaf3WYrcZY1NeoaUNVuyONeWVKM=
-X-Google-Smtp-Source: AGHT+IEFdE04em5kmZpqozJHFyl43HtOQHY9+WnoYCNyeQTYgfDQb4M2mP493FyurdHm66aSFshL8OyGHxIs5qHUet4=
-X-Received: by 2002:a17:90b:618:b0:2b1:502a:7f7 with SMTP id
- gb24-20020a17090b061800b002b1502a07f7mr2934765pjb.6.1714580887956; Wed, 01
- May 2024 09:28:07 -0700 (PDT)
+        bh=atYkm9Bv1WMdbMlr9D036H2OQplmZ+kaXzy56fOOTJk=;
+        b=oLqyPhiz2TIzmbtUEu/3s2043smr5+sF4OAx/ILlvyqlDUEh2tYG6h2uWdFlfnXWA5
+         2MndXdM8sBL6H1sNKqwNg/0mNBBUQ7ywpxHLBHLGRD0Et0I8eqKDOB1VQWYAldLyBt2L
+         5MJ6Va4meEe7PEpAN7qRQ16E9KF067S0ojNdm1YqcNdzDhGczq+h6nHFCdo+BibBZ+Mh
+         i2329MA/PnOzgGGWpp+GXXPkGW5jy4rSLeh6Rm2Kb6fb6njOV8QFgdtVEt9SMS+FKPJN
+         GCf7+A2zsdddANnMpJATtQS49BVQ6/Sn6gcb5gNdAYlo8pQD1mCagng/S0opTuGPRur3
+         vlcw==
+X-Forwarded-Encrypted: i=1; AJvYcCXcgag4V+o8k0xxgpGueTjUdH3wckUFQscdtgizkXGVCF5uyiAmDtLhGmpM/oTKm0OMqmccPjoIX6Om1GPfhya3XgU9W7QjJmuCWGBsHCo6gvPJViHfKACqj4rqhUamtQv3
+X-Gm-Message-State: AOJu0YwWH0wW7teQVKfjKE3oU+VVLqZZTggZcm7kHEzYwPBSwal06YJc
+	grh8v6Iw2tgA1p+HMzq2rKp/Lx1z7K9DA+lAJvorAlRcy8/2Qe8SL9yROt2dfP6aZdMC1Tld6QT
+	Hd07OOuyjfYv5O3p31ISkvbl2kH0=
+X-Google-Smtp-Source: AGHT+IH9qVt/8p/ZzN/bKmmQQSZrFPfCdVcRg2/ZJQ47K9yCmaJysyJJWGSuxK+4eLs3XYg++rCaK5WXpND3Jm9u4Iw=
+X-Received: by 2002:a17:90a:af8f:b0:2b2:7e94:c5e0 with SMTP id
+ w15-20020a17090aaf8f00b002b27e94c5e0mr3030873pjq.20.1714581594182; Wed, 01
+ May 2024 09:39:54 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240430112830.1184228-1-jolsa@kernel.org> <20240430112830.1184228-7-jolsa@kernel.org>
- <CAEf4BzYiBDDEPjAbW+anv8uoAdwjyUrOAeFeEXKXSBj_0wOTqQ@mail.gmail.com> <ZjIFzmmj_e1PzS5x@krava>
-In-Reply-To: <ZjIFzmmj_e1PzS5x@krava>
+References: <20240430175834.33152-1-puranjay@kernel.org> <20240430175834.33152-2-puranjay@kernel.org>
+In-Reply-To: <20240430175834.33152-2-puranjay@kernel.org>
 From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Wed, 1 May 2024 09:27:55 -0700
-Message-ID: <CAEf4BzZDg6-GUt2d4Oy2p82EoBxUWrpSAMK4fvWWegFoov09Gw@mail.gmail.com>
-Subject: Re: [PATCHv2 bpf-next 6/7] selftests/bpf: Add kprobe session test
-To: Jiri Olsa <olsajiri@gmail.com>
+Date: Wed, 1 May 2024 09:39:42 -0700
+Message-ID: <CAEf4Bzb2NY+wuK159Xb8F9Nu4CuVoYJ6WWR3_0LeTAi+zONewQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 1/2] riscv, bpf: add internal-only MOV
+ instruction to resolve per-CPU addrs
+To: Puranjay Mohan <puranjay@kernel.org>
 Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>, 
-	Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>, 
-	John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@chromium.org>, 
-	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Viktor Malik <vmalik@redhat.com>, 
-	"Masami Hiramatsu (Google)" <mhiramat@kernel.org>
+	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>, 
+	Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, 
+	Albert Ou <aou@eecs.berkeley.edu>, bpf@vger.kernel.org, 
+	linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org, 
+	Pu Lehui <pulehui@huawei.com>, puranjay12@gmail.com
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, May 1, 2024 at 2:05=E2=80=AFAM Jiri Olsa <olsajiri@gmail.com> wrote=
-:
+On Tue, Apr 30, 2024 at 10:58=E2=80=AFAM Puranjay Mohan <puranjay@kernel.or=
+g> wrote:
 >
-> On Tue, Apr 30, 2024 at 10:29:05AM -0700, Andrii Nakryiko wrote:
-> > On Tue, Apr 30, 2024 at 4:29=E2=80=AFAM Jiri Olsa <jolsa@kernel.org> wr=
-ote:
-> > >
-> > > Adding kprobe session test and testing that the entry program
-> > > return value controls execution of the return probe program.
-> > >
-> > > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> > > ---
-> > >  tools/testing/selftests/bpf/bpf_kfuncs.h      |  2 +
-> > >  .../bpf/prog_tests/kprobe_multi_test.c        | 39 ++++++++++
-> > >  .../bpf/progs/kprobe_multi_session.c          | 78 +++++++++++++++++=
-++
-> > >  3 files changed, 119 insertions(+)
-> > >  create mode 100644 tools/testing/selftests/bpf/progs/kprobe_multi_se=
-ssion.c
-> > >
-> >
-> > Given the things I mentioned below were the only "problems" I found, I
-> > applied the patch and fixed those issues up while applying. Thanks a
-> > lot for working on this! Excited about this feature, it's been asked
-> > by our internal customers for a while as well. Looking forward to
-> > uprobe session program type!
+> Support an instruction for resolving absolute addresses of per-CPU
+> data from their per-CPU offsets. This instruction is internal-only and
+> users are not allowed to use them directly. They will only be used for
+> internal inlining optimizations for now between BPF verifier and BPF
+> JITs.
 >
-> great, I'll send it soon
+> RISC-V uses generic per-cpu implementation where the offsets for CPUs
+> are kept in an array called __per_cpu_offset[cpu_number]. RISCV stores
+> the address of the task_struct in TP register. The first element in
+> task_struct is struct thread_info, and we can get the cpu number by
+> reading from the TP register + offsetof(struct thread_info, cpu).
 >
-> >
-> > > diff --git a/tools/testing/selftests/bpf/bpf_kfuncs.h b/tools/testing=
-/selftests/bpf/bpf_kfuncs.h
-> > > index 14ebe7d9e1a3..180030b5d828 100644
-> > > --- a/tools/testing/selftests/bpf/bpf_kfuncs.h
-> > > +++ b/tools/testing/selftests/bpf/bpf_kfuncs.h
-> > > @@ -75,4 +75,6 @@ extern void bpf_key_put(struct bpf_key *key) __ksym=
-;
-> > >  extern int bpf_verify_pkcs7_signature(struct bpf_dynptr *data_ptr,
-> > >                                       struct bpf_dynptr *sig_ptr,
-> > >                                       struct bpf_key *trusted_keyring=
-) __ksym;
-> > > +
-> > > +extern bool bpf_session_is_return(void) __ksym;
-> >
-> > should be __weak, always make it __weak. vmlinux.h with kfuncs is comin=
-g
-> >
-> > same for another kfunc in next patch
+> Once we have the cpu number in a register we read the offset for that
+> cpu from address: &__per_cpu_offset + cpu_number << 3. Then we add this
+> offset to the destination register.
 >
-> ok
+> To measure the improvement from this change, the benchmark in [1] was
+> used on Qemu:
 >
-> >
-> > >  #endif
-> >
-> > [...]
-> >
-> > > +static const void *kfuncs[8] =3D {
-> > > +       &bpf_fentry_test1,
-> > > +       &bpf_fentry_test2,
-> > > +       &bpf_fentry_test3,
-> > > +       &bpf_fentry_test4,
-> > > +       &bpf_fentry_test5,
-> > > +       &bpf_fentry_test6,
-> > > +       &bpf_fentry_test7,
-> > > +       &bpf_fentry_test8,
-> > > +};
-> > > +
-> >
-> > this is not supposed to work :) I don't think libbpf support this kind
-> > of relocations in data section.
+> Before:
+> glob-arr-inc   :    1.127 =C2=B1 0.013M/s
+> arr-inc        :    1.121 =C2=B1 0.004M/s
+> hash-inc       :    0.681 =C2=B1 0.052M/s
 >
-> aah, nice ;-) should we make it work (or make sure it works) ? seems usef=
-ul
+> After:
+> glob-arr-inc   :    1.138 =C2=B1 0.011M/s
+> arr-inc        :    1.366 =C2=B1 0.006M/s
+> hash-inc       :    0.676 =C2=B1 0.001M/s
 >
+> [1] https://github.com/anakryiko/linux/commit/8dec900975ef
+>
+> Signed-off-by: Puranjay Mohan <puranjay@kernel.org>
+> ---
+>  arch/riscv/net/bpf_jit_comp64.c | 24 ++++++++++++++++++++++++
+>  1 file changed, 24 insertions(+)
+>
+> diff --git a/arch/riscv/net/bpf_jit_comp64.c b/arch/riscv/net/bpf_jit_com=
+p64.c
+> index 15e482f2c657..99d7006f1420 100644
+> --- a/arch/riscv/net/bpf_jit_comp64.c
+> +++ b/arch/riscv/net/bpf_jit_comp64.c
+> @@ -12,6 +12,7 @@
+>  #include <linux/stop_machine.h>
+>  #include <asm/patch.h>
+>  #include <asm/cfi.h>
+> +#include <asm/percpu.h>
+>  #include "bpf_jit.h"
+>
+>  #define RV_FENTRY_NINSNS 2
+> @@ -1089,6 +1090,24 @@ int bpf_jit_emit_insn(const struct bpf_insn *insn,=
+ struct rv_jit_context *ctx,
+>                         emit_or(RV_REG_T1, rd, RV_REG_T1, ctx);
+>                         emit_mv(rd, RV_REG_T1, ctx);
+>                         break;
+> +               } else if (insn_is_mov_percpu_addr(insn)) {
+> +                       if (rd !=3D rs)
+> +                               emit_mv(rd, rs, ctx);
+> +#ifdef CONFIG_SMP
+> +                               /* Load current CPU number in T1 */
+> +                               emit_ld(RV_REG_T1, offsetof(struct thread=
+_info, cpu),
+> +                                       RV_REG_TP, ctx);
+> +                               /* << 3 because offsets are 8 bytes */
+> +                               emit_slli(RV_REG_T1, RV_REG_T1, 3, ctx);
+> +                               /* Load address of __per_cpu_offset array=
+ in T2 */
+> +                               emit_addr(RV_REG_T2, (u64)&__per_cpu_offs=
+et, extra_pass, ctx);
+> +                               /* Add offset of current CPU to  __per_cp=
+u_offset */
+> +                               emit_add(RV_REG_T1, RV_REG_T2, RV_REG_T1,=
+ ctx);
+> +                               /* Load __per_cpu_offset[cpu] in T1 */
+> +                               emit_ld(RV_REG_T1, 0, RV_REG_T1, ctx);
+> +                               /* Add the offset to Rd */
+> +                               emit_add(rd, rd, RV_REG_T1, ctx);
 
-let's see if there are any real use cases beyond selftests, first
+is this the right level of code indentation?
 
-> >
-> > The only reason it works in practice is because compiler completely
-> > inlines access to this array and so code just has unrolled loop
-> > (thanks to "static const" and -O2).
-> >
-> > This is a bit fragile, though. It might keep working, of course
-> > (though I'm not sure if -O1 would still work), but I'd feel a bit more
-> > comfortable if you define and initialize this array inside the
-> > function (then it will be guaranteed to work with libbpf logic)
+> +#endif
+>                 }
+>                 if (imm =3D=3D 1) {
+>                         /* Special mov32 for zext */
+> @@ -2038,3 +2057,8 @@ bool bpf_jit_supports_arena(void)
+>  {
+>         return true;
+>  }
+> +
+> +bool bpf_jit_supports_percpu_insn(void)
+> +{
+> +       return true;
+> +}
+> --
+> 2.40.1
 >
-> thanks,
-> jirka
 
