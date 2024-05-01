@@ -1,157 +1,111 @@
-Return-Path: <bpf+bounces-28395-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-28396-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id A4CFC8B907F
-	for <lists+bpf@lfdr.de>; Wed,  1 May 2024 22:19:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id B1B8F8B90A9
+	for <lists+bpf@lfdr.de>; Wed,  1 May 2024 22:36:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C7F491C22BD3
-	for <lists+bpf@lfdr.de>; Wed,  1 May 2024 20:19:56 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E2B271C2172A
+	for <lists+bpf@lfdr.de>; Wed,  1 May 2024 20:36:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 696381635B5;
-	Wed,  1 May 2024 20:19:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C2CB013049E;
+	Wed,  1 May 2024 20:36:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="CpbfQLyv"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="b2fD7eLF"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-184.mta0.migadu.com (out-184.mta0.migadu.com [91.218.175.184])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f176.google.com (mail-pl1-f176.google.com [209.85.214.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7BEF71635A4
-	for <bpf@vger.kernel.org>; Wed,  1 May 2024 20:19:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.184
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 14EEE1527B2
+	for <bpf@vger.kernel.org>; Wed,  1 May 2024 20:36:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714594789; cv=none; b=lJ581HnpnfH8SnvTMnePpTB1yCfYNvEjSlLgRdlDV/o01FpCV55kHHFft64qWCuaVaeq43hv28LEzKaxmv56F60E//WW5J1p2DZrMSU1/lnMjKPqIgyIkyrC9eJY4s8LxQkJlPA1po8fwJgaaF6TZ2/96zFQufBghY3ikaTdvIE=
+	t=1714595795; cv=none; b=G8d74LVskOmilqt6GLiyc2u9as+qXvAUxhk5Wl6xjFSAHDD4sCZfGeM2cbDPxpZvGKvV1p6QZSTU3LRJF9omdHsTKveA83Ba2tH31kkizj87shhZECaHRPM3z+9IDKpJJUlK3kb/I81umpAzuzBhfAmVqglZ0uecoDT1yA0zFwE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714594789; c=relaxed/simple;
-	bh=ZjYCQKJOfsopt4TvhGlDDrsAfLUHPktwffSbt/6tcQ0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=iq3p5wS7Eel8reL3rtrF4zZ8J55gZxzb9BiY6I+jievIu7v2F769HJgjKa5dD65lhIZuctfRJSTWaYTnQ0n8GGCa1EbtE8lNk8FwGrwqNMJljCWL+wdbRaMW2t/g/RSFZc72rEyRX8GBcg+RhBE8Z8MMS51gJmyBIhwecDpMlgQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=CpbfQLyv; arc=none smtp.client-ip=91.218.175.184
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <a9aa6df0-b6ee-4512-acbe-7e30c98bba25@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1714594785;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=5jk2HaGW95j1hEmVkOcC1ChSD3MUX4ikdql3+VHiIpY=;
-	b=CpbfQLyvxYMJPklPAdTL1tmF89XE6qU7PcfW2dlndiS8eIap7w8z4KeF6WlZt/IxhO6Jwr
-	0kmfdSucPp6EzsC1CJ0GrrkRfC+Oeq/iDcPpKMEqUIB+nzdxZ+FyYjyDn5PFs52KM+A8m5
-	LRr4wcaao6fgFiu6TlgTHqY53i6t/4Q=
-Date: Wed, 1 May 2024 13:19:38 -0700
+	s=arc-20240116; t=1714595795; c=relaxed/simple;
+	bh=EFaemyGohPskUeweK54cTLjtsZrk7L8btTndPcl/bPs=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=WRuWBVjTz9HBHKJnvng+uTP9ji8w7dMLviNFclHndaC01r3fC+kBrkxr2nK7HMpy+W66U0G1R3NpqYzW+PUnATK+wvL3nd6mddqHokPlpELfK8gf/pTAKuJBb6WyvsAWSDyJgYPhUCc+tm/vyfGcORnd5CB1bzKvXrcaG9k0tYg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=b2fD7eLF; arc=none smtp.client-ip=209.85.214.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f176.google.com with SMTP id d9443c01a7336-1ec5387aed9so18305175ad.3
+        for <bpf@vger.kernel.org>; Wed, 01 May 2024 13:36:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1714595793; x=1715200593; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=gRvDBA5jVpVg3M6DSXrsA9+aWK+kDzo1sdFW990u6A4=;
+        b=b2fD7eLF5+oBT4kFSlvwq2SZ5Nru35q09WlBOTzxtxGHHYh3KqgssYxOWNaTH4vYom
+         unDCIZLDUVkCDYSCA5fKCxfanBSMK2bICfm1/9IrkHCYqhzMDUwfbesjZGyFkF6XVYPx
+         csiilJxq4v+mGW4Ly2uwDL2QTOXlMCR9NVvnZ4ioKPVjzGpbHyeoDzLp4CykpxwUc6/Z
+         Fvk8Uounw9vEVQLW3au3CmQPJvLmo4kUNDBCBqQ+sbxRMC4HsjQ8EmcujI4jxFpvp2Yg
+         im3+C/YDqalNQaDGDzlKfMBmZ7QjpPm1MkoEt0AIly3GkOEyY+NVRCX3RKSPJFUCFsYl
+         BPog==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714595793; x=1715200593;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=gRvDBA5jVpVg3M6DSXrsA9+aWK+kDzo1sdFW990u6A4=;
+        b=anE3cvgEWkMETiuGhiscch6T6iyaPPe2PhjvmZvobYF8lmY1Brq6KAKNchSJ6+TiO7
+         kmT9QmRIzp+Z8oCn4bvN0wABRT4YIg8+XdUFgFXqssYSP5F26NNF2TYbxemb66Gw2qgm
+         C2mcIeAl09ayPMy2tD8SwpYw6btPe+SqVkQOT0Ue9IUtYvtGwfiMWDT1S3Jr1m8rLnF2
+         Z3KkztlieUntqHTdA3igaT5cVSDPa5k7VVrs8lEVAvDpg721IggOfr0e6ILivI8/rmU5
+         l6MYXEu7v7tCasSw5CALCHU/LHUBzR8l82DtVXVAUbtKL2eCSgF1mqV1HRY6l9pE0AU0
+         uOxw==
+X-Forwarded-Encrypted: i=1; AJvYcCUlIhdK32E4J5fcu59DQcYBSN7bhyim5BikrIno3RCoOPY76nYoF2siX77dX7EEIBzGmdCT7zgp1p/QcOq7JA2tG1Jz
+X-Gm-Message-State: AOJu0YynDBcCyj9B6KjeWGyZt7F6P4Pck8b1AspSBgcWzQN8bVM+FfJz
+	oFtpl4aBfnVsRTab/6AVZuwBJMFKlzSETrQXKNO6nbWQ6sntFQpr
+X-Google-Smtp-Source: AGHT+IEI7rwpQK2aO2P8lq/PHpz7zBGiqCy0scUObdJ5x+yA1YceVqR0kEeu9Uo7KpL0zfa+wTHkkg==
+X-Received: by 2002:a17:903:41c7:b0:1eb:86d:3ddb with SMTP id u7-20020a17090341c700b001eb086d3ddbmr4564475ple.56.1714595793257;
+        Wed, 01 May 2024 13:36:33 -0700 (PDT)
+Received: from ?IPv6:2604:3d08:6979:1160:7cc5:20b9:bcdc:5d52? ([2604:3d08:6979:1160:7cc5:20b9:bcdc:5d52])
+        by smtp.gmail.com with ESMTPSA id u9-20020a170902bf4900b001e26b7ac950sm24456136pls.272.2024.05.01.13.36.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 01 May 2024 13:36:32 -0700 (PDT)
+Message-ID: <205d41a7b13d5a0eded6fb45d18942359efc52cd.camel@gmail.com>
+Subject: Re: [PATCH bpf-next] kbuild,bpf: switch to using --btf_features for
+ pahole v1.26 and later
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Alan Maguire <alan.maguire@oracle.com>, andrii@kernel.org,
+ jolsa@kernel.org,  acme@redhat.com
+Cc: mykolal@fb.com, ast@kernel.org, daniel@iogearbox.net,
+ martin.lau@linux.dev,  song@kernel.org, yonghong.song@linux.dev,
+ john.fastabend@gmail.com,  kpsingh@kernel.org, sdf@google.com,
+ haoluo@google.com, houtao1@huawei.com,  bpf@vger.kernel.org,
+ masahiroy@kernel.org
+Date: Wed, 01 May 2024 13:36:31 -0700
+In-Reply-To: <20240501175035.2476830-1-alan.maguire@oracle.com>
+References: <20240501175035.2476830-1-alan.maguire@oracle.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.44.4-0ubuntu2 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH net-next v2 3/3] Add test for the use of new args in
- cong_control
-To: Miao Xu <miaxu@meta.com>
-Cc: Eric Dumazet <edumazet@google.com>, "David S . Miller"
- <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>,
- Paolo Abeni <pabeni@redhat.com>, David Ahern <dsahern@kernel.org>,
- Martin Lau <kafai@meta.com>, netdev@vger.kernel.org, bpf@vger.kernel.org
-References: <20240501074338.362361-1-miaxu@meta.com>
- <20240501074338.362361-3-miaxu@meta.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Martin KaFai Lau <martin.lau@linux.dev>
-Content-Language: en-US
-In-Reply-To: <20240501074338.362361-3-miaxu@meta.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
 
-On 5/1/24 12:43 AM, Miao Xu wrote:
-> This patch adds a selftest to show the usage of the new arguments in
-> cong_control. For simplicity's sake, the testing example reuses cubic's
-> kernel functions.
+On Wed, 2024-05-01 at 18:50 +0100, Alan Maguire wrote:
+> The btf_features list can be used for pahole v1.26 and later -
+> it is useful because if a feature is not yet implemented it will
+> not exit with a failure message.  This will allow us to add feature
+> requests to the pahole options without having to check pahole versions
+> in future; if the version of pahole supports the feature it will be
+> added.
+>=20
+> Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
+> ---
 
-Jakub, is it ok to target the set for the bpf-next?
+I tried building kernel and running bpf selftests using this patch and
+two pahole versions: tags 1.25 and 1.26 (from git@github.com:acmel/dwarves.=
+git).
+Selftests are passing (test_{verifier,progs})
 
-The bpf_tcp_ca test failed (Jakub also mentioned). The progs/tcp_ca_kfunc.c 
-requires changes. The func signature of bbr_main and the BPF_PROG(cong_control, 
-...) has to be adjusted.
-
-Since it needs a respin, a few nits.
-
-Please add "selftests/bpf:" to the subject line of this patch 3. I think Patch 1 
-can use "tcp:" and patch 2 can use "bpf: tcp:" also.
-
-Please also add a cover letter, git format-patch --cover-letter ...
-
-[ ... ]
-
-> +void BPF_STRUCT_OPS(bpf_cubic_cong_control, struct sock *sk, __u32 ack, int flag,
-> +		const struct rate_sample *rs)
-> +{
-> +	struct tcp_sock *tp = tcp_sk(sk);
-> +
-> +	if (((1<<TCP_CA_CWR) | (1<<TCP_CA_Recovery)) &
-> +			(1 << inet_csk(sk)->icsk_ca_state)) {
-> +		/* Reduce cwnd if state mandates */
-> +		tcp_cwnd_reduction(sk, rs->acked_sacked, rs->losses, flag);
-> +
-> +		if (!before(tp->snd_una, tp->high_seq)) {
-> +			/* Reset cwnd to ssthresh in CWR or Recovery (unless it's undone) */
-> +			if (tp->snd_ssthresh < TCP_INFINITE_SSTHRESH &&
-> +					inet_csk(sk)->icsk_ca_state == TCP_CA_CWR) {
-> +				tp->snd_cwnd = tp->snd_ssthresh;
-> +				tp->snd_cwnd_stamp = tcp_jiffies32;
-> +			}
-> +			// __cwnd_event(sk, CA_EVENT_COMPLETE_CWR);
-
-Remove the commented out code.
-
-> +		}
-> +	} else if (tcp_may_raise_cwnd(sk, flag)) {
-> +		/* Advance cwnd if state allows */
-> +		cubictcp_cong_avoid(sk, ack, rs->acked_sacked);
-> +		tp->snd_cwnd_stamp = tcp_jiffies32;
-> +	}
-> +
-> +	tcp_update_pacing_rate(sk);
-> +}
-> +
-> +__u32 BPF_STRUCT_OPS(bpf_cubic_recalc_ssthresh, struct sock *sk)
-> +{
-> +	return cubictcp_recalc_ssthresh(sk);
-> +}
-> +
-> +void BPF_STRUCT_OPS(bpf_cubic_state, struct sock *sk, __u8 new_state)
-> +{
-> +	cubictcp_state(sk, new_state);
-> +}
-> +
-> +void BPF_STRUCT_OPS(bpf_cubic_acked, struct sock *sk,
-> +		const struct ack_sample *sample)
-> +{
-> +	cubictcp_acked(sk, sample);
-> +}
-> +
-> +__u32 BPF_STRUCT_OPS(bpf_cubic_undo_cwnd, struct sock *sk)
-> +{
-> +	return tcp_reno_undo_cwnd(sk);
-> +}
-> +
-> +
-> +SEC(".struct_ops")
-> +struct tcp_congestion_ops cubic = {
-> +	.init		= (void *)bpf_cubic_init,
-> +	.ssthresh	= (void *)bpf_cubic_recalc_ssthresh,
-> +	.cong_control	= (void *)bpf_cubic_cong_control,
-> +	.set_state	= (void *)bpf_cubic_state,
-> +	.undo_cwnd	= (void *)bpf_cubic_undo_cwnd,
-> +	.cwnd_event	= (void *)bpf_cubic_cwnd_event,
-> +	.pkts_acked     = (void *)bpf_cubic_acked,
-> +	.name		= "bpf_cubic",
-
-nit. It has the same name as the tcp-cc in bpf_cubic.c. Rename it to 
-"bpf_cc_cubic" ?
-
-
+Tested-by: Eduard Zingerman <eddyz87@gmail.com>
 
