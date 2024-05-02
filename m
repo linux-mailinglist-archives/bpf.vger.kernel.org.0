@@ -1,204 +1,117 @@
-Return-Path: <bpf+bounces-28460-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-28461-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4496F8B9EB2
-	for <lists+bpf@lfdr.de>; Thu,  2 May 2024 18:35:37 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2D5D58B9EC2
+	for <lists+bpf@lfdr.de>; Thu,  2 May 2024 18:39:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B02261F224A4
-	for <lists+bpf@lfdr.de>; Thu,  2 May 2024 16:35:36 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4EE26B24B58
+	for <lists+bpf@lfdr.de>; Thu,  2 May 2024 16:39:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2742415E5A3;
-	Thu,  2 May 2024 16:35:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1795115E5C7;
+	Thu,  2 May 2024 16:39:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mbty/mQM"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XWbMUVeQ"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f47.google.com (mail-pj1-f47.google.com [209.85.216.47])
+Received: from mail-pj1-f50.google.com (mail-pj1-f50.google.com [209.85.216.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5138622EF0;
-	Thu,  2 May 2024 16:35:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6BC2E1553BB
+	for <bpf@vger.kernel.org>; Thu,  2 May 2024 16:39:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714667726; cv=none; b=cyEDEJ5RXJp9yhVpcabwmegPGPtDWV/gYuL0otyTKJDtn4cCA9qdwIU67ypAtcyUcek57ZOdp+FHhPjRfeoDP/WqzOfnj51Kw32YwngB4IUSejdCpawoimkkaJlLTAEQ/ovRw1gfdKmp653lA7YES+qDW0y+90xA6knlZd7GM7A=
+	t=1714667990; cv=none; b=RenP+qacMBr+HWNlD8IQSI9KxFNddnbwbUtt/rtkUb8P351kLvPfmaxJMfUULJ3BK+miOLqGxrAjRDdGMSnF8kXrF3SGt8HAoBQPk+uBokv3BKjdkXDxnrCHRcAK3MvQjO37SpCWiESCgfXtGrbOy6HV1dcDZcAC9HAhnBQvI/4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714667726; c=relaxed/simple;
-	bh=PBGx+QzK3V/jzaTxmAF0sxMEy41nY0esBUQXEGTg/YU=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=WvUZb3o1NLa7XwKGIw9TqnovxeNQdVhg9MRGCcjBa/hcY+rccKXAcQDszb74UfzQP8QZw5lbP2VsBXUFxEUuaxR/lNKsKyHDN/Xsle3dadZ+v4oXYqzsgl7vcBbb6y34KSehrE+qf2mpCiDAC3mc8vu9YZg717MuCUXGjGJqsM4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mbty/mQM; arc=none smtp.client-ip=209.85.216.47
+	s=arc-20240116; t=1714667990; c=relaxed/simple;
+	bh=v6MiBTlIpCSh3z396eKc53/d3SlKRNmd/FtG/o+2Mb0=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=qpIlBgen3ETI/UXzG2dsrl4RfZXxhUM+tkH+XdoRmmAOcANN51WpuRrQluGYA2V6auJgCqqosZvt6GU2tvtAGGqvUo9NkGkq9hq+8e6fiWb6jItzqhODluA0RDqTXp0E/Pqrryvcu7FwH25c1thB0ep/sWnzvFkNDYzpgZSaoII=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=XWbMUVeQ; arc=none smtp.client-ip=209.85.216.50
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f47.google.com with SMTP id 98e67ed59e1d1-2a484f772e2so5446948a91.3;
-        Thu, 02 May 2024 09:35:24 -0700 (PDT)
+Received: by mail-pj1-f50.google.com with SMTP id 98e67ed59e1d1-2b2768f5bb4so2619303a91.0
+        for <bpf@vger.kernel.org>; Thu, 02 May 2024 09:39:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714667724; x=1715272524; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=A7qX2wsQfUaEvzSjOKIteqtXpOpMFTBitC+8nZW0h8Q=;
-        b=mbty/mQMh8lT4nWu3ozWXdS36VKpBuQUCzf8PfadaxHf42EBnOuucc3w3yyLdF81yI
-         fz81L8G73+Lswim6p+BVUn5UAoRnGW8HGGyvtbpMs5mKTrA22/JTx1hIXJeQ7Scvo4/v
-         W11N156CIDScgQrawho0QSkgGj65tZo88DaRQm8xfmt+Gi93bUpD60mOluTRJI3LdTt4
-         p4fE1MPhxZsEkwInb04as1XOTw3TOwvN+bvcnR6OpxOT3ezSH0tD4/Ktv4PQAy/0SOpm
-         SRJhbZUePhIo22Qf2PRaTlnElZwdkcZvNPE9fhpB1yyRhCykFQKEhR2mGyZkTV2TClks
-         8ERg==
+        d=gmail.com; s=20230601; t=1714667989; x=1715272789; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=v6MiBTlIpCSh3z396eKc53/d3SlKRNmd/FtG/o+2Mb0=;
+        b=XWbMUVeQSNHIHsRb7aVNey+9TVzKzBUkRrSAnDwu8mQB47p6567tFkJ88kK7Z4q0/W
+         X2o+QW4ilNQdP52mer9RocptdvlAcl11pM8TktKG1zU5Driyb5Q9I4EZHwASKTyccAWT
+         8jcgvkIs6Qxs7X0OCcgHiGSAJvXemAZEiOLJMY00NaItX9rj5fZiLLyd1qS2V1tlmhaF
+         baEibjLdjueZXPfNGKcZFVO2y039ZL0XXeWfTNs+85RdsJ9kcOkRLfvu0NAfqwNjJBVa
+         RwHiqciifgQwz5j55/5lT1SqNZJ5Oopt+Csf1LKINMgKTyfxiWjXVrlaPwcNqkoIkrce
+         wsDA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714667724; x=1715272524;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=A7qX2wsQfUaEvzSjOKIteqtXpOpMFTBitC+8nZW0h8Q=;
-        b=IThDaOgDrwTzNmL/97fMcZxUpo1AIMNbPL9L8HE4PIw3jDY8R/M+KU5k6X2lp7Tevw
-         ZLlLmTpZ4CdGQuvc+C5JU3Pqwu7eR2Ziop9cYnmrBWoGlRGHsJxQM3BVg27J0oY8MBia
-         2g7wi8EYyRBOhUy/4jut792WPLTLSehiybgOY6S40nFMs7aBgU04Hz2rooXpQknv+liK
-         MQqXt6KK+WtZ8mfJbAi85I7UnoT6OqpC9w7xcj5n7LRkzuVS8xACr9z/yUNkJ9BMqAxq
-         sn1R9KHaoOZjSSi5nHY4/JPSO7fa1+xxjB8+8U0wMW1Ka2iBJuKKUUMkwaVBg3A7ELk4
-         L66w==
-X-Forwarded-Encrypted: i=1; AJvYcCXYoscNU3xJWfE8PYUNWj6p0nmW3rpfFG7aej/NCyCGqw7N+Lr4q/AYwF7eJ4pQ0G/nJ7FWQptmPgEpywe4/BU4FHHAaISmTUpedKOMy8UQtuRSFZNiSUWsSTyUqhhaPM84cWYMd+T4NwK60CzwU6c3NOX9bbSlzNXJxS5JIakzwEl0Va6NEaG3a4j7OoWXkfkDj1hLPUfWqCnzJh+z2zveMICiZ8ue3z2j1z+1+wBXmSoUmxgkxKPF9Nsx
-X-Gm-Message-State: AOJu0Yyu7E+Qq1Tv8oNzw6ETA521xTDbUlDcbtE4OKI34Z5ibpxvriD9
-	7UlHcjEAQJckpKXboMqgcysI5GwUlU4cUuLgv/jtpSndUsnHlGIN4uKVpKaNMp8TKj7uDLgSK64
-	xCKUtr5Wv/CsSF/v7BQ39TcTnj4s=
-X-Google-Smtp-Source: AGHT+IG4Gm0i1UKy3HOxBNiZHuaEQz/Ocw5YTH/JSaYPZ9RO+Z2kf0Gj/JRl8WUdGd7sAevYvNoCL2ilQrEq/2lAIxY=
-X-Received: by 2002:a17:90b:46c7:b0:2b2:ce88:c68c with SMTP id
- jx7-20020a17090b46c700b002b2ce88c68cmr284889pjb.19.1714667723617; Thu, 02 May
- 2024 09:35:23 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1714667989; x=1715272789;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=v6MiBTlIpCSh3z396eKc53/d3SlKRNmd/FtG/o+2Mb0=;
+        b=YUiyxyuHf+FjSFDNJY+6aAmOkziyTkYx+nckFaXMgBgd00i5y+6X1rJSoH7dFF8kk7
+         /7QXpbC6dKLaIcbFTCB9V7GRwDZ59Y6FXAoQETzjB10RWT5mN+fiJOGVmWnuL3MDJck+
+         rlLKBQmjSO+PfutT/xwNa8/WUrFnTLU6h8LvRwTmM0JEyHBxHw28/HJxD5ysGJ+QLjlt
+         f3YqrMDH/bjJ5yoNTjzx0+V0iNH0X864Xs0bdA1FyvY5+Id3fUYn2pNEhsK8NQVJFh8J
+         KeWaEddjRiP8LajEUxh7BnCJ+xmfP/GQmx4+zAKcUMSKY+jRrX1EqchzNtupi4pJo0rT
+         UO1g==
+X-Forwarded-Encrypted: i=1; AJvYcCX/6Qba/UC4NSl3e67zJF6CxLM9aR0qkSjXnHsb6uxXc+hceuSMBkyGWJSBlUcUQh3aVZgu0KKUhOQybTR/chxHfGRv
+X-Gm-Message-State: AOJu0YyVSuXu9d/vzRICW/S1MSwUlWmFSL6qnvJxizuTUWLQmGeDhlVA
+	lAiCZIAiB2HnMsSMqidBgyJUtkC0DAr8Hagfr2KoDBhgPmrJTrc/
+X-Google-Smtp-Source: AGHT+IExTR75hEX9K4hKaxCOs6BEc0vB3cF4atfVKHWIlvLxqUoMMUdDEAvhdc1mnXMq4q1FHfIv+Q==
+X-Received: by 2002:a17:90b:238f:b0:2b2:1514:b79d with SMTP id mr15-20020a17090b238f00b002b21514b79dmr283191pjb.31.1714667988614;
+        Thu, 02 May 2024 09:39:48 -0700 (PDT)
+Received: from ?IPv6:2605:8d80:4c3:8aa3:a6b4:2cc7:9867:3518? ([2605:8d80:4c3:8aa3:a6b4:2cc7:9867:3518])
+        by smtp.gmail.com with ESMTPSA id t14-20020a17090ad50e00b002b409f41604sm365190pju.0.2024.05.02.09.39.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 02 May 2024 09:39:48 -0700 (PDT)
+Message-ID: <21a0516c0ce86941f9cc6b95d978e9d7ab071ba1.camel@gmail.com>
+Subject: Re: [PATCH v2 bpf-next 09/13] libbpf: split BTF relocation
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>, Alan Maguire
+	 <alan.maguire@oracle.com>, Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>
+Cc: andrii@kernel.org, ast@kernel.org, jolsa@kernel.org, acme@redhat.com, 
+ quentin@isovalent.com, mykolal@fb.com, daniel@iogearbox.net,
+ martin.lau@linux.dev,  song@kernel.org, yonghong.song@linux.dev,
+ john.fastabend@gmail.com,  kpsingh@kernel.org, sdf@google.com,
+ haoluo@google.com, houtao1@huawei.com,  bpf@vger.kernel.org,
+ masahiroy@kernel.org, mcgrof@kernel.org, nathan@kernel.org
+Date: Thu, 02 May 2024 09:39:43 -0700
+In-Reply-To: <CAEf4BzYnw3n_qHGCBGPxYw1Q1S8d+uF62MybJakgcAG9=CF-Bw@mail.gmail.com>
+References: <20240424154806.3417662-1-alan.maguire@oracle.com>
+	 <20240424154806.3417662-10-alan.maguire@oracle.com>
+	 <CAEf4BzYr8ONqLuH0q+FFJijx3ADrqn464pf8E4A3s+uJ03cyVQ@mail.gmail.com>
+	 <8483cbf7-6729-471c-8aa8-f88c9e306fe5@oracle.com>
+	 <CAEf4BzYnw3n_qHGCBGPxYw1Q1S8d+uF62MybJakgcAG9=CF-Bw@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.44.4-0ubuntu2 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240502122313.1579719-1-jolsa@kernel.org> <20240502122313.1579719-7-jolsa@kernel.org>
-In-Reply-To: <20240502122313.1579719-7-jolsa@kernel.org>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Thu, 2 May 2024 09:35:11 -0700
-Message-ID: <CAEf4Bza5P7BVpvE4SyJsyGSZAp3bU+2qX9KCxFLQ7rrRPmDxSg@mail.gmail.com>
-Subject: Re: [PATCHv4 bpf-next 6/7] selftests/bpf: Add uretprobe compat test
-To: Jiri Olsa <jolsa@kernel.org>
-Cc: Steven Rostedt <rostedt@goodmis.org>, Masami Hiramatsu <mhiramat@kernel.org>, 
-	Oleg Nesterov <oleg@redhat.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, linux-kernel@vger.kernel.org, 
-	linux-trace-kernel@vger.kernel.org, linux-api@vger.kernel.org, 
-	linux-man@vger.kernel.org, x86@kernel.org, bpf@vger.kernel.org, 
-	Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>, 
-	John Fastabend <john.fastabend@gmail.com>, Peter Zijlstra <peterz@infradead.org>, 
-	Thomas Gleixner <tglx@linutronix.de>, "Borislav Petkov (AMD)" <bp@alien8.de>, Ingo Molnar <mingo@redhat.com>, 
-	Andy Lutomirski <luto@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Thu, May 2, 2024 at 5:24=E2=80=AFAM Jiri Olsa <jolsa@kernel.org> wrote:
->
-> Adding test that adds return uprobe inside 32-bit task
-> and verify the return uprobe and attached bpf programs
-> get properly executed.
->
-> Reviewed-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> ---
->  tools/testing/selftests/bpf/.gitignore        |  1 +
->  tools/testing/selftests/bpf/Makefile          |  7 ++-
->  .../selftests/bpf/prog_tests/uprobe_syscall.c | 60 +++++++++++++++++++
->  3 files changed, 67 insertions(+), 1 deletion(-)
->
-> diff --git a/tools/testing/selftests/bpf/.gitignore b/tools/testing/selft=
-ests/bpf/.gitignore
-> index f1aebabfb017..69d71223c0dd 100644
-> --- a/tools/testing/selftests/bpf/.gitignore
-> +++ b/tools/testing/selftests/bpf/.gitignore
-> @@ -45,6 +45,7 @@ test_cpp
->  /veristat
->  /sign-file
->  /uprobe_multi
-> +/uprobe_compat
->  *.ko
->  *.tmp
->  xskxceiver
-> diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftes=
-ts/bpf/Makefile
-> index 82247aeef857..a94352162290 100644
-> --- a/tools/testing/selftests/bpf/Makefile
-> +++ b/tools/testing/selftests/bpf/Makefile
-> @@ -133,7 +133,7 @@ TEST_GEN_PROGS_EXTENDED =3D test_sock_addr test_skb_c=
-group_id_user \
->         xskxceiver xdp_redirect_multi xdp_synproxy veristat xdp_hw_metada=
-ta \
->         xdp_features bpf_test_no_cfi.ko
->
-> -TEST_GEN_FILES +=3D liburandom_read.so urandom_read sign-file uprobe_mul=
-ti
-> +TEST_GEN_FILES +=3D liburandom_read.so urandom_read sign-file uprobe_mul=
-ti uprobe_compat
->
->  ifneq ($(V),1)
->  submake_extras :=3D feature_display=3D0
-> @@ -631,6 +631,7 @@ TRUNNER_EXTRA_FILES :=3D $(OUTPUT)/urandom_read $(OUT=
-PUT)/bpf_testmod.ko      \
->                        $(OUTPUT)/xdp_synproxy                           \
->                        $(OUTPUT)/sign-file                              \
->                        $(OUTPUT)/uprobe_multi                           \
-> +                      $(OUTPUT)/uprobe_compat                          \
->                        ima_setup.sh                                     \
->                        verify_sig_setup.sh                              \
->                        $(wildcard progs/btf_dump_test_case_*.c)         \
-> @@ -752,6 +753,10 @@ $(OUTPUT)/uprobe_multi: uprobe_multi.c
->         $(call msg,BINARY,,$@)
->         $(Q)$(CC) $(CFLAGS) -O0 $(LDFLAGS) $^ $(LDLIBS) -o $@
->
-> +$(OUTPUT)/uprobe_compat:
-> +       $(call msg,BINARY,,$@)
-> +       $(Q)echo "int main() { return 0; }" | $(CC) $(CFLAGS) -xc -m32 -O=
-0 - -o $@
-> +
->  EXTRA_CLEAN :=3D $(SCRATCH_DIR) $(HOST_SCRATCH_DIR)                     =
- \
->         prog_tests/tests.h map_tests/tests.h verifier/tests.h           \
->         feature bpftool                                                 \
-> diff --git a/tools/testing/selftests/bpf/prog_tests/uprobe_syscall.c b/to=
-ols/testing/selftests/bpf/prog_tests/uprobe_syscall.c
-> index c6fdb8c59ea3..bfea9a0368a4 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/uprobe_syscall.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/uprobe_syscall.c
-> @@ -5,6 +5,7 @@
->  #ifdef __x86_64__
->
->  #include <unistd.h>
-> +#include <stdlib.h>
->  #include <asm/ptrace.h>
->  #include <linux/compiler.h>
->  #include <linux/stringify.h>
-> @@ -297,6 +298,58 @@ static void test_uretprobe_syscall_call(void)
->         close(go[1]);
->         close(go[0]);
->  }
-> +
-> +static void test_uretprobe_compat(void)
-> +{
-> +       LIBBPF_OPTS(bpf_uprobe_multi_opts, opts,
-> +               .retprobe =3D true,
-> +       );
-> +       struct uprobe_syscall_executed *skel;
-> +       int err, go[2], pid, c, status;
-> +
-> +       if (pipe(go))
-> +               return;
-
-ASSERT_OK() missing, like in the previous patch
-
-Thanks for switching to pipe() + global variable instead of using trace_pip=
-e.
-
-Acked-by: Andrii Nakryiko <andrii@kernel.org>
-
-> +
-> +       skel =3D uprobe_syscall_executed__open_and_load();
-> +       if (!ASSERT_OK_PTR(skel, "uprobe_syscall_executed__open_and_load"=
-))
-> +               goto cleanup;
-> +
+On Tue, 2024-04-30 at 10:41 -0700, Andrii Nakryiko wrote:
 
 [...]
+
+
+> Speaking of sorting, Mykyta (cc'ed) is working on teaching *bpftool*
+> to do a sane ordering of types so that vmlinux.h output is a)
+> meaningfully (from human POV) sorted and b) vmlinux.h overall is more
+> "stable" between slight changes to vmlinux BTF itself, so that they
+> can be more meaningfully diffed. This is in no way related to sorting
+> vmlinux BTF data itself (sorting is done on the fly before generating
+> vmlinux.h), but I thought I'd mention that as you are probably
+> interested in this as well.
+
+Oh, well...
+I have a sorting pass already, it is here:
+https://github.com/eddyz87/dwarves/tree/sort-btf
+Would be a bit simpler, if moved inside libbpf and uses internal APIs.
+
 
