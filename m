@@ -1,111 +1,151 @@
-Return-Path: <bpf+bounces-28482-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-28483-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8091E8BA328
-	for <lists+bpf@lfdr.de>; Fri,  3 May 2024 00:30:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 1DC918BA3A0
+	for <lists+bpf@lfdr.de>; Fri,  3 May 2024 01:00:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 815171C214C5
-	for <lists+bpf@lfdr.de>; Thu,  2 May 2024 22:30:41 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4F3961C21F79
+	for <lists+bpf@lfdr.de>; Thu,  2 May 2024 23:00:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1CF0414285;
-	Thu,  2 May 2024 22:30:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="k2C0cDBi"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 04ABE8462;
+	Thu,  2 May 2024 23:00:32 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from smtp.dudau.co.uk (dliviu.plus.com [80.229.23.120])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F20E57CB0;
-	Thu,  2 May 2024 22:30:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6DC341C6A7;
+	Thu,  2 May 2024 23:00:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.229.23.120
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714689033; cv=none; b=jcZ+Q3NDwCPBzxB1wIuJGTtH11rHtbQtrQdIn7QS+HU5rAwu+CKlr8YOU+PhYGq3suyxdN4Ntj/P6dFFA/mZb6THQYWkWWmXbAifi3Iv31q3wSQ9WUvHa+wmVdBr7tAaLyvtWvQhFk+hHEou6GlzFTUgTSqrg0I1qTaocCIitGU=
+	t=1714690831; cv=none; b=MEPtpvDWf7s26QV4qi3UG6Yb3HPMrj3kQwkS2sKU1ctEjTEQ4PjDOUjmQAlQinX+k7Da7PMcbj+ejHm2pn7noKYCI+sFVKtnfZ9fn8O0mW8c5nBNQ7swkiaLqBy56f1/c3TNGPMbUaaM8jvVDf4HpL7aWAOyHLt681uQ+CzBwe8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714689033; c=relaxed/simple;
-	bh=QZGnUvdVwR89BvjmFjqMdwIjaQH+8xIMyYMoMePP4qM=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=Z1tS6wTqUIXPG8+dY1s8t8GUdQth8Z56lF0lkTV9IUlKtcoIL44eWOWglf/bFd7NxxLMnqRi7uLHTvGff5ztnuY/3/BSKFYD9M0rKC2f0RvdCu7FazOkAxN7AzvMYTdqKtExS+nfO26miTumpGwmvmikQKiO3Y3HRF8WiaKKFaQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=k2C0cDBi; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id F0B82C4AF18;
-	Thu,  2 May 2024 22:30:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714689032;
-	bh=QZGnUvdVwR89BvjmFjqMdwIjaQH+8xIMyYMoMePP4qM=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=k2C0cDBiv4f40modWgR6rLBycWufOT9Z+0MCrNeg6WlDK8y+GaeaTPIwoQd3TFI0g
-	 K/Uc5woZdWxrvK6s/6sHROcASWVNxQ6aa+SrPolJDCyzdGXAEEqbVMozKyIO9KML5Y
-	 4UPM9UeeT5dfmZs+9ml2bVdFZWTh3Ykpn2/Rs/yOHORKPkA3zcZT07cPL4qtXFZigL
-	 4vMHfQZmIbaXFyW5+BFhCIqup6CjHU1x7+vsZXIISsuYR93vlYrry3kK0lkJurhgxM
-	 umMid5GiThtvlmn0U5OSeB3FVXw221UvU2xXgTrkBLA6w7Q2kDe07auSXLP2dserOO
-	 uWhJvaPyF8G+w==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id DA514C43337;
-	Thu,  2 May 2024 22:30:31 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1714690831; c=relaxed/simple;
+	bh=RHdXinQzCxW7+a0qagt11WYAo+XBPVjylUdFscA6mww=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=A/OYe4MMAIuuc2PCNBkOIUadGm7kp9nWv566E9aEYEH5MHHTbX4fD+lZaZyf4kslCsCeSK1wuqXgGIyGR63jGo+2diDTfQs3pQDdDYgJa7cAgJ8OC/86iID/eAz0mdyx4KHz0CAyiNWs5wk85f+IQ+TYdXONA8+BttvakZwHnyw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dudau.co.uk; spf=pass smtp.mailfrom=dudau.co.uk; arc=none smtp.client-ip=80.229.23.120
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dudau.co.uk
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dudau.co.uk
+Received: from mail.dudau.co.uk (bart.dudau.co.uk [192.168.14.2])
+	by smtp.dudau.co.uk (Postfix) with SMTP id 557B041D12F3;
+	Thu, 02 May 2024 23:50:36 +0100 (BST)
+Received: by mail.dudau.co.uk (sSMTP sendmail emulation); Thu, 02 May 2024 23:50:36 +0100
+Date: Thu, 2 May 2024 23:50:36 +0100
+From: Liviu Dudau <liviu@dudau.co.uk>
+To: Luis Chamberlain <mcgrof@kernel.org>
+Cc: Mike Rapoport <rppt@kernel.org>, linux-kernel@vger.kernel.org,
+	Alexandre Ghiti <alexghiti@rivosinc.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	=?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Christophe Leroy <christophe.leroy@csgroup.eu>,
+	"David S. Miller" <davem@davemloft.net>,
+	Dinh Nguyen <dinguyen@kernel.org>,
+	Donald Dutile <ddutile@redhat.com>,
+	Eric Chanudet <echanude@redhat.com>,
+	Heiko Carstens <hca@linux.ibm.com>, Helge Deller <deller@gmx.de>,
+	Huacai Chen <chenhuacai@kernel.org>,
+	Kent Overstreet <kent.overstreet@linux.dev>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Michael Ellerman <mpe@ellerman.id.au>,
+	Nadav Amit <nadav.amit@gmail.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Philippe =?utf-8?Q?Mathieu-Daud=C3=A9?= <philmd@linaro.org>,
+	Rick Edgecombe <rick.p.edgecombe@intel.com>,
+	Russell King <linux@armlinux.org.uk>,
+	Sam Ravnborg <sam@ravnborg.org>, Song Liu <song@kernel.org>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	Thomas Gleixner <tglx@linutronix.de>, Will Deacon <will@kernel.org>,
+	bpf@vger.kernel.org, linux-arch@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
+	linux-mm@kvack.org, linux-modules@vger.kernel.org,
+	linux-parisc@vger.kernel.org, linux-riscv@lists.infradead.org,
+	linux-s390@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+	linuxppc-dev@lists.ozlabs.org, loongarch@lists.linux.dev,
+	netdev@vger.kernel.org, sparclinux@vger.kernel.org, x86@kernel.org
+Subject: Re: [PATCH v7 00/16] mm: jit/text allocator
+Message-ID: <ZjQYvOYgURx9/+d0@bart.dudau.co.uk>
+References: <20240429121620.1186447-1-rppt@kernel.org>
+ <Zi_K4K-j-VB_WI4i@bombadil.infradead.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH v3 bpf-next 0/6] selftests/bpf: Add sockaddr tests for kernel
- networking
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <171468903188.9823.10683400427580146706.git-patchwork-notify@kernel.org>
-Date: Thu, 02 May 2024 22:30:31 +0000
-References: <20240429214529.2644801-1-jrife@google.com>
-In-Reply-To: <20240429214529.2644801-1-jrife@google.com>
-To: Jordan Rife <jrife@google.com>
-Cc: bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
- netdev@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
- andrii@kernel.org, martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org,
- yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org,
- sdf@google.com, haoluo@google.com, jolsa@kernel.org, mykolal@fb.com,
- shuah@kernel.org, thinker.li@gmail.com, asavkov@redhat.com,
- davemarchevsky@fb.com, imagedong@tencent.com, dxu@dxuuu.xyz,
- void@manifault.com, daan.j.demeyer@gmail.com, bentiss@kernel.org,
- houtao1@huawei.com, willemdebruijn.kernel@gmail.com
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <Zi_K4K-j-VB_WI4i@bombadil.infradead.org>
 
-Hello:
-
-This series was applied to bpf/bpf-next.git (master)
-by Martin KaFai Lau <martin.lau@kernel.org>:
-
-On Mon, 29 Apr 2024 16:45:17 -0500 you wrote:
-> This patch series adds test coverage for BPF sockaddr hooks and their
-> interactions with kernel socket functions (i.e. kernel_bind(),
-> kernel_connect(), kernel_sendmsg(), sock_sendmsg(),
-> kernel_getpeername(), and kernel_getsockname()) while also rounding out
-> IPv4 and IPv6 sockaddr hook coverage in prog_tests/sock_addr.c.
+On Mon, Apr 29, 2024 at 09:29:20AM -0700, Luis Chamberlain wrote:
+> On Mon, Apr 29, 2024 at 03:16:04PM +0300, Mike Rapoport wrote:
+> > From: "Mike Rapoport (IBM)" <rppt@kernel.org>
+> > 
+> > Hi,
+> > 
+> > The patches are also available in git:
+> > https://git.kernel.org/pub/scm/linux/kernel/git/rppt/linux.git/log/?h=execmem/v7
+> > 
+> > v7 changes:
+> > * define MODULE_{VADDR,END} for riscv32 to fix the build and avoid
+> >   #ifdefs in a function body
+> > * add Acks, thanks everybody
 > 
-> As with v1 of this patch series, we add regression coverage for the
-> issues addressed by these patches,
+> Thanks, I've pushed this to modules-next for further exposure / testing.
+> Given the status of testing so far with prior revisions, in that only a
+> few issues were found and that those were fixed, and the status of
+> reviews, this just might be ripe for v6.10.
+
+Looks like there is still some work needed. I've picked up next-20240501
+and on arch/mips with CONFIG_MODULE_COMPRESS_XZ=y and CONFIG_MODULE_DECOMPRESS=y
+I fail to load any module:
+
+# modprobe rfkill
+[11746.539090] Invalid ELF header magic: != ELF
+[11746.587149] execmem: unable to allocate memory
+modprobe: can't load module rfkill (kernel/net/rfkill/rfkill.ko.xz): Out of memory
+
+The (hopefully) relevant parts of my .config:
+
+CONFIG_HAVE_KERNEL_XZ=y
+CONFIG_MIPS=y
+CONFIG_RALINK=y
+CONFIG_SOC_MT7621=y
+CONFIG_EXECMEM=y
+CONFIG_MODULES_USE_ELF_REL=y
+CONFIG_MODULES=y
+# CONFIG_MODULE_DEBUG is not set
+# CONFIG_MODULE_FORCE_LOAD is not set
+CONFIG_MODULE_UNLOAD=y
+# CONFIG_MODULE_FORCE_UNLOAD is not set
+# CONFIG_MODULE_UNLOAD_TAINT_TRACKING is not set
+# CONFIG_MODULE_SRCVERSION_ALL is not set
+# CONFIG_MODULE_SIG is not set
+# CONFIG_MODULE_COMPRESS_NONE is not set
+# CONFIG_MODULE_COMPRESS_GZIP is not set
+CONFIG_MODULE_COMPRESS_XZ=y
+# CONFIG_MODULE_COMPRESS_ZSTD is not set
+CONFIG_MODULE_DECOMPRESS=y
+# CONFIG_MODULE_ALLOW_MISSING_NAMESPACE_IMPORTS is not set
+CONFIG_MODULES_TREE_LOOKUP=y
+
+
+Best regards,
+Liviu
+
+
 > 
-> [...]
+>   Luis
+> 
 
-Here is the summary with links:
-  - [v3,bpf-next,1/6] selftests/bpf: Fix bind program for big endian systems
-    https://git.kernel.org/bpf/bpf-next/c/8e667a065daa
-  - [v3,bpf-next,2/6] selftests/bpf: Implement socket kfuncs for bpf_testmod
-    https://git.kernel.org/bpf/bpf-next/c/bbb1cfdd0224
-  - [v3,bpf-next,3/6] selftests/bpf: Implement BPF programs for kernel socket operations
-    https://git.kernel.org/bpf/bpf-next/c/15b6671efa50
-  - [v3,bpf-next,4/6] selftests/bpf: Move IPv4 and IPv6 sockaddr test cases
-    https://git.kernel.org/bpf/bpf-next/c/8a9d22b8aeb2
-  - [v3,bpf-next,5/6] selftests/bpf: Make sock configurable for each test case
-    https://git.kernel.org/bpf/bpf-next/c/524e05ac4e14
-  - [v3,bpf-next,6/6] selftests/bpf: Add kernel socket operation tests
-    https://git.kernel.org/bpf/bpf-next/c/e0c8a7e7526f
-
-You are awesome, thank you!
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+Everyone who uses computers frequently has had, from time to time,
+a mad desire to attack the precocious abacus with an axe.
+       	   	      	     	  -- John D. Clark, Ignition!
 
