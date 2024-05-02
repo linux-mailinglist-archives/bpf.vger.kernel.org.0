@@ -1,137 +1,99 @@
-Return-Path: <bpf+bounces-28442-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-28443-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6148D8B9B6F
-	for <lists+bpf@lfdr.de>; Thu,  2 May 2024 15:17:04 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8645C8B9BB5
+	for <lists+bpf@lfdr.de>; Thu,  2 May 2024 15:35:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 928511C22100
-	for <lists+bpf@lfdr.de>; Thu,  2 May 2024 13:17:03 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D5122B219EF
+	for <lists+bpf@lfdr.de>; Thu,  2 May 2024 13:35:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CADE284A51;
-	Thu,  2 May 2024 13:16:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 46A3213C662;
+	Thu,  2 May 2024 13:35:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="sY3nTQsk"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AUysGepP"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D13DC8F3;
-	Thu,  2 May 2024 13:16:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C5A9A83CCE
+	for <bpf@vger.kernel.org>; Thu,  2 May 2024 13:35:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714655816; cv=none; b=PbKkaky+STJAoIRcQ9dYkEccmfdJCVTplv/AV/cRPwIBeuGpAB5ENNkpfyLwjSq8DTF7h7wBvFxNG4LBjObvlQWhgKsLXUPHGkGFQPastsFI8cI1YUtLnnH00BFN2csHQAK74gmjHPnWfAZQHEY3Q7nO/6z7qj03hM4l5nHci2c=
+	t=1714656916; cv=none; b=JMN5Z75cIqq0U7Jqwck+TyGG5XQ8t3yDL6hBeyTTFEfjdcxAS8IB5W+TWkQamSHwwly+aWVUPCr/PVbatK8lAT38Flw29NsRxLlooaxtd7TIbFMZOXnT1Yxs9hVrTlXvSLgLskpB4ymDBMk4T4Uk4EWOuZHU3m49OPygZCzH6mg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714655816; c=relaxed/simple;
-	bh=w6H08j+R8foRTFOw41AFNnzrEJ9YvknLQmjZmPzZqeg=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=NVIbvCFdGtKlhLHRj9P+xdiJeFlOGoCrTy6/l33aC3ZkNPQ5NfcOwLsGSMWvWipeZ6NxS14JLQK3sl4caZ8Re93heZSabjoBCDDxOoSz4+e3v0ya8tFN8km8v/jPtwHSVEFS0MtL4uzrkMn1Qm8yNJZvM4vAjxfMoMasuOdVTBo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=sY3nTQsk; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 78E1DC113CC;
-	Thu,  2 May 2024 13:16:55 +0000 (UTC)
+	s=arc-20240116; t=1714656916; c=relaxed/simple;
+	bh=uXiiEc49gyJlcB3cUGtvNaLwAg50LhovFpPKHuk1lEQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=UZsCLxnMG/zjRqNf38YPi/TyQX4VrNyYqfX6itNWqFSTeXE0nDE7G6BXiTUql+Ovj8fwxCUAz+Vt5Ax2bwfcUTJe9MzjfKZP/6axikpBlOCPVCwCHfSoxOs/3AVwLnLZuVVd4uuk8fVsgInGMaSI85ApWFbjMEmYSfxHm/tKNXc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AUysGepP; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D7472C113CC;
+	Thu,  2 May 2024 13:35:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714655815;
-	bh=w6H08j+R8foRTFOw41AFNnzrEJ9YvknLQmjZmPzZqeg=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-	b=sY3nTQskk7vNgYeyYTzpB4pbuFH03SPkrPHSPWha53MbJ2I9QaBvetSVC9FLQA9Cb
-	 Rr16e80Wxtm36HemMa8595Zrk4tAH5ovpMruDcdGy5KOBYXJb9OtvnEU+U9eEmwLkM
-	 KK9Q5afWGBJsY+cjlw2SnJ55eLFALNedVkBi51lX+7vrDSkzYsidf/Cw0FJ+HPQmAE
-	 PDFWs2L2tv/NanO2s55if5kvu+W3hreqLwmbDXH/WdYuJQs7vKA4/EJYBn1yJac+gq
-	 Ycl4ToG9I5wqlQ0G6/TU7M88c7ns413EvU0ChjaMOSyhqRm7/0TXCPiZfRZWOXtxxI
-	 ekb0tn/7bVlqA==
-From: Puranjay Mohan <puranjay@kernel.org>
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann
- <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, Martin KaFai
- Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu
- <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, John Fastabend
- <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, Stanislav
- Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa
- <jolsa@kernel.org>, =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
- Paul Walmsley
- <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou
- <aou@eecs.berkeley.edu>, bpf@vger.kernel.org,
- linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org, Pu Lehui
- <pulehui@huawei.com>
-Subject: Re: [PATCH bpf-next v2 2/2] riscv, bpf: inline
- bpf_get_smp_processor_id()
-In-Reply-To: <CAEf4Bzb4FYVNjuoghCcDxLgQCOT9Mb=nbjgNktqDarPHkOsuog@mail.gmail.com>
-References: <20240430175834.33152-1-puranjay@kernel.org>
- <20240430175834.33152-3-puranjay@kernel.org>
- <CAEf4Bzb4FYVNjuoghCcDxLgQCOT9Mb=nbjgNktqDarPHkOsuog@mail.gmail.com>
-Date: Thu, 02 May 2024 13:16:52 +0000
-Message-ID: <mb61pcyq45p6j.fsf@kernel.org>
+	s=k20201202; t=1714656916;
+	bh=uXiiEc49gyJlcB3cUGtvNaLwAg50LhovFpPKHuk1lEQ=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=AUysGepPXftd25fg0FmWE/X6xcUNto1yhtff3Trbb+2r9duIl1OEP3VcQnp15sm2N
+	 Nt0qugLiNm3Xei5Jt+rt32saTa3zZUERm82ik+rAIa5hMpAvwNePn0aAq6LBvwG/hv
+	 O74vLOt7PdkfAS8dcZqn08xZLNNUVIBRkXF3lMVSDtYqMd89XZDxZpcz/AewN6l71u
+	 NRY+AEguG8OhsowkZaSk5tgvKBg8/mGvvk8/4lvDRTxP9aKfnpDiFAQ3jzVW7O+cC3
+	 X9xzPUVi4fPaSiwucyUEKCFjI5QR6eTT+VFbaUWI69eWrSEmfGQRiZwrN4eHac/OxM
+	 tBMy1Gc6wu+8Q==
+Date: Thu, 2 May 2024 10:35:10 -0300
+From: Arnaldo Carvalho de Melo <acme@kernel.org>
+To: Alan Maguire <alan.maguire@oracle.com>
+Cc: Daniel Xu <dxu@dxuuu.xyz>, jolsa@kernel.org, quentin@isovalent.com,
+	eddyz87@gmail.com, andrii.nakryiko@gmail.com, ast@kernel.org,
+	daniel@iogearbox.net, bpf@vger.kernel.org
+Subject: Re: [PATCH dwarves v9 2/3] pahole: Add --btf_feature=decl_tag_kfuncs
+ feature
+Message-ID: <ZjOWjjUmgCdNsXkD@x1>
+References: <cover.1714430735.git.dxu@dxuuu.xyz>
+ <6d69d6dce917475ffe9c1bd7bc53358904f60915.1714430735.git.dxu@dxuuu.xyz>
+ <ZjE85q0SJ1sve25u@x1>
+ <2jjkwylnz7rjqkjpjb5li3n7g32uhrhx2uzwwthtgfqdf6bwzl@yjmuy24buoyl>
+ <2bc24644-0289-48c5-8118-8be4fc1658a9@oracle.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2bc24644-0289-48c5-8118-8be4fc1658a9@oracle.com>
 
-Andrii Nakryiko <andrii.nakryiko@gmail.com> writes:
+On Thu, May 02, 2024 at 12:49:26PM +0100, Alan Maguire wrote:
+> On 01/05/2024 00:00, Daniel Xu wrote:
+> > On Tue, Apr 30, 2024 at 03:48:06PM GMT, Arnaldo Carvalho de Melo wrote:
+> >> On Mon, Apr 29, 2024 at 04:45:59PM -0600, Daniel Xu wrote:
+> >> Also 'decl_tag_kfuncs' is not enabled when using --btf_features=default,
+> >> right? as:
 
-> On Tue, Apr 30, 2024 at 10:59=E2=80=AFAM Puranjay Mohan <puranjay@kernel.=
-org> wrote:
->>
->> Inline the calls to bpf_get_smp_processor_id() in the riscv bpf jit.
->>
->> RISCV saves the pointer to the CPU's task_struct in the TP (thread
->> pointer) register. This makes it trivial to get the CPU's processor id.
->> As thread_info is the first member of task_struct, we can read the
->> processor id from TP + offsetof(struct thread_info, cpu).
->>
->>           RISCV64 JIT output for `call bpf_get_smp_processor_id`
->>           =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D
->>
->>                 Before                           After
->>                --------                         -------
->>
->>          auipc   t1,0x848c                  ld    a5,32(tp)
->>          jalr    604(t1)
->>          mv      a5,a0
->>
->
-> Nice, great find! Would you be able to do similar inlining for x86-64
-> as well? Disassembling bpf_get_smp_processor_id for x86-64 shows this:
->
-> Dump of assembler code for function bpf_get_smp_processor_id:
->    0xffffffff810f91a0 <+0>:     0f 1f 44 00 00  nopl   0x0(%rax,%rax,1)
->    0xffffffff810f91a5 <+5>:     65 8b 05 60 79 f3 7e    mov
-> %gs:0x7ef37960(%rip),%eax        # 0x30b0c <pcpu_hot+12>
->    0xffffffff810f91ac <+12>:    48 98   cltq
->    0xffffffff810f91ae <+14>:    c3      ret
-> End of assembler dump.
-> We should be able to do the same in x86-64 BPF JIT. (it's actually how
-> I started initially, I had a dedicated instruction reading per-cpu
-> memory, but ended up with more general "calculate per-cpu address").
+> >>         BTF_DEFAULT_FEATURE(decl_tag_kfuncs, btf_decl_tag_kfuncs, false),
 
-I feel in x86-64's case JIT can not do a (much) better job compared to the
-current approach in the verifier.
+> >> And that false is .default_enabled=false.
 
-On RISC-V and ARM64, JIT was able to do it better because both of these
-architectures save a pointer to the task struct in a special CPU
-register. As x86-64 doesn't have enough extra registers, it uses a
-percpu variable to store task struct, thread_info, and the cpu
-number.
+> > I think that `false` is for `initial_value`, isn't it? The macro sets
+> > the `default_enabled` field.
+ 
+> yep it's the initial unset value. Specifying an option in --btf_features
+> flips that value, so for initial-off values they are switched on, while
 
-P.S. - While doing this for BPF, I realized that ARM64 kernel code is
-also not optimal as it is using the percpu variable and is not reading
-the CPU register directly. So, I sent a patch[1] to fix it in the kernel
-and get rid of the per-cpu variable in ARM64.
+So --btf_features=something may mean "don't use that feature"? That is
+confusing, perhaps the '-something' come in handy?
 
+> initial-on values are switched off. I _think_ the intent here is to tag
+> kfuncs by default, so we can add tag_kfuncs to the set of options
 
-[1] https://lore.kernel.org/all/20240502123449.2690-2-puranjay@kernel.org/
+Probably, if they are present in the file being BTF encoded.
 
-> Anyways, great work, a small nit below.
->
-> Acked-by: Andrii Nakryiko <andrii@kernel.org>
+> specified in pahole-flags for v1.26. We won't be using "default" there
+> as we want to call out the flags explicitly.
 
-Thanks,
-Puranjay
+Sure.
+
+- Arnaldo
 
