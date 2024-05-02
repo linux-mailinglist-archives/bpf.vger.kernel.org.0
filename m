@@ -1,134 +1,119 @@
-Return-Path: <bpf+bounces-28419-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-28420-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5C8E28B9361
-	for <lists+bpf@lfdr.de>; Thu,  2 May 2024 04:25:00 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 931D78B93D6
+	for <lists+bpf@lfdr.de>; Thu,  2 May 2024 06:23:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 10018284387
-	for <lists+bpf@lfdr.de>; Thu,  2 May 2024 02:24:59 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8DA1A1C21520
+	for <lists+bpf@lfdr.de>; Thu,  2 May 2024 04:23:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2EB9C17BBA;
-	Thu,  2 May 2024 02:24:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D0371BF47;
+	Thu,  2 May 2024 04:23:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lIy5mhX2"
+	dkim=pass (2048-bit key) header.d=meta.com header.i=@meta.com header.b="RaHOUhGC"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f176.google.com (mail-pf1-f176.google.com [209.85.210.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7CD012F5E;
-	Thu,  2 May 2024 02:24:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 62699171AA
+	for <bpf@vger.kernel.org>; Thu,  2 May 2024 04:23:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.145.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714616693; cv=none; b=fH1ycuDeS7LR7yx0RGiy6hwoJquLjY5hqjPp6DGHuTmncLQHT6mTlTQLKh5RWRiago0vgXAvhsgg7pGsRf6nMf3liPKrjbCSXw8cV0bZ1ee4crDqGXAjA6K8IxraqcNoV3+OrBeRgtMNE66ing/ecliHHhooMbNwC7x6GNHToqo=
+	t=1714623829; cv=none; b=f4JSo6lzxFs8aZ1ns6XyxareaucbBkRZHuqE58grEiF4LEZ6qoC8Ss7v2L0Dc+XiUFtudOkuvW13cx9fstlY5lewuSRq9geqPII0FsnvQXt/LMy5i7H1W8MT1gc6u9kLFBBJc/oItQyDRGzz5X2K2GbAbGwVOGIcJrrlX84aRuc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714616693; c=relaxed/simple;
-	bh=xrTQoHWv3EtMeuf3B3Rm+LDsh6sOE+ST1aB231dLTr8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=RVfW3JTCFx5J+nQQgU6hi0zljtkfroVxrpv5a1cqq9SpLK8aswz3qPZ+sBiM3qcwjCJzA4pcd9EKhNVl6axkjCDIoFJx6OrFNiyhO84ZL8NKyX1i84B4EgXfgVGkoW0ByqGQHXxPWkZxCe1z61OJ3T3CnuNJEQDj0GkyzPju+9s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=lIy5mhX2; arc=none smtp.client-ip=209.85.210.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f176.google.com with SMTP id d2e1a72fcca58-6ed3cafd766so6696180b3a.0;
-        Wed, 01 May 2024 19:24:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714616692; x=1715221492; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=xrTQoHWv3EtMeuf3B3Rm+LDsh6sOE+ST1aB231dLTr8=;
-        b=lIy5mhX2cHtQnWEVQsEZPl/1NhFkk+VC1H540pBQxkoUagPY3zux5GYAcD2ss/8eZF
-         i3CvyrnKLTmj89+k29la0KzpxwqWf8E5QznkFQ2fw+dhEt31BMZHxxq/LWXWZ7BhNFGs
-         /E+pLzSac90oOWaiY1qDjV0+Gqd/UPxGx5juvl6JhDdy2ysewV/XFznNtdHpHWj7Ap5t
-         oTBIOM7E42+qajc1rCvVhGXMoUFrY+dPU7XBEJMpHgXGgpLs6vMpDTqpAT2ZSFLMG1na
-         RCoCHVye/RYYLD5VSM3fXN4Id+8IwSGNu3l03neh04g7vApNR4Hp30Up4zJZwj3lNcyy
-         u52Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714616692; x=1715221492;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=xrTQoHWv3EtMeuf3B3Rm+LDsh6sOE+ST1aB231dLTr8=;
-        b=huOpvTnU0SMhEuMtMZw7fQHiV6/NYpVBv0moghtgoclze8apAiZ1A9P9xLSxNL1A7m
-         JUwD3UJvJIvC/1KiqPFx2I4Qn8OaxxNI9/NWua4y8Znx/voVqt9RZ6ZYxf8kXeNd/Tkj
-         tBzg/pL3JfH7G1GFxqRpIYc0ZM6NKKWyGJoYPFPLxe9KoepfQasFwqwl9ITejg1oReHI
-         ZpG1/J1Tt2LB3jestt7HdYukV5ka5tsbN+95ogkrfva1f8VtqS/loBNWGmEO62NBQmx1
-         SeiWyHwM4IV0UvJDNzpEmSJtv34hKeqswsdrGUw01yDU0Bvu/jDxKIEIPYEPsJ05v+kE
-         hvbg==
-X-Forwarded-Encrypted: i=1; AJvYcCUT2ZkiywnmY/dukqfa6m0jitsbb5JMTXZJgHgQicuXz4jorbXuynFA0AW8ds+FGIHVqQWaMMS524fxNptmM/3RIG9O
-X-Gm-Message-State: AOJu0Ywdn4au5LlIiG9oAPzWuISucQ6l/QO36uhe5xV/L4RSeEDw9zXE
-	Gla8ODHIVgolUvHv3tbnJKNCBgKRnHwXYMdYHQsZ3jjf8cNNpYpI
-X-Google-Smtp-Source: AGHT+IEx6Cn9aBZ41WAY4tzUNjB8lWHGCj87MQZE+E2qxJy6F4KdxVJ7neCYhNcXIbnFSHnHZFYCfA==
-X-Received: by 2002:a05:6a00:1305:b0:6f3:e71f:2d6e with SMTP id j5-20020a056a00130500b006f3e71f2d6emr893122pfu.9.1714616691452;
-        Wed, 01 May 2024 19:24:51 -0700 (PDT)
-Received: from archie.me ([103.124.138.155])
-        by smtp.gmail.com with ESMTPSA id x16-20020a056a000bd000b006f3ef4e7551sm75000pfu.217.2024.05.01.19.24.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 01 May 2024 19:24:50 -0700 (PDT)
-Received: by archie.me (Postfix, from userid 1000)
-	id B3C351848D5B5; Thu, 02 May 2024 09:24:47 +0700 (WIB)
-Date: Thu, 2 May 2024 09:24:47 +0700
-From: Bagas Sanjaya <bagasdotme@gmail.com>
-To: Tejun Heo <tj@kernel.org>, torvalds@linux-foundation.org,
-	mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
-	vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-	rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-	bristot@redhat.com, vschneid@redhat.com, ast@kernel.org,
-	daniel@iogearbox.net, andrii@kernel.org, martin.lau@kernel.org,
-	joshdon@google.com, brho@google.com, pjt@google.com,
-	derkling@google.com, haoluo@google.com, dvernet@meta.com,
-	dschatzberg@meta.com, dskarlat@cs.cmu.edu, riel@surriel.com,
-	changwoo@igalia.com, himadrics@inria.fr, memxor@gmail.com,
-	andrea.righi@canonical.com, joel@joelfernandes.org,
-	YouHong Li <liyouhong@kylinos.cn>
-Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-	Linux BPF <bpf@vger.kernel.org>, kernel-team@meta.com
-Subject: Re: [PATCH 38/39] sched_ext: Documentation: scheduler: Document
- extensible scheduler class
-Message-ID: <ZjL5b-zipMrV2JSg@archie.me>
-References: <20240501151312.635565-1-tj@kernel.org>
- <20240501151312.635565-39-tj@kernel.org>
+	s=arc-20240116; t=1714623829; c=relaxed/simple;
+	bh=9loqrPzqZAxVOaUc4oopSnUKFBSd2uYPXYpzR5q9FAU=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=EEIP3CPzG5UNJIAD0jPgchQ+IG65vIgxB+VNIVBDFU1SmEHVbwWcCSrRBvA6/URv7K4SXXd+nQAF8VMSVbUuOvBvC95OnUr9N9vmJWGHIeDd7Sc5B/s4WpN4sUYyVTXXpZ/tzooki+70aEcjfGpuKkDHVDOGmH1dkzsE7N+8qGI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=meta.com; spf=pass smtp.mailfrom=meta.com; dkim=pass (2048-bit key) header.d=meta.com header.i=@meta.com header.b=RaHOUhGC; arc=none smtp.client-ip=67.231.145.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=meta.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=meta.com
+Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
+	by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 441Mjqpm010650
+	for <bpf@vger.kernel.org>; Wed, 1 May 2024 21:23:47 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=meta.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=s2048-2021-q4;
+ bh=TO1PSaKRd633vyRFurgOUtsTs/4pfrreyOBxMprrjDI=;
+ b=RaHOUhGCOTO8nhlHvVCSpuaHMR5lCZLS4e+R/PZeKQ4I1ZN+gUov+ya/75UAXUArk/NS
+ EaxiAWRKzD/7+g+SlTF+y0BSZfTx0TEuZVMmhyQb/MMW1M56JoLDi8o2ZEkvzM7edDIT
+ 3tteickO2quAFXRaFBuP/OnzrD1nOGy7Wmp0FyYBYK5ttG+/N9e/BoBtcdPS5PgKWtPq
+ sDEenRUJ/i7qROB47WQIfPGD577rzdkPz2kSuzXcTmALh/tF9Ur5CF8b5QoPusG26KLH
+ 2ZmfuYWkOktnzYsivXOIp8AGiSIfI7hL3WATUReMTIWcMVeKO+BQ2sc9WTki1i5laUoj 7g== 
+Received: from mail.thefacebook.com ([163.114.132.120])
+	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3xuxtmhhjt-6
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+	for <bpf@vger.kernel.org>; Wed, 01 May 2024 21:23:47 -0700
+Received: from twshared53332.38.frc1.facebook.com (2620:10d:c085:108::8) by
+ mail.thefacebook.com (2620:10d:c085:11d::8) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Thu, 2 May 2024 04:23:45 +0000
+Received: by devvm15954.vll0.facebook.com (Postfix, from userid 420730)
+	id 53D20CB261CF; Wed,  1 May 2024 21:23:30 -0700 (PDT)
+From: Miao Xu <miaxu@meta.com>
+To: Eric Dumazet <edumazet@google.com>,
+        "David S . Miller"
+	<davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, Paolo Abeni
+	<pabeni@redhat.com>,
+        David Ahern <dsahern@kernel.org>, Martin Lau
+	<kafai@meta.com>
+CC: <netdev@vger.kernel.org>, <bpf@vger.kernel.org>, Miao Xu <miaxu@meta.com>
+Subject: [PATCH net-next v3 0/3] Add new args into tcp_congestion_ops' cong_control
+Date: Wed, 1 May 2024 21:23:15 -0700
+Message-ID: <20240502042318.801932-1-miaxu@meta.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="Fcduo8LxL1NdM4pB"
-Content-Disposition: inline
-In-Reply-To: <20240501151312.635565-39-tj@kernel.org>
-
-
---Fcduo8LxL1NdM4pB
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-ORIG-GUID: ux_bGmHcqVRZn4_T7hQ-RmqVkrg7dhzW
+X-Proofpoint-GUID: ux_bGmHcqVRZn4_T7hQ-RmqVkrg7dhzW
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.650,FMLib:17.11.176.26
+ definitions=2024-05-01_16,2024-04-30_01,2023-05-22_02
 
-On Wed, May 01, 2024 at 05:10:13AM -1000, Tejun Heo wrote:
-> Add Documentation/scheduler/sched-ext.rst which gives a high-level overvi=
-ew
-> and pointers to the examples.
->=20
+This patchset attempts to add two new arguments into the hookpoint
+cong_control in tcp_congestion_ops. The new arguments are inherited
+from the caller tcp_cong_control and can be used by any bpf cc prog
+that implements its own logic inside this hookpoint.
 
-The doc LGTM, thanks!
+Please review. Thanks a lot!
 
-Reviewed-by: Bagas Sanjaya <bagasdotme@gmail.com>
+Changelog
+=3D=3D=3D=3D=3D
+v2->v3:
+  - Fixed the broken selftest caused by the new arguments.
+  - Renamed the selftest file name and bpf prog name.
+
+v1->v2:
+  - Split the patchset into 3 separate patches.
+  - Added highlights in the selftest prog.
+  - Removed the dependency on bpf_tcp_helpers.h.
+
+Miao Xu (3):
+  tcp: Add new args for cong_control in tcp_congestion_ops
+  bpf: tcp: Allow to write tp->snd_cwnd_stamp in bpf_tcp_ca
+  selftests/bpf: Add test for the use of new args in cong_control
+
+ include/net/tcp.h                             |   2 +-
+ net/ipv4/bpf_tcp_ca.c                         |   6 +-
+ net/ipv4/tcp_bbr.c                            |   2 +-
+ net/ipv4/tcp_input.c                          |   2 +-
+ .../selftests/bpf/progs/bpf_cc_cubic.c        | 206 ++++++++++++++++++
+ .../selftests/bpf/progs/bpf_tracing_net.h     |  10 +
+ .../selftests/bpf/progs/tcp_ca_kfunc.c        |   6 +-
+ 7 files changed, 227 insertions(+), 7 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/progs/bpf_cc_cubic.c
 
 --=20
-An old man doll... just what I always wanted! - Clara
+2.43.0
 
---Fcduo8LxL1NdM4pB
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZjL5awAKCRD2uYlJVVFO
-o4D6AP0b0L1twya8PouA/EIkgqcNG14MyQMcuaFSl40YPFG1ygD9HyzhHX7R27te
-TQyJoSRgdVAp0ukw/0DIyIRz6+6q2AM=
-=h0Rx
------END PGP SIGNATURE-----
-
---Fcduo8LxL1NdM4pB--
 
