@@ -1,157 +1,210 @@
-Return-Path: <bpf+bounces-28465-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-28466-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7A8758B9F5E
-	for <lists+bpf@lfdr.de>; Thu,  2 May 2024 19:20:50 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id E82D98B9F92
+	for <lists+bpf@lfdr.de>; Thu,  2 May 2024 19:33:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 78061B21BD1
-	for <lists+bpf@lfdr.de>; Thu,  2 May 2024 17:20:47 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 76B8A1F2416C
+	for <lists+bpf@lfdr.de>; Thu,  2 May 2024 17:33:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE3DC15E5A9;
-	Thu,  2 May 2024 17:20:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C019617107A;
+	Thu,  2 May 2024 17:32:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Oy3tmieJ"
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="GBt2AHgZ"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A69616D9D1
-	for <bpf@vger.kernel.org>; Thu,  2 May 2024 17:20:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A7B7728FC;
+	Thu,  2 May 2024 17:32:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714670441; cv=none; b=pXFo9En2UcylJ4li65Y9VBsfUKw3dCwDTMHAsBRX2ia2nM4p0kvJwDAthkRlKDs16kQljKpgSHE6ytO8pznHqD0qOtf44cgW267pDMpm2EO7kTfHs/ejYFrMEBeFsuo0vw6KZEvjaLZxhi48uatoSI4u6qcSPpboTUv/p9E5OaY=
+	t=1714671176; cv=none; b=KZpgOINhvIQ5cq0LtE3yjQ3FluysqfcGZtK/blqlbPfPZbf5ksDLMftbSLwNjipjPvmZtP53+ujP8z1CdhNylWkL5vBTqv5XWCMpsbyKQdJBpxS61RR14TYFvnIDc75nBnYAwvoW00phk6aVldG3ppAbcxzLpAxBPYtA2nz7K00=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714670441; c=relaxed/simple;
-	bh=VhOejjmvQh0MO1ktRzefBNavI+jQPT4qirXMsRitAjg=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=U2Uow4/9dS0/oi5j0n6UhpReE+meq+aRQXVfgHvf8whuWyKjQGrRiMmpRvxSkLxBGgLQA0J2JQFl0xgaxDHJjt9WbAeyTZvIv72kUQ+d2Jc+ZndMRjxIzFBbpbJqaumE/P9Wia0Pv4q7cq14RABWKzoFNsnpt0OpLXZu60/+cQA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Oy3tmieJ; arc=none smtp.client-ip=209.85.214.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f182.google.com with SMTP id d9443c01a7336-1ed012c1afbso6159705ad.1
-        for <bpf@vger.kernel.org>; Thu, 02 May 2024 10:20:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714670439; x=1715275239; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=3jADiLYx54wcQ/dnAqkp6UYRgueX7NutPSzWYlg3LiU=;
-        b=Oy3tmieJV6rqooeT6L3DMvoMJgQ5iwdo5bWarlerirFysgKQFWoIv+p9bRbUXDbrcX
-         La6crH5b9zElLzDJIJH+bcoTT0RnL1bAIquNUDtNQgYjpm78ORURQXtTfOgsECTRigX7
-         qctj2+wprKDEA2YcUs9OWb3UcunG4xrJVMTC+eEqywZ2a1zVNPsCcUUrztqvMa+Yhs/1
-         m5ovxXiVQj10RM5bVgikQyeDdytTmQ3YG6oNQxLXieGmMUmwu2EaosabXmvbKrYYtm1i
-         YoiAv1hHg7L8pk//REoMvOzWSq6X084w24M6Kdvt1wR4KhOMI3M6y0IxfjGJBaEpERsp
-         R3uQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714670439; x=1715275239;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=3jADiLYx54wcQ/dnAqkp6UYRgueX7NutPSzWYlg3LiU=;
-        b=ZWWAaquCuWP6mq8oT7ZntBD+m/3S/DLTiLDNJr3M5C0DoSaS7qdbYLPFmpxJrVcB6l
-         Y3HMsCxDsSLxGJzM81110szfSSm4TNwGVxK5mJrXh+A3dpcAMC389Nyh3a2AG5DBBy4Q
-         2ST6/OL9rg0xe+rCnq7V1oBD7FC6E/ZFwk+TWFVPvwgRXs2uhfiKV4jQDyaENhvulNaW
-         gPbAm0SLnbx8VySSlfcIGbV3biR6IhUuDK0g1Iq9b5+S89vrbJPEv9VYgxUFi5Jvxzok
-         eTIG4uR8d7enjwFhReznRnWCb3xFHLOPpZOSqMv+H3BAKPMsEkc0gAsvfQ6EkV+j6Z5y
-         2BFA==
-X-Forwarded-Encrypted: i=1; AJvYcCUc7a6SKQmaZzQcqODHNFtlITopTc9RJqjmiem8y2p42cfhoA9AiQOeuSwv4LsEG/v2ON8Qy0L2IXgYAZPRZJ5SedCs
-X-Gm-Message-State: AOJu0YwQ1asS/cI6sRWrb9d08A2l6NzZf0giLNsSidPBG+8Gk+1mPerR
-	GZ6wqnq6yrdv7rknJ1Fo0/7Om7G4YPrK5hSm+EI7TuvAZMONGHyF
-X-Google-Smtp-Source: AGHT+IH8yVprjmMrJ7UlJjf/M5E5VLut0MCJcqCnh8xoG/1HZg4UxliYPdadtN0gfWUvUZecdICnHQ==
-X-Received: by 2002:a17:902:ea07:b0:1e0:e8b5:3225 with SMTP id s7-20020a170902ea0700b001e0e8b53225mr608483plg.12.1714670439457;
-        Thu, 02 May 2024 10:20:39 -0700 (PDT)
-Received: from ?IPv6:2605:8d80:4c3:8aa3:a6b4:2cc7:9867:3518? ([2605:8d80:4c3:8aa3:a6b4:2cc7:9867:3518])
-        by smtp.gmail.com with ESMTPSA id j12-20020a170903024c00b001e43576a7a1sm1561744plh.222.2024.05.02.10.20.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 May 2024 10:20:38 -0700 (PDT)
-Message-ID: <017ecee002197526aa5d91d856c25510d36b57ce.camel@gmail.com>
-Subject: Re: [PATCH bpf-next v3 3/7] bpf: create repeated fields for arrays.
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Kui-Feng Lee <thinker.li@gmail.com>, bpf@vger.kernel.org,
- ast@kernel.org,  martin.lau@linux.dev, song@kernel.org,
- kernel-team@meta.com, andrii@kernel.org
-Cc: sinquersw@gmail.com, kuifeng@meta.com
-Date: Thu, 02 May 2024 10:20:36 -0700
-In-Reply-To: <20240501204729.484085-4-thinker.li@gmail.com>
-References: <20240501204729.484085-1-thinker.li@gmail.com>
-	 <20240501204729.484085-4-thinker.li@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.44.4-0ubuntu2 
+	s=arc-20240116; t=1714671176; c=relaxed/simple;
+	bh=LaCvykQvdmUOuzSwHmR3Avj+B1lxgk4vwyJwgGxaceo=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=rLUF6hQlX/iKdjM+PKXdV3+t566PWuEsVz1JKBPX4XJGpVQilnALJZ6pKiEKWEUwqTOsxJ62oUh9FH9z6wSAuZvZVGB8NFrZyVEktf6lFGRwVwKuz7TPoN+fOPAQkqif+pq6TWV5Cl5v+LFQT6itwoveQEJ75/BLt653VJXpqy8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=GBt2AHgZ; arc=none smtp.client-ip=148.163.156.1
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0353729.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 442HRCti021266;
+	Thu, 2 May 2024 17:32:15 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=JIL5lk6UNm+SMBzpIAyATQq6e3XKM7ByRDdvdp+Nd6U=;
+ b=GBt2AHgZy2ljW+aV4fCT/SgKow/iYqbWiusf4yRCqk/Z4b4nlO8dYhquVDp2Kds8FLqn
+ CI76xWPfVSd1WjGyzfNoXMejjii3/iZKJiFIqeFoZTbtzbSFKRbDiQ/ck90jIzGmZcKa
+ gCliM7lhw6sIPDVCDCXuvTD/h81CIb4AeJay//Mm3A7OUvqgcB+FXvux/SWixZ1iBACe
+ W0laFeQTPR5RaLdUh6jvHZMBBSyB8+bfHatBk4qsHEEQB4bc983z8FunJmWHc6A6l7k+
+ TeaOTLUoESXpR9NHXNdE7hlvvqDKEyHjLVQSa8nM2O5WfsWneNGpV77Hssfc2qkkU3fm Sw== 
+Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3xvf87r0eb-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 02 May 2024 17:32:14 +0000
+Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma22.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 442EsJdi027556;
+	Thu, 2 May 2024 17:32:13 GMT
+Received: from smtprelay03.fra02v.mail.ibm.com ([9.218.2.224])
+	by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3xsc30sc95-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 02 May 2024 17:32:13 +0000
+Received: from smtpav07.fra02v.mail.ibm.com (smtpav07.fra02v.mail.ibm.com [10.20.54.106])
+	by smtprelay03.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 442HW9wO30605740
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Thu, 2 May 2024 17:32:11 GMT
+Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id A65BF20065;
+	Thu,  2 May 2024 17:32:09 +0000 (GMT)
+Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id E144F2004D;
+	Thu,  2 May 2024 17:32:06 +0000 (GMT)
+Received: from li-bd3f974c-2712-11b2-a85c-df1cec4d728e.ibm.com.com (unknown [9.43.113.195])
+	by smtpav07.fra02v.mail.ibm.com (Postfix) with ESMTP;
+	Thu,  2 May 2024 17:32:06 +0000 (GMT)
+From: Hari Bathini <hbathini@linux.ibm.com>
+To: linuxppc-dev <linuxppc-dev@lists.ozlabs.org>, bpf@vger.kernel.org
+Cc: Song Liu <songliubraving@fb.com>, Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Martin KaFai Lau <martin.lau@linux.dev>, stable@vger.kernel.org
+Subject: [PATCH v4 1/2] powerpc64/bpf: fix tail calls for PCREL addressing
+Date: Thu,  2 May 2024 23:02:04 +0530
+Message-ID: <20240502173205.142794-1-hbathini@linux.ibm.com>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: jYrSV768ZNXbY9FSJdfTlD6fTHVxz4kW
+X-Proofpoint-GUID: jYrSV768ZNXbY9FSJdfTlD6fTHVxz4kW
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.650,FMLib:17.11.176.26
+ definitions=2024-05-02_09,2024-05-02_03,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
+ priorityscore=1501 mlxlogscore=999 lowpriorityscore=0 clxscore=1011
+ impostorscore=0 spamscore=0 bulkscore=0 mlxscore=0 adultscore=0
+ phishscore=0 suspectscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2404010000 definitions=main-2405020115
 
-On Wed, 2024-05-01 at 13:47 -0700, Kui-Feng Lee wrote:
+With PCREL addressing, there is no kernel TOC. So, it is not setup in
+prologue when PCREL addressing is used. But the number of instructions
+to skip on a tail call was not adjusted accordingly. That resulted in
+not so obvious failures while using tailcalls. 'tailcalls' selftest
+crashed the system with the below call trace:
 
-I think this looks good for repeating fields of nested arrays
-(w/o visiting nested structures), two nits below.
+  bpf_test_run+0xe8/0x3cc (unreliable)
+  bpf_prog_test_run_skb+0x348/0x778
+  __sys_bpf+0xb04/0x2b00
+  sys_bpf+0x28/0x38
+  system_call_exception+0x168/0x340
+  system_call_vectored_common+0x15c/0x2ec
 
-> @@ -3575,6 +3628,19 @@ static int btf_find_datasec_var(const struct btf *=
-btf, const struct btf_type *t,
->  	for_each_vsi(i, t, vsi) {
->  		const struct btf_type *var =3D btf_type_by_id(btf, vsi->type);
->  		const struct btf_type *var_type =3D btf_type_by_id(btf, var->type);
-> +		const struct btf_array *array;
-> +		u32 j, nelems =3D 1;
-> +
-> +		/* Walk into array types to find the element type and the
-> +		 * number of elements in the (flattened) array.
-> +		 */
-> +		for (j =3D 0; j < MAX_RESOLVE_DEPTH && btf_type_is_array(var_type); j+=
-+) {
-> +			array =3D btf_array(var_type);
-> +			nelems *=3D array->nelems;
-> +			var_type =3D btf_type_by_id(btf, array->type);
-> +		}
-> +		if (nelems =3D=3D 0)
-> +			continue;
+Also, as bpf programs are always module addresses and a bpf helper in
+general is a core kernel text address, using PC relative addressing
+often fails with "out of range of pcrel address" error. Switch to
+using kernel base for relative addressing to handle this better.
 
-Nit: Should this return an error if j =3D=3D MAX_RESOLVE_DEPTH after the lo=
-op?
+Fixes: 7e3a68be42e1 ("powerpc/64: vmlinux support building with PCREL addresing")
+Cc: stable@vger.kernel.org
+Signed-off-by: Hari Bathini <hbathini@linux.ibm.com>
+---
 
-> =20
->  		field_type =3D btf_get_field_type(__btf_name_by_offset(btf, var_type->=
-name_off),
->  						field_mask, &seen_mask, &align, &sz);
-> @@ -3584,7 +3650,7 @@ static int btf_find_datasec_var(const struct btf *b=
-tf, const struct btf_type *t,
->  			return field_type;
-> =20
->  		off =3D vsi->offset;
-> -		if (vsi->size !=3D sz)
-> +		if (vsi->size !=3D sz * nelems)
->  			continue;
->  		if (off % align)
->  			continue;
-> @@ -3624,9 +3690,14 @@ static int btf_find_datasec_var(const struct btf *=
-btf, const struct btf_type *t,
-> =20
->  		if (ret =3D=3D BTF_FIELD_IGNORE)
->  			continue;
-> -		if (idx >=3D info_cnt)
-> +		if (idx + nelems > info_cnt)
->  			return -E2BIG;
+* Changes in v4:
+  - Fix out of range errors by switching to kernelbase instead of PC
+    for relative addressing.
 
-Nit: This is bounded by BTF_FIELDS_MAX which has value of 11,
-     would that be enough?
+* Changes in v3:
+  - New patch to fix tailcall issues with PCREL addressing.
 
-> -		++idx;
-> +		if (nelems > 1) {
-> +			ret =3D btf_repeat_field(info, idx, nelems - 1, sz);
-> +			if (ret < 0)
-> +				return ret;
-> +		}
-> +		idx +=3D nelems;
->  	}
->  	return idx;
->  }
 
+ arch/powerpc/net/bpf_jit_comp64.c | 30 ++++++++++++++++--------------
+ 1 file changed, 16 insertions(+), 14 deletions(-)
+
+diff --git a/arch/powerpc/net/bpf_jit_comp64.c b/arch/powerpc/net/bpf_jit_comp64.c
+index 79f23974a320..4de08e35e284 100644
+--- a/arch/powerpc/net/bpf_jit_comp64.c
++++ b/arch/powerpc/net/bpf_jit_comp64.c
+@@ -202,7 +202,8 @@ void bpf_jit_build_epilogue(u32 *image, struct codegen_context *ctx)
+ 	EMIT(PPC_RAW_BLR());
+ }
+ 
+-static int bpf_jit_emit_func_call_hlp(u32 *image, struct codegen_context *ctx, u64 func)
++static int
++bpf_jit_emit_func_call_hlp(u32 *image, u32 *fimage, struct codegen_context *ctx, u64 func)
+ {
+ 	unsigned long func_addr = func ? ppc_function_entry((void *)func) : 0;
+ 	long reladdr;
+@@ -211,19 +212,20 @@ static int bpf_jit_emit_func_call_hlp(u32 *image, struct codegen_context *ctx, u
+ 		return -EINVAL;
+ 
+ 	if (IS_ENABLED(CONFIG_PPC_KERNEL_PCREL)) {
+-		reladdr = func_addr - CTX_NIA(ctx);
++		reladdr = func_addr - local_paca->kernelbase;
+ 
+ 		if (reladdr >= (long)SZ_8G || reladdr < -(long)SZ_8G) {
+-			pr_err("eBPF: address of %ps out of range of pcrel address.\n",
+-				(void *)func);
++			pr_err("eBPF: address of %ps out of range of 34-bit relative address.\n",
++			       (void *)func);
+ 			return -ERANGE;
+ 		}
+-		/* pla r12,addr */
+-		EMIT(PPC_PREFIX_MLS | __PPC_PRFX_R(1) | IMM_H18(reladdr));
+-		EMIT(PPC_INST_PADDI | ___PPC_RT(_R12) | IMM_L(reladdr));
+-		EMIT(PPC_RAW_MTCTR(_R12));
+-		EMIT(PPC_RAW_BCTR());
+-
++		EMIT(PPC_RAW_LD(_R12, _R13, offsetof(struct paca_struct, kernelbase)));
++		/* Align for subsequent prefix instruction */
++		if (!IS_ALIGNED((unsigned long)fimage + CTX_NIA(ctx), 8))
++			EMIT(PPC_RAW_NOP());
++		/* paddi r12,r12,addr */
++		EMIT(PPC_PREFIX_MLS | __PPC_PRFX_R(0) | IMM_H18(reladdr));
++		EMIT(PPC_INST_PADDI | ___PPC_RT(_R12) | ___PPC_RA(_R12) | IMM_L(reladdr));
+ 	} else {
+ 		reladdr = func_addr - kernel_toc_addr();
+ 		if (reladdr > 0x7FFFFFFF || reladdr < -(0x80000000L)) {
+@@ -233,9 +235,9 @@ static int bpf_jit_emit_func_call_hlp(u32 *image, struct codegen_context *ctx, u
+ 
+ 		EMIT(PPC_RAW_ADDIS(_R12, _R2, PPC_HA(reladdr)));
+ 		EMIT(PPC_RAW_ADDI(_R12, _R12, PPC_LO(reladdr)));
+-		EMIT(PPC_RAW_MTCTR(_R12));
+-		EMIT(PPC_RAW_BCTRL());
+ 	}
++	EMIT(PPC_RAW_MTCTR(_R12));
++	EMIT(PPC_RAW_BCTRL());
+ 
+ 	return 0;
+ }
+@@ -285,7 +287,7 @@ static int bpf_jit_emit_tail_call(u32 *image, struct codegen_context *ctx, u32 o
+ 	int b2p_index = bpf_to_ppc(BPF_REG_3);
+ 	int bpf_tailcall_prologue_size = 8;
+ 
+-	if (IS_ENABLED(CONFIG_PPC64_ELF_ABI_V2))
++	if (!IS_ENABLED(CONFIG_PPC_KERNEL_PCREL) && IS_ENABLED(CONFIG_PPC64_ELF_ABI_V2))
+ 		bpf_tailcall_prologue_size += 4; /* skip past the toc load */
+ 
+ 	/*
+@@ -993,7 +995,7 @@ int bpf_jit_build_body(struct bpf_prog *fp, u32 *image, u32 *fimage, struct code
+ 				return ret;
+ 
+ 			if (func_addr_fixed)
+-				ret = bpf_jit_emit_func_call_hlp(image, ctx, func_addr);
++				ret = bpf_jit_emit_func_call_hlp(image, fimage, ctx, func_addr);
+ 			else
+ 				ret = bpf_jit_emit_func_call_rel(image, fimage, ctx, func_addr);
+ 
+-- 
+2.44.0
 
 
