@@ -1,45 +1,46 @@
-Return-Path: <bpf+bounces-28448-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-28449-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9BA088B9D32
-	for <lists+bpf@lfdr.de>; Thu,  2 May 2024 17:19:14 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 68CB68B9D37
+	for <lists+bpf@lfdr.de>; Thu,  2 May 2024 17:19:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CBACD1C21D68
-	for <lists+bpf@lfdr.de>; Thu,  2 May 2024 15:19:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2399C28253A
+	for <lists+bpf@lfdr.de>; Thu,  2 May 2024 15:19:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D09F515B0F4;
-	Thu,  2 May 2024 15:19:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F2EE15B57F;
+	Thu,  2 May 2024 15:19:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uD25S/4F"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GWcVk3MI"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 536FF13C676;
-	Thu,  2 May 2024 15:19:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BBF7315B540;
+	Thu,  2 May 2024 15:19:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714663146; cv=none; b=d+xJMWZyS3yzmZIuKkBI/+YxmSsAlvGTNXN4ZjPAWc59dajHEZ9gT36u5pSvtPOg7fAICWuL0DsOZ2pxppySHbcrOVpYWHvN2A0Po1JDGFJYkeQR9vUPqv2S/aVEdAtg12MqoBtL38xl7d5QyYhaKGcK9sMmjCkuqft/GmMC6Qc=
+	t=1714663153; cv=none; b=Ur3jui6sQdoY+o1wCnXkqa7Uz+IDxVkUGdygeOmCqT0FRkyXT8eKG8i8VqISNm5zYLP42NzsHnSNhN/32R+G08DhPl17/pYDnYkuS5o4eKQCfTp/17ZXjeL+jkyJ4hAFVOpGTCw1LdFaByA450/sv5HRlKnr3GzUTkeKlkbvwtE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714663146; c=relaxed/simple;
-	bh=7XHyWmwoJgP0UGlglktz7deiDM07JIaBpdoPgHdNioY=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=LcQmoCKR0+WZpt3NPkj3nAQ3HXTZnbXBOoZeeKLTwELfJlTc9KOG6KqPxb48c2t/Emnwu02+iYvYYcJf0VCNxR7hdeOTK9tP+ZQ0/////koO9qIjpuSoGmIjGtQIqqFa+i9syoNJ+hE9yFWBQxw16wEauJ5mQZdwwDZz+Ljtt7I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=uD25S/4F; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 835A0C113CC;
-	Thu,  2 May 2024 15:19:05 +0000 (UTC)
+	s=arc-20240116; t=1714663153; c=relaxed/simple;
+	bh=NlOfpDA9479fClDBYpH3IncZJ/YB0fwZk2zOr/dFfoM=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=g8/S7X1XADp16SDAndogVrY9bbWFRfx4WXspSh1TDPqfNQi81MNLwVaG6dh8cLL/53Cs2LEEL3ascYFmD643MbV6dWGXLv5jDPklJKMJkW947iZFFDmy9aEtfAIda0vfnOT0YXDERvLsdguSNkJMvz/1fAwVeQb+OyVEjbbyaQ0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GWcVk3MI; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F20DBC113CC;
+	Thu,  2 May 2024 15:19:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714663145;
-	bh=7XHyWmwoJgP0UGlglktz7deiDM07JIaBpdoPgHdNioY=;
-	h=From:To:Cc:Subject:Date:From;
-	b=uD25S/4F0Y8CK9PidfG+C/jIFZKd0O0JnUKCDBXtFJYGjPPqtYblkB1A2wGLrkfiM
-	 1KI19VGhAwc/zKaRrWD6YuGqBuj/Gz+34lu6Aw575Zo+tZ2thVP1EN1uFe34s7+qEU
-	 YGrOj3Z7ADNaNuvxZWpBM9Nv4k+gFIpTWswbEQxhvUDQcXxmhUCX40zbrr/Q72Axh9
-	 IMBR0vJ/aUObQ3CaDeks+DxP8qoKxPZyCp5zOmtH9XakDVWQfjzBtfYcEXCkeXZNQQ
-	 g5stsY9/Evyeuykc4KSX6Y1QXQclVz2D2rBEFQMKROC8CJnMg2w6iKnXNG/js2mfMD
-	 0JmsGQIwxpPEg==
+	s=k20201202; t=1714663153;
+	bh=NlOfpDA9479fClDBYpH3IncZJ/YB0fwZk2zOr/dFfoM=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=GWcVk3MIlgLKK2+jBElztSJifGpt9ofuMwJESSDfi+LXIjP2CIV+w0MspPnRBiXSm
+	 cDxCg/nqZShKg6CndhiHdrvQ64StPrG32oj2iqrGLOFlaxbKLf8N8YN3Do8aXtbdUy
+	 9oN7nnZZ5lClKlHKDratrmhsBeVA8XegTWOWBB6Grbx2jnBtjiV070MSk+lWPupD47
+	 MccQQtBp2FD61PNP77oVje61mJ++mTFBOPreG2mFopbfWOODeKJQ7VlcaOTTEqo67b
+	 Pleh/IMYOy4sltl4R/HwCNjG1L/qrhmu0H+ZKrrMoaxO7mtPzcKZX0qim4CTv0rLpC
+	 Fygozg1h3z30w==
 From: Puranjay Mohan <puranjay@kernel.org>
 To: Catalin Marinas <catalin.marinas@arm.com>,
 	Will Deacon <will@kernel.org>,
@@ -64,10 +65,12 @@ To: Catalin Marinas <catalin.marinas@arm.com>,
 	Kumar Kartikeya Dwivedi <memxor@gmail.com>,
 	=?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn@kernel.org>
 Cc: puranjay12@gmail.com
-Subject: [PATCH bpf-next v6 0/4] bpf: Inline helpers in arm64 and riscv JITs
-Date: Thu,  2 May 2024 15:18:50 +0000
-Message-Id: <20240502151854.9810-1-puranjay@kernel.org>
+Subject: [PATCH bpf-next v6 1/4] riscv, bpf: add internal-only MOV instruction to resolve per-CPU addrs
+Date: Thu,  2 May 2024 15:18:51 +0000
+Message-Id: <20240502151854.9810-2-puranjay@kernel.org>
 X-Mailer: git-send-email 2.40.1
+In-Reply-To: <20240502151854.9810-1-puranjay@kernel.org>
+References: <20240502151854.9810-1-puranjay@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -77,153 +80,88 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-Changes in v5 -> v6:
-arm64 v5: https://lore.kernel.org/all/20240430234739.79185-1-puranjay@kernel.org/
-riscv v2: https://lore.kernel.org/all/20240430175834.33152-1-puranjay@kernel.org/
-- Combine riscv and arm64 changes in single series
-- Some coding style fixes
+Support an instruction for resolving absolute addresses of per-CPU
+data from their per-CPU offsets. This instruction is internal-only and
+users are not allowed to use them directly. They will only be used for
+internal inlining optimizations for now between BPF verifier and BPF
+JITs.
 
-Changes in v4 -> v5:
-v4: https://lore.kernel.org/all/20240429131647.50165-1-puranjay@kernel.org/
-- Implement the inlining of the bpf_get_smp_processor_id() in the JIT.
+RISC-V uses generic per-cpu implementation where the offsets for CPUs
+are kept in an array called __per_cpu_offset[cpu_number]. RISCV stores
+the address of the task_struct in TP register. The first element in
+task_struct is struct thread_info, and we can get the cpu number by
+reading from the TP register + offsetof(struct thread_info, cpu).
 
-NOTE: This needs to be based on:
-https://lore.kernel.org/all/20240430175834.33152-1-puranjay@kernel.org/
-to be built.
+Once we have the cpu number in a register we read the offset for that
+cpu from address: &__per_cpu_offset + cpu_number << 3. Then we add this
+offset to the destination register.
 
-Manual run of bpf-ci with this series rebased on above:
-https://github.com/kernel-patches/bpf/pull/6929
+To measure the improvement from this change, the benchmark in [1] was
+used on Qemu:
 
-Changes in v3 -> v4:
-v3: https://lore.kernel.org/all/20240426121349.97651-1-puranjay@kernel.org/
-- Fix coding style issue related to C89 standards.
+Before:
+glob-arr-inc   :    1.127 ± 0.013M/s
+arr-inc        :    1.121 ± 0.004M/s
+hash-inc       :    0.681 ± 0.052M/s
 
-Changes in v2 -> v3:
-v2: https://lore.kernel.org/all/20240424173550.16359-1-puranjay@kernel.org/
-- Fixed the xlated dump of percpu mov to "r0 = &(void __percpu *)(r0)"
-- Made ARM64 and x86-64 use the same code for inlining. The only difference
-  that remains is the per-cpu address of the cpu_number.
-
-Changes in v1 -> v2:
-v1: https://lore.kernel.org/all/20240405091707.66675-1-puranjay12@gmail.com/
-- Add a patch to inline bpf_get_smp_processor_id()
-- Fix an issue in MRS instruction encoding as pointed out by Will
-- Remove CONFIG_SMP check because arm64 kernel always compiles with CONFIG_SMP
-
-This series adds the support of internal only per-CPU instructions and inlines
-the bpf_get_smp_processor_id() helper call for ARM64 and RISC-V BPF JITs.
-
-Here is an example of calls to bpf_get_smp_processor_id() and
-percpu_array_map_lookup_elem() before and after this series on ARM64.
-
-                                         BPF
-                                        =====
-              BEFORE                                       AFTER
-             --------                                     -------
-
-int cpu = bpf_get_smp_processor_id();           int cpu = bpf_get_smp_processor_id();
-(85) call bpf_get_smp_processor_id#229032       (85) call bpf_get_smp_processor_id#8
-
-
-p = bpf_map_lookup_elem(map, &zero);            p = bpf_map_lookup_elem(map, &zero);
-(18) r1 = map[id:78]                            (18) r1 = map[id:153]
-(18) r2 = map[id:82][0]+65536                   (18) r2 = map[id:157][0]+65536
-(85) call percpu_array_map_lookup_elem#313512   (07) r1 += 496
-                                                (61) r0 = *(u32 *)(r2 +0)
-                                                (35) if r0 >= 0x1 goto pc+5
-                                                (67) r0 <<= 3
-                                                (0f) r0 += r1
-                                                (79) r0 = *(u64 *)(r0 +0)
-                                                (bf) r0 = &(void __percpu *)(r0)
-                                                (05) goto pc+1
-                                                (b7) r0 = 0
-
-
-                                      ARM64 JIT
-                                     ===========
-
-              BEFORE                                       AFTER
-             --------                                     -------
-
-int cpu = bpf_get_smp_processor_id();           int cpu = bpf_get_smp_processor_id();
-mov     x10, #0xfffffffffffff4d0                mrs     x10, sp_el0
-movk    x10, #0x802b, lsl #16                   ldr     w7, [x10, #24]
-movk    x10, #0x8000, lsl #32
-blr     x10
-add     x7, x0, #0x0
-
-
-p = bpf_map_lookup_elem(map, &zero);            p = bpf_map_lookup_elem(map, &zero);
-mov     x0, #0xffff0003ffffffff                 mov     x0, #0xffff0003ffffffff
-movk    x0, #0xce5c, lsl #16                    movk    x0, #0xe0f3, lsl #16
-movk    x0, #0xca00                             movk    x0, #0x7c00
-mov     x1, #0xffff8000ffffffff                 mov     x1, #0xffff8000ffffffff
-movk    x1, #0x8bdb, lsl #16                    movk    x1, #0xb0c7, lsl #16
-movk    x1, #0x6000                             movk    x1, #0xe000
-mov     x10, #0xffffffffffff3ed0                add     x0, x0, #0x1f0
-movk    x10, #0x802d, lsl #16                   ldr     w7, [x1]
-movk    x10, #0x8000, lsl #32                   cmp     x7, #0x1
-blr     x10                                     b.cs    0x0000000000000090
-add     x7, x0, #0x0                            lsl     x7, x7, #3
-                                                add     x7, x7, x0
-                                                ldr     x7, [x7]
-                                                mrs     x10, tpidr_el1
-                                                add     x7, x7, x10
-                                                b       0x0000000000000094
-                                                mov     x7, #0x0
-
-              Performance improvement found using benchmark[1]
-
-./benchs/run_bench_trigger.sh glob-arr-inc arr-inc hash-inc
-
-  +---------------+-------------------+-------------------+--------------+
-  |      Name     |      Before       |        After      |   % change   |
-  |---------------+-------------------+-------------------+--------------|
-  | glob-arr-inc  | 23.380 ± 1.675M/s | 25.893 ± 0.026M/s |   + 10.74%   |
-  | arr-inc       | 23.928 ± 0.034M/s | 25.213 ± 0.063M/s |   + 5.37%    |
-  | hash-inc      | 12.352 ± 0.005M/s | 12.609 ± 0.013M/s |   + 2.08%    |
-  +---------------+-------------------+-------------------+--------------+
+After:
+glob-arr-inc   :    1.138 ± 0.011M/s
+arr-inc        :    1.366 ± 0.006M/s
+hash-inc       :    0.676 ± 0.001M/s
 
 [1] https://github.com/anakryiko/linux/commit/8dec900975ef
 
-             RISCV64 JIT output for `call bpf_get_smp_processor_id`
-            =======================================================
+Signed-off-by: Puranjay Mohan <puranjay@kernel.org>
+---
+ arch/riscv/net/bpf_jit_comp64.c | 24 ++++++++++++++++++++++++
+ 1 file changed, 24 insertions(+)
 
-                  Before                           After
-                 --------                         -------
-
-           auipc   t1,0x848c                  ld    a5,32(tp)
-           jalr    604(t1)
-           mv      a5,a0
-
-  Benchmark using [1] on Qemu.
-
-  ./benchs/run_bench_trigger.sh glob-arr-inc arr-inc hash-inc
-
-  +---------------+------------------+------------------+--------------+
-  |      Name     |     Before       |       After      |   % change   |
-  |---------------+------------------+------------------+--------------|
-  | glob-arr-inc  | 1.077 ± 0.006M/s | 1.336 ± 0.010M/s |   + 24.04%   |
-  | arr-inc       | 1.078 ± 0.002M/s | 1.332 ± 0.015M/s |   + 23.56%   |
-  | hash-inc      | 0.494 ± 0.004M/s | 0.653 ± 0.001M/s |   + 32.18%   |
-  +---------------+------------------+------------------+--------------+
-
-Puranjay Mohan (4):
-  riscv, bpf: add internal-only MOV instruction to resolve per-CPU addrs
-  riscv, bpf: inline bpf_get_smp_processor_id()
-  arm64, bpf: add internal-only MOV instruction to resolve per-CPU addrs
-  bpf, arm64: inline bpf_get_smp_processor_id() helper
-
- arch/arm64/include/asm/insn.h   |  8 ++++++
- arch/arm64/lib/insn.c           | 11 ++++++++
- arch/arm64/net/bpf_jit.h        |  8 ++++++
- arch/arm64/net/bpf_jit_comp.c   | 39 +++++++++++++++++++++++++
- arch/riscv/net/bpf_jit_comp64.c | 50 +++++++++++++++++++++++++++++++++
- include/linux/filter.h          |  1 +
- kernel/bpf/core.c               | 11 ++++++++
- kernel/bpf/verifier.c           |  4 +++
- 8 files changed, 132 insertions(+)
-
+diff --git a/arch/riscv/net/bpf_jit_comp64.c b/arch/riscv/net/bpf_jit_comp64.c
+index 15e482f2c657..1f0159963b3e 100644
+--- a/arch/riscv/net/bpf_jit_comp64.c
++++ b/arch/riscv/net/bpf_jit_comp64.c
+@@ -12,6 +12,7 @@
+ #include <linux/stop_machine.h>
+ #include <asm/patch.h>
+ #include <asm/cfi.h>
++#include <asm/percpu.h>
+ #include "bpf_jit.h"
+ 
+ #define RV_FENTRY_NINSNS 2
+@@ -1089,6 +1090,24 @@ int bpf_jit_emit_insn(const struct bpf_insn *insn, struct rv_jit_context *ctx,
+ 			emit_or(RV_REG_T1, rd, RV_REG_T1, ctx);
+ 			emit_mv(rd, RV_REG_T1, ctx);
+ 			break;
++		} else if (insn_is_mov_percpu_addr(insn)) {
++			if (rd != rs)
++				emit_mv(rd, rs, ctx);
++#ifdef CONFIG_SMP
++			/* Load current CPU number in T1 */
++			emit_ld(RV_REG_T1, offsetof(struct thread_info, cpu),
++				RV_REG_TP, ctx);
++			/* << 3 because offsets are 8 bytes */
++			emit_slli(RV_REG_T1, RV_REG_T1, 3, ctx);
++			/* Load address of __per_cpu_offset array in T2 */
++			emit_addr(RV_REG_T2, (u64)&__per_cpu_offset, extra_pass, ctx);
++			/* Add offset of current CPU to  __per_cpu_offset */
++			emit_add(RV_REG_T1, RV_REG_T2, RV_REG_T1, ctx);
++			/* Load __per_cpu_offset[cpu] in T1 */
++			emit_ld(RV_REG_T1, 0, RV_REG_T1, ctx);
++			/* Add the offset to Rd */
++			emit_add(rd, rd, RV_REG_T1, ctx);
++#endif
+ 		}
+ 		if (imm == 1) {
+ 			/* Special mov32 for zext */
+@@ -2038,3 +2057,8 @@ bool bpf_jit_supports_arena(void)
+ {
+ 	return true;
+ }
++
++bool bpf_jit_supports_percpu_insn(void)
++{
++	return true;
++}
 -- 
 2.40.1
 
