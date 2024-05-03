@@ -1,213 +1,167 @@
-Return-Path: <bpf+bounces-28526-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-28527-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 00DB08BB199
-	for <lists+bpf@lfdr.de>; Fri,  3 May 2024 19:19:29 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1015A8BB204
+	for <lists+bpf@lfdr.de>; Fri,  3 May 2024 20:02:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 22DC9B227CC
-	for <lists+bpf@lfdr.de>; Fri,  3 May 2024 17:19:26 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 37025B23032
+	for <lists+bpf@lfdr.de>; Fri,  3 May 2024 18:02:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B51B7158202;
-	Fri,  3 May 2024 17:19:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A1544524BE;
+	Fri,  3 May 2024 18:02:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qI3izxXw"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="H+UY2s6y"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-oi1-f179.google.com (mail-oi1-f179.google.com [209.85.167.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 319521581F5;
-	Fri,  3 May 2024 17:19:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D083415533D
+	for <bpf@vger.kernel.org>; Fri,  3 May 2024 18:02:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714756746; cv=none; b=p8H8/zTEUETqdKlNWOq1zFL1N21JKRhcGmxf4HELGmWEurDRoVuTEzA9vZ2fv+QNOuD+W9C8A/zXC39oMOHuPL40IrWCbKRtz/Prx/NLAqD+PsbloCYgcLIUuK39ac1m6f2Uuh3zJaOgpiAZDOJ45uK+T+bf71IstplGmBkfd5o=
+	t=1714759363; cv=none; b=jNCDS2zBfA+vGXOvVvVR3merknb+UFtbnrySfNhUScJJvmRZSg/U4LcAhsVvfjfMy1y5xg+IPTQyjlKJEuolYvpiBKOpxzbgXbVjJ5ofiOei85AoHe7xVIP00jy3KoqDoIQK46BehNstLtCGNXboN+H313pgy2B372Uc+QunbB4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714756746; c=relaxed/simple;
-	bh=SKPGGFh3wFauCRM9bosYEwSGbWHR5tDTuYSe2kSfmNQ=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=FbyDP6sIJ7jXWQu/Rz/S6jSzCKZ8avRFoa39pEGIPQgtJk81iJeUQRcY6QHYUyRTwsoxWPz4L02mqfTJRIXHIzfPwHD4s4TT3Hd8TDn5wDOQqn2C0sa0CLlSYWU0S43D8GvrDJqEsV4JyoyFUsZlZK4m5eaMrhHR46M10d/VW80=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qI3izxXw; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 79A30C116B1;
-	Fri,  3 May 2024 17:19:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1714756745;
-	bh=SKPGGFh3wFauCRM9bosYEwSGbWHR5tDTuYSe2kSfmNQ=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=qI3izxXwFqNX4HpMhaKsfqCMLJdgy+IySCBeCY29ifhaPt902Hca20463lWJ3VH+/
-	 Tqj338XIPGTpolG8s+ut9LJWxjNZKPNtbZ7qfwPvVyDqp9Tm9l5CC+TGRSeLs0r/QA
-	 ewaJpUaDScg/uFwSOxlI+GFyhHYZwV4o7542q9DdMg/vBiQ9SZB0CpY4vWp1IZJht2
-	 4niqwjcIgnYWZcD6HeGFMplquUnrQfLLUXW9bFHPtKBSqQ0rYQX9UzsLwYiksBYGUI
-	 0SPKxpx7bWmyoPsuMjCLj3VLJYC9MmZnIzb3GXAktmb+3T1ESmuPd/PmgEjakJ4E2E
-	 8n4c87SVmbp6g==
-From: Puranjay Mohan <puranjay@kernel.org>
-To: Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>,
-	Sumit Garg <sumit.garg@linaro.org>,
-	Stephen Boyd <swboyd@chromium.org>,
-	Douglas Anderson <dianders@chromium.org>,
-	"Peter Zijlstra (Intel)" <peterz@infradead.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Mark Rutland <mark.rutland@arm.com>,
-	linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	bpf@vger.kernel.org
-Cc: puranjay12@gmail.com
-Subject: [PATCH v3 2/2] arm64: implement raw_smp_processor_id() using thread_info
-Date: Fri,  3 May 2024 17:18:47 +0000
-Message-Id: <20240503171847.68267-2-puranjay@kernel.org>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20240503171847.68267-1-puranjay@kernel.org>
-References: <20240503171847.68267-1-puranjay@kernel.org>
+	s=arc-20240116; t=1714759363; c=relaxed/simple;
+	bh=LZ1Jo0eUy5YsXgZTMw6OJGp79REUNkeonvSdvgHcIKQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=eX6LjPY4nGPafzGv8P7oxxD9ZITFs0CLMlrENvCnmfyYEVko5kWfeKwpr5D1AZ1dWUAPSMVNRHTrptIKR8G7/qDJ+IPMhPAyCoXNsiG+7kNgGMyxIGF6XQvBcL3v+831Fd7GXbZmcT7dt5E/9D09opUat5pA0YaJ8ZnmCUWNQVI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=H+UY2s6y; arc=none smtp.client-ip=209.85.167.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oi1-f179.google.com with SMTP id 5614622812f47-3c751bf249cso5293690b6e.2
+        for <bpf@vger.kernel.org>; Fri, 03 May 2024 11:02:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1714759361; x=1715364161; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=j+1MyupIH9+mVYVx0tDNdpatNSjES4f9vH0sXDNzI+I=;
+        b=H+UY2s6yjE4wxjdFctP3ORF7iZKO+qte7KOtWmy+drGJBNueqbQ+VT4WJg+KMFbJGl
+         IHZjmuQZE8JjK8dRtPVyNyXuxsm8pZalC43vrTTH8sejMmqxfs4qyMBHfjrB1uttZO8b
+         RhD18FNeuj+bafYkJAxKVwGhMCfQ+8P8M0+PyI3LFq3twiRigRAkGEAl+PI9Q2OKt13+
+         Q0lWcS5IvhOxiquWw0nLsm7tt07QZt1txIL5FycXu92AIp2hXFiDgynEqQT6O/3TkXU+
+         G568DTHV+AaSCWJlW8kJM78av6A5XRIz+Pp+FK8AjWs18XHh65mKalHu1pEy1KLd4bIN
+         3YQA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714759361; x=1715364161;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=j+1MyupIH9+mVYVx0tDNdpatNSjES4f9vH0sXDNzI+I=;
+        b=qsTK8Tbqb/Ce6H604dgf3l8IxXQUnYAVSJH2vxuKYN6A9Xb2+4YjBxRJRfztzTPKuT
+         fFla8Qqgc2I7Z6xoy8Rcxys2azAuX52C3ZdzrFObyglfKFL3YrmiG7bFlkJsvnoUYCDn
+         kw9bxDnfwK2fy5fTeLt1PvLVHqSJMbp4yzzIzcKxiwfmr80GLsN0ODMpfrTTNQa831ru
+         8mrJUhstCONABCTwvgzySt4XBW82Wo0pBCbMCD6ruAtlbAqOa+k7wcLwQIaNGwnxfGC0
+         Dp4zLBcbQzef1QqQmauQQwHYUI//zmhDIsAYRxIB5Ye1kglkAsHgoelw8ZjAGNJ2EStp
+         9O7w==
+X-Forwarded-Encrypted: i=1; AJvYcCXWXjKa9g2r4gjtYlro6NXcwhbXynDj/TKpwHjl7JTZ5GrcIo80DpL/yOloFQ8lS+ZXOSmSPHbQfFuCLJRcBjkvTgcd
+X-Gm-Message-State: AOJu0Yyk4xR26h8WAGNTgipgOU9iPkr9qWoNeH3MCqdeEQgpbu9Wetco
+	ic0jddUxIxCRsmGe+MfQ9GwQRjlm/HBtUGp6dXSv+MxvInn+woKP
+X-Google-Smtp-Source: AGHT+IFyDDncBosGWpyyTzNYjPs1l2qkjqHI6iYfN2n0GQbZHN7M9FmhSVJ4gGyLzCs3PQkrMQ96NA==
+X-Received: by 2002:a05:6808:11c8:b0:3c5:e23c:cf3c with SMTP id p8-20020a05680811c800b003c5e23ccf3cmr4690993oiv.42.1714759360807;
+        Fri, 03 May 2024 11:02:40 -0700 (PDT)
+Received: from ?IPV6:2600:1700:6cf8:1240:248:d6ee:f0ae:bd46? ([2600:1700:6cf8:1240:248:d6ee:f0ae:bd46])
+        by smtp.gmail.com with ESMTPSA id a4-20020aca1a04000000b003c874e9f943sm583889oia.38.2024.05.03.11.02.39
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 03 May 2024 11:02:40 -0700 (PDT)
+Message-ID: <0fba228d-ee81-4aee-901f-c60dfd53c102@gmail.com>
+Date: Fri, 3 May 2024 11:02:38 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH bpf-next v3 3/7] bpf: create repeated fields for arrays.
+To: Eduard Zingerman <eddyz87@gmail.com>, Kui-Feng Lee
+ <thinker.li@gmail.com>, bpf@vger.kernel.org, ast@kernel.org,
+ martin.lau@linux.dev, song@kernel.org, kernel-team@meta.com,
+ andrii@kernel.org
+Cc: kuifeng@meta.com
+References: <20240501204729.484085-1-thinker.li@gmail.com>
+ <20240501204729.484085-4-thinker.li@gmail.com>
+ <017ecee002197526aa5d91d856c25510d36b57ce.camel@gmail.com>
+Content-Language: en-US
+From: Kui-Feng Lee <sinquersw@gmail.com>
+In-Reply-To: <017ecee002197526aa5d91d856c25510d36b57ce.camel@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Historically, arm64 implemented raw_smp_processor_id() as a read of
-current_thread_info()->cpu. This changed when arm64 moved thread_info into
-task struct, as at the time CONFIG_THREAD_INFO_IN_TASK made core code use
-thread_struct::cpu for the cpu number, and due to header dependencies
-prevented using this in raw_smp_processor_id(). As a workaround, we moved to
-using a percpu variable in commit:
 
-  57c82954e77fa12c ("arm64: make cpu number a percpu variable")
 
-Since then, thread_info::cpu was reintroduced, and core code was made to use
-this in commits:
+On 5/2/24 10:20, Eduard Zingerman wrote:
+> On Wed, 2024-05-01 at 13:47 -0700, Kui-Feng Lee wrote:
+> 
+> I think this looks good for repeating fields of nested arrays
+> (w/o visiting nested structures), two nits below.
+> 
+>> @@ -3575,6 +3628,19 @@ static int btf_find_datasec_var(const struct btf *btf, const struct btf_type *t,
+>>   	for_each_vsi(i, t, vsi) {
+>>   		const struct btf_type *var = btf_type_by_id(btf, vsi->type);
+>>   		const struct btf_type *var_type = btf_type_by_id(btf, var->type);
+>> +		const struct btf_array *array;
+>> +		u32 j, nelems = 1;
+>> +
+>> +		/* Walk into array types to find the element type and the
+>> +		 * number of elements in the (flattened) array.
+>> +		 */
+>> +		for (j = 0; j < MAX_RESOLVE_DEPTH && btf_type_is_array(var_type); j++) {
+>> +			array = btf_array(var_type);
+>> +			nelems *= array->nelems;
+>> +			var_type = btf_type_by_id(btf, array->type);
+>> +		}
+>> +		if (nelems == 0)
+>> +			continue;
+> 
+> Nit: Should this return an error if j == MAX_RESOLVE_DEPTH after the loop?
 
-  001430c1910df65a ("arm64: add CPU field to struct thread_info")
-  bcf9033e5449bdca ("sched: move CPU field back into thread_info if THREAD_INFO_IN_TASK=y")
+agree
 
-Consequently it is possible to use current_thread_info()->cpu again.
 
-This decreases the number of emitted instructions like in the following
-example:
+> 
+>>   
+>>   		field_type = btf_get_field_type(__btf_name_by_offset(btf, var_type->name_off),
+>>   						field_mask, &seen_mask, &align, &sz);
+>> @@ -3584,7 +3650,7 @@ static int btf_find_datasec_var(const struct btf *btf, const struct btf_type *t,
+>>   			return field_type;
+>>   
+>>   		off = vsi->offset;
+>> -		if (vsi->size != sz)
+>> +		if (vsi->size != sz * nelems)
+>>   			continue;
+>>   		if (off % align)
+>>   			continue;
+>> @@ -3624,9 +3690,14 @@ static int btf_find_datasec_var(const struct btf *btf, const struct btf_type *t,
+>>   
+>>   		if (ret == BTF_FIELD_IGNORE)
+>>   			continue;
+>> -		if (idx >= info_cnt)
+>> +		if (idx + nelems > info_cnt)
+>>   			return -E2BIG;
+> 
+> Nit: This is bounded by BTF_FIELDS_MAX which has value of 11,
+>       would that be enough?
 
-Dump of assembler code for function bpf_get_smp_processor_id:
-   0xffff8000802cd608 <+0>:     nop
-   0xffff8000802cd60c <+4>:     nop
-   0xffff8000802cd610 <+8>:     adrp    x0, 0xffff800082138000
-   0xffff8000802cd614 <+12>:    mrs     x1, tpidr_el1
-   0xffff8000802cd618 <+16>:    add     x0, x0, #0x8
-   0xffff8000802cd61c <+20>:    ldrsw   x0, [x0, x1]
-   0xffff8000802cd620 <+24>:    ret
+So far, no one has complained it yet!
+But, some one will reach the limit in future.
+If people want a flexible length, I will solve it in a follow-up.
+WDYT?
 
-After this patch:
-
-Dump of assembler code for function bpf_get_smp_processor_id:
-   0xffff8000802c9130 <+0>:     nop
-   0xffff8000802c9134 <+4>:     nop
-   0xffff8000802c9138 <+8>:     mrs     x0, sp_el0
-   0xffff8000802c913c <+12>:    ldr     w0, [x0, #24]
-   0xffff8000802c9140 <+16>:    ret
-
-A microbenchmark[1] was built to measure the performance improvement
-provided by this change. It calls the following function given number of
-times and finds the runtime overhead:
-
-static noinline int get_cpu_id(void)
-{
-	return smp_processor_id();
-}
-
-Run the benchmark like:
- modprobe smp_processor_id nr_function_calls=1000000000
-
-      +--------------------------+------------------------+
-      |        | Number of Calls |    Time taken          |
-      +--------+-----------------+------------------------+
-      | Before |   1000000000    |   1602888401ns         |
-      +--------+-----------------+------------------------+
-      | After  |   1000000000    |   1206212658ns         |
-      +--------+-----------------+------------------------+
-      |  Difference (decrease)   |   396675743ns (24.74%) |
-      +---------------------------------------------------+
-
-Remove the percpu variable cpu_number as it is used only in
-set_smp_ipi_range() as a dummy variable to be passed to ipi_handler().
-Use irq_stat in place of cpu_number here like arm32.
-
-[1] https://github.com/puranjaymohan/linux/commit/77d3fdd
-
-Signed-off-by: Puranjay Mohan <puranjay@kernel.org>
-Acked-by: Mark Rutland <mark.rutland@arm.com>
----
- arch/arm64/include/asm/smp.h | 13 +------------
- arch/arm64/kernel/smp.c      |  9 ++-------
- 2 files changed, 3 insertions(+), 19 deletions(-)
-
-diff --git a/arch/arm64/include/asm/smp.h b/arch/arm64/include/asm/smp.h
-index efb13112b408..2510eec026f7 100644
---- a/arch/arm64/include/asm/smp.h
-+++ b/arch/arm64/include/asm/smp.h
-@@ -25,22 +25,11 @@
- 
- #ifndef __ASSEMBLY__
- 
--#include <asm/percpu.h>
--
- #include <linux/threads.h>
- #include <linux/cpumask.h>
- #include <linux/thread_info.h>
- 
--DECLARE_PER_CPU_READ_MOSTLY(int, cpu_number);
--
--/*
-- * We don't use this_cpu_read(cpu_number) as that has implicit writes to
-- * preempt_count, and associated (compiler) barriers, that we'd like to avoid
-- * the expense of. If we're preemptible, the value can be stale at use anyway.
-- * And we can't use this_cpu_ptr() either, as that winds up recursing back
-- * here under CONFIG_DEBUG_PREEMPT=y.
-- */
--#define raw_smp_processor_id() (*raw_cpu_ptr(&cpu_number))
-+#define raw_smp_processor_id() (current_thread_info()->cpu)
- 
- /*
-  * Logical CPU mapping.
-diff --git a/arch/arm64/kernel/smp.c b/arch/arm64/kernel/smp.c
-index 4ced34f62dab..98d4e352c3d0 100644
---- a/arch/arm64/kernel/smp.c
-+++ b/arch/arm64/kernel/smp.c
-@@ -55,9 +55,6 @@
- 
- #include <trace/events/ipi.h>
- 
--DEFINE_PER_CPU_READ_MOSTLY(int, cpu_number);
--EXPORT_PER_CPU_SYMBOL(cpu_number);
--
- /*
-  * as from 2.5, kernels no longer have an init_tasks structure
-  * so we need some other way of telling a new secondary core
-@@ -742,8 +739,6 @@ void __init smp_prepare_cpus(unsigned int max_cpus)
- 	 */
- 	for_each_possible_cpu(cpu) {
- 
--		per_cpu(cpu_number, cpu) = cpu;
--
- 		if (cpu == smp_processor_id())
- 			continue;
- 
-@@ -1021,12 +1016,12 @@ void __init set_smp_ipi_range(int ipi_base, int n)
- 
- 		if (ipi_should_be_nmi(i)) {
- 			err = request_percpu_nmi(ipi_base + i, ipi_handler,
--						 "IPI", &cpu_number);
-+						 "IPI", &irq_stat);
- 			WARN(err, "Could not request IPI %d as NMI, err=%d\n",
- 			     i, err);
- 		} else {
- 			err = request_percpu_irq(ipi_base + i, ipi_handler,
--						 "IPI", &cpu_number);
-+						 "IPI", &irq_stat);
- 			WARN(err, "Could not request IPI %d as IRQ, err=%d\n",
- 			     i, err);
- 		}
--- 
-2.40.1
-
+> 
+>> -		++idx;
+>> +		if (nelems > 1) {
+>> +			ret = btf_repeat_field(info, idx, nelems - 1, sz);
+>> +			if (ret < 0)
+>> +				return ret;
+>> +		}
+>> +		idx += nelems;
+>>   	}
+>>   	return idx;
+>>   }
+> 
+> 
 
