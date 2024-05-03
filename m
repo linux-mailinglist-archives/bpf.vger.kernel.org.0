@@ -1,250 +1,320 @@
-Return-Path: <bpf+bounces-28489-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-28490-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7BAA08BA4A7
-	for <lists+bpf@lfdr.de>; Fri,  3 May 2024 02:41:22 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id ED9A18BA673
+	for <lists+bpf@lfdr.de>; Fri,  3 May 2024 06:57:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9E5091C22A5E
-	for <lists+bpf@lfdr.de>; Fri,  3 May 2024 00:41:21 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1308F1C218AD
+	for <lists+bpf@lfdr.de>; Fri,  3 May 2024 04:57:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D0225BA53;
-	Fri,  3 May 2024 00:41:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0420B139579;
+	Fri,  3 May 2024 04:56:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bnbc5SpV"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="fynppAFk"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ot1-f41.google.com (mail-ot1-f41.google.com [209.85.210.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-180.mta0.migadu.com (out-180.mta0.migadu.com [91.218.175.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE5E78BF8
-	for <bpf@vger.kernel.org>; Fri,  3 May 2024 00:41:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D00746A003
+	for <bpf@vger.kernel.org>; Fri,  3 May 2024 04:56:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714696875; cv=none; b=U9OvZpLcavmDA8yQynccQGzDf9EQcQAK29vJKr9LwV27dz2S3K1jEiJzYPO4eIBhTfbpp1omCkOAgq01fvvHHv61YtC5VVOqKWfyHnKOr3sQS6R9UjJpeXEsHzVrVFyHoMLv8qPDVa0niSzDB6Xz3r9nS/7tW2n3Fc9JRTOQ9nQ=
+	t=1714712217; cv=none; b=uvht8ZqrTFbzhyekK4ubKQ1iggRubO6qFyQ1r7jf2HPm134UhmZjnOLVXdPOjo0mIzKVU6OJNM1WeMg9bsRh1w37LSUL72gNu9LdnihFdSaTcFR+E/Fze3QPGOc/yexUZQ9uHVwU+GH6vED6t+TyRMwAsYtt0FuDh8LmeLXcRlI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714696875; c=relaxed/simple;
-	bh=xDeIpVzeyqwfFLGAE2Qan+tDcHRREFrpMPdZ3P9gnhE=;
+	s=arc-20240116; t=1714712217; c=relaxed/simple;
+	bh=+osZo2VwPJCzW+EbsUu6xRBez0ZbwSWfS0MOPLhwF9E=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=DW6iEHLQgix3J1M2sjiY7pQfvxge+4cS2YLc8gVFbZ7mBvpnxihhdWFNVA/ONmmJbfuiimZv9j9MfOaLMk4KoO/Yc1pxFPmobbOU/84X0t7xygPOVN4QPwlMJd6dhZHK0ulDWoMO2pgHGuVtwttfzjmGaRnhYT9K/VvT5vZ2o0Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=bnbc5SpV; arc=none smtp.client-ip=209.85.210.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ot1-f41.google.com with SMTP id 46e09a7af769-6ef884f86e9so1635469a34.0
-        for <bpf@vger.kernel.org>; Thu, 02 May 2024 17:41:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714696873; x=1715301673; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=fR1GYONoRMMgMqoHwy9VeF//vMk0ANRzUUxlGyQLWcA=;
-        b=bnbc5SpVD6SvO0iwRoz2Net9QG49iQtiQDdj79iMI+xSQsnztYwL1WFfAeSoKLwaOk
-         aAbpcxeJeEVsuUUwnKP/uCHjxk51jYqpL5JZL1K5a8VLZaY95feCDiSG1olPqy8zWHbG
-         dxy0zNvi6dP2rlM239jvYCXpiOLx9F5ObU9q3DHd1kNPrH661j5Wu6gNFcsHk83fgjx8
-         O+uT7AecUgqTr6VniFTwDxTxrGWTWaMEX6s491E5gcnBrxn+2lh6UYuH0XPPZ5TljHF9
-         2zuW+TWVXHR0RxjuzhC9T7v5C5wFyIgfCWRtvqP7IxFS6GPbZ4e1ahzHvFoAV3EBfA9t
-         dWlg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714696873; x=1715301673;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=fR1GYONoRMMgMqoHwy9VeF//vMk0ANRzUUxlGyQLWcA=;
-        b=Asb+alHpI1VvJcNnhjv0mLsib07MoOE9wi8PjxGvoLa665NZthbiVdyRI8uAQIjgKX
-         CMzNJK5ZNZcb477FPIHh52PEsaWBrTQU1CMiazFMWp+ouA1CXdUPheI0c3PaDiIYt8EQ
-         P5aVqvtLSkOkOJo2gCN7LPDerB6PoXOhc/HaO6L92xmRO6UrnYt6K9fd7LflidKwnClT
-         pOmHDzIHxp/xlf+VInjyRUwJgozlqhd+ZXaZ/HeJqeUWcNrSzfKSsowL7jf7/JxtuHQF
-         7eNCyHrT8A5hJ7WoR3SaqZTVLO7cF8jaDEUNP5d1e0mxWUoY8wk3u2ixlTngLXJ/bZzH
-         FSsg==
-X-Gm-Message-State: AOJu0Ywmdx/4bKFbhdsEyvZdkOxR5+RhMdcj9pUDVxyMLtKAR2hrV9Z4
-	+uJ6RlvnBju0dzw+oLXw9wJ0nJC0M/Y0z2E628NRxIpnAtUAK3Aw
-X-Google-Smtp-Source: AGHT+IHnil6pmmD86Y1Fh0WeceNcNfJ3WrEChN3yEpeycNVY4shGQS6TfwRguqEuewAWNlaKj5DVtQ==
-X-Received: by 2002:a9d:730b:0:b0:6ee:6741:539e with SMTP id e11-20020a9d730b000000b006ee6741539emr1551131otk.15.1714696872818;
-        Thu, 02 May 2024 17:41:12 -0700 (PDT)
-Received: from ?IPV6:2600:1700:6cf8:1240:8400:1987:243f:f8a5? ([2600:1700:6cf8:1240:8400:1987:243f:f8a5])
-        by smtp.gmail.com with ESMTPSA id g18-20020a9d6212000000b006ef8773670dsm408072otj.64.2024.05.02.17.41.11
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 02 May 2024 17:41:12 -0700 (PDT)
-Message-ID: <fb06e9a7-244a-421d-ae9e-8d6da9a25684@gmail.com>
-Date: Thu, 2 May 2024 17:41:11 -0700
+	 In-Reply-To:Content-Type; b=ZhxDQ/wPpKUQkb/HzovShOSgMekE+vFqNAEF7UCirol2rDLa+PDTDy4Dn9QaHaSwQybSmiHyEgHuSwaWudTnW9VbPZmLu6nItW7CbgM820aKvJaolFgnWSQlk+xlbL0TJn4PP15vk/2AOjwj3Umv9AvOuMnlJz+BTQkzDk3LoTQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=fynppAFk; arc=none smtp.client-ip=91.218.175.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <24149037-4c12-4a10-84b3-4f5640edc644@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1714712212;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=n8+YwfgvmHTuKhr3udbs4iRjaXuljKWey0hIVdIQANU=;
+	b=fynppAFkwU8AAbvZKVh1aCCkGgTvM+zsjJOtbhDiRBi/95uPFxswRnJbL8j4bUqEqektD+
+	KACTLcPwHZeKPMFQk9//Q6jnwXcaera/VDZPqXJtzg0WKzV+0jrhI4XuucFb+iKCXlRbig
+	XaEV7m0LDSUsgUkSxaXkBX0eK2lYbb0=
+Date: Thu, 2 May 2024 21:56:44 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH bpf-next 3/6] bpf: provide a function to unregister
- struct_ops objects from consumers.
-To: Martin KaFai Lau <martin.lau@linux.dev>,
- Kui-Feng Lee <thinker.li@gmail.com>
-Cc: bpf@vger.kernel.org, ast@kernel.org, song@kernel.org,
- kernel-team@meta.com, andrii@kernel.org, kuifeng@meta.com
-References: <20240429213609.487820-1-thinker.li@gmail.com>
- <20240429213609.487820-4-thinker.li@gmail.com>
- <f287c62f-628f-4201-ba34-03a7193212d8@linux.dev>
- <5c07376c-40b3-4dd3-ab2c-7659900914b3@linux.dev>
-Content-Language: en-US
-From: Kui-Feng Lee <sinquersw@gmail.com>
-In-Reply-To: <5c07376c-40b3-4dd3-ab2c-7659900914b3@linux.dev>
+Subject: Re: [PATCH bpf-next] bpf: fix bpf_ksym_exists in GCC
+Content-Language: en-GB
+To: "Jose E. Marchesi" <jose.marchesi@oracle.com>
+Cc: bpf@vger.kernel.org, Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+ david.faust@oracle.com, cupertino.miranda@oracle.com
+References: <20240428112559.10518-1-jose.marchesi@oracle.com>
+ <c4d99195-f000-47f2-b167-12e76b705dc9@linux.dev> <87jzkcqfb5.fsf@oracle.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Yonghong Song <yonghong.song@linux.dev>
+In-Reply-To: <87jzkcqfb5.fsf@oracle.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
 
+On 5/2/24 10:44 AM, Jose E. Marchesi wrote:
+>> On 4/28/24 4:25 AM, Jose E. Marchesi wrote:
+>>> The macro bpf_ksym_exists is defined in bpf_helpers.h as:
+>>>
+>>>     #define bpf_ksym_exists(sym) ({								\
+>>>     	_Static_assert(!__builtin_constant_p(!!sym), #sym " should be marked as __weak");	\
+>>>     	!!sym;											\
+>>>     })
+>>>
+>>> The purpose of the macro is to determine whether a given symbol has
+>>> been defined, given the address of the object associated with the
+>>> symbol.  It also has a compile-time check to make sure the object
+>>> whose address is passed to the macro has been declared as weak, which
+>>> makes the check on `sym' meaningful.
+>>>
+>>> As it happens, the check for weak doesn't work in GCC in all cases,
+>>> because __builtin_constant_p not always folds at parse time when
+>>> optimizing.  This is because optimizations that happen later in the
+>>> compilation process, like inlining, may make a previously non-constant
+>>> expression a constant.  This results in errors like the following when
+>>> building the selftests with GCC:
+>>>
+>>>     bpf_helpers.h:190:24: error: expression in static assertion is not constant
+>>>     190 |         _Static_assert(!__builtin_constant_p(!!sym), #sym " should be marked as __weak");       \
+>>>         |                        ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>>>
+>>> Fortunately recent versions of GCC support a __builtin_has_attribute
+>>> that can be used to directly check for the __weak__ attribute.  This
+>>> patch changes bpf_helpers.h to use that builtin when building with a
+>>> recent enough GCC, and to omit the check if GCC is too old to support
+>>> the builtin.
+>>>
+>>> The macro used for GCC becomes:
+>>>
+>>>     #define bpf_ksym_exists(sym) ({									\
+>>> 	_Static_assert(__builtin_has_attribute (*sym, __weak__), #sym " should be marked as __weak");	\
+>>> 	!!sym;												\
+>>>     })
+>>>
+>>> Note that since bpf_ksym_exists is designed to get the address of the
+>>> object associated with symbol SYM, we pass *sym to
+>>> __builtin_has_attribute instead of sym.  When an expression is passed
+>>> to __builtin_has_attribute then it is the type of the passed
+>>> expression that is checked for the specified attribute.  The
+>>> expression itself is not evaluated.  This accommodates well with the
+>>> existing usages of the macro:
+>>>
+>>> - For function objects:
+>>>
+>>>     struct task_struct *bpf_task_acquire(struct task_struct *p) __ksym __weak;
+>>>     [...]
+>>>     bpf_ksym_exists(bpf_task_acquire)
+>>>
+>>> - For variable objects:
+>>>
+>>>     extern const struct rq runqueues __ksym __weak; /* typed */
+>>>     [...]
+>>>     bpf_ksym_exists(&runqueues)
+>>>
+>>> Note also that BPF support was added in GCC 10 and support for
+>>> __builtin_has_attribute in GCC 9.
+>> It would be great if you can share details with asm code and
+>> BTF so we can understand better. I am not 100% sure about
+>> whether __builtin_has_attribute builtin can help to do
+>> run-time ksym resolution with libbpf.
+> Hi Yonghong.
+>
+> I am a bit confused.  Is the _Static_assert supposed to contribute
+> anything to the generated code?
 
-On 5/2/24 10:56, Martin KaFai Lau wrote:
-> On 5/1/24 11:48 AM, Martin KaFai Lau wrote:
->> On 4/29/24 2:36 PM, Kui-Feng Lee wrote:
->>> +/* Called from the subsystem that consume the struct_ops.
->>> + *
->>> + * The caller should protected this function by holding 
->>> rcu_read_lock() to
->>> + * ensure "data" is valid. However, this function may unlock rcu
->>> + * temporarily. The caller should not rely on the preceding 
->>> rcu_read_lock()
->>> + * after returning from this function.
->>
->> This temporarily losing rcu_read_lock protection is error prone. The 
->> caller should do the inc_not_zero() instead if it is needed.
->>
->> I feel the approach in patch 1 and 3 is a little box-ed in by the 
->> earlier tcp-cc usage that tried to fit into the kernel module 
->> reg/unreg paradigm and hide as much bpf details as possible from 
->> tcp-cc. This is not necessarily true now for other subsystem which has 
->> bpf struct_ops from day one.
->>
->> The epoll detach notification is link only. Can this kernel side 
->> specific unreg be limited to struct_ops link only? During reg, a rcu 
->> protected link could be passed to the subsystem. That subsystem 
->> becomes a kernel user of the bpf link and it can call 
->> link_detach(link) to detach. Pseudo code:
->>
->> struct link __rcu *link;
->>
->> rcu_read_lock();
->> ref_link = rcu_dereference(link)
->> if (ref_link)
->>      ref_link = bpf_link_inc_not_zero(ref_link);
->> rcu_read_unlock();
->>
->> if (!IS_ERR_OR_NULL(ref_link)) {
->>      bpf_struct_ops_map_link_detach(ref_link);
->>      bpf_link_put(ref_link);
->> }
-> 
-> [ ... ]
-> 
->>
->>> + *
->>> + * Return true if unreg() success. If a call fails, it means some other
->>> + * task has unrgistered or is unregistering the same object.
->>> + */
->>> +bool bpf_struct_ops_kvalue_unreg(void *data)
->>> +{
->>> +    struct bpf_struct_ops_map *st_map =
->>> +        container_of(data, struct bpf_struct_ops_map, kvalue.data);
->>> +    enum bpf_struct_ops_state prev_state;
->>> +    struct bpf_struct_ops_link *st_link;
->>> +    bool ret = false;
->>> +
->>> +    /* The st_map and st_link should be protected by rcu_read_lock(),
->>> +     * or they may have been free when we try to increase their
->>> +     * refcount.
->>> +     */
->>> +    if (IS_ERR(bpf_map_inc_not_zero(&st_map->map)))
->>> +        /* The map is already gone */
->>> +        return false;
->>> +
->>> +    prev_state = cmpxchg(&st_map->kvalue.common.state,
->>> +                 BPF_STRUCT_OPS_STATE_INUSE,
->>> +                 BPF_STRUCT_OPS_STATE_TOBEFREE);
->>> +    if (prev_state == BPF_STRUCT_OPS_STATE_INUSE) {
->>> +        st_map->st_ops_desc->st_ops->unreg(data);
->>> +        /* Pair with bpf_map_inc() for reg() */
->>> +        bpf_map_put(&st_map->map);
->>> +        /* Pair with bpf_map_inc_not_zero() above */
->>> +        bpf_map_put(&st_map->map);
->>> +        return true;
->>> +    }
->>> +    if (prev_state != BPF_STRUCT_OPS_STATE_READY)
->>> +        goto fail;
->>> +
->>> +    /* With BPF_F_LINK */
->>> +
->>> +    st_link = rcu_dereference(st_map->attached);
-> 
->  From looking at the change in bpf_struct_ops_map_link_dealloc() in 
-> patch 1 again, I am not sure st_link is rcu gp protected either. 
-> bpf_struct_ops_map_link_dealloc() is still just kfree(st_link).
+No it is not. It is used to check whether __weak attribute is added to
+the symbol or not.
 
-I am not sure what you mean.
-With the implementation of this version, st_link should be rcu
-protected. The backward pointer, "attached", from st_map to st_link will
-be reset before kfree(). So, if the caller hold rcu_read_lock(), a
-st_link should be valid as long as it can be reached from a st_map.
+>
+> This is what GCC generates for pass_handler:
+>
+> -----
+> pass_handler:
+> .LFB1:
+> 	r2 = 0
+> 	r1 = runqueues ll
+> 	call	153
+> 	if r0 == 0 goto .L2
+> 	r1 = runqueues ll
+> 	if r1 == 0 goto .L2
+> 	r2 = out__existing_typed ll
+> 	r0 = *(u32 *) (r0+2920)
+> 	*(u32 *) (r2+0) = r0
+> .L2:
+> 	r6 = out__non_existent_typed ll
+> 	r1 = bpf_link_fops2 ll
+> 	r3 = out__existing_typeless ll
+> 	r4 = bpf_prog_active ll
+> 	r5 = out__non_existent_typeless ll
+> 	r9 = bpf_link_fops1 ll
+> 	*(u64 *) (r3+0) = r4
+> 	*(u64 *) (r5+0) = r9
+> 	*(u64 *) (r6+0) = r1
+> 	if r1 == 0 goto .L3
+> 	r2 = 0
+> 	call	153
+> 	*(u64 *) (r6+0) = r0
+> .L3:
+> 	r1 = bpf_task_acquire ll
+> 	if r1 == 0 goto .L20
+> .L4:
+> 	r1 = bpf_testmod_test_mod_kfunc ll
+> 	if r1 == 0 goto .L21
+> .L5:
+> 	r1 = invalid_kfunc ll
+> 	if r1 == 0 goto .L6
+> 	call	invalid_kfunc
+> .L6:
+> 	r0 = 0
+> 	exit
+> .L21:
+> 	call	bpf_testmod_test_mod_kfunc
+> 	goto .L5
+> .L20:
+> 	call	bpf_task_acquire
+> 	goto .L4
+> .LFE1:
+> 	.size	pass_handler, .-pass_handler
+> -----
+>
+> And the .ksyms datasec:
+>
+> -----
+> [7693] DATASEC '.ksyms' size=0 vlen=7
+> 	type_id=7690 offset=0 size=0 (FUNC 'invalid_kfunc')
+> 	type_id=7691 offset=0 size=0 (FUNC 'bpf_testmod_test_mod_kfunc')
+> 	type_id=7692 offset=0 size=0 (FUNC 'bpf_task_acquire')
+> 	type_id=7530 offset=0 size=4 (VAR 'bpf_link_fops2')
+> 	type_id=7550 offset=0 size=1 (VAR 'bpf_link_fops1')
+> 	type_id=7475 offset=0 size=1 (VAR 'bpf_prog_active')
+> 	type_id=7535 offset=0 size=3456 (VAR 'runqueues')
+> -----
+>
+> Is the entry for runqueues en the datasec enough for libbpf to patch the
+> ksym value in the corresponding `r1 = runqueues ll' instructions
 
-> 
-> I also don't think it needs to complicate it further by making st_link 
-> go through rcu only for this use case. The subsystem must have its own 
-> lock to protect parallel reg() and unreg(). tcp-cc has 
-> tcp_cong_list_lock. From looking at scx, scx has scx_ops_enable_mutex. 
-> When it tries to do unreg itself by calling 
-> bpf_struct_ops_map_link_detach(link), it needs to acquire its own lock 
-> to ensure a parallel unreg() has not happened. Pseudo code:
-> 
-> struct bpf_link *link;
-> 
-> static void scx_ops_detach_by_kernel(void)
-> {
->      struct bpf_link *ref_link;
-> 
->      mutex_lock(&scx_ops_enable_mutex);
->      ref_link = link;
->      if (ref_link)
->          ref_link = bpf_link_inc_not_zero(ref_link);
->      mutex_unlock(&scx_ops_enable_mutex);
-> 
->      if (!IS_ERR_OR_NULL(ref_link)) {
->          ref_link->ops->detach(ref_link);
->          bpf_link_put(ref_link);
->      }
-> }
-> 
->>> +    if (!st_link || !bpf_link_inc_not_zero(&st_link->link))
->>> +        /* The map is on the way to unregister */
->>> +        goto fail;
->>> +
->>> +    rcu_read_unlock();
->>> +    mutex_lock(&update_mutex);
->>> +
->>> +    if (rcu_dereference_protected(st_link->map, true) != &st_map->map)
->>> +        /* The map should be unregistered already or on the way to
->>> +         * be unregistered.
->>> +         */
->>> +        goto fail_unlock;
->>> +
->>> +    st_map->st_ops_desc->st_ops->unreg(data);
->>> +
->>> +    map_attached_null(st_map);
->>> +    rcu_assign_pointer(st_link->map, NULL);
->>> +    /* Pair with bpf_map_get() in bpf_struct_ops_link_create() or
->>> +     * bpf_map_inc() in bpf_struct_ops_map_link_update().
->>> +     */
->>> +    bpf_map_put(&st_map->map);
->>> +
->>> +    ret = true;
->>> +
->>> +fail_unlock:
->>> +    mutex_unlock(&update_mutex);
->>> +    rcu_read_lock();
->>> +    bpf_link_put(&st_link->link);
->>> +fail:
->>> +    bpf_map_put(&st_map->map);
->>> +    return ret;
->>> +}
->>> +EXPORT_SYMBOL_GPL(bpf_struct_ops_kvalue_unreg);
+It should be okay. libbpf will patch `r1 = runqueues ll` with
+`r1 = <btf_obj_fd/btf_id>` and the kernel will translate it to
+`r1 = <kernel addr of runqueues>`.
+
+Based on your above output, the patch looks good to me.
+
+Acked-by: Yonghong Song <yonghong.song@linux.dev>
+
+>
+>> The following is what clang does:
 >>
+>> For example, for progs/test_ksyms_weak.c, we have
+>>   43         if (rq && bpf_ksym_exists(&runqueues))
+>>   44                 out__existing_typed = rq->cpu;
+>> ...
+>>   56         if (!bpf_ksym_exists(bpf_task_acquire))
+>>   57                 /* dead code won't be seen by the verifier */
+>>   58                 bpf_task_acquire(0);
 >>
-> 
+>> The asm code:
+>>
+>>          .loc    0 42 20 prologue_end            # progs/test_ksyms_weak.c:42:20
+>> .Ltmp0:
+>>          r6 = runqueues ll
+>>          r1 = runqueues ll
+>>          w2 = 0
+>>          call 153
+>> .Ltmp1:
+>> .Ltmp2:
+>>          #DEBUG_VALUE: pass_handler:rq <- $r0
+>>          .loc    0 43 9                          # progs/test_ksyms_weak.c:43:9
+>> .Ltmp3:
+>>          if r0 == 0 goto LBB0_3
+>> .Ltmp4:
+>> .Ltmp5:
+>> # %bb.1:                                # %entry
+>>          #DEBUG_VALUE: pass_handler:rq <- $r0
+>>          if r6 == 0 goto LBB0_3
+>> ...
+>> LBB0_5:                                 # %if.end4
+>>          .loc    0 56 6 is_stmt 1                # progs/test_ksyms_weak.c:56:6
+>> .Ltmp25:
+>>          r1 = bpf_task_acquire ll
+>>          if r1 != 0 goto LBB0_7
+>> # %bb.6:                                # %if.then9
+>>
+>> Here, 'runqueues' and 'bpf_task_acquire' will be changed by libbpf
+>> based on the *current* kernel state. The BTF datasec encodes such ksym
+>> information like below which will be used by libbpf:
+>>
+>>          .long   13079                           # BTF_KIND_DATASEC(id = 395)
+>>          .long   251658247                       # 0xf000007
+>>          .long   0
+>>          .long   377
+>>          .long   bpf_task_acquire
+>>          .long   0
+>>          .long   379
+>>          .long   bpf_testmod_test_mod_kfunc
+>>          .long   0
+>>          .long   381
+>>          .long   invalid_kfunc
+>>          .long   0
+>>          .long   387
+>>          .long   runqueues
+>>          .long   3264
+>>          .long   388
+>>          .long   bpf_prog_active
+>>          .long   1
+>>          .long   389
+>>          .long   bpf_link_fops1
+>>          .long   1
+>>          .long   391
+>>          .long   bpf_link_fops2
+>>          .long   4
+>>
+>> What gcc generates for the above example? It would be great
+>> if this can be put in the commit message.
+>>
+>>> Locally tested in bpf-next master branch.
+>>> No regressions.
+>>>
+>>> Signed-of-by: Jose E. Marchesi <jose.marchesi@oracle.com>
+>>> Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+>>> Cc: david.faust@oracle.com
+>>> Cc: cupertino.miranda@oracle.com
+>>> ---
+>>>    tools/lib/bpf/bpf_helpers.h | 9 +++++++++
+>>>    1 file changed, 9 insertions(+)
+>>>
+>>> diff --git a/tools/lib/bpf/bpf_helpers.h b/tools/lib/bpf/bpf_helpers.h
+>>> index 62e1c0cc4a59..a720636a87d9 100644
+>>> --- a/tools/lib/bpf/bpf_helpers.h
+>>> +++ b/tools/lib/bpf/bpf_helpers.h
+>>> @@ -186,10 +186,19 @@ enum libbpf_tristate {
+>>>    #define __kptr __attribute__((btf_type_tag("kptr")))
+>>>    #define __percpu_kptr __attribute__((btf_type_tag("percpu_kptr")))
+>>>    +#if defined (__clang__)
+>>>    #define bpf_ksym_exists(sym) ({									\
+>>>    	_Static_assert(!__builtin_constant_p(!!sym), #sym " should be marked as __weak");	\
+>>>    	!!sym;											\
+>>>    })
+>>> +#elif __GNUC__ > 8
+>> | +#define bpf_ksym_exists(sym) ({									\
+>>
+>>> +	_Static_assert(__builtin_has_attribute (*sym, __weak__), #sym " should be marked as __weak");	\
+>>> +	!!sym;												\
+>>> +})
+>>> +#else
+>>> +#define bpf_ksym_exists(sym) !!sym
+>>> +#endif
+>>>      #define __arg_ctx __attribute__((btf_decl_tag("arg:ctx")))
+>>>    #define __arg_nonnull __attribute((btf_decl_tag("arg:nonnull")))
 
