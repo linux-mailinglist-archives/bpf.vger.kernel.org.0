@@ -1,230 +1,242 @@
-Return-Path: <bpf+bounces-28510-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-28511-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 38A8F8BAE3F
-	for <lists+bpf@lfdr.de>; Fri,  3 May 2024 15:57:35 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 25C418BAE91
+	for <lists+bpf@lfdr.de>; Fri,  3 May 2024 16:10:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A42871F212E6
-	for <lists+bpf@lfdr.de>; Fri,  3 May 2024 13:57:34 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3847E1C20FC2
+	for <lists+bpf@lfdr.de>; Fri,  3 May 2024 14:10:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D93015445B;
-	Fri,  3 May 2024 13:56:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE2671552EB;
+	Fri,  3 May 2024 14:09:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="LrwH/3mn"
+	dkim=pass (1024-bit key) header.d=weissschuh.net header.i=@weissschuh.net header.b="KM4XIarb"
 X-Original-To: bpf@vger.kernel.org
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+Received: from todd.t-8ch.de (todd.t-8ch.de [159.69.126.157])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 751051DA21;
-	Fri,  3 May 2024 13:56:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 50F1415444E;
+	Fri,  3 May 2024 14:09:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=159.69.126.157
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714744567; cv=none; b=fDcX2ymBE0NqDD8i+m45v+5albMtMDb/USJg9eZzQJvG18UpLR983epfbe72xs4/zLrj0rZmYPdIKyXJdRsjOVwq5ErDbdN2JMITM1aJ7XjfC6XUkqnvv6Y1oshjbxaQQm10at8IK52rZOYE1GiHXhAr3LI/kIHbpcxxATG9Pow=
+	t=1714745385; cv=none; b=mUVWfdVt0zYaR0o2/SbDplsl3eIToZqAKv+V/l2tox9igjNvNhu+YAjaf2+P4MUCwHgCM+BXRW1fvxmc2bckq1D2TW1uElLHlBiRqqtsP58W8hwu+a4nok4u5MmGUqCX33zQUrnNGkxMWqHUh7iJNJ2B2nvMqmI1lDR6LBR4Pxs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714744567; c=relaxed/simple;
-	bh=Y96AOJn77GLmUXEHBQutWKub1WKq1hWJmHUqVNR3Y1k=;
-	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:References:
-	 In-Reply-To:Content-Type; b=BAbahciPbzsI8MuY+WbxVnXc/nQDia0TYC9tgicebRWrhoQtN0j7Arkt5EKcEfSrfS3MTOiAL3Q6qfoU5LEFZMbH0+DhtRvLwHnYbeYJ/uHEI/MrQgO3sPIL11G5ecY7SpZdFC8Bos5CHDlKHbm3zdinKetz/GQ3ZFiMe3/Seic=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=LrwH/3mn; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1714744558;
-	bh=Y96AOJn77GLmUXEHBQutWKub1WKq1hWJmHUqVNR3Y1k=;
-	h=Date:From:Subject:To:Cc:References:In-Reply-To:From;
-	b=LrwH/3mnfPFWqlO5VtTiuRGi9MobTvoBHFrIB76DM6IOY+OUEJR0aAjTboy988yxP
-	 QSMEaZ3YNliz8x2SL9d2ztlpuXyVPx0TUKok84aJeR0FOwlO24eYgbvNLSwPkcfxPG
-	 pRCOxnEBERINg0V91bymWGUP03rFYdGMavMztrpWxRtbmoSM+hRbtTmAq6rx4xwvDr
-	 J3mNBr0h1epQC8Zio6mZvPLIiBsx75G9tiepMv+ebSGKARKHLP4txvVH+ee64mNfr3
-	 4tOdpC/q3rPmtqELML2YsgF4rCCSp86E4EPPbvcu+OoflwW3KnSsogQtvbsVCYas1C
-	 JlVqryH+wLruA==
-Received: from [10.193.1.1] (broslavsky.collaboradmins.com [68.183.210.73])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: usama.anjum)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 5A0D33782135;
-	Fri,  3 May 2024 13:55:47 +0000 (UTC)
-Message-ID: <b4d7ce70-3320-4333-9589-b5df187409fe@collabora.com>
-Date: Fri, 3 May 2024 18:55:59 +0500
+	s=arc-20240116; t=1714745385; c=relaxed/simple;
+	bh=+fi7fUfomErHHAmvDww2p/WTBqGy/yFZDfIKZxnytjc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=CCdPlKyCDCaJhJaOwA2p1JSxq4VuaZLqvkDZ1bf5bPxs0s+fVuu+J0ErRRJkTUSueX9Ozh8KROPOdICNpBkkA0BfOXwwJ1uBH/IrSLWigC6wpebd33UiFahRV/Z+4aHBbfG/UsiIoZw2Vs6tTQ0nRUb/EjIJuxDYXdq9/FKLSJ8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=weissschuh.net; spf=pass smtp.mailfrom=weissschuh.net; dkim=pass (1024-bit key) header.d=weissschuh.net header.i=@weissschuh.net header.b=KM4XIarb; arc=none smtp.client-ip=159.69.126.157
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=weissschuh.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=weissschuh.net
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=weissschuh.net;
+	s=mail; t=1714745381;
+	bh=+fi7fUfomErHHAmvDww2p/WTBqGy/yFZDfIKZxnytjc=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=KM4XIarbWLiqP+rTdHhYP4ADp2FfBPZJESIvebE/x46r3wpaPNaKYYJ8DjRuiR4XK
+	 lgnUuJtE42KneR0ACxiqLQ5uJD/S7BK84VwhVwYe9egEdoAzvtQwKV4FeMNTpP6GjL
+	 22eK/o3npUywdzgLbvtpx7d4AZBFjdzVsbPnc49I=
+Date: Fri, 3 May 2024 16:09:40 +0200
+From: Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <linux@weissschuh.net>
+To: Joel Granados <j.granados@samsung.com>
+Cc: Luis Chamberlain <mcgrof@kernel.org>, 
+	Kees Cook <keescook@chromium.org>, Eric Dumazet <edumazet@google.com>, 
+	Dave Chinner <david@fromorbit.com>, linux-fsdevel@vger.kernel.org, netdev@vger.kernel.org, 
+	linux-arm-kernel@lists.infradead.org, linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-riscv@lists.infradead.org, linux-mm@kvack.org, linux-security-module@vger.kernel.org, 
+	bpf@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-xfs@vger.kernel.org, 
+	linux-trace-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org, 
+	netfilter-devel@vger.kernel.org, coreteam@netfilter.org, kexec@lists.infradead.org, 
+	linux-hardening@vger.kernel.org, bridge@lists.linux.dev, lvs-devel@vger.kernel.org, 
+	linux-rdma@vger.kernel.org, rds-devel@oss.oracle.com, linux-sctp@vger.kernel.org, 
+	linux-nfs@vger.kernel.org, apparmor@lists.ubuntu.com
+Subject: Re: [PATCH v3 00/11] sysctl: treewide: constify ctl_table argument
+ of sysctl handlers
+Message-ID: <4cda5d2d-dd92-44ef-9e7b-7b780ec795ab@t-8ch.de>
+References: <CGME20240423075608eucas1p265e7c90f3efd6995cb240b3d2688b803@eucas1p2.samsung.com>
+ <20240423-sysctl-const-handler-v3-0-e0beccb836e2@weissschuh.net>
+ <20240503090332.irkiwn73dgznjflz@joelS2.panther.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-From: Muhammad Usama Anjum <usama.anjum@collabora.com>
-Subject: Re: [PATCH bpf-next v3] selftests/bpf: Move test_dev_cgroup to
- prog_tests
-To: Yonghong Song <yonghong.song@linux.dev>,
- Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau
- <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>,
- Song Liu <song@kernel.org>, John Fastabend <john.fastabend@gmail.com>,
- KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
- Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
- Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>
-Cc: Muhammad Usama Anjum <usama.anjum@collabora.com>, kernel@collabora.com,
- linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
- linux-kselftest@vger.kernel.org
-References: <20240401123455.1377896-1-usama.anjum@collabora.com>
- <92e1cce6-5f26-4a49-86b6-81e1e80d1aaa@linux.dev>
- <cfecd6ea-8fa3-477f-bd32-4087aefee2af@collabora.com>
- <0ff5c7d0-d5c5-4b61-ba89-8e7f9f775935@linux.dev>
- <0973bc93-7a8d-451c-9944-d91a77d68755@collabora.com>
- <ff36e8fa-14f4-42a6-8210-cec24a7779a0@linux.dev>
-Content-Language: en-US
-In-Reply-To: <ff36e8fa-14f4-42a6-8210-cec24a7779a0@linux.dev>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240503090332.irkiwn73dgznjflz@joelS2.panther.com>
 
-On 4/5/24 1:06 AM, Yonghong Song wrote:
-> 
-> On 4/3/24 5:03 AM, Muhammad Usama Anjum wrote:
->> On 4/3/24 7:36 AM, Yonghong Song wrote:
->>> On 4/2/24 8:16 AM, Muhammad Usama Anjum wrote:
->>>> Yonghong Song,
->>>>
->>>> Thank you so much for replying. I was missing how to run pipeline
->>>> manually.
->>>> Thanks a ton.
->>>>
->>>> On 4/1/24 11:53 PM, Yonghong Song wrote:
->>>>> On 4/1/24 5:34 AM, Muhammad Usama Anjum wrote:
->>>>>> Move test_dev_cgroup.c to prog_tests/dev_cgroup.c to be able to run it
->>>>>> with test_progs. Replace dev_cgroup.bpf.o with skel header file,
->>>>>> dev_cgroup.skel.h and load program from it accourdingly.
->>>>>>
->>>>>>      ./test_progs -t dev_cgroup
->>>>>>      mknod: /tmp/test_dev_cgroup_null: Operation not permitted
->>>>>>      64+0 records in
->>>>>>      64+0 records out
->>>>>>      32768 bytes (33 kB, 32 KiB) copied, 0.000856684 s, 38.2 MB/s
->>>>>>      dd: failed to open '/dev/full': Operation not permitted
->>>>>>      dd: failed to open '/dev/random': Operation not permitted
->>>>>>      #72     test_dev_cgroup:OK
->>>>>>      Summary: 1/0 PASSED, 0 SKIPPED, 0 FAILED
->>>>>> Signed-off-by: Muhammad Usama Anjum <usama.anjum@collabora.com>
->>>>>> ---
->>>>>> Changes since v2:
->>>>>> - Replace test_dev_cgroup with serial_test_dev_cgroup as there is
->>>>>>      probability that the test is racing against another cgroup test
->>>>>> - Minor changes to the commit message above
->>>>>>
->>>>>> I've tested the patch with vmtest.sh on bpf-next/for-next and linux
->>>>>> next. It is passing on both. Not sure why it was failed on BPFCI.
->>>>>> Test run with vmtest.h:
->>>>>> sudo LDLIBS=-static PKG_CONFIG='pkg-config --static' ./vmtest.sh
->>>>>> ./test_progs -t dev_cgroup
->>>>>> ./test_progs -t dev_cgroup
->>>>>> mknod: /tmp/test_dev_cgroup_null: Operation not permitted
->>>>>> 64+0 records in
->>>>>> 64+0 records out
->>>>>> 32768 bytes (33 kB, 32 KiB) copied, 0.000403432 s, 81.2 MB/s
->>>>>> dd: failed to open '/dev/full': Operation not permitted
->>>>>> dd: failed to open '/dev/random': Operation not permitted
->>>>>>     #69      dev_cgroup:OK
->>>>>> Summary: 1/0 PASSED, 0 SKIPPED, 0 FAILED
->>>>> The CI failure:
->>>>>
->>>>>
->>>>> Error: #72 dev_cgroup
->>>>> serial_test_dev_cgroup:PASS:skel_open_and_load 0 nsec
->>>>> serial_test_dev_cgroup:PASS:cgroup_setup_and_join 0 nsec
->>>>> serial_test_dev_cgroup:PASS:bpf_attach 0 nsec
->>>>> serial_test_dev_cgroup:PASS:bpf_query 0 nsec
->>>>> serial_test_dev_cgroup:PASS:bpf_query 0 nsec
->>>>> serial_test_dev_cgroup:PASS:rm 0 nsec
->>>>> serial_test_dev_cgroup:PASS:mknod 0 nsec
->>>>> serial_test_dev_cgroup:PASS:rm 0 nsec
->>>>> serial_test_dev_cgroup:PASS:rm 0 nsec
->>>>> serial_test_dev_cgroup:FAIL:mknod unexpected mknod: actual 256 !=
->>>>> expected 0
->>>>> serial_test_dev_cgroup:PASS:rm 0 nsec
->>>>> serial_test_dev_cgroup:PASS:dd 0 nsec
->>>>> serial_test_dev_cgroup:PASS:dd 0 nsec
->>>>> serial_test_dev_cgroup:PASS:dd 0 nsec
->>>>>
->>>>> (cgroup_helpers.c:353: errno: Device or resource busy) umount cgroup2
->>>>>
->>>>> The error code 256 means mknod execution has some issues. Maybe you
->>>>> need to
->>>>> find specific errno to find out what is going on. I think you can do ci
->>>>> on-demanding test to debug.
->>>> errno is 2 --> No such file or directory
->>>>
->>>> Locally I'm unable to reproduce it until I don't remove
->>>> rm -f /tmp/test_dev_cgroup_zero such that the /tmp/test_dev_cgroup_zero
->>>> node is present before test execution. The error code is 256 with errno 2.
->>>> I'm debugging by placing system("ls /tmp 1>&2"); to find out which files
->>>> are already present in /tmp. But ls's output doesn't appear on the CI
->>>> logs.
->>> errno 2 means ENOENT.
->>>  From mknod man page (https://linux.die.net/man/2/mknod), it means
->>>    A directory component in/pathname/  does not exist or is a dangling
->>> symbolic link.
->>>
->>> It means /tmp does not exist or a dangling symbolic link.
->>> It is indeed very strange. To make the test robust, maybe creating a temp
->>> directory with mkdtemp and use it as the path? The temp directory
->>> creation should be done before bpf prog attach.
->> I've tried following but still no luck:
->> * /tmp is already present. Then I thought maybe the desired file is already
->> present. I've verified that there isn't file of same name is present inside
->> /tmp.
->> * I thought maybe mknod isn't present in the system. But mknod --help
->> succeeds.
->> * I switched from /tmp to current directory to create the mknod. But the
->> result is same error.
->> * I've tried to use the same kernel config as the BPF CI is using. I'm not
->> able to reproduce it.
->>
->> Not sure which edge case or what's going on. The problem is appearing
->> because of some limitation in the rootfs.
-> 
-> Maybe you could collect /tmp mount options to see whether anything is
-> suspicious? In my vm, I have
->   tmpfs on /tmp type tmpfs (rw,nosuid,nodev,size=3501540k,nr_inodes=1048576)
-> and the test works fine.
-> 
-> 
-My test system:
-tmpfs /tmp tmpfs rw,relatime 0 0
+Hey Joel,
 
-On the CI, /tmp is present. But it isn't tmpfs. Following shows the logs
-from /proc/mounts
+On 2024-05-03 11:03:32+0000, Joel Granados wrote:
+> Here is my feedback for your outstanding constification patches [1] and [2].
 
-On CI:
-  /dev/root / 9p
-rw,relatime,cache=f,access=client,msize=512000,trans=virtio 0 0
-  devtmpfs /dev devtmpfs
-rw,relatime,size=1998612k,nr_inodes=499653,mode=755 0 0
-  tmpfs /dev/shm tmpfs rw,nosuid,nodev,relatime 0 0
-  proc /proc proc rw,nosuid,nodev,noexec,relatime 0 0
-  tmpfs /run tmpfs rw,nosuid,nodev,relatime 0 0
-  tmpfs /run/netns tmpfs rw,nosuid,nodev,relatime 0 0
-  sys /sys sysfs rw,nosuid,nodev,noexec,relatime 0 0
-  debugfs /sys/kernel/debug debugfs rw,relatime 0 0
-  tracefs /sys/kernel/debug/tracing tracefs rw,relatime 0 0
-  cgroup2 /sys/fs/cgroup cgroup2 rw,nosuid,nodev,noexec,relatime 0 0
-  tmpfs /sys/fs/cgroup tmpfs rw,relatime 0 0
-  net_cls /sys/fs/cgroup/net_cls cgroup rw,relatime,net_cls 0 0
-  tmpfs /sys/fs/cgroup tmpfs rw,relatime 0 0
-  net_cls /sys/fs/cgroup/net_cls cgroup rw,relatime,net_cls 0 0
-  tmpfs /sys/fs/cgroup tmpfs rw,relatime 0 0
-  net_cls /sys/fs/cgroup/net_cls cgroup rw,relatime,net_cls 0 0
-  bpffs /sys/fs/bpf bpf rw,relatime 0 0
-  bpf /sys/fs/bpf bpf rw,relatime 0 0
-  tmpfs /mnt tmpfs rw,nosuid,nodev,relatime 0 0
-  vmtest-shared /mnt/vmtest 9p
-rw,relatime,cache=f,access=client,msize=512000,trans=virtio 0 0
-  none /mnt cgroup2 rw,relatime 0 0
+Thanks!
 
--- 
-BR,
-Muhammad Usama Anjum
+> # You need to split the patch
+> The answer that you got from Jakub in the network subsystem is very clear and
+> baring a change of heart from the network folks, this will go in as but as a
+> split patchset. Please split it considering the following:
+> 1. Create a different patchset for drivers/,  fs/, kernel/, net, and a
+>    miscellaneous that includes whatever does not fit into the others.
+> 2. Consider that this might take several releases.
+> 3. Consider the following sufix for the interim function name "_const". Like in
+>    kfree_const. Please not "_new".
+
+Ack. "_new" was an intentionally unacceptable placeholder.
+
+> 4. Please publish the final result somewhere. This is important so someone can
+>    take over in case you need to stop.
+
+Will do. Both for each single series and a combination of all of them.
+
+> 5. Consistently mention the motivation in your cover letters. I specify more
+>    further down in "#Motivation".
+> 6. Also mention that this is part of a bigger effort (like you did in your
+>    original cover letters). I would include [3,4,5,6]
+> 7. Include a way to show what made it into .rodata. I specify more further down
+>    in "#Show the move".
+> 
+> # Motivation
+> As I read it, the motivation for these constification efforts are:
+> 1. It provides increased safety: Having things in .rodata section reduces the
+>    attack surface. This is especially relevant for structures that have function
+>    pointers (like ctl_table); having these in .rodata means that these pointers
+>    always point to the "intended" function and cannot be changed.
+> 2. Compiler optimizations: This was just a comment in the patchsets that I have
+>    mentioned ([3,4,5]). Do you know what optimizations specifically? Does it
+>    have to do with enhancing locality for the data in .rodata? Do you have other
+>    specific optimizations in mind?
+
+I don't know about anything that would make it faster.
+It's more about safety and transmission of intent to API users,
+especially callback implementers.
+
+> 3. Readability: because it is easier to know up-front that data is not supposed
+>    to change or its obvious that a function is re-entrant. Actually a lot of the
+>    readability reasons is about knowing things "up-front".
+> As we move forward with the constification in sysctl, please include a more
+> detailed motivation in all your cover letters. This helps maintainers (that
+> don't have the context) understand what you are trying to do. It does not need
+> to be my three points, but it should be more than just "put things into
+> .rodata". Please tell me if I have missed anything in the motivation.
+
+Will do.
+
+> # Show the move
+> I created [8] because there is no easy way to validate which objects made it
+> into .rodata. I ran [8] for your Dec 2nd patcheset [7] and there are less in
+> .rodata than I expected (the results are in [9]) Why is that? Is it something
+> that has not been posted to the lists yet? 
+
+Constifying the APIs only *allows* the actual table to be constified
+themselves.
+Then each table definition will have to be touched and "const" added.
+
+See patches 17 and 18 in [7] for two examples.
+
+Some tables in net/ are already "const" as the static definitions are
+never registered themselves but only their copies are.
+
+This seems to explain your findings.
+
+> Best
+
+Thanks!
+
+> [1] https://lore.kernel.org/all/20240423-sysctl-const-handler-v3-0-e0beccb836e2@weissschuh.net/
+> [2] https://lore.kernel.org/all/20240418-sysctl-const-table-arg-v2-1-4012abc31311@weissschuh.net
+> [3] [PATCH v2 00/14] ASoC: Constify local snd_sof_dsp_ops
+>     https://lore.kernel.org/all/20240426-n-const-ops-var-v2-0-e553fe67ae82@kernel.org
+> [4] [PATCH v2 00/19] backlight: Constify lcd_ops
+>     https://lore.kernel.org/all/20240424-video-backlight-lcd-ops-v2-0-1aaa82b07bc6@kernel.org
+> [5] [PATCH 1/4] iommu: constify pointer to bus_type
+>     https://lore.kernel.org/all/20240216144027.185959-1-krzysztof.kozlowski@linaro.org
+> [6] [PATCH 00/29] const xattr tables
+>     https://lore.kernel.org/all/20230930050033.41174-1-wedsonaf@gmail.com
+> [7] https://lore.kernel.org/all/20231204-const-sysctl-v2-0-7a5060b11447@weissschuh.net/
+> 
+> [8]
+
+[snip]
+
+> [9]
+>     section: .rodata                obj_name : kern_table
+>     section: .rodata                obj_name : sysctl_mount_point
+>     section: .rodata                obj_name : addrconf_sysctl
+>     section: .rodata                obj_name : ax25_param_table
+>     section: .rodata                obj_name : mpls_table
+>     section: .rodata                obj_name : mpls_dev_table
+>     section: .data          obj_name : sld_sysctls
+>     section: .data          obj_name : kern_panic_table
+>     section: .data          obj_name : kern_exit_table
+>     section: .data          obj_name : vm_table
+>     section: .data          obj_name : signal_debug_table
+>     section: .data          obj_name : usermodehelper_table
+>     section: .data          obj_name : kern_reboot_table
+>     section: .data          obj_name : user_table
+>     section: .bss           obj_name : sched_core_sysctls
+>     section: .data          obj_name : sched_fair_sysctls
+>     section: .data          obj_name : sched_rt_sysctls
+>     section: .data          obj_name : sched_dl_sysctls
+>     section: .data          obj_name : printk_sysctls
+>     section: .data          obj_name : pid_ns_ctl_table_vm
+>     section: .data          obj_name : seccomp_sysctl_table
+>     section: .data          obj_name : uts_kern_table
+>     section: .data          obj_name : vm_oom_kill_table
+>     section: .data          obj_name : vm_page_writeback_sysctls
+>     section: .data          obj_name : page_alloc_sysctl_table
+>     section: .data          obj_name : hugetlb_table
+>     section: .data          obj_name : fs_stat_sysctls
+>     section: .data          obj_name : fs_exec_sysctls
+>     section: .data          obj_name : fs_pipe_sysctls
+>     section: .data          obj_name : namei_sysctls
+>     section: .data          obj_name : fs_dcache_sysctls
+>     section: .data          obj_name : inodes_sysctls
+>     section: .data          obj_name : fs_namespace_sysctls
+>     section: .data          obj_name : dnotify_sysctls
+>     section: .data          obj_name : inotify_table
+>     section: .data          obj_name : epoll_table
+>     section: .data          obj_name : aio_sysctls
+>     section: .data          obj_name : locks_sysctls
+>     section: .data          obj_name : coredump_sysctls
+>     section: .data          obj_name : fs_shared_sysctls
+>     section: .data          obj_name : fs_dqstats_table
+>     section: .data          obj_name : root_table
+>     section: .data          obj_name : pty_table
+>     section: .data          obj_name : xfs_table
+>     section: .data          obj_name : ipc_sysctls
+>     section: .data          obj_name : key_sysctls
+>     section: .data          obj_name : kernel_io_uring_disabled_table
+>     section: .data          obj_name : tty_table
+>     section: .data          obj_name : random_table
+>     section: .data          obj_name : scsi_table
+>     section: .data          obj_name : iwcm_ctl_table
+>     section: .data          obj_name : net_core_table
+>     section: .data          obj_name : netns_core_table
+>     section: .bss           obj_name : nf_log_sysctl_table
+>     section: .data          obj_name : nf_log_sysctl_ftable
+>     section: .data          obj_name : vs_vars
+>     section: .data          obj_name : vs_vars_table
+>     section: .data          obj_name : ipv4_route_netns_table
+>     section: .data          obj_name : ipv4_route_table
+>     section: .data          obj_name : ip4_frags_ns_ctl_table
+>     section: .data          obj_name : ip4_frags_ctl_table
+>     section: .data          obj_name : ctl_forward_entry
+>     section: .data          obj_name : ipv4_table
+>     section: .data          obj_name : ipv4_net_table
+>     section: .data          obj_name : unix_table
+>     section: .data          obj_name : ipv6_route_table_template
+>     section: .data          obj_name : ipv6_icmp_table_template
+>     section: .data          obj_name : ip6_frags_ns_ctl_table
+>     section: .data          obj_name : ip6_frags_ctl_table
+>     section: .data          obj_name : ipv6_table_template
+>     section: .data          obj_name : ipv6_rotable
+>     section: .data          obj_name : sctp_net_table
+>     section: .data          obj_name : sctp_table
+>     section: .data          obj_name : smc_table
+>     section: .data          obj_name : lowpan_frags_ns_ctl_table
+>     section: .data          obj_name : lowpan_frags_ctl_table
 
