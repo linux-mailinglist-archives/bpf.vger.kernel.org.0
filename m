@@ -1,136 +1,112 @@
-Return-Path: <bpf+bounces-28532-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-28533-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id AA47E8BB2A6
-	for <lists+bpf@lfdr.de>; Fri,  3 May 2024 20:19:30 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5D32D8BB2C7
+	for <lists+bpf@lfdr.de>; Fri,  3 May 2024 20:21:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5D7E41F20C96
-	for <lists+bpf@lfdr.de>; Fri,  3 May 2024 18:19:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 187AD282837
+	for <lists+bpf@lfdr.de>; Fri,  3 May 2024 18:21:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD6F3158A04;
-	Fri,  3 May 2024 18:16:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F21FC1598E1;
+	Fri,  3 May 2024 18:18:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="mSnyl94K"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HvYZx9GF"
 X-Original-To: bpf@vger.kernel.org
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f177.google.com (mail-pf1-f177.google.com [209.85.210.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D33901586F6;
-	Fri,  3 May 2024 18:16:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.133.104.62
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 34631159570
+	for <bpf@vger.kernel.org>; Fri,  3 May 2024 18:18:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714760197; cv=none; b=RqROgZQK3MBc6honKWDUl+ZyBpBEBpKLj4+oQ2/+QUw1Hnq3VDfBUHngppB0SjcSKq5/F9C5ORXJuUoKCbZeka/oxhuX5z0KxSjQOE/mw2vodZtsg74ig16F+Iw3beoKQ2zI0RqD4y9E+a3SVi2MNqmmPvtI4LV6Bj2jkrY+uWM=
+	t=1714760333; cv=none; b=PS+pUbdVXU5ChuYDgyYseFY9/3448QozJLYYkxWDrcUz9W4tKzULR766x1Ri86KhS/gCoQAekjQaXBBy5gWhKPgC47zmk6Fq9Bbvccmr3wdjt4p5mpelnF+z89UXOK8S23mD9e0/weNLCQ7QdARax+HhgaMKd//Shqv7SU5xRzs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714760197; c=relaxed/simple;
-	bh=YuRgDwOFHo66SVl5+SCvwWeWto7Qk5nbfcwDz1O6UBQ=;
-	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=RFgglWxf/c0/osCP90AF93s04VZ3iQFQrx+isbSJ3onNEJ21WYR/fLNYuObn1SHZUZ6OvnTPXoq9RJkt43QO/hs7kyGj7mIbafEHxPDdvKwuuNcKUun9DL9lez1I6NwR1lBn+G2fF/5H61HHS0ViBM28gUc4NBRoyNklkACEHYQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=mSnyl94K; arc=none smtp.client-ip=213.133.104.62
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iogearbox.net
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
-	In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
-	bh=sAFxnK7BGsBGg9HqpwUU0A8H/9W2t7LhGrsEhpnHuUQ=; b=mSnyl94KADVMX7fkEMtww0mrBT
-	wXrY6eSlsHmS9awY7x6ft0WGungL98FL6lOQu/CzKSt/GTZfo8/S/SuIZtuiTgboRcnF1y7m3KojY
-	sOzwWW3pMS9xIh8+Y6NyKwYXFoLlLCfYncsmOneEZ1OPKfSAXQ3YJ3yuRr4ir2jssl10monTaRnG+
-	LjsyvvAdAdastKuqnoSiEgk934ttWKywRo5s0f8PrbXZsBqlP8E7V6aNJ86+L+VUrYrLvQEgO88vk
-	inTmAyfF0MU8H3yZNZdnGUcJzOjHEh6Ed7nyexoHZtXbtqV1ylCisVHF79pbqqfsRiX4uocKU+Y9b
-	OtCMb6vA==;
-Received: from sslproxy03.your-server.de ([88.198.220.132])
-	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1s2xRp-0008TC-H3; Fri, 03 May 2024 20:16:31 +0200
-Received: from [178.197.249.41] (helo=linux.home)
-	by sslproxy03.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1s2xSQ-000HZz-1q;
-	Fri, 03 May 2024 20:16:30 +0200
-Subject: Re: [PATCH stable, 6.1] net: sockmap, fix missing MSG_MORE causing
- TCP disruptions
-To: John Fastabend <john.fastabend@gmail.com>, stable@vger.kernel.org
-Cc: bpf@vger.kernel.org, dhowells@redhat.com
-References: <20240503164805.59970-1-john.fastabend@gmail.com>
-From: Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <a84489f5-3336-e60a-02ac-5da05db53162@iogearbox.net>
-Date: Fri, 3 May 2024 20:16:30 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+	s=arc-20240116; t=1714760333; c=relaxed/simple;
+	bh=n4KO//L/jCzPEp0GC2ebpiM8u0Aj9ys6cLRrCnDEXUA=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=mKhHjvjeJ6U4oVytd/X1chVMx49zezuz1HAXnBD2uaB6UXCuX9i+dkQex+Qc1eHivxtxScQWqTkUcp995ZZ8s9HVjvb74QLWMtqzJM5+znkMc5QF71s5jrvRa9AcTmLGibqzKIPyYsJ0nvT2Fwc/ySPHHeGpk83cKxiDXhxVNnc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=HvYZx9GF; arc=none smtp.client-ip=209.85.210.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f177.google.com with SMTP id d2e1a72fcca58-6f45020ac2cso19261b3a.0
+        for <bpf@vger.kernel.org>; Fri, 03 May 2024 11:18:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1714760331; x=1715365131; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=n4KO//L/jCzPEp0GC2ebpiM8u0Aj9ys6cLRrCnDEXUA=;
+        b=HvYZx9GFcNxfaaLkZmnLzMnL0hPCn0R97YZ//4Mg68hSkOeGfSFGoyuCML79/rx+Oz
+         TnwXlB5dUINWLEp/GFnDcdqHqTbRnHyld7LlO1rQPvMlCQ6KldPfXVgE41HGHY0DPF7n
+         W3BnN2jEykrm9AM6jR6QPddDJ/i/X58FJ7dYOyZ6SOiJdfK7GpvI4dC0KRXI/8J7w6ha
+         GmoU9NGQ/+C71hHY9M5MYRs7wCvkG6OfkYjYIS04km3QIfkbK15IDarm+kCRT5tcz7nv
+         MWQh0k9LorBXkgwT6edHYjsQgHmX9fcj6fGflAetjSthZwVueW1AcUOewcJrhFzzCR8N
+         TkOQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714760331; x=1715365131;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=n4KO//L/jCzPEp0GC2ebpiM8u0Aj9ys6cLRrCnDEXUA=;
+        b=iNYzT8cklga6KwhyA/2Er+mWMjrjr0WBEjgvzDgfA0Og5fBgD3QxhpOKiyzSL50jYC
+         fjVk/KyiicEXZOpXpG51mE+wnsAXX9UxOYcvpzwrBoCB9p9SponAuq0wvHqwZDBcZuXk
+         I4bwfxJbWmLO7ZNfPJjXxsJw520ldytFdCH5xVkIaZXDbbUHh/U3WVxFaLDSWSKayGnT
+         WyAdaYA/5x3PbiKqbck5+5+r8HC5eJyboI+N3i8s9NSteTG6gNrMTgKG4683n4R5K1fY
+         7MSzioNWPn1fbtLZ8AQvwMjRczsV76cSTN2tT7gj+8M1wwxIFyqwCZJflS3zDZsc6HBS
+         1exw==
+X-Gm-Message-State: AOJu0Yzi4zuB1O+AnBhFTXjRH5hQDWjZOV4WLVuPYNO/mJPqEx8U6z6F
+	Z13lt8P2mQPYHHXNXSuAcADCiznMyMBv0c4lwivAh7t2LN9yr5wf
+X-Google-Smtp-Source: AGHT+IGDLQVgzy+YXdLOvhOTIjBvrsHA+lWIF3e0NwlIOy4i9POd33cYPbCjO1zGl2EGqdRXHcMOLA==
+X-Received: by 2002:a05:6a21:3a4b:b0:1af:36df:5159 with SMTP id zu11-20020a056a213a4b00b001af36df5159mr3919210pzb.59.1714760331354;
+        Fri, 03 May 2024 11:18:51 -0700 (PDT)
+Received: from ?IPv6:2604:3d08:6979:1160:da47:6959:81c7:8b0? ([2604:3d08:6979:1160:da47:6959:81c7:8b0])
+        by smtp.gmail.com with ESMTPSA id c6-20020a056a00008600b006e6fc52ecd0sm2337757pfj.123.2024.05.03.11.18.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 03 May 2024 11:18:50 -0700 (PDT)
+Message-ID: <402d482b9681aa29f0714d9855a3348a78751343.camel@gmail.com>
+Subject: Re: [PATCH bpf-next v4 0/7] bpf/verifier: range computation
+ improvements
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Cupertino Miranda <cupertino.miranda@oracle.com>, Alexei Starovoitov
+	 <alexei.starovoitov@gmail.com>
+Cc: bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>, "Jose E.
+	Marchesi" <jose.marchesi@oracle.com>
+Date: Fri, 03 May 2024 11:18:50 -0700
+In-Reply-To: <87cyq2u9se.fsf@oracle.com>
+References: <20240429212250.78420-1-cupertino.miranda@oracle.com>
+	 <87ikzvt22v.fsf@oracle.com>
+	 <CAADnVQJa9h7fgyHN3sbgpPrV7Kk8O+N2NVL4pF4qbE5xf59M9g@mail.gmail.com>
+	 <87cyq2u9se.fsf@oracle.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.44.4-0ubuntu2 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20240503164805.59970-1-john.fastabend@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.10/27264/Fri May  3 10:24:33 2024)
 
-On 5/3/24 6:48 PM, John Fastabend wrote:
-> [ Upstream commit ebf2e8860eea66e2c4764316b80c6a5ee5f336ee]
-> [ Upstream commit f8dd95b29d7ef08c19ec9720564acf72243ddcf6]
-> 
-> In the first patch,
-> 
-> ebf2e8860eea ("tcp_bpf: Inline do_tcp_sendpages as it's now a wrapper around tcp_sendmsg")
-> 
-> This block of code is added to tcp_bpf_push(). The
-> tcp_bpf_push is the code used by BPF to submit messages into the TCP
-> stack.
-> 
->   if (flags & MSG_SENDPAGE_NOTLAST)
->       msghdr.msg_flags | MSG_MORE;
-> 
-> In the second patch,
-> 
-> f8dd95b29d7e ("tcp_bpf, smc, tls, espintcp, siw: Reduce MSG_SENDPAGE_NOTLAST usage")
-> 
-> this logic was further changed to,
-> 
->    if (flags & MSG_SENDPAGE_NOTLAST)
->       msghdr.msg_flags |= MSG_MORE
-> 
-> This was done as part of an improvement to use the sendmsg() callbacks
-> and remove the sendpage usage inside the various sub systems.
-> 
-> However, these two patches together fixed a bug. The issue is without
-> MSG_MORE set we will break a msg up into many smaller sends. In some
-> case a lot because the operation loops over the scatter gather list.
-> Without the MSG_MORE set (the current 6.1 case) we see stalls in data
-> send/recv and sometimes applications failing to receive data. This
-> generally is the result of an application that gives up after calling
-> recv() or similar too many times. We introduce this because of how
-> we incorrectly change the TCP send pattern.
-> 
-> Now that we have both 6.5 and 6.1 stable kernels deployed we've
-> observed a series of issues related to this in real deployments. In 6.5
-> kernels all the HTTP and other compliance tests pass and we are not
-> observing any other issues. On 6.1 various compliance tests fail
-> (nginx for example), but more importantly in these clusters without
-> the flag set we observe stalled applications and increased retries in
-> other applications. Openssl users where we have annotations to monitor
-> retries and failures observed a significant increase in retries for
-> example.
-> 
-> For the backport we isolated the fix to the two lines in the above
-> patches that fixed the code. With this patch we deployed the workloads
-> again and error rates and stalls went away and 6.1 stable kernels
-> perform similar to 6.5 stable kernels. Similarly the compliance tests
-> also passed.
-> 
-> Cc: <stable@vger.kernel.org> # 6.1.x
-> Fixes: 604326b41a6fb ("tcp_bpf, smc, tls, espintcp, siw: Reduce MSG_SENDPAGE_NOTLAST usage")
-> Signed-off-by: John Fastabend <john.fastabend@gmail.com>
+On Fri, 2024-05-03 at 17:42 +0100, Cupertino Miranda wrote:
+> Is it Ok to reduce all this to 2 patches.
+> One with the verifier changes and another with selftests.
 
-Acked-by: Daniel Borkmann <daniel@iogearbox.net>
+Hi Miranda,
+
+I think Alexei meant that patch #7 could be moved to the beginning of the p=
+atch-set.
+Which would simplify patch #2.
+The main logical structure of the series makes sense to me, I think we shou=
+ld keep it:
+- replace calls to mark_reg_unknown
+>> do equivalent of patch #7 here, remove unnecessary checks <<
+- refactor checks for range computation (factor out is_safe_to_compute_dst_=
+reg_range)
+- improve XOR and OR range computation
+- XOR and OR range computation tests
+- relax MUL range computation check
+- MUL range computation tests
 
