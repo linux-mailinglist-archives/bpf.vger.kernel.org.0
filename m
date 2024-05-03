@@ -1,168 +1,186 @@
-Return-Path: <bpf+bounces-28549-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-28550-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A77398BB57A
-	for <lists+bpf@lfdr.de>; Fri,  3 May 2024 23:18:28 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7C3B58BB5D0
+	for <lists+bpf@lfdr.de>; Fri,  3 May 2024 23:34:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5D51A281939
-	for <lists+bpf@lfdr.de>; Fri,  3 May 2024 21:18:27 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E701A1F242B5
+	for <lists+bpf@lfdr.de>; Fri,  3 May 2024 21:34:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C2A3D50269;
-	Fri,  3 May 2024 21:18:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F2A345914A;
+	Fri,  3 May 2024 21:34:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VqBKts97"
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="pf8HEhBr"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f181.google.com (mail-pf1-f181.google.com [209.85.210.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 07AA33F8F1
-	for <bpf@vger.kernel.org>; Fri,  3 May 2024 21:18:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C01735821A;
+	Fri,  3 May 2024 21:33:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714771103; cv=none; b=D8QOSKSSFlkjCvOT9OFWHCcZxWAMZpr/Ie9nIGeIrXuxH4YcJVPzRx6AhalK46ni1P/tXJ48vstnhOCjXjXO5BW/nubTug6ZAsXs1dE53ZeWuw9lm/eTuWmr+WM1II+typoupHdmkXydZ2cjJdsp0Cn0x0q5DZVyaq2pQ8kCJTw=
+	t=1714772040; cv=none; b=OLnvP4LauiZUPTS5EWNnQlFTmYlvFFwEcHV5ATKt9abDsKxn4kYt2Kg2JduDx8bM1Vyk5YQiCTM1Y74c8PvQEiLfN/NtwJMP+zrjLqneqhPUQD3Ah7TegBReC4wgBYF/sbtD96Bx67Jmegsv+MaibHkNBed/i0D1+IMWvsio8D0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714771103; c=relaxed/simple;
-	bh=IRSwM3U/n7IrL8y+qXzLf9KeahiVP4P529zfC3To2Uo=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=lWPSRCmwprCjNSWU/wLxzYwlBw/apaMNeLOAV0eNeecX81dfQV8Ei9ne2mqM/8tT8nk0M6AAsmsQ0GpejqXo2LIHwGgftPkf5+KT/JN1+HxJbZ7/QP56zrzJ61cVMtnQfvfMCYj7R13gqmBumn1ytmTMf6cYXMGPS2g+jDTPW28=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=VqBKts97; arc=none smtp.client-ip=209.85.210.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f181.google.com with SMTP id d2e1a72fcca58-6f28bb6d747so133571b3a.3
-        for <bpf@vger.kernel.org>; Fri, 03 May 2024 14:18:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714771101; x=1715375901; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=oPuhRkr1fJA5SnPjVaKEd2darL7JNmMm99fNd8SEMh0=;
-        b=VqBKts97PEtTlGlsUA1KQCDCoebYzOw//iD6MYBQULU+E1trNhxiOJ2DB60/Fpd9Ht
-         SDwNwhgf4NFIKSK11Z6S6DQaRQrqt7TWi9ZQ2loIxRk/wpUXRHdvYUZ3d5sLpqAYYAcg
-         bt0PxoPzaNbcMEfRh/KVaS64VfFr+a4tAykt4ihCJjTiWxx7fjUtZsJl2BUQ2XzumHD0
-         ax/q8NTC0eUzKLORa4sPGEY1/ftO0LV+EeMdXQ7AMvaCRH6cI2Tw64k+LKeqw+FV6FGc
-         T+GIpH0KsElR6X6zt2CIGeaGyvD0kUc83HoxC0av9Kc4lkt2HOmgkLVLsvMl8vYvhyeU
-         VD8g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714771101; x=1715375901;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=oPuhRkr1fJA5SnPjVaKEd2darL7JNmMm99fNd8SEMh0=;
-        b=wCjR8N5AK/pG0H7xB+TCYoplig3lvSFd53ZVD9jaTn39J5wwCZzDL6Vx4k2hsBhnOd
-         JuLcXVMC5tCL6jzfIFl+OzTznZo/4u/MFymiHJ1KlQA5T9NbuSBg5BBVnFLKkN9R7Dxt
-         OAQG1X0RaS/oUN8XJeitzhTP3goenyXTzn2cWn5ifpFXURjoN0O27Ky8HuCpYw8+1t0+
-         rFbQMCLUsBuYo+0LcfExrhQAlJ78vLZ5X7SMeg4Hj897CE+RAdYE06SXdAw/kdriEzCI
-         YDKgdDhRiLxg8pPnc03qkfQnYljf+420PSCHQqJZiMz0XXIu9BkT6w6+0bEQ6zxbBbDG
-         ZkYw==
-X-Forwarded-Encrypted: i=1; AJvYcCUnSHXvMAj/Re7RtVKc2/P5jGWAgnT7MYKSxtL080HFoau/4tpWV9o/NqZUECIC+bKe4nniz4MBnNX2p9GKpv/WVvm/
-X-Gm-Message-State: AOJu0YyYKytmae4yFgcmtz6JfuPtSenZ1Rb8Ki1hKuGyXxqEF0/ul/dm
-	rvajIq9IKTIL14iYb+iHxzGX/CgUkQer9em1XnfufmNOxLFsmEij
-X-Google-Smtp-Source: AGHT+IE1ztPpGEFJq9zY9B/80Kj/w43A88TDd75UA/+H2slCa2Y07yettpeYv7MEJN3EHThtR3ip0g==
-X-Received: by 2002:a05:6a20:f391:b0:1a9:b7d0:b6ff with SMTP id qr17-20020a056a20f39100b001a9b7d0b6ffmr3867733pzb.32.1714771101181;
-        Fri, 03 May 2024 14:18:21 -0700 (PDT)
-Received: from ?IPv6:2604:3d08:6979:1160:da47:6959:81c7:8b0? ([2604:3d08:6979:1160:da47:6959:81c7:8b0])
-        by smtp.gmail.com with ESMTPSA id e2-20020a056a0000c200b006ecee611c05sm3494521pfj.182.2024.05.03.14.18.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 03 May 2024 14:18:20 -0700 (PDT)
-Message-ID: <171a007587c02ff4a8d064c65531fde318c3b4e2.camel@gmail.com>
-Subject: Re: [RFC bpf-next] bpf: avoid clang-specific push/pop attribute
- pragmas in bpftool
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: "Jose E. Marchesi" <jose.marchesi@oracle.com>, bpf@vger.kernel.org
-Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, Yonghong Song
-	 <yonghong.song@linux.dev>, Andrii Nakryiko <andrii.nakryiko@gmail.com>, 
-	david.faust@oracle.com, cupertino.miranda@oracle.com
-Date: Fri, 03 May 2024 14:18:20 -0700
-In-Reply-To: <6687f49cdd5061202ee112c38614bea091266179.camel@gmail.com>
-References: <20240503111836.25275-1-jose.marchesi@oracle.com>
-	 <6687f49cdd5061202ee112c38614bea091266179.camel@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.44.4-0ubuntu2 
+	s=arc-20240116; t=1714772040; c=relaxed/simple;
+	bh=OR8t/7tZT5uQQef3RULK0uCzP116fOOCTBA3svyi1Qw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=oR3zUmOCd4DbZnkRfM1cf3GsxyT6A+wV/ba3yH+LAuHBxKs24FD60iuXnWREELx0diKJPmcTAjiXxTNLJ9vCuvJehPywkw/gpD6ztfBsib/PUzwwLFlmSSNUDUFnBE3vSOHrfmzQQyEmRLLZtXYHsbFJ/KXBLP5Dg3YP5cq/r0A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=pf8HEhBr; arc=none smtp.client-ip=205.220.180.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 443LONNw021291;
+	Fri, 3 May 2024 21:33:32 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=x+VBAQfRCu+s6AQ2CmZe1fqjOOTucJLjWz4SzfIiC0A=; b=pf
+	8HEhBrNafPZBfZZZsGkubm0NmlkGrtOJqQOkKE/q+2bmZxjBDoSImg7zPWYEU+Tq
+	D+h9vHEZ+AGMosXD0xzqcA4Ogp7y4dilNvoi9w1gnzR5NulbhyiyF1UdB7hk+POp
+	Q6LyV+J/NHAjbgTZzKuiY3aZJ4XDU58Pt/BGaL7UIBM2kOcDBJJOoy5cvoWhrEp1
+	Eg/42MF1oMoDqkgK2lkVS5VahIHA8rIhkz5OIBT2Q5sIZRP2NlC2/JhQHdn3jxQ1
+	F502gT51xBP3OiptPTRL7/AGW0nLIyr6L5RQnjq1e1U71KOi5sihxC73qqZx0Uy0
+	OfB0OfWQ5O5GzwgNjwpA==
+Received: from nasanppmta02.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xvwfa9du8-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 03 May 2024 21:33:32 +0000 (GMT)
+Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
+	by NASANPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 443LXUpo015476
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 3 May 2024 21:33:30 GMT
+Received: from [10.110.77.94] (10.80.80.8) by nasanex01a.na.qualcomm.com
+ (10.52.223.231) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9; Fri, 3 May 2024
+ 14:33:27 -0700
+Message-ID: <0f88ec53-6c92-434d-81c8-538b31a2385e@quicinc.com>
+Date: Fri, 3 May 2024 14:33:26 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH bpf-next v5 2/2] net: Add additional bit to support
+ clockid_t timestamp type
+Content-Language: en-US
+To: Martin KaFai Lau <martin.lau@linux.dev>
+CC: "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet
+	<edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni
+	<pabeni@redhat.com>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, Andrew Halaney <ahalaney@redhat.com>,
+        "Willem
+ de Bruijn" <willemdebruijn.kernel@gmail.com>,
+        Martin KaFai Lau
+	<martin.lau@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>, bpf
+	<bpf@vger.kernel.org>,
+        <kernel@quicinc.com>
+References: <20240424222028.1080134-1-quic_abchauha@quicinc.com>
+ <20240424222028.1080134-3-quic_abchauha@quicinc.com>
+ <2b2c3eb1-df87-40fe-b871-b52812c8ecd0@linux.dev>
+From: "Abhishek Chauhan (ABC)" <quic_abchauha@quicinc.com>
+In-Reply-To: <2b2c3eb1-df87-40fe-b871-b52812c8ecd0@linux.dev>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nasanex01a.na.qualcomm.com (10.52.223.231)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: nVdDm5OZ1TpalJYn_PpoYsN-R3ehATxQ
+X-Proofpoint-ORIG-GUID: nVdDm5OZ1TpalJYn_PpoYsN-R3ehATxQ
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.650,FMLib:17.11.176.26
+ definitions=2024-05-03_15,2024-05-03_02,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
+ impostorscore=0 lowpriorityscore=0 bulkscore=0 adultscore=0
+ priorityscore=1501 clxscore=1015 mlxscore=0 suspectscore=0 phishscore=0
+ spamscore=0 mlxlogscore=999 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.19.0-2404010003 definitions=main-2405030153
 
-On Fri, 2024-05-03 at 13:36 -0700, Eduard Zingerman wrote:
-> On Fri, 2024-05-03 at 13:18 +0200, Jose E. Marchesi wrote:
-> [...]
->=20
-> > This patch modifies bpftool in order to, instead of using the pragmas,
-> > define ATTR_PRESERVE_ACCESS_INDEX to conditionally expand to the CO-RE
-> > attribute:
-> >=20
-> >   #ifndef __VMLINUX_H__
-> >   #define __VMLINUX_H__
-> >=20
-> >   #ifndef BPF_NO_PRESERVE_ACCESS_INDEX
-> >   #define ATTR_PRESERVE_ACCESS_INDEX __attribute__((preserve_access_ind=
-ex))
-> >   #else
-> >   #define ATTR_PRESERVE_ACCESS_INDEX
-> >   #endif
->=20
-> Nit: maybe swap the branches to avoid double negation?
->=20
-> >=20
-> >   [... type definitions generated from kernel BTF ... ]
-> >=20
-> >   #undef ATTR_PRESERVE_ACCESS_INDEX
-> >=20
-> > and then the new btf_dump__dump_type_with_opts is used with options
-> > specifying that we wish to have struct type attributes:
-> >=20
-> >   DECLARE_LIBBPF_OPTS(btf_dump_type_opts, opts);
-> >   [...]
-> >   opts.record_attrs_str =3D "ATTR_PRESERVE_ACCESS_INDEX";
-> >   [...]
-> >   err =3D btf_dump__dump_type_with_opts(d, root_type_ids[i], &opts);
-> >=20
-> > This is a RFC because introducing a new libbpf public function
-> > btf_dump__dump_type_with_opts may not be desirable.
-> >=20
-> > An alternative could be to, instead of passing the record_attrs_str
-> > option in a btf_dump_type_opts, pass it in the global dumper's option
-> > btf_dump_opts:
-> >=20
-> >   DECLARE_LIBBPF_OPTS(btf_dump_opts, opts);
-> >   [...]
-> >   opts.record_attrs_str =3D "ATTR_PRESERVE_ACCESS_INDEX";
-> >   [...]
-> >   d =3D btf_dump__new(btf, btf_dump_printf, NULL, &opts);
-> >   [...]
-> >   err =3D btf_dump__dump_type(d, root_type_ids[i]);
-> >=20
-> > This would be less disruptive regarding library API, and an overall
-> > simpler change.  But it would prevent to use the same btf dumper to
-> > dump types with and without attribute definitions.  Not sure if that
-> > matters much in practice.
-> >=20
-> > Thoughts?
->=20
-> I think that generating attributes explicitly is fine.
->=20
-> I also think that moving '.record_attrs_str' to 'btf_dump_opts' is prefer=
-able,
-> in order to avoid adding new API functions.
 
-On more argument for making it a part of btf_dump_opts is that
-btf_dump__dump_type() walks the chain of dependent types,
-so attribute placement control is not per-type anyways.
+> BPF_CALL_3(bpf_skb_set_tstamp, struct sk_buff *, skb,
+>            u64, tstamp, u32, tstamp_type)
+> {
+>     /* ... */
+>     case BPF_SKB_CLOCK_TAI:
+>         if (!tstamp)
+>             return -EINVAL;
+>         skb->tstamp = tstamp;
+>         skb->tstamp_type = SKB_CLOCK_TAI;
+>         break;
+>         case BPF_SKB_CLOCK_REALTIME:
+>         skb->tstamp = tstamp;
+>         skb->tstamp_type = SKB_CLOCK_REALTIME;
+>         break;
+> 
+>     /* ... */
+> }
+> 
+>>               return -EINVAL;
+> 
+>> @@ -9388,17 +9394,17 @@ static struct bpf_insn *bpf_convert_tstamp_type_read(const struct bpf_insn *si,
+>>   {
+>>       __u8 value_reg = si->dst_reg;
+>>       __u8 skb_reg = si->src_reg;
+>> -    /* AX is needed because src_reg and dst_reg could be the same */
+>> -    __u8 tmp_reg = BPF_REG_AX;
+>> -
+>> -    *insn++ = BPF_LDX_MEM(BPF_B, tmp_reg, skb_reg,
+>> -                  SKB_BF_MONO_TC_OFFSET);
+>> -    *insn++ = BPF_JMP32_IMM(BPF_JSET, tmp_reg,
+>> -                SKB_MONO_DELIVERY_TIME_MASK, 2);
+>> -    *insn++ = BPF_MOV32_IMM(value_reg, BPF_SKB_TSTAMP_UNSPEC);
+>> -    *insn++ = BPF_JMP_A(1);
+>> -    *insn++ = BPF_MOV32_IMM(value_reg, BPF_SKB_TSTAMP_DELIVERY_MONO);
+>> -
+>> +    BUILD_BUG_ON(__SKB_CLOCK_MAX != BPF_SKB_TSTAMP_DELIVERY_TAI);
+> 
+> Add these also:
+> 
+>     BUILD_BUG_ON(SKB_CLOCK_REALTIME != BPF_SKB_CLOCK_REALTIME);
+>     BUILD_BUG_ON(SKB_CLOCK_MONOTONIC != BPF_SKB_CLOCK_MONOTONIC);
+>     BUILD_BUG_ON(SKB_CLOCK_TAI != BPF_SKB_CLOCK_TAI);
+> 
 
-I also remembered my stalled attempt to emit preserve_static_offset
-attribute for certain types [1] (need to finish with it).
-There I needed to attach attributes to a dozen specific types.
+Martin, The above suggestion of adding BUILD_BUG_ON always gives me a warning stating the following. 
 
-[1] https://lore.kernel.org/bpf/20231220133411.22978-3-eddyz87@gmail.com/
+Some systems considers warning as error if compiler flags are enabled. I believe this requires your suggestion before i raise RFC v6 patchset to either keep the 
+BUILD_BUG_ON or remove it completely. 
 
-So, I think that it would be better if '.record_attrs_str' would be a
-callback accepting the name of the type and it's kind. Wdyt?
+/local/mnt/workspace/kernel_master/linux-next/net/core/filter.c:9395:34: warning: comparison between ‘enum skb_tstamp_type’ and ‘enum <anonymous>’ [-Wenum-compare]
+ 9395 |  BUILD_BUG_ON(SKB_CLOCK_REALTIME != BPF_SKB_CLOCK_REALTIME);
+      |                                  ^~
+/local/mnt/workspace/kernel_master/linux-next/include/linux/compiler_types.h:451:9: note: in definition of macro ‘__compiletime_assert’
+  451 |   if (!(condition))     \
+      |         ^~~~~~~~~
+/local/mnt/workspace/kernel_master/linux-next/include/linux/compiler_types.h:471:2: note: in expansion of macro ‘_compiletime_assert’
+  471 |  _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
+      |  ^~~~~~~~~~~~~~~~~~~
+/local/mnt/workspace/kernel_master/linux-next/include/linux/build_bug.h:39:37: note: in expansion of macro ‘compiletime_assert’
+   39 | #define BUILD_BUG_ON_MSG(cond, msg) compiletime_assert(!(cond), msg)
+      |                                     ^~~~~~~~~~~~~~~~~~
+/local/mnt/workspace/kernel_master/linux-next/include/linux/build_bug.h:50:2: note: in expansion of macro ‘BUILD_BUG_ON_MSG’
+   50 |  BUILD_BUG_ON_MSG(condition, "BUILD_BUG_ON failed: " #condition)
+      |  ^~~~~~~~~~~~~~~~
+/local/mnt/workspace/kernel_master/linux-next/net/core/filter.c:9395:2: note: in expansion of macro ‘BUILD_BUG_ON’
+ 9395 |  BUILD_BUG_ON(SKB_CLOCK_REALTIME != BPF_SKB_CLOCK_REALTIME);
+      |  ^~~~~~~~~~~~
+/local/mnt/workspace/kernel_master/linux-next/net/core/filter.c:9396:35: warning: comparison between ‘enum skb_tstamp_type’ and ‘enum <anonymous>’ [-Wenum-compare]
+ 9396 |  BUILD_BUG_ON(SKB_CLOCK_MONOTONIC != BPF_SKB_CLOCK_MONOTONIC);
+      |                                   ^~
+/local/mnt/workspace/kernel_master/linux-next/include/linux/compiler_types.h:451:9: note: in definition of macro ‘__compiletime_assert’
+  451 |   if (!(condition))     \
+      |         ^~~~~~~~~
 
-[...]
+         |                                      ^~
+
+
+
 
