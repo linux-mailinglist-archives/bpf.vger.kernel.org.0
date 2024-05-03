@@ -1,218 +1,230 @@
-Return-Path: <bpf+bounces-28509-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-28510-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C038A8BAD4E
-	for <lists+bpf@lfdr.de>; Fri,  3 May 2024 15:14:24 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 38A8F8BAE3F
+	for <lists+bpf@lfdr.de>; Fri,  3 May 2024 15:57:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9A3411C20E9C
-	for <lists+bpf@lfdr.de>; Fri,  3 May 2024 13:14:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A42871F212E6
+	for <lists+bpf@lfdr.de>; Fri,  3 May 2024 13:57:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D230153BE4;
-	Fri,  3 May 2024 13:14:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D93015445B;
+	Fri,  3 May 2024 13:56:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gcauIy26"
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="LrwH/3mn"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f169.google.com (mail-pf1-f169.google.com [209.85.210.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3FE8215358B;
-	Fri,  3 May 2024 13:14:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 751051DA21;
+	Fri,  3 May 2024 13:56:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714742048; cv=none; b=fiybGIh0WBX0bRyQbxo1cmcVUgNJHxr+k75ANuGHDk7iViQo5jyd9Q6VeK6GWx6FMp/X6iQHEJ29nrS+Rit93+fzbE2maVHDlpq6VCQpn0aRopoj3twk51aNaYw2Ko0a3WblSn8rScpgxO9MGX4pt9OE7oWy+nF+rM0m2zVKjHc=
+	t=1714744567; cv=none; b=fDcX2ymBE0NqDD8i+m45v+5albMtMDb/USJg9eZzQJvG18UpLR983epfbe72xs4/zLrj0rZmYPdIKyXJdRsjOVwq5ErDbdN2JMITM1aJ7XjfC6XUkqnvv6Y1oshjbxaQQm10at8IK52rZOYE1GiHXhAr3LI/kIHbpcxxATG9Pow=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714742048; c=relaxed/simple;
-	bh=emDrdx6WOkQnF2Eso3DR0P187wYGRr+WTfcYUP8aUXY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=uFXxjxIXve9tB75TqzA1vNN7p1ZU5NDyFqcopoA0UUVfvFh1JS/nMk3ot7qef24ngbQ2n4pmTs+DAMMeRmnMpMzJeVPMb6hApDjw+5Kkz/K+wFS/+9iHnupJ9J3qE+gTXxDy7nljRkmNzUGN9Vz3vgKH6DzhoQSrEPGwoTNjwh8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gcauIy26; arc=none smtp.client-ip=209.85.210.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f169.google.com with SMTP id d2e1a72fcca58-6f44ed6e82fso314106b3a.3;
-        Fri, 03 May 2024 06:14:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714742046; x=1715346846; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=S6Kz22nN7XZpw5/QYn8eU3Vl5d2ZzmTa9J6l4Ufw1zs=;
-        b=gcauIy26MtzJYA8Gns6kXZilBsGTzVoH5HBE70noznhGOD4euDnekA10A01JhJPaLO
-         3g/gVlbyt0HrO4AS2vlEUGm9fP40LfNNZhe05qHmQQDDTXbdlsjL6mGTAhieH0jEnWuf
-         2UXYKRmnjAejy9goG3wES6Ad1+iG+/facnZgyyouKsCRo2hXWbGOu9VtEEfnnefyPTSW
-         7iMwwes0uuOIIV/vYUUhSG5tqOsagJyJGfgu3ygTA3yLrrmBgMDFctfaUxslbfdu6TXe
-         7IgKNvm5WAWO0WLGUO0ftNS79LC27eJf2MhdRHCgpdbxC0N19AnVU+8e/hJVtiOaJ5Cd
-         29Pw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714742046; x=1715346846;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=S6Kz22nN7XZpw5/QYn8eU3Vl5d2ZzmTa9J6l4Ufw1zs=;
-        b=Q5uGiD4D6J/PrQvGzWl+iPWr35x9BFY32I3uffYTmLVU2gJccyoYKYOihx6Fucj+B2
-         gA9t9O9JpEcUdshqKBBY3YCp0zSPaM3r3ggiRYt5d2a9tFWwBJysy/QI1VF2ZIdh/kqB
-         A/9K4Iba1nfp9IQNqChm4DMSW+jJQFBInncsAwtQzpGZfpG4qVrw7aJAnBg9AhKTNzyJ
-         CvJJNDlUZJhFLk8OtF++fxDILWOYY7glkSaunLgvoUQ8H7V/vnzoma6qsa9Oq4WR37v3
-         k1r2JE9Ti1N+wYw4p0cPfi5eCPspBIp8y5CqBJuaZT6vG4MvG9ej9DIo+7PWdwc/GODd
-         6v+w==
-X-Forwarded-Encrypted: i=1; AJvYcCVILL6wtpyjp9AhtO3obmCsPN3ndhJIKkDpP0EPmFncQvyR/Krsp4rbEJ1jlY3jNJys+oXkf0RSHkgUMRCcecEATmVTc8kc/SRJU3HPnjLguE9vdE6uLjh53jSmXZ2MKaq/VnlNFdZ5DIwROEPEe96L/QUYjImbzgkZsUyKoZBxz1NA8JaCYGyjt5tdyIVPi97Oublw5HQ+zpiA9zKv86vL1l68FUcazL/PG2xQp0i4poNkbUioC9mTRE3VcTwJBq9Rl+Vkmzd/fcpEaT8aPn6FSeOm5TShzeECXsf3O3G8vwrzHoicyoBNXwlrmfKz3sWspenNHP1fv5grRcEa7yRbL3HruID7AYjsySZj4ntgyGwixOYBAZQcOjAoqD3lOiCr7HpZSQ3Gsa/+mJjUtR+RiVCqV8kn6cGhYgf9W12xfI0LMH/hkK06p7fNn16Zygg23SlxfvDBE/Qgc1uf1zwru5rc3ua53X6Dyudnn3XWunVjFj1GemFEY89xD+ymFrqlAuUu3w==
-X-Gm-Message-State: AOJu0YxrOPSFGgA0SvXlclJbHO9actMARbcZeqFgnXwjiekXoN7gsQcY
-	eOQa9hGvHl7K5jXKPV9hHKiye5303LSuvCHluvvjR8nW59v/1Zny
-X-Google-Smtp-Source: AGHT+IGAxZcx6M5jku9xJQNGsk1mq4nfDpmBwjTTeZ5TRCe/HqThlL4pFRsVfzRAFzuWYWRs0QPHbQ==
-X-Received: by 2002:a05:6a20:3cac:b0:1ac:c8dc:3e5e with SMTP id b44-20020a056a203cac00b001acc8dc3e5emr3146813pzj.24.1714742046301;
-        Fri, 03 May 2024 06:14:06 -0700 (PDT)
-Received: from archie.me ([103.124.138.155])
-        by smtp.gmail.com with ESMTPSA id j1-20020a170902da8100b001e509d4d6ddsm3203863plx.1.2024.05.03.06.14.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 03 May 2024 06:14:05 -0700 (PDT)
-Received: by archie.me (Postfix, from userid 1000)
-	id C0EA918462B27; Fri, 03 May 2024 20:14:03 +0700 (WIB)
-Date: Fri, 3 May 2024 20:14:03 +0700
-From: Bagas Sanjaya <bagasdotme@gmail.com>
-To: Mina Almasry <almasrymina@google.com>, netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-	linux-alpha@vger.kernel.org, linux-mips@vger.kernel.org,
-	linux-parisc@vger.kernel.org, sparclinux@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
-	bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
-	linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org
-Cc: "David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Richard Henderson <richard.henderson@linaro.org>,
-	Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-	Matt Turner <mattst88@gmail.com>,
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	"James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-	Helge Deller <deller@gmx.de>, Andreas Larsson <andreas@gaisler.com>,
-	Jesper Dangaard Brouer <hawk@kernel.org>,
-	Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Arnd Bergmann <arnd@arndb.de>, Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
-	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-	Steffen Klassert <steffen.klassert@secunet.com>,
-	Herbert Xu <herbert@gondor.apana.org.au>,
-	David Ahern <dsahern@kernel.org>,
-	Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-	Shuah Khan <shuah@kernel.org>,
-	Sumit Semwal <sumit.semwal@linaro.org>,
-	Christian =?utf-8?B?S8O2bmln?= <christian.koenig@amd.com>,
-	Amritha Nambiar <amritha.nambiar@intel.com>,
-	Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-	Alexander Mikhalitsyn <alexander@mihalicyn.com>,
-	Kaiyuan Zhang <kaiyuanz@google.com>,
-	Christian Brauner <brauner@kernel.org>,
-	Simon Horman <horms@kernel.org>,
-	David Howells <dhowells@redhat.com>,
-	Florian Westphal <fw@strlen.de>,
-	Yunsheng Lin <linyunsheng@huawei.com>,
-	Kuniyuki Iwashima <kuniyu@amazon.com>, Jens Axboe <axboe@kernel.dk>,
-	Arseniy Krasnov <avkrasnov@salutedevices.com>,
-	Aleksander Lobakin <aleksander.lobakin@intel.com>,
-	Michael Lass <bevan@bi-co.net>, Jiri Pirko <jiri@resnulli.us>,
-	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-	Lorenzo Bianconi <lorenzo@kernel.org>,
-	Richard Gobert <richardbgobert@gmail.com>,
-	Sridhar Samudrala <sridhar.samudrala@intel.com>,
-	Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
-	Johannes Berg <johannes.berg@intel.com>,
-	Abel Wu <wuyun.abel@bytedance.com>,
-	Breno Leitao <leitao@debian.org>,
-	Pavel Begunkov <asml.silence@gmail.com>, David Wei <dw@davidwei.uk>,
-	Jason Gunthorpe <jgg@ziepe.ca>,
-	Shailend Chand <shailend@google.com>,
-	Harshitha Ramamurthy <hramamurthy@google.com>,
-	Shakeel Butt <shakeel.butt@linux.dev>,
-	Jeroen de Borst <jeroendb@google.com>,
-	Praveen Kaligineedi <pkaligineedi@google.com>
-Subject: Re: [RFC PATCH net-next v8 13/14] net: add devmem TCP documentation
-Message-ID: <ZjTjG_INUM4G1Pf5@archie.me>
-References: <20240403002053.2376017-1-almasrymina@google.com>
- <20240403002053.2376017-14-almasrymina@google.com>
+	s=arc-20240116; t=1714744567; c=relaxed/simple;
+	bh=Y96AOJn77GLmUXEHBQutWKub1WKq1hWJmHUqVNR3Y1k=;
+	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:References:
+	 In-Reply-To:Content-Type; b=BAbahciPbzsI8MuY+WbxVnXc/nQDia0TYC9tgicebRWrhoQtN0j7Arkt5EKcEfSrfS3MTOiAL3Q6qfoU5LEFZMbH0+DhtRvLwHnYbeYJ/uHEI/MrQgO3sPIL11G5ecY7SpZdFC8Bos5CHDlKHbm3zdinKetz/GQ3ZFiMe3/Seic=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=LrwH/3mn; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1714744558;
+	bh=Y96AOJn77GLmUXEHBQutWKub1WKq1hWJmHUqVNR3Y1k=;
+	h=Date:From:Subject:To:Cc:References:In-Reply-To:From;
+	b=LrwH/3mnfPFWqlO5VtTiuRGi9MobTvoBHFrIB76DM6IOY+OUEJR0aAjTboy988yxP
+	 QSMEaZ3YNliz8x2SL9d2ztlpuXyVPx0TUKok84aJeR0FOwlO24eYgbvNLSwPkcfxPG
+	 pRCOxnEBERINg0V91bymWGUP03rFYdGMavMztrpWxRtbmoSM+hRbtTmAq6rx4xwvDr
+	 J3mNBr0h1epQC8Zio6mZvPLIiBsx75G9tiepMv+ebSGKARKHLP4txvVH+ee64mNfr3
+	 4tOdpC/q3rPmtqELML2YsgF4rCCSp86E4EPPbvcu+OoflwW3KnSsogQtvbsVCYas1C
+	 JlVqryH+wLruA==
+Received: from [10.193.1.1] (broslavsky.collaboradmins.com [68.183.210.73])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: usama.anjum)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 5A0D33782135;
+	Fri,  3 May 2024 13:55:47 +0000 (UTC)
+Message-ID: <b4d7ce70-3320-4333-9589-b5df187409fe@collabora.com>
+Date: Fri, 3 May 2024 18:55:59 +0500
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="p760D9CQLIFGzr8t"
-Content-Disposition: inline
-In-Reply-To: <20240403002053.2376017-14-almasrymina@google.com>
+User-Agent: Mozilla Thunderbird
+From: Muhammad Usama Anjum <usama.anjum@collabora.com>
+Subject: Re: [PATCH bpf-next v3] selftests/bpf: Move test_dev_cgroup to
+ prog_tests
+To: Yonghong Song <yonghong.song@linux.dev>,
+ Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau
+ <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>,
+ Song Liu <song@kernel.org>, John Fastabend <john.fastabend@gmail.com>,
+ KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
+ Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+ Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>
+Cc: Muhammad Usama Anjum <usama.anjum@collabora.com>, kernel@collabora.com,
+ linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+ linux-kselftest@vger.kernel.org
+References: <20240401123455.1377896-1-usama.anjum@collabora.com>
+ <92e1cce6-5f26-4a49-86b6-81e1e80d1aaa@linux.dev>
+ <cfecd6ea-8fa3-477f-bd32-4087aefee2af@collabora.com>
+ <0ff5c7d0-d5c5-4b61-ba89-8e7f9f775935@linux.dev>
+ <0973bc93-7a8d-451c-9944-d91a77d68755@collabora.com>
+ <ff36e8fa-14f4-42a6-8210-cec24a7779a0@linux.dev>
+Content-Language: en-US
+In-Reply-To: <ff36e8fa-14f4-42a6-8210-cec24a7779a0@linux.dev>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
+On 4/5/24 1:06 AM, Yonghong Song wrote:
+> 
+> On 4/3/24 5:03 AM, Muhammad Usama Anjum wrote:
+>> On 4/3/24 7:36 AM, Yonghong Song wrote:
+>>> On 4/2/24 8:16 AM, Muhammad Usama Anjum wrote:
+>>>> Yonghong Song,
+>>>>
+>>>> Thank you so much for replying. I was missing how to run pipeline
+>>>> manually.
+>>>> Thanks a ton.
+>>>>
+>>>> On 4/1/24 11:53 PM, Yonghong Song wrote:
+>>>>> On 4/1/24 5:34 AM, Muhammad Usama Anjum wrote:
+>>>>>> Move test_dev_cgroup.c to prog_tests/dev_cgroup.c to be able to run it
+>>>>>> with test_progs. Replace dev_cgroup.bpf.o with skel header file,
+>>>>>> dev_cgroup.skel.h and load program from it accourdingly.
+>>>>>>
+>>>>>>      ./test_progs -t dev_cgroup
+>>>>>>      mknod: /tmp/test_dev_cgroup_null: Operation not permitted
+>>>>>>      64+0 records in
+>>>>>>      64+0 records out
+>>>>>>      32768 bytes (33 kB, 32 KiB) copied, 0.000856684 s, 38.2 MB/s
+>>>>>>      dd: failed to open '/dev/full': Operation not permitted
+>>>>>>      dd: failed to open '/dev/random': Operation not permitted
+>>>>>>      #72     test_dev_cgroup:OK
+>>>>>>      Summary: 1/0 PASSED, 0 SKIPPED, 0 FAILED
+>>>>>> Signed-off-by: Muhammad Usama Anjum <usama.anjum@collabora.com>
+>>>>>> ---
+>>>>>> Changes since v2:
+>>>>>> - Replace test_dev_cgroup with serial_test_dev_cgroup as there is
+>>>>>>      probability that the test is racing against another cgroup test
+>>>>>> - Minor changes to the commit message above
+>>>>>>
+>>>>>> I've tested the patch with vmtest.sh on bpf-next/for-next and linux
+>>>>>> next. It is passing on both. Not sure why it was failed on BPFCI.
+>>>>>> Test run with vmtest.h:
+>>>>>> sudo LDLIBS=-static PKG_CONFIG='pkg-config --static' ./vmtest.sh
+>>>>>> ./test_progs -t dev_cgroup
+>>>>>> ./test_progs -t dev_cgroup
+>>>>>> mknod: /tmp/test_dev_cgroup_null: Operation not permitted
+>>>>>> 64+0 records in
+>>>>>> 64+0 records out
+>>>>>> 32768 bytes (33 kB, 32 KiB) copied, 0.000403432 s, 81.2 MB/s
+>>>>>> dd: failed to open '/dev/full': Operation not permitted
+>>>>>> dd: failed to open '/dev/random': Operation not permitted
+>>>>>>     #69      dev_cgroup:OK
+>>>>>> Summary: 1/0 PASSED, 0 SKIPPED, 0 FAILED
+>>>>> The CI failure:
+>>>>>
+>>>>>
+>>>>> Error: #72 dev_cgroup
+>>>>> serial_test_dev_cgroup:PASS:skel_open_and_load 0 nsec
+>>>>> serial_test_dev_cgroup:PASS:cgroup_setup_and_join 0 nsec
+>>>>> serial_test_dev_cgroup:PASS:bpf_attach 0 nsec
+>>>>> serial_test_dev_cgroup:PASS:bpf_query 0 nsec
+>>>>> serial_test_dev_cgroup:PASS:bpf_query 0 nsec
+>>>>> serial_test_dev_cgroup:PASS:rm 0 nsec
+>>>>> serial_test_dev_cgroup:PASS:mknod 0 nsec
+>>>>> serial_test_dev_cgroup:PASS:rm 0 nsec
+>>>>> serial_test_dev_cgroup:PASS:rm 0 nsec
+>>>>> serial_test_dev_cgroup:FAIL:mknod unexpected mknod: actual 256 !=
+>>>>> expected 0
+>>>>> serial_test_dev_cgroup:PASS:rm 0 nsec
+>>>>> serial_test_dev_cgroup:PASS:dd 0 nsec
+>>>>> serial_test_dev_cgroup:PASS:dd 0 nsec
+>>>>> serial_test_dev_cgroup:PASS:dd 0 nsec
+>>>>>
+>>>>> (cgroup_helpers.c:353: errno: Device or resource busy) umount cgroup2
+>>>>>
+>>>>> The error code 256 means mknod execution has some issues. Maybe you
+>>>>> need to
+>>>>> find specific errno to find out what is going on. I think you can do ci
+>>>>> on-demanding test to debug.
+>>>> errno is 2 --> No such file or directory
+>>>>
+>>>> Locally I'm unable to reproduce it until I don't remove
+>>>> rm -f /tmp/test_dev_cgroup_zero such that the /tmp/test_dev_cgroup_zero
+>>>> node is present before test execution. The error code is 256 with errno 2.
+>>>> I'm debugging by placing system("ls /tmp 1>&2"); to find out which files
+>>>> are already present in /tmp. But ls's output doesn't appear on the CI
+>>>> logs.
+>>> errno 2 means ENOENT.
+>>>  From mknod man page (https://linux.die.net/man/2/mknod), it means
+>>>    A directory component in/pathname/  does not exist or is a dangling
+>>> symbolic link.
+>>>
+>>> It means /tmp does not exist or a dangling symbolic link.
+>>> It is indeed very strange. To make the test robust, maybe creating a temp
+>>> directory with mkdtemp and use it as the path? The temp directory
+>>> creation should be done before bpf prog attach.
+>> I've tried following but still no luck:
+>> * /tmp is already present. Then I thought maybe the desired file is already
+>> present. I've verified that there isn't file of same name is present inside
+>> /tmp.
+>> * I thought maybe mknod isn't present in the system. But mknod --help
+>> succeeds.
+>> * I switched from /tmp to current directory to create the mknod. But the
+>> result is same error.
+>> * I've tried to use the same kernel config as the BPF CI is using. I'm not
+>> able to reproduce it.
+>>
+>> Not sure which edge case or what's going on. The problem is appearing
+>> because of some limitation in the rootfs.
+> 
+> Maybe you could collect /tmp mount options to see whether anything is
+> suspicious? In my vm, I have
+>   tmpfs on /tmp type tmpfs (rw,nosuid,nodev,size=3501540k,nr_inodes=1048576)
+> and the test works fine.
+> 
+> 
+My test system:
+tmpfs /tmp tmpfs rw,relatime 0 0
 
---p760D9CQLIFGzr8t
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On the CI, /tmp is present. But it isn't tmpfs. Following shows the logs
+from /proc/mounts
 
-On Tue, Apr 02, 2024 at 05:20:50PM -0700, Mina Almasry wrote:
-> +ncdevmem has a validation mode as well that expects a repeating pattern =
-of
-> +incoming data and validates it as such::
-> +
-> +	# On server:
-> +	ncdevmem -s <server IP> -c <client IP> -f eth1 -d 3 -n 0000:06:00.0 -l \
-> +		 -p 5201 -v 7
-> +
-> +	# On client:
-> +	yes $(echo -e \\x01\\x02\\x03\\x04\\x05\\x06) | \
-> +		tr \\n \\0 | head -c 5G | nc <server IP> 5201 -p 5201
+On CI:
+  /dev/root / 9p
+rw,relatime,cache=f,access=client,msize=512000,trans=virtio 0 0
+  devtmpfs /dev devtmpfs
+rw,relatime,size=1998612k,nr_inodes=499653,mode=755 0 0
+  tmpfs /dev/shm tmpfs rw,nosuid,nodev,relatime 0 0
+  proc /proc proc rw,nosuid,nodev,noexec,relatime 0 0
+  tmpfs /run tmpfs rw,nosuid,nodev,relatime 0 0
+  tmpfs /run/netns tmpfs rw,nosuid,nodev,relatime 0 0
+  sys /sys sysfs rw,nosuid,nodev,noexec,relatime 0 0
+  debugfs /sys/kernel/debug debugfs rw,relatime 0 0
+  tracefs /sys/kernel/debug/tracing tracefs rw,relatime 0 0
+  cgroup2 /sys/fs/cgroup cgroup2 rw,nosuid,nodev,noexec,relatime 0 0
+  tmpfs /sys/fs/cgroup tmpfs rw,relatime 0 0
+  net_cls /sys/fs/cgroup/net_cls cgroup rw,relatime,net_cls 0 0
+  tmpfs /sys/fs/cgroup tmpfs rw,relatime 0 0
+  net_cls /sys/fs/cgroup/net_cls cgroup rw,relatime,net_cls 0 0
+  tmpfs /sys/fs/cgroup tmpfs rw,relatime 0 0
+  net_cls /sys/fs/cgroup/net_cls cgroup rw,relatime,net_cls 0 0
+  bpffs /sys/fs/bpf bpf rw,relatime 0 0
+  bpf /sys/fs/bpf bpf rw,relatime 0 0
+  tmpfs /mnt tmpfs rw,nosuid,nodev,relatime 0 0
+  vmtest-shared /mnt/vmtest 9p
+rw,relatime,cache=f,access=client,msize=512000,trans=virtio 0 0
+  none /mnt cgroup2 rw,relatime 0 0
 
-What about splitting server and client usage?
-
----- >8 ----
-diff --git a/Documentation/networking/devmem.rst b/Documentation/networking=
-/devmem.rst
-index e4e978fbcdbd5f..f32acfd62075d2 100644
---- a/Documentation/networking/devmem.rst
-+++ b/Documentation/networking/devmem.rst
-@@ -245,12 +245,14 @@ To run ncdevmem, you need to run it on a server on th=
-e machine under test, and
- you need to run netcat on a peer to provide the TX data.
-=20
- ncdevmem has a validation mode as well that expects a repeating pattern of
--incoming data and validates it as such::
-+incoming data and validates it as such. For example, you can launch
-+ncdevmem on the server by::
-=20
--	# On server:
- 	ncdevmem -s <server IP> -c <client IP> -f eth1 -d 3 -n 0000:06:00.0 -l \
- 		 -p 5201 -v 7
-=20
--	# On client:
-+On client side, use regular netcat to send TX data to ncdevmem process
-+on the server::
-+
- 	yes $(echo -e \\x01\\x02\\x03\\x04\\x05\\x06) | \
- 		tr \\n \\0 | head -c 5G | nc <server IP> 5201 -p 5201
-
-Thanks.
-
---=20
-An old man doll... just what I always wanted! - Clara
-
---p760D9CQLIFGzr8t
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZjTjFwAKCRD2uYlJVVFO
-o9RPAQCNza/o9eilURPtLMgckHLWGXSLgl+m05JS4n+5eQOBfAEAuaR+vADZuSKC
-PnV18jn47Aqz1SmrD+MDjjeFy4rw0gM=
-=E6BN
------END PGP SIGNATURE-----
-
---p760D9CQLIFGzr8t--
+-- 
+BR,
+Muhammad Usama Anjum
 
