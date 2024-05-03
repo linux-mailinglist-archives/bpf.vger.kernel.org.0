@@ -1,231 +1,103 @@
-Return-Path: <bpf+bounces-28524-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-28525-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 439878BB196
-	for <lists+bpf@lfdr.de>; Fri,  3 May 2024 19:18:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8E8D38BB197
+	for <lists+bpf@lfdr.de>; Fri,  3 May 2024 19:19:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 991A01F228D1
-	for <lists+bpf@lfdr.de>; Fri,  3 May 2024 17:18:11 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 27B941F228A7
+	for <lists+bpf@lfdr.de>; Fri,  3 May 2024 17:19:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE664157E7D;
-	Fri,  3 May 2024 17:18:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C797157E88;
+	Fri,  3 May 2024 17:19:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="F4jgoOlp"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hIRN+DUF"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-182.mta1.migadu.com (out-182.mta1.migadu.com [95.215.58.182])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 36BFB157A74
-	for <bpf@vger.kernel.org>; Fri,  3 May 2024 17:18:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E3DBB157A74;
+	Fri,  3 May 2024 17:19:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714756684; cv=none; b=ccsmxvB7FHlkGF7GVimHg/aDeS+iBe9U00PZxW53zmemYebKm94+/2A1SBTGBnPbStD/7D/aDoJk5QkP4qywVVgYNBHI1x8FzaJRrTjJ9lofHj/7GcX6vUqCxuH0uR7RdycS+U7MfxRr3I2Sp/r3p6EGrQ08dNUhv5r6UaxQWHk=
+	t=1714756742; cv=none; b=T7q9C7XwNN6Fj5wNpXFoR8w97ik4nyi20BSiMlRMrBFQ3L7gQ2t7Shke/C4CpEupQVuj5aU9jw6mDBauXb4Kvbr4FQkG1aly6knn2eTm6zlFfEijAcR1b2R9+XMo/JQ5sAnzlGD4Nkp9xsscMWpup/i78j9Hx9DRnALFdbb/eoU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714756684; c=relaxed/simple;
-	bh=+YXSGA9DR04qVEF6seUzGHlY0Jkcb002FUWskB/gqlc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=dB6DRUcjAEOEeiq+LmutNALadsurmk+qMn0uBMC+d+51e79/+KSWxvKSQsduzBu6CGSbAw6x2JyTK9dN79siLbA/DS6XM0nyaZYvHhGTryfts302OyMUxMgtNKkK0S+KxHYMvxXQW1c+K36GF6oG4mRsihcWXfWHYqyJgBkn0ho=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=F4jgoOlp; arc=none smtp.client-ip=95.215.58.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <19c6fe1e-9afb-440f-811d-fb6a921df677@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1714756680;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=HGOgCy3jGJleD7d+R7gLjNDA+7CUBXM0VKnDUlS7QDo=;
-	b=F4jgoOlpWHboePyNiHbS+BVIFGl8gJqz1v3haFaJT6FWwdBOqrVPDnw6JQ2quTnrFmKRfS
-	BqTYQ1OchApQx18L6v+ldMQNUrzBviJ3PB9PqDUniJlE35S4BanD76tQVBd2ZxkZQzi1g7
-	EgEKmp6GMShb8rx90Z4UdjAmcqyHELU=
-Date: Fri, 3 May 2024 10:17:55 -0700
+	s=arc-20240116; t=1714756742; c=relaxed/simple;
+	bh=sxFjeHo/U9d6yJ4gu/S8oCYHW6M/QMHpy5fuSlTg3o8=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=X2cQDiF8nNDVm1XYfrFSSX8RB3GKfSFxrqN/0FX0+x0wuILJCCTzdxTq+Js7ZRAQvByaHPqMBs8FStYeGixtooMvnjnNDF2buk15kifJ9TTYqzzzR5caRLWGLtSpQLvy9gnex1b3q/vGKYZZ/yeZl9Cn3LDsBWAEtyb9S1Nrm1M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hIRN+DUF; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 257BCC116B1;
+	Fri,  3 May 2024 17:19:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1714756741;
+	bh=sxFjeHo/U9d6yJ4gu/S8oCYHW6M/QMHpy5fuSlTg3o8=;
+	h=From:To:Cc:Subject:Date:From;
+	b=hIRN+DUFCywNEszWU9lwdZU2kY1GdPQ/vI695iOCohOzJou/FEySpToU/05dvz1P0
+	 ZGNOaxMi/LHxI8UwG6/irrNE79FoDmsE6N81uZG/60U+ISuXKU4vUNVodtvYFA+4i0
+	 dT1+Y3XUIr/2WwBj57H5tUUL9bgXm3QkzWI17B7W6w9mrZjvSPoXA4BnaXNZOMJiIQ
+	 NDrAUyHfKGMaCnvapDfx5CuyznN2IiuyDyL2YFAwhaVzhlCKXXh3prw7StOm4ApR6A
+	 n9LAHQYNU74Hb1IfUBy6AZlV7JSGaMh8FctgeyyunHhpfzdXJU7/TNdWUR/5yceNDd
+	 DyXx3tDu99nJQ==
+From: Puranjay Mohan <puranjay@kernel.org>
+To: Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>,
+	Sumit Garg <sumit.garg@linaro.org>,
+	Stephen Boyd <swboyd@chromium.org>,
+	Douglas Anderson <dianders@chromium.org>,
+	"Peter Zijlstra (Intel)" <peterz@infradead.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Mark Rutland <mark.rutland@arm.com>,
+	linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	bpf@vger.kernel.org
+Cc: puranjay12@gmail.com
+Subject: [PATCH v3 1/2] arm64/arch_timer: include <linux/percpu.h>
+Date: Fri,  3 May 2024 17:18:46 +0000
+Message-Id: <20240503171847.68267-1-puranjay@kernel.org>
+X-Mailer: git-send-email 2.40.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next 3/6] bpf: provide a function to unregister
- struct_ops objects from consumers.
-To: Kui-Feng Lee <sinquersw@gmail.com>, Kui-Feng Lee <thinker.li@gmail.com>
-Cc: bpf@vger.kernel.org, ast@kernel.org, song@kernel.org,
- kernel-team@meta.com, andrii@kernel.org, kuifeng@meta.com
-References: <20240429213609.487820-1-thinker.li@gmail.com>
- <20240429213609.487820-4-thinker.li@gmail.com>
- <f287c62f-628f-4201-ba34-03a7193212d8@linux.dev>
- <5c07376c-40b3-4dd3-ab2c-7659900914b3@linux.dev>
- <fb06e9a7-244a-421d-ae9e-8d6da9a25684@gmail.com>
-Content-Language: en-US
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Martin KaFai Lau <martin.lau@linux.dev>
-In-Reply-To: <fb06e9a7-244a-421d-ae9e-8d6da9a25684@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
 
-On 5/2/24 5:41 PM, Kui-Feng Lee wrote:
-> 
-> 
-> On 5/2/24 10:56, Martin KaFai Lau wrote:
->> On 5/1/24 11:48 AM, Martin KaFai Lau wrote:
->>> On 4/29/24 2:36 PM, Kui-Feng Lee wrote:
->>>> +/* Called from the subsystem that consume the struct_ops.
->>>> + *
->>>> + * The caller should protected this function by holding rcu_read_lock() to
->>>> + * ensure "data" is valid. However, this function may unlock rcu
->>>> + * temporarily. The caller should not rely on the preceding rcu_read_lock()
->>>> + * after returning from this function.
->>>
->>> This temporarily losing rcu_read_lock protection is error prone. The caller 
->>> should do the inc_not_zero() instead if it is needed.
->>>
->>> I feel the approach in patch 1 and 3 is a little box-ed in by the earlier 
->>> tcp-cc usage that tried to fit into the kernel module reg/unreg paradigm and 
->>> hide as much bpf details as possible from tcp-cc. This is not necessarily 
->>> true now for other subsystem which has bpf struct_ops from day one.
->>>
->>> The epoll detach notification is link only. Can this kernel side specific 
->>> unreg be limited to struct_ops link only? During reg, a rcu protected link 
->>> could be passed to the subsystem. That subsystem becomes a kernel user of the 
->>> bpf link and it can call link_detach(link) to detach. Pseudo code:
->>>
->>> struct link __rcu *link;
->>>
->>> rcu_read_lock();
->>> ref_link = rcu_dereference(link)
->>> if (ref_link)
->>>      ref_link = bpf_link_inc_not_zero(ref_link);
->>> rcu_read_unlock();
->>>
->>> if (!IS_ERR_OR_NULL(ref_link)) {
->>>      bpf_struct_ops_map_link_detach(ref_link);
->>>      bpf_link_put(ref_link);
->>> }
->>
->> [ ... ]
->>
->>>
->>>> + *
->>>> + * Return true if unreg() success. If a call fails, it means some other
->>>> + * task has unrgistered or is unregistering the same object.
->>>> + */
->>>> +bool bpf_struct_ops_kvalue_unreg(void *data)
->>>> +{
->>>> +    struct bpf_struct_ops_map *st_map =
->>>> +        container_of(data, struct bpf_struct_ops_map, kvalue.data);
->>>> +    enum bpf_struct_ops_state prev_state;
->>>> +    struct bpf_struct_ops_link *st_link;
->>>> +    bool ret = false;
->>>> +
->>>> +    /* The st_map and st_link should be protected by rcu_read_lock(),
->>>> +     * or they may have been free when we try to increase their
->>>> +     * refcount.
->>>> +     */
->>>> +    if (IS_ERR(bpf_map_inc_not_zero(&st_map->map)))
->>>> +        /* The map is already gone */
->>>> +        return false;
->>>> +
->>>> +    prev_state = cmpxchg(&st_map->kvalue.common.state,
->>>> +                 BPF_STRUCT_OPS_STATE_INUSE,
->>>> +                 BPF_STRUCT_OPS_STATE_TOBEFREE);
->>>> +    if (prev_state == BPF_STRUCT_OPS_STATE_INUSE) {
->>>> +        st_map->st_ops_desc->st_ops->unreg(data);
->>>> +        /* Pair with bpf_map_inc() for reg() */
->>>> +        bpf_map_put(&st_map->map);
->>>> +        /* Pair with bpf_map_inc_not_zero() above */
->>>> +        bpf_map_put(&st_map->map);
->>>> +        return true;
->>>> +    }
->>>> +    if (prev_state != BPF_STRUCT_OPS_STATE_READY)
->>>> +        goto fail;
->>>> +
->>>> +    /* With BPF_F_LINK */
->>>> +
->>>> +    st_link = rcu_dereference(st_map->attached);
->>
->>  From looking at the change in bpf_struct_ops_map_link_dealloc() in patch 1 
->> again, I am not sure st_link is rcu gp protected either. 
->> bpf_struct_ops_map_link_dealloc() is still just kfree(st_link).
-> 
-> I am not sure what you mean.
+arch_timer.h includes linux/smp.h since the commit:
 
-I meant this should be kfree_rcu(st_link, ...) instead of kfree(st_link).
+  6acc71ccac7187fc ("arm64: arch_timer: Allows a CPU-specific erratum to only affect a subset of CPUs")
 
-The temporarily losing rcu_read_lock and other complexities in this function are 
-too subtle. It is hard to reason and should be simplified even if tradeoff is 
-needed. Please consider the ideas in my earlier code snippet about using the 
-subsystem existing lock during reg/unreg/detach and limit it to link only first.
+It was included to use DEFINE_PER_CPU(), etc. But It should have
+included <linux/percpu.h> rather than <linux/smp.h>. It worked because
+smp.h includes percpu.h.
 
-> With the implementation of this version, st_link should be rcu
-> protected. The backward pointer, "attached", from st_map to st_link will
-> be reset before kfree(). So, if the caller hold rcu_read_lock(), a
-> st_link should be valid as long as it can be reached from a st_map.
-> 
->>
->> I also don't think it needs to complicate it further by making st_link go 
->> through rcu only for this use case. The subsystem must have its own lock to 
->> protect parallel reg() and unreg(). tcp-cc has tcp_cong_list_lock. From 
->> looking at scx, scx has scx_ops_enable_mutex. When it tries to do unreg itself 
->> by calling bpf_struct_ops_map_link_detach(link), it needs to acquire its own 
->> lock to ensure a parallel unreg() has not happened. Pseudo code:
->>
->> struct bpf_link *link;
->>
->> static void scx_ops_detach_by_kernel(void)
->> {
->>      struct bpf_link *ref_link;
->>
->>      mutex_lock(&scx_ops_enable_mutex);
->>      ref_link = link;
->>      if (ref_link)
->>          ref_link = bpf_link_inc_not_zero(ref_link);
->>      mutex_unlock(&scx_ops_enable_mutex);
->>
->>      if (!IS_ERR_OR_NULL(ref_link)) {
->>          ref_link->ops->detach(ref_link);
->>          bpf_link_put(ref_link);
->>      }
->> }
->>
->>>> +    if (!st_link || !bpf_link_inc_not_zero(&st_link->link))
->>>> +        /* The map is on the way to unregister */
->>>> +        goto fail;
->>>> +
->>>> +    rcu_read_unlock();
->>>> +    mutex_lock(&update_mutex);
->>>> +
->>>> +    if (rcu_dereference_protected(st_link->map, true) != &st_map->map)
->>>> +        /* The map should be unregistered already or on the way to
->>>> +         * be unregistered.
->>>> +         */
->>>> +        goto fail_unlock;
->>>> +
->>>> +    st_map->st_ops_desc->st_ops->unreg(data);
->>>> +
->>>> +    map_attached_null(st_map);
->>>> +    rcu_assign_pointer(st_link->map, NULL);
->>>> +    /* Pair with bpf_map_get() in bpf_struct_ops_link_create() or
->>>> +     * bpf_map_inc() in bpf_struct_ops_map_link_update().
->>>> +     */
->>>> +    bpf_map_put(&st_map->map);
->>>> +
->>>> +    ret = true;
->>>> +
->>>> +fail_unlock:
->>>> +    mutex_unlock(&update_mutex);
->>>> +    rcu_read_lock();
->>>> +    bpf_link_put(&st_link->link);
->>>> +fail:
->>>> +    bpf_map_put(&st_map->map);
->>>> +    return ret;
->>>> +}
->>>> +EXPORT_SYMBOL_GPL(bpf_struct_ops_kvalue_unreg);
->>>
->>>
->>
+The next commit will remove percpu.h from smp.h and it will break this
+usage.
+
+Explicitly include percpu.h and remove smp.h
+
+Signed-off-by: Puranjay Mohan <puranjay@kernel.org>
+Acked-by: Mark Rutland <mark.rutland@arm.com>
+---
+ arch/arm64/include/asm/arch_timer.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/arm64/include/asm/arch_timer.h b/arch/arm64/include/asm/arch_timer.h
+index 934c658ee947..f5794d50f51d 100644
+--- a/arch/arm64/include/asm/arch_timer.h
++++ b/arch/arm64/include/asm/arch_timer.h
+@@ -15,7 +15,7 @@
+ #include <linux/bug.h>
+ #include <linux/init.h>
+ #include <linux/jump_label.h>
+-#include <linux/smp.h>
++#include <linux/percpu.h>
+ #include <linux/types.h>
+ 
+ #include <clocksource/arm_arch_timer.h>
+-- 
+2.40.1
 
 
