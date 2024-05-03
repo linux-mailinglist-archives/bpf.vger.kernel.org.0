@@ -1,118 +1,136 @@
-Return-Path: <bpf+bounces-28531-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-28532-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0E5588BB230
-	for <lists+bpf@lfdr.de>; Fri,  3 May 2024 20:10:54 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id AA47E8BB2A6
+	for <lists+bpf@lfdr.de>; Fri,  3 May 2024 20:19:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BD5972814E2
-	for <lists+bpf@lfdr.de>; Fri,  3 May 2024 18:10:52 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5D7E41F20C96
+	for <lists+bpf@lfdr.de>; Fri,  3 May 2024 18:19:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE67D1586C2;
-	Fri,  3 May 2024 18:10:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD6F3158A04;
+	Fri,  3 May 2024 18:16:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bggLyUzF"
+	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="mSnyl94K"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f169.google.com (mail-pl1-f169.google.com [209.85.214.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 11D181514C2
-	for <bpf@vger.kernel.org>; Fri,  3 May 2024 18:10:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D33901586F6;
+	Fri,  3 May 2024 18:16:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.133.104.62
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714759848; cv=none; b=BaBWj2TTTZ8Lc2MjGvuoKYYvT6ztc4USGBoukWKyCvTnRCZYJQIw5efzq+I/Ack6qkJTlB5s0eZualOghhnjk0qaD3UYyO2brT+sheIAu8Zxy0LSRnXvnKoUE22drIeXoqm1dm0t0inm5qLE9jVgsFgUGsjCVG2ZsdsWux3kE4M=
+	t=1714760197; cv=none; b=RqROgZQK3MBc6honKWDUl+ZyBpBEBpKLj4+oQ2/+QUw1Hnq3VDfBUHngppB0SjcSKq5/F9C5ORXJuUoKCbZeka/oxhuX5z0KxSjQOE/mw2vodZtsg74ig16F+Iw3beoKQ2zI0RqD4y9E+a3SVi2MNqmmPvtI4LV6Bj2jkrY+uWM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714759848; c=relaxed/simple;
-	bh=rC15Eonyuc1jcimaNB2Cu8/SMm8+puaY+okhAV08Feg=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=exsPsGgOh+tMSppj0+EoFk6EgNwegCT23E1FP3EXSob6Ppw23Iz3LPPRseWTOs7vyYlQrk8yUJirFFar8Rgks2PsQ0/EssiGkRruKJ1WYrL9VWWeO67+vAyoqZLKuWiFsoXI4EVparoAA5AP0pYbHCgC4w4k52HWtkRSkzb2yuI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=bggLyUzF; arc=none smtp.client-ip=209.85.214.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f169.google.com with SMTP id d9443c01a7336-1ed41eb3382so6554495ad.0
-        for <bpf@vger.kernel.org>; Fri, 03 May 2024 11:10:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714759846; x=1715364646; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=oB99JpRsj1l3VMW2lLKM8caMBxb7ADjnB29jYj28ZmY=;
-        b=bggLyUzF041nPx3cw+Ena86VWviyBCL6GlYhbjuFEQmOaVaQPcuZ2JLCRmiQBX6Lhk
-         gvN/mMh/qWBqMjnVRvRASkAC/t4yWkJuwo0CrtitMPUgXDCQTGHmJNTGnhMSt2m6Miu4
-         3f4sIvVNFj9vjNytvLbf/6qdO/iXBKFJXJMcey+AYxCOvgI7L+oWyLLNDkuiZlzg76kr
-         df9nC4VLYbNER60E0yZ7nHQ694FMFTGCpU3CL3OZlmygKx6OQzaN8rYGjyitEPSFpPBz
-         oi4zZ+wzoZ/S5275ROMM2R7D9wbrnhwWdXKUpdxxpeI62BH8YRNVcJsJD6t/7IwOscUV
-         9kRA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714759846; x=1715364646;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=oB99JpRsj1l3VMW2lLKM8caMBxb7ADjnB29jYj28ZmY=;
-        b=MIWncmJerSPTJQ1veYflqpfKGNFcpMdGr8/g59j8RKgjamu+aAyyE9yiW4q7E1lKyh
-         KAmVK5noYZ6zLD89OnVGjo2/T4SIHv9igCHX79aCPS81WwzVThuLKdyi/M17Vx5iEblB
-         s2YE81U97X1Zko+ATD0YWriU2NeG/G1+B28mpth7ye9dsLcr6+2l3oUFcBpbiumlb/U3
-         kb48Zk9FQY275BSOR+/jnfiH2NsJk3nioR1Y8mKbm/QXaPm8Kg4LGzEiIk8U0VcaSmgl
-         qgYSwxs1xjiNB99xAmYPSj6ZpIg+SdEjXBd5q2KQj4XTu7BKTE48T++k+yMf499OrIne
-         OnPA==
-X-Forwarded-Encrypted: i=1; AJvYcCUqfn3psVhwMHn3H1xjJswUqRKSofUXEWBC5ek7eE5NoHT3zF+VDo+dsXkZZywRTnYSehTdeSsN7pFC8zo4gNlUHlgZ
-X-Gm-Message-State: AOJu0YwBVAFRtF4ACnBT1xBqscJ2tAYyK4mPtK5N4C+s2NjsdMJBM/Pg
-	Jwn/uvByvno3axqA2QiOq+/9AZ4YJeCET+9stmYeD7UXfdCMmapj
-X-Google-Smtp-Source: AGHT+IHi6SoTC7g1Tvta+4srR4Ldehmm3X84eWQqvrAoB+Cudba5GRVb65ivl6pMdim7KVrrxH3+AA==
-X-Received: by 2002:a17:902:ed04:b0:1e6:68d0:d6c9 with SMTP id b4-20020a170902ed0400b001e668d0d6c9mr3226713pld.40.1714759846255;
-        Fri, 03 May 2024 11:10:46 -0700 (PDT)
-Received: from ?IPv6:2604:3d08:6979:1160:da47:6959:81c7:8b0? ([2604:3d08:6979:1160:da47:6959:81c7:8b0])
-        by smtp.gmail.com with ESMTPSA id lg6-20020a170902fb8600b001eb7823164esm3527794plb.279.2024.05.03.11.10.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 03 May 2024 11:10:45 -0700 (PDT)
-Message-ID: <30444d73030ade8610674428dce0e0978e537768.camel@gmail.com>
-Subject: Re: [PATCH bpf-next v3 3/7] bpf: create repeated fields for arrays.
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Kui-Feng Lee <sinquersw@gmail.com>, Kui-Feng Lee <thinker.li@gmail.com>,
-  bpf@vger.kernel.org, ast@kernel.org, martin.lau@linux.dev,
- song@kernel.org,  kernel-team@meta.com, andrii@kernel.org
-Cc: kuifeng@meta.com
-Date: Fri, 03 May 2024 11:10:44 -0700
-In-Reply-To: <0fba228d-ee81-4aee-901f-c60dfd53c102@gmail.com>
-References: <20240501204729.484085-1-thinker.li@gmail.com>
-	 <20240501204729.484085-4-thinker.li@gmail.com>
-	 <017ecee002197526aa5d91d856c25510d36b57ce.camel@gmail.com>
-	 <0fba228d-ee81-4aee-901f-c60dfd53c102@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.44.4-0ubuntu2 
+	s=arc-20240116; t=1714760197; c=relaxed/simple;
+	bh=YuRgDwOFHo66SVl5+SCvwWeWto7Qk5nbfcwDz1O6UBQ=;
+	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=RFgglWxf/c0/osCP90AF93s04VZ3iQFQrx+isbSJ3onNEJ21WYR/fLNYuObn1SHZUZ6OvnTPXoq9RJkt43QO/hs7kyGj7mIbafEHxPDdvKwuuNcKUun9DL9lez1I6NwR1lBn+G2fF/5H61HHS0ViBM28gUc4NBRoyNklkACEHYQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=mSnyl94K; arc=none smtp.client-ip=213.133.104.62
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iogearbox.net
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
+	In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
+	bh=sAFxnK7BGsBGg9HqpwUU0A8H/9W2t7LhGrsEhpnHuUQ=; b=mSnyl94KADVMX7fkEMtww0mrBT
+	wXrY6eSlsHmS9awY7x6ft0WGungL98FL6lOQu/CzKSt/GTZfo8/S/SuIZtuiTgboRcnF1y7m3KojY
+	sOzwWW3pMS9xIh8+Y6NyKwYXFoLlLCfYncsmOneEZ1OPKfSAXQ3YJ3yuRr4ir2jssl10monTaRnG+
+	LjsyvvAdAdastKuqnoSiEgk934ttWKywRo5s0f8PrbXZsBqlP8E7V6aNJ86+L+VUrYrLvQEgO88vk
+	inTmAyfF0MU8H3yZNZdnGUcJzOjHEh6Ed7nyexoHZtXbtqV1ylCisVHF79pbqqfsRiX4uocKU+Y9b
+	OtCMb6vA==;
+Received: from sslproxy03.your-server.de ([88.198.220.132])
+	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <daniel@iogearbox.net>)
+	id 1s2xRp-0008TC-H3; Fri, 03 May 2024 20:16:31 +0200
+Received: from [178.197.249.41] (helo=linux.home)
+	by sslproxy03.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <daniel@iogearbox.net>)
+	id 1s2xSQ-000HZz-1q;
+	Fri, 03 May 2024 20:16:30 +0200
+Subject: Re: [PATCH stable, 6.1] net: sockmap, fix missing MSG_MORE causing
+ TCP disruptions
+To: John Fastabend <john.fastabend@gmail.com>, stable@vger.kernel.org
+Cc: bpf@vger.kernel.org, dhowells@redhat.com
+References: <20240503164805.59970-1-john.fastabend@gmail.com>
+From: Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <a84489f5-3336-e60a-02ac-5da05db53162@iogearbox.net>
+Date: Fri, 3 May 2024 20:16:30 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+In-Reply-To: <20240503164805.59970-1-john.fastabend@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.10/27264/Fri May  3 10:24:33 2024)
 
-On Fri, 2024-05-03 at 11:02 -0700, Kui-Feng Lee wrote:
+On 5/3/24 6:48 PM, John Fastabend wrote:
+> [ Upstream commit ebf2e8860eea66e2c4764316b80c6a5ee5f336ee]
+> [ Upstream commit f8dd95b29d7ef08c19ec9720564acf72243ddcf6]
+> 
+> In the first patch,
+> 
+> ebf2e8860eea ("tcp_bpf: Inline do_tcp_sendpages as it's now a wrapper around tcp_sendmsg")
+> 
+> This block of code is added to tcp_bpf_push(). The
+> tcp_bpf_push is the code used by BPF to submit messages into the TCP
+> stack.
+> 
+>   if (flags & MSG_SENDPAGE_NOTLAST)
+>       msghdr.msg_flags | MSG_MORE;
+> 
+> In the second patch,
+> 
+> f8dd95b29d7e ("tcp_bpf, smc, tls, espintcp, siw: Reduce MSG_SENDPAGE_NOTLAST usage")
+> 
+> this logic was further changed to,
+> 
+>    if (flags & MSG_SENDPAGE_NOTLAST)
+>       msghdr.msg_flags |= MSG_MORE
+> 
+> This was done as part of an improvement to use the sendmsg() callbacks
+> and remove the sendpage usage inside the various sub systems.
+> 
+> However, these two patches together fixed a bug. The issue is without
+> MSG_MORE set we will break a msg up into many smaller sends. In some
+> case a lot because the operation loops over the scatter gather list.
+> Without the MSG_MORE set (the current 6.1 case) we see stalls in data
+> send/recv and sometimes applications failing to receive data. This
+> generally is the result of an application that gives up after calling
+> recv() or similar too many times. We introduce this because of how
+> we incorrectly change the TCP send pattern.
+> 
+> Now that we have both 6.5 and 6.1 stable kernels deployed we've
+> observed a series of issues related to this in real deployments. In 6.5
+> kernels all the HTTP and other compliance tests pass and we are not
+> observing any other issues. On 6.1 various compliance tests fail
+> (nginx for example), but more importantly in these clusters without
+> the flag set we observe stalled applications and increased retries in
+> other applications. Openssl users where we have annotations to monitor
+> retries and failures observed a significant increase in retries for
+> example.
+> 
+> For the backport we isolated the fix to the two lines in the above
+> patches that fixed the code. With this patch we deployed the workloads
+> again and error rates and stalls went away and 6.1 stable kernels
+> perform similar to 6.5 stable kernels. Similarly the compliance tests
+> also passed.
+> 
+> Cc: <stable@vger.kernel.org> # 6.1.x
+> Fixes: 604326b41a6fb ("tcp_bpf, smc, tls, espintcp, siw: Reduce MSG_SENDPAGE_NOTLAST usage")
+> Signed-off-by: John Fastabend <john.fastabend@gmail.com>
 
-[...]
-
-> > > @@ -3624,9 +3690,14 @@ static int btf_find_datasec_var(const struct b=
-tf *btf, const struct btf_type *t,
-> > >  =20
-> > >   		if (ret =3D=3D BTF_FIELD_IGNORE)
-> > >   			continue;
-> > > -		if (idx >=3D info_cnt)
-> > > +		if (idx + nelems > info_cnt)
-> > >   			return -E2BIG;
-> >=20
-> > Nit: This is bounded by BTF_FIELDS_MAX which has value of 11,
-> >       would that be enough?
->=20
-> So far, no one has complained it yet!
-> But, some one will reach the limit in future.
-> If people want a flexible length, I will solve it in a follow-up.
-> WDYT?
-
-Sure, follow-up works.
-Just that 11 is not much for an array.
-I think sched_ext is the only user for this feature at the moment,
-so you are in the best position to judge which size is appropriate.
+Acked-by: Daniel Borkmann <daniel@iogearbox.net>
 
