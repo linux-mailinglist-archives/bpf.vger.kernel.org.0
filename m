@@ -1,173 +1,250 @@
-Return-Path: <bpf+bounces-28488-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-28489-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 957968BA486
-	for <lists+bpf@lfdr.de>; Fri,  3 May 2024 02:23:49 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7BAA08BA4A7
+	for <lists+bpf@lfdr.de>; Fri,  3 May 2024 02:41:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1ECB8283EB1
-	for <lists+bpf@lfdr.de>; Fri,  3 May 2024 00:23:48 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9E5091C22A5E
+	for <lists+bpf@lfdr.de>; Fri,  3 May 2024 00:41:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ABFFC29CA;
-	Fri,  3 May 2024 00:23:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D0225BA53;
+	Fri,  3 May 2024 00:41:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bnbc5SpV"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.dudau.co.uk (dliviu.plus.com [80.229.23.120])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ot1-f41.google.com (mail-ot1-f41.google.com [209.85.210.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E6E4360;
-	Fri,  3 May 2024 00:23:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.229.23.120
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE5E78BF8
+	for <bpf@vger.kernel.org>; Fri,  3 May 2024 00:41:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714695817; cv=none; b=nx8Pv0en90vJz6ruNNSqPjun4k4S82bLCxN3fIX/bLk/SQruCrLL7WND5xo1CvnXP/ULUUqxiOnvq0mr9DQP4pO9Av/JEdyDr+TRdEEg+njg7G7FjMrdXcHHOJ/8Let8Q61GIM1k+U3qkphCo7b0kDdKcNvPU5KEfPJrKFzOkNA=
+	t=1714696875; cv=none; b=U9OvZpLcavmDA8yQynccQGzDf9EQcQAK29vJKr9LwV27dz2S3K1jEiJzYPO4eIBhTfbpp1omCkOAgq01fvvHHv61YtC5VVOqKWfyHnKOr3sQS6R9UjJpeXEsHzVrVFyHoMLv8qPDVa0niSzDB6Xz3r9nS/7tW2n3Fc9JRTOQ9nQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714695817; c=relaxed/simple;
-	bh=zXsI9Vt8xojfZb8+rMlItNS5EVhzZ+FhYOA1HEqzzu4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=JMaUrENzdSruJ0S5WJAym5QSzwNRfGFkoNs5F+G7890rjlR3Dyf6VEduGNA1b+c5hBcPitNyu4sktiF9h9OzAGr8emQjgy/9URkeZr0l+h4NU838xYrJd+9SiT1ax0zzhfTbuVi35yV/KdoQsTLWEyz/6oSVqxBLNhIY/jJ1nDI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dudau.co.uk; spf=pass smtp.mailfrom=dudau.co.uk; arc=none smtp.client-ip=80.229.23.120
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dudau.co.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dudau.co.uk
-Received: from mail.dudau.co.uk (bart.dudau.co.uk [192.168.14.2])
-	by smtp.dudau.co.uk (Postfix) with SMTP id 2D79141D12F0;
-	Fri, 03 May 2024 01:23:31 +0100 (BST)
-Received: by mail.dudau.co.uk (sSMTP sendmail emulation); Fri, 03 May 2024 01:23:31 +0100
-Date: Fri, 3 May 2024 01:23:30 +0100
-From: Liviu Dudau <liviu@dudau.co.uk>
-To: Luis Chamberlain <mcgrof@kernel.org>
-Cc: Mike Rapoport <rppt@kernel.org>, linux-kernel@vger.kernel.org,
-	Alexandre Ghiti <alexghiti@rivosinc.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	=?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Christophe Leroy <christophe.leroy@csgroup.eu>,
-	"David S. Miller" <davem@davemloft.net>,
-	Dinh Nguyen <dinguyen@kernel.org>,
-	Donald Dutile <ddutile@redhat.com>,
-	Eric Chanudet <echanude@redhat.com>,
-	Heiko Carstens <hca@linux.ibm.com>, Helge Deller <deller@gmx.de>,
-	Huacai Chen <chenhuacai@kernel.org>,
-	Kent Overstreet <kent.overstreet@linux.dev>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Michael Ellerman <mpe@ellerman.id.au>,
-	Nadav Amit <nadav.amit@gmail.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Philippe =?utf-8?Q?Mathieu-Daud=C3=A9?= <philmd@linaro.org>,
-	Rick Edgecombe <rick.p.edgecombe@intel.com>,
-	Russell King <linux@armlinux.org.uk>,
-	Sam Ravnborg <sam@ravnborg.org>, Song Liu <song@kernel.org>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	Thomas Gleixner <tglx@linutronix.de>, Will Deacon <will@kernel.org>,
-	bpf@vger.kernel.org, linux-arch@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
-	linux-mm@kvack.org, linux-modules@vger.kernel.org,
-	linux-parisc@vger.kernel.org, linux-riscv@lists.infradead.org,
-	linux-s390@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
-	linuxppc-dev@lists.ozlabs.org, loongarch@lists.linux.dev,
-	netdev@vger.kernel.org, sparclinux@vger.kernel.org, x86@kernel.org
-Subject: Re: [PATCH v7 00/16] mm: jit/text allocator
-Message-ID: <ZjQuggSFcO8FXSd2@bart.dudau.co.uk>
-References: <20240429121620.1186447-1-rppt@kernel.org>
- <Zi_K4K-j-VB_WI4i@bombadil.infradead.org>
- <ZjQYvOYgURx9/+d0@bart.dudau.co.uk>
- <ZjQcmcA0sNH7jfD7@bombadil.infradead.org>
+	s=arc-20240116; t=1714696875; c=relaxed/simple;
+	bh=xDeIpVzeyqwfFLGAE2Qan+tDcHRREFrpMPdZ3P9gnhE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=DW6iEHLQgix3J1M2sjiY7pQfvxge+4cS2YLc8gVFbZ7mBvpnxihhdWFNVA/ONmmJbfuiimZv9j9MfOaLMk4KoO/Yc1pxFPmobbOU/84X0t7xygPOVN4QPwlMJd6dhZHK0ulDWoMO2pgHGuVtwttfzjmGaRnhYT9K/VvT5vZ2o0Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=bnbc5SpV; arc=none smtp.client-ip=209.85.210.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ot1-f41.google.com with SMTP id 46e09a7af769-6ef884f86e9so1635469a34.0
+        for <bpf@vger.kernel.org>; Thu, 02 May 2024 17:41:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1714696873; x=1715301673; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=fR1GYONoRMMgMqoHwy9VeF//vMk0ANRzUUxlGyQLWcA=;
+        b=bnbc5SpVD6SvO0iwRoz2Net9QG49iQtiQDdj79iMI+xSQsnztYwL1WFfAeSoKLwaOk
+         aAbpcxeJeEVsuUUwnKP/uCHjxk51jYqpL5JZL1K5a8VLZaY95feCDiSG1olPqy8zWHbG
+         dxy0zNvi6dP2rlM239jvYCXpiOLx9F5ObU9q3DHd1kNPrH661j5Wu6gNFcsHk83fgjx8
+         O+uT7AecUgqTr6VniFTwDxTxrGWTWaMEX6s491E5gcnBrxn+2lh6UYuH0XPPZ5TljHF9
+         2zuW+TWVXHR0RxjuzhC9T7v5C5wFyIgfCWRtvqP7IxFS6GPbZ4e1ahzHvFoAV3EBfA9t
+         dWlg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714696873; x=1715301673;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=fR1GYONoRMMgMqoHwy9VeF//vMk0ANRzUUxlGyQLWcA=;
+        b=Asb+alHpI1VvJcNnhjv0mLsib07MoOE9wi8PjxGvoLa665NZthbiVdyRI8uAQIjgKX
+         CMzNJK5ZNZcb477FPIHh52PEsaWBrTQU1CMiazFMWp+ouA1CXdUPheI0c3PaDiIYt8EQ
+         P5aVqvtLSkOkOJo2gCN7LPDerB6PoXOhc/HaO6L92xmRO6UrnYt6K9fd7LflidKwnClT
+         pOmHDzIHxp/xlf+VInjyRUwJgozlqhd+ZXaZ/HeJqeUWcNrSzfKSsowL7jf7/JxtuHQF
+         7eNCyHrT8A5hJ7WoR3SaqZTVLO7cF8jaDEUNP5d1e0mxWUoY8wk3u2ixlTngLXJ/bZzH
+         FSsg==
+X-Gm-Message-State: AOJu0Ywmdx/4bKFbhdsEyvZdkOxR5+RhMdcj9pUDVxyMLtKAR2hrV9Z4
+	+uJ6RlvnBju0dzw+oLXw9wJ0nJC0M/Y0z2E628NRxIpnAtUAK3Aw
+X-Google-Smtp-Source: AGHT+IHnil6pmmD86Y1Fh0WeceNcNfJ3WrEChN3yEpeycNVY4shGQS6TfwRguqEuewAWNlaKj5DVtQ==
+X-Received: by 2002:a9d:730b:0:b0:6ee:6741:539e with SMTP id e11-20020a9d730b000000b006ee6741539emr1551131otk.15.1714696872818;
+        Thu, 02 May 2024 17:41:12 -0700 (PDT)
+Received: from ?IPV6:2600:1700:6cf8:1240:8400:1987:243f:f8a5? ([2600:1700:6cf8:1240:8400:1987:243f:f8a5])
+        by smtp.gmail.com with ESMTPSA id g18-20020a9d6212000000b006ef8773670dsm408072otj.64.2024.05.02.17.41.11
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 02 May 2024 17:41:12 -0700 (PDT)
+Message-ID: <fb06e9a7-244a-421d-ae9e-8d6da9a25684@gmail.com>
+Date: Thu, 2 May 2024 17:41:11 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <ZjQcmcA0sNH7jfD7@bombadil.infradead.org>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH bpf-next 3/6] bpf: provide a function to unregister
+ struct_ops objects from consumers.
+To: Martin KaFai Lau <martin.lau@linux.dev>,
+ Kui-Feng Lee <thinker.li@gmail.com>
+Cc: bpf@vger.kernel.org, ast@kernel.org, song@kernel.org,
+ kernel-team@meta.com, andrii@kernel.org, kuifeng@meta.com
+References: <20240429213609.487820-1-thinker.li@gmail.com>
+ <20240429213609.487820-4-thinker.li@gmail.com>
+ <f287c62f-628f-4201-ba34-03a7193212d8@linux.dev>
+ <5c07376c-40b3-4dd3-ab2c-7659900914b3@linux.dev>
+Content-Language: en-US
+From: Kui-Feng Lee <sinquersw@gmail.com>
+In-Reply-To: <5c07376c-40b3-4dd3-ab2c-7659900914b3@linux.dev>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Thu, May 02, 2024 at 04:07:05PM -0700, Luis Chamberlain wrote:
-> On Thu, May 02, 2024 at 11:50:36PM +0100, Liviu Dudau wrote:
-> > On Mon, Apr 29, 2024 at 09:29:20AM -0700, Luis Chamberlain wrote:
-> > > On Mon, Apr 29, 2024 at 03:16:04PM +0300, Mike Rapoport wrote:
-> > > > From: "Mike Rapoport (IBM)" <rppt@kernel.org>
-> > > > 
-> > > > Hi,
-> > > > 
-> > > > The patches are also available in git:
-> > > > https://git.kernel.org/pub/scm/linux/kernel/git/rppt/linux.git/log/?h=execmem/v7
-> > > > 
-> > > > v7 changes:
-> > > > * define MODULE_{VADDR,END} for riscv32 to fix the build and avoid
-> > > >   #ifdefs in a function body
-> > > > * add Acks, thanks everybody
-> > > 
-> > > Thanks, I've pushed this to modules-next for further exposure / testing.
-> > > Given the status of testing so far with prior revisions, in that only a
-> > > few issues were found and that those were fixed, and the status of
-> > > reviews, this just might be ripe for v6.10.
-> > 
-> > Looks like there is still some work needed. I've picked up next-20240501
-> > and on arch/mips with CONFIG_MODULE_COMPRESS_XZ=y and CONFIG_MODULE_DECOMPRESS=y
-> > I fail to load any module:
-> > 
-> > # modprobe rfkill
-> > [11746.539090] Invalid ELF header magic: != ELF
-> > [11746.587149] execmem: unable to allocate memory
-> > modprobe: can't load module rfkill (kernel/net/rfkill/rfkill.ko.xz): Out of memory
-> > 
-> > The (hopefully) relevant parts of my .config:
-> 
-> Thanks for the report! Any chance we can get you to try a bisection? I
-> think it should take 2-3 test boots. To help reduce scope you try modules-next:
-> 
-> https://git.kernel.org/pub/scm/linux/kernel/git/mcgrof/linux.git/log/?h=modules-next
-> 
-> Then can you check by resetting your tree to commmit 3fbe6c2f820a76 (mm:
-> introduce execmem_alloc() and execmem_free()"). I suspect that should
-> boot, so your bad commit would be the tip 3c2c250cb3a5fbb ("bpf: remove
-> CONFIG_BPF_JIT dependency on CONFIG_MODULES of").
-> 
-> That gives us only a few commits to bisect:
-> 
-> git log --oneline 3fbe6c2f820a76bc36d5546bda85832f57c8fce2..
-> 3c2c250cb3a5 (HEAD -> modules-next, korg/modules-next) bpf: remove CONFIG_BPF_JIT dependency on CONFIG_MODULES of
-> 11e8e65cce5c kprobes: remove dependency on CONFIG_MODULES
-> e10cbc38697b powerpc: use CONFIG_EXECMEM instead of CONFIG_MODULES where appropriate
-> 4da3d38f24c5 x86/ftrace: enable dynamic ftrace without CONFIG_MODULES
-> 13ae3d74ee70 arch: make execmem setup available regardless of CONFIG_MODULES
-> 460bbbc70a47 powerpc: extend execmem_params for kprobes allocations
-> e1a14069b5b4 arm64: extend execmem_info for generated code allocations
-> 971e181c6585 riscv: extend execmem_params for generated code allocations
-> 0fa276f26721 mm/execmem, arch: convert remaining overrides of module_alloc to execmem
-> 022cef244287 mm/execmem, arch: convert simple overrides of module_alloc to execmem
-> 
-> With 2-3 boots we should be to tell which is the bad commit.
 
-Looks like 0fa276f26721 is the first bad commit.
 
-$ git bisect log
-# bad: [3c2c250cb3a5fbbccc4a4ff4c9354c54af91f02c] bpf: remove CONFIG_BPF_JIT dependency on CONFIG_MODULES of
-# good: [3fbe6c2f820a76bc36d5546bda85832f57c8fce2] mm: introduce execmem_alloc() and execmem_free()
-git bisect start '3c2c250cb3a5' '3fbe6c2f820a76'
-# bad: [460bbbc70a47e929b1936ca68979f3b79f168fc6] powerpc: extend execmem_params for kprobes allocations
-git bisect bad 460bbbc70a47e929b1936ca68979f3b79f168fc6
-# bad: [0fa276f26721e0ffc2ae9c7cf67dcc005b43c67e] mm/execmem, arch: convert remaining overrides of module_alloc to execmem
-git bisect bad 0fa276f26721e0ffc2ae9c7cf67dcc005b43c67e
-# good: [022cef2442870db738a366d3b7a636040c081859] mm/execmem, arch: convert simple overrides of module_alloc to execmem
-git bisect good 022cef2442870db738a366d3b7a636040c081859
-# first bad commit: [0fa276f26721e0ffc2ae9c7cf67dcc005b43c67e] mm/execmem, arch: convert remaining overrides of module_alloc to execmem
+On 5/2/24 10:56, Martin KaFai Lau wrote:
+> On 5/1/24 11:48 AM, Martin KaFai Lau wrote:
+>> On 4/29/24 2:36 PM, Kui-Feng Lee wrote:
+>>> +/* Called from the subsystem that consume the struct_ops.
+>>> + *
+>>> + * The caller should protected this function by holding 
+>>> rcu_read_lock() to
+>>> + * ensure "data" is valid. However, this function may unlock rcu
+>>> + * temporarily. The caller should not rely on the preceding 
+>>> rcu_read_lock()
+>>> + * after returning from this function.
+>>
+>> This temporarily losing rcu_read_lock protection is error prone. The 
+>> caller should do the inc_not_zero() instead if it is needed.
+>>
+>> I feel the approach in patch 1 and 3 is a little box-ed in by the 
+>> earlier tcp-cc usage that tried to fit into the kernel module 
+>> reg/unreg paradigm and hide as much bpf details as possible from 
+>> tcp-cc. This is not necessarily true now for other subsystem which has 
+>> bpf struct_ops from day one.
+>>
+>> The epoll detach notification is link only. Can this kernel side 
+>> specific unreg be limited to struct_ops link only? During reg, a rcu 
+>> protected link could be passed to the subsystem. That subsystem 
+>> becomes a kernel user of the bpf link and it can call 
+>> link_detach(link) to detach. Pseudo code:
+>>
+>> struct link __rcu *link;
+>>
+>> rcu_read_lock();
+>> ref_link = rcu_dereference(link)
+>> if (ref_link)
+>>      ref_link = bpf_link_inc_not_zero(ref_link);
+>> rcu_read_unlock();
+>>
+>> if (!IS_ERR_OR_NULL(ref_link)) {
+>>      bpf_struct_ops_map_link_detach(ref_link);
+>>      bpf_link_put(ref_link);
+>> }
+> 
+> [ ... ]
+> 
+>>
+>>> + *
+>>> + * Return true if unreg() success. If a call fails, it means some other
+>>> + * task has unrgistered or is unregistering the same object.
+>>> + */
+>>> +bool bpf_struct_ops_kvalue_unreg(void *data)
+>>> +{
+>>> +    struct bpf_struct_ops_map *st_map =
+>>> +        container_of(data, struct bpf_struct_ops_map, kvalue.data);
+>>> +    enum bpf_struct_ops_state prev_state;
+>>> +    struct bpf_struct_ops_link *st_link;
+>>> +    bool ret = false;
+>>> +
+>>> +    /* The st_map and st_link should be protected by rcu_read_lock(),
+>>> +     * or they may have been free when we try to increase their
+>>> +     * refcount.
+>>> +     */
+>>> +    if (IS_ERR(bpf_map_inc_not_zero(&st_map->map)))
+>>> +        /* The map is already gone */
+>>> +        return false;
+>>> +
+>>> +    prev_state = cmpxchg(&st_map->kvalue.common.state,
+>>> +                 BPF_STRUCT_OPS_STATE_INUSE,
+>>> +                 BPF_STRUCT_OPS_STATE_TOBEFREE);
+>>> +    if (prev_state == BPF_STRUCT_OPS_STATE_INUSE) {
+>>> +        st_map->st_ops_desc->st_ops->unreg(data);
+>>> +        /* Pair with bpf_map_inc() for reg() */
+>>> +        bpf_map_put(&st_map->map);
+>>> +        /* Pair with bpf_map_inc_not_zero() above */
+>>> +        bpf_map_put(&st_map->map);
+>>> +        return true;
+>>> +    }
+>>> +    if (prev_state != BPF_STRUCT_OPS_STATE_READY)
+>>> +        goto fail;
+>>> +
+>>> +    /* With BPF_F_LINK */
+>>> +
+>>> +    st_link = rcu_dereference(st_map->attached);
+> 
+>  From looking at the change in bpf_struct_ops_map_link_dealloc() in 
+> patch 1 again, I am not sure st_link is rcu gp protected either. 
+> bpf_struct_ops_map_link_dealloc() is still just kfree(st_link).
 
-Maybe MIPS also needs a ARCH_WANTS_EXECMEM_LATE?
-
-Best regards,
-Liviu
+I am not sure what you mean.
+With the implementation of this version, st_link should be rcu
+protected. The backward pointer, "attached", from st_map to st_link will
+be reset before kfree(). So, if the caller hold rcu_read_lock(), a
+st_link should be valid as long as it can be reached from a st_map.
 
 > 
->   Luis
+> I also don't think it needs to complicate it further by making st_link 
+> go through rcu only for this use case. The subsystem must have its own 
+> lock to protect parallel reg() and unreg(). tcp-cc has 
+> tcp_cong_list_lock. From looking at scx, scx has scx_ops_enable_mutex. 
+> When it tries to do unreg itself by calling 
+> bpf_struct_ops_map_link_detach(link), it needs to acquire its own lock 
+> to ensure a parallel unreg() has not happened. Pseudo code:
 > 
-
--- 
-Everyone who uses computers frequently has had, from time to time,
-a mad desire to attack the precocious abacus with an axe.
-       	   	      	     	  -- John D. Clark, Ignition!
+> struct bpf_link *link;
+> 
+> static void scx_ops_detach_by_kernel(void)
+> {
+>      struct bpf_link *ref_link;
+> 
+>      mutex_lock(&scx_ops_enable_mutex);
+>      ref_link = link;
+>      if (ref_link)
+>          ref_link = bpf_link_inc_not_zero(ref_link);
+>      mutex_unlock(&scx_ops_enable_mutex);
+> 
+>      if (!IS_ERR_OR_NULL(ref_link)) {
+>          ref_link->ops->detach(ref_link);
+>          bpf_link_put(ref_link);
+>      }
+> }
+> 
+>>> +    if (!st_link || !bpf_link_inc_not_zero(&st_link->link))
+>>> +        /* The map is on the way to unregister */
+>>> +        goto fail;
+>>> +
+>>> +    rcu_read_unlock();
+>>> +    mutex_lock(&update_mutex);
+>>> +
+>>> +    if (rcu_dereference_protected(st_link->map, true) != &st_map->map)
+>>> +        /* The map should be unregistered already or on the way to
+>>> +         * be unregistered.
+>>> +         */
+>>> +        goto fail_unlock;
+>>> +
+>>> +    st_map->st_ops_desc->st_ops->unreg(data);
+>>> +
+>>> +    map_attached_null(st_map);
+>>> +    rcu_assign_pointer(st_link->map, NULL);
+>>> +    /* Pair with bpf_map_get() in bpf_struct_ops_link_create() or
+>>> +     * bpf_map_inc() in bpf_struct_ops_map_link_update().
+>>> +     */
+>>> +    bpf_map_put(&st_map->map);
+>>> +
+>>> +    ret = true;
+>>> +
+>>> +fail_unlock:
+>>> +    mutex_unlock(&update_mutex);
+>>> +    rcu_read_lock();
+>>> +    bpf_link_put(&st_link->link);
+>>> +fail:
+>>> +    bpf_map_put(&st_map->map);
+>>> +    return ret;
+>>> +}
+>>> +EXPORT_SYMBOL_GPL(bpf_struct_ops_kvalue_unreg);
+>>
+>>
+> 
 
