@@ -1,70 +1,70 @@
-Return-Path: <bpf+bounces-28585-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-28586-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4C4A58BBE50
-	for <lists+bpf@lfdr.de>; Sat,  4 May 2024 23:57:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id AB1AB8BBEAF
+	for <lists+bpf@lfdr.de>; Sun,  5 May 2024 00:13:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F27742821F5
-	for <lists+bpf@lfdr.de>; Sat,  4 May 2024 21:57:40 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5B8B7281B7B
+	for <lists+bpf@lfdr.de>; Sat,  4 May 2024 22:13:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD99484DE9;
-	Sat,  4 May 2024 21:57:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B0FA584DF5;
+	Sat,  4 May 2024 22:13:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RnnZkh41"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gxkYNDnx"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f177.google.com (mail-pg1-f177.google.com [209.85.215.177])
+Received: from mail-pg1-f178.google.com (mail-pg1-f178.google.com [209.85.215.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB3511BF3F;
-	Sat,  4 May 2024 21:57:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E3BC43AC0C;
+	Sat,  4 May 2024 22:13:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714859851; cv=none; b=HtzxmgfjqPZYNOb0RBpKht5b5X9JAM6RBp1t/ost+fNUJjGwnexsz350oIEtvIgaLPTGnGqvLEofK/eiiDkzvWFKDeOpqj19ym7u71+39+ipMrM6Dtmb/Hk8sJ9Hoq4Qw8S1Wqa2YRhl1xEBWZYCBRVnTuDjcxYKPfpEwBHQcOg=
+	t=1714860819; cv=none; b=XDmawf68TeY6WHVbCjSjL+mqgTTsc1rFGBHPeAq3xv8Az2JEjuQ5UtPphDutPWlYC7zuG5NiCKTX1SjKco3qyPOLQCdacCly2K52sSL61Vbis7ngU3AslvA7089SYI9eHVb5ao6Z+10nAfBZo+lodBgUO7oPWVGkIxU8LZO4iJI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714859851; c=relaxed/simple;
-	bh=vLhwg+h7aqyOdPk697HtOoy0/FFWZ8axXimFiJyfjJo=;
+	s=arc-20240116; t=1714860819; c=relaxed/simple;
+	bh=+bKYM7oK9MxJEWHIqHgavPy2YCwpLmxgKmFnVCuqWpU=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=U0kpI8Cf68Et428rEnPi/Ev0nCFji/tf1evvjb8wXimUxvmfwbct5mlZEcOHasqym60qoxSKlzYEV1RodL77CHuIUCbpK0LDR2g6Gr++ACw+6FvD5/b8gxyAPELd2fAMzqpvVdGO/qrt4kwDEZQJnGH8RDFACoNLX+DL8vdEPbI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=RnnZkh41; arc=none smtp.client-ip=209.85.215.177
+	 To:Cc:Content-Type; b=AZTnZzBU160Er7Qf4hqhUfX/Qi5g7svQppNra4Nl6wWK5x5HFZU3ju7eGnefqQHqAxDk2RuYDv77qBUmxns+bnOAIgNlu9VbcvSW3NipUU30kIbatIQsh5VzoOz0BjERB6GD+X2pjW4+dRR/cuwQx7BjMMVdARpoeZ5wwp0V5GM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gxkYNDnx; arc=none smtp.client-ip=209.85.215.178
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f177.google.com with SMTP id 41be03b00d2f7-5e42b4bbfa4so411289a12.1;
-        Sat, 04 May 2024 14:57:29 -0700 (PDT)
+Received: by mail-pg1-f178.google.com with SMTP id 41be03b00d2f7-5dcc4076c13so489670a12.0;
+        Sat, 04 May 2024 15:13:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714859849; x=1715464649; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1714860817; x=1715465617; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Vr0WzAgqZQ7xcLK1USPbgE8wMONw4Q1nntWbGT+4brc=;
-        b=RnnZkh419q7BCQB7MBKpaZGAv2bouKzEs5pCqu6VCjHummD4ejAH8bL4+qXIMqpke1
-         CmVkgCVns3yV/qtIouBLER5v2Um8LrTtRC1J9Z5cRiw7NHIjSGyOf9zjsDDLaqmW0Atv
-         Cl2ZkCR4RI9gQOay8nRL4d43fSJGKPxzkAsKIu2tTIvCYVKyLmFB1ZJrFrNKVQqP4NcU
-         H7kNDhbgccxIRnIe3MRSQsxegDtMVb/3gJTeNzLUnvZKFy74PmEpatAUojq/5s1RIQ2Z
-         Vrukq5EJ0h54OXrYdqEUv77lziPPAnXMYnNUB+0vX7TomY1o/YIy5bOE2JjX5LopILzZ
-         u6zg==
+        bh=A9unkjuVShUEk/iPiPG7EPoKRZdQZGGq2FXrz5dixV4=;
+        b=gxkYNDnxovK2McyUoynA74OO5a+7EzqcQORuXu3P7BFT2UTh8An+mtT/8jIIrjZ9k7
+         0+lUQ+DYoV4havUea3J2PC+uNU++SxQVnHRr2UykiycnQEpTiexiANcBy4ed5JKKWdpo
+         tXolgOQZnIXBgKebcPWIBBl+0jhAyyXx5Nvgid7dgU08hXs2+mRRYvsUH4vQkjUaXNDo
+         ynqdfS/FM8Ro44xqKXeKpjQXQ33SXMX7EvD4OQ0iqK11vjHb9GeQIescgB37PUdT/fsR
+         VvzNB3YJJ433qTJsGqPxTCKS0HY9hs/u6A6WfbVcmcg/KgA8Kq0EBLe/1HWgaG+h5v76
+         ATJg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714859849; x=1715464649;
+        d=1e100.net; s=20230601; t=1714860817; x=1715465617;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Vr0WzAgqZQ7xcLK1USPbgE8wMONw4Q1nntWbGT+4brc=;
-        b=VeBZpGt0cCcY2Y+JvuTVdzCaQ9zkg0cxpVhu093ZNl+DoV8vyhExarW+0S98yWAI1B
-         2iHBaqRumue2k5LHvfqvYW9o+8Sn0x83mxcvpmJlng366LLXgHL6jDb2+oTqfk0Live8
-         vk4ASOcoZ2Nah3s0X2lC7BnUfRUqMUYE+jp6veBJjHaCoXYMawKFOYinDoooV1zbiAsB
-         n3xzwSa6KSZKRycgG8PTIPqTH/g+Y/YG/VsebLjbjEkoZmiDYSHz02Ki6n7eAq1Kl3h8
-         QmhktYAtU5zgQgxf0Jg2yE/cPcnaHTh09ZCvMSmf+TaSfgvKSsBiwvHhEBne3fTafU+p
-         TNiw==
-X-Forwarded-Encrypted: i=1; AJvYcCVayopG9EMBAhcruqe4rLLnCxQiUlBcwJ0dUTBJbw+djBiEewlyMR5XJOcnFlTxc92ML1AvAbLTemIk0vh1/W4VWJqdL1ZQSIDlsbiyfMIG9oZRWhk2xGwHdle0NJmDMXvqkZ4qJTuPtJaSRh18omHKixy/IeLdQBfMhrmEFCXWujvc5GTqBYri1/6NgC7xrF6c4elZn9f93RjxhetAdj4pBKY=
-X-Gm-Message-State: AOJu0YxVcQI3cASLzVeu/haEnVDCiWVXKI7bLbDhLMmxcXICy2J/G0bq
-	IWprJOErbicuCVWrJCKVx5CY3vFa86/VQCBH2qGG9EH1m/bFu6KfV7P2gaFYCehCk80ePCvMaKB
-	lJoynLlllsMJ29+L2h1euLjMkGNw=
-X-Google-Smtp-Source: AGHT+IFMx/po3MCuNgrp19VrE6Egvrp/t8LN5+yMt2RDi+MxC38dpPZiE3MXHhcWc5dPeAVfnEvpPaDHz/ahAu3kBsc=
-X-Received: by 2002:a05:6a20:d80b:b0:1ad:6c5:4ea1 with SMTP id
- iv11-20020a056a20d80b00b001ad06c54ea1mr8771367pzb.41.1714859849188; Sat, 04
- May 2024 14:57:29 -0700 (PDT)
+        bh=A9unkjuVShUEk/iPiPG7EPoKRZdQZGGq2FXrz5dixV4=;
+        b=qZcVsG2/MfSRiu9W2+G+5lRedWVKcLFkmu9aYifd60tjMKHpI40gK/x4zs6ZmuwZen
+         meQ/09TmSfK8GzKZPhQibccDIU8ecL+H0UTIbQoTox2nuOhNzQ7iHwDLDSjRW/IljkZO
+         kkPLho7j3xmRI2VZ2UNvtPmE0HhFng8JnIdH7FVjkzkFb7/qMeJxb86JljTS70IGRf9j
+         RuXBMFXpF7z6FRn8WLe7QaTW9jQe20UlsmoJlRSMzNkJbFUxqqwLpZH3eVtHVhYnf5J0
+         oMNQxyqplcwVLn8DHJ68wM4kGvOpkN9LEuco6QxEnNRa4XNvddgFI/c1amS2cDQ9kSMv
+         pumg==
+X-Forwarded-Encrypted: i=1; AJvYcCV5bTxFTP1etFWl4Z6tI6qwb0Ud2vY16GeO9PT0YB+ZvRMX9brYuxeOjkmMih0IQy9vubqxS1FnjSKRbR2KLjFhMDRY3NGch7ihzBK835DyqMds6yHxLA1M6Qp3hy0/qLZ6L8sQ/DvvjWcoL5iRetPQw66MAJgZuyj8R3FZe6VvZA==
+X-Gm-Message-State: AOJu0YwR5RJHiMtzzsy21uZ2CHd9ovCkR6z6s9NHCfBiAwBR83WtGXac
+	NUDPKb9YwLmD68UzVCbunnY2swvTv/bNoKYdXQtvmFTIysz2ZxWBTOff7CKdrPSIbgmIMatrf7R
+	KSAK0u+7cp/lwannyeVoYlOuWxxA=
+X-Google-Smtp-Source: AGHT+IH7kyl9ysYQF/CgmoL9h1C0Cxvzu/JuyG42DgrFoEsKVBDHDDB9F2A7sEg1ahP0OclCgHXPLgibAOa4yjF3s7Q=
+X-Received: by 2002:a17:90a:d709:b0:2a5:be1a:6831 with SMTP id
+ y9-20020a17090ad70900b002a5be1a6831mr14208459pju.19.1714860817143; Sat, 04
+ May 2024 15:13:37 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -72,52 +72,94 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 References: <20240504003006.3303334-1-andrii@kernel.org> <20240504003006.3303334-6-andrii@kernel.org>
- <2024050404-rectify-romp-4fdb@gregkh>
-In-Reply-To: <2024050404-rectify-romp-4fdb@gregkh>
+ <2024050425-setting-enhance-3bcd@gregkh>
+In-Reply-To: <2024050425-setting-enhance-3bcd@gregkh>
 From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Sat, 4 May 2024 14:57:17 -0700
-Message-ID: <CAEf4BzaUgGJVqw_yWOXASHManHQWGQV905Bd-wiaHj-mRob9gw@mail.gmail.com>
+Date: Sat, 4 May 2024 15:13:25 -0700
+Message-ID: <CAEf4BzbiTQk6pLPQj=p9d18YW4fgn9k2V=zk6nUYAOK975J=xg@mail.gmail.com>
 Subject: Re: [PATCH 5/5] selftests/bpf: a simple benchmark tool for
  /proc/<pid>/maps APIs
 To: Greg KH <gregkh@linuxfoundation.org>
 Cc: Andrii Nakryiko <andrii@kernel.org>, linux-fsdevel@vger.kernel.org, brauner@kernel.org, 
 	viro@zeniv.linux.org.uk, akpm@linux-foundation.org, 
-	linux-kernel@vger.kernel.org, bpf@vger.kernel.org, linux-mm@kvack.org, 
-	Arnaldo Carvalho de Melo <acme@kernel.org>, "linux-perf-use." <linux-perf-users@vger.kernel.org>
+	linux-kernel@vger.kernel.org, bpf@vger.kernel.org, linux-mm@kvack.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Sat, May 4, 2024 at 8:29=E2=80=AFAM Greg KH <gregkh@linuxfoundation.org>=
+On Sat, May 4, 2024 at 8:32=E2=80=AFAM Greg KH <gregkh@linuxfoundation.org>=
  wrote:
 >
 > On Fri, May 03, 2024 at 05:30:06PM -0700, Andrii Nakryiko wrote:
-> > Implement a simple tool/benchmark for comparing address "resolution"
-> > logic based on textual /proc/<pid>/maps interface and new binary
-> > ioctl-based PROCFS_PROCMAP_QUERY command.
+> > I also did an strace run of both cases. In text-based one the tool did
+> > 68 read() syscalls, fetching up to 4KB of data in one go.
 >
-> Of course an artificial benchmark of "read a whole file" vs. "a tiny
-> ioctl" is going to be different, but step back and show how this is
-> going to be used in the real world overall.  Pounding on this file is
-> not a normal operation, right?
+> Why not fetch more at once?
 >
 
-It's not artificial at all. It's *exactly* what, say, blazesym library
-is doing (see [0], it's Rust and part of the overall library API, I
-think C code in this patch is way easier to follow for someone not
-familiar with implementation of blazesym, but both implementations are
-doing exactly the same sequence of steps). You can do it even less
-efficiently by parsing the whole file, building an in-memory lookup
-table, then looking up addresses one by one. But that's even slower
-and more memory-hungry. So I didn't even bother implementing that, it
-would put /proc/<pid>/maps at even more disadvantage.
+I didn't expect to be interrogated so much on the performance of the
+text parsing front, sorry. :) You can probably tune this, but where is
+the reasonable limit? 64KB? 256KB? 1MB? See below for some more
+production numbers.
 
-Other applications that deal with stack traces (including perf) would
-be doing one of those two approaches, depending on circumstances and
-level of sophistication of code (and sensitivity to performance).
+> And I have a fun 'readfile()' syscall implementation around here that
+> needs justification to get merged (I try so every other year or so) that
+> can do the open/read/close loop in one call, with the buffer size set by
+> userspace if you really are saying this is a "hot path" that needs that
+> kind of speedup.  But in the end, io_uring usually is the proper api for
+> that instead, why not use that here instead of slow open/read/close if
+> you care about speed?
+>
 
-  [0] https://github.com/libbpf/blazesym/blob/ee9b48a80c0b4499118a1e8e5d901=
-cddb2b33ab1/src/normalize/user.rs#L193
+I'm not sure what I need to say here. I'm sure it will be useful, but
+as I already explained, it's not about the text file or not, it's
+about having to read too much information that's completely
+irrelevant. Again, see below for another data point.
 
+> > In comparison,
+> > ioctl-based implementation had to do only 6 ioctl() calls to fetch all
+> > relevant VMAs.
+> >
+> > It is projected that savings from processing big production application=
+s
+> > would only widen the gap in favor of binary-based querying ioctl API, a=
+s
+> > bigger applications will tend to have even more non-executable VMA
+> > mappings relative to executable ones.
+>
+> Define "bigger applications" please.  Is this some "large database
+> company workload" type of thing, or something else?
+
+I don't have a definition. But I had in mind, as one example, an
+ads-serving service we use internally (it's a pretty large application
+by pretty much any metric you can come up with). I just randomly
+picked one of the production hosts, found one instance of that
+service, and looked at its /proc/<pid>/maps file. Hopefully it will
+satisfy your need for specifics.
+
+# cat /proc/1126243/maps | wc -c
+1570178
+# cat /proc/1126243/maps | wc -l
+28875
+# cat /proc/1126243/maps | grep ' ..x. ' | wc -l
+7347
+
+You can see that maps file itself is about 1.5MB of text (which means
+single-shot reading of its entire contents is a bit unrealistic,
+though, sure, why not). The process contains 28875 VMAs, out of which
+only 7347 are executable.
+
+This means if we were to profile this process (and normally we profile
+entire system, so it's almost never single /proc/<pid>/maps file that
+needs to be open and processed), we'd need *at most* (absolute worst
+case!) 7347/28875 =3D 25.5% of entries. In reality, most code will be
+concentrated in a much smaller number of executable VMAs, of course.
+But no, I don't have specific numbers at hand, sorry.
+
+It matters less whether it's text or binary (though binary undoubtedly
+will be faster, it's strange to even argue about this), it's the
+ability to fetch only relevant VMAs that is the point here.
+
+>
 > thanks,
 >
 > greg k-h
