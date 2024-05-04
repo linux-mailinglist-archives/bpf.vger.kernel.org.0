@@ -1,351 +1,691 @@
-Return-Path: <bpf+bounces-28581-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-28582-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 58DA68BBE24
-	for <lists+bpf@lfdr.de>; Sat,  4 May 2024 23:09:47 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5150D8BBE41
+	for <lists+bpf@lfdr.de>; Sat,  4 May 2024 23:51:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9C98D2821AF
-	for <lists+bpf@lfdr.de>; Sat,  4 May 2024 21:09:45 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id ADC221F219E2
+	for <lists+bpf@lfdr.de>; Sat,  4 May 2024 21:50:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D6A8783CDB;
-	Sat,  4 May 2024 21:09:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD7A084D25;
+	Sat,  4 May 2024 21:50:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="ok9YtR/V";
-	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="KgS5IvPt"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ViuPn8C1"
 X-Original-To: bpf@vger.kernel.org
-Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pj1-f45.google.com (mail-pj1-f45.google.com [209.85.216.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A28357C9A
-	for <bpf@vger.kernel.org>; Sat,  4 May 2024 21:09:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.177.32
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714856980; cv=fail; b=bWqPhHgjkTAwYrKc9KPMKdJzq+lYDLefeavkqOdAj7vbiTgFuP2UldMqBxZHzSCT0otfFgUBfPu78npsiC5HNRDCKUCu+T1zItwQNYOxFiUeTGisg7LN5VuRBOGP68AHGG1lxy671jwtLuDpvIRCsAQIKGYMpvFiZA3PZoh6x3U=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714856980; c=relaxed/simple;
-	bh=L8GWF/Jf75Q3PTvaWly3U6mMXV2g8elUkxkSp4v7HIo=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 Content-Type:MIME-Version; b=W4O5TCBGiURWAGYstDxIJOEtYfIBbrEIFJ/3mXF9LX3GgGMBJMoYFBp18pJmmD/xf2vwG7UWdaBC7I2lxxhBJxA1uzpQp+sMPoKstFcgtPfAompYQPfXYRwVPj1845zuQ+k3Ed3EKzY0XQMCnyFodPQEFGbDaf8QIo5kwWlNPD4=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=ok9YtR/V; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=KgS5IvPt; arc=fail smtp.client-ip=205.220.177.32
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=oracle.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
-Received: from pps.filterd (m0246630.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 444KtM6c017077;
-	Sat, 4 May 2024 21:09:36 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : in-reply-to : references : date : message-id : content-type :
- content-transfer-encoding : mime-version; s=corp-2023-11-20;
- bh=xEOhTmP8qFth+kjRm2Mq/at2rPXRVQ3wQSN9YnMWxrk=;
- b=ok9YtR/VsPaUkSuF/j4AGoVMNj+DxvCPFUbWqFsr0BEYkno0N7mwNDdfqb9XZdP2FWFo
- 2c1PWpoon2/ZHVL8DUHNpkdRLQwp9hn2ld64h8LKH67LanGJedXp6fWlL89E9z/mOaAP
- gwrnqywZ8Z0/QTWn34aDH6EAoG+sW2e90yrjrdNEhawAC7b0TBVNePNFbfo11DqIYFU9
- 0iM9QghV2NWWUDS6tBq56fkzAUoS4QKC1Fjr/ZyC+XTIEVdQE/xxE+isAOTCsjicOc5B
- T2oTI4K2Moji9btyyBYQcDJUU3eOV9aJOv83dHoFb8yw6DeYqldhuFFjKtcrKXHa7Rig 9w== 
-Received: from phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta01.appoci.oracle.com [138.1.114.2])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3xwbeermdg-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Sat, 04 May 2024 21:09:36 +0000
-Received: from pps.filterd (phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-	by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 444HGUP1039397;
-	Sat, 4 May 2024 21:09:35 GMT
-Received: from nam10-dm6-obe.outbound.protection.outlook.com (mail-dm6nam10lp2101.outbound.protection.outlook.com [104.47.58.101])
-	by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3xwbf48ra6-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Sat, 04 May 2024 21:09:35 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=b9W+7RuI1JGg9jVfu6oD3s9S47y5s5d1xB8aXn8H4sONF6nxFzH+3YWxFKThMohtHQVGf6m2e9S3upOdIGGRgFzP1FB3FkaIg2yx3mD9On3OvpYLl/fddeeqwf7IaEFuPhrIflUw3vNnfWVvcU4rLIRIEQgCc0wf6nPqhYttrT8woQmoPHZj7udzqnVPx9pTBSiJDswYPoip0oZNuFnkgsgd7Z7Llx9Ss5i6xsaFw5qOEU7lvmqhIkjubHOryADQaCHgMN+SrYwz7ESu5wkiSshTd9hl728ZzEef36dy2nDSoLu95frO9FCpG2QZ+ce+vGhK3RuRKGox9dtyxAkyBw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=xEOhTmP8qFth+kjRm2Mq/at2rPXRVQ3wQSN9YnMWxrk=;
- b=K1tNWDq+Vsr4iUrk4vdLp1Zswnp9nSAZuUZ0nOuEDbK4GPgM+TSvujujqUCPLhFwj/xOWC8bh7/Tb0efoJNPEbRBp9ptMldQEjLmhkbHP5Z3dS5c6I+LPPE2GEAmO0ZJcTJEk/WwrNFan9tuP7HDvAQ4wxs3srGUY2le9YZGMudBP9T2x2RJItZ9mc4FtHUwRqQNNCNff/m6fnBUYSI9Mfjfah6xmjsAtdFrPg0w3B3JNp8KMESzSqXZMUJ1crqBcY4FqsRdT0nT7d/sucVM7Sh55ZbfZyYlQ4RkDrnyL5liiy+CtQ2P9l++sYhpR3t00d56yq5VpGZl3Jba/W2asA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2FD6117578;
+	Sat,  4 May 2024 21:50:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.45
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1714859449; cv=none; b=DIMJ7D+DVqU/sPTJOYBp6ATBQr1Z6k01fZU891auq31Jp2DQgVvTB0ouK+Pl4Uz1VXDLxBTMcF6XFkRsuIIwYJUkpKtBryA+D8wsfYtViEaVEfp1W8/5mJVotfRyw7XxCgh7P9v2sxKf/SxNAK8+g2hDzBAfb3FHhqwzdM7HXVA=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1714859449; c=relaxed/simple;
+	bh=YdKGTjzi5rEE7CK6JG7leHSzP7OJ1x602zK/n6ZsKQw=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=oVL6Bt3XwqWrIaeXufr9aRWSV2x58LtUwsFXjKqs12fCxQFyKX8zUnFdzlj286DHHnNtluQhOB1TEr+DEEuxat14G3YN02f9aJqEmY9twa3NwhzTMsebuessGAW95JdWRxyW1BX/bz0lPDl5uE0gDwr+EQqe90RdxIFNzCbLB5U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ViuPn8C1; arc=none smtp.client-ip=209.85.216.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f45.google.com with SMTP id 98e67ed59e1d1-2b433dd2566so524118a91.2;
+        Sat, 04 May 2024 14:50:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=xEOhTmP8qFth+kjRm2Mq/at2rPXRVQ3wQSN9YnMWxrk=;
- b=KgS5IvPtARqQnQH76kdLVHUFuzk9kJgAWbhs9ziNVRkMNO/xBJyFAtphFmudTtxJkKN68A8ILFrKstuvb89t9dSH7lueb7XvFs0ygjQKPUrb+YCeinSGGWzmtqtakuc9RssvdpgU0Ryzbwf/diIGBCCI7oX59VGHn1leWJA+Pp8=
-Received: from DM6PR10MB3113.namprd10.prod.outlook.com (2603:10b6:5:1a7::12)
- by DS0PR10MB7092.namprd10.prod.outlook.com (2603:10b6:8:148::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7544.39; Sat, 4 May
- 2024 21:09:33 +0000
-Received: from DM6PR10MB3113.namprd10.prod.outlook.com
- ([fe80::e0b9:12d5:badd:6fe0]) by DM6PR10MB3113.namprd10.prod.outlook.com
- ([fe80::e0b9:12d5:badd:6fe0%7]) with mapi id 15.20.7544.036; Sat, 4 May 2024
- 21:09:33 +0000
-From: "Jose E. Marchesi" <jose.marchesi@oracle.com>
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: Eduard Zingerman <eddyz87@gmail.com>, bpf@vger.kernel.org,
-        Alexei
- Starovoitov <alexei.starovoitov@gmail.com>,
-        Yonghong Song
- <yonghong.song@linux.dev>, david.faust@oracle.com,
-        cupertino.miranda@oracle.com
-Subject: Re: [RFC bpf-next] bpf: avoid clang-specific push/pop attribute
- pragmas in bpftool
-In-Reply-To: <CAEf4Bza5cmJK-+tK1QJ-SVUWmTOTOM_3gZQ=9yhynU5vE_wWyg@mail.gmail.com>
-	(Andrii Nakryiko's message of "Fri, 3 May 2024 15:14:14 -0700")
-References: <20240503111836.25275-1-jose.marchesi@oracle.com>
-	<6687f49cdd5061202ee112c38614bea091266179.camel@gmail.com>
-	<171a007587c02ff4a8d064c65531fde318c3b4e2.camel@gmail.com>
-	<CAEf4Bza5cmJK-+tK1QJ-SVUWmTOTOM_3gZQ=9yhynU5vE_wWyg@mail.gmail.com>
-Date: Sat, 04 May 2024 23:09:23 +0200
-Message-ID: <87a5l5jncs.fsf@oracle.com>
-User-Agent: Gnus/5.13 (Gnus v5.13)
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-ClientProxiedBy: MA3P292CA0015.ESPP292.PROD.OUTLOOK.COM
- (2603:10a6:250:2c::11) To DM6PR10MB3113.namprd10.prod.outlook.com
- (2603:10b6:5:1a7::12)
+        d=gmail.com; s=20230601; t=1714859446; x=1715464246; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Ejg0fu7/prBtogEiDQzPz1cjfahSixT9lFvA3m8FfAI=;
+        b=ViuPn8C1tx4AynApdDa0OX9UksvG6TtyGChkRvth/2CSdnl99TNpFlGDDti9uG6G7i
+         WSn49ieMGVTuWkUK9kXtdiy2cTrUTp4N1cWs8tiNZ1RIyFkSsiXaiVMqzv79Zzw4nVEe
+         BaOHDXyyKfjwnxIZRxBP/dMRB66nkC1kbKnCL7N1FpBgoBMHKfIZ1qg47+JH/yN4/CHO
+         0hCi5IOjz69qIg7oJsroqD/F2TNCbx0qQ1p6yU9X7jkV/Gq0clubXpLn4n1uLStC1zt/
+         CasPwZy+9iCmCTYO4FyANW5Kz5V+RWJOf/UKyg77KWb4wPCmzLM6O/7odRTnfyw/3AXQ
+         V2mw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714859446; x=1715464246;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Ejg0fu7/prBtogEiDQzPz1cjfahSixT9lFvA3m8FfAI=;
+        b=A0MMikcAqRkvHdZaySLCkSq1S407s+ikth5L6LMPEb7EdqZ6lGtzUPs6eKWBQnFH26
+         3bi9Lm3Va/Ee6yUTHvDbKhKypmHS8ixiFgNCYQMJkk4Oztj/gPIj09/yQ5Gq0qG3LTS1
+         Ra+7OWkcRnnpWcHW9G5Mzzghg+hAesmx2sFwGkmyMpICTo+KQBcgiXPgDxOOMNRQnpuj
+         DnwmTmx8ByOoXUlMqP6JBiDiCvkLgxkiJNFvqRzvfhne4mj5oHBIe8K+y5ldJj/ou2iN
+         JhE8Jp5LasjDktEEdmgGE6tg+G1Ci1X8nz2zaHmDUJeXYA2Wgdf1f5OD3c6AQSqrCdxJ
+         UzuQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXr7XLID8BAQRv7788gMFRMa1WECTR1DeESWnXjuk0Aq6xFhSW7aUE3ZJeiRsDlIGKwP4UtrjmXinYPivELmRHX2V53FMJn6RJuVKDl84jRRhVp3sp2ct+Ftw2EiKe2LjDqbZe0PTF17Qfv/0+4hUfMxj+LnOSJV5oUFwUVQS9RaI2bol4D7AWG+4hYD8ved+5pt7TomR7vDNIXghsT5LUmA9s=
+X-Gm-Message-State: AOJu0Yz7+750Xv0A05+NVJRRg46twpMGTiEux2yMMKtN0O4GUrQXxfm1
+	z4TA/H77ty9AqEqIuFtwNtNRwXlpNdMaoX3yG6YZ6cM5P1qBis5sMtPdaRilYnGB59cBkmPJNYO
+	2KXMePdJuuDEU2azz3USD/hFgjUo=
+X-Google-Smtp-Source: AGHT+IHufq2onia8j4Kt0i/U4oeahwMO2ZeZFVGtraQRjJx8+yzYRusR/7EPfenzaVH8uhK1idzM391R+qa29hzcraQ=
+X-Received: by 2002:a17:90b:534e:b0:2b4:fcfd:780e with SMTP id
+ su14-20020a17090b534e00b002b4fcfd780emr559092pjb.49.1714859445735; Sat, 04
+ May 2024 14:50:45 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM6PR10MB3113:EE_|DS0PR10MB7092:EE_
-X-MS-Office365-Filtering-Correlation-Id: e70ebc3e-15c7-465a-b559-08dc6c7e7e9d
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230031|366007|376005|1800799015;
-X-Microsoft-Antispam-Message-Info: 
-	=?utf-8?B?RklmWm5LL0tWeHAwNFQ4OEVMWitBZGZBeHZqS3NjL1dLcm5pNnNLcWlsMFBM?=
- =?utf-8?B?Tng5aUUvWWxpeE1HWlVkUENBYmlONnNQYncweEVOS2t5Z2g4dkxJRXl6Rmx5?=
- =?utf-8?B?dWkwRjhYOTdJT0lpSCtMWUxlK2JuQmxMa2UzZFBiNXliT3h4eHFrQWM2aEZz?=
- =?utf-8?B?Y3V4Wks0dEswUjg0RVpnOHJtV1BKdWI1U2lnTW1lSnZBNDROeW10WmI1L1Js?=
- =?utf-8?B?UTkvT0tXdy9HY3RzYWJsL3ArcW1rb2Nvc25URHRaUjJERnBLQmxGZTQvcW11?=
- =?utf-8?B?Ni8rYUtmZjAyS1F2a2dhN2djOHU4WHJxNC9neVdtRTA4ZndHVjNMaEVwaEp5?=
- =?utf-8?B?Q1RsVGhPdkV6SS82Mi90K1NSRWFRUWVmVm5CR1JvU1UvekdrM2tBYTdMUTdx?=
- =?utf-8?B?VHlTVDF6WTk2YjJyakUxTXJ0RXdJL25uZGgrTTFRdDdtcXFaaGNWWUNzdWVZ?=
- =?utf-8?B?ZEV5ekdZZlFQbFZHNndFaUJmNCthUVFCMVRhSk1Pcy9hUTdLUTNEOWEwQ3Jo?=
- =?utf-8?B?ZFRLZkNwNVpEUDE0ejNDcjBINXNKUm45Y0xHOVl4VVRSK2tIZ0lKcFF6Q2Ji?=
- =?utf-8?B?M1o3aFh4NkFxN3ovY29KRGlNeEtJaGc0TVg1WjJEU1M0VXdwTHg0bFFyR2pO?=
- =?utf-8?B?RlVNOU9PN05JSkxxRzBkZzlVS1hjbVVEVjdtZGZycVFCclRIdnY5RHRJWm9k?=
- =?utf-8?B?dlgxaE1yMHBpNlp5YlMvZ01ucnpPN2NmbFRHWUV4US9nbW1kQUVKV1JNSXo2?=
- =?utf-8?B?ZHIxNE9mUWhHeDVPQ0dWbFArMktzYStWVy9CTWFvdTF3MmtKYytYd0xXc2hm?=
- =?utf-8?B?SWpPb2NBT0g2SjR3amR6LzBncXIzM1JQdlZIR2ZFRmNQQTYxdkNVL291TEZ6?=
- =?utf-8?B?dlV0aGZpRDI5dkpzeHRITm9NNmp0RDVIK2dFSVQzYTFNcGNySUtVNmVCQmJi?=
- =?utf-8?B?b3dCRGQ1c2lZaHFmR0w0Y1VLY2ZBUTF5bU5aUHkwOXRzWGZqUEpwTzRIckUr?=
- =?utf-8?B?aW1nRFhnR0JOSi9udzRUVnF1K2lHNSt6YzVySEkzZHVLR29UUVQxYXVlb3pO?=
- =?utf-8?B?ekJ6ZXh1SUpITWQ1N21pUzNQWm1wa1VrbHoraXVoaVZZQmg3VDlnTVBlNU1i?=
- =?utf-8?B?UmJEVzIzRGZpN1d5TlV3ckh2YVRiYjNwZ25oSkY5eHlYSzU0RjZTRUVBS0dt?=
- =?utf-8?B?S0thNm40WHBXaTUvYkNUMUdpWkRiekJXUG8ya0JyWGtkTkh6WFlWRDFzMnhj?=
- =?utf-8?B?U0tiZDRIOVlCQjE4bnV5aUppRy80a1l2OUtpbXlNQVUrSXVnVllWaHo5eGVN?=
- =?utf-8?B?eCtwU1krRnpPUVRGR290YUQ1RndvNDZ0dGFjUUl5RHVZUnI4YitOQ0RodU9Q?=
- =?utf-8?B?cVRHdnNvL1dWdEt4L0NLVHZIUlpMMFBvTW1WM2xMUDhRZEhzaFZTcElidlRs?=
- =?utf-8?B?NXp2T0JiNkZpTXZleTBEQzNmNElFMllkczdTdmRCTU11QnY3bUh1N2dQdlVn?=
- =?utf-8?B?aTRuMGQ0Y3dxZkpzZldmTStmRVVhOG9kTS81YVZMbVQyR0FpKzU3UDk2QnNj?=
- =?utf-8?B?WVRNV1R2OHBodk9aZDVla2taQjhwM092dFh3RnFVNGtoRHNFeFY0dEN4UGkv?=
- =?utf-8?Q?/2KKWszHM4yqWjv9y8LpNuXm5wzUjlsS78I+/E4t9cjE=3D?=
-X-Forefront-Antispam-Report: 
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR10MB3113.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366007)(376005)(1800799015);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: 
-	=?utf-8?B?dU1xbW12enZpN1diU3VnZW4veU5pZ3YyZG01UHNMWTd2RnlOaGozNUt5YnBm?=
- =?utf-8?B?SXRXNUxYSzlDY0pHbHFJUEVsL3pwSXVMS1FRUXF4OGM1SDFyNjBwdUJaNzJH?=
- =?utf-8?B?ekptVzBQQlN1YzY2RnN3MXdMZi95ZGExVTFiSW1WRlFDb1NkZElsbkNBWlBD?=
- =?utf-8?B?dU5LYktkTnBFU2ZkSkVpbFY0U2xkdWxnUWpuRGdYNmx3VHY0MmJ6dmJSeEtC?=
- =?utf-8?B?dnU1MS82c2c0WGpwYnl3SmppUk14RkFFZk5NZGhXNjBRMm9YR2QxcjdVZm9M?=
- =?utf-8?B?UGRnaUdXZU1XQzkzakp6c2gzR1ZLRHpjcVRtUjBzZ1RqQUVqNmcxWnZhTko2?=
- =?utf-8?B?K3l4Z2lVR1RFWXc2dFNoMnEwMjdVVFJ1YTFDS0FlNmdvWmsyM21OeC9VYVJR?=
- =?utf-8?B?KzJWRTk5K3BpU1J3b0VRVjlJN3ArWlBIVGF0VFRsNk02ekFkQWhia2Q0SkVJ?=
- =?utf-8?B?TlhqUFhWaTU3NkVkRk55alh6NXNqazI5OTZoZzZOM0g2dU9KZEdPV09DcXJh?=
- =?utf-8?B?Wk5nTllMMllxcW1pWVQrNjkzaVFHMjZZZnpwbzJlT0VmaEVDZEVmQ2J2UGdE?=
- =?utf-8?B?bXl0VlB0NWVsQTdYT0kxSkxIYmpRMXZrWUpTazZiOWpTdWh6dTlSZkE0WmV2?=
- =?utf-8?B?WVBQV0tZTERCZHRMMHBQVHZUN2J0b1hwcFVsMmdQMFQxMFg4QmNjcHhvK2hE?=
- =?utf-8?B?TVJ5bGR5akZZYUNMSzg5c2dST3VMRHY4bWJBSmU0WCswZy8zN2dmNDdSVzNH?=
- =?utf-8?B?S0VZYzVYVDZheTA2dmsreVQwWWRsak10RkxvMmJRMVBPRGUrMWp0VGl2MFpx?=
- =?utf-8?B?T2R1dDlwZ3hGSmJBaldNNUhDTTRjSFlSMXJQMXhYTzdWVUJvR1hKZk5zZzNn?=
- =?utf-8?B?dDBLNyt6K2RsOGFQdmdOR2d1bTBEd2lFMUJHcWZENm5YNjBSS3hpekFHUXlL?=
- =?utf-8?B?c1FJTnJuQjlHQ1h2bGIzUHpUam1jaVhlQUVsUmdyV0k3N09lYU42SE1KMzR6?=
- =?utf-8?B?dHdRZDhSeGVhb24yR2N0NGdGZS9DcWhMeDdpd1pQMVhCSVlKbk5haE5mNDBU?=
- =?utf-8?B?SVJpYitWd0M4U0Z1MmVaR0tFM21LYW9sVi8vR2ZYQklXR2RBNUJyTjNiT0tu?=
- =?utf-8?B?RGNjaFh6RjZ5UXZOMFlLYXVMR0JRL2Q3b0t4OGpLM08zR1VzRFZES0IyaVVs?=
- =?utf-8?B?U3A5Y0hCRDhRcXM3SmVVV2NDbVc4Tkt2ZVhqOFUweVp1UWFQM0FGN2Y4eG5t?=
- =?utf-8?B?VjR4UlVNL1dzUkhOS0x0ZXk1dFJlUEpBcjNQSm5rUVMvNDQySmphUFkwODBs?=
- =?utf-8?B?RHpWaXpGeEZkb3JzL0UrTVJrK3J5cENQNnNGY0xlMmlXbUNwNkZXYS8vaC9j?=
- =?utf-8?B?eVdCRkNzdm5yUVIzS0Zab0s4K3ZWWGNMUTFpU2lUUE5WZlVmOGRPOWorMUVY?=
- =?utf-8?B?b3BJenhLQ2hTZVEwRFBlaVEyYlJQdHh0M2lhSUZkR2FUSUZvVDBZcFBtTkt1?=
- =?utf-8?B?WkovTjQ3WG05bUlBcUIvUTNpc3lKdFkrN0NzaDg2T283UGxCU0hzZlYzQzBx?=
- =?utf-8?B?dVhlZDhZZFNvYmZEMFYxdjlxNVR0TWlPNitkWE14SWFhakFnTVcveUFnODA5?=
- =?utf-8?B?ckxTZ2NBODYzMlk0dWFQN3p6RTVsTmFwQUxzS3EwOG1TeXhCTi8rVlJjOTVz?=
- =?utf-8?B?R3g4UXk0VUFEN0pyTlB0Nit0a25IUXNEUTA0RDc1RWtXQmhYUUh4U3VCTmlH?=
- =?utf-8?B?SnFUMy9DQkJVN293WXpzTDlWMkpvOUs3RGlBQmd4d2lOa2dyOGxXM3lqVGE0?=
- =?utf-8?B?VU1SWlA4WkFhekhySUhjOXRSRmtWNWRnUllWQmpiZFFIenFPNEhNRnRHODIr?=
- =?utf-8?B?USsxRFY0Y3dubmU2M2pWZERWRkROWTNYZVpXbC9Bb2lSWmFyMFdYdTBqa0E2?=
- =?utf-8?B?K3BERzJrcXh3bldGdkRvbXZ5YytrYUM4RnljNngrMGF4Rmw2RUgrcHhZOG1U?=
- =?utf-8?B?ZFJ5RTVJRmd5dVBNak5mOUVYNlVtVk1UVjJDMGViRG1IOWRSNFBEbnVKZXhq?=
- =?utf-8?B?MGp1Qkg0cjFUSHhkNjFrQWZrcEh4bVVhVmc5SkwrMXg4ZDlSOTRycTBBNkJB?=
- =?utf-8?B?dmd4TkFsRCtJcDltdWdGaFBmWUNqZU8wVXNCSHhKN1haMUpheVplUU5kRWRJ?=
- =?utf-8?B?NkE9PQ==?=
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: 
-	MxwJF0D80Ljtlc9n6jHkIXvzwbjZY9OM4CP2H8ZbG3g6BUy5W/cXxUQ7AtIOEs1OJ2zZWg0WaOVlt5Z8KRE/9vsMegPOCs3n9R7R2PTMZuI+7h1wvp0niepKfB62j94eMToZZ1eyGUQZfoPfpxJyAnChYs8LZmFtg6TnILqmN0v/5kuxCSm/37wJHO9QMtS0xcXWAE2s8P+2BHEjkeowp2peqP9RAd3Kl4pkuwLAGgkIJeiGn2KTIrn5GvVNOtlCY/sKGwDkiXkSbgJX+vv0GwDmMhpaxfwhNbHuAdAa99aoNSQ3AvSKdzPaF2B8/rzz6UZS0OObcsfUguwMuVGOCkNqscolUFbnL36GdG3BkAs6n5uDrmWwJITkD3vpQPfCTtKSxSiFFI+Dgqn+KO7g8Iu4yS0j49W9DbSKb0FO9DrAbMGwdVHEHOKM+jg2DY8t7bqi/Vke5mt5GuIt+/T8BOxTC5Y82iDEuRF1VHnkvgE/+di4CMLfJDEjnfncCfP4GdcUXIMq+qRmtYTp3AMl85+3G5w7Lblp6VeEQNOHYy3cwjTWW2Gu1xudGC9ZIOd70YRRfWZ1w1O2ljYhouRxFirR6KdnpTo8GFjUmDIhAWI=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e70ebc3e-15c7-465a-b559-08dc6c7e7e9d
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR10MB3113.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 May 2024 21:09:32.8630
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: If5bxKtHVPWBKb64vzXkfx2JnwEfpvj8JgJc6DMPahbIj7BPZ3afKVHf5RNiUWqkiZNRWrbgTToY9i1u3MGtUBQ2xgpP/uXXrO9pwXTT53c=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR10MB7092
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.650,FMLib:17.11.176.26
- definitions=2024-05-04_17,2024-05-03_02,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 mlxlogscore=999
- bulkscore=0 suspectscore=0 spamscore=0 malwarescore=0 mlxscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2404010000 definitions=main-2405040138
-X-Proofpoint-GUID: 0B9ajUzd3khUs12bLNTyfgq0MvZ7PUpL
-X-Proofpoint-ORIG-GUID: 0B9ajUzd3khUs12bLNTyfgq0MvZ7PUpL
+References: <20240504003006.3303334-1-andrii@kernel.org> <20240504003006.3303334-3-andrii@kernel.org>
+ <2024050439-janitor-scoff-be04@gregkh>
+In-Reply-To: <2024050439-janitor-scoff-be04@gregkh>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Sat, 4 May 2024 14:50:31 -0700
+Message-ID: <CAEf4BzZ6CaMrqRR1Rah7=HnTpU5-zw5HUnSH9NWCzAZZ55ZXFQ@mail.gmail.com>
+Subject: Re: [PATCH 2/5] fs/procfs: implement efficient VMA querying API for /proc/<pid>/maps
+To: Greg KH <gregkh@linuxfoundation.org>
+Cc: Andrii Nakryiko <andrii@kernel.org>, linux-fsdevel@vger.kernel.org, brauner@kernel.org, 
+	viro@zeniv.linux.org.uk, akpm@linux-foundation.org, 
+	linux-kernel@vger.kernel.org, bpf@vger.kernel.org, linux-mm@kvack.org, 
+	=?UTF-8?Q?Daniel_M=C3=BCller?= <deso@posteo.net>, 
+	"linux-perf-use." <linux-perf-users@vger.kernel.org>, 
+	Arnaldo Carvalho de Melo <acme@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+On Sat, May 4, 2024 at 8:28=E2=80=AFAM Greg KH <gregkh@linuxfoundation.org>=
+ wrote:
+>
+> On Fri, May 03, 2024 at 05:30:03PM -0700, Andrii Nakryiko wrote:
+> > /proc/<pid>/maps file is extremely useful in practice for various tasks
+> > involving figuring out process memory layout, what files are backing an=
+y
+> > given memory range, etc. One important class of applications that
+> > absolutely rely on this are profilers/stack symbolizers. They would
+> > normally capture stack trace containing absolute memory addresses of
+> > some functions, and would then use /proc/<pid>/maps file to file
+> > corresponding backing ELF files, file offsets within them, and then
+> > continue from there to get yet more information (ELF symbols, DWARF
+> > information) to get human-readable symbolic information.
+> >
+> > As such, there are both performance and correctness requirement
+> > involved. This address to VMA information translation has to be done as
+> > efficiently as possible, but also not miss any VMA (especially in the
+> > case of loading/unloading shared libraries).
+> >
+> > Unfortunately, for all the /proc/<pid>/maps file universality and
+> > usefulness, it doesn't fit the above 100%.
+>
+> Is this a new change or has it always been this way?
+>
 
-> On Fri, May 3, 2024 at 2:18=E2=80=AFPM Eduard Zingerman <eddyz87@gmail.co=
-m> wrote:
->>
->> On Fri, 2024-05-03 at 13:36 -0700, Eduard Zingerman wrote:
->> > On Fri, 2024-05-03 at 13:18 +0200, Jose E. Marchesi wrote:
->> > [...]
->> >
->> > > This patch modifies bpftool in order to, instead of using the pragma=
-s,
->> > > define ATTR_PRESERVE_ACCESS_INDEX to conditionally expand to the CO-=
-RE
->> > > attribute:
->> > >
->> > >   #ifndef __VMLINUX_H__
->> > >   #define __VMLINUX_H__
->> > >
->> > >   #ifndef BPF_NO_PRESERVE_ACCESS_INDEX
->> > >   #define ATTR_PRESERVE_ACCESS_INDEX __attribute__((preserve_access_=
-index))
->> > >   #else
->> > >   #define ATTR_PRESERVE_ACCESS_INDEX
->> > >   #endif
->> >
->> > Nit: maybe swap the branches to avoid double negation?
->> >
->> > >
->> > >   [... type definitions generated from kernel BTF ... ]
->> > >
->> > >   #undef ATTR_PRESERVE_ACCESS_INDEX
->> > >
->> > > and then the new btf_dump__dump_type_with_opts is used with options
->> > > specifying that we wish to have struct type attributes:
->> > >
->> > >   DECLARE_LIBBPF_OPTS(btf_dump_type_opts, opts);
->> > >   [...]
->> > >   opts.record_attrs_str =3D "ATTR_PRESERVE_ACCESS_INDEX";
->> > >   [...]
->> > >   err =3D btf_dump__dump_type_with_opts(d, root_type_ids[i], &opts);
->> > >
->> > > This is a RFC because introducing a new libbpf public function
->> > > btf_dump__dump_type_with_opts may not be desirable.
->> > >
->> > > An alternative could be to, instead of passing the record_attrs_str
->> > > option in a btf_dump_type_opts, pass it in the global dumper's optio=
+Probably always has been this way. My first exposure to profiling and
+stack symbolization was about 7 years ago, and already then
+/proc/<pid>/maps was the only way to do this, and not a 100% fit even
+then.
+
+> > First, it's text based, which makes its programmatic use from
+> > applications and libraries unnecessarily cumbersome and slow due to the
+> > need to do text parsing to get necessary pieces of information.
+>
+> slow in what way?  How has it never been noticed before as a problem?
+
+It's just inherently slower to parse text to fish out a bunch of
+integers (vma_start address, offset, inode+dev and file paths are
+typical pieces needed to "normalize" captured stack trace addresses).
+It's not too bad in terms of programming and performance for
+scanf-like APIs, but without scanf, you are dealing with splitting by
+whitespaces and tons of unnecessary string allocations.
+
+It was noticed, I think people using this for profiling/symbolization
+are not necessarily well versed in kernel development and they just
+get by with what kernel provides.
+
+>
+> And exact numbers are appreciated please, yes open/read/close seems
+> slower than open/ioctl/close, but is it really overall an issue in the
+> real world for anything?
+>
+> Text apis are good as everyone can handle them, ioctls are harder for
+> obvious reasons.
+
+Yes, and acknowledged the usefulness of text-based interface. But it's
+my (and other people I've talked with that had to deal with these
+textual interfaces) opinion that using binary interfaces are far
+superior when it comes to *programmatic* usage (i.e., from
+C/C++/Rust/whatever languages directly). Textual is great for bash
+scripts and human debugging, of course.
+
+>
+> > Second, it's main purpose is to emit all VMAs sequentially, but in
+> > practice captured addresses would fall only into a small subset of all
+> > process' VMAs, mainly containing executable text. Yet, library would
+> > need to parse most or all of the contents to find needed VMAs, as there
+> > is no way to skip VMAs that are of no use. Efficient library can do the
+> > linear pass and it is still relatively efficient, but it's definitely a=
 n
->> > > btf_dump_opts:
->> > >
->> > >   DECLARE_LIBBPF_OPTS(btf_dump_opts, opts);
->> > >   [...]
->> > >   opts.record_attrs_str =3D "ATTR_PRESERVE_ACCESS_INDEX";
->> > >   [...]
->> > >   d =3D btf_dump__new(btf, btf_dump_printf, NULL, &opts);
->> > >   [...]
->> > >   err =3D btf_dump__dump_type(d, root_type_ids[i]);
->> > >
->> > > This would be less disruptive regarding library API, and an overall
->> > > simpler change.  But it would prevent to use the same btf dumper to
->> > > dump types with and without attribute definitions.  Not sure if that
->> > > matters much in practice.
->> > >
->> > > Thoughts?
->> >
->> > I think that generating attributes explicitly is fine.
->> >
->> > I also think that moving '.record_attrs_str' to 'btf_dump_opts' is pre=
-ferable,
->> > in order to avoid adding new API functions.
->>
->> On more argument for making it a part of btf_dump_opts is that
->> btf_dump__dump_type() walks the chain of dependent types,
->> so attribute placement control is not per-type anyways.
+> > overhead that can be avoided, if there was a way to do more targeted
+> > querying of the relevant VMA information.
 >
-> And that's very unfortunate, which makes this not a good option, IMO.
+> I don't understand, is this a bug in the current files?  If so, why not
+> just fix that up?
+>
 
-Indeed.
+It's not a bug, I think /proc/<pid>/maps was targeted to describe
+*entire* address space, but for profiling and symbolization needs we
+need to find only a small subset of relevant VMAs. There is nothing
+wrong with existing implementation, it's just not a 100% fit for the
+more specialized "let's find relevant VMAs for this set of addresses"
+problem.
 
-But for the specific case case of preserve_access_info and vmlinux.h,
-having the attribute applied to all types (both directly referred and
-indirectly dependent) is actually what is required, isn't it?  That is
-what the current implicity push-attribute clang pragma does.
+> And again "efficient" need to be quantified.
 
-I have sent a tentative patch that adds the `record_attrs_str'
-configuration parameter to the btf_dump_opts, incorporating a few
-changes after Eduard's suggestions regarding avoiding double negations
-and docstrings.
-
->> I also remembered my stalled attempt to emit preserve_static_offset
->> attribute for certain types [1] (need to finish with it).
->> There I needed to attach attributes to a dozen specific types.
->>
->> [1] https://lore.kernel.org/bpf/20231220133411.22978-3-eddyz87@gmail.com=
-/
->>
->> So, I think that it would be better if '.record_attrs_str' would be a
->> callback accepting the name of the type and it's kind. Wdyt?
->
-> I think if we are talking about the current API, then extending it
-> with some pre/post type callback would solve this specific problem
-> (but even then it feels dirty, because of "this callback is called
-> after } but before ," sadness). I really dislike callbacks as part of
-> public APIs like this. It feels like the user has to have control and
-> the library should provide building blocks.
->
-> So how about an alternative view on this problem. What if we add an
-> API that will sort types in "C type system" order, i.e., it will
-> return a sequence of BTF type ID + a flag whether it's a full BTF type
-> definition or forward declaration only for that type. And then,
-> separately, instead of btf_dump__dump_type() API that emits type *and*
-> all its dependencies (unless they were already emitted, it's very
-> stateful), we'll have an analogous API that will emit a full
-> definition of one isolated btf_type (and no dependencies).
->
-> The user will need to add semicolons after each type (and empty lines
-> and stuff like that, probably), but they will also have control over
-> appending/prepending any extra attributes and whatnot (or #ifdef
-> guards).
->
-> Also, when we have this API, we'll have all the necessary building
-> blocks to finally be able to emit only types for module BTF without
-> duplicated types from vmlinux.h (under assumption that vmlinux.h will
-> be included before that). Libbpf will return fully sorted type order,
-> including vmlinux BTF types, but bpftool (or whoever is using this
-> API) will be smart in ignoring those types and/or emitting just
-> forward declaration for them.
->
-> With the decomposition into sort + emit string representation, it's
-> now trivial to use in this flexible way.
->
-> Thoughts?
-
-I am not familiar with the particular use cases, but generally speaking
-separating sorting and emission makes sense to me.  I would also prefer
-that to iterators.
+You probably saw patch #5 where I solve exactly the same problem in
+two different ways. And the problem is typical for symbolization: you
+are given a bunch of addresses within some process, we need to find
+files they belong to and what file offset they are mapped to. This is
+then used to, for example, match them to ELF symbols representing
+functions.
 
 >
+> > Another problem when writing generic stack trace symbolization library
+> > is an unfortunate performance-vs-correctness tradeoff that needs to be
+> > made.
 >
->>
->> [...]
+> What requirement has caused a "generic stack trace symbolization
+> library" to be needed at all?  What is the problem you are trying to
+> solve that is not already solved by existing tools?
+
+Capturing stack trace is a very common part, especially for BPF-based
+tools and applications. E.g., bpftrace allows one to capture stack
+traces for some "interesting events" (whatever that is, some kernel
+function call, user function call, perf event, there is tons of
+flexibility). Stack traces answer "how did we get here", but it's just
+an array of addresses, which need to be translated to something that
+humans can make sense of.
+
+That's what the symbolization library is helping with. This process is
+multi-step, quite involved, hard to get right with a good balance of
+efficiency, correctness and fullness of information (there is always a
+choice of doing simplistic symbolization using just ELF symbols, or
+much more expensive but also fuller symbolization using DWARF
+information, which gives also file name + line number information, can
+symbolize inlined functions, etc).
+
+One such library is blazesym ([0], cc'ed Daniel, who's working on it),
+which is developed by Meta for both internal use in our fleet-wide
+profiler, and is also in the process of being integrated into bpftrace
+(to improve bpftrace's current somewhat limited symbolization approach
+based on BCC). There is also a non-Meta project (I believe Datadog)
+that is using it for its own needs.
+
+Symbolization is quite a common task, that's highly non-trivial.
+
+  [0] https://github.com/libbpf/blazesym
+
+>
+> > Library has to make a decision to either cache parsed contents of
+> > /proc/<pid>/maps for service future requests (if application requests t=
+o
+> > symbolize another set of addresses, captured at some later time, which
+> > is typical for periodic/continuous profiling cases) to avoid higher
+> > costs of needed to re-parse this file or caching the contents in memory
+> > to speed up future requests. In the former case, more memory is used fo=
+r
+> > the cache and there is a risk of getting stale data if application
+> > loaded/unloaded shared libraries, or otherwise changed its set of VMAs
+> > through additiona mmap() calls (and other means of altering memory
+> > address space). In the latter case, it's the performance hit that comes
+> > from re-opening the file and re-reading/re-parsing its contents all ove=
+r
+> > again.
+>
+> Again, "performance hit" needs to be justified, it shouldn't be much
+> overall.
+
+I'm not sure how to answer whether it's much or not. Can you be a bit
+more specific on what you'd like to see?
+
+But I want to say that sensitivity to any overhead differs a lot
+depending on specifics. As general rule, we try to minimize any
+resource usage of the profiler/symbolizer itself on the host that is
+being profiled, to minimize the disruption of the production workload.
+So anything that can be done to optimize any part of the overall
+profiling process is a benefit.
+
+But while for big servers tolerance might be higher in terms of
+re-opening and re-parsing a bunch of text files, we also have use
+cases on much less powerful and very performance sensitive Oculus VR
+devices, for example. There, any extra piece of work is scrutinized,
+so having to parse text on those relatively weak devices does add up.
+Enough to spend effort to optimize text parsing in blazesym's Rust
+code (see [1] for recent improvements).
+
+  [1] https://github.com/libbpf/blazesym/pull/643/commits/b89b91b42b994b135=
+a0079bf04b2319c0054f745
+
+>
+> > This patch aims to solve this problem by providing a new API built on
+> > top of /proc/<pid>/maps. It is ioctl()-based and built as a binary
+> > interface, avoiding the cost and awkwardness of textual representation
+> > for programmatic use.
+>
+> Some people find text easier to handle for programmatic use :)
+
+I don't disagree, but pretty much everyone I discussed having to deal
+with text-based kernel APIs are pretty uniformly in favor of
+binary-based interfaces, if they are available.
+
+But note, I'm not proposing to deprecate or remove text-based
+/proc/<pid>/maps. And the main point of this work is not so much
+binary vs text, as more selecting "point-based" querying capability as
+opposed to the "iterate everything" approach of /proc/<pid>/maps.
+
+>
+> > It's designed to be extensible and
+> > forward/backward compatible by including user-specified field size and
+> > using copy_struct_from_user() approach. But, most importantly, it allow=
+s
+> > to do point queries for specific single address, specified by user. And
+> > this is done efficiently using VMA iterator.
+>
+> Ok, maybe this is the main issue, you only want one at a time?
+
+Yes. More or less, I need "a few" that cover a captured set of addresses.
+
+>
+> > User has a choice to pick either getting VMA that covers provided
+> > address or -ENOENT if none is found (exact, least surprising, case). Or=
+,
+> > with an extra query flag (PROCFS_PROCMAP_EXACT_OR_NEXT_VMA), they can
+> > get either VMA that covers the address (if there is one), or the closes=
+t
+> > next VMA (i.e., VMA with the smallest vm_start > addr). The later allow=
+s
+> > more efficient use, but, given it could be a surprising behavior,
+> > requires an explicit opt-in.
+> >
+> > Basing this ioctl()-based API on top of /proc/<pid>/maps's FD makes
+> > sense given it's querying the same set of VMA data. All the permissions
+> > checks performed on /proc/<pid>/maps opening fit here as well.
+> > ioctl-based implementation is fetching remembered mm_struct reference,
+> > but otherwise doesn't interfere with seq_file-based implementation of
+> > /proc/<pid>/maps textual interface, and so could be used together or
+> > independently without paying any price for that.
+> >
+> > There is one extra thing that /proc/<pid>/maps doesn't currently
+> > provide, and that's an ability to fetch ELF build ID, if present. User
+> > has control over whether this piece of information is requested or not
+> > by either setting build_id_size field to zero or non-zero maximum buffe=
+r
+> > size they provided through build_id_addr field (which encodes user
+> > pointer as __u64 field).
+> >
+> > The need to get ELF build ID reliably is an important aspect when
+> > dealing with profiling and stack trace symbolization, and
+> > /proc/<pid>/maps textual representation doesn't help with this,
+> > requiring applications to open underlying ELF binary through
+> > /proc/<pid>/map_files/<start>-<end> symlink, which adds an extra
+> > permissions implications due giving a full access to the binary from
+> > (potentially) another process, while all application is interested in i=
+s
+> > build ID. Giving an ability to request just build ID doesn't introduce
+> > any additional security concerns, on top of what /proc/<pid>/maps is
+> > already concerned with, simplifying the overall logic.
+> >
+> > Kernel already implements build ID fetching, which is used from BPF
+> > subsystem. We are reusing this code here, but plan a follow up changes
+> > to make it work better under more relaxed assumption (compared to what
+> > existing code assumes) of being called from user process context, in
+> > which page faults are allowed. BPF-specific implementation currently
+> > bails out if necessary part of ELF file is not paged in, all due to
+> > extra BPF-specific restrictions (like the need to fetch build ID in
+> > restrictive contexts such as NMI handler).
+> >
+> > Note also, that fetching VMA name (e.g., backing file path, or special
+> > hard-coded or user-provided names) is optional just like build ID. If
+> > user sets vma_name_size to zero, kernel code won't attempt to retrieve
+> > it, saving resources.
+> >
+> > Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+>
+> Where is the userspace code that uses this new api you have created?
+
+So I added a faithful comparison of existing /proc/<pid>/maps vs new
+ioctl() API to solve a common problem (as described above) in patch
+#5. The plan is to put it in mentioned blazesym library at the very
+least.
+
+I'm sure perf would benefit from this as well (cc'ed Arnaldo and
+linux-perf-user), as they need to do stack symbolization as well.
+
+It will be up to other similar projects to adopt this, but we'll
+definitely get this into blazesym as it is actually a problem for the
+abovementioned Oculus use case. We already had to make a tradeoff (see
+[2], this wasn't done just because we could, but it was requested by
+Oculus customers) to cache the contents of /proc/<pid>/maps and run
+the risk of missing some shared libraries that can be loaded later. It
+would be great to not have to do this tradeoff, which this new API
+would enable.
+
+  [2] https://github.com/libbpf/blazesym/commit/6b521314126b3ae6f2add43e932=
+34b59fed48ccf
+
+>
+> > ---
+> >  fs/proc/task_mmu.c      | 165 ++++++++++++++++++++++++++++++++++++++++
+> >  include/uapi/linux/fs.h |  32 ++++++++
+> >  2 files changed, 197 insertions(+)
+> >
+> > diff --git a/fs/proc/task_mmu.c b/fs/proc/task_mmu.c
+> > index 8e503a1635b7..cb7b1ff1a144 100644
+> > --- a/fs/proc/task_mmu.c
+> > +++ b/fs/proc/task_mmu.c
+> > @@ -22,6 +22,7 @@
+> >  #include <linux/pkeys.h>
+> >  #include <linux/minmax.h>
+> >  #include <linux/overflow.h>
+> > +#include <linux/buildid.h>
+> >
+> >  #include <asm/elf.h>
+> >  #include <asm/tlb.h>
+> > @@ -375,11 +376,175 @@ static int pid_maps_open(struct inode *inode, st=
+ruct file *file)
+> >       return do_maps_open(inode, file, &proc_pid_maps_op);
+> >  }
+> >
+> > +static int do_procmap_query(struct proc_maps_private *priv, void __use=
+r *uarg)
+> > +{
+> > +     struct procfs_procmap_query karg;
+> > +     struct vma_iterator iter;
+> > +     struct vm_area_struct *vma;
+> > +     struct mm_struct *mm;
+> > +     const char *name =3D NULL;
+> > +     char build_id_buf[BUILD_ID_SIZE_MAX], *name_buf =3D NULL;
+> > +     __u64 usize;
+> > +     int err;
+> > +
+> > +     if (copy_from_user(&usize, (void __user *)uarg, sizeof(usize)))
+> > +             return -EFAULT;
+> > +     if (usize > PAGE_SIZE)
+>
+> Nice, where did you document that?  And how is that portable given that
+> PAGE_SIZE can be different on different systems?
+
+I'm happy to document everything, can you please help by pointing
+where this documentation has to live?
+
+This is mostly fool-proofing, though, because the user has to pass
+sizeof(struct procfs_procmap_query), which I don't see ever getting
+close to even 4KB (not even saying about 64KB). This is just to
+prevent copy_struct_from_user() below to do too much zero-checking.
+
+>
+> and why aren't you checking the actual structure size instead?  You can
+> easily run off the end here without knowing it.
+
+See copy_struct_from_user(), it does more checks. This is a helper
+designed specifically to deal with use cases like this where kernel
+struct size can change and user space might be newer or older.
+copy_struct_from_user() has a nice documentation describing all these
+nuances.
+
+>
+> > +             return -E2BIG;
+> > +     if (usize < offsetofend(struct procfs_procmap_query, query_addr))
+> > +             return -EINVAL;
+>
+> Ok, so you have two checks?  How can the first one ever fail?
+
+Hmm.. If usize =3D 8, copy_from_user() won't fail, usize > PAGE_SIZE
+won't fail, but this one will fail.
+
+The point of this check is that user has to specify at least first
+three fields of procfs_procmap_query (size, query_flags, and
+query_addr), because without those the query is meaningless.
+>
+>
+> > +     err =3D copy_struct_from_user(&karg, sizeof(karg), uarg, usize);
+
+and this helper does more checks validating that the user either has a
+shorter struct (and then zero-fills the rest of kernel-side struct) or
+has longer (and then the longer part has to be zero filled). Do check
+copy_struct_from_user() documentation, it's great.
+
+> > +     if (err)
+> > +             return err;
+> > +
+> > +     if (karg.query_flags & ~PROCFS_PROCMAP_EXACT_OR_NEXT_VMA)
+> > +             return -EINVAL;
+> > +     if (!!karg.vma_name_size !=3D !!karg.vma_name_addr)
+> > +             return -EINVAL;
+> > +     if (!!karg.build_id_size !=3D !!karg.build_id_addr)
+> > +             return -EINVAL;
+>
+> So you want values to be set, right?
+
+Either both should be set, or neither. It's ok for both size/addr
+fields to be zero, in which case it indicates that the user doesn't
+want this part of information (which is usually a bit more expensive
+to get and might not be necessary for all the cases).
+
+>
+> > +
+> > +     mm =3D priv->mm;
+> > +     if (!mm || !mmget_not_zero(mm))
+> > +             return -ESRCH;
+>
+> What is this error for?  Where is this documentned?
+
+I copied it from existing /proc/<pid>/maps checks. I presume it's
+guarding the case when mm might be already put. So if the process is
+gone, but we have /proc/<pid>/maps file open?
+
+>
+> > +     if (mmap_read_lock_killable(mm)) {
+> > +             mmput(mm);
+> > +             return -EINTR;
+> > +     }
+> > +
+> > +     vma_iter_init(&iter, mm, karg.query_addr);
+> > +     vma =3D vma_next(&iter);
+> > +     if (!vma) {
+> > +             err =3D -ENOENT;
+> > +             goto out;
+> > +     }
+> > +     /* user wants covering VMA, not the closest next one */
+> > +     if (!(karg.query_flags & PROCFS_PROCMAP_EXACT_OR_NEXT_VMA) &&
+> > +         vma->vm_start > karg.query_addr) {
+> > +             err =3D -ENOENT;
+> > +             goto out;
+> > +     }
+> > +
+> > +     karg.vma_start =3D vma->vm_start;
+> > +     karg.vma_end =3D vma->vm_end;
+> > +
+> > +     if (vma->vm_file) {
+> > +             const struct inode *inode =3D file_user_inode(vma->vm_fil=
+e);
+> > +
+> > +             karg.vma_offset =3D ((__u64)vma->vm_pgoff) << PAGE_SHIFT;
+> > +             karg.dev_major =3D MAJOR(inode->i_sb->s_dev);
+> > +             karg.dev_minor =3D MINOR(inode->i_sb->s_dev);
+>
+> So the major/minor is that of the file superblock?  Why?
+
+Because inode number is unique only within given super block (and even
+then it's more complicated, e.g., btrfs subvolumes add more headaches,
+I believe). inode + dev maj/min is sometimes used for cache/reuse of
+per-binary information (e.g., pre-processed DWARF information, which
+is *very* expensive, so anything that allows to avoid doing this is
+helpful).
+
+>
+> > +             karg.inode =3D inode->i_ino;
+>
+> What is userspace going to do with this?
+>
+
+See above.
+
+> > +     } else {
+> > +             karg.vma_offset =3D 0;
+> > +             karg.dev_major =3D 0;
+> > +             karg.dev_minor =3D 0;
+> > +             karg.inode =3D 0;
+>
+> Why not set everything to 0 up above at the beginning so you never miss
+> anything, and you don't miss any holes accidentally in the future.
+>
+
+Stylistic preference, I find this more explicit, but I don't care much
+one way or another.
+
+> > +     }
+> > +
+> > +     karg.vma_flags =3D 0;
+> > +     if (vma->vm_flags & VM_READ)
+> > +             karg.vma_flags |=3D PROCFS_PROCMAP_VMA_READABLE;
+> > +     if (vma->vm_flags & VM_WRITE)
+> > +             karg.vma_flags |=3D PROCFS_PROCMAP_VMA_WRITABLE;
+> > +     if (vma->vm_flags & VM_EXEC)
+> > +             karg.vma_flags |=3D PROCFS_PROCMAP_VMA_EXECUTABLE;
+> > +     if (vma->vm_flags & VM_MAYSHARE)
+> > +             karg.vma_flags |=3D PROCFS_PROCMAP_VMA_SHARED;
+> > +
+
+[...]
+
+> > diff --git a/include/uapi/linux/fs.h b/include/uapi/linux/fs.h
+> > index 45e4e64fd664..fe8924a8d916 100644
+> > --- a/include/uapi/linux/fs.h
+> > +++ b/include/uapi/linux/fs.h
+> > @@ -393,4 +393,36 @@ struct pm_scan_arg {
+> >       __u64 return_mask;
+> >  };
+> >
+> > +/* /proc/<pid>/maps ioctl */
+> > +#define PROCFS_IOCTL_MAGIC 0x9f
+>
+> Don't you need to document this in the proper place?
+
+I probably do, but I'm asking for help in knowing where. procfs is not
+a typical area of kernel I'm working with, so any pointers are highly
+appreciated.
+
+>
+> > +#define PROCFS_PROCMAP_QUERY _IOWR(PROCFS_IOCTL_MAGIC, 1, struct procf=
+s_procmap_query)
+> > +
+> > +enum procmap_query_flags {
+> > +     PROCFS_PROCMAP_EXACT_OR_NEXT_VMA =3D 0x01,
+> > +};
+> > +
+> > +enum procmap_vma_flags {
+> > +     PROCFS_PROCMAP_VMA_READABLE =3D 0x01,
+> > +     PROCFS_PROCMAP_VMA_WRITABLE =3D 0x02,
+> > +     PROCFS_PROCMAP_VMA_EXECUTABLE =3D 0x04,
+> > +     PROCFS_PROCMAP_VMA_SHARED =3D 0x08,
+>
+> Are these bits?  If so, please use the bit macro for it to make it
+> obvious.
+>
+
+Yes, they are. When I tried BIT(1), it didn't compile. I chose not to
+add any extra #includes to this UAPI header, but I can figure out the
+necessary dependency and do BIT(), I just didn't feel like BIT() adds
+much here, tbh.
+
+> > +};
+> > +
+> > +struct procfs_procmap_query {
+> > +     __u64 size;
+> > +     __u64 query_flags;              /* in */
+>
+> Does this map to the procmap_vma_flags enum?  if so, please say so.
+
+no, procmap_query_flags, and yes, I will
+
+>
+> > +     __u64 query_addr;               /* in */
+> > +     __u64 vma_start;                /* out */
+> > +     __u64 vma_end;                  /* out */
+> > +     __u64 vma_flags;                /* out */
+> > +     __u64 vma_offset;               /* out */
+> > +     __u64 inode;                    /* out */
+>
+> What is the inode for, you have an inode for the file already, why give
+> it another one?
+
+This is inode of vma's backing file, same as /proc/<pid>/maps' file
+column. What inode of file do I already have here? You mean of
+/proc/<pid>/maps itself? It's useless for the intended purposes.
+
+>
+> > +     __u32 dev_major;                /* out */
+> > +     __u32 dev_minor;                /* out */
+>
+> What is major/minor for?
+
+This is the same information as emitted by /proc/<pid>/maps,
+identifies superblock of vma's backing file. As I mentioned above, it
+can be used for caching per-file (i.e., per-ELF binary) information
+(for example).
+
+>
+> > +     __u32 vma_name_size;            /* in/out */
+> > +     __u32 build_id_size;            /* in/out */
+> > +     __u64 vma_name_addr;            /* in */
+> > +     __u64 build_id_addr;            /* in */
+>
+> Why not document this all using kerneldoc above the structure?
+
+Yes, sorry, I slacked a bit on adding this upfront. I knew we'll be
+figuring out the best place and approach, and so wanted to avoid
+documentation churn.
+
+Would something like what we have for pm_scan_arg and pagemap APIs
+work? I see it added a few simple descriptions for pm_scan_arg struct,
+and there is Documentation/admin-guide/mm/pagemap.rst. Should I add
+Documentation/admin-guide/mm/procmap.rst (admin-guide part feels off,
+though)? Anyways, I'm hoping for pointers where all this should be
+documented. Thank you!
+
+>
+> anyway, I don't like ioctls, but there is a place for them, you just
+> have to actually justify the use for them and not say "not efficient
+> enough" as that normally isn't an issue overall.
+
+I've written a demo tool in patch #5 which performs real-world task:
+mapping addresses to their VMAs (specifically calculating file offset,
+finding vma_start + vma_end range to further access files from
+/proc/<pid>/map_files/<start>-<end>). I did the implementation
+faithfully, doing it in the most optimal way for both APIs. I showed
+that for "typical" (it's hard to specify what typical is, of course,
+too many variables) scenario (it was data collected on a real server
+running real service, 30 seconds of process-specific stack traces were
+captured, if I remember correctly). I showed that doing exactly the
+same amount of work is ~35x times slower with /proc/<pid>/maps.
+
+Take another process, another set of addresses, another anything, and
+the numbers will be different, but I think it gives the right idea.
+
+But I think we are overpivoting on text vs binary distinction here.
+It's the more targeted querying of VMAs that's beneficial here. This
+allows applications to not cache anything and just re-query when doing
+periodic or continuous profiling (where addresses are coming in not as
+one batch, as a sequence of batches extended in time).
+
+/proc/<pid>/maps, for all its usefulness, just can't provide this sort
+of ability, as it wasn't designed to do that and is targeting
+different use cases.
+
+And then, a new ability to request reliable (it's not 100% reliable
+today, I'm going to address that as a follow up) build ID is *crucial*
+for some scenarios. The mentioned Oculus use case, the need to fully
+access underlying ELF binary just to get build ID is frowned upon. And
+for a good reason. Profiler only needs build ID, which is no secret
+and not sensitive information. This new (and binary, yes) API allows
+to add this into an API without breaking any backwards compatibility.
+
+>
+> thanks,
+>
+> greg k-h
 
