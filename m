@@ -1,122 +1,144 @@
-Return-Path: <bpf+bounces-28588-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-28589-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A4FAB8BBF0A
-	for <lists+bpf@lfdr.de>; Sun,  5 May 2024 03:50:07 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7E7C38BBF49
+	for <lists+bpf@lfdr.de>; Sun,  5 May 2024 07:10:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DC49AB2129B
-	for <lists+bpf@lfdr.de>; Sun,  5 May 2024 01:50:04 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3566D1F21700
+	for <lists+bpf@lfdr.de>; Sun,  5 May 2024 05:10:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6837215A8;
-	Sun,  5 May 2024 01:49:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E5DF65227;
+	Sun,  5 May 2024 05:09:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kzR1SSdR"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Mrn1xhBN"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ot1-f43.google.com (mail-ot1-f43.google.com [209.85.210.43])
+Received: from mail-pl1-f171.google.com (mail-pl1-f171.google.com [209.85.214.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 992F617C2;
-	Sun,  5 May 2024 01:49:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B8F717FF
+	for <bpf@vger.kernel.org>; Sun,  5 May 2024 05:09:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714873797; cv=none; b=b6RlICUDwYQW2gF9RHmwKZWhGBR/mS5G6/4BnHLhlr9LxbVV2D82Hq8ZPG6pfepF0vMvDmojM7GZeI4bwGxsHsTRd0XKGp/sGgNnRwTYwnwC57XZENikidJK0MBYS0wcvY8k/VipEKXoYXOoDKKiAm2eu+c0y1NBwm5Ndq7eSZ0=
+	t=1714885793; cv=none; b=Le3hDD+MOxO6XHZSz44qOATezgFPuokBBtABjNMy/yfHGyuHbMY5lzT1C+/xXCaUhXviiNOlaqAa2NTAa0lEz9fMnhnWDq4FSupC1e8u9Pw4UVCnAAFr9N5chchCluctURfdpVGHM/rUKkx6+KKq3fENFbR9GR6FawZlcJtNjBc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714873797; c=relaxed/simple;
-	bh=gwS7SvCCQzpLEKN5XmF5rDHidC1WX6HSiHlxk5j+Kdw=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=lDPFLl9MYhVRphuDG6yudqiW7teFJA34gO1fZbrwwiRK5PasfHxeNXDrMOfTFHoNRfBCsDH8LuZ9S2syBXfNLAZK72TXZLP0J1yPCMNGpsQ5M40oVFK5byZX1c5GS20MR4+BivBzZoGoUFszhg2Ej/X4ZAzHWLi4FbaQoKWPS/4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kzR1SSdR; arc=none smtp.client-ip=209.85.210.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ot1-f43.google.com with SMTP id 46e09a7af769-6f0307322d5so263796a34.0;
-        Sat, 04 May 2024 18:49:55 -0700 (PDT)
+	s=arc-20240116; t=1714885793; c=relaxed/simple;
+	bh=olH7hQHHDHDp2bsomJmiSdHdXsNU4KXMYOJHnmgtMxQ=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=BEQ1YbMrvruwBgrnmzAmAZYHXIuNdRuopgbI2I7A72ls+080fAN9YYTl3rrZqRobvywONRm7781Tbwqrr0gdDpVLuadK1tZuCvimQL0DTAmn6AYC3IhAaYgUVHN8ziYoPEWGVe+JuAzxaHhG/mukh2cwGy9gtx4YDDsbcej9ZDc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Mrn1xhBN; arc=none smtp.client-ip=209.85.214.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-pl1-f171.google.com with SMTP id d9443c01a7336-1ec182ab287so96015ad.1
+        for <bpf@vger.kernel.org>; Sat, 04 May 2024 22:09:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714873794; x=1715478594; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=SKURNdYPj7HMqSPgV0Iuf+l9Ve2ja713YdXS96CYBIo=;
-        b=kzR1SSdR7R6/s2njsZ19/4W7FT2FjEJx8YNhWCbVyRxjABJaLmeawZy3iQy153ry/o
-         jmmFqOIsjVKoQ1sRBx2FQ7WdapNHO16I3sfIuLNMKNjv424Ak97kFrX7gbhcwMNhu8i+
-         gc6SMygpHKzne/Z/8GenPouA6GEZzXzkzAhOe0FWFrZQFw8PoWsCDLKYoxLf/rnmbhxD
-         Yr2BO7zUV/HWdTnjAk5sAMoFFwgfKQKtLYJDqO9CGmDBEWL/QIEnsZFdPx6Teb1rXTVE
-         X4+oagI6Kw2BN1NBB/E+xwOD/DRju2+vOKfF8zNmzRRHluePqlu2s5f9piywxGfiMybG
-         nN9A==
+        d=google.com; s=20230601; t=1714885791; x=1715490591; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=+LFEOHbhdT8xlmXAZ79el6d0XvgZNSArYbb5H09rUb4=;
+        b=Mrn1xhBNBqxCE5yPD5OVx+e8FNRV17ekqQA2aKdNnVNULq8zWnwENBgC+uQl92OwtH
+         N8CSJy84/hyjZZjR6nTlf5NZYZVbhQvn0/s2xcrqoxO6hcBF9TVX8NkzWKg8cm25W1+0
+         0boxYbJxSq21MoP1RTNS/2jad52AnDomuT+zNIfSYmC0RsvYFALNXf3ssOYQmEWycu/e
+         65ZT8SB/V25cyTrikHt5DWMwAVwYH6IyNvxza9ZVNbcMQw9AFRxRAhIG+o9VGHsv1vms
+         R1I7anqnYCubCZwrkOusYF3KwLWw5hEqWk5W3DxnebOzRvc3dshcmd4SvE+TLp67Rn1T
+         rG+Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714873794; x=1715478594;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=SKURNdYPj7HMqSPgV0Iuf+l9Ve2ja713YdXS96CYBIo=;
-        b=Jw6RFVjRSnJ+4gBOccDZVBCPzix05Jcl7cIGktwXIyyU4u2vubsXMMCeMDt9aSZQDq
-         yIfzP2sFB/xgx0zt1Yn7fID+gLUucukWi5+UhUZiVlPJxz/mmGSWfjl5Bjn2abmTh61D
-         xD58JQx0irvi+xeCrA05BoNcQxrrnBKz9UWfQw7K2nbxU0FKm3EoKKFlVvZYqAKbXJ/F
-         KE/DhNgRz8FIXzmTHz62yxumbJwUhOHKAV4BI3Jo0RZO0FZCqjGXR4NzeV23HzAX/ydh
-         XQDsXdjDNLIbTk+PiLbRPFnHpoNjYicuYFFE9vB90pRsTKylv0v9kMcepdBe7FEGwsJg
-         0f3Q==
-X-Forwarded-Encrypted: i=1; AJvYcCWiEeuTZRrKA+U+Pn+w1nk57BCRNCmLNeKl5+Mcp1VGmxJe75um3nQfTfGX0K6+NDyoZf8XwfZFb5aTRGsgHST9oWfsTcCH9D4GPmpa
-X-Gm-Message-State: AOJu0YzPf57Rjk5i4jurxzGD9rZBiKuklA+FjhiH8XkVUQ6nc5GpEe6E
-	6utK76EUB5XtkDFKnEkJY/sDYT5QYOAQH434Nu6n7jKCkdekP5fv/2kpcEZE
-X-Google-Smtp-Source: AGHT+IFC7+Y8m5ihDjkRKe7ei7TaJn3CEK9M1rcC9r9JFAJrNyCDbzo3sH5V7Mmxcwyy/AA+KhuzmQ==
-X-Received: by 2002:a05:6830:1314:b0:6ee:405b:5220 with SMTP id p20-20020a056830131400b006ee405b5220mr7390613otq.19.1714873794678;
-        Sat, 04 May 2024 18:49:54 -0700 (PDT)
-Received: from localhost.localdomain ([190.196.101.184])
-        by smtp.gmail.com with ESMTPSA id h64-20020a638343000000b0061a943e043fsm5070536pge.80.2024.05.04.18.49.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 04 May 2024 18:49:54 -0700 (PDT)
-From: Camila Alvarez <cam.alvarez.i@gmail.com>
-To: ast@kernel.org,
-	daniel@iogearbox.net
-Cc: bpf@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Camila Alvarez <cam.alvarez.i@gmail.com>,
-	syzbot+d2a2c639d03ac200a4f1@syzkaller.appspotmail.com
-Subject: [PATCH] fix array-index-out-of-bounds in bpf_prog_select_runtime
-Date: Sat,  4 May 2024 21:46:43 -0400
-Message-Id: <20240505014641.203643-1-cam.alvarez.i@gmail.com>
-X-Mailer: git-send-email 2.34.1
+        d=1e100.net; s=20230601; t=1714885791; x=1715490591;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=+LFEOHbhdT8xlmXAZ79el6d0XvgZNSArYbb5H09rUb4=;
+        b=G7PIGr3wcmxQNhvpKjIcvDRm67vwWVzWgiQ4VK+M6JoJGlO7+TpXiL3CAawJ5xRhVc
+         dhqAsep/T9cQP/z/n9RR4Xjh4lleoWguQZA6QSTEr5pBTMwlhmeB0JNvfZNcLBt2kMj3
+         /WlZpWMmH9ZTVoAWIG7+fyqO/kkveHe5ilJrR9PEm+1sPeSo7vqBYGtq3bXT0N+US23k
+         x4g27Tt41EoCPISt6OpFvgDO8BWWPAH+mDNYb5JEK9cWy3IkntVhKCD6Fa2/n+8t8wym
+         bVJnrCqBYIQhSFRrpIcA/gJdQ0hgAw1OYuEGhBMx+nOTubLHAsO5ScEGtr69oRQa5Vg1
+         v1nA==
+X-Forwarded-Encrypted: i=1; AJvYcCXq86pkX3C2NFE1bB3jacF5KtBIDmSuemnc+TlZJYoippkw/ecc7n9jCNPR38LbtJPxVoHj62k6Gb43dOKhEfGK72ja
+X-Gm-Message-State: AOJu0YxytYvCpH2iSlgH33WtOLSlgUeEtkzhPJ3+5iqsFx7ejqMqWL1M
+	tyNyC953N47zDcG+gMnDFeHIeMDPHGi5S4JNJcuyqOplMndhy02EbaXZk1BFHXy7FRwlu2uZX6E
+	FYuijPIfwEAJ+VFYasFZAqt4O3nGFVmiY4sqZ
+X-Google-Smtp-Source: AGHT+IHGBa7tMMleiZKIyfq04qQxdw3xbaO8yY7nGHAFS1LwAn2FIimhO36Sml74NHR419/S58AeVS848bcSO81YVbs=
+X-Received: by 2002:a17:902:f789:b0:1e0:c571:d652 with SMTP id
+ d9443c01a7336-1ed851171f3mr1404605ad.1.1714885790351; Sat, 04 May 2024
+ 22:09:50 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20240504003006.3303334-1-andrii@kernel.org> <20240504003006.3303334-6-andrii@kernel.org>
+ <2024050404-rectify-romp-4fdb@gregkh> <CAEf4BzaUgGJVqw_yWOXASHManHQWGQV905Bd-wiaHj-mRob9gw@mail.gmail.com>
+In-Reply-To: <CAEf4BzaUgGJVqw_yWOXASHManHQWGQV905Bd-wiaHj-mRob9gw@mail.gmail.com>
+From: Ian Rogers <irogers@google.com>
+Date: Sat, 4 May 2024 22:09:39 -0700
+Message-ID: <CAP-5=fWPig8-CLLBJ_rb3D6eNAKVY7KX_n_HcpGqL7gfe-=XXg@mail.gmail.com>
+Subject: Re: [PATCH 5/5] selftests/bpf: a simple benchmark tool for
+ /proc/<pid>/maps APIs
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: Greg KH <gregkh@linuxfoundation.org>, Andrii Nakryiko <andrii@kernel.org>, 
+	linux-fsdevel@vger.kernel.org, brauner@kernel.org, viro@zeniv.linux.org.uk, 
+	akpm@linux-foundation.org, linux-kernel@vger.kernel.org, bpf@vger.kernel.org, 
+	linux-mm@kvack.org, Arnaldo Carvalho de Melo <acme@kernel.org>, 
+	"linux-perf-use." <linux-perf-users@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-The error indicates that the verifier is letting through a program with
-a stack depth bigger than 512.
+On Sat, May 4, 2024 at 2:57=E2=80=AFPM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
+>
+> On Sat, May 4, 2024 at 8:29=E2=80=AFAM Greg KH <gregkh@linuxfoundation.or=
+g> wrote:
+> >
+> > On Fri, May 03, 2024 at 05:30:06PM -0700, Andrii Nakryiko wrote:
+> > > Implement a simple tool/benchmark for comparing address "resolution"
+> > > logic based on textual /proc/<pid>/maps interface and new binary
+> > > ioctl-based PROCFS_PROCMAP_QUERY command.
+> >
+> > Of course an artificial benchmark of "read a whole file" vs. "a tiny
+> > ioctl" is going to be different, but step back and show how this is
+> > going to be used in the real world overall.  Pounding on this file is
+> > not a normal operation, right?
+> >
+>
+> It's not artificial at all. It's *exactly* what, say, blazesym library
+> is doing (see [0], it's Rust and part of the overall library API, I
+> think C code in this patch is way easier to follow for someone not
+> familiar with implementation of blazesym, but both implementations are
+> doing exactly the same sequence of steps). You can do it even less
+> efficiently by parsing the whole file, building an in-memory lookup
+> table, then looking up addresses one by one. But that's even slower
+> and more memory-hungry. So I didn't even bother implementing that, it
+> would put /proc/<pid>/maps at even more disadvantage.
+>
+> Other applications that deal with stack traces (including perf) would
+> be doing one of those two approaches, depending on circumstances and
+> level of sophistication of code (and sensitivity to performance).
 
-This is due to the verifier not checking the stack depth after
-instruction rewrites are perfomed. For example, the MAY_GOTO instruction
-adds 8 bytes to the stack, which means that if the stack at the moment
-was already 512 bytes it would overflow after rewriting the instruction.
+The code in perf doing this is here:
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/too=
+ls/perf/util/synthetic-events.c#n440
+The code is using the api/io.h code:
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/too=
+ls/lib/api/io.h
+Using perf to profile perf it was observed time was spent allocating
+buffers and locale related activities when using stdio, so io is a
+lighter weight alternative, albeit with more verbose code than fscanf.
+You could add this as an alternate /proc/<pid>/maps reader, we have a
+similar benchmark in `perf bench internals synthesize`.
 
-The fix involves adding a stack depth check after all instruction
-rewrites are performed.
+Thanks,
+Ian
 
-Reported-by: syzbot+d2a2c639d03ac200a4f1@syzkaller.appspotmail.com
-Signed-off-by: Camila Alvarez <cam.alvarez.i@gmail.com>
----
- kernel/bpf/verifier.c | 4 ++++
- 1 file changed, 4 insertions(+)
-
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 63749ad5ac6b..a9e23b6b8e8f 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -21285,6 +21285,10 @@ int bpf_check(struct bpf_prog **prog, union bpf_attr *attr, bpfptr_t uattr, __u3
- 	if (ret == 0)
- 		ret = do_misc_fixups(env);
- 
-+        /* max stack depth verification must be done after rewrites as well */
-+        if (ret == 0)
-+                ret = check_max_stack_depth(env);
-+
- 	/* do 32-bit optimization after insn patching has done so those patched
- 	 * insns could be handled correctly.
- 	 */
--- 
-2.34.1
-
+>   [0] https://github.com/libbpf/blazesym/blob/ee9b48a80c0b4499118a1e8e5d9=
+01cddb2b33ab1/src/normalize/user.rs#L193
+>
+> > thanks,
+> >
+> > greg k-h
+>
 
