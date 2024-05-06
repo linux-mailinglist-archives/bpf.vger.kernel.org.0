@@ -1,140 +1,209 @@
-Return-Path: <bpf+bounces-28736-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-28737-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 058EB8BD838
-	for <lists+bpf@lfdr.de>; Tue,  7 May 2024 01:36:20 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DC1888BD83D
+	for <lists+bpf@lfdr.de>; Tue,  7 May 2024 01:41:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 52D2EB21576
-	for <lists+bpf@lfdr.de>; Mon,  6 May 2024 23:36:17 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 14BB21C20D49
+	for <lists+bpf@lfdr.de>; Mon,  6 May 2024 23:41:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2630C15D5A1;
-	Mon,  6 May 2024 23:36:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 22CFA15D5A9;
+	Mon,  6 May 2024 23:41:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XqHaMFlA"
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="fnXVY3V4"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f52.google.com (mail-wr1-f52.google.com [209.85.221.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2767115B131;
-	Mon,  6 May 2024 23:36:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 022601E885;
+	Mon,  6 May 2024 23:41:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715038569; cv=none; b=LLT2nt/NjL6qwi42zlpCYHr/C3WmAlOkrEXSRpGCJC+cbRhYw35yDHkLcYjFiA6pZ3vjLCuzn2qX+n+BoBfZmoiEzxCbt7bBtYCftJMP6SgvTLhqxGuUgeYvJXs7nhjrq8i/ggS49dybywY9nxkbAC9Qz7FUnvRMci7MRb2aAi0=
+	t=1715038865; cv=none; b=gcInXOrV4+oKErQ4QkvyTsDCqHJsrvXWy9oSbT17PJ15fu5knGaYGc+gCuf3povpLKgIVHjOQxLnhbwGZ3JLrQmnYCvNtJEN6zb5k93cSDZmn80+irJ2ggj43XzqWGT/tWQg+NaAyfAnvV4/pA2TtadNjEm26T4Pjx1nj6zVpUQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715038569; c=relaxed/simple;
-	bh=1IVbn48SaZRlWHmSAYL0VGXv8W1m+hKXQFeTuINxXh8=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=SCjxuXmI8VOr2HL02TyqAXJNnP/ulnUdecQOekHCK+wXW2z5TANGmqTLBHuC2VqQ2B9VUDO53QNApPkEjvSdGTEX34sDKq6tlH9oRLdIY8UVau67gGIDP7i1jqRCOquKPnWhETDL6DXYPlU8JhGAFcBI5hyYKC4arrc+rBRDodY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=XqHaMFlA; arc=none smtp.client-ip=209.85.221.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f52.google.com with SMTP id ffacd0b85a97d-34db6a299b8so1645366f8f.3;
-        Mon, 06 May 2024 16:36:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1715038566; x=1715643366; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=1IVbn48SaZRlWHmSAYL0VGXv8W1m+hKXQFeTuINxXh8=;
-        b=XqHaMFlAzbah75MO6E50vlAVVf6dNegXYw0jzlfvjRXwLbiSRsQtvUiFaxqMylUgpp
-         y+OHiIvBMcR49IdWxsVVDRuEqzyGqFqkmtIsePx7LSLS3OgrmVlfp3TsQ26mbzJbtg7r
-         9sfIWxxOoNMv+oPl9a5B77QUXNZkNKjWkcbCgFJWMlPP5syNVIVrlst/HDkV3kAYveWv
-         EjLdlho5FiL7GxaRbp46ZjvMtsf6Wq2VktCc7c26QBHIThQh3iFpzeger36MD6kZlajp
-         hiPl8EACdwBhjP9NMkqQ14/AYaeXW/1XUEezz5fqvAAcWQtPdwszW0E3kAYTlQ5elWAS
-         Xaew==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1715038566; x=1715643366;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=1IVbn48SaZRlWHmSAYL0VGXv8W1m+hKXQFeTuINxXh8=;
-        b=nPfI88JJMO+wdVco2X3GuLH86fEUdA8jT/ltRDCXZ124f7XBWgtkK2h9uKE/kX1bgh
-         8XeUGRvScQLzwciE1glYbyVSQYQqXQ23wEsVkVDBAo77/TemiXVu1FYkHZhqmp/0w/+K
-         Wd27wT665Gvca8MIYyWhxQuQ/mJ3034oLab3RKxtr1ZueWXJhJuWQMK4yN13d2yqzHiB
-         cx7oce36pWpTZWG+lapjua76h/A841Tis2pm4cbNAfeUFLBqmu/62cqYMW2VAknYkVKV
-         lhFEYqCZ9PAZd+GdK0G+/vJdgfwuniHyOeuqonGfuCmbbgmBETNkjBx/6j/cvKIegLRl
-         YPOA==
-X-Forwarded-Encrypted: i=1; AJvYcCXMcFz4iQ79KtMnGxVw2HWFdPc8Lkd1jRp4B0uFkNO80gJOHJFi0l0SK56UCJ1Gr1gE/6Ywo7d0/v4rjOjKnxnrwMEZC3pBwgJgbRGMz267RpbUw3YSWHcRnBtTZbkh/WRe
-X-Gm-Message-State: AOJu0YzqI1l5CtctENqEN93AqkhMWCwe5mZpiMRUsdOYjL65UOIk0V6L
-	urdfpwIEtYQ7FT5N/SpyQso4QuF8vW2IKUJ+z8YuXDoUPJrRp8rHfaZzEoAlP4l5OuzOYtLJIF+
-	kYyd1inIlAWsgMYPYf9GDix9ydrA=
-X-Google-Smtp-Source: AGHT+IHgA28g3YSCc6rp0DCCyi7xufJmrX6RMYy1KnpYmyznCbqvH1sbt2cix116kayzS+oeIsyPQgPd4y5UuGNqq8A=
-X-Received: by 2002:a05:6000:e42:b0:34d:9467:d6d7 with SMTP id
- dy2-20020a0560000e4200b0034d9467d6d7mr8401009wrb.9.1715038566138; Mon, 06 May
- 2024 16:36:06 -0700 (PDT)
+	s=arc-20240116; t=1715038865; c=relaxed/simple;
+	bh=mqR6gz9gp6tJrQIcAxieaVjngKl4qs2DMsMrtXf5s1g=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:CC:References:
+	 In-Reply-To:Content-Type; b=TnVn6nckyZhsvjLFdKW643MwBqxS75lqlTR6H/AhJxx1qqF9EbXKpc8BGGCW1rTRDdFBIJEXchQ8eStAlPm8lzQKHeTpm5rRl/ozhfov3P8BCrWuPm4mv6AMfZJG6Jf97tQsEtxZpsKrHblSSWQsLvg4r5xxOKAYyykXsVo22QA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=fnXVY3V4; arc=none smtp.client-ip=205.220.168.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 446NbpJI003979;
+	Mon, 6 May 2024 23:40:42 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:from:to:cc:references
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=IpjLrfB035u5+tHfJeAEmJfrrZpD/R9nfsWbDFifxOk=; b=fn
+	XVY3V4X54YEo/xZa01ZFO752F3zihAcuBCmFMIPsd0XD51Of+kYeAwQ9MuwXvKCU
+	TnZiyU47iEqs1+QUd0EuqMxd25H2/TMZEf06jclnSVW+E+Yl7LZOpvkIWxYnEzAq
+	xf+K8wlqf2sDIK6DLgGMKMSRT3F0Qea5HQqov4X6k+kle1U/J31Yc80024tlI4pf
+	Qrz1v85cyjfhFb26XkauKd1p4OTxBRjtjU0DCyOUkeS5ZFl2L1UEB+rty+Qjy+rk
+	FWQkbifNKV31opao7QZ3/msPx8DKHEiaL+HKQlOGkx7QJoFEvChnTV9xI3FbDFEy
+	Jsn6u/BbyT9Ay2ZvLvlQ==
+Received: from nasanppmta05.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xxuthhqbu-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 06 May 2024 23:40:42 +0000 (GMT)
+Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
+	by NASANPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 446NefG0016395
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 6 May 2024 23:40:41 GMT
+Received: from [10.46.19.239] (10.80.80.8) by nasanex01a.na.qualcomm.com
+ (10.52.223.231) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9; Mon, 6 May 2024
+ 16:40:37 -0700
+Message-ID: <8a6e3ed0-186e-4248-98a0-c8b60341d3aa@quicinc.com>
+Date: Mon, 6 May 2024 16:40:37 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240505014641.203643-1-cam.alvarez.i@gmail.com>
- <CAADnVQ+Y5k0XMytXo9CLGYDUnVNXcgtz+2mTLUdS-yWV7JDjeQ@mail.gmail.com> <43a0853d-e7f3-702b-e7c4-f360ae1e3a70@macbook-pro-de-camila.local>
-In-Reply-To: <43a0853d-e7f3-702b-e7c4-f360ae1e3a70@macbook-pro-de-camila.local>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Mon, 6 May 2024 16:35:55 -0700
-Message-ID: <CAADnVQ+eQ36rc8Ew5a4YfFbB0rgbJhXXwwgPASjFVQ7=QFyM1A@mail.gmail.com>
-Subject: Re: [PATCH] fix array-index-out-of-bounds in bpf_prog_select_runtime
-To: Camila Alvarez Inostroza <cam.alvarez.i@gmail.com>
-Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, bpf <bpf@vger.kernel.org>, 
-	LKML <linux-kernel@vger.kernel.org>, 
-	syzbot+d2a2c639d03ac200a4f1@syzkaller.appspotmail.com
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH bpf-next v6 3/3] selftests/bpf: Handle forwarding of
+ UDP CLOCK_TAI packets
+Content-Language: en-US
+From: "Abhishek Chauhan (ABC)" <quic_abchauha@quicinc.com>
+To: Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+        "David S. Miller"
+	<davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>, Jakub Kicinski
+	<kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, Andrew Halaney <ahalaney@redhat.com>,
+        "Martin
+ KaFai Lau" <martin.lau@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Daniel Borkmann <daniel@iogearbox.net>, bpf <bpf@vger.kernel.org>
+CC: <kernel@quicinc.com>
+References: <20240504031331.2737365-1-quic_abchauha@quicinc.com>
+ <20240504031331.2737365-4-quic_abchauha@quicinc.com>
+ <663929b249143_516de2945@willemb.c.googlers.com.notmuch>
+ <d613c5a6-5081-4760-8a86-db1107bdc207@quicinc.com>
+ <1480064d-1825-4438-9d30-bc47a694cc12@quicinc.com>
+In-Reply-To: <1480064d-1825-4438-9d30-bc47a694cc12@quicinc.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nasanex01a.na.qualcomm.com (10.52.223.231)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: przWdvP5rukM-nKm2AnRtDImBlIfUkjW
+X-Proofpoint-ORIG-GUID: przWdvP5rukM-nKm2AnRtDImBlIfUkjW
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.650,FMLib:17.11.176.26
+ definitions=2024-05-06_17,2024-05-06_02,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 malwarescore=0
+ adultscore=0 mlxscore=0 bulkscore=0 lowpriorityscore=0 impostorscore=0
+ mlxlogscore=999 clxscore=1015 suspectscore=0 phishscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2404010003 definitions=main-2405060172
 
-On Sun, May 5, 2024 at 4:18=E2=80=AFPM Camila Alvarez Inostroza
-<cam.alvarez.i@gmail.com> wrote:
->
->
->
-> On Sun, 5 May 2024, Alexei Starovoitov wrote:
->
-> > On Sat, May 4, 2024 at 6:49=E2=80=AFPM Camila Alvarez <cam.alvarez.i@gm=
-ail.com> wrote:
-> >>
-> >> The error indicates that the verifier is letting through a program wit=
-h
-> >> a stack depth bigger than 512.
-> >>
-> >> This is due to the verifier not checking the stack depth after
-> >> instruction rewrites are perfomed. For example, the MAY_GOTO instructi=
-on
-> >> adds 8 bytes to the stack, which means that if the stack at the moment
-> >> was already 512 bytes it would overflow after rewriting the instructio=
-n.
-> >
-> > This is by design. may_goto and other constructs like bpf_loop
-> > inlining can consume a few words above 512 limit.
-> >
->
-> Is this the only case where the verifier should allow the stack to go ove=
-r
-> the 512 limit? If that's the case, maybe we could use the extra stack
-> depth to store how much the rewrites affect the stack depth? This would
-> only be used to obtain the correct interpreter when
-> CONFIG_BPF_JIT_ALWAYS_ON is not set.
-> That would allow choosing the interpreter by considering the stack depth
-> before the rewrites.
->
-> >> The fix involves adding a stack depth check after all instruction
-> >> rewrites are performed.
-> >>
-> >> Reported-by: syzbot+d2a2c639d03ac200a4f1@syzkaller.appspotmail.com
-> >
-> > This syzbot report is likely unrelated.
-> > It says that it bisected it to may_goto, but it has this report
-> > before may_goto was introduced, so bisection is incorrect.
-> >
-> > pw-bot: cr
->
-> I can see that may_goto was introduced on march 6th, and the first report
-> was on march 13th. Is there any report I'm missing?
 
-Could you please craft a selftest for this issue then?
-It will be much easier to reason about the fix.
-We can either add another interpreter to interpreters_args[]
-or just gate may_goto with prog->jit_requested.
+
+On 5/6/2024 1:54 PM, Abhishek Chauhan (ABC) wrote:
+> 
+> 
+> On 5/6/2024 1:50 PM, Abhishek Chauhan (ABC) wrote:
+>>
+>>
+>> On 5/6/2024 12:04 PM, Willem de Bruijn wrote:
+>>> Abhishek Chauhan wrote:
+>>>> With changes in the design to forward CLOCK_TAI in the skbuff
+>>>> framework,  existing selftest framework needs modification
+>>>> to handle forwarding of UDP packets with CLOCK_TAI as clockid.
+>>>>
+>>>> Link: https://lore.kernel.org/netdev/bc037db4-58bb-4861-ac31-a361a93841d3@linux.dev/
+>>>> Signed-off-by: Abhishek Chauhan <quic_abchauha@quicinc.com>
+>>>> ---
+>>>>  tools/include/uapi/linux/bpf.h                | 15 ++++---
+>>>>  .../selftests/bpf/prog_tests/ctx_rewrite.c    | 10 +++--
+>>>>  .../selftests/bpf/prog_tests/tc_redirect.c    |  3 --
+>>>>  .../selftests/bpf/progs/test_tc_dtime.c       | 39 +++++++++----------
+>>>>  4 files changed, 34 insertions(+), 33 deletions(-)
+>>>>
+>>>> diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
+>>>> index 90706a47f6ff..25ea393cf084 100644
+>>>> --- a/tools/include/uapi/linux/bpf.h
+>>>> +++ b/tools/include/uapi/linux/bpf.h
+>>>> @@ -6207,12 +6207,17 @@ union {					\
+>>>>  	__u64 :64;			\
+>>>>  } __attribute__((aligned(8)))
+>>>>  
+>>>> +/* The enum used in skb->tstamp_type. It specifies the clock type
+>>>> + * of the time stored in the skb->tstamp.
+>>>> + */
+>>>>  enum {
+>>>> -	BPF_SKB_TSTAMP_UNSPEC,
+>>>> -	BPF_SKB_TSTAMP_DELIVERY_MONO,	/* tstamp has mono delivery time */
+>>>> -	/* For any BPF_SKB_TSTAMP_* that the bpf prog cannot handle,
+>>>> -	 * the bpf prog should handle it like BPF_SKB_TSTAMP_UNSPEC
+>>>> -	 * and try to deduce it by ingress, egress or skb->sk->sk_clockid.
+>>>> +	BPF_SKB_TSTAMP_UNSPEC = 0,		/* DEPRECATED */
+>>>> +	BPF_SKB_TSTAMP_DELIVERY_MONO = 1,	/* DEPRECATED */
+>>>> +	BPF_SKB_CLOCK_REALTIME = 0,
+>>>> +	BPF_SKB_CLOCK_MONOTONIC = 1,
+>>>> +	BPF_SKB_CLOCK_TAI = 2,
+>>>> +	/* For any future BPF_SKB_CLOCK_* that the bpf prog cannot handle,
+>>>> +	 * the bpf prog can try to deduce it by ingress/egress/skb->sk->sk_clockid.
+>>>>  	 */
+>>>>  };
+>>>>  
+>>>> diff --git a/tools/testing/selftests/bpf/prog_tests/ctx_rewrite.c b/tools/testing/selftests/bpf/prog_tests/ctx_rewrite.c
+>>>> index 3b7c57fe55a5..71940f4ef0fb 100644
+>>>> --- a/tools/testing/selftests/bpf/prog_tests/ctx_rewrite.c
+>>>> +++ b/tools/testing/selftests/bpf/prog_tests/ctx_rewrite.c
+>>>> @@ -69,15 +69,17 @@ static struct test_case test_cases[] = {
+>>>>  	{
+>>>>  		N(SCHED_CLS, struct __sk_buff, tstamp),
+>>>>  		.read  = "r11 = *(u8 *)($ctx + sk_buff::__mono_tc_offset);"
+>>>> -			 "w11 &= 3;"
+>>>> -			 "if w11 != 0x3 goto pc+2;"
+>>>> +			 "if w11 == 0x4 goto pc+1;"
+>>>> +			 "goto pc+4;"
+>>>> +			 "if w11 == 0x3 goto pc+1;"
+>>>> +			 "goto pc+2;"
+>>>
+>>> Not an expert on this code, and I see that the existing code already
+>>> has this below, but: isn't it odd and unnecessary to jump to an
+>>> unconditional jump statement?
+>>>
+>> I am closely looking into your comment and i will evalute it(Martin can correct me 
+>> if the jumps are correct or not as i am new to BPF as well) but i found out that 
+>> JSET = "&" and not "==". So the above two ins has to change from -   
+>>
+>> "if w11 == 0x4 goto pc+1;" ==>(needs to be corrected to) "if w11 & 0x4 goto pc+1;" 
+>>  "if w11 == 0x3 goto pc+1;" ==> (needs to be correct to) "if w11 & 0x3 goto pc+1;"
+>>
+>>
+Willem, I looked at the jumps in the above code. They look correct to me. 
+Martin can check too if i am doing anything wrong here other than the JSET "&".
+
+Ideally pc(program counter) points to the next instruction. 
+
+			 "if w11 & 0x4 goto pc+1;"
+			 "goto pc+4;" 
+		[pc+0]	 "if w11 & 0x3 goto pc+1;" <== PC is going to be here 
+		[pc+1]	 "goto pc+2;"
+		[pc+2]	 "$dst = 0;"
+		[pc+3]	 "goto pc+1;"
+		[pc+4]	 "$dst = *(u64 *)($ctx + sk_buff::tstamp);", <== This is where the code is intended to jump to for "goto pc+4;"
+
+
+
+>>>>  			 "$dst = 0;"
+>>>>  			 "goto pc+1;"
+>>>>  			 "$dst = *(u64 *)($ctx + sk_buff::tstamp);",
+>>>>  		.write = "r11 = *(u8 *)($ctx + sk_buff::__mono_tc_offset);"
+>>>> -			 "if w11 & 0x2 goto pc+1;"
+>>>> +			 "if w11 & 0x4 goto pc+1;"
+>>>>  			 "goto pc+2;"
+>>>> -			 "w11 &= -2;"
+>>>> +			 "w11 &= -3;"
+
 
