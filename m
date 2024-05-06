@@ -1,447 +1,500 @@
-Return-Path: <bpf+bounces-28671-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-28672-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2E3678BCF5B
-	for <lists+bpf@lfdr.de>; Mon,  6 May 2024 15:45:23 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5D6C78BCF87
+	for <lists+bpf@lfdr.de>; Mon,  6 May 2024 15:59:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D7454288237
-	for <lists+bpf@lfdr.de>; Mon,  6 May 2024 13:45:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DA4C9285DE6
+	for <lists+bpf@lfdr.de>; Mon,  6 May 2024 13:58:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B62BC78C6C;
-	Mon,  6 May 2024 13:45:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2603481740;
+	Mon,  6 May 2024 13:58:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="e3GtH8bp"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-lf1-f48.google.com (mail-lf1-f48.google.com [209.85.167.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 95C6077F2F
-	for <bpf@vger.kernel.org>; Mon,  6 May 2024 13:45:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 96BCE7FBC6;
+	Mon,  6 May 2024 13:58:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715003117; cv=none; b=dTVJJ8lKQknZw36NgUfdFk4gz2TDwE5jFXpBwLGYyKqyC6EXszyIa0RybBefIZyWflIS62Ow6mAycJt514paXlKRRj0/XEmDTa9Knn0lo1fWFSXesWARNFnuNso8R7Dbxh+xwHE9IRJIWqI7nUOAIxbOvJ9UGH7rTmS9PJjCLO0=
+	t=1715003930; cv=none; b=mcgedauqAyeY8fzS8JsPTcq80KAa07oFTyEdSCNLqKkVw9zAtA0ATJBSHvJMSjAGKSdK+fuK68HQ/Bi9rUWZaYsrir9pYUqJYmEy9ZQY5ZIPLVZjr23bsmV7/pL3ZESdRYuTr2DkDVhYv9g+eBXUy2fotPAD2A+fW5KGxgHju7U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715003117; c=relaxed/simple;
-	bh=/BjDU3XhI1hhP47tqKrY1oZiizwF9vQ8sHTeLnQvyI4=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=f0hcVdAB8riPHV+fDyBvTsdzji6B2KAcszI8ag5oBitsStnWNF6laHPq+PI3nJGnwoMCGpKRZCQ8z9f/uDyUbe7Twu5CHDUNeyR4ReWcf6O7F8CAL9RopghYyq23IKw5B8MhyNnbNoOARFXblypgU2ZEQV6FYlITxNVrXcLjdNk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.167.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f48.google.com with SMTP id 2adb3069b0e04-51f57713684so2385916e87.1
-        for <bpf@vger.kernel.org>; Mon, 06 May 2024 06:45:15 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1715003114; x=1715607914;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=AhKS9tL2ICLoIW3I/8d5fM+9a33yhxidd3gcA27RLpM=;
-        b=rergvaUVcqKUKIOjorMxsouF8LdlrRiA5cz5gWJ7pT5w0sL3CLyPkatrn/cSP92gC5
-         WRDJY1SdNBrODEnX2KKg9y26vHnPifovzQDzTF/seE6kqSZJz8s9NFWBUCGqZtbZQGZj
-         5huRPqKCzMYxkpJPi+INUjfXJbuaBycER1dppX6hJNJW0tlx9TPzQfKTYxnwb13MZ/eH
-         AM3+lLmNXgnMst0Gg1v0bfAUmjokUaHKY37pTgCS+EAgkVb0LUuWctI7lE6sKswrSsc/
-         QwMaZ5cI78Um8RHgW9/hyjHgjthZ6Bz9u/iXlf7ElZFnuLeAoNJ58byI6isWDOMAgoSN
-         UGaA==
-X-Gm-Message-State: AOJu0YypRwv1jSji8jLECHZAkMSgddlrWiQqdFoNyDPn+EC3pLetlWGB
-	/kUxdEJ2PlHs2IzZ2SjCavFbYhzJlHFlOQ0CELLmNVs4g30mHgKsBp6Y1Q==
-X-Google-Smtp-Source: AGHT+IHTIefRgfwRR2QzcgIsUSbrqIbLPtqC/6O3H5OXRAiCa10BDMxydWOSJyIig5p9iT9E0BzHqQ==
-X-Received: by 2002:a05:6512:7c:b0:51c:22fb:182f with SMTP id i28-20020a056512007c00b0051c22fb182fmr6771060lfo.13.1715003113322;
-        Mon, 06 May 2024 06:45:13 -0700 (PDT)
-Received: from yatsenko-fedora-K2202N0103767.thefacebook.com ([2620:10d:c092:400::5:81ce])
-        by smtp.gmail.com with ESMTPSA id c10-20020a0564021f8a00b005727e826977sm5222028edc.19.2024.05.06.06.45.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 06 May 2024 06:45:12 -0700 (PDT)
-From: Mykyta@web.codeaurora.org, Yatsenko@web.codeaurora.org,
-	mykyta.yatsenko5@gmail.com
-To: bpf@vger.kernel.org,
-	ast@kernel.org,
-	andrii@kernel.org,
-	daniel@iogearbox.net,
-	kafai@meta.com,
-	kernel-team@meta.com
-Cc: Mykyta Yatsenko <yatsenko@meta.com>
-Subject: [PATCH bpf-next] bpftool: introduce btf c dump sorting
-Date: Mon,  6 May 2024 14:44:58 +0100
-Message-ID: <20240506134458.727621-1-yatsenko@meta.com>
-X-Mailer: git-send-email 2.44.0
+	s=arc-20240116; t=1715003930; c=relaxed/simple;
+	bh=IVqDKFkhumztfAGI13+AbiKN+ZomqU+p5X3ccF6t988=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=pfh762UHKKtE8oivlJRQkP5eLPNrFzRt+gotJb1mBkQ/8j+EpjuqaHn9oiPDDkmLC4TndhnYW2qtM1fiPEMzZZBaajPiqW8Cy2m5lefY8gHplY6XqrplFbyjz0heogxT3oJ5pQ1K4MmYt6AMU3S4Q2OwjiBYIr+oLaqviPpWoZ4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=e3GtH8bp; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 74146C116B1;
+	Mon,  6 May 2024 13:58:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1715003930;
+	bh=IVqDKFkhumztfAGI13+AbiKN+ZomqU+p5X3ccF6t988=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=e3GtH8bpQacvsG/MulZkKiYjUwP62cpavRPHDEoErmr7W0VTKSwOgqZsbEXWez8V9
+	 MLw/V3EvOZdK/qBhK/u7tJIEv0aysVGHyxe2JwYuLVGtuQPePxYtEHdKB7usvRdm74
+	 ybSEWQvleKjaiKkZbTjLCffnjo4FWALQVscGqSzQp3IpZqFyVJB2G9hzfINNrYEqwp
+	 fyBUe2HKamOExOkqE3VG+2gs2/SPtW4S1yctyYM2vIxJSyjK8doBMrXSG1sERR8jXg
+	 z0OQKrVry9qDig9wM0z5W7qpaRVVXBAlyXKLdguwj4dIA0E+G7EGZSrwAusxap8GSB
+	 4/PbAJlyQUIew==
+Date: Mon, 6 May 2024 10:58:46 -0300
+From: Arnaldo Carvalho de Melo <acme@kernel.org>
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>,
+	Greg KH <gregkh@linuxfoundation.org>,
+	Andrii Nakryiko <andrii@kernel.org>, linux-fsdevel@vger.kernel.org,
+	brauner@kernel.org, viro@zeniv.linux.org.uk,
+	akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
+	bpf@vger.kernel.org, linux-mm@kvack.org,
+	Daniel =?iso-8859-1?Q?M=FCller?= <deso@posteo.net>,
+	"linux-perf-use." <linux-perf-users@vger.kernel.org>
+Subject: Re: [PATCH 2/5] fs/procfs: implement efficient VMA querying API for
+ /proc/<pid>/maps
+Message-ID: <ZjjiFnNRbwsMJ3Gj@x1>
+References: <20240504003006.3303334-1-andrii@kernel.org>
+ <20240504003006.3303334-3-andrii@kernel.org>
+ <2024050439-janitor-scoff-be04@gregkh>
+ <CAEf4BzZ6CaMrqRR1Rah7=HnTpU5-zw5HUnSH9NWCzAZZ55ZXFQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAEf4BzZ6CaMrqRR1Rah7=HnTpU5-zw5HUnSH9NWCzAZZ55ZXFQ@mail.gmail.com>
 
-From: Mykyta Yatsenko <yatsenko@meta.com>
+On Sat, May 04, 2024 at 02:50:31PM -0700, Andrii Nakryiko wrote:
+> On Sat, May 4, 2024 at 8:28 AM Greg KH <gregkh@linuxfoundation.org> wrote:
+> > On Fri, May 03, 2024 at 05:30:03PM -0700, Andrii Nakryiko wrote:
+> > > Note also, that fetching VMA name (e.g., backing file path, or special
+> > > hard-coded or user-provided names) is optional just like build ID. If
+> > > user sets vma_name_size to zero, kernel code won't attempt to retrieve
+> > > it, saving resources.
 
-Provide a way to sort bpftool c dump output, to simplify vmlinux.h
-diffing and forcing more natural definitions ordering.
+> > > Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
 
-Use `normalized` argument in bpftool CLI after `format c` for example:
-```
-bpftool btf dump file /sys/kernel/btf/fuse format c normalized
-```
-
-Definitions are sorted by their BTF kind ranks, lexicographically and
-typedefs are forced to go right after their base type.
-
-Type ranks
-
-Assign ranks to btf kinds (defined in function btf_type_rank) to set
-next order:
-1. Anonymous enums
-2. Anonymous enums64
-3. Named enums
-4. Named enums64
-5. Trivial types typedefs (ints, then floats)
-6. Structs
-7. Unions
-8. Function prototypes
-9. Forward declarations
-
-Lexicographical ordering
-
-Definitions within the same BTF kind are ordered by their names.
-Anonymous enums are ordered by their first element.
-
-Forcing typedefs to go right after their base type
-
-To make sure that typedefs are emitted right after their base type,
-we build a list of type's typedefs (struct typedef_ref) and after
-emitting type, its typedefs are emitted as well (lexicographically)
-
-There is a small flaw in this implementation:
-Type dependencies are resolved by bpf lib, so when type is dumped
-because it is a dependency, its typedefs are not output right after it,
-as bpflib does not have the list of typedefs for a given type.
-
-Signed-off-by: Mykyta Yatsenko <yatsenko@meta.com>
----
- tools/bpf/bpftool/btf.c | 264 +++++++++++++++++++++++++++++++++++++++-
- 1 file changed, 259 insertions(+), 5 deletions(-)
-
-diff --git a/tools/bpf/bpftool/btf.c b/tools/bpf/bpftool/btf.c
-index 91fcb75babe3..93c876e90b04 100644
---- a/tools/bpf/bpftool/btf.c
-+++ b/tools/bpf/bpftool/btf.c
-@@ -11,6 +11,7 @@
- #include <linux/btf.h>
- #include <sys/types.h>
- #include <sys/stat.h>
-+#include <linux/list.h>
+> > Where is the userspace code that uses this new api you have created?
  
- #include <bpf/bpf.h>
- #include <bpf/btf.h>
-@@ -43,6 +44,20 @@ static const char * const btf_kind_str[NR_BTF_KINDS] = {
- 	[BTF_KIND_ENUM64]	= "ENUM64",
- };
- 
-+struct typedef_ref {
-+	struct sort_datum *datum;
-+	struct list_head list;
-+};
-+
-+struct sort_datum {
-+	__u32 index;
-+	int type_rank;
-+	bool emitted;
-+	const char *name;
-+	// List of typedefs of this type
-+	struct list_head *typedef_list;
-+};
-+
- static const char *btf_int_enc_str(__u8 encoding)
- {
- 	switch (encoding) {
-@@ -460,8 +475,233 @@ static void __printf(2, 0) btf_dump_printf(void *ctx,
- 	vfprintf(stdout, fmt, args);
- }
- 
-+static int btf_type_rank(const struct btf *btf, __u32 index, bool has_name)
-+{
-+	const struct btf_type *btf_type = btf__type_by_id(btf, index);
-+	const int max_rank = 1000;
-+
-+	has_name |= (bool)btf_type->name_off;
-+
-+	switch (btf_kind(btf_type)) {
-+	case BTF_KIND_ENUM:
-+		return 100 + (btf_type->name_off == 0 ? 0 : 1);
-+	case BTF_KIND_ENUM64:
-+		return 200 + (btf_type->name_off == 0 ? 0 : 1);
-+	case BTF_KIND_INT:
-+		return 300;
-+	case BTF_KIND_FLOAT:
-+		return 400;
-+	case BTF_KIND_VAR:
-+		return 500;
-+
-+	case BTF_KIND_STRUCT:
-+		return 600 + (has_name ? 0 : max_rank);
-+	case BTF_KIND_UNION:
-+		return 700 + (has_name ? 0 : max_rank);
-+	case BTF_KIND_FUNC_PROTO:
-+		return 800 + (has_name ? 0 : max_rank);
-+
-+	case BTF_KIND_FWD:
-+		return 900;
-+
-+	case BTF_KIND_ARRAY:
-+		return 1 + btf_type_rank(btf, btf_array(btf_type)->type, has_name);
-+
-+	case BTF_KIND_CONST:
-+	case BTF_KIND_PTR:
-+	case BTF_KIND_VOLATILE:
-+	case BTF_KIND_RESTRICT:
-+	case BTF_KIND_TYPE_TAG:
-+	case BTF_KIND_TYPEDEF:
-+		return 1 + btf_type_rank(btf, btf_type->type, has_name);
-+
-+	default:
-+		return max_rank;
-+	}
-+}
-+
-+static const char *btf_type_sort_name(const struct btf *btf, __u32 index)
-+{
-+	const struct btf_type *btf_type = btf__type_by_id(btf, index);
-+	const int kind = btf_kind(btf_type);
-+	const char *name = btf__name_by_offset(btf, btf_type->name_off);
-+
-+	// Use name of the first element for anonymous enums
-+	if (!btf_type->name_off && (kind == BTF_KIND_ENUM || kind == BTF_KIND_ENUM64))
-+		name = btf__name_by_offset(btf, btf_enum(btf_type)->name_off);
-+
-+	return name;
-+}
-+
-+static int btf_type_compare(const void *left, const void *right)
-+{
-+	const struct sort_datum *datum1 = (const struct sort_datum *)left;
-+	const struct sort_datum *datum2 = (const struct sort_datum *)right;
-+
-+	if (datum1->type_rank != datum2->type_rank)
-+		return datum1->type_rank < datum2->type_rank ? -1 : 1;
-+
-+	return strcmp(datum1->name, datum2->name);
-+}
-+
-+static int emit_typedefs(struct list_head *typedef_list, int *sorted_indexes)
-+{
-+	struct typedef_ref *type;
-+	int current_index = 0;
-+
-+	if (!typedef_list)
-+		return 0;
-+	list_for_each_entry(type, typedef_list, list) {
-+		if (type->datum->emitted)
-+			continue;
-+		type->datum->emitted = true;
-+		sorted_indexes[current_index++] = type->datum->index;
-+		current_index += emit_typedefs(type->datum->typedef_list,
-+					sorted_indexes + current_index);
-+	}
-+	return current_index;
-+}
-+
-+static void free_typedefs(struct list_head *typedef_list)
-+{
-+	struct typedef_ref *type;
-+	struct typedef_ref *temp_type;
-+
-+	if (!typedef_list)
-+		return;
-+	list_for_each_entry_safe(type, temp_type, typedef_list, list) {
-+		list_del(&type->list);
-+		free(type);
-+	}
-+	free(typedef_list);
-+}
-+
-+static void add_typedef_ref(const struct btf *btf, struct sort_datum *parent,
-+			    struct typedef_ref *new_ref)
-+{
-+	struct typedef_ref *current_child;
-+	const char *new_child_name = new_ref->datum->name;
-+
-+	if (!parent->typedef_list) {
-+		parent->typedef_list = malloc(sizeof(struct list_head));
-+		INIT_LIST_HEAD(parent->typedef_list);
-+		list_add(&new_ref->list, parent->typedef_list);
-+		return;
-+	}
-+	list_for_each_entry(current_child, parent->typedef_list, list) {
-+		const struct btf_type *t = btf__type_by_id(btf, current_child->datum->index);
-+		const char *current_name = btf_str(btf, t->name_off);
-+
-+		if (list_is_last(&current_child->list, parent->typedef_list)) {
-+			list_add(&new_ref->list, &current_child->list);
-+			return;
-+		}
-+		if (strcmp(new_child_name, current_name) < 0) {
-+			list_add_tail(&new_ref->list, &current_child->list);
-+			return;
-+		}
-+	}
-+}
-+
-+static int find_base_typedef_type(const struct btf *btf, int index)
-+{
-+	const struct btf_type *type = btf__type_by_id(btf, index);
-+	int kind = btf_kind(type);
-+	int base_idx;
-+
-+	if (kind != BTF_KIND_TYPEDEF)
-+		return 0;
-+
-+	do {
-+		base_idx = kind == BTF_KIND_ARRAY ? btf_array(type)->type : type->type;
-+		type = btf__type_by_id(btf, base_idx);
-+		kind = btf_kind(type);
-+	} while (kind == BTF_KIND_ARRAY ||
-+		   kind == BTF_KIND_PTR ||
-+		   kind == BTF_KIND_CONST ||
-+		   kind == BTF_KIND_VOLATILE ||
-+		   kind == BTF_KIND_RESTRICT ||
-+		   kind == BTF_KIND_TYPE_TAG);
-+
-+	return base_idx;
-+}
-+
-+static int *sort_btf_c(const struct btf *btf)
-+{
-+	int total_root_types;
-+	struct sort_datum *datums;
-+	int *sorted_indexes = NULL;
-+	int *type_index_to_datum_index;
-+
-+	if (!btf)
-+		return sorted_indexes;
-+
-+	total_root_types = btf__type_cnt(btf);
-+	datums = malloc(sizeof(struct sort_datum) * total_root_types);
-+
-+	for (int i = 1; i < total_root_types; ++i) {
-+		struct sort_datum *current_datum = datums + i;
-+
-+		current_datum->index = i;
-+		current_datum->name = btf_type_sort_name(btf, i);
-+		current_datum->type_rank = btf_type_rank(btf, i, false);
-+		current_datum->emitted = false;
-+		current_datum->typedef_list = NULL;
-+	}
-+
-+	qsort(datums + 1, total_root_types - 1, sizeof(struct sort_datum), btf_type_compare);
-+
-+	// Build a mapping from btf type id to datums array index
-+	type_index_to_datum_index = malloc(sizeof(int) * total_root_types);
-+	type_index_to_datum_index[0] = 0;
-+	for (int i = 1; i < total_root_types; ++i)
-+		type_index_to_datum_index[datums[i].index] = i;
-+
-+	for (int i = 1; i < total_root_types; ++i) {
-+		struct sort_datum *current_datum = datums + i;
-+		const struct btf_type *current_type = btf__type_by_id(btf, current_datum->index);
-+		int base_index;
-+		struct sort_datum *base_datum;
-+		const struct btf_type *base_type;
-+		struct typedef_ref *new_ref;
-+
-+		if (btf_kind(current_type) != BTF_KIND_TYPEDEF)
-+			continue;
-+
-+		base_index = find_base_typedef_type(btf, current_datum->index);
-+		if (!base_index)
-+			continue;
-+
-+		base_datum = datums + type_index_to_datum_index[base_index];
-+		base_type = btf__type_by_id(btf, base_datum->index);
-+		if (!base_type->name_off)
-+			continue;
-+
-+		new_ref = malloc(sizeof(struct typedef_ref));
-+		new_ref->datum = current_datum;
-+
-+		add_typedef_ref(btf, base_datum, new_ref);
-+	}
-+
-+	sorted_indexes = malloc(sizeof(int) * total_root_types);
-+	sorted_indexes[0] = 0;
-+	for (int emit_index = 1, datum_index = 1; emit_index < total_root_types; ++datum_index) {
-+		struct sort_datum *datum = datums + datum_index;
-+
-+		if (datum->emitted)
-+			continue;
-+		datum->emitted = true;
-+		sorted_indexes[emit_index++] = datum->index;
-+		emit_index += emit_typedefs(datum->typedef_list, sorted_indexes + emit_index);
-+		free_typedefs(datum->typedef_list);
-+	}
-+	free(type_index_to_datum_index);
-+	free(datums);
-+	return sorted_indexes;
-+}
-+
- static int dump_btf_c(const struct btf *btf,
--		      __u32 *root_type_ids, int root_type_cnt)
-+		      __u32 *root_type_ids, int root_type_cnt, bool normalized)
- {
- 	struct btf_dump *d;
- 	int err = 0, i;
-@@ -485,12 +725,17 @@ static int dump_btf_c(const struct btf *btf,
- 		}
- 	} else {
- 		int cnt = btf__type_cnt(btf);
--
-+		int *sorted_indexes = normalized ? sort_btf_c(btf) : NULL;
- 		for (i = 1; i < cnt; i++) {
--			err = btf_dump__dump_type(d, i);
-+			int idx = sorted_indexes ? sorted_indexes[i] : i;
-+
-+			err = btf_dump__dump_type(d, idx);
- 			if (err)
--				goto done;
-+				break;
- 		}
-+		free(sorted_indexes);
-+		if (err)
-+			goto done;
- 	}
- 
- 	printf("#ifndef BPF_NO_PRESERVE_ACCESS_INDEX\n");
-@@ -553,6 +798,7 @@ static int do_dump(int argc, char **argv)
- 	__u32 root_type_ids[2];
- 	int root_type_cnt = 0;
- 	bool dump_c = false;
-+	bool normalized = false;
- 	__u32 btf_id = -1;
- 	const char *src;
- 	int fd = -1;
-@@ -663,6 +909,14 @@ static int do_dump(int argc, char **argv)
- 				goto done;
- 			}
- 			NEXT_ARG();
-+		} else if (strcmp(*argv, "normalized") == 0) {
-+			if (!dump_c) {
-+				p_err("Only C dump supports normalization");
-+				err = -EINVAL;
-+				goto done;
-+			}
-+			normalized = true;
-+			NEXT_ARG();
- 		} else {
- 			p_err("unrecognized option: '%s'", *argv);
- 			err = -EINVAL;
-@@ -691,7 +945,7 @@ static int do_dump(int argc, char **argv)
- 			err = -ENOTSUP;
- 			goto done;
- 		}
--		err = dump_btf_c(btf, root_type_ids, root_type_cnt);
-+		err = dump_btf_c(btf, root_type_ids, root_type_cnt, normalized);
- 	} else {
- 		err = dump_btf_raw(btf, root_type_ids, root_type_cnt);
- 	}
--- 
-2.44.0
+> So I added a faithful comparison of existing /proc/<pid>/maps vs new
+> ioctl() API to solve a common problem (as described above) in patch
+> #5. The plan is to put it in mentioned blazesym library at the very
+> least.
+> 
+> I'm sure perf would benefit from this as well (cc'ed Arnaldo and
+> linux-perf-user), as they need to do stack symbolization as well.
 
+At some point, when BPF iterators became a thing we thought about, IIRC
+Jiri did some experimentation, but I lost track, of using BPF to
+synthesize PERF_RECORD_MMAP2 records for pre-existing maps, the layout
+as in uapi/linux/perf_event.h:
+
+        /*
+         * The MMAP2 records are an augmented version of MMAP, they add
+         * maj, min, ino numbers to be used to uniquely identify each mapping
+         *
+         * struct {
+         *      struct perf_event_header        header;
+         *
+         *      u32                             pid, tid;
+         *      u64                             addr;
+         *      u64                             len;
+         *      u64                             pgoff;
+         *      union {
+         *              struct {
+         *                      u32             maj;
+         *                      u32             min;
+         *                      u64             ino;
+         *                      u64             ino_generation;
+         *              };
+         *              struct {
+         *                      u8              build_id_size;
+         *                      u8              __reserved_1;
+         *                      u16             __reserved_2;
+         *                      u8              build_id[20];
+         *              };
+         *      };
+         *      u32                             prot, flags;
+         *      char                            filename[];
+         *      struct sample_id                sample_id;
+         * };
+         */
+        PERF_RECORD_MMAP2                       = 10,
+
+ *   PERF_RECORD_MISC_MMAP_BUILD_ID      - PERF_RECORD_MMAP2 event
+
+As perf.data files can be used for many purposes we want them all, so we
+setup a meta data perf file descriptor to go on receiving the new mmaps
+while we read /proc/<pid>/maps, to reduce the chance of missing maps, do
+it in parallel, etc:
+
+⬢[acme@toolbox perf-tools-next]$ perf record -h 'event synthesis'
+
+ Usage: perf record [<options>] [<command>]
+    or: perf record [<options>] -- <command> [<options>]
+
+        --num-thread-synthesize <n>
+                          number of threads to run for event synthesis
+        --synth <no|all|task|mmap|cgroup>
+                          Fine-tune event synthesis: default=all
+
+⬢[acme@toolbox perf-tools-next]$
+
+For this specific initial synthesis of everything the plan, as mentioned
+about Jiri's experiments, was to use a BPF iterator to just feed the
+perf ring buffer with those events, that way userspace would just
+receive the usual records it gets when a new mmap is put in place, the
+BPF iterator would just feed the preexisting mmaps, as instructed via
+the perf_event_attr for the perf_event_open syscall.
+
+For people not wanting BPF, i.e. disabling it altogether in perf or
+disabling just BPF skels, then we would fallback to the current method,
+or to the one being discussed here when it becomes available.
+
+One thing to have in mind is for this iterator not to generate duplicate
+records for non-pre-existing mmaps, i.e. we would need some generation
+number that would be bumped when asking for such pre-existing maps
+PERF_RECORD_MMAP2 dumps.
+ 
+> It will be up to other similar projects to adopt this, but we'll
+> definitely get this into blazesym as it is actually a problem for the
+
+At some point looking at plugging blazesym somehow with perf may be
+something to consider, indeed.
+
+- Arnaldo
+
+> abovementioned Oculus use case. We already had to make a tradeoff (see
+> [2], this wasn't done just because we could, but it was requested by
+> Oculus customers) to cache the contents of /proc/<pid>/maps and run
+> the risk of missing some shared libraries that can be loaded later. It
+> would be great to not have to do this tradeoff, which this new API
+> would enable.
+> 
+>   [2] https://github.com/libbpf/blazesym/commit/6b521314126b3ae6f2add43e93234b59fed48ccf
+> 
+> >
+> > > ---
+> > >  fs/proc/task_mmu.c      | 165 ++++++++++++++++++++++++++++++++++++++++
+> > >  include/uapi/linux/fs.h |  32 ++++++++
+> > >  2 files changed, 197 insertions(+)
+> > >
+> > > diff --git a/fs/proc/task_mmu.c b/fs/proc/task_mmu.c
+> > > index 8e503a1635b7..cb7b1ff1a144 100644
+> > > --- a/fs/proc/task_mmu.c
+> > > +++ b/fs/proc/task_mmu.c
+> > > @@ -22,6 +22,7 @@
+> > >  #include <linux/pkeys.h>
+> > >  #include <linux/minmax.h>
+> > >  #include <linux/overflow.h>
+> > > +#include <linux/buildid.h>
+> > >
+> > >  #include <asm/elf.h>
+> > >  #include <asm/tlb.h>
+> > > @@ -375,11 +376,175 @@ static int pid_maps_open(struct inode *inode, struct file *file)
+> > >       return do_maps_open(inode, file, &proc_pid_maps_op);
+> > >  }
+> > >
+> > > +static int do_procmap_query(struct proc_maps_private *priv, void __user *uarg)
+> > > +{
+> > > +     struct procfs_procmap_query karg;
+> > > +     struct vma_iterator iter;
+> > > +     struct vm_area_struct *vma;
+> > > +     struct mm_struct *mm;
+> > > +     const char *name = NULL;
+> > > +     char build_id_buf[BUILD_ID_SIZE_MAX], *name_buf = NULL;
+> > > +     __u64 usize;
+> > > +     int err;
+> > > +
+> > > +     if (copy_from_user(&usize, (void __user *)uarg, sizeof(usize)))
+> > > +             return -EFAULT;
+> > > +     if (usize > PAGE_SIZE)
+> >
+> > Nice, where did you document that?  And how is that portable given that
+> > PAGE_SIZE can be different on different systems?
+> 
+> I'm happy to document everything, can you please help by pointing
+> where this documentation has to live?
+> 
+> This is mostly fool-proofing, though, because the user has to pass
+> sizeof(struct procfs_procmap_query), which I don't see ever getting
+> close to even 4KB (not even saying about 64KB). This is just to
+> prevent copy_struct_from_user() below to do too much zero-checking.
+> 
+> >
+> > and why aren't you checking the actual structure size instead?  You can
+> > easily run off the end here without knowing it.
+> 
+> See copy_struct_from_user(), it does more checks. This is a helper
+> designed specifically to deal with use cases like this where kernel
+> struct size can change and user space might be newer or older.
+> copy_struct_from_user() has a nice documentation describing all these
+> nuances.
+> 
+> >
+> > > +             return -E2BIG;
+> > > +     if (usize < offsetofend(struct procfs_procmap_query, query_addr))
+> > > +             return -EINVAL;
+> >
+> > Ok, so you have two checks?  How can the first one ever fail?
+> 
+> Hmm.. If usize = 8, copy_from_user() won't fail, usize > PAGE_SIZE
+> won't fail, but this one will fail.
+> 
+> The point of this check is that user has to specify at least first
+> three fields of procfs_procmap_query (size, query_flags, and
+> query_addr), because without those the query is meaningless.
+> >
+> >
+> > > +     err = copy_struct_from_user(&karg, sizeof(karg), uarg, usize);
+> 
+> and this helper does more checks validating that the user either has a
+> shorter struct (and then zero-fills the rest of kernel-side struct) or
+> has longer (and then the longer part has to be zero filled). Do check
+> copy_struct_from_user() documentation, it's great.
+> 
+> > > +     if (err)
+> > > +             return err;
+> > > +
+> > > +     if (karg.query_flags & ~PROCFS_PROCMAP_EXACT_OR_NEXT_VMA)
+> > > +             return -EINVAL;
+> > > +     if (!!karg.vma_name_size != !!karg.vma_name_addr)
+> > > +             return -EINVAL;
+> > > +     if (!!karg.build_id_size != !!karg.build_id_addr)
+> > > +             return -EINVAL;
+> >
+> > So you want values to be set, right?
+> 
+> Either both should be set, or neither. It's ok for both size/addr
+> fields to be zero, in which case it indicates that the user doesn't
+> want this part of information (which is usually a bit more expensive
+> to get and might not be necessary for all the cases).
+> 
+> >
+> > > +
+> > > +     mm = priv->mm;
+> > > +     if (!mm || !mmget_not_zero(mm))
+> > > +             return -ESRCH;
+> >
+> > What is this error for?  Where is this documentned?
+> 
+> I copied it from existing /proc/<pid>/maps checks. I presume it's
+> guarding the case when mm might be already put. So if the process is
+> gone, but we have /proc/<pid>/maps file open?
+> 
+> >
+> > > +     if (mmap_read_lock_killable(mm)) {
+> > > +             mmput(mm);
+> > > +             return -EINTR;
+> > > +     }
+> > > +
+> > > +     vma_iter_init(&iter, mm, karg.query_addr);
+> > > +     vma = vma_next(&iter);
+> > > +     if (!vma) {
+> > > +             err = -ENOENT;
+> > > +             goto out;
+> > > +     }
+> > > +     /* user wants covering VMA, not the closest next one */
+> > > +     if (!(karg.query_flags & PROCFS_PROCMAP_EXACT_OR_NEXT_VMA) &&
+> > > +         vma->vm_start > karg.query_addr) {
+> > > +             err = -ENOENT;
+> > > +             goto out;
+> > > +     }
+> > > +
+> > > +     karg.vma_start = vma->vm_start;
+> > > +     karg.vma_end = vma->vm_end;
+> > > +
+> > > +     if (vma->vm_file) {
+> > > +             const struct inode *inode = file_user_inode(vma->vm_file);
+> > > +
+> > > +             karg.vma_offset = ((__u64)vma->vm_pgoff) << PAGE_SHIFT;
+> > > +             karg.dev_major = MAJOR(inode->i_sb->s_dev);
+> > > +             karg.dev_minor = MINOR(inode->i_sb->s_dev);
+> >
+> > So the major/minor is that of the file superblock?  Why?
+> 
+> Because inode number is unique only within given super block (and even
+> then it's more complicated, e.g., btrfs subvolumes add more headaches,
+> I believe). inode + dev maj/min is sometimes used for cache/reuse of
+> per-binary information (e.g., pre-processed DWARF information, which
+> is *very* expensive, so anything that allows to avoid doing this is
+> helpful).
+> 
+> >
+> > > +             karg.inode = inode->i_ino;
+> >
+> > What is userspace going to do with this?
+> >
+> 
+> See above.
+> 
+> > > +     } else {
+> > > +             karg.vma_offset = 0;
+> > > +             karg.dev_major = 0;
+> > > +             karg.dev_minor = 0;
+> > > +             karg.inode = 0;
+> >
+> > Why not set everything to 0 up above at the beginning so you never miss
+> > anything, and you don't miss any holes accidentally in the future.
+> >
+> 
+> Stylistic preference, I find this more explicit, but I don't care much
+> one way or another.
+> 
+> > > +     }
+> > > +
+> > > +     karg.vma_flags = 0;
+> > > +     if (vma->vm_flags & VM_READ)
+> > > +             karg.vma_flags |= PROCFS_PROCMAP_VMA_READABLE;
+> > > +     if (vma->vm_flags & VM_WRITE)
+> > > +             karg.vma_flags |= PROCFS_PROCMAP_VMA_WRITABLE;
+> > > +     if (vma->vm_flags & VM_EXEC)
+> > > +             karg.vma_flags |= PROCFS_PROCMAP_VMA_EXECUTABLE;
+> > > +     if (vma->vm_flags & VM_MAYSHARE)
+> > > +             karg.vma_flags |= PROCFS_PROCMAP_VMA_SHARED;
+> > > +
+> 
+> [...]
+> 
+> > > diff --git a/include/uapi/linux/fs.h b/include/uapi/linux/fs.h
+> > > index 45e4e64fd664..fe8924a8d916 100644
+> > > --- a/include/uapi/linux/fs.h
+> > > +++ b/include/uapi/linux/fs.h
+> > > @@ -393,4 +393,36 @@ struct pm_scan_arg {
+> > >       __u64 return_mask;
+> > >  };
+> > >
+> > > +/* /proc/<pid>/maps ioctl */
+> > > +#define PROCFS_IOCTL_MAGIC 0x9f
+> >
+> > Don't you need to document this in the proper place?
+> 
+> I probably do, but I'm asking for help in knowing where. procfs is not
+> a typical area of kernel I'm working with, so any pointers are highly
+> appreciated.
+> 
+> >
+> > > +#define PROCFS_PROCMAP_QUERY _IOWR(PROCFS_IOCTL_MAGIC, 1, struct procfs_procmap_query)
+> > > +
+> > > +enum procmap_query_flags {
+> > > +     PROCFS_PROCMAP_EXACT_OR_NEXT_VMA = 0x01,
+> > > +};
+> > > +
+> > > +enum procmap_vma_flags {
+> > > +     PROCFS_PROCMAP_VMA_READABLE = 0x01,
+> > > +     PROCFS_PROCMAP_VMA_WRITABLE = 0x02,
+> > > +     PROCFS_PROCMAP_VMA_EXECUTABLE = 0x04,
+> > > +     PROCFS_PROCMAP_VMA_SHARED = 0x08,
+> >
+> > Are these bits?  If so, please use the bit macro for it to make it
+> > obvious.
+> >
+> 
+> Yes, they are. When I tried BIT(1), it didn't compile. I chose not to
+> add any extra #includes to this UAPI header, but I can figure out the
+> necessary dependency and do BIT(), I just didn't feel like BIT() adds
+> much here, tbh.
+> 
+> > > +};
+> > > +
+> > > +struct procfs_procmap_query {
+> > > +     __u64 size;
+> > > +     __u64 query_flags;              /* in */
+> >
+> > Does this map to the procmap_vma_flags enum?  if so, please say so.
+> 
+> no, procmap_query_flags, and yes, I will
+> 
+> >
+> > > +     __u64 query_addr;               /* in */
+> > > +     __u64 vma_start;                /* out */
+> > > +     __u64 vma_end;                  /* out */
+> > > +     __u64 vma_flags;                /* out */
+> > > +     __u64 vma_offset;               /* out */
+> > > +     __u64 inode;                    /* out */
+> >
+> > What is the inode for, you have an inode for the file already, why give
+> > it another one?
+> 
+> This is inode of vma's backing file, same as /proc/<pid>/maps' file
+> column. What inode of file do I already have here? You mean of
+> /proc/<pid>/maps itself? It's useless for the intended purposes.
+> 
+> >
+> > > +     __u32 dev_major;                /* out */
+> > > +     __u32 dev_minor;                /* out */
+> >
+> > What is major/minor for?
+> 
+> This is the same information as emitted by /proc/<pid>/maps,
+> identifies superblock of vma's backing file. As I mentioned above, it
+> can be used for caching per-file (i.e., per-ELF binary) information
+> (for example).
+> 
+> >
+> > > +     __u32 vma_name_size;            /* in/out */
+> > > +     __u32 build_id_size;            /* in/out */
+> > > +     __u64 vma_name_addr;            /* in */
+> > > +     __u64 build_id_addr;            /* in */
+> >
+> > Why not document this all using kerneldoc above the structure?
+> 
+> Yes, sorry, I slacked a bit on adding this upfront. I knew we'll be
+> figuring out the best place and approach, and so wanted to avoid
+> documentation churn.
+> 
+> Would something like what we have for pm_scan_arg and pagemap APIs
+> work? I see it added a few simple descriptions for pm_scan_arg struct,
+> and there is Documentation/admin-guide/mm/pagemap.rst. Should I add
+> Documentation/admin-guide/mm/procmap.rst (admin-guide part feels off,
+> though)? Anyways, I'm hoping for pointers where all this should be
+> documented. Thank you!
+> 
+> >
+> > anyway, I don't like ioctls, but there is a place for them, you just
+> > have to actually justify the use for them and not say "not efficient
+> > enough" as that normally isn't an issue overall.
+> 
+> I've written a demo tool in patch #5 which performs real-world task:
+> mapping addresses to their VMAs (specifically calculating file offset,
+> finding vma_start + vma_end range to further access files from
+> /proc/<pid>/map_files/<start>-<end>). I did the implementation
+> faithfully, doing it in the most optimal way for both APIs. I showed
+> that for "typical" (it's hard to specify what typical is, of course,
+> too many variables) scenario (it was data collected on a real server
+> running real service, 30 seconds of process-specific stack traces were
+> captured, if I remember correctly). I showed that doing exactly the
+> same amount of work is ~35x times slower with /proc/<pid>/maps.
+> 
+> Take another process, another set of addresses, another anything, and
+> the numbers will be different, but I think it gives the right idea.
+> 
+> But I think we are overpivoting on text vs binary distinction here.
+> It's the more targeted querying of VMAs that's beneficial here. This
+> allows applications to not cache anything and just re-query when doing
+> periodic or continuous profiling (where addresses are coming in not as
+> one batch, as a sequence of batches extended in time).
+> 
+> /proc/<pid>/maps, for all its usefulness, just can't provide this sort
+> of ability, as it wasn't designed to do that and is targeting
+> different use cases.
+> 
+> And then, a new ability to request reliable (it's not 100% reliable
+> today, I'm going to address that as a follow up) build ID is *crucial*
+> for some scenarios. The mentioned Oculus use case, the need to fully
+> access underlying ELF binary just to get build ID is frowned upon. And
+> for a good reason. Profiler only needs build ID, which is no secret
+> and not sensitive information. This new (and binary, yes) API allows
+> to add this into an API without breaking any backwards compatibility.
+> 
+> >
+> > thanks,
+> >
+> > greg k-h
 
