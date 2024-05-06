@@ -1,181 +1,141 @@
-Return-Path: <bpf+bounces-28733-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-28734-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DDA348BD80A
-	for <lists+bpf@lfdr.de>; Tue,  7 May 2024 01:10:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 78B748BD816
+	for <lists+bpf@lfdr.de>; Tue,  7 May 2024 01:15:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E0944B21DA8
-	for <lists+bpf@lfdr.de>; Mon,  6 May 2024 23:10:11 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6552AB21C15
+	for <lists+bpf@lfdr.de>; Mon,  6 May 2024 23:15:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D30015B99E;
-	Mon,  6 May 2024 23:10:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 15C0615B990;
+	Mon,  6 May 2024 23:15:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="nFF/q6E/"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Ljc0PDeD"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f42.google.com (mail-wr1-f42.google.com [209.85.221.42])
+Received: from mail-pj1-f53.google.com (mail-pj1-f53.google.com [209.85.216.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F1F51E492;
-	Mon,  6 May 2024 23:10:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6060457C9A
+	for <bpf@vger.kernel.org>; Mon,  6 May 2024 23:15:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715037003; cv=none; b=p3PvvQdHYLfBGQ4RK8RDYMRSGf9KY8v8p+dercix1asilymhWj/C0g795D85t8dNFJtmlTQygwCeMM40oxzCo8JQKBuZX0FJWt6No1KnueafZKIDK+0XCFLyuCEzm758AFR7PUVK3Y19Om4uifmD1lGZ5K+L1ZHe3KrECvjNPZ0=
+	t=1715037314; cv=none; b=XbEyzmVLT1UDsj07v5nAtLyyXiHCE8wWOcudJMUGTImwX0BwAE8YfEjP1Xw4GrvEP37Qmfe7506zFDAllrwglGAr/Da6dwtsl42l1c5lhnsAj8AFhl1pTCmRtyJWfsw4Err9ouEv6/5YnaqaruoBYL+QSdg97yddvQcYvmCjhv8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715037003; c=relaxed/simple;
-	bh=jb6AoaZ4+1JJOP5y0uiexhZgPhIBpaMIIaYEadS16Q4=;
+	s=arc-20240116; t=1715037314; c=relaxed/simple;
+	bh=Y0nQ2k17NHXmEV0P0iGoNACbaIbr6Kv/zhoy81GEHoo=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=dq7d/ztGS7bwT+R6gunl+rpBaUKKlGmSa6F4pTPuShoYV5XwtRNedSihydA/WtCkmPNKQUxWdsw/Cdxj/MhRNrMMwUhpWJwvnlRQNa6LKl+NfBOhYrXmFbEfXaV9sPvCdGSyx1EELzeYyysKInyuw5C79161SC/c8tGZNsBhOLI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=nFF/q6E/; arc=none smtp.client-ip=209.85.221.42
+	 To:Cc:Content-Type; b=GHJJw93+4rX+RKU+O0+LcpwxrzDJWiSSqO1YtDX6KQHOoMY6WWDkCdeRooSc0uLI2rZczbAaY5vc5/tWqEHlIdO4fo3M+zqPR55reyPxowFB8nIGDrXTqyYmlF5/OYHL+LKifTzu4qLR9a17ajfJyZocmNuuB31H2Ougr8WhvPg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Ljc0PDeD; arc=none smtp.client-ip=209.85.216.53
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f42.google.com with SMTP id ffacd0b85a97d-34db6a29a1eso1571042f8f.1;
-        Mon, 06 May 2024 16:10:01 -0700 (PDT)
+Received: by mail-pj1-f53.google.com with SMTP id 98e67ed59e1d1-2b3f5fcecc1so1968727a91.1
+        for <bpf@vger.kernel.org>; Mon, 06 May 2024 16:15:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1715037000; x=1715641800; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1715037313; x=1715642113; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=2djqDQE+yQ6VgjclssSW7VHfPd80JOhsReXmW/fEqXY=;
-        b=nFF/q6E/ncV3MYvnMC7xKGOyT/arhdI5FKJ2nO17qmvlhvec75Ip4UFkbelMBZm7u+
-         PBybAqvSwcZ9oDJ8hZ65h3OUtU6K6Tuy4OkIGMJU59xY9PCjEXwEAGoDPocnQ+odxFom
-         N4Er+uN2wFHGu3eg6asD6OXFTuW6yF4gNJU933BhbVd4uV4tZ6+URa8Jwqd66UlaKEXz
-         FEA2YE5NWTnaVcLhc7lKdA+UZIO5JJc7OE0mGh0wB5dw8+AOkZN8ljykJ0/x5DDTqv8I
-         +nfXwAZgQyqRLuTHKeUPhB9EQwjDvTRuBnfJV5zlxfON94q4okZL4aKm22KMg0a5rCoU
-         77jw==
+        bh=htOD6h0mJABcmUAZn58+/66JdEPxleWucl8hl1MJ0RE=;
+        b=Ljc0PDeDzFA9RcMYiiH+0CtoYEcP5342rjrzFCLU0NjFdLZJg+nDwf5pjbpfrJtTep
+         OSQ6ZY1xBdFC0ONljTAQtr2ij0F8EgHIO70XYAfckJFFOkImygE34Zzkaa3FvRk6pP6z
+         yYyFXA9n6OGgNk8tPVk4cLzvS1fRIeXTOOnVC3VlwjNoI3xwYkrfRuoWSS0OX1IMVc4A
+         fn6w1FOjr5UM6NAR6sg+tiw3jSlPRJdWExr2gpHgp5J/gaA46UkNZL+nYJMhJHmpAe14
+         +j80rERSnCDt/B/ELpgXHySLGoTrGMuisz6UoePcJakdPZfMAsjfbS+jsDOm7ktlWmQg
+         zlWQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1715037000; x=1715641800;
+        d=1e100.net; s=20230601; t=1715037313; x=1715642113;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=2djqDQE+yQ6VgjclssSW7VHfPd80JOhsReXmW/fEqXY=;
-        b=GaQdPszgEpeawo3JT8tP1hTAO04LdGbkLuwmnMF5k9+FiNe9ikF2g8dgHY/iTVaqn2
-         QExx9KJgqi2XrNYK6XUhBmP06jo4TO/obfKkG5vH2uOOp2yVDE2RseuD7jJ3P38Kfo12
-         i0dQiiYiCDYH3GOwV1MxmcUr5OTn9d/3fSRb6HrLwZOGIPj1NIBG4iys3BKAKJRNQPkc
-         Y39/1DsJlK+uTbiDY8KvJ6UBRY0qCl7H2VFQ78lnM1gP/R7I0Zybzh7ZdWbUIw/Z1JkM
-         /vRIsPAzucIrNmB+6lWg8cHZxeu5uZN7vE/mYLjODOoLbA++Vl7U2FmCkbw2/QTmOAJr
-         ZZ8g==
-X-Forwarded-Encrypted: i=1; AJvYcCUaK882yAs7A/4I5W3SbVLAoLMrcy0nHYyak7mj5O7c+Hbrqn7BR12EfPEQSsWKRxjwIMCvyCHopGjpmcLmkC9+xbXZAYCJ3bMDumqOZVVj10hfF8NzN6R3fnBS4w1/r1ghl/lQ0j3Hhzfzd0zYYg0lMoT0GILyGM4p
-X-Gm-Message-State: AOJu0YwXiLNQZKp11BEH1vJXozsm/o7CPlhnvv2FoznjxEQjEfl/rvpx
-	mvMI2t9aD2zKDuZ1LTi82ZFnvMkPgmXNk4+reoPZJUOCLjlrRmLpeynVvEPL3K2WgGrClApeLjU
-	9nEhgpMBIt8Ib/U5eE2pKEC6VAY4=
-X-Google-Smtp-Source: AGHT+IGxLV8o+I20/ACsrxFvjlgXJfW+QBAHlbBignGmLULqLzAKyI21XMdrf96e9JbOwJvccCh16JA6cXe8ZtJOOVs=
-X-Received: by 2002:adf:e60c:0:b0:34d:b993:fe6e with SMTP id
- p12-20020adfe60c000000b0034db993fe6emr8100162wrm.0.1715036999414; Mon, 06 May
- 2024 16:09:59 -0700 (PDT)
+        bh=htOD6h0mJABcmUAZn58+/66JdEPxleWucl8hl1MJ0RE=;
+        b=V4do2nEx5uCp4huT3OjvfgxXa1UalO6EBe791z8JqJ3Cn9iCnnoK9BQNUhmyCBHE06
+         kqHA2eUNmcdIm7/fDMrS0tI4hrY6zhoHlhP3CjVxi1RG3Ky/O9RLyhr6tLrdHj3SeIAG
+         E3jSdoDHangyGge06btgA35jJIepSFauxiPED91tYth9vaKtsdnl9gujFdV1Pm4Gt31M
+         VQUPVM/eiOsga99AmgfsoZEpTdBi3bg1d16weJp9hGW6xeiMYeKyXA5L/h7F5/TbyVUO
+         GV4ap9ub6jNEifb0C1WHBskL/K7DtY7ocV5jHn+IjdbWWUi8zM7lloKK4uWa34DIWJH9
+         HCdw==
+X-Forwarded-Encrypted: i=1; AJvYcCXxDYkmOHe0s5+JLIviRTQq4DC9GZhcgr4sNe1dP74agAxxjD/zRNL1+ihMlNXFqaa8D8n5t4SWOwsQG6ZtcfDsfZpY
+X-Gm-Message-State: AOJu0YwRBYWObQIx1YBY+ya4bTu+exy9mk76XDppILX9bvY4zy1T+F/R
+	Bk9V24Uv7af4SICNargypjZTavpF/w8+ahX2anKrGRUuur6qhgXPlUWl7KyIiPWKb7yfaLQEbR9
+	suHqYTWprZVa9y6r7ovj4YlkE/80=
+X-Google-Smtp-Source: AGHT+IEW0yNH3035BflMbI2DEPBYMhbY2ZBCOxnWKVx4IPPudqFDmV6LXtapMfdqzSy098QJsS4IyASMGBkeN2uRNWs=
+X-Received: by 2002:a17:90b:4d8b:b0:2b3:2a3b:e4fb with SMTP id
+ oj11-20020a17090b4d8b00b002b32a3be4fbmr8357133pjb.24.1715037312479; Mon, 06
+ May 2024 16:15:12 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240503182957.1042122-1-bigeasy@linutronix.de>
- <20240503182957.1042122-15-bigeasy@linutronix.de> <87y18mohhp.fsf@toke.dk>
-In-Reply-To: <87y18mohhp.fsf@toke.dk>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Mon, 6 May 2024 16:09:47 -0700
-Message-ID: <CAADnVQJkiwaYXUo+LyKoV96VFFCFL0VY5Jgpuv_0oypksrnciA@mail.gmail.com>
-Subject: Re: [PATCH net-next 14/15] net: Reference bpf_redirect_info via
- task_struct on PREEMPT_RT.
-To: =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
-Cc: Sebastian Andrzej Siewior <bigeasy@linutronix.de>, LKML <linux-kernel@vger.kernel.org>, 
-	Network Development <netdev@vger.kernel.org>, "David S. Miller" <davem@davemloft.net>, 
-	Boqun Feng <boqun.feng@gmail.com>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Eric Dumazet <edumazet@google.com>, Frederic Weisbecker <frederic@kernel.org>, 
-	Ingo Molnar <mingo@redhat.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
-	Peter Zijlstra <peterz@infradead.org>, Thomas Gleixner <tglx@linutronix.de>, 
-	Waiman Long <longman@redhat.com>, Will Deacon <will@kernel.org>, 
-	Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, Eduard Zingerman <eddyz87@gmail.com>, 
-	Hao Luo <haoluo@google.com>, Jesper Dangaard Brouer <hawk@kernel.org>, Jiri Olsa <jolsa@kernel.org>, 
-	John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
-	Stanislav Fomichev <sdf@google.com>, Yonghong Song <yonghong.song@linux.dev>, bpf <bpf@vger.kernel.org>
+References: <20240501175035.2476830-1-alan.maguire@oracle.com>
+In-Reply-To: <20240501175035.2476830-1-alan.maguire@oracle.com>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Mon, 6 May 2024 16:15:00 -0700
+Message-ID: <CAEf4BzZPSer7EhZ1uJjQQEhPPo7U+dJJbQuBN+1bnJN64LyPRQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] kbuild,bpf: switch to using --btf_features for
+ pahole v1.26 and later
+To: Alan Maguire <alan.maguire@oracle.com>
+Cc: andrii@kernel.org, jolsa@kernel.org, acme@redhat.com, eddyz87@gmail.com, 
+	mykolal@fb.com, ast@kernel.org, daniel@iogearbox.net, martin.lau@linux.dev, 
+	song@kernel.org, yonghong.song@linux.dev, john.fastabend@gmail.com, 
+	kpsingh@kernel.org, sdf@google.com, haoluo@google.com, houtao1@huawei.com, 
+	bpf@vger.kernel.org, masahiroy@kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, May 6, 2024 at 12:41=E2=80=AFPM Toke H=C3=B8iland-J=C3=B8rgensen <t=
-oke@redhat.com> wrote:
+On Wed, May 1, 2024 at 10:51=E2=80=AFAM Alan Maguire <alan.maguire@oracle.c=
+om> wrote:
 >
-> Sebastian Andrzej Siewior <bigeasy@linutronix.de> writes:
+> The btf_features list can be used for pahole v1.26 and later -
+> it is useful because if a feature is not yet implemented it will
+> not exit with a failure message.  This will allow us to add feature
+> requests to the pahole options without having to check pahole versions
+> in future; if the version of pahole supports the feature it will be
+> added.
 >
-> > The XDP redirect process is two staged:
-> > - bpf_prog_run_xdp() is invoked to run a eBPF program which inspects th=
-e
-> >   packet and makes decisions. While doing that, the per-CPU variable
-> >   bpf_redirect_info is used.
-> >
-> > - Afterwards xdp_do_redirect() is invoked and accesses bpf_redirect_inf=
-o
-> >   and it may also access other per-CPU variables like xskmap_flush_list=
-.
-> >
-> > At the very end of the NAPI callback, xdp_do_flush() is invoked which
-> > does not access bpf_redirect_info but will touch the individual per-CPU
-> > lists.
-> >
-> > The per-CPU variables are only used in the NAPI callback hence disablin=
-g
-> > bottom halves is the only protection mechanism. Users from preemptible
-> > context (like cpu_map_kthread_run()) explicitly disable bottom halves
-> > for protections reasons.
-> > Without locking in local_bh_disable() on PREEMPT_RT this data structure
-> > requires explicit locking.
-> >
-> > PREEMPT_RT has forced-threaded interrupts enabled and every
-> > NAPI-callback runs in a thread. If each thread has its own data
-> > structure then locking can be avoided.
-> >
-> > Create a struct bpf_net_context which contains struct bpf_redirect_info=
-.
-> > Define the variable on stack, use bpf_net_ctx_set() to save a pointer t=
-o
-> > it. Use the __free() annotation to automatically reset the pointer once
-> > function returns.
-> > The bpf_net_ctx_set() may nest. For instance a function can be used fro=
-m
-> > within NET_RX_SOFTIRQ/ net_rx_action which uses bpf_net_ctx_set() and
-> > NET_TX_SOFTIRQ which does not. Therefore only the first invocations
-> > updates the pointer.
-> > Use bpf_net_ctx_get_ri() as a wrapper to retrieve the current struct
-> > bpf_redirect_info.
-> >
-> > On PREEMPT_RT the pointer to bpf_net_context is saved task's
-> > task_struct. On non-PREEMPT_RT builds the pointer saved in a per-CPU
-> > variable (which is always NODE-local memory). Using always the
-> > bpf_net_context approach has the advantage that there is almost zero
-> > differences between PREEMPT_RT and non-PREEMPT_RT builds.
+> Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
+> ---
+>  scripts/Makefile.btf | 7 +++++--
+>  1 file changed, 5 insertions(+), 2 deletions(-)
 >
-> Did you ever manage to get any performance data to see if this has an
-> impact?
+> diff --git a/scripts/Makefile.btf b/scripts/Makefile.btf
+> index 82377e470aed..8e6a9d4b492e 100644
+> --- a/scripts/Makefile.btf
+> +++ b/scripts/Makefile.btf
+> @@ -12,8 +12,11 @@ pahole-flags-$(call test-ge, $(pahole-ver), 121)     +=
+=3D --btf_gen_floats
 >
-> [...]
+>  pahole-flags-$(call test-ge, $(pahole-ver), 122)       +=3D -j
 >
-> > +static inline struct bpf_net_context *bpf_net_ctx_get(void)
-> > +{
-> > +     struct bpf_net_context *bpf_net_ctx =3D this_cpu_read(bpf_net_con=
-text);
-> > +
-> > +     WARN_ON_ONCE(!bpf_net_ctx);
->
-> If we have this WARN...
->
-> > +static inline struct bpf_redirect_info *bpf_net_ctx_get_ri(void)
-> > +{
-> > +     struct bpf_net_context *bpf_net_ctx =3D bpf_net_ctx_get();
-> > +
-> > +     if (!bpf_net_ctx)
-> > +             return NULL;
->
-> ... do we really need all the NULL checks?
+> -pahole-flags-$(CONFIG_PAHOLE_HAS_LANG_EXCLUDE)         +=3D --lang_exclu=
+de=3Drust
+> -
+>  pahole-flags-$(call test-ge, $(pahole-ver), 125)       +=3D --skip_encod=
+ing_btf_inconsistent_proto --btf_gen_optimized
 
-Indeed.
-Let's drop all NULL checks, since they definitely add overhead.
-I'd also remove ifdef CONFIG_PREEMPT_RT and converge on single implementati=
-on:
-static inline struct bpf_net_context * bpf_net_ctx_get(void)
-{
- return current->bpf_net_context;
-}
+given starting from 1.26 we use --btf-features, this should be `=3D=3D
+1.25` condition, not `>=3D 1.25`, right? It doesn't hurt right now, but
+it's best to be explicitly that below `-j --btf_features=3D...` is all
+that's necessary.
+
+pw-bot: cr
+
+
+>
+> +# Switch to using --btf_features for v1.26 and later.
+> +pahole-flags-$(call test-ge, $(pahole-ver), 126)       =3D -j --btf_feat=
+ures=3Dencode_force,var,float,enum64,decl_tag,type_tag,optimized_func,consi=
+stent_func
+> +
+> +pahole-flags-$(CONFIG_PAHOLE_HAS_LANG_EXCLUDE)         +=3D --lang_exclu=
+de=3Drust
+> +
+>  export PAHOLE_FLAGS :=3D $(pahole-flags-y)
+> --
+> 2.39.3
+>
 
