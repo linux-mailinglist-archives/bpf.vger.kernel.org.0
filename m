@@ -1,198 +1,138 @@
-Return-Path: <bpf+bounces-28711-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-28712-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8AF3D8BD586
-	for <lists+bpf@lfdr.de>; Mon,  6 May 2024 21:41:52 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id A20A58BD5D4
+	for <lists+bpf@lfdr.de>; Mon,  6 May 2024 21:49:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id F2C091F210EB
-	for <lists+bpf@lfdr.de>; Mon,  6 May 2024 19:41:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5D0A7281ED0
+	for <lists+bpf@lfdr.de>; Mon,  6 May 2024 19:49:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 533D215AD9C;
-	Mon,  6 May 2024 19:41:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C29C315ADA8;
+	Mon,  6 May 2024 19:47:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="fChv2u3+"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="XFFz6ATW"
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E32E81207
-	for <bpf@vger.kernel.org>; Mon,  6 May 2024 19:41:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C22A8158873
+	for <bpf@vger.kernel.org>; Mon,  6 May 2024 19:47:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715024505; cv=none; b=p/8hMbY9ZKcYxtcO2NTEouBhHRzFuRS9Nm4W0WPqLCIUsGS1n4GQijrpsXLlLBsTKBrscr1GYM88LiUjbGt51lS+VVrSOriXBSiSgNrleEYPWI50tWmukWmLLoHSHopNxUxf1BWsB5gq3xJWmWws7mANCYzXxoHHeKi3J+8DDFw=
+	t=1715024848; cv=none; b=IypRIDrt7ERs8Mf2FGaRYX71qEVQM0ejuIl77J3DaaeB90D24Qj9TJUfdwjanep0MAOmnEb3oCxOgTh59AnTQ/sbA61ZXnJF2+Vwrn4KYaXvwNSaQsi7F9osf+c875nE2EJVsKODDpAtKXaAHz9gW52ZAKp2V/M0Qm+cMpIPuug=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715024505; c=relaxed/simple;
-	bh=PrBhS5DyGnBu39z/bV+pMeXm6EsKEDKCW+dJYY8AEjI=;
+	s=arc-20240116; t=1715024848; c=relaxed/simple;
+	bh=GByCENBgWchn0akpqZGoD+13cIMCyJdu/t7ZRXWHSVM=;
 	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=sTUelVZnyoo9eAPRuPwTprlzrL8u+ixxmdUzQ5vRW7OHBf61MZPhXSBrPugOcf7cQIiN08bZ0j+00cJ5Hb/+P7OhdufFc4kMlTDpkF/H5gDklGp5xuC19lvyUMN3CsIxI6cuF9aClz154xk8aQ/AQMrzODmBB3ugYYb+SzKv/u4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=fChv2u3+; arc=none smtp.client-ip=170.10.133.124
+	 MIME-Version:Content-Type; b=LLtMJNqagtVK0iGhhGDZcrGPkWGwGMLpu4VejUdtDMv2nLHWYG5PldgPC3O1+W/MJbRJo1o7jIGcXOJcw/dEckDMVsNZb1ThFjBHXGIcDpOwSdNhCKRVlaJIPzN9SQLTLMrWuourCU0HIRUakprfpwEybEkoJMpvXJINRX9g9Fc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=XFFz6ATW; arc=none smtp.client-ip=170.10.129.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1715024503;
+	s=mimecast20190719; t=1715024845;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=DY+sYZC8mturY+dnlOrnmUuxCVCJqkhdnmld3ulR81I=;
-	b=fChv2u3+WpCAUw3DyLxnkgw/qgz7o0g9nlw9fUnTVqeiaWtCadr5hlX+m8ZopCpPL4zGMp
-	DxZtvjk5YzOk8By+12MvQ0dYGRmaVvKKyGISZfis3HFIkyYPye2FYZxazQhymLky2NH7oa
-	Tzo1z2s3fYVJRLiSs5+hNelLGDyrDyc=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) by relay.mimecast.com with ESMTP with STARTTLS
+	bh=B+LfvZaM0cDhMeJS6ywBd3hBXEDd/TNc5rZ9ADTiBeU=;
+	b=XFFz6ATWAYxWIPX6dQOicv1BgwQn+0Nr5heyzjg+MHj7lcis5yn5DkHbq3DftmlKtKp2DF
+	BEZOVpGwIboeY6L1uFsjjS2BXlcgx1a8bpdjuAjq+YqHmLCw9ydbelytX4GvoMQBjsZFbf
+	PxN2OsaWtIoeDidlQ4nwV5+6z8fjxGE=
+Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
+ [209.85.218.72]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-212-nxr4KWjdMUKCc1bcs5GZYA-1; Mon, 06 May 2024 15:41:41 -0400
-X-MC-Unique: nxr4KWjdMUKCc1bcs5GZYA-1
-Received: by mail-wr1-f71.google.com with SMTP id ffacd0b85a97d-34dcec2cbbbso1716739f8f.0
-        for <bpf@vger.kernel.org>; Mon, 06 May 2024 12:41:41 -0700 (PDT)
+ us-mta-283-R9Qq2RSjPOyACnH7wFgftA-1; Mon, 06 May 2024 15:47:24 -0400
+X-MC-Unique: R9Qq2RSjPOyACnH7wFgftA-1
+Received: by mail-ej1-f72.google.com with SMTP id a640c23a62f3a-a59c942611bso98542966b.0
+        for <bpf@vger.kernel.org>; Mon, 06 May 2024 12:47:24 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1715024500; x=1715629300;
-        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=DY+sYZC8mturY+dnlOrnmUuxCVCJqkhdnmld3ulR81I=;
-        b=URyyaKD/wM2IMevC3rHb4pGHXkhtzbnBOSmVUiAfYQYKT49nqEp4+vvQqh9Sk5ohOI
-         RMsdPPd0j/SaoznboZ1BxYmY0BBG1zOI2egLVE5a17nmXtZf9/jJ1Pbg0D/ndRlOBBoY
-         UPJf4qFuN+W8llQchqfBTQZ0YUQMJa0OLg3mMgHXXno9aTHCMVudQZodrVtQYWyXXRbK
-         sQg5t6/qmwBamcQJI9lV5Cpt7D1BvR00lDjMrEdlPqDqc6uVz5QdPEGt/19PmOSmTOG/
-         2f8d+YbgjQRphv5nfTpO9lGecQezMOplCcQJR/RVZpP2e1FicACXNjMflv3Xk7fYHdI9
-         a7Jw==
-X-Forwarded-Encrypted: i=1; AJvYcCXENKGuFDZiMwFB0ZhJZbffUUdr23Zl2jRysHQ30MM+RKP1AfUf4GU9Q6auh244X5r3STk5lopThp9twR6e+HMxNJHK
-X-Gm-Message-State: AOJu0YxuLSTJDFr63eAETozN2nxBoUXG9you+9GvN1mHTcwRKFJIq5v/
-	kf3Asix/6mSyPgtjzLvpYcp/JTeAt/UazFKPVUPptn4Sv/xUMo410uAnF7FP2JqZ3SVZvAX4BFi
-	wPta9qlpChnjgpgm3i4uDOBM7XB/fgJAb6aafTwfSjYUZXOuz3g==
-X-Received: by 2002:a5d:4404:0:b0:34d:354:b9ba with SMTP id z4-20020a5d4404000000b0034d0354b9bamr7042496wrq.30.1715024500710;
-        Mon, 06 May 2024 12:41:40 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFaokgN4DJrI/5hz3+xQUzTXmGqJHdlwJ5Sbtxf1d7FO21ctPZPxyFm8wyqqr/TggXdaqWO3w==
-X-Received: by 2002:a5d:4404:0:b0:34d:354:b9ba with SMTP id z4-20020a5d4404000000b0034d0354b9bamr7042472wrq.30.1715024500275;
-        Mon, 06 May 2024 12:41:40 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1715024843; x=1715629643;
+        h=content-transfer-encoding:mime-version:message-id:date:references
+         :in-reply-to:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=B+LfvZaM0cDhMeJS6ywBd3hBXEDd/TNc5rZ9ADTiBeU=;
+        b=bSCrxeQnHKC268Hb8w/VC+baNRU3+j7LinmdnCbWc6Bww0+2w1f/8H9yRO2jzLsq8z
+         V//h5JZTyf6w7SgYGS/5GwlNOgeBdaHOcOl3NeChdOrY4dXvONtNWYQXA3YrjktdPtjw
+         f/r2Qtyj2PBjBN6tR2XwCzd4QD9NXVXUwK7NSBKR13lJeOjZlKG/n4XnegjwIeoqGguY
+         a6dxvPAp8u0A7sPaBU7PWoEcC29s/2V0f77adGT3rALzcyaNKZTenxG0gMnsS40VSkNC
+         Dn+wxHgifCpmz5E3MkMN26FHqSRqyr8OgSIgnRnoCW8SVRhfmCK0/tavlzPh9EaFB7bS
+         AH0A==
+X-Forwarded-Encrypted: i=1; AJvYcCXcRUVpp0e5RysQ5Qmy4iHJ16dwncSfx7QcTTgk8KcKBDW41wmUuSzubBS7Vj5d2EXGoE0hv5IurP/jrQLo5A1m27FO
+X-Gm-Message-State: AOJu0YxSvPuqHc/nEJlCSyI86AgmIWBCPiNFmPr+O/Kl/TLsQ5CyiJXy
+	rV9t2pGq6hdNBHIeW7oHI70ZnLikL/2sWhZoHqZk0MJtDuxaGyYPUmiSgapkp+iLkxrAsM+lFir
+	hyU8pvjy5boCRmDpZ6OfbCvqnw9crhxpTsRKXT8Ns4ELmAGbSPQ==
+X-Received: by 2002:a17:906:b52:b0:a59:a857:85d9 with SMTP id v18-20020a1709060b5200b00a59a85785d9mr4643933ejg.69.1715024843408;
+        Mon, 06 May 2024 12:47:23 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGRBhj9be7jQBaaYDelz+oS21CM2eqozyILXEzEZ8HkdFgKx5zuiy6DpoR7jF+SLKlNWeLj5A==
+X-Received: by 2002:a17:906:b52:b0:a59:a857:85d9 with SMTP id v18-20020a1709060b5200b00a59a85785d9mr4643904ejg.69.1715024842927;
+        Mon, 06 May 2024 12:47:22 -0700 (PDT)
 Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
-        by smtp.gmail.com with ESMTPSA id f6-20020a5d58e6000000b0034dd063e8dasm11301564wrd.86.2024.05.06.12.41.39
+        by smtp.gmail.com with ESMTPSA id mf1-20020a170906cb8100b00a55778c1af7sm5641019ejb.11.2024.05.06.12.47.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 06 May 2024 12:41:39 -0700 (PDT)
+        Mon, 06 May 2024 12:47:22 -0700 (PDT)
 Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-	id D92311275C73; Mon, 06 May 2024 21:41:38 +0200 (CEST)
+	id D9DAC1275C78; Mon, 06 May 2024 21:47:21 +0200 (CEST)
 From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To: Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
- linux-kernel@vger.kernel.org, netdev@vger.kernel.org
-Cc: "David S. Miller" <davem@davemloft.net>, Boqun Feng
- <boqun.feng@gmail.com>, Daniel Borkmann <daniel@iogearbox.net>, Eric
- Dumazet <edumazet@google.com>, Frederic Weisbecker <frederic@kernel.org>,
- Ingo Molnar <mingo@redhat.com>, Jakub Kicinski <kuba@kernel.org>, Paolo
- Abeni <pabeni@redhat.com>, Peter Zijlstra <peterz@infradead.org>, Thomas
- Gleixner <tglx@linutronix.de>, Waiman Long <longman@redhat.com>, Will
- Deacon <will@kernel.org>, Sebastian Andrzej Siewior
- <bigeasy@linutronix.de>, Alexei Starovoitov <ast@kernel.org>, Andrii
- Nakryiko <andrii@kernel.org>, Eduard Zingerman <eddyz87@gmail.com>, Hao
- Luo <haoluo@google.com>, Jesper Dangaard Brouer <hawk@kernel.org>, Jiri
- Olsa <jolsa@kernel.org>, John Fastabend <john.fastabend@gmail.com>, KP
- Singh <kpsingh@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, Song
- Liu <song@kernel.org>, Stanislav Fomichev <sdf@google.com>, Yonghong Song
- <yonghong.song@linux.dev>, bpf@vger.kernel.org
-Subject: Re: [PATCH net-next 14/15] net: Reference bpf_redirect_info via
- task_struct on PREEMPT_RT.
-In-Reply-To: <20240503182957.1042122-15-bigeasy@linutronix.de>
-References: <20240503182957.1042122-1-bigeasy@linutronix.de>
- <20240503182957.1042122-15-bigeasy@linutronix.de>
+To: Michal Schmidt <mschmidt@redhat.com>, Alexei Starovoitov
+ <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, "David S.
+ Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, Jesper
+ Dangaard Brouer <hawk@kernel.org>, John Fastabend
+ <john.fastabend@gmail.com>, Andrii Nakryiko <andrii@kernel.org>, Martin
+ KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>,
+ Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, KP
+ Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo
+ <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko
+ <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>, Alexander Lobakin
+ <aleksander.lobakin@intel.com>
+Cc: netdev@vger.kernel.org, bpf@vger.kernel.org,
+ linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net] selftests/bpf: fix pointer arithmetic in
+ test_xdp_do_redirect
+In-Reply-To: <20240506145023.214248-1-mschmidt@redhat.com>
+References: <20240506145023.214248-1-mschmidt@redhat.com>
 X-Clacks-Overhead: GNU Terry Pratchett
-Date: Mon, 06 May 2024 21:41:38 +0200
-Message-ID: <87y18mohhp.fsf@toke.dk>
+Date: Mon, 06 May 2024 21:47:21 +0200
+Message-ID: <87v83qoh86.fsf@toke.dk>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-Sebastian Andrzej Siewior <bigeasy@linutronix.de> writes:
+Michal Schmidt <mschmidt@redhat.com> writes:
 
-> The XDP redirect process is two staged:
-> - bpf_prog_run_xdp() is invoked to run a eBPF program which inspects the
->   packet and makes decisions. While doing that, the per-CPU variable
->   bpf_redirect_info is used.
+> Cast operation has a higher precedence than addition. The code here
+> wants to zero the 2nd half of the 64-bit metadata, but due to a pointer
+> arithmetic mistake, it writes the zero at offset 16 instead.
 >
-> - Afterwards xdp_do_redirect() is invoked and accesses bpf_redirect_info
->   and it may also access other per-CPU variables like xskmap_flush_list.
+> Just adding parentheses around "data + 4" would fix this, but I think
+> this will be slightly better readable with array syntax.
 >
-> At the very end of the NAPI callback, xdp_do_flush() is invoked which
-> does not access bpf_redirect_info but will touch the individual per-CPU
-> lists.
+> I was unable to test this with tools/testing/selftests/bpf/vmtest.sh,
+> because my glibc is newer than glibc in the provided VM image.
+> So I just checked the difference in the compiled code.
+> objdump -S tools/testing/selftests/bpf/xdp_do_redirect.test.o:
+>   -	*((__u32 *)data) =3D 0x42; /* metadata test value */
+>   +	((__u32 *)data)[0] =3D 0x42; /* metadata test value */
+>         be7:	48 8d 85 30 fc ff ff 	lea    -0x3d0(%rbp),%rax
+>         bee:	c7 00 42 00 00 00    	movl   $0x42,(%rax)
+>   -	*((__u32 *)data + 4) =3D 0;
+>   +	((__u32 *)data)[1] =3D 0;
+>         bf4:	48 8d 85 30 fc ff ff 	lea    -0x3d0(%rbp),%rax
+>   -     bfb:	48 83 c0 10          	add    $0x10,%rax
+>   +     bfb:	48 83 c0 04          	add    $0x4,%rax
+>         bff:	c7 00 00 00 00 00    	movl   $0x0,(%rax)
 >
-> The per-CPU variables are only used in the NAPI callback hence disabling
-> bottom halves is the only protection mechanism. Users from preemptible
-> context (like cpu_map_kthread_run()) explicitly disable bottom halves
-> for protections reasons.
-> Without locking in local_bh_disable() on PREEMPT_RT this data structure
-> requires explicit locking.
->
-> PREEMPT_RT has forced-threaded interrupts enabled and every
-> NAPI-callback runs in a thread. If each thread has its own data
-> structure then locking can be avoided.
->
-> Create a struct bpf_net_context which contains struct bpf_redirect_info.
-> Define the variable on stack, use bpf_net_ctx_set() to save a pointer to
-> it. Use the __free() annotation to automatically reset the pointer once
-> function returns.
-> The bpf_net_ctx_set() may nest. For instance a function can be used from
-> within NET_RX_SOFTIRQ/ net_rx_action which uses bpf_net_ctx_set() and
-> NET_TX_SOFTIRQ which does not. Therefore only the first invocations
-> updates the pointer.
-> Use bpf_net_ctx_get_ri() as a wrapper to retrieve the current struct
-> bpf_redirect_info.
->
-> On PREEMPT_RT the pointer to bpf_net_context is saved task's
-> task_struct. On non-PREEMPT_RT builds the pointer saved in a per-CPU
-> variable (which is always NODE-local memory). Using always the
-> bpf_net_context approach has the advantage that there is almost zero
-> differences between PREEMPT_RT and non-PREEMPT_RT builds.
+> Fixes: 5640b6d89434 ("selftests/bpf: fix "metadata marker" getting overwr=
+itten by the netstack")
+> Signed-off-by: Michal Schmidt <mschmidt@redhat.com>
 
-Did you ever manage to get any performance data to see if this has an
-impact?
-
-[...]
-
-> +static inline struct bpf_net_context *bpf_net_ctx_get(void)
-> +{
-> +	struct bpf_net_context *bpf_net_ctx = this_cpu_read(bpf_net_context);
-> +
-> +	WARN_ON_ONCE(!bpf_net_ctx);
-
-If we have this WARN...
-
-> +static inline struct bpf_redirect_info *bpf_net_ctx_get_ri(void)
-> +{
-> +	struct bpf_net_context *bpf_net_ctx = bpf_net_ctx_get();
-> +
-> +	if (!bpf_net_ctx)
-> +		return NULL;
-
-... do we really need all the NULL checks?
-
-(not just here, but in the code below as well).
-
-I'm a little concerned that we are introducing a bunch of new branches
-in the XDP hot path. Which is also why I'm asking for benchmarks :)
-
-[...]
-
-> +	/* ri->map is assigned in __bpf_xdp_redirect_map() from within a eBPF
-> +	 * program/ during NAPI callback. It is used during
-> +	 * xdp_do_generic_redirect_map()/ __xdp_do_redirect_frame() from the
-> +	 * redirect callback afterwards. ri->map is cleared after usage.
-> +	 * The path has no explicit RCU read section but the local_bh_disable()
-> +	 * is also a RCU read section which makes the complete softirq callback
-> +	 * RCU protected. This in turn makes ri->map RCU protocted and it is
-
-s/protocted/protected/
-
-> +	 * sufficient to wait a grace period to ensure that no "ri->map == map"
-> +	 * exist.  dev_map_free() removes the map from the list and then
-
-s/exist/exists/
-
-
--Toke
+Reviewed-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
 
 
