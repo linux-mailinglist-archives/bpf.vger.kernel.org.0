@@ -1,168 +1,177 @@
-Return-Path: <bpf+bounces-28699-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-28704-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0F5F58BD4BF
-	for <lists+bpf@lfdr.de>; Mon,  6 May 2024 20:43:47 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D49F28BD502
+	for <lists+bpf@lfdr.de>; Mon,  6 May 2024 20:58:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 320BF1C225A0
-	for <lists+bpf@lfdr.de>; Mon,  6 May 2024 18:43:46 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DBB5DB23A66
+	for <lists+bpf@lfdr.de>; Mon,  6 May 2024 18:58:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 86CF61E4A6;
-	Mon,  6 May 2024 18:43:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="QWamJBOm"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E7DE08494;
+	Mon,  6 May 2024 18:58:18 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from shelob.surriel.com (shelob.surriel.com [96.67.55.147])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A12E7158845
-	for <bpf@vger.kernel.org>; Mon,  6 May 2024 18:43:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BCFEE158DB0;
+	Mon,  6 May 2024 18:58:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=96.67.55.147
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715021015; cv=none; b=ptXc8ODQSZgtBrHEOP9/xC3Bwx/TwLc2K1BCR7Zm4eMmaeD7byj+2w+qRBRQUW8Fenv181r+JTcJdrMF13TsAYIPJkeCvpsYLYVA7BNEVwiu3HOKYAuW3AlQY/ByOYwVYMggr83csMlwJJ8vxc0d9azbzRSEEwSM8DfpLPc3yR4=
+	t=1715021898; cv=none; b=EsCHGazoIkwhQPqY2r2i8UY2snR4s8qpBMmTPGwG/50cTYJOvtN5zECEJmFyLTRq8jcABsqJG2WZooRQiLqvjapkO+DtkMuSmSKFamsUm6Jpb7d5Phu1oIfr9b63/nXp1vJdZ4vtjpgx1QAWJcSBO6pKP98pj6sIzpwxEScthFw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715021015; c=relaxed/simple;
-	bh=sPMDL23QS9Xd7hIJCfVoH9uVk6HP1D83LxcnL9CKbhw=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=fnsDujq8skNArWaZ8ioVprh0y1mPC2/Q8GqObnypLXwEemBcG+Uu4PqVe2wfJICqcwbU32Zbwyn/uZnw0ep+4TWLQaDCoo4OEQRlsXWRTDKoZIPz/wee/OkEJW4in/4bTAH375wDyJGIvhwudu+S6dTDHx8dZQbZCitIWFIujS4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=QWamJBOm; arc=none smtp.client-ip=209.85.214.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-pl1-f182.google.com with SMTP id d9443c01a7336-1ee5f3123d8so28325ad.1
-        for <bpf@vger.kernel.org>; Mon, 06 May 2024 11:43:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1715021013; x=1715625813; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=aMqIHyLa/gmjK+J+Bo0q9JLXeRdO7aoxpGEVpFxtErc=;
-        b=QWamJBOm4/1TXFGAlwW2Wp7gFQIn4jOLbK8k/7TXtI6Kh/BdcgxPiBgf8NOsA42nAm
-         uQiK29razQgTolKJ83t8GlWw/aWYiHnrKObkVwYk/yQjbnK9rBslQDGQhtZFLayX178G
-         4OCpW+B+8JqGXHydmgVyA6NPi28sh+1m1G9q+TfOHJV7UFKThKdOApqV0YDJLTcH7F41
-         bGN1X61cVCHyuYRiUdpYJyQrDOqp2+I3OCslH0/TnK0I0o7rIvQqLyY8PQ5IfFI4/+GX
-         Do8PA1fFt4N5F6O/ozmCq7GZH3m1h5jv0Q5oEwTXYtr90EefNSITLAu0NHBOKZTcQgm6
-         Kz3Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1715021013; x=1715625813;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=aMqIHyLa/gmjK+J+Bo0q9JLXeRdO7aoxpGEVpFxtErc=;
-        b=g++zFGIuijY0lkpEvJDDdld5giSttdgbyDlnCF5UcaohpEnGUX/TJOVcEO4gT5WyLa
-         oK+HJ7rlT//uytU7ozZuDLzStb3ML6etAJ6sD+LyPmHv96bc+UlGnkeZKuXvDaYDlfX+
-         HgJqCK3HrR2SC6gMMQBH1Y2A1IpG9FtM3fdtDTTlZaQk88JdGYG/QHHfSGfaEg1Q4JAb
-         Bl3zwwVZIMRlTftZos8gfNdDJbsoD7SvupKJg2+2k7/uqXAEfgf2Ds/jYwlN2b3koH2N
-         ru5KVDf6KOHQJKVmJJWSTBEr68ywl+XC+mmTf3y+wBQpTEVBmyNbksNmEBYtlwHXzKTj
-         pYKQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXPh6VHruoVqdYKH04AzdyrZC9FGUaOwrNrDSt4Cq1CHrCjpURFjIBOhCHPfj42HEy11gYPIGuQLSiD0dgu9XyGq3lS
-X-Gm-Message-State: AOJu0YwGOCLYlUf5Mzs55XxUwgVau0vqW8oQG4tBnChJizvlS3S+zK3W
-	/wlsFEVbYKCx4yHNORVybqeHXVpsT293WzTgYCTiwoV4zbelfqalj4lE1pF5TK521hPZ/JzNorK
-	QTqO1UB4xu9uylMaatytVGmSPdgfyhepX+LHb
-X-Google-Smtp-Source: AGHT+IFulYHpYLHM1ZuESjR5oSmKrCpxfE2wIN5s61bSGDGu2zfJeu8lvWzNU0Er8XFXuAkgqi4DEDvGGFyMpu+7Ino=
-X-Received: by 2002:a17:903:2003:b0:1e2:573:eecd with SMTP id
- d9443c01a7336-1ee6a6a8e32mr195735ad.3.1715021012487; Mon, 06 May 2024
- 11:43:32 -0700 (PDT)
+	s=arc-20240116; t=1715021898; c=relaxed/simple;
+	bh=V5Q/PtAoa1EYXLeQtATWPzqJIo+EJXn8vpl0tEf4S8I=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=B69ZsePTjOSw7rcvWOXjEJniGwA+NG8AkJRiPPgWG88aV+PlbweJBfL2JnZ+Fl8AT94ZBYBzxlT2f6FyT84myAGC3I3fLOMdX18fiLagxNo3uy7DknuMZF8xlR5fxqs6Dem2spVGh4PFwmHfH7ArxmzWdgofsX6X9XFRZiSrEOM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=surriel.com; spf=pass smtp.mailfrom=shelob.surriel.com; arc=none smtp.client-ip=96.67.55.147
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=surriel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=shelob.surriel.com
+Received: from [2601:18c:9101:a8b6:6e0b:84ff:fee2:98bb] (helo=imladris.surriel.com)
+	by shelob.surriel.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.97.1)
+	(envelope-from <riel@shelob.surriel.com>)
+	id 1s43NP-000000002I5-3dwS;
+	Mon, 06 May 2024 14:47:51 -0400
+Message-ID: <798768ad5db073d36467a432352b968b01649898.camel@surriel.com>
+Subject: Re: [PATCHSET v6] sched: Implement BPF extensible scheduler class
+From: Rik van Riel <riel@surriel.com>
+To: Peter Zijlstra <peterz@infradead.org>, Tejun Heo <tj@kernel.org>
+Cc: torvalds@linux-foundation.org, mingo@redhat.com, juri.lelli@redhat.com, 
+ vincent.guittot@linaro.org, dietmar.eggemann@arm.com, rostedt@goodmis.org, 
+ bsegall@google.com, mgorman@suse.de, bristot@redhat.com,
+ vschneid@redhat.com,  ast@kernel.org, daniel@iogearbox.net,
+ andrii@kernel.org, martin.lau@kernel.org,  joshdon@google.com,
+ brho@google.com, pjt@google.com, derkling@google.com,  haoluo@google.com,
+ dvernet@meta.com, dschatzberg@meta.com, dskarlat@cs.cmu.edu, 
+ changwoo@igalia.com, himadrics@inria.fr, memxor@gmail.com, 
+ andrea.righi@canonical.com, joel@joelfernandes.org,
+ linux-kernel@vger.kernel.org,  bpf@vger.kernel.org, kernel-team@meta.com
+Date: Mon, 06 May 2024 14:47:47 -0400
+In-Reply-To: <20240503085232.GC30852@noisy.programming.kicks-ass.net>
+References: <20240501151312.635565-1-tj@kernel.org>
+	 <20240502084800.GY30852@noisy.programming.kicks-ass.net>
+	 <ZjPnb1vdt80FrksA@slm.duckdns.org>
+	 <20240503085232.GC30852@noisy.programming.kicks-ass.net>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.46.4 (3.46.4-1.fc37) 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240504003006.3303334-1-andrii@kernel.org> <20240504003006.3303334-6-andrii@kernel.org>
- <2024050404-rectify-romp-4fdb@gregkh> <CAEf4BzaUgGJVqw_yWOXASHManHQWGQV905Bd-wiaHj-mRob9gw@mail.gmail.com>
- <CAP-5=fWPig8-CLLBJ_rb3D6eNAKVY7KX_n_HcpGqL7gfe-=XXg@mail.gmail.com> <CAEf4Bzab+sRQ8pzNYxh1BOgjhDF4yCkqcHxy5YZAyT-jef7Acw@mail.gmail.com>
-In-Reply-To: <CAEf4Bzab+sRQ8pzNYxh1BOgjhDF4yCkqcHxy5YZAyT-jef7Acw@mail.gmail.com>
-From: Ian Rogers <irogers@google.com>
-Date: Mon, 6 May 2024 11:43:21 -0700
-Message-ID: <CAP-5=fXv59EmyM7FNnwAp0JjAZjtYhCj3b3FTH7KsHL=k8C6oQ@mail.gmail.com>
-Subject: Re: [PATCH 5/5] selftests/bpf: a simple benchmark tool for
- /proc/<pid>/maps APIs
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: Greg KH <gregkh@linuxfoundation.org>, Andrii Nakryiko <andrii@kernel.org>, 
-	linux-fsdevel@vger.kernel.org, brauner@kernel.org, viro@zeniv.linux.org.uk, 
-	akpm@linux-foundation.org, linux-kernel@vger.kernel.org, bpf@vger.kernel.org, 
-	linux-mm@kvack.org, Arnaldo Carvalho de Melo <acme@kernel.org>, 
-	"linux-perf-use." <linux-perf-users@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Sender: riel@surriel.com
 
-On Mon, May 6, 2024 at 11:32=E2=80=AFAM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
->
-> On Sat, May 4, 2024 at 10:09=E2=80=AFPM Ian Rogers <irogers@google.com> w=
-rote:
-> >
-> > On Sat, May 4, 2024 at 2:57=E2=80=AFPM Andrii Nakryiko
-> > <andrii.nakryiko@gmail.com> wrote:
-> > >
-> > > On Sat, May 4, 2024 at 8:29=E2=80=AFAM Greg KH <gregkh@linuxfoundatio=
-n.org> wrote:
-> > > >
-> > > > On Fri, May 03, 2024 at 05:30:06PM -0700, Andrii Nakryiko wrote:
-> > > > > Implement a simple tool/benchmark for comparing address "resoluti=
-on"
-> > > > > logic based on textual /proc/<pid>/maps interface and new binary
-> > > > > ioctl-based PROCFS_PROCMAP_QUERY command.
-> > > >
-> > > > Of course an artificial benchmark of "read a whole file" vs. "a tin=
-y
-> > > > ioctl" is going to be different, but step back and show how this is
-> > > > going to be used in the real world overall.  Pounding on this file =
-is
-> > > > not a normal operation, right?
-> > > >
-> > >
-> > > It's not artificial at all. It's *exactly* what, say, blazesym librar=
-y
-> > > is doing (see [0], it's Rust and part of the overall library API, I
-> > > think C code in this patch is way easier to follow for someone not
-> > > familiar with implementation of blazesym, but both implementations ar=
-e
-> > > doing exactly the same sequence of steps). You can do it even less
-> > > efficiently by parsing the whole file, building an in-memory lookup
-> > > table, then looking up addresses one by one. But that's even slower
-> > > and more memory-hungry. So I didn't even bother implementing that, it
-> > > would put /proc/<pid>/maps at even more disadvantage.
-> > >
-> > > Other applications that deal with stack traces (including perf) would
-> > > be doing one of those two approaches, depending on circumstances and
-> > > level of sophistication of code (and sensitivity to performance).
-> >
-> > The code in perf doing this is here:
-> > https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree=
-/tools/perf/util/synthetic-events.c#n440
-> > The code is using the api/io.h code:
-> > https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree=
-/tools/lib/api/io.h
-> > Using perf to profile perf it was observed time was spent allocating
-> > buffers and locale related activities when using stdio, so io is a
-> > lighter weight alternative, albeit with more verbose code than fscanf.
-> > You could add this as an alternate /proc/<pid>/maps reader, we have a
-> > similar benchmark in `perf bench internals synthesize`.
-> >
->
-> If I add a new implementation using this ioctl() into
-> perf_event__synthesize_mmap_events(), will it be tested from this
-> `perf bench internals synthesize`? I'm not too familiar with perf code
-> organization, sorry if it's a stupid question. If not, where exactly
-> is the code that would be triggered from benchmark?
+On Fri, 2024-05-03 at 10:52 +0200, Peter Zijlstra wrote:
+> On Thu, May 02, 2024 at 09:20:15AM -1000, Tejun Heo wrote:
+> > Hello, Peter.
+> >=20
+> > On Thu, May 02, 2024 at 10:48:00AM +0200, Peter Zijlstra wrote:
+> > > Can you please put your efforts and the touted Google
+> > > collaboration in
+> > > fixing the existing cgroup mess?
+> >=20
+> > I suppose you're referring to Rik's flattened hierarchy patchset.
+> >=20
+> > =C2=A0
+> > https://lore.kernel.org/all/20190822021740.15554-1-riel@surriel.com
+> >=20
+>=20
+> You guys Google/Facebook got us the cgroup thing, Google did a lot of
+> the work for cpu-cgroup, and now you Facebook say you can't live with
+> it
+> because it's too expensive. Yes Rik did put a lot of effort into it,
+> but
+> Google shot it down. What am I to do?
 
-Yes it would be triggered :-)
+I believe the issues that Paul pointed out with my
+flattened cgroup code are fixable. I ended up not
+getting back to this code because it took me a few
+months to think of ways to fix the issues Paul found,
+and by then I had moved on to other projects.
 
-Thanks,
-Ian
+For reference, Paul found these two (very real) issues
+with my implementation.
 
-> > Thanks,
-> > Ian
-> >
-> > >   [0] https://github.com/libbpf/blazesym/blob/ee9b48a80c0b4499118a1e8=
-e5d901cddb2b33ab1/src/normalize/user.rs#L193
-> > >
-> > > > thanks,
-> > > >
-> > > > greg k-h
-> > >
+1) Thundering herd problem. If many tasks in a low
+   priority cgroup wake up at the same time, they can
+   end up swamping a CPU.
+
+   I believe this can be solved with the same idea
+   I had for reimplementing CONFIG_CFS_BANDWIDTH.
+   Specifically, the code that determines the time
+   slice length for a task already has a way to
+   determine whether a CPU is "overloaded", and
+   time slices need to be shortened.  Once we reach
+   that situation, we can place woken up tasks on
+   a secondary heap of per-cgroup runqueues, from
+   which we do not directly run tasks, but pick
+   the lowest vruntime task from the lowest vruntime
+   cgroup and put that on the main runqueue, if
+   the previously running task has a vruntime that
+   is higher than that of a task in the secondary
+   group. If a task is woken up in a cgroup that
+   already has tasks on that secondary queue, we
+   wake up the task onto that secondary queue.
+
+   This means on overloaded CPUs, we move back to
+   a task selection mechanism closer to what we
+   currently have, while in the non-overloaded
+   situation we use a flat runqueue.
+
+   This same scheme could be used to implement
+   CFS bandwidth control. A task belonging to a
+   throttled group would be placed on the group's
+   queue, not the CPU's flat runqueue.
+
+2) The vruntime for a task can be advanced by way
+   to much at once. If we have tasks A & B running,
+   and task B has a priority that is 1/100th of that
+   of task A, its vruntime would be advanced 100x
+   as much as task A, when running the same length
+   time slice.
+
+   This creates a big issue if we get a wakeup of
+   task C, at the same priority as task B, and then
+   task A goes to sleep. Due to the very far advanced
+   runtime of task B, task C could get to monopolize
+   the CPU for a considerable amount of time, and
+   task B could get starved.
+
+   A potential fix for this is to never account more
+   than the maximum time slice length at a time, while
+   any excess delta_exec time for the task gets remembered.
+
+   At pick_next_entity time, the scheduler can see that
+   task B has a lot of delta_exec time left, and account
+   up to the maximum slice length to the task's vruntime,
+   and place it back in the queue if the next task now has
+   a lower vruntime.
+
+   For a steady state of a high priority task A and a low
+   priority task B, this makes pick_next_task more expensive,
+   but when task A disappears and task C appears, CPU time
+   will continue to be fair between them.
+
+   Limiting the total weight of tasks on the flat runqueue,
+   using the mechanism for thundering herd and CFS bandwidth
+   outlined above, should keep this overhead bounded to
+   something reasonable.
+
+Does the above sound like it would work?
+
+Does it sound like code that you would be ok with merging?
+
+Is it a large enough improvement over the current hierarchical
+runqueue that it would be worth doing?
+
+This would be a fairly large project, so we should probably discuss
+some of the details before investing too much time in it.
+
+--=20
+All Rights Reversed.
 
