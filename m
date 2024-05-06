@@ -1,159 +1,363 @@
-Return-Path: <bpf+bounces-28688-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-28689-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5D5548BD19D
-	for <lists+bpf@lfdr.de>; Mon,  6 May 2024 17:38:21 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 817188BD21F
+	for <lists+bpf@lfdr.de>; Mon,  6 May 2024 18:08:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1270228488F
-	for <lists+bpf@lfdr.de>; Mon,  6 May 2024 15:38:20 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0EB5C1F22A30
+	for <lists+bpf@lfdr.de>; Mon,  6 May 2024 16:08:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C5A9E155341;
-	Mon,  6 May 2024 15:38:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C7DC6156223;
+	Mon,  6 May 2024 16:08:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="mdcM3M4J"
 X-Original-To: bpf@vger.kernel.org
-Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E3412F2C;
-	Mon,  6 May 2024 15:38:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.189
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 342921552F7;
+	Mon,  6 May 2024 16:07:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.9
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715009893; cv=none; b=G80LFLcFA5GpznApt0t8XDPOu1Svq29vWg6nh5XZ7ptJDKDx9xlJUN3eD02nZ5uzEHiU50SfUDfNlO0IcqLIF8pnNC4wkiFzEGKf0PWxMBF5jquOkczO9Bkm6mjbKH+lHIwZX+sPF7PSAZ95GctSBMpiRoEVScjgMASLZ8IC/3M=
+	t=1715011681; cv=none; b=XP1meAl8ALlbKEB1+GoIxH3XXtCol/5Azz6ekV0YKzaRPkOZpooXxnuOd7/SzSvlizxBUgP2nVgnCK4ThwbnHkm1CoseZKbAiTx+fCvtI/Me6vQK9/Vddck9VvYhH9xEYdFi5dvMPY60UGnYJru0wTxdPaev4lJxYQWHB0IdeWU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715009893; c=relaxed/simple;
-	bh=KsKttnModc95STUcrfxqiV25av+zrqovFOTXQe8hQ6I=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=uoB4OB/E1RFaThb/JWBHkue8YUGjKqwn/UH2GQ0cywH49trlf6F+wi6pK+y3ME4KzFhtJLbkc8oAT9jwVjdEYYxfOMyVnoY8R85Yeg42Ac5l21icZ21tZYj/YCD3ROaAzfHnryuNK+98N6Au/I8W/NMHuet4rmYaApHTfIOXPK4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.189
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.252])
-	by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4VY5893TxrzNw6Y;
-	Mon,  6 May 2024 23:35:21 +0800 (CST)
-Received: from kwepemf100007.china.huawei.com (unknown [7.202.181.221])
-	by mail.maildlp.com (Postfix) with ESMTPS id 3AE2218007D;
-	Mon,  6 May 2024 23:38:06 +0800 (CST)
-Received: from [10.67.109.184] (10.67.109.184) by
- kwepemf100007.china.huawei.com (7.202.181.221) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.4; Mon, 6 May 2024 23:38:05 +0800
-Message-ID: <5df237e2-5bfd-4f31-a168-abfbf7808822@huawei.com>
-Date: Mon, 6 May 2024 23:38:04 +0800
+	s=arc-20240116; t=1715011681; c=relaxed/simple;
+	bh=2IOd66RSOqQqrKQkuMh3XogGiLvLLMV7lnIQ5ZnGbPE=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=ab+S3ejjGcxj4AmsJYFwHp1MJ4UeIqbizPvsOHQ+JUzWEi7gxTAl5fcSlM7/bj3HmrWP9mSa/5epd+xCS1HcqFVb+leMOnPQTJCc7C5xtwAEmDjx8MgJ3n+yvRNb+v4erKGANSsZuJ6HiaH/7evuEYtmnd19B0ueSzRe7Mhdv+Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=mdcM3M4J; arc=none smtp.client-ip=192.198.163.9
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1715011679; x=1746547679;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=2IOd66RSOqQqrKQkuMh3XogGiLvLLMV7lnIQ5ZnGbPE=;
+  b=mdcM3M4JAswq+Hj/4Jf8yuJJzZ01cw/1YIbVCq41wSpETdlk/y+wCCKG
+   Zm5wngIWty+CYyYkYBxJboRiH5P5Sp7aMxzCLDqTo+c4sWsxLXg0gx0iZ
+   ICjxPI7MQGO4zSU25v8UzZkJVkuasCkw+113Id0SpRZecPk/3CK4JUCL2
+   X2Gp/ANFecJKEF7RfXSUX5GxkGd3k1fJeXjnni6M/P+yMGpWIG6PZcOqK
+   AQuzxwxWUTTCuBffe/10Q4i3vtKMFf3Fwd6/YQr79alcEMS7Rrek/qjga
+   OmWUC8WaxWZlYmWg7BWc5+uBSNvvny8mI8bPfuX9l+Eq9r5VkSyxvBgJb
+   Q==;
+X-CSE-ConnectionGUID: NLhT/Lx7Qmu2o7wZa+FILQ==
+X-CSE-MsgGUID: BDduzWQaQ6Knn/Zh12Op3g==
+X-IronPort-AV: E=McAfee;i="6600,9927,11065"; a="21440400"
+X-IronPort-AV: E=Sophos;i="6.07,258,1708416000"; 
+   d="scan'208";a="21440400"
+Received: from fmviesa003.fm.intel.com ([10.60.135.143])
+  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 May 2024 09:07:58 -0700
+X-CSE-ConnectionGUID: u2l7s34lSJ6s3YOUXNviqw==
+X-CSE-MsgGUID: +dIdv11yQnK7uo5bWilyRQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,258,1708416000"; 
+   d="scan'208";a="32705046"
+Received: from haabdall-mobl.amr.corp.intel.com (HELO rpedgeco-desk4.intel.com) ([10.209.82.8])
+  by fmviesa003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 May 2024 09:07:57 -0700
+From: Rick Edgecombe <rick.p.edgecombe@intel.com>
+To: akpm@linux-foundation.org
+Cc: rick.p.edgecombe@intel.com,
+	Liam.Howlett@oracle.com,
+	bp@alien8.de,
+	bpf@vger.kernel.org,
+	broonie@kernel.org,
+	christophe.leroy@csgroup.eu,
+	dan.j.williams@intel.com,
+	dave.hansen@linux.intel.com,
+	debug@rivosinc.com,
+	hpa@zytor.com,
+	io-uring@vger.kernel.org,
+	keescook@chromium.org,
+	kirill.shutemov@linux.intel.com,
+	linux-cxl@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-mm@kvack.org,
+	linux-s390@vger.kernel.org,
+	linux-sgx@vger.kernel.org,
+	luto@kernel.org,
+	mingo@redhat.com,
+	nvdimm@lists.linux.dev,
+	peterz@infradead.org,
+	sparclinux@vger.kernel.org,
+	tglx@linutronix.de,
+	x86@kernel.org
+Subject: [PATCH] mm: Remove mm argument from mm_get_unmapped_area()
+Date: Mon,  6 May 2024 09:07:47 -0700
+Message-Id: <20240506160747.1321726-1-rick.p.edgecombe@intel.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH bpf] riscv, bpf: make some atomic operations fully ordered
-To: Puranjay Mohan <puranjay@kernel.org>
-CC: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann
-	<daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau
-	<martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu
-	<song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, John Fastabend
-	<john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, Stanislav Fomichev
-	<sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-	=?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>, "Paul E. McKenney"
-	<paulmck@kernel.org>, Paul Walmsley <paul.walmsley@sifive.com>, Palmer
- Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>,
-	<bpf@vger.kernel.org>, <linux-riscv@lists.infradead.org>,
-	<linux-kernel@vger.kernel.org>, <puranjay12@gmail.com>
-References: <20240505201633.123115-1-puranjay@kernel.org>
-Content-Language: en-US
-From: Pu Lehui <pulehui@huawei.com>
-In-Reply-To: <20240505201633.123115-1-puranjay@kernel.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- kwepemf100007.china.huawei.com (7.202.181.221)
+Content-Transfer-Encoding: 8bit
 
+Recently the get_unmapped_area() pointer on mm_struct was removed in
+favor of direct callable function that can determines which of two
+handlers to call based on an mm flag. This function,
+mm_get_unmapped_area(), checks the flag of the mm passed as an argument.
 
+Dan Williams pointed out (see link) that all callers pass curret->mm, so
+the mm argument is unneeded. It could be conceivable for a caller to want
+to pass a different mm in the future, but in this case a new helper could
+easily be added.
 
-On 2024/5/6 4:16, Puranjay Mohan wrote:
-> The BPF atomic operations with the BPF_FETCH modifier along with
-> BPF_XCHG and BPF_CMPXCHG are fully ordered but the RISC-V JIT implements
-> all atomic operations except BPF_CMPXCHG with relaxed ordering.
-> 
-> Section 8.1 of the "The RISC-V Instruction Set Manual Volume I:
-> Unprivileged ISA" [1], titled, "Specifying Ordering of Atomic
-> Instructions" says:
-> 
-> | To provide more efficient support for release consistency [5], each
-> | atomic instruction has two bits, aq and rl, used to specify additional
-> | memory ordering constraints as viewed by other RISC-V harts.
-> 
-> and
-> 
-> | If only the aq bit is set, the atomic memory operation is treated as
-> | an acquire access.
-> | If only the rl bit is set, the atomic memory operation is treated as a
-> | release access.
-> |
-> | If both the aq and rl bits are set, the atomic memory operation is
-> | sequentially consistent.
-> 
-> Fix this by setting both aq and rl bits as 1 for operations with
-> BPF_FETCH and BPF_XCHG.
-> 
-> [1] https://riscv.org/wp-content/uploads/2017/05/riscv-spec-v2.2.pdf
-> 
-> Fixes: dd642ccb45ec ("riscv, bpf: Implement more atomic operations for RV64")
-> Signed-off-by: Puranjay Mohan <puranjay@kernel.org>
-> ---
->   arch/riscv/net/bpf_jit_comp64.c | 20 ++++++++++----------
->   1 file changed, 10 insertions(+), 10 deletions(-)
-> 
-> diff --git a/arch/riscv/net/bpf_jit_comp64.c b/arch/riscv/net/bpf_jit_comp64.c
-> index ec9d692838fc..fb5d1950042b 100644
-> --- a/arch/riscv/net/bpf_jit_comp64.c
-> +++ b/arch/riscv/net/bpf_jit_comp64.c
-> @@ -498,33 +498,33 @@ static void emit_atomic(u8 rd, u8 rs, s16 off, s32 imm, bool is64,
->   		break;
->   	/* src_reg = atomic_fetch_<op>(dst_reg + off16, src_reg) */
->   	case BPF_ADD | BPF_FETCH:
-> -		emit(is64 ? rv_amoadd_d(rs, rs, rd, 0, 0) :
-> -		     rv_amoadd_w(rs, rs, rd, 0, 0), ctx);
-> +		emit(is64 ? rv_amoadd_d(rs, rs, rd, 1, 1) :
-> +		     rv_amoadd_w(rs, rs, rd, 1, 1), ctx);
->   		if (!is64)
->   			emit_zextw(rs, rs, ctx);
->   		break;
->   	case BPF_AND | BPF_FETCH:
-> -		emit(is64 ? rv_amoand_d(rs, rs, rd, 0, 0) :
-> -		     rv_amoand_w(rs, rs, rd, 0, 0), ctx);
-> +		emit(is64 ? rv_amoand_d(rs, rs, rd, 1, 1) :
-> +		     rv_amoand_w(rs, rs, rd, 1, 1), ctx);
->   		if (!is64)
->   			emit_zextw(rs, rs, ctx);
->   		break;
->   	case BPF_OR | BPF_FETCH:
-> -		emit(is64 ? rv_amoor_d(rs, rs, rd, 0, 0) :
-> -		     rv_amoor_w(rs, rs, rd, 0, 0), ctx);
-> +		emit(is64 ? rv_amoor_d(rs, rs, rd, 1, 1) :
-> +		     rv_amoor_w(rs, rs, rd, 1, 1), ctx);
->   		if (!is64)
->   			emit_zextw(rs, rs, ctx);
->   		break;
->   	case BPF_XOR | BPF_FETCH:
-> -		emit(is64 ? rv_amoxor_d(rs, rs, rd, 0, 0) :
-> -		     rv_amoxor_w(rs, rs, rd, 0, 0), ctx);
-> +		emit(is64 ? rv_amoxor_d(rs, rs, rd, 1, 1) :
-> +		     rv_amoxor_w(rs, rs, rd, 1, 1), ctx);
->   		if (!is64)
->   			emit_zextw(rs, rs, ctx);
->   		break;
->   	/* src_reg = atomic_xchg(dst_reg + off16, src_reg); */
->   	case BPF_XCHG:
-> -		emit(is64 ? rv_amoswap_d(rs, rs, rd, 0, 0) :
-> -		     rv_amoswap_w(rs, rs, rd, 0, 0), ctx);
-> +		emit(is64 ? rv_amoswap_d(rs, rs, rd, 1, 1) :
-> +		     rv_amoswap_w(rs, rs, rd, 1, 1), ctx);
->   		if (!is64)
->   			emit_zextw(rs, rs, ctx);
->   		break;
+So remove the mm argument, and rename the function
+current_get_unmapped_area().
 
-Reviewed-by: Pu Lehui <pulehui@huawei.com>
+Fixes: 529ce23a764f ("mm: switch mm->get_unmapped_area() to a flag")
+Suggested-by: Dan Williams <dan.j.williams@intel.com>
+Signed-off-by: Rick Edgecombe <rick.p.edgecombe@intel.com>
+Link: https://lore.kernel.org/lkml/6603bed6662a_4a98a2949e@dwillia2-mobl3.amr.corp.intel.com.notmuch/
+---
+Based on linux-next.
+---
+ arch/sparc/kernel/sys_sparc_64.c |  9 +++++----
+ arch/x86/kernel/cpu/sgx/driver.c |  2 +-
+ drivers/char/mem.c               |  2 +-
+ drivers/dax/device.c             |  6 +++---
+ fs/proc/inode.c                  |  2 +-
+ fs/ramfs/file-mmu.c              |  2 +-
+ include/linux/sched/mm.h         |  6 +++---
+ io_uring/memmap.c                |  2 +-
+ kernel/bpf/arena.c               |  2 +-
+ kernel/bpf/syscall.c             |  2 +-
+ mm/mmap.c                        | 11 +++++------
+ mm/shmem.c                       |  9 ++++-----
+ 12 files changed, 27 insertions(+), 28 deletions(-)
+
+diff --git a/arch/sparc/kernel/sys_sparc_64.c b/arch/sparc/kernel/sys_sparc_64.c
+index d9c3b34ca744..cf0b4ace5bf9 100644
+--- a/arch/sparc/kernel/sys_sparc_64.c
++++ b/arch/sparc/kernel/sys_sparc_64.c
+@@ -220,7 +220,7 @@ unsigned long get_fb_unmapped_area(struct file *filp, unsigned long orig_addr, u
+ 
+ 	if (flags & MAP_FIXED) {
+ 		/* Ok, don't mess with it. */
+-		return mm_get_unmapped_area(current->mm, NULL, orig_addr, len, pgoff, flags);
++		return current_get_unmapped_area(NULL, orig_addr, len, pgoff, flags);
+ 	}
+ 	flags &= ~MAP_SHARED;
+ 
+@@ -233,8 +233,9 @@ unsigned long get_fb_unmapped_area(struct file *filp, unsigned long orig_addr, u
+ 		align_goal = (64UL * 1024);
+ 
+ 	do {
+-		addr = mm_get_unmapped_area(current->mm, NULL, orig_addr,
+-					    len + (align_goal - PAGE_SIZE), pgoff, flags);
++		addr = current_get_unmapped_area(NULL, orig_addr,
++						 len + (align_goal - PAGE_SIZE),
++						 pgoff, flags);
+ 		if (!(addr & ~PAGE_MASK)) {
+ 			addr = (addr + (align_goal - 1UL)) & ~(align_goal - 1UL);
+ 			break;
+@@ -252,7 +253,7 @@ unsigned long get_fb_unmapped_area(struct file *filp, unsigned long orig_addr, u
+ 	 * be obtained.
+ 	 */
+ 	if (addr & ~PAGE_MASK)
+-		addr = mm_get_unmapped_area(current->mm, NULL, orig_addr, len, pgoff, flags);
++		addr = current_get_unmapped_area(NULL, orig_addr, len, pgoff, flags);
+ 
+ 	return addr;
+ }
+diff --git a/arch/x86/kernel/cpu/sgx/driver.c b/arch/x86/kernel/cpu/sgx/driver.c
+index 22b65a5f5ec6..5f7bfd9035f7 100644
+--- a/arch/x86/kernel/cpu/sgx/driver.c
++++ b/arch/x86/kernel/cpu/sgx/driver.c
+@@ -113,7 +113,7 @@ static unsigned long sgx_get_unmapped_area(struct file *file,
+ 	if (flags & MAP_FIXED)
+ 		return addr;
+ 
+-	return mm_get_unmapped_area(current->mm, file, addr, len, pgoff, flags);
++	return current_get_unmapped_area(file, addr, len, pgoff, flags);
+ }
+ 
+ #ifdef CONFIG_COMPAT
+diff --git a/drivers/char/mem.c b/drivers/char/mem.c
+index 7c359cc406d5..a29c4bd506d5 100644
+--- a/drivers/char/mem.c
++++ b/drivers/char/mem.c
+@@ -546,7 +546,7 @@ static unsigned long get_unmapped_area_zero(struct file *file,
+ 	}
+ 
+ 	/* Otherwise flags & MAP_PRIVATE: with no shmem object beneath it */
+-	return mm_get_unmapped_area(current->mm, file, addr, len, pgoff, flags);
++	return current_get_unmapped_area(file, addr, len, pgoff, flags);
+ #else
+ 	return -ENOSYS;
+ #endif
+diff --git a/drivers/dax/device.c b/drivers/dax/device.c
+index eb61598247a9..c379902307b7 100644
+--- a/drivers/dax/device.c
++++ b/drivers/dax/device.c
+@@ -329,14 +329,14 @@ static unsigned long dax_get_unmapped_area(struct file *filp,
+ 	if ((off + len_align) < off)
+ 		goto out;
+ 
+-	addr_align = mm_get_unmapped_area(current->mm, filp, addr, len_align,
+-					  pgoff, flags);
++	addr_align = current_get_unmapped_area(filp, addr, len_align,
++					       pgoff, flags);
+ 	if (!IS_ERR_VALUE(addr_align)) {
+ 		addr_align += (off - addr_align) & (align - 1);
+ 		return addr_align;
+ 	}
+  out:
+-	return mm_get_unmapped_area(current->mm, filp, addr, len, pgoff, flags);
++	return current_get_unmapped_area(filp, addr, len, pgoff, flags);
+ }
+ 
+ static const struct address_space_operations dev_dax_aops = {
+diff --git a/fs/proc/inode.c b/fs/proc/inode.c
+index d19434e2a58e..24a6aeac3de5 100644
+--- a/fs/proc/inode.c
++++ b/fs/proc/inode.c
+@@ -455,7 +455,7 @@ pde_get_unmapped_area(struct proc_dir_entry *pde, struct file *file, unsigned lo
+ 		return pde->proc_ops->proc_get_unmapped_area(file, orig_addr, len, pgoff, flags);
+ 
+ #ifdef CONFIG_MMU
+-	return mm_get_unmapped_area(current->mm, file, orig_addr, len, pgoff, flags);
++	return current_get_unmapped_area(file, orig_addr, len, pgoff, flags);
+ #endif
+ 
+ 	return orig_addr;
+diff --git a/fs/ramfs/file-mmu.c b/fs/ramfs/file-mmu.c
+index b45c7edc3225..85f57de31102 100644
+--- a/fs/ramfs/file-mmu.c
++++ b/fs/ramfs/file-mmu.c
+@@ -35,7 +35,7 @@ static unsigned long ramfs_mmu_get_unmapped_area(struct file *file,
+ 		unsigned long addr, unsigned long len, unsigned long pgoff,
+ 		unsigned long flags)
+ {
+-	return mm_get_unmapped_area(current->mm, file, addr, len, pgoff, flags);
++	return current_get_unmapped_area(file, addr, len, pgoff, flags);
+ }
+ 
+ const struct file_operations ramfs_file_operations = {
+diff --git a/include/linux/sched/mm.h b/include/linux/sched/mm.h
+index 91546493c43d..c67c7de05c7a 100644
+--- a/include/linux/sched/mm.h
++++ b/include/linux/sched/mm.h
+@@ -187,9 +187,9 @@ arch_get_unmapped_area_topdown(struct file *filp, unsigned long addr,
+ 			  unsigned long len, unsigned long pgoff,
+ 			  unsigned long flags);
+ 
+-unsigned long mm_get_unmapped_area(struct mm_struct *mm, struct file *filp,
+-				   unsigned long addr, unsigned long len,
+-				   unsigned long pgoff, unsigned long flags);
++unsigned long current_get_unmapped_area(struct file *filp, unsigned long addr,
++					unsigned long len, unsigned long pgoff,
++					unsigned long flags);
+ 
+ unsigned long
+ arch_get_unmapped_area_vmflags(struct file *filp, unsigned long addr,
+diff --git a/io_uring/memmap.c b/io_uring/memmap.c
+index 4785d6af5fee..1aaea32c797c 100644
+--- a/io_uring/memmap.c
++++ b/io_uring/memmap.c
+@@ -305,7 +305,7 @@ unsigned long io_uring_get_unmapped_area(struct file *filp, unsigned long addr,
+ #else
+ 	addr = 0UL;
+ #endif
+-	return mm_get_unmapped_area(current->mm, filp, addr, len, pgoff, flags);
++	return current_get_unmapped_area(filp, addr, len, pgoff, flags);
+ }
+ 
+ #else /* !CONFIG_MMU */
+diff --git a/kernel/bpf/arena.c b/kernel/bpf/arena.c
+index 4a1be699bb82..054486f7c453 100644
+--- a/kernel/bpf/arena.c
++++ b/kernel/bpf/arena.c
+@@ -314,7 +314,7 @@ static unsigned long arena_get_unmapped_area(struct file *filp, unsigned long ad
+ 			return -EINVAL;
+ 	}
+ 
+-	ret = mm_get_unmapped_area(current->mm, filp, addr, len * 2, 0, flags);
++	ret = current_get_unmapped_area(filp, addr, len * 2, 0, flags);
+ 	if (IS_ERR_VALUE(ret))
+ 		return ret;
+ 	if ((ret >> 32) == ((ret + len - 1) >> 32))
+diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+index 2222c3ff88e7..d9ff2843f6ef 100644
+--- a/kernel/bpf/syscall.c
++++ b/kernel/bpf/syscall.c
+@@ -992,7 +992,7 @@ static unsigned long bpf_get_unmapped_area(struct file *filp, unsigned long addr
+ 	if (map->ops->map_get_unmapped_area)
+ 		return map->ops->map_get_unmapped_area(filp, addr, len, pgoff, flags);
+ #ifdef CONFIG_MMU
+-	return mm_get_unmapped_area(current->mm, filp, addr, len, pgoff, flags);
++	return current_get_unmapped_area(filp, addr, len, pgoff, flags);
+ #else
+ 	return addr;
+ #endif
+diff --git a/mm/mmap.c b/mm/mmap.c
+index 83b4682ec85c..4e98a907c53d 100644
+--- a/mm/mmap.c
++++ b/mm/mmap.c
+@@ -1901,16 +1901,15 @@ __get_unmapped_area(struct file *file, unsigned long addr, unsigned long len,
+ 	return error ? error : addr;
+ }
+ 
+-unsigned long
+-mm_get_unmapped_area(struct mm_struct *mm, struct file *file,
+-		     unsigned long addr, unsigned long len,
+-		     unsigned long pgoff, unsigned long flags)
++unsigned long current_get_unmapped_area(struct file *file, unsigned long addr,
++					unsigned long len, unsigned long pgoff,
++					unsigned long flags)
+ {
+-	if (test_bit(MMF_TOPDOWN, &mm->flags))
++	if (test_bit(MMF_TOPDOWN, &current->mm->flags))
+ 		return arch_get_unmapped_area_topdown(file, addr, len, pgoff, flags);
+ 	return arch_get_unmapped_area(file, addr, len, pgoff, flags);
+ }
+-EXPORT_SYMBOL(mm_get_unmapped_area);
++EXPORT_SYMBOL(current_get_unmapped_area);
+ 
+ /**
+  * find_vma_intersection() - Look up the first VMA which intersects the interval
+diff --git a/mm/shmem.c b/mm/shmem.c
+index f5d60436b604..c0acd7db93c8 100644
+--- a/mm/shmem.c
++++ b/mm/shmem.c
+@@ -2276,8 +2276,7 @@ unsigned long shmem_get_unmapped_area(struct file *file,
+ 	if (len > TASK_SIZE)
+ 		return -ENOMEM;
+ 
+-	addr = mm_get_unmapped_area(current->mm, file, uaddr, len, pgoff,
+-				    flags);
++	addr = current_get_unmapped_area(file, uaddr, len, pgoff, flags);
+ 
+ 	if (!IS_ENABLED(CONFIG_TRANSPARENT_HUGEPAGE))
+ 		return addr;
+@@ -2334,8 +2333,8 @@ unsigned long shmem_get_unmapped_area(struct file *file,
+ 	if (inflated_len < len)
+ 		return addr;
+ 
+-	inflated_addr = mm_get_unmapped_area(current->mm, NULL, uaddr,
+-					     inflated_len, 0, flags);
++	inflated_addr = current_get_unmapped_area(NULL, uaddr,
++						  inflated_len, 0, flags);
+ 	if (IS_ERR_VALUE(inflated_addr))
+ 		return addr;
+ 	if (inflated_addr & ~PAGE_MASK)
+@@ -4799,7 +4798,7 @@ unsigned long shmem_get_unmapped_area(struct file *file,
+ 				      unsigned long addr, unsigned long len,
+ 				      unsigned long pgoff, unsigned long flags)
+ {
+-	return mm_get_unmapped_area(current->mm, file, addr, len, pgoff, flags);
++	return current_get_unmapped_area(file, addr, len, pgoff, flags);
+ }
+ #endif
+ 
+
+base-commit: 9221b2819b8a4196eecf5476d66201be60fbcf29
+-- 
+2.34.1
+
 
