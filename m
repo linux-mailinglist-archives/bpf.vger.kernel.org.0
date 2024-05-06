@@ -1,98 +1,137 @@
-Return-Path: <bpf+bounces-28722-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-28723-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0922D8BD697
-	for <lists+bpf@lfdr.de>; Mon,  6 May 2024 23:00:39 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 231DE8BD69B
+	for <lists+bpf@lfdr.de>; Mon,  6 May 2024 23:05:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8AD5D1F22B73
-	for <lists+bpf@lfdr.de>; Mon,  6 May 2024 21:00:38 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D3B88282D63
+	for <lists+bpf@lfdr.de>; Mon,  6 May 2024 21:05:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD31F15B989;
-	Mon,  6 May 2024 21:00:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 64DAF158D7B;
+	Mon,  6 May 2024 21:05:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XHiq341e"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="IWMB6EWo"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out-173.mta1.migadu.com (out-173.mta1.migadu.com [95.215.58.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 32646EBB;
-	Mon,  6 May 2024 21:00:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4746EEBB
+	for <bpf@vger.kernel.org>; Mon,  6 May 2024 21:05:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715029229; cv=none; b=Aa8xW6L2b7uL37DXbEIAYFOUlhRcrvPUWFvIQi+vTok78AN3Z+bIe/+DVCAeX0vrKFrkcGcARmW6buAfH+mAIyTWjqu96CCcrtK/zbxH7t0cLiw3tNT+FFlcML29K9n1AWQrQVqSdehughFPTmU57Q6cZeVOefuj+kGiCYsLb0w=
+	t=1715029511; cv=none; b=nh318+E8zzSqNuuvHVaXkvQdxeizxqjVh6s6hapj8nX0WPdrCg4B5PH9im9lyRcRkPQg523t/jQvyaW9aPjOpu/HC9/zkH+fn0RxLAr2NOoDE7mz0lNGEid8omQXXwm9BmSA7eZzAemR9lSk5fQemRgkCQjLpakcLIdNWnujsrk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715029229; c=relaxed/simple;
-	bh=euep0cZkBW8JkBqz2qwER9CnPAwCYh/hflWCc3SyRv8=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=Hs9NsVWx/QRc4ma383s1/iPmUSYv9h9gSl59Fi8eEWR7XgPOgPmuy012qvp54R7JijNqMBJ4VkzU1CF8+LpmmNx+4p8y/yCyGEmZNWCFClgT0Q+5IiHCPwCQy0sRaPpt8gLYSpiJcwC0919jXTmmJ9OsbMYfWyDY9zqrlUbcRDM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XHiq341e; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 89945C4AF65;
-	Mon,  6 May 2024 21:00:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1715029228;
-	bh=euep0cZkBW8JkBqz2qwER9CnPAwCYh/hflWCc3SyRv8=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=XHiq341eR6eJjhLUMMgLXBcKLu6IuYQr9RrVVuJIHDZ5fM7yeJOWIVO633hoGPEqS
-	 cO+B6keGCRykadaZJkRUuA+kRn74Ym/PLH+7cU54lWyeVWDUG6HSyCRBhunq+c9lbr
-	 8+ijsHdOF6JCEZOXO/DoyugVMqhRkiP8JVvDLZlg3P8T01Wxnk1knC976Exh0+AM9l
-	 CmbKpN4rmtTcpwd5t3ZDyWO6g8cn0Rfbb5sFH12pwYefbwCxENN4YDR655Bzx7+2VT
-	 ezzseIDQyUirMbwWZ40Do+208Vun9P6lQTw6q40fbHyZkPKBJL8m1hdADLQua93+WO
-	 EG0V47hrFuAAA==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 7774EC43335;
-	Mon,  6 May 2024 21:00:28 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1715029511; c=relaxed/simple;
+	bh=1NSJc03A4NZroirCU9H8CMzH7+blLGtfIep/PPbV5bo=;
+	h=Content-Type:Mime-Version:Subject:From:In-Reply-To:Date:Cc:
+	 Message-Id:References:To; b=Vny2aSnaBXUdA3v83V50TbQm1CcXcYTm3nvJqHk/UIWmd1PK02tR436I2JAf1EE30/U0FENTurt2Kh10PElQFFHQ93b4XrFHor/9jnTpD18447o385actehBtFEjjML7C3aoGc/+BlUfeqfXzObT3Udgo2cBrcR4dzTvz7NT2g0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=IWMB6EWo; arc=none smtp.client-ip=95.215.58.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Content-Type: text/plain; charset=utf-8
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1715029507;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=1NSJc03A4NZroirCU9H8CMzH7+blLGtfIep/PPbV5bo=;
+	b=IWMB6EWo+7kE0zqbM4YzEH+F7t/xlK6DuUiAZhAfxz8EotR4Vh3GuehN5Sh1XlRBbkdPJU
+	rUhQKMeN3PX2xVe6PO4KGTSr1EIXXuzTe+EHXvddG62T3v6EXQsS2bB9PqEi/HDEJj4vmA
+	Sv4wKRc/IUi9jrtwoOmDeGkgjP43wPg=
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net] selftests/bpf: fix pointer arithmetic in
- test_xdp_do_redirect
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <171502922848.22261.11157218747353339667.git-patchwork-notify@kernel.org>
-Date: Mon, 06 May 2024 21:00:28 +0000
-References: <20240506145023.214248-1-mschmidt@redhat.com>
-In-Reply-To: <20240506145023.214248-1-mschmidt@redhat.com>
-To: Michal Schmidt <mschmidt@redhat.com>
-Cc: ast@kernel.org, daniel@iogearbox.net, davem@davemloft.net,
- kuba@kernel.org, hawk@kernel.org, john.fastabend@gmail.com,
- andrii@kernel.org, martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org,
- yonghong.song@linux.dev, kpsingh@kernel.org, sdf@google.com,
- haoluo@google.com, jolsa@kernel.org, mykolal@fb.com, shuah@kernel.org,
- aleksander.lobakin@intel.com, toke@redhat.com, netdev@vger.kernel.org,
- bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
- linux-kernel@vger.kernel.org
-
-Hello:
-
-This patch was applied to bpf/bpf-next.git (master)
-by Andrii Nakryiko <andrii@kernel.org>:
-
-On Mon,  6 May 2024 16:50:22 +0200 you wrote:
-> Cast operation has a higher precedence than addition. The code here
-> wants to zero the 2nd half of the 64-bit metadata, but due to a pointer
-> arithmetic mistake, it writes the zero at offset 16 instead.
-> 
-> Just adding parentheses around "data + 4" would fix this, but I think
-> this will be slightly better readable with array syntax.
-> 
-> [...]
-
-Here is the summary with links:
-  - [net] selftests/bpf: fix pointer arithmetic in test_xdp_do_redirect
-    https://git.kernel.org/bpf/bpf-next/c/e549b39a0ab8
-
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+Mime-Version: 1.0 (1.0)
+Subject: Re: [Lsf-pc] [LSF/MM/BPF TOPIC] SLUB: what's next?
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Roman Gushchin <roman.gushchin@linux.dev>
+In-Reply-To: <67304905-57d7-47f5-937b-2c4fb95d13ba@suse.cz>
+Date: Mon, 6 May 2024 14:04:54 -0700
+Cc: Michal Hocko <mhocko@suse.com>, lsf-pc@lists.linux-foundation.org,
+ linux-mm@kvack.org, bpf <bpf@vger.kernel.org>
+Message-Id: <3B8114F2-2284-441C-BC26-5AA95D02B7A0@linux.dev>
+References: <67304905-57d7-47f5-937b-2c4fb95d13ba@suse.cz>
+To: Vlastimil Babka <vbabka@suse.cz>
+X-Migadu-Flow: FLOW_OUT
 
 
+> On May 2, 2024, at 2:26=E2=80=AFAM, Vlastimil Babka <vbabka@suse.cz> wrote=
+:
+>=20
+> =EF=BB=BF
+>=20
+>> On 5/2/24 09:59, Michal Hocko wrote:
+>>> On Tue 30-04-24 17:42:18, Vlastimil Babka wrote:
+>>> Hi,
+>>>=20
+>>> I'd like to propose a session about the next steps for SLUB. This is
+>>> different from the BOF about sheaves that Matthew suggested, which would=
+ be
+>>> not suitable for the whole group due to being not fleshed out enough yet=
+.
+>>> But the session could be scheduled after the BOF so if we do brainstorm
+>>> something promising there, the result could be discussed as part of the f=
+ull
+>>> session.
+>>>=20
+>>> Aside from that my preliminary plan is to discuss:
+>>>=20
+>>> - what was made possible by reducing the slab allocators implementations=
+ to
+>>> a single one, and what else could be done now with a single implementati=
+on
+>>>=20
+>>> - the work-in-progress work (for now in the context of maple tree) on SL=
+UB
+>>> per-cpu array caches and preallocation
+>>>=20
+>>> - what functionality would SLUB need to gain so the extra caching done b=
+y
+>>> bpf allocator on top wouldn't be necessary? (kernel/bpf/memalloc.c)
+>>>=20
+>>> - similar wrt lib/objpool.c (did you even noticed it was added? :)
+>>>=20
+>>> - maybe the mempool functionality could be better integrated as well?
+>>>=20
+>>> - are there more cases where people have invented layers outside mm and t=
+hat
+>>> could be integrated with some effort? IIRC io_uring also has some cachin=
+g on
+>>> top currently...
+>>>=20
+>>> - better/more efficient memcg integration?
+
+This is definitely an interesting topic, especially in a light of recent sla=
+b accounting performance conversations with Linus. Unfortunately I=E2=80=99m=
+ not attending in person this year, but happy to join virtually if it=E2=80=99=
+s possible.
+
+It=E2=80=99s not yet entirely clear to me if the kmem accounting performance=
+ problem exists outside of some micro-benchmarks.
+
+Additionally, Linus proposed to optimize for cases when allocations might be=
+ short-living. In the proposed form it would complicate call sites significa=
+ntly, but maybe we need some sort of transactional api, e.g.:
+
+memcg_kmem_local_accounting_start();
+p1 =3D kmalloc(GFP_ACCOUNT_LOCAL);
+p2 =3D kmalloc(GFP_ACCOUNT_LOCAL);
+=E2=80=A6
+kfree(p1);
+memcg_kmem_local_accounting_commit();
+
+In this case all allocations within the transaction will be saved to some te=
+mporarily buffer and not fully accounted until memcg_kmem_local_accounting_c=
+ommit(). This will make them way faster. But a user should guarantee that th=
+ese allocations won=E2=80=99t be freed from any other context until memcg_km=
+em_local_accounting_commit().
+
+Thanks!=
 
