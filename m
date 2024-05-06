@@ -1,225 +1,287 @@
-Return-Path: <bpf+bounces-28731-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-28732-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 73D098BD78D
-	for <lists+bpf@lfdr.de>; Tue,  7 May 2024 00:11:46 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9A1B08BD806
+	for <lists+bpf@lfdr.de>; Tue,  7 May 2024 01:00:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 685BCB22D32
-	for <lists+bpf@lfdr.de>; Mon,  6 May 2024 22:11:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1932B1F21E4F
+	for <lists+bpf@lfdr.de>; Mon,  6 May 2024 23:00:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2AEA015CD79;
-	Mon,  6 May 2024 22:11:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4202B15B11F;
+	Mon,  6 May 2024 23:00:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="KMZYMBF4"
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="UHIGa0AW"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-178.mta0.migadu.com (out-178.mta0.migadu.com [91.218.175.178])
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E7AC415CD51
-	for <bpf@vger.kernel.org>; Mon,  6 May 2024 22:11:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 41EBE13D2A7
+	for <bpf@vger.kernel.org>; Mon,  6 May 2024 23:00:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715033493; cv=none; b=lKVoEjRzsAcitcj3wem+/vAkdk/ptnpXq9zc6f8LSPF/jrYCeWBYHqc3FsUj4VE8mTq/S4pBqOOW+G+znGNc5I0iFBeDmezho5zH8/Dth3mGGXlk2Jn1TVgS3f7xQWBoJ00pWga6Ex2dCVDF6Rdk99cny5IdGaiC91XJpGUQJ00=
+	t=1715036409; cv=none; b=RWBlvg0ZZRy1R4jxZ7NOp5jrKVSHVYMMXGMwdPtpnHIuVbTJxUPfvziEH2CS2VfuiaIMLPZmHWxxpL2tHlY+2Q/1tbVq4LcADkozMU6lrbA/U4hi4STNu4ErggjBOfyIsNDzB+k0NylJmfxiVbbPHTDlVKFQnfifGOfthvGEhBA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715033493; c=relaxed/simple;
-	bh=/Kkn3iylTA0/DbNE6xbIHvO5QRrH6fjFBRnumk+mQzc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=CUuBlxsdJ5BbtoDp0LYyjsThQOWXoLJ5YCfpwzcpQDfqZmEfa3W+hV6C4VwViAuZ4qXHFXhkPuZ/dx92B1ygSbcAgoDj52E+wwaVK8kLpbZfAKrd379cs6/FKxLXComES3mEAwOrkZmlowOXem9gGnIKFeq+/vG1v7vea9gGFoU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=KMZYMBF4; arc=none smtp.client-ip=91.218.175.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <f171eee4-fa70-4374-b6a7-00d4edc03ae5@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1715033488;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=H4tAkfAI7C3BLA+cjtRULDa+t26iegxH3w/RcYzSWz8=;
-	b=KMZYMBF42BzUP1zS/OfDbRS16NS8PN4n4Ejkzvz3B5InLxteAeim8iUKXWTWxaoMMZZt0p
-	P4qWm68KTzOCXSHHdB/MZzDM+rYzesepvl4LnjLtwFp7tJrpw/TopeEYt/eFefxHSHPNsl
-	jEhoTE/yqa7QNPFv8nzeZihTkxTRjhg=
-Date: Mon, 6 May 2024 15:11:22 -0700
+	s=arc-20240116; t=1715036409; c=relaxed/simple;
+	bh=6dizyx8ZuxDooU+pvdME/CAA4uuDxUfQl34rMuixqtM=;
+	h=Message-ID:Subject:From:To:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=pX3DWUZZXwF97mzpsfOg23e7JAoj/ob4a7B81WKNlByXPniE9EfMFKidhWdFsrJG/XPSsy/phPjbopmsPqzjqh3JHukCtErYsQSArUjP1J7VwtUnHo8rEyPTl1RooBhvZV1hJXcdJX6LRgKYTg6OKbZ+wPUQlI1hy7ydfpMgHYI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=UHIGa0AW; arc=none smtp.client-ip=148.163.156.1
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0356517.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 446MlJZK006356;
+	Mon, 6 May 2024 22:59:41 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : date : in-reply-to : references : content-type :
+ content-transfer-encoding : mime-version; s=pp1;
+ bh=6dizyx8ZuxDooU+pvdME/CAA4uuDxUfQl34rMuixqtM=;
+ b=UHIGa0AW1rZoihiKNWlNDgT16tbBMUERu31Iv5zoyFyIr6MFmSHcGNFd8xEX9kQUNuai
+ /NwOFVWPGh5n1/hdftl9YNClSBBv2sMWo39Q6udQpZ2mWt0bSLcCrYsbpW//ycXak51x
+ 6rG1JVcihSS++TA3+7iCtB3yfOnmuBdoOcS+RZ95xel/n3Wi7tvciKCObnllJZJ6cYcU
+ 678SL8XE7crD4bhKJmXMKMd6i8jaaZ/udfo+cX3yE7GekSuUAbktyjuv29jb5q950RdN
+ iZGEx7ekUoBkeokI7DXE5g8EkoJ5DLgb8XX8uU7XL6ruXHjVmRG46M7Pl3WhcaogXoqA gg== 
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3xy8a5r0eq-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 06 May 2024 22:59:41 +0000
+Received: from m0356517.ppops.net (m0356517.ppops.net [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 446MxeeO021422;
+	Mon, 6 May 2024 22:59:40 GMT
+Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3xy8a5r0cx-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 06 May 2024 22:59:40 +0000
+Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma23.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 446Ks497005549;
+	Mon, 6 May 2024 22:56:33 GMT
+Received: from smtprelay01.fra02v.mail.ibm.com ([9.218.2.227])
+	by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3xx5yh19eu-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 06 May 2024 22:56:33 +0000
+Received: from smtpav03.fra02v.mail.ibm.com (smtpav03.fra02v.mail.ibm.com [10.20.54.102])
+	by smtprelay01.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 446MuR5c57475420
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Mon, 6 May 2024 22:56:29 GMT
+Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 660D320043;
+	Mon,  6 May 2024 22:56:27 +0000 (GMT)
+Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 2C7B520040;
+	Mon,  6 May 2024 22:56:26 +0000 (GMT)
+Received: from [127.0.0.1] (unknown [9.152.108.100])
+	by smtpav03.fra02v.mail.ibm.com (Postfix) with ESMTP;
+	Mon,  6 May 2024 22:56:26 +0000 (GMT)
+Message-ID: <7cdc423edbcdd8155c8a3f0fce7913f707c8c146.camel@linux.ibm.com>
+Subject: Re: [PATCH bpf] riscv, bpf: make some atomic operations fully
+ ordered
+From: Ilya Leoshkevich <iii@linux.ibm.com>
+To: Puranjay Mohan <puranjay@kernel.org>, Alexei Starovoitov
+ <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko
+ <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Eduard
+ Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
+        Yonghong Song
+ <yonghong.song@linux.dev>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP
+ Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
+        Hao Luo
+ <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        =?ISO-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@kernel.org>,
+        Pu Lehui
+ <pulehui@huawei.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>, bpf@vger.kernel.org,
+        "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
+        Tiezhu
+ Yang <yangtiezhu@loongson.cn>,
+        Heiko Carstens <hca@linux.ibm.com>
+Date: Tue, 07 May 2024 00:56:25 +0200
+In-Reply-To: <mb61pcypz0zhe.fsf@kernel.org>
+References: <20240505201633.123115-1-puranjay@kernel.org>
+	 <mb61p34qvq3wf.fsf@kernel.org>
+	 <a5de8fa22c021c2df5f37f285c8d2247f1c6c1b0.camel@linux.ibm.com>
+	 <mb61pcypz0zhe.fsf@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.4 (3.50.4-1.fc39) 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next v3] selftests/bpf: Move test_dev_cgroup to
- prog_tests
-Content-Language: en-GB
-To: Muhammad Usama Anjum <usama.anjum@collabora.com>,
- Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau
- <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>,
- Song Liu <song@kernel.org>, John Fastabend <john.fastabend@gmail.com>,
- KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
- Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
- Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>
-Cc: kernel@collabora.com, linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
- linux-kselftest@vger.kernel.org
-References: <20240401123455.1377896-1-usama.anjum@collabora.com>
- <92e1cce6-5f26-4a49-86b6-81e1e80d1aaa@linux.dev>
- <cfecd6ea-8fa3-477f-bd32-4087aefee2af@collabora.com>
- <0ff5c7d0-d5c5-4b61-ba89-8e7f9f775935@linux.dev>
- <0973bc93-7a8d-451c-9944-d91a77d68755@collabora.com>
- <ff36e8fa-14f4-42a6-8210-cec24a7779a0@linux.dev>
- <b4d7ce70-3320-4333-9589-b5df187409fe@collabora.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Yonghong Song <yonghong.song@linux.dev>
-In-Reply-To: <b4d7ce70-3320-4333-9589-b5df187409fe@collabora.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: 0JADB8xcB6WJsB4NsgfXXg96ep1Zbl7o
+X-Proofpoint-ORIG-GUID: JoCZTrJHKEmMhDwES0m9XcnMq2rWv7dU
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.650,FMLib:17.11.176.26
+ definitions=2024-05-06_17,2024-05-06_02,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 clxscore=1015
+ phishscore=0 adultscore=0 mlxscore=0 mlxlogscore=999 suspectscore=0
+ priorityscore=1501 spamscore=0 bulkscore=0 lowpriorityscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2404010000 definitions=main-2405060167
 
+On Mon, 2024-05-06 at 14:46 +0000, Puranjay Mohan wrote:
+> Ilya Leoshkevich <iii@linux.ibm.com> writes:
+>=20
+> > > Puranjay Mohan <puranjay@kernel.org> writes:
+> > >=20
+> > > > The BPF atomic operations with the BPF_FETCH modifier along
+> > > > with
+> > > > BPF_XCHG and BPF_CMPXCHG are fully ordered but the RISC-V JIT
+> > > > implements
+> > > > all atomic operations except BPF_CMPXCHG with relaxed ordering.
+> > >=20
+> > > I know that the BPF memory model is in the works and we currently
+> > > don't
+> > > have a way to make all the JITs consistent. But as far as atomic
+> > > operations are concerned here are my observations:
+> >=20
+> > [...]
+> >=20
+> > > 4. S390
+> > > =C2=A0=C2=A0 ----
+> > >=20
+> > > Ilya, can you help with this?
+> > >=20
+> > > I see that the kernel is emitting "bcr 14,0" after "laal|laalg"
+> > > but
+> > > the
+> > > JIT is not.
+> >=20
+> > Hi,
+> >=20
+> > Here are two relevant paragraphs from the Principles of Operation:
+> >=20
+> > =C2=A0 Relation between Operand Accesses
+> > =C2=A0 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> > =C2=A0 As observed by other CPUs and by channel pro-
+> > =C2=A0 grams, storage-operand fetches associated with one
+> > =C2=A0 instruction execution appear to precede all storage-
+> > =C2=A0 operand references for conceptually subsequent
+> > =C2=A0 instructions. A storage-operand store specified by
+> > =C2=A0 one instruction appears to precede all storage-oper-
+> > =C2=A0 and stores specified by conceptually subsequent
+> > =C2=A0 instructions, but it does not necessarily precede stor-
+> > =C2=A0 age-operand fetches specified by conceptually sub-
+> > =C2=A0 sequent instructions. However, a storage-operand
+> > =C2=A0 store appears to precede a conceptually subsequent
+> > =C2=A0 storage-operand fetch from the same main-storage
+> > =C2=A0 location.
+> >=20
+> > In short, all memory accesses are fully ordered except for
+> > stores followed by fetches from different addresses.
+>=20
+> Thanks for sharing the details.
+>=20
+> So, this is TSO like x86
+>=20
+> > =C2=A0 LAALG R1,R3,D2(B2)
+> > =C2=A0 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> > =C2=A0 [...]
+> > =C2=A0 All accesses to the second-operand location appear
+> > =C2=A0 to be a block-concurrent interlocked-update refer-
+> > =C2=A0 ence as observed by other CPUs and the I/O subsys-
+> > =C2=A0 tem. A specific-operand-serialization operation is
+> > =C2=A0 performed.
+> >=20
+> > Specific-operand-serialization is weaker than full serialization,
+> > which means that, even though s390x=C2=A0provides very strong ordering
+> > guarantees, strictly speaking, as architected, s390x atomics are
+> > not
+> > fully ordered.
+> >=20
+> > I have a hard time thinking of a situation where a store-fetch
+> > reordering=C2=A0for different addresses could matter, but to be on the
+> > safe
+> > side we should probably just do what the kernel does and add a
+> > "bcr 14,0". I will send a patch.
+>=20
+> Thanks,
+>=20
+> IMO, bcr 14,0 would be needed because, s390x has both
+>=20
+> =C2=A0 int __atomic_add(int i, int *v);
+>=20
+> and
+>=20
+> =C2=A0 int __atomic_add_barrier(int i, int *v);
+>=20
+> both of these do the fetch operation but the second one adds a
+> barrier
+> (bcr 14, 0)
+>=20
+> JIT was using the first one (without barrier) to implement the
+> arch_atomic_fetch_add
+>=20
+> So, assuming that without this barrier, store->fetch reordering would
+> be
+> allowed as you said.
+>=20
+> It would mean:
+> This litmus test would fail for the s390 JIT:
+>=20
+> =C2=A0 C SB+atomic_fetch
+> =C2=A0=20
+> =C2=A0 (*
+> =C2=A0=C2=A0 * Result: Never
+> =C2=A0=C2=A0 *
+> =C2=A0=C2=A0 * This litmus test demonstrates that LKMM expects total orde=
+ring
+> from
+> =C2=A0=C2=A0 * atomic_*() operations with fetch or return.
+> =C2=A0=C2=A0 *)
+> =C2=A0=20
+> =C2=A0 {
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 atomic_t dummy1 =
+=3D ATOMIC_INIT(1);
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 atomic_t dummy2 =
+=3D ATOMIC_INIT(1);
+> =C2=A0 }
+> =C2=A0=20
+> =C2=A0 P0(int *x, int *y, atomic_t *dummy1)
+> =C2=A0 {
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 WRITE_ONCE(*x, 1);
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 rd =3D atomic_fetc=
+h_add(1, dummy1);=C2=A0=C2=A0=C2=A0=C2=A0 /* assuming this is
+> implemented without barrier */=20
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 r0 =3D READ_ONCE(*=
+y);
+> =C2=A0 }
+> =C2=A0=20
+> =C2=A0 P1(int *x, int *y, atomic_t *dummy2)
+> =C2=A0 {
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 WRITE_ONCE(*y, 1);
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 rd =3D atomic_fetc=
+h_add(1, dummy2);=C2=A0=C2=A0=C2=A0 /* assuming this is
+> implemented without barrier */
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 r1 =3D READ_ONCE(*=
+x);
+> =C2=A0 }
+> =C2=A0=20
+> =C2=A0 exists (0:r0=3D0 /\ 1:r1=3D0)
+>=20
+>=20
+> P.S. - It would be nice to have a tool that can convert litmus tests
+> into BPF assembly programs and then we can test them on hardware
+> after JITing.
+>=20
+> Thanks,
+> Puranjay
 
-On 5/3/24 6:55 AM, Muhammad Usama Anjum wrote:
-> On 4/5/24 1:06 AM, Yonghong Song wrote:
->> On 4/3/24 5:03 AM, Muhammad Usama Anjum wrote:
->>> On 4/3/24 7:36 AM, Yonghong Song wrote:
->>>> On 4/2/24 8:16 AM, Muhammad Usama Anjum wrote:
->>>>> Yonghong Song,
->>>>>
->>>>> Thank you so much for replying. I was missing how to run pipeline
->>>>> manually.
->>>>> Thanks a ton.
->>>>>
->>>>> On 4/1/24 11:53 PM, Yonghong Song wrote:
->>>>>> On 4/1/24 5:34 AM, Muhammad Usama Anjum wrote:
->>>>>>> Move test_dev_cgroup.c to prog_tests/dev_cgroup.c to be able to run it
->>>>>>> with test_progs. Replace dev_cgroup.bpf.o with skel header file,
->>>>>>> dev_cgroup.skel.h and load program from it accourdingly.
->>>>>>>
->>>>>>>       ./test_progs -t dev_cgroup
->>>>>>>       mknod: /tmp/test_dev_cgroup_null: Operation not permitted
->>>>>>>       64+0 records in
->>>>>>>       64+0 records out
->>>>>>>       32768 bytes (33 kB, 32 KiB) copied, 0.000856684 s, 38.2 MB/s
->>>>>>>       dd: failed to open '/dev/full': Operation not permitted
->>>>>>>       dd: failed to open '/dev/random': Operation not permitted
->>>>>>>       #72     test_dev_cgroup:OK
->>>>>>>       Summary: 1/0 PASSED, 0 SKIPPED, 0 FAILED
->>>>>>> Signed-off-by: Muhammad Usama Anjum <usama.anjum@collabora.com>
->>>>>>> ---
->>>>>>> Changes since v2:
->>>>>>> - Replace test_dev_cgroup with serial_test_dev_cgroup as there is
->>>>>>>       probability that the test is racing against another cgroup test
->>>>>>> - Minor changes to the commit message above
->>>>>>>
->>>>>>> I've tested the patch with vmtest.sh on bpf-next/for-next and linux
->>>>>>> next. It is passing on both. Not sure why it was failed on BPFCI.
->>>>>>> Test run with vmtest.h:
->>>>>>> sudo LDLIBS=-static PKG_CONFIG='pkg-config --static' ./vmtest.sh
->>>>>>> ./test_progs -t dev_cgroup
->>>>>>> ./test_progs -t dev_cgroup
->>>>>>> mknod: /tmp/test_dev_cgroup_null: Operation not permitted
->>>>>>> 64+0 records in
->>>>>>> 64+0 records out
->>>>>>> 32768 bytes (33 kB, 32 KiB) copied, 0.000403432 s, 81.2 MB/s
->>>>>>> dd: failed to open '/dev/full': Operation not permitted
->>>>>>> dd: failed to open '/dev/random': Operation not permitted
->>>>>>>      #69      dev_cgroup:OK
->>>>>>> Summary: 1/0 PASSED, 0 SKIPPED, 0 FAILED
->>>>>> The CI failure:
->>>>>>
->>>>>>
->>>>>> Error: #72 dev_cgroup
->>>>>> serial_test_dev_cgroup:PASS:skel_open_and_load 0 nsec
->>>>>> serial_test_dev_cgroup:PASS:cgroup_setup_and_join 0 nsec
->>>>>> serial_test_dev_cgroup:PASS:bpf_attach 0 nsec
->>>>>> serial_test_dev_cgroup:PASS:bpf_query 0 nsec
->>>>>> serial_test_dev_cgroup:PASS:bpf_query 0 nsec
->>>>>> serial_test_dev_cgroup:PASS:rm 0 nsec
->>>>>> serial_test_dev_cgroup:PASS:mknod 0 nsec
->>>>>> serial_test_dev_cgroup:PASS:rm 0 nsec
->>>>>> serial_test_dev_cgroup:PASS:rm 0 nsec
->>>>>> serial_test_dev_cgroup:FAIL:mknod unexpected mknod: actual 256 !=
->>>>>> expected 0
->>>>>> serial_test_dev_cgroup:PASS:rm 0 nsec
->>>>>> serial_test_dev_cgroup:PASS:dd 0 nsec
->>>>>> serial_test_dev_cgroup:PASS:dd 0 nsec
->>>>>> serial_test_dev_cgroup:PASS:dd 0 nsec
->>>>>>
->>>>>> (cgroup_helpers.c:353: errno: Device or resource busy) umount cgroup2
->>>>>>
->>>>>> The error code 256 means mknod execution has some issues. Maybe you
->>>>>> need to
->>>>>> find specific errno to find out what is going on. I think you can do ci
->>>>>> on-demanding test to debug.
->>>>> errno is 2 --> No such file or directory
->>>>>
->>>>> Locally I'm unable to reproduce it until I don't remove
->>>>> rm -f /tmp/test_dev_cgroup_zero such that the /tmp/test_dev_cgroup_zero
->>>>> node is present before test execution. The error code is 256 with errno 2.
->>>>> I'm debugging by placing system("ls /tmp 1>&2"); to find out which files
->>>>> are already present in /tmp. But ls's output doesn't appear on the CI
->>>>> logs.
->>>> errno 2 means ENOENT.
->>>>   From mknod man page (https://linux.die.net/man/2/mknod), it means
->>>>     A directory component in/pathname/  does not exist or is a dangling
->>>> symbolic link.
->>>>
->>>> It means /tmp does not exist or a dangling symbolic link.
->>>> It is indeed very strange. To make the test robust, maybe creating a temp
->>>> directory with mkdtemp and use it as the path? The temp directory
->>>> creation should be done before bpf prog attach.
->>> I've tried following but still no luck:
->>> * /tmp is already present. Then I thought maybe the desired file is already
->>> present. I've verified that there isn't file of same name is present inside
->>> /tmp.
->>> * I thought maybe mknod isn't present in the system. But mknod --help
->>> succeeds.
->>> * I switched from /tmp to current directory to create the mknod. But the
->>> result is same error.
->>> * I've tried to use the same kernel config as the BPF CI is using. I'm not
->>> able to reproduce it.
->>>
->>> Not sure which edge case or what's going on. The problem is appearing
->>> because of some limitation in the rootfs.
->> Maybe you could collect /tmp mount options to see whether anything is
->> suspicious? In my vm, I have
->>    tmpfs on /tmp type tmpfs (rw,nosuid,nodev,size=3501540k,nr_inodes=1048576)
->> and the test works fine.
->>
->>
-> My test system:
-> tmpfs /tmp tmpfs rw,relatime 0 0
->
-> On the CI, /tmp is present. But it isn't tmpfs. Following shows the logs
-> from /proc/mounts
->
-> On CI:
->    /dev/root / 9p
-> rw,relatime,cache=f,access=client,msize=512000,trans=virtio 0 0
->    devtmpfs /dev devtmpfs
-> rw,relatime,size=1998612k,nr_inodes=499653,mode=755 0 0
->    tmpfs /dev/shm tmpfs rw,nosuid,nodev,relatime 0 0
->    proc /proc proc rw,nosuid,nodev,noexec,relatime 0 0
->    tmpfs /run tmpfs rw,nosuid,nodev,relatime 0 0
->    tmpfs /run/netns tmpfs rw,nosuid,nodev,relatime 0 0
->    sys /sys sysfs rw,nosuid,nodev,noexec,relatime 0 0
->    debugfs /sys/kernel/debug debugfs rw,relatime 0 0
->    tracefs /sys/kernel/debug/tracing tracefs rw,relatime 0 0
->    cgroup2 /sys/fs/cgroup cgroup2 rw,nosuid,nodev,noexec,relatime 0 0
->    tmpfs /sys/fs/cgroup tmpfs rw,relatime 0 0
+Thanks for providing an example! So unrelated memory accesses may rely
+on atomics being barriers.
 
-somthing wrong here. /sys/fs/cgroup cannot be both cgroup2
-and tmpfs types.
-
->    net_cls /sys/fs/cgroup/net_cls cgroup rw,relatime,net_cls 0 0
->    tmpfs /sys/fs/cgroup tmpfs rw,relatime 0 0
->    net_cls /sys/fs/cgroup/net_cls cgroup rw,relatime,net_cls 0 0
->    tmpfs /sys/fs/cgroup tmpfs rw,relatime 0 0
->    net_cls /sys/fs/cgroup/net_cls cgroup rw,relatime,net_cls 0 0
->    bpffs /sys/fs/bpf bpf rw,relatime 0 0
->    bpf /sys/fs/bpf bpf rw,relatime 0 0
->    tmpfs /mnt tmpfs rw,nosuid,nodev,relatime 0 0
->    vmtest-shared /mnt/vmtest 9p
-> rw,relatime,cache=f,access=client,msize=512000,trans=virtio 0 0
->    none /mnt cgroup2 rw,relatime 0 0
->
+I will adjust my commit message, since now I claim that we are doing
+the change "just in case", but apparently, if the hardware chooses to
+exercise all the freedoms allowed by the architecture, there can occur
+real problems.
 
