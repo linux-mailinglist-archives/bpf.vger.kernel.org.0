@@ -1,207 +1,164 @@
-Return-Path: <bpf+bounces-28681-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-28682-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9DAD68BD0A1
-	for <lists+bpf@lfdr.de>; Mon,  6 May 2024 16:47:04 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 177F68BD0B6
+	for <lists+bpf@lfdr.de>; Mon,  6 May 2024 16:50:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 29E0B1F23A83
-	for <lists+bpf@lfdr.de>; Mon,  6 May 2024 14:47:04 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AB8691F220E0
+	for <lists+bpf@lfdr.de>; Mon,  6 May 2024 14:50:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD306153584;
-	Mon,  6 May 2024 14:46:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 179CF155398;
+	Mon,  6 May 2024 14:49:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hPXlmeP4"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="i5z66Dbe"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 57B7B15351B
-	for <bpf@vger.kernel.org>; Mon,  6 May 2024 14:46:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3FFA6153583
+	for <bpf@vger.kernel.org>; Mon,  6 May 2024 14:49:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715006817; cv=none; b=hisNCQcMKVafw7BtlHdtGeH+Twf9O87kedxTsUNpXbhR1F4Yfp+jsFv7b6BxAIowZnBVRt4mwPyy+O1JN3y6JfQ+PYAMnu5O+OumcGUDk9GK+nNlYrHUB/+WPbGwhKr/ojxy2IMoHihmrG62gljQa9oaDSQ8rjTN69VkNv3tuIQ=
+	t=1715006990; cv=none; b=gj4toq40X19ezwEPwURD1q6hFbx7hRbP63srPetZPxB2VRSoox1brUFD3BZUzs63FhVpj79FBkeBiVslixGHrhJwhBPMQTo20aNC1NFFhCm3+KFNl9dGdE2Ey2DtN1jywtkkxxEp5w16zh33sX8fP9++XcMxsXbY2YAET5BmuxE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715006817; c=relaxed/simple;
-	bh=QtoHV+JH74/adDpTtAlHD+OlOZohxlWng/ziX5O8GJk=;
-	h=From:To:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=hx9cNwhMisM/wm8h7FZ6TQ1j/3YKu41f1uRZp33wvTgvVkDrwyocllhvU9hnto1DQjhDpqqvl1CfkcJsIcOoo//fxdsj57UG0MrgvFW5S6FT3yCrzyt05AYFP8/ul3P7zVKxCKHLt4a7z5/JANIus3ch3Ff07TB+uhpXR6aXnWA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hPXlmeP4; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 89C06C116B1;
-	Mon,  6 May 2024 14:46:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1715006816;
-	bh=QtoHV+JH74/adDpTtAlHD+OlOZohxlWng/ziX5O8GJk=;
-	h=From:To:Subject:In-Reply-To:References:Date:From;
-	b=hPXlmeP4dDxNTZicwx/pRqnx12XPwBc8RWW3HEZIwZyaWnXdpHu+QDSSuQ0s1VgVP
-	 GQ6fQpgDSfmWFrLwfW96k1rXdOYOK92jiUbg0ulen5Ue2KMSBoMVj7dxtRCJgFchdY
-	 gci58xM6N8Uv75rIvEOrQz4B3eMwEXycTiuoPFz/UH1EkUllINiNGx5DZ2ijg3f9dJ
-	 kbO1nf69p38djm0SqvBGRnwV/FMH/uC5Mq8oKC8rnS+t/OyZcUz4QO5SbI3Mg2sCwm
-	 NwfUTSpIZl790aHfjWyKV53W77uzTJM0OzVohHZrPIUICpzHTZyoLZLULKbcA2+JhP
-	 946IDfSfT40+A==
-From: Puranjay Mohan <puranjay@kernel.org>
-To: Ilya Leoshkevich <iii@linux.ibm.com>, Alexei Starovoitov
- <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko
- <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, "Eduard
- Zingerman" <eddyz87@gmail.com>, Song Liu <song@kernel.org>, Yonghong Song
- <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, "KP
- Singh" <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo
- <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, =?utf-8?B?QmrDtnJuIFQ=?=
- =?utf-8?B?w7ZwZWw=?=
- <bjorn@kernel.org>, Pu Lehui <pulehui@huawei.com>, "Paul E. McKenney"
- <paulmck@kernel.org>, bpf@vger.kernel.org, "Naveen N. Rao"
- <naveen.n.rao@linux.ibm.com>, "Tiezhu
- Yang" <yangtiezhu@loongson.cn>, Heiko Carstens <hca@linux.ibm.com>
-Subject: Re: [PATCH bpf] riscv, bpf: make some atomic operations fully ordered
-In-Reply-To: <a5de8fa22c021c2df5f37f285c8d2247f1c6c1b0.camel@linux.ibm.com>
-References: <20240505201633.123115-1-puranjay@kernel.org>
- <mb61p34qvq3wf.fsf@kernel.org>
- <a5de8fa22c021c2df5f37f285c8d2247f1c6c1b0.camel@linux.ibm.com>
-Date: Mon, 06 May 2024 14:46:53 +0000
-Message-ID: <mb61pcypz0zhe.fsf@kernel.org>
+	s=arc-20240116; t=1715006990; c=relaxed/simple;
+	bh=wFEAgz9DoEMtNEfhF2whHUgl+SQ1hbYNvw0LVwBJMHI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=jy+Zl+7GiB+5s/Jsx9V98ORoB535uG6XBM860WW69+ohbN+1KWZu17IZtjgTTiA4K9dgBbj4P+Aei4jXNCxyDw1oiswDgZnoPdHkneKib/LdOE+izimieqYC3S0783G3Yw9rhS6zMKYnUdY32Z72sC6mPG8clrGeMzDBifr4TTc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=i5z66Dbe; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1715006988;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ouwyK0typuZ1ow/pNC/Gp96v2+HGSiLFxZMM2D2vdpo=;
+	b=i5z66DbeM7ExaCLJMcGHwWdaMlSUede8CvlwCTlHRwHn7ui7SFUIA36XxWTMLM3tgM30bJ
+	nfVCnLXzwXyh95OOCCikMDvyH41+pfv2hXlwKs4IaulMa5PL5h6S59PQzjZdzuwFBSEecu
+	aHPCdMAlFn2Jub6ysVsGMm2aB5qSdow=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-219-WAecL6woNUie1QQfQDGzqA-1; Mon, 06 May 2024 10:49:46 -0400
+X-MC-Unique: WAecL6woNUie1QQfQDGzqA-1
+Received: by mail-wm1-f71.google.com with SMTP id 5b1f17b1804b1-41e9feb655eso4831535e9.1
+        for <bpf@vger.kernel.org>; Mon, 06 May 2024 07:49:44 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1715006984; x=1715611784;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ouwyK0typuZ1ow/pNC/Gp96v2+HGSiLFxZMM2D2vdpo=;
+        b=A08tlAgUEZSUKR/zfGJb5jkA19P3VGXu3MDRBARQ75XqFw6wTpIcDISRCfgQ0uV1Nf
+         ukgelJwWBcbrvRnHoC7mOBNp1WTkewbZ5wYTjy/rc0IJwrQV5vHOf0jIWIRfBoin2fSa
+         sxQMIPiAJ44MXJPyesHNYwIINcHk2LCcdwX4vwEG+qiWxKk6LGK/W2R3yKTqiACFVpGR
+         6HHNzMIyMWfL0n1LoOfJ5A501BrX8qqQDgCtBdUX7Hz0dN5xdP3WU9FH07+DIWzw9ij8
+         nW0LuYxwWhc6UlIzMsncZAPgplyeix2asN6koUwwY1/I27tiNfJNRsVMLTf9zVp6hKG5
+         oWqg==
+X-Forwarded-Encrypted: i=1; AJvYcCXM75EtqIbbZIw5vP+dPEeK/Tw8TOu8ly7dEIYWs7qC2PbY0u/93i2wTnrlek4pZl3OY5oEiI7/r06L+fVm92Jv8yom
+X-Gm-Message-State: AOJu0Yx5NT7jl8Ji5j7ebFCbywd4FXUlUm7dQkgvS+hA5tMbnsqgmb9/
+	fhHRDMbTbcz6SBtfsEBjSH4uF+w1lRkmCZjWJc+qoXkPE7Md7YYZLAxFKx8W0+Ck1BJkchrr2In
+	Wtjp2uT48qqNX953f5mrU5WKbCARNuVSDj9bmxhN3NhhPzhV64g==
+X-Received: by 2002:a05:600c:4743:b0:41b:ca55:2e2c with SMTP id w3-20020a05600c474300b0041bca552e2cmr8502329wmo.17.1715006983659;
+        Mon, 06 May 2024 07:49:43 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFMEmpLMRChpFtoTgMDV3aoqDMFyufxEAAMjuwb6gH8jVd4UbrgetEx8t9mH1iRsKhjutk0Nw==
+X-Received: by 2002:a05:600c:4743:b0:41b:ca55:2e2c with SMTP id w3-20020a05600c474300b0041bca552e2cmr8502298wmo.17.1715006983060;
+        Mon, 06 May 2024 07:49:43 -0700 (PDT)
+Received: from localhost (net-93-151-202-124.cust.dsl.teletu.it. [93.151.202.124])
+        by smtp.gmail.com with ESMTPSA id cw1-20020a056000090100b0034dec80428asm10817755wrb.67.2024.05.06.07.49.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 06 May 2024 07:49:42 -0700 (PDT)
+Date: Mon, 6 May 2024 16:49:40 +0200
+From: Lorenzo Bianconi <lorenzo.bianconi@redhat.com>
+To: syzbot <syzbot+f534bd500d914e34b59e@syzkaller.appspotmail.com>
+Cc: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
+	daniel@iogearbox.net, davem@davemloft.net, edumazet@google.com,
+	hawk@kernel.org, john.fastabend@gmail.com, kuba@kernel.org,
+	linux-kernel@vger.kernel.org, lorenzo@kernel.org,
+	netdev@vger.kernel.org, pabeni@redhat.com,
+	syzkaller-bugs@googlegroups.com, toke@redhat.com
+Subject: Re: [syzbot] [bpf?] [net?] WARNING in __xdp_reg_mem_model
+Message-ID: <ZjjuBCk33QtxLrAm@lore-desk>
+References: <0000000000004cc3030616474b1e@google.com>
+ <000000000000ae301f0617a4a52c@google.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="vAieqiNxGUQydHCv"
+Content-Disposition: inline
+In-Reply-To: <000000000000ae301f0617a4a52c@google.com>
+
+
+--vAieqiNxGUQydHCv
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-Ilya Leoshkevich <iii@linux.ibm.com> writes:
+> syzbot has bisected this issue to:
+>=20
+> commit 2b0cfa6e49566c8fa6759734cf821aa6e8271a9e
+> Author: Lorenzo Bianconi <lorenzo@kernel.org>
+> Date:   Mon Feb 12 09:50:54 2024 +0000
+>=20
+>     net: add generic percpu page_pool allocator
+>=20
+> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=3D151860d498=
+0000
+> start commit:   f99c5f563c17 Merge tag 'nf-24-03-21' of git://git.kernel.=
+o..
+> git tree:       net
+> final oops:     https://syzkaller.appspot.com/x/report.txt?x=3D171860d498=
+0000
+> console output: https://syzkaller.appspot.com/x/log.txt?x=3D131860d4980000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=3D6fb1be60a193d=
+440
+> dashboard link: https://syzkaller.appspot.com/bug?extid=3Df534bd500d914e3=
+4b59e
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=3D17ac600b180=
+000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=3D1144b797180000
+>=20
+> Reported-by: syzbot+f534bd500d914e34b59e@syzkaller.appspotmail.com
+> Fixes: 2b0cfa6e4956 ("net: add generic percpu page_pool allocator")
+>=20
+> For information about bisection process see: https://goo.gl/tpsmEJ#bisect=
+ion
+>=20
 
->> Puranjay Mohan <puranjay@kernel.org> writes:
->>=20
->> > The BPF atomic operations with the BPF_FETCH modifier along with
->> > BPF_XCHG and BPF_CMPXCHG are fully ordered but the RISC-V JIT
->> > implements
->> > all atomic operations except BPF_CMPXCHG with relaxed ordering.
->>=20
->> I know that the BPF memory model is in the works and we currently
->> don't
->> have a way to make all the JITs consistent. But as far as atomic
->> operations are concerned here are my observations:
->
-> [...]
->
->> 4. S390
->> =C2=A0=C2=A0 ----
->>=20
->> Ilya, can you help with this?
->>=20
->> I see that the kernel is emitting "bcr 14,0" after "laal|laalg" but
->> the
->> JIT is not.
->
-> Hi,
->
-> Here are two relevant paragraphs from the Principles of Operation:
->
->   Relation between Operand Accesses
->   =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
->   As observed by other CPUs and by channel pro-
->   grams, storage-operand fetches associated with one
->   instruction execution appear to precede all storage-
->   operand references for conceptually subsequent
->   instructions. A storage-operand store specified by
->   one instruction appears to precede all storage-oper-
->   and stores specified by conceptually subsequent
->   instructions, but it does not necessarily precede stor-
->   age-operand fetches specified by conceptually sub-
->   sequent instructions. However, a storage-operand
->   store appears to precede a conceptually subsequent
->   storage-operand fetch from the same main-storage
->   location.
->
-> In short, all memory accesses are fully ordered except for
-> stores followed by fetches from different addresses.
+Looking at the code, the root cause of the issue is the WARN(1) in
+__xdp_reg_mem_model routine. __mem_id_init_hash_table() can fail just if rht
+allocation fails. Do we really need this WARN(1)? It has been introduced in=
+ the
+commit below:
 
-Thanks for sharing the details.
+commit 8d5d88527587516bd58ff0f3810f07c38e65e2be
+Author: Jesper Dangaard Brouer <brouer@redhat.com>
+Date:   Tue Apr 17 16:46:12 2018 +0200
 
-So, this is TSO like x86
+    xdp: rhashtable with allocator ID to pointer mapping
 
->   LAALG R1,R3,D2(B2)
->   =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
->   [...]
->   All accesses to the second-operand location appear
->   to be a block-concurrent interlocked-update refer-
->   ence as observed by other CPUs and the I/O subsys-
->   tem. A specific-operand-serialization operation is
->   performed.
->
-> Specific-operand-serialization is weaker than full serialization,
-> which means that, even though s390x=C2=A0provides very strong ordering
-> guarantees, strictly speaking, as architected, s390x atomics are not
-> fully ordered.
->
-> I have a hard time thinking of a situation where a store-fetch
-> reordering=C2=A0for different addresses could matter, but to be on the sa=
-fe
-> side we should probably just do what the kernel does and add a
-> "bcr 14,0". I will send a patch.
+Regards,
+Lorenzo
 
-Thanks,
+--vAieqiNxGUQydHCv
+Content-Type: application/pgp-signature; name="signature.asc"
 
-IMO, bcr 14,0 would be needed because, s390x has both
+-----BEGIN PGP SIGNATURE-----
 
-  int __atomic_add(int i, int *v);
+iHUEABYKAB0WIQTquNwa3Txd3rGGn7Y6cBh0uS2trAUCZjjuBAAKCRA6cBh0uS2t
+rHE8AP9aiQe9PRxjbu8EA3OAzA4evmD4DeMhokGWsZjanPp69QD/Qr+N4crIXk/4
+h4vZ5Fo/cpxn4NjaaMLCYwTl/2NQ5Qw=
+=QBb4
+-----END PGP SIGNATURE-----
 
-and
+--vAieqiNxGUQydHCv--
 
-  int __atomic_add_barrier(int i, int *v);
-
-both of these do the fetch operation but the second one adds a barrier
-(bcr 14, 0)
-
-JIT was using the first one (without barrier) to implement the arch_atomic_=
-fetch_add
-
-So, assuming that without this barrier, store->fetch reordering would be
-allowed as you said.
-
-It would mean:
-This litmus test would fail for the s390 JIT:
-
-  C SB+atomic_fetch
-=20=20
-  (*
-   * Result: Never
-   *
-   * This litmus test demonstrates that LKMM expects total ordering from
-   * atomic_*() operations with fetch or return.
-   *)
-=20=20
-  {
-          atomic_t dummy1 =3D ATOMIC_INIT(1);
-          atomic_t dummy2 =3D ATOMIC_INIT(1);
-  }
-=20=20
-  P0(int *x, int *y, atomic_t *dummy1)
-  {
-          WRITE_ONCE(*x, 1);
-          rd =3D atomic_fetch_add(1, dummy1);     /* assuming this is imple=
-mented without barrier */=20
-          r0 =3D READ_ONCE(*y);
-  }
-=20=20
-  P1(int *x, int *y, atomic_t *dummy2)
-  {
-          WRITE_ONCE(*y, 1);
-          rd =3D atomic_fetch_add(1, dummy2);    /* assuming this is implem=
-ented without barrier */
-          r1 =3D READ_ONCE(*x);
-  }
-=20=20
-  exists (0:r0=3D0 /\ 1:r1=3D0)
-
-
-P.S. - It would be nice to have a tool that can convert litmus tests
-into BPF assembly programs and then we can test them on hardware after JITi=
-ng.
-
-Thanks,
-Puranjay
 
