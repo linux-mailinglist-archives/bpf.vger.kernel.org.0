@@ -1,191 +1,242 @@
-Return-Path: <bpf+bounces-28701-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-28700-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2AB7C8BD4E8
-	for <lists+bpf@lfdr.de>; Mon,  6 May 2024 20:52:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 402A78BD4E6
+	for <lists+bpf@lfdr.de>; Mon,  6 May 2024 20:51:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4DDAA1C2255F
-	for <lists+bpf@lfdr.de>; Mon,  6 May 2024 18:52:06 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 636A01C2262A
+	for <lists+bpf@lfdr.de>; Mon,  6 May 2024 18:51:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B8FF8158DB8;
-	Mon,  6 May 2024 18:51:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C1609158DA7;
+	Mon,  6 May 2024 18:51:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TT5ujKr3"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YfHVYz/1"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f48.google.com (mail-pj1-f48.google.com [209.85.216.48])
+Received: from mail-oi1-f177.google.com (mail-oi1-f177.google.com [209.85.167.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D1C3F1586DB;
-	Mon,  6 May 2024 18:51:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D2F6615886A;
+	Mon,  6 May 2024 18:51:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715021509; cv=none; b=hbNRk9Gbgv6LedBViU7JDKozB7Fn8SRdSuOkdEjlEpPKYRs2hAvQKYJjJSZBU4iNNcfPRLa+bcJvfAel/yE3z1hLb/FEQ6ZGqfRq1wFGnibjbr+vW+S7EZfhJlnbLrK2EgmYVZNm6dtyxmqMwOHGUtSXVlTuW+QmrCXBuUlzwHc=
+	t=1715021498; cv=none; b=aRm/iU0mghxYuHtG78Wyn8cVyDPKBAH00JX0yjRN7suYwbeXHMA/LZD/CYHopwKNlNDLYoXdi5QHzuU5uBQCYJh6hD7xfQaEw3uxOgIC5ClgdLb5ZKG3xVLfckkqD5C1iGuYn5PeyvgwBQsNEs0l+2dWX2lORPGYOFeDn1sE2tA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715021509; c=relaxed/simple;
-	bh=1KQ4Pn+yoB6PBBPN4ya2Y5yJYGn51e6uVPcXD8xSJo4=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=s8HmbZCU6NVcu0cCO5EI1s7HZ7Hns5qUe932VgAEfOsU7PdOMg1X/oUGQwgYsL0gfy0HDbU9O/sYQ30zbFzUy2HMEolXJRPiv6PFZlPxoPaccnVcuAQIPW5tH1UHl0+0edMfiXd84JqdrrtzyPXz/MG2vKKKPWGnErzJ5Y5wnFE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=TT5ujKr3; arc=none smtp.client-ip=209.85.216.48
+	s=arc-20240116; t=1715021498; c=relaxed/simple;
+	bh=8R4ZPMsVAW+UX7HqHWTfTC7cyZevPvFz9AU2FQlodBI=;
+	h=Date:From:To:Cc:Message-ID:In-Reply-To:References:Subject:
+	 Mime-Version:Content-Type; b=SL2wFRH2XTWQVnwjJQQBWAeACCfw6FO0lo9YYn3AVAhXM0NGhvvBK1S/XxAJB32p8CglD/uf3mDqqjy0FQT+ZnYvGpR+hfmFHmkdXSQO06uDxajze27f7XKq37qhFClt1q/ao7mpqW0/4QqNSD5fEnqbzgC2AbVM1xpB8Xnmgmk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=YfHVYz/1; arc=none smtp.client-ip=209.85.167.177
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f48.google.com with SMTP id 98e67ed59e1d1-2ab1ddfded1so2052499a91.1;
-        Mon, 06 May 2024 11:51:47 -0700 (PDT)
+Received: by mail-oi1-f177.google.com with SMTP id 5614622812f47-3c9691e1e78so972929b6e.3;
+        Mon, 06 May 2024 11:51:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1715021507; x=1715626307; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1715021496; x=1715626296; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=NJYCFU1qR3U70oabFLkUOdKlCf4CgRflsuk19nnPjCE=;
-        b=TT5ujKr3Cr0Nc8BmRTvw25nPW4I++FBh4Ebd9gOVVM7iNyi3iS6XTO+9WmbLJwGXkZ
-         RsdCDq/kbIebUFOVh6Xv0zxZTiD3aiuta6+u8/LStpRdoIgStnPaFaSbzYO8UM/lQntk
-         O/p2Vp/OKJUrqlxLNAU/nhJL96mat1fXaeR8eunEuknFY5slUZsO6Edq2dgK8zNYGFBx
-         0/6e1XiOw/fDULoiKhg6kJkdNGsxLL07Ld2HFjGr0fXK/yAEvZDXke9yIcCSjwRT7DAH
-         UORxMrsZlxwqISPL7suSAXAUvUjDmS/ie9n7f0FRs3clHcprzXczoWHfTC+FRNzIUuFJ
-         2zsQ==
+        bh=cV6bIWj1XAD1mDEysW3PzxfMR0Aa4OzBGgrUMASIDvU=;
+        b=YfHVYz/1PhBHOBu35FkuMhydcdJJGEA30s4oObg1HoTeXMqATCLWww9Hmfukg5Pyy0
+         ZrSw46zFFevA0M2GBEZ8RQ/YH/mpQqfx1uR/cSJLuG51VLsPNQKzgx38rn4DBZCBs9nl
+         MJzHKbdFGVS7oASgJeBCylufFlKpqjLr+LYAjtlIDYZaOjOaSvF2rI4OKcNv/PRxvSq/
+         My36degVJT9wCFOuY50LvruhPB46iDfMQInI6LnLhTKhruc302vxajndUtNcuNvcsLr4
+         pFX/vk1F0sr3cnjutyCwiYTycJlaOA0brY1wHApGNxYqsFIojx2RLK7rTOamvbVGKlXE
+         aF6Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1715021507; x=1715626307;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=NJYCFU1qR3U70oabFLkUOdKlCf4CgRflsuk19nnPjCE=;
-        b=EYRo2UXAnw3xpmoyZQ/y9A2RCdLij3LQ/HAdqMo3xvlXZBPhdf//TlUIV8dy+idM2+
-         qJTzacTpWeBzulHugoqBXkiS9eWYiIGZ/AajqI7+DEk9yl0YYlsndtsGG3/CBc3Lmntb
-         Evv8AozE8UEccqBTDHzmswk5sk2ceqlmijMGSn/2xUasNRms2Wdhaee2SSX4yE5ncnG1
-         SlWjvuoISAnun93YRgHZ5dqDWKuhV4YGumZpecyZXUywE5YGx6qctdkPucyFbRBugQyS
-         RH/s4TkPW+0CKcD6viZ4CQ4ti1dxztukSQW8eZmolCY9koSPnDchkFxhuJv2MpVm7e2J
-         Eobw==
-X-Forwarded-Encrypted: i=1; AJvYcCUJDDDKulwvvIkxQW+v+4r8LA5c+s2gcjsVfOUk/8bvyzfk1YIqTs+ybEap1L0xy520jzT+XINKp+HiJ6HJ5cd0YmuCD5maY+zpC9pp0exVwnc1hABDB7/HrI5cuewZYG2dWpx1uY/k886oaOnK6RfAlIPaI9AFQrPdmMP9VqEfcdTwTuyWGFjHrrDFKQIP47/ti9YkGRlQ+FyFQihgzbKRb2o=
-X-Gm-Message-State: AOJu0YwmGMNbmBiyVuElCBxgyBTa25yr33yHD9Ymt0nCI5QvJzUgJhS1
-	Dkl9veaX8q1BWMr8EpWrGxfA9SqtMT5JvrWtYuewRuG6oxOB0bozIaRONgh4xWpI48PSoTPBKML
-	6CRhfMnt37Nk6xlToqfG3EYkvBXEikQ==
-X-Google-Smtp-Source: AGHT+IHUCuh5MCL4HivLFIEUU8PAZ5xNKwbc3jbpnxvyJnZmxUy6rlnIubbWPjNgeUkkQLRn4ZF6m3s29tesf53SNBA=
-X-Received: by 2002:a17:90a:930c:b0:2a1:f586:d203 with SMTP id
- p12-20020a17090a930c00b002a1f586d203mr8530578pjo.41.1715021506858; Mon, 06
- May 2024 11:51:46 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1715021496; x=1715626296;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=cV6bIWj1XAD1mDEysW3PzxfMR0Aa4OzBGgrUMASIDvU=;
+        b=bw4jnjwPRab4zDhxmoDguwVw/Eql3iULJNOkL+28jBY8gSZbAKD3eIYkDkY8JqPSWL
+         NIQrb+A+t/Z0JI+JqEmTXMP1AnPAS7VHI86sM2hLXDYtFvgHdGTl16oWuGHsxztnfC4x
+         WH66cpuWBHENfyEgr/QGWjJhNU3Xs9ynEIjNRwr1RpzevGQNNYFH8UOAVwKaqVowrpYe
+         GD4PgFkBTb8Kjt6jAT+sJtYhAXmzhH4tiOYtn1g1iTSC8OtfesRYzlMRu+fI6tN4v3RH
+         9E28dbtsiZjLW4fO8fv2IT5YQlprjN3DerOVud1mxS7tX8ty6iWgNJIP+Inw7+V+ljhg
+         NoYg==
+X-Forwarded-Encrypted: i=1; AJvYcCUHc1IQY4jrt0TmwTeUjbijsHc8NHVOofFFNToE2S9hfFQm6DNwNdYtryMIFX3TK3DtmESACPPUc72iE4Ya0T07224weo4g7ZMoei1lLtXHl/SoNiJvczh5o+bsXxwtkojvgm7oVF9tXNI66lINjqyhyHLIYPE/3mfA
+X-Gm-Message-State: AOJu0YyZ+vuTHcjEpqJekKK873MLzxQFAvSVcNS9SO1FrZZ88ZKB05vi
+	evVLQ2HU7N9asduSq5tvjlNNqj6afBBJtfPFTkhzoSM8JVr9JK0s
+X-Google-Smtp-Source: AGHT+IHshUHD7rX/miFmKb49aF7IGeRm84VGByYTEoXu41Q3MLA0lnEG6e4eefO5gUEkXOkxr4vDeQ==
+X-Received: by 2002:a05:6808:1b23:b0:3c9:64ad:da93 with SMTP id bx35-20020a0568081b2300b003c964adda93mr8466950oib.29.1715021495815;
+        Mon, 06 May 2024 11:51:35 -0700 (PDT)
+Received: from localhost (164.146.150.34.bc.googleusercontent.com. [34.150.146.164])
+        by smtp.gmail.com with ESMTPSA id de17-20020ad45851000000b006a0f3c93325sm3958744qvb.84.2024.05.06.11.51.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 06 May 2024 11:51:35 -0700 (PDT)
+Date: Mon, 06 May 2024 14:51:35 -0400
+From: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+To: Abhishek Chauhan <quic_abchauha@quicinc.com>, 
+ "David S. Miller" <davem@davemloft.net>, 
+ Eric Dumazet <edumazet@google.com>, 
+ Jakub Kicinski <kuba@kernel.org>, 
+ Paolo Abeni <pabeni@redhat.com>, 
+ netdev@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, 
+ Andrew Halaney <ahalaney@redhat.com>, 
+ Willem de Bruijn <willemdebruijn.kernel@gmail.com>, 
+ Martin KaFai Lau <martin.lau@kernel.org>, 
+ Martin KaFai Lau <martin.lau@linux.dev>, 
+ Daniel Borkmann <daniel@iogearbox.net>, 
+ bpf <bpf@vger.kernel.org>
+Cc: kernel@quicinc.com
+Message-ID: <663926b74cbbd_516de29466@willemb.c.googlers.com.notmuch>
+In-Reply-To: <20240504031331.2737365-2-quic_abchauha@quicinc.com>
+References: <20240504031331.2737365-1-quic_abchauha@quicinc.com>
+ <20240504031331.2737365-2-quic_abchauha@quicinc.com>
+Subject: Re: [RFC PATCH bpf-next v6 1/3] net: Rename mono_delivery_time to
+ tstamp_type for scalabilty
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20240504003006.3303334-1-andrii@kernel.org> <20240504003006.3303334-3-andrii@kernel.org>
- <2024050439-janitor-scoff-be04@gregkh> <CAEf4BzZ6CaMrqRR1Rah7=HnTpU5-zw5HUnSH9NWCzAZZ55ZXFQ@mail.gmail.com>
- <ZjjiFnNRbwsMJ3Gj@x1> <CAM9d7cgvCB8CBFGhMB_-4tCm6+jzoPBNg4CR7AEyMNo8pF9QKg@mail.gmail.com>
-In-Reply-To: <CAM9d7cgvCB8CBFGhMB_-4tCm6+jzoPBNg4CR7AEyMNo8pF9QKg@mail.gmail.com>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Mon, 6 May 2024 11:51:34 -0700
-Message-ID: <CAEf4Bzb8E7wzwBn+cx-XAW0ofEqemeuZoawHTFoTc-jK1azasA@mail.gmail.com>
-Subject: Re: [PATCH 2/5] fs/procfs: implement efficient VMA querying API for /proc/<pid>/maps
-To: Namhyung Kim <namhyung@kernel.org>
-Cc: Arnaldo Carvalho de Melo <acme@kernel.org>, Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>, 
-	Greg KH <gregkh@linuxfoundation.org>, Andrii Nakryiko <andrii@kernel.org>, 
-	linux-fsdevel@vger.kernel.org, brauner@kernel.org, viro@zeniv.linux.org.uk, 
-	akpm@linux-foundation.org, linux-kernel@vger.kernel.org, bpf@vger.kernel.org, 
-	linux-mm@kvack.org, =?UTF-8?Q?Daniel_M=C3=BCller?= <deso@posteo.net>, 
-	"linux-perf-use." <linux-perf-users@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 7bit
 
-On Mon, May 6, 2024 at 11:05=E2=80=AFAM Namhyung Kim <namhyung@kernel.org> =
-wrote:
->
-> Hello,
->
-> On Mon, May 6, 2024 at 6:58=E2=80=AFAM Arnaldo Carvalho de Melo <acme@ker=
-nel.org> wrote:
-> >
-> > On Sat, May 04, 2024 at 02:50:31PM -0700, Andrii Nakryiko wrote:
-> > > On Sat, May 4, 2024 at 8:28=E2=80=AFAM Greg KH <gregkh@linuxfoundatio=
-n.org> wrote:
-> > > > On Fri, May 03, 2024 at 05:30:03PM -0700, Andrii Nakryiko wrote:
-> > > > > Note also, that fetching VMA name (e.g., backing file path, or sp=
-ecial
-> > > > > hard-coded or user-provided names) is optional just like build ID=
-. If
-> > > > > user sets vma_name_size to zero, kernel code won't attempt to ret=
-rieve
-> > > > > it, saving resources.
-> >
-> > > > > Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-> >
-> > > > Where is the userspace code that uses this new api you have created=
-?
-> >
-> > > So I added a faithful comparison of existing /proc/<pid>/maps vs new
-> > > ioctl() API to solve a common problem (as described above) in patch
-> > > #5. The plan is to put it in mentioned blazesym library at the very
-> > > least.
-> > >
-> > > I'm sure perf would benefit from this as well (cc'ed Arnaldo and
-> > > linux-perf-user), as they need to do stack symbolization as well.
->
-> I think the general use case in perf is different.  This ioctl API is gre=
-at
-> for live tracing of a single (or a small number of) process(es).  And
-> yes, perf tools have those tracing use cases too.  But I think the
-> major use case of perf tools is system-wide profiling.
+Abhishek Chauhan wrote:
+> mono_delivery_time was added to check if skb->tstamp has delivery
+> time in mono clock base (i.e. EDT) otherwise skb->tstamp has
+> timestamp in ingress and delivery_time at egress.
+> 
+> Renaming the bitfield from mono_delivery_time to tstamp_type is for
+> extensibilty for other timestamps such as userspace timestamp
+> (i.e. SO_TXTIME) set via sock opts.
+> 
+> As we are renaming the mono_delivery_time to tstamp_type, it makes
+> sense to start assigning tstamp_type based on enum defined
+> in this commit.
+> 
+> Earlier we used bool arg flag to check if the tstamp is mono in
+> function skb_set_delivery_time, Now the signature of the functions
+> accepts tstamp_type to distinguish between mono and real time.
+> 
+> Also skb_set_delivery_type_by_clockid is a new function which accepts
+> clockid to determine the tstamp_type.
+> 
+> In future tstamp_type:1 can be extended to support userspace timestamp
+> by increasing the bitfield.
+> 
+> Link: https://lore.kernel.org/netdev/bc037db4-58bb-4861-ac31-a361a93841d3@linux.dev/
+> Signed-off-by: Abhishek Chauhan <quic_abchauha@quicinc.com>
+> ---
+> Changes since v5
+> - Avoided using garble function names as mentioned by
+>   Willem.
+> - Implemented a conversion function stead of duplicating 
+>   the same logic as mentioned by Willem.
+> - Fixed indentation problems and minor documentation issues
+>   which mentions tstamp_type as a whole instead of bitfield
+>   notations. (Mentioned both by Willem and Martin)
+>   
+> Changes since v4
+> - Introduce new function to directly delivery_time and
+>   another to set tstamp_type based on clockid. 
+> - Removed un-necessary comments in skbuff.h as 
+>   enums were obvious and understood.
+> 
+> Changes since v3
+> - Fixed inconsistent capitalization in skbuff.h
+> - remove reference to MONO_DELIVERY_TIME_MASK in skbuff.h
+>   and point it to skb_tstamp_type now.
+> - Explicitely setting SKB_CLOCK_MONO if valid transmit_time
+>   ip_send_unicast_reply 
+> - Keeping skb_tstamp inline with skb_clear_tstamp. 
+> - skb_set_delivery_time checks if timstamp is 0 and 
+>   sets the tstamp_type to SKB_CLOCK_REAL.
+> - Above comments are given by Willem 
+> - Found out that skbuff.h has access to uapi/linux/time.h
+>   So now instead of using  CLOCK_REAL/CLOCK_MONO 
+>   i am checking actual clockid_t directly to set tstamp_type 
+>   example:- CLOCK_REALTIME/CLOCK_MONOTONIC 
+> - Compilation error fixed in 
+>   net/ieee802154/6lowpan/reassembly.c
+> 
+> Changes since v2
+> - Minor changes to commit subject
+> 
+> Changes since v1
+> - Squashed the two commits into one as mentioned by Willem.
+> - Introduced switch in skb_set_delivery_time.
+> - Renamed and removed directionality aspects w.r.t tstamp_type 
+>   as mentioned by Willem.
+> 
+>  include/linux/skbuff.h                     | 53 ++++++++++++++++------
+>  include/net/inet_frag.h                    |  4 +-
+>  net/bridge/netfilter/nf_conntrack_bridge.c |  6 +--
+>  net/core/dev.c                             |  2 +-
+>  net/core/filter.c                          | 10 ++--
+>  net/ieee802154/6lowpan/reassembly.c        |  2 +-
+>  net/ipv4/inet_fragment.c                   |  2 +-
+>  net/ipv4/ip_fragment.c                     |  2 +-
+>  net/ipv4/ip_output.c                       |  9 ++--
+>  net/ipv4/tcp_output.c                      | 16 +++----
+>  net/ipv6/ip6_output.c                      |  6 +--
+>  net/ipv6/netfilter.c                       |  6 +--
+>  net/ipv6/netfilter/nf_conntrack_reasm.c    |  2 +-
+>  net/ipv6/reassembly.c                      |  2 +-
+>  net/ipv6/tcp_ipv6.c                        |  2 +-
+>  net/sched/act_bpf.c                        |  4 +-
+>  net/sched/cls_bpf.c                        |  4 +-
+>  17 files changed, 80 insertions(+), 52 deletions(-)
+> 
+> diff --git a/include/linux/skbuff.h b/include/linux/skbuff.h
+> index 1c2902eaebd3..de3915e2bfdb 100644
+> --- a/include/linux/skbuff.h
+> +++ b/include/linux/skbuff.h
+> @@ -706,6 +706,11 @@ typedef unsigned int sk_buff_data_t;
+>  typedef unsigned char *sk_buff_data_t;
+>  #endif
+>  
+> +enum skb_tstamp_type {
+> +	SKB_CLOCK_REALTIME,
+> +	SKB_CLOCK_MONOTONIC,
+> +};
+> +
+>  /**
+>   * DOC: Basic sk_buff geometry
+>   *
+> @@ -823,10 +828,9 @@ typedef unsigned char *sk_buff_data_t;
+>   *	@dst_pending_confirm: need to confirm neighbour
+>   *	@decrypted: Decrypted SKB
+>   *	@slow_gro: state present at GRO time, slower prepare step required
+> - *	@mono_delivery_time: When set, skb->tstamp has the
+> - *		delivery_time in mono clock base (i.e. EDT).  Otherwise, the
+> - *		skb->tstamp has the (rcv) timestamp at ingress and
+> - *		delivery_time at egress.
+> + *	@tstamp_type: When set, skb->tstamp has the
+> + *		delivery_time in mono clock base Otherwise, the
+> + *		timestamp is considered real clock base.
 
-The intended use case is also a system-wide profiling, but I haven't
-heard that opening a file per process is a big bottleneck or a
-limitation, tbh.
+Missing period. More importantly, no longer conditional. It always
+captures the type of skb->tstamp.
 
->
-> For system-wide profiling, you need to process samples of many
-> different processes at a high frequency.  Now perf record doesn't
-> process them and just save it for offline processing (well, it does
-> at the end to find out build-ID but it can be omitted).
->
-> Doing it online is possible (like perf top) but it would add more
-> overhead during the profiling.  And we cannot move processing
-> or symbolization to the end of profiling because some (short-
-> lived) tasks can go away.
+> --- a/net/ipv4/tcp_output.c
+> +++ b/net/ipv4/tcp_output.c
+> @@ -1301,7 +1301,7 @@ static int __tcp_transmit_skb(struct sock *sk, struct sk_buff *skb,
+>  	tp = tcp_sk(sk);
+>  	prior_wstamp = tp->tcp_wstamp_ns;
+>  	tp->tcp_wstamp_ns = max(tp->tcp_wstamp_ns, tp->tcp_clock_cache);
+> -	skb_set_delivery_time(skb, tp->tcp_wstamp_ns, true);
+> +	skb_set_delivery_type_by_clockid(skb, tp->tcp_wstamp_ns, CLOCK_MONOTONIC);
+>  	if (clone_it) {
+>  		oskb = skb;
+>  
+> @@ -1655,7 +1655,7 @@ int tcp_fragment(struct sock *sk, enum tcp_queue tcp_queue,
+>  
+>  	skb_split(skb, buff, len);
+>  
+> -	skb_set_delivery_time(buff, skb->tstamp, true);
+> +	skb_set_delivery_type_by_clockid(buff, skb->tstamp, CLOCK_MONOTONIC);
+>  	tcp_fragment_tstamp(skb, buff);
 
-We do have some setups where we install a BPF program that monitors
-process exit and mmap() events and emits (proactively) VMA
-information. It's not applicable everywhere, and in some setups (like
-Oculus case) we just accept that short-lived processes will be missed
-at the expense of less interruption, simpler and less privileged
-"agents" doing profiling and address resolution logic.
+All these hardcoded monotonic calls in TCP can be the shorter version
 
-So the problem space, as can be seen, is pretty vast and varied, and
-there is no single API that would serve all the needs perfectly.
-
->
-> Also it should support perf report (offline) on data from a
-> different kernel or even a different machine.
-
-We fetch build ID (and resolve file offset) and offload actual
-symbolization to a dedicated fleet of servers, whenever possible. We
-don't yet do it for kernel stack traces, but we are moving in this
-direction (and there are their own problems with /proc/kallsyms being
-text-based, listing everything, and pretty big all in itself; but
-that's a separate topic).
-
->
-> So it saves the memory map of processes and symbolizes
-> the stack trace with it later.  Of course it needs to be updated
-> as the memory map changes and that's why it tracks mmap
-> or similar syscalls with PERF_RECORD_MMAP[2] records.
->
-> A problem with this approach is to get the initial state of all
-> (or a target for non-system-wide mode) existing processes.
-> We call it synthesizing, and read /proc/PID/maps to generate
-> the mmap records.
->
-> I think the below comment from Arnaldo talked about how
-> we can improve the synthesizing (which is sequential access
-> to proc maps) using BPF.
-
-Yep. We can also benchmark using this new ioctl() to fetch a full set
-of VMAs, it might still be good enough.
-
->
-> Thanks,
-> Namhyung
->
-
-[...]
+    skb_set_delivery_type(.., SKB_CLOCK_MONOTONIC);
+  
 
