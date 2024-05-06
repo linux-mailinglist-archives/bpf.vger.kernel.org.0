@@ -1,200 +1,447 @@
-Return-Path: <bpf+bounces-28670-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-28671-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 725C98BCDEC
-	for <lists+bpf@lfdr.de>; Mon,  6 May 2024 14:29:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2E3678BCF5B
+	for <lists+bpf@lfdr.de>; Mon,  6 May 2024 15:45:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 27316281011
-	for <lists+bpf@lfdr.de>; Mon,  6 May 2024 12:29:09 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D7454288237
+	for <lists+bpf@lfdr.de>; Mon,  6 May 2024 13:45:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 18ECB143C50;
-	Mon,  6 May 2024 12:29:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="Nla/JYKw"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B62BC78C6C;
+	Mon,  6 May 2024 13:45:17 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-lf1-f48.google.com (mail-lf1-f48.google.com [209.85.167.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F6FA143878
-	for <bpf@vger.kernel.org>; Mon,  6 May 2024 12:28:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 95C6077F2F
+	for <bpf@vger.kernel.org>; Mon,  6 May 2024 13:45:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714998540; cv=none; b=UC4bHoYe/0U06C1nXUnk/07KL93VtjbMR9TjffR6UgnZ2kcS3dD9l2D+/Fg+vMpA//vwVV67NqGdnTdjoEmSgqMhuO9cB9kyWO5K44qe12tGsF4UxrbeiWZIUtMUxSZxw3I3giYaAK+7HSSpcwRfYBfMEFxBTyqaHwWw9Evm+IA=
+	t=1715003117; cv=none; b=dTVJJ8lKQknZw36NgUfdFk4gz2TDwE5jFXpBwLGYyKqyC6EXszyIa0RybBefIZyWflIS62Ow6mAycJt514paXlKRRj0/XEmDTa9Knn0lo1fWFSXesWARNFnuNso8R7Dbxh+xwHE9IRJIWqI7nUOAIxbOvJ9UGH7rTmS9PJjCLO0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714998540; c=relaxed/simple;
-	bh=Jw6Yfh0lVZSYZukBJVRLc+6yJKUWGmyjLANQ4Uwz3RU=;
-	h=Message-ID:Subject:From:To:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=mesQMGwmG4QshW8POetHDwWY19qGMSfeOSbBrJOVz9F5XaiFSEsksEZWsTRDY1kmB7YnDPrcZPaPDUqhuhCsVxdbnqfdDW9ktHyQZKHxjx3QvFbOH5IgJQ9LKpBkjNK0f3ClB1t5O6QQcHmFglHH1Fb1t9jQFGoHtTlFvPFgvCE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=Nla/JYKw; arc=none smtp.client-ip=148.163.156.1
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353728.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 446BlCXp011170;
-	Mon, 6 May 2024 12:28:28 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : date : in-reply-to : references : content-type :
- content-transfer-encoding : mime-version; s=pp1;
- bh=Vml9acb56QlbDhtLKie+EnhqpxtdU780f+fTkyusmGU=;
- b=Nla/JYKwdaHb0CNmN3YQpPylDKxgmlQ44ohWNotJ7xxb8SR5QHL9dBIhmACIGIRoE+dy
- G4CRYP7iYfOgN0+oeyg8VzhtZlljqETNCyOz5dly5ktlsmHPIP53c8uMeZPX9WJJeQur
- qi9NAz4y9B+DsakMTtsAq/oxIHs6IfdU+CNS4h2wDbQ+Ffyn0PnwFHFu0cz1nzmSMfeO
- /tyUoOjzibsyQ6LyjrHtEgwK8F3zKKLfXDgusqB7DRJ8wtzLYzJQgWo22eJYo8rCjJa9
- 2Xv7bocKiSITIoTFVwV6fgiIQkHi/PybutAdL8qSDaoUGFxoXeQPBKZd+tJ/F0N4TyJF Jw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3xxxmt83kn-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 06 May 2024 12:28:27 +0000
-Received: from m0353728.ppops.net (m0353728.ppops.net [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 446CSRSp020326;
-	Mon, 6 May 2024 12:28:27 GMT
-Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3xxxmt83kj-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 06 May 2024 12:28:27 +0000
-Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma12.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 446BAIY5030885;
-	Mon, 6 May 2024 12:28:26 GMT
-Received: from smtprelay07.fra02v.mail.ibm.com ([9.218.2.229])
-	by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 3xwybtr39g-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 06 May 2024 12:28:25 +0000
-Received: from smtpav06.fra02v.mail.ibm.com (smtpav06.fra02v.mail.ibm.com [10.20.54.105])
-	by smtprelay07.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 446CSK9r51904948
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Mon, 6 May 2024 12:28:22 GMT
-Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id AD0FA20049;
-	Mon,  6 May 2024 12:28:20 +0000 (GMT)
-Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 3315F20040;
-	Mon,  6 May 2024 12:28:20 +0000 (GMT)
-Received: from [127.0.0.1] (unknown [9.152.108.100])
-	by smtpav06.fra02v.mail.ibm.com (Postfix) with ESMTP;
-	Mon,  6 May 2024 12:28:20 +0000 (GMT)
-Message-ID: <a5de8fa22c021c2df5f37f285c8d2247f1c6c1b0.camel@linux.ibm.com>
-Subject: Re: [PATCH bpf] riscv, bpf: make some atomic operations fully
- ordered
-From: Ilya Leoshkevich <iii@linux.ibm.com>
-To: Puranjay Mohan <puranjay@kernel.org>, Alexei Starovoitov
- <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko
- <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Eduard
- Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
-        Yonghong Song
- <yonghong.song@linux.dev>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP
- Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
-        Hao Luo
- <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        =?ISO-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@kernel.org>,
-        Pu Lehui
- <pulehui@huawei.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>, bpf@vger.kernel.org,
-        "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
-        Tiezhu
- Yang <yangtiezhu@loongson.cn>,
-        Heiko Carstens <hca@linux.ibm.com>
-Date: Mon, 06 May 2024 14:28:20 +0200
-In-Reply-To: <mb61p34qvq3wf.fsf@kernel.org>
-References: <20240505201633.123115-1-puranjay@kernel.org>
-	 <mb61p34qvq3wf.fsf@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.4 (3.50.4-1.fc39) 
+	s=arc-20240116; t=1715003117; c=relaxed/simple;
+	bh=/BjDU3XhI1hhP47tqKrY1oZiizwF9vQ8sHTeLnQvyI4=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=f0hcVdAB8riPHV+fDyBvTsdzji6B2KAcszI8ag5oBitsStnWNF6laHPq+PI3nJGnwoMCGpKRZCQ8z9f/uDyUbe7Twu5CHDUNeyR4ReWcf6O7F8CAL9RopghYyq23IKw5B8MhyNnbNoOARFXblypgU2ZEQV6FYlITxNVrXcLjdNk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.167.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lf1-f48.google.com with SMTP id 2adb3069b0e04-51f57713684so2385916e87.1
+        for <bpf@vger.kernel.org>; Mon, 06 May 2024 06:45:15 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1715003114; x=1715607914;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=AhKS9tL2ICLoIW3I/8d5fM+9a33yhxidd3gcA27RLpM=;
+        b=rergvaUVcqKUKIOjorMxsouF8LdlrRiA5cz5gWJ7pT5w0sL3CLyPkatrn/cSP92gC5
+         WRDJY1SdNBrODEnX2KKg9y26vHnPifovzQDzTF/seE6kqSZJz8s9NFWBUCGqZtbZQGZj
+         5huRPqKCzMYxkpJPi+INUjfXJbuaBycER1dppX6hJNJW0tlx9TPzQfKTYxnwb13MZ/eH
+         AM3+lLmNXgnMst0Gg1v0bfAUmjokUaHKY37pTgCS+EAgkVb0LUuWctI7lE6sKswrSsc/
+         QwMaZ5cI78Um8RHgW9/hyjHgjthZ6Bz9u/iXlf7ElZFnuLeAoNJ58byI6isWDOMAgoSN
+         UGaA==
+X-Gm-Message-State: AOJu0YypRwv1jSji8jLECHZAkMSgddlrWiQqdFoNyDPn+EC3pLetlWGB
+	/kUxdEJ2PlHs2IzZ2SjCavFbYhzJlHFlOQ0CELLmNVs4g30mHgKsBp6Y1Q==
+X-Google-Smtp-Source: AGHT+IHTIefRgfwRR2QzcgIsUSbrqIbLPtqC/6O3H5OXRAiCa10BDMxydWOSJyIig5p9iT9E0BzHqQ==
+X-Received: by 2002:a05:6512:7c:b0:51c:22fb:182f with SMTP id i28-20020a056512007c00b0051c22fb182fmr6771060lfo.13.1715003113322;
+        Mon, 06 May 2024 06:45:13 -0700 (PDT)
+Received: from yatsenko-fedora-K2202N0103767.thefacebook.com ([2620:10d:c092:400::5:81ce])
+        by smtp.gmail.com with ESMTPSA id c10-20020a0564021f8a00b005727e826977sm5222028edc.19.2024.05.06.06.45.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 06 May 2024 06:45:12 -0700 (PDT)
+From: Mykyta@web.codeaurora.org, Yatsenko@web.codeaurora.org,
+	mykyta.yatsenko5@gmail.com
+To: bpf@vger.kernel.org,
+	ast@kernel.org,
+	andrii@kernel.org,
+	daniel@iogearbox.net,
+	kafai@meta.com,
+	kernel-team@meta.com
+Cc: Mykyta Yatsenko <yatsenko@meta.com>
+Subject: [PATCH bpf-next] bpftool: introduce btf c dump sorting
+Date: Mon,  6 May 2024 14:44:58 +0100
+Message-ID: <20240506134458.727621-1-yatsenko@meta.com>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: HSoYpPk50-4-j201uqVvzdNpNP749s22
-X-Proofpoint-GUID: AYVLe5xWev8qJ1VBXBcGFmkCI6_9Z2y1
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1011,Hydra:6.0.650,FMLib:17.11.176.26
- definitions=2024-05-06_07,2024-05-06_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999 adultscore=0
- clxscore=1011 mlxscore=0 bulkscore=0 priorityscore=1501 spamscore=0
- suspectscore=0 lowpriorityscore=0 impostorscore=0 malwarescore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2404010000 definitions=main-2405060086
+Content-Transfer-Encoding: 8bit
 
-> Puranjay Mohan <puranjay@kernel.org> writes:
->=20
-> > The BPF atomic operations with the BPF_FETCH modifier along with
-> > BPF_XCHG and BPF_CMPXCHG are fully ordered but the RISC-V JIT
-> > implements
-> > all atomic operations except BPF_CMPXCHG with relaxed ordering.
->=20
-> I know that the BPF memory model is in the works and we currently
-> don't
-> have a way to make all the JITs consistent. But as far as atomic
-> operations are concerned here are my observations:
+From: Mykyta Yatsenko <yatsenko@meta.com>
 
-[...]
+Provide a way to sort bpftool c dump output, to simplify vmlinux.h
+diffing and forcing more natural definitions ordering.
 
-> 4. S390
-> =C2=A0=C2=A0 ----
->=20
-> Ilya, can you help with this?
->=20
-> I see that the kernel is emitting "bcr 14,0" after "laal|laalg" but
-> the
-> JIT is not.
+Use `normalized` argument in bpftool CLI after `format c` for example:
+```
+bpftool btf dump file /sys/kernel/btf/fuse format c normalized
+```
 
-Hi,
+Definitions are sorted by their BTF kind ranks, lexicographically and
+typedefs are forced to go right after their base type.
 
-Here are two relevant paragraphs from the Principles of Operation:
+Type ranks
 
-  Relation between Operand Accesses
-  =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D
-  As observed by other CPUs and by channel pro-
-  grams, storage-operand fetches associated with one
-  instruction execution appear to precede all storage-
-  operand references for conceptually subsequent
-  instructions. A storage-operand store specified by
-  one instruction appears to precede all storage-oper-
-  and stores specified by conceptually subsequent
-  instructions, but it does not necessarily precede stor-
-  age-operand fetches specified by conceptually sub-
-  sequent instructions. However, a storage-operand
-  store appears to precede a conceptually subsequent
-  storage-operand fetch from the same main-storage
-  location.
+Assign ranks to btf kinds (defined in function btf_type_rank) to set
+next order:
+1. Anonymous enums
+2. Anonymous enums64
+3. Named enums
+4. Named enums64
+5. Trivial types typedefs (ints, then floats)
+6. Structs
+7. Unions
+8. Function prototypes
+9. Forward declarations
 
-In short, all memory accesses are fully ordered except for
-stores followed by fetches from different addresses.
+Lexicographical ordering
 
-  LAALG R1,R3,D2(B2)
-  =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-  [...]
-  All accesses to the second-operand location appear
-  to be a block-concurrent interlocked-update refer-
-  ence as observed by other CPUs and the I/O subsys-
-  tem. A specific-operand-serialization operation is
-  performed.
+Definitions within the same BTF kind are ordered by their names.
+Anonymous enums are ordered by their first element.
 
-Specific-operand-serialization is weaker than full serialization,
-which means that, even though s390x=C2=A0provides very strong ordering
-guarantees, strictly speaking, as architected, s390x atomics are not
-fully ordered.
+Forcing typedefs to go right after their base type
 
-I have a hard time thinking of a situation where a store-fetch
-reordering=C2=A0for different addresses could matter, but to be on the safe
-side we should probably just do what the kernel does and add a
-"bcr 14,0". I will send a patch.
+To make sure that typedefs are emitted right after their base type,
+we build a list of type's typedefs (struct typedef_ref) and after
+emitting type, its typedefs are emitted as well (lexicographically)
 
-[...]
+There is a small flaw in this implementation:
+Type dependencies are resolved by bpf lib, so when type is dumped
+because it is a dependency, its typedefs are not output right after it,
+as bpflib does not have the list of typedefs for a given type.
 
-> Thanks,
-> Puranjay
+Signed-off-by: Mykyta Yatsenko <yatsenko@meta.com>
+---
+ tools/bpf/bpftool/btf.c | 264 +++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 259 insertions(+), 5 deletions(-)
+
+diff --git a/tools/bpf/bpftool/btf.c b/tools/bpf/bpftool/btf.c
+index 91fcb75babe3..93c876e90b04 100644
+--- a/tools/bpf/bpftool/btf.c
++++ b/tools/bpf/bpftool/btf.c
+@@ -11,6 +11,7 @@
+ #include <linux/btf.h>
+ #include <sys/types.h>
+ #include <sys/stat.h>
++#include <linux/list.h>
+ 
+ #include <bpf/bpf.h>
+ #include <bpf/btf.h>
+@@ -43,6 +44,20 @@ static const char * const btf_kind_str[NR_BTF_KINDS] = {
+ 	[BTF_KIND_ENUM64]	= "ENUM64",
+ };
+ 
++struct typedef_ref {
++	struct sort_datum *datum;
++	struct list_head list;
++};
++
++struct sort_datum {
++	__u32 index;
++	int type_rank;
++	bool emitted;
++	const char *name;
++	// List of typedefs of this type
++	struct list_head *typedef_list;
++};
++
+ static const char *btf_int_enc_str(__u8 encoding)
+ {
+ 	switch (encoding) {
+@@ -460,8 +475,233 @@ static void __printf(2, 0) btf_dump_printf(void *ctx,
+ 	vfprintf(stdout, fmt, args);
+ }
+ 
++static int btf_type_rank(const struct btf *btf, __u32 index, bool has_name)
++{
++	const struct btf_type *btf_type = btf__type_by_id(btf, index);
++	const int max_rank = 1000;
++
++	has_name |= (bool)btf_type->name_off;
++
++	switch (btf_kind(btf_type)) {
++	case BTF_KIND_ENUM:
++		return 100 + (btf_type->name_off == 0 ? 0 : 1);
++	case BTF_KIND_ENUM64:
++		return 200 + (btf_type->name_off == 0 ? 0 : 1);
++	case BTF_KIND_INT:
++		return 300;
++	case BTF_KIND_FLOAT:
++		return 400;
++	case BTF_KIND_VAR:
++		return 500;
++
++	case BTF_KIND_STRUCT:
++		return 600 + (has_name ? 0 : max_rank);
++	case BTF_KIND_UNION:
++		return 700 + (has_name ? 0 : max_rank);
++	case BTF_KIND_FUNC_PROTO:
++		return 800 + (has_name ? 0 : max_rank);
++
++	case BTF_KIND_FWD:
++		return 900;
++
++	case BTF_KIND_ARRAY:
++		return 1 + btf_type_rank(btf, btf_array(btf_type)->type, has_name);
++
++	case BTF_KIND_CONST:
++	case BTF_KIND_PTR:
++	case BTF_KIND_VOLATILE:
++	case BTF_KIND_RESTRICT:
++	case BTF_KIND_TYPE_TAG:
++	case BTF_KIND_TYPEDEF:
++		return 1 + btf_type_rank(btf, btf_type->type, has_name);
++
++	default:
++		return max_rank;
++	}
++}
++
++static const char *btf_type_sort_name(const struct btf *btf, __u32 index)
++{
++	const struct btf_type *btf_type = btf__type_by_id(btf, index);
++	const int kind = btf_kind(btf_type);
++	const char *name = btf__name_by_offset(btf, btf_type->name_off);
++
++	// Use name of the first element for anonymous enums
++	if (!btf_type->name_off && (kind == BTF_KIND_ENUM || kind == BTF_KIND_ENUM64))
++		name = btf__name_by_offset(btf, btf_enum(btf_type)->name_off);
++
++	return name;
++}
++
++static int btf_type_compare(const void *left, const void *right)
++{
++	const struct sort_datum *datum1 = (const struct sort_datum *)left;
++	const struct sort_datum *datum2 = (const struct sort_datum *)right;
++
++	if (datum1->type_rank != datum2->type_rank)
++		return datum1->type_rank < datum2->type_rank ? -1 : 1;
++
++	return strcmp(datum1->name, datum2->name);
++}
++
++static int emit_typedefs(struct list_head *typedef_list, int *sorted_indexes)
++{
++	struct typedef_ref *type;
++	int current_index = 0;
++
++	if (!typedef_list)
++		return 0;
++	list_for_each_entry(type, typedef_list, list) {
++		if (type->datum->emitted)
++			continue;
++		type->datum->emitted = true;
++		sorted_indexes[current_index++] = type->datum->index;
++		current_index += emit_typedefs(type->datum->typedef_list,
++					sorted_indexes + current_index);
++	}
++	return current_index;
++}
++
++static void free_typedefs(struct list_head *typedef_list)
++{
++	struct typedef_ref *type;
++	struct typedef_ref *temp_type;
++
++	if (!typedef_list)
++		return;
++	list_for_each_entry_safe(type, temp_type, typedef_list, list) {
++		list_del(&type->list);
++		free(type);
++	}
++	free(typedef_list);
++}
++
++static void add_typedef_ref(const struct btf *btf, struct sort_datum *parent,
++			    struct typedef_ref *new_ref)
++{
++	struct typedef_ref *current_child;
++	const char *new_child_name = new_ref->datum->name;
++
++	if (!parent->typedef_list) {
++		parent->typedef_list = malloc(sizeof(struct list_head));
++		INIT_LIST_HEAD(parent->typedef_list);
++		list_add(&new_ref->list, parent->typedef_list);
++		return;
++	}
++	list_for_each_entry(current_child, parent->typedef_list, list) {
++		const struct btf_type *t = btf__type_by_id(btf, current_child->datum->index);
++		const char *current_name = btf_str(btf, t->name_off);
++
++		if (list_is_last(&current_child->list, parent->typedef_list)) {
++			list_add(&new_ref->list, &current_child->list);
++			return;
++		}
++		if (strcmp(new_child_name, current_name) < 0) {
++			list_add_tail(&new_ref->list, &current_child->list);
++			return;
++		}
++	}
++}
++
++static int find_base_typedef_type(const struct btf *btf, int index)
++{
++	const struct btf_type *type = btf__type_by_id(btf, index);
++	int kind = btf_kind(type);
++	int base_idx;
++
++	if (kind != BTF_KIND_TYPEDEF)
++		return 0;
++
++	do {
++		base_idx = kind == BTF_KIND_ARRAY ? btf_array(type)->type : type->type;
++		type = btf__type_by_id(btf, base_idx);
++		kind = btf_kind(type);
++	} while (kind == BTF_KIND_ARRAY ||
++		   kind == BTF_KIND_PTR ||
++		   kind == BTF_KIND_CONST ||
++		   kind == BTF_KIND_VOLATILE ||
++		   kind == BTF_KIND_RESTRICT ||
++		   kind == BTF_KIND_TYPE_TAG);
++
++	return base_idx;
++}
++
++static int *sort_btf_c(const struct btf *btf)
++{
++	int total_root_types;
++	struct sort_datum *datums;
++	int *sorted_indexes = NULL;
++	int *type_index_to_datum_index;
++
++	if (!btf)
++		return sorted_indexes;
++
++	total_root_types = btf__type_cnt(btf);
++	datums = malloc(sizeof(struct sort_datum) * total_root_types);
++
++	for (int i = 1; i < total_root_types; ++i) {
++		struct sort_datum *current_datum = datums + i;
++
++		current_datum->index = i;
++		current_datum->name = btf_type_sort_name(btf, i);
++		current_datum->type_rank = btf_type_rank(btf, i, false);
++		current_datum->emitted = false;
++		current_datum->typedef_list = NULL;
++	}
++
++	qsort(datums + 1, total_root_types - 1, sizeof(struct sort_datum), btf_type_compare);
++
++	// Build a mapping from btf type id to datums array index
++	type_index_to_datum_index = malloc(sizeof(int) * total_root_types);
++	type_index_to_datum_index[0] = 0;
++	for (int i = 1; i < total_root_types; ++i)
++		type_index_to_datum_index[datums[i].index] = i;
++
++	for (int i = 1; i < total_root_types; ++i) {
++		struct sort_datum *current_datum = datums + i;
++		const struct btf_type *current_type = btf__type_by_id(btf, current_datum->index);
++		int base_index;
++		struct sort_datum *base_datum;
++		const struct btf_type *base_type;
++		struct typedef_ref *new_ref;
++
++		if (btf_kind(current_type) != BTF_KIND_TYPEDEF)
++			continue;
++
++		base_index = find_base_typedef_type(btf, current_datum->index);
++		if (!base_index)
++			continue;
++
++		base_datum = datums + type_index_to_datum_index[base_index];
++		base_type = btf__type_by_id(btf, base_datum->index);
++		if (!base_type->name_off)
++			continue;
++
++		new_ref = malloc(sizeof(struct typedef_ref));
++		new_ref->datum = current_datum;
++
++		add_typedef_ref(btf, base_datum, new_ref);
++	}
++
++	sorted_indexes = malloc(sizeof(int) * total_root_types);
++	sorted_indexes[0] = 0;
++	for (int emit_index = 1, datum_index = 1; emit_index < total_root_types; ++datum_index) {
++		struct sort_datum *datum = datums + datum_index;
++
++		if (datum->emitted)
++			continue;
++		datum->emitted = true;
++		sorted_indexes[emit_index++] = datum->index;
++		emit_index += emit_typedefs(datum->typedef_list, sorted_indexes + emit_index);
++		free_typedefs(datum->typedef_list);
++	}
++	free(type_index_to_datum_index);
++	free(datums);
++	return sorted_indexes;
++}
++
+ static int dump_btf_c(const struct btf *btf,
+-		      __u32 *root_type_ids, int root_type_cnt)
++		      __u32 *root_type_ids, int root_type_cnt, bool normalized)
+ {
+ 	struct btf_dump *d;
+ 	int err = 0, i;
+@@ -485,12 +725,17 @@ static int dump_btf_c(const struct btf *btf,
+ 		}
+ 	} else {
+ 		int cnt = btf__type_cnt(btf);
+-
++		int *sorted_indexes = normalized ? sort_btf_c(btf) : NULL;
+ 		for (i = 1; i < cnt; i++) {
+-			err = btf_dump__dump_type(d, i);
++			int idx = sorted_indexes ? sorted_indexes[i] : i;
++
++			err = btf_dump__dump_type(d, idx);
+ 			if (err)
+-				goto done;
++				break;
+ 		}
++		free(sorted_indexes);
++		if (err)
++			goto done;
+ 	}
+ 
+ 	printf("#ifndef BPF_NO_PRESERVE_ACCESS_INDEX\n");
+@@ -553,6 +798,7 @@ static int do_dump(int argc, char **argv)
+ 	__u32 root_type_ids[2];
+ 	int root_type_cnt = 0;
+ 	bool dump_c = false;
++	bool normalized = false;
+ 	__u32 btf_id = -1;
+ 	const char *src;
+ 	int fd = -1;
+@@ -663,6 +909,14 @@ static int do_dump(int argc, char **argv)
+ 				goto done;
+ 			}
+ 			NEXT_ARG();
++		} else if (strcmp(*argv, "normalized") == 0) {
++			if (!dump_c) {
++				p_err("Only C dump supports normalization");
++				err = -EINVAL;
++				goto done;
++			}
++			normalized = true;
++			NEXT_ARG();
+ 		} else {
+ 			p_err("unrecognized option: '%s'", *argv);
+ 			err = -EINVAL;
+@@ -691,7 +945,7 @@ static int do_dump(int argc, char **argv)
+ 			err = -ENOTSUP;
+ 			goto done;
+ 		}
+-		err = dump_btf_c(btf, root_type_ids, root_type_cnt);
++		err = dump_btf_c(btf, root_type_ids, root_type_cnt, normalized);
+ 	} else {
+ 		err = dump_btf_raw(btf, root_type_ids, root_type_cnt);
+ 	}
+-- 
+2.44.0
 
 
