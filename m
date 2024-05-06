@@ -1,58 +1,66 @@
-Return-Path: <bpf+bounces-28717-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-28718-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A5D4D8BD607
-	for <lists+bpf@lfdr.de>; Mon,  6 May 2024 22:08:08 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 173208BD647
+	for <lists+bpf@lfdr.de>; Mon,  6 May 2024 22:35:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 59AB4283D5F
-	for <lists+bpf@lfdr.de>; Mon,  6 May 2024 20:08:07 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BB9302834F2
+	for <lists+bpf@lfdr.de>; Mon,  6 May 2024 20:35:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0BDE515B0EC;
-	Mon,  6 May 2024 20:08:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4BF1E15B549;
+	Mon,  6 May 2024 20:35:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tMpri0SN"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="p7Lo4B0F"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 88FA1745D9
-	for <bpf@vger.kernel.org>; Mon,  6 May 2024 20:08:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B92F32BAE5;
+	Mon,  6 May 2024 20:35:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715026081; cv=none; b=GAmQ5RjPAlZoc/6LiQSTKM6sD/QQZs2goRpVdVSyQ/V+ut/p1NPjyi+WcuH6BPi38H5p0JDujNdgT59TgvpipJnfzWzfV4FcFTs93v7Gk2lnedfs2lJCqoOnWZT/b3gSlDIHT8Qy7QHAotiEBbgePYfNBXjX9ZnJlaeOfFY1Y7w=
+	t=1715027709; cv=none; b=AJNRT1ViOevta6dHtr175NdSncdytL6zRlGKd3U8wkaPShfw225AXQQOJZaTaG0tGUCvb1cVAfhLWbSvdLJzKgSum5+Pld4lsWROG25U+V0plqZwLpXGMlLsz7+vAAPHAflWSnTnHZYDv0mPqy9JatirSPSJxykYF7oXeIbbV1M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715026081; c=relaxed/simple;
-	bh=IdnAHyLnxgPjUwAhR3LlJ6TVTylzAFPh2bo4mquvkRE=;
+	s=arc-20240116; t=1715027709; c=relaxed/simple;
+	bh=2J6q6pee6c+RhPyheJbTp0seb82usaTe/jFdcBygloQ=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=njG2Cqpn4JUpsZcyPjiNvVvNrUq0CpRqmTYu6t2ba1gJVstOP2tFwrtVCQh/JuGj7XtoZ7aieyx0H2Bya52LlF1kZoKmI9jWeg8clccFF7oh9c4mlmh5dwtD7QNmhITIqQNETG7i8tUr2MvNzHKkII1Wf4GlqcMyLeJ0fGGv4m4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tMpri0SN; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7DF9AC116B1;
-	Mon,  6 May 2024 20:07:59 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=WhplaxM9XQDoMLKvo52awb1Ek94hsuiJXy9rstWQeisEnMX2OqezAXhIQy3exsfhZ7oiHMo+qAHu/9pZ9maUK4Q2g1zMNLxr0ODClkCjXp71yFnAgxkUHFKqpF1dLlvPHdmgQYGJhBfRHJ89eFFCER88cNrzkhwYPCXBCZiL/sg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=p7Lo4B0F; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 67BF0C116B1;
+	Mon,  6 May 2024 20:35:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1715026081;
-	bh=IdnAHyLnxgPjUwAhR3LlJ6TVTylzAFPh2bo4mquvkRE=;
+	s=k20201202; t=1715027709;
+	bh=2J6q6pee6c+RhPyheJbTp0seb82usaTe/jFdcBygloQ=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=tMpri0SNZgpOuq7d+fg+mH6Mv6EOf4VHtpqjn38FgmJwnSqh0wZV6oFBqHmnKJrvV
-	 N/gPnceiV2YQJDQYlBeqnj53Zrw9EQrU0IPGaKH/jKyYKumge+RRF9yO0uGb4I/sFy
-	 8uboWdV83qWlaJk8owFAki1zSuqNvUpQxN+pyS8xDVMkWxnfN8sjJZKFFZhavg8qNd
-	 C7Hr/gGBkJXWwGKJK/ELdbCwCgcbhu9ahsoewbYk7iTBeECHhvcsZdLgWhQfJ47OWf
-	 ab/t4X4GFqJABxozePyFKAmggf3I+XWVxbGJQ/Z7AhiX8RW+X5+CXYyRPerFExpfKn
-	 jitTYwJJ8aHbw==
-Date: Mon, 6 May 2024 17:07:54 -0300
+	b=p7Lo4B0FSYjHcCM/Bsy/vgbwfnsYFN1u8xq6hhk1tF2raIeVRu7efrKPanTu5Yn1h
+	 NjYWiHho9RWdhZTBnQOG0SzTY39KDPg4/pP4ZqLZHde0Yyuc57THzyFOghopzYiHFw
+	 YrP8o9I3qyMKwCoLCbBdV4IpLTBIIaqLvf9C5CXzfQICcpBjWPG1/Vj0wbzfHnYpZd
+	 BAPA99lYtXDJGphEKGjdpGFOuCOmJkwTcTy1KaeDYermM33/4dFCg7eyUgXap8D/DE
+	 xJN6P0+FTiracyjBpkwN/6lWdk6nwb8ld2iO8wYsfPybc6wPjqGlBWMbd2tGLk0skj
+	 0OV6KwMUfMV8w==
+Date: Mon, 6 May 2024 17:35:04 -0300
 From: Arnaldo Carvalho de Melo <acme@kernel.org>
-To: Daniel Xu <dxu@dxuuu.xyz>
-Cc: jolsa@kernel.org, quentin@isovalent.com, alan.maguire@oracle.com,
-	eddyz87@gmail.com, andrii.nakryiko@gmail.com, ast@kernel.org,
-	daniel@iogearbox.net, bpf@vger.kernel.org
-Subject: Re: [PATCH dwarves v9 3/3] pahole: Inject kfunc decl tags into BTF
-Message-ID: <Zjk4mlHKmukeUc4y@x1>
-References: <cover.1714430735.git.dxu@dxuuu.xyz>
- <26ec519a00aa47f25bc6b4c7e4e15e5191ba4d45.1714430735.git.dxu@dxuuu.xyz>
- <ZjFXpgRjpDyDnvdc@x1>
- <zdag4h7ztmwn56yrmieisbhno4gpb24k7rgjevp6gc46e5dxak@3stxrh2qfnlu>
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>,
+	Greg KH <gregkh@linuxfoundation.org>,
+	Andrii Nakryiko <andrii@kernel.org>, linux-fsdevel@vger.kernel.org,
+	brauner@kernel.org, viro@zeniv.linux.org.uk,
+	akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
+	bpf@vger.kernel.org, linux-mm@kvack.org,
+	Daniel =?iso-8859-1?Q?M=FCller?= <deso@posteo.net>,
+	"linux-perf-use." <linux-perf-users@vger.kernel.org>
+Subject: Re: [PATCH 2/5] fs/procfs: implement efficient VMA querying API for
+ /proc/<pid>/maps
+Message-ID: <Zjk--KLSjdg2kpic@x1>
+References: <20240504003006.3303334-1-andrii@kernel.org>
+ <20240504003006.3303334-3-andrii@kernel.org>
+ <2024050439-janitor-scoff-be04@gregkh>
+ <CAEf4BzZ6CaMrqRR1Rah7=HnTpU5-zw5HUnSH9NWCzAZZ55ZXFQ@mail.gmail.com>
+ <ZjjiFnNRbwsMJ3Gj@x1>
+ <CAEf4BzZJPY0tfLtvFA4BpQr71wO7iz-1-q16cENOAbuT1EX_og@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -62,366 +70,174 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <zdag4h7ztmwn56yrmieisbhno4gpb24k7rgjevp6gc46e5dxak@3stxrh2qfnlu>
+In-Reply-To: <CAEf4BzZJPY0tfLtvFA4BpQr71wO7iz-1-q16cENOAbuT1EX_og@mail.gmail.com>
 
-On Tue, Apr 30, 2024 at 05:27:24PM -0600, Daniel Xu wrote:
-> On Tue, Apr 30, 2024 at 05:42:14PM GMT, Arnaldo Carvalho de Melo wrote:
-> > On Mon, Apr 29, 2024 at 04:46:00PM -0600, Daniel Xu wrote:
-> > > This commit teaches pahole to parse symbols in .BTF_ids section in
-> > > vmlinux and discover exported kfuncs. Pahole then takes the list of
-> > > kfuncs and injects a BTF_KIND_DECL_TAG for each kfunc.
-> > > 
-> > > Example of encoding:
-> > > 
-> > >         $ bpftool btf dump file .tmp_vmlinux.btf | rg "DECL_TAG 'bpf_kfunc'" | wc -l
-> > >         121
-> > > 
-> > >         $ bpftool btf dump file .tmp_vmlinux.btf | rg 56337
-> > >         [56337] FUNC 'bpf_ct_change_timeout' type_id=56336 linkage=static
-> > >         [127861] DECL_TAG 'bpf_kfunc' type_id=56337 component_idx=-1
-> > > 
-> > > This enables downstream users and tools to dynamically discover which
-> > > kfuncs are available on a system by parsing vmlinux or module BTF, both
-> > > available in /sys/kernel/btf.
-> > > 
-> > > This feature is enabled with --btf_features=decl_tag,decl_tag_kfuncs.
-> > 
-> > I'm trying this but:
-> > 
-> > ⬢[acme@toolbox pahole]$ time pahole -j --btf_features=decl_tag,decl_tag_kfuncs --btf_encode_detached=vmlinux.btf.decl_tag,decl_tag_kfuncs vmlinux
-> > btf_encoder__tag_kfuncs(cgroup_rstat_updated): found=0
-> > btf_encoder__tag_kfuncs(cgroup_rstat_flush): found=0
-> > btf_encoder__tag_kfuncs(security_file_permission): found=0
-> > btf_encoder__tag_kfuncs(security_inode_getattr): found=0
-> > btf_encoder__tag_kfuncs(security_file_open): found=0
-> > btf_encoder__tag_kfuncs(security_path_truncate): found=0
-> > btf_encoder__tag_kfuncs(vfs_truncate): found=0
-> > btf_encoder__tag_kfuncs(vfs_fallocate): found=0
-> > btf_encoder__tag_kfuncs(dentry_open): found=0
-> > btf_encoder__tag_kfuncs(vfs_getattr): found=0
-> > btf_encoder__tag_kfuncs(filp_close): found=0
-> > btf_encoder__tag_kfuncs(bpf_lookup_user_key): found=0
-> > btf_encoder__tag_kfuncs(bpf_lookup_system_key): found=0
-> > btf_encoder__tag_kfuncs(bpf_key_put): found=0
-> > btf_encoder__tag_kfuncs(bpf_verify_pkcs7_signature): found=0
-> > btf_encoder__tag_kfuncs(bpf_obj_new_impl): found=0
-> > <SNIP all with found=0>
-> > 
-> > With:
-> > 
-> > ⬢[acme@toolbox pahole]$ git diff -U16
-> > diff --git a/btf_encoder.c b/btf_encoder.c
-> > index c2df2bc7a374447b..27a16d6564381b60 100644
-> > --- a/btf_encoder.c
-> > +++ b/btf_encoder.c
-> > @@ -1689,32 +1689,35 @@ static int btf_encoder__tag_kfuncs(struct btf_encoder *encoder)
-> >  		func = get_func_name(name);
-> >  		if (!func)
-> >  			continue;
-> >  
-> >  		/* Check if function belongs to a kfunc set */
-> >  		ranges = gobuffer__entries(&btf_kfunc_ranges);
-> >  		ranges_cnt = gobuffer__nr_entries(&btf_kfunc_ranges);
-> >  		found = false;
-> >  		for (j = 0; j < ranges_cnt; j++) {
-> >  			size_t addr = sym.st_value;
-> >  
-> >  			if (ranges[j].start <= addr && addr < ranges[j].end) {
-> >  				found = true;
-> >  				break;
-> >  			}
-> >  		}
-> > +
-> > +		printf("%s(%s): found=%d\n", __func__, func, found);
-> > +
-> >  		if (!found) {
-> >  			free(func);
-> >  			continue;
-> >  		}
-> >  
-> >  		err = btf_encoder__tag_kfunc(encoder, &btf_funcs, func);
-> >  		if (err) {
-> >  			fprintf(stderr, "%s: failed to tag kfunc '%s'\n", __func__, func);
-> >  			free(func);
-> >  			goto out;
-> >  		}
-> >  		free(func);
-> >  	}
-> >  
-> >  	err = 0;
-> >  out:
-> > 
-> > --------------
-> > 
-> > The vmlinux I'm testing on has the kfuncs, etc, as we can see with:
-> > 
-> > ⬢[acme@toolbox pahole]$ readelf -sW vmlinux | grep __BTF_ID__func__ | wc -l
-> > 517
-> > ⬢[acme@toolbox pahole]$ readelf -sW vmlinux | grep __BTF_ID__func__ | tail
-> >  97887: ffffffff83266bfc     4 OBJECT  LOCAL  DEFAULT   15 __BTF_ID__func__cubictcp_cong_avoid__805493
-> >  97888: ffffffff83266c04     4 OBJECT  LOCAL  DEFAULT   15 __BTF_ID__func__cubictcp_state__806494
-> >  97889: ffffffff83266c0c     4 OBJECT  LOCAL  DEFAULT   15 __BTF_ID__func__cubictcp_cwnd_event__807495
-> >  97890: ffffffff83266c14     4 OBJECT  LOCAL  DEFAULT   15 __BTF_ID__func__cubictcp_acked__808496
-> >  98068: ffffffff83266c24     4 OBJECT  LOCAL  DEFAULT   15 __BTF_ID__func__tcp_reno_ssthresh__773199
-> >  98069: ffffffff83266c2c     4 OBJECT  LOCAL  DEFAULT   15 __BTF_ID__func__tcp_reno_cong_avoid__774200
-> >  98070: ffffffff83266c34     4 OBJECT  LOCAL  DEFAULT   15 __BTF_ID__func__tcp_reno_undo_cwnd__775201
-> >  98071: ffffffff83266c3c     4 OBJECT  LOCAL  DEFAULT   15 __BTF_ID__func__tcp_slow_start__776202
-> >  98072: ffffffff83266c44     4 OBJECT  LOCAL  DEFAULT   15 __BTF_ID__func__tcp_cong_avoid_ai__777203
-> > 101522: ffffffff83266c5c     4 OBJECT  LOCAL  DEFAULT   15 __BTF_ID__func__update_socket_protocol__80024
-> > ⬢[acme@toolbox pahole]$
-> > 
-> > 
-> > So that btf_encoder__tag_kfuncs() isn't finding any?
-> > 
-> > $ pahole -j --btf_features=decl_tag,decl_tag_kfuncs --btf_encode_detached=vmlinux.btf.decl_tag,decl_tag_kfuncs vmlinux
-> > btf_encoder__tag_kfuncs(vmlinux)
-> > 
-> > Yeah, getting the source filename, the right one.
-> > 
-> > Then is_sym_kfunc_set() never returns true... But:
-> > 
-> > ⬢[acme@toolbox pahole]$ time pahole -j --btf_features=decl_tag,decl_tag_kfuncs --btf_encode_detached=vmlinux.btf.decl_tag,decl_tag_kfuncs vmlinux
-> > is_sym_kfunc_set(__BTF_ID__set8__bpf_rstat_kfunc_ids, BTF_ID_SET8_PFX=__BTF_ID__set8__)
-> > is_sym_kfunc_set(__BTF_ID__set8__key_sig_kfunc_set, BTF_ID_SET8_PFX=__BTF_ID__set8__)
-> > is_sym_kfunc_set(__BTF_ID__set8__generic_btf_ids, BTF_ID_SET8_PFX=__BTF_ID__set8__)
-> > is_sym_kfunc_set(__BTF_ID__set8__common_btf_ids, BTF_ID_SET8_PFX=__BTF_ID__set8__)
-> > is_sym_kfunc_set(__BTF_ID__set8__bpf_map_iter_kfunc_ids, BTF_ID_SET8_PFX=__BTF_ID__set8__)
-> > is_sym_kfunc_set(__BTF_ID__set8__cpumask_kfunc_btf_ids, BTF_ID_SET8_PFX=__BTF_ID__set8__)
-> > is_sym_kfunc_set(__BTF_ID__set8__hid_bpf_kfunc_ids, BTF_ID_SET8_PFX=__BTF_ID__set8__)
-> > is_sym_kfunc_set(__BTF_ID__set8__hid_bpf_fmodret_ids, BTF_ID_SET8_PFX=__BTF_ID__set8__)
-> > is_sym_kfunc_set(__BTF_ID__set8__hid_bpf_syscall_kfunc_ids, BTF_ID_SET8_PFX=__BTF_ID__set8__)
-> > is_sym_kfunc_set(__BTF_ID__set8__bpf_kfunc_check_set_skb, BTF_ID_SET8_PFX=__BTF_ID__set8__)
-> > is_sym_kfunc_set(__BTF_ID__set8__bpf_kfunc_check_set_xdp, BTF_ID_SET8_PFX=__BTF_ID__set8__)
-> > is_sym_kfunc_set(__BTF_ID__set8__bpf_kfunc_check_set_sock_addr, BTF_ID_SET8_PFX=__BTF_ID__set8__)
-> > is_sym_kfunc_set(__BTF_ID__set8__bpf_sk_iter_kfunc_ids, BTF_ID_SET8_PFX=__BTF_ID__set8__)
-> > is_sym_kfunc_set(__BTF_ID__set8__xdp_metadata_kfunc_ids, BTF_ID_SET8_PFX=__BTF_ID__set8__)
-> > is_sym_kfunc_set(__BTF_ID__set8__bpf_test_modify_return_ids, BTF_ID_SET8_PFX=__BTF_ID__set8__)
-> > is_sym_kfunc_set(__BTF_ID__set8__test_sk_check_kfunc_ids, BTF_ID_SET8_PFX=__BTF_ID__set8__)
-> > is_sym_kfunc_set(__BTF_ID__set8__tcp_cubic_check_kfunc_ids, BTF_ID_SET8_PFX=__BTF_ID__set8__)
-> > is_sym_kfunc_set(__BTF_ID__set8__bpf_tcp_ca_check_kfunc_ids, BTF_ID_SET8_PFX=__BTF_ID__set8__)
-> > is_sym_kfunc_set(__BTF_ID__set8__bpf_mptcp_fmodret_ids, BTF_ID_SET8_PFX=__BTF_ID__set8__)
-> > 
-> > real	0m5.586s
-> > user	0m29.707s
-> > sys	0m2.160s
-> > ⬢[acme@toolbox pahole]$
-> > 
-> > And then:
-> > 
-> > ⬢[acme@toolbox pahole]$ time pahole -j --btf_features=decl_tag,decl_tag_kfuncs --btf_encode_detached=vmlinux.btf.decl_tag,decl_tag_kfuncs vmlinux
-> > is_sym_kfunc_set(__BTF_ID__set8__bpf_rstat_kfunc_ids, BTF_ID_SET8_PFX=__BTF_ID__set8__, set->flags= 0, BTF_SET8_KFUNCS=1, ret=0)
-> > is_sym_kfunc_set(__BTF_ID__set8__key_sig_kfunc_set, BTF_ID_SET8_PFX=__BTF_ID__set8__, set->flags= 0, BTF_SET8_KFUNCS=1, ret=0)
-> > is_sym_kfunc_set(__BTF_ID__set8__generic_btf_ids, BTF_ID_SET8_PFX=__BTF_ID__set8__, set->flags= 0, BTF_SET8_KFUNCS=1, ret=0)
-> > is_sym_kfunc_set(__BTF_ID__set8__common_btf_ids, BTF_ID_SET8_PFX=__BTF_ID__set8__, set->flags= 0, BTF_SET8_KFUNCS=1, ret=0)
-> > is_sym_kfunc_set(__BTF_ID__set8__bpf_map_iter_kfunc_ids, BTF_ID_SET8_PFX=__BTF_ID__set8__, set->flags= 0, BTF_SET8_KFUNCS=1, ret=0)
-> > is_sym_kfunc_set(__BTF_ID__set8__cpumask_kfunc_btf_ids, BTF_ID_SET8_PFX=__BTF_ID__set8__, set->flags= 0, BTF_SET8_KFUNCS=1, ret=0)
-> > is_sym_kfunc_set(__BTF_ID__set8__hid_bpf_kfunc_ids, BTF_ID_SET8_PFX=__BTF_ID__set8__, set->flags= 0, BTF_SET8_KFUNCS=1, ret=0)
-> > is_sym_kfunc_set(__BTF_ID__set8__hid_bpf_fmodret_ids, BTF_ID_SET8_PFX=__BTF_ID__set8__, set->flags= 0, BTF_SET8_KFUNCS=1, ret=0)
-> > is_sym_kfunc_set(__BTF_ID__set8__hid_bpf_syscall_kfunc_ids, BTF_ID_SET8_PFX=__BTF_ID__set8__, set->flags= 0, BTF_SET8_KFUNCS=1, ret=0)
-> > is_sym_kfunc_set(__BTF_ID__set8__bpf_kfunc_check_set_skb, BTF_ID_SET8_PFX=__BTF_ID__set8__, set->flags= 0, BTF_SET8_KFUNCS=1, ret=0)
-> > is_sym_kfunc_set(__BTF_ID__set8__bpf_kfunc_check_set_xdp, BTF_ID_SET8_PFX=__BTF_ID__set8__, set->flags= 0, BTF_SET8_KFUNCS=1, ret=0)
-> > is_sym_kfunc_set(__BTF_ID__set8__bpf_kfunc_check_set_sock_addr, BTF_ID_SET8_PFX=__BTF_ID__set8__, set->flags= 0, BTF_SET8_KFUNCS=1, ret=0)
-> > is_sym_kfunc_set(__BTF_ID__set8__bpf_sk_iter_kfunc_ids, BTF_ID_SET8_PFX=__BTF_ID__set8__, set->flags= 0, BTF_SET8_KFUNCS=1, ret=0)
-> > is_sym_kfunc_set(__BTF_ID__set8__xdp_metadata_kfunc_ids, BTF_ID_SET8_PFX=__BTF_ID__set8__, set->flags= 0, BTF_SET8_KFUNCS=1, ret=0)
-> > is_sym_kfunc_set(__BTF_ID__set8__bpf_test_modify_return_ids, BTF_ID_SET8_PFX=__BTF_ID__set8__, set->flags= 0, BTF_SET8_KFUNCS=1, ret=0)
-> > is_sym_kfunc_set(__BTF_ID__set8__test_sk_check_kfunc_ids, BTF_ID_SET8_PFX=__BTF_ID__set8__, set->flags= 0, BTF_SET8_KFUNCS=1, ret=0)
-> > is_sym_kfunc_set(__BTF_ID__set8__tcp_cubic_check_kfunc_ids, BTF_ID_SET8_PFX=__BTF_ID__set8__, set->flags= 0, BTF_SET8_KFUNCS=1, ret=0)
-> > is_sym_kfunc_set(__BTF_ID__set8__bpf_tcp_ca_check_kfunc_ids, BTF_ID_SET8_PFX=__BTF_ID__set8__, set->flags= 0, BTF_SET8_KFUNCS=1, ret=0)
-> > is_sym_kfunc_set(__BTF_ID__set8__bpf_mptcp_fmodret_ids, BTF_ID_SET8_PFX=__BTF_ID__set8__, set->flags= 0, BTF_SET8_KFUNCS=1, ret=0)
+On Mon, May 06, 2024 at 11:41:43AM -0700, Andrii Nakryiko wrote:
+> On Mon, May 6, 2024 at 6:58 AM Arnaldo Carvalho de Melo <acme@kernel.org> wrote:
+> >
+> > On Sat, May 04, 2024 at 02:50:31PM -0700, Andrii Nakryiko wrote:
+> > > On Sat, May 4, 2024 at 8:28 AM Greg KH <gregkh@linuxfoundation.org> wrote:
+> > > > On Fri, May 03, 2024 at 05:30:03PM -0700, Andrii Nakryiko wrote:
+> > > > > Note also, that fetching VMA name (e.g., backing file path, or special
+> > > > > hard-coded or user-provided names) is optional just like build ID. If
+> > > > > user sets vma_name_size to zero, kernel code won't attempt to retrieve
+> > > > > it, saving resources.
+> >
+> > > > > Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+> >
+> > > > Where is the userspace code that uses this new api you have created?
+> >
+> > > So I added a faithful comparison of existing /proc/<pid>/maps vs new
+> > > ioctl() API to solve a common problem (as described above) in patch
+> > > #5. The plan is to put it in mentioned blazesym library at the very
+> > > least.
+> > >
+> > > I'm sure perf would benefit from this as well (cc'ed Arnaldo and
+> > > linux-perf-user), as they need to do stack symbolization as well.
+> >
+> > At some point, when BPF iterators became a thing we thought about, IIRC
+> > Jiri did some experimentation, but I lost track, of using BPF to
+> > synthesize PERF_RECORD_MMAP2 records for pre-existing maps, the layout
+> > as in uapi/linux/perf_event.h:
+> >
+> >         /*
+> >          * The MMAP2 records are an augmented version of MMAP, they add
+> >          * maj, min, ino numbers to be used to uniquely identify each mapping
+> >          *
+> >          * struct {
+> >          *      struct perf_event_header        header;
+> >          *
+> >          *      u32                             pid, tid;
+> >          *      u64                             addr;
+> >          *      u64                             len;
+> >          *      u64                             pgoff;
+> >          *      union {
+> >          *              struct {
+> >          *                      u32             maj;
+> >          *                      u32             min;
+> >          *                      u64             ino;
+> >          *                      u64             ino_generation;
+> >          *              };
+> >          *              struct {
+> >          *                      u8              build_id_size;
+> >          *                      u8              __reserved_1;
+> >          *                      u16             __reserved_2;
+> >          *                      u8              build_id[20];
+> >          *              };
+> >          *      };
+> >          *      u32                             prot, flags;
+> >          *      char                            filename[];
+> >          *      struct sample_id                sample_id;
+> >          * };
+> >          */
+> >         PERF_RECORD_MMAP2                       = 10,
+> >
+> >  *   PERF_RECORD_MISC_MMAP_BUILD_ID      - PERF_RECORD_MMAP2 event
+> >
+> > As perf.data files can be used for many purposes we want them all, so we
 > 
-> set->flags=0 here is odd. I'd expect at least some of those to be
-> non-zero. Can you check if your tree has
-> https://github.com/torvalds/linux/commit/6f3189f38a3e995232e028a4c341164c4aca1b20
-> ?
+> ok, so because you want them all and you don't know which VMAs will be
+> useful or not, it's a different problem. BPF iterators will be faster
+> purely due to avoiding binary -> text -> binary conversion path, but
+> other than that you'll still retrieve all VMAs.
 
-⬢[acme@toolbox linux]$ git tag --contains 6f3189f38a3e995232e028a4c341164c4aca1b20
-v6.9-rc1
-v6.9-rc2
-v6.9-rc3
-v6.9-rc4
-v6.9-rc5
-v6.9-rc6
-v6.9-rc7
-⬢[acme@toolbox linux]$ git log --oneline -1
-dd5a440a31fae6e4 (HEAD, tag: v6.9-rc7, torvalds/master) Linux 6.9-rc7
-⬢[acme@toolbox linux]$
+But not using tons of syscalls to parse text data from /proc.
+ 
+> You can still do the same full VMA iteration with this new API, of
+> course, but advantages are probably smaller as you'll be retrieving a
+> full set of VMAs regardless (though it would be interesting to compare
+> anyways).
 
-So now with a just built upstream kernel I get the output below, do you
-have patches for other tools to consume this? Or does, say, bpftrace
-already handles such decl tags, etc?
+sure, I can't see how it would be faster, but yeah, interesting to see
+what is the difference.
+ 
+> > setup a meta data perf file descriptor to go on receiving the new mmaps
+> > while we read /proc/<pid>/maps, to reduce the chance of missing maps, do
+> > it in parallel, etc:
+> >
+> > ⬢[acme@toolbox perf-tools-next]$ perf record -h 'event synthesis'
+> >
+> >  Usage: perf record [<options>] [<command>]
+> >     or: perf record [<options>] -- <command> [<options>]
+> >
+> >         --num-thread-synthesize <n>
+> >                           number of threads to run for event synthesis
+> >         --synth <no|all|task|mmap|cgroup>
+> >                           Fine-tune event synthesis: default=all
+> >
+> > ⬢[acme@toolbox perf-tools-next]$
+> >
+> > For this specific initial synthesis of everything the plan, as mentioned
+> > about Jiri's experiments, was to use a BPF iterator to just feed the
+> > perf ring buffer with those events, that way userspace would just
+> > receive the usual records it gets when a new mmap is put in place, the
+> > BPF iterator would just feed the preexisting mmaps, as instructed via
+> > the perf_event_attr for the perf_event_open syscall.
+> >
+> > For people not wanting BPF, i.e. disabling it altogether in perf or
+> > disabling just BPF skels, then we would fallback to the current method,
+> > or to the one being discussed here when it becomes available.
+> >
+> > One thing to have in mind is for this iterator not to generate duplicate
+> > records for non-pre-existing mmaps, i.e. we would need some generation
+> > number that would be bumped when asking for such pre-existing maps
+> > PERF_RECORD_MMAP2 dumps.
+> 
+> Looking briefly at struct vm_area_struct, it doesn't seems like the
+> kernel maintains any sort of generation (at least not at
+> vm_area_struct level), so this would be nice to have, I'm sure, but
 
-I think I'll make pfunct (its in the pahole git repo) to consume it:
+Yeah, this would be something specific to the "retrieve me the list of
+VMAs" bulky thing, i.e. the kernel perf code (or the BPF that would
+generate the PERF_RECORD_MMAP2 records by using a BPF vma iterator)
+would bump the generation number and store it to the VMA in
+perf_event_mmap() so that the iterator doesn't consider it, as it is a
+new mmap that is being just sent to whoever is listening, and the perf
+tool that put in place the BPF program to iterate is listening.
 
-⬢[acme@toolbox pahole]$ pfunct --help
-Usage: pfunct [OPTION...] FILE
+> isn't really related to adding this API. Once the kernel does have
 
-  -a, --addr=ADDR            show just the function that where ADDR is
-  -b, --expand_types         Expand types needed by the prototype
-      --compile[=FUNCTION]   Generate compilable source code with types
-                             expanded (Default all functions)
-  -c, --class=CLASS          functions that have CLASS pointer parameters
-  -E, --externals            show just external functions
-  -f, --function=FUNCTION    show just FUNCTION
-  -F, --format_path=FORMAT_LIST   List of debugging formats to try
-  -g, --goto_labels          show number of goto labels
-  -G, --cc_uninlined         declared inline, uninlined by compiler
-  -H, --cc_inlined           not declared inline, inlined by compiler
-  -i, --inline_expansions    show inline expansions
-  -I, --inline_expansions_stats   show inline expansions stats
-  -l, --decl_info            show source code info
-      --no_parm_names        Don't show parameter names
-  -N, --function_name_len    show size of functions names
-  -p, --nr_parms             show number of parameters
-  -P, --prototypes           show function prototypes
-      --symtab[=NAME]        show symbol table NAME (Default .symtab)
-  -s, --sizes                show size of functions
-  -S, --nr_variables         show number of variables
-  -t, --total_inline_stats   show Multi-CU total inline expansions stats
-  -T, --variables            show variables
-  -V, --verbose              be verbose
-  -?, --help                 Give this help list
-      --usage                Give a short usage message
-      --version              Print program version
+Well, perf wants to enumerate pre-existing mmaps _and_ after that
+finishes to know about new mmaps, so we need to know a way to avoid
+having the BPF program enumerating pre-existing maps sending
+PERF_RECORD_MMAP2 for maps perf already knows about via a regular
+PERF_RECORD_MMAP2 sent when a new mmap is put in place.
 
-Mandatory or optional arguments to long options are also mandatory or optional
-for any corresponding short options.
-⬢[acme@toolbox pahole]$
+So there is an overlap where perf (or any other tool wanting to
+enumerate all pre-existing maps and new ones) can receive info for the
+same map from the enumerator and from the existing mechanism generating
+PERF_RECORD_MMAP2 records.
 
 - Arnaldo
 
-⬢[acme@toolbox pahole]$ time pahole -j --btf_features=decl_tag,decl_tag_kfuncs --btf_encode_detached=vmlinux.btf.decl_tag,decl_tag_kfuncs vmlinux-v6.9.0-rc7
-
-real	0m5.938s
-user	0m32.050s
-sys	0m2.075s
-⬢[acme@toolbox pahole]$ bpftool btf dump file vmlinux.btf.decl_tag,decl_tag_kfuncs | grep -w 94151
-[94151] FUNC 'cgroup_rstat_updated' type_id=94150 linkage=static
-[135450] DECL_TAG 'bpf_kfunc' type_id=94151 component_idx=-1
-⬢[acme@toolbox pahole]$ bpftool btf dump file vmlinux.btf.decl_tag,decl_tag_kfuncs | grep -w 94150 -A2
-[94150] FUNC_PROTO '(anon)' ret_type_id=0 vlen=2
-	'cgrp' type_id=744
-	'cpu' type_id=12
-[94151] FUNC 'cgroup_rstat_updated' type_id=94150 linkage=static
-[94152] STRUCT 'pids_cgroup' size=288 vlen=6
-	'css' type_id=1786 bits_offset=0
-⬢[acme@toolbox pahole]$
-⬢[acme@toolbox pahole]$ bpftool btf dump file vmlinux.btf.decl_tag,decl_tag_kfuncs  | grep DECL
-	'BTF_KIND_DECL_TAG' val=17
-[135450] DECL_TAG 'bpf_kfunc' type_id=94151 component_idx=-1
-[135451] DECL_TAG 'bpf_kfunc' type_id=94146 component_idx=-1
-[135452] DECL_TAG 'bpf_kfunc' type_id=74311 component_idx=-1
-[135453] DECL_TAG 'bpf_kfunc' type_id=74309 component_idx=-1
-[135454] DECL_TAG 'bpf_kfunc' type_id=74307 component_idx=-1
-[135455] DECL_TAG 'bpf_kfunc' type_id=74305 component_idx=-1
-[135456] DECL_TAG 'bpf_kfunc' type_id=74302 component_idx=-1
-[135457] DECL_TAG 'bpf_kfunc' type_id=43681 component_idx=-1
-[135458] DECL_TAG 'bpf_kfunc' type_id=83157 component_idx=-1
-[135459] DECL_TAG 'bpf_kfunc' type_id=83156 component_idx=-1
-[135460] DECL_TAG 'bpf_kfunc' type_id=83152 component_idx=-1
-[135461] DECL_TAG 'bpf_kfunc' type_id=83151 component_idx=-1
-[135462] DECL_TAG 'bpf_kfunc' type_id=83149 component_idx=-1
-[135463] DECL_TAG 'bpf_kfunc' type_id=83145 component_idx=-1
-[135464] DECL_TAG 'bpf_kfunc' type_id=83144 component_idx=-1
-[135465] DECL_TAG 'bpf_kfunc' type_id=83142 component_idx=-1
-[135466] DECL_TAG 'bpf_kfunc' type_id=83141 component_idx=-1
-[135467] DECL_TAG 'bpf_kfunc' type_id=83133 component_idx=-1
-[135468] DECL_TAG 'bpf_kfunc' type_id=83132 component_idx=-1
-[135469] DECL_TAG 'bpf_kfunc' type_id=83139 component_idx=-1
-[135470] DECL_TAG 'bpf_kfunc' type_id=83137 component_idx=-1
-[135471] DECL_TAG 'bpf_kfunc' type_id=83135 component_idx=-1
-[135472] DECL_TAG 'bpf_kfunc' type_id=83130 component_idx=-1
-[135473] DECL_TAG 'bpf_kfunc' type_id=83128 component_idx=-1
-[135474] DECL_TAG 'bpf_kfunc' type_id=83125 component_idx=-1
-[135475] DECL_TAG 'bpf_kfunc' type_id=83123 component_idx=-1
-[135476] DECL_TAG 'bpf_kfunc' type_id=83121 component_idx=-1
-[135477] DECL_TAG 'bpf_kfunc' type_id=83119 component_idx=-1
-[135478] DECL_TAG 'bpf_kfunc' type_id=83117 component_idx=-1
-[135479] DECL_TAG 'bpf_kfunc' type_id=83095 component_idx=-1
-[135480] DECL_TAG 'bpf_kfunc' type_id=83103 component_idx=-1
-[135481] DECL_TAG 'bpf_kfunc' type_id=83101 component_idx=-1
-[135482] DECL_TAG 'bpf_kfunc' type_id=83099 component_idx=-1
-[135483] DECL_TAG 'bpf_kfunc' type_id=83098 component_idx=-1
-[135484] DECL_TAG 'bpf_kfunc' type_id=83115 component_idx=-1
-[135485] DECL_TAG 'bpf_kfunc' type_id=83114 component_idx=-1
-[135486] DECL_TAG 'bpf_kfunc' type_id=24936 component_idx=-1
-[135487] DECL_TAG 'bpf_kfunc' type_id=24934 component_idx=-1
-[135488] DECL_TAG 'bpf_kfunc' type_id=24932 component_idx=-1
-[135489] DECL_TAG 'bpf_kfunc' type_id=35395 component_idx=-1
-[135490] DECL_TAG 'bpf_kfunc' type_id=35393 component_idx=-1
-[135491] DECL_TAG 'bpf_kfunc' type_id=35391 component_idx=-1
-[135492] DECL_TAG 'bpf_kfunc' type_id=35389 component_idx=-1
-[135493] DECL_TAG 'bpf_kfunc' type_id=35387 component_idx=-1
-[135494] DECL_TAG 'bpf_kfunc' type_id=35385 component_idx=-1
-[135495] DECL_TAG 'bpf_kfunc' type_id=129497 component_idx=-1
-[135496] DECL_TAG 'bpf_kfunc' type_id=129495 component_idx=-1
-[135497] DECL_TAG 'bpf_kfunc' type_id=129493 component_idx=-1
-[135498] DECL_TAG 'bpf_kfunc' type_id=35383 component_idx=-1
-[135499] DECL_TAG 'bpf_kfunc' type_id=35381 component_idx=-1
-[135500] DECL_TAG 'bpf_kfunc' type_id=35379 component_idx=-1
-[135501] DECL_TAG 'bpf_kfunc' type_id=83112 component_idx=-1
-[135502] DECL_TAG 'bpf_kfunc' type_id=83110 component_idx=-1
-[135503] DECL_TAG 'bpf_kfunc' type_id=83109 component_idx=-1
-[135504] DECL_TAG 'bpf_kfunc' type_id=83107 component_idx=-1
-[135505] DECL_TAG 'bpf_kfunc' type_id=83105 component_idx=-1
-[135506] DECL_TAG 'bpf_kfunc' type_id=129409 component_idx=-1
-[135507] DECL_TAG 'bpf_kfunc' type_id=119719 component_idx=-1
-[135508] DECL_TAG 'bpf_kfunc' type_id=119717 component_idx=-1
-[135509] DECL_TAG 'bpf_kfunc' type_id=83434 component_idx=-1
-[135510] DECL_TAG 'bpf_kfunc' type_id=83430 component_idx=-1
-[135511] DECL_TAG 'bpf_kfunc' type_id=83432 component_idx=-1
-[135512] DECL_TAG 'bpf_kfunc' type_id=83427 component_idx=-1
-[135513] DECL_TAG 'bpf_kfunc' type_id=83426 component_idx=-1
-[135514] DECL_TAG 'bpf_kfunc' type_id=83425 component_idx=-1
-[135515] DECL_TAG 'bpf_kfunc' type_id=83424 component_idx=-1
-[135516] DECL_TAG 'bpf_kfunc' type_id=83423 component_idx=-1
-[135517] DECL_TAG 'bpf_kfunc' type_id=83421 component_idx=-1
-[135518] DECL_TAG 'bpf_kfunc' type_id=83419 component_idx=-1
-[135519] DECL_TAG 'bpf_kfunc' type_id=83418 component_idx=-1
-[135520] DECL_TAG 'bpf_kfunc' type_id=83416 component_idx=-1
-[135521] DECL_TAG 'bpf_kfunc' type_id=83415 component_idx=-1
-[135522] DECL_TAG 'bpf_kfunc' type_id=83413 component_idx=-1
-[135523] DECL_TAG 'bpf_kfunc' type_id=83411 component_idx=-1
-[135524] DECL_TAG 'bpf_kfunc' type_id=83410 component_idx=-1
-[135525] DECL_TAG 'bpf_kfunc' type_id=83408 component_idx=-1
-[135526] DECL_TAG 'bpf_kfunc' type_id=83407 component_idx=-1
-[135527] DECL_TAG 'bpf_kfunc' type_id=83406 component_idx=-1
-[135528] DECL_TAG 'bpf_kfunc' type_id=83404 component_idx=-1
-[135529] DECL_TAG 'bpf_kfunc' type_id=83403 component_idx=-1
-[135530] DECL_TAG 'bpf_kfunc' type_id=83401 component_idx=-1
-[135531] DECL_TAG 'bpf_kfunc' type_id=83399 component_idx=-1
-[135532] DECL_TAG 'bpf_kfunc' type_id=83398 component_idx=-1
-[135533] DECL_TAG 'bpf_kfunc' type_id=83396 component_idx=-1
-[135534] DECL_TAG 'bpf_kfunc' type_id=84592 component_idx=-1
-[135535] DECL_TAG 'bpf_kfunc' type_id=78862 component_idx=-1
-[135536] DECL_TAG 'bpf_kfunc' type_id=78855 component_idx=-1
-[135537] DECL_TAG 'bpf_kfunc' type_id=78853 component_idx=-1
-[135538] DECL_TAG 'bpf_kfunc' type_id=78851 component_idx=-1
-[135539] DECL_TAG 'bpf_kfunc' type_id=78849 component_idx=-1
-[135540] DECL_TAG 'bpf_kfunc' type_id=52826 component_idx=-1
-[135541] DECL_TAG 'bpf_kfunc' type_id=52825 component_idx=-1
-[135542] DECL_TAG 'bpf_kfunc' type_id=52823 component_idx=-1
-[135543] DECL_TAG 'bpf_kfunc' type_id=52821 component_idx=-1
-[135544] DECL_TAG 'bpf_kfunc' type_id=52816 component_idx=-1
-[135545] DECL_TAG 'bpf_kfunc' type_id=79148 component_idx=-1
-[135546] DECL_TAG 'bpf_kfunc' type_id=79146 component_idx=-1
-[135547] DECL_TAG 'bpf_kfunc' type_id=79144 component_idx=-1
-[135548] DECL_TAG 'bpf_kfunc' type_id=33070 component_idx=-1
-[135549] DECL_TAG 'bpf_kfunc' type_id=33068 component_idx=-1
-[135550] DECL_TAG 'bpf_kfunc' type_id=33088 component_idx=-1
-[135551] DECL_TAG 'bpf_kfunc' type_id=33064 component_idx=-1
-[135552] DECL_TAG 'bpf_kfunc' type_id=33061 component_idx=-1
-[135553] DECL_TAG 'bpf_kfunc' type_id=134975 component_idx=-1
-[135554] DECL_TAG 'bpf_kfunc' type_id=134971 component_idx=-1
-[135555] DECL_TAG 'bpf_kfunc' type_id=134972 component_idx=-1
-[135556] DECL_TAG 'bpf_kfunc' type_id=134970 component_idx=-1
-[135557] DECL_TAG 'bpf_kfunc' type_id=134974 component_idx=-1
-[135558] DECL_TAG 'bpf_kfunc' type_id=134969 component_idx=-1
-[135559] DECL_TAG 'bpf_kfunc' type_id=53825 component_idx=-1
-[135560] DECL_TAG 'bpf_kfunc' type_id=53827 component_idx=-1
-[135561] DECL_TAG 'bpf_kfunc' type_id=53824 component_idx=-1
-[135562] DECL_TAG 'bpf_kfunc' type_id=53831 component_idx=-1
-[135563] DECL_TAG 'bpf_kfunc' type_id=53829 component_idx=-1
-[135564] DECL_TAG 'bpf_kfunc' type_id=21317 component_idx=-1
-[135565] DECL_TAG 'bpf_kfunc' type_id=21315 component_idx=-1
-⬢[acme@toolbox pahole]$
+> this "VMA generation" counter, it can be trivially added to this
+> binary interface (which can't be said about /proc/<pid>/maps,
+> unfortunately).
+> 
+> >
+> > > It will be up to other similar projects to adopt this, but we'll
+> > > definitely get this into blazesym as it is actually a problem for the
+> >
+> > At some point looking at plugging blazesym somehow with perf may be
+> > something to consider, indeed.
+> 
+> In the above I meant direct use of this new API in perf code itself,
+> but yes, blazesym is a generic library for symbolization that handles
+> ELF/DWARF/GSYM (and I believe more formats), so it indeed might make
+> sense to use it.
+> 
+> >
+> > - Arnaldo
+> >
+> > > abovementioned Oculus use case. We already had to make a tradeoff (see
+> > > [2], this wasn't done just because we could, but it was requested by
+> > > Oculus customers) to cache the contents of /proc/<pid>/maps and run
+> > > the risk of missing some shared libraries that can be loaded later. It
+> > > would be great to not have to do this tradeoff, which this new API
+> > > would enable.
+> > >
+> > >   [2] https://github.com/libbpf/blazesym/commit/6b521314126b3ae6f2add43e93234b59fed48ccf
+> > >
+> 
+> [...]
 
