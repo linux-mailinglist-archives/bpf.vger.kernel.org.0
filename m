@@ -1,141 +1,169 @@
-Return-Path: <bpf+bounces-28734-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-28735-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 78B748BD816
-	for <lists+bpf@lfdr.de>; Tue,  7 May 2024 01:15:22 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 317668BD82F
+	for <lists+bpf@lfdr.de>; Tue,  7 May 2024 01:29:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6552AB21C15
-	for <lists+bpf@lfdr.de>; Mon,  6 May 2024 23:15:19 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9BAFB1F23CBF
+	for <lists+bpf@lfdr.de>; Mon,  6 May 2024 23:29:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 15C0615B990;
-	Mon,  6 May 2024 23:15:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B34BA15CD7D;
+	Mon,  6 May 2024 23:29:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Ljc0PDeD"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NMB13Mdu"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f53.google.com (mail-pj1-f53.google.com [209.85.216.53])
+Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com [209.85.128.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6060457C9A
-	for <bpf@vger.kernel.org>; Mon,  6 May 2024 23:15:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 960AD8488
+	for <bpf@vger.kernel.org>; Mon,  6 May 2024 23:29:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715037314; cv=none; b=XbEyzmVLT1UDsj07v5nAtLyyXiHCE8wWOcudJMUGTImwX0BwAE8YfEjP1Xw4GrvEP37Qmfe7506zFDAllrwglGAr/Da6dwtsl42l1c5lhnsAj8AFhl1pTCmRtyJWfsw4Err9ouEv6/5YnaqaruoBYL+QSdg97yddvQcYvmCjhv8=
+	t=1715038160; cv=none; b=VAQW/CmrL1EJaUwyJYkgUyNs9WAtQY8GQTkH3WcY0TwXYD5pLuWfTTwopajEcwPjGO2EEw8oQFtT874vW8txdk2VrDJa38QWHTC73r96+T1uvehY0LEfGl6eI6lTSBGFd+TrJ8FzUAx9Q2RaZabI89Ml545FXHO7UKRV2FwC6Og=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715037314; c=relaxed/simple;
-	bh=Y0nQ2k17NHXmEV0P0iGoNACbaIbr6Kv/zhoy81GEHoo=;
+	s=arc-20240116; t=1715038160; c=relaxed/simple;
+	bh=ezVK+zkyzpvUg0cqM5WFF3qmKh3kV0DzQZ0Ltr+WFCs=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=GHJJw93+4rX+RKU+O0+LcpwxrzDJWiSSqO1YtDX6KQHOoMY6WWDkCdeRooSc0uLI2rZczbAaY5vc5/tWqEHlIdO4fo3M+zqPR55reyPxowFB8nIGDrXTqyYmlF5/OYHL+LKifTzu4qLR9a17ajfJyZocmNuuB31H2Ougr8WhvPg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Ljc0PDeD; arc=none smtp.client-ip=209.85.216.53
+	 To:Cc:Content-Type; b=TRsJYa06CMm5NvYfWrLv1b6tEZ3W9D+YAWiS4WVix4RrQ2ixiTJ7hD+PeehHwz6YQddgBRkJBQK19K4SyNFh/hhGa1kLk97D9gDbzb9PWIPbovfpKEQwRAnOLTZuqfyI7QvYeJc5Cjd4KZTJ9Wf/jjbhpxxqThDpyxLy4u26tuU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=NMB13Mdu; arc=none smtp.client-ip=209.85.128.45
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f53.google.com with SMTP id 98e67ed59e1d1-2b3f5fcecc1so1968727a91.1
-        for <bpf@vger.kernel.org>; Mon, 06 May 2024 16:15:13 -0700 (PDT)
+Received: by mail-wm1-f45.google.com with SMTP id 5b1f17b1804b1-41b7a26326eso18629845e9.3
+        for <bpf@vger.kernel.org>; Mon, 06 May 2024 16:29:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1715037313; x=1715642113; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1715038157; x=1715642957; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=htOD6h0mJABcmUAZn58+/66JdEPxleWucl8hl1MJ0RE=;
-        b=Ljc0PDeDzFA9RcMYiiH+0CtoYEcP5342rjrzFCLU0NjFdLZJg+nDwf5pjbpfrJtTep
-         OSQ6ZY1xBdFC0ONljTAQtr2ij0F8EgHIO70XYAfckJFFOkImygE34Zzkaa3FvRk6pP6z
-         yYyFXA9n6OGgNk8tPVk4cLzvS1fRIeXTOOnVC3VlwjNoI3xwYkrfRuoWSS0OX1IMVc4A
-         fn6w1FOjr5UM6NAR6sg+tiw3jSlPRJdWExr2gpHgp5J/gaA46UkNZL+nYJMhJHmpAe14
-         +j80rERSnCDt/B/ELpgXHySLGoTrGMuisz6UoePcJakdPZfMAsjfbS+jsDOm7ktlWmQg
-         zlWQ==
+        bh=qPvpEpXiPKr3u5v7Z/JE5OlI1VNsE+nCJE2v7Xrub9k=;
+        b=NMB13Mdutnk6jOdXbUXc0F6aWaU4bqw2qO2Js60vGg/zkL/oQnznycbCnH5AnAQnMH
+         +p40dNCG/95vsg+NYDNjoqvyIT7LpcyFhr8K1OSYcmWDGWoZ4w2zVeu9FRngLcYBfst9
+         Y1FzUJ0DxO1UwoA1fy6OEbbTjXFvFezFJZX3tBydKdbVAwyqm3FT3cDk4oyBF509sV4i
+         vTgyXKcXdBM9ueIF6o+77CRVp2t1rZRtH+06+QIwh3bkyEsXyU/9Rr/BIPvdjPQTWiMJ
+         T84f3lf7bIM02Ib0T/9FIKPeT2zNWDELIDwqdXdxWBoJSQmfr6cs0ROXUB/MTXjv4ImU
+         uUOg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1715037313; x=1715642113;
+        d=1e100.net; s=20230601; t=1715038157; x=1715642957;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=htOD6h0mJABcmUAZn58+/66JdEPxleWucl8hl1MJ0RE=;
-        b=V4do2nEx5uCp4huT3OjvfgxXa1UalO6EBe791z8JqJ3Cn9iCnnoK9BQNUhmyCBHE06
-         kqHA2eUNmcdIm7/fDMrS0tI4hrY6zhoHlhP3CjVxi1RG3Ky/O9RLyhr6tLrdHj3SeIAG
-         E3jSdoDHangyGge06btgA35jJIepSFauxiPED91tYth9vaKtsdnl9gujFdV1Pm4Gt31M
-         VQUPVM/eiOsga99AmgfsoZEpTdBi3bg1d16weJp9hGW6xeiMYeKyXA5L/h7F5/TbyVUO
-         GV4ap9ub6jNEifb0C1WHBskL/K7DtY7ocV5jHn+IjdbWWUi8zM7lloKK4uWa34DIWJH9
-         HCdw==
-X-Forwarded-Encrypted: i=1; AJvYcCXxDYkmOHe0s5+JLIviRTQq4DC9GZhcgr4sNe1dP74agAxxjD/zRNL1+ihMlNXFqaa8D8n5t4SWOwsQG6ZtcfDsfZpY
-X-Gm-Message-State: AOJu0YwRBYWObQIx1YBY+ya4bTu+exy9mk76XDppILX9bvY4zy1T+F/R
-	Bk9V24Uv7af4SICNargypjZTavpF/w8+ahX2anKrGRUuur6qhgXPlUWl7KyIiPWKb7yfaLQEbR9
-	suHqYTWprZVa9y6r7ovj4YlkE/80=
-X-Google-Smtp-Source: AGHT+IEW0yNH3035BflMbI2DEPBYMhbY2ZBCOxnWKVx4IPPudqFDmV6LXtapMfdqzSy098QJsS4IyASMGBkeN2uRNWs=
-X-Received: by 2002:a17:90b:4d8b:b0:2b3:2a3b:e4fb with SMTP id
- oj11-20020a17090b4d8b00b002b32a3be4fbmr8357133pjb.24.1715037312479; Mon, 06
- May 2024 16:15:12 -0700 (PDT)
+        bh=qPvpEpXiPKr3u5v7Z/JE5OlI1VNsE+nCJE2v7Xrub9k=;
+        b=jMnBASvdz1NN+RcHLG2Ywr6MR+qMhNOiGp7hhkrJqC6L6UgQqaH48VpfZ6hwER40eg
+         VBW1ZMPZVvssOIF0Dy9JgvNEiZB/Z15hKBSpJeoLB0aca3AoaqA7vXXU1ebCdGPvCPDD
+         FlhpnARU+rB94DtmAhNBhgIAhEI/6UprSLpiM4JKGWeQ62L+DofWkcoqmBpmGO0gRLFs
+         7NTusWy0J7kbzyLXvYlSzKzIFO/ZeWCAnjr3y408bKAyJ0LeIkOeocoXfrTeQbWa2WVy
+         yhugzuea9TyHRmT8NC3HGSOZHeUmU5WY21MdRa9IzVdrJ987Y5Pi144TUftftl3/F+qK
+         iZ3Q==
+X-Forwarded-Encrypted: i=1; AJvYcCXXxhZFF0worjjmiVQduWIYfT10AkQXRSE5Ro76T1XPDh8vsMGVywXMCwvz2PosX/58Yhy+h3axr4InhE1lCI6FYocu
+X-Gm-Message-State: AOJu0YwQaB5Uc7TZOLntwUpkh7cSEqNKdX7elUP8c1vyWPSRi5VwuQ9O
+	yX4LQps5O/FMLhlCvNe5+Zel3ssgMjxL/CoHdZ/fcpt4l5oJU1PQXFG/7cdpH/TfTj2NsLnzKrJ
+	PehPEgnZqWInJLmLC64/jSIVgFLk=
+X-Google-Smtp-Source: AGHT+IHO0wVQSWlW2fcG43Y6ucF5jxPIOI/oTeSr9DRiRFOVE1pcuv7QYKewLrF+ekmxA+D/m+k9Oc4ZjRHsHNjbUG4=
+X-Received: by 2002:a5d:654e:0:b0:34c:e44a:4620 with SMTP id
+ z14-20020a5d654e000000b0034ce44a4620mr7440228wrv.28.1715038156663; Mon, 06
+ May 2024 16:29:16 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240501175035.2476830-1-alan.maguire@oracle.com>
-In-Reply-To: <20240501175035.2476830-1-alan.maguire@oracle.com>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Mon, 6 May 2024 16:15:00 -0700
-Message-ID: <CAEf4BzZPSer7EhZ1uJjQQEhPPo7U+dJJbQuBN+1bnJN64LyPRQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] kbuild,bpf: switch to using --btf_features for
- pahole v1.26 and later
-To: Alan Maguire <alan.maguire@oracle.com>
-Cc: andrii@kernel.org, jolsa@kernel.org, acme@redhat.com, eddyz87@gmail.com, 
-	mykolal@fb.com, ast@kernel.org, daniel@iogearbox.net, martin.lau@linux.dev, 
-	song@kernel.org, yonghong.song@linux.dev, john.fastabend@gmail.com, 
-	kpsingh@kernel.org, sdf@google.com, haoluo@google.com, houtao1@huawei.com, 
-	bpf@vger.kernel.org, masahiroy@kernel.org
+References: <20240430121805.104618-1-lulie@linux.alibaba.com>
+ <20240430121805.104618-2-lulie@linux.alibaba.com> <5d4f681a-6636-4c98-9b1e-5c5170b79f7c@linux.dev>
+In-Reply-To: <5d4f681a-6636-4c98-9b1e-5c5170b79f7c@linux.dev>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Mon, 6 May 2024 16:29:05 -0700
+Message-ID: <CAADnVQJ1tycykaGEkD1ubi-kjFapKJBhffYePNsgQH7qh_9ivw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 1/2] bpf: Allow bpf_dynptr_from_skb() for tp_btf
+To: Martin KaFai Lau <martin.lau@linux.dev>
+Cc: Philo Lu <lulie@linux.alibaba.com>, Daniel Borkmann <daniel@iogearbox.net>, 
+	John Fastabend <john.fastabend@gmail.com>, Alexei Starovoitov <ast@kernel.org>, 
+	Andrii Nakryiko <andrii@kernel.org>, Eddy Z <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
+	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
+	"David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Mykola Lysenko <mykolal@fb.com>, 
+	Shuah Khan <shuah@kernel.org>, Daniel Rosenberg <drosen@google.com>, 
+	Xuan Zhuo <xuanzhuo@linux.alibaba.com>, bpf <bpf@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, May 1, 2024 at 10:51=E2=80=AFAM Alan Maguire <alan.maguire@oracle.c=
-om> wrote:
+On Mon, May 6, 2024 at 2:39=E2=80=AFPM Martin KaFai Lau <martin.lau@linux.d=
+ev> wrote:
 >
-> The btf_features list can be used for pahole v1.26 and later -
-> it is useful because if a feature is not yet implemented it will
-> not exit with a failure message.  This will allow us to add feature
-> requests to the pahole options without having to check pahole versions
-> in future; if the version of pahole supports the feature it will be
-> added.
+> On 4/30/24 5:18 AM, Philo Lu wrote:
+> > Making tp_btf able to use bpf_dynptr_from_skb(), which is useful for sk=
+b
+> > parsing, especially for non-linear paged skb data. This is achieved by
+> > adding KF_TRUSTED_ARGS flag to bpf_dynptr_from_skb and registering it
+> > for TRACING progs. With KF_TRUSTED_ARGS, args from fentry/fexit are
+> > excluded, so that unsafe progs like fexit/__kfree_skb are not allowed.
+> >
+> > We also need the skb dynptr to be read-only in tp_btf. Because
+> > may_access_direct_pkt_data() returns false by default when checking
+> > bpf_dynptr_from_skb, there is no need to add BPF_PROG_TYPE_TRACING to i=
+t
+> > explicitly.
+> >
+> > Signed-off-by: Philo Lu <lulie@linux.alibaba.com>
+> > ---
+> >   net/core/filter.c | 3 ++-
+> >   1 file changed, 2 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/net/core/filter.c b/net/core/filter.c
+> > index 786d792ac816..399492970b8c 100644
+> > --- a/net/core/filter.c
+> > +++ b/net/core/filter.c
+> > @@ -11990,7 +11990,7 @@ int bpf_dynptr_from_skb_rdonly(struct sk_buff *=
+skb, u64 flags,
+> >   }
+> >
+> >   BTF_KFUNCS_START(bpf_kfunc_check_set_skb)
+> > -BTF_ID_FLAGS(func, bpf_dynptr_from_skb)
+> > +BTF_ID_FLAGS(func, bpf_dynptr_from_skb, KF_TRUSTED_ARGS)
 >
-> Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
-> ---
->  scripts/Makefile.btf | 7 +++++--
->  1 file changed, 5 insertions(+), 2 deletions(-)
+> I can see the usefulness of having the same way parsing the header as the
+> tc-bpf. However, it implicitly means the skb->data and skb_shinfo are tru=
+sted
+> also. afaik, it should be as long as skb is not NULL.
 >
-> diff --git a/scripts/Makefile.btf b/scripts/Makefile.btf
-> index 82377e470aed..8e6a9d4b492e 100644
-> --- a/scripts/Makefile.btf
-> +++ b/scripts/Makefile.btf
-> @@ -12,8 +12,11 @@ pahole-flags-$(call test-ge, $(pahole-ver), 121)     +=
-=3D --btf_gen_floats
->
->  pahole-flags-$(call test-ge, $(pahole-ver), 122)       +=3D -j
->
-> -pahole-flags-$(CONFIG_PAHOLE_HAS_LANG_EXCLUDE)         +=3D --lang_exclu=
-de=3Drust
-> -
->  pahole-flags-$(call test-ge, $(pahole-ver), 125)       +=3D --skip_encod=
-ing_btf_inconsistent_proto --btf_gen_optimized
+>  From looking at include/trace/events, there is case that skb is NULL. e.=
+g.
+> tcp_send_reset. It is not something new though, e.g. using skb->sk in the=
+ tp_btf
+> could be bad already. This should be addressed before allowing more kfunc=
+/helper.
 
-given starting from 1.26 we use --btf-features, this should be `=3D=3D
-1.25` condition, not `>=3D 1.25`, right? It doesn't hurt right now, but
-it's best to be explicitly that below `-j --btf_features=3D...` is all
-that's necessary.
+Good catch.
+We need to fix this part first:
+        if (prog_args_trusted(prog))
+                info->reg_type |=3D PTR_TRUSTED;
 
-pw-bot: cr
+Brute force fix by adding PTR_MAYBE_NULL is probably overkill.
+I suspect passing NULL into tracepoint is more of an exception than the rul=
+e.
+Maybe we can use kfunc's "__" suffix approach for tracepoint args?
+[43947] FUNC_PROTO '(anon)' ret_type_id=3D0 vlen=3D4
+        '__data' type_id=3D10
+        'sk' type_id=3D3434
+        'skb' type_id=3D2386
+        'reason' type_id=3D39860
+[43948] FUNC '__bpf_trace_tcp_send_reset' type_id=3D43947 linkage=3Dstatic
 
+Then do:
+diff --git a/include/trace/events/tcp.h b/include/trace/events/tcp.h
+index 49b5ee091cf6..325e8a31729a 100644
+--- a/include/trace/events/tcp.h
++++ b/include/trace/events/tcp.h
+@@ -91,7 +91,7 @@ DEFINE_RST_REASON(FN, FN)
+ TRACE_EVENT(tcp_send_reset,
 
->
-> +# Switch to using --btf_features for v1.26 and later.
-> +pahole-flags-$(call test-ge, $(pahole-ver), 126)       =3D -j --btf_feat=
-ures=3Dencode_force,var,float,enum64,decl_tag,type_tag,optimized_func,consi=
-stent_func
-> +
-> +pahole-flags-$(CONFIG_PAHOLE_HAS_LANG_EXCLUDE)         +=3D --lang_exclu=
-de=3Drust
-> +
->  export PAHOLE_FLAGS :=3D $(pahole-flags-y)
-> --
-> 2.39.3
->
+        TP_PROTO(const struct sock *sk,
+-                const struct sk_buff *skb,
++                const struct sk_buff *skb__nullable,
+
+and detect it in btf_ctx_access().
 
