@@ -1,287 +1,181 @@
-Return-Path: <bpf+bounces-28732-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-28733-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9A1B08BD806
-	for <lists+bpf@lfdr.de>; Tue,  7 May 2024 01:00:16 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DDA348BD80A
+	for <lists+bpf@lfdr.de>; Tue,  7 May 2024 01:10:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1932B1F21E4F
-	for <lists+bpf@lfdr.de>; Mon,  6 May 2024 23:00:16 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E0944B21DA8
+	for <lists+bpf@lfdr.de>; Mon,  6 May 2024 23:10:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4202B15B11F;
-	Mon,  6 May 2024 23:00:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D30015B99E;
+	Mon,  6 May 2024 23:10:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="UHIGa0AW"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="nFF/q6E/"
 X-Original-To: bpf@vger.kernel.org
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f42.google.com (mail-wr1-f42.google.com [209.85.221.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 41EBE13D2A7
-	for <bpf@vger.kernel.org>; Mon,  6 May 2024 23:00:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F1F51E492;
+	Mon,  6 May 2024 23:10:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715036409; cv=none; b=RWBlvg0ZZRy1R4jxZ7NOp5jrKVSHVYMMXGMwdPtpnHIuVbTJxUPfvziEH2CS2VfuiaIMLPZmHWxxpL2tHlY+2Q/1tbVq4LcADkozMU6lrbA/U4hi4STNu4ErggjBOfyIsNDzB+k0NylJmfxiVbbPHTDlVKFQnfifGOfthvGEhBA=
+	t=1715037003; cv=none; b=p3PvvQdHYLfBGQ4RK8RDYMRSGf9KY8v8p+dercix1asilymhWj/C0g795D85t8dNFJtmlTQygwCeMM40oxzCo8JQKBuZX0FJWt6No1KnueafZKIDK+0XCFLyuCEzm758AFR7PUVK3Y19Om4uifmD1lGZ5K+L1ZHe3KrECvjNPZ0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715036409; c=relaxed/simple;
-	bh=6dizyx8ZuxDooU+pvdME/CAA4uuDxUfQl34rMuixqtM=;
-	h=Message-ID:Subject:From:To:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=pX3DWUZZXwF97mzpsfOg23e7JAoj/ob4a7B81WKNlByXPniE9EfMFKidhWdFsrJG/XPSsy/phPjbopmsPqzjqh3JHukCtErYsQSArUjP1J7VwtUnHo8rEyPTl1RooBhvZV1hJXcdJX6LRgKYTg6OKbZ+wPUQlI1hy7ydfpMgHYI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=UHIGa0AW; arc=none smtp.client-ip=148.163.156.1
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0356517.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 446MlJZK006356;
-	Mon, 6 May 2024 22:59:41 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : date : in-reply-to : references : content-type :
- content-transfer-encoding : mime-version; s=pp1;
- bh=6dizyx8ZuxDooU+pvdME/CAA4uuDxUfQl34rMuixqtM=;
- b=UHIGa0AW1rZoihiKNWlNDgT16tbBMUERu31Iv5zoyFyIr6MFmSHcGNFd8xEX9kQUNuai
- /NwOFVWPGh5n1/hdftl9YNClSBBv2sMWo39Q6udQpZ2mWt0bSLcCrYsbpW//ycXak51x
- 6rG1JVcihSS++TA3+7iCtB3yfOnmuBdoOcS+RZ95xel/n3Wi7tvciKCObnllJZJ6cYcU
- 678SL8XE7crD4bhKJmXMKMd6i8jaaZ/udfo+cX3yE7GekSuUAbktyjuv29jb5q950RdN
- iZGEx7ekUoBkeokI7DXE5g8EkoJ5DLgb8XX8uU7XL6ruXHjVmRG46M7Pl3WhcaogXoqA gg== 
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3xy8a5r0eq-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 06 May 2024 22:59:41 +0000
-Received: from m0356517.ppops.net (m0356517.ppops.net [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 446MxeeO021422;
-	Mon, 6 May 2024 22:59:40 GMT
-Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3xy8a5r0cx-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 06 May 2024 22:59:40 +0000
-Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma23.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 446Ks497005549;
-	Mon, 6 May 2024 22:56:33 GMT
-Received: from smtprelay01.fra02v.mail.ibm.com ([9.218.2.227])
-	by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3xx5yh19eu-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 06 May 2024 22:56:33 +0000
-Received: from smtpav03.fra02v.mail.ibm.com (smtpav03.fra02v.mail.ibm.com [10.20.54.102])
-	by smtprelay01.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 446MuR5c57475420
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Mon, 6 May 2024 22:56:29 GMT
-Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 660D320043;
-	Mon,  6 May 2024 22:56:27 +0000 (GMT)
-Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 2C7B520040;
-	Mon,  6 May 2024 22:56:26 +0000 (GMT)
-Received: from [127.0.0.1] (unknown [9.152.108.100])
-	by smtpav03.fra02v.mail.ibm.com (Postfix) with ESMTP;
-	Mon,  6 May 2024 22:56:26 +0000 (GMT)
-Message-ID: <7cdc423edbcdd8155c8a3f0fce7913f707c8c146.camel@linux.ibm.com>
-Subject: Re: [PATCH bpf] riscv, bpf: make some atomic operations fully
- ordered
-From: Ilya Leoshkevich <iii@linux.ibm.com>
-To: Puranjay Mohan <puranjay@kernel.org>, Alexei Starovoitov
- <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko
- <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Eduard
- Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
-        Yonghong Song
- <yonghong.song@linux.dev>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP
- Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
-        Hao Luo
- <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        =?ISO-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@kernel.org>,
-        Pu Lehui
- <pulehui@huawei.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>, bpf@vger.kernel.org,
-        "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
-        Tiezhu
- Yang <yangtiezhu@loongson.cn>,
-        Heiko Carstens <hca@linux.ibm.com>
-Date: Tue, 07 May 2024 00:56:25 +0200
-In-Reply-To: <mb61pcypz0zhe.fsf@kernel.org>
-References: <20240505201633.123115-1-puranjay@kernel.org>
-	 <mb61p34qvq3wf.fsf@kernel.org>
-	 <a5de8fa22c021c2df5f37f285c8d2247f1c6c1b0.camel@linux.ibm.com>
-	 <mb61pcypz0zhe.fsf@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.4 (3.50.4-1.fc39) 
+	s=arc-20240116; t=1715037003; c=relaxed/simple;
+	bh=jb6AoaZ4+1JJOP5y0uiexhZgPhIBpaMIIaYEadS16Q4=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=dq7d/ztGS7bwT+R6gunl+rpBaUKKlGmSa6F4pTPuShoYV5XwtRNedSihydA/WtCkmPNKQUxWdsw/Cdxj/MhRNrMMwUhpWJwvnlRQNa6LKl+NfBOhYrXmFbEfXaV9sPvCdGSyx1EELzeYyysKInyuw5C79161SC/c8tGZNsBhOLI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=nFF/q6E/; arc=none smtp.client-ip=209.85.221.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f42.google.com with SMTP id ffacd0b85a97d-34db6a29a1eso1571042f8f.1;
+        Mon, 06 May 2024 16:10:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1715037000; x=1715641800; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=2djqDQE+yQ6VgjclssSW7VHfPd80JOhsReXmW/fEqXY=;
+        b=nFF/q6E/ncV3MYvnMC7xKGOyT/arhdI5FKJ2nO17qmvlhvec75Ip4UFkbelMBZm7u+
+         PBybAqvSwcZ9oDJ8hZ65h3OUtU6K6Tuy4OkIGMJU59xY9PCjEXwEAGoDPocnQ+odxFom
+         N4Er+uN2wFHGu3eg6asD6OXFTuW6yF4gNJU933BhbVd4uV4tZ6+URa8Jwqd66UlaKEXz
+         FEA2YE5NWTnaVcLhc7lKdA+UZIO5JJc7OE0mGh0wB5dw8+AOkZN8ljykJ0/x5DDTqv8I
+         +nfXwAZgQyqRLuTHKeUPhB9EQwjDvTRuBnfJV5zlxfON94q4okZL4aKm22KMg0a5rCoU
+         77jw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1715037000; x=1715641800;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=2djqDQE+yQ6VgjclssSW7VHfPd80JOhsReXmW/fEqXY=;
+        b=GaQdPszgEpeawo3JT8tP1hTAO04LdGbkLuwmnMF5k9+FiNe9ikF2g8dgHY/iTVaqn2
+         QExx9KJgqi2XrNYK6XUhBmP06jo4TO/obfKkG5vH2uOOp2yVDE2RseuD7jJ3P38Kfo12
+         i0dQiiYiCDYH3GOwV1MxmcUr5OTn9d/3fSRb6HrLwZOGIPj1NIBG4iys3BKAKJRNQPkc
+         Y39/1DsJlK+uTbiDY8KvJ6UBRY0qCl7H2VFQ78lnM1gP/R7I0Zybzh7ZdWbUIw/Z1JkM
+         /vRIsPAzucIrNmB+6lWg8cHZxeu5uZN7vE/mYLjODOoLbA++Vl7U2FmCkbw2/QTmOAJr
+         ZZ8g==
+X-Forwarded-Encrypted: i=1; AJvYcCUaK882yAs7A/4I5W3SbVLAoLMrcy0nHYyak7mj5O7c+Hbrqn7BR12EfPEQSsWKRxjwIMCvyCHopGjpmcLmkC9+xbXZAYCJ3bMDumqOZVVj10hfF8NzN6R3fnBS4w1/r1ghl/lQ0j3Hhzfzd0zYYg0lMoT0GILyGM4p
+X-Gm-Message-State: AOJu0YwXiLNQZKp11BEH1vJXozsm/o7CPlhnvv2FoznjxEQjEfl/rvpx
+	mvMI2t9aD2zKDuZ1LTi82ZFnvMkPgmXNk4+reoPZJUOCLjlrRmLpeynVvEPL3K2WgGrClApeLjU
+	9nEhgpMBIt8Ib/U5eE2pKEC6VAY4=
+X-Google-Smtp-Source: AGHT+IGxLV8o+I20/ACsrxFvjlgXJfW+QBAHlbBignGmLULqLzAKyI21XMdrf96e9JbOwJvccCh16JA6cXe8ZtJOOVs=
+X-Received: by 2002:adf:e60c:0:b0:34d:b993:fe6e with SMTP id
+ p12-20020adfe60c000000b0034db993fe6emr8100162wrm.0.1715036999414; Mon, 06 May
+ 2024 16:09:59 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: 0JADB8xcB6WJsB4NsgfXXg96ep1Zbl7o
-X-Proofpoint-ORIG-GUID: JoCZTrJHKEmMhDwES0m9XcnMq2rWv7dU
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.650,FMLib:17.11.176.26
- definitions=2024-05-06_17,2024-05-06_02,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 clxscore=1015
- phishscore=0 adultscore=0 mlxscore=0 mlxlogscore=999 suspectscore=0
- priorityscore=1501 spamscore=0 bulkscore=0 lowpriorityscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2404010000 definitions=main-2405060167
+References: <20240503182957.1042122-1-bigeasy@linutronix.de>
+ <20240503182957.1042122-15-bigeasy@linutronix.de> <87y18mohhp.fsf@toke.dk>
+In-Reply-To: <87y18mohhp.fsf@toke.dk>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Mon, 6 May 2024 16:09:47 -0700
+Message-ID: <CAADnVQJkiwaYXUo+LyKoV96VFFCFL0VY5Jgpuv_0oypksrnciA@mail.gmail.com>
+Subject: Re: [PATCH net-next 14/15] net: Reference bpf_redirect_info via
+ task_struct on PREEMPT_RT.
+To: =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>
+Cc: Sebastian Andrzej Siewior <bigeasy@linutronix.de>, LKML <linux-kernel@vger.kernel.org>, 
+	Network Development <netdev@vger.kernel.org>, "David S. Miller" <davem@davemloft.net>, 
+	Boqun Feng <boqun.feng@gmail.com>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Eric Dumazet <edumazet@google.com>, Frederic Weisbecker <frederic@kernel.org>, 
+	Ingo Molnar <mingo@redhat.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+	Peter Zijlstra <peterz@infradead.org>, Thomas Gleixner <tglx@linutronix.de>, 
+	Waiman Long <longman@redhat.com>, Will Deacon <will@kernel.org>, 
+	Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, Eduard Zingerman <eddyz87@gmail.com>, 
+	Hao Luo <haoluo@google.com>, Jesper Dangaard Brouer <hawk@kernel.org>, Jiri Olsa <jolsa@kernel.org>, 
+	John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
+	Stanislav Fomichev <sdf@google.com>, Yonghong Song <yonghong.song@linux.dev>, bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, 2024-05-06 at 14:46 +0000, Puranjay Mohan wrote:
-> Ilya Leoshkevich <iii@linux.ibm.com> writes:
->=20
-> > > Puranjay Mohan <puranjay@kernel.org> writes:
-> > >=20
-> > > > The BPF atomic operations with the BPF_FETCH modifier along
-> > > > with
-> > > > BPF_XCHG and BPF_CMPXCHG are fully ordered but the RISC-V JIT
-> > > > implements
-> > > > all atomic operations except BPF_CMPXCHG with relaxed ordering.
-> > >=20
-> > > I know that the BPF memory model is in the works and we currently
-> > > don't
-> > > have a way to make all the JITs consistent. But as far as atomic
-> > > operations are concerned here are my observations:
-> >=20
-> > [...]
-> >=20
-> > > 4. S390
-> > > =C2=A0=C2=A0 ----
-> > >=20
-> > > Ilya, can you help with this?
-> > >=20
-> > > I see that the kernel is emitting "bcr 14,0" after "laal|laalg"
-> > > but
-> > > the
-> > > JIT is not.
-> >=20
-> > Hi,
-> >=20
-> > Here are two relevant paragraphs from the Principles of Operation:
-> >=20
-> > =C2=A0 Relation between Operand Accesses
-> > =C2=A0 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> > =C2=A0 As observed by other CPUs and by channel pro-
-> > =C2=A0 grams, storage-operand fetches associated with one
-> > =C2=A0 instruction execution appear to precede all storage-
-> > =C2=A0 operand references for conceptually subsequent
-> > =C2=A0 instructions. A storage-operand store specified by
-> > =C2=A0 one instruction appears to precede all storage-oper-
-> > =C2=A0 and stores specified by conceptually subsequent
-> > =C2=A0 instructions, but it does not necessarily precede stor-
-> > =C2=A0 age-operand fetches specified by conceptually sub-
-> > =C2=A0 sequent instructions. However, a storage-operand
-> > =C2=A0 store appears to precede a conceptually subsequent
-> > =C2=A0 storage-operand fetch from the same main-storage
-> > =C2=A0 location.
-> >=20
-> > In short, all memory accesses are fully ordered except for
-> > stores followed by fetches from different addresses.
->=20
-> Thanks for sharing the details.
->=20
-> So, this is TSO like x86
->=20
-> > =C2=A0 LAALG R1,R3,D2(B2)
-> > =C2=A0 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> > =C2=A0 [...]
-> > =C2=A0 All accesses to the second-operand location appear
-> > =C2=A0 to be a block-concurrent interlocked-update refer-
-> > =C2=A0 ence as observed by other CPUs and the I/O subsys-
-> > =C2=A0 tem. A specific-operand-serialization operation is
-> > =C2=A0 performed.
-> >=20
-> > Specific-operand-serialization is weaker than full serialization,
-> > which means that, even though s390x=C2=A0provides very strong ordering
-> > guarantees, strictly speaking, as architected, s390x atomics are
-> > not
-> > fully ordered.
-> >=20
-> > I have a hard time thinking of a situation where a store-fetch
-> > reordering=C2=A0for different addresses could matter, but to be on the
-> > safe
-> > side we should probably just do what the kernel does and add a
-> > "bcr 14,0". I will send a patch.
->=20
-> Thanks,
->=20
-> IMO, bcr 14,0 would be needed because, s390x has both
->=20
-> =C2=A0 int __atomic_add(int i, int *v);
->=20
-> and
->=20
-> =C2=A0 int __atomic_add_barrier(int i, int *v);
->=20
-> both of these do the fetch operation but the second one adds a
-> barrier
-> (bcr 14, 0)
->=20
-> JIT was using the first one (without barrier) to implement the
-> arch_atomic_fetch_add
->=20
-> So, assuming that without this barrier, store->fetch reordering would
-> be
-> allowed as you said.
->=20
-> It would mean:
-> This litmus test would fail for the s390 JIT:
->=20
-> =C2=A0 C SB+atomic_fetch
-> =C2=A0=20
-> =C2=A0 (*
-> =C2=A0=C2=A0 * Result: Never
-> =C2=A0=C2=A0 *
-> =C2=A0=C2=A0 * This litmus test demonstrates that LKMM expects total orde=
-ring
-> from
-> =C2=A0=C2=A0 * atomic_*() operations with fetch or return.
-> =C2=A0=C2=A0 *)
-> =C2=A0=20
-> =C2=A0 {
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 atomic_t dummy1 =
-=3D ATOMIC_INIT(1);
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 atomic_t dummy2 =
-=3D ATOMIC_INIT(1);
-> =C2=A0 }
-> =C2=A0=20
-> =C2=A0 P0(int *x, int *y, atomic_t *dummy1)
-> =C2=A0 {
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 WRITE_ONCE(*x, 1);
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 rd =3D atomic_fetc=
-h_add(1, dummy1);=C2=A0=C2=A0=C2=A0=C2=A0 /* assuming this is
-> implemented without barrier */=20
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 r0 =3D READ_ONCE(*=
-y);
-> =C2=A0 }
-> =C2=A0=20
-> =C2=A0 P1(int *x, int *y, atomic_t *dummy2)
-> =C2=A0 {
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 WRITE_ONCE(*y, 1);
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 rd =3D atomic_fetc=
-h_add(1, dummy2);=C2=A0=C2=A0=C2=A0 /* assuming this is
-> implemented without barrier */
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 r1 =3D READ_ONCE(*=
-x);
-> =C2=A0 }
-> =C2=A0=20
-> =C2=A0 exists (0:r0=3D0 /\ 1:r1=3D0)
->=20
->=20
-> P.S. - It would be nice to have a tool that can convert litmus tests
-> into BPF assembly programs and then we can test them on hardware
-> after JITing.
->=20
-> Thanks,
-> Puranjay
+On Mon, May 6, 2024 at 12:41=E2=80=AFPM Toke H=C3=B8iland-J=C3=B8rgensen <t=
+oke@redhat.com> wrote:
+>
+> Sebastian Andrzej Siewior <bigeasy@linutronix.de> writes:
+>
+> > The XDP redirect process is two staged:
+> > - bpf_prog_run_xdp() is invoked to run a eBPF program which inspects th=
+e
+> >   packet and makes decisions. While doing that, the per-CPU variable
+> >   bpf_redirect_info is used.
+> >
+> > - Afterwards xdp_do_redirect() is invoked and accesses bpf_redirect_inf=
+o
+> >   and it may also access other per-CPU variables like xskmap_flush_list=
+.
+> >
+> > At the very end of the NAPI callback, xdp_do_flush() is invoked which
+> > does not access bpf_redirect_info but will touch the individual per-CPU
+> > lists.
+> >
+> > The per-CPU variables are only used in the NAPI callback hence disablin=
+g
+> > bottom halves is the only protection mechanism. Users from preemptible
+> > context (like cpu_map_kthread_run()) explicitly disable bottom halves
+> > for protections reasons.
+> > Without locking in local_bh_disable() on PREEMPT_RT this data structure
+> > requires explicit locking.
+> >
+> > PREEMPT_RT has forced-threaded interrupts enabled and every
+> > NAPI-callback runs in a thread. If each thread has its own data
+> > structure then locking can be avoided.
+> >
+> > Create a struct bpf_net_context which contains struct bpf_redirect_info=
+.
+> > Define the variable on stack, use bpf_net_ctx_set() to save a pointer t=
+o
+> > it. Use the __free() annotation to automatically reset the pointer once
+> > function returns.
+> > The bpf_net_ctx_set() may nest. For instance a function can be used fro=
+m
+> > within NET_RX_SOFTIRQ/ net_rx_action which uses bpf_net_ctx_set() and
+> > NET_TX_SOFTIRQ which does not. Therefore only the first invocations
+> > updates the pointer.
+> > Use bpf_net_ctx_get_ri() as a wrapper to retrieve the current struct
+> > bpf_redirect_info.
+> >
+> > On PREEMPT_RT the pointer to bpf_net_context is saved task's
+> > task_struct. On non-PREEMPT_RT builds the pointer saved in a per-CPU
+> > variable (which is always NODE-local memory). Using always the
+> > bpf_net_context approach has the advantage that there is almost zero
+> > differences between PREEMPT_RT and non-PREEMPT_RT builds.
+>
+> Did you ever manage to get any performance data to see if this has an
+> impact?
+>
+> [...]
+>
+> > +static inline struct bpf_net_context *bpf_net_ctx_get(void)
+> > +{
+> > +     struct bpf_net_context *bpf_net_ctx =3D this_cpu_read(bpf_net_con=
+text);
+> > +
+> > +     WARN_ON_ONCE(!bpf_net_ctx);
+>
+> If we have this WARN...
+>
+> > +static inline struct bpf_redirect_info *bpf_net_ctx_get_ri(void)
+> > +{
+> > +     struct bpf_net_context *bpf_net_ctx =3D bpf_net_ctx_get();
+> > +
+> > +     if (!bpf_net_ctx)
+> > +             return NULL;
+>
+> ... do we really need all the NULL checks?
 
-Thanks for providing an example! So unrelated memory accesses may rely
-on atomics being barriers.
-
-I will adjust my commit message, since now I claim that we are doing
-the change "just in case", but apparently, if the hardware chooses to
-exercise all the freedoms allowed by the architecture, there can occur
-real problems.
+Indeed.
+Let's drop all NULL checks, since they definitely add overhead.
+I'd also remove ifdef CONFIG_PREEMPT_RT and converge on single implementati=
+on:
+static inline struct bpf_net_context * bpf_net_ctx_get(void)
+{
+ return current->bpf_net_context;
+}
 
