@@ -1,327 +1,229 @@
-Return-Path: <bpf+bounces-28755-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-28756-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B14CA8BD9CE
-	for <lists+bpf@lfdr.de>; Tue,  7 May 2024 05:42:52 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 227C48BD9FB
+	for <lists+bpf@lfdr.de>; Tue,  7 May 2024 06:05:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3E57A1F23347
-	for <lists+bpf@lfdr.de>; Tue,  7 May 2024 03:42:52 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CDC3F28451B
+	for <lists+bpf@lfdr.de>; Tue,  7 May 2024 04:05:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE20E3FBA2;
-	Tue,  7 May 2024 03:42:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DEB3F4EB44;
+	Tue,  7 May 2024 04:05:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="O0UG18ir"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="U3RidpiQ"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f174.google.com (mail-pg1-f174.google.com [209.85.215.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D6405A93C
-	for <bpf@vger.kernel.org>; Tue,  7 May 2024 03:42:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 58D464087F;
+	Tue,  7 May 2024 04:04:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715053365; cv=none; b=ahzQJD9OvNsIuKM252HpWIgB8TAEqmhuADw/TOuf+CZuQTmQc25Dbq33fLRbKfOdxjUCR5UT8qeZk7UfiQrvBLQWU5wcU/MdC7GxKz/pxPx2VSVilza/8lElDEPmVZC+W7PPU9juRbWuOyjsSgBblWuPHad6MTAhQwkuOCB9V1o=
+	t=1715054700; cv=none; b=awv+L29xA5iX5LWSDDrQQOz2Eu9L6+kd9wrQJjzgBbm0fZ0ugCaAR/uCnXhz8R/V/BbzjEnJSvc5g4uh0T8HMJUHg6LtJhaEH9SAOF8Gue11xHQL7WqJIMkU5CfGJn/v+0DG8TCcjrpBxX8hEnZi2SxoVF2hCk6H5GkKzdV1nNA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715053365; c=relaxed/simple;
-	bh=jryJTc7toY+M/Bs2xUtY3N+HVg9VI/viiBiu5SsN6jQ=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ZpMRCN+qR9Lehl0Stn5bwtHjWlT7uyI380Xix6tsQxtLblP7u/zq8kk++vv5oKu2WCnIU82fmS+WyxKaI80z1rBP/Iz2FnDobkqn4NlmKmAyKn2te/nvEQJESAneA7mrYZwbS1R98VJenZu3YU2iYvkysNro5PNTHQlxlgKPXPU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=O0UG18ir; arc=none smtp.client-ip=209.85.215.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f174.google.com with SMTP id 41be03b00d2f7-61eba9f9c5dso2153127a12.0
-        for <bpf@vger.kernel.org>; Mon, 06 May 2024 20:42:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1715053363; x=1715658163; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=EU1SHjrKzQ9o28rRd+GfUpQeW0RaimKOb9nsfszMBs0=;
-        b=O0UG18irYXRUkNEcenBsxfU4HzvbxwaLacBMyvtlb+kMSjdEmrXYEKxGbMY5/n/PvW
-         69YkjU7bXuIif0sJ7jPiTBrUwDqDp/776hGZSD8/QlwyNd0BgbiZDO8od5RDMro5mCeT
-         Q7gYOkuQ91E3SxHwyjheymoiZqQkuRifpOXZVWXi2VnZlFgkFQKffhDjpUce2qppTVIC
-         0OBuF7taDBEoVIlwfwYeeVkL7oT+a8KfUD/uVkzWiRSUBB3NVv3ZYZan3wr97WAlU/8I
-         qP/QkG9oB8HD8NcNhll+2T9bOj027YncPkc8wdxq/FvXe7O1LRlZedmQpNeiKcNVdESl
-         7p6Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1715053363; x=1715658163;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=EU1SHjrKzQ9o28rRd+GfUpQeW0RaimKOb9nsfszMBs0=;
-        b=Y/d+9IlW49QlQxLyUOw3zDPWyZYpcQ4Bbo1IH4IDJCH1zo3w7xsfpjLgaWacCDu9Z3
-         jdJelWjGS5Y3+SeTDSV6C0YvW8mutmAVvQazA7V2Nack0oVkk5bkut86fbJrh0LFI67a
-         Z+5md+PtPoas1FijOdJkXlNFGieJTcvwPNowOgGtfz/hRTHZx/r7AXALUgDKHC9YVqK+
-         9lBx28zJLmPoW3T8h8PvjCFEsK6JK5XQ6Zf5z8Q9XwbQfSPw/XHA4MgYgLKj3fXLf3Dx
-         1+tQ5jdLOZS+Xa+tc2NjIcD5RehbegZOK2ZM4t7GGw/2J2VZcF0yR5Do6t0TVRPh7aJR
-         5t2Q==
-X-Forwarded-Encrypted: i=1; AJvYcCXKrVp2m3oZZurTBNfdMKXGBujIam/RUzFkz1OotyIrmVFAb1r92wojsshwa2MF8tX4MfTAwY0bAAet8aNSDbRuwcFd
-X-Gm-Message-State: AOJu0YyO3/PmOTA39KpuBBKIK2K6hgyzHn+gek9dR+MUjha0sN5CVOfP
-	gFTVtghDbIXHQ8qjF7Oue4XKZB5AUS5HBX3GneB5sKk3G+5vCvNA2V5DjfMIIftamIg9+UY1aGe
-	nhYl1Co+tNFAppFFi/hMg2POetHEqmdGk
-X-Google-Smtp-Source: AGHT+IFUO0GUQM9ng5dIGLphKpC93SqMjnDk5BFggmWXiExRz5CPjOmiaRf0ivgleeTecWeFwPwpKnIu07B0VItJVpA=
-X-Received: by 2002:a05:6a20:5aa3:b0:1af:b311:6a70 with SMTP id
- kh35-20020a056a205aa300b001afb3116a70mr3732616pzb.27.1715053363059; Mon, 06
- May 2024 20:42:43 -0700 (PDT)
+	s=arc-20240116; t=1715054700; c=relaxed/simple;
+	bh=RVnEF18pmo4hzHCpqUvXE5nta1BVMS7Kjs1hKQO8KSs=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=ZeVXUOMXn0n04nSH1jD1XVWr6moG/5j4a7q8O30K//rda31cfLBxXy/WrymQW4z4E1/LA44kLDUbIOwTU0aerGlyP1e2l2fVh5sLG7282JCu1+WOD+KRtWnVm0KfOlmBeIbOvLCb6goi9GD3ep7cFuVywc858deygNG1mPFjFl8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=U3RidpiQ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8F5AFC2BBFC;
+	Tue,  7 May 2024 04:04:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1715054699;
+	bh=RVnEF18pmo4hzHCpqUvXE5nta1BVMS7Kjs1hKQO8KSs=;
+	h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+	b=U3RidpiQoAFe0PkC0w2ZDoeNacGei0vDvEgwD/KvUkQhdB8m1pnbQG1TWPxA8jz1n
+	 weACrG3kV9Cb7geopsoTeOxF4XlvDLShrf4S+bK1+wA/j+fOySHxZRCpa9GrFHiS63
+	 4ZKCaUkA9h1H4U/+Wm+rsQmrYzN1AMzozd4H0G+DAucQAiZRacwOJJ4PCW6cTonuOr
+	 WlCEjB/zGkUzNGuwrLYwsSblHVNcyFUh6LyCzSx/8qIeel2kVtA6pfq+QSdFzCzjAU
+	 69gZqSCdOaoMOEmCko8HIxww/2wsyv9kyBjjXilDqM6Rn2B21U6wQCKH4EPZECh0j6
+	 5awf+eCDVoWrQ==
+Message-ID: <8201104dcc0b2b1e26a915315083e2098fb420b3.camel@kernel.org>
+Subject: Re: [PATCH bpf-next v4 3/3] selftests/bpf: Support nonblock for
+ send_recv_data
+From: Geliang Tang <geliang@kernel.org>
+To: Martin KaFai Lau <martin.lau@linux.dev>
+Cc: Geliang Tang <tanggeliang@kylinos.cn>, Andrii Nakryiko
+ <andrii@kernel.org>,  Eduard Zingerman <eddyz87@gmail.com>, Mykola Lysenko
+ <mykolal@fb.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann
+ <daniel@iogearbox.net>, Song Liu <song@kernel.org>, Yonghong Song
+ <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, KP
+ Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo
+ <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,  Shuah Khan
+ <shuah@kernel.org>, bpf@vger.kernel.org, mptcp@lists.linux.dev, 
+ linux-kselftest@vger.kernel.org
+Date: Tue, 07 May 2024 12:04:48 +0800
+In-Reply-To: <12aab271-da72-49b4-ac91-2091b6889856@linux.dev>
+References: <cover.1712729342.git.tanggeliang@kylinos.cn>
+	 <9cd358958245f8ec87c4f553779aa4243f967a2f.1712729342.git.tanggeliang@kylinos.cn>
+	 <12aab271-da72-49b4-ac91-2091b6889856@linux.dev>
+Autocrypt: addr=geliang@kernel.org; prefer-encrypt=mutual;
+ keydata=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
+ TO0tfEdfAX7IENcV87h2yAFBZkaA==
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.52.0-1build2 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240506033353.28505-1-laoar.shao@gmail.com> <20240506033353.28505-3-laoar.shao@gmail.com>
-In-Reply-To: <20240506033353.28505-3-laoar.shao@gmail.com>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Mon, 6 May 2024 20:42:31 -0700
-Message-ID: <CAEf4Bza0UnsAVuBH1J_nGN14gXg_Sa2QnJG7jjFjozcYzxx2dg@mail.gmail.com>
-Subject: Re: [PATCH v7 bpf-next 2/2] selftests/bpf: Add selftest for bits iter
-To: Yafang Shao <laoar.shao@gmail.com>
-Cc: ast@kernel.org, daniel@iogearbox.net, john.fastabend@gmail.com, 
-	andrii@kernel.org, martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org, 
-	yonghong.song@linux.dev, kpsingh@kernel.org, sdf@google.com, 
-	haoluo@google.com, jolsa@kernel.org, bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Sun, May 5, 2024 at 8:35=E2=80=AFPM Yafang Shao <laoar.shao@gmail.com> w=
-rote:
->
-> Add test cases for the bits iter:
-> - positive case
->   - bit mask smaller than 8 bytes
->   - a typical case of having 8-byte bit mask
->   - another typical case where bit mask is > 8 bytes
->   - the index of set bit
->
-> - nagative cases
->   - bpf_iter_bits_destroy() is required after calling
->     bpf_iter_bits_new()
->   - bpf_iter_bits_destroy() can only destroy an initialized iter
->   - bpf_iter_bits_next() must use an initialized iter
->
-> Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
-> ---
->  .../selftests/bpf/prog_tests/verifier.c       |   2 +
->  .../selftests/bpf/progs/verifier_bits_iter.c  | 160 ++++++++++++++++++
->  2 files changed, 162 insertions(+)
->  create mode 100644 tools/testing/selftests/bpf/progs/verifier_bits_iter.=
-c
->
-> diff --git a/tools/testing/selftests/bpf/prog_tests/verifier.c b/tools/te=
-sting/selftests/bpf/prog_tests/verifier.c
-> index c4f9f306646e..7e04ecaaa20a 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/verifier.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/verifier.c
-> @@ -84,6 +84,7 @@
->  #include "verifier_xadd.skel.h"
->  #include "verifier_xdp.skel.h"
->  #include "verifier_xdp_direct_packet_access.skel.h"
-> +#include "verifier_bits_iter.skel.h"
->
->  #define MAX_ENTRIES 11
->
-> @@ -198,6 +199,7 @@ void test_verifier_var_off(void)              { RUN(v=
-erifier_var_off); }
->  void test_verifier_xadd(void)                 { RUN(verifier_xadd); }
->  void test_verifier_xdp(void)                  { RUN(verifier_xdp); }
->  void test_verifier_xdp_direct_packet_access(void) { RUN(verifier_xdp_dir=
-ect_packet_access); }
-> +void test_verifier_bits_iter(void) { RUN(verifier_bits_iter); }
->
->  static int init_test_val_map(struct bpf_object *obj, char *map_name)
->  {
-> diff --git a/tools/testing/selftests/bpf/progs/verifier_bits_iter.c b/too=
-ls/testing/selftests/bpf/progs/verifier_bits_iter.c
-> new file mode 100644
-> index 000000000000..2f7b62b25638
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/progs/verifier_bits_iter.c
-> @@ -0,0 +1,160 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +/* Copyright (c) 2024 Yafang Shao <laoar.shao@gmail.com> */
-> +
-> +#include "vmlinux.h"
-> +#include <bpf/bpf_helpers.h>
-> +#include <bpf/bpf_tracing.h>
-> +
-> +#include "bpf_misc.h"
-> +#include "task_kfunc_common.h"
-> +
-> +char _license[] SEC("license") =3D "GPL";
-> +
-> +int bpf_iter_bits_new(struct bpf_iter_bits *it, const void *unsafe_ptr__=
-ign,
-> +                     u32 nr_bits) __ksym __weak;
-> +int *bpf_iter_bits_next(struct bpf_iter_bits *it) __ksym __weak;
-> +void bpf_iter_bits_destroy(struct bpf_iter_bits *it) __ksym __weak;
-> +
-> +SEC("iter.s/cgroup")
-> +__description("bits iter without destroy")
-> +__failure __msg("Unreleased reference")
-> +int BPF_PROG(no_destroy, struct bpf_iter_meta *meta, struct cgroup *cgrp=
-)
-> +{
-> +       struct bpf_iter_bits it;
-> +       struct task_struct *p;
-> +
-> +       p =3D bpf_task_from_pid(1);
-> +       if (!p)
-> +               return 1;
-> +
-> +       bpf_iter_bits_new(&it, p->cpus_ptr, 8192);
-> +
-> +       bpf_iter_bits_next(&it);
-> +       bpf_task_release(p);
-> +       return 0;
-> +}
-> +
-> +SEC("iter/cgroup")
-> +__description("bits iter with uninitialized iter in ->next()")
-> +__failure __msg("expected an initialized iter_bits as arg #1")
-> +int BPF_PROG(next_uninit, struct bpf_iter_meta *meta, struct cgroup *cgr=
-p)
-> +{
-> +       struct bpf_iter_bits *it =3D NULL;
-> +
-> +       bpf_iter_bits_next(it);
-> +       return 0;
-> +}
-> +
-> +SEC("iter/cgroup")
-> +__description("bits iter with uninitialized iter in ->destroy()")
-> +__failure __msg("expected an initialized iter_bits as arg #1")
-> +int BPF_PROG(destroy_uninit, struct bpf_iter_meta *meta, struct cgroup *=
-cgrp)
-> +{
-> +       struct bpf_iter_bits it =3D {};
-> +
-> +       bpf_iter_bits_destroy(&it);
-> +       return 0;
-> +}
-> +
-> +SEC("syscall")
-> +__description("bits copy 32")
-> +__success __retval(10)
-> +int bits_copy32(void)
-> +{
-> +       /* 21 bits:             --------------------- */
-> +       u32 data =3D 0b11111101111101111100001000100101U;
+On Wed, 2024-04-10 at 14:34 -0700, Martin KaFai Lau wrote:
+> On 4/9/24 11:13 PM, Geliang Tang wrote:
+> > From: Geliang Tang <tanggeliang@kylinos.cn>
+> > 
+> > Some tests, such as the MPTCP bpf tests, require send_recv_data
+> > helper
+> > to run in nonblock mode.
+> > 
+> > This patch adds nonblock support for send_recv_data(). Check if it
+> > is
+> > currently in nonblock mode, and if so, ignore EWOULDBLOCK to
+> > continue
+> > sending and receiving.
+> > 
+> > Signed-off-by: Geliang Tang <tanggeliang@kylinos.cn>
+> > ---
+> >   tools/testing/selftests/bpf/network_helpers.c | 9 ++++++++-
+> >   1 file changed, 8 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/tools/testing/selftests/bpf/network_helpers.c
+> > b/tools/testing/selftests/bpf/network_helpers.c
+> > index 137cd18ef3f2..ca16ef2b648e 100644
+> > --- a/tools/testing/selftests/bpf/network_helpers.c
+> > +++ b/tools/testing/selftests/bpf/network_helpers.c
+> > @@ -555,6 +555,7 @@ struct send_recv_arg {
+> >   static void *send_recv_server(void *arg)
+> >   {
+> >   	struct send_recv_arg *a = (struct send_recv_arg *)arg;
+> > +	int flags = fcntl(a->fd, F_GETFL);
+> >   	ssize_t nr_sent = 0, bytes = 0;
+> >   	char batch[1500];
+> >   	int err = 0, fd;
+> > @@ -578,6 +579,8 @@ static void *send_recv_server(void *arg)
+> >   		if (nr_sent == -1 && errno == EINTR)
+> >   			continue;
+> >   		if (nr_sent == -1) {
+> > +			if (flags & O_NONBLOCK && errno ==
+> > EWOULDBLOCK)
+> 
+> I still don't see why it needs to be a non blocking IO. mptcp should
+> work
+> with blocking IO also, no? Does it really need non blocking IO to
+> make
+> mptcp test work? I would rather stay with blocking IO in selftest as
+> much as
+> possible for simplicity reason.
+> 
+> I am afraid the root cause of the EAGAIN thread has not been figured
+> out yet:
+> https://lore.kernel.org/all/b3943f9a8bf595212b00e96ba850bf32893312cc.camel@kernel.org/
+> 
+> Lets drop patch 3 until it is understood why mptcp needs EAGAIN or
+> non-blocking IO.
+> It feels like there is some flakiness and it should be understood and
+> avoided.
 
-if you define this bit mask as an array of bytes, then you won't have
-to handle big-endian in the tests at all
+Hi Martin,
 
+I finally found the root cause of this issue. It is indeed an MPTCP
+bug. It took me a long time to debug, and the fix is here:
 
-> +       int nr =3D 0, offset =3D 0;
-> +       int *bit;
-> +
-> +#if defined(__TARGET_ARCH_s390)
-> +       offset =3D sizeof(u32) - (21 + 7) / 8;
-> +#endif
-> +       bpf_for_each(bits, bit, ((char *)&data) + offset, 21)
-> +               nr++;
-> +       return nr;
-> +}
-> +
-> +SEC("syscall")
-> +__description("bits copy 64")
-> +__success __retval(18)
-> +int bits_copy64(void)
-> +{
-> +       /* 34 bits:         ~-------- */
-> +       u64 data =3D 0xffffefdf0f0f0f0fUL;
-> +       int nr =3D 0, offset =3D 0;
-> +       int *bit;
-> +
-> +#if defined(__TARGET_ARCH_s390)
-> +       offset =3D sizeof(u64) - (34 + 7) / 8;
-> +#endif
-> +
-> +       bpf_for_each(bits, bit, ((char *)&data) + offset, 34)
+https://patchwork.kernel.org/project/mptcp/patch/0ccc1c26d27d6ee7be22806a97983d37c6ca548c.1715053270.git.tanggeliang@kylinos.cn/
 
-see above about byte array, but if we define different (not as byte
-array but long[]), it would be cleaner to have
+Thank you for insisting on not accepting these work around patches from
+me in the user space, almost hiding a kernel bug.
 
-#if __BYTE_ORDER__ =3D=3D __ORDER_BIG_ENDIAN__
-u64 data =3D 0x......UL;
-#else
-u64 data =3D 0x......UL;
-#endif
+-Geliang
 
-wherer we'd hard-code bit masks in proper endianness in one place and
-then just do a clean `bpf_for_each(bits, bit, &data, <len>) {}` calls
+> 
+> Other than the comment in patch 2, the first two patches lgtm. Please
+> respin with
+> the first two patches.
+> 
+> > +				continue;
+> >   			err = -errno;
+> >   			break;
+> >   		}
+> > @@ -599,6 +602,7 @@ static void *send_recv_server(void *arg)
+> >   
+> >   int send_recv_data(int lfd, int fd, uint32_t total_bytes)
+> >   {
+> > +	int flags = fcntl(lfd, F_GETFL);
+> >   	ssize_t nr_recv = 0, bytes = 0;
+> >   	struct send_recv_arg arg = {
+> >   		.fd	= lfd,
+> > @@ -622,8 +626,11 @@ int send_recv_data(int lfd, int fd, uint32_t
+> > total_bytes)
+> >   			       MIN(total_bytes - bytes,
+> > sizeof(batch)), 0);
+> >   		if (nr_recv == -1 && errno == EINTR)
+> >   			continue;
+> > -		if (nr_recv == -1)
+> > +		if (nr_recv == -1) {
+> > +			if (flags & O_NONBLOCK && errno ==
+> > EWOULDBLOCK)
+> > +				continue;
+> >   			break;
+> > +		}
+> >   		bytes += nr_recv;
+> >   	}
+> >   
+> 
+> 
 
-> +               nr++;
-> +       return nr;
-> +}
-> +
-> +SEC("syscall")
-> +__description("bits memalloc long-aligned")
-> +__success __retval(32) /* 16 * 2 */
-> +int bits_memalloc(void)
-> +{
-> +       char data[16];
-> +       int nr =3D 0;
-> +       int *bit;
-> +
-> +       __builtin_memset(&data, 0x48, sizeof(data));
-> +       bpf_for_each(bits, bit, &data, sizeof(data) * 8)
-> +               nr++;
-> +       return nr;
-> +}
-> +
-> +SEC("syscall")
-> +__description("bits memalloc non-long-aligned")
-> +__success __retval(85) /* 17 * 5*/
-> +int bits_memalloc_non_aligned(void)
-> +{
-> +       char data[17];
-> +       int nr =3D 0;
-> +       int *bit;
-> +
-> +       __builtin_memset(&data, 0x1f, sizeof(data));
-> +       bpf_for_each(bits, bit, &data, sizeof(data) * 8)
-> +               nr++;
-> +       return nr;
-> +}
-> +
-> +SEC("syscall")
-> +__description("bits memalloc non-aligned-bits")
-> +__success __retval(27) /* 8 * 3 + 3 */
-> +int bits_memalloc_non_aligned_bits(void)
-> +{
-> +       char data[16];
-> +       int nr =3D 0;
-> +       int *bit;
-> +
-> +       __builtin_memset(&data, 0x31, sizeof(data));
-> +       /* Different with all other bytes */
-> +       data[8] =3D 0xf7;
-> +
-> +       bpf_for_each(bits, bit, &data,  68)
-> +               nr++;
-> +       return nr;
-> +}
-> +
-> +
-> +SEC("syscall")
-> +__description("bit index")
-> +__success __retval(8)
-> +int bit_index(void)
-> +{
-> +       u64 data =3D 0x100;
-> +       int bit_idx =3D 0;
-> +       int *bit;
-> +
-> +       bpf_for_each(bits, bit, &data, 64) {
-> +               if (*bit =3D=3D 0)
-> +                       continue;
-> +               bit_idx =3D *bit;
-> +       }
-> +       return bit_idx;
-> +}
-> --
-> 2.30.1 (Apple Git-130)
->
 
