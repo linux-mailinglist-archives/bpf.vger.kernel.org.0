@@ -1,157 +1,225 @@
-Return-Path: <bpf+bounces-28972-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-28973-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 816A68BEF40
-	for <lists+bpf@lfdr.de>; Tue,  7 May 2024 23:56:26 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0AA8E8BEFA6
+	for <lists+bpf@lfdr.de>; Wed,  8 May 2024 00:11:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0E6361F2334B
-	for <lists+bpf@lfdr.de>; Tue,  7 May 2024 21:56:26 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2D8DA1C22FBE
+	for <lists+bpf@lfdr.de>; Tue,  7 May 2024 22:11:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 64CF816D309;
-	Tue,  7 May 2024 21:56:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 634EF14B97E;
+	Tue,  7 May 2024 22:10:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bFBYIwgt"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f173.google.com (mail-pg1-f173.google.com [209.85.215.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B64C179CF;
-	Tue,  7 May 2024 21:56:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D654877658;
+	Tue,  7 May 2024 22:10:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715118967; cv=none; b=Sn/EJ+YK1AwL+SKrEI6Fvigk9+3q+NUqDhrc4EhDw/mnIj21W3bEbzTU6F27vkqVkm8lGT5vC9lGHRWrliN0nxBtRmEW1b6uH0+xlnbYR/m6SYJaDKs/kaHOnhF/aZ4Ti5BpLQFyvkTOBDKN+x0EC34XNKKWag1q2OcrtC3X11s=
+	t=1715119859; cv=none; b=atHHntsbnImQiPFkBJ79e4KNQBXiV384gI/1ko6uPq320KCjFaPzXAVgijVCFST+lnS8yFaWKNnCVkBJMmfcji1iKNmJci0nLcqZ5EoVwHeuWYdCXHercENJUQ56JO7FoW3cvrciMItZtl4CQsIQ6bYJlRZLJ3Mc6k/SwC3SIYw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715118967; c=relaxed/simple;
-	bh=c6YHGEYmPjpO9D/p2b9v83LdrifgicmhUFUwgBtopaI=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=YqB9NJMJed0H5VWmyvBmYQeBPETNrrHfGS6+YvXFhofXbaiMSCaLH3jYaZTs1+6u/FOJkqHMJn6ra3UVJpDOE190kpYaDSDxRxcasKd833pOZa8h6oORUWfLDnOKfqikXwBPaUhPr1AZyI36D6h+Xm+4CMnSopF/vMb1jjv5Lus=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.215.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f173.google.com with SMTP id 41be03b00d2f7-61aef9901deso2510504a12.1;
-        Tue, 07 May 2024 14:56:05 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1715118965; x=1715723765;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=nXTaPie4n8q7aWd8lKqdehPO2SNuKWmtizpezocD5H4=;
-        b=g9QpDvlOJwdxgjipCk2RplWsuZ+Vn4tRzRNZavLWVZiQ4mUsjpGo14ZsauiboTAuAK
-         aaAPPjWSF+hxSNG2/K/ls/xgrk/e55xXm5tG2Lo84DR0DaLRIZlnPyfsBH+7Yz/frfTC
-         Y4VfYwBf5Dsg5wNlF/LjveB+5FVO4q9b/6/W6WjknS4bHXIewBDTchpFiabzoYOgasJP
-         t765XvcjWLvWy/JKnHmi3OcSOiqEqLeNCVrP9PmdYg2xI2oh7ywtkyvqJ0ImQqV0TeXY
-         BhaNM8H9mrefaByESrkCo8TV8L5veV2Ih0vhvcWP9thVtjvV0sbSSiGSHaDRTgGMMuCb
-         JHCA==
-X-Forwarded-Encrypted: i=1; AJvYcCXH8RFDpuyLH27tlWpjwdQbHU3tDCAPG5DH/MbMV0vIOXTPaUQ+VKgNB6tMyENoYJOt7fg1FYD2rp9OgJiXQJDAj+VB8oyqeirLfUZ0zAbnHO03s83h9GqZkQhhPE8BSn0fvqU3q2ZQbJR7KYWEiUkorQbRqpTTXtliKm9Le+EPqiFAhLxVtb0lvGhHFMKdDTFazLTfqj2UKtdFLBbLRIZZC7o=
-X-Gm-Message-State: AOJu0YxVMaZ4zQXlFdcoZ+Lvh5OhNQ7cOhrpQp4uNs4sgJIFMW+/F11R
-	XOAOkn/x/vVo1HT2vEPMi1uGyq1bAmtkOtyk7Z7NaP1wmyHf/Of6ga0kzBUm89jCcQE4yVi3H59
-	bR8i1PhBpcvMPiSLAvNd+UAS71HI=
-X-Google-Smtp-Source: AGHT+IFXpLdBXP0wh3twnNJnWEDW8JXUqluwb5PZEvCJy86sy4dMIzPSzZ/Bo27vj60SVq+hRMSHToV6/VUrIXVJVlQ=
-X-Received: by 2002:a17:90a:cf14:b0:2b3:ed2:1a91 with SMTP id
- 98e67ed59e1d1-2b616ae2ca0mr732222a91.45.1715118965098; Tue, 07 May 2024
- 14:56:05 -0700 (PDT)
+	s=arc-20240116; t=1715119859; c=relaxed/simple;
+	bh=uPLD44Nxh5xn4KgOnC/Ys+QhBTI+d/3+8T1PBMK6NqA=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=KrJSR5MGXrmsxnn4/YNOo5s003foXrtKpuzr2ePce/wwihsGWJFCq1X2uPi2bwA5XcqJjuUQdHJu/iWcDCJV+DMqT6/bJlJZFn1tpN33nwnjC88sE+MyriwSfvC7FJtevDDtA9UKLYPK6E7n5A+zXMj89x6zwZqDt9H9eRAxGIc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bFBYIwgt; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4A7DCC2BBFC;
+	Tue,  7 May 2024 22:10:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1715119858;
+	bh=uPLD44Nxh5xn4KgOnC/Ys+QhBTI+d/3+8T1PBMK6NqA=;
+	h=From:To:Cc:Subject:Date:From;
+	b=bFBYIwgtxbAtP8jTo6/H8dCA9jliTJ26i1fAkiaHbh2KFbX4PgWs2YwztTIewOt4C
+	 K/JoNVoWWciRPfCxtH9cEZpEfEx2+xjuWINUwF3Kaxp77eDjOKceCpfyY37fr2xrta
+	 9feGOCJKZ8g0Frm59/MixQQwBAFPpcqY0ehakwM66LFmww8PJzkkWyCSNwdGd8Yihu
+	 2wmtzNhv61/dXZrxPLmyqpDltQNdG+dMyz/6Zl+iPRUjHPTXnGxt17Z+EI+56MUQq5
+	 pQU3A2ESgAtChYUM3JzGQKhByAlgDBqEGjMSxyDPEFthwXZ6eAKpVssbWEhbEtvpKK
+	 8qOPSc/9P123A==
+From: KP Singh <kpsingh@kernel.org>
+To: linux-security-module@vger.kernel.org,
+	bpf@vger.kernel.org
+Cc: ast@kernel.org,
+	daniel@iogearbox.net,
+	jackmanb@google.com,
+	renauld@google.com,
+	paul@paul-moore.com,
+	casey@schaufler-ca.com,
+	song@kernel.org,
+	revest@chromium.org,
+	keescook@chromium.org
+Subject: [PATCH bpf-next v10 0/5] Reduce overhead of LSMs with static calls
+Date: Wed,  8 May 2024 00:10:40 +0200
+Message-ID: <20240507221045.551537-1-kpsingh@kernel.org>
+X-Mailer: git-send-email 2.45.0.rc1.225.g2a3ae87e7f-goog
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240504003006.3303334-1-andrii@kernel.org> <20240504003006.3303334-3-andrii@kernel.org>
- <2024050439-janitor-scoff-be04@gregkh> <CAEf4BzZ6CaMrqRR1Rah7=HnTpU5-zw5HUnSH9NWCzAZZ55ZXFQ@mail.gmail.com>
- <ZjjiFnNRbwsMJ3Gj@x1> <CAM9d7cgvCB8CBFGhMB_-4tCm6+jzoPBNg4CR7AEyMNo8pF9QKg@mail.gmail.com>
- <ZjknNJSFcKaxGDS4@x1> <Zjksc3yqvkocS18M@x1>
-In-Reply-To: <Zjksc3yqvkocS18M@x1>
-From: Namhyung Kim <namhyung@kernel.org>
-Date: Tue, 7 May 2024 14:55:53 -0700
-Message-ID: <CAM9d7cj=zadZzQakNC7PeKWd5hfL83jvCRu-BuZ4EOzF2WPb-w@mail.gmail.com>
-Subject: Re: [PATCH 2/5] fs/procfs: implement efficient VMA querying API for /proc/<pid>/maps
-To: Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Ian Rogers <irogers@google.com>, Greg KH <gregkh@linuxfoundation.org>, 
-	Andrii Nakryiko <andrii@kernel.org>, linux-fsdevel@vger.kernel.org, brauner@kernel.org, 
-	viro@zeniv.linux.org.uk, akpm@linux-foundation.org, 
-	linux-kernel@vger.kernel.org, bpf@vger.kernel.org, linux-mm@kvack.org, 
-	=?UTF-8?Q?Daniel_M=C3=BCller?= <deso@posteo.net>, 
-	"linux-perf-use." <linux-perf-users@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Mon, May 6, 2024 at 12:16=E2=80=AFPM Arnaldo Carvalho de Melo
-<acme@kernel.org> wrote:
->
-> On Mon, May 06, 2024 at 03:53:40PM -0300, Arnaldo Carvalho de Melo wrote:
-> > On Mon, May 06, 2024 at 11:05:17AM -0700, Namhyung Kim wrote:
-> > > On Mon, May 6, 2024 at 6:58=E2=80=AFAM Arnaldo Carvalho de Melo <acme=
-@kernel.org> wrote:
-> > > > On Sat, May 04, 2024 at 02:50:31PM -0700, Andrii Nakryiko wrote:
-> > > > > On Sat, May 4, 2024 at 8:28=E2=80=AFAM Greg KH <gregkh@linuxfound=
-ation.org> wrote:
-> > > > > > On Fri, May 03, 2024 at 05:30:03PM -0700, Andrii Nakryiko wrote=
-:
-> > > > > > > Note also, that fetching VMA name (e.g., backing file path, o=
-r special
-> > > > > > > hard-coded or user-provided names) is optional just like buil=
-d ID. If
-> > > > > > > user sets vma_name_size to zero, kernel code won't attempt to=
- retrieve
-> > > > > > > it, saving resources.
-> >
-> > > > > > > Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-> >
-> > > > > > Where is the userspace code that uses this new api you have cre=
-ated?
-> >
-> > > > > So I added a faithful comparison of existing /proc/<pid>/maps vs =
-new
-> > > > > ioctl() API to solve a common problem (as described above) in pat=
-ch
-> > > > > #5. The plan is to put it in mentioned blazesym library at the ve=
-ry
-> > > > > least.
-> > > > >
-> > > > > I'm sure perf would benefit from this as well (cc'ed Arnaldo and
-> > > > > linux-perf-user), as they need to do stack symbolization as well.
-> >
-> > > I think the general use case in perf is different.  This ioctl API is=
- great
-> > > for live tracing of a single (or a small number of) process(es).  And
-> > > yes, perf tools have those tracing use cases too.  But I think the
-> > > major use case of perf tools is system-wide profiling.
-> >
-> > > For system-wide profiling, you need to process samples of many
-> > > different processes at a high frequency.  Now perf record doesn't
-> > > process them and just save it for offline processing (well, it does
-> > > at the end to find out build-ID but it can be omitted).
-> >
-> > Since:
-> >
-> >   Author: Jiri Olsa <jolsa@kernel.org>
-> >   Date:   Mon Dec 14 11:54:49 2020 +0100
-> >   1ca6e80254141d26 ("perf tools: Store build id when available in PERF_=
-RECORD_MMAP2 metadata events")
-> >
-> > We don't need to to process the events to find the build ids. I haven't
-> > checked if we still do it to find out which DSOs had hits, but we
-> > shouldn't need to do it for build-ids (unless they were not in memory
-> > when the kernel tried to stash them in the PERF_RECORD_MMAP2, which I
-> > haven't checked but IIRC is a possibility if that ELF part isn't in
-> > memory at the time we want to copy it).
->
-> > If we're still traversing it like that I guess we can have a knob and
-> > make it the default to not do that and instead create the perf.data
-> > build ID header table with all the build-ids we got from
-> > PERF_RECORD_MMAP2, a (slightly) bigger perf.data file but no event
-> > processing at the end of a 'perf record' session.
->
-> But then we don't process the PERF_RECORD_MMAP2 in 'perf record', it
-> just goes on directly to the perf.data file :-\
+# Background
 
-Yep, we don't process build-IDs at the end if --buildid-mmap
-option is given.  It won't have build-ID header table but it's
-not needed anymore and perf report can know build-ID from
-MMAP2 directly.
+LSM hooks (callbacks) are currently invoked as indirect function calls. These
+callbacks are registered into a linked list at boot time as the order of the
+LSMs can be configured on the kernel command line with the "lsm=" command line
+parameter.
 
-Thanks,
-Namhyung
+Indirect function calls have a high overhead due to retpoline mitigation for
+various speculative execution attacks.
+
+Retpolines remain relevant even with newer generation CPUs as recently
+discovered speculative attacks, like Spectre BHB need Retpolines to mitigate
+against branch history injection and still need to be used in combination with
+newer mitigation features like eIBRS.
+
+This overhead is especially significant for the "bpf" LSM which allows the user
+to implement LSM functionality with eBPF program. In order to facilitate this
+the "bpf" LSM provides a default callback for all LSM hooks. When enabled,
+the "bpf" LSM incurs an unnecessary / avoidable indirect call. This is
+especially bad in OS hot paths (e.g. in the networking stack).
+This overhead prevents the adoption of bpf LSM on performance critical
+systems, and also, in general, slows down all LSMs.
+
+Since we know the address of the enabled LSM callbacks at compile time and only
+the order is determined at boot time, the LSM framework can allocate static
+calls for each of the possible LSM callbacks and these calls can be updated once
+the order is determined at boot.
+
+This series is a respin of the RFC proposed by Paul Renauld (renauld@google.com)
+and Brendan Jackman (jackmanb@google.com) [1]
+
+# Performance improvement
+
+With this patch-set some syscalls with lots of LSM hooks in their path
+benefitted at an average of ~3% and I/O and Pipe based system calls benefitting
+the most.
+
+Here are the results of the relevant Unixbench system benchmarks with BPF LSM
+and SELinux enabled with default policies enabled with and without these
+patches.
+
+Benchmark                                               Delta(%): (+ is better)
+===============================================================================
+Execl Throughput                                             +1.9356
+File Write 1024 bufsize 2000 maxblocks                       +6.5953
+Pipe Throughput                                              +9.5499
+Pipe-based Context Switching                                 +3.0209
+Process Creation                                             +2.3246
+Shell Scripts (1 concurrent)                                 +1.4975
+System Call Overhead                                         +2.7815
+System Benchmarks Index Score (Partial Only):                +3.4859
+
+In the best case, some syscalls like eventfd_create benefitted to about ~10%.
+The full analysis can be viewed at https://kpsingh.ch/lsm-perf
+
+[1] https://lore.kernel.org/linux-security-module/20200820164753.3256899-1-jackmanb@chromium.org/
+
+
+# BPF LSM Side effects
+
+Patch 4 of the series also addresses the issues with the side effects of the
+default value return values of the BPF LSM callbacks and also removes the
+overheads associated with them making it deployable at hyperscale.
+
+# v9 to v10
+
+* Addressed Paul's comments for Patch 3. I did not remove the acks from this one
+  as changes were minor.
+* Moved BPF LSM specific hook toggling logic bpf_lsm_toggle_hook to s
+  security_toggle_hook as a generic API. I removed the Ack's from this patch
+  as it's worth another look.
+* Refactored the non-standard hooks to use static calls.
+
+# v8 to v9
+
+Paul, I removed the 5th patch about CONFIG_SECURITY_HOOK_LIKELY and went through
+all the feedback. I believe it all should be addressed now.
+But, please let me know if I missed anything.
+
+The patches are based on https://git.kernel.org/pub/scm/linux/kernel/git/pcmoore/lsm.git
+(next branch as of 2024-02-07) and resolved a bunch of conflicts.
+
+I also added Andrii's series ack to indidividual patches.
+
+# v7 to v8
+
+* Addressed Andrii's feedback
+* Rebased (this seems to have removed the syscall changes). v7 has the required
+  conflict resolution incase the conflicts need to be resolved again.
+
+# v6 -> v7
+
+* Rebased with latest LSM id changes merged
+
+NOTE: The warning shown by the kernel test bot is spurious, there is no flex array
+and it seems to come from an older tool chain.
+
+https://lore.kernel.org/bpf/202310111711.wLbijitj-lkp@intel.com/
+
+# v5 -> v6
+
+* Fix a bug in BPF LSM hook toggle logic.
+
+# v4 -> v5
+
+* Rebase to linux-next/master
+* Fixed the case where MAX_LSM_COUNT comes to zero when just CONFIG_SECURITY
+  is compiled in without any other LSM enabled as reported here:
+
+  https://lore.kernel.org/bpf/202309271206.d7fb60f9-oliver.sang@intel.com
+
+# v3 -> v4
+
+* Refactor LSM count macros to use COUNT_ARGS
+* Change CONFIG_SECURITY_HOOK_LIKELY likely's default value to be based on
+  the LSM enabled and have it depend on CONFIG_EXPERT. There are a lot of subtle
+  options behind CONFIG_EXPERT and this should, hopefully alleviate concerns
+  about yet another knob.
+* __randomize_layout for struct lsm_static_call and, in addition to the cover
+  letter add performance numbers to 3rd patch and some minor commit message
+  updates.
+* Rebase to linux-next.
+
+# v2 -> v3
+
+* Fixed a build issue on archs which don't have static calls and enable
+  CONFIG_SECURITY.
+* Updated the LSM_COUNT macros based on Andrii's suggestions.
+* Changed the security_ prefix to lsm_prefix based on Casey's suggestion.
+* Inlined static_branch_maybe into lsm_for_each_hook on Kees' feedback.
+
+# v1 -> v2 (based on linux-next, next-20230614)
+
+* Incorporated suggestions from Kees
+* Changed the way MAX_LSMs are counted from a binary based generator to a clever header.
+* Add CONFIG_SECURITY_HOOK_LIKELY to configure the likelihood of LSM hooks.
+
+KP Singh (5):
+  kernel: Add helper macros for loop unrolling
+  security: Count the LSMs enabled at compile time
+  security: Replace indirect LSM hook calls with static calls
+  security: Update non standard hooks to use static calls
+  bpf: Only enable BPF LSM hooks when an LSM program is attached
+
+ include/linux/args.h      |   6 +-
+ include/linux/lsm_count.h | 128 +++++++++++++
+ include/linux/lsm_hooks.h |  94 +++++++++-
+ include/linux/unroll.h    |  36 ++++
+ kernel/bpf/trampoline.c   |  40 +++-
+ security/bpf/hooks.c      |   2 +-
+ security/security.c       | 382 +++++++++++++++++++++++++-------------
+ 7 files changed, 542 insertions(+), 146 deletions(-)
+ create mode 100644 include/linux/lsm_count.h
+ create mode 100644 include/linux/unroll.h
+
+-- 
+2.45.0.rc1.225.g2a3ae87e7f-goog
+
 
