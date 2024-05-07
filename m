@@ -1,128 +1,175 @@
-Return-Path: <bpf+bounces-28952-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-28953-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 585648BEE39
-	for <lists+bpf@lfdr.de>; Tue,  7 May 2024 22:42:22 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 780EA8BEE65
+	for <lists+bpf@lfdr.de>; Tue,  7 May 2024 22:52:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 08B541F23C1C
-	for <lists+bpf@lfdr.de>; Tue,  7 May 2024 20:42:22 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E8A411F253A0
+	for <lists+bpf@lfdr.de>; Tue,  7 May 2024 20:52:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 152252E62C;
-	Tue,  7 May 2024 20:42:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B9AB35B696;
+	Tue,  7 May 2024 20:52:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="cEQzyG5M"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hivFTRQ1"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-lj1-f170.google.com (mail-lj1-f170.google.com [209.85.208.170])
+Received: from mail-wr1-f44.google.com (mail-wr1-f44.google.com [209.85.221.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 238977E8;
-	Tue,  7 May 2024 20:42:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CBAE6187353;
+	Tue,  7 May 2024 20:52:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715114534; cv=none; b=dVp4NfqwptJrCMvuQ0CIw2NhDwTpndkTHNZ/XLqh9TkYcrG4qtCzvGkigm4xfkFaBIieqXJj0SI7vgGfuYXtIJ6Bbts392EjXeR+IUz4Psm/xIvlUC5ztzm2MBJpK9Ua2EKy5l0aYi+i945QLPLobKKdkOCu0+19HCTw51NymGc=
+	t=1715115124; cv=none; b=T71EJlxTQ32EICOI4wQPRMrjQaV8JZOxT6Ol9INPan+PESGewiarOrQUdC95Hdi6GzYcMTxUXD4g9m4e/hxeVPLacq9giI14L2ZWnlwI+o43nDx3OF5ckvhWakuZ5FUBI1rRv7d5ShadMFlVXMRs3M7xHI0xrAA8y+xPgeVKzEA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715114534; c=relaxed/simple;
-	bh=kCPZuUN4t/5qb5/ns65qHqchFck1pP0QXE79yPvXklg=;
+	s=arc-20240116; t=1715115124; c=relaxed/simple;
+	bh=b8UZ2RsJ1KvRwNE/4/qun7NqMNi9/Ak7SZwXxlqtD5E=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=azyDvpCelzTt4gsn7szp+g3Z4ykWeKQUddEg4gClfEqx+DdlR0+2Zv7T7DKmEhVzBbmcJb+YJIY/cwE/NZBV/ZY+YsnUZsd6zgcOi1Wa9Rumw8Ei2n11vfB+Oddvh+9Ey/NT42bzvmz08b4nniknD70vPV/7U3hPaMw/lZ/FEjg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=cEQzyG5M; arc=none smtp.client-ip=209.85.208.170
+	 To:Cc:Content-Type; b=J9pRjKyQiNn8dZmoasPGruBMpZlKQ5l9/Y9miIO3QCpTuF0v2y/N+VxxQrNi2OfX33dKUx1uSlyPEoreW1RUKTfBKtkJA3XI3JKhfMQRTpsOfeso6kc9E5zRI70XopSmQOn8tdAiqhqy8XoIUb06L4yY6S3rpWejjbETBsGIdRM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hivFTRQ1; arc=none smtp.client-ip=209.85.221.44
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f170.google.com with SMTP id 38308e7fff4ca-2e0a34b2899so50830071fa.3;
-        Tue, 07 May 2024 13:42:12 -0700 (PDT)
+Received: by mail-wr1-f44.google.com with SMTP id ffacd0b85a97d-34f0e55787aso1973011f8f.2;
+        Tue, 07 May 2024 13:52:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1715114531; x=1715719331; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1715115120; x=1715719920; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=kCPZuUN4t/5qb5/ns65qHqchFck1pP0QXE79yPvXklg=;
-        b=cEQzyG5MaefWFmhe44Egt57motKriaW5vYpD3mGF2qdJDKEa20JU08c7dNEx4spAvj
-         d7+n8nQU7CrTi7E+ZYzat0vrNbXJokDpOqDhzU8Cfs64Ylyc7ks/lYKfvQXufAOcZi87
-         0UrsdsvV36ffUJm05LO7C3a+QLZN1FzG22cWajMqsSgAYmsus+iUqzOtKckO1wtcJfKk
-         pIsJS0sPS0G6ODmj0Pf+Ojsqe6E2sd7ICi/9ku7NjLrGZ2PHEuxh7cxJSasYjrUTABvb
-         b9JGnOFAGo0iyHimm1fA9vOxaEfTMBR/SKxBqBPm5z4W9joUnAYwE14GhjXCwVf60+G0
-         RY1A==
+        bh=qdcR2a16esVT3UB13Wto/4zRmwQIrll7yYTlz1PQXa8=;
+        b=hivFTRQ1huyE+NCd428B/jvRiaUVey7DtoY4duh1oTE/7nFH3Ke53YiZrFXCpeDLpo
+         xwzhgDoPhnxA5OkXtVqFRyIZ6IZPoFGuMI73TpMzHxHRpcUxdVkrsX2fhTO9TY9YHVeB
+         UI52nlJLt4vX5jCRL45dyHtyBaTkcidP3BKqYXcz4K+OTGK+VTRkpkAjRWihvJH7UdF7
+         YSEeIS9m7/YG+1m+RH25SywwaCNovK+51E8IMhr0C8K+wXs9H42dp+ruDDb2zlsssr4u
+         6OPBN2YR7Bf+Q83/cyS5qxO0u8gHMWdNE+7KN7blntCJ1nZ9iIfEtf4y+T7KYdzFcqYD
+         21tw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1715114531; x=1715719331;
+        d=1e100.net; s=20230601; t=1715115120; x=1715719920;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=kCPZuUN4t/5qb5/ns65qHqchFck1pP0QXE79yPvXklg=;
-        b=r1DK2n6ZdkbezpSo0/6SKuFGRHwlx51pZd64uUzsfvMG5WqNeDhazq7JNQrPnjPbqG
-         6lx21zt0uLHMHPwgypPisI5II4Fes6ykTHlvGWM/K5ijVZ6MvBeyVaQ/2lYN9/tm76kb
-         W/N002qjP95FeuMCbx7KKHB2YrrL+PVyNkm6vlYHNozvoiAiincYtcd5tVCo48iW8cD2
-         vVQ2dLoYJC4E09vhT5egShLVp/WAiY3HZPzTiBYaCrzThY3L0taO5ZfSPEuFVK9PtzTc
-         Ta752DyetUfbKaKuz9od0Rr3ttDH0+EJuT6K2qonm8FB7a+AWfRtAeg+uqE2v79OfjXu
-         BZzw==
-X-Forwarded-Encrypted: i=1; AJvYcCUfaqzJ5ZWpWx89BEqXAOXZkjbRKBwXRbUEc4Y+0QhW6RLiiXsM8Lahm38E9S3u1afQ7H9BQjj9kLLB7cEGZOVE/6KsCAQCp6a+Qwn9+slNSlRu0dz2hXgseyUcGUbYd4yS
-X-Gm-Message-State: AOJu0YwxpgmTz37WPRMzImQ+EhR5P5162fmmrBONtBeCqUe33nGPm3rS
-	B/OmMnaZ68If4KyKQUv+Wlr8cXIENyMvmV6UnAj12RD2zbNHRkksS+iOnSKiq4AGVHDS8Ac/3Yr
-	mEFqrrmY8mMslefDppEPTHfaaaTM=
-X-Google-Smtp-Source: AGHT+IHA5tSY5YImS5LpbKiSZZvrmasAH5RUDvfoUhFtaX2IXPP9G3AVss5gyxGDhAh6Lq3HMLfkxmaqovC4uW0nDSo=
-X-Received: by 2002:a2e:97c9:0:b0:2e3:ba0e:de12 with SMTP id
- 38308e7fff4ca-2e446e82769mr4903291fa.22.1715114531024; Tue, 07 May 2024
- 13:42:11 -0700 (PDT)
+        bh=qdcR2a16esVT3UB13Wto/4zRmwQIrll7yYTlz1PQXa8=;
+        b=J4beitXZdLy2O1OKoVaSZTWCadg+ncBVE4g0hIjbZjxDMP+jfEGGqL/oDHzCZC5AtA
+         5aNWWfARRs6Q8olWkh3WdhX9eRCHDDZvvtMwRSQjp4pY47Y24ox6yVjcSi3SFQB4Fe8X
+         ppOBXs2rGxl/w4QgNwACB6frtHWAqwWhMWUV6ds+R/OB5drohJ7RCrQ83B72/bZZk3Lv
+         4h/npxjwDT6zPNDHhCCMBFuSrGaWMxtMjhG5jkSfYLEK9As4tKkk+BZ1rlZRxZrv1LDn
+         HzeaSIF+w3ncufDcjP8HLs43hIqA2kS0rgaIsgEcNYWCp/ji/Gkb4anWqhhWl/6OzNMl
+         q0dw==
+X-Forwarded-Encrypted: i=1; AJvYcCWEAJjE1Igtb6yVqoA4DNawhh1E7OIMBldNEcaf7DF/oH4rY5lgA0NsdLBGkyEni29QbkF2kQ5NKugXT+palOJnB5n5hjCJNcleiLlVtWbl8zj/Yodh29+WzJ0zg9D9imlJkIBl7EIfJujAnFyUEgINS9ppNr+1qWk+UG8UkTb6MwsZlBO9ULB+UuTGqMUpliQpLkP2V/E8Md/l
+X-Gm-Message-State: AOJu0YwomNR/mgfvLvQ3pX3Ad/R2DyWhjhsqBZ9OdGmVu93jfIhZO8la
+	QEo6t7yPrYSV73rFwQsrnBUk6D4Dx7PSjCoEaJcI2dWgvIrKhfBMhd79WCZxM/rZLG6W0JO+6ZK
+	FQSG1mJErpf3JCkN9GY3EHtkECJM=
+X-Google-Smtp-Source: AGHT+IEupALi3YmwRAFNO89hfoLq5x2UZOxByq4dlLEg5tUq6l7C9/2mHmwsQr3MawIVxEWxb4cV0A1MmIur9qWOZgc=
+X-Received: by 2002:a5d:6e55:0:b0:34a:3f3d:bb14 with SMTP id
+ ffacd0b85a97d-34fca242709mr600329f8f.27.1715115119939; Tue, 07 May 2024
+ 13:51:59 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240507024952.1590681-1-haiyue.wang@intel.com>
- <CAADnVQK7zD312WRJboMib8HJnNzN=i2FKH2QxkVVy736b7sNTQ@mail.gmail.com> <CAEf4Bzbze5D0M2V9d9q90E_XHCMEUa7oXum=wOCVQ_BAugox7A@mail.gmail.com>
-In-Reply-To: <CAEf4Bzbze5D0M2V9d9q90E_XHCMEUa7oXum=wOCVQ_BAugox7A@mail.gmail.com>
+References: <20240507-upstream-bpf-next-20240506-mptcp-subflow-test-v1-0-e2bcbdf49857@kernel.org>
+ <20240507-upstream-bpf-next-20240506-mptcp-subflow-test-v1-2-e2bcbdf49857@kernel.org>
+ <CAADnVQJ5-APFxMeGsUDSWBsiAbhJGivs=fBUapgYEFNHgnEVeA@mail.gmail.com> <d28dec16-9029-42f5-b979-a0f11656a991@kernel.org>
+In-Reply-To: <d28dec16-9029-42f5-b979-a0f11656a991@kernel.org>
 From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Tue, 7 May 2024 13:41:59 -0700
-Message-ID: <CAADnVQJuL18Zkyyztkmzm54yvq3CuB4bSjoL331cmcnX_kppeA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v1] bpf,arena: Rename the kfunc set variable
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: Haiyue Wang <haiyue.wang@intel.com>, bpf <bpf@vger.kernel.org>, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
-	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+Date: Tue, 7 May 2024 13:51:48 -0700
+Message-ID: <CAADnVQJM73g9gTq3GxR-RMmpJPK3DGgzUTQiJXjz_B1G_4JAAw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 2/4] selftests/bpf: Add RUN_MPTCP_TEST macro
+To: Matthieu Baerts <matttbe@kernel.org>
+Cc: MPTCP Upstream <mptcp@lists.linux.dev>, Mat Martineau <martineau@kernel.org>, 
+	Geliang Tang <geliang@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
+	Eduard Zingerman <eddyz87@gmail.com>, Mykola Lysenko <mykolal@fb.com>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
 	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
 	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
-	Jiri Olsa <jolsa@kernel.org>, open list <linux-kernel@vger.kernel.org>
+	Jiri Olsa <jolsa@kernel.org>, Shuah Khan <shuah@kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
+	Network Development <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>, 
+	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>, Geliang Tang <tanggeliang@kylinos.cn>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, May 7, 2024 at 9:43=E2=80=AFAM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
+On Tue, May 7, 2024 at 9:02=E2=80=AFAM Matthieu Baerts <matttbe@kernel.org>=
+ wrote:
 >
-> On Tue, May 7, 2024 at 7:36=E2=80=AFAM Alexei Starovoitov
-> <alexei.starovoitov@gmail.com> wrote:
-> >
-> > On Mon, May 6, 2024 at 7:46=E2=80=AFPM Haiyue Wang <haiyue.wang@intel.c=
-om> wrote:
-> > >
-> > > Rename the kfunc set variable to specify the 'arena' function scope,
-> > > although the 'UNSPEC' type BPF program is mapped to 'COMMON' hook.
-> > >
-> > > And there is 'common_kfunc_set' defined for real 'common' function in
-> > > file 'kernel/bpf/helpers.c'.
-> >
-> > I think common_kfunc_set is a better name to describe that these
-> > two kfuncs are in a common category.
-> > BPF_PROG_TYPE_UNSPEC is a lot less obvious.
-> >
-> > There are two static common_kfunc_set in helpers.c and arena.c
-> > and that's fine.
+> Hi Alexei,
 >
-> it is actually confusing when reading/grepping code, though, so why
-
-What's the confusion? Same name static var in different files?
-There are tons of such cases in the kernel src tree.
-
-> not have arena_common_kfunc_set and whatever the meaningful
-> "qualifier" name for the other one?
-
-arena_common_kfunc_set is certainly better than arena_kfunc_set,
-but I don't like to make the precedent to start renaming static vars
-because they have the same name.
-
+> Thank you for the review!
+>
+> On 07/05/2024 16:44, Alexei Starovoitov wrote:
+> > On Tue, May 7, 2024 at 3:53=E2=80=AFAM Matthieu Baerts (NGI0)
+> > <matttbe@kernel.org> wrote:
+> >>
+> >> From: Geliang Tang <tanggeliang@kylinos.cn>
+> >>
+> >> Each MPTCP subtest tests test__start_subtest(suffix), then invokes
+> >> test_suffix(). It makes sense to add a new macro RUN_MPTCP_TEST to
+> >> simpolify the code.
+> >>
+> >> Signed-off-by: Geliang Tang <tanggeliang@kylinos.cn>
+> >> Reviewed-by: Mat Martineau <martineau@kernel.org>
+> >> Signed-off-by: Matthieu Baerts (NGI0) <matttbe@kernel.org>
+> >> ---
+> >>  tools/testing/selftests/bpf/prog_tests/mptcp.c | 12 ++++++++----
+> >>  1 file changed, 8 insertions(+), 4 deletions(-)
+> >>
+> >> diff --git a/tools/testing/selftests/bpf/prog_tests/mptcp.c b/tools/te=
+sting/selftests/bpf/prog_tests/mptcp.c
+> >> index baf976a7a1dd..9d1b255bb654 100644
+> >> --- a/tools/testing/selftests/bpf/prog_tests/mptcp.c
+> >> +++ b/tools/testing/selftests/bpf/prog_tests/mptcp.c
+> >> @@ -347,10 +347,14 @@ static void test_mptcpify(void)
+> >>         close(cgroup_fd);
+> >>  }
+> >>
+> >> +#define RUN_MPTCP_TEST(suffix)                                 \
+> >> +do {                                                           \
+> >> +       if (test__start_subtest(#suffix))                       \
+> >> +               test_##suffix();                                \
+> >> +} while (0)
 > >
-> > pw-bot: cr
+> > Please no.
+> > Don't hide it behind macros.
+>
+> I understand, I'm personally not a big fan of hiding code being a macro
+> too. This one saves only one line. Geliang added a few more tests in our
+> tree [1], for a total of 9, so that's only saving 9 lines.
+>
+> Related to that, if you don't mind, Geliang also added another macro --
+> MPTCP_SCHED_TEST -- for tests that are currently only in our tree [2]
+> (not ready yet). We asked him to reduce the size of this macro to the
+> minimum. We accepted it because it removed quite a lot of similar code
+> with very small differences [3]. Do you think we should revert this
+> modification too?
+
+Yeah. Pls don't hide such things in macros.
+Refactor into helper function in normal C.
+
+But, what do you mean "in your tree" ?
+That's your development tree and you plan to send all that
+properly as patches to bpf-next someday?
+
+>
+> [1]
+> https://github.com/multipath-tcp/mptcp_net-next/blob/4369d9cbd752e166961a=
+c0db7f85886111606301/tools/testing/selftests/bpf/prog_tests/mptcp.c#L578-L5=
+95
+>
+> [2]
+> https://github.com/multipath-tcp/mptcp_net-next/blob/4369d9cbd752e166961a=
+c0db7f85886111606301/tools/testing/selftests/bpf/prog_tests/mptcp.c#L559-L5=
+76
+>
+> [3]
+> https://lore.kernel.org/mptcp/cover.1713321357.git.tanggeliang@kylinos.cn=
+/T/#m0b9c14f1cbae8653c6fd119f6b71d1797961d6ba
+>
+> Cheers,
+> Matt
+> --
+> Sponsored by the NGI0 Core fund.
+>
 
