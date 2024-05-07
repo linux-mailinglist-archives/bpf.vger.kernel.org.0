@@ -1,308 +1,281 @@
-Return-Path: <bpf+bounces-28988-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-28989-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 652FD8BF28F
-	for <lists+bpf@lfdr.de>; Wed,  8 May 2024 01:52:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id BAE288BF2DA
+	for <lists+bpf@lfdr.de>; Wed,  8 May 2024 02:00:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E7B671F22088
-	for <lists+bpf@lfdr.de>; Tue,  7 May 2024 23:52:55 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4759C1F230A1
+	for <lists+bpf@lfdr.de>; Wed,  8 May 2024 00:00:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA0923DAC1B;
-	Tue,  7 May 2024 23:14:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D7DE681AD7;
+	Tue,  7 May 2024 23:20:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OLtaxPlP"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="pBnSVFFb"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out-187.mta0.migadu.com (out-187.mta0.migadu.com [91.218.175.187])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5FA0386278;
-	Tue,  7 May 2024 23:14:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 129EF73514
+	for <bpf@vger.kernel.org>; Tue,  7 May 2024 23:20:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.187
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715123641; cv=none; b=FW/CUcWhdrKCGz+gPq3J9FuFLc5P/PyfZ5V6OtomEbfqCOtA/LysuE4PHgODuOj5s7/KYOLNt7EDtEOpTwkvcyuBH/6/lygoFurK3z2pVG9K4A/4rO03Gfxo8Gfzj+IVGqhhZqea6H1XiJ4AaRI0pKOZ2WLl+SM/Jf97TKOxXqI=
+	t=1715124047; cv=none; b=HoPuhOO8RQ/gi1Rs+LczCwF6T32CgyPavNp9J7/YRFML3xk0KkWabo0iXy/JeQke1ejreqDwQYk456GFvzBOE/t51v8lGqbi82v+DKpEB+J/75loiRJuCJYSPvebcWUQ33GZdV0Dc7jUK5jz+9F79F+AbQgsMXI921WFglNSnqs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715123641; c=relaxed/simple;
-	bh=KbVCOFHLcEa/8Y6Eb2j5Y6XPf1/h3zsATp8sxGIpVXk=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=SLJfiEV3b0mHwDYrn99OHUWANVuwnXdwFC74UE2fQ/aGp3gMKWsLkQ5AUSCmsIyKLkdyEFLvoyRfmI8XmX1PAfYq3nc3e6dPdtxoujdiM8towqj+mWu+FRX5U/hMYxf+gsaJOqx/6oP/UEnXsonlXDYOJXinwiejh6GigeL8Kik=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OLtaxPlP; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 382D2C4AF67;
-	Tue,  7 May 2024 23:13:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1715123641;
-	bh=KbVCOFHLcEa/8Y6Eb2j5Y6XPf1/h3zsATp8sxGIpVXk=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=OLtaxPlPbsqlf8dFtVIP1JPmZ/mW7xicgpL+ckxYF6xtBtTu1eSzu2FbFpafpLcML
-	 WGy26yKbllPUeBEjwLYM3un1uRNyRjA0RMav2l6gQ2TWcvawA7kRWcFLo4IKA6T44q
-	 FgxpZy44M0Kx02tz4FV8GsPptcPr7KIw+EU+1z/kGgJC05Jaqez7zMS3UQAduhqWZT
-	 TrL1FONsS719SHeKFmbKNuteJAZh8a82Z25sPuNVe1vC9yJAQfTSlICiWPgaIxeL02
-	 4j0jGNP1GeGH6yM/OHulxL8xOjezWBJVB0lql/BmbjdUtoaplzs8DTZ1Y6VXaHAczi
-	 VgzcrSR0I++OA==
-From: Sasha Levin <sashal@kernel.org>
-To: linux-kernel@vger.kernel.org,
-	stable@vger.kernel.org
-Cc: Linus Torvalds <torvalds@linux-foundation.org>,
-	syzbot+83e7f982ca045ab4405c@syzkaller.appspotmail.com,
-	Ingo Molnar <mingo@kernel.org>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Andy Lutomirski <luto@kernel.org>,
-	Sasha Levin <sashal@kernel.org>,
-	tglx@linutronix.de,
-	mingo@redhat.com,
-	bp@alien8.de,
-	dave.hansen@linux.intel.com,
-	x86@kernel.org,
-	peterz@infradead.org,
-	xin3.li@intel.com,
-	ubizjak@gmail.com,
-	arnd@arndb.de,
-	rick.p.edgecombe@intel.com,
-	mjguzik@gmail.com,
-	bpf@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.15 13/15] x86/mm: Remove broken vsyscall emulation code from the page fault code
-Date: Tue,  7 May 2024 19:13:22 -0400
-Message-ID: <20240507231333.394765-13-sashal@kernel.org>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240507231333.394765-1-sashal@kernel.org>
-References: <20240507231333.394765-1-sashal@kernel.org>
+	s=arc-20240116; t=1715124047; c=relaxed/simple;
+	bh=VGnjLYCLsh93O+xSMSpjzl2No7wex8k6/FwauUdnQBM=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:Cc:
+	 In-Reply-To:Content-Type; b=duCxkYvOJemCFu5EY5dAjFx2SlVU2joXDfJLd5FsnSQGwKhUeVrcEfIcBzKz4ntGlrrkmtIC44bqO4rrxmgPHQbg1kDAqct9glXbrYKy6khMZJUGjBd1kKBReR4+jNRAXwDr313SvDhI3zzyjRXhqU15Rzlao5TnQa1ReE96ssI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=pBnSVFFb; arc=none smtp.client-ip=91.218.175.187
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <ca8136e0-5d2a-402b-ad03-cc8a218affd4@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1715124042;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=XVbHDlzQnvUxQGeT6Y01Ypo21CA9imncIrMPaQB2Sdc=;
+	b=pBnSVFFb0nOvV+DHU4OF3vtH2xzaSmdBFeVfstUS0wKo/iXV1EC41Orezud71dAMNpB0sg
+	nqsteenxlHRq6TB0Lj9lfeERokuEdue7KNXdmGsXsiusrd+Zu5V1bO851PXtMqA08e16on
+	o717cIQJQ0rfoPMGudgKvVZBC1/dg8o=
+Date: Tue, 7 May 2024 16:20:36 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-X-stable-base: Linux 5.15.158
-Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf-next 1/1] Fix for bpf_sysctl_set_new_value
+To: Raman Shukhau <ramasha@fb.com>
+References: <20240504102312.3137741-1-ramasha@fb.com>
+ <20240504102312.3137741-2-ramasha@fb.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Martin KaFai Lau <martin.lau@linux.dev>
+Content-Language: en-US
+Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
+ daniel@iogearbox.net
+In-Reply-To: <20240504102312.3137741-2-ramasha@fb.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-From: Linus Torvalds <torvalds@linux-foundation.org>
+On 5/4/24 3:23 AM, Raman Shukhau wrote:
+> Noticed that call to bpf_sysctl_set_new_value doesn't change final value
+> of the parameter, when called from cgroup/syscall bpf handler. No error
+> thrown in this case, new value is simply ignored and original value, sent
+> to sysctl, is set. Example (see test added to this change for BPF handler
+> logic):
+> 
+> sysctl -w net.ipv4.ip_local_reserved_ports = 11111
+> ... cgroup/syscal handler call bpf_sysctl_set_new_value	and set 22222
+> sysctl net.ipv4.ip_local_reserved_ports
+> ... returns 11111
+> 
+> On investigation I found 2 things that needs to be changed:
+> * return value check
+> * new_len provided by bpf back to sysctl. proc_sys_call_handler	expects
+>    this value NOT to include \0 symbol, e.g. if user do
 
-[ Upstream commit 02b670c1f88e78f42a6c5aee155c7b26960ca054 ]
+Thanks for the report and the patch.
 
-The syzbot-reported stack trace from hell in this discussion thread
-actually has three nested page faults:
+This patch is changing a few things (1 fix, 1 improvement, 1 test).
 
-  https://lore.kernel.org/r/000000000000d5f4fc0616e816d4@google.com
+Separate these individual changes into its own patch. Patch 1 fixes the return 
+value. Patch 2 improves the '\0' and *pcount situation. Patch 3 adds the test.
 
-... and I think that's actually the important thing here:
+btw, I am curious what is missed in the test_sysctl.c that didn't catch the 
+return value case?
 
- - the first page fault is from user space, and triggers the vsyscall
-   emulation.
+> 
+> 	```
+>    open("/proc/sys/net/ipv4/ip_local_reserved_ports", ...)
+>    write(fd, "11111", sizeof("22222"))
+>    ```
+> 
+>    or `echo -n "11111" > /proc/sys/net/ipv4/ip_local_reserved_ports`
+> 
+>    or `sysctl -w	net.ipv4.ip_local_reserved_ports=11111
+> 
+>    proc_sys_call_handler receives count equal to `5`. To make it consistent
+>    with bpf_sysctl_set_new_value, this change also adjust `new_len` with
+>    `-1`, if `\0` passed as last character. Alternatively, using
+>    `sizeof("11111") - 1` in BPF handler should work, but it might not be
+>    obvious and spark confusion. Note: if incorrect count is used, sysctl
+>    returns EINVAL to the user.
+> 
+> Signed-off-by: Raman Shukhau <ramasha@fb.com>
+> ---
+>   kernel/bpf/cgroup.c                           |  7 ++-
+>   .../bpf/progs/test_sysctl_overwrite.c         | 47 +++++++++++++++++++
+>   tools/testing/selftests/bpf/test_sysctl.c     | 35 +++++++++++++-
+>   3 files changed, 85 insertions(+), 4 deletions(-)
+>   create mode 100644 tools/testing/selftests/bpf/progs/test_sysctl_overwrite.c
+> 
+> diff --git a/kernel/bpf/cgroup.c b/kernel/bpf/cgroup.c
+> index 8ba73042a239..23736aed1b53 100644
+> --- a/kernel/bpf/cgroup.c
+> +++ b/kernel/bpf/cgroup.c
+> @@ -1739,10 +1739,13 @@ int __cgroup_bpf_run_filter_sysctl(struct ctl_table_header *head,
+>   
+>   	kfree(ctx.cur_val);
+>   
+> -	if (ret == 1 && ctx.new_updated) {
+> +	if (ret == 0 && ctx.new_updated) {
+>   		kfree(*buf);
+>   		*buf = ctx.new_val;
+> -		*pcount = ctx.new_len;
+> +		if (!(*buf)[ctx.new_len])
+> +			*pcount = ctx.new_len - 1;
 
- - the second page fault is from __do_sys_gettimeofday(), and that should
-   just have caused the exception that then sets the return value to
-   -EFAULT
+ From looking at how new_updated is set, my understanding is new_len cannot be 0 
+here. just want to double check.
 
- - the third nested page fault is due to _raw_spin_unlock_irqrestore() ->
-   preempt_schedule() -> trace_sched_switch(), which then causes a BPF
-   trace program to run, which does that bpf_probe_read_compat(), which
-   causes that page fault under pagefault_disable().
 
-It's quite the nasty backtrace, and there's a lot going on.
+> +		else
+> +			*pcount = ctx.new_len;
+>   	} else {
+>   		kfree(ctx.new_val);
+>   	}
+> diff --git a/tools/testing/selftests/bpf/progs/test_sysctl_overwrite.c b/tools/testing/selftests/bpf/progs/test_sysctl_overwrite.c
+> new file mode 100644
+> index 000000000000..e44b429fcfc1
+> --- /dev/null
+> +++ b/tools/testing/selftests/bpf/progs/test_sysctl_overwrite.c
+> @@ -0,0 +1,47 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +// Copyright (c) 2019 Facebook
+> +
+> +#include <string.h>
+> +
+> +#include <linux/bpf.h>
+> +
+> +#include <bpf/bpf_helpers.h>
+> +
+> +#include "bpf_compiler.h"
+> +
+> +static const char sysctl_value[] = "31337";
+> +static const char sysctl_name[] = "net/ipv4/ip_local_reserved_ports";
+> +static __always_inline int is_expected_name(struct bpf_sysctl *ctx)
+> +{
+> +	unsigned char i;
+> +	char name[sizeof(sysctl_name)];
+> +	int ret;
+> +
+> +	memset(name, 0, sizeof(name));
+> +	ret = bpf_sysctl_get_name(ctx, name, sizeof(name), 0);
+> +	if (ret < 0 || ret != sizeof(sysctl_name) - 1)
+> +		return 0;
+> +
+> +	__pragma_loop_unroll_full
+> +	for (i = 0; i < sizeof(sysctl_name); ++i)
+> +		if (name[i] != sysctl_name[i])
 
-The problem is literally the vsyscall emulation, which sets
+bpf_strncmp() should be useful here.
 
-        current->thread.sig_on_uaccess_err = 1;
+> +			return 0;
+> +
+> +	return 1;
+> +}
+> +
+> +SEC("cgroup/sysctl")
+> +int test_value_overwrite(struct bpf_sysctl *ctx)
+> +{
+> +	if (!ctx->write)
+> +		return 1;
+> +
+> +	if (!is_expected_name(ctx))
+> +		return 0;
+> +
+> +	if (bpf_sysctl_set_new_value(ctx, sysctl_value, sizeof(sysctl_value)) == 0)
+> +		return 1;
+> +	return 0;
+> +}
+> +
+> +char _license[] SEC("license") = "GPL";
+> diff --git a/tools/testing/selftests/bpf/test_sysctl.c b/tools/testing/selftests/bpf/test_sysctl.c
+> index bcdbd27f22f0..dfa479861d3a 100644
+> --- a/tools/testing/selftests/bpf/test_sysctl.c
+> +++ b/tools/testing/selftests/bpf/test_sysctl.c
+> @@ -35,6 +35,7 @@ struct sysctl_test {
+>   	int seek;
+>   	const char *newval;
+>   	const char *oldval;
+> +	const char *updval;
+>   	enum {
+>   		LOAD_REJECT,
+>   		ATTACH_REJECT,
+> @@ -1395,6 +1396,16 @@ static struct sysctl_test tests[] = {
+>   		.open_flags = O_RDONLY,
+>   		.result = SUCCESS,
+>   	},
+> +	{
+> +		"C prog: override write to ip_local_reserved_ports",
+> +		.prog_file = "./test_sysctl_overwrite.bpf.o",
 
-and that causes the fixup_exception() code to send the signal *despite* the
-exception being caught.
+test_sysctl.c is not run in bpf CI. It is not very useful to extend this test 
+further. Lets take this chance to create a new progs/cgrp_sysctl.c test that 
+will be exercised by ./test_progs in bpf CI. Then it can use the newer skel 
+open_and_load also.
 
-And I think that is in fact completely bogus.  It's completely bogus
-exactly because it sends that signal even when it *shouldn't* be sent -
-like for the BPF user mode trace gathering.
+Not asking to to migrate the existing tests in test_sysctl.c to the new 
+progs/cgrp_sysctl.c in this patch set. The new cgrp_sysctl.c can only have the 
+tests that exercise the changes in this patch set. However, it will be useful if 
+progs/cgrp_sysctl.c can be bootstrapped in a way that the future test_sysctl.c 
+migration will be easier. I also wouldn't worry too much on the existing raw 
+insns tests in test_sysctl.c for now. They will need to be moved to either C or 
+bpf asm in the future.
 
-In other words, I think the whole "sig_on_uaccess_err" thing is entirely
-broken, because it makes any nested page-faults do all the wrong things.
+pw-bot: cr
 
-Now, arguably, I don't think anybody should enable vsyscall emulation any
-more, but this test case clearly does.
-
-I think we should just make the "send SIGSEGV" be something that the
-vsyscall emulation does on its own, not this broken per-thread state for
-something that isn't actually per thread.
-
-The x86 page fault code actually tried to deal with the "incorrect nesting"
-by having that:
-
-                if (in_interrupt())
-                        return;
-
-which ignores the sig_on_uaccess_err case when it happens in interrupts,
-but as shown by this example, these nested page faults do not need to be
-about interrupts at all.
-
-IOW, I think the only right thing is to remove that horrendously broken
-code.
-
-The attached patch looks like the ObviouslyCorrect(tm) thing to do.
-
-NOTE! This broken code goes back to this commit in 2011:
-
-  4fc3490114bb ("x86-64: Set siginfo and context on vsyscall emulation faults")
-
-... and back then the reason was to get all the siginfo details right.
-Honestly, I do not for a moment believe that it's worth getting the siginfo
-details right here, but part of the commit says:
-
-    This fixes issues with UML when vsyscall=emulate.
-
-... and so my patch to remove this garbage will probably break UML in this
-situation.
-
-I do not believe that anybody should be running with vsyscall=emulate in
-2024 in the first place, much less if you are doing things like UML. But
-let's see if somebody screams.
-
-Reported-and-tested-by: syzbot+83e7f982ca045ab4405c@syzkaller.appspotmail.com
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Tested-by: Jiri Olsa <jolsa@kernel.org>
-Acked-by: Andy Lutomirski <luto@kernel.org>
-Link: https://lore.kernel.org/r/CAHk-=wh9D6f7HUkDgZHKmDCHUQmp+Co89GP+b8+z+G56BKeyNg@mail.gmail.com
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- arch/x86/entry/vsyscall/vsyscall_64.c | 28 ++---------------------
- arch/x86/include/asm/processor.h      |  1 -
- arch/x86/mm/fault.c                   | 33 +--------------------------
- 3 files changed, 3 insertions(+), 59 deletions(-)
-
-diff --git a/arch/x86/entry/vsyscall/vsyscall_64.c b/arch/x86/entry/vsyscall/vsyscall_64.c
-index fd2ee9408e914..ba3172d5b3286 100644
---- a/arch/x86/entry/vsyscall/vsyscall_64.c
-+++ b/arch/x86/entry/vsyscall/vsyscall_64.c
-@@ -98,11 +98,6 @@ static int addr_to_vsyscall_nr(unsigned long addr)
- 
- static bool write_ok_or_segv(unsigned long ptr, size_t size)
- {
--	/*
--	 * XXX: if access_ok, get_user, and put_user handled
--	 * sig_on_uaccess_err, this could go away.
--	 */
--
- 	if (!access_ok((void __user *)ptr, size)) {
- 		struct thread_struct *thread = &current->thread;
- 
-@@ -120,10 +115,8 @@ static bool write_ok_or_segv(unsigned long ptr, size_t size)
- bool emulate_vsyscall(unsigned long error_code,
- 		      struct pt_regs *regs, unsigned long address)
- {
--	struct task_struct *tsk;
- 	unsigned long caller;
- 	int vsyscall_nr, syscall_nr, tmp;
--	int prev_sig_on_uaccess_err;
- 	long ret;
- 	unsigned long orig_dx;
- 
-@@ -172,8 +165,6 @@ bool emulate_vsyscall(unsigned long error_code,
- 		goto sigsegv;
- 	}
- 
--	tsk = current;
--
- 	/*
- 	 * Check for access_ok violations and find the syscall nr.
- 	 *
-@@ -234,12 +225,8 @@ bool emulate_vsyscall(unsigned long error_code,
- 		goto do_ret;  /* skip requested */
- 
- 	/*
--	 * With a real vsyscall, page faults cause SIGSEGV.  We want to
--	 * preserve that behavior to make writing exploits harder.
-+	 * With a real vsyscall, page faults cause SIGSEGV.
- 	 */
--	prev_sig_on_uaccess_err = current->thread.sig_on_uaccess_err;
--	current->thread.sig_on_uaccess_err = 1;
--
- 	ret = -EFAULT;
- 	switch (vsyscall_nr) {
- 	case 0:
-@@ -262,23 +249,12 @@ bool emulate_vsyscall(unsigned long error_code,
- 		break;
- 	}
- 
--	current->thread.sig_on_uaccess_err = prev_sig_on_uaccess_err;
--
- check_fault:
- 	if (ret == -EFAULT) {
- 		/* Bad news -- userspace fed a bad pointer to a vsyscall. */
- 		warn_bad_vsyscall(KERN_INFO, regs,
- 				  "vsyscall fault (exploit attempt?)");
--
--		/*
--		 * If we failed to generate a signal for any reason,
--		 * generate one here.  (This should be impossible.)
--		 */
--		if (WARN_ON_ONCE(!sigismember(&tsk->pending.signal, SIGBUS) &&
--				 !sigismember(&tsk->pending.signal, SIGSEGV)))
--			goto sigsegv;
--
--		return true;  /* Don't emulate the ret. */
-+		goto sigsegv;
- 	}
- 
- 	regs->ax = ret;
-diff --git a/arch/x86/include/asm/processor.h b/arch/x86/include/asm/processor.h
-index bbbf27cfe7015..0702e0c5dbb8d 100644
---- a/arch/x86/include/asm/processor.h
-+++ b/arch/x86/include/asm/processor.h
-@@ -519,7 +519,6 @@ struct thread_struct {
- 	unsigned long		iopl_emul;
- 
- 	unsigned int		iopl_warn:1;
--	unsigned int		sig_on_uaccess_err:1;
- 
- 	/*
- 	 * Protection Keys Register for Userspace.  Loaded immediately on
-diff --git a/arch/x86/mm/fault.c b/arch/x86/mm/fault.c
-index abc6fbc3d5f21..31afd82b95245 100644
---- a/arch/x86/mm/fault.c
-+++ b/arch/x86/mm/fault.c
-@@ -716,39 +716,8 @@ kernelmode_fixup_or_oops(struct pt_regs *regs, unsigned long error_code,
- 	WARN_ON_ONCE(user_mode(regs));
- 
- 	/* Are we prepared to handle this kernel fault? */
--	if (fixup_exception(regs, X86_TRAP_PF, error_code, address)) {
--		/*
--		 * Any interrupt that takes a fault gets the fixup. This makes
--		 * the below recursive fault logic only apply to a faults from
--		 * task context.
--		 */
--		if (in_interrupt())
--			return;
--
--		/*
--		 * Per the above we're !in_interrupt(), aka. task context.
--		 *
--		 * In this case we need to make sure we're not recursively
--		 * faulting through the emulate_vsyscall() logic.
--		 */
--		if (current->thread.sig_on_uaccess_err && signal) {
--			sanitize_error_code(address, &error_code);
--
--			set_signal_archinfo(address, error_code);
--
--			if (si_code == SEGV_PKUERR) {
--				force_sig_pkuerr((void __user *)address, pkey);
--			} else {
--				/* XXX: hwpoison faults will set the wrong code. */
--				force_sig_fault(signal, si_code, (void __user *)address);
--			}
--		}
--
--		/*
--		 * Barring that, we can do the fixup and be happy.
--		 */
-+	if (fixup_exception(regs, X86_TRAP_PF, error_code, address))
- 		return;
--	}
- 
- 	/*
- 	 * AMD erratum #91 manifests as a spurious page fault on a PREFETCH
--- 
-2.43.0
+> +		.attach_type = BPF_CGROUP_SYSCTL,
+> +		.sysctl = "net/ipv4/ip_local_reserved_ports",
+> +		.open_flags = O_RDWR,
+> +		.newval = "11111",
+> +		.updval = "31337",
+> +		.result = SUCCESS,
+> +	},
+>   };
+>   
+>   static size_t probe_prog_length(const struct bpf_insn *fp)
+> @@ -1520,13 +1531,33 @@ static int access_sysctl(const char *sysctl_path,
+>   			log_err("Read value %s != %s", buf, test->oldval);
+>   			goto err;
+>   		}
+> -	} else if (test->open_flags == O_WRONLY) {
+> +	} else if (test->open_flags == O_WRONLY || test->open_flags == O_RDWR) {
+>   		if (!test->newval) {
+>   			log_err("New value for sysctl is not set");
+>   			goto err;
+>   		}
+> -		if (write(fd, test->newval, strlen(test->newval)) == -1)
+> +		if (write(fd, test->newval, strlen(test->newval)) == -1) {
+> +			log_err("Unable to write sysctl value");
+>   			goto err;
+> +		}
+> +		if (test->open_flags == O_RDWR) {
+> +			char buf[128];
+> +
+> +			if (!test->updval) {
+> +				log_err("Expected value for sysctl is not set");
+> +				goto err;
+> +			}
+> +
+> +			lseek(fd, 0, SEEK_SET);
+> +			if (read(fd, buf, sizeof(buf)) == -1) {
+> +				log_err("Unable to read updated value");
+> +				goto err;
+> +			}
+> +			if (strncmp(buf, test->updval, strlen(test->updval))) {
+> +				log_err("Overwritten value %s != %s", buf, test->updval);
+> +				goto err;
+> +			}
+> +		}
+>   	} else {
+>   		log_err("Unexpected sysctl access: neither read nor write");
+>   		goto err;
 
 
