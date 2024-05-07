@@ -1,235 +1,198 @@
-Return-Path: <bpf+bounces-28956-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-28957-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 479D68BEE8F
-	for <lists+bpf@lfdr.de>; Tue,  7 May 2024 23:04:31 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2F1B58BEE9D
+	for <lists+bpf@lfdr.de>; Tue,  7 May 2024 23:08:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B9B7DB210BC
-	for <lists+bpf@lfdr.de>; Tue,  7 May 2024 21:04:28 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 99B4E1F25F69
+	for <lists+bpf@lfdr.de>; Tue,  7 May 2024 21:08:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A91A87316F;
-	Tue,  7 May 2024 21:04:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D14FF73183;
+	Tue,  7 May 2024 21:08:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jZqNtQxR"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CEXEINa9"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f175.google.com (mail-pg1-f175.google.com [209.85.215.175])
+Received: from mail-ej1-f42.google.com (mail-ej1-f42.google.com [209.85.218.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC92A71B3A;
-	Tue,  7 May 2024 21:04:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C522973163;
+	Tue,  7 May 2024 21:08:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715115862; cv=none; b=tUcgtKvUAzHHILVi66kOnHlmZ5tfUK+0XBPxwIGb+TiGTJ4W5nu4EVs4aYQm7e9J9G4BIE+TSLpisrRtxpd+8NBMuSMvcXbtBBHEVaqF01FZ3zp9amBp97XwAUMV8Z4t/94T7ct6lLRPyY9flIAVIZbHXw4b9+JGCsK8Lopi1jc=
+	t=1715116085; cv=none; b=Uniic3Ox9DgkJecixgIGmrLE7CvsJQbO5us83oG//gKVTV6SwWNn4ERexP9GR0c7xkP0NW0CYm2OtpjQyxnKfAPpNhNXhwr6gEfbc/3wijGTj6Gzw9210L1QjYgWaLUxoU2YbysWCx91i9R4HcY87fo6M0oIs/LUAyz0QMeNNLw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715115862; c=relaxed/simple;
-	bh=9ythelcd555ehayoCK+v6PnGyHN2aIf5mfrvlET7y4A=;
+	s=arc-20240116; t=1715116085; c=relaxed/simple;
+	bh=B6UyPSjkD4lPVXtW9MIZrPpHMifBqYpqqtm47NjnchY=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=rlq3wbsDaluVZXYxNhnz6RHUVw0TwLtFTifXhnvpd46Lxfi8kb3ejVBqa++Wv3rTEJ6jcpqoZj21r5DMXHFxv4dTYyNwUU6og1Upi6watF2YIl38zpCYqdl7Lwz6SfkpbxLs7uJqYMerXPVF3oGwukGWj+/7dXt8WFElH4w+kNw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jZqNtQxR; arc=none smtp.client-ip=209.85.215.175
+	 To:Cc:Content-Type; b=Uf28kGSO+6NOVGjE4+CGBKvwjjQMYDG6NB2k4Arr7Jdg7KoAc18eTPQzTLcG5Fb0E1/dCQfZrVa/VeDzhzD8YXYhj7xTFLGkUp5Q6g8qJYBzALsbRRTVpVCX3VOt7bYmvOQwym1SRoVgqcg+pfoV8yMYZe3n4JR4ZQS84sgPzAY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CEXEINa9; arc=none smtp.client-ip=209.85.218.42
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f175.google.com with SMTP id 41be03b00d2f7-61c4ebd0c99so2368262a12.0;
-        Tue, 07 May 2024 14:04:20 -0700 (PDT)
+Received: by mail-ej1-f42.google.com with SMTP id a640c23a62f3a-a4702457ccbso947716566b.3;
+        Tue, 07 May 2024 14:08:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1715115860; x=1715720660; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1715116082; x=1715720882; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=MFzLP9jypxz8zp9JCgtxnmrKkuxXPrSxPzVAWQBs/uM=;
-        b=jZqNtQxRsCskCePX71jcFMFj/K3q40uhIKi2if8KL/YIsEg2rFRdlgj8lCGD9Mewpj
-         DzaG9+2eDfIfpKaeKPfhxISweO5mOWhfYyhI/VCIRzsPWMgmkH6+YEUr076ePaDC8HYW
-         fOxfLrvq6trAImpWC6/ivbruvdBY3P0o3i6BdJWoMt+DgX7dbj5tY9RcYNMnTbj5jGTV
-         jvfP9I7Y5kGZWyiFucKwYpQAQ6qbjMdShiwmHAIyfWGunhUbMPTIOCQ5zGSHpJ0JQnzE
-         z8vdDKlptmwoWOQNzQ25DC8UIqF9oqKY3WAihX9DUYZ2c6ENlWiZxLQ+Lr/0GeDGe45e
-         9R4Q==
+        bh=ieHKWE/362CtrkuwJG+D03/eKpQ3iQM4fqC19j9FWgg=;
+        b=CEXEINa9LB5L1K0I9mGM+0JpL9F9qpMUlCnSAZCIFmhhjKw5D79kAmJNOSoGrZ2QWD
+         48ScQ1OUWzJnhZT8W++4u5LM108rb6zoz+XrKAMYtmT62Oo53lyO6vWTY5Ey4XkQ2OEI
+         tLnnrkoRcAjPvmpF5AFLtSV95CbOp44Ia80LK8x+WCcT+m/TFFRqzdk5TUvbm5KLRWYt
+         /J6NufyZrebUaZuKGD0EFwnEY6W3BP9ZoiQw3IwDu4EsJEjbcCHa7YSRerLMx5KOqy79
+         Y2pFT1SKZDTgFSigqBiDGEjbSR3/b4yk6yKRynScGdeETi7yjWIUgb4QRNCcjEp2dFzU
+         odWg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1715115860; x=1715720660;
+        d=1e100.net; s=20230601; t=1715116082; x=1715720882;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=MFzLP9jypxz8zp9JCgtxnmrKkuxXPrSxPzVAWQBs/uM=;
-        b=VVzmgXdFHZkqNek/YmWR9AV9pjMucmKL93vg2U5fiOluZClNGR2XYsTKh4sMoXSK0g
-         78jefW2UGpqJ13MQCSU3v+N2yAa09Tnq2sdRUTrzUOj2HXhtcfAfOUXYgmCMlP55HCis
-         DF/o7qgI1AjNS0HioN5b0wKsnKSGEUPB5fWWvygV23R8k44YJLfBJvr3lCHtYPmihCH4
-         bKaNI+I0qVVv5bFGRBHJJ2Lh/btcVfwtL+UIihl70ppCymOZPfki6kGIwjVm/z9tb1vq
-         yV2otIM6PuQyzuwTJxnczlH13JiZCFqv1IAXOwU7SkPQ2W394cPPxDsSKTA6OT/PID57
-         OEog==
-X-Forwarded-Encrypted: i=1; AJvYcCV46FLTIRzbzsow448QTNhWlYd6rF4R8PSZyDJ+YSJQX/18aUa9s85YVVPqaafQJ+iu6qvh7yO2+H27OS8g1xbbktrKZQ1ZyG2yVa4B9l1BotvOeHhLkthhqRPuYFpR+yzIaQlTr0g9NFlgJr09K+gT/pmvZjjrxKI+DFYzD1VFq++ZbZB9
-X-Gm-Message-State: AOJu0YyAYA3tZGPTl7hnRmAbRgl3DyuzYu9RxSMGXIIIwlL1pLcN2Yf3
-	EHUzVYWEBo952RxxaQdMgXqPkgcpPSHKRFjNZ46bENN8ESp1p/EIHGkl/NfWqYJCl0GKKriZSrb
-	RO0pPnhsrPKoY2D0XaICUuzhdUAQ=
-X-Google-Smtp-Source: AGHT+IEvi+qh6FV6T7TpdH8lIa91LZDU7awvCKHqDLHp6p/u8XRcYsLVnh1NuA9JDVQ663ZK+HDD0OJS6hdKcdp/eaQ=
-X-Received: by 2002:a17:90b:348e:b0:2ac:513b:b316 with SMTP id
- 98e67ed59e1d1-2b6163a32ebmr826188a91.10.1715115860101; Tue, 07 May 2024
- 14:04:20 -0700 (PDT)
+        bh=ieHKWE/362CtrkuwJG+D03/eKpQ3iQM4fqC19j9FWgg=;
+        b=vIe8z2YXOU8JGVBfFW1rp3jIIeWXZaykrpXGaAjcfYQvl6E8DZuA2sL8slo8N9onsn
+         NgO5RZrZNvwuQqn+EIbverqvmzBINl1TwLMERTho2BCRtLQHkAM7SDMrJIE9PuDc9PQt
+         AI7d0Vfg3pQRLv0mDET6MwVwnNP+vVhCh1LTfvyz2MMMDvqL6M4ZcpZ6Y2ZH/x188Wk/
+         0svu6MBODCs1J+LYNKA+naz9Vkqx1Wy7Jx0Y72oWYXzATglazNWTfMuY5uHTbC+/UbPp
+         km7MVhNFo8kHfVz9OnIu0snLUxA9Hd8hgagQC1HYeRePVrJSqHCK5wEGvVhe+17oj3eD
+         f3Kg==
+X-Forwarded-Encrypted: i=1; AJvYcCVb6c9ejdODjgvFkobFmSej2w1Ngrus+jJ0mOBgpHqazP9jztT5VbUaxPONUuzLwMCGOXLbG9ma13ntqrG+EO2MdLFCOkYlVFFy//gmBxoMYFOng85p6wvDOCF/EjVoUmzA
+X-Gm-Message-State: AOJu0YwPyjPZbth5+LpzpP8nQUcgUy2IAa5CkgKP0pGWViT5xWGkhWzS
+	Frnnj9SRgBvf+gqahEMNEfA3RuRF/XZM4ueJjKOKy5Dp/T7DT0MvhWXKoegwNJ9w+Yz02vXfJBa
+	XCllzyLEPRYaOY5UAEc8IdXo8efY=
+X-Google-Smtp-Source: AGHT+IEw3/qNsNoUP7aAcOanTDPmGmWt8ZwnfCP9de7aC18zb/HtIe1tDLKzU3KIIw24p7yI1mX2F4HjYsuumVBJOf8=
+X-Received: by 2002:a17:906:7181:b0:a59:c9ad:bd26 with SMTP id
+ a640c23a62f3a-a59fb922db9mr35896566b.12.1715116081732; Tue, 07 May 2024
+ 14:08:01 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <171318533841.254850.15841395205784342850.stgit@devnote2>
- <CAEf4BzYMToveELxsOJ9dXz3H-9omhxRLKgGK-ppYvmK8pgDsfA@mail.gmail.com>
- <20240429225119.410833c12d9f6fbcce0a58db@kernel.org> <CAEf4BzZDqD4fyLpoq9r2M0HnES7aO7YW=ZNH-k8uPJWd_VbAJg@mail.gmail.com>
- <20240430223217.fd375d57d130a4207be18e94@kernel.org> <CAEf4BzZQLPL7419W1=yNw6gzB4gquiXfeANbUKbUL8bK+5if=w@mail.gmail.com>
- <20240502110610.412d54a0cf194293b82ee787@kernel.org>
-In-Reply-To: <20240502110610.412d54a0cf194293b82ee787@kernel.org>
+References: <20240502151854.9810-1-puranjay@kernel.org> <20240502151854.9810-2-puranjay@kernel.org>
+In-Reply-To: <20240502151854.9810-2-puranjay@kernel.org>
 From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Tue, 7 May 2024 14:04:08 -0700
-Message-ID: <CAEf4BzYb0LUKo_BUnd72qrBOtnbbHRS8SaDz0XcTx-DTgb2mVA@mail.gmail.com>
-Subject: Re: [PATCH v9 00/36] tracing: fprobe: function_graph: Multi-function
- graph and fprobe on fgraph
-To: Masami Hiramatsu <mhiramat@kernel.org>
-Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, Steven Rostedt <rostedt@goodmis.org>, 
-	Florent Revest <revest@chromium.org>, linux-trace-kernel@vger.kernel.org, 
-	LKML <linux-kernel@vger.kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
-	bpf <bpf@vger.kernel.org>, Sven Schnelle <svens@linux.ibm.com>, 
-	Alexei Starovoitov <ast@kernel.org>, Jiri Olsa <jolsa@kernel.org>, 
-	Arnaldo Carvalho de Melo <acme@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Alan Maguire <alan.maguire@oracle.com>, Mark Rutland <mark.rutland@arm.com>, 
-	Peter Zijlstra <peterz@infradead.org>, Thomas Gleixner <tglx@linutronix.de>, Guo Ren <guoren@kernel.org>
+Date: Tue, 7 May 2024 14:07:46 -0700
+Message-ID: <CAEf4BzZoB2jGZu7MVXbhyWKXNu1UCpvxznFCazH-vGPRPrYFFg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v6 1/4] riscv, bpf: add internal-only MOV
+ instruction to resolve per-CPU addrs
+To: Puranjay Mohan <puranjay@kernel.org>
+Cc: Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, 
+	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, Zi Shen Lim <zlim.lnx@gmail.com>, Xu Kuohai <xukuohai@huawei.com>, 
+	Florent Revest <revest@chromium.org>, linux-arm-kernel@lists.infradead.org, 
+	linux-kernel@vger.kernel.org, bpf@vger.kernel.org, 
+	Kumar Kartikeya Dwivedi <memxor@gmail.com>, =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>, 
+	puranjay12@gmail.com
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, May 1, 2024 at 7:06=E2=80=AFPM Masami Hiramatsu <mhiramat@kernel.or=
-g> wrote:
+On Thu, May 2, 2024 at 8:19=E2=80=AFAM Puranjay Mohan <puranjay@kernel.org>=
+ wrote:
 >
-> On Tue, 30 Apr 2024 09:29:40 -0700
-> Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
+> Support an instruction for resolving absolute addresses of per-CPU
+> data from their per-CPU offsets. This instruction is internal-only and
+> users are not allowed to use them directly. They will only be used for
+> internal inlining optimizations for now between BPF verifier and BPF
+> JITs.
 >
-> > On Tue, Apr 30, 2024 at 6:32=E2=80=AFAM Masami Hiramatsu <mhiramat@kern=
-el.org> wrote:
-> > >
-> > > On Mon, 29 Apr 2024 13:25:04 -0700
-> > > Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
-> > >
-> > > > On Mon, Apr 29, 2024 at 6:51=E2=80=AFAM Masami Hiramatsu <mhiramat@=
-kernel.org> wrote:
-> > > > >
-> > > > > Hi Andrii,
-> > > > >
-> > > > > On Thu, 25 Apr 2024 13:31:53 -0700
-> > > > > Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
-> > > > >
-> > > > > > Hey Masami,
-> > > > > >
-> > > > > > I can't really review most of that code as I'm completely unfam=
-iliar
-> > > > > > with all those inner workings of fprobe/ftrace/function_graph. =
-I left
-> > > > > > a few comments where there were somewhat more obvious BPF-relat=
-ed
-> > > > > > pieces.
-> > > > > >
-> > > > > > But I also did run our BPF benchmarks on probes/for-next as a b=
-aseline
-> > > > > > and then with your series applied on top. Just to see if there =
-are any
-> > > > > > regressions. I think it will be a useful data point for you.
-> > > > >
-> > > > > Thanks for testing!
-> > > > >
-> > > > > >
-> > > > > > You should be already familiar with the bench tool we have in B=
-PF
-> > > > > > selftests (I used it on some other patches for your tree).
-> > > > >
-> > > > > What patches we need?
-> > > > >
-> > > >
-> > > > You mean for this `bench` tool? They are part of BPF selftests (und=
-er
-> > > > tools/testing/selftests/bpf), you can build them by running:
-> > > >
-> > > > $ make RELEASE=3D1 -j$(nproc) bench
-> > > >
-> > > > After that you'll get a self-container `bench` binary, which has al=
-l
-> > > > the self-contained benchmarks.
-> > > >
-> > > > You might also find a small script (benchs/run_bench_trigger.sh ins=
-ide
-> > > > BPF selftests directory) helpful, it collects final summary of the
-> > > > benchmark run and optionally accepts a specific set of benchmarks. =
-So
-> > > > you can use it like this:
-> > > >
-> > > > $ benchs/run_bench_trigger.sh kprobe kprobe-multi
-> > > > kprobe         :   18.731 =C2=B1 0.639M/s
-> > > > kprobe-multi   :   23.938 =C2=B1 0.612M/s
-> > > >
-> > > > By default it will run a wider set of benchmarks (no uprobes, but a
-> > > > bunch of extra fentry/fexit tests and stuff like this).
-> > >
-> > > origin:
-> > > # benchs/run_bench_trigger.sh
-> > > kretprobe :    1.329 =C2=B1 0.007M/s
-> > > kretprobe-multi:    1.341 =C2=B1 0.004M/s
-> > > # benchs/run_bench_trigger.sh
-> > > kretprobe :    1.288 =C2=B1 0.014M/s
-> > > kretprobe-multi:    1.365 =C2=B1 0.002M/s
-> > > # benchs/run_bench_trigger.sh
-> > > kretprobe :    1.329 =C2=B1 0.002M/s
-> > > kretprobe-multi:    1.331 =C2=B1 0.011M/s
-> > > # benchs/run_bench_trigger.sh
-> > > kretprobe :    1.311 =C2=B1 0.003M/s
-> > > kretprobe-multi:    1.318 =C2=B1 0.002M/s s
-> > >
-> > > patched:
-> > >
-> > > # benchs/run_bench_trigger.sh
-> > > kretprobe :    1.274 =C2=B1 0.003M/s
-> > > kretprobe-multi:    1.397 =C2=B1 0.002M/s
-> > > # benchs/run_bench_trigger.sh
-> > > kretprobe :    1.307 =C2=B1 0.002M/s
-> > > kretprobe-multi:    1.406 =C2=B1 0.004M/s
-> > > # benchs/run_bench_trigger.sh
-> > > kretprobe :    1.279 =C2=B1 0.004M/s
-> > > kretprobe-multi:    1.330 =C2=B1 0.014M/s
-> > > # benchs/run_bench_trigger.sh
-> > > kretprobe :    1.256 =C2=B1 0.010M/s
-> > > kretprobe-multi:    1.412 =C2=B1 0.003M/s
-> > >
-> > > Hmm, in my case, it seems smaller differences (~3%?).
-> > > I attached perf report results for those, but I don't see large diffe=
-rence.
-> >
-> > I ran my benchmarks on bare metal machine (and quite powerful at that,
-> > you can see my numbers are almost 10x of yours), with mitigations
-> > disabled, no retpolines, etc. If you have any of those mitigations it
-> > might result in smaller differences, probably. If you are running
-> > inside QEMU/VM, the results might differ significantly as well.
+> RISC-V uses generic per-cpu implementation where the offsets for CPUs
+> are kept in an array called __per_cpu_offset[cpu_number]. RISCV stores
+> the address of the task_struct in TP register. The first element in
+> task_struct is struct thread_info, and we can get the cpu number by
+> reading from the TP register + offsetof(struct thread_info, cpu).
 >
-> I ran it on my bare metal machines again, but could not find any differen=
-ce
-> between them. But I think I enabled intel mitigations on, so it might mak=
-e
-> a difference from your result.
+> Once we have the cpu number in a register we read the offset for that
+> cpu from address: &__per_cpu_offset + cpu_number << 3. Then we add this
+> offset to the destination register.
 >
-> Can you run the benchmark with perf record? If there is such differences,
-> there should be recorded.
+> To measure the improvement from this change, the benchmark in [1] was
+> used on Qemu:
+>
+> Before:
+> glob-arr-inc   :    1.127 =C2=B1 0.013M/s
+> arr-inc        :    1.121 =C2=B1 0.004M/s
+> hash-inc       :    0.681 =C2=B1 0.052M/s
+>
+> After:
+> glob-arr-inc   :    1.138 =C2=B1 0.011M/s
+> arr-inc        :    1.366 =C2=B1 0.006M/s
+> hash-inc       :    0.676 =C2=B1 0.001M/s
+>
+> [1] https://github.com/anakryiko/linux/commit/8dec900975ef
+>
+> Signed-off-by: Puranjay Mohan <puranjay@kernel.org>
+> ---
+>  arch/riscv/net/bpf_jit_comp64.c | 24 ++++++++++++++++++++++++
+>  1 file changed, 24 insertions(+)
+>
 
-I can, yes, will try to do this week, I'm just trying to keep up with
-the rest of the stuff on my plate and haven't found yet time to do
-this. I'll get back to you (and I'll use the latest version of your
-patch set, of course).
+Please carry over acks you got on previous revisions, unless you
+significantly change something about the patch, invalidating previous
+acks. You had Bjorn's ack on this one, I believe:
 
-> e.g.
+Acked-by: Bj=C3=B6rn T=C3=B6pel <bjorn@kernel.org>
+
+
+> diff --git a/arch/riscv/net/bpf_jit_comp64.c b/arch/riscv/net/bpf_jit_com=
+p64.c
+> index 15e482f2c657..1f0159963b3e 100644
+> --- a/arch/riscv/net/bpf_jit_comp64.c
+> +++ b/arch/riscv/net/bpf_jit_comp64.c
+> @@ -12,6 +12,7 @@
+>  #include <linux/stop_machine.h>
+>  #include <asm/patch.h>
+>  #include <asm/cfi.h>
+> +#include <asm/percpu.h>
+>  #include "bpf_jit.h"
 >
-> # perf record -g -o perf.data-kretprobe-nopatch-raw-bpf -- bench -w2 -d5 =
--a trig-kretprobe
-> # perf report -G -i perf.data-kretprobe-nopatch-raw-bpf -k $VMLINUX --std=
-io > perf-out-kretprobe-nopatch-raw-bpf
->
-> I attached the results in my side.
-> The interesting point is, the functions int the result are not touched by
-> this series. Thus there may be another reason if you see the kretprobe
-> regression.
->
-> Thank you,
+>  #define RV_FENTRY_NINSNS 2
+> @@ -1089,6 +1090,24 @@ int bpf_jit_emit_insn(const struct bpf_insn *insn,=
+ struct rv_jit_context *ctx,
+>                         emit_or(RV_REG_T1, rd, RV_REG_T1, ctx);
+>                         emit_mv(rd, RV_REG_T1, ctx);
+>                         break;
+> +               } else if (insn_is_mov_percpu_addr(insn)) {
+> +                       if (rd !=3D rs)
+> +                               emit_mv(rd, rs, ctx);
+> +#ifdef CONFIG_SMP
+> +                       /* Load current CPU number in T1 */
+> +                       emit_ld(RV_REG_T1, offsetof(struct thread_info, c=
+pu),
+> +                               RV_REG_TP, ctx);
+> +                       /* << 3 because offsets are 8 bytes */
+> +                       emit_slli(RV_REG_T1, RV_REG_T1, 3, ctx);
+> +                       /* Load address of __per_cpu_offset array in T2 *=
+/
+> +                       emit_addr(RV_REG_T2, (u64)&__per_cpu_offset, extr=
+a_pass, ctx);
+> +                       /* Add offset of current CPU to  __per_cpu_offset=
+ */
+> +                       emit_add(RV_REG_T1, RV_REG_T2, RV_REG_T1, ctx);
+> +                       /* Load __per_cpu_offset[cpu] in T1 */
+> +                       emit_ld(RV_REG_T1, 0, RV_REG_T1, ctx);
+> +                       /* Add the offset to Rd */
+> +                       emit_add(rd, rd, RV_REG_T1, ctx);
+> +#endif
+>                 }
+>                 if (imm =3D=3D 1) {
+>                         /* Special mov32 for zext */
+> @@ -2038,3 +2057,8 @@ bool bpf_jit_supports_arena(void)
+>  {
+>         return true;
+>  }
+> +
+> +bool bpf_jit_supports_percpu_insn(void)
+> +{
+> +       return true;
+> +}
 > --
-> Masami Hiramatsu (Google) <mhiramat@kernel.org>
+> 2.40.1
+>
 
