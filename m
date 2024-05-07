@@ -1,122 +1,136 @@
-Return-Path: <bpf+bounces-28752-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-28753-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 71FB78BD97F
-	for <lists+bpf@lfdr.de>; Tue,  7 May 2024 04:46:06 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0A7208BD9A5
+	for <lists+bpf@lfdr.de>; Tue,  7 May 2024 05:15:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 883811C20E96
-	for <lists+bpf@lfdr.de>; Tue,  7 May 2024 02:46:05 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7E506B2280D
+	for <lists+bpf@lfdr.de>; Tue,  7 May 2024 03:15:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 82B172E40D;
-	Tue,  7 May 2024 02:45:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4E70A3FB2F;
+	Tue,  7 May 2024 03:15:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Pr5ywb6V"
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="Y5lpGjJv"
 X-Original-To: bpf@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.16])
+Received: from out30-111.freemail.mail.aliyun.com (out30-111.freemail.mail.aliyun.com [115.124.30.111])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 55AD615C9;
-	Tue,  7 May 2024 02:45:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.16
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE7A650A67
+	for <bpf@vger.kernel.org>; Tue,  7 May 2024 03:15:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.111
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715049959; cv=none; b=o9BtP0ZCEDFz+Kh1fHsdFFjm7MlcmIs6fr53mXgZ+5SGDmOmfOAJRjcPBO+tptpTUhs4Y/rF5Iqmd+rwGcQpOHzSeO2gugr58vj1UVi+SgkBLK2/ev0p0JuxE1DPIVeBHLETWH+H5rWiAjkONa7Bov10umaQWzUpEwbgxzQWrVg=
+	t=1715051737; cv=none; b=nwkywQgP0EErYdE8L92SelCyKnczomX0F1vCL2zDkoG+eKLJpWYC2Lr0RqfUEP5fDaSZvmBS5ORwe+/xIHPvbVLOVVEj2cf2nz0F6lf9OVtVK8Qp3vjECFciIJRbavzKVmWHZ4LKbxpiqp7t/NJxhNUpi+T8DpoLYWcqRmfPJko=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715049959; c=relaxed/simple;
-	bh=4G4o0Jo/rKX6UsEbQz7dosJdScsz2KSFW0v5nc8PWqg=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=u8RqalhO8oZPw1r8sBkk2lUtzKcilPMwFAZ4KTJ0JMp+NX1h9i9rZ+xX3/wIOzJC8LlD+Cf/8GV6zWxAbLoO3LORyyP/cnN180yI9z7GN1mEQKlTlcJd9UAqSqKbOxSkosTjra7NCY+kN+3BI5r3VDTzCTodbHM3Jb2rl1nU1bI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Pr5ywb6V; arc=none smtp.client-ip=192.198.163.16
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1715049958; x=1746585958;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=4G4o0Jo/rKX6UsEbQz7dosJdScsz2KSFW0v5nc8PWqg=;
-  b=Pr5ywb6VEfrc7Zeja5XXGxL+XcfzHQ1RmXZUaHedLEuD6sPDtxpJyFpG
-   gHDcxK40gAuV3izHcxZZi2Wnzg1ab4ebJMptbXY0OLJYuBQOdmW53oBDQ
-   hRygk+GQVdfsg6bCaZ5Tc4PgvLb1YE9LB/GgdiYUDKJ2gHqhTJDwY+N/7
-   8BF45JEN11lGfd14kdT2YvuLjoDhEmNcIO7ngtOvzpENAr1NLbd7V5lkA
-   jXmT/AE1GlTbEvG1oFFhwdc5hpFMyl0aeSGBmtM0eoEshUuZ2080ZOFrJ
-   e42PaKCKQ7HgtUPdpg43TGjviRVVUuseIKcq7EiTn8t0J7SCAhU3Sa4tO
-   w==;
-X-CSE-ConnectionGUID: FB/7CP4HRHOFWYdr0BokRA==
-X-CSE-MsgGUID: F7fIWhnvRa6vD4DGvjbviA==
-X-IronPort-AV: E=McAfee;i="6600,9927,11065"; a="11361892"
-X-IronPort-AV: E=Sophos;i="6.07,260,1708416000"; 
-   d="scan'208";a="11361892"
-Received: from fmviesa003.fm.intel.com ([10.60.135.143])
-  by fmvoesa110.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 May 2024 19:45:57 -0700
-X-CSE-ConnectionGUID: NRqpgIBnQvOc3cwys/A6cA==
-X-CSE-MsgGUID: gqaHCpsDRqyB8yQbhPi6+w==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,260,1708416000"; 
-   d="scan'208";a="32872793"
-Received: from unknown (HELO dcai-bmc-sherry-1.sh.intel.com) ([10.239.138.57])
-  by fmviesa003.fm.intel.com with ESMTP; 06 May 2024 19:45:52 -0700
-From: Haiyue Wang <haiyue.wang@intel.com>
-To: bpf@vger.kernel.org
-Cc: Haiyue Wang <haiyue.wang@intel.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>,
-	Stanislav Fomichev <sdf@google.com>,
-	Hao Luo <haoluo@google.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH bpf-next v1] bpf,arena: Rename the kfunc set variable
-Date: Tue,  7 May 2024 10:49:15 +0800
-Message-ID: <20240507024952.1590681-1-haiyue.wang@intel.com>
-X-Mailer: git-send-email 2.43.2
+	s=arc-20240116; t=1715051737; c=relaxed/simple;
+	bh=jMrEKDwZCFov2K64LDvgoYffo5ZggXpzw6fuUy2inUU=;
+	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:References:
+	 In-Reply-To:Content-Type; b=ZMXlhxtxQf2lDz9Fn8d9Xu6vnzgzBmWbtS0OL34PZynI/TwmUsildiWpg72Pu1jPixCwIMkIvXZjglXG8SauuoovPtWe/LE6RKM/0g46AwgkVwBBz+kh4P+GO6guYm/pPSKYGYJFSOmWoi8K0WB4iFCqcsJ9FMtHEXKOEd4w2zI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=Y5lpGjJv; arc=none smtp.client-ip=115.124.30.111
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1715051726; h=Message-ID:Date:MIME-Version:From:Subject:To:Content-Type;
+	bh=fvyMm0M5S/jAwxgOJhHMO2OcnsUJKWVm4Xslcg7cod4=;
+	b=Y5lpGjJvYNr1dFEiWv0SmFFK909mL4f6RuI4b/yQLdHJMaDtaTU/l79jsqSpuUxJdqhi8X1nLTY5TFDhEg+N/YXONyrR7p1nJF1WWhTM5cie0Rp+4WT+RHpeY673Gwi30Sx4+YowNT2y7yGv8a8ig//CLoM+1N0dROhYneVEe1c=
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R151e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=maildocker-contentspam033045075189;MF=lulie@linux.alibaba.com;NM=1;PH=DS;RN=21;SR=0;TI=SMTPD_---0W6-Z8Wb_1715051723;
+Received: from 30.221.128.110(mailfrom:lulie@linux.alibaba.com fp:SMTPD_---0W6-Z8Wb_1715051723)
+          by smtp.aliyun-inc.com;
+          Tue, 07 May 2024 11:15:24 +0800
+Message-ID: <e2b00a10-db9f-4b8f-82ac-49a3f9b301ed@linux.alibaba.com>
+Date: Tue, 7 May 2024 11:15:23 +0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+From: Philo Lu <lulie@linux.alibaba.com>
+Subject: Re: [PATCH bpf-next 2/2] selftests/bpf: Expand skb dynptr selftests
+ for tp_btf
+To: Martin KaFai Lau <martin.lau@linux.dev>
+Cc: daniel@iogearbox.net, john.fastabend@gmail.com, ast@kernel.org,
+ andrii@kernel.org, eddyz87@gmail.com, song@kernel.org,
+ yonghong.song@linux.dev, kpsingh@kernel.org, sdf@google.com,
+ haoluo@google.com, jolsa@kernel.org, davem@davemloft.net,
+ edumazet@google.com, kuba@kernel.org, pabeni@redhat.com, mykolal@fb.com,
+ shuah@kernel.org, drosen@google.com, xuanzhuo@linux.alibaba.com,
+ bpf@vger.kernel.org
+References: <20240430121805.104618-1-lulie@linux.alibaba.com>
+ <20240430121805.104618-3-lulie@linux.alibaba.com>
+ <5e3d1bd3-0893-41b0-89e1-9311d53c2198@linux.dev>
+In-Reply-To: <5e3d1bd3-0893-41b0-89e1-9311d53c2198@linux.dev>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Rename the kfunc set variable to specify the 'arena' function scope,
-although the 'UNSPEC' type BPF program is mapped to 'COMMON' hook.
 
-And there is 'common_kfunc_set' defined for real 'common' function in
-file 'kernel/bpf/helpers.c'.
 
-Signed-off-by: Haiyue Wang <haiyue.wang@intel.com>
----
- kernel/bpf/arena.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+On 2024/5/7 05:43, Martin KaFai Lau wrote:
+> On 4/30/24 5:18 AM, Philo Lu wrote:
+>> Add 3 test cases for skb dynptr used in tp_btf:
+[...]
+>> +
+>> +SEC("tp_btf/kfree_skb")
+>> +int BPF_PROG(test_dynptr_skb_tp_btf, struct __sk_buff *skb, void 
+>> *location)
+> 
+> struct __sk_buff is the incorrect type. This happens to work but will be 
+> a surprise for people trying to read something (e.g. skb->len). The same 
+> goes for the ones in dynptr_fail.c.
+> 
 
-diff --git a/kernel/bpf/arena.c b/kernel/bpf/arena.c
-index 6c81630c5293..ef2177c0465f 100644
---- a/kernel/bpf/arena.c
-+++ b/kernel/bpf/arena.c
-@@ -557,13 +557,13 @@ BTF_ID_FLAGS(func, bpf_arena_alloc_pages, KF_TRUSTED_ARGS | KF_SLEEPABLE)
- BTF_ID_FLAGS(func, bpf_arena_free_pages, KF_TRUSTED_ARGS | KF_SLEEPABLE)
- BTF_KFUNCS_END(arena_kfuncs)
- 
--static const struct btf_kfunc_id_set common_kfunc_set = {
-+static const struct btf_kfunc_id_set arena_kfunc_set = {
- 	.owner = THIS_MODULE,
- 	.set   = &arena_kfuncs,
- };
- 
- static int __init kfunc_init(void)
- {
--	return register_btf_kfunc_id_set(BPF_PROG_TYPE_UNSPEC, &common_kfunc_set);
-+	return register_btf_kfunc_id_set(BPF_PROG_TYPE_UNSPEC, &arena_kfunc_set);
- }
- late_initcall(kfunc_init);
--- 
-2.43.2
+What do you think if I replace "struct __sk_buff" with "void"? The diffs 
+are appended below.
 
+Because we are not to read anything in these cases, I think using void* 
+is enough to avoid confusion. On the other hand, to use "struct sk_buff" 
+here, we have to introduce the definition, and tune codes as the input 
+type of bpf_dynptr_from_skb() is defined as struct __sk_buff in 
+"bpf_kfuncs.h".
+
+Thanks.
+
+-----------------
+diff --git a/tools/testing/selftests/bpf/progs/dynptr_fail.c 
+b/tools/testing/selftests/bpf/progs/dynptr_fail.c
+index c438d1c3cac56..42dbf8715c6a8 100644
+--- a/tools/testing/selftests/bpf/progs/dynptr_fail.c
++++ b/tools/testing/selftests/bpf/progs/dynptr_fail.c
+@@ -1257,7 +1257,7 @@ int skb_invalid_ctx(void *ctx)
+
+  SEC("fentry/skb_tx_error")
+  __failure __msg("must be referenced or trusted")
+-int BPF_PROG(skb_invalid_ctx_fentry, struct __sk_buff *skb)
++int BPF_PROG(skb_invalid_ctx_fentry, void *skb)
+  {
+         struct bpf_dynptr ptr;
+
+@@ -1269,7 +1269,7 @@ int BPF_PROG(skb_invalid_ctx_fentry, struct 
+__sk_buff *skb)
+
+  SEC("fexit/skb_tx_error")
+  __failure __msg("must be referenced or trusted")
+-int BPF_PROG(skb_invalid_ctx_fexit, struct __sk_buff *skb)
++int BPF_PROG(skb_invalid_ctx_fexit, void *skb)
+  {
+         struct bpf_dynptr ptr;
+
+diff --git a/tools/testing/selftests/bpf/progs/dynptr_success.c 
+b/tools/testing/selftests/bpf/progs/dynptr_success.c
+index 8faafab97c0ec..bfcc85686cf04 100644
+--- a/tools/testing/selftests/bpf/progs/dynptr_success.c
++++ b/tools/testing/selftests/bpf/progs/dynptr_success.c
+@@ -547,7 +547,7 @@ int test_dynptr_skb_strcmp(struct __sk_buff *skb)
+  }
+
+  SEC("tp_btf/kfree_skb")
+-int BPF_PROG(test_dynptr_skb_tp_btf, struct __sk_buff *skb, void *location)
++int BPF_PROG(test_dynptr_skb_tp_btf, void *skb, void *location)
+  {
+         __u8 write_data[2] = {1, 2};
+         struct bpf_dynptr ptr;
 
