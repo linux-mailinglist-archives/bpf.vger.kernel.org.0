@@ -1,231 +1,257 @@
-Return-Path: <bpf+bounces-28994-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-28995-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id DDF7C8BF31E
-	for <lists+bpf@lfdr.de>; Wed,  8 May 2024 02:05:55 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 588748BF321
+	for <lists+bpf@lfdr.de>; Wed,  8 May 2024 02:06:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6B1951F22921
-	for <lists+bpf@lfdr.de>; Wed,  8 May 2024 00:05:55 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0E679282C6A
+	for <lists+bpf@lfdr.de>; Wed,  8 May 2024 00:06:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7BEC4133991;
-	Tue,  7 May 2024 23:41:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D40B134738;
+	Tue,  7 May 2024 23:46:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WH1d1Zrd"
+	dkim=pass (2048-bit key) header.d=motorola.com header.i=@motorola.com header.b="C5cVx0XE"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mx0b-00823401.pphosted.com (mx0b-00823401.pphosted.com [148.163.152.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C242B13329C;
-	Tue,  7 May 2024 23:41:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C6D6134404;
+	Tue,  7 May 2024 23:46:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.152.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715125274; cv=none; b=OkB35gfkdzPhtxtDSZ4xgBJaX+HxhZRSo/vGhdQEEV5SQ3ksd4gKg110XV6oqNBBnWG8KIrg6i0gwC28u81zkEaeCKv2aG1aTHFRZ4SGQJc6xiwi22vHHkA0ro4iKNjdg8lGoLJOKgqC9G9mHqwnUFwN3gpTLAqnx0RSIXLU52w=
+	t=1715125574; cv=none; b=jV47TIqa7GlTQMLTr0nUNqp+6da3Kj+8BoitE2BxfjgZYKU13QHCNNEoenD/PqKUZ2Gew1JMGMEaTDj9TfaEQJkGaWu/3qqgBeYqhqgYMND5gCzncHSYJWXMUnMhZrKuhnNjVGibNis4SrNuwuej/hl8w7NrO4amMRH8E5YFMmA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715125274; c=relaxed/simple;
-	bh=ODKOUMcSjW/vZC3ltI6tPmb1ZIxhx2e2qI8/N+kVOFM=;
-	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
-	 Mime-Version:Content-Type; b=t6CwqmleLwgGY8hf61vJqTDLDLKUtwOl7IzBSRD290G2mMXBMDMCx2LipMBcNV+MIlJJGXlHmZeFSZuCnSIP01uaA+ypqj6ovQ9E8BObn5JsrlczQyJPZMNFW+hJSgwjhYqdHmj6d7yuiJRfiFhF3lDHotmh5ouLRqgfEu8Km9Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WH1d1Zrd; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3D7C2C2BBFC;
-	Tue,  7 May 2024 23:41:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1715125273;
-	bh=ODKOUMcSjW/vZC3ltI6tPmb1ZIxhx2e2qI8/N+kVOFM=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=WH1d1ZrdOijFn1cT49Jm2ZUSrhswkNac03IVHqq7Eohwb66eyC/upbIRg5OmSQrS5
-	 590jVcfK2eY7mGIT+Mu2vfZ+2kgvT+bvvG+nO0mpjkaiB/hzuVoCqKdsgEfcB6GUI1
-	 tZHVMdm8HMaoJWCDDdSEsUeSS2shrn9LwS64jApcEtp551mG5S0J2RXLfrbG59V5J/
-	 HlHuUhoLZsEzbSOo52SetyHK+GisTyafXt2qQ3WQN6uI/FPqAL3Mvb4Ag0onvgsMRn
-	 PVoqChvTS3nyekeTg4nrB1W8PoOH/gLtrOXEqRETwcHpFeC7NS6eZgZtaW77r3KgQl
-	 SXWjnlSGSut3Q==
-Date: Wed, 8 May 2024 08:41:02 +0900
-From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To: Mike Rapoport <rppt@kernel.org>
-Cc: linux-kernel@vger.kernel.org, Alexandre Ghiti <alexghiti@rivosinc.com>,
- Andrew Morton <akpm@linux-foundation.org>, =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?=
- <bjorn@kernel.org>, Catalin Marinas <catalin.marinas@arm.com>, Christophe
- Leroy <christophe.leroy@csgroup.eu>, "David S. Miller"
- <davem@davemloft.net>, Dinh Nguyen <dinguyen@kernel.org>, Donald Dutile
- <ddutile@redhat.com>, Eric Chanudet <echanude@redhat.com>, Heiko Carstens
- <hca@linux.ibm.com>, Helge Deller <deller@gmx.de>, Huacai Chen
- <chenhuacai@kernel.org>, Kent Overstreet <kent.overstreet@linux.dev>, Liviu
- Dudau <liviu@dudau.co.uk>, Luis Chamberlain <mcgrof@kernel.org>, Mark
- Rutland <mark.rutland@arm.com>, Masami Hiramatsu <mhiramat@kernel.org>,
- Michael Ellerman <mpe@ellerman.id.au>, Nadav Amit <nadav.amit@gmail.com>,
- Palmer Dabbelt <palmer@dabbelt.com>, Peter Zijlstra <peterz@infradead.org>,
- Philippe =?UTF-8?B?TWF0aGlldS1EYXVkw6k=?= <philmd@linaro.org>, Rick
- Edgecombe <rick.p.edgecombe@intel.com>, Russell King
- <linux@armlinux.org.uk>, Sam Ravnborg <sam@ravnborg.org>, Song Liu
- <song@kernel.org>, Steven Rostedt <rostedt@goodmis.org>, Thomas
- Bogendoerfer <tsbogend@alpha.franken.de>, Thomas Gleixner
- <tglx@linutronix.de>, Will Deacon <will@kernel.org>, bpf@vger.kernel.org,
- linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-mips@vger.kernel.org, linux-mm@kvack.org,
- linux-modules@vger.kernel.org, linux-parisc@vger.kernel.org,
- linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
- linux-trace-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
- loongarch@lists.linux.dev, netdev@vger.kernel.org,
- sparclinux@vger.kernel.org, x86@kernel.org
-Subject: Re: [PATCH RESEND v8 05/16] module: make module_memory_{alloc,free}
- more self-contained
-Message-Id: <20240508084102.9e9b18a9b111d427e7cc9c94@kernel.org>
-In-Reply-To: <20240505160628.2323363-6-rppt@kernel.org>
-References: <20240505160628.2323363-1-rppt@kernel.org>
-	<20240505160628.2323363-6-rppt@kernel.org>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1715125574; c=relaxed/simple;
+	bh=mRf4sFS3M2r5suIDC5Yz0KSPw6KgVbOBBFejMfG51T8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=RGq3Gzb1W+OEj1u6PEpyVxNceHiLidFN5mNqt+nf9ZoIOHW5ddYH86NwQyG8T6hOYwGO9vCrmF6jbrWGdhuLa0lOvMclGd+/srKVrFDbdF55f5xR9QHGvhsgvjX1uShMASkaKQiicNZspA0njI1qmA/TsvQVNekOiMgzotplr9g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=motorola.com; spf=pass smtp.mailfrom=motorola.com; dkim=pass (2048-bit key) header.d=motorola.com header.i=@motorola.com header.b=C5cVx0XE; arc=none smtp.client-ip=148.163.152.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=motorola.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=motorola.com
+Received: from pps.filterd (m0355090.ppops.net [127.0.0.1])
+	by m0355090.ppops.net (8.18.1.2/8.18.1.2) with ESMTP id 447IXpsG013457;
+	Tue, 7 May 2024 23:45:30 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=motorola.com; h=
+	date:from:to:cc:subject:message-id:references:mime-version
+	:content-type:in-reply-to; s=DKIM202306; bh=XZQn26dKtPfMXsFhpYKg
+	dBkaGAd4LS1iE2OPg92zk3w=; b=C5cVx0XEKBD2/F0KyfT56vox51eR4dRq4Epl
+	H7m5IdvOjnfXgxm1bGo1GGpn9qTcsB7rOLo5hBuV+bVJvMp3LeFQ+iWjTh4xFAKY
+	jrS1LSxyQXWui08Tg68Afy81wTeBNj6xMDJk4isFhyHi50CmoKx3ZeZmMbn6o6M8
+	Hun/p6TFJAchIJGGfCpx4Fw77py9XhPOVq6xm/VJH+/6SDbfmbPEZbbuojtJ8Sp8
+	hZ7LDj6pZ10jHvKf7112hBeR8IgQfQ9Z+9/e673HjcKGhjb39Xy+AjW4SpSE+jJ9
+	Q/3V7F10RUV3Zx9ZhETTZz+GRTeVZFUJkbYdNotqO11/A4kRQg==
+Received: from va32lpfpp03.lenovo.com ([104.232.228.23])
+	by m0355090.ppops.net (PPS) with ESMTPS id 3xysphrfky-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 07 May 2024 23:45:29 +0000 (GMT)
+Received: from va32lmmrp01.lenovo.com (va32lmmrp01.mot.com [10.62.177.113])
+	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by va32lpfpp03.lenovo.com (Postfix) with ESMTPS id 4VYvzF1MW6z4yhlh;
+	Tue,  7 May 2024 23:45:29 +0000 (UTC)
+Received: from ilclasset02 (ilclasset02.mot.com [100.64.49.13])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: mbland)
+	by va32lmmrp01.lenovo.com (Postfix) with ESMTPSA id 4VYvzD484Zz2VZRw;
+	Tue,  7 May 2024 23:45:28 +0000 (UTC)
+Date: Tue, 7 May 2024 18:45:27 -0500
+From: Maxwell Bland <mbland@motorola.com>
+To: "open list:BPF [GENERAL] (Safe Dynamic Programs and Tools)" <bpf@vger.kernel.org>
+Cc: Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
+        Yonghong Song <yonghong.song@linux.dev>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Zi Shen Lim <zlim.lnx@gmail.com>, Mark Rutland <mark.rutland@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Mark Brown <broonie@kernel.org>, linux-arm-kernel@lists.infradead.org,
+        open list <linux-kernel@vger.kernel.org>,
+        Puranjay Mohan <puranjay12@gmail.com>,
+        Josh Poimboeuf <jpoimboe@kernel.org>
+Subject: [PATCH bpf-next v3 1/3] cfi: add C CFI type macro
+Message-ID: <erc5hsambwr44pluahlgpslypqf6kupr4ajrbhzbe263rmfvxi@ujttwtzbcpie>
+References: <fhdcjdzqdqnoehenxbipfaorseeamt3q7fbm7ghe6z5s2chif5@lrhtasolawud>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <fhdcjdzqdqnoehenxbipfaorseeamt3q7fbm7ghe6z5s2chif5@lrhtasolawud>
+X-Proofpoint-ORIG-GUID: NFUmIUO-nogsRhDKBKLtmGDw29KKSj6x
+X-Proofpoint-GUID: NFUmIUO-nogsRhDKBKLtmGDw29KKSj6x
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.650,FMLib:17.11.176.26
+ definitions=2024-05-07_15,2024-05-06_02,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 adultscore=0
+ clxscore=1015 priorityscore=1501 lowpriorityscore=0 phishscore=0
+ spamscore=0 bulkscore=0 mlxscore=0 suspectscore=0 mlxlogscore=999
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2405010000 definitions=main-2405070167
 
-On Sun,  5 May 2024 19:06:17 +0300
-Mike Rapoport <rppt@kernel.org> wrote:
+Currently x86 and riscv open-code 4 instances of the same logic to
+define a u32 variable with the KCFI typeid of a given function.
 
-> From: "Mike Rapoport (IBM)" <rppt@kernel.org>
-> 
-> Move the logic related to the memory allocation and freeing into
-> module_memory_alloc() and module_memory_free().
-> 
+Replace the duplicate logic with a common macro.
 
-Looks good to me.
+Signed-off-by: Mark Rutland <mark.rutland@arm.com>
+---
+ arch/riscv/kernel/cfi.c       | 34 ++--------------------------------
+ arch/x86/kernel/alternative.c | 35 +++--------------------------------
+ include/linux/cfi_types.h     | 23 +++++++++++++++++++++++
+ 3 files changed, 28 insertions(+), 64 deletions(-)
 
-Reviewed-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-
-Thanks,
-
-> Signed-off-by: Mike Rapoport (IBM) <rppt@kernel.org>
-> Reviewed-by: Philippe Mathieu-Daudé <philmd@linaro.org>
-> ---
->  kernel/module/main.c | 64 +++++++++++++++++++++++++++-----------------
->  1 file changed, 39 insertions(+), 25 deletions(-)
-> 
-> diff --git a/kernel/module/main.c b/kernel/module/main.c
-> index e1e8a7a9d6c1..5b82b069e0d3 100644
-> --- a/kernel/module/main.c
-> +++ b/kernel/module/main.c
-> @@ -1203,15 +1203,44 @@ static bool mod_mem_use_vmalloc(enum mod_mem_type type)
->  		mod_mem_type_is_core_data(type);
->  }
->  
-> -static void *module_memory_alloc(unsigned int size, enum mod_mem_type type)
-> +static int module_memory_alloc(struct module *mod, enum mod_mem_type type)
->  {
-> +	unsigned int size = PAGE_ALIGN(mod->mem[type].size);
-> +	void *ptr;
-> +
-> +	mod->mem[type].size = size;
-> +
->  	if (mod_mem_use_vmalloc(type))
-> -		return vzalloc(size);
-> -	return module_alloc(size);
-> +		ptr = vmalloc(size);
-> +	else
-> +		ptr = module_alloc(size);
-> +
-> +	if (!ptr)
-> +		return -ENOMEM;
-> +
-> +	/*
-> +	 * The pointer to these blocks of memory are stored on the module
-> +	 * structure and we keep that around so long as the module is
-> +	 * around. We only free that memory when we unload the module.
-> +	 * Just mark them as not being a leak then. The .init* ELF
-> +	 * sections *do* get freed after boot so we *could* treat them
-> +	 * slightly differently with kmemleak_ignore() and only grey
-> +	 * them out as they work as typical memory allocations which
-> +	 * *do* eventually get freed, but let's just keep things simple
-> +	 * and avoid *any* false positives.
-> +	 */
-> +	kmemleak_not_leak(ptr);
-> +
-> +	memset(ptr, 0, size);
-> +	mod->mem[type].base = ptr;
-> +
-> +	return 0;
->  }
->  
-> -static void module_memory_free(void *ptr, enum mod_mem_type type)
-> +static void module_memory_free(struct module *mod, enum mod_mem_type type)
->  {
-> +	void *ptr = mod->mem[type].base;
-> +
->  	if (mod_mem_use_vmalloc(type))
->  		vfree(ptr);
->  	else
-> @@ -1229,12 +1258,12 @@ static void free_mod_mem(struct module *mod)
->  		/* Free lock-classes; relies on the preceding sync_rcu(). */
->  		lockdep_free_key_range(mod_mem->base, mod_mem->size);
->  		if (mod_mem->size)
-> -			module_memory_free(mod_mem->base, type);
-> +			module_memory_free(mod, type);
->  	}
->  
->  	/* MOD_DATA hosts mod, so free it at last */
->  	lockdep_free_key_range(mod->mem[MOD_DATA].base, mod->mem[MOD_DATA].size);
-> -	module_memory_free(mod->mem[MOD_DATA].base, MOD_DATA);
-> +	module_memory_free(mod, MOD_DATA);
->  }
->  
->  /* Free a module, remove from lists, etc. */
-> @@ -2225,7 +2254,6 @@ static int find_module_sections(struct module *mod, struct load_info *info)
->  static int move_module(struct module *mod, struct load_info *info)
->  {
->  	int i;
-> -	void *ptr;
->  	enum mod_mem_type t = 0;
->  	int ret = -ENOMEM;
->  
-> @@ -2234,26 +2262,12 @@ static int move_module(struct module *mod, struct load_info *info)
->  			mod->mem[type].base = NULL;
->  			continue;
->  		}
-> -		mod->mem[type].size = PAGE_ALIGN(mod->mem[type].size);
-> -		ptr = module_memory_alloc(mod->mem[type].size, type);
-> -		/*
-> -                 * The pointer to these blocks of memory are stored on the module
-> -                 * structure and we keep that around so long as the module is
-> -                 * around. We only free that memory when we unload the module.
-> -                 * Just mark them as not being a leak then. The .init* ELF
-> -                 * sections *do* get freed after boot so we *could* treat them
-> -                 * slightly differently with kmemleak_ignore() and only grey
-> -                 * them out as they work as typical memory allocations which
-> -                 * *do* eventually get freed, but let's just keep things simple
-> -                 * and avoid *any* false positives.
-> -		 */
-> -		kmemleak_not_leak(ptr);
-> -		if (!ptr) {
-> +
-> +		ret = module_memory_alloc(mod, type);
-> +		if (ret) {
->  			t = type;
->  			goto out_enomem;
->  		}
-> -		memset(ptr, 0, mod->mem[type].size);
-> -		mod->mem[type].base = ptr;
->  	}
->  
->  	/* Transfer each section which specifies SHF_ALLOC */
-> @@ -2296,7 +2310,7 @@ static int move_module(struct module *mod, struct load_info *info)
->  	return 0;
->  out_enomem:
->  	for (t--; t >= 0; t--)
-> -		module_memory_free(mod->mem[t].base, t);
-> +		module_memory_free(mod, t);
->  	return ret;
->  }
->  
-> -- 
-> 2.43.0
-> 
-
-
+diff --git a/arch/riscv/kernel/cfi.c b/arch/riscv/kernel/cfi.c
+index 64bdd3e1ab8c..b78a6f41df22 100644
+--- a/arch/riscv/kernel/cfi.c
++++ b/arch/riscv/kernel/cfi.c
+@@ -82,41 +82,11 @@ struct bpf_insn;
+ /* Must match bpf_func_t / DEFINE_BPF_PROG_RUN() */
+ extern unsigned int __bpf_prog_runX(const void *ctx,
+ 				    const struct bpf_insn *insn);
+-
+-/*
+- * Force a reference to the external symbol so the compiler generates
+- * __kcfi_typid.
+- */
+-__ADDRESSABLE(__bpf_prog_runX);
+-
+-/* u32 __ro_after_init cfi_bpf_hash = __kcfi_typeid___bpf_prog_runX; */
+-asm (
+-"	.pushsection	.data..ro_after_init,\"aw\",@progbits	\n"
+-"	.type	cfi_bpf_hash,@object				\n"
+-"	.globl	cfi_bpf_hash					\n"
+-"	.p2align	2, 0x0					\n"
+-"cfi_bpf_hash:							\n"
+-"	.word	__kcfi_typeid___bpf_prog_runX			\n"
+-"	.size	cfi_bpf_hash, 4					\n"
+-"	.popsection						\n"
+-);
++DEFINE_CFI_TYPE(cfi_bpf_hash, __bpf_prog_runX);
+ 
+ /* Must match bpf_callback_t */
+ extern u64 __bpf_callback_fn(u64, u64, u64, u64, u64);
+-
+-__ADDRESSABLE(__bpf_callback_fn);
+-
+-/* u32 __ro_after_init cfi_bpf_subprog_hash = __kcfi_typeid___bpf_callback_fn; */
+-asm (
+-"	.pushsection	.data..ro_after_init,\"aw\",@progbits	\n"
+-"	.type	cfi_bpf_subprog_hash,@object			\n"
+-"	.globl	cfi_bpf_subprog_hash				\n"
+-"	.p2align	2, 0x0					\n"
+-"cfi_bpf_subprog_hash:						\n"
+-"	.word	__kcfi_typeid___bpf_callback_fn			\n"
+-"	.size	cfi_bpf_subprog_hash, 4				\n"
+-"	.popsection						\n"
+-);
++DEFINE_CFI_TYPE(cfi_bpf_subprog_hash, __bpf_callback_fn);
+ 
+ u32 cfi_get_func_hash(void *func)
+ {
+diff --git a/arch/x86/kernel/alternative.c b/arch/x86/kernel/alternative.c
+index 45a280f2161c..a822699a40dd 100644
+--- a/arch/x86/kernel/alternative.c
++++ b/arch/x86/kernel/alternative.c
+@@ -1,6 +1,7 @@
+ // SPDX-License-Identifier: GPL-2.0-only
+ #define pr_fmt(fmt) "SMP alternatives: " fmt
+ 
++#include <linux/cfi_types.h>
+ #include <linux/module.h>
+ #include <linux/sched.h>
+ #include <linux/perf_event.h>
+@@ -918,41 +919,11 @@ struct bpf_insn;
+ /* Must match bpf_func_t / DEFINE_BPF_PROG_RUN() */
+ extern unsigned int __bpf_prog_runX(const void *ctx,
+ 				    const struct bpf_insn *insn);
+-
+-/*
+- * Force a reference to the external symbol so the compiler generates
+- * __kcfi_typid.
+- */
+-__ADDRESSABLE(__bpf_prog_runX);
+-
+-/* u32 __ro_after_init cfi_bpf_hash = __kcfi_typeid___bpf_prog_runX; */
+-asm (
+-"	.pushsection	.data..ro_after_init,\"aw\",@progbits	\n"
+-"	.type	cfi_bpf_hash,@object				\n"
+-"	.globl	cfi_bpf_hash					\n"
+-"	.p2align	2, 0x0					\n"
+-"cfi_bpf_hash:							\n"
+-"	.long	__kcfi_typeid___bpf_prog_runX			\n"
+-"	.size	cfi_bpf_hash, 4					\n"
+-"	.popsection						\n"
+-);
++DEFINE_CFI_TYPE(cfi_bpf_hash, __bpf_prog_runX);
+ 
+ /* Must match bpf_callback_t */
+ extern u64 __bpf_callback_fn(u64, u64, u64, u64, u64);
+-
+-__ADDRESSABLE(__bpf_callback_fn);
+-
+-/* u32 __ro_after_init cfi_bpf_subprog_hash = __kcfi_typeid___bpf_callback_fn; */
+-asm (
+-"	.pushsection	.data..ro_after_init,\"aw\",@progbits	\n"
+-"	.type	cfi_bpf_subprog_hash,@object			\n"
+-"	.globl	cfi_bpf_subprog_hash				\n"
+-"	.p2align	2, 0x0					\n"
+-"cfi_bpf_subprog_hash:						\n"
+-"	.long	__kcfi_typeid___bpf_callback_fn			\n"
+-"	.size	cfi_bpf_subprog_hash, 4				\n"
+-"	.popsection						\n"
+-);
++DEFINE_CFI_TYPE(cfi_bpf_subprog_hash, __bpf_callback_fn);
+ 
+ u32 cfi_get_func_hash(void *func)
+ {
+diff --git a/include/linux/cfi_types.h b/include/linux/cfi_types.h
+index 6b8713675765..f510e62ca8b1 100644
+--- a/include/linux/cfi_types.h
++++ b/include/linux/cfi_types.h
+@@ -41,5 +41,28 @@
+ 	SYM_TYPED_START(name, SYM_L_GLOBAL, SYM_A_ALIGN)
+ #endif
+ 
++#else /* __ASSEMBLY__ */
++
++#ifdef CONFIG_CFI_CLANG
++#define DEFINE_CFI_TYPE(name, func)						\
++	/*									\
++	 * Force a reference to the function so the compiler generates		\
++	 * __kcfi_typeid_<func>.						\
++	 */									\
++	__ADDRESSABLE(func);							\
++	/* u32 name = __kcfi_typeid_<func> */					\
++	extern u32 name;							\
++	asm (									\
++	"	.pushsection	.data..ro_after_init,\"aw\",@progbits	\n"	\
++	"	.type	" #name ",@object				\n"	\
++	"	.globl	" #name "					\n"	\
++	"	.p2align	2, 0x0					\n"	\
++	#name ":							\n"	\
++	"	.long	__kcfi_typeid_" #func "				\n"	\
++	"	.size	" #name ", 4					\n"	\
++	"	.popsection						\n"	\
++	);
++#endif
++
+ #endif /* __ASSEMBLY__ */
+ #endif /* _LINUX_CFI_TYPES_H */
 -- 
-Masami Hiramatsu (Google) <mhiramat@kernel.org>
+2.34.1
+
+
 
