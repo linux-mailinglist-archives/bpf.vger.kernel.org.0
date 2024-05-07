@@ -1,46 +1,46 @@
-Return-Path: <bpf+bounces-28792-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-28793-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 26B108BE068
-	for <lists+bpf@lfdr.de>; Tue,  7 May 2024 12:57:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id CCC8F8BE06E
+	for <lists+bpf@lfdr.de>; Tue,  7 May 2024 12:57:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 57D4B1C21139
-	for <lists+bpf@lfdr.de>; Tue,  7 May 2024 10:57:37 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0A0971C21CA8
+	for <lists+bpf@lfdr.de>; Tue,  7 May 2024 10:57:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6AABF156660;
-	Tue,  7 May 2024 10:54:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DEDCA156F23;
+	Tue,  7 May 2024 10:54:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YbzXVIRM"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Um9Npo7M"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC8671514C9;
-	Tue,  7 May 2024 10:54:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A2151514F8;
+	Tue,  7 May 2024 10:54:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715079286; cv=none; b=mlVLNLswge13FbUKt/DsYSWlf0HPCk1bx0fyLsh9aFPzQd6bKa7vrBQJeXKfRFqbhmL26GA+C1z0frkxWuFWGdSoWn+tl3KgfXg4K8cpiRF2c0ePt0lDBWHOolqGukpSW7VhLzqCOucMCu3EEV6owcKS1xplnlQnQn9Jg2O2sVI=
+	t=1715079298; cv=none; b=LBYZjqsMY/sh730TmzegS3bPVd/wvhpGqova1qhqvYWPetkCFLroVsEbzPWJcFGhj1nhx/EuhR5QlQ3yhzPM623uTYwXjNfJ0Lopk2NeMhPHKYDfOvTJEtkFZkps082K1JvCfDkj1PYSdBPIjmvbVzuQBgSgSZAnDBufYRddyZs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715079286; c=relaxed/simple;
-	bh=jAXKnqAimwcay1qElQR4j+I/IkSSXznYDTBurbcpNU4=;
+	s=arc-20240116; t=1715079298; c=relaxed/simple;
+	bh=rkhifOud3Xw62+0WzcH/TUiWiCAIoKRXhKfeTNZ5TtQ=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=SVgoGvdPj6Vtp2J5vuLnTaQY5dSGLDNRMq2Zt1yRm7gflLrwpCl3P3pxRi3NJx+XYVqbJXaQrq1wO1NphYekBX11dW7DrFSB9A19dOoMf0M0oCvxX885godNLakHIhfE82i8GjCaNwZSORwvQVaGnQfvv+KQMpZiFCIH9eEoBtk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YbzXVIRM; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5C680C2BBFC;
-	Tue,  7 May 2024 10:54:40 +0000 (UTC)
+	 MIME-Version; b=NloUdIHtxo6VviSCVSOB92NB+LDGuBIoem34TtujeHUYwva8Bhhn9BBkGT0DewAPqqBqTDmTjbZfdb0Mkn8eDRFQvxTYs+2UaFFG4lFPByPFo3cO/9ApgueYSqRMJZfUaAAQcr8fjL9vNa+jX6eN/kD9tsJcnEQq4HC/euSoJ0Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Um9Npo7M; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D3EAAC2BBFC;
+	Tue,  7 May 2024 10:54:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1715079285;
-	bh=jAXKnqAimwcay1qElQR4j+I/IkSSXznYDTBurbcpNU4=;
+	s=k20201202; t=1715079297;
+	bh=rkhifOud3Xw62+0WzcH/TUiWiCAIoKRXhKfeTNZ5TtQ=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=YbzXVIRM67EcqLKqbNDmmL/w2VZo6AcKf7MgMIDIssD51cpu4vRefzjzg1HTrt0kV
-	 TtD9HO3QKnc6fh5VL0ZYimrNS5o2c2Ws16dgIzUVdZlJfN4aInVFE9i/KaVJKRiYkg
-	 6Tbv2qhmhmBfZpXuQYR/Qmoi2WRElv+UhrB78eo8j7JBoWRD+/KYKKI0F+xMbkOjS2
-	 Z7OwXlwie6964TU/iInjXURazie7rSckzqVWHQ7nj9gkHg+TqQKJkfz3KDuByG+kKh
-	 4YCGGUX33mjRlSDWwDO6m0P7zvt54t49Jj1Djg2NEAi6F0ZTlBr/3/tTcSFQ0iDzRY
-	 c70qlqbEMcKLA==
+	b=Um9Npo7MovB8wjoKHKIoytIscrHEbWnyBD2ibolD80D+gFW5ygOqKGl1FzClrx20W
+	 PznycYBvqFEwTfKwJGW2e/IYFnWOe0SuOiiZLgRQSALKN4eXLRDs43fR0+DaqosR4t
+	 Xr0vD86j2IB+Dqjqa4qr5jRF5vQD9MthLJ/LKffN6SzVuYdQb4pw9CPf9ZLGZH9Kd+
+	 JltRor1EQcoe1cfkO+J/hlDKxGof/Po0palt5rgFT6NVoLLsbRQ4ULzPPe1zgijbIv
+	 YzhNUFcM+sjeKIPXTsOPyu7/bNho3giNn/3ZDBwFafkRKDXNuyRLwIN59pRHJIJ47J
+	 VORuZDbJIJOcw==
 From: Jiri Olsa <jolsa@kernel.org>
 To: Steven Rostedt <rostedt@goodmis.org>,
 	Masami Hiramatsu <mhiramat@kernel.org>,
@@ -64,9 +64,9 @@ Cc: linux-kernel@vger.kernel.org,
 	Andy Lutomirski <luto@kernel.org>,
 	"Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
 	Deepak Gupta <debug@rivosinc.com>
-Subject: [PATCHv5 bpf-next 6/8] x86/shstk: Add return uprobe support
-Date: Tue,  7 May 2024 12:53:19 +0200
-Message-ID: <20240507105321.71524-7-jolsa@kernel.org>
+Subject: [PATCHv5 bpf-next 7/8] selftests/x86: Add return uprobe shadow stack test
+Date: Tue,  7 May 2024 12:53:20 +0200
+Message-ID: <20240507105321.71524-8-jolsa@kernel.org>
 X-Mailer: git-send-email 2.44.0
 In-Reply-To: <20240507105321.71524-1-jolsa@kernel.org>
 References: <20240507105321.71524-1-jolsa@kernel.org>
@@ -78,114 +78,181 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Adding return uprobe support to work with enabled shadow stack.
-
-Currently the application with enabled shadow stack will crash
-if it sets up return uprobe. The reason is the uretprobe kernel
-code changes the user space task's stack, but does not update
-shadow stack accordingly.
-
-Adding new functions to update values on shadow stack and using
-them in uprobe code to keep shadow stack in sync with uretprobe
-changes to user stack.
+Adding return uprobe test for shadow stack and making sure it's
+working properly. Borrowed some of the code from bpf selftests.
 
 Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 ---
- arch/x86/include/asm/shstk.h |  4 ++++
- arch/x86/kernel/shstk.c      | 29 +++++++++++++++++++++++++++++
- arch/x86/kernel/uprobes.c    | 12 +++++++++++-
- 3 files changed, 44 insertions(+), 1 deletion(-)
+ .../testing/selftests/x86/test_shadow_stack.c | 142 ++++++++++++++++++
+ 1 file changed, 142 insertions(+)
 
-diff --git a/arch/x86/include/asm/shstk.h b/arch/x86/include/asm/shstk.h
-index 42fee8959df7..2e1ddcf98242 100644
---- a/arch/x86/include/asm/shstk.h
-+++ b/arch/x86/include/asm/shstk.h
-@@ -21,6 +21,8 @@ unsigned long shstk_alloc_thread_stack(struct task_struct *p, unsigned long clon
- void shstk_free(struct task_struct *p);
- int setup_signal_shadow_stack(struct ksignal *ksig);
- int restore_signal_shadow_stack(void);
-+int shstk_update_last_frame(unsigned long val);
-+int shstk_push_frame(unsigned long val);
- #else
- static inline long shstk_prctl(struct task_struct *task, int option,
- 			       unsigned long arg2) { return -EINVAL; }
-@@ -31,6 +33,8 @@ static inline unsigned long shstk_alloc_thread_stack(struct task_struct *p,
- static inline void shstk_free(struct task_struct *p) {}
- static inline int setup_signal_shadow_stack(struct ksignal *ksig) { return 0; }
- static inline int restore_signal_shadow_stack(void) { return 0; }
-+static inline int shstk_update_last_frame(unsigned long val) { return 0; }
-+static inline int shstk_push_frame(unsigned long val) { return 0; }
- #endif /* CONFIG_X86_USER_SHADOW_STACK */
+diff --git a/tools/testing/selftests/x86/test_shadow_stack.c b/tools/testing/selftests/x86/test_shadow_stack.c
+index 757e6527f67e..1b919baa999b 100644
+--- a/tools/testing/selftests/x86/test_shadow_stack.c
++++ b/tools/testing/selftests/x86/test_shadow_stack.c
+@@ -34,6 +34,7 @@
+ #include <sys/ptrace.h>
+ #include <sys/signal.h>
+ #include <linux/elf.h>
++#include <linux/perf_event.h>
  
- #endif /* __ASSEMBLY__ */
-diff --git a/arch/x86/kernel/shstk.c b/arch/x86/kernel/shstk.c
-index 59e15dd8d0f8..66434dfde52e 100644
---- a/arch/x86/kernel/shstk.c
-+++ b/arch/x86/kernel/shstk.c
-@@ -577,3 +577,32 @@ long shstk_prctl(struct task_struct *task, int option, unsigned long arg2)
- 		return wrss_control(true);
- 	return -EINVAL;
+ /*
+  * Define the ABI defines if needed, so people can run the tests
+@@ -681,6 +682,141 @@ int test_32bit(void)
+ 	return !segv_triggered;
  }
-+
-+int shstk_update_last_frame(unsigned long val)
-+{
-+	unsigned long ssp;
-+
-+	if (!features_enabled(ARCH_SHSTK_SHSTK))
-+		return 0;
-+
-+	ssp = get_user_shstk_addr();
-+	return write_user_shstk_64((u64 __user *)ssp, (u64)val);
-+}
-+
-+int shstk_push_frame(unsigned long val)
-+{
-+	unsigned long ssp;
-+
-+	if (!features_enabled(ARCH_SHSTK_SHSTK))
-+		return 0;
-+
-+	ssp = get_user_shstk_addr();
-+	ssp -= SS_FRAME_SIZE;
-+	if (write_user_shstk_64((u64 __user *)ssp, (u64)val))
-+		return -EFAULT;
-+
-+	fpregs_lock_and_load();
-+	wrmsrl(MSR_IA32_PL3_SSP, ssp);
-+	fpregs_unlock();
-+	return 0;
-+}
-diff --git a/arch/x86/kernel/uprobes.c b/arch/x86/kernel/uprobes.c
-index 81e6ee95784d..ae6c3458a675 100644
---- a/arch/x86/kernel/uprobes.c
-+++ b/arch/x86/kernel/uprobes.c
-@@ -406,6 +406,11 @@ SYSCALL_DEFINE0(uretprobe)
- 	 * trampoline's ret instruction
- 	 */
- 	r11_cx_ax[2] = regs->ip;
-+
-+	/* make the shadow stack follow that */
-+	if (shstk_push_frame(regs->ip))
-+		goto sigill;
-+
- 	regs->ip = ip;
  
- 	err = copy_to_user((void __user *)regs->sp, r11_cx_ax, sizeof(r11_cx_ax));
-@@ -1191,8 +1196,13 @@ arch_uretprobe_hijack_return_addr(unsigned long trampoline_vaddr, struct pt_regs
- 		return orig_ret_vaddr;
- 
- 	nleft = copy_to_user((void __user *)regs->sp, &trampoline_vaddr, rasize);
--	if (likely(!nleft))
-+	if (likely(!nleft)) {
-+		if (shstk_update_last_frame(trampoline_vaddr)) {
-+			force_sig(SIGSEGV);
-+			return -1;
-+		}
- 		return orig_ret_vaddr;
++static int parse_uint_from_file(const char *file, const char *fmt)
++{
++	int err, ret;
++	FILE *f;
++
++	f = fopen(file, "re");
++	if (!f) {
++		err = -errno;
++		printf("failed to open '%s': %d\n", file, err);
++		return err;
 +	}
++	err = fscanf(f, fmt, &ret);
++	if (err != 1) {
++		err = err == EOF ? -EIO : -errno;
++		printf("failed to parse '%s': %d\n", file, err);
++		fclose(f);
++		return err;
++	}
++	fclose(f);
++	return ret;
++}
++
++static int determine_uprobe_perf_type(void)
++{
++	const char *file = "/sys/bus/event_source/devices/uprobe/type";
++
++	return parse_uint_from_file(file, "%d\n");
++}
++
++static int determine_uprobe_retprobe_bit(void)
++{
++	const char *file = "/sys/bus/event_source/devices/uprobe/format/retprobe";
++
++	return parse_uint_from_file(file, "config:%d\n");
++}
++
++static ssize_t get_uprobe_offset(const void *addr)
++{
++	size_t start, end, base;
++	char buf[256];
++	bool found = false;
++	FILE *f;
++
++	f = fopen("/proc/self/maps", "r");
++	if (!f)
++		return -errno;
++
++	while (fscanf(f, "%zx-%zx %s %zx %*[^\n]\n", &start, &end, buf, &base) == 4) {
++		if (buf[2] == 'x' && (uintptr_t)addr >= start && (uintptr_t)addr < end) {
++			found = true;
++			break;
++		}
++	}
++
++	fclose(f);
++
++	if (!found)
++		return -ESRCH;
++
++	return (uintptr_t)addr - start + base;
++}
++
++static __attribute__((noinline)) void uretprobe_trigger(void)
++{
++	asm volatile ("");
++}
++
++/*
++ * This test setups return uprobe, which is sensitive to shadow stack
++ * (crashes without extra fix). After executing the uretprobe we fail
++ * the test if we receive SIGSEGV, no crash means we're good.
++ *
++ * Helper functions above borrowed from bpf selftests.
++ */
++static int test_uretprobe(void)
++{
++	const size_t attr_sz = sizeof(struct perf_event_attr);
++	const char *file = "/proc/self/exe";
++	int bit, fd = 0, type, err = 1;
++	struct perf_event_attr attr;
++	struct sigaction sa = {};
++	ssize_t offset;
++
++	type = determine_uprobe_perf_type();
++	if (type < 0)
++		return 1;
++
++	offset = get_uprobe_offset(uretprobe_trigger);
++	if (offset < 0)
++		return 1;
++
++	bit = determine_uprobe_retprobe_bit();
++	if (bit < 0)
++		return 1;
++
++	sa.sa_sigaction = segv_gp_handler;
++	sa.sa_flags = SA_SIGINFO;
++	if (sigaction(SIGSEGV, &sa, NULL))
++		return 1;
++
++	/* Setup return uprobe through perf event interface. */
++	memset(&attr, 0, attr_sz);
++	attr.size = attr_sz;
++	attr.type = type;
++	attr.config = 1 << bit;
++	attr.config1 = (__u64) (unsigned long) file;
++	attr.config2 = offset;
++
++	fd = syscall(__NR_perf_event_open, &attr, 0 /* pid */, -1 /* cpu */,
++		     -1 /* group_fd */, PERF_FLAG_FD_CLOEXEC);
++	if (fd < 0)
++		goto out;
++
++	if (sigsetjmp(jmp_buffer, 1))
++		goto out;
++
++	ARCH_PRCTL(ARCH_SHSTK_ENABLE, ARCH_SHSTK_SHSTK);
++
++	/*
++	 * This either segfaults and goes through sigsetjmp above
++	 * or succeeds and we're good.
++	 */
++	uretprobe_trigger();
++
++	printf("[OK]\tUretprobe test\n");
++	err = 0;
++
++out:
++	ARCH_PRCTL(ARCH_SHSTK_DISABLE, ARCH_SHSTK_SHSTK);
++	signal(SIGSEGV, SIG_DFL);
++	if (fd)
++		close(fd);
++	return err;
++}
++
+ void segv_handler_ptrace(int signum, siginfo_t *si, void *uc)
+ {
+ 	/* The SSP adjustment caused a segfault. */
+@@ -867,6 +1003,12 @@ int main(int argc, char *argv[])
+ 		goto out;
+ 	}
  
- 	if (nleft != rasize) {
- 		pr_err("return address clobbered: pid=%d, %%sp=%#lx, %%ip=%#lx\n",
++	if (test_uretprobe()) {
++		ret = 1;
++		printf("[FAIL]\turetprobe test\n");
++		goto out;
++	}
++
+ 	return ret;
+ 
+ out:
 -- 
 2.44.0
 
