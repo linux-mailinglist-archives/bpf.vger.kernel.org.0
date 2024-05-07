@@ -1,326 +1,458 @@
-Return-Path: <bpf+bounces-28978-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-28979-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BBD3C8BEFB0
-	for <lists+bpf@lfdr.de>; Wed,  8 May 2024 00:11:24 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 85F2C8BEFC5
+	for <lists+bpf@lfdr.de>; Wed,  8 May 2024 00:27:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 723DF284BFF
-	for <lists+bpf@lfdr.de>; Tue,  7 May 2024 22:11:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EF7F81F25BAF
+	for <lists+bpf@lfdr.de>; Tue,  7 May 2024 22:27:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B980816D309;
-	Tue,  7 May 2024 22:11:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tpqUuros"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C77116C445;
+	Tue,  7 May 2024 22:27:35 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pj1-f42.google.com (mail-pj1-f42.google.com [209.85.216.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3EB1314B963;
-	Tue,  7 May 2024 22:11:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E88B78C72;
+	Tue,  7 May 2024 22:27:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715119872; cv=none; b=Y/n+WVE8ma40Qj44a1HEBXViSmtw8h/tdXMS18XrI8EPmY2a+jSFIzFyJ0xPxibT0413IHRBvyq8rjlUgPFfZsFPL7amsFc85eDWyPC0QvbaNbgGwukhVORXbre8HfFEY/1+oX4bpVlZ64APJn2Ul162p0dtiYiQQDHVt65si0g=
+	t=1715120855; cv=none; b=cwIj0lsPIhgkYPqX25Ik0fBCNiam5iAEolsSfEZBAsZK0qFCUMCv0TkfDRcLs2FhzB1EprJx2HK9mFggjf2UJRC+hN4q3XdShtM6/zLO/evc29/gRCE/251sTbW830Xmn11UDx2Gvv+dm1snFfn3IL9sVGIE9qYhWwwQGeAxScE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715119872; c=relaxed/simple;
-	bh=tgcdgDwEKZBPYKJKif98/IEsmSNucP2ZJ6S9UPVZAPE=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=LaayM+3R8lc0txHC/sCazgrRBV46mWo/21os3JCJzS+IwXUxhxj9I7bIe+jdat5O3Nehx00aoR4lJpjlWY3SYEeCTBLk/4UPMRxIMkL1prDvb1TPGQ4ynjW8HPh8W17QcPqTtcmNdlrYfgQLPz88a8XaoG4OOgvR0AhTMY8Cobo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tpqUuros; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DE0DCC4AF67;
-	Tue,  7 May 2024 22:11:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1715119872;
-	bh=tgcdgDwEKZBPYKJKif98/IEsmSNucP2ZJ6S9UPVZAPE=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=tpqUuros4KAFWcbiw55vUEJ9EvWTghO8f49SaZbB2rwfXLp0DjxmmwWloJzkWKOrL
-	 SYL8lWJUntLz0C3LPOtDpwdlViPfBR/4baV4v6ezW7jrHBLAHKdQsU97U2ZhM8CTGh
-	 X1qGH+ocT77mO8f32PX360c4VqNMaxtCjHLcVPNdSC1rSglYp9/1/g+tcH3RdKqarG
-	 8dYtHByA4EkLi3RL2Yw4h1b25i9Wu/ihN2VJXrVp+bBEQoUX1WrQCS19buHEpoXxYq
-	 3bystrTuLDNC2ByO3huuiR9m4XupFa80a2EFPAfPs3sLgEwlxqNwcgMS8n/dxpS30c
-	 E62EoioxEsVqQ==
-From: KP Singh <kpsingh@kernel.org>
-To: linux-security-module@vger.kernel.org,
-	bpf@vger.kernel.org
-Cc: ast@kernel.org,
-	daniel@iogearbox.net,
-	jackmanb@google.com,
-	renauld@google.com,
-	paul@paul-moore.com,
-	casey@schaufler-ca.com,
-	song@kernel.org,
-	revest@chromium.org,
-	keescook@chromium.org,
-	KP Singh <kpsingh@kernel.org>
-Subject: [PATCH bpf-next v10 5/5] bpf: Only enable BPF LSM hooks when an LSM program is attached
-Date: Wed,  8 May 2024 00:10:45 +0200
-Message-ID: <20240507221045.551537-6-kpsingh@kernel.org>
-X-Mailer: git-send-email 2.45.0.rc1.225.g2a3ae87e7f-goog
-In-Reply-To: <20240507221045.551537-1-kpsingh@kernel.org>
-References: <20240507221045.551537-1-kpsingh@kernel.org>
+	s=arc-20240116; t=1715120855; c=relaxed/simple;
+	bh=z1INW5YGW6+SjsokijtbqfPOSndamLIB9aMPbWxgyP0=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=TSLlSmnz15oG/dIc+B179xMFVQxcASEaXv5BhgxtqIMOAmGIMlSLmsz6Q/18reEWYuOEHQ+JqpXWLTmDrn6Sp2ouc7Z9cQpY68nROUf2mi5iZbKVTmHA1g5rOVyspGY2Cm5H4kBp9OvVS0pigArgneyWy3mQbccxOVesPhSyUEU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.216.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f42.google.com with SMTP id 98e67ed59e1d1-2b239b5fedaso2881593a91.0;
+        Tue, 07 May 2024 15:27:33 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1715120853; x=1715725653;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=t5X7mhLCQAPvf9UJYurWF6MZ4a0PGMgJ3oHaQ7skRzQ=;
+        b=pwSX61x6flVi0J3FK5AWcDUakwGiyitG0Z0wgUjkJvpdpK1vEnjKp6ezLVepGHI6tG
+         QwvN+jEvygoUsQQNrD4tsbo6VzwMwEpa2kXqWFhOj44kIY6s2gr8IyJQgCJkrzfO2xNE
+         s53YjlGdJS6Lm4sN5YZsO3ANkVTsGfVsnhDjjbK6gjOSFk5qUkQ80MDGGzy6r3+yOeU+
+         WZVLUrBnTUG0cIT0XGqC//kb4UUhY83ppcFIMtcHldXC1pIt91bx4CQYBsyhrB55O9Vm
+         VJult4ZR/l1PSYliR8Ek7IW/heOBy+aNbdsg+IV3D4lEVNf9KLRyLtRIKW7NB0vrBv6R
+         Tazw==
+X-Forwarded-Encrypted: i=1; AJvYcCUpM39EuseTl2T+kKwCaUND3dH3Hu2nR7VqxABl5WOhQVwQeKnVUzjgZJwNVRnMaNvXKx4L8710WuMENlFHI8TruLzq/K5A4I92LBIJ5eqkaX+qrpxnZ0CP2aR6gP2ScPE8GFoLOcgBB0cz2ectIZ1xjIQV+JkVU9glUjOkHkHpeEhiyAwPdO9ZpNW7gM+WCGAkzLJf/lkhmxEybRzD3MkuZZI=
+X-Gm-Message-State: AOJu0YzVaSo8cKg+UY53LqnzWeQN/BiaMmTMrUUcUuJAdArh23yUrKBj
+	5BkkPFPrLMYHE5mgkhJ6LvXyuD718ZQNL7CDhK4xZjKg5cuzYzmbXANROvD4KNlTVAAJTxWP0iM
+	eqQwbOkvd6KK3qJoOlKyEgtiVKp0=
+X-Google-Smtp-Source: AGHT+IEI2iBjGsSm/jmmFvlkhywBbG2wjmqIDdAcjH0lE6lVLSaKRGjeWcb6bNRpbExj2FjfgzPSBheUFBHkoKAfvdE=
+X-Received: by 2002:a17:90b:1882:b0:2b6:1711:9e08 with SMTP id
+ 98e67ed59e1d1-2b617119ea2mr846653a91.43.1715120852514; Tue, 07 May 2024
+ 15:27:32 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20240504003006.3303334-1-andrii@kernel.org> <20240504003006.3303334-6-andrii@kernel.org>
+ <2024050404-rectify-romp-4fdb@gregkh> <CAEf4BzaUgGJVqw_yWOXASHManHQWGQV905Bd-wiaHj-mRob9gw@mail.gmail.com>
+ <CAP-5=fWPig8-CLLBJ_rb3D6eNAKVY7KX_n_HcpGqL7gfe-=XXg@mail.gmail.com>
+ <CAEf4Bzab+sRQ8pzNYxh1BOgjhDF4yCkqcHxy5YZAyT-jef7Acw@mail.gmail.com>
+ <CAP-5=fXv59EmyM7FNnwAp0JjAZjtYhCj3b3FTH7KsHL=k8C6oQ@mail.gmail.com>
+ <CAEf4BzbdGJzMuRgGJE72VFquXL37rS9Ti__wx4f_+kt3yetkEg@mail.gmail.com> <CAEf4BzYykUsN_Z92cXAh_9+fmN-bzr7xOEBe2v_5xDoXRhijmg@mail.gmail.com>
+In-Reply-To: <CAEf4BzYykUsN_Z92cXAh_9+fmN-bzr7xOEBe2v_5xDoXRhijmg@mail.gmail.com>
+From: Namhyung Kim <namhyung@kernel.org>
+Date: Tue, 7 May 2024 15:27:21 -0700
+Message-ID: <CAM9d7cg4ErddXRXJWg7sAgSY=wzej8e4SO6NhsXJNDj69DyqCw@mail.gmail.com>
+Subject: Re: [PATCH 5/5] selftests/bpf: a simple benchmark tool for
+ /proc/<pid>/maps APIs
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: Ian Rogers <irogers@google.com>, Greg KH <gregkh@linuxfoundation.org>, 
+	Andrii Nakryiko <andrii@kernel.org>, linux-fsdevel@vger.kernel.org, brauner@kernel.org, 
+	viro@zeniv.linux.org.uk, akpm@linux-foundation.org, 
+	linux-kernel@vger.kernel.org, bpf@vger.kernel.org, linux-mm@kvack.org, 
+	Arnaldo Carvalho de Melo <acme@kernel.org>, "linux-perf-use." <linux-perf-users@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-BPF LSM hooks have side-effects (even when a default value is returned),
-as some hooks end up behaving differently due to the very presence of
-the hook.
+On Tue, May 7, 2024 at 10:29=E2=80=AFAM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
+>
+> On Mon, May 6, 2024 at 10:06=E2=80=AFPM Andrii Nakryiko
+> <andrii.nakryiko@gmail.com> wrote:
+> >
+> > On Mon, May 6, 2024 at 11:43=E2=80=AFAM Ian Rogers <irogers@google.com>=
+ wrote:
+> > >
+> > > On Mon, May 6, 2024 at 11:32=E2=80=AFAM Andrii Nakryiko
+> > > <andrii.nakryiko@gmail.com> wrote:
+> > > >
+> > > > On Sat, May 4, 2024 at 10:09=E2=80=AFPM Ian Rogers <irogers@google.=
+com> wrote:
+> > > > >
+> > > > > On Sat, May 4, 2024 at 2:57=E2=80=AFPM Andrii Nakryiko
+> > > > > <andrii.nakryiko@gmail.com> wrote:
+> > > > > >
+> > > > > > On Sat, May 4, 2024 at 8:29=E2=80=AFAM Greg KH <gregkh@linuxfou=
+ndation.org> wrote:
+> > > > > > >
+> > > > > > > On Fri, May 03, 2024 at 05:30:06PM -0700, Andrii Nakryiko wro=
+te:
+> > > > > > > > Implement a simple tool/benchmark for comparing address "re=
+solution"
+> > > > > > > > logic based on textual /proc/<pid>/maps interface and new b=
+inary
+> > > > > > > > ioctl-based PROCFS_PROCMAP_QUERY command.
+> > > > > > >
+> > > > > > > Of course an artificial benchmark of "read a whole file" vs. =
+"a tiny
+> > > > > > > ioctl" is going to be different, but step back and show how t=
+his is
+> > > > > > > going to be used in the real world overall.  Pounding on this=
+ file is
+> > > > > > > not a normal operation, right?
+> > > > > > >
+> > > > > >
+> > > > > > It's not artificial at all. It's *exactly* what, say, blazesym =
+library
+> > > > > > is doing (see [0], it's Rust and part of the overall library AP=
+I, I
+> > > > > > think C code in this patch is way easier to follow for someone =
+not
+> > > > > > familiar with implementation of blazesym, but both implementati=
+ons are
+> > > > > > doing exactly the same sequence of steps). You can do it even l=
+ess
+> > > > > > efficiently by parsing the whole file, building an in-memory lo=
+okup
+> > > > > > table, then looking up addresses one by one. But that's even sl=
+ower
+> > > > > > and more memory-hungry. So I didn't even bother implementing th=
+at, it
+> > > > > > would put /proc/<pid>/maps at even more disadvantage.
+> > > > > >
+> > > > > > Other applications that deal with stack traces (including perf)=
+ would
+> > > > > > be doing one of those two approaches, depending on circumstance=
+s and
+> > > > > > level of sophistication of code (and sensitivity to performance=
+).
+> > > > >
+> > > > > The code in perf doing this is here:
+> > > > > https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.gi=
+t/tree/tools/perf/util/synthetic-events.c#n440
+> > > > > The code is using the api/io.h code:
+> > > > > https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.gi=
+t/tree/tools/lib/api/io.h
+> > > > > Using perf to profile perf it was observed time was spent allocat=
+ing
+> > > > > buffers and locale related activities when using stdio, so io is =
+a
+> > > > > lighter weight alternative, albeit with more verbose code than fs=
+canf.
+> > > > > You could add this as an alternate /proc/<pid>/maps reader, we ha=
+ve a
+> > > > > similar benchmark in `perf bench internals synthesize`.
+> > > > >
+> > > >
+> > > > If I add a new implementation using this ioctl() into
+> > > > perf_event__synthesize_mmap_events(), will it be tested from this
+> > > > `perf bench internals synthesize`? I'm not too familiar with perf c=
+ode
+> > > > organization, sorry if it's a stupid question. If not, where exactl=
+y
+> > > > is the code that would be triggered from benchmark?
+> > >
+> > > Yes it would be triggered :-)
+> >
+> > Ok, I don't exactly know how to interpret the results (and what the
+> > benchmark is doing), but numbers don't seem to be worse. They actually
+> > seem to be a bit better.
+> >
+> > I pushed my code that adds perf integration to [0]. That commit has
+> > results, but I'll post them here (with invocation parameters).
+> > perf-ioctl is the version with ioctl()-based implementation,
+> > perf-parse is, logically, text-parsing version. Here are the results
+> > (and see my notes below the results as well):
+> >
+> > TEXT-BASED
+> > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> >
+> > # ./perf-parse bench internals synthesize
+> > # Running 'internals/synthesize' benchmark:
+> > Computing performance of single threaded perf event synthesis by
+> > synthesizing events on the perf process itself:
+> >   Average synthesis took: 80.311 usec (+- 0.077 usec)
+> >   Average num. events: 32.000 (+- 0.000)
+> >   Average time per event 2.510 usec
+> >   Average data synthesis took: 84.429 usec (+- 0.066 usec)
+> >   Average num. events: 179.000 (+- 0.000)
+> >   Average time per event 0.472 usec
+> >
+> > # ./perf-parse bench internals synthesize
+> > # Running 'internals/synthesize' benchmark:
+> > Computing performance of single threaded perf event synthesis by
+> > synthesizing events on the perf process itself:
+> >   Average synthesis took: 79.900 usec (+- 0.077 usec)
+> >   Average num. events: 32.000 (+- 0.000)
+> >   Average time per event 2.497 usec
+> >   Average data synthesis took: 84.832 usec (+- 0.074 usec)
+> >   Average num. events: 180.000 (+- 0.000)
+> >   Average time per event 0.471 usec
+> >
+> > # ./perf-parse bench internals synthesize --mt -M 8
+> > # Running 'internals/synthesize' benchmark:
+> > Computing performance of multi threaded perf event synthesis by
+> > synthesizing events on CPU 0:
+> >   Number of synthesis threads: 1
+> >     Average synthesis took: 36338.100 usec (+- 406.091 usec)
+> >     Average num. events: 14091.300 (+- 7.433)
+> >     Average time per event 2.579 usec
+> >   Number of synthesis threads: 2
+> >     Average synthesis took: 37071.200 usec (+- 746.498 usec)
+> >     Average num. events: 14085.900 (+- 1.900)
+> >     Average time per event 2.632 usec
+> >   Number of synthesis threads: 3
+> >     Average synthesis took: 33932.300 usec (+- 626.861 usec)
+> >     Average num. events: 14085.900 (+- 1.900)
+> >     Average time per event 2.409 usec
+> >   Number of synthesis threads: 4
+> >     Average synthesis took: 33822.700 usec (+- 506.290 usec)
+> >     Average num. events: 14099.200 (+- 8.761)
+> >     Average time per event 2.399 usec
+> >   Number of synthesis threads: 5
+> >     Average synthesis took: 33348.200 usec (+- 389.771 usec)
+> >     Average num. events: 14085.900 (+- 1.900)
+> >     Average time per event 2.367 usec
+> >   Number of synthesis threads: 6
+> >     Average synthesis took: 33269.600 usec (+- 350.341 usec)
+> >     Average num. events: 14084.000 (+- 0.000)
+> >     Average time per event 2.362 usec
+> >   Number of synthesis threads: 7
+> >     Average synthesis took: 32663.900 usec (+- 338.870 usec)
+> >     Average num. events: 14085.900 (+- 1.900)
+> >     Average time per event 2.319 usec
+> >   Number of synthesis threads: 8
+> >     Average synthesis took: 32748.400 usec (+- 285.450 usec)
+> >     Average num. events: 14085.900 (+- 1.900)
+> >     Average time per event 2.325 usec
+> >
+> > IOCTL-BASED
+> > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> > # ./perf-ioctl bench internals synthesize
+> > # Running 'internals/synthesize' benchmark:
+> > Computing performance of single threaded perf event synthesis by
+> > synthesizing events on the perf process itself:
+> >   Average synthesis took: 72.996 usec (+- 0.076 usec)
+> >   Average num. events: 31.000 (+- 0.000)
+> >   Average time per event 2.355 usec
+> >   Average data synthesis took: 79.067 usec (+- 0.074 usec)
+> >   Average num. events: 178.000 (+- 0.000)
+> >   Average time per event 0.444 usec
+> >
+> > # ./perf-ioctl bench internals synthesize
+> > # Running 'internals/synthesize' benchmark:
+> > Computing performance of single threaded perf event synthesis by
+> > synthesizing events on the perf process itself:
+> >   Average synthesis took: 73.921 usec (+- 0.073 usec)
+> >   Average num. events: 31.000 (+- 0.000)
+> >   Average time per event 2.385 usec
+> >   Average data synthesis took: 80.545 usec (+- 0.070 usec)
+> >   Average num. events: 178.000 (+- 0.000)
+> >   Average time per event 0.453 usec
+> >
+> > # ./perf-ioctl bench internals synthesize --mt -M 8
+> > # Running 'internals/synthesize' benchmark:
+> > Computing performance of multi threaded perf event synthesis by
+> > synthesizing events on CPU 0:
+> >   Number of synthesis threads: 1
+> >     Average synthesis took: 35609.500 usec (+- 428.576 usec)
+> >     Average num. events: 14040.700 (+- 1.700)
+> >     Average time per event 2.536 usec
+> >   Number of synthesis threads: 2
+> >     Average synthesis took: 34293.800 usec (+- 453.811 usec)
+> >     Average num. events: 14040.700 (+- 1.700)
+> >     Average time per event 2.442 usec
+> >   Number of synthesis threads: 3
+> >     Average synthesis took: 32385.200 usec (+- 363.106 usec)
+> >     Average num. events: 14040.700 (+- 1.700)
+> >     Average time per event 2.307 usec
+> >   Number of synthesis threads: 4
+> >     Average synthesis took: 33113.100 usec (+- 553.931 usec)
+> >     Average num. events: 14054.500 (+- 11.469)
+> >     Average time per event 2.356 usec
+> >   Number of synthesis threads: 5
+> >     Average synthesis took: 31600.600 usec (+- 297.349 usec)
+> >     Average num. events: 14012.500 (+- 4.590)
+> >     Average time per event 2.255 usec
+> >   Number of synthesis threads: 6
+> >     Average synthesis took: 32309.900 usec (+- 472.225 usec)
+> >     Average num. events: 14004.000 (+- 0.000)
+> >     Average time per event 2.307 usec
+> >   Number of synthesis threads: 7
+> >     Average synthesis took: 31400.100 usec (+- 206.261 usec)
+> >     Average num. events: 14004.800 (+- 0.800)
+> >     Average time per event 2.242 usec
+> >   Number of synthesis threads: 8
+> >     Average synthesis took: 31601.400 usec (+- 303.350 usec)
+> >     Average num. events: 14005.700 (+- 1.700)
+> >     Average time per event 2.256 usec
+> >
+> > I also double-checked (using strace) that it does what it is supposed
+> > to do, and it seems like everything checks out. Here's text-based
+> > strace log:
+> >
+> > openat(AT_FDCWD, "/proc/35876/task/35876/maps", O_RDONLY) =3D 3
+> > read(3, "00400000-0040c000 r--p 00000000 "..., 8192) =3D 3997
+> > read(3, "7f519d4d3000-7f519d516000 r--p 0"..., 8192) =3D 4025
+> > read(3, "7f519dc3d000-7f519dc44000 r-xp 0"..., 8192) =3D 4048
+> > read(3, "7f519dd2d000-7f519dd2f000 r--p 0"..., 8192) =3D 4017
+> > read(3, "7f519dff6000-7f519dff8000 r--p 0"..., 8192) =3D 2744
+> > read(3, "", 8192)                       =3D 0
+> > close(3)                                =3D 0
+> >
+> >
+> > BTW, note how the kernel doesn't serve more than 4KB of data, even
+> > though perf provides 8KB buffer (that's to Greg's question about
+> > optimizing using bigger buffers, I suspect without seq_file changes,
+> > it won't work).
+> >
+> > And here's an abbreviated log for ioctl version, it has lots more (but
+> > much faster) ioctl() syscalls, given it dumps everything:
+> >
+> > openat(AT_FDCWD, "/proc/36380/task/36380/maps", O_RDONLY) =3D 3
+> > ioctl(3, _IOC(_IOC_READ|_IOC_WRITE, 0x9f, 0x1, 0x60), 0x7fff6b603d50) =
+=3D 0
+> > ioctl(3, _IOC(_IOC_READ|_IOC_WRITE, 0x9f, 0x1, 0x60), 0x7fff6b603d50) =
+=3D 0
+> >
+> >  ... 195 ioctl() calls in total ...
+> >
+> > ioctl(3, _IOC(_IOC_READ|_IOC_WRITE, 0x9f, 0x1, 0x60), 0x7fff6b603d50) =
+=3D 0
+> > ioctl(3, _IOC(_IOC_READ|_IOC_WRITE, 0x9f, 0x1, 0x60), 0x7fff6b603d50) =
+=3D 0
+> > ioctl(3, _IOC(_IOC_READ|_IOC_WRITE, 0x9f, 0x1, 0x60), 0x7fff6b603d50) =
+=3D 0
+> > ioctl(3, _IOC(_IOC_READ|_IOC_WRITE, 0x9f, 0x1, 0x60), 0x7fff6b603d50)
+> > =3D -1 ENOENT (No such file or directory)
+> > close(3)                                =3D 0
+> >
+> >
+> > So, it's not the optimal usage of this API, and yet it's still better
+> > (or at least not worse) than text-based API.
 
-The static keys guarding the BPF LSM hooks are disabled by default and
-enabled only when a BPF program is attached implementing the hook
-logic. This avoids the issue of the side-effects and also the minor
-overhead associated with the empty callback.
+It's surprising that more ioctl is cheaper than less read and parse.
 
-security_file_ioctl:
-   0xffffffff818f0e30 <+0>:	endbr64
-   0xffffffff818f0e34 <+4>:	nopl   0x0(%rax,%rax,1)
-   0xffffffff818f0e39 <+9>:	push   %rbp
-   0xffffffff818f0e3a <+10>:	push   %r14
-   0xffffffff818f0e3c <+12>:	push   %rbx
-   0xffffffff818f0e3d <+13>:	mov    %rdx,%rbx
-   0xffffffff818f0e40 <+16>:	mov    %esi,%ebp
-   0xffffffff818f0e42 <+18>:	mov    %rdi,%r14
-   0xffffffff818f0e45 <+21>:	jmp    0xffffffff818f0e57 <security_file_ioctl+39>
-   				^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> >
+>
+> In another reply to Arnaldo on patch #2 I mentioned the idea of
+> allowing to iterate only file-backed VMAs (as it seems like what
+> symbolizers would only care about, but I might be wrong here). So I
 
-   Static key enabled for SELinux
+Yep, I think it's enough to get file-backed VMAs only.
 
-   0xffffffff818f0e47 <+23>:	xchg   %ax,%ax
-   				^^^^^^^^^^^^^^
 
-   Static key disabled for BPF. This gets patched when a BPF LSM program
-   is attached
+> tried that quickly, given it's a trivial addition to my code. See
+> results below (it is slightly faster, but not much, because most of
+> VMAs in that benchmark seem to be indeed file-backed anyways), just
+> for completeness. I'm not sure if that would be useful/used by perf,
+> so please let me know.
 
-   0xffffffff818f0e49 <+25>:	xor    %eax,%eax
-   0xffffffff818f0e4b <+27>:	xchg   %ax,%ax
-   0xffffffff818f0e4d <+29>:	pop    %rbx
-   0xffffffff818f0e4e <+30>:	pop    %r14
-   0xffffffff818f0e50 <+32>:	pop    %rbp
-   0xffffffff818f0e51 <+33>:	cs jmp 0xffffffff82c00000 <__x86_return_thunk>
-   0xffffffff818f0e57 <+39>:	endbr64
-   0xffffffff818f0e5b <+43>:	mov    %r14,%rdi
-   0xffffffff818f0e5e <+46>:	mov    %ebp,%esi
-   0xffffffff818f0e60 <+48>:	mov    %rbx,%rdx
-   0xffffffff818f0e63 <+51>:	call   0xffffffff819033c0 <selinux_file_ioctl>
-   0xffffffff818f0e68 <+56>:	test   %eax,%eax
-   0xffffffff818f0e6a <+58>:	jne    0xffffffff818f0e4d <security_file_ioctl+29>
-   0xffffffff818f0e6c <+60>:	jmp    0xffffffff818f0e47 <security_file_ioctl+23>
-   0xffffffff818f0e6e <+62>:	endbr64
-   0xffffffff818f0e72 <+66>:	mov    %r14,%rdi
-   0xffffffff818f0e75 <+69>:	mov    %ebp,%esi
-   0xffffffff818f0e77 <+71>:	mov    %rbx,%rdx
-   0xffffffff818f0e7a <+74>:	call   0xffffffff8141e3b0 <bpf_lsm_file_ioctl>
-   0xffffffff818f0e7f <+79>:	test   %eax,%eax
-   0xffffffff818f0e81 <+81>:	jne    0xffffffff818f0e4d <security_file_ioctl+29>
-   0xffffffff818f0e83 <+83>:	jmp    0xffffffff818f0e49 <security_file_ioctl+25>
-   0xffffffff818f0e85 <+85>:	endbr64
-   0xffffffff818f0e89 <+89>:	mov    %r14,%rdi
-   0xffffffff818f0e8c <+92>:	mov    %ebp,%esi
-   0xffffffff818f0e8e <+94>:	mov    %rbx,%rdx
-   0xffffffff818f0e91 <+97>:	pop    %rbx
-   0xffffffff818f0e92 <+98>:	pop    %r14
-   0xffffffff818f0e94 <+100>:	pop    %rbp
-   0xffffffff818f0e95 <+101>:	ret
+Thanks for doing this.  It'd be useful as it provides better synthesizing
+performance.  The startup latency of perf record is a problem, I need
+to take a look if it can be improved more.
 
-Signed-off-by: KP Singh <kpsingh@kernel.org>
----
- include/linux/lsm_hooks.h | 26 ++++++++++++++++++++++++-
- kernel/bpf/trampoline.c   | 40 +++++++++++++++++++++++++++++++++++----
- security/bpf/hooks.c      |  2 +-
- security/security.c       | 33 +++++++++++++++++++++++++++++++-
- 4 files changed, 94 insertions(+), 7 deletions(-)
+Thanks,
+Namhyung
 
-diff --git a/include/linux/lsm_hooks.h b/include/linux/lsm_hooks.h
-index 5db244308c92..4bd1d47bb9dc 100644
---- a/include/linux/lsm_hooks.h
-+++ b/include/linux/lsm_hooks.h
-@@ -110,11 +110,14 @@ struct lsm_id {
-  * @scalls: The beginning of the array of static calls assigned to this hook.
-  * @hook: The callback for the hook.
-  * @lsm: The name of the lsm that owns this hook.
-+ * @default_state: The state of the LSM hook when initialized. If set to false,
-+ * the static key guarding the hook will be set to disabled.
-  */
- struct security_hook_list {
- 	struct lsm_static_call	*scalls;
- 	union security_list_options	hook;
- 	const struct lsm_id		*lsmid;
-+	bool				default_enabled;
- } __randomize_layout;
- 
- /*
-@@ -164,7 +167,15 @@ static inline struct xattr *lsm_get_xattr_slot(struct xattr *xattrs,
- #define LSM_HOOK_INIT(NAME, HOOK)			\
- 	{						\
- 		.scalls = static_calls_table.NAME,	\
--		.hook = { .NAME = HOOK }		\
-+		.hook = { .NAME = HOOK },		\
-+		.default_enabled = true			\
-+	}
-+
-+#define LSM_HOOK_INIT_DISABLED(NAME, HOOK)		\
-+	{						\
-+		.scalls = static_calls_table.NAME,	\
-+		.hook = { .NAME = HOOK },		\
-+		.default_enabled = false		\
- 	}
- 
- extern char *lsm_names;
-@@ -206,4 +217,17 @@ extern struct lsm_info __start_early_lsm_info[], __end_early_lsm_info[];
- extern int lsm_inode_alloc(struct inode *inode);
- extern struct lsm_static_calls_table static_calls_table __ro_after_init;
- 
-+#ifdef CONFIG_SECURITY
-+
-+int security_toggle_hook(void *addr, bool value);
-+
-+#else
-+
-+static inline int security_toggle_hook(void *addr, bool value)
-+{
-+	return -EINVAL;
-+}
-+
-+#endif /* CONFIG_SECURITY */
-+
- #endif /* ! __LINUX_LSM_HOOKS_H */
-diff --git a/kernel/bpf/trampoline.c b/kernel/bpf/trampoline.c
-index db7599c59c78..5758c5681023 100644
---- a/kernel/bpf/trampoline.c
-+++ b/kernel/bpf/trampoline.c
-@@ -521,6 +521,21 @@ static enum bpf_tramp_prog_type bpf_attach_type_to_tramp(struct bpf_prog *prog)
- 	}
- }
- 
-+static int bpf_trampoline_toggle_lsm(struct bpf_trampoline *tr,
-+				      enum bpf_tramp_prog_type kind)
-+{
-+	struct bpf_tramp_link *link;
-+	bool found = false;
-+
-+	hlist_for_each_entry(link, &tr->progs_hlist[kind], tramp_hlist) {
-+		if (link->link.prog->type == BPF_PROG_TYPE_LSM) {
-+			found  = true;
-+			break;
-+		}
-+	}
-+	return security_toggle_hook(tr->func.addr, found);
-+}
-+
- static int __bpf_trampoline_link_prog(struct bpf_tramp_link *link, struct bpf_trampoline *tr)
- {
- 	enum bpf_tramp_prog_type kind;
-@@ -560,11 +575,22 @@ static int __bpf_trampoline_link_prog(struct bpf_tramp_link *link, struct bpf_tr
- 
- 	hlist_add_head(&link->tramp_hlist, &tr->progs_hlist[kind]);
- 	tr->progs_cnt[kind]++;
--	err = bpf_trampoline_update(tr, true /* lock_direct_mutex */);
--	if (err) {
--		hlist_del_init(&link->tramp_hlist);
--		tr->progs_cnt[kind]--;
-+
-+	if (link->link.prog->type == BPF_PROG_TYPE_LSM) {
-+		err = bpf_trampoline_toggle_lsm(tr, kind);
-+		if (err)
-+			goto cleanup;
- 	}
-+
-+	err = bpf_trampoline_update(tr, true /* lock_direct_mutex */);
-+	if (err)
-+		goto cleanup;
-+
-+	return 0;
-+
-+cleanup:
-+	hlist_del_init(&link->tramp_hlist);
-+	tr->progs_cnt[kind]--;
- 	return err;
- }
- 
-@@ -593,6 +619,12 @@ static int __bpf_trampoline_unlink_prog(struct bpf_tramp_link *link, struct bpf_
- 	}
- 	hlist_del_init(&link->tramp_hlist);
- 	tr->progs_cnt[kind]--;
-+
-+	if (link->link.prog->type == BPF_PROG_TYPE_LSM) {
-+		err = bpf_trampoline_toggle_lsm(tr, kind);
-+		WARN(err, "BUG: unable to toggle BPF LSM hook");
-+	}
-+
- 	return bpf_trampoline_update(tr, true /* lock_direct_mutex */);
- }
- 
-diff --git a/security/bpf/hooks.c b/security/bpf/hooks.c
-index 57b9ffd53c98..ed864f7430a3 100644
---- a/security/bpf/hooks.c
-+++ b/security/bpf/hooks.c
-@@ -9,7 +9,7 @@
- 
- static struct security_hook_list bpf_lsm_hooks[] __ro_after_init = {
- 	#define LSM_HOOK(RET, DEFAULT, NAME, ...) \
--	LSM_HOOK_INIT(NAME, bpf_lsm_##NAME),
-+	LSM_HOOK_INIT_DISABLED(NAME, bpf_lsm_##NAME),
- 	#include <linux/lsm_hook_defs.h>
- 	#undef LSM_HOOK
- 	LSM_HOOK_INIT(inode_free_security, bpf_inode_storage_free),
-diff --git a/security/security.c b/security/security.c
-index 491b807a8a63..b3a92a67f325 100644
---- a/security/security.c
-+++ b/security/security.c
-@@ -407,7 +407,8 @@ static void __init lsm_static_call_init(struct security_hook_list *hl)
- 			__static_call_update(scall->key, scall->trampoline,
- 					     hl->hook.lsm_func_addr);
- 			scall->hl = hl;
--			static_branch_enable(scall->active);
-+			if (hl->default_enabled)
-+				static_branch_enable(scall->active);
- 			return;
- 		}
- 		scall++;
-@@ -885,6 +886,36 @@ int lsm_fill_user_ctx(struct lsm_ctx __user *uctx, u32 *uctx_len,
- 	return rc;
- }
- 
-+/**
-+ * security_toggle_hook - Toggle the state of the LSM hook.
-+ * @hook_addr: The address of the hook to be toggled.
-+ * @state: Whether to enable for disable the hook.
-+ *
-+ * Returns 0 on success, -EINVAL if the address is not found.
-+ */
-+int security_toggle_hook(void *hook_addr, bool state)
-+{
-+	struct lsm_static_call *scalls = ((void *)&static_calls_table);
-+	unsigned long num_entries =
-+		(sizeof(static_calls_table) / sizeof(struct lsm_static_call));
-+	int i;
-+
-+	for (i = 0; i < num_entries; i++) {
-+		if (!scalls[i].hl)
-+			continue;
-+
-+		if (scalls[i].hl->hook.lsm_func_addr != hook_addr)
-+			continue;
-+
-+		if (state)
-+			static_branch_enable(scalls[i].active);
-+		else
-+			static_branch_disable(scalls[i].active);
-+		return 0;
-+	}
-+	return -EINVAL;
-+}
-+
- /*
-  * The default value of the LSM hook is defined in linux/lsm_hook_defs.h and
-  * can be accessed with:
--- 
-2.45.0.rc1.225.g2a3ae87e7f-goog
 
+>
+> As I mentioned above, it's not radically faster in this perf
+> benchmark, because we still request about 170 VMAs (vs ~195 if we
+> iterate *all* of them), so not a big change. The ratio will vary
+> depending on what the process is doing, of course. Anyways, just for
+> completeness, I'm not sure if I have to add this "filter" to the
+> actual implementation.
+>
+> # ./perf-filebacked bench internals synthesize
+> # Running 'internals/synthesize' benchmark:
+> Computing performance of single threaded perf event synthesis by
+> synthesizing events on the perf process itself:
+>   Average synthesis took: 65.759 usec (+- 0.063 usec)
+>   Average num. events: 30.000 (+- 0.000)
+>   Average time per event 2.192 usec
+>   Average data synthesis took: 73.840 usec (+- 0.080 usec)
+>   Average num. events: 153.000 (+- 0.000)
+>   Average time per event 0.483 usec
+>
+> # ./perf-filebacked bench internals synthesize
+> # Running 'internals/synthesize' benchmark:
+> Computing performance of single threaded perf event synthesis by
+> synthesizing events on the perf process itself:
+>   Average synthesis took: 66.245 usec (+- 0.059 usec)
+>   Average num. events: 30.000 (+- 0.000)
+>   Average time per event 2.208 usec
+>   Average data synthesis took: 70.627 usec (+- 0.074 usec)
+>   Average num. events: 153.000 (+- 0.000)
+>   Average time per event 0.462 usec
+>
+> # ./perf-filebacked bench internals synthesize --mt -M 8
+> # Running 'internals/synthesize' benchmark:
+> Computing performance of multi threaded perf event synthesis by
+> synthesizing events on CPU 0:
+>   Number of synthesis threads: 1
+>     Average synthesis took: 33477.500 usec (+- 556.102 usec)
+>     Average num. events: 10125.700 (+- 1.620)
+>     Average time per event 3.306 usec
+>   Number of synthesis threads: 2
+>     Average synthesis took: 30473.700 usec (+- 221.933 usec)
+>     Average num. events: 10127.000 (+- 0.000)
+>     Average time per event 3.009 usec
+>   Number of synthesis threads: 3
+>     Average synthesis took: 29775.200 usec (+- 315.212 usec)
+>     Average num. events: 10128.700 (+- 0.667)
+>     Average time per event 2.940 usec
+>   Number of synthesis threads: 4
+>     Average synthesis took: 29477.100 usec (+- 621.258 usec)
+>     Average num. events: 10129.000 (+- 0.000)
+>     Average time per event 2.910 usec
+>   Number of synthesis threads: 5
+>     Average synthesis took: 29777.900 usec (+- 294.710 usec)
+>     Average num. events: 10144.700 (+- 11.597)
+>     Average time per event 2.935 usec
+>   Number of synthesis threads: 6
+>     Average synthesis took: 27774.700 usec (+- 357.569 usec)
+>     Average num. events: 10158.500 (+- 14.710)
+>     Average time per event 2.734 usec
+>   Number of synthesis threads: 7
+>     Average synthesis took: 27437.200 usec (+- 233.626 usec)
+>     Average num. events: 10135.700 (+- 2.700)
+>     Average time per event 2.707 usec
+>   Number of synthesis threads: 8
+>     Average synthesis took: 28784.600 usec (+- 477.630 usec)
+>     Average num. events: 10133.000 (+- 0.000)
+>     Average time per event 2.841 usec
+>
+> >   [0] https://github.com/anakryiko/linux/commit/0841fe675ed30f5605c5b22=
+8e18f5612ea253b35
+> >
+> > >
+> > > Thanks,
+> > > Ian
+> > >
+> > > > > Thanks,
+> > > > > Ian
+> > > > >
+> > > > > >   [0] https://github.com/libbpf/blazesym/blob/ee9b48a80c0b44991=
+18a1e8e5d901cddb2b33ab1/src/normalize/user.rs#L193
+> > > > > >
+> > > > > > > thanks,
+> > > > > > >
+> > > > > > > greg k-h
+> > > > > >
+>
 
