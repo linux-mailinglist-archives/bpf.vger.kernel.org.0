@@ -1,177 +1,146 @@
-Return-Path: <bpf+bounces-28824-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-28825-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 448EA8BE432
-	for <lists+bpf@lfdr.de>; Tue,  7 May 2024 15:35:28 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 516918BE43E
+	for <lists+bpf@lfdr.de>; Tue,  7 May 2024 15:36:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D83781F23928
-	for <lists+bpf@lfdr.de>; Tue,  7 May 2024 13:35:27 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0CA2E2887D9
+	for <lists+bpf@lfdr.de>; Tue,  7 May 2024 13:36:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9CE651CB314;
-	Tue,  7 May 2024 13:20:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A0BE15FA86;
+	Tue,  7 May 2024 13:27:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gd4Oiq2g"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZeeRFXLn"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 21AC21CB304;
-	Tue,  7 May 2024 13:20:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CDC6715E1FD;
+	Tue,  7 May 2024 13:27:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715088014; cv=none; b=jpD2WEGmhd8Ucr1QP5HTb+jJswEcrLLju/xPp+6O8YY74Dt/CClRdxtY2+8jiCFKjFRPIE5hgVKVN+R7NLOU4k4JWF7LKpNIFEnmzyTH0D1MfUNB3ZWT+J+Hie3wYMvvk7V2B4LS77kwIqE4E0MdJGGlULZtIdUGRQoi4QQHs+g=
+	t=1715088471; cv=none; b=LSTSOxD03G+Fq1fucrLo2sbrTq37lTXHWLH27jNhWonYfiKw16ABmmlxH/b9Dv85+kZGYj7nhZoQMub++YzlSL81EDoe61KqcYrzaoefKRDaF6SWnsA/hM/3B00WFvrdo4G48TRES+mU1K3v2L4rDnUWMh1XYZgc+vdmhV83hkA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715088014; c=relaxed/simple;
-	bh=xqxP5tviAL2S96IuIPgdlhvR3scECTl5ZJSxLsbtWpE=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=qWNtSjdgCG/a3FYdCrGzSHNON0mM3Nb/y1BH3SxMybcOtaHybphatCgnNvpypzEKEgkNhGVxJeIQD7rJ8AbtZ6qw7EOzT9sEEMnsJ6Azr0mgad7ETaIIAge8fZ+8rsPnRs25IhI06aHgxfA0l9EANGkw0oq+TWtAleLjnvfsPjs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gd4Oiq2g; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7A9D3C4DDE7;
-	Tue,  7 May 2024 13:20:10 +0000 (UTC)
+	s=arc-20240116; t=1715088471; c=relaxed/simple;
+	bh=wSGVZ5eyp2TtRxuELZrZ5TmmY6mnjuj8g/MnrMUOfx4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=H9uqbe5UsKOHDcFL/aS653wlfHdqsN5+Gdx+DZBxJamSHcfRu0b/cgfaYnm3t6p0w3N8UQvOogsa3dmMHz9xMclKfpBqi76TTE0sPA2OEcNVCMQarV4R13g5s+pGESpVH8d7XW3kjrkHsEk0RcVHYnLSYVcGY5yCWKFeYDQjZsk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZeeRFXLn; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6C235C2BBFC;
+	Tue,  7 May 2024 13:27:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1715088013;
-	bh=xqxP5tviAL2S96IuIPgdlhvR3scECTl5ZJSxLsbtWpE=;
-	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-	b=gd4Oiq2gEdgU1xGUmMmSAo2Ok46t/iK3YslvSMCr1C8RAhH7YNv7NP5q/cKDFNCli
-	 vtBGyNL1bMnsbMz2JVDcctY3aDWQq/FmHWsw1K88IV8ITMv6MtE1MJ3pFWU4yvItaf
-	 BwwhfsZzg1sA76I4bnzpQGw3HjWmkpZ8pUwQ9P3SA9QfbhoXfOm24631lAwLGzDRdR
-	 UPscs38LStKDElMYm0Ze3gz7IUva3/sMFooxIwcSIKxo+qsGbxffEv4jyTWSsTOgae
-	 ENsvws/vunKkdMSsTnGyMpja8gceb9WxHOTmq5vKXTP5FHJn/Cf8MhtruG8VHWn50W
-	 mB+BeOuEeokQQ==
-From: Benjamin Tissoires <bentiss@kernel.org>
-Date: Tue, 07 May 2024 15:19:36 +0200
-Subject: [PATCH RFC bpf-next 8/8] bpf: rely on __aux suffix for
- bpf_wq_set_callback_impl
+	s=k20201202; t=1715088471;
+	bh=wSGVZ5eyp2TtRxuELZrZ5TmmY6mnjuj8g/MnrMUOfx4=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=ZeeRFXLn7sWlW3FsWwj65mF2Jn3XVHaHgT1uSEdBDO7vlmy7e0GhSN5JLRCQPEroj
+	 j/tHDw5TMBpcBNvDZ8zmp/9c6hHNE1BO9Fv79dHmLtj/s/E5C2f2J8JNCgG+yV36su
+	 AOUWoVXXyUmwXf8eCiEV2Yd3GFwZcS5/22BwxfrdQx+N5m0T5+8d1IxRscP1n6onY8
+	 Ms/Gh/AM/4mVSQV+g4beMkLwSNlIsp8lIpEx5PRHxNkM2SwvwfnRBiRtZ2Kt6xAyKO
+	 Eu9sXzNVXxyhb8AVq4Og1zuZNgR6QHhAWHUE4X6iNP7lSI64JLk3r41gPt6AHrovKO
+	 a9lew8Z0hbj5w==
+Message-ID: <93062ce7-8dfa-48a9-a4ad-24c5a3993b41@kernel.org>
+Date: Tue, 7 May 2024 15:27:44 +0200
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next 14/15] net: Reference bpf_redirect_info via
+ task_struct on PREEMPT_RT.
+To: Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+ Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: =?UTF-8?Q?Toke_H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
+ LKML <linux-kernel@vger.kernel.org>,
+ Network Development <netdev@vger.kernel.org>,
+ "David S. Miller" <davem@davemloft.net>, Boqun Feng <boqun.feng@gmail.com>,
+ Daniel Borkmann <daniel@iogearbox.net>, Eric Dumazet <edumazet@google.com>,
+ Frederic Weisbecker <frederic@kernel.org>, Ingo Molnar <mingo@redhat.com>,
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+ Peter Zijlstra <peterz@infradead.org>, Thomas Gleixner <tglx@linutronix.de>,
+ Waiman Long <longman@redhat.com>, Will Deacon <will@kernel.org>,
+ Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
+ Eduard Zingerman <eddyz87@gmail.com>, Hao Luo <haoluo@google.com>,
+ Jiri Olsa <jolsa@kernel.org>, John Fastabend <john.fastabend@gmail.com>,
+ KP Singh <kpsingh@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>,
+ Song Liu <song@kernel.org>, Stanislav Fomichev <sdf@google.com>,
+ Yonghong Song <yonghong.song@linux.dev>, bpf <bpf@vger.kernel.org>
+References: <20240503182957.1042122-1-bigeasy@linutronix.de>
+ <20240503182957.1042122-15-bigeasy@linutronix.de> <87y18mohhp.fsf@toke.dk>
+ <CAADnVQJkiwaYXUo+LyKoV96VFFCFL0VY5Jgpuv_0oypksrnciA@mail.gmail.com>
+ <20240507123636.cTnT7TvU@linutronix.de>
+Content-Language: en-US
+From: Jesper Dangaard Brouer <hawk@kernel.org>
+In-Reply-To: <20240507123636.cTnT7TvU@linutronix.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240507-bpf_async-v1-8-b4df966096d8@kernel.org>
-References: <20240507-bpf_async-v1-0-b4df966096d8@kernel.org>
-In-Reply-To: <20240507-bpf_async-v1-0-b4df966096d8@kernel.org>
-To: Alexei Starovoitov <ast@kernel.org>, 
- Daniel Borkmann <daniel@iogearbox.net>, 
- John Fastabend <john.fastabend@gmail.com>, 
- Andrii Nakryiko <andrii@kernel.org>, 
- Martin KaFai Lau <martin.lau@linux.dev>, 
- Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
- Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
- Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
- Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>, 
- Shuah Khan <shuah@kernel.org>
-Cc: bpf@vger.kernel.org, linux-kernel@vger.kernel.org, 
- linux-kselftest@vger.kernel.org, Benjamin Tissoires <bentiss@kernel.org>
-X-Mailer: b4 0.12.4
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1715087980; l=3513;
- i=bentiss@kernel.org; s=20230215; h=from:subject:message-id;
- bh=xqxP5tviAL2S96IuIPgdlhvR3scECTl5ZJSxLsbtWpE=;
- b=gLKwDN8r6bRspBt809EY3fwZaVCUxwSCKzAOrVkEzq+C8Ab8+unf1PTiflvMQqRSlCcJAZyt9
- XIcu3gAUTtSBKFD4QWf7tuSKVgxC+E6WpF36p1+A7nM8EvjE/Pq1B+E
-X-Developer-Key: i=bentiss@kernel.org; a=ed25519;
- pk=7D1DyAVh6ajCkuUTudt/chMuXWIJHlv2qCsRkIizvFw=
 
-And then cleanup the verifier about the special cases about this kfunc.
 
-Signed-off-by: Benjamin Tissoires <bentiss@kernel.org>
 
----
+On 07/05/2024 14.36, Sebastian Andrzej Siewior wrote:
+> On 2024-05-06 16:09:47 [-0700], Alexei Starovoitov wrote:
+>>>> On PREEMPT_RT the pointer to bpf_net_context is saved task's
+>>>> task_struct. On non-PREEMPT_RT builds the pointer saved in a per-CPU
+>>>> variable (which is always NODE-local memory). Using always the
+>>>> bpf_net_context approach has the advantage that there is almost zero
+>>>> differences between PREEMPT_RT and non-PREEMPT_RT builds.
+>>>
+>>> Did you ever manage to get any performance data to see if this has an
+>>> impact?
+>>>
+>>> [...]
+>>>
+>>>> +static inline struct bpf_net_context *bpf_net_ctx_get(void)
+>>>> +{
+>>>> +     struct bpf_net_context *bpf_net_ctx = this_cpu_read(bpf_net_context);
+>>>> +
+>>>> +     WARN_ON_ONCE(!bpf_net_ctx);
+>>>
+>>> If we have this WARN...
+>>>
 
-This is an RFC, and is not meant to be fully reviewed/applied as it is.
-I'm posting this to show what I wanted to explain in
-https://lore.kernel.org/bpf/mhkzkf4e23uvljtmwizwcxyuyat2tmfxn33xb4t7waafgmsa66@mcrzpj3b6ssx/
----
- kernel/bpf/helpers.c  |  4 ++--
- kernel/bpf/verifier.c | 17 -----------------
- 2 files changed, 2 insertions(+), 19 deletions(-)
+When asking for change anyhow...
 
-diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-index 97628bcbd507..03524fa5feef 100644
---- a/kernel/bpf/helpers.c
-+++ b/kernel/bpf/helpers.c
-@@ -2725,9 +2725,9 @@ typedef int (*wq_callback_fn_t)(struct bpf_map *map, int *key, struct bpf_wq *wq
- __bpf_kfunc int bpf_wq_set_callback_impl(struct bpf_wq *wq,
- 					 wq_callback_fn_t callback_fn__s_async,
- 					 unsigned int flags,
--					 void *aux__ign)
-+					 void *prog__aux)
- {
--	struct bpf_prog_aux *aux = (struct bpf_prog_aux *)aux__ign;
-+	struct bpf_prog_aux *aux = (struct bpf_prog_aux *)prog__aux;
- 	struct bpf_async_kern *async = (struct bpf_async_kern *)wq;
- 
- 	if (flags)
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 33b108db0025..829a234832d9 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -514,8 +514,6 @@ static bool is_sync_callback_calling_kfunc(u32 btf_id);
- static bool is_callback_calling_kfunc(u32 btf_id);
- static bool is_bpf_throw_kfunc(struct bpf_insn *insn);
- 
--static bool is_bpf_wq_set_callback_impl_kfunc(u32 btf_id);
--
- static bool is_sync_callback_calling_function(enum bpf_func_id func_id)
- {
- 	return func_id == BPF_FUNC_for_each_map_elem ||
-@@ -11134,7 +11132,6 @@ enum special_kfunc_type {
- 	KF_bpf_percpu_obj_new_impl,
- 	KF_bpf_percpu_obj_drop_impl,
- 	KF_bpf_throw,
--	KF_bpf_wq_set_callback_impl,
- 	KF_bpf_preempt_disable,
- 	KF_bpf_preempt_enable,
- 	KF_bpf_iter_css_task_new,
-@@ -11161,7 +11158,6 @@ BTF_ID(func, bpf_dynptr_clone)
- BTF_ID(func, bpf_percpu_obj_new_impl)
- BTF_ID(func, bpf_percpu_obj_drop_impl)
- BTF_ID(func, bpf_throw)
--BTF_ID(func, bpf_wq_set_callback_impl)
- #ifdef CONFIG_CGROUPS
- BTF_ID(func, bpf_iter_css_task_new)
- #endif
-@@ -11190,7 +11186,6 @@ BTF_ID(func, bpf_dynptr_clone)
- BTF_ID(func, bpf_percpu_obj_new_impl)
- BTF_ID(func, bpf_percpu_obj_drop_impl)
- BTF_ID(func, bpf_throw)
--BTF_ID(func, bpf_wq_set_callback_impl)
- BTF_ID(func, bpf_preempt_disable)
- BTF_ID(func, bpf_preempt_enable)
- #ifdef CONFIG_CGROUPS
-@@ -11542,11 +11537,6 @@ static bool is_bpf_throw_kfunc(struct bpf_insn *insn)
- 	       insn->imm == special_kfunc_list[KF_bpf_throw];
- }
- 
--static bool is_bpf_wq_set_callback_impl_kfunc(u32 btf_id)
--{
--	return btf_id == special_kfunc_list[KF_bpf_wq_set_callback_impl];
--}
--
- static bool is_callback_calling_kfunc(u32 btf_id)
- {
- 	return is_sync_callback_calling_kfunc(btf_id);
-@@ -19949,13 +19939,6 @@ static int fixup_kfunc_call(struct bpf_verifier_env *env, struct bpf_insn *insn,
- 		   desc->func_id == special_kfunc_list[KF_bpf_rdonly_cast]) {
- 		insn_buf[0] = BPF_MOV64_REG(BPF_REG_0, BPF_REG_1);
- 		*cnt = 1;
--	} else if (is_bpf_wq_set_callback_impl_kfunc(desc->func_id)) {
--		struct bpf_insn ld_addrs[2] = { BPF_LD_IMM64(BPF_REG_4, (long)env->prog->aux) };
--
--		insn_buf[0] = ld_addrs[0];
--		insn_buf[1] = ld_addrs[1];
--		insn_buf[2] = *insn;
--		*cnt = 3;
- 	} else {
- 		struct bpf_kfunc_call_arg_meta meta;
- 		struct bpf_insn kfunc_insn = *insn;
+XDP redirect is an extreme fast-path.
 
--- 
-2.44.0
+Adding an WARN macro cause adding an 'ud2' instruction that cause CPU
+instruction-cache to stop pre-fetching.
+
+For this reason we in include/net/xdp.h have #define XDP_WARN and
+function xdp_warn() that lives in net/core/xdp.c.
+See how it is used in xdp_update_frame_from_buff().
+
+Described in https://git.kernel.org/torvalds/c/34cc0b338a61
+  - 34cc0b338a61 ("xdp: Xdp_frame add member frame_sz and handle in 
+convert_to_xdp_frame")
+
+
+
+>>>> +static inline struct bpf_redirect_info *bpf_net_ctx_get_ri(void)
+>>>> +{
+>>>> +     struct bpf_net_context *bpf_net_ctx = bpf_net_ctx_get();
+>>>> +
+>>>> +     if (!bpf_net_ctx)
+>>>> +             return NULL;
+>>>
+>>> ... do we really need all the NULL checks?
+>>
+>> Indeed.
+>> Let's drop all NULL checks, since they definitely add overhead.
+>> I'd also remove ifdef CONFIG_PREEMPT_RT and converge on single implementation:
+>> static inline struct bpf_net_context * bpf_net_ctx_get(void)
+>> {
+>>   return current->bpf_net_context;
+>> }
+> 
+> Okay, let me do that then.
+
+I need/want to echo Toke's request to benchmark these changes.
+
+--Jesper
 
 
