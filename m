@@ -1,123 +1,208 @@
-Return-Path: <bpf+bounces-28892-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-28893-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1131C8BE8C4
-	for <lists+bpf@lfdr.de>; Tue,  7 May 2024 18:24:15 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5B0E08BE913
+	for <lists+bpf@lfdr.de>; Tue,  7 May 2024 18:33:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BAA131F25BAD
-	for <lists+bpf@lfdr.de>; Tue,  7 May 2024 16:24:14 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7EBEA1C23B14
+	for <lists+bpf@lfdr.de>; Tue,  7 May 2024 16:33:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F2B9516C853;
-	Tue,  7 May 2024 16:23:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F030516C84A;
+	Tue,  7 May 2024 16:28:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="jr5PuPpk"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bBMwDUYA"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-175.mta1.migadu.com (out-175.mta1.migadu.com [95.215.58.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f54.google.com (mail-ej1-f54.google.com [209.85.218.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4062015DBAE
-	for <bpf@vger.kernel.org>; Tue,  7 May 2024 16:23:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE3F316C447;
+	Tue,  7 May 2024 16:28:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715099022; cv=none; b=B6+v2J+KWNXKGcJGyq83rK+Hzdx2J0Q28bPeju7+aLbXU8AEC4uBx2DJrKwTHLA6TBtYHiTTlYoDawgxqcLxfZZGxRodvGrfayFLkD81+pFZZXFsj7dcccg9FwMDnOj4yNsjp4aMI3j9qtJejf4BNWLe/1+JhFHHrmP1tZSSldM=
+	t=1715099283; cv=none; b=fLUIhsFmVC/gSKOO2nDxIBY043tJw93y/ZZrcuFaKkq06OBvfnV+ZAhLw7B9U30+PrJ3rmJ3YFO0h03Xpem4RMvzbnezRQDx0bwHz6Dv2eJqBvXnXf4mDRxkWxTL06ggqBFOkNn8An8qyA+5TNHZy/g9O3YTJVfhYotjQ0IniGY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715099022; c=relaxed/simple;
-	bh=JYETHVpXfG/IOE1NocStmqlr4mjTnSvPEil736MhzI4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ojiYZZwI6dCMbzGQb1UN2WUDWyd6rU8aGOtY7x5q4MzocXiqPvB8hOZj4nLpJKvp924z1bCU8vU4QOLPfbDvyHVW2fX+k20JXxa0tIpvY8fXzfZUjApX5nTxeTL0M/toUz0itvyRNiQIttHvv2KttLgtLNLEvXNCrzuSE5iO38E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=jr5PuPpk; arc=none smtp.client-ip=95.215.58.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <263a563a-3abe-4c88-8a1e-e10fb8a6dfad@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1715099018;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=P3QSPEp3QVLFM+pfahGDqaxQBjZmMDI7OLyr2e9NWdY=;
-	b=jr5PuPpk6GKfCLeRe70BEVUkJ4O2QsjAsN+b467nK8v6+B8W3p1m9MCZZk3hnXJ5CIMjTE
-	qojzDQ5347ivZgbHaR1u4QRPXntju81luiJteXk65Ko1rGVz11AftIBegT/pNpvAKZeKJh
-	QTuDmKL0ta4iwPSVU4FirYQZ2+j+wgA=
-Date: Tue, 7 May 2024 09:23:31 -0700
+	s=arc-20240116; t=1715099283; c=relaxed/simple;
+	bh=hD+M8iZyRZ2U9jnt01xrNmHVdD1Kc6oVV4hfl9YcSjg=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Content-Type; b=r2IdKelf98fJTD4rxOepQwLJtlhRh2Ii59hAO1mAZqmC077Gb9L++NtqLYBHQ0m9SkKqFMU8NWbT45RSl3oodkPuIS3LZFY3K7EfaKGKVocZ/E+dJ3qdfK4o/orC2ACDK3lCp+yMIzUSELi8XDANA0TZl8uqMB0Poxe9rI/XVNY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=bBMwDUYA; arc=none smtp.client-ip=209.85.218.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f54.google.com with SMTP id a640c23a62f3a-a59ab4f60a6so726402966b.0;
+        Tue, 07 May 2024 09:28:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1715099280; x=1715704080; darn=vger.kernel.org;
+        h=content-transfer-encoding:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=rICwxurU6A+ycOmFzrxmjMEY+vAR/gQDdccoIGBtMqA=;
+        b=bBMwDUYAyCNo3SnY7dqiYWGUDAvA5KOLaMSiryJybhsYi6F3uv8Dk1M503llh38mDi
+         HIgw8yvrsBjKH1NCuwmy4VO6VuR1keoV7U0KfmGiM4fcjPwaNyvSi++I7Utb/B8Knpz1
+         n5d1HVwXE4Moa3MzBmlh3nunz1R3I9EDHHlxEQtZejf4zCbGFOMQR0qhVydp9YbSw1qh
+         ++QsvpHuvU2mNYohr+R71VP4K0qusnci6AHhqG4yMKnJX3DzsaJE3gEKuDgGA9ADDTTF
+         NF6cZWDsEOYSz4ul7WzUnSeHxRVwuvHQYaEsFgQobQwmtmNDYhz2+cXxjC4lKvqnSHx+
+         qESQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1715099280; x=1715704080;
+        h=content-transfer-encoding:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=rICwxurU6A+ycOmFzrxmjMEY+vAR/gQDdccoIGBtMqA=;
+        b=uvjLqg/D1zzLa7UnQK+qUpfKKyW1p6XrvMNCi/egzMMEqF8iVvJjaXFgGrrKyeSDbN
+         jx947CcEYNwBb2zW3+k/oJlW/5j1kk2Wq+jMN4JCZFC4AWfefszUsXlwWe1iOJnMmxkS
+         sq6VEqW2aLE9WEBaaoMdnqwpSyM6s1hAReYig72oV9coPTsddNeN2ILymeW7yxsNe1LB
+         djGaJZl/WuqzhbcYDWYSX0GBQHidEg2J/1//OJW8beQuMXQlNNu7wyrH5ra/x8CvSlSE
+         c41YVN6MHDCSj/3GOQ+0ztRl9uaC6Nt4zyCMszCwSbDpfR77WMI+Hl+jn8Qk7gRK0Lvy
+         uZtQ==
+X-Forwarded-Encrypted: i=1; AJvYcCX/S9cMRb/1qZlxyNA7JLDHukaAvAecZPcIVUKxj5wAEHfyDeJfhecT7M8OmenhDopbxf072CFSHxnzcE+dRUmnroLe+GNoh7S6clgjR039gxAS76ij57C/qzAJoX9iowlpOfgTNPiO74wcHN5DFxK5mf6igbBBoiPnE+qnfj08GA==
+X-Gm-Message-State: AOJu0YyfMgjkZ6H3IjrIxEAt1oa9K+fij8zYzj0lnjEHTpeBTaj8VJT9
+	Ve+t2L7cZiYlO7KMG9508x0vegDlkrDpaoiZznt4s3oOFQcypwUcRUpvSx61Lx9uzQKixQsSLaL
+	wOECtEdA66lfHU+BJpmyEsIkE7R0=
+X-Google-Smtp-Source: AGHT+IFn3p6+IU8MNAx4QtWppQukiCZTYwwesAVqUICe2KaycZuCykzGNsekqL7kux4xcd7LRFMUFDcyPHBLQ7Tec6w=
+X-Received: by 2002:a17:907:3f9a:b0:a59:c5c2:a31c with SMTP id
+ hr26-20020a1709073f9a00b00a59c5c2a31cmr8176135ejc.33.1715099279965; Tue, 07
+ May 2024 09:27:59 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next] bpf: avoid uninitialized value in
- BPF_CORE_READ_BITFIELD
-Content-Language: en-GB
-To: "Jose E. Marchesi" <jose.marchesi@oracle.com>, bpf@vger.kernel.org
-Cc: david.faust@oracle.com, cupertino.miranda@oracle.com,
- Eduard Zingerman <eddyz87@gmail.com>
-References: <20240507113950.28208-1-jose.marchesi@oracle.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Yonghong Song <yonghong.song@linux.dev>
-In-Reply-To: <20240507113950.28208-1-jose.marchesi@oracle.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+References: <20240504003006.3303334-1-andrii@kernel.org> <20240504003006.3303334-6-andrii@kernel.org>
+ <2024050425-setting-enhance-3bcd@gregkh> <CAEf4BzbiTQk6pLPQj=p9d18YW4fgn9k2V=zk6nUYAOK975J=xg@mail.gmail.com>
+ <cgpi2vaxveiytrtywsd4qynxnm3qqur3xlmbzcqqgoap6oxcjv@wjxukapfjowc>
+In-Reply-To: <cgpi2vaxveiytrtywsd4qynxnm3qqur3xlmbzcqqgoap6oxcjv@wjxukapfjowc>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Tue, 7 May 2024 09:27:44 -0700
+Message-ID: <CAEf4BzZQexjTvROUMkNb2MMB2scmjJHNRunA-NqeNzfo-yYh9g@mail.gmail.com>
+Subject: Re: [PATCH 5/5] selftests/bpf: a simple benchmark tool for
+ /proc/<pid>/maps APIs
+To: "Liam R. Howlett" <Liam.Howlett@oracle.com>, Andrii Nakryiko <andrii.nakryiko@gmail.com>, 
+	Greg KH <gregkh@linuxfoundation.org>, Andrii Nakryiko <andrii@kernel.org>, 
+	linux-fsdevel@vger.kernel.org, brauner@kernel.org, viro@zeniv.linux.org.uk, 
+	akpm@linux-foundation.org, linux-kernel@vger.kernel.org, bpf@vger.kernel.org, 
+	linux-mm@kvack.org, Suren Baghdasaryan <surenb@google.com>, 
+	Matthew Wilcox <willy@infradead.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-
-On 5/7/24 4:39 AM, Jose E. Marchesi wrote:
-> GCC warns that `val' may be used uninitialized in the
-> BPF_CORE_READ_BITFIELD macro, defined in bpf_core_read.h as:
+On Tue, May 7, 2024 at 8:49=E2=80=AFAM Liam R. Howlett <Liam.Howlett@oracle=
+.com> wrote:
 >
-> 	[...]
-> 	unsigned long long val;						      \
-> 	[...]								      \
-> 	switch (__CORE_RELO(s, field, BYTE_SIZE)) {			      \
-> 	case 1: val = *(const unsigned char *)p; break;			      \
-> 	case 2: val = *(const unsigned short *)p; break;		      \
-> 	case 4: val = *(const unsigned int *)p; break;			      \
-> 	case 8: val = *(const unsigned long long *)p; break;		      \
->          }       							      \
-> 	[...]
-> 	val;								      \
-> 	}								      \
+> .. Adding Suren & Willy to the Cc
 >
-> This patch initializes `val' to zero in order to avoid the warning,
-> and random values to be used in case __builtin_preserve_field_info
-> returns unexpected values for BPF_FIELD_BYTE_SIZE.
+> * Andrii Nakryiko <andrii.nakryiko@gmail.com> [240504 18:14]:
+> > On Sat, May 4, 2024 at 8:32=E2=80=AFAM Greg KH <gregkh@linuxfoundation.=
+org> wrote:
+> > >
+> > > On Fri, May 03, 2024 at 05:30:06PM -0700, Andrii Nakryiko wrote:
+> > > > I also did an strace run of both cases. In text-based one the tool =
+did
+> > > > 68 read() syscalls, fetching up to 4KB of data in one go.
+> > >
+> > > Why not fetch more at once?
+> > >
+> >
+> > I didn't expect to be interrogated so much on the performance of the
+> > text parsing front, sorry. :) You can probably tune this, but where is
+> > the reasonable limit? 64KB? 256KB? 1MB? See below for some more
+> > production numbers.
+>
+> The reason the file reads are limited to 4KB is because this file is
+> used for monitoring processes.  We have a significant number of
+> organisations polling this file so frequently that the mmap lock
+> contention becomes an issue. (reading a file is free, right?)  People
+> also tend to try to figure out why a process is slow by reading this
+> file - which amplifies the lock contention.
+>
+> What happens today is that the lock is yielded after 4KB to allow time
+> for mmap writes to happen.  This also means your data may be
+> inconsistent from one 4KB block to the next (the write may be around
+> this boundary).
+>
+> This new interface also takes the lock in do_procmap_query() and does
+> the 4kb blocks as well.  Extending this size means more time spent
+> blocking mmap writes, but a more consistent view of the world (less
+> "tearing" of the addresses).
 
-In clang, __builtin_preserve_field_info either returns correct value
-or caused compilation error. Do you mean for gcc __builtin_preserve_field_info
-might return an unexpected value here?
+Hold on. There is no 4KB in the new ioctl-based API I'm adding. It
+does a single VMA look up (presumably O(logN) operation) using a
+single vma_iter_init(addr) + vma_next() call on vma_iterator.
 
-BTW, your change makes sense to silent this warning. So Ack below.
+As for the mmap_read_lock_killable() (is that what we are talking
+about?), I'm happy to use anything else available, please give me a
+pointer. But I suspect given how fast and small this new API is,
+mmap_read_lock_killable() in it is not comparable to holding it for
+producing /proc/<pid>/maps contents.
 
 >
-> Tested in bpf-next master.
-> No regressions.
+> We are working to reduce these issues by switching the /proc/<pid>/maps
+> file to use rcu lookup.  I would recommend we do not proceed with this
+> interface using the old method and instead, implement it using rcu from
+> the start - if it fits your use case (or we can make it fit your use
+> case).
 >
-> Signed-off-by: Jose E. Marchesi <jose.marchesi@oracle.com>
-> Cc: david.faust@oracle.com
-> Cc: cupertino.miranda@oracle.com
-> Cc: Eduard Zingerman <eddyz87@gmail.com>
-> Cc: Yonghong Song <yonghong.song@linux.dev>
-
-Acked-by: Yonghong Song <yonghong.song@linux.dev>
-
-> ---
->   tools/lib/bpf/bpf_core_read.h | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
+> At least, for most page faults, we can work around the lock contention
+> (since v6.6), but not all and not on all archs.
 >
-> diff --git a/tools/lib/bpf/bpf_core_read.h b/tools/lib/bpf/bpf_core_read.h
-> index b5c7ce5c243a..88d129b5f0a1 100644
-> --- a/tools/lib/bpf/bpf_core_read.h
-> +++ b/tools/lib/bpf/bpf_core_read.h
-> @@ -89,7 +89,7 @@ enum bpf_enum_value_kind {
->    */
->   #define BPF_CORE_READ_BITFIELD(s, field) ({				      \
->   	const void *p = (const void *)s + __CORE_RELO(s, field, BYTE_OFFSET); \
-> -	unsigned long long val;						      \
-> +	unsigned long long val = 0;					      \
->   									      \
->   	/* This is a so-called barrier_var() operation that makes specified   \
->   	 * variable "a black box" for optimizing compiler.		      \
+> ...
+>
+> >
+> > > > In comparison,
+> > > > ioctl-based implementation had to do only 6 ioctl() calls to fetch =
+all
+> > > > relevant VMAs.
+> > > >
+> > > > It is projected that savings from processing big production applica=
+tions
+> > > > would only widen the gap in favor of binary-based querying ioctl AP=
+I, as
+> > > > bigger applications will tend to have even more non-executable VMA
+> > > > mappings relative to executable ones.
+> > >
+> > > Define "bigger applications" please.  Is this some "large database
+> > > company workload" type of thing, or something else?
+> >
+> > I don't have a definition. But I had in mind, as one example, an
+> > ads-serving service we use internally (it's a pretty large application
+> > by pretty much any metric you can come up with). I just randomly
+> > picked one of the production hosts, found one instance of that
+> > service, and looked at its /proc/<pid>/maps file. Hopefully it will
+> > satisfy your need for specifics.
+> >
+> > # cat /proc/1126243/maps | wc -c
+> > 1570178
+> > # cat /proc/1126243/maps | wc -l
+> > 28875
+> > # cat /proc/1126243/maps | grep ' ..x. ' | wc -l
+> > 7347
+>
+> We have distributions increasing the map_count to an insane number to
+> allow games to work [1].  It is, unfortunately, only a matter of time unt=
+il
+> this is regularly an issue as it is being normalised and allowed by an
+> increased number of distributions (fedora, arch, ubuntu).  So, despite
+> my email address, I am not talking about large database companies here.
+>
+> Also, note that applications that use guard VMAs double the number for
+> the guards.  Fun stuff.
+>
+> We are really doing a lot in the VMA area to reduce the mmap locking
+> contention and it seems you have a use case for a new interface that can
+> leverage these changes.
+>
+> We have at least two talks around this area at LSF if you are attending.
+
+I am attending LSFMM, yes, I'll try to not miss them.
+
+>
+> Thanks,
+> Liam
+>
+> [1] https://lore.kernel.org/linux-mm/8f6e2d69-b4df-45f3-aed4-5190966e2dea=
+@valvesoftware.com/
+>
 
