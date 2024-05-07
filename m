@@ -1,63 +1,63 @@
-Return-Path: <bpf+bounces-28941-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-28942-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 605B98BEC56
-	for <lists+bpf@lfdr.de>; Tue,  7 May 2024 21:09:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 81BCF8BEC69
+	for <lists+bpf@lfdr.de>; Tue,  7 May 2024 21:15:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 824021C246A7
-	for <lists+bpf@lfdr.de>; Tue,  7 May 2024 19:09:22 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9FCAF1C2430C
+	for <lists+bpf@lfdr.de>; Tue,  7 May 2024 19:15:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BCB7116EBED;
-	Tue,  7 May 2024 19:08:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A7A416DEBD;
+	Tue,  7 May 2024 19:15:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="WSXdBAtN"
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="HDG4RCQR"
 X-Original-To: bpf@vger.kernel.org
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC41616DEB6;
-	Tue,  7 May 2024 19:08:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 310A816E88E;
+	Tue,  7 May 2024 19:15:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715108933; cv=none; b=paZfk9R9QExCwt+OeHVs67K+i9oekgxsdBD43hdzUvmVNZ9NpzLJ9ChGJDTEN0SGf0W8A0VRzV6jPPWf8rgzIeR1vMQ92ruBbEz8IjrWRrTqiIM9PPYVpAUEO7EdjaUoXvrTxqs0bfy4K4lqHYNnf1KJ6JdlUMZ9fT+gQruZYOE=
+	t=1715109345; cv=none; b=VbU9o3Iv/war8KwDpZrP3YMWRML3awnnH6pa8+wgxntLIE7TF3WhAOiN7WIEfAtbSU3NpzjOstXTN4TBPO+rv5njERWM+JVKRge7uAMjM7lTh0AWlCOguLd/OESESWPPKqW2PJqs9+J6dkdRpD9b9B8KJZcSHqLcwJ2OOjJihpc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715108933; c=relaxed/simple;
-	bh=NkCcFJMiI2fIuafu13ahaUzYsqra2h0cXjW2V5EMPoA=;
+	s=arc-20240116; t=1715109345; c=relaxed/simple;
+	bh=H0OrEbKkNSluiLf/r1ab0wfVjhBJw5DKB5glHgKQknw=;
 	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=cMeiL359RaOT3S9maomWHJuwZkcQTKz9HGtZoKL98xfgk97wPPiRytQwChEyiF1yKq0xkbAFuR84fJwuTvyVJUrVUPkA4+2lTPO3C7l6tKuiTRKWhDnDW4CO8KEa/LcWidl/BPHxSyHgk6j058yx2oSMWkCUYeoTgMS+W2IQcc8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=WSXdBAtN; arc=none smtp.client-ip=205.220.168.131
+	 In-Reply-To:Content-Type; b=qCx5vbnBTSJdTT/B3vLWnw796Pt6uihH0klbnfCxp19u6nhDe9iy+oq4/Rl9U5M2mUfs2pd8XwVcmZ95V/gjW1Exlejs7mgbEHjRsTIB6CdQw4xfuNqP733x1l5Vnfynye46jE683ljF16FP63jfBZofLYjs8BbEuHop5Q4wSos=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=HDG4RCQR; arc=none smtp.client-ip=205.220.180.131
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 447IKEcg001484;
-	Tue, 7 May 2024 19:08:29 GMT
+Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 447IjSBp013292;
+	Tue, 7 May 2024 19:15:23 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
 	message-id:date:mime-version:subject:to:cc:references:from
 	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=xVPphSKUlVh/m4wKeSY0WKuT3/YvZYGtZ2wCat41/zQ=; b=WS
-	XdBAtNmpIka7OVy1BTfiJKJ8Xb0TtgXHs6hymdhDrjg+hbOSYCwMLspqfQmrhz3T
-	Cafe5pms2mIMNS1akeWHk0xAzDLSJR4QGLrw3PP6CQUovSm0XdXY8hbzZ5zOmi6p
-	8+3SvVwviKaB8arHAvQ5XkTMSgfjTEUKFAIwMi/ckvclTcWBBk8iD7+WCc8PvfDZ
-	NyLlYVAU9xJP5qE38Ec/3Bqdm4Biw5lXeFqP0U5JApkesYRAvNzx9HbmsY9M3fja
-	rU4O1M7Mx385YFoIBeNgaQm5MU4hLSrRH3tc9RgXd07pExPWO198LoWRXZujyQoU
-	xW9HNKjNXcuITwWEctfg==
-Received: from nasanppmta01.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xysg403g6-1
+	qcppdkim1; bh=1ozfY6ERltqf/Cq7PFYWt9JbiYqu96TtyBwLN6d8sHs=; b=HD
+	G4RCQRkTUOY17Aggc4oDtV5vUNg4CZ53qHvHVEAGShQ58AlUsEuIjGVQDCFKd8D1
+	lVvpk9sIj6CIsCKNE86qlCpMuQtbOM6RDHVNIGZFXI+1JbVyPBwL+HzKxeke5qfT
+	eyqpBXxX9CQp5svBWkNKnEZDFWW6GU4S8M7Nw9lgaA2uoq4CPsOrETXRU985F4xT
+	N/+5UoZRHI1xhWqPUb6BYhb4weH7YUXj3mKFlBCb+1iBfB6qVm95AOFqHJitCCkv
+	A3B6Wo+O/9aK10lVscWTKfD4npwX8lUaLUVxYZZ9HZWOkT/lMfj3qTYfv9tW1nn6
+	rlqTmyCZBEE4iNXoRumw==
+Received: from nasanppmta05.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xyste024e-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 07 May 2024 19:08:28 +0000 (GMT)
+	Tue, 07 May 2024 19:15:22 +0000 (GMT)
 Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
-	by NASANPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 447J8Sn8031305
+	by NASANPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 447JFLO6030978
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 7 May 2024 19:08:28 GMT
+	Tue, 7 May 2024 19:15:21 GMT
 Received: from [10.110.127.27] (10.80.80.8) by nasanex01a.na.qualcomm.com
  (10.52.223.231) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9; Tue, 7 May 2024
- 12:08:24 -0700
-Message-ID: <fc8334a6-6961-41f4-affc-28bdfc3dd697@quicinc.com>
-Date: Tue, 7 May 2024 12:08:24 -0700
+ 12:15:18 -0700
+Message-ID: <8569f47c-0c59-49f6-8b93-09bc0defb670@quicinc.com>
+Date: Tue, 7 May 2024 12:15:17 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -65,118 +65,164 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH bpf-next v6 2/3] net: Add additional bit to support
- clockid_t timestamp type
+Subject: Re: [RFC PATCH bpf-next v6 3/3] selftests/bpf: Handle forwarding of
+ UDP CLOCK_TAI packets
 Content-Language: en-US
-To: Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-        Martin KaFai Lau
-	<martin.lau@linux.dev>
-CC: "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet
-	<edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni
-	<pabeni@redhat.com>, <netdev@vger.kernel.org>,
+To: Martin KaFai Lau <martin.lau@linux.dev>
+CC: Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+        "David S. Miller"
+	<davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>, Jakub Kicinski
+	<kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, <netdev@vger.kernel.org>,
         <linux-kernel@vger.kernel.org>, Andrew Halaney <ahalaney@redhat.com>,
         "Martin
  KaFai Lau" <martin.lau@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>, bpf <bpf@vger.kernel.org>,
         <kernel@quicinc.com>
 References: <20240504031331.2737365-1-quic_abchauha@quicinc.com>
- <20240504031331.2737365-3-quic_abchauha@quicinc.com>
- <cab0c7ba-90bf-49e2-908d-ecd879160667@linux.dev>
- <663a12f089b81_726ea29426@willemb.c.googlers.com.notmuch>
+ <20240504031331.2737365-4-quic_abchauha@quicinc.com>
+ <663929b249143_516de2945@willemb.c.googlers.com.notmuch>
+ <d613c5a6-5081-4760-8a86-db1107bdc207@quicinc.com>
+ <a4957aaf-6b3f-45e8-8c18-a9f74213d0f3@linux.dev>
 From: "Abhishek Chauhan (ABC)" <quic_abchauha@quicinc.com>
-In-Reply-To: <663a12f089b81_726ea29426@willemb.c.googlers.com.notmuch>
+In-Reply-To: <a4957aaf-6b3f-45e8-8c18-a9f74213d0f3@linux.dev>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
  nasanex01a.na.qualcomm.com (10.52.223.231)
 X-QCInternal: smtphost
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: 0ZnVXcfSMYO1lo2QZkiXV9RYeAgI8NH3
-X-Proofpoint-ORIG-GUID: 0ZnVXcfSMYO1lo2QZkiXV9RYeAgI8NH3
+X-Proofpoint-GUID: k5pvUtUAARjbwZE0Nl3U4YmBMIwdPprY
+X-Proofpoint-ORIG-GUID: k5pvUtUAARjbwZE0Nl3U4YmBMIwdPprY
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.650,FMLib:17.11.176.26
- definitions=2024-05-07_12,2024-05-06_02,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 phishscore=0
- spamscore=0 mlxlogscore=999 impostorscore=0 mlxscore=0 lowpriorityscore=0
- clxscore=1015 malwarescore=0 priorityscore=1501 suspectscore=0 bulkscore=0
+ definitions=2024-05-07_11,2024-05-06_02,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 phishscore=0
+ priorityscore=1501 malwarescore=0 mlxscore=0 bulkscore=0 clxscore=1015
+ mlxlogscore=999 spamscore=0 adultscore=0 suspectscore=0 lowpriorityscore=0
  classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2405010000
- definitions=main-2405070135
+ definitions=main-2405070134
 
 
 
-On 5/7/2024 4:39 AM, Willem de Bruijn wrote:
-> Martin KaFai Lau wrote:
->> On 5/3/24 8:13 PM, Abhishek Chauhan wrote:
->>> diff --git a/net/ipv4/ip_output.c b/net/ipv4/ip_output.c
->>> index fe86cadfa85b..c3d852eecb01 100644
->>> --- a/net/ipv4/ip_output.c
->>> +++ b/net/ipv4/ip_output.c
->>> @@ -1457,7 +1457,10 @@ struct sk_buff *__ip_make_skb(struct sock *sk,
->>>   
->>>   	skb->priority = (cork->tos != -1) ? cork->priority: READ_ONCE(sk->sk_priority);
->>>   	skb->mark = cork->mark;
->>> -	skb->tstamp = cork->transmit_time;
->>> +	if (sk_is_tcp(sk))
+On 5/6/2024 5:54 PM, Martin KaFai Lau wrote:
+> On 5/6/24 1:50 PM, Abhishek Chauhan (ABC) wrote:
 >>
->> This seems not catching all IPPROTO_TCP case. In particular, the percpu 
->> "ipv4_tcp_sk" is SOCK_RAW. sk_is_tcp() is checking SOCK_STREAM:
 >>
->> void __init tcp_v4_init(void)
->> {
->>
->> 	/* ... */
->> 	res = inet_ctl_sock_create(&sk, PF_INET, SOCK_RAW,
->> 				   IPPROTO_TCP, &init_net);
->>
->> 	/* ... */
->> }
->>
->> "while :; do ./test_progs -t tc_redirect/tc_redirect_dtime || break; done" 
->> failed pretty often exactly in this case.
->>
+>> On 5/6/2024 12:04 PM, Willem de Bruijn wrote:
+>>> Abhishek Chauhan wrote:
+>>>> With changes in the design to forward CLOCK_TAI in the skbuff
+>>>> framework,  existing selftest framework needs modification
+>>>> to handle forwarding of UDP packets with CLOCK_TAI as clockid.
+>>>>
+>>>> Link: https://lore.kernel.org/netdev/bc037db4-58bb-4861-ac31-a361a93841d3@linux.dev/
+>>>> Signed-off-by: Abhishek Chauhan <quic_abchauha@quicinc.com>
+>>>> ---
+>>>>   tools/include/uapi/linux/bpf.h                | 15 ++++---
+>>>>   .../selftests/bpf/prog_tests/ctx_rewrite.c    | 10 +++--
+>>>>   .../selftests/bpf/prog_tests/tc_redirect.c    |  3 --
+>>>>   .../selftests/bpf/progs/test_tc_dtime.c       | 39 +++++++++----------
+>>>>   4 files changed, 34 insertions(+), 33 deletions(-)
+>>>>
+>>>> diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
+>>>> index 90706a47f6ff..25ea393cf084 100644
+>>>> --- a/tools/include/uapi/linux/bpf.h
+>>>> +++ b/tools/include/uapi/linux/bpf.h
+>>>> @@ -6207,12 +6207,17 @@ union {                    \
+>>>>       __u64 :64;            \
+>>>>   } __attribute__((aligned(8)))
+>>>>   +/* The enum used in skb->tstamp_type. It specifies the clock type
+>>>> + * of the time stored in the skb->tstamp.
+>>>> + */
+>>>>   enum {
+>>>> -    BPF_SKB_TSTAMP_UNSPEC,
+>>>> -    BPF_SKB_TSTAMP_DELIVERY_MONO,    /* tstamp has mono delivery time */
+>>>> -    /* For any BPF_SKB_TSTAMP_* that the bpf prog cannot handle,
+>>>> -     * the bpf prog should handle it like BPF_SKB_TSTAMP_UNSPEC
+>>>> -     * and try to deduce it by ingress, egress or skb->sk->sk_clockid.
+>>>> +    BPF_SKB_TSTAMP_UNSPEC = 0,        /* DEPRECATED */
+>>>> +    BPF_SKB_TSTAMP_DELIVERY_MONO = 1,    /* DEPRECATED */
+>>>> +    BPF_SKB_CLOCK_REALTIME = 0,
+>>>> +    BPF_SKB_CLOCK_MONOTONIC = 1,
+>>>> +    BPF_SKB_CLOCK_TAI = 2,
+>>>> +    /* For any future BPF_SKB_CLOCK_* that the bpf prog cannot handle,
+>>>> +     * the bpf prog can try to deduce it by ingress/egress/skb->sk->sk_clockid.
+>>>>        */
+>>>>   };
+>>>>   diff --git a/tools/testing/selftests/bpf/prog_tests/ctx_rewrite.c b/tools/testing/selftests/bpf/prog_tests/ctx_rewrite.c
+>>>> index 3b7c57fe55a5..71940f4ef0fb 100644
+>>>> --- a/tools/testing/selftests/bpf/prog_tests/ctx_rewrite.c
+>>>> +++ b/tools/testing/selftests/bpf/prog_tests/ctx_rewrite.c
+>>>> @@ -69,15 +69,17 @@ static struct test_case test_cases[] = {
+>>>>       {
+>>>>           N(SCHED_CLS, struct __sk_buff, tstamp),
+>>>>           .read  = "r11 = *(u8 *)($ctx + sk_buff::__mono_tc_offset);"
+>>>> -             "w11 &= 3;"
+>>>> -             "if w11 != 0x3 goto pc+2;"
+>>>> +             "if w11 == 0x4 goto pc+1;"
+>>>> +             "goto pc+4;"
+>>>> +             "if w11 == 0x3 goto pc+1;"
+>>>> +             "goto pc+2;"
+>>>
+>>> Not an expert on this code, and I see that the existing code already
+>>> has this below, but: isn't it odd and unnecessary to jump to an
+>>> unconditional jump statement?
+>>>
+>> I am closely looking into your comment and i will evalute it(Martin can correct me
+>> if the jumps are correct or not as i am new to BPF as well) but i found out that
+>> JSET = "&" and not "==". So the above two ins has to change from -
 > 
-> Interesting. The TCP stack opens non TCP sockets.
+> Yes, this should be bitwise "&" instead of "==".
 > 
-> Initializing sk->sk_clockid for this socket should address that.
+> The bpf CI did report this: https://github.com/kernel-patches/bpf/actions/runs/8947652196/job/24579927178
 > 
-Willem, Are you suggesting your point from the previous patch ? 
+> Please monitor the bpf CI test result.
+> 
+> Do you have issue running the test locally?
+> 
+Yes, To be honest. I am facing compilation issues when i follow the documentation to Make BPF on latest kernel. 
 
-"I think we want to avoid special casing if we can. Note the if.
+This is slowing down my development with this patch. 
 
-If TCP always uses monotonic, we could consider initializing
-sk_clockid to CLOCK_MONONOTIC in tcp_init_sock.
+Very similar to the problem described here :- https://github.com/jsitnicki/ebpf-summit-2020/issues/1
 
-I guess TCP logic currently entirely ignores sk_clockid. If we are to
-start using this, then setsocktop SO_TXTIME must explicitly fail or
-ignore for TCP sockets, or silently skip the write.
+local/mnt/workspace/kernel_master/linux-next/tools/testing/selftests/bpf/tools/build/bpftool/bootstrap/libbpf/include/bpf/bpf_core_read.h:379:26: note: expanded from macro '___arrow2'
+#define ___arrow2(a, b) a->b
+                        ~^
+skeleton/pid_iter.bpf.c:19:9: note: forward declaration of 'struct bpf_link'
+        struct bpf_link link;
+               ^
+skeleton/pid_iter.bpf.c:105:7: error: incomplete definition of type 'struct bpf_link'
+                if (BPF_CORE_READ(link, type) == bpf_core_enum_value(enum bpf_link_type___local,
+                    ^~~~~~~~~~~~~~~~~~~~~~~~~
 
-All of that is more complexity. Than is maybe warranted for this one
-case. So no objections from me to special casing using sk_is_tcp(sk)
-either." 
-
-Few places we need to initialize the clock base for tcp to monotonic 
-1. tcp_init_sock 
-2. void __init tcp_v4_init(void) in tcp_ipv4.c
-3. static int __net_init tcpv6_net_init(struct net *net)
-4. Ignore setsockopts for SO_TXTIME if the sk->protocol is tcp.  
-
-Is it safe to assume the TCP will never use any other close base ? 
-
-
-OR 
-
-
-For now we can do just protocol level check in ip_make_skb and ip6_make_skb 
-like 
-if (iph->protocol == IPPROTO_TCP)
-    /* ... */
-else
-    /* ... */
-
-
-
-
-
+>>
+>> "if w11 == 0x4 goto pc+1;" ==>(needs to be corrected to) "if w11 & 0x4 goto pc+1;"
+>>   "if w11 == 0x3 goto pc+1;" ==> (needs to be correct to) "if w11 & 0x3 goto pc+1;"
+>>
+>>
+>>>>                "$dst = 0;"
+>>>>                "goto pc+1;"
+>>>>                "$dst = *(u64 *)($ctx + sk_buff::tstamp);",
+>>>>           .write = "r11 = *(u8 *)($ctx + sk_buff::__mono_tc_offset);"
+>>>> -             "if w11 & 0x2 goto pc+1;"
+>>>> +             "if w11 & 0x4 goto pc+1;"
+>>>>                "goto pc+2;"
+>>>> -             "w11 &= -2;"
+>>>> +             "w11 &= -3;"
+>> Martin,
+>> Also i am not sure why the the dissembly complains because the value of SKB_TSTAMP_TYPE_MASK = 3 and we are
+>> negating it ~3 = -3.
+>>
+>>    Can't match disassembly(left) with pattern(right):
+>>    r11 = *(u8 *)(r1 +129)  ;  r11 = *(u8 *)($ctx + sk_buff::__mono_tc_offset)
+>>    if w11 & 0x4 goto pc+1  ;  if w11 & 0x4 goto pc+1
+>>    goto pc+2               ;  goto pc+2
+>>    w11 &= -4               ;  w11 &= -3
+>>
+>>>>                "*(u8 *)($ctx + sk_buff::__mono_tc_offset) = r11;"
+>>>>                "*(u64 *)($ctx + sk_buff::tstamp) = $src;",
+>>>>       },
+> 
 
