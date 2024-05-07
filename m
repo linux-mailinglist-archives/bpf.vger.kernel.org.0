@@ -1,171 +1,206 @@
-Return-Path: <bpf+bounces-28991-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-28992-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 76D5F8BF2F8
-	for <lists+bpf@lfdr.de>; Wed,  8 May 2024 02:03:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id F28CC8BF301
+	for <lists+bpf@lfdr.de>; Wed,  8 May 2024 02:03:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2C85E1F21DA9
-	for <lists+bpf@lfdr.de>; Wed,  8 May 2024 00:03:33 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7F8E51F215B2
+	for <lists+bpf@lfdr.de>; Wed,  8 May 2024 00:03:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E6F2B130AE6;
-	Tue,  7 May 2024 23:30:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D6A467F7FF;
+	Tue,  7 May 2024 23:32:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MbC/QFHw"
+	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="kLgbb4QD"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qt1-f174.google.com (mail-qt1-f174.google.com [209.85.160.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7203A12EBD8
-	for <bpf@vger.kernel.org>; Tue,  7 May 2024 23:30:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93E4784FCD
+	for <bpf@vger.kernel.org>; Tue,  7 May 2024 23:32:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715124629; cv=none; b=XwRo6Fx+y4B0hmIRwsETsraUZ9DNIXRp3qbag3W/UIB2mZ5YzBZO/gtqvNkztWR5JqGBUuvkMPcC4NyBZSB8KjtbwTp53TOldPuKQYOTnrcM1XnSFA7SyF5bkn4imVKPHyXgZtTeDI3c/I/PPLi8pBE9nXuzoDXGOVVBe4kRJpo=
+	t=1715124771; cv=none; b=BKVNTl+TxOKOwHL7jGwYuJGo+juRANYxUIdTHZslqUvKuESJPW7/VYjpsS1A/swsEK3lo39dVMSgC9sDuB2Y8jatN4FsbiQByBHip4YCu6+MtY5bSqBwsikmyEC4E32EBF2vClOd+CwU0wiI+fhdhM9mOZ/euKCtXhQ/Yf2eXNs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715124629; c=relaxed/simple;
-	bh=K/NnQu5gGvpwxpebQf9zdaag+ng94gImfgssHfQNtSI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=HwPKcZTVB36Atf2AnsVem1Chc0nV4tV1pEkdaYSOQjYOe9yvZOAyv3yPXn2VqmsPxXiacLKjFnn+UuU6zRewd6tif2ZH75qjiy4CChgsjdKI+MlJirV1nwRuZo0p2YBcRxg1v3WF3F4Ah/IUKPhOBv8yDfrbN2KFqSpX2h0oCVY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MbC/QFHw; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0E1DAC2BBFC;
-	Tue,  7 May 2024 23:30:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1715124629;
-	bh=K/NnQu5gGvpwxpebQf9zdaag+ng94gImfgssHfQNtSI=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=MbC/QFHwBWtcRNJjjWkITSNSWb0l7FSKiK/SCCBXi0Ex5Xqe85wf3fc+j6EWKED1j
-	 c8q7SiohUmfFKXLJzazKc73Ws5GjnzRj3Md5sYKxQ6zX0lqhbkERGW2f7H94qGcRCq
-	 uUOYmtNoBW9TEdh052zWfCnywjJbGmlubZZ46rmjTD6Cw+fL/Yzh1BRpMuQnnT9thI
-	 ouesHglIOmjPUd0wjahoXl3toqamCQnWYVoUchwKUso6k1U+k3I1Nv2ctoMoCX7yfH
-	 fqxjNuBWaBp1h0wDRC2P/x2MYSqdVvDE5jE0CCwFu7/VMtm2nYCx1Vz8zLqnUG713v
-	 2cWTg3/oNHd7A==
-Message-ID: <e20be6d3-b9c7-4a64-add1-f4c7a6d3a4bc@kernel.org>
-Date: Wed, 8 May 2024 00:30:24 +0100
+	s=arc-20240116; t=1715124771; c=relaxed/simple;
+	bh=S2uBTZg89QC23t/2WuaFpXUGHgJQVwlXA9YYtSljwBo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=hDgAiIGFvpP24WSOrkLnvDSjmkIhz1jrsSpQXwJ9GwAr+0EG8mneV1pzVZdtT52iPsJsWAzeAUeWT0+UUlUJD54aeJx1eOJlUEqCCgsyob6zQEylK4kYgDEUAOzqQ1rQ4YfiAkHsFVW2FIZgNQ/glrk2NQFE/6sdnLFjerJPanc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=kLgbb4QD; arc=none smtp.client-ip=209.85.160.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
+Received: by mail-qt1-f174.google.com with SMTP id d75a77b69052e-43ad4097aefso11677571cf.2
+        for <bpf@vger.kernel.org>; Tue, 07 May 2024 16:32:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google; t=1715124768; x=1715729568; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=cP7hm5cgGIFObZwmlEXmT4H6ZLJ5hLejs2qh73QUpsY=;
+        b=kLgbb4QDiYjjhbVyqnASJTqYVBMpFZOu0trzJrO++O0tgH216w9YbqRM7XZIqXipzP
+         DU7LaKiHJo+E9DfRMOf3yG/lgGvIKPfZegBXl5VnL64GTcnVXxbA2wVHsGQ+Grsyo0fc
+         eSCOy1wI0RHUjdPVCTMH8wp2yDyyMFvV/XUHhkbTPNutQ72aqilYR3nVWDQQVwt5D1z2
+         CKQtLDYFc1SFzbSLM1F6oA/FT669ybhGR9UhqpSu7S/9p/Y0yeuCrv1BtOQGkQuoiPKM
+         IRDQC38DkPdYqATOLE4nt7CYXbckLb/80m/t3XhzxmOZ+VOgARatj3XQtpjCKsgKUATY
+         kZXg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1715124768; x=1715729568;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=cP7hm5cgGIFObZwmlEXmT4H6ZLJ5hLejs2qh73QUpsY=;
+        b=Hswsvq544uRsqp0pH1KwHUqHhTuJgfKlcOvBdjP3+85uI7iQPDTUkxRgl4ABEUw579
+         SOIjQBjT2Ec6YLOea96hQ98Y+RBdRnCDFAmwjVaka32ZprEYXG1Q6nwJhrq1I7tbBPCT
+         lJtb4Oucb/1x3gygMX4g+uuMotQFlMXDLUriTxSc0JaYzp6nVFmErxXsot4coOZLCkhR
+         1lz9p6R3xvVkMMr9uippo4and0u3PcCiVVXpNog085xDt/9jF/KLCHBoLcpsHiWLR+Kf
+         U2TlAKd6DX8vu0Pa1epCWkd8qvlJgOcZCYnGDoWQCOFc5C4qU4VMUC1fOy50Tp539lye
+         E/Kg==
+X-Forwarded-Encrypted: i=1; AJvYcCWsL9ZNVEpC2lYbEQNLvZ5heTJGWn8uqDw8nW2YZaC/p1UcAwFDAC/UoFoq6DVBnqNIdLw4mEWZt1wB7ehq+idBxntY
+X-Gm-Message-State: AOJu0YxaaE8J3dFQLz+KJy6/E02kelQ0Flxicd1Ie7M3wiw+oyZUNXvm
+	P8iuSuIjncKPs8NO9Mz0MUmbF6B/CBT7mtWBx12OuuZ9X86+qigYoyQtiP3JXy0=
+X-Google-Smtp-Source: AGHT+IHk+yKjIhj9AR797n1JaOj9Z/2rWjQRz+xGELrz6+y3H07eSktk/E/cHfzwS8PtlVFgYI8C4w==
+X-Received: by 2002:a05:622a:60c:b0:434:b593:2d25 with SMTP id d75a77b69052e-43dbf0b35e3mr10728951cf.66.1715124768502;
+        Tue, 07 May 2024 16:32:48 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-142-68-80-239.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.80.239])
+        by smtp.gmail.com with ESMTPSA id fb20-20020a05622a481400b00434efa0feaasm6953842qtb.1.2024.05.07.16.32.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 07 May 2024 16:32:48 -0700 (PDT)
+Received: from jgg by wakko with local (Exim 4.95)
+	(envelope-from <jgg@ziepe.ca>)
+	id 1s4UIh-0003NT-Cq;
+	Tue, 07 May 2024 20:32:47 -0300
+Date: Tue, 7 May 2024 20:32:47 -0300
+From: Jason Gunthorpe <jgg@ziepe.ca>
+To: Pavel Begunkov <asml.silence@gmail.com>
+Cc: Mina Almasry <almasrymina@google.com>,
+	Christoph Hellwig <hch@infradead.org>, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+	linux-alpha@vger.kernel.org, linux-mips@vger.kernel.org,
+	linux-parisc@vger.kernel.org, sparclinux@vger.kernel.org,
+	linux-trace-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
+	bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
+	linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Richard Henderson <richard.henderson@linaro.org>,
+	Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+	Matt Turner <mattst88@gmail.com>,
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	"James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+	Helge Deller <deller@gmx.de>, Andreas Larsson <andreas@gaisler.com>,
+	Jesper Dangaard Brouer <hawk@kernel.org>,
+	Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Arnd Bergmann <arnd@arndb.de>, Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
+	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+	Steffen Klassert <steffen.klassert@secunet.com>,
+	Herbert Xu <herbert@gondor.apana.org.au>,
+	David Ahern <dsahern@kernel.org>,
+	Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+	Shuah Khan <shuah@kernel.org>,
+	Sumit Semwal <sumit.semwal@linaro.org>,
+	Christian =?utf-8?B?S8O2bmln?= <christian.koenig@amd.com>,
+	Amritha Nambiar <amritha.nambiar@intel.com>,
+	Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+	Alexander Mikhalitsyn <alexander@mihalicyn.com>,
+	Kaiyuan Zhang <kaiyuanz@google.com>,
+	Christian Brauner <brauner@kernel.org>,
+	Simon Horman <horms@kernel.org>,
+	David Howells <dhowells@redhat.com>,
+	Florian Westphal <fw@strlen.de>,
+	Yunsheng Lin <linyunsheng@huawei.com>,
+	Kuniyuki Iwashima <kuniyu@amazon.com>, Jens Axboe <axboe@kernel.dk>,
+	Arseniy Krasnov <avkrasnov@salutedevices.com>,
+	Aleksander Lobakin <aleksander.lobakin@intel.com>,
+	Michael Lass <bevan@bi-co.net>, Jiri Pirko <jiri@resnulli.us>,
+	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+	Lorenzo Bianconi <lorenzo@kernel.org>,
+	Richard Gobert <richardbgobert@gmail.com>,
+	Sridhar Samudrala <sridhar.samudrala@intel.com>,
+	Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+	Johannes Berg <johannes.berg@intel.com>,
+	Abel Wu <wuyun.abel@bytedance.com>,
+	Breno Leitao <leitao@debian.org>, David Wei <dw@davidwei.uk>,
+	Shailend Chand <shailend@google.com>,
+	Harshitha Ramamurthy <hramamurthy@google.com>,
+	Shakeel Butt <shakeel.butt@linux.dev>,
+	Jeroen de Borst <jeroendb@google.com>,
+	Praveen Kaligineedi <pkaligineedi@google.com>
+Subject: Re: [RFC PATCH net-next v8 02/14] net: page_pool: create hooks for
+ custom page providers
+Message-ID: <20240507233247.GK4718@ziepe.ca>
+References: <CAHS8izM0=xc2UhUxhnF_BixuFs5VaDV9W1jbso1K+Rg=35NzeA@mail.gmail.com>
+ <ZjjHUh1eINPg1wkn@infradead.org>
+ <20b1c2d9-0b37-414c-b348-89684c0c0998@gmail.com>
+ <20240507161857.GA4718@ziepe.ca>
+ <ZjpVfPqGNfE5N4bl@infradead.org>
+ <CAHS8izPH+sRLSiZ7vbrNtRdHrFEf8XQ61XAyHuxRSL9Jjy8YbQ@mail.gmail.com>
+ <20240507164838.GG4718@ziepe.ca>
+ <0d5da361-cc7b-46e9-a635-9a7a4c208444@gmail.com>
+ <20240507175644.GJ4718@ziepe.ca>
+ <6a50d01a-b5b9-4699-9d58-94e5f8f81c13@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird Beta
-Subject: Re: [PATCH bpf-next] bpftool: introduce btf c dump sorting
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>,
- Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>,
- Eduard Zingerman <eddyz87@gmail.com>
-Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
- daniel@iogearbox.net, kafai@meta.com, kernel-team@meta.com,
- Mykyta Yatsenko <yatsenko@meta.com>
-References: <20240506134458.727621-1-yatsenko@meta.com>
- <CAEf4BzZ+nw6iu8RO1xJutRf+qnxAotHx47bXuJuw8AT-5Z3QfQ@mail.gmail.com>
-From: Quentin Monnet <qmo@kernel.org>
-Content-Language: en-GB
-In-Reply-To: <CAEf4BzZ+nw6iu8RO1xJutRf+qnxAotHx47bXuJuw8AT-5Z3QfQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <6a50d01a-b5b9-4699-9d58-94e5f8f81c13@gmail.com>
 
-On 07/05/2024 22:02, Andrii Nakryiko wrote:
-> On Mon, May 6, 2024 at 6:45 AM Mykyta Yatsenko
-> <mykyta.yatsenko5@gmail.com> wrote:
->>
->> From: Mykyta Yatsenko <yatsenko@meta.com>
->>
->> Provide a way to sort bpftool c dump output, to simplify vmlinux.h
->> diffing and forcing more natural definitions ordering.
->>
->> Use `normalized` argument in bpftool CLI after `format c` for example:
->> ```
->> bpftool btf dump file /sys/kernel/btf/fuse format c normalized
->> ```
->>
->> Definitions are sorted by their BTF kind ranks, lexicographically and
->> typedefs are forced to go right after their base type.
->>
->> Type ranks
->>
->> Assign ranks to btf kinds (defined in function btf_type_rank) to set
->> next order:
->> 1. Anonymous enums
->> 2. Anonymous enums64
->> 3. Named enums
->> 4. Named enums64
->> 5. Trivial types typedefs (ints, then floats)
->> 6. Structs
->> 7. Unions
->> 8. Function prototypes
->> 9. Forward declarations
->>
->> Lexicographical ordering
->>
->> Definitions within the same BTF kind are ordered by their names.
->> Anonymous enums are ordered by their first element.
->>
->> Forcing typedefs to go right after their base type
->>
->> To make sure that typedefs are emitted right after their base type,
->> we build a list of type's typedefs (struct typedef_ref) and after
->> emitting type, its typedefs are emitted as well (lexicographically)
->>
->> There is a small flaw in this implementation:
->> Type dependencies are resolved by bpf lib, so when type is dumped
->> because it is a dependency, its typedefs are not output right after it,
->> as bpflib does not have the list of typedefs for a given type.
->>
->> Signed-off-by: Mykyta Yatsenko <yatsenko@meta.com>
->> ---
->>  tools/bpf/bpftool/btf.c | 264 +++++++++++++++++++++++++++++++++++++++-
->>  1 file changed, 259 insertions(+), 5 deletions(-)
->>
+On Tue, May 07, 2024 at 08:35:37PM +0100, Pavel Begunkov wrote:
+> On 5/7/24 18:56, Jason Gunthorpe wrote:
+> > On Tue, May 07, 2024 at 06:25:52PM +0100, Pavel Begunkov wrote:
+> > > On 5/7/24 17:48, Jason Gunthorpe wrote:
+> > > > On Tue, May 07, 2024 at 09:42:05AM -0700, Mina Almasry wrote:
+> > > > 
+> > > > > 1. Align with devmem TCP to use udmabuf for your io_uring memory. I
+> > > > > think in the past you said it's a uapi you don't link but in the face
+> > > > > of this pushback you may want to reconsider.
+> > > > 
+> > > > dmabuf does not force a uapi, you can acquire your pages however you
+> > > > want and wrap them up in a dmabuf. No uapi at all.
+> > > > 
+> > > > The point is that dmabuf already provides ops that do basically what
+> > > > is needed here. We don't need ops calling ops just because dmabuf's
+> > > > ops are not understsood or not perfect. Fixup dmabuf.
+> > > 
+> > > Those ops, for example, are used to efficiently return used buffers
+> > > back to the kernel, which is uapi, I don't see how dmabuf can be
+> > > fixed up to cover it.
+> > 
+> > Sure, but that doesn't mean you can't use dma buf for the other parts
+> > of the flow. The per-page lifetime is a different topic than the
+> > refcounting and access of the entire bulk of memory.
 > 
-> I applied this locally to experiment. Generated vmlinux.h for the
-> production (a bit older) kernel and then for latest bpf-next/master
-> kernel. And then tried diff between normalized vmlinux.h dumps and
-> non-normalized.
-> 
-> It took a bit for the diff tool to generate, but I think diff for
-> normalized vmlinux.h is actually very usable. You can see an example
-> at [1]. It shows whole new types being added in front of existing
-> ones. And for existing ones it shows only parts that actually changed.
-> It's quite nice. And note that I used a relatively stale production
-> kernel vs latest upstream bpf-next, *AND* with different (bigger)
-> Kconfig. So for more incremental changes in kernel config/version the
-> diff should be much slower.
-> 
-> I think this idea of normalizing vmlinux.h works and is useful.
-> 
-> Eduard, Quentin, please take a look when you get a chance.
-> 
-> My high-level feedback. I like the idea and it seems to work well in
-> practice. I do think, though, that the current implementation is a bit
-> over-engineered. I'd drop all the complexity with TYPEDEF and try to
-> get almost the same behavior with a slightly different ranking
-> strategy.
-> 
-> Tracking which types are emitted seems unnecessary btf_dumper is doing
-> that already internally. So I think overall flow could be basically
-> three steps:
-> 
->   - precalculate/cache "sort names" and ranks;
->   - sort based on those two, construct 0-based list of types to emit
->   - just go linearly over that sorted list, call btf_dump__dump_type()
-> on each one with original type ID; if the type was already emitted or
-> is not the type that's emitted as an independent type (e.g.,
-> FUNC_PROTO), btf_dump__dump_type() should do the right thing (do
-> nothing).
-> 
-> Any flaws in the above proposal?
-> 
->   [1] https://gist.github.com/anakryiko/cca678c8f77833d9eb99ffc102612e28
+> Ok, so if we're leaving uapi (and ops) and keep per page/sub-buffer as
+> is, the rest is resolving uptr -> pages, and passing it to page pool in
+> a convenient to page pool format (net_iov).
 
-Hi, thanks for the patch - and thanks Andrii for the Cc. I didn't have
-time to look at the code yet (will do), but the idea looks great.
+I'm not going to pretend to know about page pool details, but dmabuf
+is the way to get the bulk of pages into a pool within the net stack's
+allocator and keep that bulk properly refcounted while.
 
-My main question would be, how much overhead does the sorting add to the
-BTF dump, and if this overhead is low, is it even worth having a
-dedicated command-line keyword to trigger the sorting, or should we just
-make it the default behaviour for the C-formatted dump? (Or is there any
-advantage in dumping with the current, unsorted order?)
+An object like dmabuf is needed for the general case because there are
+not going to be per-page references or otherwise available.
 
-Quentin
+What you seem to want is to alter how the actual allocation flow works
+from that bulk of memory and delay the free. It seems like a different
+topic to me, and honestly hacking into the allocator free function
+seems a bit weird..
+
+Jason
 
