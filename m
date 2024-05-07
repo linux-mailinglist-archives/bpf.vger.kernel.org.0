@@ -1,448 +1,214 @@
-Return-Path: <bpf+bounces-28909-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-28910-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id E1F228BEA8D
-	for <lists+bpf@lfdr.de>; Tue,  7 May 2024 19:29:35 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A3CA78BEAA0
+	for <lists+bpf@lfdr.de>; Tue,  7 May 2024 19:34:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6EE081F25C24
-	for <lists+bpf@lfdr.de>; Tue,  7 May 2024 17:29:35 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 34C15B23C71
+	for <lists+bpf@lfdr.de>; Tue,  7 May 2024 17:34:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2300216C6BF;
-	Tue,  7 May 2024 17:29:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 91BDF16C864;
+	Tue,  7 May 2024 17:34:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="f0S248o8"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RD/pUMEk"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f176.google.com (mail-pl1-f176.google.com [209.85.214.176])
+Received: from mail-lf1-f53.google.com (mail-lf1-f53.google.com [209.85.167.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E252FE570;
-	Tue,  7 May 2024 17:29:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 75A1BE570;
+	Tue,  7 May 2024 17:34:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715102966; cv=none; b=bKOADHRMcq5eu8csC2kWspXe0zs7yV9GByimna1/HeD+i9OWWS12vSCjPOKx602goDZDX+Bn2fh04n1eTbEx6zL079Ofj5fTwo+gDmtbklss3lLvgX0hh4e++tTsV63UL/Yzw61sYhqTbkpcwULxkyeLKlc4Gyid1/KJat2M7b8=
+	t=1715103276; cv=none; b=VjC0QhH1dAc0ygZIessWZO1yFGYIBvlOJ56EQYd2dlHl/J0UzVlo+4VRn/em0Js5NeMxKsEso5yTiOC6b9G3BJhWuBm8O4l45MulyDkXCgYNEGNIB2id1uTEqiaX6VaHGRXYHkE/iIsHJwKlGAek+w58zp+E5uC9+5sGsOnYY6U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715102966; c=relaxed/simple;
-	bh=KzuPLDxblRhUgWu+o7vgcddTvikSweClUNGQqmHG6HE=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=dIPEiJFmRKpKRlBwOsQ9gNyIFYQ+0/S5DzJayRKfo3UFq0FUDkhGfGubbPEUAwmrs5cnffpRAHCxISgcL+lxfPmKUD1pSN55yKq9bDjY09dK7vVqXSdbeoZF/8Psi5Ba1pynzCK+vvD6WArTtsxPybsEPbleVw3PSdHW7tf8INM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=f0S248o8; arc=none smtp.client-ip=209.85.214.176
+	s=arc-20240116; t=1715103276; c=relaxed/simple;
+	bh=hkmSpCfY2pGETcTniSOSjKGIbKjU6zGXd/p45e1CGy8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=LB7QkhPYFT+RZNTNejzqlTkb+54C+/NjnEnvnR1ojxdpTMrTcyWZWy415XL6PuXsRDsV9VHDR7GCh473g7RCW/Q1+T+VJ6uezY7+pVSN2FcrV+iNAcYhAX4gIl7iQAQUAEDO3D2DgfjaOY9LtyB6JSfsBMzC8vfiTr0mXm3YigI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=RD/pUMEk; arc=none smtp.client-ip=209.85.167.53
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f176.google.com with SMTP id d9443c01a7336-1ed0abbf706so23793285ad.2;
-        Tue, 07 May 2024 10:29:24 -0700 (PDT)
+Received: by mail-lf1-f53.google.com with SMTP id 2adb3069b0e04-51ef64d051bso2744763e87.1;
+        Tue, 07 May 2024 10:34:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1715102964; x=1715707764; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=DDZ21BfhcAiLJodQpjNC/6yMxF3ELBdQ20+IdAkrnMs=;
-        b=f0S248o8UneBtITuD4W0gmCstCm9rzwXoLqAvPYKoFmGia/rspGfGGsalO/UE32zNe
-         aWgRRhySV+D/xB8D9ylZ90bS1yPjPV5mPED5pKLc8V4ew0aed9dpiPrUPPbpk13sh+w5
-         8q9kdV51yPte/K9vDOsZhPkwvdjgM0sJvuCqp98C53G1h4+WuD5AeWXQ0Ix+y3zm84J9
-         N8OgbT3Fj+A6QNlplKrO4HLVDjAn8/RhPSDAf3OsHk2BCjpDNMTCWLnmmbWXtRoYYx1F
-         ECaVTPmeRHeNu5Fv/U5ltnYm/eqJ5hg1rZ4Qign49AU3/aMYDZHBQ9imLO3a2q7/Yw5y
-         beCw==
+        d=gmail.com; s=20230601; t=1715103273; x=1715708073; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Ix/QxWf0/ikFiOadZQO4gRsywekkLf0Td8sGVeNMKyo=;
+        b=RD/pUMEkWyThGhfipc8589F/jMhkVh8PJ3N5UOIorpeLtHpGnZGV+zPvRn0eXeeC89
+         5Tc8LB9WeNCWpjgUnZVvnboPdncgu7pC0z1usBtEI2vWzoEvKG6DMkay3OGWA/mReghI
+         FEe9rYpYdHF0tuPpvzCeZJhK3GXU5jsB+ivcr99U5+Wix5DgiCcbnVFdy5eazSfsRnbf
+         rHOxGb0zCwI7RkqPv0B8mFYD6Vx1xko6VrIj3DCL6ADLaBjiDvn+Uoi+/V9T5umSdsnp
+         f3Lzeyla4D4CaeVVhmsl4X7WsOsd6vvewAs1vkesKaTDkwq7ihDprI5seVIBg4TRtn5G
+         T23A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1715102964; x=1715707764;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=DDZ21BfhcAiLJodQpjNC/6yMxF3ELBdQ20+IdAkrnMs=;
-        b=OUZDqQy6cpoNTV9BikhVyCPTDHiWwFq4c32DOYq4H6X7aWvEm2WdBR9XEn+Y14OnH1
-         EbMwHdh6oXS+yLeWn9xsfsFby+QcZuXOASTdP1VvtsE0eq3PKw9ueoXRvcWTj+JWFiF+
-         xNeKGuVeHsA5n3qKpGmlYhwPvkyv5H4KN50+pS7wmvEk0KgjePffGUGdoo6BvbeJ6xON
-         ubLVELXEe3VBQpzYV8aUZL8r8uhhOBlRlarqVi/0K2YIMWS9MwozjXknl2z0hyTDA9SR
-         mkibpSaxtB+LpcT2IM5QlGqYDs/SfqfTBYwR0yYUulCwjyzaxczwmEy2RoCyntgpV3Yg
-         w4QQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUd5VTD8fg1mbtycQcehos2PKAxHwGzIw0jiPjgzY4H03IGCyw4gk3Tnf20YL91lNxuvai+2ZBsXFOkdDQU9kKn2bJlCKr18kcfHo95cyNqGcIrIKSL30Zibvw5uRAX07pt0wdjzT2jFCdljQ+NG2hR1j/YltZGADH4ptrgfmIDl4UkNF9Oq7Ujml16/AQqjyr0jljDI9ac1uYcQTYZuqIC4x0=
-X-Gm-Message-State: AOJu0YzVUtyIsPmieml8anT5W6pTOYdCLQ7tOKlLnLRBDHRFoj8Qft+/
-	BT8/A5uMA9sIbAGEwYEEbF8NUYqoIpa2ZaRMN0HAQoVvBn494Gje+lXJQhjl/KJHiNvcZWtYE3p
-	QecWuA49cFIWu3dDyrXODhsV9qRY=
-X-Google-Smtp-Source: AGHT+IHUyaZnlpJw7nJ4YjUhgV2JhTbjZvtjSBxEMvt+FIIIYjTcMP8F76B4Efs97DgOKIKE6zAI2tAIf1wA1Fy747o=
-X-Received: by 2002:a17:90a:588a:b0:2b3:28df:96b1 with SMTP id
- 98e67ed59e1d1-2b61639ffb6mr268408a91.7.1715102964093; Tue, 07 May 2024
- 10:29:24 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1715103273; x=1715708073;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Ix/QxWf0/ikFiOadZQO4gRsywekkLf0Td8sGVeNMKyo=;
+        b=e0RuIXjowtf2wAi78oEE6qA0Gwe7nHpy2cVr7iVNjhxVQtrxC2IJ6UgzzIR3eytsa8
+         f6uprBC8Bst7FAa/QeivvgFDFQAElVk8zFAempPIvr5OToZgFe3VWDX2hG8Ax1InmaNV
+         5DvgqCqHQ8ZQaPytrXqgQ0GWE+sCXRnMxJKXHmKGVq/+Kiaxl3z4lrPbHaT5sxEF0b5p
+         ZhPI1IhoGgcjOWa8Uot+RGXJuaxbh+oXWxPawyAmH26XtM8hVij/LEMSa3B6QPdPphyl
+         eFp1I5VU5LNs3jXM8q9pR3f35IiCCTqQLxcyDF5MYYuiviXcUGtB9E1onf0uXprN4kGU
+         t9Ng==
+X-Forwarded-Encrypted: i=1; AJvYcCWAiRp/gu7ilgr7U6BCFj6++dNT1zD1UAu7ardBPaJw1oouKt7z2MFMfAlT6idhRA+ZsdsAjVFpOZ9rf5T2KoCqNDlaujMig72Pjopg5FgSGTj2JlGenAS7qHqKD1iH9MdAfG6TjymSpmWjKk3yIJfCMT7k0cfv47UYcXCdyc7KqADlpVgjGxuaW/PVOvWF8gMZpM0lPyCzePnaP008N/wAzwGeeXDoPFx0TxZ2iycbWhZ4OVY2gALqgMzQ++G1dXyio9lMJX+E7dkc4Na4pflAcC1useZ68vyPLoSxNaqSP1v1Xa7JoM4jyh/agJEyuWlfk6XzDK2iVzLw69KForO4YT5dAaOQ2dtWrqDKVMa+e7z5dcb/A764IB/5bD6KN+fq95qAXXVdThEPfPgYfsItlw0XGEV5iHc4FPEm5h/4ObjQdcedBWQpNp+aC59L0PeNMK2NFwMcLT1kxUc/irQOx0mLSTvOxkaAGigrcqZ9C1s9ubTcwmDppT/UNee/dDI9ZbS8vA==
+X-Gm-Message-State: AOJu0YyutIejzXqTxSGY99N+EeLBN7Lr8Nl4DfKVFO5Pg+v8GQwGyVsI
+	MLvA6RVNoZHhPsxLp9dm1Bx3iAvLmyXgjw6sohuOZgndziMT6S9M
+X-Google-Smtp-Source: AGHT+IFwBZaOv+SBhnHvVRoQ0ogfQ2GeK7ijkmELIpHxY/887/bhXSwiTzeGZmrx+/5btYaXXDo8Dw==
+X-Received: by 2002:a05:6512:754:b0:51d:998e:e0c1 with SMTP id 2adb3069b0e04-5217c26e844mr150973e87.13.1715103272504;
+        Tue, 07 May 2024 10:34:32 -0700 (PDT)
+Received: from [192.168.42.69] ([85.255.235.91])
+        by smtp.gmail.com with ESMTPSA id m7-20020a05600c4f4700b0041b434e5869sm23985466wmq.43.2024.05.07.10.34.29
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 07 May 2024 10:34:32 -0700 (PDT)
+Message-ID: <d0610fa1-562f-4d4e-ae84-2a0267316c32@gmail.com>
+Date: Tue, 7 May 2024 18:34:39 +0100
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240504003006.3303334-1-andrii@kernel.org> <20240504003006.3303334-6-andrii@kernel.org>
- <2024050404-rectify-romp-4fdb@gregkh> <CAEf4BzaUgGJVqw_yWOXASHManHQWGQV905Bd-wiaHj-mRob9gw@mail.gmail.com>
- <CAP-5=fWPig8-CLLBJ_rb3D6eNAKVY7KX_n_HcpGqL7gfe-=XXg@mail.gmail.com>
- <CAEf4Bzab+sRQ8pzNYxh1BOgjhDF4yCkqcHxy5YZAyT-jef7Acw@mail.gmail.com>
- <CAP-5=fXv59EmyM7FNnwAp0JjAZjtYhCj3b3FTH7KsHL=k8C6oQ@mail.gmail.com> <CAEf4BzbdGJzMuRgGJE72VFquXL37rS9Ti__wx4f_+kt3yetkEg@mail.gmail.com>
-In-Reply-To: <CAEf4BzbdGJzMuRgGJE72VFquXL37rS9Ti__wx4f_+kt3yetkEg@mail.gmail.com>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Tue, 7 May 2024 10:29:11 -0700
-Message-ID: <CAEf4BzYykUsN_Z92cXAh_9+fmN-bzr7xOEBe2v_5xDoXRhijmg@mail.gmail.com>
-Subject: Re: [PATCH 5/5] selftests/bpf: a simple benchmark tool for
- /proc/<pid>/maps APIs
-To: Ian Rogers <irogers@google.com>
-Cc: Greg KH <gregkh@linuxfoundation.org>, Andrii Nakryiko <andrii@kernel.org>, 
-	linux-fsdevel@vger.kernel.org, brauner@kernel.org, viro@zeniv.linux.org.uk, 
-	akpm@linux-foundation.org, linux-kernel@vger.kernel.org, bpf@vger.kernel.org, 
-	linux-mm@kvack.org, Arnaldo Carvalho de Melo <acme@kernel.org>, 
-	"linux-perf-use." <linux-perf-users@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH net-next v8 02/14] net: page_pool: create hooks for
+ custom page providers
+To: Mina Almasry <almasrymina@google.com>
+Cc: Christoph Hellwig <hch@infradead.org>, Jason Gunthorpe <jgg@ziepe.ca>,
+ netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-doc@vger.kernel.org, linux-alpha@vger.kernel.org,
+ linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
+ sparclinux@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+ linux-arch@vger.kernel.org, bpf@vger.kernel.org,
+ linux-kselftest@vger.kernel.org, linux-media@vger.kernel.org,
+ dri-devel@lists.freedesktop.org, "David S. Miller" <davem@davemloft.net>,
+ Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+ Paolo Abeni <pabeni@redhat.com>, Jonathan Corbet <corbet@lwn.net>,
+ Richard Henderson <richard.henderson@linaro.org>,
+ Ivan Kokshaysky <ink@jurassic.park.msu.ru>, Matt Turner
+ <mattst88@gmail.com>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+ "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+ Helge Deller <deller@gmx.de>, Andreas Larsson <andreas@gaisler.com>,
+ Jesper Dangaard Brouer <hawk@kernel.org>,
+ Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+ Steven Rostedt <rostedt@goodmis.org>, Masami Hiramatsu
+ <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+ Arnd Bergmann <arnd@arndb.de>, Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
+ Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman
+ <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
+ Yonghong Song <yonghong.song@linux.dev>,
+ John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
+ Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
+ Jiri Olsa <jolsa@kernel.org>, Steffen Klassert
+ <steffen.klassert@secunet.com>, Herbert Xu <herbert@gondor.apana.org.au>,
+ David Ahern <dsahern@kernel.org>,
+ Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+ Shuah Khan <shuah@kernel.org>, Sumit Semwal <sumit.semwal@linaro.org>,
+ =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+ Amritha Nambiar <amritha.nambiar@intel.com>,
+ Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+ Alexander Mikhalitsyn <alexander@mihalicyn.com>,
+ Kaiyuan Zhang <kaiyuanz@google.com>, Christian Brauner <brauner@kernel.org>,
+ Simon Horman <horms@kernel.org>, David Howells <dhowells@redhat.com>,
+ Florian Westphal <fw@strlen.de>, Yunsheng Lin <linyunsheng@huawei.com>,
+ Kuniyuki Iwashima <kuniyu@amazon.com>, Jens Axboe <axboe@kernel.dk>,
+ Arseniy Krasnov <avkrasnov@salutedevices.com>,
+ Aleksander Lobakin <aleksander.lobakin@intel.com>,
+ Michael Lass <bevan@bi-co.net>, Jiri Pirko <jiri@resnulli.us>,
+ Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+ Lorenzo Bianconi <lorenzo@kernel.org>,
+ Richard Gobert <richardbgobert@gmail.com>,
+ Sridhar Samudrala <sridhar.samudrala@intel.com>,
+ Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+ Johannes Berg <johannes.berg@intel.com>, Abel Wu <wuyun.abel@bytedance.com>,
+ Breno Leitao <leitao@debian.org>, David Wei <dw@davidwei.uk>,
+ Shailend Chand <shailend@google.com>,
+ Harshitha Ramamurthy <hramamurthy@google.com>,
+ Shakeel Butt <shakeel.butt@linux.dev>, Jeroen de Borst
+ <jeroendb@google.com>, Praveen Kaligineedi <pkaligineedi@google.com>
+References: <20240403002053.2376017-1-almasrymina@google.com>
+ <20240403002053.2376017-3-almasrymina@google.com>
+ <ZjH1QaSSQ98mw158@infradead.org>
+ <CAHS8izM0=xc2UhUxhnF_BixuFs5VaDV9W1jbso1K+Rg=35NzeA@mail.gmail.com>
+ <ZjjHUh1eINPg1wkn@infradead.org>
+ <20b1c2d9-0b37-414c-b348-89684c0c0998@gmail.com>
+ <20240507161857.GA4718@ziepe.ca> <ZjpVfPqGNfE5N4bl@infradead.org>
+ <54b1bf11-0f9a-4e9e-9e5c-7d81e066fc7c@gmail.com>
+ <CAHS8izNL-phg3y9xiQbx7A2wQE3ZZKXiQA0oFW9mgj4ONk7GSw@mail.gmail.com>
+Content-Language: en-US
+From: Pavel Begunkov <asml.silence@gmail.com>
+In-Reply-To: <CAHS8izNL-phg3y9xiQbx7A2wQE3ZZKXiQA0oFW9mgj4ONk7GSw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Mon, May 6, 2024 at 10:06=E2=80=AFPM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
->
-> On Mon, May 6, 2024 at 11:43=E2=80=AFAM Ian Rogers <irogers@google.com> w=
-rote:
-> >
-> > On Mon, May 6, 2024 at 11:32=E2=80=AFAM Andrii Nakryiko
-> > <andrii.nakryiko@gmail.com> wrote:
-> > >
-> > > On Sat, May 4, 2024 at 10:09=E2=80=AFPM Ian Rogers <irogers@google.co=
-m> wrote:
-> > > >
-> > > > On Sat, May 4, 2024 at 2:57=E2=80=AFPM Andrii Nakryiko
-> > > > <andrii.nakryiko@gmail.com> wrote:
-> > > > >
-> > > > > On Sat, May 4, 2024 at 8:29=E2=80=AFAM Greg KH <gregkh@linuxfound=
-ation.org> wrote:
-> > > > > >
-> > > > > > On Fri, May 03, 2024 at 05:30:06PM -0700, Andrii Nakryiko wrote=
-:
-> > > > > > > Implement a simple tool/benchmark for comparing address "reso=
-lution"
-> > > > > > > logic based on textual /proc/<pid>/maps interface and new bin=
-ary
-> > > > > > > ioctl-based PROCFS_PROCMAP_QUERY command.
-> > > > > >
-> > > > > > Of course an artificial benchmark of "read a whole file" vs. "a=
- tiny
-> > > > > > ioctl" is going to be different, but step back and show how thi=
-s is
-> > > > > > going to be used in the real world overall.  Pounding on this f=
-ile is
-> > > > > > not a normal operation, right?
-> > > > > >
-> > > > >
-> > > > > It's not artificial at all. It's *exactly* what, say, blazesym li=
-brary
-> > > > > is doing (see [0], it's Rust and part of the overall library API,=
- I
-> > > > > think C code in this patch is way easier to follow for someone no=
-t
-> > > > > familiar with implementation of blazesym, but both implementation=
-s are
-> > > > > doing exactly the same sequence of steps). You can do it even les=
-s
-> > > > > efficiently by parsing the whole file, building an in-memory look=
-up
-> > > > > table, then looking up addresses one by one. But that's even slow=
-er
-> > > > > and more memory-hungry. So I didn't even bother implementing that=
-, it
-> > > > > would put /proc/<pid>/maps at even more disadvantage.
-> > > > >
-> > > > > Other applications that deal with stack traces (including perf) w=
-ould
-> > > > > be doing one of those two approaches, depending on circumstances =
-and
-> > > > > level of sophistication of code (and sensitivity to performance).
-> > > >
-> > > > The code in perf doing this is here:
-> > > > https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/=
-tree/tools/perf/util/synthetic-events.c#n440
-> > > > The code is using the api/io.h code:
-> > > > https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/=
-tree/tools/lib/api/io.h
-> > > > Using perf to profile perf it was observed time was spent allocatin=
-g
-> > > > buffers and locale related activities when using stdio, so io is a
-> > > > lighter weight alternative, albeit with more verbose code than fsca=
-nf.
-> > > > You could add this as an alternate /proc/<pid>/maps reader, we have=
- a
-> > > > similar benchmark in `perf bench internals synthesize`.
-> > > >
-> > >
-> > > If I add a new implementation using this ioctl() into
-> > > perf_event__synthesize_mmap_events(), will it be tested from this
-> > > `perf bench internals synthesize`? I'm not too familiar with perf cod=
-e
-> > > organization, sorry if it's a stupid question. If not, where exactly
-> > > is the code that would be triggered from benchmark?
-> >
-> > Yes it would be triggered :-)
->
-> Ok, I don't exactly know how to interpret the results (and what the
-> benchmark is doing), but numbers don't seem to be worse. They actually
-> seem to be a bit better.
->
-> I pushed my code that adds perf integration to [0]. That commit has
-> results, but I'll post them here (with invocation parameters).
-> perf-ioctl is the version with ioctl()-based implementation,
-> perf-parse is, logically, text-parsing version. Here are the results
-> (and see my notes below the results as well):
->
-> TEXT-BASED
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
->
-> # ./perf-parse bench internals synthesize
-> # Running 'internals/synthesize' benchmark:
-> Computing performance of single threaded perf event synthesis by
-> synthesizing events on the perf process itself:
->   Average synthesis took: 80.311 usec (+- 0.077 usec)
->   Average num. events: 32.000 (+- 0.000)
->   Average time per event 2.510 usec
->   Average data synthesis took: 84.429 usec (+- 0.066 usec)
->   Average num. events: 179.000 (+- 0.000)
->   Average time per event 0.472 usec
->
-> # ./perf-parse bench internals synthesize
-> # Running 'internals/synthesize' benchmark:
-> Computing performance of single threaded perf event synthesis by
-> synthesizing events on the perf process itself:
->   Average synthesis took: 79.900 usec (+- 0.077 usec)
->   Average num. events: 32.000 (+- 0.000)
->   Average time per event 2.497 usec
->   Average data synthesis took: 84.832 usec (+- 0.074 usec)
->   Average num. events: 180.000 (+- 0.000)
->   Average time per event 0.471 usec
->
-> # ./perf-parse bench internals synthesize --mt -M 8
-> # Running 'internals/synthesize' benchmark:
-> Computing performance of multi threaded perf event synthesis by
-> synthesizing events on CPU 0:
->   Number of synthesis threads: 1
->     Average synthesis took: 36338.100 usec (+- 406.091 usec)
->     Average num. events: 14091.300 (+- 7.433)
->     Average time per event 2.579 usec
->   Number of synthesis threads: 2
->     Average synthesis took: 37071.200 usec (+- 746.498 usec)
->     Average num. events: 14085.900 (+- 1.900)
->     Average time per event 2.632 usec
->   Number of synthesis threads: 3
->     Average synthesis took: 33932.300 usec (+- 626.861 usec)
->     Average num. events: 14085.900 (+- 1.900)
->     Average time per event 2.409 usec
->   Number of synthesis threads: 4
->     Average synthesis took: 33822.700 usec (+- 506.290 usec)
->     Average num. events: 14099.200 (+- 8.761)
->     Average time per event 2.399 usec
->   Number of synthesis threads: 5
->     Average synthesis took: 33348.200 usec (+- 389.771 usec)
->     Average num. events: 14085.900 (+- 1.900)
->     Average time per event 2.367 usec
->   Number of synthesis threads: 6
->     Average synthesis took: 33269.600 usec (+- 350.341 usec)
->     Average num. events: 14084.000 (+- 0.000)
->     Average time per event 2.362 usec
->   Number of synthesis threads: 7
->     Average synthesis took: 32663.900 usec (+- 338.870 usec)
->     Average num. events: 14085.900 (+- 1.900)
->     Average time per event 2.319 usec
->   Number of synthesis threads: 8
->     Average synthesis took: 32748.400 usec (+- 285.450 usec)
->     Average num. events: 14085.900 (+- 1.900)
->     Average time per event 2.325 usec
->
-> IOCTL-BASED
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> # ./perf-ioctl bench internals synthesize
-> # Running 'internals/synthesize' benchmark:
-> Computing performance of single threaded perf event synthesis by
-> synthesizing events on the perf process itself:
->   Average synthesis took: 72.996 usec (+- 0.076 usec)
->   Average num. events: 31.000 (+- 0.000)
->   Average time per event 2.355 usec
->   Average data synthesis took: 79.067 usec (+- 0.074 usec)
->   Average num. events: 178.000 (+- 0.000)
->   Average time per event 0.444 usec
->
-> # ./perf-ioctl bench internals synthesize
-> # Running 'internals/synthesize' benchmark:
-> Computing performance of single threaded perf event synthesis by
-> synthesizing events on the perf process itself:
->   Average synthesis took: 73.921 usec (+- 0.073 usec)
->   Average num. events: 31.000 (+- 0.000)
->   Average time per event 2.385 usec
->   Average data synthesis took: 80.545 usec (+- 0.070 usec)
->   Average num. events: 178.000 (+- 0.000)
->   Average time per event 0.453 usec
->
-> # ./perf-ioctl bench internals synthesize --mt -M 8
-> # Running 'internals/synthesize' benchmark:
-> Computing performance of multi threaded perf event synthesis by
-> synthesizing events on CPU 0:
->   Number of synthesis threads: 1
->     Average synthesis took: 35609.500 usec (+- 428.576 usec)
->     Average num. events: 14040.700 (+- 1.700)
->     Average time per event 2.536 usec
->   Number of synthesis threads: 2
->     Average synthesis took: 34293.800 usec (+- 453.811 usec)
->     Average num. events: 14040.700 (+- 1.700)
->     Average time per event 2.442 usec
->   Number of synthesis threads: 3
->     Average synthesis took: 32385.200 usec (+- 363.106 usec)
->     Average num. events: 14040.700 (+- 1.700)
->     Average time per event 2.307 usec
->   Number of synthesis threads: 4
->     Average synthesis took: 33113.100 usec (+- 553.931 usec)
->     Average num. events: 14054.500 (+- 11.469)
->     Average time per event 2.356 usec
->   Number of synthesis threads: 5
->     Average synthesis took: 31600.600 usec (+- 297.349 usec)
->     Average num. events: 14012.500 (+- 4.590)
->     Average time per event 2.255 usec
->   Number of synthesis threads: 6
->     Average synthesis took: 32309.900 usec (+- 472.225 usec)
->     Average num. events: 14004.000 (+- 0.000)
->     Average time per event 2.307 usec
->   Number of synthesis threads: 7
->     Average synthesis took: 31400.100 usec (+- 206.261 usec)
->     Average num. events: 14004.800 (+- 0.800)
->     Average time per event 2.242 usec
->   Number of synthesis threads: 8
->     Average synthesis took: 31601.400 usec (+- 303.350 usec)
->     Average num. events: 14005.700 (+- 1.700)
->     Average time per event 2.256 usec
->
-> I also double-checked (using strace) that it does what it is supposed
-> to do, and it seems like everything checks out. Here's text-based
-> strace log:
->
-> openat(AT_FDCWD, "/proc/35876/task/35876/maps", O_RDONLY) =3D 3
-> read(3, "00400000-0040c000 r--p 00000000 "..., 8192) =3D 3997
-> read(3, "7f519d4d3000-7f519d516000 r--p 0"..., 8192) =3D 4025
-> read(3, "7f519dc3d000-7f519dc44000 r-xp 0"..., 8192) =3D 4048
-> read(3, "7f519dd2d000-7f519dd2f000 r--p 0"..., 8192) =3D 4017
-> read(3, "7f519dff6000-7f519dff8000 r--p 0"..., 8192) =3D 2744
-> read(3, "", 8192)                       =3D 0
-> close(3)                                =3D 0
->
->
-> BTW, note how the kernel doesn't serve more than 4KB of data, even
-> though perf provides 8KB buffer (that's to Greg's question about
-> optimizing using bigger buffers, I suspect without seq_file changes,
-> it won't work).
->
-> And here's an abbreviated log for ioctl version, it has lots more (but
-> much faster) ioctl() syscalls, given it dumps everything:
->
-> openat(AT_FDCWD, "/proc/36380/task/36380/maps", O_RDONLY) =3D 3
-> ioctl(3, _IOC(_IOC_READ|_IOC_WRITE, 0x9f, 0x1, 0x60), 0x7fff6b603d50) =3D=
- 0
-> ioctl(3, _IOC(_IOC_READ|_IOC_WRITE, 0x9f, 0x1, 0x60), 0x7fff6b603d50) =3D=
- 0
->
->  ... 195 ioctl() calls in total ...
->
-> ioctl(3, _IOC(_IOC_READ|_IOC_WRITE, 0x9f, 0x1, 0x60), 0x7fff6b603d50) =3D=
- 0
-> ioctl(3, _IOC(_IOC_READ|_IOC_WRITE, 0x9f, 0x1, 0x60), 0x7fff6b603d50) =3D=
- 0
-> ioctl(3, _IOC(_IOC_READ|_IOC_WRITE, 0x9f, 0x1, 0x60), 0x7fff6b603d50) =3D=
- 0
-> ioctl(3, _IOC(_IOC_READ|_IOC_WRITE, 0x9f, 0x1, 0x60), 0x7fff6b603d50)
-> =3D -1 ENOENT (No such file or directory)
-> close(3)                                =3D 0
->
->
-> So, it's not the optimal usage of this API, and yet it's still better
-> (or at least not worse) than text-based API.
->
+On 5/7/24 18:15, Mina Almasry wrote:
+> On Tue, May 7, 2024 at 9:55 AM Pavel Begunkov <asml.silence@gmail.com> wrote:
+>>
+>> On 5/7/24 17:23, Christoph Hellwig wrote:
+>>> On Tue, May 07, 2024 at 01:18:57PM -0300, Jason Gunthorpe wrote:
+>>>> On Tue, May 07, 2024 at 05:05:12PM +0100, Pavel Begunkov wrote:
+>>>>>> even in tree if you give them enough rope, and they should not have
+>>>>>> that rope when the only sensible options are page/folio based kernel
+>>>>>> memory (incuding large/huge folios) and dmabuf.
+>>>>>
+>>>>> I believe there is at least one deep confusion here, considering you
+>>>>> previously mentioned Keith's pre-mapping patches. The "hooks" are not
+>>>>> that about in what format you pass memory, it's arguably the least
+>>>>> interesting part for page pool, more or less it'd circulate whatever
+>>>>> is given. It's more of how to have a better control over buffer lifetime
+>>>>> and implement a buffer pool passing data to users and empty buffers
+>>>>> back.
+>>>>
+>>>> Isn't that more or less exactly what dmabuf is? Why do you need
+>>>> another almost dma-buf thing for another project?
+>>>
+>>> That's the exact point I've been making since the last round of
+>>> the series.  We don't need to reinvent dmabuf poorly in every
+>>> subsystem, but instead fix the odd parts in it and make it suitable
+>>> for everyone.
+>>
+>> Someone would need to elaborate how dma-buf is like that addition
+>> to page pool infra.
+> 
+> I think I understand what Jason is requesting here, and I'll take a
+> shot at elaborating. AFAICT what he's saying is technically feasible
+> and addresses the nack while giving you the uapi you want. It just
+> requires a bit (a lot?) of work on your end unfortunately.
+> 
+> CONFIG_UDMABUF takes in a memfd, converts it to a dmabuf, and returns
+> it to userspace. See udmabuf_create().
+> 
+> I think what Jason is saying here, is that you can write similar code
+> to udmabuf_creat() that takes in a io_uring memory region, and
+> converts it to a dmabuf inside the kernel.
+> 
+> I haven't looked at your series yet too closely (sorry!), but I assume
+> you currently have a netlink API that binds an io_uring memory region
+> to the NIC rx-queue page_pool, right? That netlink API would need to
+> be changed to:
 
-In another reply to Arnaldo on patch #2 I mentioned the idea of
-allowing to iterate only file-backed VMAs (as it seems like what
-symbolizers would only care about, but I might be wrong here). So I
-tried that quickly, given it's a trivial addition to my code. See
-results below (it is slightly faster, but not much, because most of
-VMAs in that benchmark seem to be indeed file-backed anyways), just
-for completeness. I'm not sure if that would be useful/used by perf,
-so please let me know.
+No, it's different, I'll skip details, but the main problem is
+that those callbacks are used to implement the user api returning
+buffers via a ring, where the callback grabs them (in napi context)
+and feeds into page pool. That replaces SO_DEVMEM_DONTNEED and the
+need for ioctl/setsockopt.
 
-As I mentioned above, it's not radically faster in this perf
-benchmark, because we still request about 170 VMAs (vs ~195 if we
-iterate *all* of them), so not a big change. The ratio will vary
-depending on what the process is doing, of course. Anyways, just for
-completeness, I'm not sure if I have to add this "filter" to the
-actual implementation.
+> 1. Take in the io_uring memory.
+> 2. Convert it to a dmabuf like udmabuf_create() does.
+> 3. Bind the resulting dmabuf to the rx-queue page_pool.
+> 
+> There would be more changes needed vis-a-vis the clean up path and
+> lifetime management, but I think this is the general idea.
+> 
+> This would give you the uapi you want, while the page_pool never seen
+> non-dmabuf memory (addresses the nack, I think).
 
-# ./perf-filebacked bench internals synthesize
-# Running 'internals/synthesize' benchmark:
-Computing performance of single threaded perf event synthesis by
-synthesizing events on the perf process itself:
-  Average synthesis took: 65.759 usec (+- 0.063 usec)
-  Average num. events: 30.000 (+- 0.000)
-  Average time per event 2.192 usec
-  Average data synthesis took: 73.840 usec (+- 0.080 usec)
-  Average num. events: 153.000 (+- 0.000)
-  Average time per event 0.483 usec
-
-# ./perf-filebacked bench internals synthesize
-# Running 'internals/synthesize' benchmark:
-Computing performance of single threaded perf event synthesis by
-synthesizing events on the perf process itself:
-  Average synthesis took: 66.245 usec (+- 0.059 usec)
-  Average num. events: 30.000 (+- 0.000)
-  Average time per event 2.208 usec
-  Average data synthesis took: 70.627 usec (+- 0.074 usec)
-  Average num. events: 153.000 (+- 0.000)
-  Average time per event 0.462 usec
-
-# ./perf-filebacked bench internals synthesize --mt -M 8
-# Running 'internals/synthesize' benchmark:
-Computing performance of multi threaded perf event synthesis by
-synthesizing events on CPU 0:
-  Number of synthesis threads: 1
-    Average synthesis took: 33477.500 usec (+- 556.102 usec)
-    Average num. events: 10125.700 (+- 1.620)
-    Average time per event 3.306 usec
-  Number of synthesis threads: 2
-    Average synthesis took: 30473.700 usec (+- 221.933 usec)
-    Average num. events: 10127.000 (+- 0.000)
-    Average time per event 3.009 usec
-  Number of synthesis threads: 3
-    Average synthesis took: 29775.200 usec (+- 315.212 usec)
-    Average num. events: 10128.700 (+- 0.667)
-    Average time per event 2.940 usec
-  Number of synthesis threads: 4
-    Average synthesis took: 29477.100 usec (+- 621.258 usec)
-    Average num. events: 10129.000 (+- 0.000)
-    Average time per event 2.910 usec
-  Number of synthesis threads: 5
-    Average synthesis took: 29777.900 usec (+- 294.710 usec)
-    Average num. events: 10144.700 (+- 11.597)
-    Average time per event 2.935 usec
-  Number of synthesis threads: 6
-    Average synthesis took: 27774.700 usec (+- 357.569 usec)
-    Average num. events: 10158.500 (+- 14.710)
-    Average time per event 2.734 usec
-  Number of synthesis threads: 7
-    Average synthesis took: 27437.200 usec (+- 233.626 usec)
-    Average num. events: 10135.700 (+- 2.700)
-    Average time per event 2.707 usec
-  Number of synthesis threads: 8
-    Average synthesis took: 28784.600 usec (+- 477.630 usec)
-    Average num. events: 10133.000 (+- 0.000)
-    Average time per event 2.841 usec
-
->   [0] https://github.com/anakryiko/linux/commit/0841fe675ed30f5605c5b228e=
-18f5612ea253b35
->
-> >
-> > Thanks,
-> > Ian
-> >
-> > > > Thanks,
-> > > > Ian
-> > > >
-> > > > >   [0] https://github.com/libbpf/blazesym/blob/ee9b48a80c0b4499118=
-a1e8e5d901cddb2b33ab1/src/normalize/user.rs#L193
-> > > > >
-> > > > > > thanks,
-> > > > > >
-> > > > > > greg k-h
-> > > > >
+-- 
+Pavel Begunkov
 
