@@ -1,118 +1,129 @@
-Return-Path: <bpf+bounces-28796-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-28797-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B733D8BE0B8
-	for <lists+bpf@lfdr.de>; Tue,  7 May 2024 13:10:59 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2B5E08BE0BE
+	for <lists+bpf@lfdr.de>; Tue,  7 May 2024 13:13:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E95711C23A22
-	for <lists+bpf@lfdr.de>; Tue,  7 May 2024 11:10:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DA667280FD9
+	for <lists+bpf@lfdr.de>; Tue,  7 May 2024 11:13:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 269831514E0;
-	Tue,  7 May 2024 11:10:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D23B11514FA;
+	Tue,  7 May 2024 11:13:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="S15W3mLN"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="aUQOJyOc"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f44.google.com (mail-wm1-f44.google.com [209.85.128.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.18])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 439CA6F086
-	for <bpf@vger.kernel.org>; Tue,  7 May 2024 11:10:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 12B591514E0;
+	Tue,  7 May 2024 11:12:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715080253; cv=none; b=QJtlRvKujkg1/tjqhyrxZ2klJgh73dxVfjV2mfud0YGcD0cA9JsEHgnoVRUI5fJQ5rWIHROpUAmSMxcSd67nLwWWf1cMHlLYx2ZJXGhweRva99LiosE0WnDpefJkOvTlX9Yxs432vHH6WtcNWvm58X13J5MXtJpZLQqHl92lHcg=
+	t=1715080380; cv=none; b=Wtkd7ZAPK3bdRu8R3WNEMuROe4PCKKQuSx62HfsQT+sFUh1aAJaHu1ekpExNfbjBKvfy3VKNGkj2j54O91ylCkowEqH2GL0Kw3wJtOFxhMqpRWn+ofsTbXZgJZjIHPkx43zYs90nQXxTuINUCuEMgqFZVrS82JEL/yxOoRPe2/A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715080253; c=relaxed/simple;
-	bh=8BsLDQyHOYjPEWq9Xe8+6NajCenEo8x7fNJ1RDGWa0U=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=i9fMfAqVgHWe6wjnVJsXAFalDpksQ6bRssn8qkcRYGlj245mn/A36GU7dF3gp4YjWrh3pEU2K3W04uZfiN5nmqh2GciHlWqrJYdDl31tzIFuzeOZxry06LZEl6BJdKzMUdMVzrw/iZh9at/NlMCh5tlfc9nqd/ypgvPXqn7u8XA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=S15W3mLN; arc=none smtp.client-ip=209.85.128.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f44.google.com with SMTP id 5b1f17b1804b1-41ba1ba55ffso16811125e9.1
-        for <bpf@vger.kernel.org>; Tue, 07 May 2024 04:10:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1715080250; x=1715685050; darn=vger.kernel.org;
-        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
-         :from:from:to:cc:subject:date:message-id:reply-to;
-        bh=wgXBWDXfJTQZGqNXQdWwUSTlUSdvzCYZ+5Wh0gT04jk=;
-        b=S15W3mLNSixF8l3hX/Z4a3bjrv1CRQpZsK6XafkIG5heK2gVwnI33YlkVohmWsA9/p
-         pnGQfcRHQ7pjB0iX7xpOCpEllctZ2n+PG4nx5SFZrbG8MUHO57YOh046SP6Dff3pYJpO
-         r2/BHudM0F+mfbxke1jJ1uHamSic0TlVZWmCniEqTF40tS8KktbCn5PAyScBMbqi06ZG
-         olL/dS1vhNl57PvbonI7wJqMlFkcOTYFDwYuhHXiHJOMsu/Fr6PoRj4c4NNZg/X89vPj
-         mNYAIrUAlLbhsllxJ4B62fKB1PYAVz4yFlPYUuPX/YHEroPCt3RvGnZMGK8SUjw8hz+Q
-         a8zQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1715080250; x=1715685050;
-        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=wgXBWDXfJTQZGqNXQdWwUSTlUSdvzCYZ+5Wh0gT04jk=;
-        b=tVMHSHHZN/e6TcoC9H060F/q3w0ytPsuGQr1R8VKQbH+jpzOY0FKn7Kx1xaUG39GrW
-         SVwpJpKA7eiOu3xDk/dUpZwkF+ybPkXoFYPIJvx9V2supxMwSCKVkazmPw1535l3VOEd
-         CE2sCO3CN9DtrUiKXPeUUBAM0MFxviOTqbDdivLpbY3Q1Jil8Dqq6YIfv4ffYzI2aX4M
-         frQtueYRrPkPpOSSdSe9dUlcxviGKK95xswGdafljNLTPmrzHm5CU/RZJkmY0gSat4W/
-         nRTVyUzcsL3P9BwY2v8LGx9OaN1IWFPFpATVzfk/T9qGNBeNPJYHbSqlaLcD55Ul8L+F
-         VfCQ==
-X-Gm-Message-State: AOJu0Yy7lVcDF6R+5HMbyQkBMVWgrHHc0eXLV7I01J74X48u7zt5ODVj
-	HlI3inOfTHNE/BrbyGbkOtSPVc4AYlhyNBxwhkyR/4cz5FqfGP7t
-X-Google-Smtp-Source: AGHT+IEwtgMl0/NVkwEnfN3O3PWG2LdmvVYjoR7fwdLi3OJ5Crc4Rim6huNtzJuuhnL9qdhcDKYhVg==
-X-Received: by 2002:a05:600c:3b1b:b0:41b:4caa:554c with SMTP id m27-20020a05600c3b1b00b0041b4caa554cmr2249513wms.2.1715080250304;
-        Tue, 07 May 2024 04:10:50 -0700 (PDT)
-Received: from localhost (54-240-197-231.amazon.com. [54.240.197.231])
-        by smtp.gmail.com with ESMTPSA id c14-20020adfe70e000000b0034de40673easm12798200wrm.74.2024.05.07.04.10.49
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 07 May 2024 04:10:49 -0700 (PDT)
-From: Puranjay Mohan <puranjay12@gmail.com>
-To: Ilya Leoshkevich <iii@linux.ibm.com>, Alexei Starovoitov
- <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko
- <andrii@kernel.org>
-Cc: bpf@vger.kernel.org, Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik
- <gor@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>, Ilya
- Leoshkevich <iii@linux.ibm.com>
-Subject: Re: [PATCH bpf-next v2] s390/bpf: Emit a barrier for BPF_FETCH
- instructions
-In-Reply-To: <20240507000557.12048-1-iii@linux.ibm.com>
-References: <20240507000557.12048-1-iii@linux.ibm.com>
-Date: Tue, 07 May 2024 11:10:47 +0000
-Message-ID: <mb61p7cg527yg.fsf@gmail.com>
+	s=arc-20240116; t=1715080380; c=relaxed/simple;
+	bh=vZwwfPun+jcrJFXKdn0WPiO85JreSPpf8VyM/d3hF3Q=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=TnlCVIwWbGZjUHt/idI4jTbu/JVXZtHJW3EiKMn2gtTTYZCOwl6qRUBBDQCSDJGtzDd30oCE9RvBLgrEokP0TXJNBqgRVMbFR0S9AoPT1fXA9WQSCAxY5jUlNzvugEWtvkZDGiHB6DNVK46eKf6705Hq4koySsee3DN/BE1JLxE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=aUQOJyOc; arc=none smtp.client-ip=192.198.163.18
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1715080379; x=1746616379;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=vZwwfPun+jcrJFXKdn0WPiO85JreSPpf8VyM/d3hF3Q=;
+  b=aUQOJyOcXuk0xQj101q6BoaPUfOByJZh+GytipbSZR+Zj/W5nO9XlSTe
+   p+T8Kke7C3/0S3f5sUFvyEJ1YWt6gT9e90O5qOsTJ9GErylYQYluTkOol
+   F+MZqaFLzSqOiZjmiw3HNbMG5Sg1VU7VGuhaOQ1cZdLHZs2B/6t27IgbF
+   QlDEom3460hxFO7N/2OJAw5aMRzLDIlSkLGLYVYNwOJ8dx65hm403SJAt
+   bHQzvu1eKeBjntIKAFsy0lGHgbGBxUfgz1QG+oldnqji1xYvBtCp79sfh
+   13FsLzAr2YmOvFfFpN6yQ0OI9l4TKjx/1Nx7EUhL0nFUc9LGc9WcRDViO
+   Q==;
+X-CSE-ConnectionGUID: OxbJEHk3SEmeJnD0JtWWug==
+X-CSE-MsgGUID: 9m2p3pxSRraXkSvZVj495g==
+X-IronPort-AV: E=McAfee;i="6600,9927,11065"; a="10721233"
+X-IronPort-AV: E=Sophos;i="6.07,261,1708416000"; 
+   d="scan'208";a="10721233"
+Received: from fmviesa009.fm.intel.com ([10.60.135.149])
+  by fmvoesa112.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 May 2024 04:12:58 -0700
+X-CSE-ConnectionGUID: shxD1AQuTimRHOLMV3dpFw==
+X-CSE-MsgGUID: X6ObiS9hTta/WxyGh3BG7Q==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,261,1708416000"; 
+   d="scan'208";a="28462880"
+Received: from xiao-desktop.sh.intel.com ([10.239.46.158])
+  by fmviesa009.fm.intel.com with ESMTP; 07 May 2024 04:12:53 -0700
+From: Xiao Wang <xiao.w.wang@intel.com>
+To: paul.walmsley@sifive.com,
+	palmer@dabbelt.com,
+	aou@eecs.berkeley.edu,
+	luke.r.nels@gmail.com,
+	xi.wang@gmail.com,
+	bjorn@kernel.org
+Cc: ast@kernel.org,
+	daniel@iogearbox.net,
+	andrii@kernel.org,
+	martin.lau@linux.dev,
+	eddyz87@gmail.com,
+	song@kernel.org,
+	yonghong.song@linux.dev,
+	john.fastabend@gmail.com,
+	kpsingh@kernel.org,
+	sdf@google.com,
+	haoluo@google.com,
+	jolsa@kernel.org,
+	linux-riscv@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	bpf@vger.kernel.org,
+	pulehui@huawei.com,
+	haicheng.li@intel.com,
+	Xiao Wang <xiao.w.wang@intel.com>
+Subject: [PATCH] riscv, bpf: Fix typo in comment
+Date: Tue,  7 May 2024 19:16:18 +0800
+Message-Id: <20240507111618.437121-1-xiao.w.wang@intel.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
 
-Ilya Leoshkevich <iii@linux.ibm.com> writes:
+We can use either "instruction" or "insn" in the comment.
 
-> BPF_ATOMIC_OP() macro documentation states that "BPF_ADD | BPF_FETCH"
-> should be the same as atomic_fetch_add(), which is currently not the
-> case on s390x: the serialization instruction "bcr 14,0" is missing.
-> This applies to "and", "or" and "xor" variants too.
->
-> s390x is allowed to reorder stores with subsequent fetches from
-> different addresses, so code relying on BPF_FETCH acting as a barrier,
-> for example:
->
->   stw [%r0], 1
->   afadd [%r1], %r2
->   ldxw %r3, [%r4]
->
-> may be broken. Fix it by emitting "bcr 14,0".
->
-> Note that a separate serialization instruction is not needed for
-> BPF_XCHG and BPF_CMPXCHG, because COMPARE AND SWAP performs
-> serialization itself.
->
-> Fixes: ba3b86b9cef0 ("s390/bpf: Implement new atomic ops")
-> Reported-by: Puranjay Mohan <puranjay12@gmail.com>
-> Closes: https://lore.kernel.org/bpf/mb61p34qvq3wf.fsf@kernel.org/
-> Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
+Signed-off-by: Xiao Wang <xiao.w.wang@intel.com>
+---
+ arch/riscv/net/bpf_jit.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Reviewed-by: Puranjay Mohan <puranjay@kernel.org>
+diff --git a/arch/riscv/net/bpf_jit.h b/arch/riscv/net/bpf_jit.h
+index 18a7885ba95e..c1b6b44a2f49 100644
+--- a/arch/riscv/net/bpf_jit.h
++++ b/arch/riscv/net/bpf_jit.h
+@@ -611,7 +611,7 @@ static inline u32 rv_nop(void)
+ 	return rv_i_insn(0, 0, 0, 0, 0x13);
+ }
+ 
+-/* RVC instrutions. */
++/* RVC instructions. */
+ 
+ static inline u16 rvc_addi4spn(u8 rd, u32 imm10)
+ {
+@@ -740,7 +740,7 @@ static inline u16 rvc_swsp(u32 imm8, u8 rs2)
+ 	return rv_css_insn(0x6, imm, rs2, 0x2);
+ }
+ 
+-/* RVZBB instrutions. */
++/* RVZBB instructions. */
+ static inline u32 rvzbb_sextb(u8 rd, u8 rs1)
+ {
+ 	return rv_i_insn(0x604, rs1, 1, rd, 0x13);
+-- 
+2.25.1
 
-Thanks,
-Puranjay
 
