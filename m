@@ -1,243 +1,348 @@
-Return-Path: <bpf+bounces-28937-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-28938-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id EE8068BEBE3
-	for <lists+bpf@lfdr.de>; Tue,  7 May 2024 20:50:53 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 303938BEBFD
+	for <lists+bpf@lfdr.de>; Tue,  7 May 2024 20:53:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 685FB1F257EF
-	for <lists+bpf@lfdr.de>; Tue,  7 May 2024 18:50:53 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DA232282B77
+	for <lists+bpf@lfdr.de>; Tue,  7 May 2024 18:53:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D0F2D16D9DB;
-	Tue,  7 May 2024 18:48:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 33B4516D9C9;
+	Tue,  7 May 2024 18:52:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="gGtjBRLW";
-	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="L1q0vtYW"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="j+npPo0A"
 X-Original-To: bpf@vger.kernel.org
-Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pj1-f53.google.com (mail-pj1-f53.google.com [209.85.216.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1639216EBED
-	for <bpf@vger.kernel.org>; Tue,  7 May 2024 18:48:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.165.32
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715107716; cv=fail; b=B4XsDm+iEcu5j439kLJ2II/Q0VndlDQA6mBfdWyvvq+Kv4xHYU+2+UQfoBgXCn+CLzAEasoJdxyEzXEV2D/IvTHmb8uat5b6Ow/mlt+kenk3KwWNY21p2vgEQ0o1VgSGggiv5L906v62Ppnis/zkF+S8bhJhXZq5fXhsFm8+NQM=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715107716; c=relaxed/simple;
-	bh=FLZTBSC3eYqc9o352nPSEwuoCgI+WaGByOFGUfblY9I=;
-	h=From:To:Cc:Subject:Date:Message-Id:Content-Type:MIME-Version; b=erkgU3/vfVjQoyNVDSP2SGbdGv234PGUEV4yTAb9MaA8wz6CRWt2ROyG4VwDjyelh0gvZZ89LHz7zlvMHWD2UI2WA0jEH3dV2erXqfDnnM04uIMS5WB5xtZKHmU2vjGNLMwpsvrjot7owm+O1XW6KxkmohzjfkfRahdgIESb34g=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=gGtjBRLW; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=L1q0vtYW; arc=fail smtp.client-ip=205.220.165.32
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=oracle.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
-Received: from pps.filterd (m0333521.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 447IK6QQ006536;
-	Tue, 7 May 2024 18:48:25 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : content-transfer-encoding : content-type :
- mime-version; s=corp-2023-11-20;
- bh=CwC4rn8cWAf87rIujsGNoFiRdUpc5qtMg8SOMIcE8Dg=;
- b=gGtjBRLWvDyao+C39fZ/5S/BE2oUlf+ipKNwD1nFOsG66AufhkV47nfsi56PH+3S+ot9
- PKo3tjsx5MMwjWbC5zdO43OfM4wF3u7Be9zbi7Dd+Ml3/TnTEpnN+zWqKuOxsYm3YrLs
- XXulxODR+U82uuRQZ9TE0knJo7JUeS/P2vDSTOTIbeAr2g5lujF1NUXra1aWRcpKYkJ9
- 1+9slD4Lj6045szSI0b/9/Se4xERxF+vaXxgiWS1N5LwLuUiu53ZaXq8GNImJg0q2t0A
- 4x9YySLlc/9sJBm3zB7KPyy0INQ96oh1KUniisPk+m7UyhmB6PEmx0mPuaufrTHMekEt oQ== 
-Received: from iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta01.appoci.oracle.com [130.35.100.223])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3xysfv02ep-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Tue, 07 May 2024 18:48:25 +0000
-Received: from pps.filterd (iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-	by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 447IJ2oK020104;
-	Tue, 7 May 2024 18:48:24 GMT
-Received: from nam10-bn7-obe.outbound.protection.outlook.com (mail-bn7nam10lp2101.outbound.protection.outlook.com [104.47.70.101])
-	by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3xysfk13gx-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Tue, 07 May 2024 18:48:23 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=cT8iKpycYyKsx/UokI1T/JV3YrbSqXa0bHxrckLD9GZDTFCWgqiy9Mt7JH2CGYVQajP9p2a9O2ZKwwHuLy1QZofmkZi6T5PXXb9sFerrHTk6idnTSLlUDT/Ky/gf0fPiFYFfEDtvhcH3jlf+GyCiCuPs9ciSGYxqql3ZAwMytUw9LDvPmYf0JfaT59OK8TrrmJzF5fNUD4lrnLb8ANeY4m92ma0EbPaq3YAIy6Nwgu+zKd3DhRY7AXZ9DknYIUUMQV0C15iwupa/9Ljmh2V1wM5mb2DZkjkt5L5Rm5Na+YDoCxNw8D/lJtUmOc0iwYB+UpEs0LaCKB3+0vswoQsjgw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=CwC4rn8cWAf87rIujsGNoFiRdUpc5qtMg8SOMIcE8Dg=;
- b=GPv5ohjFJTZ5Kq4Ke7tlawRJHY4VPaFeuxG35t8kWqwBcVNGKr0x3yL2Kotc1OmZWEReZd8v+ukFwNed7dlYzgJ47qqeRILHmXyQNJ08IgDWJ5awhTa3F78Zq1aYbaj6K4ixX0rQOTavUAzFnGGK1KeeA2yr/NhPb/mcgojgDcDwjbPfoGw3jcucIsmIAmYLHf41dPWFgUgt+nWUFuIVa2aeTByFPtCHicSjeT1qOBz8PU0tiBlySe9qmAhmcsW2GtygmF6j3wAmMHo00krEpIRyAG+zHZjNY6yCA4V/i896wEM+Ecsz86Zww5quSuePk2WMeZTkQ13p29jbOxWmYw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0BE726CDC2;
+	Tue,  7 May 2024 18:52:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.53
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1715107964; cv=none; b=nPfNTJsXb/71NjE49G7QyCDbT7eRKwl+KieXX0Hrou6bUR0//x9sxY7v4bQqa+E6wJswjXd5iG3I9J/VUamZfn77GZ9Z/LpRoCtZHOcjez3F9sviTxoheBnvglEb4OWExsJTvJTFxUmaF5Q8NWguNbJOv15xci/n8HVjGgTCfic=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1715107964; c=relaxed/simple;
+	bh=r0n+lAaUIJYL/6lmnO1EiLwZUHwaOjLhtCSzCjyhdAM=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Content-Type; b=hj+hNpRAIpu0NzH34Y3ZQL7UOFm1cjl9fOAFlmktnAm9PEmeacTcAz26kVpmz6pdEJnVhjGjEHzmEErEl9uHjpRcbyw3xpIMdvSCFyjpCWBfEFEFNCaBHlU0wfcc+TttMweiw5kyc8U3BRcIcB5bD/1panu0Qv+RbQF/OF3TTlA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=j+npPo0A; arc=none smtp.client-ip=209.85.216.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f53.google.com with SMTP id 98e67ed59e1d1-2b387e2e355so2367305a91.3;
+        Tue, 07 May 2024 11:52:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=CwC4rn8cWAf87rIujsGNoFiRdUpc5qtMg8SOMIcE8Dg=;
- b=L1q0vtYWAIX65hzfYMwaJi+pZECnwQpt2o3i1ivdeKERbYdyNAFxVppLv8php6jF6cFlx32Kh8lcezuyLq637irvfemkel3FSZaHqxbC4tBsuJGBKEE4BnvXQZ5KjXwTpsHp/nUiEhewl4WBv5gZhvia1qbLqwKgvPCBlit5YsA=
-Received: from DM6PR10MB3113.namprd10.prod.outlook.com (2603:10b6:5:1a7::12)
- by SJ2PR10MB7581.namprd10.prod.outlook.com (2603:10b6:a03:546::7) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7544.41; Tue, 7 May
- 2024 18:48:02 +0000
-Received: from DM6PR10MB3113.namprd10.prod.outlook.com
- ([fe80::e0b9:12d5:badd:6fe0]) by DM6PR10MB3113.namprd10.prod.outlook.com
- ([fe80::e0b9:12d5:badd:6fe0%7]) with mapi id 15.20.7544.041; Tue, 7 May 2024
- 18:48:02 +0000
-From: "Jose E. Marchesi" <jose.marchesi@oracle.com>
-To: bpf@vger.kernel.org
-Cc: "Jose E . Marchesi" <jose.marchesi@oracle.com>, david.faust@oracle.com,
-        cupertino.miranda@oracle.com, Yonghong Song <yonghong.song@linux.dev>,
-        Eduard Zingerman <eddyz87@gmail.com>
-Subject: [PATCH bpf-next V2] bpf: avoid uninitialized warnings in verifier_global_subprogs.c
-Date: Tue,  7 May 2024 20:47:56 +0200
-Message-Id: <20240507184756.1772-1-jose.marchesi@oracle.com>
-X-Mailer: git-send-email 2.30.2
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: LO4P123CA0020.GBRP123.PROD.OUTLOOK.COM
- (2603:10a6:600:151::7) To DM6PR10MB3113.namprd10.prod.outlook.com
- (2603:10b6:5:1a7::12)
+        d=gmail.com; s=20230601; t=1715107962; x=1715712762; darn=vger.kernel.org;
+        h=content-transfer-encoding:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=AwLLEGYjxX+LEtBwUpGGf8LdmjjTex/ws/dicJ6KmUU=;
+        b=j+npPo0AYi06aE6dz7DfMJFuJ3qMBsg/5+8Uf8eRhN9PiVV5MpzGLB1TeIF7Wy45AZ
+         NRzs2n3+pg++EkvTQ2eGvdrVUjwIUMp4qb6Jt5kaEQybExAsKQ1jLcf8wJEqEdhIFgD3
+         26bOEsxACoBVw02TLXNBiDhVATzXhr8F9hWpr38yKrN8gtO+LKyiZ4kXA2urUfksSVA5
+         xVpaznEF2XVRpfqlSQhnr/iSozK/ODsbVMEex1HK0UMbKPeeO9F+NvUBam87uI38emex
+         F5n6DbHlLwu2fp53GTVAkODXF4ff00rY2qrMa5HvRqcXpEglYMlXkV9tAZP0fPBPDLOZ
+         kvMg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1715107962; x=1715712762;
+        h=content-transfer-encoding:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=AwLLEGYjxX+LEtBwUpGGf8LdmjjTex/ws/dicJ6KmUU=;
+        b=j3+ZqEjVK39nEFtbokQCnNOOB2ZWFN/eVTelKvWxQUxcoFxXYa3BtxweIKoSQS04/K
+         Nxt2mR8s+XDqMOQb/RJkp24x7jfi1BC028NnCxx+b7MoHn2SrSiYKk16J0Nt+mr0hMba
+         bkxz4qa94S3cRXZKFqHa9DhC0T+LX/Dzj0LOtJhv40KjSZgKvcCZNcSiMVeqpZvi5JtD
+         ZD59ouHIl7XKjrZxNfpTztC1wvpcyYJjaopIchnv83yFCTUUf2LhO3PcT1/TpI9cPERV
+         iE9FZDRdwNxMdiGqCZ85BEFqFhokr/bXpKhVeiKpOjCFmv3qrDtZzQcSvDeWe54WJZ97
+         No9g==
+X-Forwarded-Encrypted: i=1; AJvYcCWR/+oEDBKVXhNCYPlX9EfIuuccsdXmuAM2lmn+j/DM+SL/l485jefU1EcHuUytfpI56xnb7Ib8bQY3EhIOJXLG1I08qCQUQ53SVDB1aGJCtVS7IYNsAMWReIYagRBfyExYY6yjxjap+w1xb3jvJXOsloa1KlzkNlWMyzSGxtC2aw==
+X-Gm-Message-State: AOJu0YxyEMNNZCvbs3SswoG+CAP+idgtAfcNkscM0JWPoW07A4RU8zZq
+	UvHes0430/SnLQhd8C7K2muTWbGsgottZI5/TiZ0TPUSfJv8yIaEGIuPaKxtQsoLUGhyqzPAkzD
+	58nXFSUZoBvwBKZfSg2BkPiCPj4OT3bHD
+X-Google-Smtp-Source: AGHT+IEP2PRAErTlJKaX5mCGUjXUHTm1j2QYD4mJIWSnjVBKhEf4IrxDiaZsBvKjXK1rTpYf+lSwrEtYTWi4YA61IoU=
+X-Received: by 2002:a17:90a:fa02:b0:2b2:6339:b1a3 with SMTP id
+ 98e67ed59e1d1-2b616aedaf7mr472183a91.37.1715107962298; Tue, 07 May 2024
+ 11:52:42 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM6PR10MB3113:EE_|SJ2PR10MB7581:EE_
-X-MS-Office365-Filtering-Correlation-Id: 5dc3239a-c4da-402f-88fc-08dc6ec63900
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230031|366007|1800799015|376005;
-X-Microsoft-Antispam-Message-Info: 
-	=?us-ascii?Q?S0LiYaa2wTEE+TM39SNNbuyn2emvxXSxEssKFgz+qSnR0spT/MEUF9v1QG05?=
- =?us-ascii?Q?7jEEHI8gNyMH4APeHPtcL3LJB5T5mucitSDltPEAk1X6G7WwafCiStixKGk5?=
- =?us-ascii?Q?mGKZ0vRS1moTqnydp6+JkkugAdBhCkdV5omrdMDzlAi00kPFDXDjQemkUz5b?=
- =?us-ascii?Q?RrGGoNZi7V1JCfoXESjbCCGvHal/3GfPJmfDJn3CzQD5h4Z/RG0xjmynl7oT?=
- =?us-ascii?Q?6lehYe91ITATyaXSpi7uAgvRXhkfb2n2PqK+k3dIltwboL5V648YyWdGnUML?=
- =?us-ascii?Q?3Cguxe1knlp1K22LPDqwupadkVDxM6Q+Garsjgn8U/aKNm1tXrHhrwtFYN9Q?=
- =?us-ascii?Q?+5mJJsRMOj8zuX9oZ0YVVEgxjYf5BUaSExJFl3kdn9s0RiWfmUxixp7kaH9/?=
- =?us-ascii?Q?IrS7+tBKeB6+jpOwWSFJmnrQW1yq23lPsdb4LvTXQomyYlZe3ZwjLOoW2YKX?=
- =?us-ascii?Q?6e1TlmLd1ZcIqaNjuh8W7xdXDH9h0LbWS+qUHA3N/1xTbfduo8mQOWBHu/k8?=
- =?us-ascii?Q?X7GenoxGqZgTLQLM2cso31fK23vOzpHY9T0yxunm5Mc5HB/La79ZzciKV6c9?=
- =?us-ascii?Q?xjG4/JyVxnJW52Kury2n3P7+fhXQn5plUIXKEXDH1qb1RmRQU5F8SKVtHI/J?=
- =?us-ascii?Q?WHYkl9+b4BH5P7O5divJ3OONVVzHmAzIr7Fc+w31eo/HuCFwH9Y049WNLfJ+?=
- =?us-ascii?Q?/U9LgSYg6DXkQMCeju2Bf74brmBqx4srWgf68ftMmQWojibBCUPDpG/olum8?=
- =?us-ascii?Q?dwJUHk0TwW2T+HtqUXjUC/hRY8iVXpUeJXg3E/3Gufhab7fklFKg2WA6+936?=
- =?us-ascii?Q?xeiAqy5MGL6CBCeJjqbKnCCKgH36K8PiHAOOGrd4KJK7mFpO1DtjPR2xvvf2?=
- =?us-ascii?Q?cX8nW0z/bC0T+ksertN/CV+L1Igxzbi0EP9zXTLO4cfklqgthQB0KRlewcZF?=
- =?us-ascii?Q?HViWTUtiaoTFNlK1Z0qx+L1ePOmeX2UqT2i4sNNQWm0MZu5D26hYRyxp8LB6?=
- =?us-ascii?Q?1HX3vQgnn2l3pzXF5w0AJ/0SHMzN9ITWlfRQFkRZ+xxL53KJblbo7LUgfo3D?=
- =?us-ascii?Q?HJmue2Ydv6q+IGTU/4EYLamxUwSd4BT9mK+XEXzyhZwJMlJUs14Ry66aUs2J?=
- =?us-ascii?Q?dgdZqS8ZzVNqVmeFJB3gajHen6869EC9ngUBrDm3EZ0WcAxmbIW0ES3jbSzN?=
- =?us-ascii?Q?+Rw+nOs449kZ5sdNidaBukYfZfyYD8w1bPPxNnrTH0Knw7FmuPubRUT8BrQ9?=
- =?us-ascii?Q?tO790BBhBALPGmuOes4tOG6+Ry8X1U/Co648KJVfuQ=3D=3D?=
-X-Forefront-Antispam-Report: 
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR10MB3113.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366007)(1800799015)(376005);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: 
-	=?us-ascii?Q?icL/MvpQu1iaYADWG+jsqOADS7N0Zae+g+7A6m9AIp7ymo2cC7T1DcP+Io7n?=
- =?us-ascii?Q?+VMaeMqrY4IYQ8b5/ow9i4XZHNm8XcNEG+GbcSgCyGaWCW2PzpIeYUhKGark?=
- =?us-ascii?Q?O67cziZn1bOeFpY6AsNn8w1biK5kw3QlsrZw7KuSOvwg7XWa0zwwtszVWgPu?=
- =?us-ascii?Q?kWFNcssryIx92TsUdsYU4wGUzJ4WpNuBdDon08dzVcOaZYmuzeSuubhbIURt?=
- =?us-ascii?Q?t8fvQUcGhrFjJKFBZ284g0QPzLGmvEFZibt7ieU0HI2M4CGR7gDkdsIFoHXH?=
- =?us-ascii?Q?GXEfQcAQqKObc2riY73+i+7zVDO63NFo/js01KpjKTwwr6ANEnQMjEsQH5k9?=
- =?us-ascii?Q?hGXhWmezCZJtWwZY5SmiY1/Vzy2iUrWeZVaRcEGFFsi8n7YfLOR3OIwNhClz?=
- =?us-ascii?Q?bPUqbWqrSIq8zNetpDUM2hfbE0OFXWjqGHDgspwstg4yhysELUxY3hlJhQex?=
- =?us-ascii?Q?v9MUWp96j6MSqk5rEqnrpBpno7emI63Iaf/ar14/Va9iXO9NFJN58KIotSBx?=
- =?us-ascii?Q?FF+Of5mp7MEga+X0Ab2RlTPxiEZ/X7FLVxhs3/F1mFxtKEgx7kvahZw3u6O3?=
- =?us-ascii?Q?qOlAFrCEnVZiwZER6gHCtCTJwJfAYzScqRXXlntNOY8kn/ipdCEDuzwH5sGm?=
- =?us-ascii?Q?H6DH9wesWwma9QMLM4pdGfYY15xrn9CX7QEuZUJAb/q4wVaj7+N+fsir7UWP?=
- =?us-ascii?Q?vzGjy8EzKNPJemW4/Gi4JcHf1jNXFlomDB4k087oAt1WJjbC1a5qPCVuSlYT?=
- =?us-ascii?Q?cGUsrExxaU1WRUTaW+r0scyjFt/eNmuqgyXA+dyw/oHaduQD6823ULMCcdsF?=
- =?us-ascii?Q?sY3bLAT1SGQ7S1XDMVdOaIIWkHaFMenSPDDKE3uZHhr+wpu06rwLRCcF7Dgm?=
- =?us-ascii?Q?v/p1lrOy2cqo2eq97PQiM1ptoORu4BKELiETObwXd/HuBMgFKI8nw5dW1anS?=
- =?us-ascii?Q?/NRhgxllS0Ue3KMA8bpjNLkdzuzwSyd0lyLuySbpK48F899wRrry7jtw0X8y?=
- =?us-ascii?Q?e8oDMGmEujkb8DUoslXaGg783ROgEMPGhoHexCIRMzERQcQu+tqRI5bJQdl7?=
- =?us-ascii?Q?KriAvB1CPXL6XsNodNQnRDu71Iy4KGezMziZdssYc5l9Nioa0hC9IcYaz/s/?=
- =?us-ascii?Q?YG+r3p0tCLEWLMxQzRRon/scFzDdAKHy63zTsRxD7minOIBoc0XsCPnn1w8Q?=
- =?us-ascii?Q?Qzz5yLoJP1714D2Tm+jCjl5/UbhDNJj75KhA5Dp4lbW6KWGeqTXDzncLxoOf?=
- =?us-ascii?Q?mQumgc8wrlwXZWWJpqADSkqUEiy/algmt0Cc4nsIkRhEkLIEOMIj3ysRjViz?=
- =?us-ascii?Q?DLIIFLeuWV0qE9fPVEFmkRn/b73AiLN88N6SgJN26wYaukny7hzxLgRxOII5?=
- =?us-ascii?Q?PUDlO9zM7VJXFmXkDKfbO4V8w7soZ3kWJ/VFB0xGn3PZpPDtWfTSaJqvZu6V?=
- =?us-ascii?Q?kYZakFNop4s6DUyfQJ9Q41mAaFsorzwxpgK2NSGFXeaRF+HGYwsRo9ahpk4z?=
- =?us-ascii?Q?TGv5jtvdfKsa5HnvVx088+hQMu9+UzU3ZxbPAxEN5BzE5OX2opQ/iGLtX3F0?=
- =?us-ascii?Q?n5mBCWW7uvw99D7P3YUMouxnSjPvJQnkh/hRTVQ1pcKWqqtX2MOvovp7TDHj?=
- =?us-ascii?Q?Bg=3D=3D?=
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: 
-	94S2vKx9MCG9926wWgCAMfK/uOHrCn604BdXn8basRrZAzz8qgtIxjEoGOley9oOWAjIv00N2eZETfprtKWX1z6suwIreEn7S3wDQ9R/WzrdFx1aMoCJYZsiR/jsSXORXXfc4BMQ+WeCrx3xmc7EjMKtBIHsSojR/X9UsMmdeXeLA2Bg1zOldiAtHu4wrQo1Zh0hczgiVijO2x8Oug66J8noEgZ03UAKWQyn9W18eiG7CHdePE335Ohuneg3A59U1qAH6Y3toM9p+MbNScwWEQ3IcxGQpSremfUA2dnmTnXvDMaFKCFbQZ+cO22drwy+Lg1VpcirD77kIcMInRNJHPh30+JEt/4vbGqpIHzWYkzSRET0tyQHJX1Lynu+dpGYjK/AJhKs1iZ8FFqzRDZAIjaIKmHQ1OupkiizmD6UsT8mWOitS/0nmsiAwgw/+oB99yfH7Mz3QcRcl7wdAYA/eccgrKRqmsg4Z/1VjFI4kBrl2DRXspqCQjlh8zf+RFCUAW1GyZ6gs756t5RJBbRUr9AMvnLO7dVhTLR8blcWID3VyTF7IKk/8wlT1k4GTYOxRLAlkVVA/RIcXYMgbrAX4auiRJtnyfukYAhG5JQXGnY=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5dc3239a-c4da-402f-88fc-08dc6ec63900
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR10MB3113.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 May 2024 18:48:02.0738
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: rWmc3Lv6YCjvTtyfPsQZYkfQH1QSbM5++C3eeacx6dDSHt+trkaGvLoRVqlw6elo7Mvt9Ji7/Q80NVFmhADgy7fJCjVWqgehN+1HK0EN36g=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ2PR10MB7581
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.650,FMLib:17.11.176.26
- definitions=2024-05-07_11,2024-05-06_02,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 adultscore=0 malwarescore=0
- mlxlogscore=999 phishscore=0 mlxscore=0 suspectscore=0 spamscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2405010000
- definitions=main-2405070132
-X-Proofpoint-GUID: snd6VzX7Tvy98yKj--7pFMjwlGuXYLna
-X-Proofpoint-ORIG-GUID: snd6VzX7Tvy98yKj--7pFMjwlGuXYLna
+References: <20240504003006.3303334-1-andrii@kernel.org> <20240504003006.3303334-3-andrii@kernel.org>
+ <gn5i3p6w7ih3pabh6r3vryyauotiajpfnd4ftdn4akt7f242pa@thxj3gzzofnl>
+In-Reply-To: <gn5i3p6w7ih3pabh6r3vryyauotiajpfnd4ftdn4akt7f242pa@thxj3gzzofnl>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Tue, 7 May 2024 11:52:30 -0700
+Message-ID: <CAEf4BzY2c8X--Yufh3jApU3uUK3Qb4BJRNqWpCO8NOGJ6fVryg@mail.gmail.com>
+Subject: Re: [PATCH 2/5] fs/procfs: implement efficient VMA querying API for /proc/<pid>/maps
+To: "Liam R. Howlett" <Liam.Howlett@oracle.com>, Andrii Nakryiko <andrii@kernel.org>, 
+	linux-fsdevel@vger.kernel.org, brauner@kernel.org, viro@zeniv.linux.org.uk, 
+	akpm@linux-foundation.org, linux-kernel@vger.kernel.org, bpf@vger.kernel.org, 
+	gregkh@linuxfoundation.org, linux-mm@kvack.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-[Changes from V1:
-- The warning to disable is -Wmaybe-uninitialized, not -Wuninitialized.
-- This warning is only supported in GCC.]
+On Tue, May 7, 2024 at 11:10=E2=80=AFAM Liam R. Howlett <Liam.Howlett@oracl=
+e.com> wrote:
+>
+> * Andrii Nakryiko <andrii@kernel.org> [240503 20:30]:
+> > /proc/<pid>/maps file is extremely useful in practice for various tasks
+> > involving figuring out process memory layout, what files are backing an=
+y
+> > given memory range, etc. One important class of applications that
+> > absolutely rely on this are profilers/stack symbolizers. They would
+> > normally capture stack trace containing absolute memory addresses of
+> > some functions, and would then use /proc/<pid>/maps file to file
+> > corresponding backing ELF files, file offsets within them, and then
+> > continue from there to get yet more information (ELF symbols, DWARF
+> > information) to get human-readable symbolic information.
+> >
+> > As such, there are both performance and correctness requirement
+> > involved. This address to VMA information translation has to be done as
+> > efficiently as possible, but also not miss any VMA (especially in the
+> > case of loading/unloading shared libraries).
+> >
+> > Unfortunately, for all the /proc/<pid>/maps file universality and
+> > usefulness, it doesn't fit the above 100%.
+> >
+> > First, it's text based, which makes its programmatic use from
+> > applications and libraries unnecessarily cumbersome and slow due to the
+> > need to do text parsing to get necessary pieces of information.
+> >
+> > Second, it's main purpose is to emit all VMAs sequentially, but in
+> > practice captured addresses would fall only into a small subset of all
+> > process' VMAs, mainly containing executable text. Yet, library would
+> > need to parse most or all of the contents to find needed VMAs, as there
+> > is no way to skip VMAs that are of no use. Efficient library can do the
+> > linear pass and it is still relatively efficient, but it's definitely a=
+n
+> > overhead that can be avoided, if there was a way to do more targeted
+> > querying of the relevant VMA information.
+> >
+> > Another problem when writing generic stack trace symbolization library
+> > is an unfortunate performance-vs-correctness tradeoff that needs to be
+> > made. Library has to make a decision to either cache parsed contents of
+> > /proc/<pid>/maps for service future requests (if application requests t=
+o
+> > symbolize another set of addresses, captured at some later time, which
+> > is typical for periodic/continuous profiling cases) to avoid higher
+> > costs of needed to re-parse this file or caching the contents in memory
+> > to speed up future requests. In the former case, more memory is used fo=
+r
+> > the cache and there is a risk of getting stale data if application
+> > loaded/unloaded shared libraries, or otherwise changed its set of VMAs
+> > through additiona mmap() calls (and other means of altering memory
+> > address space). In the latter case, it's the performance hit that comes
+> > from re-opening the file and re-reading/re-parsing its contents all ove=
+r
+> > again.
+> >
+> > This patch aims to solve this problem by providing a new API built on
+> > top of /proc/<pid>/maps. It is ioctl()-based and built as a binary
+> > interface, avoiding the cost and awkwardness of textual representation
+> > for programmatic use. It's designed to be extensible and
+> > forward/backward compatible by including user-specified field size and
+> > using copy_struct_from_user() approach. But, most importantly, it allow=
+s
+> > to do point queries for specific single address, specified by user. And
+> > this is done efficiently using VMA iterator.
+> >
+> > User has a choice to pick either getting VMA that covers provided
+> > address or -ENOENT if none is found (exact, least surprising, case). Or=
+,
+> > with an extra query flag (PROCFS_PROCMAP_EXACT_OR_NEXT_VMA), they can
+> > get either VMA that covers the address (if there is one), or the closes=
+t
+> > next VMA (i.e., VMA with the smallest vm_start > addr). The later allow=
+s
+> > more efficient use, but, given it could be a surprising behavior,
+> > requires an explicit opt-in.
+> >
+> > Basing this ioctl()-based API on top of /proc/<pid>/maps's FD makes
+> > sense given it's querying the same set of VMA data. All the permissions
+> > checks performed on /proc/<pid>/maps opening fit here as well.
+> > ioctl-based implementation is fetching remembered mm_struct reference,
+> > but otherwise doesn't interfere with seq_file-based implementation of
+> > /proc/<pid>/maps textual interface, and so could be used together or
+> > independently without paying any price for that.
+> >
+> > There is one extra thing that /proc/<pid>/maps doesn't currently
+> > provide, and that's an ability to fetch ELF build ID, if present. User
+> > has control over whether this piece of information is requested or not
+> > by either setting build_id_size field to zero or non-zero maximum buffe=
+r
+> > size they provided through build_id_addr field (which encodes user
+> > pointer as __u64 field).
+> >
+> > The need to get ELF build ID reliably is an important aspect when
+> > dealing with profiling and stack trace symbolization, and
+> > /proc/<pid>/maps textual representation doesn't help with this,
+> > requiring applications to open underlying ELF binary through
+> > /proc/<pid>/map_files/<start>-<end> symlink, which adds an extra
+> > permissions implications due giving a full access to the binary from
+> > (potentially) another process, while all application is interested in i=
+s
+> > build ID. Giving an ability to request just build ID doesn't introduce
+> > any additional security concerns, on top of what /proc/<pid>/maps is
+> > already concerned with, simplifying the overall logic.
+> >
+> > Kernel already implements build ID fetching, which is used from BPF
+> > subsystem. We are reusing this code here, but plan a follow up changes
+> > to make it work better under more relaxed assumption (compared to what
+> > existing code assumes) of being called from user process context, in
+> > which page faults are allowed. BPF-specific implementation currently
+> > bails out if necessary part of ELF file is not paged in, all due to
+> > extra BPF-specific restrictions (like the need to fetch build ID in
+> > restrictive contexts such as NMI handler).
+> >
+> > Note also, that fetching VMA name (e.g., backing file path, or special
+> > hard-coded or user-provided names) is optional just like build ID. If
+> > user sets vma_name_size to zero, kernel code won't attempt to retrieve
+> > it, saving resources.
+> >
+> > Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+> > ---
+> >  fs/proc/task_mmu.c      | 165 ++++++++++++++++++++++++++++++++++++++++
+> >  include/uapi/linux/fs.h |  32 ++++++++
+> >  2 files changed, 197 insertions(+)
+> >
+> > diff --git a/fs/proc/task_mmu.c b/fs/proc/task_mmu.c
+> > index 8e503a1635b7..cb7b1ff1a144 100644
+> > --- a/fs/proc/task_mmu.c
+> > +++ b/fs/proc/task_mmu.c
+> > @@ -22,6 +22,7 @@
+> >  #include <linux/pkeys.h>
+> >  #include <linux/minmax.h>
+> >  #include <linux/overflow.h>
+> > +#include <linux/buildid.h>
+> >
+> >  #include <asm/elf.h>
+> >  #include <asm/tlb.h>
+> > @@ -375,11 +376,175 @@ static int pid_maps_open(struct inode *inode, st=
+ruct file *file)
+> >       return do_maps_open(inode, file, &proc_pid_maps_op);
+> >  }
+> >
+> > +static int do_procmap_query(struct proc_maps_private *priv, void __use=
+r *uarg)
+> > +{
+> > +     struct procfs_procmap_query karg;
+> > +     struct vma_iterator iter;
+> > +     struct vm_area_struct *vma;
+> > +     struct mm_struct *mm;
+> > +     const char *name =3D NULL;
+> > +     char build_id_buf[BUILD_ID_SIZE_MAX], *name_buf =3D NULL;
+> > +     __u64 usize;
+> > +     int err;
+> > +
+> > +     if (copy_from_user(&usize, (void __user *)uarg, sizeof(usize)))
+> > +             return -EFAULT;
+> > +     if (usize > PAGE_SIZE)
+> > +             return -E2BIG;
+> > +     if (usize < offsetofend(struct procfs_procmap_query, query_addr))
+> > +             return -EINVAL;
+> > +     err =3D copy_struct_from_user(&karg, sizeof(karg), uarg, usize);
+> > +     if (err)
+> > +             return err;
+> > +
+> > +     if (karg.query_flags & ~PROCFS_PROCMAP_EXACT_OR_NEXT_VMA)
+> > +             return -EINVAL;
+> > +     if (!!karg.vma_name_size !=3D !!karg.vma_name_addr)
+> > +             return -EINVAL;
+> > +     if (!!karg.build_id_size !=3D !!karg.build_id_addr)
+> > +             return -EINVAL;
+> > +
+> > +     mm =3D priv->mm;
+> > +     if (!mm || !mmget_not_zero(mm))
+> > +             return -ESRCH;
+> > +     if (mmap_read_lock_killable(mm)) {
+> > +             mmput(mm);
+> > +             return -EINTR;
+> > +     }
+>
+> Using the rcu lookup here will allow for more success rate with less
+> lock contention.
+>
 
-The BPF selftest verifier_global_subprogs.c contains code that
-purposedly performs out of bounds access to memory, to check whether
-the kernel verifier is able to catch them.  For example:
+If you have any code pointers, I'd appreciate it. If not, I'll try to
+find it myself, no worries.
 
-  __noinline int global_unsupp(const int *mem)
-  {
-	if (!mem)
-		return 0;
-	return mem[100]; /* BOOM */
-  }
+> > +
+> > +     vma_iter_init(&iter, mm, karg.query_addr);
+> > +     vma =3D vma_next(&iter);
+> > +     if (!vma) {
+> > +             err =3D -ENOENT;
+> > +             goto out;
+> > +     }
+> > +     /* user wants covering VMA, not the closest next one */
+> > +     if (!(karg.query_flags & PROCFS_PROCMAP_EXACT_OR_NEXT_VMA) &&
+> > +         vma->vm_start > karg.query_addr) {
+> > +             err =3D -ENOENT;
+> > +             goto out;
+> > +     }
+>
+> The interface you are using is a start address to search from to the end
+> of the address space, so this won't work as you intended with the
+> PROCFS_PROCMAP_EXACT_OR_NEXT_VMA flag.  I do not think the vma iterator
 
-With -O1 and higher and no inlining, GCC notices this fact and emits a
-"maybe uninitialized" warning.  This is by design.  Note that the
-emission of these warnings is highly dependent on the precise
-optimizations that are performed.
+Maybe the name isn't the best, by "EXACT" here I meant "VMA that
+exactly covers provided address", so maybe "COVERING_OR_NEXT_VMA"
+would be better wording.
 
-This patch adds a compiler pragma to verifier_global_subprogs.c to
-ignore these warnings.
+With that out of the way, I think this API works exactly how I expect
+it to work:
 
-Tested in bpf-next master.
-No regressions.
+# cat /proc/3406/maps | grep -C1 7f42099fe000
+7f42099fa000-7f42099fc000 rw-p 00000000 00:00 0
+7f42099fc000-7f42099fe000 r--p 00000000 00:21 109331
+  /usr/local/fbcode/platform010-compat/lib/libz.so.1.2.8
+7f42099fe000-7f4209a0e000 r-xp 00002000 00:21 109331
+  /usr/local/fbcode/platform010-compat/lib/libz.so.1.2.8
+7f4209a0e000-7f4209a14000 r--p 00012000 00:21 109331
+  /usr/local/fbcode/platform010-compat/lib/libz.so.1.2.8
 
-Signed-off-by: Jose E. Marchesi <jose.marchesi@oracle.com>
-Cc: david.faust@oracle.com
-Cc: cupertino.miranda@oracle.com
-Cc: Yonghong Song <yonghong.song@linux.dev>
-Cc: Eduard Zingerman <eddyz87@gmail.com>
-Acked-by: Yonghong Song <yonghong.song@linux.dev>
----
- .../testing/selftests/bpf/progs/verifier_global_subprogs.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+# cat addrs.txt
+0x7f42099fe010
 
-diff --git a/tools/testing/selftests/bpf/progs/verifier_global_subprogs.c b/tools/testing/selftests/bpf/progs/verifier_global_subprogs.c
-index baff5ffe9405..a9fc30ed4d73 100644
---- a/tools/testing/selftests/bpf/progs/verifier_global_subprogs.c
-+++ b/tools/testing/selftests/bpf/progs/verifier_global_subprogs.c
-@@ -8,6 +8,13 @@
- #include "xdp_metadata.h"
- #include "bpf_kfuncs.h"
- 
-+/* The compiler may be able to detect the access to uninitialized
-+   memory in the routines performing out of bound memory accesses and
-+   emit warnings about it.  This is the case of GCC. */
-+#if !defined(__clang__)
-+#pragma GCC diagnostic ignored "-Wmaybe-uninitialized"
-+#endif
-+
- int arr[1];
- int unkn_idx;
- const volatile bool call_dead_subprog = false;
--- 
-2.30.2
+# ./procfs_query -f addrs.txt -p 3406 -v -Q
+PID: 3406
+PATH: addrs.txt
+READ 1 addrs!
+SORTED ADDRS (1):
+ADDR #0: 0x7f42099fe010
+VMA FOUND (addr 7f42099fe010): 7f42099fe000-7f4209a0e000 r-xp 00002000
+00:21 109331 /usr/local/fbcode/platform010-compat/lib/libz.so.1.2.8
+(build ID: NO, 0 bytes)
+RESOLVED ADDRS (1):
+RESOLVED   #0: 0x7f42099fe010 -> OFF 0x2010 NAME
+/usr/local/fbcode/platform010-compat/lib/libz.so.1.2.8
 
+You can see above that for the requested 0x7f42099fe010 address we got
+a VMA that starts before this address: 7f42099fe000-7f4209a0e000,
+which is what we want.
+
+Before submitting I ran the tool with /proc/<pid>/maps and ioctl to
+"resolve" the exact same set of addresses and I compared results. They
+were identical.
+
+
+Note, there is a small bug in the tool I added in patch #5. I changed
+`-i` argument to `-Q` at the very last moment and haven't updated the
+code in one place. But other than that I didn't change anything. For
+the above output, I added "VMA FOUND" verbose logging to see all the
+details of VMA, not just resolved offset. I'll add that in v2.
+
+> has the desired interface you want as the single address lookup doesn't
+> use the vma iterator.  I'd just run the vma_next() and check the limits.
+> See find_exact_vma() for the limit checks.
+>
+> > +
+> > +     karg.vma_start =3D vma->vm_start;
+> > +     karg.vma_end =3D vma->vm_end;
+> > +
+
+[...]
 
