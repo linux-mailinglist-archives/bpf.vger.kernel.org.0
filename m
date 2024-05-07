@@ -1,156 +1,85 @@
-Return-Path: <bpf+bounces-28992-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-28993-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id F28CC8BF301
-	for <lists+bpf@lfdr.de>; Wed,  8 May 2024 02:03:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 40B848BF314
+	for <lists+bpf@lfdr.de>; Wed,  8 May 2024 02:05:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7F8E51F215B2
-	for <lists+bpf@lfdr.de>; Wed,  8 May 2024 00:03:40 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E9E431F221F0
+	for <lists+bpf@lfdr.de>; Wed,  8 May 2024 00:05:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D6A467F7FF;
-	Tue,  7 May 2024 23:32:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F2D8E132C3F;
+	Tue,  7 May 2024 23:41:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="kLgbb4QD"
+	dkim=pass (2048-bit key) header.d=motorola.com header.i=@motorola.com header.b="2UtulqaN"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-qt1-f174.google.com (mail-qt1-f174.google.com [209.85.160.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0a-00823401.pphosted.com (mx0a-00823401.pphosted.com [148.163.148.104])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93E4784FCD
-	for <bpf@vger.kernel.org>; Tue,  7 May 2024 23:32:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7391380BE5;
+	Tue,  7 May 2024 23:41:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.148.104
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715124771; cv=none; b=BKVNTl+TxOKOwHL7jGwYuJGo+juRANYxUIdTHZslqUvKuESJPW7/VYjpsS1A/swsEK3lo39dVMSgC9sDuB2Y8jatN4FsbiQByBHip4YCu6+MtY5bSqBwsikmyEC4E32EBF2vClOd+CwU0wiI+fhdhM9mOZ/euKCtXhQ/Yf2eXNs=
+	t=1715125270; cv=none; b=Vq9Iu5lF7++eXzgq5JtVVQxLJrq1kmSb84xVoHp5qGdiw7oW+ae4pqzHhbaRQ9ZcHREftzSN0Fcmg8Sd7WCu9JpMMcGD9QevauXbNXj6XFmjJ1xCgggeebwA1z4gcjbVrkezJgRhF2zOTbSZxCGKMSuED0a2aiPQIvo17hUqcNw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715124771; c=relaxed/simple;
-	bh=S2uBTZg89QC23t/2WuaFpXUGHgJQVwlXA9YYtSljwBo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=hDgAiIGFvpP24WSOrkLnvDSjmkIhz1jrsSpQXwJ9GwAr+0EG8mneV1pzVZdtT52iPsJsWAzeAUeWT0+UUlUJD54aeJx1eOJlUEqCCgsyob6zQEylK4kYgDEUAOzqQ1rQ4YfiAkHsFVW2FIZgNQ/glrk2NQFE/6sdnLFjerJPanc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=kLgbb4QD; arc=none smtp.client-ip=209.85.160.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
-Received: by mail-qt1-f174.google.com with SMTP id d75a77b69052e-43ad4097aefso11677571cf.2
-        for <bpf@vger.kernel.org>; Tue, 07 May 2024 16:32:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google; t=1715124768; x=1715729568; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=cP7hm5cgGIFObZwmlEXmT4H6ZLJ5hLejs2qh73QUpsY=;
-        b=kLgbb4QDiYjjhbVyqnASJTqYVBMpFZOu0trzJrO++O0tgH216w9YbqRM7XZIqXipzP
-         DU7LaKiHJo+E9DfRMOf3yG/lgGvIKPfZegBXl5VnL64GTcnVXxbA2wVHsGQ+Grsyo0fc
-         eSCOy1wI0RHUjdPVCTMH8wp2yDyyMFvV/XUHhkbTPNutQ72aqilYR3nVWDQQVwt5D1z2
-         CKQtLDYFc1SFzbSLM1F6oA/FT669ybhGR9UhqpSu7S/9p/Y0yeuCrv1BtOQGkQuoiPKM
-         IRDQC38DkPdYqATOLE4nt7CYXbckLb/80m/t3XhzxmOZ+VOgARatj3XQtpjCKsgKUATY
-         kZXg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1715124768; x=1715729568;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=cP7hm5cgGIFObZwmlEXmT4H6ZLJ5hLejs2qh73QUpsY=;
-        b=Hswsvq544uRsqp0pH1KwHUqHhTuJgfKlcOvBdjP3+85uI7iQPDTUkxRgl4ABEUw579
-         SOIjQBjT2Ec6YLOea96hQ98Y+RBdRnCDFAmwjVaka32ZprEYXG1Q6nwJhrq1I7tbBPCT
-         lJtb4Oucb/1x3gygMX4g+uuMotQFlMXDLUriTxSc0JaYzp6nVFmErxXsot4coOZLCkhR
-         1lz9p6R3xvVkMMr9uippo4and0u3PcCiVVXpNog085xDt/9jF/KLCHBoLcpsHiWLR+Kf
-         U2TlAKd6DX8vu0Pa1epCWkd8qvlJgOcZCYnGDoWQCOFc5C4qU4VMUC1fOy50Tp539lye
-         E/Kg==
-X-Forwarded-Encrypted: i=1; AJvYcCWsL9ZNVEpC2lYbEQNLvZ5heTJGWn8uqDw8nW2YZaC/p1UcAwFDAC/UoFoq6DVBnqNIdLw4mEWZt1wB7ehq+idBxntY
-X-Gm-Message-State: AOJu0YxaaE8J3dFQLz+KJy6/E02kelQ0Flxicd1Ie7M3wiw+oyZUNXvm
-	P8iuSuIjncKPs8NO9Mz0MUmbF6B/CBT7mtWBx12OuuZ9X86+qigYoyQtiP3JXy0=
-X-Google-Smtp-Source: AGHT+IHk+yKjIhj9AR797n1JaOj9Z/2rWjQRz+xGELrz6+y3H07eSktk/E/cHfzwS8PtlVFgYI8C4w==
-X-Received: by 2002:a05:622a:60c:b0:434:b593:2d25 with SMTP id d75a77b69052e-43dbf0b35e3mr10728951cf.66.1715124768502;
-        Tue, 07 May 2024 16:32:48 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-142-68-80-239.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.80.239])
-        by smtp.gmail.com with ESMTPSA id fb20-20020a05622a481400b00434efa0feaasm6953842qtb.1.2024.05.07.16.32.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 07 May 2024 16:32:48 -0700 (PDT)
-Received: from jgg by wakko with local (Exim 4.95)
-	(envelope-from <jgg@ziepe.ca>)
-	id 1s4UIh-0003NT-Cq;
-	Tue, 07 May 2024 20:32:47 -0300
-Date: Tue, 7 May 2024 20:32:47 -0300
-From: Jason Gunthorpe <jgg@ziepe.ca>
-To: Pavel Begunkov <asml.silence@gmail.com>
-Cc: Mina Almasry <almasrymina@google.com>,
-	Christoph Hellwig <hch@infradead.org>, netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-	linux-alpha@vger.kernel.org, linux-mips@vger.kernel.org,
-	linux-parisc@vger.kernel.org, sparclinux@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
-	bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
-	linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Richard Henderson <richard.henderson@linaro.org>,
-	Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-	Matt Turner <mattst88@gmail.com>,
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	"James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-	Helge Deller <deller@gmx.de>, Andreas Larsson <andreas@gaisler.com>,
-	Jesper Dangaard Brouer <hawk@kernel.org>,
-	Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Arnd Bergmann <arnd@arndb.de>, Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
-	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-	Steffen Klassert <steffen.klassert@secunet.com>,
-	Herbert Xu <herbert@gondor.apana.org.au>,
-	David Ahern <dsahern@kernel.org>,
-	Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-	Shuah Khan <shuah@kernel.org>,
-	Sumit Semwal <sumit.semwal@linaro.org>,
-	Christian =?utf-8?B?S8O2bmln?= <christian.koenig@amd.com>,
-	Amritha Nambiar <amritha.nambiar@intel.com>,
-	Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-	Alexander Mikhalitsyn <alexander@mihalicyn.com>,
-	Kaiyuan Zhang <kaiyuanz@google.com>,
-	Christian Brauner <brauner@kernel.org>,
-	Simon Horman <horms@kernel.org>,
-	David Howells <dhowells@redhat.com>,
-	Florian Westphal <fw@strlen.de>,
-	Yunsheng Lin <linyunsheng@huawei.com>,
-	Kuniyuki Iwashima <kuniyu@amazon.com>, Jens Axboe <axboe@kernel.dk>,
-	Arseniy Krasnov <avkrasnov@salutedevices.com>,
-	Aleksander Lobakin <aleksander.lobakin@intel.com>,
-	Michael Lass <bevan@bi-co.net>, Jiri Pirko <jiri@resnulli.us>,
-	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-	Lorenzo Bianconi <lorenzo@kernel.org>,
-	Richard Gobert <richardbgobert@gmail.com>,
-	Sridhar Samudrala <sridhar.samudrala@intel.com>,
-	Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
-	Johannes Berg <johannes.berg@intel.com>,
-	Abel Wu <wuyun.abel@bytedance.com>,
-	Breno Leitao <leitao@debian.org>, David Wei <dw@davidwei.uk>,
-	Shailend Chand <shailend@google.com>,
-	Harshitha Ramamurthy <hramamurthy@google.com>,
-	Shakeel Butt <shakeel.butt@linux.dev>,
-	Jeroen de Borst <jeroendb@google.com>,
-	Praveen Kaligineedi <pkaligineedi@google.com>
-Subject: Re: [RFC PATCH net-next v8 02/14] net: page_pool: create hooks for
- custom page providers
-Message-ID: <20240507233247.GK4718@ziepe.ca>
-References: <CAHS8izM0=xc2UhUxhnF_BixuFs5VaDV9W1jbso1K+Rg=35NzeA@mail.gmail.com>
- <ZjjHUh1eINPg1wkn@infradead.org>
- <20b1c2d9-0b37-414c-b348-89684c0c0998@gmail.com>
- <20240507161857.GA4718@ziepe.ca>
- <ZjpVfPqGNfE5N4bl@infradead.org>
- <CAHS8izPH+sRLSiZ7vbrNtRdHrFEf8XQ61XAyHuxRSL9Jjy8YbQ@mail.gmail.com>
- <20240507164838.GG4718@ziepe.ca>
- <0d5da361-cc7b-46e9-a635-9a7a4c208444@gmail.com>
- <20240507175644.GJ4718@ziepe.ca>
- <6a50d01a-b5b9-4699-9d58-94e5f8f81c13@gmail.com>
+	s=arc-20240116; t=1715125270; c=relaxed/simple;
+	bh=DzIBNyM5bHb69k+2aGT791vy83w8DRLKb5e6PQS5kxM=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=LQp2rDA3g1OCIQybaRoFILAD4AiFCi0DPs+M5xp6KYzEgo7Ok/Cjz2y4QjShCH+DRiYYF4pXMzR/skc8FKml18hQHS2fSq78p7ck7m9bGnD4kH/UQQmi7MJ6krQeEIKYKYVTBf3UkKu17WhfQeslyRykfoMfTlPEQK6hIVx7NhA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=motorola.com; spf=pass smtp.mailfrom=motorola.com; dkim=pass (2048-bit key) header.d=motorola.com header.i=@motorola.com header.b=2UtulqaN; arc=none smtp.client-ip=148.163.148.104
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=motorola.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=motorola.com
+Received: from pps.filterd (m0355087.ppops.net [127.0.0.1])
+	by mx0a-00823401.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 447IKCU0011567;
+	Tue, 7 May 2024 23:40:17 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=motorola.com; h=
+	date:from:to:cc:subject:message-id:mime-version:content-type; s=
+	DKIM202306; bh=VGziX56dHq14Bu+7ioE0T28erjDlFCIx9NNqQFIUAWE=; b=2
+	UtulqaNFrOC5ntuxHe963dh2rlvjRFwvJuCuH/nNag5aPI5qzRVFhzB8mLXeox/c
+	nWoVGHcMqheKzyi5Q2lDxbtuoY1ZEOWW9iE5LLb7T8eX9b+KGHb7h2d9x4U4JYP2
+	8/Fp9pn5zWqWBkh2wtv2VNVivxvYQgZYGhYSwn36lbWwbH2kxq7h6MrSMdoK+Rfk
+	aSlLpAYto3KGBMUaIOy9OLkmc+Nxvdqhmh1G7cFpFVQcmLBypZG7gg3d6i67cnsp
+	a2+388UJncykhLYvx/fn9duUaljlEH9QzHmJK064zdtRWNvamyngYyB+7xHnCKji
+	MPrK0O50W0+9ZUikSW2oA==
+Received: from va32lpfpp01.lenovo.com ([104.232.228.21])
+	by mx0a-00823401.pphosted.com (PPS) with ESMTPS id 3xysg68ehu-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 07 May 2024 23:40:17 +0000 (GMT)
+Received: from va32lmmrp02.lenovo.com (va32lmmrp02.mot.com [10.62.176.191])
+	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by va32lpfpp01.lenovo.com (Postfix) with ESMTPS id 4VYvsD1ZjlzgQ3M;
+	Tue,  7 May 2024 23:40:16 +0000 (UTC)
+Received: from ilclasset02 (ilclasset02.mot.com [100.64.49.13])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: mbland)
+	by va32lmmrp02.lenovo.com (Postfix) with ESMTPSA id 4VYvsC5rZXz2VZ3B;
+	Tue,  7 May 2024 23:40:15 +0000 (UTC)
+Date: Tue, 7 May 2024 18:40:14 -0500
+From: Maxwell Bland <mbland@motorola.com>
+To: "open list:BPF [GENERAL] (Safe Dynamic Programs and Tools)" <bpf@vger.kernel.org>
+Cc: Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
+        Yonghong Song <yonghong.song@linux.dev>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Zi Shen Lim <zlim.lnx@gmail.com>, Mark Rutland <mark.rutland@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Mark Brown <broonie@kernel.org>, linux-arm-kernel@lists.infradead.org,
+        open list <linux-kernel@vger.kernel.org>,
+        Josh Poimboeuf <jpoimboe@kernel.org>,
+        Puranjay Mohan <puranjay12@gmail.com>
+Subject: [PATCH bpf-next v3 0/3]  Support kCFI + BPF on arm64
+Message-ID: <fhdcjdzqdqnoehenxbipfaorseeamt3q7fbm7ghe6z5s2chif5@lrhtasolawud>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -159,48 +88,78 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <6a50d01a-b5b9-4699-9d58-94e5f8f81c13@gmail.com>
+X-Proofpoint-ORIG-GUID: 0FthpWwfiD2jFL969mXhLQWi8o5CI2vc
+X-Proofpoint-GUID: 0FthpWwfiD2jFL969mXhLQWi8o5CI2vc
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.650,FMLib:17.11.176.26
+ definitions=2024-05-07_15,2024-05-06_02,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ adultscore=0 clxscore=1011 bulkscore=0 priorityscore=1501 phishscore=0
+ impostorscore=0 spamscore=0 malwarescore=0 suspectscore=0 mlxscore=0
+ mlxlogscore=699 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2405010000 definitions=main-2405070167
 
-On Tue, May 07, 2024 at 08:35:37PM +0100, Pavel Begunkov wrote:
-> On 5/7/24 18:56, Jason Gunthorpe wrote:
-> > On Tue, May 07, 2024 at 06:25:52PM +0100, Pavel Begunkov wrote:
-> > > On 5/7/24 17:48, Jason Gunthorpe wrote:
-> > > > On Tue, May 07, 2024 at 09:42:05AM -0700, Mina Almasry wrote:
-> > > > 
-> > > > > 1. Align with devmem TCP to use udmabuf for your io_uring memory. I
-> > > > > think in the past you said it's a uapi you don't link but in the face
-> > > > > of this pushback you may want to reconsider.
-> > > > 
-> > > > dmabuf does not force a uapi, you can acquire your pages however you
-> > > > want and wrap them up in a dmabuf. No uapi at all.
-> > > > 
-> > > > The point is that dmabuf already provides ops that do basically what
-> > > > is needed here. We don't need ops calling ops just because dmabuf's
-> > > > ops are not understsood or not perfect. Fixup dmabuf.
-> > > 
-> > > Those ops, for example, are used to efficiently return used buffers
-> > > back to the kernel, which is uapi, I don't see how dmabuf can be
-> > > fixed up to cover it.
-> > 
-> > Sure, but that doesn't mean you can't use dma buf for the other parts
-> > of the flow. The per-page lifetime is a different topic than the
-> > refcounting and access of the entire bulk of memory.
-> 
-> Ok, so if we're leaving uapi (and ops) and keep per page/sub-buffer as
-> is, the rest is resolving uptr -> pages, and passing it to page pool in
-> a convenient to page pool format (net_iov).
+In preparation for the BPF summit, I took a look back on BPF-CFI patches
+to check the status and found that there had been no updates for around
+a month, so I went ahead and made the fixes suggested in v2.
 
-I'm not going to pretend to know about page pool details, but dmabuf
-is the way to get the bulk of pages into a pool within the net stack's
-allocator and keep that bulk properly refcounted while.
+This patchset handles emitting proper CFI hashes during JIT, which
+can cause some of the selftests to fail, and handles removing the
+__nocfi tag from bpf_dispatch_*_func on ARM, meaning Clang CFI 
+checks will be generated:
 
-An object like dmabuf is needed for the general case because there are
-not going to be per-page references or otherwise available.
+0000000000fea1e8 <bpf_dispatcher_xdp_func>:
+paciasp
+stp     x29, x30, [sp, #-0x10]!
+mov     x29, sp
++ ldur    w16, [x2, #-0x4]                           
++ movk    w17, #0x1881                               
++ movk    w17, #0xd942, lsl #16                      
++ cmp     w16, w17                                
++ b.eq    0xffff8000810016a0 <bpf_dispatcher_xdp_func+0x24>
++ brk     #0x8222   
+blr     x2
+ldp     x29, x30, [sp], #0x10
+autiasp
+ret
 
-What you seem to want is to alter how the actual allocation flow works
-from that bulk of memory and delay the free. It seems like a different
-topic to me, and honestly hacking into the allocator free function
-seems a bit weird..
+Where ^+ indicates the additional assembly.
 
-Jason
+Credit goes to Puranjay Mohan entirely for this, I just did some fixes,
+hopefully that is OK.
+
+Cc: stable@vger.kernel.org
+
+Changes in v2->v3:
+https://lore.kernel.org/all/20240324211518.93892-1-puranjay12@gmail.com/
+- Simplify cfi_get_func_hash to avoid needless failure case
+- Use DEFINE_CFI_TYPE as suggested by Mark Rutland
+
+Changes in v1->v2:
+https://lore.kernel.org/bpf/20240227151115.4623-1-puranjay12@gmail.com/
+- Rebased on latest bpf-next/master
+
+Mark Rutland (1):
+  cfi: add C CFI type macro
+
+Maxwell Bland (1):
+  arm64/cfi,bpf: Use DEFINE_CFI_TYPE in arm64
+
+Puranjay Mohan (1):
+  arm64/cfi,bpf: Support kCFI + BPF on arm64
+
+ arch/arm64/include/asm/cfi.h    | 23 ++++++++++++++++++++++
+ arch/arm64/kernel/alternative.c | 18 +++++++++++++++++
+ arch/arm64/net/bpf_jit_comp.c   | 18 +++++++++++++++--
+ arch/riscv/kernel/cfi.c         | 34 ++------------------------------
+ arch/x86/kernel/alternative.c   | 35 +++------------------------------
+ include/linux/cfi_types.h       | 23 ++++++++++++++++++++++
+ 6 files changed, 85 insertions(+), 66 deletions(-)
+ create mode 100644 arch/arm64/include/asm/cfi.h
+
+
+base-commit: 329a6720a3ebbc041983b267981ab2cac102de93
+-- 
+2.34.1
+
 
