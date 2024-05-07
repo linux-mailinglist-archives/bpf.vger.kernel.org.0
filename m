@@ -1,229 +1,354 @@
-Return-Path: <bpf+bounces-28756-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-28757-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 227C48BD9FB
-	for <lists+bpf@lfdr.de>; Tue,  7 May 2024 06:05:07 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3CB408BDA7F
+	for <lists+bpf@lfdr.de>; Tue,  7 May 2024 07:07:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CDC3F28451B
-	for <lists+bpf@lfdr.de>; Tue,  7 May 2024 04:05:05 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E20592827BE
+	for <lists+bpf@lfdr.de>; Tue,  7 May 2024 05:07:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DEB3F4EB44;
-	Tue,  7 May 2024 04:05:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 37C7E6BB5B;
+	Tue,  7 May 2024 05:07:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="U3RidpiQ"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HhvsX8Fn"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pj1-f51.google.com (mail-pj1-f51.google.com [209.85.216.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 58D464087F;
-	Tue,  7 May 2024 04:04:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A3D6381C4;
+	Tue,  7 May 2024 05:07:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715054700; cv=none; b=awv+L29xA5iX5LWSDDrQQOz2Eu9L6+kd9wrQJjzgBbm0fZ0ugCaAR/uCnXhz8R/V/BbzjEnJSvc5g4uh0T8HMJUHg6LtJhaEH9SAOF8Gue11xHQL7WqJIMkU5CfGJn/v+0DG8TCcjrpBxX8hEnZi2SxoVF2hCk6H5GkKzdV1nNA=
+	t=1715058430; cv=none; b=RYjrclG1wDyzfk3bt+aL265L0u8mapEIYh/D3RtDbqcib3lthKl+x8EU4I1xttG7m+WI1/SxkT3i1rQryoIE9YBPbszxlnT9NFtoJKVTvbMnY3iJqfGtpm0XTM0KRNk6l3WdKp/d4vvJuIT3SGmGck3hfedJpzn1QgM5b6OibgU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715054700; c=relaxed/simple;
-	bh=RVnEF18pmo4hzHCpqUvXE5nta1BVMS7Kjs1hKQO8KSs=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=ZeVXUOMXn0n04nSH1jD1XVWr6moG/5j4a7q8O30K//rda31cfLBxXy/WrymQW4z4E1/LA44kLDUbIOwTU0aerGlyP1e2l2fVh5sLG7282JCu1+WOD+KRtWnVm0KfOlmBeIbOvLCb6goi9GD3ep7cFuVywc858deygNG1mPFjFl8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=U3RidpiQ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8F5AFC2BBFC;
-	Tue,  7 May 2024 04:04:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1715054699;
-	bh=RVnEF18pmo4hzHCpqUvXE5nta1BVMS7Kjs1hKQO8KSs=;
-	h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-	b=U3RidpiQoAFe0PkC0w2ZDoeNacGei0vDvEgwD/KvUkQhdB8m1pnbQG1TWPxA8jz1n
-	 weACrG3kV9Cb7geopsoTeOxF4XlvDLShrf4S+bK1+wA/j+fOySHxZRCpa9GrFHiS63
-	 4ZKCaUkA9h1H4U/+Wm+rsQmrYzN1AMzozd4H0G+DAucQAiZRacwOJJ4PCW6cTonuOr
-	 WlCEjB/zGkUzNGuwrLYwsSblHVNcyFUh6LyCzSx/8qIeel2kVtA6pfq+QSdFzCzjAU
-	 69gZqSCdOaoMOEmCko8HIxww/2wsyv9kyBjjXilDqM6Rn2B21U6wQCKH4EPZECh0j6
-	 5awf+eCDVoWrQ==
-Message-ID: <8201104dcc0b2b1e26a915315083e2098fb420b3.camel@kernel.org>
-Subject: Re: [PATCH bpf-next v4 3/3] selftests/bpf: Support nonblock for
- send_recv_data
-From: Geliang Tang <geliang@kernel.org>
-To: Martin KaFai Lau <martin.lau@linux.dev>
-Cc: Geliang Tang <tanggeliang@kylinos.cn>, Andrii Nakryiko
- <andrii@kernel.org>,  Eduard Zingerman <eddyz87@gmail.com>, Mykola Lysenko
- <mykolal@fb.com>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann
- <daniel@iogearbox.net>, Song Liu <song@kernel.org>, Yonghong Song
- <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, KP
- Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo
- <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,  Shuah Khan
- <shuah@kernel.org>, bpf@vger.kernel.org, mptcp@lists.linux.dev, 
- linux-kselftest@vger.kernel.org
-Date: Tue, 07 May 2024 12:04:48 +0800
-In-Reply-To: <12aab271-da72-49b4-ac91-2091b6889856@linux.dev>
-References: <cover.1712729342.git.tanggeliang@kylinos.cn>
-	 <9cd358958245f8ec87c4f553779aa4243f967a2f.1712729342.git.tanggeliang@kylinos.cn>
-	 <12aab271-da72-49b4-ac91-2091b6889856@linux.dev>
-Autocrypt: addr=geliang@kernel.org; prefer-encrypt=mutual;
- keydata=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
- TO0tfEdfAX7IENcV87h2yAFBZkaA==
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.52.0-1build2 
+	s=arc-20240116; t=1715058430; c=relaxed/simple;
+	bh=uWQxqjs6kfqAnNXz7BtR6USEjXO0E3uBp/EeYliL4HQ=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=gNLf0HgyqSisy3a0sUkir3UzgYjLZOLOLWU80hOp6wD7UZHaKxI41elTSEKSNlcZD+j+WcmfPl6b0FUwL2WmiozK3qJR0mqtHf0mVmj66TKby2D/bfzPzH18lJWAzd/05abBQMYc+h5KYphKAK5vrDSfUxSy3b2hFmN4z9j65+I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=HhvsX8Fn; arc=none smtp.client-ip=209.85.216.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f51.google.com with SMTP id 98e67ed59e1d1-2a2da57ab3aso2109131a91.3;
+        Mon, 06 May 2024 22:07:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1715058428; x=1715663228; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=D8vbZJ5UPiifYuspMMKBbXeF72Brhg4ICn1NMDsG3XQ=;
+        b=HhvsX8FnLmXAld2ITq6UoIYYvVP/4vl2/88nftgcGJpcW1C9YxIBvAxtpHFvddaLTL
+         L2JJkbo3GwV4bFrlUmhKyFerkN7Ee14r8WGiOSzfSeLEV1/PgqXxt3GCv81/+txv3EVl
+         Y0qzwf0HiYOmYFijblRcXy5+f3ja9y+Vy3UfBkzEJmfv608aJlpIMvyq03rOTJkbSghJ
+         mtKtj1EhoupWc+s/gEQcNoEnXUNn0kidtjtIvjW9yRhEny5u/J76wHKwB2kbXDTzWRkd
+         CLYHYKDpvlgij2gOdQg1rLHJg0TgdPvlp32yngDDUkbxNw6zIPQTjyVlUgWLxxcDPMWo
+         HA0Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1715058428; x=1715663228;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=D8vbZJ5UPiifYuspMMKBbXeF72Brhg4ICn1NMDsG3XQ=;
+        b=KBqwV+fxl+7QzjIm2vZX2QUkBe6RmHP8UC+sCLKFyU6rtf8KVKN7yqxgB25ENrBQR4
+         SMP7DWX2zHusoWjMhWwbVE2M4Bfoyc5Y12a+sk4RcvogDidsWDR0tldTXm7DLuhduBK8
+         DixYzyQkJtjfEmwvpIpDobMgbuqO9gGdbMUaVlCa2QCks1uX84jshXvyso4vlJHpr8OV
+         +UEeUAylG+OHoBWaRWglA3Tow/RSZqL+1wtPv2HMmnvujOea9QwL70sDuJsILajuaCNN
+         JzbGpSRowGaFkzpV7MEBEqlYcGa1Zup5EF9mtoxHnCA58JOieseGRMZYnEhRiod20P3f
+         TBsg==
+X-Forwarded-Encrypted: i=1; AJvYcCWgt292lKAbUx6DpxjoVSEjkDBvPurDVFvIN3Nl9TwTH+00Zai+9MpVO4yCZ+Q1hR00YuUch40cLNN9GiFDKswEh3Zq3Vi1ppH5Sa5HUFLsI7/6KEHxDIdW5vSoqHm/DVcPSOBPUFk5GnjceVwFCrjP0YNkZI7ehxeVkTLPAJKE/XaiofYCsXWSYQu3E8mU4Sy74W/uKGXwggu+YRVEh5UBtQ4=
+X-Gm-Message-State: AOJu0YzoY8gPMFmgEIGTfr6CS2Ebk3uoLAR0zr8Uf9o2xTflxsPk5BuM
+	NZUqwzpyd45Ikquvxo7jsNyvC1kbqBBJhWLnclikxEwhGeHKeRQrL+xlqKG/A0+2M29Cg0cQ1NS
+	beT7wRThxcsVF1dRjLkN6DCvSnDk=
+X-Google-Smtp-Source: AGHT+IEB8vQbtVs+3K7IpXxE9aS+S0ebnjARauIth7zOTQsKYLVCTGe39Yqo8hcl7fuF+7QLXoq2DOEb7xuVPYELUqE=
+X-Received: by 2002:a17:90b:38c4:b0:2b4:e4d2:e6f0 with SMTP id
+ nn4-20020a17090b38c400b002b4e4d2e6f0mr3870255pjb.45.1715058428309; Mon, 06
+ May 2024 22:07:08 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20240504003006.3303334-1-andrii@kernel.org> <20240504003006.3303334-6-andrii@kernel.org>
+ <2024050404-rectify-romp-4fdb@gregkh> <CAEf4BzaUgGJVqw_yWOXASHManHQWGQV905Bd-wiaHj-mRob9gw@mail.gmail.com>
+ <CAP-5=fWPig8-CLLBJ_rb3D6eNAKVY7KX_n_HcpGqL7gfe-=XXg@mail.gmail.com>
+ <CAEf4Bzab+sRQ8pzNYxh1BOgjhDF4yCkqcHxy5YZAyT-jef7Acw@mail.gmail.com> <CAP-5=fXv59EmyM7FNnwAp0JjAZjtYhCj3b3FTH7KsHL=k8C6oQ@mail.gmail.com>
+In-Reply-To: <CAP-5=fXv59EmyM7FNnwAp0JjAZjtYhCj3b3FTH7KsHL=k8C6oQ@mail.gmail.com>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Mon, 6 May 2024 22:06:56 -0700
+Message-ID: <CAEf4BzbdGJzMuRgGJE72VFquXL37rS9Ti__wx4f_+kt3yetkEg@mail.gmail.com>
+Subject: Re: [PATCH 5/5] selftests/bpf: a simple benchmark tool for
+ /proc/<pid>/maps APIs
+To: Ian Rogers <irogers@google.com>
+Cc: Greg KH <gregkh@linuxfoundation.org>, Andrii Nakryiko <andrii@kernel.org>, 
+	linux-fsdevel@vger.kernel.org, brauner@kernel.org, viro@zeniv.linux.org.uk, 
+	akpm@linux-foundation.org, linux-kernel@vger.kernel.org, bpf@vger.kernel.org, 
+	linux-mm@kvack.org, Arnaldo Carvalho de Melo <acme@kernel.org>, 
+	"linux-perf-use." <linux-perf-users@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, 2024-04-10 at 14:34 -0700, Martin KaFai Lau wrote:
-> On 4/9/24 11:13 PM, Geliang Tang wrote:
-> > From: Geliang Tang <tanggeliang@kylinos.cn>
-> > 
-> > Some tests, such as the MPTCP bpf tests, require send_recv_data
-> > helper
-> > to run in nonblock mode.
-> > 
-> > This patch adds nonblock support for send_recv_data(). Check if it
-> > is
-> > currently in nonblock mode, and if so, ignore EWOULDBLOCK to
-> > continue
-> > sending and receiving.
-> > 
-> > Signed-off-by: Geliang Tang <tanggeliang@kylinos.cn>
-> > ---
-> >   tools/testing/selftests/bpf/network_helpers.c | 9 ++++++++-
-> >   1 file changed, 8 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/tools/testing/selftests/bpf/network_helpers.c
-> > b/tools/testing/selftests/bpf/network_helpers.c
-> > index 137cd18ef3f2..ca16ef2b648e 100644
-> > --- a/tools/testing/selftests/bpf/network_helpers.c
-> > +++ b/tools/testing/selftests/bpf/network_helpers.c
-> > @@ -555,6 +555,7 @@ struct send_recv_arg {
-> >   static void *send_recv_server(void *arg)
-> >   {
-> >   	struct send_recv_arg *a = (struct send_recv_arg *)arg;
-> > +	int flags = fcntl(a->fd, F_GETFL);
-> >   	ssize_t nr_sent = 0, bytes = 0;
-> >   	char batch[1500];
-> >   	int err = 0, fd;
-> > @@ -578,6 +579,8 @@ static void *send_recv_server(void *arg)
-> >   		if (nr_sent == -1 && errno == EINTR)
-> >   			continue;
-> >   		if (nr_sent == -1) {
-> > +			if (flags & O_NONBLOCK && errno ==
-> > EWOULDBLOCK)
-> 
-> I still don't see why it needs to be a non blocking IO. mptcp should
-> work
-> with blocking IO also, no? Does it really need non blocking IO to
-> make
-> mptcp test work? I would rather stay with blocking IO in selftest as
-> much as
-> possible for simplicity reason.
-> 
-> I am afraid the root cause of the EAGAIN thread has not been figured
-> out yet:
-> https://lore.kernel.org/all/b3943f9a8bf595212b00e96ba850bf32893312cc.camel@kernel.org/
-> 
-> Lets drop patch 3 until it is understood why mptcp needs EAGAIN or
-> non-blocking IO.
-> It feels like there is some flakiness and it should be understood and
-> avoided.
+On Mon, May 6, 2024 at 11:43=E2=80=AFAM Ian Rogers <irogers@google.com> wro=
+te:
+>
+> On Mon, May 6, 2024 at 11:32=E2=80=AFAM Andrii Nakryiko
+> <andrii.nakryiko@gmail.com> wrote:
+> >
+> > On Sat, May 4, 2024 at 10:09=E2=80=AFPM Ian Rogers <irogers@google.com>=
+ wrote:
+> > >
+> > > On Sat, May 4, 2024 at 2:57=E2=80=AFPM Andrii Nakryiko
+> > > <andrii.nakryiko@gmail.com> wrote:
+> > > >
+> > > > On Sat, May 4, 2024 at 8:29=E2=80=AFAM Greg KH <gregkh@linuxfoundat=
+ion.org> wrote:
+> > > > >
+> > > > > On Fri, May 03, 2024 at 05:30:06PM -0700, Andrii Nakryiko wrote:
+> > > > > > Implement a simple tool/benchmark for comparing address "resolu=
+tion"
+> > > > > > logic based on textual /proc/<pid>/maps interface and new binar=
+y
+> > > > > > ioctl-based PROCFS_PROCMAP_QUERY command.
+> > > > >
+> > > > > Of course an artificial benchmark of "read a whole file" vs. "a t=
+iny
+> > > > > ioctl" is going to be different, but step back and show how this =
+is
+> > > > > going to be used in the real world overall.  Pounding on this fil=
+e is
+> > > > > not a normal operation, right?
+> > > > >
+> > > >
+> > > > It's not artificial at all. It's *exactly* what, say, blazesym libr=
+ary
+> > > > is doing (see [0], it's Rust and part of the overall library API, I
+> > > > think C code in this patch is way easier to follow for someone not
+> > > > familiar with implementation of blazesym, but both implementations =
+are
+> > > > doing exactly the same sequence of steps). You can do it even less
+> > > > efficiently by parsing the whole file, building an in-memory lookup
+> > > > table, then looking up addresses one by one. But that's even slower
+> > > > and more memory-hungry. So I didn't even bother implementing that, =
+it
+> > > > would put /proc/<pid>/maps at even more disadvantage.
+> > > >
+> > > > Other applications that deal with stack traces (including perf) wou=
+ld
+> > > > be doing one of those two approaches, depending on circumstances an=
+d
+> > > > level of sophistication of code (and sensitivity to performance).
+> > >
+> > > The code in perf doing this is here:
+> > > https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tr=
+ee/tools/perf/util/synthetic-events.c#n440
+> > > The code is using the api/io.h code:
+> > > https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tr=
+ee/tools/lib/api/io.h
+> > > Using perf to profile perf it was observed time was spent allocating
+> > > buffers and locale related activities when using stdio, so io is a
+> > > lighter weight alternative, albeit with more verbose code than fscanf=
+.
+> > > You could add this as an alternate /proc/<pid>/maps reader, we have a
+> > > similar benchmark in `perf bench internals synthesize`.
+> > >
+> >
+> > If I add a new implementation using this ioctl() into
+> > perf_event__synthesize_mmap_events(), will it be tested from this
+> > `perf bench internals synthesize`? I'm not too familiar with perf code
+> > organization, sorry if it's a stupid question. If not, where exactly
+> > is the code that would be triggered from benchmark?
+>
+> Yes it would be triggered :-)
 
-Hi Martin,
+Ok, I don't exactly know how to interpret the results (and what the
+benchmark is doing), but numbers don't seem to be worse. They actually
+seem to be a bit better.
 
-I finally found the root cause of this issue. It is indeed an MPTCP
-bug. It took me a long time to debug, and the fix is here:
+I pushed my code that adds perf integration to [0]. That commit has
+results, but I'll post them here (with invocation parameters).
+perf-ioctl is the version with ioctl()-based implementation,
+perf-parse is, logically, text-parsing version. Here are the results
+(and see my notes below the results as well):
 
-https://patchwork.kernel.org/project/mptcp/patch/0ccc1c26d27d6ee7be22806a97983d37c6ca548c.1715053270.git.tanggeliang@kylinos.cn/
+TEXT-BASED
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 
-Thank you for insisting on not accepting these work around patches from
-me in the user space, almost hiding a kernel bug.
+# ./perf-parse bench internals synthesize
+# Running 'internals/synthesize' benchmark:
+Computing performance of single threaded perf event synthesis by
+synthesizing events on the perf process itself:
+  Average synthesis took: 80.311 usec (+- 0.077 usec)
+  Average num. events: 32.000 (+- 0.000)
+  Average time per event 2.510 usec
+  Average data synthesis took: 84.429 usec (+- 0.066 usec)
+  Average num. events: 179.000 (+- 0.000)
+  Average time per event 0.472 usec
 
--Geliang
+# ./perf-parse bench internals synthesize
+# Running 'internals/synthesize' benchmark:
+Computing performance of single threaded perf event synthesis by
+synthesizing events on the perf process itself:
+  Average synthesis took: 79.900 usec (+- 0.077 usec)
+  Average num. events: 32.000 (+- 0.000)
+  Average time per event 2.497 usec
+  Average data synthesis took: 84.832 usec (+- 0.074 usec)
+  Average num. events: 180.000 (+- 0.000)
+  Average time per event 0.471 usec
 
-> 
-> Other than the comment in patch 2, the first two patches lgtm. Please
-> respin with
-> the first two patches.
-> 
-> > +				continue;
-> >   			err = -errno;
-> >   			break;
-> >   		}
-> > @@ -599,6 +602,7 @@ static void *send_recv_server(void *arg)
-> >   
-> >   int send_recv_data(int lfd, int fd, uint32_t total_bytes)
-> >   {
-> > +	int flags = fcntl(lfd, F_GETFL);
-> >   	ssize_t nr_recv = 0, bytes = 0;
-> >   	struct send_recv_arg arg = {
-> >   		.fd	= lfd,
-> > @@ -622,8 +626,11 @@ int send_recv_data(int lfd, int fd, uint32_t
-> > total_bytes)
-> >   			       MIN(total_bytes - bytes,
-> > sizeof(batch)), 0);
-> >   		if (nr_recv == -1 && errno == EINTR)
-> >   			continue;
-> > -		if (nr_recv == -1)
-> > +		if (nr_recv == -1) {
-> > +			if (flags & O_NONBLOCK && errno ==
-> > EWOULDBLOCK)
-> > +				continue;
-> >   			break;
-> > +		}
-> >   		bytes += nr_recv;
-> >   	}
-> >   
-> 
-> 
+# ./perf-parse bench internals synthesize --mt -M 8
+# Running 'internals/synthesize' benchmark:
+Computing performance of multi threaded perf event synthesis by
+synthesizing events on CPU 0:
+  Number of synthesis threads: 1
+    Average synthesis took: 36338.100 usec (+- 406.091 usec)
+    Average num. events: 14091.300 (+- 7.433)
+    Average time per event 2.579 usec
+  Number of synthesis threads: 2
+    Average synthesis took: 37071.200 usec (+- 746.498 usec)
+    Average num. events: 14085.900 (+- 1.900)
+    Average time per event 2.632 usec
+  Number of synthesis threads: 3
+    Average synthesis took: 33932.300 usec (+- 626.861 usec)
+    Average num. events: 14085.900 (+- 1.900)
+    Average time per event 2.409 usec
+  Number of synthesis threads: 4
+    Average synthesis took: 33822.700 usec (+- 506.290 usec)
+    Average num. events: 14099.200 (+- 8.761)
+    Average time per event 2.399 usec
+  Number of synthesis threads: 5
+    Average synthesis took: 33348.200 usec (+- 389.771 usec)
+    Average num. events: 14085.900 (+- 1.900)
+    Average time per event 2.367 usec
+  Number of synthesis threads: 6
+    Average synthesis took: 33269.600 usec (+- 350.341 usec)
+    Average num. events: 14084.000 (+- 0.000)
+    Average time per event 2.362 usec
+  Number of synthesis threads: 7
+    Average synthesis took: 32663.900 usec (+- 338.870 usec)
+    Average num. events: 14085.900 (+- 1.900)
+    Average time per event 2.319 usec
+  Number of synthesis threads: 8
+    Average synthesis took: 32748.400 usec (+- 285.450 usec)
+    Average num. events: 14085.900 (+- 1.900)
+    Average time per event 2.325 usec
 
+IOCTL-BASED
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+# ./perf-ioctl bench internals synthesize
+# Running 'internals/synthesize' benchmark:
+Computing performance of single threaded perf event synthesis by
+synthesizing events on the perf process itself:
+  Average synthesis took: 72.996 usec (+- 0.076 usec)
+  Average num. events: 31.000 (+- 0.000)
+  Average time per event 2.355 usec
+  Average data synthesis took: 79.067 usec (+- 0.074 usec)
+  Average num. events: 178.000 (+- 0.000)
+  Average time per event 0.444 usec
+
+# ./perf-ioctl bench internals synthesize
+# Running 'internals/synthesize' benchmark:
+Computing performance of single threaded perf event synthesis by
+synthesizing events on the perf process itself:
+  Average synthesis took: 73.921 usec (+- 0.073 usec)
+  Average num. events: 31.000 (+- 0.000)
+  Average time per event 2.385 usec
+  Average data synthesis took: 80.545 usec (+- 0.070 usec)
+  Average num. events: 178.000 (+- 0.000)
+  Average time per event 0.453 usec
+
+# ./perf-ioctl bench internals synthesize --mt -M 8
+# Running 'internals/synthesize' benchmark:
+Computing performance of multi threaded perf event synthesis by
+synthesizing events on CPU 0:
+  Number of synthesis threads: 1
+    Average synthesis took: 35609.500 usec (+- 428.576 usec)
+    Average num. events: 14040.700 (+- 1.700)
+    Average time per event 2.536 usec
+  Number of synthesis threads: 2
+    Average synthesis took: 34293.800 usec (+- 453.811 usec)
+    Average num. events: 14040.700 (+- 1.700)
+    Average time per event 2.442 usec
+  Number of synthesis threads: 3
+    Average synthesis took: 32385.200 usec (+- 363.106 usec)
+    Average num. events: 14040.700 (+- 1.700)
+    Average time per event 2.307 usec
+  Number of synthesis threads: 4
+    Average synthesis took: 33113.100 usec (+- 553.931 usec)
+    Average num. events: 14054.500 (+- 11.469)
+    Average time per event 2.356 usec
+  Number of synthesis threads: 5
+    Average synthesis took: 31600.600 usec (+- 297.349 usec)
+    Average num. events: 14012.500 (+- 4.590)
+    Average time per event 2.255 usec
+  Number of synthesis threads: 6
+    Average synthesis took: 32309.900 usec (+- 472.225 usec)
+    Average num. events: 14004.000 (+- 0.000)
+    Average time per event 2.307 usec
+  Number of synthesis threads: 7
+    Average synthesis took: 31400.100 usec (+- 206.261 usec)
+    Average num. events: 14004.800 (+- 0.800)
+    Average time per event 2.242 usec
+  Number of synthesis threads: 8
+    Average synthesis took: 31601.400 usec (+- 303.350 usec)
+    Average num. events: 14005.700 (+- 1.700)
+    Average time per event 2.256 usec
+
+I also double-checked (using strace) that it does what it is supposed
+to do, and it seems like everything checks out. Here's text-based
+strace log:
+
+openat(AT_FDCWD, "/proc/35876/task/35876/maps", O_RDONLY) =3D 3
+read(3, "00400000-0040c000 r--p 00000000 "..., 8192) =3D 3997
+read(3, "7f519d4d3000-7f519d516000 r--p 0"..., 8192) =3D 4025
+read(3, "7f519dc3d000-7f519dc44000 r-xp 0"..., 8192) =3D 4048
+read(3, "7f519dd2d000-7f519dd2f000 r--p 0"..., 8192) =3D 4017
+read(3, "7f519dff6000-7f519dff8000 r--p 0"..., 8192) =3D 2744
+read(3, "", 8192)                       =3D 0
+close(3)                                =3D 0
+
+
+BTW, note how the kernel doesn't serve more than 4KB of data, even
+though perf provides 8KB buffer (that's to Greg's question about
+optimizing using bigger buffers, I suspect without seq_file changes,
+it won't work).
+
+And here's an abbreviated log for ioctl version, it has lots more (but
+much faster) ioctl() syscalls, given it dumps everything:
+
+openat(AT_FDCWD, "/proc/36380/task/36380/maps", O_RDONLY) =3D 3
+ioctl(3, _IOC(_IOC_READ|_IOC_WRITE, 0x9f, 0x1, 0x60), 0x7fff6b603d50) =3D 0
+ioctl(3, _IOC(_IOC_READ|_IOC_WRITE, 0x9f, 0x1, 0x60), 0x7fff6b603d50) =3D 0
+
+ ... 195 ioctl() calls in total ...
+
+ioctl(3, _IOC(_IOC_READ|_IOC_WRITE, 0x9f, 0x1, 0x60), 0x7fff6b603d50) =3D 0
+ioctl(3, _IOC(_IOC_READ|_IOC_WRITE, 0x9f, 0x1, 0x60), 0x7fff6b603d50) =3D 0
+ioctl(3, _IOC(_IOC_READ|_IOC_WRITE, 0x9f, 0x1, 0x60), 0x7fff6b603d50) =3D 0
+ioctl(3, _IOC(_IOC_READ|_IOC_WRITE, 0x9f, 0x1, 0x60), 0x7fff6b603d50)
+=3D -1 ENOENT (No such file or directory)
+close(3)                                =3D 0
+
+
+So, it's not the optimal usage of this API, and yet it's still better
+(or at least not worse) than text-based API.
+
+  [0] https://github.com/anakryiko/linux/commit/0841fe675ed30f5605c5b228e18=
+f5612ea253b35
+
+>
+> Thanks,
+> Ian
+>
+> > > Thanks,
+> > > Ian
+> > >
+> > > >   [0] https://github.com/libbpf/blazesym/blob/ee9b48a80c0b4499118a1=
+e8e5d901cddb2b33ab1/src/normalize/user.rs#L193
+> > > >
+> > > > > thanks,
+> > > > >
+> > > > > greg k-h
+> > > >
 
