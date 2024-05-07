@@ -1,46 +1,46 @@
-Return-Path: <bpf+bounces-28872-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-28873-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4131E8BE5AA
-	for <lists+bpf@lfdr.de>; Tue,  7 May 2024 16:21:42 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 397268BE5B0
+	for <lists+bpf@lfdr.de>; Tue,  7 May 2024 16:22:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 645971C20B58
-	for <lists+bpf@lfdr.de>; Tue,  7 May 2024 14:21:41 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 555DD1C23FAB
+	for <lists+bpf@lfdr.de>; Tue,  7 May 2024 14:22:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8865D16F903;
-	Tue,  7 May 2024 14:14:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8123216C6AA;
+	Tue,  7 May 2024 14:15:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XjFEu0Qt"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="scBCwpI+"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 02E8616C85E;
-	Tue,  7 May 2024 14:14:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0149D1607AB;
+	Tue,  7 May 2024 14:15:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715091298; cv=none; b=k7J5zYZb3H3kCYgM6u3GoT4JEPCuvhiwivnGgM/VZThcG7gme0WAHtA6W1EJFVtr9u4AqsYr5WxUIiqDtkeQI8KPRabBxzi1Z8/gNaV5s8G8f3KnUhPZmISdIAgprwor8IN24Y/nnX5fuMBV5RQ0d3++Fx5KRubSVShFeQlJeTM=
+	t=1715091310; cv=none; b=RM73hkEzDdejuQfn3JTRzRIeo6+HvQjasBC6W6+JykZ+z3UwKR7Ws/Rpmh/Rfdfc1hgb/uxUBTVShaCCFLlLy9GqTXID/OuHiFU7+1bTpJXkM10xVdPKN9Da6i0tVbqjMFnahImL8mkdGsvbh4SBbwy+WHJQlPzn901Ferc/KS4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715091298; c=relaxed/simple;
-	bh=8t7YVZmoVUR7dCk/2nFP4SmQbrkuMwJVZH30PnGw0sc=;
+	s=arc-20240116; t=1715091310; c=relaxed/simple;
+	bh=qz9bUI0E+avzydjRe5h6w3UDaf44DOCWwgWc2tfDYyI=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=IVfYHo80ZcGupl2VkE49FXtH/0oncD60uPpfcoRPjelxYGKP9GkTk/61nsxD55hKqO8tUcAl6S8aMWUy4k9piwFtmuU5VeTnHUZnQ+CFEsYUxLC78QrbnjmZl8jtmUr+dktwBr3WvzB3chHuDx6snNHetmsrnVQ/61JgOqMToHA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XjFEu0Qt; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3C4B8C2BBFC;
-	Tue,  7 May 2024 14:14:53 +0000 (UTC)
+	 MIME-Version:Content-Type; b=qrdUaF2yDjCVbb7nz3OfFK+voxljiDDf5IMTj1CDebn2pEzCg5EN6tjYT6WysT8YawFisoPhGVDF1XCmAd4aRco0/9e5R0eH/gbnRYmBwy7w3w4XFp2IFAnZ7QPMSa0tevigBsYjv/OxYtQYepRgxsNppDV97Ae8/sH8ayNNnHY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=scBCwpI+; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7EF06C2BBFC;
+	Tue,  7 May 2024 14:15:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1715091297;
-	bh=8t7YVZmoVUR7dCk/2nFP4SmQbrkuMwJVZH30PnGw0sc=;
+	s=k20201202; t=1715091309;
+	bh=qz9bUI0E+avzydjRe5h6w3UDaf44DOCWwgWc2tfDYyI=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=XjFEu0Qt8KozkfMbdpyY24z0pgfPzRHkynLWueA0ZvU40GAXYhvN0uh74Y/LUu2H8
-	 By9QD+OLgNEzA34eHLyf+no1f3w895moJCxSY5CV0yWZ1pvty+881Xn0sgXy/iPyBy
-	 FxYe9Wq45CQa0nnaDOsBkqPBS1/upRXv+Y49K6PaEvjDmZT16oWNTyHIZRzebxyhOv
-	 ke5OUyGJfjNgNZV4nMw+Slo/DhEYfOT3TjRrFuXqXBpu24K22Q4IdIYXShCl4aJtoF
-	 klW06GSHlb1aX1RnoZGor+nqLF5bZ6/tG9PkROL+1PoquElZQX66ePu/olgcH0yI36
-	 LS7HvA4w8Ig7Q==
+	b=scBCwpI++kfSsaSK9E+iTNPa3Gn4Kpn7ej+TCsJq9/tvveZnHzDfK4ZdjVpc7TCbs
+	 npyUH8SXX+ysW7F18FoSNddiDpTlv86V9nOo+tD4UHZduDuX7vEut+K31++p/Ygi1U
+	 /ctNctmqffokczLd7vFi00arorqWT8QYVk/XWTHYe3wY0lAPtALVw6B6XQJvHFdkrJ
+	 ZUV4BMK25UOQ/EHs1wvjZ3oYdP52Cx5uxUYNN0z46rnVCVYsgYwGuSLPvlZ9cge6Cw
+	 YIsEs2ZSLiPqF0hIoJmgK07+3aaQH1eUK4jmGfJvgfjjYgOGN0bsNweRxA6vpzSI6t
+	 ByLq9Ng5RgvUw==
 From: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
 To: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
 	Steven Rostedt <rostedt@goodmis.org>,
@@ -59,9 +59,9 @@ Cc: linux-trace-kernel@vger.kernel.org,
 	Peter Zijlstra <peterz@infradead.org>,
 	Thomas Gleixner <tglx@linutronix.de>,
 	Guo Ren <guoren@kernel.org>
-Subject: [PATCH v10 35/36] Documentation: probes: Update fprobe on function-graph tracer
-Date: Tue,  7 May 2024 23:14:51 +0900
-Message-Id: <171509129107.162236.1791729856199912729.stgit@devnote2>
+Subject: [PATCH v10 36/36] fgraph: Skip recording calltime/rettime if it is not nneeded
+Date: Tue,  7 May 2024 23:15:02 +0900
+Message-Id: <171509130284.162236.12400830886224359503.stgit@devnote2>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <171509088006.162236.7227326999861366050.stgit@devnote2>
 References: <171509088006.162236.7227326999861366050.stgit@devnote2>
@@ -77,100 +77,197 @@ Content-Transfer-Encoding: 8bit
 
 From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
-Update fprobe documentation for the new fprobe on function-graph
-tracer. This includes some bahvior changes and pt_regs to
-ftrace_regs interface change.
+Skip recording calltime and rettime if the fgraph_ops does not need it.
+This is a kind of performance optimization for fprobe. Since the fprobe
+user does not use these entries, recording timestamp in fgraph is just
+a overhead (e.g. eBPF, ftrace). So introduce the skip_timestamp flag,
+and all fgraph_ops sets this flag, skip recording calltime and rettime.
 
+Suggested-by: Jiri Olsa <olsajiri@gmail.com>
 Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
 ---
- Changes in v2:
-  - Update @fregs parameter explanation.
+ Changes in v10:
+  - Add likely() to skipping timestamp.
+ Changes in v9:
+  - Newly added.
 ---
- Documentation/trace/fprobe.rst |   42 ++++++++++++++++++++++++++--------------
- 1 file changed, 27 insertions(+), 15 deletions(-)
+ include/linux/ftrace.h |    2 ++
+ kernel/trace/fgraph.c  |   51 +++++++++++++++++++++++++++++++++++++++++-------
+ kernel/trace/fprobe.c  |    1 +
+ 3 files changed, 47 insertions(+), 7 deletions(-)
 
-diff --git a/Documentation/trace/fprobe.rst b/Documentation/trace/fprobe.rst
-index 196f52386aaa..f58bdc64504f 100644
---- a/Documentation/trace/fprobe.rst
-+++ b/Documentation/trace/fprobe.rst
-@@ -9,9 +9,10 @@ Fprobe - Function entry/exit probe
- Introduction
- ============
+diff --git a/include/linux/ftrace.h b/include/linux/ftrace.h
+index 64ca91d1527f..eb9de9d70829 100644
+--- a/include/linux/ftrace.h
++++ b/include/linux/ftrace.h
+@@ -1156,6 +1156,8 @@ struct fgraph_ops {
+ 	struct ftrace_ops		ops; /* for the hash lists */
+ 	void				*private;
+ 	int				idx;
++	/* If skip_timestamp is true, this does not record timestamps. */
++	bool				skip_timestamp;
+ };
  
--Fprobe is a function entry/exit probe mechanism based on ftrace.
--Instead of using ftrace full feature, if you only want to attach callbacks
--on function entry and exit, similar to the kprobes and kretprobes, you can
-+Fprobe is a function entry/exit probe mechanism based on the function-graph
-+tracer.
-+Instead of tracing all functions, if you want to attach callbacks on specific
-+function entry and exit, similar to the kprobes and kretprobes, you can
- use fprobe. Compared with kprobes and kretprobes, fprobe gives faster
- instrumentation for multiple functions with single handler. This document
- describes how to use fprobe.
-@@ -91,12 +92,14 @@ The prototype of the entry/exit callback function are as follows:
+ void *fgraph_reserve_data(int idx, int size_bytes);
+diff --git a/kernel/trace/fgraph.c b/kernel/trace/fgraph.c
+index 40f47fcbc6c3..13b41485ce49 100644
+--- a/kernel/trace/fgraph.c
++++ b/kernel/trace/fgraph.c
+@@ -138,6 +138,7 @@ DEFINE_STATIC_KEY_FALSE(kill_ftrace_graph);
+ int ftrace_graph_active;
  
- .. code-block:: c
+ static struct fgraph_ops *fgraph_array[FGRAPH_ARRAY_SIZE];
++static bool fgraph_skip_timestamp;
  
-- int entry_callback(struct fprobe *fp, unsigned long entry_ip, unsigned long ret_ip, struct pt_regs *regs, void *entry_data);
-+ int entry_callback(struct fprobe *fp, unsigned long entry_ip, unsigned long ret_ip, struct ftrace_regs *fregs, void *entry_data);
+ /* LRU index table for fgraph_array */
+ static int fgraph_lru_table[FGRAPH_ARRAY_SIZE];
+@@ -483,7 +484,7 @@ void ftrace_graph_stop(void)
+ static int
+ ftrace_push_return_trace(unsigned long ret, unsigned long func,
+ 			 unsigned long frame_pointer, unsigned long *retp,
+-			 int fgraph_idx)
++			 int fgraph_idx, bool skip_ts)
+ {
+ 	struct ftrace_ret_stack *ret_stack;
+ 	unsigned long long calltime;
+@@ -506,8 +507,12 @@ ftrace_push_return_trace(unsigned long ret, unsigned long func,
+ 	ret_stack = get_ret_stack(current, current->curr_ret_stack, &offset);
+ 	if (ret_stack && ret_stack->func == func &&
+ 	    get_fgraph_type(current, offset + FGRAPH_FRAME_OFFSET) == FGRAPH_TYPE_BITMAP &&
+-	    !is_fgraph_index_set(current, offset + FGRAPH_FRAME_OFFSET, fgraph_idx))
++	    !is_fgraph_index_set(current, offset + FGRAPH_FRAME_OFFSET, fgraph_idx)) {
++		/* If previous one skips calltime, update it. */
++		if (!skip_ts && !ret_stack->calltime)
++			ret_stack->calltime = trace_clock_local();
+ 		return offset + FGRAPH_FRAME_OFFSET;
++	}
  
-- void exit_callback(struct fprobe *fp, unsigned long entry_ip, unsigned long ret_ip, struct pt_regs *regs, void *entry_data);
-+ void exit_callback(struct fprobe *fp, unsigned long entry_ip, unsigned long ret_ip, struct ftrace_regs *fregs, void *entry_data);
+ 	val = (FGRAPH_TYPE_RESERVED << FGRAPH_TYPE_SHIFT) | FGRAPH_FRAME_OFFSET;
  
--Note that the @entry_ip is saved at function entry and passed to exit handler.
--If the entry callback function returns !0, the corresponding exit callback will be cancelled.
-+Note that the @entry_ip is saved at function entry and passed to exit
-+handler.
-+If the entry callback function returns !0, the corresponding exit callback
-+will be cancelled.
+@@ -525,7 +530,11 @@ ftrace_push_return_trace(unsigned long ret, unsigned long func,
+ 		return -EBUSY;
+ 	}
  
- @fp
-         This is the address of `fprobe` data structure related to this handler.
-@@ -112,12 +115,10 @@ If the entry callback function returns !0, the corresponding exit callback will
-         This is the return address that the traced function will return to,
-         somewhere in the caller. This can be used at both entry and exit.
+-	calltime = trace_clock_local();
++	/* This is not really 'likely' but for keeping the least path to be faster. */
++	if (likely(skip_ts))
++		calltime = 0LL;
++	else
++		calltime = trace_clock_local();
  
--@regs
--        This is the `pt_regs` data structure at the entry and exit. Note that
--        the instruction pointer of @regs may be different from the @entry_ip
--        in the entry_handler. If you need traced instruction pointer, you need
--        to use @entry_ip. On the other hand, in the exit_handler, the instruction
--        pointer of @regs is set to the current return address.
-+@fregs
-+        This is the `ftrace_regs` data structure at the entry and exit. This
-+        includes the function parameters, or the return values. So user can
-+        access thos values via appropriate `ftrace_regs_*` APIs.
+ 	offset = READ_ONCE(current->curr_ret_stack);
+ 	ret_stack = RET_STACK(current, offset);
+@@ -609,7 +618,8 @@ int function_graph_enter_regs(unsigned long ret, unsigned long func,
+ 	trace.func = func;
+ 	trace.depth = ++current->curr_ret_depth;
  
- @entry_data
-         This is a local storage to share the data between entry and exit handlers.
-@@ -125,6 +126,17 @@ If the entry callback function returns !0, the corresponding exit callback will
-         and `entry_data_size` field when registering the fprobe, the storage is
-         allocated and passed to both `entry_handler` and `exit_handler`.
+-	offset = ftrace_push_return_trace(ret, func, frame_pointer, retp, 0);
++	offset = ftrace_push_return_trace(ret, func, frame_pointer, retp, 0,
++					  fgraph_skip_timestamp);
+ 	if (offset < 0)
+ 		goto out;
  
-+Entry data size and exit handlers on the same function
-+======================================================
+@@ -662,7 +672,8 @@ int function_graph_enter_ops(unsigned long ret, unsigned long func,
+ 		return -ENODEV;
+ 
+ 	/* Use start for the distance to ret_stack (skipping over reserve) */
+-	offset = ftrace_push_return_trace(ret, func, frame_pointer, retp, gops->idx);
++	offset = ftrace_push_return_trace(ret, func, frame_pointer, retp, gops->idx,
++					  gops->skip_timestamp);
+ 	if (offset < 0)
+ 		return offset;
+ 	type = get_fgraph_type(current, offset);
+@@ -740,6 +751,7 @@ ftrace_pop_return_trace(struct ftrace_graph_ret *trace, unsigned long *ret,
+ 	*ret = ret_stack->ret;
+ 	trace->func = ret_stack->func;
+ 	trace->calltime = ret_stack->calltime;
++	trace->rettime = 0;
+ 	trace->overrun = atomic_read(&current->trace_overrun);
+ 	trace->depth = current->curr_ret_depth;
+ 	/*
+@@ -800,7 +812,6 @@ __ftrace_return_to_handler(struct ftrace_regs *fregs, unsigned long frame_pointe
+ 		return (unsigned long)panic;
+ 	}
+ 
+-	trace.rettime = trace_clock_local();
+ 	if (fregs)
+ 		ftrace_regs_set_instruction_pointer(fregs, ret);
+ 
+@@ -816,6 +827,12 @@ __ftrace_return_to_handler(struct ftrace_regs *fregs, unsigned long frame_pointe
+ 			continue;
+ 		if (gops == &fgraph_stub)
+ 			continue;
++		/*
++		 * This is not really 'unlikely' but for keeping the least path
++		 * to be faster.
++		 */
++		if (unlikely(!trace.rettime && !gops->skip_timestamp))
++			trace.rettime = trace_clock_local();
+ 
+ 		gops->retfunc(&trace, gops, fregs);
+ 	}
+@@ -1193,6 +1210,24 @@ static void init_task_vars(int idx)
+ 	read_unlock(&tasklist_lock);
+ }
+ 
++static void update_fgraph_skip_timestamp(void)
++{
++	int i;
 +
-+Since the entry data is passed via per-task stack and it is has limited size,
-+the entry data size per probe is limited to `15 * sizeof(long)`. You also need
-+to take care that the different fprobes are probing on the same function, this
-+limit becomes smaller. The entry data size is aligned to `sizeof(long)` and
-+each fprobe which has exit handler uses a `sizeof(long)` space on the stack,
-+you should keep the number of fprobes on the same function as small as
-+possible.
++	for (i = 0; i < FGRAPH_ARRAY_SIZE; i++) {
++		struct fgraph_ops *gops = fgraph_array[i];
 +
- Share the callbacks with kprobes
- ================================
++		if (gops == &fgraph_stub)
++			continue;
++
++		if (!gops->skip_timestamp) {
++			fgraph_skip_timestamp = false;
++			return;
++		}
++	}
++	fgraph_skip_timestamp = true;
++}
++
+ int register_ftrace_graph(struct fgraph_ops *gops)
+ {
+ 	int command = 0;
+@@ -1227,6 +1262,7 @@ int register_ftrace_graph(struct fgraph_ops *gops)
+ 	gops->idx = i;
  
-@@ -165,8 +177,8 @@ This counter counts up when;
-  - fprobe fails to take ftrace_recursion lock. This usually means that a function
-    which is traced by other ftrace users is called from the entry_handler.
+ 	ftrace_graph_active++;
++	update_fgraph_skip_timestamp();
  
-- - fprobe fails to setup the function exit because of the shortage of rethook
--   (the shadow stack for hooking the function return.)
-+ - fprobe fails to setup the function exit because of failing to allocate the
-+   data buffer from the per-task shadow stack.
+ 	if (ftrace_graph_active == 1) {
+ 		register_pm_notifier(&ftrace_suspend_notifier);
+@@ -1250,6 +1286,7 @@ int register_ftrace_graph(struct fgraph_ops *gops)
+ 		fgraph_array[i] = &fgraph_stub;
+ 		ftrace_graph_active--;
+ 		fgraph_lru_release_index(i);
++		update_fgraph_skip_timestamp();
+ 	}
+ out:
+ 	mutex_unlock(&ftrace_lock);
+@@ -1273,8 +1310,8 @@ void unregister_ftrace_graph(struct fgraph_ops *gops)
+ 		goto out;
  
- The `fprobe::nmissed` field counts up in both cases. Therefore, the former
- skips both of entry and exit callback and the latter skips the exit
+ 	fgraph_array[gops->idx] = &fgraph_stub;
+-
+ 	ftrace_graph_active--;
++	update_fgraph_skip_timestamp();
+ 
+ 	if (!ftrace_graph_active)
+ 		command = FTRACE_STOP_FUNC_RET;
+diff --git a/kernel/trace/fprobe.c b/kernel/trace/fprobe.c
+index afa52d9816cf..24bb8edec8a3 100644
+--- a/kernel/trace/fprobe.c
++++ b/kernel/trace/fprobe.c
+@@ -345,6 +345,7 @@ NOKPROBE_SYMBOL(fprobe_return);
+ static struct fgraph_ops fprobe_graph_ops = {
+ 	.entryfunc	= fprobe_entry,
+ 	.retfunc	= fprobe_return,
++	.skip_timestamp = true,
+ };
+ static int fprobe_graph_active;
+ 
 
 
