@@ -1,72 +1,72 @@
-Return-Path: <bpf+bounces-28914-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-28915-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id E3ECA8BEAC9
-	for <lists+bpf@lfdr.de>; Tue,  7 May 2024 19:48:14 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id DE0CC8BEACA
+	for <lists+bpf@lfdr.de>; Tue,  7 May 2024 19:48:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 46F86B22DDA
-	for <lists+bpf@lfdr.de>; Tue,  7 May 2024 17:48:12 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 99547285899
+	for <lists+bpf@lfdr.de>; Tue,  7 May 2024 17:48:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B4E4316C873;
-	Tue,  7 May 2024 17:48:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A1F4516D300;
+	Tue,  7 May 2024 17:48:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gfpfA6a9"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Y8iFoOyI"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-oo1-f47.google.com (mail-oo1-f47.google.com [209.85.161.47])
+Received: from mail-ot1-f48.google.com (mail-ot1-f48.google.com [209.85.210.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D65FD1607A7;
-	Tue,  7 May 2024 17:48:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C29DC168AF5;
+	Tue,  7 May 2024 17:48:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715104082; cv=none; b=mrnzj+aIEoSW8HziNxQ5gVxse1vyU58dImm00thAj5FMatos3jKQjRZ+4qJrQPF2hvMxcBCeMdtsHl9GDPgJ2Vk+6FNr6D1BX+oEa68dQ3zbHnfuqIK4sOWsI+tpcpQTFhLJzbSdGV4BX97iBy9d4wk8IQImC7MWYg7pJ8R+BUQ=
+	t=1715104083; cv=none; b=pMK4k20+b0tcFS0mjeOeBTkKoF+05//6qmvYyFxLJ693qLPrksqBkFGsjY/+BGOLJ0/JqdZ6L2MyZaQvFb++jTGMhaznTt4qoG0Lxwt6eZiIEn/EyOm3nP/EvTdSzHMSTvAY147zrulrUi/EQ9W6vfna53GyvnJeB+4JEy/JEGE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715104082; c=relaxed/simple;
-	bh=JRzYTW1hbpACv/XArPGnNCXaVihUOrHzdm+ZCR9gGEQ=;
+	s=arc-20240116; t=1715104083; c=relaxed/simple;
+	bh=1GYe8vJ/q/lJREi+XvoAG9h5MbSbTk4JcK/eBrXGRQ8=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=Q5tCF9fXjy964X7PazRFYbUdPvd8DfrIjYQBcGXfqOtMdeMPMqaJFTLq7eEmGdgvJaBBl6JVIyoQbPsL5UjzIhIVVa+ITlZX/7fyRk1ovpmYgmmgUVgQD/WBenahVweJV+0Ae8MjOU4KFz7gmt+W0X9HArDPaxf+Rq6Bv4vji3Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gfpfA6a9; arc=none smtp.client-ip=209.85.161.47
+	 MIME-Version; b=LGjA57nju4PerwAeBYElYR00NJenHKVfVRqLq+WoG3uWzfn7MYdkMy/ImQ+aeFIIaJfNyjqkbIIHDgeJJoqCp1fZow/ryMWaNarG8dniaLDyI04n1KpkCkR2Pc09qohCWalLwfm8mEd4GQ6Rrwxw1aurDl667tzDTa5w4fuW7VE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Y8iFoOyI; arc=none smtp.client-ip=209.85.210.48
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oo1-f47.google.com with SMTP id 006d021491bc7-5b22f818a24so847024eaf.1;
-        Tue, 07 May 2024 10:48:00 -0700 (PDT)
+Received: by mail-ot1-f48.google.com with SMTP id 46e09a7af769-6f0812c4500so1048117a34.0;
+        Tue, 07 May 2024 10:48:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1715104080; x=1715708880; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1715104081; x=1715708881; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=PlKpfs+JEwOA0Qk2J2UEne/NBRJhiZf3MVtRU+wvPMc=;
-        b=gfpfA6a9Fw1eNGMZf2BGs1j22ymrJLfZh3+w7iojHXH61BTeCu1xpxmpM1ymcVNPhW
-         417rwS0oUKfa4cuwqSjgp/fN4itTxrDdRf/rUlEVoaApxLI3fZwvBQMHyMUiJQ524Hmf
-         1ZLyJ67ctfoxPOPLxY4B00KCt/5fTV/2H7jkix66dWvtM1NTqB9zZDBhEglCmY76bhUo
-         ywUwbP9pIncDb5MURJ8p40TTU+V0sXKXS0UTF9+DSEms3/APzcX9FnTlgopKFdc/Fb6q
-         VYRvD1DAjdQnZIQKA0uV7WGYkt4gZSeAB7O9pbqwmWGdu+jMqMtYWzFJMmNlaVtrHYBT
-         x47w==
+        bh=pTwi1uf3IMxodfokkx4FoU+4557jdgjAbeZcWcBw0N0=;
+        b=Y8iFoOyIgb2V03x1//qjz3oRIgER1Ddddci228J8TB+kozEnls6d11zH3ZGJMX43en
+         5PdjYrNPyliUWEWlfJhA9x9ekFknzsjhBPRWhK4H/Y59VjbODuysHl0bAyrnZ5Q+g6Ui
+         uvFQGxBVTc1kGS7ZXs7PVQI79viAPmyFL3bNj5zfMhEqMSnpRPIv4OA3igUhkYTyYoI1
+         1lshf0aXnGybWArk2zO4CjhQ77E9EMHpBe9cAA5y/O/xpo4tS7zefYYrifL2MDX/WotM
+         jKtLRQODY5MCUW6iSOel54MwG+990cwpEQxQptDDk/gghPDYWjzqMOkWAWgqKoqizzPf
+         koQw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1715104080; x=1715708880;
+        d=1e100.net; s=20230601; t=1715104081; x=1715708881;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=PlKpfs+JEwOA0Qk2J2UEne/NBRJhiZf3MVtRU+wvPMc=;
-        b=RwKixS9VGOw1tOHrcmoADN9m4geToMj3ptjhbcUt9BMA+LvPxkR4CxjFiMiJTNHpjp
-         fdMgFM7vK+Mp0Qm/BNF+jAnhIHC+rLSYzyASzwNI7bqqzvZwevIx8rHmonpRvEbevyIc
-         PX9M/dEwPDOhdyGgpzGemRYdPgnoye5icDtc9k+S1AlIfruRC74vgww4pZo25FIRNGqO
-         G+dVxEdcJCQres/ornsMoNiW1DrghDSjJGk4hCOHbsl9qnkhcknn0KQLL4O+WWY0H23F
-         7PxtWceuPeZkTMqNOOgc3N4iBrDHWGf9NJiyusEp2kjTIvu+aght6AMTZonhD1AIe2pY
-         zXCw==
-X-Forwarded-Encrypted: i=1; AJvYcCUSyacr6aXi4c4wymU8A4ophMDq9xa8HH/26ntC7zR7GIKu8QN0Fyshfqr8J3M40tWsw7qRAFePiqBips6JgaqFwYUP1G/V
-X-Gm-Message-State: AOJu0YwlankeSVkjr3G3Daekww/MgN2lmBv/q0gPRh5RS+AcnTRVuoic
-	1v6HnubTIzJ9WRBvyIAYvvE1KBYMtdAiufa0XDQSuUx+4WXfu0ChknhVoA==
-X-Google-Smtp-Source: AGHT+IHKu1OuOwtcpRT6C6tx4T2zQps2i9LwIRGCyuxXr7NN9yR4rqKpvr4AB7WmSZ5jjacmfqV32g==
-X-Received: by 2002:a05:6358:3114:b0:186:1abe:611e with SMTP id e5c5f4694b2df-192d367eba0mr44587155d.30.1715104079920;
-        Tue, 07 May 2024 10:47:59 -0700 (PDT)
+        bh=pTwi1uf3IMxodfokkx4FoU+4557jdgjAbeZcWcBw0N0=;
+        b=UeD9gJ/J6uGhNXGrW/yl0tSZ86bOQriS4PHGRtbjYPHTSbrWe2xvqNS383PNQ2UhVr
+         6O598jALr2qZQepK9FDcBwry1IZm8/1OphEVSUVZP98oDzGLpVO99HmbA2J3H2rsGbW1
+         e9wvr/acAlzg0yYFE7Caq30CJKWwzSeA52gXMgFn5TbuUdAWm4rSaSscXlhY2bblgzQ1
+         eZZzSR3Ewjvyrd7yfIU09qy0EH/lAzKxOlUNOSVC0MVSlB2Eg2x5GHVCP33aU2I1WLBS
+         Z1XQHXxP4qwvkmoki9vHl03Kzlx7NvIWshsZXa1U+DKOSRm2MhojAZSrETvstrJTDj3l
+         4z6g==
+X-Forwarded-Encrypted: i=1; AJvYcCX9K0rvsRAvoyMZ41RyJ7vuMjLkudeXE1o1s8RT72oH+70lCYMGPVOliBycMsFn5UFHZkZiFR8STXzkaJuolegHAN2wKdyp
+X-Gm-Message-State: AOJu0YxE346dxBuvlNi/6O1rXO9H7Kv0cu/VUwM7pfyT9LdiTq9hpYAV
+	T9n8wrY5X+7Dzx/VCrR8PxWMA7t6JqJftFoPNRQpMFxWHR4esa4h
+X-Google-Smtp-Source: AGHT+IHCafJuIl/JQEqnJxZLXpz3KsG1IJlOPWj2sPzxxOX4nAYr6YALlxf3T23/hwCZfeGnvCS/Xw==
+X-Received: by 2002:a05:6358:24aa:b0:192:9834:7975 with SMTP id e5c5f4694b2df-192d2e54ca8mr48864655d.11.1715104080844;
+        Tue, 07 May 2024 10:48:00 -0700 (PDT)
 Received: from john.. ([98.97.42.227])
-        by smtp.gmail.com with ESMTPSA id u34-20020a631422000000b00600d20da76esm9958611pgl.60.2024.05.07.10.47.59
+        by smtp.gmail.com with ESMTPSA id u34-20020a631422000000b00600d20da76esm9958611pgl.60.2024.05.07.10.48.00
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 07 May 2024 10:47:59 -0700 (PDT)
+        Tue, 07 May 2024 10:48:00 -0700 (PDT)
 From: John Fastabend <john.fastabend@gmail.com>
 To: gregkh@linuxfoundation.org,
 	stable@vger.kernel.org
@@ -75,9 +75,9 @@ Cc: bpf@vger.kernel.org,
 	john.fastabend@gmail.com,
 	dhowells@redhat.com,
 	kuba@kernel.org
-Subject: [PATCH stable, 6.1 1/2] tcp_bpf: Inline do_tcp_sendpages as it's now a wrapper around tcp_sendmsg
-Date: Tue,  7 May 2024 10:47:56 -0700
-Message-Id: <20240507174757.260478-2-john.fastabend@gmail.com>
+Subject: [PATCH stable, 6.1 2/2] tcp_bpf, smc, tls, espintcp, siw: Reduce MSG_SENDPAGE_NOTLAST usage
+Date: Tue,  7 May 2024 10:47:57 -0700
+Message-Id: <20240507174757.260478-3-john.fastabend@gmail.com>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <20240507174757.260478-1-john.fastabend@gmail.com>
 References: <20240507174757.260478-1-john.fastabend@gmail.com>
@@ -91,77 +91,65 @@ Content-Transfer-Encoding: 8bit
 
 From: David Howells <dhowells@redhat.com>
 
-[ Upstream commit ebf2e8860eea66e2c4764316b80c6a5ee5f336ee ]
+[ Upstream commit f8dd95b29d7ef08c19ec9720564acf72243ddcf6]
 
-do_tcp_sendpages() is now just a small wrapper around tcp_sendmsg_locked(),
-so inline it.  This is part of replacing ->sendpage() with a call to
-sendmsg() with MSG_SPLICE_PAGES set.
+As MSG_SENDPAGE_NOTLAST is being phased out along with sendpage(), don't
+use it further in than the sendpage methods, but rather translate it to
+MSG_MORE and use that instead.
 
 Fixes: 04919bed948dc ("tcp: Introduce tcp_read_skb()")
 Signed-off-by: David Howells <dhowells@redhat.com>
+cc: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+cc: Bernard Metzler <bmt@zurich.ibm.com>
+cc: Jason Gunthorpe <jgg@ziepe.ca>
+cc: Leon Romanovsky <leon@kernel.org>
 cc: John Fastabend <john.fastabend@gmail.com>
 cc: Jakub Sitnicki <jakub@cloudflare.com>
 cc: David Ahern <dsahern@kernel.org>
-cc: Jens Axboe <axboe@kernel.dk>
-cc: Matthew Wilcox <willy@infradead.org>
+cc: Karsten Graul <kgraul@linux.ibm.com>
+cc: Wenjia Zhang <wenjia@linux.ibm.com>
+cc: Jan Karcher <jaka@linux.ibm.com>
+cc: "D. Wythe" <alibuda@linux.alibaba.com>
+cc: Tony Lu <tonylu@linux.alibaba.com>
+cc: Wen Gu <guwen@linux.alibaba.com>
+cc: Boris Pismenny <borisp@nvidia.com>
+cc: Steffen Klassert <steffen.klassert@secunet.com>
+cc: Herbert Xu <herbert@gondor.apana.org.au>
+Link: https://lore.kernel.org/r/20230623225513.2732256-2-dhowells@redhat.com
 Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 ---
- net/ipv4/tcp_bpf.c | 20 ++++++++++++--------
- 1 file changed, 12 insertions(+), 8 deletions(-)
+ net/ipv4/tcp_bpf.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
 diff --git a/net/ipv4/tcp_bpf.c b/net/ipv4/tcp_bpf.c
-index f8037d142bb7..f3def363b971 100644
+index f3def363b971..cd6648aaf570 100644
 --- a/net/ipv4/tcp_bpf.c
 +++ b/net/ipv4/tcp_bpf.c
-@@ -90,11 +90,13 @@ static int tcp_bpf_push(struct sock *sk, struct sk_msg *msg, u32 apply_bytes,
+@@ -88,9 +88,9 @@ static int bpf_tcp_ingress(struct sock *sk, struct sk_psock *psock,
+ static int tcp_bpf_push(struct sock *sk, struct sk_msg *msg, u32 apply_bytes,
+ 			int flags, bool uncharge)
  {
++	struct msghdr msghdr = {};
  	bool apply = apply_bytes;
  	struct scatterlist *sge;
-+	struct msghdr msghdr = { .msg_flags = flags | MSG_SPLICE_PAGES, };
+-	struct msghdr msghdr = { .msg_flags = flags | MSG_SPLICE_PAGES, };
  	struct page *page;
  	int size, ret = 0;
  	u32 off;
+@@ -107,11 +107,12 @@ static int tcp_bpf_push(struct sock *sk, struct sk_msg *msg, u32 apply_bytes,
  
- 	while (1) {
-+		struct bio_vec bvec;
- 		bool has_tx_ulp;
- 
- 		sge = sk_msg_elem(msg, msg->sg.start);
-@@ -106,16 +108,18 @@ static int tcp_bpf_push(struct sock *sk, struct sk_msg *msg, u32 apply_bytes,
  		tcp_rate_check_app_limited(sk);
  retry:
++		msghdr.msg_flags = flags | MSG_SPLICE_PAGES;
  		has_tx_ulp = tls_sw_has_ctx_tx(sk);
--		if (has_tx_ulp) {
--			flags |= MSG_SENDPAGE_NOPOLICY;
--			ret = kernel_sendpage_locked(sk,
--						     page, off, size, flags);
--		} else {
--			ret = do_tcp_sendpages(sk, page, off, size, flags);
--		}
-+		if (has_tx_ulp)
-+			msghdr.msg_flags |= MSG_SENDPAGE_NOPOLICY;
+ 		if (has_tx_ulp)
+ 			msghdr.msg_flags |= MSG_SENDPAGE_NOPOLICY;
  
-+		if (flags & MSG_SENDPAGE_NOTLAST)
-+			msghdr.msg_flags |= MSG_MORE;
-+
-+		bvec_set_page(&bvec, page, size, off);
-+		iov_iter_bvec(&msghdr.msg_iter, ITER_SOURCE, &bvec, 1, size);
-+		ret = tcp_sendmsg_locked(sk, &msghdr, size);
- 		if (ret <= 0)
- 			return ret;
-+
- 		if (apply)
- 			apply_bytes -= ret;
- 		msg->sg.size -= ret;
-@@ -495,7 +499,7 @@ static int tcp_bpf_sendmsg(struct sock *sk, struct msghdr *msg, size_t size)
- 	long timeo;
- 	int flags;
+-		if (flags & MSG_SENDPAGE_NOTLAST)
++		if (size < sge->length && msg->sg.start != msg->sg.end)
+ 			msghdr.msg_flags |= MSG_MORE;
  
--	/* Don't let internal do_tcp_sendpages() flags through */
-+	/* Don't let internal sendpage flags through */
- 	flags = (msg->msg_flags & ~MSG_SENDPAGE_DECRYPTED);
- 	flags |= MSG_NO_SHARED_FRAGS;
- 
+ 		bvec_set_page(&bvec, page, size, off);
 -- 
 2.33.0
 
