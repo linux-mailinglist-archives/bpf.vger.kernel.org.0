@@ -1,122 +1,120 @@
-Return-Path: <bpf+bounces-28912-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-28913-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9E0448BEAB3
-	for <lists+bpf@lfdr.de>; Tue,  7 May 2024 19:41:32 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id F0BA68BEAC4
+	for <lists+bpf@lfdr.de>; Tue,  7 May 2024 19:48:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 016B51F2601F
-	for <lists+bpf@lfdr.de>; Tue,  7 May 2024 17:41:32 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A78941F26019
+	for <lists+bpf@lfdr.de>; Tue,  7 May 2024 17:48:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B671216C853;
-	Tue,  7 May 2024 17:41:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 702BB16C863;
+	Tue,  7 May 2024 17:48:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="xjLA1wT5"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Htavpb9Y"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-171.mta0.migadu.com (out-171.mta0.migadu.com [91.218.175.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f171.google.com (mail-pf1-f171.google.com [209.85.210.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5650340BE2
-	for <bpf@vger.kernel.org>; Tue,  7 May 2024 17:41:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B1077168AF5;
+	Tue,  7 May 2024 17:47:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715103686; cv=none; b=Di/wG/N7xs6LvBKIkWhcpilQxHJVlN4Oc+aaMmaCv6R8+hbbOGrzzCbGdinjRb+WiukAf+xarO+UZqa5+jYcSKn0VATdKLKGRBsgOSfctNsr57I7T/CfnFR/HDv92Yv41FUbuQGUeWiYDXee1qDINjhTOJPeLcJVS+Z84bCTflE=
+	t=1715104081; cv=none; b=M8XsOYyRzJ28h/qLS35gddZ/0I2YVt/GAV74Ltg+AqW+3uEixKoqFES2VqKtf/GlkUwL3hA19dfVqx31kZNNu4kSC2M564IwXhsd93zdoJEGSF7c+2O/UtcrHK6CHL2CGhEMPN8I/6NKsCuik3np5qfKqyYLob/ZODIilpodNhQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715103686; c=relaxed/simple;
-	bh=XiGTImf6ALTx2G9ZY/ywi9qQBNEVTqUH7+1fkpZkQkQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=nX+xwx2YRfikjFahg6Cmvm9sICQi/r7CZ3MNLjSYF3QDwF4Sct6r/0lHQjXvc1lWQpO2UndHZwVhYbzIE3f5ohG08ZZII6VzZDpAJ7L/syi0xHWdKK/wiTI1bZXxpmz7ZegV7lQZJahuEfIofSaRuezQat753+GeQC0YHG58I8A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=xjLA1wT5; arc=none smtp.client-ip=91.218.175.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <223e5ab8-83da-40b7-b10b-0f6341aacb27@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1715103677;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=4VUpCvzEYqWt3KTHjG8stgwjh3syA9a9hmb8NY49okU=;
-	b=xjLA1wT5+PsrXzOt+6F7YaUo6nLj9aL8yIB3wY0PAL91/ndIJbGTSfomErfuYaToORHHwo
-	p+rTrNf/fIJ+C7qIv5kKMK6ugBuLsmbVTf+Yor8KcCe5SuRecuyJHIVO8aAbl/eBE8aA6/
-	9ocPbH3jbs+Lp2pzRLsThDLDsvDQ9dY=
-Date: Tue, 7 May 2024 10:41:11 -0700
+	s=arc-20240116; t=1715104081; c=relaxed/simple;
+	bh=TjDPssNzTY8qWUgRS2QVPyoIl5gqGS3DWk/sWADBxfQ=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=bZ2jzzT6InYH1TZjZTHGB1uIBqoHRLgLfz43HwlhgUVqGkhQ3CB2fKl8duit3s3t/zFC8zl/45Fq922Cu4datTmZNpkREo1TyDEIx0Lw3vw/nxS+gpZiU+VVPr+V1wKu2EqBpXlqE+hwXoIYPJ/dfARTOOge1Do8DseG0HAwc2M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Htavpb9Y; arc=none smtp.client-ip=209.85.210.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f171.google.com with SMTP id d2e1a72fcca58-6f28bb6d747so2447183b3a.3;
+        Tue, 07 May 2024 10:47:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1715104079; x=1715708879; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=BB2/yyQRwxhXXSepeucMR5Q2a+hm4bu0sqJ9xoUUmRk=;
+        b=Htavpb9YYlKHWUzSgUq7jy2060PLL5qI5BviHTH/xrtOv0wbs53MZddxvcq4Oc3Z66
+         1ZKRLmft+IrFCGQdyGs/Bm/qaOw6Hw44hpVK4XIJqZzFWFaOS0Q58/gWh5wlwaoTTdT4
+         Lj5aVeXHGjl/qfNyhIIHco51OOKAukO8nmHLvRs4gz1Te//+klLRBOIlQgnj0qrRI/K5
+         JLrCYXwJOgSnYf2S/Debek0jkzFJIk9gENNV65rqrWcHWrbufrpGZ4lpSpSM/hbUYf5M
+         6PjdCo6arRCPfLf58DOmMx4oq4efRk3huZjxdPz1U4qZhr0kPmaUHMGKOilA/3MrCgo2
+         7ShA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1715104079; x=1715708879;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=BB2/yyQRwxhXXSepeucMR5Q2a+hm4bu0sqJ9xoUUmRk=;
+        b=kWO1l5aO7XjfO8nkO77g3i73vft1ytBoBmN6TlIm+N9MtyEmO5ffABcwWYkclcfYwp
+         VdXeEUSLRojsSS0I+T4dK5sxPIZSnj+7lCEJ+I/fLXh9+PSabakukq2juI9ECJ+Cz/NM
+         VEcxtpuyAurYYAUPQhtogievLN881nxAM95rxYB/O9aiOHRInxqUoOc498Mu6vI3Y4WV
+         dqNlclniEjRSSwZV4pbn/MskJaiEmTnne5VA7Y78J3rANxPWn/IOT1OZaWt/ARXT00a/
+         BDLHnehmEzGaVWM3LbEKUE4pr92TrMMiGk+lnUZ6BbcNp7Xty5NAH/n1f+4DqcP/K3io
+         nabw==
+X-Forwarded-Encrypted: i=1; AJvYcCWfayz63j7VwpRZ6fx7XX2yuhHcbqzacb4UDUV2lt4pNeMHNmLMe0aK2xma0+tdOI5iPcvo8JwPCxQCCZYf1eZ33G4LFpnt
+X-Gm-Message-State: AOJu0YwiEziUncsgHBK9CnpbIRSlbKcky7GhWVoIXd+vWNrBRjVnsG3Z
+	o8TZ/LAiD6YK2lOWCMLsxTCYgcFCsXT6iFz/lKLE8jQglxlOGiyl
+X-Google-Smtp-Source: AGHT+IGyH+awiohqFZVOo/M+q+GYIU9GI7dSgjs+HC39rVVtiBMvE+uhgx/i4LAb5SM5zf8adATy5g==
+X-Received: by 2002:aa7:99cc:0:b0:6ea:df65:ff7d with SMTP id d2e1a72fcca58-6f49c21342amr349431b3a.10.1715104078951;
+        Tue, 07 May 2024 10:47:58 -0700 (PDT)
+Received: from john.. ([98.97.42.227])
+        by smtp.gmail.com with ESMTPSA id u34-20020a631422000000b00600d20da76esm9958611pgl.60.2024.05.07.10.47.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 07 May 2024 10:47:58 -0700 (PDT)
+From: John Fastabend <john.fastabend@gmail.com>
+To: gregkh@linuxfoundation.org,
+	stable@vger.kernel.org
+Cc: bpf@vger.kernel.org,
+	daniel@iogearbox.net,
+	john.fastabend@gmail.com,
+	dhowells@redhat.com,
+	kuba@kernel.org
+Subject: [PATCH stable, 6.1 0/2] Fix for sockmap causing data stalls 
+Date: Tue,  7 May 2024 10:47:55 -0700
+Message-Id: <20240507174757.260478-1-john.fastabend@gmail.com>
+X-Mailer: git-send-email 2.33.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next] bpf: avoid uninitialized warnings in
- verifier_global_subprogs.c
-Content-Language: en-GB
-To: "Jose E. Marchesi" <jose.marchesi@oracle.com>, bpf@vger.kernel.org
-Cc: david.faust@oracle.com, cupertino.miranda@oracle.com,
- Eduard Zingerman <eddyz87@gmail.com>
-References: <20240507140540.3972-1-jose.marchesi@oracle.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Yonghong Song <yonghong.song@linux.dev>
-In-Reply-To: <20240507140540.3972-1-jose.marchesi@oracle.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+Content-Transfer-Encoding: 8bit
 
+The attached two patches fix an issue with running BPF sockmap on TCP
+sockets where applications error out due to sender doing a send for
+each scatter gather element in the msg. The other 6.x stable and
+longterm kernels have this fix so we don't see it there and the issue
+was introduced in 6.1 by converting to the read_skb() interface. The
+5.15 stable kernels use the read_sock() interface which doesn't have
+this issue.
 
-On 5/7/24 7:05 AM, Jose E. Marchesi wrote:
-> The BPF selftest verifier_global_subprogs.c contains code that
-> purposedly performs out of bounds access to memory, to check whether
-> the kernel verifier is able to catch them.  For example:
->
->    __noinline int global_unsupp(const int *mem)
->    {
-> 	if (!mem)
-> 		return 0;
-> 	return mem[100]; /* BOOM */
->    }
->
-> With -O1 and higher and no inlining, GCC notices this fact and emits a
-> "maybe uninitialized" warning.  This is by design.  Note that the
-> emission of these warnings is highly dependent on the precise
-> optimizations that are performed.
+We missed adding the fixes tag to the original series because the work
+was a code improvement and wasn't originally identified as a bugfix.
 
-Interesting. The error message is 'maybe uninitialized' but not
-an error to complain out-of-bound access. But anyway, since gcc
-produces a warning, your patch silences it and LGTM.
+The first patch applies cleanly, the second patch does not because
+it touches smc, espintcp, and siw which do not apply because that
+code does not use sendmsg() yet on 6.1. I remove those chunks of the
+patch because they don't apply here.
 
-Acked-by: Yonghong Song <yonghong.song@linux.dev>
+I added a Fixes tag to the patches to point at the patch introducing
+the issue. Originally I sent something similar to this as a single
+patch where I incorrectly merged the two patches. Greg asked me to
+do this as two patches. Thanks.
 
->
-> This patch adds a compiler pragma to verifier_global_subprogs.c to
-> ignore these warnings.
->
-> Tested in bpf-next master.
-> No regressions.
->
-> Signed-off-by: Jose E. Marchesi <jose.marchesi@oracle.com>
-> Cc: david.faust@oracle.com
-> Cc: cupertino.miranda@oracle.com
-> Cc: Yonghong Song <yonghong.song@linux.dev>
-> Cc: Eduard Zingerman <eddyz87@gmail.com>
-> ---
->   tools/testing/selftests/bpf/progs/verifier_global_subprogs.c | 5 +++++
->   1 file changed, 5 insertions(+)
->
-> diff --git a/tools/testing/selftests/bpf/progs/verifier_global_subprogs.c b/tools/testing/selftests/bpf/progs/verifier_global_subprogs.c
-> index baff5ffe9405..d05dc218b7e9 100644
-> --- a/tools/testing/selftests/bpf/progs/verifier_global_subprogs.c
-> +++ b/tools/testing/selftests/bpf/progs/verifier_global_subprogs.c
-> @@ -8,6 +8,11 @@
->   #include "xdp_metadata.h"
->   #include "bpf_kfuncs.h"
->   
-> +/* The compiler may be able to detect the access to uninitialized
-> +   memory in the routines performing out of bound memory accesses and
-> +   emit warnings about it.  This is the case of GCC. */
-> +#pragma GCC diagnostic ignored "-Wuninitialized"
-> +
->   int arr[1];
->   int unkn_idx;
->   const volatile bool call_dead_subprog = false;
+David Howells (2):
+  tcp_bpf: Inline do_tcp_sendpages as it's now a wrapper around
+    tcp_sendmsg
+  tcp_bpf, smc, tls, espintcp, siw: Reduce MSG_SENDPAGE_NOTLAST usage
+
+ net/ipv4/tcp_bpf.c | 21 +++++++++++++--------
+ 1 file changed, 13 insertions(+), 8 deletions(-)
+
+-- 
+2.33.0
+
 
