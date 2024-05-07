@@ -1,74 +1,63 @@
-Return-Path: <bpf+bounces-28947-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-28948-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id BB4438BECAB
-	for <lists+bpf@lfdr.de>; Tue,  7 May 2024 21:35:50 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 44B878BECBD
+	for <lists+bpf@lfdr.de>; Tue,  7 May 2024 21:39:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DF9621C21BEC
-	for <lists+bpf@lfdr.de>; Tue,  7 May 2024 19:35:49 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C53F61F23EF8
+	for <lists+bpf@lfdr.de>; Tue,  7 May 2024 19:39:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C47A16E890;
-	Tue,  7 May 2024 19:35:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D6F716E870;
+	Tue,  7 May 2024 19:39:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UuFlJ0su"
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="XtspuWq3"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f53.google.com (mail-wm1-f53.google.com [209.85.128.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 387B61607A7;
-	Tue,  7 May 2024 19:35:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ADF2C7350C;
+	Tue,  7 May 2024 19:39:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715110534; cv=none; b=habkOchynkxOnnxzvrE+ARJcehWMkU66aYgA5XMuTlT9/7pwBg+/3Kw/HMNGl1BpfqigvawLgdxVq3X9nDm2ijaT3SjKk8guPUvg2dKCfGMj9mx1jMIkttUsgWFHluqZImi28xWWrVHWSg5tdOB/zaH+DuvEpxfh0b4UMbKcjxw=
+	t=1715110758; cv=none; b=naxSiac4rr0MRjfKjCBVezV4TtMQeeHjYHCu7Wce0qlqidQBL29AtZC56XCVdZIvtRbQ5grXLfjZojwqwxdgC1k3hK79A/Snl/wNVYA2x5kvfHsozVv4GlJ9pgs+22fDJhAZd8oboKusoDiqOL/5X5aPvuLu+dLgX5kK1RihmwA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715110534; c=relaxed/simple;
-	bh=K7koNsOotobWiysspCzAcVC3GFkF8Gu5l5G8dKp2Hak=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=EAmh29qBxSn4VkyAw+CQOCB+/5RA/drT0+1hJA83BaZWRy8jdUiIu6zjhcFYqv5OHJQd7oTpwvcWgFrBgyZi9Bx+fBRhb5tG3ECZmDzTV+Vu7s7eye8VdD4U9/FYHGkQDWzhRFk7qtgqD9P4fIdYr88QTlGmpOfWOFfEaNpmG4s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=UuFlJ0su; arc=none smtp.client-ip=209.85.128.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f53.google.com with SMTP id 5b1f17b1804b1-41c1b75ca31so26297875e9.2;
-        Tue, 07 May 2024 12:35:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1715110531; x=1715715331; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=0MsVmwcc7IjdJ/e1qKc5IeNtKIDJim+5sn115KirsXM=;
-        b=UuFlJ0suPwJAUR9NA4My7Sr82F1k55jAJas2JUPg41UEYltdHEHV2ud2/6txlmgxDy
-         YKvZ/Letr2rCL08NZuYM9UnoXohx3ZIih0KyrvtucKBHXoGLo9PvYI8fHbJMIUPNHgqh
-         tUWYaGnZXsdLhKdI6VYiH2xg4Ph1niwTSIuWZeNLCilDaKa0YfrGjZgJvJ4L+PI+fbfK
-         2PQxFozR/WueZRSzZK6FNLafTuqos6y22WvJRtOxBRscZf4k+AZ0tQ8eZnlQ/Bd23qHO
-         1e7rXg+pTAzZtjVRl5onJ6VVczBpYRT6b242KVfR+Q/u6bBVakLasqPYxmeGYWfe7A2b
-         eDBA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1715110531; x=1715715331;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=0MsVmwcc7IjdJ/e1qKc5IeNtKIDJim+5sn115KirsXM=;
-        b=YtXJMXgxu/pu7uH4kznEhGIShVKwUV5ja/yiEciIucAQLv79lnL+yV6O796uURabIl
-         BthNkKeVBfiC7hUyU8AdywQ/MylR3nlo4JJaJodJweCPeWpydfBSaym2Xfw4Nd4hm2JY
-         CE8UIK5DZBHJw/DK+fcl+v5PrHLJ23+l6f2bzwWaSFC6K/uNRkt3nZwp72dPmamPkcK3
-         ruOM7qF8wevuRdc46Ll9OE1JvcB29+BE7M3rRyz2cGx+la3Qg6vqAeKULs6BESwsitYg
-         9RFHkVhI3H0wenJDPXf4xzr6VcI9FwF2G31265zVHrOW8HrzfgN23LiyfV1hTaG6E97v
-         wdjw==
-X-Forwarded-Encrypted: i=1; AJvYcCVFVgyFYMcvrkM2ANpIpJbyDvBKnVMsfOyYlKgtcErJiJriNxnRwu2mgZRlmpJUaVBxvOIzpfff9SCJdYj//abMa2xfWi0VGh2Oc9b01xo1WkhvYVW362ud66c/+G85z64L2WHsmToEzT0s5Tr/z1fy1eSormgU3hPOT4mzipw6BAzmsVS3o6TS8FDrrFXoc9dRcOLd8aP5kx93YdBEZSqjWFqsHrYaDcXkC2VT2gDeX4A9r0Ks40drbK+HuZpVyq+7DkcCYIp7O9X3zKPfTTjLVd/3Czti/m1LLYbh6vIsOek+qH6xYnyHk1P7HeUyam3J4L+tk2N+BCWlUK6Y608TzJd/TN2C5FYt9fwMMngHhESJgQru5WluPAjA6Qv0Hc624tnX1EsY2IFu0eOJnJh58PMGXdw5mIXaPigUngLa5RW0npxyc98eFHM/o/sF933e1Zqk/l3BvbpNYSrrvKer/T+4CWtlj2ZWaW/g8TLRtMD2CVYWTzWyfvJOhVJKAGSvTkwG6w==
-X-Gm-Message-State: AOJu0YyjcI6OSzo3UzcOA1ufPXfhtl/igDrHzHNil1Z0xD2+SZ6l+Z0n
-	u7whzzC5MqGnzgc0bndbMfTRgya8NR4R2h9DNDxoo6ydchvy3F5u
-X-Google-Smtp-Source: AGHT+IEykirY9gyWc0Q9cAc6TvBa0+t0xp9ehEp+M4lSOcYK9DTE6BwXpCm/3e/UtlGIJu+qNRFaFg==
-X-Received: by 2002:a05:600c:3583:b0:418:ed13:302d with SMTP id 5b1f17b1804b1-41f723a1a0amr5612735e9.26.1715110531198;
-        Tue, 07 May 2024 12:35:31 -0700 (PDT)
-Received: from [192.168.42.69] ([85.255.235.91])
-        by smtp.gmail.com with ESMTPSA id z5-20020a05600c0a0500b0041bd85cd3f2sm20447278wmp.19.2024.05.07.12.35.28
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 07 May 2024 12:35:30 -0700 (PDT)
-Message-ID: <6a50d01a-b5b9-4699-9d58-94e5f8f81c13@gmail.com>
-Date: Tue, 7 May 2024 20:35:37 +0100
+	s=arc-20240116; t=1715110758; c=relaxed/simple;
+	bh=mv1uSj5Kq4YcblH7Tz4McLmQNmcq+h6m2ps+PPU3mMs=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=aPIdojKcVpY+rJWBZSVOiYp46pKa+WhEQFzGcBRpd1Zek4Vx7nq5WwXS9DqvBkwlHl8oBoocQr8CRBTVyb2+E0QD21eqR9S6fhL+SpIkDUkhMPfNNGLBsbuecifSbau0cumgqdeEmpbbCGI0BOpM/G437IcQpxmD/ROwxCHsT74=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=XtspuWq3; arc=none smtp.client-ip=205.220.180.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 447IgltP007564;
+	Tue, 7 May 2024 19:38:57 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=jCFHp8W259KAmupqm+5dmy2ouOi8pkhAE6sb3LDJp+c=; b=Xt
+	spuWq3dFAY8G1hA5LmYlv/MzMQKcD5COPXhRkXmszpUjhCWeul6pDBezTy5ly0YJ
+	UKQbr0DulLlUeFabm2Q90cT5zmitV9GXW/xNzQb7zUWlnt/Oo3VcCU09X1TenaRq
+	q10mUG1xCMF+GJhEXPUGpaZzRFP8y85zDccY9trtDYhB5yAkEjrlly/+nQrMw4fT
+	Gl66YVSCpKzZrQxD+mQWoXUBdQ8UFy52/rCGCJAY0j193NOXY7kadS/B53c810jp
+	DZLqLW2hmhyq0VBhcdRoTBS7J2MA9kjL1qGQ7XFD8lAgYFktCoNKPJk75Rn9pr+K
+	QFbaCEQOhMSdEcHWiJCg==
+Received: from nasanppmta02.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xyste03ay-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 07 May 2024 19:38:57 +0000 (GMT)
+Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
+	by NASANPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 447Jcu3N029224
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 7 May 2024 19:38:56 GMT
+Received: from [10.110.127.27] (10.80.80.8) by nasanex01a.na.qualcomm.com
+ (10.52.223.231) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9; Tue, 7 May 2024
+ 12:38:52 -0700
+Message-ID: <69c55618-931a-48f4-a25c-0d5666bcb5cb@quicinc.com>
+Date: Tue, 7 May 2024 12:38:51 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -76,113 +65,102 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH net-next v8 02/14] net: page_pool: create hooks for
- custom page providers
-To: Jason Gunthorpe <jgg@ziepe.ca>
-Cc: Mina Almasry <almasrymina@google.com>,
- Christoph Hellwig <hch@infradead.org>, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
- linux-alpha@vger.kernel.org, linux-mips@vger.kernel.org,
- linux-parisc@vger.kernel.org, sparclinux@vger.kernel.org,
- linux-trace-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
- bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
- linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
- "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
- Jonathan Corbet <corbet@lwn.net>,
- Richard Henderson <richard.henderson@linaro.org>,
- Ivan Kokshaysky <ink@jurassic.park.msu.ru>, Matt Turner
- <mattst88@gmail.com>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
- "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
- Helge Deller <deller@gmx.de>, Andreas Larsson <andreas@gaisler.com>,
- Jesper Dangaard Brouer <hawk@kernel.org>,
- Ilias Apalodimas <ilias.apalodimas@linaro.org>,
- Steven Rostedt <rostedt@goodmis.org>, Masami Hiramatsu
- <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
- Arnd Bergmann <arnd@arndb.de>, Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
- Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman
- <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
- Yonghong Song <yonghong.song@linux.dev>,
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
- Jiri Olsa <jolsa@kernel.org>, Steffen Klassert
- <steffen.klassert@secunet.com>, Herbert Xu <herbert@gondor.apana.org.au>,
- David Ahern <dsahern@kernel.org>,
- Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
- Shuah Khan <shuah@kernel.org>, Sumit Semwal <sumit.semwal@linaro.org>,
- =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
- Amritha Nambiar <amritha.nambiar@intel.com>,
- Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
- Alexander Mikhalitsyn <alexander@mihalicyn.com>,
- Kaiyuan Zhang <kaiyuanz@google.com>, Christian Brauner <brauner@kernel.org>,
- Simon Horman <horms@kernel.org>, David Howells <dhowells@redhat.com>,
- Florian Westphal <fw@strlen.de>, Yunsheng Lin <linyunsheng@huawei.com>,
- Kuniyuki Iwashima <kuniyu@amazon.com>, Jens Axboe <axboe@kernel.dk>,
- Arseniy Krasnov <avkrasnov@salutedevices.com>,
- Aleksander Lobakin <aleksander.lobakin@intel.com>,
- Michael Lass <bevan@bi-co.net>, Jiri Pirko <jiri@resnulli.us>,
- Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
- Lorenzo Bianconi <lorenzo@kernel.org>,
- Richard Gobert <richardbgobert@gmail.com>,
- Sridhar Samudrala <sridhar.samudrala@intel.com>,
- Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
- Johannes Berg <johannes.berg@intel.com>, Abel Wu <wuyun.abel@bytedance.com>,
- Breno Leitao <leitao@debian.org>, David Wei <dw@davidwei.uk>,
- Shailend Chand <shailend@google.com>,
- Harshitha Ramamurthy <hramamurthy@google.com>,
- Shakeel Butt <shakeel.butt@linux.dev>, Jeroen de Borst
- <jeroendb@google.com>, Praveen Kaligineedi <pkaligineedi@google.com>
-References: <20240403002053.2376017-3-almasrymina@google.com>
- <ZjH1QaSSQ98mw158@infradead.org>
- <CAHS8izM0=xc2UhUxhnF_BixuFs5VaDV9W1jbso1K+Rg=35NzeA@mail.gmail.com>
- <ZjjHUh1eINPg1wkn@infradead.org>
- <20b1c2d9-0b37-414c-b348-89684c0c0998@gmail.com>
- <20240507161857.GA4718@ziepe.ca> <ZjpVfPqGNfE5N4bl@infradead.org>
- <CAHS8izPH+sRLSiZ7vbrNtRdHrFEf8XQ61XAyHuxRSL9Jjy8YbQ@mail.gmail.com>
- <20240507164838.GG4718@ziepe.ca>
- <0d5da361-cc7b-46e9-a635-9a7a4c208444@gmail.com>
- <20240507175644.GJ4718@ziepe.ca>
+Subject: Re: [RFC PATCH bpf-next v6 2/3] net: Add additional bit to support
+ clockid_t timestamp type
 Content-Language: en-US
-From: Pavel Begunkov <asml.silence@gmail.com>
-In-Reply-To: <20240507175644.GJ4718@ziepe.ca>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+To: Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+        Martin KaFai Lau
+	<martin.lau@linux.dev>
+CC: "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet
+	<edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni
+	<pabeni@redhat.com>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, Andrew Halaney <ahalaney@redhat.com>,
+        "Martin
+ KaFai Lau" <martin.lau@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>, bpf <bpf@vger.kernel.org>,
+        <kernel@quicinc.com>
+References: <20240504031331.2737365-1-quic_abchauha@quicinc.com>
+ <20240504031331.2737365-3-quic_abchauha@quicinc.com>
+ <cab0c7ba-90bf-49e2-908d-ecd879160667@linux.dev>
+ <663a12f089b81_726ea29426@willemb.c.googlers.com.notmuch>
+ <fc8334a6-6961-41f4-affc-28bdfc3dd697@quicinc.com>
+ <663a7e7e1f5b5_cc75c294c0@willemb.c.googlers.com.notmuch>
+From: "Abhishek Chauhan (ABC)" <quic_abchauha@quicinc.com>
+In-Reply-To: <663a7e7e1f5b5_cc75c294c0@willemb.c.googlers.com.notmuch>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nasanex01a.na.qualcomm.com (10.52.223.231)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: J5C4MZW2Ei4xKG093PaksBBJHC0lxS63
+X-Proofpoint-ORIG-GUID: J5C4MZW2Ei4xKG093PaksBBJHC0lxS63
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.650,FMLib:17.11.176.26
+ definitions=2024-05-07_12,2024-05-06_02,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 phishscore=0
+ priorityscore=1501 malwarescore=0 mlxscore=0 bulkscore=0 clxscore=1015
+ mlxlogscore=999 spamscore=0 adultscore=0 suspectscore=0 lowpriorityscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2405010000
+ definitions=main-2405070136
 
-On 5/7/24 18:56, Jason Gunthorpe wrote:
-> On Tue, May 07, 2024 at 06:25:52PM +0100, Pavel Begunkov wrote:
->> On 5/7/24 17:48, Jason Gunthorpe wrote:
->>> On Tue, May 07, 2024 at 09:42:05AM -0700, Mina Almasry wrote:
->>>
->>>> 1. Align with devmem TCP to use udmabuf for your io_uring memory. I
->>>> think in the past you said it's a uapi you don't link but in the face
->>>> of this pushback you may want to reconsider.
->>>
->>> dmabuf does not force a uapi, you can acquire your pages however you
->>> want and wrap them up in a dmabuf. No uapi at all.
->>>
->>> The point is that dmabuf already provides ops that do basically what
->>> is needed here. We don't need ops calling ops just because dmabuf's
->>> ops are not understsood or not perfect. Fixup dmabuf.
+
+
+On 5/7/2024 12:18 PM, Willem de Bruijn wrote:
+> Abhishek Chauhan (ABC) wrote:
 >>
->> Those ops, for example, are used to efficiently return used buffers
->> back to the kernel, which is uapi, I don't see how dmabuf can be
->> fixed up to cover it.
+>>
+>> On 5/7/2024 4:39 AM, Willem de Bruijn wrote:
+>>> Martin KaFai Lau wrote:
+>>>> On 5/3/24 8:13 PM, Abhishek Chauhan wrote:
+>>>>> diff --git a/net/ipv4/ip_output.c b/net/ipv4/ip_output.c
+>>>>> index fe86cadfa85b..c3d852eecb01 100644
+>>>>> --- a/net/ipv4/ip_output.c
+>>>>> +++ b/net/ipv4/ip_output.c
+>>>>> @@ -1457,7 +1457,10 @@ struct sk_buff *__ip_make_skb(struct sock *sk,
+>>>>>   
+>>>>>   	skb->priority = (cork->tos != -1) ? cork->priority: READ_ONCE(sk->sk_priority);
+>>>>>   	skb->mark = cork->mark;
+>>>>> -	skb->tstamp = cork->transmit_time;
+>>>>> +	if (sk_is_tcp(sk))
+>>>>
+>>>> This seems not catching all IPPROTO_TCP case. In particular, the percpu 
+>>>> "ipv4_tcp_sk" is SOCK_RAW. sk_is_tcp() is checking SOCK_STREAM:
+>>>>
+>>>> void __init tcp_v4_init(void)
+>>>> {
+>>>>
+>>>> 	/* ... */
+>>>> 	res = inet_ctl_sock_create(&sk, PF_INET, SOCK_RAW,
+>>>> 				   IPPROTO_TCP, &init_net);
+>>>>
+>>>> 	/* ... */
+>>>> }
+>>>>
+>>>> "while :; do ./test_progs -t tc_redirect/tc_redirect_dtime || break; done" 
+>>>> failed pretty often exactly in this case.
+>>>>
+>>>
+>>> Interesting. The TCP stack opens non TCP sockets.
+>>>
+>>> Initializing sk->sk_clockid for this socket should address that.
+>>>
+>> Willem, Are you suggesting your point from the previous patch ? 
+>>
 > 
-> Sure, but that doesn't mean you can't use dma buf for the other parts
-> of the flow. The per-page lifetime is a different topic than the
-> refcounting and access of the entire bulk of memory.
+> No, just for this custom socket to initialize the sk_clockid. It is
+> not a TCP socket, but only used by TCP.
+Thanks Willem, 
+Noted! Which means there are only two places these custom RAW tcp socket 
+are getting called 
 
-Ok, so if we're leaving uapi (and ops) and keep per page/sub-buffer as
-is, the rest is resolving uptr -> pages, and passing it to page pool in
-a convenient to page pool format (net_iov). I don't see how dmabuf would
-help here. Adding dmabuf in the middle (internally wrapping pages) would
-add more setup code with the same final result, that is a format that
-page pool can work with. And for io_uring it's normal user memory. We'll
-have to use dmabuf when we'd want to extend to peer-to-peer and all that
-fun, but that's a small fraction of it, and we'll hopefully reuse some
-setup helpers from devmem tcp.
+1. tcp_ipv4.c 
+2. tcp_ipv6.c 
 
--- 
-Pavel Begunkov
+I will take care of initializing sk_clockid to monotonic in the next patch 
+in the above two files. 
+
+Let me know if i missed out anything. 
 
