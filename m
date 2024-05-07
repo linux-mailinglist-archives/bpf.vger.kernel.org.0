@@ -1,57 +1,56 @@
-Return-Path: <bpf+bounces-28744-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-28745-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D23908BD870
-	for <lists+bpf@lfdr.de>; Tue,  7 May 2024 02:13:58 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 99BBB8BD871
+	for <lists+bpf@lfdr.de>; Tue,  7 May 2024 02:14:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 87DD31F22AAA
-	for <lists+bpf@lfdr.de>; Tue,  7 May 2024 00:13:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4D678282C25
+	for <lists+bpf@lfdr.de>; Tue,  7 May 2024 00:14:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 94AB6A59;
-	Tue,  7 May 2024 00:13:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE864653;
+	Tue,  7 May 2024 00:13:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Xi/D79YA"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="W75IATbt"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 00731653
-	for <bpf@vger.kernel.org>; Tue,  7 May 2024 00:13:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 32992389
+	for <bpf@vger.kernel.org>; Tue,  7 May 2024 00:13:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715040836; cv=none; b=otKVEc0OEVzcPVCG0tjHZboDzARJxWtcSlQzFvUt5IcIYMOuJajvJ3E0HEbqnd1UP/p0AF7wXnTRn6678w814Co5cu4J7M4HSql2kJ1B6rD1XmbECDQ8dGxyyDYVEXj93rCnoub16rhMUh8Q8/KIPP8I5SaJR11ikel9FxgKN9k=
+	t=1715040839; cv=none; b=d6Y5Qad7wH2RK5s0gWgKN1AXtzG/7CL4XGpTzLHG/16ZpMRY3aIW8eilfjPj3l6t88Ke9uALnlzgyWbwB9hGHrHubYstZjDfJgGdc1yOV/wOtXpbInONlmXgovEksh729idQg6idxRSrtmAmS+JsPTRQn/5R3XyKsBsJ2b6GGEw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715040836; c=relaxed/simple;
-	bh=Qfo7/DmAqnVQb+lryVOFU9WxqfPwY+i4xDZT3A3xM6I=;
+	s=arc-20240116; t=1715040839; c=relaxed/simple;
+	bh=NadnHBQ3TBYENzaBm12S5ll5QN2eMBpcavPtAqhYpw0=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=FmpBXcyDvoD0I8fJTn4X0IcQTpCswyDlip6shNPGhBA2NU1zCuQ1NhIMUmXZvhXpOIv1gHQ1IMz53ERcBQMV6m4AUbPMWEG5Z8Hpl7yED28xv9rtlMOU+iI1z9YiFqOlU4wO5LYu0YG8ec19Wn1WPEBR4sDsf43dzQpN6tXZrAo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Xi/D79YA; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 60C50C116B1;
-	Tue,  7 May 2024 00:13:55 +0000 (UTC)
+	 MIME-Version; b=l5/+UdfInPYI/1PkM3dwPblPiVFmS0RiCCuYZpjJMHzyhnWg2gy5NRIZBsMWUrP1Rm4FUz4bwWEK2ZjT4qYPEo2L+Mn/UKhQKFOSF8x5y2cfBxVEFmUxssUJddw5fIUgKzpRRt4iIVmjLpJyNRzqqwPM2c8aBDXxJ+xzz+rg/bQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=W75IATbt; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9817EC116B1;
+	Tue,  7 May 2024 00:13:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1715040835;
-	bh=Qfo7/DmAqnVQb+lryVOFU9WxqfPwY+i4xDZT3A3xM6I=;
+	s=k20201202; t=1715040838;
+	bh=NadnHBQ3TBYENzaBm12S5ll5QN2eMBpcavPtAqhYpw0=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=Xi/D79YAthcC8LIfkI5LlAh14Zz3ppm85Ia8+cBxeIjhBbCDhN5wNbGrH1C/ywz9E
-	 5ZbrP7Q8Arlx1CRVBZKUOQgEKhJrAH3eEiu6tz6vJP0ita1p6uf6X9wlqD8ODEB3u1
-	 k9lwelQ7Or9BuPFB3/TmbtdwZM7rLAKRWVe1DF/Od7yj03Q3F2NQ3UOcnxvDcRIuja
-	 ROj1/7f6mv4GYYXgCZ07pU4JEgx5Lamv9kvA5ba63xV640H3U93p00QRsHLDIX9Maf
-	 NT/zb/pSTa7AVN1gzW+kEaGj9wCqOM5OVAChU88Sr3b5TwVS3mB2fuViYcMqj0MjK6
-	 bOxLHjk5YQNHg==
+	b=W75IATbtvaG84uUeGmehk/H05lw7AmXucrmfhkGwhSnih9Vl6UFAKfrFNkkz6pSjJ
+	 4QPmQXONZiyx2+7/N7Q5Eq68Vx6lVnoOuliViLi4AAJwcat1RFGTFHeo8MOKDO6qRu
+	 tVcmgnoDONn/bDsgC81LS9i6wArEGmQKenm5KVBzhwSFhFZhvWDzFFtOuH5fwM7mog
+	 yAdFfv/vDYo4vxhM+l4IZAGxwDd1pHuE2PDV0HDAwAFmXelI2pUaz3Cbkavf7azorp
+	 jxT9B4MgAnbig2UPP+WZm/YMT5dnis/3EJOqpFO05YOygWt4tYBWEDpZJrrumPDicm
+	 MDx2FTfC5KBnw==
 From: Andrii Nakryiko <andrii@kernel.org>
 To: bpf@vger.kernel.org,
 	ast@kernel.org,
 	daniel@iogearbox.net,
 	martin.lau@kernel.org
 Cc: andrii@kernel.org,
-	kernel-team@meta.com,
-	Tejun Heo <tj@kernel.org>
-Subject: [PATCH bpf-next 5/7] libbpf: improve early detection of doomed-to-fail BPF program loading
-Date: Mon,  6 May 2024 17:13:33 -0700
-Message-ID: <20240507001335.1445325-6-andrii@kernel.org>
+	kernel-team@meta.com
+Subject: [PATCH bpf-next 6/7] selftests/bpf: validate struct_ops early failure detection logic
+Date: Mon,  6 May 2024 17:13:34 -0700
+Message-ID: <20240507001335.1445325-7-andrii@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240507001335.1445325-1-andrii@kernel.org>
 References: <20240507001335.1445325-1-andrii@kernel.org>
@@ -63,58 +62,113 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Extend libbpf's pre-load checks for BPF programs, detecting more typical
-conditions that are destinated to cause BPF program failure. This is an
-opportunity to provide more helpful and actionable error message to
-users, instead of potentially very confusing BPF verifier log and/or
-error.
+Add a simple test that validates that libbpf will reject isolated
+struct_ops program early with helpful warning message.
 
-In this case, we detect struct_ops BPF program that was not referenced
-anywhere, but still attempted to be loaded (according to libbpf logic).
-Suggest that the program might need to be used in some struct_ops
-variable. User will get a message of the following kind:
+Also validate that explicit use of such BPF program through BPF skeleton
+after BPF object is open won't trigger any warnings.
 
-  libbpf: prog 'test_1_forgotten': SEC("struct_ops") program isn't referenced anywhere, did you forget to use it?
-
-Suggested-by: Tejun Heo <tj@kernel.org>
 Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
 ---
- tools/lib/bpf/libbpf.c | 15 ++++++++++++++-
- 1 file changed, 14 insertions(+), 1 deletion(-)
+ .../bpf/prog_tests/test_struct_ops_module.c   | 45 +++++++++++++++++++
+ .../bpf/progs/struct_ops_forgotten_cb.c       | 19 ++++++++
+ 2 files changed, 64 insertions(+)
+ create mode 100644 tools/testing/selftests/bpf/progs/struct_ops_forgotten_cb.c
 
-diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index 04de4fb81785..5401f2df463d 100644
---- a/tools/lib/bpf/libbpf.c
-+++ b/tools/lib/bpf/libbpf.c
-@@ -7372,7 +7372,11 @@ static int bpf_object_load_prog(struct bpf_object *obj, struct bpf_program *prog
- 	__u32 log_level = prog->log_level;
- 	int ret, err;
+diff --git a/tools/testing/selftests/bpf/prog_tests/test_struct_ops_module.c b/tools/testing/selftests/bpf/prog_tests/test_struct_ops_module.c
+index f3c61ebad323..3785b648c8ad 100644
+--- a/tools/testing/selftests/bpf/prog_tests/test_struct_ops_module.c
++++ b/tools/testing/selftests/bpf/prog_tests/test_struct_ops_module.c
+@@ -5,6 +5,7 @@
  
--	if (prog->type == BPF_PROG_TYPE_UNSPEC) {
-+	/* Be more helpful by rejecting programs that can't be validated early
-+	 * with more meaningful and actionable error message.
-+	 */
-+	switch (prog->type) {
-+	case BPF_PROG_TYPE_UNSPEC:
- 		/*
- 		 * The program type must be set.  Most likely we couldn't find a proper
- 		 * section definition at load time, and thus we didn't infer the type.
-@@ -7380,6 +7384,15 @@ static int bpf_object_load_prog(struct bpf_object *obj, struct bpf_program *prog
- 		pr_warn("prog '%s': missing BPF prog type, check ELF section name '%s'\n",
- 			prog->name, prog->sec_name);
- 		return -EINVAL;
-+	case BPF_PROG_TYPE_STRUCT_OPS:
-+		if (prog->attach_btf_id == 0) {
-+			pr_warn("prog '%s': SEC(\"struct_ops\") program isn't referenced anywhere, did you forget to use it?\n",
-+				prog->name);
-+			return -EINVAL;
-+		}
-+		break;
-+	default:
-+		break;
- 	}
+ #include "struct_ops_module.skel.h"
+ #include "struct_ops_nulled_out_cb.skel.h"
++#include "struct_ops_forgotten_cb.skel.h"
  
- 	if (!insns || !insns_cnt)
+ static void check_map_info(struct bpf_map_info *info)
+ {
+@@ -199,6 +200,48 @@ static void test_struct_ops_nulled_out_cb(void)
+ 	struct_ops_nulled_out_cb__destroy(skel);
+ }
+ 
++/* validate that libbpf generates reasonable error message if struct_ops is
++ * not referenced in any struct_ops map
++ */
++static void test_struct_ops_forgotten_cb(void)
++{
++	struct struct_ops_forgotten_cb *skel;
++	char *log;
++	int err;
++
++	skel = struct_ops_forgotten_cb__open();
++	if (!ASSERT_OK_PTR(skel, "skel_open"))
++		return;
++
++	start_libbpf_log_capture();
++
++	err = struct_ops_forgotten_cb__load(skel);
++	if (!ASSERT_ERR(err, "skel_load"))
++		goto cleanup;
++
++	log = stop_libbpf_log_capture();
++	ASSERT_HAS_SUBSTR(log,
++			  "prog 'test_1_forgotten': SEC(\"struct_ops\") program isn't referenced anywhere, did you forget to use it?",
++			  "libbpf_log");
++	free(log);
++
++	struct_ops_forgotten_cb__destroy(skel);
++
++	/* now let's programmatically use it, we should be fine now */
++	skel = struct_ops_forgotten_cb__open();
++	if (!ASSERT_OK_PTR(skel, "skel_open"))
++		return;
++
++	skel->struct_ops.ops->test_1 = skel->progs.test_1_forgotten; /* not anymore */
++
++	err = struct_ops_forgotten_cb__load(skel);
++	if (!ASSERT_OK(err, "skel_load"))
++		goto cleanup;
++
++cleanup:
++	struct_ops_forgotten_cb__destroy(skel);
++}
++
+ void serial_test_struct_ops_module(void)
+ {
+ 	if (test__start_subtest("test_struct_ops_load"))
+@@ -209,5 +252,7 @@ void serial_test_struct_ops_module(void)
+ 		test_struct_ops_incompatible();
+ 	if (test__start_subtest("test_struct_ops_null_out_cb"))
+ 		test_struct_ops_nulled_out_cb();
++	if (test__start_subtest("struct_ops_forgotten_cb"))
++		test_struct_ops_forgotten_cb();
+ }
+ 
+diff --git a/tools/testing/selftests/bpf/progs/struct_ops_forgotten_cb.c b/tools/testing/selftests/bpf/progs/struct_ops_forgotten_cb.c
+new file mode 100644
+index 000000000000..3c822103bd40
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/struct_ops_forgotten_cb.c
+@@ -0,0 +1,19 @@
++// SPDX-License-Identifier: GPL-2.0
++/* Copyright (c) 2024 Meta Platforms, Inc. and affiliates. */
++#include <vmlinux.h>
++#include <bpf/bpf_tracing.h>
++#include "../bpf_testmod/bpf_testmod.h"
++
++char _license[] SEC("license") = "GPL";
++
++SEC("struct_ops/test_1")
++int BPF_PROG(test_1_forgotten)
++{
++	return 0;
++}
++
++SEC(".struct_ops.link")
++struct bpf_testmod_ops ops = {
++	/* we forgot to reference test_1_forgotten above, oops */
++};
++
 -- 
 2.43.0
 
