@@ -1,49 +1,49 @@
-Return-Path: <bpf+bounces-28963-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-28971-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9967C8BEEED
-	for <lists+bpf@lfdr.de>; Tue,  7 May 2024 23:40:31 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 19E868BEF36
+	for <lists+bpf@lfdr.de>; Tue,  7 May 2024 23:50:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 44B02282FEC
-	for <lists+bpf@lfdr.de>; Tue,  7 May 2024 21:40:30 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C28731F2591B
+	for <lists+bpf@lfdr.de>; Tue,  7 May 2024 21:50:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 131487603A;
-	Tue,  7 May 2024 21:40:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0AD8714B974;
+	Tue,  7 May 2024 21:50:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Z7M2Ix52"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lFTkF2om"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E8FE74433
-	for <bpf@vger.kernel.org>; Tue,  7 May 2024 21:40:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8838814B948
+	for <bpf@vger.kernel.org>; Tue,  7 May 2024 21:50:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715118028; cv=none; b=Irnoeb4w4CmYHoUkQb1UGUTE5QRDor+RsJpqp4jzabs9Nt79jNDCZy8EVvxjun7y54v3nfrW3/zptjjSYourW01rZbetVks+84e9feNCw+i+4Nn7EMnWIY5fhqxlJmvigZa/EYX2xOagYJy6NcdJBk2gTF3X5aPoPJl/LR5SUTg=
+	t=1715118629; cv=none; b=bjVe0vFsaJ7mu+W8ocr9mu+kYgsonSXI+jAnP8LspuQNA5Nx1j+yQePtdF4hO2yB7nY4c+YfTT6K949vd4N5oNII8cj9qzZhLRRDNUbwxazcn9bykIGvhlKkCa9NrPKgQng9yjxxH43eHFjImhjSAV9HVKCh5PARaxhyM4Nu4/c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715118028; c=relaxed/simple;
-	bh=jnp/upSq68FDdxtb4CM8ef0lh6InJAeyuU53cZDaISo=;
+	s=arc-20240116; t=1715118629; c=relaxed/simple;
+	bh=FzRe09x3ReW6P1laDssItvMlaUqh04TBOjR4OWAnEjw=;
 	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=KJEXl0GyT/PC8HBHbKEgJVc5IH/O55zCX0RA7B3vBIddM6bpAaZvB8g2wbTLp3z7pyxXLKchYwArXu5aTvov3eG7tnEK+OniFm55CA7j+pf7HZr36EIaU2OJKerKVrb1XN8Pmsco3tYNG2BIKzChbOZcjpRG8Fh4Vt7WGMcN4FA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Z7M2Ix52; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 245D6C4AF17;
-	Tue,  7 May 2024 21:40:28 +0000 (UTC)
+	 In-Reply-To:To:Cc; b=c/dmUYYzHjccejVYX4yc9WeV2I/0fpvUoCWCBZjifyo2c3yrf65yLBq324UAYdgtNeEj26kaW/5BQISbflzYpaYT5FbGVlwOAXs6PlHT83jnynghW3GdlJng4ddTyWtlS9ct1XxXT0Bz0NjdTKGMiJd7QLabLG1oiPXkEBukVAw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lFTkF2om; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 38999C3277B;
+	Tue,  7 May 2024 21:50:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1715118028;
-	bh=jnp/upSq68FDdxtb4CM8ef0lh6InJAeyuU53cZDaISo=;
+	s=k20201202; t=1715118629;
+	bh=FzRe09x3ReW6P1laDssItvMlaUqh04TBOjR4OWAnEjw=;
 	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=Z7M2Ix524WwXFkUroIVL3/EwWePaj+vcFf5osqkXU++xXkj3OUH7tQai8L6e1u2+i
-	 uXSrEuBOzk5UAxDUvI/s88rdc5OOZoENVxSCqtjKjO+nB2t+vkCWfZs/8RJswtVlqv
-	 9bqQiKvBOqF7hLbz7Gnz0spK8wxKo2OPKnc4IyyneHBx50tebmLlit+duVzfJLpGuK
-	 6xOjb9oxeseQJT39Biztbfw0279ytmubDZjsZtZcXUSQove/23nJyh02ow9gN5Fl1e
-	 c6vIWzCqmId7DBwIDWI/GTAkin/FAaul4MniNBhvWpBsm9tCn8u+2AiVzba+g78RkK
-	 mK6c9HxgHKfLw==
+	b=lFTkF2om5HWcbVV565CRmkmd8rp38WoMXgBdMAiS2lxOgtCtq+ce6duo3kMrDRw4B
+	 uaUJC6z5DU87rVUwzhz9pzgb74JR4JZmmS5rfEO03y/r9jJs2pHsTXwHD1Z8p7bwAY
+	 6VeKXqk1AhBXaHZ0q1GyFM0KwYAPS26aDpwR4cw0E6T/XgusYfGza74RJrOWhSn9+G
+	 fqNkG1IEsIqr2kz7XqbpaApTB/k3Y3p/epCZVRLBoY4tvEOuP8ym/Ol7UgEtNwXSD3
+	 y+7/uITH8n7uxHkmtbrumgKBaUYT4+etgSeBnnnWuhevHL+hBXo+7Of3cbUoa7t0sX
+	 e5kbqRIBCd38w==
 Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 0A91BC43330;
-	Tue,  7 May 2024 21:40:28 +0000 (UTC)
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 2AF9BC43614;
+	Tue,  7 May 2024 21:50:29 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -52,40 +52,37 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next V2 0/2] bpf: avoid `attribute ignored' warnings in
- GCC
+Subject: Re: [PATCH bpf-next] bpf: temporarily define BPF_NO_PRESEVE_ACCESS_INDEX
+ for GCC
 From: patchwork-bot+netdevbpf@kernel.org
 Message-Id: 
- <171511802803.15787.2996104692965890147.git-patchwork-notify@kernel.org>
-Date: Tue, 07 May 2024 21:40:28 +0000
-References: <20240507074227.4523-1-jose.marchesi@oracle.com>
-In-Reply-To: <20240507074227.4523-1-jose.marchesi@oracle.com>
+ <171511862917.23249.10258143765327305501.git-patchwork-notify@kernel.org>
+Date: Tue, 07 May 2024 21:50:29 +0000
+References: <20240507095011.15867-1-jose.marchesi@oracle.com>
+In-Reply-To: <20240507095011.15867-1-jose.marchesi@oracle.com>
 To: Jose E. Marchesi <jose.marchesi@oracle.com>
-Cc: bpf@vger.kernel.org
+Cc: bpf@vger.kernel.org, alexei.starovoitov@gmail.com,
+ yonghong.song@linux.dev, andrii.nakryiko@gmail.com, david.faust@oracle.com,
+ cupertino.miranda@oracle.com
 
 Hello:
 
-This series was applied to bpf/bpf-next.git (master)
+This patch was applied to bpf/bpf-next.git (master)
 by Andrii Nakryiko <andrii@kernel.org>:
 
-On Tue,  7 May 2024 09:42:25 +0200 you wrote:
-> These two patches avoid warnings (turned into errors) when building
-> the BPF selftests with GCC.
+On Tue,  7 May 2024 11:50:11 +0200 you wrote:
+> The vmlinux.h file generated by bpftool makes use of compiler pragmas
+> in order to install the CO-RE preserve_access_index in all the struct
+> types derived from the BTF info:
 > 
-> [Changes from V1:
-> - As requested by reviewer, an additional patch has been added in
->   order to remove __hidden from the `private' macro in
->   cpumask_common.h.
-> - Typo bening -> benign fixed in the commit message of the second
->   patch.]
+>   #ifndef __VMLINUX_H__
+>   #define __VMLINUX_H__
 > 
 > [...]
 
 Here is the summary with links:
-  - [bpf-next,V2,1/2] bpf: avoid __hidden__ attribute in static object
-    https://git.kernel.org/bpf/bpf-next/c/2ce987e16502
-  - [bpf-next,V2,2/2] bpf: disable some `attribute ignored' warnings in GCC
-    https://git.kernel.org/bpf/bpf-next/c/b0fbdf759da0
+  - [bpf-next] bpf: temporarily define BPF_NO_PRESEVE_ACCESS_INDEX for GCC
+    https://git.kernel.org/bpf/bpf-next/c/675b4e24bc50
 
 You are awesome, thank you!
 -- 
