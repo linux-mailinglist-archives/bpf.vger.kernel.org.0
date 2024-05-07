@@ -1,315 +1,163 @@
-Return-Path: <bpf+bounces-28894-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-28895-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 751A88BE96E
-	for <lists+bpf@lfdr.de>; Tue,  7 May 2024 18:43:22 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4AD6B8BE994
+	for <lists+bpf@lfdr.de>; Tue,  7 May 2024 18:47:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2B54E292BDA
-	for <lists+bpf@lfdr.de>; Tue,  7 May 2024 16:43:21 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7C7541C21AE2
+	for <lists+bpf@lfdr.de>; Tue,  7 May 2024 16:47:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 52BDE548F8;
-	Tue,  7 May 2024 16:37:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2133B17799B;
+	Tue,  7 May 2024 16:42:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HRUQJpYE"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="egeU03Qw"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f175.google.com (mail-pg1-f175.google.com [209.85.215.175])
+Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3ED3D3E48F;
-	Tue,  7 May 2024 16:37:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B02716D304
+	for <bpf@vger.kernel.org>; Tue,  7 May 2024 16:42:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715099827; cv=none; b=QxdfuW7arm1sXLCyy7DqnUs3Yv+MU/DS8yxLVEtGGYHYuZJfaMfL+xHK8hfhSN8q3RfNPYrCCJAzAA0oMu5ZBBRoVJaUfFTogrOm3JyLkop7N7crnFYQHxMpR5rS/+o589h0BOL1eMy/rd6LaSk7hdHG+Zz1nED4KLFODicLp/E=
+	t=1715100122; cv=none; b=UrAWyy2FN1LHX1bjjbf0MD4C9IIqWvbXFGS04/sinaiBTSXh0usM2t8kx3wRv6hl2NiSMgsVeQRlYes2/WVqt2Lb0r0FfUMxMb2a2Zqe94WH9PHvbHcbnp11oVOZX2NbAjjMBMV5l5y2li69KuPXHij/QwMajDEtVDTHv0L5p/8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715099827; c=relaxed/simple;
-	bh=qGfJvnfpxxK0Cnb6ZWI/3YT+WlFz4LPSpjpA2+r7j5w=;
+	s=arc-20240116; t=1715100122; c=relaxed/simple;
+	bh=qwLC5cBEd3Rp+u+f16eiuFja4w0IZlh93r+rs+D4dcM=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=mKG6Jt5J44DO9UGxygcOiGCRgCA6GAe4evqjdQ+szyssJz+vLpDJ4lRKnrCm2lb3ANEtc9lfgc8L4GipD0kA78pIPME9dMmYegCno6XLiBCQw29ARF59eDsLUMhPHkq9+a9EXKrAXwAmUlg/jrq1jvlqqUMqG3ThZqrrAF4ZMD4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=HRUQJpYE; arc=none smtp.client-ip=209.85.215.175
+	 To:Cc:Content-Type; b=ezSutX85oXgW5XRuzNnt9sqqAu0wGjHxjUcJUiNtrmFh7Gq0uVgTotkC/Cc3LSTkfvEimvERFJR+NfUtT0mXdZMnYyfsZN84LpTNOgkOU9D9L0HPUTCXPk4bpVJd4+Kqp0aQZ5gUoftnhW343aDzp2enm+vHF/B4MzqGYFMQNRU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=egeU03Qw; arc=none smtp.client-ip=209.85.214.181
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f175.google.com with SMTP id 41be03b00d2f7-6001399f22bso2490251a12.0;
-        Tue, 07 May 2024 09:37:05 -0700 (PDT)
+Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-1e4bf0b3e06so29739125ad.1
+        for <bpf@vger.kernel.org>; Tue, 07 May 2024 09:42:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1715099825; x=1715704625; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1715100120; x=1715704920; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=h4OwR2TgrDTiiCg6OQZ7l2+opI9M0Uh+nYNlleYZodA=;
-        b=HRUQJpYEOVWwbv92ztTsKj20wkRvBjaj70s6Kr+tHRFgOYHd1dwamdvo7oQ243zRph
-         7cSU3KQEWAyunpo4b55PPF6Vgn7fnLQatDHdYgGEMTtxhnkFHmOO2ibwn+PAoVpfX5Ix
-         spK4rnJvmLyzcmDpBStanPG3RYghP3voozGl4UkC4a/EgnGQZ32j8rkZ2kBOenZIpYl/
-         8QIK9gt7y7e960baYQI9zx2xgqb7KsUY19zXIKPSHbPZZilhCm8e/jgG5VxpH7xxjALm
-         8QD8B8VyODLpC9zpTRwmQ3cEFeu4/Tx1QivCOy3vIZ6nONCq4QQaeFBBpEM/w/SSUXdY
-         SeXw==
+        bh=Qu+lGDBpGzq9v1NMqEEDXxvCQ38ypf4jopzyPJIzoiU=;
+        b=egeU03Qw+XA1GofQHQQOcf440xbZhHwm2qrIBDt3EArUh02jDxcYsAZpylJndFUKEB
+         sAfDNVru4z9FppYk1/1VwPTydmWoKxJ7S9MIOKP5JJLo3Udb0u0NdLa/U5/Pg+zAVpgC
+         tvBwSALFJhrGC2oFMLuRf6a2BHH0GxknXvGkafWYjgSvkXW8YtaehDbTdWYbn4zyYZhl
+         m4R6gniMd2jzQICwE8MuycqoEP3+bmzJz5yin3ig2AtkD/L+hkkjQmGBRskQHml8Yt0F
+         d18Yr07Xu6YgIOYXrAKuAaZ6G2o3oyU48gcqU1iVq+9d+KI5buN8mYWCRY27Je0+Ub1E
+         hbhw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1715099825; x=1715704625;
+        d=1e100.net; s=20230601; t=1715100120; x=1715704920;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=h4OwR2TgrDTiiCg6OQZ7l2+opI9M0Uh+nYNlleYZodA=;
-        b=aLGWJhoqBMKqkLH6qUfgyj9RInmzKeJQpY1KHRUNZ8Vl2iujcsHycCIgN2KwQOQfBN
-         +plpTsL4YC810fg1v2fCVIHtivG+TjdbFSyfCpWvADeCpcfL/v45BEBKAEnVfeEhTKD0
-         lrXvtforHtUoaQR0TQCsXHEJDPDCKCH7/JsWv6XHDP4ihGEU5ickh9OQh7LDeAhpCpI6
-         nM0IxMYbzN3jKbaFRG2167IKeCTIHDeZa9xtMpru9BhfHlbKz3s81YJtk+1w08rV4lSd
-         wf8IwpDNzR6KtxOeI/0sbvQld0su6YIMl51IBEyTB51MZmP8GHocELaKM6q/shZc9ZeC
-         oeBg==
-X-Forwarded-Encrypted: i=1; AJvYcCUeIRQQ/mqn2L8BblA09mmeSo34SyB3KYxvMrMWHAuAFwLArVjDRpBrS7W0egwuMiKdZVcwZBplEUbikBkfxRy8MCVMn2nwyM8QqNP8A1gYpMKThyTRR35zuU3tGZkCaTKGnP0HQmO/+ZY9po8kwKwx4XrHR9iWzOk1Ewxyh4E/CGLk/t+JKs0kWgCRSvegFgpuz8a0ot65oBtEklgL0BE77rA=
-X-Gm-Message-State: AOJu0Yx4Q5HR8962YA1WN8CJp6Tx7C/8C3giqpLtIsmr91+CJfdrVM58
-	Bc/4vyQx+uJOiXoNSF7eUNVpCMENmNK9T4DmyEi1wsZPPFtDWJjzYVh4HIMDQv6QzppnAtLG2hT
-	gQ0nvt1sQpZRoG3NuJdPhF63uzSk=
-X-Google-Smtp-Source: AGHT+IHJgrwGB4ntGMYQujEHAZAA3qer5jlfBLoOJ9WIa4Ibk405hMwVEWVotrCPoLmMIPRvDSQO5cKYoauW1OsRePs=
-X-Received: by 2002:a17:90a:d14f:b0:2b2:bccc:5681 with SMTP id
- 98e67ed59e1d1-2b6169e3210mr75104a91.33.1715099825278; Tue, 07 May 2024
- 09:37:05 -0700 (PDT)
+        bh=Qu+lGDBpGzq9v1NMqEEDXxvCQ38ypf4jopzyPJIzoiU=;
+        b=poWPbse4QpEta41mw2GzvpsBKlnyfBDLRwjkES8x7e48ZXWsUsuJHaZd3VwFRoaQ1G
+         N1l/f+0xoKd7Nkg5I0mvW7XCivguTYuv0x5XmuS/c7noP/3AB0Sjx+M7kLVjgMOYhJYH
+         22Fg+Ugd+6tOhibbK+1Aa+z15dUz+nYdKI8LQs5nUwCV+RtkvWxXHFtKwVzJB1Xo0AMI
+         gnDuvJN8inUpmN6whzdMvUxIIX2kRieIjTQe8eWxciydfv7DVhXJI88hXExDOmbjxTPR
+         vviE7V7hNTfAqXeLCmQ33knlyE4yC9bCpL5GHEmOOLDvaiqn08CTb0Nwtjo14IqUtax8
+         g8fQ==
+X-Gm-Message-State: AOJu0Yy82onuGkOMhUpAC1eg7M9hknbVNN8Fkq5BhMac9iUvUhLwK37h
+	NKnxMJWI6RsFYtaMIsUZVaVhHfsBSwKV/w32CKaaveVQ/+reZ+x6JkCx3yGJJ9SWwA+J/UZeA8M
+	I7HFKynY9iq/g79NCUha1Y7/I6nM=
+X-Google-Smtp-Source: AGHT+IE+LIUE1AUihTHW0R+1wqdyTgsVw+2u6a9qokXD6K/SUxmvP9KRxbPngazoD1ft53xryeYnVv3dTYqIfEPH6Q4=
+X-Received: by 2002:a17:903:228f:b0:1e8:a63b:d427 with SMTP id
+ d9443c01a7336-1eeb0791c73mr1743755ad.49.1715100120550; Tue, 07 May 2024
+ 09:42:00 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240504003006.3303334-1-andrii@kernel.org> <20240504003006.3303334-3-andrii@kernel.org>
- <2024050439-janitor-scoff-be04@gregkh> <CAEf4BzZ6CaMrqRR1Rah7=HnTpU5-zw5HUnSH9NWCzAZZ55ZXFQ@mail.gmail.com>
- <ZjjiFnNRbwsMJ3Gj@x1> <CAEf4BzZJPY0tfLtvFA4BpQr71wO7iz-1-q16cENOAbuT1EX_og@mail.gmail.com>
- <Zjk--KLSjdg2kpic@x1>
-In-Reply-To: <Zjk--KLSjdg2kpic@x1>
+References: <20240507113950.28208-1-jose.marchesi@oracle.com>
+In-Reply-To: <20240507113950.28208-1-jose.marchesi@oracle.com>
 From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Tue, 7 May 2024 09:36:52 -0700
-Message-ID: <CAEf4BzZfOkw-mep-ox+1q29GTDoNeRAr0p6++7gEkCNn1Cph-g@mail.gmail.com>
-Subject: Re: [PATCH 2/5] fs/procfs: implement efficient VMA querying API for /proc/<pid>/maps
-To: Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc: Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>, 
-	Greg KH <gregkh@linuxfoundation.org>, Andrii Nakryiko <andrii@kernel.org>, 
-	linux-fsdevel@vger.kernel.org, brauner@kernel.org, viro@zeniv.linux.org.uk, 
-	akpm@linux-foundation.org, linux-kernel@vger.kernel.org, bpf@vger.kernel.org, 
-	linux-mm@kvack.org, =?UTF-8?Q?Daniel_M=C3=BCller?= <deso@posteo.net>, 
-	"linux-perf-use." <linux-perf-users@vger.kernel.org>
+Date: Tue, 7 May 2024 09:41:47 -0700
+Message-ID: <CAEf4BzZ259J6M+y5xVakycqVPgU3vjP3_qWFMuyZKDkVn68ysg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] bpf: avoid uninitialized value in BPF_CORE_READ_BITFIELD
+To: "Jose E. Marchesi" <jose.marchesi@oracle.com>
+Cc: bpf@vger.kernel.org, david.faust@oracle.com, cupertino.miranda@oracle.com, 
+	Eduard Zingerman <eddyz87@gmail.com>, Yonghong Song <yonghong.song@linux.dev>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, May 6, 2024 at 1:35=E2=80=AFPM Arnaldo Carvalho de Melo <acme@kerne=
-l.org> wrote:
+On Tue, May 7, 2024 at 4:40=E2=80=AFAM Jose E. Marchesi
+<jose.marchesi@oracle.com> wrote:
 >
-> On Mon, May 06, 2024 at 11:41:43AM -0700, Andrii Nakryiko wrote:
-> > On Mon, May 6, 2024 at 6:58=E2=80=AFAM Arnaldo Carvalho de Melo <acme@k=
-ernel.org> wrote:
-> > >
-> > > On Sat, May 04, 2024 at 02:50:31PM -0700, Andrii Nakryiko wrote:
-> > > > On Sat, May 4, 2024 at 8:28=E2=80=AFAM Greg KH <gregkh@linuxfoundat=
-ion.org> wrote:
-> > > > > On Fri, May 03, 2024 at 05:30:03PM -0700, Andrii Nakryiko wrote:
-> > > > > > Note also, that fetching VMA name (e.g., backing file path, or =
-special
-> > > > > > hard-coded or user-provided names) is optional just like build =
-ID. If
-> > > > > > user sets vma_name_size to zero, kernel code won't attempt to r=
-etrieve
-> > > > > > it, saving resources.
-> > >
-> > > > > > Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-> > >
-> > > > > Where is the userspace code that uses this new api you have creat=
-ed?
-> > >
-> > > > So I added a faithful comparison of existing /proc/<pid>/maps vs ne=
-w
-> > > > ioctl() API to solve a common problem (as described above) in patch
-> > > > #5. The plan is to put it in mentioned blazesym library at the very
-> > > > least.
-> > > >
-> > > > I'm sure perf would benefit from this as well (cc'ed Arnaldo and
-> > > > linux-perf-user), as they need to do stack symbolization as well.
-> > >
-> > > At some point, when BPF iterators became a thing we thought about, II=
-RC
-> > > Jiri did some experimentation, but I lost track, of using BPF to
-> > > synthesize PERF_RECORD_MMAP2 records for pre-existing maps, the layou=
-t
-> > > as in uapi/linux/perf_event.h:
-> > >
-> > >         /*
-> > >          * The MMAP2 records are an augmented version of MMAP, they a=
-dd
-> > >          * maj, min, ino numbers to be used to uniquely identify each=
- mapping
-> > >          *
-> > >          * struct {
-> > >          *      struct perf_event_header        header;
-> > >          *
-> > >          *      u32                             pid, tid;
-> > >          *      u64                             addr;
-> > >          *      u64                             len;
-> > >          *      u64                             pgoff;
-> > >          *      union {
-> > >          *              struct {
-> > >          *                      u32             maj;
-> > >          *                      u32             min;
-> > >          *                      u64             ino;
-> > >          *                      u64             ino_generation;
-> > >          *              };
-> > >          *              struct {
-> > >          *                      u8              build_id_size;
-> > >          *                      u8              __reserved_1;
-> > >          *                      u16             __reserved_2;
-> > >          *                      u8              build_id[20];
-> > >          *              };
-> > >          *      };
-> > >          *      u32                             prot, flags;
-> > >          *      char                            filename[];
-> > >          *      struct sample_id                sample_id;
-> > >          * };
-> > >          */
-> > >         PERF_RECORD_MMAP2                       =3D 10,
-> > >
-> > >  *   PERF_RECORD_MISC_MMAP_BUILD_ID      - PERF_RECORD_MMAP2 event
-> > >
-> > > As perf.data files can be used for many purposes we want them all, so=
- we
-> >
-> > ok, so because you want them all and you don't know which VMAs will be
-> > useful or not, it's a different problem. BPF iterators will be faster
-> > purely due to avoiding binary -> text -> binary conversion path, but
-> > other than that you'll still retrieve all VMAs.
+> GCC warns that `val' may be used uninitialized in the
+> BPF_CORE_READ_BITFIELD macro, defined in bpf_core_read.h as:
 >
-> But not using tons of syscalls to parse text data from /proc.
+>         [...]
+>         unsigned long long val;                                          =
+     \
+>         [...]                                                            =
+     \
+>         switch (__CORE_RELO(s, field, BYTE_SIZE)) {                      =
+     \
+>         case 1: val =3D *(const unsigned char *)p; break;                =
+       \
+>         case 2: val =3D *(const unsigned short *)p; break;               =
+       \
+>         case 4: val =3D *(const unsigned int *)p; break;                 =
+       \
+>         case 8: val =3D *(const unsigned long long *)p; break;           =
+       \
+>         }                                                                =
+     \
+>         [...]
+>         val;                                                             =
+     \
+>         }                                                                =
+     \
+>
+> This patch initializes `val' to zero in order to avoid the warning,
+> and random values to be used in case __builtin_preserve_field_info
+> returns unexpected values for BPF_FIELD_BYTE_SIZE.
+>
+> Tested in bpf-next master.
+> No regressions.
+>
+> Signed-off-by: Jose E. Marchesi <jose.marchesi@oracle.com>
+> Cc: david.faust@oracle.com
+> Cc: cupertino.miranda@oracle.com
+> Cc: Eduard Zingerman <eddyz87@gmail.com>
+> Cc: Yonghong Song <yonghong.song@linux.dev>
+> ---
+>  tools/lib/bpf/bpf_core_read.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/tools/lib/bpf/bpf_core_read.h b/tools/lib/bpf/bpf_core_read.=
+h
+> index b5c7ce5c243a..88d129b5f0a1 100644
+> --- a/tools/lib/bpf/bpf_core_read.h
+> +++ b/tools/lib/bpf/bpf_core_read.h
+> @@ -89,7 +89,7 @@ enum bpf_enum_value_kind {
+>   */
+>  #define BPF_CORE_READ_BITFIELD(s, field) ({                             =
+     \
+>         const void *p =3D (const void *)s + __CORE_RELO(s, field, BYTE_OF=
+FSET); \
+> -       unsigned long long val;                                          =
+     \
+> +       unsigned long long val =3D 0;                                    =
+       \
 
-In terms of syscall *count* you win with 4KB text reads, there are
-fewer syscalls because of this 4KB-based batching. But the cost of
-syscall + amount of user-space processing is a different matter. My
-benchmark in perf (see patch #5 discussion) suggests that even with
-more ioctl() syscalls, perf would win here.
+let's add instead `default: val =3D 0; break;`
 
-But I also realized that what you really need (I think, correct me if
-I'm wrong) is only file-backed VMAs, because all the other ones are
-not that useful for symbolization. So I'm adding a minimal change to
-my code to allow the user to specify another query flag to only return
-file-backed VMAs. I'm going to try it with perf code and see how that
-helps. I'll post results in patch #5 thread, once I have them.
+as Yonghong mentioned, it's not expected to have invalid byte size
+value in the relocation
 
->
-> > You can still do the same full VMA iteration with this new API, of
-> > course, but advantages are probably smaller as you'll be retrieving a
-> > full set of VMAs regardless (though it would be interesting to compare
-> > anyways).
->
-> sure, I can't see how it would be faster, but yeah, interesting to see
-> what is the difference.
+pw-bot: cr
 
-see patch #5 thread, seems like it's still a bit faster
-
+>                                                                          =
+     \
+>         /* This is a so-called barrier_var() operation that makes specifi=
+ed   \
+>          * variable "a black box" for optimizing compiler.               =
+     \
+> --
+> 2.30.2
 >
-> > > setup a meta data perf file descriptor to go on receiving the new mma=
-ps
-> > > while we read /proc/<pid>/maps, to reduce the chance of missing maps,=
- do
-> > > it in parallel, etc:
-> > >
-> > > =E2=AC=A2[acme@toolbox perf-tools-next]$ perf record -h 'event synthe=
-sis'
-> > >
-> > >  Usage: perf record [<options>] [<command>]
-> > >     or: perf record [<options>] -- <command> [<options>]
-> > >
-> > >         --num-thread-synthesize <n>
-> > >                           number of threads to run for event synthesi=
-s
-> > >         --synth <no|all|task|mmap|cgroup>
-> > >                           Fine-tune event synthesis: default=3Dall
-> > >
-> > > =E2=AC=A2[acme@toolbox perf-tools-next]$
-> > >
-> > > For this specific initial synthesis of everything the plan, as mentio=
-ned
-> > > about Jiri's experiments, was to use a BPF iterator to just feed the
-> > > perf ring buffer with those events, that way userspace would just
-> > > receive the usual records it gets when a new mmap is put in place, th=
-e
-> > > BPF iterator would just feed the preexisting mmaps, as instructed via
-> > > the perf_event_attr for the perf_event_open syscall.
-> > >
-> > > For people not wanting BPF, i.e. disabling it altogether in perf or
-> > > disabling just BPF skels, then we would fallback to the current metho=
-d,
-> > > or to the one being discussed here when it becomes available.
-> > >
-> > > One thing to have in mind is for this iterator not to generate duplic=
-ate
-> > > records for non-pre-existing mmaps, i.e. we would need some generatio=
-n
-> > > number that would be bumped when asking for such pre-existing maps
-> > > PERF_RECORD_MMAP2 dumps.
-> >
-> > Looking briefly at struct vm_area_struct, it doesn't seems like the
-> > kernel maintains any sort of generation (at least not at
-> > vm_area_struct level), so this would be nice to have, I'm sure, but
 >
-> Yeah, this would be something specific to the "retrieve me the list of
-> VMAs" bulky thing, i.e. the kernel perf code (or the BPF that would
-> generate the PERF_RECORD_MMAP2 records by using a BPF vma iterator)
-> would bump the generation number and store it to the VMA in
-> perf_event_mmap() so that the iterator doesn't consider it, as it is a
-> new mmap that is being just sent to whoever is listening, and the perf
-> tool that put in place the BPF program to iterate is listening.
-
-Ok, we went on *so many* tangents in emails on this patch set :) Seems
-like there are a bunch of perf-specific improvements possible which
-are completely irrelevant to the API I'm proposing. Let's please keep
-them separate (and you, perf folks, should propose them upstream),
-it's getting hard to see what this patch set is actually about with
-all the tangential emails.
-
->
-> > isn't really related to adding this API. Once the kernel does have
->
-> Well, perf wants to enumerate pre-existing mmaps _and_ after that
-> finishes to know about new mmaps, so we need to know a way to avoid
-> having the BPF program enumerating pre-existing maps sending
-> PERF_RECORD_MMAP2 for maps perf already knows about via a regular
-> PERF_RECORD_MMAP2 sent when a new mmap is put in place.
->
-> So there is an overlap where perf (or any other tool wanting to
-> enumerate all pre-existing maps and new ones) can receive info for the
-> same map from the enumerator and from the existing mechanism generating
-> PERF_RECORD_MMAP2 records.
->
-> - Arnaldo
->
-> > this "VMA generation" counter, it can be trivially added to this
-> > binary interface (which can't be said about /proc/<pid>/maps,
-> > unfortunately).
-> >
-> > >
-> > > > It will be up to other similar projects to adopt this, but we'll
-> > > > definitely get this into blazesym as it is actually a problem for t=
-he
-> > >
-> > > At some point looking at plugging blazesym somehow with perf may be
-> > > something to consider, indeed.
-> >
-> > In the above I meant direct use of this new API in perf code itself,
-> > but yes, blazesym is a generic library for symbolization that handles
-> > ELF/DWARF/GSYM (and I believe more formats), so it indeed might make
-> > sense to use it.
-> >
-> > >
-> > > - Arnaldo
-> > >
-> > > > abovementioned Oculus use case. We already had to make a tradeoff (=
-see
-> > > > [2], this wasn't done just because we could, but it was requested b=
-y
-> > > > Oculus customers) to cache the contents of /proc/<pid>/maps and run
-> > > > the risk of missing some shared libraries that can be loaded later.=
- It
-> > > > would be great to not have to do this tradeoff, which this new API
-> > > > would enable.
-> > > >
-> > > >   [2] https://github.com/libbpf/blazesym/commit/6b521314126b3ae6f2a=
-dd43e93234b59fed48ccf
-> > > >
-> >
-> > [...]
 
