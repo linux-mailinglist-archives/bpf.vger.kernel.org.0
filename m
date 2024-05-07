@@ -1,46 +1,46 @@
-Return-Path: <bpf+bounces-28986-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-28987-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E74BB8BF225
-	for <lists+bpf@lfdr.de>; Wed,  8 May 2024 01:42:58 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id DDC5F8BF263
+	for <lists+bpf@lfdr.de>; Wed,  8 May 2024 01:48:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 16A4D1C213A0
-	for <lists+bpf@lfdr.de>; Tue,  7 May 2024 23:42:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 94567285098
+	for <lists+bpf@lfdr.de>; Tue,  7 May 2024 23:48:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 45AF01708A3;
-	Tue,  7 May 2024 23:12:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F1811C8FC9;
+	Tue,  7 May 2024 23:13:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tQR/tN+0"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="e8AzfSeB"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C0000137C39;
-	Tue,  7 May 2024 23:12:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 90828139D16;
+	Tue,  7 May 2024 23:13:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715123521; cv=none; b=n5oKytroHrjhphl2a+mtkQ0dLOIy8JvXhtnTAf+aXwfV4i6X9y1MM8amY2VDG9eoDU3sKJQnutjmgRM/w4uaIinB6CfqNSjUPWOLrBMQEaIRxpOLTM6lS6LQ8zgT1XB53Tao+LXICgD6xbRsqxhvMAjQEKjJsjsgLKhMhswB3nE=
+	t=1715123595; cv=none; b=aseURWuVorkqT0tocuYSFc/lYsBe06p9EF3nYQeuDNRL1KZnLFbLxX/1aV+ZnAbHZMWTjmetK6DsWQmfLGD3pHPpFMrk2vHiU+j6jjGDC5IpgEH6OE3vOi5RAog7WgO3FQ/USOloPU7Eci4DWbTSijnin2BDlJu+7QyjyoVRsu0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715123521; c=relaxed/simple;
-	bh=Qr+vb+lt/DUmw1VZ+Sbw61envuX/3itFnyK4OdzykdQ=;
+	s=arc-20240116; t=1715123595; c=relaxed/simple;
+	bh=Zpc25XZiv6MhNUzAJdH/DyOn/hx46bbrTRVDiHKwGUs=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=F0yr1qsKt9wlNyGJq2Is8IOYAOVxrqDVpQsDJHr/1Y7gujBb3AsWbNk41orjIsip3vppF5iagqagLqhjo1p7VJIUOCkWF039MgVKl8q9Z49u6IB/1XU1VmIzWfxlHO8MKD3kLxL6j7d2wadBtXJmkPsFYA+55iGkU+v21Jl3i/w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tQR/tN+0; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4572FC2BBFC;
-	Tue,  7 May 2024 23:11:59 +0000 (UTC)
+	 MIME-Version; b=VyTWGtu1Rbfet/ixvRTdd3u/JXP+jiSY04+Iu/rGI2D2pkWz/e04VYr81ZBA8NJ2EG3ZeJ6G3IUiRNi/PlbVCCV9lrWoRhdY2wHMjcGP1QAwUErwawQhPLM6dx9K4AGRCoh4AJvIoEk0ah33I7PLG8DdcfU0BLG2hoLLA6VwHo8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=e8AzfSeB; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 65C0CC3277B;
+	Tue,  7 May 2024 23:13:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1715123521;
-	bh=Qr+vb+lt/DUmw1VZ+Sbw61envuX/3itFnyK4OdzykdQ=;
+	s=k20201202; t=1715123595;
+	bh=Zpc25XZiv6MhNUzAJdH/DyOn/hx46bbrTRVDiHKwGUs=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=tQR/tN+0Rmnyz3ihL5JStEoBbBb/bCb1OWsggums3S97Lg4jWYi/fwcoupYxdO6qM
-	 iepUWQLxXCwh68tLeH0UM3Wdt6aW+tTCBx8Pp5umz7TJtLAe2X9SzZ7w1jXRlYkUHR
-	 7ggjHZS/GZxRq+tiIjFVi0YRHNCl3xsV0pGaUy9QodjdShOgtfa/gHh2cPrMhoUvwi
-	 v/yEGQ99h9P2d1G0OfwGEfz9wN6P6aTxJHDZZDu2UGk3H00kgeUghzKlo+2z8J93E8
-	 vdTEddlG7UWw2l0aMbK24M0UGfP1laptNKA9eIeaZwpR0jIcnaFIVUsM0Jqt+TSP6N
-	 UxbuMqBwB85kQ==
+	b=e8AzfSeBoDgFH5dH2hxEH0/w61Rk4rTK6p632p4NZt5dMAURka1arQ11kFokwp7Z1
+	 Y/X/l8UhSUOfqhUMW+P7bz1qWmJcuA64c8ZI6gFqffyTUPKFR1qDqui7o2lMA8lfCd
+	 j0B7kl160XHH1YGHP6X7bnYFQIZDf6/l6EgMBNk7uGFUWfefQ3xv7gubKGSQH2b4UG
+	 kFIRxwktZOMRMn1LyNUfeVBIuBA09r/oxRqSwsJLDeCM+efNnrSP4HX4nfDWYYcskj
+	 gNXiDQfB0h74pPsPYmE36ETYMuRJC2wJsz47t2yGLQQHo2mRLBeZuFTAgM1eE0jkdp
+	 MTfNHEoS28+lQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
@@ -62,12 +62,12 @@ Cc: Linus Torvalds <torvalds@linux-foundation.org>,
 	arnd@arndb.de,
 	mjguzik@gmail.com,
 	bpf@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.6 36/43] x86/mm: Remove broken vsyscall emulation code from the page fault code
-Date: Tue,  7 May 2024 19:09:57 -0400
-Message-ID: <20240507231033.393285-36-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.1 19/25] x86/mm: Remove broken vsyscall emulation code from the page fault code
+Date: Tue,  7 May 2024 19:12:06 -0400
+Message-ID: <20240507231231.394219-19-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240507231033.393285-1-sashal@kernel.org>
-References: <20240507231033.393285-1-sashal@kernel.org>
+In-Reply-To: <20240507231231.394219-1-sashal@kernel.org>
+References: <20240507231231.394219-1-sashal@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -76,7 +76,7 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
-X-stable-base: Linux 6.6.30
+X-stable-base: Linux 6.1.90
 Content-Transfer-Encoding: 8bit
 
 From: Linus Torvalds <torvalds@linux-foundation.org>
@@ -171,7 +171,7 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  3 files changed, 3 insertions(+), 59 deletions(-)
 
 diff --git a/arch/x86/entry/vsyscall/vsyscall_64.c b/arch/x86/entry/vsyscall/vsyscall_64.c
-index e0ca8120aea87..1245000a8792f 100644
+index 4af81df133ee8..5d4ca8b942939 100644
 --- a/arch/x86/entry/vsyscall/vsyscall_64.c
 +++ b/arch/x86/entry/vsyscall/vsyscall_64.c
 @@ -98,11 +98,6 @@ static int addr_to_vsyscall_nr(unsigned long addr)
@@ -246,10 +246,10 @@ index e0ca8120aea87..1245000a8792f 100644
  
  	regs->ax = ret;
 diff --git a/arch/x86/include/asm/processor.h b/arch/x86/include/asm/processor.h
-index 191f1d8f05061..6e19d0f226000 100644
+index 94ea13adb724a..3ed6cc7785037 100644
 --- a/arch/x86/include/asm/processor.h
 +++ b/arch/x86/include/asm/processor.h
-@@ -464,7 +464,6 @@ struct thread_struct {
+@@ -519,7 +519,6 @@ struct thread_struct {
  	unsigned long		iopl_emul;
  
  	unsigned int		iopl_warn:1;
@@ -258,10 +258,10 @@ index 191f1d8f05061..6e19d0f226000 100644
  	/*
  	 * Protection Keys Register for Userspace.  Loaded immediately on
 diff --git a/arch/x86/mm/fault.c b/arch/x86/mm/fault.c
-index e238517968836..6529b3e2cff3c 100644
+index f20636510eb1e..2fc007752ceb1 100644
 --- a/arch/x86/mm/fault.c
 +++ b/arch/x86/mm/fault.c
-@@ -717,39 +717,8 @@ kernelmode_fixup_or_oops(struct pt_regs *regs, unsigned long error_code,
+@@ -737,39 +737,8 @@ kernelmode_fixup_or_oops(struct pt_regs *regs, unsigned long error_code,
  	WARN_ON_ONCE(user_mode(regs));
  
  	/* Are we prepared to handle this kernel fault? */
