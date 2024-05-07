@@ -1,126 +1,107 @@
-Return-Path: <bpf+bounces-28874-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-28875-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id F28D98BE609
-	for <lists+bpf@lfdr.de>; Tue,  7 May 2024 16:34:46 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CA61E8BE61E
+	for <lists+bpf@lfdr.de>; Tue,  7 May 2024 16:36:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8A03F1F23190
-	for <lists+bpf@lfdr.de>; Tue,  7 May 2024 14:34:46 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8413D28CF86
+	for <lists+bpf@lfdr.de>; Tue,  7 May 2024 14:36:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F2DA615FA80;
-	Tue,  7 May 2024 14:34:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1EFA715F40C;
+	Tue,  7 May 2024 14:36:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="dD/2g+G8"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mq6/KdbR"
 X-Original-To: bpf@vger.kernel.org
-Received: from out30-110.freemail.mail.aliyun.com (out30-110.freemail.mail.aliyun.com [115.124.30.110])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f45.google.com (mail-wr1-f45.google.com [209.85.221.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1CC3A15DBC1;
-	Tue,  7 May 2024 14:34:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.110
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 357DC1514C5;
+	Tue,  7 May 2024 14:36:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715092473; cv=none; b=FzVWi4Xigq5apxaFRKQmorIITZ8titCk0W5q988te8lVJXm012UFsPDlItLJXAH+xIvZRMr4Rw6ySqsRnN0BvxAKJuGMCcMW1xa3eEABdi8hv+DR8GXy3wpcI9nzaYWwRlniNoaIldpSraf+Oemxcq3TfYLXwNfHNhP0ti61hSo=
+	t=1715092593; cv=none; b=Y9WKM4PQpRdGxZRepq01FmdWDxDivp1E9vqnZtjOLy3YLDrcgrkZB1ms9juj/ZEPvwvHVhS+wVJU7w4TCK5dHBLcTRlHqHvc1xtEQuxgU81XXelN1xtFR5qh0RgB/ZtV+DNlSItgJMct+lUEqV/g44RK/vxB7OhRkxsrJpwr7RA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715092473; c=relaxed/simple;
-	bh=Rn98kkZoCRyzEDUHujvEdeSt3a+LcvSTBCAGe29A2To=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=nKyutH8wGubMf2A8EkNfTdfDZmI8/7lhPMhBj1kfuQssxarF+Nz5eAraaRuQ2739NS7DT+0LleuTvPOHDIDJS6r+XGuQdDCWtQQi9PMr0Wsg4dc1ev5f2rCdSHQAvSnE0UN4132HsyA2MTu7D0YzrjmvGczLnWDYOnlJkdSfjng=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=dD/2g+G8; arc=none smtp.client-ip=115.124.30.110
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1715092463; h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type;
-	bh=o6bWFqpzN6Wrt8MSD5ofMjZort1RodcrLsBtj4xyd/s=;
-	b=dD/2g+G8AcBnrB61lNFhlUquRhuOdpa4VZwRIBd6gdWgM0ONU3jakQRnCAYgJoUUKsxdkgTtJv49y9LnIFJWF3F8Kk6F6maLJkztb3LmD2+aZ5kht0R3mz7Tgn+FX8sQ0t8oZxXofJ8qp73gcZAd/VOeA4WHAj4FX/8Bn21Xlfc=
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R951e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=maildocker-contentspam033037067110;MF=guwen@linux.alibaba.com;NM=1;PH=DS;RN=20;SR=0;TI=SMTPD_---0W60RrX4_1715092449;
-Received: from 30.221.130.197(mailfrom:guwen@linux.alibaba.com fp:SMTPD_---0W60RrX4_1715092449)
-          by smtp.aliyun-inc.com;
-          Tue, 07 May 2024 22:34:22 +0800
-Message-ID: <2e34e4ea-b198-487e-be5b-ba854965dbeb@linux.alibaba.com>
-Date: Tue, 7 May 2024 22:34:09 +0800
+	s=arc-20240116; t=1715092593; c=relaxed/simple;
+	bh=ltkHF7USXEUiblC57EI2w5ExeCBBkAO5TlznSzRIeWg=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=r2b7a9Y+qJY5cJ57h/0Lvjx4RTeC9Q1b+65brjXJIi0T3pgLBCqEEWt38oP53aWK3OQhqfs6fhL2AGtyftA+xA/fiW3iUCrNsZwSW/0Yi82ml+msKxoEGomcWXGX6NPYbKJ/l8GsEAz06x+E0a86WRnGTBVtktyamRPgqkdh4EM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mq6/KdbR; arc=none smtp.client-ip=209.85.221.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f45.google.com with SMTP id ffacd0b85a97d-34ef66c0178so1873018f8f.1;
+        Tue, 07 May 2024 07:36:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1715092589; x=1715697389; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ltkHF7USXEUiblC57EI2w5ExeCBBkAO5TlznSzRIeWg=;
+        b=mq6/KdbRwdTPQMSRwYPD3fXvfvoj3V8L22IKTWwAtkaI/bgezFfzTd8JIJizjhrNWD
+         Qd+q2XQh3XY+WRw0DlUK4SyocXMj28jMojqvf8C562Xk+7/+XO+bym6QvTZQauaGHKS5
+         xVD8OFy7/ZJsUTEEkXvMIwnnpiuC/t1X5+OXAASr5gAD9IoIsCv8K1u8f9iB/+Oy7XM2
+         Rrr461egeZyLcwzcZK0nCPVWaW5uL3cix0l7lnLkEW5GJkWjsYr8EyxGok5OU38nrB9m
+         9sjXgQ9VfECgQgmYnjXWZ2NzD0s91OAgP6Sb6vIDS0f5Zuk/EkYOC4Ljq7EIJSWPKrrE
+         Rbvw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1715092589; x=1715697389;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ltkHF7USXEUiblC57EI2w5ExeCBBkAO5TlznSzRIeWg=;
+        b=X0oaMgafNaKUuL78FMi4536T7kq+I3z70H3FGSiL1YtNGKfo32igi3etCK59qp3dB9
+         pKQ4QiMgbJwmNHbue3ewuJrYRI2ubIv4EiIKMu3MOwLss1iKU0QsPaD4URjcIf+etIq/
+         a37fuu3R6U7MNj/MZbOC8uTvm9c+F8ScptvZLgPpKt8flpzKQdwoJtQr4n2PW220viQX
+         FP8o7ZRBGv3yewqxuYgLaaZ5v9EQm0h/9Rc+Cn216ih4fr4PbBrIjWJ9wuPnwLifWJ+0
+         F3o8pyM+oKW+eEyLhWWFICQ8Iayar6D0UPUN7xNih014wnyXv83bnAds4Z2mJ7ddlxLj
+         fKrw==
+X-Forwarded-Encrypted: i=1; AJvYcCUDH3Z7myb5KGZNqm4JjcOtx26jecXo+mrA51OU4dIR2XDrRg+ASnt2ciqXGGIWXYKaX9Vm1v4BPvIVkvqol5izbS7f/iBxA3kYHjdO
+X-Gm-Message-State: AOJu0Yxek0Y3XMvGQbolktFfisSvCEnEm3bNGDyS0Per+iylTlzoAEU0
+	QNQ56fsjm4oOdX0M2R+XbQmNw4zfsIGxR8EJ5Gt3s3n0bcKjV3FDrBlgkUTEfE0HQ2bRvDpQV9D
+	rLWPFhGk08jGorgghQkQCuIYbHmU=
+X-Google-Smtp-Source: AGHT+IHTsLpepLtn1ceKo4nbzm7tDYWoONlZoXEISnwYHFP/Vzwk2BC/YEf3kkUVPJYp9IlI09mYAlfXbVpY7XA7PkQ=
+X-Received: by 2002:adf:f8c6:0:b0:34d:9c8f:61a1 with SMTP id
+ f6-20020adff8c6000000b0034d9c8f61a1mr11820520wrq.60.1715092589280; Tue, 07
+ May 2024 07:36:29 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next v7 00/11] net/smc: SMC intra-OS shortcut with
- loopback-ism
-To: Cong Wang <xiyou.wangcong@gmail.com>
-Cc: wintera@linux.ibm.com, twinkler@linux.ibm.com, hca@linux.ibm.com,
- gor@linux.ibm.com, agordeev@linux.ibm.com, davem@davemloft.net,
- edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
- wenjia@linux.ibm.com, jaka@linux.ibm.com, borntraeger@linux.ibm.com,
- svens@linux.ibm.com, alibuda@linux.alibaba.com, tonylu@linux.alibaba.com,
- linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org,
- netdev@vger.kernel.org, bpf@vger.kernel.org
-References: <20240428060738.60843-1-guwen@linux.alibaba.com>
- <Zi5wIrf3nAeJh1u5@pop-os.localdomain>
-From: Wen Gu <guwen@linux.alibaba.com>
-In-Reply-To: <Zi5wIrf3nAeJh1u5@pop-os.localdomain>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <20240507024952.1590681-1-haiyue.wang@intel.com>
+In-Reply-To: <20240507024952.1590681-1-haiyue.wang@intel.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Tue, 7 May 2024 07:36:17 -0700
+Message-ID: <CAADnVQK7zD312WRJboMib8HJnNzN=i2FKH2QxkVVy736b7sNTQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v1] bpf,arena: Rename the kfunc set variable
+To: Haiyue Wang <haiyue.wang@intel.com>
+Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+On Mon, May 6, 2024 at 7:46=E2=80=AFPM Haiyue Wang <haiyue.wang@intel.com> =
+wrote:
+>
+> Rename the kfunc set variable to specify the 'arena' function scope,
+> although the 'UNSPEC' type BPF program is mapped to 'COMMON' hook.
+>
+> And there is 'common_kfunc_set' defined for real 'common' function in
+> file 'kernel/bpf/helpers.c'.
 
+I think common_kfunc_set is a better name to describe that these
+two kfuncs are in a common category.
+BPF_PROG_TYPE_UNSPEC is a lot less obvious.
 
-On 2024/4/28 23:49, Cong Wang wrote:
-> On Sun, Apr 28, 2024 at 02:07:27PM +0800, Wen Gu wrote:
->> This patch set acts as the second part of the new version of [1] (The first
->> part can be referred from [2]), the updated things of this version are listed
->> at the end.
->>
->> - Background
->>
->> SMC-D is now used in IBM z with ISM function to optimize network interconnect
->> for intra-CPC communications. Inspired by this, we try to make SMC-D available
->> on the non-s390 architecture through a software-implemented Emulated-ISM device,
->> that is the loopback-ism device here, to accelerate inter-process or
->> inter-containers communication within the same OS instance.
-> 
-> Just FYI:
-> 
-> Cilium has implemented this kind of shortcut with sockmap and sockops.
-> In fact, for intra-OS case, it is _very_ simple. The core code is less
-> than 50 lines. Please take a look here:
-> https://github.com/cilium/cilium/blob/v1.11.4/bpf/sockops/bpf_sockops.c
-> 
-> Like I mentioned in my LSF/MM/BPF proposal, we plan to implement
-> similiar eBPF things for inter-OS (aka VM) case.
-> 
-> More importantly, even LD_PRELOAD is not needed for this eBPF approach.
-> :)
-> 
-> Thanks.
+There are two static common_kfunc_set in helpers.c and arena.c
+and that's fine.
 
-Hi, Cong. Thank you very much for the information. I learned about sockmap
-before and from my perspective smcd loopback and sockmap each have their own
-pros and cons.
-
-The pros of smcd loopback is that it uses a standard process that defined
-by RFC-7609 for negotiation, this CLC handshake helps smc correctly determine
-whether the tcp connection should be upgraded no matter what middleware the
-connection passes, e.g. through NAT. So we don't need to pay extra effort to
-check whether the connection should be shortcut, unlike checking various policy
-by bpf_sock_ops_ipv4() in sockmap. And since the handshake automatically select
-different underlay devices for different scenarios (loopback-ism in intra-OS,
-ISM in inter-VM of IBM z and RDMA in inter-VM of different hosts), various
-scenarios can be covered through one smc protocol stack.
-
-The cons of smcd loopback is also related to the CLC handshake, one more round
-handshake may cause smc to perform worse than TCP in short-lived connection
-scenarios. So we basically use smc upgrade in long-lived connection scenarios
-and are exploring IPPROTO_SMC[1] to provide lossless fallback under adverse cases.
-
-And we are also working on other upgrade ways than LD_PRELOAD, e.g. using eBPF
-hook[2] with IPPROTO_SMC, to enhance the usability.
-
-[1] https://lore.kernel.org/netdev/1708412505-34470-1-git-send-email-alibuda@linux.alibaba.com/
-[2] https://lore.kernel.org/all/ac84be00f97072a46f8a72b4e2be46cbb7fa5053.1692147782.git.geliang.tang@suse.com/
-
-Thanks!
+pw-bot: cr
 
