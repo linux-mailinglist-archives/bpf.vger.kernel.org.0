@@ -1,276 +1,619 @@
-Return-Path: <bpf+bounces-29137-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-29138-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 640038C0751
-	for <lists+bpf@lfdr.de>; Thu,  9 May 2024 00:25:54 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2C31E8C0783
+	for <lists+bpf@lfdr.de>; Thu,  9 May 2024 01:07:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 90D971C20FAF
-	for <lists+bpf@lfdr.de>; Wed,  8 May 2024 22:25:53 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7C7BBB20FEB
+	for <lists+bpf@lfdr.de>; Wed,  8 May 2024 23:07:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 25BB21332A7;
-	Wed,  8 May 2024 22:25:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A1FC23A8FF;
+	Wed,  8 May 2024 23:07:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Q860DLMQ"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Zn3tDsmL"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f49.google.com (mail-wm1-f49.google.com [209.85.128.49])
+Received: from mail-ej1-f43.google.com (mail-ej1-f43.google.com [209.85.218.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C8A01130E4B;
-	Wed,  8 May 2024 22:25:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C86FE17C79
+	for <bpf@vger.kernel.org>; Wed,  8 May 2024 23:07:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715207147; cv=none; b=g1xbDj8qOKVaQUCI+1bi0VvVuyxV5LIHIJLoNZcsQpj5gSise/LW6OGVUUtuPz/oFKDj8DUcKasz1f5KbHBE/efDcMjQn52cox/OsnJKf+hXAi70FgrWstcRqBSU828MBU2d7Zx65JvxulYdGZzwdqjNEDLh+YnNWNrNtL4OERY=
+	t=1715209658; cv=none; b=ASgpGlQUJhrD7BcbMsRqo0Tjtqq/LU26lI5FLsq3p151tjnvxkTkP//px4/dUNuU4KFXtNTzkDLjJDYwfa2gjYP2ANlIHWsGa25J+WclmUPOeH9RHBPconZRvAMLIRy1CI+MHm3xI1w/ObjrTP+i5w9WZPq3jkmeyMcDXdqJFzY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715207147; c=relaxed/simple;
-	bh=Iaqt7cI5LSs0Yy4oxTQR2YW3DueQdxMrZk9gsDgznmY=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=iz6qttSpIeSCo3rXqiDrJJmnkJnex8KVCCcbUEHjF9DmCjXmXTNfuNYV97EgWbUXGbuMdQgWC8VZ5qVxSAJ9+Dn84OHfTijxEGWnR7XgngDoUehddo1NTgWO7p7wSJPpHscN0TWkzyxjO6ugXvQFy+O/aorF+WKnXjwpbb3rroY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Q860DLMQ; arc=none smtp.client-ip=209.85.128.49
+	s=arc-20240116; t=1715209658; c=relaxed/simple;
+	bh=seswmGHupHBsLOOxaMtJGclr74Q4DcL4n7RwnfPXA4Y=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=ithzpJWPZRr1r5U+qO3nlW0yvAnBCmsU1k13WQ+Ph7QfL22wURNUo/wATMQOAuaCOUXXN3LP3PTc6QtCY6o8day4FuTcJ7C1tlvS7k4OmDVgX462e+yduLaOdphXv/c9suRntjEhKXmqceq4MxhyZ+jw9hlA6nVBpWFCIf8EozQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Zn3tDsmL; arc=none smtp.client-ip=209.85.218.43
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f49.google.com with SMTP id 5b1f17b1804b1-41f9ce16ed8so3129895e9.0;
-        Wed, 08 May 2024 15:25:45 -0700 (PDT)
+Received: by mail-ej1-f43.google.com with SMTP id a640c23a62f3a-a59cdd185b9so251382066b.1
+        for <bpf@vger.kernel.org>; Wed, 08 May 2024 16:07:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1715207144; x=1715811944; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=d+l+oDWiSz2dter6uou4EZeP8lrM0thCQpHdtcg22Oc=;
-        b=Q860DLMQnHEbG1OscS9QXAiLJRZ5wpL20GKMwcWcYN+f5pUjJsoDHvfVUPkmn5haSd
-         bEWpLEfgN9p1W9gW3Qv9Y2XVkEPB6j5NaERVSCu2I+ve3d6PNtX1eS+4hrxioYuxBSYu
-         AlnPOgJnZs2atKLSLkt+0Bw8ccveuSCpniX3a+Hi+oUn79lX1FdEUD1NJE7QKH+OmtSl
-         iS/xLPA5ZVj2p7gJ1gGAA8gfsSNLqFFflg9lWY6TvtV27za8hYfO88SHjaCzn9T9dCif
-         UZVfFTmGQzzQ9lP3BNLeGjAmmnDk058YpGM1jQGWd1GmoeooluXMMb4f7b7BeHoSh100
-         2F0w==
+        d=gmail.com; s=20230601; t=1715209654; x=1715814454; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=m+tBB5AQnsJLJE7TPcQoSI0WYy+s92qCjujbGMGLkE0=;
+        b=Zn3tDsmLhjC4+xk4EugsMFiomXXQNBzjDa/FBtzH4do54PoNA0Nr8gU7yrX8D4KgxQ
+         fEhhxB2QtrW6zjefIKUt3CwrNFT6ioD8CkX5Ce3+8PEo6t/dfLSGBpCF1pWVtc4shQq9
+         v1O1p3xXl5R/baUo7ME3cylPi3KbqMvQ62V3KdF61J0puN2Hzf2pKC+bKMRmalUIGdR6
+         DNnjXNq/p3AOdSgXMnhMyqbs1Qv+1pV7RbESP4Lx5LiB4uSP+oTPSN6M7qlOCfG+aJfM
+         RNHTt9NWrBQ8sWgwuyn+Uj6NO/Ypo2tU7slL/B6dh7DyKW7elX3Kfjchp99AwcN8masA
+         W/CA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1715207144; x=1715811944;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=d+l+oDWiSz2dter6uou4EZeP8lrM0thCQpHdtcg22Oc=;
-        b=sa2isWLitmfSYn4DS7I3NcEcf3BGZQ374adnNEkjB2dc9LGde+3qtHE7c0BazngiOW
-         JeNzN/feV5dbJeu2tjzi8p8o8o+eOmdzNOdh7REzG1aYQemKRbzoWyglua/QwkyC7pFr
-         7rFqdLFdmzRYUrL/bJtEe7NknTgRzLd3wJ0KdA42S+HWC3O3FgrUYDbBPIQq46iVFMZb
-         hXkSE8RbGqkSzdy/efyPfdZb8Oe/BDZTR1js6n7+M3a0plCtA5cHKK/73SnYZ7NS55ou
-         PaYcm0o5HP+mVb/nekebygF7uokHR7DH6cuVV+PGSxsCkFYvyR/DCx8Cs9BJeQQHoNgm
-         RiHQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUrMSOI/B8TlXFRZIU7TomwVn6ptDrT1jdJQ/Xe2RBkOa6zWE/JgFHPfgNP/jh1Xj2pBhVgA4ZG+Xvs570NHItoLWYk1HARFEhrg70LrDv1Zke03hz9ms/0iN0CSopIS3vW
-X-Gm-Message-State: AOJu0Yxa/cAilAAmRnYonEJ2qpP+rI7NxeAKoCokLoXnfTfw1mFk9zu7
-	Nfv4WZngB3aaHXXPwgWh9tAYxzmfMFkLWBSFnQg2QtLtJH5GknDcxqlvsjgvX5Fuu1wGiisauQ9
-	BOalFL/Jyok7q+moZbErKynGcHqE=
-X-Google-Smtp-Source: AGHT+IE1brzbuRTz9QQT/7/yj6R9Xy+cNUD7s5000JtPqTHGDnKg4ZjmAP83VYeEoFo4dMCijk17UxEKgn+EURDNrro=
-X-Received: by 2002:a05:600c:45cf:b0:41b:e244:164a with SMTP id
- 5b1f17b1804b1-41f71302db2mr42287715e9.6.1715207143761; Wed, 08 May 2024
- 15:25:43 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1715209654; x=1715814454;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=m+tBB5AQnsJLJE7TPcQoSI0WYy+s92qCjujbGMGLkE0=;
+        b=prmCjcUP0sHPp1c3cWX64/3pSZO7/OD4THnZ4dF3wWfTgFvMsAbTb/B24cT23p9WCH
+         Lp0uxJl+OVc33LgsvnbL6FCepJCKDcSUQNmF9ix1gd/lnxUKTqGeAr6A9WyY1Iv6w+TU
+         pqUxdr9YyGHIB8CnaYU2qFX4cJnrkqO75gSKFii7qZBfVXV4P3jiM0TXbpVkm1epo66P
+         si4M+RvCkAyNyVI9KI2GglDgoVeW11FiR+v+eoiGgROk6nJuBk+uRmDOskKxP8JQTZoF
+         99tr9BrTf/w2RwTLYuLo3bsRgfm5W1QFfFKp8gBPBI8Yzbpfj2trwqp/gW70KEJpOplq
+         IjvQ==
+X-Gm-Message-State: AOJu0Yzt8t9oOAISn1UiBZgTLjjQnUDeNK1rRbk/ESYuLfqEoUmO4MX5
+	fTvlqkpukhXmOYavIAEKEB+6q5f5+/3R5TFwKkIf0DK1UYlT/Z2a
+X-Google-Smtp-Source: AGHT+IGBuww+7NYktanjmfSApua+GqDiYCpPrlPyh1iozfG9cndnF4jRRQwlogMNSeyGNGM9FWFljg==
+X-Received: by 2002:a17:907:7252:b0:a59:ba34:f047 with SMTP id a640c23a62f3a-a5a116f6254mr83708866b.22.1715209653668;
+        Wed, 08 May 2024 16:07:33 -0700 (PDT)
+Received: from ?IPV6:2620:10d:c0c3:1131::1331? ([2620:10d:c092:400::5:54e4])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a5a1781d35csm10436866b.36.2024.05.08.16.07.32
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 08 May 2024 16:07:33 -0700 (PDT)
+Message-ID: <8ff3e0a3-faf7-4377-a4c3-8ee1aa82dd21@gmail.com>
+Date: Thu, 9 May 2024 00:07:32 +0100
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240422-sleepable_array_progs-v1-1-7c46ccbaa6e2@kernel.org>
- <7344022a-6f59-7cbf-ee45-6b7d59114be6@iogearbox.net> <un4jw2ef45vu3vwojpjca3wezso7fdp5gih7np73f4pmsmhmaj@csm3ix2ygd5i>
- <35nbgxc7hqyef3iobfvhbftxtbxb3dfz574gbba4kwvbo6os4v@sya7ul5i6mmd>
- <CAADnVQJaG8kDaJr5LV29ces+gVpgARLAWiUvE9Ee5huuiW5X=Q@mail.gmail.com>
- <mhkzkf4e23uvljtmwizwcxyuyat2tmfxn33xb4t7waafgmsa66@mcrzpj3b6ssx>
- <CAADnVQLJ=nxp3bZYYMJd0yrUtMNx2DcvYXXmbGKBQAiG85kSLQ@mail.gmail.com>
- <xt2zckipzs24eur4ozdo64uoxfed6jm3qixxgnp3o2gogjmosc@723s2u7jbsaz>
- <CAADnVQK9qeMmzxE-aivmue-CF_hn1EFUTUAZyaMRqy2cW6j73A@mail.gmail.com> <b5r55f2uan7qm5h34nfu2qmoap2gm3ox3dtp2kjpaxebjrzxvp@zqx23ecrnj4q>
-In-Reply-To: <b5r55f2uan7qm5h34nfu2qmoap2gm3ox3dtp2kjpaxebjrzxvp@zqx23ecrnj4q>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Wed, 8 May 2024 15:25:31 -0700
-Message-ID: <CAADnVQLxjW411h-Wr2shMFNi_D7FK661yBZjYj2pUTwwhafc-A@mail.gmail.com>
-Subject: Re: [PATCH] bpf: verifier: allow arrays of progs to be used in
- sleepable context
-To: Benjamin Tissoires <bentiss@kernel.org>
-Cc: Daniel Borkmann <daniel@iogearbox.net>, Alexei Starovoitov <ast@kernel.org>, 
-	John Fastabend <john.fastabend@gmail.com>, Andrii Nakryiko <andrii@kernel.org>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
-	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
-	bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH bpf-next] bpftool: introduce btf c dump sorting
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+ Quentin Monnet <qmo@kernel.org>, Eduard Zingerman <eddyz87@gmail.com>
+Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
+ daniel@iogearbox.net, kafai@meta.com, kernel-team@meta.com,
+ Mykyta Yatsenko <yatsenko@meta.com>
+References: <20240506134458.727621-1-yatsenko@meta.com>
+ <CAEf4BzZ+nw6iu8RO1xJutRf+qnxAotHx47bXuJuw8AT-5Z3QfQ@mail.gmail.com>
+Content-Language: en-US
+From: Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>
+In-Reply-To: <CAEf4BzZ+nw6iu8RO1xJutRf+qnxAotHx47bXuJuw8AT-5Z3QfQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Wed, May 8, 2024 at 4:53=E2=80=AFAM Benjamin Tissoires <bentiss@kernel.o=
-rg> wrote:
+On 5/7/24 22:02, Andrii Nakryiko wrote:
+> On Mon, May 6, 2024 at 6:45 AM Mykyta Yatsenko
+> <mykyta.yatsenko5@gmail.com> wrote:
+>> From: Mykyta Yatsenko <yatsenko@meta.com>
+>>
+>> Provide a way to sort bpftool c dump output, to simplify vmlinux.h
+>> diffing and forcing more natural definitions ordering.
+>>
+>> Use `normalized` argument in bpftool CLI after `format c` for example:
+>> ```
+>> bpftool btf dump file /sys/kernel/btf/fuse format c normalized
+>> ```
+>>
+>> Definitions are sorted by their BTF kind ranks, lexicographically and
+>> typedefs are forced to go right after their base type.
+>>
+>> Type ranks
+>>
+>> Assign ranks to btf kinds (defined in function btf_type_rank) to set
+>> next order:
+>> 1. Anonymous enums
+>> 2. Anonymous enums64
+>> 3. Named enums
+>> 4. Named enums64
+>> 5. Trivial types typedefs (ints, then floats)
+>> 6. Structs
+>> 7. Unions
+>> 8. Function prototypes
+>> 9. Forward declarations
+>>
+>> Lexicographical ordering
+>>
+>> Definitions within the same BTF kind are ordered by their names.
+>> Anonymous enums are ordered by their first element.
+>>
+>> Forcing typedefs to go right after their base type
+>>
+>> To make sure that typedefs are emitted right after their base type,
+>> we build a list of type's typedefs (struct typedef_ref) and after
+>> emitting type, its typedefs are emitted as well (lexicographically)
+>>
+>> There is a small flaw in this implementation:
+>> Type dependencies are resolved by bpf lib, so when type is dumped
+>> because it is a dependency, its typedefs are not output right after it,
+>> as bpflib does not have the list of typedefs for a given type.
+>>
+>> Signed-off-by: Mykyta Yatsenko <yatsenko@meta.com>
+>> ---
+>>   tools/bpf/bpftool/btf.c | 264 +++++++++++++++++++++++++++++++++++++++-
+>>   1 file changed, 259 insertions(+), 5 deletions(-)
+>>
+> I applied this locally to experiment. Generated vmlinux.h for the
+> production (a bit older) kernel and then for latest bpf-next/master
+> kernel. And then tried diff between normalized vmlinux.h dumps and
+> non-normalized.
 >
-> On May 07 2024, Alexei Starovoitov wrote:
-> > On Tue, May 7, 2024 at 6:32=E2=80=AFAM Benjamin Tissoires <bentiss@kern=
-el.org> wrote:
-> > >
-> > > Yes, exactly that. See [0] for my current WIP. I've just sent it, not
-> > > for reviews, but so you see what I meant here.
-> >
-> > The patches helped to understand, for sure, and on surface
-> > they kind of make sense, but without seeing what is that
-> > hid specific kfunc that will use it
-> > it's hard to make a call.
+> It took a bit for the diff tool to generate, but I think diff for
+> normalized vmlinux.h is actually very usable. You can see an example
+> at [1]. It shows whole new types being added in front of existing
+> ones. And for existing ones it shows only parts that actually changed.
+> It's quite nice. And note that I used a relatively stale production
+> kernel vs latest upstream bpf-next, *AND* with different (bigger)
+> Kconfig. So for more incremental changes in kernel config/version the
+> diff should be much slower.
 >
-> I've posted my HID WIP on [1]. It probably won't compile as my local
-> original branch was having a merge of HID and bpf trees.
+> I think this idea of normalizing vmlinux.h works and is useful.
+>
+> Eduard, Quentin, please take a look when you get a chance.
+>
+> My high-level feedback. I like the idea and it seems to work well in
+> practice. I do think, though, that the current implementation is a bit
+> over-engineered. I'd drop all the complexity with TYPEDEF and try to
+> get almost the same behavior with a slightly different ranking
+> strategy.
+>
+> Tracking which types are emitted seems unnecessary btf_dumper is doing
+> that already internally. So I think overall flow could be basically
+> three steps:
+>
+>    - precalculate/cache "sort names" and ranks;
+>    - sort based on those two, construct 0-based list of types to emit
+>    - just go linearly over that sorted list, call btf_dump__dump_type()
+> on each one with original type ID; if the type was already emitted or
+> is not the type that's emitted as an independent type (e.g.,
+> FUNC_PROTO), btf_dump__dump_type() should do the right thing (do
+> nothing).
+>
+> Any flaws in the above proposal?
+>
+>    [1] https://gist.github.com/anakryiko/cca678c8f77833d9eb99ffc102612e28
+>
+>> diff --git a/tools/bpf/bpftool/btf.c b/tools/bpf/bpftool/btf.c
+>> index 91fcb75babe3..93c876e90b04 100644
+>> --- a/tools/bpf/bpftool/btf.c
+>> +++ b/tools/bpf/bpftool/btf.c
+>> @@ -11,6 +11,7 @@
+>>   #include <linux/btf.h>
+>>   #include <sys/types.h>
+>>   #include <sys/stat.h>
+>> +#include <linux/list.h>
+>>
+>>   #include <bpf/bpf.h>
+>>   #include <bpf/btf.h>
+>> @@ -43,6 +44,20 @@ static const char * const btf_kind_str[NR_BTF_KINDS] = {
+>>          [BTF_KIND_ENUM64]       = "ENUM64",
+>>   };
+>>
+>> +struct typedef_ref {
+>> +       struct sort_datum *datum;
+>> +       struct list_head list;
+>> +};
+>> +
+>> +struct sort_datum {
+>> +       __u32 index;
+>> +       int type_rank;
+>> +       bool emitted;
+>> +       const char *name;
+>> +       // List of typedefs of this type
+> let's not use C++-style comments in C code, please stick to /* */
+>
+>> +       struct list_head *typedef_list;
+>> +};
+>> +
+>>   static const char *btf_int_enc_str(__u8 encoding)
+>>   {
+>>          switch (encoding) {
+>> @@ -460,8 +475,233 @@ static void __printf(2, 0) btf_dump_printf(void *ctx,
+>>          vfprintf(stdout, fmt, args);
+>>   }
+>>
+>> +static int btf_type_rank(const struct btf *btf, __u32 index, bool has_name)
+>> +{
+>> +       const struct btf_type *btf_type = btf__type_by_id(btf, index);
+> nit: we normally use `t` when there is one BTF type that function is
+> working with, it's nice and short that way
+>
+>> +       const int max_rank = 1000;
+>> +
+>> +       has_name |= (bool)btf_type->name_off;
+> this is a rather unconventional way of writing
+>
+> if (btf_type->name_off)
+>      has_name = true;
+>
+>> +
+>> +       switch (btf_kind(btf_type)) {
+>> +       case BTF_KIND_ENUM:
+>> +               return 100 + (btf_type->name_off == 0 ? 0 : 1);
+>> +       case BTF_KIND_ENUM64:
+>> +               return 200 + (btf_type->name_off == 0 ? 0 : 1);
+> nit: ENUM and ENUM64 are not fundamentally different, I'd rank them
+> absolutely the same
+>
+>> +       case BTF_KIND_INT:
+>> +               return 300;
+>> +       case BTF_KIND_FLOAT:
+>> +               return 400;
+>> +       case BTF_KIND_VAR:
+>> +               return 500;
+> doesn't really matter, because VAR is not emitted by btf_dumper, but
+> I'd put it right before DATASEC, they are related (i.e., I'd just drop
+> them to max_rank for now)
+>
+>> +
+>> +       case BTF_KIND_STRUCT:
+>> +               return 600 + (has_name ? 0 : max_rank);
+>> +       case BTF_KIND_UNION:
+>> +               return 700 + (has_name ? 0 : max_rank);
+> struct/union are also conceptually on the same footing, let's rank them the same
+>
+>> +       case BTF_KIND_FUNC_PROTO:
+>> +               return 800 + (has_name ? 0 : max_rank);
+> func_proto by itself is not emitted, it can be emitted as part of TYPEDEF only
+>
+>> +
+>> +       case BTF_KIND_FWD:
+>> +               return 900;
+>> +
+>> +       case BTF_KIND_ARRAY:
+>> +               return 1 + btf_type_rank(btf, btf_array(btf_type)->type, has_name);
+> similarly not an independent type, but maybe it's ranking influences
+> the order of typedef, still reading the rest of the logic...
+>
+>> +
+>> +       case BTF_KIND_CONST:
+>> +       case BTF_KIND_PTR:
+>> +       case BTF_KIND_VOLATILE:
+>> +       case BTF_KIND_RESTRICT:
+>> +       case BTF_KIND_TYPE_TAG:
+>> +       case BTF_KIND_TYPEDEF:
+>> +               return 1 + btf_type_rank(btf, btf_type->type, has_name);
+>> +
+>> +       default:
+>> +               return max_rank;
+>> +       }
+>> +}
+>> +
+>> +static const char *btf_type_sort_name(const struct btf *btf, __u32 index)
+>> +{
+>> +       const struct btf_type *btf_type = btf__type_by_id(btf, index);
+> nit: btf_type -> t
+>
+>> +       const int kind = btf_kind(btf_type);
+>> +       const char *name = btf__name_by_offset(btf, btf_type->name_off);
+>> +
+>> +       // Use name of the first element for anonymous enums
+> /* */
+>
+>> +       if (!btf_type->name_off && (kind == BTF_KIND_ENUM || kind == BTF_KIND_ENUM64))
+>> +               name = btf__name_by_offset(btf, btf_enum(btf_type)->name_off);
+> we could have empty enums, but they should be named (because they are
+> effectively a forward-declaration of an enum), but it would be nice to
+> guard btf_enum() access by checking vlen first
+>
+>> +
+>> +       return name;
+>> +}
+>> +
+>> +static int btf_type_compare(const void *left, const void *right)
+>> +{
+>> +       const struct sort_datum *datum1 = (const struct sort_datum *)left;
+>> +       const struct sort_datum *datum2 = (const struct sort_datum *)right;
+>> +
+>> +       if (datum1->type_rank != datum2->type_rank)
+>> +               return datum1->type_rank < datum2->type_rank ? -1 : 1;
+>> +
+>> +       return strcmp(datum1->name, datum2->name);
+>> +}
+>> +
+>> +static int emit_typedefs(struct list_head *typedef_list, int *sorted_indexes)
+>> +{
+>> +       struct typedef_ref *type;
+>> +       int current_index = 0;
+>> +
+>> +       if (!typedef_list)
+>> +               return 0;
+>> +       list_for_each_entry(type, typedef_list, list) {
+>> +               if (type->datum->emitted)
+>> +                       continue;
+>> +               type->datum->emitted = true;
+>> +               sorted_indexes[current_index++] = type->datum->index;
+>> +               current_index += emit_typedefs(type->datum->typedef_list,
+>> +                                       sorted_indexes + current_index);
+>> +       }
+>> +       return current_index;
+>> +}
+>> +
+>> +static void free_typedefs(struct list_head *typedef_list)
+>> +{
+>> +       struct typedef_ref *type;
+>> +       struct typedef_ref *temp_type;
+>> +
+>> +       if (!typedef_list)
+>> +               return;
+>> +       list_for_each_entry_safe(type, temp_type, typedef_list, list) {
+>> +               list_del(&type->list);
+>> +               free(type);
+>> +       }
+>> +       free(typedef_list);
+>> +}
+>> +
+>> +static void add_typedef_ref(const struct btf *btf, struct sort_datum *parent,
+>> +                           struct typedef_ref *new_ref)
+>> +{
+>> +       struct typedef_ref *current_child;
+>> +       const char *new_child_name = new_ref->datum->name;
+>> +
+>> +       if (!parent->typedef_list) {
+>> +               parent->typedef_list = malloc(sizeof(struct list_head));
+>> +               INIT_LIST_HEAD(parent->typedef_list);
+>> +               list_add(&new_ref->list, parent->typedef_list);
+>> +               return;
+>> +       }
+>> +       list_for_each_entry(current_child, parent->typedef_list, list) {
+>> +               const struct btf_type *t = btf__type_by_id(btf, current_child->datum->index);
+>> +               const char *current_name = btf_str(btf, t->name_off);
+>> +
+>> +               if (list_is_last(&current_child->list, parent->typedef_list)) {
+>> +                       list_add(&new_ref->list, &current_child->list);
+>> +                       return;
+>> +               }
+>> +               if (strcmp(new_child_name, current_name) < 0) {
+>> +                       list_add_tail(&new_ref->list, &current_child->list);
+>> +                       return;
+>> +               }
+>> +       }
+>> +}
+>> +
+>> +static int find_base_typedef_type(const struct btf *btf, int index)
+>> +{
+>> +       const struct btf_type *type = btf__type_by_id(btf, index);
+>> +       int kind = btf_kind(type);
+>> +       int base_idx;
+>> +
+>> +       if (kind != BTF_KIND_TYPEDEF)
+>> +               return 0;
+>> +
+>> +       do {
+>> +               base_idx = kind == BTF_KIND_ARRAY ? btf_array(type)->type : type->type;
+>> +               type = btf__type_by_id(btf, base_idx);
+>> +               kind = btf_kind(type);
+>> +       } while (kind == BTF_KIND_ARRAY ||
+>> +                  kind == BTF_KIND_PTR ||
+>> +                  kind == BTF_KIND_CONST ||
+>> +                  kind == BTF_KIND_VOLATILE ||
+>> +                  kind == BTF_KIND_RESTRICT ||
+>> +                  kind == BTF_KIND_TYPE_TAG);
+>> +
+>> +       return base_idx;
+>> +}
+>> +
+> can we avoid all this complexity with TYPEDEFs if we just rank them
+> just like the type they are pointing to? I.e., TYPEDEF -> STRUCT is
+> just a struct, TYPEDEF -> TYPEDEF -> INT is just an INT. Emitting the
+> TYPEDEF type will force all the dependent types to be emitted, which
+> is good.
+>
+> If we also use this "pointee type"'s name as TYPEDEF's sort name, it
+> will also put it in the position where it should be, right? There
+> might be some insignificant deviations, but I think it would keep the
+> code much simpler (and either way we are striving for something that
+> more-or-less works as expected in practice, not designing some API
+> that's set in stone).
+>
+> WDYT?
+>
+I don't think this will guarantee for each type all typedefs follow 
+immediately.
+For example:
 
-Thanks for this context.
-Now it makes a lot more sense.
-And the first patches look fine and simplification is impressive,
-but this part:
-+     SEC("syscall")
-+     int name(struct attach_prog_args *ctx)
-+     {
-+       ctx->retval =3D hid_bpf_attach_prog_impl(ctx->hid,
-+                                                 type,
-+                                                 __##name,
-+                           ctx->insert_head ? HID_BPF_FLAG_INSERT_HEAD :
-+                                                 HID_BPF_FLAG_NONE,
-+                                                 NULL);
+With this patch next output is generated:
+     typedef s64 aaa; /* aaa is the smallest first level child of s64 */
+     typedef aaa ccc; /* ccc immediately follows aaa as child */
+     typedef s64 bbb; /* bbb is first level child of s64 following aaa */
+     typedef s32 xxx; /* xxx follows bbb lexicographically */
 
-is too odd.
-Essentially you're adding a kfunc on hid side just to call it
-from a temporary "syscall" program to register another prog.
-A fake prog just to call a kfunc is a bit too much.
+Option 2: I we apply flat sorting by rank and then name, we'll get next 
+order:
+     typedef s64 aaa;
+     typedef s64 bbb;
+     typedef aaa ccc;
+     typedef s32 xxx;
 
-The overall mechanism is pretty much a customized struct-ops.
+Here order just follows aaa - bbb - ccc - xxx. Type ccc does not immediately
+follow its parent aaa.
 
-I think struct-ops infra provides better api-s, safety guarantees,
-bpf_link support, prog management including reentrance check, etc.
-It needs to be parametrized, so it's not just
-SEC("struct_ops/kern_callback_name")
-so that the skeleton loading phase can pass device id or something.
+Option3: If we use pointee name as sort name, next output is expected:
+     typedef s64 aaa; /* dependency of the next line */
+     typedef aaa ccc; /* sort name aaa */
+     typedef s32 xxx; /* sort name s32 */
+     typedef s64 bbb; /* sort name s64 */
 
-> > The (u64)(long) casting concerns and prog lifetime are
-> > difficult to get right. The verifier won't help and it all
-> > will fall on code reviews.
+I think Option 2 will have the simplest implementation, but we are 
+getting BFS
+ordering instead of DFS. I'm not entirely sure, but it looks to me, that we
+can't achieve DFS ordering with sort-based simple implementation, let me 
+know if
+I'm missing anything here.
+If DFS ordering is not required, I'm happy to scrap it.
+>> +static int *sort_btf_c(const struct btf *btf)
+>> +{
+>> +       int total_root_types;
+>> +       struct sort_datum *datums;
+>> +       int *sorted_indexes = NULL;
+>> +       int *type_index_to_datum_index;
+> nit: most of these names are unnecessarily verbose. It's one
+> relatively straightforward function, just use shorter names "n",
+> "idxs", "idx_to_datum", stuff like this. Cooler and shorter C names
+> :))
 >
-> yeah, this is a concern.
-
-Not only that. The special kfunc does migrate_disable
-before calling callback, but it needs rcu_lock or tracing lock,
-plus reentrance checks.
-
+>> +
+>> +       if (!btf)
+>> +               return sorted_indexes;
+> this would be a horrible bug if this happens, don't guard against it here
 >
-> > So I'd rather not go this route.
-> > Let's explore first what exactly the goal here.
-> > We've talked about sleepable tail_calls, this async callbacks
-> > from hid kfuncs, and struct-ops.
-> > Maybe none of them fit well and we need something else.
-> > Could you please explain (maybe once again) what is the end goal?
+>> +
+>> +       total_root_types = btf__type_cnt(btf);
+>> +       datums = malloc(sizeof(struct sort_datum) * total_root_types);
+>> +
+>> +       for (int i = 1; i < total_root_types; ++i) {
+>> +               struct sort_datum *current_datum = datums + i;
+>> +
+>> +               current_datum->index = i;
+>> +               current_datum->name = btf_type_sort_name(btf, i);
+>> +               current_datum->type_rank = btf_type_rank(btf, i, false);
+>> +               current_datum->emitted = false;
+> btf_dump__dump_type() keeps track of which types are already emitted,
+> you probably don't need to do this explicitly?
+I use `emitted` to indicate whether type index has been copied into output
+`sorted_indexes` array. This is needed because type (if it is a typedef)
+can be put into output out of order by its parent base type, if base has
+been processed earlier. It helps to avoid putting the same type twice in
+the output array preventing buffer overrun.
+>> +               current_datum->typedef_list = NULL;
+>> +       }
+>> +
+>> +       qsort(datums + 1, total_root_types - 1, sizeof(struct sort_datum), btf_type_compare);
+> do we really need to do 1-based indexing?
 >
-> right now I need 4 hooks in HID, the first 2 are already upstream:
-> - whenever I need to retrieve the report descriptor (this happens in a
->   sleepable context, but non sleepable is fine)
-> - whenever I receive an event from a device (non sleepable context, this
->   is coming from a hard IRQ context)
-> - whenever someone tries to write to the device through
->   hid_hw_raw_request (original context is sleepable, and for being able
->   to communicate with the device we need sleepable context in bpf)
-> - same but from hid_hw_output_report
+>> +
+>> +       // Build a mapping from btf type id to datums array index
+>> +       type_index_to_datum_index = malloc(sizeof(int) * total_root_types);
+>> +       type_index_to_datum_index[0] = 0;
+>> +       for (int i = 1; i < total_root_types; ++i)
+>> +               type_index_to_datum_index[datums[i].index] = i;
+>> +
+>> +       for (int i = 1; i < total_root_types; ++i) {
+>> +               struct sort_datum *current_datum = datums + i;
+>> +               const struct btf_type *current_type = btf__type_by_id(btf, current_datum->index);
+>> +               int base_index;
+>> +               struct sort_datum *base_datum;
+>> +               const struct btf_type *base_type;
+>> +               struct typedef_ref *new_ref;
+>> +
+>> +               if (btf_kind(current_type) != BTF_KIND_TYPEDEF)
+>> +                       continue;
+>> +
+>> +               base_index = find_base_typedef_type(btf, current_datum->index);
+>> +               if (!base_index)
+>> +                       continue;
+>> +
+>> +               base_datum = datums + type_index_to_datum_index[base_index];
+>> +               base_type = btf__type_by_id(btf, base_datum->index);
+>> +               if (!base_type->name_off)
+>> +                       continue;
+>> +
+>> +               new_ref = malloc(sizeof(struct typedef_ref));
+>> +               new_ref->datum = current_datum;
+>> +
+>> +               add_typedef_ref(btf, base_datum, new_ref);
+>> +       }
+>> +
+>> +       sorted_indexes = malloc(sizeof(int) * total_root_types);
+> nit: here and above, gotta check your malloc()'s for NULL results, it's C
 >
-> Again, the first 2 are working just fine.
+>> +       sorted_indexes[0] = 0;
+>> +       for (int emit_index = 1, datum_index = 1; emit_index < total_root_types; ++datum_index) {
+>> +               struct sort_datum *datum = datums + datum_index;
+>> +
+>> +               if (datum->emitted)
+>> +                       continue;
+>> +               datum->emitted = true;
+>> +               sorted_indexes[emit_index++] = datum->index;
+>> +               emit_index += emit_typedefs(datum->typedef_list, sorted_indexes + emit_index);
+>> +               free_typedefs(datum->typedef_list);
+>> +       }
+>> +       free(type_index_to_datum_index);
+>> +       free(datums);
+>> +       return sorted_indexes;
+>> +}
+>> +
+>>   static int dump_btf_c(const struct btf *btf,
+>> -                     __u32 *root_type_ids, int root_type_cnt)
+>> +                     __u32 *root_type_ids, int root_type_cnt, bool normalized)
+>>   {
+>>          struct btf_dump *d;
+>>          int err = 0, i;
+>> @@ -485,12 +725,17 @@ static int dump_btf_c(const struct btf *btf,
+>>                  }
+>>          } else {
+>>                  int cnt = btf__type_cnt(btf);
+>> -
+>> +               int *sorted_indexes = normalized ? sort_btf_c(btf) : NULL;
+> keep empty line between variable declaration and the rest of the code
+> in the block. Also see below, I'd declare sorted_indexes at the
+> function level, init to NULL, and free at the end, keeping clean up
+> simpler
 >
-> Implementing the latter twos requires sleepable context because we
-> might:
+>>                  for (i = 1; i < cnt; i++) {
+>> -                       err = btf_dump__dump_type(d, i);
+>> +                       int idx = sorted_indexes ? sorted_indexes[i] : i;
+>> +
+>> +                       err = btf_dump__dump_type(d, idx);
+>>                          if (err)
+>> -                               goto done;
+>> +                               break;
+>>                  }
+>> +               free(sorted_indexes);
+>> +               if (err)
+>> +                       goto done;
+> too convoluted, just free(sorted_indexes) next to btf_dump__free() at
+> the very end, initialize it to NULL and be done with it.
 >
-> 1. a request is made from user-space
-> 2. we jump into hid-bpf
-> 3. the bpf program "converts" the request from report ID 1 to 2 (because
-> we export a slightly different API)
-> 4. the bpf program directly emits hid_bpf_raw_request (sleepable
-> operation)
-> 5. the bpf program returns the correct value
-> 6. hid-core doesn't attempt to communicate with the device as bpf
-> already did.
+>>          }
+>>
+>>          printf("#ifndef BPF_NO_PRESERVE_ACCESS_INDEX\n");
+>> @@ -553,6 +798,7 @@ static int do_dump(int argc, char **argv)
+>>          __u32 root_type_ids[2];
+>>          int root_type_cnt = 0;
+>>          bool dump_c = false;
+>> +       bool normalized = false;
+>>          __u32 btf_id = -1;
+>>          const char *src;
+>>          int fd = -1;
+>> @@ -663,6 +909,14 @@ static int do_dump(int argc, char **argv)
+>>                                  goto done;
+>>                          }
+>>                          NEXT_ARG();
+>> +               } else if (strcmp(*argv, "normalized") == 0) {
+> use is_prefix() helper, then we can do `bpftool btf dump file <path>
+> format c norm` without having to spell out entire "normalized"
 >
-> In the series, I also realized that I need sleepable and non sleepable
-> contexts for this kind of situation, because I want tracing and
-> firewalling available (non sleepable context), while still allowing to
-> communicate with the device. But when you communicate with the device
-> from bpf, the sleepable bpf program is not invoked or this allows
-> infinite loops.
-
-I don't get the point about infinite loops.
-fyi struct_ops already supports sleepable and non-sleepable callbacks.
-See progs/dummy_st_ops_success.c
-SEC(".struct_ops")
-struct bpf_dummy_ops dummy_1 =3D {
-        .test_1 =3D (void *)test_1,
-        .test_2 =3D (void *)test_2,
-        .test_sleepable =3D (void *)test_sleepable,
-};
-
-two callbacks are normal and another one is sleepable.
-
-The generated bpf trampoline will have the right
-__bpf_prog_enter* wrappers for all 3 progs,
-so the kernel code will be just do ops->callback_name().
-
-> >
-> > > Last time I checked, I thought struct_ops were only for defining one =
-set
-> > > of operations. And you could overwrite them exactly once.
-> > > But after reading more carefully how it was used in tcp_cong.c, it se=
-ems
-> > > we can have multiple programs which define the same struct_ops, and t=
-hen
-> > > it's the kernel which will choose which one needs to be run.
-> >
-> > struct-ops is pretty much a mechanism for kernel to define
-> > a set of callbacks and bpf prog to provide implementation for
-> > these callbacks. The kernel choses when to call them.
-> > tcp-bpf is one such user. sched_ext is another and more advanced.
-> > Currently struct-ops bpf prog loading/attaching mechanism
-> > only specifies the struct-ops. There is no device-id argument,
-> > but that can be extended and kernel can keep per-device a set
-> > of bpf progs.
-> > struct-ops is a bit of overkill if you have only one callback.
-> > It's typically for a set of callbacks.
+>> +                       if (!dump_c) {
+>> +                               p_err("Only C dump supports normalization");
+>> +                               err = -EINVAL;
+>> +                               goto done;
+>> +                       }
+> this should be checked after processing all the options, we shouldn't
+> assume any mutual ordering between them
 >
-> In the end I have 4. However, I might have programs that overwrite twice
-> the same callback (see the 2 SEC("fmod_ret/hid_bpf_device_event") in
-> [2]).
->
-> >
-> > > Last, I'm not entirely sure how I can specify which struct_ops needs =
-to be
-> > > attached to which device, but it's worth a shot. I've already realize=
-d
-> > > that I would probably have to drop the current way of HID-BPF is runn=
-ing,
-> > > so now it's just technical bits to assemble :)
-> >
-> > You need to call different bpf progs per device, right?
->
-> yes
->
-> > If indirect call is fine from performance pov,
-> > then tailcall or struct_ops+device_argument might fit.
->
-> performance is not a requirement. It's better if we have low latency but
-> we are not talking the same requirements than network.
->
-> >
-> > If you want max perf with direct calls then
-> > we'd need to generalize xdp dispatcher.
->
-> I'll need to have a deeper look at it, yeah.
->
-> >
-> > So far it sounds that tailcalls might be the best actually,
-> > since prog lifetime is handled by prog array map.
-> > Maybe instead of bpf_tail_call helper we should add a kfunc that
-> > will operate on prog array differently?
-> > (if current bpf_tail_call semantics don't fit).
->
-> Actually I'd like to remove bpf_tail_call entirely, because it requires
-> to pre-load a BPF program at boot, and in some situations (RHEL) this
-> creates issues. I haven't been able to debug what was happening, I
-> couldn't reproduce it myself, but removing that bit would be nice :)
-
-We probably need to debug it anyway, since it sounds that it's
-related to preloaded bpf skeleton and not tail_call logic itself.
-
-After looking through all that it seems to me that
-parametrized struct-ops is the way to go.
+>> +                       normalized = true;
+>> +                       NEXT_ARG();
+>>                  } else {
+>>                          p_err("unrecognized option: '%s'", *argv);
+>>                          err = -EINVAL;
+>> @@ -691,7 +945,7 @@ static int do_dump(int argc, char **argv)
+>>                          err = -ENOTSUP;
+>>                          goto done;
+>>                  }
+>> -               err = dump_btf_c(btf, root_type_ids, root_type_cnt);
+>> +               err = dump_btf_c(btf, root_type_ids, root_type_cnt, normalized);
+>>          } else {
+>>                  err = dump_btf_raw(btf, root_type_ids, root_type_cnt);
+>>          }
+>> --
+>> 2.44.0
+>>
 
