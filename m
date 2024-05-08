@@ -1,212 +1,243 @@
-Return-Path: <bpf+bounces-29032-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-29033-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B31E48BF725
-	for <lists+bpf@lfdr.de>; Wed,  8 May 2024 09:36:59 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2CBE08BF784
+	for <lists+bpf@lfdr.de>; Wed,  8 May 2024 09:48:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3FACE1F24C2B
-	for <lists+bpf@lfdr.de>; Wed,  8 May 2024 07:36:59 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 62017B24485
+	for <lists+bpf@lfdr.de>; Wed,  8 May 2024 07:48:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED28A3D0B3;
-	Wed,  8 May 2024 07:36:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 426E63F9D8;
+	Wed,  8 May 2024 07:48:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="vMrBsgr5"
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="j3skPPsS"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f175.google.com (mail-pl1-f175.google.com [209.85.214.175])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 676DE3B298;
-	Wed,  8 May 2024 07:36:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 457263E47F
+	for <bpf@vger.kernel.org>; Wed,  8 May 2024 07:48:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715153789; cv=none; b=EGqcGGM/g8DueLiwaWqHOJoGDjg2bPRgPKoWpQ6uo1wDVyS0KksbrJTSLilG9JUUpqrGatnhOL2vEdIOfP25TuklN2VfXfD8HDhOdJUSosFO1IfAEhHxzN6eiIlR/Qn1pseCAr68LP66kTcUZkXBv214mQ/iEBuf+7lOjDXaa6w=
+	t=1715154503; cv=none; b=Obhy+uVeM2ZBAqj+tBEPcTswByVZvzaKlLCUduQm1JIOKCH2ALeJuOunEBO7Vn3cvAcO69WpcnnkAk++JNFwRvrowV1DNEmBbweTiVjkhj8XIIZTAzGj3L763J4Jh1HSGHE8P2hLzAQrptA+fuF5ZXX70KctX2Lo3ug+WzXNOIQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715153789; c=relaxed/simple;
-	bh=uSc6/F8e+7rFoVsQ6llcJbirZ3srNGLSdVcX9PY6dFw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Nl7S56goMjkuyQxjZvgHqzbkNOacTbzjtZ7FK2UqQsIPWIawpKVqQG/p1XEi7RyAtyh7gVPf3LGgmcB1gEItNhFM1LLdLlPTTf4xs9qh++41W55EIDFrAyzAt8bIBoprQwzX6/g0dJaWbhGPv2q8Xa6s+UfxfynZO4fv7pPzWOs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=vMrBsgr5; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 63B71C4AF17;
-	Wed,  8 May 2024 07:36:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1715153789;
-	bh=uSc6/F8e+7rFoVsQ6llcJbirZ3srNGLSdVcX9PY6dFw=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=vMrBsgr5Ntv8vEb5Wf0oFCiz716SpRC1/cH+4HxjtkIgjPFEIAT43XIMOJiyFEV8r
-	 5H3aIdkSo4cG1A5cHNsAzsntRKz5oaV4iZ7eD7oZsqbWz0Npd0LXE2iDgI8Kc/O71A
-	 uGaMvrdpY48GXT9ITcCqJuv8BdiS0ZOJLUMnp5Bv6oI1zSQDEeT2dWiASpMknsfdkw
-	 ZSgJ6AMgjRs18bCuHCg1cqauasvhGhEcFfHzZuxI92+qOUG3Tmn7Z0uQO8LNkZvmib
-	 YApL6r57WmT3/skOS8opW6JZr8b6BOZMNMWYerEB/XEGaClFz0mNAnyI72JwssSeQv
-	 N2GtCx40jfi/w==
-Message-ID: <42d0718f-296d-48ca-a21a-b4708e9bd6e9@kernel.org>
-Date: Wed, 8 May 2024 09:36:18 +0200
+	s=arc-20240116; t=1715154503; c=relaxed/simple;
+	bh=TasSARTFdXIxUWjPKu3kpQ4aMQkQD44UgXk5WeGg/+U=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=NDm9+coegMHY1PxgKZ/PgkQV+V9s9Lov2Q+w2KNuJ/jw6RJKbHMY/il5MYsUuPte7Ah0bDT1U4bKCUpeJRX4mu7ynPnIMIHG7siNN+J9n2KGNY1KIXC7J8TF7ilTiFHkEEdvOKvRJLlFm5IBSgZru09hxgJvMPZV2GYmJ3L/IJA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=j3skPPsS; arc=none smtp.client-ip=209.85.214.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-pl1-f175.google.com with SMTP id d9443c01a7336-1ecd3867556so30348985ad.0
+        for <bpf@vger.kernel.org>; Wed, 08 May 2024 00:48:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1715154501; x=1715759301; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=M5pHOmjks1nfFEoIt8pbmL3QjdwH+0idfpB8T7F0fDQ=;
+        b=j3skPPsSFbSHJTW0O9ayFuYTfjy1A4clRZ3JTaXIl8wiwx5fulCDL6QNC/59beX4P7
+         tQdx7lNFAexBVtmYKhCrVkOYk5bFStBsI7Iz2R42RwSdJwMzry3ypSY7UGkTHkMUPOAS
+         9VsZ38R4WO751o9z8dyR96fkNJQtpnm497Xpo=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1715154501; x=1715759301;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=M5pHOmjks1nfFEoIt8pbmL3QjdwH+0idfpB8T7F0fDQ=;
+        b=OyubxQezSowq8bkG+ab5RnqaqkkJkrki5dGOso5ziNunQydAd0JPgNabAVEWFoB9i9
+         5YWLhX9fbrygwDDg5hxM65u8FQwVKXtlAqQJ8xIWMoa7pi9u+YALWCrs18jWb0cOK9gQ
+         9wcKe/3oMZk9KRMsZ/9aFUxNP2bcDYZuz2oPj0O2LCvLsRONLiM/r6tUlKTlH4EIMBBW
+         Oingq6/xJxNnkPMRqNLqsnPuzfBXfv4TuoqXnyAgwLpoUNQz/L4zGnGMB4gxj58bROdF
+         hVcm6hdUDHN3bhO0p3csPJlGKu9YbGCNa7ueoCWHS65biO4s4ZRQeG+diCeeLZb+VW3D
+         OmBg==
+X-Forwarded-Encrypted: i=1; AJvYcCW/o6PE9LkBEjRJVjEpHlSltgbRAQ00rEDnLi5D8X5YR7li7VxHyEn3af48hR9m0QwGnkdCmaCo4YvVFKiVuZRmZf1W
+X-Gm-Message-State: AOJu0YxYB0RQlR+0CQhIHvGeVrVULZl+Kx0dbO8y/+4FeoERDx41J7dH
+	eb9lbutQjZzI10xFZGqlYUaLdAgNfYsgj4rgIcVlibV0IDSd6koT4vSspu48ug==
+X-Google-Smtp-Source: AGHT+IG4ah6/Js07oQcVDizigw0pMGjNWVoBVRv7YEqpwTeEYnbIOrMnpPlN/hxArf5H4b01hmjAhQ==
+X-Received: by 2002:a17:902:ff02:b0:1eb:7172:673b with SMTP id d9443c01a7336-1eeb01a3cd5mr16915995ad.16.1715154501566;
+        Wed, 08 May 2024 00:48:21 -0700 (PDT)
+Received: from www.outflux.net ([198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id u3-20020a17090341c300b001e245c5afbfsm11186041ple.155.2024.05.08.00.48.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 08 May 2024 00:48:21 -0700 (PDT)
+Date: Wed, 8 May 2024 00:48:20 -0700
+From: Kees Cook <keescook@chromium.org>
+To: KP Singh <kpsingh@kernel.org>
+Cc: Paul Moore <paul@paul-moore.com>, linux-security-module@vger.kernel.org,
+	bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>, jackmanb@google.com,
+	renauld@google.com, casey@schaufler-ca.com, song@kernel.org,
+	revest@chromium.org
+Subject: Re: [PATCH bpf-next v10 5/5] bpf: Only enable BPF LSM hooks when an
+ LSM program is attached
+Message-ID: <202405080045.6D38296@keescook>
+References: <20240507221045.551537-1-kpsingh@kernel.org>
+ <20240507221045.551537-6-kpsingh@kernel.org>
+ <202405071653.2C761D80@keescook>
+ <CAHC9VhTWB+zL-cqNGFOfW_LsPHp3=ddoHkjUTq+NoSj7BdRvmw@mail.gmail.com>
+ <0E524496-74E4-4419-8FE5-7675BD1834C0@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird Beta
-Subject: Re: [PATCH bpf-next 3/4] selftests/bpf: Add mptcp subflow example
-Content-Language: en-GB
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: MPTCP Upstream <mptcp@lists.linux.dev>,
- Mat Martineau <martineau@kernel.org>, Geliang Tang <geliang@kernel.org>,
- Andrii Nakryiko <andrii@kernel.org>, Eduard Zingerman <eddyz87@gmail.com>,
- Mykola Lysenko <mykolal@fb.com>, Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>,
- Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
- Yonghong Song <yonghong.song@linux.dev>,
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
- Jiri Olsa <jolsa@kernel.org>, Shuah Khan <shuah@kernel.org>,
- LKML <linux-kernel@vger.kernel.org>,
- Network Development <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
- "open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>,
- Geliang Tang <tanggeliang@kylinos.cn>
-References: <20240507-upstream-bpf-next-20240506-mptcp-subflow-test-v1-0-e2bcbdf49857@kernel.org>
- <20240507-upstream-bpf-next-20240506-mptcp-subflow-test-v1-3-e2bcbdf49857@kernel.org>
- <CAADnVQ+ADQRrZmZ_M9LLGj9u_HOo7Aeup+kid62xZfLCvSxUOQ@mail.gmail.com>
- <843ea6eb-a28d-437c-9c98-0b8c8816c518@kernel.org>
- <CAADnVQLA+2uoJJAJNFoK-EnUjLAwxJjxOXAizLWhcx4mf+C2Vg@mail.gmail.com>
-From: Matthieu Baerts <matttbe@kernel.org>
-Autocrypt: addr=matttbe@kernel.org; keydata=
- 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
- lzVbFe7fduHbABmYz9cefQpO7wDE/Q==
-Organization: NGI0 Core
-In-Reply-To: <CAADnVQLA+2uoJJAJNFoK-EnUjLAwxJjxOXAizLWhcx4mf+C2Vg@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <0E524496-74E4-4419-8FE5-7675BD1834C0@kernel.org>
 
-Hi Alexei,
-
-Thank you for your reply!
-
-On 07/05/2024 22:54, Alexei Starovoitov wrote:
-> On Tue, May 7, 2024 at 9:03 AM Matthieu Baerts <matttbe@kernel.org> wrote:
->>
->> Hi Alexei,
->>
->> Thank you for the review!
->>
->> On 07/05/2024 16:49, Alexei Starovoitov wrote:
->>> On Tue, May 7, 2024 at 3:53 AM Matthieu Baerts (NGI0)
->>> <matttbe@kernel.org> wrote:
->>>>
->>>> From: Nicolas Rybowski <nicolas.rybowski@tessares.net>
->>>>
->>>> Move Nicolas's patch into bpf selftests directory. This example added a
->>>> test that was adding a different mark (SO_MARK) on each subflow, and
->>>> changing the TCP CC only on the first subflow.
->>>>
->>>> This example shows how it is possible to:
->>>>
->>>>     Identify the parent msk of an MPTCP subflow.
->>>>     Put different sockopt for each subflow of a same MPTCP connection.
->>>>
->>>> Here especially, we implemented two different behaviours:
->>>>
->>>>     A socket mark (SOL_SOCKET SO_MARK) is put on each subflow of a same
->>>>     MPTCP connection. The order of creation of the current subflow defines
->>>>     its mark.
->>>
->>>> The TCP CC algorithm of the very first subflow of an MPTCP
->>>>     connection is set to "reno".
->>>
->>> why?
->>> What does it test?
->>> That bpf_setsockopt() can actually do it?
->>
->> Correct.
->>
->> Here is a bit of context: from the userspace, an application can do a
->> setsockopt() on an MPTCP socket, and typically the same value will be
->> set on all subflows (paths). If someone wants to have different values
->> per subflow, the recommanded way is to use BPF.
->>
->> We can indeed restrict this test to changing the MARK only. I think the
->> CC has been modified just not to check one thing, but also to change
->> something at the TCP level, because it is managed differently on MPTCP
->> side -- but only when the userspace set something, or when new subflows
->> are created. The result of this operation is easy to check with 'ss',
->> and it was to show an exemple where this is set only on one subflow.
->>
->>> But the next patch doesn't check that it's reno.
->>
->> No, I think it is checked: 'reno' is not hardcoded, but 'skel->data->cc'
->> is used instead:
->>
->>   run_subflow(skel->data->cc);
->>
->>> It looks to me that dropping this "set to reno" part
->>> won't change the purpose of the rest of selftest.
->>
->> Yes, up to you. If you still think it is better without it, we can
->> remove the modification of the CC in patch 3/4, and the validation in
->> patch 4/4.
+On Wed, May 08, 2024 at 09:00:42AM +0200, KP Singh wrote:
 > 
-> The concern with picking reno is extra deps to CI and every developer.
-> Currently in selftests/bpf/config we do:
-> CONFIG_TCP_CONG_DCTCP=y
-> CONFIG_TCP_CONG_BBR=y
 > 
-> I'd like to avoid adding reno there as well.
-> Will bpf_setsockopt("dctcp") work?
+> > On 8 May 2024, at 03:45, Paul Moore <paul@paul-moore.com> wrote:
+> > 
+> > On Tue, May 7, 2024 at 8:01 PM Kees Cook <keescook@chromium.org> wrote:
+> >> 
+> >> On Wed, May 08, 2024 at 12:10:45AM +0200, KP Singh wrote:
+> >>> [...]
+> >>> +/**
+> >>> + * security_toggle_hook - Toggle the state of the LSM hook.
+> >>> + * @hook_addr: The address of the hook to be toggled.
+> >>> + * @state: Whether to enable for disable the hook.
+> >>> + *
+> >>> + * Returns 0 on success, -EINVAL if the address is not found.
+> >>> + */
+> >>> +int security_toggle_hook(void *hook_addr, bool state)
+> >>> +{
+> >>> +     struct lsm_static_call *scalls = ((void *)&static_calls_table);
+> >>> +     unsigned long num_entries =
+> >>> +             (sizeof(static_calls_table) / sizeof(struct lsm_static_call));
+> >>> +     int i;
+> >>> +
+> >>> +     for (i = 0; i < num_entries; i++) {
+> >>> +             if (!scalls[i].hl)
+> >>> +                     continue;
+> >>> +
+> >>> +             if (scalls[i].hl->hook.lsm_func_addr != hook_addr)
+> >>> +                     continue;
+> >>> +
+> >>> +             if (state)
+> >>> +                     static_branch_enable(scalls[i].active);
+> >>> +             else
+> >>> +                     static_branch_disable(scalls[i].active);
+> >>> +             return 0;
+> >>> +     }
+> >>> +     return -EINVAL;
+> >>> +}
+> >> 
+> >> First of all: patches 1-4 are great. They have a measurable performance
+> >> benefit; let's get those in.
+> >> 
+> >> But here I come to patch 5 where I will suggest the exact opposite of
+> >> what Paul said in v9 for patch 5. :P
+> > 
+> > For those looking up v9 of the patchset, you'll be looking for patch
+> > *4*, not patch 5, as there were only four patches in the v9 series.
+> > Patch 4/5 in the v10 series is a new addition to the stack.
+> > 
+> > Beyond that, I'm guessing you are referring to my comment regarding
+> > bpf_lsm_toggle_hook() Kees?  The one that starts with "More ugh.  If
+> > we are going to solve things this way ..."?
+> > 
+> >> I don't want to have a global function that can be used to disable LSMs.
+> >> We got an entire distro (RedHat) to change their SELinux configurations
+> >> to get rid of CONFIG_SECURITY_SELINUX_DISABLE (and therefore
+> >> CONFIG_SECURITY_WRITABLE_HOOKS), via commit f22f9aaf6c3d ("selinux:
+> >> remove the runtime disable functionality"). We cannot reintroduce that,
+> >> and I'm hoping Paul will agree, given this reminder of LSM history. :)
+> >> 
+> >> Run-time hook changing should be BPF_LSM specific, if it exists at all.
+> 
+> 
+> One idea here is that only LSM hooks with default_state = false can be toggled. 
+> 
+> This would also any ROPs that try to abuse this function. Maybe we can call "default_disabled" .toggleable (or dynamic)
+> 
+> and change the corresponding LSM_INIT_TOGGLEABLE. Kees, Paul, this may be a fair middle ground?
+> 
+> Something like:
+> 
+> diff --git a/include/linux/lsm_hooks.h b/include/linux/lsm_hooks.h
+> index 4bd1d47bb9dc..5c0918ed6b80 100644
+> --- a/include/linux/lsm_hooks.h
+> +++ b/include/linux/lsm_hooks.h
+> @@ -117,7 +117,7 @@ struct security_hook_list {
+>         struct lsm_static_call  *scalls;
+>         union security_list_options     hook;
+>         const struct lsm_id             *lsmid;
+> -       bool                            default_enabled;
+> +       bool                            toggleable;
+>  } __randomize_layout;
+> 
+>  /*
+> @@ -168,14 +168,18 @@ static inline struct xattr *lsm_get_xattr_slot(struct xattr *xattrs,
+>         {                                               \
+>                 .scalls = static_calls_table.NAME,      \
+>                 .hook = { .NAME = HOOK },               \
+> -               .default_enabled = true                 \
+> +               .toggleable = false                     \
+>         }
+> 
+> -#define LSM_HOOK_INIT_DISABLED(NAME, HOOK)             \
+> +/*
+> + * Toggleable LSM hooks are enabled at runtime with
+> + * security_toggle_hook and are initialized as inactive.
+> + */
+> +#define LSM_HOOK_INIT_TOGGLEABLE(NAME, HOOK)           \
+>         {                                               \
+>                 .scalls = static_calls_table.NAME,      \
+>                 .hook = { .NAME = HOOK },               \
+> -               .default_enabled = false                \
+> +               .toggleable = true                      \
+>         }
+> 
+>  extern char *lsm_names;
+> diff --git a/security/bpf/hooks.c b/security/bpf/hooks.c
+> index ed864f7430a3..ba1c3a19fb12 100644
+> --- a/security/bpf/hooks.c
+> +++ b/security/bpf/hooks.c
+> @@ -9,7 +9,7 @@
+> 
+>  static struct security_hook_list bpf_lsm_hooks[] __ro_after_init = {
+>         #define LSM_HOOK(RET, DEFAULT, NAME, ...) \
+> -       LSM_HOOK_INIT_DISABLED(NAME, bpf_lsm_##NAME),
+> +       LSM_HOOK_INIT_TOGGLEABLE(NAME, bpf_lsm_##NAME),
+>         #include <linux/lsm_hook_defs.h>
+>         #undef LSM_HOOK
+>         LSM_HOOK_INIT(inode_free_security, bpf_inode_storage_free),
+> diff --git a/security/security.c b/security/security.c
+> index b3a92a67f325..a89eb8fe302b 100644
+> --- a/security/security.c
+> +++ b/security/security.c
+> @@ -407,7 +407,8 @@ static void __init lsm_static_call_init(struct security_hook_list *hl)
+>                         __static_call_update(scall->key, scall->trampoline,
+>                                              hl->hook.lsm_func_addr);
+>                         scall->hl = hl;
+> -                       if (hl->default_enabled)
+> +                       /* Toggleable hooks are inactive by default */
+> +                       if (!hl->toggleable)
+>                                 static_branch_enable(scall->active);
+>                         return;
+>                 }
+> @@ -901,6 +902,9 @@ int security_toggle_hook(void *hook_addr, bool state)
+>         int i;
+> 
+>         for (i = 0; i < num_entries; i++) {
+> +               if (!scalls[i].hl->toggleable)
+> +                       continue;
+> +
+>                 if (!scalls[i].hl)
+>                         continue;
 
-We picked Reno because this is an inlined kernel module that is always
-built: there is no kernel config to set, no extra deps. Also, it is
-usually not used as default, mostly used as fallback, so the
-verification should not be an issue.
+Yeah, I like this! It's a routine that is walking read-only data to make
+the choice, and it's specific to a pre-defined characteristic that an
+LSM would need to opt into. My concerns are addressed! Thanks! :)
 
-We can switch to DCTCP or BBR if you prefer, but I think it is "safer"
-with Reno, no?
-
-Cheers,
-Matt
 -- 
-Sponsored by the NGI0 Core fund.
-
+Kees Cook
 
