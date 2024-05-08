@@ -1,192 +1,325 @@
-Return-Path: <bpf+bounces-29028-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-29029-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 41C9C8BF667
-	for <lists+bpf@lfdr.de>; Wed,  8 May 2024 08:39:41 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6F5998BF6B1
+	for <lists+bpf@lfdr.de>; Wed,  8 May 2024 09:01:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C1EF71F23C4D
-	for <lists+bpf@lfdr.de>; Wed,  8 May 2024 06:39:40 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2674D2842AF
+	for <lists+bpf@lfdr.de>; Wed,  8 May 2024 07:01:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 74BFD2375B;
-	Wed,  8 May 2024 06:39:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E5032375B;
+	Wed,  8 May 2024 07:00:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="kg4kuT87"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZqG4i5vp"
 X-Original-To: bpf@vger.kernel.org
-Received: from out30-130.freemail.mail.aliyun.com (out30-130.freemail.mail.aliyun.com [115.124.30.130])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D447C147;
-	Wed,  8 May 2024 06:39:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0ECA82BB0E;
+	Wed,  8 May 2024 07:00:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715150365; cv=none; b=laHQPdpNZQv8IzpSrN4ZYv9PQbwMf8cx2HK0kbaP4XoT41IzRJipTpNu7yTRCNFKuqQp8DPvmceNQ7UkaPTZGx/5+qzm1/MYMrGViqisXU5pUx2wW4TMBE+TWrTPYgDTQjEW2dZRz0yNaiAdly34rVGgaTRCdjR38WMGjawJdQQ=
+	t=1715151648; cv=none; b=cBLl2lQ4Ghye+bMD8OQyaiEdTirXXrOu0r8aL3gqzmL36cdUNPxTEoeWFbmBqM8zrQklt3dGh4f3XRAZVOsqVHi6P5u39tsiO4oSZcpknOBoLUkosYkcdLfw73X2iI3UNTwVI7o379Wpiag1AbnZsGky8rO/6Rt6LrdY8pFEXes=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715150365; c=relaxed/simple;
-	bh=5apkTWojmcE3k+MggFfi2u73Otl721UvupdTwYEon8Q=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=CVw1EZjixswHtcCfyKBynInB75jaoqwOMj4kWXRGG7HzNXv48cOGXOSEkBg5EB1Y8ZXQtRCja2nwp/NJiQ1kz8Pv1KlhJa1cewwQBmUFBLGiBc8SHIAtq8llTLWaltJDnCCZQmMEKKKB5WV8eV7AfRrOkUWYip0W4Ck9L9EyTGc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=kg4kuT87; arc=none smtp.client-ip=115.124.30.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1715150354; h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type;
-	bh=yizkrXLhU+dxzuGFufkGGyPhK2B9HqR+hbP/CMmLM4w=;
-	b=kg4kuT87a7eljIbhflDzfjvNrhFGkeyvJwz/qF1cdLDaAgFzZXb1bhodXu18UlMxH7kWbmbNGHstKqZgHSyhJawuPmcWi1FLVG6OcbtLy2ZYgcAEJj63vGsmpYiSpzxYBRzwdOzvJF9fMUKukV/EUXaADi2LRAiQgJANEsfv24M=
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R111e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=maildocker-contentspam033032014031;MF=tonylu@linux.alibaba.com;NM=1;PH=DS;RN=21;SR=0;TI=SMTPD_---0W62UDX-_1715150352;
-Received: from localhost(mailfrom:tonylu@linux.alibaba.com fp:SMTPD_---0W62UDX-_1715150352)
-          by smtp.aliyun-inc.com;
-          Wed, 08 May 2024 14:39:13 +0800
-Date: Wed, 8 May 2024 14:39:10 +0800
-From: Tony Lu <tonylu@linux.alibaba.com>
-To: Cong Wang <xiyou.wangcong@gmail.com>
-Cc: Wen Gu <guwen@linux.alibaba.com>, wintera@linux.ibm.com,
-	twinkler@linux.ibm.com, hca@linux.ibm.com, gor@linux.ibm.com,
-	agordeev@linux.ibm.com, davem@davemloft.net, edumazet@google.com,
-	kuba@kernel.org, pabeni@redhat.com, wenjia@linux.ibm.com,
-	jaka@linux.ibm.com, borntraeger@linux.ibm.com, svens@linux.ibm.com,
-	alibuda@linux.alibaba.com, linux-kernel@vger.kernel.org,
-	linux-s390@vger.kernel.org, netdev@vger.kernel.org,
-	bpf@vger.kernel.org
-Subject: Re: [PATCH net-next v7 00/11] net/smc: SMC intra-OS shortcut with
- loopback-ism
-Message-ID: <ZjseDobo5XqUQcUE@TONYMAC-ALIBABA.local>
-Reply-To: Tony Lu <tonylu@linux.alibaba.com>
-References: <20240428060738.60843-1-guwen@linux.alibaba.com>
- <Zi5wIrf3nAeJh1u5@pop-os.localdomain>
- <2e34e4ea-b198-487e-be5b-ba854965dbeb@linux.alibaba.com>
- <ZjpSgWyHaNC/ikNP@pop-os.localdomain>
+	s=arc-20240116; t=1715151648; c=relaxed/simple;
+	bh=LHSXmCmOtg5sXjJg7vqTUEWoeI0rETcoMNKOmxXoz6Y=;
+	h=Content-Type:Mime-Version:Subject:From:In-Reply-To:Date:Cc:
+	 Message-Id:References:To; b=LUYH89A6ZxT3Nj+Y+PSf0nzWQnhsApybiydqHArzNXm7EyIZ6zyyQ1jFtLkUQzoCj1DRay2XyKe9rvKpXW/Am0XlenIZL0ceM5IFyXWbMf75GKCEU4Rr0QGQlZnDsgMtXfFISAp46ToPNfjnmuoG7wbCUYAjceGBnIRAfjxHEUo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZqG4i5vp; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7C026C113CC;
+	Wed,  8 May 2024 07:00:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1715151647;
+	bh=LHSXmCmOtg5sXjJg7vqTUEWoeI0rETcoMNKOmxXoz6Y=;
+	h=Subject:From:In-Reply-To:Date:Cc:References:To:From;
+	b=ZqG4i5vp0Xn5Wn8UQrQ5FyKJ/e2/vItEh+SlzJmtF64bsVQeDURqD9UsG1MWgslFD
+	 AHfhPEY40lBnid9mjD08mVxrYLUATWZzwYCD5S4t1AZvYL/LQ0rm57qqczbwoSkPs7
+	 DIS98Nhl/5CWpANxEBJduUp0+8M20tgUXqcvFyQ71YsrdoUJ4uGiCqNLGGHA0OmVBR
+	 1TMuiyyn2T8Mr3Hu3a4suR8ra6SuvK2wBLBCt/PiIEY1BBbKXk0aaLWVXDXzLDGvrF
+	 7euVhnKAiBmA+nIP69PfVbx5Vgirz7wFOO0r5hzVaLVLFa+xfe0t689k9oQWe7/IEX
+	 NzxRv/ACjG9ug==
+Content-Type: text/plain;
+	charset=utf-8
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZjpSgWyHaNC/ikNP@pop-os.localdomain>
+Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3774.500.171.1.1\))
+Subject: Re: [PATCH bpf-next v10 5/5] bpf: Only enable BPF LSM hooks when an
+ LSM program is attached
+From: KP Singh <kpsingh@kernel.org>
+In-Reply-To: <CAHC9VhTWB+zL-cqNGFOfW_LsPHp3=ddoHkjUTq+NoSj7BdRvmw@mail.gmail.com>
+Date: Wed, 8 May 2024 09:00:42 +0200
+Cc: Kees Cook <keescook@chromium.org>,
+ linux-security-module@vger.kernel.org,
+ bpf@vger.kernel.org,
+ Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>,
+ jackmanb@google.com,
+ renauld@google.com,
+ casey@schaufler-ca.com,
+ song@kernel.org,
+ revest@chromium.org
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <0E524496-74E4-4419-8FE5-7675BD1834C0@kernel.org>
+References: <20240507221045.551537-1-kpsingh@kernel.org>
+ <20240507221045.551537-6-kpsingh@kernel.org> <202405071653.2C761D80@keescook>
+ <CAHC9VhTWB+zL-cqNGFOfW_LsPHp3=ddoHkjUTq+NoSj7BdRvmw@mail.gmail.com>
+To: Paul Moore <paul@paul-moore.com>
+X-Mailer: Apple Mail (2.3774.500.171.1.1)
 
-On Tue, May 07, 2024 at 09:10:41AM -0700, Cong Wang wrote:
-> On Tue, May 07, 2024 at 10:34:09PM +0800, Wen Gu wrote:
-> > 
-> > 
-> > On 2024/4/28 23:49, Cong Wang wrote:
-> > > On Sun, Apr 28, 2024 at 02:07:27PM +0800, Wen Gu wrote:
-> > > > This patch set acts as the second part of the new version of [1] (The first
-> > > > part can be referred from [2]), the updated things of this version are listed
-> > > > at the end.
-> > > > 
-> > > > - Background
-> > > > 
-> > > > SMC-D is now used in IBM z with ISM function to optimize network interconnect
-> > > > for intra-CPC communications. Inspired by this, we try to make SMC-D available
-> > > > on the non-s390 architecture through a software-implemented Emulated-ISM device,
-> > > > that is the loopback-ism device here, to accelerate inter-process or
-> > > > inter-containers communication within the same OS instance.
-> > > 
-> > > Just FYI:
-> > > 
-> > > Cilium has implemented this kind of shortcut with sockmap and sockops.
-> > > In fact, for intra-OS case, it is _very_ simple. The core code is less
-> > > than 50 lines. Please take a look here:
-> > > https://github.com/cilium/cilium/blob/v1.11.4/bpf/sockops/bpf_sockops.c
-> > > 
-> > > Like I mentioned in my LSF/MM/BPF proposal, we plan to implement
-> > > similiar eBPF things for inter-OS (aka VM) case.
-> > > 
-> > > More importantly, even LD_PRELOAD is not needed for this eBPF approach.
-> > > :)
-> > > 
-> > > Thanks.
-> > 
-> > Hi, Cong. Thank you very much for the information. I learned about sockmap
-> > before and from my perspective smcd loopback and sockmap each have their own
-> > pros and cons.
-> > 
-> > The pros of smcd loopback is that it uses a standard process that defined
-> > by RFC-7609 for negotiation, this CLC handshake helps smc correctly determine
-> > whether the tcp connection should be upgraded no matter what middleware the
-> > connection passes, e.g. through NAT. So we don't need to pay extra effort to
-> > check whether the connection should be shortcut, unlike checking various policy
-> > by bpf_sock_ops_ipv4() in sockmap. And since the handshake automatically select
-> > different underlay devices for different scenarios (loopback-ism in intra-OS,
-> > ISM in inter-VM of IBM z and RDMA in inter-VM of different hosts), various
-> > scenarios can be covered through one smc protocol stack.
-> > 
-> > The cons of smcd loopback is also related to the CLC handshake, one more round
-> > handshake may cause smc to perform worse than TCP in short-lived connection
-> > scenarios. So we basically use smc upgrade in long-lived connection scenarios
-> > and are exploring IPPROTO_SMC[1] to provide lossless fallback under adverse cases.
-> 
-> You don't have to bother RFC's, since you could define your own TCP
-> options. And, the eBPF approach could also use TCP options whenver
-> needed. Cilium probably does not use them only because for intra-OS case
-> it is too simple to bother TCP options, as everything can be shared via a
-> shared socketmap.
 
-You can define and use any private TCP options but that is not the right
-way for a inter-host network protocol, especially for different subnet,
-arch or OS (Linux, z/OS and so on). As the essence of communication
-between any two parties, everyone need to abide by the same standards. I
-also have to admit that SMC is a standard protocol and we need to extend
-the protocol spec through standard and appropriate methods, such as IETF
-RFC and protocol white paper. If it is only a temporary acceleration
-solution used on a small scale, this restriction are not required.
 
-> 
-> In reality, the setup is not that complex. In many cases we already know
-> whether we have VM or container (or mixed) setup before we develop (as
-> a part of requirement gathering). And they rarely change.
+> On 8 May 2024, at 03:45, Paul Moore <paul@paul-moore.com> wrote:
+>=20
+> On Tue, May 7, 2024 at 8:01=E2=80=AFPM Kees Cook =
+<keescook@chromium.org> wrote:
+>>=20
+>> On Wed, May 08, 2024 at 12:10:45AM +0200, KP Singh wrote:
+>>> [...]
+>>> +/**
+>>> + * security_toggle_hook - Toggle the state of the LSM hook.
+>>> + * @hook_addr: The address of the hook to be toggled.
+>>> + * @state: Whether to enable for disable the hook.
+>>> + *
+>>> + * Returns 0 on success, -EINVAL if the address is not found.
+>>> + */
+>>> +int security_toggle_hook(void *hook_addr, bool state)
+>>> +{
+>>> +     struct lsm_static_call *scalls =3D ((void =
+*)&static_calls_table);
+>>> +     unsigned long num_entries =3D
+>>> +             (sizeof(static_calls_table) / sizeof(struct =
+lsm_static_call));
+>>> +     int i;
+>>> +
+>>> +     for (i =3D 0; i < num_entries; i++) {
+>>> +             if (!scalls[i].hl)
+>>> +                     continue;
+>>> +
+>>> +             if (scalls[i].hl->hook.lsm_func_addr !=3D hook_addr)
+>>> +                     continue;
+>>> +
+>>> +             if (state)
+>>> +                     static_branch_enable(scalls[i].active);
+>>> +             else
+>>> +                     static_branch_disable(scalls[i].active);
+>>> +             return 0;
+>>> +     }
+>>> +     return -EINVAL;
+>>> +}
+>>=20
+>> First of all: patches 1-4 are great. They have a measurable =
+performance
+>> benefit; let's get those in.
+>>=20
+>> But here I come to patch 5 where I will suggest the exact opposite of
+>> what Paul said in v9 for patch 5. :P
+>=20
+> For those looking up v9 of the patchset, you'll be looking for patch
+> *4*, not patch 5, as there were only four patches in the v9 series.
+> Patch 4/5 in the v10 series is a new addition to the stack.
+>=20
+> Beyond that, I'm guessing you are referring to my comment regarding
+> bpf_lsm_toggle_hook() Kees?  The one that starts with "More ugh.  If
+> we are going to solve things this way ..."?
+>=20
+>> I don't want to have a global function that can be used to disable =
+LSMs.
+>> We got an entire distro (RedHat) to change their SELinux =
+configurations
+>> to get rid of CONFIG_SECURITY_SELINUX_DISABLE (and therefore
+>> CONFIG_SECURITY_WRITABLE_HOOKS), via commit f22f9aaf6c3d ("selinux:
+>> remove the runtime disable functionality"). We cannot reintroduce =
+that,
+>> and I'm hoping Paul will agree, given this reminder of LSM history. =
+:)
+>>=20
+>> Run-time hook changing should be BPF_LSM specific, if it exists at =
+all.
 
-To running SMC in nowadays cloud infra, TCP handshake is not the most
-efficient but the most practical way, for we can't touch the infra
-under VM, even don't know what kind of environment.
 
-> 
-> Taking one step back, the discovery of VM or container or loopback cases
-> could be done via TCP options too, to deal with complex cases like
-> KataContainer. There is no reason to bother RFC's, maybe except the RDMA
-> case.
-> 
-> In fact, this is an advantage to me. We don't need to argue with anyone
-> on our own TCP option or eBPF code, we don't even have to share our own
-> eBPF code here.
+One idea here is that only LSM hooks with default_state =3D false can be =
+toggled.=20
 
-Actually I am looking forward to learn about the whole way of eBPF. Both
-SMC and eBPF are trying to solve this issue in their own view. I don't
-think one must be replaced by another one for now. To define these
-inter/intra-OS/host scene and captivate interest are more important, I
-think, than seeking a one-size-fits-all solution for the present time.
+This would also any ROPs that try to abuse this function. Maybe we can =
+call "default_disabled" .toggleable (or dynamic)
 
-> 
-> > 
-> > And we are also working on other upgrade ways than LD_PRELOAD, e.g. using eBPF
-> > hook[2] with IPPROTO_SMC, to enhance the usability.
-> 
-> That is wrong IMHO, because basically it just overwrites kernel modules
-> with eBPF, not how eBPF is supposed to be used. IOW, you could not use
-> it at all without SMC/MPTCP modules.
+and change the corresponding LSM_INIT_TOGGLEABLE. Kees, Paul, this may =
+be a fair middle ground?
 
-The eBPF hookers are considering as a part of SMC modules. It should not
-be used out of SMC module for now at least.
+Something like:
 
-> 
-> BTW, this approach does not work for kernel sockets, because you only
-> hook __sys_socket().
+diff --git a/include/linux/lsm_hooks.h b/include/linux/lsm_hooks.h
+index 4bd1d47bb9dc..5c0918ed6b80 100644
+--- a/include/linux/lsm_hooks.h
++++ b/include/linux/lsm_hooks.h
+@@ -117,7 +117,7 @@ struct security_hook_list {
+        struct lsm_static_call  *scalls;
+        union security_list_options     hook;
+        const struct lsm_id             *lsmid;
+-       bool                            default_enabled;
++       bool                            toggleable;
+ } __randomize_layout;
 
-Yep, SMC should not replace kernel socket for now. In our scenario,
-almost all applications suitable for SMC only run in user space.
+ /*
+@@ -168,14 +168,18 @@ static inline struct xattr =
+*lsm_get_xattr_slot(struct xat>
+        {                                               \
+                .scalls =3D static_calls_table.NAME,      \
+                .hook =3D { .NAME =3D HOOK },               \
+-               .default_enabled =3D true                 \
++               .toggleable =3D false                     \
+        }
 
-Thanks,
-Tony Lu
+-#define LSM_HOOK_INIT_DISABLED(NAME, HOOK)             \
++/*
++ * Toggleable LSM hooks are enabled at runtime with
++ * security_toggle_hook and are initialized as inactive.
++ */
++#define LSM_HOOK_INIT_TOGGLEABLE(NAME, HOOK)           \
+        {                                               \
+                .scalls =3D static_calls_table.NAME,      \
+                .hook =3D { .NAME =3D HOOK },               \
+-               .default_enabled =3D false                \
++               .toggleable =3D true                      \
+        }
 
-> 
-> Of course, for sockmap or sockops, they could be used independently for
-> any other purposes. I hope now you could see the flexiblities of eBPF
-> over kernel modules.
-> 
-> Thanks.
+ extern char *lsm_names;
+diff --git a/security/bpf/hooks.c b/security/bpf/hooks.c
+index ed864f7430a3..ba1c3a19fb12 100644
+--- a/security/bpf/hooks.c
++++ b/security/bpf/hooks.c
+@@ -9,7 +9,7 @@
+
+ static struct security_hook_list bpf_lsm_hooks[] __ro_after_init =3D {
+        #define LSM_HOOK(RET, DEFAULT, NAME, ...) \
+-       LSM_HOOK_INIT_DISABLED(NAME, bpf_lsm_##NAME),
++       LSM_HOOK_INIT_TOGGLEABLE(NAME, bpf_lsm_##NAME),
+        #include <linux/lsm_hook_defs.h>
+        #undef LSM_HOOK
+        LSM_HOOK_INIT(inode_free_security, bpf_inode_storage_free),
++ * security_toggle_hook and are initialized as inactive.
++ */
++#define LSM_HOOK_INIT_TOGGLEABLE(NAME, HOOK)           \
+        {                                               \
+                .scalls =3D static_calls_table.NAME,      \
+                .hook =3D { .NAME =3D HOOK },               \
+-               .default_enabled =3D false                \
++               .toggleable =3D true                      \
+        }
+
+ extern char *lsm_names;
+diff --git a/security/bpf/hooks.c b/security/bpf/hooks.c
+index ed864f7430a3..ba1c3a19fb12 100644
+--- a/security/bpf/hooks.c
++++ b/security/bpf/hooks.c
+@@ -9,7 +9,7 @@
+
+ static struct security_hook_list bpf_lsm_hooks[] __ro_after_init =3D {
+        #define LSM_HOOK(RET, DEFAULT, NAME, ...) \
+-       LSM_HOOK_INIT_DISABLED(NAME, bpf_lsm_##NAME),
++       LSM_HOOK_INIT_TOGGLEABLE(NAME, bpf_lsm_##NAME),
+        #include <linux/lsm_hook_defs.h>
+        #undef LSM_HOOK
+        LSM_HOOK_INIT(inode_free_security, bpf_inode_storage_free),
+kpsingh@kpsingh:~/projects/linux$ git diff
+diff --git a/include/linux/lsm_hooks.h b/include/linux/lsm_hooks.h
+index 4bd1d47bb9dc..5c0918ed6b80 100644
+--- a/include/linux/lsm_hooks.h
++++ b/include/linux/lsm_hooks.h
+@@ -117,7 +117,7 @@ struct security_hook_list {
+        struct lsm_static_call  *scalls;
+        union security_list_options     hook;
+        const struct lsm_id             *lsmid;
+-       bool                            default_enabled;
++       bool                            toggleable;
+ } __randomize_layout;
+
+ /*
+@@ -168,14 +168,18 @@ static inline struct xattr =
+*lsm_get_xattr_slot(struct xattr *xattrs,
+        {                                               \
+                .scalls =3D static_calls_table.NAME,      \
+                .hook =3D { .NAME =3D HOOK },               \
+-               .default_enabled =3D true                 \
++               .toggleable =3D false                     \
+        }
+
+-#define LSM_HOOK_INIT_DISABLED(NAME, HOOK)             \
++/*
++ * Toggleable LSM hooks are enabled at runtime with
++ * security_toggle_hook and are initialized as inactive.
++ */
++#define LSM_HOOK_INIT_TOGGLEABLE(NAME, HOOK)           \
+        {                                               \
+                .scalls =3D static_calls_table.NAME,      \
+                .hook =3D { .NAME =3D HOOK },               \
+-               .default_enabled =3D false                \
++               .toggleable =3D true                      \
+        }
+
+ extern char *lsm_names;
+diff --git a/security/bpf/hooks.c b/security/bpf/hooks.c
+index ed864f7430a3..ba1c3a19fb12 100644
+--- a/security/bpf/hooks.c
++++ b/security/bpf/hooks.c
+@@ -9,7 +9,7 @@
+
+ static struct security_hook_list bpf_lsm_hooks[] __ro_after_init =3D {
+        #define LSM_HOOK(RET, DEFAULT, NAME, ...) \
+-       LSM_HOOK_INIT_DISABLED(NAME, bpf_lsm_##NAME),
++       LSM_HOOK_INIT_TOGGLEABLE(NAME, bpf_lsm_##NAME),
+        #include <linux/lsm_hook_defs.h>
+        #undef LSM_HOOK
+        LSM_HOOK_INIT(inode_free_security, bpf_inode_storage_free),
+diff --git a/security/security.c b/security/security.c
+index b3a92a67f325..a89eb8fe302b 100644
+--- a/security/security.c
++++ b/security/security.c
+@@ -407,7 +407,8 @@ static void __init lsm_static_call_init(struct =
+security_hook_list *hl)
+                        __static_call_update(scall->key, =
+scall->trampoline,
+                                             hl->hook.lsm_func_addr);
+                        scall->hl =3D hl;
+-                       if (hl->default_enabled)
++                       /* Toggleable hooks are inactive by default */
++                       if (!hl->toggleable)
+                                static_branch_enable(scall->active);
+                        return;
+                }
+@@ -901,6 +902,9 @@ int security_toggle_hook(void *hook_addr, bool =
+state)
+        int i;
+
+        for (i =3D 0; i < num_entries; i++) {
++               if (!scalls[i].hl->toggleable)
++                       continue;
++
+                if (!scalls[i].hl)
+                        continue;
+
+- KP
+
+>=20
+> I don't want individual LSMs manipulating the LSM hook state directly;
+> they go through the LSM layer to register their hooks, they should go
+> through the LSM layer to unregister or enable/disable their hooks.
+> I'm going to be pretty inflexible on this point.
+>=20
+> Honestly, I see this more as a problem in the BPF LSM design (although
+> one might argue it's an implementation issue?), just as I saw the
+> SELinux runtime disable as a problem.  If you're upset with the
+> runtime hook disable, and you should be, fix the BPF LSM, don't force
+> more bad architecture on the LSM layer.
+>=20
+> --=20
+> paul-moore.com
+
+
 
