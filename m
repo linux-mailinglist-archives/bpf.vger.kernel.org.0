@@ -1,255 +1,107 @@
-Return-Path: <bpf+bounces-29119-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-29120-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 25F308C05FA
-	for <lists+bpf@lfdr.de>; Wed,  8 May 2024 22:56:23 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id ABC658C060C
+	for <lists+bpf@lfdr.de>; Wed,  8 May 2024 23:10:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D1FF3283E7E
-	for <lists+bpf@lfdr.de>; Wed,  8 May 2024 20:56:21 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 34B6BB21DF0
+	for <lists+bpf@lfdr.de>; Wed,  8 May 2024 21:10:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 22EF8131748;
-	Wed,  8 May 2024 20:56:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 088BE131BAE;
+	Wed,  8 May 2024 21:10:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZM2Ygu9x"
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="NKzU9+SN"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f48.google.com (mail-pj1-f48.google.com [209.85.216.48])
+Received: from mail-oi1-f178.google.com (mail-oi1-f178.google.com [209.85.167.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2F1F821373
-	for <bpf@vger.kernel.org>; Wed,  8 May 2024 20:56:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E93114A9F
+	for <bpf@vger.kernel.org>; Wed,  8 May 2024 21:10:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715201775; cv=none; b=kIMDhSAIaKvPZX8NwMdPyhxhkJkpmXze+YGy4Mf7Ldb0dyBaXWXC5zU3/+Cd5NryFBL8+ioEUcwnbtUCxwd8fbYFILpxZiqFPl9PhtDEATQvoGDXKmfja7dGSlrFNzBWhBmcu98lj7i6HysnvDEnEQSceeE7ZbvgV2TnO6KB4S4=
+	t=1715202603; cv=none; b=QAaRDSzlQcFtOoeV7YDDRdmP87PNMhv2w60zjfG8RXK3yEeKsopY4lWs0glWJ/ovj8D8mNsaCu2OWXQnNz1pIap2pzVukSeFTa+8oYEHeKavj5dRYKKGq7dNZ8ugmTE/a9g2xXUe3AmO6QzC2Abo6JY/wIrhDaZw2IdZcGcJ8iA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715201775; c=relaxed/simple;
-	bh=b9HPaW5nDrZIXPldvrCkOIVenhM2XhXfrhxFIbonza0=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=cil/RjyfsHFrW/2f52gXMGsFoNuh6gZx/r8/oJewKyz35zqxalutjnkJfpwjkj+BeKgL+7UQn9hx2N3JP/EEM5mev7XLtAzBRwLhBI5JZX9VSs7SNP78Gqkf1ArM8Gtzw/4XGz6bDQ2xpGUFEcZmf8apYmr2DfPTpRYiQrjEJgQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ZM2Ygu9x; arc=none smtp.client-ip=209.85.216.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f48.google.com with SMTP id 98e67ed59e1d1-2b4952a1b51so199494a91.0
-        for <bpf@vger.kernel.org>; Wed, 08 May 2024 13:56:13 -0700 (PDT)
+	s=arc-20240116; t=1715202603; c=relaxed/simple;
+	bh=vFL4B3wK6V0zyeCGMUE/eo8ppygLhYYUWQCOaznNGKA=;
+	h=MIME-Version:In-Reply-To:References:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=d6Ye5T1a4qkR2a7POL09PID9E1K1umfUVxNWM4oH8gL+JXesiijUVXQIVtEt58OOztCiRrOPVdf6ZOE5tNCQf0E9+r/YAVQlMmWhsU3zRHSk/zTNKXJ3JS51F4D9x2ppQsISQ4J67H+PqQX096s6zEtyLnOvS3/EsZiDo3IIqS4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=NKzU9+SN; arc=none smtp.client-ip=209.85.167.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-oi1-f178.google.com with SMTP id 5614622812f47-3c97a485733so151794b6e.2
+        for <bpf@vger.kernel.org>; Wed, 08 May 2024 14:10:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1715201773; x=1715806573; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=iV2vPrp9sgO2YTf3r3uL/WZAEXZbq0eq8z3N+IGKRWY=;
-        b=ZM2Ygu9xCot+JbZF7rYRP34LrE8jHr6e9aVxZp/CYKdEWdWCnBfrGV8EYAcG6MC0Q6
-         gGPbiw31oCgL8kFPtaMnvAxjkhHJMblGnb41g7IHwSoavZ0nWcVAzV/aYWdjIT5FW1Ig
-         cZZm7f7J7yylwxTiAjxn0Q9Gk9zaEs24jtQfuGEGd5Ll98/MVphz8JfMRmQmxRxl6zYy
-         3GefYJIlQ/dJrxKiZKCN7qriSA8izbfislwaq3dOcb9SNpevTjsu2UMlPETGWNcmqGTK
-         KRvsZzhoOp1G6TB27QKu+n+8WknRNgq4qtjdmg/a1rKGMZ97bIs/6SgmUPRGViOb00dE
-         t4JA==
+        d=chromium.org; s=google; t=1715202601; x=1715807401; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:user-agent:from:references
+         :in-reply-to:mime-version:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=malKjFparRZHby6p2gcvIikID9eemr65ODf87siiN6w=;
+        b=NKzU9+SNHU4gmkfECNrn+IB9sOoXSd4NtcHgBrmp+w2E2ynUDHqRVS/FaGLIPaEt7e
+         wS+uFPZAepuSK4ldrMU2CrhXGDNuDPxFn6bBOEIpoq6ylGyxuDDK402Jy6Xa+07XVwZS
+         bRQgd0aaOjXzg0sQlp67b0n+PAtyFq4sRMWlI=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1715201773; x=1715806573;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=iV2vPrp9sgO2YTf3r3uL/WZAEXZbq0eq8z3N+IGKRWY=;
-        b=ITfp3oSu6pb4ZkUWPJExyD3ycnXNDtsuX2MN2N76XpQRgeAcbda9Tw8ocbQUmAERJH
-         ciyrhtdgPC0DmBgHKNOHOeZWfIYhp1R/aPcVLWfzJbmxqPzWiXTWkKqbDTuP5AjTVjwm
-         hjJKWG+XXBBJnpV06Z1/n2Wk6cGgCTDiFsWkBsYN89kHNyzsQVQ6Uo5UjLWv4M/ZTZ6K
-         QQUli+4KlPHoxfg1tXUgOLXONzATWyTIjnxTqe0QhG2Im9eD0azR+UD325eKYh6N+Vzl
-         fOZya3XQsmw074J74yvutlipmpQbcG8T7lwAc0fmvxrryO00fTxGKnhJv56uKRYG243t
-         s8og==
-X-Gm-Message-State: AOJu0Yy2XkwZ2529Qs8pEU6Zx280ZdWn5Bkc7mEUT/NUQuPPnX6uxV3r
-	Wb06DJE5YLcQ8DnReD7ZH6XvDizaTYAQ744tSCmZWze/i5oPpqc0UdRlTB3OK08a1IKay8MzYmh
-	EJ8vCdbRlliz+CLz/q/3qAybJ/n0=
-X-Google-Smtp-Source: AGHT+IH0YzgCeSUsncWCu/p4QbohIjG1nydrcvqrYBOfElzGLWKflOcFWz0n5H/yZukd78lQBjBUZOSnH1JGJNmCxIc=
-X-Received: by 2002:a17:90a:ac03:b0:2b5:6d47:9e12 with SMTP id
- 98e67ed59e1d1-2b61639c8a6mr3498622a91.2.1715201773337; Wed, 08 May 2024
- 13:56:13 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1715202601; x=1715807401;
+        h=cc:to:subject:message-id:date:user-agent:from:references
+         :in-reply-to:mime-version:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=malKjFparRZHby6p2gcvIikID9eemr65ODf87siiN6w=;
+        b=o6tZoQX6h5v8DwBfl9zhv+UccT7R0YLaz2IeAx8c/L/MUtbf9grMzXmBv7u6NJVWYh
+         NAuLU4Ul6vLTT1xy8rieFV+MDCx11sm5qSKXzPw4kN1KEQ1D3ES4XnujGamgxvi2Noh9
+         OTUDPTJbeTP3OiZQjQWmfI9BEF8XZlIH30WhItMEuFSsPJ/E6cQNhw3Lk2KRn5iNCF72
+         VYqdlP/SIHnma20q0wm0PqKsV9rYIyO6KSRg2T7uc4edScsuW8w/YQSCRPwgU/1m2WIG
+         GtHbBa/1+dwWTBHEBhU/o+HXJKDSJW+BxBNaI5rPCZf2TXPMudWOUxxadbKA4fsejhsk
+         2gUA==
+X-Forwarded-Encrypted: i=1; AJvYcCU0VEOx5aLAIJ2AipPbypXyIRRxzy5xRznBX+QsAD8v3QbxpdgAgJ9fnxWSJEdtoGerFxxD65qoAMPw1QXuoa3aWkBv
+X-Gm-Message-State: AOJu0Yx4TlOt0rfjypqie1+PcFURlkLaRWfMw2gQfy7RAIw+OeX5yHVq
+	nxW/uqWYD7ngrQ7bS8a2sL2rYIZSqsb5AmOTPoyW24hlBhacHUzO+0Gt9KT6RX20+U8aa6Dz7q3
+	YyoUSyTSRJzHXeoGZZElC71tjReCv6qqY6XD8
+X-Google-Smtp-Source: AGHT+IEdt693kG5CsvJhhJKxEwutqN4U04lOEMxarSx84uS+eZ/8glpfYJEhQ71dRPpHXu+PbW6nNTnvO6fe3wEXqgw=
+X-Received: by 2002:a54:4604:0:b0:3c9:6cfb:bf4e with SMTP id
+ 5614622812f47-3c9852927aamr4063549b6e.7.1715202601233; Wed, 08 May 2024
+ 14:10:01 -0700 (PDT)
+Received: from 753933720722 named unknown by gmailapi.google.com with
+ HTTPREST; Wed, 8 May 2024 17:10:00 -0400
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240508154145.236420-1-cupertino.miranda@oracle.com>
-In-Reply-To: <20240508154145.236420-1-cupertino.miranda@oracle.com>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Wed, 8 May 2024 13:56:01 -0700
-Message-ID: <CAEf4BzZDp3jt0eOPOh8m7XGAypiMHtPFss4-deOKViTHCe+h1g@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] selftests/bpf: Fix a few tests for GCC related warnings.
-To: Cupertino Miranda <cupertino.miranda@oracle.com>
-Cc: bpf@vger.kernel.org, jose.marchesi@oracle.com, david.faust@oracle.com, 
-	Yonghong Song <yonghong.song@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>
+In-Reply-To: <20240503171847.68267-1-puranjay@kernel.org>
+References: <20240503171847.68267-1-puranjay@kernel.org>
+From: Stephen Boyd <swboyd@chromium.org>
+User-Agent: alot/0.10
+Date: Wed, 8 May 2024 17:10:00 -0400
+Message-ID: <CAE-0n50Pcmjq7b3F7OiU066FR3vk9avU22H0OEcoGcbGVd14dw@mail.gmail.com>
+Subject: Re: [PATCH v3 1/2] arm64/arch_timer: include <linux/percpu.h>
+To: Catalin Marinas <catalin.marinas@arm.com>, Douglas Anderson <dianders@chromium.org>, 
+	Mark Rutland <mark.rutland@arm.com>, Peter Zijlstra <peterz@infradead.org>, 
+	Puranjay Mohan <puranjay@kernel.org>, Sumit Garg <sumit.garg@linaro.org>, 
+	Thomas Gleixner <tglx@linutronix.de>, Will Deacon <will@kernel.org>, bpf@vger.kernel.org, 
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc: puranjay12@gmail.com
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Wed, May 8, 2024 at 8:57=E2=80=AFAM Cupertino Miranda
-<cupertino.miranda@oracle.com> wrote:
+Quoting Puranjay Mohan (2024-05-03 10:18:46)
+> arch_timer.h includes linux/smp.h since the commit:
 >
-> This patch disables a few warnings to allow selftests to compile for
-> GCC.
+>   6acc71ccac7187fc ("arm64: arch_timer: Allows a CPU-specific erratum to only affect a subset of CPUs")
 >
-> -- progs/cpumask_failure.c --
+> It was included to use DEFINE_PER_CPU(), etc. But It should have
+> included <linux/percpu.h> rather than <linux/smp.h>. It worked because
+> smp.h includes percpu.h.
 >
-> progs/bpf_misc.h:136:22: error: =E2=80=98cpumask=E2=80=99 is used uniniti=
-alized
-> [-Werror=3Duninitialized]
->   136 | #define __sink(expr) asm volatile("" : "+g"(expr))
->       |                      ^~~
-> progs/cpumask_failure.c:68:9: note: in expansion of macro =E2=80=98__sink=
-=E2=80=99
->    68 |         __sink(cpumask);
+> The next commit will remove percpu.h from smp.h and it will break this
+> usage.
 >
-> The macro __sink(cpumask) with the '+' contraint modifier forces the
-> the compieler to expect a read and write from cpumask. GCC detects
-> that cpumask is never initialized and reports an error.
-
-this one seems like a legit unused variable that should just be removed.
-
+> Explicitly include percpu.h and remove smp.h
 >
-> -- progs/dynptr_fail.c --
->
-> progs/dynptr_fail.c:1444:9: error: =E2=80=98ptr1=E2=80=99 may be used uni=
-nitialized
-> [-Werror=3Dmaybe-uninitialized]
->  1444 |         bpf_dynptr_clone(&ptr1, &ptr2);
->
-> Many of the tests in the file are related to the detection of
-> uninitialized pointers by the verifier. GCC is able to detect possible
-> uninititialized values, and reports this as an error.
->
-
-We can do `struct bpf_dynptr ptr1 =3D {};` to satisfy compiler without
-affecting what the test is actually testing.
-
-Or at the very least, we should add those pragmas only around few
-affected functions, not for the entire file.
-
-
-I haven't looked at other cases, but let's take a step back a bit and
-see if existing code makes sense and whether GCC warnings are real and
-we should do something about them.
-
-pw-bot: cr
-
-> -- progs/test_tunnel_kern.c --
->
-> progs/test_tunnel_kern.c:590:9: error: array subscript 1 is outside
-> array bounds of =E2=80=98struct geneve_opt[1]=E2=80=99 [-Werror=3Darray-b=
-ounds=3D]
->   590 |         *(int *) &gopt.opt_data =3D bpf_htonl(0xdeadbeef);
->       |         ^~~~~~~~~~~~~~~~~~~~~~~
-> progs/test_tunnel_kern.c:575:27: note: at offset 4 into object =E2=80=98g=
-opt=E2=80=99 of
-> size 4
->   575 |         struct geneve_opt gopt;
->
-> This tests accesses beyond the defined data for the struct geneve_opt
-> which contains as last field "u8 opt_data[0]" which clearly does not get
-> reserved space (in stack) in the function header. This pattern is
-> repeated in ip6geneve_set_tunnel and geneve_set_tunnel functions.
-> GCC is able to see this and emits a warning.
->
-> -- progs/jeq_infer_not_null_fail.c --
->
-> progs/jeq_infer_not_null_fail.c:21:40: error: array subscript =E2=80=98st=
-ruct
-> bpf_map[0]=E2=80=99 is partly outside array bounds of =E2=80=98struct <an=
-onymous>[1]=E2=80=99
-> [-Werror=3Darray-bounds=3D]
->    21 |         struct bpf_map *inner_map =3D map->inner_map_meta;
->       |                                        ^~
-> progs/jeq_infer_not_null_fail.c:14:3: note: object =E2=80=98m_hash=E2=80=
-=99 of size 32
->    14 | } m_hash SEC(".maps");
->
-> This example defines m_hash in the context of the compilation unit and
-> casts it to struct bpf_map which is much smaller than the size of struct
-> bpf_map. It errors out in GCC when it attempts to access an element that
-> would be defined in struct bpf_map outsize of the defined limits for
-> m_hash.
->
-> This change was tested in bpf-next master selftests without any
-> regressions.
->
-> Signed-off-by: Cupertino Miranda <cupertino.miranda@oracle.com>
-> Cc: jose.marchesi@oracle.com
-> Cc: david.faust@oracle.com
-> Cc: Yonghong Song <yonghong.song@linux.dev>
-> Cc: Eduard Zingerman <eddyz87@gmail.com>
+> Signed-off-by: Puranjay Mohan <puranjay@kernel.org>
+> Acked-by: Mark Rutland <mark.rutland@arm.com>
 > ---
->  tools/testing/selftests/bpf/progs/cpumask_failure.c         | 4 ++++
->  tools/testing/selftests/bpf/progs/dynptr_fail.c             | 4 ++++
->  tools/testing/selftests/bpf/progs/jeq_infer_not_null_fail.c | 4 ++++
->  tools/testing/selftests/bpf/progs/test_tunnel_kern.c        | 4 ++++
->  4 files changed, 16 insertions(+)
->
-> diff --git a/tools/testing/selftests/bpf/progs/cpumask_failure.c b/tools/=
-testing/selftests/bpf/progs/cpumask_failure.c
-> index a9bf6ea336cf..56a6adb6cbbb 100644
-> --- a/tools/testing/selftests/bpf/progs/cpumask_failure.c
-> +++ b/tools/testing/selftests/bpf/progs/cpumask_failure.c
-> @@ -8,6 +8,10 @@
->
->  #include "cpumask_common.h"
->
-> +#ifndef __clang__
-> +#pragma GCC diagnostic ignored "-Wuninitialized"
-> +#endif
-> +
->  char _license[] SEC("license") =3D "GPL";
->
->  /* Prototype for all of the program trace events below:
-> diff --git a/tools/testing/selftests/bpf/progs/dynptr_fail.c b/tools/test=
-ing/selftests/bpf/progs/dynptr_fail.c
-> index 7ce7e827d5f0..9ceff0b5d143 100644
-> --- a/tools/testing/selftests/bpf/progs/dynptr_fail.c
-> +++ b/tools/testing/selftests/bpf/progs/dynptr_fail.c
-> @@ -10,6 +10,10 @@
->  #include "bpf_misc.h"
->  #include "bpf_kfuncs.h"
->
-> +#ifndef __clang__
-> +#pragma GCC diagnostic ignored "-Wmaybe-uninitialized"
-> +#endif
-> +
->  char _license[] SEC("license") =3D "GPL";
->
->  struct test_info {
-> diff --git a/tools/testing/selftests/bpf/progs/jeq_infer_not_null_fail.c =
-b/tools/testing/selftests/bpf/progs/jeq_infer_not_null_fail.c
-> index f46965053acb..4d619bea9c75 100644
-> --- a/tools/testing/selftests/bpf/progs/jeq_infer_not_null_fail.c
-> +++ b/tools/testing/selftests/bpf/progs/jeq_infer_not_null_fail.c
-> @@ -4,6 +4,10 @@
->  #include <bpf/bpf_helpers.h>
->  #include "bpf_misc.h"
->
-> +#ifndef __clang__
-> +#pragma GCC diagnostic ignored "-Warray-bounds"
-> +#endif
-> +
->  char _license[] SEC("license") =3D "GPL";
->
->  struct {
-> diff --git a/tools/testing/selftests/bpf/progs/test_tunnel_kern.c b/tools=
-/testing/selftests/bpf/progs/test_tunnel_kern.c
-> index 3e436e6f7312..806c16809a4c 100644
-> --- a/tools/testing/selftests/bpf/progs/test_tunnel_kern.c
-> +++ b/tools/testing/selftests/bpf/progs/test_tunnel_kern.c
-> @@ -13,6 +13,10 @@
->  #include "bpf_kfuncs.h"
->  #include "bpf_tracing_net.h"
->
-> +#ifndef __clang__
-> +#pragma GCC diagnostic ignored "-Warray-bounds"
-> +#endif
-> +
->  #define log_err(__ret) bpf_printk("ERROR line:%d ret:%d\n", __LINE__, __=
-ret)
->
->  #define VXLAN_UDP_PORT         4789
-> --
-> 2.39.2
->
->
+
+Reviewed-by: Stephen Boyd <swboyd@chromium.org>
 
