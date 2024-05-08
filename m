@@ -1,325 +1,283 @@
-Return-Path: <bpf+bounces-29029-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-29030-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6F5998BF6B1
-	for <lists+bpf@lfdr.de>; Wed,  8 May 2024 09:01:02 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 027AB8BF6DA
+	for <lists+bpf@lfdr.de>; Wed,  8 May 2024 09:17:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2674D2842AF
-	for <lists+bpf@lfdr.de>; Wed,  8 May 2024 07:01:01 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6DB3A1F236E8
+	for <lists+bpf@lfdr.de>; Wed,  8 May 2024 07:17:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E5032375B;
-	Wed,  8 May 2024 07:00:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 60BAB2BB08;
+	Wed,  8 May 2024 07:16:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZqG4i5vp"
+	dkim=pass (1024-bit key) header.d=ffwll.ch header.i=@ffwll.ch header.b="MroJbJ8q"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f49.google.com (mail-ej1-f49.google.com [209.85.218.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0ECA82BB0E;
-	Wed,  8 May 2024 07:00:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0739B28373
+	for <bpf@vger.kernel.org>; Wed,  8 May 2024 07:16:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715151648; cv=none; b=cBLl2lQ4Ghye+bMD8OQyaiEdTirXXrOu0r8aL3gqzmL36cdUNPxTEoeWFbmBqM8zrQklt3dGh4f3XRAZVOsqVHi6P5u39tsiO4oSZcpknOBoLUkosYkcdLfw73X2iI3UNTwVI7o379Wpiag1AbnZsGky8rO/6Rt6LrdY8pFEXes=
+	t=1715152613; cv=none; b=gc92Hzj/5z9anf4ACbq/OxC82To5x0FSDFCK/anQwZH4mMGJr24h7hGeq6zAuCuL2yL+JPheCIY5k41COB9irLzttaURkzid7zqAOBSopm+4dDRFTWkYKkWvygucPWNEP22Cv8XN0z9njfmTgVPxYQ8Hen3bQHGWELc6mkSVLiE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715151648; c=relaxed/simple;
-	bh=LHSXmCmOtg5sXjJg7vqTUEWoeI0rETcoMNKOmxXoz6Y=;
-	h=Content-Type:Mime-Version:Subject:From:In-Reply-To:Date:Cc:
-	 Message-Id:References:To; b=LUYH89A6ZxT3Nj+Y+PSf0nzWQnhsApybiydqHArzNXm7EyIZ6zyyQ1jFtLkUQzoCj1DRay2XyKe9rvKpXW/Am0XlenIZL0ceM5IFyXWbMf75GKCEU4Rr0QGQlZnDsgMtXfFISAp46ToPNfjnmuoG7wbCUYAjceGBnIRAfjxHEUo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZqG4i5vp; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7C026C113CC;
-	Wed,  8 May 2024 07:00:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1715151647;
-	bh=LHSXmCmOtg5sXjJg7vqTUEWoeI0rETcoMNKOmxXoz6Y=;
-	h=Subject:From:In-Reply-To:Date:Cc:References:To:From;
-	b=ZqG4i5vp0Xn5Wn8UQrQ5FyKJ/e2/vItEh+SlzJmtF64bsVQeDURqD9UsG1MWgslFD
-	 AHfhPEY40lBnid9mjD08mVxrYLUATWZzwYCD5S4t1AZvYL/LQ0rm57qqczbwoSkPs7
-	 DIS98Nhl/5CWpANxEBJduUp0+8M20tgUXqcvFyQ71YsrdoUJ4uGiCqNLGGHA0OmVBR
-	 1TMuiyyn2T8Mr3Hu3a4suR8ra6SuvK2wBLBCt/PiIEY1BBbKXk0aaLWVXDXzLDGvrF
-	 7euVhnKAiBmA+nIP69PfVbx5Vgirz7wFOO0r5hzVaLVLFa+xfe0t689k9oQWe7/IEX
-	 NzxRv/ACjG9ug==
-Content-Type: text/plain;
-	charset=utf-8
+	s=arc-20240116; t=1715152613; c=relaxed/simple;
+	bh=f0m34QhDPAosJyYZmjdMVXrVYo1qtPAsG7RWUe2/wXY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=PEsnbgqLBqLYLaifTC0+hXHi1DAVLmAvOj/p4sSHQTUExocM/Ne7vuEkuqyi7er9rsxBv5lTeMt9p6ZrykNDEp/TbBLvLv+HJQwtN7aUCYayHMo55uH0oaOz+QBVYb16BsQ+cClsxtO19ItRktDjSLAKW2anJePJNrOg6ncOiKM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ffwll.ch; spf=none smtp.mailfrom=ffwll.ch; dkim=pass (1024-bit key) header.d=ffwll.ch header.i=@ffwll.ch header.b=MroJbJ8q; arc=none smtp.client-ip=209.85.218.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ffwll.ch
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ffwll.ch
+Received: by mail-ej1-f49.google.com with SMTP id a640c23a62f3a-a5971c4211bso111956466b.2
+        for <bpf@vger.kernel.org>; Wed, 08 May 2024 00:16:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google; t=1715152610; x=1715757410; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references
+         :mail-followup-to:message-id:subject:cc:to:from:date:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=CeBqT9Zed0z1jUGrfvGp1XN4J6QgdBnyIkuy1n0h3cY=;
+        b=MroJbJ8qrt1lWtQl9CkIOA2S2/0/Rhz+N8DSshEjcDJkwLiOBB10BYEH8HBRVgEogf
+         aproeU1tIF8tqQahdssZIDdOG5v17aE1qXU1Efu55FGbbP739+/7KY5q49fLqgFTZdy9
+         E3mqH2mJI76tWpPg8ek0CnV201zdpFmeUQeyQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1715152610; x=1715757410;
+        h=in-reply-to:content-disposition:mime-version:references
+         :mail-followup-to:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=CeBqT9Zed0z1jUGrfvGp1XN4J6QgdBnyIkuy1n0h3cY=;
+        b=FmHVSLInQvAGXGPj+lAW2lMK0Jh9qc7koYAECL1XDMH4zLRhEjGrro7/hW29PLQc/D
+         uKxaG/QJk93qtukT4JgguyUhd7JY6RA1Y+JEsHmHpQuymrQ7+rDsYARVEfnz67CCM9XW
+         nKeX6joNkf1RP84R/Kk0GG4FRGWRr0Evscm6/nBaNwEEbLv+YM1peCxZUIJslQFWuq3f
+         YxDEIdXLfnqqh5BUBnZyqHHBeSwfyPyhKA3IUjTMy92qk/p2v0cH1mJWk5b8A4be5ZHx
+         8JUmEdYUiYHfrm6oIzlVVM98uzQ2FX9Oo/jmO75fne94W7BCF8xW4KOnxFBveAHMVWZZ
+         mgJA==
+X-Forwarded-Encrypted: i=1; AJvYcCVVWmcePP3vBpSl5hjWOn0l9NKKTE+xWayUvifJ9ZyPETsLIcK9VrSzPzFrgu0/8+mBUy50y+2QYJwG9pyb0kOaSZ4C
+X-Gm-Message-State: AOJu0Yyx+079xp2GYXdwUXs+yE4eUgFeYnv9+KdjI3P5/Dlto+KvYDtc
+	11SeHQ8pEBcdcP5fMWHF9lNg0cOwjd1l/N/qM9WWUEvpdbbd9hAsrXv1nDUC/F0=
+X-Google-Smtp-Source: AGHT+IHGhXCUeVIYLmH7Uo4M9BmI6iPWf/Ls31PQQRWTBdNBS6P3e6HNMCsyKMnZNizlrV6npyfCDA==
+X-Received: by 2002:a05:6402:378a:b0:572:d841:1189 with SMTP id 4fb4d7f45d1cf-5731da624efmr899529a12.3.1715152610093;
+        Wed, 08 May 2024 00:16:50 -0700 (PDT)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id n18-20020a05640205d200b00572f0438b02sm4124571edx.6.2024.05.08.00.16.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 08 May 2024 00:16:49 -0700 (PDT)
+Date: Wed, 8 May 2024 09:16:46 +0200
+From: Daniel Vetter <daniel@ffwll.ch>
+To: Jason Gunthorpe <jgg@ziepe.ca>
+Cc: Pavel Begunkov <asml.silence@gmail.com>,
+	Mina Almasry <almasrymina@google.com>,
+	Christoph Hellwig <hch@infradead.org>, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+	linux-alpha@vger.kernel.org, linux-mips@vger.kernel.org,
+	linux-parisc@vger.kernel.org, sparclinux@vger.kernel.org,
+	linux-trace-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
+	bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
+	linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Richard Henderson <richard.henderson@linaro.org>,
+	Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+	Matt Turner <mattst88@gmail.com>,
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	"James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+	Helge Deller <deller@gmx.de>, Andreas Larsson <andreas@gaisler.com>,
+	Jesper Dangaard Brouer <hawk@kernel.org>,
+	Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Arnd Bergmann <arnd@arndb.de>, Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
+	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+	Steffen Klassert <steffen.klassert@secunet.com>,
+	Herbert Xu <herbert@gondor.apana.org.au>,
+	David Ahern <dsahern@kernel.org>,
+	Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+	Shuah Khan <shuah@kernel.org>,
+	Sumit Semwal <sumit.semwal@linaro.org>,
+	Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+	Amritha Nambiar <amritha.nambiar@intel.com>,
+	Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+	Alexander Mikhalitsyn <alexander@mihalicyn.com>,
+	Kaiyuan Zhang <kaiyuanz@google.com>,
+	Christian Brauner <brauner@kernel.org>,
+	Simon Horman <horms@kernel.org>,
+	David Howells <dhowells@redhat.com>,
+	Florian Westphal <fw@strlen.de>,
+	Yunsheng Lin <linyunsheng@huawei.com>,
+	Kuniyuki Iwashima <kuniyu@amazon.com>, Jens Axboe <axboe@kernel.dk>,
+	Arseniy Krasnov <avkrasnov@salutedevices.com>,
+	Aleksander Lobakin <aleksander.lobakin@intel.com>,
+	Michael Lass <bevan@bi-co.net>, Jiri Pirko <jiri@resnulli.us>,
+	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+	Lorenzo Bianconi <lorenzo@kernel.org>,
+	Richard Gobert <richardbgobert@gmail.com>,
+	Sridhar Samudrala <sridhar.samudrala@intel.com>,
+	Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+	Johannes Berg <johannes.berg@intel.com>,
+	Abel Wu <wuyun.abel@bytedance.com>,
+	Breno Leitao <leitao@debian.org>, David Wei <dw@davidwei.uk>,
+	Shailend Chand <shailend@google.com>,
+	Harshitha Ramamurthy <hramamurthy@google.com>,
+	Shakeel Butt <shakeel.butt@linux.dev>,
+	Jeroen de Borst <jeroendb@google.com>,
+	Praveen Kaligineedi <pkaligineedi@google.com>
+Subject: Re: [RFC PATCH net-next v8 02/14] net: page_pool: create hooks for
+ custom page providers
+Message-ID: <Zjsm3vO6rIY_sw5A@phenom.ffwll.local>
+Mail-Followup-To: Jason Gunthorpe <jgg@ziepe.ca>,
+	Pavel Begunkov <asml.silence@gmail.com>,
+	Mina Almasry <almasrymina@google.com>,
+	Christoph Hellwig <hch@infradead.org>, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+	linux-alpha@vger.kernel.org, linux-mips@vger.kernel.org,
+	linux-parisc@vger.kernel.org, sparclinux@vger.kernel.org,
+	linux-trace-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
+	bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
+	linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Richard Henderson <richard.henderson@linaro.org>,
+	Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+	Matt Turner <mattst88@gmail.com>,
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	"James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+	Helge Deller <deller@gmx.de>, Andreas Larsson <andreas@gaisler.com>,
+	Jesper Dangaard Brouer <hawk@kernel.org>,
+	Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Arnd Bergmann <arnd@arndb.de>, Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
+	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+	Steffen Klassert <steffen.klassert@secunet.com>,
+	Herbert Xu <herbert@gondor.apana.org.au>,
+	David Ahern <dsahern@kernel.org>,
+	Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+	Shuah Khan <shuah@kernel.org>,
+	Sumit Semwal <sumit.semwal@linaro.org>,
+	Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+	Amritha Nambiar <amritha.nambiar@intel.com>,
+	Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+	Alexander Mikhalitsyn <alexander@mihalicyn.com>,
+	Kaiyuan Zhang <kaiyuanz@google.com>,
+	Christian Brauner <brauner@kernel.org>,
+	Simon Horman <horms@kernel.org>,
+	David Howells <dhowells@redhat.com>,
+	Florian Westphal <fw@strlen.de>,
+	Yunsheng Lin <linyunsheng@huawei.com>,
+	Kuniyuki Iwashima <kuniyu@amazon.com>, Jens Axboe <axboe@kernel.dk>,
+	Arseniy Krasnov <avkrasnov@salutedevices.com>,
+	Aleksander Lobakin <aleksander.lobakin@intel.com>,
+	Michael Lass <bevan@bi-co.net>, Jiri Pirko <jiri@resnulli.us>,
+	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+	Lorenzo Bianconi <lorenzo@kernel.org>,
+	Richard Gobert <richardbgobert@gmail.com>,
+	Sridhar Samudrala <sridhar.samudrala@intel.com>,
+	Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+	Johannes Berg <johannes.berg@intel.com>,
+	Abel Wu <wuyun.abel@bytedance.com>,
+	Breno Leitao <leitao@debian.org>, David Wei <dw@davidwei.uk>,
+	Shailend Chand <shailend@google.com>,
+	Harshitha Ramamurthy <hramamurthy@google.com>,
+	Shakeel Butt <shakeel.butt@linux.dev>,
+	Jeroen de Borst <jeroendb@google.com>,
+	Praveen Kaligineedi <pkaligineedi@google.com>
+References: <ZjjHUh1eINPg1wkn@infradead.org>
+ <20b1c2d9-0b37-414c-b348-89684c0c0998@gmail.com>
+ <20240507161857.GA4718@ziepe.ca>
+ <ZjpVfPqGNfE5N4bl@infradead.org>
+ <CAHS8izPH+sRLSiZ7vbrNtRdHrFEf8XQ61XAyHuxRSL9Jjy8YbQ@mail.gmail.com>
+ <20240507164838.GG4718@ziepe.ca>
+ <0d5da361-cc7b-46e9-a635-9a7a4c208444@gmail.com>
+ <20240507175644.GJ4718@ziepe.ca>
+ <6a50d01a-b5b9-4699-9d58-94e5f8f81c13@gmail.com>
+ <20240507233247.GK4718@ziepe.ca>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3774.500.171.1.1\))
-Subject: Re: [PATCH bpf-next v10 5/5] bpf: Only enable BPF LSM hooks when an
- LSM program is attached
-From: KP Singh <kpsingh@kernel.org>
-In-Reply-To: <CAHC9VhTWB+zL-cqNGFOfW_LsPHp3=ddoHkjUTq+NoSj7BdRvmw@mail.gmail.com>
-Date: Wed, 8 May 2024 09:00:42 +0200
-Cc: Kees Cook <keescook@chromium.org>,
- linux-security-module@vger.kernel.org,
- bpf@vger.kernel.org,
- Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>,
- jackmanb@google.com,
- renauld@google.com,
- casey@schaufler-ca.com,
- song@kernel.org,
- revest@chromium.org
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <0E524496-74E4-4419-8FE5-7675BD1834C0@kernel.org>
-References: <20240507221045.551537-1-kpsingh@kernel.org>
- <20240507221045.551537-6-kpsingh@kernel.org> <202405071653.2C761D80@keescook>
- <CAHC9VhTWB+zL-cqNGFOfW_LsPHp3=ddoHkjUTq+NoSj7BdRvmw@mail.gmail.com>
-To: Paul Moore <paul@paul-moore.com>
-X-Mailer: Apple Mail (2.3774.500.171.1.1)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240507233247.GK4718@ziepe.ca>
+X-Operating-System: Linux phenom 6.6.15-amd64 
 
+On Tue, May 07, 2024 at 08:32:47PM -0300, Jason Gunthorpe wrote:
+> On Tue, May 07, 2024 at 08:35:37PM +0100, Pavel Begunkov wrote:
+> > On 5/7/24 18:56, Jason Gunthorpe wrote:
+> > > On Tue, May 07, 2024 at 06:25:52PM +0100, Pavel Begunkov wrote:
+> > > > On 5/7/24 17:48, Jason Gunthorpe wrote:
+> > > > > On Tue, May 07, 2024 at 09:42:05AM -0700, Mina Almasry wrote:
+> > > > > 
+> > > > > > 1. Align with devmem TCP to use udmabuf for your io_uring memory. I
+> > > > > > think in the past you said it's a uapi you don't link but in the face
+> > > > > > of this pushback you may want to reconsider.
+> > > > > 
+> > > > > dmabuf does not force a uapi, you can acquire your pages however you
+> > > > > want and wrap them up in a dmabuf. No uapi at all.
+> > > > > 
+> > > > > The point is that dmabuf already provides ops that do basically what
+> > > > > is needed here. We don't need ops calling ops just because dmabuf's
+> > > > > ops are not understsood or not perfect. Fixup dmabuf.
+> > > > 
+> > > > Those ops, for example, are used to efficiently return used buffers
+> > > > back to the kernel, which is uapi, I don't see how dmabuf can be
+> > > > fixed up to cover it.
+> > > 
+> > > Sure, but that doesn't mean you can't use dma buf for the other parts
+> > > of the flow. The per-page lifetime is a different topic than the
+> > > refcounting and access of the entire bulk of memory.
+> > 
+> > Ok, so if we're leaving uapi (and ops) and keep per page/sub-buffer as
+> > is, the rest is resolving uptr -> pages, and passing it to page pool in
+> > a convenient to page pool format (net_iov).
+> 
+> I'm not going to pretend to know about page pool details, but dmabuf
+> is the way to get the bulk of pages into a pool within the net stack's
+> allocator and keep that bulk properly refcounted while.
+> 
+> An object like dmabuf is needed for the general case because there are
+> not going to be per-page references or otherwise available.
+> 
+> What you seem to want is to alter how the actual allocation flow works
+> from that bulk of memory and delay the free. It seems like a different
+> topic to me, and honestly hacking into the allocator free function
+> seems a bit weird..
 
+Also I don't see how it's an argument against dma-buf as the interface for
+all these, because e.g. ttm internally does have a page pool because
+depending upon allocator, that's indeed beneficial. Other drm drivers have
+more buffer-based concepts for opportunistically memory around, usually
+by marking buffers that are just kept as cache as purgeable (which is a
+concept that goes all the way to opengl/vulkan).
 
-> On 8 May 2024, at 03:45, Paul Moore <paul@paul-moore.com> wrote:
->=20
-> On Tue, May 7, 2024 at 8:01=E2=80=AFPM Kees Cook =
-<keescook@chromium.org> wrote:
->>=20
->> On Wed, May 08, 2024 at 12:10:45AM +0200, KP Singh wrote:
->>> [...]
->>> +/**
->>> + * security_toggle_hook - Toggle the state of the LSM hook.
->>> + * @hook_addr: The address of the hook to be toggled.
->>> + * @state: Whether to enable for disable the hook.
->>> + *
->>> + * Returns 0 on success, -EINVAL if the address is not found.
->>> + */
->>> +int security_toggle_hook(void *hook_addr, bool state)
->>> +{
->>> +     struct lsm_static_call *scalls =3D ((void =
-*)&static_calls_table);
->>> +     unsigned long num_entries =3D
->>> +             (sizeof(static_calls_table) / sizeof(struct =
-lsm_static_call));
->>> +     int i;
->>> +
->>> +     for (i =3D 0; i < num_entries; i++) {
->>> +             if (!scalls[i].hl)
->>> +                     continue;
->>> +
->>> +             if (scalls[i].hl->hook.lsm_func_addr !=3D hook_addr)
->>> +                     continue;
->>> +
->>> +             if (state)
->>> +                     static_branch_enable(scalls[i].active);
->>> +             else
->>> +                     static_branch_disable(scalls[i].active);
->>> +             return 0;
->>> +     }
->>> +     return -EINVAL;
->>> +}
->>=20
->> First of all: patches 1-4 are great. They have a measurable =
-performance
->> benefit; let's get those in.
->>=20
->> But here I come to patch 5 where I will suggest the exact opposite of
->> what Paul said in v9 for patch 5. :P
->=20
-> For those looking up v9 of the patchset, you'll be looking for patch
-> *4*, not patch 5, as there were only four patches in the v9 series.
-> Patch 4/5 in the v10 series is a new addition to the stack.
->=20
-> Beyond that, I'm guessing you are referring to my comment regarding
-> bpf_lsm_toggle_hook() Kees?  The one that starts with "More ugh.  If
-> we are going to solve things this way ..."?
->=20
->> I don't want to have a global function that can be used to disable =
-LSMs.
->> We got an entire distro (RedHat) to change their SELinux =
-configurations
->> to get rid of CONFIG_SECURITY_SELINUX_DISABLE (and therefore
->> CONFIG_SECURITY_WRITABLE_HOOKS), via commit f22f9aaf6c3d ("selinux:
->> remove the runtime disable functionality"). We cannot reintroduce =
-that,
->> and I'm hoping Paul will agree, given this reminder of LSM history. =
-:)
->>=20
->> Run-time hook changing should be BPF_LSM specific, if it exists at =
-all.
-
-
-One idea here is that only LSM hooks with default_state =3D false can be =
-toggled.=20
-
-This would also any ROPs that try to abuse this function. Maybe we can =
-call "default_disabled" .toggleable (or dynamic)
-
-and change the corresponding LSM_INIT_TOGGLEABLE. Kees, Paul, this may =
-be a fair middle ground?
-
-Something like:
-
-diff --git a/include/linux/lsm_hooks.h b/include/linux/lsm_hooks.h
-index 4bd1d47bb9dc..5c0918ed6b80 100644
---- a/include/linux/lsm_hooks.h
-+++ b/include/linux/lsm_hooks.h
-@@ -117,7 +117,7 @@ struct security_hook_list {
-        struct lsm_static_call  *scalls;
-        union security_list_options     hook;
-        const struct lsm_id             *lsmid;
--       bool                            default_enabled;
-+       bool                            toggleable;
- } __randomize_layout;
-
- /*
-@@ -168,14 +168,18 @@ static inline struct xattr =
-*lsm_get_xattr_slot(struct xat>
-        {                                               \
-                .scalls =3D static_calls_table.NAME,      \
-                .hook =3D { .NAME =3D HOOK },               \
--               .default_enabled =3D true                 \
-+               .toggleable =3D false                     \
-        }
-
--#define LSM_HOOK_INIT_DISABLED(NAME, HOOK)             \
-+/*
-+ * Toggleable LSM hooks are enabled at runtime with
-+ * security_toggle_hook and are initialized as inactive.
-+ */
-+#define LSM_HOOK_INIT_TOGGLEABLE(NAME, HOOK)           \
-        {                                               \
-                .scalls =3D static_calls_table.NAME,      \
-                .hook =3D { .NAME =3D HOOK },               \
--               .default_enabled =3D false                \
-+               .toggleable =3D true                      \
-        }
-
- extern char *lsm_names;
-diff --git a/security/bpf/hooks.c b/security/bpf/hooks.c
-index ed864f7430a3..ba1c3a19fb12 100644
---- a/security/bpf/hooks.c
-+++ b/security/bpf/hooks.c
-@@ -9,7 +9,7 @@
-
- static struct security_hook_list bpf_lsm_hooks[] __ro_after_init =3D {
-        #define LSM_HOOK(RET, DEFAULT, NAME, ...) \
--       LSM_HOOK_INIT_DISABLED(NAME, bpf_lsm_##NAME),
-+       LSM_HOOK_INIT_TOGGLEABLE(NAME, bpf_lsm_##NAME),
-        #include <linux/lsm_hook_defs.h>
-        #undef LSM_HOOK
-        LSM_HOOK_INIT(inode_free_security, bpf_inode_storage_free),
-+ * security_toggle_hook and are initialized as inactive.
-+ */
-+#define LSM_HOOK_INIT_TOGGLEABLE(NAME, HOOK)           \
-        {                                               \
-                .scalls =3D static_calls_table.NAME,      \
-                .hook =3D { .NAME =3D HOOK },               \
--               .default_enabled =3D false                \
-+               .toggleable =3D true                      \
-        }
-
- extern char *lsm_names;
-diff --git a/security/bpf/hooks.c b/security/bpf/hooks.c
-index ed864f7430a3..ba1c3a19fb12 100644
---- a/security/bpf/hooks.c
-+++ b/security/bpf/hooks.c
-@@ -9,7 +9,7 @@
-
- static struct security_hook_list bpf_lsm_hooks[] __ro_after_init =3D {
-        #define LSM_HOOK(RET, DEFAULT, NAME, ...) \
--       LSM_HOOK_INIT_DISABLED(NAME, bpf_lsm_##NAME),
-+       LSM_HOOK_INIT_TOGGLEABLE(NAME, bpf_lsm_##NAME),
-        #include <linux/lsm_hook_defs.h>
-        #undef LSM_HOOK
-        LSM_HOOK_INIT(inode_free_security, bpf_inode_storage_free),
-kpsingh@kpsingh:~/projects/linux$ git diff
-diff --git a/include/linux/lsm_hooks.h b/include/linux/lsm_hooks.h
-index 4bd1d47bb9dc..5c0918ed6b80 100644
---- a/include/linux/lsm_hooks.h
-+++ b/include/linux/lsm_hooks.h
-@@ -117,7 +117,7 @@ struct security_hook_list {
-        struct lsm_static_call  *scalls;
-        union security_list_options     hook;
-        const struct lsm_id             *lsmid;
--       bool                            default_enabled;
-+       bool                            toggleable;
- } __randomize_layout;
-
- /*
-@@ -168,14 +168,18 @@ static inline struct xattr =
-*lsm_get_xattr_slot(struct xattr *xattrs,
-        {                                               \
-                .scalls =3D static_calls_table.NAME,      \
-                .hook =3D { .NAME =3D HOOK },               \
--               .default_enabled =3D true                 \
-+               .toggleable =3D false                     \
-        }
-
--#define LSM_HOOK_INIT_DISABLED(NAME, HOOK)             \
-+/*
-+ * Toggleable LSM hooks are enabled at runtime with
-+ * security_toggle_hook and are initialized as inactive.
-+ */
-+#define LSM_HOOK_INIT_TOGGLEABLE(NAME, HOOK)           \
-        {                                               \
-                .scalls =3D static_calls_table.NAME,      \
-                .hook =3D { .NAME =3D HOOK },               \
--               .default_enabled =3D false                \
-+               .toggleable =3D true                      \
-        }
-
- extern char *lsm_names;
-diff --git a/security/bpf/hooks.c b/security/bpf/hooks.c
-index ed864f7430a3..ba1c3a19fb12 100644
---- a/security/bpf/hooks.c
-+++ b/security/bpf/hooks.c
-@@ -9,7 +9,7 @@
-
- static struct security_hook_list bpf_lsm_hooks[] __ro_after_init =3D {
-        #define LSM_HOOK(RET, DEFAULT, NAME, ...) \
--       LSM_HOOK_INIT_DISABLED(NAME, bpf_lsm_##NAME),
-+       LSM_HOOK_INIT_TOGGLEABLE(NAME, bpf_lsm_##NAME),
-        #include <linux/lsm_hook_defs.h>
-        #undef LSM_HOOK
-        LSM_HOOK_INIT(inode_free_security, bpf_inode_storage_free),
-diff --git a/security/security.c b/security/security.c
-index b3a92a67f325..a89eb8fe302b 100644
---- a/security/security.c
-+++ b/security/security.c
-@@ -407,7 +407,8 @@ static void __init lsm_static_call_init(struct =
-security_hook_list *hl)
-                        __static_call_update(scall->key, =
-scall->trampoline,
-                                             hl->hook.lsm_func_addr);
-                        scall->hl =3D hl;
--                       if (hl->default_enabled)
-+                       /* Toggleable hooks are inactive by default */
-+                       if (!hl->toggleable)
-                                static_branch_enable(scall->active);
-                        return;
-                }
-@@ -901,6 +902,9 @@ int security_toggle_hook(void *hook_addr, bool =
-state)
-        int i;
-
-        for (i =3D 0; i < num_entries; i++) {
-+               if (!scalls[i].hl->toggleable)
-+                       continue;
-+
-                if (!scalls[i].hl)
-                        continue;
-
-- KP
-
->=20
-> I don't want individual LSMs manipulating the LSM hook state directly;
-> they go through the LSM layer to register their hooks, they should go
-> through the LSM layer to unregister or enable/disable their hooks.
-> I'm going to be pretty inflexible on this point.
->=20
-> Honestly, I see this more as a problem in the BPF LSM design (although
-> one might argue it's an implementation issue?), just as I saw the
-> SELinux runtime disable as a problem.  If you're upset with the
-> runtime hook disable, and you should be, fix the BPF LSM, don't force
-> more bad architecture on the LSM layer.
->=20
-> --=20
-> paul-moore.com
-
-
+But these are all internals of the dma-buf exporter, the dma-buf api users
+don't ever need to care.
+-Sima
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
 
