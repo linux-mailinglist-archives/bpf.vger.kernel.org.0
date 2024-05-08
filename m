@@ -1,48 +1,48 @@
-Return-Path: <bpf+bounces-29101-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-29103-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C901F8C026E
-	for <lists+bpf@lfdr.de>; Wed,  8 May 2024 19:00:38 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1089A8C0270
+	for <lists+bpf@lfdr.de>; Wed,  8 May 2024 19:00:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 05FC11C223B3
-	for <lists+bpf@lfdr.de>; Wed,  8 May 2024 17:00:38 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A1615B20A75
+	for <lists+bpf@lfdr.de>; Wed,  8 May 2024 17:00:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D5920DF5C;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D5A81DF71;
 	Wed,  8 May 2024 17:00:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BILyaDRM"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AbwwUmmC"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B2E946B5
-	for <bpf@vger.kernel.org>; Wed,  8 May 2024 17:00:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B3138828
+	for <bpf@vger.kernel.org>; Wed,  8 May 2024 17:00:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715187631; cv=none; b=eE2PfyouDQcdfsG/LXjz2gllyiGEcwL61PEXPEuacDEsEcHWz7xnKWThtG+BxywTc2i0VyA36TyHCDDlqm8GPlwYzYxEwgAEtxoUXwEzZRslLmn+TcRlIbSz3iH5QkLwqwutXHmb0a+30BFwfPRTNLC/pXTRp+GcDw/Wj6G8ObM=
+	t=1715187631; cv=none; b=J3bvQtTA8czk+PvOp4DJDOaRYmMwNAexo+xr5mlaskn+iphHr8+O2pmpt8yHv4NlfGm/UgSwRLvfAHLxtr51YscTKN5Ipc2o0+64AGvXE8yn7rbMffTeTSIHTknFR2zMbjmtsihPBfkIaxRCgjUEF5k8eXx7X3tHHJ1dyuB77FU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1715187631; c=relaxed/simple;
-	bh=jkc0U2Apkfu7GaJ1EHF0AlqEZ66jeDrNhHVB4Wmw9H0=;
+	bh=SwNPI9B+dJcvCuleLNEFvid7uclJPe4YXd9JvIMr+qU=;
 	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=MtvjuqaUQx8ftcz0+P0AndP1ewsna+bBeNH4zbs5+al9YjJZ86ziDXz5NICRkclxSzUTS5fSFBN1urJp7jdOzeGMZn0bG6Gbal+CN1ynj643HjQt+E+pvW6Ps6yUMjqk6Qxky1rC0m34t7u/JKe6T9SrQDOyxev26dJSbeED7wg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BILyaDRM; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id E6D34C4AF07;
+	 In-Reply-To:To:Cc; b=DwNJ677EaKEHMaMeHz2qmLEqVDfE/i3qh5WpGqXewK6jEvLm/Ro9zAf1Q1DF65z9m4aAFozHC4oCtsjLXkHj39jda9Xr4k4+sq1coitvJjmwaKSxtS2P/Sv8kFLBuK40kQVpREZ4oBwbK8gvcFZhMkik0d0V/FQXz/sz6BLLOfE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AbwwUmmC; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id CE7C7C2BD11;
 	Wed,  8 May 2024 17:00:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1715187630;
-	bh=jkc0U2Apkfu7GaJ1EHF0AlqEZ66jeDrNhHVB4Wmw9H0=;
+	bh=SwNPI9B+dJcvCuleLNEFvid7uclJPe4YXd9JvIMr+qU=;
 	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=BILyaDRMp/wcCgb+n9WfKNkLbSp09NRSGxr/DOwZvo9qOao4NHbfzHdVhAHgZWRCo
-	 Fwj0kcZNuLfg3cCH7XrrFKRe6RPlk+FRCxfS7wGPvc1/VwCnvekhvuPqAYSjI7eE1m
-	 UagNB5eyXpSDdWQlyGF7ebf19sgWK3AhMzUu4Er73ppfx+R4FbMVREoOZuCcKOZEBd
-	 aZErc11+18LUzCSBIHe/6HbG7pyoRhroFEyd49ifXGZL78eOwQUJSEZbdQBtEvy0kY
-	 nt5MpDmxQZdrpuEO6aP0Wlb+JA5RdPIoNWS+6vCJ7FIsqBvC9X9nv/+WpkC2dIfpsP
-	 co6EPI9dTmsKg==
+	b=AbwwUmmClIzuzTt78p32FXnkgq8ZN3Enyd4H47RrrTp2rRcCN8mFsamUtwMfQyF+L
+	 v2Iu3OkA30q7my0x0SYq5lLEaobDGgUN+MDzS5dYl5xsFZ7pxLq2TAEfKnoaj2UKJp
+	 oWINA7JumhXO5lNANxsCMc0tw9pZ0jHCvdzsf5TGFbS99Moei8TBRfsLM51Cp8zm7Z
+	 RinAjGIeSn4/j8Dlz8YVt2Z6BbgrLkG4TJwIt6YD64iEl4y3tFXZi6oKzjesNX+ARE
+	 hZ6F2l/wz/TQaRFR8hEuKqMCd6FrcA6MZ3MSOJvqAMTK+K1FdtkiMBb7lOTbPO3nr/
+	 fGhv2BU2XN9lw==
 Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id D184EC43332;
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id BC0E0C43331;
 	Wed,  8 May 2024 17:00:30 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
@@ -52,13 +52,14 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next V3] bpf: avoid UB in usages of the __imm_insn macro
+Subject: Re: [PATCH bpf-next V2] bpf: avoid uninitialized warnings in
+ verifier_global_subprogs.c
 From: patchwork-bot+netdevbpf@kernel.org
 Message-Id: 
- <171518763085.20768.9178276784469181139.git-patchwork-notify@kernel.org>
+ <171518763076.20768.13274880727599956792.git-patchwork-notify@kernel.org>
 Date: Wed, 08 May 2024 17:00:30 +0000
-References: <20240508103551.14955-1-jose.marchesi@oracle.com>
-In-Reply-To: <20240508103551.14955-1-jose.marchesi@oracle.com>
+References: <20240507184756.1772-1-jose.marchesi@oracle.com>
+In-Reply-To: <20240507184756.1772-1-jose.marchesi@oracle.com>
 To: Jose E. Marchesi <jose.marchesi@oracle.com>
 Cc: bpf@vger.kernel.org, david.faust@oracle.com, cupertino.miranda@oracle.com,
  yonghong.song@linux.dev, eddyz87@gmail.com
@@ -68,20 +69,20 @@ Hello:
 This patch was applied to bpf/bpf-next.git (master)
 by Alexei Starovoitov <ast@kernel.org>:
 
-On Wed,  8 May 2024 12:35:51 +0200 you wrote:
-> [Changes from V2:
->  - no-strict-aliasing is only applied when building with GCC.
->  - cpumask_failure.c is excluded, as it doesn't use __imm_insn.]
+On Tue,  7 May 2024 20:47:56 +0200 you wrote:
+> [Changes from V1:
+> - The warning to disable is -Wmaybe-uninitialized, not -Wuninitialized.
+> - This warning is only supported in GCC.]
 > 
-> The __imm_insn macro is defined in bpf_misc.h as:
-> 
->   #define __imm_insn(name, expr) [name]"i"(*(long *)&(expr))
+> The BPF selftest verifier_global_subprogs.c contains code that
+> purposedly performs out of bounds access to memory, to check whether
+> the kernel verifier is able to catch them.  For example:
 > 
 > [...]
 
 Here is the summary with links:
-  - [bpf-next,V3] bpf: avoid UB in usages of the __imm_insn macro
-    https://git.kernel.org/bpf/bpf-next/c/1209a523f691
+  - [bpf-next,V2] bpf: avoid uninitialized warnings in verifier_global_subprogs.c
+    https://git.kernel.org/bpf/bpf-next/c/cd3fc3b97821
 
 You are awesome, thank you!
 -- 
