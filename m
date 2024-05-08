@@ -1,115 +1,93 @@
-Return-Path: <bpf+bounces-29100-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-29102-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7CB148C0267
-	for <lists+bpf@lfdr.de>; Wed,  8 May 2024 18:55:56 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id A42E78C026F
+	for <lists+bpf@lfdr.de>; Wed,  8 May 2024 19:00:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A8EA41C21B70
-	for <lists+bpf@lfdr.de>; Wed,  8 May 2024 16:55:55 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4401F1F24C1B
+	for <lists+bpf@lfdr.de>; Wed,  8 May 2024 17:00:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9EBAADF6C;
-	Wed,  8 May 2024 16:55:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D5A63DF6C;
+	Wed,  8 May 2024 17:00:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="n6uhNQ1o"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gZEb1wSr"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B214DDB2;
-	Wed,  8 May 2024 16:55:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B2A61A2C2D
+	for <bpf@vger.kernel.org>; Wed,  8 May 2024 17:00:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715187349; cv=none; b=Jp3Kr8a9TLrh+YdJo0lIWQOWcwQKKB1i3F1mhqAupfSBzbcMO5PEf5x34XsAyC4n41VMuOWB34bIIb3GuEBF/FrVOar8ouFvZ6Xd90E5T+PKH13vaU6rvflMZlhkym5WuZ7W0VhsyQ/AxXtlnJvHH9T6VsEHL6VgcmR2V74/fuY=
+	t=1715187631; cv=none; b=pdxzICac2w+PpiZh6V3t1rGyFKO4T+CdU9egIQpfyMdhTO2vY8QD1o3e2t0wmuVcXE4HmKhjOzsalWkGIRtf9+yLEoeV8a8YfyNkhG3BysiDsIU9NAa83bKF5lNMGt0XfbGaMvQtF43RmW2EtCoRJsvgxKuv9H401AL9p9hdj/8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715187349; c=relaxed/simple;
-	bh=oV9q6FohML+t2GsOtO4f7Y/sVfHt/7X/LujEYuhSVX0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=qNzCZtRxwNex5oL469LCGPQRGq8oQipQN2UkWZrAqrfcBBt+wlpWlfjo8ZF2QSfOsViaVuproYsm6N7naxGHGQwIVT5VE6ym2i7Xu0EYJxtdshCQ07KJ9GP9luP4CWfdFpaCKkVOCjKRg0s5lfefbDZE93d/5fmEn3UcKNmhpkY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=n6uhNQ1o; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0F8C8C113CC;
-	Wed,  8 May 2024 16:55:43 +0000 (UTC)
+	s=arc-20240116; t=1715187631; c=relaxed/simple;
+	bh=TNAXsxPgGcQZnzJ0ROnaKUUPk2KEyypL9lRAASUSLeI=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=El3awaOKYxOz9Z1V9YKMonCQ4zo3q7HL3NvzAfmzAd2O+jDDVZMDA6T1wKFhmmMnoC1v8AVHwnfOzJ7FbyKmhUu0l2rs6uo9rUIKZNtmSV0NLdiN/Oq16AkPcVvw7GzUH8V2QENAZ68s30anDaywWXcW7WPSMIDqNUxZVkXvoIk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gZEb1wSr; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id E25CBC32781;
+	Wed,  8 May 2024 17:00:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1715187348;
-	bh=oV9q6FohML+t2GsOtO4f7Y/sVfHt/7X/LujEYuhSVX0=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=n6uhNQ1oq6Rn5WQb042DEvXZnTUepAiSPmAjDtYr5An6TZV3w2plxq2bKwuN7C2J0
-	 hOvQEROUy/ICLmgmQm/7iEFRvJPRKVSjfz0bWHrOQDxgQLllOwWuwkdLb78j2zh1xD
-	 dBFpIfOT871mUsCl2/DRD6q615dEZ3+Sedo4Q/c/o2oK4vsvsbUZ9YtgAT1QRDRZe4
-	 /Rwy7ykBQ9e/guvz5JNTU0zsQ/LxRIJoflPbOSOtX7iSyR2/oGkpongQIOSVeMbXDM
-	 3hXBS5OluDrRUcGRM6dNvJet7GpI7Xcwxmv1FKitzIxIi1+OqYHyI916q+0GMRYy1r
-	 ZAXpILsX/Rb4g==
-Date: Wed, 8 May 2024 17:55:41 +0100
-From: Conor Dooley <conor@kernel.org>
-To: Frank Li <Frank.Li@nxp.com>
-Cc: Richard Zhu <hongxing.zhu@nxp.com>,
-	Lucas Stach <l.stach@pengutronix.de>,
-	Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
-	Shawn Guo <shawnguo@kernel.org>,
-	Sascha Hauer <s.hauer@pengutronix.de>,
-	Pengutronix Kernel Team <kernel@pengutronix.de>,
-	Fabio Estevam <festevam@gmail.com>,
-	NXP Linux Team <linux-imx@nxp.com>,
-	Philipp Zabel <p.zabel@pengutronix.de>,
-	Liam Girdwood <lgirdwood@gmail.com>,
-	Mark Brown <broonie@kernel.org>,
-	Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>, linux-pci@vger.kernel.org,
-	imx@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-	devicetree@vger.kernel.org
-Subject: Re: [PATCH v4 10/12] dt-bindings: imx6q-pcie: Add i.MX8Q pcie
- compatible string
-Message-ID: <20240508-stalling-skinless-2ee6926d5bba@spud>
-References: <20240507-pci2_upstream-v4-0-e8c80d874057@nxp.com>
- <20240507-pci2_upstream-v4-10-e8c80d874057@nxp.com>
+	s=k20201202; t=1715187630;
+	bh=TNAXsxPgGcQZnzJ0ROnaKUUPk2KEyypL9lRAASUSLeI=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=gZEb1wSr/akULHZW9xBWX9EyEyovbAP16YhSCyGVBEBNjI+6aSBblm03dYzdGH8dO
+	 CISsTMz5gHJWUGS1o9kyIZJSqqVpm9ogJMjMSroAj/b8LNEUNW4yFev5vZLFkwYRh1
+	 1ImBi7+H9o9bv1T1WGk03IiaymJNnNmfMYsl+r+Obq/wvD9FWqTFjNcEaACGEdsKW3
+	 Xcv6e+RNyvmFRuSEQmyO8Z7hFYGIBdDRJJSNPj6HFJmVzSQ7KC7z+dvqRM01VAJtZT
+	 qF6TvtL9RtsRri4GmTfCziuaX2tx3nNwL9mT416sPvbbFcG/w5kvrc1RSXIUf8xWpp
+	 +CCqaMZkIB5cw==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id C6FA4C43614;
+	Wed,  8 May 2024 17:00:30 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="QdjAdVM3nDrdUFsa"
-Content-Disposition: inline
-In-Reply-To: <20240507-pci2_upstream-v4-10-e8c80d874057@nxp.com>
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf-next] bpf: guard BPF_NO_PRESERVE_ACCESS_INDEX in
+ skb_pkt_end.c
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <171518763081.20768.9843819969177772597.git-patchwork-notify@kernel.org>
+Date: Wed, 08 May 2024 17:00:30 +0000
+References: <20240508110332.17332-1-jose.marchesi@oracle.com>
+In-Reply-To: <20240508110332.17332-1-jose.marchesi@oracle.com>
+To: Jose E. Marchesi <jose.marchesi@oracle.com>
+Cc: bpf@vger.kernel.org, david.faust@oracle.com, cupertino.miranda@oracle.com,
+ eddyz87@gmail.com, yonghong.song@linux.dev, andrii.nakryiko@gmail.com
+
+Hello:
+
+This patch was applied to bpf/bpf-next.git (master)
+by Alexei Starovoitov <ast@kernel.org>:
+
+On Wed,  8 May 2024 13:03:32 +0200 you wrote:
+> This little patch is a follow-up to:
+> https://lore.kernel.org/bpf/20240507095011.15867-1-jose.marchesi@oracle.com/T/#u
+> 
+> The temporary workaround of passing -DBPF_NO_PRESERVE_ACCESS_INDEX
+> when building with GCC triggers a redefinition preprocessor error when
+> building progs/skb_pkt_end.c.  This patch adds a guard to avoid
+> redefinition.
+> 
+> [...]
+
+Here is the summary with links:
+  - [bpf-next] bpf: guard BPF_NO_PRESERVE_ACCESS_INDEX in skb_pkt_end.c
+    https://git.kernel.org/bpf/bpf-next/c/911edc69c832
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
 
---QdjAdVM3nDrdUFsa
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Tue, May 07, 2024 at 02:45:48PM -0400, Frank Li wrote:
-> From: Richard Zhu <hongxing.zhu@nxp.com>
->=20
-> Add i.MX8Q PCIe "fsl,imx8q-pcie" compatible strings. clock-names align dwc
-> common naming convension.
->=20
-> Signed-off-by: Richard Zhu <hongxing.zhu@nxp.com>
-> Signed-off-by: Frank Li <Frank.Li@nxp.com>
-
-Acked-by: Conor Dooley <conor.dooley@microchip.com>
-
-Cheers,
-Conor.
-
-
---QdjAdVM3nDrdUFsa
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZjuujQAKCRB4tDGHoIJi
-0iEAAP4odCwqsa0krpPtS6/ctZZWtHEAap7Ag61eyEoeDNMojQD/Sn+eC8qeLR/x
-JDSqlvC8xXonb7tvS7luBljtDTpTBgE=
-=3NM7
------END PGP SIGNATURE-----
-
---QdjAdVM3nDrdUFsa--
 
