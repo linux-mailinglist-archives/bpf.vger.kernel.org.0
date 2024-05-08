@@ -1,148 +1,215 @@
-Return-Path: <bpf+bounces-29079-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-29080-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8D6F48BFF91
-	for <lists+bpf@lfdr.de>; Wed,  8 May 2024 15:55:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 442D78BFFD9
+	for <lists+bpf@lfdr.de>; Wed,  8 May 2024 16:25:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BEA6F1C2271C
-	for <lists+bpf@lfdr.de>; Wed,  8 May 2024 13:55:06 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 674181C21327
+	for <lists+bpf@lfdr.de>; Wed,  8 May 2024 14:25:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D8C484A3C;
-	Wed,  8 May 2024 13:54:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 911BE85633;
+	Wed,  8 May 2024 14:25:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="sChzYj2r"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NDy0rFmd"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yb1-f201.google.com (mail-yb1-f201.google.com [209.85.219.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 22F1C84DFB
-	for <bpf@vger.kernel.org>; Wed,  8 May 2024 13:54:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 135EE54FA3;
+	Wed,  8 May 2024 14:25:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715176486; cv=none; b=tUr9QBG8AsMtbUS1DjhrGfpgQYM/1+xaYjie3Qf7phKJbsPPk+LZS539DxzvOZvjoNrrvjjWGe6LhS7NqoYx6kEbuK7Yn8vuYK+n3IvDftTSUqm3VIjUJtx6bC61gGMOBqqjKexD8HmyiKUU98fTK5CBZZzSgwcT4vKYW2OxjKo=
+	t=1715178302; cv=none; b=XVwhWlelnW7NrYS/1BEDh+xXlYyRopuHMUw92iNgFL1ecKU3jDOXJQfKa92X4W7YuZxA6FxE1NfjgouSUM1aQmC1xlXVGtu25qRGpF/0vRle1j0qwhILB4klty8iIik2d2KWdx9enuLykmMpmABl/pC5a2gfEYTgduXtqgtDT8k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715176486; c=relaxed/simple;
-	bh=c4rrNnRvo0cBlTP42xOOVWUGWry3TUGUYL7wXej88eM=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=L3BJCkVtJHNKcIf7tWRVfB56BfMLNXAxkZsBlM0CT6ML6M9AHJ2FE/o4AtRyghBc/Fc1wqRC16onwJdYfW+QTLRdmncxKrILmIS/hRyOqZ43kez/e0k6gRXQglV8UQ0zwll/SZosqAg9jOGINCRrmDwCrV0CDrmqadn4TKnLJ4c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=sChzYj2r; arc=none smtp.client-ip=209.85.219.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-dbf618042daso8058021276.0
-        for <bpf@vger.kernel.org>; Wed, 08 May 2024 06:54:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1715176482; x=1715781282; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=qrxifLi18HwIXN/paZijnWPdESXfJJzxe/+u8UtVff4=;
-        b=sChzYj2rtzH+m82eJTwVi4o6/zZb4Tlo57BCb+n1FPzSPtq6p6xORd6/DYyI7qb5wx
-         UIAsEztjkkh7Kk0ZcUkYVI7Keczqp57Eoy2dlm1HhY+gT7XI9MskBF90x3ohX5x57RMr
-         /K6Em/fk4vBVDRGJLDa1BUOO5qbYbAJqvbq+reXWKTlKMSiyIaiF3vsAJTmdOeaR2wHU
-         1plsfxD3xB3uD6q0MIa/idAEY33bOCWrKRLQylsaNnDzG2mFjvkjkHlW0BU3ZPWU9lcf
-         hAI4kR0t1rm3WCfEMP/R+Doq90LDP6FOZ6/hdOBJRWc/btr+nMEmQ0RQQfu7qVl5XQ0n
-         1k8g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1715176482; x=1715781282;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=qrxifLi18HwIXN/paZijnWPdESXfJJzxe/+u8UtVff4=;
-        b=HnLn575xvtdYksRzgzaHhzX5LieWalFRjyeO6ZrSGUifk6SjH+pYjhuJPTW+WiOJno
-         hps0/qqpdiLaEdVhWqX78IkxgrSyWYFsmxcLBwX4cgOkyLET/czr/JMIKgSsqCqVVVPp
-         qkA5iGs3cmaTi/r2FuSKGzOJJhHkvRuM6hjSZEZXcQ5xCFYh8vFOBO0w6tNrpuTVWUQH
-         +rulBp4EVG7uhcLdv574Z9whMfGL00mHo+0OAEpTlIuNraV0gYTmhEM2UFkmxi+dZyeK
-         edhU6nnBVLUNopK7A1xZVmw/k3OxN7+oXs9eVFXg+8eeKnjZJuBsPImE1BbbmTovShiz
-         MFVQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUdovq/RgHEavDX2KKpmVhceETGbVyTNGPzVPZLzcBbB2bnfjNs2mDgvXbOctaaqG9czj9K2qCUCEQCwvXRdxzT8aNh
-X-Gm-Message-State: AOJu0Yx04sqsL6Q9wU2I0h7MHz8leo7AVjSxgPuafq8z6z0zDIKF3POE
-	LWEOY4nIHSTWKarehElbN1lq1kHFdVr8I/ix573QZvALgb8a5+6bVMoouIBsttYmwIZefouhZGj
-	n6A==
-X-Google-Smtp-Source: AGHT+IGJRBi1UvMX9yVwIeeKPJ5i4MXrMA7fvNEnU0sh0JI0w6+2/9z2FlMIObyx5JUsUOMhiA6kQPpm0zI=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a05:6902:18c8:b0:dd9:2789:17fb with SMTP id
- 3f1490d57ef6-debb9cfd19bmr223701276.3.1715176481930; Wed, 08 May 2024
- 06:54:41 -0700 (PDT)
-Date: Wed, 8 May 2024 06:54:40 -0700
-In-Reply-To: <20240507214254.2787305-5-edliaw@google.com>
+	s=arc-20240116; t=1715178302; c=relaxed/simple;
+	bh=H5W0qWwV5Zw5XZ0V4zxs5cf/O4YOn5Y1GFbYXB47ePU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=jBhqrLCaEsZ602a97ORlBDY0JGuZOjWb8K5+15HijorRRcuggwFO374JDgw1xy54KLiyggfoANN7iaEXtuy1Er5Q58NAWqRXRHNemcjPlicFXp7BDtcEjJxqCQ3jyrJ8lYMOEcAiWDB/0ozG1znLhvdleiP9z2gXf728lPpx0Ww=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NDy0rFmd; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7517EC113CC;
+	Wed,  8 May 2024 14:25:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1715178301;
+	bh=H5W0qWwV5Zw5XZ0V4zxs5cf/O4YOn5Y1GFbYXB47ePU=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+	b=NDy0rFmdLGcDZEKwnoEz7PDzd1Iw8kQMjMA87zRnt69QSQVQ18WsnLIe2eZGn2b0O
+	 oDe+rE5fKtMD9DUf3OH80HPg7tf4oumrFJpvZIa2aawoGCUMj7bYi9lWkL7B087NBs
+	 lEoXZ1QmKI+5fBoFODxUBcRcwQh06g/dIy44QmBEJBpBmGrXhZY6uaVIpwFkGY4j7k
+	 U8F72AYCup1//T6oL6nfJnd8gtJkWbMvM3f33FkQ7iJrSHvH6326jP43AjRyIcGOSj
+	 8AtvL1V83nXda+NumGlqQGUxTnxDsEAabuYDjPiTkxKkUb2YcwoDGaKhNLotRgwrqM
+	 R4rpI4JOzi3Kg==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id 15DA6CE0448; Wed,  8 May 2024 07:25:01 -0700 (PDT)
+Date: Wed, 8 May 2024 07:25:01 -0700
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: Puranjay Mohan <puranjay@kernel.org>
+Cc: Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
+	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+	"Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
+	Michael Ellerman <mpe@ellerman.id.au>,
+	Nicholas Piggin <npiggin@gmail.com>,
+	Christophe Leroy <christophe.leroy@csgroup.eu>,
+	"Aneesh Kumar K.V" <aneesh.kumar@kernel.org>,
+	Hari Bathini <hbathini@linux.ibm.com>, bpf@vger.kernel.org,
+	linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+	puranjay12@gmail.com
+Subject: Re: [PATCH bpf v2] powerpc/bpf: enforce full ordering for ATOMIC
+ operations with BPF_FETCH
+Message-ID: <6b26d11f-ee4c-4d1e-b4b3-5a94444d8fea@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <20240508115404.74823-1-puranjay@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240507214254.2787305-1-edliaw@google.com> <20240507214254.2787305-5-edliaw@google.com>
-Message-ID: <ZjuEILj0SZRuTL9I@google.com>
-Subject: Re: [PATCH v2 4/5] selftests: Drop define _GNU_SOURCE
-From: Sean Christopherson <seanjc@google.com>
-To: Edward Liaw <edliaw@google.com>
-Cc: shuah@kernel.org, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, 
-	Takashi Iwai <tiwai@suse.com>, Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, 
-	Nhat Pham <nphamcs@gmail.com>, Johannes Weiner <hannes@cmpxchg.org>, 
-	Christian Brauner <brauner@kernel.org>, Eric Biederman <ebiederm@xmission.com>, 
-	Kees Cook <keescook@chromium.org>, OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>, 
-	Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, 
-	Peter Zijlstra <peterz@infradead.org>, Darren Hart <dvhart@infradead.org>, 
-	Davidlohr Bueso <dave@stgolabs.net>, "=?utf-8?B?QW5kcsOp?= Almeida" <andrealmeid@igalia.com>, 
-	Jiri Kosina <jikos@kernel.org>, Benjamin Tissoires <bentiss@kernel.org>, Jason Gunthorpe <jgg@ziepe.ca>, 
-	Kevin Tian <kevin.tian@intel.com>, Andy Lutomirski <luto@amacapital.net>, 
-	Will Drewry <wad@chromium.org>, Marc Zyngier <maz@kernel.org>, Oliver Upton <oliver.upton@linux.dev>, 
-	James Morse <james.morse@arm.com>, Suzuki K Poulose <suzuki.poulose@arm.com>, 
-	Zenghui Yu <yuzenghui@huawei.com>, Paolo Bonzini <pbonzini@redhat.com>, 
-	Anup Patel <anup@brainfault.org>, Atish Patra <atishp@atishpatra.org>, 
-	Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, 
-	Albert Ou <aou@eecs.berkeley.edu>, Christian Borntraeger <borntraeger@linux.ibm.com>, 
-	Janosch Frank <frankja@linux.ibm.com>, Claudio Imbrenda <imbrenda@linux.ibm.com>, 
-	David Hildenbrand <david@redhat.com>, "=?utf-8?Q?Micka=C3=ABl_Sala=C3=BCn?=" <mic@digikod.net>, Paul Moore <paul@paul-moore.com>, 
-	James Morris <jmorris@namei.org>, "Serge E. Hallyn" <serge@hallyn.com>, 
-	Andrew Morton <akpm@linux-foundation.org>, Seth Forshee <sforshee@kernel.org>, 
-	Bongsu Jeon <bongsu.jeon@samsung.com>, "David S. Miller" <davem@davemloft.net>, 
-	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
-	Steffen Klassert <steffen.klassert@secunet.com>, Herbert Xu <herbert@gondor.apana.org.au>, 
-	"Andreas =?utf-8?Q?F=C3=A4rber?=" <afaerber@suse.de>, Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>, 
-	Matthieu Baerts <matttbe@kernel.org>, Mat Martineau <martineau@kernel.org>, 
-	Geliang Tang <geliang@kernel.org>, Willem de Bruijn <willemdebruijn.kernel@gmail.com>, 
-	Fenghua Yu <fenghua.yu@intel.com>, Reinette Chatre <reinette.chatre@intel.com>, 
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, "Paul E. McKenney" <paulmck@kernel.org>, 
-	Boqun Feng <boqun.feng@gmail.com>, Alexandre Belloni <alexandre.belloni@bootlin.com>, 
-	Jarkko Sakkinen <jarkko@kernel.org>, Dave Hansen <dave.hansen@linux.intel.com>, 
-	Muhammad Usama Anjum <usama.anjum@collabora.com>, linux-kernel@vger.kernel.org, 
-	linux-kselftest@vger.kernel.org, kernel-team@android.com, 
-	linux-sound@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
-	linux-mm@kvack.org, linux-input@vger.kernel.org, iommu@lists.linux.dev, 
-	kvmarm@lists.linux.dev, kvm@vger.kernel.org, kvm-riscv@lists.infradead.org, 
-	linux-riscv@lists.infradead.org, linux-security-module@vger.kernel.org, 
-	linux-fsdevel@vger.kernel.org, netdev@vger.kernel.org, 
-	linux-actions@lists.infradead.org, mptcp@lists.linux.dev, 
-	linux-rtc@vger.kernel.org, linux-sgx@vger.kernel.org, bpf@vger.kernel.org
-Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240508115404.74823-1-puranjay@kernel.org>
 
-On Tue, May 07, 2024, Edward Liaw wrote:
-> _GNU_SOURCE is provided by KHDR_INCLUDES, so it should be dropped to
-> prevent _GNU_SOURCE redefined warnings.
+On Wed, May 08, 2024 at 11:54:04AM +0000, Puranjay Mohan wrote:
+> The Linux Kernel Memory Model [1][2] requires RMW operations that have a
+> return value to be fully ordered.
+> 
+> BPF atomic operations with BPF_FETCH (including BPF_XCHG and
+> BPF_CMPXCHG) return a value back so they need to be JITed to fully
+> ordered operations. POWERPC currently emits relaxed operations for
+> these.
+> 
+> We can show this by running the following litmus-test:
+> 
+> PPC SB+atomic_add+fetch
+> 
+> {
+> 0:r0=x;  (* dst reg assuming offset is 0 *)
+> 0:r1=2;  (* src reg *)
+> 0:r2=1;
+> 0:r4=y;  (* P0 writes to this, P1 reads this *)
+> 0:r5=z;  (* P1 writes to this, P0 reads this *)
+> 0:r6=0;
+> 
+> 1:r2=1;
+> 1:r4=y;
+> 1:r5=z;
+> }
+> 
+> P0                      | P1            ;
+> stw         r2, 0(r4)   | stw  r2,0(r5) ;
+>                         |               ;
+> loop:lwarx  r3, r6, r0  |               ;
+> mr          r8, r3      |               ;
+> add         r3, r3, r1  | sync          ;
+> stwcx.      r3, r6, r0  |               ;
+> bne         loop        |               ;
+> mr          r1, r8      |               ;
+>                         |               ;
+> lwa         r7, 0(r5)   | lwa  r7,0(r4) ;
+> 
+> ~exists(0:r7=0 /\ 1:r7=0)
+> 
+> Witnesses
+> Positive: 9 Negative: 3
+> Condition ~exists (0:r7=0 /\ 1:r7=0)
+> Observation SB+atomic_add+fetch Sometimes 3 9
+> 
+> This test shows that the older store in P0 is reordered with a newer
+> load to a different address. Although there is a RMW operation with
+> fetch between them. Adding a sync before and after RMW fixes the issue:
+> 
+> Witnesses
+> Positive: 9 Negative: 0
+> Condition ~exists (0:r7=0 /\ 1:r7=0)
+> Observation SB+atomic_add+fetch Never 0 9
+> 
+> [1] https://www.kernel.org/doc/Documentation/memory-barriers.txt
+> [2] https://www.kernel.org/doc/Documentation/atomic_t.txt
+> 
+> Fixes: 65112709115f ("powerpc/bpf/64: add support for BPF_ATOMIC bitwise operations")
+> Signed-off-by: Puranjay Mohan <puranjay@kernel.org>
 
-...
+Acked-by: Paul E. McKenney <paulmck@kernel.org>
 
-> diff --git a/tools/testing/selftests/x86/test_syscall_vdso.c b/tools/testing/selftests/x86/test_syscall_vdso.c
-> index 8965c311bd65..5cd13279bba5 100644
-> --- a/tools/testing/selftests/x86/test_syscall_vdso.c
-> +++ b/tools/testing/selftests/x86/test_syscall_vdso.c
-> @@ -8,10 +8,6 @@
->   * Can be built statically:
->   * gcc -Os -Wall -static -m32 test_syscall_vdso.c thunks_32.S
->   */
-> -#undef _GNU_SOURCE
-> -#define _GNU_SOURCE 1
-> -#undef __USE_GNU
-> -#define __USE_GNU 1
-
-AFAICT, manually defining __USE_GNU is frowned upon, so I'm guessing the __USE_GNU
-stuff is just the result of misguided copy+paste.  But it would be nice to get
-confirmation that this test isn't doing something clever.  Or at the very least,
-explain the removal of __USE_GNU in the changelog.
-
->  #include <unistd.h>
->  #include <stdlib.h>
->  #include <string.h>
+> ---
+> Changes in v1 -> v2:
+> v1: https://lore.kernel.org/all/20240507175439.119467-1-puranjay@kernel.org/
+> - Don't emit `sync` for non-SMP kernels as that adds unessential overhead.
+> ---
+>  arch/powerpc/net/bpf_jit_comp32.c | 12 ++++++++++++
+>  arch/powerpc/net/bpf_jit_comp64.c | 12 ++++++++++++
+>  2 files changed, 24 insertions(+)
+> 
+> diff --git a/arch/powerpc/net/bpf_jit_comp32.c b/arch/powerpc/net/bpf_jit_comp32.c
+> index 2f39c50ca729..0318b83f2e6a 100644
+> --- a/arch/powerpc/net/bpf_jit_comp32.c
+> +++ b/arch/powerpc/net/bpf_jit_comp32.c
+> @@ -853,6 +853,15 @@ int bpf_jit_build_body(struct bpf_prog *fp, u32 *image, u32 *fimage, struct code
+>  			/* Get offset into TMP_REG */
+>  			EMIT(PPC_RAW_LI(tmp_reg, off));
+>  			tmp_idx = ctx->idx * 4;
+> +			/*
+> +			 * Enforce full ordering for operations with BPF_FETCH by emitting a 'sync'
+> +			 * before and after the operation.
+> +			 *
+> +			 * This is a requirement in the Linux Kernel Memory Model.
+> +			 * See __cmpxchg_u64() in asm/cmpxchg.h as an example.
+> +			 */
+> +			if (imm & BPF_FETCH && IS_ENABLED(CONFIG_SMP))
+> +				EMIT(PPC_RAW_SYNC());
+>  			/* load value from memory into r0 */
+>  			EMIT(PPC_RAW_LWARX(_R0, tmp_reg, dst_reg, 0));
+>  
+> @@ -905,6 +914,9 @@ int bpf_jit_build_body(struct bpf_prog *fp, u32 *image, u32 *fimage, struct code
+>  
+>  			/* For the BPF_FETCH variant, get old data into src_reg */
+>  			if (imm & BPF_FETCH) {
+> +				/* Emit 'sync' to enforce full ordering */
+> +				if (IS_ENABLED(CONFIG_SMP))
+> +					EMIT(PPC_RAW_SYNC());
+>  				EMIT(PPC_RAW_MR(ret_reg, ax_reg));
+>  				if (!fp->aux->verifier_zext)
+>  					EMIT(PPC_RAW_LI(ret_reg - 1, 0)); /* higher 32-bit */
+> diff --git a/arch/powerpc/net/bpf_jit_comp64.c b/arch/powerpc/net/bpf_jit_comp64.c
+> index 79f23974a320..9a077f8acf7b 100644
+> --- a/arch/powerpc/net/bpf_jit_comp64.c
+> +++ b/arch/powerpc/net/bpf_jit_comp64.c
+> @@ -804,6 +804,15 @@ int bpf_jit_build_body(struct bpf_prog *fp, u32 *image, u32 *fimage, struct code
+>  			/* Get offset into TMP_REG_1 */
+>  			EMIT(PPC_RAW_LI(tmp1_reg, off));
+>  			tmp_idx = ctx->idx * 4;
+> +			/*
+> +			 * Enforce full ordering for operations with BPF_FETCH by emitting a 'sync'
+> +			 * before and after the operation.
+> +			 *
+> +			 * This is a requirement in the Linux Kernel Memory Model.
+> +			 * See __cmpxchg_u64() in asm/cmpxchg.h as an example.
+> +			 */
+> +			if (imm & BPF_FETCH && IS_ENABLED(CONFIG_SMP))
+> +				EMIT(PPC_RAW_SYNC());
+>  			/* load value from memory into TMP_REG_2 */
+>  			if (size == BPF_DW)
+>  				EMIT(PPC_RAW_LDARX(tmp2_reg, tmp1_reg, dst_reg, 0));
+> @@ -865,6 +874,9 @@ int bpf_jit_build_body(struct bpf_prog *fp, u32 *image, u32 *fimage, struct code
+>  			PPC_BCC_SHORT(COND_NE, tmp_idx);
+>  
+>  			if (imm & BPF_FETCH) {
+> +				/* Emit 'sync' to enforce full ordering */
+> +				if (IS_ENABLED(CONFIG_SMP))
+> +					EMIT(PPC_RAW_SYNC());
+>  				EMIT(PPC_RAW_MR(ret_reg, _R0));
+>  				/*
+>  				 * Skip unnecessary zero-extension for 32-bit cmpxchg.
+> -- 
+> 2.42.0
+> 
 
