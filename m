@@ -1,164 +1,177 @@
-Return-Path: <bpf+bounces-29112-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-29113-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6AC488C0405
-	for <lists+bpf@lfdr.de>; Wed,  8 May 2024 20:02:31 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7592B8C040F
+	for <lists+bpf@lfdr.de>; Wed,  8 May 2024 20:03:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2708328ABA6
-	for <lists+bpf@lfdr.de>; Wed,  8 May 2024 18:02:30 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DE4911F260BB
+	for <lists+bpf@lfdr.de>; Wed,  8 May 2024 18:03:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C9E2112BF28;
-	Wed,  8 May 2024 18:02:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 88D1D12E1C1;
+	Wed,  8 May 2024 18:03:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="nByua/OS"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="DUGEar/2"
 X-Original-To: bpf@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.16])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed1-f53.google.com (mail-ed1-f53.google.com [209.85.208.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF434128383;
-	Wed,  8 May 2024 18:02:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.16
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3ADEE12BF28
+	for <bpf@vger.kernel.org>; Wed,  8 May 2024 18:03:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715191341; cv=none; b=MYP4W9yiCygVkUbHMIpRP5+rIy4zHPSV7VRusg8k2UupAdxG1RSjivExYaQAPuxJ85YxiEsy0gOYfpD80VEdH6pl9yVoDsHaOEx6xw6XOccZ+SBeNq3B6P6mDaiFmX/0XGnhNv2mtLMTW73Icb4LnqlmMHMJ8gG+cIaDgqvJU9c=
+	t=1715191421; cv=none; b=Mjf3XCGQDI02SHweCROJGRMD5UEKQ5Dab26FTT1+T5JZuRVOKb8ryawBFDB7gkK74RAk4NTR+lt34OIScK7WBbuwyrFAzgTULGBwm467SffgXh1ZhjjVN/bKxFdQfJD0ssvvsKAGBHM4wtyOu+7yVii2LJYUIq2Kji8cX4p5V8Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715191341; c=relaxed/simple;
-	bh=sY9CUVNAfqtE1KTKFXhbixYNH/fSPbF+uxQ9ZNfixXU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=h32/SwuIIe1utHXnld2V50IZc8aLH5Xwi+9VYPrbOIDwwdVzn14Gp15nVYZxVro5N+DrWVIlLkvPdO2Qiq1NgqArtpo+IVJRjO0vSrbGxXzlfqMLIsuLFiHzuRrRuvlk7YnYCqA4jKyL+QRaZ/Jx77l/3EzeyY4DjlzLl6IPE2c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=nByua/OS; arc=none smtp.client-ip=198.175.65.16
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1715191340; x=1746727340;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=sY9CUVNAfqtE1KTKFXhbixYNH/fSPbF+uxQ9ZNfixXU=;
-  b=nByua/OSqFS1XTHfLox3SzmttP7PcTOsPoZFi4aPbu4cqFwwldqv2qFD
-   /tce95IRpmkOXvdNuFV1IXNqYHuobmkaINzLWpzAkSF4/Sl7u9nP2eB8T
-   vW4hoE+Z7QvTZYaJ3z/coCfZSUqHwiS5286H03OAUpWNVVUMYrKf0fEZC
-   PYOqVHdmiS1oKFczSYzzbQ7bps2R/u1qFOZ39X+pS6GPuB9X4vMdg/Gnf
-   IP0eysdKWsQPtIjdljx4C16TwGX+3rZQZFc8OlF4+z39welqE4qnmCcI7
-   qQFyl2LGGyFmMDknWyDuX8bx6sZoFjTqgqQqXl33048MKhbZvc7e0mrF2
-   Q==;
-X-CSE-ConnectionGUID: rMde/ajmQOSX86PgS9JgnA==
-X-CSE-MsgGUID: YBpmEqxrRtmhRAOqgur+LA==
-X-IronPort-AV: E=McAfee;i="6600,9927,11067"; a="11200205"
-X-IronPort-AV: E=Sophos;i="6.08,145,1712646000"; 
-   d="scan'208";a="11200205"
-Received: from fmviesa009.fm.intel.com ([10.60.135.149])
-  by orvoesa108.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 May 2024 11:02:12 -0700
-X-CSE-ConnectionGUID: 5Dud2CDiTOGfUDUU5xzjrw==
-X-CSE-MsgGUID: NAOZO05YTjKchJ/XBg4Rsg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.08,145,1712646000"; 
-   d="scan'208";a="28944992"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmviesa009.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 May 2024 11:02:08 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-	(envelope-from <andriy.shevchenko@linux.intel.com>)
-	id 1s4lcD-00000005X4F-1ef0;
-	Wed, 08 May 2024 21:02:05 +0300
-Date: Wed, 8 May 2024 21:02:05 +0300
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Jacob Keller <jacob.e.keller@intel.com>
-Cc: "Loktionov, Aleksandr" <aleksandr.loktionov@intel.com>,
-	"Lobakin, Aleksander" <aleksander.lobakin@intel.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Jesper Dangaard Brouer <hawk@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	"netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-	Richard Cochran <richardcochran@gmail.com>,
-	John Fastabend <john.fastabend@gmail.com>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	Eric Dumazet <edumazet@google.com>,
-	"intel-wired-lan@lists.osuosl.org" <intel-wired-lan@lists.osuosl.org>,
-	Jakub Kicinski <kuba@kernel.org>,
-	"Nguyen, Anthony L" <anthony.l.nguyen@intel.com>,
-	"bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	"David S. Miller" <davem@davemloft.net>
-Subject: Re: [Intel-wired-lan] [PATCH net-next v1 1/1] net: intel: Use *-y
- instead of *-objs in Makefile
-Message-ID: <Zju-HVbo0lMsR6Ee@smile.fi.intel.com>
-References: <20240508132315.1121086-1-andriy.shevchenko@linux.intel.com>
- <6ac025de-9264-4510-ba7f-f9a56c564a80@intel.com>
- <ZjuLW8jA3MuT0oih@smile.fi.intel.com>
- <5ab7ae5c-79d2-494e-8986-d18d4a8e74bb@intel.com>
- <4038b9d4-6618-46cc-bed8-a0ccd1c92cd2@intel.com>
- <SJ0PR11MB5866F14FA9B7D02BC97942F5E5E52@SJ0PR11MB5866.namprd11.prod.outlook.com>
- <18a6a31f-bccb-4d96-8503-1d80b5eb32e2@intel.com>
+	s=arc-20240116; t=1715191421; c=relaxed/simple;
+	bh=QnIGcOGbV4cqrx4Nx/huveAV3Zfk93aDR5GKJzn4mog=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=KmCKqt78tvFD/eQgKE+Ql+GV+fGXYC9jXvzh6T7rDJD7LczEeqmYzn/Zissx9Pet7LfA2NK44FXtLQwClHJqXj0R5AMqRNg/Ivz/rcna0jTppeAJHcFUJpbL+ya1PGYRtMvkRdHVe1mWaxUmeDJAMV2wbz882gp+QZ6gLrNDYQo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=DUGEar/2; arc=none smtp.client-ip=209.85.208.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ed1-f53.google.com with SMTP id 4fb4d7f45d1cf-572a1b3d6baso1727a12.1
+        for <bpf@vger.kernel.org>; Wed, 08 May 2024 11:03:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1715191416; x=1715796216; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=NKy0w8SAVZYo27FpU6ZBovVv7b8KWTwyUtyfvoxHua4=;
+        b=DUGEar/2Azn7Sk1QTNCuUDEulN/0fZl9vXB5hOQzu0/nOgrwg4fZf52/mToQDVM8qK
+         jiUsdPGqqUwvZzc5u0l9202dIYL0q+IMe7xxZmBhlXB3J5eRzxWX0fftblZOgWkxI+we
+         9XD++0LEzvNluWOsumBz40KWlPtxbPjPC1kf6Ok4aTOZesZCMqDyE4i2PbM2TmRkV77y
+         fnpSfFLerzM3rn5+E4gNgR7DEPJhXlLQCIGbBmOfFDZ+yXafG5xPNT3IZJeGT7IZdJGj
+         zytDYAaO/LVJKWnOCxxOJKkQXzbNcmOYPnzY1vzpXmWU5IB7rQ0/IA1p+LCrYBo48PLP
+         biFA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1715191416; x=1715796216;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=NKy0w8SAVZYo27FpU6ZBovVv7b8KWTwyUtyfvoxHua4=;
+        b=slML1nYzrh3o1+aWsgwrVbOaYWHbjlexZwvgTlT4E2ZYxJaNFo+eH3f8GSC46zSwFL
+         ynn9zONCS5CxL6sr9EXnBkG6uofWjwC98sXbXSyl7L0cBciNowjgKGBPjZHBQF/RyoZv
+         SHQDRgTVVr2is6KuY1haDlJtUD6nKyLcb+/SP1SN0MG3vkgWqs7+qngEYRPKtbHGVCz4
+         r3dvprpjGcpxHiVz75aQw5xHiQUQMrDTERq4xu7WZjWdHSYziM5oz0XjN60nJKat79ZC
+         DlVuaaGn5haVEkQ9KybMDWdmQO87vCVm+2l3W2dflU1RYSdN1E2LfoUgRy2X7djDcVNv
+         XGTg==
+X-Forwarded-Encrypted: i=1; AJvYcCWREBtxOTHrKmHft5d43hy/Jr2qHOyXXX8PB2tcSlovCWmp2Uf8f5q3woRjgkxoqC3AA6jVCE5Jgk3P8IjZ1ZM8Coia
+X-Gm-Message-State: AOJu0YxQQQcKg/yGrMC0HdNjAHDRbOvBCQz8Kajaklt253m9FyTFygwO
+	Ldi31Jt7uJC2ZkzsWuehpTYtTR8337pwFZXvldkd9TPU7cJq8NnYbtsmPH/F4j0QoK3G9RmVo+A
+	gPtisn+eZ9Me4lGTP15yMc5CKr2krBhRmP9Im
+X-Google-Smtp-Source: AGHT+IFdyxKHKBA5RxjNJeg0nvw+PuOv0TpVA43qYYBbq4FC0UUJLuiCzYnH7rV9IAgiFwYJSHM5Q/yPLhYa7GrUbHY=
+X-Received: by 2002:a05:6402:1763:b0:572:554b:ec66 with SMTP id
+ 4fb4d7f45d1cf-57334b922acmr1088a12.3.1715191416289; Wed, 08 May 2024 11:03:36
+ -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <18a6a31f-bccb-4d96-8503-1d80b5eb32e2@intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <20240507214254.2787305-1-edliaw@google.com> <ZjuA3aY_iHkjP7bQ@google.com>
+In-Reply-To: <ZjuA3aY_iHkjP7bQ@google.com>
+From: Edward Liaw <edliaw@google.com>
+Date: Wed, 8 May 2024 11:03:07 -0700
+Message-ID: <CAG4es9V1578h2EgpztcoEv3CPGftbgA+HNfhgaPxBqOxP6-CrQ@mail.gmail.com>
+Subject: Re: [PATCH v2 0/5] Define _GNU_SOURCE for sources using
+To: Sean Christopherson <seanjc@google.com>
+Cc: shuah@kernel.org, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, 
+	Takashi Iwai <tiwai@suse.com>, Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, 
+	Nhat Pham <nphamcs@gmail.com>, Johannes Weiner <hannes@cmpxchg.org>, 
+	Christian Brauner <brauner@kernel.org>, Eric Biederman <ebiederm@xmission.com>, 
+	Kees Cook <keescook@chromium.org>, OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>, 
+	Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, 
+	Peter Zijlstra <peterz@infradead.org>, Darren Hart <dvhart@infradead.org>, 
+	Davidlohr Bueso <dave@stgolabs.net>, =?UTF-8?Q?Andr=C3=A9_Almeida?= <andrealmeid@igalia.com>, 
+	Jiri Kosina <jikos@kernel.org>, Benjamin Tissoires <bentiss@kernel.org>, Jason Gunthorpe <jgg@ziepe.ca>, 
+	Kevin Tian <kevin.tian@intel.com>, Andy Lutomirski <luto@amacapital.net>, 
+	Will Drewry <wad@chromium.org>, Marc Zyngier <maz@kernel.org>, Oliver Upton <oliver.upton@linux.dev>, 
+	James Morse <james.morse@arm.com>, Suzuki K Poulose <suzuki.poulose@arm.com>, 
+	Zenghui Yu <yuzenghui@huawei.com>, Paolo Bonzini <pbonzini@redhat.com>, 
+	Anup Patel <anup@brainfault.org>, Atish Patra <atishp@atishpatra.org>, 
+	Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, 
+	Albert Ou <aou@eecs.berkeley.edu>, Christian Borntraeger <borntraeger@linux.ibm.com>, 
+	Janosch Frank <frankja@linux.ibm.com>, Claudio Imbrenda <imbrenda@linux.ibm.com>, 
+	David Hildenbrand <david@redhat.com>, =?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@digikod.net>, 
+	Paul Moore <paul@paul-moore.com>, James Morris <jmorris@namei.org>, 
+	"Serge E. Hallyn" <serge@hallyn.com>, Andrew Morton <akpm@linux-foundation.org>, 
+	Seth Forshee <sforshee@kernel.org>, Bongsu Jeon <bongsu.jeon@samsung.com>, 
+	"David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+	Steffen Klassert <steffen.klassert@secunet.com>, Herbert Xu <herbert@gondor.apana.org.au>, 
+	=?UTF-8?Q?Andreas_F=C3=A4rber?= <afaerber@suse.de>, 
+	Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>, Matthieu Baerts <matttbe@kernel.org>, 
+	Mat Martineau <martineau@kernel.org>, Geliang Tang <geliang@kernel.org>, 
+	Willem de Bruijn <willemdebruijn.kernel@gmail.com>, Fenghua Yu <fenghua.yu@intel.com>, 
+	Reinette Chatre <reinette.chatre@intel.com>, 
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, "Paul E. McKenney" <paulmck@kernel.org>, 
+	Boqun Feng <boqun.feng@gmail.com>, Alexandre Belloni <alexandre.belloni@bootlin.com>, 
+	Jarkko Sakkinen <jarkko@kernel.org>, Dave Hansen <dave.hansen@linux.intel.com>, 
+	Muhammad Usama Anjum <usama.anjum@collabora.com>, linux-kernel@vger.kernel.org, 
+	linux-kselftest@vger.kernel.org, kernel-team@android.com, 
+	linux-sound@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+	linux-mm@kvack.org, linux-input@vger.kernel.org, iommu@lists.linux.dev, 
+	kvmarm@lists.linux.dev, kvm@vger.kernel.org, kvm-riscv@lists.infradead.org, 
+	linux-riscv@lists.infradead.org, linux-security-module@vger.kernel.org, 
+	linux-fsdevel@vger.kernel.org, netdev@vger.kernel.org, 
+	linux-actions@lists.infradead.org, mptcp@lists.linux.dev, 
+	linux-rtc@vger.kernel.org, linux-sgx@vger.kernel.org, bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, May 08, 2024 at 10:58:37AM -0700, Jacob Keller wrote:
-> On 5/8/2024 7:42 AM, Loktionov, Aleksandr wrote:
-> >> From: Alexander Lobakin <aleksander.lobakin@intel.com>
-> >> Date: Wed, 8 May 2024 16:39:21 +0200
-> >>> From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> >>> Date: Wed, 8 May 2024 17:25:31 +0300
-> >>>> On Wed, May 08, 2024 at 03:35:26PM +0200, Alexander Lobakin
-> >> wrote:
-> >>>>>> *-objs suffix is reserved rather for (user-space) host
-> >> programs
-> >>>>>> while usually *-y suffix is used for kernel drivers (although
-> >>>>>> *-objs works for that purpose for now).
-> >>>>>>
-> >>>>>> Let's correct the old usages of *-objs in Makefiles.
-> >>>>>
-> >>>>> Wait, I was sure I've seen somewhere that -objs is more new and
-> >>>>> preferred over -y.
-> >>>>
-> >>>> Then you are mistaken.
-> >>>>
-> >>>>> See recent dimlib comment where Florian changed -y to -objs for
-> >>>>> example.
-> >>>>
-> >>>> So does he :-)
-> >>>>
-> >>>>> Any documentation reference that -objs is for userspace and we
-> >>>>> should clearly use -y?
-> >>>>
-> >>>> Sure. Luckily it's documented in
-> >> Documentation/kbuild/makefiles.rst
-> >>>> "Composite Host Programs" (mind the meaning of the word
-> >> "host"!).
-> >>>
-> >>> Oh okay, I see. `-objs` is indeed only mentioned in the host
-> >> chapter.
-> >>
-> >> Reviewed-by: Alexander Lobakin <aleksander.lobakin@intel.com>
-> >>
-> >> Thanks,
-> >> Olek
-> > 
-> > Reviewed-by: Aleksandr Loktionov <aleksandr.loktionov@intel.com>
-> 
-> Yea, reading the makefiles.rst again, it does seem that -objs only is
-> intended for host programs. The fact that it works now is an accident.
-> Further use of -y is necessary as we also use module-$(CONFIG_SYMBOL) to
-> resolve cases where we only include the files if the configuration is set.
-> 
-> Makes sense to clean this up.
-> 
-> Reviewed-by: Jacob Keller <jacob.e.keller@intel.com>
+On Wed, May 8, 2024 at 6:47=E2=80=AFAM Sean Christopherson <seanjc@google.c=
+om> wrote:
+>
+> On Tue, May 07, 2024, Edward Liaw wrote:
+> > 809216233555 ("selftests/harness: remove use of LINE_MAX") introduced
+> > asprintf into kselftest_harness.h, which is a GNU extension and needs
+> > _GNU_SOURCE to either be defined prior to including headers or with the
+> > -D_GNU_SOURCE flag passed to the compiler.
+> >
+> > v1: https://lore.kernel.org/linux-kselftest/20240430235057.1351993-1-ed=
+liaw@google.com/
+> > v2: add -D_GNU_SOURCE to KHDR_INCLUDES so that it is in a single
+> > location.  Remove #define _GNU_SOURCE from source code to resolve
+> > redefinition warnings.
+> >
+> > Edward Liaw (5):
+> >   selftests: Compile kselftest headers with -D_GNU_SOURCE
+> >   selftests/sgx: Include KHDR_INCLUDES in Makefile
+> >   selftests: Include KHDR_INCLUDES in Makefile
+> >   selftests: Drop define _GNU_SOURCE
+> >   selftests: Drop duplicate -D_GNU_SOURCE
+>
+> Can you rebase this on top of linux-next?  I have a conflicting fix[*] fo=
+r the
+> KVM selftests queued for 6.10, and I would prefer not to drop that commit=
+ at
+> this stage as it would require a rebase of a pile of other commits.
 
-Oops, just sent a v2 to address LKP findings. Can you look at it instead?
+Ok, I'll do that.
 
--- 
-With Best Regards,
-Andy Shevchenko
+>
+> And I doubt KVM is the only subsystem that has a targeted fix for the _GN=
+U_SOURCE
+> mess.
+>
+> If we want/need to get a fix into 6.9, then IMO we should just revert 809=
+216233555
+> ("selftests/harness: remove use of LINE_MAX"), as that came in quite late=
+ in the
+> 6.9 cycle, and I don't think it's feasible to be 100% confident that glob=
+ally
+> defining _GNU_SOURCE works for all selftests, i.e. we really should have =
+a full
+> cycle for folks to test.
 
+That sounds reasonable to me.  In this thread Tao suggested reverting
+back to 809216233555 and using a fixed value in place of LINE_MAX to
+fix 38c957f07038
+https://lore.kernel.org/linux-kselftest/20240508070003.2acdf9b4@kernel.org/
 
+>
+> [*] https://github.com/kvm-x86/linux/commit/730cfa45b5f4
 
