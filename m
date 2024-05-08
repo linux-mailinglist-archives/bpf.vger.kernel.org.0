@@ -1,166 +1,255 @@
-Return-Path: <bpf+bounces-29118-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-29119-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4F5C58C05A1
-	for <lists+bpf@lfdr.de>; Wed,  8 May 2024 22:28:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 25F308C05FA
+	for <lists+bpf@lfdr.de>; Wed,  8 May 2024 22:56:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0ABB2282F74
-	for <lists+bpf@lfdr.de>; Wed,  8 May 2024 20:28:32 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D1FF3283E7E
+	for <lists+bpf@lfdr.de>; Wed,  8 May 2024 20:56:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 26D0313119B;
-	Wed,  8 May 2024 20:28:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 22EF8131748;
+	Wed,  8 May 2024 20:56:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="NyX9IHCr"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZM2Ygu9x"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-f48.google.com (mail-ed1-f48.google.com [209.85.208.48])
+Received: from mail-pj1-f48.google.com (mail-pj1-f48.google.com [209.85.216.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D8B54130E2C
-	for <bpf@vger.kernel.org>; Wed,  8 May 2024 20:28:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2F1F821373
+	for <bpf@vger.kernel.org>; Wed,  8 May 2024 20:56:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715200092; cv=none; b=OIytqX0rESlAudyyKexgHM+zrGIb172w7vRVJqABWxb9w8kKvL1uzwpY8SLhFgyzj88WoITzWLCNupVIh+eBwKW6XGTtqBsz7J24YazAsALXRA06qhXvYlBz4lUYWqZUwQ8Frc6zcDRqbAimwon+1jWL7xnz8LraZXWlQ7/WCN0=
+	t=1715201775; cv=none; b=kIMDhSAIaKvPZX8NwMdPyhxhkJkpmXze+YGy4Mf7Ldb0dyBaXWXC5zU3/+Cd5NryFBL8+ioEUcwnbtUCxwd8fbYFILpxZiqFPl9PhtDEATQvoGDXKmfja7dGSlrFNzBWhBmcu98lj7i6HysnvDEnEQSceeE7ZbvgV2TnO6KB4S4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715200092; c=relaxed/simple;
-	bh=o2NLQhPztuDZ4rTiTDFMEINRFzrqOs93EXYAp0RXtiY=;
+	s=arc-20240116; t=1715201775; c=relaxed/simple;
+	bh=b9HPaW5nDrZIXPldvrCkOIVenhM2XhXfrhxFIbonza0=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=BloAhkzIGIGhSC2JAhxbO7ifaxq8lQ+3l/MDIesiyy3eG4cbMkxzaZOvTLfgrxsuiJKiI3LpuKSGB451m3gl5pdoCcWmLLG8YygAcq9jN07UmnMLSnQ23L4UrnzajB6VoiHBxAJ6g9dRfbmy4KVbCoaVrqEP7A7csGtFsIl5Wn8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=NyX9IHCr; arc=none smtp.client-ip=209.85.208.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ed1-f48.google.com with SMTP id 4fb4d7f45d1cf-572a1b3d6baso745a12.1
-        for <bpf@vger.kernel.org>; Wed, 08 May 2024 13:28:09 -0700 (PDT)
+	 To:Cc:Content-Type; b=cil/RjyfsHFrW/2f52gXMGsFoNuh6gZx/r8/oJewKyz35zqxalutjnkJfpwjkj+BeKgL+7UQn9hx2N3JP/EEM5mev7XLtAzBRwLhBI5JZX9VSs7SNP78Gqkf1ArM8Gtzw/4XGz6bDQ2xpGUFEcZmf8apYmr2DfPTpRYiQrjEJgQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ZM2Ygu9x; arc=none smtp.client-ip=209.85.216.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f48.google.com with SMTP id 98e67ed59e1d1-2b4952a1b51so199494a91.0
+        for <bpf@vger.kernel.org>; Wed, 08 May 2024 13:56:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1715200088; x=1715804888; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1715201773; x=1715806573; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=VxBCT1ZV/EGWLKjxVs7FXcKu7sqjJfkKsVJ1w+mU1+0=;
-        b=NyX9IHCrSC9Je83Z/MnO8GwYzmpBLZE12Oh7P0WFKvTalU2Ciei+SR4yfrdbmQXps+
-         uWt/vjgQ+p0u6FKAcDDdqRciXtxpn1eAn1RRbxJrfD7/D6dUWWiyHNmgyOHtkeETq02t
-         YGSf7tHygxWbjyaDE4tFQH/tNyN+kiFydGC4Sf/vS3eO7m6sUlailV45R5eKKxcUYq0J
-         aW/UI7mnxqPAUJ+IEgeMuC8o5GtFG8x1++zBxQVDeD5vc9pjheIIRF7IN7vbtVWA/fD2
-         KDdFmbJEMXi4XdMUBM8YFeX7KpKa9V5dExWXQepqMrbkr5Fy3psYGVyoCv4bI3hNGEoQ
-         uD6Q==
+        bh=iV2vPrp9sgO2YTf3r3uL/WZAEXZbq0eq8z3N+IGKRWY=;
+        b=ZM2Ygu9xCot+JbZF7rYRP34LrE8jHr6e9aVxZp/CYKdEWdWCnBfrGV8EYAcG6MC0Q6
+         gGPbiw31oCgL8kFPtaMnvAxjkhHJMblGnb41g7IHwSoavZ0nWcVAzV/aYWdjIT5FW1Ig
+         cZZm7f7J7yylwxTiAjxn0Q9Gk9zaEs24jtQfuGEGd5Ll98/MVphz8JfMRmQmxRxl6zYy
+         3GefYJIlQ/dJrxKiZKCN7qriSA8izbfislwaq3dOcb9SNpevTjsu2UMlPETGWNcmqGTK
+         KRvsZzhoOp1G6TB27QKu+n+8WknRNgq4qtjdmg/a1rKGMZ97bIs/6SgmUPRGViOb00dE
+         t4JA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1715200088; x=1715804888;
+        d=1e100.net; s=20230601; t=1715201773; x=1715806573;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=VxBCT1ZV/EGWLKjxVs7FXcKu7sqjJfkKsVJ1w+mU1+0=;
-        b=dZWyVhOkzbZkCot1+MLr2BbFZbu9K8ng2v4nNUoUV7pFnKgo8m8rsH41Lfj22kQWJ8
-         oBWVpMMWniM1pqQSs4pkqKML+XjF04S3SCtwUVuHwxjSGBpko4ipHj9orY5/+PdtdeCv
-         kbLDsaijYz0a62zq3TeizdBkmwQXV/IHDBPQ3pNzmsMNo5f9uM3VViiNyZjl4aX7d9Wz
-         qq6GsqGsfVyym9mC3OGrRirvmU+KVb4lkmvmhnEcFibZcL3txG49nonSxdy/zu2CdB40
-         nbhV5zdoTY96Sk+SnQRhkV1sfH6rXpPbn3qfNAjE60ae2CgIe3iIAMR7lWoO31ao7FRo
-         UFqQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWxChNu39kGIiSvXYBFgKhIeWBrF5FGpnClYPJHlhFn6KMUGxnQVElRgGn6d9KoHfEv64koF3NXW3NFqUpNrPbn8wZC
-X-Gm-Message-State: AOJu0YzlJblHqKXyJBVdO3DgdiLjYRIshOEAWtXtuNyD3HofSeWNkwTt
-	vAH5QfDEOV+/XJs8mLk27ojmodgIKj6e0cuPRmuWYip0IAFBa3xE+31gacqNbyn5NLdtpYCPGgc
-	PqUEUIcHZDjlp5160PKmVzSO7wtatu4/F5NMY
-X-Google-Smtp-Source: AGHT+IG0Nkg3RjjAAyj+n+Ew0xyy8RnKsH20og6+OrFEWYycNhxXEo9VK176FECewK/2EQxZ5XFepnMJQqWDZY6gYdE=
-X-Received: by 2002:a05:6402:228b:b0:572:a33d:437f with SMTP id
- 4fb4d7f45d1cf-573341614e1mr44879a12.2.1715200087751; Wed, 08 May 2024
- 13:28:07 -0700 (PDT)
+        bh=iV2vPrp9sgO2YTf3r3uL/WZAEXZbq0eq8z3N+IGKRWY=;
+        b=ITfp3oSu6pb4ZkUWPJExyD3ycnXNDtsuX2MN2N76XpQRgeAcbda9Tw8ocbQUmAERJH
+         ciyrhtdgPC0DmBgHKNOHOeZWfIYhp1R/aPcVLWfzJbmxqPzWiXTWkKqbDTuP5AjTVjwm
+         hjJKWG+XXBBJnpV06Z1/n2Wk6cGgCTDiFsWkBsYN89kHNyzsQVQ6Uo5UjLWv4M/ZTZ6K
+         QQUli+4KlPHoxfg1tXUgOLXONzATWyTIjnxTqe0QhG2Im9eD0azR+UD325eKYh6N+Vzl
+         fOZya3XQsmw074J74yvutlipmpQbcG8T7lwAc0fmvxrryO00fTxGKnhJv56uKRYG243t
+         s8og==
+X-Gm-Message-State: AOJu0Yy2XkwZ2529Qs8pEU6Zx280ZdWn5Bkc7mEUT/NUQuPPnX6uxV3r
+	Wb06DJE5YLcQ8DnReD7ZH6XvDizaTYAQ744tSCmZWze/i5oPpqc0UdRlTB3OK08a1IKay8MzYmh
+	EJ8vCdbRlliz+CLz/q/3qAybJ/n0=
+X-Google-Smtp-Source: AGHT+IH0YzgCeSUsncWCu/p4QbohIjG1nydrcvqrYBOfElzGLWKflOcFWz0n5H/yZukd78lQBjBUZOSnH1JGJNmCxIc=
+X-Received: by 2002:a17:90a:ac03:b0:2b5:6d47:9e12 with SMTP id
+ 98e67ed59e1d1-2b61639c8a6mr3498622a91.2.1715201773337; Wed, 08 May 2024
+ 13:56:13 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240507214254.2787305-1-edliaw@google.com> <20240507214254.2787305-5-edliaw@google.com>
- <ZjuEILj0SZRuTL9I@google.com>
-In-Reply-To: <ZjuEILj0SZRuTL9I@google.com>
-From: Edward Liaw <edliaw@google.com>
-Date: Wed, 8 May 2024 13:27:39 -0700
-Message-ID: <CAG4es9VWuY4Z5HoU_SQCDaSrDC0s1knDfGvLNEa1YxhC0RZ2ZQ@mail.gmail.com>
-Subject: Re: [PATCH v2 4/5] selftests: Drop define _GNU_SOURCE
-To: Sean Christopherson <seanjc@google.com>
-Cc: shuah@kernel.org, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, 
-	Takashi Iwai <tiwai@suse.com>, Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, 
-	Nhat Pham <nphamcs@gmail.com>, Johannes Weiner <hannes@cmpxchg.org>, 
-	Christian Brauner <brauner@kernel.org>, Eric Biederman <ebiederm@xmission.com>, 
-	Kees Cook <keescook@chromium.org>, OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>, 
-	Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, 
-	Peter Zijlstra <peterz@infradead.org>, Darren Hart <dvhart@infradead.org>, 
-	Davidlohr Bueso <dave@stgolabs.net>, =?UTF-8?Q?Andr=C3=A9_Almeida?= <andrealmeid@igalia.com>, 
-	Jiri Kosina <jikos@kernel.org>, Benjamin Tissoires <bentiss@kernel.org>, Jason Gunthorpe <jgg@ziepe.ca>, 
-	Kevin Tian <kevin.tian@intel.com>, Andy Lutomirski <luto@amacapital.net>, 
-	Will Drewry <wad@chromium.org>, Marc Zyngier <maz@kernel.org>, Oliver Upton <oliver.upton@linux.dev>, 
-	James Morse <james.morse@arm.com>, Suzuki K Poulose <suzuki.poulose@arm.com>, 
-	Zenghui Yu <yuzenghui@huawei.com>, Paolo Bonzini <pbonzini@redhat.com>, 
-	Anup Patel <anup@brainfault.org>, Atish Patra <atishp@atishpatra.org>, 
-	Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, 
-	Albert Ou <aou@eecs.berkeley.edu>, Christian Borntraeger <borntraeger@linux.ibm.com>, 
-	Janosch Frank <frankja@linux.ibm.com>, Claudio Imbrenda <imbrenda@linux.ibm.com>, 
-	David Hildenbrand <david@redhat.com>, =?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@digikod.net>, 
-	Paul Moore <paul@paul-moore.com>, James Morris <jmorris@namei.org>, 
-	"Serge E. Hallyn" <serge@hallyn.com>, Andrew Morton <akpm@linux-foundation.org>, 
-	Seth Forshee <sforshee@kernel.org>, Bongsu Jeon <bongsu.jeon@samsung.com>, 
-	"David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
-	Steffen Klassert <steffen.klassert@secunet.com>, Herbert Xu <herbert@gondor.apana.org.au>, 
-	=?UTF-8?Q?Andreas_F=C3=A4rber?= <afaerber@suse.de>, 
-	Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>, Matthieu Baerts <matttbe@kernel.org>, 
-	Mat Martineau <martineau@kernel.org>, Geliang Tang <geliang@kernel.org>, 
-	Willem de Bruijn <willemdebruijn.kernel@gmail.com>, Fenghua Yu <fenghua.yu@intel.com>, 
-	Reinette Chatre <reinette.chatre@intel.com>, 
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, "Paul E. McKenney" <paulmck@kernel.org>, 
-	Boqun Feng <boqun.feng@gmail.com>, Alexandre Belloni <alexandre.belloni@bootlin.com>, 
-	Jarkko Sakkinen <jarkko@kernel.org>, Dave Hansen <dave.hansen@linux.intel.com>, 
-	Muhammad Usama Anjum <usama.anjum@collabora.com>, linux-kernel@vger.kernel.org, 
-	linux-kselftest@vger.kernel.org, kernel-team@android.com, 
-	linux-sound@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
-	linux-mm@kvack.org, linux-input@vger.kernel.org, iommu@lists.linux.dev, 
-	kvmarm@lists.linux.dev, kvm@vger.kernel.org, kvm-riscv@lists.infradead.org, 
-	linux-riscv@lists.infradead.org, linux-security-module@vger.kernel.org, 
-	linux-fsdevel@vger.kernel.org, netdev@vger.kernel.org, 
-	linux-actions@lists.infradead.org, mptcp@lists.linux.dev, 
-	linux-rtc@vger.kernel.org, linux-sgx@vger.kernel.org, bpf@vger.kernel.org
+References: <20240508154145.236420-1-cupertino.miranda@oracle.com>
+In-Reply-To: <20240508154145.236420-1-cupertino.miranda@oracle.com>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Wed, 8 May 2024 13:56:01 -0700
+Message-ID: <CAEf4BzZDp3jt0eOPOh8m7XGAypiMHtPFss4-deOKViTHCe+h1g@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] selftests/bpf: Fix a few tests for GCC related warnings.
+To: Cupertino Miranda <cupertino.miranda@oracle.com>
+Cc: bpf@vger.kernel.org, jose.marchesi@oracle.com, david.faust@oracle.com, 
+	Yonghong Song <yonghong.song@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, May 8, 2024 at 6:54=E2=80=AFAM Sean Christopherson <seanjc@google.c=
-om> wrote:
+On Wed, May 8, 2024 at 8:57=E2=80=AFAM Cupertino Miranda
+<cupertino.miranda@oracle.com> wrote:
 >
-> On Tue, May 07, 2024, Edward Liaw wrote:
-> > _GNU_SOURCE is provided by KHDR_INCLUDES, so it should be dropped to
-> > prevent _GNU_SOURCE redefined warnings.
+> This patch disables a few warnings to allow selftests to compile for
+> GCC.
 >
-> ...
+> -- progs/cpumask_failure.c --
 >
-> > diff --git a/tools/testing/selftests/x86/test_syscall_vdso.c b/tools/te=
-sting/selftests/x86/test_syscall_vdso.c
-> > index 8965c311bd65..5cd13279bba5 100644
-> > --- a/tools/testing/selftests/x86/test_syscall_vdso.c
-> > +++ b/tools/testing/selftests/x86/test_syscall_vdso.c
-> > @@ -8,10 +8,6 @@
-> >   * Can be built statically:
-> >   * gcc -Os -Wall -static -m32 test_syscall_vdso.c thunks_32.S
-> >   */
-> > -#undef _GNU_SOURCE
-> > -#define _GNU_SOURCE 1
-> > -#undef __USE_GNU
-> > -#define __USE_GNU 1
+> progs/bpf_misc.h:136:22: error: =E2=80=98cpumask=E2=80=99 is used uniniti=
+alized
+> [-Werror=3Duninitialized]
+>   136 | #define __sink(expr) asm volatile("" : "+g"(expr))
+>       |                      ^~~
+> progs/cpumask_failure.c:68:9: note: in expansion of macro =E2=80=98__sink=
+=E2=80=99
+>    68 |         __sink(cpumask);
 >
-> AFAICT, manually defining __USE_GNU is frowned upon, so I'm guessing the =
-__USE_GNU
-> stuff is just the result of misguided copy+paste.  But it would be nice t=
-o get
-> confirmation that this test isn't doing something clever.  Or at the very=
- least,
-> explain the removal of __USE_GNU in the changelog.
+> The macro __sink(cpumask) with the '+' contraint modifier forces the
+> the compieler to expect a read and write from cpumask. GCC detects
+> that cpumask is never initialized and reports an error.
 
-It looks like test_syscall_vdso, test_FCMOV, test_FCOMI, and
-test_FISTTP don't actually use any GNU extensions.  I'll add that to
-the commit message.
-
+this one seems like a legit unused variable that should just be removed.
 
 >
-> >  #include <unistd.h>
-> >  #include <stdlib.h>
-> >  #include <string.h>
+> -- progs/dynptr_fail.c --
+>
+> progs/dynptr_fail.c:1444:9: error: =E2=80=98ptr1=E2=80=99 may be used uni=
+nitialized
+> [-Werror=3Dmaybe-uninitialized]
+>  1444 |         bpf_dynptr_clone(&ptr1, &ptr2);
+>
+> Many of the tests in the file are related to the detection of
+> uninitialized pointers by the verifier. GCC is able to detect possible
+> uninititialized values, and reports this as an error.
+>
+
+We can do `struct bpf_dynptr ptr1 =3D {};` to satisfy compiler without
+affecting what the test is actually testing.
+
+Or at the very least, we should add those pragmas only around few
+affected functions, not for the entire file.
+
+
+I haven't looked at other cases, but let's take a step back a bit and
+see if existing code makes sense and whether GCC warnings are real and
+we should do something about them.
+
+pw-bot: cr
+
+> -- progs/test_tunnel_kern.c --
+>
+> progs/test_tunnel_kern.c:590:9: error: array subscript 1 is outside
+> array bounds of =E2=80=98struct geneve_opt[1]=E2=80=99 [-Werror=3Darray-b=
+ounds=3D]
+>   590 |         *(int *) &gopt.opt_data =3D bpf_htonl(0xdeadbeef);
+>       |         ^~~~~~~~~~~~~~~~~~~~~~~
+> progs/test_tunnel_kern.c:575:27: note: at offset 4 into object =E2=80=98g=
+opt=E2=80=99 of
+> size 4
+>   575 |         struct geneve_opt gopt;
+>
+> This tests accesses beyond the defined data for the struct geneve_opt
+> which contains as last field "u8 opt_data[0]" which clearly does not get
+> reserved space (in stack) in the function header. This pattern is
+> repeated in ip6geneve_set_tunnel and geneve_set_tunnel functions.
+> GCC is able to see this and emits a warning.
+>
+> -- progs/jeq_infer_not_null_fail.c --
+>
+> progs/jeq_infer_not_null_fail.c:21:40: error: array subscript =E2=80=98st=
+ruct
+> bpf_map[0]=E2=80=99 is partly outside array bounds of =E2=80=98struct <an=
+onymous>[1]=E2=80=99
+> [-Werror=3Darray-bounds=3D]
+>    21 |         struct bpf_map *inner_map =3D map->inner_map_meta;
+>       |                                        ^~
+> progs/jeq_infer_not_null_fail.c:14:3: note: object =E2=80=98m_hash=E2=80=
+=99 of size 32
+>    14 | } m_hash SEC(".maps");
+>
+> This example defines m_hash in the context of the compilation unit and
+> casts it to struct bpf_map which is much smaller than the size of struct
+> bpf_map. It errors out in GCC when it attempts to access an element that
+> would be defined in struct bpf_map outsize of the defined limits for
+> m_hash.
+>
+> This change was tested in bpf-next master selftests without any
+> regressions.
+>
+> Signed-off-by: Cupertino Miranda <cupertino.miranda@oracle.com>
+> Cc: jose.marchesi@oracle.com
+> Cc: david.faust@oracle.com
+> Cc: Yonghong Song <yonghong.song@linux.dev>
+> Cc: Eduard Zingerman <eddyz87@gmail.com>
+> ---
+>  tools/testing/selftests/bpf/progs/cpumask_failure.c         | 4 ++++
+>  tools/testing/selftests/bpf/progs/dynptr_fail.c             | 4 ++++
+>  tools/testing/selftests/bpf/progs/jeq_infer_not_null_fail.c | 4 ++++
+>  tools/testing/selftests/bpf/progs/test_tunnel_kern.c        | 4 ++++
+>  4 files changed, 16 insertions(+)
+>
+> diff --git a/tools/testing/selftests/bpf/progs/cpumask_failure.c b/tools/=
+testing/selftests/bpf/progs/cpumask_failure.c
+> index a9bf6ea336cf..56a6adb6cbbb 100644
+> --- a/tools/testing/selftests/bpf/progs/cpumask_failure.c
+> +++ b/tools/testing/selftests/bpf/progs/cpumask_failure.c
+> @@ -8,6 +8,10 @@
+>
+>  #include "cpumask_common.h"
+>
+> +#ifndef __clang__
+> +#pragma GCC diagnostic ignored "-Wuninitialized"
+> +#endif
+> +
+>  char _license[] SEC("license") =3D "GPL";
+>
+>  /* Prototype for all of the program trace events below:
+> diff --git a/tools/testing/selftests/bpf/progs/dynptr_fail.c b/tools/test=
+ing/selftests/bpf/progs/dynptr_fail.c
+> index 7ce7e827d5f0..9ceff0b5d143 100644
+> --- a/tools/testing/selftests/bpf/progs/dynptr_fail.c
+> +++ b/tools/testing/selftests/bpf/progs/dynptr_fail.c
+> @@ -10,6 +10,10 @@
+>  #include "bpf_misc.h"
+>  #include "bpf_kfuncs.h"
+>
+> +#ifndef __clang__
+> +#pragma GCC diagnostic ignored "-Wmaybe-uninitialized"
+> +#endif
+> +
+>  char _license[] SEC("license") =3D "GPL";
+>
+>  struct test_info {
+> diff --git a/tools/testing/selftests/bpf/progs/jeq_infer_not_null_fail.c =
+b/tools/testing/selftests/bpf/progs/jeq_infer_not_null_fail.c
+> index f46965053acb..4d619bea9c75 100644
+> --- a/tools/testing/selftests/bpf/progs/jeq_infer_not_null_fail.c
+> +++ b/tools/testing/selftests/bpf/progs/jeq_infer_not_null_fail.c
+> @@ -4,6 +4,10 @@
+>  #include <bpf/bpf_helpers.h>
+>  #include "bpf_misc.h"
+>
+> +#ifndef __clang__
+> +#pragma GCC diagnostic ignored "-Warray-bounds"
+> +#endif
+> +
+>  char _license[] SEC("license") =3D "GPL";
+>
+>  struct {
+> diff --git a/tools/testing/selftests/bpf/progs/test_tunnel_kern.c b/tools=
+/testing/selftests/bpf/progs/test_tunnel_kern.c
+> index 3e436e6f7312..806c16809a4c 100644
+> --- a/tools/testing/selftests/bpf/progs/test_tunnel_kern.c
+> +++ b/tools/testing/selftests/bpf/progs/test_tunnel_kern.c
+> @@ -13,6 +13,10 @@
+>  #include "bpf_kfuncs.h"
+>  #include "bpf_tracing_net.h"
+>
+> +#ifndef __clang__
+> +#pragma GCC diagnostic ignored "-Warray-bounds"
+> +#endif
+> +
+>  #define log_err(__ret) bpf_printk("ERROR line:%d ret:%d\n", __LINE__, __=
+ret)
+>
+>  #define VXLAN_UDP_PORT         4789
+> --
+> 2.39.2
+>
+>
 
