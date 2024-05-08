@@ -1,45 +1,46 @@
-Return-Path: <bpf+bounces-29124-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-29125-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1F3828C0641
-	for <lists+bpf@lfdr.de>; Wed,  8 May 2024 23:26:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 4A33E8C0642
+	for <lists+bpf@lfdr.de>; Wed,  8 May 2024 23:26:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CF5912814B8
-	for <lists+bpf@lfdr.de>; Wed,  8 May 2024 21:26:31 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 065B728410F
+	for <lists+bpf@lfdr.de>; Wed,  8 May 2024 21:26:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1EE5E131E43;
-	Wed,  8 May 2024 21:26:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 67DDC132489;
+	Wed,  8 May 2024 21:26:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="iBbBi7iC"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Lu/stqCp"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E995131BA5;
-	Wed,  8 May 2024 21:26:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB09612BF23;
+	Wed,  8 May 2024 21:26:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715203571; cv=none; b=dhGIomptxp2MkyeKKYqCIGqY9DKFfZaz0aY2a8+5Cw9otM5WitTfhhE8kg6Z+GITndBW+eyNAbnTI0x58jsBYEwE0vuwXLfntgXec8xUXcPGD1QvXWm9yfYH4VnlthhY8Y58+Q4ChUUcXInjn6S7TBx7KnXRS3sqyVh23Aih/Uw=
+	t=1715203575; cv=none; b=OgR/6ZHgtBBgLB+vGnP+bMvPHuR2Y0rZ1vmQmrCJdnQR5XnAtpnlNR47QFnx8DL0kz/KJAU6Ato6/ESky1sPJ61Xa9/bvurnl3ouyN32C8vK8n/j1VAhpFrEuehBDlXWvssvyv8OUIgPLcoyhdci0lsOaX5fsvg9+wnjzwS3T6c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715203571; c=relaxed/simple;
-	bh=jC4/tDWF+DXydkKwS4U4tonr/b7NgqdXz976VdA1gQw=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=QhdrP1UxYjCcnJ43uSwQMahyVEHyD3HDg9mwmitR4KKsbMNbplrciNwtkjwLU7ns4iYtMVhNioXEKwSvo0OKIJGuTtnu2kApmvO2XLLGAF4KgZkriA7ye/UUc6AAefNjAcUgYhS2SrMBTWrc0mgn7bZfsSN8WIp3elwIUyzS48w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=iBbBi7iC; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F2B91C2BD11;
-	Wed,  8 May 2024 21:26:10 +0000 (UTC)
+	s=arc-20240116; t=1715203575; c=relaxed/simple;
+	bh=PdIMsdaUCiSs4TuXIKskUpSJzvRucEq5dFDzB/EcSIQ=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=tanMLuMTEcp6zibjXv46vuv3lgT6ciqlXm2TYgoXgRu0BMnf8eUxgzPOFwh4+VYS4mudx8XtGAtmNKgx6WjH6b7Vj1jpnqR6JviWtWgz7uEO0mpbBnN1ON4zF6vPmBDgY8DgGn/zXwvjkU6F2vN/F1b1KzzGRX/5XgBxioNpHz4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Lu/stqCp; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3CF85C32781;
+	Wed,  8 May 2024 21:26:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1715203571;
-	bh=jC4/tDWF+DXydkKwS4U4tonr/b7NgqdXz976VdA1gQw=;
-	h=From:To:Cc:Subject:Date:From;
-	b=iBbBi7iCSjvumvPAFRmnIVnArDqj5xI5HxXKvnq91/VeCUZmyxxu13nioLy1MeiVq
-	 VRA4Bt9in7wFbXkhg74E9eLYnvp8Y92DLvAauwdEkt7LZmOlF8GGVOOk/EW5F4C8aQ
-	 f8hwuzzSX9g6Rou3v+u+SikOvoJu3MrlgXBWgkUOWbWs6bA661Qadwa/wJtQF9HG6/
-	 Up3T3h76j2Q8+XCCw0xuFLvY5/g62fTP16g8C7qRAXfcbxjiBlnD1cM4zEDWnq5yJo
-	 3Bq/w76pxM62dnxTVHCVs9X12kaol8M+CfiMGbPZ5K/GhrSV3kgayqe83bidMew8Mn
-	 MAnir3cFQugzA==
+	s=k20201202; t=1715203574;
+	bh=PdIMsdaUCiSs4TuXIKskUpSJzvRucEq5dFDzB/EcSIQ=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=Lu/stqCpGqXbJCbwBFZy/OhMMRDhP17FPPje8d87tprBaEoaifFfQ2HqPLhAl7V9W
+	 6VB0IpbY1wVitIp2XrhAay3JJJId2Kpb7QrTb0mCnqaVsn76s8vqBjpW15DVJMrhrd
+	 a14WBvvjkDdYLnmRJ4aILUj/szfYXudWBplpb+q9Mtv2Q+JqUnRMb6YJ9cn9OfGDs6
+	 jnHTHijCRNGTpXYG3uCnuTphVw679PZzD4jwaoBftl37PGipPEip2vsJ5eJBtdWLe7
+	 gR0+6y7dU0NKpC6sBJA6EKC3y1rOat+EBVH+FP3H7E8plRE6lxfwEsxFZg4ITYeBd7
+	 wZtSkwUruTuZg==
 From: Andrii Nakryiko <andrii@kernel.org>
 To: linux-trace-kernel@vger.kernel.org,
 	rostedt@goodmis.org,
@@ -52,10 +53,12 @@ Cc: x86@kernel.org,
 	rihams@fb.com,
 	linux-perf-users@vger.kernel.org,
 	Andrii Nakryiko <andrii@kernel.org>
-Subject: [PATCH 0/4] Fix user stack traces captured from uprobes
-Date: Wed,  8 May 2024 14:26:01 -0700
-Message-ID: <20240508212605.4012172-1-andrii@kernel.org>
+Subject: [PATCH 1/4] uprobes: rename get_trampoline_vaddr() and make it global
+Date: Wed,  8 May 2024 14:26:02 -0700
+Message-ID: <20240508212605.4012172-2-andrii@kernel.org>
 X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20240508212605.4012172-1-andrii@kernel.org>
+References: <20240508212605.4012172-1-andrii@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -64,50 +67,58 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-This patch set reports two issues with captured stack traces.
+This helper is needed in another file, so make it a bit more uniquely
+named and expose it internally.
 
-First issue, fixed in patch #2, deals with fixing up uretprobe trampoline
-addresses in captured stack trace. This issue happens when there are pending
-return probes, for which kernel hijacks some of the return addresses on user
-stacks. The code is matching those special uretprobe trampoline addresses with
-the list of pending return probe instances and replaces them with actual
-return addresses.
+Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+---
+ include/linux/uprobes.h | 1 +
+ kernel/events/uprobes.c | 6 +++---
+ 2 files changed, 4 insertions(+), 3 deletions(-)
 
-Second issue, which patch #3 is trying to fix with the help of heuristic, is
-having to do with capturing user stack traces in entry uprobes. At the very
-entrance to user function, frame pointer in rbp register is not yet setup, so
-actual caller return address is still pointed to by rsp. Patch is using
-a simple heuristic, looking for `push %rbp` instruction, to fetch this extra
-direct caller return address, before proceeding to unwind the stack using rbp.
-
-Consider this patch #3 an RFC, if there are better suggestions how this can be
-solved, I'd be happy to hear that.
-
-Patch #4 adds tests into BPF selftests, that validate that captured stack
-traces at various points is what we expect to get. This patch, while being BPF
-selftests, is isolated from any other BPF selftests changes and can go in
-through non-BPF tree without the risk of merge conflicts.
-
-Patches are based on latest linux-trace's probes/for-next branch.
-
-Andrii Nakryiko (4):
-  uprobes: rename get_trampoline_vaddr() and make it global
-  perf,uprobes: fix user stack traces in the presence of pending
-    uretprobes
-  perf,x86: avoid missing caller address in stack traces captured in
-    uprobe
-  selftests/bpf: add test validating uprobe/uretprobe stack traces
-
- arch/x86/events/core.c                        |  20 ++
- include/linux/uprobes.h                       |   3 +
- kernel/events/callchain.c                     |  42 +++-
- kernel/events/uprobes.c                       |  17 +-
- .../bpf/prog_tests/uretprobe_stack.c          | 185 ++++++++++++++++++
- .../selftests/bpf/progs/uretprobe_stack.c     |  96 +++++++++
- 6 files changed, 359 insertions(+), 4 deletions(-)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/uretprobe_stack.c
- create mode 100644 tools/testing/selftests/bpf/progs/uretprobe_stack.c
-
+diff --git a/include/linux/uprobes.h b/include/linux/uprobes.h
+index f46e0ca0169c..0c57eec85339 100644
+--- a/include/linux/uprobes.h
++++ b/include/linux/uprobes.h
+@@ -138,6 +138,7 @@ extern bool arch_uretprobe_is_alive(struct return_instance *ret, enum rp_check c
+ extern bool arch_uprobe_ignore(struct arch_uprobe *aup, struct pt_regs *regs);
+ extern void arch_uprobe_copy_ixol(struct page *page, unsigned long vaddr,
+ 					 void *src, unsigned long len);
++extern unsigned long uprobe_get_trampoline_vaddr(void);
+ #else /* !CONFIG_UPROBES */
+ struct uprobes_state {
+ };
+diff --git a/kernel/events/uprobes.c b/kernel/events/uprobes.c
+index 8ae0eefc3a34..d60d24f0f2f4 100644
+--- a/kernel/events/uprobes.c
++++ b/kernel/events/uprobes.c
+@@ -1827,7 +1827,7 @@ void uprobe_copy_process(struct task_struct *t, unsigned long flags)
+  *
+  * Returns -1 in case the xol_area is not allocated.
+  */
+-static unsigned long get_trampoline_vaddr(void)
++unsigned long uprobe_get_trampoline_vaddr(void)
+ {
+ 	struct xol_area *area;
+ 	unsigned long trampoline_vaddr = -1;
+@@ -1878,7 +1878,7 @@ static void prepare_uretprobe(struct uprobe *uprobe, struct pt_regs *regs)
+ 	if (!ri)
+ 		return;
+ 
+-	trampoline_vaddr = get_trampoline_vaddr();
++	trampoline_vaddr = uprobe_get_trampoline_vaddr();
+ 	orig_ret_vaddr = arch_uretprobe_hijack_return_addr(trampoline_vaddr, regs);
+ 	if (orig_ret_vaddr == -1)
+ 		goto fail;
+@@ -2187,7 +2187,7 @@ static void handle_swbp(struct pt_regs *regs)
+ 	int is_swbp;
+ 
+ 	bp_vaddr = uprobe_get_swbp_addr(regs);
+-	if (bp_vaddr == get_trampoline_vaddr())
++	if (bp_vaddr == uprobe_get_trampoline_vaddr())
+ 		return handle_trampoline(regs);
+ 
+ 	uprobe = find_active_uprobe(bp_vaddr, &is_swbp);
 -- 
 2.43.0
 
