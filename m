@@ -1,180 +1,250 @@
-Return-Path: <bpf+bounces-29013-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-29014-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7FE6E8BF518
-	for <lists+bpf@lfdr.de>; Wed,  8 May 2024 05:54:17 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 893858BF541
+	for <lists+bpf@lfdr.de>; Wed,  8 May 2024 06:31:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3599B2815FE
-	for <lists+bpf@lfdr.de>; Wed,  8 May 2024 03:54:16 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 264342867DD
+	for <lists+bpf@lfdr.de>; Wed,  8 May 2024 04:31:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F08017557;
-	Wed,  8 May 2024 03:53:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 393C81757D;
+	Wed,  8 May 2024 04:31:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="LxVw5+ot"
+	dkim=pass (1024-bit key) header.d=faucet.nz header.i=@faucet.nz header.b="gGLDUaxV"
 X-Original-To: bpf@vger.kernel.org
-Received: from out30-124.freemail.mail.aliyun.com (out30-124.freemail.mail.aliyun.com [115.124.30.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp.forwardemail.net (smtp.forwardemail.net [149.28.215.223])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5EBE824B34;
-	Wed,  8 May 2024 03:53:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9925F1A2C15
+	for <bpf@vger.kernel.org>; Wed,  8 May 2024 04:31:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=149.28.215.223
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715140417; cv=none; b=FkuNJAfbPZMm0g1uWyqVeDDfQCo0p6rVn8mvaWM5OVKf7DFvt7pa4I99sAqZb/5XvcO8rHYJI+mfBBhTw4eZ2fwmkKbZ8VkNjyfUYaqQ0VDDxQEXzoKNk/VgB3qHMlt8/Vs6rgYNpgJhdEBC1Jg0fpCcKh+pCQNRlNHNePJ2lv0=
+	t=1715142709; cv=none; b=jl68pYYPLuYeMOcgcF5exiYK6foKbqKl2FW9CVBgqX3va5RqMFWN3i2yz1etwg9ymvz3VPHExSqGhcw8bXCknoa2aFsVpwc8W0cjxP/Yf+60Kdu4IpZx2lruN7BijNLurRs4ombIEq/f5aT/4tPsfBehNpLPBDzngMZvrH0u+3w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715140417; c=relaxed/simple;
-	bh=J2WRcifkgTTK2WyoFwQaw/xp648pJDvELfsC0xE8i6k=;
-	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:References:
-	 In-Reply-To:Content-Type; b=hHyzJymdy8XqzeT6yDmbmvaEJVVmNKOolz61FJy4KtSPZ+oCCswCaUcszujgjPpj0wGTd1iItBigQaHSSXvgkCMHCEvudZh1KhVzZ3LnoTlzPaSSIqeRZuNTa//2RF4dQMju7h/Xw6O6Qx/cK/S98/Kt+gJhSJsJV/hEVyLUoPo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=LxVw5+ot; arc=none smtp.client-ip=115.124.30.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1715140411; h=Message-ID:Date:MIME-Version:From:Subject:To:Content-Type;
-	bh=sD4L/2NZOlCbtlDmhnBNkK3tUAmTyh296u5gGEDFucA=;
-	b=LxVw5+otY27y4yWW2VaK0xSOOwIY3l0b5S8mvBoEH0D1EAQRG3MLgYGtaGAr0Bx6qbsKqx4xRJV+I8xn3c1flwaSBp20JnYxifyPKQdKc9VSdzYWpGVkfZR9Jv8KpdWTlm47/vK7w4FDP4UYVwaqRLE471o3L3HC/f4RX7+VOzY=
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R161e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=maildocker-contentspam033037067113;MF=guwen@linux.alibaba.com;NM=1;PH=DS;RN=20;SR=0;TI=SMTPD_---0W625brA_1715140085;
-Received: from 30.221.130.197(mailfrom:guwen@linux.alibaba.com fp:SMTPD_---0W625brA_1715140085)
-          by smtp.aliyun-inc.com;
-          Wed, 08 May 2024 11:48:06 +0800
-Message-ID: <7f62c6fd-c193-45ba-9f8a-485f011c5c0d@linux.alibaba.com>
-Date: Wed, 8 May 2024 11:48:04 +0800
+	s=arc-20240116; t=1715142709; c=relaxed/simple;
+	bh=TcKipYSQ7HxK9DGEAnXO7v/KoZRGOrh+vyY6CyEwTRc=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=FG0hnI72aRXdk21HZcFxTUm2AWsLEQlHWY3takS8kJuZrSyFUupkLIBJLZRoHr5O30qQRZGsknIl1g7z+/nVnDdwD5zjAhQdQJ8lldNLFyXbJRN4kzCFskmAD4XZaB8CZxHL2BfznylgfT7EOY5QedsAMQFnlamd07Ax3xNCF+8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=faucet.nz; spf=pass smtp.mailfrom=fe-bounces.faucet.nz; dkim=pass (1024-bit key) header.d=faucet.nz header.i=@faucet.nz header.b=gGLDUaxV; arc=none smtp.client-ip=149.28.215.223
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=faucet.nz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fe-bounces.faucet.nz
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=faucet.nz;
+ h=Content-Transfer-Encoding: MIME-Version: Message-Id: Date: Subject: Cc:
+ To: From; q=dns/txt; s=fe-4ed8c67516; t=1715142676;
+ bh=n5msmILHpinJBimNBcmxIbuUacgT3LzKm/AdQAyT72k=;
+ b=gGLDUaxVaCUnDnk77pQcj79FyUzehnBvbAMW+33c/g1kufy446NJ32uO2JI+beqp3y7SRBekZ
+ euRkjVSWJuyPjEUq0/znpkcZXEMCi6qS3ECwvQtMELlsgL5/t/nK9oraO+Anm4eisdrMTQj24au
+ eta07vcCZlV4xw0rThhq73k=
+From: Brad Cowie <brad@faucet.nz>
+To: bpf@vger.kernel.org, martin.lau@linux.dev
+Cc: lorenzo@kernel.org, memxor@gmail.com, pablo@netfilter.org,
+ davem@davemloft.net, kuba@kernel.org, pabeni@redhat.com, ast@kernel.org,
+ daniel@iogearbox.net, andrii@kernel.org, song@kernel.org,
+ john.fastabend@gmail.com, sdf@google.com, jolsa@kernel.org,
+ netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
+ netdev@vger.kernel.org, Brad Cowie <brad@faucet.nz>
+Subject: [PATCH bpf-next v3 1/2] net: netfilter: Make ct zone opts configurable for bpf ct helpers
+Date: Wed,  8 May 2024 16:30:32 +1200
+Message-Id: <20240508043033.52311-1-brad@faucet.nz>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-From: Wen Gu <guwen@linux.alibaba.com>
-Subject: Re: [PATCH net-next v7 00/11] net/smc: SMC intra-OS shortcut with
- loopback-ism
-To: Cong Wang <xiyou.wangcong@gmail.com>
-Cc: wintera@linux.ibm.com, twinkler@linux.ibm.com, hca@linux.ibm.com,
- gor@linux.ibm.com, agordeev@linux.ibm.com, davem@davemloft.net,
- edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
- wenjia@linux.ibm.com, jaka@linux.ibm.com, borntraeger@linux.ibm.com,
- svens@linux.ibm.com, alibuda@linux.alibaba.com, tonylu@linux.alibaba.com,
- linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org,
- netdev@vger.kernel.org, bpf@vger.kernel.org
-References: <20240428060738.60843-1-guwen@linux.alibaba.com>
- <Zi5wIrf3nAeJh1u5@pop-os.localdomain>
- <2e34e4ea-b198-487e-be5b-ba854965dbeb@linux.alibaba.com>
- <ZjpSgWyHaNC/ikNP@pop-os.localdomain>
-In-Reply-To: <ZjpSgWyHaNC/ikNP@pop-os.localdomain>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-Report-Abuse-To: abuse@forwardemail.net
+X-Report-Abuse: abuse@forwardemail.net
+X-Complaints-To: abuse@forwardemail.net
+X-ForwardEmail-Version: 0.4.40
+X-ForwardEmail-Sender: rfc822; brad@faucet.nz, smtp.forwardemail.net,
+ 149.28.215.223
+X-ForwardEmail-ID: 663b000c72b4a4e913ba5536
 
+Add ct zone id and direction to bpf_ct_opts so that arbitrary ct zones
+can be used for xdp/tc bpf ct helper functions bpf_{xdp,skb}_ct_alloc
+and bpf_{xdp,skb}_ct_lookup.
 
+Signed-off-by: Brad Cowie <brad@faucet.nz>
+---
+v2 -> v3:
+  - Remove whitespace changes
+  - Add reserved padding options
+  - If ct_zone_id is set when opts__sz isn't 16 return -EINVAL
+  - Remove ct_zone_flags, not used by nf_conntrack_alloc
+    or nf_conntrack_find_get
+  - Update comments to reflect opts__sz can be 16 or 12
 
-On 2024/5/8 00:10, Cong Wang wrote:
-> On Tue, May 07, 2024 at 10:34:09PM +0800, Wen Gu wrote:
->>
->>
->> On 2024/4/28 23:49, Cong Wang wrote:
->>> On Sun, Apr 28, 2024 at 02:07:27PM +0800, Wen Gu wrote:
->>>> This patch set acts as the second part of the new version of [1] (The first
->>>> part can be referred from [2]), the updated things of this version are listed
->>>> at the end.
->>>>
->>>> - Background
->>>>
->>>> SMC-D is now used in IBM z with ISM function to optimize network interconnect
->>>> for intra-CPC communications. Inspired by this, we try to make SMC-D available
->>>> on the non-s390 architecture through a software-implemented Emulated-ISM device,
->>>> that is the loopback-ism device here, to accelerate inter-process or
->>>> inter-containers communication within the same OS instance.
->>>
->>> Just FYI:
->>>
->>> Cilium has implemented this kind of shortcut with sockmap and sockops.
->>> In fact, for intra-OS case, it is _very_ simple. The core code is less
->>> than 50 lines. Please take a look here:
->>> https://github.com/cilium/cilium/blob/v1.11.4/bpf/sockops/bpf_sockops.c
->>>
->>> Like I mentioned in my LSF/MM/BPF proposal, we plan to implement
->>> similiar eBPF things for inter-OS (aka VM) case.
->>>
->>> More importantly, even LD_PRELOAD is not needed for this eBPF approach.
->>> :)
->>>
->>> Thanks.
->>
->> Hi, Cong. Thank you very much for the information. I learned about sockmap
->> before and from my perspective smcd loopback and sockmap each have their own
->> pros and cons.
->>
->> The pros of smcd loopback is that it uses a standard process that defined
->> by RFC-7609 for negotiation, this CLC handshake helps smc correctly determine
->> whether the tcp connection should be upgraded no matter what middleware the
->> connection passes, e.g. through NAT. So we don't need to pay extra effort to
->> check whether the connection should be shortcut, unlike checking various policy
->> by bpf_sock_ops_ipv4() in sockmap. And since the handshake automatically select
->> different underlay devices for different scenarios (loopback-ism in intra-OS,
->> ISM in inter-VM of IBM z and RDMA in inter-VM of different hosts), various
->> scenarios can be covered through one smc protocol stack.
->>
->> The cons of smcd loopback is also related to the CLC handshake, one more round
->> handshake may cause smc to perform worse than TCP in short-lived connection
->> scenarios. So we basically use smc upgrade in long-lived connection scenarios
->> and are exploring IPPROTO_SMC[1] to provide lossless fallback under adverse cases.
-> 
-> You don't have to bother RFC's, since you could define your own TCP
-> options. And, the eBPF approach could also use TCP options whenver
-> needed. Cilium probably does not use them only because for intra-OS case
-> it is too simple to bother TCP options, as everything can be shared via a
-> shared socketmap.
-> 
-> In reality, the setup is not that complex. In many cases we already know
-> whether we have VM or container (or mixed) setup before we develop (as
-> a part of requirement gathering). And they rarely change.
-> 
-> Taking one step back, the discovery of VM or container or loopback cases
-> could be done via TCP options too, to deal with complex cases like
-> KataContainer. There is no reason to bother RFC's, maybe except the RDMA
-> case.
-> 
-> In fact, this is an advantage to me. We don't need to argue with anyone
-> on our own TCP option or eBPF code, we don't even have to share our own
-> eBPF code here.
-> 
+v1 -> v2:
+  - Make ct zone flags/dir configurable
+---
+ net/netfilter/nf_conntrack_bpf.c | 68 ++++++++++++++++++++++++++------
+ 1 file changed, 55 insertions(+), 13 deletions(-)
 
-Private TCP option could be a historical burden and a risk for compatibility,
-so IMHO it doesn't work, at least for SMC. Besides, the smc handshake process
-I mentioned is not just about TCP option, that is the first step. There are
-another 3-way CLC handshake to choose right underlay for different cases
-or safelly fallback to TCP, keep users out of bother. Lastly, the process was
-designed for different cases and smcd loopback is one of the whole picture,
-so simplicity of intra-OS case does not mean the existing handshake is meaningless
-nor smcd loopback should give up using existing process but follow sockmap.
+diff --git a/net/netfilter/nf_conntrack_bpf.c b/net/netfilter/nf_conntrack_bpf.c
+index d2492d050fe6..4a136fc3a9c0 100644
+--- a/net/netfilter/nf_conntrack_bpf.c
++++ b/net/netfilter/nf_conntrack_bpf.c
+@@ -32,7 +32,9 @@
+  *		   -EINVAL - Passed NULL for bpf_tuple pointer
+  *		   -EINVAL - opts->reserved is not 0
+  *		   -EINVAL - netns_id is less than -1
+- *		   -EINVAL - opts__sz isn't NF_BPF_CT_OPTS_SZ (12)
++ *		   -EINVAL - opts__sz isn't NF_BPF_CT_OPTS_SZ (16) or 12
++ *		   -EINVAL - opts->ct_zone_id set when
++			     opts__sz isn't NF_BPF_CT_OPTS_SZ (16)
+  *		   -EPROTO - l4proto isn't one of IPPROTO_TCP or IPPROTO_UDP
+  *		   -ENONET - No network namespace found for netns_id
+  *		   -ENOENT - Conntrack lookup could not find entry for tuple
+@@ -42,6 +44,8 @@
+  *		 Values:
+  *		   IPPROTO_TCP, IPPROTO_UDP
+  * @dir:       - connection tracking tuple direction.
++ * @ct_zone_id - connection tracking zone id.
++ * @ct_zone_dir - connection tracking zone direction.
+  * @reserved   - Reserved member, will be reused for more options in future
+  *		 Values:
+  *		   0
+@@ -51,11 +55,13 @@ struct bpf_ct_opts {
+ 	s32 error;
+ 	u8 l4proto;
+ 	u8 dir;
+-	u8 reserved[2];
++	u16 ct_zone_id;
++	u8 ct_zone_dir;
++	u8 reserved[3];
+ };
+ 
+ enum {
+-	NF_BPF_CT_OPTS_SZ = 12,
++	NF_BPF_CT_OPTS_SZ = 16,
+ };
+ 
+ static int bpf_nf_ct_tuple_parse(struct bpf_sock_tuple *bpf_tuple,
+@@ -104,12 +110,21 @@ __bpf_nf_ct_alloc_entry(struct net *net, struct bpf_sock_tuple *bpf_tuple,
+ 			u32 timeout)
+ {
+ 	struct nf_conntrack_tuple otuple, rtuple;
++	struct nf_conntrack_zone ct_zone;
+ 	struct nf_conn *ct;
+ 	int err;
+ 
+-	if (!opts || !bpf_tuple || opts->reserved[0] || opts->reserved[1] ||
+-	    opts_len != NF_BPF_CT_OPTS_SZ)
++	if (!opts || !bpf_tuple)
+ 		return ERR_PTR(-EINVAL);
++	if (!(opts_len == NF_BPF_CT_OPTS_SZ || opts_len == 12))
++		return ERR_PTR(-EINVAL);
++	if (opts_len == NF_BPF_CT_OPTS_SZ) {
++		if (opts->reserved[0] || opts->reserved[1] || opts->reserved[2])
++			return ERR_PTR(-EINVAL);
++	} else {
++		if (opts->ct_zone_id)
++			return ERR_PTR(-EINVAL);
++	}
+ 
+ 	if (unlikely(opts->netns_id < BPF_F_CURRENT_NETNS))
+ 		return ERR_PTR(-EINVAL);
+@@ -130,7 +145,16 @@ __bpf_nf_ct_alloc_entry(struct net *net, struct bpf_sock_tuple *bpf_tuple,
+ 			return ERR_PTR(-ENONET);
+ 	}
+ 
+-	ct = nf_conntrack_alloc(net, &nf_ct_zone_dflt, &otuple, &rtuple,
++	if (opts_len == NF_BPF_CT_OPTS_SZ) {
++		if (opts->ct_zone_dir == 0)
++			opts->ct_zone_dir = NF_CT_DEFAULT_ZONE_DIR;
++		nf_ct_zone_init(&ct_zone,
++				opts->ct_zone_id, opts->ct_zone_dir, 0);
++	} else {
++		ct_zone = nf_ct_zone_dflt;
++	}
++
++	ct = nf_conntrack_alloc(net, &ct_zone, &otuple, &rtuple,
+ 				GFP_ATOMIC);
+ 	if (IS_ERR(ct))
+ 		goto out;
+@@ -152,12 +176,21 @@ static struct nf_conn *__bpf_nf_ct_lookup(struct net *net,
+ {
+ 	struct nf_conntrack_tuple_hash *hash;
+ 	struct nf_conntrack_tuple tuple;
++	struct nf_conntrack_zone ct_zone;
+ 	struct nf_conn *ct;
+ 	int err;
+ 
+-	if (!opts || !bpf_tuple || opts->reserved[0] || opts->reserved[1] ||
+-	    opts_len != NF_BPF_CT_OPTS_SZ)
++	if (!opts || !bpf_tuple)
+ 		return ERR_PTR(-EINVAL);
++	if (!(opts_len == NF_BPF_CT_OPTS_SZ || opts_len == 12))
++		return ERR_PTR(-EINVAL);
++	if (opts_len == NF_BPF_CT_OPTS_SZ) {
++		if (opts->reserved[0] || opts->reserved[1] || opts->reserved[2])
++			return ERR_PTR(-EINVAL);
++	} else {
++		if (opts->ct_zone_id)
++			return ERR_PTR(-EINVAL);
++	}
+ 	if (unlikely(opts->l4proto != IPPROTO_TCP && opts->l4proto != IPPROTO_UDP))
+ 		return ERR_PTR(-EPROTO);
+ 	if (unlikely(opts->netns_id < BPF_F_CURRENT_NETNS))
+@@ -174,7 +207,16 @@ static struct nf_conn *__bpf_nf_ct_lookup(struct net *net,
+ 			return ERR_PTR(-ENONET);
+ 	}
+ 
+-	hash = nf_conntrack_find_get(net, &nf_ct_zone_dflt, &tuple);
++	if (opts_len == NF_BPF_CT_OPTS_SZ) {
++		if (opts->ct_zone_dir == 0)
++			opts->ct_zone_dir = NF_CT_DEFAULT_ZONE_DIR;
++		nf_ct_zone_init(&ct_zone,
++				opts->ct_zone_id, opts->ct_zone_dir, 0);
++	} else {
++		ct_zone = nf_ct_zone_dflt;
++	}
++
++	hash = nf_conntrack_find_get(net, &ct_zone, &tuple);
+ 	if (opts->netns_id >= 0)
+ 		put_net(net);
+ 	if (!hash)
+@@ -245,7 +287,7 @@ __bpf_kfunc_start_defs();
+  * @opts	- Additional options for allocation (documented above)
+  *		    Cannot be NULL
+  * @opts__sz	- Length of the bpf_ct_opts structure
+- *		    Must be NF_BPF_CT_OPTS_SZ (12)
++ *		    Must be NF_BPF_CT_OPTS_SZ (16) or 12
+  */
+ __bpf_kfunc struct nf_conn___init *
+ bpf_xdp_ct_alloc(struct xdp_md *xdp_ctx, struct bpf_sock_tuple *bpf_tuple,
+@@ -279,7 +321,7 @@ bpf_xdp_ct_alloc(struct xdp_md *xdp_ctx, struct bpf_sock_tuple *bpf_tuple,
+  * @opts	- Additional options for lookup (documented above)
+  *		    Cannot be NULL
+  * @opts__sz	- Length of the bpf_ct_opts structure
+- *		    Must be NF_BPF_CT_OPTS_SZ (12)
++ *		    Must be NF_BPF_CT_OPTS_SZ (16) or 12
+  */
+ __bpf_kfunc struct nf_conn *
+ bpf_xdp_ct_lookup(struct xdp_md *xdp_ctx, struct bpf_sock_tuple *bpf_tuple,
+@@ -312,7 +354,7 @@ bpf_xdp_ct_lookup(struct xdp_md *xdp_ctx, struct bpf_sock_tuple *bpf_tuple,
+  * @opts	- Additional options for allocation (documented above)
+  *		    Cannot be NULL
+  * @opts__sz	- Length of the bpf_ct_opts structure
+- *		    Must be NF_BPF_CT_OPTS_SZ (12)
++ *		    Must be NF_BPF_CT_OPTS_SZ (16) or 12
+  */
+ __bpf_kfunc struct nf_conn___init *
+ bpf_skb_ct_alloc(struct __sk_buff *skb_ctx, struct bpf_sock_tuple *bpf_tuple,
+@@ -347,7 +389,7 @@ bpf_skb_ct_alloc(struct __sk_buff *skb_ctx, struct bpf_sock_tuple *bpf_tuple,
+  * @opts	- Additional options for lookup (documented above)
+  *		    Cannot be NULL
+  * @opts__sz	- Length of the bpf_ct_opts structure
+- *		    Must be NF_BPF_CT_OPTS_SZ (12)
++ *		    Must be NF_BPF_CT_OPTS_SZ (16) or 12
+  */
+ __bpf_kfunc struct nf_conn *
+ bpf_skb_ct_lookup(struct __sk_buff *skb_ctx, struct bpf_sock_tuple *bpf_tuple,
+-- 
+2.34.1
 
->>
->> And we are also working on other upgrade ways than LD_PRELOAD, e.g. using eBPF
->> hook[2] with IPPROTO_SMC, to enhance the usability.
-> 
-> That is wrong IMHO, because basically it just overwrites kernel modules
-> with eBPF, not how eBPF is supposed to be used. IOW, you could not use
-> it at all without SMC/MPTCP modules.
-> 
-Yes, it expects to be used for SMC/MPTCP modules.
-
-> BTW, this approach does not work for kernel sockets, because you only
-> hook __sys_socket().
-> 
-In fact the purpose of this is mainly to transparently upgrade applications'
-TCP sockets, so kernel sockets are not the target.
-
-> Of course, for sockmap or sockops, they could be used independently for
-> any other purposes. I hope now you could see the flexiblities of eBPF
-> over kernel modules.
-> 
-Yes, I agree with the pros of eBPF way, like flexiblities you mentioned.
-As I said above, from my perspective they both have their own pros and cons.
-
-> Thanks.
-
-Thanks!
 
