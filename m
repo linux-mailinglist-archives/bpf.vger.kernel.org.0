@@ -1,156 +1,88 @@
-Return-Path: <bpf+bounces-29081-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-29082-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2A9538BFFE6
-	for <lists+bpf@lfdr.de>; Wed,  8 May 2024 16:25:44 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 448568BFFEE
+	for <lists+bpf@lfdr.de>; Wed,  8 May 2024 16:26:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4DAC61C20E52
-	for <lists+bpf@lfdr.de>; Wed,  8 May 2024 14:25:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D4D171F22769
+	for <lists+bpf@lfdr.de>; Wed,  8 May 2024 14:26:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A41E485633;
-	Wed,  8 May 2024 14:25:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE81586151;
+	Wed,  8 May 2024 14:25:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="PkSz5ZIr"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="KIwywg5r"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-oo1-f42.google.com (mail-oo1-f42.google.com [209.85.161.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.15])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2067B85646
-	for <bpf@vger.kernel.org>; Wed,  8 May 2024 14:25:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 923828562E;
+	Wed,  8 May 2024 14:25:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.15
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715178335; cv=none; b=C+Zo8MBqMUaaBpxSdhcI9j+pGD5d2ZgIaGWN1d13q918MTee/uDr0sR+3wl4mgQkZ3HCJYAV7wUxCYM+MhJIwVh5wx3AC+SmaBw5MEJYiG93TBfEg1ERRa3KzAYMcZvVX9XWtbqCmUd3JvUghMIlH5kIopIH0ExLQN4b3cPmUAs=
+	t=1715178341; cv=none; b=OL3L6/xvesPSqLlLgWQpb4TPsSqKPxgBDl+aQGQNPUSjMO9aqf2/tknGFDIkiBEz7DbJJxxASqJBxA2WnZPFYDxDb8BxN3L0u1zOD3dmtQL7LKIULdpyNMxQma4teGyS7YnkpnfpZyy01MRFX1BkBfawgr+9H7U+1NI7FATpFos=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715178335; c=relaxed/simple;
-	bh=4BjthKjlyBrv7qlqiwaK/PtT8pzCfUhJT3JhHavFgDI=;
+	s=arc-20240116; t=1715178341; c=relaxed/simple;
+	bh=GJmvi/Sx1Tmjcq6Bnii+IMV6C5ZymcNZfpdtfXPoNkk=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Wuly9rerEquYBnImyv1wmkRtFyD5GpbA5NXzqlIuwASg71JSXTmAxUQXv8H/Riw6HzY8JIWs8obIJtv6V3exgMKAqn5PakSzXd4G5lDkEEWPsFBJLfW+7rsB0U5KagqULoWFD3BVuxVNtfPBMAPfd/dUryEDAtekais7PD/5wm8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=PkSz5ZIr; arc=none smtp.client-ip=209.85.161.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
-Received: by mail-oo1-f42.google.com with SMTP id 006d021491bc7-5b203c9933dso2366201eaf.3
-        for <bpf@vger.kernel.org>; Wed, 08 May 2024 07:25:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google; t=1715178332; x=1715783132; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=AgrD1WoYkdj8wg28imEY2ANZlllvJHBViF8cNCfVJ94=;
-        b=PkSz5ZIrJA+JdKLTG1OfJOpsC3pIK9p0Yyyccg0hoyFx4nX+QslSRwMwI4DVdChRJP
-         izW8bkDiT9CPlsFn6NWC8ObqLmJqHdv9dPY0oT30ErifiuP39AlKPuvD7Yf+BkCaa7Sb
-         Te00sjo5KeKCTCzDG2Db1vLaDVs3d6arHQrZ1bw9QDP+92DwkxA9EYsv7pLYZJCoOqPF
-         uZtQ58ltzdg1IK0HMjEk0b7ojsbJFvvU8qgxGk4eLmdxoYaDj295d2YoNoZssCzplhTt
-         gIWCjBnmhmKaQvlqOK/z5YS7LMtFLbkb/MYrvH7dBUqJkFBFDaeqoCDz0sPa37MSs4wn
-         v6AQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1715178332; x=1715783132;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=AgrD1WoYkdj8wg28imEY2ANZlllvJHBViF8cNCfVJ94=;
-        b=pFk9W4F4vla99eDJ62eJHqr1AiXoilMv4zKY+VKwXiXe0oHa3SHZJwhLMz+0BDcexp
-         z1KZkzViGrlLsWXe7moKCNB4l2T1VpPy0DuVQALZHfISKAqK0ZFtUiT8QqhtEjvjkTAp
-         E5Bmz66vRY0CRnA1cwn6WM311H+fLlNI1wQkdWA4Z1AIWtGJ9gz9jmdPWhGDf/CABiMj
-         Hfox6Ht+4DblUIIsKvx4cAs9cn8aFtKSUdj4es8v+bdtGRy3RDAki0tUa8YvM08p4xTq
-         zNjW3pnILtE3xBpA0pDkmQT1NAGAAKbehqTVT2/cpOcs5rBseGaf51jHAsPyFD5y4fgu
-         RTxQ==
-X-Forwarded-Encrypted: i=1; AJvYcCV1xMpO5MZ5bD/hJmvkgaVhYcU6rm7s1CcBILMeXD2dn+g6VBqVsyEj/OBOS5H6WvYq8o8mZtth7zgsE6PaCrG7gPv2
-X-Gm-Message-State: AOJu0YwZCodrv9SUXB8liI//4ZAi08Gkzn5oHnIsm+qv/Vcx0Fv4PPij
-	+IZslJhqeuRjM3+rslYw0NoU/VmDnzqba9KBFQYJSYU+4k7swGTKr3l41Bpo2W8=
-X-Google-Smtp-Source: AGHT+IHjV+YjcifEHKw5oQYkCNsBVkCIuACEQyUL/WL5v5GcAhnL6ouYxG09iM1YvQ+6Pe3rmrQdgA==
-X-Received: by 2002:a4a:8c24:0:b0:5aa:538a:ed60 with SMTP id 006d021491bc7-5b24d28fdb4mr2495842eaf.3.1715178331994;
-        Wed, 08 May 2024 07:25:31 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-142-68-80-239.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.80.239])
-        by smtp.gmail.com with ESMTPSA id o18-20020ac86992000000b0043d4245dd4csm4389539qtq.84.2024.05.08.07.25.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 08 May 2024 07:25:31 -0700 (PDT)
-Received: from jgg by wakko with local (Exim 4.95)
-	(envelope-from <jgg@ziepe.ca>)
-	id 1s4iEc-0016QI-DE;
-	Wed, 08 May 2024 11:25:30 -0300
-Date: Wed, 8 May 2024 11:25:30 -0300
-From: Jason Gunthorpe <jgg@ziepe.ca>
-To: Pavel Begunkov <asml.silence@gmail.com>
-Cc: Mina Almasry <almasrymina@google.com>,
-	Christoph Hellwig <hch@infradead.org>, netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-	linux-alpha@vger.kernel.org, linux-mips@vger.kernel.org,
-	linux-parisc@vger.kernel.org, sparclinux@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
-	bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
-	linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
+	 Content-Type:Content-Disposition:In-Reply-To; b=eMMQGFGxNh5Qo3KnnWqbpXmydNnHsgmSTuiHaP8N4lg22BdyVLlGrTKRrFnP10GRhu3raaVOzqGts9bLRrxib6ShnpS98Lyc4ryVJiVFzI4KlIvp1TzJHxvHS/Cog/SHgj0rSbvdJeD6dAOzjM2XTr35zm5JDeM4ZCqZZ2IVpes=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=KIwywg5r; arc=none smtp.client-ip=198.175.65.15
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1715178340; x=1746714340;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=GJmvi/Sx1Tmjcq6Bnii+IMV6C5ZymcNZfpdtfXPoNkk=;
+  b=KIwywg5rsNOAf3x0WRDbE7scJCaGAFVtqQUocQwvgNJ47/MvMWvmg3pi
+   GBiucELq/C/kbe18sK6MNPy1OhvIP3ladVP1tsTuW1cv6iz4kFaCeM3ZZ
+   yi11NqyZHyexqQf1s2zFZ3mwFemzczva4KuBmjAUsjseoeOjC1YJnoJwt
+   d40hBUMmJnY3iS0umgcg8wYsJAGweRigbYJT3RT7+ay5U1WX0jHz1SPo+
+   R14VNbXOf4yjs4vFXLzudfbqU3t45q0XF4td9QGVZRx57U84jXkEVDx0T
+   +mDzlFlV+0SaWYUq3Zgl9wQBEoxidgYsd5CapbwnzNKtccke01qoGSNBu
+   g==;
+X-CSE-ConnectionGUID: Xs8RSaYPQJ6KfLl/ItCm7A==
+X-CSE-MsgGUID: xCZeykM7TUqsPmpaEWEeQw==
+X-IronPort-AV: E=McAfee;i="6600,9927,11067"; a="14836225"
+X-IronPort-AV: E=Sophos;i="6.08,145,1712646000"; 
+   d="scan'208";a="14836225"
+Received: from orviesa005.jf.intel.com ([10.64.159.145])
+  by orvoesa107.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 May 2024 07:25:39 -0700
+X-CSE-ConnectionGUID: CYCHGa+5QuOPLZYR89aEqg==
+X-CSE-MsgGUID: /qEKDGxwR6iaVVUBhdkp7Q==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.08,145,1712646000"; 
+   d="scan'208";a="33703450"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by orviesa005.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 May 2024 07:25:35 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.97)
+	(envelope-from <andriy.shevchenko@linux.intel.com>)
+	id 1s4iEd-00000005T34-3Cbf;
+	Wed, 08 May 2024 17:25:31 +0300
+Date: Wed, 8 May 2024 17:25:31 +0300
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Alexander Lobakin <aleksander.lobakin@intel.com>
+Cc: Jacob Keller <jacob.e.keller@intel.com>,
+	intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+	Jesse Brandeburg <jesse.brandeburg@intel.com>,
+	Tony Nguyen <anthony.l.nguyen@intel.com>,
 	"David S. Miller" <davem@davemloft.net>,
 	Eric Dumazet <edumazet@google.com>,
 	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Richard Henderson <richard.henderson@linaro.org>,
-	Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-	Matt Turner <mattst88@gmail.com>,
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	"James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-	Helge Deller <deller@gmx.de>, Andreas Larsson <andreas@gaisler.com>,
-	Jesper Dangaard Brouer <hawk@kernel.org>,
-	Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Arnd Bergmann <arnd@arndb.de>, Alexei Starovoitov <ast@kernel.org>,
+	Richard Cochran <richardcochran@gmail.com>,
+	Alexei Starovoitov <ast@kernel.org>,
 	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
-	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-	Steffen Klassert <steffen.klassert@secunet.com>,
-	Herbert Xu <herbert@gondor.apana.org.au>,
-	David Ahern <dsahern@kernel.org>,
-	Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-	Shuah Khan <shuah@kernel.org>,
-	Sumit Semwal <sumit.semwal@linaro.org>,
-	Christian =?utf-8?B?S8O2bmln?= <christian.koenig@amd.com>,
-	Amritha Nambiar <amritha.nambiar@intel.com>,
-	Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-	Alexander Mikhalitsyn <alexander@mihalicyn.com>,
-	Kaiyuan Zhang <kaiyuanz@google.com>,
-	Christian Brauner <brauner@kernel.org>,
-	Simon Horman <horms@kernel.org>,
-	David Howells <dhowells@redhat.com>,
-	Florian Westphal <fw@strlen.de>,
-	Yunsheng Lin <linyunsheng@huawei.com>,
-	Kuniyuki Iwashima <kuniyu@amazon.com>, Jens Axboe <axboe@kernel.dk>,
-	Arseniy Krasnov <avkrasnov@salutedevices.com>,
-	Aleksander Lobakin <aleksander.lobakin@intel.com>,
-	Michael Lass <bevan@bi-co.net>, Jiri Pirko <jiri@resnulli.us>,
-	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-	Lorenzo Bianconi <lorenzo@kernel.org>,
-	Richard Gobert <richardbgobert@gmail.com>,
-	Sridhar Samudrala <sridhar.samudrala@intel.com>,
-	Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
-	Johannes Berg <johannes.berg@intel.com>,
-	Abel Wu <wuyun.abel@bytedance.com>,
-	Breno Leitao <leitao@debian.org>, David Wei <dw@davidwei.uk>,
-	Shailend Chand <shailend@google.com>,
-	Harshitha Ramamurthy <hramamurthy@google.com>,
-	Shakeel Butt <shakeel.butt@linux.dev>,
-	Jeroen de Borst <jeroendb@google.com>,
-	Praveen Kaligineedi <pkaligineedi@google.com>
-Subject: Re: [RFC PATCH net-next v8 02/14] net: page_pool: create hooks for
- custom page providers
-Message-ID: <20240508142530.GR4718@ziepe.ca>
-References: <20b1c2d9-0b37-414c-b348-89684c0c0998@gmail.com>
- <20240507161857.GA4718@ziepe.ca>
- <ZjpVfPqGNfE5N4bl@infradead.org>
- <CAHS8izPH+sRLSiZ7vbrNtRdHrFEf8XQ61XAyHuxRSL9Jjy8YbQ@mail.gmail.com>
- <20240507164838.GG4718@ziepe.ca>
- <0d5da361-cc7b-46e9-a635-9a7a4c208444@gmail.com>
- <20240507175644.GJ4718@ziepe.ca>
- <6a50d01a-b5b9-4699-9d58-94e5f8f81c13@gmail.com>
- <20240507233247.GK4718@ziepe.ca>
- <54830914-1ec9-4312-96ad-423ac0aeb233@gmail.com>
+	Jesper Dangaard Brouer <hawk@kernel.org>,
+	John Fastabend <john.fastabend@gmail.com>
+Subject: Re: [PATCH net-next v1 1/1] net: intel: Use *-y instead of *-objs in
+ Makefile
+Message-ID: <ZjuLW8jA3MuT0oih@smile.fi.intel.com>
+References: <20240508132315.1121086-1-andriy.shevchenko@linux.intel.com>
+ <6ac025de-9264-4510-ba7f-f9a56c564a80@intel.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -159,42 +91,35 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <54830914-1ec9-4312-96ad-423ac0aeb233@gmail.com>
+In-Reply-To: <6ac025de-9264-4510-ba7f-f9a56c564a80@intel.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 
-On Wed, May 08, 2024 at 12:30:07PM +0100, Pavel Begunkov wrote:
-
-> > I'm not going to pretend to know about page pool details, but dmabuf
-> > is the way to get the bulk of pages into a pool within the net stack's
-> > allocator and keep that bulk properly refcounted while.> An object like
-> > dmabuf is needed for the general case because there are
-> > not going to be per-page references or otherwise available.
+On Wed, May 08, 2024 at 03:35:26PM +0200, Alexander Lobakin wrote:
+> > *-objs suffix is reserved rather for (user-space) host programs while
+> > usually *-y suffix is used for kernel drivers (although *-objs works
+> > for that purpose for now).
+> > 
+> > Let's correct the old usages of *-objs in Makefiles.
 > 
-> They are already pinned, memory is owned by the provider, io_uring
-> in this case, and it should not be freed circumventing io_uring,
-> and at this stage calling release_pages() is not such a hassle,
-> especially comparing to introducing an additional object.
+> Wait, I was sure I've seen somewhere that -objs is more new and
+> preferred over -y. 
 
-Something needs to co-ordinate when the net stack's allocator is done
-with the bulk of pages and when io_uring and do the final
-put_user_page() to free it. DMABUF is not an unreasonable choice for
-this.
+Then you are mistaken.
 
-> > topic to me, and honestly hacking into the allocator free function
-> > seems a bit weird..
-> 
-> Do you also think that DMA_BUF_IOCTL_SYNC is a weird hack, because
-> it "delays free" by pinning the dmabuf object and letting the user
-> read memory instead of copying it? I can find many examples
+> See recent dimlib comment where Florian changed -y to
+> -objs for example.
 
-It seems to me the flow you want is for the driver to allocate a page,
-put it on a rx ring, process it through the netstack, and deliver it
-to io_uring. io_uring would then sit on the allocation until userspace
-it done and return it back to the netstack allocator.
+So does he :-)
 
-Hooking the free of the netstack allocator and then defering it seems
-like a weird and indirect way to get there. Why can't io_uring just be
-the entity that does the final free and not mess with the logic
-allocator?
+> Any documentation reference that -objs is for userspace and we should
+> clearly use -y?
 
-Jason
+Sure. Luckily it's documented in Documentation/kbuild/makefiles.rst
+"Composite Host Programs" (mind the meaning of the word "host"!).
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
 
