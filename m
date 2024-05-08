@@ -1,89 +1,64 @@
-Return-Path: <bpf+bounces-29048-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-29049-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1CCD68BFAA3
-	for <lists+bpf@lfdr.de>; Wed,  8 May 2024 12:14:55 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1EF408BFAB3
+	for <lists+bpf@lfdr.de>; Wed,  8 May 2024 12:16:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C5C6A285708
-	for <lists+bpf@lfdr.de>; Wed,  8 May 2024 10:14:53 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 501EC1C227C6
+	for <lists+bpf@lfdr.de>; Wed,  8 May 2024 10:16:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 26FB17F7ED;
-	Wed,  8 May 2024 10:05:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 25FA08248E;
+	Wed,  8 May 2024 10:11:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BPjYn4lV"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Zh/RcZaG"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f48.google.com (mail-wm1-f48.google.com [209.85.128.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 27A397F7D3;
-	Wed,  8 May 2024 10:05:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9990D82487;
+	Wed,  8 May 2024 10:11:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715162737; cv=none; b=EbOdsLuiv54xeS6lZCWZqcCUyZ/Hi+uc16Xgcdve8411qLbwHqHajJeYUYHipw9pmFSrihW+cRX+r5NGaMN2YqKCzuV7UN4J4uwQSVyrVnpNj5fIC1979/3jeZ0bq9KKfjF2CHg4t2gDO4YI3vIyK2UWZWHjMj2i1QxE2f0JYyQ=
+	t=1715163087; cv=none; b=n1Y9Ws63rvGkQkMNwdE38sh8/MSVhqA6TVDfWSDQidDbOjN2WNP/CcJTjh8JD4mzqeD2Wckk+XZjZtPAEeW1SMW7eNJhQuesB2fXoIwliPO47hPVZtrD459RRFH58ovLVNDIGZXhQskUXKbJEXdSlcn5fl7y1ureER7PXH+LBY0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715162737; c=relaxed/simple;
-	bh=69rPTkrrk+KDC8oVqGxQZvFlCJ9xKMO3lKevbhjOd14=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=ru/IpzmO3CcMhYb/fAkME60gFO+LKoVhFbePhxtgT5gD6QvLaeCEU2NsGFkVWoFQWM30T1N23S9sKuV+jcWkBmcKHOFOHIj07ZdBld9Euo8yizGdUe7Q716DmCpwsla971o6eiC1/CXpXJZQirsoS9NFNP22mmmkOEVIOVnHuo0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BPjYn4lV; arc=none smtp.client-ip=209.85.128.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f48.google.com with SMTP id 5b1f17b1804b1-41ba1ba55ffso3687775e9.1;
-        Wed, 08 May 2024 03:05:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1715162734; x=1715767534; darn=vger.kernel.org;
-        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
-         :from:from:to:cc:subject:date:message-id:reply-to;
-        bh=1pfrqMs/oV1OywiwI/fbear8P048VZ1F1GZommjWhxc=;
-        b=BPjYn4lVlmeT4GXv7BfwlwFa30+q8sl7UdTMtHUOzRpp00/GZdvdLfWq/4Jg3QbtU+
-         +eW7rPw1z8EnCXVveQT4NPg2vRBBx+IkTaJMl1X99Lpc3Dd26I1SYAivkVTIW6PPC3ym
-         fOra4IZOR0kvYeCF9uy3Q50CszcAXUBI5LPkBX5A0YMdcW9Nk1VGYBmcz8RTuZjBe8EA
-         SCBd9Vmphd2VB7VWikICuol3ZmyFCyXrjH3o7uVWXbLuo2Fnc8OnB0Hk90E/OqasQvSh
-         8NQTfEb2UnhQy0vgdN9SkcaK6Cki/eFs0aKjAT4G5OmVuUMfv4Y64Ca8fFoTJAkC9cBx
-         nRIA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1715162734; x=1715767534;
-        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=1pfrqMs/oV1OywiwI/fbear8P048VZ1F1GZommjWhxc=;
-        b=R/VRojhpp984VBUWk8dVzVNBxot3hJCm8Ua6pePHq+DXfBhCU81fCHbJsvbcjNsrzZ
-         LwhQsWVw77NJPmbagXBhQk/6O2QRayoVGtBUQVSS06aI8+6qCyH5JKj1X9qcsQf30+kv
-         EAozzHqJx3+1Mj6M9pUsohVvTkz7ldAs5L/QhpKjkrjWmZuV1oQ6HSxa+b+9NKoNTTCx
-         O1dY6qi3YPNp4cxBwtASB+uq8x3NG4RmDK/nwmWTcpoxMSafF+eCAw+lqKnmR0CvHVuJ
-         l0/dZOpO0ShgvZZZ/yOwh00mXonM5hrnA4p2BO7vlREI33EAgcD5itei6BrqwA3oT4DV
-         VUhQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVvPaPhumbNpZ+mlRHBhhKXNLMtcKCuiw9y9xiULd278fnzxhSl6277R9ULAKsUsTyZbq7E7D33j0Jx2vpXB7y5FazZPf8s0SECcoCUh+amtBvgq2G9V87cIiEdT7dfoQGh
-X-Gm-Message-State: AOJu0Yw6ZUQmBjGaw6D4/hjKVi4L5Gqi1bFNX2KEzxPlXwVpItqRzt34
-	16mK3oIuSx7aGnVGIF+nBVyizJyMa416lNLaSgmb+t06f+xE+58S
-X-Google-Smtp-Source: AGHT+IHbPK8B0S9D/N+c2TUnl34+0ibw3s7SFJOpj8TxqMbt0pndiEbMnr8WkwO+xCns/doklbqPyA==
-X-Received: by 2002:a05:600c:35c3:b0:41b:4506:9fd with SMTP id 5b1f17b1804b1-41f71ad0be5mr20497925e9.6.1715162734173;
-        Wed, 08 May 2024 03:05:34 -0700 (PDT)
-Received: from localhost (54-240-197-231.amazon.com. [54.240.197.231])
-        by smtp.gmail.com with ESMTPSA id z18-20020adff752000000b0034e19861891sm14923686wrp.33.2024.05.08.03.05.32
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 08 May 2024 03:05:32 -0700 (PDT)
-From: Puranjay Mohan <puranjay12@gmail.com>
-To: Maxwell Bland <mbland@motorola.com>, "open list:BPF [GENERAL] (Safe
- Dynamic Programs and Tools)" <bpf@vger.kernel.org>
-Cc: Catalin Marinas <catalin.marinas@arm.com>, Will Deacon
- <will@kernel.org>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann
+	s=arc-20240116; t=1715163087; c=relaxed/simple;
+	bh=O01+4OxDhqfAMNBJajyRNazF4RaEhwcQwMkJgUw3EWY=;
+	h=From:To:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=ZLHs8nI304CGxa4RC1mYUOMwS1NwAUSJnszVHeC/Wl3oaaY3qlQImlFc1GPNaTTOM4yJLQJqLa7uqpF2unbLoXsxXDLvG/To9gj2dUsPgw6Kggup4TIDsE0HCtTUlRYnoQKLvOsxlLZ3TKkqZ0zNdCPADLceogOAImIEL/IL3BY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Zh/RcZaG; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D1EEFC4AF17;
+	Wed,  8 May 2024 10:11:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1715163087;
+	bh=O01+4OxDhqfAMNBJajyRNazF4RaEhwcQwMkJgUw3EWY=;
+	h=From:To:Subject:In-Reply-To:References:Date:From;
+	b=Zh/RcZaGT6E7lVROM1Ix/WzyM9U1WHn89iH+ECtYZyPi325pd5UBnddq6OsgQKhGj
+	 dtgp1emBDcRguH+li8+LQOsvCJHPDTzLgdhPEnO6o2x9HZhEu0bjP2FV3Co8XIFCye
+	 zN4xGHE8nKwPbF0b+AXMC9mFzQqGUrhGjtblR5TjB5mb2wy78uePKX7yUX6LcmK+Bj
+	 EchcG9cYgys2zvHpPQstcBiSX9NWznB/RttR2UazhmwjIa9ODcL4uU00iHqmG+2hdb
+	 wzt2m24Re/wGc58B9JxIG00Be3CU853Cea4h9d6mKsUD2Cdk99oG0QBZqNID/djXMX
+	 O53MvfdTHggLA==
+From: Puranjay Mohan <puranjay@kernel.org>
+To: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann
  <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, Martin KaFai
  Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu
  <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, John Fastabend
  <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, Stanislav
  Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa
- <jolsa@kernel.org>, Zi Shen Lim <zlim.lnx@gmail.com>, Mark Rutland
- <mark.rutland@arm.com>, Suzuki K Poulose <suzuki.poulose@arm.com>, Mark
- Brown <broonie@kernel.org>, linux-arm-kernel@lists.infradead.org, open
- list <linux-kernel@vger.kernel.org>, Josh Poimboeuf <jpoimboe@kernel.org>
-Subject: Re: [PATCH bpf-next v3 0/3]  Support kCFI + BPF on arm64
-In-Reply-To: <fhdcjdzqdqnoehenxbipfaorseeamt3q7fbm7ghe6z5s2chif5@lrhtasolawud>
-References: <fhdcjdzqdqnoehenxbipfaorseeamt3q7fbm7ghe6z5s2chif5@lrhtasolawud>
-Date: Wed, 08 May 2024 10:05:30 +0000
-Message-ID: <mb61p34qs1uvp.fsf@gmail.com>
+ <jolsa@kernel.org>, Zi Shen Lim <zlim.lnx@gmail.com>, Catalin Marinas
+ <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, Mykola Lysenko
+ <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>, bpf@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+ linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH bpf-next] bpf, arm64: Add support for lse atomics in
+ bpf_arena
+In-Reply-To: <20240426161116.441-1-puranjay@kernel.org>
+References: <20240426161116.441-1-puranjay@kernel.org>
+Date: Wed, 08 May 2024 10:11:23 +0000
+Message-ID: <mb61pzft0zk8k.fsf@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -92,52 +67,42 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain
 
-Maxwell Bland <mbland@motorola.com> writes:
+Puranjay Mohan <puranjay@kernel.org> writes:
 
-Hi Maxwell,
-
-> In preparation for the BPF summit, I took a look back on BPF-CFI patches
-> to check the status and found that there had been no updates for around
-> a month, so I went ahead and made the fixes suggested in v2.
+> When LSE atomics are available, BPF atomic instructions are implemented
+> as single ARM64 atomic instructions, therefore it is easy to enable
+> these in bpf_arena using the currently available exception handling
+> setup.
 >
-> This patchset handles emitting proper CFI hashes during JIT, which
-> can cause some of the selftests to fail, and handles removing the
-> __nocfi tag from bpf_dispatch_*_func on ARM, meaning Clang CFI 
-> checks will be generated:
+> LL_SC atomics use loops and therefore would need more work to enable in
+> bpf_arena.
 >
-> 0000000000fea1e8 <bpf_dispatcher_xdp_func>:
-> paciasp
-> stp     x29, x30, [sp, #-0x10]!
-> mov     x29, sp
-> + ldur    w16, [x2, #-0x4]                           
-> + movk    w17, #0x1881                               
-> + movk    w17, #0xd942, lsl #16                      
-> + cmp     w16, w17                                
-> + b.eq    0xffff8000810016a0 <bpf_dispatcher_xdp_func+0x24>
-> + brk     #0x8222   
-> blr     x2
-> ldp     x29, x30, [sp], #0x10
-> autiasp
-> ret
+> Enable LSE atomics based instructions in bpf_arena and use the
+> bpf_jit_supports_insn() callback to reject atomics in bpf_arena if LSE
+> atomics are not available.
 >
-> Where ^+ indicates the additional assembly.
+> All atomics and arena_atomics selftests are passing:
 >
-> Credit goes to Puranjay Mohan entirely for this, I just did some fixes,
-> hopefully that is OK.
+>   [root@ip-172-31-2-216 bpf]# ./test_progs -a atomics,arena_atomics
+>   #3/1     arena_atomics/add:OK
+>   #3/2     arena_atomics/sub:OK
+>   #3/3     arena_atomics/and:OK
+>   #3/4     arena_atomics/or:OK
+>   #3/5     arena_atomics/xor:OK
+>   #3/6     arena_atomics/cmpxchg:OK
+>   #3/7     arena_atomics/xchg:OK
+>   #3       arena_atomics:OK
+>   #10/1    atomics/add:OK
+>   #10/2    atomics/sub:OK
+>   #10/3    atomics/and:OK
+>   #10/4    atomics/or:OK
+>   #10/5    atomics/xor:OK
+>   #10/6    atomics/cmpxchg:OK
+>   #10/7    atomics/xchg:OK
+>   #10      atomics:OK
+>   Summary: 2/14 PASSED, 0 SKIPPED, 0 FAILED
 
-Thanks for taking this effort forward.
-
-checkpatch.pl complains about the patches like the following:
-
-ERROR: Missing Signed-off-by: line by nominal patch author 'Maxwell Bland <mbland@motorola.com>'
-
-So, you can change the authorship of the patch like:
-
-git commit --amend --author "Puranjay Mohan <puranjay12@gmail.com>"
-
-similar for the patch by Mark:
-
-git commit --amend --author "Mark Rutland <mark.rutland@arm.com>"
+Gentle ping about this,
 
 Thanks,
 Puranjay
