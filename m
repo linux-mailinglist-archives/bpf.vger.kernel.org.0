@@ -1,71 +1,71 @@
-Return-Path: <bpf+bounces-29023-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-29024-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 10BA48BF649
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 970DA8BF64A
 	for <lists+bpf@lfdr.de>; Wed,  8 May 2024 08:32:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 67B0AB21BD9
-	for <lists+bpf@lfdr.de>; Wed,  8 May 2024 06:32:46 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BAF3E1C21B86
+	for <lists+bpf@lfdr.de>; Wed,  8 May 2024 06:32:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7441015E88;
-	Wed,  8 May 2024 06:32:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 53CF922EF8;
+	Wed,  8 May 2024 06:32:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Xf8enLOj"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MIo3tnVf"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-oi1-f177.google.com (mail-oi1-f177.google.com [209.85.167.177])
+Received: from mail-oi1-f181.google.com (mail-oi1-f181.google.com [209.85.167.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8467D1DA53
-	for <bpf@vger.kernel.org>; Wed,  8 May 2024 06:32:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C16C1E53F
+	for <bpf@vger.kernel.org>; Wed,  8 May 2024 06:32:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715149952; cv=none; b=bR4h7fcKq6mBzjdYuJTamHY+6GvFyvK/IROlxUaI4FioZXOIo83JYtK6b5Fe7Kxb8rFw6Kj4aKUfOnclKPW7SS2UAbsvvCTrcnOViF2a70oUAivsJEVA0dePks3AjS65Yv+a0gBGWzBH02HIB7AglDg0VqDvQuKN1/ZNZXlusfc=
+	t=1715149953; cv=none; b=FsVY4cmwhv4EmREUwCjYC1fl3wL0y9JuOdOwLPiknqAUBdZeULAAAadcQvauIK3k5+wDfi1HAEHKh6aeYi+QoOPlyHAJezI/evegzTe465GAA03RJ6p0/gf93d9Hr7m+qASPmNHGAWVuCykCR0MV1Ome1EqSUPBp8hJ2rJsKBJE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715149952; c=relaxed/simple;
-	bh=IukWxncW71pOWKuXy6XwK0xo/mkiKGE5IHNqY5ILuKg=;
+	s=arc-20240116; t=1715149953; c=relaxed/simple;
+	bh=LpM0WjX+tDainc6yVUwiMyxOVwf2I1EDoa4gC6TSX28=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=em/0j+F5Pemzeqdffqjdi+YcT/wFBLsW2V2wNorWHL2xG50e4NgnVd3jFQyJY2WRDo+iuJ4fTfV7CHi9jzVBJ4pBJFvlp7oMCWC+jaCBhSbyCdl54LBIDFS16uxsj+bmnb2xmgPFR5OSteHUErw42lQj8qbSStCsPslVe0uQ6qU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Xf8enLOj; arc=none smtp.client-ip=209.85.167.177
+	 MIME-Version; b=SZiZRsmNRmkOmMLJ8lnkTwajUjVVfR2JmEKYXxYmDe4OQbN0+SSm2anPhCpekk53bHuVh/L7LIUBeRlRvXIBBkpjuBh9jhvD48CCw+miSfEAVLUi+y2kjhANX7UG+d0prfggPyiCSSg9KV7FuFjofYYiRTro1XQxEl59vn+MuAg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=MIo3tnVf; arc=none smtp.client-ip=209.85.167.181
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oi1-f177.google.com with SMTP id 5614622812f47-3c96d8bff27so228609b6e.0
-        for <bpf@vger.kernel.org>; Tue, 07 May 2024 23:32:30 -0700 (PDT)
+Received: by mail-oi1-f181.google.com with SMTP id 5614622812f47-3c963880aecso1535707b6e.3
+        for <bpf@vger.kernel.org>; Tue, 07 May 2024 23:32:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1715149949; x=1715754749; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1715149950; x=1715754750; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=qMHj8IuUdPM0tOmYXvWLbeITQEfrgALpkMswxvMZiwc=;
-        b=Xf8enLOjH4a/2pihQTJDP4fe2YryexPIJSQXB9+tyI4vAeDAOOKoJHHrCroagwgvy9
-         g0NO9SMRp1xHaYVeh3DPTizOnU7e7xS172P4N22XfS8diFZchK3B8v++PulHddUnoxfn
-         Cz2stn2NP5CApblupccQcLyfrihIz67kJrSHO+2z1x3StFfbLFwP4vgJ00LIAPcdgkgn
-         pLOAHufsorgOY/+p7tYpgoslgzmfU9JvyP//qw8YyKqtC4dsHcgwlyxM6vqz+jRn/CWy
-         vH0OMwNMz3kz5XeTJCxRqbsAEOSrzTQndVNzrShjOuLG2FPehovOg4njuLYMLhuLmazE
-         7C8g==
+        bh=eGCAxMWCfi60a3tw+PnorEYjKcG5uTIVemeKayT5RIo=;
+        b=MIo3tnVfOlhrpefraBDN5MhD8H8xTTFBACHFrKxS0RZaXbLonciML5e5LU2o5OCSY3
+         4lk+HzZnNHqCW+KH04rqJUd4ktH44i9M1qXixekITxcGAM/buQrcKviSp6G4sMujpHrm
+         EQJybScQXfdf2l9uLXhbky21dFhPWWotWKbPtanRKVpicKTJQsUDs5DeZe3N/GrwTjzt
+         dgQEKo1RVwSaeUl8hta8ws9TqRP9Rj2Dv6vQimlonT3Pe0eLfKeYLuc4S7asae/zwV9M
+         6zMWOpSrXFhKLDKunJaeN/2Z42mRwMbAB/3rh8yf96VbqooYu9aBbHTGJb3py+kTavah
+         WmrA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1715149949; x=1715754749;
+        d=1e100.net; s=20230601; t=1715149950; x=1715754750;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=qMHj8IuUdPM0tOmYXvWLbeITQEfrgALpkMswxvMZiwc=;
-        b=b9T6Q4wbSleXDR0eOaVMxdjxza2RIFhOgCFapy85NXbmuEYlfIn/uy4lHbGqzlwhaH
-         IkxoZ/5RXwCz3JDgUf4+EpXmPJZ+lLhLLP4wXOIOfjw5IpP1LvPzvKCue7m8OEJep41m
-         AbDv8Woe49dlqv0Dt3lxm/22xj+45nST+iqHm8dZE+61mNUbW2fEKUwFcXHxQYXhD8uj
-         7Z/nLgfWoROpyc+2F6xkvcktP6KV9qNK+5H18eGYuHyIWIvHg3setwr89sFZb/fXBFRq
-         W/fBKzOpiO7S6Ba+dOBFFfF+7oz2eMIzKdnHuC7yjcPMlj/Dx7UCTkJMaFqL9tQVBG0n
-         RS0w==
-X-Gm-Message-State: AOJu0YzKxU66hjlm0KeEVBOTCx7hql1Ja5cm8wycpGEpqncDcMkoZRbE
-	ofZFF+axtZ0zKBUrO5FY+sHMHSNgQR+/rJdPyYJDhusMaSWy4QW6kozM2A==
-X-Google-Smtp-Source: AGHT+IFF+nh9MHmVqxyX6v9J1xkNli6ZnPfROimbxUVoPTmtVObywp/5f2EYYDx/mISGYvsCS8sRhA==
-X-Received: by 2002:a05:6808:2988:b0:3c9:691b:dcee with SMTP id 5614622812f47-3c984b6a9aamr808328b6e.7.1715149949105;
-        Tue, 07 May 2024 23:32:29 -0700 (PDT)
+        bh=eGCAxMWCfi60a3tw+PnorEYjKcG5uTIVemeKayT5RIo=;
+        b=lnZZya1kJ+ZlKRr0JSGnJMrFKrbKdPHBO3952aRjVssh4gKommp3MUPYYVexZZou/t
+         C+WIWaj61mBkvB3oXnYDVlzo6KQRKUF1o68ixuvy1iCc5iDgRjQVrofU3q2WxKYXuNwX
+         r3YyZ/BvMFl+ADDn8yF7SmEenTpzxAQTbDPMPJQs6p+scMLaDmXBi4iUdVmwL6vuAUo9
+         EVxOva95NTMJVYdWeNW9Y6Ky8qwq+SsfCldJSgIErAD5R9PjYeJaywUn3aU9Ki7lufEn
+         CjfhvCUx3NcN3v0ehuDmh48rXQ77R7LQkprjSRA3wolYNRsNvGsthfvP71cAYKy5Cklp
+         J+Ag==
+X-Gm-Message-State: AOJu0YyPEvknaboWHxsY09NUqebLr161DZ7YbbK8hJ2x+3UYILKo6bNY
+	rJ2zyEBhnzR9/1PQrlif8ftQMiiwnjdpWSmS5lAtIs7Jh4RS4seWXNRqtg==
+X-Google-Smtp-Source: AGHT+IGBMZRWdnyXIaNGMMcC/AieXODTPoY91Wqfr8ro436ML/0njKraxI09E7LPCQJTXxdVT59gJA==
+X-Received: by 2002:a05:6808:1a1c:b0:3c9:6ba0:e98c with SMTP id 5614622812f47-3c98532a51fmr2056412b6e.52.1715149950384;
+        Tue, 07 May 2024 23:32:30 -0700 (PDT)
 Received: from kickker.attlocal.net ([2600:1700:6cf8:1240:28e:823a:cbf2:fea6])
-        by smtp.gmail.com with ESMTPSA id z22-20020a056808029600b003c9729ac86dsm841371oic.11.2024.05.07.23.32.28
+        by smtp.gmail.com with ESMTPSA id z22-20020a056808029600b003c9729ac86dsm841371oic.11.2024.05.07.23.32.29
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 07 May 2024 23:32:28 -0700 (PDT)
+        Tue, 07 May 2024 23:32:29 -0700 (PDT)
 From: Kui-Feng Lee <thinker.li@gmail.com>
 To: bpf@vger.kernel.org,
 	ast@kernel.org,
@@ -76,9 +76,9 @@ To: bpf@vger.kernel.org,
 Cc: sinquersw@gmail.com,
 	kuifeng@meta.com,
 	Kui-Feng Lee <thinker.li@gmail.com>
-Subject: [PATCH bpf-next v4 5/9] bpf: look into the types of the fields of a struct type recursively.
-Date: Tue,  7 May 2024 23:32:14 -0700
-Message-Id: <20240508063218.2806447-6-thinker.li@gmail.com>
+Subject: [PATCH bpf-next v4 6/9] bpf: limit the number of levels of a nested struct type.
+Date: Tue,  7 May 2024 23:32:15 -0700
+Message-Id: <20240508063218.2806447-7-thinker.li@gmail.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240508063218.2806447-1-thinker.li@gmail.com>
 References: <20240508063218.2806447-1-thinker.li@gmail.com>
@@ -90,171 +90,115 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-The verifier has field information for specific special types, such as
-kptr, rbtree root, and list head. These types are handled
-differently. However, we did not previously examine the types of fields of
-a struct type variable. Field information records were not generated for
-the kptrs, rbtree roots, and linked_list heads that are not located at the
-outermost struct type of a variable.
-
-For example,
-
-  struct A {
-    struct task_struct __kptr * task;
-  };
-
-  struct B {
-    struct A mem_a;
-  }
-
-  struct B var_b;
-
-It did not examine "struct A" so as not to generate field information for
-the kptr in "struct A" for "var_b".
-
-This patch enables BPF programs to define fields of these special types in
-a struct type other than the direct type of a variable or in a struct type
-that is the type of a field in the value type of a map.
+Limit the number of levels looking into struct types to avoid running out
+of stack space.
 
 Signed-off-by: Kui-Feng Lee <thinker.li@gmail.com>
 ---
- kernel/bpf/btf.c | 93 +++++++++++++++++++++++++++++++++++++-----------
- 1 file changed, 73 insertions(+), 20 deletions(-)
+ kernel/bpf/btf.c | 30 +++++++++++++++++++-----------
+ 1 file changed, 19 insertions(+), 11 deletions(-)
 
 diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-index 633c3e037cef..bbda24299be2 100644
+index bbda24299be2..b4d6a6959b21 100644
 --- a/kernel/bpf/btf.c
 +++ b/kernel/bpf/btf.c
-@@ -3494,41 +3494,83 @@ static int btf_get_field_type(const char *name, u32 field_mask, u32 *seen_mask,
+@@ -3534,7 +3534,8 @@ static int btf_repeat_fields(struct btf_field_info *info,
  
- #undef field_mask_test_name
+ static int btf_find_struct_field(const struct btf *btf,
+ 				 const struct btf_type *t, u32 field_mask,
+-				 struct btf_field_info *info, int info_cnt);
++				 struct btf_field_info *info, int info_cnt,
++				 u32 level);
  
--/* Repeat a field for a specified number of times.
-+/* Repeat a number of fields for a specified number of times.
+ /* Find special fields in the struct type of a field.
   *
-- * Copy and repeat the first field for repeat_cnt
-- * times. The field is repeated by adding the offset of each field
-- * with
-+ * Copy the fields starting from the first field and repeat them for
-+ * repeat_cnt times. The fields are repeated by adding the offset of each
-+ * field with
-  *   (i + 1) * elem_size
-  * where i is the repeat index and elem_size is the size of an element.
-  */
--static int btf_repeat_field(struct btf_field_info *info,
--			    u32 repeat_cnt, u32 elem_size)
-+static int btf_repeat_fields(struct btf_field_info *info,
-+			     u32 field_cnt, u32 repeat_cnt, u32 elem_size)
+@@ -3545,11 +3546,15 @@ static int btf_find_struct_field(const struct btf *btf,
+ static int btf_find_nested_struct(const struct btf *btf, const struct btf_type *t,
+ 				  u32 off, u32 nelems,
+ 				  u32 field_mask, struct btf_field_info *info,
+-				  int info_cnt)
++				  int info_cnt, u32 level)
  {
--	u32 i;
-+	u32 i, j;
- 	u32 cur;
+ 	int ret, err, i;
  
- 	/* Ensure not repeating fields that should not be repeated. */
--	switch (info[0].type) {
--	case BPF_KPTR_UNREF:
--	case BPF_KPTR_REF:
--	case BPF_KPTR_PERCPU:
--	case BPF_LIST_HEAD:
--	case BPF_RB_ROOT:
--		break;
--	default:
--		return -EINVAL;
-+	for (i = 0; i < field_cnt; i++) {
-+		switch (info[i].type) {
-+		case BPF_KPTR_UNREF:
-+		case BPF_KPTR_REF:
-+		case BPF_KPTR_PERCPU:
-+		case BPF_LIST_HEAD:
-+		case BPF_RB_ROOT:
-+			break;
-+		default:
-+			return -EINVAL;
-+		}
+-	ret = btf_find_struct_field(btf, t, field_mask, info, info_cnt);
++	level++;
++	if (level >= MAX_RESOLVE_DEPTH)
++		return -E2BIG;
++
++	ret = btf_find_struct_field(btf, t, field_mask, info, info_cnt, level);
+ 
+ 	if (ret <= 0)
+ 		return ret;
+@@ -3577,7 +3582,8 @@ static int btf_find_field_one(const struct btf *btf,
+ 			      int var_idx,
+ 			      u32 off, u32 expected_size,
+ 			      u32 field_mask, u32 *seen_mask,
+-			      struct btf_field_info *info, int info_cnt)
++			      struct btf_field_info *info, int info_cnt,
++			      u32 level)
+ {
+ 	int ret, align, sz, field_type;
+ 	struct btf_field_info tmp;
+@@ -3604,7 +3610,7 @@ static int btf_find_field_one(const struct btf *btf,
+ 		if (expected_size && expected_size != sz * nelems)
+ 			return 0;
+ 		ret = btf_find_nested_struct(btf, var_type, off, nelems, field_mask,
+-					     &info[0], info_cnt);
++					     &info[0], info_cnt, level);
+ 		return ret;
  	}
  
--	cur = 1;
-+	cur = field_cnt;
- 	for (i = 0; i < repeat_cnt; i++) {
--		memcpy(&info[cur], &info[0], sizeof(info[0]));
--		info[cur++].off += (i + 1) * elem_size;
-+		memcpy(&info[cur], &info[0], field_cnt * sizeof(info[0]));
-+		for (j = 0; j < field_cnt; j++)
-+			info[cur++].off += (i + 1) * elem_size;
- 	}
+@@ -3665,7 +3671,8 @@ static int btf_find_field_one(const struct btf *btf,
  
- 	return 0;
- }
- 
-+static int btf_find_struct_field(const struct btf *btf,
-+				 const struct btf_type *t, u32 field_mask,
-+				 struct btf_field_info *info, int info_cnt);
-+
-+/* Find special fields in the struct type of a field.
-+ *
-+ * This function is used to find fields of special types that is not a
-+ * global variable or a direct field of a struct type. It also handles the
-+ * repetition if it is the element type of an array.
-+ */
-+static int btf_find_nested_struct(const struct btf *btf, const struct btf_type *t,
-+				  u32 off, u32 nelems,
-+				  u32 field_mask, struct btf_field_info *info,
-+				  int info_cnt)
-+{
-+	int ret, err, i;
-+
-+	ret = btf_find_struct_field(btf, t, field_mask, info, info_cnt);
-+
-+	if (ret <= 0)
-+		return ret;
-+
-+	/* Shift the offsets of the nested struct fields to the offsets
-+	 * related to the container.
-+	 */
-+	for (i = 0; i < ret; i++)
-+		info[i].off += off;
-+
-+	if (nelems > 1) {
-+		err = btf_repeat_fields(info, ret, nelems - 1, t->size);
-+		if (err == 0)
-+			ret *= nelems;
-+		else
-+			ret = err;
-+	}
-+
-+	return ret;
-+}
-+
- static int btf_find_field_one(const struct btf *btf,
- 			      const struct btf_type *var,
- 			      const struct btf_type *var_type,
-@@ -3555,6 +3597,17 @@ static int btf_find_field_one(const struct btf *btf,
- 
- 	field_type = btf_get_field_type(__btf_name_by_offset(btf, var_type->name_off),
- 					field_mask, seen_mask, &align, &sz);
-+	/* Look into variables of struct types */
-+	if ((field_type == BPF_KPTR_REF || !field_type) &&
-+	    __btf_type_is_struct(var_type)) {
-+		sz = var_type->size;
-+		if (expected_size && expected_size != sz * nelems)
-+			return 0;
-+		ret = btf_find_nested_struct(btf, var_type, off, nelems, field_mask,
-+					     &info[0], info_cnt);
-+		return ret;
-+	}
-+
- 	if (field_type == 0)
- 		return 0;
- 	if (field_type < 0)
-@@ -3603,7 +3656,7 @@ static int btf_find_field_one(const struct btf *btf,
- 	if (nelems > info_cnt)
- 		return -E2BIG;
- 	if (nelems > 1) {
--		ret = btf_repeat_field(info, nelems - 1, sz);
-+		ret = btf_repeat_fields(info, 1, nelems - 1, sz);
+ static int btf_find_struct_field(const struct btf *btf,
+ 				 const struct btf_type *t, u32 field_mask,
+-				 struct btf_field_info *info, int info_cnt)
++				 struct btf_field_info *info, int info_cnt,
++				 u32 level)
+ {
+ 	int ret, idx = 0;
+ 	const struct btf_member *member;
+@@ -3684,7 +3691,7 @@ static int btf_find_struct_field(const struct btf *btf,
+ 		ret = btf_find_field_one(btf, t, member_type, i,
+ 					 off, 0,
+ 					 field_mask, &seen_mask,
+-					 &info[idx], info_cnt - idx);
++					 &info[idx], info_cnt - idx, level);
  		if (ret < 0)
  			return ret;
- 	}
+ 		idx += ret;
+@@ -3694,7 +3701,7 @@ static int btf_find_struct_field(const struct btf *btf,
+ 
+ static int btf_find_datasec_var(const struct btf *btf, const struct btf_type *t,
+ 				u32 field_mask, struct btf_field_info *info,
+-				int info_cnt)
++				int info_cnt, u32 level)
+ {
+ 	int ret, idx = 0;
+ 	const struct btf_var_secinfo *vsi;
+@@ -3707,7 +3714,8 @@ static int btf_find_datasec_var(const struct btf *btf, const struct btf_type *t,
+ 		off = vsi->offset;
+ 		ret = btf_find_field_one(btf, var, var_type, -1, off, vsi->size,
+ 					 field_mask, &seen_mask,
+-					 &info[idx], info_cnt - idx);
++					 &info[idx], info_cnt - idx,
++					 level);
+ 		if (ret < 0)
+ 			return ret;
+ 		idx += ret;
+@@ -3720,9 +3728,9 @@ static int btf_find_field(const struct btf *btf, const struct btf_type *t,
+ 			  int info_cnt)
+ {
+ 	if (__btf_type_is_struct(t))
+-		return btf_find_struct_field(btf, t, field_mask, info, info_cnt);
++		return btf_find_struct_field(btf, t, field_mask, info, info_cnt, 0);
+ 	else if (btf_type_is_datasec(t))
+-		return btf_find_datasec_var(btf, t, field_mask, info, info_cnt);
++		return btf_find_datasec_var(btf, t, field_mask, info, info_cnt, 0);
+ 	return -EINVAL;
+ }
+ 
 -- 
 2.34.1
 
