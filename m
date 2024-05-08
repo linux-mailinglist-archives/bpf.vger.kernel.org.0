@@ -1,214 +1,235 @@
-Return-Path: <bpf+bounces-29064-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-29067-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9C3488BFC32
-	for <lists+bpf@lfdr.de>; Wed,  8 May 2024 13:36:05 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id A430F8BFC9F
+	for <lists+bpf@lfdr.de>; Wed,  8 May 2024 13:47:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 107D4B209DB
-	for <lists+bpf@lfdr.de>; Wed,  8 May 2024 11:36:03 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1A00C1F257DE
+	for <lists+bpf@lfdr.de>; Wed,  8 May 2024 11:47:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4BC9B8288A;
-	Wed,  8 May 2024 11:35:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D77884A34;
+	Wed,  8 May 2024 11:46:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="cVtwl2Ey"
+	dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b="MGedoFgJ"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f48.google.com (mail-ej1-f48.google.com [209.85.218.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mailout2.w1.samsung.com (mailout2.w1.samsung.com [210.118.77.12])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 20AB447F6C;
-	Wed,  8 May 2024 11:35:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4ABDE82D62;
+	Wed,  8 May 2024 11:46:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=210.118.77.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715168148; cv=none; b=eJjU0TsyE78ZD963yoessgBvF11SwWh0/x/rK0cRpUufsMGUsuTzHye401rZNWuGDQZ9zeEyjewMj1/RGe2rU0rd2NRkBij8yGR9576KvMPalBIrE8ulL8G7xO6hxNqNI8GB0FyuMiKne1rqb+azIjofCbJTSgdDULIU20Ztmsw=
+	t=1715168803; cv=none; b=r4+TihxJqOgmyUCehE91vYQowL4h/5ic7FjRAM5nZklYPvu9tjpsqKErxql3GjkA4N00/44tlRZebRFTzrES+NTfNMY0N8+KyA1ajtJwjuD5if7WNCSR21BcKm/WJ/LP+svd9EAnhRrU1Gw0r7ABw+h1szrSH2hGjV3q522pH94=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715168148; c=relaxed/simple;
-	bh=NUGzzI2KqNP1cPbp/GxrzL3VQvSocCNEihYdoADSwBA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=P7Nkvm7GcpAYmXb1yv4TUGjc4bdQV9BxYOZZvaVvdmxkiaJJTNsu7hyhghtAcp4SS6rtwjo3tNaIkRwnsU8K05ADAMOfgoF1Sld/FTWcx2KHPw0RySsaXFTb2forzcWP44kAkw19wiLoZy0L29zUWXqX/erg7uBhc0YgvhlGiOI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=cVtwl2Ey; arc=none smtp.client-ip=209.85.218.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-a59c5c9c6aeso889617966b.2;
-        Wed, 08 May 2024 04:35:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1715168145; x=1715772945; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:to:subject:user-agent:mime-version:date:message-id:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=Vb7A8NDewpqVb/wyIJ0582aE2qv/3FWwkQEcmRDFW+Y=;
-        b=cVtwl2EyWMN1bGdSkykbJhrDFoQpdkWU7U8Iqy5jzsqGgIvn/e6ZCNK6t48QGPTZ/x
-         P70xXIi51A1Jkx7i30fX0a5dMpmqyyeTmNPyo0KzQBvmURkZDWUUCvKPBrPmzjJxqmq+
-         Au3+NimpyoMB0Z74M/IOrwR6cou46Qxg8Rt946ebkk7lRvziMVXMRkxMVJusv/6DaNWu
-         IEDZhsoO/i1y43oBsLpNQ6T96eMJU0Kx2k96MPJbB5sPytYv67jOqcmBixqa7TnMvlsK
-         kiQ5Pr43AQKfYlO9JU6XsdJy44dMQCfMEayJ4Qj5R7tGtqFJnzDQz2cpLNpF9vqlPzHQ
-         UTgg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1715168145; x=1715772945;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Vb7A8NDewpqVb/wyIJ0582aE2qv/3FWwkQEcmRDFW+Y=;
-        b=AgjGsJScNDHJqQnI6NO2doDMKlGhORuTvTqwGd7a5nhAK5hlZOowBbS6EK3x1GsZAW
-         oxpBCGu/hEnuqVBaKDdzmirrQ0KDQJpVl5QASebqXLVqe776RWbI2oeHZwkwqCmnuHF3
-         IB6Tvwxt4gjNYO/WHqrDbpY19rILXEkkvcVUyCENOOcNNRAyzbTv3CWz4NK8sn0jYhHE
-         cAS1zCfsOFQECJyLeeypg8VKpoQABZlB+w6wUCEnTD/VWvDRoePdeW1tF7wIq2wPG4f8
-         F+G4Za6ERSCi2N7c4gNkQHnc7Zt/zeY0C9JWkZBFolOsp6UUN/XnyMZw4HmbbRjaZXTk
-         WpkA==
-X-Forwarded-Encrypted: i=1; AJvYcCWU88OpDWbAOKdGKRMW2jpmD1p+H4YCFocqp3cT5i4CVf8rHabWNVVjXlErDKGMXBVu7ygruQDbYaQBCzHGvKGWhmDWRQ4yVA6e3EueaCUBuMsscIgViXVmvYZziF7rumzHQgTbhQB9DZhymBNt8fZyF70VxXaYEPTwv6fr/G6qLlLvQ6XizMsnVgGCGnetj5aPeEISags693A3rBN9ze3otY7SB5qAlnwby1thQL0ZDnfU/XDPQb1dIiXBzYjmdKg/pOLJ0NT7R39oD741CYEesFvQwmDJh8wJSP+IAVxdrZboU+QI80YhsL17T+DPQwpdQE8JjS/U7gA3STCtvWxSdJAgmCTXPO5CCbTtBm8lx+Y9AxYZ55B0L7PFd4bA5ZGNoIwgwdXwkiAb6zOIQimtEU9CUJcmAM5uk+QlhPZWXUKnGJPMufklnDErHVFvBdOVUnFi1LDEyvIor+jgsCk01DdZlVsDvVLZqOaGkt4PNaBbwKMc+LPXJznPCeyFAOEeerFwZw==
-X-Gm-Message-State: AOJu0YzI1687RXF6xyRCrTIQN9uPWV+DevSYCa5VsGXCpQOX+qFFXMnX
-	LXvIxD90PoGcaC1YBBzmXYmeCRggFEUco55LvUySgy3oWOkuDtSh
-X-Google-Smtp-Source: AGHT+IFD1CFod5VQ+iswMgBuojxIC5HF11jrNe705xchAqUdklV+Hcoyl3d8HPrZmlieFNMEy7rhLQ==
-X-Received: by 2002:a17:906:54c7:b0:a59:9edf:14b6 with SMTP id a640c23a62f3a-a59fb9699ccmr154863866b.45.1715168145194;
-        Wed, 08 May 2024 04:35:45 -0700 (PDT)
-Received: from [192.168.42.217] ([163.114.131.193])
-        by smtp.gmail.com with ESMTPSA id p25-20020a170906141900b00a55a5384986sm7568868ejc.24.2024.05.08.04.35.43
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 08 May 2024 04:35:44 -0700 (PDT)
-Message-ID: <1e2823db-504b-4829-856f-3f45a45ccada@gmail.com>
-Date: Wed, 8 May 2024 12:35:52 +0100
+	s=arc-20240116; t=1715168803; c=relaxed/simple;
+	bh=cpA+7N6Sz3fsV3eip5EVkKcJQeVtFO7ZiIALxL3MuKA=;
+	h=Date:From:To:CC:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition:In-Reply-To:References; b=U+8k4XmOVQRQawKAarRlX7wi2Q1LMRxT2qdZnRTdMWxrI7DHXOey/FD0uT30oCzA5UZN5K7Mct4AC49DlR83clHXkrgu26phEutdJCbKd9u3PnnYT/TDQz5Dy5E7WrMkJk+RvMqfOUSakZk/q7EJg3/6ULBZTki8IK3rDmE/weU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com; spf=pass smtp.mailfrom=samsung.com; dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b=MGedoFgJ; arc=none smtp.client-ip=210.118.77.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=samsung.com
+Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
+	by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20240508113726euoutp023b917c183029915f96a388a085ef9f3c~NgG6-85E21770217702euoutp02_;
+	Wed,  8 May 2024 11:37:26 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20240508113726euoutp023b917c183029915f96a388a085ef9f3c~NgG6-85E21770217702euoutp02_
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+	s=mail20170921; t=1715168246;
+	bh=cF90zorX3Vhkec3/TFj+N593dqTmsatotOCQjHSZEbM=;
+	h=Date:From:To:CC:Subject:In-Reply-To:References:From;
+	b=MGedoFgJUxqsWS+zDcnWEQjCsAolmv6XQq26O3hTwtnVUXsPIbO123xNVdDsR1wi8
+	 4ruaFwHk37WfH/K8Vb94HbGRPKKEv2Im4rxPFviwViSVpO0j+oN5tsVWmyq70AhMUk
+	 fkBQHu/4DdTej80roiXkz13NiIEQJKgdnVvkytNE=
+Received: from eusmges1new.samsung.com (unknown [203.254.199.242]) by
+	eucas1p1.samsung.com (KnoxPortal) with ESMTP id
+	20240508113725eucas1p16225069534576a85124b13399ba8b854~NgG6vou7Z2221222212eucas1p1K;
+	Wed,  8 May 2024 11:37:25 +0000 (GMT)
+Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
+	eusmges1new.samsung.com (EUCPMTA) with SMTP id C2.CE.09624.5F36B366; Wed,  8
+	May 2024 12:37:25 +0100 (BST)
+Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
+	eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
+	20240508113725eucas1p1c73dc1b7bc2780f99b281e4cc534d1a0~NgG6RWhmU1576115761eucas1p1a;
+	Wed,  8 May 2024 11:37:25 +0000 (GMT)
+Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
+	eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
+	20240508113725eusmtrp125fc799878405e7480db3ef8c0ccefef~NgG6P556t0870508705eusmtrp1k;
+	Wed,  8 May 2024 11:37:25 +0000 (GMT)
+X-AuditID: cbfec7f2-c11ff70000002598-a3-663b63f58af9
+Received: from eusmtip2.samsung.com ( [203.254.199.222]) by
+	eusmgms2.samsung.com (EUCPMTA) with SMTP id 28.7B.09010.5F36B366; Wed,  8
+	May 2024 12:37:25 +0100 (BST)
+Received: from CAMSVWEXC02.scsc.local (unknown [106.1.227.72]) by
+	eusmtip2.samsung.com (KnoxPortal) with ESMTPA id
+	20240508113725eusmtip245b7460632450ec5f8efcdd3ed3a83f1~NgG6AtV8G1709017090eusmtip2g;
+	Wed,  8 May 2024 11:37:25 +0000 (GMT)
+Received: from localhost (106.110.32.44) by CAMSVWEXC02.scsc.local
+	(2002:6a01:e348::6a01:e348) with Microsoft SMTP Server (TLS) id 15.0.1497.2;
+	Wed, 8 May 2024 12:37:24 +0100
+Date: Wed, 8 May 2024 13:37:19 +0200
+From: Joel Granados <j.granados@samsung.com>
+To: Kees Cook <keescook@chromium.org>
+CC: Jakub Kicinski <kuba@kernel.org>, Luis Chamberlain <mcgrof@kernel.org>,
+	Kees Cook <keescook@chromium.org>, Eric Dumazet <edumazet@google.com>, Dave
+	Chinner <david@fromorbit.com>, <linux-fsdevel@vger.kernel.org>,
+	<netdev@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+	<linux-s390@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<linux-riscv@lists.infradead.org>, <linux-mm@kvack.org>,
+	<linux-security-module@vger.kernel.org>, <bpf@vger.kernel.org>,
+	<linuxppc-dev@lists.ozlabs.org>, <linux-xfs@vger.kernel.org>,
+	<linux-trace-kernel@vger.kernel.org>, <linux-perf-users@vger.kernel.org>,
+	<netfilter-devel@vger.kernel.org>, <coreteam@netfilter.org>,
+	<kexec@lists.infradead.org>, <linux-hardening@vger.kernel.org>,
+	<bridge@lists.linux.dev>, <lvs-devel@vger.kernel.org>,
+	<linux-rdma@vger.kernel.org>, <rds-devel@oss.oracle.com>,
+	<linux-sctp@vger.kernel.org>, <linux-nfs@vger.kernel.org>,
+	<apparmor@lists.ubuntu.com>
+Subject: Re: [PATCH v3 00/11] sysctl: treewide: constify ctl_table argument
+ of sysctl handlers
+Message-ID: <20240508113719.pccjkyd5nk5soqrg@joelS2.panther.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH net-next v8 02/14] net: page_pool: create hooks for
- custom page providers
-To: Jason Gunthorpe <jgg@ziepe.ca>, Mina Almasry <almasrymina@google.com>,
- Christoph Hellwig <hch@infradead.org>, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
- linux-alpha@vger.kernel.org, linux-mips@vger.kernel.org,
- linux-parisc@vger.kernel.org, sparclinux@vger.kernel.org,
- linux-trace-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
- bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
- linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
- "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
- Jonathan Corbet <corbet@lwn.net>,
- Richard Henderson <richard.henderson@linaro.org>,
- Ivan Kokshaysky <ink@jurassic.park.msu.ru>, Matt Turner
- <mattst88@gmail.com>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
- "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
- Helge Deller <deller@gmx.de>, Andreas Larsson <andreas@gaisler.com>,
- Jesper Dangaard Brouer <hawk@kernel.org>,
- Ilias Apalodimas <ilias.apalodimas@linaro.org>,
- Steven Rostedt <rostedt@goodmis.org>, Masami Hiramatsu
- <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
- Arnd Bergmann <arnd@arndb.de>, Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
- Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman
- <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
- Yonghong Song <yonghong.song@linux.dev>,
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
- Jiri Olsa <jolsa@kernel.org>, Steffen Klassert
- <steffen.klassert@secunet.com>, Herbert Xu <herbert@gondor.apana.org.au>,
- David Ahern <dsahern@kernel.org>,
- Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
- Shuah Khan <shuah@kernel.org>, Sumit Semwal <sumit.semwal@linaro.org>,
- =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
- Amritha Nambiar <amritha.nambiar@intel.com>,
- Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
- Alexander Mikhalitsyn <alexander@mihalicyn.com>,
- Kaiyuan Zhang <kaiyuanz@google.com>, Christian Brauner <brauner@kernel.org>,
- Simon Horman <horms@kernel.org>, David Howells <dhowells@redhat.com>,
- Florian Westphal <fw@strlen.de>, Yunsheng Lin <linyunsheng@huawei.com>,
- Kuniyuki Iwashima <kuniyu@amazon.com>, Jens Axboe <axboe@kernel.dk>,
- Arseniy Krasnov <avkrasnov@salutedevices.com>,
- Aleksander Lobakin <aleksander.lobakin@intel.com>,
- Michael Lass <bevan@bi-co.net>, Jiri Pirko <jiri@resnulli.us>,
- Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
- Lorenzo Bianconi <lorenzo@kernel.org>,
- Richard Gobert <richardbgobert@gmail.com>,
- Sridhar Samudrala <sridhar.samudrala@intel.com>,
- Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
- Johannes Berg <johannes.berg@intel.com>, Abel Wu <wuyun.abel@bytedance.com>,
- Breno Leitao <leitao@debian.org>, David Wei <dw@davidwei.uk>,
- Shailend Chand <shailend@google.com>,
- Harshitha Ramamurthy <hramamurthy@google.com>,
- Shakeel Butt <shakeel.butt@linux.dev>, Jeroen de Borst
- <jeroendb@google.com>, Praveen Kaligineedi <pkaligineedi@google.com>
-References: <ZjjHUh1eINPg1wkn@infradead.org>
- <20b1c2d9-0b37-414c-b348-89684c0c0998@gmail.com>
- <20240507161857.GA4718@ziepe.ca> <ZjpVfPqGNfE5N4bl@infradead.org>
- <CAHS8izPH+sRLSiZ7vbrNtRdHrFEf8XQ61XAyHuxRSL9Jjy8YbQ@mail.gmail.com>
- <20240507164838.GG4718@ziepe.ca>
- <0d5da361-cc7b-46e9-a635-9a7a4c208444@gmail.com>
- <20240507175644.GJ4718@ziepe.ca>
- <6a50d01a-b5b9-4699-9d58-94e5f8f81c13@gmail.com>
- <20240507233247.GK4718@ziepe.ca> <Zjsm3vO6rIY_sw5A@phenom.ffwll.local>
-Content-Language: en-US
-From: Pavel Begunkov <asml.silence@gmail.com>
-In-Reply-To: <Zjsm3vO6rIY_sw5A@phenom.ffwll.local>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg="pgp-sha512";
+	protocol="application/pgp-signature"; boundary="v7sa5w52x2sbyktg"
+Content-Disposition: inline
+In-Reply-To: <d11f875e-4fb5-46dd-a412-84818208c575@t-8ch.de>
+X-ClientProxiedBy: CAMSVWEXC01.scsc.local (2002:6a01:e347::6a01:e347) To
+	CAMSVWEXC02.scsc.local (2002:6a01:e348::6a01:e348)
+X-Brightmail-Tracker: H4sIAAAAAAAAA2WSf0wTZxzG917vrkez4lGdvIDOwQCz6RhuKO8C21RMdsuiwy1b4pJldnAU
+	Ai2kBabgsiKObvwQtJnQKrMgItCFstI1/DISwDIps0WJkskgqeAmUGB0hSBa13KQmey/z/N8
+	v0/u+7w5iie6RwZTabJsVi4TZ4SRAtxsWb75mjspLiV61L0bFVh0BHL19ZPIfKkEQ0/aVTxk
+	sowBNGlx8NFgiRR1Wt0YsptPE8h4/w6Buq7ewNGPhmWAbndcINHYT08JZO+2Emj4l2YcPegp
+	w5HZdYpEFTWFPDSpmybQfKmDRH2G33DU8biNj1aWPAQqvLjAQyMVkwBZdJtRRfMAjm62uoi9
+	W5nzyiGcGaiFjM6YwxibvicZ48JZPtNa9w3zV6sGMLaqGsDcGRnHGefKrxhjr58hGZfxxcTn
+	PxPEJ7MZabms/PV3jgpSda4JkPVzyLG66iq+EjzZXAz8KEjHwMFyKygGAkpENwBYvzTI58Q/
+	AFaZ7DgnXACqp5r465H2yi6MG1wBcLh4XXi3ZvvH1vJGABufthG+CE6Hw85zHatM0juhbWaU
+	5+NNdARculW4yjy6nQ9trgAfb6SPQtNlNfCxkN4LtY4hnOMAeEMzgXP7x2Dhmcfej1FeDoFX
+	PJTP9qPjYdt5O4+7NBS6L43hHH8NB0y/rx4K6QkB1HTZMG5wALYM95Mcb4RT/aa1mlugVV2K
+	cwE1gNc883xO6L3PVOBeS8fBU8MTa4l90GawEb6LIO0PR5wB3KH+8Ky5ksfZQvhdkYjbjoT6
+	sRm8Arysfaaa9plq2v+qcfZOqOtcIP9n74D1NdM8jt+Gzc1zuA7wm0Agm6OQSljFLhn7VZRC
+	LFXkyCRRSZlSI/D+81ZP/0IbqJ76O6oHYBToAeHesKNFbwfBuCxTxoZtEl5XxaaIhMni43ms
+	PPMLeU4Gq+gBIRQeFiiMSN7GimiJOJtNZ9ksVr4+xSi/YCW2R1rSi4Qx4elB5/Z35R9871Za
+	+ZbjQfXKdOsrOUox3EDMsoJq43MJ6pZDi+P63LRti5GzjTXXFoNky/5FR8J6Ba4909mfJm73
+	XF94kFCg/OHkwzJxxMcn4lRJwsqBw2/2FVyIVmtFcTumh2rclm/z/+guS7g6cyLrYt49Z+Mg
+	9uHIbodGETtep6ib3G9yOJY/Kv38S6vmtqM19uH4n7mS8kfd0p59KU3qOfP9w+ly+uDoXfTG
+	J1Wt+TAy3vnBkeTodztDscsr5g3WkwcOba/tdeclKopWnI3stIQ1vBWTF/8CnZrUwDc1hJd6
+	5k8Hzhnuvk/lT6q2htbqx19iMUr1KAxXpIp3vcqTK8T/AgNMPNVuBAAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA2WSfUxTZxTG896vtmrntaC+gDpX2WaYVlpofWHAIDHLXXTL9seyZROxK1dg
+	0pb1w+AWNwxmzDIWQCICMotCJ4UUdmGErw1XWSlUpLjJ0Gx11kEmH9mgA0OKZYVmmcn+++V5
+	8jzn5OTwcdEiGcnP0RhYnUaZK6bWEa7AgGfvgurFY7HW4nB02mEmka9/gEIdV4ox9LirCEft
+	Dg9AEw4vD90oVqMe1wKG3B1fkIh7MEai3m8HCfRlyxJAP3ZfpJCneYVE7msuEv30jY1Ak/YS
+	AnX4zlCotK4QRxPmaRL99bmXQv0twwTqXu7kIf+jAIkKL83jaLx0AiCHeQsqtQ0R6Gabj0zd
+	ztQUjBLM0GXImDkjw1nPUgw3X85j2uo/Yf5oqwLMyIU6wIyN3yOYWb8TY9yWGYrxcTte3/CO
+	JEmnNRrYndlavSFZ/K4UySTSBCSRxSdIpHH70xNlcvG+lKRMNjfnBKvbl3JUkl356U2Q1xKV
+	f8ZnIguAf4sJCPiQjoddlb2YCazji+gGAE3dFVTI2Aa//vs2GeIwuDxmWtNF9ByAjdbnQgEO
+	QEuZiVg1CDoa9pzvXgtQ9B44MvMLvsrh9LPw0a3CNcbpLh50LdKrHEYfhe0N58AqC+lUWO0d
+	JUKlrRicthfgIWMTHKz6nQiFT0Bn61xwAD/IUfCrAH9VFtBJsLPGjYcWfQYuXPEQIT4FfY8n
+	QSkIq36iqfqJpur/mkJyDBwPPMT+J78ALXXTeIiToc32J2EGPCsIZ416dZZaL5PolWq9UZMl
+	UWnVHAg+XYdjqb0TNE7NSewA4wM7iA4mva1NbhBJaLQaVhwu/KFo/zGRMFN58kNWp83QGXNZ
+	vR3Ig1cswyM3q7TBD9YYMqSKWLk0XpEQK09QxIm3Cl/J+0wporOUBvY4y+axun9zGF8QWYBZ
+	xWWJk1SvYtDoUnNPN78hM3Utbnq+XvLqaLIqrNZ2teTNuqKLUa7E9T1X9wzE7Bqv2VbW4Tni
+	TO07HXjZ7uZ+Tn1YNb6oqLxeUrzT3HZj5Xr+3ZOXn7LMpsRNC5oiJu+0FH+wvn+0YkzRJapP
+	Gz4gqFj43nJhKOOU//D93VjfsNOmOh/RMLx1Y9TB3dQSeXfzHe39CKtAmNW84S3pvHTO7n+t
+	Nquitqnc8etvM40jMUcyPVPXyvEIWWv0jrRdG8/mr/i42733Bt7P+ah50n8rZuptc7r4Y2c6
+	zTsIdZVNndF732ugqeTD574T9jNpPO/x7QuH+l56oNTL5YYD0uUAb1ZM6LOV0hhcp1f+Aw47
+	jhcJBAAA
+X-CMS-MailID: 20240508113725eucas1p1c73dc1b7bc2780f99b281e4cc534d1a0
+X-Msg-Generator: CA
+X-RootMTR: 20240425031241eucas1p1fb0790e0d03ccbe4fca2b5f6da83d6db
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20240425031241eucas1p1fb0790e0d03ccbe4fca2b5f6da83d6db
+References: <20240423-sysctl-const-handler-v3-0-e0beccb836e2@weissschuh.net>
+	<CGME20240425031241eucas1p1fb0790e0d03ccbe4fca2b5f6da83d6db@eucas1p1.samsung.com>
+	<20240424201234.3cc2b509@kernel.org>
+	<20240425110412.2n5d27smecfncsfa@joelS2.panther.com>
+	<d11f875e-4fb5-46dd-a412-84818208c575@t-8ch.de>
 
-On 5/8/24 08:16, Daniel Vetter wrote:
-> On Tue, May 07, 2024 at 08:32:47PM -0300, Jason Gunthorpe wrote:
->> On Tue, May 07, 2024 at 08:35:37PM +0100, Pavel Begunkov wrote:
->>> On 5/7/24 18:56, Jason Gunthorpe wrote:
->>>> On Tue, May 07, 2024 at 06:25:52PM +0100, Pavel Begunkov wrote:
->>>>> On 5/7/24 17:48, Jason Gunthorpe wrote:
->>>>>> On Tue, May 07, 2024 at 09:42:05AM -0700, Mina Almasry wrote:
->>>>>>
->>>>>>> 1. Align with devmem TCP to use udmabuf for your io_uring memory. I
->>>>>>> think in the past you said it's a uapi you don't link but in the face
->>>>>>> of this pushback you may want to reconsider.
->>>>>>
->>>>>> dmabuf does not force a uapi, you can acquire your pages however you
->>>>>> want and wrap them up in a dmabuf. No uapi at all.
->>>>>>
->>>>>> The point is that dmabuf already provides ops that do basically what
->>>>>> is needed here. We don't need ops calling ops just because dmabuf's
->>>>>> ops are not understsood or not perfect. Fixup dmabuf.
->>>>>
->>>>> Those ops, for example, are used to efficiently return used buffers
->>>>> back to the kernel, which is uapi, I don't see how dmabuf can be
->>>>> fixed up to cover it.
->>>>
->>>> Sure, but that doesn't mean you can't use dma buf for the other parts
->>>> of the flow. The per-page lifetime is a different topic than the
->>>> refcounting and access of the entire bulk of memory.
->>>
->>> Ok, so if we're leaving uapi (and ops) and keep per page/sub-buffer as
->>> is, the rest is resolving uptr -> pages, and passing it to page pool in
->>> a convenient to page pool format (net_iov).
->>
->> I'm not going to pretend to know about page pool details, but dmabuf
->> is the way to get the bulk of pages into a pool within the net stack's
->> allocator and keep that bulk properly refcounted while.
->>
->> An object like dmabuf is needed for the general case because there are
->> not going to be per-page references or otherwise available.
->>
->> What you seem to want is to alter how the actual allocation flow works
->> from that bulk of memory and delay the free. It seems like a different
->> topic to me, and honestly hacking into the allocator free function
->> seems a bit weird..
-> 
-> Also I don't see how it's an argument against dma-buf as the interface for
+--v7sa5w52x2sbyktg
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-It's not, neither I said it is, but it is an argument against removing
-the network's page pool ops.
+Kees
 
-> all these, because e.g. ttm internally does have a page pool because
-> depending upon allocator, that's indeed beneficial. Other drm drivers have
-> more buffer-based concepts for opportunistically memory around, usually
-> by marking buffers that are just kept as cache as purgeable (which is a
-> concept that goes all the way to opengl/vulkan).
+Could you comment on the feasibility of this alternative from the
+Control Flow Integrity perspective. My proposal is to change the
+proc_handler to void* and back in the same release. So there would not
+be a kernel released with a void* proc_handler.
 
-Because in this case it solves nothing and helps with nothing, quite
-the opposite. Just as well we can ask why NVMe doesn't wrap user pages
-into a dmabuf while doing IO.
+> > However, there is an alternative way to do this that allows chunking. We
+> > first define the proc_handler as a void pointer (casting it where it is
+> > being used) [1]. Then we could do the constification by subsystem (like
+> > Jakub proposes). Finally we can "revert the void pointer change so we
+> > don't have one size fit all pointer as our proc_handler [2].
+> >=20
+> > Here are some comments about the alternative:
+> > 1. We would need to make the first argument const in all the derived
+> >    proc_handlers [3]=20
+> > 2. There would be no undefined behavior for two reasons:
+> >    2.1. There is no case where we change the first argument. We know
+> >         this because there are no compile errors after we make it const.
+> >    2.2. We would always go from non-const to const. This is the case
+> >         because all the stuff that is unchanged in non-const.
+> > 3. If the idea sticks, it should go into mainline as one patchset. I
+> >    would not like to have a void* proc_handler in a kernel release.
+> > 4. I think this is a "win/win" solution were the constification goes
+> >    through and it is divided in such a way that it is reviewable.
+> >=20
+> > I would really like to hear what ppl think about this "heretic"
+> > alternative. @Thomas, @Luis, @Kees @Jakub?
+>=20
+> Thanks for that alternative, I'm not a big fan though.
+>=20
+> Besides the wonky syntax, Control Flow Integrity should trap on
+> this construct. Functions are called through different pointers than
+> their actual types which is exactly what CFI is meant to prevent.
+>=20
+> Maybe people find it easier to review when using
+> "--word-diff" and/or "-U0" with git diff/show.
+> There is really nothing going an besides adding a few "const"s.
+>=20
+> But if the consensus prefers this solution, I'll be happy to adopt it.
+>=20
+> > [1] https://git.kernel.org/pub/scm/linux/kernel/git/joel.granados/linux=
+=2Egit/commit/?h=3Djag/constfy_treewide_alternative&id=3D4a383503b1ea650d4e=
+12c1f5838974e879f5aa6f
+> > [2] https://git.kernel.org/pub/scm/linux/kernel/git/joel.granados/linux=
+=2Egit/commit/?h=3Djag/constfy_treewide_alternative&id=3Da3be65973d27ec2933=
+b9e81e1bec60be3a9b460d
+> > [3] proc_dostring, proc_dobool, proc_dointvec....
+>=20
+>=20
+> Thomas
 
-> But these are all internals of the dma-buf exporter, the dma-buf api users
-> don't ever need to care.
-> -Sima
+Best
+--=20
 
--- 
-Pavel Begunkov
+Joel Granados
+
+--v7sa5w52x2sbyktg
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQGzBAABCgAdFiEErkcJVyXmMSXOyyeQupfNUreWQU8FAmY7Y+4ACgkQupfNUreW
+QU9YEgwAhDVP7Y6eoR6THZeBhX5jlhu2G9nJstttqNF2XutpFKVjE8Z3C89eHNng
+DCMo7QPRNspNV7452TWHzjB9TyWvZ3WtKaNd1O0ECwCMpZ32/0aZ5SAsMd+cY2D5
+yDhAjIzVJups6lQWx1bTMDtuWft9Ebi7Wvd9I3Q+Qjq5khbrSHMCzCr1Bl2ZfscY
+ApmHqb3v0KxOM+QrrybFvFCD/tt7uYyJfmH96GgBLdl2+7ceoUigiSK5ebySplCo
+UnNLZi6LEwS1kjyNpbWQbKq9czcSKCCYVM3kzqzcPBdRU/km7XH0oi7SybNt7PSz
+ZvFQgc34OiFAFcb9twbtzTKfXVBXpBwmOwwgqLw4yNS2C8QH+nbO6qUmHoDp44ZW
+6jYrjdWbdDrP+Mwh56FkIcs84+0tgdLgsT6ni9LyK50S8Ik7ivQRCnojjpNJS19p
+wRnfmB6C3lNH2MWxq9gw8k+RMhDB3eRxcXrTbEjYImsO4zb3xo+CjjPG5TGkvezg
+ehHTRa51
+=YpMU
+-----END PGP SIGNATURE-----
+
+--v7sa5w52x2sbyktg--
 
