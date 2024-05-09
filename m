@@ -1,82 +1,47 @@
-Return-Path: <bpf+bounces-29154-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-29155-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2315E8C08C8
-	for <lists+bpf@lfdr.de>; Thu,  9 May 2024 03:04:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 007838C08E9
+	for <lists+bpf@lfdr.de>; Thu,  9 May 2024 03:11:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CF0A9283DCB
-	for <lists+bpf@lfdr.de>; Thu,  9 May 2024 01:04:43 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7FE522839CE
+	for <lists+bpf@lfdr.de>; Thu,  9 May 2024 01:11:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0331040C15;
-	Thu,  9 May 2024 01:04:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B85DC13A3F0;
+	Thu,  9 May 2024 01:11:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="mjjYm74W"
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="Z4Up2mBj"
 X-Original-To: bpf@vger.kernel.org
-Received: from NAM04-DM6-obe.outbound.protection.outlook.com (mail-dm6nam04on2059.outbound.protection.outlook.com [40.107.102.59])
+Received: from out30-124.freemail.mail.aliyun.com (out30-124.freemail.mail.aliyun.com [115.124.30.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E608FBEF;
-	Thu,  9 May 2024 01:04:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.102.59
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715216667; cv=fail; b=cVIptdx4sY9oewavT5PLAIeJ8uHKuYm6NY60WRiozoHFxREwHSlHsrTZtL1usBxvZ5fP+l0xdBCyxjf7TI9ntFEgk55G7MvRrbSrDXKI+K+VLyAHQ6jCLt55EQNYK9zNAcM1khyAe8WarkeSompkfn+lIn3A6H8/lXEZR55mzmk=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715216667; c=relaxed/simple;
-	bh=IBVK3rIKdWW3fCLkuQF25b4vcPNrURKJqfnPddfb8o8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=UfKkmdQMO0JtRKvgBaJC6fNhGvyionddBwpsY4/sH/JUvv9O8mwhjHKdrCty1BEsA1FnTjelWf748DCwDSWEz/bgEMpspcYCAAYJP2M2MEwRAgdGC4UKXng28GTc4XVJk07mTMcISY+xBf1vZocExNUxuX5xK/2emk1/EFrynTw=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=mjjYm74W; arc=fail smtp.client-ip=40.107.102.59
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=TfGIfBjFLbV3QAYoX5NSp6I2e0xGZqvZdwTR2UQPjUORwSCf6mG3zaVMmAmUP2ccPaI5JSIQ1qujB9VH2ZyIMAojlk3r9Jk2uonlaiVaFCN2oHRqIi2HDrj466Dn+IuEnbn18Okxn12KCgUmWN0Tg5EFFUXpOdB7U8MDE2QcqMUCN3PwUUhwckonNNbASuSnGPwR3X+MWw4P+yvci0L9p+1Y2dPjV+DryQgzfe2qP62y9lbsN4h9qPHLxorPPI94sR6AwOEDy6CsC+Ulpq9EM+VW6Rz0EcNdqSVv9+4F+WXc9efPsXyVVi4CZIVbAKWu+vn7QftvXhnrGNoiYCetnQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=HIdFRLbe3qiBNNVpFNSCkinob5/WXfdpDRpOh92Qjss=;
- b=INnefU5TkWWCfnhhZUGr4+W2dDRwcfMMXcNPseYVg7VSN/jB9LWO5fiucy+P7Y6Wi6O9Ra/pcYlZxJTnNdqMQPhFEeigyoDyCSQ35Jnunli46v87IiY/mi3bLSAgMfIBzD5UOMVl0BIk/TaNc1pvq9zcr5HJnXGWVLXHax2A0HsiPrMHfTJHoee+Ngg7otgY0ZKgmLMQz1FKCv8KbwVkUkeTEfQt0vyfjDMhLvektgAr26OxkEA3h2ZXZy6alxzWKo8+dbZTtGI4e5bv35ib+StlvNfR4/HG3nW/JvXaVTVSyg60PBrMcUz0DtRFF2yJaAwinWqdYm6AMg/wU3jmpQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.117.160) smtp.rcpttodomain=google.com smtp.mailfrom=nvidia.com;
- dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=HIdFRLbe3qiBNNVpFNSCkinob5/WXfdpDRpOh92Qjss=;
- b=mjjYm74WQX3FWOesc28YdpvpTjyGEjvJMpW0LSR+NEp27IVxf3D7uqcpD+DXiWMb1nz0MTseXg4eqLDI35f9oDArbahGFrvZ0PpRxWKa+pUUdqR7c5fP+gims5UDCG9CXVkFdzKyCh20gcSAEGupV/AJh25L8FO5XvQjJyAXk/ENENWqfTXOGHowiCtdCijvRcipK2pzJvnYKPU7t7AYCtFxwmES1HjfmknV0fqxgBkTYOa4rMMC770gm56jxWCVX512d9QP26uO/TQEUqd7AQQLOPdCU8VDu5aaOTSS2tu0a8vqjlcHYQLkQDf0a5wTnBp+Yi9mK8+38V7DuT5VLA==
-Received: from SJ0PR13CA0001.namprd13.prod.outlook.com (2603:10b6:a03:2c0::6)
- by SJ0PR12MB5662.namprd12.prod.outlook.com (2603:10b6:a03:429::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7544.46; Thu, 9 May
- 2024 01:04:21 +0000
-Received: from MWH0EPF000971E3.namprd02.prod.outlook.com
- (2603:10b6:a03:2c0:cafe::f7) by SJ0PR13CA0001.outlook.office365.com
- (2603:10b6:a03:2c0::6) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7544.46 via Frontend
- Transport; Thu, 9 May 2024 01:04:20 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.160)
- smtp.mailfrom=nvidia.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.117.160 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.117.160; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.117.160) by
- MWH0EPF000971E3.mail.protection.outlook.com (10.167.243.70) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7544.18 via Frontend Transport; Thu, 9 May 2024 01:04:20 +0000
-Received: from rnnvmail201.nvidia.com (10.129.68.8) by mail.nvidia.com
- (10.129.200.66) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.4; Wed, 8 May 2024
- 18:04:01 -0700
-Received: from [10.110.48.28] (10.126.230.35) by rnnvmail201.nvidia.com
- (10.129.68.8) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.4; Wed, 8 May 2024
- 18:03:59 -0700
-Message-ID: <e2b35876-db4d-4646-908f-1e7da1814d1c@nvidia.com>
-Date: Wed, 8 May 2024 18:03:58 -0700
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C98DB3C482
+	for <bpf@vger.kernel.org>; Thu,  9 May 2024 01:11:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.124
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1715217081; cv=none; b=jm/DbGkNHTuihLPBN6vWd7UFks++DjS3FKePIK8bkybGaIaO3fWmF1XPYKdH4FyBtwKOZI/mQxvJr5OqVr/Rv48y1rOclf69upRGwEuHraEGI0PLjHEwaCHilZeRhTL3cKUuCUuIUS76OpnTH9lHaHJ02hqU3quEMDd6PqMpq7Q=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1715217081; c=relaxed/simple;
+	bh=UwEZSQM3niBNxY7aZPq+blxbStmqtZ9rzCRmPUNbaeo=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=J9TnpmC5uZxxE2ZEDeqk/E5eQi+WodWH1dwu9MzFM0YpO56kmlaC1ak7X0E1ifaT0iKYqC8V5epjmcp7dueSgJp/TitvQUQCPd8fOJqgjDUKdjcDZ/AQUxM9HEP1HF8U3UzTVzwqQv7DeFDEYecqJQu/aTz7urnbtsr439vQ+eU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=Z4Up2mBj; arc=none smtp.client-ip=115.124.30.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1715217076; h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type;
+	bh=BKCDXWVhwcBboopblbpWtGkFD/ChzakRDpvtvp2T2N8=;
+	b=Z4Up2mBjLb5zIiLlW6h3cT6Ro/7gRAN0MI24rZGjsXsDfAZ0ub602QICfq2GpqBAuCp6dyTa3LNvkQ8t+faQrdgi4ieWya7pvBYBa8J9twrf27/LqW95sH0wbvPkkisj9HzJNUbCwrsZaWfMDgYBcdbQ69QHfhGVthvqyE+V9QY=
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R151e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=maildocker-contentspam033068173054;MF=lulie@linux.alibaba.com;NM=1;PH=DS;RN=22;SR=0;TI=SMTPD_---0W64zi4G_1715217073;
+Received: from 30.221.128.110(mailfrom:lulie@linux.alibaba.com fp:SMTPD_---0W64zi4G_1715217073)
+          by smtp.aliyun-inc.com;
+          Thu, 09 May 2024 09:11:15 +0800
+Message-ID: <b8afd57d-1167-4821-91e3-8e3e34cf94c4@linux.alibaba.com>
+Date: Thu, 9 May 2024 09:11:12 +0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -84,151 +49,116 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 3/5] selftests: Include KHDR_INCLUDES in Makefile
-To: Edward Liaw <edliaw@google.com>
-CC: <shuah@kernel.org>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela
-	<perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Catalin Marinas
-	<catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, Nhat Pham
-	<nphamcs@gmail.com>, Johannes Weiner <hannes@cmpxchg.org>, Christian Brauner
-	<brauner@kernel.org>, Eric Biederman <ebiederm@xmission.com>, Kees Cook
-	<keescook@chromium.org>, OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
-	"Thomas Gleixner" <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Peter
- Zijlstra <peterz@infradead.org>, Darren Hart <dvhart@infradead.org>,
-	Davidlohr Bueso <dave@stgolabs.net>, =?UTF-8?Q?Andr=C3=A9_Almeida?=
-	<andrealmeid@igalia.com>, Jiri Kosina <jikos@kernel.org>, Benjamin Tissoires
-	<bentiss@kernel.org>, Jason Gunthorpe <jgg@ziepe.ca>, Kevin Tian
-	<kevin.tian@intel.com>, "Andy Lutomirski" <luto@amacapital.net>, Will Drewry
-	<wad@chromium.org>, "Marc Zyngier" <maz@kernel.org>, Oliver Upton
-	<oliver.upton@linux.dev>, James Morse <james.morse@arm.com>, Suzuki K Poulose
-	<suzuki.poulose@arm.com>, Zenghui Yu <yuzenghui@huawei.com>, Paolo Bonzini
-	<pbonzini@redhat.com>, "Sean Christopherson" <seanjc@google.com>, Anup Patel
-	<anup@brainfault.org>, "Atish Patra" <atishp@atishpatra.org>, Paul Walmsley
-	<paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou
-	<aou@eecs.berkeley.edu>, Christian Borntraeger <borntraeger@linux.ibm.com>,
-	Janosch Frank <frankja@linux.ibm.com>, Claudio Imbrenda
-	<imbrenda@linux.ibm.com>, "David Hildenbrand" <david@redhat.com>,
-	=?UTF-8?Q?Micka=C3=ABl_Sala=C3=BCn?= <mic@digikod.net>, Paul Moore
-	<paul@paul-moore.com>, James Morris <jmorris@namei.org>, "Serge E. Hallyn"
-	<serge@hallyn.com>, Andrew Morton <akpm@linux-foundation.org>, Seth Forshee
-	<sforshee@kernel.org>, Bongsu Jeon <bongsu.jeon@samsung.com>, "David S.
- Miller" <davem@davemloft.net>, "Eric Dumazet" <edumazet@google.com>, Jakub
- Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Steffen Klassert
-	<steffen.klassert@secunet.com>, "Herbert Xu" <herbert@gondor.apana.org.au>,
-	=?UTF-8?Q?Andreas_F=C3=A4rber?= <afaerber@suse.de>, Manivannan Sadhasivam
-	<manivannan.sadhasivam@linaro.org>, Matthieu Baerts <matttbe@kernel.org>, Mat
- Martineau <martineau@kernel.org>, Geliang Tang <geliang@kernel.org>, Willem
- de Bruijn <willemdebruijn.kernel@gmail.com>, Fenghua Yu
-	<fenghua.yu@intel.com>, Reinette Chatre <reinette.chatre@intel.com>, Mathieu
- Desnoyers <mathieu.desnoyers@efficios.com>, "Paul E. McKenney"
-	<paulmck@kernel.org>, Boqun Feng <boqun.feng@gmail.com>, Alexandre Belloni
-	<alexandre.belloni@bootlin.com>, Jarkko Sakkinen <jarkko@kernel.org>, "Dave
- Hansen" <dave.hansen@linux.intel.com>, Muhammad Usama Anjum
-	<usama.anjum@collabora.com>, <linux-kernel@vger.kernel.org>,
-	<linux-kselftest@vger.kernel.org>, <kernel-team@android.com>,
-	<linux-sound@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
-	<linux-mm@kvack.org>, <linux-input@vger.kernel.org>, <iommu@lists.linux.dev>,
-	<kvmarm@lists.linux.dev>, <kvm@vger.kernel.org>,
-	<kvm-riscv@lists.infradead.org>, <linux-riscv@lists.infradead.org>,
-	<linux-security-module@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>,
-	<netdev@vger.kernel.org>, <linux-actions@lists.infradead.org>,
-	<mptcp@lists.linux.dev>, <linux-rtc@vger.kernel.org>,
-	<linux-sgx@vger.kernel.org>, <bpf@vger.kernel.org>
-References: <20240507214254.2787305-1-edliaw@google.com>
- <20240507214254.2787305-4-edliaw@google.com>
- <ec8ab737-a841-4cd5-8ec1-e0a777744262@nvidia.com>
- <CAG4es9XPLhHhH-Hfm3_m5zLLtiB1zme8pAazMhErMpHqJcAMmw@mail.gmail.com>
-Content-Language: en-US
-From: John Hubbard <jhubbard@nvidia.com>
-In-Reply-To: <CAG4es9XPLhHhH-Hfm3_m5zLLtiB1zme8pAazMhErMpHqJcAMmw@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+Subject: Re: [PATCH bpf-next 1/2] bpf: Allow bpf_dynptr_from_skb() for tp_btf
+To: Martin KaFai Lau <martin.lau@linux.dev>
+Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+ Daniel Borkmann <daniel@iogearbox.net>,
+ John Fastabend <john.fastabend@gmail.com>,
+ Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
+ Eddy Z <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
+ Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>,
+ Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
+ Jiri Olsa <jolsa@kernel.org>, "David S. Miller" <davem@davemloft.net>,
+ Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+ Paolo Abeni <pabeni@redhat.com>, Mykola Lysenko <mykolal@fb.com>,
+ Shuah Khan <shuah@kernel.org>, Daniel Rosenberg <drosen@google.com>,
+ Xuan Zhuo <xuanzhuo@linux.alibaba.com>, bpf <bpf@vger.kernel.org>
+References: <20240430121805.104618-1-lulie@linux.alibaba.com>
+ <20240430121805.104618-2-lulie@linux.alibaba.com>
+ <5d4f681a-6636-4c98-9b1e-5c5170b79f7c@linux.dev>
+ <CAADnVQJ1tycykaGEkD1ubi-kjFapKJBhffYePNsgQH7qh_9ivw@mail.gmail.com>
+ <07ea0e86-ca28-42e9-9e8f-a4188aef1096@linux.dev>
+From: Philo Lu <lulie@linux.alibaba.com>
+In-Reply-To: <07ea0e86-ca28-42e9-9e8f-a4188aef1096@linux.dev>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: rnnvmail203.nvidia.com (10.129.68.9) To
- rnnvmail201.nvidia.com (10.129.68.8)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MWH0EPF000971E3:EE_|SJ0PR12MB5662:EE_
-X-MS-Office365-Filtering-Correlation-Id: 929b3f3a-f4f2-4fe1-03da-08dc6fc3f599
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam:
-	BCL:0;ARA:13230031|7416005|1800799015|82310400017|36860700004|376005;
-X-Microsoft-Antispam-Message-Info:
-	=?utf-8?B?djdXSnE1eGNCMllUVVE3QmwxQmFLaXF6QlJINTl2TzZBMUZscm9sUFdPZ1Nr?=
- =?utf-8?B?OUhiQlBaQ1F4VGx3SmVOSll0aTlzMzNDdisvUkNxTE5CaXlvZlZUaVF2NitC?=
- =?utf-8?B?N0ZHUUFuejlhV0JwMmUrRmZQM1NVL2JXTlBVeWVUZVgweUVHWjZBOUI2STZi?=
- =?utf-8?B?YmtkWDBWcVBieS9hcThpSGt0L3dlemJrdVlZNUtrSUtkM2FlWDhZSlZ0Y0lX?=
- =?utf-8?B?aHM3VnFIV0RlbzVoazJhaEwrbklkTitUTVArelJQNHJUYXR4WnE2cVcvSGVB?=
- =?utf-8?B?SkcrVWtZQU5pQUVXWkhzcXpjWTBtaGx5czFtQ21ETzRuRlFIdjhtU0hFSVcx?=
- =?utf-8?B?WmRpL28wNlM3ZGhiOHh4Mk9QeW5hTUlkK3hYaEJwb1RQWUFFU1JBRi9kVlpr?=
- =?utf-8?B?bFJWeG1udGdOczhvZE9oeExXc0doU0hLWTVKL3V0WXhwNDVxeURWaktvV0M2?=
- =?utf-8?B?UmtQSlBkMCsxUzhZNUhvbm0wbHRiR29OaWZvVnBZMjJxb2Y4d054RVJQejBU?=
- =?utf-8?B?OGJpSC9mSkJIeG5tRzh6bUk1KzR5R3lqMFJ0bUZjblBDeXBZSS9EKzJWWThK?=
- =?utf-8?B?cmZDMnNmSXBUb1VleEh6L2RpYVhvS0RERTJ3ZFlhTkhFYUVGTWQ2aUEwZjJS?=
- =?utf-8?B?algxaEJOcUhua1FQQ1lKMzVOYmxwTzdDRmYvTE4zUjErODB6YUVwYUh2aDk1?=
- =?utf-8?B?NklSckM0Z05jOEVyZkFSL1BSdWkvblh1YlUwQUlkT09aNHFma3E4cEpzWEc4?=
- =?utf-8?B?V3pzYncyMUJnREpjT1lOTFhYM2xHbVUxN3c4V1RYemNvSmo1NFp0VWxJNnQy?=
- =?utf-8?B?N2RvOHV3V1E5aGViZk5HcDBQbGdqT01hQkgwSzcrSTR5T2xjNTRkSEhpVUF0?=
- =?utf-8?B?YkJFRWhRSmZaTnBMTWpIRnpaQVpFYkFEcjBTNFJUWmU1V3ZtWUtKQXA4UDMy?=
- =?utf-8?B?LzBjOWZ4MzdZZXk2Zk1rSk5GdE5vU0x3MjdHQkZSYy9hNngyZkxELzdSVnRj?=
- =?utf-8?B?endhV1ZnTENUdmFsMHlaMGZMa3cwaFVCbEh0d3BPSUc2MXhoSUc1TGYzTmZs?=
- =?utf-8?B?cEV1TkUrSEtxUVJJbklhOUF4SFFhTXdrRnhJR01yR2E0YThRMzhlTFV4TmV4?=
- =?utf-8?B?VG42Y1J3MW5sQnhacmlab0c4R1dYcEgwcDljemYvUGM0NjBmSHZPdENpZEYz?=
- =?utf-8?B?dE5CZGdEaHh0c0QyZ2FyMUZVN3RIZ2VTK09qSGNCbWpCd1hiTXZwRWJqNEdH?=
- =?utf-8?B?ZWxPbWhMTFJZb1F2RUt6L2wvNmNwcnRIdkF4YXF4QmdSR2wrYU1NWWx0R1VR?=
- =?utf-8?B?d2FTdGNaTmFTOHRDZGQ4ZWY5Z3paV2lxa0djd2VmaHpmWFlmUWFGVGtGMUpB?=
- =?utf-8?B?LzFXclhsRnd4TnRKMElDbkdMREw1WFpnMWxBcDJNYjBSUEhhUTNtTWduc3hO?=
- =?utf-8?B?c3NZUUE1RHAxY2Nic05FdDNEOEtnbW9pMGpJMXBTOHAweGk3SWNLY0ZOMmNO?=
- =?utf-8?B?R0dHUlFaNjU5eEJKa3BHZTk0emhUNGhyTVJMSlVHcFp4cTJLcVNDNUxneUxI?=
- =?utf-8?B?dzk0SExUeGJFY2NySXh6bnBIWnNBUk9KellVSk0yWk5WQU1Mb1dkdFJHd3Ns?=
- =?utf-8?B?d3V5Wk9Zc2NtMWJTaG0wTUNuRm1QTm1HajJ6aFFUNzh3N3IwNFZSV2pkMGps?=
- =?utf-8?B?eUxFa09tTFQ2OW96cjVYa3pxdHVOdW1ySkxsN21CNE8vemgvOEthQy9zS3pO?=
- =?utf-8?B?WUw0QTRTOVJ1bWk3ZFZEQTlsQnpCWUVndXJDUTVIQStXRUtlUFdYRFNjcVVq?=
- =?utf-8?B?K2FwN3VrSGNJcDdWc3JLOEdQdW5XRkM0Y0NLeWxNZHBFK2ZUc2dpQytiNnNZ?=
- =?utf-8?Q?+0aBELOIR1jqk?=
-X-Forefront-Antispam-Report:
-	CIP:216.228.117.160;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge1.nvidia.com;CAT:NONE;SFS:(13230031)(7416005)(1800799015)(82310400017)(36860700004)(376005);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 May 2024 01:04:20.7800
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 929b3f3a-f4f2-4fe1-03da-08dc6fc3f599
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.160];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	MWH0EPF000971E3.namprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR12MB5662
 
-On 5/8/24 5:29 PM, Edward Liaw wrote:
-> On Wed, May 8, 2024 at 2:41 PM John Hubbard <jhubbard@nvidia.com> wrote:
->> On 5/7/24 2:38 PM, Edward Liaw wrote:
-...
->> Seeing as how these all include lib.mk, and all use CFLAGS, is there
->> any reason not to simply fix this in lib.mk instead? Like this:
+
+
+On 2024/5/9 08:24, Martin KaFai Lau wrote:
+> On 5/6/24 4:29 PM, Alexei Starovoitov wrote:
+>> On Mon, May 6, 2024 at 2:39 PM Martin KaFai Lau <martin.lau@linux.dev> 
+>> wrote:
+>>>
+>>> On 4/30/24 5:18 AM, Philo Lu wrote:
+>>>> Making tp_btf able to use bpf_dynptr_from_skb(), which is useful for 
+>>>> skb
+>>>> parsing, especially for non-linear paged skb data. This is achieved by
+>>>> adding KF_TRUSTED_ARGS flag to bpf_dynptr_from_skb and registering it
+>>>> for TRACING progs. With KF_TRUSTED_ARGS, args from fentry/fexit are
+>>>> excluded, so that unsafe progs like fexit/__kfree_skb are not allowed.
+>>>>
+>>>> We also need the skb dynptr to be read-only in tp_btf. Because
+>>>> may_access_direct_pkt_data() returns false by default when checking
+>>>> bpf_dynptr_from_skb, there is no need to add BPF_PROG_TYPE_TRACING 
+>>>> to it
+>>>> explicitly.
+>>>>
+>>>> Signed-off-by: Philo Lu <lulie@linux.alibaba.com>
+>>>> ---
+>>>>    net/core/filter.c | 3 ++-
+>>>>    1 file changed, 2 insertions(+), 1 deletion(-)
+>>>>
+>>>> diff --git a/net/core/filter.c b/net/core/filter.c
+>>>> index 786d792ac816..399492970b8c 100644
+>>>> --- a/net/core/filter.c
+>>>> +++ b/net/core/filter.c
+>>>> @@ -11990,7 +11990,7 @@ int bpf_dynptr_from_skb_rdonly(struct 
+>>>> sk_buff *skb, u64 flags,
+>>>>    }
+>>>>
+>>>>    BTF_KFUNCS_START(bpf_kfunc_check_set_skb)
+>>>> -BTF_ID_FLAGS(func, bpf_dynptr_from_skb)
+>>>> +BTF_ID_FLAGS(func, bpf_dynptr_from_skb, KF_TRUSTED_ARGS)
+>>>
+>>> I can see the usefulness of having the same way parsing the header as 
+>>> the
+>>> tc-bpf. However, it implicitly means the skb->data and skb_shinfo are 
+>>> trusted
+>>> also. afaik, it should be as long as skb is not NULL.
+>>>
+>>>   From looking at include/trace/events, there is case that skb is 
+>>> NULL. e.g.
+>>> tcp_send_reset. It is not something new though, e.g. using skb->sk in 
+>>> the tp_btf
+>>> could be bad already. This should be addressed before allowing more 
+>>> kfunc/helper.
 >>
->> diff --git a/tools/testing/selftests/lib.mk b/tools/testing/selftests/lib.mk
->> index 7fa4a96e26ed..df72610e0d2b 100644
->> --- a/tools/testing/selftests/lib.mk
->> +++ b/tools/testing/selftests/lib.mk
->> @@ -170,6 +170,8 @@ clean: $(if $(TEST_GEN_MODS_DIR),clean_mods_dir)
->>    CFLAGS += $(USERCFLAGS)
->>    LDFLAGS += $(USERLDFLAGS)
+>> Good catch.
+>> We need to fix this part first:
+>>          if (prog_args_trusted(prog))
+>>                  info->reg_type |= PTR_TRUSTED;
 >>
->> +CFLAGS += $(KHDR_INCLUDES)
->> +
->>    # When make O= with kselftest target from main level
->>    # the following aren't defined.
->>    #
+>> Brute force fix by adding PTR_MAYBE_NULL is probably overkill.
+>> I suspect passing NULL into tracepoint is more of an exception than 
+>> the rule.
+>> Maybe we can use kfunc's "__" suffix approach for tracepoint args?
+>> [43947] FUNC_PROTO '(anon)' ret_type_id=0 vlen=4
+>>          '__data' type_id=10
+>>          'sk' type_id=3434
+>>          'skb' type_id=2386
+>>          'reason' type_id=39860
+>> [43948] FUNC '__bpf_trace_tcp_send_reset' type_id=43947 linkage=static
 >>
+>> Then do:
+>> diff --git a/include/trace/events/tcp.h b/include/trace/events/tcp.h
+>> index 49b5ee091cf6..325e8a31729a 100644
+>> --- a/include/trace/events/tcp.h
+>> +++ b/include/trace/events/tcp.h
+>> @@ -91,7 +91,7 @@ DEFINE_RST_REASON(FN, FN)
+>>   TRACE_EVENT(tcp_send_reset,
+>>
+>>          TP_PROTO(const struct sock *sk,
+>> -                const struct sk_buff *skb,
+>> +                const struct sk_buff *skb__nullable,
+>>
+>> and detect it in btf_ctx_access().
 > 
-> Or how about just adding -D_GNU_SOURCE to CFLAGS then?
+> +1. It is a neat solution. Thanks for the suggestion.
+> 
+> Philo, can you give it a try to fix this in the next re-spin?
 
-Yes, that would also work. I think either one would be good.
+Glad to do that. I'll try to implement a "__nullable" suffix for tracepoint.
 
-
-thanks,
--- 
-John Hubbard
-NVIDIA
-
+Thanks.
 
