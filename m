@@ -1,336 +1,237 @@
-Return-Path: <bpf+bounces-29150-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-29151-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2950D8C0874
-	for <lists+bpf@lfdr.de>; Thu,  9 May 2024 02:30:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id EBC4A8C0886
+	for <lists+bpf@lfdr.de>; Thu,  9 May 2024 02:36:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 93EC91F22717
-	for <lists+bpf@lfdr.de>; Thu,  9 May 2024 00:30:01 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5BFA81F2258A
+	for <lists+bpf@lfdr.de>; Thu,  9 May 2024 00:36:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B82AFBFD;
-	Thu,  9 May 2024 00:29:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 56B101B968;
+	Thu,  9 May 2024 00:36:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="M1rhmnQ5"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="B2H91p3h"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-f41.google.com (mail-ed1-f41.google.com [209.85.208.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-183.mta1.migadu.com (out-183.mta1.migadu.com [95.215.58.183])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B9692D2E6
-	for <bpf@vger.kernel.org>; Thu,  9 May 2024 00:29:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B656ADDA5
+	for <bpf@vger.kernel.org>; Thu,  9 May 2024 00:36:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.183
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715214580; cv=none; b=OSMq+6bw4+5QJ1dOm9jBbtk6az3vsAblF1vLsPWLKdutxPK/xPz64G59qR3gZj/lyEBau3vGUdH8qpvfKnIaw+/i4zceitWjoSeDgW5FxXzhIO+gbVzepm6aSt2m7tNk4iQt/wMmiv5hr1zap7g/pKIrPgKCwnNoV8/escTQtC8=
+	t=1715214976; cv=none; b=GFHXbP93l63SIBxPyA26GZTB5+spqVXJYPnOSGTmP+Xgz2XiWwt9nlK3gcuY4HY0lR0ipfCQ1WsXGkmDdHn+qmA0f1dEkbes/geRmuukglyCSgyUs2IgaXNwKzqFGoSHdJrpA/njMOJtJxJi/cNZy8H+5JLC+w4AvRmEMcH7PqQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715214580; c=relaxed/simple;
-	bh=YFEOyn8HhTR+KZ3cmP9SJDzMJP8/0gmTLnbxrYrAyiM=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=fTbXZPiS3WcXqKXfEea0zzSiV87/HY+IaFRsdnXbw3rPqVT0X8rOnrSM4DodfGFEXAhpx52uYxfTA+z2XfXRr/wr5s0Q4d2lrXoO1WGHPlVJfje3aWJxgHT5TsPP0LZzLEuhGFN+sTCpc70YHV02n1Frx/LiFdkrlKyQsTI3rug=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=M1rhmnQ5; arc=none smtp.client-ip=209.85.208.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ed1-f41.google.com with SMTP id 4fb4d7f45d1cf-572a1b3d6baso3624a12.1
-        for <bpf@vger.kernel.org>; Wed, 08 May 2024 17:29:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1715214575; x=1715819375; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=/ze6we/9zl1hwpr5TTVXS+9EQi+iUJaNZFz5eMfIu64=;
-        b=M1rhmnQ5tPiYNgd3tYVN99l88xQJCR8QJ093SQ2ZdqpvlnparBv0W5R3gw0uiZoJIW
-         OpS/QL8eJjBFSCFRg+WtS4Mr4e8sgr3XF6Fj9sM8TRcogvaHaHeSvC8uTmpzeIK7nx/P
-         U7MG5p/lfaoyftQszloEFVlHKD53T+lSbG8Rm2k1ovzoPmXkANijqZHgFbeGAIK7Icii
-         K6YOYusn0GcPwD+KKY5aBL+oPTwXT5B1TJ5xzq3oXzHkMgTwfKWDpnhK1YYst/teky9P
-         eEY/jKzRKxHTRMapxx/C+MzpnWsiVAkjn6zSY9i9NeLPbdp5Hr1PIkGY86y0jHRXFr+5
-         Pg8Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1715214575; x=1715819375;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=/ze6we/9zl1hwpr5TTVXS+9EQi+iUJaNZFz5eMfIu64=;
-        b=cdU5SANjqE//anzY9uKYy00voXYOQ/jHUGurB6czjupQg64YR/tL9I/cSqD0I9YOSV
-         +jLrcFct69QdWMGzpUWbQKGwa+OMAAhael6wNkxuxumyS2+vorGUOWF4SVLjyStE1sef
-         GBPQsEJzOXP3ccfV1QUjhcS6RMxjhF+AlePCUpKdhMpzcPiVontyzVctLjWRD1ROrAeo
-         T93oIpgLWMe4tLPWB7xOuG2SRZMvNUI70V8BItVSNnLDvWfmajrywp2lda621eB4XpMF
-         ocN5s+ZEKh27SoCI+o+L7iz9IB2t5uf+0gXS1ooWCknkAODOxFqUuyo33MuXJDd9WzAd
-         BwyA==
-X-Forwarded-Encrypted: i=1; AJvYcCXLFRiFq1puCz32+Kes+sm92kkybj9x9tAbPcVFk1+PxVQ1+Q7E0RoCBIgemTvsQtVUz62cS46PH020Kqy8ux0Oxudp
-X-Gm-Message-State: AOJu0Yy50kb40Y5jAAd29WTRmxApC0NBpAtiJ+W8+ML2NgQt9aNOURaA
-	gb7+ASORIyh8k6Nd/KnD/d58fTJPrzcl71I0UgEDncTkJYZJgqDh3eaemI6X4LALuun3wFZvnqs
-	Ur5IceulN+HsK24aBt8Jame2Mbqd6kibZHXtD
-X-Google-Smtp-Source: AGHT+IEpRBxjqO7YXZEC9B8FKVtXSFN03eOTZMizwoUq2jNrJCvIwReN+ats511GKy8ts5rRqhmgn49fpwdVOB7Y6R8=
-X-Received: by 2002:a05:6402:742:b0:572:a154:7081 with SMTP id
- 4fb4d7f45d1cf-5733434b416mr85834a12.4.1715214574664; Wed, 08 May 2024
- 17:29:34 -0700 (PDT)
+	s=arc-20240116; t=1715214976; c=relaxed/simple;
+	bh=lccKizYEsspYXQa37ujjGGO+fgcxjKUfqqlIifzhRpI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=LQZsm9CDkeCtQwDDeAe3oBfZa1a5NLX4vXAZgKqUkxQ6piNP4J3Md/27Zv4zKKX9kGtJrvRLKNHdKMt+V2o0/duVQCXbhBARqyvjCQBJaxrchcNstY/Yb0HYjj/xr4IakhwO0wSMBvQhaagxkegHreTTTQ33KBO+0t56jw0G85s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=B2H91p3h; arc=none smtp.client-ip=95.215.58.183
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <799553a1-b916-4926-819f-c30aa6aa4d2a@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1715214973;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=2hWcPJIOdxJRyYcKECdIb3FojS7t3UyLwrbrs8BGIvw=;
+	b=B2H91p3hQgCaJrECaK44kJC74Nolcv9Lm8l6svvRLw1MAK+KceF71tZsLY/Z68H1dGC8dK
+	gwQ6cUdjbiBRw4ojUdvKYAwrD9osMAHjib+IhGIhDViHLPU+CTo0T65Yr9FLii2RxTNF7s
+	e+mwm6/3WEi5jlllSPpfN3F94G5n1Pk=
+Date: Wed, 8 May 2024 17:36:08 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240507214254.2787305-1-edliaw@google.com> <20240507214254.2787305-4-edliaw@google.com>
- <ec8ab737-a841-4cd5-8ec1-e0a777744262@nvidia.com>
-In-Reply-To: <ec8ab737-a841-4cd5-8ec1-e0a777744262@nvidia.com>
-From: Edward Liaw <edliaw@google.com>
-Date: Wed, 8 May 2024 17:29:07 -0700
-Message-ID: <CAG4es9XPLhHhH-Hfm3_m5zLLtiB1zme8pAazMhErMpHqJcAMmw@mail.gmail.com>
-Subject: Re: [PATCH v2 3/5] selftests: Include KHDR_INCLUDES in Makefile
-To: John Hubbard <jhubbard@nvidia.com>
-Cc: shuah@kernel.org, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, 
-	Takashi Iwai <tiwai@suse.com>, Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, 
-	Nhat Pham <nphamcs@gmail.com>, Johannes Weiner <hannes@cmpxchg.org>, 
-	Christian Brauner <brauner@kernel.org>, Eric Biederman <ebiederm@xmission.com>, 
-	Kees Cook <keescook@chromium.org>, OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>, 
-	Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, 
-	Peter Zijlstra <peterz@infradead.org>, Darren Hart <dvhart@infradead.org>, 
-	Davidlohr Bueso <dave@stgolabs.net>, =?UTF-8?Q?Andr=C3=A9_Almeida?= <andrealmeid@igalia.com>, 
-	Jiri Kosina <jikos@kernel.org>, Benjamin Tissoires <bentiss@kernel.org>, Jason Gunthorpe <jgg@ziepe.ca>, 
-	Kevin Tian <kevin.tian@intel.com>, Andy Lutomirski <luto@amacapital.net>, 
-	Will Drewry <wad@chromium.org>, Marc Zyngier <maz@kernel.org>, Oliver Upton <oliver.upton@linux.dev>, 
-	James Morse <james.morse@arm.com>, Suzuki K Poulose <suzuki.poulose@arm.com>, 
-	Zenghui Yu <yuzenghui@huawei.com>, Paolo Bonzini <pbonzini@redhat.com>, 
-	Sean Christopherson <seanjc@google.com>, Anup Patel <anup@brainfault.org>, 
-	Atish Patra <atishp@atishpatra.org>, Paul Walmsley <paul.walmsley@sifive.com>, 
-	Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>, 
-	Christian Borntraeger <borntraeger@linux.ibm.com>, Janosch Frank <frankja@linux.ibm.com>, 
-	Claudio Imbrenda <imbrenda@linux.ibm.com>, David Hildenbrand <david@redhat.com>, 
-	=?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@digikod.net>, 
-	Paul Moore <paul@paul-moore.com>, James Morris <jmorris@namei.org>, 
-	"Serge E. Hallyn" <serge@hallyn.com>, Andrew Morton <akpm@linux-foundation.org>, 
-	Seth Forshee <sforshee@kernel.org>, Bongsu Jeon <bongsu.jeon@samsung.com>, 
-	"David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
-	Steffen Klassert <steffen.klassert@secunet.com>, Herbert Xu <herbert@gondor.apana.org.au>, 
-	=?UTF-8?Q?Andreas_F=C3=A4rber?= <afaerber@suse.de>, 
-	Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>, Matthieu Baerts <matttbe@kernel.org>, 
-	Mat Martineau <martineau@kernel.org>, Geliang Tang <geliang@kernel.org>, 
-	Willem de Bruijn <willemdebruijn.kernel@gmail.com>, Fenghua Yu <fenghua.yu@intel.com>, 
-	Reinette Chatre <reinette.chatre@intel.com>, 
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, "Paul E. McKenney" <paulmck@kernel.org>, 
-	Boqun Feng <boqun.feng@gmail.com>, Alexandre Belloni <alexandre.belloni@bootlin.com>, 
-	Jarkko Sakkinen <jarkko@kernel.org>, Dave Hansen <dave.hansen@linux.intel.com>, 
-	Muhammad Usama Anjum <usama.anjum@collabora.com>, linux-kernel@vger.kernel.org, 
-	linux-kselftest@vger.kernel.org, kernel-team@android.com, 
-	linux-sound@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
-	linux-mm@kvack.org, linux-input@vger.kernel.org, iommu@lists.linux.dev, 
-	kvmarm@lists.linux.dev, kvm@vger.kernel.org, kvm-riscv@lists.infradead.org, 
-	linux-riscv@lists.infradead.org, linux-security-module@vger.kernel.org, 
-	linux-fsdevel@vger.kernel.org, netdev@vger.kernel.org, 
-	linux-actions@lists.infradead.org, mptcp@lists.linux.dev, 
-	linux-rtc@vger.kernel.org, linux-sgx@vger.kernel.org, bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH bpf-next v2 2/6] bpf: enable detaching links of struct_ops
+ objects.
+To: Kui-Feng Lee <sinquersw@gmail.com>, Kui-Feng Lee <thinker.li@gmail.com>
+Cc: kuifeng@meta.com, bpf@vger.kernel.org, ast@kernel.org, song@kernel.org,
+ kernel-team@meta.com, andrii@kernel.org
+References: <20240507055600.2382627-1-thinker.li@gmail.com>
+ <20240507055600.2382627-3-thinker.li@gmail.com>
+ <88fdd488-f548-4ed4-8afa-ab6a8af974e8@linux.dev>
+ <7f285130-d6bf-43ea-b70a-eddc5c419d3e@gmail.com>
+Content-Language: en-US
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Martin KaFai Lau <martin.lau@linux.dev>
+In-Reply-To: <7f285130-d6bf-43ea-b70a-eddc5c419d3e@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-On Wed, May 8, 2024 at 2:41=E2=80=AFPM John Hubbard <jhubbard@nvidia.com> w=
-rote:
->
-> On 5/7/24 2:38 PM, Edward Liaw wrote:
-> > Add KHDR_INCLUDES to CFLAGS to pull in the kselftest harness
-> > dependencies (-D_GNU_SOURCE).
-> >
-> > Fixes: 809216233555 ("selftests/harness: remove use of LINE_MAX")
-> > Signed-off-by: Edward Liaw <edliaw@google.com>
-> > ---
-> >   tools/testing/selftests/alsa/Makefile                  | 2 +-
-> >   tools/testing/selftests/arm64/signal/Makefile          | 2 +-
-> >   tools/testing/selftests/exec/Makefile                  | 2 +-
-> >   tools/testing/selftests/filesystems/overlayfs/Makefile | 2 +-
-> >   tools/testing/selftests/hid/Makefile                   | 2 +-
-> >   tools/testing/selftests/nci/Makefile                   | 2 +-
-> >   tools/testing/selftests/prctl/Makefile                 | 2 ++
-> >   tools/testing/selftests/proc/Makefile                  | 2 +-
-> >   tools/testing/selftests/riscv/mm/Makefile              | 2 +-
-> >   tools/testing/selftests/rtc/Makefile                   | 2 +-
-> >   tools/testing/selftests/tmpfs/Makefile                 | 2 +-
-> >   11 files changed, 12 insertions(+), 10 deletions(-)
->
-> Hi Edward,
->
-> Seeing as how these all include lib.mk, and all use CFLAGS, is there
-> any reason not to simply fix this in lib.mk instead? Like this:
->
-> diff --git a/tools/testing/selftests/lib.mk b/tools/testing/selftests/lib=
-.mk
-> index 7fa4a96e26ed..df72610e0d2b 100644
-> --- a/tools/testing/selftests/lib.mk
-> +++ b/tools/testing/selftests/lib.mk
-> @@ -170,6 +170,8 @@ clean: $(if $(TEST_GEN_MODS_DIR),clean_mods_dir)
->   CFLAGS +=3D $(USERCFLAGS)
->   LDFLAGS +=3D $(USERLDFLAGS)
->
-> +CFLAGS +=3D $(KHDR_INCLUDES)
-> +
->   # When make O=3D with kselftest target from main level
->   # the following aren't defined.
->   #
->
+On 5/8/24 5:14 PM, Kui-Feng Lee wrote:
+> 
+> 
+> On 5/8/24 16:22, Martin KaFai Lau wrote:
+>> On 5/6/24 10:55 PM, Kui-Feng Lee wrote:
+>>> Implement the detach callback in bpf_link_ops for struct_ops. The
+>>> subsystems that struct_ops objects are registered to can use this callback
+>>> to detach the links being passed to them.
+>>
+>> The user space can also use the detach. The subsystem is merely reusing the 
+>> similar detach callback if it stores the link during reg().
+> 
+> Sure!
+> 
+>>
+>>>
+>>> Signed-off-by: Kui-Feng Lee <thinker.li@gmail.com>
+>>> ---
+>>>   kernel/bpf/bpf_struct_ops.c | 50 ++++++++++++++++++++++++++++++++-----
+>>>   1 file changed, 44 insertions(+), 6 deletions(-)
+>>>
+>>> diff --git a/kernel/bpf/bpf_struct_ops.c b/kernel/bpf/bpf_struct_ops.c
+>>> index 390f8c155135..bd2602982e4d 100644
+>>> --- a/kernel/bpf/bpf_struct_ops.c
+>>> +++ b/kernel/bpf/bpf_struct_ops.c
+>>> @@ -1057,9 +1057,6 @@ static void bpf_struct_ops_map_link_dealloc(struct 
+>>> bpf_link *link)
+>>>       st_map = (struct bpf_struct_ops_map *)
+>>>           rcu_dereference_protected(st_link->map, true);
+>>>       if (st_map) {
+>>> -        /* st_link->map can be NULL if
+>>> -         * bpf_struct_ops_link_create() fails to register.
+>>> -         */
+>>>           st_map->st_ops_desc->st_ops->unreg(&st_map->kvalue.data, st_link);
+>>>           bpf_map_put(&st_map->map);
+>>>       }
+>>> @@ -1075,7 +1072,8 @@ static void bpf_struct_ops_map_link_show_fdinfo(const 
+>>> struct bpf_link *link,
+>>>       st_link = container_of(link, struct bpf_struct_ops_link, link);
+>>>       rcu_read_lock();
+>>>       map = rcu_dereference(st_link->map);
+>>> -    seq_printf(seq, "map_id:\t%d\n", map->id);
+>>> +    if (map)
+>>> +        seq_printf(seq, "map_id:\t%d\n", map->id);
+>>>       rcu_read_unlock();
+>>>   }
+>>> @@ -1088,7 +1086,8 @@ static int bpf_struct_ops_map_link_fill_link_info(const 
+>>> struct bpf_link *link,
+>>>       st_link = container_of(link, struct bpf_struct_ops_link, link);
+>>>       rcu_read_lock();
+>>>       map = rcu_dereference(st_link->map);
+>>> -    info->struct_ops.map_id = map->id;
+>>> +    if (map)
+>>> +        info->struct_ops.map_id = map->id;
+>>>       rcu_read_unlock();
+>>>       return 0;
+>>>   }
+>>> @@ -1113,6 +1112,10 @@ static int bpf_struct_ops_map_link_update(struct 
+>>> bpf_link *link, struct bpf_map
+>>>       mutex_lock(&update_mutex);
+>>>       old_map = rcu_dereference_protected(st_link->map, 
+>>> lockdep_is_held(&update_mutex));
+>>> +    if (!old_map) {
+>>> +        err = -EINVAL;
+>>> +        goto err_out;
+>>> +    }
+>>>       if (expected_old_map && old_map != expected_old_map) {
+>>>           err = -EPERM;
+>>>           goto err_out;
+>>> @@ -1139,8 +1142,37 @@ static int bpf_struct_ops_map_link_update(struct 
+>>> bpf_link *link, struct bpf_map
+>>>       return err;
+>>>   }
+>>> +static int bpf_struct_ops_map_link_detach(struct bpf_link *link)
+>>> +{
+>>> +    struct bpf_struct_ops_link *st_link = container_of(link, struct 
+>>> bpf_struct_ops_link, link);
+>>> +    struct bpf_struct_ops_map *st_map;
+>>> +    struct bpf_map *map;
+>>> +
+>>> +    mutex_lock(&update_mutex);
+>>> +
+>>> +    map = rcu_dereference_protected(st_link->map, true);
+>>
+>> nit. s/true/lockdep_is_held(&update_mutex)/
+> 
+> 
+> I thought it is protected by the refcount holding by the caller.
+> WDYT?
 
-Or how about just adding -D_GNU_SOURCE to CFLAGS then?
+st_link->map is the one with __rcu tag and "!map" is tested next. I don't see 
+how these imply the map pointer is protected by refcount. Can you explain?
 
+> 
+> 
+>>
+>>> +    if (!map) {
+>>> +        mutex_unlock(&update_mutex);
+>>> +        return -EINVAL;
+>>> +    }
+>>> +    st_map = container_of(map, struct bpf_struct_ops_map, map);
+>>> +
+>>> +    st_map->st_ops_desc->st_ops->unreg(&st_map->kvalue.data, link);
+>>> +
+>>> +    rcu_assign_pointer(st_link->map, NULL);
+>>> +    /* Pair with bpf_map_get() in bpf_struct_ops_link_create() or
+>>> +     * bpf_map_inc() in bpf_struct_ops_map_link_update().
+>>> +     */
+>>> +    bpf_map_put(&st_map->map);
+>>> +
+>>> +    mutex_unlock(&update_mutex);
+>>> +
+>>> +    return 0;
+>>> +}
+>>> +
+>>>   static const struct bpf_link_ops bpf_struct_ops_map_lops = {
+>>>       .dealloc = bpf_struct_ops_map_link_dealloc,
+>>> +    .detach = bpf_struct_ops_map_link_detach,
+>>>       .show_fdinfo = bpf_struct_ops_map_link_show_fdinfo,
+>>>       .fill_link_info = bpf_struct_ops_map_link_fill_link_info,
+>>>       .update_map = bpf_struct_ops_map_link_update,
+>>> @@ -1176,13 +1208,19 @@ int bpf_struct_ops_link_create(union bpf_attr *attr)
+>>>       if (err)
+>>>           goto err_out;
+>>> +    /* Init link->map before calling reg() in case being detached
+>>> +     * immediately.
+>>> +     */
+>>> +    RCU_INIT_POINTER(link->map, map);
+>>> +
+>>>       err = st_map->st_ops_desc->st_ops->reg(st_map->kvalue.data, &link->link);
+>>>       if (err) {
+>>> +        rcu_assign_pointer(link->map, NULL);
+>>
+>> nit. RCU_INIT_POINTER(link->map, NULL) is fine.
+> 
+> Got it!
+> 
+>>
+>> There is a merge conflict with patch 4 also.
+> 
+> What do you mean here? Do you mean the patch 4 can not be applied on top
+> of the patch 2?
 
+Please monitor the bpf CI report.
 
->
-> thanks,
-> --
-> John Hubbard
-> NVIDIA
->
-> >
-> > diff --git a/tools/testing/selftests/alsa/Makefile b/tools/testing/self=
-tests/alsa/Makefile
-> > index 5af9ba8a4645..9a0ef194522c 100644
-> > --- a/tools/testing/selftests/alsa/Makefile
-> > +++ b/tools/testing/selftests/alsa/Makefile
-> > @@ -6,7 +6,7 @@ LDLIBS +=3D $(shell pkg-config --libs alsa)
-> >   ifeq ($(LDLIBS),)
-> >   LDLIBS +=3D -lasound
-> >   endif
-> > -CFLAGS +=3D -L$(OUTPUT) -Wl,-rpath=3D./
-> > +CFLAGS +=3D $(KHDR_INCLUDES) -L$(OUTPUT) -Wl,-rpath=3D./
-> >
-> >   LDLIBS+=3D-lpthread
-> >
-> > diff --git a/tools/testing/selftests/arm64/signal/Makefile b/tools/test=
-ing/selftests/arm64/signal/Makefile
-> > index 8f5febaf1a9a..ae682ade615d 100644
-> > --- a/tools/testing/selftests/arm64/signal/Makefile
-> > +++ b/tools/testing/selftests/arm64/signal/Makefile
-> > @@ -2,7 +2,7 @@
-> >   # Copyright (C) 2019 ARM Limited
-> >
-> >   # Additional include paths needed by kselftest.h and local headers
-> > -CFLAGS +=3D -D_GNU_SOURCE -std=3Dgnu99 -I.
-> > +CFLAGS +=3D $(KHDR_INCLUDES) -std=3Dgnu99 -I.
-> >
-> >   SRCS :=3D $(filter-out testcases/testcases.c,$(wildcard testcases/*.c=
-))
-> >   PROGS :=3D $(patsubst %.c,%,$(SRCS))
-> > diff --git a/tools/testing/selftests/exec/Makefile b/tools/testing/self=
-tests/exec/Makefile
-> > index fb4472ddffd8..15e78ec7c55e 100644
-> > --- a/tools/testing/selftests/exec/Makefile
-> > +++ b/tools/testing/selftests/exec/Makefile
-> > @@ -1,7 +1,7 @@
-> >   # SPDX-License-Identifier: GPL-2.0
-> >   CFLAGS =3D -Wall
-> >   CFLAGS +=3D -Wno-nonnull
-> > -CFLAGS +=3D -D_GNU_SOURCE
-> > +CFLAGS +=3D $(KHDR_INCLUDES)
-> >
-> >   TEST_PROGS :=3D binfmt_script.py
-> >   TEST_GEN_PROGS :=3D execveat load_address_4096 load_address_2097152 l=
-oad_address_16777216 non-regular
-> > diff --git a/tools/testing/selftests/filesystems/overlayfs/Makefile b/t=
-ools/testing/selftests/filesystems/overlayfs/Makefile
-> > index 56b2b48a765b..6c29c963c7a8 100644
-> > --- a/tools/testing/selftests/filesystems/overlayfs/Makefile
-> > +++ b/tools/testing/selftests/filesystems/overlayfs/Makefile
-> > @@ -2,6 +2,6 @@
-> >
-> >   TEST_GEN_PROGS :=3D dev_in_maps
-> >
-> > -CFLAGS :=3D -Wall -Werror
-> > +CFLAGS :=3D -Wall -Werror $(KHDR_INCLUDES)
-> >
-> >   include ../../lib.mk
-> > diff --git a/tools/testing/selftests/hid/Makefile b/tools/testing/selft=
-ests/hid/Makefile
-> > index 2b5ea18bde38..0661b34488ef 100644
-> > --- a/tools/testing/selftests/hid/Makefile
-> > +++ b/tools/testing/selftests/hid/Makefile
-> > @@ -21,7 +21,7 @@ CXX ?=3D $(CROSS_COMPILE)g++
-> >
-> >   HOSTPKG_CONFIG :=3D pkg-config
-> >
-> > -CFLAGS +=3D -g -O0 -rdynamic -Wall -Werror -I$(OUTPUT)
-> > +CFLAGS +=3D -g -O0 -rdynamic -Wall -Werror $(KHDR_INCLUDES) -I$(OUTPUT=
-)
-> >   CFLAGS +=3D -I$(OUTPUT)/tools/include
-> >
-> >   LDLIBS +=3D -lelf -lz -lrt -lpthread
-> > diff --git a/tools/testing/selftests/nci/Makefile b/tools/testing/selft=
-ests/nci/Makefile
-> > index 47669a1d6a59..bbc5b8ec3b17 100644
-> > --- a/tools/testing/selftests/nci/Makefile
-> > +++ b/tools/testing/selftests/nci/Makefile
-> > @@ -1,5 +1,5 @@
-> >   # SPDX-License-Identifier: GPL-2.0
-> > -CFLAGS +=3D -Wl,-no-as-needed -Wall
-> > +CFLAGS +=3D -Wl,-no-as-needed -Wall $(KHDR_INCLUDES)
-> >   LDFLAGS +=3D -lpthread
-> >
-> >   TEST_GEN_PROGS :=3D nci_dev
-> > diff --git a/tools/testing/selftests/prctl/Makefile b/tools/testing/sel=
-ftests/prctl/Makefile
-> > index 01dc90fbb509..1a0aefec9d6f 100644
-> > --- a/tools/testing/selftests/prctl/Makefile
-> > +++ b/tools/testing/selftests/prctl/Makefile
-> > @@ -6,6 +6,8 @@ ARCH ?=3D $(shell echo $(uname_M) | sed -e s/i.86/x86/ =
--e s/x86_64/x86/)
-> >   ifeq ($(ARCH),x86)
-> >   TEST_PROGS :=3D disable-tsc-ctxt-sw-stress-test disable-tsc-on-off-st=
-ress-test \
-> >               disable-tsc-test set-anon-vma-name-test set-process-name
-> > +
-> > +CFLAGS +=3D $(KHDR_INCLUDES)
-> >   all: $(TEST_PROGS)
-> >
-> >   include ../lib.mk
-> > diff --git a/tools/testing/selftests/proc/Makefile b/tools/testing/self=
-tests/proc/Makefile
-> > index cd95369254c0..9596014c10a0 100644
-> > --- a/tools/testing/selftests/proc/Makefile
-> > +++ b/tools/testing/selftests/proc/Makefile
-> > @@ -1,6 +1,6 @@
-> >   # SPDX-License-Identifier: GPL-2.0-only
-> >   CFLAGS +=3D -Wall -O2 -Wno-unused-function
-> > -CFLAGS +=3D -D_GNU_SOURCE
-> > +CFLAGS +=3D $(KHDR_INCLUDES)
-> >   LDFLAGS +=3D -pthread
-> >
-> >   TEST_GEN_PROGS :=3D
-> > diff --git a/tools/testing/selftests/riscv/mm/Makefile b/tools/testing/=
-selftests/riscv/mm/Makefile
-> > index c333263f2b27..715a21241113 100644
-> > --- a/tools/testing/selftests/riscv/mm/Makefile
-> > +++ b/tools/testing/selftests/riscv/mm/Makefile
-> > @@ -3,7 +3,7 @@
-> >   # Originally tools/testing/arm64/abi/Makefile
-> >
-> >   # Additional include paths needed by kselftest.h and local headers
-> > -CFLAGS +=3D -D_GNU_SOURCE -std=3Dgnu99 -I.
-> > +CFLAGS +=3D $(KHDR_INCLUDES) -std=3Dgnu99 -I.
-> >
-> >   TEST_GEN_FILES :=3D mmap_default mmap_bottomup
-> >
-> > diff --git a/tools/testing/selftests/rtc/Makefile b/tools/testing/selft=
-ests/rtc/Makefile
-> > index 55198ecc04db..654f9d58da3c 100644
-> > --- a/tools/testing/selftests/rtc/Makefile
-> > +++ b/tools/testing/selftests/rtc/Makefile
-> > @@ -1,5 +1,5 @@
-> >   # SPDX-License-Identifier: GPL-2.0
-> > -CFLAGS +=3D -O3 -Wl,-no-as-needed -Wall
-> > +CFLAGS +=3D -O3 -Wl,-no-as-needed -Wall $(KHDR_INCLUDES)
-> >   LDLIBS +=3D -lrt -lpthread -lm
-> >
-> >   TEST_GEN_PROGS =3D rtctest
-> > diff --git a/tools/testing/selftests/tmpfs/Makefile b/tools/testing/sel=
-ftests/tmpfs/Makefile
-> > index aa11ccc92e5b..bcdc1bb6d2e6 100644
-> > --- a/tools/testing/selftests/tmpfs/Makefile
-> > +++ b/tools/testing/selftests/tmpfs/Makefile
-> > @@ -1,6 +1,6 @@
-> >   # SPDX-License-Identifier: GPL-2.0-only
-> >   CFLAGS +=3D -Wall -O2
-> > -CFLAGS +=3D -D_GNU_SOURCE
-> > +CFLAGS +=3D $(KHDR_INCLUDES)
-> >
-> >   TEST_GEN_PROGS :=3D
-> >   TEST_GEN_PROGS +=3D bug-link-o-tmpfile
->
->
+bpf CI complains: 
+https://patchwork.kernel.org/project/netdevbpf/patch/20240507055600.2382627-2-thinker.li@gmail.com/
+
+snippet of the error:
+
+Applying: bpf: enable detaching links of struct_ops objects.
+Applying: bpf: support epoll from bpf struct_ops links.
+Applying: selftests/bpf: test struct_ops with epoll
+Patch failed at 0004 selftests/bpf: test struct_ops with epoll
+
+> 
+>>
+>> pw-bot: cr
+>>
+>>>           bpf_link_cleanup(&link_primer);
+>>> +        /* The link has been free by bpf_link_cleanup() */
+>>>           link = NULL;
+>>>           goto err_out;
+>>>       }
+>>> -    RCU_INIT_POINTER(link->map, map);
+>>>       return bpf_link_settle(&link_primer);
+>>
+
 
