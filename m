@@ -1,191 +1,366 @@
-Return-Path: <bpf+bounces-29330-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-29331-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F0B838C19A7
-	for <lists+bpf@lfdr.de>; Fri, 10 May 2024 00:59:18 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id CF5FB8C19C7
+	for <lists+bpf@lfdr.de>; Fri, 10 May 2024 01:09:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A6594285392
-	for <lists+bpf@lfdr.de>; Thu,  9 May 2024 22:59:17 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7C2E028543F
+	for <lists+bpf@lfdr.de>; Thu,  9 May 2024 23:09:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7CFF312D765;
-	Thu,  9 May 2024 22:59:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3282112D760;
+	Thu,  9 May 2024 23:09:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="j08TbA+4"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VYCQJ/Wf"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-f49.google.com (mail-ed1-f49.google.com [209.85.208.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5968E12D215
-	for <bpf@vger.kernel.org>; Thu,  9 May 2024 22:59:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD07112838D
+	for <bpf@vger.kernel.org>; Thu,  9 May 2024 23:09:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715295548; cv=none; b=TI+lwmel7GPwtwN5p1Fl8+RZUhhQ6l9/0KCFa+48rE9+HNfy5FnHctVSK/0bjkA53jQU0qkx7q3inKVBmRECJPGIMLjSAWj8NNamalY+MNB2U9T7a4nAYFO7kkDTtgPcXeQXAYHO6gZMsWuM/EmqwU8k/LXSWaX3zAvPHZVE5l0=
+	t=1715296176; cv=none; b=dNJmUx2q5qbeW/Lm9/dE95ckxb/VFNKfB1vcmc+khhSxkoi9laSFC0F+F+eoB9ZMuUUXfsWX99juuJ+MF/CTYhnFU6p7Zr2Z1JP03rMPB7JTUn0e1VXRXCSZi/mHLRFjoHdmEwedb1nu6t+wIyIiC7LBP7NBaEdDenkxTbjJYvU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715295548; c=relaxed/simple;
-	bh=6jtL8Tq51/6D1tJuPGm0Kl2FshQGs9RlrJmrJmmfe3k=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=QSbr13v8X/M+R8ijPOyzN2FOxPntZVsCrSnubjMBs4lolm1Q5bw5rfYHp7FV3KbkU3fYsNxtYPOs2TfWWvuXiQPMbGCtjpHhGDcKbohtiv9iUTw8NiG0YkJeALqVHLvr30nc0UzOXF7JecprlwH+HdoDCaPFIzwCrGQbr9Tx2Io=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=j08TbA+4; arc=none smtp.client-ip=209.85.208.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ed1-f49.google.com with SMTP id 4fb4d7f45d1cf-572f6c56cdaso7095a12.0
-        for <bpf@vger.kernel.org>; Thu, 09 May 2024 15:59:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1715295545; x=1715900345; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=y1vau91hxBMnWZHVkH054+8jTk5Pa/DNJnVVz4HmL40=;
-        b=j08TbA+4eLGw+ulUEWaupL0wgEo+IcJIKC1IAT1G1uR8jtJt0JcQbwjZbbrzP4KEQV
-         7n8/5WNKUeRGYLv3KXIp9UcqwVkFMFG4PEy+Ce+2sze3V1TFPLoj9RvbNI3sBXqDQEGw
-         9CzqWC0zpYfLZ2ty04pD4e+BwaVgrsCi1Ratin88wWMIKZkfMklkCGRj8BWjsDKfHCni
-         G7JjZVoHCGKe2Nb4j6V9c06UW0gtVq1fILG7PVYqwzkPOixySzJgNhM/FrPm+r9uZzdF
-         GKnIlFcgWg0c9Pc1Mcod5SGWbbDXEFWjlciZiw0e0Rzgb2kAEqds7a95UdWbDh86Jr2l
-         PhSQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1715295545; x=1715900345;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=y1vau91hxBMnWZHVkH054+8jTk5Pa/DNJnVVz4HmL40=;
-        b=NC1+AL0MimTTRh+VDrnRL6qxpFErf9DOechZOzj/sE01VFHhRM68iJAnv6SmV0+OMm
-         2j/63QDbR45h68T+GwthUhV0tBs1TaI4mf/VXXk3sdeKPL7d51ES79bhS/PPw3vr43ES
-         Tx1vLExcpCYFcjwUfLYuzHoHyKCdyZdiPgdkJA8UQNZDAJfdhO230TtTIsocOUvPs9G5
-         PyNW0Bzxtp5r0LBWrQvQGc3iiyaYV2iGoWY1jAg9F538bVwX3Iw+pBnCPVaLsFx231rW
-         1e4p2G95qwFueLnkapSVvyTbLXr+HjSdN214uUbpFRQdraHPDpnu2PNAfBqrNagHMDCE
-         bl/A==
-X-Forwarded-Encrypted: i=1; AJvYcCXYd42oxkB9gaf224eT1Uo4nV0g81atR7rjhOc7Tr6FmpgUe8ob3iTwxR//MSewCp1CZ3mSWmWgE9JKtqdRN9+3MLYU
-X-Gm-Message-State: AOJu0YzzPP/KnPHHNlxOuPqpWf/COHu9biwF0HQE8zStP7IhcWMew+aC
-	0/VXL089ocNnMw6c7BsOl6sQDASh/czZ8ilZ1WLKVO3wdYINkZ0hCyZzEqYgr3zihxUZkEIhljj
-	+396ZUw/xphGaiSvSD48vzdNSWYcMIkiiJfKF
-X-Google-Smtp-Source: AGHT+IHuVFTFisfvrt55ub+8UO4+Id1LOVWeasU97gGretbq/QA6WW4CiikvBa7AfpTXmMMad1SbRPJ/2IdczDaT84s=
-X-Received: by 2002:a50:8d84:0:b0:572:e6fb:ab07 with SMTP id
- 4fb4d7f45d1cf-5735203906fmr30811a12.7.1715295542981; Thu, 09 May 2024
- 15:59:02 -0700 (PDT)
+	s=arc-20240116; t=1715296176; c=relaxed/simple;
+	bh=VwPy2X1QytQZvEMvECpGY8ibN2h/HLoZ0yAv6oUptvU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=USLbS/BHuMaYZDcFI/ZdLwhmZEl3g78FatsxwH+Vyf7bt9yLOLgP5Rd5//+QzneNZgtGzzXrYrPNcHLF+zHxuT67QhzbAnzs3K/u5/9VDzvjmtYEJuXVyScj7i8SpEhjd/muaAG+l11AHwGIpRIod3cAoF3i0JKmo3IiwOOe7TE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VYCQJ/Wf; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B8BBCC116B1;
+	Thu,  9 May 2024 23:09:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1715296176;
+	bh=VwPy2X1QytQZvEMvECpGY8ibN2h/HLoZ0yAv6oUptvU=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=VYCQJ/WfzxF66GlDbJtAY+TOCivalH9kgEAmUpBFPjJ2DfwhCHOgQ4FNZvo+e1N7D
+	 pqgV5bA04kriqJdIovozUiM72CYKUCKuWZEM8jaiF7mTtNYU02b6yZBZkf0iiaLBJm
+	 hGZLdLn4u9GcF5X6VULf+lsqRC6DLXLlDoV8lUJyMdKqNxPPVylwPY67zeFhH9boxT
+	 8ObRiW2j8vbKMsNjL1nUGRbqEhjHZimhxcsQPieHkv4J2WF9Pxmu/obtW4vpUOPrl6
+	 F9cenv/XHS2Fy75zry8iEFcXZRjn/KDMvm+ToM6wK0HWJaLcRY8Vnav1F72uHjxS1l
+	 eCqOPDdukqRww==
+Message-ID: <fa464ad7-4af3-4c25-a786-0f6b5c9d260e@kernel.org>
+Date: Fri, 10 May 2024 00:09:32 +0100
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240509200022.253089-1-edliaw@google.com> <20240509200022.253089-4-edliaw@google.com>
- <0e196143-c0bf-4d70-9735-7e6d9a69ea8f@nvidia.com>
-In-Reply-To: <0e196143-c0bf-4d70-9735-7e6d9a69ea8f@nvidia.com>
-From: Edward Liaw <edliaw@google.com>
-Date: Thu, 9 May 2024 15:58:35 -0700
-Message-ID: <CAG4es9Xv0Pwst+b0mre2g+QkBGoQS0cWj4xizRt+cHFJ0BTDaQ@mail.gmail.com>
-Subject: Re: [PATCH v3 03/68] selftests: Compile with -D_GNU_SOURCE when
- including lib.mk
-To: John Hubbard <jhubbard@nvidia.com>
-Cc: shuah@kernel.org, =?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@digikod.net>, 
-	=?UTF-8?Q?G=C3=BCnther_Noack?= <gnoack@google.com>, 
-	Christian Brauner <brauner@kernel.org>, Richard Cochran <richardcochran@gmail.com>, 
-	Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, 
-	Albert Ou <aou@eecs.berkeley.edu>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, "David S. Miller" <davem@davemloft.net>, 
-	Jakub Kicinski <kuba@kernel.org>, Jesper Dangaard Brouer <hawk@kernel.org>, 
-	John Fastabend <john.fastabend@gmail.com>, Andrew Morton <akpm@linux-foundation.org>, 
-	Muhammad Usama Anjum <usama.anjum@collabora.com>, linux-kernel@vger.kernel.org, 
-	linux-kselftest@vger.kernel.org, kernel-team@android.com, 
-	linux-security-module@vger.kernel.org, netdev@vger.kernel.org, 
-	linux-riscv@lists.infradead.org, bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird Beta
+Subject: Re: [PATCH v2 bpf-next] bpftool: introduce btf c dump sorting
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+ Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>
+Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org,
+ kernel-team@meta.com, Mykyta Yatsenko <yatsenko@meta.com>
+References: <20240509151744.131648-1-yatsenko@meta.com>
+ <CAEf4Bzbfiii8yamOoMgoQjswvvrehF8crUK_4zJ8AA1tmHWoxQ@mail.gmail.com>
+From: Quentin Monnet <qmo@kernel.org>
+Content-Language: en-GB
+In-Reply-To: <CAEf4Bzbfiii8yamOoMgoQjswvvrehF8crUK_4zJ8AA1tmHWoxQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Thu, May 9, 2024 at 2:25=E2=80=AFPM John Hubbard <jhubbard@nvidia.com> w=
-rote:
->
-> On 5/9/24 12:57 PM, Edward Liaw wrote:
-> > lib.mk will add -D_GNU_SOURCE to CFLAGS by default.  This will make it
-> > unnecessary to add #define _GNU_SOURCE in the source code.
-> >
-> > Fixes: 809216233555 ("selftests/harness: remove use of LINE_MAX")
-> > Suggested-by: John Hubbard <jhubbard@nvidia.com>
-> > Signed-off-by: Edward Liaw <edliaw@google.com>
-> > ---
-> >   tools/testing/selftests/Makefile | 4 ++--
-> >   tools/testing/selftests/lib.mk   | 5 ++++-
-> >   2 files changed, 6 insertions(+), 3 deletions(-)
-> >
->
-> Hi Edward,
->
-> This looks good, with one small refactoring opportunity remaining, though=
-:
->
-> > diff --git a/tools/testing/selftests/Makefile b/tools/testing/selftests=
-/Makefile
-> > index f0431e6cb67e..9039f3709aff 100644
-> > --- a/tools/testing/selftests/Makefile
-> > +++ b/tools/testing/selftests/Makefile
-> > @@ -170,11 +170,11 @@ ifneq ($(KBUILD_OUTPUT),)
-> >     # $(realpath ...) resolves symlinks
-> >     abs_objtree :=3D $(realpath $(abs_objtree))
-> >     BUILD :=3D $(abs_objtree)/kselftest
-> > -  KHDR_INCLUDES :=3D -D_GNU_SOURCE -isystem ${abs_objtree}/usr/include
-> > +  KHDR_INCLUDES :=3D -isystem ${abs_objtree}/usr/include
-> >   else
-> >     BUILD :=3D $(CURDIR)
-> >     abs_srctree :=3D $(shell cd $(top_srcdir) && pwd)
-> > -  KHDR_INCLUDES :=3D -D_GNU_SOURCE -isystem ${abs_srctree}/usr/include
-> > +  KHDR_INCLUDES :=3D -isystem ${abs_srctree}/usr/include
->
-> As mentioned in [1] (but there are a lot of patches to manage here, and
-> I think it got overlooked), you could factor out the duplicated
-> -D_GNU_SOURCE items into a single place:
+On 09/05/2024 22:39, Andrii Nakryiko wrote:
+> On Thu, May 9, 2024 at 8:17 AM Mykyta Yatsenko
+> <mykyta.yatsenko5@gmail.com> wrote:
+>>
+>> From: Mykyta Yatsenko <yatsenko@meta.com>
+>>
+>> Sort bpftool c dump output; aiming to simplify vmlinux.h diffing and
+>> forcing more natural type definitions ordering.
+>>
+>> Definitions are sorted first by their BTF kind ranks, then by their base
+>> type name and by their own name.
+>>
+>> Type ranks
+>>
+>> Assign ranks to btf kinds (defined in function btf_type_rank) to set
+>> next order:
+>> 1. Anonymous enums/enums64
+>> 2. Named enums/enums64
+>> 3. Trivial types typedefs (ints, then floats)
+>> 4. Structs/Unions
+>> 5. Function prototypes
+>> 6. Forward declarations
+>>
+>> Type rank is set to maximum for unnamed reference types, structs and
+>> unions to avoid emitting those types early. They will be emitted as
+>> part of the type chain starting with named type.
+>>
+>> Lexicographical ordering
+>>
+>> Each type is assigned a sort_name and own_name.
+>> sort_name is the resolved name of the final base type for reference
+>> types (typedef, pointer, array etc). Sorting by sort_name allows to
+>> group typedefs of the same base type. sort_name for non-reference type
+>> is the same as own_name. own_name is a direct name of particular type,
+>> is used as final sorting step.
+>>
+>> Signed-off-by: Mykyta Yatsenko <yatsenko@meta.com>
+>> ---
+>>  tools/bpf/bpftool/btf.c | 125 +++++++++++++++++++++++++++++++++++++++-
+>>  1 file changed, 122 insertions(+), 3 deletions(-)
+>>
+> 
+> It's getting very close, see a bunch of nits below.
 
-Hi John,
-Here I'm reverting the change I made to the Makefile in patch 1/68,
-since -D_GNU_SOURCE is being added directly to CFLAGS now, I didn't
-think it was necessary to add it to KHDR_INCLUDES anymore.  I would
-have merged the two patches together, but since the first and second
-patches from v2 were already merged, I thought I should leave them in
-the series.
+Agreed, it's in a nice shape, thanks a lot for this work. Apologies for
+the review delay, I just have a few additional nits.
 
-Thanks,
-Edward
+> 
+>> diff --git a/tools/bpf/bpftool/btf.c b/tools/bpf/bpftool/btf.c
+>> index 91fcb75babe3..09ecd2abf066 100644
+>> --- a/tools/bpf/bpftool/btf.c
+>> +++ b/tools/bpf/bpftool/btf.c
+>> @@ -43,6 +43,13 @@ static const char * const btf_kind_str[NR_BTF_KINDS] = {
+>>         [BTF_KIND_ENUM64]       = "ENUM64",
+>>  };
+>>
+>> +struct sort_datum {
+>> +       int index;
+>> +       int type_rank;
+>> +       const char *sort_name;
+>> +       const char *own_name;
+>> +};
+>> +
+>>  static const char *btf_int_enc_str(__u8 encoding)
+>>  {
+>>         switch (encoding) {
+>> @@ -460,11 +467,114 @@ static void __printf(2, 0) btf_dump_printf(void *ctx,
+>>         vfprintf(stdout, fmt, args);
+>>  }
+>>
+>> +static bool is_reference_type(const struct btf_type *t)
+>> +{
+>> +       int kind = btf_kind(t);
+>> +
+>> +       return kind == BTF_KIND_CONST || kind == BTF_KIND_PTR || kind == BTF_KIND_VOLATILE ||
+>> +               kind == BTF_KIND_RESTRICT || kind == BTF_KIND_ARRAY || kind == BTF_KIND_TYPEDEF ||
+>> +               kind == BTF_KIND_DECL_TAG;
+> 
+> probably best to write as a switch, also make sure that
+> BTF_KIND_TYPE_TAG is supported, it is effectively treated as
+> CONST/VOLATILE
+> 
+> and actually looking below, I'd just incorporate these as extra cases
+> in the existing btf_type_rank() switch, and then have a similar
+> open-coded switch for btf_type_sort_name()
+> 
+> When dealing with BTF I find these explicit switches listing what
+> kinds are special and how they are processed much easier to check and
+> follow than any of the extra helpers doing some kind checks
+> 
+> 
+>> +}
+>> +
+>> +static int btf_type_rank(const struct btf *btf, __u32 index, bool has_name)
+>> +{
+>> +       const struct btf_type *t = btf__type_by_id(btf, index);
+>> +       const int max_rank = 10;
+>> +       const int kind = btf_kind(t);
+>> +
+>> +       if (t->name_off)
+>> +               has_name = true;
+>> +
+>> +       switch (kind) {
+>> +       case BTF_KIND_ENUM:
+>> +       case BTF_KIND_ENUM64:
+>> +               return has_name ? 1 : 0;
+>> +       case BTF_KIND_INT:
+>> +       case BTF_KIND_FLOAT:
+>> +               return 2;
+>> +       case BTF_KIND_STRUCT:
+>> +       case BTF_KIND_UNION:
+>> +               return has_name ? 3 : max_rank;
+>> +       case BTF_KIND_FUNC_PROTO:
+>> +               return has_name ? 4 : max_rank;
+>> +
+>> +       default: {
+>> +               if (has_name && is_reference_type(t)) {
+>> +                       const int parent = kind == BTF_KIND_ARRAY ? btf_array(t)->type : t->type;
+>> +
+>> +                       return btf_type_rank(btf, parent, has_name);
+>> +               }
+>> +               return max_rank;
+>> +       }
+> 
+> nit: you don't need these {} for default
+> 
+>> +       }
+>> +}
+>> +
+>> +static const char *btf_type_sort_name(const struct btf *btf, __u32 index)
+>> +{
+>> +       const struct btf_type *t = btf__type_by_id(btf, index);
+>> +       int kind = btf_kind(t);
+>> +
+>> +       /* Use name of the first element for anonymous enums */
+>> +       if (!t->name_off && (kind == BTF_KIND_ENUM || kind == BTF_KIND_ENUM64) &&
+> 
+> there is btf_is_any_enum() helper for this kind check
+> 
+>> +           BTF_INFO_VLEN(t->info))
+> 
+> please use btf_vlen(t) helper
+> 
+>> +               return btf__name_by_offset(btf, btf_enum(t)->name_off);
+> 
+> what if enum's vlen == 0? I think I mentioned that before, it
+> shouldn't happen in valid BTF, but it's technically allowable in BTF,
+> so best to be able to handle that instead of crashing or doing random
+> memory reads.
+> 
+>> +
+>> +       /* Return base type name for reference types */
+>> +       while (is_reference_type(t)) {
+>> +               index = btf_kind(t) == BTF_KIND_ARRAY ? btf_array(t)->type : t->type;
+>> +               t = btf__type_by_id(btf, index);
+>> +       }
+>> +
+>> +       return btf__name_by_offset(btf, t->name_off);
+>> +}
+>> +
+>> +static int btf_type_compare(const void *left, const void *right)
+>> +{
+>> +       const struct sort_datum *datum1 = (const struct sort_datum *)left;
+>> +       const struct sort_datum *datum2 = (const struct sort_datum *)right;
+>> +       int sort_name_cmp;
+> 
+> stylistic nit: it's minot, but I'd use less distracting naming. Eg., d1, d2, r.
+> 
+>> +
+>> +       if (datum1->type_rank != datum2->type_rank)
+>> +               return datum1->type_rank < datum2->type_rank ? -1 : 1;
+>> +
+>> +       sort_name_cmp = strcmp(datum1->sort_name, datum2->sort_name);
+>> +       if (sort_name_cmp)
+>> +               return sort_name_cmp;
+>> +
+>> +       return strcmp(datum1->own_name, datum2->own_name);
+>> +}
+>> +
+>> +static struct sort_datum *sort_btf_c(const struct btf *btf)
+>> +{
+>> +       int total_root_types;
+>> +       struct sort_datum *datums;
+>> +
+>> +       total_root_types = btf__type_cnt(btf);
+> 
+> nit: s/total_root_types/n/
+> 
+>> +       datums = malloc(sizeof(struct sort_datum) * total_root_types);
+>> +       if (!datums)
+>> +               return NULL;
+>> +
+>> +       for (int i = 0; i < total_root_types; ++i) {
+>> +               struct sort_datum *current_datum = datums + i;
+> 
+> nit: just d for the name, it's not going to be hard to follow or ambiguous
+> 
+>> +               const struct btf_type *t = btf__type_by_id(btf, i);
+>> +
+>> +               current_datum->index = i;
+>> +               current_datum->type_rank = btf_type_rank(btf, i, false);
+>> +               current_datum->sort_name = btf_type_sort_name(btf, i);
+>> +               current_datum->own_name = btf__name_by_offset(btf, t->name_off);
+>> +       }
+>> +
+>> +       qsort(datums, total_root_types, sizeof(struct sort_datum), btf_type_compare);
+>> +
+>> +       return datums;
+>> +}
+>> +
+>>  static int dump_btf_c(const struct btf *btf,
+>> -                     __u32 *root_type_ids, int root_type_cnt)
+>> +                     __u32 *root_type_ids, int root_type_cnt, bool sort_dump)
+>>  {
+>>         struct btf_dump *d;
+>>         int err = 0, i;
+>> +       struct sort_datum *datums = NULL;
 
->
-> [1]
-> https://lore.kernel.org/all/ac8c217e-4109-4ca7-a7dd-fc4fc8b0a4de@nvidia.c=
-om/
->
-> thanks,
-> --
-> John Hubbard
-> NVIDIA
->
-> >     DEFAULT_INSTALL_HDR_PATH :=3D 1
-> >   endif
-> >
-> > diff --git a/tools/testing/selftests/lib.mk b/tools/testing/selftests/l=
-ib.mk
-> > index 3023e0e2f58f..e782f4c96aee 100644
-> > --- a/tools/testing/selftests/lib.mk
-> > +++ b/tools/testing/selftests/lib.mk
-> > @@ -67,7 +67,7 @@ MAKEFLAGS +=3D --no-print-directory
-> >   endif
-> >
-> >   ifeq ($(KHDR_INCLUDES),)
-> > -KHDR_INCLUDES :=3D -D_GNU_SOURCE -isystem $(top_srcdir)/usr/include
-> > +KHDR_INCLUDES :=3D -isystem $(top_srcdir)/usr/include
-> >   endif
-> >
-> >   # In order to use newer items that haven't yet been added to the user=
-'s system
-> > @@ -188,6 +188,9 @@ endef
-> >   clean: $(if $(TEST_GEN_MODS_DIR),clean_mods_dir)
-> >       $(CLEAN)
-> >
-> > +# Build with _GNU_SOURCE by default
-> > +CFLAGS +=3D -D_GNU_SOURCE
-> > +
-> >   # Enables to extend CFLAGS and LDFLAGS from command line, e.g.
-> >   # make USERCFLAGS=3D-Werror USERLDFLAGS=3D-static
-> >   CFLAGS +=3D $(USERCFLAGS)
->
->
+Nit: Most variables in the file are declared in "reverse-Christmas-tree"
+order (longest lines first, unless there's a reason not to). Could you
+please try to preserve this order, here and elsewhere, for consistency?
+
+>>
+>>         d = btf_dump__new(btf, btf_dump_printf, NULL, NULL);
+>>         if (!d)
+>> @@ -486,8 +596,12 @@ static int dump_btf_c(const struct btf *btf,
+>>         } else {
+>>                 int cnt = btf__type_cnt(btf);
+>>
+>> +               if (sort_dump)
+>> +                       datums = sort_btf_c(btf);
+>>                 for (i = 1; i < cnt; i++) {
+>> -                       err = btf_dump__dump_type(d, i);
+>> +                       int idx = datums ? datums[i].index : i;
+>> +
+>> +                       err = btf_dump__dump_type(d, idx);
+>>                         if (err)
+>>                                 goto done;
+>>                 }
+>> @@ -501,6 +615,7 @@ static int dump_btf_c(const struct btf *btf,
+>>
+>>  done:
+>>         btf_dump__free(d);
+>> +       free(datums);
+
+Small nit: I'd swap the two lines above, it would seem more logical to
+free in the reverse order from allocation and would be more
+straightforward to "split" if we ever need to free d only when jumping
+from the first goto.
+
+>>         return err;
+>>  }
+>>
+>> @@ -553,6 +668,7 @@ static int do_dump(int argc, char **argv)
+>>         __u32 root_type_ids[2];
+>>         int root_type_cnt = 0;
+>>         bool dump_c = false;
+>> +       bool sort_dump_c = true;
+>>         __u32 btf_id = -1;
+>>         const char *src;
+>>         int fd = -1;
+>> @@ -663,6 +779,9 @@ static int do_dump(int argc, char **argv)
+>>                                 goto done;
+>>                         }
+>>                         NEXT_ARG();
+>> +               } else if (is_prefix(*argv, "unordered")) {
+> 
+> it's more of a "original order" rather than unordered, so maybe "unnormalized"?
+I'd have gone with "unsorted", but Andrii's reasoning probably applies
+the same to it. I find "unnormalized" might be difficult to understand,
+maybe "preserve_order" or, shorter, "keep_order"?
+
+And as Alan mentioned on the other thread, we'll need the following
+updates for the new keyword:
+
+- Adding the keyword to the command summary at the top of
+  tools/bpf/bpftool/Documentation/bpftool-btf.rst:
+  | *FORMAT* := { **raw** | **c** [**unordered**]}
+  (or whatever keyword we pick)
+- Adding the description for the keyword, below on the same page
+- Adding the keyword to the help message, at the end of btf.c
+- Updating the bash completion. The patch below should work (to adjust
+  with the final keyword):
+
+------
+diff --git a/tools/bpf/bpftool/bash-completion/bpftool b/tools/bpf/bpftool/bash-completion/bpftool
+index 04afe2ac2228..85a43c867e5f 100644
+--- a/tools/bpf/bpftool/bash-completion/bpftool
++++ b/tools/bpf/bpftool/bash-completion/bpftool
+@@ -930,6 +930,9 @@ _bpftool()
+                         format)
+                             COMPREPLY=( $( compgen -W "c raw" -- "$cur" ) )
+                             ;;
++                        c)
++                            COMPREPLY=( $( compgen -W "unordered" -- "$cur" ) )
++                            ;;
+                         *)
+                             # emit extra options
+                             case ${words[3]} in
+------
 
