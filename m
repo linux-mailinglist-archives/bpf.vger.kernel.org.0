@@ -1,161 +1,119 @@
-Return-Path: <bpf+bounces-29177-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-29179-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B2CBD8C1081
-	for <lists+bpf@lfdr.de>; Thu,  9 May 2024 15:41:07 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id C59568C1087
+	for <lists+bpf@lfdr.de>; Thu,  9 May 2024 15:41:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EDEC11C21278
-	for <lists+bpf@lfdr.de>; Thu,  9 May 2024 13:41:06 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 51311B2259F
+	for <lists+bpf@lfdr.de>; Thu,  9 May 2024 13:41:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E06115B0FC;
-	Thu,  9 May 2024 13:40:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 287E9158DA1;
+	Thu,  9 May 2024 13:41:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=meta.com header.i=@meta.com header.b="FSkIeMM6"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="C4hvl+jf"
 X-Original-To: bpf@vger.kernel.org
-Received: from mx0a-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qk1-f174.google.com (mail-qk1-f174.google.com [209.85.222.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0031B15278D
-	for <bpf@vger.kernel.org>; Thu,  9 May 2024 13:40:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.153.30
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3BA661514F4;
+	Thu,  9 May 2024 13:41:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715262057; cv=none; b=NiU1+C8cp8K/OwEFZWxiCg4Typs2HviCSPPb69dOcB+oMzwxPpHcjIB3XIEQsqEqXQWsoQcbn6DjVvQ9Z/eZLXwNCiF0VvT60pG+7GkF8EqsI89ICmsNmIAhtGL5oCWldAqJXuNjvKUOaXhV/kgMN4Uxq82urgUC47CXNE1wQR8=
+	t=1715262105; cv=none; b=LTB/SyhlApWdAY6wvVIrXAFAv9d7XHm0xhEeIRROBTGNf5Z28Ddi4s0JUH8G5WT/oPTAbdv7KAYoSd5qD/4Czf2HDQfF9VA5B1p+RFXVsBk9Wp8yDZyswyw7qREIqs4F7QttVujuBt3Q4/NZah/C5CFL5p7B6BUD8oHb6GbLjac=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715262057; c=relaxed/simple;
-	bh=xkUA+ZdoaRrxiJJpJG9Gxwc0ZruKOevYi79DYLrp5Ec=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=sv2yrYbVQhfdHlJnubb+szbaPBrHLAFVRqSxkQCrbC4XpHpU5A1gU7YTq7Ju0IVGs1Lu3cI9PQ9vEI8Wagb+lyQCumNa6Avt9W+Cd3LJs4+AzG/bdUgE6ekFUkNm8xc6QhDiFcgSeKMb4MZdq91BCsrqn4obyGZJkHK2udpxTiY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=meta.com; spf=pass smtp.mailfrom=meta.com; dkim=pass (2048-bit key) header.d=meta.com header.i=@meta.com header.b=FSkIeMM6; arc=none smtp.client-ip=67.231.153.30
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=meta.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=meta.com
-Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
-	by m0001303.ppops.net (8.17.1.19/8.17.1.19) with ESMTP id 449DOpCB001589;
-	Thu, 9 May 2024 06:40:45 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=meta.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-type : content-transfer-encoding; s=s2048-2021-q4;
- bh=RAtc41c5KP/0D5YtkuiplfaJKKlNf+QL4ZD3+asfYjU=;
- b=FSkIeMM6V7JYLIZ9YkwwR0S+E0wzLvIXOOLrpCQLTHO2qQIVL7knrtalllUlbAxQY/ED
- 2VYTZtLxM9CpBsx1rOoj5K6IenGy5bnqPm1ZYhtvTjqft6dq2TS+48ceAPXMN43Wy96U
- OvevQDSlJyWDKPs2j0C+btyDPF6AKv8/kWezEZYEWHmIiRn6O3JRreBu1QZR3nd/uoJ2
- 6igLwHP4WO9eHWvr1Zc2eqj9lecLdGQnkOtGVdELUtF5SzE7rwsytBRdKdVQOtUbwxjf
- 2fGSLJMXierhZVhWPKXT48Eg7Wvz5PGc9pOqG6R49cAaQpLANX4yFaJ5JNj7YDN8Yeig uw== 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-	by m0001303.ppops.net (PPS) with ESMTPS id 3y0e7umtpu-12
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-	Thu, 09 May 2024 06:40:45 -0700
-Received: from devvm4158.cln0.facebook.com (2620:10d:c0a8:1b::8e35) by
- mail.thefacebook.com (2620:10d:c0a8:83::8) with Microsoft SMTP Server id
- 15.1.2507.35; Thu, 9 May 2024 13:40:37 +0000
-From: Vadim Fedorenko <vadfed@meta.com>
-To: Vadim Fedorenko <vadim.fedorenko@linux.dev>,
-        Martin KaFai Lau
-	<martin.lau@linux.dev>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        "Alexei
- Starovoitov" <ast@kernel.org>,
-        Mykola Lysenko <mykolal@fb.com>, Jakub
- Kicinski <kuba@kernel.org>
-CC: Vadim Fedorenko <vadfed@meta.com>, <bpf@vger.kernel.org>
-Subject: [PATCH bpf-next 4/4] selftests: bpf: crypto: adjust bench to use nullable IV
-Date: Thu, 9 May 2024 06:40:23 -0700
-Message-ID: <20240509134023.1289303-5-vadfed@meta.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240509134023.1289303-1-vadfed@meta.com>
-References: <20240509134023.1289303-1-vadfed@meta.com>
+	s=arc-20240116; t=1715262105; c=relaxed/simple;
+	bh=byWCUfWH9G9t798Z/UalQqwNars7ub6qY+Y8p84jINs=;
+	h=Date:From:To:Cc:Message-ID:In-Reply-To:References:Subject:
+	 Mime-Version:Content-Type; b=Hr/t3UoCwnUuzVHJyHIIGSjsqakGdGXRGMMtksVfLHzSodatFh5LzJ7zcv7zkKaJFBk0pTrPRWRnDFxA46uyYe9pMdw7USUaBf1Tu+y1dbXPlglKnKbIVMk7PfADjkxRJiGjlK/m/kjn4MEJWWTQaN+V1Vl/fed1D3/mGbNwU78=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=C4hvl+jf; arc=none smtp.client-ip=209.85.222.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qk1-f174.google.com with SMTP id af79cd13be357-792c34f891eso20209385a.1;
+        Thu, 09 May 2024 06:41:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1715262103; x=1715866903; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=q/hDoEEEO+Anwz6S3zgshZvUzJLkImXA0wUVfV3KGBY=;
+        b=C4hvl+jfhFTh5fKDxniDVYXjJuR6PAcXUe3yrKecKq9tHN8eUeUWAppSh6ij89U7xX
+         FEKMArdZVNE+WR3cpmum+hkRmJlz7BJr2Y54EqK8+4Mdd2RlbHcH/Ypm/yKMGRq8iAud
+         NZohwae9L0xHPTV5IjYgXesfg5wvk/n09HWDntMHzX2XBWdQf0WEaznMKHFNRdPT956k
+         e7IzePCVb1wmTHmOtNkYtumDAQMzhOHbwpdL68JpNdNQvus07VNSZqR1OOwgsReXIqDJ
+         gj5BBvWec54ETJXCX4SlT8IscwENu9/t1yual1HUUon/KgQLczNphOOGQBahgJBTxxTL
+         kLaA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1715262103; x=1715866903;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=q/hDoEEEO+Anwz6S3zgshZvUzJLkImXA0wUVfV3KGBY=;
+        b=IRK8ag25z9Tu7rqQyzrrfzgQ2rb0g+nWQz5Eh9V0sAWsMkN1LtycClvBA/nxJTWCTS
+         fB6Gwz+aBje/CW0/xd0vrD537kh7yzYcCxhNAxG6Scd9+VQLdTpKQpFE9d6F0QgQGjXD
+         nlLTCGJZb39IIwPIoutnJZdlu0xv+42IKAiIpnz1FqGeGEoLqVkp6rxzUHnYcGLSMlba
+         smvHDVAyHE8hnWwZvun3Yk7AHP9hfXrFhV8NTPGDPHBY2pW9cawjR3Zqj0ZPTBvj4NCg
+         URMTcfRu+EH/8Dfw+so41xUARbuLRKKmXemsVqp5tH+yQ3fGtIWirIjaWF9M08rmbt1E
+         n2/Q==
+X-Forwarded-Encrypted: i=1; AJvYcCX0TepOL0eynDPRIkG74RQhJCphU1bwKBjCaI5sf84pjW3sDlUrZopmZIZJjhZBbaLElk4fKnygazWYMBqxrSVsCcEGO2uCdLKKjFoc/dsXnZPiH30J9TFs/Fsjlr7qmRExGXGURvMaEsJApxLT81VENJB4z/8P9Kue
+X-Gm-Message-State: AOJu0YzlEZlwhlzKRhkaMXqLm0yP2hHli68JlYvwwM5P+/5XmFuohXjb
+	ceBL1xonJGgm/nQp6mwubItxa2/pkyz0K5w8hpC15tyEZ8RCnV+r
+X-Google-Smtp-Source: AGHT+IEC6zx5G5aGb3z2zBxSi/6jyKi3pIt3NFO1UVMHHOItQUwIpMf6Iy2ywJx3RO14fJpdZhA0sw==
+X-Received: by 2002:a37:c243:0:b0:792:960c:80cd with SMTP id af79cd13be357-792b276b341mr626867185a.74.1715262103063;
+        Thu, 09 May 2024 06:41:43 -0700 (PDT)
+Received: from localhost (164.146.150.34.bc.googleusercontent.com. [34.150.146.164])
+        by smtp.gmail.com with ESMTPSA id af79cd13be357-792bf310848sm68698485a.110.2024.05.09.06.41.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 09 May 2024 06:41:42 -0700 (PDT)
+Date: Thu, 09 May 2024 09:41:42 -0400
+From: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+To: Abhishek Chauhan <quic_abchauha@quicinc.com>, 
+ "David S. Miller" <davem@davemloft.net>, 
+ Eric Dumazet <edumazet@google.com>, 
+ Jakub Kicinski <kuba@kernel.org>, 
+ Paolo Abeni <pabeni@redhat.com>, 
+ netdev@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, 
+ Andrew Halaney <ahalaney@redhat.com>, 
+ Willem de Bruijn <willemdebruijn.kernel@gmail.com>, 
+ Martin KaFai Lau <martin.lau@kernel.org>, 
+ Martin KaFai Lau <martin.lau@linux.dev>, 
+ Daniel Borkmann <daniel@iogearbox.net>, 
+ bpf <bpf@vger.kernel.org>
+Cc: kernel@quicinc.com
+Message-ID: <663cd29678007_12691429440@willemb.c.googlers.com.notmuch>
+In-Reply-To: <20240508215842.2449798-3-quic_abchauha@quicinc.com>
+References: <20240508215842.2449798-1-quic_abchauha@quicinc.com>
+ <20240508215842.2449798-3-quic_abchauha@quicinc.com>
+Subject: Re: [RFC PATCH bpf-next v7 2/3] net: Add additional bit to support
+ clockid_t timestamp type
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-GUID: m-uuxzaqkE8e6zCmNSDzSxiw9Wm1YnzP
-X-Proofpoint-ORIG-GUID: m-uuxzaqkE8e6zCmNSDzSxiw9Wm1YnzP
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.650,FMLib:17.11.176.26
- definitions=2024-05-09_06,2024-05-09_01,2023-05-22_02
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 7bit
 
-The bench shows some improvements, around 4% faster on decrypt.
+Abhishek Chauhan wrote:
+> tstamp_type is now set based on actual clockid_t compressed
+> into 2 bits.
+> 
+> To make the design scalable for future needs this commit bring in
+> the change to extend the tstamp_type:1 to tstamp_type:2 to support
+> other clockid_t timestamp.
+> 
+> We now support CLOCK_TAI as part of tstamp_type as part of this
+> commit with exisiting support CLOCK_MONOTONIC and CLOCK_REALTIME.
+> 
+> Link: https://lore.kernel.org/netdev/bc037db4-58bb-4861-ac31-a361a93841d3@linux.dev/
+> Signed-off-by: Abhishek Chauhan <quic_abchauha@quicinc.com>
 
-Before:
+Reviewed-by: Willem de Bruijn <willemb@google.com>
 
-Benchmark 'crypto-decrypt' started.
-Iter   0 (325.719us): hits    5.105M/s (  5.105M/prod), drops 0.000M/s, total operations    5.105M/s
-Iter   1 (-17.295us): hits    5.224M/s (  5.224M/prod), drops 0.000M/s, total operations    5.224M/s
-Iter   2 (  5.504us): hits    4.630M/s (  4.630M/prod), drops 0.000M/s, total operations    4.630M/s
-Iter   3 (  9.239us): hits    5.148M/s (  5.148M/prod), drops 0.000M/s, total operations    5.148M/s
-Iter   4 ( 37.885us): hits    5.198M/s (  5.198M/prod), drops 0.000M/s, total operations    5.198M/s
-Iter   5 (-53.282us): hits    5.167M/s (  5.167M/prod), drops 0.000M/s, total operations    5.167M/s
-Iter   6 (-17.809us): hits    5.186M/s (  5.186M/prod), drops 0.000M/s, total operations    5.186M/s
-Summary: hits    5.092 ± 0.228M/s (  5.092M/prod), drops    0.000 ±0.000M/s, total operations    5.092 ± 0.228M/s
-
-After:
-
-Benchmark 'crypto-decrypt' started.
-Iter   0 (268.912us): hits    5.312M/s (  5.312M/prod), drops 0.000M/s, total operations    5.312M/s
-Iter   1 (124.869us): hits    5.354M/s (  5.354M/prod), drops 0.000M/s, total operations    5.354M/s
-Iter   2 (-36.801us): hits    5.334M/s (  5.334M/prod), drops 0.000M/s, total operations    5.334M/s
-Iter   3 (254.628us): hits    5.334M/s (  5.334M/prod), drops 0.000M/s, total operations    5.334M/s
-Iter   4 (-77.691us): hits    5.275M/s (  5.275M/prod), drops 0.000M/s, total operations    5.275M/s
-Iter   5 (-164.510us): hits    5.313M/s (  5.313M/prod), drops 0.000M/s, total operations    5.313M/s
-Iter   6 (-81.376us): hits    5.346M/s (  5.346M/prod), drops 0.000M/s, total operations    5.346M/s
-Summary: hits    5.326 ± 0.029M/s (  5.326M/prod), drops    0.000 ±0.000M/s, total operations    5.326 ± 0.029M/s
-
-Signed-off-by: Vadim Fedorenko <vadfed@meta.com>
----
- tools/testing/selftests/bpf/progs/crypto_bench.c | 10 ++++------
- 1 file changed, 4 insertions(+), 6 deletions(-)
-
-diff --git a/tools/testing/selftests/bpf/progs/crypto_bench.c b/tools/testing/selftests/bpf/progs/crypto_bench.c
-index e61fe0882293..4ac956b26240 100644
---- a/tools/testing/selftests/bpf/progs/crypto_bench.c
-+++ b/tools/testing/selftests/bpf/progs/crypto_bench.c
-@@ -57,7 +57,7 @@ int crypto_encrypt(struct __sk_buff *skb)
- {
- 	struct __crypto_ctx_value *v;
- 	struct bpf_crypto_ctx *ctx;
--	struct bpf_dynptr psrc, pdst, iv;
-+	struct bpf_dynptr psrc, pdst;
- 
- 	v = crypto_ctx_value_lookup();
- 	if (!v) {
-@@ -73,9 +73,8 @@ int crypto_encrypt(struct __sk_buff *skb)
- 
- 	bpf_dynptr_from_skb(skb, 0, &psrc);
- 	bpf_dynptr_from_mem(dst, len, 0, &pdst);
--	bpf_dynptr_from_mem(dst, 0, 0, &iv);
- 
--	status = bpf_crypto_encrypt(ctx, &psrc, &pdst, &iv);
-+	status = bpf_crypto_encrypt(ctx, &psrc, &pdst, NULL);
- 	__sync_add_and_fetch(&hits, 1);
- 
- 	return 0;
-@@ -84,7 +83,7 @@ int crypto_encrypt(struct __sk_buff *skb)
- SEC("tc")
- int crypto_decrypt(struct __sk_buff *skb)
- {
--	struct bpf_dynptr psrc, pdst, iv;
-+	struct bpf_dynptr psrc, pdst;
- 	struct __crypto_ctx_value *v;
- 	struct bpf_crypto_ctx *ctx;
- 
-@@ -98,9 +97,8 @@ int crypto_decrypt(struct __sk_buff *skb)
- 
- 	bpf_dynptr_from_skb(skb, 0, &psrc);
- 	bpf_dynptr_from_mem(dst, len, 0, &pdst);
--	bpf_dynptr_from_mem(dst, 0, 0, &iv);
- 
--	status = bpf_crypto_decrypt(ctx, &psrc, &pdst, &iv);
-+	status = bpf_crypto_decrypt(ctx, &psrc, &pdst, NULL);
- 	__sync_add_and_fetch(&hits, 1);
- 
- 	return 0;
--- 
-2.43.0
-
+For the non-BPF parts.
 
