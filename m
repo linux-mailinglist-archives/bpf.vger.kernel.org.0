@@ -1,289 +1,248 @@
-Return-Path: <bpf+bounces-29203-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-29204-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 981128C12A4
-	for <lists+bpf@lfdr.de>; Thu,  9 May 2024 18:22:16 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id E3B608C12AB
+	for <lists+bpf@lfdr.de>; Thu,  9 May 2024 18:24:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B98B01C216C4
-	for <lists+bpf@lfdr.de>; Thu,  9 May 2024 16:22:15 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9A0AE281512
+	for <lists+bpf@lfdr.de>; Thu,  9 May 2024 16:24:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BDA0316F8FF;
-	Thu,  9 May 2024 16:22:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A704D16F90E;
+	Thu,  9 May 2024 16:24:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mqSd014o"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="QO+SKTrp"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.13])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3918C16F85D;
-	Thu,  9 May 2024 16:22:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715271728; cv=none; b=UK0bYPTa7NORf1TXQeuwyMJIYlUNnjMe7BKME8GGS1XyfzXxDgiN0sFcwIOR0GfRsQ1AP9HCMmJ9XntMdRoEe8agxQAqqrKtsNC3+zKdprHJ7LDckpBUnugR7EUj/IjeqV8j4a3Ge1QdzRuSpkR/lKdhXTm+D/6zKtgK26onjII=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715271728; c=relaxed/simple;
-	bh=IL8r0xvUD4MebH1iIU9DukAU1bJeaYL6vvG94QxaVag=;
-	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=Eh26W0gr5+qBn46ZhOl5K7kUAOC9TLJPq8LCkV+je0osDmDyNN6FNSBos3nqy8BB9n81MFUbkjf/vieU7G1r50ZG5+sTkEZIUdKs32L4hskoJmS+onEv2rjgLjJG8rh2GlD4ZBxb8Y6NCv764uMMD+QIvpU2efZZc1NfZ57SlwI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mqSd014o; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4A560C116B1;
-	Thu,  9 May 2024 16:22:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1715271727;
-	bh=IL8r0xvUD4MebH1iIU9DukAU1bJeaYL6vvG94QxaVag=;
-	h=Date:From:To:cc:Subject:In-Reply-To:References:From;
-	b=mqSd014oPs9qMHfbf/w8UGWecJ/yMDeavDW24z8I4EtEKoQeD7wUBGkkSeaQbqviB
-	 7Hhh2L/zrybj872eMv3TTgYZMkgsoczJhjH1hgBU9UXXo86WNk2fiPGXZurnJialdC
-	 BVgFon/xiKXRw6Sp584BztAToQj1JJIDU11EPN+7FBnaFG+IH2HtB3NOGP32Lswvtc
-	 a6hrGif9DMQkpjLlBGXx4lpNNU6GAR+1Rgwi98ywB3s10lSkOAoN58c6LpFRthelWY
-	 JDQYpaAZErNik/8VqDYJwKChrTECMtGImS7jCCS/sjSt5xFlbtFQP9Il14xUowCWx4
-	 TOjoj1Wxr7vWQ==
-Date: Thu, 9 May 2024 09:22:05 -0700 (PDT)
-From: Mat Martineau <martineau@kernel.org>
-To: Yunsheng Lin <linyunsheng@huawei.com>
-cc: davem@davemloft.net, kuba@kernel.org, pabeni@redhat.com, 
-    netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
-    Alexander Duyck <alexander.duyck@gmail.com>, 
-    Ayush Sawal <ayush.sawal@chelsio.com>, Eric Dumazet <edumazet@google.com>, 
-    Willem de Bruijn <willemdebruijn.kernel@gmail.com>, 
-    Jason Wang <jasowang@redhat.com>, Ingo Molnar <mingo@redhat.com>, 
-    Peter Zijlstra <peterz@infradead.org>, Juri Lelli <juri.lelli@redhat.com>, 
-    Vincent Guittot <vincent.guittot@linaro.org>, 
-    Dietmar Eggemann <dietmar.eggemann@arm.com>, 
-    Steven Rostedt <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>, 
-    Mel Gorman <mgorman@suse.de>, 
-    Daniel Bristot de Oliveira <bristot@redhat.com>, 
-    Valentin Schneider <vschneid@redhat.com>, 
-    John Fastabend <john.fastabend@gmail.com>, 
-    Jakub Sitnicki <jakub@cloudflare.com>, David Ahern <dsahern@kernel.org>, 
-    Matthieu Baerts <matttbe@kernel.org>, Geliang Tang <geliang@kernel.org>, 
-    Jamal Hadi Salim <jhs@mojatatu.com>, Cong Wang <xiyou.wangcong@gmail.com>, 
-    Jiri Pirko <jiri@resnulli.us>, Boris Pismenny <borisp@nvidia.com>, 
-    bpf@vger.kernel.org, mptcp@lists.linux.dev
-Subject: Re: [PATCH net-next v3 11/13] net: replace page_frag with
- page_frag_cache
-In-Reply-To: <20240508133408.54708-12-linyunsheng@huawei.com>
-Message-ID: <334a8c67-87c8-a918-9517-0afbfae0d02b@kernel.org>
-References: <20240508133408.54708-1-linyunsheng@huawei.com> <20240508133408.54708-12-linyunsheng@huawei.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 48B2250A6C;
+	Thu,  9 May 2024 16:24:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=192.198.163.13
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1715271884; cv=fail; b=NwjKo3KZjWuvur/pDErZz/zF6uJ237EkPXEjOj9EYW1d/8XsK8ZNcJIrRY2g6SnE1/aIdSwiZUscNPwfPhMYJJrybVW6WA143keQG6ZZSV/4ZGjKIcgpZFDwKs51+czEVVG1hvHdtXFe4kM08rWnmr7YCdPcZA14puSllJoHBCk=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1715271884; c=relaxed/simple;
+	bh=GP8dpDaqTieaeUKSnaJ/QJFBz+ZLmlBz9U62G9f1XfE=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=LFtK+8+lTZw7l6OhVDv0/E4rvjhjh/kai+VKJMDz0GV8gmrGFbIhCrlt451fd+8TOM2X/kfnURZaaLIeAC58YXzaFq1eFBtgNg/PIAWmUl5L1yk6U/q9jmqS6dautjd8CaZgTy3NmGFJXCC85yyzwjfOrBKr0IKncqGJTEo1hG0=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=QO+SKTrp; arc=fail smtp.client-ip=192.198.163.13
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1715271882; x=1746807882;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-id:content-transfer-encoding:
+   mime-version;
+  bh=GP8dpDaqTieaeUKSnaJ/QJFBz+ZLmlBz9U62G9f1XfE=;
+  b=QO+SKTrprVIeWbGDuy2Pg0o1sp+z7IyqXw2sg47eASHyADwS+Ajo7FTB
+   eNs8cRgjac+vbcPdZWgC/I19TUBxhShyvbyBxwYwM/EZW6QGtcxl0bQ0Y
+   SOaM8SrTq/WGXvi456pIUQKvXFB/fSmlTUvMvIYoK9DB8EsmPStg8BBdW
+   BQUS3dOI5beH7tOyCSQLwg0xXOH2FEANG0Z9gs2PrHiJjBbYWYrlS+tky
+   Ufi4GmZh+ZJX+MRchET2551QayPKwGmjMpTstFTjbEq4nEo3CKxZMYC1K
+   h0nvMOUrCayGXg1+GX/LznykGLKnLxv3tK5ZyNCYhUo+zX1UIxgEYCNvv
+   w==;
+X-CSE-ConnectionGUID: x5juNBwuQ8qpY7QnsB3UEw==
+X-CSE-MsgGUID: AwiCHKMqTJO7sKvtbfPfsA==
+X-IronPort-AV: E=McAfee;i="6600,9927,11068"; a="14156646"
+X-IronPort-AV: E=Sophos;i="6.08,148,1712646000"; 
+   d="scan'208";a="14156646"
+Received: from fmviesa002.fm.intel.com ([10.60.135.142])
+  by fmvoesa107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 May 2024 09:24:41 -0700
+X-CSE-ConnectionGUID: UAhV9xX6S0Gwsir/oLpzGA==
+X-CSE-MsgGUID: vvdDx4IGSFC0RXkEhc74Fw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.08,148,1712646000"; 
+   d="scan'208";a="52497006"
+Received: from orsmsx601.amr.corp.intel.com ([10.22.229.14])
+  by fmviesa002.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 09 May 2024 09:24:41 -0700
+Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
+ ORSMSX601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Thu, 9 May 2024 09:24:40 -0700
+Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Thu, 9 May 2024 09:24:40 -0700
+Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
+ orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Thu, 9 May 2024 09:24:40 -0700
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (104.47.70.100)
+ by edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Thu, 9 May 2024 09:24:40 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Q6I0PZ4E0R/cl2TpADCXKvab8a6C6Pi6lk0no5eqENN4DiD7xlsET+cFPsAAZFvCGKWkCqCYsbyrgwZ2kSHXAEQYTmMoYKpX58CXk/pkRsU7X0Jzcjwhf87sSG+2QdzkQSUadjb/3v7GMAZaM1X7NFXdEZSBPNLtyk3A5OSxTPrrMTo6iJ7+rSnIqPfIOcPHV7wjtsR1YoDN1AV4GvA/56kbvw56yG4cagxVX7YWe1+bBEC+WkqpmczheKDxKXlIBxhfkSvUmNeznvXZWZ8JZ7mt7sZtGpTbIopg9cCkcjVcSXO4MamLn3c42IZCOs5ho+cSzEcTL9XG+kkjaTOkXA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=GP8dpDaqTieaeUKSnaJ/QJFBz+ZLmlBz9U62G9f1XfE=;
+ b=aW5OndzI3jGcziTPbNVqaOd+6uf98epUcfk+TDVuyMPcLk/2FgU69+AXsZvFIPnEL2IIThuI3PuKm8Cm1F+m+DUnayno6popQCbpmxjucASiXF/1rZAb8yuO+9FT4AOwGwnvXKNyhWxih59WhMkm8GfYGt5vE1DC8C8hPW/5WzMXkAz/k2Fejzkt0Y//7HPlQJGb8vPR2eaNPp8mGwHBaiBB5Np8WASv26sNB1ydr/e9XBCJKqh73VZTf1cwi3PEsAVLxkQpCehV9v+5L4JNwlAgDWmgfuk5/r7v2YWbNaNHkthmpIjVfVh0gQIZ8axGWm8jkMv2qQj7gM2TvJ0pag==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Received: from MN0PR11MB5963.namprd11.prod.outlook.com (2603:10b6:208:372::10)
+ by MW4PR11MB6983.namprd11.prod.outlook.com (2603:10b6:303:226::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7544.46; Thu, 9 May
+ 2024 16:24:37 +0000
+Received: from MN0PR11MB5963.namprd11.prod.outlook.com
+ ([fe80::edb2:a242:e0b8:5ac9]) by MN0PR11MB5963.namprd11.prod.outlook.com
+ ([fe80::edb2:a242:e0b8:5ac9%3]) with mapi id 15.20.7544.046; Thu, 9 May 2024
+ 16:24:37 +0000
+From: "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>
+To: "olsajiri@gmail.com" <olsajiri@gmail.com>
+CC: "songliubraving@fb.com" <songliubraving@fb.com>, "luto@kernel.org"
+	<luto@kernel.org>, "mhiramat@kernel.org" <mhiramat@kernel.org>,
+	"andrii@kernel.org" <andrii@kernel.org>, "debug@rivosinc.com"
+	<debug@rivosinc.com>, "john.fastabend@gmail.com" <john.fastabend@gmail.com>,
+	"linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"mingo@redhat.com" <mingo@redhat.com>, "rostedt@goodmis.org"
+	<rostedt@goodmis.org>, "ast@kernel.org" <ast@kernel.org>,
+	"tglx@linutronix.de" <tglx@linutronix.de>, "yhs@fb.com" <yhs@fb.com>,
+	"oleg@redhat.com" <oleg@redhat.com>, "peterz@infradead.org"
+	<peterz@infradead.org>, "linux-man@vger.kernel.org"
+	<linux-man@vger.kernel.org>, "daniel@iogearbox.net" <daniel@iogearbox.net>,
+	"linux-trace-kernel@vger.kernel.org" <linux-trace-kernel@vger.kernel.org>,
+	"bp@alien8.de" <bp@alien8.de>, "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+	"x86@kernel.org" <x86@kernel.org>
+Subject: Re: [PATCHv5 bpf-next 6/8] x86/shstk: Add return uprobe support
+Thread-Topic: [PATCHv5 bpf-next 6/8] x86/shstk: Add return uprobe support
+Thread-Index: AQHaoGz/NDbwXOtepku5mG5JmKvX1LGMCSqAgAKMVwCAAIRoAA==
+Date: Thu, 9 May 2024 16:24:37 +0000
+Message-ID: <a8b7be15e6dbb1e8f2acaee7dae21fec7775194c.camel@intel.com>
+References: <20240507105321.71524-1-jolsa@kernel.org>
+	 <20240507105321.71524-7-jolsa@kernel.org>
+	 <a08a955c74682e9dc6eb6d49b91c6968c9b62f75.camel@intel.com>
+	 <ZjyJsl_u_FmYHrki@krava>
+In-Reply-To: <ZjyJsl_u_FmYHrki@krava>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+user-agent: Evolution 3.44.4-0ubuntu2 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: MN0PR11MB5963:EE_|MW4PR11MB6983:EE_
+x-ms-office365-filtering-correlation-id: 3551f087-2df0-4a46-9af0-08dc70448513
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;ARA:13230031|1800799015|366007|7416005|376005|38070700009;
+x-microsoft-antispam-message-info: =?utf-8?B?cyt2WnhiUFZsLzlMQjN2b1c0bW1MZUNlUWVycm1CYTZwNFZIR1ZjbFlSVFl1?=
+ =?utf-8?B?OWJ5MmtYaE5EazZ3djdnUHNoandJMUdWYWt0clcxNTZHaXRpTnpCdXZoL1ZX?=
+ =?utf-8?B?bkE4VnZkdTFhSXZzOTd0MmJlc2ZXNlM5UnZSd2VWWnF3L1pHV2lVS0Vxa0dP?=
+ =?utf-8?B?ZHIzVGtrQlVqWGN6NklzNkJLZXBYUzRCU1NCVjdodTNNOENMdkIxem1oVmlN?=
+ =?utf-8?B?aTVFQ0ZaS25ZTzBOYVJDUm5ldUpVeC9NRVdOWWdDR01ZOVNRb0QvdlE0aU90?=
+ =?utf-8?B?R2ZYeWxjbVU2YWNENlJkYm9wNFUwTC9sS29ZV2FIdGI1TEVuUWMzelpkSm40?=
+ =?utf-8?B?QmNPYWdtVFoxNmJkVCs2N1ZrM1NucC9CVUFSeHJTUnhhL080RDJWeXljdVpW?=
+ =?utf-8?B?djZtODJGcU1IempLWERmTHZUTy9EbFhNWWpFdStNUmhFK1FtSU1EV2U0bzJu?=
+ =?utf-8?B?TjB3OUYzTjJXQTc1SDc5SktIcXJ2cTAvTXh5L0xZRFRzWmlLeFcrbWFsRTM1?=
+ =?utf-8?B?KzZFMnRUV1RxalJwTDBIcTgwWU9MZWlDUnJlbzZtMGxreGp3QWRYTzhzMmkv?=
+ =?utf-8?B?ZVdXQmszWUlvSEwzTCtkYmJSRklzMko4WWV1VjRJL25YcjRhZ1hWREhoSlpl?=
+ =?utf-8?B?M2Rhb2JtbE0ycWZvTHUzUDg2NE1PUUEzMDZzNzNoNkFONEtYWXVUOENUQStn?=
+ =?utf-8?B?cnZ4Y0QwcWIvNHUxMy9tcG9vdFJpb1d0TXQ1YnY2VS9kVzB0RjN3QTZjRzRm?=
+ =?utf-8?B?VGNGQVVjRHhTZGNMaDUrbXpNbGZSa1pERDFDWXhIWnQ2djV4bGhjV05HVk4y?=
+ =?utf-8?B?RFlTL2RjY2h2WVIwNEpTQ0tGZm9tWDJ4QlVocTl1TmpHREJqUnJVUXU2L1dN?=
+ =?utf-8?B?a1pGdFlBRGZPV1NlTU1rZkdnWUl5MSsxOVhlWUZEaHR2TjJzMmtnM0t5bkho?=
+ =?utf-8?B?YW5manZXbGpQQy84em56OERpKzVvdGFaUEh4Y25TTnRaU3lPWElRVUxpWkZ3?=
+ =?utf-8?B?WUk2V0daL2E2T0hDWUdBVVFVTFk1dUVydkR3TC96SG1JaWYza29nekY5MkRS?=
+ =?utf-8?B?VlMrWGVZaFFxNk8rMG5zdS9KRmkweEpLWXJwTFM3MGVLOUg4Mm1yc2M2UFpU?=
+ =?utf-8?B?YTBGM3Jzclk1ZEZVcENvQ2tUdVU0dmk5WEFOU3VVV2pmd2g0Nmk4NWx1bURD?=
+ =?utf-8?B?NmlncWRFbnQ4VU9zZUYvWGFQTFZES1kzQThLanNVRE1jallTWnV3VFRCYmp2?=
+ =?utf-8?B?NEtHU2pCR2dZdFBsYWtZZTJQeWMrNUFzUnZLS3NiQTA5bEUrK21qWVcwQVFv?=
+ =?utf-8?B?czBLbllNdlFta21xK090Z2l0ZitQWWVxelZpYVhxcjFDNFgxWldNTzZFRHRJ?=
+ =?utf-8?B?cWwvcFFrczNjWkJ4UTE3WS9LLzljV3pjNHQ2R0o0bzMvR2k4dERpNC9pVENM?=
+ =?utf-8?B?Z05SdlNYby83QjAyVnN0YTdHNlBXT090MkY5UTZlUG9XNGNmaGh6eFVkbE5M?=
+ =?utf-8?B?Z04wWTRKY1ZhSTVFdGJMVStwSVpjNjNZMEdwYTFuK3N0NHFmcUN5Rjc4YnFx?=
+ =?utf-8?B?alNBajI3dHp0MWtZVldEMFJueCsyWVNEZ1k2SUc1T2JiNmc0bmExRXcycGY3?=
+ =?utf-8?B?Zms4Z1gzWUhRZE5Rdzlia01ST1lOTHVzT1EvSXFGeTNBQ01OelkvVTRmSldz?=
+ =?utf-8?B?bmMrOGFsWWUyM0lEM3poNVRrRlppSU9ldzBEMjJVdWtkbm1MVjh5OWtyOCtt?=
+ =?utf-8?B?QzRqbDdCcEp5RzdhbHZuRlRVMVFKMGl6VEZSeGk1UEpZT3BNVEg3N2YvRE94?=
+ =?utf-8?B?UGppdDhvOHZ0b1ZDdTNVZz09?=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN0PR11MB5963.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(1800799015)(366007)(7416005)(376005)(38070700009);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?ZW0rOFZtK01wZHVWL3NpSjZLOWhtODU0QVJRamlWbGpVbFphZzRzS2JVTHJh?=
+ =?utf-8?B?M3IvNVlHc0ZDbk04RjBXSTRodzl5aVhmcjdDTE56TmdJelJQNTFzNDNxM21W?=
+ =?utf-8?B?VEJHaUZPOEJjVEo5cUtCK2VKbjFhVVpRRmhWUzZjclBQSlJDUkhYQ09ySklC?=
+ =?utf-8?B?aXdXVnlENHM0bVluWnVYWVVsZHByWWk2a21ZOHFackhnUGxzMmpJakdRbE1O?=
+ =?utf-8?B?L3M5TGxVaDN3WVBvbjVWOHAvMXA4bEFIM01oallhZjl3WHhFckhEd0hVTC9Y?=
+ =?utf-8?B?bXJkeUpMNnVJU2xyaW5UMC9NNWVFZDJGOTFCRUV4WnloZ1pFWjRlZm5WTk1h?=
+ =?utf-8?B?QVYyVHFrSFVHZjVvVWJoeEpNekRJejBwMjNPbmhjVzBRTEczNWs4UVk5d2gy?=
+ =?utf-8?B?dEN2c0JVZUx4S2U3SFVDTlRNbXRSZGcvclZwRVBnUVd6QkNDeDJzTHdNaVhO?=
+ =?utf-8?B?ZkZRY3BXaXh3aVYrMVlVdE5reTRrZUcyYWlva3paYVdLT0xZRnVZYW11eDBC?=
+ =?utf-8?B?R2N4ZCtEa2ZuamFvNXY4ZU96MHZzMFhRclNPNE5IcnhFREEralhQZE9aUHJK?=
+ =?utf-8?B?aEhwS2VuYW90VjRBMEYxR1NCbXRMMnRoaTlRWUtKY2JyWU5JRHR3SlV1YWty?=
+ =?utf-8?B?RWJOL3BJVTEzQktmTTAxOFMyUUk0Mjk0S3E3S01mdnN5QndRQXp0cUlvdEgz?=
+ =?utf-8?B?a2xhS2g2bjA4cVJKYVpzdE1LdTU4MEdsMHY1Tk00M054STl3T1BYcDVGQkJP?=
+ =?utf-8?B?TGdoMnRtZGNpWGdPNlh1dGRaaHh1L2Q1RGlURzNXV1pzTjBRZW93VFVYa1NT?=
+ =?utf-8?B?U0xLNzU2a3ZHOUt1Y1NjQkRmTW9URG81SmpyMzdRMDVROVRGdXp0dDRoaUJI?=
+ =?utf-8?B?UUJiTGN5QUpRRStLcmg2UFVqdXBENVpNZ3hyb2szd2ZscHpvV2tndVBnZ0Uz?=
+ =?utf-8?B?NmIxOWZ1K1JGeG95L2owNkhGUlNiV2tiSkQzVlphb0xHbUt5a2d6RFIrS3dW?=
+ =?utf-8?B?RDhDaWsxTUNWWGVGN3JZWC9OSkNCSStETExDbXFUc1JWODFjRGRVbzUvNFFo?=
+ =?utf-8?B?Y1hnRm4yeEU3S3hCdFltRUtWdXZFZGFPSTNiaDIvOUU3TERnSDJvUEFpaXFG?=
+ =?utf-8?B?TnRQcnplTit4dmwyN2F6cCtUTnpWNm91ejgvWS8ySnlBbzZzOEY0a2ZqdXZ4?=
+ =?utf-8?B?ZHBOOXRZN1p1K2xHUi94M2I2ckRTQ0VKQm9XakE0T2lRbGhOYTJ4cTI1Wnho?=
+ =?utf-8?B?ZEk4Ui85OW5sTGIzWklqSzhYTHkzNUQrMERQdDF6aWZSQW8xaTJ4ZHdQUkVB?=
+ =?utf-8?B?NFdxOERZWGYyaURqWHRhT1Z2dFdEN1NYWnVraUZzaWEwL0FuU0pYeTk5MXZE?=
+ =?utf-8?B?KzdsT25hYXArYmsxQ1ZwOTJ2RDBhUzQreG8yR1ZQZW96VEQrTVpRNlR3Umw1?=
+ =?utf-8?B?SEJrYThBMFkxMXpmd1ZraG5uUTVKb1NXZlJFK3hteVdxQzVDMWhPQ0pwM3Ry?=
+ =?utf-8?B?TU9UcjVqS3k5dlUwSk5PSXllOU5tYTJ4UllsSUx0am1YanN5YUZQL05ZTk5K?=
+ =?utf-8?B?UXJKL1o3d3ROKzBtVm1LVFl4YjRtY2k4am5SazZQUDZDOG92WWJnbHRxUHdJ?=
+ =?utf-8?B?RFFaWXI1NUNJMkJkWmlJZnorSmZORFRnQzAwTEozY25XRXhHU1J4eE9ydEs4?=
+ =?utf-8?B?VGdaNTZUbWdwTStWdnpHLzdHWjRsb0E3YjRadG9pOXMxd0xwc3pxa0o5OUpT?=
+ =?utf-8?B?TEF1UzB1TDBvVzNPOG1uU2FLcDlhU3FhQ2VWTExFTmRQZ0ZNZUhHMTFxQlYy?=
+ =?utf-8?B?bzZBNHVqZzl3TDFZT0tzZytZeU9OWVJjdXlISXRSWTVrZDF1ZmRjVmpsOHo0?=
+ =?utf-8?B?M2M5TUdQQWRFdXV6dkZRYWZYVE4yaDdkWHE1YUU2NFNFS0tLT3Zvc2M2RjFx?=
+ =?utf-8?B?RWw2c1lUSjBCdE13N3owcFc3Wi85d2k3U2RxUlVGekhON0FXS0ZhYVZWQkt6?=
+ =?utf-8?B?WjM5Zm5Wc2l2SmU3bThzdVFsUjRWQThHai9LNmhmdHdySEZpendJeE1zVjBy?=
+ =?utf-8?B?cXBYLzJBN0o2SmJwSXlBbFdIc2FOUWZxODdMWVBDeWcxY0xFdTZCSmVwV2x1?=
+ =?utf-8?B?UW82dkJFcDRiVjFuQTVkZWFvU1Y1QmtHQXVGeWZLTk9CN0FYc3BVYVZZUVBJ?=
+ =?utf-8?Q?Q+PL75S7GfG2rlmHQNoZuZE=3D?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <7BAE96D65C75534CA48EF4943D3EEC74@namprd11.prod.outlook.com>
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; format=flowed; charset=US-ASCII
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: MN0PR11MB5963.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3551f087-2df0-4a46-9af0-08dc70448513
+X-MS-Exchange-CrossTenant-originalarrivaltime: 09 May 2024 16:24:37.2261
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 6yxT/Wam0lDCJYx1pjZaGQew+Xga2kBJ7PfyenbIy1InWPdzm1iVdPBdd4cABbKbp2UKU1jp5g4/gunCLb1QLUKBfOq9GgRDf/IcBvKa5HM=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR11MB6983
+X-OriginatorOrg: intel.com
 
-On Wed, 8 May 2024, Yunsheng Lin wrote:
-
-> Use the newly introduced prepare/probe/commit API to
-> replace page_frag with page_frag_cache for sk_page_frag().
->
-> CC: Alexander Duyck <alexander.duyck@gmail.com>
-> Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
-> ---
-> .../chelsio/inline_crypto/chtls/chtls.h       |   3 -
-> .../chelsio/inline_crypto/chtls/chtls_io.c    | 100 ++++---------
-> .../chelsio/inline_crypto/chtls/chtls_main.c  |   3 -
-> drivers/net/tun.c                             |  28 ++--
-> include/linux/sched.h                         |   4 +-
-> include/net/sock.h                            |  14 +-
-> kernel/exit.c                                 |   3 +-
-> kernel/fork.c                                 |   3 +-
-> net/core/skbuff.c                             |  32 ++--
-> net/core/skmsg.c                              |  22 +--
-> net/core/sock.c                               |  46 ++++--
-> net/ipv4/ip_output.c                          |  33 +++--
-> net/ipv4/tcp.c                                |  35 ++---
-> net/ipv4/tcp_output.c                         |  28 ++--
-> net/ipv6/ip6_output.c                         |  33 +++--
-> net/kcm/kcmsock.c                             |  30 ++--
-> net/mptcp/protocol.c                          |  70 +++++----
-> net/sched/em_meta.c                           |   2 +-
-> net/tls/tls_device.c                          | 139 ++++++++++--------
-> 19 files changed, 331 insertions(+), 297 deletions(-)
->
-
-<snip>
-
-> diff --git a/net/mptcp/protocol.c b/net/mptcp/protocol.c
-> index bb8f96f2b86f..ab844011d442 100644
-> --- a/net/mptcp/protocol.c
-> +++ b/net/mptcp/protocol.c
-> @@ -960,17 +960,18 @@ static bool mptcp_skb_can_collapse_to(u64 write_seq,
-> }
->
-> /* we can append data to the given data frag if:
-> - * - there is space available in the backing page_frag
-> - * - the data frag tail matches the current page_frag free offset
-> + * - there is space available for the current page
-> + * - the data frag tail matches the current page and offset
->  * - the data frag end sequence number matches the current write seq
->  */
-> static bool mptcp_frag_can_collapse_to(const struct mptcp_sock *msk,
-> -				       const struct page_frag *pfrag,
-> +				       const struct page *page,
-> +				       const unsigned int offset,
-> +				       const unsigned int size,
-
-Hi Yunsheng -
-
-Why add the 'size' parameter here? It's checked to be a nonzero value, but 
-it can only be 0 if page is also NULL. In this case "page == df->page" 
-will be false, so the function will return false even without checking 
-'size'.
-
-Thanks,
-
-Mat
-
-> 				       const struct mptcp_data_frag *df)
-> {
-> -	return df && pfrag->page == df->page &&
-> -		pfrag->size - pfrag->offset > 0 &&
-> -		pfrag->offset == (df->offset + df->data_len) &&
-> +	return df && size && page == df->page &&
-> +		offset == (df->offset + df->data_len) &&
-> 		df->data_seq + df->data_len == msk->write_seq;
-> }
->
-> @@ -1085,30 +1086,36 @@ static void mptcp_enter_memory_pressure(struct sock *sk)
-> /* ensure we get enough memory for the frag hdr, beyond some minimal amount of
->  * data
->  */
-> -static bool mptcp_page_frag_refill(struct sock *sk, struct page_frag *pfrag)
-> +static struct page *mptcp_page_frag_alloc_prepare(struct sock *sk,
-> +						  struct page_frag_cache *pfrag,
-> +						  unsigned int *offset,
-> +						  unsigned int *size, void **va)
-> {
-> -	if (likely(skb_page_frag_refill(32U + sizeof(struct mptcp_data_frag),
-> -					pfrag, sk->sk_allocation)))
-> -		return true;
-> +	struct page *page;
-> +
-> +	page = page_frag_alloc_prepare(pfrag, offset, size, va,
-> +				       sk->sk_allocation);
-> +	if (likely(page))
-> +		return page;
->
-> 	mptcp_enter_memory_pressure(sk);
-> -	return false;
-> +	return NULL;
-> }
->
-> static struct mptcp_data_frag *
-> -mptcp_carve_data_frag(const struct mptcp_sock *msk, struct page_frag *pfrag,
-> -		      int orig_offset)
-> +mptcp_carve_data_frag(const struct mptcp_sock *msk, struct page *page,
-> +		      unsigned int orig_offset)
-> {
-> 	int offset = ALIGN(orig_offset, sizeof(long));
-> 	struct mptcp_data_frag *dfrag;
->
-> -	dfrag = (struct mptcp_data_frag *)(page_to_virt(pfrag->page) + offset);
-> +	dfrag = (struct mptcp_data_frag *)(page_to_virt(page) + offset);
-> 	dfrag->data_len = 0;
-> 	dfrag->data_seq = msk->write_seq;
-> 	dfrag->overhead = offset - orig_offset + sizeof(struct mptcp_data_frag);
-> 	dfrag->offset = offset + sizeof(struct mptcp_data_frag);
-> 	dfrag->already_sent = 0;
-> -	dfrag->page = pfrag->page;
-> +	dfrag->page = page;
->
-> 	return dfrag;
-> }
-> @@ -1793,7 +1800,7 @@ static u32 mptcp_send_limit(const struct sock *sk)
-> static int mptcp_sendmsg(struct sock *sk, struct msghdr *msg, size_t len)
-> {
-> 	struct mptcp_sock *msk = mptcp_sk(sk);
-> -	struct page_frag *pfrag;
-> +	struct page_frag_cache *pfrag;
-> 	size_t copied = 0;
-> 	int ret = 0;
-> 	long timeo;
-> @@ -1832,9 +1839,12 @@ static int mptcp_sendmsg(struct sock *sk, struct msghdr *msg, size_t len)
-> 	while (msg_data_left(msg)) {
-> 		int total_ts, frag_truesize = 0;
-> 		struct mptcp_data_frag *dfrag;
-> -		bool dfrag_collapsed;
-> -		size_t psize, offset;
-> +		bool dfrag_collapsed = false;
-> +		unsigned int offset, size;
-> +		struct page *page;
-> +		size_t psize;
-> 		u32 copy_limit;
-> +		void *va;
->
-> 		/* ensure fitting the notsent_lowat() constraint */
-> 		copy_limit = mptcp_send_limit(sk);
-> @@ -1845,21 +1855,26 @@ static int mptcp_sendmsg(struct sock *sk, struct msghdr *msg, size_t len)
-> 		 * page allocator
-> 		 */
-> 		dfrag = mptcp_pending_tail(sk);
-> -		dfrag_collapsed = mptcp_frag_can_collapse_to(msk, pfrag, dfrag);
-> +		page = page_frag_alloc_probe(pfrag, &offset, &size, &va);
-> +		dfrag_collapsed = mptcp_frag_can_collapse_to(msk, page, offset,
-> +							     size, dfrag);
-> 		if (!dfrag_collapsed) {
-> -			if (!mptcp_page_frag_refill(sk, pfrag))
-> +			size = 32U + sizeof(struct mptcp_data_frag);
-> +			page = mptcp_page_frag_alloc_prepare(sk, pfrag, &offset,
-> +							     &size, &va);
-> +			if (!page)
-> 				goto wait_for_memory;
->
-> -			dfrag = mptcp_carve_data_frag(msk, pfrag, pfrag->offset);
-> +			dfrag = mptcp_carve_data_frag(msk, page, offset);
-> 			frag_truesize = dfrag->overhead;
-> +			va += dfrag->overhead;
-> 		}
->
-> 		/* we do not bound vs wspace, to allow a single packet.
-> 		 * memory accounting will prevent execessive memory usage
-> 		 * anyway
-> 		 */
-> -		offset = dfrag->offset + dfrag->data_len;
-> -		psize = pfrag->size - offset;
-> +		psize = size - frag_truesize;
-> 		psize = min_t(size_t, psize, msg_data_left(msg));
-> 		psize = min_t(size_t, psize, copy_limit);
-> 		total_ts = psize + frag_truesize;
-> @@ -1867,8 +1882,7 @@ static int mptcp_sendmsg(struct sock *sk, struct msghdr *msg, size_t len)
-> 		if (!sk_wmem_schedule(sk, total_ts))
-> 			goto wait_for_memory;
->
-> -		ret = do_copy_data_nocache(sk, psize, &msg->msg_iter,
-> -					   page_address(dfrag->page) + offset);
-> +		ret = do_copy_data_nocache(sk, psize, &msg->msg_iter, va);
-> 		if (ret)
-> 			goto do_error;
->
-> @@ -1877,7 +1891,6 @@ static int mptcp_sendmsg(struct sock *sk, struct msghdr *msg, size_t len)
-> 		copied += psize;
-> 		dfrag->data_len += psize;
-> 		frag_truesize += psize;
-> -		pfrag->offset += frag_truesize;
-> 		WRITE_ONCE(msk->write_seq, msk->write_seq + psize);
->
-> 		/* charge data on mptcp pending queue to the msk socket
-> @@ -1885,11 +1898,14 @@ static int mptcp_sendmsg(struct sock *sk, struct msghdr *msg, size_t len)
-> 		 */
-> 		sk_wmem_queued_add(sk, frag_truesize);
-> 		if (!dfrag_collapsed) {
-> -			get_page(dfrag->page);
-> +			page_frag_alloc_commit(pfrag, frag_truesize);
-> 			list_add_tail(&dfrag->list, &msk->rtx_queue);
-> 			if (!msk->first_pending)
-> 				WRITE_ONCE(msk->first_pending, dfrag);
-> +		} else {
-> +			page_frag_alloc_commit_noref(pfrag, frag_truesize);
-> 		}
-> +
-> 		pr_debug("msk=%p dfrag at seq=%llu len=%u sent=%u new=%d", msk,
-> 			 dfrag->data_seq, dfrag->data_len, dfrag->already_sent,
-> 			 !dfrag_collapsed);
-
+T24gVGh1LCAyMDI0LTA1LTA5IGF0IDEwOjMwICswMjAwLCBKaXJpIE9sc2Egd3JvdGU6DQo+ID4g
+UGVyIHRoZSBlYXJsaWVyIGRpc2N1c3Npb24sIHRoaXMgY2Fubm90IGJlIHJlYWNoZWQgdW5sZXNz
+IHVyZXRwcm9iZXMgYXJlIGluDQo+ID4gdXNlLA0KPiA+IHdoaWNoIGNhbm5vdCBoYXBwZW4gd2l0
+aG91dCBzb21ldGhpbmcgd2l0aCBwcml2aWxlZ2VzIHRha2luZyBhbiBhY3Rpb24uIEJ1dA0KPiA+
+IGFyZQ0KPiA+IHVyZXRwcm9iZXMgZXZlciB1c2VkIGZvciBtb25pdG9yaW5nIGFwcGxpY2F0aW9u
+cyB3aGVyZSBzZWN1cml0eSBpcw0KPiA+IGltcG9ydGFudD8gT3INCj4gPiBpcyBpdCBzdHJpY3Rs
+eSBhIGRlYnVnLXRpbWUgdGhpbmc/DQo+IA0KPiBzb3JyeSwgSSBkb24ndCBoYXZlIHRoYXQgbGV2
+ZWwgb2YgZGV0YWlsLCBidXQgd2UgZG8gaGF2ZSBjdXN0b21lcnMNCj4gdGhhdCB1c2UgdXByb2Jl
+cyBpbiBnZW5lcmFsIG9yIHdhbnQgdG8gdXNlIGl0IGFuZCBjb21wbGFpbiBhYm91dA0KPiB0aGUg
+c3BlZWQNCj4gDQo+IHRoZXJlIGFyZSBzZXZlcmFsIHRvb2xzIGluIGJjYyBbMV0gdGhhdCB1c2Ug
+dXJldHByb2JlcyBpbiBzY3JpcHRzLA0KPiBsaWtlOg0KPiDCoCBtZW1sZWFrLCBzc2xzbmlmZiwg
+dHJhY2UsIGJhc2hyZWFkbGluZSwgZ2V0aG9zdGxhdGVuY3ksIGFyZ2Rpc3QsDQo+IMKgIGZ1bmNs
+YXRlbmN5DQoNCklzIGl0IHBvc3NpYmxlIHRvIGhhdmUgc2hhZG93IHN0YWNrIG9ubHkgdXNlIHRo
+ZSBub24tc3lzY2FsbCBzb2x1dGlvbj8gSXQgc2VlbXMNCml0IGV4cG9zZXMgYSBtb3JlIGxpbWl0
+ZWQgY29tcGF0aWJpbGl0eSBpbiB0aGF0IGl0IG9ubHkgYWxsb3dzIHdyaXRpbmcgdGhlDQpzcGVj
+aWZpYyB0cmFtcG9saW5lIGFkZHJlc3MuIChJSVJDKSBUaGVuIHNoYWRvdyBzdGFjayB1c2VycyBj
+b3VsZCBzdGlsbCB1c2UNCnVyZXRwcm9iZXMsIGJ1dCBqdXN0IG5vdCB0aGUgbmV3IG9wdGltaXpl
+ZCBzb2x1dGlvbi4gVGhlcmUgYXJlIGFscmVhZHkNCm9wZXJhdGlvbnMgdGhhdCBhcmUgc2xvd2Vy
+IHdpdGggc2hhZG93IHN0YWNrLCBsaWtlIGxvbmdqbXAoKSwgc28gdGhpcyBjb3VsZCBiZQ0Kb2sg
+bWF5YmUuDQo=
 
