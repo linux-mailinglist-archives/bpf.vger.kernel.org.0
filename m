@@ -1,235 +1,262 @@
-Return-Path: <bpf+bounces-29160-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-29161-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F3BD08C0ADC
-	for <lists+bpf@lfdr.de>; Thu,  9 May 2024 07:15:22 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id ED4618C0B2D
+	for <lists+bpf@lfdr.de>; Thu,  9 May 2024 07:50:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 22B531C2292D
-	for <lists+bpf@lfdr.de>; Thu,  9 May 2024 05:15:22 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5D50D1F23FAB
+	for <lists+bpf@lfdr.de>; Thu,  9 May 2024 05:50:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BAB951494DB;
-	Thu,  9 May 2024 05:15:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B13E31494AB;
+	Thu,  9 May 2024 05:50:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BQoywBiy"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bZbV0ydz"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ot1-f45.google.com (mail-ot1-f45.google.com [209.85.210.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F165712BEA4;
-	Thu,  9 May 2024 05:15:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE8701A2C2A
+	for <bpf@vger.kernel.org>; Thu,  9 May 2024 05:50:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715231702; cv=none; b=M20wBKv1KmPMI2YetKIHte8XdX1oOsLDwQcAV4/kVjGbt7LgdtZpiYBivxWYM6Mb/cUJEvRi0aY2UUtfDo2etnGZruROxlcL8+l6he8JsrW81V+/STuGay6UFLmYnCDKJuS3ShDNYpnJYmF1wltJI8B7rSDqcZTIoFR/Xw8dj5I=
+	t=1715233808; cv=none; b=KFPsBQf8nqWXksqpKrdGC7qUu0O1zP099KrGDJe/dxqv8CO43a6I0RJBFh5cbUEx9Q7W5Xr8+i8fDy/phnF896uJWaljviVIwDfLUtwmm8IEWo0wC727qKHwb7WYA6KTls9GmoMKDRMEPCvWJ2bpjpQphlvJq5qhmEbMWRy6pz4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715231702; c=relaxed/simple;
-	bh=dgBpxGC9J1WlBSk7j6Dg82LPiieH8ot79JOBQEcnXq0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=n2X0yRfuJgzYC4GSubvuUR/5Mc+Bz/XX8LWsy43oCV78USf9Uh4j92xsVivWX0kqhbj4GJ/BO21C19tiXwk2NykWKbDTZrv1yhi9vB7FfA1jx8/s+s8AyWaOhf/UcAKOxIkaE8Aj7rR2p4Ycj47Tv1oXF0eztuzz2OEIiDcDgZs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BQoywBiy; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AF8AFC116B1;
-	Thu,  9 May 2024 05:15:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1715231701;
-	bh=dgBpxGC9J1WlBSk7j6Dg82LPiieH8ot79JOBQEcnXq0=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=BQoywBiy+PCheZmKhnImt/9BOTJD7sOxdMdOTlOLCfvXUKjgZOA92aRVR4OmcoxF9
-	 PTbOPGZF15CWvHBVuEwGeUtVVWmwiTb6FfsEOgf/6RkiKxAdRchyA72tARTMQHHS56
-	 7stGdQt7WDteZaEvMke5xN3k6+K3rexu/sDXquvtBr5Y2djj6r0Ay4Odn4nRO45Keu
-	 8+zyLIWzfYoyoPvE3xWjoC9Knv0/BRtHDQXiZtyiizSj8iI/Tmkzv636dmxJZptUSp
-	 6/rG79xlRkSsK2N27OtXiWF1LNTVKFxU0CRMDW0fjxV0VUp1GCtX3Br/Lr+jHOaIOv
-	 Lun/NWWKy0C5Q==
-Date: Thu, 9 May 2024 07:14:58 +0200
-From: Mark Brown <broonie@kernel.org>
-To: Edward Liaw <edliaw@google.com>
-Cc: shuah@kernel.org, Jaroslav Kysela <perex@perex.cz>,
-	Takashi Iwai <tiwai@suse.com>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>, Nhat Pham <nphamcs@gmail.com>,
-	Johannes Weiner <hannes@cmpxchg.org>,
-	Christian Brauner <brauner@kernel.org>,
-	Eric Biederman <ebiederm@xmission.com>,
-	Kees Cook <keescook@chromium.org>,
-	OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Ingo Molnar <mingo@redhat.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Darren Hart <dvhart@infradead.org>,
-	Davidlohr Bueso <dave@stgolabs.net>,
-	=?iso-8859-1?Q?Andr=E9?= Almeida <andrealmeid@igalia.com>,
-	Jiri Kosina <jikos@kernel.org>,
-	Benjamin Tissoires <bentiss@kernel.org>,
-	Jason Gunthorpe <jgg@ziepe.ca>, Kevin Tian <kevin.tian@intel.com>,
-	Andy Lutomirski <luto@amacapital.net>,
-	Will Drewry <wad@chromium.org>, Marc Zyngier <maz@kernel.org>,
-	Oliver Upton <oliver.upton@linux.dev>,
-	James Morse <james.morse@arm.com>,
-	Suzuki K Poulose <suzuki.poulose@arm.com>,
-	Zenghui Yu <yuzenghui@huawei.com>,
-	Paolo Bonzini <pbonzini@redhat.com>,
-	Sean Christopherson <seanjc@google.com>,
-	Anup Patel <anup@brainfault.org>,
-	Atish Patra <atishp@atishpatra.org>,
-	Paul Walmsley <paul.walmsley@sifive.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Albert Ou <aou@eecs.berkeley.edu>,
-	Christian Borntraeger <borntraeger@linux.ibm.com>,
-	Janosch Frank <frankja@linux.ibm.com>,
-	Claudio Imbrenda <imbrenda@linux.ibm.com>,
-	David Hildenbrand <david@redhat.com>,
-	=?iso-8859-1?Q?Micka=EBl_Sala=FCn?= <mic@digikod.net>,
-	Paul Moore <paul@paul-moore.com>, James Morris <jmorris@namei.org>,
-	"Serge E. Hallyn" <serge@hallyn.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Seth Forshee <sforshee@kernel.org>,
-	Bongsu Jeon <bongsu.jeon@samsung.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Steffen Klassert <steffen.klassert@secunet.com>,
-	Herbert Xu <herbert@gondor.apana.org.au>,
-	Andreas =?iso-8859-1?Q?F=E4rber?= <afaerber@suse.de>,
-	Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-	Matthieu Baerts <matttbe@kernel.org>,
-	Mat Martineau <martineau@kernel.org>,
-	Geliang Tang <geliang@kernel.org>,
-	Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-	Fenghua Yu <fenghua.yu@intel.com>,
-	Reinette Chatre <reinette.chatre@intel.com>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	"Paul E. McKenney" <paulmck@kernel.org>,
-	Boqun Feng <boqun.feng@gmail.com>,
-	Alexandre Belloni <alexandre.belloni@bootlin.com>,
-	Jarkko Sakkinen <jarkko@kernel.org>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	Muhammad Usama Anjum <usama.anjum@collabora.com>,
-	linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-	kernel-team@android.com, linux-sound@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
-	linux-input@vger.kernel.org, iommu@lists.linux.dev,
-	kvmarm@lists.linux.dev, kvm@vger.kernel.org,
-	kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
-	linux-security-module@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org, netdev@vger.kernel.org,
-	linux-actions@lists.infradead.org, mptcp@lists.linux.dev,
-	linux-rtc@vger.kernel.org, linux-sgx@vger.kernel.org,
-	bpf@vger.kernel.org
-Subject: Re: [PATCH v2 3/5] selftests: Include KHDR_INCLUDES in Makefile
-Message-ID: <Zjxb0k--qUyZKSg6@finisterre.sirena.org.uk>
-Mail-Followup-To: Edward Liaw <edliaw@google.com>, shuah@kernel.org,
-	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>, Nhat Pham <nphamcs@gmail.com>,
-	Johannes Weiner <hannes@cmpxchg.org>,
-	Christian Brauner <brauner@kernel.org>,
-	Eric Biederman <ebiederm@xmission.com>,
-	Kees Cook <keescook@chromium.org>,
-	OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Ingo Molnar <mingo@redhat.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Darren Hart <dvhart@infradead.org>,
-	Davidlohr Bueso <dave@stgolabs.net>,
-	=?iso-8859-1?Q?Andr=E9?= Almeida <andrealmeid@igalia.com>,
-	Jiri Kosina <jikos@kernel.org>,
-	Benjamin Tissoires <bentiss@kernel.org>,
-	Jason Gunthorpe <jgg@ziepe.ca>, Kevin Tian <kevin.tian@intel.com>,
-	Andy Lutomirski <luto@amacapital.net>,
-	Will Drewry <wad@chromium.org>, Marc Zyngier <maz@kernel.org>,
-	Oliver Upton <oliver.upton@linux.dev>,
-	James Morse <james.morse@arm.com>,
-	Suzuki K Poulose <suzuki.poulose@arm.com>,
-	Zenghui Yu <yuzenghui@huawei.com>,
-	Paolo Bonzini <pbonzini@redhat.com>,
-	Sean Christopherson <seanjc@google.com>,
-	Anup Patel <anup@brainfault.org>,
-	Atish Patra <atishp@atishpatra.org>,
-	Paul Walmsley <paul.walmsley@sifive.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Albert Ou <aou@eecs.berkeley.edu>,
-	Christian Borntraeger <borntraeger@linux.ibm.com>,
-	Janosch Frank <frankja@linux.ibm.com>,
-	Claudio Imbrenda <imbrenda@linux.ibm.com>,
-	David Hildenbrand <david@redhat.com>,
-	=?iso-8859-1?Q?Micka=EBl_Sala=FCn?= <mic@digikod.net>,
-	Paul Moore <paul@paul-moore.com>, James Morris <jmorris@namei.org>,
-	"Serge E. Hallyn" <serge@hallyn.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Seth Forshee <sforshee@kernel.org>,
-	Bongsu Jeon <bongsu.jeon@samsung.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Steffen Klassert <steffen.klassert@secunet.com>,
-	Herbert Xu <herbert@gondor.apana.org.au>,
-	Andreas =?iso-8859-1?Q?F=E4rber?= <afaerber@suse.de>,
-	Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-	Matthieu Baerts <matttbe@kernel.org>,
-	Mat Martineau <martineau@kernel.org>,
-	Geliang Tang <geliang@kernel.org>,
-	Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-	Fenghua Yu <fenghua.yu@intel.com>,
-	Reinette Chatre <reinette.chatre@intel.com>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	"Paul E. McKenney" <paulmck@kernel.org>,
-	Boqun Feng <boqun.feng@gmail.com>,
-	Alexandre Belloni <alexandre.belloni@bootlin.com>,
-	Jarkko Sakkinen <jarkko@kernel.org>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	Muhammad Usama Anjum <usama.anjum@collabora.com>,
-	linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-	kernel-team@android.com, linux-sound@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
-	linux-input@vger.kernel.org, iommu@lists.linux.dev,
-	kvmarm@lists.linux.dev, kvm@vger.kernel.org,
-	kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
-	linux-security-module@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org, netdev@vger.kernel.org,
-	linux-actions@lists.infradead.org, mptcp@lists.linux.dev,
-	linux-rtc@vger.kernel.org, linux-sgx@vger.kernel.org,
-	bpf@vger.kernel.org
-References: <20240507214254.2787305-1-edliaw@google.com>
- <20240507214254.2787305-4-edliaw@google.com>
+	s=arc-20240116; t=1715233808; c=relaxed/simple;
+	bh=kqZYC64XJ5KtbDifVIEIePIEW4gdhVZiXaKya7dD5/0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=HhhgDfLq3bWBZEK6Y4rzuBI9d9eowCOwGTWGCkePbXKAj8TCgMK9X1FUJKU4yRZk6xyaKsz4NYUrvdm/muNtR5eEdLoNDyKuIR+phMJ8FnNk8IXO/nkJNPvEV4bu+/Atna39z0IltD5zai9Iw5XST4nZaJCWGb2KBJiNZu7Mo5M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=bZbV0ydz; arc=none smtp.client-ip=209.85.210.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ot1-f45.google.com with SMTP id 46e09a7af769-6f065bc237aso284097a34.0
+        for <bpf@vger.kernel.org>; Wed, 08 May 2024 22:50:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1715233806; x=1715838606; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=a5RTgdA5b6xtX4qQuHEQVZIBfTzHqYajOC/YXGXY92o=;
+        b=bZbV0ydztdONeSq9Hs+66AMfbnd+5qnmoQT+ZzdReKB2+30xKDrnW4fdd6YjgMQ/9e
+         TgnOq/6aaY7bfBnpTM6N9MToQG9433akCVM97ljLV6I19FwolIQLvd0KjJdJ+pB5YjLL
+         o+N+6brxTRCatXw96bcX1GsbA4PP4RIiramYewZZpK1E9DbgaMCoK2BlNBoVlOx8yaFk
+         P76fq9RkDoCNvIPYqE8PJsOq10FesV1YvF8TNRpOQUkNxMhr9f2bm4NOXzKmcSdVVbBi
+         UJqpsw2tkF4BRABnQ/LyM1Ljkf5HksSoqfHsehUkNOO58QFiDHtD3+RO7RglA7eg3gb0
+         wY3g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1715233806; x=1715838606;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=a5RTgdA5b6xtX4qQuHEQVZIBfTzHqYajOC/YXGXY92o=;
+        b=WbH6Ppej/6SBw3VLzcn+1JLZ/++l/Cp1S+x7Sl2MqtcHZPAPYtaAgkiXzO6AYm5pTw
+         fAyO4rRiZeTMhdE3znBHlb0j4/BjA7ZyJw4M7jEwO3a4yU4rgBfQJvYent7YnhSznoJX
+         lcFOS676cC9QuT392foWGmJeRT+tI7uUhNNYxp3q83P/Jmok2szs5Z3r64V5osUpSNNR
+         MWarfejGE8KeZ86j6qjfp6Q0SvVoVRHuXkbkrvGsia0ZBL1ai/jED2H5bfEPkFMnq6sS
+         3mjvB/J+WehOLiBDX1jIqJRRWw6kOk7xL6Y04T/r+kyURvgPuemC92K3FaEwpLdDIq1x
+         xx6g==
+X-Forwarded-Encrypted: i=1; AJvYcCWV8Ff7PzgI6wyJDMef4/iqjOKBoAHVAsZY1whkG6e3yi/GMPMEK6D+Lxbm8u1gdsaCfKWJByRwA9Qe5Ou/XZBnvHgM
+X-Gm-Message-State: AOJu0YwjcmQEnBa0is1ncgyzzlARKnaV0O6b7qTBU542k6CJSPlj6gt1
+	j5+z3kTxTu3eAzaYR0/ZyJimsNgZ5s8iwMVP1b+iwhC9qJ/gALgK
+X-Google-Smtp-Source: AGHT+IFtdnSqZnib1xsn4KAbZNLt/4csYJ9Q9uh85SO6PqeQQrIzWRM00kBvD57wQjQqNlSXqOrx7A==
+X-Received: by 2002:a9d:65c2:0:b0:6f0:54fa:6697 with SMTP id 46e09a7af769-6f0b7836163mr4590180a34.4.1715233805847;
+        Wed, 08 May 2024 22:50:05 -0700 (PDT)
+Received: from ?IPV6:2600:1700:6cf8:1240:e321:942a:80e1:2a2f? ([2600:1700:6cf8:1240:e321:942a:80e1:2a2f])
+        by smtp.gmail.com with ESMTPSA id 46e09a7af769-6f0e01cb9eesm137381a34.34.2024.05.08.22.50.04
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 08 May 2024 22:50:05 -0700 (PDT)
+Message-ID: <d66a62fe-cce8-43fe-86e0-f21d98a8c69e@gmail.com>
+Date: Wed, 8 May 2024 22:50:04 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="8TMyWXG1VGLOfNzK"
-Content-Disposition: inline
-In-Reply-To: <20240507214254.2787305-4-edliaw@google.com>
-X-Cookie: Sorry.  Nice try.
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH bpf-next v2 5/6] selftests/bpf: detach a struct_ops link
+ from the subsystem managing it.
+To: Martin KaFai Lau <martin.lau@linux.dev>,
+ Kui-Feng Lee <thinker.li@gmail.com>
+Cc: kuifeng@meta.com, bpf@vger.kernel.org, ast@kernel.org, song@kernel.org,
+ kernel-team@meta.com, andrii@kernel.org
+References: <20240507055600.2382627-1-thinker.li@gmail.com>
+ <20240507055600.2382627-6-thinker.li@gmail.com>
+ <f0f66283-9c11-4fd8-9880-d9bbc6e36b55@linux.dev>
+Content-Language: en-US
+From: Kui-Feng Lee <sinquersw@gmail.com>
+In-Reply-To: <f0f66283-9c11-4fd8-9880-d9bbc6e36b55@linux.dev>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
 
---8TMyWXG1VGLOfNzK
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
 
-On Tue, May 07, 2024 at 09:38:28PM +0000, Edward Liaw wrote:
+On 5/8/24 16:50, Martin KaFai Lau wrote:
+> On 5/6/24 10:55 PM, Kui-Feng Lee wrote:
+>> Not only a user space program can detach a struct_ops link, the subsystem
+>> managing a link can also detach the link. This patch add a kfunc to
+>> simulate detaching a link by the subsystem managing it.
+>>
+>> Signed-off-by: Kui-Feng Lee <thinker.li@gmail.com>
+>> ---
+>>   .../selftests/bpf/bpf_testmod/bpf_testmod.c   | 21 ++++++
+>>   .../bpf/prog_tests/test_struct_ops_module.c   | 65 +++++++++++++++++++
+>>   .../selftests/bpf/progs/struct_ops_detach.c   |  6 ++
+>>   3 files changed, 92 insertions(+)
+>>
+>> diff --git a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c 
+>> b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
+>> index c89a6414c69f..0bf1acc1767a 100644
+>> --- a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
+>> +++ b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
+>> @@ -502,6 +502,26 @@ __bpf_kfunc void bpf_kfunc_call_test_sleepable(void)
+>>   static DEFINE_MUTEX(detach_mutex);
+>>   static struct bpf_link *link_to_detach;
+>> +__bpf_kfunc int bpf_dummy_do_link_detach(void)
+>> +{
+>> +    struct bpf_link *link;
+>> +    int ret = -ENOENT;
+>> +
+>> +    mutex_lock(&detach_mutex);
+>> +    link = link_to_detach;
+>> +    /* Make sure the link is still valid by increasing its refcnt */
+>> +    if (link && !atomic64_inc_not_zero(&link->refcnt))
+> 
+> It is better to reuse the bpf_link_inc_not_zero().
 
->  tools/testing/selftests/arm64/signal/Makefile          | 2 +-
+I will export this function to be used by modules.
 
-This is not really using any of the kselftest framework at all to build
-so I'm not sure the change makes sense for it.  OTOH it does no harm...
+> 
+>> +        link = NULL;
+>> +    mutex_unlock(&detach_mutex);
+>> +
+>> +    if (link) {
+>> +        ret = link->ops->detach(link);
+>> +        bpf_link_put(link);
+>> +    }
+>> +
+>> +    return ret;
+>> +}
+>> +
+>>   BTF_KFUNCS_START(bpf_testmod_check_kfunc_ids)
+>>   BTF_ID_FLAGS(func, bpf_testmod_test_mod_kfunc)
+>>   BTF_ID_FLAGS(func, bpf_kfunc_call_test1)
+>> @@ -529,6 +549,7 @@ BTF_ID_FLAGS(func, 
+>> bpf_kfunc_call_test_destructive, KF_DESTRUCTIVE)
+>>   BTF_ID_FLAGS(func, bpf_kfunc_call_test_static_unused_arg)
+>>   BTF_ID_FLAGS(func, bpf_kfunc_call_test_offset)
+>>   BTF_ID_FLAGS(func, bpf_kfunc_call_test_sleepable, KF_SLEEPABLE)
+>> +BTF_ID_FLAGS(func, bpf_dummy_do_link_detach)
+> 
+> It should need KF_SLEEPABLE. mutex is used.
 
---8TMyWXG1VGLOfNzK
-Content-Type: application/pgp-signature; name="signature.asc"
+To simplify it, spinlock will be used instead.
 
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmY8W9EACgkQJNaLcl1U
-h9Aa4gf9HY7hIlNAryB75Fb1YdATwSHy7EQyKfWsSaobZtWWwgFh6CF0C6J7Wa0o
-UmFwVoKos72xm0UCKTtuBAxkIxhk1wupw0K6u0fVcraHpDV579RI/BAsIc1cFgf8
-cGvyEy3VRgjGDKorUJnMg9WU7qNTIfRovXGmXewa1WJHz1OFk+ETMSbXQ3rmKPlF
-2epuBPaw7gBN4W1nb9nGpZkG+Ub2hUJTN7nBB0IJ5GD+mrREYXyxAHiEk9AWR1Bb
-nD5tNG9ZWepZSGtR11j3jdPc2XVNksMJyMCuqG4tmIZbjuaS7mu9vvxBoSDxqD9j
-uK6Nqwb0FziTG9MkhW8EMgjvhlCGnA==
-=L/hl
------END PGP SIGNATURE-----
-
---8TMyWXG1VGLOfNzK--
+> 
+>>   BTF_KFUNCS_END(bpf_testmod_check_kfunc_ids)
+>>   static int bpf_testmod_ops_init(struct btf *btf)
+>> diff --git 
+>> a/tools/testing/selftests/bpf/prog_tests/test_struct_ops_module.c 
+>> b/tools/testing/selftests/bpf/prog_tests/test_struct_ops_module.c
+>> index f39455b81664..9f6657b53a93 100644
+>> --- a/tools/testing/selftests/bpf/prog_tests/test_struct_ops_module.c
+>> +++ b/tools/testing/selftests/bpf/prog_tests/test_struct_ops_module.c
+>> @@ -229,6 +229,69 @@ static void test_detach_link(void)
+>>       struct_ops_detach__destroy(skel);
+>>   }
+>> +/* Detach a link from the subsystem that the link was registered to */
+>> +static void test_subsystem_detach(void)
+>> +{
+>> +    LIBBPF_OPTS(bpf_test_run_opts, topts,
+>> +            .data_in = &pkt_v4,
+>> +            .data_size_in = sizeof(pkt_v4));
+>> +    struct epoll_event ev, events[2];
+>> +    struct struct_ops_detach *skel;
+>> +    struct bpf_link *link = NULL;
+>> +    int fd, epollfd = -1, nfds;
+>> +    int prog_fd;
+>> +    int err;
+>> +
+>> +    skel = struct_ops_detach__open_and_load();
+>> +    if (!ASSERT_OK_PTR(skel, "struct_ops_detach_open_and_load"))
+>> +        return;
+>> +
+>> +    link = bpf_map__attach_struct_ops(skel->maps.testmod_do_detach);
+>> +    if (!ASSERT_OK_PTR(link, "attach_struct_ops"))
+>> +        goto cleanup;
+>> +
+>> +    fd = bpf_link__fd(link);
+>> +    if (!ASSERT_GE(fd, 0, "link_fd"))
+>> +        goto cleanup;
+>> +
+>> +    prog_fd = bpf_program__fd(skel->progs.start_detach);
+>> +    if (!ASSERT_GE(prog_fd, 0, "start_detach_fd"))
+>> +        goto cleanup;
+>> +
+>> +    /* Do detachment from the registered subsystem */
+>> +    err = bpf_prog_test_run_opts(prog_fd, &topts);
+>> +    if (!ASSERT_OK(err, "start_detach_run"))
+>> +        goto cleanup;
+>> +
+>> +    if (!ASSERT_EQ(topts.retval, 0, "start_detach_run retval"))
+>> +        goto cleanup;
+>> +
+>> +    epollfd = epoll_create1(0);
+>> +    if (!ASSERT_GE(epollfd, 0, "epoll_create1"))
+>> +        goto cleanup;
+>> +
+>> +    ev.events = EPOLLHUP;
+>> +    ev.data.fd = fd;
+>> +    err = epoll_ctl(epollfd, EPOLL_CTL_ADD, fd, &ev);
+>> +    if (!ASSERT_OK(err, "epoll_ctl"))
+>> +        goto cleanup;
+>> +
+>> +    /* Wait for EPOLLHUP */
+>> +    nfds = epoll_wait(epollfd, events, 2, 5000);
+>> +    if (!ASSERT_EQ(nfds, 1, "epoll_wait"))
+>> +        goto cleanup;
+>> +
+>> +    if (!ASSERT_EQ(events[0].data.fd, fd, "epoll_wait_fd"))
+>> +        goto cleanup;
+>> +    if (!ASSERT_TRUE(events[0].events & EPOLLHUP, "events[0].events"))
+>> +        goto cleanup;
+>> +
+>> +cleanup:
+>> +    close(epollfd);
+>> +    bpf_link__destroy(link);
+>> +    struct_ops_detach__destroy(skel);
+>> +}
+>> +
+>>   void serial_test_struct_ops_module(void)
+>>   {
+>>       if (test__start_subtest("test_struct_ops_load"))
+>> @@ -239,5 +302,7 @@ void serial_test_struct_ops_module(void)
+>>           test_struct_ops_incompatible();
+>>       if (test__start_subtest("test_detach_link"))
+>>           test_detach_link();
+>> +    if (test__start_subtest("test_subsystem_detach"))
+>> +        test_subsystem_detach();
+>>   }
+>> diff --git a/tools/testing/selftests/bpf/progs/struct_ops_detach.c 
+>> b/tools/testing/selftests/bpf/progs/struct_ops_detach.c
+>> index aeb355b3bea3..139f9a5c5601 100644
+>> --- a/tools/testing/selftests/bpf/progs/struct_ops_detach.c
+>> +++ b/tools/testing/selftests/bpf/progs/struct_ops_detach.c
+>> @@ -29,3 +29,9 @@ struct bpf_testmod_ops testmod_do_detach = {
+>>       .test_1 = (void *)test_1,
+>>       .test_2 = (void *)test_2,
+>>   };
+>> +
+>> +SEC("tc")
+> 
+> The bpf_dummy_do_link_detach() uses a mutex. There is no lockdep splat 
+> in the test?
+> 
+>> +int start_detach(void *skb)
+>> +{
+>> +    return bpf_dummy_do_link_detach();
+>> +}
+> 
 
