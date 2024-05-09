@@ -1,310 +1,155 @@
-Return-Path: <bpf+bounces-29312-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-29313-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CB9F58C180A
-	for <lists+bpf@lfdr.de>; Thu,  9 May 2024 23:04:56 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 216798C1831
+	for <lists+bpf@lfdr.de>; Thu,  9 May 2024 23:19:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 80A6F282649
-	for <lists+bpf@lfdr.de>; Thu,  9 May 2024 21:04:55 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 864331F21BFF
+	for <lists+bpf@lfdr.de>; Thu,  9 May 2024 21:19:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1243684A50;
-	Thu,  9 May 2024 21:04:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D351485653;
+	Thu,  9 May 2024 21:19:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="yk+yL7yb"
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="C0mWpryS"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-qt1-f182.google.com (mail-qt1-f182.google.com [209.85.160.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE34D811E0
-	for <bpf@vger.kernel.org>; Thu,  9 May 2024 21:04:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE7D984FBC;
+	Thu,  9 May 2024 21:19:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715288690; cv=none; b=b1npiynG4/lkarqQyUTBtYSq5ymcYY46l3drf+hzAWUv5pscmldBJiFjqk9VaOkSbHleNRA3TPDYrr4l3AtMN3/tp1t7wP5WaxkJzVGDTxzszVRQ6j/B8/kYouDznv3gR1jhWCDNglZsEj6xa0/4RNMgJJaxrE80xUmCNMMoPyE=
+	t=1715289542; cv=none; b=ssCbb32k2lXtVbgp5XobTlnFdtzz0LZSnMhoCNhIwYXBIURyszswQfo0lfF78Sh449g2qEbUWl+wvYAeDEQZbb5RxkXaj8Faau3IObKYQwWi1JGp2YR06l+3jLh0VsJU4Ja3Lsy6FDPR8Ie4aiXhteok5DQh83MqFzHuwXm61ns=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715288690; c=relaxed/simple;
-	bh=C2amn8/MjN0IM4RIO4S50Amv3j2rBOJd6EWDwyLABjA=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=KQzUCRqZJ1/oQse65Fs1eBcohLnRDdh1ARPFf/QcVsJaNGxdO8+9fDqKVFTNI5QVLrAV9z6ZYToTjlZuRLyM/iejVt8cqYMCrYZpmtcASr8jSOL6SIzmoTGW+1DF9uFTAIEr9i8QSIsdE94hRo8DcLoC7ViGohWVmOWw7DMDISQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=yk+yL7yb; arc=none smtp.client-ip=209.85.160.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-qt1-f182.google.com with SMTP id d75a77b69052e-43dfe020675so109141cf.0
-        for <bpf@vger.kernel.org>; Thu, 09 May 2024 14:04:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1715288688; x=1715893488; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=zasTy8CP2/aUCe8GaQUqPrWEeq4iZIR2Q40eyzR1FwA=;
-        b=yk+yL7ybHcGoz5oeAeJhNaTSMUUILZviIimfwuxMLi+/i0bTk1KJ16reHCoE1b38jD
-         85pMfJrqO01NV9PwoWTl7+XWmYeYucKe9qgWt/fj3+s/xTahAc0lTG6vAXfsG984KgOz
-         Cx9W99pfikb4CMnj5WlxkE1ZJwlJ5FtAkTGzxOjAhjnx+0pRE0icGgnmTnXav42RRfp5
-         7Gtm61EoRqZ5/IuYV25nJr0vIiMpXzsgOM3ulXuic3NBrrbZleiWRALNs2WtH8Rs0dK8
-         LcWOBIvoi99s+I2leNYn2umLzYlc0PNeL7FZiohaOGf94EefM2zeEGac+LJHi0ZXlmRo
-         yVRA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1715288688; x=1715893488;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=zasTy8CP2/aUCe8GaQUqPrWEeq4iZIR2Q40eyzR1FwA=;
-        b=e5mOKeH5mhVpVjSOKTr/uI/wQtjg5W/tGIyLDnwlm989NeJgVRTl5ZqCW13tNLxPcS
-         Bu8NeFR23s2pP75pQFt7kfQxbBYcsKsQyJhAeFywvFOjPS8fkWACX8mGs/NislG+58ie
-         YY+zkiJRXYRUg7l6aoY+DOia3mUMMb4CTT1eB/H88nmPfU+pbOzTXkBc4O7XeEZw+193
-         MwRNBWc1I8jIsOeIJi3/4XW6jdp8xpml84+Jp0YgnCSbJqjmFDIvItkZ0L6rYV+u6Smf
-         LPjPpprlyjzGMTxtKoqTLxxsDa4xJM1N+rH1aXIwihHz3zOLu5LwBkAIIg2WTY71Z++x
-         kCZA==
-X-Forwarded-Encrypted: i=1; AJvYcCXElKh14SxZZ4u0IwKeLWsanb2IYEDSeR7uOm4yVr3MTO/1AoPd4BYZ1C9DkjsY/UsBltC0WLmZMGVuLkqjmcVAFb7K
-X-Gm-Message-State: AOJu0YwzBUK8+45M4+6jz1RnJeoDBLV6CK/3F71yurqPnE+QdEM/Oiz7
-	SraS2/QxVmLbPIB+hejlirG6IaXGjSabDad9JrOcS5w+P8cnwi3L+MP0yXK33thYk93QCgSxltw
-	3NrLrM9kTTwQeWKd6K7W7bhF2MgUc+AlzwHg=
-X-Google-Smtp-Source: AGHT+IFqsgOT5Sqi/rvjdtFNKVETF+FGAJDzIhh0L7MAaIjIevIF3vvjDcaZTcL42uS/yzK+o79KstjQCZdjpG/x2ao=
-X-Received: by 2002:a05:622a:5190:b0:43a:b8f3:f079 with SMTP id
- d75a77b69052e-43dfdd09fd1mr742981cf.20.1715288687602; Thu, 09 May 2024
- 14:04:47 -0700 (PDT)
+	s=arc-20240116; t=1715289542; c=relaxed/simple;
+	bh=DSNcjb0/9m14mg1z288CJEBF+EywuKjvLqNTFhCT7uE=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=QzkSiHT9r8qR3IPtrD5NMN/XLXsrYO+2x6cBmhKLE0n+rJo1um4j581DrNmhE3xcltn7Kzw//unXKjQx+uAJgYjaniRHnvGtxFivrAd1XyqyeFYUmu3YEwh130SvL1K+8yga4PxUhmjluh8s1nqU8GsrBHLhjxAXuYxoMuaNQNE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=qualcomm.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=C0mWpryS; arc=none smtp.client-ip=205.220.168.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qualcomm.com
+Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 449KsrG9008212;
+	Thu, 9 May 2024 21:18:36 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	from:to:cc:subject:date:message-id:mime-version
+	:content-transfer-encoding; s=qcppdkim1; bh=Iic5rqV5jfXiANtpFR5G
+	e5pqq5EIbYObP8BVr/ZIjn0=; b=C0mWprySAuansH8pKuup0cud5cJntOfGlVCi
+	GtUmmE89fIX3GkPNqmJMPidERknwsyf3WXlUcRiabdmMzXNkWwegQRgLFo/cL3nI
+	rA7RkmufQrmDw0UHr6lDnAzoAuPs4TJ24ByheRhwgReCXC5OjklOFv4Jhd6WfJkM
+	hlt20tyEDAtqlF3qK0nDPXMqcwtMa2JZpyf+CbhdltuaJ+kcKnaKwRmnxRTRz07L
+	ignV3PLo9mYDcCciigmH/JdEL39UYQrJK509zk2x8nPtH7oATI3sz//A+XHvmhfs
+	9mixGcA+Yd3I3+VcnmX16xgCtdzed0mo6OrJGKKUAf0b5hTFpg==
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3y08ne3rwf-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 09 May 2024 21:18:35 +0000 (GMT)
+Received: from pps.filterd (NALASPPMTA03.qualcomm.com [127.0.0.1])
+	by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTP id 449LIZtb014490;
+	Thu, 9 May 2024 21:18:35 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+	by NALASPPMTA03.qualcomm.com (PPS) with ESMTPS id 3y0wfhkte5-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 09 May 2024 21:18:35 +0000
+Received: from NALASPPMTA03.qualcomm.com (NALASPPMTA03.qualcomm.com [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 449LIYIJ014485;
+	Thu, 9 May 2024 21:18:34 GMT
+Received: from hu-devc-lv-u20-a-new.qualcomm.com (hu-abchauha-lv.qualcomm.com [10.81.25.35])
+	by NALASPPMTA03.qualcomm.com (PPS) with ESMTPS id 449LIYKB014484
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 09 May 2024 21:18:34 +0000
+Received: by hu-devc-lv-u20-a-new.qualcomm.com (Postfix, from userid 214165)
+	id 4D28823A6F; Thu,  9 May 2024 14:18:34 -0700 (PDT)
+From: Abhishek Chauhan <quic_abchauha@quicinc.com>
+To: "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Andrew Halaney <ahalaney@redhat.com>,
+        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+        Martin KaFai Lau <martin.lau@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Daniel Borkmann <daniel@iogearbox.net>, bpf <bpf@vger.kernel.org>
+Cc: kernel@quicinc.com
+Subject: [PATCH bpf-next v8 0/3] Replace mono_delivery_time with tstamp_type
+Date: Thu,  9 May 2024 14:18:31 -0700
+Message-Id: <20240509211834.3235191-1-quic_abchauha@quicinc.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240502000602.753861-1-yabinc@google.com> <CAM9d7cj2WUdbXz1E4kQCYY=7tO+C9XXQidMJuQNp=WP6dudLkw@mail.gmail.com>
- <CAM9d7cg0vCLf+X30PnmR9wcXT9+taXKntJoeAdWae+_G6mWjvw@mail.gmail.com>
-In-Reply-To: <CAM9d7cg0vCLf+X30PnmR9wcXT9+taXKntJoeAdWae+_G6mWjvw@mail.gmail.com>
-From: Yabin Cui <yabinc@google.com>
-Date: Thu, 9 May 2024 14:04:31 -0700
-Message-ID: <CALJ9ZPPv6Yj6FrpLY9u0G_4y1Th8BzjM+eTsYJAhRViQuaSfRA@mail.gmail.com>
-Subject: Re: [PATCH v2] perf/core: Save raw sample data conditionally based on
- sample type
-To: Namhyung Kim <namhyung@kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
-	Arnaldo Carvalho de Melo <acme@kernel.org>, Mark Rutland <mark.rutland@arm.com>, 
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Ian Rogers <irogers@google.com>, Adrian Hunter <adrian.hunter@intel.com>, 
-	linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+X-QCInternal: smtphost
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: JWJiFtWoRHtNMSnr0dmGzugIwJDb8BTw
+X-Proofpoint-ORIG-GUID: JWJiFtWoRHtNMSnr0dmGzugIwJDb8BTw
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.650,FMLib:17.11.176.26
+ definitions=2024-05-09_12,2024-05-09_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 priorityscore=1501
+ malwarescore=0 suspectscore=0 spamscore=0 impostorscore=0 phishscore=0
+ adultscore=0 clxscore=1015 lowpriorityscore=0 mlxlogscore=977 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2405010000
+ definitions=main-2405090150
 
-Thanks for reviewing the patch! I will update a v3 patch based on the comme=
-nts.
+Patch 1 :- This patch takes care of only renaming the mono delivery
+timestamp to tstamp_type with no change in functionality of 
+existing available code in kernel also  
+Starts assigning tstamp_type with either mono or real and 
+introduces a new enum in the skbuff.h, again no change in functionality 
+of the existing available code in kernel , just making the code scalable.
 
+Patch 2 :- Additional bit was added to support tai timestamp type to 
+avoid tstamp drops in the forwarding path when testing TC-ETF. 
+Patch is also updating bpf filter.c
+Some updates to bpf header files with introduction to BPF_SKB_CLOCK_TAI
+and documentation updates stating deprecation of BPF_SKB_TSTAMP_UNSPEC 
+and BPF_SKB_TSTAMP_DELIVERY_MONO 
 
-On Thu, May 9, 2024 at 12:55=E2=80=AFPM Namhyung Kim <namhyung@kernel.org> =
-wrote:
->
-> Another thought.
->
-> On Thu, May 9, 2024 at 12:45=E2=80=AFPM Namhyung Kim <namhyung@kernel.org=
-> wrote:
-> >
-> > Hello,
-> >
-> > On Wed, May 1, 2024 at 5:06=E2=80=AFPM Yabin Cui <yabinc@google.com> wr=
-ote:
-> > >
-> > > Currently, space for raw sample data is always allocated within sampl=
-e
-> > > records for both BPF output and tracepoint events. This leads to unus=
-ed
-> > > space in sample records when raw sample data is not requested.
-> >
-> > Oh, I thought it was ok because even if it sets _RAW bit in the
-> > data->sample_flags unconditionally, perf_prepare_sample() and
-> > perf_output_sample() checks the original event's attr->sample_type
-> > so the raw data won't be recorded.
-> >
-> > But I've realized that it increased data->dyn_size already. :(
-> > Which means the sample would have garbage at the end.
-> >
-> > I need to check if there are other places that made the same
-> > mistake for other sample types.
-> >
-> > >
-> > > This patch checks sample type of an event before saving raw sample da=
-ta
-> > > in both BPF output and tracepoint event handling logic. Raw sample da=
-ta
-> > > will only be saved if explicitly requested, reducing overhead when it
-> > > is not needed.
-> > >
-> > > Fixes: 0a9081cf0a11 ("perf/core: Add perf_sample_save_raw_data() help=
-er")
-> > > Signed-off-by: Yabin Cui <yabinc@google.com>
-> >
-> > Acked-by: Namhyung Kim <namhyung@kernel.org>
-> >
-> > Thanks,
-> > Namhyung
-> >
-> > > ---
-> [SNIP]
-> > > @@ -10180,13 +10181,18 @@ static void __perf_tp_event_target_task(u64=
- count, void *record,
-> > >         /* Cannot deliver synchronous signal to other task. */
-> > >         if (event->attr.sigtrap)
-> > >                 return;
-> > > -       if (perf_tp_event_match(event, data, regs))
-> > > +       if (perf_tp_event_match(event, raw, regs)) {
-> > > +               perf_sample_data_init(data, 0, 0);
-> > > +               if (event->attr.sample_type & PERF_SAMPLE_RAW)
-> > > +                       perf_sample_save_raw_data(data, raw);
->
-> Hmm.. to prevent future mistakes, maybe we can move the
-> check into the perf_sample_save_raw_data() itself.
->
-> And it'd be great if you could do the same for callchain
-> and brstack too. :)
->
-> Thanks,
-> Namhyung
->
->
-> > >                 perf_swevent_event(event, count, data, regs);
-> > > +       }
-> > >  }
-> > >
-> > >  static void perf_tp_event_target_task(u64 count, void *record,
-> > >                                       struct pt_regs *regs,
-> > >                                       struct perf_sample_data *data,
-> > > +                                     struct perf_raw_record *raw,
-> > >                                       struct perf_event_context *ctx)
-> > >  {
-> > >         unsigned int cpu =3D smp_processor_id();
-> > > @@ -10194,15 +10200,15 @@ static void perf_tp_event_target_task(u64 c=
-ount, void *record,
-> > >         struct perf_event *event, *sibling;
-> > >
-> > >         perf_event_groups_for_cpu_pmu(event, &ctx->pinned_groups, cpu=
-, pmu) {
-> > > -               __perf_tp_event_target_task(count, record, regs, data=
-, event);
-> > > +               __perf_tp_event_target_task(count, record, regs, data=
-, raw, event);
-> > >                 for_each_sibling_event(sibling, event)
-> > > -                       __perf_tp_event_target_task(count, record, re=
-gs, data, sibling);
-> > > +                       __perf_tp_event_target_task(count, record, re=
-gs, data, raw, sibling);
-> > >         }
-> > >
-> > >         perf_event_groups_for_cpu_pmu(event, &ctx->flexible_groups, c=
-pu, pmu) {
-> > > -               __perf_tp_event_target_task(count, record, regs, data=
-, event);
-> > > +               __perf_tp_event_target_task(count, record, regs, data=
-, raw, event);
-> > >                 for_each_sibling_event(sibling, event)
-> > > -                       __perf_tp_event_target_task(count, record, re=
-gs, data, sibling);
-> > > +                       __perf_tp_event_target_task(count, record, re=
-gs, data, raw, sibling);
-> > >         }
-> > >  }
-> > >
-> > > @@ -10220,15 +10226,10 @@ void perf_tp_event(u16 event_type, u64 coun=
-t, void *record, int entry_size,
-> > >                 },
-> > >         };
-> > >
-> > > -       perf_sample_data_init(&data, 0, 0);
-> > > -       perf_sample_save_raw_data(&data, &raw);
-> > > -
-> > >         perf_trace_buf_update(record, event_type);
-> > >
-> > >         hlist_for_each_entry_rcu(event, head, hlist_entry) {
-> > > -               if (perf_tp_event_match(event, &data, regs)) {
-> > > -                       perf_swevent_event(event, count, &data, regs)=
-;
-> > > -
-> > > +               if (perf_tp_event_match(event, &raw, regs)) {
-> > >                         /*
-> > >                          * Here use the same on-stack perf_sample_dat=
-a,
-> > >                          * some members in data are event-specific an=
-d
-> > > @@ -10238,7 +10239,9 @@ void perf_tp_event(u16 event_type, u64 count,=
- void *record, int entry_size,
-> > >                          * because data->sample_flags is set.
-> > >                          */
-> > >                         perf_sample_data_init(&data, 0, 0);
-> > > -                       perf_sample_save_raw_data(&data, &raw);
-> > > +                       if (event->attr.sample_type & PERF_SAMPLE_RAW=
-)
-> > > +                               perf_sample_save_raw_data(&data, &raw=
-);
-> > > +                       perf_swevent_event(event, count, &data, regs)=
-;
-> > >                 }
-> > >         }
-> > >
-> > > @@ -10255,7 +10258,7 @@ void perf_tp_event(u16 event_type, u64 count,=
- void *record, int entry_size,
-> > >                         goto unlock;
-> > >
-> > >                 raw_spin_lock(&ctx->lock);
-> > > -               perf_tp_event_target_task(count, record, regs, &data,=
- ctx);
-> > > +               perf_tp_event_target_task(count, record, regs, &data,=
- &raw, ctx);
-> > >                 raw_spin_unlock(&ctx->lock);
-> > >  unlock:
-> > >                 rcu_read_unlock();
-> > > diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-> > > index 9dc605f08a23..4b3ff71b4c0a 100644
-> > > --- a/kernel/trace/bpf_trace.c
-> > > +++ b/kernel/trace/bpf_trace.c
-> > > @@ -620,7 +620,8 @@ static const struct bpf_func_proto bpf_perf_event=
-_read_value_proto =3D {
-> > >
-> > >  static __always_inline u64
-> > >  __bpf_perf_event_output(struct pt_regs *regs, struct bpf_map *map,
-> > > -                       u64 flags, struct perf_sample_data *sd)
-> > > +                       u64 flags, struct perf_raw_record *raw,
-> > > +                       struct perf_sample_data *sd)
-> > >  {
-> > >         struct bpf_array *array =3D container_of(map, struct bpf_arra=
-y, map);
-> > >         unsigned int cpu =3D smp_processor_id();
-> > > @@ -645,6 +646,9 @@ __bpf_perf_event_output(struct pt_regs *regs, str=
-uct bpf_map *map,
-> > >         if (unlikely(event->oncpu !=3D cpu))
-> > >                 return -EOPNOTSUPP;
-> > >
-> > > +       if (event->attr.sample_type & PERF_SAMPLE_RAW)
-> > > +               perf_sample_save_raw_data(sd, raw);
-> > > +
-> > >         return perf_event_output(event, sd, regs);
-> > >  }
-> > >
-> > > @@ -688,9 +692,8 @@ BPF_CALL_5(bpf_perf_event_output, struct pt_regs =
-*, regs, struct bpf_map *, map,
-> > >         }
-> > >
-> > >         perf_sample_data_init(sd, 0, 0);
-> > > -       perf_sample_save_raw_data(sd, &raw);
-> > >
-> > > -       err =3D __bpf_perf_event_output(regs, map, flags, sd);
-> > > +       err =3D __bpf_perf_event_output(regs, map, flags, &raw, sd);
-> > >  out:
-> > >         this_cpu_dec(bpf_trace_nest_level);
-> > >         preempt_enable();
-> > > @@ -749,9 +752,8 @@ u64 bpf_event_output(struct bpf_map *map, u64 fla=
-gs, void *meta, u64 meta_size,
-> > >
-> > >         perf_fetch_caller_regs(regs);
-> > >         perf_sample_data_init(sd, 0, 0);
-> > > -       perf_sample_save_raw_data(sd, &raw);
-> > >
-> > > -       ret =3D __bpf_perf_event_output(regs, map, flags, sd);
-> > > +       ret =3D __bpf_perf_event_output(regs, map, flags, &raw, sd);
-> > >  out:
-> > >         this_cpu_dec(bpf_event_output_nest_level);
-> > >         preempt_enable();
-> > > --
-> > > 2.45.0.rc0.197.gbae5840b3b-goog
-> > >
+Patch 3:- Handles forwarding of UDP packets with TAI clock id tstamp_type
+type with supported changes for tc_redirect/tc_redirect_dtime
+to handle forwarding of UDP packets with TAI tstamp_type 
+
+Abhishek Chauhan (3):
+  net: Rename mono_delivery_time to tstamp_type for scalabilty
+  net: Add additional bit to support clockid_t timestamp type
+  selftests/bpf: Handle forwarding of UDP CLOCK_TAI packets
+
+ include/linux/skbuff.h                        | 68 ++++++++++++++-----
+ include/net/inet_frag.h                       |  4 +-
+ include/uapi/linux/bpf.h                      | 15 ++--
+ net/bridge/netfilter/nf_conntrack_bridge.c    |  6 +-
+ net/core/dev.c                                |  2 +-
+ net/core/filter.c                             | 54 ++++++++-------
+ net/ieee802154/6lowpan/reassembly.c           |  2 +-
+ net/ipv4/inet_fragment.c                      |  2 +-
+ net/ipv4/ip_fragment.c                        |  2 +-
+ net/ipv4/ip_output.c                          | 14 ++--
+ net/ipv4/raw.c                                |  2 +-
+ net/ipv4/tcp_ipv4.c                           |  2 +
+ net/ipv4/tcp_output.c                         | 14 ++--
+ net/ipv6/ip6_output.c                         | 11 +--
+ net/ipv6/netfilter.c                          |  6 +-
+ net/ipv6/netfilter/nf_conntrack_reasm.c       |  2 +-
+ net/ipv6/raw.c                                |  2 +-
+ net/ipv6/reassembly.c                         |  2 +-
+ net/ipv6/tcp_ipv6.c                           | 12 +++-
+ net/packet/af_packet.c                        |  7 +-
+ net/sched/act_bpf.c                           |  4 +-
+ net/sched/cls_bpf.c                           |  4 +-
+ tools/include/uapi/linux/bpf.h                | 15 ++--
+ .../selftests/bpf/prog_tests/ctx_rewrite.c    | 10 +--
+ .../selftests/bpf/prog_tests/tc_redirect.c    |  3 -
+ .../selftests/bpf/progs/test_tc_dtime.c       | 39 +++++------
+ 26 files changed, 180 insertions(+), 124 deletions(-)
+
+-- 
+2.25.1
+
 
