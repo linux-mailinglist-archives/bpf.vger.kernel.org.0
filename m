@@ -1,81 +1,50 @@
-Return-Path: <bpf+bounces-29309-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-29310-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9F6568C1792
-	for <lists+bpf@lfdr.de>; Thu,  9 May 2024 22:31:37 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3E05F8C17E7
+	for <lists+bpf@lfdr.de>; Thu,  9 May 2024 22:50:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E8AF9B223C9
-	for <lists+bpf@lfdr.de>; Thu,  9 May 2024 20:31:34 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CEAF51F219F4
+	for <lists+bpf@lfdr.de>; Thu,  9 May 2024 20:50:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4E62779DD5;
-	Thu,  9 May 2024 20:31:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 06CF580C02;
+	Thu,  9 May 2024 20:50:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fIhFWTXo"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Z1MH4Zea"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC47C29AF;
-	Thu,  9 May 2024 20:31:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6FD68C2ED;
+	Thu,  9 May 2024 20:50:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715286683; cv=none; b=MxfK+HHZExRviTnS776143pl/fQuXzpFfRB1DTbA1SnNXBNI9mn3aQfIbPI4IYSNB9w4rw9xzaZCjRkKctJQRKpuDsP2/rTijmU2FMkcjfSoU7KxqLUC0JyP+dS9y1uHQebOTsXazlE87ZWmzPE0ZfMM6Emass15cQhWO0J2hgE=
+	t=1715287830; cv=none; b=hkz1mEcG8ZPBDF3LCIsApUNIefAORYUMRjucgIqIhukW9oEJpuz+nAG0LEBl5CnT9wIip2m+nW0Wykd9o7owoS28AUGZHHGZcXFTRVI8P8r1QFQhWGz7T/0St5sci7M2C/dk+jSBoUPBmkNk6WQbRvpYOvLuPvRXZf0b1xyR08o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715286683; c=relaxed/simple;
-	bh=3hRwl2K12SkRKNM78wLsl/4te3kJ4BT9nZoF6sCbxbA=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=Y6ORVS9/MHH8gFbRDYwZJhLkNKqr4JFJxkH3AUoj/kOCYYaeKjIfN4DoLs0hiYYB0PB6o8mTYUvLL4WU5l/kc4AFBDplL53pYWIbh7vOyD1Qfrs0/9Jgyk7g0RaRAs3k2tTyroZFVLLfc1v7dFAPKndPczpRGUSojeAyZTH37mA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fIhFWTXo; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2BEF6C116B1;
-	Thu,  9 May 2024 20:31:21 +0000 (UTC)
+	s=arc-20240116; t=1715287830; c=relaxed/simple;
+	bh=I+4WNOHQ2T0LlJSzxc1d1XkR2bEVn55vwUCepHk0L64=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=fJgigUtbCcq3lqX64l9gmKWCeHweh8J9buIjIQgIytbIMWsUsvxJs55ZzQx7+YbpgcvUkABhTFE/ESottH1K/bOvKdVNRKGs6KtUItPkN1BqdaJrH8fHIdHq8LI694yPP2I6ybqvhN4tofsmuTSKhYjxSBleZBKioKon7F5rr9U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Z1MH4Zea; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id DEF94C2BD11;
+	Thu,  9 May 2024 20:50:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1715286683;
-	bh=3hRwl2K12SkRKNM78wLsl/4te3kJ4BT9nZoF6sCbxbA=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=fIhFWTXoUfrZEXYXnNpjyqAaUa4FKNKp1liB8UAZMze9KVv4hdAFmJylc4iA2ekx7
-	 0fhwWAgIWjmCNyvHeQ0baHNbtDX7ycaHfa2SXUNVmD1OT3lznGSH7W9ZOMYVq8XzPS
-	 XNdetjkAICbPLl6ZcBlFpBrF6uOo19eNlFEH04hmul98ViHyviLWxshHNPkuB4YW8R
-	 j/XqzRH4eUz9DNnhN6j1c2zTJ4wOzQvR5+5d/39yVSA5AWK7LBuN0WnPSyQoM+Na7F
-	 +byhIpw32XvdJTGUefGzhSRK/x2pK5XgOnr0McvVxwaDjfNk0mDdQZSj4xrD1fIuDV
-	 XVepSil5D0/gg==
-From: SeongJae Park <sj@kernel.org>
-To: Edward Liaw <edliaw@google.com>
-Cc: SeongJae Park <sj@kernel.org>,
-	shuah@kernel.org,
-	"=?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?=" <mic@digikod.net>,
-	"=?UTF-8?q?G=C3=BCnther=20Noack?=" <gnoack@google.com>,
-	Christian Brauner <brauner@kernel.org>,
-	Richard Cochran <richardcochran@gmail.com>,
-	Paul Walmsley <paul.walmsley@sifive.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Albert Ou <aou@eecs.berkeley.edu>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	"David S. Miller" <davem@davemloft.net>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Jesper Dangaard Brouer <hawk@kernel.org>,
-	John Fastabend <john.fastabend@gmail.com>,
-	Muhammad Usama Anjum <usama.anjum@collabora.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	linux-kernel@vger.kernel.org,
-	linux-kselftest@vger.kernel.org,
-	kernel-team@android.com,
-	linux-security-module@vger.kernel.org,
-	netdev@vger.kernel.org,
-	linux-riscv@lists.infradead.org,
-	bpf@vger.kernel.org,
-	damon@lists.linux.dev,
-	linux-mm@kvack.org,
-	mathieu.desnoyers@efficios.com
-Subject: Re: [PATCH v3 13/68] selftests/damon: Drop define _GNU_SOURCE
-Date: Thu,  9 May 2024 13:31:13 -0700
-Message-Id: <20240509203113.63537-1-sj@kernel.org>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20240509200022.253089-14-edliaw@google.com>
-References: 
+	s=k20201202; t=1715287829;
+	bh=I+4WNOHQ2T0LlJSzxc1d1XkR2bEVn55vwUCepHk0L64=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=Z1MH4ZeaD5ZtYmexTH1wDhBcpt5g9iXKPFFJSUpArgwXLSDNdm6nZLK1mrTwSfCe6
+	 pedA/ZCcxzzyBdlr3kypQY3E4ZvWRXMA2N/KskNoq9DSM8G/toGxDbawEY+qkGHZvZ
+	 6SnpX0NBb2qicYHrxfty4idTIr4Ngxj8pGk6msyuG+NUQNPETP8kqGzHEjsLkXFmfz
+	 7nExEFyayDhQgJtL6JYRe40cow+I9lQbteHbBVSu2MTmZp2Ji6qRlzQ/R5x19ps1IN
+	 rkuPMVqRPzi0J4Ng6uKohFemlfIaP1VBLNy5ZV+hsP7m0wZsBQhKmod+azeVMeRpiH
+	 xw8Sfy8ej4EAw==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id CDAA4E7C0E0;
+	Thu,  9 May 2024 20:50:29 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -83,74 +52,54 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf-next 0/6] use network helpers, part 4
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <171528782983.387.11204190011175475682.git-patchwork-notify@kernel.org>
+Date: Thu, 09 May 2024 20:50:29 +0000
+References: <cover.1714907662.git.tanggeliang@kylinos.cn>
+In-Reply-To: <cover.1714907662.git.tanggeliang@kylinos.cn>
+To: Geliang Tang <geliang@kernel.org>
+Cc: andrii@kernel.org, eddyz87@gmail.com, mykolal@fb.com, ast@kernel.org,
+ daniel@iogearbox.net, martin.lau@linux.dev, song@kernel.org,
+ yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org,
+ sdf@google.com, haoluo@google.com, jolsa@kernel.org, shuah@kernel.org,
+ jakub@cloudflare.com, tanggeliang@kylinos.cn, bpf@vger.kernel.org,
+ linux-kselftest@vger.kernel.org
 
-Hi Edward,
+Hello:
 
-On Thu,  9 May 2024 19:58:05 +0000 Edward Liaw <edliaw@google.com> wrote:
+This series was applied to bpf/bpf-next.git (master)
+by Martin KaFai Lau <martin.lau@kernel.org>:
 
-> _GNU_SOURCE is provided by lib.mk, so it should be dropped to prevent
-> redefinition warnings.
+On Sun,  5 May 2024 19:35:07 +0800 you wrote:
+> From: Geliang Tang <tanggeliang@kylinos.cn>
 > 
-> Fixes: 809216233555 ("selftests/harness: remove use of LINE_MAX")
-
-I show Mathieu's comment on this[1].  I have no strong opinion on this, but if
-you conclude to remove or change this line, please apply same change to this
-patch.
-
-[1] https://lore.kernel.org/638a7831-493c-4917-9b22-5aa663e9ee84@efficios.com
-
-> Signed-off-by: Edward Liaw <edliaw@google.com>
-
-I also added trivial comments that coming from my personal and humble
-preferrence below.  Other than the above and the below comments,
-
-Reviewed-by: SeongJae Park <sj@kernel.org>
-
-> ---
->  tools/testing/selftests/damon/debugfs_target_ids_pid_leak.c    | 3 ---
->  .../damon/debugfs_target_ids_read_before_terminate_race.c      | 2 --
->  2 files changed, 5 deletions(-)
+> This patchset adds post_socket_cb pointer together with 'struct
+> post_socket_opts cb_opts' into struct network_helper_opts to make
+> start_server_addr() helper more flexible. With these modifications,
+> many duplicate codes can be dropped.
 > 
-> diff --git a/tools/testing/selftests/damon/debugfs_target_ids_pid_leak.c b/tools/testing/selftests/damon/debugfs_target_ids_pid_leak.c
-> index 0cc2eef7d142..7a17a03d555c 100644
-> --- a/tools/testing/selftests/damon/debugfs_target_ids_pid_leak.c
-> +++ b/tools/testing/selftests/damon/debugfs_target_ids_pid_leak.c
-> @@ -2,9 +2,6 @@
->  /*
->   * Author: SeongJae Park <sj@kernel.org>
->   */
-> -
-> -#define _GNU_SOURCE
-> -
->  #include <fcntl.h>
+> [...]
 
-I'd prefer having one empty line between the comment and includes.
+Here is the summary with links:
+  - [bpf-next,1/6] selftests/bpf: Add post_socket_cb for network_helper_opts
+    https://git.kernel.org/bpf/bpf-next/c/20434d2d896f
+  - [bpf-next,2/6] selftests/bpf: Use start_server_addr in sockopt_inherit
+    https://git.kernel.org/bpf/bpf-next/c/5166b3e3e30a
+  - [bpf-next,3/6] selftests/bpf: Use start_server_addr in test_tcp_check_syncookie
+    https://git.kernel.org/bpf/bpf-next/c/49e1fa8dbd81
+  - [bpf-next,4/6] selftests/bpf: Use connect_to_fd in sockopt_inherit
+    https://git.kernel.org/bpf/bpf-next/c/5059c73eca67
+  - [bpf-next,5/6] selftests/bpf: Use connect_to_fd in test_tcp_check_syncookie
+    https://git.kernel.org/bpf/bpf-next/c/65a3f0df44dd
+  - [bpf-next,6/6] selftests/bpf: Drop get_port in test_tcp_check_syncookie
+    https://git.kernel.org/bpf/bpf-next/c/7abbf38cd8ed
 
->  #include <stdbool.h>
->  #include <stdint.h>
-> diff --git a/tools/testing/selftests/damon/debugfs_target_ids_read_before_terminate_race.c b/tools/testing/selftests/damon/debugfs_target_ids_read_before_terminate_race.c
-> index b06f52a8ce2d..4aeac55ac93e 100644
-> --- a/tools/testing/selftests/damon/debugfs_target_ids_read_before_terminate_race.c
-> +++ b/tools/testing/selftests/damon/debugfs_target_ids_read_before_terminate_race.c
-> @@ -2,8 +2,6 @@
->  /*
->   * Author: SeongJae Park <sj@kernel.org>
->   */
-> -#define _GNU_SOURCE
-> -
->  #include <fcntl.h>
-
-Ditto.
-
-And I realize I also forgot adding one empty line before the above #define
-line.  That's why I'm saying this is just a trivial comment :)
-
->  #include <stdbool.h>
->  #include <stdint.h>
-> -- 
-> 2.45.0.118.g7fe29c98d7-goog
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
 
-Thanks,
-SJ
 
