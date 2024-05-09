@@ -1,296 +1,166 @@
-Return-Path: <bpf+bounces-29158-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-29159-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 27D598C09A8
-	for <lists+bpf@lfdr.de>; Thu,  9 May 2024 04:12:05 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id C3BDD8C0AAA
+	for <lists+bpf@lfdr.de>; Thu,  9 May 2024 06:50:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 89FF21F222F0
-	for <lists+bpf@lfdr.de>; Thu,  9 May 2024 02:12:04 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4F2D31F22D70
+	for <lists+bpf@lfdr.de>; Thu,  9 May 2024 04:50:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 741FB13C9AB;
-	Thu,  9 May 2024 02:11:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BBB6C14901F;
+	Thu,  9 May 2024 04:49:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TNwcp/Jf"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="d9k3Xohb"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-vs1-f43.google.com (mail-vs1-f43.google.com [209.85.217.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 54DC513C66A
-	for <bpf@vger.kernel.org>; Thu,  9 May 2024 02:11:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.217.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E4E902747D;
+	Thu,  9 May 2024 04:49:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715220718; cv=none; b=NmjKnhQBUH30o8jc4qcJkngE+nlqMD2+5o1SXCw0GSfeaF2DbrRS6GHZ2mkA+CPh/N4gcBkOJxfZaCaf2enLS3SfZfcfYyYdeT8ziwhtQej/mzTtl361eMvBk8i/aXpZ8Hgr4oJgVUp317VecfFMNZMCDLEM3BzGsy03uIcC8A0=
+	t=1715230195; cv=none; b=BCjXOxe0Oa9542fw/UqQXY4T5vcOs8zMxCx7ihNJu1oKiYO/d3Eh929W80bhDyr3DpbfLfuzr0zmYwwE9pI+E/g2eRC55q6a9SOAlpFVblFM+MuKjehqJPB6G8NtbUIxpEgVfiDcXzsZAMgNyQ4n9UKB5Z3UEquJx/YJMp49ERc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715220718; c=relaxed/simple;
-	bh=2IBXkNud63eSWXLjUPho1nyqY7CDu4DURB3fABpTfxU=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=fiF4SRVY2i1E4oPuLJC+imVCfVWRlQT+XVED4Ixql8evkDvJtZi087W4J4HwxiGlye+pl9tYxrvemnonQKHfm+dwnxLochDA8gbVIc5L75NnxvKE4cIdyIwZWxzLMLQDL5s9zBiJPLAJoAAXquW03GEfh2GPIKIBO4hwpaFaCyI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=TNwcp/Jf; arc=none smtp.client-ip=209.85.217.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-vs1-f43.google.com with SMTP id ada2fe7eead31-47f39711c94so124396137.1
-        for <bpf@vger.kernel.org>; Wed, 08 May 2024 19:11:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1715220715; x=1715825515; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=gMHyKAOzspC0P1aEHMkM+nFok08wIDlhZbTNsS9ndkQ=;
-        b=TNwcp/JfxJ02nrerGN/T75RJyuKw0P6MpYuuEhskOSuOgM3nhbEabiGli4lX3ZTAiJ
-         v/ONldS/3xVcSmuNJXJckEHLNautqiaI9nmrWVnWXclYdpk9vEZwXjB2EpsHpU4E2Kea
-         SwQGpab/FqKoSpbmLJJdN/A4RcIPgI55UKnEJCsiXFuCD9DsTEVIMHjN/+Jz+OpQiJuj
-         B+gXjupEGa0/cyVQOXFoJ6qo6ZNYZf75y7+b4e9MfPum9NbPJw+FFx2iTm8d9l2sP9bA
-         UjOeFH8SIKZVTAFaEHfBmSaiTNIWn2rC+fjh8FWB5wiFPABMff1hOOZeVM3WYOD2iUlG
-         nkbg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1715220715; x=1715825515;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=gMHyKAOzspC0P1aEHMkM+nFok08wIDlhZbTNsS9ndkQ=;
-        b=b8Y71W5m2l10/MLmSYvfhknndEG2XULrnwObMCIPHxuM5hn+YaZHab8MOnI1E2e0d1
-         0XlyWaG+OU5Dzl9eMlZsGMnYridfGyUGmgbCvevkce2ELIYHTRbrhurRiXoCcCGYRiTV
-         1r8GiopNia2n4HrbVSSXX0FE+Ne4icPdU5U3YHNW/Ryr/52HW0fNWfvBPem6YJRIm8d0
-         hy9H/bC2Vu3rRMYqwY517anLTFFimC+qDrFRgIu928Rx+ISjw1zBKwWh5ThQF8QKfO4Z
-         ZA7kuGGVUDK7WB9tL2njU0p4ymhduLHGo5/r0s1E4tc5uiY3B9eVpLlN4fFHjK6m4u4r
-         ud8Q==
-X-Forwarded-Encrypted: i=1; AJvYcCVKCvIOlDdax/16MUzvdVB4DP5sArY0CsMN65Bl2EWqvDYWY8cUH1+DRRv+UOs/+yKmEOrouVZZj2pRXhKbKERQInWw
-X-Gm-Message-State: AOJu0YzbOx+g3te2fXUelvnnYcH2HYQRhwuuyRyRlvi7FvYbY0xnkl8u
-	Sb672BMQU5fFeQ85YTxAumQncRDG1L2wJNEBNrwRgyXdeLVM3dlH0lfmIu4wn9iIQZCOHluCejs
-	X/sEEYaSZQ3h9OCN8ATGAaK0H8ds=
-X-Google-Smtp-Source: AGHT+IHIeOsS0EOHRgzOeYgA0G6r99iNEMBo5yimbG35U5Nfx7PribFHh2FwzKGWMjuKChH/7X/98jP9sv5+hS9b4pU=
-X-Received: by 2002:a05:6102:2245:b0:47a:2cab:75ad with SMTP id
- ada2fe7eead31-47f3c2d613dmr3719403137.14.1715220715201; Wed, 08 May 2024
- 19:11:55 -0700 (PDT)
+	s=arc-20240116; t=1715230195; c=relaxed/simple;
+	bh=+AiojDAJmMoCc0Wxxh5jISkjo5+IH8X8Y3hjru7idxw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Gd3tEsR/YQv0byIK1xjrl8o5hHsNLMKfXXH2YrBPy+qRa3XHUzeq41uD/hGk9158kxvmhCMG8KcXCYFXTNlXVTOP2Wtw56iRtrxB49RwlFBFP+KGePBvwY9IrDGeqT/tLf/oSBQJ/pYPuAj3ZSgeLMiGhvl2GtDB0nWb5/WBe8g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=d9k3Xohb; arc=none smtp.client-ip=198.137.202.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
+	:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=x3Xxg6i0FLAN0umHIWCwG93UHt8NFMOuUk41qzLUqYk=; b=d9k3XohbzRhXOoELgdBEeA6f1S
+	3oOjwUmoqaRaQC0CvfU6k+88iGiYqGevi4D0Mjv1XT/tJ31yElVIPjyooqUNsndaV6nr1hGD5KD6Y
+	hpVyEo5ud1SsOU0IbJ/27faXATUncL94DVq2aq/GP8tX02rBz5V+LazPctxgZmjT4XiNg5CteZelR
+	F250+x02riIYTRrco+NPB3RdRCFIh0LOb6pIdqAbmqXgrCWDOGcloO9JUAvrLzhBGKhu3BAgULPxQ
+	P+NUz6+r5CHQPlzEem7mdtAOYVy13sfKqnZcHBQZehzZ76EOcgOw/zp4uB68EXKz4VKifIE4VqybV
+	dq8ZPucQ==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1s4vit-00000000LYS-0m4f;
+	Thu, 09 May 2024 04:49:39 +0000
+Date: Wed, 8 May 2024 21:49:39 -0700
+From: Christoph Hellwig <hch@infradead.org>
+To: Pavel Begunkov <asml.silence@gmail.com>
+Cc: Christoph Hellwig <hch@infradead.org>, Jason Gunthorpe <jgg@ziepe.ca>,
+	Mina Almasry <almasrymina@google.com>, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+	linux-alpha@vger.kernel.org, linux-mips@vger.kernel.org,
+	linux-parisc@vger.kernel.org, sparclinux@vger.kernel.org,
+	linux-trace-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
+	bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
+	linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Richard Henderson <richard.henderson@linaro.org>,
+	Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+	Matt Turner <mattst88@gmail.com>,
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	"James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+	Helge Deller <deller@gmx.de>, Andreas Larsson <andreas@gaisler.com>,
+	Jesper Dangaard Brouer <hawk@kernel.org>,
+	Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Arnd Bergmann <arnd@arndb.de>, Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
+	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+	Steffen Klassert <steffen.klassert@secunet.com>,
+	Herbert Xu <herbert@gondor.apana.org.au>,
+	David Ahern <dsahern@kernel.org>,
+	Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+	Shuah Khan <shuah@kernel.org>,
+	Sumit Semwal <sumit.semwal@linaro.org>,
+	Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+	Amritha Nambiar <amritha.nambiar@intel.com>,
+	Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+	Alexander Mikhalitsyn <alexander@mihalicyn.com>,
+	Kaiyuan Zhang <kaiyuanz@google.com>,
+	Christian Brauner <brauner@kernel.org>,
+	Simon Horman <horms@kernel.org>,
+	David Howells <dhowells@redhat.com>,
+	Florian Westphal <fw@strlen.de>,
+	Yunsheng Lin <linyunsheng@huawei.com>,
+	Kuniyuki Iwashima <kuniyu@amazon.com>, Jens Axboe <axboe@kernel.dk>,
+	Arseniy Krasnov <avkrasnov@salutedevices.com>,
+	Aleksander Lobakin <aleksander.lobakin@intel.com>,
+	Michael Lass <bevan@bi-co.net>, Jiri Pirko <jiri@resnulli.us>,
+	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+	Lorenzo Bianconi <lorenzo@kernel.org>,
+	Richard Gobert <richardbgobert@gmail.com>,
+	Sridhar Samudrala <sridhar.samudrala@intel.com>,
+	Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+	Johannes Berg <johannes.berg@intel.com>,
+	Abel Wu <wuyun.abel@bytedance.com>,
+	Breno Leitao <leitao@debian.org>, David Wei <dw@davidwei.uk>,
+	Shailend Chand <shailend@google.com>,
+	Harshitha Ramamurthy <hramamurthy@google.com>,
+	Shakeel Butt <shakeel.butt@linux.dev>,
+	Jeroen de Borst <jeroendb@google.com>,
+	Praveen Kaligineedi <pkaligineedi@google.com>
+Subject: Re: [RFC PATCH net-next v8 02/14] net: page_pool: create hooks for
+ custom page providers
+Message-ID: <ZjxV4yEYXRGElrsA@infradead.org>
+References: <CAHS8izPH+sRLSiZ7vbrNtRdHrFEf8XQ61XAyHuxRSL9Jjy8YbQ@mail.gmail.com>
+ <20240507164838.GG4718@ziepe.ca>
+ <0d5da361-cc7b-46e9-a635-9a7a4c208444@gmail.com>
+ <20240507175644.GJ4718@ziepe.ca>
+ <6a50d01a-b5b9-4699-9d58-94e5f8f81c13@gmail.com>
+ <20240507233247.GK4718@ziepe.ca>
+ <Zjsm3vO6rIY_sw5A@phenom.ffwll.local>
+ <1e2823db-504b-4829-856f-3f45a45ccada@gmail.com>
+ <ZjufddNVJs5Csaix@infradead.org>
+ <8ced4c49-d153-40fb-9e62-0a5784cfa864@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240506033353.28505-1-laoar.shao@gmail.com> <20240506033353.28505-3-laoar.shao@gmail.com>
- <CAEf4Bza0UnsAVuBH1J_nGN14gXg_Sa2QnJG7jjFjozcYzxx2dg@mail.gmail.com>
- <CALOAHbCWVXG4V1yDwDRaZQe82O9NcsH6RpUEtursx91ZAFiySQ@mail.gmail.com> <CAEf4BzYeyUs6CmRLcEp1irBBxFUE+4MDEpRfM2=NhxzuP5WQfg@mail.gmail.com>
-In-Reply-To: <CAEf4BzYeyUs6CmRLcEp1irBBxFUE+4MDEpRfM2=NhxzuP5WQfg@mail.gmail.com>
-From: Yafang Shao <laoar.shao@gmail.com>
-Date: Thu, 9 May 2024 10:11:18 +0800
-Message-ID: <CALOAHbBiHa8+LXio6ZnJ-kUhezQnDhaj9koT-hVOaPiS3SHrDA@mail.gmail.com>
-Subject: Re: [PATCH v7 bpf-next 2/2] selftests/bpf: Add selftest for bits iter
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: ast@kernel.org, daniel@iogearbox.net, john.fastabend@gmail.com, 
-	andrii@kernel.org, martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org, 
-	yonghong.song@linux.dev, kpsingh@kernel.org, sdf@google.com, 
-	haoluo@google.com, jolsa@kernel.org, bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <8ced4c49-d153-40fb-9e62-0a5784cfa864@gmail.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 
-On Wed, May 8, 2024 at 1:12=E2=80=AFAM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
->
-> On Tue, May 7, 2024 at 6:39=E2=80=AFAM Yafang Shao <laoar.shao@gmail.com>=
- wrote:
-> >
-> > On Tue, May 7, 2024 at 11:42=E2=80=AFAM Andrii Nakryiko
-> > <andrii.nakryiko@gmail.com> wrote:
-> > >
-> > > On Sun, May 5, 2024 at 8:35=E2=80=AFPM Yafang Shao <laoar.shao@gmail.=
-com> wrote:
-> > > >
-> > > > Add test cases for the bits iter:
-> > > > - positive case
-> > > >   - bit mask smaller than 8 bytes
-> > > >   - a typical case of having 8-byte bit mask
-> > > >   - another typical case where bit mask is > 8 bytes
-> > > >   - the index of set bit
-> > > >
-> > > > - nagative cases
-> > > >   - bpf_iter_bits_destroy() is required after calling
-> > > >     bpf_iter_bits_new()
-> > > >   - bpf_iter_bits_destroy() can only destroy an initialized iter
-> > > >   - bpf_iter_bits_next() must use an initialized iter
-> > > >
-> > > > Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
-> > > > ---
-> > > >  .../selftests/bpf/prog_tests/verifier.c       |   2 +
-> > > >  .../selftests/bpf/progs/verifier_bits_iter.c  | 160 ++++++++++++++=
-++++
-> > > >  2 files changed, 162 insertions(+)
-> > > >  create mode 100644 tools/testing/selftests/bpf/progs/verifier_bits=
-_iter.c
-> > > >
-> > > > diff --git a/tools/testing/selftests/bpf/prog_tests/verifier.c b/to=
-ols/testing/selftests/bpf/prog_tests/verifier.c
-> > > > index c4f9f306646e..7e04ecaaa20a 100644
-> > > > --- a/tools/testing/selftests/bpf/prog_tests/verifier.c
-> > > > +++ b/tools/testing/selftests/bpf/prog_tests/verifier.c
-> > > > @@ -84,6 +84,7 @@
-> > > >  #include "verifier_xadd.skel.h"
-> > > >  #include "verifier_xdp.skel.h"
-> > > >  #include "verifier_xdp_direct_packet_access.skel.h"
-> > > > +#include "verifier_bits_iter.skel.h"
-> > > >
-> > > >  #define MAX_ENTRIES 11
-> > > >
-> > > > @@ -198,6 +199,7 @@ void test_verifier_var_off(void)              {=
- RUN(verifier_var_off); }
-> > > >  void test_verifier_xadd(void)                 { RUN(verifier_xadd)=
-; }
-> > > >  void test_verifier_xdp(void)                  { RUN(verifier_xdp);=
- }
-> > > >  void test_verifier_xdp_direct_packet_access(void) { RUN(verifier_x=
-dp_direct_packet_access); }
-> > > > +void test_verifier_bits_iter(void) { RUN(verifier_bits_iter); }
-> > > >
-> > > >  static int init_test_val_map(struct bpf_object *obj, char *map_nam=
-e)
-> > > >  {
-> > > > diff --git a/tools/testing/selftests/bpf/progs/verifier_bits_iter.c=
- b/tools/testing/selftests/bpf/progs/verifier_bits_iter.c
-> > > > new file mode 100644
-> > > > index 000000000000..2f7b62b25638
-> > > > --- /dev/null
-> > > > +++ b/tools/testing/selftests/bpf/progs/verifier_bits_iter.c
-> > > > @@ -0,0 +1,160 @@
-> > > > +// SPDX-License-Identifier: GPL-2.0-only
-> > > > +/* Copyright (c) 2024 Yafang Shao <laoar.shao@gmail.com> */
-> > > > +
-> > > > +#include "vmlinux.h"
-> > > > +#include <bpf/bpf_helpers.h>
-> > > > +#include <bpf/bpf_tracing.h>
-> > > > +
-> > > > +#include "bpf_misc.h"
-> > > > +#include "task_kfunc_common.h"
-> > > > +
-> > > > +char _license[] SEC("license") =3D "GPL";
-> > > > +
-> > > > +int bpf_iter_bits_new(struct bpf_iter_bits *it, const void *unsafe=
-_ptr__ign,
-> > > > +                     u32 nr_bits) __ksym __weak;
-> > > > +int *bpf_iter_bits_next(struct bpf_iter_bits *it) __ksym __weak;
-> > > > +void bpf_iter_bits_destroy(struct bpf_iter_bits *it) __ksym __weak=
-;
-> > > > +
-> > > > +SEC("iter.s/cgroup")
-> > > > +__description("bits iter without destroy")
-> > > > +__failure __msg("Unreleased reference")
-> > > > +int BPF_PROG(no_destroy, struct bpf_iter_meta *meta, struct cgroup=
- *cgrp)
-> > > > +{
-> > > > +       struct bpf_iter_bits it;
-> > > > +       struct task_struct *p;
-> > > > +
-> > > > +       p =3D bpf_task_from_pid(1);
-> > > > +       if (!p)
-> > > > +               return 1;
-> > > > +
-> > > > +       bpf_iter_bits_new(&it, p->cpus_ptr, 8192);
-> > > > +
-> > > > +       bpf_iter_bits_next(&it);
-> > > > +       bpf_task_release(p);
-> > > > +       return 0;
-> > > > +}
-> > > > +
-> > > > +SEC("iter/cgroup")
-> > > > +__description("bits iter with uninitialized iter in ->next()")
-> > > > +__failure __msg("expected an initialized iter_bits as arg #1")
-> > > > +int BPF_PROG(next_uninit, struct bpf_iter_meta *meta, struct cgrou=
-p *cgrp)
-> > > > +{
-> > > > +       struct bpf_iter_bits *it =3D NULL;
-> > > > +
-> > > > +       bpf_iter_bits_next(it);
-> > > > +       return 0;
-> > > > +}
-> > > > +
-> > > > +SEC("iter/cgroup")
-> > > > +__description("bits iter with uninitialized iter in ->destroy()")
-> > > > +__failure __msg("expected an initialized iter_bits as arg #1")
-> > > > +int BPF_PROG(destroy_uninit, struct bpf_iter_meta *meta, struct cg=
-roup *cgrp)
-> > > > +{
-> > > > +       struct bpf_iter_bits it =3D {};
-> > > > +
-> > > > +       bpf_iter_bits_destroy(&it);
-> > > > +       return 0;
-> > > > +}
-> > > > +
-> > > > +SEC("syscall")
-> > > > +__description("bits copy 32")
-> > > > +__success __retval(10)
-> > > > +int bits_copy32(void)
-> > > > +{
-> > > > +       /* 21 bits:             --------------------- */
-> > > > +       u32 data =3D 0b11111101111101111100001000100101U;
-> > >
-> > > if you define this bit mask as an array of bytes, then you won't have
-> > > to handle big-endian in the tests at all
-> >
-> > This test case provides a clear example of iterating over data of type
-> > u32, offering valuable guidance for users who need to perform such
-> > iterations.
-> >
-> > >
-> > >
-> > > > +       int nr =3D 0, offset =3D 0;
-> > > > +       int *bit;
-> > > > +
-> > > > +#if defined(__TARGET_ARCH_s390)
-> > > > +       offset =3D sizeof(u32) - (21 + 7) / 8;
-> > > > +#endif
-> > > > +       bpf_for_each(bits, bit, ((char *)&data) + offset, 21)
-> > > > +               nr++;
-> > > > +       return nr;
-> > > > +}
-> > > > +
-> > > > +SEC("syscall")
-> > > > +__description("bits copy 64")
-> > > > +__success __retval(18)
-> > > > +int bits_copy64(void)
-> > > > +{
-> > > > +       /* 34 bits:         ~-------- */
-> > > > +       u64 data =3D 0xffffefdf0f0f0f0fUL;
-> > > > +       int nr =3D 0, offset =3D 0;
-> > > > +       int *bit;
-> > > > +
-> > > > +#if defined(__TARGET_ARCH_s390)
-> > > > +       offset =3D sizeof(u64) - (34 + 7) / 8;
-> > > > +#endif
-> > > > +
-> > > > +       bpf_for_each(bits, bit, ((char *)&data) + offset, 34)
-> > >
-> > > see above about byte array, but if we define different (not as byte
-> > > array but long[]), it would be cleaner to have
-> >
-> > This test case demonstrates how to iterate over data of type u64.
-> >
-> > >
-> > > #if __BYTE_ORDER__ =3D=3D __ORDER_BIG_ENDIAN__
-> > > u64 data =3D 0x......UL;
-> > > #else
-> > > u64 data =3D 0x......UL;
-> > > #endif
-> >
-> > looks good.
-> >
->
-> Please hold off on sending a new revision until we figure out what the
-> contract should be. Because I feel like it's a (relatively) big
-> decision whether a bit mask is treated as an array of bytes or as an
-> array of longs. For little-endian it makes no difference, but for
-> big-endian it's a big difference and has usability and performance
-> implications.
+On Wed, May 08, 2024 at 06:02:14PM +0100, Pavel Begunkov wrote:
+> Well, the example fell flat, but you don't use dmabuf when there are
+> no upsides from using it. For instance, when you already have pinned
+> pages, you're going to use pages, and there are no other refcounting
+> concerns.
 
-Perhaps it would be advantageous to define the interface as follows:
+Sure.
 
-bpf_iter_bits_new(struct bpf_iter_bits *it, const u64
-*unsafe_ptr__ign, u32 words)
+> Unless there is an advantage of dmabufs over FOLL_LONGTERM
+> that I don't know about when used with normal user pages.
 
-This approach eliminates the need to account for endianness.
+The advantages of using a dma-buf over FOLL_LONGTERM are:
 
---=20
-Regards
-Yafang
+ a) you pre-dma map, which is a significant performance advantage for
+    IOMMU-based setups
+ b) you support any dma-buf exported and not just user memory.  This
+    is primarily important for PCIe P2P, but there might be other
+    useful exporters as well
+
+> > wish io_uring would have just implemented them from the start instead of
+> > the current fixed buffers that are not quite as useful by not
+> > pre-mapping DMA and not supporting P2P.
+> 
+> fdget(dmabuf) would be horrible, I assume that's not the suggestion.
+
+I'm not even sure what you mean with that.
+
 
