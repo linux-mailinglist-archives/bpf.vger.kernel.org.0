@@ -1,329 +1,185 @@
-Return-Path: <bpf+bounces-29218-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-29219-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1343C8C145D
-	for <lists+bpf@lfdr.de>; Thu,  9 May 2024 19:51:26 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EC6A38C14A4
+	for <lists+bpf@lfdr.de>; Thu,  9 May 2024 20:20:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 36F6C1C20C2D
-	for <lists+bpf@lfdr.de>; Thu,  9 May 2024 17:51:25 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 46C68B227D5
+	for <lists+bpf@lfdr.de>; Thu,  9 May 2024 18:20:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C618378C9B;
-	Thu,  9 May 2024 17:50:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A6B179DD5;
+	Thu,  9 May 2024 18:20:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="drG+RXZx"
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="Y0vwhbgp"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-176.mta0.migadu.com (out-176.mta0.migadu.com [91.218.175.176])
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD51777112
-	for <bpf@vger.kernel.org>; Thu,  9 May 2024 17:50:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 399E2770FE;
+	Thu,  9 May 2024 18:20:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715277057; cv=none; b=ZGmGXquvvHcaKNiEtpgk4R59DR3GVre0FwBUQ3ogxMgnpvc2Z41NJjr0froyr8b5dGZ+HHCUF4Ooo3chzJQ3GQJoeCvFiIrn4vJMWLuk/X9jcDwbFh8SMdTcmTYJrMaYHbFFJhCBx1BBwHQ4WX4T+4JBngo85ooJgI3SsGKZsyc=
+	t=1715278820; cv=none; b=FMnsZIY44/vqA75SH/j64Qx9W8BkojnH0OKF/6pHkqu+PSJXJZw3KgOwzamhxeDDDd2UoJjPJ4El4zKeCoTPZXmZo4wYuCKbM9qDoCzMro2p7Q2N6LhcUDD4xBfWsG0O9b66ynchtn0OhjY2aPSdQzdUIauiyXuQhEJW2oA0v74=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715277057; c=relaxed/simple;
-	bh=hvYyYqe+Ych6AXDyAvx6I5hNv7w26/XvGPpzWWe2Sx4=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=JzJXREx32KJzdIYDvotQP4aGJerWLYrB/Z1377XkFRlQcpltJUW/eeAoMcyZWr3uRTFuhwbADRWsdG0poc1JxwwSQzxb/gPQz4yc8pA0TYSVOQXPqmg3jAOuUwbw6uyFsSZC/tcFx9dNq8flZdH8U/dawqAAGsdPjwRqB58K4MI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=drG+RXZx; arc=none smtp.client-ip=91.218.175.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1715277054;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=VKCizx0oK69gTCqplrfDavwX7Cw0yWCqwN0s+HjDikw=;
-	b=drG+RXZxemJc8OB4UUi/eZ/OegazLhxujpAHptdPLojomnf0gFJslvf69oc3iY+L2NJQMr
-	dIPWs+bp16EYsKFoF+Yh82TNoTJXvtJ+rlHNexy/5pAkWUxCRVHYEEZJcHM9jZLspHvmmF
-	jfJzC99qROT195QCNA7GYcQ0lx7drSI=
-From: Martin KaFai Lau <martin.lau@linux.dev>
-To: bpf@vger.kernel.org
-Cc: Alexei Starovoitov <ast@kernel.org>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	kernel-team@meta.com
-Subject: [PATCH bpf-next 10/10] selftests/bpf: Retire bpf_tcp_helpers.h
-Date: Thu,  9 May 2024 10:50:26 -0700
-Message-ID: <20240509175026.3423614-11-martin.lau@linux.dev>
-In-Reply-To: <20240509175026.3423614-1-martin.lau@linux.dev>
-References: <20240509175026.3423614-1-martin.lau@linux.dev>
+	s=arc-20240116; t=1715278820; c=relaxed/simple;
+	bh=JCJaK6QpOrmmUJdi/1h2/P/m5VnuJoQJ8ijlBJBZs2E=;
+	h=Message-ID:Date:MIME-Version:Cc:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=E8cxY7+zC++X+urFqgMQxq9ZHtP3Hq7NmNm/UjICxXOYm1BDbRQBrLLrvkcx4eevo3SS4zdA7JPsxuskc651xjxDmubUe41XgC+ZoOYcC5nW0OBgZSnXB0PfR7hC1vsJ14nkqv5QoQeYiiGCoshy1wqB//9TaELbAy9RKwmTkVg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=Y0vwhbgp; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1715278815;
+	bh=JCJaK6QpOrmmUJdi/1h2/P/m5VnuJoQJ8ijlBJBZs2E=;
+	h=Date:Cc:Subject:To:References:From:In-Reply-To:From;
+	b=Y0vwhbgpxSGiErJBlZANaCoV14K1sUaA4F/ooMPA8bO48t72Fpno5DrnfALIMJiFY
+	 oMSvCEfOkwdTnfzldtNTgWgnNeYnX0lnmSBwYV+uUcXI50biIzPUgTSdbJDAk9h9/N
+	 bVUTOACTMW2U5cMSjfFt9b0R/BiIAN1Kzg0OIMCCtoqr8O1bj2D1Led/rtVGtGTVC8
+	 kz3S35qqjR2mswHsIzoVynyPqK+vGV6uTv4IAVR+VARRqE/hZwUo8M6kQ1/zzNJO7N
+	 IQqLkWeZKdjhwuxngilpfTAlT58QqNdElQbuZGDixBXFgx76yRt8hchoMtP4P0BWps
+	 4uG5Wxt7oOVIg==
+Received: from [100.113.15.66] (ec2-34-240-57-77.eu-west-1.compute.amazonaws.com [34.240.57.77])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: usama.anjum)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 3ED82378214F;
+	Thu,  9 May 2024 18:19:55 +0000 (UTC)
+Message-ID: <57f47bc1-972c-45b5-81ef-d8269dcadebb@collabora.com>
+Date: Thu, 9 May 2024 23:20:19 +0500
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Cc: Muhammad Usama Anjum <usama.anjum@collabora.com>, shuah@kernel.org,
+ Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
+ Takashi Iwai <tiwai@suse.com>, Catalin Marinas <catalin.marinas@arm.com>,
+ Will Deacon <will@kernel.org>, Nhat Pham <nphamcs@gmail.com>,
+ Johannes Weiner <hannes@cmpxchg.org>, Christian Brauner
+ <brauner@kernel.org>, Eric Biederman <ebiederm@xmission.com>,
+ Kees Cook <keescook@chromium.org>,
+ OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
+ Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
+ Peter Zijlstra <peterz@infradead.org>, Darren Hart <dvhart@infradead.org>,
+ Davidlohr Bueso <dave@stgolabs.net>, =?UTF-8?Q?Andr=C3=A9_Almeida?=
+ <andrealmeid@igalia.com>, Jiri Kosina <jikos@kernel.org>,
+ Benjamin Tissoires <bentiss@kernel.org>, Jason Gunthorpe <jgg@ziepe.ca>,
+ Kevin Tian <kevin.tian@intel.com>, Andy Lutomirski <luto@amacapital.net>,
+ Will Drewry <wad@chromium.org>, Marc Zyngier <maz@kernel.org>,
+ Oliver Upton <oliver.upton@linux.dev>, James Morse <james.morse@arm.com>,
+ Suzuki K Poulose <suzuki.poulose@arm.com>, Zenghui Yu
+ <yuzenghui@huawei.com>, Paolo Bonzini <pbonzini@redhat.com>,
+ Sean Christopherson <seanjc@google.com>, Anup Patel <anup@brainfault.org>,
+ Atish Patra <atishp@atishpatra.org>, Paul Walmsley
+ <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>,
+ Albert Ou <aou@eecs.berkeley.edu>,
+ Christian Borntraeger <borntraeger@linux.ibm.com>,
+ Janosch Frank <frankja@linux.ibm.com>,
+ Claudio Imbrenda <imbrenda@linux.ibm.com>,
+ David Hildenbrand <david@redhat.com>, =?UTF-8?Q?Micka=C3=ABl_Sala=C3=BCn?=
+ <mic@digikod.net>, Paul Moore <paul@paul-moore.com>,
+ James Morris <jmorris@namei.org>, "Serge E. Hallyn" <serge@hallyn.com>,
+ Andrew Morton <akpm@linux-foundation.org>, Seth Forshee
+ <sforshee@kernel.org>, Bongsu Jeon <bongsu.jeon@samsung.com>,
+ "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+ Steffen Klassert <steffen.klassert@secunet.com>,
+ Herbert Xu <herbert@gondor.apana.org.au>, =?UTF-8?Q?Andreas_F=C3=A4rber?=
+ <afaerber@suse.de>, Manivannan Sadhasivam
+ <manivannan.sadhasivam@linaro.org>, Matthieu Baerts <matttbe@kernel.org>,
+ Mat Martineau <martineau@kernel.org>, Geliang Tang <geliang@kernel.org>,
+ Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+ Fenghua Yu <fenghua.yu@intel.com>,
+ Reinette Chatre <reinette.chatre@intel.com>,
+ Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+ "Paul E. McKenney" <paulmck@kernel.org>, Boqun Feng <boqun.feng@gmail.com>,
+ Alexandre Belloni <alexandre.belloni@bootlin.com>,
+ Jarkko Sakkinen <jarkko@kernel.org>,
+ Dave Hansen <dave.hansen@linux.intel.com>, linux-kernel@vger.kernel.org,
+ linux-kselftest@vger.kernel.org, kernel-team@android.com,
+ linux-sound@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-mm@kvack.org, linux-input@vger.kernel.org, iommu@lists.linux.dev,
+ kvmarm@lists.linux.dev, kvm@vger.kernel.org, kvm-riscv@lists.infradead.org,
+ linux-riscv@lists.infradead.org, linux-security-module@vger.kernel.org,
+ linux-fsdevel@vger.kernel.org, netdev@vger.kernel.org,
+ linux-actions@lists.infradead.org, mptcp@lists.linux.dev,
+ linux-rtc@vger.kernel.org, linux-sgx@vger.kernel.org, bpf@vger.kernel.org
+Subject: Re: [PATCH v2 0/5] Define _GNU_SOURCE for sources using
+To: Edward Liaw <edliaw@google.com>, Shuah Khan <skhan@linuxfoundation.org>
+References: <20240507214254.2787305-1-edliaw@google.com>
+ <f4e45604-86b0-4be6-9bea-36edf301df33@linuxfoundation.org>
+ <CAG4es9XE2D94BNboRSf607NbJVW7OW4xkVq4jZ8pDZ_AZsb3nQ@mail.gmail.com>
+ <946ae22f-a4af-448a-92e1-60afb6ed9261@linuxfoundation.org>
+ <CAG4es9V2CcBJr0josSoGNsD+ZPQ6vasVXh_Hc_j88oeSqn__yQ@mail.gmail.com>
+Content-Language: en-US
+From: Muhammad Usama Anjum <usama.anjum@collabora.com>
+In-Reply-To: <CAG4es9V2CcBJr0josSoGNsD+ZPQ6vasVXh_Hc_j88oeSqn__yQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
 
-From: Martin KaFai Lau <martin.lau@kernel.org>
+On 5/9/24 10:45 PM, Edward Liaw wrote:
+> On Thu, May 9, 2024 at 7:37 AM Shuah Khan <skhan@linuxfoundation.org> wrote:
+>>
+>> On 5/9/24 00:13, Edward Liaw wrote:
+>>> On Wed, May 8, 2024 at 4:10 PM Shuah Khan <skhan@linuxfoundation.org> wrote:
+>>>>
+>>>> On 5/7/24 15:38, Edward Liaw wrote:
+>>>>> 809216233555 ("selftests/harness: remove use of LINE_MAX") introduced
+>>>>> asprintf into kselftest_harness.h, which is a GNU extension and needs
+>>>>> _GNU_SOURCE to either be defined prior to including headers or with the
+>>>>> -D_GNU_SOURCE flag passed to the compiler.
+>>>>>
+>>>>> v1: https://lore.kernel.org/linux-kselftest/20240430235057.1351993-1-edliaw@google.com/
+>>>>> v2: add -D_GNU_SOURCE to KHDR_INCLUDES so that it is in a single
+>>>>> location.  Remove #define _GNU_SOURCE from source code to resolve
+>>>>> redefinition warnings.
+>>>>>
+>>>>> Edward Liaw (5):
+>>>>>     selftests: Compile kselftest headers with -D_GNU_SOURCE
+>>>>>     selftests/sgx: Include KHDR_INCLUDES in Makefile
+>>>>
+>>>> I appled patches 1/5 and 2.5 - The rest need to be split up.
+>>>>
+>>>>>     selftests: Include KHDR_INCLUDES in Makefile
+>>>>>     selftests: Drop define _GNU_SOURCE
+>>>>>     selftests: Drop duplicate -D_GNU_SOURCE
+>>>>>
+>>>>
+>>>> Please split these patches pwe test directory. Otherwise it will
+>>>> cause merge conflicts which can be hard to resolve.
+>>>
+>>> Hi Shuah,
+>>> Sean asked that I rebase the patches on linux-next, and I will need to
+>>> remove additional _GNU_SOURCE defines.  Should I send an unsplit v3 to
+>>> be reviewed, then split it afterwards?  I'm concerned that it will be
+>>> difficult to review with ~70 patches once split.
+>>
+>> Please send them split - it will be easier to review and apply. You
+>> might as well wait until the merge window is done. I don't think
+>> anybody would have time to review now since merge window starts
+>> next week.
+> 
+> Sorry, I have them split already; is it ok if I send them now?  I will
+> be on leave soon and may not be able to get back to it in a while.
+Feel free to send the patches. There is no restriction on that.
 
-The previous patches have consolidated the tests to use
-bpf_tracing_net.h (i.e. vmlinux.h) instead of bpf_tcp_helpers.h.
+> 
+> Thanks,
+> Edward
+> 
+>>
+>>
+>> thanks,
+>> -- Shuah
+> 
 
-This patch can finally retire the bpf_tcp_helpers.h from
-the repository.
-
-Signed-off-by: Martin KaFai Lau <martin.lau@kernel.org>
----
- tools/testing/selftests/bpf/bpf_tcp_helpers.h | 241 ------------------
- 1 file changed, 241 deletions(-)
- delete mode 100644 tools/testing/selftests/bpf/bpf_tcp_helpers.h
-
-diff --git a/tools/testing/selftests/bpf/bpf_tcp_helpers.h b/tools/testing/selftests/bpf/bpf_tcp_helpers.h
-deleted file mode 100644
-index 82a7c9de95f9..000000000000
---- a/tools/testing/selftests/bpf/bpf_tcp_helpers.h
-+++ /dev/null
-@@ -1,241 +0,0 @@
--/* SPDX-License-Identifier: GPL-2.0 */
--#ifndef __BPF_TCP_HELPERS_H
--#define __BPF_TCP_HELPERS_H
--
--#include <stdbool.h>
--#include <linux/types.h>
--#include <bpf/bpf_helpers.h>
--#include <bpf/bpf_core_read.h>
--#include <bpf/bpf_tracing.h>
--
--#define BPF_STRUCT_OPS(name, args...) \
--SEC("struct_ops/"#name) \
--BPF_PROG(name, args)
--
--#ifndef SOL_TCP
--#define SOL_TCP 6
--#endif
--
--#ifndef TCP_CA_NAME_MAX
--#define TCP_CA_NAME_MAX	16
--#endif
--
--#define tcp_jiffies32 ((__u32)bpf_jiffies64())
--
--struct sock_common {
--	unsigned char	skc_state;
--	__u16		skc_num;
--} __attribute__((preserve_access_index));
--
--enum sk_pacing {
--	SK_PACING_NONE		= 0,
--	SK_PACING_NEEDED	= 1,
--	SK_PACING_FQ		= 2,
--};
--
--struct sock {
--	struct sock_common	__sk_common;
--#define sk_state		__sk_common.skc_state
--	unsigned long		sk_pacing_rate;
--	__u32			sk_pacing_status; /* see enum sk_pacing */
--} __attribute__((preserve_access_index));
--
--struct inet_sock {
--	struct sock		sk;
--} __attribute__((preserve_access_index));
--
--struct inet_connection_sock {
--	struct inet_sock	  icsk_inet;
--	__u8			  icsk_ca_state:6,
--				  icsk_ca_setsockopt:1,
--				  icsk_ca_dst_locked:1;
--	struct {
--		__u8		  pending;
--	} icsk_ack;
--	__u64			  icsk_ca_priv[104 / sizeof(__u64)];
--} __attribute__((preserve_access_index));
--
--struct request_sock {
--	struct sock_common		__req_common;
--} __attribute__((preserve_access_index));
--
--struct tcp_sock {
--	struct inet_connection_sock	inet_conn;
--
--	__u32	rcv_nxt;
--	__u32	snd_nxt;
--	__u32	snd_una;
--	__u32	window_clamp;
--	__u8	ecn_flags;
--	__u32	delivered;
--	__u32	delivered_ce;
--	__u32	snd_cwnd;
--	__u32	snd_cwnd_cnt;
--	__u32	snd_cwnd_clamp;
--	__u32	snd_ssthresh;
--	__u8	syn_data:1,	/* SYN includes data */
--		syn_fastopen:1,	/* SYN includes Fast Open option */
--		syn_fastopen_exp:1,/* SYN includes Fast Open exp. option */
--		syn_fastopen_ch:1, /* Active TFO re-enabling probe */
--		syn_data_acked:1,/* data in SYN is acked by SYN-ACK */
--		save_syn:1,	/* Save headers of SYN packet */
--		is_cwnd_limited:1,/* forward progress limited by snd_cwnd? */
--		syn_smc:1;	/* SYN includes SMC */
--	__u32	max_packets_out;
--	__u32	lsndtime;
--	__u32	prior_cwnd;
--	__u64	tcp_mstamp;	/* most recent packet received/sent */
--	bool	is_mptcp;
--} __attribute__((preserve_access_index));
--
--static __always_inline struct inet_connection_sock *inet_csk(const struct sock *sk)
--{
--	return (struct inet_connection_sock *)sk;
--}
--
--static __always_inline void *inet_csk_ca(const struct sock *sk)
--{
--	return (void *)inet_csk(sk)->icsk_ca_priv;
--}
--
--static __always_inline struct tcp_sock *tcp_sk(const struct sock *sk)
--{
--	return (struct tcp_sock *)sk;
--}
--
--static __always_inline bool before(__u32 seq1, __u32 seq2)
--{
--	return (__s32)(seq1-seq2) < 0;
--}
--#define after(seq2, seq1) 	before(seq1, seq2)
--
--#define	TCP_ECN_OK		1
--#define	TCP_ECN_QUEUE_CWR	2
--#define	TCP_ECN_DEMAND_CWR	4
--#define	TCP_ECN_SEEN		8
--
--enum inet_csk_ack_state_t {
--	ICSK_ACK_SCHED	= 1,
--	ICSK_ACK_TIMER  = 2,
--	ICSK_ACK_PUSHED = 4,
--	ICSK_ACK_PUSHED2 = 8,
--	ICSK_ACK_NOW = 16	/* Send the next ACK immediately (once) */
--};
--
--enum tcp_ca_event {
--	CA_EVENT_TX_START = 0,
--	CA_EVENT_CWND_RESTART = 1,
--	CA_EVENT_COMPLETE_CWR = 2,
--	CA_EVENT_LOSS = 3,
--	CA_EVENT_ECN_NO_CE = 4,
--	CA_EVENT_ECN_IS_CE = 5,
--};
--
--struct ack_sample {
--	__u32 pkts_acked;
--	__s32 rtt_us;
--	__u32 in_flight;
--} __attribute__((preserve_access_index));
--
--struct rate_sample {
--	__u64  prior_mstamp; /* starting timestamp for interval */
--	__u32  prior_delivered;	/* tp->delivered at "prior_mstamp" */
--	__s32  delivered;		/* number of packets delivered over interval */
--	long interval_us;	/* time for tp->delivered to incr "delivered" */
--	__u32 snd_interval_us;	/* snd interval for delivered packets */
--	__u32 rcv_interval_us;	/* rcv interval for delivered packets */
--	long rtt_us;		/* RTT of last (S)ACKed packet (or -1) */
--	int  losses;		/* number of packets marked lost upon ACK */
--	__u32  acked_sacked;	/* number of packets newly (S)ACKed upon ACK */
--	__u32  prior_in_flight;	/* in flight before this ACK */
--	bool is_app_limited;	/* is sample from packet with bubble in pipe? */
--	bool is_retrans;	/* is sample from retransmission? */
--	bool is_ack_delayed;	/* is this (likely) a delayed ACK? */
--} __attribute__((preserve_access_index));
--
--#define TCP_CA_NAME_MAX		16
--#define TCP_CONG_NEEDS_ECN	0x2
--
--struct tcp_congestion_ops {
--	char name[TCP_CA_NAME_MAX];
--	__u32 flags;
--
--	/* initialize private data (optional) */
--	void (*init)(struct sock *sk);
--	/* cleanup private data  (optional) */
--	void (*release)(struct sock *sk);
--
--	/* return slow start threshold (required) */
--	__u32 (*ssthresh)(struct sock *sk);
--	/* do new cwnd calculation (required) */
--	void (*cong_avoid)(struct sock *sk, __u32 ack, __u32 acked);
--	/* call before changing ca_state (optional) */
--	void (*set_state)(struct sock *sk, __u8 new_state);
--	/* call when cwnd event occurs (optional) */
--	void (*cwnd_event)(struct sock *sk, enum tcp_ca_event ev);
--	/* call when ack arrives (optional) */
--	void (*in_ack_event)(struct sock *sk, __u32 flags);
--	/* new value of cwnd after loss (required) */
--	__u32  (*undo_cwnd)(struct sock *sk);
--	/* hook for packet ack accounting (optional) */
--	void (*pkts_acked)(struct sock *sk, const struct ack_sample *sample);
--	/* override sysctl_tcp_min_tso_segs */
--	__u32 (*min_tso_segs)(struct sock *sk);
--	/* returns the multiplier used in tcp_sndbuf_expand (optional) */
--	__u32 (*sndbuf_expand)(struct sock *sk);
--	/* call when packets are delivered to update cwnd and pacing rate,
--	 * after all the ca_state processing. (optional)
--	 */
--	void (*cong_control)(struct sock *sk, const struct rate_sample *rs);
--	void *owner;
--};
--
--#define min(a, b) ((a) < (b) ? (a) : (b))
--#define max(a, b) ((a) > (b) ? (a) : (b))
--#define min_not_zero(x, y) ({			\
--	typeof(x) __x = (x);			\
--	typeof(y) __y = (y);			\
--	__x == 0 ? __y : ((__y == 0) ? __x : min(__x, __y)); })
--
--static __always_inline bool tcp_in_slow_start(const struct tcp_sock *tp)
--{
--	return tp->snd_cwnd < tp->snd_ssthresh;
--}
--
--static __always_inline bool tcp_is_cwnd_limited(const struct sock *sk)
--{
--	const struct tcp_sock *tp = tcp_sk(sk);
--
--	/* If in slow start, ensure cwnd grows to twice what was ACKed. */
--	if (tcp_in_slow_start(tp))
--		return tp->snd_cwnd < 2 * tp->max_packets_out;
--
--	return !!BPF_CORE_READ_BITFIELD(tp, is_cwnd_limited);
--}
--
--static __always_inline bool tcp_cc_eq(const char *a, const char *b)
--{
--	int i;
--
--	for (i = 0; i < TCP_CA_NAME_MAX; i++) {
--		if (a[i] != b[i])
--			return false;
--		if (!a[i])
--			break;
--	}
--
--	return true;
--}
--
--extern __u32 tcp_slow_start(struct tcp_sock *tp, __u32 acked) __ksym;
--extern void tcp_cong_avoid_ai(struct tcp_sock *tp, __u32 w, __u32 acked) __ksym;
--
--struct mptcp_sock {
--	struct inet_connection_sock	sk;
--
--	__u32		token;
--	struct sock	*first;
--	char		ca_name[TCP_CA_NAME_MAX];
--} __attribute__((preserve_access_index));
--
--#endif
 -- 
-2.43.0
-
+BR,
+Muhammad Usama Anjum
 
