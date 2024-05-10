@@ -1,71 +1,71 @@
-Return-Path: <bpf+bounces-29532-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-29530-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2E6F38C2A93
-	for <lists+bpf@lfdr.de>; Fri, 10 May 2024 21:26:04 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 13E048C2A8F
+	for <lists+bpf@lfdr.de>; Fri, 10 May 2024 21:25:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 51E231C20DD7
-	for <lists+bpf@lfdr.de>; Fri, 10 May 2024 19:26:03 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BE331282253
+	for <lists+bpf@lfdr.de>; Fri, 10 May 2024 19:25:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD8FE502B1;
-	Fri, 10 May 2024 19:24:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 41FFC5337D;
+	Fri, 10 May 2024 19:24:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Nq1djXYV"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZiAMt1HV"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-qt1-f170.google.com (mail-qt1-f170.google.com [209.85.160.170])
+Received: from mail-qt1-f174.google.com (mail-qt1-f174.google.com [209.85.160.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E400D50A87;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 96E20502BE;
 	Fri, 10 May 2024 19:24:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.170
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715369065; cv=none; b=pcJP0Bf7Md3T2kPxy86be2+qBkqZXX60c0+PV2xNstnXvZ35rD8vukZGBst/UHE3AUvXDNttojwmMXUCDYtjhlfM4t3qqWVayeo34VmMv8HUD34tjma/W36wgpmKQOss2KZUlWDxFU8WAHKOytFpc8TzKgrpScjBE9iaP0VdMuY=
+	t=1715369063; cv=none; b=XeSDm4vvaz/OAQAKkxfgoTen5LYhlH0Q1RS2WvyK3ZSl6YA79qibrhbya0FHpJWCul8BfkOGt+eeWS24BVXn8sfAgh9f8zVgfE2VQ5AS9MaM5mR5LrYNFl7mozt8qzKc5bpEB8g5AwyUbs7W7ACyqoi59JQfpLH0WKslEW/Dl/w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715369065; c=relaxed/simple;
-	bh=0ABJ9EGtHlMzRO8t2wR9+4kAyrBkPtWe5FOnV9rV9/o=;
+	s=arc-20240116; t=1715369063; c=relaxed/simple;
+	bh=syUcB07gwNwRkuB9GJehuYow/O4JgHWo2jWcVtjNxWo=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=gQuHDDnL7hCprpR9ziZG5GoIOaXU0TIgZ2ugGddZ5Inlg2aMrQrVtlswzgLbA7wlJMoKD8suKRO8R+t4fiUZ9xlX8B5Qukd713B80hosiyHspABBkEOCexC9q7nb5cjOJutBSJdqEIsGvkqprA8Cnj4b9UHrhk0vSlOIOc/Kd9E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Nq1djXYV; arc=none smtp.client-ip=209.85.160.170
+	 MIME-Version; b=ConkxZmJfLz52CZhD3C97q5fIMXQQC3kmQXj+EJQ9j8WzHgZ8z1/FKfiyaY+xJ282j3/k6tCCzNE5kqf4hdbn5LKicWqNsw4H7V0jJqd9Dhoeem/4qeFJZVTKnHFFFa6VU23OuxCguF30iQ5kY63mWrAwEIoLqIU4Go0C4uJBA8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ZiAMt1HV; arc=none smtp.client-ip=209.85.160.174
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qt1-f170.google.com with SMTP id d75a77b69052e-43de92e234dso24396381cf.1;
+Received: by mail-qt1-f174.google.com with SMTP id d75a77b69052e-43df751b5b8so12917881cf.0;
         Fri, 10 May 2024 12:24:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1715369061; x=1715973861; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1715369060; x=1715973860; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=BY/IGGUIFdyzwo5w0wCes/hxX7mNMzc6kH+nYlLXTM0=;
-        b=Nq1djXYVzp+i3KaMRrW72BOZutNurQV2l1C59sah9hzXibjIwpMf1V5tkRjo3alQpY
-         w6ivTkWvpGAjCpSBDSZfTBe4udGmrCbCscZSDM80a/To53poQP8BP7ulp78Ce67GIae7
-         LHFcMxO2Bpv9EbPXtK5x8I282QmB9d3BSKEEuMgr4VV56I/H2MtVh4rYYcAHpDrhvITP
-         NpiyeNHNDBkHdO6uX3gZ3XO2vPFJDSFfRRg701IJFwKP7+3vXuRHm81MZHJPCtqKUGz/
-         LR6AWeug7P/yPFlDvgBsUVYArT0adGqzQKun/Qekx1whM5W9DxrxO5uFx5iVy52WaOkg
-         a3Fg==
+        bh=AOGBkGpSFFT7zPNyeKaVqbqpwZiJlX+/nC4CsYgkmE4=;
+        b=ZiAMt1HV+ucwUmsmp7H6sL1tRBq0bqGJoD+nl8khhVtqbA5fqTqk8GnSmk/gkq6z/Q
+         p+FN4kNfyG6omE/vbFSMcfkfpj5FT75d0RAiy04M53mhlaI7u2vAqhomLz7fVuuhTl58
+         6OL0i2wcxbplMcNkGDeYj/fsyfmGMb+fD2PMcw1cLEh/CIq2krjT3KpPk0uduDG7fsbv
+         0Vrj8Mx3WDnSbJL5SjRJBkKaB+ep7A6ayT1xexNCZS4HX4tn44q327vDuz+Uz47lBbQX
+         e3Es4XafJhVhnFM45WiXt3xvaKSq53Us6uaXik5y207ERFEz9jRYSrcnIpznyWPEkYEq
+         EbDg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1715369061; x=1715973861;
+        d=1e100.net; s=20230601; t=1715369060; x=1715973860;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=BY/IGGUIFdyzwo5w0wCes/hxX7mNMzc6kH+nYlLXTM0=;
-        b=q7UDYPSuguqlcx1ok+d3EL5g7ENMiSBi4UQV+EPIX6gJOcoKoliekxU/ZHmP9eXDP5
-         RdEBz7XjzXA1y0vCmppyhA5rOmZVVqJRq/bQysnmzgRYdnDv9shCsn1Eg6oQVCNtlQNC
-         a2sorryg+S89CDsJODvSsKIrWtRvoQT8sk8u7LOX8usmAg87SwOBSqSz+7efZnSwoXUq
-         V0Rxnoi5V96ng5Lg3u6pxB5fTyARPdQBneEMquBGRVmYmXzCl97Z9HpDvjsu9gxn3w9F
-         fnkCiNWmXLlbciy0uyb0spxe3RSyTyVaThuczqfqMVvqQQSpDCXP/Ho4latFQCCGJzK2
-         so/Q==
-X-Gm-Message-State: AOJu0Yzkfj3ziNTq8VtkIdG9zebbFxvBOnx4Yccv1XKtBv07GP0kPFQU
-	4o+906/qAMX9nK82aCNk1aTApXoHw7qT+gEJPr7INnn3+Y/EHsP9RHTE4w==
-X-Google-Smtp-Source: AGHT+IHDloUvoXMyn50szuMjCDLkltoo8/ncszUXxwdABD5IOz67IM+jNMNmQPUpiaJOeVDcnFmYjQ==
-X-Received: by 2002:a05:622a:152:b0:43a:f5db:88b8 with SMTP id d75a77b69052e-43dfce260ebmr58982781cf.24.1715369059804;
-        Fri, 10 May 2024 12:24:19 -0700 (PDT)
+        bh=AOGBkGpSFFT7zPNyeKaVqbqpwZiJlX+/nC4CsYgkmE4=;
+        b=ibCNecxYdQSxrvutg3+ty41Vxf/H01avO8qsvuUT5wiFNelKLtuf52nRQRVw3wmEqb
+         Vk+bGUjMfVGNgRckKvN8vsjeMX1tpRoLkFUDNGxJPzqsKNu4f+kvKT1xaBUFjV+ioEfd
+         s5oaV+sHmXqo9Fh/nrYNH3lA6WmbJ3q6b/QaVQZ2bgCggcLBWBwwITUTrjcQK2wlvQGA
+         nZVNOuaDJEAljztYqyMxoOGRpumtpeTqhMtGcRP/Hvdh1Ch3UUvS03bYT9a5DZROrtot
+         wfuOJRhnd4TlQOEgQbh4Cuy7hSMqD3Jbsai6NIE5sfPzTtneVSzxQlT3LounHeXf5UGq
+         bA+Q==
+X-Gm-Message-State: AOJu0YwTUQD5IIC6zuTTIr3Pol34ulT0+tnJd0qQHNjrUxQ86Uhlaa61
+	cjwHYvbGQV0HqTul8kZsIq+6DHAEUWJIApg6qpF/s1uaiH2Dyha6fdwU4w==
+X-Google-Smtp-Source: AGHT+IFguX6k1ox/pzV81Z8RD4aKDN4Y+RxugjPD6K7jwC46EpNwtGH4tH9WkGaHmOJTgxGioagEVQ==
+X-Received: by 2002:a05:622a:1496:b0:437:bedb:3ff with SMTP id d75a77b69052e-43dec297648mr107218271cf.27.1715369060389;
+        Fri, 10 May 2024 12:24:20 -0700 (PDT)
 Received: from n36-183-057.byted.org ([147.160.184.83])
         by smtp.gmail.com with ESMTPSA id d75a77b69052e-43df5b46a26sm23863251cf.80.2024.05.10.12.24.19
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 10 May 2024 12:24:19 -0700 (PDT)
+        Fri, 10 May 2024 12:24:20 -0700 (PDT)
 From: Amery Hung <ameryhung@gmail.com>
 X-Google-Original-From: Amery Hung <amery.hung@bytedance.com>
 To: netdev@vger.kernel.org
@@ -82,9 +82,9 @@ Cc: bpf@vger.kernel.org,
 	xiyou.wangcong@gmail.com,
 	yepeilin.cs@gmail.com,
 	ameryhung@gmail.com
-Subject: [RFC PATCH v8 10/20] bpf: Introduce exclusive-ownership list and rbtree nodes
-Date: Fri, 10 May 2024 19:24:02 +0000
-Message-Id: <20240510192412.3297104-11-amery.hung@bytedance.com>
+Subject: [RFC PATCH v8 11/20] bpf: Allow adding exclusive nodes to bpf list and rbtree
+Date: Fri, 10 May 2024 19:24:03 +0000
+Message-Id: <20240510192412.3297104-12-amery.hung@bytedance.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20240510192412.3297104-1-amery.hung@bytedance.com>
 References: <20240510192412.3297104-1-amery.hung@bytedance.com>
@@ -96,373 +96,517 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-This patch reintroduces the semantic of exclusive ownership of a
-reference. The main motivation is to save spaces and avoid changing
-kernel structure layout. Existing bpf graph nodes add an additional
-owner field to list_head and rb_node to safely support shared ownership
-of a reference. The previous patch supports adding kernel objects to
-collections by including bpf_list_node or bpf_rb_node in a kernel
-structure same as user-defined local objects. However, some kernel
-objects' layout have been optimized through out the years and cannot be
-easily changed. For example, a bpf_rb_node cannot be added in the union
-at offset=0 in sk_buff since bpf_rb_node is larger than other members.
-Exclusive ownership solves the problem as "owner" is no longer needed
-and both graph nodes can be at the same offset.
+This patch first teaches verifier to accept exclusive nodes
+(bpf_list_excl_node and bpf_rb_excl_node) as valid graph nodes.
 
-To achieve this, bpf_list_excl_node and bpf_rb_excl_node are first
-introduced. They simply wrap list_head and rb_node, and serve as
-annotations in BTF. Then, we make sure that they cannot co-exist with
-bpf_refcount, bpf_list_node and bpf_rb_nodes in the same structure when
-parsing btf. This will prevent the user from acquiring more than one
-reference to a object with a exclusive node.
+Graph kfuncs can now skip ownership tracking and checks for graphs
+containing exclusive nodes since we already make sure that a exclusive
+node cannot be owned by more than one collection at the same time.
 
-No exclusive node can be added to collection yet. We will teach the
-verifier to accept exclusive nodes as valid nodes and then skip the
-ownership checks in graph kfuncs.
+Graph kfuncs will use struct_meta to tell whether a node is exclusive or
+not. Therefore we pass struct_meta as an additional argument to graph
+remove kfuncs and let verifier fixup the instruction.
+
+The first user of exclusive-ownership nodes is sk_buff. In bpf qdisc, an
+sk_buff will be able to be enqueued into either a bpf_list or a
+bpf_rbtree. This significantly simplify how users write the code and
+improve qdisc performance as we no longer need to allocate local objects
+to store skb kptrs.
 
 Signed-off-by: Amery Hung <amery.hung@bytedance.com>
 ---
- include/linux/bpf.h          | 27 ++++++++++++---
- include/linux/rbtree_types.h |  4 +++
- include/linux/types.h        |  4 +++
- kernel/bpf/btf.c             | 64 +++++++++++++++++++++++++++++++++---
- kernel/bpf/syscall.c         | 20 +++++++++--
- 5 files changed, 108 insertions(+), 11 deletions(-)
+ include/linux/skbuff.h                        |   2 +
+ kernel/bpf/btf.c                              |   1 +
+ kernel/bpf/helpers.c                          |  63 +++++++----
+ kernel/bpf/verifier.c                         | 101 ++++++++++++++----
+ .../testing/selftests/bpf/bpf_experimental.h  |  58 +++++++++-
+ 5 files changed, 180 insertions(+), 45 deletions(-)
 
-diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-index 6aabca1581fe..49c29c823fb3 100644
---- a/include/linux/bpf.h
-+++ b/include/linux/bpf.h
-@@ -197,11 +197,16 @@ enum btf_field_type {
- 	BPF_KPTR       = BPF_KPTR_UNREF | BPF_KPTR_REF | BPF_KPTR_PERCPU,
- 	BPF_LIST_HEAD  = (1 << 5),
- 	BPF_LIST_NODE  = (1 << 6),
--	BPF_RB_ROOT    = (1 << 7),
--	BPF_RB_NODE    = (1 << 8),
--	BPF_GRAPH_NODE = BPF_RB_NODE | BPF_LIST_NODE,
-+	BPF_LIST_EXCL_NODE = (1 << 7),
-+	BPF_RB_ROOT    = (1 << 8),
-+	BPF_RB_NODE    = (1 << 9),
-+	BPF_RB_EXCL_NODE = (1 << 10),
-+	BPF_GRAPH_EXCL_NODE = BPF_RB_EXCL_NODE | BPF_LIST_EXCL_NODE,
-+	BPF_GRAPH_NODE = BPF_RB_NODE | BPF_LIST_NODE |
-+			 BPF_RB_EXCL_NODE | BPF_LIST_EXCL_NODE,
- 	BPF_GRAPH_ROOT = BPF_RB_ROOT | BPF_LIST_HEAD,
--	BPF_REFCOUNT   = (1 << 9),
-+	BPF_GRAPH_NODE_OR_ROOT = BPF_GRAPH_NODE | BPF_GRAPH_ROOT,
-+	BPF_REFCOUNT   = (1 << 11),
- };
+diff --git a/include/linux/skbuff.h b/include/linux/skbuff.h
+index 03ea36a82cdd..fefc82542a3c 100644
+--- a/include/linux/skbuff.h
++++ b/include/linux/skbuff.h
+@@ -871,6 +871,8 @@ struct sk_buff {
+ 		struct rb_node		rbnode; /* used in netem, ip4 defrag, and tcp stack */
+ 		struct list_head	list;
+ 		struct llist_node	ll_node;
++		struct bpf_list_excl_node	bpf_list;
++		struct bpf_rb_excl_node		bpf_rbnode;
+ 	};
  
- typedef void (*btf_dtor_kfunc_t)(void *);
-@@ -321,10 +326,14 @@ static inline const char *btf_field_type_name(enum btf_field_type type)
- 		return "bpf_list_head";
- 	case BPF_LIST_NODE:
- 		return "bpf_list_node";
-+	case BPF_LIST_EXCL_NODE:
-+		return "bpf_list_excl_node";
- 	case BPF_RB_ROOT:
- 		return "bpf_rb_root";
- 	case BPF_RB_NODE:
- 		return "bpf_rb_node";
-+	case BPF_RB_EXCL_NODE:
-+		return "bpf_rb_excl_node";
- 	case BPF_REFCOUNT:
- 		return "bpf_refcount";
- 	default:
-@@ -348,10 +357,14 @@ static inline u32 btf_field_type_size(enum btf_field_type type)
- 		return sizeof(struct bpf_list_head);
- 	case BPF_LIST_NODE:
- 		return sizeof(struct bpf_list_node);
-+	case BPF_LIST_EXCL_NODE:
-+		return sizeof(struct bpf_list_excl_node);
- 	case BPF_RB_ROOT:
- 		return sizeof(struct bpf_rb_root);
- 	case BPF_RB_NODE:
- 		return sizeof(struct bpf_rb_node);
-+	case BPF_RB_EXCL_NODE:
-+		return sizeof(struct bpf_rb_excl_node);
- 	case BPF_REFCOUNT:
- 		return sizeof(struct bpf_refcount);
- 	default:
-@@ -375,10 +388,14 @@ static inline u32 btf_field_type_align(enum btf_field_type type)
- 		return __alignof__(struct bpf_list_head);
- 	case BPF_LIST_NODE:
- 		return __alignof__(struct bpf_list_node);
-+	case BPF_LIST_EXCL_NODE:
-+		return __alignof__(struct bpf_list_excl_node);
- 	case BPF_RB_ROOT:
- 		return __alignof__(struct bpf_rb_root);
- 	case BPF_RB_NODE:
- 		return __alignof__(struct bpf_rb_node);
-+	case BPF_RB_EXCL_NODE:
-+		return __alignof__(struct bpf_rb_excl_node);
- 	case BPF_REFCOUNT:
- 		return __alignof__(struct bpf_refcount);
- 	default:
-@@ -396,10 +413,12 @@ static inline void bpf_obj_init_field(const struct btf_field *field, void *addr)
- 		refcount_set((refcount_t *)addr, 1);
- 		break;
- 	case BPF_RB_NODE:
-+	case BPF_RB_EXCL_NODE:
- 		RB_CLEAR_NODE((struct rb_node *)addr);
- 		break;
- 	case BPF_LIST_HEAD:
- 	case BPF_LIST_NODE:
-+	case BPF_LIST_EXCL_NODE:
- 		INIT_LIST_HEAD((struct list_head *)addr);
- 		break;
- 	case BPF_RB_ROOT:
-diff --git a/include/linux/rbtree_types.h b/include/linux/rbtree_types.h
-index 45b6ecde3665..fc5185991fb1 100644
---- a/include/linux/rbtree_types.h
-+++ b/include/linux/rbtree_types.h
-@@ -28,6 +28,10 @@ struct rb_root_cached {
- 	struct rb_node *rb_leftmost;
- };
- 
-+struct bpf_rb_excl_node {
-+	struct rb_node rb_node;
-+};
-+
- #define RB_ROOT (struct rb_root) { NULL, }
- #define RB_ROOT_CACHED (struct rb_root_cached) { {NULL, }, NULL }
- 
-diff --git a/include/linux/types.h b/include/linux/types.h
-index 2bc8766ba20c..71429cd80ce2 100644
---- a/include/linux/types.h
-+++ b/include/linux/types.h
-@@ -202,6 +202,10 @@ struct hlist_node {
- 	struct hlist_node *next, **pprev;
- };
- 
-+struct bpf_list_excl_node {
-+	struct list_head list_head;
-+};
-+
- struct ustat {
- 	__kernel_daddr_t	f_tfree;
- #ifdef CONFIG_ARCH_32BIT_USTAT_F_TINODE
+ 	struct sock		*sk;
 diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-index 25a5dc840ac3..a641c716e0fa 100644
+index a641c716e0fa..6a9c1671c8f4 100644
 --- a/kernel/bpf/btf.c
 +++ b/kernel/bpf/btf.c
-@@ -3484,6 +3484,8 @@ static int btf_get_field_type(const char *name, u32 field_mask, u32 *seen_mask,
- 	field_mask_test_name(BPF_RB_ROOT,   "bpf_rb_root");
- 	field_mask_test_name(BPF_RB_NODE,   "bpf_rb_node");
- 	field_mask_test_name(BPF_REFCOUNT,  "bpf_refcount");
-+	field_mask_test_name(BPF_LIST_EXCL_NODE, "bpf_list_excl_node");
-+	field_mask_test_name(BPF_RB_EXCL_NODE,   "bpf_rb_excl_node");
- 
- 	/* Only return BPF_KPTR when all other types with matchable names fail */
- 	if (field_mask & BPF_KPTR) {
-@@ -3504,6 +3506,8 @@ static int btf_get_union_field_types(const struct btf *btf, const struct btf_typ
- 	const struct btf_member *member;
- 	const struct btf_type *t;
- 
-+	field_mask &= BPF_GRAPH_EXCL_NODE;
-+
- 	for_each_member(i, u, member) {
- 		t = btf_type_by_id(btf, member->type);
- 		field_type = btf_get_field_type(__btf_name_by_offset(btf, t->name_off),
-@@ -3552,13 +3556,28 @@ static int btf_find_struct_field(const struct btf *btf,
- 		case BPF_SPIN_LOCK:
- 		case BPF_TIMER:
- 		case BPF_LIST_NODE:
-+		case BPF_LIST_EXCL_NODE:
- 		case BPF_RB_NODE:
-+		case BPF_RB_EXCL_NODE:
- 		case BPF_REFCOUNT:
- 			ret = btf_find_struct(btf, member_type, off, sz, field_type,
- 					      idx < info_cnt ? &info[idx] : &tmp);
- 			if (ret < 0)
- 				return ret;
- 			break;
-+		case BPF_GRAPH_EXCL_NODE:
-+			ret = btf_find_struct(btf, member_type, off, sz,
-+					      BPF_LIST_EXCL_NODE,
-+					      idx < info_cnt ? &info[idx] : &tmp);
-+			if (ret < 0)
-+				return ret;
-+			++idx;
-+			ret = btf_find_struct(btf, member_type, off, sz,
-+					      BPF_RB_EXCL_NODE,
-+					      idx < info_cnt ? &info[idx] : &tmp);
-+			if (ret < 0)
-+				return ret;
-+			break;
- 		case BPF_KPTR_UNREF:
- 		case BPF_KPTR_REF:
- 		case BPF_KPTR_PERCPU:
-@@ -3619,7 +3638,9 @@ static int btf_find_datasec_var(const struct btf *btf, const struct btf_type *t,
- 		case BPF_SPIN_LOCK:
- 		case BPF_TIMER:
- 		case BPF_LIST_NODE:
-+		case BPF_LIST_EXCL_NODE:
- 		case BPF_RB_NODE:
-+		case BPF_RB_EXCL_NODE:
- 		case BPF_REFCOUNT:
- 			ret = btf_find_struct(btf, var_type, off, sz, field_type,
- 					      idx < info_cnt ? &info[idx] : &tmp);
-@@ -3827,14 +3848,24 @@ static int btf_parse_graph_root(struct btf_field *field,
- 
- static int btf_parse_list_head(struct btf_field *field, struct btf_field_info *info)
- {
--	return btf_parse_graph_root(field, info, "bpf_list_node",
--				    __alignof__(struct bpf_list_node));
-+	int err;
-+
-+	err = btf_parse_graph_root(field, info, "bpf_list_node",
-+				   __alignof__(struct bpf_list_node));
-+
-+	return err ? btf_parse_graph_root(field, info, "bpf_list_excl_node",
-+					  __alignof__(struct bpf_list_excl_node)) : 0;
- }
- 
- static int btf_parse_rb_root(struct btf_field *field, struct btf_field_info *info)
- {
--	return btf_parse_graph_root(field, info, "bpf_rb_node",
--				    __alignof__(struct bpf_rb_node));
-+	int err;
-+
-+	err = btf_parse_graph_root(field, info, "bpf_rb_node",
-+				   __alignof__(struct bpf_rb_node));
-+
-+	return err ? btf_parse_graph_root(field, info, "bpf_rb_excl_node",
-+					  __alignof__(struct bpf_rb_excl_node)) : 0;
- }
- 
- static int btf_field_cmp(const void *_a, const void *_b, const void *priv)
-@@ -3864,6 +3895,7 @@ struct btf_record *btf_parse_fields(const struct btf *btf, const struct btf_type
- 		return NULL;
- 
- 	cnt = ret;
-+
- 	/* This needs to be kzalloc to zero out padding and unused fields, see
- 	 * comment in btf_record_equal.
- 	 */
-@@ -3881,7 +3913,9 @@ struct btf_record *btf_parse_fields(const struct btf *btf, const struct btf_type
- 			ret = -EFAULT;
- 			goto end;
- 		}
--		if (info_arr[i].off < next_off) {
-+		if (info_arr[i].off < next_off &&
-+		    !(info_arr[i].off == info_arr[i - 1].off &&
-+		     (info_arr[i].type | info_arr[i - 1].type) == BPF_GRAPH_EXCL_NODE)) {
- 			ret = -EEXIST;
- 			goto end;
- 		}
-@@ -3925,6 +3959,8 @@ struct btf_record *btf_parse_fields(const struct btf *btf, const struct btf_type
- 			if (ret < 0)
- 				goto end;
- 			break;
-+		case BPF_LIST_EXCL_NODE:
-+		case BPF_RB_EXCL_NODE:
- 		case BPF_LIST_NODE:
- 		case BPF_RB_NODE:
- 			break;
-@@ -3949,6 +3985,21 @@ struct btf_record *btf_parse_fields(const struct btf *btf, const struct btf_type
- 		goto end;
- 	}
- 
-+	if (rec->refcount_off >= 0 &&
-+	    (btf_record_has_field(rec, BPF_LIST_EXCL_NODE) ||
-+	     btf_record_has_field(rec, BPF_RB_EXCL_NODE))) {
-+		ret = -EINVAL;
-+		goto end;
-+	}
-+
-+	if ((btf_record_has_field(rec, BPF_LIST_EXCL_NODE) ||
-+	     btf_record_has_field(rec, BPF_RB_EXCL_NODE)) &&
-+	    (btf_record_has_field(rec, BPF_LIST_NODE) ||
-+	     btf_record_has_field(rec, BPF_RB_NODE))) {
-+		ret = -EINVAL;
-+		goto end;
-+	}
-+
- 	sort_r(rec->fields, rec->cnt, sizeof(struct btf_field), btf_field_cmp,
- 	       NULL, rec);
- 
-@@ -5434,8 +5485,10 @@ static const char *alloc_obj_fields[] = {
- 	"bpf_spin_lock",
- 	"bpf_list_head",
- 	"bpf_list_node",
-+	"bpf_list_excl_node",
- 	"bpf_rb_root",
- 	"bpf_rb_node",
-+	"bpf_rb_excl_node",
- 	"bpf_refcount",
+@@ -5495,6 +5495,7 @@ static const char *alloc_obj_fields[] = {
+ /* kernel structures with special BTF fields*/
+ static const char *kstructs_with_special_btf[] = {
+ 	"unused",
++	"sk_buff",
  };
  
-@@ -5536,6 +5589,7 @@ btf_parse_struct_metas(struct bpf_verifier_log *log, struct btf *btf)
- 		type->btf_id = id;
- 		record = btf_parse_fields(btf, t, BPF_SPIN_LOCK | BPF_LIST_HEAD | BPF_LIST_NODE |
- 						  BPF_RB_ROOT | BPF_RB_NODE | BPF_REFCOUNT |
-+						  BPF_LIST_EXCL_NODE | BPF_RB_EXCL_NODE |
- 						  BPF_KPTR, t->size);
- 		/* The record cannot be unset, treat it as an error if so */
- 		if (IS_ERR_OR_NULL(record)) {
-diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-index 9e93d48efe19..25fad6293720 100644
---- a/kernel/bpf/syscall.c
-+++ b/kernel/bpf/syscall.c
-@@ -528,13 +528,23 @@ struct btf_field *btf_record_find(const struct btf_record *rec, u32 offset,
- 				  u32 field_mask)
+ static struct btf_struct_metas *
+diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
+index 70655cec452c..7acdd8899304 100644
+--- a/kernel/bpf/helpers.c
++++ b/kernel/bpf/helpers.c
+@@ -1988,6 +1988,9 @@ static int __bpf_list_add(struct bpf_list_node_kern *node,
+ 			  bool tail, struct btf_record *rec, u64 off)
  {
- 	struct btf_field *field;
-+	u32 i;
+ 	struct list_head *n = &node->list_head, *h = (void *)head;
++	bool exclusive;
++
++	exclusive = btf_record_has_field(rec, BPF_LIST_EXCL_NODE);
  
- 	if (IS_ERR_OR_NULL(rec) || !(rec->field_mask & field_mask))
- 		return NULL;
- 	field = bsearch(&offset, rec->fields, rec->cnt, sizeof(rec->fields[0]), btf_field_cmp);
--	if (!field || !(field->type & field_mask))
-+	if (!field)
- 		return NULL;
--	return field;
-+	if (field->type & field_mask)
-+		return field;
-+	if (field->type & BPF_GRAPH_EXCL_NODE && field_mask & BPF_GRAPH_EXCL_NODE) {
-+		i = field - rec->fields;
-+		if (i > 0 && (field - 1)->type & field_mask)
-+			return field - 1;
-+		if (i < rec->cnt - 1 && (field + 1)->type & field_mask)
-+			return field + 1;
-+	}
-+	return NULL;
+ 	/* If list_head was 0-initialized by map, bpf_obj_init_field wasn't
+ 	 * called on its fields, so init here
+@@ -1998,14 +2001,15 @@ static int __bpf_list_add(struct bpf_list_node_kern *node,
+ 	/* node->owner != NULL implies !list_empty(n), no need to separately
+ 	 * check the latter
+ 	 */
+-	if (cmpxchg(&node->owner, NULL, BPF_PTR_POISON)) {
++	if (!exclusive && cmpxchg(&node->owner, NULL, BPF_PTR_POISON)) {
+ 		/* Only called from BPF prog, no need to migrate_disable */
+ 		__bpf_obj_drop_impl((void *)n - off, rec, false);
+ 		return -EINVAL;
+ 	}
+ 
+ 	tail ? list_add_tail(n, h) : list_add(n, h);
+-	WRITE_ONCE(node->owner, head);
++	if (!exclusive)
++		WRITE_ONCE(node->owner, head);
+ 
+ 	return 0;
+ }
+@@ -2030,10 +2034,14 @@ __bpf_kfunc int bpf_list_push_back_impl(struct bpf_list_head *head,
+ 	return __bpf_list_add(n, head, true, meta ? meta->record : NULL, off);
  }
  
- void btf_record_free(struct btf_record *rec)
-@@ -554,8 +564,10 @@ void btf_record_free(struct btf_record *rec)
+-static struct bpf_list_node *__bpf_list_del(struct bpf_list_head *head, bool tail)
++static struct bpf_list_node *__bpf_list_del(struct bpf_list_head *head,
++					    struct btf_record *rec, bool tail)
+ {
+ 	struct list_head *n, *h = (void *)head;
+ 	struct bpf_list_node_kern *node;
++	bool exclusive;
++
++	exclusive = btf_record_has_field(rec, BPF_LIST_EXCL_NODE);
+ 
+ 	/* If list_head was 0-initialized by map, bpf_obj_init_field wasn't
+ 	 * called on its fields, so init here
+@@ -2045,40 +2053,55 @@ static struct bpf_list_node *__bpf_list_del(struct bpf_list_head *head, bool tai
+ 
+ 	n = tail ? h->prev : h->next;
+ 	node = container_of(n, struct bpf_list_node_kern, list_head);
+-	if (WARN_ON_ONCE(READ_ONCE(node->owner) != head))
++	if (!exclusive && WARN_ON_ONCE(READ_ONCE(node->owner) != head))
+ 		return NULL;
+ 
+ 	list_del_init(n);
+-	WRITE_ONCE(node->owner, NULL);
++	if (!exclusive)
++		WRITE_ONCE(node->owner, NULL);
+ 	return (struct bpf_list_node *)n;
+ }
+ 
+-__bpf_kfunc struct bpf_list_node *bpf_list_pop_front(struct bpf_list_head *head)
++__bpf_kfunc struct bpf_list_node *bpf_list_pop_front_impl(struct bpf_list_head *head,
++							  void *meta__ign)
+ {
+-	return __bpf_list_del(head, false);
++	struct btf_struct_meta *meta = meta__ign;
++
++	return __bpf_list_del(head, meta ? meta->record : NULL, false);
+ }
+ 
+-__bpf_kfunc struct bpf_list_node *bpf_list_pop_back(struct bpf_list_head *head)
++__bpf_kfunc struct bpf_list_node *bpf_list_pop_back_impl(struct bpf_list_head *head,
++							 void *meta__ign)
+ {
+-	return __bpf_list_del(head, true);
++	struct btf_struct_meta *meta = meta__ign;
++
++	return __bpf_list_del(head, meta ? meta->record : NULL, true);
+ }
+ 
+-__bpf_kfunc struct bpf_rb_node *bpf_rbtree_remove(struct bpf_rb_root *root,
+-						  struct bpf_rb_node *node)
++__bpf_kfunc struct bpf_rb_node *bpf_rbtree_remove_impl(struct bpf_rb_root *root,
++						       struct bpf_rb_node *node,
++						       void *meta__ign)
+ {
+ 	struct bpf_rb_node_kern *node_internal = (struct bpf_rb_node_kern *)node;
+ 	struct rb_root_cached *r = (struct rb_root_cached *)root;
+ 	struct rb_node *n = &node_internal->rb_node;
++	struct btf_struct_meta *meta = meta__ign;
++	struct btf_record *rec;
++	bool exclusive;
++
++	rec = meta ? meta->record : NULL;
++	exclusive = btf_record_has_field(rec, BPF_RB_EXCL_NODE);
+ 
+ 	/* node_internal->owner != root implies either RB_EMPTY_NODE(n) or
+ 	 * n is owned by some other tree. No need to check RB_EMPTY_NODE(n)
+ 	 */
+-	if (READ_ONCE(node_internal->owner) != root)
++	if (!exclusive && READ_ONCE(node_internal->owner) != root)
+ 		return NULL;
+ 
+ 	rb_erase_cached(n, r);
+ 	RB_CLEAR_NODE(n);
+-	WRITE_ONCE(node_internal->owner, NULL);
++	if (!exclusive)
++		WRITE_ONCE(node_internal->owner, NULL);
+ 	return (struct bpf_rb_node *)n;
+ }
+ 
+@@ -2093,11 +2116,14 @@ static int __bpf_rbtree_add(struct bpf_rb_root *root,
+ 	struct rb_node *parent = NULL, *n = &node->rb_node;
+ 	bpf_callback_t cb = (bpf_callback_t)less;
+ 	bool leftmost = true;
++	bool exclusive;
++
++	exclusive = btf_record_has_field(rec, BPF_RB_EXCL_NODE);
+ 
+ 	/* node->owner != NULL implies !RB_EMPTY_NODE(n), no need to separately
+ 	 * check the latter
+ 	 */
+-	if (cmpxchg(&node->owner, NULL, BPF_PTR_POISON)) {
++	if (!exclusive && cmpxchg(&node->owner, NULL, BPF_PTR_POISON)) {
+ 		/* Only called from BPF prog, no need to migrate_disable */
+ 		__bpf_obj_drop_impl((void *)n - off, rec, false);
+ 		return -EINVAL;
+@@ -2115,7 +2141,8 @@ static int __bpf_rbtree_add(struct bpf_rb_root *root,
+ 
+ 	rb_link_node(n, parent, link);
+ 	rb_insert_color_cached(n, (struct rb_root_cached *)root, leftmost);
+-	WRITE_ONCE(node->owner, root);
++	if (!exclusive)
++		WRITE_ONCE(node->owner, root);
+ 	return 0;
+ }
+ 
+@@ -2562,11 +2589,11 @@ BTF_ID_FLAGS(func, bpf_percpu_obj_drop_impl, KF_RELEASE)
+ BTF_ID_FLAGS(func, bpf_refcount_acquire_impl, KF_ACQUIRE | KF_RET_NULL | KF_RCU)
+ BTF_ID_FLAGS(func, bpf_list_push_front_impl)
+ BTF_ID_FLAGS(func, bpf_list_push_back_impl)
+-BTF_ID_FLAGS(func, bpf_list_pop_front, KF_ACQUIRE | KF_RET_NULL)
+-BTF_ID_FLAGS(func, bpf_list_pop_back, KF_ACQUIRE | KF_RET_NULL)
++BTF_ID_FLAGS(func, bpf_list_pop_front_impl, KF_ACQUIRE | KF_RET_NULL)
++BTF_ID_FLAGS(func, bpf_list_pop_back_impl, KF_ACQUIRE | KF_RET_NULL)
+ BTF_ID_FLAGS(func, bpf_task_acquire, KF_ACQUIRE | KF_RCU | KF_RET_NULL)
+ BTF_ID_FLAGS(func, bpf_task_release, KF_RELEASE)
+-BTF_ID_FLAGS(func, bpf_rbtree_remove, KF_ACQUIRE | KF_RET_NULL)
++BTF_ID_FLAGS(func, bpf_rbtree_remove_impl, KF_ACQUIRE | KF_RET_NULL)
+ BTF_ID_FLAGS(func, bpf_rbtree_add_impl)
+ BTF_ID_FLAGS(func, bpf_rbtree_first, KF_RET_NULL)
+ 
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index f01d2b876a2e..ffab9b6048cd 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -11005,13 +11005,13 @@ enum special_kfunc_type {
+ 	KF_bpf_refcount_acquire_impl,
+ 	KF_bpf_list_push_front_impl,
+ 	KF_bpf_list_push_back_impl,
+-	KF_bpf_list_pop_front,
+-	KF_bpf_list_pop_back,
++	KF_bpf_list_pop_front_impl,
++	KF_bpf_list_pop_back_impl,
+ 	KF_bpf_cast_to_kern_ctx,
+ 	KF_bpf_rdonly_cast,
+ 	KF_bpf_rcu_read_lock,
+ 	KF_bpf_rcu_read_unlock,
+-	KF_bpf_rbtree_remove,
++	KF_bpf_rbtree_remove_impl,
+ 	KF_bpf_rbtree_add_impl,
+ 	KF_bpf_rbtree_first,
+ 	KF_bpf_dynptr_from_skb,
+@@ -11031,11 +11031,11 @@ BTF_ID(func, bpf_obj_drop_impl)
+ BTF_ID(func, bpf_refcount_acquire_impl)
+ BTF_ID(func, bpf_list_push_front_impl)
+ BTF_ID(func, bpf_list_push_back_impl)
+-BTF_ID(func, bpf_list_pop_front)
+-BTF_ID(func, bpf_list_pop_back)
++BTF_ID(func, bpf_list_pop_front_impl)
++BTF_ID(func, bpf_list_pop_back_impl)
+ BTF_ID(func, bpf_cast_to_kern_ctx)
+ BTF_ID(func, bpf_rdonly_cast)
+-BTF_ID(func, bpf_rbtree_remove)
++BTF_ID(func, bpf_rbtree_remove_impl)
+ BTF_ID(func, bpf_rbtree_add_impl)
+ BTF_ID(func, bpf_rbtree_first)
+ BTF_ID(func, bpf_dynptr_from_skb)
+@@ -11057,13 +11057,13 @@ BTF_ID(func, bpf_obj_drop_impl)
+ BTF_ID(func, bpf_refcount_acquire_impl)
+ BTF_ID(func, bpf_list_push_front_impl)
+ BTF_ID(func, bpf_list_push_back_impl)
+-BTF_ID(func, bpf_list_pop_front)
+-BTF_ID(func, bpf_list_pop_back)
++BTF_ID(func, bpf_list_pop_front_impl)
++BTF_ID(func, bpf_list_pop_back_impl)
+ BTF_ID(func, bpf_cast_to_kern_ctx)
+ BTF_ID(func, bpf_rdonly_cast)
+ BTF_ID(func, bpf_rcu_read_lock)
+ BTF_ID(func, bpf_rcu_read_unlock)
+-BTF_ID(func, bpf_rbtree_remove)
++BTF_ID(func, bpf_rbtree_remove_impl)
+ BTF_ID(func, bpf_rbtree_add_impl)
+ BTF_ID(func, bpf_rbtree_first)
+ BTF_ID(func, bpf_dynptr_from_skb)
+@@ -11382,14 +11382,14 @@ static bool is_bpf_list_api_kfunc(u32 btf_id)
+ {
+ 	return btf_id == special_kfunc_list[KF_bpf_list_push_front_impl] ||
+ 	       btf_id == special_kfunc_list[KF_bpf_list_push_back_impl] ||
+-	       btf_id == special_kfunc_list[KF_bpf_list_pop_front] ||
+-	       btf_id == special_kfunc_list[KF_bpf_list_pop_back];
++	       btf_id == special_kfunc_list[KF_bpf_list_pop_front_impl] ||
++	       btf_id == special_kfunc_list[KF_bpf_list_pop_back_impl];
+ }
+ 
+ static bool is_bpf_rbtree_api_kfunc(u32 btf_id)
+ {
+ 	return btf_id == special_kfunc_list[KF_bpf_rbtree_add_impl] ||
+-	       btf_id == special_kfunc_list[KF_bpf_rbtree_remove] ||
++	       btf_id == special_kfunc_list[KF_bpf_rbtree_remove_impl] ||
+ 	       btf_id == special_kfunc_list[KF_bpf_rbtree_first];
+ }
+ 
+@@ -11448,11 +11448,13 @@ static bool check_kfunc_is_graph_node_api(struct bpf_verifier_env *env,
+ 
+ 	switch (node_field_type) {
+ 	case BPF_LIST_NODE:
++	case BPF_LIST_EXCL_NODE:
+ 		ret = (kfunc_btf_id == special_kfunc_list[KF_bpf_list_push_front_impl] ||
+ 		       kfunc_btf_id == special_kfunc_list[KF_bpf_list_push_back_impl]);
+ 		break;
+ 	case BPF_RB_NODE:
+-		ret = (kfunc_btf_id == special_kfunc_list[KF_bpf_rbtree_remove] ||
++	case BPF_RB_EXCL_NODE:
++		ret = (kfunc_btf_id == special_kfunc_list[KF_bpf_rbtree_remove_impl] ||
+ 		       kfunc_btf_id == special_kfunc_list[KF_bpf_rbtree_add_impl]);
+ 		break;
+ 	default:
+@@ -11515,6 +11517,9 @@ __process_kf_arg_ptr_to_graph_root(struct bpf_verifier_env *env,
+ 		return -EFAULT;
+ 	}
+ 	*head_field = field;
++	meta->arg_btf = field->graph_root.btf;
++	meta->arg_btf_id = field->graph_root.value_btf_id;
++
+ 	return 0;
+ }
+ 
+@@ -11603,18 +11608,30 @@ static int process_kf_arg_ptr_to_list_node(struct bpf_verifier_env *env,
+ 					   struct bpf_reg_state *reg, u32 regno,
+ 					   struct bpf_kfunc_call_arg_meta *meta)
+ {
+-	return __process_kf_arg_ptr_to_graph_node(env, reg, regno, meta,
+-						  BPF_LIST_HEAD, BPF_LIST_NODE,
+-						  &meta->arg_list_head.field);
++	int err;
++
++	err = __process_kf_arg_ptr_to_graph_node(env, reg, regno, meta,
++						 BPF_LIST_HEAD, BPF_LIST_NODE,
++						 &meta->arg_list_head.field);
++
++	return err ? __process_kf_arg_ptr_to_graph_node(env, reg, regno, meta,
++							BPF_LIST_HEAD, BPF_LIST_EXCL_NODE,
++							&meta->arg_list_head.field) : 0;
+ }
+ 
+ static int process_kf_arg_ptr_to_rbtree_node(struct bpf_verifier_env *env,
+ 					     struct bpf_reg_state *reg, u32 regno,
+ 					     struct bpf_kfunc_call_arg_meta *meta)
+ {
+-	return __process_kf_arg_ptr_to_graph_node(env, reg, regno, meta,
+-						  BPF_RB_ROOT, BPF_RB_NODE,
+-						  &meta->arg_rbtree_root.field);
++	int err;
++
++	err = __process_kf_arg_ptr_to_graph_node(env, reg, regno, meta,
++						 BPF_RB_ROOT, BPF_RB_NODE,
++						 &meta->arg_rbtree_root.field);
++
++	return err ? __process_kf_arg_ptr_to_graph_node(env, reg, regno, meta,
++							BPF_RB_ROOT, BPF_RB_EXCL_NODE,
++							&meta->arg_rbtree_root.field) : 0;
+ }
+ 
+ /*
+@@ -11948,7 +11965,7 @@ static int check_kfunc_args(struct bpf_verifier_env *env, struct bpf_kfunc_call_
+ 				return ret;
  			break;
- 		case BPF_LIST_HEAD:
- 		case BPF_LIST_NODE:
-+		case BPF_LIST_EXCL_NODE:
- 		case BPF_RB_ROOT:
- 		case BPF_RB_NODE:
-+		case BPF_RB_EXCL_NODE:
- 		case BPF_SPIN_LOCK:
- 		case BPF_TIMER:
- 		case BPF_REFCOUNT:
-@@ -603,8 +615,10 @@ struct btf_record *btf_record_dup(const struct btf_record *rec)
- 			break;
- 		case BPF_LIST_HEAD:
- 		case BPF_LIST_NODE:
-+		case BPF_LIST_EXCL_NODE:
- 		case BPF_RB_ROOT:
- 		case BPF_RB_NODE:
-+		case BPF_RB_EXCL_NODE:
- 		case BPF_SPIN_LOCK:
- 		case BPF_TIMER:
- 		case BPF_REFCOUNT:
-@@ -711,7 +725,9 @@ void bpf_obj_free_fields(const struct btf_record *rec, void *obj)
- 			bpf_rb_root_free(field, field_ptr, obj + rec->spin_lock_off);
- 			break;
- 		case BPF_LIST_NODE:
-+		case BPF_LIST_EXCL_NODE:
- 		case BPF_RB_NODE:
-+		case BPF_RB_EXCL_NODE:
- 		case BPF_REFCOUNT:
- 			break;
- 		default:
+ 		case KF_ARG_PTR_TO_RB_NODE:
+-			if (meta->func_id == special_kfunc_list[KF_bpf_rbtree_remove]) {
++			if (meta->func_id == special_kfunc_list[KF_bpf_rbtree_remove_impl]) {
+ 				if (!type_is_non_owning_ref(reg->type) || reg->ref_obj_id) {
+ 					verbose(env, "rbtree_remove node input must be non-owning ref\n");
+ 					return -EINVAL;
+@@ -12255,6 +12272,11 @@ static int check_kfunc_call(struct bpf_verifier_env *env, struct bpf_insn *insn,
+ 		}
+ 	}
+ 
++	if (meta.func_id == special_kfunc_list[KF_bpf_list_pop_front_impl] ||
++	    meta.func_id == special_kfunc_list[KF_bpf_list_pop_back_impl] ||
++	    meta.func_id == special_kfunc_list[KF_bpf_rbtree_remove_impl])
++		insn_aux->kptr_struct_meta = btf_find_struct_meta(meta.arg_btf, meta.arg_btf_id);
++
+ 	if (meta.func_id == special_kfunc_list[KF_bpf_throw]) {
+ 		if (!bpf_jit_supports_exceptions()) {
+ 			verbose(env, "JIT does not support calling kfunc %s#%d\n",
+@@ -12386,12 +12408,12 @@ static int check_kfunc_call(struct bpf_verifier_env *env, struct bpf_insn *insn,
+ 				insn_aux->kptr_struct_meta =
+ 					btf_find_struct_meta(meta.arg_btf,
+ 							     meta.arg_btf_id);
+-			} else if (meta.func_id == special_kfunc_list[KF_bpf_list_pop_front] ||
+-				   meta.func_id == special_kfunc_list[KF_bpf_list_pop_back]) {
++			} else if (meta.func_id == special_kfunc_list[KF_bpf_list_pop_front_impl] ||
++				   meta.func_id == special_kfunc_list[KF_bpf_list_pop_back_impl]) {
+ 				struct btf_field *field = meta.arg_list_head.field;
+ 
+ 				mark_reg_graph_node(regs, BPF_REG_0, &field->graph_root);
+-			} else if (meta.func_id == special_kfunc_list[KF_bpf_rbtree_remove] ||
++			} else if (meta.func_id == special_kfunc_list[KF_bpf_rbtree_remove_impl] ||
+ 				   meta.func_id == special_kfunc_list[KF_bpf_rbtree_first]) {
+ 				struct btf_field *field = meta.arg_rbtree_root.field;
+ 
+@@ -19526,6 +19548,21 @@ static void __fixup_collection_insert_kfunc(struct bpf_insn_aux_data *insn_aux,
+ 	*cnt = 4;
+ }
+ 
++static void __fixup_collection_remove_kfunc(struct bpf_insn_aux_data *insn_aux,
++					    u16 struct_meta_reg,
++					    struct bpf_insn *insn,
++					    struct bpf_insn *insn_buf,
++					    int *cnt)
++{
++	struct btf_struct_meta *kptr_struct_meta = insn_aux->kptr_struct_meta;
++	struct bpf_insn addr[2] = { BPF_LD_IMM64(struct_meta_reg, (long)kptr_struct_meta) };
++
++	insn_buf[0] = addr[0];
++	insn_buf[1] = addr[1];
++	insn_buf[2] = *insn;
++	*cnt = 3;
++}
++
+ static int fixup_kfunc_call(struct bpf_verifier_env *env, struct bpf_insn *insn,
+ 			    struct bpf_insn *insn_buf, int insn_idx, int *cnt)
+ {
+@@ -19614,6 +19651,24 @@ static int fixup_kfunc_call(struct bpf_verifier_env *env, struct bpf_insn *insn,
+ 
+ 		__fixup_collection_insert_kfunc(&env->insn_aux_data[insn_idx], struct_meta_reg,
+ 						node_offset_reg, insn, insn_buf, cnt);
++	} else if (desc->func_id == special_kfunc_list[KF_bpf_list_pop_back_impl] ||
++		   desc->func_id == special_kfunc_list[KF_bpf_list_pop_front_impl] ||
++		   desc->func_id == special_kfunc_list[KF_bpf_rbtree_remove_impl]) {
++		struct btf_struct_meta *kptr_struct_meta = env->insn_aux_data[insn_idx].kptr_struct_meta;
++		int struct_meta_reg = BPF_REG_2;
++
++		/* rbtree_remove has extra 'node' arg, so args-to-fixup are in diff regs */
++		if (desc->func_id == special_kfunc_list[KF_bpf_rbtree_remove_impl])
++			struct_meta_reg = BPF_REG_3;
++
++		if (!kptr_struct_meta) {
++			verbose(env, "verifier internal error: kptr_struct_meta expected at insn_idx %d\n",
++				insn_idx);
++			return -EFAULT;
++		}
++
++		__fixup_collection_remove_kfunc(&env->insn_aux_data[insn_idx], struct_meta_reg,
++						insn, insn_buf, cnt);
+ 	} else if (desc->func_id == special_kfunc_list[KF_bpf_cast_to_kern_ctx] ||
+ 		   desc->func_id == special_kfunc_list[KF_bpf_rdonly_cast]) {
+ 		insn_buf[0] = BPF_MOV64_REG(BPF_REG_0, BPF_REG_1);
+diff --git a/tools/testing/selftests/bpf/bpf_experimental.h b/tools/testing/selftests/bpf/bpf_experimental.h
+index a4da75df819c..27f6d1fec793 100644
+--- a/tools/testing/selftests/bpf/bpf_experimental.h
++++ b/tools/testing/selftests/bpf/bpf_experimental.h
+@@ -91,22 +91,34 @@ extern int bpf_list_push_back_impl(struct bpf_list_head *head,
+  * Returns
+  *	Pointer to bpf_list_node of deleted entry, or NULL if list is empty.
+  */
+-extern struct bpf_list_node *bpf_list_pop_front(struct bpf_list_head *head) __ksym;
++extern struct bpf_list_node *bpf_list_pop_front_impl(struct bpf_list_head *head,
++						     void *meta) __ksym;
++
++/* Convenience macro to wrap over bpf_list_pop_front_impl */
++#define bpf_list_pop_front(head) bpf_list_pop_front_impl(head, NULL)
+ 
+ /* Description
+  *	Remove the entry at the end of the BPF linked list.
+  * Returns
+  *	Pointer to bpf_list_node of deleted entry, or NULL if list is empty.
+  */
+-extern struct bpf_list_node *bpf_list_pop_back(struct bpf_list_head *head) __ksym;
++extern struct bpf_list_node *bpf_list_pop_back_impl(struct bpf_list_head *head,
++					            void *meta) __ksym;
++
++/* Convenience macro to wrap over bpf_list_pop_back_impl */
++#define bpf_list_pop_back(head) bpf_list_pop_back_impl(head, NULL)
+ 
+ /* Description
+  *	Remove 'node' from rbtree with root 'root'
+  * Returns
+  * 	Pointer to the removed node, or NULL if 'root' didn't contain 'node'
+  */
+-extern struct bpf_rb_node *bpf_rbtree_remove(struct bpf_rb_root *root,
+-					     struct bpf_rb_node *node) __ksym;
++extern struct bpf_rb_node *bpf_rbtree_remove_impl(struct bpf_rb_root *root,
++						  struct bpf_rb_node *node,
++						  void *meta) __ksym;
++
++/* Convenience macro to wrap over bpf_rbtree_remove_impl */
++#define bpf_rbtree_remove(head, node) bpf_rbtree_remove_impl(head, node, NULL)
+ 
+ /* Description
+  *	Add 'node' to rbtree with root 'root' using comparator 'less'
+@@ -132,6 +144,44 @@ extern int bpf_rbtree_add_impl(struct bpf_rb_root *root, struct bpf_rb_node *nod
+  */
+ extern struct bpf_rb_node *bpf_rbtree_first(struct bpf_rb_root *root) __ksym;
+ 
++/* Convenience single-ownership graph functions */
++int bpf_list_excl_push_front(struct bpf_list_head *head, struct bpf_list_excl_node *node)
++{
++	return bpf_list_push_front(head, (struct bpf_list_node *)node);
++}
++
++int bpf_list_excl_push_back(struct bpf_list_head *head, struct bpf_list_excl_node *node)
++{
++	return bpf_list_push_back(head, (struct bpf_list_node *)node);
++}
++
++struct bpf_list_excl_node *bpf_list_excl_pop_front(struct bpf_list_head *head)
++{
++	return (struct bpf_list_excl_node *)bpf_list_pop_front(head);
++}
++
++struct bpf_list_excl_node *bpf_list_excl_pop_back(struct bpf_list_head *head)
++{
++	return (struct bpf_list_excl_node *)bpf_list_pop_back(head);
++}
++
++struct bpf_rb_excl_node *bpf_rbtree_excl_remove(struct bpf_rb_root *root,
++					    struct bpf_rb_excl_node *node)
++{
++	return (struct bpf_rb_excl_node *)bpf_rbtree_remove(root, (struct bpf_rb_node *)node);
++}
++
++int bpf_rbtree_excl_add(struct bpf_rb_root *root, struct bpf_rb_excl_node *node,
++		      bool (less)(struct bpf_rb_node *a, const struct bpf_rb_node *b))
++{
++	return bpf_rbtree_add(root, (struct bpf_rb_node *)node, less);
++}
++
++struct bpf_rb_excl_node *bpf_rbtree_excl_first(struct bpf_rb_root *root)
++{
++	return (struct bpf_rb_excl_node *)bpf_rbtree_first(root);
++}
++
+ /* Description
+  *	Allocates a percpu object of the type represented by 'local_type_id' in
+  *	program BTF. User may use the bpf_core_type_id_local macro to pass the
 -- 
 2.20.1
 
