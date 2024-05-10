@@ -1,116 +1,105 @@
-Return-Path: <bpf+bounces-29468-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-29469-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 33B228C2348
-	for <lists+bpf@lfdr.de>; Fri, 10 May 2024 13:26:04 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 119678C24D9
+	for <lists+bpf@lfdr.de>; Fri, 10 May 2024 14:28:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E47DC2834A0
-	for <lists+bpf@lfdr.de>; Fri, 10 May 2024 11:26:02 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 429271C21596
+	for <lists+bpf@lfdr.de>; Fri, 10 May 2024 12:28:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C0C9E16DEAA;
-	Fri, 10 May 2024 11:24:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F38FB5027F;
+	Fri, 10 May 2024 12:28:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="KQdR1rZy"
+	dkim=pass (2048-bit key) header.d=meta.com header.i=@meta.com header.b="deAGzIgP"
 X-Original-To: bpf@vger.kernel.org
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 57B9716F0C6;
-	Fri, 10 May 2024 11:24:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 633892C853
+	for <bpf@vger.kernel.org>; Fri, 10 May 2024 12:28:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.153.30
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715340258; cv=none; b=jmqbw/DP3JKjwWV35e+ZgRGbSXa+dJVBGdV8e9dmabU8X8khVt4swc89I7KVWG7sahwaU7gJ5/SlkrwN5F/yVdZbXMnbNsYSgsU7NX3p3oYR2cGj8vsoTmWRtrF5tj8GnIUJw+W6iaYif3eoXdTOTfBcztppbjmVH+CwCN2IzZg=
+	t=1715344124; cv=none; b=G+kHvSebZt5yfYXZ04EUBhEYkP8qIL+7hrBwsUD/SNWJLHpKT/sStbERz6IKwBexZ7HgiCzfSsb6z7IRCw08Ua2ejnSCZ5Sm6JEdPy1SeIgYkjRA4+Xh0woX3SVRz7Mk43jQN151dkdTO/Vu1ckb4Os4CWc2dzKB+ZKk1xcFi10=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715340258; c=relaxed/simple;
-	bh=MuOQCmUzXNyKWcjxb84KgDM7bo5qL9Sff9/5cgSTgyQ=;
-	h=Message-ID:Date:MIME-Version:Cc:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=S55zchHKqOKTuBdW2l0TqHhQIsotbaKRdwZN4Mc2gpy/4jqE4XqhsFOkJIz0Ym0x4nEVZYDz9cQRgLrdQ/k2XdZlOKfzqr5of/umb4211DLZ5O3063WGyZQxhfIrULO4moScGK27qQ18wKwgZbjh8e7owFMdBAE9u/Y5jR8eigc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=KQdR1rZy; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1715340254;
-	bh=MuOQCmUzXNyKWcjxb84KgDM7bo5qL9Sff9/5cgSTgyQ=;
-	h=Date:Cc:Subject:To:References:From:In-Reply-To:From;
-	b=KQdR1rZyH79i9HPkv0ze2lsOUVn2BdiLTVYRsF1zHKTkchSG3t1PBrTXH3G4QZjLm
-	 coour17sQx6x8JqSy2Vq5deh+PBtF94+9NUJ8e+F0cZhY8dZYV7G5POGBAgWdsmWtJ
-	 CgffO67gYdlgsz9t0v0jyUf2y4ILIjgVHFGpOufGZiOnv26N2/YqnnIFHMRWossONs
-	 20DRPqgUbNQ2Fl9Pq24kvJ10ntF7dgHAAHBdz6IZt5K7Df0/iQtk9Nx4bS4B3vTK2M
-	 uDE8dF67X0GA+7LppCMMLqRnPfXabyF4huJgl9ecG12ZJGxvCKO6qsqfnG2o51XDD8
-	 Oz17qnxfMlvrA==
-Received: from [10.193.1.1] (broslavsky.collaboradmins.com [68.183.210.73])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: usama.anjum)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id E8BA63782185;
-	Fri, 10 May 2024 11:24:07 +0000 (UTC)
-Message-ID: <ebad1587-3016-4eb7-8cfa-4d2e1e60b95a@collabora.com>
-Date: Fri, 10 May 2024 16:24:32 +0500
+	s=arc-20240116; t=1715344124; c=relaxed/simple;
+	bh=q0XLU2FcePMqUXinyckdAcMWznhIDtUxLsPY12Redzw=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=FKFD8G+3OocQVykrbAYTQh31cw0ilQMmssEOc+8IwSL0Q3PzPKSHsa01h9j/FAn9gaSgH8HyBk0Sf7riKiJYbk7c1HL2nkeQuOeRAAJ30N3/96+9Pkvbyj9WScgEy/TC3G+8l1LsmSv1sT0jSyx6+fjLXm9vNdIbw3dHWrgvH6E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=meta.com; spf=pass smtp.mailfrom=meta.com; dkim=pass (2048-bit key) header.d=meta.com header.i=@meta.com header.b=deAGzIgP; arc=none smtp.client-ip=67.231.153.30
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=meta.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=meta.com
+Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
+	by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 44A0QAPO021039;
+	Fri, 10 May 2024 05:28:36 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=meta.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type :
+ content-transfer-encoding; s=s2048-2021-q4;
+ bh=Zi0DX4T/QBqQXPbzx/UgCNgALJTgLe37v2xLUtr+7OY=;
+ b=deAGzIgPYnIxQOpET6yQeZPrQ/AMjgEh6ote7JhgaP/GFt4/ZFhbmNJLUhaUpHP3iHX3
+ //sqezwT1rUnpI3VRIpFc7U+JsmM5bofdU86GWn9wtDTzEAVNvTA01YgQrcO+lsryDYB
+ jQ3RyzPblcrq2703gU+tMadKmsv5x4Mwz3cTUVKuac+Uqd4kW+QR2RZbEo6Kxu5FfIkH
+ cLS/k0qh40c86F9yZhhrYXuWCv3oOEy6ttHSdajsb17Jno9Quv79QtG6bxGUytszdmDv
+ T/DIuMeHsYZ+yG9Thi3/lSCs5AFCnx8kZQwMx1c81mBX2rAxAYjWVKcvAH+ZK/NnuhlK 9Q== 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3y16pxayxy-13
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+	Fri, 10 May 2024 05:28:36 -0700
+Received: from devvm4158.cln0.facebook.com (2620:10d:c0a8:1b::30) by
+ mail.thefacebook.com (2620:10d:c0a8:82::b) with Microsoft SMTP Server id
+ 15.1.2507.35; Fri, 10 May 2024 12:28:32 +0000
+From: Vadim Fedorenko <vadfed@meta.com>
+To: Vadim Fedorenko <vadim.fedorenko@linux.dev>,
+        Martin KaFai Lau
+	<martin.lau@linux.dev>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        "Alexei
+ Starovoitov" <ast@kernel.org>,
+        Mykola Lysenko <mykolal@fb.com>, Jakub
+ Kicinski <kuba@kernel.org>
+CC: Vadim Fedorenko <vadfed@meta.com>, <bpf@vger.kernel.org>
+Subject: [PATCH bpf-next v2 0/4] bpf: make trusted args nullable
+Date: Fri, 10 May 2024 05:28:19 -0700
+Message-ID: <20240510122823.1530682-1-vadfed@meta.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Cc: Muhammad Usama Anjum <usama.anjum@collabora.com>, bpf@vger.kernel.org,
- linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
- Kunwu Chan <chentao@kylinos.cn>
-Subject: Re: [PATCH bpf-next v2 4/4] selftests/bpf: Add a null pointer check
- for the serial_test_tp_attach_query
-To: kunwu.chan@linux.dev, ast@kernel.org, daniel@iogearbox.net,
- andrii@kernel.org, martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org,
- yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org,
- sdf@google.com, haoluo@google.com, jolsa@kernel.org, mykolal@fb.com,
- shuah@kernel.org, kunwu.chan@hotmail.com
-References: <20240510095803.472840-1-kunwu.chan@linux.dev>
- <20240510095803.472840-5-kunwu.chan@linux.dev>
-Content-Language: en-US
-From: Muhammad Usama Anjum <usama.anjum@collabora.com>
-In-Reply-To: <20240510095803.472840-5-kunwu.chan@linux.dev>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-GUID: X-SBQb3dtC1A2zdFNWZlxVJ9e2zmocJ7
+X-Proofpoint-ORIG-GUID: X-SBQb3dtC1A2zdFNWZlxVJ9e2zmocJ7
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.650,FMLib:17.11.176.26
+ definitions=2024-05-10_08,2024-05-10_02,2023-05-22_02
 
-On 5/10/24 2:58 PM, kunwu.chan@linux.dev wrote:
-> From: Kunwu Chan <chentao@kylinos.cn>
-> 
-> There is a 'malloc' call, which can be unsuccessful.
-> Add the malloc failure checking to avoid possible null
-> dereference.
-> 
-> Signed-off-by: Kunwu Chan <chentao@kylinos.cn>
-> Suggested-by: Daniel Borkmann <daniel@iogearbox.net>
-> ---
-> Changes in v2:
-> 	- Use ASSERT* instead of CHECK
-> 	- Add suggested-by tag
-> ---
->  tools/testing/selftests/bpf/prog_tests/tp_attach_query.c | 3 +++
->  1 file changed, 3 insertions(+)
-> 
-> diff --git a/tools/testing/selftests/bpf/prog_tests/tp_attach_query.c b/tools/testing/selftests/bpf/prog_tests/tp_attach_query.c
-> index 655d69f0ff0b..a5ebfc172ad8 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/tp_attach_query.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/tp_attach_query.c
-> @@ -39,6 +39,9 @@ void serial_test_tp_attach_query(void)
->  	attr.wakeup_events = 1;
->  
->  	query = malloc(sizeof(*query) + sizeof(__u32) * num_progs);
-> +	if (!ASSERT_OK_PTR(query, "malloc"))
-> +		return;
-> +
-LGTM
-Reviewed-by: Muhammad Usama Anjum <usama.anjum@collabora.com>
+Current verifier checks for the arg to be nullable after checking for
+certain pointer types. It prevents programs to pass NULL to kfunc args
+even if they are marked as nullable. This patchset adjusts verifier and
+changes bpf crypto kfuncs to allow null for IV parameter which is
+optional for some ciphers. Benchmark shows ~4% improvements when there
+is no need to initialise 0-sized dynptr.
 
->  	for (i = 0; i < num_progs; i++) {
->  		err = bpf_prog_test_load(file, BPF_PROG_TYPE_TRACEPOINT, &obj[i],
->  				    &prog_fd[i]);
+v2:
+- adjust kdoc accordingly
+
+Vadim Fedorenko (4):
+  bpf: verifier: make kfuncs args nullalble
+  bpf: crypto: make state and IV dynptr nullable
+  selftests: bpf: crypto: use NULL instead of 0-sized dynptr
+  selftests: bpf: crypto: adjust bench to use nullable IV
+
+ kernel/bpf/crypto.c                           | 26 +++++++++----------
+ kernel/bpf/verifier.c                         |  6 ++---
+ .../selftests/bpf/progs/crypto_bench.c        | 10 +++----
+ .../selftests/bpf/progs/crypto_sanity.c       | 16 +++---------
+ 4 files changed, 24 insertions(+), 34 deletions(-)
 
 -- 
-BR,
-Muhammad Usama Anjum
+2.43.0
+
 
