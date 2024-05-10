@@ -1,149 +1,169 @@
-Return-Path: <bpf+bounces-29433-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-29434-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id BA3EB8C1DA0
-	for <lists+bpf@lfdr.de>; Fri, 10 May 2024 07:17:12 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B268A8C1E1F
+	for <lists+bpf@lfdr.de>; Fri, 10 May 2024 08:30:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2AEF01F23B51
-	for <lists+bpf@lfdr.de>; Fri, 10 May 2024 05:17:12 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E3AF91C21422
+	for <lists+bpf@lfdr.de>; Fri, 10 May 2024 06:30:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E4D314BF97;
-	Fri, 10 May 2024 05:17:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 28F845E099;
+	Fri, 10 May 2024 06:30:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CiwTMUd7"
 X-Original-To: bpf@vger.kernel.org
-Received: from zg8tmtyylji0my4xnjeumjiw.icoremail.net (zg8tmtyylji0my4xnjeumjiw.icoremail.net [162.243.161.220])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 13D7B3C684
-	for <bpf@vger.kernel.org>; Fri, 10 May 2024 05:16:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=162.243.161.220
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D7F61F171;
+	Fri, 10 May 2024 06:30:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715318226; cv=none; b=PQUfT9ClReWxRF+bq1/L7G1/HqIYpEZcLwdF3ee+dH4yB/TdcZms02AcFuREb/85JGUcy7hRFoj8IOsqawb00MtjKHxO2P0EHv9FRD8KT7R4LTAUkhFku/RMFbx4+N6yHm16kg9MVft7jcF/Yo/c36UiCg1fpiUX8R85tUNulZ0=
+	t=1715322632; cv=none; b=jfQwq/SW/VuO3EoIFk0uLIOSHvpQ3DfzWau6CfT88ZmBalgoKvFI+KAwyFI1E58pO4WzRvubPy3X1Xum13ieZOmmz5rZ0VeeVXdwrdg4qoI49n8CrE2ROUAigip2TOG9pSBdAOXcZAW+76DgyCb/ScrwX7sQeLBGS9CvoQQ1O+w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715318226; c=relaxed/simple;
-	bh=ba0YFDTKyE7EVsCA2KRB4C0Wm10cBt97YHR/PGnb+XE=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:Content-Type:
-	 MIME-Version:Message-ID; b=HV0XdFMrX4/fkwJp6Vl2srwwy+RXMMipfvXpsC+dqFD9dkCUqHWOd9zkOi6jVH4mnleCrLcKAC1+AKVL+j76f6JlxCTUGfzd3lN9Y3rMTBEltEomUYuk0wdJMHOZyZzDdjoz5UV/3gDpk6aflN9RHdQGRUfA4ggS4R5uT4uCdzo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mail.nwpu.edu.cn; spf=pass smtp.mailfrom=mail.nwpu.edu.cn; arc=none smtp.client-ip=162.243.161.220
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mail.nwpu.edu.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mail.nwpu.edu.cn
-Received: from nwpu.edu.cn (unknown [58.206.203.66])
-	by gateway (Coremail) with SMTP id _____wDXMnbCrT1mWbAEAA--.5901S3;
-	Fri, 10 May 2024 13:16:51 +0800 (CST)
-Received: from sekiro_meng$mail.nwpu.edu.cn ( [58.206.203.66] ) by
- ajax-webmail-app (Coremail) ; Fri, 10 May 2024 13:16:48 +0800 (GMT+08:00)
-Date: Fri, 10 May 2024 13:16:48 +0800 (GMT+08:00)
-X-CM-HeaderCharset: UTF-8
-From: =?UTF-8?B?5a2f56Wl5a6H?= <sekiro_meng@mail.nwpu.edu.cn>
-To: "Alexei Starovoitov" <alexei.starovoitov@gmail.com>
-Cc: bpf@vger.kernel.org
-Subject: Re: Re: [BPF Security] what security properties does verifier
- guarantee?
-X-Priority: 3
-X-Mailer: Coremail Webmail Server Version XT5.0.14 build 20220310(96b739b2)
- Copyright (c) 2002-2024 www.mailtech.cn nwpu.edu.cn
-In-Reply-To: <CAADnVQKroXpteX+TvWja=BOC-hLbKgaGMt-5GJ2ZfxEQqK5Q2Q@mail.gmail.com>
-References: <2147ee76.10bf3.18f5dadf442.Coremail.sekiro_meng@mail.nwpu.edu.cn>
- <CAADnVQKroXpteX+TvWja=BOC-hLbKgaGMt-5GJ2ZfxEQqK5Q2Q@mail.gmail.com>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset=UTF-8
+	s=arc-20240116; t=1715322632; c=relaxed/simple;
+	bh=OPJHkBDfeGghyPDQDmdYUX1NMHXumeAbhGmbN+1eiIA=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=ZGDxgJp5Hwim1B3S6QXw8vUYzbcXfEinWWJ3V+7ftu1pSoV4jmvI1rXktOgQTCalaxpLtNy0z5yIn5Mc3MN74+NjbNLYTGaUgd1WjrZGVIDOHuvdtmeecZQl1/UAcQrmHrgSkVEtuOG3JbCx57uEfSERahbfvOTSlJvgGX2kFbU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CiwTMUd7; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2B0B8C32786;
+	Fri, 10 May 2024 06:30:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1715322631;
+	bh=OPJHkBDfeGghyPDQDmdYUX1NMHXumeAbhGmbN+1eiIA=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=CiwTMUd7d7A39Lpg3MUhYu2pRDkwC8tp5+Idm7gnNmN2odbyxP4/KADwR1224XRlZ
+	 kFWItsShrkdttjL30UWhVvMXivse5tdyV5daQk7yLIsd5FvfXWBoZbRZDUGqPxeFHG
+	 1sYf9mjwpBGFGQw05WJQNvJ5NMvhPnsbnXoKZjFX7Beb9I1ZEr9uCpQqI7vmRRg/Kq
+	 LVmF25eBMO86KFG1w5zZ24wxaNzuPGOjNAAAtPi5j8uw8ymh7JwFMK4ZD2SlQPUXT5
+	 SZJSAdCxBL62N7Fm4uueDFX42e7DXe2fG9mo9ur5yvyNKFpXvrsz7WpKYHDMRL5aUM
+	 GU2Hrfu9N+RDw==
+Received: by mail-lf1-f42.google.com with SMTP id 2adb3069b0e04-51f1b378ca5so2906548e87.1;
+        Thu, 09 May 2024 23:30:31 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCWd5GdJBxlad9ro73Ox9flIxHHJxPZg2GSRN4UzRKbxJQkBI7rhzs/AutoSDmGI+PlApWDdzQdKkKoge9/W/BtaYApa/dT4IJdrezXZI8Lq7IqkYzO1pUauQvjiDow9iCOt
+X-Gm-Message-State: AOJu0YznCyPh/5a6otiM63hAd75M7lmqXqmLsklbvLXIOAfmZ+k+4VLk
+	tm9W+iDeDtiGTdAGbIfGH7J80R4W1cPzEGC8X0tqTlpGGzIL/n72br+kQ+qDA8wFdCZmzR4lgwP
+	o8y/MCgN/11PXMcn/MDaGruhAEmk=
+X-Google-Smtp-Source: AGHT+IGnINIHV3z9/8S7hVcZBgrRa098I0bNkR2Ea0ZXUnD0MjTQ+ownzg82NBaWbEzBrKxmY0LeccGh/M8dYHbg1+s=
+X-Received: by 2002:a05:6512:ba2:b0:518:e7ed:3c7c with SMTP id
+ 2adb3069b0e04-5220fc7c570mr1650903e87.14.1715322629773; Thu, 09 May 2024
+ 23:30:29 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <2fbf4e8f.11475.18f60eeb808.Coremail.sekiro_meng@mail.nwpu.edu.cn>
-X-Coremail-Locale: zh_CN
-X-CM-TRANSID:AQGowAAn5enArT1mqE4kAQ--.57346W
-X-CM-SenderInfo: pvhnx2prbpv03j6ptxnooq41vxohv3gofq/1tbiAQMNA2Y8vvkfWw
-	ABsU
-X-Coremail-Antispam: 1Uk129KBj93XoWxGw47tr4xZw13Ww4ftw1kJFc_yoWrXF1fpa
-	yS93ZFgr1DGa47ur1jqayxua4Fy395trWUGFn8GryxZFZ8tr18KrW5Ka1Uury5Cr4kJ3WF
-	v34jvFnxZwnrZagCm3ZEXasCq-sJn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7KY7ZEXa
-	sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
-	0xBIdaVrnRJUUUBab4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
-	IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
-	e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_JFI_Gr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
-	0_Jr0_Gr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AK
-	xVW8Jr0_Cr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l57IF6xkI12xvs2x26I8E6xACxx
-	1l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv
-	67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lFcxC0VAYjx
-	AxZF0Ew4CEw7xC0wACY4xI67k04243AVC20s07MxAIw28IcxkI7VAKI48JMxC20s026xCa
-	FVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_Jr
-	Wlx4CE17CEb7AF67AKxVWUXVWUAwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j
-	6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_Jr
-	0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVWUJVW8JwCE
-	64xvF2IEb7IF0Fy7YxBIdaVFxhVjvjDU0xZFpf9x07jUDGOUUUUU=
+References: <20240507135514.490467-1-alan.maguire@oracle.com>
+ <CAEf4BzbWANm+Bf63hcFAB3Tn51tOeBLhyabV3NNz8tjaMnThjg@mail.gmail.com>
+ <339b9430-145f-402a-a93c-8440797c98a4@oracle.com> <CAEf4BzY_xwD+7b31VtS4SPh-p+ES4BUDV2um+QGcdD878Onn=Q@mail.gmail.com>
+In-Reply-To: <CAEf4BzY_xwD+7b31VtS4SPh-p+ES4BUDV2um+QGcdD878Onn=Q@mail.gmail.com>
+From: Masahiro Yamada <masahiroy@kernel.org>
+Date: Fri, 10 May 2024 15:29:53 +0900
+X-Gmail-Original-Message-ID: <CAK7LNATyMpKGK=7SMawHeZFg7MBJa0i5xsvyc+=dOxw9g0RWGA@mail.gmail.com>
+Message-ID: <CAK7LNATyMpKGK=7SMawHeZFg7MBJa0i5xsvyc+=dOxw9g0RWGA@mail.gmail.com>
+Subject: Re: [PATCH v2 bpf-next] kbuild,bpf: switch to using --btf_features
+ for pahole v1.26 and later
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: Alan Maguire <alan.maguire@oracle.com>, andrii@kernel.org, jolsa@kernel.org, 
+	acme@redhat.com, eddyz87@gmail.com, ast@kernel.org, daniel@iogearbox.net, 
+	martin.lau@linux.dev, song@kernel.org, yonghong.song@linux.dev, 
+	john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com, 
+	haoluo@google.com, bpf@vger.kernel.org, linux-kbuild@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-T3VyIHRlYW0gaXMgY3VycmVudGx5IHdvcmtpbmcgb24gZW5oYW5jaW5nIHRoZSBzZWN1cml0eSBv
-ZiB0aGUgZUJQRiBzdWJzeXN0ZW0sIGJvdGggZm9yIHByaXZpbGVnZWQgYW5kIHVucHJpdmlsZWdl
-ZCBCUEYgcHJvZ3JhbXMuCgpJbiBvdXIgZWZmb3J0cyB0byBmdWxseSB1bmRlcnN0YW5kIHRoZSB2
-ZXJpZmllcidzIGJlaGF2aW9yIGFuZCB0aGUgc2VjdXJpdHkgZ3VhcmFudGVlcyBpdCBwcm92aWRl
-cywgd2UgaGF2ZSBleGFtaW5lZCB0aGUgY2hlY2tzIGltcGxlbWVudGVkIGluIHRoZSB2ZXJpZmll
-ciwgZXNwZWNpYWxseSBpbiB0aGUgY29udGV4dCBvZiB0aGUgc3RyaWN0ZXN0IGNhc2Ugd2hlcmUg
-YWxsIGNoZWNrcyBhcmUgcGVyZm9ybWVkLiBPdXIgaW50ZW50aW9uIGlzIHRvIGVzdGFibGlzaCBh
-IHNvbGlkIGZvdW5kYXRpb24gZm9yIGZ1cnRoZXIgY3VzdG9taXphdGlvbiBiYXNlZCBvbiBwcm9n
-cmFtIHR5cGUgYW5kIENBUC4KCj4gPgo+ID4gU2luY2UgZUJQRiB2ZXJpZmllciBvZnRlbiBjaGFu
-Z2VzLCBpcyB0aGVyZSBhIGNvbmNsdXNpb24gdGhhdCBsaXN0IGFsbCB0aGUgc2VjdXJpdHkgcHJv
-cGVydGllcyB2ZXJpZmllciBndWFyYW50ZWVzPyBXaXRoIHRoZSBjb25jbHVzaW9uLCBkZXZlbG9w
-ZXJzIHdvbuKAmXQgbWFrZSB0aGUgc2FtZSBtaXN0YWtlcyBkdWUgdG8gbWlzc2luZyBzb21lIHNl
-Y3VyaXR5IHByb3BlcnR5IGNoZWNrcy4KPiAKPiBzYWZldHkgIT0gc2VjdXJpdHkuCj4gVGhlIHZl
-cmlmaWVyIGlzIGZvY3VzaW5nIG9uIHNhZmV0eSBmb3IgOTklIG9mIHRoZSB1c2UgY2FzZXMuCj4g
-VGhlIHNlY3VyaXR5IHN0YXRpYyBhbmQgcnVuLXRpbWUgY2hlY2tzIGFyZSBmb3IgdW5wcml2IGJw
-ZiBvbmx5LAo+IHdoaWNoIHdhcyBkaXNhYmxlZCB5ZWFycyBhZ28gYW5kIHN0cm9uZ2x5IG5vdCBh
-ZHZpc2VkIHRvIGJlIGVuYWJsZWQsCj4gc2luY2UgQ1BVcyBhcmUgc3RpbGwgZnVsbCBvZiBzcGVj
-dWxhdGlvbiBidWdzLgo+IAoKV2UgYWdyZWUgdGhhdCBmb3IgcHJpdiBicGYgdXNlIGNhc2VzLCBt
-YW55IG9mIHRoZSBjaGVja3MgYXJlIGRpc2FibGVkLCBhbmQgbW9zdCBvZiBjaGVja3MgYXJlIGZv
-ciB1bnByaXYgYnBmLCB3aGljaCBpcyBkaXNhYmxlZCBieSBkZWZhdWx0LiBGb3IgZXhhbXBsZSwg
-cHJvZyB3aXRoIENBUF9QRVJGTU9OIGNhbiB3cml0ZSBwb2ludGVycyB0byBtYXBzLCBhbmQgdGhl
-IHNwZWN1bGF0aW9uIHNhbml0aXplciBpcyByZW1vdmVkLiBUaGlzIGFydGljbGUgWyJSZWNvbnNp
-ZGVyaW5nIHVucHJpdmlsZWdlZCBCUEYiXShodHRwczovL2x3bi5uZXQvQXJ0aWNsZXMvNzk2MzI4
-LykgYWxzbyBkaXNjdXNzZWQgdGhlIGNoZWNrcyB2ZXJpZmllciBwb3NlZCBvbiB1bnByaXYgYnBm
-LgoKPiA+IFNpbmNlIHdlIGRpZG7igJl0IGZpbmQgYW55IHB1YmxpYyBkb2N1bWVudCB0byBkZXNj
-cmliZSB0aGUgc2VjdXJpdHkgcHJpbmNpcGxlcyBvZiB0aGUgdmVyaWZpZXIsIHdlIGhhdmUgcmVh
-ZCBtb3N0IG9mIHRoZSBjaGVja3MgaW4gaXQsIGVzcGVjaWFsbHkgZm9yIHRoZSBmdWxsLXBhdGgg
-YW5hbHlzaXMgKGBkb19jaGVjaygpYCkgYW5kIHJlbGF0ZWQgZnVuY3Rpb24sIGFuZCB3ZSBzdW1t
-YXJpemVkIHRoZSBzZWN1cml0eSBwcm9wZXJ0aWVzIChmb3IgdGhlIHN0cmljdGVzdCBjYXNlKSBh
-cyBmb2xsb3dzOgo+ID4KPiA+IDEuIE1lbW9yeSBTYWZldHk6Cj4gPiAxLjEgUHJvZ3JhbXMgY2Fu
-IG9ubHkgYWNjZXNzIEJQRiBtZW1vcnkgYW5kIHNwZWNpZmljIGtlcm5lbCBvYmplY3RzIHN1Y2gg
-YXMgY29udGV4dC4KPiAKPiBOby4gQ2VydGFpbiBwcm9ncyBjYW4gcmVhZCBhcmJpdHJhcnkga2Vy
-bmVsIG1lbW9yeSAoZGVwZW5kaW5nIG9uIHR5cGUgYW5kIENBUHMpLgo+IAoKVGhhbmtzIGZvciBw
-b2ludGluZyBvdXQgdGhpcy4gV2Ugc2F3IHNvbWUgaGVscGVycyBsaWtlIGBicGZfcHJvYmVfcmVh
-ZC93cml0ZSgpYCBjYW4gYmUgdXNlZCB0byBhY2Nlc3MgYXJiaXRyYXJ5IGtlcm5lbCBtZW1vcnks
-IGJ1dCBicGYgcHJvZyBjYW5ub3QgYWNjZXNzIGFyYml0cmFyeSBrZXJuZWwgbWVtb3J5IGJ5IGl0
-cyBvd24gbG9hZC9zdG9yZSBpbnN0cnVjdGlvbnMgKmRpcmVjdGx5KiwgYXMgdGhleSBhcmUgY2hl
-Y2tlZCBieSB0aGUgYGNoZWNrX21lbV9hY2Nlc3MoKWAgZnVuY3Rpb24gaW4gdmVyaWZpZXIuIFNv
-IHdlIGNvbnNpZGVyIGFkanVzdCAxLjEgYXMgYmVsb3c6CgoxLjEgUHJvZ3JhbXMgY2FuIG9ubHkg
-ZGlyZWN0bHkgYWNjZXNzIEJQRiBtZW1vcnkgYW5kIHNwZWNpZmljIGtlcm5lbCBvYmplY3RzIHN1
-Y2ggYXMgY29udGV4dC4KCj4gPiAyLiBJbmZvcm1hdGlvbiBMZWFrYWdlIFByZXZlbnRpb246Cj4g
-PiAyLjEgUHJvZ3JhbXMgY2Fubm90IHdyaXRlIHBvaW50ZXJzIGludG8gbWFwcywgYW5kIGNhbGN1
-bGF0aW9uIGFtb25nIHBvaW50ZXJzIGlzIG5vdCBhbGxvd2VkLgo+ID4gMi4yIFByb2dyYW1zIGNh
-bm5vdCByZWFkIHVuaW5pdGlhbGl6ZWQgbWVtb3J5Lgo+ID4gMi4zIFByb2dyYW1zIGNhbm5vdCBz
-cGVjdWxhdGl2ZWx5IGFjY2VzcyBhcmVhcyBvdXRzaWRlIHRoZSBCUEYgcHJvZ3JhbeKAmXMgbWVt
-b3J5Lgo+IAo+IE5vdCB0cnVlIGZvciBhbGwgMy4KPiAKClNwZWNpZmljYWxseSwgCjIuMSBGb3Ig
-dW5wcml2IGJwZiwgd2Ugc2F3IGluIGBjaGVja19tZW1fYWNjZXNzKClgIGFuZCBgY2hlY2tfYWx1
-X29wKClgLCB0aGUgcG9pbnRlcnMgY2FuIG5vdCBiZSBsZWFrZWQgb3IgY2FsY3VsYXRlZC4gQW5k
-IGZvciBwcml2IGJwZiwgdGhlc2UgY2hlY2tzIGFyZSBjYW5jZWxlZC4KMi4yIEZvciB1bnByaXYg
-YnBmLCBicGYgcHJvZyBjYW5ub3QgcmVhZCB1bmluaXRpYWxpemVkIHN0YWNrLgoyLjMgYnBmX2J5
-cGFzc19zcGVjX3YxL3Y0KCkgY2hlY2tzIGFyZSBwZXJmb3JtZWQvaW5zdHJ1bWVudGVkIGZvciB1
-bnByaXYgYnBmLgoKPiA+IDMuIERvUyBQcmV2ZW50aW9uOgo+ID4gMy4xIFByb2dyYW1zIGNhbm5v
-dCBjcmFzaCB3aGlsZSBleGVjdXRpbmcuCj4gPiAzLjIgUHJvZ3JhbXMgY2Fubm90IGV4ZWN1dGUg
-Zm9yIHRvbyBsb25nLgo+IAo+IHllcy4gdGhhdCdzIHRoZSBnb2FsLgo+IAo+ID4gSXMgbXkgc3Vt
-bWFyeSByaWdodCBhbmQgY29tcHJlaGVuc2l2ZT8gSSBob3BlIHdlIGNhbiBuZWdvdGlhdGUgYSBt
-YW51YWwgdG8gY29uY2x1ZGUgdGhlIHNlY3VyaXR5IHByb3BlcnRpZXMsIHNvIHRoYXQgZGV2ZWxv
-cGVycyBjYW4gaGF2ZSBhIHJlZmVyZW5jZS4KPiAKPiBOby4gU2luY2Ugc2VjdXJpdHkgIT0gc2Fm
-ZXR5IGFuZCBzb3VuZHMgbGlrZSB5b3UncmUgYWZ0ZXIgMC4wMSUgdXNlIGNhc2UuCgpXZSBhY2tu
-b3dsZWRnZSB0aGF0IG91ciBmb2N1cyBpcyBvbiB0aGUgc3RyaWN0ZXN0IHVzZSBjYXNlIHRoYXQg
-cmVwcmVzZW50cyBhIHNtYWxsIHBlcmNlbnRhZ2Ugb2Ygb3ZlcmFsbCBzY2VuYXJpb3MuIEhvd2V2
-ZXIsIHdlIGJlbGlldmUgdGhhdCBhIGNvbXByZWhlbnNpdmUgdW5kZXJzdGFuZGluZyBvZiB0aGUg
-dmVyaWZpZXIncyBzZWN1cml0eSBwcm9wZXJ0aWVzIGluIHRoZSBzdHJpY3Rlc3QgY2FzZSBpcyBj
-cnVjaWFsIGZvciBvdXIgb2JqZWN0aXZlIG9mIGVuaGFuY2luZyB0aGUgZUJQRiBzdWJzeXN0ZW0n
-cyBzZWN1cml0eS4KClRoZXJlZm9yZSwgd2Uga2luZGx5IHJlcXVlc3QgeW91ciBhc3Npc3RhbmNl
-IGluIHJldmlld2luZyBvdXIgc3VtbWFyeSBhbmQgcHJvdmlkaW5nIGFueSBjb3JyZWN0aW9ucywg
-YWRkaXRpb25zLCBvciBjbGFyaWZpY2F0aW9ucy4gQWRkaXRpb25hbGx5LCBpZiB0aGVyZSBhcmUg
-YW55IHJlbGV2YW50IHJlc291cmNlcyBvciBkb2N1bWVudGF0aW9uIHRoYXQgd2UgbWF5IGhhdmUg
-bWlzc2VkLCB3ZSB3b3VsZCBiZSBncmF0ZWZ1bCBmb3IgeW91ciBndWlkYW5jZSBpbiBhY2Nlc3Np
-bmcgdGhlbS4=
+On Fri, May 10, 2024 at 7:01=E2=80=AFAM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
+>
+> On Thu, May 9, 2024 at 1:20=E2=80=AFAM Alan Maguire <alan.maguire@oracle.=
+com> wrote:
+> >
+> > On 07/05/2024 17:48, Andrii Nakryiko wrote:
+> > > On Tue, May 7, 2024 at 6:55=E2=80=AFAM Alan Maguire <alan.maguire@ora=
+cle.com> wrote:
+> > >>
+> > >> The btf_features list can be used for pahole v1.26 and later -
+> > >> it is useful because if a feature is not yet implemented it will
+> > >> not exit with a failure message.  This will allow us to add feature
+> > >> requests to the pahole options without having to check pahole versio=
+ns
+> > >> in future; if the version of pahole supports the feature it will be
+> > >> added.
+> > >>
+> > >> Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
+> > >> Tested-by: Eduard Zingerman <eddyz87@gmail.com>
+> > >> ---
+> > >>  scripts/Makefile.btf | 15 +++++++++++++--
+> > >>  1 file changed, 13 insertions(+), 2 deletions(-)
+> > >>
+> > >> diff --git a/scripts/Makefile.btf b/scripts/Makefile.btf
+> > >> index 82377e470aed..2d6e5ed9081e 100644
+> > >> --- a/scripts/Makefile.btf
+> > >> +++ b/scripts/Makefile.btf
+> > >> @@ -3,6 +3,8 @@
+> > >>  pahole-ver :=3D $(CONFIG_PAHOLE_VERSION)
+> > >>  pahole-flags-y :=3D
+> > >>
+> > >> +ifeq ($(call test-le, $(pahole-ver), 125),y)
+> > >> +
+> > >>  # pahole 1.18 through 1.21 can't handle zero-sized per-CPU vars
+> > >>  ifeq ($(call test-le, $(pahole-ver), 121),y)
+> > >>  pahole-flags-$(call test-ge, $(pahole-ver), 118)       +=3D --skip_=
+encoding_btf_vars
+> > >> @@ -12,8 +14,17 @@ pahole-flags-$(call test-ge, $(pahole-ver), 121) =
+    +=3D --btf_gen_floats
+> > >>
+> > >>  pahole-flags-$(call test-ge, $(pahole-ver), 122)       +=3D -j
+> > >>
+> > >> -pahole-flags-$(CONFIG_PAHOLE_HAS_LANG_EXCLUDE)         +=3D --lang_=
+exclude=3Drust
+> > >> +ifeq ($(pahole-ver), 125)
+> > >
+> > > it's a bit of a scope creep, but isn't it strange that we don't have
+> > > test-eq and have to work-around that with more verbose constructs?
+> >
+> > Looking at the history, I _think_ the concern that motivated the numeri=
+c
+> > comparison constructs was the shell process fork required for numeric
+> > comparisons. In the equality case, ifeq would work for both strings and
+> > numeric values. Adding a test-eq (in a similar form to test-ge) would
+> > require a fallback to shell expansion for older Make without intcmp, an=
+d
+> > that would be slower than using ifeq, if less verbose.
+> >
+> > > Let's do a good service to the community and add test-eq (and maybe
+> > > test-ne while at it, don't know, up to Masahiro)?
+> > >
+> >
+> > Sure, I'm happy to do this if kbuild folks agree. I've cc'ed them; I
+> > neglected to do this in the original patch, apologies about that.
+> >
+>
+> Ok, let's see if Masahiro would like this improvement or not. For now
+> this patch gets us into a nicer place where there are legacy parts and
+> a better --btf_features setup completely separate, so I applied the
+> patch as is to bpf-next. If we decide to do test-eq, we can improve
+> this further separately. Thanks!
 
+
+That is a noise change.
+You did not need to modify the line in the first place.
+
+
+The previous
+
+  pahole-flags-$(call test-ge, $(pahole-ver), 125)
+
+works as-is.
+
+
+
+
+--
+Best Regards
+Masahiro Yamada
 
