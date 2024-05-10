@@ -1,194 +1,162 @@
-Return-Path: <bpf+bounces-29544-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-29545-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BF1568C2BE8
-	for <lists+bpf@lfdr.de>; Fri, 10 May 2024 23:30:20 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0F9518C2BF4
+	for <lists+bpf@lfdr.de>; Fri, 10 May 2024 23:33:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 69D40283566
-	for <lists+bpf@lfdr.de>; Fri, 10 May 2024 21:30:19 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9AB0CB212E6
+	for <lists+bpf@lfdr.de>; Fri, 10 May 2024 21:33:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BDD6113B7B2;
-	Fri, 10 May 2024 21:30:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 29A6513BAD8;
+	Fri, 10 May 2024 21:33:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bDIq9HYH"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f41.google.com (mail-pj1-f41.google.com [209.85.216.41])
+Received: from mail-ot1-f51.google.com (mail-ot1-f51.google.com [209.85.210.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 122711BDC8;
-	Fri, 10 May 2024 21:30:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E1AB4DA16;
+	Fri, 10 May 2024 21:33:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715376611; cv=none; b=V4UqNVcfFjqSOe8CGkEi7lgKasbG3C+LYjCVkqH8ZyQSJ2/LZiI4ToA+1VAPs8GA9wtlgnkapE8GRet/Kf6+k1QEQaZGaMIRhntLNi8s9prYVS5wIIv7MRRRZID75t5Q8d7578rhSyQebUxVKuaQS6krWD2Qyp73n4iTRpKYUkE=
+	t=1715376815; cv=none; b=E9n/w+7wK8UP4TrkzcGUGZP7HQdxcEzZIinnmi2i3hUVjcx6n/joZt//E9T8IR26XuikMlU4WYh5z6MPB9Spuzsynkzo/PJSi1d+/ps5idpjJv7zkgA5gq2Pc2tJF6CopGZPNZfo3oJOwKKNooKxPfsSX8+zoepEyND0VT9cwPA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715376611; c=relaxed/simple;
-	bh=eS1QIdyLTdFWFAB2PrpvAfGPAebgZ8VSah0rayF6MeI=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=DVOMbY96HvfY0jetv/y+CY40lU4asbmSyqZ0r0WpzniUiNcGuUaTGuAtEg+JqmnmXVyxu6qSjTTrENGv2IUYhs+LIo2Ni6mH4xXX4Rf/C++YzBJosGLT0qfySOXyD2OWc6KruS1JW+O0y1cb9hzWgXEdbbCBiA48+P8OqLI1BmE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.216.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	s=arc-20240116; t=1715376815; c=relaxed/simple;
+	bh=qJAuruMK4NePauEVRAdce/zUxbjNyiA1y+LP6RmJwR4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=iijq25pXfyveOhGG/glBOKl+M5b7Gz9agAs89WBxvzZSLx9E9GlPEgo1OkK3WBGj0VxlGHLTCJ21OFpqw2EP7hxKwWnRn2NnLuX2GbXujslIisnUddaLdA+qHAsMSL1Bd2sDnduiWr6J++ClbTU9JdQKv4nkeDYVIL78T5evdtk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=bDIq9HYH; arc=none smtp.client-ip=209.85.210.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f41.google.com with SMTP id 98e67ed59e1d1-2b36232fa48so1943598a91.1;
-        Fri, 10 May 2024 14:30:09 -0700 (PDT)
+Received: by mail-ot1-f51.google.com with SMTP id 46e09a7af769-6f07115e6caso1383449a34.2;
+        Fri, 10 May 2024 14:33:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1715376813; x=1715981613; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=w7jCN7Tb/qp53kdU8f7DRADLT6XbW+S6zuM+QzCIcT8=;
+        b=bDIq9HYHfq1VQZBNmRyRPP5V2CWiIG2ORRG/xqH7ileWoiBrhOkY8FjCUn96LE0QpA
+         3hDEy/AALNv5uydmmr7TsJw4kKPaaI1+le2UOQpdj3O1t2Ms38i7ohUSNLaCOkVGJcLD
+         OaUR/NDLr4lK0SixklvT+tVpJoxwVZp7FfOBeTxRvyVdz9b+O8W0fMltynHvtfKRxPi0
+         Sg46/4NAcOWNZt/YojVyBDcv2DfhP2D5I8ukDhHNxGFjd7VpKpCObZmlz3oEpB5w73YX
+         RA0fIZNLMRUgLHSy8Dbj2HSTjmIrSvsmeJwrF+RojArPjLaaeTSDPf+QTEpKs91FWcG7
+         3x/A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1715376609; x=1715981409;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=VMAf5rKeg6w+VI/gIYLoiifCQecVQKRvthW/4/8BwYI=;
-        b=R5O/sUHHIYW/puUQkGVtrc9X+AkD8yk67JDKaV78ke35tW1LKwYaBh+AvsvqMnogVH
-         RssM/edkdBC0BsA65H57j186FbtnKzxx5qdqxTe8tVSA/FkjWdVpWdrBwfgk5voS8rL0
-         Cql2jEWEk22Vir1tqBGvpSQeDSabwJNf29TIb/vKCVGiN3mlHtM4k+/R4JmFwGORUVTn
-         ENp1+dTvB3qj2V0WTwBuFj35k6Z8Idj1ZcBA5CDCXjUfklqhekIw7/xol91ydKIpNhNM
-         msAKy+Lf7mctms0itQSzDTnTE1ZO1EyLmyuQmIrE935ysxMsdnODXfFfjQpgO/GwSBbr
-         azmA==
-X-Forwarded-Encrypted: i=1; AJvYcCXUD0ebiNAJrRg+goAfOkwdeEhKAKaEbc3Z9FNj0TZpj3ET5zxSita+Z97ic+isOTBu6OHsJdwltZC9tTX9m9XXVYv/P272QkqeAxahImhm3r0wqS0stBUyVWsYAN01hOpEYisL/82e5o8LJGqes5yGnAKb1vu8PG4wFSEvvNZ8lGTXDg==
-X-Gm-Message-State: AOJu0YyW5Xwp8n59q52xxJKzakjwT1+kxTWKaqrlZQ2kO0Fsw0SZX738
-	pNcdAUcY48ISxh3a7BYql+aqOw+YN2/YjRxNZTJHNXsjE943+Xfl4KSlLQTGpaVojrxWsK7CuBn
-	VCyE4ypCdn8CAzU8sZtZrRHSiVqE=
-X-Google-Smtp-Source: AGHT+IFZkbSenvkLhokyv4EMxK86TWp9XlqSlcLUgh3x5kwN3NGOIxUQGzTPrJdFy06QmvA9W3LCymPfU5Y4Ft3Wj+I=
-X-Received: by 2002:a17:90a:296:b0:2b3:463d:992b with SMTP id
- 98e67ed59e1d1-2b6ccef6431mr3678869a91.42.1715376609286; Fri, 10 May 2024
- 14:30:09 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1715376813; x=1715981613;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=w7jCN7Tb/qp53kdU8f7DRADLT6XbW+S6zuM+QzCIcT8=;
+        b=GgShBzFtzJNX4UuduqUmRgHgekx3YBDSNslXlsf8Jl0UHgS3L3+Nvls23iJ+kTEu08
+         842NL9PP39hFbfqDg+9FLN9UwNXHfZBzQ6Ie1HkEhaNOGbF7RWunKCD5Lk0Rt+ylrTOa
+         Z7LOe/nisuUZNQI/PLg6jrp3y5BPZXEA3gYzww7LYDtEmeNpyrDJMz1th+7TicM+/DNt
+         /WjvR07bC+VcUFwQ+V0dKkNp6pzJOhHa2CDX1H5rluT4P+6wEZbIQr0LJxVHZPo0Bflc
+         GCvP3jjH6VAIOOgogwSgVJyCSf0UaZL4G3ZmTwp5Wh6CVRkBGj1XQd5CoPLMhYl4mRTR
+         3Tfg==
+X-Forwarded-Encrypted: i=1; AJvYcCX3hEIQGcgWFZCsCYY0m4ykutX79KVhOGsQCebJ5xy2cnThwOr/YUnQGRYzQUq1WdBwoLYQzsyr7PZVEhBFJYRH1+9p4+UQ
+X-Gm-Message-State: AOJu0YzhxfU6TrWwQKSGnV5KwCRfbpk6Pe5rgyJLcn2IMyqBVb+nzX9B
+	E6Nz4hiVc2JmrzhMrBxMueQTqNN/m7IaUrai90HcbovtaFrYEDXa
+X-Google-Smtp-Source: AGHT+IHJ2LWGxblIDSaQ9qYDlaIber8y049mEN3clexUmMm1/ZGGgaMp8xIB4bZpqSvB8TUfXtMhAA==
+X-Received: by 2002:a05:6830:22e6:b0:6f0:7a2c:2b3f with SMTP id 46e09a7af769-6f0e92c9a65mr4545209a34.27.1715376813201;
+        Fri, 10 May 2024 14:33:33 -0700 (PDT)
+Received: from ?IPV6:2600:1700:6cf8:1240:20fd:6927:f7be:d222? ([2600:1700:6cf8:1240:20fd:6927:f7be:d222])
+        by smtp.gmail.com with ESMTPSA id 46e09a7af769-6f0f679ca97sm7931a34.29.2024.05.10.14.33.32
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 10 May 2024 14:33:32 -0700 (PDT)
+Message-ID: <b2486867-0fee-4972-ad71-7b54e8a5d2b6@gmail.com>
+Date: Fri, 10 May 2024 14:33:31 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240510191423.2297538-1-yabinc@google.com> <20240510191423.2297538-4-yabinc@google.com>
-In-Reply-To: <20240510191423.2297538-4-yabinc@google.com>
-From: Namhyung Kim <namhyung@kernel.org>
-Date: Fri, 10 May 2024 14:29:58 -0700
-Message-ID: <CAM9d7chNz8-84m28q5qSLjUjZ=Ni1CA_JzbB_P+YJooLQd85YA@mail.gmail.com>
-Subject: Re: [PATCH v4 3/3] perf/core: Check sample_type in perf_sample_save_brstack
-To: Yabin Cui <yabinc@google.com>
-Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
-	Arnaldo Carvalho de Melo <acme@kernel.org>, Mark Rutland <mark.rutland@arm.com>, 
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Ian Rogers <irogers@google.com>, Adrian Hunter <adrian.hunter@intel.com>, 
-	linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH v8 02/20] selftests/bpf: Test referenced kptr
+ arguments of struct_ops programs
+To: Amery Hung <ameryhung@gmail.com>, netdev@vger.kernel.org
+Cc: bpf@vger.kernel.org, yangpeihao@sjtu.edu.cn, daniel@iogearbox.net,
+ andrii@kernel.org, martin.lau@kernel.org, toke@redhat.com, jhs@mojatatu.com,
+ jiri@resnulli.us, sdf@google.com, xiyou.wangcong@gmail.com,
+ yepeilin.cs@gmail.com
+References: <20240510192412.3297104-1-amery.hung@bytedance.com>
+ <20240510192412.3297104-3-amery.hung@bytedance.com>
+Content-Language: en-US
+From: Kui-Feng Lee <sinquersw@gmail.com>
+In-Reply-To: <20240510192412.3297104-3-amery.hung@bytedance.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Fri, May 10, 2024 at 12:14=E2=80=AFPM Yabin Cui <yabinc@google.com> wrot=
-e:
->
-> Check sample_type in perf_sample_save_brstack() to prevent
-> saving branch stack data when it isn't required.
->
-> Suggested-by: Namhyung Kim <namhyung@kernel.org>
-> Signed-off-by: Yabin Cui <yabinc@google.com>
 
-It seems powerpc has the similar bug, then you need this:
 
-Fixes: eb55b455ef9c ("perf/core: Add perf_sample_save_brstack() helper")
-
-Thanks,
-Namhyung
-
+On 5/10/24 12:23, Amery Hung wrote:
+> A reference is automatically acquired for a referenced kptr argument
+> annotated via the stub function with "__ref_acquired" in a struct_ops
+> program. It must be released and cannot be acquired more than once.
+> 
+> The test first checks whether a reference to the correct type is acquired
+> in "ref_acquire". Then, we check if the verifier correctly rejects the
+> program that fails to release the reference (i.e., reference leak) in
+> "ref_acquire_ref_leak". Finally, we check if the reference can be only
+> acquired once through the argument in "ref_acquire_dup_ref".
+> 
+> Signed-off-by: Amery Hung <amery.hung@bytedance.com>
 > ---
->  arch/x86/events/amd/core.c |  3 +--
->  arch/x86/events/core.c     |  3 +--
->  arch/x86/events/intel/ds.c |  3 +--
->  include/linux/perf_event.h | 13 ++++++++-----
->  4 files changed, 11 insertions(+), 11 deletions(-)
->
-> diff --git a/arch/x86/events/amd/core.c b/arch/x86/events/amd/core.c
-> index 985ef3b47919..fb9bf3aa1b42 100644
-> --- a/arch/x86/events/amd/core.c
-> +++ b/arch/x86/events/amd/core.c
-> @@ -967,8 +967,7 @@ static int amd_pmu_v2_handle_irq(struct pt_regs *regs=
-)
->                 if (!x86_perf_event_set_period(event))
->                         continue;
->
-> -               if (has_branch_stack(event))
-> -                       perf_sample_save_brstack(&data, event, &cpuc->lbr=
-_stack, NULL);
-> +               perf_sample_save_brstack(&data, event, &cpuc->lbr_stack, =
-NULL);
->
->                 if (perf_event_overflow(event, &data, regs))
->                         x86_pmu_stop(event, 0);
-> diff --git a/arch/x86/events/core.c b/arch/x86/events/core.c
-> index 5b0dd07b1ef1..ff5577315938 100644
-> --- a/arch/x86/events/core.c
-> +++ b/arch/x86/events/core.c
-> @@ -1702,8 +1702,7 @@ int x86_pmu_handle_irq(struct pt_regs *regs)
->
->                 perf_sample_data_init(&data, 0, event->hw.last_period);
->
-> -               if (has_branch_stack(event))
-> -                       perf_sample_save_brstack(&data, event, &cpuc->lbr=
-_stack, NULL);
-> +               perf_sample_save_brstack(&data, event, &cpuc->lbr_stack, =
-NULL);
->
->                 if (perf_event_overflow(event, &data, regs))
->                         x86_pmu_stop(event, 0);
-> diff --git a/arch/x86/events/intel/ds.c b/arch/x86/events/intel/ds.c
-> index c2b5585aa6d1..f25236ffa28f 100644
-> --- a/arch/x86/events/intel/ds.c
-> +++ b/arch/x86/events/intel/ds.c
-> @@ -1754,8 +1754,7 @@ static void setup_pebs_fixed_sample_data(struct per=
-f_event *event,
->         if (x86_pmu.intel_cap.pebs_format >=3D 3)
->                 setup_pebs_time(event, data, pebs->tsc);
->
-> -       if (has_branch_stack(event))
-> -               perf_sample_save_brstack(data, event, &cpuc->lbr_stack, N=
-ULL);
-> +       perf_sample_save_brstack(data, event, &cpuc->lbr_stack, NULL);
->  }
->
->  static void adaptive_pebs_save_regs(struct pt_regs *regs,
-> diff --git a/include/linux/perf_event.h b/include/linux/perf_event.h
-> index 8617815456b0..ecfbe22ff299 100644
-> --- a/include/linux/perf_event.h
-> +++ b/include/linux/perf_event.h
-> @@ -1269,6 +1269,11 @@ static inline void perf_sample_save_raw_data(struc=
-t perf_sample_data *data,
->         data->sample_flags |=3D PERF_SAMPLE_RAW;
->  }
->
-> +static inline bool has_branch_stack(struct perf_event *event)
+>   .../selftests/bpf/bpf_testmod/bpf_testmod.c   |  7 +++
+>   .../selftests/bpf/bpf_testmod/bpf_testmod.h   |  2 +
+>   .../prog_tests/test_struct_ops_ref_acquire.c  | 58 +++++++++++++++++++
+>   .../bpf/progs/struct_ops_ref_acquire.c        | 27 +++++++++
+>   .../progs/struct_ops_ref_acquire_dup_ref.c    | 24 ++++++++
+>   .../progs/struct_ops_ref_acquire_ref_leak.c   | 19 ++++++
+>   6 files changed, 137 insertions(+)
+>   create mode 100644 tools/testing/selftests/bpf/prog_tests/test_struct_ops_ref_acquire.c
+>   create mode 100644 tools/testing/selftests/bpf/progs/struct_ops_ref_acquire.c
+>   create mode 100644 tools/testing/selftests/bpf/progs/struct_ops_ref_acquire_dup_ref.c
+>   create mode 100644 tools/testing/selftests/bpf/progs/struct_ops_ref_acquire_ref_leak.c
+> 
+> 
+  ... skipped ...
+> +
+> diff --git a/tools/testing/selftests/bpf/progs/struct_ops_ref_acquire.c b/tools/testing/selftests/bpf/progs/struct_ops_ref_acquire.c
+> new file mode 100644
+> index 000000000000..bae342db0fdb
+> --- /dev/null
+> +++ b/tools/testing/selftests/bpf/progs/struct_ops_ref_acquire.c
+> @@ -0,0 +1,27 @@
+> +#include <vmlinux.h>
+> +#include <bpf/bpf_tracing.h>
+> +#include "../bpf_testmod/bpf_testmod.h"
+> +
+> +char _license[] SEC("license") = "GPL";
+> +
+> +void bpf_task_release(struct task_struct *p) __ksym;
+> +
+> +/* This is a test BPF program that uses struct_ops to access a referenced
+> + * kptr argument. This is a test for the verifier to ensure that it recongnizes
+> + * the task as a referenced object (i.e., ref_obj_id > 0).
+> + */
+> +SEC("struct_ops/test_ref_acquire")
+> +int BPF_PROG(test_ref_acquire, int dummy,
+> +	     struct task_struct *task)
 > +{
-> +       return event->attr.sample_type & PERF_SAMPLE_BRANCH_STACK;
+> +	bpf_task_release(task);
+
+This looks weird for me.
+
+According to what you mentioned in the patch 1, the purpose is to
+prevent acquiring multiple references from happening. So, is it possible
+to return NULL from the acquire function if having returned a reference
+before?
+
+
+> +
+> +	return 0;
 > +}
 > +
->  static inline void perf_sample_save_brstack(struct perf_sample_data *dat=
-a,
->                                             struct perf_event *event,
->                                             struct perf_branch_stack *brs=
-,
-> @@ -1276,6 +1281,9 @@ static inline void perf_sample_save_brstack(struct =
-perf_sample_data *data,
->  {
->         int size =3D sizeof(u64); /* nr */
->
-> +       if (!has_branch_stack(event))
-> +               return;
 > +
->         if (branch_sample_hw_index(event))
->                 size +=3D sizeof(u64);
->         size +=3D brs->nr * sizeof(struct perf_branch_entry);
-> @@ -1665,11 +1673,6 @@ extern void perf_bp_event(struct perf_event *event=
-, void *data);
->  # define perf_arch_bpf_user_pt_regs(regs) regs
->  #endif
->
-> -static inline bool has_branch_stack(struct perf_event *event)
-> -{
-> -       return event->attr.sample_type & PERF_SAMPLE_BRANCH_STACK;
-> -}
-> -
->  static inline bool needs_branch_stack(struct perf_event *event)
->  {
->         return event->attr.branch_sample_type !=3D 0;
-> --
-> 2.45.0.118.g7fe29c98d7-goog
->
+... skipped ...
 
