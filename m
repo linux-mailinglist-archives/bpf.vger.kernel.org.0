@@ -1,156 +1,149 @@
-Return-Path: <bpf+bounces-29432-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-29433-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 066548C1CC7
-	for <lists+bpf@lfdr.de>; Fri, 10 May 2024 05:07:53 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id BA3EB8C1DA0
+	for <lists+bpf@lfdr.de>; Fri, 10 May 2024 07:17:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7C7F31F21429
-	for <lists+bpf@lfdr.de>; Fri, 10 May 2024 03:07:52 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2AEF01F23B51
+	for <lists+bpf@lfdr.de>; Fri, 10 May 2024 05:17:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 70902148859;
-	Fri, 10 May 2024 03:07:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="P11mSzpO"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E4D314BF97;
+	Fri, 10 May 2024 05:17:06 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.14])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 64AB4148840
-	for <bpf@vger.kernel.org>; Fri, 10 May 2024 03:07:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.14
+Received: from zg8tmtyylji0my4xnjeumjiw.icoremail.net (zg8tmtyylji0my4xnjeumjiw.icoremail.net [162.243.161.220])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 13D7B3C684
+	for <bpf@vger.kernel.org>; Fri, 10 May 2024 05:16:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=162.243.161.220
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715310467; cv=none; b=fGYASFgqh5HpZ9hpsAOvOtre8VFRMaXD98e6lH7cWpv3JJet18Xv+a7f4MY3ID1Yo8KJXinkCbtsW191n8R3rE269Ia4tWf97kw6OgdWjeUWu1ClVPhlvf6hmuqLBhXy9TBVRCB+cf4DfN6LRYxm2eyLDadLlBtBzQUOJi86BaU=
+	t=1715318226; cv=none; b=PQUfT9ClReWxRF+bq1/L7G1/HqIYpEZcLwdF3ee+dH4yB/TdcZms02AcFuREb/85JGUcy7hRFoj8IOsqawb00MtjKHxO2P0EHv9FRD8KT7R4LTAUkhFku/RMFbx4+N6yHm16kg9MVft7jcF/Yo/c36UiCg1fpiUX8R85tUNulZ0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715310467; c=relaxed/simple;
-	bh=dPH6kqDpeaeBXR2NBCEu1O/kZ4gXvXSAUQZnXU7j9Lc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=nyZGG5yCdwMkqRtPrK45jSzMPvgOYrFhB0koQ8CSZR4cEwRsbjYnXuWmTTuL/9/l5j+09wMViM3fmP8RBfbSYbt9n2NMUNtQqP2KSLWHLbogfk9xJOUo5glibEllYmMBV0Zd6/KNeQqlUhzfaDikOWpxkXSR1aRkO2mkFe7xfDU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=P11mSzpO; arc=none smtp.client-ip=198.175.65.14
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1715310465; x=1746846465;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=dPH6kqDpeaeBXR2NBCEu1O/kZ4gXvXSAUQZnXU7j9Lc=;
-  b=P11mSzpOcQAY52ahZy+N3zEusuhKA7Q+1t4B6rU3Eb9ORtW3ipUv/O8M
-   Cv86OUXHwz37H+Pk374WRBQbVOPgD2zeGrREf8KeZqGgMzChneUruDhT+
-   xX4gyhVYv9bErt44LdKuLDW23DWGmTGAENofqZT+vmxYq2WG3+Oh9gb9W
-   EsvcWij1/jab8fbwIKxBOBnC+DsOB8cmHwsFdfyMRkVNSjqm+JBfws47j
-   rUT/iGF3XB7yqypkwzoQyct2C3HNUH1qLa/5Dk+VFxBNqhvORah17S8vR
-   YFJZDj7QTwdoTSJFVTiT0Ot7kHtHOevDieXqTTI3mNGO0p1mu6SxqCVLi
-   Q==;
-X-CSE-ConnectionGUID: ZJWfnxXCRvGCSv8AfOTFkg==
-X-CSE-MsgGUID: rM2WvXGKSQiNNXOBxDI76w==
-X-IronPort-AV: E=McAfee;i="6600,9927,11068"; a="15107356"
-X-IronPort-AV: E=Sophos;i="6.08,149,1712646000"; 
-   d="scan'208";a="15107356"
-Received: from fmviesa003.fm.intel.com ([10.60.135.143])
-  by orvoesa106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 May 2024 20:07:45 -0700
-X-CSE-ConnectionGUID: +dD9JHRBTF6nDBh//nmNqA==
-X-CSE-MsgGUID: naGFnkWzQ52ckeAjBn/F5g==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.08,149,1712646000"; 
-   d="scan'208";a="33982807"
-Received: from lkp-server01.sh.intel.com (HELO f8b243fe6e68) ([10.239.97.150])
-  by fmviesa003.fm.intel.com with ESMTP; 09 May 2024 20:07:42 -0700
-Received: from kbuild by f8b243fe6e68 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1s5Gbk-0005ez-1A;
-	Fri, 10 May 2024 03:07:40 +0000
-Date: Fri, 10 May 2024 11:07:27 +0800
-From: kernel test robot <lkp@intel.com>
-To: Vadim Fedorenko <vadfed@meta.com>,
-	Vadim Fedorenko <vadim.fedorenko@linux.dev>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Mykola Lysenko <mykolal@fb.com>, Jakub Kicinski <kuba@kernel.org>
-Cc: oe-kbuild-all@lists.linux.dev, bpf@vger.kernel.org
-Subject: Re: [PATCH bpf-next 2/4] bpf: crypto: make state and IV dynptr
- nullable
-Message-ID: <202405101026.4PbHjNBN-lkp@intel.com>
-References: <20240509134023.1289303-3-vadfed@meta.com>
+	s=arc-20240116; t=1715318226; c=relaxed/simple;
+	bh=ba0YFDTKyE7EVsCA2KRB4C0Wm10cBt97YHR/PGnb+XE=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:Content-Type:
+	 MIME-Version:Message-ID; b=HV0XdFMrX4/fkwJp6Vl2srwwy+RXMMipfvXpsC+dqFD9dkCUqHWOd9zkOi6jVH4mnleCrLcKAC1+AKVL+j76f6JlxCTUGfzd3lN9Y3rMTBEltEomUYuk0wdJMHOZyZzDdjoz5UV/3gDpk6aflN9RHdQGRUfA4ggS4R5uT4uCdzo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mail.nwpu.edu.cn; spf=pass smtp.mailfrom=mail.nwpu.edu.cn; arc=none smtp.client-ip=162.243.161.220
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mail.nwpu.edu.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mail.nwpu.edu.cn
+Received: from nwpu.edu.cn (unknown [58.206.203.66])
+	by gateway (Coremail) with SMTP id _____wDXMnbCrT1mWbAEAA--.5901S3;
+	Fri, 10 May 2024 13:16:51 +0800 (CST)
+Received: from sekiro_meng$mail.nwpu.edu.cn ( [58.206.203.66] ) by
+ ajax-webmail-app (Coremail) ; Fri, 10 May 2024 13:16:48 +0800 (GMT+08:00)
+Date: Fri, 10 May 2024 13:16:48 +0800 (GMT+08:00)
+X-CM-HeaderCharset: UTF-8
+From: =?UTF-8?B?5a2f56Wl5a6H?= <sekiro_meng@mail.nwpu.edu.cn>
+To: "Alexei Starovoitov" <alexei.starovoitov@gmail.com>
+Cc: bpf@vger.kernel.org
+Subject: Re: Re: [BPF Security] what security properties does verifier
+ guarantee?
+X-Priority: 3
+X-Mailer: Coremail Webmail Server Version XT5.0.14 build 20220310(96b739b2)
+ Copyright (c) 2002-2024 www.mailtech.cn nwpu.edu.cn
+In-Reply-To: <CAADnVQKroXpteX+TvWja=BOC-hLbKgaGMt-5GJ2ZfxEQqK5Q2Q@mail.gmail.com>
+References: <2147ee76.10bf3.18f5dadf442.Coremail.sekiro_meng@mail.nwpu.edu.cn>
+ <CAADnVQKroXpteX+TvWja=BOC-hLbKgaGMt-5GJ2ZfxEQqK5Q2Q@mail.gmail.com>
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=UTF-8
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240509134023.1289303-3-vadfed@meta.com>
+Message-ID: <2fbf4e8f.11475.18f60eeb808.Coremail.sekiro_meng@mail.nwpu.edu.cn>
+X-Coremail-Locale: zh_CN
+X-CM-TRANSID:AQGowAAn5enArT1mqE4kAQ--.57346W
+X-CM-SenderInfo: pvhnx2prbpv03j6ptxnooq41vxohv3gofq/1tbiAQMNA2Y8vvkfWw
+	ABsU
+X-Coremail-Antispam: 1Uk129KBj93XoWxGw47tr4xZw13Ww4ftw1kJFc_yoWrXF1fpa
+	yS93ZFgr1DGa47ur1jqayxua4Fy395trWUGFn8GryxZFZ8tr18KrW5Ka1Uury5Cr4kJ3WF
+	v34jvFnxZwnrZagCm3ZEXasCq-sJn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7KY7ZEXa
+	sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
+	0xBIdaVrnRJUUUBab4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
+	IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
+	e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_JFI_Gr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
+	0_Jr0_Gr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AK
+	xVW8Jr0_Cr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l57IF6xkI12xvs2x26I8E6xACxx
+	1l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv
+	67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lFcxC0VAYjx
+	AxZF0Ew4CEw7xC0wACY4xI67k04243AVC20s07MxAIw28IcxkI7VAKI48JMxC20s026xCa
+	FVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_Jr
+	Wlx4CE17CEb7AF67AKxVWUXVWUAwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j
+	6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_Jr
+	0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVWUJVW8JwCE
+	64xvF2IEb7IF0Fy7YxBIdaVFxhVjvjDU0xZFpf9x07jUDGOUUUUU=
 
-Hi Vadim,
+T3VyIHRlYW0gaXMgY3VycmVudGx5IHdvcmtpbmcgb24gZW5oYW5jaW5nIHRoZSBzZWN1cml0eSBv
+ZiB0aGUgZUJQRiBzdWJzeXN0ZW0sIGJvdGggZm9yIHByaXZpbGVnZWQgYW5kIHVucHJpdmlsZWdl
+ZCBCUEYgcHJvZ3JhbXMuCgpJbiBvdXIgZWZmb3J0cyB0byBmdWxseSB1bmRlcnN0YW5kIHRoZSB2
+ZXJpZmllcidzIGJlaGF2aW9yIGFuZCB0aGUgc2VjdXJpdHkgZ3VhcmFudGVlcyBpdCBwcm92aWRl
+cywgd2UgaGF2ZSBleGFtaW5lZCB0aGUgY2hlY2tzIGltcGxlbWVudGVkIGluIHRoZSB2ZXJpZmll
+ciwgZXNwZWNpYWxseSBpbiB0aGUgY29udGV4dCBvZiB0aGUgc3RyaWN0ZXN0IGNhc2Ugd2hlcmUg
+YWxsIGNoZWNrcyBhcmUgcGVyZm9ybWVkLiBPdXIgaW50ZW50aW9uIGlzIHRvIGVzdGFibGlzaCBh
+IHNvbGlkIGZvdW5kYXRpb24gZm9yIGZ1cnRoZXIgY3VzdG9taXphdGlvbiBiYXNlZCBvbiBwcm9n
+cmFtIHR5cGUgYW5kIENBUC4KCj4gPgo+ID4gU2luY2UgZUJQRiB2ZXJpZmllciBvZnRlbiBjaGFu
+Z2VzLCBpcyB0aGVyZSBhIGNvbmNsdXNpb24gdGhhdCBsaXN0IGFsbCB0aGUgc2VjdXJpdHkgcHJv
+cGVydGllcyB2ZXJpZmllciBndWFyYW50ZWVzPyBXaXRoIHRoZSBjb25jbHVzaW9uLCBkZXZlbG9w
+ZXJzIHdvbuKAmXQgbWFrZSB0aGUgc2FtZSBtaXN0YWtlcyBkdWUgdG8gbWlzc2luZyBzb21lIHNl
+Y3VyaXR5IHByb3BlcnR5IGNoZWNrcy4KPiAKPiBzYWZldHkgIT0gc2VjdXJpdHkuCj4gVGhlIHZl
+cmlmaWVyIGlzIGZvY3VzaW5nIG9uIHNhZmV0eSBmb3IgOTklIG9mIHRoZSB1c2UgY2FzZXMuCj4g
+VGhlIHNlY3VyaXR5IHN0YXRpYyBhbmQgcnVuLXRpbWUgY2hlY2tzIGFyZSBmb3IgdW5wcml2IGJw
+ZiBvbmx5LAo+IHdoaWNoIHdhcyBkaXNhYmxlZCB5ZWFycyBhZ28gYW5kIHN0cm9uZ2x5IG5vdCBh
+ZHZpc2VkIHRvIGJlIGVuYWJsZWQsCj4gc2luY2UgQ1BVcyBhcmUgc3RpbGwgZnVsbCBvZiBzcGVj
+dWxhdGlvbiBidWdzLgo+IAoKV2UgYWdyZWUgdGhhdCBmb3IgcHJpdiBicGYgdXNlIGNhc2VzLCBt
+YW55IG9mIHRoZSBjaGVja3MgYXJlIGRpc2FibGVkLCBhbmQgbW9zdCBvZiBjaGVja3MgYXJlIGZv
+ciB1bnByaXYgYnBmLCB3aGljaCBpcyBkaXNhYmxlZCBieSBkZWZhdWx0LiBGb3IgZXhhbXBsZSwg
+cHJvZyB3aXRoIENBUF9QRVJGTU9OIGNhbiB3cml0ZSBwb2ludGVycyB0byBtYXBzLCBhbmQgdGhl
+IHNwZWN1bGF0aW9uIHNhbml0aXplciBpcyByZW1vdmVkLiBUaGlzIGFydGljbGUgWyJSZWNvbnNp
+ZGVyaW5nIHVucHJpdmlsZWdlZCBCUEYiXShodHRwczovL2x3bi5uZXQvQXJ0aWNsZXMvNzk2MzI4
+LykgYWxzbyBkaXNjdXNzZWQgdGhlIGNoZWNrcyB2ZXJpZmllciBwb3NlZCBvbiB1bnByaXYgYnBm
+LgoKPiA+IFNpbmNlIHdlIGRpZG7igJl0IGZpbmQgYW55IHB1YmxpYyBkb2N1bWVudCB0byBkZXNj
+cmliZSB0aGUgc2VjdXJpdHkgcHJpbmNpcGxlcyBvZiB0aGUgdmVyaWZpZXIsIHdlIGhhdmUgcmVh
+ZCBtb3N0IG9mIHRoZSBjaGVja3MgaW4gaXQsIGVzcGVjaWFsbHkgZm9yIHRoZSBmdWxsLXBhdGgg
+YW5hbHlzaXMgKGBkb19jaGVjaygpYCkgYW5kIHJlbGF0ZWQgZnVuY3Rpb24sIGFuZCB3ZSBzdW1t
+YXJpemVkIHRoZSBzZWN1cml0eSBwcm9wZXJ0aWVzIChmb3IgdGhlIHN0cmljdGVzdCBjYXNlKSBh
+cyBmb2xsb3dzOgo+ID4KPiA+IDEuIE1lbW9yeSBTYWZldHk6Cj4gPiAxLjEgUHJvZ3JhbXMgY2Fu
+IG9ubHkgYWNjZXNzIEJQRiBtZW1vcnkgYW5kIHNwZWNpZmljIGtlcm5lbCBvYmplY3RzIHN1Y2gg
+YXMgY29udGV4dC4KPiAKPiBOby4gQ2VydGFpbiBwcm9ncyBjYW4gcmVhZCBhcmJpdHJhcnkga2Vy
+bmVsIG1lbW9yeSAoZGVwZW5kaW5nIG9uIHR5cGUgYW5kIENBUHMpLgo+IAoKVGhhbmtzIGZvciBw
+b2ludGluZyBvdXQgdGhpcy4gV2Ugc2F3IHNvbWUgaGVscGVycyBsaWtlIGBicGZfcHJvYmVfcmVh
+ZC93cml0ZSgpYCBjYW4gYmUgdXNlZCB0byBhY2Nlc3MgYXJiaXRyYXJ5IGtlcm5lbCBtZW1vcnks
+IGJ1dCBicGYgcHJvZyBjYW5ub3QgYWNjZXNzIGFyYml0cmFyeSBrZXJuZWwgbWVtb3J5IGJ5IGl0
+cyBvd24gbG9hZC9zdG9yZSBpbnN0cnVjdGlvbnMgKmRpcmVjdGx5KiwgYXMgdGhleSBhcmUgY2hl
+Y2tlZCBieSB0aGUgYGNoZWNrX21lbV9hY2Nlc3MoKWAgZnVuY3Rpb24gaW4gdmVyaWZpZXIuIFNv
+IHdlIGNvbnNpZGVyIGFkanVzdCAxLjEgYXMgYmVsb3c6CgoxLjEgUHJvZ3JhbXMgY2FuIG9ubHkg
+ZGlyZWN0bHkgYWNjZXNzIEJQRiBtZW1vcnkgYW5kIHNwZWNpZmljIGtlcm5lbCBvYmplY3RzIHN1
+Y2ggYXMgY29udGV4dC4KCj4gPiAyLiBJbmZvcm1hdGlvbiBMZWFrYWdlIFByZXZlbnRpb246Cj4g
+PiAyLjEgUHJvZ3JhbXMgY2Fubm90IHdyaXRlIHBvaW50ZXJzIGludG8gbWFwcywgYW5kIGNhbGN1
+bGF0aW9uIGFtb25nIHBvaW50ZXJzIGlzIG5vdCBhbGxvd2VkLgo+ID4gMi4yIFByb2dyYW1zIGNh
+bm5vdCByZWFkIHVuaW5pdGlhbGl6ZWQgbWVtb3J5Lgo+ID4gMi4zIFByb2dyYW1zIGNhbm5vdCBz
+cGVjdWxhdGl2ZWx5IGFjY2VzcyBhcmVhcyBvdXRzaWRlIHRoZSBCUEYgcHJvZ3JhbeKAmXMgbWVt
+b3J5Lgo+IAo+IE5vdCB0cnVlIGZvciBhbGwgMy4KPiAKClNwZWNpZmljYWxseSwgCjIuMSBGb3Ig
+dW5wcml2IGJwZiwgd2Ugc2F3IGluIGBjaGVja19tZW1fYWNjZXNzKClgIGFuZCBgY2hlY2tfYWx1
+X29wKClgLCB0aGUgcG9pbnRlcnMgY2FuIG5vdCBiZSBsZWFrZWQgb3IgY2FsY3VsYXRlZC4gQW5k
+IGZvciBwcml2IGJwZiwgdGhlc2UgY2hlY2tzIGFyZSBjYW5jZWxlZC4KMi4yIEZvciB1bnByaXYg
+YnBmLCBicGYgcHJvZyBjYW5ub3QgcmVhZCB1bmluaXRpYWxpemVkIHN0YWNrLgoyLjMgYnBmX2J5
+cGFzc19zcGVjX3YxL3Y0KCkgY2hlY2tzIGFyZSBwZXJmb3JtZWQvaW5zdHJ1bWVudGVkIGZvciB1
+bnByaXYgYnBmLgoKPiA+IDMuIERvUyBQcmV2ZW50aW9uOgo+ID4gMy4xIFByb2dyYW1zIGNhbm5v
+dCBjcmFzaCB3aGlsZSBleGVjdXRpbmcuCj4gPiAzLjIgUHJvZ3JhbXMgY2Fubm90IGV4ZWN1dGUg
+Zm9yIHRvbyBsb25nLgo+IAo+IHllcy4gdGhhdCdzIHRoZSBnb2FsLgo+IAo+ID4gSXMgbXkgc3Vt
+bWFyeSByaWdodCBhbmQgY29tcHJlaGVuc2l2ZT8gSSBob3BlIHdlIGNhbiBuZWdvdGlhdGUgYSBt
+YW51YWwgdG8gY29uY2x1ZGUgdGhlIHNlY3VyaXR5IHByb3BlcnRpZXMsIHNvIHRoYXQgZGV2ZWxv
+cGVycyBjYW4gaGF2ZSBhIHJlZmVyZW5jZS4KPiAKPiBOby4gU2luY2Ugc2VjdXJpdHkgIT0gc2Fm
+ZXR5IGFuZCBzb3VuZHMgbGlrZSB5b3UncmUgYWZ0ZXIgMC4wMSUgdXNlIGNhc2UuCgpXZSBhY2tu
+b3dsZWRnZSB0aGF0IG91ciBmb2N1cyBpcyBvbiB0aGUgc3RyaWN0ZXN0IHVzZSBjYXNlIHRoYXQg
+cmVwcmVzZW50cyBhIHNtYWxsIHBlcmNlbnRhZ2Ugb2Ygb3ZlcmFsbCBzY2VuYXJpb3MuIEhvd2V2
+ZXIsIHdlIGJlbGlldmUgdGhhdCBhIGNvbXByZWhlbnNpdmUgdW5kZXJzdGFuZGluZyBvZiB0aGUg
+dmVyaWZpZXIncyBzZWN1cml0eSBwcm9wZXJ0aWVzIGluIHRoZSBzdHJpY3Rlc3QgY2FzZSBpcyBj
+cnVjaWFsIGZvciBvdXIgb2JqZWN0aXZlIG9mIGVuaGFuY2luZyB0aGUgZUJQRiBzdWJzeXN0ZW0n
+cyBzZWN1cml0eS4KClRoZXJlZm9yZSwgd2Uga2luZGx5IHJlcXVlc3QgeW91ciBhc3Npc3RhbmNl
+IGluIHJldmlld2luZyBvdXIgc3VtbWFyeSBhbmQgcHJvdmlkaW5nIGFueSBjb3JyZWN0aW9ucywg
+YWRkaXRpb25zLCBvciBjbGFyaWZpY2F0aW9ucy4gQWRkaXRpb25hbGx5LCBpZiB0aGVyZSBhcmUg
+YW55IHJlbGV2YW50IHJlc291cmNlcyBvciBkb2N1bWVudGF0aW9uIHRoYXQgd2UgbWF5IGhhdmUg
+bWlzc2VkLCB3ZSB3b3VsZCBiZSBncmF0ZWZ1bCBmb3IgeW91ciBndWlkYW5jZSBpbiBhY2Nlc3Np
+bmcgdGhlbS4=
 
-kernel test robot noticed the following build warnings:
-
-[auto build test WARNING on bpf-next/master]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/Vadim-Fedorenko/bpf-verifier-make-kfuncs-args-nullalble/20240509-214252
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
-patch link:    https://lore.kernel.org/r/20240509134023.1289303-3-vadfed%40meta.com
-patch subject: [PATCH bpf-next 2/4] bpf: crypto: make state and IV dynptr nullable
-config: x86_64-randconfig-102-20240510 (https://download.01.org/0day-ci/archive/20240510/202405101026.4PbHjNBN-lkp@intel.com/config)
-compiler: clang version 18.1.5 (https://github.com/llvm/llvm-project 617a15a9eac96088ae5e9134248d8236e34b91b1)
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240510/202405101026.4PbHjNBN-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202405101026.4PbHjNBN-lkp@intel.com/
-
-All warnings (new ones prefixed by >>):
-
->> kernel/bpf/crypto.c:317: warning: Function parameter or struct member 'siv__nullable' not described in 'bpf_crypto_decrypt'
->> kernel/bpf/crypto.c:317: warning: Excess function parameter 'siv' description in 'bpf_crypto_decrypt'
->> kernel/bpf/crypto.c:334: warning: Function parameter or struct member 'siv__nullable' not described in 'bpf_crypto_encrypt'
->> kernel/bpf/crypto.c:334: warning: Excess function parameter 'siv' description in 'bpf_crypto_encrypt'
-
-
-vim +317 kernel/bpf/crypto.c
-
-3e1c6f35409f9e Vadim Fedorenko 2024-04-22  303  
-3e1c6f35409f9e Vadim Fedorenko 2024-04-22  304  /**
-3e1c6f35409f9e Vadim Fedorenko 2024-04-22  305   * bpf_crypto_decrypt() - Decrypt buffer using configured context and IV provided.
-3e1c6f35409f9e Vadim Fedorenko 2024-04-22  306   * @ctx:	The crypto context being used. The ctx must be a trusted pointer.
-3e1c6f35409f9e Vadim Fedorenko 2024-04-22  307   * @src:	bpf_dynptr to the encrypted data. Must be a trusted pointer.
-3e1c6f35409f9e Vadim Fedorenko 2024-04-22  308   * @dst:	bpf_dynptr to the buffer where to store the result. Must be a trusted pointer.
-3e1c6f35409f9e Vadim Fedorenko 2024-04-22  309   * @siv:	bpf_dynptr to IV data and state data to be used by decryptor.
-3e1c6f35409f9e Vadim Fedorenko 2024-04-22  310   *
-3e1c6f35409f9e Vadim Fedorenko 2024-04-22  311   * Decrypts provided buffer using IV data and the crypto context. Crypto context must be configured.
-3e1c6f35409f9e Vadim Fedorenko 2024-04-22  312   */
-3e1c6f35409f9e Vadim Fedorenko 2024-04-22  313  __bpf_kfunc int bpf_crypto_decrypt(struct bpf_crypto_ctx *ctx,
-3e1c6f35409f9e Vadim Fedorenko 2024-04-22  314  				   const struct bpf_dynptr_kern *src,
-3e1c6f35409f9e Vadim Fedorenko 2024-04-22  315  				   const struct bpf_dynptr_kern *dst,
-9ce5fb6f36b954 Vadim Fedorenko 2024-05-09  316  				   const struct bpf_dynptr_kern *siv__nullable)
-3e1c6f35409f9e Vadim Fedorenko 2024-04-22 @317  {
-9ce5fb6f36b954 Vadim Fedorenko 2024-05-09  318  	return bpf_crypto_crypt(ctx, src, dst, siv__nullable, true);
-3e1c6f35409f9e Vadim Fedorenko 2024-04-22  319  }
-3e1c6f35409f9e Vadim Fedorenko 2024-04-22  320  
-3e1c6f35409f9e Vadim Fedorenko 2024-04-22  321  /**
-3e1c6f35409f9e Vadim Fedorenko 2024-04-22  322   * bpf_crypto_encrypt() - Encrypt buffer using configured context and IV provided.
-3e1c6f35409f9e Vadim Fedorenko 2024-04-22  323   * @ctx:	The crypto context being used. The ctx must be a trusted pointer.
-3e1c6f35409f9e Vadim Fedorenko 2024-04-22  324   * @src:	bpf_dynptr to the plain data. Must be a trusted pointer.
-3e1c6f35409f9e Vadim Fedorenko 2024-04-22  325   * @dst:	bpf_dynptr to buffer where to store the result. Must be a trusted pointer.
-3e1c6f35409f9e Vadim Fedorenko 2024-04-22  326   * @siv:	bpf_dynptr to IV data and state data to be used by decryptor.
-3e1c6f35409f9e Vadim Fedorenko 2024-04-22  327   *
-3e1c6f35409f9e Vadim Fedorenko 2024-04-22  328   * Encrypts provided buffer using IV data and the crypto context. Crypto context must be configured.
-3e1c6f35409f9e Vadim Fedorenko 2024-04-22  329   */
-3e1c6f35409f9e Vadim Fedorenko 2024-04-22  330  __bpf_kfunc int bpf_crypto_encrypt(struct bpf_crypto_ctx *ctx,
-3e1c6f35409f9e Vadim Fedorenko 2024-04-22  331  				   const struct bpf_dynptr_kern *src,
-3e1c6f35409f9e Vadim Fedorenko 2024-04-22  332  				   const struct bpf_dynptr_kern *dst,
-9ce5fb6f36b954 Vadim Fedorenko 2024-05-09  333  				   const struct bpf_dynptr_kern *siv__nullable)
-3e1c6f35409f9e Vadim Fedorenko 2024-04-22 @334  {
-9ce5fb6f36b954 Vadim Fedorenko 2024-05-09  335  	return bpf_crypto_crypt(ctx, src, dst, siv__nullable, false);
-3e1c6f35409f9e Vadim Fedorenko 2024-04-22  336  }
-3e1c6f35409f9e Vadim Fedorenko 2024-04-22  337  
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
 
