@@ -1,298 +1,296 @@
-Return-Path: <bpf+bounces-29518-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-29519-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B5CD58C2A6D
-	for <lists+bpf@lfdr.de>; Fri, 10 May 2024 21:22:12 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A66B48C2A76
+	for <lists+bpf@lfdr.de>; Fri, 10 May 2024 21:24:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2D8691F22C86
-	for <lists+bpf@lfdr.de>; Fri, 10 May 2024 19:22:12 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 340DE1F237EF
+	for <lists+bpf@lfdr.de>; Fri, 10 May 2024 19:24:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9C643481D5;
-	Fri, 10 May 2024 19:22:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B4FE487B0;
+	Fri, 10 May 2024 19:24:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=meta.com header.i=@meta.com header.b="JtMULPt8"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Cvvto5uQ"
 X-Original-To: bpf@vger.kernel.org
-Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-vk1-f179.google.com (mail-vk1-f179.google.com [209.85.221.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 78021EAC0;
-	Fri, 10 May 2024 19:21:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=67.231.145.42
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715368921; cv=fail; b=uYedTrSHD9xE5CahM7m3cCvuUgKSXpuG/aWhscA9dhInh9X3T93Ob8vd0U+fgBmcdxazjgy9doJDAQs6BB3fIRoCnotyFzL7YX2yCIjEiUcHZbAuzhwiPSuBrpQnhcmJJ4nPWOk36DGFmYJ8hP+Gb4e6mCmdzt15zIKo0tZgUto=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715368921; c=relaxed/simple;
-	bh=WvG7TBkFXNXX6e0A2EjLyGtS9insyDgCoLvbnsgNkNc=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=kYGFVaM5uXdNVsCxwZihIkWg5w8ffJsmTWxk8cNAkVHwhopG77CnFKZdh6/7ygNnJYxP1AfVRt5S5e4EQquOA6NsRKMW+xlqOvjav3G2ogxmSt7qUumgA5yVciZHmihT6FikXq4tcgfOVR3avLnG2HxUJrfS1vxYBmH3gDSx9Bw=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=meta.com; spf=pass smtp.mailfrom=meta.com; dkim=pass (2048-bit key) header.d=meta.com header.i=@meta.com header.b=JtMULPt8; arc=fail smtp.client-ip=67.231.145.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=meta.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=meta.com
-Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
-	by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 44AInpug002353;
-	Fri, 10 May 2024 12:21:58 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=meta.com; h=from : to : cc :
- subject : date : message-id : references : in-reply-to : content-id :
- content-type : content-transfer-encoding : mime-version; s=s2048-2021-q4;
- bh=WvG7TBkFXNXX6e0A2EjLyGtS9insyDgCoLvbnsgNkNc=;
- b=JtMULPt8k9reJUI0K88kw1X9YzVFSgbWAkXW0xKWdwIgHcpHS9nBq3ieHGpUrUEB6rlS
- ciJWqjDOb2q60uT75C5weiTdNPlSAprNJQFp8n1pJb4Yl0TQOnFXqeBzhPXKs7cCpxMF
- 8ywS+RTOwW85uPE64bPLvi70SZ555ufAnetcBhfmSWWqn/vsu0qYb9pooILs76uy6vVJ
- GBR6orJWlrLfOic54ZBF8B9yPPfyOn93CfOejMY3yMaQ1g0dMdxx7Yxh7JwQFT9y50oo
- hBbc1HUgfSnTCfHv52OGDhGGNpeVDgZVTENvc+G+Us4vRtyIxJIX1aTv8eN2n4+NtfLm 0Q== 
-Received: from nam12-dm6-obe.outbound.protection.outlook.com (mail-dm6nam12lp2168.outbound.protection.outlook.com [104.47.59.168])
-	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3y16p3wg4e-2
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 10 May 2024 12:21:58 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=SrGR+2KuRN0A4xDYsTa2e1R1fyu5JHYkcWryCBun/azA9L1mAD9UJxOdfNKKvbZMeM1RkWVG++h6DbRWiCTg2Au37EhlHnFDu5bwKRIFsGd71pmnoqUZOjuslYuFE3nhXF1jd/Wid4CB5SeHi0C69Pqcx6B2DdYZpJk4VCXJSZbRPdM4jCbzWVPGV9HfzSVtmnX1UNt48KNqbslst6D/GddcH3eTOwoqslaMiLw8BTLMxOFnm6Jp94p3WjK/3Q63YuWcq4BqCdJ5HMjA88QL1UU4FqxPD43ZfwwOjDC9/27uZblXrsgKRBqgR6v1BARBnmore9snTQUNVfhpocVg4g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=WvG7TBkFXNXX6e0A2EjLyGtS9insyDgCoLvbnsgNkNc=;
- b=As4sgwRtPROl5CHiSiGe0RjY7U9y/xwl8fkUSZgvfZfojZ3BJLkR+BgFHZE/aNX6GjVhcit7p/6D9dlATVLywgC3J64jHfg/BVoA5TvcnT/2+FbRJPpHo0prdwp/bnk5CN6GsuEWNEHDf2fN8P8w1InRmovBhAQE9QMuSMBs5ihSCP9zLI9dYg604oHWv2+9fud4Z2BXm1GnkIhgR5Ssm+24j0wKZSA3hQ0VOg3AFKeppt8WFByHx1lB6SM5RLxt6mwdCeaQHMlUiE/SU0W/9LumwDStFl03Gd9V97XFeyMawLV4EwnCyNbRz0TuPR5LLOZg20A7HRsXhler+VXZEQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=meta.com; dmarc=pass action=none header.from=meta.com;
- dkim=pass header.d=meta.com; arc=none
-Received: from SJ0PR15MB4615.namprd15.prod.outlook.com (2603:10b6:a03:37c::16)
- by CH3PR15MB5843.namprd15.prod.outlook.com (2603:10b6:610:124::5) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7544.46; Fri, 10 May
- 2024 19:21:49 +0000
-Received: from SJ0PR15MB4615.namprd15.prod.outlook.com
- ([fe80::657a:1e0b:a042:548a]) by SJ0PR15MB4615.namprd15.prod.outlook.com
- ([fe80::657a:1e0b:a042:548a%3]) with mapi id 15.20.7544.046; Fri, 10 May 2024
- 19:21:49 +0000
-From: Manu Bretelle <chantra@meta.com>
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Matthieu Baerts
-	<matttbe@kernel.org>
-CC: "mptcp@lists.linux.dev" <mptcp@lists.linux.dev>,
-        Mat Martineau
-	<martineau@kernel.org>,
-        Geliang Tang <geliang@kernel.org>,
-        Andrii Nakryiko
-	<andrii@kernel.org>,
-        Eduard Zingerman <eddyz87@gmail.com>,
-        Mykola Lysenko
-	<mykolal@meta.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann
-	<daniel@iogearbox.net>,
-        Martin KaFai Lau <martin.lau@linux.dev>, Song Liu
-	<song@kernel.org>,
-        Yonghong Song <yonghong.song@linux.dev>,
-        John Fastabend
-	<john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Stanislav Fomichev
-	<sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Shuah Khan <shuah@kernel.org>,
-        "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>,
-        "netdev@vger.kernel.org"
-	<netdev@vger.kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
-        Geliang
- Tang <tanggeliang@kylinos.cn>
-Subject: Re: [PATCH bpf-next v2 2/2] selftests/bpf: Add mptcp subflow subtest
-Thread-Topic: [PATCH bpf-next v2 2/2] selftests/bpf: Add mptcp subflow subtest
-Thread-Index: AQHaoiihMJnNsDQVCEq70rk5JAhxYrGPOfIAgAFIGQD//+LlAA==
-Date: Fri, 10 May 2024 19:21:49 +0000
-Message-ID: <3BFB4741-22F2-4CBC-8FB4-9988DEE7E25A@meta.com>
-References: 
- <20240509-upstream-bpf-next-20240506-mptcp-subflow-test-v2-0-4048c2948665@kernel.org>
- <20240509-upstream-bpf-next-20240506-mptcp-subflow-test-v2-2-4048c2948665@kernel.org>
- <daf7ed61-e09b-439b-9cdd-b6d9aa003e27@kernel.org>
- <CAADnVQ+Tp8+Hhy__=uevSZsEetsWYommjhC9SqSfKEeBu51cKA@mail.gmail.com>
-In-Reply-To: 
- <CAADnVQ+Tp8+Hhy__=uevSZsEetsWYommjhC9SqSfKEeBu51cKA@mail.gmail.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Microsoft-MacOutlook/16.84.24042814
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: SJ0PR15MB4615:EE_|CH3PR15MB5843:EE_
-x-ms-office365-filtering-correlation-id: 80ae3d9d-cb8d-4872-988a-08dc712670ad
-x-fb-source: Internal
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: 
- BCL:0;ARA:13230031|7416005|1800799015|376005|366007|38070700009;
-x-microsoft-antispam-message-info: 
- =?utf-8?B?NHhYRlVvZVA3aVEwaTRzR3BWZmZkaHZsUW05ZXZScm1VTDBXK0FwckUwWlUz?=
- =?utf-8?B?b05JMmRWSTl0S2JpcnE5U25uaitmSmxKZjd2RWxGWmk0UVVMc1krMkhwSnll?=
- =?utf-8?B?Y3IrNU55VVlRQUV2QjIyc0l0eFdBUDBOSnhFUi9rbWQ4ZGx3Nng1WDRLTEJ2?=
- =?utf-8?B?aWltMGkxRksxYnI0ZTM3UHFBMVFRbnB6UEtFTHM0SWxISUs1bExOUnAxY3FO?=
- =?utf-8?B?aE1QaGh4dDJKODRoN0xGNHNNZTlZUCtuQXR6VUozNkFPZEFycytjd2JqUGds?=
- =?utf-8?B?bE41TkErektYanVpUlhTQzQrdmxyODBXNkF2WkQ3U2Vqb2NmNzIyWDhDL1lN?=
- =?utf-8?B?eGYzSU5KL0Q0c25GdGRpeFhzUHY5QlVRaU14NGxCYmphQ1QyWE1FRnpQV0dJ?=
- =?utf-8?B?SWtYSmNJMW9XRHVLcjMyNDZVMzNWdlJtR2c1UXVodUVPZVdGY1VYVU53YWh1?=
- =?utf-8?B?R1g1ampWV1JwaVEvMlk3RXowd1Z1bXFuMitNVWZITmdYakVTRER4UEtUVm5R?=
- =?utf-8?B?ajBrTlVNbnRKZlI3Sm8zRnFrdXgzTTIyRlBGd0lLbkJiNHByYkcyQ2NvSjRU?=
- =?utf-8?B?Zkx0aFZZb1lBZzUzTDd6VzNOeDg5ZUU4c3BoUFZLU3dPZThPOTRabjh0NFEr?=
- =?utf-8?B?NnRia2dGN0NqcTRFem80cGlXQjFadm5ianZ0RlpUdSsrU1lpa2pVTSs4WW5k?=
- =?utf-8?B?Z0JJUVpoemlKMElGcjVCcm50ZUt4QmVXTnpqTTk4N1RwR2JBaVFlVWhnTWtt?=
- =?utf-8?B?d2RvZFBoTVhsUlBzUHNoN3EvVVp3Y2JBZ2xCUDJ5TVY3QUhibWg3VkhpY2ll?=
- =?utf-8?B?aTY4Wm94cm1nSnYvQ2Q3cXFpZnhNUmFGNkY1T05NVkdjeVdjdUZ3enFST0Q5?=
- =?utf-8?B?d1h0QWV4VUpsdURSNFVCTVFhdUp4aTY2cFBleTJMcHZMTkhxbjBUNFhIVXpt?=
- =?utf-8?B?WUVEVnZQSFlrZjcxWCtqdHh3TDA0V29VTEFsY3orL2w4T0pzSHM2blRiMXR4?=
- =?utf-8?B?YzBGdUpmSlZKSGhoa0NKaUM2b0IvWjRLYVNYaE0wWGY5UlhydW93cldKeHQ5?=
- =?utf-8?B?OG9RMGtsZ25ZcVRkUmtDSTErRG1SaWJsRGsrY3I3OFhkZWxBOW1oMTI1UEsy?=
- =?utf-8?B?OHRWU3BPN1psbk1kMWc0NzVvK1ptZ1lhZVpZT1NnVzd3NVBWZkdkQnh1RkVj?=
- =?utf-8?B?NlFha1VjdlFrM0xUdTdqMStlVndQdVlST1MwMUxsQ3JPK3NROFdybWRFUjdq?=
- =?utf-8?B?N0UveHRDU3NRdlNkMk1EcnJLZGZtNGowWnhpV0ttTG85ckRWTDNPelNyZUF4?=
- =?utf-8?B?a21VUGNCT0VoMGFyajRoOVpQcS9wSVlqaWNzbngvVnNXY3lKMFFjYVpBbTlw?=
- =?utf-8?B?UGZQUzlxMmxiZEJtdVliNHJLY3NKV1BhUUk4cUZ5S3dsYW81Mzg1MEFIcUZD?=
- =?utf-8?B?ZDlvbkFJaWFqRkI4ODFlcis5Y2pURk83MmR1YWlYMUNucXdTKzRGODJoeTVo?=
- =?utf-8?B?aEVYWWxIUkFhcEI5M3diN2dJdWI3VGR6MFg4Z245RWlJUk1lT0h4UW4yYXY3?=
- =?utf-8?B?bTU4TUplWDBPK1JiN1hETTJ0cHdEc0J0NWxQZU0wbmh6VEVDeWRyK01EY2pT?=
- =?utf-8?B?RzJWSFpQQ0JKWWY0aW9qd2QzeGZaWDY2cFQ0ZUIyUnZuL09JQzdBUjAzSW5N?=
- =?utf-8?B?cUs4WTEvbWRrSFUrWWNsRm8vRzN5YWF3L2FteXFqbS9DTXZtbnorWkRRPT0=?=
-x-forefront-antispam-report: 
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ0PR15MB4615.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7416005)(1800799015)(376005)(366007)(38070700009);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: 
- =?utf-8?B?SnFuRjBxaTFkbWpMRkVsRWlNS0NCVU1QNFhkQXNMNld1WW5JTXFuUmRlaXNK?=
- =?utf-8?B?T1RnNlNDVXdLN0RFNnYrVzR6NlV1eGdVeGdqcEc3eForR21hYkZDWWQwWDk3?=
- =?utf-8?B?bkNCblBDYzdVVUVua2xpajN1UXRvSitEZERNMWxWWGE5R25US2lnUXI2cWFr?=
- =?utf-8?B?c3ZHa2ZPdlFCKzNDWnZ6MWgzNTk0SENGWTFKQWY0VWszZFkzLzcvWG1Ib29x?=
- =?utf-8?B?c291Q2V2WHpCeXlyeEVlZ2ViZUJBeXNZaW5ZYkh2ZFN4RVpnbHdHU1dpTlU3?=
- =?utf-8?B?ZElBT28wTi9IL3RTcHRFekRVQTB1dk5VbCtZWjQyM0hCR1IvYXNXWklZaXpx?=
- =?utf-8?B?Q0FOUXlaalE0MG53MkFxNHNGdVF5REdXVnAwWEhSWlZabEZwLzdNV3ZaT2hG?=
- =?utf-8?B?WVVRMnVVcUdkVk9uRFJuU0RVaWNRWWQ0QzVyYkVZUmRKdzljSWhmdWhYb0ky?=
- =?utf-8?B?ZmJIU1RTK0J6Z21ONkdNZncyTi80alp3emxCVjNzYk9sZFhycnl3NFdtV2hC?=
- =?utf-8?B?OVRFOEhXcmhZcmduR2RXazhicmJEUWg4L0FMbmtGUXFETFJuMEEvMUZpc1ZR?=
- =?utf-8?B?SzlGeURoK1ZiSXpoVG40c0syRGo5TmtiTzF4dENDemZSNTB3d2ZzYlJrYm5M?=
- =?utf-8?B?dHRlTmZIQWlQbXIxdGsxSi9wWVUzbUpZTjI3YSt6N2VWMTMzaTBQVXhNOVQv?=
- =?utf-8?B?b2w3MVJZNnNuZVlnZXZCSnZvaEgyY25ZbWxVbnZZeUxkOWwrTGlVK1ArWTdG?=
- =?utf-8?B?NHFRRzBCdVo4T3hZMVltNGZyL3grRTRETjVnWG1TZXdPT3FDbXhqUTVORVdN?=
- =?utf-8?B?eDViRTdrSlVZY1pCWXdWZXFUY1JlVUhwOEcvbzVqdC9iTjkyYlc1YTFtZW1Z?=
- =?utf-8?B?Wk9PVDhaaXFpK3NRazlXdEhtelE3dXlXZEdPTzJ4cloxS0M0TzZhQ0NJZm1J?=
- =?utf-8?B?aktUMWY1bkJubjdqblpxRXJSc0ZxZWx1SlkwVFkvVUg4Wm5FaFo1RXRyUk45?=
- =?utf-8?B?Ky9BRWZYTzdFWXgxZ3REK3dNckYwZldrVGo2Yi8xQkVqT3gxZXVGZ0JVOWRu?=
- =?utf-8?B?QXphV2xYVjk3Q3g1czhmZkVLSGpUamIwQm8veHlBaWZxQkhsSFVidkUwZkcr?=
- =?utf-8?B?dXZqRisvR2xwditQUmMwb0tEYmFDRUxCZWlyOVpjSHI5R3l3WTdlNjJreXJq?=
- =?utf-8?B?VXZiQVQ4MldJY3p1Y1hXNVRUVEc0bHdvQWQ2RE93RS82d1QyZHRmRVZJelZG?=
- =?utf-8?B?ZnJ2bjBNN3V1VG5UV1ZFNmJaN0dtVkFUKzExTjg5ckFTYUt4aCt5azFaR1Zi?=
- =?utf-8?B?aVV1bmhKbjdEL2hBejE0RmJwSHVJNC9OSFRyUnpHUHhCbHRNQVJvUVdoQXFx?=
- =?utf-8?B?UFJwWXY0anRJQXlaZGk0NkxEOGprNVd4Y0RyVHJMT3VCR2xydTlEcDJ6MXpW?=
- =?utf-8?B?ZTgwcXpqeHB0R01WV0RjRG52TTE5VEd0c0ZxWm44OGMrWmZnY3ppai91Zkhs?=
- =?utf-8?B?R3hBTEQ3eW8zL081bHBPRWc3c2EvSUNlWHJtaWlUaGlvU0ZIa3NFYnREbzM3?=
- =?utf-8?B?NjZmVjFUOFRlRDUrRW8xYS93N2FSWm9IU0FVM240NS9RUGxHanhMVWk2a2hy?=
- =?utf-8?B?S1MrTk9HMmVDTzl4eTFmTUVyMmdPQWdSNUNJYUtNSk0vVHVERmNlOUFkOW5T?=
- =?utf-8?B?ZDFjK1lrYjlweFgzQkVac1JOYXRvUVlRNjJzMjltdUp2ZkJHbS8xTlltS25D?=
- =?utf-8?B?K2tPUEdmY2JQMHhicnpSanZCaDBrSG02UWVXeHBEcHplY3BmcVhJVDFtZ3Z3?=
- =?utf-8?B?UzdqM1gyMGNXY1RPTEcxUnI0Q293NGY0STg4YmV5VjBNMW05d0dhcEtVamZa?=
- =?utf-8?B?RzJleU9vT1ZCVEhtVUk1aHFuQnNPYlRzd1dJZXlKVFV5aFdtL1pPUlpmL1A2?=
- =?utf-8?B?UzhXZDNvcEszMnZrVnJRNzV3L08yVXIwVDkxWE5FSWFNMkh2eU1NQ0FuM0lz?=
- =?utf-8?B?VnNBbmU1ZEp1cExwZ0VqRjY3ODk3aWdqbStGdkluQzhOT3IwLzFaQ0FabUFk?=
- =?utf-8?B?M1ZoUldsbU1WTVBKeSszaHZTdlAxV09VNVBXdGp4VnR6bklGSnB2Y1pEUkpt?=
- =?utf-8?B?cytvRktRVmlwVFRyN0d0L3c3dkR2UCtzcVV3Zm5GWEVlYVJFdlRrUWNxbkFB?=
- =?utf-8?Q?WiEV7Hb0aV3LExLLxtNM31c=3D?=
-Content-ID: <685DAAB4C427414D804559240FC9FC31@namprd15.prod.outlook.com>
-X-OriginatorOrg: meta.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SJ0PR15MB4615.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 80ae3d9d-cb8d-4872-988a-08dc712670ad
-X-MS-Exchange-CrossTenant-originalarrivaltime: 10 May 2024 19:21:49.2469
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: fyE5NGQi9hArfETrioQXYbGypOzXXri/uW4rkb2fXpSvyd8ybxzZeRAeS8oaMqbhSEcdsdfafOTHNq4E/ugFCg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH3PR15MB5843
-X-Proofpoint-GUID: q07WLrgTLkqdV-4ymLJYOur0a4tT4p3D
-X-Proofpoint-ORIG-GUID: q07WLrgTLkqdV-4ymLJYOur0a4tT4p3D
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0ACDA47A62;
+	Fri, 10 May 2024 19:24:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.179
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1715369056; cv=none; b=B3cA0g2yYdFBb/9LALgWASujEyR5H2OjFMve0yZgPBmA9UAL5makNURa3YaGLh/jvN+xzWmFu4hf3sFSbivq2nKRG/03FHp8x6iZdZSyFf0WoMBulS3+iRTP05fftCyhh41Uaz5hbygV8yXVKtnlhxUnL8yfiWi7KOR7J0SMqTo=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1715369056; c=relaxed/simple;
+	bh=gwKcORrZTVgKbilEj0IBj/n31Yqqw4k5/szSdpM025g=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=A1iXFx7/KHFKrvfBnXhE4VT2hATYTc8hIwGCCvA++TncYdcMGfxud3RLCjBGSlt4n2zfE20FGwwYjIBABzr3l02yZSAGHZvlp/jnT8k7wUiERVAQCMwfJXXv8jPx68xUkF2ofxIWXfZqXHzE6J28OJDSAT3NwjRIIm6oTcHRyC8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Cvvto5uQ; arc=none smtp.client-ip=209.85.221.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-vk1-f179.google.com with SMTP id 71dfb90a1353d-4df1cb51866so717133e0c.3;
+        Fri, 10 May 2024 12:24:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1715369054; x=1715973854; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=3/eUnTFro7FOl+F47KJAx+RfdI70P4+3XVz5qXeWrmc=;
+        b=Cvvto5uQwJEribZHIDiPEu1KcDYzsmLnm5EEPUHJWXIITVSBGAS5SbZdpGu/Vk6H5W
+         mBr1maVd2uG4Yu096TVlTzYM5C7mlW3ERn1HzgCZ20ZkDTcP2meCFCCbBsOnGXJoAbsZ
+         Z4WZ7snECnL3NoKw+oAIUWukuzVsvbfUDpDbO/rTW3kIpj8cIX9PLme6piQ+IKUOYMNy
+         tYRhtHRsigGuFGVuEMFwwTFwCy2VrP+YRrlarWm91oIqvE+owKwrcxKRLtOqV8mt8N2J
+         dSn2CzMRD/sBEkftGmHVx7tyLDrW6AFuFYG/OcMPD3xD+mIrXjvAHwU7oYax3cNp8Kmk
+         p4mQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1715369054; x=1715973854;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=3/eUnTFro7FOl+F47KJAx+RfdI70P4+3XVz5qXeWrmc=;
+        b=UDrrO6pKedcJsyf+q+aWs7yEUaVCYWMo/v2hgju71qOfp8q8KkupkkKduIUZFYwjDs
+         ufrgtlknB3pmZcgUgC/DUXY+TXxQ6rkcy+yI2GAOSGxmd1ygI0Jscp+okxM/eQbwwg94
+         mok26JiQ/jTSOeRAy5YLlZRb2RgPrlQqvAVXmEA4rN5U8m3+IU5r4JHW5yKryeMtumj9
+         yuKL5YemkeOdhFL+Ec9ZeiWwzqNxInM59RovPOTCAZTd7XkVU+kViOoJFwSFs2AIulp+
+         8WNHR8rmNA7kxljkSHSoVZF40WqzHwHZravsoCzTXRPAi5oI1qJ8M4OCc/wjw+jeIrhG
+         msDA==
+X-Gm-Message-State: AOJu0YwTzM+fX4hkg4sp2ral8eC1p9TFGTFjGrN2/LchSfFB4AtU6cpD
+	05elgDgsmqvPhgYJyxHZNH3MbTZaBeF/MzwwGglU/aX3LxzihXES4dp6mQ==
+X-Google-Smtp-Source: AGHT+IGnNScmOZ65W302q1K0zOPI40QQjDHoUWlmFjgDGlbPT4on60Rl7oCFpzcMGkPW++Qai78TpQ==
+X-Received: by 2002:a05:6102:1505:b0:47b:cca3:aca0 with SMTP id ada2fe7eead31-48077e1cdd8mr4846723137.18.1715369053523;
+        Fri, 10 May 2024 12:24:13 -0700 (PDT)
+Received: from n36-183-057.byted.org ([147.160.184.83])
+        by smtp.gmail.com with ESMTPSA id d75a77b69052e-43df5b46a26sm23863251cf.80.2024.05.10.12.24.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 10 May 2024 12:24:13 -0700 (PDT)
+From: Amery Hung <ameryhung@gmail.com>
+X-Google-Original-From: Amery Hung <amery.hung@bytedance.com>
+To: netdev@vger.kernel.org
+Cc: bpf@vger.kernel.org,
+	yangpeihao@sjtu.edu.cn,
+	daniel@iogearbox.net,
+	andrii@kernel.org,
+	martin.lau@kernel.org,
+	sinquersw@gmail.com,
+	toke@redhat.com,
+	jhs@mojatatu.com,
+	jiri@resnulli.us,
+	sdf@google.com,
+	xiyou.wangcong@gmail.com,
+	yepeilin.cs@gmail.com,
+	ameryhung@gmail.com
+Subject: [RFC PATCH v8 00/20] bpf qdisc
+Date: Fri, 10 May 2024 19:23:52 +0000
+Message-Id: <20240510192412.3297104-1-amery.hung@bytedance.com>
+X-Mailer: git-send-email 2.20.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.650,FMLib:17.11.176.26
- definitions=2024-05-10_14,2024-05-10_02,2023-05-22_02
+Content-Transfer-Encoding: 8bit
 
-DQoNCu+7v09uIDUvMTAvMjQsIDc6MDYgQU0sICJBbGV4ZWkgU3Rhcm92b2l0b3YiIDxhbGV4ZWku
-c3Rhcm92b2l0b3ZAZ21haWwuY29tIDxtYWlsdG86YWxleGVpLnN0YXJvdm9pdG92QGdtYWlsLmNv
-bT4+IHdyb3RlOg0KDQoNCiEtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tfA0KVGhpcyBNZXNzYWdlIElzIEZyb20gYW4gRXh0
-ZXJuYWwgU2VuZGVyDQoNCg0KfC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0hDQoNCg0KT24gVGh1LCBNYXkgOSwgMjAyNCBh
-dCAxMTozMSBBTSBNYXR0aGlldSBCYWVydHMgPG1hdHR0YmVAa2VybmVsLm9yZyA8bWFpbHRvOm1h
-dHR0YmVAa2VybmVsLm9yZz4+IHdyb3RlOg0KPg0KPiBIZWxsbywNCj4NCj4gT24gMDkvMDUvMjAy
-NCAxNzo0OSwgTWF0dGhpZXUgQmFlcnRzIChOR0kwKSB3cm90ZToNCj4gPiBGcm9tOiBHZWxpYW5n
-IFRhbmcgPHRhbmdnZWxpYW5nQGt5bGlub3MuY24gPG1haWx0bzp0YW5nZ2VsaWFuZ0BreWxpbm9z
-LmNuPj4NCj4gPg0KPiA+IFRoaXMgcGF0Y2ggYWRkcyBhIHN1YnRlc3QgbmFtZWQgdGVzdF9zdWJm
-bG93IHRvIGxvYWQgYW5kIHZlcmlmeSB0aGUgbmV3bHkNCj4gPiBhZGRlZCBtcHRjcCBzdWJmbG93
-IGV4YW1wbGUgaW4gdGVzdF9tcHRjcC4gQWRkIGEgaGVscGVyIGVuZHBvaW50X2luaXQoKQ0KPiA+
-IHRvIGFkZCBhIG5ldyBzdWJmbG93IGVuZHBvaW50LiBBZGQgYW5vdGhlciBoZWxwZXIgc3Nfc2Vh
-cmNoKCkgdG8gdmVyaWZ5IHRoZQ0KPiA+IGZ3bWFyayBhbmQgY29uZ2VzdGlvbiB2YWx1ZXMgc2V0
-IGJ5IG1wdGNwX3N1YmZsb3cgcHJvZyB1c2luZyBzZXRzb2Nrb3B0cy4NCj4gPg0KPiA+IENsb3Nl
-czogaHR0cHM6Ly9naXRodWIuY29tL211bHRpcGF0aC10Y3AvbXB0Y3BfbmV0LW5leHQvaXNzdWVz
-Lzc2IDxodHRwczovL2dpdGh1Yi5jb20vbXVsdGlwYXRoLXRjcC9tcHRjcF9uZXQtbmV4dC9pc3N1
-ZXMvNzY+DQo+ID4gU2lnbmVkLW9mZi1ieTogR2VsaWFuZyBUYW5nIDx0YW5nZ2VsaWFuZ0BreWxp
-bm9zLmNuIDxtYWlsdG86dGFuZ2dlbGlhbmdAa3lsaW5vcy5jbj4+DQo+ID4gUmV2aWV3ZWQtYnk6
-IE1hdCBNYXJ0aW5lYXUgPG1hcnRpbmVhdUBrZXJuZWwub3JnIDxtYWlsdG86bWFydGluZWF1QGtl
-cm5lbC5vcmc+Pg0KPiA+IFNpZ25lZC1vZmYtYnk6IE1hdHRoaWV1IEJhZXJ0cyAoTkdJMCkgPG1h
-dHR0YmVAa2VybmVsLm9yZyA8bWFpbHRvOm1hdHR0YmVAa2VybmVsLm9yZz4+DQo+ID4gLS0tDQo+
-ID4gdG9vbHMvdGVzdGluZy9zZWxmdGVzdHMvYnBmL3Byb2dfdGVzdHMvbXB0Y3AuYyB8IDEwOSAr
-KysrKysrKysrKysrKysrKysrKysrKysrDQo+ID4gMSBmaWxlIGNoYW5nZWQsIDEwOSBpbnNlcnRp
-b25zKCspDQo+ID4NCj4gPiBkaWZmIC0tZ2l0IGEvdG9vbHMvdGVzdGluZy9zZWxmdGVzdHMvYnBm
-L3Byb2dfdGVzdHMvbXB0Y3AuYyBiL3Rvb2xzL3Rlc3Rpbmcvc2VsZnRlc3RzL2JwZi9wcm9nX3Rl
-c3RzL21wdGNwLmMNCj4gPiBpbmRleCAyNzRkMmUwMzNlMzkuLjYwMzliMGZmMzgwMSAxMDA2NDQN
-Cj4gPiAtLS0gYS90b29scy90ZXN0aW5nL3NlbGZ0ZXN0cy9icGYvcHJvZ190ZXN0cy9tcHRjcC5j
-DQo+ID4gKysrIGIvdG9vbHMvdGVzdGluZy9zZWxmdGVzdHMvYnBmL3Byb2dfdGVzdHMvbXB0Y3Au
-Yw0KPg0KPiAoLi4uKQ0KPg0KPiA+IEBAIC0zNDAsMTAgKzM0NCwxMTUgQEAgc3RhdGljIHZvaWQg
-dGVzdF9tcHRjcGlmeSh2b2lkKQ0KPiA+IGNsb3NlKGNncm91cF9mZCk7DQo+ID4gfQ0KPiA+DQo+
-ID4gK3N0YXRpYyBpbnQgZW5kcG9pbnRfaW5pdChjaGFyICpmbGFncykNCj4gPiArew0KPiA+ICsg
-U1lTKGZhaWwsICJpcCAtbmV0ICVzIGxpbmsgYWRkIHZldGgxIHR5cGUgdmV0aCBwZWVyIG5hbWUg
-dmV0aDIiLCBOU19URVNUKTsNCj4gPiArIFNZUyhmYWlsLCAiaXAgLW5ldCAlcyBhZGRyIGFkZCAl
-cy8yNCBkZXYgdmV0aDEiLCBOU19URVNULCBBRERSXzEpOw0KPiA+ICsgU1lTKGZhaWwsICJpcCAt
-bmV0ICVzIGxpbmsgc2V0IGRldiB2ZXRoMSB1cCIsIE5TX1RFU1QpOw0KPiA+ICsgU1lTKGZhaWws
-ICJpcCAtbmV0ICVzIGFkZHIgYWRkICVzLzI0IGRldiB2ZXRoMiIsIE5TX1RFU1QsIEFERFJfMik7
-DQo+ID4gKyBTWVMoZmFpbCwgImlwIC1uZXQgJXMgbGluayBzZXQgZGV2IHZldGgyIHVwIiwgTlNf
-VEVTVCk7DQo+ID4gKyBTWVMoZmFpbCwgImlwIC1uZXQgJXMgbXB0Y3AgZW5kcG9pbnQgYWRkICVz
-ICVzIiwgTlNfVEVTVCwgQUREUl8yLCBmbGFncyk7DQo+DQo+IEkganVzdCBub3RpY2VkIHRoYXQg
-dGhpcyBjb21tYW5kIGlzIGZhaWxpbmcgb24gdGhlIEJQRiBDSToNCj4NCj4gaHR0cHM6Ly9naXRo
-dWIuY29tL2tlcm5lbC1wYXRjaGVzL2JwZi9hY3Rpb25zL3J1bnMvOTAyMDAyMDMxNT9wcj03MDA5
-IDxodHRwczovL2dpdGh1Yi5jb20va2VybmVsLXBhdGNoZXMvYnBmL2FjdGlvbnMvcnVucy85MDIw
-MDIwMzE1P3ByPTcwMDk+DQo+DQo+IElzIGl0IHBvc3NpYmxlIHRoYXQgYW4gb2xkIHZlcnNpb24g
-b2YgSVBSb3V0ZTIgaXMgaW5zdGFsbGVkPw0KPiAnaXAgbXB0Y3AnIGlzIHN1cHBvcnRlZCBzaW5j
-ZSB2NS44LjAgKGZyb20gMjAyMCkuDQo+DQo+IEl0IGxvb2tzIGxpa2UgVWJ1bnR1IEZvY2FsIDIw
-LjA0IGlzIGJlaW5nIHVzZWQsIHdoaWNoIGhhcyB0aGUgdjUuNS4wLiBEbw0KPiB3ZSB0aGVuIG5l
-ZWQgdG8gZmluZCBhbm90aGVyIHdheSB0byBzZXQgdGhlIE1QVENQIGVuZHBvaW50cz8NCg0KDQoN
-Cg0KTWFudSwgYW55IGlkZWE/DQoNCi8vIHJldHJ5aW5nIHBsYWluIHRleHQgZm9ybWF0Li4uLiBw
-bGVhc2Ugb3V0bG9vaywgcGxlYXNlLCBtYWtlIHRoaXMgaGFwcGVuIQ0KDQpJbmRlZWQsIHRoaXMg
-aXMgcnVubmluZyBVYnVudHUgMjAuMDQuIEkgYW0gcGxhbm5pbmcgdG8gZXZlbnR1YWxseSB1cGRh
-dGUgdG8gMjIuMDQgKHdoaWNoIGhhcyBpcHJvdXRlIDUuMTUpLA0KQnV0IEkgZG9u4oCZdCBoYXZl
-IGEgZ29vZCBFVEEgdG8gZ2l2ZSBvdGhlciB0aGFuIHRoaXMgaXMgbm90IGdvaW5nIHRvIGJlIGlu
-IHRoZSBjb21pbmcgbW9udGguDQoNCkl0IGRvZXMgbm90IHNlZW0gdGhhdCBpcHJvdXRlIHByb3Zp
-ZGVzIGFuIGVhc3kgd2F5IHRvIGNoZWNrIGl0cyB2ZXJzaW9uLCBhbmQgdGhlIHZlcnNpb24gcmV0
-dXJuZWQgYnkgdGhlIGNvbnRhaW5lciBpczoNCiANCnJvb3RAMDgxYTAyZTU3MTc1Oi9hY3Rpb25z
-LXJ1bm5lciMgaXAgLS1qc29uIC1WDQppcCB1dGlsaXR5LCBpcHJvdXRlMi1zczIwMDEyNw0Kcm9v
-dEAwODFhMDJlNTcxNzU6L2FjdGlvbnMtcnVubmVyIyBkcGtnIC1sIGlwcm91dGUyDQpEZXNpcmVk
-PVVua25vd24vSW5zdGFsbC9SZW1vdmUvUHVyZ2UvSG9sZA0KfCBTdGF0dXM9Tm90L0luc3QvQ29u
-Zi1maWxlcy9VbnBhY2tlZC9oYWxGLWNvbmYvSGFsZi1pbnN0L3RyaWctYVdhaXQvVHJpZy1wZW5k
-DQp8LyBFcnI/PShub25lKS9SZWluc3QtcmVxdWlyZWQgKFN0YXR1cyxFcnI6IHVwcGVyY2FzZT1i
-YWQpDQp8fC8gTmFtZSAgICAgICAgICAgVmVyc2lvbiAgICAgICAgQXJjaGl0ZWN0dXJlIERlc2Ny
-aXB0aW9uDQorKystPT09PT09PT09PT09PT0tPT09PT09PT09PT09PT0tPT09PT09PT09PT09LT09
-PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PQ0KaWkgIGlwcm91dGUyICAgICAgIDUu
-NS4wLTF1YnVudHUxIGFtZDY0ICAgICAgICBuZXR3b3JraW5nIGFuZCB0cmFmZmljIGNvbnRyb2wg
-dG9vbHMNCiANCiANCkhvdyBjb21wbGljYXRlZCBpcyBpdCB0byBzZXQgTVBUQ1AgZGlyZWN0bHkg
-dXNpbmcgbmV0bGluayBmb2xsb3dpbmcgaHR0cHM6Ly9naXRodWIuY29tL2lwcm91dGUyL2lwcm91
-dGUyL2Jsb2IvMzk3MzgzYTMwYzNiMGUzZmY1NTEwNDJiNjY1NDg5OGEwODcyYjgzZS9pcC9pcG1w
-dGNwLmMjTDU3MyA/DQpTZWVtcyB0b29scy90ZXN0aW5nL3NlbGZ0ZXN0cy9icGYvbmV0bGlua19o
-ZWxwZXJzLmMgY291bGQgYmUgdXNlZnVsIHRvIGRlYWwgd2l0aCB0aGUgbmV0bGluayBwYXJ0LiBB
-bmQgdGhlIGZvcm1lciBsaW5rIHRvIGZpbmQgb3V0IGhvdyB0byBmb3JtYXQgdGhlIG1lc3NhZ2U/
-DQogDQpNYW51DQoNCg0KDQo=
+This is the v8 of bpf qdisc patchset. While I would like to do more
+testing and performance evaluation, I think posting it now may help
+discussions in the upcoming LSF/MM/BPF.
+
+* Overview *
+
+This series supports implementing a qdisc using bpf struct_ops. bpf qdisc
+aims to be a flexible and easy-to-use infrastructure that allows users to
+quickly experiment with different scheduling algorithms/policies. It only
+requires users to implement core qdisc logic using bpf and implements the
+mundane part for them. In addition, the ability to easily communicate
+between qdisc and other components will also bring new opportunities for
+new applications and optimizations.
+
+After discussion in the previous patchset [0], we swicthed to struct_ops
+to take the benefit of struct_ops and avoid introducing a new abstraction
+to users. In addition, three changes to bpf are introduced to make
+bpf qdisc easier to program and performant.
+
+* struct_ops changes *
+
+To make struct_ops works better with bpf qdisc, two new changes are
+introduced to bpf specifically for struct_ops programs. Frist, we
+introduce "ref_acquired" postfix for arguments in stub functions [1] in
+patch 1-2. It will allow Qdisc_ops->enqueue to acquire an referenced kptr
+to an skb just once. Through the reference object tracking mechanism in
+the verifier, we can make sure that the acquired skb will be either
+enqueued or dropped. Besides, no duplicate references can be acquired.
+Then, we allow a reference leak in struct_ops programs so that we can
+return an skb naturally. This is done and tested in patch 3 and 4.
+
+* Support adding skb to bpf graph *
+
+Allowing users to enqueue an skb directly to a bpf collection improves
+users' programming experience and performance of qdiscs. In the previous
+patchset (v7), the user would need to allocate a local object, exchange
+an skb kptr into the object and then add the object to a collection during
+enqueue. The memory allocation in the fast path was hurting the
+performance.
+
+To allow adding skb to collection, we first introduced the support for
+adding kernel objects to bpf list and rbtree (patch 5-8). Then, we
+introduced exclusive-ownership graph nodes so that 1) we can fit
+an rb node into an skb, and 2) make it possible for list node and rb node
+to coexist in a union in skb (patch 9-12).
+
+We evaluated the benefit of direct skb queueing by comparing the
+throughput of simple fifo qdiscs implemented with v7 and v8 patchset.
+Both qdisc use a bpf list as the fifo. The fifo v8 is included in the
+selftests. While fifo v7 is identical in terms of the queueing logic,
+it requires additional bpf_obj_new() and bpf_kptr_xchg() calls to enqueue
+a local object containing a skb kptr. The test uses iperf3 to send and 
+receive traffic on the qdisc added to the loopback device for 1 minute,
+and we repeated it for five times. The result is shown below:
+
+                                    Average throughput   stdev
+fifo with indirect queueing (v7)    40.4 Gbps            0.91 Gbps
+fifo with direct queueing (v8)      43.5 Gbps            0.24 Gbps
+
+This part of the patchset (patch 5-12) is less tested and the approach may
+be overcomplicated, so I especially would like to gather more feedback
+before going further.
+
+* Miscellaneous notes *
+
+Finally, this patchset is based on 
+34c58c89feb3 (Merge branch 'gve-ring-size-changes') in net-next.
+
+The fq example in selftests requires bpf support of exchanging kptr into
+allocated objects (local kptr), which Dave Marchevsky developed and
+sent me as off-list patchset.
+
+Todo:
+  - Add more bpf testcases
+  - Add testcases for bpf_skb_tc_classify and other qdisc ops
+  - Add kfunc access control
+  - Add support for statistics
+  - Remove the requirement of explicit skb->dev restoration
+  - Look into more ops in Qdisc_ops
+  - Support updating Qdisc_ops
+
+[0] https://lore.kernel.org/netdev/cover.1705432850.git.amery.hung@bytedance.com/
+
+---
+v8: Implement support of bpf qdisc using struct_ops
+    Allow struct_ops to acquire referenced kptr via argument
+    Allow struct_ops to release and return referenced kptr
+    Support enqueuing sk_buff to bpf_rbtree/list
+    Move examples from samples to selftests
+    Add a classful qdisc selftest
+
+v7: Reference skb using kptr to sk_buff instead of __sk_buff
+    Use the new bpf rbtree/link to for skb queues
+    Add reset and init programs
+    Add a bpf fq qdisc sample
+    Add a bpf netem qdisc sample
+
+v6: switch to kptr based approach
+
+v5: mv kernel/bpf/skb_map.c net/core/skb_map.c
+    implement flow map as map-in-map
+    rename bpf_skb_tc_classify() and move it to net/sched/cls_api.c
+    clean up eBPF qdisc program context
+
+v4: get rid of PIFO, use rbtree directly
+
+v3: move priority queue from sch_bpf to skb map
+    introduce skb map and its helpers
+    introduce bpf_skb_classify()
+    use netdevice notifier to reset skb's
+    Rebase on latest bpf-next
+
+v2: Rebase on latest net-next
+    Make the code more complete (but still incomplete)
+
+Amery Hung (20):
+  bpf: Support passing referenced kptr to struct_ops programs
+  selftests/bpf: Test referenced kptr arguments of struct_ops programs
+  bpf: Allow struct_ops prog to return referenced kptr
+  selftests/bpf: Test returning kptr from struct_ops programs
+  bpf: Generate btf_struct_metas for kernel BTF
+  bpf: Recognize kernel types as graph values
+  bpf: Allow adding kernel objects to collections
+  selftests/bpf: Test adding kernel object to bpf graph
+  bpf: Find special BTF fields in union
+  bpf: Introduce exclusive-ownership list and rbtree nodes
+  bpf: Allow adding exclusive nodes to bpf list and rbtree
+  selftests/bpf: Modify linked_list tests to work with macro-ified
+    removes
+  bpf: net_sched: Support implementation of Qdisc_ops in bpf
+  bpf: net_sched: Add bpf qdisc kfuncs
+  bpf: net_sched: Allow more optional methods in Qdisc_ops
+  libbpf: Support creating and destroying qdisc
+  selftests: Add a basic fifo qdisc test
+  selftests: Add a bpf fq qdisc to selftest
+  selftests: Add a bpf netem qdisc to selftest
+  selftests: Add a prio bpf qdisc
+
+ include/linux/bpf.h                           |  30 +-
+ include/linux/bpf_verifier.h                  |   8 +-
+ include/linux/btf.h                           |   5 +-
+ include/linux/rbtree_types.h                  |   4 +
+ include/linux/skbuff.h                        |   2 +
+ include/linux/types.h                         |   4 +
+ include/net/sch_generic.h                     |   8 +
+ kernel/bpf/bpf_struct_ops.c                   |  17 +-
+ kernel/bpf/btf.c                              | 255 +++++-
+ kernel/bpf/helpers.c                          |  63 +-
+ kernel/bpf/syscall.c                          |  22 +-
+ kernel/bpf/verifier.c                         | 185 +++-
+ net/sched/Makefile                            |   4 +
+ net/sched/bpf_qdisc.c                         | 788 ++++++++++++++++++
+ net/sched/sch_api.c                           |  19 +-
+ net/sched/sch_generic.c                       |  11 +-
+ tools/lib/bpf/libbpf.h                        |   5 +-
+ tools/lib/bpf/netlink.c                       |  20 +-
+ .../testing/selftests/bpf/bpf_experimental.h  |  59 +-
+ .../selftests/bpf/bpf_testmod/bpf_testmod.c   |  29 +
+ .../selftests/bpf/bpf_testmod/bpf_testmod.h   |  11 +
+ .../selftests/bpf/prog_tests/bpf_qdisc.c      | 259 ++++++
+ .../selftests/bpf/prog_tests/linked_list.c    |   6 +-
+ .../prog_tests/test_struct_ops_kptr_return.c  |  87 ++
+ .../prog_tests/test_struct_ops_ref_acquire.c  |  58 ++
+ .../selftests/bpf/progs/bpf_qdisc_common.h    |  23 +
+ .../selftests/bpf/progs/bpf_qdisc_fifo.c      |  83 ++
+ .../selftests/bpf/progs/bpf_qdisc_fq.c        | 660 +++++++++++++++
+ .../selftests/bpf/progs/bpf_qdisc_netem.c     | 236 ++++++
+ .../selftests/bpf/progs/bpf_qdisc_prio.c      | 112 +++
+ .../testing/selftests/bpf/progs/linked_list.c |  15 +
+ .../testing/selftests/bpf/progs/linked_list.h |   8 +
+ .../selftests/bpf/progs/linked_list_fail.c    |  46 +-
+ .../bpf/progs/struct_ops_kptr_return.c        |  24 +
+ ...uct_ops_kptr_return_fail__invalid_scalar.c |  24 +
+ .../struct_ops_kptr_return_fail__local_kptr.c |  30 +
+ ...uct_ops_kptr_return_fail__nonzero_offset.c |  23 +
+ .../struct_ops_kptr_return_fail__wrong_type.c |  28 +
+ .../bpf/progs/struct_ops_ref_acquire.c        |  27 +
+ .../progs/struct_ops_ref_acquire_dup_ref.c    |  24 +
+ .../progs/struct_ops_ref_acquire_ref_leak.c   |  19 +
+ 41 files changed, 3216 insertions(+), 125 deletions(-)
+ create mode 100644 net/sched/bpf_qdisc.c
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/bpf_qdisc.c
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/test_struct_ops_kptr_return.c
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/test_struct_ops_ref_acquire.c
+ create mode 100644 tools/testing/selftests/bpf/progs/bpf_qdisc_common.h
+ create mode 100644 tools/testing/selftests/bpf/progs/bpf_qdisc_fifo.c
+ create mode 100644 tools/testing/selftests/bpf/progs/bpf_qdisc_fq.c
+ create mode 100644 tools/testing/selftests/bpf/progs/bpf_qdisc_netem.c
+ create mode 100644 tools/testing/selftests/bpf/progs/bpf_qdisc_prio.c
+ create mode 100644 tools/testing/selftests/bpf/progs/struct_ops_kptr_return.c
+ create mode 100644 tools/testing/selftests/bpf/progs/struct_ops_kptr_return_fail__invalid_scalar.c
+ create mode 100644 tools/testing/selftests/bpf/progs/struct_ops_kptr_return_fail__local_kptr.c
+ create mode 100644 tools/testing/selftests/bpf/progs/struct_ops_kptr_return_fail__nonzero_offset.c
+ create mode 100644 tools/testing/selftests/bpf/progs/struct_ops_kptr_return_fail__wrong_type.c
+ create mode 100644 tools/testing/selftests/bpf/progs/struct_ops_ref_acquire.c
+ create mode 100644 tools/testing/selftests/bpf/progs/struct_ops_ref_acquire_dup_ref.c
+ create mode 100644 tools/testing/selftests/bpf/progs/struct_ops_ref_acquire_ref_leak.c
+
+-- 
+2.20.1
+
 
