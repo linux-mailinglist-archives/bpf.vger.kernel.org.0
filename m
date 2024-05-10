@@ -1,71 +1,69 @@
-Return-Path: <bpf+bounces-29419-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-29420-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A96F98C1BC5
-	for <lists+bpf@lfdr.de>; Fri, 10 May 2024 02:39:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 233888C1BE8
+	for <lists+bpf@lfdr.de>; Fri, 10 May 2024 03:13:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DBC831C21ADD
-	for <lists+bpf@lfdr.de>; Fri, 10 May 2024 00:39:01 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 23E631C218FA
+	for <lists+bpf@lfdr.de>; Fri, 10 May 2024 01:13:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2CEAB53E2B;
-	Fri, 10 May 2024 00:29:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5055F13A87A;
+	Fri, 10 May 2024 01:13:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dxZQ5cQW"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="K+vOykjc"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-oi1-f177.google.com (mail-oi1-f177.google.com [209.85.167.177])
+Received: from mail-oa1-f50.google.com (mail-oa1-f50.google.com [209.85.160.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F54E53E07
-	for <bpf@vger.kernel.org>; Fri, 10 May 2024 00:29:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 611C7137907
+	for <bpf@vger.kernel.org>; Fri, 10 May 2024 01:13:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715300995; cv=none; b=eBYnFX8SVShj8fCHB8FmLXCaFSJgkil+gZDNOgYRwviv7xnq08PJvKimrhuct9kmNzbHo1qHSTh5DEDbtgVCLrCBZSnmvlSapx7M+sVr20JQBpdJzmxV6Wz9Oejzy3rw7Mu4ExAEGYi5J0WmgYeKw/m7l60avHe7AMDWN6sfmuo=
+	t=1715303597; cv=none; b=VDX7iqeu3QwG3RP93d9zcQRMKUeBar/AqjWUKbLMx59SFhygmCSQ9DiSy9UmgKY0AwZNGhw5VVmM7WHt3ZKHDj0+L6G2ULCkn2up5P6AyAWSbwdMFcDieIcKLAmnumwbaNSKgwY+1o45BwWdV24+wJwInjZcRpd57AlheVKri2Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715300995; c=relaxed/simple;
-	bh=AOuolpRVxv8BKwP/7SBIG5zYThDowJbKd4TrLSOyZRE=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=KsTK8mf09bESxOlGwS8IHOkh+m9/LDvhU76hdzGhXqgBpjYB+nTsvA37Pz60ijyIsSSanAmTLTL4x2psDvL/gW/AW5q6VKeO7Zubx6WfWPH32LT1tpjamNS5JbaTOcgFjQFMXbib6/AyK02DtnoBSrApLS7Idf0o/6XvNcUzawg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=dxZQ5cQW; arc=none smtp.client-ip=209.85.167.177
+	s=arc-20240116; t=1715303597; c=relaxed/simple;
+	bh=OMfUM+oVH+GAFE7dcKPWUnu20R8fFAi2vjp344H583I=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=r8NEny/rwfME6JRiUmvFgoBtdHCVRKSOxfTK6g3HXHfrzam53yTtfB/Kei/Q4a4xe12YA+AbO8FCE6q2Z5FaCkA+JbTLepD9OW8J9yRrsKDmaZ/V5yB3MOMUfM8CmE7s/CNhHPHhHFja6cAw4zL53vdm8I85yT044wY59+KtvBw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=K+vOykjc; arc=none smtp.client-ip=209.85.160.50
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oi1-f177.google.com with SMTP id 5614622812f47-3c9936cb7a8so546550b6e.2
-        for <bpf@vger.kernel.org>; Thu, 09 May 2024 17:29:54 -0700 (PDT)
+Received: by mail-oa1-f50.google.com with SMTP id 586e51a60fabf-240de3847cdso778864fac.1
+        for <bpf@vger.kernel.org>; Thu, 09 May 2024 18:13:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1715300993; x=1715905793; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=JYcqFYutho0m48sKDHLd4sCd0cqM9g/XMnashe1IAHo=;
-        b=dxZQ5cQWo4rjT0+wkguOCBjB49uAcu+BTU9DSum/juXCGE/j9xN2VlJt+8+KzBbt/+
-         bSJCXoSLk4I0UJmE+e1wUJpXRWc5rGE+BCxxirsKtc3n6Etu5cA3O3evav8Bkl0ISjB5
-         1Pq40a4Qaqvf0ztcgQ5cqCzi3imQqEj5lUQ5jHCvBtmJYOycOUBTJTkvYGG1aeC0BRLh
-         Y/DUrjq3SvldcRqgWMs37gDlyVC4FVr6PmSOkfewAE+/FQ87TgE7ngt8zw/U/F7Gc3UK
-         dQa4HWz0R745JVoztmB62OpHVu5Z3szWvR5MRC+Y7ODh1i1u2KICuxW//FDp9LGrhjli
-         sF6Q==
+        d=gmail.com; s=20230601; t=1715303595; x=1715908395; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=znk2MCClYX7eFQ8nfJntTqBtL23fcZP2oB9Vi8ynH0g=;
+        b=K+vOykjcN0YjOFHOfsZjRfFlk3XNBzKAKbHXqEAFHFCkaEA/FZwEjgzWPMkDe2f0AB
+         ib08sfDjZBZeulzNZUDPVKGIDxkjivZhrupusdK+zBOVI4ECdJPnLsixBeqpzG7TdIoy
+         Xcl+1s/8PMMJ8T5FsM2mlZIefi+mxmPpV8eHmz68LD5VcMyNUEYRv6vrBWQpWlE3jN+s
+         IICWqybTaQu9zUa8Q4qgErgvIKlkODqkeWCNT7l3/8gvxVTfn3EvYI/akulp2gQcC0/Y
+         KbkhVodJ/9F5TOl27NzHLvNG8EVBqsb6sMUoyZbzaA8sxHcCOYZAWtReel4bRVgLmCwY
+         Vw7g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1715300993; x=1715905793;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=JYcqFYutho0m48sKDHLd4sCd0cqM9g/XMnashe1IAHo=;
-        b=dqCO+WIDaDNwu4RKuHEZAIVQo3PTt2nsYJ62TLJ7zrN7un1q+khRMNRh1qaa0R6pyO
-         9kwYo1u6bTZ3BGWnKzfdiuYJDTKS42ltyzp+1YeUMoPAKqpUxf0LxecsCkrIoIgBedAk
-         LmLbBVKXMwlTfh93l0QSxX/yKuriUvNOOKlXD8kqUdzSMTTFz7cQLGUmMlYNpaHmcKkS
-         K2jXhXiTzdlxZSzrOIPgRB1iphaJtRnUHpx7sn3HinD8nFmk+Lf4J1ZrbqN14ABlqsa2
-         4E8klxm+qXMPDXaKsD0lILpLq7Sl8jX1RRpTgqO8/BL5oQv5f/eQl3wmrwCJiMxQIuUi
-         g1gQ==
-X-Gm-Message-State: AOJu0YyVCYDrQ6dCN5SxDFsirsWsBJhrxc0P1d64hq3tWC6K8DE9DxYn
-	vHfHkqGCbaDDypXabhDIeVs5SiHaca1Y1sRZQTWrrqvTJyZys2N4SVMQDA==
-X-Google-Smtp-Source: AGHT+IH35Jn1nWuKEDPnDE4RhB27h9nO+1cQ2wKCd1cI180qnD1G1e8cV7h46f4LZHto5nnB/uGVjw==
-X-Received: by 2002:a05:6808:299:b0:3c9:7ce6:3b14 with SMTP id 5614622812f47-3c9970ce763mr1132955b6e.52.1715300992688;
-        Thu, 09 May 2024 17:29:52 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1715303595; x=1715908395;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=znk2MCClYX7eFQ8nfJntTqBtL23fcZP2oB9Vi8ynH0g=;
+        b=OTryOR+d1/oYFWMo3B6Zn+yPt4cJuq0DVPL2TCpgStWlEVPVSWpWVOarvtCbw/7TKR
+         2jCI/1WpFi/Jati0xGlHRHtOssGLqhmp00fKNMsjVNTnEcgkBAkC+H87BAwRRWp7zwKd
+         bwe469MXWEXZzTbQ89/4pflMK38R0ZmtA/TDHV30RiGJHkN/XnPxNO0EwoT3VNBpwRMv
+         T2hts90RS2ya8R+ExxlYh4up6/jYlf87Z68Zbj1CTIQSD2PjJZqQA8frs44onir0Z3xh
+         zuVwE+y2+z0NmIXptCRO86NCsEkRDAsFohLe3FZZmRnZ69BvkmSafyCJga+IZcg/Xgyf
+         N2ng==
+X-Gm-Message-State: AOJu0YxKV8ph1fQ6kZkZ5sEefcT4XdCrPVG95S1pFUziiNNJ6moS3z9i
+	7ZvtiNnAfVjIUZvaZTQh//67M8rK89gzLhjWsxKllTGoYHnhSjen4+JEqA==
+X-Google-Smtp-Source: AGHT+IEANL1iF+McMQbvVyUW6ZR5B2W9S3COW/K/lTRVQfKSwlmtcCiPtGKMIWRubfCP8u64QD+m9w==
+X-Received: by 2002:a05:6870:a68b:b0:22e:93a0:fcbb with SMTP id 586e51a60fabf-24172911422mr1430753fac.34.1715303594964;
+        Thu, 09 May 2024 18:13:14 -0700 (PDT)
 Received: from kickker.attlocal.net ([2600:1700:6cf8:1240:66fe:82c7:2d03:7176])
-        by smtp.gmail.com with ESMTPSA id 5614622812f47-3c98fc7e00bsm433251b6e.4.2024.05.09.17.29.51
+        by smtp.gmail.com with ESMTPSA id 46e09a7af769-6f0e01a8b23sm476874a34.6.2024.05.09.18.13.14
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 09 May 2024 17:29:52 -0700 (PDT)
+        Thu, 09 May 2024 18:13:14 -0700 (PDT)
 From: Kui-Feng Lee <thinker.li@gmail.com>
 To: bpf@vger.kernel.org,
 	ast@kernel.org,
@@ -76,12 +74,10 @@ To: bpf@vger.kernel.org,
 Cc: sinquersw@gmail.com,
 	kuifeng@meta.com,
 	Kui-Feng Lee <thinker.li@gmail.com>
-Subject: [PATCH bpf-next v3 7/7] selftests/bpf: make sure bpf_testmod handling racing link destroying well.
-Date: Thu,  9 May 2024 17:29:42 -0700
-Message-Id: <20240510002942.1253354-8-thinker.li@gmail.com>
+Subject: [PATCH bpf-next v5 0/9] Enable BPF programs to declare arrays of kptr, bpf_rb_root, and bpf_list_head.
+Date: Thu,  9 May 2024 18:13:03 -0700
+Message-Id: <20240510011312.1488046-1-thinker.li@gmail.com>
 X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240510002942.1253354-1-thinker.li@gmail.com>
-References: <20240510002942.1253354-1-thinker.li@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -90,78 +86,129 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Do detachment from the subsystem after a link being closed/freed.  This
-test make sure the pattern implemented by bpf_dummy_do_link_detach() works
-correctly.
+Some types, such as type kptr, bpf_rb_root, and bpf_list_head, are
+treated in a special way. Previously, these types could not be the
+type of a field in a struct type that is used as the type of a global
+variable. They could not be the type of a field in a struct type that
+is used as the type of a field in the value type of a map either. They
+could not even be the type of array elements. This means that they can
+only be the type of global variables or of direct fields in the value
+type of a map.
 
-Refer to bpf_dummy_do_link_detach() in bpf_testmod.c for more details.
+The patch set aims to enable the use of these specific types in arrays
+and struct fields, providing flexibility. It examines the types of
+global variables or the value types of maps, such as arrays and struct
+types, recursively to identify these special types and generate field
+information for them.
 
-Signed-off-by: Kui-Feng Lee <thinker.li@gmail.com>
+For example,
+
+  ...
+  struct task_struct __kptr *ptr[3];
+  ...
+
+it will create 3 instances of "struct btf_field" in the "btf_record" of
+the data section.
+
+ [...,
+  btf_field(offset=0x100, type=BPF_KPTR_REF),
+  btf_field(offset=0x108, type=BPF_KPTR_REF),
+  btf_field(offset=0x110, type=BPF_KPTR_REF),
+  ...
+ ]
+
+It creates a record of each of three elements. These three records are
+almost identical except their offsets.
+
+Another example is
+
+  ...
+  struct A {
+    ...
+    struct task_struct __kptr *task;
+    struct bpf_rb_root root;
+    ...
+  }
+
+  struct A foo[2];
+
+it will create 4 records.
+
+ [...,
+  btf_field(offset=0x7100, type=BPF_KPTR_REF),
+  btf_field(offset=0x7108, type=BPF_RB_ROOT:),
+  btf_field(offset=0x7200, type=BPF_KPTR_REF),
+  btf_field(offset=0x7208, type=BPF_RB_ROOT:),
+  ...
+ ]
+
+Assuming that the size of an element/struct A is 0x100 and "foo"
+starts at 0x7000, it includes two kptr records at 0x7100 and 0x7200,
+and two rbtree root records at 0x7108 and 0x7208.
+
+All these field information will be flatten, for struct types, and
+repeated, for arrays.
+
 ---
- .../bpf/prog_tests/test_struct_ops_module.c   | 44 +++++++++++++++++++
- 1 file changed, 44 insertions(+)
+Changes from v4:
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/test_struct_ops_module.c b/tools/testing/selftests/bpf/prog_tests/test_struct_ops_module.c
-index f4000bf04752..3a8cdf440edd 100644
---- a/tools/testing/selftests/bpf/prog_tests/test_struct_ops_module.c
-+++ b/tools/testing/selftests/bpf/prog_tests/test_struct_ops_module.c
-@@ -362,6 +362,48 @@ static void test_subsystem_detach(void)
- 	struct_ops_detach__destroy(skel);
- }
- 
-+/* A subsystem detaches a link while the link is going to be free. */
-+static void test_subsystem_detach_free(void)
-+{
-+	LIBBPF_OPTS(bpf_test_run_opts, topts,
-+		    .data_in = &pkt_v4,
-+		    .data_size_in = sizeof(pkt_v4));
-+	struct struct_ops_detach *skel;
-+	struct bpf_link *link = NULL;
-+	int prog_fd;
-+	int err;
-+
-+	skel = struct_ops_detach__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "struct_ops_detach_open_and_load"))
-+		return;
-+
-+	link = bpf_map__attach_struct_ops(skel->maps.testmod_do_detach);
-+	if (!ASSERT_OK_PTR(link, "attach_struct_ops"))
-+		goto cleanup;
-+
-+	bpf_link__destroy(link);
-+
-+	prog_fd = bpf_program__fd(skel->progs.start_detach);
-+	if (!ASSERT_GE(prog_fd, 0, "start_detach_fd"))
-+		goto cleanup;
-+
-+	/* Do detachment from the registered subsystem */
-+	err = bpf_prog_test_run_opts(prog_fd, &topts);
-+	if (!ASSERT_OK(err, "start_detach_run"))
-+		goto cleanup;
-+
-+	/* The link has zeroed refcount value or even has been
-+	 * unregistered, so the detachment from the subsystem should fail.
-+	 */
-+	ASSERT_EQ(topts.retval, (u32)-ENOENT, "start_detach_run_retval");
-+
-+	/* Sync RCU to make sure the link is freed without any crash */
-+	ASSERT_OK(kern_sync_rcu(), "kern_sync_rcu");
-+
-+cleanup:
-+	struct_ops_detach__destroy(skel);
-+}
-+
- void serial_test_struct_ops_module(void)
- {
- 	if (test__start_subtest("struct_ops_load"))
-@@ -378,5 +420,7 @@ void serial_test_struct_ops_module(void)
- 		test_detach_link();
- 	if (test__start_subtest("test_subsystem_detach"))
- 		test_subsystem_detach();
-+	if (test__start_subtest("test_subsystem_detach_free"))
-+		test_subsystem_detach_free();
- }
- 
+ - Return -E2BIG for i == MAX_RESOLVE_DEPTH.
+
+Changes from v3:
+
+ - Refactor the common code of btf_find_struct_field() and
+   btf_find_datasec_var().
+
+ - Limit the number of levels looking into a struct types.
+
+Changes from v2:
+
+ - Support fields in nested struct type.
+
+ - Remove nelems and duplicate field information with offset
+   adjustments for arrays.
+
+Changes from v1:
+
+ - Move the check of element alignment out of btf_field_cmp() to
+   btf_record_find().
+
+ - Change the order of the previous patch 4 "bpf:
+   check_map_kptr_access() compute the offset from the reg state" as
+   the patch 7 now.
+
+ - Reject BPF_RB_NODE and BPF_LIST_NODE with nelems > 1.
+
+ - Rephrase the commit log of the patch "bpf: check_map_access() with
+   the knowledge of arrays" to clarify the alignment on elements.
+
+v4: https://lore.kernel.org/all/20240508063218.2806447-1-thinker.li@gmail.com/
+v3: https://lore.kernel.org/all/20240501204729.484085-1-thinker.li@gmail.com/
+v2: https://lore.kernel.org/all/20240412210814.603377-1-thinker.li@gmail.com/
+v1: https://lore.kernel.org/bpf/20240410004150.2917641-1-thinker.li@gmail.com/
+
+Kui-Feng Lee (9):
+  bpf: Remove unnecessary checks on the offset of btf_field.
+  bpf: Remove unnecessary call to btf_field_type_size().
+  bpf: refactor btf_find_struct_field() and btf_find_datasec_var().
+  bpf: create repeated fields for arrays.
+  bpf: look into the types of the fields of a struct type recursively.
+  bpf: limit the number of levels of a nested struct type.
+  selftests/bpf: Test kptr arrays and kptrs in nested struct fields.
+  selftests/bpf: Test global bpf_rb_root arrays and fields in nested
+    struct types.
+  selftests/bpf: Test global bpf_list_head arrays.
+
+ kernel/bpf/btf.c                              | 305 ++++++++++++------
+ kernel/bpf/verifier.c                         |   4 +-
+ .../selftests/bpf/prog_tests/cpumask.c        |   5 +
+ .../selftests/bpf/prog_tests/linked_list.c    |  12 +
+ .../testing/selftests/bpf/prog_tests/rbtree.c |  47 +++
+ .../selftests/bpf/progs/cpumask_success.c     | 133 ++++++++
+ .../testing/selftests/bpf/progs/linked_list.c |  42 +++
+ tools/testing/selftests/bpf/progs/rbtree.c    |  77 +++++
+ 8 files changed, 517 insertions(+), 108 deletions(-)
+
 -- 
 2.34.1
 
