@@ -1,143 +1,167 @@
-Return-Path: <bpf+bounces-29558-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-29559-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7A65B8C2CC8
-	for <lists+bpf@lfdr.de>; Sat, 11 May 2024 00:57:19 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 874E08C2CCD
+	for <lists+bpf@lfdr.de>; Sat, 11 May 2024 01:04:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0D8211F22695
-	for <lists+bpf@lfdr.de>; Fri, 10 May 2024 22:57:19 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3AF7D284837
+	for <lists+bpf@lfdr.de>; Fri, 10 May 2024 23:04:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 21BCF179211;
-	Fri, 10 May 2024 22:57:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1CF1E16F26B;
+	Fri, 10 May 2024 23:04:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MYgnLD/a"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OR1T0oCl"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182])
+Received: from mail-oo1-f54.google.com (mail-oo1-f54.google.com [209.85.161.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E57B8177980
-	for <bpf@vger.kernel.org>; Fri, 10 May 2024 22:57:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 332CD28F3
+	for <bpf@vger.kernel.org>; Fri, 10 May 2024 23:04:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715381831; cv=none; b=VBB80YE9l4bZZXAnqO1wGrU7M4d9pwX1kAmjyRK4SQFunrITzdPL7IJk3wAGQ1+C8jXkIYR4R/6AhG42tayuXy5auD0gQitfvUCEmVxEKwUyteHYXZzEKG9iItyu5vkZUCoWZuO12CkE89XF3Jqo9xsZiBL0NjqkIPKy0765tpc=
+	t=1715382256; cv=none; b=jKiWaOUtAcbyQwIBJ9X6PQa1R9TVW2ZNH7zlW9lRsbWir4/Z/CanxPrJA4vqrI0g0tUL429MShCWtruYlcOQ4QBwT4HBoXKQ0OfbCZsiYVIPfPQX5Ru0zLBlWfvm+AdcRsYoJEkP/wZM6iPs7lwgMGPOZLMp20QeOGDzKzsQG0U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715381831; c=relaxed/simple;
-	bh=CpbmmIh7r9d73jgxQSmBnmTxPYQZZN1tGJyyk52iJiI=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=Vt6GiibWvs7c5JAreqN4hftjZXsLjuevNmbQg8J5osS6nhfzRXEAADIpZqN9l1af0ohl22XBWbS/qqGVBKV6ZvkhvdNGCJi6pioGiUa91qXVQ0hB39FoxOYSPutXXv2XdAiXgC5ALi9f4uIC7mhcST29GrpF64Vfw8qnLBlOpoI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=MYgnLD/a; arc=none smtp.client-ip=209.85.214.182
+	s=arc-20240116; t=1715382256; c=relaxed/simple;
+	bh=KpTpfZReZf9aqvC9aVP4QXAYC/uVAFiOnZjFJX1xNgM=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=OxIXQg6R/7YUZsiAdAx/mRi69WD8C8jMK0HfyK8vBrzG+tdFoLpFzmViadBEEiD31v/M8EzG3mWDdYc//n1Hc0m9A8seFmDuqHDFY+VUyWN/Wj3qXomJUBPlRc/e0FmFaHqSL6p3pGdCkACY0f/PHuVIAT54NxkyOo2CIYIKbC4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OR1T0oCl; arc=none smtp.client-ip=209.85.161.54
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f182.google.com with SMTP id d9443c01a7336-1ecd3867556so21467975ad.0
-        for <bpf@vger.kernel.org>; Fri, 10 May 2024 15:57:02 -0700 (PDT)
+Received: by mail-oo1-f54.google.com with SMTP id 006d021491bc7-5b295d6b7fbso275946eaf.0
+        for <bpf@vger.kernel.org>; Fri, 10 May 2024 16:04:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1715381822; x=1715986622; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=G+zG72hxCkPBJ8eC1mTUD2S85fJoKbSik6hT66Hl3Uc=;
-        b=MYgnLD/a6OFfsBlNaD1YHnyWPZifxdilUmvdwn3697XfoiK+7mc5t8wpDpoEl4y9ZN
-         653sLR365OuwiGsf3e5xqlhXdt6cnQSxu7VhtRayIOlm5VME37n3KvWzRyQOi+AWXJR9
-         osRKwtK9IKpO43WwyuZ3yRTxe5LaUQsJFTcqAQsygsUAc9U3zEwt08zqUIvo6Q5gBXMp
-         7ETSadXLGl4JSno3yUSGD0RP0/WkrIGnk6/c1A8Lh7sbijb63+Pb+a2A5T5Jd9szjhw0
-         5xoCqDHdq6iH6nH+V8gvGBN6QVBy1E9ks86PmdgQSQtFIu3eqCcIB1sfIZFmQeM0xHAB
-         OCig==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1715381822; x=1715986622;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+        d=gmail.com; s=20230601; t=1715382254; x=1715987054; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=G+zG72hxCkPBJ8eC1mTUD2S85fJoKbSik6hT66Hl3Uc=;
-        b=ni314kKgn8vG4i78mzbC72vbe9eaU178BnzFVCdEFIdu42lV3sVGnEw2EJt48LtcFl
-         n1pK58Plmo7RZKB78iUq+3Hx4dLaF5qUmU0hBrjdLbyLwKQt7oA5DciOXUXYSHjDtmBb
-         1LKO4JFSQDWUkeRRwgdh0i48Xd6CSDg9Ta3ONc6eY5yM3kxz866ULOLHsbIOfm8X8yJx
-         xxUdv4bGJN+sPVAvZCeRPr4iZ7DbTrNfJbRKya2n8AdYsBtnf3R5JfNsJD5OY2l/Dnxw
-         8Cs3tW4rqwmZYj4YV8PJhHlwY1O3zEL+h1HjA4tp+bGDYtWiN1FMSZp0j/0ElNv6EqL5
-         T+GQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVjI1sOK4R/4pJPCN5KEqbTgSI7KFYmXgAnM05MaGSKMvkE24wGITBXhRvS5ZEewFKDHximyRU/aAAbZBYBbBfeV6bL
-X-Gm-Message-State: AOJu0YzU2nMlqfTmPtwDJ7xGDeyycyjfoiYQJJ28C0QfY708Jm3dv5jb
-	5DP59QJe9PWxfyilD19+XBlu0IL+0BrruBCeOIBk2hs0MGfMyGRM
-X-Google-Smtp-Source: AGHT+IH2o8SZhw3CxrRWQcohVkqWMisiPrQcDDnyZfdgy9umXc5659Qr0e/O0Gr15QOq+rD74F7z4Q==
-X-Received: by 2002:a17:902:d490:b0:1e7:d482:9e09 with SMTP id d9443c01a7336-1ef43d0a022mr48393735ad.7.1715381821926;
-        Fri, 10 May 2024 15:57:01 -0700 (PDT)
-Received: from ?IPv6:2604:3d08:6979:1160::3424? ([2604:3d08:6979:1160::3424])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-1ef0b9d176fsm37554925ad.58.2024.05.10.15.57.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 10 May 2024 15:57:01 -0700 (PDT)
-Message-ID: <e65e8c7d387312f4b13a1241376ad6b959f90bf7.camel@gmail.com>
-Subject: Re: [PATCH bpf-next v5 7/9] selftests/bpf: Test kptr arrays and
- kptrs in nested struct fields.
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Kui-Feng Lee <sinquersw@gmail.com>, Kui-Feng Lee <thinker.li@gmail.com>,
-  bpf@vger.kernel.org, ast@kernel.org, martin.lau@linux.dev,
- song@kernel.org,  kernel-team@meta.com, andrii@kernel.org
-Cc: kuifeng@meta.com
-Date: Fri, 10 May 2024 15:57:00 -0700
-In-Reply-To: <52912c4f-219a-45d4-bb61-aaeadaf880c5@gmail.com>
-References: <20240510011312.1488046-1-thinker.li@gmail.com>
-	 <20240510011312.1488046-8-thinker.li@gmail.com>
-	 <d8f2fa21a9af5bfcb2acb1addecea435285c40e6.camel@gmail.com>
-	 <d2b9a943-ca26-404d-899a-c7651ce18a42@gmail.com>
-	 <62a51fcaddbf5eb8552a96e6a24ded83f8f9fa49.camel@gmail.com>
-	 <aa0cb7c8-f057-4f51-84c4-2cc9bc4e2edb@gmail.com>
-	 <a938837ff87adcdebaa58f612395dee06a0ea94a.camel@gmail.com>
-	 <52912c4f-219a-45d4-bb61-aaeadaf880c5@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.44.4-0ubuntu2 
+        bh=6fSz3vs34zNtzIOdGc0Arsw2gUpE1QOFCRDlBv5lwp8=;
+        b=OR1T0oClE3/BUhBU3o/aN3p6DhdpGi8VTJAgQZ0RBSkp0lQINZR6m15epEsJyJu4o8
+         JxsMuPweHQmmR4DuqE3HDLMmyi50zh+/2ywK5x8tjUm6mRnQiHA6jGXfE6BBZ/V2udH8
+         0C2HdYiiquzFxQVAGqgHxuOL9pGxCHULfSy5lSjtrNoQAajx0NxiQz/6dT72JkobbYbS
+         +ywBdAD828CZcuVKkI8ab+6OkicWiebeAm+qE5MVJ/tvlwxvHAS9BZsRzhlxp/g0sES6
+         YquhpeKcV9HCdH4hMKadVJ/o1sRaqr/ucalx75O8rcBAFhJUTF3AyO37r2BnJ0CaeJUJ
+         4hYA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1715382254; x=1715987054;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=6fSz3vs34zNtzIOdGc0Arsw2gUpE1QOFCRDlBv5lwp8=;
+        b=mwWqLmFJNTqjlHfiZLAdFjBtz9TJVk2mnCVGU7s2FbLjzE3wNrUH6IpVZUENb8ovbO
+         U7rmzTvLoulOhrFZVnXQCYUgO+er7BIANhUJTJz8vZJH98IPDKcRRsrksqmamVz2bKt9
+         XUIgLMaSntUeSYss4zW+5krT+SCGocGh5ffEDQaZoo0gANO3TeoWfxr1dpHXlf5d1Cb9
+         8Qtg6yLQ3CSf6eIxksNx9pNnzK9es+Org7m9ObC9gv2S1Zx9lmJv4+LtXFBeKOqJm1m2
+         PF7AWPxvg1ecHtuyHCcYsuNx4w1YD2WRpb4mSZftaXqKmN8AKOrQh4bjHPtjJVfQuLbi
+         raXw==
+X-Forwarded-Encrypted: i=1; AJvYcCXkwmiinSTsILy/JD9jHlVzR+gmQu8vrbnKzVnZhz7t2eiJIe1l2l/U8GugL02X24ZrCh+aNQIfWMb0O2fsiqMdGT1k
+X-Gm-Message-State: AOJu0YwRSMxaRYUGXE/08CqDoXxTJtA2d82+O7riDVLzCK+tZjMuru51
+	et4ZeGAPy+4x6t9tR6BM5NGpLKmuU69Kv+VE+b5acQMoxpFUhu7A
+X-Google-Smtp-Source: AGHT+IHnG9K03np+TfLTfSQ1S7ux75sLhP7jDZ/rzC2JkzTBSqpU5Toq7fqQ208eW27I/2QSmzFD0Q==
+X-Received: by 2002:a05:6870:a454:b0:23c:7b6d:38d7 with SMTP id 586e51a60fabf-24172f5e5camr4383113fac.36.1715382254213;
+        Fri, 10 May 2024 16:04:14 -0700 (PDT)
+Received: from ?IPV6:2600:1700:6cf8:1240:20fd:6927:f7be:d222? ([2600:1700:6cf8:1240:20fd:6927:f7be:d222])
+        by smtp.gmail.com with ESMTPSA id 46e09a7af769-6f0e84867f5sm623743a34.54.2024.05.10.16.04.13
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 10 May 2024 16:04:13 -0700 (PDT)
+Message-ID: <f2d480de-a598-4771-9c72-722dba941e83@gmail.com>
+Date: Fri, 10 May 2024 16:04:12 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH bpf-next v5 7/9] selftests/bpf: Test kptr arrays and kptrs
+ in nested struct fields.
+To: Eduard Zingerman <eddyz87@gmail.com>, Kui-Feng Lee
+ <thinker.li@gmail.com>, bpf@vger.kernel.org, ast@kernel.org,
+ martin.lau@linux.dev, song@kernel.org, kernel-team@meta.com,
+ andrii@kernel.org
+Cc: kuifeng@meta.com
+References: <20240510011312.1488046-1-thinker.li@gmail.com>
+ <20240510011312.1488046-8-thinker.li@gmail.com>
+ <d8f2fa21a9af5bfcb2acb1addecea435285c40e6.camel@gmail.com>
+ <d2b9a943-ca26-404d-899a-c7651ce18a42@gmail.com>
+ <62a51fcaddbf5eb8552a96e6a24ded83f8f9fa49.camel@gmail.com>
+ <aa0cb7c8-f057-4f51-84c4-2cc9bc4e2edb@gmail.com>
+ <a938837ff87adcdebaa58f612395dee06a0ea94a.camel@gmail.com>
+ <52912c4f-219a-45d4-bb61-aaeadaf880c5@gmail.com>
+ <e65e8c7d387312f4b13a1241376ad6b959f90bf7.camel@gmail.com>
+Content-Language: en-US
+From: Kui-Feng Lee <sinquersw@gmail.com>
+In-Reply-To: <e65e8c7d387312f4b13a1241376ad6b959f90bf7.camel@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Fri, 2024-05-10 at 15:53 -0700, Kui-Feng Lee wrote:
 
-[...]
 
-> > > > > Do you mean checking index in the way like the following code?
-> > > > >=20
-> > > > >     if (array[0] !=3D ref0 || array[1] !=3D ref1 || array[2] !=3D=
- ref2 ....)
-> > > > >       return err;
-> > > >=20
-> > > > Probably, but I'd need your help here.
-> > > > There goal is to verify that offsets of __kptr's in the 'info' arra=
-y
-> > > > had been set correctly. Where is this information is used later on?
-> > > > E.g. I'd like to trigger some action that "touches" __kptr at index=
- N
-> > > > and verify that all others had not been "touched".
-> > > > But this "touch" action has to use offset stored in the 'info'.
-> > >=20
-> > > They are used for verifying the offset of instructions.
-> > > Let's assume we have an array of size 10.
-> > > Then, we have 10 infos with 10 different offsets.
-> > > And, we have a program includes one instruction for each element, 10 =
-in
-> > > total, to access the corresponding element.
-> > > Each instruction has an offset different from others, generated by th=
-e
-> > > compiler. That means the verifier will fail to find an info for some =
-of
-> > > instructions if there is one or more info having wrong offset.
-> >=20
-> > That's a bit depressing, as there would be no way to check if e.g. all
-> > 10 refer to the same offset. Is it possible to trigger printing of the
-> ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-> How can that happen? Do you mean the compiler does it wrong?
+On 5/10/24 15:57, Eduard Zingerman wrote:
+> On Fri, 2024-05-10 at 15:53 -0700, Kui-Feng Lee wrote:
+> 
+> [...]
+> 
+>>>>>> Do you mean checking index in the way like the following code?
+>>>>>>
+>>>>>>      if (array[0] != ref0 || array[1] != ref1 || array[2] != ref2 ....)
+>>>>>>        return err;
+>>>>>
+>>>>> Probably, but I'd need your help here.
+>>>>> There goal is to verify that offsets of __kptr's in the 'info' array
+>>>>> had been set correctly. Where is this information is used later on?
+>>>>> E.g. I'd like to trigger some action that "touches" __kptr at index N
+>>>>> and verify that all others had not been "touched".
+>>>>> But this "touch" action has to use offset stored in the 'info'.
+>>>>
+>>>> They are used for verifying the offset of instructions.
+>>>> Let's assume we have an array of size 10.
+>>>> Then, we have 10 infos with 10 different offsets.
+>>>> And, we have a program includes one instruction for each element, 10 in
+>>>> total, to access the corresponding element.
+>>>> Each instruction has an offset different from others, generated by the
+>>>> compiler. That means the verifier will fail to find an info for some of
+>>>> instructions if there is one or more info having wrong offset.
+>>>
+>>> That's a bit depressing, as there would be no way to check if e.g. all
+>>> 10 refer to the same offset. Is it possible to trigger printing of the
+>> ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>> How can that happen? Do you mean the compiler does it wrong?
+> 
+> No, suppose that 'info.offset' is computed incorrectly because of some
+> bug in arrays handling. E.g. all .off fields in the infos have the
+> same value.
+> 
+> What is the shape of the test that could catch such bug?
+> 
 
-No, suppose that 'info.offset' is computed incorrectly because of some
-bug in arrays handling. E.g. all .off fields in the infos have the
-same value.
+I am not sure if I read you question correctly.
 
-What is the shape of the test that could catch such bug?
+For example, we have 3 correct info.
 
-> > 'info.offset' to verifier log? E.g. via some 'illegal' action.
-> Yes if necessary!
+  [info(offset=0x8), info(offset=0x10), info(offset=0x18)]
 
+And We have program that includes 3 instructions to access the offset 
+0x8, 0x10, and 0x18. (let's assume these load instructions would be 
+checked against infos)
+
+  load r1, [0x8]
+  load r1, [0x10]
+  load r1, [0x18]
+
+If everything works as expected, the verifier would accept the program.
+
+Otherwise, like you said, all 3 info are pointing to the same offset.
+
+  [info(0offset=0x8), info(offset=0x8), info(offset=0x8)]
+
+Then, the later two instructions should fail the check.
+
+
+>>> 'info.offset' to verifier log? E.g. via some 'illegal' action.
+>> Yes if necessary!
+> 
 
