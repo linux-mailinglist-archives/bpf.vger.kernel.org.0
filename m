@@ -1,70 +1,70 @@
-Return-Path: <bpf+bounces-29404-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-29405-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 64C968C1B90
-	for <lists+bpf@lfdr.de>; Fri, 10 May 2024 02:33:33 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 672F88C1B94
+	for <lists+bpf@lfdr.de>; Fri, 10 May 2024 02:33:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1EC42281E5E
-	for <lists+bpf@lfdr.de>; Fri, 10 May 2024 00:33:32 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BCED5B24905
+	for <lists+bpf@lfdr.de>; Fri, 10 May 2024 00:33:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B5B681420A3;
-	Fri, 10 May 2024 00:12:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A31B31420D7;
+	Fri, 10 May 2024 00:12:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="wZyOpCWS"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="EAtmuD9W"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f202.google.com (mail-pg1-f202.google.com [209.85.215.202])
+Received: from mail-pf1-f201.google.com (mail-pf1-f201.google.com [209.85.210.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5CAB614036B
-	for <bpf@vger.kernel.org>; Fri, 10 May 2024 00:12:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B93CF1420BC
+	for <bpf@vger.kernel.org>; Fri, 10 May 2024 00:12:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715299926; cv=none; b=CwYrYl05IWYE1BEtSycR1nrPjShQAh6kloAvFItgQGoPDKXdxW9fRo1N8do1SvqTVutAEbNCgit5Ln5NZO8cd57CqaGIa7OD6FHM2NzVPK/8OzKT2tay9ui9RL/yWO2DeR/czUQfjl7377AyY59FEChbQvZqLeLVu8K3OlWTZpY=
+	t=1715299928; cv=none; b=PlaHO1BDaQnpDoC7m4na3bbxP4umqnb006qfYLBSc4PJ3aBYhRJIF6YO/VxgC74xsqKevT/ie2zFASQzu4DyMmD+fP1/rc+8SZKMbkmTpTz/m0eyX4E1/TmdxMK1J2KR7yxQVk7h41E/uZUneahdkWg/ZkKDgPYS1i5DXpGzdB4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715299926; c=relaxed/simple;
-	bh=3eJI5zSrDuIzjnrtml0eoF0GxHt+dGhxWnDnqgmi7+E=;
+	s=arc-20240116; t=1715299928; c=relaxed/simple;
+	bh=cY1yLjDVOZyUKN7zy3cH0I6yfDbGKSufrusCzHder2E=;
 	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=CZrmTXoo0ukmBcqd39KLrvhzkIZZgtktvEm+/jLkpkHMzLl+ZUlXgV8OwRRnBR3gjXrclnEKIztkBEMEHDSEiD80TrPtabmMBPrEAaH6FAB3itL5hkOu+m07JaY4iKMQ+6KCSQ70YYJjkUojtN3+NyUtOkp50MgRg1J9sFGDR5g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--edliaw.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=wZyOpCWS; arc=none smtp.client-ip=209.85.215.202
+	 To:Cc:Content-Type; b=fnFbboppEjm0ph7HiX8p95S1+JDhaO0wmwVbPIDBZ7TEEDDUrKXi6WkTAWq0VTCyKdtdM44LKUe2fih07TBIJo9VNSjtl5pJ6PPNu2WGZXPCRAyXEt4/ekCJa/14AOaDCCNECAhMEZl+/BRX5nK+e75ZEmJUOy9xLPjUksq6zNg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--edliaw.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=EAtmuD9W; arc=none smtp.client-ip=209.85.210.201
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--edliaw.bounces.google.com
-Received: by mail-pg1-f202.google.com with SMTP id 41be03b00d2f7-613dbdf5c27so1269908a12.1
-        for <bpf@vger.kernel.org>; Thu, 09 May 2024 17:12:04 -0700 (PDT)
+Received: by mail-pf1-f201.google.com with SMTP id d2e1a72fcca58-6f46acb3537so1038164b3a.1
+        for <bpf@vger.kernel.org>; Thu, 09 May 2024 17:12:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1715299924; x=1715904724; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1715299926; x=1715904726; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=AuBb56Ya/JVHt3ZPygn0bw49ZbbB/FQ8kpaCbLZgiyk=;
-        b=wZyOpCWSM3WHSJbn8sAaw/WuEzI1DaK6M/RaXSSQroIRnVDlLc+s30ZCoxG54pylQ2
-         1KI01vnfWorfbKiC5B/Tgv8/wy4mlBZ3TVVX7zR1JRDW1wC/bet3UzTOaATdd0izyZBm
-         UWCH+OzypJY1oKVZZDCBO0E8rPw/1t01Bh45bQ4eezMk71syvGhh3hdvPndU7uulAyuL
-         oF/cLbhEeHfjMzvL8oh0Ovij/iWJeX34AWTFz0foQG/Et7ml5UwR0pEJctwt/NgNy8MQ
-         zs+9hYS7nUaYXERBR+RZDzymxmDi/iAdcArRfxbbOOM0UgmT8P4VlK31nhTbi7sf66Nr
-         HwGQ==
+        bh=1+/kjO6igpY5Z9IiOKAmMz8PNt+9Eolw6t7DBSMXgDQ=;
+        b=EAtmuD9WCSKsTAnkTmM1crXLqjyHlaYH7cg8jF9zWPnpcoKSaJa5NQ8TpIX4K+ZdEO
+         djjWGkIe9TQfNArCNwaDQSzEK2DhQHaGEy7qIZqN9Yf2ibkx3jFgQcuLFCEOTZD/cfSI
+         8GQC07RRQnBFEWEqtPi/zxLmO0GbvgT+if54SKdS50NbXZ5FNqLniKAOuG75X0esoOIP
+         maDV9Jg6AQul8dMw7tKBpsJZ7AzoNLzEKC3NYnctIgzmzFyfz15OmPIy+ob2jt2EC4at
+         FOQHtWdbjel7Qqhqzj2mG3iJINrPj9xA1yXuAEgPlPQhntyenYijZJEindY2AnYn3akP
+         FdXQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1715299924; x=1715904724;
+        d=1e100.net; s=20230601; t=1715299926; x=1715904726;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=AuBb56Ya/JVHt3ZPygn0bw49ZbbB/FQ8kpaCbLZgiyk=;
-        b=k9hGb11UnYgoECRPHu138OQ7atNubUE9D9UJ0xBxs3XX6EYv8lmHv+aqYcearegu2h
-         QsjSpEtWrM02sS2gHCX+eROfhwpyM0Whjh6N/0I/cjUjfaGxOOwelWeOBBeB0fILz5tD
-         kpHs5PgTKa93qU1srOAStkm5QRIx8dALJh3kZjOJxrKIIMiC3GQ5ge+KqYW+KGvgHpn8
-         rcf2hE97a7zKRrCdeWssE7QoFMNJ/MFMwgVzT7h3A71a1CGoTx4pHYkA3cVNVS+pjCM1
-         MKhjy8dFJHDeNNV6/x5/KaiE5+uW+BFrIPAuK3dtHTvBe427GIRpuAx8CaJzse7QtuTQ
-         hGnw==
-X-Forwarded-Encrypted: i=1; AJvYcCX/RUvXcFbYKUw32u+iUUxSzZrHD743+stk8VIswIhwu7qPYwLIHxfwM1CoSom8ZT4i4Fg/NAlx8/saf2q6qZ6RqPfi
-X-Gm-Message-State: AOJu0Yw9GH1oHGBtsq6tpCbCZBnE3TWog5W8NEgGJ5eOsoRLtZxiAoen
-	dC9b5A0WEOEQnKu7dL1F9W6v0Rdbb2w4w6cFT5njsKXMDyw11UT5DfoFNbPRz9/O4JGYWcejmue
-	+vA==
-X-Google-Smtp-Source: AGHT+IGDiT6r5MtSiTKtFOeh1TnvuA8iW3sg04Hs0Mp2HYr3hoUvchEofnYDdFYeElPPK8QwfKXlxZAkHMU=
+        bh=1+/kjO6igpY5Z9IiOKAmMz8PNt+9Eolw6t7DBSMXgDQ=;
+        b=bipwR5kwHEPVV5XwYvc7XsD1SRwnFt8kgB8jKVNymokc7uVvsOsSJCGtzoVwfpUrD6
+         Et9zBXYKcwXu0g2l4uvTcifT0JsDSrUrwcHDRxLL9Tw2Ro2betK2BNaf82ZfYc/he8GG
+         TdOlguoVyVCmkvNjE+rWv+1kMQcdL/IN69XfFLHqwMuJAL6JQbo99djy2cO0z+Jxj56M
+         GuS2wE23MxR+ed1J6+c+dj+l/FV7Nd4g16ZKZ0DEAHETDaCQXEUUZIBsdlaOHR/aafYn
+         Nif/uu3SMVTx9aaojkqKEJiI82wLnnevN1QdMmjWXCoMghM0dOsElWq+w3DwPzW7yWZl
+         2KDg==
+X-Forwarded-Encrypted: i=1; AJvYcCUjiFTcpIg8InPUjtOdW9NDEpsJFdc3AN5APyo71UDE5cHeje4gfKi/7qb5N+aqC9gzCjTM6S9JLgmtWwc+EtVmwR/+
+X-Gm-Message-State: AOJu0YyZRBYz94exC53ZgvUaPc4SX/vlFibjEBemfkpEI2x108wjnlGz
+	+PRTGJP5EMd2QTAMclU+alTLhDVlOaNX6iBa23Hs+2ecbkSZgqKVBTdLHyMCofuzkwi+gpm2nAi
+	rmA==
+X-Google-Smtp-Source: AGHT+IFqVJhwpwwqiHXuwXmYYl8rNoTCx5/ixsGah9it9PhH2pp2rnYEYGHSA0lrqROCVxUa7NHIESir2HY=
 X-Received: from edliaw.c.googlers.com ([fda3:e722:ac3:cc00:24:72f4:c0a8:305d])
- (user=edliaw job=sendgmr) by 2002:a17:903:32d1:b0:1ea:2838:e164 with SMTP id
- d9443c01a7336-1ef43c0cafdmr333715ad.2.1715299923621; Thu, 09 May 2024
- 17:12:03 -0700 (PDT)
-Date: Fri, 10 May 2024 00:07:20 +0000
+ (user=edliaw job=sendgmr) by 2002:a05:6a00:3992:b0:6ea:dfc1:b79 with SMTP id
+ d2e1a72fcca58-6f4df42b865mr83743b3a.2.1715299926061; Thu, 09 May 2024
+ 17:12:06 -0700 (PDT)
+Date: Fri, 10 May 2024 00:07:21 +0000
 In-Reply-To: <20240510000842.410729-1-edliaw@google.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -74,8 +74,8 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
 References: <20240510000842.410729-1-edliaw@google.com>
 X-Mailer: git-send-email 2.45.0.118.g7fe29c98d7-goog
-Message-ID: <20240510000842.410729-64-edliaw@google.com>
-Subject: [PATCH v4 63/66] selftests/user_events: Drop define _GNU_SOURCE
+Message-ID: <20240510000842.410729-65-edliaw@google.com>
+Subject: [PATCH v4 64/66] selftests/vDSO: Drop define _GNU_SOURCE
 From: Edward Liaw <edliaw@google.com>
 To: shuah@kernel.org, "=?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?=" <mic@digikod.net>, 
 	"=?UTF-8?q?G=C3=BCnther=20Noack?=" <gnoack@google.com>, Christian Brauner <brauner@kernel.org>, 
@@ -87,33 +87,58 @@ To: shuah@kernel.org, "=?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?=" <mic@digikod.net>
 Cc: linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org, 
 	kernel-team@android.com, Edward Liaw <edliaw@google.com>, 
 	linux-security-module@vger.kernel.org, netdev@vger.kernel.org, 
-	linux-riscv@lists.infradead.org, bpf@vger.kernel.org, 
-	John Hubbard <jhubbard@nvidia.com>, Muhammad Usama Anjum <usama.anjum@collabora.com>
+	linux-riscv@lists.infradead.org, bpf@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 
 _GNU_SOURCE is provided by lib.mk, so it should be dropped to prevent
 redefinition warnings.
 
-Reviewed-by: John Hubbard <jhubbard@nvidia.com>
-Reviewed-by: Muhammad Usama Anjum <usama.anjum@collabora.com>
 Signed-off-by: Edward Liaw <edliaw@google.com>
 ---
- tools/testing/selftests/user_events/abi_test.c | 2 --
- 1 file changed, 2 deletions(-)
+ tools/testing/selftests/vDSO/vdso_test_abi.c          | 1 -
+ tools/testing/selftests/vDSO/vdso_test_clock_getres.c | 2 --
+ tools/testing/selftests/vDSO/vdso_test_correctness.c  | 3 ---
+ 3 files changed, 6 deletions(-)
 
-diff --git a/tools/testing/selftests/user_events/abi_test.c b/tools/testing/selftests/user_events/abi_test.c
-index 7288a05136ba..a1f156dbbd56 100644
---- a/tools/testing/selftests/user_events/abi_test.c
-+++ b/tools/testing/selftests/user_events/abi_test.c
-@@ -4,8 +4,6 @@
-  *
-  * Copyright (c) 2022 Beau Belgrave <beaub@linux.microsoft.com>
+diff --git a/tools/testing/selftests/vDSO/vdso_test_abi.c b/tools/testing/selftests/vDSO/vdso_test_abi.c
+index 96d32fd65b42..fb01e6ffb9a0 100644
+--- a/tools/testing/selftests/vDSO/vdso_test_abi.c
++++ b/tools/testing/selftests/vDSO/vdso_test_abi.c
+@@ -14,7 +14,6 @@
+ #include <time.h>
+ #include <sys/auxv.h>
+ #include <sys/time.h>
+-#define _GNU_SOURCE
+ #include <unistd.h>
+ #include <sys/syscall.h>
+ 
+diff --git a/tools/testing/selftests/vDSO/vdso_test_clock_getres.c b/tools/testing/selftests/vDSO/vdso_test_clock_getres.c
+index 38d46a8bf7cb..f0adb906c8bd 100644
+--- a/tools/testing/selftests/vDSO/vdso_test_clock_getres.c
++++ b/tools/testing/selftests/vDSO/vdso_test_clock_getres.c
+@@ -10,8 +10,6 @@
+  * Power (32-bit and 64-bit), S390x (32-bit and 64-bit).
+  * Might work on other architectures.
   */
 -
 -#define _GNU_SOURCE
- #include <sched.h>
- 
- #include <errno.h>
+ #include <elf.h>
+ #include <err.h>
+ #include <fcntl.h>
+diff --git a/tools/testing/selftests/vDSO/vdso_test_correctness.c b/tools/testing/selftests/vDSO/vdso_test_correctness.c
+index e691a3cf1491..c435b7a5b38d 100644
+--- a/tools/testing/selftests/vDSO/vdso_test_correctness.c
++++ b/tools/testing/selftests/vDSO/vdso_test_correctness.c
+@@ -3,9 +3,6 @@
+  * ldt_gdt.c - Test cases for LDT and GDT access
+  * Copyright (c) 2011-2015 Andrew Lutomirski
+  */
+-
+-#define _GNU_SOURCE
+-
+ #include <stdio.h>
+ #include <sys/time.h>
+ #include <time.h>
 -- 
 2.45.0.118.g7fe29c98d7-goog
 
