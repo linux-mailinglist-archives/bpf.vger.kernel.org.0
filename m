@@ -1,70 +1,70 @@
-Return-Path: <bpf+bounces-29508-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-29509-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B45DA8C2A4C
-	for <lists+bpf@lfdr.de>; Fri, 10 May 2024 21:03:39 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id CB4BA8C2A4D
+	for <lists+bpf@lfdr.de>; Fri, 10 May 2024 21:03:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D752C1C223EB
-	for <lists+bpf@lfdr.de>; Fri, 10 May 2024 19:03:38 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 819D42872FC
+	for <lists+bpf@lfdr.de>; Fri, 10 May 2024 19:03:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D7D2D45C10;
-	Fri, 10 May 2024 19:03:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5886947A62;
+	Fri, 10 May 2024 19:03:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="T+3Bi89L"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="W3FTIWyO"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yb1-f201.google.com (mail-yb1-f201.google.com [209.85.219.201])
+Received: from mail-il1-f201.google.com (mail-il1-f201.google.com [209.85.166.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A1D8448CE0
-	for <bpf@vger.kernel.org>; Fri, 10 May 2024 19:03:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3ACF445945
+	for <bpf@vger.kernel.org>; Fri, 10 May 2024 19:03:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715367796; cv=none; b=l2jfeYVIZlpv1dUq7Hl5lwfN7j9CW6kVbFZCLt+aRLDfXuogq2JlrQwWDm9JFe+LfGQE47gfhKqvCpKIWX1SURWrjPQSCwPBaVb4dwN1g5GAZF/+Fw9oKvGvwL7RVG6Y6I1TBp8lDgYBqX9sEMtENA+YYmv4EC5oSq/R9QJGXYM=
+	t=1715367797; cv=none; b=uiePFXO2hQ4FD6uNbnj4NT6tsePRJN0zutWJAerU6dsH0AQHF95Nzcuk5N12mGfz79sOCMb9NpFRdzXfgqfU3QHY4YwR33BTIuMwb+2tw/aWK3Yj5hnt0x+MTKR/jetm0UBUA59ryuaET7U8XZcN7Nc012BMIv8DfwOfg9CRxxY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715367796; c=relaxed/simple;
-	bh=bRcw1943cH77mG2/ZP6FPr847/uKREi3NhnnCguvWNg=;
+	s=arc-20240116; t=1715367797; c=relaxed/simple;
+	bh=T0zjrJP+NJhtEGA7To/nE1u/4nq/7/uZUvODiMREuBI=;
 	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=OVmMUV4hKbg5W4sShJXl/xysQMHaWExVpyAHD/Tb/un3EpFCV9FBR+lXOcTvlwg0cMHyMI/et11AAbRTjrI9OtWXCAvwy2g0vH2EUjW0TEGNv5dhGMWD44PCoreVEPrLA2AHQHCXwpEAKVT2Na8yPxPDUB5ooVDiWgoHjoLIoeM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--jrife.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=T+3Bi89L; arc=none smtp.client-ip=209.85.219.201
+	 To:Cc:Content-Type; b=eF9Uelf5CGEGEyjMktdrzETvNwBmiPBxgnTAgf0rXDw8MKMf8B9lE8dMN91Kax9tMDKIfEDgBfz7c25nht23xeiab04hmyhLJ4+nNdyjM6Nq+3oSmAoSG51jIrGznumnhKf7R1oXp98G8+yeI2bOok9NZrEJcACdly7t15YOrgU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--jrife.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=W3FTIWyO; arc=none smtp.client-ip=209.85.166.201
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--jrife.bounces.google.com
-Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-de61a10141fso3341583276.1
-        for <bpf@vger.kernel.org>; Fri, 10 May 2024 12:03:14 -0700 (PDT)
+Received: by mail-il1-f201.google.com with SMTP id e9e14a558f8ab-36c5ed3322aso23508675ab.1
+        for <bpf@vger.kernel.org>; Fri, 10 May 2024 12:03:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1715367794; x=1715972594; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1715367795; x=1715972595; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=r9uR3cPOO2I0btChfqLpnIYWCHE0wNIxkZ7R2oIXmu4=;
-        b=T+3Bi89LMjj0OT2qPysx1WdyrTshd13wnnj+KMiIAGEJ3Aonzj46GnRPXIQ/0FgqkC
-         WrXQu7db71DXea+pEpFVRbYXZIix11N6lzL6spEA37LLCqnLBZ+B+RCnlKdkzgM7GD9C
-         LTa63YtlbsdIRCbgNJ9znh+kQBBFLTl6XsAVI1EU6Bj3/L8sbyuBEV/0jjoRwebdKKrM
-         Cjd1UTWI8vXCUoNoZh2tg2hnBtj5IGsQKp/n6xeo1U0C8nQdNKucPn4DkdpLUsThLIvj
-         M4bVRn9ZuLyY1Q5HKdKDsojwZKXnBMpk+tBKDrGrFUumoI0JS7jFx0NVqdCnqo/D1u/e
-         SPWA==
+        bh=0LG6b+p0f7R0KZLw/Ip8/hPBsUvl5qeWsV9/q9Vz57w=;
+        b=W3FTIWyOJuvS1qB8QlH5+gtPX/upTdQUhX38P2t33FX0+HKyMPd3Kkgc8BZCApY37i
+         r/N6X3v4ZKP4YG8NUaRhwNQ8J9vPAL1BuMBzyE0ooxMsOFqJguNSrelCMHbyK4uPDLgZ
+         ZlF1txSBi1qb0/pC2BdmdTbsouCt3MJdzVvjBRLtu08iK7BXJRe6hTgHBOhYBQR+Spyj
+         Z7uj2Kc94QRnXllthxH6pPhg+XH+eGKQQPYHRps0CYN4XlbcN6RyAVAvVFEulUCP0Alx
+         QTEp/EfEV1SNfrCTu98QFEOE40k6ZyFJPsQCS8TYO7ztyMhWsTXRPC9hxZf0L4hrDvo8
+         SU1w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1715367794; x=1715972594;
+        d=1e100.net; s=20230601; t=1715367795; x=1715972595;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=r9uR3cPOO2I0btChfqLpnIYWCHE0wNIxkZ7R2oIXmu4=;
-        b=iJsP8WODzG81IPs1spON/XxtL0mSy63/YO1AMSPUuW9eMaDczMmrJLbaDxjByFBbMP
-         Gqw9tXzI+gn9czg1rnnFOzAN8CH4sRxZduOQpFintOF1SvU54+1P9ppFckL9Bpdy+NZR
-         92FF2ae/l5JGt7SqYcNrqxf4DlEMSH/epvsllwrnbBv56D/tcCrFhM1e/M6Zg1BsMdKh
-         zWm8to3B5TnT5SJSEreuM5Jby9PXChcr+JoRZ9C+zlxt3Xb0JA+/LWlAavHi33jfSh1S
-         Vu5NXKr/y9v4A2Uu5OeaZn7tPhpVkd4qEieNmxONgPG0q9U4EExl0pdsG0rHd92Jd1Q5
-         fCcQ==
-X-Gm-Message-State: AOJu0YxGJ8GSPP5xwC3tA4Sy8di/NOFEZ5mszQqiwzVUe0DuaGjXxiez
-	MQ2A28uWGS48ClhILaN4t5SxUa0CvpRP+EhDcM7cDGUwIirBNwOoTkcqDNpc/Pb1n6hJkgLxXeP
-	EXDIDvTfmHLOn87GP27on1g4aflzLjxVpJQOBe0kbsK/yGuGLZ7k/TFhp5imbiYHcl4XSdSo3aw
-	2h5ZNNPEc9oju3/ojOWghskpQ=
-X-Google-Smtp-Source: AGHT+IExMfyEtNP5nY9FWVOf4elIuRS+nOct7NTPxs0AoYN7KiRd1mdk1gSXpLfdshqClFW4EjkLP3FB6Q==
+        bh=0LG6b+p0f7R0KZLw/Ip8/hPBsUvl5qeWsV9/q9Vz57w=;
+        b=cGSeJSWY+BkZyw/4ruOWRV91Ll+fbf4AqZofRzqhzwMlbtVjSWDnyUFzjYHaY83Aeq
+         ONqXVpnKQLEoOXQsdjo6B00r28lVvJufztdJDoqXEAZh8lRDqodnrJP2RjMJQCLXTKr8
+         j2JQMjXHT+0xjlTXWYw3vWJb26pRqVpfKZ9aOgZgLYsaWImijhVIXI5VPA6difxK/c4C
+         Yn8talp7FOuad54S4PRig+mRIa9weCkmF26r4krnKdcgvpLvDtX8DJLiAW7AyyDORpTs
+         7ceLgKVWipzy/kc65QtoK57oPuZu1q00QWeMw+JOCVs7EjO6PSRF3hBNUxMDNJCzGG6W
+         DRgg==
+X-Gm-Message-State: AOJu0YwjM4T1RBB13WatF9SNa1gdkVwAAQssnWwxh4pKElpUQmBrZ7EX
+	vpO9N8XV6HupQwOdPp15uKn4TNvSYG0xIaewmkm7nSzuUhRpf3YnuBCwbj5DsWJclV+iPJQDMsn
+	rPNv9ogUOVXfkRS7Ujh3Ea3pUK+g0IUUDg7CfwtunQnhne4188WNbVQtO7yjxX5FW6eW1+Q2uXf
+	Od1oiNdOrHa6UHhSiVYMpnpKI=
+X-Google-Smtp-Source: AGHT+IHVC4ksDd3n7KP2LAYtsFvQfCVmcXKbRCGGlpyadJiSUQMW0cVNS8pn76DZJX3NrUtP3u1dSUpg7Q==
 X-Received: from jrife.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:9f])
- (user=jrife job=sendgmr) by 2002:a25:1982:0:b0:dcd:2f3e:4d18 with SMTP id
- 3f1490d57ef6-dee4f364f84mr276030276.12.1715367793177; Fri, 10 May 2024
- 12:03:13 -0700 (PDT)
-Date: Fri, 10 May 2024 14:02:32 -0500
+ (user=jrife job=sendgmr) by 2002:a92:2902:0:b0:36c:11a0:7878 with SMTP id
+ e9e14a558f8ab-36cc145874amr704145ab.2.1715367795052; Fri, 10 May 2024
+ 12:03:15 -0700 (PDT)
+Date: Fri, 10 May 2024 14:02:33 -0500
 In-Reply-To: <20240510190246.3247730-1-jrife@google.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -74,8 +74,9 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
 References: <20240510190246.3247730-1-jrife@google.com>
 X-Mailer: git-send-email 2.45.0.118.g7fe29c98d7-goog
-Message-ID: <20240510190246.3247730-16-jrife@google.com>
-Subject: [PATCH v1 bpf-next 15/17] sefltests/bpf: Expand sockaddr hook deny tests
+Message-ID: <20240510190246.3247730-17-jrife@google.com>
+Subject: [PATCH v1 bpf-next 16/17] selftests/bpf: Expand getsockname and
+ getpeername tests
 From: Jordan Rife <jrife@google.com>
 To: bpf@vger.kernel.org
 Cc: Jordan Rife <jrife@google.com>, Alexei Starovoitov <ast@kernel.org>, 
@@ -88,625 +89,504 @@ Cc: Jordan Rife <jrife@google.com>, Alexei Starovoitov <ast@kernel.org>,
 	Shung-Hsi Yu <shung-hsi.yu@suse.com>, linux-kselftest@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 
-This patch expands test coverage for EPERM tests to include connect and
-bind calls and rounds out the coverage for sendmsg by adding tests for
-sendmsg_unix.
+This expands coverage for getsockname and getpeername hooks to include
+getsockname4, getsockname6, getpeername4, and getpeername6.
 
 Signed-off-by: Jordan Rife <jrife@google.com>
 ---
- .../selftests/bpf/prog_tests/sock_addr.c      | 342 ++++++++++++++++++
- .../testing/selftests/bpf/progs/bind4_prog.c  |   6 +
- .../testing/selftests/bpf/progs/bind6_prog.c  |   6 +
- .../selftests/bpf/progs/connect4_prog.c       |   6 +
- .../selftests/bpf/progs/connect6_prog.c       |   6 +
- .../selftests/bpf/progs/connect_unix_prog.c   |   6 +
- .../selftests/bpf/progs/sendmsg_unix_prog.c   |   6 +
- 7 files changed, 378 insertions(+)
+ .../selftests/bpf/prog_tests/sock_addr.c      | 304 +++++++++++++++++-
+ .../selftests/bpf/progs/getpeername4_prog.c   |  24 ++
+ .../selftests/bpf/progs/getpeername6_prog.c   |  31 ++
+ .../selftests/bpf/progs/getsockname4_prog.c   |  24 ++
+ .../selftests/bpf/progs/getsockname6_prog.c   |  31 ++
+ 5 files changed, 412 insertions(+), 2 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/progs/getpeername4_prog.c
+ create mode 100644 tools/testing/selftests/bpf/progs/getpeername6_prog.c
+ create mode 100644 tools/testing/selftests/bpf/progs/getsockname4_prog.c
+ create mode 100644 tools/testing/selftests/bpf/progs/getsockname6_prog.c
 
 diff --git a/tools/testing/selftests/bpf/prog_tests/sock_addr.c b/tools/testing/selftests/bpf/prog_tests/sock_addr.c
-index ebd5e58e38c5c..0477b4080b2e8 100644
+index 0477b4080b2e8..a0a40bdcfe45c 100644
 --- a/tools/testing/selftests/bpf/prog_tests/sock_addr.c
 +++ b/tools/testing/selftests/bpf/prog_tests/sock_addr.c
-@@ -439,13 +439,18 @@ static void prog_name##_destroy(void *skel) \
+@@ -15,7 +15,11 @@
+ #include "recvmsg6_prog.skel.h"
+ #include "sendmsg_unix_prog.skel.h"
+ #include "recvmsg_unix_prog.skel.h"
++#include "getsockname4_prog.skel.h"
++#include "getsockname6_prog.skel.h"
+ #include "getsockname_unix_prog.skel.h"
++#include "getpeername4_prog.skel.h"
++#include "getpeername6_prog.skel.h"
+ #include "getpeername_unix_prog.skel.h"
+ #include "network_helpers.h"
  
- BPF_SKEL_FUNCS(bind4_prog, bind_v4_prog);
- BPF_SKEL_FUNCS_RAW(bind4_prog, bind_v4_prog);
-+BPF_SKEL_FUNCS(bind4_prog, bind_v4_deny_prog);
- BPF_SKEL_FUNCS(bind6_prog, bind_v6_prog);
- BPF_SKEL_FUNCS_RAW(bind6_prog, bind_v6_prog);
-+BPF_SKEL_FUNCS(bind6_prog, bind_v6_deny_prog);
- BPF_SKEL_FUNCS(connect4_prog, connect_v4_prog);
- BPF_SKEL_FUNCS_RAW(connect4_prog, connect_v4_prog);
-+BPF_SKEL_FUNCS(connect4_prog, connect_v4_deny_prog);
- BPF_SKEL_FUNCS(connect6_prog, connect_v6_prog);
- BPF_SKEL_FUNCS_RAW(connect6_prog, connect_v6_prog);
-+BPF_SKEL_FUNCS(connect6_prog, connect_v6_deny_prog);
- BPF_SKEL_FUNCS(connect_unix_prog, connect_unix_prog);
-+BPF_SKEL_FUNCS(connect_unix_prog, connect_unix_deny_prog);
- BPF_SKEL_FUNCS(sendmsg4_prog, sendmsg_v4_prog);
- BPF_SKEL_FUNCS_RAW(sendmsg4_prog, sendmsg_v4_prog);
- BPF_SKEL_FUNCS(sendmsg4_prog, sendmsg_v4_deny_prog);
-@@ -456,6 +461,7 @@ BPF_SKEL_FUNCS(sendmsg6_prog, sendmsg_v6_preserve_dst_prog);
- BPF_SKEL_FUNCS(sendmsg6_prog, sendmsg_v6_v4mapped_prog);
- BPF_SKEL_FUNCS(sendmsg6_prog, sendmsg_v6_wildcard_prog);
- BPF_SKEL_FUNCS(sendmsg_unix_prog, sendmsg_unix_prog);
-+BPF_SKEL_FUNCS(sendmsg_unix_prog, sendmsg_unix_deny_prog);
- BPF_SKEL_FUNCS(recvmsg4_prog, recvmsg4_prog);
+@@ -466,7 +470,11 @@ BPF_SKEL_FUNCS(recvmsg4_prog, recvmsg4_prog);
  BPF_SKEL_FUNCS(recvmsg6_prog, recvmsg6_prog);
  BPF_SKEL_FUNCS(recvmsg_unix_prog, recvmsg_unix_prog);
-@@ -480,6 +486,22 @@ static struct sock_addr_test tests[] = {
- 		NULL,
- 		SUCCESS,
- 	},
-+	{
-+		SOCK_ADDR_TEST_BIND,
-+		"bind4: bind deny (stream)",
-+		bind_v4_deny_prog_load,
-+		bind_v4_deny_prog_destroy,
-+		BPF_CGROUP_INET4_BIND,
-+		&user_ops,
-+		AF_INET,
-+		SOCK_STREAM,
-+		SERV4_IP,
-+		SERV4_PORT,
-+		SERV4_REWRITE_IP,
-+		SERV4_REWRITE_PORT,
-+		NULL,
-+		SYSCALL_EPERM,
-+	},
- 	{
- 		SOCK_ADDR_TEST_BIND,
- 		"bind4: bind (dgram)",
-@@ -496,6 +518,22 @@ static struct sock_addr_test tests[] = {
- 		NULL,
- 		SUCCESS,
- 	},
-+	{
-+		SOCK_ADDR_TEST_BIND,
-+		"bind4: bind deny (dgram)",
-+		bind_v4_deny_prog_load,
-+		bind_v4_deny_prog_destroy,
-+		BPF_CGROUP_INET4_BIND,
-+		&user_ops,
-+		AF_INET,
-+		SOCK_DGRAM,
-+		SERV4_IP,
-+		SERV4_PORT,
-+		SERV4_REWRITE_IP,
-+		SERV4_REWRITE_PORT,
-+		NULL,
-+		SYSCALL_EPERM,
-+	},
- 	{
- 		SOCK_ADDR_TEST_BIND,
- 		"bind4: load prog with wrong expected attach type",
-@@ -544,6 +582,22 @@ static struct sock_addr_test tests[] = {
- 		NULL,
- 		SUCCESS,
- 	},
-+	{
-+		SOCK_ADDR_TEST_BIND,
-+		"bind6: bind deny (stream)",
-+		bind_v6_deny_prog_load,
-+		bind_v6_deny_prog_destroy,
-+		BPF_CGROUP_INET6_BIND,
-+		&user_ops,
-+		AF_INET6,
-+		SOCK_STREAM,
-+		SERV6_IP,
-+		SERV6_PORT,
-+		SERV6_REWRITE_IP,
-+		SERV6_REWRITE_PORT,
-+		NULL,
-+		SYSCALL_EPERM,
-+	},
- 	{
- 		SOCK_ADDR_TEST_BIND,
- 		"bind6: bind (dgram)",
-@@ -560,6 +614,22 @@ static struct sock_addr_test tests[] = {
- 		NULL,
- 		SUCCESS,
- 	},
-+	{
-+		SOCK_ADDR_TEST_BIND,
-+		"bind6: bind deny (dgram)",
-+		bind_v6_deny_prog_load,
-+		bind_v6_deny_prog_destroy,
-+		BPF_CGROUP_INET6_BIND,
-+		&user_ops,
-+		AF_INET6,
-+		SOCK_DGRAM,
-+		SERV6_IP,
-+		SERV6_PORT,
-+		SERV6_REWRITE_IP,
-+		SERV6_REWRITE_PORT,
-+		NULL,
-+		SYSCALL_EPERM,
-+	},
- 	{
- 		SOCK_ADDR_TEST_BIND,
- 		"bind6: load prog with wrong expected attach type",
-@@ -610,6 +680,22 @@ static struct sock_addr_test tests[] = {
- 		NULL,
- 		SUCCESS,
- 	},
-+	{
-+		SOCK_ADDR_TEST_BIND,
-+		"bind4: kernel_bind deny (stream)",
-+		bind_v4_deny_prog_load,
-+		bind_v4_deny_prog_destroy,
-+		BPF_CGROUP_INET4_BIND,
-+		&kern_ops_sock_sendmsg,
-+		AF_INET,
-+		SOCK_STREAM,
-+		SERV4_IP,
-+		SERV4_PORT,
-+		SERV4_REWRITE_IP,
-+		SERV4_REWRITE_PORT,
-+		NULL,
-+		SYSCALL_EPERM,
-+	},
- 	{
- 		SOCK_ADDR_TEST_BIND,
- 		"bind4: kernel_bind (dgram)",
-@@ -626,6 +712,22 @@ static struct sock_addr_test tests[] = {
- 		NULL,
- 		SUCCESS,
- 	},
-+	{
-+		SOCK_ADDR_TEST_BIND,
-+		"bind4: kernel_bind deny (dgram)",
-+		bind_v4_deny_prog_load,
-+		bind_v4_deny_prog_destroy,
-+		BPF_CGROUP_INET4_BIND,
-+		&kern_ops_sock_sendmsg,
-+		AF_INET,
-+		SOCK_DGRAM,
-+		SERV4_IP,
-+		SERV4_PORT,
-+		SERV4_REWRITE_IP,
-+		SERV4_REWRITE_PORT,
-+		NULL,
-+		SYSCALL_EPERM,
-+	},
- 	{
- 		SOCK_ADDR_TEST_BIND,
- 		"bind6: kernel_bind (stream)",
-@@ -642,6 +744,22 @@ static struct sock_addr_test tests[] = {
- 		NULL,
- 		SUCCESS,
- 	},
-+	{
-+		SOCK_ADDR_TEST_BIND,
-+		"bind6: kernel_bind deny (stream)",
-+		bind_v6_deny_prog_load,
-+		bind_v6_deny_prog_destroy,
-+		BPF_CGROUP_INET6_BIND,
-+		&kern_ops_sock_sendmsg,
-+		AF_INET6,
-+		SOCK_STREAM,
-+		SERV6_IP,
-+		SERV6_PORT,
-+		SERV6_REWRITE_IP,
-+		SERV6_REWRITE_PORT,
-+		NULL,
-+		SYSCALL_EPERM,
-+	},
- 	{
- 		SOCK_ADDR_TEST_BIND,
- 		"bind6: kernel_bind (dgram)",
-@@ -658,6 +776,22 @@ static struct sock_addr_test tests[] = {
- 		NULL,
- 		SUCCESS,
- 	},
-+	{
-+		SOCK_ADDR_TEST_BIND,
-+		"bind6: kernel_bind deny (dgram)",
-+		bind_v6_deny_prog_load,
-+		bind_v6_deny_prog_destroy,
-+		BPF_CGROUP_INET6_BIND,
-+		&kern_ops_sock_sendmsg,
-+		AF_INET6,
-+		SOCK_DGRAM,
-+		SERV6_IP,
-+		SERV6_PORT,
-+		SERV6_REWRITE_IP,
-+		SERV6_REWRITE_PORT,
-+		NULL,
-+		SYSCALL_EPERM,
-+	},
+ BPF_SKEL_FUNCS(getsockname_unix_prog, getsockname_unix_prog);
++BPF_SKEL_FUNCS(getsockname4_prog, getsockname_v4_prog);
++BPF_SKEL_FUNCS(getsockname6_prog, getsockname_v6_prog);
+ BPF_SKEL_FUNCS(getpeername_unix_prog, getpeername_unix_prog);
++BPF_SKEL_FUNCS(getpeername4_prog, getpeername_v4_prog);
++BPF_SKEL_FUNCS(getpeername6_prog, getpeername_v6_prog);
  
- 	/* connect - system calls */
+ static struct sock_addr_test tests[] = {
+ 	/* bind - system calls */
+@@ -1688,7 +1696,71 @@ static struct sock_addr_test tests[] = {
+ 	/* getsockname - system calls */
  	{
-@@ -676,6 +810,22 @@ static struct sock_addr_test tests[] = {
- 		SRC4_REWRITE_IP,
- 		SUCCESS,
- 	},
-+	{
-+		SOCK_ADDR_TEST_CONNECT,
-+		"connect4: connect deny (stream)",
-+		connect_v4_deny_prog_load,
-+		connect_v4_deny_prog_destroy,
-+		BPF_CGROUP_INET4_CONNECT,
+ 		SOCK_ADDR_TEST_GETSOCKNAME,
+-		"getsockname_unix",
++		"getsockname4: getsockname (stream)",
++		getsockname_v4_prog_load,
++		getsockname_v4_prog_destroy,
++		BPF_CGROUP_INET4_GETSOCKNAME,
 +		&user_ops,
 +		AF_INET,
 +		SOCK_STREAM,
-+		SERV4_IP,
-+		SERV4_PORT,
 +		SERV4_REWRITE_IP,
 +		SERV4_REWRITE_PORT,
-+		SRC4_REWRITE_IP,
-+		SYSCALL_EPERM,
++		SERV4_IP,
++		SERV4_PORT,
++		NULL,
++		SUCCESS,
 +	},
- 	{
- 		SOCK_ADDR_TEST_CONNECT,
- 		"connect4: connect (dgram)",
-@@ -692,6 +842,22 @@ static struct sock_addr_test tests[] = {
- 		SRC4_REWRITE_IP,
- 		SUCCESS,
- 	},
 +	{
-+		SOCK_ADDR_TEST_CONNECT,
-+		"connect4: connect deny (dgram)",
-+		connect_v4_deny_prog_load,
-+		connect_v4_deny_prog_destroy,
-+		BPF_CGROUP_INET4_CONNECT,
++		SOCK_ADDR_TEST_GETSOCKNAME,
++		"getsockname4: getsockname (dgram)",
++		getsockname_v4_prog_load,
++		getsockname_v4_prog_destroy,
++		BPF_CGROUP_INET4_GETSOCKNAME,
 +		&user_ops,
 +		AF_INET,
 +		SOCK_DGRAM,
-+		SERV4_IP,
-+		SERV4_PORT,
 +		SERV4_REWRITE_IP,
 +		SERV4_REWRITE_PORT,
-+		SRC4_REWRITE_IP,
-+		SYSCALL_EPERM,
++		SERV4_IP,
++		SERV4_PORT,
++		NULL,
++		SUCCESS,
 +	},
- 	{
- 		SOCK_ADDR_TEST_CONNECT,
- 		"connect4: load prog with wrong expected attach type",
-@@ -740,6 +906,22 @@ static struct sock_addr_test tests[] = {
- 		SRC6_REWRITE_IP,
- 		SUCCESS,
- 	},
 +	{
-+		SOCK_ADDR_TEST_CONNECT,
-+		"connect6: connect deny (stream)",
-+		connect_v6_deny_prog_load,
-+		connect_v6_deny_prog_destroy,
-+		BPF_CGROUP_INET6_CONNECT,
++		SOCK_ADDR_TEST_GETSOCKNAME,
++		"getsockname6: getsockname (stream)",
++		getsockname_v6_prog_load,
++		getsockname_v6_prog_destroy,
++		BPF_CGROUP_INET6_GETSOCKNAME,
 +		&user_ops,
 +		AF_INET6,
 +		SOCK_STREAM,
-+		SERV6_IP,
-+		SERV6_PORT,
 +		SERV6_REWRITE_IP,
 +		SERV6_REWRITE_PORT,
-+		SRC6_REWRITE_IP,
-+		SYSCALL_EPERM,
++		SERV6_IP,
++		SERV6_PORT,
++		NULL,
++		SUCCESS,
 +	},
- 	{
- 		SOCK_ADDR_TEST_CONNECT,
- 		"connect6: connect (dgram)",
-@@ -756,6 +938,22 @@ static struct sock_addr_test tests[] = {
- 		SRC6_REWRITE_IP,
- 		SUCCESS,
- 	},
 +	{
-+		SOCK_ADDR_TEST_CONNECT,
-+		"connect6: connect deny (dgram)",
-+		connect_v6_deny_prog_load,
-+		connect_v6_deny_prog_destroy,
-+		BPF_CGROUP_INET6_CONNECT,
++		SOCK_ADDR_TEST_GETSOCKNAME,
++		"getsockname6: getsockname (dgram)",
++		getsockname_v6_prog_load,
++		getsockname_v6_prog_destroy,
++		BPF_CGROUP_INET6_GETSOCKNAME,
 +		&user_ops,
 +		AF_INET6,
 +		SOCK_DGRAM,
-+		SERV6_IP,
-+		SERV6_PORT,
 +		SERV6_REWRITE_IP,
 +		SERV6_REWRITE_PORT,
-+		SRC6_REWRITE_IP,
-+		SYSCALL_EPERM,
-+	},
- 	{
- 		SOCK_ADDR_TEST_CONNECT,
- 		"connect6: load prog with wrong expected attach type",
-@@ -804,6 +1002,22 @@ static struct sock_addr_test tests[] = {
- 		NULL,
- 		SUCCESS,
- 	},
-+	{
-+		SOCK_ADDR_TEST_CONNECT,
-+		"connect_unix: connect deny (stream)",
-+		connect_unix_deny_prog_load,
-+		connect_unix_deny_prog_destroy,
-+		BPF_CGROUP_UNIX_CONNECT,
-+		&user_ops,
-+		AF_UNIX,
-+		SOCK_STREAM,
-+		SERVUN_ADDRESS,
-+		0,
-+		SERVUN_REWRITE_ADDRESS,
-+		0,
++		SERV6_IP,
++		SERV6_PORT,
 +		NULL,
-+		SYSCALL_EPERM,
++		SUCCESS,
 +	},
- 
- 	/* connect - kernel calls */
- 	{
-@@ -822,6 +1036,22 @@ static struct sock_addr_test tests[] = {
- 		SRC4_REWRITE_IP,
++	{
++		SOCK_ADDR_TEST_GETSOCKNAME,
++		"getsockname_unix: getsockname",
+ 		getsockname_unix_prog_load,
+ 		getsockname_unix_prog_destroy,
+ 		BPF_CGROUP_UNIX_GETSOCKNAME,
+@@ -1703,10 +1775,156 @@ static struct sock_addr_test tests[] = {
  		SUCCESS,
  	},
+ 
++	/* getsockname - kernel calls */
 +	{
-+		SOCK_ADDR_TEST_CONNECT,
-+		"connect4: kernel_connect deny (stream)",
-+		connect_v4_deny_prog_load,
-+		connect_v4_deny_prog_destroy,
-+		BPF_CGROUP_INET4_CONNECT,
-+		&kern_ops_sock_sendmsg,
++		SOCK_ADDR_TEST_GETSOCKNAME,
++		"getsockname4: kernel_getsockname (stream)",
++		getsockname_v4_prog_load,
++		getsockname_v4_prog_destroy,
++		BPF_CGROUP_INET4_GETSOCKNAME,
++		&kern_ops_kernel_sendmsg,
 +		AF_INET,
 +		SOCK_STREAM,
-+		SERV4_IP,
-+		SERV4_PORT,
 +		SERV4_REWRITE_IP,
 +		SERV4_REWRITE_PORT,
-+		SRC4_REWRITE_IP,
-+		SYSCALL_EPERM,
++		SERV4_IP,
++		SERV4_PORT,
++		NULL,
++		SUCCESS,
 +	},
- 	{
- 		SOCK_ADDR_TEST_CONNECT,
- 		"connect4: kernel_connect (dgram)",
-@@ -838,6 +1068,22 @@ static struct sock_addr_test tests[] = {
- 		SRC4_REWRITE_IP,
- 		SUCCESS,
- 	},
 +	{
-+		SOCK_ADDR_TEST_CONNECT,
-+		"connect4: kernel_connect deny (dgram)",
-+		connect_v4_deny_prog_load,
-+		connect_v4_deny_prog_destroy,
-+		BPF_CGROUP_INET4_CONNECT,
-+		&kern_ops_sock_sendmsg,
++		SOCK_ADDR_TEST_GETSOCKNAME,
++		"getsockname4: kernel_getsockname (dgram)",
++		getsockname_v4_prog_load,
++		getsockname_v4_prog_destroy,
++		BPF_CGROUP_INET4_GETSOCKNAME,
++		&kern_ops_kernel_sendmsg,
 +		AF_INET,
 +		SOCK_DGRAM,
-+		SERV4_IP,
-+		SERV4_PORT,
 +		SERV4_REWRITE_IP,
 +		SERV4_REWRITE_PORT,
-+		SRC4_REWRITE_IP,
-+		SYSCALL_EPERM,
++		SERV4_IP,
++		SERV4_PORT,
++		NULL,
++		SUCCESS,
 +	},
- 	{
- 		SOCK_ADDR_TEST_CONNECT,
- 		"connect6: kernel_connect (stream)",
-@@ -854,6 +1100,22 @@ static struct sock_addr_test tests[] = {
- 		SRC6_REWRITE_IP,
- 		SUCCESS,
- 	},
 +	{
-+		SOCK_ADDR_TEST_CONNECT,
-+		"connect6: kernel_connect deny (stream)",
-+		connect_v6_deny_prog_load,
-+		connect_v6_deny_prog_destroy,
-+		BPF_CGROUP_INET6_CONNECT,
-+		&kern_ops_sock_sendmsg,
++		SOCK_ADDR_TEST_GETSOCKNAME,
++		"getsockname6: kernel_getsockname (stream)",
++		getsockname_v6_prog_load,
++		getsockname_v6_prog_destroy,
++		BPF_CGROUP_INET6_GETSOCKNAME,
++		&kern_ops_kernel_sendmsg,
 +		AF_INET6,
 +		SOCK_STREAM,
-+		SERV6_IP,
-+		SERV6_PORT,
 +		SERV6_REWRITE_IP,
 +		SERV6_REWRITE_PORT,
-+		SRC6_REWRITE_IP,
-+		SYSCALL_EPERM,
++		SERV6_IP,
++		SERV6_PORT,
++		NULL,
++		SUCCESS,
 +	},
- 	{
- 		SOCK_ADDR_TEST_CONNECT,
- 		"connect6: kernel_connect (dgram)",
-@@ -870,6 +1132,22 @@ static struct sock_addr_test tests[] = {
- 		SRC6_REWRITE_IP,
- 		SUCCESS,
- 	},
 +	{
-+		SOCK_ADDR_TEST_CONNECT,
-+		"connect6: kernel_connect deny (dgram)",
-+		connect_v6_deny_prog_load,
-+		connect_v6_deny_prog_destroy,
-+		BPF_CGROUP_INET6_CONNECT,
-+		&kern_ops_sock_sendmsg,
++		SOCK_ADDR_TEST_GETSOCKNAME,
++		"getsockname6: kernel_getsockname (dgram)",
++		getsockname_v6_prog_load,
++		getsockname_v6_prog_destroy,
++		BPF_CGROUP_INET6_GETSOCKNAME,
++		&kern_ops_kernel_sendmsg,
 +		AF_INET6,
 +		SOCK_DGRAM,
-+		SERV6_IP,
-+		SERV6_PORT,
 +		SERV6_REWRITE_IP,
 +		SERV6_REWRITE_PORT,
-+		SRC6_REWRITE_IP,
-+		SYSCALL_EPERM,
-+	},
- 	{
- 		SOCK_ADDR_TEST_CONNECT,
- 		"connect_unix: kernel_connect (dgram)",
-@@ -886,6 +1164,22 @@ static struct sock_addr_test tests[] = {
- 		NULL,
- 		SUCCESS,
- 	},
-+	{
-+		SOCK_ADDR_TEST_CONNECT,
-+		"connect_unix: kernel_connect deny (dgram)",
-+		connect_unix_deny_prog_load,
-+		connect_unix_deny_prog_destroy,
-+		BPF_CGROUP_UNIX_CONNECT,
-+		&kern_ops_sock_sendmsg,
-+		AF_UNIX,
-+		SOCK_STREAM,
-+		SERVUN_ADDRESS,
-+		0,
-+		SERVUN_REWRITE_ADDRESS,
-+		0,
++		SERV6_IP,
++		SERV6_PORT,
 +		NULL,
-+		SYSCALL_EPERM,
++		SUCCESS,
 +	},
- 
- 	/* sendmsg - system calls */
- 	{
-@@ -1080,6 +1374,22 @@ static struct sock_addr_test tests[] = {
- 		NULL,
- 		SUCCESS,
- 	},
 +	{
-+		SOCK_ADDR_TEST_SENDMSG,
-+		"sendmsg_unix: sendmsg deny (dgram)",
-+		sendmsg_unix_deny_prog_load,
-+		sendmsg_unix_deny_prog_destroy,
-+		BPF_CGROUP_UNIX_SENDMSG,
-+		&user_ops,
-+		AF_UNIX,
-+		SOCK_DGRAM,
-+		SERVUN_ADDRESS,
-+		0,
-+		SERVUN_REWRITE_ADDRESS,
-+		0,
-+		NULL,
-+		SYSCALL_EPERM,
-+	},
- 
- 	/* sendmsg - kernel calls (sock_sendmsg) */
- 	{
-@@ -1178,6 +1488,22 @@ static struct sock_addr_test tests[] = {
- 		NULL,
- 		SUCCESS,
- 	},
-+	{
-+		SOCK_ADDR_TEST_SENDMSG,
-+		"sendmsg_unix: sock_sendmsg deny (dgram)",
-+		sendmsg_unix_deny_prog_load,
-+		sendmsg_unix_deny_prog_destroy,
-+		BPF_CGROUP_UNIX_SENDMSG,
-+		&kern_ops_sock_sendmsg,
-+		AF_UNIX,
-+		SOCK_DGRAM,
-+		SERVUN_ADDRESS,
-+		0,
-+		SERVUN_REWRITE_ADDRESS,
-+		0,
-+		NULL,
-+		SYSCALL_EPERM,
-+	},
- 
- 	/* sendmsg - kernel calls (kernel_sendmsg) */
- 	{
-@@ -1276,6 +1602,22 @@ static struct sock_addr_test tests[] = {
- 		NULL,
- 		SUCCESS,
- 	},
-+	{
-+		SOCK_ADDR_TEST_SENDMSG,
-+		"sendmsg_unix: kernel_sendmsg deny (dgram)",
-+		sendmsg_unix_deny_prog_load,
-+		sendmsg_unix_deny_prog_destroy,
-+		BPF_CGROUP_UNIX_SENDMSG,
++		SOCK_ADDR_TEST_GETSOCKNAME,
++		"getsockname_unix: kernel_getsockname",
++		getsockname_unix_prog_load,
++		getsockname_unix_prog_destroy,
++		BPF_CGROUP_UNIX_GETSOCKNAME,
 +		&kern_ops_kernel_sendmsg,
 +		AF_UNIX,
-+		SOCK_DGRAM,
++		SOCK_STREAM,
 +		SERVUN_ADDRESS,
 +		0,
 +		SERVUN_REWRITE_ADDRESS,
 +		0,
 +		NULL,
-+		SYSCALL_EPERM,
++		SUCCESS,
 +	},
- 
- 	/* recvmsg - system calls */
++
+ 	/* getpeername - system calls */
  	{
-diff --git a/tools/testing/selftests/bpf/progs/bind4_prog.c b/tools/testing/selftests/bpf/progs/bind4_prog.c
-index 66005c1a5b367..b7ddf8ec4ee89 100644
---- a/tools/testing/selftests/bpf/progs/bind4_prog.c
-+++ b/tools/testing/selftests/bpf/progs/bind4_prog.c
-@@ -158,4 +158,10 @@ int bind_v4_prog(struct bpf_sock_addr *ctx)
- 	return 1;
- }
+ 		SOCK_ADDR_TEST_GETPEERNAME,
+-		"getpeername_unix",
++		"getpeername4: getpeername (stream)",
++		getpeername_v4_prog_load,
++		getpeername_v4_prog_destroy,
++		BPF_CGROUP_INET4_GETPEERNAME,
++		&user_ops,
++		AF_INET,
++		SOCK_STREAM,
++		SERV4_REWRITE_IP,
++		SERV4_REWRITE_PORT,
++		SERV4_IP,
++		SERV4_PORT,
++		NULL,
++		SUCCESS,
++	},
++	{
++		SOCK_ADDR_TEST_GETPEERNAME,
++		"getpeername4: getpeername (dgram)",
++		getpeername_v4_prog_load,
++		getpeername_v4_prog_destroy,
++		BPF_CGROUP_INET4_GETPEERNAME,
++		&user_ops,
++		AF_INET,
++		SOCK_DGRAM,
++		SERV4_REWRITE_IP,
++		SERV4_REWRITE_PORT,
++		SERV4_IP,
++		SERV4_PORT,
++		NULL,
++		SUCCESS,
++	},
++	{
++		SOCK_ADDR_TEST_GETPEERNAME,
++		"getpeername6: getpeername (stream)",
++		getpeername_v6_prog_load,
++		getpeername_v6_prog_destroy,
++		BPF_CGROUP_INET6_GETPEERNAME,
++		&user_ops,
++		AF_INET6,
++		SOCK_STREAM,
++		SERV6_REWRITE_IP,
++		SERV6_REWRITE_PORT,
++		SERV6_IP,
++		SERV6_PORT,
++		NULL,
++		SUCCESS,
++	},
++	{
++		SOCK_ADDR_TEST_GETPEERNAME,
++		"getpeername6: getpeername (dgram)",
++		getpeername_v6_prog_load,
++		getpeername_v6_prog_destroy,
++		BPF_CGROUP_INET6_GETPEERNAME,
++		&user_ops,
++		AF_INET6,
++		SOCK_DGRAM,
++		SERV6_REWRITE_IP,
++		SERV6_REWRITE_PORT,
++		SERV6_IP,
++		SERV6_PORT,
++		NULL,
++		SUCCESS,
++	},
++	{
++		SOCK_ADDR_TEST_GETPEERNAME,
++		"getpeername_unix: getpeername",
+ 		getpeername_unix_prog_load,
+ 		getpeername_unix_prog_destroy,
+ 		BPF_CGROUP_UNIX_GETPEERNAME,
+@@ -1720,6 +1938,88 @@ static struct sock_addr_test tests[] = {
+ 		NULL,
+ 		SUCCESS,
+ 	},
++
++	/* getpeername - kernel calls */
++	{
++		SOCK_ADDR_TEST_GETPEERNAME,
++		"getpeername4: kernel_getpeername (stream)",
++		getpeername_v4_prog_load,
++		getpeername_v4_prog_destroy,
++		BPF_CGROUP_INET4_GETPEERNAME,
++		&kern_ops_kernel_sendmsg,
++		AF_INET,
++		SOCK_STREAM,
++		SERV4_REWRITE_IP,
++		SERV4_REWRITE_PORT,
++		SERV4_IP,
++		SERV4_PORT,
++		NULL,
++		SUCCESS,
++	},
++	{
++		SOCK_ADDR_TEST_GETPEERNAME,
++		"getpeername4: kernel_getpeername (dgram)",
++		getpeername_v4_prog_load,
++		getpeername_v4_prog_destroy,
++		BPF_CGROUP_INET4_GETPEERNAME,
++		&kern_ops_kernel_sendmsg,
++		AF_INET,
++		SOCK_DGRAM,
++		SERV4_REWRITE_IP,
++		SERV4_REWRITE_PORT,
++		SERV4_IP,
++		SERV4_PORT,
++		NULL,
++		SUCCESS,
++	},
++	{
++		SOCK_ADDR_TEST_GETPEERNAME,
++		"getpeername6: kernel_getpeername (stream)",
++		getpeername_v6_prog_load,
++		getpeername_v6_prog_destroy,
++		BPF_CGROUP_INET6_GETPEERNAME,
++		&kern_ops_kernel_sendmsg,
++		AF_INET6,
++		SOCK_STREAM,
++		SERV6_REWRITE_IP,
++		SERV6_REWRITE_PORT,
++		SERV6_IP,
++		SERV6_PORT,
++		NULL,
++		SUCCESS,
++	},
++	{
++		SOCK_ADDR_TEST_GETPEERNAME,
++		"getpeername6: kernel_getpeername (dgram)",
++		getpeername_v6_prog_load,
++		getpeername_v6_prog_destroy,
++		BPF_CGROUP_INET6_GETPEERNAME,
++		&kern_ops_kernel_sendmsg,
++		AF_INET6,
++		SOCK_DGRAM,
++		SERV6_REWRITE_IP,
++		SERV6_REWRITE_PORT,
++		SERV6_IP,
++		SERV6_PORT,
++		NULL,
++		SUCCESS,
++	},
++	{
++		SOCK_ADDR_TEST_GETPEERNAME,
++		"getpeername_unix: kernel_getpeername",
++		getpeername_unix_prog_load,
++		getpeername_unix_prog_destroy,
++		BPF_CGROUP_UNIX_GETPEERNAME,
++		&kern_ops_kernel_sendmsg,
++		AF_UNIX,
++		SOCK_STREAM,
++		SERVUN_ADDRESS,
++		0,
++		SERVUN_REWRITE_ADDRESS,
++		0,
++		NULL,
++		SUCCESS,
++	},
+ };
  
-+SEC("cgroup/bind4")
-+int bind_v4_deny_prog(struct bpf_sock_addr *ctx)
+ typedef int (*info_fn)(int, struct sockaddr *, socklen_t *);
+diff --git a/tools/testing/selftests/bpf/progs/getpeername4_prog.c b/tools/testing/selftests/bpf/progs/getpeername4_prog.c
+new file mode 100644
+index 0000000000000..4c97208cd25dd
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/getpeername4_prog.c
+@@ -0,0 +1,24 @@
++// SPDX-License-Identifier: GPL-2.0
++/* Copyright (c) 2024 Google LLC */
++
++#include "vmlinux.h"
++
++#include <string.h>
++#include <bpf/bpf_helpers.h>
++#include <bpf/bpf_endian.h>
++#include <bpf/bpf_core_read.h>
++#include "bpf_kfuncs.h"
++
++#define REWRITE_ADDRESS_IP4   0xc0a801fe // 192.168.1.254
++#define REWRITE_ADDRESS_PORT4 4040
++
++SEC("cgroup/getpeername4")
++int getpeername_v4_prog(struct bpf_sock_addr *ctx)
 +{
-+	return 0;
++	ctx->user_ip4 = bpf_htonl(REWRITE_ADDRESS_IP4);
++	ctx->user_port = bpf_htons(REWRITE_ADDRESS_PORT4);
++
++	return 1;
 +}
 +
- char _license[] SEC("license") = "GPL";
-diff --git a/tools/testing/selftests/bpf/progs/bind6_prog.c b/tools/testing/selftests/bpf/progs/bind6_prog.c
-index 9c86c712348cf..501c3fc11d356 100644
---- a/tools/testing/selftests/bpf/progs/bind6_prog.c
-+++ b/tools/testing/selftests/bpf/progs/bind6_prog.c
-@@ -175,4 +175,10 @@ int bind_v6_prog(struct bpf_sock_addr *ctx)
- 	return 1;
- }
- 
-+SEC("cgroup/bind6")
-+int bind_v6_deny_prog(struct bpf_sock_addr *ctx)
++char _license[] SEC("license") = "GPL";
+diff --git a/tools/testing/selftests/bpf/progs/getpeername6_prog.c b/tools/testing/selftests/bpf/progs/getpeername6_prog.c
+new file mode 100644
+index 0000000000000..070e4d7f636c9
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/getpeername6_prog.c
+@@ -0,0 +1,31 @@
++// SPDX-License-Identifier: GPL-2.0
++/* Copyright (c) 2024 Google LLC */
++
++#include "vmlinux.h"
++
++#include <string.h>
++#include <bpf/bpf_helpers.h>
++#include <bpf/bpf_endian.h>
++#include <bpf/bpf_core_read.h>
++#include "bpf_kfuncs.h"
++
++#define REWRITE_ADDRESS_IP6_0 0xfaceb00c
++#define REWRITE_ADDRESS_IP6_1 0x12345678
++#define REWRITE_ADDRESS_IP6_2 0x00000000
++#define REWRITE_ADDRESS_IP6_3 0x0000abcd
++
++#define REWRITE_ADDRESS_PORT6 6060
++
++SEC("cgroup/getpeername6")
++int getpeername_v6_prog(struct bpf_sock_addr *ctx)
 +{
-+	return 0;
++	ctx->user_ip6[0] = bpf_htonl(REWRITE_ADDRESS_IP6_0);
++	ctx->user_ip6[1] = bpf_htonl(REWRITE_ADDRESS_IP6_1);
++	ctx->user_ip6[2] = bpf_htonl(REWRITE_ADDRESS_IP6_2);
++	ctx->user_ip6[3] = bpf_htonl(REWRITE_ADDRESS_IP6_3);
++	ctx->user_port = bpf_htons(REWRITE_ADDRESS_PORT6);
++
++	return 1;
 +}
 +
- char _license[] SEC("license") = "GPL";
-diff --git a/tools/testing/selftests/bpf/progs/connect4_prog.c b/tools/testing/selftests/bpf/progs/connect4_prog.c
-index bec529da7c9d2..9e9ebf27b8784 100644
---- a/tools/testing/selftests/bpf/progs/connect4_prog.c
-+++ b/tools/testing/selftests/bpf/progs/connect4_prog.c
-@@ -199,4 +199,10 @@ int connect_v4_prog(struct bpf_sock_addr *ctx)
- 	return do_bind(ctx) ? 1 : 0;
- }
- 
-+SEC("cgroup/connect4")
-+int connect_v4_deny_prog(struct bpf_sock_addr *ctx)
++char _license[] SEC("license") = "GPL";
+diff --git a/tools/testing/selftests/bpf/progs/getsockname4_prog.c b/tools/testing/selftests/bpf/progs/getsockname4_prog.c
+new file mode 100644
+index 0000000000000..e298487c63474
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/getsockname4_prog.c
+@@ -0,0 +1,24 @@
++// SPDX-License-Identifier: GPL-2.0
++/* Copyright (c) 2024 Google LLC */
++
++#include "vmlinux.h"
++
++#include <string.h>
++#include <bpf/bpf_helpers.h>
++#include <bpf/bpf_endian.h>
++#include <bpf/bpf_core_read.h>
++#include "bpf_kfuncs.h"
++
++#define REWRITE_ADDRESS_IP4   0xc0a801fe // 192.168.1.254
++#define REWRITE_ADDRESS_PORT4 4040
++
++SEC("cgroup/getsockname4")
++int getsockname_v4_prog(struct bpf_sock_addr *ctx)
 +{
-+	return 0;
++	ctx->user_ip4 = bpf_htonl(REWRITE_ADDRESS_IP4);
++	ctx->user_port = bpf_htons(REWRITE_ADDRESS_PORT4);
++
++	return 1;
 +}
 +
- char _license[] SEC("license") = "GPL";
-diff --git a/tools/testing/selftests/bpf/progs/connect6_prog.c b/tools/testing/selftests/bpf/progs/connect6_prog.c
-index 40266d2c737c2..e98573b00ddb2 100644
---- a/tools/testing/selftests/bpf/progs/connect6_prog.c
-+++ b/tools/testing/selftests/bpf/progs/connect6_prog.c
-@@ -90,4 +90,10 @@ int connect_v6_prog(struct bpf_sock_addr *ctx)
- 	return 1;
- }
- 
-+SEC("cgroup/connect6")
-+int connect_v6_deny_prog(struct bpf_sock_addr *ctx)
++char _license[] SEC("license") = "GPL";
+diff --git a/tools/testing/selftests/bpf/progs/getsockname6_prog.c b/tools/testing/selftests/bpf/progs/getsockname6_prog.c
+new file mode 100644
+index 0000000000000..811d10cd55258
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/getsockname6_prog.c
+@@ -0,0 +1,31 @@
++// SPDX-License-Identifier: GPL-2.0
++/* Copyright (c) 2024 Google LLC */
++
++#include "vmlinux.h"
++
++#include <string.h>
++#include <bpf/bpf_helpers.h>
++#include <bpf/bpf_endian.h>
++#include <bpf/bpf_core_read.h>
++#include "bpf_kfuncs.h"
++
++#define REWRITE_ADDRESS_IP6_0 0xfaceb00c
++#define REWRITE_ADDRESS_IP6_1 0x12345678
++#define REWRITE_ADDRESS_IP6_2 0x00000000
++#define REWRITE_ADDRESS_IP6_3 0x0000abcd
++
++#define REWRITE_ADDRESS_PORT6 6060
++
++SEC("cgroup/getsockname6")
++int getsockname_v6_prog(struct bpf_sock_addr *ctx)
 +{
-+	return 0;
++	ctx->user_ip6[0] = bpf_htonl(REWRITE_ADDRESS_IP6_0);
++	ctx->user_ip6[1] = bpf_htonl(REWRITE_ADDRESS_IP6_1);
++	ctx->user_ip6[2] = bpf_htonl(REWRITE_ADDRESS_IP6_2);
++	ctx->user_ip6[3] = bpf_htonl(REWRITE_ADDRESS_IP6_3);
++	ctx->user_port = bpf_htons(REWRITE_ADDRESS_PORT6);
++
++	return 1;
 +}
 +
- char _license[] SEC("license") = "GPL";
-diff --git a/tools/testing/selftests/bpf/progs/connect_unix_prog.c b/tools/testing/selftests/bpf/progs/connect_unix_prog.c
-index 2ef0e0c46d17b..ba60adadb3355 100644
---- a/tools/testing/selftests/bpf/progs/connect_unix_prog.c
-+++ b/tools/testing/selftests/bpf/progs/connect_unix_prog.c
-@@ -36,4 +36,10 @@ int connect_unix_prog(struct bpf_sock_addr *ctx)
- 	return 1;
- }
- 
-+SEC("cgroup/connect_unix")
-+int connect_unix_deny_prog(struct bpf_sock_addr *ctx)
-+{
-+	return 0;
-+}
-+
- char _license[] SEC("license") = "GPL";
-diff --git a/tools/testing/selftests/bpf/progs/sendmsg_unix_prog.c b/tools/testing/selftests/bpf/progs/sendmsg_unix_prog.c
-index d8869b03dda9b..332d0eb1116f8 100644
---- a/tools/testing/selftests/bpf/progs/sendmsg_unix_prog.c
-+++ b/tools/testing/selftests/bpf/progs/sendmsg_unix_prog.c
-@@ -36,4 +36,10 @@ int sendmsg_unix_prog(struct bpf_sock_addr *ctx)
- 	return 1;
- }
- 
-+SEC("cgroup/sendmsg_unix")
-+int sendmsg_unix_deny_prog(struct bpf_sock_addr *ctx)
-+{
-+	return 0;
-+}
-+
- char _license[] SEC("license") = "GPL";
++char _license[] SEC("license") = "GPL";
 -- 
 2.45.0.118.g7fe29c98d7-goog
 
