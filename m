@@ -1,65 +1,67 @@
-Return-Path: <bpf+bounces-29519-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-29520-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A66B48C2A76
-	for <lists+bpf@lfdr.de>; Fri, 10 May 2024 21:24:27 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id A7D4A8C2A77
+	for <lists+bpf@lfdr.de>; Fri, 10 May 2024 21:24:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 340DE1F237EF
-	for <lists+bpf@lfdr.de>; Fri, 10 May 2024 19:24:27 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CAEA51C2172A
+	for <lists+bpf@lfdr.de>; Fri, 10 May 2024 19:24:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B4FE487B0;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 61C944AEC1;
 	Fri, 10 May 2024 19:24:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Cvvto5uQ"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VYgJDVCs"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-vk1-f179.google.com (mail-vk1-f179.google.com [209.85.221.179])
+Received: from mail-qt1-f182.google.com (mail-qt1-f182.google.com [209.85.160.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0ACDA47A62;
-	Fri, 10 May 2024 19:24:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 402BB47A70;
+	Fri, 10 May 2024 19:24:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715369056; cv=none; b=B3cA0g2yYdFBb/9LALgWASujEyR5H2OjFMve0yZgPBmA9UAL5makNURa3YaGLh/jvN+xzWmFu4hf3sFSbivq2nKRG/03FHp8x6iZdZSyFf0WoMBulS3+iRTP05fftCyhh41Uaz5hbygV8yXVKtnlhxUnL8yfiWi7KOR7J0SMqTo=
+	t=1715369056; cv=none; b=qysCPhXR7Uynr33oz5wnEtiqL9e8PlyUsPGElcBXjrt78rm9WiWbw+i9RJzf1JkuKPw4Y+TORAjrqi/EL5pQPgAT0vlkPwRoM5GGhc7GcUOcrnu7CwaLJQrzQ2e6v5Los/rpPIPU/ETzYNOJ3lin/tf89cMYrMfCIr+D+lzypJU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1715369056; c=relaxed/simple;
-	bh=gwKcORrZTVgKbilEj0IBj/n31Yqqw4k5/szSdpM025g=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=A1iXFx7/KHFKrvfBnXhE4VT2hATYTc8hIwGCCvA++TncYdcMGfxud3RLCjBGSlt4n2zfE20FGwwYjIBABzr3l02yZSAGHZvlp/jnT8k7wUiERVAQCMwfJXXv8jPx68xUkF2ofxIWXfZqXHzE6J28OJDSAT3NwjRIIm6oTcHRyC8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Cvvto5uQ; arc=none smtp.client-ip=209.85.221.179
+	bh=ZBOPkre873D94fGleWP36Xr4oz1szFk7Gu9NStRGk9U=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=Cmkqn39QJwkFPiCxsZtceXgR16AiWK9Oo3ig43bvSZuJjyElRTsNhbwAiWL9XY68ZGsM+3wMoHQC2/86psY42q60B5JPPHb4Dqhud341R1HL7bbpbvzncdsCFYBdnfVglUbMUS3xq2Li1c43UEKpmgW4KEkke8kqdRL0vaU6RkA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=VYgJDVCs; arc=none smtp.client-ip=209.85.160.182
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-vk1-f179.google.com with SMTP id 71dfb90a1353d-4df1cb51866so717133e0c.3;
-        Fri, 10 May 2024 12:24:14 -0700 (PDT)
+Received: by mail-qt1-f182.google.com with SMTP id d75a77b69052e-43d269fa3bbso7246691cf.0;
+        Fri, 10 May 2024 12:24:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20230601; t=1715369054; x=1715973854; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=3/eUnTFro7FOl+F47KJAx+RfdI70P4+3XVz5qXeWrmc=;
-        b=Cvvto5uQwJEribZHIDiPEu1KcDYzsmLnm5EEPUHJWXIITVSBGAS5SbZdpGu/Vk6H5W
-         mBr1maVd2uG4Yu096TVlTzYM5C7mlW3ERn1HzgCZ20ZkDTcP2meCFCCbBsOnGXJoAbsZ
-         Z4WZ7snECnL3NoKw+oAIUWukuzVsvbfUDpDbO/rTW3kIpj8cIX9PLme6piQ+IKUOYMNy
-         tYRhtHRsigGuFGVuEMFwwTFwCy2VrP+YRrlarWm91oIqvE+owKwrcxKRLtOqV8mt8N2J
-         dSn2CzMRD/sBEkftGmHVx7tyLDrW6AFuFYG/OcMPD3xD+mIrXjvAHwU7oYax3cNp8Kmk
-         p4mQ==
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=BOuXQAEhKw3rJutNx8xAD21JV3BngUmgn6O7AAvUwcw=;
+        b=VYgJDVCsmDbgMNXK/3QZ7gxsIadvThj79hlSodw94o+oo/BuB02VvCEbFHkdB89k/e
+         2BdgN/2Sxm2Zr2gt/93EJLyw2f2SDmFxsKU/0jwp8SUZybpl/CgIHWy0uceVqJli6Cmn
+         FggDcYmUGwiLXfM5mOw2cWTa84W7yz4YVmRV8U+wt3rCr9kaMoDSCy3qMaIrZjLfiLxA
+         gelc8F/ztpdDYdRMwxyDAV9zXOJPdDU3fezM+W4wMIzx/ILjeq2oJ9QdElh1mrHrivdN
+         /AG1+/kEax2bEW2w4prVQpbltwPpnUo9ZmXqypofTFxXJ5dUaFnUxGl7C5gWskVj93mB
+         qQjA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20230601; t=1715369054; x=1715973854;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=3/eUnTFro7FOl+F47KJAx+RfdI70P4+3XVz5qXeWrmc=;
-        b=UDrrO6pKedcJsyf+q+aWs7yEUaVCYWMo/v2hgju71qOfp8q8KkupkkKduIUZFYwjDs
-         ufrgtlknB3pmZcgUgC/DUXY+TXxQ6rkcy+yI2GAOSGxmd1ygI0Jscp+okxM/eQbwwg94
-         mok26JiQ/jTSOeRAy5YLlZRb2RgPrlQqvAVXmEA4rN5U8m3+IU5r4JHW5yKryeMtumj9
-         yuKL5YemkeOdhFL+Ec9ZeiWwzqNxInM59RovPOTCAZTd7XkVU+kViOoJFwSFs2AIulp+
-         8WNHR8rmNA7kxljkSHSoVZF40WqzHwHZravsoCzTXRPAi5oI1qJ8M4OCc/wjw+jeIrhG
-         msDA==
-X-Gm-Message-State: AOJu0YwTzM+fX4hkg4sp2ral8eC1p9TFGTFjGrN2/LchSfFB4AtU6cpD
-	05elgDgsmqvPhgYJyxHZNH3MbTZaBeF/MzwwGglU/aX3LxzihXES4dp6mQ==
-X-Google-Smtp-Source: AGHT+IGnNScmOZ65W302q1K0zOPI40QQjDHoUWlmFjgDGlbPT4on60Rl7oCFpzcMGkPW++Qai78TpQ==
-X-Received: by 2002:a05:6102:1505:b0:47b:cca3:aca0 with SMTP id ada2fe7eead31-48077e1cdd8mr4846723137.18.1715369053523;
-        Fri, 10 May 2024 12:24:13 -0700 (PDT)
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=BOuXQAEhKw3rJutNx8xAD21JV3BngUmgn6O7AAvUwcw=;
+        b=lFc5Tj969M+HgwP6hiO4QeJA2te4npB0S8RSSCbz56exolWSMVpPxMPKCdzKoQEcx1
+         3F06v+JgGkyAXiiqGJVsudsv3pUpFaIEARHCFuWGX8DHgktDsBiTDs4bq9YM5IGh+WUr
+         N3kCAUGlKXRJfNdsXUWMi1Xt5CTokxsPDfBvA6G1UVGSbkcmJq4YK6M43uEciG8e7y5b
+         AX64b8gkfKIaaYo2oJkHL2lSa9llX+sERZk26LhI3G0kST90pUd+yZemKIn9z6G+O3jW
+         tVvnF2r2XCVPfOW69ZsHd/Sy6tHY2KPj2c9oOLpew89uJzayO7NiFv27KgHDRYubGtiO
+         Di9Q==
+X-Gm-Message-State: AOJu0YzXFoUolx6fWZjE9cpqwANOuCVoCgDsmMrZ9ERbD45Eefr56kxL
+	CmYziUiO3Vt5LSl4HyS169HVgEnxScrKemPMHtztE0EEPc/QdrMYJDEQhg==
+X-Google-Smtp-Source: AGHT+IF+TR7y7y+YfoQgO3rr6IK1e5lnG8WwMNIpDcLKo8V6nkfCKRzb1tyC1J3SYinSqV1dkv6Wkw==
+X-Received: by 2002:a05:622a:14b:b0:439:8bae:6ab2 with SMTP id d75a77b69052e-43dfdac0abamr51650031cf.17.1715369054118;
+        Fri, 10 May 2024 12:24:14 -0700 (PDT)
 Received: from n36-183-057.byted.org ([147.160.184.83])
         by smtp.gmail.com with ESMTPSA id d75a77b69052e-43df5b46a26sm23863251cf.80.2024.05.10.12.24.13
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
@@ -80,10 +82,12 @@ Cc: bpf@vger.kernel.org,
 	xiyou.wangcong@gmail.com,
 	yepeilin.cs@gmail.com,
 	ameryhung@gmail.com
-Subject: [RFC PATCH v8 00/20] bpf qdisc
-Date: Fri, 10 May 2024 19:23:52 +0000
-Message-Id: <20240510192412.3297104-1-amery.hung@bytedance.com>
+Subject: [RFC PATCH v8 01/20] bpf: Support passing referenced kptr to struct_ops programs
+Date: Fri, 10 May 2024 19:23:53 +0000
+Message-Id: <20240510192412.3297104-2-amery.hung@bytedance.com>
 X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20240510192412.3297104-1-amery.hung@bytedance.com>
+References: <20240510192412.3297104-1-amery.hung@bytedance.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -92,204 +96,203 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-This is the v8 of bpf qdisc patchset. While I would like to do more
-testing and performance evaluation, I think posting it now may help
-discussions in the upcoming LSF/MM/BPF.
+This patch supports struct_ops programs that acqurie referenced kptrs
+throguh arguments. In Qdisc_ops, an skb is passed to ".enqueue" in the
+first argument. The qdisc becomes the sole owner of the skb and must
+enqueue or drop the skb. This matches the referenced kptr semantic
+in bpf. However, the existing practice of acquiring a referenced kptr via
+a kfunc with KF_ACQUIRE does not play well in this case. Calling kfuncs
+repeatedly allows the user to acquire multiple references, while there
+should be only one reference to a unique skb in a qdisc.
 
-* Overview *
+The solutioin is to make a struct_ops program automatically acquire a
+referenced kptr through a tagged argument in the stub function. When
+tagged with "__ref_acquired" (suggestion for a better name?), an
+reference kptr (ref_obj_id > 0) will be acquired automatically when
+entering the program. In addition, only the first read to the arguement
+is allowed and it will yeild a referenced kptr.
 
-This series supports implementing a qdisc using bpf struct_ops. bpf qdisc
-aims to be a flexible and easy-to-use infrastructure that allows users to
-quickly experiment with different scheduling algorithms/policies. It only
-requires users to implement core qdisc logic using bpf and implements the
-mundane part for them. In addition, the ability to easily communicate
-between qdisc and other components will also bring new opportunities for
-new applications and optimizations.
-
-After discussion in the previous patchset [0], we swicthed to struct_ops
-to take the benefit of struct_ops and avoid introducing a new abstraction
-to users. In addition, three changes to bpf are introduced to make
-bpf qdisc easier to program and performant.
-
-* struct_ops changes *
-
-To make struct_ops works better with bpf qdisc, two new changes are
-introduced to bpf specifically for struct_ops programs. Frist, we
-introduce "ref_acquired" postfix for arguments in stub functions [1] in
-patch 1-2. It will allow Qdisc_ops->enqueue to acquire an referenced kptr
-to an skb just once. Through the reference object tracking mechanism in
-the verifier, we can make sure that the acquired skb will be either
-enqueued or dropped. Besides, no duplicate references can be acquired.
-Then, we allow a reference leak in struct_ops programs so that we can
-return an skb naturally. This is done and tested in patch 3 and 4.
-
-* Support adding skb to bpf graph *
-
-Allowing users to enqueue an skb directly to a bpf collection improves
-users' programming experience and performance of qdiscs. In the previous
-patchset (v7), the user would need to allocate a local object, exchange
-an skb kptr into the object and then add the object to a collection during
-enqueue. The memory allocation in the fast path was hurting the
-performance.
-
-To allow adding skb to collection, we first introduced the support for
-adding kernel objects to bpf list and rbtree (patch 5-8). Then, we
-introduced exclusive-ownership graph nodes so that 1) we can fit
-an rb node into an skb, and 2) make it possible for list node and rb node
-to coexist in a union in skb (patch 9-12).
-
-We evaluated the benefit of direct skb queueing by comparing the
-throughput of simple fifo qdiscs implemented with v7 and v8 patchset.
-Both qdisc use a bpf list as the fifo. The fifo v8 is included in the
-selftests. While fifo v7 is identical in terms of the queueing logic,
-it requires additional bpf_obj_new() and bpf_kptr_xchg() calls to enqueue
-a local object containing a skb kptr. The test uses iperf3 to send and 
-receive traffic on the qdisc added to the loopback device for 1 minute,
-and we repeated it for five times. The result is shown below:
-
-                                    Average throughput   stdev
-fifo with indirect queueing (v7)    40.4 Gbps            0.91 Gbps
-fifo with direct queueing (v8)      43.5 Gbps            0.24 Gbps
-
-This part of the patchset (patch 5-12) is less tested and the approach may
-be overcomplicated, so I especially would like to gather more feedback
-before going further.
-
-* Miscellaneous notes *
-
-Finally, this patchset is based on 
-34c58c89feb3 (Merge branch 'gve-ring-size-changes') in net-next.
-
-The fq example in selftests requires bpf support of exchanging kptr into
-allocated objects (local kptr), which Dave Marchevsky developed and
-sent me as off-list patchset.
-
-Todo:
-  - Add more bpf testcases
-  - Add testcases for bpf_skb_tc_classify and other qdisc ops
-  - Add kfunc access control
-  - Add support for statistics
-  - Remove the requirement of explicit skb->dev restoration
-  - Look into more ops in Qdisc_ops
-  - Support updating Qdisc_ops
-
-[0] https://lore.kernel.org/netdev/cover.1705432850.git.amery.hung@bytedance.com/
-
+Signed-off-by: Amery Hung <amery.hung@bytedance.com>
 ---
-v8: Implement support of bpf qdisc using struct_ops
-    Allow struct_ops to acquire referenced kptr via argument
-    Allow struct_ops to release and return referenced kptr
-    Support enqueuing sk_buff to bpf_rbtree/list
-    Move examples from samples to selftests
-    Add a classful qdisc selftest
+ include/linux/bpf.h         |  3 +++
+ kernel/bpf/bpf_struct_ops.c | 17 +++++++++++++----
+ kernel/bpf/btf.c            | 10 +++++++++-
+ kernel/bpf/verifier.c       | 16 +++++++++++++---
+ 4 files changed, 38 insertions(+), 8 deletions(-)
 
-v7: Reference skb using kptr to sk_buff instead of __sk_buff
-    Use the new bpf rbtree/link to for skb queues
-    Add reset and init programs
-    Add a bpf fq qdisc sample
-    Add a bpf netem qdisc sample
-
-v6: switch to kptr based approach
-
-v5: mv kernel/bpf/skb_map.c net/core/skb_map.c
-    implement flow map as map-in-map
-    rename bpf_skb_tc_classify() and move it to net/sched/cls_api.c
-    clean up eBPF qdisc program context
-
-v4: get rid of PIFO, use rbtree directly
-
-v3: move priority queue from sch_bpf to skb map
-    introduce skb map and its helpers
-    introduce bpf_skb_classify()
-    use netdevice notifier to reset skb's
-    Rebase on latest bpf-next
-
-v2: Rebase on latest net-next
-    Make the code more complete (but still incomplete)
-
-Amery Hung (20):
-  bpf: Support passing referenced kptr to struct_ops programs
-  selftests/bpf: Test referenced kptr arguments of struct_ops programs
-  bpf: Allow struct_ops prog to return referenced kptr
-  selftests/bpf: Test returning kptr from struct_ops programs
-  bpf: Generate btf_struct_metas for kernel BTF
-  bpf: Recognize kernel types as graph values
-  bpf: Allow adding kernel objects to collections
-  selftests/bpf: Test adding kernel object to bpf graph
-  bpf: Find special BTF fields in union
-  bpf: Introduce exclusive-ownership list and rbtree nodes
-  bpf: Allow adding exclusive nodes to bpf list and rbtree
-  selftests/bpf: Modify linked_list tests to work with macro-ified
-    removes
-  bpf: net_sched: Support implementation of Qdisc_ops in bpf
-  bpf: net_sched: Add bpf qdisc kfuncs
-  bpf: net_sched: Allow more optional methods in Qdisc_ops
-  libbpf: Support creating and destroying qdisc
-  selftests: Add a basic fifo qdisc test
-  selftests: Add a bpf fq qdisc to selftest
-  selftests: Add a bpf netem qdisc to selftest
-  selftests: Add a prio bpf qdisc
-
- include/linux/bpf.h                           |  30 +-
- include/linux/bpf_verifier.h                  |   8 +-
- include/linux/btf.h                           |   5 +-
- include/linux/rbtree_types.h                  |   4 +
- include/linux/skbuff.h                        |   2 +
- include/linux/types.h                         |   4 +
- include/net/sch_generic.h                     |   8 +
- kernel/bpf/bpf_struct_ops.c                   |  17 +-
- kernel/bpf/btf.c                              | 255 +++++-
- kernel/bpf/helpers.c                          |  63 +-
- kernel/bpf/syscall.c                          |  22 +-
- kernel/bpf/verifier.c                         | 185 +++-
- net/sched/Makefile                            |   4 +
- net/sched/bpf_qdisc.c                         | 788 ++++++++++++++++++
- net/sched/sch_api.c                           |  19 +-
- net/sched/sch_generic.c                       |  11 +-
- tools/lib/bpf/libbpf.h                        |   5 +-
- tools/lib/bpf/netlink.c                       |  20 +-
- .../testing/selftests/bpf/bpf_experimental.h  |  59 +-
- .../selftests/bpf/bpf_testmod/bpf_testmod.c   |  29 +
- .../selftests/bpf/bpf_testmod/bpf_testmod.h   |  11 +
- .../selftests/bpf/prog_tests/bpf_qdisc.c      | 259 ++++++
- .../selftests/bpf/prog_tests/linked_list.c    |   6 +-
- .../prog_tests/test_struct_ops_kptr_return.c  |  87 ++
- .../prog_tests/test_struct_ops_ref_acquire.c  |  58 ++
- .../selftests/bpf/progs/bpf_qdisc_common.h    |  23 +
- .../selftests/bpf/progs/bpf_qdisc_fifo.c      |  83 ++
- .../selftests/bpf/progs/bpf_qdisc_fq.c        | 660 +++++++++++++++
- .../selftests/bpf/progs/bpf_qdisc_netem.c     | 236 ++++++
- .../selftests/bpf/progs/bpf_qdisc_prio.c      | 112 +++
- .../testing/selftests/bpf/progs/linked_list.c |  15 +
- .../testing/selftests/bpf/progs/linked_list.h |   8 +
- .../selftests/bpf/progs/linked_list_fail.c    |  46 +-
- .../bpf/progs/struct_ops_kptr_return.c        |  24 +
- ...uct_ops_kptr_return_fail__invalid_scalar.c |  24 +
- .../struct_ops_kptr_return_fail__local_kptr.c |  30 +
- ...uct_ops_kptr_return_fail__nonzero_offset.c |  23 +
- .../struct_ops_kptr_return_fail__wrong_type.c |  28 +
- .../bpf/progs/struct_ops_ref_acquire.c        |  27 +
- .../progs/struct_ops_ref_acquire_dup_ref.c    |  24 +
- .../progs/struct_ops_ref_acquire_ref_leak.c   |  19 +
- 41 files changed, 3216 insertions(+), 125 deletions(-)
- create mode 100644 net/sched/bpf_qdisc.c
- create mode 100644 tools/testing/selftests/bpf/prog_tests/bpf_qdisc.c
- create mode 100644 tools/testing/selftests/bpf/prog_tests/test_struct_ops_kptr_return.c
- create mode 100644 tools/testing/selftests/bpf/prog_tests/test_struct_ops_ref_acquire.c
- create mode 100644 tools/testing/selftests/bpf/progs/bpf_qdisc_common.h
- create mode 100644 tools/testing/selftests/bpf/progs/bpf_qdisc_fifo.c
- create mode 100644 tools/testing/selftests/bpf/progs/bpf_qdisc_fq.c
- create mode 100644 tools/testing/selftests/bpf/progs/bpf_qdisc_netem.c
- create mode 100644 tools/testing/selftests/bpf/progs/bpf_qdisc_prio.c
- create mode 100644 tools/testing/selftests/bpf/progs/struct_ops_kptr_return.c
- create mode 100644 tools/testing/selftests/bpf/progs/struct_ops_kptr_return_fail__invalid_scalar.c
- create mode 100644 tools/testing/selftests/bpf/progs/struct_ops_kptr_return_fail__local_kptr.c
- create mode 100644 tools/testing/selftests/bpf/progs/struct_ops_kptr_return_fail__nonzero_offset.c
- create mode 100644 tools/testing/selftests/bpf/progs/struct_ops_kptr_return_fail__wrong_type.c
- create mode 100644 tools/testing/selftests/bpf/progs/struct_ops_ref_acquire.c
- create mode 100644 tools/testing/selftests/bpf/progs/struct_ops_ref_acquire_dup_ref.c
- create mode 100644 tools/testing/selftests/bpf/progs/struct_ops_ref_acquire_ref_leak.c
-
+diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+index 9c6a7b8ff963..6aabca1581fe 100644
+--- a/include/linux/bpf.h
++++ b/include/linux/bpf.h
+@@ -914,6 +914,7 @@ struct bpf_insn_access_aux {
+ 		struct {
+ 			struct btf *btf;
+ 			u32 btf_id;
++			u32 ref_obj_id;
+ 		};
+ 	};
+ 	struct bpf_verifier_log *log; /* for verbose logs */
+@@ -1416,6 +1417,8 @@ struct bpf_ctx_arg_aux {
+ 	enum bpf_reg_type reg_type;
+ 	struct btf *btf;
+ 	u32 btf_id;
++	u32 ref_obj_id;
++	bool ref_acquired;
+ };
+ 
+ struct btf_mod_pair {
+diff --git a/kernel/bpf/bpf_struct_ops.c b/kernel/bpf/bpf_struct_ops.c
+index 86c7884abaf8..bca8e5936846 100644
+--- a/kernel/bpf/bpf_struct_ops.c
++++ b/kernel/bpf/bpf_struct_ops.c
+@@ -143,6 +143,7 @@ void bpf_struct_ops_image_free(void *image)
+ }
+ 
+ #define MAYBE_NULL_SUFFIX "__nullable"
++#define REF_ACQUIRED_SUFFIX "__ref_acquired"
+ #define MAX_STUB_NAME 128
+ 
+ /* Return the type info of a stub function, if it exists.
+@@ -204,6 +205,7 @@ static int prepare_arg_info(struct btf *btf,
+ 			    struct bpf_struct_ops_arg_info *arg_info)
+ {
+ 	const struct btf_type *stub_func_proto, *pointed_type;
++	bool is_nullable = false, is_ref_acquired = false;
+ 	const struct btf_param *stub_args, *args;
+ 	struct bpf_ctx_arg_aux *info, *info_buf;
+ 	u32 nargs, arg_no, info_cnt = 0;
+@@ -240,8 +242,11 @@ static int prepare_arg_info(struct btf *btf,
+ 		/* Skip arguments that is not suffixed with
+ 		 * "__nullable".
+ 		 */
+-		if (!btf_param_match_suffix(btf, &stub_args[arg_no],
+-					    MAYBE_NULL_SUFFIX))
++		is_nullable = btf_param_match_suffix(btf, &stub_args[arg_no],
++						     MAYBE_NULL_SUFFIX);
++		is_ref_acquired = btf_param_match_suffix(btf, &stub_args[arg_no],
++						       REF_ACQUIRED_SUFFIX);
++		if (!(is_nullable || is_ref_acquired))
+ 			continue;
+ 
+ 		/* Should be a pointer to struct */
+@@ -269,11 +274,15 @@ static int prepare_arg_info(struct btf *btf,
+ 		}
+ 
+ 		/* Fill the information of the new argument */
+-		info->reg_type =
+-			PTR_TRUSTED | PTR_TO_BTF_ID | PTR_MAYBE_NULL;
+ 		info->btf_id = arg_btf_id;
+ 		info->btf = btf;
+ 		info->offset = offset;
++		if (is_nullable) {
++			info->reg_type = PTR_TRUSTED | PTR_TO_BTF_ID | PTR_MAYBE_NULL;
++		} else if (is_ref_acquired) {
++			info->reg_type = PTR_TRUSTED | PTR_TO_BTF_ID;
++			info->ref_acquired = true;
++		}
+ 
+ 		info++;
+ 		info_cnt++;
+diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+index 8c95392214ed..e462fb4a4598 100644
+--- a/kernel/bpf/btf.c
++++ b/kernel/bpf/btf.c
+@@ -6316,7 +6316,8 @@ bool btf_ctx_access(int off, int size, enum bpf_access_type type,
+ 
+ 	/* this is a pointer to another type */
+ 	for (i = 0; i < prog->aux->ctx_arg_info_size; i++) {
+-		const struct bpf_ctx_arg_aux *ctx_arg_info = &prog->aux->ctx_arg_info[i];
++		struct bpf_ctx_arg_aux *ctx_arg_info =
++			(struct bpf_ctx_arg_aux *)&prog->aux->ctx_arg_info[i];
+ 
+ 		if (ctx_arg_info->offset == off) {
+ 			if (!ctx_arg_info->btf_id) {
+@@ -6324,9 +6325,16 @@ bool btf_ctx_access(int off, int size, enum bpf_access_type type,
+ 				return false;
+ 			}
+ 
++			if (ctx_arg_info->ref_acquired && !ctx_arg_info->ref_obj_id) {
++				bpf_log(log, "cannot acquire a reference to context argument offset %u\n", off);
++				return false;
++			}
++
+ 			info->reg_type = ctx_arg_info->reg_type;
+ 			info->btf = ctx_arg_info->btf ? : btf_vmlinux;
+ 			info->btf_id = ctx_arg_info->btf_id;
++			info->ref_obj_id = ctx_arg_info->ref_obj_id;
++			ctx_arg_info->ref_obj_id = 0;
+ 			return true;
+ 		}
+ 	}
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index 9f867fca9fbe..06a6edd306fd 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -5557,7 +5557,7 @@ static int check_packet_access(struct bpf_verifier_env *env, u32 regno, int off,
+ /* check access to 'struct bpf_context' fields.  Supports fixed offsets only */
+ static int check_ctx_access(struct bpf_verifier_env *env, int insn_idx, int off, int size,
+ 			    enum bpf_access_type t, enum bpf_reg_type *reg_type,
+-			    struct btf **btf, u32 *btf_id)
++			    struct btf **btf, u32 *btf_id, u32 *ref_obj_id)
+ {
+ 	struct bpf_insn_access_aux info = {
+ 		.reg_type = *reg_type,
+@@ -5578,6 +5578,7 @@ static int check_ctx_access(struct bpf_verifier_env *env, int insn_idx, int off,
+ 		if (base_type(*reg_type) == PTR_TO_BTF_ID) {
+ 			*btf = info.btf;
+ 			*btf_id = info.btf_id;
++			*ref_obj_id = info.ref_obj_id;
+ 		} else {
+ 			env->insn_aux_data[insn_idx].ctx_field_size = info.ctx_field_size;
+ 		}
+@@ -6833,7 +6834,7 @@ static int check_mem_access(struct bpf_verifier_env *env, int insn_idx, u32 regn
+ 	} else if (reg->type == PTR_TO_CTX) {
+ 		enum bpf_reg_type reg_type = SCALAR_VALUE;
+ 		struct btf *btf = NULL;
+-		u32 btf_id = 0;
++		u32 btf_id = 0, ref_obj_id = 0;
+ 
+ 		if (t == BPF_WRITE && value_regno >= 0 &&
+ 		    is_pointer_value(env, value_regno)) {
+@@ -6846,7 +6847,7 @@ static int check_mem_access(struct bpf_verifier_env *env, int insn_idx, u32 regn
+ 			return err;
+ 
+ 		err = check_ctx_access(env, insn_idx, off, size, t, &reg_type, &btf,
+-				       &btf_id);
++				       &btf_id, &ref_obj_id);
+ 		if (err)
+ 			verbose_linfo(env, insn_idx, "; ");
+ 		if (!err && t == BPF_READ && value_regno >= 0) {
+@@ -6870,6 +6871,7 @@ static int check_mem_access(struct bpf_verifier_env *env, int insn_idx, u32 regn
+ 				if (base_type(reg_type) == PTR_TO_BTF_ID) {
+ 					regs[value_regno].btf = btf;
+ 					regs[value_regno].btf_id = btf_id;
++					regs[value_regno].ref_obj_id = ref_obj_id;
+ 				}
+ 			}
+ 			regs[value_regno].type = reg_type;
+@@ -20426,6 +20428,7 @@ static int do_check_common(struct bpf_verifier_env *env, int subprog)
+ {
+ 	bool pop_log = !(env->log.level & BPF_LOG_LEVEL2);
+ 	struct bpf_subprog_info *sub = subprog_info(env, subprog);
++	struct bpf_ctx_arg_aux *ctx_arg_info;
+ 	struct bpf_verifier_state *state;
+ 	struct bpf_reg_state *regs;
+ 	int ret, i;
+@@ -20533,6 +20536,13 @@ static int do_check_common(struct bpf_verifier_env *env, int subprog)
+ 		mark_reg_known_zero(env, regs, BPF_REG_1);
+ 	}
+ 
++	if (env->prog->type == BPF_PROG_TYPE_STRUCT_OPS) {
++		ctx_arg_info = (struct bpf_ctx_arg_aux *)env->prog->aux->ctx_arg_info;
++		for (i = 0; i < env->prog->aux->ctx_arg_info_size; i++)
++			if (ctx_arg_info[i].ref_acquired)
++				ctx_arg_info[i].ref_obj_id = acquire_reference_state(env, 0);
++	}
++
+ 	ret = do_check(env);
+ out:
+ 	/* check for NULL is necessary, since cur_state can be freed inside
 -- 
 2.20.1
 
