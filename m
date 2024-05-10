@@ -1,112 +1,104 @@
-Return-Path: <bpf+bounces-29555-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-29556-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D619C8C2CA2
-	for <lists+bpf@lfdr.de>; Sat, 11 May 2024 00:32:27 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3F2378C2CC0
+	for <lists+bpf@lfdr.de>; Sat, 11 May 2024 00:47:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 91A662868AB
-	for <lists+bpf@lfdr.de>; Fri, 10 May 2024 22:32:26 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BF40B1F2135E
+	for <lists+bpf@lfdr.de>; Fri, 10 May 2024 22:47:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D0CE716F823;
-	Fri, 10 May 2024 22:32:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4469417082F;
+	Fri, 10 May 2024 22:46:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="D7PXvsdy"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EjOZNA0C"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f176.google.com (mail-pl1-f176.google.com [209.85.214.176])
+Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D1D514F130;
-	Fri, 10 May 2024 22:32:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 82DF9134BD
+	for <bpf@vger.kernel.org>; Fri, 10 May 2024 22:46:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715380344; cv=none; b=onrb33ZG44NCdxgDYvP5kQRoUz01Y+SarMjtXneT3EGuwXa8XzCZK9IP/iZzxsZ/P1h8qY21rMPmEUYiNt/v+pQyjlu/KUsfph9KjJ3kwbjnz+g6yjfjhjujw2i2kooXE2ntPEWtibP8ykrTgd43r7MHRMpCbNqFZjZIwZeP+rc=
+	t=1715381215; cv=none; b=lHrshEOwNh7mMxr1hmzfpAop814u+bmZn6T8dRVEjMZRwbmooniLUmQacbE3CFSvSejKGaSUemZtM6Gybp/lD2zF9yM3GkfZJ1mkv7QRtst9P6WYKXzuPVD/uqB1LZOYRt28+7ieF28BNf840tRcbSVhMh8MWluA9wQ0t78uCWg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715380344; c=relaxed/simple;
-	bh=BplohyCDLbrqKI8Dro3eag9DCXAwc4L5fx0gsf0ZTSM=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=lKMqadQa3+GveC230MyOL7CB3FHcT0uMVSwyboM4Qp/BVavnblYn6/i3ZAAQNZnYgNWbkZi0vzD5ifiz6eXaFiCnRTQLAuDcAkKKlj0V99MJ6Uq7pzky4wL1+FnCVs+HDq75D4VUputt52QMiCqxFv0SXnJcdvZ7y9y+KzTF4nQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=D7PXvsdy; arc=none smtp.client-ip=209.85.214.176
+	s=arc-20240116; t=1715381215; c=relaxed/simple;
+	bh=+z1i8cobcR+rITNp/ZTw810btpcFAOaUXffSZNVVQXc=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=V9XnBK8BrCXnzv25RWRjjNTP+Bs6/pJu3ehkbOaWC1uVFDJ3Y5scS2qQVzt6gCVNBtR8WHwhgb7tvML85YSMI2FNr8qtocBx/tzepXdJkp95OD/iMkxTnn5eWb9bqw1P6gVyv5xr2SQwegaxArD4dMWELnH10tBVGuJX2f06j7E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=EjOZNA0C; arc=none smtp.client-ip=209.85.214.177
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f176.google.com with SMTP id d9443c01a7336-1ec4b2400b6so23993795ad.3;
-        Fri, 10 May 2024 15:32:21 -0700 (PDT)
+Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-1edc696df2bso21589365ad.0
+        for <bpf@vger.kernel.org>; Fri, 10 May 2024 15:46:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1715380341; x=1715985141; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=BplohyCDLbrqKI8Dro3eag9DCXAwc4L5fx0gsf0ZTSM=;
-        b=D7PXvsdyzGhDgduj69VRjBVBhbCw1gQ8fekekLUJt8IQrSktkMtwMAwwp0oZphY31m
-         yQTU+mwPWpP1sMPbd4cOwpACUJfnu4/k7e7VZOJx6AJcjFgIYRD8SVmDSttMJVgw1uXh
-         RdbcwSFxHUJ9shfalAhKyleZDZGm3zGs8QHKm8nJfhSCQudFhd+KCNsuNegyyFPvL3+8
-         6MYMGiW7fgFbL7wpMhtTrilS5BJnXVGe8JRuPX4BGHBqRqMffWrzuGDnPsj8WpW5+nVt
-         eS1ZQVo/tyoGeCfHhTVvhJnHlk7ElyjBoOWsU/dlmeY9lQc/8hxFplwrVEX8Te67i+vQ
-         wOcg==
+        d=gmail.com; s=20230601; t=1715381214; x=1715986014; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=+z1i8cobcR+rITNp/ZTw810btpcFAOaUXffSZNVVQXc=;
+        b=EjOZNA0Cx8KknT0YO+5hEDgRbARhMhAcLb4DlsIH6VBtAVHv/Jpu+inA4r7L3ZS+MW
+         P8uA0gIUQSIsHLTluCdtXYnas1UhJTwe8DsIXZdutpW/4iluubNezVyaCOnu4qTZElpS
+         wnIiyzuEMjaJ/r7qFNxqAGlo94re5Eey1mWP8qk/983q8gM6rvgluifUucSFH8TWiDDP
+         3+G22LSEo2/f43U1DOLxD0cdcHYW/V5VZPtKfWlRz3FYEZwruef2mgHQus6j7ExdCk7m
+         u2m4guyynsmhqLjzQNZfw4oyLzM3+VDulod59fjQOOTr5urGwaGwbahbzdWgIW8oQDz3
+         Go6g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1715380341; x=1715985141;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=BplohyCDLbrqKI8Dro3eag9DCXAwc4L5fx0gsf0ZTSM=;
-        b=jBmcHV0Qg1QajKFXaNFyRTAQVPR6hWLqU+G9XsDXRATP/o9QmhkYlUKvMS8mBScKKT
-         76fGdvvLPAyeZwnKshMbyhe0qXFN9W/H3L1b9sm6sl+uALNONUmceDRtAGeBzaf6zfBw
-         z4v6mfGp/5ypuCc6VRH/dcym+XjfZ5hXGFvpMz/R9IPZV8UuVCLMV5q0FYXywK5H1vSE
-         BxAxYhDbf5SLPL+9ILgQPQI9537Dm/RzHSRU/Owhu7yFeEdkyYO2d9oiv+vFQeIPkGO6
-         nxlz4dxv83k8mL+FiJ3RTpFlPT6JUwEfMMDZ+EfhTMVVJo4m2Qm/k7CSw1ViZPddxY0B
-         +QAQ==
-X-Forwarded-Encrypted: i=1; AJvYcCX+gmKd0NXCj0NJuW+qgdSwCCYKDBR9GMlTtGKK5xJBqdS/LFYtO7/xYPYELxK9bFsLy8HvhxJSDFqPd7fwRbHqbjPilSAtgms74V+cD0NP
-X-Gm-Message-State: AOJu0YzMEScHMDljcJCK856oxMXvB+iIe5xTWoo51i/9iUg2Y05wu3dY
-	9N3nzM+UzmE7P9IUNWzpH+QTXmy6I8psgmxr9pdrXKWXCaJ70+HYJbR2J+N9Qow6Gz07/fZID08
-	b604Scb+tCVoqWIrzpw+NzJ+OR8U=
-X-Google-Smtp-Source: AGHT+IFQOGr3C92gBBGSE2ufj7CHXHG5zr+Uk8P1+LFP9+6Mtchub6DFEXkGwkaL1ajCOOVvOdIiKHU2P+8Gy/8F63A=
-X-Received: by 2002:a17:90a:fe87:b0:2b2:9621:ffef with SMTP id
- 98e67ed59e1d1-2b6ccef6ba9mr3517867a91.46.1715380341164; Fri, 10 May 2024
- 15:32:21 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1715381214; x=1715986014;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=+z1i8cobcR+rITNp/ZTw810btpcFAOaUXffSZNVVQXc=;
+        b=vG/+K4etXVm7BA5O7BRnudhGGFDCZOOmDt+qnwY+6ZtWZbXoQKXyz08PfgyBzJEP2g
+         jmqL66X+xVlcS+w5Ii7vW8uwqMWelsUArxqMd1Kw2HbsdXS2ueywczSfNsaUd1njuasF
+         RHNrTkAr4YruoLyrR8cnC8m6cXQ7BgBbyfrfDlulqy6Si7c0WVneCJ5u+7M/JUUSnG0H
+         uUaB1IM9mTzxyIPK+oEVDVY4XEc6Ud0vzm364Z1EEiGFObWD5BaeI4lvacSAwP4ozWD2
+         GMvZOVupMzeMurptvelyqCwKNQ6VsQjAxNpkJWwYRUwHOaYjkBzijmedKFf54PLBgpsd
+         9L6g==
+X-Forwarded-Encrypted: i=1; AJvYcCXIqZdgCwtMKt6sFev8P6ug8UC3fMWWc8aomlW3V2zkcZvlm+Sd2w9d3IGbHfNm509GV9bgzMRLx25OY7Fg82i4hZKl
+X-Gm-Message-State: AOJu0YygCjoO8SJcq3oVhqX2DAEXdF8nw2QbD6yzmaDRyahfrLUJehv6
+	72h9wvGvLHsUKejz8lY08Z4UlBHnCWlEKI/XJfFA5IuiDUnhaqsE
+X-Google-Smtp-Source: AGHT+IEBXXLKLswt0RHUY4n48o9aJWugPJ28+q5oZOtu2U1mt72GnsQL+8qa7sRplSqE5+zVit6Oag==
+X-Received: by 2002:a17:902:eb86:b0:1eb:4a40:c486 with SMTP id d9443c01a7336-1ef43d17f42mr53093225ad.14.1715381213754;
+        Fri, 10 May 2024 15:46:53 -0700 (PDT)
+Received: from ?IPv6:2604:3d08:6979:1160::3424? ([2604:3d08:6979:1160::3424])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-1ef0c035d8esm37347525ad.199.2024.05.10.15.46.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 10 May 2024 15:46:53 -0700 (PDT)
+Message-ID: <b11929f6fc0306ff39a592dc52c2fd0f96f82a4f.camel@gmail.com>
+Subject: Re: [PATCH v3 bpf-next 08/11] selftests/bpf: extend distilled BTF
+ tests to cover BTF relocation
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Alan Maguire <alan.maguire@oracle.com>, andrii@kernel.org,
+ jolsa@kernel.org,  acme@redhat.com, quentin@isovalent.com
+Cc: mykolal@fb.com, ast@kernel.org, daniel@iogearbox.net,
+ martin.lau@linux.dev,  song@kernel.org, yonghong.song@linux.dev,
+ john.fastabend@gmail.com,  kpsingh@kernel.org, sdf@google.com,
+ haoluo@google.com, houtao1@huawei.com,  bpf@vger.kernel.org,
+ masahiroy@kernel.org, mcgrof@kernel.org, nathan@kernel.org
+Date: Fri, 10 May 2024 15:46:51 -0700
+In-Reply-To: <20240510103052.850012-9-alan.maguire@oracle.com>
+References: <20240510103052.850012-1-alan.maguire@oracle.com>
+	 <20240510103052.850012-9-alan.maguire@oracle.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.44.4-0ubuntu2 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240510190246.3247730-1-jrife@google.com> <CAEf4BzZ+Gymr9hgJog3NddVVhtvcGiYwLHGGUVEruUUy-h8t8Q@mail.gmail.com>
- <CADKFtnQCbWm4geSJ0FBhb7kJtLC3sLmdnKOpZbc5k=mc+HwExA@mail.gmail.com>
-In-Reply-To: <CADKFtnQCbWm4geSJ0FBhb7kJtLC3sLmdnKOpZbc5k=mc+HwExA@mail.gmail.com>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Fri, 10 May 2024 15:32:08 -0700
-Message-ID: <CAEf4Bzb9rDmAQiXiZLEvPUFZkd0wrzD1-tyhFROwGSgOoenM0w@mail.gmail.com>
-Subject: Re: [PATCH v1 bpf-next 00/17] Retire progs/test_sock_addr.c
-To: Jordan Rife <jrife@google.com>
-Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
-	Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>, 
-	Geliang Tang <tanggeliang@kylinos.cn>, Daan De Meyer <daan.j.demeyer@gmail.com>, 
-	Shung-Hsi Yu <shung-hsi.yu@suse.com>, linux-kselftest@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Fri, May 10, 2024 at 3:13=E2=80=AFPM Jordan Rife <jrife@google.com> wrot=
-e:
->
-> Andrii,
->
-> It looks like the PR bot dropped one of the commits from the patch
-> series which is why it didn't build.
->
-> > selftests/bpf: Handle ATTACH_REJECT test cases
->
-> Is there any way to get it to recreate the PR with all 17 patches?
->
+On Fri, 2024-05-10 at 11:30 +0100, Alan Maguire wrote:
+> Ensure relocated BTF looks as expected; in this case identical to
+> original split BTF, with a few duplicate anonymous types added to
+> split BTF by the relocation process.
+>=20
+> Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
+> ---
 
-I marked it back as "New" in patchworks and this time BPF CI picked up
-all patches, I think. Will let it run, thanks for noticing this! You
-don't need to resend anything just yet.
-
-
-> -Jordan
+Acked-by: Eduard Zingerman <eddyz87@gmail.com>
 
