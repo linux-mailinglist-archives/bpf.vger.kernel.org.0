@@ -1,161 +1,112 @@
-Return-Path: <bpf+bounces-29489-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-29490-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 00A968C2943
-	for <lists+bpf@lfdr.de>; Fri, 10 May 2024 19:30:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id CEC7D8C297B
+	for <lists+bpf@lfdr.de>; Fri, 10 May 2024 19:44:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 322941C21CF2
-	for <lists+bpf@lfdr.de>; Fri, 10 May 2024 17:30:11 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CE9611C22256
+	for <lists+bpf@lfdr.de>; Fri, 10 May 2024 17:44:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 49D301BDE6;
-	Fri, 10 May 2024 17:29:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 374571CF83;
+	Fri, 10 May 2024 17:44:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="sx36sAne"
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="Ssdy8x/g"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pj1-f49.google.com (mail-pj1-f49.google.com [209.85.216.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B9CB9446A1;
-	Fri, 10 May 2024 17:29:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6CA821B285
+	for <bpf@vger.kernel.org>; Fri, 10 May 2024 17:44:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715362169; cv=none; b=cGohw4gb0+zb6Ob66QZS4vOSFiKm0fwNhjJKnnB6bmt4UZHyeQlkBXnEUtZzW6EqQ6AjJDoyLPnT5OFbCCw82ApVF7WFkTapK+HMi8Mwj803P/uTyjfsfX1WqKchjO6OOfxNd1lQuRJwr3BQ6AqwunyNW3FKUVObRkW2RS5GbIs=
+	t=1715363088; cv=none; b=uqaqPEKWJtEnItwEC6RKAIjETD7D/orNgv4hVAUc3qBq/8Zm1qkM+bXtQmqWtqsjV6aaBQoOr1yk0FuHOpbM68d/poC5ufetQi+0yhnTcqTBKnR+tZ5U9SLAASgEPMfhY+jpsO3WoDImxaCjmiVMM2RVs5HtzzgT3kW3eXT+AGI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715362169; c=relaxed/simple;
-	bh=9FerCyrlgXwGRxoi932MXaGZORA1hI35HAt1Vop6+YQ=;
-	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=qoiDqSzGbWhqiLo4xLIJfoNex57MqrX2jWokMVzGcz8p5am6DI4dPGXpkq7xkj0I0NSxIavV9F1HQTec4Y62qYCIfLJDQ1lqwi+1gSXxjDCUjAOdJzbWlEQ89Qi5d65mol42J7FEw2BTiBA0g77bAW6BdIjZGUwaIZB7BUlXxPo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=sx36sAne; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0B3BDC113CC;
-	Fri, 10 May 2024 17:29:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1715362169;
-	bh=9FerCyrlgXwGRxoi932MXaGZORA1hI35HAt1Vop6+YQ=;
-	h=Date:From:To:cc:Subject:In-Reply-To:References:From;
-	b=sx36sAne/FEdqP1wxc3/9KU/1ADr2ABOKYQiWOPcLEPs7AGhMXqK2tolxinjZNh8g
-	 V+Aj73S9RmD2emupDMTeozc6bu7seT5B4P3CRwJI/G97mWUXJ3sCOtK2msyiOBJtoP
-	 tYqOQjIGhObhfVjIUud6IF4PX9G6lH47RcVp14dIPryQY957LfXOvTFuT3yhUxCd1B
-	 Ho7P8ZEKjojtQQjfewVaUxSgnKaQirDN9Yxi1fTcGUuA6vvL+f1k0PVSm+o3QzGdss
-	 yDht4MhsNnH6EhmNm0ZDiJLKFSmsEelXnsOJWLp5OfS61/YUTSsWJm0W+TvqfYmLx8
-	 35N0rxk3yjgkg==
-Date: Fri, 10 May 2024 10:29:28 -0700 (PDT)
-From: Mat Martineau <martineau@kernel.org>
-To: Yunsheng Lin <linyunsheng@huawei.com>
-cc: davem@davemloft.net, kuba@kernel.org, pabeni@redhat.com, 
-    netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
-    Alexander Duyck <alexander.duyck@gmail.com>, 
-    Ayush Sawal <ayush.sawal@chelsio.com>, Eric Dumazet <edumazet@google.com>, 
-    Willem de Bruijn <willemdebruijn.kernel@gmail.com>, 
-    Jason Wang <jasowang@redhat.com>, Ingo Molnar <mingo@redhat.com>, 
-    Peter Zijlstra <peterz@infradead.org>, Juri Lelli <juri.lelli@redhat.com>, 
-    Vincent Guittot <vincent.guittot@linaro.org>, 
-    Dietmar Eggemann <dietmar.eggemann@arm.com>, 
-    Steven Rostedt <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>, 
-    Mel Gorman <mgorman@suse.de>, 
-    Daniel Bristot de Oliveira <bristot@redhat.com>, 
-    Valentin Schneider <vschneid@redhat.com>, 
-    John Fastabend <john.fastabend@gmail.com>, 
-    Jakub Sitnicki <jakub@cloudflare.com>, David Ahern <dsahern@kernel.org>, 
-    Matthieu Baerts <matttbe@kernel.org>, Geliang Tang <geliang@kernel.org>, 
-    Jamal Hadi Salim <jhs@mojatatu.com>, Cong Wang <xiyou.wangcong@gmail.com>, 
-    Jiri Pirko <jiri@resnulli.us>, Boris Pismenny <borisp@nvidia.com>, 
-    bpf@vger.kernel.org, mptcp@lists.linux.dev
-Subject: Re: [PATCH net-next v3 11/13] net: replace page_frag with
- page_frag_cache
-In-Reply-To: <b8877f3a-831d-f899-9678-b1665739dbe9@huawei.com>
-Message-ID: <9a3cea15-2001-2222-0d0d-5f61f90507c3@kernel.org>
-References: <20240508133408.54708-1-linyunsheng@huawei.com> <20240508133408.54708-12-linyunsheng@huawei.com> <334a8c67-87c8-a918-9517-0afbfae0d02b@kernel.org> <b8877f3a-831d-f899-9678-b1665739dbe9@huawei.com>
+	s=arc-20240116; t=1715363088; c=relaxed/simple;
+	bh=xJmMGpijLVbfzV1aLbCyIFqmqtVghhRlL3fIAx0Zf3Y=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ljx7lGrJGVsmTTK/CZpChLDKzINLYblnQXuY92FML43k0iVdXpZoRy9DUHJEB9MTpw661L3TKPH2XMo+PnDPrlDXOCh+7QkeDE0pwpohlU5DJ6J2WANPt7+pq7teBvIqj7wwNWwhg0gqojNAZHCRemXd5/EO59PpHYzoLQCPX0I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=Ssdy8x/g; arc=none smtp.client-ip=209.85.216.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-pj1-f49.google.com with SMTP id 98e67ed59e1d1-2b27eec1eb1so1876667a91.0
+        for <bpf@vger.kernel.org>; Fri, 10 May 2024 10:44:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1715363087; x=1715967887; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=L57+zK9MzVoCupg09U6DhX9rKCFQrUW4lM5mF0fCgNY=;
+        b=Ssdy8x/gu3v6owk4cRKjS558k6DX65Wm05p8vmbUS80yA1nhMtBEJKTlXakydU7iv4
+         jz8AfO4nTvtwcQQHM5EqSaU/QOgxMSGVsoDmr4ZGk5pIburKLY11uAn84+0OKXfb5nef
+         O8XA4bl+7ytiI5z8A35fyK64yuLYpUa3igqEI=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1715363087; x=1715967887;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=L57+zK9MzVoCupg09U6DhX9rKCFQrUW4lM5mF0fCgNY=;
+        b=BaUknd4W+nJ51xbuw4FKNEXgUdQLDsGBHOF9MpLSY/X+owLqOXjbwmTQeTgh4U5vZh
+         HPl7kG1sr/Ebxvhl4IuZULJLAz6dNXgVH09G4RpFylzzv0xKVSvn4YZn6OgaL6t8DNQy
+         RNl0eKjNYGAHBod7PczE7tlQkU5hVU8a70ZaD+A+ibL/q+L3dAx87K7ADlOagdsQN3oG
+         2Napqu8H6quj1LRHtbM3K3mje2pxqqNyQ5OfJh1wugBScGcIcNwwlgmP2kjyMto9YDI6
+         H9ejLhjLJEpV/UbQhSppDthSaazL8j+6aPcgKHmktcEBbqfsREz4GdnIG6+oGI0akImO
+         y3+A==
+X-Forwarded-Encrypted: i=1; AJvYcCVK+rs9EeXxRNJdwm7Y002kkAWSm+BuY4YLQ08ucQOGpsyjhUL4btHiWsO7ME9RdXb3i2F5V/gBmmNhnOLrAQ9TZgu0
+X-Gm-Message-State: AOJu0YwzJAXITNz72BEL5OzWSQjnpSOgqTEo6rN/zGJGG/1ftEC0TXTu
+	o+AQVw4Yg3vYTlQC+7S4ndKNRlHbzRan5Js76S7fQXw/qHcfFXfKL8d8gIoWig==
+X-Google-Smtp-Source: AGHT+IES457OerJ6E+sjpYxMiTqrSeTP8IOKWgMKTpX1LuCp+KnQ+g1iaESf6bNjK6mubIK/EdZwFw==
+X-Received: by 2002:a17:90b:46c4:b0:2b1:817d:982b with SMTP id 98e67ed59e1d1-2b6cc777f3cmr3358191a91.14.1715363086792;
+        Fri, 10 May 2024 10:44:46 -0700 (PDT)
+Received: from www.outflux.net ([198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2b628ca53cesm5360572a91.44.2024.05.10.10.44.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 10 May 2024 10:44:45 -0700 (PDT)
+Date: Fri, 10 May 2024 10:44:44 -0700
+From: Kees Cook <keescook@chromium.org>
+To: Edward Liaw <edliaw@google.com>
+Cc: shuah@kernel.org, =?iso-8859-1?Q?Micka=EBl_Sala=FCn?= <mic@digikod.net>,
+	=?iso-8859-1?Q?G=FCnther?= Noack <gnoack@google.com>,
+	Christian Brauner <brauner@kernel.org>,
+	Richard Cochran <richardcochran@gmail.com>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	"David S. Miller" <davem@davemloft.net>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Jesper Dangaard Brouer <hawk@kernel.org>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Eric Biederman <ebiederm@xmission.com>,
+	linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+	kernel-team@android.com, linux-security-module@vger.kernel.org,
+	netdev@vger.kernel.org, linux-riscv@lists.infradead.org,
+	bpf@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: [PATCH v4 13/66] selftests/exec: Drop duplicate -D_GNU_SOURCE
+Message-ID: <202405101044.5D2742EC@keescook>
+References: <20240510000842.410729-1-edliaw@google.com>
+ <20240510000842.410729-14-edliaw@google.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII; format=flowed
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240510000842.410729-14-edliaw@google.com>
 
-On Fri, 10 May 2024, Yunsheng Lin wrote:
+On Fri, May 10, 2024 at 12:06:30AM +0000, Edward Liaw wrote:
+> -D_GNU_SOURCE can be de-duplicated here, as it is added by lib.mk.
+> 
+> Signed-off-by: Edward Liaw <edliaw@google.com>
 
-> On 2024/5/10 0:22, Mat Martineau wrote:
->> On Wed, 8 May 2024, Yunsheng Lin wrote:
->>
->>> Use the newly introduced prepare/probe/commit API to
->>> replace page_frag with page_frag_cache for sk_page_frag().
->>>
->>> CC: Alexander Duyck <alexander.duyck@gmail.com>
->>> Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
->>> ---
->>> .../chelsio/inline_crypto/chtls/chtls.h       |   3 -
->>> .../chelsio/inline_crypto/chtls/chtls_io.c    | 100 ++++---------
->>> .../chelsio/inline_crypto/chtls/chtls_main.c  |   3 -
->>> drivers/net/tun.c                             |  28 ++--
->>> include/linux/sched.h                         |   4 +-
->>> include/net/sock.h                            |  14 +-
->>> kernel/exit.c                                 |   3 +-
->>> kernel/fork.c                                 |   3 +-
->>> net/core/skbuff.c                             |  32 ++--
->>> net/core/skmsg.c                              |  22 +--
->>> net/core/sock.c                               |  46 ++++--
->>> net/ipv4/ip_output.c                          |  33 +++--
->>> net/ipv4/tcp.c                                |  35 ++---
->>> net/ipv4/tcp_output.c                         |  28 ++--
->>> net/ipv6/ip6_output.c                         |  33 +++--
->>> net/kcm/kcmsock.c                             |  30 ++--
->>> net/mptcp/protocol.c                          |  70 +++++----
->>> net/sched/em_meta.c                           |   2 +-
->>> net/tls/tls_device.c                          | 139 ++++++++++--------
->>> 19 files changed, 331 insertions(+), 297 deletions(-)
->>>
->>
->> <snip>
->>
->>> diff --git a/net/mptcp/protocol.c b/net/mptcp/protocol.c
->>> index bb8f96f2b86f..ab844011d442 100644
->>> --- a/net/mptcp/protocol.c
->>> +++ b/net/mptcp/protocol.c
->>> @@ -960,17 +960,18 @@ static bool mptcp_skb_can_collapse_to(u64 write_seq,
->>> }
->>>
->>> /* we can append data to the given data frag if:
->>> - * - there is space available in the backing page_frag
->>> - * - the data frag tail matches the current page_frag free offset
->>> + * - there is space available for the current page
->>> + * - the data frag tail matches the current page and offset
->>>  * - the data frag end sequence number matches the current write seq
->>>  */
->>> static bool mptcp_frag_can_collapse_to(const struct mptcp_sock *msk,
->>> -                       const struct page_frag *pfrag,
->>> +                       const struct page *page,
->>> +                       const unsigned int offset,
->>> +                       const unsigned int size,
->>
->> Hi Yunsheng -
->>
->> Why add the 'size' parameter here? It's checked to be a nonzero value, 
->> but it can only be 0 if page is also NULL. In this case "page == 
->> df->page" will be false, so the function will return false even without 
->> checking 'size'.
->
-> Is it possible that the pfrag->page is also NULL, which may cause
-> mptcp_frag_can_collapse_to() to return true?
+Thanks!
 
-Not sure. But I do know that df->page will never be NULL, so "page == 
-df->page" will always be false when page == NULL.
+Acked-by: Kees Cook <keescook@chromium.org>
 
->
-> I just found out that the 'size' is not set to zero when return
-> NULL for the implementation of probe API for the current version.
-> Perhaps it makes more sense to expect the API caller to make sure
-> the the returned 'page' not being NULL before using the 'offset',
-> 'size' and 'va', like below:
->
-> df && page && page == df->page
->
-
-Given that df->page is never NULL, I don't think the extra "&& page" is 
-needed.
-
-- Mat
+-- 
+Kees Cook
 
