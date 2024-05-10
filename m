@@ -1,176 +1,141 @@
-Return-Path: <bpf+bounces-29548-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-29549-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6320D8C2C6E
-	for <lists+bpf@lfdr.de>; Sat, 11 May 2024 00:06:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2A3808C2C70
+	for <lists+bpf@lfdr.de>; Sat, 11 May 2024 00:08:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B1E2FB2160F
-	for <lists+bpf@lfdr.de>; Fri, 10 May 2024 22:06:03 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7BC5DB20977
+	for <lists+bpf@lfdr.de>; Fri, 10 May 2024 22:08:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 841D913CFAE;
-	Fri, 10 May 2024 22:05:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 40DD713CFB5;
+	Fri, 10 May 2024 22:08:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KFBEBZ5g"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="R4IZR4DK"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f53.google.com (mail-pj1-f53.google.com [209.85.216.53])
+Received: from mail-pf1-f181.google.com (mail-pf1-f181.google.com [209.85.210.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A4B7613B5BB;
-	Fri, 10 May 2024 22:05:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 766DC13CFA3
+	for <bpf@vger.kernel.org>; Fri, 10 May 2024 22:08:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715378757; cv=none; b=uGgVMbJ4ZP6wEldRDAwRfvDLXWj0czdqkex8yIKCFRDGEtMvUKQ7W0saEcL7hWyRchx9ZSngYnkr65APkp5Zl/w3tEy2/u/UFw250sur4voDW8gvynNj1aNc943Xuz+87KmsWXbP+TvQ+jIzbci8kq99Wyohwm2/BBOCvAMn6/k=
+	t=1715378898; cv=none; b=AhS37QoIu9RGCecrunSBzJkS6A/not0GE430vwPQE2ACGPju5p5UML8wZ1aDhHNseFYYAdiSdDfTzDy9kIKsHQhb2P6n+t0tMKN6Wh1MlFtNNWywWtWgXZ5yoQzUaxD1bAeLCMSetRCnnmKa4qxbewE4sEkXIl/UU2W8jDf4jQk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715378757; c=relaxed/simple;
-	bh=t3NyXa0BfG7ojc5QL7HlfbFe3C1i4Bv2cdBQeHvPXAM=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=OBMoGjofb9veAR//frEQDZ99BndKATLmc/6jV4QCnoXWQM73fQ3SA40e0y/Ba7fVEoaQZ1XwUQLuSGB7zrkcfGilaAccfUrnWEDqT941qatE+srldgK+Vr1rG27x49K+tpdF2WNaQpwFrj281jRdbRwnR7+QJwaaRlITglg8/Ew=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=KFBEBZ5g; arc=none smtp.client-ip=209.85.216.53
+	s=arc-20240116; t=1715378898; c=relaxed/simple;
+	bh=fjW6oxc88WRoz/BjQ41bVNGpxXAwYoOECIm6E+NxdME=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=u/SQxMkTNPefoiWv958OVObGsWI5Z2KIRsZ8NGDJZk7t/bb6gZA6p5fv+TYVKr3hZLRWY5i3BoJzWMTNHYLQCcTrD0uFKUbp7aqSwrIIxn+qsS2tPGF51ArZPD+4MekYpLSjeK6V/r6W3O6njNEw6MXTKCuiDy8uiqzhs+KI/3Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=R4IZR4DK; arc=none smtp.client-ip=209.85.210.181
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f53.google.com with SMTP id 98e67ed59e1d1-2b36232fa48so1962544a91.1;
-        Fri, 10 May 2024 15:05:55 -0700 (PDT)
+Received: by mail-pf1-f181.google.com with SMTP id d2e1a72fcca58-6f4e59081e6so784727b3a.3
+        for <bpf@vger.kernel.org>; Fri, 10 May 2024 15:08:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1715378755; x=1715983555; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=gw8tdTUu26ntBT3cIpKlEbccxaze+gSWzCQoABlagU0=;
-        b=KFBEBZ5g6iKxCt5HxAoTe5APYo+sLx9fRl+jhETbm9NNSbo4VCaHu9ETMxLixAfLpn
-         9F5UDH44gx5tbSY/tW5/VumixTjulSkv/mVLyvSBhVNVyrbgVFog5ctcA2RdBLYUnheN
-         WzQ0fe0cYntpC+qlh4ttVwK209rbZVsbkaFU/i7KjPaRx+blUVv7z8JA3LfFo2YimKre
-         ZTpBkUxVId6sf5mn+OCidB5GsXkjFBc/XfcFUlCHeCRSdhbHqTM18E6GkUCE4q69NE/h
-         alQwxGwTlLTGMBeKtDIWBkCnbFMW3Rv6DSqJqrPDYJr7W3UK3f2M3y340qb22uoZq6tE
-         gzKg==
+        d=gmail.com; s=20230601; t=1715378897; x=1715983697; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=zppurhRsYA/OAqCNTXyic2tfejepzbqSWOnuoq/TwWw=;
+        b=R4IZR4DKJ3q9nO+qqGbqpp3xBjoFeZj18DRZEbkLwylvIU4ymCWMuCT3wuVbrWgcHe
+         4ITdlShPJZwsT0lrvR9PMDyhf7HLRDjYoK8FR3zTvFt/psgSF8LR9GpHZWZXrYTSPhlg
+         +hc+w4Xuwbz1m0mEyKX6j2wx32exOl5008H3dR0LFnPJ8w8WP0edWGBHds9x8lWV0jnb
+         8gPVWpxtmQCVq7UpddQn5+OzqcJ9iYqQhsaBXPaXhhRlKiw2N9dGqlSLiVxpXdmIUj6Z
+         EDf4sG8W0cKsDGoJ40VTkCywLflHOO9FOeyor6SayFfaD0vUW6Phy4923WVkUAM7MZv0
+         qiow==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1715378755; x=1715983555;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=gw8tdTUu26ntBT3cIpKlEbccxaze+gSWzCQoABlagU0=;
-        b=FQ0Qgb9YkkJyvBI1NjO+5rxwW2ctKujGEq//3abYykBQ7mCb/hC9q1oZCIHHg54fn+
-         pXT33dVRhU5rWFMqx9QQV8BmH35Mcorct2XRllEa83f9KOBPRkbfSzfHzgMxU2dvKguO
-         iS60457OfgTW9N+33vMRiFfjt8uG5ZzcNoCKvd1KAih+4cMmQS8ykMImUulNyQ9tR51g
-         XI0Z+o3jJ1uGcBH2LzqRyjlCPv1IzqMhs/8DK+YjacYsSLkiLi/cNUirs7mk3BvZNx37
-         cb7bmg0unTm23T3hJxzMN8ySNy8VEADS1vRZea6SP1Ckj2BK8Qe1lOSkbc023/otu3Yd
-         lnrw==
-X-Forwarded-Encrypted: i=1; AJvYcCX5LZJgWsmvb0/QrTm5CykVNjCAbn4aZVXJPT1RoObCeyLCKvzrRdaQGdiQIk3foEzPhrj0yM3AieH4dv1GKW+Cm1FIhN2R2kb/OUS19pFw
-X-Gm-Message-State: AOJu0YxC6kFgq3vHU8iz3uMUc3pRD3rjUJnaifhYjOLdknTeBL+8t+ET
-	/1SmINWYUA60puJkULfv2TVJeQdfCKp3C2zqqAUPUPpk1xdIM4JcBxpe+CwVq0paAnP4OuwduUk
-	0SRdtoyH3454kg/nHw2N+wIS8pq4=
-X-Google-Smtp-Source: AGHT+IHBh4GmlBMtNORtj2s/FodEJgl8Bu01+ZnUrn1I5A1juWJ5T64ca8WB0aQgBjiZm90GP/XLesQR2wZ0VX9I5/w=
-X-Received: by 2002:a17:90a:fb52:b0:2b2:827f:4652 with SMTP id
- 98e67ed59e1d1-2b6cc342827mr3807704a91.6.1715378754975; Fri, 10 May 2024
- 15:05:54 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1715378897; x=1715983697;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=zppurhRsYA/OAqCNTXyic2tfejepzbqSWOnuoq/TwWw=;
+        b=g8PJ/uLir/FzPhTeS7hiU0fMJnejxRdQ4kbgT7JvAB5p//gX7DNmP0IKndt0LokojT
+         FzLyjCGJgRwCZxdDF78NuvseHip+jEN/3wlblkraoFgskmG59xvl4xaB6fBMRmIfTPEC
+         a5esZ4FLncRRxdqtka+bcPipwKCMqqL71GFNnFceiEp1A1PCjPJG+NDAYD1hH6na/X//
+         UTCKvL1Bbs7spcM4Kg2UV1lXa3sETxNFEGaV9EbxBkCyq/pHUtC9ZjupqJbkNOVtA6kc
+         55YnKmZXfkw8GToEz8K1ZDwh2gqx7DkQHSLlMChacaysYDatK3btC96y3ev+EE/M1+Vj
+         /whQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWfgAQJl8q0yc/Hy6mW/cBvXlbnFGk32RUd/GLU53cl9Yim6E8Tu5sAUTcuuXvSgORzc/c7sOEGNryydIvcuxL2Fvol
+X-Gm-Message-State: AOJu0Yykl21gWtgzudvUdGv4KfxHP3fhzQIKmEzoPB1cW/EpDIuoX1os
+	RqkyzBjj4cnW0H4GrXDxac78XOJvP3Io8JPaC4sUYCtxARdmkQfn
+X-Google-Smtp-Source: AGHT+IH1JjojdwahWDX9IDZKMNbaqhkzOu7mbENHFsDkZkLEMjKhEpdl6dZAvKcr94x6vZqCiWaWNQ==
+X-Received: by 2002:a05:6a20:9f0b:b0:1af:df89:4e6a with SMTP id adf61e73a8af0-1afdf895185mr3517005637.51.1715378896779;
+        Fri, 10 May 2024 15:08:16 -0700 (PDT)
+Received: from ?IPv6:2604:3d08:6979:1160::3424? ([2604:3d08:6979:1160::3424])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-6f4d2b301d3sm3393385b3a.205.2024.05.10.15.08.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 10 May 2024 15:08:16 -0700 (PDT)
+Message-ID: <62a51fcaddbf5eb8552a96e6a24ded83f8f9fa49.camel@gmail.com>
+Subject: Re: [PATCH bpf-next v5 7/9] selftests/bpf: Test kptr arrays and
+ kptrs in nested struct fields.
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Kui-Feng Lee <sinquersw@gmail.com>, Kui-Feng Lee <thinker.li@gmail.com>,
+  bpf@vger.kernel.org, ast@kernel.org, martin.lau@linux.dev,
+ song@kernel.org,  kernel-team@meta.com, andrii@kernel.org
+Cc: kuifeng@meta.com
+Date: Fri, 10 May 2024 15:08:15 -0700
+In-Reply-To: <d2b9a943-ca26-404d-899a-c7651ce18a42@gmail.com>
+References: <20240510011312.1488046-1-thinker.li@gmail.com>
+	 <20240510011312.1488046-8-thinker.li@gmail.com>
+	 <d8f2fa21a9af5bfcb2acb1addecea435285c40e6.camel@gmail.com>
+	 <d2b9a943-ca26-404d-899a-c7651ce18a42@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.44.4-0ubuntu2 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240510190246.3247730-1-jrife@google.com>
-In-Reply-To: <20240510190246.3247730-1-jrife@google.com>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Fri, 10 May 2024 15:05:42 -0700
-Message-ID: <CAEf4BzZ+Gymr9hgJog3NddVVhtvcGiYwLHGGUVEruUUy-h8t8Q@mail.gmail.com>
-Subject: Re: [PATCH v1 bpf-next 00/17] Retire progs/test_sock_addr.c
-To: Jordan Rife <jrife@google.com>
-Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
-	Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>, 
-	Geliang Tang <tanggeliang@kylinos.cn>, Daan De Meyer <daan.j.demeyer@gmail.com>, 
-	Shung-Hsi Yu <shung-hsi.yu@suse.com>, linux-kselftest@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Fri, May 10, 2024 at 12:08=E2=80=AFPM Jordan Rife <jrife@google.com> wro=
-te:
->
-> This patch series migrates remaining tests from bpf/test_sock_addr.c to
-> prog_tests/sock_addr.c and progs/verifier_sock_addr.c in order to fully
-> retire the old-style test program and expands test coverage to test
-> previously untested scenarios related to sockaddr hooks.
->
-> This is a continuation of the work started recently during the expansion
-> of prog_tests/sock_addr.c.
->
-> Link: https://lore.kernel.org/bpf/20240429214529.2644801-1-jrife@google.c=
-om/T/#u
->
-> =3D=3D=3D=3D=3D=3D=3D
-> Patches
-> =3D=3D=3D=3D=3D=3D=3D
-> * Patch 1 moves tests that check valid return values for recvmsg hooks
->   into progs/verifier_sock_addr.c, a new addition to the verifier test
->   suite.
-> * Patches 2-5 lay the groundwork for test migration, enabling
->   prog_tests/sock_addr.c to handle more test dimensions.
-> * Patches 6-11 move existing tests to prog_tests/sock_addr.c.
-> * Patch 12 removes some redundant test cases.
-> * Patches 14-17 expand on existing test coverage.
->
-> Jordan Rife (17):
->   selftests/bpf: Migrate recvmsg* return code tests to
->     verifier_sock_addr.c
->   selftests/bpf: Use program name for skel load/destroy functions
->   selftests/bpf: Handle LOAD_REJECT test cases
->   selftests/bpf: Handle ATTACH_REJECT test cases
->   selftests/bpf: Handle SYSCALL_EPERM and SYSCALL_ENOTSUPP test cases
->   selftests/bpf: Migrate WILDCARD_IP test
->   selftests/bpf: Migrate sendmsg deny test cases
->   selftests/bpf: Migrate sendmsg6 v4 mapped address tests
->   selftests/bpf: Migrate wildcard destination rewrite test
->   selftests/bpf: Migrate expected_attach_type tests
->   selftests/bpf: Migrate ATTACH_REJECT test cases
->   selftests/bpf: Remove redundant sendmsg test cases
->   selftests/bpf: Retire test_sock_addr.(c|sh)
->   selftests/bpf: Expand sockaddr program return value tests
->   sefltests/bpf: Expand sockaddr hook deny tests
->   selftests/bpf: Expand getsockname and getpeername tests
->   selftests/bpf: Expand ATTACH_REJECT tests
->
->  tools/testing/selftests/bpf/.gitignore        |    1 -
->  tools/testing/selftests/bpf/Makefile          |    4 +-
->  .../selftests/bpf/prog_tests/sock_addr.c      | 1821 +++++++++++++++--
->  .../selftests/bpf/prog_tests/verifier.c       |    2 +
->  .../testing/selftests/bpf/progs/bind4_prog.c  |    6 +
->  .../testing/selftests/bpf/progs/bind6_prog.c  |    6 +
->  .../selftests/bpf/progs/connect4_prog.c       |    6 +
->  .../selftests/bpf/progs/connect6_prog.c       |    6 +
->  .../selftests/bpf/progs/connect_unix_prog.c   |    6 +
->  .../selftests/bpf/progs/getpeername4_prog.c   |   24 +
->  .../selftests/bpf/progs/getpeername6_prog.c   |   31 +
->  .../selftests/bpf/progs/getsockname4_prog.c   |   24 +
->  .../selftests/bpf/progs/getsockname6_prog.c   |   31 +
->  .../selftests/bpf/progs/sendmsg4_prog.c       |    6 +
->  .../selftests/bpf/progs/sendmsg6_prog.c       |   57 +
->  .../selftests/bpf/progs/sendmsg_unix_prog.c   |    6 +
->  .../selftests/bpf/progs/verifier_sock_addr.c  |  331 +++
->  tools/testing/selftests/bpf/test_sock_addr.c  | 1140 -----------
->  tools/testing/selftests/bpf/test_sock_addr.sh |   58 -
->  19 files changed, 2142 insertions(+), 1424 deletions(-)
->  create mode 100644 tools/testing/selftests/bpf/progs/getpeername4_prog.c
->  create mode 100644 tools/testing/selftests/bpf/progs/getpeername6_prog.c
->  create mode 100644 tools/testing/selftests/bpf/progs/getsockname4_prog.c
->  create mode 100644 tools/testing/selftests/bpf/progs/getsockname6_prog.c
->  create mode 100644 tools/testing/selftests/bpf/progs/verifier_sock_addr.=
-c
->  delete mode 100644 tools/testing/selftests/bpf/test_sock_addr.c
->  delete mode 100755 tools/testing/selftests/bpf/test_sock_addr.sh
->
-> --
-> 2.45.0.118.g7fe29c98d7-goog
->
+On Fri, 2024-05-10 at 14:59 -0700, Kui-Feng Lee wrote:
+>=20
+> For the sake of completeness, would it be possible to create a test
+> > case where there are several struct arrays following each other?
+> > E.g. as below:
+> >=20
+> > struct foo {
+> >    ... __kptr *a;
+> >    ... __kptr *b;
+> > }
+> >=20
+> > struct bar {
+> >    ... __kptr *c;
+> > }
+> >=20
+> > struct {
+> >    struct foo foos[3];
+> >    struct bar bars[2];
+> > }
+> >=20
+> > Just to check that offset is propagated correctly.
+>=20
+> Sure!
 
-This patch set causes BPF CI to fail to build BPF selftests ([0]),
-please check and fix. Thanks!
+Great, thank you
 
-  [0] https://github.com/kernel-patches/bpf/actions/runs/9036931713/job/248=
-34899012
+> > Also, in the tests below you check that a pointer to some object could
+> > be put into an array at different indexes. Tbh, I find it not very
+> > interesting if we want to check that offsets are correct.
+> > Would it be possible to create an array of object kptrs,
+> > put specific references at specific indexes and somehow check which
+> > object ended up where? (not necessarily 'bpf_cpumask').
+>=20
+> Do you mean checking index in the way like the following code?
+>=20
+>   if (array[0] !=3D ref0 || array[1] !=3D ref1 || array[2] !=3D ref2 ....=
+)
+>     return err;
+
+Probably, but I'd need your help here.
+There goal is to verify that offsets of __kptr's in the 'info' array
+had been set correctly. Where is this information is used later on?
+E.g. I'd like to trigger some action that "touches" __kptr at index N
+and verify that all others had not been "touched".
+But this "touch" action has to use offset stored in the 'info'.
+
+[...]
 
