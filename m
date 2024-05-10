@@ -1,242 +1,204 @@
-Return-Path: <bpf+bounces-29462-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-29463-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id C691F8C226D
-	for <lists+bpf@lfdr.de>; Fri, 10 May 2024 12:49:48 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id E78C08C2290
+	for <lists+bpf@lfdr.de>; Fri, 10 May 2024 12:55:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 27975B22364
-	for <lists+bpf@lfdr.de>; Fri, 10 May 2024 10:49:46 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 240A61C216F3
+	for <lists+bpf@lfdr.de>; Fri, 10 May 2024 10:55:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D8F7168B0C;
-	Fri, 10 May 2024 10:49:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EFD1716DEDE;
+	Fri, 10 May 2024 10:55:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="B4Wk5Mhi"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="bO+AvOdB"
 X-Original-To: bpf@vger.kernel.org
-Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1321F16132E
-	for <bpf@vger.kernel.org>; Fri, 10 May 2024 10:49:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.165.32
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A135C16D9B4;
+	Fri, 10 May 2024 10:55:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715338179; cv=none; b=UemFQjzVaPihkTHLY5g2L/k24vDAQyMMEh+0/mmct+yR2axMV1RZPtspZ8VfeEKvotNBLKeLz/Y9FrYW4v55FDyWVFIb0qxc+YZ0UIuaRawtnYiZ+tpzyaMAFaivP4r5IxmcvGCYcaA+r0xTMktJgpoyJo6R5MziqTOT/eDV8pA=
+	t=1715338508; cv=none; b=SyJfYgzQvjOzFk0lp9nwyzFrGUNBmfhfc5vJvu0ht0R8/st/JW2O3CG5kJ7fPkjKQkuPy2fOPoj0ZGGFHxwStri200M9/ZC3nxHKFhB0AOeBZyhMElJnhmbwBTf+MUv1+axbw4pCBaguGQiUgQlN1gNf9vlLgVZTey8FWbPRJoA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715338179; c=relaxed/simple;
-	bh=iP10LpNtucUKPmynAc6t3lVjPZRy0I/e+WJ5nTOsEzc=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=Tb3DNusycd3he3r4027n2Nxg1g6EqkY9FQSMQSvrkvAiOKr3MDzJCGUEXeE3t/7z3IVhJU1Djp1o5XitlwTYPp+/VQ5vcdAAovu8VOq+2bnVMALfMIH3c+yGOq5q2b4AWucVUlQqguFDyOt5QTCEd+Jhwyv8etqpbQSnBY8SBrE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=B4Wk5Mhi; arc=none smtp.client-ip=205.220.165.32
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=oracle.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
-Received: from pps.filterd (m0246627.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 44AAduDC023702;
-	Fri, 10 May 2024 10:49:01 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-transfer-encoding;
- s=corp-2023-11-20; bh=x3xhIusH5dLjMtU4JIrDCmJU4g41xZXlFKgrIYIF1W8=;
- b=B4Wk5MhiXiAA9P5w5AdleTO9IMLeFnPGKGnpTkHwi8YxZcz3mEBVhGhLBGCGTDuMEKhk
- h2B+0jqw4YEJnpbwAmrTxUFY62FVp8QCv0KIqbvxA2/7sbQ9lWA3Y4B19nqh/liyttbe
- aXi+BZI4joPfxYCanf2x2E5lCQJZZzf0wS/T52y0cYRLHMZ+NTnflHJ5atxAKmgIb3HX
- 8FrjSXvbi4tAVtjZOIGSycoyavUR8TZBOsliF2D9fBSUFxY4E/qcJSFNYVDePOGi0Ux8
- krN9xr/DpkNYSK6GWsi2bxf4hcsloE2r+SDftet04c/u77fTZ4DsGMUkvqU3L7vBJdvq iA== 
-Received: from phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta02.appoci.oracle.com [147.154.114.232])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3y1f4x0csy-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Fri, 10 May 2024 10:49:00 +0000
-Received: from pps.filterd (phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-	by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 44A8rmIe030906;
-	Fri, 10 May 2024 10:48:59 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-	by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3xysfpndeu-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Fri, 10 May 2024 10:48:59 +0000
-Received: from phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 44AAmwkf019131;
-	Fri, 10 May 2024 10:48:58 GMT
-Received: from bpf.uk.oracle.com (dhcp-10-175-161-199.vpn.oracle.com [10.175.161.199])
-	by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTP id 3xysfpnda5-1;
-	Fri, 10 May 2024 10:48:58 +0000
-From: Alan Maguire <alan.maguire@oracle.com>
-To: andrii@kernel.org, jolsa@kernel.org, acme@redhat.com,
-        quentin@isovalent.com
-Cc: eddyz87@gmail.com, mykolal@fb.com, ast@kernel.org, daniel@iogearbox.net,
-        martin.lau@linux.dev, song@kernel.org, yonghong.song@linux.dev,
-        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
-        haoluo@google.com, houtao1@huawei.com, bpf@vger.kernel.org,
-        masahiroy@kernel.org, mcgrof@kernel.org, nathan@kernel.org,
-        Alan Maguire <alan.maguire@oracle.com>
-Subject: [PATCH dwarves] btf_encoder: add "distilled_base" BTF feature to split BTF generation
-Date: Fri, 10 May 2024 11:48:47 +0100
-Message-Id: <20240510104847.858922-1-alan.maguire@oracle.com>
-X-Mailer: git-send-email 2.39.3
+	s=arc-20240116; t=1715338508; c=relaxed/simple;
+	bh=U9ppFWtQd6HThR/eg1djmH03B4xACasuWmxLlEJo+Ls=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=S4C4SF+OxcNLe0Y2ihdzE2vwvyHw3cFZpESvsm08Ub9ougjO/xbm15q770XX1YfT97mjbfh6Jnrig+nprMoFgQnxsdK/FgsIVPxr4fDPqAWi/m1qXSucIf3pQDWWFnOryblm0I5v2aeYcrpwM8PGMYJgd0LmlCVmjX+eEKIT/uU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=bO+AvOdB; arc=none smtp.client-ip=198.175.65.18
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1715338507; x=1746874507;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=U9ppFWtQd6HThR/eg1djmH03B4xACasuWmxLlEJo+Ls=;
+  b=bO+AvOdB9c4IKtTP8g95SnND4soMoJoL1ir0PWq/4eAHpFApuKsIK4hN
+   rNaEcMpCz6Hilkw6FT0k7WQ2UJCbaCBUYV7+J4JOiULX/+Y2d8E9YMf5P
+   QJcuRarCpE8mA3c+RXqSiUvcQ4v/ArSMQ2qLrM9UBPHCw1uRiIGwocsz6
+   WVJo8/Q7KWm7MPNo5TvjNYc5QIId1LK3Gc8WyWqBCJrD+1B4dBPYjlDl+
+   6S8+OUPBmE7ptUeEp7vu4tzn+NYdKtKsAwJlCJj/mD9S9oXkvZd4h7jza
+   en16GMfbAtQfbvJxiCWQO3P0m08yn4I0dMjRe1xEB/YvXiCbQusAd7kEw
+   w==;
+X-CSE-ConnectionGUID: 7VsJ2GICQo+1ZGSSyYiz5w==
+X-CSE-MsgGUID: KV5kRFugQFK+eNkOFfhJBA==
+X-IronPort-AV: E=McAfee;i="6600,9927,11068"; a="11474096"
+X-IronPort-AV: E=Sophos;i="6.08,150,1712646000"; 
+   d="scan'208";a="11474096"
+Received: from fmviesa008.fm.intel.com ([10.60.135.148])
+  by orvoesa110.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 May 2024 03:55:06 -0700
+X-CSE-ConnectionGUID: swzHCHuRSH6CTTjTY/T78Q==
+X-CSE-MsgGUID: CYQ0QnGITaWeKW8WN1MTGw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.08,150,1712646000"; 
+   d="scan'208";a="29525536"
+Received: from lkp-server01.sh.intel.com (HELO f8b243fe6e68) ([10.239.97.150])
+  by fmviesa008.fm.intel.com with ESMTP; 10 May 2024 03:55:02 -0700
+Received: from kbuild by f8b243fe6e68 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1s5Nu0-00061H-0l;
+	Fri, 10 May 2024 10:55:00 +0000
+Date: Fri, 10 May 2024 18:54:58 +0800
+From: kernel test robot <lkp@intel.com>
+To: Yabin Cui <yabinc@google.com>, Peter Zijlstra <peterz@infradead.org>,
+	Ingo Molnar <mingo@redhat.com>,
+	Arnaldo Carvalho de Melo <acme@kernel.org>,
+	Namhyung Kim <namhyung@kernel.org>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+	Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>,
+	Adrian Hunter <adrian.hunter@intel.com>
+Cc: oe-kbuild-all@lists.linux.dev, linux-perf-users@vger.kernel.org,
+	linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+	Yabin Cui <yabinc@google.com>
+Subject: Re: [PATCH v3 3/3] perf: core: Check sample_type in
+ perf_sample_save_brstack
+Message-ID: <202405101855.doEob5FK-lkp@intel.com>
+References: <20240510002424.1277314-4-yabinc@google.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.650,FMLib:17.11.176.26
- definitions=2024-05-10_07,2024-05-10_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 phishscore=0
- suspectscore=0 spamscore=0 bulkscore=0 mlxlogscore=999 adultscore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2405010000 definitions=main-2405100077
-X-Proofpoint-GUID: rcNfT33UAPHAvp2f6_18W73DdWYLIEuV
-X-Proofpoint-ORIG-GUID: rcNfT33UAPHAvp2f6_18W73DdWYLIEuV
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240510002424.1277314-4-yabinc@google.com>
 
-Adding "distilled_base" to --btf_features when generating split BTF will
-create split and .BTF.base BTF - the latter allows us to map references
-from split BTF to base BTF, even if that base BTF has changed.  It does
-this by providing just enough information about the base types in the
-.BTF.base section.
+Hi Yabin,
 
-Patch is applicable on the "next" branch of dwarves, and requires the
-libbpf from the series in [1]
+kernel test robot noticed the following build errors:
 
-Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
+[auto build test ERROR on perf-tools-next/perf-tools-next]
+[also build test ERROR on tip/perf/core linus/master v6.9-rc7 next-20240510]
+[cannot apply to acme/perf/core]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-[1] https://lore.kernel.org/bpf/20240510103052.850012-1-alan.maguire@oracle.com/
+url:    https://github.com/intel-lab-lkp/linux/commits/Yabin-Cui/perf-core-Save-raw-sample-data-conditionally-based-on-sample-type/20240510-083817
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/perf/perf-tools-next.git perf-tools-next
+patch link:    https://lore.kernel.org/r/20240510002424.1277314-4-yabinc%40google.com
+patch subject: [PATCH v3 3/3] perf: core: Check sample_type in perf_sample_save_brstack
+config: x86_64-rhel-8.3 (https://download.01.org/0day-ci/archive/20240510/202405101855.doEob5FK-lkp@intel.com/config)
+compiler: gcc-13 (Ubuntu 13.2.0-4ubuntu3) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240510/202405101855.doEob5FK-lkp@intel.com/reproduce)
 
----
- btf_encoder.c      | 40 ++++++++++++++++++++++++++++------------
- dwarves.h          |  1 +
- man-pages/pahole.1 |  3 +++
- pahole.c           |  1 +
- 4 files changed, 33 insertions(+), 12 deletions(-)
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202405101855.doEob5FK-lkp@intel.com/
 
-diff --git a/btf_encoder.c b/btf_encoder.c
-index 19e9d90..6814549 100644
---- a/btf_encoder.c
-+++ b/btf_encoder.c
-@@ -75,7 +75,8 @@ struct btf_encoder {
- 			  verbose,
- 			  force,
- 			  gen_floats,
--			  is_rel;
-+			  is_rel,
-+			  gen_distilled_base;
- 	uint32_t	  array_index_id;
- 	struct {
- 		struct var_info *vars;
-@@ -1255,9 +1256,9 @@ static int btf_encoder__write_raw_file(struct btf_encoder *encoder)
- 	return err;
- }
- 
--static int btf_encoder__write_elf(struct btf_encoder *encoder)
-+static int btf_encoder__write_elf(struct btf_encoder *encoder, const struct btf *btf,
-+				  const char *btf_secname)
- {
--	struct btf *btf = encoder->btf;
- 	const char *filename = encoder->filename;
- 	GElf_Shdr shdr_mem, *shdr;
- 	Elf_Data *btf_data = NULL;
-@@ -1297,7 +1298,7 @@ static int btf_encoder__write_elf(struct btf_encoder *encoder)
- 		if (shdr == NULL)
- 			continue;
- 		char *secname = elf_strptr(elf, strndx, shdr->sh_name);
--		if (strcmp(secname, ".BTF") == 0) {
-+		if (strcmp(secname, btf_secname) == 0) {
- 			btf_data = elf_getdata(scn, btf_data);
- 			break;
- 		}
-@@ -1341,11 +1342,11 @@ static int btf_encoder__write_elf(struct btf_encoder *encoder)
- 			goto unlink;
- 		}
- 
--		snprintf(cmd, sizeof(cmd), "%s --add-section .BTF=%s %s",
--			 llvm_objcopy, tmp_fn, filename);
-+		snprintf(cmd, sizeof(cmd), "%s --add-section %s=%s %s",
-+			 llvm_objcopy, btf_secname, tmp_fn, filename);
- 		if (system(cmd)) {
--			fprintf(stderr, "%s: failed to add .BTF section to '%s': %d!\n",
--				__func__, filename, errno);
-+			fprintf(stderr, "%s: failed to add %s section to '%s': %d!\n",
-+				__func__, btf_secname, filename, errno);
- 			goto unlink;
- 		}
- 
-@@ -1380,12 +1381,26 @@ int btf_encoder__encode(struct btf_encoder *encoder)
- 		fprintf(stderr, "%s: btf__dedup failed!\n", __func__);
- 		return -1;
- 	}
--
--	if (encoder->raw_output)
-+	if (encoder->raw_output) {
- 		err = btf_encoder__write_raw_file(encoder);
--	else
--		err = btf_encoder__write_elf(encoder);
-+	} else {
-+		struct btf *btf = encoder->btf, *distilled_base;
- 
-+		if (encoder->gen_distilled_base) {
-+			if (btf__distill_base(encoder->btf, &distilled_base, &btf) < 0) {
-+				fprintf(stderr, "could not generate distilled base BTF: %s\n",
-+					strerror(errno));
-+				return -1;
-+			}
-+		}
-+		err = btf_encoder__write_elf(encoder, btf, BTF_ELF_SEC);
-+		if (!err && encoder->gen_distilled_base)
-+			err = btf_encoder__write_elf(encoder, distilled_base, BTF_BASE_ELF_SEC);
-+		if (btf != encoder->btf) {
-+			btf__free((struct btf *)btf__base_btf(btf));
-+			btf__free(btf);
-+		}
-+	}
- 	return err;
- }
- 
-@@ -1659,6 +1674,7 @@ struct btf_encoder *btf_encoder__new(struct cu *cu, const char *detached_filenam
- 		encoder->force		 = conf_load->btf_encode_force;
- 		encoder->gen_floats	 = conf_load->btf_gen_floats;
- 		encoder->skip_encoding_vars = conf_load->skip_encoding_btf_vars;
-+		encoder->gen_distilled_base = conf_load->btf_gen_distilled_base;
- 		encoder->verbose	 = verbose;
- 		encoder->has_index_type  = false;
- 		encoder->need_index_type = false;
-diff --git a/dwarves.h b/dwarves.h
-index dd35a4e..5f5e2b6 100644
---- a/dwarves.h
-+++ b/dwarves.h
-@@ -94,6 +94,7 @@ struct conf_load {
- 	bool			btf_gen_floats;
- 	bool			btf_encode_force;
- 	bool			reproducible_build;
-+	bool			btf_gen_distilled_base;
- 	uint8_t			hashtable_bits;
- 	uint8_t			max_hashtable_bits;
- 	uint16_t		kabi_prefix_len;
-diff --git a/man-pages/pahole.1 b/man-pages/pahole.1
-index 19bf197..dae7050 100644
---- a/man-pages/pahole.1
-+++ b/man-pages/pahole.1
-@@ -316,6 +316,9 @@ Supported non-standard features (not enabled for 'default')
- 	reproducible_build Ensure generated BTF is consistent every time;
- 	                   without this parallel BTF encoding can result in
- 	                   inconsistent BTF ids.
-+	distilled_base     For split BTF, generate a distilled version of
-+	                   the associated base BTF to support later relocation
-+	                   of split BTF with a possibly changed base.
- .fi
- 
- So for example, specifying \-\-btf_encode=var,enum64 will result in a BTF encoding that (as well as encoding basic BTF information) will contain variables and enum64 values.
-diff --git a/pahole.c b/pahole.c
-index 750b847..79d01dc 100644
---- a/pahole.c
-+++ b/pahole.c
-@@ -1290,6 +1290,7 @@ struct btf_feature {
- 	BTF_DEFAULT_FEATURE(optimized_func, btf_gen_optimized, false),
- 	BTF_DEFAULT_FEATURE(consistent_func, skip_encoding_btf_inconsistent_proto, false),
- 	BTF_NON_DEFAULT_FEATURE(reproducible_build, reproducible_build, false),
-+	BTF_NON_DEFAULT_FEATURE(distilled_base, btf_gen_distilled_base, false),
- };
- 
- #define BTF_MAX_FEATURE_STR	1024
+All errors (new ones prefixed by >>):
+
+   In file included from include/linux/trace_events.h:10,
+                    from include/trace/syscall.h:7,
+                    from include/linux/syscalls.h:93,
+                    from kernel/time/time.c:33:
+   include/linux/perf_event.h: In function 'perf_sample_save_brstack':
+>> include/linux/perf_event.h:1279:14: error: implicit declaration of function 'has_branch_stack' [-Werror=implicit-function-declaration]
+    1279 |         if (!has_branch_stack(event))
+         |              ^~~~~~~~~~~~~~~~
+   include/linux/perf_event.h: At top level:
+>> include/linux/perf_event.h:1671:20: error: conflicting types for 'has_branch_stack'; have 'bool(struct perf_event *)' {aka '_Bool(struct perf_event *)'}
+    1671 | static inline bool has_branch_stack(struct perf_event *event)
+         |                    ^~~~~~~~~~~~~~~~
+   include/linux/perf_event.h:1279:14: note: previous implicit declaration of 'has_branch_stack' with type 'int()'
+    1279 |         if (!has_branch_stack(event))
+         |              ^~~~~~~~~~~~~~~~
+   cc1: some warnings being treated as errors
+--
+   In file included from include/linux/trace_events.h:10,
+                    from include/trace/syscall.h:7,
+                    from include/linux/syscalls.h:93,
+                    from kernel/time/hrtimer.c:30:
+   include/linux/perf_event.h: In function 'perf_sample_save_brstack':
+>> include/linux/perf_event.h:1279:14: error: implicit declaration of function 'has_branch_stack' [-Werror=implicit-function-declaration]
+    1279 |         if (!has_branch_stack(event))
+         |              ^~~~~~~~~~~~~~~~
+   include/linux/perf_event.h: At top level:
+>> include/linux/perf_event.h:1671:20: error: conflicting types for 'has_branch_stack'; have 'bool(struct perf_event *)' {aka '_Bool(struct perf_event *)'}
+    1671 | static inline bool has_branch_stack(struct perf_event *event)
+         |                    ^~~~~~~~~~~~~~~~
+   include/linux/perf_event.h:1279:14: note: previous implicit declaration of 'has_branch_stack' with type 'int()'
+    1279 |         if (!has_branch_stack(event))
+         |              ^~~~~~~~~~~~~~~~
+   kernel/time/hrtimer.c:121:35: warning: initialized field overwritten [-Woverride-init]
+     121 |         [CLOCK_REALTIME]        = HRTIMER_BASE_REALTIME,
+         |                                   ^~~~~~~~~~~~~~~~~~~~~
+   kernel/time/hrtimer.c:121:35: note: (near initialization for 'hrtimer_clock_to_base_table[0]')
+   kernel/time/hrtimer.c:122:35: warning: initialized field overwritten [-Woverride-init]
+     122 |         [CLOCK_MONOTONIC]       = HRTIMER_BASE_MONOTONIC,
+         |                                   ^~~~~~~~~~~~~~~~~~~~~~
+   kernel/time/hrtimer.c:122:35: note: (near initialization for 'hrtimer_clock_to_base_table[1]')
+   kernel/time/hrtimer.c:123:35: warning: initialized field overwritten [-Woverride-init]
+     123 |         [CLOCK_BOOTTIME]        = HRTIMER_BASE_BOOTTIME,
+         |                                   ^~~~~~~~~~~~~~~~~~~~~
+   kernel/time/hrtimer.c:123:35: note: (near initialization for 'hrtimer_clock_to_base_table[7]')
+   kernel/time/hrtimer.c:124:35: warning: initialized field overwritten [-Woverride-init]
+     124 |         [CLOCK_TAI]             = HRTIMER_BASE_TAI,
+         |                                   ^~~~~~~~~~~~~~~~
+   kernel/time/hrtimer.c:124:35: note: (near initialization for 'hrtimer_clock_to_base_table[11]')
+   cc1: some warnings being treated as errors
+
+
+vim +/has_branch_stack +1279 include/linux/perf_event.h
+
+  1271	
+  1272	static inline void perf_sample_save_brstack(struct perf_sample_data *data,
+  1273						    struct perf_event *event,
+  1274						    struct perf_branch_stack *brs,
+  1275						    u64 *brs_cntr)
+  1276	{
+  1277		int size = sizeof(u64); /* nr */
+  1278	
+> 1279		if (!has_branch_stack(event))
+  1280			return;
+  1281	
+  1282		if (branch_sample_hw_index(event))
+  1283			size += sizeof(u64);
+  1284		size += brs->nr * sizeof(struct perf_branch_entry);
+  1285	
+  1286		/*
+  1287		 * The extension space for counters is appended after the
+  1288		 * struct perf_branch_stack. It is used to store the occurrences
+  1289		 * of events of each branch.
+  1290		 */
+  1291		if (brs_cntr)
+  1292			size += brs->nr * sizeof(u64);
+  1293	
+  1294		data->br_stack = brs;
+  1295		data->br_stack_cntr = brs_cntr;
+  1296		data->dyn_size += size;
+  1297		data->sample_flags |= PERF_SAMPLE_BRANCH_STACK;
+  1298	}
+  1299	
+
 -- 
-2.31.1
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
