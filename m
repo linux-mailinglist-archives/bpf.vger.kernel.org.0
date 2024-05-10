@@ -1,140 +1,119 @@
-Return-Path: <bpf+bounces-29358-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-29408-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0C91B8C1A9F
-	for <lists+bpf@lfdr.de>; Fri, 10 May 2024 02:16:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id F1E888C1BB0
+	for <lists+bpf@lfdr.de>; Fri, 10 May 2024 02:37:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3DA9A1C22444
-	for <lists+bpf@lfdr.de>; Fri, 10 May 2024 00:16:52 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2EFF81C222FF
+	for <lists+bpf@lfdr.de>; Fri, 10 May 2024 00:37:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 788C484A4B;
-	Fri, 10 May 2024 00:09:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB3CD1C68D;
+	Fri, 10 May 2024 00:24:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="aZMv4CE1"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Q6oP6eX2"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yb1-f176.google.com (mail-yb1-f176.google.com [209.85.219.176])
+Received: from mail-yw1-f202.google.com (mail-yw1-f202.google.com [209.85.128.202])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5852C6166E
-	for <bpf@vger.kernel.org>; Fri, 10 May 2024 00:09:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BCE53179A7
+	for <bpf@vger.kernel.org>; Fri, 10 May 2024 00:24:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715299797; cv=none; b=uPizM44mHsm5amTgFWUByDcbBE2tmc7Yrrg5DFY9nfL+fPB1cDLX3b2chkMBc7Nkx4wcwFmmevzB8s1KasligHQbuJHOT07tGe+dt1m6AYk/Z+VjhKwtLEZKUOeXvlkdb3S+bBwRoBA1oOzB2aSJoJj8uWZwIPcJzNrv1SFcBco=
+	t=1715300683; cv=none; b=mgA79+r3vBpOympOeygA4aM3JdQ8CPAgRg2wlmFEXf+/PYZcF3NEuI6o2s4XQegvHq7WVsGDbTvNvu66bzbXuu91APY9Ct3f2B54WGfuhEbLhBAJi24fLFOeEUFtnxnZ0ZJjCRJ7n5nb99srRQmqR8orJ3K5qh/ZozMHEjdGE5Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715299797; c=relaxed/simple;
-	bh=CRyVyadP3ZU1CdFK1za0d7DYYm3XBt0zVrXPowbXrUg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=u1w2pQbz+Y0yAncfi4a6Z3pz24hBi78m+qcxW/eekSPi/wNdzwzO73qvPkua69cLSCccq8w8HTTZs6uc93gM36JYwnrtwIEBi0F1aFdx8YaBF+8CaZmBL7puhiPn4kyJ6IqcCzjbwvE7QvxzFwREgZbsKE9owK/bpUsIo5cQdCI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=aZMv4CE1; arc=none smtp.client-ip=209.85.219.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yb1-f176.google.com with SMTP id 3f1490d57ef6-de462979e00so1601039276.3
-        for <bpf@vger.kernel.org>; Thu, 09 May 2024 17:09:55 -0700 (PDT)
+	s=arc-20240116; t=1715300683; c=relaxed/simple;
+	bh=EavCetVSCgCq8a1RaVsXoOaflK2PYWCs6cIGsY45SPs=;
+	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=PyvUB+xeZo/Pwm5KNks+tEuT9ibIGh1e1CT9JvFEZHVYUC+4jwxCdyT+22Tld6ADNc4kgrYJ2CjrjlB1l7Lnc6V2NT+AUYtCEeqkM5kAUqdry0oR7OMVj4zdF8mdHPAp61kiKyIhBZTMQEu9/DpjA7Q2sDwjINkn1n4zLk2qaKs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--yabinc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Q6oP6eX2; arc=none smtp.client-ip=209.85.128.202
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--yabinc.bounces.google.com
+Received: by mail-yw1-f202.google.com with SMTP id 00721157ae682-61b2ef746c9so24282177b3.1
+        for <bpf@vger.kernel.org>; Thu, 09 May 2024 17:24:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1715299794; x=1715904594; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=sHcDzABRTPbRjY4D0g8zctIjEcKfq/Bknw189QrYauE=;
-        b=aZMv4CE1PdXsOFqFYmeILF/23XMPAZXC2ZMdRrYumzr6UQTYqPN1sruWRV0YmvUq0w
-         gttJGXcvpaeqnlPBKuaXUTjlB4IKMzjGWgTED5+5bKElNrHzYYnHrA1Dj/blbOPl9Fix
-         CbgSoqveMOkho2UaCQ42WnrVSOMDk+ig/Hqr5fVRWyA7kQ1PLrK/lwY28vfihybdxuMN
-         paYxOoFViivGPXYxY9YwR1U7ROBvML6n28Om7iZBk6PVHlpQF4lZVzfIwqKDjUJqg6ly
-         OjHoNnkR2jL6m9BX42y+WjfrCEjlRCNunCBPQC8vMvnein70qbePJ3nF5PEJvdfuShHy
-         v49g==
+        d=google.com; s=20230601; t=1715300681; x=1715905481; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=6eqm/BqIluFQHvpRuckwNPKwG5hWXwTVWnnYkmrJGUM=;
+        b=Q6oP6eX2EIg9SP1I0c1rti1vPfhT1ZObGGUb1pfzKVkMS39ZugHbj+zCZzGU2pqKLp
+         QIDQo3ODwrvmjaxT9hftZeLGvA+qfWYTnvFNzYTXmCKqe817XbG/5HcM1VswKYQin8R5
+         qrmHmouRUiGyz6g3jIq0IpsKMidRf6i8ShKx+fIpVdqz0AoqnfdaN2jCNqgssErcjuUp
+         ui8pas8lprR+rKq8F2xlFjy5TLVeYLj3zumCNz8JWN39TjoPuya2eIFXE9ZIseDwTSXv
+         7TY/sCogBvsKnQ54qEVVHhbDlr5cejO8CQ5/A/AkrOyEpkWTU4139dCBPvv2OmBJtRJ4
+         QpYw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1715299794; x=1715904594;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=sHcDzABRTPbRjY4D0g8zctIjEcKfq/Bknw189QrYauE=;
-        b=atfMMfY6lj9KRd1ctM+M5wWU/xBd8wf7IiMmmNPvABSlgkybAw6TSB9gNn+AKCyG02
-         bPxcIbUigOGA6li+f6vY3gvYJaiAsKYpbGEynyniis5aAKbl+2KqZyqGIMMOvTjbpvjv
-         XHNFCm6u41CTBADJAM9VtGiLH/9KAqnqOoQ6frMn5721d3kKV8EXigQLKJTtbZsW6LyV
-         QSwxhn4xG1qmj5t/UXjPtxjdcqFFpNHvMo6DCc9Ai0FmkGZ07uB3cVVTP4vHT+zuOUlq
-         DreC2+sQRqPKiCfsPPgTmuAFKcTICfD8zDfHtK+BcS3SJbW0tVVN8Dx5wHd1Hma4HhR0
-         BZpQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVn6F1OK7lv6nUIMsE+pihDSofBRqx6KtrrnV4sytimsiEcVxeq+mLZa2FX/vDMfT6rYfhg6ilPYtgwEJlQ6WA9kPUL
-X-Gm-Message-State: AOJu0YzdYnt/pOHCPQNm0TSIcMY+9FlwszVZBWR7I3tIM/yYfCqNBfrm
-	ZksQmDSNUg/zhofRG7KA1AYsn4T4qIb7ULppFypIVXVCD4X3CXAB
-X-Google-Smtp-Source: AGHT+IH+0mJJTXjsMz0YgkuQOuhK8Y8YxmNfvCQHi+tzuGfqITMVd+FarFXYc2xsC+LA5o0GzLeDVQ==
-X-Received: by 2002:a25:d0d7:0:b0:de6:d19:837a with SMTP id 3f1490d57ef6-dee4f33a0d4mr1155837276.34.1715299794132;
-        Thu, 09 May 2024 17:09:54 -0700 (PDT)
-Received: from ?IPV6:2600:1700:6cf8:1240:66fe:82c7:2d03:7176? ([2600:1700:6cf8:1240:66fe:82c7:2d03:7176])
-        by smtp.gmail.com with ESMTPSA id 3f1490d57ef6-debd374406asm547991276.29.2024.05.09.17.09.52
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 09 May 2024 17:09:53 -0700 (PDT)
-Message-ID: <f13a1965-15d7-4809-ae15-ad42ca0b336e@gmail.com>
-Date: Thu, 9 May 2024 17:09:51 -0700
+        d=1e100.net; s=20230601; t=1715300681; x=1715905481;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=6eqm/BqIluFQHvpRuckwNPKwG5hWXwTVWnnYkmrJGUM=;
+        b=dhATWGEvxAi+FC5Xx3MKA2lnrLZ2tOFa84bbuPMfmUL7P1hxUSJFtrr6Fkez/yMk7B
+         /YjW7q/L1uT6SwYUayO1c/KB34LSfaa9KfNP6AOvb0opTQEH7XjRfF74nqzyZ1JPBPWd
+         G+e80Ilptmx3lOKvOeZrUftkI+QaI/MJ2VWlVwoBrTGal+tz4D1LO9ATlgjbiqvLzKW6
+         OjeqGBVYeFtlebwIcabwBGpKaa5poS2/UPPmCzAZIIU7R3wxRCVBMCRruIc+20ChIwvm
+         UmbiJC/Mo/knj3pgOHBnOZir8DPdvFaXf7c8ydRDiO4sitHb0z7SjCKLb0moo5FfeHzB
+         p6Fw==
+X-Forwarded-Encrypted: i=1; AJvYcCU4hioY/ElktMuB3a2NyZRXrdlBIsaDgxzaK7wciqS8C3ACNgCovnGHR6Jzs/iVsJaB63jsZcUGu9seaUgC9hzFrIRY
+X-Gm-Message-State: AOJu0YwsIwwwZjVTeFAr6QWVxNET9ufsPMtm10G+vUncTphJTHcOlKar
+	btkMq0nnEAq+Z1jdd+V61IbOAJfbad/W8wiEJjEpqa30McZ7ndbqKL5HfoSNQmAUnCVQ2jYuU9g
+	Y
+X-Google-Smtp-Source: AGHT+IFLiYM8VZwRIj/wP+/duC96Rdf7O6hJav827B2VR01oQrpB/ASkm4qSwdbPKc+j1GRgZ4Sunld9v+0=
+X-Received: from yabinc-desktop.mtv.corp.google.com ([2620:15c:211:202:1b7d:8132:c198:e24f])
+ (user=yabinc job=sendgmr) by 2002:a05:6902:1002:b0:de5:9f2c:c17c with SMTP id
+ 3f1490d57ef6-dee4f37bbfbmr295036276.9.1715300680883; Thu, 09 May 2024
+ 17:24:40 -0700 (PDT)
+Date: Thu,  9 May 2024 17:24:21 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH bpf-next v4 4/9] bpf: create repeated fields for arrays.
-To: Eduard Zingerman <eddyz87@gmail.com>, Kui-Feng Lee
- <thinker.li@gmail.com>, bpf@vger.kernel.org, ast@kernel.org,
- martin.lau@linux.dev, song@kernel.org, kernel-team@meta.com,
- andrii@kernel.org
-Cc: kuifeng@meta.com
-References: <20240508063218.2806447-1-thinker.li@gmail.com>
- <20240508063218.2806447-5-thinker.li@gmail.com>
- <61b492f9bc12f92b64bf5ce06363087ec828e991.camel@gmail.com>
-Content-Language: en-US
-From: Kui-Feng Lee <sinquersw@gmail.com>
-In-Reply-To: <61b492f9bc12f92b64bf5ce06363087ec828e991.camel@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.45.0.118.g7fe29c98d7-goog
+Message-ID: <20240510002424.1277314-1-yabinc@google.com>
+Subject: [PATCH v3 0/3] perf:core: Save raw sample data
+From: Yabin Cui <yabinc@google.com>
+To: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
+	Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, 
+	Mark Rutland <mark.rutland@arm.com>, 
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Ian Rogers <irogers@google.com>, Adrian Hunter <adrian.hunter@intel.com>
+Cc: linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	bpf@vger.kernel.org, Yabin Cui <yabinc@google.com>
+Content-Type: text/plain; charset="UTF-8"
 
+Changes since v1:
+ - Check event->attr.sample_type & PERF_SAMPLE_RAW before
+   calling perf_sample_save_raw_data().
+ - Subject has been changed to reflect the change of solution.
 
+Changes since v2:
+ - Move sample_type check into perf_sample_save_raw_data().
+ - (New patch) Move sample_type check into perf_sample_save_callchain().
+ - (New patch) Move sample_type check into perf_sample_save_brstack().
 
-On 5/9/24 16:13, Eduard Zingerman wrote:
-> On Tue, 2024-05-07 at 23:32 -0700, Kui-Feng Lee wrote:
->> The verifier uses field information for certain special types, such as
->> kptr, rbtree root, and list head. These types are treated
->> differently. However, we did not previously support these types in
->> arrays. This update examines arrays and duplicates field information the
->> same number of times as the length of the array if the element type is one
->> of the special types.
->>
->> Signed-off-by: Kui-Feng Lee <thinker.li@gmail.com>
->> ---
-> 
-> Acked-by: Eduard Zingerman <eddyz87@gmail.com>
-> 
-> [...]
-> 
->> @@ -3504,6 +3539,19 @@ static int btf_find_field_one(const struct btf *btf,
->>   {
->>   	int ret, align, sz, field_type;
->>   	struct btf_field_info tmp;
->> +	const struct btf_array *array;
->> +	u32 i, nelems = 1;
->> +
->> +	/* Walk into array types to find the element type and the number of
->> +	 * elements in the (flattened) array.
->> +	 */
->> +	for (i = 0; i < MAX_RESOLVE_DEPTH && btf_type_is_array(var_type); i++) {
->> +		array = btf_array(var_type);
->> +		nelems *= array->nelems;
->> +		var_type = btf_type_by_id(btf, array->type);
->> +	}
-> 
-> Nit: still think that error should be reported when i == MAX_RESOLVE_DEPTH.
+Original commit message from v1:
+perf/core: Trim dyn_size if raw data is absent
 
-Sure! I will change it.
+Yabin Cui (3):
+  perf/core: Save raw sample data conditionally based on sample type
+  perf: core: Check sample_type in perf_sample_save_callchain
+  perf: core: Check sample_type in perf_sample_save_brstack
 
-> 
->> +	if (nelems == 0)
->> +		return 0;
->>
->>   	field_type = btf_get_field_type(__btf_name_by_offset(btf, var_type->name_off),
->>   					field_mask, seen_mask, &align, &sz);
-> 
-> [...]
+ arch/s390/kernel/perf_cpum_cf.c    |  2 +-
+ arch/s390/kernel/perf_pai_crypto.c |  2 +-
+ arch/s390/kernel/perf_pai_ext.c    |  2 +-
+ arch/x86/events/amd/core.c         |  3 +--
+ arch/x86/events/amd/ibs.c          |  5 ++---
+ arch/x86/events/core.c             |  3 +--
+ arch/x86/events/intel/ds.c         |  9 +++-----
+ include/linux/perf_event.h         | 10 +++++++++
+ kernel/events/core.c               | 35 +++++++++++++++---------------
+ kernel/trace/bpf_trace.c           | 11 +++++-----
+ 10 files changed, 44 insertions(+), 38 deletions(-)
+
+-- 
+2.45.0.118.g7fe29c98d7-goog
+
 
