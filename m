@@ -1,69 +1,69 @@
-Return-Path: <bpf+bounces-29527-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-29528-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D1EBB8C2A89
-	for <lists+bpf@lfdr.de>; Fri, 10 May 2024 21:25:28 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7EEF08C2A8B
+	for <lists+bpf@lfdr.de>; Fri, 10 May 2024 21:25:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 012B21C21B90
-	for <lists+bpf@lfdr.de>; Fri, 10 May 2024 19:25:28 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 09560282566
+	for <lists+bpf@lfdr.de>; Fri, 10 May 2024 19:25:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D55E04E1A2;
-	Fri, 10 May 2024 19:24:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8029C51C40;
+	Fri, 10 May 2024 19:24:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mm+X8vDz"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZiJDmb7y"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-vk1-f180.google.com (mail-vk1-f180.google.com [209.85.221.180])
+Received: from mail-qt1-f177.google.com (mail-qt1-f177.google.com [209.85.160.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B09D44F201;
-	Fri, 10 May 2024 19:24:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E44C502AE;
+	Fri, 10 May 2024 19:24:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715369061; cv=none; b=gyhfGpoEnTYGdOZKsASk1CAX0Z9+V/TUXns4F96HsvI91y+PmTmusT4KTwiqLz221US6wYGeM/zzDeRpsZAPn5/EeN2CCjMLwnem42wXvzxFHgTlPRuf8skvGkFyCbIrLFX1CL7vl6N9X4q1/eavzG6Tx6a7rrmqdxFRAv1XWl0=
+	t=1715369063; cv=none; b=bEstblHrVlv02oKEc7muCNjDT8dK3CwRQjlDPyZ7Db2nK8/vQWGSg5NVGz9Lr+5AVm02jjmbuK7QBFdVPxbJ3j4hnlDLrV91BjiM81mFPx0P2NYnaMgAbdfZHViSZ+qxKTp3D/6xJTGd/ko0A9j4D4wnx1LgchSdReTLsn0Ek8s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715369061; c=relaxed/simple;
-	bh=kehJkF7hNW6So1in8gSfWI+KqSEe1cpFQyx2tFoR3xY=;
+	s=arc-20240116; t=1715369063; c=relaxed/simple;
+	bh=kTydXBETpjr1D6XSLVXfwnOa/+Brli4WffZu0T51Xcc=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=JvTK5dcbk+KWHD6JIzC5nqCzM8s3uncZ/4z6IxmwHQj91qKP9l5VqzXvh/AcODDHfTsG/ceqn5FqyzconAi7KpbJWerrINsAe7mNT4Ie3sJ4u+2nIet3PI8fTkeDnptVYqr5zjfAlxGK6Gwq18ar4fhlEiWhh1exkMlhbdnLIH0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mm+X8vDz; arc=none smtp.client-ip=209.85.221.180
+	 MIME-Version; b=ClY5ii+gTKJTNSftcJ5FYXhtdOOW8iS1xkGE/ciS0Ufs3xDUm+rCW5TC+QL+zgxt3mEQ34QokSV9MaFOe7NKICdCS7xEdC3ZlO1LYSs4Qrfy7jyJIsfawmUlz5aQpT1EyxhZ5fNB+D5QTlSt8vBabYmmsw44R116Z2HnCcWXRbo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ZiJDmb7y; arc=none smtp.client-ip=209.85.160.177
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-vk1-f180.google.com with SMTP id 71dfb90a1353d-4df97a50d1aso87233e0c.1;
-        Fri, 10 May 2024 12:24:19 -0700 (PDT)
+Received: by mail-qt1-f177.google.com with SMTP id d75a77b69052e-43ddbdf2439so15427251cf.0;
+        Fri, 10 May 2024 12:24:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1715369058; x=1715973858; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1715369059; x=1715973859; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=AIumfiaWIEWPZRe/xDRsqp1TqW1h17NwK3fwZB2xMTs=;
-        b=mm+X8vDzYYY7wvBxyIG2gCtF0Mak4Brx0bUcX6/8cTXjn6INBMD3xLlp7eVyyPoOlj
-         SEvU5TCd05+ONs5PY+0JZ+R1ZTy+c0l04RXzDEpkDa29zaX0Mk8+2uFYpDb23CwErkL1
-         VTVU3uDOLSlN7rU5M0TuRYAjxd4xKexueEIAUIhXlCWX2W/HC4JoVV8JfImn/kVSC7Mr
-         Mga+Xm6aU2c9cDqB/IWAcjgYUqC8Jqe4PFhEGiaoEKnJhbN2AA/0tKFkXZyPYsEryyiy
-         LVk2CFySktAd7VVbW0xPDvuhGryasi/HTlLaM8XH4poE09fiq9Upqh2sU4OYrhG8UKBt
-         tleg==
+        bh=hveCu8ucfpTFonbjNBtsRxV1gZi43mXbiPaT0dPNXp0=;
+        b=ZiJDmb7yHLGoQXPfP2+TiGJp0b7qvTf0lfW4dPox75TJWhN4GII0Dh6RpE/1yhDhvJ
+         4tUBqNfF5YHFn2qXlH7bnU6dYfxMeBbZmwFXOv7/YUkUmpg6codlRjnnGb4R2eM0vBQU
+         gFD8FkD34LotUb2cn+hcQE3tWvqCEgJH/nBsJEYSizPzSvp35BQs4a4LhjnbpUlUc5Ym
+         iNExZyAk3yNaeafLMRt2TwAFjWGgPzyyZZ624MVq9JXBaOQd94y6TfNo2XYtA5hMt3cG
+         puWDh3mQvvNwLn5lxXvrwdrQ1rUnmoic75aryniswcUCkQgf+6U0vCBvYMPQZu2uV1zx
+         CZ9g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1715369058; x=1715973858;
+        d=1e100.net; s=20230601; t=1715369059; x=1715973859;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=AIumfiaWIEWPZRe/xDRsqp1TqW1h17NwK3fwZB2xMTs=;
-        b=Z9tTsTZPw1FLyrd/6a51APQ3SGBu60iLYqS4aQu2WndKZrPHPHgUvCOq+SAchKj9rM
-         Fj/uJmkGDuIrir7mxSida+1jBecZPs+XNmQdsu6BebB5LAovy0XNNZG8vE0GiDdZA48S
-         1YuuSP95f5mYZidb4J+ZsepwyK8Ms/kYj+yBCGVobrGO/4yi8Pd0bMa5+WNgXn25cYIJ
-         EVxqFFnI2BxQWApXFLBHf5pwwn4O0+g/0LAyvEmw8P6p9TRpsU0Y+tmcOE9TlbefbKqd
-         +C63XPsMdK16u1r8dLIK4vFfIb1lyM2A+Df2p2iapBCu9Nc7sRF2rolc57VqH7p5y2FL
-         A6Dw==
-X-Gm-Message-State: AOJu0YwRql+FGTy+OrnoRAfcro/E1iXCyeim1cbRiBFzVTcMt7lYKimM
-	FZqgYZBFSCt7jH+lxHsanN6BcFXwuvJZmKaQ2e62PvBD44ZJ93gJyI5+OA==
-X-Google-Smtp-Source: AGHT+IExx1AJFWIy0pm2XKH2XcB1MuY8euiT1hHYapSLEQAZ6Cjh9SZrHHIpwCazZphs6mgyVZoBrQ==
-X-Received: by 2002:a05:6122:4597:b0:4df:16d8:2b82 with SMTP id 71dfb90a1353d-4df88283ba4mr4236908e0c.1.1715369058463;
-        Fri, 10 May 2024 12:24:18 -0700 (PDT)
+        bh=hveCu8ucfpTFonbjNBtsRxV1gZi43mXbiPaT0dPNXp0=;
+        b=q08qTMIK4kvK1Q18NQpe34jwAGgi+u+F8Alte4zPnNvx4pBm6pKBcGkGjJarVjwq/R
+         X0Wgtvnwcm6gBOr7G4299HWNquXMbLlM14YpvPNs1elDuoNsBB6Kf6gaFyJqnVNtVFgv
+         EfjOTDvqpApKEKBR9RV8+4+0nd3kZFHmv0/FcID6QWRXi4vtJtMvOJAobrf811i0ODcT
+         7fuy6OdMOyWtfDOwCC9EEMrKJCL1CGqWHqsbp1lDpXGa89Wph59gnhUbisWT5R9I08RF
+         a3Yi3KEqgwOEKGBJtHZzb7PVxXrdTdQOYFqGmBa7D7UEhnbM0lbtd3ksLbPd4pBqDDe0
+         1+ow==
+X-Gm-Message-State: AOJu0YyjpAjZl0s9CAJSHeuFO6Xs06L7B6tryR9bb9o2eIS2ZLcnXRKt
+	xiqcsNlG8XZiuvoiOGCBXtoq6Edoh4iy5CEqm/7SNowh3f08tfhQnDAYiw==
+X-Google-Smtp-Source: AGHT+IEEHrBSdl5u3GgPumiQKHpYQuCPrumgKyDcajkj29MvZpj15ouVgIcL2/m2WJY86iJ5NeCucg==
+X-Received: by 2002:ac8:7f51:0:b0:43d:d970:b3f1 with SMTP id d75a77b69052e-43dfdd0c647mr36136851cf.61.1715369059163;
+        Fri, 10 May 2024 12:24:19 -0700 (PDT)
 Received: from n36-183-057.byted.org ([147.160.184.83])
-        by smtp.gmail.com with ESMTPSA id d75a77b69052e-43df5b46a26sm23863251cf.80.2024.05.10.12.24.17
+        by smtp.gmail.com with ESMTPSA id d75a77b69052e-43df5b46a26sm23863251cf.80.2024.05.10.12.24.18
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Fri, 10 May 2024 12:24:18 -0700 (PDT)
 From: Amery Hung <ameryhung@gmail.com>
@@ -82,9 +82,9 @@ Cc: bpf@vger.kernel.org,
 	xiyou.wangcong@gmail.com,
 	yepeilin.cs@gmail.com,
 	ameryhung@gmail.com
-Subject: [RFC PATCH v8 08/20] selftests/bpf: Test adding kernel object to bpf graph
-Date: Fri, 10 May 2024 19:24:00 +0000
-Message-Id: <20240510192412.3297104-9-amery.hung@bytedance.com>
+Subject: [RFC PATCH v8 09/20] bpf: Find special BTF fields in union
+Date: Fri, 10 May 2024 19:24:01 +0000
+Message-Id: <20240510192412.3297104-10-amery.hung@bytedance.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20240510192412.3297104-1-amery.hung@bytedance.com>
 References: <20240510192412.3297104-1-amery.hung@bytedance.com>
@@ -96,175 +96,157 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-This patch tests bpf graphs storing kernel objects.
+This patch looks into unions when parsing BTF. While we would like to
+support adding a skb to bpf collections, the bpf graph node in sk_buff
+will happen to be in a union due to space constraint. Therefore,
 
 Signed-off-by: Amery Hung <amery.hung@bytedance.com>
 ---
- .../selftests/bpf/bpf_testmod/bpf_testmod.c   | 14 +++++++++
- .../selftests/bpf/bpf_testmod/bpf_testmod.h   |  5 ++++
- .../selftests/bpf/prog_tests/linked_list.c    |  6 ++--
- .../testing/selftests/bpf/progs/linked_list.c | 15 ++++++++++
- .../testing/selftests/bpf/progs/linked_list.h |  8 +++++
- .../selftests/bpf/progs/linked_list_fail.c    | 29 +++++++++++++++++++
- 6 files changed, 75 insertions(+), 2 deletions(-)
+ kernel/bpf/btf.c | 74 +++++++++++++++++++++++++++++++++++++++++-------
+ 1 file changed, 64 insertions(+), 10 deletions(-)
 
-diff --git a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
-index 097a8d1c2ef8..90dda6335c04 100644
---- a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
-+++ b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
-@@ -494,6 +494,18 @@ __bpf_kfunc static u32 bpf_kfunc_call_test_static_unused_arg(u32 arg, u32 unused
- 	return arg;
+diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+index 37fb6143da79..25a5dc840ac3 100644
+--- a/kernel/bpf/btf.c
++++ b/kernel/bpf/btf.c
+@@ -3305,7 +3305,7 @@ static int btf_find_struct(const struct btf *btf, const struct btf_type *t,
+ 			   u32 off, int sz, enum btf_field_type field_type,
+ 			   struct btf_field_info *info)
+ {
+-	if (!__btf_type_is_struct(t))
++	if (!btf_type_is_struct(t))
+ 		return BTF_FIELD_IGNORE;
+ 	if (t->size != sz)
+ 		return BTF_FIELD_IGNORE;
+@@ -3497,6 +3497,24 @@ static int btf_get_field_type(const char *name, u32 field_mask, u32 *seen_mask,
+ 	return type;
  }
  
-+__bpf_kfunc static struct bpf_testmod_linked_list_obj *
-+bpf_kfunc_call_test_acq_linked_list_obj(void)
++static int btf_get_union_field_types(const struct btf *btf, const struct btf_type *u,
++				     u32 field_mask, u32 *seen_mask, int *align, int *sz)
 +{
-+	return kzalloc(sizeof(struct bpf_testmod_linked_list_obj), GFP_ATOMIC);
++	int i, field_type, field_types = 0;
++	const struct btf_member *member;
++	const struct btf_type *t;
++
++	for_each_member(i, u, member) {
++		t = btf_type_by_id(btf, member->type);
++		field_type = btf_get_field_type(__btf_name_by_offset(btf, t->name_off),
++						field_mask, seen_mask, align, sz);
++		if (field_type == 0 || field_type == BPF_KPTR_REF)
++			continue;
++		field_types = field_types | field_type;
++	}
++	return field_types;
 +}
 +
-+__bpf_kfunc static void
-+bpf_kfunc_call_test_rel_linked_list_obj(struct bpf_testmod_linked_list_obj *obj)
-+{
-+	kvfree(obj);
-+}
+ #undef field_mask_test_name
+ 
+ static int btf_find_struct_field(const struct btf *btf,
+@@ -3512,8 +3530,12 @@ static int btf_find_struct_field(const struct btf *btf,
+ 		const struct btf_type *member_type = btf_type_by_id(btf,
+ 								    member->type);
+ 
+-		field_type = btf_get_field_type(__btf_name_by_offset(btf, member_type->name_off),
+-						field_mask, &seen_mask, &align, &sz);
++		field_type = BTF_INFO_KIND(member_type->info) == BTF_KIND_UNION ?
++			btf_get_union_field_types(btf, member_type, field_mask,
++						  &seen_mask, &align, &sz) :
++			btf_get_field_type(__btf_name_by_offset(btf, member_type->name_off),
++					   field_mask, &seen_mask, &align, &sz);
 +
- BTF_KFUNCS_START(bpf_testmod_check_kfunc_ids)
- BTF_ID_FLAGS(func, bpf_testmod_test_mod_kfunc)
- BTF_ID_FLAGS(func, bpf_kfunc_call_test1)
-@@ -520,6 +532,8 @@ BTF_ID_FLAGS(func, bpf_kfunc_call_test_ref, KF_TRUSTED_ARGS | KF_RCU)
- BTF_ID_FLAGS(func, bpf_kfunc_call_test_destructive, KF_DESTRUCTIVE)
- BTF_ID_FLAGS(func, bpf_kfunc_call_test_static_unused_arg)
- BTF_ID_FLAGS(func, bpf_kfunc_call_test_offset)
-+BTF_ID_FLAGS(func, bpf_kfunc_call_test_acq_linked_list_obj, KF_ACQUIRE | KF_RET_NULL)
-+BTF_ID_FLAGS(func, bpf_kfunc_call_test_rel_linked_list_obj, KF_RELEASE)
- BTF_KFUNCS_END(bpf_testmod_check_kfunc_ids)
+ 		if (field_type == 0)
+ 			continue;
+ 		if (field_type < 0)
+@@ -3521,8 +3543,7 @@ static int btf_find_struct_field(const struct btf *btf,
  
- static int bpf_testmod_ops_init(struct btf *btf)
-diff --git a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.h b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.h
-index 6d24e1307b64..77c36fc016e3 100644
---- a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.h
-+++ b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.h
-@@ -99,4 +99,9 @@ struct bpf_testmod_ops2 {
- 	int (*test_1)(void);
- };
- 
-+struct bpf_testmod_linked_list_obj {
-+	int val;
-+	struct bpf_list_node node;
-+};
-+
- #endif /* _BPF_TESTMOD_H */
-diff --git a/tools/testing/selftests/bpf/prog_tests/linked_list.c b/tools/testing/selftests/bpf/prog_tests/linked_list.c
-index 2fb89de63bd2..813c2e9a2346 100644
---- a/tools/testing/selftests/bpf/prog_tests/linked_list.c
-+++ b/tools/testing/selftests/bpf/prog_tests/linked_list.c
-@@ -80,8 +80,8 @@ static struct {
- 	{ "direct_write_node", "direct access to bpf_list_node is disallowed" },
- 	{ "use_after_unlock_push_front", "invalid mem access 'scalar'" },
- 	{ "use_after_unlock_push_back", "invalid mem access 'scalar'" },
--	{ "double_push_front", "arg#1 expected pointer to allocated object" },
--	{ "double_push_back", "arg#1 expected pointer to allocated object" },
-+	{ "double_push_front", "arg#1 expected pointer to allocated object or trusted pointer" },
-+	{ "double_push_back", "arg#1 expected pointer to allocated object or trusted pointer" },
- 	{ "no_node_value_type", "bpf_list_node not found at offset=0" },
- 	{ "incorrect_value_type",
- 	  "operation on bpf_list_head expects arg#1 bpf_list_node at offset=48 in struct foo, "
-@@ -96,6 +96,8 @@ static struct {
- 	{ "incorrect_head_off2", "bpf_list_head not found at offset=1" },
- 	{ "pop_front_off", "off 48 doesn't point to 'struct bpf_spin_lock' that is at 40" },
- 	{ "pop_back_off", "off 48 doesn't point to 'struct bpf_spin_lock' that is at 40" },
-+	{ "direct_write_node_kernel", "" },
-+	{ "push_local_node_to_kptr_list", "operation on bpf_list_head expects arg#1 bpf_list_node at offset=8 in struct bpf_testmod_linked_list_obj, but arg is at offset=8 in struct bpf_testmod_linked_list_obj" },
- };
- 
- static void test_linked_list_fail_prog(const char *prog_name, const char *err_msg)
-diff --git a/tools/testing/selftests/bpf/progs/linked_list.c b/tools/testing/selftests/bpf/progs/linked_list.c
-index 26205ca80679..148ec67feaf7 100644
---- a/tools/testing/selftests/bpf/progs/linked_list.c
-+++ b/tools/testing/selftests/bpf/progs/linked_list.c
-@@ -378,4 +378,19 @@ int global_list_in_list(void *ctx)
- 	return test_list_in_list(&glock, &ghead);
+ 		off = __btf_member_bit_offset(t, member);
+ 		if (off % 8)
+-			/* valid C code cannot generate such BTF */
+-			return -EINVAL;
++			continue;
+ 		off /= 8;
+ 		if (off % align)
+ 			continue;
+@@ -3737,6 +3758,20 @@ static int btf_parse_kptr(const struct btf *btf, struct btf_field *field,
+ 	return ret;
  }
  
-+SEC("tc")
-+int push_to_kptr_list(void *ctx)
++static const struct btf_type *
++btf_find_member_by_name(const struct btf *btf, const struct btf_type *t,
++			const char *member_name)
 +{
-+	struct bpf_testmod_linked_list_obj *f;
++	const struct btf_member *member;
++	int i;
 +
-+	f = bpf_kfunc_call_test_acq_linked_list_obj();
-+	if (!f)
-+		return 0;
-+
-+	bpf_spin_lock(&glock3);
-+	bpf_list_push_back(&ghead3, &f->node);
-+	bpf_spin_unlock(&glock3);
-+	return 0;
++	for_each_member(i, t, member) {
++		if (!strcmp(member_name, __btf_name_by_offset(btf, member->name_off)))
++			return btf_type_by_id(btf, member->type);
++	}
++	return NULL;
 +}
 +
- char _license[] SEC("license") = "GPL";
-diff --git a/tools/testing/selftests/bpf/progs/linked_list.h b/tools/testing/selftests/bpf/progs/linked_list.h
-index c0f3609a7ffa..14bd92cfdb6f 100644
---- a/tools/testing/selftests/bpf/progs/linked_list.h
-+++ b/tools/testing/selftests/bpf/progs/linked_list.h
-@@ -5,6 +5,7 @@
- #include <vmlinux.h>
- #include <bpf/bpf_helpers.h>
- #include "bpf_experimental.h"
-+#include "../bpf_testmod/bpf_testmod.h"
+ static int btf_parse_graph_root(struct btf_field *field,
+ 				struct btf_field_info *info,
+ 				const char *node_type_name,
+@@ -3754,18 +3789,27 @@ static int btf_parse_graph_root(struct btf_field *field,
+ 	 * verify its type.
+ 	 */
+ 	for_each_member(i, t, member) {
+-		if (strcmp(info->graph_root.node_name,
+-			   __btf_name_by_offset(btf, member->name_off)))
++		const struct btf_type *member_type = btf_type_by_id(btf, member->type);
++
++		if (BTF_INFO_KIND(member_type->info) == BTF_KIND_UNION) {
++			member_type = btf_find_member_by_name(btf, member_type,
++							      info->graph_root.node_name);
++			if (!member_type)
++				continue;
++		} else if (strcmp(info->graph_root.node_name,
++				  __btf_name_by_offset(btf, member->name_off))) {
+ 			continue;
++		}
++
+ 		/* Invalid BTF, two members with same name */
+ 		if (n)
+ 			return -EINVAL;
+-		n = btf_type_by_id(btf, member->type);
++		n = member_type;
+ 		if (!__btf_type_is_struct(n))
+ 			return -EINVAL;
+ 		if (strcmp(node_type_name, __btf_name_by_offset(btf, n->name_off)))
+ 			return -EINVAL;
+-		offset = __btf_member_bit_offset(n, member);
++		offset = __btf_member_bit_offset(member_type, member);
+ 		if (offset % 8)
+ 			return -EINVAL;
+ 		offset /= 8;
+@@ -5440,7 +5484,7 @@ btf_parse_struct_metas(struct bpf_verifier_log *log, struct btf *btf)
+ 		const struct btf_member *member;
+ 		struct btf_struct_meta *type;
+ 		struct btf_record *record;
+-		const struct btf_type *t;
++		const struct btf_type *t, *member_type;
+ 		int j, tab_cnt, id;
  
- struct bar {
- 	struct bpf_list_node node;
-@@ -52,5 +53,12 @@ struct {
- private(A) struct bpf_spin_lock glock;
- private(A) struct bpf_list_head ghead __contains(foo, node2);
- private(B) struct bpf_spin_lock glock2;
-+private(C) struct bpf_spin_lock glock3;
-+private(C) struct bpf_list_head ghead3 __contains_kptr(bpf_testmod_linked_list_obj, node);
-+
-+struct bpf_testmod_linked_list_obj *bpf_kfunc_call_test_acq_linked_list_obj(void) __ksym;
-+void bpf_kfunc_call_test_rel_linked_list_obj(struct bpf_testmod_linked_list_obj *obj) __ksym;
-+struct bpf_testmod_rb_tree_obj *bpf_kfunc_call_test_acq_rb_tree_obj(void) __ksym;
-+void bpf_kfunc_call_test_rel_rb_tree_obj(struct bpf_testmod_rb_tree_obj *obj) __ksym;
+ 		id = btf_is_base_kernel ?
+@@ -5462,6 +5506,16 @@ btf_parse_struct_metas(struct bpf_verifier_log *log, struct btf *btf)
+ 		cond_resched();
  
- #endif
-diff --git a/tools/testing/selftests/bpf/progs/linked_list_fail.c b/tools/testing/selftests/bpf/progs/linked_list_fail.c
-index 6438982b928b..5f8063ecc448 100644
---- a/tools/testing/selftests/bpf/progs/linked_list_fail.c
-+++ b/tools/testing/selftests/bpf/progs/linked_list_fail.c
-@@ -609,4 +609,33 @@ int pop_back_off(void *ctx)
- 	return pop_ptr_off((void *)bpf_list_pop_back);
- }
- 
-+SEC("?tc")
-+int direct_write_node_kernel(void *ctx)
-+{
-+	struct bpf_testmod_linked_list_obj *f;
+ 		for_each_member(j, t, member) {
++			member_type = btf_type_by_id(btf, member->type);
++			if (BTF_INFO_KIND(member_type->info) == BTF_KIND_UNION) {
++				const struct btf_member *umember;
++				int k;
 +
-+	f = bpf_kfunc_call_test_acq_linked_list_obj();
-+	if (!f)
-+		return 0;
-+
-+	*(__u64 *)&f->node = 0;
-+	bpf_kfunc_call_test_rel_linked_list_obj(f);
-+	return 0;
-+}
-+
-+SEC("?tc")
-+int push_local_node_to_kptr_list(void *ctx)
-+{
-+	struct bpf_testmod_linked_list_obj *f;
-+
-+	f = bpf_obj_new(typeof(*f));
-+	if (!f)
-+		return 0;
-+
-+	bpf_spin_lock(&glock3);
-+	bpf_list_push_back(&ghead3, &f->node);
-+	bpf_spin_unlock(&glock3);
-+	return 0;
-+}
-+
- char _license[] SEC("license") = "GPL";
++				for_each_member(k, member_type, umember) {
++					if (btf_id_set_contains(&aof.set, umember->type))
++						goto parse;
++				}
++			}
+ 			if (btf_id_set_contains(&aof.set, member->type))
+ 				goto parse;
+ 		}
 -- 
 2.20.1
 
