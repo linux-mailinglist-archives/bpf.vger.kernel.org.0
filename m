@@ -1,336 +1,298 @@
-Return-Path: <bpf+bounces-29579-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-29580-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0B4BE8C2E7D
-	for <lists+bpf@lfdr.de>; Sat, 11 May 2024 03:42:53 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 057EB8C2E7F
+	for <lists+bpf@lfdr.de>; Sat, 11 May 2024 03:46:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8080A1F2283E
-	for <lists+bpf@lfdr.de>; Sat, 11 May 2024 01:42:52 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1DA08B22770
+	for <lists+bpf@lfdr.de>; Sat, 11 May 2024 01:46:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D2D212B93;
-	Sat, 11 May 2024 01:42:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F3F2C11CBD;
+	Sat, 11 May 2024 01:46:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BPI+OgTg"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="V4Ar6HUh"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-oo1-f54.google.com (mail-oo1-f54.google.com [209.85.161.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B75B8C13;
-	Sat, 11 May 2024 01:42:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F11EA1078B
+	for <bpf@vger.kernel.org>; Sat, 11 May 2024 01:46:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715391762; cv=none; b=adsZB4ZGYucLSIBtSF2SYyjempEXWNb90j7QFMOBG8rwldHm4Cbe0o1sk4M9lbzv4yzyIjcVg2eEQRmfKG+0EgBG4rvYCvLfebDrJH3xwZLnZSvRRE/Auh0zwOO4pI9dFupWRfXyK6RCThwVB4Cvu2Y6HmCy0qsfr1pOg/zQXxs=
+	t=1715391981; cv=none; b=dKVCSF3hJE9eTllbciQqZr8QlfGcgevl+7da5hqWv3s7+/nsizE4cHwNQjL/WwATHfX07ZCdpOrQ5Lh1487ge64vRxXir1BHgAc3X/orTuzKrCLYQW3+/OdTAUzJSrmcX15YnEb4s5Iy+7s0qMlXUms4jWCpF4DFhhhXWU1PHKY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715391762; c=relaxed/simple;
-	bh=B98QXwaMAkRfgO2gYmiRCq3L4jfQpvnIuCNjwrmLHLM=;
+	s=arc-20240116; t=1715391981; c=relaxed/simple;
+	bh=SIr/Sg6pnZLhyMAqYxhD91coQShDKX0D8xI+ukd7ulQ=;
 	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=rjz7FQ1cqclUvD4C/nakIEHQrFddFROJlPME+N3UjGebc95DeCyS3s04OaWgg7fL/1DU9kBPchlyjkJMBnK1sm3bH2G9kLi08b8Rj+/lzYtw5FUfY0eKhpmWU0X4EbJWRu1efIT+ZQeUCRSktxSvHWtRboqvMYj3trRN83ayqgg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BPI+OgTg; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4F53DC113CC;
-	Sat, 11 May 2024 01:42:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1715391762;
-	bh=B98QXwaMAkRfgO2gYmiRCq3L4jfQpvnIuCNjwrmLHLM=;
-	h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-	b=BPI+OgTglWOHm/ORkzJT4reyKD78QnaHWRbN7umgcuTaM2SCoF4FNGPlyenp7GZcy
-	 mv21GgnXmircxJy9G+WoEQICqELkVPOHhJNDB4g72U0vmZpSK8mcIZUYjBn2+MjgGF
-	 TGja5L4vSNsphrFTlW/vY1YhzQ6peTFFOPEwshYEtxqTvtGW/8BlJgDj5aWJ1CYW+B
-	 tqmX4/6E6ZC6PdS+Crf3n/wdoJn/Txj+DSA51/s/ZHfWdhaUYO2JUBxWyeuIWIznQW
-	 qo2rmhSMoQQCJyeFusm7eGMyTVtaccmvQQFA29dykIne8r/4B4L/4CALBslW2buvXI
-	 iWQDBCrG90+ig==
-Message-ID: <d1361cc9104390c1d5971e4618934dbe942fae92.camel@kernel.org>
-Subject: Re: [PATCH bpf-next 2/4] selftests/bpf: Add RUN_MPTCP_TEST macro
-From: Geliang Tang <geliang@kernel.org>
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>, Matthieu Baerts
-	 <matttbe@kernel.org>
-Cc: MPTCP Upstream <mptcp@lists.linux.dev>, Mat Martineau
- <martineau@kernel.org>,  Andrii Nakryiko <andrii@kernel.org>, Eduard
- Zingerman <eddyz87@gmail.com>, Mykola Lysenko <mykolal@fb.com>,  Alexei
- Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
- Yonghong Song <yonghong.song@linux.dev>, John Fastabend
- <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, Stanislav
- Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa
- <jolsa@kernel.org>, Shuah Khan <shuah@kernel.org>,  LKML
- <linux-kernel@vger.kernel.org>, Network Development
- <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>, "open list:KERNEL
- SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>, Geliang Tang
- <tanggeliang@kylinos.cn>
-Date: Sat, 11 May 2024 09:42:30 +0800
-In-Reply-To: <CAADnVQJM73g9gTq3GxR-RMmpJPK3DGgzUTQiJXjz_B1G_4JAAw@mail.gmail.com>
-References: 
-	<20240507-upstream-bpf-next-20240506-mptcp-subflow-test-v1-0-e2bcbdf49857@kernel.org>
-	 <20240507-upstream-bpf-next-20240506-mptcp-subflow-test-v1-2-e2bcbdf49857@kernel.org>
-	 <CAADnVQJ5-APFxMeGsUDSWBsiAbhJGivs=fBUapgYEFNHgnEVeA@mail.gmail.com>
-	 <d28dec16-9029-42f5-b979-a0f11656a991@kernel.org>
-	 <CAADnVQJM73g9gTq3GxR-RMmpJPK3DGgzUTQiJXjz_B1G_4JAAw@mail.gmail.com>
-Autocrypt: addr=geliang@kernel.org; prefer-encrypt=mutual;
- keydata=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
- TO0tfEdfAX7IENcV87h2yAFBZkaA==
+	 Content-Type:MIME-Version; b=e3OVbhhn3E3cp2cet8mnAh9oaU6nX9wqylcaAGpClfN6cYcwq6jvO4KBAHuzqBsMOeAupmNNjDuT2VohyysqGCA76yWhDmONmJOObvEUKqe8QdBd+TxqDlGWuip9sh3pG+XceWOI6hLBTjYc+tR68leBBbsFCEd1fmW8EytUXqA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=V4Ar6HUh; arc=none smtp.client-ip=209.85.161.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oo1-f54.google.com with SMTP id 006d021491bc7-5b28c209095so664043eaf.0
+        for <bpf@vger.kernel.org>; Fri, 10 May 2024 18:46:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1715391979; x=1715996779; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=gTribdY6DEMMmaempmd1m2GlXWKJ83bix584/uuwIug=;
+        b=V4Ar6HUh2N7DVIFuY5qeS1n3GCUipawI1a8w+OXZ0nKgOv5x5Nmi5cg3PlePeu24QW
+         UQDooHwbMIF2VvTk7lTMrEMwqmLRYTV9lNaq7AFkwHBfe7mzW/QN4JAeAm+mBBnxJuTR
+         f1Ne+RE6NyISY+vVVdMkI/4ieYJ2NHrgRdy418SNj/DDYWAI0UR3uLJ1xwwq2IGsJR1z
+         CIRcsmD6TpK/aq0brUPxNE837OotEcAs/G18/euet1PI3jr3KZtztEb8E02GbgQBZROd
+         9Qirxt0biTmUkioC80cR0Ri1UvrHfC5qSkaw+D0tn5nuWXEDXKsBihVi02qPmEyxzecZ
+         YqUQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1715391979; x=1715996779;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=gTribdY6DEMMmaempmd1m2GlXWKJ83bix584/uuwIug=;
+        b=Pb2J0PtogneqWaQMz43O39J8TVeQGtLh8nPW6c2r1i1NzTAHhaZiRLlUr4WByk1ZhM
+         qKGF6dy1ljfHnq2u9RgUnV8xiEIIdFVrl38ZqxQUrY7n8DVGR4itOOMC3tcVtrJSFiah
+         44/8O1xtfs3T+e8a+AThLw1sWsdli52GrPnMC+As9cKbK0ftKg1w8tAm/3S5rM8b891h
+         Ju2+lfAvA3fjwonNZakRleg6W0y0U+qs008Zqe2V95JL6wkYz0SJ/Qi5S+fS5Pm3ADOz
+         9rvdrdhyzbgQOuVovAK16aODyn0456qFjIOK9YzJm2nXjjNvjz1lZrBvA0EdSqHqGjAD
+         RqbQ==
+X-Forwarded-Encrypted: i=1; AJvYcCU9TfCS5afpRRz/S9WvEC94jurkVA67kR9sl+WI5PzuMz6Cyq8V2BRhlEh0uB1BNGbhMWyc8N5uyudY1NM8b3taLAAO
+X-Gm-Message-State: AOJu0YySSnQTHxKTdVzcjMfm9dNzfV/P0zSXN3tALqUYdYQCjnD92+SY
+	92lbK3mG/AaZv/R1/M/a1359Wx4/5xBqwHwxxN6M4pm7JvWGL5Gx
+X-Google-Smtp-Source: AGHT+IHn+eC/df6pNNXIdml9KXxAFnY6S+zbY6J4uWW0dqPM/5hFwkuzzh52AeHKWdOHSDPxhv6DqA==
+X-Received: by 2002:a05:6870:6113:b0:23c:d140:fe83 with SMTP id 586e51a60fabf-24172f6b2e4mr5298944fac.54.1715391978824;
+        Fri, 10 May 2024 18:46:18 -0700 (PDT)
+Received: from ?IPv6:2604:3d08:6979:1160::3424? ([2604:3d08:6979:1160::3424])
+        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-639c80f424esm979870a12.22.2024.05.10.18.46.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 10 May 2024 18:46:18 -0700 (PDT)
+Message-ID: <2e5472ba5b96118b11872a869b251132ca49dabd.camel@gmail.com>
+Subject: Re: [PATCH v3 bpf-next 10/11] libbpf,bpf: share BTF
+ relocate-related code with kernel
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Alan Maguire <alan.maguire@oracle.com>, andrii@kernel.org,
+ jolsa@kernel.org,  acme@redhat.com, quentin@isovalent.com
+Cc: mykolal@fb.com, ast@kernel.org, daniel@iogearbox.net,
+ martin.lau@linux.dev,  song@kernel.org, yonghong.song@linux.dev,
+ john.fastabend@gmail.com,  kpsingh@kernel.org, sdf@google.com,
+ haoluo@google.com, houtao1@huawei.com,  bpf@vger.kernel.org,
+ masahiroy@kernel.org, mcgrof@kernel.org, nathan@kernel.org
+Date: Fri, 10 May 2024 18:46:17 -0700
+In-Reply-To: <20240510103052.850012-11-alan.maguire@oracle.com>
+References: <20240510103052.850012-1-alan.maguire@oracle.com>
+	 <20240510103052.850012-11-alan.maguire@oracle.com>
 Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.52.0-1build2 
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.44.4-0ubuntu2 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 
-On Tue, 2024-05-07 at 13:51 -0700, Alexei Starovoitov wrote:
-> On Tue, May 7, 2024 at 9:02 AM Matthieu Baerts <matttbe@kernel.org>
-> wrote:
-> > 
-> > Hi Alexei,
-> > 
-> > Thank you for the review!
-> > 
-> > On 07/05/2024 16:44, Alexei Starovoitov wrote:
-> > > On Tue, May 7, 2024 at 3:53 AM Matthieu Baerts (NGI0)
-> > > <matttbe@kernel.org> wrote:
-> > > > 
-> > > > From: Geliang Tang <tanggeliang@kylinos.cn>
-> > > > 
-> > > > Each MPTCP subtest tests test__start_subtest(suffix), then
-> > > > invokes
-> > > > test_suffix(). It makes sense to add a new macro RUN_MPTCP_TEST
-> > > > to
-> > > > simpolify the code.
-> > > > 
-> > > > Signed-off-by: Geliang Tang <tanggeliang@kylinos.cn>
-> > > > Reviewed-by: Mat Martineau <martineau@kernel.org>
-> > > > Signed-off-by: Matthieu Baerts (NGI0) <matttbe@kernel.org>
-> > > > ---
-> > > >  tools/testing/selftests/bpf/prog_tests/mptcp.c | 12 ++++++++--
-> > > > --
-> > > >  1 file changed, 8 insertions(+), 4 deletions(-)
-> > > > 
-> > > > diff --git a/tools/testing/selftests/bpf/prog_tests/mptcp.c
-> > > > b/tools/testing/selftests/bpf/prog_tests/mptcp.c
-> > > > index baf976a7a1dd..9d1b255bb654 100644
-> > > > --- a/tools/testing/selftests/bpf/prog_tests/mptcp.c
-> > > > +++ b/tools/testing/selftests/bpf/prog_tests/mptcp.c
-> > > > @@ -347,10 +347,14 @@ static void test_mptcpify(void)
-> > > >         close(cgroup_fd);
-> > > >  }
-> > > > 
-> > > > +#define RUN_MPTCP_TEST(suffix)                                
-> > > > \
-> > > > +do {                                                          
-> > > > \
-> > > > +       if (test__start_subtest(#suffix))                      
-> > > > \
-> > > > +               test_##suffix();                               
-> > > > \
-> > > > +} while (0)
-> > > 
-> > > Please no.
-> > > Don't hide it behind macros.
-> > 
-> > I understand, I'm personally not a big fan of hiding code being a
-> > macro
-> > too. This one saves only one line. Geliang added a few more tests
-> > in our
-> > tree [1], for a total of 9, so that's only saving 9 lines.
-> > 
-> > Related to that, if you don't mind, Geliang also added another
-> > macro --
-> > MPTCP_SCHED_TEST -- for tests that are currently only in our tree
-> > [2]
-> > (not ready yet). We asked him to reduce the size of this macro to
-> > the
-> > minimum. We accepted it because it removed quite a lot of similar
-> > code
-> > with very small differences [3]. Do you think we should revert this
-> > modification too?
-> 
-> Yeah. Pls don't hide such things in macros.
-> Refactor into helper function in normal C.
+On Fri, 2024-05-10 at 11:30 +0100, Alan Maguire wrote:
 
-I do agree to remove this RUN_MPTCP_TEST macro. But MPTCP_SCHED_TEST
-macro is different. I know this type of macro is unwelcome. But it's
-indeed a perfect place to use macro in MPTCP bpf sched tests.
+[...]
 
-From
+> diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+> index 821063660d9f..82bd2a275a12 100644
+> --- a/kernel/bpf/btf.c
+> +++ b/kernel/bpf/btf.c
+> @@ -274,6 +274,7 @@ struct btf {
+>  	u32 start_str_off; /* first string offset (0 for base BTF) */
+>  	char name[MODULE_NAME_LEN];
+>  	bool kernel_btf;
+> +	__u32 *base_map; /* map from distilled base BTF -> vmlinux BTF ids */
+>  };
+> =20
+>  enum verifier_phase {
+> @@ -1735,7 +1736,13 @@ static void btf_free(struct btf *btf)
+>  	kvfree(btf->types);
+>  	kvfree(btf->resolved_sizes);
+>  	kvfree(btf->resolved_ids);
+> -	kvfree(btf->data);
+> +	/* only split BTF allocates data, but btf->data is non-NULL for
+> +	 * vmlinux BTF too.
+> +	 */
+> +	if (btf->base_btf)
+> +		kvfree(btf->data);
 
-'''
-static void test_first(void)
-{
-	struct mptcp_bpf_first *skel;
+Is this correct?
+I see that btf->data is assigned in three functions:
+- btf_parse(): allocated via kvmalloc(), does not set btf->base_btf;
+- btf_parse_base(): not allocated passed from caller, either vmlinux
+  or module, does not set btf->base_btf;
+- btf_parse_module(): allocated via kvmalloc(), does set btf->base_btf;
 
-	skel = mptcp_bpf_first__open_and_load();
-	if (!ASSERT_OK_PTR(skel, "open_and_load: first"))
-		return;
+So, the check above seems incorrect for btf_parse(), am I wrong?
 
-	test_bpf_sched(skel->obj, "first", WITH_DATA, WITHOUT_DATA);
-	mptcp_bpf_first__destroy(skel);
-}
+> +	if (btf->kernel_btf)
+> +		kvfree(btf->base_map);
 
-static void test_bkup(void)
-{
-	struct mptcp_bpf_bkup *skel;
+Nit: the check could be dropped, the btf->base_map field is
+     conditionally set only by btf_parse_module() to an allocated object,
+     in all other cases the field is NULL.
 
-	skel = mptcp_bpf_bkup__open_and_load();
-	if (!ASSERT_OK_PTR(skel, "open_and_load: bkup"))
-		return;
+>  	kfree(btf);
+>  }
+> =20
+> @@ -1764,6 +1771,90 @@ void btf_put(struct btf *btf)
+>  	}
+>  }
+> =20
+> +struct btf *btf_base_btf(const struct btf *btf)
+> +{
+> +	return btf->base_btf;
+> +}
+> +
+> +struct btf_rewrite_strs {
+> +	struct btf *btf;
+> +	const struct btf *old_base_btf;
+> +	int str_start;
+> +	int str_diff;
+> +	__u32 *str_map;
+> +};
+> +
+> +static __u32 btf_find_str(struct btf *btf, const char *s)
+> +{
+> +	__u32 offset =3D 0;
+> +
+> +	while (offset < btf->hdr.str_len) {
+> +		while (!btf->strings[offset])
+> +			offset++;
+> +		if (strcmp(s, &btf->strings[offset]) =3D=3D 0)
+> +			return offset;
+> +		while (btf->strings[offset])
+> +			offset++;
+> +	}
+> +	return -ENOENT;
+> +}
+> +
+> +static int btf_rewrite_strs(__u32 *str_off, void *ctx)
+> +{
+> +	struct btf_rewrite_strs *r =3D ctx;
+> +	const char *s;
+> +	int off;
+> +
+> +	if (!*str_off)
+> +		return 0;
+> +	if (*str_off >=3D r->str_start) {
+> +		*str_off +=3D r->str_diff;
+> +	} else {
+> +		s =3D btf_str_by_offset(r->old_base_btf, *str_off);
+> +		if (!s)
+> +			return -ENOENT;
+> +		if (r->str_map[*str_off]) {
+> +			off =3D r->str_map[*str_off];
+> +		} else {
+> +			off =3D btf_find_str(r->btf->base_btf, s);
+> +			if (off < 0)
+> +				return off;
+> +			r->str_map[*str_off] =3D off;
+> +		}
 
-	test_bpf_sched(skel->obj, "bkup", WITH_DATA, WITHOUT_DATA);
-	mptcp_bpf_bkup__destroy(skel);
-}
+If 'str_map' part would be abstracted as local function 'btf__add_str'
+it should be possible to move btf_rewrite_strs() and btf_set_base_btf()
+to btf_common.c, right?
 
-static void test_rr(void)
-{
-	struct mptcp_bpf_rr *skel;
+Also, linear scan over vmlinux BTF strings seems a bit inefficient,
+maybe build a temporary hash table instead and define 'btf__find_str'?
 
-	skel = mptcp_bpf_rr__open_and_load();
-	if (!ASSERT_OK_PTR(skel, "open_and_load: rr"))
-		return;
+> +		*str_off =3D off;
+> +	}
+> +	return 0;
+> +}
+> +
+> +int btf_set_base_btf(struct btf *btf, struct btf *base_btf)
+> +{
+> +	struct btf_rewrite_strs r =3D {};
+> +	struct btf_type *t;
+> +	int i, err;
+> +
+> +	r.old_base_btf =3D btf_base_btf(btf);
+> +	if (!r.old_base_btf)
+> +		return -EINVAL;
+> +	r.btf =3D btf;
+> +	r.str_start =3D r.old_base_btf->hdr.str_len;
+> +	r.str_diff =3D base_btf->hdr.str_len - r.old_base_btf->hdr.str_len;
+> +	r.str_map =3D kvcalloc(r.old_base_btf->hdr.str_len, sizeof(*r.str_map),
+> +			     GFP_KERNEL | __GFP_NOWARN);
+> +	if (!r.str_map)
+> +		return -ENOMEM;
+> +	btf->base_btf =3D base_btf;
+> +	btf->start_id =3D btf_nr_types(base_btf);
+> +	btf->start_str_off =3D base_btf->hdr.str_len;
+> +	for (i =3D 0; i < btf->nr_types; i++) {
+> +		t =3D (struct btf_type *)btf_type_by_id(btf, i + btf->start_id);
+> +		err =3D btf_type_visit_str_offs((struct btf_type *)t, btf_rewrite_strs=
+, &r);
+> +		if (err)
+> +			break;
+> +	}
+> +	kvfree(r.str_map);
+> +	return err;
+> +}
+> +
 
-	test_bpf_sched(skel->obj, "rr", WITH_DATA, WITH_DATA);
-	mptcp_bpf_rr__destroy(skel);
-}
+[...]
 
-static void test_red(void)
-{
-	struct mptcp_bpf_red *skel;
+> diff --git a/tools/lib/bpf/btf_relocate.c b/tools/lib/bpf/btf_relocate.c
+> index 54949975398b..4a1fcb260f7f 100644
+> --- a/tools/lib/bpf/btf_relocate.c
+> +++ b/tools/lib/bpf/btf_relocate.c
+> @@ -5,11 +5,43 @@
+>  #define _GNU_SOURCE
+>  #endif
+> =20
+> +#ifdef __KERNEL__
+> +#include <linux/bpf.h>
+> +#include <linux/bsearch.h>
+> +#include <linux/btf.h>
+> +#include <linux/sort.h>
+> +#include <linux/string.h>
+> +#include <linux/bpf_verifier.h>
+> +
+> +#define btf_type_by_id				(struct btf_type *)btf_type_by_id
+> +#define btf__type_cnt				btf_nr_types
+> +#define btf__base_btf				btf_base_btf
+> +#define btf__name_by_offset			btf_name_by_offset
+> +#define btf_kflag				btf_type_kflag
+> +
+> +#define calloc(nmemb, sz)			kvcalloc(nmemb, sz, GFP_KERNEL | __GFP_NOWAR=
+N)
+> +#define free(ptr)				kvfree(ptr)
+> +#define qsort_r(base, num, sz, cmp, priv)	sort_r(base, num, sz, (cmp_r_f=
+unc_t)cmp, NULL, priv)
+> +
+> +static inline __u8 btf_int_bits(const struct btf_type *t)
+> +{
+> +	return BTF_INT_BITS(*(__u32 *)(t + 1));
+> +}
+> +
+> +static inline struct btf_decl_tag *btf_decl_tag(const struct btf_type *t=
+)
+> +{
+> +	return (struct btf_decl_tag *)(t + 1);
+> +}
 
-	skel = mptcp_bpf_red__open_and_load();
-	if (!ASSERT_OK_PTR(skel, "open_and_load: red"))
-		return;
+Nit: maybe put btf_int_bits() and btf_decl_tag() to include/linux/btf.h?
+     There are already a lot of similar definitions there.
+     Same for btf_var_secinfos() from btf_common.c.
 
-	test_bpf_sched(skel->obj, "red", WITH_DATA, WITH_DATA);
-	mptcp_bpf_red__destroy(skel);
-}
+> +
+> +#else
+> +
+>  #include "btf.h"
+>  #include "bpf.h"
+>  #include "libbpf.h"
+>  #include "libbpf_internal.h"
+> =20
+> +#endif /* __KERNEL__ */
+> +
+>  struct btf;
+> =20
+>  struct btf_relocate {
 
-static void test_burst(void)
-{
-	struct mptcp_bpf_burst *skel;
-
-	skel = mptcp_bpf_burst__open_and_load();
-	if (!ASSERT_OK_PTR(skel, "open_and_load: burst"))
-		return;
-
-	test_bpf_sched(skel->obj, "burst", WITH_DATA, WITH_DATA);
-	mptcp_bpf_burst__destroy(skel);
-}
-
-static void test_stale(void)
-{
-	struct mptcp_bpf_stale *skel;
-
-	skel = mptcp_bpf_stale__open_and_load();
-	if (!ASSERT_OK_PTR(skel, "open_and_load: stale"))
-		return;
-
-	test_bpf_sched(skel->obj, "stale", WITH_DATA, WITHOUT_DATA);
-	mptcp_bpf_stale__destroy(skel);
-}
-'''
-
-to
-
-'''
-#define MPTCP_SCHED_TEST(sched, addr1, addr2)                   \
-static void test_##sched(void)                                  \
-{                                                               \
-        struct mptcp_bpf_##sched *skel;                         \
-                                                                \
-        skel = mptcp_bpf_##sched##__open_and_load();            \
-        if (!ASSERT_OK_PTR(skel, "open_and_load:" #sched))      \
-                return;                                         \
-                                                                \
-        test_bpf_sched(skel->obj, #sched, addr1, addr2);        \
-        mptcp_bpf_##sched##__destroy(skel);                     \
-}
-
-MPTCP_SCHED_TEST(first, WITH_DATA, WITHOUT_DATA);
-MPTCP_SCHED_TEST(bkup, WITH_DATA, WITHOUT_DATA);
-MPTCP_SCHED_TEST(rr, WITH_DATA, WITH_DATA);
-MPTCP_SCHED_TEST(red, WITH_DATA, WITH_DATA);
-MPTCP_SCHED_TEST(burst, WITH_DATA, WITH_DATA);
-MPTCP_SCHED_TEST(stale, WITH_DATA, WITHOUT_DATA);
-'''
-
-We can save so many code, and perfectly use BPF test skeleton template.
-It's small enough, and be difficult to refactor with a helper function
-in normal C.
-
-Please reconsider whether to delete it, or at least keep it until the
-day it is officially sent to BPF mail list for review.
-
-Thanks,
--Geliang
-
-> 
-> But, what do you mean "in your tree" ?
-> That's your development tree and you plan to send all that
-> properly as patches to bpf-next someday?
-> 
-> > 
-> > [1]
-> > https://github.com/multipath-tcp/mptcp_net-next/blob/4369d9cbd752e166961ac0db7f85886111606301/tools/testing/selftests/bpf/prog_tests/mptcp.c#L578-L595
-> > 
-> > [2]
-> > https://github.com/multipath-tcp/mptcp_net-next/blob/4369d9cbd752e166961ac0db7f85886111606301/tools/testing/selftests/bpf/prog_tests/mptcp.c#L559-L576
-> > 
-> > [3]
-> > https://lore.kernel.org/mptcp/cover.1713321357.git.tanggeliang@kylinos.cn/T/#m0b9c14f1cbae8653c6fd119f6b71d1797961d6ba
-> > 
-> > Cheers,
-> > Matt
-> > --
-> > Sponsored by the NGI0 Core fund.
-> > 
 
