@@ -1,92 +1,68 @@
-Return-Path: <bpf+bounces-29581-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-29582-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id CC5C68C2F0F
-	for <lists+bpf@lfdr.de>; Sat, 11 May 2024 04:31:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id C5AB68C2F4C
+	for <lists+bpf@lfdr.de>; Sat, 11 May 2024 05:16:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6D27F1F22F60
-	for <lists+bpf@lfdr.de>; Sat, 11 May 2024 02:31:45 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 588511F22898
+	for <lists+bpf@lfdr.de>; Sat, 11 May 2024 03:16:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E43772208E;
-	Sat, 11 May 2024 02:31:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E397C2D7A8;
+	Sat, 11 May 2024 03:16:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="gZM+XpWx"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hUrsIVWH"
 X-Original-To: bpf@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.17])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D903B17571;
-	Sat, 11 May 2024 02:31:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.17
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6597C21A04;
+	Sat, 11 May 2024 03:16:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715394684; cv=none; b=rJM5qdfUpL2aLizI5FksGuYi+hv4AmP1XhpOlW0x5FoCkvD5SGmnMWNMttxbO2JlM7fmsCti8YfW4kMALA5l3iaafT7GlGkh1igrQYWeKwETc5PRuOEHUUMxj+TGDg1VU+W+EB9H3H/5v2hbP7PnvYU6mACEnmdKZ0NC27HGTuo=
+	t=1715397401; cv=none; b=t0IWiySwoNOWsXsgcx1qimRYSRFcuovCu3Z+UoqOYJFh6WuIk5SBGx4XxKmmhUteHDzq8X2P7ANy4ecaSn2Z6VbEkSwvhC/cyhwNd+KtU6eWfXAH054TIIp+LDxW1i2OhWW0ApWF5oVFVk01eM4TeWgFhBG2nbOQ03+0N2qP/vE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715394684; c=relaxed/simple;
-	bh=zOqj5z27hn5Ja+9Hiogv2yU6ck56jE/mAfjwUewOMc8=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=KDWcespbbSSxJPgbVBIRdpaQFumjZDVLTKcS9E/SR6LiTe1EgtPHMeKnxPkFZPZywLEwKkqz+im+3f+0M9TTtM7Kxdd8EXXQcLrg1vvF/uGn9FQYvAcyP7f2kb0bnz4uhTm/jshkxv94sMmnEAo1KetaVbMo6IEEenirYkrnr+w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=gZM+XpWx; arc=none smtp.client-ip=198.175.65.17
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1715394682; x=1746930682;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=zOqj5z27hn5Ja+9Hiogv2yU6ck56jE/mAfjwUewOMc8=;
-  b=gZM+XpWx1hPVbs3UBNsx6ksP14Z/vrP0ygDDbnsQ3p82hxrzEZRkSfDf
-   sUH3r0l9R8QyxC4q5w1Lc2+/Kg+5YW+iHZCjH9IyuwH3jcff8FK8ST+CN
-   DdylvODsM+Vh//oLdKqZh3hI101OtsAXXjWrTlvgZT1Q3+SFfzqhpkho4
-   n6gwRW5pPXpNmiMrxbTyNVrCIKhT4LLpTdAXfNxAQqNJewVlh0vy34IVT
-   hh4iKNLqdz3/7Lb3+iADcbqoEXpc3LnznafA4tOIt/PoWJB6UBwWuOCt4
-   eCjiA1heH7A0iAUgX5XJVwB7Hbi0hvGejYulKNPYA37+yESIghc1xyZlh
-   Q==;
-X-CSE-ConnectionGUID: xISefGm2TDOJ+NRiJ7RQyA==
-X-CSE-MsgGUID: xNLJXQUwQsKlo7aDiO1GTw==
-X-IronPort-AV: E=McAfee;i="6600,9927,11069"; a="11532824"
-X-IronPort-AV: E=Sophos;i="6.08,152,1712646000"; 
-   d="scan'208";a="11532824"
-Received: from fmviesa010.fm.intel.com ([10.60.135.150])
-  by orvoesa109.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 May 2024 19:31:21 -0700
-X-CSE-ConnectionGUID: 9UgOqJBlSziTAnLQ3DxYtw==
-X-CSE-MsgGUID: 50XnkUn5TWqBlry7JtN2iw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.08,152,1712646000"; 
-   d="scan'208";a="29867299"
-Received: from xiao-desktop.sh.intel.com ([10.239.46.158])
-  by fmviesa010.fm.intel.com with ESMTP; 10 May 2024 19:31:15 -0700
-From: Xiao Wang <xiao.w.wang@intel.com>
-To: paul.walmsley@sifive.com,
-	palmer@dabbelt.com,
-	aou@eecs.berkeley.edu,
-	luke.r.nels@gmail.com,
-	xi.wang@gmail.com,
-	bjorn@kernel.org
-Cc: ast@kernel.org,
-	daniel@iogearbox.net,
-	andrii@kernel.org,
-	martin.lau@linux.dev,
-	eddyz87@gmail.com,
-	song@kernel.org,
-	yonghong.song@linux.dev,
-	john.fastabend@gmail.com,
-	kpsingh@kernel.org,
-	sdf@google.com,
-	haoluo@google.com,
-	jolsa@kernel.org,
-	linux-riscv@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
+	s=arc-20240116; t=1715397401; c=relaxed/simple;
+	bh=VNZWbyB0sPB4GGLEN/TJoCScuWT9X5M8rRhhLEnSAt0=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=FNnKFMhM2v2+rMUzQb4OKL8Mn+nlyAL40pBIn1kLnFQeKZ27B5nFWOJy8K2avM6fBT8c2KUUOi++UZhJhPSGK7MLQouBIgjFcAM/IaqUT3DEf5+JmiRmPXzDpPyy5ubccAY02wOjq4zMfej1/1rGNsKSOp0dRBv5Be4LBCO+W8k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hUrsIVWH; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EDCCDC113CC;
+	Sat, 11 May 2024 03:16:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1715397400;
+	bh=VNZWbyB0sPB4GGLEN/TJoCScuWT9X5M8rRhhLEnSAt0=;
+	h=From:To:Cc:Subject:Date:From;
+	b=hUrsIVWHsLrJqkvpCZpp6TkrjoXD3gZHxRq144YavEzF0ed4qHJ66gzW+xJvKApR8
+	 19fm5b5rqEr6u1q78fwYvEkKX3hk/qD4i8weJtmGknzILVRYDgqaE73ox0gQg10TYe
+	 ZZYWoEmQLoLo4hDANDwkreWCcNe8Vxq8hUqqfwhvXP2aQo2yhc/YFwW1R64oag++lh
+	 l7aExx5StYsEUz7X692Qmh5Xs4D17m1epWSWfYjo51+EhiTQboXkuQPqhafJywT7L0
+	 T994h/hRiy2pOQGnFCGjv53+HisLYfe+YwczRJWZ1R3M3LhCzW+40LvnUKq7NjcESX
+	 CzZmtBx5OpO4g==
+From: Geliang Tang <geliang@kernel.org>
+To: Andrii Nakryiko <andrii@kernel.org>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Mykola Lysenko <mykolal@fb.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>,
+	Stanislav Fomichev <sdf@google.com>,
+	Hao Luo <haoluo@google.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Shuah Khan <shuah@kernel.org>
+Cc: Geliang Tang <tanggeliang@kylinos.cn>,
 	bpf@vger.kernel.org,
-	pulehui@huawei.com,
-	haicheng.li@intel.com,
-	conor@kernel.org,
-	Xiao Wang <xiao.w.wang@intel.com>
-Subject: [PATCH v2] riscv, bpf: Optimize zextw insn with Zba extension
-Date: Sat, 11 May 2024 10:34:36 +0800
-Message-Id: <20240511023436.3282285-1-xiao.w.wang@intel.com>
-X-Mailer: git-send-email 2.25.1
+	linux-kselftest@vger.kernel.org,
+	Geliang Tang <geliang@kernel.org>
+Subject: [PATCH bpf-next 0/4] use network helpers, part 5
+Date: Sat, 11 May 2024 11:16:24 +0800
+Message-ID: <cover.1715396405.git.tanggeliang@kylinos.cn>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -95,103 +71,27 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-The Zba extension provides add.uw insn which can be used to implement
-zext.w with rs2 set as ZERO.
+From: Geliang Tang <tanggeliang@kylinos.cn>
 
-Signed-off-by: Xiao Wang <xiao.w.wang@intel.com>
----
-v2:
-* Add Zba description in the Kconfig. (Lehui)
-* Reword the Kconfig help message to make it clearer. (Conor)
----
- arch/riscv/Kconfig       | 22 ++++++++++++++++++++++
- arch/riscv/net/bpf_jit.h | 18 ++++++++++++++++++
- 2 files changed, 40 insertions(+)
+This patchset uses post_socket_cb and post_connect_cb callbacks of struct
+network_helper_opts to refactor do_test() in bpf_tcp_ca.c to move dctcp
+test dedicated code out of do_test() into test_dctcp().
 
-diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
-index 6bec1bce6586..e262a8668b41 100644
---- a/arch/riscv/Kconfig
-+++ b/arch/riscv/Kconfig
-@@ -586,6 +586,14 @@ config RISCV_ISA_V_PREEMPTIVE
- 	  preemption. Enabling this config will result in higher memory
- 	  consumption due to the allocation of per-task's kernel Vector context.
- 
-+config TOOLCHAIN_HAS_ZBA
-+	bool
-+	default y
-+	depends on !64BIT || $(cc-option,-mabi=lp64 -march=rv64ima_zba)
-+	depends on !32BIT || $(cc-option,-mabi=ilp32 -march=rv32ima_zba)
-+	depends on LLD_VERSION >= 150000 || LD_VERSION >= 23900
-+	depends on AS_HAS_OPTION_ARCH
-+
- config TOOLCHAIN_HAS_ZBB
- 	bool
- 	default y
-@@ -601,6 +609,20 @@ config TOOLCHAIN_HAS_VECTOR_CRYPTO
- 	def_bool $(as-instr, .option arch$(comma) +v$(comma) +zvkb)
- 	depends on AS_HAS_OPTION_ARCH
- 
-+config RISCV_ISA_ZBA
-+	bool "Zba extension support for bit manipulation instructions"
-+	depends on TOOLCHAIN_HAS_ZBA
-+	depends on RISCV_ALTERNATIVE
-+	default y
-+	help
-+	   Add support for enabling optimisations in the kernel when the Zba
-+	   extension is detected at boot.
-+
-+	   The Zba extension provides instructions to accelerate the generation
-+	   of addresses that index into arrays of basic data types.
-+
-+	   If you don't know what to do here, say Y.
-+
- config RISCV_ISA_ZBB
- 	bool "Zbb extension support for bit manipulation instructions"
- 	depends on TOOLCHAIN_HAS_ZBB
-diff --git a/arch/riscv/net/bpf_jit.h b/arch/riscv/net/bpf_jit.h
-index f4b6b3b9edda..18a7885ba95e 100644
---- a/arch/riscv/net/bpf_jit.h
-+++ b/arch/riscv/net/bpf_jit.h
-@@ -18,6 +18,11 @@ static inline bool rvc_enabled(void)
- 	return IS_ENABLED(CONFIG_RISCV_ISA_C);
- }
- 
-+static inline bool rvzba_enabled(void)
-+{
-+	return IS_ENABLED(CONFIG_RISCV_ISA_ZBA) && riscv_has_extension_likely(RISCV_ISA_EXT_ZBA);
-+}
-+
- static inline bool rvzbb_enabled(void)
- {
- 	return IS_ENABLED(CONFIG_RISCV_ISA_ZBB) && riscv_has_extension_likely(RISCV_ISA_EXT_ZBB);
-@@ -937,6 +942,14 @@ static inline u16 rvc_sdsp(u32 imm9, u8 rs2)
- 	return rv_css_insn(0x7, imm, rs2, 0x2);
- }
- 
-+/* RV64-only ZBA instructions. */
-+
-+static inline u32 rvzba_zextw(u8 rd, u8 rs1)
-+{
-+	/* add.uw rd, rs1, ZERO */
-+	return rv_r_insn(0x04, RV_REG_ZERO, rs1, 0, rd, 0x3b);
-+}
-+
- #endif /* __riscv_xlen == 64 */
- 
- /* Helper functions that emit RVC instructions when possible. */
-@@ -1159,6 +1172,11 @@ static inline void emit_zexth(u8 rd, u8 rs, struct rv_jit_context *ctx)
- 
- static inline void emit_zextw(u8 rd, u8 rs, struct rv_jit_context *ctx)
- {
-+	if (rvzba_enabled()) {
-+		emit(rvzba_zextw(rd, rs), ctx);
-+		return;
-+	}
-+
- 	emit_slli(rd, rs, 32, ctx);
- 	emit_srli(rd, rd, 32, ctx);
- }
+Patch 3 adds a new member in post_socket_opts and patch 4 adds a new
+callback in network_helper_opts. I'm not sure if this is going too far.
+
+Geliang Tang (4):
+  selftests/bpf: Use post_socket_cb in connect_to_fd_opts
+  selftests/bpf: Use start_server_addr in bpf_tcp_ca
+  selftests/bpf: Use connect_to_fd_opts in do_test in bpf_tcp_ca
+  selftests/bpf: Add post_connect_cb callback
+
+ tools/testing/selftests/bpf/network_helpers.c |  13 ++-
+ tools/testing/selftests/bpf/network_helpers.h |   8 +-
+ .../selftests/bpf/prog_tests/bpf_tcp_ca.c     | 105 +++++++++++-------
+ 3 files changed, 81 insertions(+), 45 deletions(-)
+
 -- 
-2.25.1
+2.43.0
 
 
