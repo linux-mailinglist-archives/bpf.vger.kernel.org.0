@@ -1,151 +1,144 @@
-Return-Path: <bpf+bounces-29601-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-29602-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id EB6618C354D
-	for <lists+bpf@lfdr.de>; Sun, 12 May 2024 09:22:19 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2BBC18C377D
+	for <lists+bpf@lfdr.de>; Sun, 12 May 2024 18:28:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9F97E1F214F1
-	for <lists+bpf@lfdr.de>; Sun, 12 May 2024 07:22:19 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AC5B7B20BEF
+	for <lists+bpf@lfdr.de>; Sun, 12 May 2024 16:28:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 013FC10A1A;
-	Sun, 12 May 2024 07:22:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5BEF047A7C;
+	Sun, 12 May 2024 16:28:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="cIiKsjuo"
 X-Original-To: bpf@vger.kernel.org
-Received: from www262.sakura.ne.jp (www262.sakura.ne.jp [202.181.97.72])
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [78.32.30.218])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C2ED101CA;
-	Sun, 12 May 2024 07:22:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.181.97.72
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 010FF4776A;
+	Sun, 12 May 2024 16:28:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=78.32.30.218
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715498532; cv=none; b=W3VHfA+oF/NXaill6GprpYFRKQhofOkN/kIshiwwo6Ei8w/xqflexnY03kK59fc3s7hFrQG933GeG76GGNYsWaUoe+obv52i+laa24ocn9AtN0LR4TH2aVum3GLbW2nViYHVzL5+Sa9QTDiGyxeU3bzC89lnrLDvbdCwyQlXnlk=
+	t=1715531316; cv=none; b=rSrDGYYlT5VQN47jdVG1OD4mj1YiZeHbomoUV4WBQjeRN6PMwQbe7MlQqSoLxtPalDdWc6wIhreAwoOlovPSkFcJcVDLjK0LgYpI7RqzTGyA1DoV/X878PzCPqXJxgoBXnt/LoRtq6zAxhc1Ey4wvIHR3ZneQHh1Eon2dHvHrMc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715498532; c=relaxed/simple;
-	bh=66Jqedg9cXpHoydTVuNznaoG+hIkMQD7XMiOtPkepiU=;
-	h=Message-ID:Date:MIME-Version:To:Cc:From:Subject:Content-Type; b=j2wcfna48ysxbVDBsJHzQGhqHvBD4sw89OIzFep5V9h6UpWTnisqNHeOmMfAD2IFbD4z0zfgSJ8MfzCCSmj9J3s/zhq7MyJP8aAvIFaDnNrTe6GQBCNb5vBBW9ejBi3uLMNkyqfdE+5AS7ln35+/ZZmCBllZGOm+p2m9uqcHWo0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=I-love.SAKURA.ne.jp; spf=pass smtp.mailfrom=I-love.SAKURA.ne.jp; arc=none smtp.client-ip=202.181.97.72
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=I-love.SAKURA.ne.jp
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=I-love.SAKURA.ne.jp
-Received: from fsav116.sakura.ne.jp (fsav116.sakura.ne.jp [27.133.134.243])
-	by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 44C7LiBq058242;
-	Sun, 12 May 2024 16:21:44 +0900 (JST)
-	(envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
-Received: from www262.sakura.ne.jp (202.181.97.72)
- by fsav116.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav116.sakura.ne.jp);
- Sun, 12 May 2024 16:21:44 +0900 (JST)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav116.sakura.ne.jp)
-Received: from [192.168.1.6] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
-	(authenticated bits=0)
-	by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 44C7Li58058238
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
-	Sun, 12 May 2024 16:21:44 +0900 (JST)
-	(envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
-Message-ID: <838e7959-a360-4ac1-b36a-a3469236129b@I-love.SAKURA.ne.jp>
-Date: Sun, 12 May 2024 16:21:44 +0900
+	s=arc-20240116; t=1715531316; c=relaxed/simple;
+	bh=k10JU34PCsvIgk353jT+uvbWPB/Khr6VTqgo+yzl2H8=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=Wky1uV6zOoXtPv9gWPvwSX/0Hq9v8W/pzaoVmmcPWvMgwsRsccUDxjDQKgx2z8PKmW/xEm1BrxVAkEGuCQpV4qOvQOGaFHrYNcCZjw/f4v/uySa1J2ap7wzt+5FYLmcPV55syWNmhmyAe8vm0Iyg8wBf1RvucfKdoH22DhXNlJc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk; spf=none smtp.mailfrom=armlinux.org.uk; dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b=cIiKsjuo; arc=none smtp.client-ip=78.32.30.218
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=armlinux.org.uk
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=armlinux.org.uk; s=pandora-2019; h=Sender:Content-Type:MIME-Version:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-Transfer-Encoding:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Id:
+	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=JKu2ehxGzSJF+b0EShKM7Ynw448P/EHxxma336CQaYQ=; b=cIiKsjuodW7EUMju3m8OYjr8ra
+	6yTuggYzPYm8RrAB7+gtAxmK4diC+T3yMRYkBbG994+VSvtmVTsig2oUgbursPgX6CXwprFzBflFt
+	j4AxQEgY1F0Z02+rOD+V/R26M5x5x5bWsJ4TQbxnBGQdC/PTrXekihbeaOE9rDDPGkJ2OQFwvaUmR
+	mwZS7NEHsJPk575FT8xMwthwK9hljGsKK4WYjZuskmnYLaoyimzw0KHoa0RskZxWm+C2PLMa3Khog
+	QTBiwD6ZsdmSt2TlOoKCAOynmWWQOqurxEltwVYvFKc0u91apsIfY9cJM3nXRu0PPqxv+94FRM/MD
+	WU4ItFwA==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:40658)
+	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <linux@armlinux.org.uk>)
+	id 1s6C3i-0000sh-0y;
+	Sun, 12 May 2024 17:28:22 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+	(envelope-from <linux@shell.armlinux.org.uk>)
+	id 1s6C3g-0005JR-9p; Sun, 12 May 2024 17:28:20 +0100
+Date: Sun, 12 May 2024 17:28:20 +0100
+From: "Russell King (Oracle)" <linux@armlinux.org.uk>
+To: Serge Semin <fancer.lancer@gmail.com>
+Cc: Alexandre Torgue <alexandre.torgue@foss.st.com>,
+	Alexei Starovoitov <ast@kernel.org>, bpf@vger.kernel.org,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Jesper Dangaard Brouer <hawk@kernel.org>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Jose Abreu <joabreu@synopsys.com>,
+	linux-arm-kernel@lists.infradead.org,
+	linux-stm32@st-md-mailman.stormreply.com,
+	Maxime Coquelin <mcoquelin.stm32@gmail.com>, netdev@vger.kernel.org,
+	Paolo Abeni <pabeni@redhat.com>
+Subject: [PATCH RFC 0/6] net: stmmac: convert stmmac "pcs" to phylink
+Message-ID: <ZkDuJAx7atDXjf5m@shell.armlinux.org.uk>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Content-Language: en-US
-To: John Fastabend <john.fastabend@gmail.com>,
-        Jakub Sitnicki <jakub@cloudflare.com>
-Cc: "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Network Development
- <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
-From: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-Subject: [PATCH] bpf, sockmap: defer sk_psock_free_link() using RCU
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 
-If a BPF program is attached to kfree() event, calling kfree()
-with psock->link_lock held triggers lockdep warning.
+Hi,
 
-Defer kfree() using RCU so that the attached BPF program runs
-without holding psock->link_lock.
+As I noted recently in a thread (and was ignored) stmmac sucks. (I
+won't hide my distain for drivers that make my life as phylink
+maintainer more difficult!)
 
-Reported-by: syzbot+ec941d6e24f633a59172@syzkaller.appspotmail.com
-Closes: https://syzkaller.appspot.com/bug?extid=ec941d6e24f633a59172
-Tested-by: syzbot+ec941d6e24f633a59172@syzkaller.appspotmail.com
-Reported-by: syzbot+a4ed4041b9bea8177ac3@syzkaller.appspotmail.com
-Closes: https://syzkaller.appspot.com/bug?extid=a4ed4041b9bea8177ac3
-Tested-by: syzbot+a4ed4041b9bea8177ac3@syzkaller.appspotmail.com
-Signed-off-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
----
- include/linux/skmsg.h | 7 +++++--
- net/core/skmsg.c      | 2 ++
- net/core/sock_map.c   | 2 ++
- 3 files changed, 9 insertions(+), 2 deletions(-)
+One of the contract conditions for using phylink is that the driver
+will _not_ mess with the netif carrier. stmmac developers/maintainers
+clearly didn't read that, because stmmac messes with the netif
+carrier, which destroys phylink's guarantee that it'll make certain
+calls in a particular order (e.g. it won't call mac_link_up() twice
+in a row without an intervening mac_link_down().) This is clearly
+stated in the phylink documentation.
 
-diff --git a/include/linux/skmsg.h b/include/linux/skmsg.h
-index a509caf823d6..66590f20b777 100644
---- a/include/linux/skmsg.h
-+++ b/include/linux/skmsg.h
-@@ -66,7 +66,10 @@ enum sk_psock_state_bits {
- };
- 
- struct sk_psock_link {
--	struct list_head		list;
-+	union {
-+		struct list_head	list;
-+		struct rcu_head		rcu;
-+	};
- 	struct bpf_map			*map;
- 	void				*link_raw;
- };
-@@ -418,7 +421,7 @@ static inline struct sk_psock_link *sk_psock_init_link(void)
- 
- static inline void sk_psock_free_link(struct sk_psock_link *link)
- {
--	kfree(link);
-+	kfree_rcu(link, rcu);
- }
- 
- struct sk_psock_link *sk_psock_link_pop(struct sk_psock *psock);
-diff --git a/net/core/skmsg.c b/net/core/skmsg.c
-index fd20aae30be2..9cebfeecd3c9 100644
---- a/net/core/skmsg.c
-+++ b/net/core/skmsg.c
-@@ -791,10 +791,12 @@ static void sk_psock_link_destroy(struct sk_psock *psock)
- {
- 	struct sk_psock_link *link, *tmp;
- 
-+	rcu_read_lock();
- 	list_for_each_entry_safe(link, tmp, &psock->link, list) {
- 		list_del(&link->list);
- 		sk_psock_free_link(link);
- 	}
-+	rcu_read_unlock();
- }
- 
- void sk_psock_stop(struct sk_psock *psock)
-diff --git a/net/core/sock_map.c b/net/core/sock_map.c
-index 8598466a3805..8bec4b7a8ec7 100644
---- a/net/core/sock_map.c
-+++ b/net/core/sock_map.c
-@@ -142,6 +142,7 @@ static void sock_map_del_link(struct sock *sk,
- 	bool strp_stop = false, verdict_stop = false;
- 	struct sk_psock_link *link, *tmp;
- 
-+	rcu_read_lock();
- 	spin_lock_bh(&psock->link_lock);
- 	list_for_each_entry_safe(link, tmp, &psock->link, list) {
- 		if (link->link_raw == link_raw) {
-@@ -159,6 +160,7 @@ static void sock_map_del_link(struct sock *sk,
- 		}
- 	}
- 	spin_unlock_bh(&psock->link_lock);
-+	rcu_read_unlock();
- 	if (strp_stop || verdict_stop) {
- 		write_lock_bh(&sk->sk_callback_lock);
- 		if (strp_stop)
+Thus, this patch set attempts to fix this. Why does it mess with the
+netif carrier? It has its own independent PCS implementation that
+completely bypasses phylink _while_ phylink is still being used.
+This is not acceptable. Either the driver uses phylink, or it doesn't
+use phylink. There is no half-way house about this. Therefore, this
+driver needs to either be fixed, or needs to stop using phylink.
+
+Since I was ignored when I brought this up, I've hacked together the
+following patch set - and it is hacky at the moment. It's also broken
+because of recentl changes involving dwmac-qcom-ethqos.c - but there
+isn't sufficient information in the driver for me to fix this. The
+driver appears to use SGMII at 2500Mbps, which simply does not exist.
+What interface mode (and neg_mode) does phylink pass to pcs_config()
+in each of the speeds that dwmac-qcom-ethqos.c is interested in.
+Without this information, I can't do that conversion. So for the
+purposes of this, I've just ignored dwmac-qcom-ethqos.c (which means
+it will fail to build.)
+
+The patch splitup is not ideal, but that's not what I'm interested in
+here. What I want to hear is the results of testing - does this switch
+of the RGMII/SGMII "pcs" stuff to a phylink_pcs work for this driver?
+
+Please don't review the patches, but you are welcome to send fixes to
+them. Once we know that the overall implementation works, then I'll
+look at how best to split the patches. In the mean time, the present
+form is more convenient for making changes and fixing things.
+
+There is still more improvement that's needed here.
+
+Thanks.
+
+ drivers/net/ethernet/stmicro/stmmac/Makefile       |   2 +-
+ drivers/net/ethernet/stmicro/stmmac/common.h       |  12 ++-
+ .../net/ethernet/stmicro/stmmac/dwmac1000_core.c   | 113 ++++++++++++---------
+ drivers/net/ethernet/stmicro/stmmac/dwmac4_core.c  | 108 ++++++++++++--------
+ .../net/ethernet/stmicro/stmmac/dwxgmac2_core.c    |   6 --
+ drivers/net/ethernet/stmicro/stmmac/hwif.h         |  27 ++---
+ .../net/ethernet/stmicro/stmmac/stmmac_ethtool.c   | 111 +-------------------
+ drivers/net/ethernet/stmicro/stmmac/stmmac_main.c  |  19 ++--
+ drivers/net/ethernet/stmicro/stmmac/stmmac_pcs.c   |  57 +++++++++++
+ drivers/net/ethernet/stmicro/stmmac/stmmac_pcs.h   |  84 ++-------------
+ 10 files changed, 227 insertions(+), 312 deletions(-)
+ create mode 100644 drivers/net/ethernet/stmicro/stmmac/stmmac_pcs.c
+
 -- 
-2.34.1
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
 
