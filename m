@@ -1,161 +1,359 @@
-Return-Path: <bpf+bounces-29661-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-29662-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id BFCDE8C4755
-	for <lists+bpf@lfdr.de>; Mon, 13 May 2024 21:02:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 99AB88C4785
+	for <lists+bpf@lfdr.de>; Mon, 13 May 2024 21:29:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7543B281D81
-	for <lists+bpf@lfdr.de>; Mon, 13 May 2024 19:02:41 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4EE462869F8
+	for <lists+bpf@lfdr.de>; Mon, 13 May 2024 19:29:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA8EA44366;
-	Mon, 13 May 2024 19:02:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="jHp4LqHU"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D65F54F60D;
+	Mon, 13 May 2024 19:29:37 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f169.google.com (mail-pf1-f169.google.com [209.85.210.169])
+Received: from mail-ej1-f48.google.com (mail-ej1-f48.google.com [209.85.218.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 127EC2EAF9
-	for <bpf@vger.kernel.org>; Mon, 13 May 2024 19:02:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D21AD55C08
+	for <bpf@vger.kernel.org>; Mon, 13 May 2024 19:29:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715626957; cv=none; b=pnqp03+yL6VA4+CCJgTmeKnJ8X8CshsKi6MDDxwPP8Vy6rzaiYeenGOUT/Se6fRtZr1aAJyDqe9KvE7dVo5GgjHxPYEkIwrHSz1HysKdEERCKTmoB5LL10zTZZ6lMJ8WO0ozIL5pP0tQm7odXJabnWyHE3fXarZFzilDvPin3Z0=
+	t=1715628577; cv=none; b=mJOa93fgdQhi7IIrC2Yv127LpDxHms6m/5avTdmrwgXK/UJgeRWNwJbUVxyQJnGR05gdbC82DFq/8Fw6SsALbsAJlt6Q8OEjB+7nCk2UQGrN5U2ovwaFgeKcbUm9PNBOGhLR1xgp3HCiy8NqU2dscfuaQA2FBhC0f7PWUaceCXs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715626957; c=relaxed/simple;
-	bh=1bc2nSMcFkHfg9wu7cCSnxuXsBRRHcbEfRBQ4Jq3j88=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=jWXpG6nvBdWaDYQTF1c7c7bWKBlcfGW2b8LtnEJh8Y5a1KMp5WYiOLqBx7VQf2Xa15klQgXLq/sDfTW9PrkEhiQYiTkiuTFWxWhA0vjxGBNbL4gVGPlLtNQaEo78j0ANge+9vVGcckIl5EL1MUAN7CEi2CbKMWR03G2aKrEAHqc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=jHp4LqHU; arc=none smtp.client-ip=209.85.210.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pf1-f169.google.com with SMTP id d2e1a72fcca58-6f489e64eb3so3381575b3a.1
-        for <bpf@vger.kernel.org>; Mon, 13 May 2024 12:02:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1715626955; x=1716231755; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=4uMHnpzuIbH7oFJ6h2bfKBE1eRpq/9DfRH3XLrVt75Q=;
-        b=jHp4LqHU00a9ya27Qxom19rii6XD/QPtdL7C3NB3DNIDuQBeCseGq8bmnonQbm5+gC
-         ztSceP3bWxtUdXVrqmpPG+2XG/sFKCm2azZkgvJ6aVzkfsfW2i9KBbOkdoXhMVXzW5cI
-         OzKkN508/NdAXD8Y6ioSBXf+wtQbhZKREqdFY=
+	s=arc-20240116; t=1715628577; c=relaxed/simple;
+	bh=Oz1+wr3WxJAa1wb533XsWebxnicO9GrGxmzvLy714tg=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=rZZWycz7ooyLjz29sCwYJmdxuA/JOE6qr1g7v34m/ne7Ssql3nz7nKMnS9nZwwLQGa7CrwlW1kidZAb1huzyv7DdnhQyOZFdCDECe4ZnV0VMzL7ub0TtAXJjRB6WsmydF5i9URbGM4HwuAJVpzP5Bwv1VYnT3NMg8oDMF9l8SxA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.218.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-a5a5cce2ce6so440902266b.3
+        for <bpf@vger.kernel.org>; Mon, 13 May 2024 12:29:35 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1715626955; x=1716231755;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=4uMHnpzuIbH7oFJ6h2bfKBE1eRpq/9DfRH3XLrVt75Q=;
-        b=XT4DcODvAiRkUCHzTW+Gmlyqe4pdrCEo24NWO8OUy3cFfYy2tIX62fg4XKRVU6zazy
-         OQ0QEb/eC71/1rygDmR6IqeXQ231dGIxvZ+LIYJ2PKTFjzZ050jqBL6e0QBHzJH2CrO3
-         y16E+AcV6BfECXWx9BT84uQhAyVKFTsAa9vLHRD7Zky7+Q4dlfAQU+Wt/jbcOPTJjN22
-         QPWY3btOCjpg9+J82S9V2IBpaadZ4tlGlzLXiFl/PXuWuGaNTFhq/v4Q0oJS0NeuKdYC
-         iR6nBpzRaNs0eViMGxJOdbkrVUlIXAlGHyC2wXzFuzGsvvLOlgPJnM2SM5wQaAFbVYc6
-         FFlg==
-X-Forwarded-Encrypted: i=1; AJvYcCWmn+nmFxFiibWJRvSsFVxoGcxgLUy+mT/Ml3OjDwoVtSPSGg93ww/7UJlHnixCtkr+AhWm8jf42uBCfNY5uZfO1Mrc
-X-Gm-Message-State: AOJu0YyH+t4UC6Ph6eLfOt4RVk8Av7jrmI5O11MxDqNktsqv90XfDDe6
-	/GYSzq6OyfaUMmo6MINFpVhd/tmZh9sR7dGzwtNrjtl8iGnOS+Vn6J32PiCvdQ==
-X-Google-Smtp-Source: AGHT+IHiVW2wIHzjlmmJtP3/8G2y0eAeWGzeOSVRJCk7AUFLF2+0i3BmDdDWU8tZCnuPI18ookxGLA==
-X-Received: by 2002:a05:6a20:7348:b0:1af:baf9:feee with SMTP id adf61e73a8af0-1afde0fba34mr10664628637.26.1715626955376;
-        Mon, 13 May 2024 12:02:35 -0700 (PDT)
-Received: from www.outflux.net ([198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-63411346db2sm7058480a12.82.2024.05.13.12.02.34
+        d=1e100.net; s=20230601; t=1715628574; x=1716233374;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=1JcxYc0yH4S0T7kXVg7GJbnDgCMU4HE7iApYoFdIW38=;
+        b=Ap8cGUqT734Inj6yMxmduLoCbqaeQqyVLdiTlRCZNY0Vwm+Sg6lkQEHVWxnEyF4jeQ
+         RF7BnN95o5IiatsivALz+U85MLiKMW0Zih78c1u344f56Z65B933oIhTKQaM/mFH04VV
+         w8z7RqHordpy1iHPwsxVT3Vdo1+OQe5urzqePGrbKbC9gjNVUbRWM+ESl5h6kwrfDu0W
+         X+jgbJoANyhI1y9+rEioY5itx2iDTRCVHSl9WPv3Y51OkavzHywuGuaIHt7rEtb5kNbw
+         2SwtYlller5yFG8kZrTn0HkjMWlwiw/ZjNtfd18QzDLfFZDllhD93KDP0QfYWLcS8FZ8
+         N+mg==
+X-Gm-Message-State: AOJu0YwoNTgllxxLZItp8cWlm9kSaqf8FHzPkuUJw1HvDBlZPAKqZ0Pq
+	PMtltpFACpaesbL5/aW2BT0FykB2Plpu4tNKrnuajzkLoWVUfMKAEAeOAQ==
+X-Google-Smtp-Source: AGHT+IHEOwLLu6YsfZeXop4wboQkEDbo1Rl8w/7TxXk5N0GoEoHo18RGBV26jL5DoMXRdDGaEQ1tTw==
+X-Received: by 2002:a17:906:a010:b0:a5a:2e0:93ac with SMTP id a640c23a62f3a-a5a2d54c514mr643665466b.5.1715628573834;
+        Mon, 13 May 2024 12:29:33 -0700 (PDT)
+Received: from yatsenko-fedora-K2202N0103767.thefacebook.com ([2620:10d:c092:500::5:73ff])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a5a17b17865sm625371566b.204.2024.05.13.12.29.33
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 13 May 2024 12:02:34 -0700 (PDT)
-Date: Mon, 13 May 2024 12:02:34 -0700
-From: Kees Cook <keescook@chromium.org>
-To: KP Singh <kpsingh@kernel.org>
-Cc: linux-security-module@vger.kernel.org, bpf@vger.kernel.org,
-	ast@kernel.org, paul@paul-moore.com, casey@schaufler-ca.com,
-	andrii@kernel.org, daniel@iogearbox.net, renauld@google.com,
-	revest@chromium.org, song@kernel.org
-Subject: Re: [PATCH v11 5/5] bpf: Only enable BPF LSM hooks when an LSM
- program is attached
-Message-ID: <202405131202.D31DB2D@keescook>
-References: <20240509201421.905965-1-kpsingh@kernel.org>
- <20240509201421.905965-6-kpsingh@kernel.org>
+        Mon, 13 May 2024 12:29:33 -0700 (PDT)
+From: Mykyta@web.codeaurora.org, Yatsenko@web.codeaurora.org,
+	mykyta.yatsenko5@gmail.com
+To: bpf@vger.kernel.org,
+	ast@kernel.org,
+	andrii@kernel.org,
+	daniel@iogearbox.net,
+	kafai@meta.com,
+	kernel-team@meta.com,
+	qmo@kernel.org
+Cc: Mykyta Yatsenko <yatsenko@meta.com>
+Subject: [PATCH v3 bpf-next] bpftool: introduce btf c dump sorting
+Date: Mon, 13 May 2024 20:29:27 +0100
+Message-ID: <20240513192927.99189-1-yatsenko@meta.com>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240509201421.905965-6-kpsingh@kernel.org>
+Content-Transfer-Encoding: 8bit
 
-On Thu, May 09, 2024 at 10:14:21PM +0200, KP Singh wrote:
-> BPF LSM hooks have side-effects (even when a default value's returned)
-> as some hooks end up behaving differently due to the very presence of
-> the hook.
-> 
-> The static keys guarding the BPF LSM hooks are disabled by default and
-> enabled only when a BPF program is attached implementing the hook
-> logic. This avoids the issue of the side-effects and also the minor
-> overhead associated with the empty callback.
-> 
-> security_file_ioctl:
->    0xff...0e30 <+0>:	endbr64
->    0xff...0e34 <+4>:	nopl   0x0(%rax,%rax,1)
->    0xff...0e39 <+9>:	push   %rbp
->    0xff...0e3a <+10>:	push   %r14
->    0xff...0e3c <+12>:	push   %rbx
->    0xff...0e3d <+13>:	mov    %rdx,%rbx
->    0xff...0e40 <+16>:	mov    %esi,%ebp
->    0xff...0e42 <+18>:	mov    %rdi,%r14
->    0xff...0e45 <+21>:	jmp    0xff...0e57 <security_file_ioctl+39>
->    				^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-> 
->    Static key enabled for SELinux
-> 
->    0xff...0e47 <+23>:	xchg   %ax,%ax
->    			^^^^^^^^^^^^^^
-> 
->    Static key disabled for BPF. This gets patched when a BPF LSM
->    program is attached
-> 
->    0xff...0e49 <+25>:	xor    %eax,%eax
->    0xff...0e4b <+27>:	xchg   %ax,%ax
->    0xff...0e4d <+29>:	pop    %rbx
->    0xff...0e4e <+30>:	pop    %r14
->    0xff...0e50 <+32>:	pop    %rbp
->    0xff...0e51 <+33>:	cs jmp 0xff...0000 <__x86_return_thunk>
->    0xff...0e57 <+39>:	endbr64
->    0xff...0e5b <+43>:	mov    %r14,%rdi
->    0xff...0e5e <+46>:	mov    %ebp,%esi
->    0xff...0e60 <+48>:	mov    %rbx,%rdx
->    0xff...0e63 <+51>:	call   0xff...33c0 <selinux_file_ioctl>
->    0xff...0e68 <+56>:	test   %eax,%eax
->    0xff...0e6a <+58>:	jne    0xff...0e4d <security_file_ioctl+29>
->    0xff...0e6c <+60>:	jmp    0xff...0e47 <security_file_ioctl+23>
->    0xff...0e6e <+62>:	endbr64
->    0xff...0e72 <+66>:	mov    %r14,%rdi
->    0xff...0e75 <+69>:	mov    %ebp,%esi
->    0xff...0e77 <+71>:	mov    %rbx,%rdx
->    0xff...0e7a <+74>:	call   0xff...e3b0 <bpf_lsm_file_ioctl>
->    0xff...0e7f <+79>:	test   %eax,%eax
->    0xff...0e81 <+81>:	jne    0xff...0e4d <security_file_ioctl+29>
->    0xff...0e83 <+83>:	jmp    0xff...0e49 <security_file_ioctl+25>
->    0xff...0e85 <+85>:	endbr64
->    0xff...0e89 <+89>:	mov    %r14,%rdi
->    0xff...0e8c <+92>:	mov    %ebp,%esi
->    0xff...0e8e <+94>:	mov    %rbx,%rdx
->    0xff...0e91 <+97>:	pop    %rbx
->    0xff...0e92 <+98>:	pop    %r14
->    0xff...0e94 <+100>:	pop    %rbp
->    0xff...0e95 <+101>:	ret
-> 
-> This patch enables this by providing a LSM_HOOK_INIT_TOGGLEABLE
-> variant which allows the LSMs to opt-in to toggleable hooks which can
-> be toggled on/off with security_toogle_hook.
-> 
-> Signed-off-by: KP Singh <kpsingh@kernel.org>
+From: Mykyta Yatsenko <yatsenko@meta.com>
 
-With the issue Tetsuo noted fixed:
+Sort bpftool c dump output; aiming to simplify vmlinux.h diffing and
+forcing more natural type definitions ordering.
 
-Reviewed-by: Kees Cook <keescook@chromium.org>
+Definitions are sorted first by their BTF kind ranks, then by their base
+type name and by their own name.
 
+Type ranks
+
+Assign ranks to btf kinds (defined in function btf_type_rank) to set
+next order:
+1. Anonymous enums/enums64
+2. Named enums/enums64
+3. Trivial types typedefs (ints, then floats)
+4. Structs/Unions
+5. Function prototypes
+6. Forward declarations
+
+Type rank is set to maximum for unnamed reference types, structs and
+unions to avoid emitting those types early. They will be emitted as
+part of the type chain starting with named type.
+
+Lexicographical ordering
+
+Each type is assigned a sort_name and own_name.
+sort_name is the resolved name of the final base type for reference
+types (typedef, pointer, array etc). Sorting by sort_name allows to
+group typedefs of the same base type. sort_name for non-reference type
+is the same as own_name. own_name is a direct name of particular type,
+is used as final sorting step.
+
+Signed-off-by: Mykyta Yatsenko <yatsenko@meta.com>
+---
+ .../bpf/bpftool/Documentation/bpftool-btf.rst |   5 +-
+ tools/bpf/bpftool/bash-completion/bpftool     |   3 +
+ tools/bpf/bpftool/btf.c                       | 138 +++++++++++++++++-
+ 3 files changed, 139 insertions(+), 7 deletions(-)
+
+diff --git a/tools/bpf/bpftool/Documentation/bpftool-btf.rst b/tools/bpf/bpftool/Documentation/bpftool-btf.rst
+index eaba24320fb2..65eeb3d905f0 100644
+--- a/tools/bpf/bpftool/Documentation/bpftool-btf.rst
++++ b/tools/bpf/bpftool/Documentation/bpftool-btf.rst
+@@ -28,7 +28,7 @@ BTF COMMANDS
+ | **bpftool** **btf help**
+ |
+ | *BTF_SRC* := { **id** *BTF_ID* | **prog** *PROG* | **map** *MAP* [{**key** | **value** | **kv** | **all**}] | **file** *FILE* }
+-| *FORMAT* := { **raw** | **c** }
++| *FORMAT* := { **raw** | **c** [**unsorted**]}
+ | *MAP* := { **id** *MAP_ID* | **pinned** *FILE* }
+ | *PROG* := { **id** *PROG_ID* | **pinned** *FILE* | **tag** *PROG_TAG* | **name** *PROG_NAME* }
+ 
+@@ -63,7 +63,8 @@ bpftool btf dump *BTF_SRC*
+     pahole.
+ 
+     **format** option can be used to override default (raw) output format. Raw
+-    (**raw**) or C-syntax (**c**) output formats are supported.
++    (**raw**) or C-syntax (**c**) output formats are supported. (**unsorted**)
++    option can be used with (**c**) to avoid sorting the output.
+ 
+ bpftool btf help
+     Print short help message.
+diff --git a/tools/bpf/bpftool/bash-completion/bpftool b/tools/bpf/bpftool/bash-completion/bpftool
+index 04afe2ac2228..be99d49b8714 100644
+--- a/tools/bpf/bpftool/bash-completion/bpftool
++++ b/tools/bpf/bpftool/bash-completion/bpftool
+@@ -930,6 +930,9 @@ _bpftool()
+                         format)
+                             COMPREPLY=( $( compgen -W "c raw" -- "$cur" ) )
+                             ;;
++                        c)
++                            COMPREPLY=( $( compgen -W "unsorted" -- "$cur" ) )
++                            ;;
+                         *)
+                             # emit extra options
+                             case ${words[3]} in
+diff --git a/tools/bpf/bpftool/btf.c b/tools/bpf/bpftool/btf.c
+index 91fcb75babe3..7e7071d301df 100644
+--- a/tools/bpf/bpftool/btf.c
++++ b/tools/bpf/bpftool/btf.c
+@@ -43,6 +43,13 @@ static const char * const btf_kind_str[NR_BTF_KINDS] = {
+ 	[BTF_KIND_ENUM64]	= "ENUM64",
+ };
+ 
++struct sort_datum {
++	int index;
++	int type_rank;
++	const char *sort_name;
++	const char *own_name;
++};
++
+ static const char *btf_int_enc_str(__u8 encoding)
+ {
+ 	switch (encoding) {
+@@ -460,9 +467,122 @@ static void __printf(2, 0) btf_dump_printf(void *ctx,
+ 	vfprintf(stdout, fmt, args);
+ }
+ 
++static int btf_type_rank(const struct btf *btf, __u32 index, bool has_name)
++{
++	const struct btf_type *t = btf__type_by_id(btf, index);
++	const int kind = btf_kind(t);
++	const int max_rank = 10;
++
++	if (t->name_off)
++		has_name = true;
++
++	switch (kind) {
++	case BTF_KIND_ENUM:
++	case BTF_KIND_ENUM64:
++		return has_name ? 1 : 0;
++	case BTF_KIND_INT:
++	case BTF_KIND_FLOAT:
++		return 2;
++	case BTF_KIND_STRUCT:
++	case BTF_KIND_UNION:
++		return has_name ? 3 : max_rank;
++	case BTF_KIND_FUNC_PROTO:
++		return has_name ? 4 : max_rank;
++	case BTF_KIND_ARRAY:
++		if (has_name)
++			return btf_type_rank(btf, btf_array(t)->type, has_name);
++		return max_rank;
++	case BTF_KIND_TYPE_TAG:
++	case BTF_KIND_CONST:
++	case BTF_KIND_PTR:
++	case BTF_KIND_VOLATILE:
++	case BTF_KIND_RESTRICT:
++	case BTF_KIND_TYPEDEF:
++	case BTF_KIND_DECL_TAG:
++		if (has_name)
++			return btf_type_rank(btf, t->type, has_name);
++		return max_rank;
++	default:
++		return max_rank;
++	}
++}
++
++static const char *btf_type_sort_name(const struct btf *btf, __u32 index, bool from_ref)
++{
++	const struct btf_type *t = btf__type_by_id(btf, index);
++
++	switch (btf_kind(t)) {
++	case BTF_KIND_ENUM:
++	case BTF_KIND_ENUM64: {
++		int name_off = t->name_off;
++
++		/* Use name of the first element for anonymous enums if allowed */
++		if (!from_ref && !t->name_off && btf_vlen(t))
++			name_off = btf_enum(t)->name_off;
++
++		return btf__name_by_offset(btf, name_off);
++	}
++	case BTF_KIND_ARRAY:
++		return btf_type_sort_name(btf, btf_array(t)->type, true);
++	case BTF_KIND_TYPE_TAG:
++	case BTF_KIND_CONST:
++	case BTF_KIND_PTR:
++	case BTF_KIND_VOLATILE:
++	case BTF_KIND_RESTRICT:
++	case BTF_KIND_TYPEDEF:
++	case BTF_KIND_DECL_TAG:
++		return btf_type_sort_name(btf, t->type, true);
++	default:
++		return btf__name_by_offset(btf, t->name_off);
++	}
++	return NULL;
++}
++
++static int btf_type_compare(const void *left, const void *right)
++{
++	const struct sort_datum *d1 = (const struct sort_datum *)left;
++	const struct sort_datum *d2 = (const struct sort_datum *)right;
++	int r;
++
++	if (d1->type_rank != d2->type_rank)
++		return d1->type_rank < d2->type_rank ? -1 : 1;
++
++	r = strcmp(d1->sort_name, d2->sort_name);
++	if (r)
++		return r;
++
++	return strcmp(d1->own_name, d2->own_name);
++}
++
++static struct sort_datum *sort_btf_c(const struct btf *btf)
++{
++	struct sort_datum *datums;
++	int n;
++
++	n = btf__type_cnt(btf);
++	datums = malloc(sizeof(struct sort_datum) * n);
++	if (!datums)
++		return NULL;
++
++	for (int i = 0; i < n; ++i) {
++		struct sort_datum *d = datums + i;
++		const struct btf_type *t = btf__type_by_id(btf, i);
++
++		d->index = i;
++		d->type_rank = btf_type_rank(btf, i, false);
++		d->sort_name = btf_type_sort_name(btf, i, false);
++		d->own_name = btf__name_by_offset(btf, t->name_off);
++	}
++
++	qsort(datums, n, sizeof(struct sort_datum), btf_type_compare);
++
++	return datums;
++}
++
+ static int dump_btf_c(const struct btf *btf,
+-		      __u32 *root_type_ids, int root_type_cnt)
++		      __u32 *root_type_ids, int root_type_cnt, bool sort_dump)
+ {
++	struct sort_datum *datums = NULL;
+ 	struct btf_dump *d;
+ 	int err = 0, i;
+ 
+@@ -486,8 +606,12 @@ static int dump_btf_c(const struct btf *btf,
+ 	} else {
+ 		int cnt = btf__type_cnt(btf);
+ 
++		if (sort_dump)
++			datums = sort_btf_c(btf);
+ 		for (i = 1; i < cnt; i++) {
+-			err = btf_dump__dump_type(d, i);
++			int idx = datums ? datums[i].index : i;
++
++			err = btf_dump__dump_type(d, idx);
+ 			if (err)
+ 				goto done;
+ 		}
+@@ -500,6 +624,7 @@ static int dump_btf_c(const struct btf *btf,
+ 	printf("#endif /* __VMLINUX_H__ */\n");
+ 
+ done:
++	free(datums);
+ 	btf_dump__free(d);
+ 	return err;
+ }
+@@ -549,10 +674,10 @@ static bool btf_is_kernel_module(__u32 btf_id)
+ 
+ static int do_dump(int argc, char **argv)
+ {
++	bool dump_c = false, sort_dump_c = true;
+ 	struct btf *btf = NULL, *base = NULL;
+ 	__u32 root_type_ids[2];
+ 	int root_type_cnt = 0;
+-	bool dump_c = false;
+ 	__u32 btf_id = -1;
+ 	const char *src;
+ 	int fd = -1;
+@@ -663,6 +788,9 @@ static int do_dump(int argc, char **argv)
+ 				goto done;
+ 			}
+ 			NEXT_ARG();
++		} else if (is_prefix(*argv, "unsorted")) {
++			sort_dump_c = false;
++			NEXT_ARG();
+ 		} else {
+ 			p_err("unrecognized option: '%s'", *argv);
+ 			err = -EINVAL;
+@@ -691,7 +819,7 @@ static int do_dump(int argc, char **argv)
+ 			err = -ENOTSUP;
+ 			goto done;
+ 		}
+-		err = dump_btf_c(btf, root_type_ids, root_type_cnt);
++		err = dump_btf_c(btf, root_type_ids, root_type_cnt, sort_dump_c);
+ 	} else {
+ 		err = dump_btf_raw(btf, root_type_ids, root_type_cnt);
+ 	}
+@@ -1063,7 +1191,7 @@ static int do_help(int argc, char **argv)
+ 		"       %1$s %2$s help\n"
+ 		"\n"
+ 		"       BTF_SRC := { id BTF_ID | prog PROG | map MAP [{key | value | kv | all}] | file FILE }\n"
+-		"       FORMAT  := { raw | c }\n"
++		"       FORMAT  := { raw | c [unsorted]}\n"
+ 		"       " HELP_SPEC_MAP "\n"
+ 		"       " HELP_SPEC_PROGRAM "\n"
+ 		"       " HELP_SPEC_OPTIONS " |\n"
 -- 
-Kees Cook
+2.44.0
+
 
