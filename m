@@ -1,107 +1,178 @@
-Return-Path: <bpf+bounces-29654-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-29655-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4967E8C46B6
-	for <lists+bpf@lfdr.de>; Mon, 13 May 2024 20:08:17 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 953518C46C5
+	for <lists+bpf@lfdr.de>; Mon, 13 May 2024 20:26:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C1C55B2281B
-	for <lists+bpf@lfdr.de>; Mon, 13 May 2024 18:08:14 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 66F6D1C20DEC
+	for <lists+bpf@lfdr.de>; Mon, 13 May 2024 18:26:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D1A462D058;
-	Mon, 13 May 2024 18:08:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="owoEHy+C"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C78E733CF1;
+	Mon, 13 May 2024 18:26:51 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5AB993838F
-	for <bpf@vger.kernel.org>; Mon, 13 May 2024 18:08:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 795C62C1A9;
+	Mon, 13 May 2024 18:26:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715623688; cv=none; b=eTKDGNxheXNRi9w1i6uYyTesP/B4nAinkRVI32gFff+udR053lLiryRw/JXAH/5J39CjQ8L2kzydh6xqa2nSnHbb4pYOhtyg2V4PV9yg6+TSRIO3lYQKGUCXVPVKXevnXAzc7sKyeNUiKfvIfDmtc71XmSidlOrhxeuSTO2Njkw=
+	t=1715624811; cv=none; b=tDA9OV/SsZ9oZ2L9//JxzWGdFqPpm2p/WcNam3zFHC2EMD6yJUa20UW1cRMfUESUWR8n/e2pRG8eeiBCETiLseUVmeBff3CVXemFgTVo5/qjxfc2R7nWK11Bx2TblGbeUw7tfga55OljQOS2ypv5eWvKpnX/O2+23iCuz0sFDZE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715623688; c=relaxed/simple;
-	bh=V4656gibYuhndMUYyqzVEaZZWASYfIp5xRRV/49wdQU=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=YEeZRHW/43S+kU12nnCGiR56+xupB+V0XgzxqQvalx+jhYrYFHfBWEfL+9e5qyVCOYlLOtjrwJzA1UZifOqBzdn5ozQAc7r3nZG/AYAX49OGrpL9CUw7n4vIeg5LaxnmWNkZHhS69zv70c56X9u1Xq9jrLrBl+Moh+UueESz2QE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=owoEHy+C; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B6656C113CC;
-	Mon, 13 May 2024 18:08:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1715623687;
-	bh=V4656gibYuhndMUYyqzVEaZZWASYfIp5xRRV/49wdQU=;
-	h=From:To:Cc:Subject:Date:From;
-	b=owoEHy+CTvpwYjTpcuNionrJ2V2/QunbgN+1cGzvahRpuXYlKH7HpfyoBF1dw/xme
-	 PzBwp0vtqqoOJzxm6aaTjco+wCpanGXC8GLBNlhw2DKwQcy6FrfLeCatMcD4oI2UWS
-	 J/lqecp9twjYlGUb26/zei+NyFWHo8k5lSG4y/7W+FYW7xhCf8u+7MWPCwd1v9kDBz
-	 R1nWTWJ46y9rJ7uPUkcS7aCdDYg98ikndP17wB/r04PI0W4d5Hv5TxzSOJd1zdnv6l
-	 ABYSfCXCrlwj7GbEZVftzzoCZLGGDxGO11X1EF0ks0QNcF7U3bQHG0j/Ao8S9fKMu3
-	 Vy1L9ZuQ4JaEQ==
-From: Andrii Nakryiko <andrii@kernel.org>
-To: bpf@vger.kernel.org,
-	ast@kernel.org,
-	daniel@iogearbox.net,
-	martin.lau@kernel.org
-Cc: andrii@kernel.org,
-	kernel-team@meta.com
-Subject: [PATCH] libbpf: fix feature detectors when using token_fd
-Date: Mon, 13 May 2024 11:08:03 -0700
-Message-ID: <20240513180804.403775-1-andrii@kernel.org>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1715624811; c=relaxed/simple;
+	bh=KMlCK65C87EvBcjZbxwN/eiP899E0BT6IdkmKFZJmSY=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=JpKdfvYRflt/VuLtfM05u5PyyLjiphHwLaLOTo7PCnpwVrn8tNtkXpRt4dVeOY9s1nyU6ZOehBZFnUacciD8frGQEaT2tdXSMoetBDfODvWwJeaWJhsxr0JdTrE43eOm4UVROVTtJk+AZzaah9QaDRRdU62V3i/OxFTOr6tvm7k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B8819C113CC;
+	Mon, 13 May 2024 18:26:48 +0000 (UTC)
+Date: Mon, 13 May 2024 14:26:46 -0400
+From: Steven Rostedt <rostedt@goodmis.org>
+To: Peter Zijlstra <peterz@infradead.org>
+Cc: Tejun Heo <tj@kernel.org>, torvalds@linux-foundation.org,
+ mingo@redhat.com, juri.lelli@redhat.com, vincent.guittot@linaro.org,
+ dietmar.eggemann@arm.com, bsegall@google.com, mgorman@suse.de,
+ bristot@redhat.com, vschneid@redhat.com, ast@kernel.org,
+ daniel@iogearbox.net, andrii@kernel.org, martin.lau@kernel.org,
+ joshdon@google.com, brho@google.com, pjt@google.com, derkling@google.com,
+ haoluo@google.com, dvernet@meta.com, dschatzberg@meta.com,
+ dskarlat@cs.cmu.edu, riel@surriel.com, changwoo@igalia.com,
+ himadrics@inria.fr, memxor@gmail.com, andrea.righi@canonical.com,
+ joel@joelfernandes.org, linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+ kernel-team@meta.com
+Subject: Re: [PATCHSET v6] sched: Implement BPF extensible scheduler class
+Message-ID: <20240513142646.4dc5484d@rorschach.local.home>
+In-Reply-To: <20240513080359.GI30852@noisy.programming.kicks-ass.net>
+References: <20240501151312.635565-1-tj@kernel.org>
+	<20240502084800.GY30852@noisy.programming.kicks-ass.net>
+	<ZjPnb1vdt80FrksA@slm.duckdns.org>
+	<20240503085232.GC30852@noisy.programming.kicks-ass.net>
+	<ZjgWzhruwo8euPC0@slm.duckdns.org>
+	<20240513080359.GI30852@noisy.programming.kicks-ass.net>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Adjust `union bpf_attr` size passed to kernel in two feature-detecting
-functions to take into account prog_token_fd field.
+On Mon, 13 May 2024 10:03:59 +0200
+Peter Zijlstra <peterz@infradead.org> wrote:
 
-Libbpf is avoiding memset()'ing entire `union bpf_attr` by only using
-minimal set of bpf_attr's fields. Two places have been missed when
-wiring BPF token support in libbpf's feature detection logic.
+> > I believe we agree that we want more people contributing to the schedul=
+ing
+> > area.  =20
+>=20
+> I think therein lies the rub -- contribution. If we were to do this
+> thing, random loadable BPF schedulers, then how do we ensure people will
+> contribute back?
 
-Fix them trivially.
+Hi Peter,
 
-Fixes: f3dcee938f48 ("libbpf: Wire up token_fd into feature probing logic")
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
----
- tools/lib/bpf/bpf.c      | 2 +-
- tools/lib/bpf/features.c | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+I'm somewhat agnostic to sched_ext itself, but I have been an advocate
+for a plugable scheduler infrastructure. And we are seriously looking
+at adding it to ChromeOS.
 
-diff --git a/tools/lib/bpf/bpf.c b/tools/lib/bpf/bpf.c
-index 466a29d80124..2a4c71501a17 100644
---- a/tools/lib/bpf/bpf.c
-+++ b/tools/lib/bpf/bpf.c
-@@ -105,7 +105,7 @@ int sys_bpf_prog_load(union bpf_attr *attr, unsigned int size, int attempts)
-  */
- int probe_memcg_account(int token_fd)
- {
--	const size_t attr_sz = offsetofend(union bpf_attr, attach_btf_obj_fd);
-+	const size_t attr_sz = offsetofend(union bpf_attr, prog_token_fd);
- 	struct bpf_insn insns[] = {
- 		BPF_EMIT_CALL(BPF_FUNC_ktime_get_coarse_ns),
- 		BPF_EXIT_INSN(),
-diff --git a/tools/lib/bpf/features.c b/tools/lib/bpf/features.c
-index 4e783cc7fc4b..a336786a22a3 100644
---- a/tools/lib/bpf/features.c
-+++ b/tools/lib/bpf/features.c
-@@ -22,7 +22,7 @@ int probe_fd(int fd)
- 
- static int probe_kern_prog_name(int token_fd)
- {
--	const size_t attr_sz = offsetofend(union bpf_attr, prog_name);
-+	const size_t attr_sz = offsetofend(union bpf_attr, prog_token_fd);
- 	struct bpf_insn insns[] = {
- 		BPF_MOV64_IMM(BPF_REG_0, 0),
- 		BPF_EXIT_INSN(),
--- 
-2.43.0
+>=20
+> That is, from where I am sitting I see $vendor mandate their $enterprise
+> product needs their $BPF scheduler. At which point $vendor will have no
+> incentive to ever contribute back.
 
+Believe me they already have their own scheduler, and because its so
+different, it's very hard to contribute back.
+
+>=20
+> And customers of $vendor that want to run additional workloads on
+> their machine are then stuck with that scheduler, irrespective of it
+> being suitable for them or not. This is not a good experience.
+
+And $vendor usually has a unique workload that their changes will
+likely cause regressions in other workloads, making it even harder to
+contribute back.
+
+>=20
+> So I don't at all mind people playing around with schedulers -- they can
+> do so today, there are a ton of out of tree patches to start or learn
+> from, or like I said, it really isn't all that hard to just rip out fair
+> and write something new.
+
+For cloud servers, I bet a lot of schedulers are not public. Although,
+my company tries to publish the schedulers they use.
+
+>=20
+> Open source, you get to do your own thing. Have at.
+>=20
+> But part of what made Linux work so well, is in my opinion the GPL. GPL
+> forces people to contribute back -- to work on the shared project. And I
+> see the whole BPF thing as a run-around on that.
+>=20
+> Even the large cloud vendors and service providers (Amazon, Google,
+> Facebook etc.) contribute back because of rebase pain -- as you well
+> know. The rebase pain offsets the 'TIVO hole'.
+
+=46rom what I understand (I don't work on production, but Chromebooks), a
+lot of changes cannot be contributed back because their updates are far
+from what is upstream. Having a plugable scheduler would actually allow
+them to contribute *more*.
+
+>=20
+> But with the BPF muck; where is the motivation to help improve things?
+
+For the same reasons you mention about GPL and why it works.
+Collaboration. Sharing ideas helps everyone. If there's some secret
+sauce scheduler then they would likely just replace the scheduler, as
+its more performant. I don't believe it would be worth while to use BPF
+for that purpose.
+
+>=20
+> Keeping a rando github repo with BPF schedulers is not contributing.
+
+Agreed, and I would guess having them in the Linux kernel tree would be
+more beneficial.
+
+> That's just a repo with multiple out of tree schedulers to be ignored.
+> Who will put in the effort of upsteaming things if they can hack up a
+> BPF and throw it over the wall?
+
+If there's a place in the Linux kernel tree, I'm sure there would be
+motivation to place it there. Having it in the kernel proper does give
+more visibility of code, and therefore enhancements to that code. This
+was the same rationale for putting perf into the kernel proper.
+
+>=20
+> So yeah, I'm very much NOT supportive of this effort. From where I'm
+> sitting there is simply not a single benefit. You're not making my life
+> better, so why would I care?
+>=20
+> How does this BPF muck translate into better quality patches for me?
+
+Here's how we will be using it (we will likely be porting sched_ext to
+ChromeOS regardless of its acceptance).
+
+Doing testing of scheduler changes in the field is extremely time
+consuming and complex. We tested EEVDF vs CFS by backporting EEVDF to
+5.15 (as that is the kernel version we are using on the chromebooks we
+were testing on), and then we need to add a user space "switch" to
+change the scheduler. Note, this also risks causing a bug in adding
+these changes. Then we push the kernel out, and then start our
+experiment that enables our feature to a small percentage, and slowly
+increases the number of users until we have a enough for a statistical
+result.
+
+What sched_ext would give us is a easy way to try different scheduling
+algorithms and get feedback much quicker. Once we determine a solution
+that improves things, we would then spend the time to implement it in
+the scheduler, and yes, send it upstream.
+
+To me, sched_ext should never be the final solution, but it can be
+extremely useful in testing various changes quickly in the field. Which
+to me would encourage more contributions.
+
+-- Steve
 
