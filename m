@@ -1,216 +1,283 @@
-Return-Path: <bpf+bounces-29632-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-29633-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9A5DA8C3E8D
-	for <lists+bpf@lfdr.de>; Mon, 13 May 2024 12:03:36 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id DBC588C3E91
+	for <lists+bpf@lfdr.de>; Mon, 13 May 2024 12:06:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0B91CB2276B
-	for <lists+bpf@lfdr.de>; Mon, 13 May 2024 10:03:34 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3CF981F2291E
+	for <lists+bpf@lfdr.de>; Mon, 13 May 2024 10:06:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 35212149C4A;
-	Mon, 13 May 2024 10:03:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D97E1149C4F;
+	Mon, 13 May 2024 10:06:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="iXWewXdz"
+	dkim=pass (2048-bit key) header.d=csgroup.eu header.i=@csgroup.eu header.b="EWE6Dmn8"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from PR0P264CU014.outbound.protection.outlook.com (mail-francecentralazon11022019.outbound.protection.outlook.com [52.101.167.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AEE60148FE3;
-	Mon, 13 May 2024 10:03:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715594605; cv=none; b=eJUpTHw1oQb5cca5m7TrQmYSkMBqWzkiUJ9s4QAAA/4CPWbXtctXXGl/me3QDF1WsZHrgtMjBBNerS2nbVjHTO29mBl4nTcS3DZBCIq9LPx5LE8HMSuhVgcm+cGLb1/H1lmjArt6gIcEtGqFEUUFKc0dM+JY1EMmgHzwbn0L558=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715594605; c=relaxed/simple;
-	bh=qPtmsc9aVaRFXH0vxN0wn2tJPuPbcbyFzlsOMSyAdDw=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=KoKx9iMND9dBtCujOzY1fsDxLPff6x1xY3Iz9TajbLGoIweDNvYpQ7YoshH8RgJ11GrIm8gN2Z1+YXjMfpk4miVCAO4gQYQfMSrL7ERroAu9lF1hIpMGJ/5WqIZMTraKK0Jy/5mXZgSWIuIPiMQ6IpLOy6FueZRD+vtJnAr0I0Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=iXWewXdz; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DD32CC113CC;
-	Mon, 13 May 2024 10:03:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1715594604;
-	bh=qPtmsc9aVaRFXH0vxN0wn2tJPuPbcbyFzlsOMSyAdDw=;
-	h=From:To:Cc:Subject:Date:From;
-	b=iXWewXdzUpD2uL70ydPKzG0bHJ7ydLietv9lbpsHyGyca9U5kTSqcrQE513aC4B1P
-	 Te0GCtTrCA8qwlPbM01MAFr0y6KulARZCh2GnBe8PmjIsNI5FoG2EUaeSxCTw6rRCr
-	 ihN1lHW5rCZeZZXeAZp/WsZ8fytdNXEw7kDaC8jZ4GgT4qwdpNmmpUvA5Ki6swjPZA
-	 d39TUrqh8R6aU/2CLpF6zkveRZZvVpD9e9a7RoMyvvwaaswtuLG0pnMBmEAnQt84nf
-	 NfnqZLDyWUPmLTT6bSrvjnMDaNklF7yCZdE5Vx90G+tEvXYypKtPVTZEOS8ic7ph/C
-	 bbDPur+zXAffA==
-From: Puranjay Mohan <puranjay@kernel.org>
-To: Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>,
-	Stanislav Fomichev <sdf@google.com>,
-	Hao Luo <haoluo@google.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	"Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
-	Michael Ellerman <mpe@ellerman.id.au>,
-	Nicholas Piggin <npiggin@gmail.com>,
-	Christophe Leroy <christophe.leroy@csgroup.eu>,
-	"Aneesh Kumar K.V" <aneesh.kumar@kernel.org>,
-	Hari Bathini <hbathini@linux.ibm.com>,
-	bpf@vger.kernel.org,
-	linuxppc-dev@lists.ozlabs.org,
-	linux-kernel@vger.kernel.org,
-	paulmck@kernel.org
-Cc: puranjay12@gmail.com
-Subject: [PATCH bpf v3] powerpc/bpf: enforce full ordering for ATOMIC operations with BPF_FETCH
-Date: Mon, 13 May 2024 10:02:48 +0000
-Message-Id: <20240513100248.110535-1-puranjay@kernel.org>
-X-Mailer: git-send-email 2.40.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B20A2E3E0;
+	Mon, 13 May 2024 10:06:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.167.19
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1715594771; cv=fail; b=H550bicIyhiOZyGMx482PCrq3WFjHEMtOyPcd6Q7Hsc0J/y4wY4rM9VBDOrPSPiWQpZaGjfb0wVV5z+2MVWRT4CtPyGOZUNtdAfKRmCAlnmfYR5LdD5l8xSP6e3YkFpp56wEhDPFI7Iwea6v8vP8oOgZadTZbMJk2PIaVWIf9Mk=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1715594771; c=relaxed/simple;
+	bh=/sRZ4EroGg1vE10VoDsl9eIzp7bBhT13U+hwbSlynPg=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=h6IYVm6rNlkmWr1mtMsoVL2oAQdGsX2+JQY7kaAezlmN94V5ylmtRz/gjakT4QRhXMeVvuBB6py3HoLmtpKcdCAemE+KyXslrqfhdEIVTLOSrP/+CQWErnUrCf+cVBCO86gOR7ytCLosSYjoFToBbawkBT2OqgAXraLzWiu4zhM=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=csgroup.eu; spf=pass smtp.mailfrom=csgroup.eu; dkim=pass (2048-bit key) header.d=csgroup.eu header.i=@csgroup.eu header.b=EWE6Dmn8; arc=fail smtp.client-ip=52.101.167.19
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=csgroup.eu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=csgroup.eu
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=nAx00E+dxHH6h6nJxDGp2RbV9ZxQy7/lyLkHPjF8C8UxrxaVdzd8G6OmrYx/YpzQh7VwTt5FAGfyD1YkRo9bwLKegPzGB1Sbge5NfFctQE6jsj/Pfch8N+cVlg6wFTVYWvgMtXXoPOOAktK7g3HgE4sNI8gVdR/eE+pn0tnhRKit0VGi85IneBuN1vabcmQSgdXaN9BbWpDlC719WO5uLx36Ck90OzeN34WnG9E4Y9cXg1LFByhayInGL3WkVQT5wx9dzY5djzud82slAOd9gQ9M39pT6z/+nHR32mv9+Ma1NTRzZzQuTzFBgKv6H5qJ/Z3KfFSsb8n9jUOIgeuhWw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=/sRZ4EroGg1vE10VoDsl9eIzp7bBhT13U+hwbSlynPg=;
+ b=T2v18EDrqzgmkDU0mFJoj3KPT6hzTdRdO8Oshv1dXuqpqVTYYWm1K5mtvgjSjMxxkvPaLJZ4b4mlJpDBJPuwh699G27uFhLtQAsm/1aCvt7P7Ew+5hi65vWL+y/q5Cw0ytMofgl/7XuownHTWG31vPPpFnXFEv1UehbfmDdYnh4zYoRca53UCRdogPHPz8KxAzeFuDGi/j3wmc8hOftE6B87avM8cJmowrMLFJ2VnyCurSrKUnKVj1PSPqI7ucl2OsTYKtYHd6B4btTK+pgKBQl0bWMGUvlSmSkkGoubLQmwxU2sV9cSJwXiWFV0SFFdQhlSJ+/Lc/99HBm/2w8+TA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=csgroup.eu; dmarc=pass action=none header.from=csgroup.eu;
+ dkim=pass header.d=csgroup.eu; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=csgroup.eu;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=/sRZ4EroGg1vE10VoDsl9eIzp7bBhT13U+hwbSlynPg=;
+ b=EWE6Dmn8FM7Zpd5obwcPuOys4cG1H9grZNyWVNau+N8Huw/Ql5iAy/Gb/eUaQEczeltDZRfPtXuF+NVLNQGYZhiwtVvjJSEeL8gFr4AzLXhB+Mp+KtqQjyMThFVufkKiP8Qdz94IvTXlJ/HKWRem0QX4KUNEWYHG/x41/TIe8YXme9YbbXgKAXGfqFNHPcdLqD31EXEKYat+BD4GWhI7bezwNdcS1FFumGJHO7azvx2qjQQmF1GqmsqvGCj3qkop1HVUqGt6qqEP0e3Pz4nRQscqebZ2EyjWsSCOaDIf9+bjCSrdGlge9TGWzKd52pjIHY20S75WTq+wlUhgnq0OTA==
+Received: from MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM (2603:10a6:501:31::15)
+ by PR0P264MB2741.FRAP264.PROD.OUTLOOK.COM (2603:10a6:102:1d0::9) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7544.55; Mon, 13 May
+ 2024 10:06:06 +0000
+Received: from MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM
+ ([fe80::e6d7:9670:c147:b801]) by MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM
+ ([fe80::e6d7:9670:c147:b801%3]) with mapi id 15.20.7544.052; Mon, 13 May 2024
+ 10:06:05 +0000
+From: Christophe Leroy <christophe.leroy@csgroup.eu>
+To: Puranjay Mohan <puranjay@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman
+	<eddyz87@gmail.com>, Song Liu <song@kernel.org>, Yonghong Song
+	<yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, KP
+ Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo
+	<haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, "Naveen N. Rao"
+	<naveen.n.rao@linux.ibm.com>, Michael Ellerman <mpe@ellerman.id.au>, Nicholas
+ Piggin <npiggin@gmail.com>, Aneesh Kumar K.V <aneesh.kumar@kernel.org>, Hari
+ Bathini <hbathini@linux.ibm.com>, "bpf@vger.kernel.org"
+	<bpf@vger.kernel.org>, "linuxppc-dev@lists.ozlabs.org"
+	<linuxppc-dev@lists.ozlabs.org>, "linux-kernel@vger.kernel.org"
+	<linux-kernel@vger.kernel.org>, "paulmck@kernel.org" <paulmck@kernel.org>
+CC: "puranjay12@gmail.com" <puranjay12@gmail.com>
+Subject: Re: [PATCH bpf v3] powerpc/bpf: enforce full ordering for ATOMIC
+ operations with BPF_FETCH
+Thread-Topic: [PATCH bpf v3] powerpc/bpf: enforce full ordering for ATOMIC
+ operations with BPF_FETCH
+Thread-Index: AQHapRzS5V6CS6/VaEeDDenad6RLJLGU8BuA
+Date: Mon, 13 May 2024 10:06:05 +0000
+Message-ID: <5763f25b-e9b9-4651-a401-4ea79b6db955@csgroup.eu>
+References: <20240513100248.110535-1-puranjay@kernel.org>
+In-Reply-To: <20240513100248.110535-1-puranjay@kernel.org>
+Accept-Language: fr-FR, en-US
+Content-Language: fr-FR
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+user-agent: Mozilla Thunderbird
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=csgroup.eu;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: MRZP264MB2988:EE_|PR0P264MB2741:EE_
+x-ms-office365-filtering-correlation-id: a78a605f-4f6d-42f3-52d9-08dc73344dbd
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam:
+ BCL:0;ARA:13230031|7416005|1800799015|366007|376005|38070700009|921011;
+x-microsoft-antispam-message-info:
+ =?utf-8?B?ZXo4elY3TkEyZ3d2UTFrOVlSdG5SSkZQMTdMMWw0ZDhOL3R1R3oyQ0ExRUJB?=
+ =?utf-8?B?dDhuT2NhKzVqQ1h6UEhJcnFvTldxVEd3U1RZSUVsSDhTRFBGa21rQkFwZyti?=
+ =?utf-8?B?UTlzMWpuRUhETHZJSDNCeXdmYjhING1iMG04K1o0bUliT2dVcUtrNkFZSldE?=
+ =?utf-8?B?eTMzYzNOOWlaRzhNVFNYY3RTU3dBU1Axd0JabG02bDcvb01wT3IrRDJydTJq?=
+ =?utf-8?B?T2tXK3hSem1nWXJTUlZvTUlZY0FvSEhuanhnM01taUhMcVpMbkM3eXJuY0x3?=
+ =?utf-8?B?ckNvV2xMc0U2MVpLMFZjL0VXVjVPYi9xZGJRRTZZeUZGZCs0SzNETUNFSm5n?=
+ =?utf-8?B?T3VLeFZNOG1tK2o2ZUhnSmtQdzlra0lWZjZheWVYZDl6ZnhvWjVtbkhrdWVB?=
+ =?utf-8?B?VTZCT1BJOCtlWUVBRUtHVk4yUjMxcjV2bjU0Z3pRZ1dYQlhVUXJTR0Vyc2NC?=
+ =?utf-8?B?MkV1VmJxOWVoNjhKNGxnb1hkMFAyeTM4dnRmQlEyTzllMnFaSTlnMElVZVg0?=
+ =?utf-8?B?VFVYMFRlellJelFnakNpcWVBdUVwd2szTHJYVURPS2pQc0sydWIyQ0pCdHZY?=
+ =?utf-8?B?SVhDdm4xZzU3T1luNlc5aWVVSE5DWWtKeStROUFtK3ZqNjBkbXRiVFRxb0dp?=
+ =?utf-8?B?Sit3S2hhQy9Ua3l2a042VTNrNVpIOWczeTIvVFdZT3RFeFBLVHY1blZjZ0d3?=
+ =?utf-8?B?aGp6YlRFamR3OVJhWXlrRk9tWGJDeUo0NGpsem9Ubms0WjZQYktqUUxTVFRQ?=
+ =?utf-8?B?Rm5VclFhMVZHUVM3VjlmcWJPOHdEWWphZVBCR2VyNVd6cnhDaUl1THNZMklz?=
+ =?utf-8?B?dHViTXI2eTduNExpS0hxd0preW5ER0p3aDdFanhEMlpjTHh6RXB4OHV6THVx?=
+ =?utf-8?B?Z0lHeG1OQ3lLVlo0d3Y4Q0FlWDZDaW42d2cxL3RyUG94NmdXKy9IY2kwQlFO?=
+ =?utf-8?B?TVpDVFpQVGQyeUh0Q29ZWGpDem1FZVpkR2tiZDdCT25Eb2UxSURsZ25QVEM0?=
+ =?utf-8?B?V3VETk9kSVNINStoWkFFUEM3YWs2djhRZGYzQ2xobUc1RlFLNmkvRXNaVnox?=
+ =?utf-8?B?aTUvanZUd0pNbktrazBDb1AvMWNJTEduTUNvTDg1bVMrQmVwREVvamJTMnpJ?=
+ =?utf-8?B?RnhwNUZQLzhHNFU3M2plSlUybFpMaFJsU01rbFMyMHF3QXNsT3ZRbU5NYmRT?=
+ =?utf-8?B?cFBrOFB1VWx5Qmc1SERmdHZ6WlBzdk04MGRURkY4MkJBaW5Fd0NVaUxYNHpv?=
+ =?utf-8?B?SFoxaXNRc3JHd1pkVEZLdFFuSEdlbk5CSWp1cnc0bXRqMEwzT25zN2FKa3lP?=
+ =?utf-8?B?RFdNeDgwREdHT0NxeXNHQ3p4b1dUeWdJNm42OFMrN0FJWjlYWXZpY3VwU2Zt?=
+ =?utf-8?B?dTBGMkNaWXlCQ1o1dERzOTdtSTV4NndsOTRISlJ4RXRIbEtoTWdqWGlxbUsz?=
+ =?utf-8?B?S3JpSk96aE5iZFlZWDRiSmxacVBtdVdYamV5TXFxcDF6NGJOb1V0RUdlVTRW?=
+ =?utf-8?B?UDMzYkZhOEtBRnd2a3NvNysvZk1lUEVxSmdiUnBFYUZPb1EwckVDOXh3dXpi?=
+ =?utf-8?B?YWNERXRtcGdjK0x6R3lTcWNPTWhsejJPSmxhaFkzMzlGaEtxYVZLZDlGdFA4?=
+ =?utf-8?B?QmlNMWtNZWQwWEFRMkVkdXNIS3MxZXlqU25tbFZTVm5XR25uSExXVXpUNGZq?=
+ =?utf-8?B?eHNnd2JPc1k1UVdsR2E0TTRXa0YzY0Q5MENEODVVcVpJemRoaEJuYXRxN0xJ?=
+ =?utf-8?Q?IGYDNwVvLNOg0wZQNA=3D?=
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230031)(7416005)(1800799015)(366007)(376005)(38070700009)(921011);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?utf-8?B?RCtmdi9jZVlSVmp4YmhBM2xDR2ZEQlZCSktOSDU5dUQ4ZUdQdWU5Q216eXVL?=
+ =?utf-8?B?TFYvbEpXZUdzRXhrMVZpZzUvSjlRdFova2oza3RsbUEyWjFYVXRjQ2FMUHVH?=
+ =?utf-8?B?citiK2JpYW52VlcxYnFyckZUZStpdHlpNDdGTnFMajlUSDRxOVFqRTFuQnFx?=
+ =?utf-8?B?cys5ZUJtbWx2R3k4NmxDOVZodWtJRTZHbEwvbGtvd1ZmWGtQekpzc09GclhM?=
+ =?utf-8?B?cnNNS284RmpBUnc3bUlTVFBDYm4xQ3BkUmRuYjN5bzZJaDVaWUtJUDYxTENt?=
+ =?utf-8?B?cUFVVWtXckw3OXdHc05LendGUEpMZ0RXNXdBRjRCR05pTjVPdndqQTQ1RGQw?=
+ =?utf-8?B?Zmhjbm1PNjg2NTR4cXhvcUVlQU8rNUtCaUttQVB0cjdYZXpURFgrSy9tM0tu?=
+ =?utf-8?B?Mko4VndxNXdHZlpRUkFCSHJocElqa1NaelRpM3R4c2t6ZExsbFBMYWlvMERE?=
+ =?utf-8?B?TisvV01MY3h1U1gxbjNSbHcxSFo0eHA5YnJ1ODN1bFZmeHRZOElmUEsyS1JO?=
+ =?utf-8?B?bUhFQUNETUhBaURyd1BGQnFoMnAvQ0tNSmhDYllMTCtXaVFHcWUyNTVlQkZS?=
+ =?utf-8?B?ZkwyWENraHkyVFpWQURvOFRQUUt0bm90YlB4NnZVQWo3VUxFUXUyQXllaE0v?=
+ =?utf-8?B?RVk0THNiWmlEcExlaDE4NnJocXkwYlVMT2tsMUJJMDBQUnN2OS9adk1GZGNO?=
+ =?utf-8?B?NzQvNmhLeEhLVjNPSTZ2OFF0d1ZTUmpnMEU3VXRkR0M2ZXZISStJaEphMUky?=
+ =?utf-8?B?eFVzb3huWGVPK2RnL0xURTRPTmM1d3QvUjNRcExPcnJIYm1KOEJmcVhadFZo?=
+ =?utf-8?B?eXJPQWNkOTVoaktNbUs5aTV1TWN2S2tQVHFKQm5XbThDRFFvK0tkcXdqQ0dR?=
+ =?utf-8?B?S0cvY3AyUHllSHA4V3dXdUlzTktmUUZqWEZEU2VzVTVudyt6ekJxTFRmcU9X?=
+ =?utf-8?B?cWRiVHdWTzkwbk5weGJFbUxQWXJnYjFaQVk4aEg4Y1NzV0F1bHFzWEQ5c0lx?=
+ =?utf-8?B?VXFtZ0cxTllZQzVXY1B4WUxlY2dVaVVEZ1A4MFB3WFZxMWwyWEkwbWVSM0Nt?=
+ =?utf-8?B?Y1hWN25ZNWFaRGpmN1VDUVpwZmVneEtxcmpoK3ZoeWhyZ2EyZThFek1zN2pX?=
+ =?utf-8?B?dTg0emZ0Wlk3N2pnUCs3U1BiQXAzdVNoaTNiVG1SRUpNMUFHM3Y0bGhidzhZ?=
+ =?utf-8?B?VjlRM1RRM2hLbmFQSjc1OCtlV01UWXJjVUdIajUxcHRjemd4NFh6ZFBvWmxF?=
+ =?utf-8?B?bFRKb0Qyci96Wm9iYmthUU56M2RoT1hZWmdnc0pIVjNFSFhrRkZXaEM1Z3pv?=
+ =?utf-8?B?NUNIaVlESmlDaUZ4VVA0L1lqbjJUNjkzUjVjZm43bk40WW9mZVpzVzFQZU52?=
+ =?utf-8?B?VTl3OHFxL2RsZ0FLY0hTTzZ6RHZEY2NCYk9NYStlck90azd2UUltc1dmZU1E?=
+ =?utf-8?B?OGxsYzZkL0FsZkNEaHlVa2YwcEpnWEN5UmxBTm5GTFNYb1RtUzMxMHRmNGFE?=
+ =?utf-8?B?TXloREJUOHcvRWdDQVNKM1BiSjZQeU1kT0NWSUViVGpuQnhjTVZkcnk0dWV4?=
+ =?utf-8?B?MHNock1QTTMxK2ZUYzh2aDByZ0tJNFJna1pqQmZEaVVBZFdmaFlmclh4RURP?=
+ =?utf-8?B?T2J0RXpPQzFYaUlQMVpqRU4vYXFXaDR3ZEVZYm5YTDBVbGxiM1AwRWVTSkYv?=
+ =?utf-8?B?VjlDZmhWUzdWYUk5cldIY3N5TXV1LzUzK3R6SVduRzFvUmQ0OFBXVzk4Z252?=
+ =?utf-8?B?aFpXdzduTGx2WTFtNHNab201cWZmbC84dE5xKzIvL2pudU1sL3VEM1FOVXEz?=
+ =?utf-8?B?WEt0VWcyN0pweDlKcytvODFSdSs3dHhiTndHcVNuMGY1T0pTblVJTm5tekNT?=
+ =?utf-8?B?aGk2d2M3d2t5NHg5NlhPYUhzTHQ1bUQwc1g0cEFDMTJZamhnUjh2NGlVQTI0?=
+ =?utf-8?B?R0JjUkh0dmtOTnArdllQTmpxc2gzRDdwR2lDRHFXbWtPM2RHTnVrOWVBelhp?=
+ =?utf-8?B?V0ZQa1NBS2M5Uy9RbU82dXlFQlRxdEVzc2Vnc002cXhhVnBEVHNuK2wrblEx?=
+ =?utf-8?B?a0pkN2xhb3ZPdmpEUmUvM3cwUDNvY3paNnczcmM2YjgzbUVDWlNBdzVkNUxQ?=
+ =?utf-8?Q?GQDEOoigQKvqxwNuM0o7/magB?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <A13959FCC300D9438D2B3BC96B722DCD@FRAP264.PROD.OUTLOOK.COM>
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-OriginatorOrg: csgroup.eu
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-Network-Message-Id: a78a605f-4f6d-42f3-52d9-08dc73344dbd
+X-MS-Exchange-CrossTenant-originalarrivaltime: 13 May 2024 10:06:05.8989
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 9914def7-b676-4fda-8815-5d49fb3b45c8
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: A9M/Ubit/jKWrjzq+mOAJ6OVOspaKmCSIebnN/n6hjEI1k94EX82i5EO/Q5O0xwdXggKyqRqQY9YN60C2gVd6CbWqG1LT3y6Kz2vfHPYaKA=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PR0P264MB2741
 
-The Linux Kernel Memory Model [1][2] requires RMW operations that have a
-return value to be fully ordered.
-
-BPF atomic operations with BPF_FETCH (including BPF_XCHG and
-BPF_CMPXCHG) return a value back so they need to be JITed to fully
-ordered operations. POWERPC currently emits relaxed operations for
-these.
-
-We can show this by running the following litmus-test:
-
-PPC SB+atomic_add+fetch
-
-{
-0:r0=x;  (* dst reg assuming offset is 0 *)
-0:r1=2;  (* src reg *)
-0:r2=1;
-0:r4=y;  (* P0 writes to this, P1 reads this *)
-0:r5=z;  (* P1 writes to this, P0 reads this *)
-0:r6=0;
-
-1:r2=1;
-1:r4=y;
-1:r5=z;
-}
-
-P0                      | P1            ;
-stw         r2, 0(r4)   | stw  r2,0(r5) ;
-                        |               ;
-loop:lwarx  r3, r6, r0  |               ;
-mr          r8, r3      |               ;
-add         r3, r3, r1  | sync          ;
-stwcx.      r3, r6, r0  |               ;
-bne         loop        |               ;
-mr          r1, r8      |               ;
-                        |               ;
-lwa         r7, 0(r5)   | lwa  r7,0(r4) ;
-
-~exists(0:r7=0 /\ 1:r7=0)
-
-Witnesses
-Positive: 9 Negative: 3
-Condition ~exists (0:r7=0 /\ 1:r7=0)
-Observation SB+atomic_add+fetch Sometimes 3 9
-
-This test shows that the older store in P0 is reordered with a newer
-load to a different address. Although there is a RMW operation with
-fetch between them. Adding a sync before and after RMW fixes the issue:
-
-Witnesses
-Positive: 9 Negative: 0
-Condition ~exists (0:r7=0 /\ 1:r7=0)
-Observation SB+atomic_add+fetch Never 0 9
-
-[1] https://www.kernel.org/doc/Documentation/memory-barriers.txt
-[2] https://www.kernel.org/doc/Documentation/atomic_t.txt
-
-Fixes: 65112709115f ("powerpc/bpf/64: add support for BPF_ATOMIC bitwise operations")
-Signed-off-by: Puranjay Mohan <puranjay@kernel.org>
-Acked-by: Paul E. McKenney <paulmck@kernel.org>
----
-Changes in v2 -> v3:
-v2: https://lore.kernel.org/all/20240508115404.74823-1-puranjay@kernel.org/
-- Emit the sync outside the loop so it doesn't get executed everytime.
-- Minor coding style changes.
-
-Changes in v1 -> v2:
-v1: https://lore.kernel.org/all/20240507175439.119467-1-puranjay@kernel.org/
-- Don't emit `sync` for non-SMP kernels as that adds unessential overhead.
----
-
-arch/powerpc/net/bpf_jit_comp32.c | 12 ++++++++++++
- arch/powerpc/net/bpf_jit_comp64.c | 12 ++++++++++++
- 2 files changed, 24 insertions(+)
-
-diff --git a/arch/powerpc/net/bpf_jit_comp32.c b/arch/powerpc/net/bpf_jit_comp32.c
-index 2f39c50ca729..35f64dcfa68e 100644
---- a/arch/powerpc/net/bpf_jit_comp32.c
-+++ b/arch/powerpc/net/bpf_jit_comp32.c
-@@ -852,6 +852,15 @@ int bpf_jit_build_body(struct bpf_prog *fp, u32 *image, u32 *fimage, struct code
- 
- 			/* Get offset into TMP_REG */
- 			EMIT(PPC_RAW_LI(tmp_reg, off));
-+			/*
-+			 * Enforce full ordering for operations with BPF_FETCH by emitting a 'sync'
-+			 * before and after the operation.
-+			 *
-+			 * This is a requirement in the Linux Kernel Memory Model.
-+			 * See __cmpxchg_u32() in asm/cmpxchg.h as an example.
-+			 */
-+			if ((imm & BPF_FETCH) && IS_ENABLED(CONFIG_SMP))
-+				EMIT(PPC_RAW_SYNC());
- 			tmp_idx = ctx->idx * 4;
- 			/* load value from memory into r0 */
- 			EMIT(PPC_RAW_LWARX(_R0, tmp_reg, dst_reg, 0));
-@@ -905,6 +914,9 @@ int bpf_jit_build_body(struct bpf_prog *fp, u32 *image, u32 *fimage, struct code
- 
- 			/* For the BPF_FETCH variant, get old data into src_reg */
- 			if (imm & BPF_FETCH) {
-+				/* Emit 'sync' to enforce full ordering */
-+				if (IS_ENABLED(CONFIG_SMP))
-+					EMIT(PPC_RAW_SYNC());
- 				EMIT(PPC_RAW_MR(ret_reg, ax_reg));
- 				if (!fp->aux->verifier_zext)
- 					EMIT(PPC_RAW_LI(ret_reg - 1, 0)); /* higher 32-bit */
-diff --git a/arch/powerpc/net/bpf_jit_comp64.c b/arch/powerpc/net/bpf_jit_comp64.c
-index 79f23974a320..884eef1b3973 100644
---- a/arch/powerpc/net/bpf_jit_comp64.c
-+++ b/arch/powerpc/net/bpf_jit_comp64.c
-@@ -803,6 +803,15 @@ int bpf_jit_build_body(struct bpf_prog *fp, u32 *image, u32 *fimage, struct code
- 
- 			/* Get offset into TMP_REG_1 */
- 			EMIT(PPC_RAW_LI(tmp1_reg, off));
-+			/*
-+			 * Enforce full ordering for operations with BPF_FETCH by emitting a 'sync'
-+			 * before and after the operation.
-+			 *
-+			 * This is a requirement in the Linux Kernel Memory Model.
-+			 * See __cmpxchg_u64() in asm/cmpxchg.h as an example.
-+			 */
-+			if ((imm & BPF_FETCH) && IS_ENABLED(CONFIG_SMP))
-+				EMIT(PPC_RAW_SYNC());
- 			tmp_idx = ctx->idx * 4;
- 			/* load value from memory into TMP_REG_2 */
- 			if (size == BPF_DW)
-@@ -865,6 +874,9 @@ int bpf_jit_build_body(struct bpf_prog *fp, u32 *image, u32 *fimage, struct code
- 			PPC_BCC_SHORT(COND_NE, tmp_idx);
- 
- 			if (imm & BPF_FETCH) {
-+				/* Emit 'sync' to enforce full ordering */
-+				if (IS_ENABLED(CONFIG_SMP))
-+					EMIT(PPC_RAW_SYNC());
- 				EMIT(PPC_RAW_MR(ret_reg, _R0));
- 				/*
- 				 * Skip unnecessary zero-extension for 32-bit cmpxchg.
--- 
-2.40.1
-
+DQoNCkxlIDEzLzA1LzIwMjQgw6AgMTI6MDIsIFB1cmFuamF5IE1vaGFuIGEgw6ljcml0wqA6DQo+
+IFRoZSBMaW51eCBLZXJuZWwgTWVtb3J5IE1vZGVsIFsxXVsyXSByZXF1aXJlcyBSTVcgb3BlcmF0
+aW9ucyB0aGF0IGhhdmUgYQ0KPiByZXR1cm4gdmFsdWUgdG8gYmUgZnVsbHkgb3JkZXJlZC4NCj4g
+DQo+IEJQRiBhdG9taWMgb3BlcmF0aW9ucyB3aXRoIEJQRl9GRVRDSCAoaW5jbHVkaW5nIEJQRl9Y
+Q0hHIGFuZA0KPiBCUEZfQ01QWENIRykgcmV0dXJuIGEgdmFsdWUgYmFjayBzbyB0aGV5IG5lZWQg
+dG8gYmUgSklUZWQgdG8gZnVsbHkNCj4gb3JkZXJlZCBvcGVyYXRpb25zLiBQT1dFUlBDIGN1cnJl
+bnRseSBlbWl0cyByZWxheGVkIG9wZXJhdGlvbnMgZm9yDQo+IHRoZXNlLg0KPiANCj4gV2UgY2Fu
+IHNob3cgdGhpcyBieSBydW5uaW5nIHRoZSBmb2xsb3dpbmcgbGl0bXVzLXRlc3Q6DQo+IA0KPiBQ
+UEMgU0IrYXRvbWljX2FkZCtmZXRjaA0KPiANCj4gew0KPiAwOnIwPXg7ICAoKiBkc3QgcmVnIGFz
+c3VtaW5nIG9mZnNldCBpcyAwICopDQo+IDA6cjE9MjsgICgqIHNyYyByZWcgKikNCj4gMDpyMj0x
+Ow0KPiAwOnI0PXk7ICAoKiBQMCB3cml0ZXMgdG8gdGhpcywgUDEgcmVhZHMgdGhpcyAqKQ0KPiAw
+OnI1PXo7ICAoKiBQMSB3cml0ZXMgdG8gdGhpcywgUDAgcmVhZHMgdGhpcyAqKQ0KPiAwOnI2PTA7
+DQo+IA0KPiAxOnIyPTE7DQo+IDE6cjQ9eTsNCj4gMTpyNT16Ow0KPiB9DQo+IA0KPiBQMCAgICAg
+ICAgICAgICAgICAgICAgICB8IFAxICAgICAgICAgICAgOw0KPiBzdHcgICAgICAgICByMiwgMChy
+NCkgICB8IHN0dyAgcjIsMChyNSkgOw0KPiAgICAgICAgICAgICAgICAgICAgICAgICAgfCAgICAg
+ICAgICAgICAgIDsNCj4gbG9vcDpsd2FyeCAgcjMsIHI2LCByMCAgfCAgICAgICAgICAgICAgIDsN
+Cj4gbXIgICAgICAgICAgcjgsIHIzICAgICAgfCAgICAgICAgICAgICAgIDsNCj4gYWRkICAgICAg
+ICAgcjMsIHIzLCByMSAgfCBzeW5jICAgICAgICAgIDsNCj4gc3R3Y3guICAgICAgcjMsIHI2LCBy
+MCAgfCAgICAgICAgICAgICAgIDsNCj4gYm5lICAgICAgICAgbG9vcCAgICAgICAgfCAgICAgICAg
+ICAgICAgIDsNCj4gbXIgICAgICAgICAgcjEsIHI4ICAgICAgfCAgICAgICAgICAgICAgIDsNCj4g
+ICAgICAgICAgICAgICAgICAgICAgICAgIHwgICAgICAgICAgICAgICA7DQo+IGx3YSAgICAgICAg
+IHI3LCAwKHI1KSAgIHwgbHdhICByNywwKHI0KSA7DQo+IA0KPiB+ZXhpc3RzKDA6cjc9MCAvXCAx
+OnI3PTApDQo+IA0KPiBXaXRuZXNzZXMNCj4gUG9zaXRpdmU6IDkgTmVnYXRpdmU6IDMNCj4gQ29u
+ZGl0aW9uIH5leGlzdHMgKDA6cjc9MCAvXCAxOnI3PTApDQo+IE9ic2VydmF0aW9uIFNCK2F0b21p
+Y19hZGQrZmV0Y2ggU29tZXRpbWVzIDMgOQ0KPiANCj4gVGhpcyB0ZXN0IHNob3dzIHRoYXQgdGhl
+IG9sZGVyIHN0b3JlIGluIFAwIGlzIHJlb3JkZXJlZCB3aXRoIGEgbmV3ZXINCj4gbG9hZCB0byBh
+IGRpZmZlcmVudCBhZGRyZXNzLiBBbHRob3VnaCB0aGVyZSBpcyBhIFJNVyBvcGVyYXRpb24gd2l0
+aA0KPiBmZXRjaCBiZXR3ZWVuIHRoZW0uIEFkZGluZyBhIHN5bmMgYmVmb3JlIGFuZCBhZnRlciBS
+TVcgZml4ZXMgdGhlIGlzc3VlOg0KPiANCj4gV2l0bmVzc2VzDQo+IFBvc2l0aXZlOiA5IE5lZ2F0
+aXZlOiAwDQo+IENvbmRpdGlvbiB+ZXhpc3RzICgwOnI3PTAgL1wgMTpyNz0wKQ0KPiBPYnNlcnZh
+dGlvbiBTQithdG9taWNfYWRkK2ZldGNoIE5ldmVyIDAgOQ0KPiANCj4gWzFdIGh0dHBzOi8vd3d3
+Lmtlcm5lbC5vcmcvZG9jL0RvY3VtZW50YXRpb24vbWVtb3J5LWJhcnJpZXJzLnR4dA0KPiBbMl0g
+aHR0cHM6Ly93d3cua2VybmVsLm9yZy9kb2MvRG9jdW1lbnRhdGlvbi9hdG9taWNfdC50eHQNCj4g
+DQo+IEZpeGVzOiA2NTExMjcwOTExNWYgKCJwb3dlcnBjL2JwZi82NDogYWRkIHN1cHBvcnQgZm9y
+IEJQRl9BVE9NSUMgYml0d2lzZSBvcGVyYXRpb25zIikNCj4gU2lnbmVkLW9mZi1ieTogUHVyYW5q
+YXkgTW9oYW4gPHB1cmFuamF5QGtlcm5lbC5vcmc+DQo+IEFja2VkLWJ5OiBQYXVsIEUuIE1jS2Vu
+bmV5IDxwYXVsbWNrQGtlcm5lbC5vcmc+DQoNClJldmlld2VkLWJ5OiBDaHJpc3RvcGhlIExlcm95
+IDxjaHJpc3RvcGhlLmxlcm95QGNzZ3JvdXAuZXU+DQoNCj4gLS0tDQo+IENoYW5nZXMgaW4gdjIg
+LT4gdjM6DQo+IHYyOiBodHRwczovL2xvcmUua2VybmVsLm9yZy9hbGwvMjAyNDA1MDgxMTU0MDQu
+NzQ4MjMtMS1wdXJhbmpheUBrZXJuZWwub3JnLw0KPiAtIEVtaXQgdGhlIHN5bmMgb3V0c2lkZSB0
+aGUgbG9vcCBzbyBpdCBkb2Vzbid0IGdldCBleGVjdXRlZCBldmVyeXRpbWUuDQo+IC0gTWlub3Ig
+Y29kaW5nIHN0eWxlIGNoYW5nZXMuDQo+IA0KPiBDaGFuZ2VzIGluIHYxIC0+IHYyOg0KPiB2MTog
+aHR0cHM6Ly9sb3JlLmtlcm5lbC5vcmcvYWxsLzIwMjQwNTA3MTc1NDM5LjExOTQ2Ny0xLXB1cmFu
+amF5QGtlcm5lbC5vcmcvDQo+IC0gRG9uJ3QgZW1pdCBgc3luY2AgZm9yIG5vbi1TTVAga2VybmVs
+cyBhcyB0aGF0IGFkZHMgdW5lc3NlbnRpYWwgb3ZlcmhlYWQuDQo+IC0tLQ0KPiANCj4gYXJjaC9w
+b3dlcnBjL25ldC9icGZfaml0X2NvbXAzMi5jIHwgMTIgKysrKysrKysrKysrDQo+ICAgYXJjaC9w
+b3dlcnBjL25ldC9icGZfaml0X2NvbXA2NC5jIHwgMTIgKysrKysrKysrKysrDQo+ICAgMiBmaWxl
+cyBjaGFuZ2VkLCAyNCBpbnNlcnRpb25zKCspDQo+IA0KPiBkaWZmIC0tZ2l0IGEvYXJjaC9wb3dl
+cnBjL25ldC9icGZfaml0X2NvbXAzMi5jIGIvYXJjaC9wb3dlcnBjL25ldC9icGZfaml0X2NvbXAz
+Mi5jDQo+IGluZGV4IDJmMzljNTBjYTcyOS4uMzVmNjRkY2ZhNjhlIDEwMDY0NA0KPiAtLS0gYS9h
+cmNoL3Bvd2VycGMvbmV0L2JwZl9qaXRfY29tcDMyLmMNCj4gKysrIGIvYXJjaC9wb3dlcnBjL25l
+dC9icGZfaml0X2NvbXAzMi5jDQo+IEBAIC04NTIsNiArODUyLDE1IEBAIGludCBicGZfaml0X2J1
+aWxkX2JvZHkoc3RydWN0IGJwZl9wcm9nICpmcCwgdTMyICppbWFnZSwgdTMyICpmaW1hZ2UsIHN0
+cnVjdCBjb2RlDQo+ICAgDQo+ICAgCQkJLyogR2V0IG9mZnNldCBpbnRvIFRNUF9SRUcgKi8NCj4g
+ICAJCQlFTUlUKFBQQ19SQVdfTEkodG1wX3JlZywgb2ZmKSk7DQo+ICsJCQkvKg0KPiArCQkJICog
+RW5mb3JjZSBmdWxsIG9yZGVyaW5nIGZvciBvcGVyYXRpb25zIHdpdGggQlBGX0ZFVENIIGJ5IGVt
+aXR0aW5nIGEgJ3N5bmMnDQo+ICsJCQkgKiBiZWZvcmUgYW5kIGFmdGVyIHRoZSBvcGVyYXRpb24u
+DQo+ICsJCQkgKg0KPiArCQkJICogVGhpcyBpcyBhIHJlcXVpcmVtZW50IGluIHRoZSBMaW51eCBL
+ZXJuZWwgTWVtb3J5IE1vZGVsLg0KPiArCQkJICogU2VlIF9fY21weGNoZ191MzIoKSBpbiBhc20v
+Y21weGNoZy5oIGFzIGFuIGV4YW1wbGUuDQo+ICsJCQkgKi8NCj4gKwkJCWlmICgoaW1tICYgQlBG
+X0ZFVENIKSAmJiBJU19FTkFCTEVEKENPTkZJR19TTVApKQ0KPiArCQkJCUVNSVQoUFBDX1JBV19T
+WU5DKCkpOw0KPiAgIAkJCXRtcF9pZHggPSBjdHgtPmlkeCAqIDQ7DQo+ICAgCQkJLyogbG9hZCB2
+YWx1ZSBmcm9tIG1lbW9yeSBpbnRvIHIwICovDQo+ICAgCQkJRU1JVChQUENfUkFXX0xXQVJYKF9S
+MCwgdG1wX3JlZywgZHN0X3JlZywgMCkpOw0KPiBAQCAtOTA1LDYgKzkxNCw5IEBAIGludCBicGZf
+aml0X2J1aWxkX2JvZHkoc3RydWN0IGJwZl9wcm9nICpmcCwgdTMyICppbWFnZSwgdTMyICpmaW1h
+Z2UsIHN0cnVjdCBjb2RlDQo+ICAgDQo+ICAgCQkJLyogRm9yIHRoZSBCUEZfRkVUQ0ggdmFyaWFu
+dCwgZ2V0IG9sZCBkYXRhIGludG8gc3JjX3JlZyAqLw0KPiAgIAkJCWlmIChpbW0gJiBCUEZfRkVU
+Q0gpIHsNCj4gKwkJCQkvKiBFbWl0ICdzeW5jJyB0byBlbmZvcmNlIGZ1bGwgb3JkZXJpbmcgKi8N
+Cj4gKwkJCQlpZiAoSVNfRU5BQkxFRChDT05GSUdfU01QKSkNCj4gKwkJCQkJRU1JVChQUENfUkFX
+X1NZTkMoKSk7DQo+ICAgCQkJCUVNSVQoUFBDX1JBV19NUihyZXRfcmVnLCBheF9yZWcpKTsNCj4g
+ICAJCQkJaWYgKCFmcC0+YXV4LT52ZXJpZmllcl96ZXh0KQ0KPiAgIAkJCQkJRU1JVChQUENfUkFX
+X0xJKHJldF9yZWcgLSAxLCAwKSk7IC8qIGhpZ2hlciAzMi1iaXQgKi8NCj4gZGlmZiAtLWdpdCBh
+L2FyY2gvcG93ZXJwYy9uZXQvYnBmX2ppdF9jb21wNjQuYyBiL2FyY2gvcG93ZXJwYy9uZXQvYnBm
+X2ppdF9jb21wNjQuYw0KPiBpbmRleCA3OWYyMzk3NGEzMjAuLjg4NGVlZjFiMzk3MyAxMDA2NDQN
+Cj4gLS0tIGEvYXJjaC9wb3dlcnBjL25ldC9icGZfaml0X2NvbXA2NC5jDQo+ICsrKyBiL2FyY2gv
+cG93ZXJwYy9uZXQvYnBmX2ppdF9jb21wNjQuYw0KPiBAQCAtODAzLDYgKzgwMywxNSBAQCBpbnQg
+YnBmX2ppdF9idWlsZF9ib2R5KHN0cnVjdCBicGZfcHJvZyAqZnAsIHUzMiAqaW1hZ2UsIHUzMiAq
+ZmltYWdlLCBzdHJ1Y3QgY29kZQ0KPiAgIA0KPiAgIAkJCS8qIEdldCBvZmZzZXQgaW50byBUTVBf
+UkVHXzEgKi8NCj4gICAJCQlFTUlUKFBQQ19SQVdfTEkodG1wMV9yZWcsIG9mZikpOw0KPiArCQkJ
+LyoNCj4gKwkJCSAqIEVuZm9yY2UgZnVsbCBvcmRlcmluZyBmb3Igb3BlcmF0aW9ucyB3aXRoIEJQ
+Rl9GRVRDSCBieSBlbWl0dGluZyBhICdzeW5jJw0KPiArCQkJICogYmVmb3JlIGFuZCBhZnRlciB0
+aGUgb3BlcmF0aW9uLg0KPiArCQkJICoNCj4gKwkJCSAqIFRoaXMgaXMgYSByZXF1aXJlbWVudCBp
+biB0aGUgTGludXggS2VybmVsIE1lbW9yeSBNb2RlbC4NCj4gKwkJCSAqIFNlZSBfX2NtcHhjaGdf
+dTY0KCkgaW4gYXNtL2NtcHhjaGcuaCBhcyBhbiBleGFtcGxlLg0KPiArCQkJICovDQo+ICsJCQlp
+ZiAoKGltbSAmIEJQRl9GRVRDSCkgJiYgSVNfRU5BQkxFRChDT05GSUdfU01QKSkNCj4gKwkJCQlF
+TUlUKFBQQ19SQVdfU1lOQygpKTsNCj4gICAJCQl0bXBfaWR4ID0gY3R4LT5pZHggKiA0Ow0KPiAg
+IAkJCS8qIGxvYWQgdmFsdWUgZnJvbSBtZW1vcnkgaW50byBUTVBfUkVHXzIgKi8NCj4gICAJCQlp
+ZiAoc2l6ZSA9PSBCUEZfRFcpDQo+IEBAIC04NjUsNiArODc0LDkgQEAgaW50IGJwZl9qaXRfYnVp
+bGRfYm9keShzdHJ1Y3QgYnBmX3Byb2cgKmZwLCB1MzIgKmltYWdlLCB1MzIgKmZpbWFnZSwgc3Ry
+dWN0IGNvZGUNCj4gICAJCQlQUENfQkNDX1NIT1JUKENPTkRfTkUsIHRtcF9pZHgpOw0KPiAgIA0K
+PiAgIAkJCWlmIChpbW0gJiBCUEZfRkVUQ0gpIHsNCj4gKwkJCQkvKiBFbWl0ICdzeW5jJyB0byBl
+bmZvcmNlIGZ1bGwgb3JkZXJpbmcgKi8NCj4gKwkJCQlpZiAoSVNfRU5BQkxFRChDT05GSUdfU01Q
+KSkNCj4gKwkJCQkJRU1JVChQUENfUkFXX1NZTkMoKSk7DQo+ICAgCQkJCUVNSVQoUFBDX1JBV19N
+UihyZXRfcmVnLCBfUjApKTsNCj4gICAJCQkJLyoNCj4gICAJCQkJICogU2tpcCB1bm5lY2Vzc2Fy
+eSB6ZXJvLWV4dGVuc2lvbiBmb3IgMzItYml0IGNtcHhjaGcuDQo=
 
