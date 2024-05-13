@@ -1,194 +1,140 @@
-Return-Path: <bpf+bounces-29673-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-29674-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id BBE838C49DD
-	for <lists+bpf@lfdr.de>; Tue, 14 May 2024 01:04:19 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 76A3D8C49E6
+	for <lists+bpf@lfdr.de>; Tue, 14 May 2024 01:08:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2B8D5B21765
-	for <lists+bpf@lfdr.de>; Mon, 13 May 2024 23:04:17 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 164681F21FDE
+	for <lists+bpf@lfdr.de>; Mon, 13 May 2024 23:08:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4573384E0A;
-	Mon, 13 May 2024 23:04:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9430385272;
+	Mon, 13 May 2024 23:08:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PAF05kRD"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RsyNQcfR"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-lf1-f54.google.com (mail-lf1-f54.google.com [209.85.167.54])
+Received: from mail-pg1-f182.google.com (mail-pg1-f182.google.com [209.85.215.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A47B84D07;
-	Mon, 13 May 2024 23:04:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC1F584DE3
+	for <bpf@vger.kernel.org>; Mon, 13 May 2024 23:08:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715641448; cv=none; b=RkLGBojIU6kuFMcp777d9HBAMqSjZaAeNLswqGXi7vzGgh7w2DhuRDK5Ki6ApnonCVObiBnx7kJYnX96VKZTZdgKmu3bqZtfnClYZSaRM7z2uQKXlm1gLJt39AAbSCdPYigIh+I0D2J4nFHiPmND+cKnVsOC9QavepXBDK5X1Zs=
+	t=1715641714; cv=none; b=MA+uKrhnVT+skQFUTMAae6camRoKXeuIIACO4/eP3CP2QXykenZzP/G0tjB/iiNH5Hk8ZfJuSpJG8ExXmPY1IDVCG4e9Rnc6kZ8Qtu1gh6ZOl+vxrsKJ1y5GJ82isWoq/GnCRT7Ax6eUdLUXsaEjRQQL9k2AR5Y6AwS5DoAjtAo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715641448; c=relaxed/simple;
-	bh=uYaQZv1nDuiODzrBaiNS3RZ+HBy9W9/OJ+Cp8ybFerE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=aMNqjQ+8ElLABUv26UzE2ekRAxYMJkrWhhGIpUMCtkTMwDO3SK2sHtJIcdB/u1UgbZf7ICl4nQK1Qc2QtaXFswXvb9434y6eX84YiEtNnurylLJJm+esZmOpAnwsj2aL5euXe3/o8GmQrMd30DKOZsBtQkLX4vLm8369DbQfVxI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=PAF05kRD; arc=none smtp.client-ip=209.85.167.54
+	s=arc-20240116; t=1715641714; c=relaxed/simple;
+	bh=tQVoEkh3Et22BKzJQ9SIkGLeLTeKHW0KCyca28WfJbQ=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=cVz8JLjhiuuB1UTY8+Q86ch+dneEwtwaC/o0f6LWF2ify0nLxEVJ2e0XPgcwn4U+788lLtV55ZVgZO5BrTHMQ7HgWgitbNbwvm5f8SfZeftfayjeyyP6/clFMxtQWXmS83SThU6Tzasms3jntyvgZ8kas7LO1stscZum0Z+LYqw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=RsyNQcfR; arc=none smtp.client-ip=209.85.215.182
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f54.google.com with SMTP id 2adb3069b0e04-52192578b95so5730029e87.2;
-        Mon, 13 May 2024 16:04:05 -0700 (PDT)
+Received: by mail-pg1-f182.google.com with SMTP id 41be03b00d2f7-613a6bb2947so3905282a12.3
+        for <bpf@vger.kernel.org>; Mon, 13 May 2024 16:08:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1715641443; x=1716246243; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=4xY5PD/80plu8Oum5s12UE+ZfuGa9vAHIWvugychSCA=;
-        b=PAF05kRDkWP0Xs9Kgwjtw4/t78sUeV1W08fg+AsEqsGFariKCoRNRnEiDgVIL4PhmD
-         8mGpscEti1bLySVz8Fzw8GZ/gv9HvS4tjs9w9wmumCOlSHUS4RFGJuUU+oTsYM57JJZ8
-         PnIw1VzAaLOC7x9flIz9K4s3DdY9ktLL3y8YPDhIAY2KSDKKO/hLvmg9K6aH5thlRQWg
-         6QzYprOHECf/Qm8AadMr+FrTgrDk+tL6R3yEXnRQwsr1H2R/UeT2g9IucfULq9DR4+P2
-         QeeDaxeikSW6qb+q2VQc6HfJlZmxegBxX5G3UulWGF0vGTrZmQUgtJzyR0aNgGYrxFzA
-         mcJg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1715641443; x=1716246243;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1715641712; x=1716246512; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=4xY5PD/80plu8Oum5s12UE+ZfuGa9vAHIWvugychSCA=;
-        b=MxU3xZYUQwsdapfeeF8CWWwMcyLUborE9oVuqdjF7VQuw1wkuFOJIbcZkRAY3c2pDc
-         zm0/GTwNXnIz/SIbLGQK3lKr/dDDiUZB6lXTDdod5H0ptRP/eZf9+PY7Wnl+kS0om4lc
-         EzYZab3ifWwyJFUSnAM3jTxFl9Mc7zFNrXPOWH8qp1WMeQmk0VyEi9fHVDUd84n1M5/a
-         WNyKFT3w+Vu59wcHkGLmDzgGcnwl3PCOHB4zvlMynDKG2Le0xk6GfUO4P/GBAjR3HIPh
-         58A0OtARhCf8YZX1lNJBQvNNBs6Ma0O9V30oBIXDA0kBVxIuiUsp0I2WI+4KStVMUsSC
-         lOew==
-X-Forwarded-Encrypted: i=1; AJvYcCXFSIWgfSTwvK6dZZEiCmzU4miPIEwaB9FPWSWD0ju8BVQ0NrplNcs26msMu6j6NXTfvnyEeHyPqSdnF9AInXgd2iq/fM8Hjxa6GNGZ14giF9FDBvfg+TyA3v7j
-X-Gm-Message-State: AOJu0YxUdSJBk9wWQfUDb3aCjwZ3dTE2sn1/oEt2XDoomdUvLFiFgWd9
-	T5bY8DEid1RvU0wQrqT9TnSYUJoCCIUUIsbE4/ugofLfyi0xoIyY
-X-Google-Smtp-Source: AGHT+IFFKhWpRJn2p817fOt+Wl9TNhJclHuyqCuJ0Sy/EIzuYsr2zGns6p+IViThDP2lTqh2clB10g==
-X-Received: by 2002:a05:6512:6ce:b0:523:6e01:a701 with SMTP id 2adb3069b0e04-5236e01ab0amr39636e87.64.1715641443201;
-        Mon, 13 May 2024 16:04:03 -0700 (PDT)
-Received: from mobilestation ([95.79.182.53])
-        by smtp.gmail.com with ESMTPSA id 2adb3069b0e04-521f39d2c43sm1907996e87.248.2024.05.13.16.04.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 13 May 2024 16:04:02 -0700 (PDT)
-Date: Tue, 14 May 2024 02:04:00 +0300
-From: Serge Semin <fancer.lancer@gmail.com>
-To: "Russell King (Oracle)" <linux@armlinux.org.uk>
-Cc: Alexandre Torgue <alexandre.torgue@foss.st.com>, 
-	Alexei Starovoitov <ast@kernel.org>, bpf@vger.kernel.org, Daniel Borkmann <daniel@iogearbox.net>, 
-	"David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
-	Jakub Kicinski <kuba@kernel.org>, Jesper Dangaard Brouer <hawk@kernel.org>, 
-	John Fastabend <john.fastabend@gmail.com>, Jose Abreu <joabreu@synopsys.com>, 
-	linux-arm-kernel@lists.infradead.org, linux-stm32@st-md-mailman.stormreply.com, 
-	Maxime Coquelin <mcoquelin.stm32@gmail.com>, netdev@vger.kernel.org, Paolo Abeni <pabeni@redhat.com>
-Subject: Re: [PATCH RFC 0/6] net: stmmac: convert stmmac "pcs" to phylink
-Message-ID: <y2iz5uhcj5xh3dtpg3rnxap4qgvmgavzkf6qd7c2vqysmll3yx@drhs7upgpojz>
-References: <ZkDuJAx7atDXjf5m@shell.armlinux.org.uk>
+        bh=36KrlESq+ggs0EcihIGW/LRPRQtXzbGmNiahLatMMjE=;
+        b=RsyNQcfR+yvtVw6TXZv09UOGUIh5ILT0mM6n8h/mAa9hc5CIuST6gFgvtpnF6Ak5ls
+         gB9Mzs759iNQ3IYPXwqGsfbjL4FrahBg/SIU5ONSFZccJa61L9Uw5osNNmOPyTMW3zBQ
+         MYJ3i+xLlkCfUNdjPHlFOJdxDf5GcYaeQS5szzPW5CyB8gTWftZDV/wLiVSM6Kjkegn3
+         78K8Qx9WeAM1m0xdlDmHiHTicZudJAizoGma05dT9veX4FfgkvpIRipio+AyIlZD28mZ
+         WXCNLPx/7uLkhft/oCkQR6Cu1CikBr/ohBfTM7HsLHLPykXux0Kl4RQhW9dFyZ0KzU1J
+         zuRQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1715641712; x=1716246512;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=36KrlESq+ggs0EcihIGW/LRPRQtXzbGmNiahLatMMjE=;
+        b=Il8yxcLZ/dp9tbAS8IIKMzJn522JdXzeXb9Sy67yveFD8LJFkrf88kGIaSl+TPmDFp
+         8UWUzeJzuqJx0/VBQ15MGG26KxIp+68Af1CpUkOKjn8S+GyEm9a7P/YQ5qDek7/7kP70
+         4/j1qpN+waogeqgX9Sz5GShBvhSFlT7pj3uzrqRfP0ntrp9H5Q5tgFSAFBzvWBPu2At+
+         mHpUceye+EoB6a3+wC3620/A6GFfmHzp0FWnuJkiEeZflyUWyrx93TqeRjLe9JFJ7bcC
+         lYCZxHodp9RRyCShFAnWlhdESCjlLOdvPw2zZ/uC2HWaww07HsbzJhs2PI+ezqqCBpdb
+         /o1Q==
+X-Gm-Message-State: AOJu0YzV2e428+Yv2XmJ6DxP7XJaupTXXKLO0GkM79n9phh6Af7dgmxM
+	CMUbKD8xooSye32MfK9AvyC965RTXYy6HCGKiosYfVud1gujl/AufPdZ3Tq2WvJ1+uC89x8ZvRp
+	zepqtkO4iG3JTOieP/D9Ia+2+8QY=
+X-Google-Smtp-Source: AGHT+IFyR9Xvust1NDNDZ6a2BcNEixovPIaY7GvSQ0z9/eQqmRCUN37THMoagskdtN95cZ1FArxKJfuUb2IROOQdHRk=
+X-Received: by 2002:a05:6a21:c91:b0:1af:9728:de86 with SMTP id
+ adf61e73a8af0-1afde10456emr10504527637.32.1715641711989; Mon, 13 May 2024
+ 16:08:31 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZkDuJAx7atDXjf5m@shell.armlinux.org.uk>
+References: <20240513192927.99189-1-yatsenko@meta.com>
+In-Reply-To: <20240513192927.99189-1-yatsenko@meta.com>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Mon, 13 May 2024 17:08:20 -0600
+Message-ID: <CAEf4BzY6ugkAMt23xVFM36XjD8c8Jh9vXBDPiWrR7NB42yvXKw@mail.gmail.com>
+Subject: Re: [PATCH v3 bpf-next] bpftool: introduce btf c dump sorting
+To: Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>
+Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org, 
+	daniel@iogearbox.net, kafai@meta.com, kernel-team@meta.com, qmo@kernel.org, 
+	Mykyta Yatsenko <yatsenko@meta.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi Russell
+On Mon, May 13, 2024 at 1:29=E2=80=AFPM Mykyta Yatsenko
+<mykyta.yatsenko5@gmail.com> wrote:
+>
+> From: Mykyta Yatsenko <yatsenko@meta.com>
+>
+> Sort bpftool c dump output; aiming to simplify vmlinux.h diffing and
+> forcing more natural type definitions ordering.
+>
+> Definitions are sorted first by their BTF kind ranks, then by their base
+> type name and by their own name.
+>
+> Type ranks
+>
+> Assign ranks to btf kinds (defined in function btf_type_rank) to set
+> next order:
+> 1. Anonymous enums/enums64
+> 2. Named enums/enums64
+> 3. Trivial types typedefs (ints, then floats)
+> 4. Structs/Unions
+> 5. Function prototypes
+> 6. Forward declarations
+>
+> Type rank is set to maximum for unnamed reference types, structs and
+> unions to avoid emitting those types early. They will be emitted as
+> part of the type chain starting with named type.
+>
+> Lexicographical ordering
+>
+> Each type is assigned a sort_name and own_name.
+> sort_name is the resolved name of the final base type for reference
+> types (typedef, pointer, array etc). Sorting by sort_name allows to
+> group typedefs of the same base type. sort_name for non-reference type
+> is the same as own_name. own_name is a direct name of particular type,
+> is used as final sorting step.
+>
+> Signed-off-by: Mykyta Yatsenko <yatsenko@meta.com>
+> ---
+>  .../bpf/bpftool/Documentation/bpftool-btf.rst |   5 +-
+>  tools/bpf/bpftool/bash-completion/bpftool     |   3 +
+>  tools/bpf/bpftool/btf.c                       | 138 +++++++++++++++++-
+>  3 files changed, 139 insertions(+), 7 deletions(-)
+>
 
-On Sun, May 12, 2024 at 05:28:20PM +0100, Russell King (Oracle) wrote:
-> Hi,
-> 
+LGTM, tried it locally and it works well. In fact, see 6.8 kernel vs
+latest bpf-next/master (with basically the same config) comparison.
+It's quite minimal and easy to use to see what changes about some of
+the BPF internal types.
 
-> As I noted recently in a thread (and was ignored)
+Acked-by: Andrii Nakryiko <andrii@kernel.org>
+Tested-by: Andrii Nakryiko <andrii@kernel.org>
 
-Sorry about that. I didn't mean to ignore. Your message reached me
-right when I caught a cold, which made me AFK for the rest of the
-week.(
+  [0] https://gist.github.com/anakryiko/8fd8ebf2aba73961ebd3cf6587de6822
 
-> As I noted recently in a thread (and was ignored) stmmac sucks.
-
-Can't argue with that. There are much more aspects in what it sucks
-than just the netif's. One glimpse at the plat_stmmacenet_data
-structure causes million questions aka why, how come, what the hell...
-I'll start submitting my cleanup patch sets after my another
-networking work (DW XPCS wise) is finally done, re-submitted, reviewed
-and merged in.
-
-> (I
-> won't hide my distain for drivers that make my life as phylink
-> maintainer more difficult!)
-> 
-> One of the contract conditions for using phylink is that the driver
-> will _not_ mess with the netif carrier. stmmac developers/maintainers
-> clearly didn't read that, because stmmac messes with the netif
-> carrier, which destroys phylink's guarantee that it'll make certain
-> calls in a particular order (e.g. it won't call mac_link_up() twice
-> in a row without an intervening mac_link_down().) This is clearly
-> stated in the phylink documentation.
-> 
-> Thus, this patch set attempts to fix this. Why does it mess with the
-> netif carrier? It has its own independent PCS implementation that
-> completely bypasses phylink _while_ phylink is still being used.
-> This is not acceptable. Either the driver uses phylink, or it doesn't
-> use phylink. There is no half-way house about this. Therefore, this
-> driver needs to either be fixed, or needs to stop using phylink.
-
-Thanks for submitting the series, especially for making the RGMII
-in-band status well-implemented in the driver. When I was studying the
-STMMAC internals I was surprised that it wasn't actually utilized for
-something useful. Furthermore at some point afterwards even the
-RGSMIIIS IRQ turned to be disabled. So the RGMII-part of the code has
-been completely unused after that. But even before that the RGMII
-in-band status change IRQ was utilized just to print the link state
-into the system log. 
-
-> 
-> Since I was ignored when I brought this up, I've hacked together the
-> following patch set - and it is hacky at the moment. It's also broken
-> because of recentl changes involving dwmac-qcom-ethqos.c - but there
-> isn't sufficient information in the driver for me to fix this. The
-> driver appears to use SGMII at 2500Mbps, which simply does not exist.
-> What interface mode (and neg_mode) does phylink pass to pcs_config()
-> in each of the speeds that dwmac-qcom-ethqos.c is interested in.
-> Without this information, I can't do that conversion. So for the
-> purposes of this, I've just ignored dwmac-qcom-ethqos.c (which means
-> it will fail to build.)
-> 
-> The patch splitup is not ideal, but that's not what I'm interested in
-> here. What I want to hear is the results of testing - does this switch
-> of the RGMII/SGMII "pcs" stuff to a phylink_pcs work for this driver?
-> 
-> Please don't review the patches, but you are welcome to send fixes to
-> them. Once we know that the overall implementation works, then I'll
-> look at how best to split the patches. In the mean time, the present
-> form is more convenient for making changes and fixing things.
-
-I'll give your series a try later on this week on my DW GMAC with the
-RGMII interface (alas I don't have an SGMII capable device, so can't
-help with the AN-part testing). Today I've made a brief glance on it
-and already noted a few places which may require a fix to make the
-change working for RGMII (at least the RGSMIIIS IRQ must be got back
-enabled). After making the patch set working for my device in what
-form would you prefer me to submit the fixes? As incremental patches
-in-reply to this thread?
-
--Serge(y)
-
-> 
-> There is still more improvement that's needed here.
-> 
-> Thanks.
-> 
->  drivers/net/ethernet/stmicro/stmmac/Makefile       |   2 +-
->  drivers/net/ethernet/stmicro/stmmac/common.h       |  12 ++-
->  .../net/ethernet/stmicro/stmmac/dwmac1000_core.c   | 113 ++++++++++++---------
->  drivers/net/ethernet/stmicro/stmmac/dwmac4_core.c  | 108 ++++++++++++--------
->  .../net/ethernet/stmicro/stmmac/dwxgmac2_core.c    |   6 --
->  drivers/net/ethernet/stmicro/stmmac/hwif.h         |  27 ++---
->  .../net/ethernet/stmicro/stmmac/stmmac_ethtool.c   | 111 +-------------------
->  drivers/net/ethernet/stmicro/stmmac/stmmac_main.c  |  19 ++--
->  drivers/net/ethernet/stmicro/stmmac/stmmac_pcs.c   |  57 +++++++++++
->  drivers/net/ethernet/stmicro/stmmac/stmmac_pcs.h   |  84 ++-------------
->  10 files changed, 227 insertions(+), 312 deletions(-)
->  create mode 100644 drivers/net/ethernet/stmicro/stmmac/stmmac_pcs.c
-> 
-> -- 
-> RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-> FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
+[...]
 
