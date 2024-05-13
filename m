@@ -1,240 +1,179 @@
-Return-Path: <bpf+bounces-29647-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-29646-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9505A8C453D
-	for <lists+bpf@lfdr.de>; Mon, 13 May 2024 18:47:09 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id C3B3C8C4532
+	for <lists+bpf@lfdr.de>; Mon, 13 May 2024 18:39:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0B06FB2384E
-	for <lists+bpf@lfdr.de>; Mon, 13 May 2024 16:47:07 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3A99F1F22663
+	for <lists+bpf@lfdr.de>; Mon, 13 May 2024 16:39:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 75FD0182B9;
-	Mon, 13 May 2024 16:46:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C971817565;
+	Mon, 13 May 2024 16:39:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="LNBKvguN";
-	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="AYBjmSpO"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LtNnHQ5c"
 X-Original-To: bpf@vger.kernel.org
-Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com [209.85.128.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1463C1CAAE
-	for <bpf@vger.kernel.org>; Mon, 13 May 2024 16:46:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.165.32
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715618811; cv=fail; b=r7kay/8U2XoKFuYmEyPC8+kGcVHR9h3J7MJYIuPNa6EQMN0xcfPZ0cQRAZEH3JrWZ5VxobjQzG5icVaV9fBM8hGDAjEjYggzenl0NpB9PPavkeA1AVa59zTzOQw4oIR1uXR/vUP8e9gPDFsnUJFUKu10bXeLSEyBGJZJCPFtK38=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715618811; c=relaxed/simple;
-	bh=8rJB2jIiAKGmaG9klKAdGZV/g0vDGJnK8mHMNiCvY7k=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=CoF0yIGX96IbH3IvSYk/OF5EwBeLJyxmUSzQQOKebvUeAmImHw9jKITBHNw0miIZNLa+SKVd/svvmj3B9dbz7dBTKENrkxY+fTjTC7ndJT2o5TH9jxDMY0PoIvq/OgoM8KD1mTfChzliJ78ryEtcpf/6aEYlLn5kw8R8uTo6nsI=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=LNBKvguN; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=AYBjmSpO; arc=fail smtp.client-ip=205.220.165.32
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=oracle.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
-Received: from pps.filterd (m0246617.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 44DGixig021397;
-	Mon, 13 May 2024 16:46:17 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id : date :
- subject : to : cc : references : from : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=corp-2023-11-20;
- bh=e4uvCHdD4hltGy/TXRFmE5IOQQia00oGqALCbFXmjDU=;
- b=LNBKvguN5Kef/fQgpooi759IfjV7ueNKdIWEmDGATQTblXTpQx+iBgbpCbpdjD/UMYXL
- EkD53z3qcGyv+vqbXj+Z3wg1oDJWduc7UdpAJk07v/qt9jREO0wNLNO3U4qTC/wmfXlA
- hdb04IoYppPzkGTILmEe+RoTrvzDtnskfF2kesB7EYuYlQPfS/dhV0KkFJ7oZbqE7iDw
- 8ISNZx6W+4SLdg/lYcnQtpzO3TuHM2B3K+1bm2zOIV5RJS3IX5uJxh2EqTY9l2dZjXe3
- BxoSygL6hHb4jvlneNVcpEdxKFOo1mUsX6SDi1KgC3HLiBBMygNrcPswclYOGVhBZrBv Ww== 
-Received: from iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta02.appoci.oracle.com [147.154.18.20])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3y3dyx1f1c-5
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Mon, 13 May 2024 16:46:17 +0000
-Received: from pps.filterd (iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-	by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 44DF2pIc005900;
-	Mon, 13 May 2024 16:25:30 GMT
-Received: from nam11-bn8-obe.outbound.protection.outlook.com (mail-bn8nam11lp2169.outbound.protection.outlook.com [104.47.58.169])
-	by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3y1y461ktx-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Mon, 13 May 2024 16:25:29 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=nsm2YsaDzRjeLFjnhHLkqVx53TrpTBCLVnMMdVW1mL4LuHLIvTP4GNNfmWyLfkjE9rXvV0BmXVJhh//2rwDJMxDkBJK7e8/z+PXinoInv6mepvdCaEan26lDJPmnKIUp1Ivpa5fS1lQzgaC+WUBCVNy2lLoD+mXBi3CE3VTNOFpyyBBZz5MTAOkXvmbxj2QHSgIxiBGVjEE6H0gPrKC+dpOTduU8N9OfAYgFCz/HVGMiJAbMhs7rkihKxVRpSHyg6ICdiPkxZk4OsDTEYvwR2bqJT18XDURo6J5cv5ngBiJM3lPfy7+mDN9FjTXLFvmGiDjjprcAZUkNVoPexguJ/A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=e4uvCHdD4hltGy/TXRFmE5IOQQia00oGqALCbFXmjDU=;
- b=WqJ5/e47hpl3V6r33YRjKF3+uZ3iI9pYsXikSPuk+nJl5JRAmqqF8NDqGCRaMqMTpaIwUx90avOgldF5PV7/pHhO5CKXbkUNA/5nd2muFWIXSUgumkAqmZ/kWNzZIkPKS/r7T0Bvv5vvLB/CdtnCmW3KKfgP9+ZnzXSQPx5trUyI3imhdk8i2p3uP2+LEB/icRByL2dAlFUmsSJhgDxEH+tk86iw6Y2SmkSr16mwHwOYdqDy6nOX7x/F+IoPl8ufPY/Z4WH8fsIQiM6+y0h3G/6XW680WI1BOnudboOlG2IxhTSKoJIG6Un0YA4WnOS/ZIcp9J02lvtD+eyzbZ0ayQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C00F81864C;
+	Mon, 13 May 2024 16:39:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.54
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1715618374; cv=none; b=JrlNvrhBx8lU6RmIJKryrzgz1CfWJ1V+hdNznhBai3aLrvsH9rScf1LmDzv98E56BI7VroZ3jBWN+dVEXYwOKh0IH3dTBwgMmsA3vNsaeTiBZ8PGtYBUyfCZiPoDt6/zD6cLaaIHzFmBXn4BE/xUJpevWfwM7H0ObVrtsMbQwIE=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1715618374; c=relaxed/simple;
+	bh=FXjTIu7Javcp57PGJ37+TMBH2Efe81br2mmREIXkSTU=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=ZPqgGxZmUDIOw532MS63rL4FIGRJEPY0Sjbsa3oNFmlbcrp9PCKtwrJvBynBeZGCfvuww2MSiXQs94DjAHGP4u7Pc3XKU8Tbhn/L462VaCCASk+judofbtXN1bdOgWl2eBtLR0RB7A0xSysyCglKnXUWOdMj3F64GN0CTg2bGkQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=LtNnHQ5c; arc=none smtp.client-ip=209.85.128.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f54.google.com with SMTP id 5b1f17b1804b1-420180b5838so6811545e9.2;
+        Mon, 13 May 2024 09:39:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=e4uvCHdD4hltGy/TXRFmE5IOQQia00oGqALCbFXmjDU=;
- b=AYBjmSpO8L8KYabH41ztUCDYtUs0jh9gk8pZLFhfFCYbnaGsnYjsg7MjtFo/5p85MOLkZqV7y0PAXUx17BwDnlCLM9usYrAa1fzhZ/8olvl6kHHC91CS0HLnIJetcJKpavG9vBdAguw7hiCMoOe6AUCX3mKUCrvQ+rF98R/IjjQ=
-Received: from BLAPR10MB5267.namprd10.prod.outlook.com (2603:10b6:208:30e::22)
- by MW4PR10MB6345.namprd10.prod.outlook.com (2603:10b6:303:1ed::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7544.55; Mon, 13 May
- 2024 16:25:27 +0000
-Received: from BLAPR10MB5267.namprd10.prod.outlook.com
- ([fe80::372c:5fce:57c3:6a03]) by BLAPR10MB5267.namprd10.prod.outlook.com
- ([fe80::372c:5fce:57c3:6a03%4]) with mapi id 15.20.7544.052; Mon, 13 May 2024
- 16:25:27 +0000
-Message-ID: <5e2acba0-5860-4e6d-8b5f-bb63bd4d89f8@oracle.com>
-Date: Mon, 13 May 2024 17:25:23 +0100
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 bpf-next 03/11] libbpf: add btf__parse_opts() API for
- flexible BTF parsing
-To: Eduard Zingerman <eddyz87@gmail.com>, andrii@kernel.org, jolsa@kernel.org,
-        acme@redhat.com, quentin@isovalent.com
-Cc: mykolal@fb.com, ast@kernel.org, daniel@iogearbox.net, martin.lau@linux.dev,
-        song@kernel.org, yonghong.song@linux.dev, john.fastabend@gmail.com,
-        kpsingh@kernel.org, sdf@google.com, haoluo@google.com,
-        houtao1@huawei.com, bpf@vger.kernel.org, masahiroy@kernel.org,
-        mcgrof@kernel.org, nathan@kernel.org
-References: <20240510103052.850012-1-alan.maguire@oracle.com>
- <20240510103052.850012-4-alan.maguire@oracle.com>
- <e161fa605db9eea0f55ccc724051bda6bcc7d058.camel@gmail.com>
-Content-Language: en-GB
-From: Alan Maguire <alan.maguire@oracle.com>
-In-Reply-To: <e161fa605db9eea0f55ccc724051bda6bcc7d058.camel@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: LO4P265CA0100.GBRP265.PROD.OUTLOOK.COM
- (2603:10a6:600:2bc::12) To BLAPR10MB5267.namprd10.prod.outlook.com
- (2603:10b6:208:30e::22)
+        d=gmail.com; s=20230601; t=1715618371; x=1716223171; darn=vger.kernel.org;
+        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
+         :from:from:to:cc:subject:date:message-id:reply-to;
+        bh=JlL47WvthT5p4/6Hq0zcLfQwW5agcsSiG76b2RdCPO8=;
+        b=LtNnHQ5cWHgNVzUA18Y58DxfeI1IUuVEr/7P5nHgG6WbIGPomfTfR7eoh1FQuMrgRy
+         4Jz9JGl817Qs+HTxs84xCKFikmhrHniBkSyMH1IYfEUpj5NDpB6RymYjEhnaYjt5kJFt
+         JsizPvQ1TfUvqCigtz5nJHI+WJsCFzYzLCcXXZu4sq9rqg4vbdliZOFYIwEeOA+JjN8q
+         J+yQeW1c4Sf64sVKPdr43U0bSJDyUx0aRqoRtXvJ7Cw9CowIBtR+VHhEyxN+HURvONkt
+         ZeAfgeli+OwTRhz4233tehFEOyPcQTMcRgtz6E2TcjEJWhZS7tiG2YMd9NZJAA5ipz8F
+         3V+Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1715618371; x=1716223171;
+        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=JlL47WvthT5p4/6Hq0zcLfQwW5agcsSiG76b2RdCPO8=;
+        b=wuk6q6tf3LWbS8q1hPfuIhJSWeaONcemD49e1tpih1Ek5OLbI0YUrfhkGRldCPD0pQ
+         OfukWLwOoCgxhIFU1Qi9BeKe9NQ/qWCoXkTxyxHqQ7IG6229QrlgFQ8ONjE56IjEUUDx
+         7YIXwNpNFB09BkPzig/bd/bFtuBIFxQBxpPs4WVCPIvM/rr+BFA65aMg2zcR5NQ6GuRI
+         Up1XgsvmUB1x/i3Bo1AKDR8ZHxgez46seIf1fnSgkSIfbEm5LdsRBSLegzWyXStocdV1
+         HyZA8WFysuTyaKDo4CJtqNUlQS+NNKtzaEvp4qhl5FW17DmneVEMzwCBaCC6e/DoXTs9
+         csoQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXB3wL7jpheRl4qU200ftHQwEPSWuXKhUkwBIb9vOfDaLntRBUnGE0bnNQ1PKCdUKxUGVX1cKmNM3uDeklONUm1cqB0Yq0BeP0fw/xTxg3SWCCYOTOVjTTAwJ+E+Nh/4QQI
+X-Gm-Message-State: AOJu0YwHqfrZx+dJTHLnxGSplibyHekp1043ZYF3OC7jZ2+gl13Y7PtC
+	qx4bMv/4ZhkanYfpSB6vJzUUtua+kXxIjRBOmEzCEzjLPMsmHSWq
+X-Google-Smtp-Source: AGHT+IFheMWHt8UUqBv97Se6r51eErnibj4jwd2Xsi4g0uCOA5f0VLNA4AbqyY41m1+pDF9RqD9t8Q==
+X-Received: by 2002:a05:600c:4714:b0:41b:13d5:7da9 with SMTP id 5b1f17b1804b1-41fead643famr128548145e9.38.1715618370680;
+        Mon, 13 May 2024 09:39:30 -0700 (PDT)
+Received: from localhost (54-240-197-231.amazon.com. [54.240.197.231])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-41fccee94dasm163110125e9.32.2024.05.13.09.39.30
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 13 May 2024 09:39:30 -0700 (PDT)
+From: Puranjay Mohan <puranjay12@gmail.com>
+To: Maxwell Bland <mbland@motorola.com>, "open list:BPF [GENERAL] (Safe
+ Dynamic Programs and Tools)" <bpf@vger.kernel.org>
+Cc: Catalin Marinas <catalin.marinas@arm.com>, Will Deacon
+ <will@kernel.org>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann
+ <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, Martin KaFai
+ Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu
+ <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, John Fastabend
+ <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, Stanislav
+ Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa
+ <jolsa@kernel.org>, Zi Shen Lim <zlim.lnx@gmail.com>, Mark Rutland
+ <mark.rutland@arm.com>, Suzuki K Poulose <suzuki.poulose@arm.com>, Mark
+ Brown <broonie@kernel.org>, linux-arm-kernel@lists.infradead.org, open
+ list <linux-kernel@vger.kernel.org>, Josh Poimboeuf <jpoimboe@kernel.org>
+Subject: Re: [PATCH bpf-next v4 2/3] arm64/cfi,bpf: Support kCFI + BPF on arm64
+In-Reply-To: <ub6a7msv36rhotqez3usccexkn7kdqqnsyklrnqy7znqas7fhe@cry4jnw3baky>
+References: <wtb6czzpvtqq23t4g6hf7on257dtxzdb4fa4nuq3dtq32odmli@xoyyrtthafar>
+ <ub6a7msv36rhotqez3usccexkn7kdqqnsyklrnqy7znqas7fhe@cry4jnw3baky>
+Date: Mon, 13 May 2024 16:39:28 +0000
+Message-ID: <mb61pttj1k6nz.fsf@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BLAPR10MB5267:EE_|MW4PR10MB6345:EE_
-X-MS-Office365-Filtering-Correlation-Id: 0ba6695b-eab2-4734-56ac-08dc73694c98
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230031|1800799015|376005|7416005|366007;
-X-Microsoft-Antispam-Message-Info: 
-	=?utf-8?B?N3JFU1NQZkx1cjk1QjFMRTBQNFFVYi9JZ0dCZFB5ZE53MHBla2FvNUVsKzR2?=
- =?utf-8?B?ZWd4T3RkNzBlS2VxY1c5UlUwZzZ3bjhtU2FSOW5UaGVmK1lkL0lFUDBwdFFt?=
- =?utf-8?B?dkJNejdxcnlzZVBPTExWcmtIME4vd2FtUGdERUZQK2ZqS1kvT0M2M094VEts?=
- =?utf-8?B?cTJBRzF5ZVVIeFJYTVgyUjh4eUUweFhjb1ZjcGdraDBEL0ZQc0d4dmtuMjVV?=
- =?utf-8?B?aFdXMDZGdEhLaVdHb0JqWlJlejdOTUZFTktjUHZTdnVybE9JUHowQi9MRk1C?=
- =?utf-8?B?Ti94MnVrZ0MwNDlpaVdDZnlEV0JTdlZnTmdIaXJFSzVkakxqd0tCaUhadklL?=
- =?utf-8?B?eUYydmhna01XWlJLSEF0STdaSjV1UHl2dXBEd0dGREV6ZTBwbEQ0RW51d0Q1?=
- =?utf-8?B?b3pNdDRkcTBqSjEwZ0VwNzlKeWJTczBNTW0zbEFLZFk2aU5kcXVKMHRnbFBW?=
- =?utf-8?B?QlhhM0FxTlpiSlNrTnR5RDdsUXNLVC80Qll3akN5eDhEMXRCZTEzbUFiMHFW?=
- =?utf-8?B?aWRBNndMdGpXMHZsY1Vxc2p6OHQ4cEhHeGMxZStzRHZadThoaTNhZVJtaklP?=
- =?utf-8?B?ZU5ocndqZDdGaFllMDJXU0V2OWNualFlNFd5THk2Y2ZhYXZjdGNyWjdBb0Rx?=
- =?utf-8?B?Z0VZbmJoWFYzVm82bGIvU1I4eWdjTGpzWjRvSlhPQVJxeGNuS1RybTJYdkUv?=
- =?utf-8?B?dmJDSnVwc1lINHdwVEt3WVhML1RXS2hubk5HSmN0V2ZETTJSQXFyekJiaHhk?=
- =?utf-8?B?NlA3S2tLYXlrblZabU0xL0M1SXJHNEV5ZXRzKzlOemk0bTNPMDh2azBKS0Yw?=
- =?utf-8?B?bmluVVE4QXpSY0xUOXFGV1p2NkRic2RQTU9NQlFGbk5sQlpzYnMyMzVvRnZy?=
- =?utf-8?B?SVRUTzUyTktjT2RINWVFSGw4eHBzZVM3VFpYQnNURE4yaVJ2RlQyWS9teDBz?=
- =?utf-8?B?SXhTMDUyNUtRam5DWFNjenUzaXBRcXNRTzI2anp2VStIUmE1S0JxdE5ya1Bt?=
- =?utf-8?B?QmRjVmNNdmFzaWJ1eHpmOUk0VkFJMjNMNjFkeTg0akJmT00yWDl2N3lZRWl2?=
- =?utf-8?B?M2hSUkUzNzBaOTlEOWhKY2FoZzl6M1FzNExCVFpIamtzVTBScGFzNkRLa254?=
- =?utf-8?B?dWxUeHpSQ240YXFrUkRtOXkwMGV6OTMzdXQ3cmpGNEZzYTJhM0lVd3kyVTNK?=
- =?utf-8?B?TnMxOHFQdXRrRGY3VHNxNFRqV0Z2VjNHZ3VMbEZBMVNaVXFFY08wQ2hCbHd1?=
- =?utf-8?B?OS9KTVFZdFBoYmEvLytPeEtmRk50aFVRNFQ5Z21GTlBlcnVXKzZQOU9WVThs?=
- =?utf-8?B?VEJmbkU0VFl4b0tXT0xIQmhMWmZTQ1gxY1VWK3p3d0UvQm5iempNNi9PekpX?=
- =?utf-8?B?dlBkaXdvMzBzTzZLcnZ6aFBkUS9iamRpUjZzVVdjRTdVYi9qWEhWc3hLQnkr?=
- =?utf-8?B?aEhnbWRRTnQ5MmRMdU5UWVlMaEZhSXk1cmpwUy84ckk1MVg4eTd3aHV6V1BK?=
- =?utf-8?B?WjhKMlE2ZDRLK01GYXhtbEw5YzdYRkRFSE5yYXZkSnA4NkZKTTI1aENmV0V0?=
- =?utf-8?B?Q3RRUzVhWnQzb0RVZG9jQXc4ek40aUYzZFgvMUNjTnBzMUNpa3IvYy9rSTd4?=
- =?utf-8?B?cWpKMXFwL2psRXVUSVNydkZrS25VbGorWG9WRWlRRUMvNVdaZzZuSExQYVNn?=
- =?utf-8?B?NEo0c29Fak1WclhiZ0RLdVdwNnFuTVkvNE0vbnc2Nm1vVytsaHA1dGRnPT0=?=
-X-Forefront-Antispam-Report: 
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BLAPR10MB5267.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(1800799015)(376005)(7416005)(366007);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: 
-	=?utf-8?B?L053VG5LbW5pNi90K1hQYXhXaHBxS1lhcS9hWG1DMEpwbjVsQkxzc0piOVNl?=
- =?utf-8?B?RnVkL3VTaFVIZEVEZE1qZnRuNEs1OHdaQVZpelMvaWs3aFJzTDNzMDlVOVlC?=
- =?utf-8?B?TzRLZ2dwZE9SQUtSb1NQeVJpSW04VjRvTmEwVjhSbVVMcDgrSi9vWlBxZ1dp?=
- =?utf-8?B?TlJUdzRmUWtxMk5BZUZTbWtkUjFpNk13MFBmUkRsWW5pODFVYzFYbTJheUFu?=
- =?utf-8?B?RlQzZitwalhLZlFIN0ppSE1VN0N0d0lUUm9GOGlKT1RsdVNKTHc0LzBTZXNF?=
- =?utf-8?B?WmROdWVnSDlZaHNobkJrMk9DcDltY1RYV3YyNXVNS0V2dlFCRUI4V3BiNU1J?=
- =?utf-8?B?U2k1L2ZzaHVqVmp4Q2RIVys2eE0yZ3hYdyttY2c4bDB0QVdLU29vUTVXdVB3?=
- =?utf-8?B?QUZ2dFR3UzdzeXZVOUp2M1pMYkRpTSt6WXhLWk8yMXI5cnl5RUV1dkxiNU1C?=
- =?utf-8?B?T3RqQTBFL2hlWDgvQzg3S1QwbVZZNGpNeGpwL2tIMEE4R09uR2RBNGlOMHhi?=
- =?utf-8?B?bXpseUFiY0NzejdTajZQenBHeTBJZ09JSDlUdTRkWEFVc0dSWm9BdUZkKzVO?=
- =?utf-8?B?dGxEUkNUNzdPeUlVZEZ0aUxPOWJwMzBYZklDd2lBT3QvOHRHbHRxaFlYN1Vj?=
- =?utf-8?B?am1iZ0FueGY1SktHSUtDVDVTNmZOaGJrQWFkNjk5YjAyVnREVTdqT2FQQzQ2?=
- =?utf-8?B?QkpHS25rNVVtdUROK2ZkczdCK1o0QTdRY1V2TnVvZ29mbWRhUGlJN2NkSUZi?=
- =?utf-8?B?d0JPNkM2eEFyNW5lWHZPSlY2S0hXRm4rRk9NaGJUc093U2o3WFh6OVp0SE9v?=
- =?utf-8?B?aWxNUDZpdGZrOTZ6aVU5WWt3SWdOdVlyWFhzWk52TUhITHljZURCTVluS1VR?=
- =?utf-8?B?SVo0TlJVdnE1MzlNV1JaQVgvelBXRWhtK3lDSEN1ZkdLS1dwUE5PdXRpSEJX?=
- =?utf-8?B?S2ZHTnlVTXlpTkNEa0NIekNhRXI1c3U5NXNLbmFiQ004L2pOM0REeVVHVTVE?=
- =?utf-8?B?N2pWbS93NFRjSWVoSlgxVmUzcGpwd2FsOW96YitWaWh4UW9lYXNMQi84VytU?=
- =?utf-8?B?d3dZelF2aDZyanB2bEx1S1hvTmpEZjhseUdHbE9EY3NZTjRFVHJPT0dXM3VU?=
- =?utf-8?B?bm9PVXdvV3VyakE2SkwyMG5sRGtEL1BrYlB3WWdHa25RZkxPblI4ZWorck1Y?=
- =?utf-8?B?RmR3alV3VWVvTEZSSWI2Yll2d2psVDBXNElldmhENnF5dURlUS9vL2s1b1NR?=
- =?utf-8?B?ZlQrdVZzdldQWTVKNE1VNC9WUGRiK2VoYllhdTZBS2pDdWRGYk9WT3h1QXFX?=
- =?utf-8?B?eTh2bWtueWZTOElIc2JqN3RDOUJSYmtCb0xQS1BzZmlRZTRYWHJPbVVHN0tj?=
- =?utf-8?B?bHRlSG5iMW5OMlZ5NWVaNm5jTHZDTG1DdU5oblhwdVlUQjRVbkVwOU1WV0VY?=
- =?utf-8?B?NFNTWEt6NktrcTJWQS95VWZGM0RCaURSWVo4RjZiOTdjemZ5YmczMHFMemhW?=
- =?utf-8?B?ZFU4U2x6R3JTc01aeU5DN3JzOUNKKzNrMlF6YVF5NENXLythZjVZM21zY1hV?=
- =?utf-8?B?V21ER1d0VTdOcHRnbzdvTnBCdW1MMXlKd2ZYYXRRTXpVbkJndzVVckh2RlBY?=
- =?utf-8?B?MzFOVklFTFkwR2YyYlNNUHRxamhjRmVWRVVPQlp6WUlNOXFtZ09uRUV2M3lU?=
- =?utf-8?B?ZEVRUlcwVFpkaUQwME1tb2dpQ29Hd1F6a0twbW5VMXo2aGo5SHhuSEFHWmFP?=
- =?utf-8?B?VEVGZ1NYSFR6amxBbXh0aHhQQlNPMkR1RElOMksyYVhUOE8wU05LY00ya0lQ?=
- =?utf-8?B?SE1UbC9pQlJiSEN0K2lnVENuMFp1T0FDRGVpY1Q3WXhxaGFOb1FsYmVJbHla?=
- =?utf-8?B?bEc2ZE1KZkxqWE4xSWloZFNtdXVFcTBlV2pQVmRCUWdwWjlBbTBZbVBUOW5T?=
- =?utf-8?B?cy9tMzBaKzlOVUQ4NXQzcGd2YkIwd3B0OTJzNDFCajQxK25JcWxPYzVXamh6?=
- =?utf-8?B?dENmMnlMNkNYQXpKUnRFRnBHaThsQnFxOXdYd0dwVG1PWHptaURZT2ZBdzNQ?=
- =?utf-8?B?bVh6eUFvRjdYKzJlakZHcUJHandDdWx4V1owNVZMVWswS09FeW5WMStvaEVV?=
- =?utf-8?B?TzRQMkxXZDl5QlpoUUNQdTRWSTRGcnlaWHNkUHRIWmtWQUZ5MVVvWGV5Q1Av?=
- =?utf-8?Q?6Rypb7Y11T4IFgORZg9A3xc=3D?=
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: 
-	QJxkJQ3ajIMaZwOsdHOBsLxMbYMkSCNWjpCGc5bQzfCtRj+rpoAyqtGv3iLCnntTkWn4/cf5RAq82fec1kx75larpN2zxyoLnmZjy4ASH2xPZsYqwpQwZkLHA81TeTw3ktXir6k9WAKqoLZ8TUt3mwhizKK4nBTMBRBLwT8ZG2zetbQ3BsCOHLqff8xY/C2gI8MxcgHgs2eEmACnK0tJi7lEFCp3hty8ODHAeZ7L97irIsE3Fhin7OZRqOn+mwYn/SKkNJI9B7iPrbCrBr8B734CHT4J3r3E0jht6ZGbR45FVQIAN3BPcIM0eeVrBvXk43BxA7aedUn9qixUrA1N+BEbSMt75Z7suMDsBdIgBdiGrM1mVtBz+SrN8ApZUKZ3sLj6PA5AlnhOMDDlB9mFHdyAp8k6n+kXwyRvSlt6QcfkSpp1JrQ0vs/PaEDR6AEyMH47ozGykJcG0hxsNjEbV0K8SZuwnK0U0sMhYvKDLbWC+hXrnHFiVjNej8n7VpVZ7md3BriRlCNiXexXMKz5Zgk103tP7C0YcS08qmkJOn+twhc9zpRkYcyrNENeAZ8VF9zR3CfobdHGAn00T38nHBSC98ZEmAqjlOoJ5jbOBmU=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0ba6695b-eab2-4734-56ac-08dc73694c98
-X-MS-Exchange-CrossTenant-AuthSource: BLAPR10MB5267.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 May 2024 16:25:27.5904
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Z6L9eTHK8o9p1kr1mpZgf3I7dJn95bP8bNZ2RekQcvt6N+PnKpyH9fIugy0dSu2jW8FRvL1nzFOcJJwJVCrGdQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR10MB6345
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.650,FMLib:17.11.176.26
- definitions=2024-05-13_11,2024-05-10_02,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 adultscore=0
- mlxlogscore=999 phishscore=0 malwarescore=0 suspectscore=0 mlxscore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2405010000 definitions=main-2405130106
-X-Proofpoint-GUID: iYMUC5V5UW3WkdCx9epPWkup7y3ywLcO
-X-Proofpoint-ORIG-GUID: iYMUC5V5UW3WkdCx9epPWkup7y3ywLcO
+Content-Type: text/plain
 
-On 11/05/2024 10:40, Eduard Zingerman wrote:
-> On Fri, 2024-05-10 at 11:30 +0100, Alan Maguire wrote:
->> Options cover existing parsing scenarios (ELF, raw, retrieving
->> .BTF.ext) and also allow specification of the ELF section name
->> containing BTF.  This will allow consumers to retrieve BTF from
->> .BTF.base sections (BTF_BASE_ELF_SEC) also.
->>
->> Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
->> ---
-> 
-> For the sake of discussion, what are the benefits of adding
-> btf__parse_opts(), compared to modifying btf__parse() to check if
-> .BTF.base is present and acting accordingly?
-> btf__parse() already does a guess if passed argument is an ELF or a
-> RAW file, so such guessing semantics seems to be a natural extension.
+Maxwell Bland <mbland@motorola.com> writes:
 
-It's a good idea. The only thing I'd say against it is that we already
-have existing semantics there that are well-established, and the
-.BTF.base scenario will be relatively rare, yet the check would I think
-be a tax all .BTF-only cases will have to pay. We'd presumably check
-.BTF.base, and if not present check for .BTF. So all callers of
-btf__parse() when accessing .BTF sections would be checking for
-.BTF.base first.
+This patch has a subtle difference from the patch that I sent in v2[1]
 
-In that context, it seemed to make sense to support an explicit request
-for a specific section (via btf__parse_opts()) rather than inducing
-overhead in existing checks. But again, if the overhead isn't seen as an
-issue, we could absolutely do it.
+Unfortunately, you didn't test this. :(
+
+It will break BPF on an ARM64 kernel compiled with CONFIG_CFI_CLANG=y
+
+See below:
+
+> diff --git a/arch/arm64/net/bpf_jit_comp.c b/arch/arm64/net/bpf_jit_comp.c
+> index 76b91f36c729..703247457409 100644
+> --- a/arch/arm64/net/bpf_jit_comp.c
+> +++ b/arch/arm64/net/bpf_jit_comp.c
+> @@ -17,6 +17,7 @@
+>  #include <asm/asm-extable.h>
+>  #include <asm/byteorder.h>
+>  #include <asm/cacheflush.h>
+> +#include <asm/cfi.h>
+>  #include <asm/debug-monitors.h>
+>  #include <asm/insn.h>
+>  #include <asm/patching.h>
+> @@ -162,6 +163,12 @@ static inline void emit_bti(u32 insn, struct jit_ctx *ctx)
+>  		emit(insn, ctx);
+>  }
+>  
+> +static inline void emit_kcfi(u32 hash, struct jit_ctx *ctx)
+> +{
+> +	if (IS_ENABLED(CONFIG_CFI_CLANG))
+> +		emit(hash, ctx);
+> +}
+> +
+>  /*
+>   * Kernel addresses in the vmalloc space use at most 48 bits, and the
+>   * remaining bits are guaranteed to be 0x1. So we can compose the address
+> @@ -337,6 +344,7 @@ static int build_prologue(struct jit_ctx *ctx, bool ebpf_from_cbpf,
+>  	 *
+>  	 */
+
+In my original patch the hunk here looked something like:
+
+--- >8 ---
+
+-	const int idx0 = ctx->idx;
+ 	int cur_offset;
+ 
+ 	/*
+@@ -332,6 +338,8 @@ static int build_prologue(struct jit_ctx *ctx, bool ebpf_from_cbpf,
+ 	 *
+ 	 */
+ 
++	emit_kcfi(is_subprog ? cfi_bpf_subprog_hash : cfi_bpf_hash, ctx);
++	const int idx0 = ctx->idx;
+
+--- 8< ---
+
+moving idx0 = ctx->idx; after emit_kcfi() is important because later
+this 'idx0' is used like:
+
+   cur_offset = ctx->idx - idx0;
+   if (cur_offset != PROLOGUE_OFFSET) {
+           pr_err_once("PROLOGUE_OFFSET = %d, expected %d!\n",
+                       cur_offset, PROLOGUE_OFFSET);
+           return -1;
+   }
+
+With the current version, when I boot the kernel I get:
+
+[    0.499207] bpf_jit: PROLOGUE_OFFSET = 13, expected 12!
+
+and now no BPF program can be JITed!
+
+Please fix this in the next version and test it by running:
+
+./tools/testing/selftests/bpf/test_progs
+
+Pay attention to the `rbtree_success` and the `dummy_st_ops` tests, they
+are the important ones for this change.
+
+[1] https://lore.kernel.org/all/20240324211518.93892-2-puranjay12@gmail.com/
+
+Thanks,
+Puranjay
 
