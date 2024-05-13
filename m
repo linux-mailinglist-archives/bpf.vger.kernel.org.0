@@ -1,126 +1,153 @@
-Return-Path: <bpf+bounces-29622-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-29623-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id BC3438C3ABE
-	for <lists+bpf@lfdr.de>; Mon, 13 May 2024 06:35:54 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8FEC08C3AE2
+	for <lists+bpf@lfdr.de>; Mon, 13 May 2024 07:12:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id ED76F1C20E44
-	for <lists+bpf@lfdr.de>; Mon, 13 May 2024 04:35:53 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 452BD1F210DF
+	for <lists+bpf@lfdr.de>; Mon, 13 May 2024 05:12:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D797145B37;
-	Mon, 13 May 2024 04:35:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4948314601B;
+	Mon, 13 May 2024 05:11:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="UV/hin/B"
+	dkim=pass (1024-bit key) header.d=digikod.net header.i=@digikod.net header.b="hw3En7ij"
 X-Original-To: bpf@vger.kernel.org
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+Received: from smtp-8fa9.mail.infomaniak.ch (smtp-8fa9.mail.infomaniak.ch [83.166.143.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E68A3214;
-	Mon, 13 May 2024 04:35:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.133.104.62
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1AFF6146004
+	for <bpf@vger.kernel.org>; Mon, 13 May 2024 05:11:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=83.166.143.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715574945; cv=none; b=Ye6AkHyBKO/et7vRBXtk0WhQK57jR7i9xpV+2y5g3+EsrhlQj7KapOw2hAQNAK1wb6jb72RNBGQKFUxnzWTJJHFyvQjltfCpjC1IuUeLcd0KmHbDomx3vK6sWOQBZRdC70C/p+gL2Rqe8Ilx3qQfmKFmWLxYP6TTdD573dMBgQQ=
+	t=1715577109; cv=none; b=Si2/kLuKgiWgMq0+IqvTDNiBezodrjWNu+vITlAj+QNphkU7CSpzfD6/m1hGOYcRlUBsfy8Y65x5ilr+mGEOc3Si1b9B8dK/uZqmpdrvS6NoH8pkvlG7DDNEm1pZaTMvab0VyXWSuT4/+40ugPdb7H1o50WRuHwrP1X/wLARIow=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715574945; c=relaxed/simple;
-	bh=Z0dpvmrI28eS45WbkEYgkTyMwjgnIk1pOV23QNe9tlY=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=mEpydEH/ElGBKBsjtyDmNUqKzhZWBf5Mvoph5gh3NzPAEQ4gPkBSisZTOIS5KUymi5Y+KjUHd6mteXqk/cSsqDxvLfDf76VJyeAws/Ek4w2UQKMCgeAy80yKDT0vyfbvbZpivzDUp94/bdykdjFrlChy5qCZq3c/ofLpbYPHI4Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=UV/hin/B; arc=none smtp.client-ip=213.133.104.62
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iogearbox.net
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:MIME-Version:
-	Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:In-Reply-To:References;
-	bh=+sDYxjeeVc0BhplR7Zet4dAgkgFt/tCSA/bSQmrCSdw=; b=UV/hin/BgQMGOaPvHyPvH6z8Bq
-	V16plrNrV3oeoHrlOUQgL6qKKLMdLfcssW2hLVICN68tqBQCWCqAvtCMmr96VLMfecdqG9c2WbZep
-	dnJMMUU10xH9jBRcGAMLXOkhwBvFJQzc41pov/eNGA+dXab/CwGyYz4EOBHr7w38CS4nNFU8B2JIs
-	EZgNhJ6DX1FPiq+6X29/Y+Qum3Viws5m1ZEpu5HpN58PDv7cGs8yh8f7t3vER22qzYtG8xvDMmPhx
-	0pcxsO7GldBy+GMy0FgX+xQWLg6tc65qOE/nFY+7qaeszjdkQkcorqcXm8EymPxlhWaYOm40MKwHY
-	YDmhRuaw==;
-Received: from mob-194-230-158-151.cgn.sunrise.net ([194.230.158.151] helo=localhost)
-	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1s6N9E-0005yl-Rg; Mon, 13 May 2024 06:18:49 +0200
-From: Daniel Borkmann <daniel@iogearbox.net>
-To: davem@davemloft.net
-Cc: kuba@kernel.org,
-	pabeni@redhat.com,
-	edumazet@google.com,
-	daniel@iogearbox.net,
-	ast@kernel.org,
-	andrii@kernel.org,
-	martin.lau@linux.dev,
-	netdev@vger.kernel.org,
-	bpf@vger.kernel.org
-Subject: pull-request: bpf 2024-05-13
-Date: Mon, 13 May 2024 06:18:45 +0200
-Message-Id: <20240513041845.31040-1-daniel@iogearbox.net>
-X-Mailer: git-send-email 2.21.0
+	s=arc-20240116; t=1715577109; c=relaxed/simple;
+	bh=KFDDDGcGm/oWMDzWP22M7FfCz2XpGYOkwlgc6byenZc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=X8/11aHOFkNwC9QH7lOBw9xHjFjJjXJpaXjiBKefoh7MagcoNdexedsgBpbmxH1Bo4M/B/qKpvXXRlhOMlq4xaND3XjYWM+HBU349w6y71ue5lwyqpCmbbYuMCwG8j1Iw4xFsHoVVYXOhRVDqXSue+PI71BpM1uqbG+tUwQptZ0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=digikod.net; spf=pass smtp.mailfrom=digikod.net; dkim=pass (1024-bit key) header.d=digikod.net header.i=@digikod.net header.b=hw3En7ij; arc=none smtp.client-ip=83.166.143.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=digikod.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=digikod.net
+Received: from smtp-3-0001.mail.infomaniak.ch (smtp-3-0001.mail.infomaniak.ch [10.4.36.108])
+	by smtp-4-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4Vd6zD72sYzBRV;
+	Mon, 13 May 2024 07:11:36 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=digikod.net;
+	s=20191114; t=1715577096;
+	bh=NzaTA4RcapZkISmaHLv46iIYK7VaukIA9ZguF6MFZZA=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=hw3En7ijFCwNJoThQiowXkrUxCT44rzwcTmIeGAxmMKpeUBmBD1BLh+85VHxhgwc7
+	 JBbg/rqFfZCDo0dPtfgcvOHScY8qdox00AoYekCDtfXJcIcsUmdc+pInQOE27YE5Ni
+	 +P34v4BDOwCSyvCB1aryA/Skhpq3+1VxUbfjd74w=
+Received: from unknown by smtp-3-0001.mail.infomaniak.ch (Postfix) with ESMTPA id 4Vd6z94yx1zHTv;
+	Mon, 13 May 2024 07:11:33 +0200 (CEST)
+Date: Mon, 13 May 2024 07:11:31 +0200
+From: =?utf-8?Q?Micka=C3=ABl_Sala=C3=BCn?= <mic@digikod.net>
+To: Edward Liaw <edliaw@google.com>
+Cc: shuah@kernel.org, =?utf-8?Q?G=C3=BCnther?= Noack <gnoack@google.com>, 
+	Christian Brauner <brauner@kernel.org>, Richard Cochran <richardcochran@gmail.com>, 
+	Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, 
+	Albert Ou <aou@eecs.berkeley.edu>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, "David S. Miller" <davem@davemloft.net>, 
+	Jakub Kicinski <kuba@kernel.org>, Jesper Dangaard Brouer <hawk@kernel.org>, 
+	John Fastabend <john.fastabend@gmail.com>, Muhammad Usama Anjum <usama.anjum@collabora.com>, 
+	Andrew Morton <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org, 
+	kernel-team@android.com, linux-security-module@vger.kernel.org, netdev@vger.kernel.org, 
+	linux-riscv@lists.infradead.org, bpf@vger.kernel.org, John Hubbard <jhubbard@nvidia.com>
+Subject: Re: [PATCH v3 27/68] selftests/landlock: Drop define _GNU_SOURCE
+Message-ID: <20240513.wo9coof8Dae4@digikod.net>
+References: <20240509200022.253089-1-edliaw@google.com>
+ <20240509200022.253089-28-edliaw@google.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.10/27273/Sun May 12 10:22:49 2024)
+In-Reply-To: <20240509200022.253089-28-edliaw@google.com>
+X-Infomaniak-Routing: alpha
 
-Hi David, hi Jakub, hi Paolo, hi Eric,
+On Thu, May 09, 2024 at 07:58:19PM +0000, Edward Liaw wrote:
+> _GNU_SOURCE is provided by lib.mk, so it should be dropped to prevent
+> redefinition warnings.
+> 
+> Fixes: 809216233555 ("selftests/harness: remove use of LINE_MAX")
+> Reviewed-by: John Hubbard <jhubbard@nvidia.com>
+> Reviewed-by: Muhammad Usama Anjum <usama.anjum@collabora.com>
+> Signed-off-by: Edward Liaw <edliaw@google.com>
 
-The following pull-request contains BPF updates for your *net* tree.
+Please only remove lines with _GNU_SOURCE, not the empty lines.  I think
+it would be better to not change such style choice for other subsystems
+too.
+With this change for the Landlock selftests:
+Acked-by: Mickaël Salaün <mic@digikod.net>
 
-We've added 3 non-merge commits during the last 2 day(s) which contain
-a total of 2 files changed, 62 insertions(+), 8 deletions(-).
-
-The main changes are:
-
-1) Fix a case where syzkaller found that it's unexpectedly possible to attach a
-   cgroup_skb program to the sockopt hooks. The fix adds missing attach_type
-   enforcement for the link_create case along with selftests, from Stanislav Fomichev.
-
-Please consider pulling these changes from:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git tags/for-netdev
-
-Thanks a lot!
-
-Also thanks to reporters, reviewers and testers of commits in this pull-request:
-
-Eduard Zingerman
-
-----------------------------------------------------------------
-
-The following changes since commit b867247555c4181bf84eb10b72b176862c29112d:
-
-  Merge branch 'qed-error-codes' (2024-04-29 10:02:43 +0100)
-
-are available in the Git repository at:
-
-  https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git tags/for-netdev
-
-for you to fetch changes up to 3e9bc0472b910d4115e16e9c2d684c7757cb6c60:
-
-  Merge branch 'bpf: Add BPF_PROG_TYPE_CGROUP_SKB attach type enforcement in BPF_LINK_CREATE' (2024-04-30 10:45:44 -0700)
-
-----------------------------------------------------------------
-bpf-for-netdev
-
-----------------------------------------------------------------
-Martin KaFai Lau (1):
-      Merge branch 'bpf: Add BPF_PROG_TYPE_CGROUP_SKB attach type enforcement in BPF_LINK_CREATE'
-
-Stanislav Fomichev (3):
-      bpf: Add BPF_PROG_TYPE_CGROUP_SKB attach type enforcement in BPF_LINK_CREATE
-      selftests/bpf: Extend sockopt tests to use BPF_LINK_CREATE
-      selftests/bpf: Add sockopt case to verify prog_type
-
- kernel/bpf/syscall.c                             |  5 ++
- tools/testing/selftests/bpf/prog_tests/sockopt.c | 65 +++++++++++++++++++++---
- 2 files changed, 62 insertions(+), 8 deletions(-)
+> ---
+>  tools/testing/selftests/landlock/base_test.c   | 2 --
+>  tools/testing/selftests/landlock/fs_test.c     | 2 --
+>  tools/testing/selftests/landlock/net_test.c    | 2 --
+>  tools/testing/selftests/landlock/ptrace_test.c | 2 --
+>  4 files changed, 8 deletions(-)
+> 
+> diff --git a/tools/testing/selftests/landlock/base_test.c b/tools/testing/selftests/landlock/base_test.c
+> index 3c1e9f35b531..c86e6f87b398 100644
+> --- a/tools/testing/selftests/landlock/base_test.c
+> +++ b/tools/testing/selftests/landlock/base_test.c
+> @@ -5,8 +5,6 @@
+>   * Copyright © 2017-2020 Mickaël Salaün <mic@digikod.net>
+>   * Copyright © 2019-2020 ANSSI
+>   */
+> -
+> -#define _GNU_SOURCE
+>  #include <errno.h>
+>  #include <fcntl.h>
+>  #include <linux/landlock.h>
+> diff --git a/tools/testing/selftests/landlock/fs_test.c b/tools/testing/selftests/landlock/fs_test.c
+> index 6b5a9ff88c3d..eec0d9a44d50 100644
+> --- a/tools/testing/selftests/landlock/fs_test.c
+> +++ b/tools/testing/selftests/landlock/fs_test.c
+> @@ -6,8 +6,6 @@
+>   * Copyright © 2020 ANSSI
+>   * Copyright © 2020-2022 Microsoft Corporation
+>   */
+> -
+> -#define _GNU_SOURCE
+>  #include <asm/termbits.h>
+>  #include <fcntl.h>
+>  #include <libgen.h>
+> diff --git a/tools/testing/selftests/landlock/net_test.c b/tools/testing/selftests/landlock/net_test.c
+> index f21cfbbc3638..eed040adcbac 100644
+> --- a/tools/testing/selftests/landlock/net_test.c
+> +++ b/tools/testing/selftests/landlock/net_test.c
+> @@ -5,8 +5,6 @@
+>   * Copyright © 2022-2023 Huawei Tech. Co., Ltd.
+>   * Copyright © 2023 Microsoft Corporation
+>   */
+> -
+> -#define _GNU_SOURCE
+>  #include <arpa/inet.h>
+>  #include <errno.h>
+>  #include <fcntl.h>
+> diff --git a/tools/testing/selftests/landlock/ptrace_test.c b/tools/testing/selftests/landlock/ptrace_test.c
+> index a19db4d0b3bd..c831e6d03b02 100644
+> --- a/tools/testing/selftests/landlock/ptrace_test.c
+> +++ b/tools/testing/selftests/landlock/ptrace_test.c
+> @@ -5,8 +5,6 @@
+>   * Copyright © 2017-2020 Mickaël Salaün <mic@digikod.net>
+>   * Copyright © 2019-2020 ANSSI
+>   */
+> -
+> -#define _GNU_SOURCE
+>  #include <errno.h>
+>  #include <fcntl.h>
+>  #include <linux/landlock.h>
+> -- 
+> 2.45.0.118.g7fe29c98d7-goog
+> 
+> 
 
