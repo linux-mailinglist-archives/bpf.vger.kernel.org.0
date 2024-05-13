@@ -1,89 +1,88 @@
-Return-Path: <bpf+bounces-29652-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-29653-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id BDD098C4652
-	for <lists+bpf@lfdr.de>; Mon, 13 May 2024 19:40:01 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0AA698C4683
+	for <lists+bpf@lfdr.de>; Mon, 13 May 2024 19:52:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 29296B21671
-	for <lists+bpf@lfdr.de>; Mon, 13 May 2024 17:39:59 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2DBED1C23417
+	for <lists+bpf@lfdr.de>; Mon, 13 May 2024 17:52:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C3602224CC;
-	Mon, 13 May 2024 17:39:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F5B428E34;
+	Mon, 13 May 2024 17:52:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="jSFvxQ/V";
-	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="Obep8iDm"
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="n49hZTtD";
+	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="DwN06J9W"
 X-Original-To: bpf@vger.kernel.org
 Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C80820332
-	for <bpf@vger.kernel.org>; Mon, 13 May 2024 17:39:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CBCC92E414
+	for <bpf@vger.kernel.org>; Mon, 13 May 2024 17:52:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.177.32
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715621994; cv=fail; b=L1ed/1w+xV8x1lIt8rZQpdLqHvdV7kU4uuRlC2OeEW0nkADPgeqVmbdPl6pkg+3VPjd5ThsVgbEBAH5V5usAISd765UtyhivdofMfXFJf3WvCa7qZ9clXaHbzCR4Z06HKyl0JOgsDQihW5FYMPAzAbj+qkp/0TW+inIuyxMPSck=
+	t=1715622735; cv=fail; b=XGa2MX+V8e8w/OgSHY4I08RFoa98Skt4cOY/7fLiwexaIu+Widd77mmJAtsRBfG5eE7H5LcPX8q1dzxCMFc4+0qtHQtVIvF9uQTVPEuKwe1M+SFLsCdCzP7EERcuHxdlgY9A8UErTBhCrKlGbj4ApJwgv1KVGXRUJfQwZWSFJe0=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715621994; c=relaxed/simple;
-	bh=uzr0ltleOg2HtXjTKFfmmEp5/py9QSm+2ugPgq05/EY=;
+	s=arc-20240116; t=1715622735; c=relaxed/simple;
+	bh=BqSnb/LhcXqNz/LtxXXy5Mp+gzXbpxi9nVYTunb75m0=;
 	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=WOnyY1xhbHupogsSWuU9KOM06co8n5EBCXK1ZdckEPnZ/DGgBKiDSwj0XT+5kyHEtyEp/HqXEex0OPunWZVvoJDFQ9zUKMQs49pnnadvJCKwtpxVD/ZU5tI1Y8VZMfvYESBRDGUqEe2Yzi2xBvEL8Z1sj2iNc2zh1KYeY8Yz4e8=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=jSFvxQ/V; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=Obep8iDm; arc=fail smtp.client-ip=205.220.177.32
+	 Content-Type:MIME-Version; b=dm7NSr03GhjMBn7TFjNWQeX2HyplCAMVGKZS/jHwzbKKdy8pLaoxfmuxqTxa6IzsTpzojlSKeUV0iV/o6iiuns/lr/xWIwR6YfDHmyE4rGvTBOqmH748Fo77PsmVOMpxnMjePfQ1iR9Inou+KirPxjajiCcppdea57Ihnbft28g=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=n49hZTtD; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=DwN06J9W; arc=fail smtp.client-ip=205.220.177.32
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=oracle.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
 Received: from pps.filterd (m0333520.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 44DHalim026418;
-	Mon, 13 May 2024 17:39:26 GMT
+	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 44DHahpA026397;
+	Mon, 13 May 2024 17:51:51 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id : date :
  subject : to : cc : references : from : in-reply-to : content-type :
  content-transfer-encoding : mime-version; s=corp-2023-11-20;
- bh=t0syhX52Wm4OeFZ8xwVpUGNnkNVkXdk1MRDVaWghkoU=;
- b=jSFvxQ/VMU6pU3gvV+V4DL8R9F2agcmZrk/OsusIeOQSWlqTIOYcNNYLKKHrG7KPVfdr
- uX9R3Rfev2ZvGAVMFovXdJSdeLPaf5kS4nvfnH+mWuTdoqyvN8MgUAsjgUFB1sgKdWX/
- /5rp1ImNubqaK/xjv0VhwsTlqNk2Kyb+daEMqKM6rUOiv0SgFlEs13B+AE/WVImk9zUj
- 9xyfXsrw5JZDumapf3DrtAjpj1UU+/4hfS7m2PWC/P1CcaJzpoQcODU8+1zfZw3tTJpE
- vL/17FEr/o0XyETXP9REiaHxUTkPuUY+BOahcHUahjGt+dPHtY41y52J1zOQpHbHlYtI 3g== 
-Received: from phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta02.appoci.oracle.com [147.154.114.232])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3y3qdj00d7-1
+ bh=5q7rRfXcgWRqpZ3smhIe57kqqd5t1jDlZznsJp61nVw=;
+ b=n49hZTtDDu3pt2hgphGipARiha9Jt2JPfEf0ZDifFSnJ2D9VhnWZCnwiP/vQKITuN3Hr
+ InnvLiEfhkQRw96ou31nxeinyBgMHmGEggb3EUAdnye40QJTI09vIPugki3nxFtcOstI
+ 3FtDHfLjDZS31bK7lV5VKSF3W0NWemvElCn3ygIU/3A1YhN3eJ4LJN1VYSFu7pfvrnv2
+ QGtIBSYFiHsojBii5y749TPn+IRCiRiRq9XlzNluIF4yejhem3Ztf9FNmi60r7K5/4vw
+ 1txcFhy84g3ZY4DFdkdenhPWviKK326v0U0vyfSBO/ll9iPoWhLK+5Y0aP02Hzs2COWP /A== 
+Received: from iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta02.appoci.oracle.com [147.154.18.20])
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3y3qdj01dj-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Mon, 13 May 2024 17:39:26 +0000
-Received: from pps.filterd (phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-	by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 44DGFdmx017264;
-	Mon, 13 May 2024 17:24:00 GMT
-Received: from nam12-mw2-obe.outbound.protection.outlook.com (mail-mw2nam12lp2040.outbound.protection.outlook.com [104.47.66.40])
-	by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3y1y463hnq-1
+	Mon, 13 May 2024 17:51:50 +0000
+Received: from pps.filterd (iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+	by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 44DGhjj9005725;
+	Mon, 13 May 2024 17:51:50 GMT
+Received: from nam11-co1-obe.outbound.protection.outlook.com (mail-co1nam11lp2169.outbound.protection.outlook.com [104.47.56.169])
+	by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3y1y464u8d-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Mon, 13 May 2024 17:24:00 +0000
+	Mon, 13 May 2024 17:51:49 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=YyKYrsQKvwGoN4EIoUAWYc6Zy0OdkGLZY/7EqfVNkeFwomDqmfWeE0RjXZikjL2VNcTuPqUpfbgYabGkHzxnuQhenSIDyYeRPTQu2McImR/jvXpi51uNCbBfKGQOts15M4bAELf5um0D6AtkpvaMohRYTLXzk6c4hI0SP/0lRGlJgYzJH2KHpY26H2A67vBzxlaCoWcJHqRQY++razF5hdaNEXSHfjv9gPC+J2sQL1gkH0UIt9/jng3+AlWn2bcfa2IBCyP1o4wifUlTU7w53GRi7Zv+gOcFrvp9VglPWi9Fbs4m6MCvfJyYnHCHqTUsbVP1tDAJ31I8t8StY24alw==
+ b=JkOhDT2m03QO2WVW3o0klnvUqyXsshQ6oa/9RBCHGHzCKIcx43pR6w60IpbaLEcQbZ4Z7JvEg7Jd1h/yupf1i9o/Cu1EjlvcvY9qXZ8p1Pi4WZBe/LwNkhoqZmnf8P7SI+vgJYQH9S4Sz6yzEUGyrC+OGa7Pf7e9W9dCxHsoSnR/+yo0X23h5qB81hXgJCJoo/dpntGQqCPvrhDqvvZfI7Q+X+3oBeYcNJWJM3Ob1/71rEe9li+o9NmPbMzRNNmgiQkzfB9KEE3QumWWsgupBd1fC6n9riAOU0GBAIDpB7tbRxuxVRJZo0OrQ8yuFY8717nvJKidBbyCayn6pZ3cgg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=t0syhX52Wm4OeFZ8xwVpUGNnkNVkXdk1MRDVaWghkoU=;
- b=Wx5oSeaL4FrqAlGp+9FXYkhqHYmZSqz9cyncprPyYwdOTWkhiva7WSksEO8wqKBBwR8P9MPWhxMFiLB+xg6y+BFj9+rgzhdkYtZXezWAdD82DPWcTlG/+XVJXYc/cAgpz/hZaU4XwzqvKaMu9FtPE5ENXb4vNGaUuVhTKmSK24bE8W0vEGQ27ExFBp47lII6Hcc1IRpK19u7k7MpIdIFe1DYTPbWJR1rAyKY8qC4AHzwg0dDYoVlIufMNIBY+tKBp2mss20GZ1ljhc+8dzXm7cFCQOnzh1MdWNawcJaVCiCF5YgNL11IlBHB6u2bZz8oblttLGN+eOOcRPf+tEo5vA==
+ bh=5q7rRfXcgWRqpZ3smhIe57kqqd5t1jDlZznsJp61nVw=;
+ b=SyAHtDthGKUVgp6edKXx+AkWoUcCtFm60WLlrRLRNyZbDIY4pcwfCKv5kPzo33sGfI4XsntxXXF6VNZms8n76GFGnT/nQMCk6NP5k2UqH2p+Iu8EsMTVZX2ZoUrbzLJ2vc3viTU3Y/KyoxH9iiBqrE1lWrI3QYPk7Mi1tTdP2SShmQp6XFBCN7SgnS/08Y/z/14SyFi3zoCMMTBJ1vqPaPkn8FXrysMkDerNlJCFkhNU8m2k0EA+C+iXA3Kehs2vxkWB4SV1jGW0ZHIHelmInT6YoeLUK6FKeMF6bT3PYYF7gibPvC7+EDPDUmKhJ4bB/nmeyvhaw9SrIPtHlkqOpw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
  dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=t0syhX52Wm4OeFZ8xwVpUGNnkNVkXdk1MRDVaWghkoU=;
- b=Obep8iDmujS/5azSs/z01LWGZpYlzT6ElM6A4MoHeLYCI2NqbfMBLttOjZeZRcrO5OHHIGKCUE1ucrP+mbfb8NdnSAaxX+03HxUSmjmSvU4oBRt5XFO6DKmwTbKxwvysOL08JE5P46+M7X7pdr2fP2bnb2Vs8r5LPxDRVaTK0gQ=
+ bh=5q7rRfXcgWRqpZ3smhIe57kqqd5t1jDlZznsJp61nVw=;
+ b=DwN06J9WRA60zPea/A9wb6/j3zlLtR3yb7uutCPRoabN6qvVkBA38Shp1VqWTGP7lSGWvUKbn0Lt7sE9FQtDcR+cF2kNvB4U99/qHwdaMLPPOZzco60tdykx7pWysfxwz9SYhaPkcMbtD/5CLYmA2errQtgbVsei53OEp2HTOVI=
 Received: from BLAPR10MB5267.namprd10.prod.outlook.com (2603:10b6:208:30e::22)
- by BL3PR10MB6139.namprd10.prod.outlook.com (2603:10b6:208:3ba::15) with
+ by DS0PR10MB6822.namprd10.prod.outlook.com (2603:10b6:8:11d::16) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7544.55; Mon, 13 May
- 2024 17:23:58 +0000
+ 2024 17:51:47 +0000
 Received: from BLAPR10MB5267.namprd10.prod.outlook.com
  ([fe80::372c:5fce:57c3:6a03]) by BLAPR10MB5267.namprd10.prod.outlook.com
  ([fe80::372c:5fce:57c3:6a03%4]) with mapi id 15.20.7544.052; Mon, 13 May 2024
- 17:23:58 +0000
-Message-ID: <57424cd8-c656-4ca0-80fb-288f83156ec9@oracle.com>
-Date: Mon, 13 May 2024 18:23:53 +0100
+ 17:51:46 +0000
+Message-ID: <ac181d99-c1b4-4ec0-ac37-9c9e7e132210@oracle.com>
+Date: Mon, 13 May 2024 18:51:41 +0100
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 bpf-next 01/11] libbpf: add btf__distill_base()
- creating split BTF with distilled base BTF
+Subject: Re: [PATCH v3 bpf-next 07/11] libbpf: split BTF relocation
 To: Eduard Zingerman <eddyz87@gmail.com>, andrii@kernel.org, jolsa@kernel.org,
         acme@redhat.com, quentin@isovalent.com
 Cc: mykolal@fb.com, ast@kernel.org, daniel@iogearbox.net, martin.lau@linux.dev,
@@ -92,15 +91,15 @@ Cc: mykolal@fb.com, ast@kernel.org, daniel@iogearbox.net, martin.lau@linux.dev,
         houtao1@huawei.com, bpf@vger.kernel.org, masahiroy@kernel.org,
         mcgrof@kernel.org, nathan@kernel.org
 References: <20240510103052.850012-1-alan.maguire@oracle.com>
- <20240510103052.850012-2-alan.maguire@oracle.com>
- <cdc19260a1d1e37649f64bab731c21cb4e5422ff.camel@gmail.com>
+ <20240510103052.850012-8-alan.maguire@oracle.com>
+ <392d0bfe027cb88a5813f0832715439a76ed9de6.camel@gmail.com>
 Content-Language: en-GB
 From: Alan Maguire <alan.maguire@oracle.com>
-In-Reply-To: <cdc19260a1d1e37649f64bab731c21cb4e5422ff.camel@gmail.com>
+In-Reply-To: <392d0bfe027cb88a5813f0832715439a76ed9de6.camel@gmail.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: LO4P123CA0186.GBRP123.PROD.OUTLOOK.COM
- (2603:10a6:600:1a4::11) To BLAPR10MB5267.namprd10.prod.outlook.com
+X-ClientProxiedBy: AS4P189CA0010.EURP189.PROD.OUTLOOK.COM
+ (2603:10a6:20b:5d7::14) To BLAPR10MB5267.namprd10.prod.outlook.com
  (2603:10b6:208:30e::22)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -109,255 +108,304 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BLAPR10MB5267:EE_|BL3PR10MB6139:EE_
-X-MS-Office365-Filtering-Correlation-Id: eefcf910-ab81-4bc8-3130-08dc7371790d
+X-MS-TrafficTypeDiagnostic: BLAPR10MB5267:EE_|DS0PR10MB6822:EE_
+X-MS-Office365-Filtering-Correlation-Id: eaa7e4ee-84df-4484-d594-08dc73755bc1
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230031|7416005|1800799015|376005|366007;
+X-Microsoft-Antispam: BCL:0;ARA:13230031|376005|1800799015|7416005|366007;
 X-Microsoft-Antispam-Message-Info: 
-	=?utf-8?B?S3F2ZzlUT0Z0a2xHZVJ2M2VFWGk0dDU2bE5aS0NGYnZ5bjFPTGYvYkpyMThr?=
- =?utf-8?B?VVlTM3JYd3pSR25CNHZvdVJ5VDVUUmhoT2lHR2JEeTNlYkp3UDlUSW9IQWEw?=
- =?utf-8?B?TkZERlMxQnJzS1NoaUViOEZzdkZWNzEySGRINGFacG8zNk02VEgzTFdiRDlI?=
- =?utf-8?B?UCtRdi9TYnpGcUtqK0Vzd2wxZExnVnNTRXh5TllKbUFVbjNjZ3BlTlBtN3Yv?=
- =?utf-8?B?cnloMm9wcERTUldEY2ZCUmpJak1KS2xuc2VnWnNPdnFyUm1pUFJ4dmRmVWtj?=
- =?utf-8?B?bTRQeTJudGNmbmdIWGs3TitNeHJ5TGdqMm16VG1Mb1c2UklVa2lVdVlta3ds?=
- =?utf-8?B?SjV0SUhFSjZEZFNXcWIwMjNBV1h4cGxMNTJLMFV1Y0hkUXorYUFDNzhTSEpX?=
- =?utf-8?B?bFF6OStSZUx0Q01YMWhMdjlaZ2dxajZkVTdGRUVza0FOa1kwbmJoWHlxQmtO?=
- =?utf-8?B?YjBxS3F5TVNiMnhiYUhPOUpNQndIMVdPRkxVSGozT0lhcTEyeEllclFIdWhB?=
- =?utf-8?B?Tk5OWUFEVTVMTWVTUE4rRUlRd0l2M2d4QWw1eEhLNkRCQ0RUYWF3SzJWM2hL?=
- =?utf-8?B?VFBWZHJ4ZjV5a1ptN0RRRFBOQXc5aXN1OW5VSGcvZkNTNjhieUx3MkJTSHdH?=
- =?utf-8?B?QnZNMms0UGgwUWlFNWNiZXRjNVkzSFRRanBtQjlsSmliMHJTMVQzOWE1S2dK?=
- =?utf-8?B?STlMcmp1T3YxWFpSbUtObktCM0FKV1d5bmd2c1JGNllnN25vbUhtOVFFNFhN?=
- =?utf-8?B?Sm94WFhTQ0draU56akVXcThzZzZ5UHliNkNYSzJ2d2FkSVRLSEZQajhndGJQ?=
- =?utf-8?B?OTJISXB5cDBGVDNva3l6Z2pMZExwbW9mWWFnM1M3SFlZTnJvZW8zRU5nQ1p6?=
- =?utf-8?B?WDdGS2JKYUZ5eHp1RitCeDlJbmFyU2loQnQ4bHk3QzcrcHRWYlNtRDZ0VGJq?=
- =?utf-8?B?WHRZeHF2VjVrNEdRM0RHRXhqZTNhaHhkdDUrZTNvT0oyRCtXSmpTUUwwMDU0?=
- =?utf-8?B?NlF1cFo3OHhKTmt6aERmMGUzeHlUTE8vOGZsYXVwRmRYUkw0RS84bjZvOHBP?=
- =?utf-8?B?MUlBYVhhQlJiSWE4ZjRaZm04OG1pSmNONzVxelY4c09yQzZBSmtZZHBaRU1r?=
- =?utf-8?B?em5HajRsejl1c1BTcEFFZTg5M3hNWGVQVjhaQ1BBNHQzc0d0RHYreUVVeGlL?=
- =?utf-8?B?UlpxYUVESnVDOUg1Y1hIR2FWSkVtWDcrOWdWeTJuN3pNRnZEQWgrdUNmV2cx?=
- =?utf-8?B?aVovZmV6RTZnLzM4ZVFmcVQwdmkwbEs5dWcxd0p0NGxpY0lkbmw5RGpmV3lj?=
- =?utf-8?B?WlgxSHVQUVd4TjhkbTJXNXhWUGRsSVhEUm8ycFZNaGx3a1lobWpPMGh5WEFr?=
- =?utf-8?B?cUd3VEZOZm1HdnI0dkpyUCtiREdCVHlaek5TK3YzaFY0b05TVlFWd2lTTFBy?=
- =?utf-8?B?dHorcGRmMWpON2lzU0xYYnJzTnB5TUhkSk0xc2xYeTZVa29sNTBsK25lUlZJ?=
- =?utf-8?B?eE94UlQvQmhKdHppRmRXczdQbWJ6RnVKdzA4TmlhK3psRk1RaUFHM0ZWNTVo?=
- =?utf-8?B?M250ajZjeExEbm1qakQ5VklvK3JadGRTd3lCcmpLQ1JKZFArQ0g0aDRML1NK?=
- =?utf-8?B?b1ZQcXdvcmk0dTJ5Q2R4Qld4UTdqdGUwL3M2THlvUW10MGt0WkNINmxGZTk0?=
- =?utf-8?B?dTFwK0pNUlVOTi8xcFowaHVyWlNHTEgxckdLdExGeXdFd2ROZUlSRnVRPT0=?=
+	=?utf-8?B?N0txQUlSNUpUTENWaTRac2g0RkJCQ3JOZFAvMllnTWF1cjJXN3JXVmNvblF0?=
+ =?utf-8?B?ejNERm1HUE5vbTJlSDRvbHBqeFhUZTFvN3Y1bFk4ek5RLzcvNTNqQU12TnhJ?=
+ =?utf-8?B?UXREeUZxZzVyaHRmdGhJRGVwU1JXcnJPMktpa0xqL2JHZGN2a2IxaWY1Yjh5?=
+ =?utf-8?B?S2MrMUpUcDQ1NG5Gb0pwekgyL09hS21kZUVidnRSV0hLOUZEUGY2M2VYdElP?=
+ =?utf-8?B?REhhbHBBVjBIU1F3S3FuQkNlemk2ekR1c2pHdGplRjV3ZmRSZ2ZqUFVSMC91?=
+ =?utf-8?B?cXdGMnZpZW9xRHFrNHRZMTBjcUdYRWZMOVdOM3pPVUh2Y0Y4MC9sdFhad21s?=
+ =?utf-8?B?UmpvUWdvMk9kd21vMEZkOG5wUWhpVVVLOVBJNHBYbzk3TnRDNFJuYmV3NmVM?=
+ =?utf-8?B?OWJ6NHhhZDRUMkRQU2lYU3FuSXJrOFdlV05FNGQ0aVdMM0ZwV1VWRitRTjBr?=
+ =?utf-8?B?VGhOUEJzOXVPWXhsWG15R3JaeUZXOTJGOVRRb2ljN0IzR0p3RGxrRC9QcUYy?=
+ =?utf-8?B?UzJRcEx1YTBDaHNLanVvQnFiOW1xOVZVRVE5d0E4TE50UEhSd1EyNFppemkv?=
+ =?utf-8?B?QUtuN0x2Q09JamtxRitIdGpFUWNuU1NIcndDWjliYmdDdE4zeWdsU2tRRDFW?=
+ =?utf-8?B?MXhMeUJiYy8wRVRMbTZ0dHhtcnlIdW81UjI1WnlrSVdEaGlMZEVvaEQybUFv?=
+ =?utf-8?B?bG82OG1jdWlYa1N5TkUrNlFaNTZ2a0dscDFCNGhsaXNIT1lGVTRDNlZhVFc2?=
+ =?utf-8?B?R05uWTBIK2IyTTVscWpSVHdDOHM2aFROYlJQTDNPNEh3WUFuVW0zbHhzbXRY?=
+ =?utf-8?B?MURZeENGYnpTY1JtSGVHaCtEaHVTTE81cUtCTjFRV1Z3RGtPS3JUWXdPcE8w?=
+ =?utf-8?B?cEg3dEtmNFNEaWJ3NGtLK3BtMUdBdVVtallUdnhDekZIOFplU0lxNFMvbEpC?=
+ =?utf-8?B?QnBvU1NzaFVXSGsxTU5nVThiMldOV0l0NlNvYSs3Mml1alNwV0wyN1hLTVMw?=
+ =?utf-8?B?MUltaWJJdmhsQjJBbmRCR05YOW9sdzFBcnJjbjVVWUtCVXVqT05VRjBLRnZV?=
+ =?utf-8?B?c0VtQnpDZEp3WlRZUWo1eGNLd0FUWEdMUUhSZU5aTWdsQ0hoK0ppVm9Md3JY?=
+ =?utf-8?B?UlpwM2xaY3dwRThaRTFvbUt3MTNLYUVrNWRCWHM0c1VzOHB2VU1EcWtRcHBm?=
+ =?utf-8?B?Z1JYL0NBVkIrd04xMlJJWjRvZ2RZWXcrYkJvK2VZdU1FbWRVby9nOUNSa3ZV?=
+ =?utf-8?B?UFNUczQ4RWJGK0dkWUVoTC8yR2d1TTRBZGc2ajVmVENubWdwTkZpdFQvb1Qw?=
+ =?utf-8?B?MHpNVmJGeUpzUHAwVXdhdnpBVHU3cmJvd0hHS3JZUzBtL0p3R0ZDUlFUMkNB?=
+ =?utf-8?B?ZWVTVnVTZUVlS29OcmFJR0hId3l3OFg1V0Zac2cvRWg4ZlBmYkR4QVRRZ1FH?=
+ =?utf-8?B?VGkyUkdnYld3bFJwSEV1YjRRUitZbjQzZldUMzlKZDZBcXNQTFN0SUJzbENt?=
+ =?utf-8?B?MjArVE9BQ092dmhOcHhHUWRhUVJZZTVZRUlTZ1BXejNMNjd1OHdtWnl6bVg2?=
+ =?utf-8?B?aDdaZWFQSVAvNldqd2V2aDFNODZqOGNlNzlYb1NCWG53Q3J2SVVCaDZ1cDlL?=
+ =?utf-8?B?ZzBBRURJcVJ5Q1E0QXdSbUlqK29ZNnE4REZrN0YyaENmZXlEV0s3KzNYNWVD?=
+ =?utf-8?B?VG5mZjVzRVgyaGtvVGdraitNZUw2L1BLS0ErdysybDNHQkhvaXdhcWxnPT0=?=
 X-Forefront-Antispam-Report: 
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BLAPR10MB5267.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7416005)(1800799015)(376005)(366007);DIR:OUT;SFP:1101;
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BLAPR10MB5267.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(1800799015)(7416005)(366007);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0: 
-	=?utf-8?B?SmVuTWw1K0diY0FkcGFaSXVRMzhOaEw2cENtaVNUSUNVR01pZEEwU2tVdUZk?=
- =?utf-8?B?Z2t4QjhSNjFhY2JBc005VjlZV2gydERYb0hyMzZzUnVCVndscDdLcGhBaUsy?=
- =?utf-8?B?ZDR4eGxyYmwwMGpGNzUrUjFEbkZxNWhHQUNwaFR4OWJVYTZ4Rk42VGRoOHBZ?=
- =?utf-8?B?TUg3NGtyYzZtRGtBaWRHMFJUUUpJQm1rWVZQTnFJZzNIZTE3V0dvUmxaWDI1?=
- =?utf-8?B?RWZsZEJLanNXVkxvRk1PaUZlZFNpNHJJMlptMWM0UHp5dDFxT1dZVFlySkFu?=
- =?utf-8?B?NFNsM1RnSTdMckdsRTVNU3B1T3lvTXhQSWphaVc3RmJGSjJiQko2cEVYQThv?=
- =?utf-8?B?NnUwZHM5V3Y5WklVU2lrV0VSY2dDdGtESlJiUlBIV01HMUs3Z2xxMmx1UWtu?=
- =?utf-8?B?QjVGby9LN0xidFZKUUlIemREaW56UE1VUlNuQkF2eEFXMjYxMmZsVnNyNFpv?=
- =?utf-8?B?QmNEaW9WUlIvald3NmYyNGE1Vm5FdUlFaEFZMUFxSElBakJ4NEhFOVZzc1VD?=
- =?utf-8?B?WFBBWTBIU1Rpay9aVmluNmczWWUzLzMxM3R3cjRBRWtlZ3ZleWtUT2RJSmI1?=
- =?utf-8?B?enI5WW55eTZFKzg5M1hnOUdManhpUWRUeXp0UmNFK2oyOVVFM3lxbXNUYktH?=
- =?utf-8?B?ZnBKNGNMZGJuTmRnVjB3RE80S0FHRjFoN1hqNzd3dkd0RXgyUDBpZzlYTDJw?=
- =?utf-8?B?ZU9oL2VnTlFKdWp1SC9BbVNRbjJxU3c4RzhaSW11NWJuRThQM1BOeFh5bjhi?=
- =?utf-8?B?dlVxekllVHN2QklxalFLRVp5ZkowVWtNV2Z4VkxERkJYc29IUkc5SCtEeFdo?=
- =?utf-8?B?RzB2eXdzekd6MEo2MHlWVFVVR2JkdzhZVWdqSGJ2ZDcyaGtyTDNwK01NcXdN?=
- =?utf-8?B?ZDhaTWVWYTFMZUVDbU9CU0s5bHlOOWczbnBvaUFlVUs0MWpJMGlad2FyKy81?=
- =?utf-8?B?T0Z3bWt3RFFMVTBYaG51cFlPMERRM1F2ZUFJSzcxWXJHY3poemEwWk9tRHRU?=
- =?utf-8?B?UFl5R1I4dkRNOFZpRG9CMFlKTTMvejZKbk1jdkVERmo1YzBFZGxrcVhkMkdM?=
- =?utf-8?B?NldIWjIzK0hIRUlrQWdhVHBGU2l6eDk1OEpMcytZbVNoL3VXRGdMRDFGMWJL?=
- =?utf-8?B?enVlMDhrRXBSRzR1bjZZckcxOW1UYm4rbFduaXFSc1k0TzRhZi9naTUra21a?=
- =?utf-8?B?MkdYRXhoZU04a0RCbWx4VmhYYlZRenpHakpBTzdYUVd3aFhBaVkyUGk0SGto?=
- =?utf-8?B?d0RVN29mTVY0Zkxxcy82YVZhakdPUVVQZlN2QnYweTdXdXNxQTU5QWhDYSt6?=
- =?utf-8?B?TEZxNGZBZkNuT1FQeUQxMmJBSWltWXJER253ZGNPcSt3eXYyV0pmcUc3RmFN?=
- =?utf-8?B?SWY0QTF4TllCVUczQTEwZ0Y4bzczK0tCYnlkR2o0QzQ3dVdzT1c3dS9tY0s4?=
- =?utf-8?B?aVpFRDIwc1JQV3dnUmZydU42WjRvVUdib2Vsd1NnQjJxeWJ0RzdFMFdYOXNE?=
- =?utf-8?B?T3lKK3JDa1ZsTnExSThWWmhReFVEOHh3bS8rOU1RQlVTRGVHUHp3ZDNqNTV3?=
- =?utf-8?B?T2NiN2ZCY1dnNllleHoydzBpbVFOK2Jzb2dwcUtXZUlFR08vWmxrajZ0aEV4?=
- =?utf-8?B?Vmc0cldSL3dpVlhGODlSWXVvRXFsSXhzaDNlWXBHU3F6RE5RQjZVMGdIOHY0?=
- =?utf-8?B?NHRHN2V0dWtZVlU1UWFxdkJWQXhBSlEwQWdOWnFhVjRPRFRZMkxzc2M2T01N?=
- =?utf-8?B?bFMwNmNuTW5QcW9UeGFqTkxTWUQ1Y25rR2x2V0JVLzk2ckxQMXVWMlJxR3pJ?=
- =?utf-8?B?STFZdm1aYkNsOGZPRFZ5czk3OU05MzUrNHFNS0x1cEZJUjBVUU83MXowTE4r?=
- =?utf-8?B?YXBkUTNndE50YktTZ0QvNm55cVllRS9nV2JLL2lpWmI0OUEvRk9PWmdoZHp6?=
- =?utf-8?B?cUNEYnphRUZSQ3hLWGZuQVhQR1ZiOWdUbUVVOUtpcWZzaFlCdEZ1cjg0Sk9h?=
- =?utf-8?B?QW1VN29HL3Q5YXh2eHA2R3U3SHZLaWFJRmE0M244VExtVE5uNFBRODVMWmk3?=
- =?utf-8?B?eHlUUVpLK2t5a2FyZU5IM0l4MEh2UnhYVU50MUdSV1VSSlhpQzF2SGlIM3NG?=
- =?utf-8?B?dWtrbWtucFFMZlUzVUFQRDcyeDVjNUdYOWx1ejJ3WDI0WkJWL3JNMVRMWkNK?=
- =?utf-8?Q?Nsl6jgagXrv36p6JVeU7yxM=3D?=
+	=?utf-8?B?eGJyaEd0cDIwRWNCam9vQW9zdEJrVDVVckMxWHZEV1A1ZWZkWHhGei9ubnUz?=
+ =?utf-8?B?dkdCRGozRmJxLzdZSmpveXliemprY0I3K0pLS2NTeWdLek5FWkU2ekg4N0t4?=
+ =?utf-8?B?YzhRSlpMRC9qek50cnZ1aDRLREM1U3piL0hqSWdoZjFlV1U1OG9EMW40K04z?=
+ =?utf-8?B?cG16cjhJNFJhSldpckN6QloveWY3ZVRsWk9KTWo1OGp2Ti81bEtNY3ozbFNE?=
+ =?utf-8?B?b0l1d2M2TGZIZ1UzY0FPZWJzUUNVZ3JBMGsxSmpzdi90azNIVGduYzZJUTQ3?=
+ =?utf-8?B?SFFVcm42RXNXL0szY1NTMHI1cXUzaGpEK2pmWjlBTkRBd1FKSHFjVjNNL05m?=
+ =?utf-8?B?VWx1Z3d4dCtCNkFVYnVROStNNW1SdGh6WEppa0d6M2M5SlhXTU81NDlqVTdl?=
+ =?utf-8?B?elp1Qkx6Z0VOREhvZUd6eGlzRWMweDlDVFQ1Tm1kNVdPeXVYUEpaRHBXRnpr?=
+ =?utf-8?B?VHdhSHViNWIyekFTWVNFSktSNVBVcVpES3hCTkxEcUh0K3RuQWdHelBEb0Vh?=
+ =?utf-8?B?eXVneGRCOWRvQWIydlY2cjUxUWJ4enBzZzR4NzBUNGM3Skx6OFVYNW5WMk53?=
+ =?utf-8?B?NHIzZFlhcGxraUdoejJmRmVGaXNlUGh2LzZvUU43N1Nia3J1bTdNN3FHeEx3?=
+ =?utf-8?B?RzRMb0NLQXJxTHdRZ2ZBTTdrQkl3M3Z1YVlkTHZhd01XV2RYM3BaWGV4ZjVa?=
+ =?utf-8?B?YWlwY3lpdDFKdldsQmgybEcramh2N08zK3pnTEZJNVhSWHBWWlVvMTVWYXZQ?=
+ =?utf-8?B?RzRndEpuYk52Y2xNV21EQVlrNUVROEdFZUNQWmZQTUhSY200ZUl4T0lIZTlv?=
+ =?utf-8?B?cS9CNkU3dmUvY25iMUkzVEVNZUZtWU03bEZkdTFXNy9qd0xjeHczanBJQzJi?=
+ =?utf-8?B?RlU5SmdOOUg3YjJkckVLVkJiMDNoK2VDN1I1cTRvanhvZEx3YkRRZzhVUTRu?=
+ =?utf-8?B?eUorRGllM01UZnovV1dmSlg4UlMrSTRZV2NYeWMrdU54ZkphL3d2aFdBNThX?=
+ =?utf-8?B?S2ZNUGV0K3F5VjIwUytQOWpRWjFTeHo0aW5qdHZZTmhFWGluNlpQN2RCd3Rx?=
+ =?utf-8?B?N21xOW9IZU9teFdldkgwbE53VnlFS3liSFRXWWh6cWhOOWhpSDEvR3BQS2kr?=
+ =?utf-8?B?UmRIeDMzZC9EN1lwU0xObFdlblhwTDdTcWlaOXZKNFloYmJ5VkRXajl4a1kx?=
+ =?utf-8?B?djBONk9scWJBVDQ2Z25aOE56aXZmemNYb2lzcFRVdHc1OU92WmgyejR0MUFp?=
+ =?utf-8?B?bDh3MnVBZGxqT0N6MXpWU3hKbVZzR21mVGhGNStGblRVTnc2MVVRY3VIVjJx?=
+ =?utf-8?B?eFFKS1dKRDhna3pPR1ArS1l4NzQ0U09XVDZoM0dkblRBYXY5aTlXNHl3QVNj?=
+ =?utf-8?B?ZVlqenltWHdjaC9LZTF5K0VkcnIrcTV4MVczS1N5QVluWUdTL25KKzhwSGo2?=
+ =?utf-8?B?MDZnVnA1aHdNRU1obXE0N0VoNkcwczczOHVuMlN5cmg5bmlCNElhbjZPQ0li?=
+ =?utf-8?B?NlpwaTh4Mjdna1o1ZlpRZ2VKZWtmWC9EYjVZdGowOGJ5THFsVTZ1bHQ5T1Zu?=
+ =?utf-8?B?MC93WjU4M2NvMGdUcHJzWmJXSkgzc0N0N1k0RWVodTNHQytvbmtWT3FsZVl1?=
+ =?utf-8?B?M016cE5lMnBzTUVYT0ltNFJJZVhTdFQzOFU2RXdDWHBmc05Bb3krSzdIaUIw?=
+ =?utf-8?B?dEVpL3NnN0l2ZUh3SEtFT2FHMW5Ia3E2M1JNS251WFZxb2NEQ1FTVTh3YlpB?=
+ =?utf-8?B?WDQ2K3V2aWQxaGFBUEZvcVg5VVc1STY0R29uaDJ0NDN0bG1HbVZGbnVUSENN?=
+ =?utf-8?B?dU5xNUJQOGVhL09zMkp5OTBBUU9oT0NpUnZmZ3dGcThWTDZUYXY5T2VmS0FO?=
+ =?utf-8?B?U2FXSlN3am1yRS9qUVVIUm9YRVJtd3VXZTZUeGUvdUJINTRrVXQvbmplZ1gy?=
+ =?utf-8?B?TjlHL1JjaU9ZSjZxWkk1MEp4azk5NlZEajdLdWRCZ3FGeEw2MUJiV1ZyVDI5?=
+ =?utf-8?B?RktXVWZzKzlDSmNSa25CWG0yUjFDb3N5dzZELyt1R2t1ZTdJTDhqZjIyYVZE?=
+ =?utf-8?B?VFhFelkzV2hwOGV3NkVpQkdRUUFwN1lGZTN0WnM5YWx0c3d6K2laWlFrS2Mr?=
+ =?utf-8?B?UkV5TmJhM1FLM1dLdU5iMHpPdjE5alR0SlplUE1Sd3VjQllsTjdHcWcrNjBv?=
+ =?utf-8?Q?/Y2WiHxx26xZo9Fh48xUOdY=3D?=
 X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: 
-	te2Oiwig8OjAPqzMEdZ919ecdCOpzNEl/PMmIzM5K7H089i8jESD4OGsLJtKp42bfh4CwlTp4kp2+2EOK9MmznLcM/vtUEvMO1ZhcjtsvTh6cKXQfAd+uD7MMGLC6loxNcC1HFPPQsJaMvL865aqLqlaadGHG3S7vFa8lxNivuq6bgK2XyHUxGrq60BPn7sJPqM08iXnJ90OIyZhkHbW/9FY7nJTcguWa97Zs9CdSUpwUdDdITH8j/LU2RuobIH3opylJFEFecs28ZYOEhSx1dYzDLYLmfqFkdtn1Iszce95+1Y0Oy0ZEv5oyr1jSy5XIyA2XqhRDrb2bNDWinJIeBLmsUfT7jr97BkRzDUchK/XWjfVKSu4CbGRz3LgnADa7suucopnfgre3huDkFXm8+LFHL8CAYb/eg0N7OROhCK9dT+ZRegtShHhzfs6MoYhaj7RHBNYzFZdXf5TqMot+4vWI23txohEbicXgztiBpXk9+YWyvQRqq8x3v28iS6Jz28FvFIyKi4P4nILuTTE3b6Txm616+VFUkXV6MnDakkOMoyTST7e4AtMRCl13vnxUhYNZ4e1yOtpqIiMDKCkwgTr/w0u2q5OnsxaQWUSbOw=
+	zMM0YPvInyVxKk1qqez0NZI7jFbPqpqdjL6MD+i2GSiZj0HfviCGLuxTdQ+H421Tqw/GzuhpXwpKrqKjkGfhGbhaBFLEJNzRkCLMppT8nu5RZ+qTnuwIrgdY8UidaL56QXz1sf6caTyogx1+PiDefUnQafPxotvkgtf1PfemgMR0WV7NRU92YBk8x0X1hUYt21lVN4HuAOLDHpmvlAcdlyF5qXbbFrwgcqB3cnRLcU1WoSxvpRdygK3Pnab96zz+SO8ZOzYb0DyakV7rG0JLDsJGmw4SL6cKoLRRDmGtMBbYUAyrArs1zh8Aqcj1wiamvInEhAvGAyFKYCs0kElmSODb16p7P+O+ETddcO1Rgvm1R1QeKSZbbJgrN0lDuRbuY7EqDamYgZbAJm4z3Oxh5Z3il2bgFI8/08CT8MQwI8iDknPTk+KFwU217rdvsagEVDqibiQmkiy+N9/GmTHr5YNUYHEMN4VPPWwawWo8+LwbW+HZ4jPy9xIO1CtZ3ux2vzleHOlKpTu8mI4oxwjBG0QEgChLj4F0//lh0i7AmT+ggTE6p/0/iATOnMTM5IzST+IA/JpaIevmiXapDVv8n4XDanSSOCULT2SXdZ9l0Bo=
 X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: eefcf910-ab81-4bc8-3130-08dc7371790d
+X-MS-Exchange-CrossTenant-Network-Message-Id: eaa7e4ee-84df-4484-d594-08dc73755bc1
 X-MS-Exchange-CrossTenant-AuthSource: BLAPR10MB5267.namprd10.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 May 2024 17:23:58.0965
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 May 2024 17:51:46.9192
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Aid9hn/iR1lfsFB0hSMmTOum92TNGJjaqloNGXyPDyZyj3lb1zioyTPiiKX16IfO1s6n3Dw7b4C3ZaRy9zmRag==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL3PR10MB6139
+X-MS-Exchange-CrossTenant-UserPrincipalName: f54AyZBoeaSMWFz5gQZU/YllxhSBxgeZ99XK+7OmfyBqzEfLn7zmuAYLx63B2JZwC+DlLuYM8/NEJfAnMhBkdA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR10MB6822
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.650,FMLib:17.11.176.26
  definitions=2024-05-13_12,2024-05-10_02,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
- spamscore=0 phishscore=0 mlxlogscore=999 bulkscore=0 adultscore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2405010000 definitions=main-2405130115
-X-Proofpoint-GUID: -oSMi1YodsSYYuUEgvS4t3x6TP9uywfQ
-X-Proofpoint-ORIG-GUID: -oSMi1YodsSYYuUEgvS4t3x6TP9uywfQ
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 adultscore=0
+ mlxlogscore=999 phishscore=0 malwarescore=0 suspectscore=0 mlxscore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2405010000 definitions=main-2405130118
+X-Proofpoint-GUID: x-mPnxL8jJuapE4mMQu6NJLSK6H6jNkE
+X-Proofpoint-ORIG-GUID: x-mPnxL8jJuapE4mMQu6NJLSK6H6jNkE
 
-On 10/05/2024 20:14, Eduard Zingerman wrote:
+On 10/05/2024 23:26, Eduard Zingerman wrote:
 > On Fri, 2024-05-10 at 11:30 +0100, Alan Maguire wrote:
 > 
-> [...]
-> 
-> Hi Alan,
-> 
-> A two minor notes below, otherwise I think this looks good.
+> Looks good to me, but I think that comparison function should be
+> extended to include 'size' to cover some corner cases, see below.
 >
 
-thanks for reviewing! Replies below..
+Agreed.
 
 > [...]
 > 
->> +static int btf_add_distilled_type_ids(__u32 *id, void *ctx)
+>> +/* Simple string comparison used for sorting within BTF, since all distilled types are
+>> + * named.
+>> + */
+>> +static int cmp_btf_types(const void *id1, const void *id2, void *priv)
 >> +{
->> +	struct btf_distill *dist = ctx;
->> +	struct btf_type *t = btf_type_by_id(dist->pipe.src, *id);
->> +	int err;
+>> +	const struct btf *btf = priv;
+>> +	const struct btf_type *t1 = btf_type_by_id(btf, *(__u32 *)id1);
+>> +	const struct btf_type *t2 = btf_type_by_id(btf, *(__u32 *)id2);
 >> +
->> +	if (!*id)
->> +		return 0;
->> +	/* split BTF id, not needed */
->> +	if (*id >= dist->split_start_id)
->> +		return 0;
->> +	/* already added ? */
->> +	if (BTF_ID(dist->ids[*id]) > 0)
->> +		return 0;
+>> +	return strcmp(btf__name_by_offset(btf, t1->name_off),
+>> +		      btf__name_by_offset(btf, t2->name_off));
+>> +}
 >> +
->> +	/* only a subset of base BTF types should be referenced from split
->> +	 * BTF; ensure nothing unexpected is referenced.
->> +	 */
->> +	switch (btf_kind(t)) {
->> +	case BTF_KIND_INT:
->> +	case BTF_KIND_FLOAT:
->> +	case BTF_KIND_FWD:
->> +	case BTF_KIND_ARRAY:
->> +	case BTF_KIND_STRUCT:
->> +	case BTF_KIND_UNION:
->> +	case BTF_KIND_TYPEDEF:
->> +	case BTF_KIND_ENUM:
->> +	case BTF_KIND_ENUM64:
->> +	case BTF_KIND_PTR:
->> +	case BTF_KIND_CONST:
->> +	case BTF_KIND_RESTRICT:
->> +	case BTF_KIND_VOLATILE:
->> +	case BTF_KIND_FUNC_PROTO:
+>> +/* Comparison between base BTF type (search type) and distilled base types (target).
+>> + * Because there is no bsearch_r() we need to use the search key - which also is
+>> + * the first element of struct btf_relocate * - as a means to retrieve the
+>> + * struct btf_relocate *.
+>> + */
+>> +static int cmp_base_and_distilled_btf_types(const void *idbase, const void *iddist)
+>> +{
+>> +	struct btf_relocate *r = (struct btf_relocate *)idbase;
+>> +	const struct btf_type *tbase = btf_type_by_id(r->base_btf, *(__u32 *)idbase);
+>> +	const struct btf_type *tdist = btf_type_by_id(r->dist_base_btf, *(__u32 *)iddist);
+>> +
+>> +	return strcmp(btf__name_by_offset(r->base_btf, tbase->name_off),
+>> +		      btf__name_by_offset(r->dist_base_btf, tdist->name_off));
+>> +}
 > 
-> I think BTF_KIND_TYPE_TAG should be in this list.
+> Interestingly, comparison by name might not be sufficient.
+> E.g. in my test kernel there are a few STRUCT/UNION types with duplicate names:
+> 
+> $ comm -3 <(bpftool btf dump file vmlinux | grep '^[\[0-9\]\+] \(STRUCT\|UNION\)' \
+>             | grep -v "'(anon)'" | awk '{ print $3 }' | sort) \
+>           <(bpftool btf dump file vmlinux | grep '^[\[0-9\]\+] \(STRUCT\|UNION\)' \
+>             | grep -v "'(anon)'" | awk '{ print $3 }' | sort -u)
+> 'chksum_desc_ctx'
+> 'console'
+> 'disklabel'
+> 'dma_chan'
+> 'd_partition'
+> 'getdents_callback'
+> 'irq_info'
+> 'netlbl_domhsh_walk_arg'
+> 'pci_root_info'
+> 'perf_aux_event'
+> 'perf_aux_event'
+> 'port'
+> 'syscall_tp_t'
+> 
+> I checked 'disklabel' and 'dma_chan', these are legit structures with
+> different size and number of members. The number of members is not
+> stored in the distilled BPF, but size could be used for additional
+> disambiguation.
 > 
 
-You're right; sorry, you mentioned that last time too and I missed
-fixing it for v3.
+Great idea! I'll update the first patch to check the few struct/unions
+that make it into distilled base BTF _and_ don't already preserve size
+for duplicates, and mark them as size-preserving struct/unions if so.
+It's still worth using forwards where possible, as this reduces the
+constraints for preserving size to cover just the cases that need it
+(embedded or duplicate struct/unions).
 
->> +		dist->ids[*id] |= *id;
->> +		break;
->> +	default:
->> +		pr_warn("unexpected reference to base type[%u] of kind [%u] when creating distilled base BTF.\n",
->> +			*id, btf_kind(t));
->> +		return -EINVAL;
->> +	}
-> 
-> [...]
-> 
->> +static int btf_add_distilled_types(struct btf_distill *dist)
+>> +
+>> +/* Build a map from distilled base BTF ids to base BTF ids. To do so, iterate
+>> + * through base BTF looking up distilled type (using binary search) equivalents.
+>> + *
+>> +static int btf_relocate_map_distilled_base(struct btf_relocate *r)
 >> +{
->> +	bool adding_to_base = dist->pipe.dst->start_id == 1;
->> +	int id = btf__type_cnt(dist->pipe.dst);
 >> +	struct btf_type *t;
->> +	int i, err = 0;
+>> +	const char *name;
+>> +	__u32 id;
 >> +
->> +	/* Add types for each of the required references to either distilled
->> +	 * base or split BTF, depending on type characteristics.
+>> +	/* generate a sort index array of type ids sorted by name for distilled
+>> +	 * base BTF to speed lookups.
 >> +	 */
->> +	for (i = 1; i < dist->split_start_id; i++) {
->> +		const char *name;
->> +		int kind;
+>> +	for (id = 1; id < r->nr_dist_base_types; id++)
+>> +		r->dist_base_index[id] = id;
+>> +	qsort_r(r->dist_base_index, r->nr_dist_base_types, sizeof(__u32), cmp_btf_types,
+>> +		(struct btf *)r->dist_base_btf);
 >> +
->> +		if (!BTF_ID(dist->ids[i]))
->> +			continue;
->> +		t = btf_type_by_id(dist->pipe.src, i);
+>> +	for (id = 1; id < r->nr_base_types; id++) {
+>> +		struct btf_type *dist_t;
+>> +		int dist_kind, kind;
+>> +		bool compat_kind;
+>> +		__u32 *dist_id;
+>> +
+>> +		t = btf_type_by_id(r->base_btf, id);
 >> +		kind = btf_kind(t);
->> +		name = btf__name_by_offset(dist->pipe.src, t->name_off);
->> +
->> +		/* Named int, float, fwd struct, union, enum[64] are added to
->> +		 * base; everything else is added to split BTF.
->> +		 */
+>> +		/* distilled base consists of named types only. */
+>> +		if (!t->name_off)
+>> +			continue;
 >> +		switch (kind) {
 >> +		case BTF_KIND_INT:
 >> +		case BTF_KIND_FLOAT:
+>> +		case BTF_KIND_ENUM:
+>> +		case BTF_KIND_ENUM64:
 >> +		case BTF_KIND_FWD:
 >> +		case BTF_KIND_STRUCT:
 >> +		case BTF_KIND_UNION:
->> +		case BTF_KIND_ENUM:
->> +		case BTF_KIND_ENUM64:
->> +			if ((adding_to_base && !t->name_off) || (!adding_to_base && t->name_off))
->> +				continue;
 >> +			break;
 >> +		default:
->> +			if (adding_to_base)
->> +				continue;
->> +			break;
+>> +			continue;
 >> +		}
->> +		if (dist->ids[i] & BTF_EMBEDDED_COMPOSITE) {
->> +			/* If a named struct/union in base BTF is referenced as a type
->> +			 * in split BTF without use of a pointer - i.e. as an embedded
->> +			 * struct/union - add an empty struct/union preserving size
->> +			 * since size must be consistent when relocating split and
->> +			 * possibly changed base BTF.
->> +			 */
->> +			err = btf_add_composite(dist->pipe.dst, kind, name, t->size);
->> +		} else if (btf_is_eligible_named_fwd(t)) {
->> +			/* If not embedded, use a fwd for named struct/unions since we
->> +			 * can match via name without any other details.
->> +			 */
->> +			switch (kind) {
->> +			case BTF_KIND_STRUCT:
->> +				err = btf__add_fwd(dist->pipe.dst, name, BTF_FWD_STRUCT);
->> +				break;
->> +			case BTF_KIND_UNION:
->> +				err = btf__add_fwd(dist->pipe.dst, name, BTF_FWD_UNION);
+>> +		r->search_id = id;
+>> +		dist_id = bsearch(&r->search_id, r->dist_base_index, r->nr_dist_base_types,
+>> +				  sizeof(__u32), cmp_base_and_distilled_btf_types);
+>> +		if (!dist_id)
+>> +			continue;
+>> +		if (!*dist_id || *dist_id > r->nr_dist_base_types) {
+>> +			pr_warn("base BTF id [%d] maps to invalid distilled base BTF id [%d]\n",
+>> +				id, *dist_id);
+>> +			return -EINVAL;
+>> +		}
+>> +		/* validate that kinds are compatible */
+>> +		dist_t = btf_type_by_id(r->dist_base_btf, *dist_id);
+>> +		dist_kind = btf_kind(dist_t);
+>> +		name = btf__name_by_offset(r->dist_base_btf, dist_t->name_off);
+>> +		compat_kind = dist_kind == kind;
+>> +		if (!compat_kind) {
+>> +			switch (dist_kind) {
+>> +			case BTF_KIND_FWD:
+>> +				compat_kind = kind == BTF_KIND_STRUCT || kind == BTF_KIND_UNION;
 >> +				break;
 >> +			case BTF_KIND_ENUM:
->> +				err = btf__add_enum(dist->pipe.dst, name, sizeof(int));
-> 
-> I think that the size of the enum should be read from base BTF.
-> When inspecting BTF generated for selftests kernel config there
-> are 14 enums with size=1.
-> 
-
-good idea; we can use t->size for both enum and enum64 cases above.
-
->> +				break;
->> +			case BTF_KIND_ENUM64:
->> +				err = btf__add_enum(dist->pipe.dst, name, sizeof(__u64));
+>> +				compat_kind = kind == BTF_KIND_ENUM64;
 >> +				break;
 >> +			default:
->> +				pr_warn("unexpected kind [%u] when creating distilled base BTF.\n",
->> +					btf_kind(t));
+>> +				break;
+>> +			}
+>> +			if (!compat_kind) {
+>> +				pr_warn("kind incompatibility (%d != %d) between distilled base type '%s'[%d] and base type [%d]\n",
+>> +					dist_kind, kind, name, *dist_id, id);
 >> +				return -EINVAL;
 >> +			}
->> +		} else {
->> +			err = btf_add_type(&dist->pipe, t);
 >> +		}
->> +		if (err < 0)
+>> +		/* validate that int, float struct, union sizes are compatible;
+>> +		 * distilled base BTF encodes an empty STRUCT/UNION with
+>> +		 * specific size for cases where a type is embedded in a split
+>> +		 * type (so has to preserve size info).  Do not error out
+>> +		 * on mismatch as another size match may occur for an
+>> +		 * identically-named type.
+>> +		 */
+>> +		switch (btf_kind(dist_t)) {
+>> +		case BTF_KIND_INT:
+> 
+> Nit: INT is followed by u32 with additional information,
+>      maybe that should be compared as well.
+>
+
+good idea, will add this.
+
+>> +		case BTF_KIND_FLOAT:
+>> +		case BTF_KIND_STRUCT:
+>> +		case BTF_KIND_UNION:
+>> +			if (t->size == dist_t->size)
+>> +				break;
+>> +			continue;
+>> +		default:
 >> +			break;
->> +		dist->ids[i] = id++;
+>> +		}
+>> +		r->map[*dist_id] = id;
 >> +	}
->> +	return err;
+>> +	/* ensure all distilled BTF ids have a mapping... */
+>> +	for (id = 1; id < r->nr_dist_base_types; id++) {
+>> +		t = btf_type_by_id(r->dist_base_btf, id);
+>> +		name = btf__name_by_offset(r->dist_base_btf, t->name_off);
+>> +		if (!r->map[id]) {
+>> +			pr_warn("distilled base BTF type '%s' [%d] is not mapped to base BTF id\n",
+>> +				name, id);
+>> +			return -EINVAL;
+>> +		}
+> 
+> Nit: maybe rewrite this like below?
+> 
+> 		if (r->map[id])
+> 			continue;
+> 
+> 		t = btf_type_by_id(r->dist_base_btf, id);
+> 		name = btf__name_by_offset(r->dist_base_btf, t->name_off);
+> 		pr_warn("distilled base BTF type '%s' [%d] is not mapped to base BTF id\n",
+> 			name, id);
+> 
+
+sure, will do.
+
+>> +	}
+>> +	return 0;
 >> +}
 > 
 > [...]
