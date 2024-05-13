@@ -1,48 +1,48 @@
-Return-Path: <bpf+bounces-29614-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-29612-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BA3F18C3997
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 445A38C3996
 	for <lists+bpf@lfdr.de>; Mon, 13 May 2024 02:20:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E60531C2091E
-	for <lists+bpf@lfdr.de>; Mon, 13 May 2024 00:20:41 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 75144281307
+	for <lists+bpf@lfdr.de>; Mon, 13 May 2024 00:20:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B6CDD17C9;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B2681139E;
 	Mon, 13 May 2024 00:20:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="b5jlwMkf"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="K5Wtvl+n"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 386FD36D;
-	Mon, 13 May 2024 00:20:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 386D6368
+	for <bpf@vger.kernel.org>; Mon, 13 May 2024 00:20:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715559632; cv=none; b=Rv86QoVX+ayiRFKhB1qdjhy6xgiUcaTcpbgJ7m1aIDVIG8TTWSMXmjiqZaR4BeQsCbBmSyjGnz/6W4318U8BrZwNM6UWfoSDe3etcGdTMN6QrutKRCKYhgQfw2c3QUIdLWbFL5oK+8X+i4ZGkYUOzikyhw2P54Sxz7lR9G3HXcg=
+	t=1715559632; cv=none; b=OiFUgwAgcfjz8j28FItTbWehDyJZTzuSh6dA+B1b/0E/FsykvMEVdYFRusKhDySWiUealxzd3RLSVEJs7mmB24Aai6gmkpr99uitAOtVVUxnP5kRi8DdubR+0bnNxeg9BCOD8nsPp/A1ybRpr9litKkHwar2XgMAS6KsKyyVs+Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1715559632; c=relaxed/simple;
-	bh=Hq+b14LfAi+p9vzvNy3FeEV1czeiMaaQfbEyuwoO0Hc=;
+	bh=B0M8aeR2hQpp7jsq28G2tX54mo9+kK2izID6zRdyfu0=;
 	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=J6tHMHZpMKmP6IFZcHZcDca4d/qfSyCLMlWJJ6+nrRL3bKtt4swDHdAjmi3ydMB5VdT0VLFZxuJ6Ar15lPpNuFrHrZVTgf4GB88xDRLGqfBZEpni3EiwC+tEidOvB/egrTbtYvWDVi+hD9Yld58v343WGwCCZTxKwSUAG8EUM5k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=b5jlwMkf; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id AD22CC32783;
+	 In-Reply-To:To:Cc; b=HvqcAMzbgQdou1gzTJbXKHPk8O/1I4QfXbqMceBV3KksGSQ3S47cABqnACbD9+BVo6bYUBn76uluNGWlcfxaVk+iGfSuovLhN+wtCCZDqvf/g5ylb+p+aiYAWjOtgwPKnUL/u1oeLU9swnJGR21SursfSCe2kzrO5PKyfpkPNyc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=K5Wtvl+n; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id B8FB6C32782;
 	Mon, 13 May 2024 00:20:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1715559631;
-	bh=Hq+b14LfAi+p9vzvNy3FeEV1czeiMaaQfbEyuwoO0Hc=;
+	bh=B0M8aeR2hQpp7jsq28G2tX54mo9+kK2izID6zRdyfu0=;
 	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=b5jlwMkfYlxBlFxTHG5yEUCeT9HhDqwWoNGpGoN8wFNUDlt5qqy4NX9lRqIS/+NZ5
-	 2fzCMbp/grX6egJYvUiSEFwVEYQYchxedLKqxNHItk+pKakau11OkmeEHi5aaARfPD
-	 UW4j+JcYKjkXadI1XCH55ldhbHRXwelmdkd8lkz74Ji2Mbj0lkme1gokUYR7S08EX+
-	 lhQuYKJ8jR9EdhfWjUNLL6GwANOf7UdEIEKOGp4yb0sFJcEp+kSjRU4CnVFbxBBJJS
-	 C1oQYBZBMBzysYVxqSj9PKrp0ZtEvCQRB/k+2aZC4pVp26nxKoCcjDFwSB4fY3xVjZ
-	 0S1DqWpFQBMMw==
+	b=K5Wtvl+nECtKMmQOhaW/zyIP/828JO7VvoUa9roa88endPVZrRGcG0LowFcVEVf4E
+	 kaC2j9Adihx2DLcqPkFo67VybO1tUf9JQGrG+aaZEJ9CGbiB/fJJdjyK3lsuQJtXi+
+	 y3eX0BbRrVkxrl6GJGctZ8oo3IG5+dj9rytHMgO4C8/F/B/u/bxqdFaVMTTFoXfasX
+	 z9yXgrTnjmu4sJD37AIa4uxp2iak4ZIkQJ/AszaLNDd9StS00J3M4puJgUI5HaxLPK
+	 6bHUiLGbXpXWgqEsyzvz9UiV/kCWA+kfHpebvbSfzphzvXW6lZOqDzr9BLdN4OVqF4
+	 70M+avXDAPWDA==
 Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 9B1E4C43336;
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id A6365C43444;
 	Mon, 13 May 2024 00:20:31 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
@@ -52,72 +52,42 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH v1 bpf-next 00/17] Retire progs/test_sock_addr.c
+Subject: Re: [PATCH bpf-next] bpf: avoid gcc overflow warning in test_xdp_vlan.c
 From: patchwork-bot+netdevbpf@kernel.org
 Message-Id: 
- <171555963163.28854.483246811366830977.git-patchwork-notify@kernel.org>
+ <171555963167.28854.5804115900768160470.git-patchwork-notify@kernel.org>
 Date: Mon, 13 May 2024 00:20:31 +0000
-References: <20240510190246.3247730-1-jrife@google.com>
-In-Reply-To: <20240510190246.3247730-1-jrife@google.com>
-To: Jordan Rife <jrife@google.com>
-Cc: bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
- andrii@kernel.org, martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org,
- yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org,
- sdf@google.com, haoluo@google.com, jolsa@kernel.org, mykolal@fb.com,
- shuah@kernel.org, tanggeliang@kylinos.cn, daan.j.demeyer@gmail.com,
- shung-hsi.yu@suse.com, linux-kselftest@vger.kernel.org
+References: <20240508193512.152759-1-david.faust@oracle.com>
+In-Reply-To: <20240508193512.152759-1-david.faust@oracle.com>
+To: David Faust <david.faust@oracle.com>
+Cc: bpf@vger.kernel.org, jose.marchesi@oracle.com,
+ cupertino.miranda@oracle.com, eddyz87@gmail.com, yonghong.song@linux.dev
 
 Hello:
 
-This series was applied to bpf/bpf-next.git (master)
+This patch was applied to bpf/bpf-next.git (master)
 by Alexei Starovoitov <ast@kernel.org>:
 
-On Fri, 10 May 2024 14:02:17 -0500 you wrote:
-> This patch series migrates remaining tests from bpf/test_sock_addr.c to
-> prog_tests/sock_addr.c and progs/verifier_sock_addr.c in order to fully
-> retire the old-style test program and expands test coverage to test
-> previously untested scenarios related to sockaddr hooks.
+On Wed,  8 May 2024 12:35:12 -0700 you wrote:
+> This patch fixes an integer overflow warning raised by GCC in
+> xdp_prognum1 of progs/test_xdp_vlan.c:
 > 
-> This is a continuation of the work started recently during the expansion
-> of prog_tests/sock_addr.c.
+>   GCC-BPF  [test_maps] test_xdp_vlan.bpf.o
+> progs/test_xdp_vlan.c: In function 'xdp_prognum1':
+> progs/test_xdp_vlan.c:163:25: error: integer overflow in expression
+>  '(short int)(((__builtin_constant_p((int)vlan_hdr->h_vlan_TCI)) != 0
+>    ? (int)(short unsigned int)((short int)((int)vlan_hdr->h_vlan_TCI
+>    << 8 >> 8) << 8 | (short int)((int)vlan_hdr->h_vlan_TCI << 0 >> 8
+>    << 0)) & 61440 : (int)__builtin_bswap16(vlan_hdr->h_vlan_TCI)
+>    & 61440) << 8 >> 8) << 8' of type 'short int' results in '0' [-Werror=overflow]
+>   163 |                         bpf_htons((bpf_ntohs(vlan_hdr->h_vlan_TCI) & 0xf000)
+>       |                         ^~~~~~~~~
 > 
 > [...]
 
 Here is the summary with links:
-  - [v1,bpf-next,01/17] selftests/bpf: Migrate recvmsg* return code tests to verifier_sock_addr.c
-    https://git.kernel.org/bpf/bpf-next/c/73964e9085bb
-  - [v1,bpf-next,02/17] selftests/bpf: Use program name for skel load/destroy functions
-    https://git.kernel.org/bpf/bpf-next/c/86b65c6db019
-  - [v1,bpf-next,03/17] selftests/bpf: Handle LOAD_REJECT test cases
-    https://git.kernel.org/bpf/bpf-next/c/5eff48f33fb7
-  - [v1,bpf-next,04/17] selftests/bpf: Handle ATTACH_REJECT test cases
-    https://git.kernel.org/bpf/bpf-next/c/5a047b2226c0
-  - [v1,bpf-next,05/17] selftests/bpf: Handle SYSCALL_EPERM and SYSCALL_ENOTSUPP test cases
-    https://git.kernel.org/bpf/bpf-next/c/a2618c0d8542
-  - [v1,bpf-next,06/17] selftests/bpf: Migrate WILDCARD_IP test
-    https://git.kernel.org/bpf/bpf-next/c/d1b24fcf1c16
-  - [v1,bpf-next,07/17] selftests/bpf: Migrate sendmsg deny test cases
-    https://git.kernel.org/bpf/bpf-next/c/f46a10483b27
-  - [v1,bpf-next,08/17] selftests/bpf: Migrate sendmsg6 v4 mapped address tests
-    https://git.kernel.org/bpf/bpf-next/c/54462e8452f1
-  - [v1,bpf-next,09/17] selftests/bpf: Migrate wildcard destination rewrite test
-    https://git.kernel.org/bpf/bpf-next/c/8eaf8056a44b
-  - [v1,bpf-next,10/17] selftests/bpf: Migrate expected_attach_type tests
-    https://git.kernel.org/bpf/bpf-next/c/b0f3af0bffef
-  - [v1,bpf-next,11/17] selftests/bpf: Migrate ATTACH_REJECT test cases
-    https://git.kernel.org/bpf/bpf-next/c/cded71f595c0
-  - [v1,bpf-next,12/17] selftests/bpf: Remove redundant sendmsg test cases
-    https://git.kernel.org/bpf/bpf-next/c/9c3f17862fae
-  - [v1,bpf-next,13/17] selftests/bpf: Retire test_sock_addr.(c|sh)
-    https://git.kernel.org/bpf/bpf-next/c/61ecfdfce264
-  - [v1,bpf-next,14/17] selftests/bpf: Expand sockaddr program return value tests
-    https://git.kernel.org/bpf/bpf-next/c/1e0a8367c89f
-  - [v1,bpf-next,15/17] sefltests/bpf: Expand sockaddr hook deny tests
-    https://git.kernel.org/bpf/bpf-next/c/dfb7539b47b5
-  - [v1,bpf-next,16/17] selftests/bpf: Expand getsockname and getpeername tests
-    https://git.kernel.org/bpf/bpf-next/c/bc467e953e4f
-  - [v1,bpf-next,17/17] selftests/bpf: Expand ATTACH_REJECT tests
-    https://git.kernel.org/bpf/bpf-next/c/a3d3eb957ddc
+  - [bpf-next] bpf: avoid gcc overflow warning in test_xdp_vlan.c
+    https://git.kernel.org/bpf/bpf-next/c/792a04bed41c
 
 You are awesome, thank you!
 -- 
