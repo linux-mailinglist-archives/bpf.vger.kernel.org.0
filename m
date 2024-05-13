@@ -1,216 +1,220 @@
-Return-Path: <bpf+bounces-29669-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-29670-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A98BE8C4874
-	for <lists+bpf@lfdr.de>; Mon, 13 May 2024 22:50:53 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 03C2E8C48AD
+	for <lists+bpf@lfdr.de>; Mon, 13 May 2024 23:15:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CC14B1C20CE9
-	for <lists+bpf@lfdr.de>; Mon, 13 May 2024 20:50:52 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2EB7CB229D0
+	for <lists+bpf@lfdr.de>; Mon, 13 May 2024 21:14:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 50C4381AC7;
-	Mon, 13 May 2024 20:50:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3DA44824B1;
+	Mon, 13 May 2024 21:14:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=microsoft.com header.i=@microsoft.com header.b="Dv3slrdD"
+	dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b="C3HRbjhI";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="RBirZnE3"
 X-Original-To: bpf@vger.kernel.org
-Received: from SA9PR02CU001.outbound.protection.outlook.com (mail-southcentralusazon11021006.outbound.protection.outlook.com [40.93.193.6])
+Received: from wfhigh5-smtp.messagingengine.com (wfhigh5-smtp.messagingengine.com [64.147.123.156])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B1F41C69E;
-	Mon, 13 May 2024 20:50:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.93.193.6
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715633443; cv=fail; b=rKBk2zHnB6lfoqotAsAClICtjjsXIO1ygi2B43dCOd1OE2tASdi7T3NNPj30/j3MPgYw9TC08eVJAay0nnPlLCxVxkXWJ9SfCUDnUgLcUMjTsyAJb5S/D6CBWFRds/mBfXJSmvSaSKryyb1aTneW1Z0ORf7l86G1XP4f87lTB7o=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715633443; c=relaxed/simple;
-	bh=UbxpnMKaNwI97jQyhCl9SJ2XtNtQIMdYLl/qnESXs6E=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=XN2aPkbS53G2//eu3blYfam6e5WeLjdyJLKIMl8JE9+t5/wIIPeOZ8PtbWAc9ZGcJZspzExwmPo5G/d8uSYgg+7bSiQXbCSOk5ynitOha+72cWXyn40pAbi6hzA+fPzXqoXiJBQVCWw/X+W5CFAd7IHxMR4mnpaQx2JYrLY0FRI=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microsoft.com; spf=pass smtp.mailfrom=microsoft.com; dkim=pass (1024-bit key) header.d=microsoft.com header.i=@microsoft.com header.b=Dv3slrdD; arc=fail smtp.client-ip=40.93.193.6
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microsoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microsoft.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=JrrYCv8HxOusmMYKQ570i0X/GR7nrkQ8L9PkoZhmJE7WYCWDbdT5weqzVwe2j+Gxb1s1gltuEmT3PdPKtQhMPejiY6hBPixLbBntGkPriJ/Mq3J0Kg6T0amse85grAYcEFA4TLvzf6nVLq93MSwoS9u1unMRgsvWWdhImaCSflZH5C6wrbCfZ3nlE4DHIJL7xB12Ub2mwQitFlzceZF/7OAGTGujj3XK0IVkJSfaRXCdLoIOx3cfBvmr0t60uaNS05ILhxKr2BGEk+QHhI4uJWW/dP0zrXiVRjBpyKGEdKuSyCYHq8mzglxfrlGLfDu4NTHp4Uoq9GhUN0GzrRJZew==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=G5gH74DSu+jfqStvA8VcF4BfD8y+KLuRxkJlu8XBm/k=;
- b=NOps55e1XCHdCTbHwjcLA4FyBVaA5f+LrIxhDEheIu0P8KClwTtXVxT8BX+0hjaEHuTX+XzBtGsmrF6sG217LcJzY0Rcl4uArkPuvsxbhLu+e8C718sNA3psAu0PcRfbI0e8A4Oo+JZyKxFJU6DnC1OXsgH/Kwcdr/fpEMell40W1WL/ADX5yxhBIUdi2TcjAp7wMM+5OsJzFfJioAKrZ84HjSWqe1+DTYFkiQxGQBP8DucayKs6xZbA3zg5CPu2ON0QA08SgWPR3I4uC1bTmQs2MZrDsmFuIrUqKUt38lsnkZYfEYBUQxAU3CpzgxzOyiRRxZVFMG6ydK6mkzNasg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microsoft.com; dmarc=pass action=none
- header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=G5gH74DSu+jfqStvA8VcF4BfD8y+KLuRxkJlu8XBm/k=;
- b=Dv3slrdDkdJ7sj24iInRfevJigr/XQnLfgB8J6nd/et6KcKdmHp+HOOHwpn//3MfiLM9k68bEfAQrWX+dpEWmPvnoMtPUVYRvNKfHv56Rinv8OvV6kKaAxchWQxDnewHislygIflBqAAmDvwfSNwNRAS+D2IUF4sVaklY5YYMtA=
-Received: from DM6PR21MB1481.namprd21.prod.outlook.com (2603:10b6:5:22f::8) by
- LV3PR21MB4191.namprd21.prod.outlook.com (2603:10b6:408:27c::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7611.5; Mon, 13 May
- 2024 20:50:38 +0000
-Received: from DM6PR21MB1481.namprd21.prod.outlook.com
- ([fe80::93ce:566b:57a1:bb4e]) by DM6PR21MB1481.namprd21.prod.outlook.com
- ([fe80::93ce:566b:57a1:bb4e%4]) with mapi id 15.20.7611.002; Mon, 13 May 2024
- 20:50:38 +0000
-From: Haiyang Zhang <haiyangz@microsoft.com>
-To: Jakub Kicinski <kuba@kernel.org>
-CC: "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-	"netdev@vger.kernel.org" <netdev@vger.kernel.org>, Dexuan Cui
-	<decui@microsoft.com>, "stephen@networkplumber.org"
-	<stephen@networkplumber.org>, KY Srinivasan <kys@microsoft.com>, Paul
- Rosswurm <paulros@microsoft.com>, "olaf@aepfle.de" <olaf@aepfle.de>, vkuznets
-	<vkuznets@redhat.com>, "davem@davemloft.net" <davem@davemloft.net>,
-	"wei.liu@kernel.org" <wei.liu@kernel.org>, "edumazet@google.com"
-	<edumazet@google.com>, "pabeni@redhat.com" <pabeni@redhat.com>,
-	"leon@kernel.org" <leon@kernel.org>, Long Li <longli@microsoft.com>,
-	"ssengar@linux.microsoft.com" <ssengar@linux.microsoft.com>,
-	"linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-	"daniel@iogearbox.net" <daniel@iogearbox.net>, "john.fastabend@gmail.com"
-	<john.fastabend@gmail.com>, "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-	"ast@kernel.org" <ast@kernel.org>, "hawk@kernel.org" <hawk@kernel.org>,
-	"tglx@linutronix.de" <tglx@linutronix.de>, "shradhagupta@linux.microsoft.com"
-	<shradhagupta@linux.microsoft.com>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH net-next] net: mana: Enable MANA driver on ARM64 with 4K
- page size
-Thread-Topic: [PATCH net-next] net: mana: Enable MANA driver on ARM64 with 4K
- page size
-Thread-Index: AQHapXRSoF8bWF0GzU23EBNbj3wY2rGVoRqAgAABNAA=
-Date: Mon, 13 May 2024 20:50:37 +0000
-Message-ID:
- <DM6PR21MB1481F5EE04BAB66E380A0706CAE22@DM6PR21MB1481.namprd21.prod.outlook.com>
-References: <1715632141-8089-1-git-send-email-haiyangz@microsoft.com>
- <20240513134201.5f5acbae@kernel.org>
-In-Reply-To: <20240513134201.5f5acbae@kernel.org>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-msip_labels:
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=16de0ef6-6bc9-49ea-9ab7-dc6239760e82;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2024-05-13T20:46:19Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=microsoft.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: DM6PR21MB1481:EE_|LV3PR21MB4191:EE_
-x-ms-office365-filtering-correlation-id: ee5ff38e-4c1f-4fad-f268-08dc738e5811
-x-ld-processed: 72f988bf-86f1-41af-91ab-2d7cd011db47,ExtAddr
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam:
- BCL:0;ARA:13230031|366007|1800799015|7416005|376005|38070700009;
-x-microsoft-antispam-message-info:
- =?us-ascii?Q?vKYC12z9w998ZPl5tg+sFnR+P4Eii8uFV9luCkCkqKdb/921OZSmmaorv2ln?=
- =?us-ascii?Q?eqg5j4J4CVQwTTth3y7jXOfAEuqoPPh2vt21qpphGK0tSs54ahwvmvKv0oFa?=
- =?us-ascii?Q?MFE2JA677jnhHc8FfT/yejWEVqDZg39gCTkBq2aAOqnIK7l9+Js0577XCzt0?=
- =?us-ascii?Q?bF+fjCH9S8mLUVBqJTtXLLqFZ5Bd5uaYj67HuoHWBLoUXbyfZYEx/ZfX46YY?=
- =?us-ascii?Q?4hwr/X8mC8AEhLrgWpUo4mXTWqQOcDEy3raN/wCJeOJSfE9ebwUp8oOEP3Ei?=
- =?us-ascii?Q?OoCst7LOaz9l5e1sHhVc+b9JYPHLmptdEemu2l4sSY3kdRiU4MzFMU/GnYjW?=
- =?us-ascii?Q?93YpOL/+cVlnB0wzMPxNM44XODkfGH3qVxFKQVu6E5V5VWER5CkLe6onjTI9?=
- =?us-ascii?Q?nJMNFD31NQcgN6T/W+KGUB57YHNATEKjTjADuqq7Wmxd1KfnXr04zil6+P6t?=
- =?us-ascii?Q?7i/0Mcu+G6rJyNrni1xkcw3+HZot9IHbTvpbZEEBqIlSgjvfYIBi61/ZASPv?=
- =?us-ascii?Q?USoMbSA7pdq2NWOe9Wt3BgPDS+XDsHxhPoybOAgucT7NOrwOk4g8hsL03xx8?=
- =?us-ascii?Q?SaTlU5yoEoqymmyJgNJrlGts9wHUkYHMpsAmhKjgPqxFBl2ZY8LATKL6lTqJ?=
- =?us-ascii?Q?3AnaZ9Oy8Btr9eaFQAaFtDu3Bs9yTim0x764m1S2ajqFpO3zi77yY5Tz0A7M?=
- =?us-ascii?Q?fB7ZSHHB0yxxrPNV+bwnPIl/MdqyHH6qat/f9oCxaViY5eMUvWDyaPCDkydo?=
- =?us-ascii?Q?9rBH7H/9i0iPDQoFle5xx2vIvHhRsC1WMKrQA7m6nt/ldyA7/sC6FayVHTiC?=
- =?us-ascii?Q?5GTdhslGmWF4k15GmiK2OJJqrhBf5LhzB9aFf5zIcY1encgXmna6Nhcmmob+?=
- =?us-ascii?Q?Dayf4MIX5avaz4gXU/DIAqj3oFVa8MBRxoQnmcXue7/nQ21eqQLwjpi86D7g?=
- =?us-ascii?Q?5Q91OEh6kZnmtjj+N3Ty01eQa97rA8ByG0fk043mi+NCm/y6e5B5YkEBZHXR?=
- =?us-ascii?Q?TDYCQ/jTBs6yvqQJlyUbn8/HJZm/LOfJTiwp3cZG7ZPe5SlzfJtzSk4Rf6IH?=
- =?us-ascii?Q?JsNp3eLMMRJQW7bAMYrl53dre3+Z2xx3ryKF/HIsiwLFyjyecAMWkvMnXWxP?=
- =?us-ascii?Q?dZQADxAc6YDppcHIgIotwZDt6+IHDk8OXOJt/y2YoE4ejkhSh2iU1r1NieS6?=
- =?us-ascii?Q?JtiWSW9eOUDWpgx1dr26QSumqr1svW9WfdLU6+PRHaxtsLuxLwBzYRnHx21i?=
- =?us-ascii?Q?YZ9l5z0vkfHJ/Y+zSctLK2QLRxDVqSX/FPlfaygwNw=3D=3D?=
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR21MB1481.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366007)(1800799015)(7416005)(376005)(38070700009);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?us-ascii?Q?KKw68Bc/aVlIZQIG2/+mjiztrnM6x2aOQ/yOEJmtv2UGiElMNlfnlHZBZsIB?=
- =?us-ascii?Q?X42HXaDtUHsj6p0vbVrNvH4MKFXgMjo9sMRwax45vYMiqdqQ8OpuhTeAB8AN?=
- =?us-ascii?Q?yECvZXsstmRmAmwyv4JWkr4IeJd7EgEDv6CLIhP25JZaes73cAgQ4KVS1uCv?=
- =?us-ascii?Q?qtXDw+tm8FolA1VKFUyy6EDxD1JY+OlYTvclJnf2MZfxpSHspZXRrwR0mM88?=
- =?us-ascii?Q?tpUsbaFEvxqFIKwuqaN9AQQMTNoAkBR5wgCiKe9rGD3NK91B+RCLLkFGOARs?=
- =?us-ascii?Q?6u/Cw/UxVm0nDEqo+ax5pJsV0JxhnvAdyBbXGzt7QxQQOTyfYPNtJMRRO9ct?=
- =?us-ascii?Q?5KOGfvTQG/tQcELZSf20yT6HFkcdEChBN1bNcIHdTnqaHNQJFlH5mTaoGgdz?=
- =?us-ascii?Q?ZZOo2id+t12EKlyL+Lo/kxcBUPXjOkRVzox/gpia/Nv8pz0DvjPMOegfYN/a?=
- =?us-ascii?Q?Wc7Y59Ectfot7z8XjRHaYwmpaHItffpIjwrhZ/dypWUIxN6hsp+5FY36Dsgn?=
- =?us-ascii?Q?Rs/YJLOKdbm82g9u3a4DNHE9NjI3ohk9Pvb6AzM7BVyffLdysYc6Z97iOJvM?=
- =?us-ascii?Q?Gi+BqXtfNX5wl5AhqZppWYwP6mUVOJgvcfI6/BZqbZDlQF328Lrj6F3m/Q80?=
- =?us-ascii?Q?K9taRzNJXUIs2IXpahPMdEXhjiJJIxYffTFw4eYhwb1XziyAl552zmlM+lOs?=
- =?us-ascii?Q?KJzujWiJdhyourez4RB5Lumrkhh7Fpy5KZ/HSz+LXL9/xd0aJQGYjoVTaVAD?=
- =?us-ascii?Q?4z15gfkzo3BDG4vNxI8CvdGg1kOYDvJiUpjxYmjaTww7L5J/IqAGELp64FKm?=
- =?us-ascii?Q?50+/EnPqtHWLzcmDgxdk6ifWn91sPn14LjY6q9UQb7my5wl/qPzrOFN2aLz2?=
- =?us-ascii?Q?CEivWryj60nXp4LQJ3T7VaoX2YOrefm23hN52lXXgeKFxKDc34LrnoWcRlPV?=
- =?us-ascii?Q?UXMcXyUBsmNT1gsNbBzQN+UTVr5QixfDF885s5FI6quxJWMNrAH/SfPAwirQ?=
- =?us-ascii?Q?KT2MFIVifTSBGYGyHvYIiRmfj0scXhluu+Obz43mm8x0X8sHOezhxEZvjosM?=
- =?us-ascii?Q?+lAeko4YU/dxckMkEJzGB01Eyj+GPVd2N2UnVPaGZSf8Gihk0VQOje3tg/Ei?=
- =?us-ascii?Q?fCleVFrWUwi49e7eAhTypDenI3hLNLb2+j7DPqbZU7PmzJ5sxPHImTO5/puE?=
- =?us-ascii?Q?Urgvakdqi7O7YFhAxnwU4Ibenj+OgtNiOXfXQHLXJjZ0vfmLF8vM7nxuJRbq?=
- =?us-ascii?Q?RRnuZ9OJKBqsrYo3UslMWE8CFf02TQh6+NDaFnTunCiys7sKBc5RzF5PVvBf?=
- =?us-ascii?Q?Z1YJuCbKCECSoskoqauCEfcvXPLJPAiMBcoYlDmZqohL9iThkAptcCaN/oZ4?=
- =?us-ascii?Q?VyH8dshBrtp1U5iNIrKns+qux+7f+qjnGHZRshoxMXI2l53Doy8auhc1LO2K?=
- =?us-ascii?Q?vmpESmmIjc75LDDCP11AO/W/NGgv1gBgdyFXzOMM+3P9o4BojN/HxEOoM+iw?=
- =?us-ascii?Q?RoLbd1h4moHqTfOd9k5TXdd3SoFTF0c/002/S/ENIDGXxXoxJDCjtvgwdL8Y?=
- =?us-ascii?Q?ib5LLJCDMjslxo+dOvXyEUo9+8NKersDDbgo9kRN?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B69971DA24;
+	Mon, 13 May 2024 21:14:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.156
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1715634891; cv=none; b=IXgxVQ1CYJl7yh8iGTi+yV2dZ9E0XKYKw+gSHW+kOEZPdOyv4Z1agl5E46xKTJmqdFQNa760xkBJ1GF4Ofw+M84P5VZ41JvktEBKSyJXAjWs15feEgjoPzG01pRAQ9H9pv5ZoV7VAbkalKas05pbMJjgLthfKLj+MjMCaKUIUrw=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1715634891; c=relaxed/simple;
+	bh=3RU14hPBRJi9AV9s+50eZOV1ETZIQyBxt+R/qp8IzRE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=gsRQqrfE4FQWzXeaWC7bLbdr5cqsZ3DvMGitetcPLD2CTQD/1tUq6zdji2j0D++cI+kLWWNHFCrzXRGNg9d2RPrrpg4VpWh2vIeR+jJK7tQ3Ry26yAOjp2WmOyXm6DjqoRrk+VXzjXr3eOVdKVH4cko2agoGqbsoNDQSuB62uK4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz; spf=pass smtp.mailfrom=dxuuu.xyz; dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b=C3HRbjhI; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=RBirZnE3; arc=none smtp.client-ip=64.147.123.156
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dxuuu.xyz
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
+	by mailfhigh.west.internal (Postfix) with ESMTP id B62D61800165;
+	Mon, 13 May 2024 17:14:47 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute6.internal (MEProxy); Mon, 13 May 2024 17:14:49 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
+	:cc:content-type:content-type:date:date:from:from:in-reply-to
+	:in-reply-to:message-id:mime-version:references:reply-to:subject
+	:subject:to:to; s=fm2; t=1715634887; x=1715721287; bh=5jWB6u8tA+
+	i7tSP2QC8w163S31C7XhqcLLTbhhZxvX4=; b=C3HRbjhI8qJH4OYIqx1gxKnweB
+	qPkVDutbLoTXx1orYCjAYNJL8jyMa6P8zr8Z5GPIQRNvQh8o76GuXgIULFWSFpyg
+	JUCOIcFlQSmLtP/OcUkSAIwVooEmRTSyDXYVHuBJp+HOK6IDnFp/ukTWD5oTawJm
+	3zJApPi88xNmmYwSEsW0JXujV02B66me109zyNbrG1VViSM6RqwXKAESJnFRy8m1
+	IkikurFuPFrYHlPe30s5H2CMylBb1+x/5Ws9W6TRROektZZ9cWh4Oz0nyyrvCUwH
+	WV88dSZdPc88h6gtO+SxobdvvksX9hF9KLsn5HtzQuw25W97AGqwdBpVtSTw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm3; t=1715634887; x=1715721287; bh=5jWB6u8tA+i7tSP2QC8w163S31C7
+	XhqcLLTbhhZxvX4=; b=RBirZnE3wJBSizEubcQhyFS/hGUmLA+N/h73t4J3wOsu
+	X2fP2OVVXgbe+7MA0kw0ye8XXRkonyRCxP86X6CQGN6mRhEhqS+fI6cTIQP7B8zM
+	+kh2qT+h4JkLyjGQ6shtG7wGCwbJj6hlHUvGB81eW2RAPLFoFUw3EjsGgixDFm3h
+	UqiyL7bwTYw2YFWh2o7eit4w37BBw5AfIQSa3XIBb2ObsYfrcQrMhp853x3yrJMx
+	nPHBk9GIHznfw4YitrnuXmY14X0roH2YZsR0WmMl1bEvu5Znj1w59isBX638P9jl
+	eQZXQUAtCSij5yxHIve94rBe4T1wl9zw/mtr4pb2vw==
+X-ME-Sender: <xms:xoJCZtiWU-clMtxv7adKhVdpHx5HuQNOQsKEb1LT0wgDwGXjt6p_gg>
+    <xme:xoJCZiBmMz_Um0uoONcB6tQKqU1AGrFZDHJ3QuoWLQrWKdN5_L70EeRCZptHI4kOt
+    vXsn7KpviBThWD4Sw>
+X-ME-Received: <xmr:xoJCZtGTg_PmDbBbZ9cpUJib-HAg5cA3Ao4AVBgYE27PczSB-mJwO1GXo6RAHghEnbqxzSIKqIKSdLkqVEzjqfZa1GoYSlf2wIo7ZBg>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrvdeggedgudehjecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecufghrlhcuvffnffculdejtddmnecujfgurhepff
+    fhvfevuffkfhggtggujgesthdtsfdttddtvdenucfhrhhomhepffgrnhhivghlucgiuhcu
+    oegugihusegugihuuhhurdighiiiqeenucggtffrrghtthgvrhhnpedvfeekteduudefie
+    egtdehfeffkeeuudekheduffduffffgfegiedttefgvdfhvdenucevlhhushhtvghrufhi
+    iigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegugihusegugihuuhhurdighiii
+X-ME-Proxy: <xmx:xoJCZiQiY63J_-4w_onneR62Y83dA5ctUgZVgMWpZTXR0XNW-2kmSw>
+    <xmx:xoJCZqylVdG6CoXR0qUgaHkrTVvFoMJyROPwN8rdRVsGbuIBtZCA4g>
+    <xmx:xoJCZo6uxnfvBUswxrNJF7XtzkZL5ih-9ejkZmtpcZlqcEIeUsYvGg>
+    <xmx:xoJCZvx38QH-qpYw1dpkEa41Q8fCBIc7bIf__Ep_-dk_Boua-KJTeg>
+    <xmx:x4JCZnzT7In_dEt7X-AGBC1w_mLHsoNCtrGNwQKzctGJwZnc7HheTDlF>
+Feedback-ID: i6a694271:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
+ 13 May 2024 17:14:45 -0400 (EDT)
+Date: Mon, 13 May 2024 15:14:44 -0600
+From: Daniel Xu <dxu@dxuuu.xyz>
+To: ast@kernel.org, daniel@iogearbox.net, qmo@kernel.org, 
+	andrii@kernel.org, olsajiri@gmail.com, quentin@isovalent.com, 
+	alan.maguire@oracle.com, acme@kernel.org, eddyz87@gmail.com
+Cc: martin.lau@linux.dev, song@kernel.org, yonghong.song@linux.dev, 
+	john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com, haoluo@google.com, 
+	jolsa@kernel.org, bpf@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	kernel-team@meta.com
+Subject: Re: [PATCH bpf-next v3 2/2] bpftool: Support dumping kfunc
+ prototypes from BTF
+Message-ID: <f27zhdp4ydckd36j7qskqjty227nax47uo62gqoimgw6hoanmv@bt2oxuxdngvs>
+References: <cover.1715625447.git.dxu@dxuuu.xyz>
+ <6b16417c2c05019e83e420240c6d9796f9324a6c.1715625447.git.dxu@dxuuu.xyz>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: microsoft.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR21MB1481.namprd21.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ee5ff38e-4c1f-4fad-f268-08dc738e5811
-X-MS-Exchange-CrossTenant-originalarrivaltime: 13 May 2024 20:50:37.9874
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: DNUr5fU89Wcy2N6hwibGVvzeozATPHouj6OXRRZIOVgRf/Kl8q5ixK/RD3v5XkOp68a7IC3PIp8jVtykOMc2Pw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV3PR21MB4191
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <6b16417c2c05019e83e420240c6d9796f9324a6c.1715625447.git.dxu@dxuuu.xyz>
 
+On Mon, May 13, 2024 at 12:38:59PM GMT, Daniel Xu wrote:
+> This patch enables dumping kfunc prototypes from bpftool. This is useful
+> b/c with this patch, end users will no longer have to manually define
+> kfunc prototypes. For the kernel tree, this also means we can optionally
+> drop kfunc prototypes from:
+> 
+>         tools/testing/selftests/bpf/bpf_kfuncs.h
+>         tools/testing/selftests/bpf/bpf_experimental.h
+> 
+> Example usage:
+> 
+>         $ make PAHOLE=/home/dxu/dev/pahole/build/pahole -j30 vmlinux
+> 
+>         $ ./tools/bpf/bpftool/bpftool btf dump file ./vmlinux format c | rg "__ksym;" | head -3
+>         extern void cgroup_rstat_updated(struct cgroup *cgrp, int cpu) __weak __ksym;
+>         extern void cgroup_rstat_flush(struct cgroup *cgrp) __weak __ksym;
+>         extern struct bpf_key *bpf_lookup_user_key(u32 serial, u64 flags) __weak __ksym;
+> 
+> Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
+> ---
+>  tools/bpf/bpftool/btf.c | 54 +++++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 54 insertions(+)
+> 
+> diff --git a/tools/bpf/bpftool/btf.c b/tools/bpf/bpftool/btf.c
+> index 91fcb75babe3..884af6589f0d 100644
+> --- a/tools/bpf/bpftool/btf.c
+> +++ b/tools/bpf/bpftool/btf.c
+> @@ -20,6 +20,8 @@
+>  #include "json_writer.h"
+>  #include "main.h"
+>  
+> +#define KFUNC_DECL_TAG		"bpf_kfunc"
+> +
+>  static const char * const btf_kind_str[NR_BTF_KINDS] = {
+>  	[BTF_KIND_UNKN]		= "UNKNOWN",
+>  	[BTF_KIND_INT]		= "INT",
+> @@ -454,6 +456,48 @@ static int dump_btf_raw(const struct btf *btf,
+>  	return 0;
+>  }
+>  
+> +static int dump_btf_kfuncs(struct btf_dump *d, const struct btf *btf)
+> +{
+> +	LIBBPF_OPTS(btf_dump_emit_type_decl_opts, opts);
+> +	int cnt = btf__type_cnt(btf);
+> +	int i;
+> +
+> +	printf("\n/* BPF kfuncs */\n");
+> +
+> +	for (i = 1; i < cnt; i++) {
+> +		const struct btf_type *t = btf__type_by_id(btf, i);
+> +		const char *name;
+> +		int err;
+> +
+> +		if (!btf_is_decl_tag(t))
+> +			continue;
+> +
+> +		if (btf_decl_tag(t)->component_idx != -1)
+> +			continue;
+> +
+> +		name = btf__name_by_offset(btf, t->name_off);
+> +		if (strncmp(name, KFUNC_DECL_TAG, sizeof(KFUNC_DECL_TAG)))
+> +			continue;
+> +
+> +		t = btf__type_by_id(btf, t->type);
+> +		if (!btf_is_func(t))
+> +			continue;
+> +
+> +		printf("extern ");
+> +
+> +		opts.field_name = btf__name_by_offset(btf, t->name_off);
+> +		err = btf_dump__emit_type_decl(d, t->type, &opts);
+> +		if (err)
+> +			return err;
+> +
+> +		printf(" __weak __ksym;\n");
+> +	}
+> +
+> +	printf("\n");
+> +
+> +	return 0;
+> +}
+> +
+>  static void __printf(2, 0) btf_dump_printf(void *ctx,
+>  					   const char *fmt, va_list args)
+>  {
+> @@ -476,6 +520,12 @@ static int dump_btf_c(const struct btf *btf,
+>  	printf("#ifndef BPF_NO_PRESERVE_ACCESS_INDEX\n");
+>  	printf("#pragma clang attribute push (__attribute__((preserve_access_index)), apply_to = record)\n");
+>  	printf("#endif\n\n");
+> +	printf("#ifndef __ksym\n");
+> +	printf("#define __ksym __attribute__((section(\".ksyms\")))\n");
+> +	printf("#endif\n\n");
+> +	printf("#ifndef __weak\n");
+> +	printf("#define __weak __attribute__((weak))\n");
+> +	printf("#endif\n\n");
+>  
+>  	if (root_type_cnt) {
+>  		for (i = 0; i < root_type_cnt; i++) {
+> @@ -491,6 +541,10 @@ static int dump_btf_c(const struct btf *btf,
+>  			if (err)
+>  				goto done;
+>  		}
+> +
+> +		err = dump_btf_kfuncs(d, btf);
+> +		if (err)
+> +			goto done;
+>  	}
+>  
+>  	printf("#ifndef BPF_NO_PRESERVE_ACCESS_INDEX\n");
+> -- 
+> 2.44.0
+> 
+> 
 
-
-> -----Original Message-----
-> From: Jakub Kicinski <kuba@kernel.org>
-> Sent: Monday, May 13, 2024 4:42 PM
-> To: Haiyang Zhang <haiyangz@microsoft.com>
-> Cc: linux-hyperv@vger.kernel.org; netdev@vger.kernel.org; Dexuan Cui
-> <decui@microsoft.com>; stephen@networkplumber.org; KY Srinivasan
-> <kys@microsoft.com>; Paul Rosswurm <paulros@microsoft.com>;
-> olaf@aepfle.de; vkuznets <vkuznets@redhat.com>; davem@davemloft.net;
-> wei.liu@kernel.org; edumazet@google.com; pabeni@redhat.com;
-> leon@kernel.org; Long Li <longli@microsoft.com>;
-> ssengar@linux.microsoft.com; linux-rdma@vger.kernel.org;
-> daniel@iogearbox.net; john.fastabend@gmail.com; bpf@vger.kernel.org;
-> ast@kernel.org; hawk@kernel.org; tglx@linutronix.de;
-> shradhagupta@linux.microsoft.com; linux-kernel@vger.kernel.org
-> Subject: Re: [PATCH net-next] net: mana: Enable MANA driver on ARM64 with
-> 4K page size
->=20
-> On Mon, 13 May 2024 13:29:01 -0700 Haiyang Zhang wrote:
-> > -	depends on PCI_MSI && X86_64
-> > +	depends on PCI_MSI
-> > +	depends on X86_64 || (ARM64 && !CPU_BIG_ENDIAN && ARM64_4K_PAGES)
->=20
-> Can ARM64 be big endian?
-
-From the document, it can be:
-"ARM cores support both modes, but are most commonly used in, and typically=
- default to little-endian mode. Most Linux distributions for ARM tend to be=
- little-endian only."=20
-https://developer.arm.com/documentation/den0042/a/Coding-for-Cortex-R-Proce=
-ssors/Endianness
-
-MANA driver doesn't support big endian.
-
-Thanks,
-- Haiyang
-
+Oh, looks like selftests fail to build. I will fix that for v4.
 
