@@ -1,219 +1,135 @@
-Return-Path: <bpf+bounces-29656-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-29657-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 931548C46DC
-	for <lists+bpf@lfdr.de>; Mon, 13 May 2024 20:31:56 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 047C18C46FE
+	for <lists+bpf@lfdr.de>; Mon, 13 May 2024 20:39:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B6C791C20E09
-	for <lists+bpf@lfdr.de>; Mon, 13 May 2024 18:31:55 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id ACD941F21D1E
+	for <lists+bpf@lfdr.de>; Mon, 13 May 2024 18:39:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1091439FDA;
-	Mon, 13 May 2024 18:31:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 038D039FFE;
+	Mon, 13 May 2024 18:39:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="e7elEJH7"
+	dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b="vDOpUjwA";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="h+rC8Uyt"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com [209.85.208.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from wfhigh3-smtp.messagingengine.com (wfhigh3-smtp.messagingengine.com [64.147.123.154])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB1E137144
-	for <bpf@vger.kernel.org>; Mon, 13 May 2024 18:31:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 965951BF2A;
+	Mon, 13 May 2024 18:39:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.154
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715625110; cv=none; b=URvAckpSuX37rzblXTCm9vqCbK4RrC2ChW7/g7ywP02OuMYJESScUyhuFHSsgig6bzItEsOPu15FLznnR8yL3FMaorEmE5eHBzD52LmjghQ8isGQXGoJ4u+EtSS//vYSc19m2ylrxTepvOoe0Xvw62i33CyObjFC5omG2nJR9Ro=
+	t=1715625553; cv=none; b=G2EYS3ahSy5W/2+ACrXJz5YYMLAceHqNZ0ULkNrHfUJ6Sam07kfAv+5rekahKcAbuoVyaADowVIQ9PkP3qUYHC3xlDWed4AluM2wrTrgJWkU4deGFkaGLAStf0bpCk4mRvCOzdJ/6K3Xf8aZrbsEWbz5gFwfYTgED3MtpGsxtBk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715625110; c=relaxed/simple;
-	bh=3ZwAB8Y8ZUIyGagmA9bMT/46c3bkaZgO1OCbdjLIhQU=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=sd8pz56DXU0sC+w8lX4QXJaCplRslmOtTtocLVCwVbuiBM/Lj7aBK7V8o8Ns+0ICQag/kWHVIE1PQLnLTLM4VswaLIc3lfQMex2tC1s8dAXQtdUYY9msYDwuLRzfkhFngCJVaHbloayYIGwEvO/QXFUKmXOebKlKxzEedsQYywc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=e7elEJH7; arc=none smtp.client-ip=209.85.208.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-572a1b3d6baso20472a12.1
-        for <bpf@vger.kernel.org>; Mon, 13 May 2024 11:31:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1715625107; x=1716229907; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Dp4o1bBP9g8nSA2c4EpHf9/XklxFDXV2HdHmWJKkIqw=;
-        b=e7elEJH7NOwhPMOzmp2ISWNlOFIKZWQBH6O7f+CBhbdgjXHnDT53uh1VqoCJxStsxV
-         FLUdMPezoowxy5UPF4fY1DKDHalQPgNCH5kc3tmcjnK9AXGdQ4SNf/N/ENGIhmsy3mcX
-         wGPqDNgobmMVZzQaU6C1rAUf16YaQy29ZzCPpZI5LvdP7Zuj8zxuF4ojMtj/3KzUqrlI
-         YbYv0F1fC0D48FBi95iys9tTQPNT/fB7aEmdfLiTRQtCBTIi2zNntR0TZ/z9snMIfOPw
-         7mYccyYxVEzvQXWtcsHweUE8B5s6aKSgWfvxP6juK+3L/4MJ6dIbnhR6abjwntYhiU/F
-         LkLg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1715625107; x=1716229907;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Dp4o1bBP9g8nSA2c4EpHf9/XklxFDXV2HdHmWJKkIqw=;
-        b=RqsAI4m70HQkg1H0c9RgCMoz9uRIjeloNJ+DfooOU2UcBO+qmvKU9F3xNR32nuOgZa
-         KDi9UU1BplRku51u2RW2mQf+4eHN6jFhjfHCv1lcdXT4p9DLB/tjmoEwFBfMrTqhuET9
-         Qm1E8Hy6p8KbNy7/K+yZ1lQxrJFcApfYqVVw2AlzJ/aKUqBvh/u/Va14jpR9gXQFF1DL
-         p6Box/+WnvZiEjZIrVd2Uej9x+u7R7sLUoqbxEohX4DJMTCMJkoSKvFGlhWAFIfPL5k4
-         f7yk7JMPzvim29MG8C7n/Ul9g1/ecCUb0HysIYkyI++ljKmy4NIJ3DePFNOHTPXZ3fGM
-         Q1Lw==
-X-Forwarded-Encrypted: i=1; AJvYcCXGhnsFN/hdz9+uBXKffVpoi03azLyaI3Og1o0A4idZtR1g1QAo16mMu0Fnpv2+wirw6BtslHKsdS34OPf5NsGTbCCL
-X-Gm-Message-State: AOJu0Ywb/Jg/Lx7XSg0UF+S8koYsX4vGUIm2ACIRMIGD1gs0BWFkWMzm
-	7y1artnd6zyHrP1TSpOr+MIaF8sI9jS22fIeld0A87qjXWLYh58MzBScazliVSDLYhkWLh3/6Ry
-	ZL8zNo6ToP/3w/5BPNTpV/2HV+C2P8kfJ//A=
-X-Google-Smtp-Source: AGHT+IFt9WAWEm8QsBb4sEg9CQQRW3buM/TQvs364N6oHJq9eMGxek+5D8VmJE/YX1MybjfvRdmV3Zq5jL/uB0Qx6C4=
-X-Received: by 2002:a50:cc0c:0:b0:572:9eec:774f with SMTP id
- 4fb4d7f45d1cf-57421846490mr416314a12.0.1715625106955; Mon, 13 May 2024
- 11:31:46 -0700 (PDT)
+	s=arc-20240116; t=1715625553; c=relaxed/simple;
+	bh=m8R7nWxm71bMXjsYfnz7mU8geGrDX6SswEUf/Xk8bJo=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=tIse9MHQUfJGSd9AK9CrA0bdDMV6l8kjO2MtKzp/0UZwFG97o+E1H765YOLIvGQl2WY8Fip0xaOR3YuO4A5M6pvGD6/C27kyn/Q38MixgIVLRGWaJsBuRZY85nKYU2W5kpJicsc/47kAs0OM8NAJCFms0GFiVVrySSCxALdzbXU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz; spf=pass smtp.mailfrom=dxuuu.xyz; dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b=vDOpUjwA; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=h+rC8Uyt; arc=none smtp.client-ip=64.147.123.154
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dxuuu.xyz
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
+	by mailfhigh.west.internal (Postfix) with ESMTP id 256A61800153;
+	Mon, 13 May 2024 14:39:10 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute6.internal (MEProxy); Mon, 13 May 2024 14:39:10 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
+	:cc:content-transfer-encoding:content-type:date:date:from:from
+	:in-reply-to:message-id:mime-version:reply-to:subject:subject:to
+	:to; s=fm2; t=1715625549; x=1715711949; bh=O8Ls5VMkKDiXpfxNPLZEw
+	kjr2NHHS8FZM/mcfdqCmuk=; b=vDOpUjwAllkpPSKbfTQUQcAYV6TwWyNhBT1PT
+	JRsmraP9ewCklKYVc7pDb4Cps0pCjw435H0PtunRQ6C/nf1a+SDA0HkVRMDQKlCk
+	D6FePa5kzZZ+o3BKvxIRY8E20vghNuXsc6DXhzYi/9Lpc9IkmtV9GeEmGNqpgpqZ
+	0G0DkwKoHlQ2U+TW6LzfxhhEhDFW2bIEtAXeCLLW9q/LqmRfgGUOvPTK3AyfqvWS
+	uj5cJUPDHQsUAn+MYFdipn68rG9AhUm4C8qY+zKYidPj+8jvfiSRVPsODotAwkWy
+	WqDjgSSb3ysPBUpZE28xH7Xj+EEczGiw473vJW0hCV56OqYYA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:date:date:feedback-id:feedback-id:from:from
+	:in-reply-to:message-id:mime-version:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm3; t=1715625549; x=1715711949; bh=O8Ls5VMkKDiXpfxNPLZEwkjr2NHH
+	S8FZM/mcfdqCmuk=; b=h+rC8UytYoJ3vCyijsSey5eYa5LBlbPSIJPTWu9ZEDXm
+	f9wQf7H7c4iZ6MMAmjoonhin5Qlb+HTB+7yA9CXDUpQQ3Dj+st5/ack6QzhGCW9o
+	V283bzyvlestF4QpF6QZzYmC4AUgWD+AliznidLBST8tPr/a2sgO0lV5Bdw+21Nn
+	BGETNQuGRfUWd5WuJy5u3l2xvZgR2XV10DOaCsQch4PoOweROI//ldT4reOHmDmw
+	jilKSPD1SbUSFUzA7naRwQxDLr0nvm9p0GP6mEXhLLq4w9ehHsWqpv2lGHxz5GXV
+	pNfmvYHiFzMWgOxMl0k690OdpbKwNpRdVGqUdZ2baA==
+X-ME-Sender: <xms:TV5CZl4oDUszujwYT57kIIfybAgPttrCd05d5yWFrMb1mx9qYQBIuA>
+    <xme:TV5CZi7AfMnIGrL849aRz1Zf9MLyMb4fvV9XZmAR0XgQddoZyTRNjrOTbf6DdbXol
+    6PvaeAOhYkRl8Ti3w>
+X-ME-Received: <xmr:TV5CZsd_j-R7qSzKQIlPcBdeBu2KCPtQBLt8_Ujv9VedNiVqV4J4NHUkOQ8u50hkDbGTYrlqTlWg0H7l8VaOt4TP3ROge6UYUnDry84P6REmzA>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrvdeggedguddviecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecufghrlhcuvffnffculdejtddmnecujfgurhephf
+    fvvefufffkofgggfestdekredtredttdenucfhrhhomhepffgrnhhivghlucgiuhcuoegu
+    gihusegugihuuhhurdighiiiqeenucggtffrrghtthgvrhhnpedvgefgtefgleehhfeufe
+    ekuddvgfeuvdfhgeeljeduudfffffgteeuudeiieekjeenucevlhhushhtvghrufhiiigv
+    pedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegugihusegugihuuhhurdighiii
+X-ME-Proxy: <xmx:TV5CZuKdPeAlh2H3c6wU_bDCwotxcxa7g4F1_W6178KVTQh9_fg73g>
+    <xmx:TV5CZpIJsZroPvq7W0o232DwIxWiSmya_Cj4q_gVN1mnVr70HPIQ6Q>
+    <xmx:TV5CZnzbeNs01h-SGY-smsDY20wQxc787BTxE5o2fgISjzW0fvs8rg>
+    <xmx:TV5CZlJtlFgNm_ezlawz57roxaawvzS-F9y_uK6e158_Or98ZQ9lYA>
+    <xmx:TV5CZmAklU-2e1R3L9xv7RjSVy4bh7sPG7dGye-9rngtKYKGEIlO-IQq>
+Feedback-ID: i6a694271:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
+ 13 May 2024 14:39:08 -0400 (EDT)
+From: Daniel Xu <dxu@dxuuu.xyz>
+To: linux-kernel@vger.kernel.org,
+	bpf@vger.kernel.org,
+	linux-kbuild@vger.kernel.org,
+	andrii@kernel.org,
+	olsajiri@gmail.com,
+	quentin@isovalent.com,
+	alan.maguire@oracle.com,
+	acme@kernel.org,
+	eddyz87@gmail.com
+Cc: kernel-team@meta.com
+Subject: [PATCH bpf-next v3 0/2] bpf: bpftool: Support dumping kfunc prototypes from BTF
+Date: Mon, 13 May 2024 12:38:57 -0600
+Message-ID: <cover.1715625447.git.dxu@dxuuu.xyz>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240510191423.2297538-1-yabinc@google.com> <20240510191423.2297538-4-yabinc@google.com>
- <CAM9d7chNz8-84m28q5qSLjUjZ=Ni1CA_JzbB_P+YJooLQd85YA@mail.gmail.com>
-In-Reply-To: <CAM9d7chNz8-84m28q5qSLjUjZ=Ni1CA_JzbB_P+YJooLQd85YA@mail.gmail.com>
-From: Yabin Cui <yabinc@google.com>
-Date: Mon, 13 May 2024 11:31:34 -0700
-Message-ID: <CALJ9ZPP_2=X7XNQrLCV1pQUVH-pnHbW=Kz75ugSy+kda9Xwmpg@mail.gmail.com>
-Subject: Re: [PATCH v4 3/3] perf/core: Check sample_type in perf_sample_save_brstack
-To: Namhyung Kim <namhyung@kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
-	Arnaldo Carvalho de Melo <acme@kernel.org>, Mark Rutland <mark.rutland@arm.com>, 
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Ian Rogers <irogers@google.com>, Adrian Hunter <adrian.hunter@intel.com>, 
-	linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-arch/powerpc/perf/core-book3s.c checks sample_type, see
-   if (event->attr.sample_type & PERF_SAMPLE_BRANCH_STACK) {
-     ...
-     perf_sample_save_brstack(&data, event, &cpuhw->bhrb_stack, NULL);
-  }
-So I think we don't need the "fixes:" line.
+This patchset enables both detecting as well as dumping compilable
+prototypes for kfuncs.
 
-On Fri, May 10, 2024 at 2:30=E2=80=AFPM Namhyung Kim <namhyung@kernel.org> =
-wrote:
->
-> On Fri, May 10, 2024 at 12:14=E2=80=AFPM Yabin Cui <yabinc@google.com> wr=
-ote:
-> >
-> > Check sample_type in perf_sample_save_brstack() to prevent
-> > saving branch stack data when it isn't required.
-> >
-> > Suggested-by: Namhyung Kim <namhyung@kernel.org>
-> > Signed-off-by: Yabin Cui <yabinc@google.com>
->
-> It seems powerpc has the similar bug, then you need this:
->
-> Fixes: eb55b455ef9c ("perf/core: Add perf_sample_save_brstack() helper")
->
-> Thanks,
-> Namhyung
->
-> > ---
-> >  arch/x86/events/amd/core.c |  3 +--
-> >  arch/x86/events/core.c     |  3 +--
-> >  arch/x86/events/intel/ds.c |  3 +--
-> >  include/linux/perf_event.h | 13 ++++++++-----
-> >  4 files changed, 11 insertions(+), 11 deletions(-)
-> >
-> > diff --git a/arch/x86/events/amd/core.c b/arch/x86/events/amd/core.c
-> > index 985ef3b47919..fb9bf3aa1b42 100644
-> > --- a/arch/x86/events/amd/core.c
-> > +++ b/arch/x86/events/amd/core.c
-> > @@ -967,8 +967,7 @@ static int amd_pmu_v2_handle_irq(struct pt_regs *re=
-gs)
-> >                 if (!x86_perf_event_set_period(event))
-> >                         continue;
-> >
-> > -               if (has_branch_stack(event))
-> > -                       perf_sample_save_brstack(&data, event, &cpuc->l=
-br_stack, NULL);
-> > +               perf_sample_save_brstack(&data, event, &cpuc->lbr_stack=
-, NULL);
-> >
-> >                 if (perf_event_overflow(event, &data, regs))
-> >                         x86_pmu_stop(event, 0);
-> > diff --git a/arch/x86/events/core.c b/arch/x86/events/core.c
-> > index 5b0dd07b1ef1..ff5577315938 100644
-> > --- a/arch/x86/events/core.c
-> > +++ b/arch/x86/events/core.c
-> > @@ -1702,8 +1702,7 @@ int x86_pmu_handle_irq(struct pt_regs *regs)
-> >
-> >                 perf_sample_data_init(&data, 0, event->hw.last_period);
-> >
-> > -               if (has_branch_stack(event))
-> > -                       perf_sample_save_brstack(&data, event, &cpuc->l=
-br_stack, NULL);
-> > +               perf_sample_save_brstack(&data, event, &cpuc->lbr_stack=
-, NULL);
-> >
-> >                 if (perf_event_overflow(event, &data, regs))
-> >                         x86_pmu_stop(event, 0);
-> > diff --git a/arch/x86/events/intel/ds.c b/arch/x86/events/intel/ds.c
-> > index c2b5585aa6d1..f25236ffa28f 100644
-> > --- a/arch/x86/events/intel/ds.c
-> > +++ b/arch/x86/events/intel/ds.c
-> > @@ -1754,8 +1754,7 @@ static void setup_pebs_fixed_sample_data(struct p=
-erf_event *event,
-> >         if (x86_pmu.intel_cap.pebs_format >=3D 3)
-> >                 setup_pebs_time(event, data, pebs->tsc);
-> >
-> > -       if (has_branch_stack(event))
-> > -               perf_sample_save_brstack(data, event, &cpuc->lbr_stack,=
- NULL);
-> > +       perf_sample_save_brstack(data, event, &cpuc->lbr_stack, NULL);
-> >  }
-> >
-> >  static void adaptive_pebs_save_regs(struct pt_regs *regs,
-> > diff --git a/include/linux/perf_event.h b/include/linux/perf_event.h
-> > index 8617815456b0..ecfbe22ff299 100644
-> > --- a/include/linux/perf_event.h
-> > +++ b/include/linux/perf_event.h
-> > @@ -1269,6 +1269,11 @@ static inline void perf_sample_save_raw_data(str=
-uct perf_sample_data *data,
-> >         data->sample_flags |=3D PERF_SAMPLE_RAW;
-> >  }
-> >
-> > +static inline bool has_branch_stack(struct perf_event *event)
-> > +{
-> > +       return event->attr.sample_type & PERF_SAMPLE_BRANCH_STACK;
-> > +}
-> > +
-> >  static inline void perf_sample_save_brstack(struct perf_sample_data *d=
-ata,
-> >                                             struct perf_event *event,
-> >                                             struct perf_branch_stack *b=
-rs,
-> > @@ -1276,6 +1281,9 @@ static inline void perf_sample_save_brstack(struc=
-t perf_sample_data *data,
-> >  {
-> >         int size =3D sizeof(u64); /* nr */
-> >
-> > +       if (!has_branch_stack(event))
-> > +               return;
-> > +
-> >         if (branch_sample_hw_index(event))
-> >                 size +=3D sizeof(u64);
-> >         size +=3D brs->nr * sizeof(struct perf_branch_entry);
-> > @@ -1665,11 +1673,6 @@ extern void perf_bp_event(struct perf_event *eve=
-nt, void *data);
-> >  # define perf_arch_bpf_user_pt_regs(regs) regs
-> >  #endif
-> >
-> > -static inline bool has_branch_stack(struct perf_event *event)
-> > -{
-> > -       return event->attr.sample_type & PERF_SAMPLE_BRANCH_STACK;
-> > -}
-> > -
-> >  static inline bool needs_branch_stack(struct perf_event *event)
-> >  {
-> >         return event->attr.branch_sample_type !=3D 0;
-> > --
-> > 2.45.0.118.g7fe29c98d7-goog
-> >
+Users will be able to look at BTF inside vmlinux (or modules) and check
+if the kfunc they want is available.
+
+For developer convenience, we also support dumping kfunc prototypes from
+bpftool.
+
+=== Changelog ===
+From v2:
+* Update Makefile.btf with pahole flag
+* More error checking
+* Output formatting changes
+* Drop already-merged commit
+
+From v1:
+* Add __weak annotation
+* Use btf_dump for kfunc prototypes
+* Update kernel bpf_rdonly_cast() signature
+
+Daniel Xu (2):
+  kbuild: bpf: Tell pahole to DECL_TAG kfuncs
+  bpftool: Support dumping kfunc prototypes from BTF
+
+ scripts/Makefile.btf    |  2 +-
+ tools/bpf/bpftool/btf.c | 54 +++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 55 insertions(+), 1 deletion(-)
+
+-- 
+2.44.0
+
 
