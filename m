@@ -1,69 +1,71 @@
-Return-Path: <bpf+bounces-29693-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-29694-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0581F8C55F8
-	for <lists+bpf@lfdr.de>; Tue, 14 May 2024 14:24:12 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B82BC8C55FF
+	for <lists+bpf@lfdr.de>; Tue, 14 May 2024 14:24:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6D41CB2110E
-	for <lists+bpf@lfdr.de>; Tue, 14 May 2024 12:24:09 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C5ACB1C227D6
+	for <lists+bpf@lfdr.de>; Tue, 14 May 2024 12:24:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C3C753E37;
-	Tue, 14 May 2024 12:23:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C4C24594C;
+	Tue, 14 May 2024 12:24:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FP8uviXK"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="I1sLiUqx"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-qt1-f177.google.com (mail-qt1-f177.google.com [209.85.160.177])
+Received: from mail-qt1-f170.google.com (mail-qt1-f170.google.com [209.85.160.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4FA30DDC0
-	for <bpf@vger.kernel.org>; Tue, 14 May 2024 12:23:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E54FDDC0
+	for <bpf@vger.kernel.org>; Tue, 14 May 2024 12:24:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715689435; cv=none; b=EBz/zIbz7kf+KK34agc1syyPSk3+O5sJ5+u9U/lO7aWmHLNMJ3grKNmBBWvyzwQ0Uyh4DX5vcM6xbvHgmtE/e04YsG+Rt9PhtG0GNf8L6d5ogLvDBiREAQlVoxH7D8I6j4VS+nTPEjH68xGXrR7YoPBN2L1VHxVjsnMz33zpqmQ=
+	t=1715689454; cv=none; b=GKYi9R3mFD20OeCGVOFMfP9pYn0WVidkuk31G2d2SGqHnmB+R5L2p58EI9+bWJwq3MrclGckAzGk7nl7jV5TiI0uwLSKal/erfwdOcCA8gJycKiO91DQwkKsEAUEqNIBYb6uJqUx1v5nJ4CUFEqrp4kzP7A+7dFSQJg6W1OLsh0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715689435; c=relaxed/simple;
-	bh=NDml+X0Q0Q1ym/XKHhKRFO91+hyquvu/T9mSRiZZvAg=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=sFeDGnFoZGn6FCzX4EgmQSBQ3qPUNaNaJPy27VbZRzXFses5/YNokwqqS57BM5rpEgeVQ7lJ0jAsmDnoAvdrvCGc/I25v1dL924oejd5Amh5vrax4BkbmTZtikA+le8w1VfzbULApDDo11M6zFFWkHMoZ7s28dFlm1DCi3MHGo0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FP8uviXK; arc=none smtp.client-ip=209.85.160.177
+	s=arc-20240116; t=1715689454; c=relaxed/simple;
+	bh=uowLP++liw21uF2zuo/eKfAR23hS3OQREjM5sUi3QDU=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=SPMfeGnmrD0kHql+wabyUNOb0sdzoxTU6DbdKu7GlJK9bShfKSvs+TNdxsQ7KLPa+0QuyFcY8LhzRGepMpkHT4pkcKh/iQR69i/bPJ6VXT2cm5jv/NrX1BwIGVCG6BFuRc0XZYzNWFWDrdAO1OKwu7+lecrxrgykWUkyYcdAsh8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=I1sLiUqx; arc=none smtp.client-ip=209.85.160.170
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qt1-f177.google.com with SMTP id d75a77b69052e-43df44ef2f9so35244531cf.1
-        for <bpf@vger.kernel.org>; Tue, 14 May 2024 05:23:54 -0700 (PDT)
+Received: by mail-qt1-f170.google.com with SMTP id d75a77b69052e-43e1593d633so13422261cf.3
+        for <bpf@vger.kernel.org>; Tue, 14 May 2024 05:24:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1715689433; x=1716294233; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=/VP2qmNVvYKu7jaFSob2OgHGamWZNxeVPT1CsJCS9Rg=;
-        b=FP8uviXKtE7rvGRIN1wIx6A1lqB9b8sMEG/eBKEX+1yfP27aUyYi6ULxwT0/Xt5Xfz
-         7iXQDoYUfK5o9lxnOrD991KSOxidn7Pj5ik87+y+EBVWd+256+V/Cxn4J91i0wgy8dix
-         tHacx5kx10U9PWjOqyQYmis05jJAGN21NZCS2NRUDUfUSZbGF4udzQSQUbjVhWA0SdjZ
-         DP8KLHrpvuPEMN0VjGPifXVD1pMNBflF0orbFjOskmmTNAAPEIpbtZsh8bNDXKInSWW9
-         30gptpKukT+cP2gNqbflNF30LCU5v6JisdXOc2MuCsDMTffpXSsoXHErME10IclOOXjf
-         5DSQ==
+        d=gmail.com; s=20230601; t=1715689452; x=1716294252; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ypCihyheNflK1mbusL6H8ZCmjUFQCxzxR9a9qXg+FaI=;
+        b=I1sLiUqxmFkJUrYYRZKqGqFGdhIG4FasZxKhhZRzoQ+BueMOi3TaZrx8T8NCuBxvaP
+         eRwRsZVZdsQelJZqEiz2GY/nO0ya0mFvQ7EvrmcpqKrXMvWU3dhM64YTaSB/kvs+hHeO
+         J6FmgSTPqVt9TN+d2aU3w4fCS+XrE/wM/cJORl9pmYeTLJq5xfjuZ3Td+qYUh42S5y3u
+         JfeeFjCTGvZXDOnpcUuSnR4rZnjFbRZyN3zT6xpdw89RVBckiM2sj0rfD7EeKoC6e58K
+         skNlCDsrcRo87YljhniiNACsYugI6xL+f+u50QlKl+B5e8IIPKgs4vHf3mZMNoE9u6/t
+         sKpw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1715689433; x=1716294233;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=/VP2qmNVvYKu7jaFSob2OgHGamWZNxeVPT1CsJCS9Rg=;
-        b=oOPcpz8YZmr0fW4herFFe32Hq0goUdkyyND3ZcPwj34DKszqSJzD6RIPDbOXVAUSss
-         xP2phl9LyA6zVtvyXWTn2ujBv238NBouQZC0niqUuZgMdIR0iKuZDroxBWjtYSrCHQpA
-         g9+mk8dajBniDWap+6VgnIr7llD17cSbqgilZyViyboJQAU7UrolyzqEf6L6eV2X0nry
-         sbH2gcwFLtHx6gRvnE7++fYY/k8WXnMVq73ehdotBAHCz1BbODgeuM3U//cDqtw4SgWx
-         D0RLUFqA44Bm0MsbhwYSY9RK818o8DsMp1Rnrw9N2eVqvD3FzAjDeolNH1gf3lFl//Dn
-         JEcQ==
-X-Gm-Message-State: AOJu0YzrO1XN9epWeF399gLsoP2t2+SvGyzxC54lMteEVQXsmSN5HtrK
-	iXj8KpU+6Ec5CbakGd062se4nTd+E8EC+X/BewPu9NrZ9PYtkmwPXaFu2w==
-X-Google-Smtp-Source: AGHT+IFwY7Tf73WUNHOwxE1ptIkIqpm+4Dv4mOFlAXoDSAhUsmFGHtbCjqKjukbMZgm42AdMDevARA==
-X-Received: by 2002:a05:622a:15c1:b0:43a:74ea:89b with SMTP id d75a77b69052e-43dfdb4969cmr142018401cf.16.1715689433138;
-        Tue, 14 May 2024 05:23:53 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1715689452; x=1716294252;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ypCihyheNflK1mbusL6H8ZCmjUFQCxzxR9a9qXg+FaI=;
+        b=GiaijvfqbDVM8xY9L3IkQGSC0sfgA3S883rCuS/fq2S2+5d8hOKZZ2YtMjWvnhwDru
+         +opGQb0DINmeCSfY02tePC+I7KY0KU3edPqJ5J1cO9jZIK9gOSn3Mio2v6jcz01zVsCb
+         8Xul0eT6BX+qfC3oktlw9j6hmdeycrJz6CY9dS7Kzeax4TPKHnHWhqUFWq6yrfOdiNs4
+         Divm90JJbbBvh642At2pt8SgMndfUBMPzgxy/lj1mIuFr/H1L+P1IH3pjRX6FvBE8gwy
+         SDJuj2L5p2pBo2wir3hPhUlnYXZuUe5Y/1y/RBc1DxwrCkGvHjhDmVVooxqpilrmGDa4
+         3gSQ==
+X-Gm-Message-State: AOJu0YxxfQgzNNPP8QHEYcBfggNKHujJ1O45s4xEGustp41cDPrB/UGs
+	b7xIEDoGvvc4JD9bgRXb/rCRflHZgKbe+Q62vg3nLNF4AqmSNvQHXDKX8g==
+X-Google-Smtp-Source: AGHT+IF03vDjN14n5TbSX2nv8cwW9mF3I8ZBqv41jSYYXZ3RFnTRCMfd4U7LCjLazJguG/mo9WtX9w==
+X-Received: by 2002:a05:622a:1344:b0:43b:4d2:48cc with SMTP id d75a77b69052e-43dfdd1961bmr194978081cf.46.1715689451957;
+        Tue, 14 May 2024 05:24:11 -0700 (PDT)
 Received: from fedora.. ([2607:b400:30:a100:6442:5b0e:54ab:110b])
-        by smtp.gmail.com with ESMTPSA id d75a77b69052e-43e25735ceesm11861811cf.11.2024.05.14.05.23.52
+        by smtp.gmail.com with ESMTPSA id d75a77b69052e-43e25735ceesm11861811cf.11.2024.05.14.05.24.11
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 May 2024 05:23:52 -0700 (PDT)
+        Tue, 14 May 2024 05:24:11 -0700 (PDT)
 From: Siddharth Chintamaneni <sidchintamaneni@gmail.com>
 To: bpf@vger.kernel.org
 Cc: alexei.starovoitov@gmail.com,
@@ -75,11 +77,14 @@ Cc: alexei.starovoitov@gmail.com,
 	sairoop@vt.edu,
 	miloc@vt.edu,
 	memxor@gmail.com,
-	Siddharth Chintamaneni <sidchintamaneni@gmail.com>
-Subject: [PATCH v2 bpf-next 2/2] selftests/bpf: Added selftests to check deadlocks in queue and stack map
-Date: Tue, 14 May 2024 08:23:36 -0400
-Message-ID: <20240514122337.1239800-1-sidchintamaneni@gmail.com>
+	Siddharth Chintamaneni <sidchintamaneni@gmail.com>,
+	syzbot+8bdfc2c53fb2b63e1871@syzkaller.appspotmail.com
+Subject: [PATCH v2 bpf-next 1/2] bpf: Patch to Fix deadlocks in queue and stack maps
+Date: Tue, 14 May 2024 08:23:37 -0400
+Message-ID: <20240514122337.1239800-2-sidchintamaneni@gmail.com>
 X-Mailer: git-send-email 2.44.0
+In-Reply-To: <20240514122337.1239800-1-sidchintamaneni@gmail.com>
+References: <20240514122337.1239800-1-sidchintamaneni@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -88,258 +93,186 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Added selftests to check for nested deadlocks in queue  and stack maps.
+This patch is a revised version which addresses a possible deadlock issue in
+queue and stack map types.
 
-test_map_queue_stack_nesting_success:PASS:test_queue_stack_nested_map__open 0 nsec
-test_map_queue_stack_nesting_success:PASS:test_queue_stack_nested_map__load 0 nsec
-test_map_queue_stack_nesting_success:PASS:test_queue_stack_nested_map__attach 0 nsec
-test_map_queue_stack_nesting_success:PASS:MAP Write 0 nsec
-test_map_queue_stack_nesting_success:PASS:no map nesting 0 nsec
-test_map_queue_stack_nesting_success:PASS:no map nesting 0 nsec
-384/1   test_queue_stack_nested_map/map_queue_nesting:OK
-test_map_queue_stack_nesting_success:PASS:test_queue_stack_nested_map__open 0 nsec
-test_map_queue_stack_nesting_success:PASS:test_queue_stack_nested_map__load 0 nsec
-test_map_queue_stack_nesting_success:PASS:test_queue_stack_nested_map__attach 0 nsec
-test_map_queue_stack_nesting_success:PASS:MAP Write 0 nsec
-test_map_queue_stack_nesting_success:PASS:no map nesting 0 nsec
-384/2   test_queue_stack_nested_map/map_stack_nesting:OK
-384     test_queue_stack_nested_map:OK
-Summary: 1/2 PASSED, 0 SKIPPED, 0 FAILED
+Deadlock could happen when a nested BPF program acquires the same lock
+as the parent BPF program to perform a write operation on the same map
+as the first one. This bug is also reported by syzbot.
 
+Link: https://lore.kernel.org/lkml/0000000000004c3fc90615f37756@google.com/
+Reported-by: syzbot+8bdfc2c53fb2b63e1871@syzkaller.appspotmail.com
+Fixes: f1a2e44a3aec ("bpf: add queue and stack maps")
 Signed-off-by: Siddharth Chintamaneni <sidchintamaneni@gmail.com>
 ---
- samples/bpf/Makefile                          |   3 +
- .../prog_tests/test_queue_stack_nested_map.c  |  69 +++++++++++
- .../bpf/progs/test_queue_stack_nested_map.c   | 116 ++++++++++++++++++
- 3 files changed, 188 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/test_queue_stack_nested_map.c
- create mode 100644 tools/testing/selftests/bpf/progs/test_queue_stack_nested_map.c
+ kernel/bpf/queue_stack_maps.c | 76 +++++++++++++++++++++++++++++++++--
+ 1 file changed, 73 insertions(+), 3 deletions(-)
 
-diff --git a/samples/bpf/Makefile b/samples/bpf/Makefile
-index 9aa027b144df..9e1abf0e21ad 100644
---- a/samples/bpf/Makefile
-+++ b/samples/bpf/Makefile
-@@ -7,6 +7,7 @@ pound := \#
+diff --git a/kernel/bpf/queue_stack_maps.c b/kernel/bpf/queue_stack_maps.c
+index d869f51ea93a..b5ed76c9ddd7 100644
+--- a/kernel/bpf/queue_stack_maps.c
++++ b/kernel/bpf/queue_stack_maps.c
+@@ -13,11 +13,13 @@
+ #define QUEUE_STACK_CREATE_FLAG_MASK \
+ 	(BPF_F_NUMA_NODE | BPF_F_ACCESS_MASK)
  
- # List of programs to build
- tprogs-y := test_lru_dist
-+tprogs-y += sid_queue_stack
- tprogs-y += sock_example
- tprogs-y += fds_example
- tprogs-y += sockex1
-@@ -98,6 +99,7 @@ ibumad-objs := ibumad_user.o
- hbm-objs := hbm.o $(CGROUP_HELPERS)
- 
- xdp_router_ipv4-objs := xdp_router_ipv4_user.o $(XDP_SAMPLE)
-+sid_queue_stack-objs := sid_queue_stack_user.o
- 
- # Tell kbuild to always build the programs
- always-y := $(tprogs-y)
-@@ -149,6 +151,7 @@ always-y += task_fd_query_kern.o
- always-y += ibumad_kern.o
- always-y += hbm_out_kern.o
- always-y += hbm_edt_kern.o
-+always-y += sid_queue_stack_kern.o
- 
- TPROGS_CFLAGS = $(TPROGS_USER_CFLAGS)
- TPROGS_LDFLAGS = $(TPROGS_USER_LDFLAGS)
-diff --git a/tools/testing/selftests/bpf/prog_tests/test_queue_stack_nested_map.c b/tools/testing/selftests/bpf/prog_tests/test_queue_stack_nested_map.c
-new file mode 100644
-index 000000000000..fc46561788af
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/test_queue_stack_nested_map.c
-@@ -0,0 +1,69 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include <test_progs.h>
-+#include <network_helpers.h>
 +
-+#include "test_queue_stack_nested_map.skel.h"
+ struct bpf_queue_stack {
+ 	struct bpf_map map;
+ 	raw_spinlock_t lock;
+ 	u32 head, tail;
+ 	u32 size; /* max_entries + 1 */
++	int __percpu *map_locked;
+ 
+ 	char elements[] __aligned(8);
+ };
+@@ -78,6 +80,15 @@ static struct bpf_map *queue_stack_map_alloc(union bpf_attr *attr)
+ 
+ 	qs->size = size;
+ 
++	qs->map_locked = bpf_map_alloc_percpu(&qs->map,
++						sizeof(int),
++						sizeof(int),
++						GFP_USER | __GFP_NOWARN);
++	if (!qs->map_locked) {
++		bpf_map_area_free(qs);
++		return ERR_PTR(-ENOMEM);
++	}
 +
-+
-+static void test_map_queue_stack_nesting_success(bool is_map_queue)
+ 	raw_spin_lock_init(&qs->lock);
+ 
+ 	return &qs->map;
+@@ -88,19 +99,57 @@ static void queue_stack_map_free(struct bpf_map *map)
+ {
+ 	struct bpf_queue_stack *qs = bpf_queue_stack(map);
+ 
++	free_percpu(qs->map_locked);
+ 	bpf_map_area_free(qs);
+ }
+ 
++static inline int map_lock_inc(struct bpf_queue_stack *qs)
 +{
-+	struct test_queue_stack_nested_map *skel;
-+	int err;
++	unsigned long flags;
 +
-+	skel = test_queue_stack_nested_map__open();
-+	if (!ASSERT_OK_PTR(skel, "test_queue_stack_nested_map__open"))
-+		return;
++	preempt_disable();
++	local_irq_save(flags);
++	if (unlikely(__this_cpu_inc_return(*(qs->map_locked)) != 1)) {
++		__this_cpu_dec(*(qs->map_locked));
++		local_irq_restore(flags);
++		preempt_enable();
++		return -EBUSY;
++	}
 +
-+	err = test_queue_stack_nested_map__load(skel);
-+	if (!ASSERT_OK(err, "test_queue_stack_nested_map__load"))
-+		goto out;
++	local_irq_restore(flags);
++	preempt_enable();
 +
-+	skel->bss->pid = getpid();
-+	err = test_queue_stack_nested_map__attach(skel);
-+	if (!ASSERT_OK(err, "test_queue_stack_nested_map__attach"))
-+		goto out;
++	return 0;
++}
 +
-+	/* trigger map from userspace to check nesting */
-+	int value = 0;
++static inline void map_unlock_dec(struct bpf_queue_stack *qs)
++{
++	unsigned long flags;
 +
-+	do {
-+		if (is_map_queue) {
-+			err = bpf_map_update_elem(bpf_map__fd(skel->maps.map_queue),
-+								NULL, &value, 0);
-+			if (err < 0)
-+				break;
-+			err = bpf_map_lookup_and_delete_elem(bpf_map__fd(skel->maps.map_queue),
-+								 NULL, &value);
-+		} else {
-+			err = bpf_map_update_elem(bpf_map__fd(skel->maps.map_stack),
-+								NULL, &value, 0);
-+			if (err < 0)
-+				break;
-+			err = bpf_map_lookup_and_delete_elem(bpf_map__fd(skel->maps.map_stack),
-+								NULL, &value);
++	preempt_disable();
++	local_irq_save(flags);
++	__this_cpu_dec(*(qs->map_locked));
++	local_irq_restore(flags);
++	preempt_enable();
++}
++
+ static long __queue_map_get(struct bpf_map *map, void *value, bool delete)
+ {
+ 	struct bpf_queue_stack *qs = bpf_queue_stack(map);
+ 	unsigned long flags;
+ 	int err = 0;
+ 	void *ptr;
++	int ret;
++
++	ret = map_lock_inc(qs);
++	if (ret)
++		return ret;
+ 
+ 	if (in_nmi()) {
+-		if (!raw_spin_trylock_irqsave(&qs->lock, flags))
++		if (!raw_spin_trylock_irqsave(&qs->lock, flags)) {
++			map_unlock_dec(qs);
+ 			return -EBUSY;
 +		}
-+	} while (0);
+ 	} else {
+ 		raw_spin_lock_irqsave(&qs->lock, flags);
+ 	}
+@@ -121,6 +170,8 @@ static long __queue_map_get(struct bpf_map *map, void *value, bool delete)
+ 
+ out:
+ 	raw_spin_unlock_irqrestore(&qs->lock, flags);
++	map_unlock_dec(qs);
 +
+ 	return err;
+ }
+ 
+@@ -132,10 +183,17 @@ static long __stack_map_get(struct bpf_map *map, void *value, bool delete)
+ 	int err = 0;
+ 	void *ptr;
+ 	u32 index;
++	int ret;
 +
-+	if (!ASSERT_OK(err, "MAP Write"))
-+		goto out;
++	ret = map_lock_inc(qs);
++	if (ret)
++		return ret;
+ 
+ 	if (in_nmi()) {
+-		if (!raw_spin_trylock_irqsave(&qs->lock, flags))
++		if (!raw_spin_trylock_irqsave(&qs->lock, flags)) {
++			map_unlock_dec(qs);
+ 			return -EBUSY;
++		}
+ 	} else {
+ 		raw_spin_lock_irqsave(&qs->lock, flags);
+ 	}
+@@ -158,6 +216,8 @@ static long __stack_map_get(struct bpf_map *map, void *value, bool delete)
+ 
+ out:
+ 	raw_spin_unlock_irqrestore(&qs->lock, flags);
++	map_unlock_dec(qs);
 +
-+	if (is_map_queue) {
-+		ASSERT_EQ(skel->bss->err_queue_push, -EBUSY, "no map nesting");
-+		ASSERT_EQ(skel->bss->err_queue_pop, -EBUSY, "no map nesting");
-+	} else {
-+		ASSERT_EQ(skel->bss->err_stack, -EBUSY, "no map nesting");
-+	}
-+out:
-+	test_queue_stack_nested_map__destroy(skel);
-+}
+ 	return err;
+ }
+ 
+@@ -193,6 +253,7 @@ static long queue_stack_map_push_elem(struct bpf_map *map, void *value,
+ 	unsigned long irq_flags;
+ 	int err = 0;
+ 	void *dst;
++	int ret;
+ 
+ 	/* BPF_EXIST is used to force making room for a new element in case the
+ 	 * map is full
+@@ -203,9 +264,16 @@ static long queue_stack_map_push_elem(struct bpf_map *map, void *value,
+ 	if (flags & BPF_NOEXIST || flags > BPF_EXIST)
+ 		return -EINVAL;
+ 
 +
-+void test_test_queue_stack_nested_map(void)
-+{
-+	if (test__start_subtest("map_queue_nesting"))
-+		test_map_queue_stack_nesting_success(true);
-+	if (test__start_subtest("map_stack_nesting"))
-+		test_map_queue_stack_nesting_success(false);
++	ret = map_lock_inc(qs);
++	if (ret)
++		return ret;
 +
-+}
+ 	if (in_nmi()) {
+-		if (!raw_spin_trylock_irqsave(&qs->lock, irq_flags))
++		if (!raw_spin_trylock_irqsave(&qs->lock, irq_flags)) {
++			map_unlock_dec(qs);
+ 			return -EBUSY;
++		}
+ 	} else {
+ 		raw_spin_lock_irqsave(&qs->lock, irq_flags);
+ 	}
+@@ -228,6 +296,8 @@ static long queue_stack_map_push_elem(struct bpf_map *map, void *value,
+ 
+ out:
+ 	raw_spin_unlock_irqrestore(&qs->lock, irq_flags);
++	map_unlock_dec(qs);
 +
-diff --git a/tools/testing/selftests/bpf/progs/test_queue_stack_nested_map.c b/tools/testing/selftests/bpf/progs/test_queue_stack_nested_map.c
-new file mode 100644
-index 000000000000..893a37593206
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/test_queue_stack_nested_map.c
-@@ -0,0 +1,116 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include "vmlinux.h"
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_tracing.h>
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_STACK);
-+	__uint(max_entries, 32);
-+	__uint(key_size, 0);
-+	__uint(value_size, sizeof(__u32));
-+} map_stack SEC(".maps");
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_QUEUE);
-+	__uint(max_entries, 32);
-+	__uint(key_size, 0);
-+	__uint(value_size, sizeof(__u32));
-+} map_queue SEC(".maps");
-+
-+
-+int err_queue_push;
-+int err_queue_pop;
-+int err_stack;
-+int pid;
-+__u32 trigger_flag_queue_push;
-+__u32 trigger_flag_queue_pop;
-+__u32 trigger_flag_stack;
-+
-+SEC("fentry/queue_stack_map_push_elem")
-+int BPF_PROG(test_queue_stack_push_trigger, raw_spinlock_t *lock, unsigned long flags)
-+{
-+
-+	if ((bpf_get_current_pid_tgid() >> 32) != pid)
-+		return 0;
-+
-+
-+	trigger_flag_queue_push = 1;
-+
-+	return 0;
-+}
-+
-+SEC("fentry/queue_map_pop_elem")
-+int BPF_PROG(test_queue_pop_trigger, raw_spinlock_t *lock, unsigned long flags)
-+{
-+
-+	if ((bpf_get_current_pid_tgid() >> 32) != pid)
-+		return 0;
-+
-+	trigger_flag_queue_pop = 1;
-+
-+	return 0;
-+}
-+
-+
-+SEC("fentry/stack_map_pop_elem")
-+int BPF_PROG(test_stack_pop_trigger, raw_spinlock_t *lock, unsigned long flags)
-+{
-+
-+	if ((bpf_get_current_pid_tgid() >> 32) != pid)
-+		return 0;
-+
-+	trigger_flag_stack = 1;
-+
-+	return 0;
-+}
-+
-+SEC("fentry/_raw_spin_unlock_irqrestore")
-+int BPF_PROG(test_queue_pop_nesting, raw_spinlock_t *lock, unsigned long flags)
-+{
-+	__u32 val;
-+
-+	if ((bpf_get_current_pid_tgid() >> 32) != pid || trigger_flag_queue_pop != 1)
-+		return 0;
-+
-+
-+	err_queue_pop = bpf_map_pop_elem(&map_queue, &val);
-+
-+	trigger_flag_queue_pop = 0;
-+
-+	return 0;
-+}
-+
-+SEC("fentry/_raw_spin_unlock_irqrestore")
-+int BPF_PROG(test_stack_nesting, raw_spinlock_t *lock, unsigned long flags)
-+{
-+	__u32 val;
-+
-+	if ((bpf_get_current_pid_tgid() >> 32) != pid || trigger_flag_stack != 1)
-+		return 0;
-+
-+
-+	err_stack = bpf_map_pop_elem(&map_stack, &val);
-+
-+	trigger_flag_stack = 0;
-+
-+	return 0;
-+}
-+
-+
-+SEC("fentry/_raw_spin_unlock_irqrestore")
-+int BPF_PROG(test_queue_push_nesting, raw_spinlock_t *lock, unsigned long flags)
-+{
-+	__u32 val = 1;
-+
-+	if ((bpf_get_current_pid_tgid() >> 32) != pid || trigger_flag_queue_push != 1) {
-+		return 0;
-+	}
-+
-+	err_queue_push = bpf_map_push_elem(&map_queue, &val, 0);
-+
-+	trigger_flag_queue_push = 0;
-+
-+	return 0;
-+}
-+
-+char _license[] SEC("license") = "GPL";
+ 	return err;
+ }
+ 
 -- 
 2.44.0
 
