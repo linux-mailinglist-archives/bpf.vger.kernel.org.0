@@ -1,149 +1,172 @@
-Return-Path: <bpf+bounces-29684-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-29685-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 93A7B8C4AC2
-	for <lists+bpf@lfdr.de>; Tue, 14 May 2024 03:09:24 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0E6578C4B91
+	for <lists+bpf@lfdr.de>; Tue, 14 May 2024 05:51:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 335141F22FB6
-	for <lists+bpf@lfdr.de>; Tue, 14 May 2024 01:09:24 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2ADF01C2102F
+	for <lists+bpf@lfdr.de>; Tue, 14 May 2024 03:51:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D3E4B17EF;
-	Tue, 14 May 2024 01:09:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F2254C2E3;
+	Tue, 14 May 2024 03:51:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ellerman.id.au header.i=@ellerman.id.au header.b="nhWdX3An"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="aZETA6Ar"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pg1-f171.google.com (mail-pg1-f171.google.com [209.85.215.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B69B5EC5;
-	Tue, 14 May 2024 01:09:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 27142B653
+	for <bpf@vger.kernel.org>; Tue, 14 May 2024 03:51:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715648956; cv=none; b=gioD83WxgL8NhBuSjnYvrIIRD/Z5XvKVldZA51hOWdWgk3zJ+W7QeyVtrgMdIB5CRTvFcMNGWO3XwAvhySu30eVCv+OVBQKXHaun6ajDY8NUWx04BjMVVoLQrtvv2MQko4rY7Ed8BYBzbnKRuk1TEJy6nLhPvcmzYf9Vm1VSiNQ=
+	t=1715658675; cv=none; b=sjef7atCrTkIysDfQmHmZugf2xdimX7rm2lVU8186/RAgJGNRDaTmVdHKpXbwB0nHIbCLnkAzZWeqNOUwweZK4ody+jbNcePwXvMNBJTQvRQGIL37FT6ACKtW0czJq7AfIvCi67OwGxMABGhliKAUeycfG7fBr3jPFQspInvvsA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715648956; c=relaxed/simple;
-	bh=Z0a9zo/oD7Fzoeh2HMvsQbMyP/a4DTsMNsBtVleFWZA=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=VF6viBxU4cViOEtn5FxgnGBMmU11NcaBkS5YrfUlv3Plm0GNPNSKISCbPaGTI4olYSY0W2gMOxjoQoQgguxbikKO7TnaltQMzzRFbn/uDt4tQkX9G+xdya/doJoneM+kJAVX7AS4IWlLLH1MtJIuPKdDGdrxpGa1VYSFmSEkUXQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ellerman.id.au; spf=pass smtp.mailfrom=ellerman.id.au; dkim=pass (2048-bit key) header.d=ellerman.id.au header.i=@ellerman.id.au header.b=nhWdX3An; arc=none smtp.client-ip=150.107.74.76
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ellerman.id.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ellerman.id.au
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
-	s=201909; t=1715648950;
-	bh=cJZZq6BaqUzfoKYWBZ/95aiewNAVNaflLJy9ncQn21Q=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-	b=nhWdX3AnX/lfpTM/3msxKX1vr3ahC0e0aj5/uYWopsMwiOJhDV5Nj/9I89GXiJ3Q/
-	 6aWx/cOv3OZ5Xo/4WZgD4+v03yGXP9Y07XFHKiUgCf6W10BmHEh3ar0Z6HIhINcKMB
-	 Nvk9huz4bBVvkHluHiCMpZ+lJHDL8VkSbohw0wrxlC3wLUTp0h+L99ji3VJ1t4ZXCl
-	 Irb8bpFJpVczlOs7DFojFAjJN7zOYxbbCkp2/BPs86cHpna5tdzFe7teI5Zjk/pgWb
-	 lkRs4aODolq4b60AuGvlOMP8nfOQuE2sioi7ZEaPvpXugmAHNmKLhYBf4LxJH1xpS8
-	 esjU/uxMK+iMQ==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.ozlabs.org (Postfix) with ESMTPSA id 4VddY15HGZz4wc3;
-	Tue, 14 May 2024 11:09:09 +1000 (AEST)
-From: Michael Ellerman <mpe@ellerman.id.au>
-To: Puranjay Mohan <puranjay@kernel.org>, Naveen N Rao <naveen@kernel.org>
-Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann
- <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, Martin KaFai
- Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu
- <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, John Fastabend
- <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, Stanislav
- Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa
- <jolsa@kernel.org>, Nicholas Piggin <npiggin@gmail.com>, Christophe Leroy
- <christophe.leroy@csgroup.eu>, "Aneesh Kumar K.V"
- <aneesh.kumar@kernel.org>, Hari Bathini <hbathini@linux.ibm.com>,
- bpf@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
- linux-kernel@vger.kernel.org, paulmck@kernel.org
-Subject: Re: [PATCH bpf v3] powerpc/bpf: enforce full ordering for ATOMIC
- operations with BPF_FETCH
-In-Reply-To: <mb61pwmnxhfcw.fsf@kernel.org>
-References: <20240513100248.110535-1-puranjay@kernel.org>
- <wlslraxtexuncmqsfen6gum4sg4viecu4zx73pvlfztjmwxenl@fcoal5io4kse>
- <mb61pwmnxhfcw.fsf@kernel.org>
-Date: Tue, 14 May 2024 11:09:07 +1000
-Message-ID: <87h6f1w66k.fsf@mail.lhotse>
+	s=arc-20240116; t=1715658675; c=relaxed/simple;
+	bh=tD6W9lfvr9vW0qaLabFCwi7jkutJqhsyqfmxxsP0a6M=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=pdWQuyLwhDjrPVR7jMVRbNoSJEhrmtFNrTARTgfPph4QDZAZOYqdSyZhJz+NSxt1SIY8XvGgU1PQis8uZc6PGES7fcyLPk195l9Enpp0K76V1F2xOzsmfCh0KBpww40IMLS3pMli3LFSCQjrbLL9BpoSz7MbtG1pDYdidc/AQpg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=aZETA6Ar; arc=none smtp.client-ip=209.85.215.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f171.google.com with SMTP id 41be03b00d2f7-64e93d9b14bso32882a12.1
+        for <bpf@vger.kernel.org>; Mon, 13 May 2024 20:51:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1715658673; x=1716263473; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=QqcFXhoDvdBPYrb27LXNJvIfvwGX1Tt1anOFjJwQRwU=;
+        b=aZETA6ArJQFLD5ycMIUvZhEUco4QiFAR/1cmZ30l0pDWtAq1l0h57NZwBYtCNkRFJa
+         4Ftx+b7U4LB+mQA4zQh0LGaO/EwMREhbTmksC6oeA4THfImuBvuOErkM91sf5jdObg7A
+         lQrUmnf5bW4+V+lMFi+iYFi9rm1AlYzvamC4F1tniyQAexyd0/qt3z2+U/NM65gvftap
+         Px0m4ld305fegCgcISkaUg+AhuQ8QH9sgqVQ5GSuOC1DqrubgliNABa9lk6T9PPH2CZW
+         CSpzj+QEe5FVZTiD0d5UNq/Rq7fkRhhyLZmzVhDqS7PsKoXV4uFpYjSVfXJG0n0+S/1f
+         5wiA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1715658673; x=1716263473;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=QqcFXhoDvdBPYrb27LXNJvIfvwGX1Tt1anOFjJwQRwU=;
+        b=UiKiZf/OWPIakFT2I72/CXEblne1LBw+lkhLzKNPLZqs54ODIJ7pwemgVtwzlMUvnd
+         HFjuwbopqTU7hOX2GCo2juxldnzOHBcrbzE17tcWU4y7gMMaPt2K1dnOEibSealSHqxx
+         g4JLCD/LVisDxggjmq4fxcqXUOWNFsaMwkSkPWop/J0nEs7/X9KAsDZqbxqtZc6NuMAD
+         WC+tMKkE0biuOub+HxeitSpGg2xNtDEaeb8PKpHNIb8U3ob7FHaPw04XJrYzoUb+fsW7
+         L/4QsAFizWS3ZzkX3W4jc8+RyoSJmKp5Fg8pAmGr0R38NSE7kUBoA+8pZ+7ezL5B34uD
+         C7mQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVm2gGB0AnZZ7Pq/NDrmFjhwQ4ozW7pwrB0TqieKafnlMVz9UIlqnI7wIzvFG/5vw6dTdWyNCGXLrb9Hv1yQ/psRRn0
+X-Gm-Message-State: AOJu0YzvvIYwkyvWMD3Q+1Cq71w5Svru8y1LaFyARTd3Dl5Pzr3Xiqlb
+	GPXzhlSaRGq2OntyDD6NWn19LftlrHowmC9/dDZwx9Lo5TdPzdIahRxnQCQpcxQxILOcFr3U4Kd
+	7iOK8w61FeMEBkPj3LhmZvEcnf2s=
+X-Google-Smtp-Source: AGHT+IEK4i/3PjV9ZY51+IN8g0iosrSj59dkXpqI7DKyFUe6JY6XjHN7ja0xnMXLQ+ll3JWoccu7cJZ7vqczZnxySGc=
+X-Received: by 2002:a05:6a21:6d9e:b0:1af:952f:f6fb with SMTP id
+ adf61e73a8af0-1afde0a8e00mr12926380637.3.1715658673330; Mon, 13 May 2024
+ 20:51:13 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20240513192927.99189-1-yatsenko@meta.com> <CAEf4BzY6ugkAMt23xVFM36XjD8c8Jh9vXBDPiWrR7NB42yvXKw@mail.gmail.com>
+ <CAADnVQKRkap+uusEqM937bHWtojkth+aSdS8fFn7VRJrzPVOqw@mail.gmail.com>
+In-Reply-To: <CAADnVQKRkap+uusEqM937bHWtojkth+aSdS8fFn7VRJrzPVOqw@mail.gmail.com>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Mon, 13 May 2024 21:51:01 -0600
+Message-ID: <CAEf4BzYmRt0Bn9FVBZLOVzU5E5d30Dkba=MRSKWgDaRXp=vdKg@mail.gmail.com>
+Subject: Re: [PATCH v3 bpf-next] bpftool: introduce btf c dump sorting
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Mykyta Yatsenko <mykyta.yatsenko5@gmail.com>, bpf <bpf@vger.kernel.org>, 
+	Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Martin Lau <kafai@meta.com>, 
+	Kernel Team <kernel-team@meta.com>, Quentin Monnet <qmo@kernel.org>, 
+	Mykyta Yatsenko <yatsenko@meta.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Puranjay Mohan <puranjay@kernel.org> writes:
-> Naveen N Rao <naveen@kernel.org> writes:
->> On Mon, May 13, 2024 at 10:02:48AM GMT, Puranjay Mohan wrote:
->>> The Linux Kernel Memory Model [1][2] requires RMW operations that have a
->>> return value to be fully ordered.
->>> 
->>> BPF atomic operations with BPF_FETCH (including BPF_XCHG and
->>> BPF_CMPXCHG) return a value back so they need to be JITed to fully
->>> ordered operations. POWERPC currently emits relaxed operations for
->>> these.
->>> 
->>> We can show this by running the following litmus-test:
->>> 
->>> PPC SB+atomic_add+fetch
->>> 
->>> {
->>> 0:r0=x;  (* dst reg assuming offset is 0 *)
->>> 0:r1=2;  (* src reg *)
->>> 0:r2=1;
->>> 0:r4=y;  (* P0 writes to this, P1 reads this *)
->>> 0:r5=z;  (* P1 writes to this, P0 reads this *)
->>> 0:r6=0;
->>> 
->>> 1:r2=1;
->>> 1:r4=y;
->>> 1:r5=z;
->>> }
->>> 
->>> P0                      | P1            ;
->>> stw         r2, 0(r4)   | stw  r2,0(r5) ;
->>>                         |               ;
->>> loop:lwarx  r3, r6, r0  |               ;
->>> mr          r8, r3      |               ;
->>> add         r3, r3, r1  | sync          ;
->>> stwcx.      r3, r6, r0  |               ;
->>> bne         loop        |               ;
->>> mr          r1, r8      |               ;
->>>                         |               ;
->>> lwa         r7, 0(r5)   | lwa  r7,0(r4) ;
->>> 
->>> ~exists(0:r7=0 /\ 1:r7=0)
->>> 
->>> Witnesses
->>> Positive: 9 Negative: 3
->>> Condition ~exists (0:r7=0 /\ 1:r7=0)
->>> Observation SB+atomic_add+fetch Sometimes 3 9
->>> 
->>> This test shows that the older store in P0 is reordered with a newer
->>> load to a different address. Although there is a RMW operation with
->>> fetch between them. Adding a sync before and after RMW fixes the issue:
->>> 
->>> Witnesses
->>> Positive: 9 Negative: 0
->>> Condition ~exists (0:r7=0 /\ 1:r7=0)
->>> Observation SB+atomic_add+fetch Never 0 9
->>> 
->>> [1] https://www.kernel.org/doc/Documentation/memory-barriers.txt
->>> [2] https://www.kernel.org/doc/Documentation/atomic_t.txt
->>> 
->>> Fixes: 65112709115f ("powerpc/bpf/64: add support for BPF_ATOMIC bitwise operations")
->>
->> As I noted in v2, I think that is the wrong commit. This fixes the below 
+On Mon, May 13, 2024 at 5:34=E2=80=AFPM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
 >
-> Sorry for missing this. Would this need another version or your message
-> below will make it work with the stable process?
+> On Mon, May 13, 2024 at 4:08=E2=80=AFPM Andrii Nakryiko
+> <andrii.nakryiko@gmail.com> wrote:
+> >
+> > On Mon, May 13, 2024 at 1:29=E2=80=AFPM Mykyta Yatsenko
+> > <mykyta.yatsenko5@gmail.com> wrote:
+> > >
+> > > From: Mykyta Yatsenko <yatsenko@meta.com>
+> > >
+> > > Sort bpftool c dump output; aiming to simplify vmlinux.h diffing and
+> > > forcing more natural type definitions ordering.
+> > >
+> > > Definitions are sorted first by their BTF kind ranks, then by their b=
+ase
+> > > type name and by their own name.
+> > >
+> > > Type ranks
+> > >
+> > > Assign ranks to btf kinds (defined in function btf_type_rank) to set
+> > > next order:
+> > > 1. Anonymous enums/enums64
+> > > 2. Named enums/enums64
+> > > 3. Trivial types typedefs (ints, then floats)
+> > > 4. Structs/Unions
+> > > 5. Function prototypes
+> > > 6. Forward declarations
+> > >
+> > > Type rank is set to maximum for unnamed reference types, structs and
+> > > unions to avoid emitting those types early. They will be emitted as
+> > > part of the type chain starting with named type.
+> > >
+> > > Lexicographical ordering
+> > >
+> > > Each type is assigned a sort_name and own_name.
+> > > sort_name is the resolved name of the final base type for reference
+> > > types (typedef, pointer, array etc). Sorting by sort_name allows to
+> > > group typedefs of the same base type. sort_name for non-reference typ=
+e
+> > > is the same as own_name. own_name is a direct name of particular type=
+,
+> > > is used as final sorting step.
+> > >
+> > > Signed-off-by: Mykyta Yatsenko <yatsenko@meta.com>
+> > > ---
+> > >  .../bpf/bpftool/Documentation/bpftool-btf.rst |   5 +-
+> > >  tools/bpf/bpftool/bash-completion/bpftool     |   3 +
+> > >  tools/bpf/bpftool/btf.c                       | 138 ++++++++++++++++=
++-
+> > >  3 files changed, 139 insertions(+), 7 deletions(-)
+> > >
+> >
+> > LGTM, tried it locally and it works well. In fact, see 6.8 kernel vs
+> > latest bpf-next/master (with basically the same config) comparison.
+> > It's quite minimal and easy to use to see what changes about some of
+> > the BPF internal types.
+> >
+> > Acked-by: Andrii Nakryiko <andrii@kernel.org>
+> > Tested-by: Andrii Nakryiko <andrii@kernel.org>
+> >
+> >   [0] https://gist.github.com/anakryiko/8fd8ebf2aba73961ebd3cf6587de682=
+2
+>
+> Just noticed:
+>
+> + ETHTOOL_A_TS_STAT_UNSPEC =3D 0,
+> + ETHTOOL_A_TS_STAT_TX_PKTS =3D 1,
+> + ETHTOOL_A_TS_STAT_TX_LOST =3D 2,
+> + ETHTOOL_A_TS_STAT_TX_ERR =3D 3,
+> + __ETHTOOL_A_TS_STAT_CNT =3D 4,
+> + ETHTOOL_A_TS_STAT_MAX =3D 3,
+> };
+>
+> I'm a bit surprised that enum values are not sorted.
+> I'm guessing the enum names come in dwarf order and copied
+> the same way in BTF ?
+> I guess it's not an issue.
 
-No need for another version. b4 should pick up those tags, or if not
-I'll add them by hand.
-
-cheers
+Yes, it's the order in which enumerators are defined (which DWARF and
+thus BTF preserves). I think it makes sense to keep the original order
+for those.
 
