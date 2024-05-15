@@ -1,162 +1,130 @@
-Return-Path: <bpf+bounces-29720-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-29721-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1513D8C5EDB
-	for <lists+bpf@lfdr.de>; Wed, 15 May 2024 03:44:48 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id DF0D48C5F6A
+	for <lists+bpf@lfdr.de>; Wed, 15 May 2024 05:32:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7FD821F22227
-	for <lists+bpf@lfdr.de>; Wed, 15 May 2024 01:44:47 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 665641F21A52
+	for <lists+bpf@lfdr.de>; Wed, 15 May 2024 03:32:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 77A68611B;
-	Wed, 15 May 2024 01:44:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D6C8381B9;
+	Wed, 15 May 2024 03:32:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="aLO7PNM0"
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="IQFb+fnc"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f175.google.com (mail-pf1-f175.google.com [209.85.210.175])
+Received: from mail-ed1-f46.google.com (mail-ed1-f46.google.com [209.85.208.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A918CBA5E
-	for <bpf@vger.kernel.org>; Wed, 15 May 2024 01:44:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CCE9838390
+	for <bpf@vger.kernel.org>; Wed, 15 May 2024 03:32:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715737479; cv=none; b=RPY9VFva3ATFq1yzX5/sQqyu7VkE0SusvnCBn266mDNoMG3S7VgiLXAMRJQaDw55ujPPM1T0qrelrh2FPWEyRLBjQN93BqMtnsLr3o+WPYbMJLx7hFAJ4ICOEXSWAtNKWfzRlp9zm95gFc1vsBJictwRBL/xec6JE1If7TaEPXU=
+	t=1715743965; cv=none; b=lM+sjILSlz/VLB3ExmnXJRwS69uJe2u6CjHXoVk1qTjHxttfgf1rEhk8H0TvBFko87i6i/nngNYOwzd2Jpv9oG13jtEL1EUZWsTHcg8wKC9ElRi3wZTcUBT8Wt3VWndP04XU+oUOQzpDjhVUin2xyFnbMf5QdTIecIOJsJ2etDk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715737479; c=relaxed/simple;
-	bh=utrhsUe7+CsXJr0wIMC6o0BnlW4BggIXELMhPPq0LLY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=NM4yuzAqqrGO/TMD6MnuvyJGFHobCLg5yO0ATCbiAhERaMr32nCALwuDqrSnXvf4OeNT/HvHXyleD4okiEAlr8rJR2GdUseKXLl4tnweWkUh9ifLLmtwRkKUqu/rn+nz5PzRGygjj0SJaG5VE/mNvhDLHtj/TjzB8UzSj14dnAk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=aLO7PNM0; arc=none smtp.client-ip=209.85.210.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
-Received: by mail-pf1-f175.google.com with SMTP id d2e1a72fcca58-6f44e3fd382so5249424b3a.1
-        for <bpf@vger.kernel.org>; Tue, 14 May 2024 18:44:37 -0700 (PDT)
+	s=arc-20240116; t=1715743965; c=relaxed/simple;
+	bh=IwjxX6lGjtRR4HsC+Tx98ybpDz/8CNenXrNP0R7dQk8=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=sqrLoo2bz0xI2+Bwf3HZf9U4XNiLlgV2LACz+/zV+As3EGx/mOSLjG+Tm8rKVPEN7QJzVcFtxD4+FDkztMuXDUOkKdqp9vci2Il3l12xUr3MG8zrUp/ZoE/wQAamffl+QSaA2ClbcOHd3c/cVaRHQPNaRJZIOJbw+J0vXuzNOkk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=IQFb+fnc; arc=none smtp.client-ip=209.85.208.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
+Received: by mail-ed1-f46.google.com with SMTP id 4fb4d7f45d1cf-57342829409so2433114a12.1
+        for <bpf@vger.kernel.org>; Tue, 14 May 2024 20:32:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1715737477; x=1716342277; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=qo/v4eXzdi6YHioqLixe5DcUJ4f/UL2pWmemFFHuCb4=;
-        b=aLO7PNM0dUV2nFR3uNW7VBuUROhMzuknk95TAq+VncPVvq/8XGJREw03E/f7db/T7P
-         56TlB3Y+EGMHqsw4i6PxJd2oJbmp3tufIJwWylFjTESpM6nssCbCe2AUrJ3mpZ+yV/NX
-         N9naksMPBnPJ1NzvWgOFG1s0h9vjjWE6IbdAm8HcnaCnB6/UzZe6huAKXDMXIe3jbRqy
-         /dRy+gmrTNNhM3JOYLjGSKz+93l7oovuD6dSDlB2Obx3tJTrf8mtA4/2Ar1M9qR4NlIU
-         LYRQrhyGomg8fkgEIUixYtYbj+c+Pvct6Td4XtuUUHhF/blPWTtgqAzfSgfD6ErKZ5+z
-         CYIg==
+        d=linux-foundation.org; s=google; t=1715743962; x=1716348762; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=n78oaAZRyO+VAfWO7SduK6Bbx6aSAbla91zbFFaUVww=;
+        b=IQFb+fnchIRC7GqVva+r8lW7Xi4SHJiGntne8eKqzYa3ARlBxbtWGrrJyALoWIuw7c
+         mz4PZmkXItCiBUybEh9TtE4Aj3DdzPeckGDAqDQ5H3XgFWnDYuCEyyGUDFCA6WxmPQ/K
+         Gw2poZGgOlhCEx+0YxVFQs+IydHtdsQ4/5x1c=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1715737477; x=1716342277;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=qo/v4eXzdi6YHioqLixe5DcUJ4f/UL2pWmemFFHuCb4=;
-        b=HgJ5ae5LTu5wun/3nj8RtHMX6vkMIAvWSXWH9eHj0ABrRCn3h8/4oWABeWl5e7jB26
-         BJ8HjuHswOv7vUG0vfxS7a7jWEuUm3NGQJoEN+XAgTRm+UK12WwP35UHsiGjuoLIG/pa
-         cT4tL6EazwuObRaoZfflxskF9BGWdozVWpYX5h/Bk0s8fQqXbK16tOZF2+AVfq03kGt/
-         JN/a2S34sIFwHK8EzFTI53WDNIcGwMbS3TF4eCA1a7lv04++3UeXBcSZ3hAHLG0iBpGx
-         N17rLxDEePNXvUcQvdipxtDLDjJEkiwDHj9mL754hxFA/iq5duT0PELj3zh0YIMFxrQo
-         YTow==
-X-Forwarded-Encrypted: i=1; AJvYcCWVTPVpt8Af6RK+VGaASVLcGNOhYWOWZCENJElw9BtJ72xJFdSbLCAoIUH26qQgfaFEizgAKhTVKnaPaGuzDW5PMdDN
-X-Gm-Message-State: AOJu0YysrwPUzCkSSTuL8fo6djY1NqBVBuhOzUh0aglxhgv1F4s2qYtz
-	h0YN5HGB4TSoDiBMByckR3F9GIrHA4uBFxxS/mN09AIhNr25sucz20+aK8wxnUU=
-X-Google-Smtp-Source: AGHT+IEHwYi3lxbkeeQme7XFurOrb4+25P1XQTNA/EpQWyQ7HAW2wUw7KzjFUtiLX1yfPtkTtjx+Lw==
-X-Received: by 2002:a05:6a00:1493:b0:6ea:df6a:39e7 with SMTP id d2e1a72fcca58-6f4e02adb85mr16427939b3a.13.1715737476914;
-        Tue, 14 May 2024 18:44:36 -0700 (PDT)
-Received: from debug.ba.rivosinc.com ([64.71.180.162])
-        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-634103f6e2dsm8832789a12.61.2024.05.14.18.44.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 May 2024 18:44:36 -0700 (PDT)
-Date: Tue, 14 May 2024 18:44:33 -0700
-From: Deepak Gupta <debug@rivosinc.com>
-To: "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>
-Cc: "olsajiri@gmail.com" <olsajiri@gmail.com>,
-	"songliubraving@fb.com" <songliubraving@fb.com>,
-	"luto@kernel.org" <luto@kernel.org>,
-	"mhiramat@kernel.org" <mhiramat@kernel.org>,
-	"andrii@kernel.org" <andrii@kernel.org>,
-	"john.fastabend@gmail.com" <john.fastabend@gmail.com>,
-	"linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"mingo@redhat.com" <mingo@redhat.com>,
-	"rostedt@goodmis.org" <rostedt@goodmis.org>,
-	"ast@kernel.org" <ast@kernel.org>,
-	"tglx@linutronix.de" <tglx@linutronix.de>,
-	"linux-man@vger.kernel.org" <linux-man@vger.kernel.org>,
-	"oleg@redhat.com" <oleg@redhat.com>, "yhs@fb.com" <yhs@fb.com>,
-	"daniel@iogearbox.net" <daniel@iogearbox.net>,
-	"peterz@infradead.org" <peterz@infradead.org>,
-	"linux-trace-kernel@vger.kernel.org" <linux-trace-kernel@vger.kernel.org>,
-	"bp@alien8.de" <bp@alien8.de>,
-	"bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-	"x86@kernel.org" <x86@kernel.org>
-Subject: Re: [PATCHv5 bpf-next 6/8] x86/shstk: Add return uprobe support
-Message-ID: <ZkQTgQ3aKU4MAjPu@debug.ba.rivosinc.com>
-References: <20240507105321.71524-1-jolsa@kernel.org>
- <20240507105321.71524-7-jolsa@kernel.org>
- <a08a955c74682e9dc6eb6d49b91c6968c9b62f75.camel@intel.com>
- <ZjyJsl_u_FmYHrki@krava>
- <a8b7be15e6dbb1e8f2acaee7dae21fec7775194c.camel@intel.com>
- <Zj_enIB_J6pGJ6Nu@krava>
- <20240513185040.416d62bc4a71e79367c1cd9c@kernel.org>
- <c56ae75e9cf0878ac46185a14a18f6ff7e8f891a.camel@intel.com>
- <ZkKE3qT1X_Jirb92@krava>
- <3e15152888d543d2ee4e5a1d75298c80aa946659.camel@intel.com>
+        d=1e100.net; s=20230601; t=1715743962; x=1716348762;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=n78oaAZRyO+VAfWO7SduK6Bbx6aSAbla91zbFFaUVww=;
+        b=tGMPOwJLyNWaMp0hCHF/HwRNBMpnlJBpMKBEU91JhaNOCUL20nwnEgi+Jaq9GZUiOE
+         tkqZS2hHuh1iUtDBSn4wlg2AGySAdpX7susPKgH5hKwopW2PknYbTBi/Rt7FJnZ4D8ZT
+         HRu2g+wnW5SM5XQ2zAPluZodzVCJhaUF0MVm7JNojtM+ygI16nAbGBgoHAlpUAcs8N+z
+         rUdEPbjU4LJR/9u8/jUDVKfYF5fr8GzGTmeTS/+V4eamhOxyTeBGnkeSmeRAyBXrtQt/
+         uOkONpAhhlE2BpGYlccHj1h82EbJNMjdBaEAAVSpyvfipoIJtC6XlPiUwxoo317zQ5W/
+         9rjw==
+X-Forwarded-Encrypted: i=1; AJvYcCUB55FrYUhu+NoU6fsoqErnjS+3dv+7MZhP8er+1A7biTC8r8mnoKQde4lyBC9/a8ZXAFD0+fLdftlpRqH/qwMyDgPq
+X-Gm-Message-State: AOJu0Yx4mNB7kfEnqhDKFFtHPWalK6trgkhNbk1Ds0BG1y6HC4nRrUXC
+	5exCi4RIjEGx9t3kL6ZLSOemToHAgagMHN2oYIAVPRPU7bgeribHciNf9Q+uGxmbCZKDAQM/Y4G
+	1On8ljA==
+X-Google-Smtp-Source: AGHT+IEtmYn334kjU+CbJm/IinFeOtK4pZILWZe1kvNvLClkUTdvBeDzSo6Gpk4gwCz4c0+zGE0zrw==
+X-Received: by 2002:a05:6402:13d3:b0:572:b83e:e062 with SMTP id 4fb4d7f45d1cf-57332686076mr17744868a12.3.1715743961947;
+        Tue, 14 May 2024 20:32:41 -0700 (PDT)
+Received: from mail-ej1-f54.google.com (mail-ej1-f54.google.com. [209.85.218.54])
+        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-574ed753a6dsm800168a12.77.2024.05.14.20.32.41
+        for <bpf@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 14 May 2024 20:32:41 -0700 (PDT)
+Received: by mail-ej1-f54.google.com with SMTP id a640c23a62f3a-a59a609dd3fso135424266b.0
+        for <bpf@vger.kernel.org>; Tue, 14 May 2024 20:32:41 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCUDjS1D4Asz06YX07YsBlK+Jzpfve/38W+QF2t6OeF5HKqyzbyODV8WHK0rcKjfFg/tmGqtDQvjM/bLnZEIg2MxE7pc
+X-Received: by 2002:a17:906:70f:b0:a5a:7493:5b68 with SMTP id
+ a640c23a62f3a-a5a74935c7emr527515666b.24.1715743960872; Tue, 14 May 2024
+ 20:32:40 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1; format=flowed
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <3e15152888d543d2ee4e5a1d75298c80aa946659.camel@intel.com>
+References: <20240514231155.1004295-1-kuba@kernel.org>
+In-Reply-To: <20240514231155.1004295-1-kuba@kernel.org>
+From: Linus Torvalds <torvalds@linux-foundation.org>
+Date: Tue, 14 May 2024 20:32:24 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wiSiGppp-J25Ww-gN6qgpc7gZRb_cP+dn3Q8_zdntzgYQ@mail.gmail.com>
+Message-ID: <CAHk-=wiSiGppp-J25Ww-gN6qgpc7gZRb_cP+dn3Q8_zdntzgYQ@mail.gmail.com>
+Subject: Re: [GIT PULL] Networking for v6.10
+To: Jakub Kicinski <kuba@kernel.org>
+Cc: davem@davemloft.net, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	pabeni@redhat.com, bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-On Wed, May 15, 2024 at 01:10:03AM +0000, Edgecombe, Rick P wrote:
->On Mon, 2024-05-13 at 15:23 -0600, Jiri Olsa wrote:
->> so at the moment the patch 6 changes shadow stack for
->>
->> 1) current uretprobe which are not working at the moment and we change
->>    the top value of shadow stack with shstk_push_frame
->> 2) optimized uretprobe which needs to push new frame on shadow stack
->>    with shstk_update_last_frame
->>
->> I think we should do 1) and have current uretprobe working with shadow
->> stack, which is broken at the moment
->>
->> I'm ok with not using optimized uretprobe when shadow stack is detected
->> as enabled and we go with current uretprobe in that case
->>
->> would this work for you?
+On Tue, 14 May 2024 at 16:12, Jakub Kicinski <kuba@kernel.org> wrote:
 >
->Sorry for the delay. It seems reasonable to me due to 1 being at a fixed address
->where 2 was arbitrary address. But Peterz might have felt the opposite earlier.
->Not sure.
->
->I'd also love to get some second opinions from broonie (arm shadow stack) and
->Deepak (riscv shadow stack).
->
->Deepak, even if riscv has a special instruction that pushes to the shadow stack,
->will it be ok if there is a callable operation that does the same thing? Like,
->aren't you relying on endbranches or the compiler or something such that
->arbitrary data can't be pushed via that instruction?
+> Full disclosure I hit a KASAN OOB read warning in BPF when testing
+> on Meta's production servers (which load a lot of BPF).
+> BPF folks aren't super alarmed by it, and also they are partying at
+> LSFMM so I don't think it's worth waiting for the fix.
+> But you may feel differently...  https://pastebin.com/0fzqy3cW
 
-Instruction is `sspush x1/ra`. It pushes contents of register return address (ra 
-also called x1) onto shadow stack. `ra` is like arm's equivalent of link register.
-Prologue of function is supposed to have `sspush x1` to save it away.
-ISA doesn't allow encodings with register in risc-v GPRs (except register x5
-because some embedded riscv space toolchains have used x5 as ra too).
+Hmm. As long as people are aware of it, I don't think a known issue
+needs to hold up any pull request.
 
-On question of callable operation, I think still need to fully understand who manages
-the probe and forward progress.
+Even if that whole 'struct bpf_map can be embedded in many different
+structures", combined with "users just magically know which structure
+it is and use container_of()" looks like a horrid pattern.
 
-Question,
+Why does it do that disgusting
 
-Is it kernel who is maintaining all return probes, meaning original return addresses
-are saved in kernel data structures on per task basis. Once uretprobe did its job then
-its kernel who is ensuring return to original return address ?
+        struct bpf_array *array = container_of(map, struct bpf_array, map);
+        ...
+                *insn++ = BPF_ALU32_IMM(BPF_AND, BPF_REG_0, array->index_mask);
 
->
->BTW Jiri, thanks for considering shadow stack in your work.
+thing? As far as I can tell, a bpf map can be embedded in many
+different structures, not just that 'bpf_array' thing.
+
+That spectre-v1 code generation is disgusting. But worse, it's stupid.
+The way to turn the index into a data dependency isn't to just 'and'
+it with some fixed mask (that is wrong anyway and requires that whole
+"round up to the next power-of-two), it's to just teach the JIT to
+generate the proper Spectre-v1 sequence.
+
+So that code should be able to rely purely on map->max_entries, and
+not do that disgusting "look up struct 'bpf_array'"
+
+Anyway, I've pulled it - the bpf code looks broken, but it looks
+fairly straightforward to do it right if I understood that code
+correctly.
+
+              Linus
 
