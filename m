@@ -1,113 +1,121 @@
-Return-Path: <bpf+bounces-29794-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-29795-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id F178E8C6BB4
-	for <lists+bpf@lfdr.de>; Wed, 15 May 2024 19:47:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 735D78C6BC1
+	for <lists+bpf@lfdr.de>; Wed, 15 May 2024 19:57:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 20C081C2221A
-	for <lists+bpf@lfdr.de>; Wed, 15 May 2024 17:47:33 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 90A191C21D1F
+	for <lists+bpf@lfdr.de>; Wed, 15 May 2024 17:57:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4BCAA158864;
-	Wed, 15 May 2024 17:47:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED901158DA8;
+	Wed, 15 May 2024 17:57:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="xYahn0dK"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="d4u4j2h/"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-f47.google.com (mail-ed1-f47.google.com [209.85.208.47])
+Received: from mail-wr1-f65.google.com (mail-wr1-f65.google.com [209.85.221.65])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 562E015884F
-	for <bpf@vger.kernel.org>; Wed, 15 May 2024 17:47:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E812815687A
+	for <bpf@vger.kernel.org>; Wed, 15 May 2024 17:57:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.65
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715795246; cv=none; b=abOy798+7bpjEuJbmr/637v8cIpyQc2XyJsUsxrWYuPyd3FJgyP3W0rl9nqO3DiDZ4tptvDKXjWYYM0Y4aLfkZ0sIeyYUxz+fCY9bbnulf2h5o44mGV/FuQLW7xr7ESxkNTrqL34WOokCzDY0/zrn4PTJ9I67PbeNu2DXwB6SW8=
+	t=1715795827; cv=none; b=jZ8HQsQWISnKohU0zclvHOoNNg+1WDl9Oq+xYewLEBCpwhOU1KvAlRVqosW8Qq5DtiGVFVe4UTSe7/rtetrRr39ztRuZKLF54W01RX1DBN/GOeED76AIip+sgT7I5s6zAYsJE3TB5ShtyWwujmSH9GAx49mZDHRwHOyOPm9Hpbc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715795246; c=relaxed/simple;
-	bh=/zCcP1X1di1bJ8igzkeKa8QLS6+W1fjEL6lp+hEgy6k=;
+	s=arc-20240116; t=1715795827; c=relaxed/simple;
+	bh=s+bC+MDFMm3YPeFA5IULf10Pzzhn5wixAk19b3bw0nM=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=sDHUw9fE1oSnTEzYPpxf3CS92/b4XKl3ihyknoC2l90VqgRxgEytenLOZDS4FDsfCN7KYZIKAtLIxttlovpWm6icE5a9uQp6KXXDCROVl3ZoW0Q1zpNbmE74YldweDeWjtUMMTFE7KhPyXsH8tjIQfb56OvV1ET9Pagz0mXeMHQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=xYahn0dK; arc=none smtp.client-ip=209.85.208.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ed1-f47.google.com with SMTP id 4fb4d7f45d1cf-5724736770cso28711a12.1
-        for <bpf@vger.kernel.org>; Wed, 15 May 2024 10:47:25 -0700 (PDT)
+	 To:Cc:Content-Type; b=k7PHdUipxdIxjN3HofQAWz8yAyHxKNbH3GDrkF+ZS9l4Xv4hm4SotriCAMTE8OOpLCIRvdiATkcjQWCUYjGlmzUzecSa2qfn3J8hp5P5LMi+ZUs9ze4LnzA4OQuqdbNc1RPjPxksGfBXpIDALAhu37RQk/wu4PtQI+EQs6zOBHo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=d4u4j2h/; arc=none smtp.client-ip=209.85.221.65
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f65.google.com with SMTP id ffacd0b85a97d-34db9a38755so6757943f8f.1
+        for <bpf@vger.kernel.org>; Wed, 15 May 2024 10:57:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1715795244; x=1716400044; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=/zCcP1X1di1bJ8igzkeKa8QLS6+W1fjEL6lp+hEgy6k=;
-        b=xYahn0dKtXhY820/F6CDXFoP2gqTb3Hyfibp5IhGBY3fywmEfVxRVozqL6hItqnjnO
-         73RLzB7KCmKM0I3TXcX/6+7KP/ldHnAKgdM57sUa2XOpDyDsCQGCBT/QAhjBWCgfm/V9
-         u27KFFgy07GkEfUxR4YN+0E6bH0YfVYZKH4RG1WXz4bVxJAUJGSGaxXNh5IVF/r5F0Lr
-         7DyJouQ+vssBpPZW2Qlx/9mMMOVzgCu4C4UpFSti3OYZkOL/j5JYtOSOt6b6GhsTF1/t
-         jeuqic9Jwm+9EhQbl9/vwBfrxgxlRkOecOmKXKHIpZ6UHf4OnFBlF6olubIFhO5fAmzo
-         qTaQ==
+        d=gmail.com; s=20230601; t=1715795824; x=1716400624; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=s+bC+MDFMm3YPeFA5IULf10Pzzhn5wixAk19b3bw0nM=;
+        b=d4u4j2h/vPJMsDFrOGW/ixTPa0tkveLRQqsCg+T8Y9iHcUv50isJ97p9izsUIqe45v
+         fX39K2bhiLmET8iKrwbsjZmvuiRkFYQEqxNyt7kOkU75oBhhjO8Rvk9p4Q5mifc9RZiv
+         fVSZhhMG6k5AxpTTRMameaued7225U0eOY8MnxuOzQvuTDifoPr9N4iZympfay4Vje83
+         3AEPG7ScUdad025GUAzUQI+Yxwc3+s0lZzPpyn2Cvsj+akXMI10j/YlMWdIssQk9MFUi
+         iiN2THP08PYqS+sjn8i1qdzXfNfWZVvTDD/9BbQnEuXPcMRQILX9T1MRIxAD6ZVHY7mS
+         qE8Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1715795244; x=1716400044;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=/zCcP1X1di1bJ8igzkeKa8QLS6+W1fjEL6lp+hEgy6k=;
-        b=tXtnXF2HxHDM38xp8Wjk0EoYRAtyzTWIYBXgvoLyD5HgykTtoQn4JpJoUMNeXVINLn
-         cLMVGASgMPvM6TXYtLSqL+mBAuSboegdrkqY7neUm9FPOqrfWGmIrKcNvYy1hrlTiwSt
-         v29GCtOD4JhW0k0B4QExxVPwNjC7VAGMtSN+nwB9uIXDgGEnthBY5NLx6Ku6c89VsAKh
-         HvuIKeHLBfqvenlB7DGFsegkgYbWXEGLQRSTVYSamqtzmvyBwvvaInnYM9+gHCs7mSCV
-         Ah4uwchFpPmJHwrcLPfwWJ8yIXx6pC+OdU3gcC7UIXuZ6b0V/CPmFlgBbfmUtVBh+2mY
-         ybhQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXbCqbmPaN9GxvdmtRIi/ytU4WKuQ09BXRsV/hUw+fVYR/2lRBs7u75u9YC0SQn4ULrxD1tPvT7sMIf5XokaMAwJDKj
-X-Gm-Message-State: AOJu0YwxO89c+hvaUWj72B+Wfb5XfSAtrOn8h7R1yaI/6sJivUktleNS
-	6A1M76kCDY5MzoLe91rIsMgnYwKdgphjToPOB5gwlL1EUtI9zcAIRn6r1TyboPJAjMdyLBy52A5
-	9zTspFIrPV74a3J3mtQs+F6e59xK50oUOgpc=
-X-Google-Smtp-Source: AGHT+IGAXYIvp/5ckzCX34ddHzC1hiYy+B64kYba2ozl+yuCpUfE1UDiQpoL6EmGIVsWJBofAQCpERhDXWItJwqAXeM=
-X-Received: by 2002:a50:cb8c:0:b0:573:438c:778d with SMTP id
- 4fb4d7f45d1cf-574ae3c1280mr810495a12.1.1715795243503; Wed, 15 May 2024
- 10:47:23 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1715795824; x=1716400624;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=s+bC+MDFMm3YPeFA5IULf10Pzzhn5wixAk19b3bw0nM=;
+        b=wx3tI3IgNIXX9Po2NTy09u+ZsAF27dmeIDLMV8U+Uz7QUGafPCp8dwC/uOg3psOXSU
+         GRCT63SNt5uoijFNQ62kSAgk3o/nuyVev0IgX0WrDNXBNHLmYrGIH7rX7hnrX/sPZ96x
+         3QU7SZSdxUOGNg6ger0KW1s3BCLH29IDd/z4X4cKVvZqUpZfIhlCKwiXFqLtLZGdvWUv
+         liJ4KBFKv8PX/nZEhetuYyYfXfrqiB3noTA67k0zS4KPfdZm283zgzqH0sN8pvLlzIOZ
+         OBtq7GSZuLMNSMkx9r+onfXRb/CztmxPN1wutZQoVKaF30hLchb0ed3lhnimIvDr4no2
+         mJmA==
+X-Gm-Message-State: AOJu0YzI2sSyCTEL5mkZzBQtkppoA/lLO1jZuWdnT6coW/GU4shkPnhf
+	ixBGpfGZ0m900CnoyfCe8wLignkGYq0LCeOMDYXphNzvYbdUdXtK1QYew8Vc5jfJ0WMB0FQtS+g
+	HWuagMKxL8ticHwxCdLQ5kV/fWkQ=
+X-Google-Smtp-Source: AGHT+IFRYezdpnaFOuCtpHi2T//0qEiUQ2F3MWCpYlm1ZlDlNaN21HvGO6w+CWfjtn5n2GZWhIsr9ye6VHZfLUz0gbQ=
+X-Received: by 2002:a05:6000:d82:b0:351:bc37:c688 with SMTP id
+ ffacd0b85a97d-351bc37c6acmr7621750f8f.46.1715795823961; Wed, 15 May 2024
+ 10:57:03 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240510191423.2297538-1-yabinc@google.com> <20240510191423.2297538-4-yabinc@google.com>
- <CAM9d7chNz8-84m28q5qSLjUjZ=Ni1CA_JzbB_P+YJooLQd85YA@mail.gmail.com> <20240515085840.GD40213@noisy.programming.kicks-ass.net>
-In-Reply-To: <20240515085840.GD40213@noisy.programming.kicks-ass.net>
-From: Yabin Cui <yabinc@google.com>
-Date: Wed, 15 May 2024 10:47:11 -0700
-Message-ID: <CALJ9ZPOr7Jg8Vic9Ap5+jYqJVaLeV3DEJm3dAGBCLB9DL5EusQ@mail.gmail.com>
-Subject: Re: [PATCH v4 3/3] perf/core: Check sample_type in perf_sample_save_brstack
-To: Peter Zijlstra <peterz@infradead.org>
-Cc: Namhyung Kim <namhyung@kernel.org>, Ingo Molnar <mingo@redhat.com>, 
-	Arnaldo Carvalho de Melo <acme@kernel.org>, Mark Rutland <mark.rutland@arm.com>, 
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Ian Rogers <irogers@google.com>, Adrian Hunter <adrian.hunter@intel.com>, 
-	linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	bpf@vger.kernel.org
+References: <20240514124052.1240266-1-sidchintamaneni@gmail.com>
+ <CAP01T778YG3sL1BTJnPdOJkqhcNG=zv2dEp1hquUV1+aX+DXDA@mail.gmail.com> <CAE5sdEgjqYkSyG9MgrpJ=dDCEGtC0e-L4hzV+tz8Pr8c2EbrnQ@mail.gmail.com>
+In-Reply-To: <CAE5sdEgjqYkSyG9MgrpJ=dDCEGtC0e-L4hzV+tz8Pr8c2EbrnQ@mail.gmail.com>
+From: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Date: Wed, 15 May 2024 19:56:27 +0200
+Message-ID: <CAP01T74tenD5vWgh_Q2JzkWP=xTAVJiovqk0C5aMYmUNbpedog@mail.gmail.com>
+Subject: Re: [PATCH v3 bpf-next 2/2] selftests/bpf: Added selftests to check
+ deadlocks in queue and stack map
+To: Siddharth Chintamaneni <sidchintamaneni@gmail.com>
+Cc: bpf@vger.kernel.org, alexei.starovoitov@gmail.com, daniel@iogearbox.net, 
+	olsajiri@gmail.com, andrii@kernel.org, yonghong.song@linux.dev, rjsu26@vt.edu, 
+	sairoop@vt.edu, miloc@vt.edu
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Wed, May 15, 2024 at 1:58=E2=80=AFAM Peter Zijlstra <peterz@infradead.or=
-g> wrote:
+On Wed, 15 May 2024 at 19:44, Siddharth Chintamaneni
+<sidchintamaneni@gmail.com> wrote:
 >
-> On Fri, May 10, 2024 at 02:29:58PM -0700, Namhyung Kim wrote:
-> > On Fri, May 10, 2024 at 12:14=E2=80=AFPM Yabin Cui <yabinc@google.com> =
-wrote:
-> > >
-> > > Check sample_type in perf_sample_save_brstack() to prevent
-> > > saving branch stack data when it isn't required.
-> > >
-> > > Suggested-by: Namhyung Kim <namhyung@kernel.org>
-> > > Signed-off-by: Yabin Cui <yabinc@google.com>
-> >
-> > It seems powerpc has the similar bug, then you need this:
-> >
-> > Fixes: eb55b455ef9c ("perf/core: Add perf_sample_save_brstack() helper"=
-)
+> > CI fails on s390
+> > https://github.com/kernel-patches/bpf/actions/runs/9081519831/job/24957489598?pr=7031
+> > A different method of triggering deadlock is required. Seems like
+> > _raw_spin_lock_irqsave being available everywhere cannot be relied
+> > upon.
 >
-> Is this really a bug? AFAICT it just does unneeded work, no?
+> The other functions which are in the critical section are getting
+> inlined so I have used
+> _raw_spin_lock_irqsave to write the selftests.
+>
+> Other approach could be to just pass the tests if the function is
+> getting inlined just like in
+> https://elixir.bootlin.com/linux/latest/source/tools/testing/selftests/bpf/prog_tests/htab_update.c
 
-It's not a bug. As I replied to Namhyuang, the powerpc code checks
-sample_type before calling perf_sample_save_brstack().
+Yeah, it is certainly tricky.
+Skipping seems fragile because what if x86 and others also inline the
+function? Then this test would simply report success while not
+testing anything.
+
+One option is to place it at trace_contention_begin, and spawn
+multiple threads in the test and try until you hit -EBUSY (due to
+increased contention, leading to queued_spin_lock_slowpath being
+called and the tracepoint being hit).
+
+The other option would be to add a dummy empty call within the
+critical section marked as noinline, and then attach the BPF program
+there. But I think this might not be liked by everyone since we're
+introducing code in the kernel just to test stuff.
+
+So option 1 seems better to me, but the test needs to be set up
+carefully to ensure contention occurs.
+Others can chime in with better ideas.
 
