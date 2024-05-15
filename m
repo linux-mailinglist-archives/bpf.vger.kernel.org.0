@@ -1,100 +1,138 @@
-Return-Path: <bpf+bounces-29771-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-29773-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 661108C699E
-	for <lists+bpf@lfdr.de>; Wed, 15 May 2024 17:25:50 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DF57A8C69A7
+	for <lists+bpf@lfdr.de>; Wed, 15 May 2024 17:28:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 039B81F2300F
-	for <lists+bpf@lfdr.de>; Wed, 15 May 2024 15:25:50 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1C3D11C21143
+	for <lists+bpf@lfdr.de>; Wed, 15 May 2024 15:28:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 99E0E155A2B;
-	Wed, 15 May 2024 15:25:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4616B15625D;
+	Wed, 15 May 2024 15:28:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="eySLR15T"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="LKzKGh93"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-f67.google.com (mail-ed1-f67.google.com [209.85.208.67])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A3C3315573E;
-	Wed, 15 May 2024 15:25:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.67
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3098F156236
+	for <bpf@vger.kernel.org>; Wed, 15 May 2024 15:28:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715786744; cv=none; b=VcJWkHqiL0P3YPA+cBjo5HAiXeAuCmPZWmhCkpQanq316rqlDJaKkJdoFv676vfSKSI4KHRST77qkzcpuqvgTcsZHBlTQOC2SKlh19bwmFWcmJqx4C4fYJcELDmrvqaVVusVoT0KAWO0XVTVReedQ9pPxuh6K66yj74B8dKxqqI=
+	t=1715786883; cv=none; b=Dp2Ym2CD9xreQL2mDgALkfHu3IGxqkO5d296FYNRfTosfko3piAZiqGVrQ11wZoaCAjgTN05OqK86rOWv1Wz1dba8aXSMJqq+ZOgCARTog2Tniylpy+Rr7uG5iBCZWX0x9RxRLKmejOtDi9SBUY+dmCwyp4qAWdlBgyezvzn4gk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715786744; c=relaxed/simple;
-	bh=ekQu6l8UVVNVkUjVcmcdczKoulddjvrzz3Upabd+m2c=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=BgOGodr+x03/P9IifXOUkECS1WZXrPWd9nt2r3riZm8iZZqeVzDSDNITgpl4VdoJw8/7dly8sYOQH5LAqeZLIDq9mQ8ZI8GefBl06FK1cr405jHSSt3pQ3vLxAPGuygs3XcL3MO3A5/F8dVKhDniB0ply5PYqjXRgTtp0wJpXSg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=eySLR15T; arc=none smtp.client-ip=209.85.208.67
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f67.google.com with SMTP id 4fb4d7f45d1cf-5709cb80b03so2225747a12.2;
-        Wed, 15 May 2024 08:25:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1715786740; x=1716391540; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=ekQu6l8UVVNVkUjVcmcdczKoulddjvrzz3Upabd+m2c=;
-        b=eySLR15T+OBYzI0z8b7iPHcuVh8vP8xK0vhPP1/NMQ2bXT430X7He50SDNxzOrkgWN
-         VlESHN20t/sGXp/RxAPVK90fgCJKVWuPlZQ1zGiz/Zw/Jsl+6vI4Bbv+HjlknCdk33gE
-         Yse+CU9+irjF5NIGZhRJuFY+a9ECzr5v29FFs5gPIvis23rgGSUxnuV1dq8QobG86+U4
-         ftdAaRs46kPcp2e/CfKGxf64Nr00O3SdUnuM5HJjvd90ZQX3Ud6pg9HJQOuTUCsIDhqn
-         6TRzq49/U+yjjRzNP7r2zYrPgcBedwK6JbmNn4QLkevU8UU9BeRCXpyEVn2w/ivWTof7
-         O3XQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1715786740; x=1716391540;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=ekQu6l8UVVNVkUjVcmcdczKoulddjvrzz3Upabd+m2c=;
-        b=bCMYoVnSSNNY0vTHPYxzlrjpau6u5thyAnHkdMGuNbw8JW7rEQRTl5PBul3MmpwnLE
-         Ng0AbxRsET16jdr2H+4m0EMvgimw2MU0W6mZ7ECoWitY7DT+aLo+ebB10I2APNE0tz1A
-         hQi56mot13hjYe+zrX0MJhN0+uT7SVmPQccuM6CJwk/Clx4QMvEWgBWAgq5CjQKlQEeu
-         GalbR3iHst8dMoYXOK8A80WccF+dAbf4xLQJ5yd8FqWfAm2YlN+LQroOVImAv3dalLkP
-         jeAE2k8x97nv+f4QYRrxifMz3eSUYrgCOZpCo3m+XmAjtoM5aot3/ZQKhxTUxCEZzy7R
-         AkRg==
-X-Forwarded-Encrypted: i=1; AJvYcCVH/afRyl2rwAH9/N//A/n2FL2ocqOgCc1oFI0S8hJLmQendwm8pRKVc0ddTt2iwC1KIq7mYWxLMAyZAOx2dxlKW0u1
-X-Gm-Message-State: AOJu0YyeeS/YhdUlIS1jZEZVc1QOKU4Qba0tJ4+Rp5eeMqE1Taqhqvqr
-	4OyhCPUpFXLGTqTsnq51qPcfY/3aaT5RaUCQfQASCLwdiqLlJEdu3IF/9Sk+HjGPtNUkMrRDqE5
-	DcnFzOLeCJh9Qu0htHJRUsD0w3I8=
-X-Google-Smtp-Source: AGHT+IFOOz6XjLsCUnykrsTh4I2zrKCNz//LZi0zmMAPj4wBAZcDL/1aJOqWR2rhv263BtLvZWbhkl1FLEFVI4kvUYE=
-X-Received: by 2002:a50:a417:0:b0:572:9503:4f8c with SMTP id
- 4fb4d7f45d1cf-5734d67aed2mr10313575a12.34.1715786739755; Wed, 15 May 2024
- 08:25:39 -0700 (PDT)
+	s=arc-20240116; t=1715786883; c=relaxed/simple;
+	bh=C8kKQKOtylTtvVHkjEFur6xMaFsKzbM5ZDTUlRRicm4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=QtOo/OmHiQZ0p/I9zoUqELDFTLgWP31DBflrTeIlciNWn4OkpE4MqsNq17sAZ78aMKyYojldyan71L9rBeNixtQze6tsyJ7Qdh1O/Olcbe28LReOsVib2lgXZjCcYURzCmOIvzOyPMQ1w/zG/4wG64jBhnugcjkbs9axjvqz0Ns=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=LKzKGh93; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1715786880;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=uInC5hWDwqGcx7P6rLG2USi6e9+2nLZVOslbhOtiZQ8=;
+	b=LKzKGh93tvBFeZ+m9DLl6inrNboW+4rP3q2fDHZP9Ymxc1YmqyO0qDncW7Ki7ZYhjrzBGR
+	m4sqDUgoqYHbXoI9rSDRQdItoHYFLgu2VP83havmMx40bTp+HLUL7lSmjCY+NM6kZrrUiu
+	JsII/6VjL6dIhBIg2oXq5E6BQK6PB2k=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-159-OKrgi6wzN1OJxJUn5UMrTA-1; Wed,
+ 15 May 2024 11:27:42 -0400
+X-MC-Unique: OKrgi6wzN1OJxJUn5UMrTA-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.rdu2.redhat.com [10.11.54.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 4ABD71C0513F;
+	Wed, 15 May 2024 15:27:41 +0000 (UTC)
+Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.226.39])
+	by smtp.corp.redhat.com (Postfix) with SMTP id 7395F3C27;
+	Wed, 15 May 2024 15:27:36 +0000 (UTC)
+Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
+	oleg@redhat.com; Wed, 15 May 2024 17:26:15 +0200 (CEST)
+Date: Wed, 15 May 2024 17:26:09 +0200
+From: Oleg Nesterov <oleg@redhat.com>
+To: Jiri Olsa <olsajiri@gmail.com>
+Cc: Deepak Gupta <debug@rivosinc.com>,
+	"Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
+	"songliubraving@fb.com" <songliubraving@fb.com>,
+	"luto@kernel.org" <luto@kernel.org>,
+	"mhiramat@kernel.org" <mhiramat@kernel.org>,
+	"andrii@kernel.org" <andrii@kernel.org>,
+	"john.fastabend@gmail.com" <john.fastabend@gmail.com>,
+	"linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"mingo@redhat.com" <mingo@redhat.com>,
+	"rostedt@goodmis.org" <rostedt@goodmis.org>,
+	"ast@kernel.org" <ast@kernel.org>,
+	"tglx@linutronix.de" <tglx@linutronix.de>,
+	"linux-man@vger.kernel.org" <linux-man@vger.kernel.org>,
+	"yhs@fb.com" <yhs@fb.com>,
+	"daniel@iogearbox.net" <daniel@iogearbox.net>,
+	"peterz@infradead.org" <peterz@infradead.org>,
+	"linux-trace-kernel@vger.kernel.org" <linux-trace-kernel@vger.kernel.org>,
+	"bp@alien8.de" <bp@alien8.de>,
+	"bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+	"x86@kernel.org" <x86@kernel.org>
+Subject: Re: [PATCHv5 bpf-next 6/8] x86/shstk: Add return uprobe support
+Message-ID: <20240515152609.GD6821@redhat.com>
+References: <ZjyJsl_u_FmYHrki@krava>
+ <a8b7be15e6dbb1e8f2acaee7dae21fec7775194c.camel@intel.com>
+ <Zj_enIB_J6pGJ6Nu@krava>
+ <20240513185040.416d62bc4a71e79367c1cd9c@kernel.org>
+ <c56ae75e9cf0878ac46185a14a18f6ff7e8f891a.camel@intel.com>
+ <ZkKE3qT1X_Jirb92@krava>
+ <3e15152888d543d2ee4e5a1d75298c80aa946659.camel@intel.com>
+ <ZkQTgQ3aKU4MAjPu@debug.ba.rivosinc.com>
+ <20240515111919.GA6821@redhat.com>
+ <ZkTIU1QUAJF0f0KK@krava>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240515062440.846086-1-andrii@kernel.org>
-In-Reply-To: <20240515062440.846086-1-andrii@kernel.org>
-From: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Date: Wed, 15 May 2024 17:25:03 +0200
-Message-ID: <CAP01T74yJD508cSUtb4pFpuj0M8AM+t-sbxE8BE9Wt7zj4gHmg@mail.gmail.com>
-Subject: Re: [PATCH net-next 1/2] bpf: save extended inner map info for percpu
- array maps as well
-To: Andrii Nakryiko <andrii@kernel.org>
-Cc: netdev@vger.kernel.org, bpf@vger.kernel.org, ast@kernel.org, 
-	daniel@iogearbox.net, martin.lau@kernel.org, torvalds@linux-foundation.org, 
-	Jakub Kicinski <kuba@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZkTIU1QUAJF0f0KK@krava>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.1
 
-On Wed, 15 May 2024 at 08:24, Andrii Nakryiko <andrii@kernel.org> wrote:
+On 05/15, Jiri Olsa wrote:
 >
-> ARRAY_OF_MAPS and HASH_OF_MAPS map types have special logic to save
-> a few extra fields required for correct operations of ARRAY maps, when
-> they are used as inner maps. PERCPU_ARRAY maps have similar
-> requirements as they now support generating inline element lookup
-> logic. So make sure that both classes of maps are handled correctly.
->
-> Reported-by: Jakub Kicinski <kuba@kernel.org>
-> Fixes: db69718b8efa ("bpf: inline bpf_map_lookup_elem() for PERCPU_ARRAY maps")
-> Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-> ---
+> On Wed, May 15, 2024 at 01:19:20PM +0200, Oleg Nesterov wrote:
+> > Let me ask a couple of really stupid questions. What if the shadow stack
+> > is "shorter" than the normal stack? I mean,
+> >
+> > 	enable_shstk()
+> > 	{
+> > 		prctl(ARCH_SHSTK_SHSTK);
 
-Acked-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+I meant ARCH_SHSTK_ENABLE, of course
+
+> > 	}
+> >
+> > what happens when enable_shstk() returns?
+>
+> I think it will crash, there's explanation in the comment in
+> tools/testing/selftests/x86/test_shadow_stack.c test
+
+OK, thanks...
+
+But test_shadow_stack.c doesn't do ARCH_PRCTL(ARCH_SHSTK_DISABLE) if
+all the tests succeed ? Confused but nevermind.
+
+> > And what is the purpose of fpregs_lock_and_load() ? Why do we need to
+> > fpregs_restore_userregs() in shstk_setup() and other places?
+> >
+> > Oleg.
+> >
+>
+
 
