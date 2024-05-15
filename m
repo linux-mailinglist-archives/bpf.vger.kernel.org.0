@@ -1,127 +1,114 @@
-Return-Path: <bpf+bounces-29788-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-29789-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 563148C6B43
-	for <lists+bpf@lfdr.de>; Wed, 15 May 2024 19:04:15 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 11ACD8C6B44
+	for <lists+bpf@lfdr.de>; Wed, 15 May 2024 19:04:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0E8E01F2503C
-	for <lists+bpf@lfdr.de>; Wed, 15 May 2024 17:04:15 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C19272862E3
+	for <lists+bpf@lfdr.de>; Wed, 15 May 2024 17:04:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 54752157469;
-	Wed, 15 May 2024 17:02:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C2D8F39FE4;
+	Wed, 15 May 2024 17:03:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="C3uvyMRy"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="X5fAH/9A"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f42.google.com (mail-wr1-f42.google.com [209.85.221.42])
+Received: from mail-ej1-f65.google.com (mail-ej1-f65.google.com [209.85.218.65])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2760447F63
-	for <bpf@vger.kernel.org>; Wed, 15 May 2024 17:02:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C62F5381BA
+	for <bpf@vger.kernel.org>; Wed, 15 May 2024 17:03:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.65
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715792565; cv=none; b=IF1j1Z8Lh2O6r9jS1eQDmfAZYg6Pd/IoGTuEaid4Ppt8Ho69kG4EGG3nWctxkmfsHzwzt+Kz9WidF8fnoYFZNpJz/VdvWL3LM5AXT84KrwCZrplqDWLSS3lBmD21wZma5U0YOOzEaNFA/suODON9oHBXTlaArcq/XoozxSWSP+4=
+	t=1715792616; cv=none; b=d/kKhSsOWVt3yatS+NF7zw/zYZYMnB/4jtjVyeoiMj8fOAIXguxiRm9FviGLVFZ+fSqqpvBwubDHWVgoJiPx1MwJdPJSMjmDd3hafspvJ9vE2Fw4LC+5yIS+EtPQ9LODKqPIoI0eKMgUeiR5g+Ec9lVLQ2C/KVS/kWJoWH4sQVQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715792565; c=relaxed/simple;
-	bh=7OEf8zJV8DEwbsjhDg/GY+8G5Ko52ZH06IrbEHdKM8g=;
+	s=arc-20240116; t=1715792616; c=relaxed/simple;
+	bh=TKQQScGGSW80RMVVPkNLSS/x2KZgzC5d+z5kNB1T82A=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ey/PRvwQn4Tilyrtaghc6qUK1NmmjGAXUa8xQzlG/nF7vjHx6kWW5wAGQpj+C/O52HzBxDr/AkqZUs2thJVgkatYk7ZxUc12dddu61n0h8ObhIP1xYIJSoI327Woq7j1f5Z+2pxZXZPSJbyc9MoIkruXqA++FRyJAE8LAnTpAzM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=C3uvyMRy; arc=none smtp.client-ip=209.85.221.42
+	 To:Cc:Content-Type; b=aOpB6eRzfynZpedjb0l9SKAUUFPfBmi85zsTF5D/SczIJqiil9Rs12G9ad5C6jtabtsj4ie7578TcDyon3OqNbG7+8pUUVv7AvZ9er+WVf5lJrD4lAlASmMA5J29MV4PGSREHRM4J7i6xP68hDeOnDrMABFzP/RjUamx9KonSQc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=X5fAH/9A; arc=none smtp.client-ip=209.85.218.65
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f42.google.com with SMTP id ffacd0b85a97d-351d4909783so49129f8f.0
-        for <bpf@vger.kernel.org>; Wed, 15 May 2024 10:02:43 -0700 (PDT)
+Received: by mail-ej1-f65.google.com with SMTP id a640c23a62f3a-a5a88339780so214550866b.0
+        for <bpf@vger.kernel.org>; Wed, 15 May 2024 10:03:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1715792562; x=1716397362; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=hh3m3XjTL2DoP4DTOrEzVeyAHuwM1Po+gOqYm7QrQrc=;
-        b=C3uvyMRy5vAsZ9/S9y2Om0x9l+isnxbd/e+PBOolOG63VMTR5zuFBTzdgJ41l8mdNT
-         LnGzIF00WsWCxHPegXdYpCNmSME9o8TYyq5Vf1c19lONbsLB27fhOIZtRuklE6GNuypP
-         VnTbJvyd3LcOS7KbzNhh6lS/LYNFw+1Q6iXYvvdLuSUYtU1MgqXV66aRiuAs1zzJDzYI
-         k4WSlPLS2Dgi/fp0Q8GU4eRxn1kzv+PXfiB0CZGEOfaVyF0DJnpUzAhpKTR5fxPod+Pe
-         Y4ZAnpi1e2gg79XWzU/S0ZUdVQ3z4VhsYTQYO7qZcVJF5/JRcnddpKSsQDaSQ49BcOo6
-         N6fA==
+        d=gmail.com; s=20230601; t=1715792613; x=1716397413; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=TYQUvBG7AsY4Zy0RIsKk/tJtuddljbrs7bpvUpgPjBU=;
+        b=X5fAH/9A29Ow50QsZuqFlQm9Et2xiNPkXqesmqwCWnNPGE9dgPWzSnV+m4pAubxM02
+         00kISbGFPNRcXaKEEpg0D9TStWtwlXHpGSR78/00swOkHfmM/WxiVN2F8IbfMdTVvxug
+         9HyWvNS6i/Ir1bLorfJOkYJsppdsW8um63BBjovmCoMEHVysPbn75/j+lAprXo1nPeDe
+         VwOnVyEMm5sv5MR7wuSORvVpbcn3M2E6zx/uvVMJd8Fn1XZ0vj7kh5gyPUEPMb1b8wJQ
+         xsiijI6JJzgpezm/4G6Evm3ayDrUTLqROPjKnKvcVROWrP6wJpbn6/gLCGHXa+TmoMRX
+         L+MQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1715792562; x=1716397362;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=hh3m3XjTL2DoP4DTOrEzVeyAHuwM1Po+gOqYm7QrQrc=;
-        b=rWviVnUMLR3y4iA+6cfY1aFuSdBcSmumftd3qQcQMoRuCqs4tFX/bm0h5EM7MUEyth
-         VQMHLPzQV5wy2iTK46CasTKaXWltY6SzXobahg8OV6rYyEXhI/SyNlH/Yh6KiHIzNgGU
-         FBkG8wPAA5FeuhZOEOCx0ANDVKxw961BegIuJrz4uBEOxBSsgJc/hBcD7CflBrJ/VADP
-         P64bOXK/w4oxnJv9NOAPouvrd5VkMe3xodP37QQMfubdEpTaYc/eoW0dyMf8mKMmJG2P
-         cOIG82r6Jx1d+f4u7yKZ3dMGMRPclmF5V35HN6uBfEb541qdz/TPpBSyaEt2x7VGHNfw
-         qUcA==
-X-Forwarded-Encrypted: i=1; AJvYcCU07fIl1jiYH+7SXt7N3fZaxZttvZnhGlgPMBe77NgG/crBrj6esY49Fuvzm2S1D8UH9t2EluqM5hsgqWAqFMuOarqL
-X-Gm-Message-State: AOJu0YweK/qZX3/APkWk/sA80cbXx8/GxUurRFvWAEV54lTg6pc6lXdL
-	C8nkhveq9s2J3TpY+uo8SqShWvkRP/ciMlnqNtfbg5WgKBl3h1nOWjYMmI2hjxXdBzIJ0BpUNI5
-	qEVYSC9C0NZlOHLG09EO3nN0F+us=
-X-Google-Smtp-Source: AGHT+IEqr18heC6tfO8yQFc3E3r5+io/W4og/hPEB8HQDlo/LrENYuUPKWDJUmqKQfVDFEMUhmLuINn9ECJ0NU4WQmo=
-X-Received: by 2002:adf:fc89:0:b0:34d:118f:21ee with SMTP id
- ffacd0b85a97d-3504a6376bfmr13297435f8f.28.1715792562226; Wed, 15 May 2024
- 10:02:42 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1715792613; x=1716397413;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=TYQUvBG7AsY4Zy0RIsKk/tJtuddljbrs7bpvUpgPjBU=;
+        b=mXivwQ3AU/fIlm8hy6lAHWWEDFUd/lS24CS5wg058wMkztEKe8j5o+1szButVsUtoJ
+         j471jOVzSf2dIKwCQyZGR31Z8+aGwoPaG5dkpZ4RK1ogevWSG6ukpbdBQOs429LFjaXF
+         HyUmOOMns+uPq5aAtmE4geMrG84Rrj5zDQb9aBElCBgMIiY62mIpMHfeuU78I3giDx4O
+         bSRfY1jeqE6ZxTUWfPnq8mnil1AKlxrnA1yCT8G9mKP3FoIalIJSrHsDRQsEvSPndoUT
+         /Sn4QaUbGuG8d2m8igqB72vFPIecr6xadkcZmkXfMyBqwcsbuDs7L0vk4++/2iAd5TwU
+         hqYg==
+X-Gm-Message-State: AOJu0YzZU98h3IKATC1uKk0GMXjBZdmlK7gI+kYhTJV3aQXJeDdJcPoi
+	crdC9fwYmvOqxNnvwFPKZwH4fOR3jfRiWMWfOlhh4LNWPMZ9QixWPUqI2DqGzASFUXK82vjz3fz
+	Grwn1J5B3ZVksf5v/4Q8GKeZmqGM=
+X-Google-Smtp-Source: AGHT+IFTe9KjjVso9ihQ3LjFyTaZ/Z6dy3obt0QfZE0KC5R3G7TDSfALVBZ/l3QUbz6MN/q6Gw4zlO7hO+ZbsRifqDo=
+X-Received: by 2002:a17:906:490d:b0:a59:ce1e:8541 with SMTP id
+ a640c23a62f3a-a5a2d5d14a9mr1036476466b.37.1715792612841; Wed, 15 May 2024
+ 10:03:32 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240514183914.27737-1-puranjay@kernel.org> <2fc3b4da-7218-4a79-aef3-152297c37926@huawei.com>
-In-Reply-To: <2fc3b4da-7218-4a79-aef3-152297c37926@huawei.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Wed, 15 May 2024 10:02:31 -0700
-Message-ID: <CAADnVQ+KKxVhDGKr3KDCam=SrTqas3rDJVSPSy=3QVm2w1q1mw@mail.gmail.com>
-Subject: Re: [PATCH bpf] MAINTAINERS: Update ARM64 BPF JIT maintainer
-To: Xu Kuohai <xukuohai@huawei.com>
-Cc: Puranjay Mohan <puranjay@kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, bpf <bpf@vger.kernel.org>, 
-	Zi Shen Lim <zlim.lnx@gmail.com>, Puranjay Mohan <puranjay12@gmail.com>
+References: <20240514124052.1240266-1-sidchintamaneni@gmail.com>
+In-Reply-To: <20240514124052.1240266-1-sidchintamaneni@gmail.com>
+From: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Date: Wed, 15 May 2024 19:02:56 +0200
+Message-ID: <CAP01T778YG3sL1BTJnPdOJkqhcNG=zv2dEp1hquUV1+aX+DXDA@mail.gmail.com>
+Subject: Re: [PATCH v3 bpf-next 2/2] selftests/bpf: Added selftests to check
+ deadlocks in queue and stack map
+To: Siddharth Chintamaneni <sidchintamaneni@gmail.com>
+Cc: bpf@vger.kernel.org, alexei.starovoitov@gmail.com, daniel@iogearbox.net, 
+	olsajiri@gmail.com, andrii@kernel.org, yonghong.song@linux.dev, rjsu26@vt.edu, 
+	sairoop@vt.edu, miloc@vt.edu
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Wed, May 15, 2024 at 6:22=E2=80=AFAM Xu Kuohai <xukuohai@huawei.com> wro=
-te:
+On Tue, 14 May 2024 at 14:41, Siddharth Chintamaneni
+<sidchintamaneni@gmail.com> wrote:
 >
-> On 5/15/2024 2:39 AM, Puranjay Mohan wrote:
-> > Zi Shen Lim is not actively doing kernel development and has decided to
-> > tranfer the responsibility of maintaining the JIT to me.
-> >
-> > Add myself as the maintainer for BPF JIT for ARM64 and remove Zi Shen
-> > Lim.
-> >
-> > Signed-off-by: Puranjay Mohan <puranjay@kernel.org>
-> > Acked-by: Zi Shen Lim <zlim.lnx@gmail.com>
-> > ---
-> >   MAINTAINERS | 2 +-
-> >   1 file changed, 1 insertion(+), 1 deletion(-)
-> >
-> > diff --git a/MAINTAINERS b/MAINTAINERS
-> > index 05720fcc95cb..95beaf4dccf7 100644
-> > --- a/MAINTAINERS
-> > +++ b/MAINTAINERS
-> > @@ -3722,7 +3722,7 @@ F:      arch/arm/net/
-> >   BPF JIT for ARM64
-> >   M:  Daniel Borkmann <daniel@iogearbox.net>
-> >   M:  Alexei Starovoitov <ast@kernel.org>
-> > -M:   Zi Shen Lim <zlim.lnx@gmail.com>
-> > +M:   Puranjay Mohan <puranjay@kernel.org>
-> >   L:  bpf@vger.kernel.org
-> >   S:  Supported
-> >   F:  arch/arm64/net/
+> Added selftests to check for nested deadlocks in queue  and stack maps.
 >
-> Ah, I've been working on arm64 bpf jit since 2 years ago, added arm64 bpf
-> trampoline, cpuv4 insns, and helped to review patches. I would appreciate
-> it if I could be also added as a reviewer or maintainer.
+> test_map_queue_stack_nesting_success:PASS:test_queue_stack_nested_map__open 0 nsec
+> test_map_queue_stack_nesting_success:PASS:test_queue_stack_nested_map__load 0 nsec
+> test_map_queue_stack_nesting_success:PASS:test_queue_stack_nested_map__attach 0 nsec
+> test_map_queue_stack_nesting_success:PASS:MAP Write 0 nsec
+> test_map_queue_stack_nesting_success:PASS:no map nesting 0 nsec
+> test_map_queue_stack_nesting_success:PASS:no map nesting 0 nsec
+> 384/1   test_queue_stack_nested_map/map_queue_nesting:OK
+> test_map_queue_stack_nesting_success:PASS:test_queue_stack_nested_map__open 0 nsec
+> test_map_queue_stack_nesting_success:PASS:test_queue_stack_nested_map__load 0 nsec
+> test_map_queue_stack_nesting_success:PASS:test_queue_stack_nested_map__attach 0 nsec
+> test_map_queue_stack_nesting_success:PASS:MAP Write 0 nsec
+> test_map_queue_stack_nesting_success:PASS:no map nesting 0 nsec
+> 384/2   test_queue_stack_nested_map/map_stack_nesting:OK
+> 384     test_queue_stack_nested_map:OK
+> Summary: 1/2 PASSED, 0 SKIPPED, 0 FAILED
+>
+> Signed-off-by: Siddharth Chintamaneni <sidchintamaneni@gmail.com>
+> ---
 
-All the work is very much appreciated.
-Feel free to send a patch to add yourself as a reviewer,
-but fix your email first. @ huawei domain gmail classifies as spam.
-So "R: Xu Kuohai <xukuohai@huawei.com>" entry
-won't work well for many users.
+CI fails on s390
+https://github.com/kernel-patches/bpf/actions/runs/9081519831/job/24957489598?pr=7031
+A different method of triggering deadlock is required. Seems like
+_raw_spin_lock_irqsave being available everywhere cannot be relied
+upon.
 
