@@ -1,141 +1,117 @@
-Return-Path: <bpf+bounces-29776-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-29778-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7DB048C69E5
-	for <lists+bpf@lfdr.de>; Wed, 15 May 2024 17:43:53 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 35CF68C6A34
+	for <lists+bpf@lfdr.de>; Wed, 15 May 2024 18:09:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AF3F31C216D4
-	for <lists+bpf@lfdr.de>; Wed, 15 May 2024 15:43:52 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E6696281496
+	for <lists+bpf@lfdr.de>; Wed, 15 May 2024 16:09:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 463D5155A53;
-	Wed, 15 May 2024 15:43:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8275A156256;
+	Wed, 15 May 2024 16:09:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="NwHJeUni"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="n6NR1mc+"
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A28D155A4F
-	for <bpf@vger.kernel.org>; Wed, 15 May 2024 15:43:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 394F113EFE5;
+	Wed, 15 May 2024 16:09:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715787826; cv=none; b=K9fXNgJPJQjKHuAgvkEBBIVTTPcjiq73YN9NdyfVNJ9kUbi3aRlzHB+Y3VIGow1wTImWKeCsWdqjb4Lltf5m2CDA+KeSh3f03mkjiEMj5PlsduyKyHFQpxG3hOUIYn07XyFF0mV0DjHtAbg1b2Bi/CcxMuBlsczy9/AfNyTb6bM=
+	t=1715789358; cv=none; b=aLmv7qbwAN4POs+bBJRlSkoVHaiDoO0Ga42pnPWCOp0ad/UvL4sARHK1rk0PKNvE44TZkpF8pvOHH4haG0PVuYguEzYovU9fMS63oZ8PQUF56rxbCTIPbbI0vRIS3TArKuwRGpkgRP1I91uyzfqoRRxKfhlTYxlZlBI8L0DJX5U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715787826; c=relaxed/simple;
-	bh=sVxFSbL3YtTiW/g14Gv6p0q8nZLKnH+spwUtKK9cJ9A=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=JSJ9GumFapW4Jv8Ijy4vmbUTs+o3+fm0CjHc1wKB3K6bo3z5frPB3sQ4afUYXnAoitRWO5oheHFNNMVcV8TZElbasX/uyEH1Z/L8qz5YxeMttNZrzvkhqyL1EF59vXm6tUEapTkDyP4vU58pYtS5zJQ9qTtIJZ/WcwBWYaK45hU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=NwHJeUni; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1715787824;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=sVxFSbL3YtTiW/g14Gv6p0q8nZLKnH+spwUtKK9cJ9A=;
-	b=NwHJeUniLMcY2PIjcN02rOodzkNgo6EYitlRQF3ZNCThMeNi4vkgNdjP54QzRm2nUWnL2k
-	gF9pJTCLRaTIuWgkhS/D+g5eNxAinK7ZXOHcaZGOZHMg1MC0b+6vaTdoAd1fR658gStg+E
-	TLdglxN10gm2tWtINu03xoPMeKTSa/Q=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-361-WrPe04tvN8qa89qxw5DYcg-1; Wed, 15 May 2024 11:43:35 -0400
-X-MC-Unique: WrPe04tvN8qa89qxw5DYcg-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.rdu2.redhat.com [10.11.54.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 867498016E9;
-	Wed, 15 May 2024 15:43:34 +0000 (UTC)
-Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.226.39])
-	by smtp.corp.redhat.com (Postfix) with SMTP id C19983C27;
-	Wed, 15 May 2024 15:43:29 +0000 (UTC)
-Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
-	oleg@redhat.com; Wed, 15 May 2024 17:42:08 +0200 (CEST)
-Date: Wed, 15 May 2024 17:42:03 +0200
-From: Oleg Nesterov <oleg@redhat.com>
-To: "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>
-Cc: "olsajiri@gmail.com" <olsajiri@gmail.com>,
-	"songliubraving@fb.com" <songliubraving@fb.com>,
-	"luto@kernel.org" <luto@kernel.org>,
-	"mhiramat@kernel.org" <mhiramat@kernel.org>,
-	"andrii@kernel.org" <andrii@kernel.org>,
-	"debug@rivosinc.com" <debug@rivosinc.com>,
-	"john.fastabend@gmail.com" <john.fastabend@gmail.com>,
-	"linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"mingo@redhat.com" <mingo@redhat.com>,
-	"rostedt@goodmis.org" <rostedt@goodmis.org>,
-	"ast@kernel.org" <ast@kernel.org>,
-	"tglx@linutronix.de" <tglx@linutronix.de>,
-	"linux-man@vger.kernel.org" <linux-man@vger.kernel.org>,
-	"yhs@fb.com" <yhs@fb.com>,
-	"daniel@iogearbox.net" <daniel@iogearbox.net>,
-	"peterz@infradead.org" <peterz@infradead.org>,
-	"linux-trace-kernel@vger.kernel.org" <linux-trace-kernel@vger.kernel.org>,
-	"bp@alien8.de" <bp@alien8.de>,
-	"bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-	"x86@kernel.org" <x86@kernel.org>
-Subject: Re: [PATCHv5 bpf-next 6/8] x86/shstk: Add return uprobe support
-Message-ID: <20240515154202.GE6821@redhat.com>
-References: <20240507105321.71524-7-jolsa@kernel.org>
- <a08a955c74682e9dc6eb6d49b91c6968c9b62f75.camel@intel.com>
- <ZjyJsl_u_FmYHrki@krava>
- <a8b7be15e6dbb1e8f2acaee7dae21fec7775194c.camel@intel.com>
- <Zj_enIB_J6pGJ6Nu@krava>
- <20240513185040.416d62bc4a71e79367c1cd9c@kernel.org>
- <c56ae75e9cf0878ac46185a14a18f6ff7e8f891a.camel@intel.com>
- <ZkKE3qT1X_Jirb92@krava>
- <20240515113525.GB6821@redhat.com>
- <0fa9634e9ac0d30d513eefe6099f5d8d354d93c1.camel@intel.com>
+	s=arc-20240116; t=1715789358; c=relaxed/simple;
+	bh=nTVevPGzNWh4s9PReJpsEP/R9Arj6uGdwElEHpIpPH4=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=ZwzsIIpTl02Uwaf70e8SbruV/lKJIiDJIGyoUxteupJazcOFbg9GtZ1lkcPjmhmDp5OGslLAWnLA39p0CiPTekHKSsCnj19aF01lMhjMbF0c+MDlQn2cbcI6Cu+5FEqz+aGGu4a8fC85r2x2bmv7RyXaNLQ7XKc7qg4cGP1izR0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=n6NR1mc+; arc=none smtp.client-ip=192.198.163.18
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1715789356; x=1747325356;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=nTVevPGzNWh4s9PReJpsEP/R9Arj6uGdwElEHpIpPH4=;
+  b=n6NR1mc+iJMElevA92dvPV+cMFuEmxJqIHsp5v2YpBHo86XxOWEWh8Oh
+   haohwcXGHQqDT1VtODWIM7cusR4HcfLeve52HHJDOiHDguLGSlwdGfMN2
+   q1rVmnPkglf19obkOvfX9Rittzis9SG3SDyucUDBK2k/8H0Ywms4N2ERS
+   uKiHl2GUKhwNALjyH1fddNVVc20f4GDcPhxoRXabolN2XEJGMbccR5ouc
+   pCTUwnxSzs5mzBNV5i9N6QDbbwXhOaqsPwmMNGL6lD+Oqd1U3DMrTMxFg
+   RDGOpYCIjTSXHQu1hriKjV1oeupZn+aGRgwYoUOQyjlE5CKNIBjpllN7a
+   Q==;
+X-CSE-ConnectionGUID: 7Y/CP5g9RCKzQPCyzNGBDw==
+X-CSE-MsgGUID: kzul5gNeS7SB/2kxCgINJg==
+X-IronPort-AV: E=McAfee;i="6600,9927,11074"; a="11666344"
+X-IronPort-AV: E=Sophos;i="6.08,162,1712646000"; 
+   d="scan'208";a="11666344"
+Received: from fmviesa001.fm.intel.com ([10.60.135.141])
+  by fmvoesa112.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 May 2024 09:09:15 -0700
+X-CSE-ConnectionGUID: GANiKUvAR7uiRZ8GlOHq8g==
+X-CSE-MsgGUID: 72pTt72QRii18KEvAsm9hw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.08,162,1712646000"; 
+   d="scan'208";a="62297177"
+Received: from irvmail002.ir.intel.com ([10.43.11.120])
+  by fmviesa001.fm.intel.com with ESMTP; 15 May 2024 09:09:11 -0700
+Received: from lincoln.igk.intel.com (lincoln.igk.intel.com [10.102.21.235])
+	by irvmail002.ir.intel.com (Postfix) with ESMTP id 3DA332878C;
+	Wed, 15 May 2024 17:09:05 +0100 (IST)
+From: Larysa Zaremba <larysa.zaremba@intel.com>
+To: intel-wired-lan@lists.osuosl.org,
+	Jacob Keller <jacob.e.keller@intel.com>
+Cc: Larysa Zaremba <larysa.zaremba@intel.com>,
+	maciej.fijalkowski@intel.com,
+	Magnus Karlsson <magnus.karlsson@gmail.com>,
+	Przemek Kitszel <przemyslaw.kitszel@intel.com>,
+	igor.bagnucki@intel.com,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Jesper Dangaard Brouer <hawk@kernel.org>,
+	John Fastabend <john.fastabend@gmail.com>,
+	netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	bpf@vger.kernel.org
+Subject: [PATCH iwl-net 0/3] Fix AF_XDP problems after changing queue number
+Date: Wed, 15 May 2024 18:02:13 +0200
+Message-ID: <20240515160246.5181-1-larysa.zaremba@intel.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <0fa9634e9ac0d30d513eefe6099f5d8d354d93c1.camel@intel.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.1
+Content-Transfer-Encoding: 8bit
 
-On 05/15, Edgecombe, Rick P wrote:
->
-> On Wed, 2024-05-15 at 13:35 +0200, Oleg Nesterov wrote:
-> >
-> > > I'm ok with not using optimized uretprobe when shadow stack is detected
-> > > as enabled and we go with current uretprobe in that case
-> >
-> > But how can we detect it? Again, suppose userspace does
->
-> the rdssp instruction returns the value of the shadow stack pointer. On non-
-> shadow stack it is a nop. So you could check if the SSP is non-zero to find if
-> shadow stack is enabled.
+Presented fixes address the following test-case:
+* Run xdpsock on queue 10
+* change number of combined channels to 20
+* observe an error on xdpsock side
 
-But again, the ret-probed function can enable it before it returns? And we
-need to check if it is enabled on the function entry if we want to avoid
-sys_uretprobe() in this case. Although I don't understand why we want to
-avoid it.
+The first 2 patches deal with errors, the last one addresses the lack of
+traffic.
 
-> This would catch most cases, but I guess there is the
-> possibility of it getting enabled in a signal that hit between checking and the
-> rest of operation.
+Larysa Zaremba (3):
+  ice: remove af_xdp_zc_qps bitmap
+  ice: add flag to distinguish reset from .ndo_bpf in XDP rings config
+  ice: map XDP queues to vectors in ice_vsi_map_rings_to_vectors()
 
-Or from signal handler.
+ drivers/net/ethernet/intel/ice/ice.h      |  44 +++++---
+ drivers/net/ethernet/intel/ice/ice_base.c |   3 +
+ drivers/net/ethernet/intel/ice/ice_lib.c  |  27 ++---
+ drivers/net/ethernet/intel/ice/ice_main.c | 118 +++++++++++++---------
+ drivers/net/ethernet/intel/ice/ice_xsk.c  |  13 ++-
+ 5 files changed, 119 insertions(+), 86 deletions(-)
 
-> Is this uretprobe stuff signal safe in general?
-
-In what sense?
-
-I forgot everything about this code but I can't recall any problem with signals.
-
-Except it doesn't support sigaltstack() + siglongjmp().
-
-Oleg.
+-- 
+2.43.0
 
 
