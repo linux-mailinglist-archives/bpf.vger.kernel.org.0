@@ -1,46 +1,45 @@
-Return-Path: <bpf+bounces-29728-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-29729-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 812B58C5FB8
-	for <lists+bpf@lfdr.de>; Wed, 15 May 2024 06:21:09 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6C2D08C6078
+	for <lists+bpf@lfdr.de>; Wed, 15 May 2024 08:01:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 13C221F22D85
-	for <lists+bpf@lfdr.de>; Wed, 15 May 2024 04:21:09 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9E0B61C2201F
+	for <lists+bpf@lfdr.de>; Wed, 15 May 2024 06:01:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 04D0538F97;
-	Wed, 15 May 2024 04:21:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A3CC3BBCE;
+	Wed, 15 May 2024 06:00:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BsylV6p6"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fxmBmR1I"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D8443838A;
-	Wed, 15 May 2024 04:21:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7DABE3D541;
+	Wed, 15 May 2024 06:00:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715746863; cv=none; b=g5MRbjILpim8aX4hfRxHu+SXqkGYI2fjLylGPs/rtzbvMeDSlv9peLFHBkyUVM7Bf12ms1onprBBwJvt7njSwJBj7QheV0s2zUTTxJtKlOlXBcXiWQ5tJM7VUy6vJ3SVVo44aCfphgiosPfVhvNs0cnUCTxsenGXDyw806CxT00=
+	t=1715752808; cv=none; b=hMqsszsQ/Wn+XUSz6FF8DkMPYTScHzpeltGPCY0RjYDnYYsnJMXlVY7cnpVAyUquMu5EorhDXv3uBq0siJkcUnEWtjEAk+0gFWGUhyvwWzX5k88+J8WhlOslvVZoi+p5J0HoKGIHfcn7Gkme2utmaDXXzRf6iq7MPK6+UHeUHEA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715746863; c=relaxed/simple;
-	bh=uqqq8xHZEu3FsErv+gXQyhiJdQiI3eJ/IXas1Dknud8=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Eb5IHmK1SKqaEwDZFa8+Ow+aT5s7dx3agSbeI1TkHU4NPGhw5NVUfIkn1OAcqQ6kMlrEsB3AZHob3GKtvxpwXFpHACf0wiDZtb7ECJ2KSTkXoMUQhDBRe1JFKrAQv4YFp22L946KJu/99uEnZ0mXgrvnVpRb0u1kCXbrdUXYm3I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BsylV6p6; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2ACD5C32781;
-	Wed, 15 May 2024 04:20:56 +0000 (UTC)
+	s=arc-20240116; t=1715752808; c=relaxed/simple;
+	bh=AQ3tkiONemRilHkmlqquV+TjmIQLfUDgsuuM0Tf2bCk=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=QuhQ9GXdmCBvrOvjLxxOoiU06KBrswLxWMJAljDW+DN6ysWTTmGfCyRmbE9tp09EyUi87UJxKGJtK1G1satno1aiiyFe8F3wWtIA4hIPNcpp3cukdnmU4dfIVlAV+gARHZr69UzOjAAB99DGh80CTzzOHLXCZl4wwAq9ropI3xc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fxmBmR1I; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DD1FBC116B1;
+	Wed, 15 May 2024 06:00:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1715746863;
-	bh=uqqq8xHZEu3FsErv+gXQyhiJdQiI3eJ/IXas1Dknud8=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=BsylV6p6imbr4f3rK4oSSyf63FaJ7SlwnbG166UfU/lry+Tqjl13kRGHwSh6GrBrH
-	 H1gJXBWzcYP6BmOV7cxGFbP8EJfoa7yadsxY/eqLRHswyJJqknBbcf3o9ak6Uogx4T
-	 haePx/nhbbr1ZVyGQvuKZiroksMIQ4/dJqCGlJm/AhbIAFTltblWZd2fPlV30CF/NY
-	 f8eVqbJ48dbgEdrT3USfaEvxepFrmmBZovocp7Tbtlkg+ZSKQXM0n2XN+EStf3FntS
-	 p4dzBOoWtcMIJSEM7KLt+NfFXK94hM0DyAPvM4uGlMix8zAfTXRWK+iPb104yMrN+0
-	 wvr8DzxN09Ijw==
+	s=k20201202; t=1715752808;
+	bh=AQ3tkiONemRilHkmlqquV+TjmIQLfUDgsuuM0Tf2bCk=;
+	h=From:To:Cc:Subject:Date:From;
+	b=fxmBmR1IJ80bdF0JfJhMKEigeOYplQSs1LMYxRQ3XHy/7ttki/1fYBwhrEkADErP7
+	 x/lriRh0i41gL1HjzK/KL+MuCqF4l/+Yz0GdRlJ6UPTI7JRAY1qLOR06WXYgnnUwMq
+	 hw9pcEJMYKgZUHx58Z5PeqY4cBEwOtFYiA6NtAs8WsTfa9Fgsw9WkEU1Ab6CCm5OkA
+	 wK7Tz8wmXlIEypkePJpiaaGCyy+weRmRzukKUoo9yOVLFFi2oEz7WI3sYx4h1uLpSF
+	 eQBMJiA8H84DG20Y9F0yqnhhZGu50lz4aClVGeZn93orjlXEUHyHd2Z0VLAGOFKTMB
+	 AWqlNFGsFYBjg==
 From: Geliang Tang <geliang@kernel.org>
 To: Andrii Nakryiko <andrii@kernel.org>,
 	Eduard Zingerman <eddyz87@gmail.com>,
@@ -58,14 +57,13 @@ To: Andrii Nakryiko <andrii@kernel.org>,
 	Shuah Khan <shuah@kernel.org>
 Cc: Geliang Tang <tanggeliang@kylinos.cn>,
 	bpf@vger.kernel.org,
+	mptcp@lists.linux.dev,
 	linux-kselftest@vger.kernel.org,
 	Geliang Tang <geliang@kernel.org>
-Subject: [PATCH bpf-next v2 4/4] selftests/bpf: Add post_connect_cb callback
-Date: Wed, 15 May 2024 12:20:24 +0800
-Message-ID: <f092af05e77d3bab8cf55602b1df4ae00ae90cd5.1715745588.git.tanggeliang@kylinos.cn>
+Subject: [PATCH bpf-next 0/9] add netns helpers
+Date: Wed, 15 May 2024 13:59:27 +0800
+Message-ID: <cover.1715751995.git.tanggeliang@kylinos.cn>
 X-Mailer: git-send-email 2.43.0
-In-Reply-To: <cover.1715745588.git.tanggeliang@kylinos.cn>
-References: <cover.1715745588.git.tanggeliang@kylinos.cn>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -76,184 +74,52 @@ Content-Transfer-Encoding: 8bit
 
 From: Geliang Tang <tanggeliang@kylinos.cn>
 
-For getting rid of the second parameter of do_test(), this patch adds a
-new callback post_connect_cb in struct network_helper_opts, it will be
-invoked after connect_fd_to_addr() in connect_to_fd_opts().
+This patchset addresses Alexei's comment for commit "Handle SIGINT
+when creating netns" [1]. Export local helpers create_netns() and
+cleanup_netns() defined in mptcp.c into network_helpers.c as generic
+ones. For this another helper unshare_netns() is added to replace
+the existing local helpers create_netns().
 
-Then define a dctcp dedicated post_connect_cb callback, invoking
-bpf_map_lookup_elem() in it, named stg_post_connect_cb() and set it in
-test_dctcp().
+[1]
+https://patchwork.kernel.org/project/mptcp/patch/20240507-upstream-bpf-next-20240506-mptcp-subflow-test-v1-1-e2bcbdf49857@kernel.org/
 
-Signed-off-by: Geliang Tang <tanggeliang@kylinos.cn>
----
- tools/testing/selftests/bpf/network_helpers.c |  6 ++-
- tools/testing/selftests/bpf/network_helpers.h |  1 +
- .../selftests/bpf/prog_tests/bpf_tcp_ca.c     | 43 ++++++++++---------
- 3 files changed, 28 insertions(+), 22 deletions(-)
+Geliang Tang (9):
+  selftests/bpf: Add unshare_netns helper
+  selftests/bpf: Use unshare_netns helper
+  selftests/bpf: Drop duplicate create_netns
+  selftests/bpf: Export create_netns helper
+  selftests/bpf: Use create_netns helper
+  selftests/bpf: Export cleanup_netns helper
+  selftests/bpf: Use cleanup_netns helper
+  selftests/bpf: Use netns helpers in lwt tests
+  selftests/bpf: Use netns helpers in test_tunnel
 
-diff --git a/tools/testing/selftests/bpf/network_helpers.c b/tools/testing/selftests/bpf/network_helpers.c
-index 6864af665508..5636488dfb42 100644
---- a/tools/testing/selftests/bpf/network_helpers.c
-+++ b/tools/testing/selftests/bpf/network_helpers.c
-@@ -342,10 +342,14 @@ int connect_to_fd_opts(int server_fd, const struct network_helper_opts *opts)
- 	    opts->post_socket_cb(fd, &opts->cb_opts))
- 		goto error_close;
- 
--	if (!opts->noconnect)
-+	if (!opts->noconnect) {
- 		if (connect_fd_to_addr(fd, &addr, addrlen, opts->must_fail))
- 			goto error_close;
- 
-+		if (opts->post_connect_cb && opts->post_connect_cb(fd, &opts->cb_opts))
-+			goto error_close;
-+	}
-+
- 	return fd;
- 
- error_close:
-diff --git a/tools/testing/selftests/bpf/network_helpers.h b/tools/testing/selftests/bpf/network_helpers.h
-index 62dd40095cf2..0c8859651e7a 100644
---- a/tools/testing/selftests/bpf/network_helpers.h
-+++ b/tools/testing/selftests/bpf/network_helpers.h
-@@ -33,6 +33,7 @@ struct network_helper_opts {
- 	int type;
- 	int proto;
- 	int (*post_socket_cb)(int fd, const struct post_socket_opts *opts);
-+	int (*post_connect_cb)(int fd, const struct post_socket_opts *opts);
- 	struct post_socket_opts cb_opts;
- };
- 
-diff --git a/tools/testing/selftests/bpf/prog_tests/bpf_tcp_ca.c b/tools/testing/selftests/bpf/prog_tests/bpf_tcp_ca.c
-index 7c9c79e35551..05bcdb4830fa 100644
---- a/tools/testing/selftests/bpf/prog_tests/bpf_tcp_ca.c
-+++ b/tools/testing/selftests/bpf/prog_tests/bpf_tcp_ca.c
-@@ -34,13 +34,11 @@ static int settcpca(int fd, const char *tcp_ca)
- 	return 0;
- }
- 
--static void do_test(const struct network_helper_opts *opts,
--		    const struct bpf_map *sk_stg_map)
-+static void do_test(const struct network_helper_opts *opts)
- {
- 	struct sockaddr_storage addr;
- 	int lfd = -1, fd = -1;
- 	socklen_t addrlen;
--	int err;
- 
- 	if (make_sockaddr(AF_INET6, NULL, 0, &addr, &addrlen))
- 		return;
-@@ -54,16 +52,6 @@ static void do_test(const struct network_helper_opts *opts,
- 	if (!ASSERT_NEQ(fd, -1, "connect_to_fd_opts"))
- 		goto done;
- 
--	if (sk_stg_map) {
--		int tmp_stg;
--
--		err = bpf_map_lookup_elem(bpf_map__fd(sk_stg_map), &fd,
--					  &tmp_stg);
--		if (!ASSERT_ERR(err, "bpf_map_lookup_elem(sk_stg_map)") ||
--				!ASSERT_EQ(errno, ENOENT, "bpf_map_lookup_elem(sk_stg_map)"))
--			goto done;
--	}
--
- 	ASSERT_OK(send_recv_data(lfd, fd, total_bytes), "send_recv_data");
- 
- done:
-@@ -96,7 +84,7 @@ static void test_cubic(void)
- 		return;
- 	}
- 
--	do_test(&opts, NULL);
-+	do_test(&opts);
- 
- 	ASSERT_EQ(cubic_skel->bss->bpf_cubic_acked_called, 1, "pkts_acked called");
- 
-@@ -114,11 +102,24 @@ static int stg_post_socket_cb(int fd, const struct post_socket_opts *opts)
- 	return bpf_map_update_elem(opts->map_fd, &fd, &expected_stg, BPF_NOEXIST);
- }
- 
-+static int stg_post_connect_cb(int fd, const struct post_socket_opts *opts)
-+{
-+	int tmp_stg;
-+	int err;
-+
-+	err = bpf_map_lookup_elem(opts->map_fd, &fd, &tmp_stg);
-+	if (!ASSERT_ERR(err, "bpf_map_lookup_elem(sk_stg_map)") ||
-+			!ASSERT_EQ(errno, ENOENT, "bpf_map_lookup_elem(sk_stg_map)"))
-+		return err;
-+	return 0;
-+}
-+
- static void test_dctcp(void)
- {
- 	struct network_helper_opts opts = {
- 		.cb_opts.cc = "bpf_dctcp",
- 		.post_socket_cb = stg_post_socket_cb,
-+		.post_connect_cb = stg_post_connect_cb,
- 	};
- 	struct bpf_dctcp *dctcp_skel;
- 	struct bpf_link *link;
-@@ -134,7 +135,7 @@ static void test_dctcp(void)
- 	}
- 
- 	opts.cb_opts.map_fd = bpf_map__fd(dctcp_skel->maps.sk_stg_map);
--	do_test(&opts, dctcp_skel->maps.sk_stg_map);
-+	do_test(&opts);
- 	ASSERT_EQ(dctcp_skel->bss->stg_result, expected_stg, "stg_result");
- 
- 	bpf_link__destroy(link);
-@@ -329,14 +330,14 @@ static void test_update_ca(void)
- 	link = bpf_map__attach_struct_ops(skel->maps.ca_update_1);
- 	ASSERT_OK_PTR(link, "attach_struct_ops");
- 
--	do_test(&opts, NULL);
-+	do_test(&opts);
- 	saved_ca1_cnt = skel->bss->ca1_cnt;
- 	ASSERT_GT(saved_ca1_cnt, 0, "ca1_ca1_cnt");
- 
- 	err = bpf_link__update_map(link, skel->maps.ca_update_2);
- 	ASSERT_OK(err, "update_map");
- 
--	do_test(&opts, NULL);
-+	do_test(&opts);
- 	ASSERT_EQ(skel->bss->ca1_cnt, saved_ca1_cnt, "ca2_ca1_cnt");
- 	ASSERT_GT(skel->bss->ca2_cnt, 0, "ca2_ca2_cnt");
- 
-@@ -362,14 +363,14 @@ static void test_update_wrong(void)
- 	link = bpf_map__attach_struct_ops(skel->maps.ca_update_1);
- 	ASSERT_OK_PTR(link, "attach_struct_ops");
- 
--	do_test(&opts, NULL);
-+	do_test(&opts);
- 	saved_ca1_cnt = skel->bss->ca1_cnt;
- 	ASSERT_GT(saved_ca1_cnt, 0, "ca1_ca1_cnt");
- 
- 	err = bpf_link__update_map(link, skel->maps.ca_wrong);
- 	ASSERT_ERR(err, "update_map");
- 
--	do_test(&opts, NULL);
-+	do_test(&opts);
- 	ASSERT_GT(skel->bss->ca1_cnt, saved_ca1_cnt, "ca2_ca1_cnt");
- 
- 	bpf_link__destroy(link);
-@@ -396,7 +397,7 @@ static void test_mixed_links(void)
- 	link = bpf_map__attach_struct_ops(skel->maps.ca_update_1);
- 	ASSERT_OK_PTR(link, "attach_struct_ops");
- 
--	do_test(&opts, NULL);
-+	do_test(&opts);
- 	ASSERT_GT(skel->bss->ca1_cnt, 0, "ca1_ca1_cnt");
- 
- 	err = bpf_link__update_map(link, skel->maps.ca_no_link);
-@@ -500,7 +501,7 @@ static void test_cc_cubic(void)
- 		return;
- 	}
- 
--	do_test(&opts, NULL);
-+	do_test(&opts);
- 
- 	bpf_link__destroy(link);
- 	bpf_cc_cubic__destroy(cc_cubic_skel);
+ tools/testing/selftests/bpf/network_helpers.c | 67 +++++++++++++++++++
+ tools/testing/selftests/bpf/network_helpers.h |  3 +
+ .../selftests/bpf/prog_tests/assign_reuse.c   | 12 +---
+ .../selftests/bpf/prog_tests/bind_perm.c      | 11 +--
+ .../bpf/prog_tests/bpf_iter_setsockopt.c      | 13 +---
+ .../bpf/prog_tests/btf_skc_cls_ingress.c      |  6 +-
+ .../selftests/bpf/prog_tests/crypto_sanity.c  |  3 +-
+ .../selftests/bpf/prog_tests/decap_sanity.c   |  6 +-
+ .../selftests/bpf/prog_tests/fib_lookup.c     |  8 +--
+ .../selftests/bpf/prog_tests/lwt_helpers.h    | 26 ++-----
+ .../selftests/bpf/prog_tests/lwt_redirect.c   |  2 -
+ .../selftests/bpf/prog_tests/lwt_reroute.c    |  2 -
+ .../testing/selftests/bpf/prog_tests/mptcp.c  | 22 +-----
+ .../bpf/prog_tests/ns_current_pid_tgid.c      |  9 +--
+ .../selftests/bpf/prog_tests/setget_sockopt.c | 10 +--
+ .../selftests/bpf/prog_tests/sk_assign.c      |  4 +-
+ .../selftests/bpf/prog_tests/sock_destroy.c   |  9 +--
+ .../selftests/bpf/prog_tests/sock_fields.c    | 13 +---
+ .../bpf/prog_tests/sock_iter_batch.c          |  7 +-
+ .../bpf/prog_tests/tcp_custom_syncookie.c     |  5 +-
+ .../bpf/prog_tests/tcp_hdr_options.c          | 13 +---
+ .../selftests/bpf/prog_tests/test_tunnel.c    | 19 +++---
+ .../bpf/prog_tests/xdp_dev_bound_only.c       |  3 +-
+ .../bpf/prog_tests/xdp_do_redirect.c          |  4 +-
+ 24 files changed, 114 insertions(+), 163 deletions(-)
+
 -- 
 2.43.0
 
