@@ -1,46 +1,46 @@
-Return-Path: <bpf+bounces-29805-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-29806-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 361C58C6D92
-	for <lists+bpf@lfdr.de>; Wed, 15 May 2024 23:13:33 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3800A8C6D95
+	for <lists+bpf@lfdr.de>; Wed, 15 May 2024 23:13:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B788D1F222C3
-	for <lists+bpf@lfdr.de>; Wed, 15 May 2024 21:13:32 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DDB78281C6D
+	for <lists+bpf@lfdr.de>; Wed, 15 May 2024 21:13:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ABEBD15B55B;
-	Wed, 15 May 2024 21:13:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E78A815B56F;
+	Wed, 15 May 2024 21:13:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="P4Kdr17v"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="joB91BFx"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B3B82F877;
-	Wed, 15 May 2024 21:13:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 66DDE2F877;
+	Wed, 15 May 2024 21:13:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715807594; cv=none; b=J+D+KhuJgZTl8Wti7SknPftNfMM2PxOWsute5EbpKfUMWnMHWywmL11gShMLS8SRRFtj+bKji9gqbyVMKNCaxZFuCZYmN0jzIhca60CFtA4lVVam4veSlb0YKKCgAitasfV2lVY2vwpvqXcR8xlnFniWsCZmoCibLzVRTgmKLvc=
+	t=1715807598; cv=none; b=d+cuTpwZAkzaTkgPQLRKG5vR3st0G92ebxpzVqrx2EbIwA0mTPhoiOuXkk/f8/us1Jor/TUptRTFV1T3I2fb12noHP01ll7QeGhb9rcwBRtM2uxq/a6vM9LgSA3OYqcGf75y+Op0Q28yFbz2Hovvlg1WhVfUts8r8KxYb1IuWn8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715807594; c=relaxed/simple;
-	bh=LV0D0I25+4TlL9DWwVTWUbzh60ntnDy0Ap4VeBMVM/w=;
+	s=arc-20240116; t=1715807598; c=relaxed/simple;
+	bh=v0uuuhUE2wqCSiEzBC0tUksx8Sxag17ovvMsswnSdSo=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=bPfE44bkqZBMKaC3k8fySksFyr2Tl66on/Bswf7xGQtBEVwJuvLvBR2OkLCDHS1Br8cvj6K4gfoRw7+778lDFU3GkJUT923Ds1Szbrz1PleHSYL5ufvEoEWKzmnASI/YioOvX95C5rmpCJX88vx49jh8GbJEXhBhxtAHaXY2GCI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=P4Kdr17v; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7445FC116B1;
-	Wed, 15 May 2024 21:13:13 +0000 (UTC)
+	 MIME-Version; b=Sx6LWxSvpHk/JajAm/gIEnMcmcjuX7yZ//D7qgqea3BJcCDgJYHPJ5BKtBBMjeXFxgOS6xsbiiJ+nod80iSBdiBOJUZ7jQZVI33/DSTQGMAxB+7b7pbD3hKjdr1fJvDS8FBjdQgvzh4fzj7DhFhewIytWuOXIqGHa08L9rbfnNY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=joB91BFx; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 80174C32781;
+	Wed, 15 May 2024 21:13:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1715807594;
-	bh=LV0D0I25+4TlL9DWwVTWUbzh60ntnDy0Ap4VeBMVM/w=;
+	s=k20201202; t=1715807598;
+	bh=v0uuuhUE2wqCSiEzBC0tUksx8Sxag17ovvMsswnSdSo=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=P4Kdr17vbCIqf9fEleWkYRWwjelk//Z3XES644pp3yCViNENqIKhbKC47+2lH2czB
-	 C8uaOUV7qkmdU06Et3MEq6jrutGG1u9pqDkjNrJ/2t45gdYwJ4lotjiC1UszOV2eqG
-	 7iyt9f5RCUJuErtvwTfwGZTSfBMmkBlPFzg4MSjXRQL8WBje34f2wS+UQBx/cVL+7e
-	 WAleEsQqLGdwG/pErVoGMxK/JQrlw/4Dr54SmbaDYnwzkhCKW2mxdwCrTfhkmfZ54d
-	 RsbEseO4Oll1T4OgOcu5yf3fAzZraCqWsNXz5UnBiJSO6aD/YmjUMrXWpnRvFtFVPe
-	 EAGWMLB74eMWw==
+	b=joB91BFxiMP9Jdu3z/sDcsMVqpLfFKaBwDujTnjFetWBSv42uk0liEPpxwPVstaz2
+	 iOVN3jxmjV7EhV0ch3STjP2UmRMeMfdBVlmAxkTBIdZbMbB1c+f5f8w5/gMTtvgLkZ
+	 +nCPbZZjUiEGe6WQ+IkmLMEi7+Xj4disYCYUn6TS3S1mRGE4+Mx3ze18SGdQQmxVKj
+	 aP/1kV2vMEJn6pIU1tRDmlliPyO5UBnpaRiacpTvQvx5OYUTK2Ma/95U4TRVbJefu5
+	 +a4KT4QX89zPiUNwL+KnUCLIww+TbvCizrWa4JghXFSKl41c14kYLdOcqJdNp75Jln
+	 bkCQA2Dc8qqAA==
 From: Lorenzo Bianconi <lorenzo@kernel.org>
 To: bpf@vger.kernel.org
 Cc: pablo@netfilter.org,
@@ -60,9 +60,9 @@ Cc: pablo@netfilter.org,
 	hawk@kernel.org,
 	horms@kernel.org,
 	donhunte@redhat.com
-Subject: [PATCH bpf-next 2/4] netfilter: add bpf_xdp_flow_offload_lookup kfunc
-Date: Wed, 15 May 2024 23:12:55 +0200
-Message-ID: <c87caa37757cdf6e323c89748fd0a0408fd47da2.1715807303.git.lorenzo@kernel.org>
+Subject: [PATCH bpf-next 3/4] samples/bpf: Add bpf sample to offload flowtable traffic to xdp
+Date: Wed, 15 May 2024 23:12:56 +0200
+Message-ID: <2ce25de74134e96dfa0b21a419e7c01f31c41226.1715807303.git.lorenzo@kernel.org>
 X-Mailer: git-send-email 2.45.0
 In-Reply-To: <cover.1715807303.git.lorenzo@kernel.org>
 References: <cover.1715807303.git.lorenzo@kernel.org>
@@ -74,173 +74,800 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Introduce bpf_xdp_flow_offload_lookup kfunc in order to perform the
-lookup of a given flowtable entry based on a fib tuple of incoming
-traffic.
-bpf_xdp_flow_offload_lookup can be used as building block to offload
-in xdp the processing of sw flowtable when hw flowtable is not
-available.
+Introduce xdp_flowtable_offload bpf sample to offload sw flowtable logic
+in xdp layer if hw flowtable is not available or does not support a
+specific kind of traffic.
 
 Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
 ---
- include/net/netfilter/nf_flow_table.h | 10 +++
- net/netfilter/Makefile                |  5 ++
- net/netfilter/nf_flow_table_bpf.c     | 95 +++++++++++++++++++++++++++
- net/netfilter/nf_flow_table_inet.c    |  2 +
- 4 files changed, 112 insertions(+)
- create mode 100644 net/netfilter/nf_flow_table_bpf.c
+ samples/bpf/Makefile                     |   7 +-
+ samples/bpf/xdp_flowtable_offload.bpf.c  | 592 +++++++++++++++++++++++
+ samples/bpf/xdp_flowtable_offload_user.c | 128 +++++
+ 3 files changed, 726 insertions(+), 1 deletion(-)
+ create mode 100644 samples/bpf/xdp_flowtable_offload.bpf.c
+ create mode 100644 samples/bpf/xdp_flowtable_offload_user.c
 
-diff --git a/include/net/netfilter/nf_flow_table.h b/include/net/netfilter/nf_flow_table.h
-index 0bbe6ea8e0651..085660cbcd3f2 100644
---- a/include/net/netfilter/nf_flow_table.h
-+++ b/include/net/netfilter/nf_flow_table.h
-@@ -312,6 +312,16 @@ unsigned int nf_flow_offload_ip_hook(void *priv, struct sk_buff *skb,
- unsigned int nf_flow_offload_ipv6_hook(void *priv, struct sk_buff *skb,
- 				       const struct nf_hook_state *state);
+diff --git a/samples/bpf/Makefile b/samples/bpf/Makefile
+index 9aa027b144df6..a3d089ca224d5 100644
+--- a/samples/bpf/Makefile
++++ b/samples/bpf/Makefile
+@@ -46,6 +46,7 @@ tprogs-y += xdp_fwd
+ tprogs-y += task_fd_query
+ tprogs-y += ibumad
+ tprogs-y += hbm
++tprogs-y += xdp_flowtable_offload
  
-+#if (IS_BUILTIN(CONFIG_NF_FLOW_TABLE) && IS_ENABLED(CONFIG_DEBUG_INFO_BTF)) || \
-+    (IS_MODULE(CONFIG_NF_FLOW_TABLE) && IS_ENABLED(CONFIG_DEBUG_INFO_BTF_MODULES))
-+extern int nf_flow_offload_register_bpf(void);
-+#else
-+static inline int nf_flow_offload_register_bpf(void)
-+{
-+	return 0;
-+}
-+#endif
-+
- #define MODULE_ALIAS_NF_FLOWTABLE(family)	\
- 	MODULE_ALIAS("nf-flowtable-" __stringify(family))
+ # Libbpf dependencies
+ LIBBPF_SRC = $(TOOLS_PATH)/lib/bpf
+@@ -98,6 +99,7 @@ ibumad-objs := ibumad_user.o
+ hbm-objs := hbm.o $(CGROUP_HELPERS)
  
-diff --git a/net/netfilter/Makefile b/net/netfilter/Makefile
-index 614815a3ed738..18b09cec92024 100644
---- a/net/netfilter/Makefile
-+++ b/net/netfilter/Makefile
-@@ -144,6 +144,11 @@ obj-$(CONFIG_NF_FLOW_TABLE)	+= nf_flow_table.o
- nf_flow_table-objs		:= nf_flow_table_core.o nf_flow_table_ip.o \
- 				   nf_flow_table_offload.o
- nf_flow_table-$(CONFIG_NF_FLOW_TABLE_PROCFS) += nf_flow_table_procfs.o
-+ifeq ($(CONFIG_NF_FLOW_TABLE),m)
-+nf_flow_table-$(CONFIG_DEBUG_INFO_BTF_MODULES) += nf_flow_table_bpf.o
-+else ifeq ($(CONFIG_NF_FLOW_TABLE),y)
-+nf_flow_table-$(CONFIG_DEBUG_INFO_BTF) += nf_flow_table_bpf.o
-+endif
+ xdp_router_ipv4-objs := xdp_router_ipv4_user.o $(XDP_SAMPLE)
++xdp_flowtable_offload-objs := xdp_flowtable_offload_user.o $(XDP_SAMPLE)
  
- obj-$(CONFIG_NF_FLOW_TABLE_INET) += nf_flow_table_inet.o
+ # Tell kbuild to always build the programs
+ always-y := $(tprogs-y)
+@@ -306,6 +308,7 @@ $(obj)/$(TRACE_HELPERS) $(obj)/$(CGROUP_HELPERS) $(obj)/$(XDP_SAMPLE): | libbpf_
+ .PHONY: libbpf_hdrs
  
-diff --git a/net/netfilter/nf_flow_table_bpf.c b/net/netfilter/nf_flow_table_bpf.c
+ $(obj)/xdp_router_ipv4_user.o: $(obj)/xdp_router_ipv4.skel.h
++$(obj)/xdp_flowtable_offload_user.o: $(obj)/xdp_flowtable_offload.skel.h
+ 
+ $(obj)/tracex5.bpf.o: $(obj)/syscall_nrs.h
+ $(obj)/hbm_out_kern.o: $(src)/hbm.h $(src)/hbm_kern.h
+@@ -361,6 +364,7 @@ endef
+ CLANG_SYS_INCLUDES = $(call get_sys_includes,$(CLANG))
+ 
+ $(obj)/xdp_router_ipv4.bpf.o: $(obj)/xdp_sample.bpf.o
++$(obj)/xdp_flowtable_offload.bpf.o: $(obj)/xdp_sample.bpf.o
+ 
+ $(obj)/%.bpf.o: $(src)/%.bpf.c $(obj)/vmlinux.h $(src)/xdp_sample.bpf.h $(src)/xdp_sample_shared.h
+ 	@echo "  CLANG-BPF " $@
+@@ -370,10 +374,11 @@ $(obj)/%.bpf.o: $(src)/%.bpf.c $(obj)/vmlinux.h $(src)/xdp_sample.bpf.h $(src)/x
+ 		-I$(LIBBPF_INCLUDE) $(CLANG_SYS_INCLUDES) \
+ 		-c $(filter %.bpf.c,$^) -o $@
+ 
+-LINKED_SKELS := xdp_router_ipv4.skel.h
++LINKED_SKELS := xdp_router_ipv4.skel.h xdp_flowtable_offload.skel.h
+ clean-files += $(LINKED_SKELS)
+ 
+ xdp_router_ipv4.skel.h-deps := xdp_router_ipv4.bpf.o xdp_sample.bpf.o
++xdp_flowtable_offload.skel.h-deps := xdp_flowtable_offload.bpf.o xdp_sample.bpf.o
+ 
+ LINKED_BPF_SRCS := $(patsubst %.bpf.o,%.bpf.c,$(foreach skel,$(LINKED_SKELS),$($(skel)-deps)))
+ 
+diff --git a/samples/bpf/xdp_flowtable_offload.bpf.c b/samples/bpf/xdp_flowtable_offload.bpf.c
 new file mode 100644
-index 0000000000000..836a1127e4052
+index 0000000000000..728c859feefae
 --- /dev/null
-+++ b/net/netfilter/nf_flow_table_bpf.c
-@@ -0,0 +1,95 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/* Unstable Flow Table Helpers for XDP hook
++++ b/samples/bpf/xdp_flowtable_offload.bpf.c
+@@ -0,0 +1,592 @@
++/* Copyright (c) 2024 Lorenzo Bianconi <lorenzo@kernel.org>
 + *
-+ * These are called from the XDP programs.
-+ * Note that it is allowed to break compatibility for these functions since
-+ * the interface they are exposed through to BPF programs is explicitly
-+ * unstable.
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of version 2 of the GNU General Public
++ * License as published by the Free Software Foundation.
++ *
++ * This program is distributed in the hope that it will be useful, but
++ * WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
++ * General Public License for more details.
 + */
 +
-+#include <linux/kernel.h>
-+#include <linux/init.h>
-+#include <linux/module.h>
-+#include <net/netfilter/nf_flow_table.h>
-+#include <linux/bpf.h>
-+#include <linux/btf.h>
-+#include <net/xdp.h>
++#include "vmlinux.h"
++#include "xdp_sample.bpf.h"
++#include "xdp_sample_shared.h"
 +
-+__diag_push();
-+__diag_ignore_all("-Wmissing-prototypes",
-+		  "Global functions as their definitions will be in nf_flow_table BTF");
++#define MAX_ERRNO	4095
++#define IS_ERR_VALUE(x)	(unsigned long)(void *)(x) >= (unsigned long)-MAX_ERRNO
++#define BIT(x)		(1 << (x))
 +
-+static struct flow_offload_tuple_rhash *
-+bpf_xdp_flow_offload_tuple_lookup(struct net_device *dev,
-+				  struct flow_offload_tuple *tuple,
-+				  __be16 proto)
++#define ETH_P_IP	0x0800
++#define IP_MF		0x2000	/* "More Fragments" */
++#define IP_OFFSET	0x1fff	/* "Fragment Offset" */
++
++#define IPV6_FLOWINFO_MASK	__cpu_to_be32(0x0fffffff)
++
++#define CSUM_MANGLED_0		((__sum16)0xffff)
++
++struct flow_offload_tuple_rhash *
++bpf_xdp_flow_offload_lookup(struct xdp_md *,
++			    struct bpf_fib_lookup *, u32) __ksym;
++
++/* IP checksum utility routines */
++
++static __always_inline __u32 csum_add(__u32 csum, __u32 addend)
 +{
-+	struct flow_offload_tuple_rhash *tuplehash;
-+	struct nf_flowtable *flow_table;
-+	struct flow_offload *flow;
++	__u32 res = csum + addend;
 +
-+	flow_table = nf_flowtable_by_dev(dev);
-+	if (!flow_table)
-+		return ERR_PTR(-ENOENT);
-+
-+	tuplehash = flow_offload_lookup(flow_table, tuple);
-+	if (!tuplehash)
-+		return ERR_PTR(-ENOENT);
-+
-+	flow = container_of(tuplehash, struct flow_offload,
-+			    tuplehash[tuplehash->tuple.dir]);
-+	flow_offload_refresh(flow_table, flow, false);
-+
-+	return tuplehash;
++	return res + (res < addend);
 +}
 +
-+__bpf_kfunc struct flow_offload_tuple_rhash *
-+bpf_xdp_flow_offload_lookup(struct xdp_md *ctx,
-+			    struct bpf_fib_lookup *fib_tuple,
-+			    u32 fib_tuple__sz)
++static __always_inline __u16 csum_fold(__u32 csum)
 +{
-+	struct xdp_buff *xdp = (struct xdp_buff *)ctx;
-+	struct flow_offload_tuple tuple = {
-+		.iifidx = fib_tuple->ifindex,
-+		.l3proto = fib_tuple->family,
-+		.l4proto = fib_tuple->l4_protocol,
-+		.src_port = fib_tuple->sport,
-+		.dst_port = fib_tuple->dport,
-+	};
-+	__be16 proto;
++	csum = (csum & 0xffff) + (csum >> 16);
++	csum = (csum & 0xffff) + (csum >> 16);
++	return ~csum;
++}
 +
-+	switch (fib_tuple->family) {
-+	case AF_INET:
-+		tuple.src_v4.s_addr = fib_tuple->ipv4_src;
-+		tuple.dst_v4.s_addr = fib_tuple->ipv4_dst;
-+		proto = htons(ETH_P_IP);
-+		break;
-+	case AF_INET6:
-+		tuple.src_v6 = *(struct in6_addr *)&fib_tuple->ipv6_src;
-+		tuple.dst_v6 = *(struct in6_addr *)&fib_tuple->ipv6_dst;
-+		proto = htons(ETH_P_IPV6);
-+		break;
-+	default:
-+		return ERR_PTR(-EINVAL);
++static __always_inline __u16 csum_replace4(__u32 csum, __u32 from, __u32 to)
++{
++	__u32 tmp = csum_add(~csum, ~from);
++
++	return csum_fold(csum_add(tmp, to));
++}
++
++static __always_inline __u16 csum_replace16(__u32 csum, __u32 *from, __u32 *to)
++{
++	__u32 diff[] = {
++		~from[0], ~from[1], ~from[2], ~from[3],
++		to[0], to[1], to[2], to[3],
++	};
++
++	csum = bpf_csum_diff(0, 0, diff, sizeof(diff), ~csum);
++	return csum_fold(csum);
++}
++
++/* IP-TCP header utility routines */
++
++static __always_inline void ip_decrease_ttl(struct iphdr *iph)
++{
++	__u32 check = (__u32)iph->check;
++
++	check += (__u32)bpf_htons(0x0100);
++	iph->check = (__sum16)(check + (check >= 0xffff));
++	iph->ttl--;
++}
++
++static __always_inline bool
++xdp_flowtable_offload_check_iphdr(struct iphdr *iph)
++{
++	/* ip fragmented traffic */
++	if (iph->frag_off & bpf_htons(IP_MF | IP_OFFSET))
++		return false;
++
++	/* ip options */
++	if (iph->ihl * 4 != sizeof(*iph))
++		return false;
++
++	if (iph->ttl <= 1)
++		return false;
++
++	return true;
++}
++
++static __always_inline bool
++xdp_flowtable_offload_check_tcp_state(void *ports, void *data_end, u8 proto)
++{
++	if (proto == IPPROTO_TCP) {
++		struct tcphdr *tcph = ports;
++
++		if (tcph + 1 > data_end)
++			return false;
++
++		if (tcph->fin || tcph->rst)
++			return false;
 +	}
 +
-+	return bpf_xdp_flow_offload_tuple_lookup(xdp->rxq->dev, &tuple, proto);
++	return true;
 +}
 +
-+__diag_pop()
++/* IP nat utility routines */
 +
-+BTF_KFUNCS_START(nf_ft_kfunc_set)
-+BTF_ID_FLAGS(func, bpf_xdp_flow_offload_lookup)
-+BTF_KFUNCS_END(nf_ft_kfunc_set)
++static __always_inline void
++xdp_flowtable_offload_nat_port(struct flow_ports *ports, void *data_end,
++			       u8 proto, __be16 port, __be16 nat_port)
++{
++	switch (proto) {
++	case IPPROTO_TCP: {
++		struct tcphdr *tcph = (struct tcphdr *)ports;
 +
-+static const struct btf_kfunc_id_set nf_flow_offload_kfunc_set = {
-+	.owner = THIS_MODULE,
-+	.set   = &nf_ft_kfunc_set,
++		if (tcph + 1 > data_end)
++			break;
++
++		tcph->check = csum_replace4((__u32)tcph->check, (__u32)port,
++					    (__u32)nat_port);
++		break;
++	}
++	case IPPROTO_UDP: {
++		struct udphdr *udph = (struct udphdr *)ports;
++
++		if (udph + 1 > data_end)
++			break;
++
++		if (!udph->check)
++			break;
++
++		udph->check = csum_replace4((__u32)udph->check, (__u32)port,
++					    (__u32)nat_port);
++		if (!udph->check)
++			udph->check = CSUM_MANGLED_0;
++		break;
++	}
++	default:
++		break;
++	}
++}
++
++static __always_inline void
++xdp_flowtable_offload_snat_port(const struct flow_offload *flow,
++				struct flow_ports *ports, void *data_end,
++				u8 proto, enum flow_offload_tuple_dir dir)
++{
++	__be16 port, nat_port;
++
++	if (ports + 1 > data_end)
++		return;
++
++	switch (dir) {
++	case FLOW_OFFLOAD_DIR_ORIGINAL:
++		port = ports->source;
++		bpf_core_read(&nat_port, bpf_core_type_size(nat_port),
++			      &flow->tuplehash[FLOW_OFFLOAD_DIR_REPLY].tuple.dst_port);
++		ports->source = nat_port;
++		break;
++	case FLOW_OFFLOAD_DIR_REPLY:
++		port = ports->dest;
++		bpf_core_read(&nat_port, bpf_core_type_size(nat_port),
++			      &flow->tuplehash[FLOW_OFFLOAD_DIR_ORIGINAL].tuple.src_port);
++		ports->dest = nat_port;
++		break;
++	default:
++		return;
++	}
++
++	xdp_flowtable_offload_nat_port(ports, data_end, proto, port, nat_port);
++}
++
++static __always_inline void
++xdp_flowtable_offload_dnat_port(const struct flow_offload *flow,
++				struct flow_ports *ports, void *data_end,
++				u8 proto, enum flow_offload_tuple_dir dir)
++{
++	__be16 port, nat_port;
++
++	if (ports + 1 > data_end)
++		return;
++
++	switch (dir) {
++	case FLOW_OFFLOAD_DIR_ORIGINAL:
++		port = ports->dest;
++		bpf_core_read(&nat_port, bpf_core_type_size(nat_port),
++			      &flow->tuplehash[FLOW_OFFLOAD_DIR_REPLY].tuple.src_port);
++		ports->dest = nat_port;
++		break;
++	case FLOW_OFFLOAD_DIR_REPLY:
++		port = ports->source;
++		bpf_core_read(&nat_port, bpf_core_type_size(nat_port),
++			      &flow->tuplehash[FLOW_OFFLOAD_DIR_ORIGINAL].tuple.dst_port);
++		ports->source = nat_port;
++		break;
++	default:
++		return;
++	}
++
++	xdp_flowtable_offload_nat_port(ports, data_end, proto, port, nat_port);
++}
++
++static __always_inline void
++xdp_flowtable_offload_ip_l4(struct iphdr *iph, void *data_end,
++			    __be32 addr, __be32 nat_addr)
++{
++	switch (iph->protocol) {
++	case IPPROTO_TCP: {
++		struct tcphdr *tcph = (struct tcphdr *)(iph + 1);
++
++		if (tcph + 1 > data_end)
++			break;
++
++		tcph->check = csum_replace4((__u32)tcph->check, addr,
++					    nat_addr);
++		break;
++	}
++	case IPPROTO_UDP: {
++		struct udphdr *udph = (struct udphdr *)(iph + 1);
++
++		if (udph + 1 > data_end)
++			break;
++
++		if (!udph->check)
++			break;
++
++		udph->check = csum_replace4((__u32)udph->check, addr,
++					    nat_addr);
++		if (!udph->check)
++			udph->check = CSUM_MANGLED_0;
++		break;
++	}
++	default:
++		break;
++	}
++}
++
++static __always_inline void
++xdp_flowtable_offload_snat_ip(const struct flow_offload *flow,
++			      struct iphdr *iph, void *data_end,
++			      enum flow_offload_tuple_dir dir)
++{
++	__be32 addr, nat_addr;
++
++	switch (dir) {
++	case FLOW_OFFLOAD_DIR_ORIGINAL:
++		addr = iph->saddr;
++		bpf_core_read(&nat_addr, bpf_core_type_size(nat_addr),
++			      &flow->tuplehash[FLOW_OFFLOAD_DIR_REPLY].tuple.dst_v4.s_addr);
++		iph->saddr = nat_addr;
++		break;
++	case FLOW_OFFLOAD_DIR_REPLY:
++		addr = iph->daddr;
++		bpf_core_read(&nat_addr, bpf_core_type_size(nat_addr),
++			      &flow->tuplehash[FLOW_OFFLOAD_DIR_ORIGINAL].tuple.src_v4.s_addr);
++		iph->daddr = nat_addr;
++		break;
++	default:
++		return;
++	}
++	iph->check = csum_replace4((__u32)iph->check, addr, nat_addr);
++
++	xdp_flowtable_offload_ip_l4(iph, data_end, addr, nat_addr);
++}
++
++static __always_inline void
++xdp_flowtable_offload_get_dnat_ip(const struct flow_offload *flow,
++				  enum flow_offload_tuple_dir dir,
++				  __be32 *addr)
++{
++	switch (dir) {
++	case FLOW_OFFLOAD_DIR_ORIGINAL:
++		bpf_core_read(addr, sizeof(*addr),
++			      &flow->tuplehash[FLOW_OFFLOAD_DIR_REPLY].tuple.src_v4.s_addr);
++		break;
++	case FLOW_OFFLOAD_DIR_REPLY:
++		bpf_core_read(addr, sizeof(*addr),
++			      &flow->tuplehash[FLOW_OFFLOAD_DIR_ORIGINAL].tuple.dst_v4.s_addr);
++		break;
++	}
++}
++
++static __always_inline void
++xdp_flowtable_offload_dnat_ip(const struct flow_offload *flow,
++			      struct iphdr *iph, void *data_end,
++			      enum flow_offload_tuple_dir dir)
++{
++	__be32 addr, nat_addr;
++
++	switch (dir) {
++	case FLOW_OFFLOAD_DIR_ORIGINAL:
++		addr = iph->daddr;
++		bpf_core_read(&nat_addr, bpf_core_type_size(nat_addr),
++			      &flow->tuplehash[FLOW_OFFLOAD_DIR_REPLY].tuple.src_v4.s_addr);
++		iph->daddr = nat_addr;
++		break;
++	case FLOW_OFFLOAD_DIR_REPLY:
++		addr = iph->saddr;
++		bpf_core_read(&nat_addr, bpf_core_type_size(nat_addr),
++			      &flow->tuplehash[FLOW_OFFLOAD_DIR_ORIGINAL].tuple.dst_v4.s_addr);
++		iph->saddr = nat_addr;
++		break;
++	default:
++		return;
++	}
++	iph->check = csum_replace4((__u32)iph->check, addr, nat_addr);
++
++	xdp_flowtable_offload_ip_l4(iph, data_end, addr, nat_addr);
++}
++
++static __always_inline void
++xdp_flowtable_offload_ipv6_l4(struct ipv6hdr *ip6h, void *data_end,
++			      struct in6_addr *addr, struct in6_addr *nat_addr)
++{
++	switch (ip6h->nexthdr) {
++	case IPPROTO_TCP: {
++		struct tcphdr *tcph = (struct tcphdr *)(ip6h + 1);
++
++		if (tcph + 1 > data_end)
++			break;
++
++		tcph->check = csum_replace16((__u32)tcph->check,
++					     addr->in6_u.u6_addr32,
++					     nat_addr->in6_u.u6_addr32);
++		break;
++	}
++	case IPPROTO_UDP: {
++		struct udphdr *udph = (struct udphdr *)(ip6h + 1);
++
++		if (udph + 1 > data_end)
++			break;
++
++		if (!udph->check)
++			break;
++
++		udph->check = csum_replace16((__u32)udph->check,
++					     addr->in6_u.u6_addr32,
++					     nat_addr->in6_u.u6_addr32);
++		if (!udph->check)
++			udph->check = CSUM_MANGLED_0;
++		break;
++	}
++	default:
++		break;
++	}
++}
++
++static __always_inline void
++xdp_flowtable_offload_snat_ipv6(const struct flow_offload *flow,
++				struct ipv6hdr *ip6h, void *data_end,
++				enum flow_offload_tuple_dir dir)
++{
++	struct in6_addr addr, nat_addr;
++
++	switch (dir) {
++	case FLOW_OFFLOAD_DIR_ORIGINAL:
++		addr = ip6h->saddr;
++		bpf_core_read(&nat_addr, bpf_core_type_size(nat_addr),
++			      &flow->tuplehash[FLOW_OFFLOAD_DIR_REPLY].tuple.dst_v6);
++		ip6h->saddr = nat_addr;
++		break;
++	case FLOW_OFFLOAD_DIR_REPLY:
++		addr = ip6h->daddr;
++		bpf_core_read(&nat_addr, bpf_core_type_size(nat_addr),
++			      &flow->tuplehash[FLOW_OFFLOAD_DIR_ORIGINAL].tuple.src_v6);
++		ip6h->daddr = nat_addr;
++		break;
++	default:
++		return;
++	}
++
++	xdp_flowtable_offload_ipv6_l4(ip6h, data_end, &addr, &nat_addr);
++}
++
++static __always_inline void
++xdp_flowtable_offload_get_dnat_ipv6(const struct flow_offload *flow,
++				    enum flow_offload_tuple_dir dir,
++				    struct in6_addr *addr)
++{
++	switch (dir) {
++	case FLOW_OFFLOAD_DIR_ORIGINAL:
++		bpf_core_read(addr, sizeof(*addr),
++			      &flow->tuplehash[FLOW_OFFLOAD_DIR_REPLY].tuple.src_v6);
++		break;
++	case FLOW_OFFLOAD_DIR_REPLY:
++		bpf_core_read(addr, sizeof(*addr),
++			      &flow->tuplehash[FLOW_OFFLOAD_DIR_ORIGINAL].tuple.dst_v6);
++		break;
++	}
++}
++
++static __always_inline void
++xdp_flowtable_offload_dnat_ipv6(const struct flow_offload *flow,
++				struct ipv6hdr *ip6h, void *data_end,
++				enum flow_offload_tuple_dir dir)
++{
++	struct in6_addr addr, nat_addr;
++
++	switch (dir) {
++	case FLOW_OFFLOAD_DIR_ORIGINAL:
++		addr = ip6h->daddr;
++		bpf_core_read(&nat_addr, bpf_core_type_size(nat_addr),
++			      &flow->tuplehash[FLOW_OFFLOAD_DIR_REPLY].tuple.src_v6);
++		ip6h->daddr = nat_addr;
++		break;
++	case FLOW_OFFLOAD_DIR_REPLY:
++		addr = ip6h->saddr;
++		bpf_core_read(&nat_addr, bpf_core_type_size(nat_addr),
++			      &flow->tuplehash[FLOW_OFFLOAD_DIR_ORIGINAL].tuple.dst_v6);
++		ip6h->saddr = nat_addr;
++		break;
++	default:
++		return;
++	}
++
++	xdp_flowtable_offload_ipv6_l4(ip6h, data_end, &addr, &nat_addr);
++}
++
++static __always_inline void
++xdp_flowtable_offload_forward_ip(const struct flow_offload *flow,
++				 void *data, void *data_end,
++				 struct flow_ports *ports,
++				 enum flow_offload_tuple_dir dir,
++				 unsigned long flags)
++{
++	struct iphdr *iph = data + sizeof(struct ethhdr);
++
++	if (iph + 1 > data_end)
++		return;
++
++	if (flags & BIT(NF_FLOW_SNAT)) {
++		xdp_flowtable_offload_snat_port(flow, ports, data_end,
++						iph->protocol, dir);
++		xdp_flowtable_offload_snat_ip(flow, iph, data_end, dir);
++	}
++	if (flags & BIT(NF_FLOW_DNAT)) {
++		xdp_flowtable_offload_dnat_port(flow, ports, data_end,
++						iph->protocol, dir);
++		xdp_flowtable_offload_dnat_ip(flow, iph, data_end, dir);
++	}
++
++	ip_decrease_ttl(iph);
++}
++
++static __always_inline void
++xdp_flowtable_offload_forward_ipv6(const struct flow_offload *flow,
++				   void *data, void *data_end,
++				   struct flow_ports *ports,
++				   enum flow_offload_tuple_dir dir,
++				   unsigned long flags)
++{
++	struct ipv6hdr *ip6h = data + sizeof(struct ethhdr);
++
++	if (ip6h + 1 > data_end)
++		return;
++
++	if (flags & BIT(NF_FLOW_SNAT)) {
++		xdp_flowtable_offload_snat_port(flow, ports, data_end,
++						ip6h->nexthdr, dir);
++		xdp_flowtable_offload_snat_ipv6(flow, ip6h, data_end, dir);
++	}
++	if (flags & BIT(NF_FLOW_DNAT)) {
++		xdp_flowtable_offload_dnat_port(flow, ports, data_end,
++						ip6h->nexthdr, dir);
++		xdp_flowtable_offload_dnat_ipv6(flow, ip6h, data_end, dir);
++	}
++
++	ip6h->hop_limit--;
++}
++
++SEC("xdp")
++int xdp_flowtable_offload(struct xdp_md *ctx)
++{
++	void *data_end = (void *)(long)ctx->data_end;
++	struct flow_offload_tuple_rhash *tuplehash;
++	struct bpf_fib_lookup tuple = {
++		.ifindex = ctx->ingress_ifindex,
++	};
++	void *data = (void *)(long)ctx->data;
++	enum flow_offload_tuple_dir dir;
++	struct ethhdr *eth = data;
++	struct flow_offload *flow;
++	struct flow_ports *ports;
++	unsigned long flags;
++	int iifindex;
++
++	if (eth + 1 > data_end)
++		return XDP_PASS;
++
++	switch (eth->h_proto) {
++	case bpf_htons(ETH_P_IP): {
++		struct iphdr *iph = data + sizeof(*eth);
++
++		ports = (struct flow_ports *)(iph + 1);
++		if (ports + 1 > data_end)
++			return XDP_PASS;
++
++		/* sanity check on ip header */
++		if (!xdp_flowtable_offload_check_iphdr(iph))
++			return XDP_PASS;
++
++		if (!xdp_flowtable_offload_check_tcp_state(ports, data_end,
++							   iph->protocol))
++			return XDP_PASS;
++
++		tuple.family		= AF_INET;
++		tuple.tos		= iph->tos;
++		tuple.l4_protocol	= iph->protocol;
++		tuple.tot_len		= bpf_ntohs(iph->tot_len);
++		tuple.ipv4_src		= iph->saddr;
++		tuple.ipv4_dst		= iph->daddr;
++		tuple.sport		= ports->source;
++		tuple.dport		= ports->dest;
++		break;
++	}
++	case bpf_htons(ETH_P_IPV6): {
++		struct in6_addr *src = (struct in6_addr *)tuple.ipv6_src;
++		struct in6_addr *dst = (struct in6_addr *)tuple.ipv6_dst;
++		struct ipv6hdr *ip6h = data + sizeof(*eth);
++
++		ports = (struct flow_ports *)(ip6h + 1);
++		if (ports + 1 > data_end)
++			return XDP_PASS;
++
++		if (ip6h->hop_limit <= 1)
++			return XDP_PASS;
++
++		if (!xdp_flowtable_offload_check_tcp_state(ports, data_end,
++							   ip6h->nexthdr))
++			return XDP_PASS;
++
++		tuple.family		= AF_INET6;
++		tuple.l4_protocol	= ip6h->nexthdr;
++		tuple.tot_len		= bpf_ntohs(ip6h->payload_len);
++		*src			= ip6h->saddr;
++		*dst			= ip6h->daddr;
++		tuple.sport		= ports->source;
++		tuple.dport		= ports->dest;
++		break;
++	}
++	default:
++		return XDP_PASS;
++	}
++
++	tuplehash = bpf_xdp_flow_offload_lookup(ctx, &tuple, sizeof(tuple));
++	if (IS_ERR_VALUE(tuplehash))
++		return XDP_PASS;
++
++	dir = tuplehash->tuple.dir;
++	flow = container_of(tuplehash, struct flow_offload, tuplehash[dir]);
++	if (bpf_core_read(&flags, sizeof(flags), &flow->flags))
++		return XDP_PASS;
++
++	switch (tuplehash->tuple.xmit_type) {
++	case FLOW_OFFLOAD_XMIT_NEIGH:
++		/* update the destination address in case of dnatting before
++		 * performing the route lookup
++		 */
++		if (tuple.family == AF_INET6)
++			xdp_flowtable_offload_get_dnat_ipv6(flow, dir,
++					(struct in6_addr *)&tuple.ipv6_dst);
++		else
++			xdp_flowtable_offload_get_dnat_ip(flow, dir, &tuple.ipv4_src);
++
++		if (bpf_fib_lookup(ctx, &tuple, sizeof(tuple), 0))
++			return XDP_PASS;
++
++		if (tuple.family == AF_INET6)
++			xdp_flowtable_offload_forward_ipv6(flow, data, data_end,
++							   ports, dir, flags);
++		else
++			xdp_flowtable_offload_forward_ip(flow, data, data_end,
++							 ports, dir, flags);
++
++		__builtin_memcpy(eth->h_dest, tuple.dmac, ETH_ALEN);
++		__builtin_memcpy(eth->h_source, tuple.smac, ETH_ALEN);
++		iifindex = tuple.ifindex;
++		break;
++	case FLOW_OFFLOAD_XMIT_DIRECT:
++	default:
++		return XDP_PASS;
++	}
++
++	return bpf_redirect(iifindex, 0);
++}
++
++char _license[] SEC("license") = "GPL";
+diff --git a/samples/bpf/xdp_flowtable_offload_user.c b/samples/bpf/xdp_flowtable_offload_user.c
+new file mode 100644
+index 0000000000000..179b1f34b48fd
+--- /dev/null
++++ b/samples/bpf/xdp_flowtable_offload_user.c
+@@ -0,0 +1,128 @@
++// SPDX-License-Identifier: GPL-2.0-only
++/* Copyright (c) 2024 Lorenzo Bianconi <lorenzo@kernel.org>
++ */
++static const char *__doc__ =
++"XDP flowtable integration example\n"
++"Usage: xdp_flowtable_offload <IFINDEX|IFNAME>\n";
++
++#include <linux/bpf.h>
++#include <linux/if_link.h>
++#include <assert.h>
++#include <errno.h>
++#include <signal.h>
++#include <stdio.h>
++#include <stdlib.h>
++#include <stdbool.h>
++#include <string.h>
++#include <net/if.h>
++#include <unistd.h>
++#include <libgen.h>
++#include <getopt.h>
++#include <bpf/bpf.h>
++#include <bpf/libbpf.h>
++#include "bpf_util.h"
++#include "xdp_sample_user.h"
++#include "xdp_flowtable_offload.skel.h"
++
++static int mask = SAMPLE_RX_CNT | SAMPLE_EXCEPTION_CNT;
++
++DEFINE_SAMPLE_INIT(xdp_flowtable_offload);
++
++static const struct option long_options[] = {
++	{ "help", no_argument, NULL, 'h' },
++	{ "generic", no_argument, NULL, 'g' },
++	{}
 +};
 +
-+int nf_flow_offload_register_bpf(void)
++int main(int argc, char **argv)
 +{
-+	return register_btf_kfunc_id_set(BPF_PROG_TYPE_XDP,
-+					 &nf_flow_offload_kfunc_set);
-+}
-+EXPORT_SYMBOL_GPL(nf_flow_offload_register_bpf);
-diff --git a/net/netfilter/nf_flow_table_inet.c b/net/netfilter/nf_flow_table_inet.c
-index 6eef15648b7b0..b13587238eceb 100644
---- a/net/netfilter/nf_flow_table_inet.c
-+++ b/net/netfilter/nf_flow_table_inet.c
-@@ -98,6 +98,8 @@ static int __init nf_flow_inet_module_init(void)
- 	nft_register_flowtable_type(&flowtable_ipv6);
- 	nft_register_flowtable_type(&flowtable_inet);
- 
-+	nf_flow_offload_register_bpf();
++	struct xdp_flowtable_offload *skel;
++	int ret = EXIT_FAIL_OPTION;
++	char ifname[IF_NAMESIZE];
++	bool generic = false;
++	int ifindex;
++	int opt;
 +
- 	return 0;
- }
- 
++	while ((opt = getopt_long(argc, argv, "hg",
++				  long_options, NULL)) != -1) {
++		switch (opt) {
++		case 'g':
++			generic = true;
++			break;
++		case 'h':
++		default:
++			sample_usage(argv, long_options, __doc__, mask, false);
++			return ret;
++		}
++	}
++
++	if (argc <= optind) {
++		sample_usage(argv, long_options, __doc__, mask, true);
++		goto end;
++	}
++
++	ifindex = if_nametoindex(argv[optind]);
++	if (!ifindex)
++		ifindex = strtoul(argv[optind], NULL, 0);
++
++	if (!ifindex) {
++		fprintf(stderr, "Bad interface index or name\n");
++		sample_usage(argv, long_options, __doc__, mask, true);
++		goto end;
++	}
++
++	skel = xdp_flowtable_offload__open();
++	if (!skel) {
++		fprintf(stderr, "Failed to xdp_flowtable_offload__open: %s\n",
++			strerror(errno));
++		ret = EXIT_FAIL_BPF;
++		goto end;
++	}
++
++	ret = sample_init_pre_load(skel);
++	if (ret < 0) {
++		fprintf(stderr, "Failed to sample_init_pre_load: %s\n", strerror(-ret));
++		ret = EXIT_FAIL_BPF;
++		goto end_destroy;
++	}
++
++	ret = xdp_flowtable_offload__load(skel);
++	if (ret < 0) {
++		fprintf(stderr, "Failed to xdp_flowtable_offload__load: %s\n",
++			strerror(errno));
++		ret = EXIT_FAIL_BPF;
++		goto end_destroy;
++	}
++
++	ret = sample_init(skel, mask);
++	if (ret < 0) {
++		fprintf(stderr, "Failed to initialize sample: %s\n", strerror(-ret));
++		ret = EXIT_FAIL;
++		goto end_destroy;
++	}
++
++	if (sample_install_xdp(skel->progs.xdp_flowtable_offload,
++			       ifindex, generic, false) < 0) {
++		ret = EXIT_FAIL_XDP;
++		goto end_destroy;
++	}
++
++	ret = EXIT_FAIL;
++	if (!if_indextoname(ifindex, ifname)) {
++		fprintf(stderr, "Failed to if_indextoname for %d: %s\n", ifindex,
++			strerror(errno));
++		goto end_destroy;
++	}
++
++	ret = sample_run(2, NULL, NULL);
++	if (ret < 0) {
++		fprintf(stderr, "Failed during sample run: %s\n", strerror(-ret));
++		ret = EXIT_FAIL;
++		goto end_destroy;
++	}
++	ret = EXIT_OK;
++end_destroy:
++	xdp_flowtable_offload__destroy(skel);
++end:
++	sample_exit(ret);
++}
 -- 
 2.45.0
 
