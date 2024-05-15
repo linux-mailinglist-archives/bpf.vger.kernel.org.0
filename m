@@ -1,71 +1,71 @@
-Return-Path: <bpf+bounces-29810-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-29811-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8CE418C6F45
-	for <lists+bpf@lfdr.de>; Thu, 16 May 2024 01:39:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id B70118C6F46
+	for <lists+bpf@lfdr.de>; Thu, 16 May 2024 01:39:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 238661F2330F
-	for <lists+bpf@lfdr.de>; Wed, 15 May 2024 23:39:50 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4DBFE1F232D4
+	for <lists+bpf@lfdr.de>; Wed, 15 May 2024 23:39:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7535E50297;
-	Wed, 15 May 2024 23:39:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D98952F8C;
+	Wed, 15 May 2024 23:39:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MEi1is/+"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hwhDOZRj"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f66.google.com (mail-ej1-f66.google.com [209.85.218.66])
+Received: from mail-ej1-f65.google.com (mail-ej1-f65.google.com [209.85.218.65])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 76DDD4D9F2
-	for <bpf@vger.kernel.org>; Wed, 15 May 2024 23:39:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.66
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 80382502A1
+	for <bpf@vger.kernel.org>; Wed, 15 May 2024 23:39:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.65
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715816383; cv=none; b=hq8gU8Fc0sOLwqXZSxIYiMwNjm1vX3HIQUhFf7XYHWRyickifXICghzS+cMZ2nYpFbPJzmRzSKNH9/5cAH1Nk9pgAEKbKVhRAcBp1vaRjcHW0NovFlWC7dH8yS7ndhWK+hznw6s3QhMrENowY9637EdOtVBCphPKCAd71Q8sGxs=
+	t=1715816385; cv=none; b=kepalaaMfvdCI+k+svk8MzEJ1bTjKxpEWISZQmJXZixhBuzfkZPUhPIGD1BD0tHiFpNVMKZQ6BNdgqfdquac+7sN0LSayJxh73ijqq3kZ/HAQoe5sFFLK/LlIvt9iSp+UiHB1MNGnBL2wqKyjR0mssUIoPnLuKwE7UuWhOjJEpA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715816383; c=relaxed/simple;
-	bh=5MvUSEn9J+PjSdBO3utcE/+7IsYnvJ85wSQvwltCY7c=;
+	s=arc-20240116; t=1715816385; c=relaxed/simple;
+	bh=c5oTgP9QkkqMhl0mhuFCPOTyp5qmTdwIBTcPx9gqqZM=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=nl4RiB4IKOT9jq26H/Xr8ZshgzVrtjkrMbPRyPRbSLuM9M9/iB2UqH1bV4xaFP8OYtjQRpEryAx5grQOfmE1UTDQV/vP99Bfxuqi0dHJrnibfotBpnJL+puBSH0E3G0O337J7ZvZnp08yzkUKrS3qlZYhyoBqYG382NwUCGLeLM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=MEi1is/+; arc=none smtp.client-ip=209.85.218.66
+	 MIME-Version; b=EHKGT00/3DMGQ0WnL4jPxOtWM0Pk+ZxRaQ19uajlH2f8vRpQNvV+goeYXyQ9/7cLPY3t0j9ivPNd1+R105p5mMPUBkeb7FqAzA4tggqsdU8trU36OAp7lE+WEJHsTwAUyyMqqMJs1/T4IS4/CcWXGFs2rAMrQGBoLKT5t9144v4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hwhDOZRj; arc=none smtp.client-ip=209.85.218.65
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f66.google.com with SMTP id a640c23a62f3a-a59a0e4b773so240094666b.2
-        for <bpf@vger.kernel.org>; Wed, 15 May 2024 16:39:41 -0700 (PDT)
+Received: by mail-ej1-f65.google.com with SMTP id a640c23a62f3a-a5a2d0d8644so246327666b.1
+        for <bpf@vger.kernel.org>; Wed, 15 May 2024 16:39:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1715816379; x=1716421179; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1715816381; x=1716421181; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=oi3VKQi+kfCeBqE0u8yX5xl5ALnD9Yf93ry4CDZhVYA=;
-        b=MEi1is/+sp1W86eXy0Q+pA0c/LFevS0Nke7oXZkdnMKGGS/3cw9AU23upg4LRrEhAt
-         HD9PvoQAoIdFSthPQGIFgOy76FKri5T5HaXNM/evb4Jblfm/jQsU1BRX8l+I4DZMxA5k
-         JspYrIHxaWof+HWucUpWrVI6K27VUfi+k0F/5hIKGztsfpoIkpWuzzRLql8Cc1qu64Ia
-         zGCxFwZIEUuC3Oml4hDKu3oIqsogeL8RJtrdqykZ2TFE+ewnCaJnQCITDMEq0bg/FAlK
-         ta7A38bEkrwLc7mhEdRwQWxceBTNqyseselLYjcxqfaKaBApp4Iy32FKiewbl2RTC1/K
-         bLcg==
+        bh=CuFNtRiPUxiY2ssVsIPz8qk6a5jINgTHJnFo8uiNf6E=;
+        b=hwhDOZRjnBef6cisxK+8vNfVInPTrs+3fKIBMi0OjbZmTvK6o9pl8dov01XpRnEEHh
+         KfREXoxw0Py9GAFLFL+bTb9EXc5wCIVwQAOwnt5XX/N68ioMeTdV1ySVsIXLj9t2ajRC
+         gccJZ6ZWWDqpfplugT5UVWbK7syayipandwYuynBz5LfM8FeceYvDMSuRyJki0FHHy8z
+         /LdQixOsdzTQ0YS10k0FdXTMk3Ga9Bdyzm0NtifulLVFVCfaOfwXjuVSVCZ8xgqz2ET9
+         4Tnx6UbvRKy46hsuMPN/82vFGJtpyNJa9AcnBF5BzOAgFNDfnBfD+3Znfxmzu6e9onuE
+         EycQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1715816380; x=1716421180;
+        d=1e100.net; s=20230601; t=1715816381; x=1716421181;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=oi3VKQi+kfCeBqE0u8yX5xl5ALnD9Yf93ry4CDZhVYA=;
-        b=cXrb3h+nW1CdySj7JqmJ3fPIXPZCGT4ZwZFwxRTDbW7QN8M8jKbKjspLVWq5ctzQTY
-         YuOeTPwCmLVnzcNRc1BKi7veSPBkZm0FPVrgIlrObE5N4t21lTpUO+pzcUyCp6gBq+nw
-         zZL33I9BxbixUjxLr7Mn0q7HAG+C0zMStvxxt9ebsk5KHKkX4f2ow7/dP5lkcdrVMIUY
-         yRip9sd1dG5Ar/2iBcJDh+8VrW3DgnRpDkLpyyAYk+0nLxbv3dNI37kBqx90/ooA5lij
-         6tXcgiYONfLrkBhjZmTqu0rzIgXVqIhHyfoChapSY5Xo1BiF6lIYisFUSxz1zWywfpS0
-         XxbQ==
-X-Gm-Message-State: AOJu0Yz5NWx7ohUnGBTFqiGzIMg65P2yJfpUqIse8ZZRiwmDxmNqukNZ
-	ZrpedG2l7UTRUMRbckLOA8WVq3mLejxrTEn+ZifrAmKaQGDhybk1zP9epj8n
-X-Google-Smtp-Source: AGHT+IFOTEt3TUMmWXi+VGQxZd2jJqGKVRVMdMMQiSZfeh2pZR+HiPamC4V5DJzgEj/DamvajMacVw==
-X-Received: by 2002:a17:906:1dd7:b0:a59:a431:f951 with SMTP id a640c23a62f3a-a5a2d665e13mr1119514766b.48.1715816379626;
-        Wed, 15 May 2024 16:39:39 -0700 (PDT)
+        bh=CuFNtRiPUxiY2ssVsIPz8qk6a5jINgTHJnFo8uiNf6E=;
+        b=f6amOtjIx6zQ02SKvFqBAe4Ic7IUIMWSiDtYeyjqzoox92NK7UmPO6QL4f5vaNyld0
+         QH/8ClI9tS6bbMclDOQTxyKXoWgYbJMCqRgVmyt/7JUcvjXynt6WvM1gL0a197arK2wz
+         Evxq+2atLWdO46CUmKc4vuqOLLt0T5kjxeDd366pZqfU7/hCqulozTns7sgFzLLxYDz1
+         HuGYWsal5BpPgmSDX4RAQhVSXi/NpM+aE8BEDQbdI7woRBjpxDodUk0aMfml8Mseo6Mo
+         UdUtkUn9uwhWsUe9aFFWA0GdU23CiVW9uWtnWgZNHoLp6zco8qu70eMp2MXerLiVcXs1
+         HV1A==
+X-Gm-Message-State: AOJu0Yxdh7FfquW2LRtliUp7PWqrLV20ZHJSq5k7cl49PePGyVtYlpX0
+	ZkXAswZDJezpdcgTiGt+RjWng4MmTd4nl53L9SM7xLJznKbgyeiuDIWgl9pT
+X-Google-Smtp-Source: AGHT+IEU7ZqNfE7Y8V9LyIud1++9gvQjHgulMM7+L1Hafa7k6IV8YGZh4M8FiVTP7YQQWUDch8PaPg==
+X-Received: by 2002:a17:906:7807:b0:a58:7298:fdfe with SMTP id a640c23a62f3a-a5a2d672028mr1165759066b.53.1715816381356;
+        Wed, 15 May 2024 16:39:41 -0700 (PDT)
 Received: from localhost (nat-icclus-192-26-29-3.epfl.ch. [192.26.29.3])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a5a179c7e2bsm916631066b.110.2024.05.15.16.39.39
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a5a179c80ffsm914408066b.115.2024.05.15.16.39.40
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 15 May 2024 16:39:39 -0700 (PDT)
+        Wed, 15 May 2024 16:39:40 -0700 (PDT)
 From: Kumar Kartikeya Dwivedi <memxor@gmail.com>
 To: bpf@vger.kernel.org
 Cc: Alexei Starovoitov <ast@kernel.org>,
@@ -84,9 +84,9 @@ Cc: Alexei Starovoitov <ast@kernel.org>,
 	Borislav Petkov <bp@alien8.de>,
 	x86@kernel.org,
 	"H. Peter Anvin" <hpa@zytor.com>
-Subject: [PATCH bpf-next v1 1/2] x86: Perform BPF exception fixup in do_user_addr_fault
-Date: Wed, 15 May 2024 23:39:31 +0000
-Message-ID: <20240515233932.3733815-2-memxor@gmail.com>
+Subject: [PATCH bpf-next v1 2/2] bpf, x86: Skip bounds checking for PROBE_MEM with SMAP
+Date: Wed, 15 May 2024 23:39:32 +0000
+Message-ID: <20240515233932.3733815-3-memxor@gmail.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240515233932.3733815-1-memxor@gmail.com>
 References: <20240515233932.3733815-1-memxor@gmail.com>
@@ -96,72 +96,74 @@ List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=3005; i=memxor@gmail.com; h=from:subject; bh=5MvUSEn9J+PjSdBO3utcE/+7IsYnvJ85wSQvwltCY7c=; b=owEBbQKS/ZANAwAKAUzgyIZIvxHKAcsmYgBmRUUks+YTp5oYDU+g9+GK1KdsCxwk0doxPWh+X nQy1EuWGV2JAjMEAAEKAB0WIQRLvip+Buz51YI8YRFM4MiGSL8RygUCZkVFJAAKCRBM4MiGSL8R ymHtD/0XJqthahOUVJNJ7AU0iBAMGjR2ky3GnGfsNe8+MVu3c9O76IGkz+Rhzewas74yoeFl4kU gPT+0wzXsRt3O2WNanu0Egeii/juFGuL48XuqVjoscru9l4io9aSxxjh9QREJbAstC/vliRtV/x ivnILZ6yfXYKNeI/Ahdq3ufBBFePIODmFo271cyujcRKxbDOoN/t209SkUiSK8A/aBzCCGDmCHU 4GIwus/dOL6SZ1eU27fXOBkHESXbCH3ZDZC4fqTwCNzq7bSt3T2W2L6bM9ugDSEF5W4eXfvyeIU zy0qFN6NASqG9hvO9vQtms4EvqsO1Fquofl7mye91dncuH3lzP91Hy5mD1sYYU4Om9JV2WI4qNo D9jo8tZnaISMHxksavINiBiPqNKtErnMqdOyBut/woA7Orz4T+e8PfOwmGISAXIXVBrgL/wVbjV bnRVSqL6W8WccxHUdBp+WdIMdI67ND9Y0P71PvGWW9MZ5exJRBwFOEXq9rtLIXLiF3pfqR5gfY2 dUW1sbpO4zziNtYzuk0NYz+SUKZlIKRsHxrgOp4d6thOiBrinYIQogXWUgbkd2cYgBaLGDr/Ul8 wVC2j8U7Ltg8zuaVAyudfUheFnF++IpwbF0OvIZPt1VxftM9B3zRD251mE2hQm2cTnqR2jaJGvo syHR3dGU9ld2hIw==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2699; i=memxor@gmail.com; h=from:subject; bh=c5oTgP9QkkqMhl0mhuFCPOTyp5qmTdwIBTcPx9gqqZM=; b=owEBbQKS/ZANAwAKAUzgyIZIvxHKAcsmYgBmRUUlHVXLEcjnMz1ZjXdYJR6KEUpM7hl4PD0Iv CImrToA1vSJAjMEAAEKAB0WIQRLvip+Buz51YI8YRFM4MiGSL8RygUCZkVFJQAKCRBM4MiGSL8R yvT4D/oDA65a3kATSPCKOqlcWENl1KjrvVOZaJpHlN3n8hWF1Da+p7fpnz/j9v0sQEMgcZWUtu2 bVKKsA4CZRddxOn6wnNHxTsE5ilhBUtYjb9CgnacnndDL9EaQtqxOGEnxUAVo036zQAncpO3RkH lUlmZPL6WcEPQhjmbuNCof2g/YYLELjaOhSoh78NGcxW/nvDtdofJ/kJ9CF4yDEZlsz1h01UJpi 7ayH9wHivPIRCiZH1MbYdrZK1fGMwddbWXfTt8VJzqsfVja9gpzPK2s1Jg6LDtIi+wIS9/7fhlG ig2lwyaQpxvnnHqEiIpWnrQ5QSbzyk9cqM1hu5MXh7J1R7FZysDRoE+ZgkIZQMr+MS+l5RymCU3 bWD3jEj73iy4W5ZBNHcotRtPev41uD2QlfF/jxYi5z1SVkd42eL5h/owANQrRMhgy5euAkmQIui jAba3Qtf9JiJQXk6Z197S7kmsxoP5sKUyOflPPl8rZSkjQGJ97GQeYLBHAQqPB+wFlfk8wmrx1X ZVl4zo9xx/RjK03Lw1NI8vwCMUWS2YTkHr3l08RZjxNmGjjy/YwE+gr6WIsaVmQ6HeaPeHk9FDu wL2CmOcdjzWPddcQzLhY5Ycg2eBk63L6sZZkHYMLIK6pY3coSoQOzgwbxZu2QnoXS2VYzMp4xro ZEtEUmwfbN3l28Q==
 X-Developer-Key: i=memxor@gmail.com; a=openpgp; fpr=4BBE2A7E06ECF9D5823C61114CE0C88648BF11CA
 Content-Transfer-Encoding: 8bit
 
-Currently, on x86, when SMAP is enabled, and a page fault occurs in
-kernel mode for accessing a user address, the kernel will rightly panic
-as no valid kernel code can cause such a page fault (unless buggy).
-There is no valid correct kernel code that can generate such a fault,
-therefore this behavior would be correct.
+The previous patch changed the do_user_addr_fault page fault handler to
+invoke BPF's fixup routines (by searching exception tables and calling
+ex_handler_bpf). This would only occur when SMAP is enabled, such that
+any user address access from BPF programs running in kernel mode would
+reach this path and invoke the fixup routines.
 
-BPF programs that currently encounter user addresses when doing
-PROBE_MEM loads (load instructions which are allowed to read any kernel
-address, only available for root users) avoid a page fault by performing
-bounds checking on the address.  This requires the JIT to emit a jump
-over each PROBE_MEM load instruction to avoid hitting page faults.
+Relying on this behavior, disable any bounds checking instrumentation in
+the BPF JIT for x86 when X86_FEATURE_SMAP is available. All BPF
+programs execute with SMAP enabled, therefore when this feature is
+available, we can assume that SMAP will be enabled during program
+execution at runtime.
 
-We would prefer avoiding these jump instructions to improve performance
-of programs which use PROBE_MEM loads pervasively. For correct behavior,
-programs already rely on the kernel addresses being valid when they are
-executing, but BPF's safety properties must still ensure kernel safety
-in presence of invalid addresses. Therefore, for correct programs, the
-bounds checking is an added cost meant to ensure kernel safety. If the
-do_user_addr_fault handler could perform fixups for the BPF program in
-such a case, the bounds checking could be eliminated, the load
-instruction could be emitted directly without any checking.
+This optimizes PROBE_MEM loads down to a normal unchecked load
+instruction. Any page faults for user or kernel addresses will be
+handled using the fixup routines, and the generation exception table
+entries for such load instructions.
 
-Thus, in case SMAP is enabled (which would mean the kernel traps on
-accessing a user address), and the instruction pointer belongs to a BPF
-program, perform fixup for the access by searching exception tables.
-All BPF programs already execute with SMAP protection. When SMAP is not
-enabled, the BPF JIT will continue to emit bounds checking instructions.
+All in all, this ensures that PROBE_MEM loads will now incur no runtime
+overhead, and become practically free.
 
 Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
 ---
- arch/x86/mm/fault.c | 11 +++++++++++
- 1 file changed, 11 insertions(+)
+ arch/x86/net/bpf_jit_comp.c | 11 +++++++++--
+ 1 file changed, 9 insertions(+), 2 deletions(-)
 
-diff --git a/arch/x86/mm/fault.c b/arch/x86/mm/fault.c
-index bba4e020dd64..6bd2d566d9e5 100644
---- a/arch/x86/mm/fault.c
-+++ b/arch/x86/mm/fault.c
-@@ -20,6 +20,7 @@
- #include <linux/efi.h>			/* efi_crash_gracefully_on_page_fault()*/
- #include <linux/mm_types.h>
- #include <linux/mm.h>			/* find_and_lock_vma() */
-+#include <linux/filter.h>		/* is_bpf_text_address()	*/
+diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
+index 5159c7a22922..f8a39189cddc 100644
+--- a/arch/x86/net/bpf_jit_comp.c
++++ b/arch/x86/net/bpf_jit_comp.c
+@@ -1864,8 +1864,8 @@ st:			if (is_imm8(insn->off))
+ 		case BPF_LDX | BPF_PROBE_MEMSX | BPF_W:
+ 			insn_off = insn->off;
  
- #include <asm/cpufeature.h>		/* boot_cpu_has, ...		*/
- #include <asm/traps.h>			/* dotraplinkage, ...		*/
-@@ -1251,6 +1252,16 @@ void do_user_addr_fault(struct pt_regs *regs,
- 	if (unlikely(cpu_feature_enabled(X86_FEATURE_SMAP) &&
- 		     !(error_code & X86_PF_USER) &&
- 		     !(regs->flags & X86_EFLAGS_AC))) {
-+		/*
-+		 * If the kernel access happened to an invalid user pointer
-+		 * under SMAP by a BPF program, we will have an extable entry
-+		 * here, and need to perform the fixup.
-+		 */
-+		if (is_bpf_text_address(regs->ip)) {
-+			kernelmode_fixup_or_oops(regs, error_code, address,
-+						 0, 0, ARCH_DEFAULT_PKEY);
-+			return;
-+		}
- 		/*
- 		 * No extable entry here.  This was a kernel access to an
- 		 * invalid pointer.  get_kernel_nofault() will not get here.
+-			if (BPF_MODE(insn->code) == BPF_PROBE_MEM ||
+-			    BPF_MODE(insn->code) == BPF_PROBE_MEMSX) {
++			if ((BPF_MODE(insn->code) == BPF_PROBE_MEM ||
++			     BPF_MODE(insn->code) == BPF_PROBE_MEMSX) && !cpu_feature_enabled(X86_FEATURE_SMAP)) {
+ 				/* Conservatively check that src_reg + insn->off is a kernel address:
+ 				 *   src_reg + insn->off > TASK_SIZE_MAX + PAGE_SIZE
+ 				 *   and
+@@ -1912,6 +1912,9 @@ st:			if (is_imm8(insn->off))
+ 				/* populate jmp_offset for JAE above to jump to start_of_ldx */
+ 				start_of_ldx = prog;
+ 				end_of_jmp[-1] = start_of_ldx - end_of_jmp;
++			} else if ((BPF_MODE(insn->code) == BPF_PROBE_MEM ||
++				    BPF_MODE(insn->code) == BPF_PROBE_MEMSX)) {
++				start_of_ldx = prog;
+ 			}
+ 			if (BPF_MODE(insn->code) == BPF_PROBE_MEMSX ||
+ 			    BPF_MODE(insn->code) == BPF_MEMSX)
+@@ -1924,9 +1927,13 @@ st:			if (is_imm8(insn->off))
+ 				u8 *_insn = image + proglen + (start_of_ldx - temp);
+ 				s64 delta;
+ 
++				if (cpu_feature_enabled(X86_FEATURE_SMAP))
++					goto extable_fixup;
++
+ 				/* populate jmp_offset for JMP above */
+ 				start_of_ldx[-1] = prog - start_of_ldx;
+ 
++			extable_fixup:
+ 				if (!bpf_prog->aux->extable)
+ 					break;
+ 
 -- 
 2.43.0
 
