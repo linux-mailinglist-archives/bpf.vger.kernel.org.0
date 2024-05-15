@@ -1,110 +1,92 @@
-Return-Path: <bpf+bounces-29747-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-29748-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 52E868C6340
-	for <lists+bpf@lfdr.de>; Wed, 15 May 2024 11:00:11 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id F2B838C6343
+	for <lists+bpf@lfdr.de>; Wed, 15 May 2024 11:00:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7FBE61C2121F
-	for <lists+bpf@lfdr.de>; Wed, 15 May 2024 09:00:10 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 95A3E1F230DE
+	for <lists+bpf@lfdr.de>; Wed, 15 May 2024 09:00:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD31157CB6;
-	Wed, 15 May 2024 08:58:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 16B5355C0A;
+	Wed, 15 May 2024 08:58:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="kheFWwti"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="X+PkpahR"
 X-Original-To: bpf@vger.kernel.org
 Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6451A57CB5;
-	Wed, 15 May 2024 08:58:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5036B5A0F5;
+	Wed, 15 May 2024 08:58:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715763491; cv=none; b=n5N0eqXbM/UHpsr5QnF/f6M3p9SsFKDqf70esQkSiwx0lq4QXkVPaVhAGm0uk9B3NT+XLkF9qoVaGnyKMi/UXA7fsRL55b4Sq2AfFXcuQ3wMZa4agSZ5UzYsDvU4VwXfB1X9WbH2oiksKmzBr32gXm4tqU4fTsZ6FlBJ7K0eooM=
+	t=1715763528; cv=none; b=lGLDzoKutCX7O3upF4XBx/2GznfGADJPV6OGY63kFhnrgBqWmRxbEWVg/gqDtWr3P5HPLpeCLFcHy//gozk3pJsTNLUmXSpqUE0XknDqIVM+iJHA5lDU/5z7pohJjf1lll/4kegsBroMTh0uPsq91WGg86CAi5E4h3/9lDjvT50=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715763491; c=relaxed/simple;
-	bh=WxhNVJglXJ6bifS2+W6QqNp4SxMw1w+StWa+9MJ2u70=;
+	s=arc-20240116; t=1715763528; c=relaxed/simple;
+	bh=mIm962IF10bdWS0VjUWThN6tROwBuUJv1m8MYht87Qs=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=i7m0DlJybF+13Mkik/nvrFCwf1k0kHQ1bj8xtnlTSSO3tKNkcifU1VH37c74E/Ri4tjQEjNVWB/VwSCTM/0jINsen5qzfbV44I7xNdU8ya+vBxvD1glC+XAPNZX/WAR/i+AUe0jHAWfDGjZOcC3J+R4YooXm0VfR1SHLEVpNiwI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=kheFWwti; arc=none smtp.client-ip=90.155.50.34
+	 Content-Type:Content-Disposition:In-Reply-To; b=X1fdbe2XQQEnqlJ0sl6wRD61HRnYeRBWuvZrcs1yZlnbyIeGhKN32S3+Ap7YE/zf58/yRGctFFxTopT3Hcu+ImNTz3HkRPKj2Abzkw6Atcb4+kiLcsTAtfPylIf1YwC/XtTlcENaNNCQcqPm8iIMZCXTbUdVR7qONqDOlTCUUeY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=X+PkpahR; arc=none smtp.client-ip=90.155.50.34
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=LN7R/89hFiNKE7ZDOsR+E6btUpw/DgQgLlnRJEQx8kQ=; b=kheFWwtiLwToB5Ja8OlBP3jaYi
-	SxjYf45I3t5MbVXsSY+sz/7hLX9h2KLp6ECp9lF8CYolkN4XWvsTR6cAbTdRZUpJS1Ul9BpH8u+YH
-	WR6Y9QZrSal5bja3nzexsfK/KnHnhkaJZbYfbAxrSsR/V9Bps1TvjMcXWYT8Ttqq8gUbYFKwLCNzD
-	7aNOlg0i9qUOpFyfJ/aZVuUGfaZfe/tx3EYZREXNwV7W1kfxgyRcdhsQXj0f0Rb2gxEQ7aCR+JBg4
-	pKNc8bzj6i6hPoASUbsJ2Wph9rqz8jgtv9c4czJiyRfm8wSAeFjoVMQ4k8wsdIiV4IPCh0Ks6UU74
-	9H2Wt0dg==;
+	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Transfer-Encoding:
+	Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+	Sender:Reply-To:Content-ID:Content-Description;
+	bh=bw07bIpSCJ/6547TDCpYtK4MhhGWZ4UOhTjbzZBecaw=; b=X+PkpahRQrFnvf3SXhfKjeI5rP
+	c7Km4Hfpcl06bjSZvd1AgoInaxPlctKsMtlsNqHOtFf6GGFdbk68VIwaFuKZbN6D48KFBQ8a41gMK
+	aeLMpi6vtJB+nWe5i/aGk7XGoSKfrNGIorJvXuCQqbl8u79Nywsvq02vrypAGZ8j00mfBLYlo38Jh
+	gvviAqOAqJUB0vNBVOWFZKinU40WNZu8bXUsBXz5ZP66LKyTXkOT8qvU3B8rQ0vVA/RuD6xsPOK2k
+	fFaxd4sEX6gsbJ0pK1uoYRA1ykOnb1zbKZd1lwje1muDusiDnl6mFPC3yyB3wCdepJNGVX9yQPI0A
+	pl8zH4kQ==;
 Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
 	by casper.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1s7ASR-0000000A8iI-3U4k;
-	Wed, 15 May 2024 08:57:59 +0000
+	id 1s7ATA-0000000A8lu-1oQT;
+	Wed, 15 May 2024 08:58:40 +0000
 Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-	id 62178301105; Wed, 15 May 2024 10:57:55 +0200 (CEST)
-Date: Wed, 15 May 2024 10:57:55 +0200
+	id 1C94630068B; Wed, 15 May 2024 10:58:40 +0200 (CEST)
+Date: Wed, 15 May 2024 10:58:40 +0200
 From: Peter Zijlstra <peterz@infradead.org>
-To: Yabin Cui <yabinc@google.com>
-Cc: Ingo Molnar <mingo@redhat.com>,
+To: Namhyung Kim <namhyung@kernel.org>
+Cc: Yabin Cui <yabinc@google.com>, Ingo Molnar <mingo@redhat.com>,
 	Arnaldo Carvalho de Melo <acme@kernel.org>,
-	Namhyung Kim <namhyung@kernel.org>,
 	Mark Rutland <mark.rutland@arm.com>,
 	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
 	Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>,
 	Adrian Hunter <adrian.hunter@intel.com>,
 	linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
 	bpf@vger.kernel.org
-Subject: Re: [PATCH v4 1/3] perf/core: Save raw sample data conditionally
- based on sample type
-Message-ID: <20240515085755.GC40213@noisy.programming.kicks-ass.net>
+Subject: Re: [PATCH v4 3/3] perf/core: Check sample_type in
+ perf_sample_save_brstack
+Message-ID: <20240515085840.GD40213@noisy.programming.kicks-ass.net>
 References: <20240510191423.2297538-1-yabinc@google.com>
- <20240510191423.2297538-2-yabinc@google.com>
+ <20240510191423.2297538-4-yabinc@google.com>
+ <CAM9d7chNz8-84m28q5qSLjUjZ=Ni1CA_JzbB_P+YJooLQd85YA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20240510191423.2297538-2-yabinc@google.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAM9d7chNz8-84m28q5qSLjUjZ=Ni1CA_JzbB_P+YJooLQd85YA@mail.gmail.com>
 
-On Fri, May 10, 2024 at 12:14:21PM -0700, Yabin Cui wrote:
+On Fri, May 10, 2024 at 02:29:58PM -0700, Namhyung Kim wrote:
+> On Fri, May 10, 2024 at 12:14 PM Yabin Cui <yabinc@google.com> wrote:
+> >
+> > Check sample_type in perf_sample_save_brstack() to prevent
+> > saving branch stack data when it isn't required.
+> >
+> > Suggested-by: Namhyung Kim <namhyung@kernel.org>
+> > Signed-off-by: Yabin Cui <yabinc@google.com>
+> 
+> It seems powerpc has the similar bug, then you need this:
+> 
+> Fixes: eb55b455ef9c ("perf/core: Add perf_sample_save_brstack() helper")
 
-> diff --git a/include/linux/perf_event.h b/include/linux/perf_event.h
-> index d2a15c0c6f8a..9fc55193ff99 100644
-> --- a/include/linux/perf_event.h
-> +++ b/include/linux/perf_event.h
-> @@ -1240,12 +1240,16 @@ static inline void perf_sample_save_callchain(struct perf_sample_data *data,
->  }
->  
->  static inline void perf_sample_save_raw_data(struct perf_sample_data *data,
-> +					     struct perf_event *event,
->  					     struct perf_raw_record *raw)
->  {
->  	struct perf_raw_frag *frag = &raw->frag;
->  	u32 sum = 0;
->  	int size;
->  
-> +	if (!(event->attr.sample_type & PERF_SAMPLE_RAW))
-> +		return;
-> +
-
-Should we add something like:
-
-	if (WARN_ON_ONCE(data->sample_flags & PERF_SAMPLE_RAW))
-		return;
-
-? And I suppose the same for all these other patches.
-
->  	do {
->  		sum += frag->size;
->  		if (perf_raw_frag_last(frag))
-
-
+Is this really a bug? AFAICT it just does unneeded work, no?
 
