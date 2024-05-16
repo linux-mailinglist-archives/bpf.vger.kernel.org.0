@@ -1,67 +1,53 @@
-Return-Path: <bpf+bounces-29828-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-29829-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8454A8C7013
-	for <lists+bpf@lfdr.de>; Thu, 16 May 2024 03:42:12 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DCBF28C702A
+	for <lists+bpf@lfdr.de>; Thu, 16 May 2024 04:02:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 263951F2236D
-	for <lists+bpf@lfdr.de>; Thu, 16 May 2024 01:42:12 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9934A2832E7
+	for <lists+bpf@lfdr.de>; Thu, 16 May 2024 02:02:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3146E138E;
-	Thu, 16 May 2024 01:42:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TO03+x3r"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D9C26138E;
+	Thu, 16 May 2024 02:02:09 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from dggsgout12.his.huawei.com (unknown [45.249.212.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A8C8C10FA;
-	Thu, 16 May 2024 01:42:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 92A121366
+	for <bpf@vger.kernel.org>; Thu, 16 May 2024 02:02:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715823725; cv=none; b=KBfkhD1nndymmVjIYeZszwK1YcUx6Z9K/ILaAOxuvfqsm+o3bvteV9UI8K+YsUxqe2c4OWtIGd5ASQ/UHKgHV54vzjiyetja6qqJNvWYI+JnlCS7l752czhqV6vfbuvAUUo8uB2CClb3vlNnuAbNcGPBI7nR3PEc9tbsX49YWFA=
+	t=1715824929; cv=none; b=QU48iYQwJChHwjEtLH/yc+rEqupxv05AIv0TtX2G00AQ+CmzEj3NJWkCa85zf0eH7XlqVVP8VKvdpqLuMBLFCC2dTpzBjqyj80gfrD6utLi1qgcOrW+kmMXMy0QsyecflSWan0POnJVbJ3Z+opJVrduENPYjda+Y72XVWhMdRK0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715823725; c=relaxed/simple;
-	bh=xk386NB5B+OYNSRRJVYypSTewBpx9zOWjLdaiL1ocTI=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=XysZexdc2+gZXaJAq1XqvZDZC0h0hlS8vt/35tlLdBx6LPzPZbLoZ9Q10xwCwG8RNHTRVFG9GKbp70PZaGNCgjNgaZjaAfxuphAtt5jL5D0XOJN+7XesfcuEu/Wo2zw43e+qr52Amglpe0QVNy4RV7tbHx6RIeiia9i9C+9Ntbo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TO03+x3r; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8E34CC116B1;
-	Thu, 16 May 2024 01:41:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1715823725;
-	bh=xk386NB5B+OYNSRRJVYypSTewBpx9zOWjLdaiL1ocTI=;
-	h=From:To:Cc:Subject:Date:From;
-	b=TO03+x3rDgELssLHtutB/zQR3GH6iKSsR0LaRtbxO+VmxVnWceAD+XaXLHb2A/gsK
-	 rs4XwwCbTqluqj4MkFL45bOQ1GyKtxKCeWX6P+E1N7ZBbFCnz3DMOBfH8wvAPGAR/7
-	 bZzoyjtQd1fVoW/7/j1CRdUMsxOAgXxAOtS6eCljnKXQHQpvj8tEUCpk3bEbkQzROx
-	 l6UOqfJXJMezKXwaRPMvoSAivCyJZTRXOxC2d7N57pbl8xWu+9Cxf0IYayq9zkia11
-	 Ezw8LNDo7FzOG+3z1j4WYm9b8tglkvDz1Un77a+JDtb+pXkvSMBxqLvCb3D43tdny5
-	 d8CdqGStsXnFA==
-From: Geliang Tang <geliang@kernel.org>
-To: Andrii Nakryiko <andrii@kernel.org>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Mykola Lysenko <mykolal@fb.com>,
+	s=arc-20240116; t=1715824929; c=relaxed/simple;
+	bh=ZdfQtgll+RXEod5WN7aVWcux8brf8rPhsc4fymG14cw=;
+	h=From:To:Subject:Date:Message-Id:MIME-Version; b=o2AjghExm2CUk7qbQm2d6gkmyFN5fSzoqeiZi1/f1LyOsEA8a9PQbvnPfpFiVADsKc+1OvN42Ry2sZ9TKTrQYbX+R1pkW6GINx/e7udxrnWanoicDGTueO0u4iUgT9sLcFXMM/BHjMi3CFdNjBLTTmg2I+ZEgRrLVXD+L6gzqxU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.216])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4Vftcw6dSGz4f3jdV
+	for <bpf@vger.kernel.org>; Thu, 16 May 2024 10:01:52 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.128])
+	by mail.maildlp.com (Postfix) with ESMTP id 9E2B91A0B39
+	for <bpf@vger.kernel.org>; Thu, 16 May 2024 10:02:01 +0800 (CST)
+Received: from k01.huawei.com (unknown [10.67.174.197])
+	by APP4 (Coremail) with SMTP id gCh0CgAnd2kYaUVmfBsfNA--.14397S2;
+	Thu, 16 May 2024 10:02:01 +0800 (CST)
+From: Xu Kuohai <xukuohai@huaweicloud.com>
+To: bpf@vger.kernel.org,
 	Alexei Starovoitov <ast@kernel.org>,
 	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
 	Martin KaFai Lau <martin.lau@linux.dev>,
-	Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>,
-	Stanislav Fomichev <sdf@google.com>,
-	Hao Luo <haoluo@google.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Shuah Khan <shuah@kernel.org>
-Cc: Geliang Tang <tanggeliang@kylinos.cn>,
-	bpf@vger.kernel.org,
-	linux-kselftest@vger.kernel.org
-Subject: [PATCH bpf-next] selftests/bpf: Enable INET_XFRM_TUNNEL in config
-Date: Thu, 16 May 2024 09:41:53 +0800
-Message-ID: <acb442e38544bc5c60dcaa61d56ca1e6bbbc82fe.1715823610.git.tanggeliang@kylinos.cn>
-X-Mailer: git-send-email 2.43.0
+	Puranjay Mohan <puranjay@kernel.org>
+Subject: [PATCH bpf] MAINTAINERS: Add myself as reviewer of ARM64 BPF JIT
+Date: Thu, 16 May 2024 10:09:28 +0800
+Message-Id: <20240516020928.156125-1-xukuohai@huaweicloud.com>
+X-Mailer: git-send-email 2.30.2
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -69,31 +55,43 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:gCh0CgAnd2kYaUVmfBsfNA--.14397S2
+X-Coremail-Antispam: 1UD129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73
+	VFW2AGmfu7bjvjm3AaLaJ3UjIYCTnIWjp_UUU5d7kC6x804xWl14x267AKxVWUJVW8JwAF
+	c2x0x2IEx4CE42xK8VAvwI8IcIk0rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII
+	0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xv
+	wVC0I7IYx2IY6xkF7I0E14v26rxl6s0DM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjc
+	xK6I8E87Iv6xkF7I0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVAC
+	Y4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJV
+	W8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41l42xK82IYc2Ij64vIr41l
+	4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67
+	AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8I
+	cVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI
+	8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAF
+	wI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7IU1CPfJUUUUU==
+X-CM-SenderInfo: 50xn30hkdlqx5xdzvxpfor3voofrz/
 
-From: Geliang Tang <tanggeliang@kylinos.cn>
+I am working on ARM64 BPF JIT for a while, hence add myself
+as reviewer.
 
-The kconfigs CONFIG_INET_XFRM_TUNNEL and CONFIG_INET6_XFRM_TUNNEL are
-needed by test_tunnel tests. This patch enables them together with the
-dependent kconfigs CONFIG_INET_IPCOMP and CONFIG_INET6_IPCOMP.
-
-Signed-off-by: Geliang Tang <tanggeliang@kylinos.cn>
+Signed-off-by: Xu Kuohai <xukuohai@huaweicloud.com>
 ---
- tools/testing/selftests/bpf/config | 4 ++++
- 1 file changed, 4 insertions(+)
+ MAINTAINERS | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/tools/testing/selftests/bpf/config b/tools/testing/selftests/bpf/config
-index eeabd798bc3a..8aa56e6bdac1 100644
---- a/tools/testing/selftests/bpf/config
-+++ b/tools/testing/selftests/bpf/config
-@@ -95,3 +95,7 @@ CONFIG_XDP_SOCKETS=y
- CONFIG_XFRM_INTERFACE=y
- CONFIG_TCP_CONG_DCTCP=y
- CONFIG_TCP_CONG_BBR=y
-+CONFIG_INET_IPCOMP=y
-+CONFIG_INET_XFRM_TUNNEL=y
-+CONFIG_INET6_IPCOMP=y
-+CONFIG_INET6_XFRM_TUNNEL=y
+diff --git a/MAINTAINERS b/MAINTAINERS
+index be7f72766dc6..c626df550480 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -3778,6 +3778,7 @@ BPF JIT for ARM64
+ M:	Daniel Borkmann <daniel@iogearbox.net>
+ M:	Alexei Starovoitov <ast@kernel.org>
+ M:	Puranjay Mohan <puranjay@kernel.org>
++R:	Xu Kuohai <xukuohai@huaweicloud.com>
+ L:	bpf@vger.kernel.org
+ S:	Supported
+ F:	arch/arm64/net/
 -- 
-2.43.0
+2.30.2
 
 
