@@ -1,118 +1,139 @@
-Return-Path: <bpf+bounces-29846-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-29847-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id A10918C74FE
-	for <lists+bpf@lfdr.de>; Thu, 16 May 2024 13:11:54 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AA9BE8C7540
+	for <lists+bpf@lfdr.de>; Thu, 16 May 2024 13:29:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id F06F91F24335
-	for <lists+bpf@lfdr.de>; Thu, 16 May 2024 11:11:53 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A35121C21606
+	for <lists+bpf@lfdr.de>; Thu, 16 May 2024 11:29:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 933E7145353;
-	Thu, 16 May 2024 11:11:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="c8orAaoe"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 58F3C1459FA;
+	Thu, 16 May 2024 11:29:23 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-oo1-f43.google.com (mail-oo1-f43.google.com [209.85.161.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C2E18143747
-	for <bpf@vger.kernel.org>; Thu, 16 May 2024 11:11:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C2D61459E5;
+	Thu, 16 May 2024 11:29:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715857908; cv=none; b=W5zeGV3i3CbPSs9Y+x+y7sFRdfu7b1qPtY+BDlnOXlCiRkRZ5YBlazrBLthL8sYEXmL/8Y1/8G0RyqOd6GHLNk2tydmZ1ITIUzG+xDPyWWWyEoj4UJfleIosBRA34vmw1OtTD8sK+erGfLEULIJ7oURN1I/PvoNFcHAvvFZLYaA=
+	t=1715858963; cv=none; b=PQd55JxrqJZbR0h7jwt4I24L1c2KJ0mvWZM9R0dMMONBUZINRifijFIoCifH+0LozAIxMz6KDNiDJlYGZP9hJM0EEDYkfht3CylrA6XMrIwiLqhPpFbwNYuCG+JFUQ2p0WBcd+janr8/CjkpnLiu3pOJ+n7YeYt7t6Vg4/9WuAQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715857908; c=relaxed/simple;
-	bh=nPho1laorl+T++aIuAWy9Tg1Swupi1tp1ak7kgPwid4=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=n11STb934LOhuMeY6Ts+3hJ8cwPhTaFG41bB9g3POBUB1yrr+U4vNJzacztQUowv12TUB4RvtIsEBf73dRQOKayxJbrcfGjjDWuYYEGV9Ne8/eQzwx/VO2GsY3SN+GtIXufTpXePe55FrfabeKI6mOT7ZgnL1o1Wt+AFU1LtD/g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=c8orAaoe; arc=none smtp.client-ip=209.85.161.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oo1-f43.google.com with SMTP id 006d021491bc7-5b2a2ef4e4cso28477eaf.0
-        for <bpf@vger.kernel.org>; Thu, 16 May 2024 04:11:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1715857906; x=1716462706; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=g/RbLC/bSVS/cMOam6GioeOsvjLG9BniREFIGISsu8c=;
-        b=c8orAaoeVGHeGttOUqqmIxJlBFlzXhN3AkPkyKevlSl/koPNAk3XJZlhPv2l7h2fuN
-         fJZjsK89oHTwuPzWIn+UZv1A0WgVgrV7W+90Ca7CvQv0lEW14LE/Usvg4xfmuraG0oQa
-         Gsg9njGCJjzdrpFYMUpQhIvlyHBKtmwMkRSMUrrbCt2FZaPGgfNqhNmZGDPu3cweYz7N
-         FXSRLinVvd0l8YTIn/Y+7NSm/3gDAZDViSzHgA1WDdWpXSUOMb6amiulL5bA8qb3Y2H9
-         Qq0RV5Phg0nQE3/X65G/tNPCIchhaxMY+bN6JhSSac/gInAcgDvhf5ll7pjwupIRn6sn
-         vVsg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1715857906; x=1716462706;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=g/RbLC/bSVS/cMOam6GioeOsvjLG9BniREFIGISsu8c=;
-        b=g6011xlXKun8ha/6TVRgL3reM9chJRGEt3UZ9fd/RrxRaWnzBW8OfmCfJlWLxWXulr
-         tnvs++kVjvXOWH5R8kgpskGqxviS0fglcctxJx7NUuuiKojb2PMOolavkRpyoWI4izgu
-         XrKxshvhcYtZOU0CbIhmSuHsRrYR7/bzXFYI620BwWh1rMn15etxcL2lGtL7I/kSRnOV
-         ue0Cuvk8hOPYA/yqUVO62bMYu/p2bNyfIgTRRyTXobHVleDwwEzuF3R3tKRPFGH1uJJh
-         IFhHC1YZfgfHpC3RG7sSnRHM3eaAv+fgOv99thJHHfvX5RhfV81X1rT0EiZimi33fAVR
-         +5Fw==
-X-Gm-Message-State: AOJu0YznN9/WKSvMLaTNqkciYYv4BcNtuRKcW1V0ReEP45OLulA9uZ1u
-	xu/QhIQhjJhA5lAV3D9ZRNcnG2cBbxivaQ5AL8F3GaEslu77srr5wy/F5zvVXZFMx3Dac1fuef9
-	oDkaUpyz8+9akE01yJDyNZD2O7Co=
-X-Google-Smtp-Source: AGHT+IH+AcEpN8XNsEKXmGBnxkaYTiSlvvwAEPBK+54Y6uM2ONb5y2mRyQhaT3meK/JvmlCZCfSMsHnsSoKi1lxPjQ0=
-X-Received: by 2002:a05:6870:730d:b0:22e:b299:6512 with SMTP id
- 586e51a60fabf-24172bab10bmr22718531fac.32.1715857905700; Thu, 16 May 2024
- 04:11:45 -0700 (PDT)
+	s=arc-20240116; t=1715858963; c=relaxed/simple;
+	bh=aq6ITJh/YOvmeVso4+d1enkSB3/DKdAKgMUJRNUj5zc=;
+	h=Subject:To:References:From:Cc:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=ja3MExHNGc/FZeuP7935EGRgflkah6Ay4vcVVRH/lAwT4RwmI12yihY7YDuuD4gBgfo2O2kbz9vyi1jatDpIme9TWoRPCdShXrb3Ta6bS23zwBvdkp5036FFC6wsgMhxDXL2/6UxOCczpvL8EpMquX+zmf7JS1oBsf4UOyRlubQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.93.142])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4Vg7CQ54Xpz4f3nJf;
+	Thu, 16 May 2024 19:29:06 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.75])
+	by mail.maildlp.com (Postfix) with ESMTP id E66971A016E;
+	Thu, 16 May 2024 19:29:16 +0800 (CST)
+Received: from [10.174.176.117] (unknown [10.174.176.117])
+	by APP2 (Coremail) with SMTP id Syh0CgAnjgEJ7kVmMaWGNA--.21693S2;
+	Thu, 16 May 2024 19:29:16 +0800 (CST)
+Subject: Re: bpf_map_update_elem returns -ENOMEM
+To: Chase Hiltz <chase@path.net>, xdp-newbies@vger.kernel.org
+References: <CAOAiysedBwajcFQwuPrtn5bbdk_5zrNq=oY91j5mWyKdc+06uw@mail.gmail.com>
+From: Hou Tao <houtao@huaweicloud.com>
+Cc: bpf <bpf@vger.kernel.org>
+Message-ID: <e697a0b2-7197-9a33-2efe-e11278b8835d@huaweicloud.com>
+Date: Thu, 16 May 2024 19:29:13 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240516020928.156125-1-xukuohai@huaweicloud.com>
-In-Reply-To: <20240516020928.156125-1-xukuohai@huaweicloud.com>
-From: Hengqi Chen <hengqi.chen@gmail.com>
-Date: Thu, 16 May 2024 19:11:34 +0800
-Message-ID: <CAEyhmHR616sEaZhCCXj9pa2U5C7jzk+svbYT+xLf2ArL0WZy7g@mail.gmail.com>
-Subject: Re: [PATCH bpf] MAINTAINERS: Add myself as reviewer of ARM64 BPF JIT
-To: Xu Kuohai <xukuohai@huaweicloud.com>
-Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Puranjay Mohan <puranjay@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <CAOAiysedBwajcFQwuPrtn5bbdk_5zrNq=oY91j5mWyKdc+06uw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-CM-TRANSID:Syh0CgAnjgEJ7kVmMaWGNA--.21693S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxCFyrtw45WF43WrW8JFy3twb_yoW5GrWkpF
+	Z5KFyYgw1kXF1aq39ay348WrZYyws0qa9xX3Z8KrWkArZ8Wr92qFyfWF4YkFnxAr4DWF10
+	qay2qFn8Ja98ZFJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUyEb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
+	0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
+	x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
+	0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lc7I2V7IY0VAS07AlzVAYIcxG8wCF04k20xvY0x0E
+	wIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E74
+	80Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jrv_JF1lIxkGc2Ij64vIr41lIxAIcVC0
+	I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04
+	k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY
+	1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU1CPfJUUUUU==
+X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
 
-On Thu, May 16, 2024 at 10:02=E2=80=AFAM Xu Kuohai <xukuohai@huaweicloud.co=
-m> wrote:
->
-> I am working on ARM64 BPF JIT for a while, hence add myself
-> as reviewer.
->
-> Signed-off-by: Xu Kuohai <xukuohai@huaweicloud.com>
-> ---
+Hi,
 
-Learned a lot from your arm64 bpf trampoline work.
++cc bpf list
 
-Acked-by: Hengqi Chen <hengqi.chen@gmail.com>
+On 5/6/2024 11:19 PM, Chase Hiltz wrote:
+> Hi,
+>
+> I'm writing regarding a rather bizarre scenario that I'm hoping
+> someone could provide insight on. I have a map defined as follows:
+> ```
+> struct {
+>     __uint(type, BPF_MAP_TYPE_LRU_HASH);
+>     __uint(max_entries, 1000000);
+>     __type(key, struct my_map_key);
+>     __type(value, struct my_map_val);
+>     __uint(map_flags, BPF_F_NO_COMMON_LRU);
+>     __uint(pinning, LIBBPF_PIN_BY_NAME);
+> } my_map SEC(".maps");
+> ```
+> I have several fentry/fexit programs that need to perform updates in
+> this map. After a certain number of map entries has been reached,
+> calls to bpf_map_update_elem start returning `-ENOMEM`. As one
+> example, I'm observing a program deployment where we have 816032
+> entries on a 64 CPU machine, and a certain portion of updates are
+> failing. I'm puzzled as to why this is occurring given that:
+> - The 1M entries should be preallocated upon map creation (since I'm
+> not using `BPF_F_NO_PREALLOC`)
+> - The host machine has over 120G of unused memory available at any given time
+>
+> I've previously reduced max_entries by 25% under the assumption that
+> this would prevent the problem from occurring, but this only caused
 
->  MAINTAINERS | 1 +
->  1 file changed, 1 insertion(+)
+For LRU map with BPF_F_NO_PREALLOC, the number of entries is distributed
+evenly between all CPUs. For your case, each CPU will have 1M/64 = 15625
+entries. In order to reduce of possibility of ENOMEM error, the right
+way is to increase the value of max_entries instead of decreasing it.
+> map updates to start failing at a lower threshold. I believe that this
+> is a problem with maps using the `BPF_F_NO_COMMON_LRU` flag, my
+> reasoning being that when map updates fail, it occurs consistently for
+> specific CPUs.
+
+Does the specific CPU always fail afterwards, or does it fail
+periodically ? Is the machine running the bpf program an arm64 host or
+an x86-64 host (namely uname -a) ? I suspect that the problem may be due
+to htab_lock_bucket() which may fail under arm64 host in v5.15.
+
+Could you please check and account the ratio of times when
+htab_lru_map_delete_node() returns 0 ? If the ratio high, it probably
+means that there may be too many overwrites of entries between different
+CPUs (e.g., CPU 0 updates key=X, then CPU 1 updates the same key again).
+> At this time, all machines experiencing the problem are running kernel
+> version 5.15, however I'm not currently able to try out any newer
+> kernels to confirm whether or not the same problem occurs there. Any
+> ideas on what could be responsible for this would be greatly
+> appreciated!
 >
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index be7f72766dc6..c626df550480 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -3778,6 +3778,7 @@ BPF JIT for ARM64
->  M:     Daniel Borkmann <daniel@iogearbox.net>
->  M:     Alexei Starovoitov <ast@kernel.org>
->  M:     Puranjay Mohan <puranjay@kernel.org>
-> +R:     Xu Kuohai <xukuohai@huaweicloud.com>
->  L:     bpf@vger.kernel.org
->  S:     Supported
->  F:     arch/arm64/net/
-> --
-> 2.30.2
+> Thanks,
+> Chase Hiltz
 >
->
+> .
+
 
