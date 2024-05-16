@@ -1,99 +1,118 @@
-Return-Path: <bpf+bounces-29845-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-29846-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id DF1498C7446
-	for <lists+bpf@lfdr.de>; Thu, 16 May 2024 12:01:27 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id A10918C74FE
+	for <lists+bpf@lfdr.de>; Thu, 16 May 2024 13:11:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 954411F24786
-	for <lists+bpf@lfdr.de>; Thu, 16 May 2024 10:01:27 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id F06F91F24335
+	for <lists+bpf@lfdr.de>; Thu, 16 May 2024 11:11:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ACCE014388B;
-	Thu, 16 May 2024 10:01:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 933E7145353;
+	Thu, 16 May 2024 11:11:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="RJECdNHv"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="c8orAaoe"
 X-Original-To: bpf@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.13])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-oo1-f43.google.com (mail-oo1-f43.google.com [209.85.161.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF3CF143880;
-	Thu, 16 May 2024 10:01:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.13
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C2E18143747
+	for <bpf@vger.kernel.org>; Thu, 16 May 2024 11:11:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715853678; cv=none; b=a2wHoEU6OByCXdC5gcvmR2jGP1iurTYxpOP2UTi49hghBmv629t96j8aOA3qZK6qjJQQieTOnf1urGuH6T72pr02zw3FyuJ6NUNTroIRkZatkGUx7q0LIoH0mog1CNWEY9tm6XkM3xY1RNbjovOdXb35onhV4YpePo9kEXrNxZc=
+	t=1715857908; cv=none; b=W5zeGV3i3CbPSs9Y+x+y7sFRdfu7b1qPtY+BDlnOXlCiRkRZ5YBlazrBLthL8sYEXmL/8Y1/8G0RyqOd6GHLNk2tydmZ1ITIUzG+xDPyWWWyEoj4UJfleIosBRA34vmw1OtTD8sK+erGfLEULIJ7oURN1I/PvoNFcHAvvFZLYaA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715853678; c=relaxed/simple;
-	bh=JLPwevbZr7qyG05/ysC6iuRNGwXqdjfIgp7fbEN99Og=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=VytLfL7GNry4d6hglix22AylqGbLhyP5dXIlnzJOW3PGGh7HM8i6kcpMH0xw8pByIMFThRygg3oKhjbR38/06gwBG9YfOorAo1C3YogdYOPgEpKIDv1f0bw+EB3ONTXUUVYiOcIhpem7hjURljUC8ScXv1dAWOmHA+cUwtQx3to=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=RJECdNHv; arc=none smtp.client-ip=192.198.163.13
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1715853677; x=1747389677;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=JLPwevbZr7qyG05/ysC6iuRNGwXqdjfIgp7fbEN99Og=;
-  b=RJECdNHvCEL5+AcGvQ2KXToO2xo2vX8bWOwlOYR8QflyG3Es8OIrChDI
-   AyOS6eolm28/EMUr5+W3iFPWN9NHTbvtJTEfdNRRqeToIPrLEpRe+rg2T
-   PEAvh1EJPxSn1nYGB2fxNPYL56X9tDhhZfwbAiPrMYAT4XQFoSC2qSxAw
-   hyrR7++OzRNC0DgobE4sgMLhVysnA263cZ3eVgIaWweT7HUX62GBJIPYI
-   G+6nQYWkbjNJBKM3FpkbC3icrVO+g+sZsKMBE1t3+C9PHgem+NmAoDARV
-   jZ5hnN2vwQSTGiBG4vACk7epb8r6Cq5hY5Q2BcoHuZHStYeIpVdoHcB/u
-   g==;
-X-CSE-ConnectionGUID: yTF68hfmQmuESq0uVNgcCQ==
-X-CSE-MsgGUID: 1JlLBk9YTtaOP3QQ+9GduQ==
-X-IronPort-AV: E=McAfee;i="6600,9927,11074"; a="14904542"
-X-IronPort-AV: E=Sophos;i="6.08,164,1712646000"; 
-   d="scan'208";a="14904542"
-Received: from fmviesa005.fm.intel.com ([10.60.135.145])
-  by fmvoesa107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 May 2024 03:01:15 -0700
-X-CSE-ConnectionGUID: iFfmqHnZTvWBzGzC4IR4PQ==
-X-CSE-MsgGUID: 08gnIcHCTqunVJDmnlbing==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.08,164,1712646000"; 
-   d="scan'208";a="35813173"
-Received: from unknown (HELO localhost.igk.intel.com) ([10.211.13.141])
-  by fmviesa005.fm.intel.com with ESMTP; 16 May 2024 03:01:11 -0700
-From: Sergey Temerkhanov <sergey.temerkhanov@intel.com>
-To: larysa.zaremba@intel.com
-Cc: ast@kernel.org,
-	bpf@vger.kernel.org,
-	daniel@iogearbox.net,
-	davem@davemloft.net,
-	edumazet@google.com,
-	hawk@kernel.org,
-	igor.bagnucki@intel.com,
-	intel-wired-lan@lists.osuosl.org,
-	jacob.e.keller@intel.com,
-	john.fastabend@gmail.com,
-	kuba@kernel.org,
-	linux-kernel@vger.kernel.org,
-	maciej.fijalkowski@intel.com,
-	magnus.karlsson@gmail.com,
-	netdev@vger.kernel.org,
-	pabeni@redhat.com,
-	przemyslaw.kitszel@intel.com
-Subject: [PATCH iwl-net 2/3] ice: add flag to distinguish reset from .ndo_bpf in XDP rings config
-Date: Thu, 16 May 2024 12:00:39 +0200
-Message-Id: <20240516100039.88189-1-sergey.temerkhanov@intel.com>
-X-Mailer: git-send-email 2.35.3
-In-Reply-To: <20240515160246.5181-3-larysa.zaremba@intel.com>
-References: <20240515160246.5181-3-larysa.zaremba@intel.com>
+	s=arc-20240116; t=1715857908; c=relaxed/simple;
+	bh=nPho1laorl+T++aIuAWy9Tg1Swupi1tp1ak7kgPwid4=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=n11STb934LOhuMeY6Ts+3hJ8cwPhTaFG41bB9g3POBUB1yrr+U4vNJzacztQUowv12TUB4RvtIsEBf73dRQOKayxJbrcfGjjDWuYYEGV9Ne8/eQzwx/VO2GsY3SN+GtIXufTpXePe55FrfabeKI6mOT7ZgnL1o1Wt+AFU1LtD/g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=c8orAaoe; arc=none smtp.client-ip=209.85.161.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oo1-f43.google.com with SMTP id 006d021491bc7-5b2a2ef4e4cso28477eaf.0
+        for <bpf@vger.kernel.org>; Thu, 16 May 2024 04:11:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1715857906; x=1716462706; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=g/RbLC/bSVS/cMOam6GioeOsvjLG9BniREFIGISsu8c=;
+        b=c8orAaoeVGHeGttOUqqmIxJlBFlzXhN3AkPkyKevlSl/koPNAk3XJZlhPv2l7h2fuN
+         fJZjsK89oHTwuPzWIn+UZv1A0WgVgrV7W+90Ca7CvQv0lEW14LE/Usvg4xfmuraG0oQa
+         Gsg9njGCJjzdrpFYMUpQhIvlyHBKtmwMkRSMUrrbCt2FZaPGgfNqhNmZGDPu3cweYz7N
+         FXSRLinVvd0l8YTIn/Y+7NSm/3gDAZDViSzHgA1WDdWpXSUOMb6amiulL5bA8qb3Y2H9
+         Qq0RV5Phg0nQE3/X65G/tNPCIchhaxMY+bN6JhSSac/gInAcgDvhf5ll7pjwupIRn6sn
+         vVsg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1715857906; x=1716462706;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=g/RbLC/bSVS/cMOam6GioeOsvjLG9BniREFIGISsu8c=;
+        b=g6011xlXKun8ha/6TVRgL3reM9chJRGEt3UZ9fd/RrxRaWnzBW8OfmCfJlWLxWXulr
+         tnvs++kVjvXOWH5R8kgpskGqxviS0fglcctxJx7NUuuiKojb2PMOolavkRpyoWI4izgu
+         XrKxshvhcYtZOU0CbIhmSuHsRrYR7/bzXFYI620BwWh1rMn15etxcL2lGtL7I/kSRnOV
+         ue0Cuvk8hOPYA/yqUVO62bMYu/p2bNyfIgTRRyTXobHVleDwwEzuF3R3tKRPFGH1uJJh
+         IFhHC1YZfgfHpC3RG7sSnRHM3eaAv+fgOv99thJHHfvX5RhfV81X1rT0EiZimi33fAVR
+         +5Fw==
+X-Gm-Message-State: AOJu0YznN9/WKSvMLaTNqkciYYv4BcNtuRKcW1V0ReEP45OLulA9uZ1u
+	xu/QhIQhjJhA5lAV3D9ZRNcnG2cBbxivaQ5AL8F3GaEslu77srr5wy/F5zvVXZFMx3Dac1fuef9
+	oDkaUpyz8+9akE01yJDyNZD2O7Co=
+X-Google-Smtp-Source: AGHT+IH+AcEpN8XNsEKXmGBnxkaYTiSlvvwAEPBK+54Y6uM2ONb5y2mRyQhaT3meK/JvmlCZCfSMsHnsSoKi1lxPjQ0=
+X-Received: by 2002:a05:6870:730d:b0:22e:b299:6512 with SMTP id
+ 586e51a60fabf-24172bab10bmr22718531fac.32.1715857905700; Thu, 16 May 2024
+ 04:11:45 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Organization: Intel Technology Poland sp. z o.o. - ul. Slowackiego 173, 80-298 Gdansk - KRS 101882 - NIP 957-07-52-316
-Content-Transfer-Encoding: 8bit
+References: <20240516020928.156125-1-xukuohai@huaweicloud.com>
+In-Reply-To: <20240516020928.156125-1-xukuohai@huaweicloud.com>
+From: Hengqi Chen <hengqi.chen@gmail.com>
+Date: Thu, 16 May 2024 19:11:34 +0800
+Message-ID: <CAEyhmHR616sEaZhCCXj9pa2U5C7jzk+svbYT+xLf2ArL0WZy7g@mail.gmail.com>
+Subject: Re: [PATCH bpf] MAINTAINERS: Add myself as reviewer of ARM64 BPF JIT
+To: Xu Kuohai <xukuohai@huaweicloud.com>
+Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Puranjay Mohan <puranjay@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-This patch also fixes an issue when XDP programs become detached from the RX rings on channel number reconfiguration
+On Thu, May 16, 2024 at 10:02=E2=80=AFAM Xu Kuohai <xukuohai@huaweicloud.co=
+m> wrote:
+>
+> I am working on ARM64 BPF JIT for a while, hence add myself
+> as reviewer.
+>
+> Signed-off-by: Xu Kuohai <xukuohai@huaweicloud.com>
+> ---
 
-Regards,
-Sergey
+Learned a lot from your arm64 bpf trampoline work.
+
+Acked-by: Hengqi Chen <hengqi.chen@gmail.com>
+
+>  MAINTAINERS | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index be7f72766dc6..c626df550480 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -3778,6 +3778,7 @@ BPF JIT for ARM64
+>  M:     Daniel Borkmann <daniel@iogearbox.net>
+>  M:     Alexei Starovoitov <ast@kernel.org>
+>  M:     Puranjay Mohan <puranjay@kernel.org>
+> +R:     Xu Kuohai <xukuohai@huaweicloud.com>
+>  L:     bpf@vger.kernel.org
+>  S:     Supported
+>  F:     arch/arm64/net/
+> --
+> 2.30.2
+>
+>
 
