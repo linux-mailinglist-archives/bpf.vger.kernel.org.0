@@ -1,252 +1,185 @@
-Return-Path: <bpf+bounces-29950-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-29952-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8D0638C8903
-	for <lists+bpf@lfdr.de>; Fri, 17 May 2024 17:05:46 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 123858C8967
+	for <lists+bpf@lfdr.de>; Fri, 17 May 2024 17:35:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 16E6B1F22AB0
-	for <lists+bpf@lfdr.de>; Fri, 17 May 2024 15:05:46 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C5886281107
+	for <lists+bpf@lfdr.de>; Fri, 17 May 2024 15:35:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6885B664DD;
-	Fri, 17 May 2024 15:05:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E91912D755;
+	Fri, 17 May 2024 15:35:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="m4vQqC9h"
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ietf.org header.i=@ietf.org header.b="FxcULPk4";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ietf.org header.i=@ietf.org header.b="MvC9gGmL";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=googlemail.com header.i=@googlemail.com header.b="Ja5BDERg"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f178.google.com (mail-pl1-f178.google.com [209.85.214.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mail.ietf.org (mail.ietf.org [50.223.129.194])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 85B0B1A2C23
-	for <bpf@vger.kernel.org>; Fri, 17 May 2024 15:05:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 33D3354673
+	for <bpf@vger.kernel.org>; Fri, 17 May 2024 15:35:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=50.223.129.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715958341; cv=none; b=lSUmy3R2TiOry+18WKhqloj3DkRgkLlKjxtfCYJfDf2t41Y1UnrWZH21XPrzX2HA2b4Ky+N4PwAjbVqDco9lXp+3j1zHJMcBQeVQlZS3vYlTHcCauC5rjo++rOxoUJ7iF96lOVa/BLRE7/ifmdw5KNuMAbDfTQV+l5YHCU7FN58=
+	t=1715960105; cv=none; b=j/adLel+G/SCyhs4u8vPFJeD6LOcS45dm2NTMrcqGrU7r7bG2UiSCi7Sx+8SOoPpHGrd+AeEycnT+1VhSRngOySfVhH8AeN08eIyMXU97/d15j6v7ixcC7BSmSulW6qSBmbBF3Zzd1SoELeSUNx+nuZnf63sa4TVNAnvur1VsLo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715958341; c=relaxed/simple;
-	bh=wBU7tkAVK4/Ql7Vh3owdnXi8N5p4LdKcjE3l7YWvsTg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=bGHnQDQBU1dcGouM6bVsnLayrHtHgKUHNxO6w2uShShOSAbd+r/5y9tiuE0CXbsdbHL9njeLMpvPEKbuJkEhGVVN/NxzA5CtfP4X18RAPQ/mcnrjxjCV5UsyWkgtzZ7LgrO3cttdpg/bbYmgZXslNQGpCnKGKmOsTpVN50MD1Bw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=m4vQqC9h; arc=none smtp.client-ip=209.85.214.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f178.google.com with SMTP id d9443c01a7336-1edfc57ac0cso11031055ad.3
-        for <bpf@vger.kernel.org>; Fri, 17 May 2024 08:05:39 -0700 (PDT)
+	s=arc-20240116; t=1715960105; c=relaxed/simple;
+	bh=nj48mcF7ntqeKT5K10mLaxwH7gG5FYJhrEpbQbuF3RM=;
+	h=To:Date:Message-Id:MIME-Version:CC:Subject:Content-Type:From; b=M0FUbtZ0GlOd5Uodr3u8f3GMpaXZIJ+6BQCRqjzkEaev0P5VJHApeMBtyvlv2Ie21l0OIG/owVFvZ8lOKwHFYEu/pxk7eZrjo78BpAgaJwEnqL3eBMqKRNxEpzlHtYDwhiPMpUXX9lXsBiSLAaoTsRJnEGLnr/qGwNH2VUzpJ5o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=dmarc.ietf.org; spf=pass smtp.mailfrom=ietf.org; dkim=pass (1024-bit key) header.d=ietf.org header.i=@ietf.org header.b=FxcULPk4; dkim=fail (1024-bit key) header.d=ietf.org header.i=@ietf.org header.b=MvC9gGmL reason="signature verification failed"; dkim=fail (2048-bit key) header.d=googlemail.com header.i=@googlemail.com header.b=Ja5BDERg reason="signature verification failed"; arc=none smtp.client-ip=50.223.129.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=dmarc.ietf.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ietf.org
+Received: from ietfa.amsl.com (localhost [IPv6:::1])
+	by ietfa.amsl.com (Postfix) with ESMTP id 90AEAC1D4A8D
+	for <bpf@vger.kernel.org>; Fri, 17 May 2024 08:35:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ietf.org; s=ietf1;
+	t=1715960102; bh=nj48mcF7ntqeKT5K10mLaxwH7gG5FYJhrEpbQbuF3RM=;
+	h=To:Date:CC:Subject:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=FxcULPk4Y9ps4+oZkZbnek6DI+1KlK203/zjYRZO0wOndQCDVOEPxe1/EZiAKjhAh
+	 2t9f0xzzuDmH7IVD37gyoUgQ+T00v4om6DK+rs1atrscozNVeNKIMQDk6duk03HMkz
+	 fWakrxPYl+V2Ie0EsYi1tz+U5bUIyzlPcfDkkrHg=
+Received: from ietfa.amsl.com (localhost [IPv6:::1])
+ by ietfa.amsl.com (Postfix) with ESMTP id 78E78C14F61E
+ for <bpf@vger.kernel.org>; Fri, 17 May 2024 08:35:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ietf.org; s=ietf1;
+ t=1715960102; bh=nj48mcF7ntqeKT5K10mLaxwH7gG5FYJhrEpbQbuF3RM=;
+ h=From:To:Date:CC:Subject:List-Id:List-Archive:List-Help:List-Owner:
+ List-Post:List-Subscribe:List-Unsubscribe;
+ b=MvC9gGmLZyt90Je40PqZzJR+x+KH76krpOkGN2C3LPt1+FACvSrsHwnFqP2YhCeKL
+ v9yF9aVdOOvbZxKd4ZYGj/oZuzOQcbE9lUz+2l8+hwMWLAKaBgVznrNvPZXWKiLH+r
+ PpzYMLCR2XJCNvf29k6VKtimVnvR9GA3NMj3kuoA=
+X-Original-To: bpf@ietfa.amsl.com
+Delivered-To: bpf@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+ by ietfa.amsl.com (Postfix) with ESMTP id BDD48C14EB1E
+ for <bpf@ietfa.amsl.com>; Fri, 17 May 2024 08:34:53 -0700 (PDT)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: -6.845
+X-Spam-Level: 
+Authentication-Results: ietfa.amsl.com (amavisd-new); dkim=pass (2048-bit key)
+ header.d=googlemail.com
+Received: from mail.ietf.org ([50.223.129.194])
+ by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id QrHruz1q_aLy for <bpf@ietfa.amsl.com>;
+ Fri, 17 May 2024 08:34:49 -0700 (PDT)
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com
+ [IPv6:2607:f8b0:4864:20::1035])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest
+ SHA256) (No client certificate requested)
+ by ietfa.amsl.com (Postfix) with ESMTPS id ECEF4C14F5E5
+ for <bpf@ietf.org>; Fri, 17 May 2024 08:34:49 -0700 (PDT)
+Received: by mail-pj1-x1035.google.com with SMTP id
+ 98e67ed59e1d1-2b27eec1eb1so47898a91.0
+ for <bpf@ietf.org>; Fri, 17 May 2024 08:34:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1715958339; x=1716563139; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=9t/c5qhHAr6XNZpogV/gslaLFHPSz8UVFQayWVosKg8=;
-        b=m4vQqC9h4/TCUP4nBHZ/qgSVGpoqzRrGUPF01UctyCyCoSC/RswrCQjydpUZCgC0Z6
-         YNHkMecu1usDUdCVV+4EaKTzVmeEwrznL68PpA24b3iDZlAWcyoNZxBm/pP0RUEE87jb
-         zxBnzhSzPPGcoVisXycp0iArU7EZG38GjwkcO4Rb4Mb6VU0N3JjK/rVFAR4AKbVWPbcq
-         elEwF1NZ83NzIfdKxebNmmdo5PPk+TWbHfGDQS0ayVtxtq+ufMIpYQD38+bvh3ySX5oD
-         eIeZWLsNqPvi3VnN9XT4xgy7/E4f9aXElIllMO4JdIeFSUdGcLRsMnGeXQLW4M7U2Xii
-         J/Tw==
+ d=googlemail.com; s=20230601; t=1715960089; x=1716564889;
+ darn=ietf.org;
+ h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+ :to:from:from:to:cc:subject:date:message-id:reply-to;
+ bh=gu9rHXjrQNiuEdfil+6Qxyl1dIA+C1Ezul/fpNnbzX0=;
+ b=Ja5BDERgBgTifhW7xvsOa3m4ShkcGP8/G+OTPkx6tDFE7P6sgPVyf0v1rJ6asnHZ4D
+ RMoOZZwQ2NIpsyNG+0S4pKqaC1OVZfNQFWPeY5wTCW/tTmlXWnZxyQZTOAT8booRC3DH
+ JjijTwCigToFFrmf5QfeY7a4IH2OIazlp9yAlqPVOAeSp2gQDdK3gSh3hh4HkCPefx3h
+ esc7/GRcTzzutRRokdIOgr5FvnLjTIk5hQfo0ipPv6q3nNTjp7uWJtJn/0PPoIQY5u3E
+ m+3B0tYyxxg5AGS6rFex8I7Ti49uKNZoOH9sNQVX7nDoFRBbfEIh2ZOLgJfYOlewu5fC
+ 3uoQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1715958339; x=1716563139;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=9t/c5qhHAr6XNZpogV/gslaLFHPSz8UVFQayWVosKg8=;
-        b=wlw1uoJiN5VTkDD/wY9SdVHui3K6m7Yy/kXbAkD01ZpqC2I+5yUZJmB6kmFBYG8GxJ
-         N2ivk5V199WQiECiep+JjitDjBNyugzyWP+WdsAHyYHnXJa2evvHTsgbcBn7dBNUa9xa
-         hyBFFK8i1Ey20SGIThp4oz3y7EjCj28EwIYBG7Jc3LQ7kaS246j/QzLNhmD0i/yuB77G
-         shccyQDQAGR60HDUc7JzBU2CubYmOVz1wshiaTG6qegvpbGN66K5+SIfepMxv/Ktf8vb
-         THoksFSZJlb/iSZwUCGHgd4TsPI6FLYia1JHQiMg3fPOf8trTOasQTpq2xXdqXvOB756
-         bCoQ==
-X-Gm-Message-State: AOJu0YwmkZdXPaxonDHxq9WeoJcaXC8qd0iwvkmdobtQl71g8i+TtDo6
-	JMawT/rZ6ikx5sh2uKGPCWCGgiiX8EKoiNWVYxxXQsAHy/I6DJ6X
-X-Google-Smtp-Source: AGHT+IFsGBY0LL+eJq+HtHGpKdIbqbxnSVu3/Vz1GKS361QNetolyXk4su66SSiFvwxksm577dWsXA==
-X-Received: by 2002:a05:6a20:1056:b0:1ad:9202:2391 with SMTP id adf61e73a8af0-1afde07cecbmr20032783637.2.1715958338603;
-        Fri, 17 May 2024 08:05:38 -0700 (PDT)
-Received: from [192.168.1.76] (bb116-14-181-187.singnet.com.sg. [116.14.181.187])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-6f4d2af2b72sm14843117b3a.159.2024.05.17.08.05.35
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 17 May 2024 08:05:38 -0700 (PDT)
-Message-ID: <c1483467-b7e5-4511-8c8e-3ab9dfd0ea49@gmail.com>
-Date: Fri, 17 May 2024 23:05:34 +0800
+ d=1e100.net; s=20230601; t=1715960089; x=1716564889;
+ h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+ :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+ :reply-to;
+ bh=gu9rHXjrQNiuEdfil+6Qxyl1dIA+C1Ezul/fpNnbzX0=;
+ b=jupc6dtcKWdsUXBzkhV+63KetRk6zbXFzE6QzrZR6O8JUIEI9pqBXbao2lwSfJjfQB
+ StaAVPlMUfOl23i35BYsT9G2v3FLUoIrJcbP7AddRAkHYuOM5Um1w/7JV5l5nggfGrc9
+ d3JzOinAvlTFXxB9CqK8ffokFKMOMw09BBtu4QLnHRjsn7sGOUgBH3DDUl1HeAVpx+Ud
+ 2f2juso89U9Ft8qOl08o/MMEPmFauKoQYF3IYpX8VqWQDKrAb/YrjxwH1BQvx9Og+mMZ
+ 4JrUBZ2k9OOnrlAlvZDwu7rbLCA406KAzE8D2beqeA/W3PVH3EI19QPhtkOSOqGeVxxb
+ xaYg==
+X-Gm-Message-State: AOJu0YxoQJAgOO7v09IYZ2C/yD2u2f7K81SXRePoALP+DJ0I7s4yQdWe
+ 6kqi/79tZ7CsX2c4QmU5GOhJfXkyjGR90lNU85PoIe0yTqd7wAl7
+X-Google-Smtp-Source: AGHT+IEmwrGI+mO352Ret0QmpEQXcshi8dtdOKXoKXqgkRXtzbmexGrV7Gnc7qYFKDIm26al4/xBrw==
+X-Received: by 2002:a17:90a:ea12:b0:2b2:7c52:e175 with SMTP id
+ 98e67ed59e1d1-2b6cceef2f7mr20254508a91.31.1715960088955;
+ Fri, 17 May 2024 08:34:48 -0700 (PDT)
+Received: from ubuntu2310.lan (c-67-170-74-237.hsd1.wa.comcast.net.
+ [67.170.74.237]) by smtp.gmail.com with ESMTPSA id
+ 98e67ed59e1d1-2b628ca5124sm17494864a91.43.2024.05.17.08.34.47
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Fri, 17 May 2024 08:34:48 -0700 (PDT)
+X-Google-Original-From: Dave Thaler <dthaler1968@gmail.com>
+To: bpf@vger.kernel.org
+Date: Fri, 17 May 2024 08:34:45 -0700
+Message-Id: <20240517153445.3914-1-dthaler1968@gmail.com>
+X-Mailer: git-send-email 2.40.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH bpf-next v4 3/5] bpf, x64: Fix tailcall hierarchy
-To: Zvi Effron <zeffron@riotgames.com>
-Cc: bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
- andrii@kernel.org, maciej.fijalkowski@intel.com, jakub@cloudflare.com,
- pulehui@huawei.com, kernel-patches-bot@fb.com
-References: <20240509150541.81799-1-hffilwlqm@gmail.com>
- <20240509150541.81799-4-hffilwlqm@gmail.com>
- <a6b60575-6342-4ce7-9652-2a7438a3e1f4@gmail.com>
- <CAC1LvL27bXu5zbPj+wO1hQCGvdHooUbQchiwwawyd+iokKc42Q@mail.gmail.com>
-Content-Language: en-US
-From: Leon Hwang <hffilwlqm@gmail.com>
-In-Reply-To: <CAC1LvL27bXu5zbPj+wO1hQCGvdHooUbQchiwwawyd+iokKc42Q@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Message-ID-Hash: FCNFA6O74P2HVGMO6HLIRXHCMXSMV76P
+X-Message-ID-Hash: FCNFA6O74P2HVGMO6HLIRXHCMXSMV76P
+X-MailFrom: dthaler1968@googlemail.com
+X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
+ loop; banned-address; member-moderation; nonmember-moderation; administrivia; 
+ implicit-dest; max-recipients; max-size; news-moderation; no-subject;
+ digests; suspicious-header
+CC: bpf@ietf.org, Dave Thaler <dthaler1968@gmail.com>,
+ Dave Thaler <dthaler1968@googlemail.com>
+X-Mailman-Version: 3.3.9rc4
+Precedence: list
+Subject: =?utf-8?q?=5BBpf=5D_=5BPATCH_bpf-next=5D_bpf=2C_docs=3A_Move_sentence_about_?=
+ =?utf-8?q?returning_R0_to_abi=2Erst?=
+Archived-At: <https://mailarchive.ietf.org/arch/msg/bpf/RHjXOXRkTc3i5F_wXQjL4MNQvks>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/bpf>
+List-Help: <mailto:bpf-request@ietf.org?subject=help>
+List-Owner: <mailto:bpf-owner@ietf.org>
+List-Post: <mailto:bpf@ietf.org>
+X-Mailman-Copy: yes
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+X-Original-From: Dave Thaler <dthaler1968@googlemail.com>
+From: Dave Thaler <dthaler1968=40googlemail.com@dmarc.ietf.org>
 
-
-
-On 2024/5/17 02:56, Zvi Effron wrote:
-> On Thu, May 16, 2024 at 8:28 AM Leon Hwang <hffilwlqm@gmail.com> wrote:
->>
->>
->>
->> On 2024/5/9 23:05, Leon Hwang wrote:
->>> This patch fixes a tailcall issue caused by abusing the tailcall in
->>> bpf2bpf feature.
->>>
-
-[SNIP]
-
->>>
->>
->> Oh, I missed a case here.
->>
->> This patch set is unable to provide tcc_ptr for freplace programs that
->> use tail calls in bpf2bpf.
->>
->> How can this approach provide tcc_ptr for freplace programs?
->>
->> Achieving this is not straightforward. However, it is simpler to disable
->> the use of tail calls in bpf2bpf for freplace programs, even though this
->> is a desired feature for my project.
->>
->> Therefore, I will disable it in the v5 patch set.
->>
-> 
-> Isn't this a breaking change such that it would effectively be a regression for
-> any users already using tail_calls in bpf2bpf for freplace programs? And,
-> correct me if I'm wrong, but aren't those pieces of eBPF essentially considered
-> UAPI stable (unlike kfuncs)?
-
-Yeah, this is a breaking change. However, I think it's acceptable, as
-tail_calls in subprogs was considered to be disabled[0].
-
-[0]
-https://lore.kernel.org/bpf/CAADnVQLOswL3BY1s0B28wRZH1PU675S6_2=XknjZKNgyJ=yDxw@mail.gmail.com/
-
-> 
-> I appreciate that this is an esoteric use of eBPF, but as you said, you have a
-> use case for it, as does my team (although we haven't had a chance to implement
-> it yet), and if the two of us have use cases for it, I imagine other may have
-> as well, and some of them might already have done their implementation.
-> 
-
-
-It seems it is an useful feature for us. I haven't use it either because
-of old kernel version.
-
-So, I figure out another approach to resolve this issue.
-
-Here's the diff just for idea discussion:
-
-diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
-index 5159c7a229229..b0b6c84874e54 100644
---- a/arch/x86/net/bpf_jit_comp.c
-+++ b/arch/x86/net/bpf_jit_comp.c
-@@ -273,7 +273,7 @@ struct jit_context {
- /* Number of bytes emit_patch() needs to generate instructions */
- #define X86_PATCH_SIZE		5
- /* Number of bytes that will be skipped on tailcall */
--#define X86_TAIL_CALL_OFFSET	(11 + ENDBR_INSN_SIZE)
-+#define X86_TAIL_CALL_OFFSET	(22 + ENDBR_INSN_SIZE)
-
- static void push_r12(u8 **pprog)
- {
-@@ -403,6 +403,22 @@ static void emit_cfi(u8 **pprog, u32 hash)
- 	*pprog = prog;
- }
-
-+static notrace void bpf_prepare_tail_call_cnt_ptr()
-+{
-+	/* %rax stores the position to call the original prog. */
-+
-+	asm (
-+	    "pushq %r9\n\t"       /* Push %r9. */
-+	    "movq %rax, %r9\n\t"  /* Cache calling position. */
-+	    "xor %eax, %eax\n\t"  /* Initialise tail_call_cnt. */
-+	    "pushq %rax\n\t"      /* Push tail_call_cnt. */
-+	    "movq %rsp, %rax\n\t" /* Make %rax as tcc_ptr. */
-+	    "callq *%r9\n\t"      /* Call the original prog. */
-+	    "popq %r9\n\t"        /* Pop tail_call_cnt. */
-+	    "popq %r9\n\t"        /* Pop %r9. */
-+	);
-+}
-+
- /*
-  * Emit x86-64 prologue code for BPF program.
-  * bpf_tail_call helper will skip the first X86_TAIL_CALL_OFFSET bytes
-@@ -410,9 +426,9 @@ static void emit_cfi(u8 **pprog, u32 hash)
-  */
- static void emit_prologue(u8 **pprog, u32 stack_depth, bool ebpf_from_cbpf,
- 			  bool tail_call_reachable, bool is_subprog,
--			  bool is_exception_cb)
-+			  bool is_exception_cb, u8 *image)
- {
--	u8 *prog = *pprog;
-+	u8 *prog = *pprog, *start = *pprog;
-
- 	emit_cfi(&prog, is_subprog ? cfi_bpf_subprog_hash : cfi_bpf_hash);
- 	/* BPF trampoline can be made to work without these nops,
-@@ -420,14 +436,16 @@ static void emit_prologue(u8 **pprog, u32
-stack_depth, bool ebpf_from_cbpf,
- 	 */
- 	emit_nops(&prog, X86_PATCH_SIZE);
- 	if (!ebpf_from_cbpf) {
--		if (tail_call_reachable && !is_subprog)
--			/* When it's the entry of the whole tailcall context,
--			 * zeroing rax means initialising tail_call_cnt.
--			 */
--			EMIT2(0x31, 0xC0); /* xor eax, eax */
--		else
-+		if (tail_call_reachable && !is_subprog) {
-+			/* mov rax, offset */
-+			u32 offset = image + (prog - start) + 13;
-+			EMIT4_off32(0x48, 0x8B, 0x04, 0x25, offset);
-+			/* call bpf_prepare_tail_call_cnt_ptr */
-+			emit_call(&prog, bpf_prepare_tail_call_cnt_ptr, offset-5);
-+		 } else {
- 			/* Keep the same instruction layout. */
--			EMIT2(0x66, 0x90); /* nop2 */
-+			emit_nops(&prog, 13);
-+		 }
- 	}
- 	/* Exception callback receives FP as third parameter */
- 	if (is_exception_cb) {
-@@ -1344,7 +1362,8 @@ static int do_jit(struct bpf_prog *bpf_prog, int
-*addrs, u8 *image, u8 *rw_image
-
- 	emit_prologue(&prog, bpf_prog->aux->stack_depth,
- 		      bpf_prog_was_classic(bpf_prog), tail_call_reachable,
--		      bpf_is_subprog(bpf_prog), bpf_prog->aux->exception_cb);
-+		      bpf_is_subprog(bpf_prog), bpf_prog->aux->exception_cb,
-+		      image);
- 	/* Exception callback will clobber callee regs for its own use, and
- 	 * restore the original callee regs from main prog's stack frame.
- 	 */
-
-
-Unlink the way to prepare tcc_ptr of current patch set by bpf prog's
-caller, it prepares tcc_ptr by calling a function at prologue to reserve
-tail_call_cnt memory on stack. And then, call the remain part of the bpf
-prog. At the end of prologue, rax is tcc_ptr, too.
-
-This is inspired by the original RFC PATCH[0]. And then, it avoids
-unwind-breaking issue by a real function call.
-
-[0] https://lore.kernel.org/bpf/20240104142226.87869-3-hffilwlqm@gmail.com/
-
-However, it introduces an indirect call in
-bpf_prepare_tail_call_cnt_ptr(), which costs performance by retpoline.
-If to improve performance here, bpf dispatcher should be considered,
-like XDP.
-
-Thanks,
-Leon
+QXMgZGlzY3Vzc2VkIGF0IExTRi9NTS9CUEYsIHRoZSBzZW50ZW5jZSBhYm91dCB1c2luZyBSMCBm
+b3IgcmV0dXJuaW5nDQp2YWx1ZXMgZnJvbSBjYWxscyBpcyBwYXJ0IG9mIHRoZSBjYWxsaW5nIGNv
+bnZlbnRpb24gYW5kIGJlbG9uZ3MgaW4NCmFiaS5yc3QuICBBbnkgZnVydGhlciBhZGRpdGlvbnMg
+b3IgY2xhcmlmaWNhdGlvbnMgdG8gdGhpcyB0ZXh0IGFyZSBsZWZ0DQpmb3IgZnV0dXJlIHBhdGNo
+ZXMgb24gYWJpLnJzdC4gIFRoZSBjdXJyZW50IHBhdGNoIGlzIHNpbXBseSB0byB1bmJsb2NrDQpw
+cm9ncmVzc2lvbiBvZiBpbnN0cnVjdGlvbi1zZXQucnN0IHRvIGEgc3RhbmRhcmQuDQoNCkluIGNv
+bnRyYXN0LCB0aGUgcmVzdHJpY3Rpb24gb2YgcmVnaXN0ZXIgbnVtYmVycyB0byB0aGUgcmFuZ2Ug
+MC0xMA0KaXMgdW50b3VjaGVkLCBsZWZ0IGluIHRoZSBpbnN0cnVjdGlvbi1zZXQucnN0IGRlZmlu
+aXRpb24gb2YgdGhlDQpzcmNfcmVnIGFuZCBkc3RfcmVnIGZpZWxkcy4NCg0KU2lnbmVkLW9mZi1i
+eTogRGF2ZSBUaGFsZXIgPGR0aGFsZXIxOTY4QGdvb2dsZW1haWwuY29tPg0KLS0tDQogRG9jdW1l
+bnRhdGlvbi9icGYvc3RhbmRhcmRpemF0aW9uL2FiaS5yc3QgICAgICAgICAgICAgfCAzICsrKw0K
+IERvY3VtZW50YXRpb24vYnBmL3N0YW5kYXJkaXphdGlvbi9pbnN0cnVjdGlvbi1zZXQucnN0IHwg
+MyAtLS0NCiAyIGZpbGVzIGNoYW5nZWQsIDMgaW5zZXJ0aW9ucygrKSwgMyBkZWxldGlvbnMoLSkN
+Cg0KZGlmZiAtLWdpdCBhL0RvY3VtZW50YXRpb24vYnBmL3N0YW5kYXJkaXphdGlvbi9hYmkucnN0
+IGIvRG9jdW1lbnRhdGlvbi9icGYvc3RhbmRhcmRpemF0aW9uL2FiaS5yc3QNCmluZGV4IDBjMmUx
+MGVlYi4uNDE1MTQxMzdjIDEwMDY0NA0KLS0tIGEvRG9jdW1lbnRhdGlvbi9icGYvc3RhbmRhcmRp
+emF0aW9uL2FiaS5yc3QNCisrKyBiL0RvY3VtZW50YXRpb24vYnBmL3N0YW5kYXJkaXphdGlvbi9h
+YmkucnN0DQpAQCAtMjMsMyArMjMsNiBAQCBUaGUgQlBGIGNhbGxpbmcgY29udmVudGlvbiBpcyBk
+ZWZpbmVkIGFzOg0KIA0KIFIwIC0gUjUgYXJlIHNjcmF0Y2ggcmVnaXN0ZXJzIGFuZCBCUEYgcHJv
+Z3JhbXMgbmVlZHMgdG8gc3BpbGwvZmlsbCB0aGVtIGlmDQogbmVjZXNzYXJ5IGFjcm9zcyBjYWxs
+cy4NCisNCitUaGUgQlBGIHByb2dyYW0gbmVlZHMgdG8gc3RvcmUgdGhlIHJldHVybiB2YWx1ZSBp
+bnRvIHJlZ2lzdGVyIFIwIGJlZm9yZSBkb2luZyBhbg0KK2BgRVhJVGBgLg0KZGlmZiAtLWdpdCBh
+L0RvY3VtZW50YXRpb24vYnBmL3N0YW5kYXJkaXphdGlvbi9pbnN0cnVjdGlvbi1zZXQucnN0IGIv
+RG9jdW1lbnRhdGlvbi9icGYvc3RhbmRhcmRpemF0aW9uL2luc3RydWN0aW9uLXNldC5yc3QNCmlu
+ZGV4IDk5NzU2MGFiYS4uYzBkN2Q3NGUwIDEwMDY0NA0KLS0tIGEvRG9jdW1lbnRhdGlvbi9icGYv
+c3RhbmRhcmRpemF0aW9uL2luc3RydWN0aW9uLXNldC5yc3QNCisrKyBiL0RvY3VtZW50YXRpb24v
+YnBmL3N0YW5kYXJkaXphdGlvbi9pbnN0cnVjdGlvbi1zZXQucnN0DQpAQCAtNDc1LDkgKzQ3NSw2
+IEBAIHRoZSBqdW1wIGluc3RydWN0aW9uLiAgVGh1cyAnUEMgKz0gMScgc2tpcHMgZXhlY3V0aW9u
+IG9mIHRoZSBuZXh0DQogaW5zdHJ1Y3Rpb24gaWYgaXQncyBhIGJhc2ljIGluc3RydWN0aW9uIG9y
+IHJlc3VsdHMgaW4gdW5kZWZpbmVkIGJlaGF2aW9yDQogaWYgdGhlIG5leHQgaW5zdHJ1Y3Rpb24g
+aXMgYSAxMjgtYml0IHdpZGUgaW5zdHJ1Y3Rpb24uDQogDQotVGhlIEJQRiBwcm9ncmFtIG5lZWRz
+IHRvIHN0b3JlIHRoZSByZXR1cm4gdmFsdWUgaW50byByZWdpc3RlciBSMCBiZWZvcmUgZG9pbmcg
+YW4NCi1gYEVYSVRgYC4NCi0NCiBFeGFtcGxlOg0KIA0KIGBge0pTR0UsIFgsIEpNUDMyfWBgIG1l
+YW5zOjoNCi0tIA0KMi40MC4xDQoNCi0tIApCcGYgbWFpbGluZyBsaXN0IC0tIGJwZkBpZXRmLm9y
+ZwpUbyB1bnN1YnNjcmliZSBzZW5kIGFuIGVtYWlsIHRvIGJwZi1sZWF2ZUBpZXRmLm9yZwo=
 
