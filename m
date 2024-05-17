@@ -1,158 +1,188 @@
-Return-Path: <bpf+bounces-29955-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-29956-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D69D78C89D1
-	for <lists+bpf@lfdr.de>; Fri, 17 May 2024 18:10:01 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 46EAF8C89DF
+	for <lists+bpf@lfdr.de>; Fri, 17 May 2024 18:16:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8B14D2813E3
-	for <lists+bpf@lfdr.de>; Fri, 17 May 2024 16:10:00 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4ECD41C217C1
+	for <lists+bpf@lfdr.de>; Fri, 17 May 2024 16:16:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B050F12FB21;
-	Fri, 17 May 2024 16:09:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9303612FB18;
+	Fri, 17 May 2024 16:15:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gzY46KJ2"
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="odMDw5B5";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="jQQmelsg"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-lj1-f170.google.com (mail-lj1-f170.google.com [209.85.208.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 97E0A2EAE1;
-	Fri, 17 May 2024 16:09:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7455B12F5A7;
+	Fri, 17 May 2024 16:15:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715962189; cv=none; b=acPGVc2me7c9+7EKOs6WvsCqzQV/9Ya6YyfrqUu3lG+umJ3s9UUruqo8NGEty4SyQOSg+0TCV5TKoiUT5USfExJV6YRipBACNog3u3VCy7nm5Arqlq7BdHO8x9GSelwxa2G7YvJmEPmNHSLMnqOocKD9cR9z4u6pYulZxl5hnmk=
+	t=1715962559; cv=none; b=jSVgj4ppdVw5U6wd8lgeuugBd9nodURLzpO+Ciu8ruHIbWSao1ffAQQCvAlEetiwuJCrsyLlToE5QnC96PhVHs6zOBc744/8bMUA3FW+Bs3L/KR6IEiIK3p65yMNeM0onaEvZ7vjVi/KnATjeNORoVjduM0T4VL7I3x2eL35D7Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715962189; c=relaxed/simple;
-	bh=Nf4RNkeImLEAmR+itasCgmxOOOn/nmm3CPvksEHRQiQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=e/4D3wXVH3g7ZYzav0YUFeSkZyznpy4HASdZk+nRjeNipuuqOTdl4XBGZJwgqz5DJv+cWXCy4YJfsZ1gjMv258XOPdBFYPU1XQ+nbb2OHQJWFT+CBMBCicPFMyKviNld8BLIjBKDTDpbx7WngkH08lVlBjOFm7itTrTYQQvykac=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gzY46KJ2; arc=none smtp.client-ip=209.85.208.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f170.google.com with SMTP id 38308e7fff4ca-2e09138a2b1so11564841fa.3;
-        Fri, 17 May 2024 09:09:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1715962186; x=1716566986; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=IstAfylTBNaTxmmaRyk4imp16sEYUHGaznoMjv7UZHs=;
-        b=gzY46KJ24SqO952EeXZ1ZO64bPCcjC9ww5yqMYdkda2VCXqZ1BHujAjp48nLIIhP+S
-         cT2FibLbWOCcbAhe8wD3crfcaviP0/zRZ0+5bs/6JiMQuG/Mm20itWyTvIQvzY6+Dv3X
-         mVYiRewPhKc3UO/H0zDT1uzxqM1GzZ6WFT8uWdUxhjOC0j1zyuLVpQEXUAds8Ll8SBDR
-         2vaUVuPdVRMjfp+cGKOXGirmJAWaP00pVr9bE8jAxG+UVkMd4K1xyMzGy9vD2fh0ubz/
-         Hh62aMMN+izN0mgiwBL1BNy4ecDGxBLvL+wc++odjdJ+dGXHRMjUn+ySqQY3LKvMmAle
-         8vXg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1715962186; x=1716566986;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=IstAfylTBNaTxmmaRyk4imp16sEYUHGaznoMjv7UZHs=;
-        b=U23BflJQlQ2SGJx6BVQqRxoFzFWgcmhTqIm1wSvgx3EyT3hwUs2+5BGBwZNKB7kere
-         MoeIJ946/NxmLgjRu3LL8wV2uecsu37yvbcF6GGWVRtFIc3iEoXeZuqTLXtT6XP30GhO
-         9pr1lnw7TPURUUP7nhr6sUiPYcYHTBst/pfXzMJUF+WDjaFo7KAx7CEItwyXwG60rhRz
-         LQU8wait7HO3oaeXn9gt+F3SZItVu6J7zzvGwC6xDdqavqJ0qT0PTVYPrwNXaz1y5FU2
-         oK6FfLTOVtxcpBkNxrZ+BCGko7ppZQnA3BOeia8I6Kkc+RUtXSiJdb/4S4Mu2NRRZHaP
-         S/4A==
-X-Forwarded-Encrypted: i=1; AJvYcCVzrSMCrjLxH+iRV0A35S2goPPB7Ob/Ks0PtFJEQluR3WUOaZ0wAYAojqCSrw8LUSgND8nWjrVyAC0iudBvgq6lu30F+E3jX21QEK8DdPIglEJt5keV3Aj39yBeuqAqo5/dktfEo7vyZFtjosNlbp/kPvsf/EczQHymfiMM66snE7D2egW8Qqm+D07E2Yz9JkiOIk4NL421Xz+mmp4nGlAkQr4IHxjjfHlyM7XPbz2gMw5tWwvtp4+AB4q7qhgLjkxwQFFFL6VKautv5puOPnvg3f3l8FEjWH8PXei73VlCeADJcTqi6Tj9RYW5msNrhPedxvJu5x/U6bjMnK+ZwTxt8R0tsLrwcuNs9Wc6ctG72lMZXsXr1s9S0c67BGUm/qFAjrXMxcPlqFMC0+mFcY/VhsCtMc9EWF2OV+OeDoCnN1jmwBZ9izYEcKY=
-X-Gm-Message-State: AOJu0Yx1QqQpPvKlKY35dejdl+ioSYdJ8e3F1ggS4wOeT4PT6j9KumUx
-	JijzxMan+uhxZgF5wivoX6We58viImiA10v2lncSfF0OabKe5kks
-X-Google-Smtp-Source: AGHT+IHgmwwit2WhgD28ItKwKm0UGYj6mPQDthm9VUXNUEsMkvdnQLGvWiUajRHCK+r/d8TH466Lzg==
-X-Received: by 2002:ac2:54b9:0:b0:51f:d72:cd2d with SMTP id 2adb3069b0e04-5220fc7aeb4mr13493469e87.22.1715962185544;
-        Fri, 17 May 2024 09:09:45 -0700 (PDT)
-Received: from ?IPV6:2001:678:a5c:1202:2659:d6e4:5d55:b864? (soda.int.kasm.eu. [2001:678:a5c:1202:2659:d6e4:5d55:b864])
-        by smtp.gmail.com with ESMTPSA id 2adb3069b0e04-521f38d7ee4sm3314135e87.182.2024.05.17.09.09.43
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 17 May 2024 09:09:45 -0700 (PDT)
-Message-ID: <170eca58-8950-40b5-b2af-3ac3844af3aa@gmail.com>
-Date: Fri, 17 May 2024 18:09:42 +0200
+	s=arc-20240116; t=1715962559; c=relaxed/simple;
+	bh=EmAE75Rh1IojcGIii7mshbjXPWbWpMjnetS2uQdsF04=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=K/hNLf77UdrF3AW5nCRaXckdbJqBKsKUByowhS4Ij4XANJEhDnW3POZefF57yEeV961qbMzkjvqcJKovP3YBBgtPgW+yIgWWdl3vX8V2q2/4L1ZL6rCuSywpOtjEb1E+kU55qa6ZmVJdLLzJ651Fyq2kXXO/9uzlyLPeHMDAYBk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=odMDw5B5; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=jQQmelsg; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+Date: Fri, 17 May 2024 18:15:53 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1715962555;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Nu7OJz7stGDD7aVVbUS1exAOqBswvTYuUIGwWepjL+Y=;
+	b=odMDw5B5NmpDQv+vVzfiiZ+jCVCfC5SspPiJtsW9aRwVGIP7eF7ZCBSSMLW3/B1JLGnBsg
+	0xt/SBvTsNSGFIALeR4WWbgxNeVAyOZduMfOpUuGu9pFgExmSIJgiZiSS9DfZkZMb0+3f1
+	IkW64GnlkhCpcC4APBnOmrp/xhfkmhqcoH7HdZLv+RnCT70dAVr6EvFzmyroHkT7SMlqhe
+	e7Dk400XpXYd5TGiVLMfMtsvWrvaQEJleudgZr746fe4SeZDNiFC0mi53ia5LBIc0H5q7x
+	UqRTipVe9iHk3OAS9e6ayM7yXdoDK/SvsxVYNDKuWhuz+8pFMOe0P2rjhuhWcw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1715962555;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Nu7OJz7stGDD7aVVbUS1exAOqBswvTYuUIGwWepjL+Y=;
+	b=jQQmelsgpA0lT0C4fRIIw6vi6VwS7QZY53uLwQ12igOcw8ADTaJ/vvm9O2q2qeoy1NgHgY
+	QtbjugbWbYbPSEBA==
+From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To: Jesper Dangaard Brouer <hawk@kernel.org>
+Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+	Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
+	LKML <linux-kernel@vger.kernel.org>,
+	Network Development <netdev@vger.kernel.org>,
+	"David S. Miller" <davem@davemloft.net>,
+	Boqun Feng <boqun.feng@gmail.com>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Frederic Weisbecker <frederic@kernel.org>,
+	Ingo Molnar <mingo@redhat.com>, Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Waiman Long <longman@redhat.com>, Will Deacon <will@kernel.org>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Eduard Zingerman <eddyz87@gmail.com>, Hao Luo <haoluo@google.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
+	Stanislav Fomichev <sdf@google.com>,
+	Yonghong Song <yonghong.song@linux.dev>, bpf <bpf@vger.kernel.org>
+Subject: Re: [PATCH net-next 14/15 v2] net: Reference bpf_redirect_info via
+ task_struct on PREEMPT_RT.
+Message-ID: <20240517161553.SSh4BNQO@linutronix.de>
+References: <20240503182957.1042122-15-bigeasy@linutronix.de>
+ <87y18mohhp.fsf@toke.dk>
+ <CAADnVQJkiwaYXUo+LyKoV96VFFCFL0VY5Jgpuv_0oypksrnciA@mail.gmail.com>
+ <20240507123636.cTnT7TvU@linutronix.de>
+ <93062ce7-8dfa-48a9-a4ad-24c5a3993b41@kernel.org>
+ <20240510162121.f-tvqcyf@linutronix.de>
+ <20240510162214.zNWRKgFU@linutronix.de>
+ <4949dca0-377a-45b1-a0fd-17bdf5a6ab10@kernel.org>
+ <20240514054345.DZkx7fJs@linutronix.de>
+ <e4123697-3e6e-4d4a-8b06-f69e1c453225@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH RESEND v8 16/16] bpf: remove CONFIG_BPF_JIT dependency on
- CONFIG_MODULES of
-To: Will Deacon <will@kernel.org>
-Cc: Mike Rapoport <rppt@kernel.org>, linux-kernel@vger.kernel.org,
- Alexandre Ghiti <alexghiti@rivosinc.com>,
- Andrew Morton <akpm@linux-foundation.org>, =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?=
- <bjorn@kernel.org>, Catalin Marinas <catalin.marinas@arm.com>,
- Christophe Leroy <christophe.leroy@csgroup.eu>,
- "David S. Miller" <davem@davemloft.net>, Dinh Nguyen <dinguyen@kernel.org>,
- Donald Dutile <ddutile@redhat.com>, Eric Chanudet <echanude@redhat.com>,
- Heiko Carstens <hca@linux.ibm.com>, Helge Deller <deller@gmx.de>,
- Huacai Chen <chenhuacai@kernel.org>,
- Kent Overstreet <kent.overstreet@linux.dev>, Liviu Dudau
- <liviu@dudau.co.uk>, Luis Chamberlain <mcgrof@kernel.org>,
- Mark Rutland <mark.rutland@arm.com>, Masami Hiramatsu <mhiramat@kernel.org>,
- Michael Ellerman <mpe@ellerman.id.au>, Nadav Amit <nadav.amit@gmail.com>,
- Palmer Dabbelt <palmer@dabbelt.com>, Peter Zijlstra <peterz@infradead.org>,
- =?UTF-8?Q?Philippe_Mathieu-Daud=C3=A9?= <philmd@linaro.org>,
- Rick Edgecombe <rick.p.edgecombe@intel.com>,
- Russell King <linux@armlinux.org.uk>, Sam Ravnborg <sam@ravnborg.org>,
- Song Liu <song@kernel.org>, Steven Rostedt <rostedt@goodmis.org>,
- Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
- Thomas Gleixner <tglx@linutronix.de>, bpf@vger.kernel.org,
- linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-mips@vger.kernel.org, linux-mm@kvack.org,
- linux-modules@vger.kernel.org, linux-parisc@vger.kernel.org,
- linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
- linux-trace-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
- loongarch@lists.linux.dev, netdev@vger.kernel.org,
- sparclinux@vger.kernel.org, x86@kernel.org
-References: <20240505160628.2323363-1-rppt@kernel.org>
- <20240505160628.2323363-17-rppt@kernel.org>
- <7983fbbf-0127-457c-9394-8d6e4299c685@gmail.com>
- <20240517154632.GA320@willie-the-truck>
-Content-Language: en-US, sv-SE
-From: Klara Modin <klarasmodin@gmail.com>
-In-Reply-To: <20240517154632.GA320@willie-the-truck>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <e4123697-3e6e-4d4a-8b06-f69e1c453225@kernel.org>
 
-On 2024-05-17 17:46, Will Deacon wrote:
-> Hi Klara,
+On 2024-05-14 14:20:03 [+0200], Jesper Dangaard Brouer wrote:
+> Trick for CPU-map to do early drop on remote CPU:
 > 
-> On Fri, May 17, 2024 at 01:00:31AM +0200, Klara Modin wrote:
->>
->> This does not seem to work entirely. If build with BPF_JIT without module
->> support for my Raspberry Pi 3 B I get warnings in my kernel log (easiest way
->> to trigger it seems to be trying to ssh into it, which fails).
+>  # ./xdp-bench redirect-cpu --cpu 3 --remote-action drop ixgbe1
 > 
-> Thanks for the report. I was able to reproduce this using QEMU and it
-> looks like the problem is because bpf_arch_text_copy() silently fails
-> to write to the read-only area as a result of patch_map() faulting and
-> the resulting -EFAULT being chucked away.
-> 
-> Please can you try the diff below?
-> 
-> Will
-> 
-> --->8
-> 
-> diff --git a/arch/arm64/kernel/patching.c b/arch/arm64/kernel/patching.c
-> index 255534930368..94b9fea65aca 100644
-> --- a/arch/arm64/kernel/patching.c
-> +++ b/arch/arm64/kernel/patching.c
-> @@ -36,7 +36,7 @@ static void __kprobes *patch_map(void *addr, int fixmap)
->   
->          if (image)
->                  page = phys_to_page(__pa_symbol(addr));
-> -       else if (IS_ENABLED(CONFIG_STRICT_MODULE_RWX))
-> +       else if (IS_ENABLED(CONFIG_EXECMEM))
->                  page = vmalloc_to_page(addr);
->          else
->                  return addr;
-> 
+> I recommend using Ctrl+\ while running to show more info like CPUs being
+> used and what kthread consumes.  To catch issues e.g. if you are CPU
+> redirecting to same CPU as RX happen to run on.
 
-This seems to work from my short testing.
+Okay. So I reworked the last two patches make the struct part of
+task_struct and then did as you suggested:
 
-Thanks,
-Tested-by: Klara Modin <klarasmodin@gmail.com>
+Unpatched:
+|Sending:
+|Show adapter(s) (eno2np1) statistics (ONLY that changed!)
+|Ethtool(eno2np1 ) stat:    952102520 (    952,102,520) <= port.tx_bytes /sec
+|Ethtool(eno2np1 ) stat:     14876602 (     14,876,602) <= port.tx_size_64 /sec
+|Ethtool(eno2np1 ) stat:     14876602 (     14,876,602) <= port.tx_unicast /sec
+|Ethtool(eno2np1 ) stat:    446045897 (    446,045,897) <= tx-0.bytes /sec
+|Ethtool(eno2np1 ) stat:      7434098 (      7,434,098) <= tx-0.packets /sec
+|Ethtool(eno2np1 ) stat:    446556042 (    446,556,042) <= tx-1.bytes /sec
+|Ethtool(eno2np1 ) stat:      7442601 (      7,442,601) <= tx-1.packets /sec
+|Ethtool(eno2np1 ) stat:    892592523 (    892,592,523) <= tx_bytes /sec
+|Ethtool(eno2np1 ) stat:     14876542 (     14,876,542) <= tx_packets /sec
+|Ethtool(eno2np1 ) stat:            2 (              2) <= tx_restart /sec
+|Ethtool(eno2np1 ) stat:            2 (              2) <= tx_stopped /sec
+|Ethtool(eno2np1 ) stat:     14876622 (     14,876,622) <= tx_unicast /sec
+|
+|Receive:
+|eth1->?                 8,732,508 rx/s                  0 err,drop/s
+|  receive total         8,732,508 pkt/s                 0 drop/s                0 error/s
+|    cpu:10              8,732,508 pkt/s                 0 drop/s                0 error/s
+|  enqueue to cpu 3      8,732,510 pkt/s                 0 drop/s             7.00 bulk-avg
+|    cpu:10->3           8,732,510 pkt/s                 0 drop/s             7.00 bulk-avg
+|  kthread total         8,732,506 pkt/s                 0 drop/s          205,650 sched
+|    cpu:3               8,732,506 pkt/s                 0 drop/s          205,650 sched
+|    xdp_stats                   0 pass/s        8,732,506 drop/s                0 redir/s
+|      cpu:3                     0 pass/s        8,732,506 drop/s                0 redir/s
+|  redirect_err                  0 error/s
+|  xdp_exception                 0 hit/s
+
+I verified that the "drop only" case hits 14M packets/s while this
+redirect part reports 8M packets/s.
+
+Patched:
+|Sending:
+|Show adapter(s) (eno2np1) statistics (ONLY that changed!)
+|Ethtool(eno2np1 ) stat:    952635404 (    952,635,404) <= port.tx_bytes /sec
+|Ethtool(eno2np1 ) stat:     14884934 (     14,884,934) <= port.tx_size_64 /sec
+|Ethtool(eno2np1 ) stat:     14884928 (     14,884,928) <= port.tx_unicast /sec
+|Ethtool(eno2np1 ) stat:    446496117 (    446,496,117) <= tx-0.bytes /sec
+|Ethtool(eno2np1 ) stat:      7441602 (      7,441,602) <= tx-0.packets /sec
+|Ethtool(eno2np1 ) stat:    446603461 (    446,603,461) <= tx-1.bytes /sec
+|Ethtool(eno2np1 ) stat:      7443391 (      7,443,391) <= tx-1.packets /sec
+|Ethtool(eno2np1 ) stat:    893086506 (    893,086,506) <= tx_bytes /sec
+|Ethtool(eno2np1 ) stat:     14884775 (     14,884,775) <= tx_packets /sec
+|Ethtool(eno2np1 ) stat:           14 (             14) <= tx_restart /sec
+|Ethtool(eno2np1 ) stat:           14 (             14) <= tx_stopped /sec
+|Ethtool(eno2np1 ) stat:     14884937 (     14,884,937) <= tx_unicast /sec
+|
+|Receive:
+|eth1->?                 8,735,198 rx/s                  0 err,drop/s
+|  receive total         8,735,198 pkt/s                 0 drop/s                0 error/s
+|    cpu:6               8,735,198 pkt/s                 0 drop/s                0 error/s
+|  enqueue to cpu 3      8,735,193 pkt/s                 0 drop/s             7.00 bulk-avg
+|    cpu:6->3            8,735,193 pkt/s                 0 drop/s             7.00 bulk-avg
+|  kthread total         8,735,191 pkt/s                 0 drop/s          208,054 sched
+|    cpu:3               8,735,191 pkt/s                 0 drop/s          208,054 sched
+|    xdp_stats                   0 pass/s        8,735,191 drop/s                0 redir/s
+|      cpu:3                     0 pass/s        8,735,191 drop/s                0 redir/s
+|  redirect_err                  0 error/s
+|  xdp_exception                 0 hit/s
+
+This looks to be in the same range/ noise level. top wise I have
+ksoftirqd at 100% and cpumap/./map at ~60% so I hit CPU speed limit on a
+10G link. perf top shows
+|   18.37%  bpf_prog_4f0ffbb35139c187_cpumap_l4_hash         [k] bpf_prog_4f0ffbb35139c187_cpumap_l4_hash
+|   13.15%  [kernel]                                         [k] cpu_map_kthread_run
+|   12.96%  [kernel]                                         [k] ixgbe_poll
+|    6.78%  [kernel]                                         [k] page_frag_free
+|    5.62%  [kernel]                                         [k] xdp_do_redirect
+
+for the top 5. Is this something that looks reasonable?
+
+Sebastian
 
