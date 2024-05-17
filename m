@@ -1,108 +1,252 @@
-Return-Path: <bpf+bounces-29949-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-29950-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 199C88C8866
-	for <lists+bpf@lfdr.de>; Fri, 17 May 2024 16:49:11 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8D0638C8903
+	for <lists+bpf@lfdr.de>; Fri, 17 May 2024 17:05:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C9EF428221C
-	for <lists+bpf@lfdr.de>; Fri, 17 May 2024 14:49:09 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 16E6B1F22AB0
+	for <lists+bpf@lfdr.de>; Fri, 17 May 2024 15:05:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C11A469DF7;
-	Fri, 17 May 2024 14:48:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6885B664DD;
+	Fri, 17 May 2024 15:05:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b="QNIiwpei"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="m4vQqC9h"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f178.google.com (mail-pl1-f178.google.com [209.85.214.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 09D5E60263;
-	Fri, 17 May 2024 14:48:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 85B0B1A2C23
+	for <bpf@vger.kernel.org>; Fri, 17 May 2024 15:05:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715957295; cv=none; b=pwRLH5XlGIZ3CcZZUG5OlTc0LgInhGYbHiXcerPUCcLjMw5RZ5ldKRt3jVDItJjmAO7ZKRpUJeCdKamMSRb3oeZdaCFYlqt8A+b6mAgji8DTYoDe8u4Rd6wkd977P2++vXC9Zp0CPictZOgMno34/bA+8PRijJX8sQm9Q4YkH7Q=
+	t=1715958341; cv=none; b=lSUmy3R2TiOry+18WKhqloj3DkRgkLlKjxtfCYJfDf2t41Y1UnrWZH21XPrzX2HA2b4Ky+N4PwAjbVqDco9lXp+3j1zHJMcBQeVQlZS3vYlTHcCauC5rjo++rOxoUJ7iF96lOVa/BLRE7/ifmdw5KNuMAbDfTQV+l5YHCU7FN58=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715957295; c=relaxed/simple;
-	bh=sR1b4hovpLB3+hUo2qFNbqPLLe083HhBBkJ1S7HtDB4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=H0ZcNUDcvjHXG88aKHhDaWteZDBPkFMqt/FXVMWy6AH2Z3oDG1BJq6aWHsHVT3zWvQfEu9yTQOScuVu0svuh2vCZPUP8QND9swCsSwWE6CCMFHoXJz2e4IC3tMjSLhJB8u5qJNgaI7zpr8yPgbaZ/W6a5xj6wPYz6OTDv3p+2ZU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b=QNIiwpei; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8C99DC2BD10;
-	Fri, 17 May 2024 14:48:12 +0000 (UTC)
-Authentication-Results: smtp.kernel.org;
-	dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b="QNIiwpei"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zx2c4.com; s=20210105;
-	t=1715957290;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=0cBkPJS4a5BxMhrLDaw8NzLtBZZCj9gi/zQctsonxVI=;
-	b=QNIiwpeic5qa/l6WvUy8VnPkDhwOw2O5t+Zqc3jVrwko+I6pojUkkvxst2Jk4OyqKLfd3J
-	wK3xBSDhEAAJSz2SFq6ZkSt6Q5XXRnLGDdX/Nfp8hnhqgf1R4vLiNcFi+jHwY6DQZ+aShR
-	9DLIWT0iMqYDchSnSp1S9+BJggdRqMU=
-Received: 
-	by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id 8ba86458 (TLSv1.3:TLS_AES_256_GCM_SHA384:256:NO);
-	Fri, 17 May 2024 14:48:09 +0000 (UTC)
-Date: Fri, 17 May 2024 16:48:02 +0200
-From: "Jason A. Donenfeld" <Jason@zx2c4.com>
-To: Edward Liaw <edliaw@google.com>
-Cc: shuah@kernel.org,
-	=?utf-8?Q?Micka=C3=ABl_Sala=C3=BCn?= <mic@digikod.net>,
-	=?utf-8?Q?G=C3=BCnther?= Noack <gnoack@google.com>,
-	Christian Brauner <brauner@kernel.org>,
-	Richard Cochran <richardcochran@gmail.com>,
-	Paul Walmsley <paul.walmsley@sifive.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Albert Ou <aou@eecs.berkeley.edu>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	"David S. Miller" <davem@davemloft.net>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Jesper Dangaard Brouer <hawk@kernel.org>,
-	John Fastabend <john.fastabend@gmail.com>,
-	linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-	kernel-team@android.com, linux-security-module@vger.kernel.org,
-	netdev@vger.kernel.org, linux-riscv@lists.infradead.org,
-	bpf@vger.kernel.org, wireguard@lists.zx2c4.com
-Subject: Re: [PATCH v4 65/66] selftests/wireguard: Drop define _GNU_SOURCE
-Message-ID: <ZkduIlhF2XswiAJr@zx2c4.com>
-References: <20240510000842.410729-1-edliaw@google.com>
- <20240510000842.410729-66-edliaw@google.com>
+	s=arc-20240116; t=1715958341; c=relaxed/simple;
+	bh=wBU7tkAVK4/Ql7Vh3owdnXi8N5p4LdKcjE3l7YWvsTg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=bGHnQDQBU1dcGouM6bVsnLayrHtHgKUHNxO6w2uShShOSAbd+r/5y9tiuE0CXbsdbHL9njeLMpvPEKbuJkEhGVVN/NxzA5CtfP4X18RAPQ/mcnrjxjCV5UsyWkgtzZ7LgrO3cttdpg/bbYmgZXslNQGpCnKGKmOsTpVN50MD1Bw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=m4vQqC9h; arc=none smtp.client-ip=209.85.214.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f178.google.com with SMTP id d9443c01a7336-1edfc57ac0cso11031055ad.3
+        for <bpf@vger.kernel.org>; Fri, 17 May 2024 08:05:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1715958339; x=1716563139; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=9t/c5qhHAr6XNZpogV/gslaLFHPSz8UVFQayWVosKg8=;
+        b=m4vQqC9h4/TCUP4nBHZ/qgSVGpoqzRrGUPF01UctyCyCoSC/RswrCQjydpUZCgC0Z6
+         YNHkMecu1usDUdCVV+4EaKTzVmeEwrznL68PpA24b3iDZlAWcyoNZxBm/pP0RUEE87jb
+         zxBnzhSzPPGcoVisXycp0iArU7EZG38GjwkcO4Rb4Mb6VU0N3JjK/rVFAR4AKbVWPbcq
+         elEwF1NZ83NzIfdKxebNmmdo5PPk+TWbHfGDQS0ayVtxtq+ufMIpYQD38+bvh3ySX5oD
+         eIeZWLsNqPvi3VnN9XT4xgy7/E4f9aXElIllMO4JdIeFSUdGcLRsMnGeXQLW4M7U2Xii
+         J/Tw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1715958339; x=1716563139;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=9t/c5qhHAr6XNZpogV/gslaLFHPSz8UVFQayWVosKg8=;
+        b=wlw1uoJiN5VTkDD/wY9SdVHui3K6m7Yy/kXbAkD01ZpqC2I+5yUZJmB6kmFBYG8GxJ
+         N2ivk5V199WQiECiep+JjitDjBNyugzyWP+WdsAHyYHnXJa2evvHTsgbcBn7dBNUa9xa
+         hyBFFK8i1Ey20SGIThp4oz3y7EjCj28EwIYBG7Jc3LQ7kaS246j/QzLNhmD0i/yuB77G
+         shccyQDQAGR60HDUc7JzBU2CubYmOVz1wshiaTG6qegvpbGN66K5+SIfepMxv/Ktf8vb
+         THoksFSZJlb/iSZwUCGHgd4TsPI6FLYia1JHQiMg3fPOf8trTOasQTpq2xXdqXvOB756
+         bCoQ==
+X-Gm-Message-State: AOJu0YwmkZdXPaxonDHxq9WeoJcaXC8qd0iwvkmdobtQl71g8i+TtDo6
+	JMawT/rZ6ikx5sh2uKGPCWCGgiiX8EKoiNWVYxxXQsAHy/I6DJ6X
+X-Google-Smtp-Source: AGHT+IFsGBY0LL+eJq+HtHGpKdIbqbxnSVu3/Vz1GKS361QNetolyXk4su66SSiFvwxksm577dWsXA==
+X-Received: by 2002:a05:6a20:1056:b0:1ad:9202:2391 with SMTP id adf61e73a8af0-1afde07cecbmr20032783637.2.1715958338603;
+        Fri, 17 May 2024 08:05:38 -0700 (PDT)
+Received: from [192.168.1.76] (bb116-14-181-187.singnet.com.sg. [116.14.181.187])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-6f4d2af2b72sm14843117b3a.159.2024.05.17.08.05.35
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 17 May 2024 08:05:38 -0700 (PDT)
+Message-ID: <c1483467-b7e5-4511-8c8e-3ab9dfd0ea49@gmail.com>
+Date: Fri, 17 May 2024 23:05:34 +0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20240510000842.410729-66-edliaw@google.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH bpf-next v4 3/5] bpf, x64: Fix tailcall hierarchy
+To: Zvi Effron <zeffron@riotgames.com>
+Cc: bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+ andrii@kernel.org, maciej.fijalkowski@intel.com, jakub@cloudflare.com,
+ pulehui@huawei.com, kernel-patches-bot@fb.com
+References: <20240509150541.81799-1-hffilwlqm@gmail.com>
+ <20240509150541.81799-4-hffilwlqm@gmail.com>
+ <a6b60575-6342-4ce7-9652-2a7438a3e1f4@gmail.com>
+ <CAC1LvL27bXu5zbPj+wO1hQCGvdHooUbQchiwwawyd+iokKc42Q@mail.gmail.com>
+Content-Language: en-US
+From: Leon Hwang <hffilwlqm@gmail.com>
+In-Reply-To: <CAC1LvL27bXu5zbPj+wO1hQCGvdHooUbQchiwwawyd+iokKc42Q@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Fri, May 10, 2024 at 12:07:22AM +0000, Edward Liaw wrote:
-> _GNU_SOURCE is provided by lib.mk, so it should be dropped to prevent
-> redefinition warnings.
-> 
-> Signed-off-by: Edward Liaw <edliaw@google.com>
-> ---
->  tools/testing/selftests/wireguard/qemu/init.c | 2 --
->  1 file changed, 2 deletions(-)
-> 
-> diff --git a/tools/testing/selftests/wireguard/qemu/init.c b/tools/testing/selftests/wireguard/qemu/init.c
-> index 3e49924dd77e..08113f3c6189 100644
-> --- a/tools/testing/selftests/wireguard/qemu/init.c
-> +++ b/tools/testing/selftests/wireguard/qemu/init.c
-> @@ -2,8 +2,6 @@
->  /*
->   * Copyright (C) 2015-2019 Jason A. Donenfeld <Jason@zx2c4.com>. All Rights Reserved.
->   */
-> -
-> -#define _GNU_SOURCE
->  #include <unistd.h>
->  #include <errno.h>
->  #include <string.h>
-> -- 
 
-But this file doesn't use lib.mk.
+
+On 2024/5/17 02:56, Zvi Effron wrote:
+> On Thu, May 16, 2024 at 8:28 AM Leon Hwang <hffilwlqm@gmail.com> wrote:
+>>
+>>
+>>
+>> On 2024/5/9 23:05, Leon Hwang wrote:
+>>> This patch fixes a tailcall issue caused by abusing the tailcall in
+>>> bpf2bpf feature.
+>>>
+
+[SNIP]
+
+>>>
+>>
+>> Oh, I missed a case here.
+>>
+>> This patch set is unable to provide tcc_ptr for freplace programs that
+>> use tail calls in bpf2bpf.
+>>
+>> How can this approach provide tcc_ptr for freplace programs?
+>>
+>> Achieving this is not straightforward. However, it is simpler to disable
+>> the use of tail calls in bpf2bpf for freplace programs, even though this
+>> is a desired feature for my project.
+>>
+>> Therefore, I will disable it in the v5 patch set.
+>>
+> 
+> Isn't this a breaking change such that it would effectively be a regression for
+> any users already using tail_calls in bpf2bpf for freplace programs? And,
+> correct me if I'm wrong, but aren't those pieces of eBPF essentially considered
+> UAPI stable (unlike kfuncs)?
+
+Yeah, this is a breaking change. However, I think it's acceptable, as
+tail_calls in subprogs was considered to be disabled[0].
+
+[0]
+https://lore.kernel.org/bpf/CAADnVQLOswL3BY1s0B28wRZH1PU675S6_2=XknjZKNgyJ=yDxw@mail.gmail.com/
+
+> 
+> I appreciate that this is an esoteric use of eBPF, but as you said, you have a
+> use case for it, as does my team (although we haven't had a chance to implement
+> it yet), and if the two of us have use cases for it, I imagine other may have
+> as well, and some of them might already have done their implementation.
+> 
+
+
+It seems it is an useful feature for us. I haven't use it either because
+of old kernel version.
+
+So, I figure out another approach to resolve this issue.
+
+Here's the diff just for idea discussion:
+
+diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
+index 5159c7a229229..b0b6c84874e54 100644
+--- a/arch/x86/net/bpf_jit_comp.c
++++ b/arch/x86/net/bpf_jit_comp.c
+@@ -273,7 +273,7 @@ struct jit_context {
+ /* Number of bytes emit_patch() needs to generate instructions */
+ #define X86_PATCH_SIZE		5
+ /* Number of bytes that will be skipped on tailcall */
+-#define X86_TAIL_CALL_OFFSET	(11 + ENDBR_INSN_SIZE)
++#define X86_TAIL_CALL_OFFSET	(22 + ENDBR_INSN_SIZE)
+
+ static void push_r12(u8 **pprog)
+ {
+@@ -403,6 +403,22 @@ static void emit_cfi(u8 **pprog, u32 hash)
+ 	*pprog = prog;
+ }
+
++static notrace void bpf_prepare_tail_call_cnt_ptr()
++{
++	/* %rax stores the position to call the original prog. */
++
++	asm (
++	    "pushq %r9\n\t"       /* Push %r9. */
++	    "movq %rax, %r9\n\t"  /* Cache calling position. */
++	    "xor %eax, %eax\n\t"  /* Initialise tail_call_cnt. */
++	    "pushq %rax\n\t"      /* Push tail_call_cnt. */
++	    "movq %rsp, %rax\n\t" /* Make %rax as tcc_ptr. */
++	    "callq *%r9\n\t"      /* Call the original prog. */
++	    "popq %r9\n\t"        /* Pop tail_call_cnt. */
++	    "popq %r9\n\t"        /* Pop %r9. */
++	);
++}
++
+ /*
+  * Emit x86-64 prologue code for BPF program.
+  * bpf_tail_call helper will skip the first X86_TAIL_CALL_OFFSET bytes
+@@ -410,9 +426,9 @@ static void emit_cfi(u8 **pprog, u32 hash)
+  */
+ static void emit_prologue(u8 **pprog, u32 stack_depth, bool ebpf_from_cbpf,
+ 			  bool tail_call_reachable, bool is_subprog,
+-			  bool is_exception_cb)
++			  bool is_exception_cb, u8 *image)
+ {
+-	u8 *prog = *pprog;
++	u8 *prog = *pprog, *start = *pprog;
+
+ 	emit_cfi(&prog, is_subprog ? cfi_bpf_subprog_hash : cfi_bpf_hash);
+ 	/* BPF trampoline can be made to work without these nops,
+@@ -420,14 +436,16 @@ static void emit_prologue(u8 **pprog, u32
+stack_depth, bool ebpf_from_cbpf,
+ 	 */
+ 	emit_nops(&prog, X86_PATCH_SIZE);
+ 	if (!ebpf_from_cbpf) {
+-		if (tail_call_reachable && !is_subprog)
+-			/* When it's the entry of the whole tailcall context,
+-			 * zeroing rax means initialising tail_call_cnt.
+-			 */
+-			EMIT2(0x31, 0xC0); /* xor eax, eax */
+-		else
++		if (tail_call_reachable && !is_subprog) {
++			/* mov rax, offset */
++			u32 offset = image + (prog - start) + 13;
++			EMIT4_off32(0x48, 0x8B, 0x04, 0x25, offset);
++			/* call bpf_prepare_tail_call_cnt_ptr */
++			emit_call(&prog, bpf_prepare_tail_call_cnt_ptr, offset-5);
++		 } else {
+ 			/* Keep the same instruction layout. */
+-			EMIT2(0x66, 0x90); /* nop2 */
++			emit_nops(&prog, 13);
++		 }
+ 	}
+ 	/* Exception callback receives FP as third parameter */
+ 	if (is_exception_cb) {
+@@ -1344,7 +1362,8 @@ static int do_jit(struct bpf_prog *bpf_prog, int
+*addrs, u8 *image, u8 *rw_image
+
+ 	emit_prologue(&prog, bpf_prog->aux->stack_depth,
+ 		      bpf_prog_was_classic(bpf_prog), tail_call_reachable,
+-		      bpf_is_subprog(bpf_prog), bpf_prog->aux->exception_cb);
++		      bpf_is_subprog(bpf_prog), bpf_prog->aux->exception_cb,
++		      image);
+ 	/* Exception callback will clobber callee regs for its own use, and
+ 	 * restore the original callee regs from main prog's stack frame.
+ 	 */
+
+
+Unlink the way to prepare tcc_ptr of current patch set by bpf prog's
+caller, it prepares tcc_ptr by calling a function at prologue to reserve
+tail_call_cnt memory on stack. And then, call the remain part of the bpf
+prog. At the end of prologue, rax is tcc_ptr, too.
+
+This is inspired by the original RFC PATCH[0]. And then, it avoids
+unwind-breaking issue by a real function call.
+
+[0] https://lore.kernel.org/bpf/20240104142226.87869-3-hffilwlqm@gmail.com/
+
+However, it introduces an indirect call in
+bpf_prepare_tail_call_cnt_ptr(), which costs performance by retpoline.
+If to improve performance here, bpf dispatcher should be considered,
+like XDP.
+
+Thanks,
+Leon
 
