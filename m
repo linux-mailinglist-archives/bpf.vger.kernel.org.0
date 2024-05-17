@@ -1,238 +1,319 @@
-Return-Path: <bpf+bounces-29928-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-29929-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 46BC48C8433
-	for <lists+bpf@lfdr.de>; Fri, 17 May 2024 11:51:02 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9DA858C845F
+	for <lists+bpf@lfdr.de>; Fri, 17 May 2024 11:59:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F13B02822D6
-	for <lists+bpf@lfdr.de>; Fri, 17 May 2024 09:51:00 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0D4A1B23584
+	for <lists+bpf@lfdr.de>; Fri, 17 May 2024 09:59:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C81E9364AB;
-	Fri, 17 May 2024 09:50:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B3FC2364BE;
+	Fri, 17 May 2024 09:58:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="aqPS27rf";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="ybHcdzif";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="aqPS27rf";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="ybHcdzif"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="VlRnJynH"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 50DE724B34;
-	Fri, 17 May 2024 09:50:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3DC192C68F;
+	Fri, 17 May 2024 09:58:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.92.199
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715939427; cv=none; b=O4xq5yuQ28+cp3xEKAI3QWWFbn5Dz4WzUQ06C3sswhNsPfcYD0nUAQo4DY3xiKJ/9CP67P6kBucgLyilSJIHnHHE4z7dVnytfiqe2kCzDemJ75K8XyApr/EmTI4jF32HpI/km67OngFpVmeDJaW3/dsXEqtP5bqoE+JY67hRlyA=
+	t=1715939922; cv=none; b=dJPQIx5ZOCN3gwcm9JZa2jexv/9HGIv3equzdTNIpxOh4CNXRJiFus6HAW/M5U8dW4VKGXg5g/lDdeALXSC926bBQpl0EBhWtMBl+QEI3yWsQnqiaYr9ASEkr7M5/pCU2iw7QXqWwNoITbREgTtU2qoiDbME4vsvIP0TjKJxTjk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715939427; c=relaxed/simple;
-	bh=fH748Fp39+O/lxgUrh9rhN64OkwK7uTA4acwzoyb8i0=;
-	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=H+2+gI0oSJRdPj14eLzxvbVR6e79738QtYfx2VDCCdilIIM/OTo8vtzhzfPBWXiKyGsUIc7WXPbwVAAmubUiG0kDJFGsVMGCvyNX3JyVQyoiamOM6Zw9VXPjlDNVJ7yj4wamOw5KsKwikutUqe/wLB3Q9yiaghIbwEyOivewIKU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=aqPS27rf; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=ybHcdzif; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=aqPS27rf; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=ybHcdzif; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 6034E37344;
-	Fri, 17 May 2024 09:50:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1715939422; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=8jfFpRbNQ4JylrNPf/Ju6XAY6qQjrc+0U9vxW7VwdqA=;
-	b=aqPS27rfYVOIlQYJQqRWN1OB2KuGqplKO0xASvAy99Em1LNhKAq/Z45rrmqOfomt6ymSXF
-	OiEv1bW+ZdpI213w3TR/RlpBxADCOtSoygZG2IWVCeRjyU7fk9xYWgYywcz+IS9+rfxp20
-	iBC1DT09pzE+KgT4PXFcXk6IVt2gReU=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1715939422;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=8jfFpRbNQ4JylrNPf/Ju6XAY6qQjrc+0U9vxW7VwdqA=;
-	b=ybHcdzifmrWaHz4fudlW6TywmF4wPptrNP5A3fPjgJZxiNP8yysPTURMY+P9YDVx2v+UNY
-	h72YrP3bBg//bVBQ==
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1715939422; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=8jfFpRbNQ4JylrNPf/Ju6XAY6qQjrc+0U9vxW7VwdqA=;
-	b=aqPS27rfYVOIlQYJQqRWN1OB2KuGqplKO0xASvAy99Em1LNhKAq/Z45rrmqOfomt6ymSXF
-	OiEv1bW+ZdpI213w3TR/RlpBxADCOtSoygZG2IWVCeRjyU7fk9xYWgYywcz+IS9+rfxp20
-	iBC1DT09pzE+KgT4PXFcXk6IVt2gReU=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1715939422;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=8jfFpRbNQ4JylrNPf/Ju6XAY6qQjrc+0U9vxW7VwdqA=;
-	b=ybHcdzifmrWaHz4fudlW6TywmF4wPptrNP5A3fPjgJZxiNP8yysPTURMY+P9YDVx2v+UNY
-	h72YrP3bBg//bVBQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 3DB2D13991;
-	Fri, 17 May 2024 09:50:21 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id rHjlDV0oR2boBwAAD6G6ig
-	(envelope-from <tiwai@suse.de>); Fri, 17 May 2024 09:50:21 +0000
-Date: Fri, 17 May 2024 11:50:38 +0200
-Message-ID: <87r0e0zs0h.wl-tiwai@suse.de>
-From: Takashi Iwai <tiwai@suse.de>
-To: Steven Rostedt <rostedt@goodmis.org>
-Cc: LKML <linux-kernel@vger.kernel.org>,
-	Linux trace kernel
- <linux-trace-kernel@vger.kernel.org>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Mathieu Desnoyers 
- <mathieu.desnoyers@efficios.com>,
-	Linus Torvalds 
- <torvalds@linux-foundation.org>,
-	linuxppc-dev@lists.ozlabs.org,
-	kvm@vger.kernel.org,
-	linux-block@vger.kernel.org,
-	linux-cxl@vger.kernel.org,
-	linux-media@vger.kernel.org,
-	dri-devel@lists.freedesktop.org,
-	amd-gfx@lists.freedesktop.org,
-	intel-gfx@lists.freedesktop.org,
-	intel-xe@lists.freedesktop.org,
-	linux-arm-msm@vger.kernel.org,
-	freedreno@lists.freedesktop.org,
-	virtualization@lists.linux.dev,
-	linux-rdma@vger.kernel.org,
-	linux-pm@vger.kernel.org,
-	iommu@lists.linux.dev,
-	linux-tegra@vger.kernel.org,
-	netdev@vger.kernel.org,
-	linux-hyperv@vger.kernel.org,
-	ath10k@lists.infradead.org,
-	linux-wireless@vger.kernel.org,
-	ath11k@lists.infradead.org,
-	ath12k@lists.infradead.org,
-	brcm80211@lists.linux.dev,
-	brcm80211-dev-list.pdl@broadcom.com,
-	linux-usb@vger.kernel.org,
-	linux-bcachefs@vger.kernel.org,
-	linux-nfs@vger.kernel.org,
-	ocfs2-devel@lists.linux.dev,
-	linux-cifs@vger.kernel.org,
-	linux-xfs@vger.kernel.org,
-	linux-edac@vger.kernel.org,
-	selinux@vger.kernel.org,
-	linux-btrfs@vger.kernel.org,
-	linux-erofs@lists.ozlabs.org,
-	linux-f2fs-devel@lists.sourceforge.net,
-	linux-hwmon@vger.kernel.org,
-	io-uring@vger.kernel.org,
-	linux-sound@vger.kernel.org,
-	bpf@vger.kernel.org,
-	linux-wpan@vger.kernel.org,
-	dev@openvswitch.org,
-	linux-s390@vger.kernel.org,
-	tipc-discussion@lists.sourceforge.net,
-	Julia 
- Lawall <Julia.Lawall@inria.fr>
-Subject: Re: [PATCH] tracing/treewide: Remove second parameter of __assign_str()
-In-Reply-To: <20240516133454.681ba6a0@rorschach.local.home>
-References: <20240516133454.681ba6a0@rorschach.local.home>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+	s=arc-20240116; t=1715939922; c=relaxed/simple;
+	bh=Ia/dVEWr7HUDim7yKQ618Z6eSusWdkAeUMCVf/PkIBs=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=RKpGrzlIvxs/gXj6zVQdR978ICeU56xf45Wu7ofilNAqlycEb4oxqpnDy/yNZOxUPkmPofwm5vAhgeKdgyJUMf39HdeWREjV6gcYijeL5bkxke9MLjbdOIqXK1zAkdnYyG8QBui7fIPbgG+6O+CWmvbOujqEys7cudGG5C8PhmM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=VlRnJynH; arc=none smtp.client-ip=90.155.92.199
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=hxpi/TgnORew9Z/XVkDVjx2QVxlulE667vNxVvqbtUY=; b=VlRnJynHf9XB1WJ2PuU8uoeNgE
+	VdIMolFav8OAqCi1rx/aeYzCQ5aWp6It1sZZRN8BaQATBARFNT0qTDGipMZggVztCksTuSiTW9Xod
+	h7r0+s51aMAtM2HoQ5EfDx9DIBhsjZff/7Hl74WAvcruReu/0HGpQ0EyIWFIUtqjmc/8YNduhWw26
+	sHNIsA7PWEcbQ1+0UPn7DfJPFOOgmTqp9sC6pcY+FAKWFy4P6Ku736gXrhmJgvnCO4gdadR4DXkAP
+	p8KukVuQkhH160MXcGP8GtmlCgLUl3fh2EIxK4ZeO/XCi64BWpa16V2qfytp6hFKbQnHYJHYA9VY2
+	MRLOcXQA==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+	by desiato.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1s7uLn-00000005eN4-0oKS;
+	Fri, 17 May 2024 09:58:10 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+	id C30AE3005E3; Fri, 17 May 2024 11:58:06 +0200 (CEST)
+Date: Fri, 17 May 2024 11:58:06 +0200
+From: Peter Zijlstra <peterz@infradead.org>
+To: Qais Yousef <qyousef@layalina.io>
+Cc: Steven Rostedt <rostedt@goodmis.org>, Tejun Heo <tj@kernel.org>,
+	torvalds@linux-foundation.org, mingo@redhat.com,
+	juri.lelli@redhat.com, vincent.guittot@linaro.org,
+	dietmar.eggemann@arm.com, bsegall@google.com, mgorman@suse.de,
+	bristot@redhat.com, vschneid@redhat.com, ast@kernel.org,
+	daniel@iogearbox.net, andrii@kernel.org, martin.lau@kernel.org,
+	joshdon@google.com, brho@google.com, pjt@google.com,
+	derkling@google.com, haoluo@google.com, dvernet@meta.com,
+	dschatzberg@meta.com, dskarlat@cs.cmu.edu, riel@surriel.com,
+	changwoo@igalia.com, himadrics@inria.fr, memxor@gmail.com,
+	andrea.righi@canonical.com, joel@joelfernandes.org,
+	linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+	kernel-team@meta.com
+Subject: Re: [PATCHSET v6] sched: Implement BPF extensible scheduler class
+Message-ID: <20240517095806.GJ30852@noisy.programming.kicks-ass.net>
+References: <20240501151312.635565-1-tj@kernel.org>
+ <20240502084800.GY30852@noisy.programming.kicks-ass.net>
+ <ZjPnb1vdt80FrksA@slm.duckdns.org>
+ <20240503085232.GC30852@noisy.programming.kicks-ass.net>
+ <ZjgWzhruwo8euPC0@slm.duckdns.org>
+ <20240513080359.GI30852@noisy.programming.kicks-ass.net>
+ <20240513142646.4dc5484d@rorschach.local.home>
+ <20240514000715.4765jfpwi5ovlizj@airbuntu>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-X-Spam-Level: 
-X-Spamd-Result: default: False [-1.80 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	SUSPICIOUS_RECIPS(1.50)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	MID_CONTAINS_FROM(1.00)[];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	TO_DN_SOME(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	ARC_NA(0.00)[];
-	RCVD_TLS_ALL(0.00)[];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	R_RATELIMIT(0.00)[to_ip_from(RL6rcqepr6awpd9qb5xxedoiwq)];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	RCPT_COUNT_GT_50(0.00)[50];
-	RCVD_COUNT_TWO(0.00)[2];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[efficios.com:email,inria.fr:email,imap1.dmz-prg2.suse.org:helo,suse.de:email,goodmis.org:email,linux-foundation.org:email]
-X-Spam-Score: -1.80
-X-Spam-Flag: NO
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240514000715.4765jfpwi5ovlizj@airbuntu>
 
-On Thu, 16 May 2024 19:34:54 +0200,
-Steven Rostedt wrote:
-> 
-> From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
-> 
-> [
->    This is a treewide change. I will likely re-create this patch again in
->    the second week of the merge window of v6.10 and submit it then. Hoping
->    to keep the conflicts that it will cause to a minimum.
-> ]
-> 
-> With the rework of how the __string() handles dynamic strings where it
-> saves off the source string in field in the helper structure[1], the
-> assignment of that value to the trace event field is stored in the helper
-> value and does not need to be passed in again.
-> 
-> This means that with:
-> 
->   __string(field, mystring)
-> 
-> Which use to be assigned with __assign_str(field, mystring), no longer
-> needs the second parameter and it is unused. With this, __assign_str()
-> will now only get a single parameter.
-> 
-> There's over 700 users of __assign_str() and because coccinelle does not
-> handle the TRACE_EVENT() macro I ended up using the following sed script:
-> 
->   git grep -l __assign_str | while read a ; do
->       sed -e 's/\(__assign_str([^,]*[^ ,]\) *,[^;]*/\1)/' $a > /tmp/test-file;
->       mv /tmp/test-file $a;
->   done
-> 
-> I then searched for __assign_str() that did not end with ';' as those
-> were multi line assignments that the sed script above would fail to catch.
-> 
-> Note, the same updates will need to be done for:
-> 
->   __assign_str_len()
->   __assign_rel_str()
->   __assign_rel_str_len()
-> 
-> I tested this with both an allmodconfig and an allyesconfig (build only for both).
-> 
-> [1] https://lore.kernel.org/linux-trace-kernel/20240222211442.634192653@goodmis.org/
-> 
-> Cc: Masami Hiramatsu <mhiramat@kernel.org>
-> Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-> Cc: Linus Torvalds <torvalds@linux-foundation.org>
-> Cc: Julia Lawall <Julia.Lawall@inria.fr>
-> Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+On Tue, May 14, 2024 at 01:07:15AM +0100, Qais Yousef wrote:
+> On 05/13/24 14:26, Steven Rostedt wrote:
 
-For the sound part
-Acked-by: Takashi Iwai <tiwai@suse.de>
+> > > That is, from where I am sitting I see $vendor mandate their $enterprise
+> > > product needs their $BPF scheduler. At which point $vendor will have no
+> > > incentive to ever contribute back.
+> > 
+> > Believe me they already have their own scheduler, and because its so
+> > different, it's very hard to contribute back.
 
+'They' are free to have their own scheduler, but since 'nobody' is using
+it and 'they' want to have their product work on RHEL / SLES / etc..
+therefore are bound to respect the common interfaces, no?
 
-thanks,
+> > > So I don't at all mind people playing around with schedulers -- they can
+> > > do so today, there are a ton of out of tree patches to start or learn
+> > > from, or like I said, it really isn't all that hard to just rip out fair
+> > > and write something new.
+> > 
+> > For cloud servers, I bet a lot of schedulers are not public. Although,
+> > my company tries to publish the schedulers they use.
 
-Takashi
+Yeah, it's the TIVO thing. Keeping all that private creates the rebase
+pain. Outside of that there's nothing we can do.
+
+Anyway, instead of doing magic mushroom schedulers, what does the cloud
+crud actually want? I know the KVM people were somewhat looking forward
+to the EEVDF sched_attr::sched_runtime extension because virt likes the
+longer slices. Less preemption more better for them.
+
+In fact, some of the facebook workloads also wanted longer slices (and
+no wakeup preemption).
+
+> > From what I understand (I don't work on production, but Chromebooks), a
+> > lot of changes cannot be contributed back because their updates are far
+> > from what is upstream. Having a plugable scheduler would actually allow
+> > them to contribute *more*.
+
+So can we please start by telling what kind of magic hacks ChromeOS has
+and whatfor?
+
+The term contributing seems to mean different things to us. Building a
+external scheduler isn't contributing, it's fragmenting.
+
+> > > Keeping a rando github repo with BPF schedulers is not contributing.
+> > 
+> > Agreed, and I would guess having them in the Linux kernel tree would be
+> > more beneficial.
+
+Yeah, no. Same thing. It's just a pile of junk until someone puts the
+time in to figure out how to properly integrate it. Very much like Qais
+argues below.
+
+> > > That's just a repo with multiple out of tree schedulers to be ignored.
+> > > Who will put in the effort of upsteaming things if they can hack up a
+> > > BPF and throw it over the wall?
+> > 
+> > If there's a place in the Linux kernel tree, I'm sure there would be
+> > motivation to place it there. Having it in the kernel proper does give
+> > more visibility of code, and therefore enhancements to that code. This
+> > was the same rationale for putting perf into the kernel proper.
+
+These things are very much not the same. A pile of random hacks vs a
+single unified interface to PMUs. They're like the polar opposite of
+one another.
+
+> > > So yeah, I'm very much NOT supportive of this effort. From where I'm
+> > > sitting there is simply not a single benefit. You're not making my life
+> > > better, so why would I care?
+> > > 
+> > > How does this BPF muck translate into better quality patches for me?
+> > 
+> > Here's how we will be using it (we will likely be porting sched_ext to
+> > ChromeOS regardless of its acceptance).
+> > 
+> > Doing testing of scheduler changes in the field is extremely time
+> > consuming and complex. We tested EEVDF vs CFS by backporting EEVDF to
+> > 5.15 (as that is the kernel version we are using on the chromebooks we
+
+/me mumbles something about necro-kernels...
+
+> > were testing on), and then we need to add a user space "switch" to
+> > change the scheduler. Note, this also risks causing a bug in adding
+> > these changes. Then we push the kernel out, and then start our
+> > experiment that enables our feature to a small percentage, and slowly
+> > increases the number of users until we have a enough for a statistical
+> > result.
+> > 
+> > What sched_ext would give us is a easy way to try different scheduling
+> > algorithms and get feedback much quicker. Once we determine a solution
+> > that improves things, we would then spend the time to implement it in
+> > the scheduler, and yes, send it upstream.
+
+This sounds a little backwards... ok, a lot. How do you do actual
+problem analysis in this case? Having random statistics is not really
+useful - beyond determining there might be a problem.
+
+The next step is isolating that problem locally and reproducing it. Then
+analysing *what* the actual problem is and how it happens, and then try
+and think of a solution.
+
+(preferably one that then doesn't break another thing :-)
+
+> > To me, sched_ext should never be the final solution, but it can be
+> > extremely useful in testing various changes quickly in the field. Which
+> > to me would encourage more contributions.
+
+Well, the thing is, the moment sched_ext itself lands upstream, it will
+become the final solution for a fair number of people and leave us, the
+wider Linux scheduler community, up a creek without no paddles on.
+
+There is absolutely no inherent incentive to further contribute. Your
+immediate problem is solved, you get assigned the next problem. That is
+reality.
+
+Worse, they can share the BPF hack and get warm fuzzy feeling of
+'contribution' while in fact it's useless. At best we know 'random hack
+changed something for them'. No problem description, no reproducer, no
+nothing.
+
+Anyway, if you feel you need BPF hackery to do this, by all means, do
+so. But realize that it is a debug tool and in general we don't merge
+debug tools.
+
+Also, I would argue that perhaps a scheduler livepatch would be more
+convenient to actually debug / A-B test things.
+
+> I really don't think the problems we have are because of EEVDF vs CFS vs
+> anything else. Other major OSes have one scheduler, but what they exceed on is
+> providing better QoS interfaces and mechanism to handle specific scenarios that
+> Linux lacks.
+
+Quite possibly. The immediate problem being that adding interfaces is
+terrifying. Linus has a rather strong opinion about breaking stuff, and
+getting this wrong will very quickly result in a paint-into-corner type
+problem.
+
+We can/could add fields to sched_attr under the understanding that
+they're purely optional and try thing, *however* too many such fields
+and we're up a creek again.
+
+> The confusion I see again and again over the years is the fragmentation of
+> Linux eco system and app writers don't know how to do things properly on Linux
+> vs other OSes. Note our CONFIG system is part of this fragmentation.
+> 
+> The addition of more flavours which inevitably will lead to custom QoS specific
+> to that scheduler and libraries built on top of it that require that particular
+> extension available is a recipe for more confusion and fragmentation.
+
+Yes, this!
+
+> I really don't buy the rapid development aspect too. The scheduler was heavily
+> influenced by the early contributors which come from server market that had
+> (few) very specific workloads they needed to optimize for and throughput had
+> a heavier weight vs latency. Fast forward to now, things are different. Even on
+> server market latency/responsiveness has become more important. Power and
+> thermal are important on a larger class of systems now too. I'd dare say even
+> on server market.
+
+Absolutely, AFAIU racks are both power and thermal limited. There are
+some crazy ACPI protocols to manage some of this.
+
+> How do you know when it's okay for an app/task to consume too
+> much power and when it is not? Hint hint, you can't unless someone in userspace
+> tells you.
+
+Yes, cluster/cloud infrastructure needs to manage that. There is nothing
+smart the kernel can do here on its own, except respect the ACPI lunacy
+and hard throttle itself when the panic signal comes.
+
+> Similarly for latency vs throughput. What is the correct way to
+> write an application to provide this info? Then we can ask what is missing in
+> the scheduler to enable this.
+
+Right, so the EEVDF thing is a start here. By providing a per task
+request size, applications can indicate if they want frequent and short
+activations or more infrequent longer activations.
+
+An application can know it's (average) activation time, the kernel has
+no clue when work starts and is completed. Applications can fairly
+trivially measure this using CLOCK_THREAD_CPUTIME_ID reads before and
+after and communicate this (very much like SCHED_DEADLINE).
+
+Anyway, yes, userspace needs to change and provide more information. The
+trick ofcourse is figuring out which bit of information is critical /
+useful etc.
+
+There is a definite limit on the amount of constraints you want to solve
+at runtime.
+
+Everybody going off and hacking their own thing does not help, we need
+collaboration to figure out what it is that is needed.
+
+> Note the original min/wakeup_granularity_ns, latency_ns etc were tuned by
+> default for throughput by the way (server market bias). You can manipulate
+> those and get better latencies.
+
+The immediate problem with those knobs is that they are system wide. But
+yes, everybody was randomly poking them knobs, sometimes in obviously
+insane ways.
+
+> FWIW IMO the biggest issues I see in the scheduler is that its testability and
+> debuggability is hard. I think BPF can be a good fit for that. For the latter
+> I started this project, yet I am still trying to figure out how to add tracer
+> for the difficult paths to help people more easily report when a bad decision
+> has happened to provide more info about the internal state of the scheduler, in
+> hope to accelerate the process of finding solutions. 
+
+So the pitfalls here are that exposing that information for debug
+purposes can/will lead to people consuming this information for
+non-debug purposes and then when we want to change things we're stuck
+because suddenly someone relies something we believed was an
+implementation detail :/
+
+I've been bitten by this before and this is why I'm so very hesitant to
+put tracepoints in the scheduler.
+
+> I think it would be great to have a clear list of the current limitations
+> people see in the scheduler. It could be a failure on my end, but I haven't
+> seen specifics of problems and what was tried and failed to the point it is
+> impossible to move forward. 
+
+Right, list, but also ideally reproducers (yeah, I know, really hard).
+
+The moment we merge sched_ext all motivation to do any of this work goes
+out the window.
+
+> From what I see, I am hitting bugs here and there
+> all the time. But they are hard to debug to truly understand where things went
+> wrong. Like this one for example where PTHREAD_PRIO_PI is a NOP for fair tasks.
+> Many thought using this flag doesn't help (rather than buggy)..
+
+Yay for the terminal backlog :/ I'll try and have a look.
 
