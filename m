@@ -1,55 +1,55 @@
-Return-Path: <bpf+bounces-29924-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-29925-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1E0608C8246
-	for <lists+bpf@lfdr.de>; Fri, 17 May 2024 10:04:39 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 029658C826F
+	for <lists+bpf@lfdr.de>; Fri, 17 May 2024 10:10:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 254031C21BB6
-	for <lists+bpf@lfdr.de>; Fri, 17 May 2024 08:04:38 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4BA74B223A6
+	for <lists+bpf@lfdr.de>; Fri, 17 May 2024 08:10:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D08821373;
-	Fri, 17 May 2024 08:04:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 92C661B809;
+	Fri, 17 May 2024 08:09:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com header.b="elrPmV5g"
+	dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com header.b="DmkMWjRn"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp-relay-canonical-1.canonical.com (smtp-relay-canonical-1.canonical.com [185.125.188.121])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3007328DA4;
-	Fri, 17 May 2024 08:04:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 45E3822EE8;
+	Fri, 17 May 2024 08:09:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.125.188.121
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715933053; cv=none; b=cSCqHYXEQmsZiVQqapnJOt2NWP8iu8A0P6c8kHPB7L8KVz4+pZqLNsVWTiPvdeeUzNLGYeRPutqocLSEp+HMCaU1ih0DHPyp6Kvu2OaY0vRT5+Eg7mRveJSHNsiUy3cHxSlawNtcxDfdyKhHEfMLFheLZLPBNVqeYZ8sXKJHkgA=
+	t=1715933399; cv=none; b=QzRRLMHocIKwiU7J3q+t8k0TtctEYhpsodQwaVjdhwfLuorOPH/bsF6R27AjnWM588cP620xtobGcSzGUR5uKP1YMCK2RZplY4uOEm2cQfCxOUZYqdTVsP1cydGDrfzo3E5bM3f0fHo626jSm5negXB6kzfFMGNgK6NE7Nc9/Qs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715933053; c=relaxed/simple;
-	bh=XZaa9vVqsuZLVJrkk5kjpUcAzKBYKYdObS8BQonHeW8=;
+	s=arc-20240116; t=1715933399; c=relaxed/simple;
+	bh=wNEzgGHOjrndbGdT+4iN3Zp8tASOmsliZN8MhPwij5Y=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=E1rcxYcwThFxjgKE1cCDpfNlx9Oo9CMjH8Jz8P3EJOPSQFsa6c/rgl9ox4q1T90v7ttNN/K/iZ11kw+lW0A9pdCvNWjmKkz0Pw9yfXHJ/xQbN48ZXYChlWIUIef8ApruQU2RiIuZwnWuQg8s6E5vj7CAQeEEuY2qH+rnZwSyvmg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canonical.com; spf=pass smtp.mailfrom=canonical.com; dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com header.b=elrPmV5g; arc=none smtp.client-ip=185.125.188.121
+	 In-Reply-To:Content-Type; b=PikCsV+7DxS4LH/YQC5uee4M9cfIzKFPQWlYV6Gku5qKgkZsqhbzo53Jkmls+BQnjk7xB8CLjRBzV4T/CX6dghbpVTnA8FX8JNUBgGyg3kYqZdmG9LtxxahMDoLYVNfUFRCTkG8gyyM4rlwpnmXyG5A0+PO5KxLCMdfo73//O2k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canonical.com; spf=pass smtp.mailfrom=canonical.com; dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com header.b=DmkMWjRn; arc=none smtp.client-ip=185.125.188.121
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canonical.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canonical.com
 Received: from [10.8.193.2] (unknown [50.39.103.33])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPSA id A006E3FE21;
-	Fri, 17 May 2024 08:03:56 +0000 (UTC)
+	by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPSA id D3CF73F103;
+	Fri, 17 May 2024 08:09:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-	s=20210705; t=1715933041;
-	bh=6f73wJOpnXPfmlfzDSwmA5b/rEYNvgxqFktpdTrtfUM=;
+	s=20210705; t=1715933388;
+	bh=PRtVwgpx4S0MflLTqf0VyebjH24V+iLMQE8myIRBDzs=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
 	 In-Reply-To:Content-Type;
-	b=elrPmV5g3rjnj2J662xKlGIJbHULQvyzFSUjJPO0AsG0V8b/Xb4A4dB1MtvqbLgP2
-	 MPQzPDcsOeJoqBpBJRT1Wai/+9WRDwwKn7sAPAiK9y5ulJHGbi13gl4eyep5wQWEOt
-	 3wPNAu5I1Tn8HZ1DLR9+p9q+wyuBt26KPmytWzlo12jAVwDlw4d3VCS1+6RBO28szD
-	 uAzz5opx+bnA9Z5DOJNhg+BvvWP8NbXTx3RavG4cVQFeCaaDUh3rYrH3BUO3Gq1j1R
-	 U4MENsC2iViccilIwIqEWJ8lNmBWvbz02UOOFYvINt90a2NdrUxdgoaRQmHxFQDO7f
-	 TS2SksYF7FfQQ==
-Message-ID: <3e50ac39-2dde-47e7-8415-2b57f461094f@canonical.com>
-Date: Fri, 17 May 2024 01:03:52 -0700
+	b=DmkMWjRnT+y28G6OVilDXkBdO5pgpZ8TcdhDT+K8/aLALpQaN8wRnrs7MACjMV0Xr
+	 SDo6NEVx9bVrqp8jnMaP4a42A3foSSXzIJZNLbp+VxjQeTwoYe5a7yh6/TWdPTRiv4
+	 rU13StK43q6X9AuDsExIr1XPBIb4caPFTN8LRtAx1svs+d1Qr3MeMdQxYLyn8QI6b6
+	 EAs5C53Qb5L2EyIF539M/MztKirb2YEKAf8jtrdZ5YZgZq9uNJKAEgM0Ke+Te2Fs28
+	 akkIMvHQk5tnTwTNO2yJwi6+A5OkRPXgCgzVgLaJ234JvEp4iQuPHLTqcO7dAbHcIX
+	 SUGiWhQZFWAvg==
+Message-ID: <9dca979e-2e8d-4078-aa4f-bc54e1ddbf49@canonical.com>
+Date: Fri, 17 May 2024 01:09:39 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -57,14 +57,15 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v12 1/5] kernel: Add helper macros for loop unrolling
+Subject: Re: [PATCH v12 2/5] security: Count the LSMs enabled at compile time
 To: KP Singh <kpsingh@kernel.org>, linux-security-module@vger.kernel.org,
  bpf@vger.kernel.org
 Cc: ast@kernel.org, paul@paul-moore.com, casey@schaufler-ca.com,
  andrii@kernel.org, keescook@chromium.org, daniel@iogearbox.net,
- renauld@google.com, revest@chromium.org, song@kernel.org
+ renauld@google.com, revest@chromium.org, song@kernel.org,
+ Kui-Feng Lee <sinquersw@gmail.com>
 References: <20240516003524.143243-1-kpsingh@kernel.org>
- <20240516003524.143243-2-kpsingh@kernel.org>
+ <20240516003524.143243-3-kpsingh@kernel.org>
 Content-Language: en-US
 From: John Johansen <john.johansen@canonical.com>
 Autocrypt: addr=john.johansen@canonical.com; keydata=
@@ -110,98 +111,186 @@ Autocrypt: addr=john.johansen@canonical.com; keydata=
  +T7sv9+iY+e0Y+SolyJgTxMYeRnDWE6S77g6gzYYHmcQOWP7ZMX+MtD4SKlf0+Q8li/F9GUL
  p0rw8op9f0p1+YAhyAd+dXWNKf7zIfZ2ME+0qKpbQnr1oizLHuJX/Telo8KMmHter28DPJ03 lT9Q
 Organization: Canonical
-In-Reply-To: <20240516003524.143243-2-kpsingh@kernel.org>
+In-Reply-To: <20240516003524.143243-3-kpsingh@kernel.org>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
 On 5/15/24 17:35, KP Singh wrote:
-> This helps in easily initializing blocks of code (e.g. static calls and
-> keys).
+> These macros are a clever trick to determine a count of the number of
+> LSMs that are enabled in the config to ascertain the maximum number of
+> static calls that need to be configured per LSM hook.
 > 
-> UNROLL(N, MACRO, __VA_ARGS__) calls MACRO N times with the first
-> argument as the index of the iteration. This allows string pasting to
-> create unique tokens for variable names, function calls etc.
+> Without this one would need to generate static calls for the total
+> number of LSMs in the kernel (even if they are not compiled) times the
+> number of LSM hooks which ends up being quite wasteful.
 > 
-> As an example:
-> 
-> 	#include <linux/unroll.h>
-> 
-> 	#define MACRO(N, a, b)            \
-> 		int add_##N(int a, int b) \
-> 		{                         \
-> 			return a + b + N; \
-> 		}
-> 
-> 	UNROLL(2, MACRO, x, y)
-> 
-> expands to:
-> 
-> 	int add_0(int x, int y)
-> 	{
-> 		return x + y + 0;
-> 	}
-> 
-> 	int add_1(int x, int y)
-> 	{
-> 		return x + y + 1;
-> 	}
-> 
-> Reviewed-by: Kees Cook <keescook@chromium.org>
-> Reviewed-by: Casey Schaufler <casey@schaufler-ca.com>
+> Suggested-by: Kui-Feng Lee <sinquersw@gmail.com>
+> Suggested-by: Andrii Nakryiko <andrii@kernel.org>
 > Acked-by: Song Liu <song@kernel.org>
 > Acked-by: Andrii Nakryiko <andrii@kernel.org>
+> Reviewed-by: Kees Cook <keescook@chromium.org>
+> Reviewed-by: Casey Schaufler <casey@schaufler-ca.com>
 > Signed-off-by: KP Singh <kpsingh@kernel.org>
 
 looks good
-
 Reviewed-by: John Johansen <john.johansen@canonical.com>
 
 > ---
->   include/linux/unroll.h | 36 ++++++++++++++++++++++++++++++++++++
->   1 file changed, 36 insertions(+)
->   create mode 100644 include/linux/unroll.h
+>   include/linux/args.h      |   6 +-
+>   include/linux/lsm_count.h | 128 ++++++++++++++++++++++++++++++++++++++
+>   2 files changed, 131 insertions(+), 3 deletions(-)
+>   create mode 100644 include/linux/lsm_count.h
 > 
-> diff --git a/include/linux/unroll.h b/include/linux/unroll.h
+> diff --git a/include/linux/args.h b/include/linux/args.h
+> index 8ff60a54eb7d..2e8e65d975c7 100644
+> --- a/include/linux/args.h
+> +++ b/include/linux/args.h
+> @@ -17,9 +17,9 @@
+>    * that as _n.
+>    */
+>   
+> -/* This counts to 12. Any more, it will return 13th argument. */
+> -#define __COUNT_ARGS(_0, _1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11, _12, _n, X...) _n
+> -#define COUNT_ARGS(X...) __COUNT_ARGS(, ##X, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0)
+> +/* This counts to 15. Any more, it will return 16th argument. */
+> +#define __COUNT_ARGS(_0, _1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11, _12, _13, _14, _15, _n, X...) _n
+> +#define COUNT_ARGS(X...) __COUNT_ARGS(, ##X, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0)
+>   
+>   /* Concatenate two parameters, but allow them to be expanded beforehand. */
+>   #define __CONCAT(a, b) a ## b
+> diff --git a/include/linux/lsm_count.h b/include/linux/lsm_count.h
 > new file mode 100644
-> index 000000000000..d42fd6366373
+> index 000000000000..73c7cc81349b
 > --- /dev/null
-> +++ b/include/linux/unroll.h
-> @@ -0,0 +1,36 @@
+> +++ b/include/linux/lsm_count.h
+> @@ -0,0 +1,128 @@
 > +/* SPDX-License-Identifier: GPL-2.0 */
 > +
 > +/*
 > + * Copyright (C) 2023 Google LLC.
 > + */
 > +
-> +#ifndef __UNROLL_H
-> +#define __UNROLL_H
+> +#ifndef __LINUX_LSM_COUNT_H
+> +#define __LINUX_LSM_COUNT_H
 > +
 > +#include <linux/args.h>
 > +
-> +#define UNROLL(N, MACRO, args...) CONCATENATE(__UNROLL_, N)(MACRO, args)
+> +#ifdef CONFIG_SECURITY
 > +
-> +#define __UNROLL_0(MACRO, args...)
-> +#define __UNROLL_1(MACRO, args...)  __UNROLL_0(MACRO, args)  MACRO(0, args)
-> +#define __UNROLL_2(MACRO, args...)  __UNROLL_1(MACRO, args)  MACRO(1, args)
-> +#define __UNROLL_3(MACRO, args...)  __UNROLL_2(MACRO, args)  MACRO(2, args)
-> +#define __UNROLL_4(MACRO, args...)  __UNROLL_3(MACRO, args)  MACRO(3, args)
-> +#define __UNROLL_5(MACRO, args...)  __UNROLL_4(MACRO, args)  MACRO(4, args)
-> +#define __UNROLL_6(MACRO, args...)  __UNROLL_5(MACRO, args)  MACRO(5, args)
-> +#define __UNROLL_7(MACRO, args...)  __UNROLL_6(MACRO, args)  MACRO(6, args)
-> +#define __UNROLL_8(MACRO, args...)  __UNROLL_7(MACRO, args)  MACRO(7, args)
-> +#define __UNROLL_9(MACRO, args...)  __UNROLL_8(MACRO, args)  MACRO(8, args)
-> +#define __UNROLL_10(MACRO, args...) __UNROLL_9(MACRO, args)  MACRO(9, args)
-> +#define __UNROLL_11(MACRO, args...) __UNROLL_10(MACRO, args) MACRO(10, args)
-> +#define __UNROLL_12(MACRO, args...) __UNROLL_11(MACRO, args) MACRO(11, args)
-> +#define __UNROLL_13(MACRO, args...) __UNROLL_12(MACRO, args) MACRO(12, args)
-> +#define __UNROLL_14(MACRO, args...) __UNROLL_13(MACRO, args) MACRO(13, args)
-> +#define __UNROLL_15(MACRO, args...) __UNROLL_14(MACRO, args) MACRO(14, args)
-> +#define __UNROLL_16(MACRO, args...) __UNROLL_15(MACRO, args) MACRO(15, args)
-> +#define __UNROLL_17(MACRO, args...) __UNROLL_16(MACRO, args) MACRO(16, args)
-> +#define __UNROLL_18(MACRO, args...) __UNROLL_17(MACRO, args) MACRO(17, args)
-> +#define __UNROLL_19(MACRO, args...) __UNROLL_18(MACRO, args) MACRO(18, args)
-> +#define __UNROLL_20(MACRO, args...) __UNROLL_19(MACRO, args) MACRO(19, args)
+> +/*
+> + * Macros to count the number of LSMs enabled in the kernel at compile time.
+> + */
 > +
-> +#endif /* __UNROLL_H */
+> +/*
+> + * Capabilities is enabled when CONFIG_SECURITY is enabled.
+> + */
+> +#if IS_ENABLED(CONFIG_SECURITY)
+> +#define CAPABILITIES_ENABLED 1,
+> +#else
+> +#define CAPABILITIES_ENABLED
+> +#endif
+> +
+> +#if IS_ENABLED(CONFIG_SECURITY_SELINUX)
+> +#define SELINUX_ENABLED 1,
+> +#else
+> +#define SELINUX_ENABLED
+> +#endif
+> +
+> +#if IS_ENABLED(CONFIG_SECURITY_SMACK)
+> +#define SMACK_ENABLED 1,
+> +#else
+> +#define SMACK_ENABLED
+> +#endif
+> +
+> +#if IS_ENABLED(CONFIG_SECURITY_APPARMOR)
+> +#define APPARMOR_ENABLED 1,
+> +#else
+> +#define APPARMOR_ENABLED
+> +#endif
+> +
+> +#if IS_ENABLED(CONFIG_SECURITY_TOMOYO)
+> +#define TOMOYO_ENABLED 1,
+> +#else
+> +#define TOMOYO_ENABLED
+> +#endif
+> +
+> +#if IS_ENABLED(CONFIG_SECURITY_YAMA)
+> +#define YAMA_ENABLED 1,
+> +#else
+> +#define YAMA_ENABLED
+> +#endif
+> +
+> +#if IS_ENABLED(CONFIG_SECURITY_LOADPIN)
+> +#define LOADPIN_ENABLED 1,
+> +#else
+> +#define LOADPIN_ENABLED
+> +#endif
+> +
+> +#if IS_ENABLED(CONFIG_SECURITY_LOCKDOWN_LSM)
+> +#define LOCKDOWN_ENABLED 1,
+> +#else
+> +#define LOCKDOWN_ENABLED
+> +#endif
+> +
+> +#if IS_ENABLED(CONFIG_SECURITY_SAFESETID)
+> +#define SAFESETID_ENABLED 1,
+> +#else
+> +#define SAFESETID_ENABLED
+> +#endif
+> +
+> +#if IS_ENABLED(CONFIG_BPF_LSM)
+> +#define BPF_LSM_ENABLED 1,
+> +#else
+> +#define BPF_LSM_ENABLED
+> +#endif
+> +
+> +#if IS_ENABLED(CONFIG_SECURITY_LANDLOCK)
+> +#define LANDLOCK_ENABLED 1,
+> +#else
+> +#define LANDLOCK_ENABLED
+> +#endif
+> +
+> +#if IS_ENABLED(CONFIG_IMA)
+> +#define IMA_ENABLED 1,
+> +#else
+> +#define IMA_ENABLED
+> +#endif
+> +
+> +#if IS_ENABLED(CONFIG_EVM)
+> +#define EVM_ENABLED 1,
+> +#else
+> +#define EVM_ENABLED
+> +#endif
+> +
+> +/*
+> + *  There is a trailing comma that we need to be accounted for. This is done by
+> + *  using a skipped argument in __COUNT_LSMS
+> + */
+> +#define __COUNT_LSMS(skipped_arg, args...) COUNT_ARGS(args...)
+> +#define COUNT_LSMS(args...) __COUNT_LSMS(args)
+> +
+> +#define MAX_LSM_COUNT			\
+> +	COUNT_LSMS(			\
+> +		CAPABILITIES_ENABLED	\
+> +		SELINUX_ENABLED		\
+> +		SMACK_ENABLED		\
+> +		APPARMOR_ENABLED	\
+> +		TOMOYO_ENABLED		\
+> +		YAMA_ENABLED		\
+> +		LOADPIN_ENABLED		\
+> +		LOCKDOWN_ENABLED	\
+> +		SAFESETID_ENABLED	\
+> +		BPF_LSM_ENABLED		\
+> +		LANDLOCK_ENABLED	\
+> +		IMA_ENABLED		\
+> +		EVM_ENABLED)
+> +
+> +#else
+> +
+> +#define MAX_LSM_COUNT 0
+> +
+> +#endif /* CONFIG_SECURITY */
+> +
+> +#endif  /* __LINUX_LSM_COUNT_H */
 
 
