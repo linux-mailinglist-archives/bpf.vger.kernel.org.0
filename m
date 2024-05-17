@@ -1,79 +1,93 @@
-Return-Path: <bpf+bounces-29951-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-29953-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7F2468C8966
-	for <lists+bpf@lfdr.de>; Fri, 17 May 2024 17:34:56 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id D5E9E8C8976
+	for <lists+bpf@lfdr.de>; Fri, 17 May 2024 17:40:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 42F10282E1E
-	for <lists+bpf@lfdr.de>; Fri, 17 May 2024 15:34:55 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0BEB61C21003
+	for <lists+bpf@lfdr.de>; Fri, 17 May 2024 15:40:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD12712D74F;
-	Fri, 17 May 2024 15:34:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 27CF212FB03;
+	Fri, 17 May 2024 15:40:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=googlemail.com header.i=@googlemail.com header.b="UXY3Ck2H"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="efgBE+zA"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f178.google.com (mail-pl1-f178.google.com [209.85.214.178])
+Received: from mail-pl1-f194.google.com (mail-pl1-f194.google.com [209.85.214.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC53854673
-	for <bpf@vger.kernel.org>; Fri, 17 May 2024 15:34:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5248112F5A9;
+	Fri, 17 May 2024 15:40:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715960091; cv=none; b=V/oXMN80Mxs5Kc26qQG8tr2ZbZFiSwx8R6CmOJQzWaX6pq4KqY4N6fcwy79sBRE/+NhwlXuHNZPjVxcv2xxyIHP80mY64Vc6n3DIdYfY271hLFRU013T7GD7a8pGhgeo58Z15Pqhxjy25rFGV1Ov2Osj0oY5eSnKHDpoIxFd/Zs=
+	t=1715960439; cv=none; b=dRKzplkEDPpCA66HGRt+ycJIpdfq7BL615PN4n4lij8Bl+n5b3MvbtCLT9x1A+DL8gV04ybQixNI5rLtjXMXh44KdKyhaz0MbkSUyNK75TrMqSCh2hZQTz8vQbrm+bZ0SBhgxEED+KjsPsPH2kKWiWww+kFb19AMYFhIaTqwOVQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715960091; c=relaxed/simple;
-	bh=UkqjKfmhbO5OyfYRmSX4f2sXh07K3UTE+omaUOYPCXE=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=MfDX+T3iX5D7QziNC7dH2cII3oEwJjsOewSmWbRVvKeIkEiETxU14WpZvsCY+1NENEXRsOi0AzPSktOFOz6So+EqQDDAFxMyNUfeW6xTDf+mv55TaID2SNcfb+VhIQ3bGULQ6JFYw+6ixPiyHmqT2/1JJ0m6OvYXXFcTKdXy9zo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=googlemail.com; spf=pass smtp.mailfrom=googlemail.com; dkim=pass (2048-bit key) header.d=googlemail.com header.i=@googlemail.com header.b=UXY3Ck2H; arc=none smtp.client-ip=209.85.214.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=googlemail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=googlemail.com
-Received: by mail-pl1-f178.google.com with SMTP id d9443c01a7336-1e3c3aa8938so11928205ad.1
-        for <bpf@vger.kernel.org>; Fri, 17 May 2024 08:34:49 -0700 (PDT)
+	s=arc-20240116; t=1715960439; c=relaxed/simple;
+	bh=iNsDA5SLvPhu0JbRwQ06u+xbMDVE3hHQVYQf02Bb1H0=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=tyUA5M+cTPveD5vGrb3UicsbPxY8cq9aMc1HHu+VMWba5D/gI16FGOEFA4JqzZ/Z6zolGk9G0ygz41FNebho8KIhCeLyApB3ypgcGcKd75F8fs40HZEXTlGwYSkx8XpluHAAOGl6ay0IJ4wPYZVzJtAo0Wn1OZ4z7SUI79hs0Yw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=efgBE+zA; arc=none smtp.client-ip=209.85.214.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f194.google.com with SMTP id d9443c01a7336-1eb0e08bfd2so12868965ad.1;
+        Fri, 17 May 2024 08:40:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=20230601; t=1715960089; x=1716564889; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=gu9rHXjrQNiuEdfil+6Qxyl1dIA+C1Ezul/fpNnbzX0=;
-        b=UXY3Ck2H4tR8AZx0sQW9/JGxmrTNB+vXRdGSpBJfGZ7KE0TWeU79AhI7AElZGKoLz3
-         NCxnH9J++/3XMh5Jni2jo7BSw+23uasQQGU7QuxIsDK7YvIcuQywv2A0o2RctRyNXXLV
-         DK0gQU7gkgpifnwYK3637Qd8T6cOUMA4ZwpyhWMvJ6vSB6SY+tjuLrL1LBlotGbGjQ+a
-         20tFcqq3fRTmCuIBPLljfqU3dS9rJzn4H2K+eu2MklAscyF8OybGlsys+bBnMNCo0yNn
-         t5G3BzQbQeaeg5yuEfGSTNXcRmAmfzAKNwonn3ElIJu1LFnEq/ijiDGIdTrpGW22OUPo
-         N0+w==
+        d=gmail.com; s=20230601; t=1715960437; x=1716565237; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=KeBHstQjIre4Wfpl7kdLCjbinS3o2KJnHNzvvNjFeMA=;
+        b=efgBE+zAOPgMAKpKlPDdN+a1doIdMBMnA5PCJe5gL/1y8bYfNlHc06+ssAStNXrvpN
+         /xuInGfFxot7ehI8gDm7OdWH/7EGSa+FbNwk5C4DG5Jc2rAwEDYGEu10gFKgH1YbFcJX
+         uINa+/7EWO2WDBPqSzG0RJhVrPq54daq6VdxFqqEtNDXFeIx4RQwk9Yla5TXOnBIKkVS
+         /yXgxp4oJsTT+2G/8nKPeVrxgCoRZ/phmZSjWv9Ahb+Odu5ZJOfFwL5LgPRdMU5yPKXZ
+         p8/o4ze3yJyXY4emVi33GM5Xr5Zw+PlXhJ7pgWm5VlFg5umQJWt59UQyFw0SAbsxhoaF
+         5y0g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1715960089; x=1716564889;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=gu9rHXjrQNiuEdfil+6Qxyl1dIA+C1Ezul/fpNnbzX0=;
-        b=W9T3jt3poNKhmbjbn1r8rnwyp1cMG8IDplXnzyN7IkJrKsDZE43ihD1IKTj2ZjIp0k
-         87l6CPLLs6Bn3p5DzsSPz8JOR0M1ymPi/C1ZUrNCH0f2lCI0igVtAyiD514t/I1n8XFY
-         s3IRu49kI81lIWJfX7j/kVLDP8GINigjZ20ow1pj/AmihxLAKirrGa0ttBXtTJYY2hzT
-         Q8vIRtbYKE7QAgZlSum4JODjOi5bHTjuQJrkGhIHm+vRPo2WcWgxSAZ91cC5rpXF75v5
-         BmjOy52OtxE/ddx4+5kX5OZDUn4RApImB64yZXxxCFGKw6VUJJ07Vzj6PJCdX9LVBCWw
-         OXZg==
-X-Gm-Message-State: AOJu0YwNI7K5+BQ1Ndp1QM+lboxjIlZEuHtK+EFjmY/hvay3qMC361q9
-	MpdfAvOqBCFzlu4pnM4hglNZ7/o2pOLyucDxnER97GQHhGjGLHhRy2+h6Q==
-X-Google-Smtp-Source: AGHT+IEmwrGI+mO352Ret0QmpEQXcshi8dtdOKXoKXqgkRXtzbmexGrV7Gnc7qYFKDIm26al4/xBrw==
-X-Received: by 2002:a17:90a:ea12:b0:2b2:7c52:e175 with SMTP id 98e67ed59e1d1-2b6cceef2f7mr20254508a91.31.1715960088955;
-        Fri, 17 May 2024 08:34:48 -0700 (PDT)
-Received: from ubuntu2310.lan (c-67-170-74-237.hsd1.wa.comcast.net. [67.170.74.237])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2b628ca5124sm17494864a91.43.2024.05.17.08.34.47
+        d=1e100.net; s=20230601; t=1715960437; x=1716565237;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=KeBHstQjIre4Wfpl7kdLCjbinS3o2KJnHNzvvNjFeMA=;
+        b=BuXnFlWVr+UD+awvsJlTkkdw1w8TbSr+UBU7+JWUEBTKJkACFtIBsD9M4cN3tCR6Ta
+         KgQ5uM805FO2tG4EOmY1GsGFxXBcr5kBwXCRRv2XBxlV7HvvOSr96SVYafooPnKfx/Uj
+         f8Qwz1vFOofGkEsAOkZZ4mjAaCn4qJ4l7lQ0QNfW81z6BD3CYpEt4E0deXQ6+rQp3HJt
+         GGoE05nIlqs2woojCHSQhO0aNPHBp2HazNuvfOAft2CCY2f8Ixrcut8iBYc4Hb9KEIw+
+         Uh9bSJlySEosTuMly5M8TCjGX7iSrnWQAVdW0Xp6Tw/QgdelT3bLRrVerDpX7iBNGS9T
+         ClOg==
+X-Forwarded-Encrypted: i=1; AJvYcCWIFZ5nUeLzRHcqOmXiJFh+0vLGKB3jaDddPJ9bPdZTUWfUAF0WOkHk/vgA5kt3CxNHM061og0Zjz2uC2JRQZRCQyff3Uiml4ngdwbUv8tG1XwaAVe8K1p4jWhAOR4ryV1Xsu8DykkyUOdN+TI4MXyGdxY+S6SYoizs
+X-Gm-Message-State: AOJu0YxTD2v+vRZouAMyfMN4mUmvBjDALfGypfdXoJaw3D42pKp6E0po
+	zwG7GPp7Wv/e+vRJg2IzOYLwHHSTe953e6NU+XMTgmyfytflrZY4
+X-Google-Smtp-Source: AGHT+IFAxssLZ3RlB8pKZO/643cGL8ZseaQ/GUvaESDKuEXqQJ08vNFDKkMH7OAtEz24bk4QezyrPA==
+X-Received: by 2002:a05:6a00:1824:b0:6ec:ff1b:aa0b with SMTP id d2e1a72fcca58-6f4e02d3698mr24977798b3a.18.1715960437452;
+        Fri, 17 May 2024 08:40:37 -0700 (PDT)
+Received: from localhost.localdomain ([2409:8a00:26be:370:d9bb:b9a0:16e:48c8])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-6f66e4bed05sm6328779b3a.100.2024.05.17.08.40.33
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 17 May 2024 08:34:48 -0700 (PDT)
-From: Dave Thaler <dthaler1968@googlemail.com>
-X-Google-Original-From: Dave Thaler <dthaler1968@gmail.com>
-To: bpf@vger.kernel.org
-Cc: bpf@ietf.org,
-	Dave Thaler <dthaler1968@gmail.com>,
-	Dave Thaler <dthaler1968@googlemail.com>
-Subject: [PATCH bpf-next] bpf, docs: Move sentence about returning R0 to abi.rst
-Date: Fri, 17 May 2024 08:34:45 -0700
-Message-Id: <20240517153445.3914-1-dthaler1968@gmail.com>
-X-Mailer: git-send-email 2.40.1
+        Fri, 17 May 2024 08:40:37 -0700 (PDT)
+From: Fred Li <dracodingfly@gmail.com>
+To: dracodingfly@gmail.com
+Cc: andrii@kernel.org,
+	ast@kernel.org,
+	bpf@vger.kernel.org,
+	daniel@iogearbox.net,
+	davem@davemloft.net,
+	john.fastabend@gmail.com,
+	kafai@fb.com,
+	kpsingh@kernel.org,
+	kuba@kernel.org,
+	linux-kernel@vger.kernel.org,
+	netdev@vger.kernel.org,
+	songliubraving@fb.com,
+	yhs@fb.com
+Subject: [PATCH] test_bpf: Add an skb_segment test for a non linear frag_list whose head_frag=1 and gso_size was mangled
+Date: Fri, 17 May 2024 23:40:28 +0800
+Message-Id: <20240517154028.70588-1-dracodingfly@gmail.com>
+X-Mailer: git-send-email 2.32.1 (Apple Git-133)
+In-Reply-To: <20240515144313.61680-1-dracodingfly@gmail.com>
+References: <20240515144313.61680-1-dracodingfly@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -82,48 +96,100 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-As discussed at LSF/MM/BPF, the sentence about using R0 for returning
-values from calls is part of the calling convention and belongs in
-abi.rst.  Any further additions or clarifications to this text are left
-for future patches on abi.rst.  The current patch is simply to unblock
-progression of instruction-set.rst to a standard.
+The patch was based on kernel 6.6.8, the skb properties as
+mentioned in [1]. This test will cause system crash without
+the patch described in [1].
 
-In contrast, the restriction of register numbers to the range 0-10
-is untouched, left in the instruction-set.rst definition of the
-src_reg and dst_reg fields.
+[1] https://lore.kernel.org/netdev/20240515144313.61680-1-dracodingfly@gmail.com/
 
-Signed-off-by: Dave Thaler <dthaler1968@googlemail.com>
+Signed-off-by: Fred Li <dracodingfly@gmail.com>
 ---
- Documentation/bpf/standardization/abi.rst             | 3 +++
- Documentation/bpf/standardization/instruction-set.rst | 3 ---
- 2 files changed, 3 insertions(+), 3 deletions(-)
+ lib/test_bpf.c | 64 ++++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 64 insertions(+)
 
-diff --git a/Documentation/bpf/standardization/abi.rst b/Documentation/bpf/standardization/abi.rst
-index 0c2e10eeb..41514137c 100644
---- a/Documentation/bpf/standardization/abi.rst
-+++ b/Documentation/bpf/standardization/abi.rst
-@@ -23,3 +23,6 @@ The BPF calling convention is defined as:
+diff --git a/lib/test_bpf.c b/lib/test_bpf.c
+index ecde42162..a38d2d09c 100644
+--- a/lib/test_bpf.c
++++ b/lib/test_bpf.c
+@@ -14706,6 +14706,63 @@ static __init struct sk_buff *build_test_skb_linear_no_head_frag(void)
+ 	return NULL;
+ }
  
- R0 - R5 are scratch registers and BPF programs needs to spill/fill them if
- necessary across calls.
++static __init struct sk_buff *build_test_skb_head_frag(void)
++{
++	u32 headroom = 192, doffset = 66, alloc_size = 1536;
++	struct sk_buff *skb[2];
++	struct page *page[17];
++	int i, data_size = 125;
++	int j;
 +
-+The BPF program needs to store the return value into register R0 before doing an
-+``EXIT``.
-diff --git a/Documentation/bpf/standardization/instruction-set.rst b/Documentation/bpf/standardization/instruction-set.rst
-index 997560aba..c0d7d74e0 100644
---- a/Documentation/bpf/standardization/instruction-set.rst
-+++ b/Documentation/bpf/standardization/instruction-set.rst
-@@ -475,9 +475,6 @@ the jump instruction.  Thus 'PC += 1' skips execution of the next
- instruction if it's a basic instruction or results in undefined behavior
- if the next instruction is a 128-bit wide instruction.
++	skb[0] = dev_alloc_skb(headroom + alloc_size);
++	if (!skb[0])
++		return NULL;
++
++	skb_reserve(skb[0], headroom + doffset);
++	skb_put(skb[0], data_size);
++	skb[0]->mac_header = 192;
++
++	skb[0]->protocol = htons(ETH_P_IP);
++	skb[0]->network_header = 206;
++
++	for (i = 0; i < 17; i++) {
++		page[i] = alloc_page(GFP_KERNEL);
++		if (!page[i])
++			goto err_page;
++
++		skb_add_rx_frag(skb[0], i, page[i], 0, data_size, data_size);
++	}
++
++	skb[1] = dev_alloc_skb(headroom + alloc_size);
++	if (!skb[1])
++		goto err_page;
++
++	skb_reserve(skb[1], headroom + doffset);
++	skb_put(skb[1], data_size);
++
++	/* setup shinfo */
++	skb_shinfo(skb[0])->gso_size = 75;
++	skb_shinfo(skb[0])->gso_type = SKB_GSO_TCPV4;
++	skb_shinfo(skb[0])->gso_type |= SKB_GSO_UDP_TUNNEL|SKB_GSO_TCP_FIXEDID|SKB_GSO_DODGY;
++	skb_shinfo(skb[0])->gso_segs = 0;
++	skb_shinfo(skb[0])->frag_list = skb[1];
++	skb_shinfo(skb[0])->hwtstamps.hwtstamp = 1000;
++
++	/* adjust skb[0]'s len */
++	skb[0]->len += skb[1]->len;
++	skb[0]->data_len += skb[1]->len;
++	skb[0]->truesize += skb[1]->truesize;
++
++	return skb[0];
++
++err_page:
++	kfree_skb(skb[0]);
++	for (j = 0; j < i; j++)
++		__free_page(page[j]);
++
++	return NULL;
++}
++
+ struct skb_segment_test {
+ 	const char *descr;
+ 	struct sk_buff *(*build_skb)(void);
+@@ -14727,6 +14784,13 @@ static struct skb_segment_test skb_segment_tests[] __initconst = {
+ 			    NETIF_F_LLTX | NETIF_F_GRO |
+ 			    NETIF_F_IPV6_CSUM | NETIF_F_RXCSUM |
+ 			    NETIF_F_HW_VLAN_STAG_TX
++	},
++	{
++		.descr = "gso_with_head_frag",
++		.build_skb = build_test_skb_head_frag,
++		.features = NETIF_F_SG | NETIF_F_HW_CSUM | NETIF_F_GSO_SHIFT |
++			    NETIF_F_TSO_ECN | NETIF_F_TSO_MANGLEID | NETIF_F_TSO6 |
++			    NETIF_F_GSO_SCTP | NETIF_F_GSO_UDP_L4 | NETIF_F_GSO_FRAGLIST
+ 	}
+ };
  
--The BPF program needs to store the return value into register R0 before doing an
--``EXIT``.
--
- Example:
- 
- ``{JSGE, X, JMP32}`` means::
 -- 
-2.40.1
+2.33.0
 
 
