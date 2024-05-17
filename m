@@ -1,106 +1,118 @@
-Return-Path: <bpf+bounces-29893-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-29894-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3761F8C7F69
-	for <lists+bpf@lfdr.de>; Fri, 17 May 2024 03:09:33 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 319BF8C7F75
+	for <lists+bpf@lfdr.de>; Fri, 17 May 2024 03:17:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 691ED1C2129C
-	for <lists+bpf@lfdr.de>; Fri, 17 May 2024 01:09:32 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6371F1C21986
+	for <lists+bpf@lfdr.de>; Fri, 17 May 2024 01:17:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2BA701A2C32;
-	Fri, 17 May 2024 01:09:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="SABINdmF"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E1EEE818;
+	Fri, 17 May 2024 01:17:13 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from out-189.mta1.migadu.com (out-189.mta1.migadu.com [95.215.58.189])
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8581720E3
-	for <bpf@vger.kernel.org>; Fri, 17 May 2024 01:09:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.189
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A2EE622;
+	Fri, 17 May 2024 01:17:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715908158; cv=none; b=DQjQJsoMFa8lpDMbk0b6IoJ2IwedhsPvtsndWP91siUwIyNOAlBmRs707i9C8t7xafG1OG8R43Kn9NJMgIPGTN4i8UcIClDqk+/bg1Htw86RUgjUe6SNvPcjE0Cwd17rHST5OSlxAbJ5/pMR8+vpzvC9+2O+FXssfV7bSr9CahM=
+	t=1715908633; cv=none; b=kkNT83zKDnhbcotwgfLY5AER4FppiJSLaPx2x49OZq867VsXdHJ78zcFOMCi9OAaoTkqQs3qmCDq7o8lgGgnHEhPSPnUCaHleAn/MIqcWvd6xuNaDV5neyilhli1unvUgra1/7KA/W8o55oT70CBo30c8mVW9VdfIPPnazcFnRE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715908158; c=relaxed/simple;
-	bh=gEekdrYNh6S7gPAJ8d18ymC/w9fxQD+kLuXR+qBj/Uc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Mvt8vxWROfgQOXDZ2WBCx4wyIDWnaNPuhv0tN5OvXPAfG5kijWJGjQirFKmJeXKzZi6OZpmKlWQ61n+dGm8qixGLKUgBxgixiB+Gc9UMEBYLDZPkn/cxQCnr4j4ZdfT5eMtN27jx3cG4mUDrfE6BQSDJEv2NSaLmL2CDyfirIhs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=SABINdmF; arc=none smtp.client-ip=95.215.58.189
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Envelope-To: ameryhung@gmail.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1715908154;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=3UbqBv1ohkIhFSpUWIlV5walljGuHrBVktUvk08YhKw=;
-	b=SABINdmF66wLG4Pk8A9IJ0tSWo9F/MwFc5SSs5Iw5j/Bzb9aoqiEkGm79BXz7+oxANFDLC
-	esLQJVDZN1MIxoegJsQ5IXqzzLSgqvlFYNqj/os3x08067L6oLBV8i1s+XIOI2gw1U7rkC
-	Z9aQzUfa7PedbidsfuEBcZTlSakxzPE=
-X-Envelope-To: sinquersw@gmail.com
-X-Envelope-To: netdev@vger.kernel.org
-X-Envelope-To: bpf@vger.kernel.org
-X-Envelope-To: yangpeihao@sjtu.edu.cn
-X-Envelope-To: daniel@iogearbox.net
-X-Envelope-To: andrii@kernel.org
-X-Envelope-To: martin.lau@kernel.org
-X-Envelope-To: toke@redhat.com
-X-Envelope-To: jhs@mojatatu.com
-X-Envelope-To: jiri@resnulli.us
-X-Envelope-To: sdf@google.com
-X-Envelope-To: xiyou.wangcong@gmail.com
-X-Envelope-To: yepeilin.cs@gmail.com
-Message-ID: <e8e0e6c2-52b8-4602-b146-7ab588c56f1a@linux.dev>
-Date: Thu, 16 May 2024 18:07:52 -0700
+	s=arc-20240116; t=1715908633; c=relaxed/simple;
+	bh=17admwWmB2d6L9FqoIo/jNMsNyv0xGeOExpch0HKWgM=;
+	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=tc2Mp4p5QfYJm+XI8vYGT0KTlfDmF2OeGh+/GS1c/alQsJdT7qlDHjoZ3+lUHCkjCWj8OCF8Q/4kLDWrZrA7d+fU7X5fnyywjJzgQSdXrqLLblmN5DGWcLo+6qefPwvM0GWm8ChFoMlsvDGf/M75buDvz+d6hFv8vW54zKMni4Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.93.142])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4VgTZf0GPxz4f3jHg;
+	Fri, 17 May 2024 09:16:58 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.252])
+	by mail.maildlp.com (Postfix) with ESMTP id BDE8C1A016E;
+	Fri, 17 May 2024 09:17:06 +0800 (CST)
+Received: from [10.174.176.117] (unknown [10.174.176.117])
+	by APP3 (Coremail) with SMTP id _Ch0CgCHR58RsEZmphO5Mg--.56729S2;
+	Fri, 17 May 2024 09:17:06 +0800 (CST)
+Subject: Re: [PATCH] net/sched: unregister root_lock_key in the error path of
+ qdisc_alloc()
+To: Davide Caratti <dcaratti@redhat.com>
+Cc: netdev@vger.kernel.org, Jamal Hadi Salim <jhs@mojatatu.com>,
+ Cong Wang <xiyou.wangcong@gmail.com>, Jiri Pirko <jiri@resnulli.us>,
+ "David S . Miller" <davem@davemloft.net>, Eric Dumazet
+ <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+ Paolo Abeni <pabeni@redhat.com>, bpf@vger.kernel.org
+References: <20240516133035.1050113-1-houtao@huaweicloud.com>
+ <dbb75bc2-cb09-79e9-2227-16adf957ae05@huaweicloud.com>
+ <CAKa-r6u=FiCxzQ0FF-XMdNjEA=LZZ+m-yMZ1KXT9wqMiX2gkPg@mail.gmail.com>
+From: Hou Tao <houtao@huaweicloud.com>
+Message-ID: <3c1c37ce-cc13-9fe9-1da2-0898f2d679f1@huaweicloud.com>
+Date: Fri, 17 May 2024 09:17:04 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [RFC PATCH v8 02/20] selftests/bpf: Test referenced kptr
- arguments of struct_ops programs
-To: Amery Hung <ameryhung@gmail.com>
-Cc: Kui-Feng Lee <sinquersw@gmail.com>, netdev@vger.kernel.org,
- bpf@vger.kernel.org, yangpeihao@sjtu.edu.cn, daniel@iogearbox.net,
- andrii@kernel.org, martin.lau@kernel.org, toke@redhat.com, jhs@mojatatu.com,
- jiri@resnulli.us, sdf@google.com, xiyou.wangcong@gmail.com,
- yepeilin.cs@gmail.com
-References: <20240510192412.3297104-1-amery.hung@bytedance.com>
- <20240510192412.3297104-3-amery.hung@bytedance.com>
- <b2486867-0fee-4972-ad71-7b54e8a5d2b6@gmail.com>
- <CAMB2axN3XwSmvk2eC9OnaUk5QvXS6sLVv148NrepkbtjCixVwg@mail.gmail.com>
- <CAMB2axMG2Pr11-O8ZRh3=T-4VqUmfoKQ7=ukQxK3rHONaTXypQ@mail.gmail.com>
- <184079b1-1ad0-414d-b8ff-179b5525c439@linux.dev>
- <CAMB2axOyfLoyicoNwJ=hdoNzZYQk67XVxQ4qrjZe4zLMZrz1xQ@mail.gmail.com>
+In-Reply-To: <CAKa-r6u=FiCxzQ0FF-XMdNjEA=LZZ+m-yMZ1KXT9wqMiX2gkPg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
 Content-Language: en-US
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Martin KaFai Lau <martin.lau@linux.dev>
-In-Reply-To: <CAMB2axOyfLoyicoNwJ=hdoNzZYQk67XVxQ4qrjZe4zLMZrz1xQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+X-CM-TRANSID:_Ch0CgCHR58RsEZmphO5Mg--.56729S2
+X-Coremail-Antispam: 1UD129KBjvdXoWrtFyxKr4xCw1rZr13ArWDArb_yoWkGwc_u3
+	yDA34xCFsxXw1jqF42kr1kCrZ5GFnYgFs3JryDGrWjy3WrXa95WFsY9ryfCryrGFWvgF9x
+	CwsYvFWxCrs29jkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+	9fnUUIcSsGvfJTRUUUbI8YFVCjjxCrM7AC8VAFwI0_Gr0_Xr1l1xkIjI8I6I8E6xAIw20E
+	Y4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwV
+	A0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8IcVCY1x02
+	67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
+	0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
+	x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
+	0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc7I2V7IY0VAS
+	07AlzVAYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c
+	02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_
+	GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7
+	CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAF
+	wI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVWUJVW8JbIYCTnIWIevJa73UjIFyTuYvj
+	xUrR6zUUUUU
+X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
 
-On 5/16/24 5:54 PM, Amery Hung wrote:
->> The part that no skb acquire kfunc should be available to the qdisc struct_ops
->> prog is understood. I think it just needs to clarify the commit message and
->> remove the "It must be released and cannot be acquired more than once" part.
+H Davide,
+
+On 5/16/2024 9:45 PM, Davide Caratti wrote:
+> hello Hou Tao,
+>
+> On Thu, May 16, 2024 at 3:33 PM Hou Tao <houtao@huaweicloud.com> wrote:
+>> Oops. Forgot to add the target git tree for the patch. It is targeted
+>> for net- tree.
 >>
-> Got it. I will improve the clarity of the commit message.
-> 
-> In addition, I will also remove "struct_ops_ref_acquire_dup_ref.c" as
-> whether duplicate references can be acquired through kfunc is out of
-> scope (should be taken care of by struct_ops implementer). Actually,
-> this testcase should load the and it does load...
-> 
-> As for the name, do you have any thoughts?
+>>> diff --git a/net/sched/sch_generic.c b/net/sched/sch_generic.c
+>>> index 31dfd6c7405b0..d3f6006b563cc 100644
+>>> --- a/net/sched/sch_generic.c
+>>> +++ b/net/sched/sch_generic.c
+>>> @@ -982,6 +982,7 @@ struct Qdisc *qdisc_alloc(struct netdev_queue *dev_queue,
+>>>
+>>>       return sch;
+>>>  errout1:
+>>> +     lockdep_unregister_key(&sch->root_lock_key);
+>>>       kfree(sch);
+>>>  errout:
+>>>       return ERR_PTR(err);
+> AFAIS this line is part of the fix that was merged a couple of weeks
+> ago, (see the 2nd hunk of [1]). That patch also protects the error
+> path of qdisc_create(), that proved to make kselftest fail with
+> similar splats. Can you check if this commit resolves that syzbot?
 
-Naming is hard... :(
+I missed that commit and didn't check the net-next git tree before
+posting the patch. Yes, I think this commit will resolve the reported
+problem. Thanks.
+>
+> thanks a lot!
 
-May be just keep it short, just "__ref"?
 
