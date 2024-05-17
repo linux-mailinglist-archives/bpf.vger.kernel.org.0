@@ -1,188 +1,147 @@
-Return-Path: <bpf+bounces-29956-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-29957-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 46EAF8C89DF
-	for <lists+bpf@lfdr.de>; Fri, 17 May 2024 18:16:08 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id A86DA8C89E1
+	for <lists+bpf@lfdr.de>; Fri, 17 May 2024 18:16:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4ECD41C217C1
-	for <lists+bpf@lfdr.de>; Fri, 17 May 2024 16:16:07 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 34213B228F8
+	for <lists+bpf@lfdr.de>; Fri, 17 May 2024 16:16:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9303612FB18;
-	Fri, 17 May 2024 16:15:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A69C12FB12;
+	Fri, 17 May 2024 16:16:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="odMDw5B5";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="jQQmelsg"
+	dkim=pass (2048-bit key) header.d=googlemail.com header.i=@googlemail.com header.b="KSxDT1P1"
 X-Original-To: bpf@vger.kernel.org
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7455B12F5A7;
-	Fri, 17 May 2024 16:15:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9227C12F5B2
+	for <bpf@vger.kernel.org>; Fri, 17 May 2024 16:16:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715962559; cv=none; b=jSVgj4ppdVw5U6wd8lgeuugBd9nodURLzpO+Ciu8ruHIbWSao1ffAQQCvAlEetiwuJCrsyLlToE5QnC96PhVHs6zOBc744/8bMUA3FW+Bs3L/KR6IEiIK3p65yMNeM0onaEvZ7vjVi/KnATjeNORoVjduM0T4VL7I3x2eL35D7Y=
+	t=1715962581; cv=none; b=Qk+WfhcS1ZkVs4+tpnm1q9UxsqwjdTLAoNXGMKzsmVPk/3yGLaiWZEOuf3RcarWMbYTC08ZkBOEgPLnaq9MgWlvTgzN8PXgsnKkw1V+2a0MoZxHGtvmAyRGmRlqcTUZi+ankwY8L1gjnKZJ3G4SD8z4a4r15EZQNg/J/UWmiG+k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715962559; c=relaxed/simple;
-	bh=EmAE75Rh1IojcGIii7mshbjXPWbWpMjnetS2uQdsF04=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=K/hNLf77UdrF3AW5nCRaXckdbJqBKsKUByowhS4Ij4XANJEhDnW3POZefF57yEeV961qbMzkjvqcJKovP3YBBgtPgW+yIgWWdl3vX8V2q2/4L1ZL6rCuSywpOtjEb1E+kU55qa6ZmVJdLLzJ651Fyq2kXXO/9uzlyLPeHMDAYBk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=odMDw5B5; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=jQQmelsg; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-Date: Fri, 17 May 2024 18:15:53 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1715962555;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Nu7OJz7stGDD7aVVbUS1exAOqBswvTYuUIGwWepjL+Y=;
-	b=odMDw5B5NmpDQv+vVzfiiZ+jCVCfC5SspPiJtsW9aRwVGIP7eF7ZCBSSMLW3/B1JLGnBsg
-	0xt/SBvTsNSGFIALeR4WWbgxNeVAyOZduMfOpUuGu9pFgExmSIJgiZiSS9DfZkZMb0+3f1
-	IkW64GnlkhCpcC4APBnOmrp/xhfkmhqcoH7HdZLv+RnCT70dAVr6EvFzmyroHkT7SMlqhe
-	e7Dk400XpXYd5TGiVLMfMtsvWrvaQEJleudgZr746fe4SeZDNiFC0mi53ia5LBIc0H5q7x
-	UqRTipVe9iHk3OAS9e6ayM7yXdoDK/SvsxVYNDKuWhuz+8pFMOe0P2rjhuhWcw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1715962555;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Nu7OJz7stGDD7aVVbUS1exAOqBswvTYuUIGwWepjL+Y=;
-	b=jQQmelsgpA0lT0C4fRIIw6vi6VwS7QZY53uLwQ12igOcw8ADTaJ/vvm9O2q2qeoy1NgHgY
-	QtbjugbWbYbPSEBA==
-From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To: Jesper Dangaard Brouer <hawk@kernel.org>
-Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-	Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
-	LKML <linux-kernel@vger.kernel.org>,
-	Network Development <netdev@vger.kernel.org>,
-	"David S. Miller" <davem@davemloft.net>,
-	Boqun Feng <boqun.feng@gmail.com>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Frederic Weisbecker <frederic@kernel.org>,
-	Ingo Molnar <mingo@redhat.com>, Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Waiman Long <longman@redhat.com>, Will Deacon <will@kernel.org>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Eduard Zingerman <eddyz87@gmail.com>, Hao Luo <haoluo@google.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
-	Stanislav Fomichev <sdf@google.com>,
-	Yonghong Song <yonghong.song@linux.dev>, bpf <bpf@vger.kernel.org>
-Subject: Re: [PATCH net-next 14/15 v2] net: Reference bpf_redirect_info via
- task_struct on PREEMPT_RT.
-Message-ID: <20240517161553.SSh4BNQO@linutronix.de>
-References: <20240503182957.1042122-15-bigeasy@linutronix.de>
- <87y18mohhp.fsf@toke.dk>
- <CAADnVQJkiwaYXUo+LyKoV96VFFCFL0VY5Jgpuv_0oypksrnciA@mail.gmail.com>
- <20240507123636.cTnT7TvU@linutronix.de>
- <93062ce7-8dfa-48a9-a4ad-24c5a3993b41@kernel.org>
- <20240510162121.f-tvqcyf@linutronix.de>
- <20240510162214.zNWRKgFU@linutronix.de>
- <4949dca0-377a-45b1-a0fd-17bdf5a6ab10@kernel.org>
- <20240514054345.DZkx7fJs@linutronix.de>
- <e4123697-3e6e-4d4a-8b06-f69e1c453225@kernel.org>
+	s=arc-20240116; t=1715962581; c=relaxed/simple;
+	bh=ug9A1IeTy+2qJZmw2wdiGiE9ZxVmrFnvNA3aiSZXmpI=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=dIZ/+gVdKJCooruVVYSk4nhnc1mFfwE7q+pd9ClBtDgERZ4JQn2nDzfcM+GNjQWQEZsDZQCtIevhAqkVhwsexnsxOC00mC9xtwg6isySpQ65jr2bHTmJ2VCtY5a9LnK75UVDrBoqYN+QL0l3WJbcbgOPpL9gwlGeB0pmVBhbNeE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=googlemail.com; spf=pass smtp.mailfrom=googlemail.com; dkim=pass (2048-bit key) header.d=googlemail.com header.i=@googlemail.com header.b=KSxDT1P1; arc=none smtp.client-ip=209.85.214.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=googlemail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=googlemail.com
+Received: by mail-pl1-f170.google.com with SMTP id d9443c01a7336-1ecddf96313so14458015ad.2
+        for <bpf@vger.kernel.org>; Fri, 17 May 2024 09:16:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=googlemail.com; s=20230601; t=1715962578; x=1716567378; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=7armfeLAXQsQMrjI6vgVSTIgmnXDgZlGhC1Cl43yCcA=;
+        b=KSxDT1P1iCY6e4OOLFD392Kht7hsggi3INrzhsOGgt+1nIS4kdMPvc7Ru/K2vntcpj
+         QjqePkTZB8cd7DbKLEP/kqOCz67UGNEQlwgIjoalOp0CVu+omLHMbrvLyAaA2rIHdpBp
+         bNoH+2vQuw4lsnXy/Nv8hT/StIw3skY4VrrnWjItMfXW+XRp+ZqoQqBCVm4QZVBImQX9
+         AkWNnACMlGELTdpeVl2JPoAtTEYNdDq3y/q9OCzloa4MojiUjHeDjSbP/ePz/gqVaW8x
+         31XLcBLf8vhbn9Eq9mmdLKH5WsUz6ljs8Cfkh3AiKoSP5OEeXshibugZK2pHvBEjl7j1
+         QqcA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1715962578; x=1716567378;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=7armfeLAXQsQMrjI6vgVSTIgmnXDgZlGhC1Cl43yCcA=;
+        b=OH25fZ3rBvazjsE2aKtd1QiJdSB/lXpGCaoytSACVsMgaPPwkiCfTIcgtgr+srkUP3
+         BD/doiIAG1SWHa6xz5TaFRo93horSPFrGaJkiH6NxWmrX45HMjlysMFqt4blQxnIgwmS
+         ilmbk9/j5PgNRhGaG5Qe86PQq2rMHs1Y61m7pSSHcxwqV+xm6a1e5Votn8SUyzRFhC+C
+         yLnaNO4FCWoV7Y2vTIxh01QnWeHW8/GG1yNVvsvDwf2XNc5hkpxUkFgNCknh/LD65HFP
+         GoabMGaQwZuWfMZJuEIZWtNxQEyBfeK+Dr9W0vRaYVTaVh0K+h5Nns5loqHusGVNc29o
+         dcqw==
+X-Gm-Message-State: AOJu0Yxjwi7/bpp98TyjowrNVYU4wzF23zsNk7PzV3lIEGSikBgAwl0o
+	Ufdcmol6SP3vKkgI199p4oyHNc+eiY4ynXGXRH0hF/y+RL2prunkZopqkQ==
+X-Google-Smtp-Source: AGHT+IELgdG7dj3psWg2I6LwndPnLGU73+zzMKxqQ0QkyQOw8zjQDpy6DpP2Wg52aAuohVDSevg3kw==
+X-Received: by 2002:a17:90a:fb4d:b0:2b1:50:cad4 with SMTP id 98e67ed59e1d1-2b6cc450329mr24365693a91.1.1715962578510;
+        Fri, 17 May 2024 09:16:18 -0700 (PDT)
+Received: from ubuntu2310.lan (c-67-170-74-237.hsd1.wa.comcast.net. [67.170.74.237])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2bd47ba8c2dsm2300933a91.27.2024.05.17.09.16.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 17 May 2024 09:16:18 -0700 (PDT)
+From: Dave Thaler <dthaler1968@googlemail.com>
+X-Google-Original-From: Dave Thaler <dthaler1968@gmail.com>
+To: bpf@vger.kernel.org
+Cc: bpf@ietf.org,
+	Dave Thaler <dthaler1968@gmail.com>,
+	Dave Thaler <dthaler1968@googlemail.com>
+Subject: [PATCH bpf-next] bpf, docs: clarify sign extension of 64-bit use of 32-bit imm
+Date: Fri, 17 May 2024 09:16:12 -0700
+Message-Id: <20240517161612.4385-1-dthaler1968@gmail.com>
+X-Mailer: git-send-email 2.40.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <e4123697-3e6e-4d4a-8b06-f69e1c453225@kernel.org>
+Content-Transfer-Encoding: 8bit
 
-On 2024-05-14 14:20:03 [+0200], Jesper Dangaard Brouer wrote:
-> Trick for CPU-map to do early drop on remote CPU:
-> 
->  # ./xdp-bench redirect-cpu --cpu 3 --remote-action drop ixgbe1
-> 
-> I recommend using Ctrl+\ while running to show more info like CPUs being
-> used and what kthread consumes.  To catch issues e.g. if you are CPU
-> redirecting to same CPU as RX happen to run on.
+imm is defined as a 32-bit signed integer.
 
-Okay. So I reworked the last two patches make the struct part of
-task_struct and then did as you suggested:
+{MOV, K, ALU64} says it does "dst = src" (where src is 'imm') but it does
+not sign extend, but instead does dst = (u32)src.  The "Jump instructions"
+section has "unsigned" by some instructions, but the "Arithmetic instructions"
+section has no such note about the MOV instruction, so added an example to
+make this more clear.
 
-Unpatched:
-|Sending:
-|Show adapter(s) (eno2np1) statistics (ONLY that changed!)
-|Ethtool(eno2np1 ) stat:    952102520 (    952,102,520) <= port.tx_bytes /sec
-|Ethtool(eno2np1 ) stat:     14876602 (     14,876,602) <= port.tx_size_64 /sec
-|Ethtool(eno2np1 ) stat:     14876602 (     14,876,602) <= port.tx_unicast /sec
-|Ethtool(eno2np1 ) stat:    446045897 (    446,045,897) <= tx-0.bytes /sec
-|Ethtool(eno2np1 ) stat:      7434098 (      7,434,098) <= tx-0.packets /sec
-|Ethtool(eno2np1 ) stat:    446556042 (    446,556,042) <= tx-1.bytes /sec
-|Ethtool(eno2np1 ) stat:      7442601 (      7,442,601) <= tx-1.packets /sec
-|Ethtool(eno2np1 ) stat:    892592523 (    892,592,523) <= tx_bytes /sec
-|Ethtool(eno2np1 ) stat:     14876542 (     14,876,542) <= tx_packets /sec
-|Ethtool(eno2np1 ) stat:            2 (              2) <= tx_restart /sec
-|Ethtool(eno2np1 ) stat:            2 (              2) <= tx_stopped /sec
-|Ethtool(eno2np1 ) stat:     14876622 (     14,876,622) <= tx_unicast /sec
-|
-|Receive:
-|eth1->?                 8,732,508 rx/s                  0 err,drop/s
-|  receive total         8,732,508 pkt/s                 0 drop/s                0 error/s
-|    cpu:10              8,732,508 pkt/s                 0 drop/s                0 error/s
-|  enqueue to cpu 3      8,732,510 pkt/s                 0 drop/s             7.00 bulk-avg
-|    cpu:10->3           8,732,510 pkt/s                 0 drop/s             7.00 bulk-avg
-|  kthread total         8,732,506 pkt/s                 0 drop/s          205,650 sched
-|    cpu:3               8,732,506 pkt/s                 0 drop/s          205,650 sched
-|    xdp_stats                   0 pass/s        8,732,506 drop/s                0 redir/s
-|      cpu:3                     0 pass/s        8,732,506 drop/s                0 redir/s
-|  redirect_err                  0 error/s
-|  xdp_exception                 0 hit/s
+{JLE, K, JMP} says it does "PC += offset if dst <= src" (where src is 'imm',
+and the comparison is unsigned). This was apparently ambiguous to some
+readers as to whether the comparison was "dst <= (u64)(u32)imm" or
+"dst <= (u64)(s64)imm", since the correct assumption would be the latter
+except that the MOV instruction doesn't follow that, so added an example
+to make this more clear.
 
-I verified that the "drop only" case hits 14M packets/s while this
-redirect part reports 8M packets/s.
+Signed-off-by: Dave Thaler <dthaler1968@googlemail.com>
+---
+ .../bpf/standardization/instruction-set.rst       | 15 ++++++++++++++-
+ 1 file changed, 14 insertions(+), 1 deletion(-)
 
-Patched:
-|Sending:
-|Show adapter(s) (eno2np1) statistics (ONLY that changed!)
-|Ethtool(eno2np1 ) stat:    952635404 (    952,635,404) <= port.tx_bytes /sec
-|Ethtool(eno2np1 ) stat:     14884934 (     14,884,934) <= port.tx_size_64 /sec
-|Ethtool(eno2np1 ) stat:     14884928 (     14,884,928) <= port.tx_unicast /sec
-|Ethtool(eno2np1 ) stat:    446496117 (    446,496,117) <= tx-0.bytes /sec
-|Ethtool(eno2np1 ) stat:      7441602 (      7,441,602) <= tx-0.packets /sec
-|Ethtool(eno2np1 ) stat:    446603461 (    446,603,461) <= tx-1.bytes /sec
-|Ethtool(eno2np1 ) stat:      7443391 (      7,443,391) <= tx-1.packets /sec
-|Ethtool(eno2np1 ) stat:    893086506 (    893,086,506) <= tx_bytes /sec
-|Ethtool(eno2np1 ) stat:     14884775 (     14,884,775) <= tx_packets /sec
-|Ethtool(eno2np1 ) stat:           14 (             14) <= tx_restart /sec
-|Ethtool(eno2np1 ) stat:           14 (             14) <= tx_stopped /sec
-|Ethtool(eno2np1 ) stat:     14884937 (     14,884,937) <= tx_unicast /sec
-|
-|Receive:
-|eth1->?                 8,735,198 rx/s                  0 err,drop/s
-|  receive total         8,735,198 pkt/s                 0 drop/s                0 error/s
-|    cpu:6               8,735,198 pkt/s                 0 drop/s                0 error/s
-|  enqueue to cpu 3      8,735,193 pkt/s                 0 drop/s             7.00 bulk-avg
-|    cpu:6->3            8,735,193 pkt/s                 0 drop/s             7.00 bulk-avg
-|  kthread total         8,735,191 pkt/s                 0 drop/s          208,054 sched
-|    cpu:3               8,735,191 pkt/s                 0 drop/s          208,054 sched
-|    xdp_stats                   0 pass/s        8,735,191 drop/s                0 redir/s
-|      cpu:3                     0 pass/s        8,735,191 drop/s                0 redir/s
-|  redirect_err                  0 error/s
-|  xdp_exception                 0 hit/s
+diff --git a/Documentation/bpf/standardization/instruction-set.rst b/Documentation/bpf/standardization/instruction-set.rst
+index 997560aba..f96ebb169 100644
+--- a/Documentation/bpf/standardization/instruction-set.rst
++++ b/Documentation/bpf/standardization/instruction-set.rst
+@@ -378,13 +378,22 @@ etc. This specification requires that signed modulo use truncated division
+ 
+    a % n = a - n * trunc(a / n)
+ 
+-The ``MOVSX`` instruction does a move operation with sign extension.
++The ``MOV`` instruction does a move operation without sign extension, whereas
++the ``MOVSX`` instruction does a move operation with sign extension.
+ ``{MOVSX, X, ALU}`` :term:`sign extends<Sign Extend>` 8-bit and 16-bit operands into
+ 32-bit operands, and zeroes the remaining upper 32 bits.
+ ``{MOVSX, X, ALU64}`` :term:`sign extends<Sign Extend>` 8-bit, 16-bit, and 32-bit
+ operands into 64-bit operands.  Unlike other arithmetic instructions,
+ ``MOVSX`` is only defined for register source operands (``X``).
+ 
++``{MOV, K, ALU}`` means::
++
++  dst = (u32) imm
++
++``{MOVSX, X, ALU}`` with 'offset' 32 means::
++
++  dst = (s32) src
++
+ The ``NEG`` instruction is only defined when the source bit is clear
+ (``K``).
+ 
+@@ -486,6 +495,10 @@ Example:
+ 
+ where 's>=' indicates a signed '>=' comparison.
+ 
++``{JLE, K, JMP}`` means::
++
++  if dst <= (u64)(s64)imm goto +offset
++
+ ``{JA, K, JMP32}`` means::
+ 
+   gotol +imm
+-- 
+2.40.1
 
-This looks to be in the same range/ noise level. top wise I have
-ksoftirqd at 100% and cpumap/./map at ~60% so I hit CPU speed limit on a
-10G link. perf top shows
-|   18.37%  bpf_prog_4f0ffbb35139c187_cpumap_l4_hash         [k] bpf_prog_4f0ffbb35139c187_cpumap_l4_hash
-|   13.15%  [kernel]                                         [k] cpu_map_kthread_run
-|   12.96%  [kernel]                                         [k] ixgbe_poll
-|    6.78%  [kernel]                                         [k] page_frag_free
-|    5.62%  [kernel]                                         [k] xdp_do_redirect
-
-for the top 5. Is this something that looks reasonable?
-
-Sebastian
 
