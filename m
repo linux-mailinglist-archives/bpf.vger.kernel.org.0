@@ -1,114 +1,241 @@
-Return-Path: <bpf+bounces-30010-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-30011-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3AD178C91B6
-	for <lists+bpf@lfdr.de>; Sat, 18 May 2024 19:19:04 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id B91588C91C7
+	for <lists+bpf@lfdr.de>; Sat, 18 May 2024 20:05:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ACA0B281806
-	for <lists+bpf@lfdr.de>; Sat, 18 May 2024 17:19:02 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DF18E1F21907
+	for <lists+bpf@lfdr.de>; Sat, 18 May 2024 18:05:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 02EC1481BD;
-	Sat, 18 May 2024 17:18:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D46044642D;
+	Sat, 18 May 2024 18:05:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="bLvtPKtf"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="POK7Wotj"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
+Received: from mail-wr1-f47.google.com (mail-wr1-f47.google.com [209.85.221.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E978171B6
-	for <bpf@vger.kernel.org>; Sat, 18 May 2024 17:18:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B83B61BC4B
+	for <bpf@vger.kernel.org>; Sat, 18 May 2024 18:05:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716052734; cv=none; b=gB/kKlbOXG14B0U/T5IFTLJKwIPJ9se9fuGu4B1VxxotzjsjO7WwAIRvjAsPPTqICJcdcwHye345Vdbr/F/Q6B48oBd7vIzr8ffjQDmeVMME1JL8z6rMvjas1l/pIN4RNxlO9hQu2tt9USg4NWukc/Cj4ojVWbK+DFR7jmOoh5s=
+	t=1716055540; cv=none; b=SlsLV46IRq5oQa9GiTvJN+0OzYPyr/WolpAFcMI9ioHRxiBtMJ7Zdq0wALgE4nExPXyKYZ9msZ6ZUpae677HnPKyGqRJV/e7ggn6X+vOglyuJlBobZLYrARPrdj7bORbR/SbA/TG0zlcLyLA8x6U4I8d5P+GIqIyUTvbn7XwFLc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716052734; c=relaxed/simple;
-	bh=//8QV5TSiMfT14T+L5Dni8yVPWQI23EOE8lPHpMRkQs=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=A/i/iBBxhvIFCW7oEiqrIKOa5B/Bgpu1P3oCOTGdwGghOYb2TO05jdMizYsv484oM63k6Qz0REKz/mJ0W4cZV8TSb+qGZZQrPEsyBq/1k+i91gTSZM1HDZcpUt0nZlMrhZtiilIlbXuGVDPtGGIy+mBTS0mv3klCGf+UEMfTG5o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=bLvtPKtf; arc=none smtp.client-ip=209.85.214.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-1ecd3867556so41988375ad.0
-        for <bpf@vger.kernel.org>; Sat, 18 May 2024 10:18:53 -0700 (PDT)
+	s=arc-20240116; t=1716055540; c=relaxed/simple;
+	bh=AK4lihbNHXazc4fgbnPI7zt0mA69ORi7kA6WrBvLLBA=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=dDugOBg1RSH6yqBvBXNnBsIyIDO9dFe5Z2YpfWhF6pJPsyRITr7/YIn2qXlRboFK/800zwj5ZdEZ3lIt6z0MdAqK1+oq4n1/z9aZQ7O6VBKMnVMaCXP72aOSgpxSzY7dZmh+VYD0MUU3KQ+YnNoC07LO2v5s6IT5Nta09UkUilI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=POK7Wotj; arc=none smtp.client-ip=209.85.221.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f47.google.com with SMTP id ffacd0b85a97d-351d309bbcfso710907f8f.3
+        for <bpf@vger.kernel.org>; Sat, 18 May 2024 11:05:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1716052732; x=1716657532; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=bI35mSpFGv5azuf3W34PAy5g+Nwe9xTUDOP2VBYb+qw=;
-        b=bLvtPKtf7AAWUQL7+1BKfBQFilZk/h/+9MqhYx3/ShuBC/VbG7djvHzsS5IkURC66Q
-         01vQjZEIk0vVLgNCnqrW31X87xGfJIH8Zb0RGjsovgioPJUSOqmnKHV3pz4gKKRjv+vk
-         ORI+VxKwcJWNGn1ZIf67KYxyKfGxIkGDJCZMk=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1716052732; x=1716657532;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1716055537; x=1716660337; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=bI35mSpFGv5azuf3W34PAy5g+Nwe9xTUDOP2VBYb+qw=;
-        b=oPrWq+fFOgR9TXAuAJTyi1mAy0BEuLAEpia6lKIcB5tc4/5rOue9gG1enxFKnIMNzs
-         DMW35PZQredYHLeoaBqZ2IFAY3sc2FFGwM8WQ8KmDsoR3BTzOpUfIhCjNOXtwDjCfKd1
-         nh4rRz4+6okrg15SAFXcAG9NCUxyYCfvelup0CZisgUAnjjbDVFshQTK5bRY4aMdzStP
-         Jk9U82TDkHwVQj23qQ7xIBsgJuwvGB2xXyCoP+PpdA3n6YdQ3Lf1cbKebO9seXEzU1W3
-         HoO6d+03I0aSCheuFLFqS1CDfN6EOT/MXhwxknsKu23rTJS34ob621XPYE/GKutt7mTS
-         JpEQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVYXCiHNoXIF5GIVnm8mkUL97wrpnzmAtowjiok8wiFQCVKVtd5go6cBpB9hVdHvctbp2yptv+YjHV2Aww06z1MBLcp
-X-Gm-Message-State: AOJu0Yy1QSJJxwC9A75hYA21uAA7KjDc7iQml7RWVkL8Rjd8MY6MMlmD
-	w0VfvJwyBf2E36KlXIum2mE3cqiXNRM6bHfbb0stNSMc1OyhpKCs9O6PUiJSfU5UGYKa4ZwiMTU
-	=
-X-Google-Smtp-Source: AGHT+IHnTm7HxB1ifDLOfll4lXfhQucVtONb5bXh+in0GA9Emo8PEiZzBgcOx9HwsOaXGa4JlF1tXg==
-X-Received: by 2002:a05:6a20:5602:b0:1af:cbd3:ab4d with SMTP id adf61e73a8af0-1afde120e4dmr22666060637.33.1716052732590;
-        Sat, 18 May 2024 10:18:52 -0700 (PDT)
-Received: from www.outflux.net ([198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-6f4fff45ce3sm11294743b3a.197.2024.05.18.10.18.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 18 May 2024 10:18:51 -0700 (PDT)
-Date: Sat, 18 May 2024 10:18:50 -0700
-From: Kees Cook <keescook@chromium.org>
-To: Masahiro Yamada <masahiroy@kernel.org>
-Cc: Andy Lutomirski <luto@amacapital.net>, Will Drewry <wad@chromium.org>,
-	linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Alexandre Belloni <alexandre.belloni@bootlin.com>,
-	Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-	Christian Borntraeger <borntraeger@linux.ibm.com>,
-	Claudio Imbrenda <imbrenda@linux.ibm.com>,
-	David Hildenbrand <david@redhat.com>,
-	Janosch Frank <frankja@linux.ibm.com>,
-	Jiri Kosina <jikos@kernel.org>, Shuah Khan <shuah@kernel.org>,
-	bpf@vger.kernel.org, kvm@vger.kernel.org,
-	linux-input@vger.kernel.org, linux-rtc@vger.kernel.org
-Subject: Re: [PATCH 1/2] selftests: harness: remove unneeded
- __constructor_order_last()
-Message-ID: <202405181014.B84D979BA@keescook>
-References: <20240517114506.1259203-1-masahiroy@kernel.org>
- <20240517114506.1259203-2-masahiroy@kernel.org>
- <202405171621.A178606D8@keescook>
- <CAK7LNARpvZ5AeH9HXFPupD_Jj0Gw4D6MZ5iR7uvVwnm9nSg9CA@mail.gmail.com>
+        bh=m7tDvxk1HqeGb3aX7zQXSgaiUf87wzgB2yUfYsZXIkE=;
+        b=POK7WotjF+YG/1AWPh9EM+W0eOvzHBtxdMH2etQHMbNYl0dZacE+8joR8Gcsofpj0I
+         Zxo4rPY3cLolgN6HUd/bl44CVYHBIB0l5LyWpPjIsqeURUFei27u8U6BGmw/KbCW2VhM
+         vQsfigOk+As+gqXNeI7QXgRgI/CnlkPYtphOsghW4tUV1cWQfJG5tfLAffML5O6qiVpO
+         T4trrpFJEatlEeEMzeFyJ+ofZxBtaJLlu1u6m4/oNGL97ioG90ND0d5qpH/qXjP104qS
+         vJ+oOFFJ1w/tmZzJf0oEBXT8GVq2HSgi4IBBrLPPo3ZhP5BgryHCtLSJNnjTXgftoQJR
+         MwBw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1716055537; x=1716660337;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=m7tDvxk1HqeGb3aX7zQXSgaiUf87wzgB2yUfYsZXIkE=;
+        b=Uf1MylrPrwKo5wBTnqICZGpMg9xpy+V/drl0iXZlGrNa2mRnDDtDpPV8SociHepVBH
+         p0E3sGL6LBpQOVAGmGpIWiCfyYP74+fB9oBr7ugglhJy0RhELfz3nbYszhBUxfGxnRh2
+         E4KILcW9BwXdBeYaOLV5PbPEEp3MFSbe5hpn7ONywMzFJkrn+VU0FjOPmcO3BVm4Q0/0
+         TtZCnbqlInm/9TrC88zz6Jm0KQIEP4Hw+ILmy0hG4woHbXOMA/hT/smKU/4EDNBLgekn
+         /W45xpYXlUQAwKEDr096LGc8P8QQKpXQs7tcHxoESMA4nfuvwmyTZau1NOPL7pKLPLcM
+         867A==
+X-Gm-Message-State: AOJu0YyVQEwxzZKyGJw2LLCASRlIyXsGPno5OSh5l6vky4WPfX1KEsrp
+	wSU9h6hz1Vzmfpo3MPH/1X9JkuvuuuDfPyfn3h49L/45OIhLTl7zLeOFDq9S/fN6GdaF7xVqZjk
+	tsQjfHQiVHxgesaOjbe/qbrk8fII=
+X-Google-Smtp-Source: AGHT+IGve1aiyUp/zWpys9lL122qEduU/Y5UYPWmTo0I/8ZiTalfrEtWuCNczpXu7fFHTPCX4+d5vUqPcjRDvxf/MKE=
+X-Received: by 2002:a5d:6d8d:0:b0:351:d7d8:ef70 with SMTP id
+ ffacd0b85a97d-351d7d8f0c2mr7982173f8f.13.1716055536821; Sat, 18 May 2024
+ 11:05:36 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAK7LNARpvZ5AeH9HXFPupD_Jj0Gw4D6MZ5iR7uvVwnm9nSg9CA@mail.gmail.com>
+References: <20240518002942.3692677-1-ramasha@meta.com> <20240518002942.3692677-4-ramasha@meta.com>
+In-Reply-To: <20240518002942.3692677-4-ramasha@meta.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Sat, 18 May 2024 11:05:25 -0700
+Message-ID: <CAADnVQJSF56NiROC6tmut3oq0Ln6T1smV1H+RHzDyi_=Ns3CSQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 3/3] net: new cgrp_sysctl test suite
+To: Raman Shukhau <ramasha@meta.com>
+Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
+	Martin KaFai Lau <martin.lau@linux.dev>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Sat, May 18, 2024 at 12:29:00PM +0900, Masahiro Yamada wrote:
-> It will be set to "true" eventually,
-> but __LIST_APPEND() still sees "false"
-> on backward-order systems.
+On Fri, May 17, 2024 at 5:30=E2=80=AFPM Raman Shukhau <ramasha@meta.com> wr=
+ote:
+>
+> Adding new prog_tests for sysctl BPF handlers, first version with
+> a single test to validate bpf_sysctl_set_new_value call
+>
+> Signed-off-by: Raman Shukhau <ramasha@meta.com>
+> ---
+>  .../selftests/bpf/prog_tests/cgrp_sysctl.c    | 106 ++++++++++++++++++
+>  .../testing/selftests/bpf/progs/cgrp_sysctl.c |  51 +++++++++
+>  2 files changed, 157 insertions(+)
+>  create mode 100644 tools/testing/selftests/bpf/prog_tests/cgrp_sysctl.c
+>  create mode 100644 tools/testing/selftests/bpf/progs/cgrp_sysctl.c
+>
+> diff --git a/tools/testing/selftests/bpf/prog_tests/cgrp_sysctl.c b/tools=
+/testing/selftests/bpf/prog_tests/cgrp_sysctl.c
+> new file mode 100644
+> index 000000000000..dad847d397de
+> --- /dev/null
+> +++ b/tools/testing/selftests/bpf/prog_tests/cgrp_sysctl.c
+> @@ -0,0 +1,106 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +
+> +/*
+> + * Copyright 2022 Google LLC.
+> + */
 
-Ah, yes -- you are right. I looked through the commit history (I had
-to go back to when the seccomp test, and the harness, was out of tree).
-There was a time when the logic happened during the list walking, rather
-than during list _creation_. I was remembering the former.
+hmm ?
 
-So, yes, let's make this change. As you say, it also solves for defining
-TEST_HARNESS_MAIN before the tests. Thank you! I'd still like to replace
-all the open-coded TEST_HARNESS_MAIN calls, though.
+> +
+> +#define SYSCTL_ROOT_PATH "/proc/sys/"
+> +#define SYSCTL_NAME_LEN 128
+> +#define RESERVED_PORTS_SYSCTL_NAME "net/ipv4/ip_local_reserved_ports"
+> +#define RESERVED_PORTS_OVERRIDE_VALUE "31337"
+> +
+> +#define _GNU_SOURCE
+> +#include <unistd.h>
+> +#include <string.h>
+> +#include <fcntl.h>
+> +
+> +#include <sys/mount.h>
+> +
+> +#include "test_progs.h"
+> +#include "cgrp_sysctl.skel.h"
+> +
+> +struct sysctl_test {
+> +       const char *sysctl;
+> +       int open_flags;
+> +       const char *newval;
+> +       const char *updval;
+> +};
+> +
+> +static void subtest(int cgroup_fd, struct cgrp_sysctl *skel, struct sysc=
+tl_test *test_data)
+> +{
+> +       int fd;
+> +
+> +       fd =3D open(SYSCTL_ROOT_PATH RESERVED_PORTS_SYSCTL_NAME, test_dat=
+a->open_flags | O_CLOEXEC);
+> +       if (!ASSERT_GT(fd, 0, "sysctl-open"))
+> +               return;
+> +
+> +       if (test_data->open_flags =3D=3D O_RDWR) {
+> +               int wr_ret;
+> +
+> +               wr_ret =3D write(fd, test_data->newval, strlen(test_data-=
+>newval));
+> +               if (!ASSERT_GT(wr_ret, 0, "sysctl-write"))
+> +                       goto out;
+> +
+> +               char buf[SYSCTL_NAME_LEN];
+> +               char updval[SYSCTL_NAME_LEN];
+> +
+> +               sprintf(updval, "%s\n", test_data->updval);
+> +               if (!ASSERT_OK(lseek(fd, 0, SEEK_SET), "sysctl-seek"))
+> +                       goto out;
+> +               if (!ASSERT_GT(read(fd, buf, sizeof(buf)), 0, "sysctl-rea=
+d"))
+> +                       goto out;
+> +               if (!ASSERT_OK(strncmp(buf, updval, strlen(updval)), "sys=
+ctl-updval"))
+> +                       goto out;
+> +       }
+> +
+> +out:
+> +       close(fd);
+> +}
+> +
+> +void test_cgrp_sysctl(void)
+> +{
+> +       struct cgrp_sysctl *skel;
+> +       int cgroup_fd;
+> +
+> +       cgroup_fd =3D test__join_cgroup("/cgrp_sysctl");
+> +       if (!ASSERT_GE(cgroup_fd, 0, "cg-create"))
+> +               return;
+> +
+> +       skel =3D cgrp_sysctl__open();
+> +       if (!ASSERT_OK_PTR(skel, "skel-open"))
+> +               goto close_cgroup;
+> +
+> +       struct sysctl_test test_data;
+> +
+> +       if (test__start_subtest("overwrite_success")) {
+> +               test_data =3D (struct sysctl_test){
+> +                       .sysctl =3D RESERVED_PORTS_SYSCTL_NAME,
+> +                       .open_flags =3D O_RDWR,
+> +                       .newval =3D "22222",
+> +                       .updval =3D RESERVED_PORTS_OVERRIDE_VALUE,
+> +               };
+> +               memcpy(skel->rodata->sysctl_name, RESERVED_PORTS_SYSCTL_N=
+AME,
+> +                      sizeof(RESERVED_PORTS_SYSCTL_NAME));
+> +               skel->rodata->name_len =3D sizeof(RESERVED_PORTS_SYSCTL_N=
+AME);
+> +               memcpy(skel->rodata->sysctl_updval, RESERVED_PORTS_OVERRI=
+DE_VALUE,
+> +                      sizeof(RESERVED_PORTS_OVERRIDE_VALUE));
+> +               skel->rodata->updval_len =3D sizeof(RESERVED_PORTS_OVERRI=
+DE_VALUE);
+> +       }
+> +
+> +       if (!ASSERT_OK(cgrp_sysctl__load(skel), "skel-load"))
+> +               goto close_cgroup;
+> +
+> +       skel->links.cgrp_sysctl_overwrite =3D
+> +               bpf_program__attach_cgroup(skel->progs.cgrp_sysctl_overwr=
+ite, cgroup_fd);
+> +       if (!ASSERT_OK_PTR(skel->links.cgrp_sysctl_overwrite, "cg-attach-=
+sysctl"))
+> +               goto skel_destroy;
+> +
+> +       subtest(cgroup_fd, skel, &test_data);
+> +       goto skel_destroy;
+> +
+> +skel_destroy:
+> +       cgrp_sysctl__destroy(skel);
+> +
+> +close_cgroup:
+> +       close(cgroup_fd);
+> +}
+> diff --git a/tools/testing/selftests/bpf/progs/cgrp_sysctl.c b/tools/test=
+ing/selftests/bpf/progs/cgrp_sysctl.c
+> new file mode 100644
+> index 000000000000..99b202835f85
+> --- /dev/null
+> +++ b/tools/testing/selftests/bpf/progs/cgrp_sysctl.c
+> @@ -0,0 +1,51 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +// Copyright (c) 2019 Facebook
 
--- 
-Kees Cook
+Another odd copy-paste.
+
+Also this new test is failing in CI.
+
+pw-bot: cr
 
