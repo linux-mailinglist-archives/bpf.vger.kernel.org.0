@@ -1,211 +1,188 @@
-Return-Path: <bpf+bounces-29986-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-29987-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 16D738C8EF1
-	for <lists+bpf@lfdr.de>; Sat, 18 May 2024 02:39:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5438D8C8F0E
+	for <lists+bpf@lfdr.de>; Sat, 18 May 2024 03:22:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BC22C282E0B
-	for <lists+bpf@lfdr.de>; Sat, 18 May 2024 00:39:44 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BD443282F40
+	for <lists+bpf@lfdr.de>; Sat, 18 May 2024 01:22:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 52A084C8B;
-	Sat, 18 May 2024 00:39:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=davidwei-uk.20230601.gappssmtp.com header.i=@davidwei-uk.20230601.gappssmtp.com header.b="SV2zemg5"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C5F9B4A29;
+	Sat, 18 May 2024 01:22:03 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
+Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E66AC65C
-	for <bpf@vger.kernel.org>; Sat, 18 May 2024 00:39:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B46E637;
+	Sat, 18 May 2024 01:22:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715992774; cv=none; b=QjHO8+C8FWZC49b7886vThmQT9Rw67vbCjk44wJSF4k9w5QoYzZc5od0EQ87hdkyvyYGFqIXIMewYKo89+MH+QoRPMveW1+/Mau30J0EXUJsRII+bPRJzQoJPO03MN5K+OjhCFE5h+3cApywls3jgJ4628FibTyFfb2/wtv/u24=
+	t=1715995323; cv=none; b=EF6jDzkyZ65d6VOyupsBqDc7DltoyHqRzb/VOu3v5isqgrq/BMB4xIkfCO4FL0r3YoVaGwqlYxtldq1RXmhxateOTwRKmq/ogbdiwzm5AI4syHFnV5PYGDiHlkHBFkijvp0yOLydSFZo40uLx4pjZpoz2uJdvZ53/v5snzH7gU0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715992774; c=relaxed/simple;
-	bh=4V5YW8ORGMY45KRj8UEqSm59pF8Y+sc6mDeE+TSeGJM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=gR0XZj2/WmS4MvBiLKw1GXzSCDiJcrJgPT82eDHsMLMpl9Qz/Q+D5vuMfznhDyOrcw2omaD/2y6VIkzQi1Rp8NCxzWtRY7DlOCw0SRI4yKqEotgIBOIO5dLRaoZy8F289FMS6FBNyBRuhdUDUyqt5qG3SjkE2nM83qQJhF009qM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=davidwei.uk; spf=none smtp.mailfrom=davidwei.uk; dkim=pass (2048-bit key) header.d=davidwei-uk.20230601.gappssmtp.com header.i=@davidwei-uk.20230601.gappssmtp.com header.b=SV2zemg5; arc=none smtp.client-ip=209.85.214.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=davidwei.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=davidwei.uk
-Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-1e3c3aa8938so25542155ad.1
-        for <bpf@vger.kernel.org>; Fri, 17 May 2024 17:39:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=davidwei-uk.20230601.gappssmtp.com; s=20230601; t=1715992772; x=1716597572; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=p7Punv+O2VI5RKAkHRkhtEk7CBj9yRK2PJX5XN6bfhc=;
-        b=SV2zemg5NtIR3pbXcUpjQL4Nh2uV808bM0bYra4XbVqoECYENJz6/Yy1du6GUsBF1T
-         XjClNZyHgkq1IjzGsNu0VF4KSRcFvP8duWW93pNhihxONKxIBHEuEju184pzDGSNNupq
-         ib3YMvRdDHjiHmp2OxcZgusnPxfFWYkd34Nlw+eS/M5SIsLUf3Mrx9wPF3j4JbN0L51J
-         8Ns52iIbDMMJzhPw7VAE6tB2RCkaU9f1rM9auoIgPX19Bn4lqARdC5AzZbrjVYBG9xPX
-         cdNuEoJX1TmbwOv4k+7AFSI4ow5gFWRUrYzogvoH4IJNgoo7XBVgU2ba15ADfeNZaYsV
-         sGRA==
+	s=arc-20240116; t=1715995323; c=relaxed/simple;
+	bh=ElhXaKsS1+9DXmfAIxHjuyBWoUf40Xp5dX2TRm/4xnA=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=rn+6k4aVI/dYkj9d3lCActjttFv78sCsdfgoHX6XdQ91vNR8KpZ1iJ+p6MTH2+kofyW0BpZlp2raKwp3dw8kUhsZ64HR+DKXZ8a1q/voRoOn+PwsvFws72+6+PeVJkO3U1mD7k7qchpPX69eMhsYMdOI0FSX+EriiybfVWWbgBA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.214.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f182.google.com with SMTP id d9443c01a7336-1ee954e0aa6so27076885ad.3;
+        Fri, 17 May 2024 18:22:01 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1715992772; x=1716597572;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=p7Punv+O2VI5RKAkHRkhtEk7CBj9yRK2PJX5XN6bfhc=;
-        b=oc7kIjAbH6XW5baD4dF5xksfGIKk+4Th3/epurOs9dnibkhEC8Ha5u7a7gcqT0WDq4
-         37+XZKeVqERWRy2bnYx326TR41O3IUiD640xudAXHpZRVhvXCCHNm0P1XGZHtGfB9hCD
-         V26oLF0GGofFTldtnc438Pwh7c9RiXqIjsysDHOn5pmm/Ur3F9hsvshmiezMKrfbzs2R
-         bK0FwER7GhEv5nG+fTvv6iA8LzJ9ZZG1gcimRLx1SsdXA/jPYvGML+LzHBSORQAvs4YJ
-         235NYhD3731PVhOHJNeFLcQ3Kyf8bHZiMsEN2CVvJqistDJFTfYGEZRvuMUGmIUdPQxH
-         G0vQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVWRVjhoh2cnHjFPlP+4wAiXEeo/mVwHsdxfy9u679qlSTdZjTp71iMml+PfKpCf2ENobRVSxRelZMUrIxaYJMOFVxS
-X-Gm-Message-State: AOJu0Ywq2YKvFPbXF3AA+1IZNbL9QsROQXlRbTPVZLZ6WNravuzI8ADu
-	gugQkVheeUbJH9hkcx2nW0Fw8tUniAgbBeF4MQpZRx870iXSjqZnpMt4h9PnL4M=
-X-Google-Smtp-Source: AGHT+IG2kizdOiSw0uylPEq0qK5Nujj1quEtxgB2wxc39/tXdkGx33RSfpvHjRCh3dNNGsAUN6Msjg==
-X-Received: by 2002:a05:6a00:1397:b0:6e6:89ad:1233 with SMTP id d2e1a72fcca58-6f4e02a6150mr30537733b3a.2.1715992772166;
-        Fri, 17 May 2024 17:39:32 -0700 (PDT)
-Received: from ?IPV6:2a03:83e0:1156:1:1cbd:da2b:a9f2:881? ([2620:10d:c090:500::6:9fd9])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-6f4d2af2bccsm16503658b3a.170.2024.05.17.17.39.26
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 17 May 2024 17:39:31 -0700 (PDT)
-Message-ID: <090be3c0-42e6-4b97-8b03-eb64b06a2911@davidwei.uk>
-Date: Fri, 17 May 2024 17:39:25 -0700
+        d=1e100.net; s=20230601; t=1715995321; x=1716600121;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=2hc0SNlsLadEAwSJsJkJ0F+sA68E81mxz5OGr/0vCeI=;
+        b=FV01LO2ToJpau07BPXN4t284mogm69zM5sqvk4dynWByOKOEg+8gQlnmNb0gbraeBM
+         HYkTua+429ozIrV4dJcZ4IZSmmnVgeSgvVeKlauVtVWmkar00voVCW8RUmZaVzr/tgUa
+         uJUxfiNQmbaARtu9Q5yuvGrZungYW/73HphjqZypkpr+6m2B8AvVGEpOvEu5qH67+KV7
+         eXkP+t6OpjU0nwsYSaL7erXPihnIgtjCIic4U6BoM+PlvxbFGkPiCJjZmi6mrxxqqLSn
+         r3X66iJZmI5va86zkNdFaloquyKdrdLoDp04gFhfndbk/wc/Fj4jBa0u+O1Fy7oKCFIR
+         aVbA==
+X-Forwarded-Encrypted: i=1; AJvYcCUJeIRgrVblGgPuHXroxqXCLu2Rf0FKyMIX2w0JzJCcHMEODlE7SH8nPfntSoxON0dZg1iBDdbKCCA4wu64XoKMKWEDVXZtgbDGOKxuzUAdqhcjmgezfgdyCVBRFHYOsbJD/YyTwVCJu5XczCcNJd3C6Da8hOHMs4igAI6lwCBUpC7enw==
+X-Gm-Message-State: AOJu0YxKJq8kddk0OCGtBOU/0MRQJPIigx6Ob5p+970n2/mZ6e+PmQ7p
+	G3S3KC+7OAXV8JzO3gUT6eQqLJ9M45iDvDWnfPREDzesy9PV8t/ursk2WqGDSOd+8KwLDmii8ey
+	N6yeQ3iJoaJsgm9uMrtmx9SNruCI=
+X-Google-Smtp-Source: AGHT+IE0d41KlXtAOA3EnUT5tFEzESh1XTS/75pcgKnYzszaKX7EC6DEt/owS960AUGa6kFY7l2W6eyQ5y1LDiIsH90=
+X-Received: by 2002:a17:902:d2c4:b0:1e6:40f1:9357 with SMTP id
+ d9443c01a7336-1ef43d2e3acmr276615955ad.8.1715995321085; Fri, 17 May 2024
+ 18:22:01 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next v9 05/14] netdev: netdevice devmem allocator
-Content-Language: en-GB
-To: Mina Almasry <almasrymina@google.com>, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
- linux-alpha@vger.kernel.org, linux-mips@vger.kernel.org,
- linux-parisc@vger.kernel.org, sparclinux@vger.kernel.org,
- linux-trace-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
- bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
- linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org
-Cc: Donald Hunter <donald.hunter@gmail.com>, Jakub Kicinski
- <kuba@kernel.org>, "David S. Miller" <davem@davemloft.net>,
- Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>,
- Jonathan Corbet <corbet@lwn.net>,
- Richard Henderson <richard.henderson@linaro.org>,
- Ivan Kokshaysky <ink@jurassic.park.msu.ru>, Matt Turner
- <mattst88@gmail.com>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
- "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
- Helge Deller <deller@gmx.de>, Andreas Larsson <andreas@gaisler.com>,
- Jesper Dangaard Brouer <hawk@kernel.org>,
- Ilias Apalodimas <ilias.apalodimas@linaro.org>,
- Steven Rostedt <rostedt@goodmis.org>, Masami Hiramatsu
- <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
- Arnd Bergmann <arnd@arndb.de>, Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
- Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman
- <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
- Yonghong Song <yonghong.song@linux.dev>,
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
- Jiri Olsa <jolsa@kernel.org>, Steffen Klassert
- <steffen.klassert@secunet.com>, Herbert Xu <herbert@gondor.apana.org.au>,
- David Ahern <dsahern@kernel.org>,
- Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
- Shuah Khan <shuah@kernel.org>, Sumit Semwal <sumit.semwal@linaro.org>,
- =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
- Pavel Begunkov <asml.silence@gmail.com>, Jason Gunthorpe <jgg@ziepe.ca>,
- Yunsheng Lin <linyunsheng@huawei.com>, Shailend Chand <shailend@google.com>,
- Harshitha Ramamurthy <hramamurthy@google.com>,
- Shakeel Butt <shakeel.butt@linux.dev>, Jeroen de Borst
- <jeroendb@google.com>, Praveen Kaligineedi <pkaligineedi@google.com>,
- Willem de Bruijn <willemb@google.com>, Kaiyuan Zhang <kaiyuanz@google.com>
-References: <20240510232128.1105145-1-almasrymina@google.com>
- <20240510232128.1105145-6-almasrymina@google.com>
-From: David Wei <dw@davidwei.uk>
-In-Reply-To: <20240510232128.1105145-6-almasrymina@google.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20240516041948.3546553-1-irogers@google.com> <CAP-5=fW8TA0KQOepQRuC_0mhyp6kHbPodh+6-uoVxsmC=09tTw@mail.gmail.com>
+ <CAP-5=fUBJOaE3Tp1NP4Urdt-r_kHEaR00aTKxMrvfe_0fyPxYA@mail.gmail.com>
+In-Reply-To: <CAP-5=fUBJOaE3Tp1NP4Urdt-r_kHEaR00aTKxMrvfe_0fyPxYA@mail.gmail.com>
+From: Namhyung Kim <namhyung@kernel.org>
+Date: Fri, 17 May 2024 18:21:50 -0700
+Message-ID: <CAM9d7cjYcOuZOU_vFf8oFJjbTb62pGqTWSVopNAus6waXqSS+A@mail.gmail.com>
+Subject: Re: [PATCH v1 0/3] Use BPF filters for a "perf top -u" workaround
+To: Ian Rogers <irogers@google.com>
+Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
+	Arnaldo Carvalho de Melo <acme@kernel.org>, Mark Rutland <mark.rutland@arm.com>, 
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Adrian Hunter <adrian.hunter@intel.com>, Kan Liang <kan.liang@linux.intel.com>, 
+	Changbin Du <changbin.du@huawei.com>, John Fastabend <john.fastabend@gmail.com>, 
+	Andrii Nakryiko <andrii@kernel.org>, linux-perf-users@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 2024-05-10 16:21, Mina Almasry wrote:
-> +/* This returns the absolute dma_addr_t calculated from
-> + * net_iov_owner(niov)->owner->base_dma_addr, not the page_pool-owned
-> + * niov->dma_addr.
-> + *
-> + * The absolute dma_addr_t is a dma_addr_t that is always uncompressed.
-> + *
-> + * The page_pool-owner niov->dma_addr is the absolute dma_addr compressed into
-> + * an unsigned long. Special handling is done when the unsigned long is 32-bit
-> + * but the dma_addr_t is 64-bit.
-> + *
-> + * In general code looking for the dma_addr_t should use net_iov_dma_addr(),
-> + * while page_pool code looking for the unsigned long dma_addr which mirrors
-> + * the field in struct page should use niov->dma_addr.
-> + */
-> +static inline dma_addr_t net_iov_dma_addr(const struct net_iov *niov)
-> +{
-> +	struct dmabuf_genpool_chunk_owner *owner = net_iov_owner(niov);
-> +
-> +	return owner->base_dma_addr +
-> +	       ((dma_addr_t)net_iov_idx(niov) << PAGE_SHIFT);
-> +}
+Hi Ian,
 
-This part feels like devmem TCP specific, yet the function is in
-netmem.h. Please consider moving it into devmem.{h,c} which makes it
-less likely that people not reading your comment will try using it.
+On Thu, May 16, 2024 at 10:34=E2=80=AFAM Ian Rogers <irogers@google.com> wr=
+ote:
+>
+> On Wed, May 15, 2024 at 10:04=E2=80=AFPM Ian Rogers <irogers@google.com> =
+wrote:
+> >
+> > On Wed, May 15, 2024 at 9:20=E2=80=AFPM Ian Rogers <irogers@google.com>=
+ wrote:
+> > >
+> > > Allow uid and gid to be terms in BPF filters by first breaking the
+> > > connection between filter terms and PERF_SAMPLE_xx values. Calculate
+> > > the uid and gid using the bpf_get_current_uid_gid helper, rather than
+> > > from a value in the sample. Allow filters to be passed to perf top, t=
+his allows:
+> > >
+> > > $ perf top -e cycles:P --filter "uid =3D=3D $(id -u)"
+> > >
+> > > to work as a "perf top -u" workaround, as "perf top -u" usually fails
+> > > due to processes/threads terminating between the /proc scan and the
+> > > perf_event_open.
+> >
+> > Fwiw, something I noticed playing around with this (my workload was
+> > `perf test -w noploop 100000` as different users) is that old samples
+> > appeared to linger around making terminated processes still appear in
+> > the top list. My guess is that there aren't other samples showing up
+> > and pushing the old sample events out of the ring buffers due to the
+> > filter. This can look quite odd and I don't know if we have a way to
+> > improve upon it, flush the ring buffers, histograms, etc. It appears
+> > to be a latent `perf top` issue that you could encounter on other low
+> > frequency events, but I thought I'd mention it anyway.
+>
+> Some other thoughts:
+>
+>  - It is kind of annoying with the --filter option (either on top or
+> record) that there first needs to be an event to filter on. It'd be
+> nice if we could just filter the default event.
 
-> +
-> +static inline struct net_devmem_dmabuf_binding *
-> +net_iov_binding(const struct net_iov *niov)
-> +{
-> +	return net_iov_owner(niov)->binding;
-> +}
-> +
->  /* netmem */
->  
->  /**
-> diff --git a/net/core/devmem.c b/net/core/devmem.c
-> index d82f92d7cf9ce..1f90e23a81441 100644
-> --- a/net/core/devmem.c
-> +++ b/net/core/devmem.c
-> @@ -54,6 +54,42 @@ void __net_devmem_dmabuf_binding_free(struct net_devmem_dmabuf_binding *binding)
->  	kfree(binding);
->  }
->  
-> +struct net_iov *
-> +net_devmem_alloc_dmabuf(struct net_devmem_dmabuf_binding *binding)
-> +{
-> +	struct dmabuf_genpool_chunk_owner *owner;
-> +	unsigned long dma_addr;
-> +	struct net_iov *niov;
-> +	ssize_t offset;
-> +	ssize_t index;
-> +
-> +	dma_addr = gen_pool_alloc_owner(binding->chunk_pool, PAGE_SIZE,
-> +					(void **)&owner);
-> +	if (!dma_addr)
-> +		return NULL;
-> +
-> +	offset = dma_addr - owner->base_dma_addr;
-> +	index = offset / PAGE_SIZE;
-> +	niov = &owner->niovs[index];
-> +
-> +	niov->dma_addr = 0;
-> +
-> +	net_devmem_dmabuf_binding_get(binding);
-> +
-> +	return niov;
-> +}
-> +
-> +void net_devmem_free_dmabuf(struct net_iov *niov)
-> +{
-> +	struct net_devmem_dmabuf_binding *binding = net_iov_binding(niov);
-> +	unsigned long dma_addr = net_iov_dma_addr(niov);
-> +
-> +	if (gen_pool_has_addr(binding->chunk_pool, dma_addr, PAGE_SIZE))
-> +		gen_pool_free(binding->chunk_pool, dma_addr, PAGE_SIZE);
-> +
-> +	net_devmem_dmabuf_binding_put(binding);
-> +}
-> +
->  /* Protected by rtnl_lock() */
->  static DEFINE_XARRAY_FLAGS(net_devmem_dmabuf_bindings, XA_FLAGS_ALLOC1);
->  
+Hmm.. right.  It should work with the default event when
+no -e option is given.
+
+>
+>  - Should "perf top --uid=3D1234" be removed or turned into  an alias
+> for '--filter "uid =3D=3D $(id -u)"' given the --uid option generally
+> doesn't work?
+
+I think --uid should not fail if it cannot find the task.
+I had a similar situation for perf stat --for-each-cgroup
+and made it ignore the failures.
+
+>
+>  - What should happen to the perf top --pid and --tid options, should
+> they be filters? Should they fallback on /proc scanning if there
+> aren't sufficient BPF permissions? The plumbing for that is going to
+> be messy.
+
+I'm not inclined to do such things.
+
+>
+>  - There should probably be a way to filter on cgroups.
+
++1
+
+>
+>  - Does the user care that there are 3 kinds of filter that will work
+> differently? Could we break them apart to make it more explicit, I may
+> want tracepoint events with a BPF filter. How can we ensure 1 syntax
+> for the 3 kinds of filter.
+>
+>  - Filtering on register values could be potentially interesting, for
+> example, sampling on memcpy-s where the length is over a threshold. We
+> have a register capture test:
+> https://git.kernel.org/pub/scm/linux/kernel/git/perf/perf-tools-next.git/=
+tree/tools/perf/tests/shell/record.sh#n81
+> Perhaps the filter could look something like 'perf record -g -e
+> mem:$ADDRESS_OF_MEMCPY:x --filter "reg:rdx > 1024"' -  this makes me
+> think we need to make a more convenient way to specify memory
+> addresses as symbols.
+
+I've been thinking about a similar idea on uftrace.
+It would filter the function based on the value of an
+argument or a global variable.
+
+Thanks,
+Namhyung
+
+
+> >
+> > > Ian Rogers (3):
+> > >   perf bpf filter: Give terms their own enum
+> > >   perf bpf filter: Add uid and gid terms
+> > >   perf top: Allow filters on events
+> > >
+> > >  tools/perf/Documentation/perf-record.txt     |  2 +-
+> > >  tools/perf/Documentation/perf-top.txt        |  4 ++
+> > >  tools/perf/builtin-top.c                     |  9 +++
+> > >  tools/perf/util/bpf-filter.c                 | 55 ++++++++++++----
+> > >  tools/perf/util/bpf-filter.h                 |  5 +-
+> > >  tools/perf/util/bpf-filter.l                 | 66 +++++++++---------=
+-
+> > >  tools/perf/util/bpf-filter.y                 |  7 +-
+> > >  tools/perf/util/bpf_skel/sample-filter.h     | 27 +++++++-
+> > >  tools/perf/util/bpf_skel/sample_filter.bpf.c | 67 +++++++++++++++---=
+--
+> > >  9 files changed, 172 insertions(+), 70 deletions(-)
+> > >
+> > > --
+> > > 2.45.0.rc1.225.g2a3ae87e7f-goog
+> > >
 
