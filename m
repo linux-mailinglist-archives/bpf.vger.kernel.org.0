@@ -1,230 +1,162 @@
-Return-Path: <bpf+bounces-30013-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-30014-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1DF1A8C9203
-	for <lists+bpf@lfdr.de>; Sat, 18 May 2024 20:57:46 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 748A38C924F
+	for <lists+bpf@lfdr.de>; Sat, 18 May 2024 23:05:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 410F31C20969
-	for <lists+bpf@lfdr.de>; Sat, 18 May 2024 18:57:45 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id F247B1F214DE
+	for <lists+bpf@lfdr.de>; Sat, 18 May 2024 21:05:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F77660882;
-	Sat, 18 May 2024 18:57:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=davidwei-uk.20230601.gappssmtp.com header.i=@davidwei-uk.20230601.gappssmtp.com header.b="v/AmV8kq"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7BB9C6A8CF;
+	Sat, 18 May 2024 21:05:39 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-oo1-f52.google.com (mail-oo1-f52.google.com [209.85.161.52])
+Received: from mail-io1-f78.google.com (mail-io1-f78.google.com [209.85.166.78])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1EE5462171
-	for <bpf@vger.kernel.org>; Sat, 18 May 2024 18:57:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD7898F4A
+	for <bpf@vger.kernel.org>; Sat, 18 May 2024 21:05:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.78
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716058651; cv=none; b=jCg0SnenR8NlTyPVqTasIIn1jJ7TjGYZV50lrbgnFJRD121TwRIjFCPXswnfT3gmlG4RDrfmMz8L6aigXJIZVp0x5ijEq/8OrDRielOv12+XHmPVHkgN44xasuyE5wHnU71sk+E5JSaDc4i1wOu0xCuj/5MCF8JsOe9LoZqrGGM=
+	t=1716066339; cv=none; b=BqBmxnNCsu+jHBhNwel3f8kMHhIWDhIptNL10PGafaCKoGJfFjSCsxYb0ZilnxhFHW4j2Eg1uBKh2udBJ5mofxFlzqNPgY4/eCI8P2RPEcm/kf34ymFYO3HVv+/LXQXMvG16aS95IUsJrhkAMzYqFobuYwtlgNoqxHHP4cGA61o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716058651; c=relaxed/simple;
-	bh=wAqIRcCabbfn5FNmvGNIGPL+iroeEmFcrvMhrlMZdAE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=nE1H8iaZKuEQYnN8gH+4QMLlTZtuV50RoxDGKIwkBUTur5ADembYEU4dd3Ef0gpb+v8t0FyTYm0kTigF7W7ssyq+2DpiY3GehH2D+9DcXz66XoNe5VwFRorlntod1G45T+alj8ZbhNPa4I/yBvPevnQU8JvNjgZO17Vu6+1VlMA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=davidwei.uk; spf=none smtp.mailfrom=davidwei.uk; dkim=pass (2048-bit key) header.d=davidwei-uk.20230601.gappssmtp.com header.i=@davidwei-uk.20230601.gappssmtp.com header.b=v/AmV8kq; arc=none smtp.client-ip=209.85.161.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=davidwei.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=davidwei.uk
-Received: by mail-oo1-f52.google.com with SMTP id 006d021491bc7-5b295d6b7fbso766793eaf.0
-        for <bpf@vger.kernel.org>; Sat, 18 May 2024 11:57:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=davidwei-uk.20230601.gappssmtp.com; s=20230601; t=1716058649; x=1716663449; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=YguLbfIUe9SPEVY4PVRNzJgWNLjHIbYrZNjYPjw1wDY=;
-        b=v/AmV8kq3UZnHRDaqHKqhNVypfUF8x6d6yBi1N5G0tcfRYE7ce3MRpUzwl4YK2pDOY
-         0gSkGZswCXm5bMtnmSlhuxkbS/tIUF9okGsjBZ5fby4NKwqYTPIwTzC4ZoclOyTZFLem
-         RT2+G780T4Rvt6sAdooeJFD4Qw3kSZNGJ+JoLSw1NmiZZpBQstNxMDIY5BleC4qlptFg
-         +S8gDOPygxpPebphBpPjxk+hnz5mYSWeMnl3BWZFaLUWoQw272KOFLgpA509meCbeaTc
-         1zy687rDIDcZ+p0a/pi8z2PkHBDskEdl/PpU+UT704u1+W7ImWvpp5WEZODo1Gd2YGEU
-         ZAqg==
+	s=arc-20240116; t=1716066339; c=relaxed/simple;
+	bh=NRgjkBMK4sXVRHAhM0KdWy2Ma87HvsqtCepIc1Mmf+U=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=oh0Nj0x3RWF+9soxky/UbHiWfh9STOR1OhvHxcIcPDbxBN55A9l4OquwuFolnT6o+EtP3j23gt9VNgBX2efyBu/V3AhCWsfBkOU5A2pyCZ5vPP579E7rfUVZ6wB+dRbVc9iYcqyR/tAUb5MMHTT0Z7iNgfiRQVfXcKD2Lk1C6eo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.78
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f78.google.com with SMTP id ca18e2360f4ac-7dabc125bddso1197354339f.1
+        for <bpf@vger.kernel.org>; Sat, 18 May 2024 14:05:37 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1716058649; x=1716663449;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=YguLbfIUe9SPEVY4PVRNzJgWNLjHIbYrZNjYPjw1wDY=;
-        b=vOajqp2KdABX5ZFZE8HpMpAlKEH8nEdEilGMzCCrnjoqqTzNiAPUAzcR6kHLnFc+FY
-         BJD2jr7glEXi6P4b3qhhrfwxWQs+0G3MqvcIJgnhxD7fk0Nt0yhnyRxhpmPYW7xM9MWz
-         rsu2haBUY7eUrBz66zpN1jYVKlNMRGGstdypUZyQztUsnXyiT7tkb757HvEu4wAL2vZP
-         ZIqV0ccuAGCfpjUiWlz+vEkX4jcNVSyqlgXuzeYI3jzSeTX+oDTNU1g8fgxHUuJdjV2W
-         EXOx9u0p3Nbbwm1bnn08ypf2CLi0Z7u6cIHapkC34759C3qzHLQ79dXQzyzeQ8cQRP92
-         PSJg==
-X-Forwarded-Encrypted: i=1; AJvYcCVeyrBXINPSCO92Hnckjn44LvJIF9fYnccAUOspBkM1dytcTkBGSj2S7rEbqm+/WIoApCB1v20cS8rMLuoVtjXQDoCM
-X-Gm-Message-State: AOJu0Yy9S0dhJ/42LQgzTW9PxttwWxZNMtSvn8vmSHh5CZPRmMHMk0RL
-	K1Ts3HtgrFpuiGGVlpQXbCa56OHsQvdIKIszgKTpvqJrzc3GdWl8HAowix+fIXI=
-X-Google-Smtp-Source: AGHT+IHilXoeJ/w5ohYR0i7AU3401ochXIU5LArEI0v5RdvvJ31YBmDQam4A7KpiPZymCfWrte5bew==
-X-Received: by 2002:a05:6358:3a11:b0:17b:5661:5e2b with SMTP id e5c5f4694b2df-193bb64065bmr2817534555d.18.1716058648846;
-        Sat, 18 May 2024 11:57:28 -0700 (PDT)
-Received: from [192.168.1.16] (174-21-188-197.tukw.qwest.net. [174.21.188.197])
-        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-658764fda40sm5342410a12.5.2024.05.18.11.57.27
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 18 May 2024 11:57:28 -0700 (PDT)
-Message-ID: <eeb59c4f-9208-4700-b73b-9652398371d7@davidwei.uk>
-Date: Sat, 18 May 2024 11:57:26 -0700
+        d=1e100.net; s=20230601; t=1716066337; x=1716671137;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=gfFjo3BhTE67D3mQ9xMB8FDVigkkGBSudUTv3+vJeFs=;
+        b=stCyPVaQ3WGvOmCDs7MmzejcjmoKqS6KJijEDzmDnPEaIFonwCdr7Wkgeam+TfdAMj
+         MwNa6SMucPUNp/oSJT10R11xKGtdDU2aNSU49J3llVVUvcAluZW1DEItd0iEBDOELgUc
+         3qoVdMUlT2zoamIp9WS563ySyc41ErroKG0aqx2UJ6aI0sHa7Cnu4SPGX1fjwbg1sb9l
+         g8sNoScaJDigG0pCcQ2i1ppMiOFR4LiOKMMlPbFwLTMVnr644SAUu/oec266uEbhrNUc
+         a+y4bLF+suHWqPcXwnJU/ki3IvjptzIXxnFb4Qtl01/T60tHMTj7/EosbxfitVwL0UDH
+         5WPA==
+X-Forwarded-Encrypted: i=1; AJvYcCUZBVaiJ/NN4VECWkdKKHlRr+2OYePICXcjbU4a1GkZofrb9HkrhLWEa9Kjf260EMLbx3Ekf7Gj0ZXCIM4z8MB7l4NA
+X-Gm-Message-State: AOJu0YxCTBE7/TEH9X2gHN9m4z5rKuo+S8hGXsa4WbILhJrT63YqX6XM
+	vji3eo3ldNjOYr98McvO0qQdKbk5spc6kcAuWSfFtwkManXV5vX/pUfUzfsJP2QOZB7a56pyl9R
+	9/HUb8bpHnWDfhpBRvd+qq7hhJNR5pr6jKe3xDemLywQlhIth/yxMi2E=
+X-Google-Smtp-Source: AGHT+IH81JS2t4EuaWyDfkKkvdQ+OWubY5WcSldbCKOiadcOGy+6xA3E/2fR+hWaPT/Rs30P1O4E7tnxWdz8RrhitmSScCVpPKsK
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next v9 04/14] netdev: support binding dma-buf to
- netdevice
-Content-Language: en-GB
-To: Mina Almasry <almasrymina@google.com>, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
- linux-alpha@vger.kernel.org, linux-mips@vger.kernel.org,
- linux-parisc@vger.kernel.org, sparclinux@vger.kernel.org,
- linux-trace-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
- bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
- linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org
-Cc: Donald Hunter <donald.hunter@gmail.com>, Jakub Kicinski
- <kuba@kernel.org>, "David S. Miller" <davem@davemloft.net>,
- Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>,
- Jonathan Corbet <corbet@lwn.net>,
- Richard Henderson <richard.henderson@linaro.org>,
- Ivan Kokshaysky <ink@jurassic.park.msu.ru>, Matt Turner
- <mattst88@gmail.com>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
- "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
- Helge Deller <deller@gmx.de>, Andreas Larsson <andreas@gaisler.com>,
- Jesper Dangaard Brouer <hawk@kernel.org>,
- Ilias Apalodimas <ilias.apalodimas@linaro.org>,
- Steven Rostedt <rostedt@goodmis.org>, Masami Hiramatsu
- <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
- Arnd Bergmann <arnd@arndb.de>, Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
- Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman
- <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
- Yonghong Song <yonghong.song@linux.dev>,
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
- Jiri Olsa <jolsa@kernel.org>, Steffen Klassert
- <steffen.klassert@secunet.com>, Herbert Xu <herbert@gondor.apana.org.au>,
- David Ahern <dsahern@kernel.org>,
- Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
- Shuah Khan <shuah@kernel.org>, Sumit Semwal <sumit.semwal@linaro.org>,
- =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
- Pavel Begunkov <asml.silence@gmail.com>, Jason Gunthorpe <jgg@ziepe.ca>,
- Yunsheng Lin <linyunsheng@huawei.com>, Shailend Chand <shailend@google.com>,
- Harshitha Ramamurthy <hramamurthy@google.com>,
- Shakeel Butt <shakeel.butt@linux.dev>, Jeroen de Borst
- <jeroendb@google.com>, Praveen Kaligineedi <pkaligineedi@google.com>,
- Willem de Bruijn <willemb@google.com>, Kaiyuan Zhang <kaiyuanz@google.com>
-References: <20240510232128.1105145-1-almasrymina@google.com>
- <20240510232128.1105145-5-almasrymina@google.com>
-From: David Wei <dw@davidwei.uk>
-In-Reply-To: <20240510232128.1105145-5-almasrymina@google.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+X-Received: by 2002:a05:6638:8305:b0:487:100b:9212 with SMTP id
+ 8926c6da1cb9f-48958af8591mr1771843173.3.1716066336941; Sat, 18 May 2024
+ 14:05:36 -0700 (PDT)
+Date: Sat, 18 May 2024 14:05:36 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000006cbc570618c0d4a3@google.com>
+Subject: [syzbot] [bpf?] [net?] KMSAN: uninit-value in dev_map_hash_lookup_elem
+From: syzbot <syzbot+80cf9d55d6fd2d6a9838@syzkaller.appspotmail.com>
+To: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org, 
+	daniel@iogearbox.net, davem@davemloft.net, eddyz87@gmail.com, 
+	haoluo@google.com, hawk@kernel.org, john.fastabend@gmail.com, 
+	jolsa@kernel.org, kpsingh@kernel.org, kuba@kernel.org, 
+	linux-kernel@vger.kernel.org, martin.lau@linux.dev, netdev@vger.kernel.org, 
+	sdf@google.com, song@kernel.org, syzkaller-bugs@googlegroups.com, 
+	yonghong.song@linux.dev
+Content-Type: text/plain; charset="UTF-8"
 
-On 2024-05-10 16:21, Mina Almasry wrote:
-> -/* Stub */
->  int netdev_nl_bind_rx_doit(struct sk_buff *skb, struct genl_info *info)
->  {
-> -	return 0;
-> +	struct nlattr *tb[ARRAY_SIZE(netdev_queue_dmabuf_nl_policy)];
-> +	struct net_devmem_dmabuf_binding *out_binding;
-> +	struct list_head *sock_binding_list;
-> +	u32 ifindex, dmabuf_fd, rxq_idx;
-> +	struct net_device *netdev;
-> +	struct sk_buff *rsp;
-> +	struct nlattr *attr;
-> +	int rem, err = 0;
-> +	void *hdr;
-> +
-> +	if (GENL_REQ_ATTR_CHECK(info, NETDEV_A_DEV_IFINDEX) ||
-> +	    GENL_REQ_ATTR_CHECK(info, NETDEV_A_BIND_DMABUF_DMABUF_FD) ||
-> +	    GENL_REQ_ATTR_CHECK(info, NETDEV_A_BIND_DMABUF_QUEUES))
-> +		return -EINVAL;
-> +
-> +	ifindex = nla_get_u32(info->attrs[NETDEV_A_DEV_IFINDEX]);
-> +	dmabuf_fd = nla_get_u32(info->attrs[NETDEV_A_BIND_DMABUF_DMABUF_FD]);
-> +
-> +	rtnl_lock();
-> +
-> +	netdev = __dev_get_by_index(genl_info_net(info), ifindex);
-> +	if (!netdev) {
-> +		err = -ENODEV;
-> +		goto err_unlock;
-> +	}
-> +
-> +	err = net_devmem_bind_dmabuf(netdev, dmabuf_fd, &out_binding);
-> +	if (err)
-> +		goto err_unlock;
-> +
-> +	nla_for_each_attr(attr, genlmsg_data(info->genlhdr),
-> +			  genlmsg_len(info->genlhdr), rem) {
-> +		if (nla_type(attr) != NETDEV_A_BIND_DMABUF_QUEUES)
-> +			continue;
-> +
-> +		err = nla_parse_nested(
-> +			tb, ARRAY_SIZE(netdev_queue_dmabuf_nl_policy) - 1, attr,
-> +			netdev_queue_dmabuf_nl_policy, info->extack);
-> +		if (err < 0)
-> +			goto err_unbind;
-> +
-> +		rxq_idx = nla_get_u32(tb[NETDEV_A_QUEUE_DMABUF_IDX]);
-> +		if (rxq_idx >= netdev->num_rx_queues) {
-> +			err = -ERANGE;
-> +			goto err_unbind;
-> +		}
+Hello,
 
-net_devmem_bind_dmabuf_to_queue() checks for rxq_idx >=
-netdev->num_rx_queues as well. I'd say remove the one in
-netdev_nl_bind_rx_doit().
+syzbot found the following issue on:
 
-Also we may want a generic netdev function e.g. netdev_rx_queue_set_mp()
-since I need the same functionality.
+HEAD commit:    614da38e2f7a Merge tag 'hid-for-linus-2024051401' of git:/..
+git tree:       upstream
+console+strace: https://syzkaller.appspot.com/x/log.txt?x=1429a96c980000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=f5d2cbf33633f507
+dashboard link: https://syzkaller.appspot.com/bug?extid=80cf9d55d6fd2d6a9838
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=16a53ae4980000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=113003d4980000
 
-> +
-> +		err = net_devmem_bind_dmabuf_to_queue(netdev, rxq_idx,
-> +						      out_binding);
-> +		if (err)
-> +			goto err_unbind;
-> +	}
-> +
-> +	sock_binding_list = genl_sk_priv_get(&netdev_nl_family,
-> +					     NETLINK_CB(skb).sk);
-> +	if (IS_ERR(sock_binding_list)) {
-> +		err = PTR_ERR(sock_binding_list);
-> +		goto err_unbind;
-> +	}
-> +
-> +	list_add(&out_binding->list, sock_binding_list);
-> +
-> +	rsp = genlmsg_new(GENLMSG_DEFAULT_SIZE, GFP_KERNEL);
-> +	if (!rsp) {
-> +		err = -ENOMEM;
-> +		goto err_unbind;
-> +	}
-> +
-> +	hdr = genlmsg_iput(rsp, info);
-> +	if (!hdr) {
-> +		err = -EMSGSIZE;
-> +		goto err_genlmsg_free;
-> +	}
-> +
-> +	nla_put_u32(rsp, NETDEV_A_BIND_DMABUF_DMABUF_ID, out_binding->id);
-> +	genlmsg_end(rsp, hdr);
-> +
-> +	rtnl_unlock();
-> +
-> +	return genlmsg_reply(rsp, info);
-> +
-> +err_genlmsg_free:
-> +	nlmsg_free(rsp);
-> +err_unbind:
-> +	net_devmem_unbind_dmabuf(out_binding);
-> +err_unlock:
-> +	rtnl_unlock();
-> +	return err;
->  }
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/89eafb874b71/disk-614da38e.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/356000512ad9/vmlinux-614da38e.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/839c73939115/bzImage-614da38e.xz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+80cf9d55d6fd2d6a9838@syzkaller.appspotmail.com
+
+=====================================================
+BUG: KMSAN: uninit-value in __dev_map_hash_lookup_elem kernel/bpf/devmap.c:270 [inline]
+BUG: KMSAN: uninit-value in dev_map_hash_lookup_elem+0x116/0x2e0 kernel/bpf/devmap.c:803
+ __dev_map_hash_lookup_elem kernel/bpf/devmap.c:270 [inline]
+ dev_map_hash_lookup_elem+0x116/0x2e0 kernel/bpf/devmap.c:803
+ ____bpf_map_lookup_elem kernel/bpf/helpers.c:42 [inline]
+ bpf_map_lookup_elem+0x5c/0x80 kernel/bpf/helpers.c:38
+ ___bpf_prog_run+0x13fe/0xe0f0 kernel/bpf/core.c:1997
+ __bpf_prog_run64+0xb5/0xe0 kernel/bpf/core.c:2236
+ bpf_dispatcher_nop_func include/linux/bpf.h:1234 [inline]
+ __bpf_prog_run include/linux/filter.h:657 [inline]
+ bpf_prog_run include/linux/filter.h:664 [inline]
+ __bpf_trace_run kernel/trace/bpf_trace.c:2381 [inline]
+ bpf_trace_run4+0x150/0x340 kernel/trace/bpf_trace.c:2422
+ __bpf_trace_sched_switch+0x37/0x50 include/trace/events/sched.h:222
+ trace_sched_switch include/trace/events/sched.h:222 [inline]
+ __schedule+0x2eca/0x6bc0 kernel/sched/core.c:6743
+ __schedule_loop kernel/sched/core.c:6823 [inline]
+ schedule+0x13d/0x380 kernel/sched/core.c:6838
+ ptrace_stop+0x8eb/0xd60 kernel/signal.c:2358
+ ptrace_do_notify kernel/signal.c:2395 [inline]
+ ptrace_notify+0x234/0x320 kernel/signal.c:2407
+ ptrace_report_syscall include/linux/ptrace.h:415 [inline]
+ ptrace_report_syscall_exit include/linux/ptrace.h:477 [inline]
+ syscall_exit_work+0x14e/0x3e0 kernel/entry/common.c:173
+ syscall_exit_to_user_mode_prepare kernel/entry/common.c:200 [inline]
+ __syscall_exit_to_user_mode_work kernel/entry/common.c:205 [inline]
+ syscall_exit_to_user_mode+0x135/0x160 kernel/entry/common.c:218
+ do_syscall_64+0xdc/0x1e0 arch/x86/entry/common.c:89
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+
+Local variable stack created at:
+ __bpf_prog_run64+0x45/0xe0 kernel/bpf/core.c:2236
+ bpf_dispatcher_nop_func include/linux/bpf.h:1234 [inline]
+ __bpf_prog_run include/linux/filter.h:657 [inline]
+ bpf_prog_run include/linux/filter.h:664 [inline]
+ __bpf_trace_run kernel/trace/bpf_trace.c:2381 [inline]
+ bpf_trace_run4+0x150/0x340 kernel/trace/bpf_trace.c:2422
+
+CPU: 0 PID: 5042 Comm: syz-executor593 Not tainted 6.9.0-syzkaller-02707-g614da38e2f7a #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 04/02/2024
+=====================================================
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
 
