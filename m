@@ -1,74 +1,74 @@
-Return-Path: <bpf+bounces-30012-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-30013-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 17E878C91F3
-	for <lists+bpf@lfdr.de>; Sat, 18 May 2024 20:46:29 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1DF1A8C9203
+	for <lists+bpf@lfdr.de>; Sat, 18 May 2024 20:57:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8C85A1F219A8
-	for <lists+bpf@lfdr.de>; Sat, 18 May 2024 18:46:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 410F31C20969
+	for <lists+bpf@lfdr.de>; Sat, 18 May 2024 18:57:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 408CF604C8;
-	Sat, 18 May 2024 18:46:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F77660882;
+	Sat, 18 May 2024 18:57:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=davidwei-uk.20230601.gappssmtp.com header.i=@davidwei-uk.20230601.gappssmtp.com header.b="eR1BZGWi"
+	dkim=pass (2048-bit key) header.d=davidwei-uk.20230601.gappssmtp.com header.i=@davidwei-uk.20230601.gappssmtp.com header.b="v/AmV8kq"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
+Received: from mail-oo1-f52.google.com (mail-oo1-f52.google.com [209.85.161.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 64AA65465B
-	for <bpf@vger.kernel.org>; Sat, 18 May 2024 18:46:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1EE5462171
+	for <bpf@vger.kernel.org>; Sat, 18 May 2024 18:57:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716057974; cv=none; b=GpowLCeNhkc+jUUjTV8xCCX71/PAmb+YSPcoVr75w3GQJsrey8UTynGeTPhiPf3YAJ8gXZ4P57VD+ixaEkejUmbHvCDpS5t1aCE25YSs7aNamfbRr62D+6X7xb66QbUP4Lav1L9la0AJ7PAjKIrmnPpztGTRjxcyLUSrTyNwv4Q=
+	t=1716058651; cv=none; b=jCg0SnenR8NlTyPVqTasIIn1jJ7TjGYZV50lrbgnFJRD121TwRIjFCPXswnfT3gmlG4RDrfmMz8L6aigXJIZVp0x5ijEq/8OrDRielOv12+XHmPVHkgN44xasuyE5wHnU71sk+E5JSaDc4i1wOu0xCuj/5MCF8JsOe9LoZqrGGM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716057974; c=relaxed/simple;
-	bh=zQdyUAfqyEGFQFtZHOsOkjixcTwdwCIOHdjVrBr5h0Y=;
+	s=arc-20240116; t=1716058651; c=relaxed/simple;
+	bh=wAqIRcCabbfn5FNmvGNIGPL+iroeEmFcrvMhrlMZdAE=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=u3BxvK40VKxTBxNXjkCEq/pYfVJKRWWjBpYQSL7rSjEhBoa9zMBGecfH0U2YI0mhQUWrD1UgeLC5U6FBPmNBEn3dqFKWDpoUWCludOje6ks2sTjB1MZhi5ywo3wdYFbO0y0azugoF4DPlLApiyEFKReWd7z/Rdz2E/8A5qyrS6w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=davidwei.uk; spf=none smtp.mailfrom=davidwei.uk; dkim=pass (2048-bit key) header.d=davidwei-uk.20230601.gappssmtp.com header.i=@davidwei-uk.20230601.gappssmtp.com header.b=eR1BZGWi; arc=none smtp.client-ip=209.85.214.173
+	 In-Reply-To:Content-Type; b=nE1H8iaZKuEQYnN8gH+4QMLlTZtuV50RoxDGKIwkBUTur5ADembYEU4dd3Ef0gpb+v8t0FyTYm0kTigF7W7ssyq+2DpiY3GehH2D+9DcXz66XoNe5VwFRorlntod1G45T+alj8ZbhNPa4I/yBvPevnQU8JvNjgZO17Vu6+1VlMA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=davidwei.uk; spf=none smtp.mailfrom=davidwei.uk; dkim=pass (2048-bit key) header.d=davidwei-uk.20230601.gappssmtp.com header.i=@davidwei-uk.20230601.gappssmtp.com header.b=v/AmV8kq; arc=none smtp.client-ip=209.85.161.52
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=davidwei.uk
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=davidwei.uk
-Received: by mail-pl1-f173.google.com with SMTP id d9443c01a7336-1edfc57ac0cso40033695ad.3
-        for <bpf@vger.kernel.org>; Sat, 18 May 2024 11:46:13 -0700 (PDT)
+Received: by mail-oo1-f52.google.com with SMTP id 006d021491bc7-5b295d6b7fbso766793eaf.0
+        for <bpf@vger.kernel.org>; Sat, 18 May 2024 11:57:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=davidwei-uk.20230601.gappssmtp.com; s=20230601; t=1716057973; x=1716662773; darn=vger.kernel.org;
+        d=davidwei-uk.20230601.gappssmtp.com; s=20230601; t=1716058649; x=1716663449; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=gtghe09oJ6h1zM6r9/hcuib2w+0SfFSyUIep5UEjz/8=;
-        b=eR1BZGWiXUpu2rNKW2Dg0cebePtcPzqYX2u5sAFvIGD+F4YpaI4u3yxUrMF+gvTohG
-         affruCAaUkXyjjMKkYm2juD+Qy8Su66gtY7GTZSw/0NV8Lp5VsnFW5Eeuy9jLGUqnduO
-         sfBEHdUFPniJ+ymxgStYAf3knUbYbu13wMvCjt/gGpJUao1H7fIMRVoIo3Zdk0e1j7Jk
-         gGrny5nnCtrzU5wwSTUSnMoslxlmwQHgozR5HStBaLReUsSSObFhENpDWdzmADxItp1p
-         prY4wfdoqXZl+zZLTNCR26qlRpJN3t4e0Nz2ujcdkegRJyydgbisxR10yo8UJA7lcKKl
-         M0sw==
+        bh=YguLbfIUe9SPEVY4PVRNzJgWNLjHIbYrZNjYPjw1wDY=;
+        b=v/AmV8kq3UZnHRDaqHKqhNVypfUF8x6d6yBi1N5G0tcfRYE7ce3MRpUzwl4YK2pDOY
+         0gSkGZswCXm5bMtnmSlhuxkbS/tIUF9okGsjBZ5fby4NKwqYTPIwTzC4ZoclOyTZFLem
+         RT2+G780T4Rvt6sAdooeJFD4Qw3kSZNGJ+JoLSw1NmiZZpBQstNxMDIY5BleC4qlptFg
+         +S8gDOPygxpPebphBpPjxk+hnz5mYSWeMnl3BWZFaLUWoQw272KOFLgpA509meCbeaTc
+         1zy687rDIDcZ+p0a/pi8z2PkHBDskEdl/PpU+UT704u1+W7ImWvpp5WEZODo1Gd2YGEU
+         ZAqg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1716057973; x=1716662773;
+        d=1e100.net; s=20230601; t=1716058649; x=1716663449;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=gtghe09oJ6h1zM6r9/hcuib2w+0SfFSyUIep5UEjz/8=;
-        b=bGNOJdt5CzXMbaWZpj3gilP4iTiZ6o9F8IROE+uHMDKCUGGibHNdarIQwXoYlhHWrp
-         2oo1tGJtjT+ZNowKdh2bP+TjXXdkLWp3sRjpROP9jYXtCNKdNNre9969YkK678vLkIF/
-         bJMZZ3G7vMLTW0xna7Bn5nGGYLMNfcgdcDb3dLChARMt8dhblZI/cDythyw9GqmcGZMM
-         vWLJmubFyUthd42YLhW6+oqcSBW036RTpJeiFZDCxytDdokAONs2G7N+gnkZ/TtM3NY7
-         Fv0v9Ih4ab3ukPntCmvNbCgbGI6GoXeS+KJFQhzY5RJSaPFXPTsotV3NbIXSyQzml9CJ
-         ZCCQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVzSGu2U7CYytmi+ebj7DOE83+4hW8lZ7FoHNkKZUUJ+JmDa80AZHx2239SjLX7iLq0/OqcXdehWhMh7svfYFR3xYLk
-X-Gm-Message-State: AOJu0YxohxNvM4Q9ThKaQAzsOZRmVNwSe0kQIwhXb7DmqOn+y+Tb76Tq
-	DWhXFKpU7VzT4TEjO1u8SvFCi3TtRmHhnZ7BTfD/iGDPQHO+BvpSrA2d02NkEfk=
-X-Google-Smtp-Source: AGHT+IGg0S5X0hOpYwIoBA7prkwh880WzDoU3RkbOFeT/k39JSwrbImT1CJOj9wyUMDIZCVhykRgQw==
-X-Received: by 2002:a05:6a00:1988:b0:6f3:8468:f9d1 with SMTP id d2e1a72fcca58-6f4e02c7d62mr28356985b3a.14.1716057972513;
-        Sat, 18 May 2024 11:46:12 -0700 (PDT)
+        bh=YguLbfIUe9SPEVY4PVRNzJgWNLjHIbYrZNjYPjw1wDY=;
+        b=vOajqp2KdABX5ZFZE8HpMpAlKEH8nEdEilGMzCCrnjoqqTzNiAPUAzcR6kHLnFc+FY
+         BJD2jr7glEXi6P4b3qhhrfwxWQs+0G3MqvcIJgnhxD7fk0Nt0yhnyRxhpmPYW7xM9MWz
+         rsu2haBUY7eUrBz66zpN1jYVKlNMRGGstdypUZyQztUsnXyiT7tkb757HvEu4wAL2vZP
+         ZIqV0ccuAGCfpjUiWlz+vEkX4jcNVSyqlgXuzeYI3jzSeTX+oDTNU1g8fgxHUuJdjV2W
+         EXOx9u0p3Nbbwm1bnn08ypf2CLi0Z7u6cIHapkC34759C3qzHLQ79dXQzyzeQ8cQRP92
+         PSJg==
+X-Forwarded-Encrypted: i=1; AJvYcCVeyrBXINPSCO92Hnckjn44LvJIF9fYnccAUOspBkM1dytcTkBGSj2S7rEbqm+/WIoApCB1v20cS8rMLuoVtjXQDoCM
+X-Gm-Message-State: AOJu0Yy9S0dhJ/42LQgzTW9PxttwWxZNMtSvn8vmSHh5CZPRmMHMk0RL
+	K1Ts3HtgrFpuiGGVlpQXbCa56OHsQvdIKIszgKTpvqJrzc3GdWl8HAowix+fIXI=
+X-Google-Smtp-Source: AGHT+IHilXoeJ/w5ohYR0i7AU3401ochXIU5LArEI0v5RdvvJ31YBmDQam4A7KpiPZymCfWrte5bew==
+X-Received: by 2002:a05:6358:3a11:b0:17b:5661:5e2b with SMTP id e5c5f4694b2df-193bb64065bmr2817534555d.18.1716058648846;
+        Sat, 18 May 2024 11:57:28 -0700 (PDT)
 Received: from [192.168.1.16] (174-21-188-197.tukw.qwest.net. [174.21.188.197])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-6f4d2a6656esm16665141b3a.38.2024.05.18.11.46.10
+        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-658764fda40sm5342410a12.5.2024.05.18.11.57.27
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 18 May 2024 11:46:11 -0700 (PDT)
-Message-ID: <d85f4ba4-774f-4577-985f-45a5a1866da7@davidwei.uk>
-Date: Sat, 18 May 2024 11:46:09 -0700
+        Sat, 18 May 2024 11:57:28 -0700 (PDT)
+Message-ID: <eeb59c4f-9208-4700-b73b-9652398371d7@davidwei.uk>
+Date: Sat, 18 May 2024 11:57:26 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -126,39 +126,105 @@ Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
 On 2024-05-10 16:21, Mina Almasry wrote:
-> +void net_devmem_unbind_dmabuf(struct net_devmem_dmabuf_binding *binding)
-> +{
-> +	struct netdev_rx_queue *rxq;
-> +	unsigned long xa_idx;
-> +	unsigned int rxq_idx;
+> -/* Stub */
+>  int netdev_nl_bind_rx_doit(struct sk_buff *skb, struct genl_info *info)
+>  {
+> -	return 0;
+> +	struct nlattr *tb[ARRAY_SIZE(netdev_queue_dmabuf_nl_policy)];
+> +	struct net_devmem_dmabuf_binding *out_binding;
+> +	struct list_head *sock_binding_list;
+> +	u32 ifindex, dmabuf_fd, rxq_idx;
+> +	struct net_device *netdev;
+> +	struct sk_buff *rsp;
+> +	struct nlattr *attr;
+> +	int rem, err = 0;
+> +	void *hdr;
 > +
-> +	if (!binding)
-> +		return;
+> +	if (GENL_REQ_ATTR_CHECK(info, NETDEV_A_DEV_IFINDEX) ||
+> +	    GENL_REQ_ATTR_CHECK(info, NETDEV_A_BIND_DMABUF_DMABUF_FD) ||
+> +	    GENL_REQ_ATTR_CHECK(info, NETDEV_A_BIND_DMABUF_QUEUES))
+> +		return -EINVAL;
 > +
-> +	if (binding->list.next)
-> +		list_del(&binding->list);
+> +	ifindex = nla_get_u32(info->attrs[NETDEV_A_DEV_IFINDEX]);
+> +	dmabuf_fd = nla_get_u32(info->attrs[NETDEV_A_BIND_DMABUF_DMABUF_FD]);
 > +
-> +	xa_for_each(&binding->bound_rxq_list, xa_idx, rxq) {
-> +		if (rxq->mp_params.mp_priv == binding) {
-> +			/* We hold the rtnl_lock while binding/unbinding
-> +			 * dma-buf, so we can't race with another thread that
-> +			 * is also modifying this value. However, the page_pool
-> +			 * may read this config while it's creating its
-> +			 * rx-queues. WRITE_ONCE() here to match the
-> +			 * READ_ONCE() in the page_pool.
-> +			 */
-> +			WRITE_ONCE(rxq->mp_params.mp_ops, NULL);
-> +			WRITE_ONCE(rxq->mp_params.mp_priv, NULL);
+> +	rtnl_lock();
 > +
-> +			rxq_idx = get_netdev_rx_queue_index(rxq);
+> +	netdev = __dev_get_by_index(genl_info_net(info), ifindex);
+> +	if (!netdev) {
+> +		err = -ENODEV;
+> +		goto err_unlock;
+> +	}
 > +
-> +			netdev_rx_queue_restart(binding->dev, rxq_idx);
+> +	err = net_devmem_bind_dmabuf(netdev, dmabuf_fd, &out_binding);
+> +	if (err)
+> +		goto err_unlock;
+> +
+> +	nla_for_each_attr(attr, genlmsg_data(info->genlhdr),
+> +			  genlmsg_len(info->genlhdr), rem) {
+> +		if (nla_type(attr) != NETDEV_A_BIND_DMABUF_QUEUES)
+> +			continue;
+> +
+> +		err = nla_parse_nested(
+> +			tb, ARRAY_SIZE(netdev_queue_dmabuf_nl_policy) - 1, attr,
+> +			netdev_queue_dmabuf_nl_policy, info->extack);
+> +		if (err < 0)
+> +			goto err_unbind;
+> +
+> +		rxq_idx = nla_get_u32(tb[NETDEV_A_QUEUE_DMABUF_IDX]);
+> +		if (rxq_idx >= netdev->num_rx_queues) {
+> +			err = -ERANGE;
+> +			goto err_unbind;
+> +		}
 
-What if netdev_rx_queue_restart() fails? Depending on where it failed, a
-queue might still be filled from struct net_devmem_dmabuf_binding. This
-is one downside of the current situation with netdev_rx_queue_restart()
-needing to do allocations each time.
+net_devmem_bind_dmabuf_to_queue() checks for rxq_idx >=
+netdev->num_rx_queues as well. I'd say remove the one in
+netdev_nl_bind_rx_doit().
 
-Perhaps a full reset if individual queue restart fails?
+Also we may want a generic netdev function e.g. netdev_rx_queue_set_mp()
+since I need the same functionality.
 
+> +
+> +		err = net_devmem_bind_dmabuf_to_queue(netdev, rxq_idx,
+> +						      out_binding);
+> +		if (err)
+> +			goto err_unbind;
+> +	}
+> +
+> +	sock_binding_list = genl_sk_priv_get(&netdev_nl_family,
+> +					     NETLINK_CB(skb).sk);
+> +	if (IS_ERR(sock_binding_list)) {
+> +		err = PTR_ERR(sock_binding_list);
+> +		goto err_unbind;
+> +	}
+> +
+> +	list_add(&out_binding->list, sock_binding_list);
+> +
+> +	rsp = genlmsg_new(GENLMSG_DEFAULT_SIZE, GFP_KERNEL);
+> +	if (!rsp) {
+> +		err = -ENOMEM;
+> +		goto err_unbind;
+> +	}
+> +
+> +	hdr = genlmsg_iput(rsp, info);
+> +	if (!hdr) {
+> +		err = -EMSGSIZE;
+> +		goto err_genlmsg_free;
+> +	}
+> +
+> +	nla_put_u32(rsp, NETDEV_A_BIND_DMABUF_DMABUF_ID, out_binding->id);
+> +	genlmsg_end(rsp, hdr);
+> +
+> +	rtnl_unlock();
+> +
+> +	return genlmsg_reply(rsp, info);
+> +
+> +err_genlmsg_free:
+> +	nlmsg_free(rsp);
+> +err_unbind:
+> +	net_devmem_unbind_dmabuf(out_binding);
+> +err_unlock:
+> +	rtnl_unlock();
+> +	return err;
+>  }
 
