@@ -1,316 +1,296 @@
-Return-Path: <bpf+bounces-29995-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-29996-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9E89F8C8F78
-	for <lists+bpf@lfdr.de>; Sat, 18 May 2024 05:29:50 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id ABEDD8C8F7B
+	for <lists+bpf@lfdr.de>; Sat, 18 May 2024 05:30:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5039A282B72
-	for <lists+bpf@lfdr.de>; Sat, 18 May 2024 03:29:49 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 62C3F282048
+	for <lists+bpf@lfdr.de>; Sat, 18 May 2024 03:30:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5AB768BE0;
-	Sat, 18 May 2024 03:29:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 588B16FCB;
+	Sat, 18 May 2024 03:30:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rjoNvqOz"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="3z/R82/9"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B0C041A2C03;
-	Sat, 18 May 2024 03:29:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 67B504C8B
+	for <bpf@vger.kernel.org>; Sat, 18 May 2024 03:30:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716002978; cv=none; b=RicBhEVF2uIsn08zrPJAvlUjpiFBSSvoXA3LkvXwVMZdcgRg/KdEHZxoc1RvwDGlvfq8P78w5hswuFtnGhACuLdr+wS7ddaZOgS/yPGoa6l1YPA9C4DJ7y3NSnyPhBe8o3uxDMBFG525r571iE0FTIUA2jTXWPpzr2ao09ewOlg=
+	t=1716003020; cv=none; b=blzLkZBnhitPr9jxLcis4iNJ4QIt8r1jaG4U+0BveTqbL7e89fvg1O6PzbINHNfTNOkPLaY6zfs+E6Mv1UFd/PyXbLUSbP3IVU9hPkSrKzZ1oSqQ1PkvH0NhJ90Bxm4suEOA8LcU5vVVVVXVqHThQpJwrajgLsUdKVbDGnOyuxQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716002978; c=relaxed/simple;
-	bh=kkyl4Oabc5KFglNOe80Nz61jeWKai1MJfXMkEUXwnmU=;
+	s=arc-20240116; t=1716003020; c=relaxed/simple;
+	bh=i2aLlf3CCtikkEtAK0ntXxBrsOx2ayXvknDbt5qFetw=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=b1kDV2Zn9OHarVbYodo8HNMgC0zbwriS2pfF0HaJKfFqmJCdzCN8dwsOD01XoGabxXbQh9p70HnGCQQgwaX+jUZ4pHqVF0qBORPNfDdXfpOMYkIjDZC2clgVxdE1BbmccxA1dS+LNQb2RVJugbRtHO1qq8ee8HpnsCqdhMaPfrU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rjoNvqOz; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 24DD6C113CC;
-	Sat, 18 May 2024 03:29:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1716002978;
-	bh=kkyl4Oabc5KFglNOe80Nz61jeWKai1MJfXMkEUXwnmU=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=rjoNvqOzo3HdnCeU+KmVqyS7dlVzyuiOyXi+GfeZT+PrEdOGm5eXgAKqNBDjCP74i
-	 KdN3NnxQRn1nlaoug/cLc+tKQtZPi3M3u3wr3tz/cg6DJ4FygUGUNzwquCe873tVFF
-	 KnyYkspXItQ8KzSNo3hAcGrC0ugmx6+45rNT0iLJ8ERFnZQHABzMCWtO1igPTr9QX1
-	 D7ND6kmhn6HxddN7fuB1ZETN6kKhjmNlYtyMaCkaCv1bpMqGXecXRK06lr57C8Y15E
-	 +u1bWRz8msvvNg7DbCgQ/7pu+0ll9aSJZrPlvavVisdii/k12lVdzq9RlcwzV4yKuW
-	 ShT7OB+k3qYdQ==
-Received: by mail-lf1-f42.google.com with SMTP id 2adb3069b0e04-51fcb7dc722so2402308e87.1;
-        Fri, 17 May 2024 20:29:38 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCUpD4v8a+xMIMnnTahEfVSRuTTwy9NYDIS9AlBJ8RtK5rNfFyFjqohjw4lBNorJ64W0UEpKSqMWBusee1ZFFU+Deg3UPe5zFjvky+gG1y778ilbl6uq0N/ULpMD1IBKENOAvoprCbW1ZRNSQ+zrwFxZieTSMxmJwwTDq/+78832lGTVx5gZi3LNXJvTqenNcDoHpv8wsqATOJNed9UVcL4piF2Qkr7z9lavF/uy5hPaKKDoYl3ILo7t4h1M2U8I85lLv4jNbTTFs489lnjZ01s=
-X-Gm-Message-State: AOJu0YwamY5BkZLPU4VsvnCiXgGbFMcwDn6lkadrlrYnzA2AgiiveVjv
-	LAHpJTCOo69+QdwXq7MgP7Ax6Ke+9kFXSY98NaduHh4nq+pnB8QBC62CicSVVjaKRd4EIhOnhFd
-	VBDnnIYOMVjujSWKq7qa3as5Vj3Y=
-X-Google-Smtp-Source: AGHT+IHjKSQhzhnm8QEyFc5lZeQyVnNhe9kiBHVN3rnespbtU+DOI88/Xq5mDvMdVlJFl+tDAt3va5hG2q/WRWWlhDk=
-X-Received: by 2002:ac2:514d:0:b0:51f:5f6d:3fba with SMTP id
- 2adb3069b0e04-52407cddc4amr204791e87.27.1716002976823; Fri, 17 May 2024
- 20:29:36 -0700 (PDT)
+	 To:Cc:Content-Type; b=fZbKOGTcYOACDERXyDjViUMZXf10mbREPoLrf/FNjDTd/mPnGNshA2F5Or9O+TbVbEljyBkERqjyJGAkQSt5BkCfXS7MZsDSLw26/0ACx4TqGIvcBNGBehRSxwixjEiCLkD/Wvft1qqvTwVlI64oUChM3WTrMBdYTZpY5wijTIo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=3z/R82/9; arc=none smtp.client-ip=209.85.214.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-1eed90a926fso28685ad.0
+        for <bpf@vger.kernel.org>; Fri, 17 May 2024 20:30:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1716003019; x=1716607819; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=1nWYYKjaR/jDGFeRF8uaCxl0MPSOP0KopiQrG5iiGtI=;
+        b=3z/R82/9w8wRJH0gjQ9vj4rjxCBES5iqvzJgEjdN8Ip/KhSsNAzCqhP6mhtt7nyvmm
+         McAyF8DOwAFRkcwr/o4rW1iShOR+62r+LpiG3q09ghI7+A8Ahg6hLE2wRIT7Dy1WULgV
+         uZIUgZYFo+luZYrkOhSM8IkVkV8NiqLwkVJXNdgEZIOJKVMD0P7LqLxqrv5DNZwsfsn7
+         tLlvWqRVgsFM/OleqpURKWJVCA/mXu1IXjoxKJ8SqSF8Pw54GPkT3kFbpTZ+sSpTRCVE
+         rXwterz/azADwjLTHiBRqANA6dX5m0VrW+IS10iXzIRc5Ozt3EhA8pW4z7ZSphrDQjOG
+         D9WQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1716003019; x=1716607819;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=1nWYYKjaR/jDGFeRF8uaCxl0MPSOP0KopiQrG5iiGtI=;
+        b=GUBG0MiXzIqcox40N6OFpkPOGwJCYwsXxHg9AfE0E8KmSoCLdebPrnbVFOqAZEDXLX
+         6GSk7jvI9Y1WldnjCg4W6bEEoxtnRpGPk0QHOdDymi87neAla2r21ZGG4rx2em57Qkc8
+         pqkH2aMjZA3YEz4o+SZkv8VjNR79gnva2V8HSQbFdL0cUAfdf0Narw3TZ4zxLnBfxnFk
+         sTDo0Mid1XHQRXlIxeOLMgMnr0nQCjVgJ4QyNv3/H58AX5wqIaKBpGl+l3TRpbKku6fg
+         MSca0wVNGYGkeQYDiMDrr+fduRJrW1G+/P9ZgKNVq6YCcPicb9mgea2GeSPQWD6tXagN
+         oLTg==
+X-Forwarded-Encrypted: i=1; AJvYcCVHYtk/i+hQJzTuqRfFh1RbfWZQHMWN3Wc2NTaP/OBDMC1htBh6ncG1SXvHkTY25pnma3YZoKIugSJ82c0LRDYTrWzf
+X-Gm-Message-State: AOJu0YwFymbk9aOeLMY9XNgkn7bXgfk8o60MvzFs+70yaV554VyW68g8
+	r2PbfLuhSoadLJ8rCr7JqA+zL14ChBd0BcDHWyPWYueqMhOLG9CtScF2+thUOpdwQhixXN2ck58
+	83yxPgTezWDcSKoulKROSBTTzMUJYc6zP6zL4
+X-Google-Smtp-Source: AGHT+IFbyZwc0QMJvH/mRE3Qe4iX1MKPVAPecQCzhgLJIWXVM52u3qQbDZRuGEmLd6AR4KRYL8Rm3IcTwTGe7DwBkg4=
+X-Received: by 2002:a17:902:6549:b0:1e5:62:7a89 with SMTP id
+ d9443c01a7336-1f2ecbc4160mr1086035ad.18.1716003018134; Fri, 17 May 2024
+ 20:30:18 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240517114506.1259203-1-masahiroy@kernel.org>
- <20240517114506.1259203-2-masahiroy@kernel.org> <202405171621.A178606D8@keescook>
-In-Reply-To: <202405171621.A178606D8@keescook>
-From: Masahiro Yamada <masahiroy@kernel.org>
-Date: Sat, 18 May 2024 12:29:00 +0900
-X-Gmail-Original-Message-ID: <CAK7LNARpvZ5AeH9HXFPupD_Jj0Gw4D6MZ5iR7uvVwnm9nSg9CA@mail.gmail.com>
-Message-ID: <CAK7LNARpvZ5AeH9HXFPupD_Jj0Gw4D6MZ5iR7uvVwnm9nSg9CA@mail.gmail.com>
-Subject: Re: [PATCH 1/2] selftests: harness: remove unneeded __constructor_order_last()
-To: Kees Cook <keescook@chromium.org>
-Cc: Andy Lutomirski <luto@amacapital.net>, Will Drewry <wad@chromium.org>, 
-	linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Alexandre Belloni <alexandre.belloni@bootlin.com>, 
-	Benjamin Tissoires <benjamin.tissoires@redhat.com>, 
-	Christian Borntraeger <borntraeger@linux.ibm.com>, Claudio Imbrenda <imbrenda@linux.ibm.com>, 
-	David Hildenbrand <david@redhat.com>, Janosch Frank <frankja@linux.ibm.com>, Jiri Kosina <jikos@kernel.org>, 
-	Shuah Khan <shuah@kernel.org>, bpf@vger.kernel.org, kvm@vger.kernel.org, 
-	linux-input@vger.kernel.org, linux-rtc@vger.kernel.org
+References: <20240516041948.3546553-1-irogers@google.com> <20240516041948.3546553-2-irogers@google.com>
+ <CAM9d7ch51JK8Xu+kOYUdxgM10_gS2=vjfW5sqFwrRS2eC8cYXA@mail.gmail.com>
+In-Reply-To: <CAM9d7ch51JK8Xu+kOYUdxgM10_gS2=vjfW5sqFwrRS2eC8cYXA@mail.gmail.com>
+From: Ian Rogers <irogers@google.com>
+Date: Fri, 17 May 2024 20:29:59 -0700
+Message-ID: <CAP-5=fXNQ0=8mKKkBrmA9JpNLZEoQxb=AEYjBT-_brFt3Qom-A@mail.gmail.com>
+Subject: Re: [PATCH v1 1/3] perf bpf filter: Give terms their own enum
+To: Namhyung Kim <namhyung@kernel.org>
+Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
+	Arnaldo Carvalho de Melo <acme@kernel.org>, Mark Rutland <mark.rutland@arm.com>, 
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Adrian Hunter <adrian.hunter@intel.com>, Kan Liang <kan.liang@linux.intel.com>, 
+	Changbin Du <changbin.du@huawei.com>, John Fastabend <john.fastabend@gmail.com>, 
+	Andrii Nakryiko <andrii@kernel.org>, linux-perf-users@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, bpf@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Sat, May 18, 2024 at 8:26=E2=80=AFAM Kees Cook <keescook@chromium.org> w=
+On Fri, May 17, 2024 at 6:36=E2=80=AFPM Namhyung Kim <namhyung@kernel.org> =
+wrote:
+>
+> On Wed, May 15, 2024 at 9:20=E2=80=AFPM Ian Rogers <irogers@google.com> w=
 rote:
->
-> On Fri, May 17, 2024 at 08:45:05PM +0900, Masahiro Yamada wrote:
-> > __constructor_order_last() is unneeded.
 > >
-> > If __constructor_order_last() is not called on reverse-order systems,
-> > __constructor_order will remain 0 instead of being set to
-> > _CONSTRUCTOR_ORDER_BACKWARD (=3D -1).
+> > Give the term types their own enum so that additional terms can be
+> > added that don't correspond to a PERF_SAMPLE_xx flag. The term values
+> > are numerically ascending rather than bit field positions, this means
+> > they need translating to a PERF_SAMPLE_xx bit field in certain places
+> > and they are more densely encoded.
 > >
-> > __LIST_APPEND() will still take the 'else' branch, so there is no
-> > difference in the behavior.
-> >
-> > Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+> > Signed-off-by: Ian Rogers <irogers@google.com>
 > > ---
+> [SNIP]
+> > diff --git a/tools/perf/util/bpf_skel/sample-filter.h b/tools/perf/util=
+/bpf_skel/sample-filter.h
+> > index 2e96e1ab084a..161d5ff49cb6 100644
+> > --- a/tools/perf/util/bpf_skel/sample-filter.h
+> > +++ b/tools/perf/util/bpf_skel/sample-filter.h
+> > @@ -16,12 +16,32 @@ enum perf_bpf_filter_op {
+> >         PBF_OP_GROUP_END,
+> >  };
 > >
-> >  .../selftests/drivers/s390x/uvdevice/test_uvdevice.c   |  6 ------
-> >  tools/testing/selftests/hid/hid_bpf.c                  |  6 ------
-> >  tools/testing/selftests/kselftest_harness.h            | 10 +---------
-> >  tools/testing/selftests/rtc/rtctest.c                  |  7 -------
-> >  4 files changed, 1 insertion(+), 28 deletions(-)
+> > +enum perf_bpf_filter_term {
+> > +       /* No term is in use. */
+> > +       PBF_TERM_NONE,
+> > +       /* Terms that correspond to PERF_SAMPLE_xx values. */
+> > +       PBF_TERM_IP,
+> > +       PBF_TERM_ID,
+> > +       PBF_TERM_TID,
+> > +       PBF_TERM_CPU,
+> > +       PBF_TERM_TIME,
+> > +       PBF_TERM_ADDR,
+> > +       PBF_TERM_PERIOD,
+> > +       PBF_TERM_TRANSACTION,
+> > +       PBF_TERM_WEIGHT,
+> > +       PBF_TERM_PHYS_ADDR,
+> > +       PBF_TERM_CODE_PAGE_SIZE,
+> > +       PBF_TERM_DATA_PAGE_SIZE,
+> > +       PBF_TERM_WEIGHT_STRUCT,
+> > +       PBF_TERM_DATA_SRC,
+> > +};
+> > +
+> >  /* BPF map entry for filtering */
+> >  struct perf_bpf_filter_entry {
+> >         enum perf_bpf_filter_op op;
+> >         __u32 part; /* sub-sample type info when it has multiple values=
+ */
+> > -       __u64 flags; /* perf sample type flags */
+> > +       enum perf_bpf_filter_term term;
+> >         __u64 value;
+> >  };
 > >
-> > diff --git a/tools/testing/selftests/drivers/s390x/uvdevice/test_uvdevi=
-ce.c b/tools/testing/selftests/drivers/s390x/uvdevice/test_uvdevice.c
-> > index ea0cdc37b44f..7ee7492138c6 100644
-> > --- a/tools/testing/selftests/drivers/s390x/uvdevice/test_uvdevice.c
-> > +++ b/tools/testing/selftests/drivers/s390x/uvdevice/test_uvdevice.c
-> > @@ -257,12 +257,6 @@ TEST_F(attest_fixture, att_inval_addr)
-> >       att_inval_addr_test(&self->uvio_attest.meas_addr, _metadata, self=
-);
-> >  }
-> >
-> > -static void __attribute__((constructor)) __constructor_order_last(void=
-)
-> > -{
-> > -     if (!__constructor_order)
-> > -             __constructor_order =3D _CONSTRUCTOR_ORDER_BACKWARD;
-> > -}
-> > -
-> >  int main(int argc, char **argv)
+> > -#endif /* PERF_UTIL_BPF_SKEL_SAMPLE_FILTER_H */
+> > \ No newline at end of file
+> > +#endif /* PERF_UTIL_BPF_SKEL_SAMPLE_FILTER_H */
+> > diff --git a/tools/perf/util/bpf_skel/sample_filter.bpf.c b/tools/perf/=
+util/bpf_skel/sample_filter.bpf.c
+> > index fb94f5280626..8666c85e9333 100644
+> > --- a/tools/perf/util/bpf_skel/sample_filter.bpf.c
+> > +++ b/tools/perf/util/bpf_skel/sample_filter.bpf.c
+> > @@ -48,31 +48,50 @@ static inline __u64 perf_get_sample(struct bpf_perf=
+_event_data_kern *kctx,
 > >  {
-> >       int fd =3D open(UV_PATH, O_ACCMODE);
-> > diff --git a/tools/testing/selftests/hid/hid_bpf.c b/tools/testing/self=
-tests/hid/hid_bpf.c
-> > index 2cf96f818f25..f47feef2aced 100644
-> > --- a/tools/testing/selftests/hid/hid_bpf.c
-> > +++ b/tools/testing/selftests/hid/hid_bpf.c
-> > @@ -853,12 +853,6 @@ static int libbpf_print_fn(enum libbpf_print_level=
- level,
-> >       return 0;
-> >  }
+> >         struct perf_sample_data___new *data =3D (void *)kctx->data;
 > >
-> > -static void __attribute__((constructor)) __constructor_order_last(void=
-)
-> > -{
-> > -     if (!__constructor_order)
-> > -             __constructor_order =3D _CONSTRUCTOR_ORDER_BACKWARD;
-> > -}
-> > -
-> >  int main(int argc, char **argv)
-> >  {
-> >       /* Use libbpf 1.0 API mode */
-> > diff --git a/tools/testing/selftests/kselftest_harness.h b/tools/testin=
-g/selftests/kselftest_harness.h
-> > index ba3ddeda24bf..60c1cf5b0f0d 100644
-> > --- a/tools/testing/selftests/kselftest_harness.h
-> > +++ b/tools/testing/selftests/kselftest_harness.h
-> > @@ -444,12 +444,6 @@
-> >   * Use once to append a main() to the test file.
-> >   */
-> >  #define TEST_HARNESS_MAIN \
-> > -     static void __attribute__((constructor)) \
-> > -     __constructor_order_last(void) \
-> > -     { \
-> > -             if (!__constructor_order) \
-> > -                     __constructor_order =3D _CONSTRUCTOR_ORDER_BACKWA=
-RD; \
-> > -     } \
-> >       int main(int argc, char **argv) { \
-> >               return test_harness_run(argc, argv); \
-> >       }
+> > -       if (!bpf_core_field_exists(data->sample_flags) ||
+> > -           (data->sample_flags & entry->flags) =3D=3D 0)
+> > +       if (!bpf_core_field_exists(data->sample_flags))
+> >                 return 0;
+> >
+> > -       switch (entry->flags) {
+> > -       case PERF_SAMPLE_IP:
+> > +       switch (entry->term) {
+> > +       case PBF_TERM_NONE:
+> > +               return 0;
+> > +       case PBF_TERM_IP:
+> > +               if ((data->sample_flags & PERF_SAMPLE_IP) =3D=3D 0)
+> > +                       return 0;
 >
-> This won't work. All constructors are executed, so we have to figure
-> out which is run _first_. Switching this to a boolean means we gain no
-> information about ordering: it'll always be set to "true".
+> Can we check this in a single place like in the original code
+> instead of doing it in every case?  I think we can keep the
+> entry->flags and check it only if it's non zero.  Then uid and
+> gid will have 0 to skip.
 
+I found the old way confusing. As the flags are a bitmap it looks like
+more than one can be set, if that were the case then the switch
+statement would be broken as the case wouldn't exist. Using an enum
+like this allows warnings to occur when a term is missing in the
+switch statement - which is good when you are adding new terms. I
+think it more obviously matches the man page. We could arrange for the
+enum values to encode the shift position of the flag. Something like:
 
+if ((entry->term > PBF_TERM_NONE && entry->term <=3D PBF_TERM_DATA_SRC) &&
+    (data->sample_flags & (1 << entry->term)) =3D=3D 0)
+   return 0;
 
-It will be set to "true" eventually,
-but __LIST_APPEND() still sees "false"
-on backward-order systems.
+But the problem there is that not every sample type has an enum value,
+and I'm not sure it makes sense for things like STREAM_ID. We could do
+some macro magic to reduce the verbosity like:
 
+#define SAMPLE_CASE(x) \
+    case PBF_TERM_##x: \
+        if ((data->sample_flags & PERF_SAMPLE_x) =3D=3D 0) \
+            return 0
 
+But I thought that made the code harder to read given the relatively
+small number of sample cases.
 
+Thanks,
+Ian
 
-Let's see how the following is expanded.
-
-
- #include "kselftest_harness.h"
-
- TEST(foo) { ... }
-
- TEST(bar) { ... }
-
-
-
-You will get something as follows:
-
-
-
-void _attribute__((constructor)) __constructor_order_first(void)
-{
-        __constructor_order_forward =3D true;
-}
-
-void __attribute__((constructor)) _register_foo(void)
-{
-      __register_test(&foo_object); // call __LIST_APPEND() for foo
-}
-
-
-void __attribute__((constructor)) _register_bar(void)
-{
-      __register_test(&bar_object); // call __LIST_APPEND() for bar
-}
-
-
-
-
-On forward-order systems, the constructors are executed in this order:
-
-
-  __constructor_order_first() -> _register_foo() -> _register_bar()
-
-
-So, __LIST_APPEND will see "true".
-
-
-
-
-On backward-order systems, the constructors are executed in this order:
-
-
-  _register_bar() -> _register_foo() -> __constructor_order_first()
-
-
-So, __LIST_APPEND will see "false" since __construtor_order_first()
-has not been called yet.
-
-
-
-Correct me if I am wrong.
-
-
-
-
-> We need to
-> detect which constructor sets it first so that we can walk the lists
-> (that are built via all the constructors in between)
-
-
-You have a wrong assumption here.
-
-TEST() macros may not be placed in-between.
-
-
-   #include "kselftest_harness.h"
-
-   TEST_HARNESS_MAIN
-   TEST(foo) { ... }
-   TEST(bar) { ... }
-
-
-This is perfectly correct code, because there is no reason to force
-"Please put TEST_HARNESS_MAIN at the end of the file".
-
-It is just a "coding style".
-
-
-If the test code were written in such style with
-the current harness implementation, __constructor_order
-would be zero instead of _CONSTRUCTOR_ORDER_BACKWARD
-on backward-order systems.
-__LIST_APPEND() still works correctly, though.
-
-
-
-
-
-
-
-
-
-> >  #endif  /* __KSELFTEST_HARNESS_H */
-> > diff --git a/tools/testing/selftests/rtc/rtctest.c b/tools/testing/self=
-tests/rtc/rtctest.c
-> > index 63ce02d1d5cc..9647b14b47c5 100644
-> > --- a/tools/testing/selftests/rtc/rtctest.c
-> > +++ b/tools/testing/selftests/rtc/rtctest.c
-> > @@ -410,13 +410,6 @@ TEST_F_TIMEOUT(rtc, alarm_wkalm_set_minute, 65) {
-> >       ASSERT_EQ(new, secs);
-> >  }
-> >
-> > -static void __attribute__((constructor))
-> > -__constructor_order_last(void)
-> > -{
-> > -     if (!__constructor_order)
-> > -             __constructor_order =3D _CONSTRUCTOR_ORDER_BACKWARD;
-> > -}
-> > -
-> >  int main(int argc, char **argv)
-> >  {
-> >       switch (argc) {
+> Thanks,
+> Namhyung
 >
-> A better question is why these tests are open-coding the execution of
-> "main"...
-
-
-
-It is open __unnecessary__ coding.
-
-
-
-If __constructor_order_last() had not existed in the first place,
-such things would not have occured.
-
-
-
-
-
-
-
-
---
-Best Regards
-Masahiro Yamada
+>
+> >                 return kctx->data->ip;
+> > -       case PERF_SAMPLE_ID:
+> > +       case PBF_TERM_ID:
+> > +               if ((data->sample_flags & PERF_SAMPLE_ID) =3D=3D 0)
+> > +                       return 0;
+> >                 return kctx->data->id;
+> > -       case PERF_SAMPLE_TID:
+> > +       case PBF_TERM_TID:
+> > +               if ((data->sample_flags & PERF_SAMPLE_TID) =3D=3D 0)
+> > +                       return 0;
+> >                 if (entry->part)
+> >                         return kctx->data->tid_entry.pid;
+> >                 else
+> >                         return kctx->data->tid_entry.tid;
+> > -       case PERF_SAMPLE_CPU:
+> > +       case PBF_TERM_CPU:
+> > +               if ((data->sample_flags & PERF_SAMPLE_CPU) =3D=3D 0)
+> > +                       return 0;
+> >                 return kctx->data->cpu_entry.cpu;
+> > -       case PERF_SAMPLE_TIME:
+> > +       case PBF_TERM_TIME:
+> > +               if ((data->sample_flags & PERF_SAMPLE_TIME) =3D=3D 0)
+> > +                       return 0;
+> >                 return kctx->data->time;
+> > -       case PERF_SAMPLE_ADDR:
+> > +       case PBF_TERM_ADDR:
+> > +               if ((data->sample_flags & PERF_SAMPLE_ADDR) =3D=3D 0)
+> > +                       return 0;
+> >                 return kctx->data->addr;
+> > -       case PERF_SAMPLE_PERIOD:
+> > +       case PBF_TERM_PERIOD:
+> > +               if ((data->sample_flags & PERF_SAMPLE_PERIOD) =3D=3D 0)
+> > +                       return 0;
+> >                 return kctx->data->period;
+> > -       case PERF_SAMPLE_TRANSACTION:
+> > +       case PBF_TERM_TRANSACTION:
+> > +               if ((data->sample_flags & PERF_SAMPLE_TRANSACTION) =3D=
+=3D 0)
+> > +                       return 0;
+> >                 return kctx->data->txn;
+> > -       case PERF_SAMPLE_WEIGHT_STRUCT:
+> > +       case PBF_TERM_WEIGHT_STRUCT:
+> > +               if ((data->sample_flags & PERF_SAMPLE_WEIGHT_STRUCT) =
+=3D=3D 0)
+> > +                       return 0;
+> >                 if (entry->part =3D=3D 1)
+> >                         return kctx->data->weight.var1_dw;
+> >                 if (entry->part =3D=3D 2)
+> > @@ -80,15 +99,25 @@ static inline __u64 perf_get_sample(struct bpf_perf=
+_event_data_kern *kctx,
+> >                 if (entry->part =3D=3D 3)
+> >                         return kctx->data->weight.var3_w;
+> >                 /* fall through */
+> > -       case PERF_SAMPLE_WEIGHT:
+> > +       case PBF_TERM_WEIGHT:
+> > +               if ((data->sample_flags & PERF_SAMPLE_WEIGHT) =3D=3D 0)
+> > +                       return 0;
+> >                 return kctx->data->weight.full;
+> > -       case PERF_SAMPLE_PHYS_ADDR:
+> > +       case PBF_TERM_PHYS_ADDR:
+> > +               if ((data->sample_flags & PERF_SAMPLE_PHYS_ADDR) =3D=3D=
+ 0)
+> > +                       return 0;
+> >                 return kctx->data->phys_addr;
+> > -       case PERF_SAMPLE_CODE_PAGE_SIZE:
+> > +       case PBF_TERM_CODE_PAGE_SIZE:
+> > +               if ((data->sample_flags & PERF_SAMPLE_CODE_PAGE_SIZE) =
+=3D=3D 0)
+> > +                       return 0;
+> >                 return kctx->data->code_page_size;
+> > -       case PERF_SAMPLE_DATA_PAGE_SIZE:
+> > +       case PBF_TERM_DATA_PAGE_SIZE:
+> > +               if ((data->sample_flags & PERF_SAMPLE_DATA_PAGE_SIZE) =
+=3D=3D 0)
+> > +                       return 0;
+> >                 return kctx->data->data_page_size;
+> > -       case PERF_SAMPLE_DATA_SRC:
+> > +       case PBF_TERM_DATA_SRC:
+> > +               if ((data->sample_flags & PERF_SAMPLE_DATA_SRC) =3D=3D =
+0)
+> > +                       return 0;
+> >                 if (entry->part =3D=3D 1)
+> >                         return kctx->data->data_src.mem_op;
+> >                 if (entry->part =3D=3D 2)
+> > --
+> > 2.45.0.rc1.225.g2a3ae87e7f-goog
+> >
 
