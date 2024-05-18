@@ -1,142 +1,139 @@
-Return-Path: <bpf+bounces-29990-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-29991-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D4C988C8F60
-	for <lists+bpf@lfdr.de>; Sat, 18 May 2024 04:38:19 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5AC148C8F6E
+	for <lists+bpf@lfdr.de>; Sat, 18 May 2024 05:28:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B1DF51C21338
-	for <lists+bpf@lfdr.de>; Sat, 18 May 2024 02:38:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1E76A282C31
+	for <lists+bpf@lfdr.de>; Sat, 18 May 2024 03:28:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1885B4A2D;
-	Sat, 18 May 2024 02:38:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="S1SICUp3"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D40046FCB;
+	Sat, 18 May 2024 03:28:01 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-oi1-f182.google.com (mail-oi1-f182.google.com [209.85.167.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from dggsgout12.his.huawei.com (unknown [45.249.212.56])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B682804
-	for <bpf@vger.kernel.org>; Sat, 18 May 2024 02:38:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 129F2523A;
+	Sat, 18 May 2024 03:27:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715999892; cv=none; b=lktDNPl/G2pBahc5Z1UlsSEgsOZqA3B9F2wGaTg/pFBDv0wXIuVL3AWdNTCtCAXoTrDqPQ61KRz/52w9tZN1baiFq0m9kIkH52qLALSGScYu+l64mbil0A2dPcP5j7jihFoNsB7T5WaHLTWN+ahwzdaF07d68T0zwnDG15g94fs=
+	t=1716002881; cv=none; b=XAqL26dQ2mw3R3oLgO/acpFDNkbhChgCMSpFDVcJcnOgow3ipmEmkMgSSruUOdpVvqX7mamsvHgLjDaGLqfbPftbvUKyeOTI6hGww1oCW5QO703OiAbw80GwAbo09DcqtjMbyMxxkn2cwx3bLg/8TBUDPcHZ+eGospY2rFb9irM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715999892; c=relaxed/simple;
-	bh=0WHpzRxbMHkzUbB0azQ1iMekKVriTZ9tsfBMqGEAHaU=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=hZVmyma+PVBkqYusKa8GzJDtX8yw9W7WAjPkpAlG5NhsER3qo90pdGUSeShZzMcamIyNLZbNyCjsb1qeQmP1SneoseWzKGT++07UCsSyIZLuSeC0UBH1b5RFuiR/Cx03VZq0P4eIDVZZfq/sePKYoFVrdgRsosvZIU5gddOfniM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=S1SICUp3; arc=none smtp.client-ip=209.85.167.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oi1-f182.google.com with SMTP id 5614622812f47-3c9cc681ee4so425333b6e.0
-        for <bpf@vger.kernel.org>; Fri, 17 May 2024 19:38:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1715999889; x=1716604689; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=6J/w7RXhmiey7QmUmvyRbfAEpRqGc1zjez2O/AHRpDg=;
-        b=S1SICUp3RmejWt/337GfhOpNX8FHvrx/QYuKlM+v5d3KbP9nlSo8gbqMWWq7WuQBA3
-         tNggTX5+KZjX5uph7+UnBu/g+OXPn6TchJg9T1qHA9dzbyEfTnRPzUA+D9aD+CyByAp7
-         cu6zU16V1cuCGofh3S61YEniD31+jSfltfhcs5Sae6VEr/3nTnKS2rH39+LHk1b7BQzH
-         EPkhEEuhRdAcgOeiXFGdnIV2XlC+bySJZOCU8KS3rp5zVyfdAv70Jo/sB/H1jD5d2nF8
-         rzxR1s+Dpbr7AqJpE1I7SYfJzi40QcC1xjdLmbcsE/bY/dITe/juy+BPbmYT2TmLk1YG
-         gqqQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1715999889; x=1716604689;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=6J/w7RXhmiey7QmUmvyRbfAEpRqGc1zjez2O/AHRpDg=;
-        b=W+e42yfoIbKw9yEfhlf6QaFiKUDb1lb+qxWXo/uogYWzouDzh9suhvg6PkBX1fKLD+
-         pwcUnx/uP7iuzfDwHuizbEtkvI/crV5yrEMg8iH99X/NRh8lYPNWn3eus1NH2htr7g92
-         z1+Eu335rxP/O6qCCHIJyVMftdjtk/0MmHiiwE/g3pNgCv568l/uTPHl8L5m5uq1+cGA
-         9DrNy7RAXLoi4uxHOGezTSWuoE4k20TXfFAmRxryWQjaElNVTAOvfT89OlI/8qtPia5B
-         8vaTzKreuJgKUfKPxxzJAVvMb6bjlT3fphLAVoP5GIKYI0sz2skGt4eWq1J08PvLmsTH
-         /www==
-X-Forwarded-Encrypted: i=1; AJvYcCWCMPNFcitYPBSPJqhgY9syG96ASlcJDrMQl1j/1VTOa3PZWkU0hBlhjJFprUI4+un6iHcdvsBrOe7wKCi9OzayVoC9
-X-Gm-Message-State: AOJu0YwDQXEXh+ilbsJsSnAlhFWyWeSU3MvH2LpdJaBF9SqwpCbis47Y
-	SSPeD2qweIn0AX8SqMKfZQzvZuPewRaT1T0YQQ4CXd+HODuBveGg
-X-Google-Smtp-Source: AGHT+IGLHRS6TWLqvbXl2r2zC0lCwr1yyh4NIP1R6HB1MZCcJAEwpY2NknpkfgBEwA1mCPibTCySKQ==
-X-Received: by 2002:a05:6808:220f:b0:3c9:6a90:caa4 with SMTP id 5614622812f47-3c997023d43mr30695510b6e.10.1715999887577;
-        Fri, 17 May 2024 19:38:07 -0700 (PDT)
-Received: from ?IPv6:2604:3d08:6979:1160::3424? ([2604:3d08:6979:1160::3424])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-6f4d2ade2besm15863992b3a.98.2024.05.17.19.38.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 17 May 2024 19:38:07 -0700 (PDT)
-Message-ID: <b647e0d1d225f9d21e78c6ffedb722507f42eff0.camel@gmail.com>
-Subject: Re: [PATCH v4 bpf-next 00/11] bpf: support resilient split BTF
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Alan Maguire <alan.maguire@oracle.com>, andrii@kernel.org,
- jolsa@kernel.org,  acme@redhat.com, quentin@isovalent.com
-Cc: mykolal@fb.com, ast@kernel.org, daniel@iogearbox.net,
- martin.lau@linux.dev,  song@kernel.org, yonghong.song@linux.dev,
- john.fastabend@gmail.com,  kpsingh@kernel.org, sdf@google.com,
- haoluo@google.com, houtao1@huawei.com,  bpf@vger.kernel.org,
- masahiroy@kernel.org, mcgrof@kernel.org, nathan@kernel.org
-Date: Fri, 17 May 2024 19:38:06 -0700
-In-Reply-To: <20240517102246.4070184-1-alan.maguire@oracle.com>
-References: <20240517102246.4070184-1-alan.maguire@oracle.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.44.4-0ubuntu2 
+	s=arc-20240116; t=1716002881; c=relaxed/simple;
+	bh=HhXC567gm27enXF8Mkpeq7Mb78wrx5ujlnTsvAyjJsQ=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=FYhWISlxpgKITCRY9cfv56hiBOCmEQjQHudFsnYXTy4KdkXfyML3gqsDk9VGHbCNGoo16H+aADRE9u7HcuQHuDSQztBsHERm1abxpfPDxc1ZucrzQpK0TwHZcaMAJKAB8LWlXBj1V5I/+afBhLEkMWM12teWlzktIpazRO52cGs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.93.142])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4Vh8R675XWz4f3jrh;
+	Sat, 18 May 2024 11:27:46 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.75])
+	by mail.maildlp.com (Postfix) with ESMTP id C13F41A016E;
+	Sat, 18 May 2024 11:27:55 +0800 (CST)
+Received: from ultra.huawei.com (unknown [10.90.53.71])
+	by APP2 (Coremail) with SMTP id Syh0CgC3Gf05IEhmkYcnNQ--.13474S2;
+	Sat, 18 May 2024 11:27:53 +0800 (CST)
+From: Pu Lehui <pulehui@huaweicloud.com>
+To: bpf@vger.kernel.org,
+	linux-riscv@lists.infradead.org,
+	netdev@vger.kernel.org
+Cc: Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Song Liu <song@kernel.org>,
+	Yonghong Song <yhs@fb.com>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>,
+	Stanislav Fomichev <sdf@google.com>,
+	Hao Luo <haoluo@google.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	=?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn@kernel.org>,
+	Pu Lehui <pulehui@huawei.com>,
+	Puranjay Mohan <puranjay@kernel.org>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Menglong Dong <imagedong@tencent.com>,
+	Pu Lehui <pulehui@gmail.com>
+Subject: [PATCH bpf-next v4 0/3] Add 12-argument support for RV64 bpf trampoline
+Date: Sat, 18 May 2024 03:28:53 +0000
+Message-Id: <20240518032856.2721688-1-pulehui@huaweicloud.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:Syh0CgC3Gf05IEhmkYcnNQ--.13474S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7CF45KF1xuF4fXryktF4fXwb_yoW8Kr17pa
+	1Ig3Wa9F1rKF42q34xJa1Uuryrtr4rZw15Cr4xJ34F9ayDtry5Jr1I9w4Yy345Wr93u3yS
+	y3sI9Fy5WF1DZ3DanT9S1TB71UUUUUDqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUkYb4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
+	0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
+	x7xfMcIj6xIIjxv20xvE14v26r106r15McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
+	0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l42xK82IY
+	c2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s
+	026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a6rW5MIIYrxkI7VAKI48JMIIF
+	0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0x
+	vE42xK8VAvwI8IcIk0rVW3JVWrJr1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280
+	aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IUbG2NtUUUUU==
+X-CM-SenderInfo: psxovxtxl6x35dzhxuhorxvhhfrp/
 
-On Fri, 2024-05-17 at 11:22 +0100, Alan Maguire wrote:
+This patch adds 12 function arguments support for riscv64 bpf
+trampoline. The current bpf trampoline supports <= sizeof(u64) bytes
+scalar arguments [0] and <= 16 bytes struct arguments [1]. Therefore, we
+focus on the situation where scalars are at most XLEN bits and
+aggregates whose total size does not exceed 2×XLEN bits in the riscv
+calling convention [2].
 
-(Also, please note that CI fails for this series).
+Link: https://elixir.bootlin.com/linux/v6.8/source/kernel/bpf/btf.c#L6184 [0]
+Link: https://elixir.bootlin.com/linux/v6.8/source/kernel/bpf/btf.c#L6769 [1]
+Link: https://github.com/riscv-non-isa/riscv-elf-psabi-doc/releases/download/draft-20230929-e5c800e661a53efe3c2678d71a306323b60eb13b/riscv-abi.pdf [2]
 
-[...]
+v4:
+- Separate many args test logic from tracing_struct. (Daniel)
 
-> Also explored Eduard's suggestion of doing an implicit fallback
-> to checking for .BTF.base section in btf__parse() when it is
-> called to get base BTF.  However while it is doable, it turned
-> out to be difficult operationally.  Since fallback is implicit
-> we do not know the source of the BTF - was it from .BTF or
-> .BTF.base? In bpftool, we want to try first standalone BTF,
-> then split, then split with distilled base.  Having a way
-> to explicitly request .BTF.base via btf__parse_opts() fits
-> that model better.
+v3: https://lore.kernel.org/all/20240403072818.1462811-1-pulehui@huaweicloud.com/
+- Variable and macro name alignment:
+  nr_reg_args: number of args in reg
+  nr_stack_args: number of args on stack
+  RV_MAX_REG_ARGS: macro for riscv max args in reg
 
-I don't think this is the case. Here is what I mean:
-https://github.com/eddyz87/bpf/tree/distilled-base-alternative-parse-elf
+v2: https://lore.kernel.org/all/20240403041710.1416369-1-pulehui@huaweicloud.com/
+- Add tracing_struct to DENYLIST.aarch64 while aarch64 does not yet support
+  bpf trampoline with more than 8 args.
+- Change the macro RV_MAX_ARG_REGS to RV_MAX_ARGS_REG to synchronize with
+  the variable definition below.
+- Add some comments for stk_arg_off and magic number of skip slots for loading
+  args on stack.
 
-The branch above is a modification for btf_parse_elf() and a few
-reverts on top of this patch-set.
+v1: https://lore.kernel.org/all/20240331092405.822571-1-pulehui@huaweicloud.com/
 
-I modified btf_parse_elf() to follow the logic below:
+Pu Lehui (3):
+  riscv, bpf: Add 12-argument support for RV64 bpf trampoline
+  selftests/bpf: Factor out many args tests from tracing_struct
+  selftests/bpf: Add testcase where 7th argment is struct
 
-| base_btf   | .BTF.base | Effect                                      |
-| specified? | present?  |                                             |
-|------------+-----------+---------------------------------------------|
-| no         | no        | load btf from .BTF                          |
-|------------+-----------+---------------------------------------------|
-| yes        | no        | load btf from .BTF using base_btf as base   |
-|            |           |                                             |
-|------------+-----------+---------------------------------------------|
-| no         | yes       | load btf from .BTF using .BTF.base as base  |
-|            |           |                                             |
-|------------+-----------+---------------------------------------------|
-| yes        | yes       | load btf from .BTF using .BTF.base as base, |
-|            |           | relocate btf against base_btf               |
+ arch/riscv/net/bpf_jit_comp64.c               | 66 +++++++++----
+ tools/testing/selftests/bpf/DENYLIST.aarch64  |  1 +
+ .../selftests/bpf/bpf_testmod/bpf_testmod.c   | 19 ++++
+ .../selftests/bpf/prog_tests/tracing_struct.c | 46 ++++++++-
+ .../selftests/bpf/progs/tracing_struct.c      | 54 -----------
+ .../bpf/progs/tracing_struct_many_args.c      | 97 +++++++++++++++++++
+ 6 files changed, 206 insertions(+), 77 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/progs/tracing_struct_many_args.c
 
-When organized like that, there is no need to modify libbpf clients to
-work with split BTF.
+-- 
+2.34.1
 
-The `bpftool btf dump file ./btf_testmod.ko` would print non-relocated BTF.
-The `bpftool btf -B ../../../vmlinux dump file ./btf_testmod.ko` would
-print relocated BTF, no need for separate -R flag.
-Imo, loading split BTF w/o relocation when .BTF.base is present
-is interesting only for debug purposes and could be handled separately
-as all building blocks are present in the library.
-
-[...]
 
