@@ -1,65 +1,68 @@
-Return-Path: <bpf+bounces-30023-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-30021-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7C6D58C9A30
-	for <lists+bpf@lfdr.de>; Mon, 20 May 2024 11:14:55 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8089B8C9A2E
+	for <lists+bpf@lfdr.de>; Mon, 20 May 2024 11:14:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 300EC1F21B05
-	for <lists+bpf@lfdr.de>; Mon, 20 May 2024 09:14:55 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B0C5E1C20E71
+	for <lists+bpf@lfdr.de>; Mon, 20 May 2024 09:14:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 47AA11CFBD;
-	Mon, 20 May 2024 09:14:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C11C91CABB;
+	Mon, 20 May 2024 09:14:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=meta.com header.i=@meta.com header.b="TOfxlPKx"
+	dkim=pass (2048-bit key) header.d=meta.com header.i=@meta.com header.b="FIQ2gooN"
 X-Original-To: bpf@vger.kernel.org
 Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7CF071C6B7
-	for <bpf@vger.kernel.org>; Mon, 20 May 2024 09:14:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D57891BC4F
+	for <bpf@vger.kernel.org>; Mon, 20 May 2024 09:14:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.145.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716196486; cv=none; b=r26mOFL6OikDu/unTv6yp4ln72uKFjO/MCMPvAKlaPbZcs96zDmEXp0PvQ4nl9zOymJgGAcz4iJzi9yULNp3EMiQ99LdZMu8wAISQ5S1FXFtsESyip2Y+/812Y1RYmyJU1TTRA+RDG2+lps9qMbdU/YFakEik8S62CPDI3EumpI=
+	t=1716196485; cv=none; b=uHGXZBsr07LUEckVawWtCNFNbPrPO4LsblVvW/XvVLerRTV8KuzIHZMA7HuoEIovta1FuzohOwjnUFEDfDKzWpo/3uiLvvbXhT+zgrD3E05neLEd8oMiJBHzN9IhCssTm8SBzYWkQd/ZLtPzITGtoFgLPPCgx7kflRP4QIqXsf0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716196486; c=relaxed/simple;
-	bh=cs1RbC6IvMaqIy/X+tiw47UbU1V5ro7RrA6h+2yzU7U=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=BxN9ZV+9WDbqdilkuwC4puaH3LqXovChHafSOhMewzJYs/qDkSC/jx9Ka0traCaG45oHwdPb52R1JfuGWJ7WUn5MmaUh+WjzMWoBD1v4VWpRWnBPHUSM7fIWs9X19CczuzWyQwFfK4TBB0Ro+TGLLLGU5j803EpPihK9Z+rmIx4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=meta.com; spf=pass smtp.mailfrom=meta.com; dkim=pass (2048-bit key) header.d=meta.com header.i=@meta.com header.b=TOfxlPKx; arc=none smtp.client-ip=67.231.145.42
+	s=arc-20240116; t=1716196485; c=relaxed/simple;
+	bh=R+t5eDT6OlX3s0V50wx16DQ3NKCxGDeesfI16J18Khk=;
+	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=Z+H8grlBottUa5015ixLD9yG5EzS62iZjF+pYM/pBIfzoDiTlzL1iZjCe+y+ypZjAMeQfw7No3nmicBOGqeJdSiKKZFhypac7CLCRDUIOP3j+GaY3EUJEFypr4yxr36imkALAQ6ceW7m+zqPgxDpFiwEqMxrL/D/POuRgBfsYFI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=meta.com; spf=pass smtp.mailfrom=meta.com; dkim=pass (2048-bit key) header.d=meta.com header.i=@meta.com header.b=FIQ2gooN; arc=none smtp.client-ip=67.231.145.42
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=meta.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=meta.com
-Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
-	by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 44K4KNnF003187
-	for <bpf@vger.kernel.org>; Mon, 20 May 2024 02:14:44 -0700
+Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
+	by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 44K5A3Vo014821
+	for <bpf@vger.kernel.org>; Mon, 20 May 2024 02:14:43 -0700
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=meta.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-transfer-encoding :
- content-type; s=s2048-2021-q4;
- bh=WotpMEArL0j0HF7NgXM8Ih6AN+DeYoTyCV24dTOV4SA=;
- b=TOfxlPKxSadZqP/NOdjInmWG/zJsXCH8W0nSnxp1HN61N7dDfRp78mRChUFdp73yYTW3
- X7WmUY8xp105I2GwaYjZj5rZuur1ykoAXSoab1kd4tZKv2KrYWlHSSQmm4DWB2HAiEo1
- mMN8cHVy3udLSv1qncGb4OlvMC9lqTQoadFPm0t/GcEyVbLePAwB7rHn/oka8R/ch/Ga
- ssg7+JBrQDd9P4Cum4iVl0qaGqtWUdTOJtLxrxSs18XG4Jcb8Ib39EMMwqLjUrYeo3kv
- RmAO0+pAuwHlyVMjG9nX+pyNqZ/6Ur+/PLp85S9tG/gzT0/EDS8c5vyevPzq6BU3q2uB 6Q== 
+ subject : date : message-id : in-reply-to : references : mime-version :
+ content-transfer-encoding : content-type; s=s2048-2021-q4;
+ bh=vtuucQ3ApEEh7t+z1rK+z0xIwbpF+2cv6NNtBH/Lj/U=;
+ b=FIQ2gooN+rdyI7YemW/vWlXDS66Tk2g8HWDEuCas/oX5DQYYc8JBMEZvYfrenLb6oFVl
+ NFRPUSfB/F7kkKqYlkZOou6ygi4Gy5N9aYASpWdRQ+TGfO6+nkBh3+u/QPLBlTvv9qZH
+ D4MDKoRbwWNQDXHG35CKXv2JPuzu2D2bXmuHVHEmg2d8GPxfKWQwRswOy6r6MvzZYVRc
+ 4++NDFgn8fHN+y9bMJiZ1vImeFllGNWhw8E5tV5yDIrK+wOAnC+uQneNCxsDPv5144kb
+ nEQDbXoIu1r7++iOqqXECpxGqYS7HYKey4OeL96RZCpsWxNTGlbs/J0V7jHndfySH0gp Ww== 
 Received: from mail.thefacebook.com ([163.114.132.120])
-	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3y7yd28vj8-4
+	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3y804d8rbb-6
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-	for <bpf@vger.kernel.org>; Mon, 20 May 2024 02:14:44 -0700
-Received: from twshared0252.08.ash9.facebook.com (2620:10d:c085:208::f) by
- mail.thefacebook.com (2620:10d:c085:11d::8) with Microsoft SMTP Server
+	for <bpf@vger.kernel.org>; Mon, 20 May 2024 02:14:43 -0700
+Received: from twshared38934.02.ash8.facebook.com (2620:10d:c085:208::11) by
+ mail.thefacebook.com (2620:10d:c085:21d::8) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Mon, 20 May 2024 09:14:43 +0000
+ 15.1.2507.35; Mon, 20 May 2024 02:14:40 -0700
 Received: by devbig031.nha1.facebook.com (Postfix, from userid 398628)
-	id 223711349D7F; Mon, 20 May 2024 02:14:35 -0700 (PDT)
+	id 0D2491349DBE; Mon, 20 May 2024 02:14:39 -0700 (PDT)
 From: Raman Shukhau <ramasha@meta.com>
 To: <bpf@vger.kernel.org>, <ast@kernel.org>, <andrii@kernel.org>,
         <daniel@iogearbox.net>
 CC: Raman Shukhau <ramasha@meta.com>
-Subject: [PATCH v2 bpf-next 0/3] Fix and improvement for bpf_sysctl_set_new_value
-Date: Mon, 20 May 2024 02:14:21 -0700
-Message-ID: <20240520091424.2427762-1-ramasha@meta.com>
+Subject: [PATCH v2 bpf-next 1/3] net: Fix for bpf_sysctl_set_new_value
+Date: Mon, 20 May 2024 02:14:22 -0700
+Message-ID: <20240520091424.2427762-2-ramasha@meta.com>
 X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20240520091424.2427762-1-ramasha@meta.com>
+References: <20240520091424.2427762-1-ramasha@meta.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -69,42 +72,46 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 X-FB-Internal: Safe
 Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: 7ceYhXo7VPJ1m0AH-zqi69W0sFSH1bIv
-X-Proofpoint-GUID: 7ceYhXo7VPJ1m0AH-zqi69W0sFSH1bIv
+X-Proofpoint-GUID: DOx8zJiG2Hk3rt5cqLGazJmck0dFL-UR
+X-Proofpoint-ORIG-GUID: DOx8zJiG2Hk3rt5cqLGazJmck0dFL-UR
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.650,FMLib:17.11.176.26
  definitions=2024-05-20_04,2024-05-17_03,2023-05-22_02
 
-Changes v1 =3D> v2:
-1. corrected copyright comments
-2. unsigned int for sysctl name to prevent build test error:
-   "R2 min value is negative, either use unsigned or 'var &=3D const'"
+Call to bpf_sysctl_set_new_value doesn't change final value
+of the parameter, when called from cgroup/syscall bpf handler. No error
+thrown in this case, new value is simply ignored and original value, sent
+to sysctl, is set. Example (see test added to this change for BPF handler
+logic):
 
-Fix and improvement for bpf_sysctl_set_new_value
+sysctl -w net.ipv4.ip_local_reserved_ports =3D 11111
+... cgroup/syscal handler call bpf_sysctl_set_new_value	and set 22222
+sysctl net.ipv4.ip_local_reserved_ports
+... returns 11111
 
-This patch set is doing several changes around bpf_sysctl_set_new_value
-(1 fix, 1 improvement, 1 test):
-1. Fix is for return value check, when sysctl value is updated from BPF
-  handler with call to bpf_sysctl_set_new_value.
-2. Improvement for bpf_sysctl_set_new_value to match behavior with
-  sysctl write call. Result value shouldn't include "\0", otherwise
-  proc_sys_call_handler rejects value.
-3. New cgrp_sysctl test suite is added. It has single test to check
-  behavior of bpf_sysctl_set_new_value and is called from BPF
-  test_progs test suite.
+Return value check is incorrect in __cgroup_bpf_run_filter_sysctl
+specifically for the case when new value is set, as bpf_prog_run_array_cg
+return 0 on success.
 
-Raman Shukhau (3):
-  net: Fix for bpf_sysctl_set_new_value
-  net: Improvement for bpf_sysctl_set_new_value
-  net: new cgrp_sysctl test suite
+Signed-off-by: Raman Shukhau <ramasha@meta.com>
+---
+ kernel/bpf/cgroup.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
- kernel/bpf/cgroup.c                           |   7 +-
- .../selftests/bpf/prog_tests/cgrp_sysctl.c    | 103 ++++++++++++++++++
- .../testing/selftests/bpf/progs/cgrp_sysctl.c |  51 +++++++++
- 3 files changed, 159 insertions(+), 2 deletions(-)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/cgrp_sysctl.c
- create mode 100644 tools/testing/selftests/bpf/progs/cgrp_sysctl.c
-
+diff --git a/kernel/bpf/cgroup.c b/kernel/bpf/cgroup.c
+index 8ba73042a239..bfc36e7ca6f6 100644
+--- a/kernel/bpf/cgroup.c
++++ b/kernel/bpf/cgroup.c
+@@ -1739,7 +1739,7 @@ int __cgroup_bpf_run_filter_sysctl(struct ctl_table=
+_header *head,
+=20
+ 	kfree(ctx.cur_val);
+=20
+-	if (ret =3D=3D 1 && ctx.new_updated) {
++	if (ret =3D=3D 0 && ctx.new_updated) {
+ 		kfree(*buf);
+ 		*buf =3D ctx.new_val;
+ 		*pcount =3D ctx.new_len;
 --=20
 2.43.0
 
