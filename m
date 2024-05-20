@@ -1,431 +1,192 @@
-Return-Path: <bpf+bounces-30017-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-30018-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 01F268C9738
-	for <lists+bpf@lfdr.de>; Mon, 20 May 2024 00:18:18 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 78C368C9823
+	for <lists+bpf@lfdr.de>; Mon, 20 May 2024 05:04:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id ECF4F1C20869
-	for <lists+bpf@lfdr.de>; Sun, 19 May 2024 22:18:16 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2F00B2827C4
+	for <lists+bpf@lfdr.de>; Mon, 20 May 2024 03:04:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 779A07317C;
-	Sun, 19 May 2024 22:18:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0FC6DDDDA;
+	Mon, 20 May 2024 03:04:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fSWQ/H/E"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="kJPZ+fs/"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f54.google.com (mail-wr1-f54.google.com [209.85.221.54])
+Received: from mail-pl1-f201.google.com (mail-pl1-f201.google.com [209.85.214.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 164234E1D1;
-	Sun, 19 May 2024 22:18:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 24639D52F
+	for <bpf@vger.kernel.org>; Mon, 20 May 2024 03:04:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716157088; cv=none; b=gDOLuef+SdVZt5KLaTn3sCygXo8F4fRoyWbzGhEHiO0UNlq76Acinjvq9tHkwWLmo6QLTe5hhZPfHeIHQ+IOXsiGZjdqIfPCkMgasiiYy22E9l82v2X7k1X1FbeldmvjuzCf1GqfsajV0WFcs5e3mkPTqEazu0Hrv5K97GLeR2I=
+	t=1716174270; cv=none; b=WGlCMb9uED7vfStvBeO1oN0VRwamVXY41MfUPim/rkuyJIlhVDRhUu/P2PZRYqIeYY6KJQwoghDIW8ZvmOBxxU2lllihW0IqdFpBQO2gpgHeahTsf7seprpWFBjmzf7Rre1mvqQkpv1389bSSRghlbf9pZJGiUKDrNoMl0oR9CI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716157088; c=relaxed/simple;
-	bh=fg7ohdBWKnULCMhyPwARV0dOMRmj1SHe/51R5ZciX10=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=fXM0gQ3Z8CJdW+EBNOclwThM0WL6YH9oZb+MAbqj1bWILUvPGP8s1q+oCuhcU/ln5JF3FskFaW9mWzOsMNuPZ328WnwooYuUONCz637DNIyZ4UYpAp9qMfpqpb4AvlcEDD02ClbC3/JmKLo/8Nx//MhmD3ZnIs5Y4r93A3QNin8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=fSWQ/H/E; arc=none smtp.client-ip=209.85.221.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f54.google.com with SMTP id ffacd0b85a97d-34db6a29a1eso1552929f8f.1;
-        Sun, 19 May 2024 15:18:05 -0700 (PDT)
+	s=arc-20240116; t=1716174270; c=relaxed/simple;
+	bh=wjAv8+ohMqoJwri7GhA5EDNuaDlea2q73CThdVmfos4=;
+	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=sn+hBruUv2Ragt6e0prLWHSfoWaqmzP1mZ2KVHqDIWNS0P88b1ggETzQK53orAoh2z0YJrRkmKboedtu6MrMee4ML/lT4eLYMtMe9rcozraIC8gCfYDdH7gv9ciQ0SKUCXr8ADj+tpqyODK9wimXckxEB99SGfgBESPCxcoieyI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--sdf.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=kJPZ+fs/; arc=none smtp.client-ip=209.85.214.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--sdf.bounces.google.com
+Received: by mail-pl1-f201.google.com with SMTP id d9443c01a7336-1ec896dae3cso114377835ad.0
+        for <bpf@vger.kernel.org>; Sun, 19 May 2024 20:04:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1716157084; x=1716761884; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=goIREiRJuXempbIzhjUceDqvcpesyLrumaZd4akCD6w=;
-        b=fSWQ/H/EwdIK5qCNUZNXbt/iylVmYHuDMOp2mtWah0HW7eZlz5IuyDJc0gKP+K7qp5
-         foxzqdomBynLDT9zkFlgmVYEyDRRTbNH4jZpx4QBFZKNRvHt44QpdvHVWWZ/f1TWnDNT
-         CT3rFEbHCGrm0xo+5GtP5uKwyFmh7SPqhj84Ie/lncuk8Iu79WxDO+YGH8QzvVsQVzTo
-         LPr4mxLkkKDTY2B4rsfHKilk+OL+EEoHIn9Iz9N9R3xyxaseMA6uMo5uD4YBMG8LDXjX
-         Y0UT/QUSHQWukF52UDq8iX5n/M4nVaI/TF/a4uMhnhLSWOjmp+/q65CFewK1U6uMgQSW
-         JtIA==
+        d=google.com; s=20230601; t=1716174268; x=1716779068; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=dtb8RJmBCS/dNtE4zbJQ+VjAWESsuE5pIfeTCax/Y+Y=;
+        b=kJPZ+fs/UCOsut03jOwQ5fLeMMXNF8ThSTTGy1kJ6V6SPxWt3plQoR5xvS3c6f555S
+         rbRpMpu/tIAIakua+Cz02Au0n3i6B6ygCTlpdnfyZ3CxIAngt8rO4oYVbqLaoj3viRl/
+         q9f3bneHEu+lyzmsbsPHlkET4jog50xXhENKBpYYK/uYd6gjk6CA7UroxGjR2x6WBFcw
+         Zrl3wePn/EPxInPgLDBBSzv2MAqrMvPVH/OU1RbfJHOdfGimq6ethko3c8JjwYeTligF
+         GwaKDWPfk5vuoBAxUOlmKVVC/IfMmnDqyQ7RPrjXQ7z0zmc4VBaVrWesaCzdmuDPwcb2
+         /89w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1716157084; x=1716761884;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=goIREiRJuXempbIzhjUceDqvcpesyLrumaZd4akCD6w=;
-        b=MXTf1Ud0+XUSH6oot5KYZuRGOJgTspX93XKu5PJPobM2zJyiNEsfWl2yICeBap3cy/
-         7OBfTCzf+sCVbvLm26pw9xnMgrHoHVosOUWYgBQYFkq0c80v/EwGctZD7ytAxGvPWIRj
-         B4om6eAPUmx6bg1C20bqVIHNhhlwHqLMdhtVKFPg0Gq7ABju0B7qF56kcA2D3W7gYbt+
-         2vJi3XKMYU5PhnBbfGTwSQgnOQNOEceHvtJXrP1VhxQ3imerDeX1P2utCl9IplFPEuGi
-         qEaHjY+Smey+9Ze3qIZccPfzujm2PnrknIpRWtzTWIL+/uYaTP4w4wz/IzzjWayAT0U0
-         dN0A==
-X-Forwarded-Encrypted: i=1; AJvYcCWEkYOJzs/GN/P8bTHKGARsRN7N/TGIIiZ42FNoGXf/WafqSUwubt3KYw5bcdBkaq/xOzegdmrAbc5HH9bs5w7qwLNNVEfK3jL6MHmaX4fVvQcHgROhkBvXGM47Oos5NuTwsv1njnDpBwRYsojD05tUg/F7Mg9KSUyGX0eNcRhcNsJH/CwQR1gL6qejqercgFSwHe9HyqRkTDd0sdTCOjFOVjmraM7Sw2AWyr2+ZEc3gqf+9Zwn3m/+Lj4j
-X-Gm-Message-State: AOJu0YxSSxOXYU8zRUIe/HI9NZ7iB3K8qoRv8WourfKSKzW1xnU6zKWi
-	Uqo2ty/x6cngf5OaVN4NKs0tBqG67PmUjeclEVVFM2WgG0yKsRv0
-X-Google-Smtp-Source: AGHT+IFooj5S4I7pLSIpLa/QfqyyeoxWME22Mmc4N6Toc4dPXMTjaTNvv0sOrxRBboXlWwge+Rg/uQ==
-X-Received: by 2002:adf:cd07:0:b0:351:d418:efac with SMTP id ffacd0b85a97d-351d418f351mr8377418f8f.32.1716157083989;
-        Sun, 19 May 2024 15:18:03 -0700 (PDT)
-Received: from krava ([83.240.61.240])
-        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-5750d5f21d6sm4392336a12.18.2024.05.19.15.18.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 19 May 2024 15:18:03 -0700 (PDT)
-From: Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Mon, 20 May 2024 00:18:01 +0200
-To: Oleg Nesterov <oleg@redhat.com>
-Cc: "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
-	"olsajiri@gmail.com" <olsajiri@gmail.com>,
-	"songliubraving@fb.com" <songliubraving@fb.com>,
-	"luto@kernel.org" <luto@kernel.org>,
-	"mhiramat@kernel.org" <mhiramat@kernel.org>,
-	"andrii@kernel.org" <andrii@kernel.org>,
-	"debug@rivosinc.com" <debug@rivosinc.com>,
-	"john.fastabend@gmail.com" <john.fastabend@gmail.com>,
-	"linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"mingo@redhat.com" <mingo@redhat.com>,
-	"rostedt@goodmis.org" <rostedt@goodmis.org>,
-	"ast@kernel.org" <ast@kernel.org>,
-	"tglx@linutronix.de" <tglx@linutronix.de>,
-	"linux-man@vger.kernel.org" <linux-man@vger.kernel.org>,
-	"yhs@fb.com" <yhs@fb.com>,
-	"daniel@iogearbox.net" <daniel@iogearbox.net>,
-	"peterz@infradead.org" <peterz@infradead.org>,
-	"linux-trace-kernel@vger.kernel.org" <linux-trace-kernel@vger.kernel.org>,
-	"bp@alien8.de" <bp@alien8.de>,
-	"bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-	"x86@kernel.org" <x86@kernel.org>
-Subject: Re: [PATCHv5 bpf-next 6/8] x86/shstk: Add return uprobe support
-Message-ID: <Zkp6mT2xag29dLTR@krava>
-References: <a08a955c74682e9dc6eb6d49b91c6968c9b62f75.camel@intel.com>
- <ZjyJsl_u_FmYHrki@krava>
- <a8b7be15e6dbb1e8f2acaee7dae21fec7775194c.camel@intel.com>
- <Zj_enIB_J6pGJ6Nu@krava>
- <20240513185040.416d62bc4a71e79367c1cd9c@kernel.org>
- <c56ae75e9cf0878ac46185a14a18f6ff7e8f891a.camel@intel.com>
- <ZkKE3qT1X_Jirb92@krava>
- <20240515113525.GB6821@redhat.com>
- <0fa9634e9ac0d30d513eefe6099f5d8d354d93c1.camel@intel.com>
- <20240515154202.GE6821@redhat.com>
+        d=1e100.net; s=20230601; t=1716174268; x=1716779068;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=dtb8RJmBCS/dNtE4zbJQ+VjAWESsuE5pIfeTCax/Y+Y=;
+        b=Kfm9EVSpIclp/QGU1oDgTnIQtGMDu7EknCYMzmaIlmJdcjtGZCAyflgE707HKtlJOR
+         bgTfd/bmWyzHZDmV+C64CsGJTzrfw7VFYgau0ZsdA7kliDd96dSkjMvqdq+GrfHlhn5z
+         +XmQRY9zXo7Av7N1C2XKOPa+8ycLisEtHUGAWxJUoADXiHbhMPcUSA4qRUN3wIK7ot3c
+         eJJkQMQGwt7EWmKq0GXrSTec/tX0BbTEspmLtPXFM5Ch5S83kOPiKc4FLTXg+A9xiFSx
+         Q1GleDRN0EgZ5iLWJm2aX7CI9DcjA2Rqzfm9GfDNLD7+rIEUbwV5CNOYFcNtt/LkZnsG
+         t3nQ==
+X-Gm-Message-State: AOJu0Yy98Hf8YPAROCctRIAISaLeYtBpn7VE4JIzMNT/DFa1w+h4TC2B
+	NODtUmUKMzdedAkCorpaK2lHJz7rkZB68rn/LM7dmqdRaiTIomom6r0I21Jy+7UaZTzUW8DAzYn
+	Ss+oWitbmDXd97aSjnVoKyry9PDS3smdkeY/94wapcE+QL5PQa+Egrr3uVXpEPLF0q1AM/adReN
+	ESBMVDjydDgbU3
+X-Google-Smtp-Source: AGHT+IF/lCAVgQ9UaMEeuyaNr0DrYahEF50OG2vHnNzB9VYx9e9R05j8UrYzrDOkKklm/4ryQrioRo8=
+X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
+ (user=sdf job=sendgmr) by 2002:a17:902:d50d:b0:1ec:2c80:8041 with SMTP id
+ d9443c01a7336-1ef43f522c8mr9964455ad.13.1716174268185; Sun, 19 May 2024
+ 20:04:28 -0700 (PDT)
+Date: Sun, 19 May 2024 20:04:26 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240515154202.GE6821@redhat.com>
+Mime-Version: 1.0
+Message-ID: <Zkq9uifSQ9R3Xp9W@google.com>
+Subject: [ANN] bpf development stats for 6.10
+From: Stanislav Fomichev <sdf@google.com>
+To: bpf@vger.kernel.org
+Cc: kuba@kernel.org
+Content-Type: text/plain; charset="utf-8"
 
-On Wed, May 15, 2024 at 05:42:03PM +0200, Oleg Nesterov wrote:
-> On 05/15, Edgecombe, Rick P wrote:
-> >
-> > On Wed, 2024-05-15 at 13:35 +0200, Oleg Nesterov wrote:
-> > >
-> > > > I'm ok with not using optimized uretprobe when shadow stack is detected
-> > > > as enabled and we go with current uretprobe in that case
-> > >
-> > > But how can we detect it? Again, suppose userspace does
-> >
-> > the rdssp instruction returns the value of the shadow stack pointer. On non-
-> > shadow stack it is a nop. So you could check if the SSP is non-zero to find if
-> > shadow stack is enabled.
-> 
-> But again, the ret-probed function can enable it before it returns? And we
-> need to check if it is enabled on the function entry if we want to avoid
-> sys_uretprobe() in this case. 
+Another kernel release, another opportunity to collect the stats :-)
+See Jakub's netdev post for more details on the methodology:
+https://lore.kernel.org/netdev/20240515122552.34af8692@kernel.org/T/#u
 
-yea, that's another complexity
+BPF 6.9 stats: https://lore.kernel.org/bpf/ZfIW5n6qBzPITavK@google.com/
 
-> Although I don't understand why we want to
-> avoid it.
+Previous cycle:
+9 Jan to 11 Mar: 4536 mailing list messages, 62 days, 73 messages per day
+602 repo commits (10 commits/day)
 
-AFAIU the problem is that by using uretprobe syscall we make the kernel to
-push data on shadow stack [1], which adds another way to modify shadow stack
-as pointed out by Rick in here [2]:
+Current cycle:
+12 Mar to 14 May: 5841 mailing list messages, 64 days, 91 messages per day
+632 repo commits (10 commits/day)
 
- > Shadow stack allows for modification to the shadow stack only through a few
- > limited ways (call, ret, etc). The kernel has the ability to write through
- > shadow stack protections (for example when pushing and popping signal frames),
- > but the ways in which it does this are limited in order to try to prevent
- > providing extra capabilities to attackers wanting to craft their own shadow
- > stacks.
+Developer rankings
+------------------
 
+Top reviewers (cs):                  Top reviewers (msg):                
+   1 ( +1) [8] Andrii Nakryiko          1 (   ) [27] Andrii Nakryiko     
+   2 ( +1) [7] Alexei Starovoitov       2 ( +1) [21] Alexei Starovoitov  
+   3 ( -2) [4] Yonghong Song            3 ( +1) [13] Eduard Zingerman    
+   4 ( +1) [3] Martin KaFai Lau         4 ( +1) [11] Martin KaFai Lau    
+   5 ( +2) [3] Daniel Borkmann          5 ( -3) [ 9] Yonghong Song       
+   6 ( +2) [2] Eduard Zingerman         6 ( +1) [ 6] Jiri Olsa           
+   7 ( -3) [2] Jiri Olsa                7 (+39) [ 5] Masami Hiramatsu (Google)
+   8 ( +2) [2] John Fastabend           8 ( +4) [ 4] John Fastabend      
+   9 ( +6) [2] Stanislav Fomichev       9 ( +2) [ 4] Jakub Kicinski      
+  10 ( -1) [2] Jakub Kicinski          10 ( -2) [ 4] Daniel Borkmann     
+  11 (+10) [1] Arnaldo Carvalho de Melo   11 (+26) [ 3] Arnaldo Carvalho de Melo
+  12 ( -6) [1] David Vernet            12 ( -6) [ 3] David Vernet        
+  13 (***) [1] Quentin Monnet          13 ( +7) [ 3] Stanislav Fomichev  
+  14 (+29) [1] Masami Hiramatsu (Google)   14 (+45) [ 3] Willem de Bruijn    
+  15 (+13) [1] Kumar Kartikeya Dwivedi   15 (***) [ 2] Quentin Monnet      
 
-anyway I think we can fix that in another way by using the optimized trampoline,
-but returning to the user space through iret when shadow stack is detected
-(as I did in the first version, before you adjusted it to the sysret path).
+Top authors (cs):                    Top authors (msg):                  
+   1 (   ) [4] Andrii Nakryiko          1 (***) [16] Edward Liaw         
+   2 (***) [3] Puranjay Mohan           2 (+23) [15] Geliang Tang        
+   3 (+35) [2] Geliang Tang             3 ( +1) [15] Andrii Nakryiko     
+   4 (   ) [2] "Jose E. Marchesi"       4 (***) [14] Mike Rapoport       
+   5 (***) [1] Dave Thaler              5 ( +3) [10] Benjamin Tissoires  
+   6 ( -3) [1] Yonghong Song            6 ( -5) [10] Kui-Feng Lee        
+   7 (***) [1] Cupertino Miranda        7 (***) [ 9] Puranjay Mohan      
+   8 (+45) [1] Alan Maguire             8 ( -5) [ 8] Masami Hiramatsu (Google)
+   9 (+16) [1] Benjamin Tissoires       9 ( +4) [ 7] Yonghong Song       
+  10 ( -4) [1] Alexei Starovoitov      10 ( -1) [ 7] Jamal Hadi Salim    
 
-we need to update the return address on stack only when returning through the
-trampoline, but we can jump to original return address directly from syscall
-through iret.. which is slower, but with shadow stack we don't care
+Top scores (positive):               Top scores (negative):              
+   1 ( +4) [130] Alexei Starovoitov     1 (***) [64] Edward Liaw         
+   2 (   ) [101] Andrii Nakryiko        2 (+15) [60] Geliang Tang        
+   3 (   ) [ 64] Martin KaFai Lau       3 (***) [56] Mike Rapoport       
+   4 (+11) [ 56] Eduard Zingerman       4 ( +1) [42] Benjamin Tissoires  
+   5 ( -4) [ 43] Yonghong Song          5 ( -2) [35] Kui-Feng Lee        
+   6 ( +1) [ 32] Daniel Borkmann        6 ( +2) [29] Jamal Hadi Salim    
+   7 (+10) [ 28] John Fastabend         7 (***) [25] Puranjay Mohan      
+   8 (   ) [ 25] Jakub Kicinski         8 ( -7) [23] Xuan Zhuo           
+   9 ( +4) [ 22] Stanislav Fomichev     9 (***) [22] Breno Leitao        
+  10 ( -4) [ 19] Jiri Olsa             10 ( +9) [20] Mina Almasry        
 
-basically the only change is adding the shstk_is_enabled check to the
-following condition in SYSCALL_DEFINE0(uretprobe):
+Company rankings
+----------------
 
-	if (regs->sp != sp || shstk_is_enabled())
-		return regs->ax;
+Top reviewers (cs):                  Top reviewers (msg):                
+   1 (   ) [18] Meta                    1 (   ) [76] Meta                
+   2 (   ) [ 7] Isovalent               2 ( +2) [15] Google              
+   3 ( +1) [ 5] Google                  3 (   ) [15] Isovalent           
+   4 ( -1) [ 3] RedHat                  4 ( -2) [11] RedHat              
+   5 (   ) [ 2] Intel                   5 (   ) [ 8] Intel               
+   6 ( +1) [ 1] Oracle                  6 (   ) [ 3] Oracle              
+   7 ( -1) [ 1] Huawei                  7 (+11) [ 3] Linaro              
 
-I'm testing patch below and it looks good so far, I'll add test code to run
-existing tests on top of shadow stack as well (when detected).
+Top authors (cs):                    Top authors (msg):                  
+   1 (   ) [9] Meta                     1 (   ) [54] Meta                
+   2 ( +3) [4] Intel                    2 (   ) [51] Google              
+   3 ( +1) [4] Oracle                   3 ( +2) [17] RedHat              
+   4 ( +5) [3] Amazon                   4 (***) [15] Suse                
+   5 ( -3) [3] Google                   5 (+29) [15] IBM                 
+   6 (   ) [3] RedHat                   6 ( +7) [14] Oracle              
+   7 (***) [2] Suse                     7 ( -1) [11] Isovalent           
 
-I'll send new version with that
+Top scores (positive):               Top scores (negative):              
+   1 ( +1) [189] Meta                   1 (   ) [109] Google             
+   2 ( -1) [ 75] Isovalent              2 (***) [ 60] Suse               
+   3 ( +3) [ 15] ARM                    3 (***) [ 49] IBM                
+   4 ( +1) [ 14] Linux Foundation       4 (***) [ 33] Oracle             
+   5 (***) [ 13] SUSE                   5 ( -3) [ 29] Alibaba            
+   6 ( +5) [ 12] Linaro                 6 (   ) [ 29] Mojatatu           
+   7 ( +1) [ 11] Rivos                  7 ( -3) [ 22] Amazon             
 
-jirka
+More raw stats
+--------------
 
+Prev: start: Tue, 09 Jan 2024 19:26:28 -0500
+	end: Mon, 11 Mar 2024 17:03:11 -0700
+Prev: messages: 4553 days: 62 (73 msg/day)
+Prev: direct commits: 376 (6 commits/day)
+Prev: people/aliases: 249  {'author': 79, 'commenter': 117, 'both': 53}
+Prev: review pct: 43.88%  x-corp pct: 37.23%
 
----
-diff --git a/arch/x86/include/asm/shstk.h b/arch/x86/include/asm/shstk.h
-index 896909f306e3..4cb77e004615 100644
---- a/arch/x86/include/asm/shstk.h
-+++ b/arch/x86/include/asm/shstk.h
-@@ -22,6 +22,7 @@ void shstk_free(struct task_struct *p);
- int setup_signal_shadow_stack(struct ksignal *ksig);
- int restore_signal_shadow_stack(void);
- int shstk_update_last_frame(unsigned long val);
-+bool shstk_is_enabled(void);
- #else
- static inline long shstk_prctl(struct task_struct *task, int option,
- 			       unsigned long arg2) { return -EINVAL; }
-@@ -33,6 +34,7 @@ static inline void shstk_free(struct task_struct *p) {}
- static inline int setup_signal_shadow_stack(struct ksignal *ksig) { return 0; }
- static inline int restore_signal_shadow_stack(void) { return 0; }
- static inline int shstk_update_last_frame(unsigned long val) { return 0; }
-+static inline bool shstk_is_enabled(void) { return false; }
- #endif /* CONFIG_X86_USER_SHADOW_STACK */
- 
- #endif /* __ASSEMBLY__ */
-diff --git a/arch/x86/kernel/shstk.c b/arch/x86/kernel/shstk.c
-index 9797d4cdb78a..059685612362 100644
---- a/arch/x86/kernel/shstk.c
-+++ b/arch/x86/kernel/shstk.c
-@@ -588,3 +588,8 @@ int shstk_update_last_frame(unsigned long val)
- 	ssp = get_user_shstk_addr();
- 	return write_user_shstk_64((u64 __user *)ssp, (u64)val);
- }
-+
-+bool shstk_is_enabled(void)
-+{
-+	return features_enabled(ARCH_SHSTK_SHSTK);
-+}
-diff --git a/arch/x86/kernel/uprobes.c b/arch/x86/kernel/uprobes.c
-index 6402fb3089d2..5a952c5ea66b 100644
---- a/arch/x86/kernel/uprobes.c
-+++ b/arch/x86/kernel/uprobes.c
-@@ -12,6 +12,7 @@
- #include <linux/ptrace.h>
- #include <linux/uprobes.h>
- #include <linux/uaccess.h>
-+#include <linux/syscalls.h>
- 
- #include <linux/kdebug.h>
- #include <asm/processor.h>
-@@ -308,6 +309,122 @@ static int uprobe_init_insn(struct arch_uprobe *auprobe, struct insn *insn, bool
- }
- 
- #ifdef CONFIG_X86_64
-+
-+asm (
-+	".pushsection .rodata\n"
-+	".global uretprobe_trampoline_entry\n"
-+	"uretprobe_trampoline_entry:\n"
-+	"pushq %rax\n"
-+	"pushq %rcx\n"
-+	"pushq %r11\n"
-+	"movq $" __stringify(__NR_uretprobe) ", %rax\n"
-+	"syscall\n"
-+	".global uretprobe_syscall_check\n"
-+	"uretprobe_syscall_check:\n"
-+	"popq %r11\n"
-+	"popq %rcx\n"
-+
-+	/* The uretprobe syscall replaces stored %rax value with final
-+	 * return address, so we don't restore %rax in here and just
-+	 * call ret.
-+	 */
-+	"retq\n"
-+	".global uretprobe_trampoline_end\n"
-+	"uretprobe_trampoline_end:\n"
-+	".popsection\n"
-+);
-+
-+extern u8 uretprobe_trampoline_entry[];
-+extern u8 uretprobe_trampoline_end[];
-+extern u8 uretprobe_syscall_check[];
-+
-+void *arch_uprobe_trampoline(unsigned long *psize)
-+{
-+	static uprobe_opcode_t insn = UPROBE_SWBP_INSN;
-+	struct pt_regs *regs = task_pt_regs(current);
-+
-+	/*
-+	 * At the moment the uretprobe syscall trampoline is supported
-+	 * only for native 64-bit process, the compat process still uses
-+	 * standard breakpoint.
-+	 */
-+	if (user_64bit_mode(regs)) {
-+		*psize = uretprobe_trampoline_end - uretprobe_trampoline_entry;
-+		return uretprobe_trampoline_entry;
-+	}
-+
-+	*psize = UPROBE_SWBP_INSN_SIZE;
-+	return &insn;
-+}
-+
-+static unsigned long trampoline_check_ip(void)
-+{
-+	unsigned long tramp = uprobe_get_trampoline_vaddr();
-+
-+	return tramp + (uretprobe_syscall_check - uretprobe_trampoline_entry);
-+}
-+
-+SYSCALL_DEFINE0(uretprobe)
-+{
-+	struct pt_regs *regs = task_pt_regs(current);
-+	unsigned long err, ip, sp, r11_cx_ax[3];
-+
-+	if (regs->ip != trampoline_check_ip())
-+		goto sigill;
-+
-+	err = copy_from_user(r11_cx_ax, (void __user *)regs->sp, sizeof(r11_cx_ax));
-+	if (err)
-+		goto sigill;
-+
-+	/* expose the "right" values of r11/cx/ax/sp to uprobe_consumer/s */
-+	regs->r11 = r11_cx_ax[0];
-+	regs->cx  = r11_cx_ax[1];
-+	regs->ax  = r11_cx_ax[2];
-+	regs->sp += sizeof(r11_cx_ax);
-+	regs->orig_ax = -1;
-+
-+	ip = regs->ip;
-+	sp = regs->sp;
-+
-+	uprobe_handle_trampoline(regs);
-+
-+	/*
-+	 * Some of the uprobe consumers has changed sp, we can do nothing,
-+	 * just return via iret.
-+	 * .. or shadow stack is enabled, in which case we need to skip
-+	 * return through the user space stack address.
-+	 */
-+	if (regs->sp != sp || shstk_is_enabled())
-+		return regs->ax;
-+	regs->sp -= sizeof(r11_cx_ax);
-+
-+	/* for the case uprobe_consumer has changed r11/cx */
-+	r11_cx_ax[0] = regs->r11;
-+	r11_cx_ax[1] = regs->cx;
-+
-+	/*
-+	 * ax register is passed through as return value, so we can use
-+	 * its space on stack for ip value and jump to it through the
-+	 * trampoline's ret instruction
-+	 */
-+	r11_cx_ax[2] = regs->ip;
-+	regs->ip = ip;
-+
-+	err = copy_to_user((void __user *)regs->sp, r11_cx_ax, sizeof(r11_cx_ax));
-+	if (err)
-+		goto sigill;
-+
-+	/* ensure sysret, see do_syscall_64() */
-+	regs->r11 = regs->flags;
-+	regs->cx  = regs->ip;
-+
-+	return regs->ax;
-+
-+sigill:
-+	force_sig(SIGILL);
-+	return -1;
-+}
-+
- /*
-  * If arch_uprobe->insn doesn't use rip-relative addressing, return
-  * immediately.  Otherwise, rewrite the instruction so that it accesses
-diff --git a/include/linux/uprobes.h b/include/linux/uprobes.h
-index f46e0ca0169c..b503fafb7fb3 100644
---- a/include/linux/uprobes.h
-+++ b/include/linux/uprobes.h
-@@ -138,6 +138,9 @@ extern bool arch_uretprobe_is_alive(struct return_instance *ret, enum rp_check c
- extern bool arch_uprobe_ignore(struct arch_uprobe *aup, struct pt_regs *regs);
- extern void arch_uprobe_copy_ixol(struct page *page, unsigned long vaddr,
- 					 void *src, unsigned long len);
-+extern void uprobe_handle_trampoline(struct pt_regs *regs);
-+extern void *arch_uprobe_trampoline(unsigned long *psize);
-+extern unsigned long uprobe_get_trampoline_vaddr(void);
- #else /* !CONFIG_UPROBES */
- struct uprobes_state {
- };
-diff --git a/kernel/events/uprobes.c b/kernel/events/uprobes.c
-index 2c83ba776fc7..2816e65729ac 100644
---- a/kernel/events/uprobes.c
-+++ b/kernel/events/uprobes.c
-@@ -1474,11 +1474,20 @@ static int xol_add_vma(struct mm_struct *mm, struct xol_area *area)
- 	return ret;
- }
- 
-+void * __weak arch_uprobe_trampoline(unsigned long *psize)
-+{
-+	static uprobe_opcode_t insn = UPROBE_SWBP_INSN;
-+
-+	*psize = UPROBE_SWBP_INSN_SIZE;
-+	return &insn;
-+}
-+
- static struct xol_area *__create_xol_area(unsigned long vaddr)
- {
- 	struct mm_struct *mm = current->mm;
--	uprobe_opcode_t insn = UPROBE_SWBP_INSN;
-+	unsigned long insns_size;
- 	struct xol_area *area;
-+	void *insns;
- 
- 	area = kmalloc(sizeof(*area), GFP_KERNEL);
- 	if (unlikely(!area))
-@@ -1502,7 +1511,8 @@ static struct xol_area *__create_xol_area(unsigned long vaddr)
- 	/* Reserve the 1st slot for get_trampoline_vaddr() */
- 	set_bit(0, area->bitmap);
- 	atomic_set(&area->slot_count, 1);
--	arch_uprobe_copy_ixol(area->pages[0], 0, &insn, UPROBE_SWBP_INSN_SIZE);
-+	insns = arch_uprobe_trampoline(&insns_size);
-+	arch_uprobe_copy_ixol(area->pages[0], 0, insns, insns_size);
- 
- 	if (!xol_add_vma(mm, area))
- 		return area;
-@@ -1827,7 +1837,7 @@ void uprobe_copy_process(struct task_struct *t, unsigned long flags)
-  *
-  * Returns -1 in case the xol_area is not allocated.
-  */
--static unsigned long get_trampoline_vaddr(void)
-+unsigned long uprobe_get_trampoline_vaddr(void)
- {
- 	struct xol_area *area;
- 	unsigned long trampoline_vaddr = -1;
-@@ -1878,7 +1888,7 @@ static void prepare_uretprobe(struct uprobe *uprobe, struct pt_regs *regs)
- 	if (!ri)
- 		return;
- 
--	trampoline_vaddr = get_trampoline_vaddr();
-+	trampoline_vaddr = uprobe_get_trampoline_vaddr();
- 	orig_ret_vaddr = arch_uretprobe_hijack_return_addr(trampoline_vaddr, regs);
- 	if (orig_ret_vaddr == -1)
- 		goto fail;
-@@ -2123,7 +2133,7 @@ static struct return_instance *find_next_ret_chain(struct return_instance *ri)
- 	return ri;
- }
- 
--static void handle_trampoline(struct pt_regs *regs)
-+void uprobe_handle_trampoline(struct pt_regs *regs)
- {
- 	struct uprobe_task *utask;
- 	struct return_instance *ri, *next;
-@@ -2187,8 +2197,8 @@ static void handle_swbp(struct pt_regs *regs)
- 	int is_swbp;
- 
- 	bp_vaddr = uprobe_get_swbp_addr(regs);
--	if (bp_vaddr == get_trampoline_vaddr())
--		return handle_trampoline(regs);
-+	if (bp_vaddr == uprobe_get_trampoline_vaddr())
-+		return uprobe_handle_trampoline(regs);
- 
- 	uprobe = find_active_uprobe(bp_vaddr, &is_swbp);
- 	if (!uprobe) {
+Curr: start: Tue, 12 Mar 2024 11:13:50 +0800
+	end: Tue, 14 May 2024 18:44:33 -0700
+Curr: messages: 5833 days: 64 (91 msg/day)
+Curr: direct commits: 632 (10 commits/day)
+Curr: test commits: 263 (41.61%)
+Curr: people/aliases: 320  {'author': 101, 'commenter': 160, 'both': 59}
+Curr: review pct: 20.25%  x-corp pct: 18.51%
+
+Diff: +24.1% msg/day
+Diff: +62.8% commits/day
+Diff: +24.5% people/day
+Diff: review pct: -23.6%
+      x-corp pct: -18.7%
+
 
