@@ -1,179 +1,179 @@
-Return-Path: <bpf+bounces-30053-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-30054-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 610EF8CA3CE
-	for <lists+bpf@lfdr.de>; Mon, 20 May 2024 23:32:19 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 073B58CA3DE
+	for <lists+bpf@lfdr.de>; Mon, 20 May 2024 23:43:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B521E1F2179E
-	for <lists+bpf@lfdr.de>; Mon, 20 May 2024 21:32:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5F3FD28232F
+	for <lists+bpf@lfdr.de>; Mon, 20 May 2024 21:43:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 007EB139566;
-	Mon, 20 May 2024 21:32:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D7BB139D17;
+	Mon, 20 May 2024 21:43:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="wbDcTEx/"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=igalia.com header.i=@igalia.com header.b="seD2tPjl"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-181.mta0.migadu.com (out-181.mta0.migadu.com [91.218.175.181])
+Received: from fanzine2.igalia.com (fanzine.igalia.com [178.60.130.6])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 14E5521A1C
-	for <bpf@vger.kernel.org>; Mon, 20 May 2024 21:32:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F20731369BA;
+	Mon, 20 May 2024 21:43:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=178.60.130.6
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716240732; cv=none; b=FGTflNb4A0pqrGNQCtSNIqKaKQCJKvaNW8HdSMRWyCP2lNo3Ndsu51A8VVDLlWmmLOb/k8updSLDpTejAWKqKIj5U+lpLgG+u6hUsXsb9rqGLTzoL5TR28Uq5nTUleq5/lxzDqxyWPP7muww6YiznOpLHU7/g5mOP9PjpSoobOY=
+	t=1716241420; cv=none; b=GpyGbjCqvdQoMSb39e/nSTWgpr9J5jcQI3N3V5b2AwHowpwVMbj4abYd1ErlOy9livOE1NqZPFPQxLn0aIxYZ7cKKfOR7DRpRWM+LyYNaAfGCCuzGchfjP+S0YxY4/X0N9pbsTr8onBIfP8+5UDdnnlMxWWcfXygxw44qA/lva4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716240732; c=relaxed/simple;
-	bh=+phe3Dn0kAJsEJKCKqC/u42l/w9QPlrwTCBb5jkGSDM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=EBCp1PAd4U5pg975leOJNG0o0gMkUrhAT3a/1DZQ3O9TKW5IrWdpuGIzlOos3/1cFFvnCPG4lBe57HIXV8b4uVdcf1iydZZNJXE2ORBjxEXf9bWdKCOiiCqJT5WjuhOTB6nIzQf3rBblQaWnb6iUVOKTzPJacUrEn1Ah3kdc+Fw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=wbDcTEx/; arc=none smtp.client-ip=91.218.175.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Envelope-To: ivan@cloudflare.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1716240725;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=bcY+s6m5RT0WTmqxlbBbw/jl5u8VPujdIzVjdDRst3A=;
-	b=wbDcTEx/QcBRXvd2RyiZqCIupe22EhKXZiTSwk75VXq4iqcIwm5rr8LFvEQNBn5SyqjLLf
-	iWrQxi/Qe7po8jJKQcMkGy4V/CZS+3VFdXT/AMmk6fA+GzBDbyNZkw+KfPLDpT+ITYpSjy
-	+J4c1f21mdCOWD2ikEhS6PcYOB4dE98=
-X-Envelope-To: alexei.starovoitov@gmail.com
-X-Envelope-To: bpf@vger.kernel.org
-X-Envelope-To: kernel-team@cloudflare.com
-X-Envelope-To: linux-kernel@vger.kernel.org
-X-Envelope-To: llvm@lists.linux.dev
-Message-ID: <80b405c5-4bab-4364-ba32-e3f6ab9a5d57@linux.dev>
-Date: Mon, 20 May 2024 14:31:59 -0700
+	s=arc-20240116; t=1716241420; c=relaxed/simple;
+	bh=7WNiq+m24TdoDjrU3CX4peS8kSGwsRE718xgtAGf3kA=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=qWDNnsVGHX/ngbpKuE7ipFiqnKOmceqOi6ItxLNSyeHWzVOrttpW0gQrtd++r1F+EZ7UTWwnM29yFOOaXHeno8m5+jsuSHZemQffVhQLVKHkCHq/0Syba8ZXQJyOL9Vt/v+ujRbfzNSMCYyl98CFMIvAmf+uNXtILEp93e1zeeo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=igalia.com; spf=pass smtp.mailfrom=igalia.com; dkim=pass (2048-bit key) header.d=igalia.com header.i=@igalia.com header.b=seD2tPjl; arc=none smtp.client-ip=178.60.130.6
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=igalia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=igalia.com
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=igalia.com;
+	s=20170329; h=Content-Transfer-Encoding:MIME-Version:Message-Id:Date:Subject:
+	Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+	List-Post:List-Owner:List-Archive;
+	bh=nRaPtaGD+w2O2Xn9ZyX0XaVoJoGCp+hsvN0C/YGO87c=; b=seD2tPjl1ZuwN0XVfUGP6eptAZ
+	sFqT3ZVRnQ4KqYU0/klnL16OJ0w3SqdGWyuVocLw0s/PyXaC3lihbPnHFNs/GRN+I1D2GZhP29Nzz
+	2kHJofFAuP3jC+m2TLcP9Tu+ehaq3Dw04E7GbMMeErovazgcOFOZwCyIfTh9LKHjKWLNWS7IIJT9y
+	WNCpjMzEf/93DsWb/lNQpCXSPXxxThgIWgOvi2kFq8i2ISpnqetMY7LWu+FAbJ0m8obXdUD8wEHgj
+	1FAL8ZBXb8vi04I3ClMPdQnmybbmItKk68GvzVudO4TLEE7HUFm8VbPU73PCKtAPVtZXy2LtCtaUx
+	+M4tjvZQ==;
+Received: from 179-125-79-244-dinamico.pombonet.net.br ([179.125.79.244] helo=quatroqueijos.lan)
+	by fanzine2.igalia.com with esmtpsa 
+	(Cipher TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256) (Exim)
+	id 1s9Amv-00AOaJ-Mf; Mon, 20 May 2024 23:43:22 +0200
+From: Thadeu Lima de Souza Cascardo <cascardo@igalia.com>
+To: netdev@vger.kernel.org
+Cc: Cong Wang <cong.wang@bytedance.com>,
+	Jakub Sitnicki <jakub@cloudflare.com>,
+	Eric Dumazet <edumazet@google.com>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	John Fastabend <john.fastabend@gmail.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	bpf@vger.kernel.org,
+	kernel-dev@igalia.com,
+	Thadeu Lima de Souza Cascardo <cascardo@igalia.com>,
+	syzbot+07a2e4a1a57118ef7355@syzkaller.appspotmail.com,
+	stable@vger.kernel.org
+Subject: [PATCH net] sock_map: avoid race between sock_map_close and sk_psock_put
+Date: Mon, 20 May 2024 18:41:53 -0300
+Message-Id: <20240520214153.847619-1-cascardo@igalia.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: bpftool does not print full names with LLVM 17 and newer
-Content-Language: en-GB
-To: Ivan Babrou <ivan@cloudflare.com>,
- Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: bpf <bpf@vger.kernel.org>, kernel-team <kernel-team@cloudflare.com>,
- linux-kernel <linux-kernel@vger.kernel.org>,
- clang-built-linux <llvm@lists.linux.dev>
-References: <CABWYdi0ymezpYsQsPv7qzpx2fWuTkoD1-wG1eT-9x-TSREFrQg@mail.gmail.com>
- <CAADnVQ+YXf=1iO3C7pBvV1vhfWDyko2pJzKDXv7i6fkzsBM0ig@mail.gmail.com>
- <CABWYdi14d61j9=nei6q7YCT8ZLv2DDc1uqmY_f_DimBUAW5MCA@mail.gmail.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Yonghong Song <yonghong.song@linux.dev>
-In-Reply-To: <CABWYdi14d61j9=nei6q7YCT8ZLv2DDc1uqmY_f_DimBUAW5MCA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
 
+sk_psock_get will return NULL if the refcount of psock has gone to 0, which
+will happen when the last call of sk_psock_put is done. However,
+sk_psock_drop may not have finished yet, so the close callback will still
+point to sock_map_close despite psock being NULL.
 
-On 5/20/24 12:44 PM, Ivan Babrou wrote:
-> On Fri, May 17, 2024 at 4:33 PM Alexei Starovoitov
-> <alexei.starovoitov@gmail.com> wrote:
->> On Fri, May 17, 2024 at 2:51 PM Ivan Babrou <ivan@cloudflare.com> wrote:
->>> Hello,
->>>
->>> We recently bumped LLVM used for bpftool compilation from 15 to 18 and
->>> our alerting system notified us about some unknown bpf programs. It
->>> turns out, the names were truncated to 15 chars, whereas before they
->>> were longer.
->>>
->>> After some investigation, I was able to see that the following code:
->>>
->>>      diff --git a/src/common.c b/src/common.c
->>>      index 958e92a..ac38506 100644
->>>      --- a/src/common.c
->>>      +++ b/src/common.c
->>>      @@ -435,7 +435,9 @@ void get_prog_full_name(const struct
->>> bpf_prog_info *prog_info, int prog_fd,
->>>          if (!prog_btf)
->>>              goto copy_name;
->>>
->>>      +    printf("[0] finfo.type_id = %x\n", finfo.type_id);
->>>          func_type = btf__type_by_id(prog_btf, finfo.type_id);
->>>      +    printf("[1] finfo.type_id = %x\n", finfo.type_id);
->>>          if (!func_type || !btf_is_func(func_type))
->>>              goto copy_name;
->>>
->>> When ran under gdb, shows:
->>>
->>>      (gdb) b common.c:439
->>>      Breakpoint 1 at 0x16859: file common.c, line 439.
->>>
->>>      (gdb) r
->>>      3403: tracing  [0] finfo.type_id = 0
->>>
->>>      Breakpoint 1, get_prog_full_name (prog_info=0x7fffffffe160,
->>> prog_fd=3, name_buff=0x7fffffffe030 "", buff_len=128) at common.c:439
->>>      439        func_type = btf__type_by_id(prog_btf, finfo.type_id);
->>>      (gdb) print finfo
->>>      $1 = {insn_off = 0, type_id = 1547}
->>>
->>>
->>> Notice that finfo.type_id is printed as zero, but in gdb it is in fact 1547.
->>>
->>> Disassembly difference looks like this:
->>>
->>>      -    8b 75 cc                 mov    -0x34(%rbp),%esi
->>>      -    e8 47 8d 02 00           call   3f5b0 <btf__type_by_id>
->>>      +    31 f6                    xor    %esi,%esi
->>>      +    e8 a9 8c 02 00           call   3f510 <btf__type_by_id>
->>>
->>> This can be avoided if one removes "const" during finfo initialization:
->>>
->>>      const struct bpf_func_info finfo = {};
->>>
->>> This seems like a pretty annoying miscompilation, and hopefully
->>> there's a way to make clang complain about this loudly, but that's
->>> outside of my expertise. There might be other places like this that we
->>> just haven't noticed yet.
->>>
->>> I can send a patch to fix this particular issue, but I'm hoping for a
->>> more comprehensive approach from people who know better.
->> Wow. Great catch. Please send a patch to fix bpftool and,
->> I agree, llvm should be warning about such footgun,
->> but the way ptr_to_u64() is written is probably silencing it.
->> We probably should drop 'const' from it:
->> static inline __u64 ptr_to_u64(const void *ptr)
->>
->> and maybe add a flavor of ptr_to_u64 with extra check
->> that the arg doesn't have a const modifier.
->> __builtin_types_compatible_p(typeof(ptr), void *)
->> should do the trick.
-> In bpftool there's just two call sites that are unhappy if I remove
-> "const" in the arguments:
->
-> * this problematic one
-> * "GPL" literal passed
->
-> I'll send the patch to drop "const" from the struct initialization
+This can be reproduced with a thread deleting an element from the sock map,
+while the second one creates a socket, adds it to the map and closes it.
 
-Yes, this should work as we discussed earlier. Thanks!
+That will trigger the WARN_ON_ONCE:
 
-> today or tomorrow (it works great in our internal build), but I'll
-> leave the bigger change to you. There seem to be many places in libbpf
-> and I'm far from being a C expert to drive this change.
+------------[ cut here ]------------
+WARNING: CPU: 1 PID: 7220 at net/core/sock_map.c:1701 sock_map_close+0x2a2/0x2d0 net/core/sock_map.c:1701
+Modules linked in:
+CPU: 1 PID: 7220 Comm: syz-executor380 Not tainted 6.9.0-syzkaller-07726-g3c999d1ae3c7 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 04/02/2024
+RIP: 0010:sock_map_close+0x2a2/0x2d0 net/core/sock_map.c:1701
+Code: df e8 92 29 88 f8 48 8b 1b 48 89 d8 48 c1 e8 03 42 80 3c 20 00 74 08 48 89 df e8 79 29 88 f8 4c 8b 23 eb 89 e8 4f 15 23 f8 90 <0f> 0b 90 48 83 c4 08 5b 41 5c 41 5d 41 5e 41 5f 5d e9 13 26 3d 02
+RSP: 0018:ffffc9000441fda8 EFLAGS: 00010293
+RAX: ffffffff89731ae1 RBX: ffffffff94b87540 RCX: ffff888029470000
+RDX: 0000000000000000 RSI: ffffffff8bcab5c0 RDI: ffffffff8c1faba0
+RBP: 0000000000000000 R08: ffffffff92f9b61f R09: 1ffffffff25f36c3
+R10: dffffc0000000000 R11: fffffbfff25f36c4 R12: ffffffff89731840
+R13: ffff88804b587000 R14: ffff88804b587000 R15: ffffffff89731870
+FS:  000055555e080380(0000) GS:ffff8880b9500000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000000000000 CR3: 00000000207d4000 CR4: 0000000000350ef0
+Call Trace:
+ <TASK>
+ unix_release+0x87/0xc0 net/unix/af_unix.c:1048
+ __sock_release net/socket.c:659 [inline]
+ sock_close+0xbe/0x240 net/socket.c:1421
+ __fput+0x42b/0x8a0 fs/file_table.c:422
+ __do_sys_close fs/open.c:1556 [inline]
+ __se_sys_close fs/open.c:1541 [inline]
+ __x64_sys_close+0x7f/0x110 fs/open.c:1541
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0xf5/0x240 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+RIP: 0033:0x7fb37d618070
+Code: 00 00 48 c7 c2 b8 ff ff ff f7 d8 64 89 02 b8 ff ff ff ff eb d4 e8 10 2c 00 00 80 3d 31 f0 07 00 00 74 17 b8 03 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 48 c3 0f 1f 80 00 00 00 00 48 83 ec 18 89 7c
+RSP: 002b:00007ffcd4a525d8 EFLAGS: 00000202 ORIG_RAX: 0000000000000003
+RAX: ffffffffffffffda RBX: 0000000000000005 RCX: 00007fb37d618070
+RDX: 0000000000000010 RSI: 00000000200001c0 RDI: 0000000000000004
+RBP: 0000000000000000 R08: 0000000100000000 R09: 0000000100000000
+R10: 0000000000000000 R11: 0000000000000202 R12: 0000000000000000
+R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
+ </TASK>
 
-As discussed in below link. It is not easy for compiler to deduce whether
-an undefined behavior is triggered or not. The additional
-const_ptr_to_u64() serves the purpose to force patch author and reviewer
-to double check whether the 'u64' value may eventually invalidate
-'const' property or not.
+Use sk_psock, which will only check that the pointer is not been set to
+NULL yet, which should only happen after the callbacks are restored. If,
+then, a reference can still be gotten, we may call sk_psock_stop and cancel
+psock->work.
 
->
-> I managed to bisect clang to find the commit that introduced the change:
->
-> * https://github.com/llvm/llvm-project/commit/0b2d5b967d98
->
-> I also mentioned the commit author and they have some ideas about
-> UBSAN catching this (it doesn't in the current state):
->
-> * https://mastodon.ivan.computer/@mastodon/112465898861074834
->
+After that change, the reproducer does not trigger the WARN_ON_ONCE
+anymore.
+
+Reported-by: syzbot+07a2e4a1a57118ef7355@syzkaller.appspotmail.com
+Closes: https://syzkaller.appspot.com/bug?extid=07a2e4a1a57118ef7355
+Fixes: aadb2bb83ff7 ("sock_map: Fix a potential use-after-free in sock_map_close()")
+Fixes: 5b4a79ba65a1 ("bpf, sockmap: Don't let sock_map_{close,destroy,unhash} call itself")
+Cc: stable@vger.kernel.org
+Signed-off-by: Thadeu Lima de Souza Cascardo <cascardo@igalia.com>
+---
+ net/core/sock_map.c | 14 +++++++++-----
+ 1 file changed, 9 insertions(+), 5 deletions(-)
+
+diff --git a/net/core/sock_map.c b/net/core/sock_map.c
+index 9402889840bf..13267e667a4c 100644
+--- a/net/core/sock_map.c
++++ b/net/core/sock_map.c
+@@ -1680,19 +1680,23 @@ void sock_map_close(struct sock *sk, long timeout)
+ 
+ 	lock_sock(sk);
+ 	rcu_read_lock();
+-	psock = sk_psock_get(sk);
++	psock = sk_psock(sk);
+ 	if (unlikely(!psock)) {
++		saved_close = READ_ONCE(sk->sk_prot)->close;
+ 		rcu_read_unlock();
+ 		release_sock(sk);
+-		saved_close = READ_ONCE(sk->sk_prot)->close;
+ 	} else {
+ 		saved_close = psock->saved_close;
+ 		sock_map_remove_links(sk, psock);
++		psock = sk_psock_get(sk);
+ 		rcu_read_unlock();
+-		sk_psock_stop(psock);
++		if (psock)
++			sk_psock_stop(psock);
+ 		release_sock(sk);
+-		cancel_delayed_work_sync(&psock->work);
+-		sk_psock_put(sk, psock);
++		if (psock) {
++			cancel_delayed_work_sync(&psock->work);
++			sk_psock_put(sk, psock);
++		}
+ 	}
+ 
+ 	/* Make sure we do not recurse. This is a bug.
+-- 
+2.34.1
+
 
