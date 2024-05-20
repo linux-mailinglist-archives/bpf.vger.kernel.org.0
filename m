@@ -1,154 +1,208 @@
-Return-Path: <bpf+bounces-30058-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-30060-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 42C6B8CA4D7
-	for <lists+bpf@lfdr.de>; Tue, 21 May 2024 01:03:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9E3158CA4F0
+	for <lists+bpf@lfdr.de>; Tue, 21 May 2024 01:18:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F24D92820CE
-	for <lists+bpf@lfdr.de>; Mon, 20 May 2024 23:03:11 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 55E99281DA7
+	for <lists+bpf@lfdr.de>; Mon, 20 May 2024 23:18:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 97AC84F613;
-	Mon, 20 May 2024 23:03:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C03EF481CD;
+	Mon, 20 May 2024 23:18:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="3wd4++dZ"
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ietf.org header.i=@ietf.org header.b="ugKp4PUc";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ietf.org header.i=@ietf.org header.b="ugKp4PUc"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f54.google.com (mail-wr1-f54.google.com [209.85.221.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mail.ietf.org (mail.ietf.org [50.223.129.194])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C9994501B
-	for <bpf@vger.kernel.org>; Mon, 20 May 2024 23:02:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D95B3D3BC
+	for <bpf@vger.kernel.org>; Mon, 20 May 2024 23:18:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=50.223.129.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716246181; cv=none; b=SzV6TcWh8HsUIGfM6RGJtWq46ZzsrVCOKg11byQeBItbrheiLkWJni+QDq9jJuBQ2pZYxcaUICk+IvCE3PnacyCS7Rbgg5smol/juuFkOLWM2fw9NSms0ZAytoOHqXXBYoVyzdzQ0zpfuZMYZIU1uwAQzq+vlsaoZfMQBtcvFCo=
+	t=1716247128; cv=none; b=H2YY5be+21vImEkwYXU0DUVpVyYDeueXx+OM/nv+IUsGs7rjmfta6++m0kjL8OugDUemXfFLd2sicTBIRmDDRaETBaYS9Mw+u5XmNVYi9b6QWW9pKOpDnQ1eaZyhZt3hklwEAe60xLafsKl0AaBIu7jSfhMD3d14flYmzin0sRM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716246181; c=relaxed/simple;
-	bh=YYCn5DU0BRg86YcFP1gvZ12Pp9o7w1dKSDgFLl47yi0=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=awpe3O3FC0nSYjxqHws9Jo3byA+KriJYPaXSTNbJ9RsiugujVAz3U6wvsdzvPHeeztJ/lBbIkizd+vYzyCEz+ce8YYr+wZqK5VgXqrhLtwnpzv8AEAQf7Vo7EQJjmLUBwWd9+5e3+NWi+HNeigBgBeJH0EV+KKKHs2nZCzTbkFg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=3wd4++dZ; arc=none smtp.client-ip=209.85.221.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-wr1-f54.google.com with SMTP id ffacd0b85a97d-351d79b56cdso2262569f8f.1
-        for <bpf@vger.kernel.org>; Mon, 20 May 2024 16:02:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1716246178; x=1716850978; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=mnBN2AJ+C4r+I3b8Px2gKwiIz+2UCq076e9/dAr3Nlc=;
-        b=3wd4++dZyHbukCUXZwgTPVdfDsG8fDLvrcSopkIj6Me+GGfdj/7Hjls6dAlJx+2gK8
-         gdeQYJRUEUcq9/2UzlkvYag6qWrBQgwAULIlhCOUB+cWZuOp2aU/JyVq9y+bpCOCzDmB
-         AupAmx3PSyhbYgV0tyZ1dg9HapqoTpjH7dNQDj3SEOGnlPHTh7QzIGClMpyshvh72uaT
-         kWDHdZhdVw7hzIxJC7r9d84OeMjb8hJmyuTbfY4bvFp860x4sdhQEPRALk+OxjLWXeOM
-         2gRRHiExbehgyXNp2Oa/IOycHXKRlNu3UX7JcL95pW04eCoJnctHIc3YVvs9d3xg8/5p
-         bjew==
+	s=arc-20240116; t=1716247128; c=relaxed/simple;
+	bh=e/VMKR0iS+POli58PXWS+zSjq60nQTFP1p+5EAPF6zs=;
+	h=Date:From:To:Message-ID:References:MIME-Version:In-Reply-To:CC:
+	 Subject:Content-Type; b=r4bB5ySYpkNgkDRGlV8y/FMd4hR9YoW8tiIzkrWTpaEyT9yZZvhiPmeoIY42Moo31XZrfyJskQHjyfsfRoPCPMWmaE4Jc/RngRbTxZBj1IdrOWTwVxvxWI0JsOWRux/rGt/79o4UyBnuTsrvHJ9mfF8+9kSs8eL4FUy32QunuDs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=manifault.com; spf=pass smtp.mailfrom=ietf.org; dkim=pass (1024-bit key) header.d=ietf.org header.i=@ietf.org header.b=ugKp4PUc; dkim=pass (1024-bit key) header.d=ietf.org header.i=@ietf.org header.b=ugKp4PUc; arc=none smtp.client-ip=50.223.129.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=manifault.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ietf.org
+Received: from ietfa.amsl.com (localhost [IPv6:::1])
+	by ietfa.amsl.com (Postfix) with ESMTP id E8352C1CAF3B
+	for <bpf@vger.kernel.org>; Mon, 20 May 2024 16:18:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ietf.org; s=ietf1;
+	t=1716247125; bh=e/VMKR0iS+POli58PXWS+zSjq60nQTFP1p+5EAPF6zs=;
+	h=Date:From:To:References:In-Reply-To:CC:Subject:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe;
+	b=ugKp4PUc3mAE8YgYWsduP3dRXSIBHQYrjS4/mO6fYOvsVQMyK8QnnkyRXC1jY80vq
+	 tfnRqfnLj3gULy+MutyYjUlUYchT/9EE4xRcizGin+ovimtUavAB326ZYq7aOwWJ1H
+	 4ZIklbdyNiREs1sjrnu8VO7K+6p1/H1wQKexPvgw=
+X-Mailbox-Line: From bpf-bounces+bpf=vger.kernel.org@ietf.org  Mon May 20 16:18:45 2024
+Received: from ietfa.amsl.com (localhost [IPv6:::1])
+	by ietfa.amsl.com (Postfix) with ESMTP id D0C1DC1CAF3C
+	for <bpf@vger.kernel.org>; Mon, 20 May 2024 16:18:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ietf.org; s=ietf1;
+	t=1716247125; bh=e/VMKR0iS+POli58PXWS+zSjq60nQTFP1p+5EAPF6zs=;
+	h=Date:From:To:References:In-Reply-To:CC:Subject:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe;
+	b=ugKp4PUc3mAE8YgYWsduP3dRXSIBHQYrjS4/mO6fYOvsVQMyK8QnnkyRXC1jY80vq
+	 tfnRqfnLj3gULy+MutyYjUlUYchT/9EE4xRcizGin+ovimtUavAB326ZYq7aOwWJ1H
+	 4ZIklbdyNiREs1sjrnu8VO7K+6p1/H1wQKexPvgw=
+X-Original-To: bpf@ietfa.amsl.com
+Delivered-To: bpf@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+	by ietfa.amsl.com (Postfix) with ESMTP id 1170AC1CAF35
+	for <bpf@ietfa.amsl.com>; Mon, 20 May 2024 16:18:37 -0700 (PDT)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: -1.646
+X-Spam-Level: 
+Received: from mail.ietf.org ([50.223.129.194])
+	by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id ooAqS0uiyqwt for <bpf@ietfa.amsl.com>;
+	Mon, 20 May 2024 16:18:35 -0700 (PDT)
+Received: from mail-qt1-f178.google.com (mail-qt1-f178.google.com
+ [209.85.160.178])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest
+ SHA256)
+	(No client certificate requested)
+	by ietfa.amsl.com (Postfix) with ESMTPS id F31F0C1C3D70
+	for <bpf@ietf.org>; Mon, 20 May 2024 16:18:34 -0700 (PDT)
+Received: by mail-qt1-f178.google.com with SMTP id
+ d75a77b69052e-43df23e034cso29598021cf.0
+        for <bpf@ietf.org>; Mon, 20 May 2024 16:18:34 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1716246178; x=1716850978;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1716247114; x=1716851914;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=mnBN2AJ+C4r+I3b8Px2gKwiIz+2UCq076e9/dAr3Nlc=;
-        b=r0rVelKnm2lx44WmwXS5Z+uJCm0jGAPM12zpXwExh4N8hsSK8KZcfgeVVl211BWDlO
-         FVgW0e/iX1wg8BKX98NksCHopzB6EJ7VaDDapx+U+m6HqbjKgFLXDZ1Qc8zjpEy+pTC6
-         mJIdOQLStt8jbuCaW3bPBI6G9Zdm+3tdBLdJH5tnxIQoFJkOIIOOaTIP+LhyJY8pd6MX
-         T7oa6DKLQJ9CW76gR0gFvyAoeloLVDB+QMLbNEonpfabjhTrpFmiNz/SyNBOa8+rGWuq
-         sdpd1smnk5LSYLh4XHz7HBesMoDBxidYgUQhKIxmSruL0DuN5ds5TfKu2XvNQqn1IPuh
-         ZF8Q==
-X-Gm-Message-State: AOJu0YwFBk2lXzhiqOmUaPlFpG6I2ekfX2A/6SzuAVcx+nCDY1KhyEK4
-	OhS0AYm+nWBqrHwmkhlkqcYlBsKfqUFLgAcz/cdrw8zSz1zxIEEyr3HwHC3DMcCiSpFw9Mnb8tZ
-	3mN9KPuy+MTn7lfkOgS8/CLw40fbLEYeL6saG
-X-Google-Smtp-Source: AGHT+IG4cEEKUkzo/+CBd+YpcfA7ZHQM2JEsNWhdsouLB+NgevotUCG5aMQE/0G3uNB4T/otNQFC6GRKTsRtoO0t8u8=
-X-Received: by 2002:a5d:6190:0:b0:34d:bab1:26eb with SMTP id
- ffacd0b85a97d-3504aa62e31mr20183750f8f.68.1716246177862; Mon, 20 May 2024
- 16:02:57 -0700 (PDT)
+        bh=kUqc4wSdLpnCjuNLhKWLrdKDKKNiFfKFYw1o3HNF77A=;
+        b=GgHFJ9nUsWGA2YscskwyapFKPj4FZ9VVUq8cQEgrUWCL918Z9UdzDdXMTH/vL8WQJq
+         rPAgF/BHgTpBNSs6SA3pJrI9LcvoZoT4Sedlfz1JLf1nGuviWzcTTOK2PP7jDmPRT15A
+         LLNYzgEyB3fJdiTHyGQPyaaaA2mj0i24TRxoi7d9e3SKi0GwrDULZqvgutb+SLKEEsko
+         UQjv7C0Mk5N1ZPZYag1P62NesstirES7z3zmusZ6N9Ras6XWpgcH7s0W3ITwG4Ir2ZKg
+         8HefcM9ux4IHxCRgGqTnHmX2erk9YcmBN3Cq92pGt4bp64AaiMi5H0ZcaqC1CufvibI2
+         Aerw==
+X-Forwarded-Encrypted: i=1;
+ AJvYcCWV9SCj0nzjCiuRgQRR8P/eE0RBVY5PihzZTanie4M55qA7cAu1XCbVw3ra/euUokllEsxUbz1PyApWrSo=
+X-Gm-Message-State: AOJu0Yxd2nbDbeC7acjAGu6VXIF9Yoby1UnY2peTtuB0MjSVYMje8eCH
+	SDJvhSbMqBtohUdYz8+sXMUXi9U76jEEXC4HCgvMsXpevK+QM+n7
+X-Google-Smtp-Source: 
+ AGHT+IHpmMGWcnB8KO/+DZP9KczQN171J6UBUIucH5+w7M14R9ULkMNx/8ORoWyb9Mffkt8zNLcbYA==
+X-Received: by 2002:a05:6214:4808:b0:6aa:2697:2747 with SMTP id
+ 6a1803df08f44-6aa26973847mr78998536d6.13.1716247113757;
+        Mon, 20 May 2024 16:18:33 -0700 (PDT)
+Received: from maniforge (c-76-136-75-40.hsd1.il.comcast.net. [76.136.75.40])
+        by smtp.gmail.com with ESMTPSA id
+ 6a1803df08f44-6a93a73a4besm23230906d6.99.2024.05.20.16.18.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 20 May 2024 16:18:33 -0700 (PDT)
+Date: Mon, 20 May 2024 18:18:29 -0500
+From: David Vernet <void@manifault.com>
+To: Dave Thaler <dthaler1968@googlemail.com>
+Message-ID: <20240520231829.GC1116559@maniforge>
+References: <20240517165855.4688-1-dthaler1968@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240520225149.5517-1-ivan@cloudflare.com>
-In-Reply-To: <20240520225149.5517-1-ivan@cloudflare.com>
-From: Nick Desaulniers <ndesaulniers@google.com>
-Date: Mon, 20 May 2024 16:02:43 -0700
-Message-ID: <CAKwvOdk+K=Ne8APreZWU0DxRkLq6aiKUXiX6v_hJJ5sug0cQAw@mail.gmail.com>
-Subject: Re: [PATCH] bpftool: un-const bpf_func_info to fix it for llvm 17 and newer
-To: Ivan Babrou <ivan@cloudflare.com>
-Cc: bpf@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	kernel-team@cloudflare.com, Quentin Monnet <quentin@isovalent.com>, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
-	Jiri Olsa <jolsa@kernel.org>, Nathan Chancellor <nathan@kernel.org>, Tom Rix <trix@redhat.com>, 
-	Raman Shukhau <ramasha@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20240517165855.4688-1-dthaler1968@gmail.com>
+User-Agent: Mutt/2.2.13 (00d56288) (2024-03-09)
+Message-ID-Hash: 7IONCXKFI5DII5Q4MTXANTXII5KTLWQ5
+X-Message-ID-Hash: 7IONCXKFI5DII5Q4MTXANTXII5KTLWQ5
+X-MailFrom: dcvernet@gmail.com
+X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
+ loop; banned-address; member-moderation; nonmember-moderation; administrivia;
+ implicit-dest; max-recipients; max-size; news-moderation; no-subject;
+ digests; suspicious-header
+CC: bpf@vger.kernel.org, bpf@ietf.org, Dave Thaler <dthaler1968@gmail.com>
+X-Mailman-Version: 3.3.9rc4
+Precedence: list
+Subject: =?utf-8?q?=5BBpf=5D_Re=3A_=5BPATCH_bpf-next=5D_bpf=2C_docs=3A_Use_RFC_2119_l?=
+ =?utf-8?q?anguage_for_ISA_requirements?=
+Archived-At: 
+ <https://mailarchive.ietf.org/arch/msg/bpf/bRLyawTEh6Dc5PRg_RaDQaoRYGw>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/bpf>
+List-Help: <mailto:bpf-request@ietf.org?subject=help>
+List-Owner: <mailto:bpf-owner@ietf.org>
+List-Post: <mailto:bpf@ietf.org>
+X-Mailman-Copy: yes
+Content-Type: multipart/mixed; boundary="===============4183454722442434038=="
+
+
+--===============4183454722442434038==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="YOkmkFmqSH7Tl1oq"
+Content-Disposition: inline
+
+
+--YOkmkFmqSH7Tl1oq
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, May 20, 2024 at 3:52=E2=80=AFPM Ivan Babrou <ivan@cloudflare.com> w=
-rote:
->
-> LLVM 17 started treating const structs as constants:
->
-> * https://github.com/llvm/llvm-project/commit/0b2d5b967d98
->
-> Combined with pointer laundering via ptr_to_u64, which takes a const ptr,
-> but in reality treats the underlying memory as mutable, this makes clang
-> always pass zero to btf__type_by_id, which breaks full name resolution.
->
-> Disassembly before (LLVM 16) and after (LLVM 17):
->
->     -    8b 75 cc                 mov    -0x34(%rbp),%esi
->     -    e8 47 8d 02 00           call   3f5b0 <btf__type_by_id>
->     +    31 f6                    xor    %esi,%esi
->     +    e8 a9 8c 02 00           call   3f510 <btf__type_by_id>
->
-> It's a bigger project to fix this properly (and a question whether LLVM
-> itself should detect this), but for right now let's just fix bpftool.
+On Fri, May 17, 2024 at 09:58:55AM -0700, Dave Thaler wrote:
+> Per IETF convention and discussion at LSF/MM/BPF, use MUST etc.
+> keywords as requested by IETF Area Director review.  Also as
+> requested, indicate that documenting BTF is out of scope of this
+> document and will be covered by a separate IETF specification.
+>=20
+> Added paragraph about the terminology that is required IETF boilerplate
+> and must be worded exactly as such.
+>=20
+> Signed-off-by: Dave Thaler <dthaler1968@googlemail.com>
 
-Right, looks like we don't currently have UBSan instrumentation for "I
-modified an object declared const."  Instead, it just leads to fun
-bugs like "why was my write elided" or in this case "why did my
-constant folding change between compiler versions?"  Such are the joys
-of UB.
+Acked-by: David Vernet <void@manifault.com>
 
-Acked-by: Nick Desaulniers <ndesaulniers@google.com>
+We still have "may" in a couple of places, as in e.g.:
 
->
-> For more information, see this thread in bpf mailing list:
->
-> * https://lore.kernel.org/bpf/CABWYdi0ymezpYsQsPv7qzpx2fWuTkoD1-wG1eT-9x-=
-TSREFrQg@mail.gmail.com/T/
->
-> Fixes: b662000aff84 ("bpftool: Adding support for BTF program names")
-> Signed-off-by: Ivan Babrou <ivan@cloudflare.com>
-> ---
->  tools/bpf/bpftool/common.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/tools/bpf/bpftool/common.c b/tools/bpf/bpftool/common.c
-> index cc6e6aae2447..6d8bbc3ec603 100644
-> --- a/tools/bpf/bpftool/common.c
-> +++ b/tools/bpf/bpftool/common.c
-> @@ -338,7 +338,7 @@ void get_prog_full_name(const struct bpf_prog_info *p=
-rog_info, int prog_fd,
->  {
->         const char *prog_name =3D prog_info->name;
->         const struct btf_type *func_type;
-> -       const struct bpf_func_info finfo =3D {};
-> +       struct bpf_func_info finfo =3D {};
->         struct bpf_prog_info info =3D {};
->         __u32 info_len =3D sizeof(info);
->         struct btf *prog_btf =3D NULL;
-> --
-> 2.44.0
->
+Note that there are two flavors of ``JA`` instructions. The ``JMP``
+class permits a 16-bit jump offset specified by the 'offset' field,
+whereas the ``JMP32`` class permits a 32-bit jump offset specified by
+the 'imm' field. A > 16-bit conditional jump may be converted to a <
+16-bit conditional jump plus a 32-bit unconditional jump.
 
+Also in the "Helper functions" and "Maps" sections.
 
---=20
+Do we need to fix those as well? Or are they considered semantically
+different than how RFC 2119 would define the terms?
+
 Thanks,
-~Nick Desaulniers
+David
+
+--YOkmkFmqSH7Tl1oq
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEARYKAB0WIQRBxU1So5MTLwphjdFZ5LhpZcTzZAUCZkvaRQAKCRBZ5LhpZcTz
+ZPiWAP4juqPoXiDzaTMmnyCqgJbSAjhwr/p2C+mXZrbefsmlXQEA/RFCnTeneiKz
+racIp8x5MDJDumrlDO4Y3SIZeyEbIgY=
+=xG1k
+-----END PGP SIGNATURE-----
+
+--YOkmkFmqSH7Tl1oq--
+
+
+--===============4183454722442434038==
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: base64
+Content-Disposition: inline
+
+LS0gCkJwZiBtYWlsaW5nIGxpc3QgLS0gYnBmQGlldGYub3JnClRvIHVuc3Vic2NyaWJlIHNlbmQg
+YW4gZW1haWwgdG8gYnBmLWxlYXZlQGlldGYub3JnCg==
+
+--===============4183454722442434038==--
+
 
