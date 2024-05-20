@@ -1,101 +1,200 @@
-Return-Path: <bpf+bounces-30028-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-30029-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D266E8C9F24
-	for <lists+bpf@lfdr.de>; Mon, 20 May 2024 16:59:23 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 887F08C9F81
+	for <lists+bpf@lfdr.de>; Mon, 20 May 2024 17:20:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8D6752813FE
-	for <lists+bpf@lfdr.de>; Mon, 20 May 2024 14:59:22 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AC2651C21225
+	for <lists+bpf@lfdr.de>; Mon, 20 May 2024 15:20:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 02E5A1369B4;
-	Mon, 20 May 2024 14:59:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6BFC5136E1A;
+	Mon, 20 May 2024 15:20:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JsJahsin"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="AFVb44CA"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f53.google.com (mail-wr1-f53.google.com [209.85.221.53])
+Received: from mail-wm1-f44.google.com (mail-wm1-f44.google.com [209.85.128.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 155891E878
-	for <bpf@vger.kernel.org>; Mon, 20 May 2024 14:59:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 52E7F1E49D;
+	Mon, 20 May 2024 15:20:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716217157; cv=none; b=tSrE9NBxu/gu1zjpgfJxfMhwK5LUMIf+K/CaiDtMgINcCUHVlFEM7f+x7kn9edaS2fHAaGmhLKm9FxtgvRlLn3ED+CMcjdSm/379lhhm3Ri46WdHqkxl4rN9UGNgOkhCzd7StnKWZiQPmOgPaTwDoj8bKWVtNuL44z35ZtNiOBc=
+	t=1716218411; cv=none; b=CZjq6BjsobnUBgAZ2/thgt/cZD7nkck4PyoNoTgssSVUdr9a+2XLuV/cezImTUi0wTHhHPl9/RcD2sc7Sdv9mtQrlCPUi9JfOkcmSyDbRhLM8lOZGwkNfyPnbJS9BxboUV2Ehl5uOR+3fe3zk2KGA5CQP973sFNB+fusyprFh5o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716217157; c=relaxed/simple;
-	bh=WyWrElNaUXVoHnbG6p+pKl5bxMQZjKGN9IShyMCviNU=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=GCuD8walTrX77DPukaqXTDk9hppmUs+kXwxkuaN64CNLw9QQgxrsm+5Axi6xx6N8RD+ttwDuMWmi2OCY3g11v+kt5QKlsqZhEZ9gz7QLF7ugRIKStOq7JhXcrO6NftbyKxO16Xjn+2VqkBCgObFRZQQ1suGC+9c+yUYGOoOfvds=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=JsJahsin; arc=none smtp.client-ip=209.85.221.53
+	s=arc-20240116; t=1716218411; c=relaxed/simple;
+	bh=N6fEg1pyqaOsfC47bR4QbKVFbMf4jtbYbZ3SQBu6klk=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=rokDhc5q/OL1300HiHoDGPXVcQBF+Bzn/mJfUR0he8hXsYhjph4cPpGI2XcItEvMTj0Gv2FVtfg5OIvWyj+KzifrVR92bid/8RnuAME7aKbvcTERiBFyE3+nCJXzA5mEQkFYgT9cz4ftHdK1a6e9vRiXYHMcajzPzvYQJ9klpkk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=AFVb44CA; arc=none smtp.client-ip=209.85.128.44
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f53.google.com with SMTP id ffacd0b85a97d-352129e3c8eso2398628f8f.2
-        for <bpf@vger.kernel.org>; Mon, 20 May 2024 07:59:15 -0700 (PDT)
+Received: by mail-wm1-f44.google.com with SMTP id 5b1f17b1804b1-4200ee78f33so22125915e9.3;
+        Mon, 20 May 2024 08:20:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1716217154; x=1716821954; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=7DpcBI+qfP2yjnEHD73CNplrNEsDfsJQEVymt3Vkg4A=;
-        b=JsJahsinf5eA5oOy+69bvb9gJVHg8fAAVm1cPreMg5jE2vWvSxdEJPrFNunaLLsHH2
-         F2dKkP9EeOCIdbsW+5mTslKt6/1tjh4xaeml6uSqL/tNLO6eOYcfzUtp2q+3kC3oV4vv
-         hvXKQgU/JclboMwnZuhBLnj+yh7sOoanSHqZuA5cWwPN6gpOdW3vZCzgPrtosSwGDkrr
-         EwSSxibtLahqUISORyssv/FU87AhDXuKbSmmroK33RIQiJcj3OTRVk5WQ7RuCrgcb/fV
-         uJRcv/Wp9wU8Ef+a7E8KZPEJCoDrNLEFJhtRtTBC0B4KsXsXHs3QH5po+aJNruPEpzoc
-         e6tw==
+        d=gmail.com; s=20230601; t=1716218408; x=1716823208; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=em/KEqasq7vpAe1VPn6oJS+HRlUkBEq2Y5EIncGB1fo=;
+        b=AFVb44CAjMQXAUvps2X3KdvH8aSWv407TzpFD5sMtYtVqvdZJajoTpfsHM3H6F+PPM
+         R6qSiI5US6d94PSdxO110q7APqbf7crW6g2B+TdCpm7fGFS26V+TI07p8e94qEyABrZn
+         usqjHbYDleD+DJ84/XfiTUIVZPBy2heQu0C4m/m8JLbMMtf5/xeM6kKltOCyki0T60mM
+         yamfiOzO8KnxqBZkSbAE4ayY2QSUlX1BlikFwWH9GxvvP2rZXQ8JdbGdL4sfhmhHleFF
+         wyUkPOhMM5y9sVfyxWVLNcqABqm3jhFFseV/uAJfJzdAptdGJbTEFeM9dEob1vBvfup4
+         OlOg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1716217154; x=1716821954;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=7DpcBI+qfP2yjnEHD73CNplrNEsDfsJQEVymt3Vkg4A=;
-        b=YJ7WCW/zmW6YofvfxtT2ovz8z9CsMg+LCNQGUkUj3bdBEi8jYMSUQHjnj5f5vPTL2n
-         OwoMdF+xpYG2/gTxkDsMulKlcYh6AUL5WsjF4ha7ZwBbyF+wluxACtDLGJKLLR/gWW3O
-         ba4B/QpxEYSG/xUHOJzeGxwtImh3t98J5/wCaH2LU5rJ4+RG/TVAc88AkSwjD6RwEkUZ
-         KgaBaHCXcDOWeCZf6KJETb6jgtFxV9eme0LzGCQErzT84Y7XFwPvuSXxvJ4Zb3cw5Eg3
-         OFaHgNBzZ68J45x+JKp39lZI2v/XGBTA484bBvntWIYKie9OiMcw4+zxt1BKn2YgTF/e
-         XK7w==
-X-Gm-Message-State: AOJu0YyxGBwhL+Kb5EQwBZuXKduo67tL3xovH9XoFOZKRnXZ9bMA2WPc
-	DHa4a/FVdPLYG4JSMeLgUQwyHE/psKW0Trf8uP0X4eBuU1ug6gBlsFrHYX7r2djx1MRGuTnAfbC
-	nuEXYJMq6zOUHD6t7L3QpI0zxIVk=
-X-Google-Smtp-Source: AGHT+IEPfy+NSI1tmQDoInXI7NTmnvV9z5QREE4EtTZcoufl9RNP3WhIVkF+xFiR97pYJiMKZLWym90i4pjO0YLA4TQ=
-X-Received: by 2002:adf:b651:0:b0:351:c6bd:ee1d with SMTP id
- ffacd0b85a97d-351c6bdef5emr15446797f8f.32.1716217154058; Mon, 20 May 2024
- 07:59:14 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1716218408; x=1716823208;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=em/KEqasq7vpAe1VPn6oJS+HRlUkBEq2Y5EIncGB1fo=;
+        b=Yxz78DSNKe908rVD+qtvcCwMM2RWIRbIhRpS65KONfIJ6fAF59zOABp4VZWoTlGWTy
+         YBq+WSr75oUmYRGxbLIlBLGGKBTj3wmywX033AgOHk/4dnKZUr25/hgBxXlhDQWEzTWo
+         3zLxS1txfnWJCanzFaA+PjbrceAlcwg+s5pbzpQcwpSep+Zsr4WdhrvpXm6AR64/0imL
+         PLJ7+U3H+sgRGcvqqWvqUTG0gsDlx4XuAyEMUvIufOX4hOzfyuQOc1KoYWewmpTuMHzM
+         FDaheKsZgjavM5jYQ4LMOc1nln2Z7xCwiHAA8y8Cj6Gs04/s9CAcRICllv00QgUFpUsF
+         5VWA==
+X-Forwarded-Encrypted: i=1; AJvYcCWbHlE3ZRUmRNOs3fbBqfzAW1UlwCm0f56nixLHk2uOC+92/9rD0w8rD8E1KZ9guRgFacvDEky03593JLZVp3PItmHw2rSXsnJ4GYqXGMKpST0sRjJ+cULuuwoliKBTFVDpEf6e3zkUFMosPx8GnGV/8ZSdqdsnvpuDD2VW9SDxfQLLhtA5PMj98A==
+X-Gm-Message-State: AOJu0Yy/HWx7KwnayvrojIG5yxJ+4dnyWxs+S3kpHg0hjL4uKaw45r6P
+	T0CKSfVx8lluJNIqlLivoyQe/2BARY7bVtpmBX+z2ib3xjGmSNqP
+X-Google-Smtp-Source: AGHT+IGQLam3jCntGZ7QaJLqSJe6OjnQfTqwX/5OLP3js7D9iL3km/fMHr0inTnl10uAYNKvcB72zw==
+X-Received: by 2002:a05:600c:4ecc:b0:420:2b2e:f6e7 with SMTP id 5b1f17b1804b1-4202b2ef814mr107282885e9.17.1716218407408;
+        Mon, 20 May 2024 08:20:07 -0700 (PDT)
+Received: from krava ([2a00:102a:4030:3ad2:f918:d0bd:fbd5:61c])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-41f87b2653bsm458947885e9.4.2024.05.20.08.20.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 20 May 2024 08:20:07 -0700 (PDT)
+From: Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date: Mon, 20 May 2024 17:20:04 +0200
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: Peter Zijlstra <peterz@infradead.org>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	linux-trace-kernel@vger.kernel.org, rostedt@goodmis.org,
+	mhiramat@kernel.org, x86@kernel.org, mingo@redhat.com,
+	tglx@linutronix.de, bpf@vger.kernel.org, rihams@fb.com,
+	linux-perf-users@vger.kernel.org, Riham Selim <rihams@meta.com>
+Subject: Re: [PATCH 2/4] perf,uprobes: fix user stack traces in the presence
+ of pending uretprobes
+Message-ID: <ZktqJEsmsVawdPNU@krava>
+References: <20240508212605.4012172-1-andrii@kernel.org>
+ <20240508212605.4012172-3-andrii@kernel.org>
+ <20240515093013.GE40213@noisy.programming.kicks-ass.net>
+ <CAEf4Bzazi7YMz9n0V46BU7xthQjNdQL_zma5vzgCm_7C-_CvmQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240520091424.2427762-1-ramasha@meta.com>
-In-Reply-To: <20240520091424.2427762-1-ramasha@meta.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Mon, 20 May 2024 07:59:01 -0700
-Message-ID: <CAADnVQKZcqddcAOWWZaqsTrSXm4LA09O1Sk3rr6DRnjzm0uxVw@mail.gmail.com>
-Subject: Re: [PATCH v2 bpf-next 0/3] Fix and improvement for bpf_sysctl_set_new_value
-To: Raman Shukhau <ramasha@meta.com>
-Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
-	Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAEf4Bzazi7YMz9n0V46BU7xthQjNdQL_zma5vzgCm_7C-_CvmQ@mail.gmail.com>
 
-On Mon, May 20, 2024 at 2:14=E2=80=AFAM Raman Shukhau <ramasha@meta.com> wr=
-ote:
->
-> Changes v1 =3D> v2:
-> 1. corrected copyright comments
-> 2. unsigned int for sysctl name to prevent build test error:
->    "R2 min value is negative, either use unsigned or 'var &=3D const'"
+On Wed, May 15, 2024 at 08:32:30AM -0600, Andrii Nakryiko wrote:
+> On Wed, May 15, 2024 at 3:30 AM Peter Zijlstra <peterz@infradead.org> wrote:
+> >
+> > On Wed, May 08, 2024 at 02:26:03PM -0700, Andrii Nakryiko wrote:
+> >
+> > > +static void fixup_uretprobe_trampoline_entries(struct perf_callchain_entry *entry,
+> > > +                                            int start_entry_idx)
+> > > +{
+> > > +#ifdef CONFIG_UPROBES
+> > > +     struct uprobe_task *utask = current->utask;
+> > > +     struct return_instance *ri;
+> > > +     __u64 *cur_ip, *last_ip, tramp_addr;
+> > > +
+> > > +     if (likely(!utask || !utask->return_instances))
+> > > +             return;
+> > > +
+> > > +     cur_ip = &entry->ip[start_entry_idx];
+> > > +     last_ip = &entry->ip[entry->nr - 1];
+> > > +     ri = utask->return_instances;
+> > > +     tramp_addr = uprobe_get_trampoline_vaddr();
+> > > +
+> > > +     /* If there are pending uretprobes for current thread, they are
+> >
+> > Comment style fail. Also 'for *the* current thread'.
+> >
+> 
+> ack, will fix
+> 
+> > > +      * recorded in a list inside utask->return_instances; each such
+> > > +      * pending uretprobe replaces traced user function's return address on
+> > > +      * the stack, so when stack trace is captured, instead of seeing
+> > > +      * actual function's return address, we'll have one or many uretprobe
+> > > +      * trampoline addresses in the stack trace, which are not helpful and
+> > > +      * misleading to users.
+> >
+> > I would beg to differ, what if the uprobe is causing the performance
+> > issue?
+> 
+> If uprobe/uretprobe code itself is causing performance issues, you'll
+> see that in other stack traces, where this code will be actively
+> running on CPU. I don't think we make anything worse here.
 
-CI disagrees. Same failure in test_progs-no_alu32
+I think we do similar thing in kernel unwind for rethook trampoline used
+in fprobe/kretprobe code, so seems ok to me to do it for uprobes as well
 
-42: (18) r3 =3D 0xffffa5bd00dd5014 ;
-R3_w=3Dmap_value(map=3Dcgrp_sys.rodata,ks=3D4,vs=3D152,off=3D20)
-44: (85) call bpf_strncmp#182
-R2 min value is negative, either use unsigned or 'var &=3D const'
+> 
+> Here we are talking about the case where the uprobe part is done and
+> it hijacked the return address on the stack, uretprobe is not yet
+> running (and so not causing any performance issues). The presence of
+> this "snooping" (pending) uretprobe is irrelevant to the user that is
+> capturing stack trace. Right now address in [uprobes] VMA section
+> installed by uretprobe infra code is directly replacing correct and
+> actual calling function address.
+> 
+> Worst case, one can argue that both [uprobes] and original caller
+> address should be in the stack trace, but I think it still will be
+> confusing to users. And also will make implementation less efficient
+> because now we'll need to insert entries into the array and shift
+> everything around.
 
-pw-bot: cr
+agreed this would be confusing.. also as you noted above the return
+trampoline did not get executed yet at the time of the callstack,
+so it's bit misleading
+
+might be stupid idea.. but we do have the 'special' context entries
+that we store in the callstack to mark user/kernel/guest context ..
+maybe we could add some special entry (context does not fit too well)
+to point out there's uretprobe going on .. perf tool could print
+'uretprobe' hint when displaying the original address
+
+jirka
+
+> 
+> So as I mentioned above, if the concern is seeing uprobe/uretprobe
+> code using CPU, that doesn't change, we'll see that in the overall set
+> of captured stack traces (be it custom uprobe handler code or BPF
+> program).
+> 
+> >
+> > While I do think it makes sense to fix the unwind in the sense that we
+> > should be able to continue the unwind, I don't think it makes sense to
+> > completely hide the presence of uprobes.
+> 
+> Unwind isn't broken in this sense, we do unwind the entire stack trace
+> (see examples in the later patch). We just don't capture actual
+> callers if they have uretprobe pending.
+> 
+> >
+> > > +      * So here we go over the pending list of uretprobes, and each
+> > > +      * encountered trampoline address is replaced with actual return
+> > > +      * address.
+> > > +      */
+> > > +     while (ri && cur_ip <= last_ip) {
+> > > +             if (*cur_ip == tramp_addr) {
+> > > +                     *cur_ip = ri->orig_ret_vaddr;
+> > > +                     ri = ri->next;
+> > > +             }
+> > > +             cur_ip++;
+> > > +     }
+> > > +#endif
+> > > +}
+> 
 
