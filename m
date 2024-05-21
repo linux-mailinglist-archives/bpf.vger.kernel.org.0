@@ -1,84 +1,84 @@
-Return-Path: <bpf+bounces-30155-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-30156-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 276AF8CB468
-	for <lists+bpf@lfdr.de>; Tue, 21 May 2024 21:48:13 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id DD1218CB46B
+	for <lists+bpf@lfdr.de>; Tue, 21 May 2024 21:48:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 979111F2322A
-	for <lists+bpf@lfdr.de>; Tue, 21 May 2024 19:48:12 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 85E5F1F2348F
+	for <lists+bpf@lfdr.de>; Tue, 21 May 2024 19:48:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F3C89148FEC;
-	Tue, 21 May 2024 19:48:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 23A82148FF1;
+	Tue, 21 May 2024 19:48:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="SM9bWrtx"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Z7ix+HRG"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f43.google.com (mail-pj1-f43.google.com [209.85.216.43])
+Received: from mail-pl1-f171.google.com (mail-pl1-f171.google.com [209.85.214.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 31512208DA
-	for <bpf@vger.kernel.org>; Tue, 21 May 2024 19:48:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6253A208DA
+	for <bpf@vger.kernel.org>; Tue, 21 May 2024 19:48:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716320887; cv=none; b=tQaERciUUrPedqRU7ndzlC50NUADscgwi5I0IpCQ1bfrZyPudnqomX6x1ef0IDMittbRjkAgW9fPMK+2/f1RDo/6ezum8cXdk/kDilVEJs/cJiRxOuhqv/1z09xjsRQjJ5V6te1RPfFccwhI6a6Uj0bE5fuc27y5Rb289guyKZE=
+	t=1716320915; cv=none; b=DU0qqkxSqRPbZgFe2qOFGWOp4tpY1KLONy9BKzp9RV+jflBY5DDORMCFAzOJMi2TKr8sxy+iohoLdu32uw1gQfzTYzMLUTtJO4gOnWSlDW1Xfxu61mPvkOLHj+zHc9zPAiCdO1cQ6r+28CgCUP5eMr3Vpu625VqHF93VNwx7ib8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716320887; c=relaxed/simple;
-	bh=n/OknCsCl/sy0dRsezLKrcZZfy445/+GVv6TVvue9zk=;
+	s=arc-20240116; t=1716320915; c=relaxed/simple;
+	bh=XGNmuR5JLkdaAM0dS7VkdSEoIxfzyTT4/Ww5VlUq3cw=;
 	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=cPHqRCXiR2oP5JWrrrNZea6d5DX3YJNHx0x0ERkYatJM0eK35LnIEtxLq90XFfopeIj6OBQsnq8sCLWQzSncodUzcN5kqhADyz4rezPXbVc8fnwsTOW/mV5CbnmezeDmW4JLsvXWTRSwOv2qHZMAcT5g/fWaNVlQKdKrpYn8KnY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=SM9bWrtx; arc=none smtp.client-ip=209.85.216.43
+	 Content-Type:MIME-Version; b=J/d+a4OJljcJFXiGSA712HAw7Ne1tThsLD28r5aPsuMTA2UiiNVbTp4VJjT1CUL3XMwYQPyPVaTr0RdR7dOaK0wBLlqa9hEj6YgLtgzE6YDE7m+txOb8tyGKytXWajfdGfgiAMUDzR0MRZhhv6iUTeRnaHxRubzxxcuzio5YzGI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Z7ix+HRG; arc=none smtp.client-ip=209.85.214.171
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f43.google.com with SMTP id 98e67ed59e1d1-2b8a13416d0so561114a91.3
-        for <bpf@vger.kernel.org>; Tue, 21 May 2024 12:48:05 -0700 (PDT)
+Received: by mail-pl1-f171.google.com with SMTP id d9443c01a7336-1f3105f3597so16985805ad.2
+        for <bpf@vger.kernel.org>; Tue, 21 May 2024 12:48:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1716320885; x=1716925685; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1716320914; x=1716925714; darn=vger.kernel.org;
         h=mime-version:user-agent:content-transfer-encoding:references
          :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
          :date:message-id:reply-to;
-        bh=dUTTV+Ry3EWKqyAWaM+NScTJ5tlhoLKKYXQQ/uRVF3I=;
-        b=SM9bWrtxUQkg6HpPb9xFDhQIcDoNWtWRQ9IN2Slxr1vk4RsBMR2wM06HlUoaKFEZy5
-         r3JwmzAxj5sRF/tF1HN4xSUfQ5voemBJCY/+gdXdryl7C4OPwnRpDT6vMdpF/yAAakgt
-         3D90CwccT18Fp14L3sPdJu0K7wsvJU6YChr9s3HRXU3R+olG03AVDjdD3JD99sbHKbBF
-         57OJuNvM20aNQ0BnLDqeR1c+XXxoEZc1FIiSRIXZ8QOzr8UDq5JCFr15ummSRPvt5dUG
-         JrGirUG98p0pbUnFF1BxVNjfXPjlPnMQRxkpYTRlaOviJtQIhf/mj43YKtEs0vVLdSIz
-         +QKQ==
+        bh=XGNmuR5JLkdaAM0dS7VkdSEoIxfzyTT4/Ww5VlUq3cw=;
+        b=Z7ix+HRGNr+jfG9Pp64ppA+JJIAdZjKkb5842/qmlXyKOxs+eFZjYFcakBZm/2LjUG
+         niFE/db9Zv/Y4E2NfHVM1LYxWZKCV8MFKXbpEWY9PJveGr1iivNwTHCX8yuoRdHUrkI/
+         r2ah2rfAi62zP0K1gqcQccZefa8EAajnln6M4qnXz17uZf7bCJ4S24UgjI1fXEFeH02Q
+         yd9K26BJcnWyC6RSn70vO2J6E+H/kjQWCWTrSm4EH1NXPv1i4kkdMQrStcgqerUifSwm
+         OAkcw60AY7W2Jyvv452y8O6UJlpZumEkCgz6WcnMRtptnO38D8JICGM6cwRBPHYjNH/4
+         BZJw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1716320885; x=1716925685;
+        d=1e100.net; s=20230601; t=1716320914; x=1716925714;
         h=mime-version:user-agent:content-transfer-encoding:references
          :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=dUTTV+Ry3EWKqyAWaM+NScTJ5tlhoLKKYXQQ/uRVF3I=;
-        b=NQhujCtEn/6RToM7+9be1EBXdxtBRZpaMbFKj7Se/Y93E9/W7g7zIOdJ0l76l0aC4q
-         X0YhmMjalHyrM/nlJcfsni6YxYT86k/umf49UNiPQT+8jLoqoR28klbHG3Px0aLdnGHK
-         wobuIIaVldsQLZorOCcdazy1cHKR4OIJpXe4/QqH5ZeMTZcSzAbBOewaDXbMKCGHoRaL
-         gZwoijEF4adfu/iTHSRs4bX44IAyzFgghaR/OGJDvyADIcG3eQlubJlAYjP/UjtA9ExJ
-         TdOceU244YRy1iy/GxbQL1N57BZE5rxx+pQjmdTHDJlq5LIb/1eDTVgUbpILvXKchHdy
-         IbzQ==
-X-Gm-Message-State: AOJu0YwobdOLsAaz1O3nAGH9P8cGRjFI8idcEpYQCWmr6kLADLskAzsk
-	5DQOrjsRU9beGuCjcezxAKSMoHoDugtjVDZgm5+1OwBQNqSFbvEY/kQHEHAI
-X-Google-Smtp-Source: AGHT+IEAxY+/FXZZAsDkLDQLrkSS9H1x6BheH/i4bAGKRt5JVkuXE5+1B+jTKbFM3DHlEEeSj7AtLA==
-X-Received: by 2002:a17:90b:11d2:b0:2a2:70f6:8f67 with SMTP id 98e67ed59e1d1-2bd9f59ebcfmr97899a91.30.1716320885291;
-        Tue, 21 May 2024 12:48:05 -0700 (PDT)
+        bh=XGNmuR5JLkdaAM0dS7VkdSEoIxfzyTT4/Ww5VlUq3cw=;
+        b=mx7fO8+Ts6FVAIayd7h6LSDvyleL+vDkNQVb2QexHQEgxvvIV1SfeKAM7Y740bi90f
+         NZ2LnPwFXshPnfTngjmOq08QAB2apjQQy+bzh6ygZSFTAqa6BvlyDkAZgmyDMobIzycW
+         tSlKOukPx8dQr2fgqsAlfUH6mVTeqkbA1g0iJFIY3daTo6Yl51xLo1WtMgrQ4T0zL6Eb
+         VMIqI/oPHqZ6CJU4RmqX2fmDVPL5xvRMsFJbyGPs2FzaGcM0zvUHZJduW1dG9lkLVHj4
+         pE6k7e8cATm1WIMpQwWq6CAH/GcTw4xBFSD1ErKa7QE8nQeD6Nubc2lUrV9ASXiBua7u
+         Ga9Q==
+X-Gm-Message-State: AOJu0YzCPkFbBxARvkUQx0ePYkxCv9klE7hcZUDUnrZgTqEfBfcQyyhN
+	bKzvhRGAXclyC2tJ2yQEP7m+wVF+m4bXboljJ87DRMhbL0YTCbljVXAwIKmI
+X-Google-Smtp-Source: AGHT+IHFOy/UXs41UJLi+dBwuWOaLtyubE41zcInIdOxs0MM0EofVyy8aWpC3turgA0F/Xhkv8iDVQ==
+X-Received: by 2002:a17:902:7248:b0:1ee:2a58:cb7c with SMTP id d9443c01a7336-1ef43e26586mr319055425ad.35.1716320913651;
+        Tue, 21 May 2024 12:48:33 -0700 (PDT)
 Received: from ?IPv6:2604:3d08:6979:1160::3424? ([2604:3d08:6979:1160::3424])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2b62863a238sm24433732a91.7.2024.05.21.12.48.04
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-1f310957fc5sm15026975ad.139.2024.05.21.12.48.32
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 May 2024 12:48:04 -0700 (PDT)
-Message-ID: <f8b7741fff952d2be84f0a5cb5f8f9622c0bf09c.camel@gmail.com>
-Subject: Re: [PATCH bpf-next v2 1/4] bpf: verifier: make kfuncs args
- nullalble
+        Tue, 21 May 2024 12:48:33 -0700 (PDT)
+Message-ID: <9e85057c1300c6ff2895f84580eb7e758b4459cb.camel@gmail.com>
+Subject: Re: [PATCH bpf-next v2 2/4] bpf: crypto: make state and IV dynptr
+ nullable
 From: Eduard Zingerman <eddyz87@gmail.com>
 To: Vadim Fedorenko <vadfed@meta.com>, Vadim Fedorenko
  <vadim.fedorenko@linux.dev>, Martin KaFai Lau <martin.lau@linux.dev>,
  Andrii Nakryiko <andrii@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
  Mykola Lysenko <mykolal@fb.com>,  Jakub Kicinski <kuba@kernel.org>
 Cc: bpf@vger.kernel.org
-Date: Tue, 21 May 2024 12:48:04 -0700
-In-Reply-To: <20240510122823.1530682-2-vadfed@meta.com>
+Date: Tue, 21 May 2024 12:48:32 -0700
+In-Reply-To: <20240510122823.1530682-3-vadfed@meta.com>
 References: <20240510122823.1530682-1-vadfed@meta.com>
-	 <20240510122823.1530682-2-vadfed@meta.com>
+	 <20240510122823.1530682-3-vadfed@meta.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 User-Agent: Evolution 3.44.4-0ubuntu2 
@@ -90,33 +90,13 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 
 On Fri, 2024-05-10 at 05:28 -0700, Vadim Fedorenko wrote:
-> Some arguments to kfuncs might be NULL in some cases. But currently it's
-> not possible to pass NULL to any BTF structures because the check for
-> the suffix is located after all type checks. Move it to earlier place
-> to allow nullable args.
+> Some ciphers do not require state and IV buffer, but with current
+> implementation 0-sized dynptr is always needed. With adjustment to
+> verifier we can provide NULL instead of 0-sized dynptr. Make crypto
+> kfuncs ready for this.
 >=20
 > Signed-off-by: Vadim Fedorenko <vadfed@meta.com>
 > ---
 
 Acked-by: Eduard Zingerman <eddyz87@gmail.com>
-
->  kernel/bpf/verifier.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
->=20
-> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> index 9e3aba08984e..ed67aed3c284 100644
-> --- a/kernel/bpf/verifier.c
-> +++ b/kernel/bpf/verifier.c
-> @@ -11179,6 +11179,9 @@ get_kfunc_ptr_arg_type(struct bpf_verifier_env *e=
-nv,
->  	if (btf_is_prog_ctx_type(&env->log, meta->btf, t, resolve_prog_type(env=
-->prog), argno))
->  		return KF_ARG_PTR_TO_CTX;
-> =20
-> +	if (is_kfunc_arg_nullable(meta->btf, &args[argno]) && register_is_null(=
-reg))
-> +		return KF_ARG_PTR_TO_NULL;
-> +
-
-Nit: maybe move this above the KF_ARG_PTR_TO_CTX check as well?
 
