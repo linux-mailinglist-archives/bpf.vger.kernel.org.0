@@ -1,215 +1,126 @@
-Return-Path: <bpf+bounces-30131-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-30132-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 048F68CB23F
-	for <lists+bpf@lfdr.de>; Tue, 21 May 2024 18:34:43 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 053DE8CB246
+	for <lists+bpf@lfdr.de>; Tue, 21 May 2024 18:35:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 287D01C21D05
-	for <lists+bpf@lfdr.de>; Tue, 21 May 2024 16:34:42 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9AD541F22524
+	for <lists+bpf@lfdr.de>; Tue, 21 May 2024 16:35:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB7291448DA;
-	Tue, 21 May 2024 16:34:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A6C173539;
+	Tue, 21 May 2024 16:35:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UoS2T6SP"
+	dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b="AWfr9MG7"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f46.google.com (mail-ej1-f46.google.com [209.85.218.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 54CE0282EE
-	for <bpf@vger.kernel.org>; Tue, 21 May 2024 16:34:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 717E1147C6F
+	for <bpf@vger.kernel.org>; Tue, 21 May 2024 16:35:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716309261; cv=none; b=RdhUrZozbiFO9uxklTby6totRMMS4K5h0SRC0n/c3koDrMFiG9PmJfErbRy4UTfKDBgfOhNvq8+1FLWsTljfvTNil9RlgBjEKcI3O37AUlE4SL2iPCJZpzKoGHj88DfdvXy2TV++82wo84Q0Oqo1mW/U7BXtuowl909ZbWPnAIg=
+	t=1716309327; cv=none; b=GQ5plhutpy8vCuN+0f25ACbfkOVo65BkZgt3FL8YUABAmcudQZBzCh/SEhnQwsJNnoKJPaTnq23sGDDDFKfRtrSc9n8fYsJGhKcbozm8XOLfubF8/nwpqJ+KtVdA6Ss+nXuP29DuDSt3kRcg8BqF1LXqwZGkCzTFaAmge3MBYM8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716309261; c=relaxed/simple;
-	bh=Yqux7nSuFfyauKcuXg94gdqjx6nIFom1rp0gLXu0IIc=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=ulrx8HPLYge7K/kiycr+rEHpILw9yJS5FOUQwPJTIZ8rSHlAsoaN1xBPYqw968pG/5ML7N1GgOVgC3dsP1m916XUGEBt4pF3lvt6S8vuM7Dfb2uUlGHl4mnMu6M/2zXgQbIg9Jvyxp93xnHuZAuJcxk/FvFn5Zruenfn5VPe7JQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UoS2T6SP; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BFA2AC32786;
-	Tue, 21 May 2024 16:34:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1716309260;
-	bh=Yqux7nSuFfyauKcuXg94gdqjx6nIFom1rp0gLXu0IIc=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=UoS2T6SPDjfhPoxndaP3eEOr5FCltP5+wjcv5XCMTD0KUy+aAinmwAeG3NVRVuzBG
-	 s7RbC9nUYVD5Ps15te8LbesD+ds9y2/yJ4VLUBX9QlO24GJegnqjcjMKQkWSdyg9rQ
-	 nJVISn/gY4Sh//3E52zZKAoMgSE1+FhRPVoLAdh3js5kXilR8ErnapRx0rCaIyY+sF
-	 IgVYTN+pyEua8R+cMc+YgWenV4ATieV/ZGjPzURd5a7duHUYkwP5oZkxXd1l2cCf5T
-	 QOjuATXSETStTzjrjzqGDsTCnwSwGt6kU99s5x9EnVqq6LHHIW1eSXTCfshveNl567
-	 pa3aGUUV9sIXw==
-From: Andrii Nakryiko <andrii@kernel.org>
-To: bpf@vger.kernel.org,
-	ast@kernel.org,
-	daniel@iogearbox.net,
-	martin.lau@kernel.org
-Cc: andrii@kernel.org,
-	kernel-team@meta.com,
-	Jiri Olsa <jolsa@kernel.org>
-Subject: [PATCH v2 bpf 5/5] selftests/bpf: extend multi-uprobe tests with USDTs
-Date: Tue, 21 May 2024 09:34:01 -0700
-Message-ID: <20240521163401.3005045-6-andrii@kernel.org>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240521163401.3005045-1-andrii@kernel.org>
-References: <20240521163401.3005045-1-andrii@kernel.org>
+	s=arc-20240116; t=1716309327; c=relaxed/simple;
+	bh=TzhbxjT2ArdvIpXfLBKdAlsNwdS6WxVTuh9aPBFI9ak=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=kOROnKQ0mB199ZjWmquUsq3m1AveLot3VdFWdRjxiF7hIKsQX2WhH56/gvei6W4rAnoiqJnnqm2pCI3M6tKtmkOkfrLfsR+p83ZeSywFFZq+ibcTor/12JhtoIm5HCuMuTN6YV4KI4uAovfyXnfCwcaNoJxtb/Bv4lJz9e1jBHs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com; spf=pass smtp.mailfrom=cloudflare.com; dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b=AWfr9MG7; arc=none smtp.client-ip=209.85.218.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cloudflare.com
+Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-a5a5cb0e6b7so909505966b.1
+        for <bpf@vger.kernel.org>; Tue, 21 May 2024 09:35:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google09082023; t=1716309324; x=1716914124; darn=vger.kernel.org;
+        h=mime-version:message-id:date:user-agent:references:in-reply-to
+         :subject:cc:to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=wfuAgFBtTDpOlwam0N4IvuREtSpDy15u8s72jLqSs6I=;
+        b=AWfr9MG7YLaUfxOftxZYuGsIZwy3zVKP/G+++qEA8GCWKCI6E16JC/M5UdZBI5lyzO
+         XY0vc0qSImoYxT1cBfMt5eCx8XbJoaH2jOtBEb/6EaBnnxncbHYyuNBfiK4fWbUP0AwF
+         zkd1/8D3q7YqUxWUZieuARmzdiu6mLvcGzogy17bIKR3tRDoa8Zt7RJ3rbNibqLIkQla
+         Ey3BOJ13Ko2lJ+HHVXaRpQ6GzZXG2M1f+opN+0+3w5zW/+Zz1Efn7M6Qyv7l1cse6wtf
+         r+grsXMpRV5j9JTIPdgcVIkNC/FcvH17f3GsuSvlQo2IBk63XSDZlkmeP2h5YPizVZgV
+         W37g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1716309324; x=1716914124;
+        h=mime-version:message-id:date:user-agent:references:in-reply-to
+         :subject:cc:to:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=wfuAgFBtTDpOlwam0N4IvuREtSpDy15u8s72jLqSs6I=;
+        b=iR95GfEkq/JJSiY4OmCxHBS75eir7ZrctG22xlq2lLJ5G/V7cyQ1utFRjNE7q+nlGb
+         w88BZuNCCU1V43Kp8Iq/z1ypEkYil0WhaKNcw6YmlSCHh+YgUJmEIiVr2uA47OGOUYvd
+         LnypjGgvOc42hGUKO2pSs6gei5FRNirEbkM0ZYsThXg5hCgVot6xoawxCe5Kg0qYMbnj
+         wTJtiWGMM8ScS1j8WNhv4LImtk4zVTqy1tfHEXc5c09W4JA2jpj5BT+bcF5t9M/BcAlS
+         tkv6bZGeDQ28lbvsBhYbQS7uS5lQEQJFX901HRZkXV3rUxi6YtILaoLR7FRgGgvKtZ8Y
+         vHGw==
+X-Forwarded-Encrypted: i=1; AJvYcCVNlkNVdJK42TTDgqO5OzyAs+IrwZSDk98dEP+LzZyqo5O9Eq/c4KdUBq284jMEjYOXIUmLxYOOXMYJP14+WoC9r5BP
+X-Gm-Message-State: AOJu0Yx4l0Btpo0sOUw2JZZoZMAlAZBFkkt8iPnZIs5pCk8WqNg9U/4E
+	pRoqLJJ6Y6lmVJ6rysGdxGJVVB6kM1FeDQVH3Tnp8RtyN8o+yEhveYSaF9x9cITwvkT3ZBG9xe4
+	W
+X-Google-Smtp-Source: AGHT+IFzI1BEXmKk+UchCTrQEn5fWoUij7qbsBXTjK7v2jJxza6UZKJQBB4DiEPBrAKBLfd2pFUEKA==
+X-Received: by 2002:a17:907:9405:b0:a5a:5b8b:d14 with SMTP id a640c23a62f3a-a5a5b8b0de6mr2012491266b.40.1716309323855;
+        Tue, 21 May 2024 09:35:23 -0700 (PDT)
+Received: from cloudflare.com ([2a09:bac5:5063:2387::38a:3a])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a5a17894dc3sm1633471866b.86.2024.05.21.09.35.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 21 May 2024 09:35:22 -0700 (PDT)
+From: Jakub Sitnicki <jakub@cloudflare.com>
+To: syzbot <syzbot+ec941d6e24f633a59172@syzkaller.appspotmail.com>
+Cc: andrii@kernel.org,  ast@kernel.org,  bpf@vger.kernel.org,
+  daniel@iogearbox.net,  davem@davemloft.net,  edumazet@google.com,
+  john.fastabend@gmail.com,  kuba@kernel.org,
+  linux-kernel@vger.kernel.org,  netdev@vger.kernel.org,
+  pabeni@redhat.com,  syzkaller-bugs@googlegroups.com,
+  xrivendell7@gmail.com
+Subject: Re: [syzbot] [net?] [bpf?] possible deadlock in
+ sock_hash_delete_elem (2)
+In-Reply-To: <000000000000d0b87206170dd88f@google.com> (syzbot's message of
+	"Fri, 26 Apr 2024 23:08:19 -0700")
+References: <000000000000d0b87206170dd88f@google.com>
+User-Agent: mu4e 1.12.4; emacs 29.1
+Date: Tue, 21 May 2024 18:35:21 +0200
+Message-ID: <87o78zxgvq.fsf@cloudflare.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 
-Validate libbpf's USDT-over-multi-uprobe logic by adding USDTs to
-existing multi-uprobe tests. This checks correct libbpf fallback to
-singular uprobes (when run on older kernels with buggy PID filtering).
-We reuse already established child process and child thread testing
-infrastructure, so additions are minimal. These test fail on either
-older kernels or older version of libbpf that doesn't detect PID
-filtering problems.
+#syz test: git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git main
 
-Acked-by: Jiri Olsa <jolsa@kernel.org>
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
----
- .../bpf/prog_tests/uprobe_multi_test.c        | 25 ++++++++++++++
- .../selftests/bpf/progs/uprobe_multi.c        | 33 +++++++++++++++++--
- 2 files changed, 56 insertions(+), 2 deletions(-)
-
-diff --git a/tools/testing/selftests/bpf/prog_tests/uprobe_multi_test.c b/tools/testing/selftests/bpf/prog_tests/uprobe_multi_test.c
-index 677232d31432..bf6ca8e3eb13 100644
---- a/tools/testing/selftests/bpf/prog_tests/uprobe_multi_test.c
-+++ b/tools/testing/selftests/bpf/prog_tests/uprobe_multi_test.c
-@@ -8,6 +8,7 @@
- #include "uprobe_multi_usdt.skel.h"
- #include "bpf/libbpf_internal.h"
- #include "testing_helpers.h"
-+#include "../sdt.h"
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index 77da1f438bec..f6e694457886 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -8882,7 +8882,8 @@ static bool may_update_sockmap(struct bpf_verifier_env *env, int func_id)
+ 	enum bpf_attach_type eatype = env->prog->expected_attach_type;
+ 	enum bpf_prog_type type = resolve_prog_type(env->prog);
  
- static char test_data[] = "test_data";
+-	if (func_id != BPF_FUNC_map_update_elem)
++	if (func_id != BPF_FUNC_map_update_elem &&
++	    func_id != BPF_FUNC_map_delete_elem)
+ 		return false;
  
-@@ -26,6 +27,11 @@ noinline void uprobe_multi_func_3(void)
- 	asm volatile ("");
- }
- 
-+noinline void usdt_trigger(void)
-+{
-+	STAP_PROBE(test, pid_filter_usdt);
-+}
-+
- struct child {
- 	int go[2];
- 	int c2p[2]; /* child -> parent channel */
-@@ -90,6 +96,7 @@ static struct child *spawn_child(void)
- 		uprobe_multi_func_1();
- 		uprobe_multi_func_2();
- 		uprobe_multi_func_3();
-+		usdt_trigger();
- 
- 		exit(errno);
- 	}
-@@ -117,6 +124,7 @@ static void *child_thread(void *ctx)
- 	uprobe_multi_func_1();
- 	uprobe_multi_func_2();
- 	uprobe_multi_func_3();
-+	usdt_trigger();
- 
- 	err = 0;
- 	pthread_exit(&err);
-@@ -182,6 +190,7 @@ static void uprobe_multi_test_run(struct uprobe_multi *skel, struct child *child
- 		uprobe_multi_func_1();
- 		uprobe_multi_func_2();
- 		uprobe_multi_func_3();
-+		usdt_trigger();
- 	}
- 
- 	if (child)
-@@ -269,8 +278,24 @@ __test_attach_api(const char *binary, const char *pattern, struct bpf_uprobe_mul
- 	if (!ASSERT_OK_PTR(skel->links.uprobe_extra, "bpf_program__attach_uprobe_multi"))
- 		goto cleanup;
- 
-+	/* Attach (uprobe-backed) USDTs */
-+	skel->links.usdt_pid = bpf_program__attach_usdt(skel->progs.usdt_pid, pid, binary,
-+							"test", "pid_filter_usdt", NULL);
-+	if (!ASSERT_OK_PTR(skel->links.usdt_pid, "attach_usdt_pid"))
-+		goto cleanup;
-+
-+	skel->links.usdt_extra = bpf_program__attach_usdt(skel->progs.usdt_extra, -1, binary,
-+							  "test", "pid_filter_usdt", NULL);
-+	if (!ASSERT_OK_PTR(skel->links.usdt_extra, "attach_usdt_extra"))
-+		goto cleanup;
-+
- 	uprobe_multi_test_run(skel, child);
- 
-+	ASSERT_FALSE(skel->bss->bad_pid_seen_usdt, "bad_pid_seen_usdt");
-+	if (child) {
-+		ASSERT_EQ(skel->bss->child_pid_usdt, child->pid, "usdt_multi_child_pid");
-+		ASSERT_EQ(skel->bss->child_tid_usdt, child->tid, "usdt_multi_child_tid");
-+	}
- cleanup:
- 	uprobe_multi__destroy(skel);
- }
-diff --git a/tools/testing/selftests/bpf/progs/uprobe_multi.c b/tools/testing/selftests/bpf/progs/uprobe_multi.c
-index 86a7ff5d3726..44190efcdba2 100644
---- a/tools/testing/selftests/bpf/progs/uprobe_multi.c
-+++ b/tools/testing/selftests/bpf/progs/uprobe_multi.c
-@@ -1,8 +1,8 @@
- // SPDX-License-Identifier: GPL-2.0
--#include <linux/bpf.h>
-+#include "vmlinux.h"
- #include <bpf/bpf_helpers.h>
- #include <bpf/bpf_tracing.h>
--#include <stdbool.h>
-+#include <bpf/usdt.bpf.h>
- 
- char _license[] SEC("license") = "GPL";
- 
-@@ -23,9 +23,12 @@ __u64 uprobe_multi_sleep_result = 0;
- int pid = 0;
- int child_pid = 0;
- int child_tid = 0;
-+int child_pid_usdt = 0;
-+int child_tid_usdt = 0;
- 
- int expect_pid = 0;
- bool bad_pid_seen = false;
-+bool bad_pid_seen_usdt = false;
- 
- bool test_cookie = false;
- void *user_ptr = 0;
-@@ -112,3 +115,29 @@ int uprobe_extra(struct pt_regs *ctx)
- 	/* we need this one just to mix PID-filtered and global uprobes */
- 	return 0;
- }
-+
-+SEC("usdt")
-+int usdt_pid(struct pt_regs *ctx)
-+{
-+	__u64 cur_pid_tgid = bpf_get_current_pid_tgid();
-+	__u32 cur_pid;
-+
-+	cur_pid = cur_pid_tgid >> 32;
-+	if (pid && cur_pid != pid)
-+		return 0;
-+
-+	if (expect_pid && cur_pid != expect_pid)
-+		bad_pid_seen_usdt = true;
-+
-+	child_pid_usdt = cur_pid_tgid >> 32;
-+	child_tid_usdt = (__u32)cur_pid_tgid;
-+
-+	return 0;
-+}
-+
-+SEC("usdt")
-+int usdt_extra(struct pt_regs *ctx)
-+{
-+	/* we need this one just to mix PID-filtered and global USDT probes */
-+	return 0;
-+}
--- 
-2.43.0
-
+ 	/* It's not possible to get access to a locked struct sock in these
+@@ -8988,7 +8989,6 @@ static int check_map_func_compatibility(struct bpf_verifier_env *env,
+ 	case BPF_MAP_TYPE_SOCKMAP:
+ 		if (func_id != BPF_FUNC_sk_redirect_map &&
+ 		    func_id != BPF_FUNC_sock_map_update &&
+-		    func_id != BPF_FUNC_map_delete_elem &&
+ 		    func_id != BPF_FUNC_msg_redirect_map &&
+ 		    func_id != BPF_FUNC_sk_select_reuseport &&
+ 		    func_id != BPF_FUNC_map_lookup_elem &&
+@@ -8998,7 +8998,6 @@ static int check_map_func_compatibility(struct bpf_verifier_env *env,
+ 	case BPF_MAP_TYPE_SOCKHASH:
+ 		if (func_id != BPF_FUNC_sk_redirect_hash &&
+ 		    func_id != BPF_FUNC_sock_hash_update &&
+-		    func_id != BPF_FUNC_map_delete_elem &&
+ 		    func_id != BPF_FUNC_msg_redirect_hash &&
+ 		    func_id != BPF_FUNC_sk_select_reuseport &&
+ 		    func_id != BPF_FUNC_map_lookup_elem &&
 
