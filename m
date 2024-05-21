@@ -1,111 +1,126 @@
-Return-Path: <bpf+bounces-30125-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-30123-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 759788CB237
-	for <lists+bpf@lfdr.de>; Tue, 21 May 2024 18:33:26 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 91D5E8CB20E
+	for <lists+bpf@lfdr.de>; Tue, 21 May 2024 18:19:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2DA261F22120
-	for <lists+bpf@lfdr.de>; Tue, 21 May 2024 16:33:26 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 393701F22325
+	for <lists+bpf@lfdr.de>; Tue, 21 May 2024 16:19:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D69729414;
-	Tue, 21 May 2024 16:33:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A41D21CD3B;
+	Tue, 21 May 2024 16:19:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="kxELvDe4"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="eVTSqy5o"
 X-Original-To: bpf@vger.kernel.org
-Received: from m15.mail.163.com (m15.mail.163.com [45.254.50.219])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B146717556
-	for <bpf@vger.kernel.org>; Tue, 21 May 2024 16:33:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.254.50.219
+Received: from mail-pg1-f172.google.com (mail-pg1-f172.google.com [209.85.215.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E22D64C66
+	for <bpf@vger.kernel.org>; Tue, 21 May 2024 16:19:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716309199; cv=none; b=DFCNiGi9pJTg/FKRL1QUQREiDPv68xJ4eET3cxDXcCaBHLNLACF9mO57ZdC3309SxnguEh+NDSFNrsNscVW+sBMOQWpXD2wo35KZwpJAindoPcejjGP/oFPpc73V8I83Fl586bZ31e2QdQKlQFl8RpVYOqUUCKEgCUcC6WJRI/U=
+	t=1716308384; cv=none; b=RuAuofGMjYSzxGUxF7iZnQD0HsK1UWOh3PivWcciyQuZjmvPZI1r6bc6EwmHeTUKeVVBshUOzXwkB7jfPkbifRNAz9eeYoOyCpxAojwDjPblpVwpmHejdGyOdOjKU1Bvxcc3Qw52avUOg2wHln4INReglUeTKmyOz0s+YYH8rok=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716309199; c=relaxed/simple;
-	bh=4pGAMx5urtSQ/dCyB9t6cN9tmkLhVjzBgpx40HlKF6w=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=ZD42Vk6jnrDB6dOX/j+CujBa1aSJsRAnw6y/3jAHJ6YU+Lh7oF3joJh9qIpEnzEz7ZPU3kub6SQdygUc+IYckFCiZ86hrQsK9pbuscU8FWJHODQ0B/uh9muoFezjqpgDBzF4FKD2RVmSCzGCQXveFMJheQ6d2h2PbBNZq1zF0Vs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b=kxELvDe4; arc=none smtp.client-ip=45.254.50.219
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-	s=s110527; h=From:Subject:Date:Message-ID:MIME-Version; bh=T2lAV
-	QvwxpH/bjA1fpplqyRYDx8/s/Tkoi13ietImFg=; b=kxELvDe46+LMpAmf4e/QC
-	P4BVCo2MEMXazye542lbJkSOZG7FsvP8qbE6lGVQKypAyNrU+vacfPOyUYfqfpSN
-	ogvvb0DNmFMMeJT4qrrQKl9GI9wQP+iGFpJ9jx6sOaie04LzUf1oiHZnY2iAi2Uv
-	/z8SAh8bxN1f7vatYwSvew=
-Received: from localhost.localdomain (unknown [115.60.16.246])
-	by gzga-smtp-mta-g0-5 (Coremail) with SMTP id _____wDX_2EAyUxm1naHFQ--.46551S2;
-	Wed, 22 May 2024 00:17:08 +0800 (CST)
-From: zhangying <yingzhang098@163.com>
-To: ast@kernel.org,
-	daniel@iogearbox.net,
-	andrii@kernel.org
-Cc: martin.lau@linux.dev,
-	song@kernel.org,
-	yonghong.song@linux.dev,
-	john.fastabend@gmail.com,
-	kpsingh@kernel.org,
-	sdf@google.com,
-	haoluo@google.com,
-	jolsa@kernel.org,
-	bpf@vger.kernel.org,
-	Ying Zhang <yingzhang098@163.com>
-Subject: [PATCH bpf-next v2] bpf: Remove unused variable "prev_state"
-Date: Tue, 21 May 2024 16:17:02 +0000
-Message-ID: <20240521161702.4339-1-yingzhang098@163.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <yonghong.song@linux.dev>
-References: <yonghong.song@linux.dev>
+	s=arc-20240116; t=1716308384; c=relaxed/simple;
+	bh=wvroEoVEhaV92iXAqzB/u+ZllHGQlM9QZfVpy13fCQI=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=Ij/N0ef79YxEppaRcKFljpQHtfm4J43mJdTjnmf+/2JA1Y2xdxA0aqRp4B7Aa5OljsZkBdtGkcHJvdcsxv82GTlSVR5dEARbWgzr7bRehaG72k+VRHFQbOAK9/naqPlJGo5Xe5CCY87pOezo6evECXkbnLOfjnkDHZujrsKK0R8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=eVTSqy5o; arc=none smtp.client-ip=209.85.215.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f172.google.com with SMTP id 41be03b00d2f7-656d8b346d2so1471110a12.2
+        for <bpf@vger.kernel.org>; Tue, 21 May 2024 09:19:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1716308382; x=1716913182; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=eNFK/UpQQJeUWPv9gZBtmOUb/BKOfMOKTFPirHiD6BE=;
+        b=eVTSqy5oK1L1o2Ke0nx9+CWN5/LlzNh1n+dwojuHDk5qMBJh8MnXWUIP3hS0rqlDjP
+         BzsS21Tx5ohwO/6pmCPzvZ4rMPd7i4IRZjnZxd8kT+pPUhor5PZGjtYqvzhkv0ys5Mfj
+         D9EeGPHKc8Us6sg058ipFvgzHjZ4xVFHK54Wf1K1Qy0ajPyubdNUjqnuJVHs5mfGChcb
+         Y5oqYwq48bKhSpa1IkSxLA27dLvVSIM3TRNVyf1J+3MYMghrvv91EbKh5oYlpnK+z4E1
+         mnst7UvMn40+NeUlcZFHq1LbrAf2Eh9TvUDONek3ADw14/OMWB0BUQqZfwzGnYsa49/y
+         JTsg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1716308382; x=1716913182;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=eNFK/UpQQJeUWPv9gZBtmOUb/BKOfMOKTFPirHiD6BE=;
+        b=UtNEQDMdP43cnD185P6l3E3t8N8QuQSrkRCFv+9qyXHXhrjas1yekEwdqNMc802acO
+         1dHNoSg9WhYnmJG6UZwK6Ds/IvtNxL2GDWVThXyv8aRPB+4Hqppb3t+0Axs53s3NR+Kd
+         zrHFkTlGrgClVwesV6Y/l03koUgwOGVLF4HtkixhkzwbjcynJqufZCtd5WkasrA3gxrm
+         g7CZ1QblwZa3MqBljtlbsw8D0rmMKyek6OWaXYHlty4vJ6batM8lpjnf2wBJnuxDO/ZV
+         fmvS/ppUGc+swmRnRyxXV3M2ftcxwoIX3lQA0dppbgc8CubYIlYjyEOQQ1Yyf22cy6Pe
+         0/eQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVCBkvGfZo5tMbHKJz9vKFjy5M9Wi8A60RF7nsqHeuye6kkguOjwrGR8YkI2srRZOJoTTb/xto/XFV0aYndC1mfbCI6
+X-Gm-Message-State: AOJu0Yx5sRYWlkKqryCwqkeWhpOSUi1BlpyvWVHmUU5XxHwRUOdHs1wO
+	2M7BxO/PuGQyQmm/PPS01rOkZcBQUEqXgeRylJ8AWKpqN0bz7IqQ
+X-Google-Smtp-Source: AGHT+IGRwlaF6DjfYY4eMRziEx+cUyFUFumrzVMXR3qMubJ8Y0oeYE4WFtOMxBnoiTe43hcWUxyNew==
+X-Received: by 2002:a17:90a:f495:b0:2b3:28be:ddfa with SMTP id 98e67ed59e1d1-2b6cceef302mr29410184a91.38.1716308382119;
+        Tue, 21 May 2024 09:19:42 -0700 (PDT)
+Received: from ?IPv6:2604:3d08:6979:1160::3424? ([2604:3d08:6979:1160::3424])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2bd7f6c90f0sm3841769a91.2.2024.05.21.09.19.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 21 May 2024 09:19:41 -0700 (PDT)
+Message-ID: <81bbbbad95244dd74801497414c2cdad88815f83.camel@gmail.com>
+Subject: Re: [PATCH v4 bpf-next 00/11] bpf: support resilient split BTF
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Alan Maguire <alan.maguire@oracle.com>, andrii@kernel.org,
+ jolsa@kernel.org,  acme@redhat.com, quentin@isovalent.com
+Cc: mykolal@fb.com, ast@kernel.org, daniel@iogearbox.net,
+ martin.lau@linux.dev,  song@kernel.org, yonghong.song@linux.dev,
+ john.fastabend@gmail.com,  kpsingh@kernel.org, sdf@google.com,
+ haoluo@google.com, houtao1@huawei.com,  bpf@vger.kernel.org,
+ masahiroy@kernel.org, mcgrof@kernel.org, nathan@kernel.org
+Date: Tue, 21 May 2024 09:19:40 -0700
+In-Reply-To: <3ae296b2-402a-4e17-b874-e067c57fc091@oracle.com>
+References: <20240517102246.4070184-1-alan.maguire@oracle.com>
+	 <b647e0d1d225f9d21e78c6ffedb722507f42eff0.camel@gmail.com>
+	 <3ae296b2-402a-4e17-b874-e067c57fc091@oracle.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.44.4-0ubuntu2 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:_____wDX_2EAyUxm1naHFQ--.46551S2
-X-Coremail-Antispam: 1Uf129KBjvdXoW7Xr15CF18tr1kWr1xWw4xXrb_yoWDJFg_tw
-	1Fqr1xArZ5Gr10kF1F9w17Gas7Zr95Kw48WrWjq34jy3Z3tr1rZwsxZrnxWrWxXw1xuF9x
-	J3s7XF1Ikr42yjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-	9fnUUvcSsGvfC2KfnxnUUI43ZEXa7xRRMmhtUUUUU==
-X-CM-SenderInfo: p1lqw6pkdqwiizy6il2tof0z/xtbBhgXl0WWXvodD3AAAsj
 
-From: Ying Zhang <yingzhang098@163.com>
+On Tue, 2024-05-21 at 10:15 +0100, Alan Maguire wrote:
 
-The variable "prev_state" is not used for any actual operations
+[...]
 
-v2: Fix commit message and description.
+> This is a neat approach, and as you say it eliminates the need to modify
+> bpftool to handle distilled base BTF and relocation.  The only wrinkle
+> is resolve_btfids; we call resolve_btfids for modules with a "-B
+> vmlinux" argument, so in that case we'd be calling btf_parse_elf() with
+> both a split and base BTF. According to the approach outlined above,
+> we'd relocate split BTF - originally relative to .BTF.base - to be
+> relative to vmlinux BTF, but in the case of resolve_btfids we don't want
+> that relocation. We want the BTF ids to reflect the distilled base BTF
+> ids since they will be relocated later on module load along with the
+> split BTF references themselves.
 
-Signed-off-by: Ying Zhang <yingzhang098@163.com>
-Acked-by: Yonghong Song <yonghong.song@linux.dev>
----
- samples/bpf/cpustat_kern.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+You are correct, I missed this detail, resolve_btfids needs distilled
+base instead of vmlinux for out of tree modules.
 
-diff --git a/samples/bpf/cpustat_kern.c b/samples/bpf/cpustat_kern.c
-index 944f13fe1..7ec7143e2 100644
---- a/samples/bpf/cpustat_kern.c
-+++ b/samples/bpf/cpustat_kern.c
-@@ -211,7 +211,7 @@ int bpf_prog1(struct cpu_args *ctx)
- SEC("tracepoint/power/cpu_frequency")
- int bpf_prog2(struct cpu_args *ctx)
- {
--	u64 *pts, *cstate, *pstate, prev_state, cur_ts, delta;
-+	u64 *pts, *cstate, *pstate, cur_ts, delta;
- 	u32 key, cpu, pstate_idx;
- 	u64 *val;
- 
-@@ -232,7 +232,6 @@ int bpf_prog2(struct cpu_args *ctx)
- 	if (!cstate)
- 		return 0;
- 
--	prev_state = *pstate;
- 	*pstate = ctx->state;
- 
- 	if (!*pts) {
--- 
-2.43.0
+> We can handle this by having a -R flag to skip relocation; it would
+> simply ensure we first try calling btf__parse(), falling back to
+> btf__parse_split(); we need the fallback logic as it is possible the
+> pahole version didn't add .BTF.base sections. This logic would only be
+> activated for out-of-tree module builds so seems acceptable to me. If
+> that makes sense, with your permission I can rework the series to
+> include your BTF parsing patch.
 
+Makes sense to me, but I'm curious whether you and Andrii consider
+this a good interface, compared to _opts version.
+
+Thanks,
+Eduard
 
