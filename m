@@ -1,46 +1,46 @@
-Return-Path: <bpf+bounces-30128-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-30129-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 846C48CB23D
-	for <lists+bpf@lfdr.de>; Tue, 21 May 2024 18:34:27 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C7ED78CB23E
+	for <lists+bpf@lfdr.de>; Tue, 21 May 2024 18:34:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B6D5E1C2180A
-	for <lists+bpf@lfdr.de>; Tue, 21 May 2024 16:34:26 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 055051C2158C
+	for <lists+bpf@lfdr.de>; Tue, 21 May 2024 16:34:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E09A147C9D;
-	Tue, 21 May 2024 16:34:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0CE68148308;
+	Tue, 21 May 2024 16:34:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="L6oeK1Uw"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XWwk3Cse"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A67A147C85
-	for <bpf@vger.kernel.org>; Tue, 21 May 2024 16:34:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8239D143C60
+	for <bpf@vger.kernel.org>; Tue, 21 May 2024 16:34:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716309251; cv=none; b=WjtK/PMKy+5bGl8rsnK6eX+Abe1tXmWWaq+LVx9gjlX4f8FVR+KkKPlXJkWD44z2f5UkAiqcwZcA8JS3miW5ZJGOtW9CAwH3P8N4gUtt9gxGJP0tcE5hW8SVAGBLcOqFjPXZJJr5ENkt0xC5GEgH5tSHVD3NCMY5PXHeggxJ2OY=
+	t=1716309254; cv=none; b=tf9NgZBjwwD8uCDjOoipj5fMfutsksoDmDMgjU5BoTSlN7a93xu0Bqs4HUJxDQ0xLkzlvAR02L9DI/WZIZ9bbSX+n5eR838lCIsKXuMU3GwFGMzDNqP7MCMpDzq8sR213+7cWBrklMtBBRYtwzj8QSZpXpcU2ISo9A5oHw4kW/0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716309251; c=relaxed/simple;
-	bh=/M2O7Cyt5OcFCAFni7ZaMrpNoZe+Pp4LTjLqo8ViL/o=;
+	s=arc-20240116; t=1716309254; c=relaxed/simple;
+	bh=DYO2gS09fDQpo2u4YCFEw0hE2Q7oztvr4HIeqjjNFVo=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=dZlHfNQAXu5REJoPB6YP0oICcCh0NQpnsRdV6pFIXakom9DPqpoPC5hRpshA95xGqms22ogRf3z16I43X18jK1hQNiGnDxW4sBpJy0Y1ILjG0Zy3aIEGRmsf3bOXMBSFsu35k7PO0mjDdFe9iEfSr4vxbY8H3DJ6tQz0IlJmCF8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=L6oeK1Uw; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E674DC4AF0C;
-	Tue, 21 May 2024 16:34:10 +0000 (UTC)
+	 MIME-Version; b=tkr+KJl9dqy6eqGhmOMd1Vi0Se7TWmQKpVUjogDBPa66m1oILnF29+MrE3je/Cy+vhkvYKNHB5sZl3oVXh4yJQQpy5r+g/3tk9lsDFpSldT2SepQ7guGAX38Mv9fTwy3IwApA/yH5bhUQfwa83PpF2014LS1/DSbcOgNdiPwi84=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XWwk3Cse; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4132CC2BD11;
+	Tue, 21 May 2024 16:34:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1716309251;
-	bh=/M2O7Cyt5OcFCAFni7ZaMrpNoZe+Pp4LTjLqo8ViL/o=;
+	s=k20201202; t=1716309254;
+	bh=DYO2gS09fDQpo2u4YCFEw0hE2Q7oztvr4HIeqjjNFVo=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=L6oeK1Uwxe7Tc/tG/YTiCzvnvsoFzza0ofo3ZcgzOCujDlsay4N1E3NT5xzAIiwXA
-	 gsYAieaErx5vcrO0t9qX8tlxHwM+EeVMFoEFVydh5iOYumVUsQKlBSk5YqaoxhvdNA
-	 TcsXYzsNPrDX0RaIRy/Af53MkojEY92R6YHJYTWjj8ed4loM4IZsiA6HZxSyffGaIj
-	 v7YgNFaxsytcqyIo9XaBmq3Xm0EtxO4PROFEVZkfir8O/8TCRbbP0mbsRXfNLVVlbO
-	 QHs7pTQMIPchU3TYWNMvb+IjQchRdAti4WkSDKK13hCrZ2Agcc75MetUuXpe5yiM5N
-	 aT6it7LeTqH6A==
+	b=XWwk3CseFxM1EPLPlgFiwcF3QGJoV4KBWgS/muGuDuvztPKtdaiVnf+eeyieXTeSH
+	 iZGWogeSExjfCZblVLr0xAjlqxqR9AYdtHYz4SxBfmeo+APIJU2FCrgObX8Bgv8P/o
+	 Jcd9SwK57NuAqpSzhS/8QPU9jNkMxbp5SmnVJ7Sem8dKpwTd4OZd1gVH3zmUdsyOiw
+	 eJr1Z4iJ6ptg8PjWVAUxJsNVryB6V0XxnWS0s8w309gDN8Pdd/t4E8revVddumKoZy
+	 Cxk9mgROEir54S/emHgXr+Lhtdoswnsl4wvPaEgHW61/C/59+rBIRX4syM5oiEoFSk
+	 jUaPiaUDL6liA==
 From: Andrii Nakryiko <andrii@kernel.org>
 To: bpf@vger.kernel.org,
 	ast@kernel.org,
@@ -49,9 +49,9 @@ To: bpf@vger.kernel.org,
 Cc: andrii@kernel.org,
 	kernel-team@meta.com,
 	Jiri Olsa <jolsa@kernel.org>
-Subject: [PATCH v2 bpf 2/5] bpf: remove unnecessary rcu_read_{lock,unlock}() in multi-uprobe attach logic
-Date: Tue, 21 May 2024 09:33:58 -0700
-Message-ID: <20240521163401.3005045-3-andrii@kernel.org>
+Subject: [PATCH v2 bpf 3/5] libbpf: detect broken PID filtering logic for multi-uprobe
+Date: Tue, 21 May 2024 09:33:59 -0700
+Message-ID: <20240521163401.3005045-4-andrii@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240521163401.3005045-1-andrii@kernel.org>
 References: <20240521163401.3005045-1-andrii@kernel.org>
@@ -63,31 +63,92 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-get_pid_task() internally already calls rcu_read_lock() and
-rcu_read_unlock(), so there is no point to do this one extra time.
+Libbpf is automatically (and transparently to user) detecting
+multi-uprobe support in the kernel, and, if supported, uses
+multi-uprobes to improve USDT attachment speed.
 
-This is a drive-by improvement and has no correctness implications.
+USDTs can be attached system-wide or for the specific process by PID. In
+the latter case, we rely on correct kernel logic of not triggering USDT
+for unrelated processes.
+
+As such, on older kernels that do support multi-uprobes, but still have
+broken PID filtering logic, we need to fall back to singular uprobes.
+
+Unfortunately, whether user is using PID filtering or not is known at
+the attachment time, which happens after relevant BPF programs were
+loaded into the kernel. Also unfortunately, we need to make a call
+whether to use multi-uprobes or singular uprobe for SEC("usdt") programs
+during BPF object load time, at which point we have no information about
+possible PID filtering.
+
+The distinction between single and multi-uprobes is small, but important
+for the kernel. Multi-uprobes get BPF_TRACE_UPROBE_MULTI attach type,
+and kernel internally substitiute different implementation of some of
+BPF helpers (e.g., bpf_get_attach_cookie()) depending on whether uprobe
+is multi or singular. So, multi-uprobes and singular uprobes cannot be
+intermixed.
+
+All the above implies that we have to make an early and conservative
+call about the use of multi-uprobes. And so this patch modifies libbpf's
+existing feature detector for multi-uprobe support to also check correct
+PID filtering. If PID filtering is not yet fixed, we fall back to
+singular uprobes for USDTs.
+
+This extension to feature detection is simple thanks to kernel's -EINVAL
+addition for pid < 0.
 
 Acked-by: Jiri Olsa <jolsa@kernel.org>
 Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
 ---
- kernel/trace/bpf_trace.c | 2 --
- 1 file changed, 2 deletions(-)
+ tools/lib/bpf/features.c | 31 ++++++++++++++++++++++++++++++-
+ 1 file changed, 30 insertions(+), 1 deletion(-)
 
-diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-index 1baaeb9ca205..6249dac61701 100644
---- a/kernel/trace/bpf_trace.c
-+++ b/kernel/trace/bpf_trace.c
-@@ -3423,9 +3423,7 @@ int bpf_uprobe_multi_link_attach(const union bpf_attr *attr, struct bpf_prog *pr
- 	}
+diff --git a/tools/lib/bpf/features.c b/tools/lib/bpf/features.c
+index a336786a22a3..3df0125ed5fa 100644
+--- a/tools/lib/bpf/features.c
++++ b/tools/lib/bpf/features.c
+@@ -392,11 +392,40 @@ static int probe_uprobe_multi_link(int token_fd)
+ 	link_fd = bpf_link_create(prog_fd, -1, BPF_TRACE_UPROBE_MULTI, &link_opts);
+ 	err = -errno; /* close() can clobber errno */
  
- 	if (pid) {
--		rcu_read_lock();
- 		task = get_pid_task(find_vpid(pid), PIDTYPE_TGID);
--		rcu_read_unlock();
- 		if (!task) {
- 			err = -ESRCH;
- 			goto error_path_put;
++	if (link_fd >= 0 || err != -EBADF) {
++		close(link_fd);
++		close(prog_fd);
++		return 0;
++	}
++
++	/* Initial multi-uprobe support in kernel didn't handle PID filtering
++	 * correctly (it was doing thread filtering, not process filtering).
++	 * So now we'll detect if PID filtering logic was fixed, and, if not,
++	 * we'll pretend multi-uprobes are not supported, if not.
++	 * Multi-uprobes are used in USDT attachment logic, and we need to be
++	 * conservative here, because multi-uprobe selection happens early at
++	 * load time, while the use of PID filtering is known late at
++	 * attachment time, at which point it's too late to undo multi-uprobe
++	 * selection.
++	 *
++	 * Creating uprobe with pid == -1 for (invalid) '/' binary will fail
++	 * early with -EINVAL on kernels with fixed PID filtering logic;
++	 * otherwise -ESRCH would be returned if passed correct binary path
++	 * (but we'll just get -BADF, of course).
++	 */
++	link_opts.uprobe_multi.pid = -1; /* invalid PID */
++	link_opts.uprobe_multi.path = "/"; /* invalid path */
++	link_opts.uprobe_multi.offsets = &offset;
++	link_opts.uprobe_multi.cnt = 1;
++
++	link_fd = bpf_link_create(prog_fd, -1, BPF_TRACE_UPROBE_MULTI, &link_opts);
++	err = -errno; /* close() can clobber errno */
++
+ 	if (link_fd >= 0)
+ 		close(link_fd);
+ 	close(prog_fd);
+ 
+-	return link_fd < 0 && err == -EBADF;
++	return link_fd < 0 && err == -EINVAL;
+ }
+ 
+ static int probe_kern_bpf_cookie(int token_fd)
 -- 
 2.43.0
 
