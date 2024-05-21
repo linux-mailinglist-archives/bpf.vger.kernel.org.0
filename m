@@ -1,147 +1,151 @@
-Return-Path: <bpf+bounces-30098-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-30099-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0B3968CAB8D
-	for <lists+bpf@lfdr.de>; Tue, 21 May 2024 12:12:16 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id D98BC8CAC25
+	for <lists+bpf@lfdr.de>; Tue, 21 May 2024 12:26:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5C4C0B20B6D
-	for <lists+bpf@lfdr.de>; Tue, 21 May 2024 10:12:13 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 169101C20B33
+	for <lists+bpf@lfdr.de>; Tue, 21 May 2024 10:26:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5BC7E6CDAC;
-	Tue, 21 May 2024 10:12:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F23E87E58D;
+	Tue, 21 May 2024 10:19:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="U91SY6bN"
+	dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b="QKrHGL7h"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-f49.google.com (mail-ed1-f49.google.com [209.85.208.49])
+Received: from mail-lj1-f173.google.com (mail-lj1-f173.google.com [209.85.208.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6DE7156B7B;
-	Tue, 21 May 2024 10:12:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE4527352D
+	for <bpf@vger.kernel.org>; Tue, 21 May 2024 10:19:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716286323; cv=none; b=S51CLKOXgX7BXoS/QRodvT47bXW2anzRnz6Hy1uhXlmNj1wgpkc6wUp0X9DXqvPlZiQEGR39bzCNBaeaBCatLzhs9+n5CA+62tbSBG96kdetmxKpliJgpO27gLoGDWWm6UiE0/farxELfpfM6+3jfUdG86eScp76d4ehq/t6w8U=
+	t=1716286748; cv=none; b=qAJdo8f8Wq6FgEzvBv7oXHh8rJfFTm9bBp8qletyfErr4lSD4e+Xeg0Zzgp7OWq1iMlcIOeF1FbhD4HJDr2+jrks5AFUsroi4+TmtAOAbWBDM4pwZJhWaapMWSF0PWCstZ+EeWcyuqsQ4oWim5mBAHt7+HOhn/9jck7cLAKUM9M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716286323; c=relaxed/simple;
-	bh=yYi5hNsdf/JVmDv8OJQeekda0JmzzC54uH3omBKiUME=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=nr1EfKIgSw+iUf4sK83I41jGIbP6tlQluG3kJ349LOgHZRpsiSV3dK1Qs/HV+gAvOxx+DQV5R99iCRnpQlqo+25R034GuaAPzC3fgeAK8jXnNie0eohRNBwoNnnFXptTWuc4VxwKuWGQrvJgAW29Etdms1Z0MBldomkipb82l6o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=U91SY6bN; arc=none smtp.client-ip=209.85.208.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f49.google.com with SMTP id 4fb4d7f45d1cf-56e56ee8d5cso9519199a12.2;
-        Tue, 21 May 2024 03:12:02 -0700 (PDT)
+	s=arc-20240116; t=1716286748; c=relaxed/simple;
+	bh=aTLAfJ7NTAq195IS6FqbKzM3Y760wbMl85VWvhcZgbA=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=lDNHzC+prOj7uI8TeK8zdQo1jG6DJEk0NKdX3LVm1uSFgDtey8KQUlitNGgkwdb37BLZy/mvpz9atTOL91rVqeZ4bcL5k+JjuKvg+FRkp0hSRMC6WKfmFvOVyfA1DwQC83e1gySnk+L69zYbb094PExUL3aQJw3xW7gT+9siTnM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com; spf=pass smtp.mailfrom=cloudflare.com; dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b=QKrHGL7h; arc=none smtp.client-ip=209.85.208.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cloudflare.com
+Received: by mail-lj1-f173.google.com with SMTP id 38308e7fff4ca-2e428242a38so72078841fa.2
+        for <bpf@vger.kernel.org>; Tue, 21 May 2024 03:19:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1716286321; x=1716891121; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=DXGQUDdf+LcN9Se8hy3SDw3datb6i3o01wmR3xY+ZaE=;
-        b=U91SY6bN7zE1iekQp9AYZTMIJ4GCYUq4NODLW816WeATTYMW6STyvRQCBUrDybwaO4
-         Z8nNz/fKmx8qfzI3Zai1U6TFc8bYFifvtoBlXXqiIuaoAe7l38i5yT5IIeaju820XtaT
-         WB2bban6pV6OJBWSQ3fgiK5fWl+w5wEsQAw5Kq7QP0pQBXqJhRemLCw1Uhal8W+cb/E3
-         VFLs9qTVA87tcqmXbqvx9cx3pBkbhRej05v4UT3YfzXl79Ju6pWi1VlRK3U2CKN7L7tg
-         zwJHYfV94QnuUAf6GEVK7eX3hbVOuKPeIbjkdk9G0Jh/mci8Q4AnMlN42WO35otNfsi+
-         pPsw==
+        d=cloudflare.com; s=google09082023; t=1716286745; x=1716891545; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=RVE6+ZCNpzwGUe1XsnJn7ueU+NKyXAImX94cXiq0K+c=;
+        b=QKrHGL7hpwz/uI3zNsDl72G93KBtnl+z4XG+5T8OcIhPVRxm0n1KBQQD27xOKbAd4B
+         42Ks534ejYQ8O0n3675IaGEMnfLTcyydEuyVRGgn3e4+neAeUE3oVcVIFB+veCl4IeXN
+         +IZFT0SK3tGrrRyjCcdrBdlCDYwBTX3QPlCkpSY7ncqu6BXCsuH4VH3A3vCOaiGkuYgC
+         qmzg/FBR5LFaSeTYeWIFC9qTkJtNLI6sh/RmFzkpvXtRzgvrbID/tRhJvqkyP9DxLSwv
+         NL+T0nCUpJJPtRmzBZjT8tLOwvJll6tEQyPyZzgXfH/L5UGGz6wKRnmV7tc2JQ7uXxl7
+         ZLLg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1716286321; x=1716891121;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=DXGQUDdf+LcN9Se8hy3SDw3datb6i3o01wmR3xY+ZaE=;
-        b=f38PwsZkh91RibmV48z49CASkeHK/GFNSE7A2kJwoUi87Vo9CfUGjvzdHYi2eHyuZG
-         DhM6Gqq+xsGIu01i+/hQO6/kX9hjYTToVTLbsHzK9YVE2sVsdMcctqZwtaHOFdOvcVYL
-         TIwMo/yi/ehHvQ0Yxh9BBhLZJNhZyfef7UHNB9w5GUl1m/QAE6Li6iUPYkfLr6lJT+NE
-         dc0uUTmCEgqfMoPQJEGRqNGlfJn8RtlgotbNrQhxZh0uHgOou6oSEh68zyBG4Q4cqysq
-         k98r4YnT5fnGYCIH3X9OcdA2XIeD6DA7xCYB47IkHyVnT/lmJT8bWzsQMYmVdcQT/efY
-         /EqQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXRj/ZoD3txuDRUxSXJnNEl+wHp+b+igQ8JHs5o54uxfkseEyzT4F8iMOaa7q/ZkYJJDNykkoLFaC4R79KowtBXirbBYIThn4a0JChrmOB9/R6FWwRYp4ughTmb0/dydubIKAocfIf5WW0DlXx8l90mQAqYe0lb3Qm9g7xSGnmeaAFhsRtbmoJ7VJQPzcF8QT5AAky7W3JQRjcRzhqJt84tj68vV5OFehq9HFYMwgz1s4KtuaQLjxOoNEZx
-X-Gm-Message-State: AOJu0YxK3lxPpB/D7ifyWfWs/+GHfP1AMQfPyak6S2SDpgUPREo09NA5
-	xOWFMmlUCp2Ya10AKV8Tr3DGDGsezCwebc/3YQsNDQ8jEqoCbMX5
-X-Google-Smtp-Source: AGHT+IHrL4nO4dbSC1XQCh+yY9f5vG1i3rheyn4t0k3IkGU+d9ENf3sGlpgIMwS4VGw4IHpSZTUeHg==
-X-Received: by 2002:a17:907:7da3:b0:a58:e3d9:e2d6 with SMTP id a640c23a62f3a-a5a2d672f76mr2679777966b.56.1716286320629;
-        Tue, 21 May 2024 03:12:00 -0700 (PDT)
-Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a5a17894d4bsm1581035266b.78.2024.05.21.03.11.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 May 2024 03:11:59 -0700 (PDT)
-From: Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Tue, 21 May 2024 12:11:57 +0200
-To: "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>
-Cc: "olsajiri@gmail.com" <olsajiri@gmail.com>,
-	"oleg@redhat.com" <oleg@redhat.com>,
-	"songliubraving@fb.com" <songliubraving@fb.com>,
-	"luto@kernel.org" <luto@kernel.org>,
-	"mhiramat@kernel.org" <mhiramat@kernel.org>,
-	"andrii@kernel.org" <andrii@kernel.org>,
-	"debug@rivosinc.com" <debug@rivosinc.com>,
-	"john.fastabend@gmail.com" <john.fastabend@gmail.com>,
-	"linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"mingo@redhat.com" <mingo@redhat.com>,
-	"rostedt@goodmis.org" <rostedt@goodmis.org>,
-	"ast@kernel.org" <ast@kernel.org>,
-	"tglx@linutronix.de" <tglx@linutronix.de>,
-	"linux-man@vger.kernel.org" <linux-man@vger.kernel.org>,
-	"yhs@fb.com" <yhs@fb.com>,
-	"daniel@iogearbox.net" <daniel@iogearbox.net>,
-	"peterz@infradead.org" <peterz@infradead.org>,
-	"linux-trace-kernel@vger.kernel.org" <linux-trace-kernel@vger.kernel.org>,
-	"bp@alien8.de" <bp@alien8.de>,
-	"bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-	"x86@kernel.org" <x86@kernel.org>
-Subject: Re: [PATCHv5 bpf-next 6/8] x86/shstk: Add return uprobe support
-Message-ID: <ZkxzbSq3bS2loTJI@krava>
-References: <a8b7be15e6dbb1e8f2acaee7dae21fec7775194c.camel@intel.com>
- <Zj_enIB_J6pGJ6Nu@krava>
- <20240513185040.416d62bc4a71e79367c1cd9c@kernel.org>
- <c56ae75e9cf0878ac46185a14a18f6ff7e8f891a.camel@intel.com>
- <ZkKE3qT1X_Jirb92@krava>
- <20240515113525.GB6821@redhat.com>
- <0fa9634e9ac0d30d513eefe6099f5d8d354d93c1.camel@intel.com>
- <20240515154202.GE6821@redhat.com>
- <Zkp6mT2xag29dLTR@krava>
- <81afa4ccc661a1598b659958164c7a73cf211d21.camel@intel.com>
+        d=1e100.net; s=20230601; t=1716286745; x=1716891545;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=RVE6+ZCNpzwGUe1XsnJn7ueU+NKyXAImX94cXiq0K+c=;
+        b=KPObRc6GRKp05tEUS0JWtwBIJstOpMeMcWr8LOmX20s59Psrk7KyRqhmiJvOn9W/mm
+         QmIddvLQTSsT5atS87r21mll9NCbdoJ3aqFlEiHWR7e4uDsudf9RdFlUUyttD22gLCEP
+         BXQ1nybeezsYqsDUg9vVgedRCUmoN5s8hkJ711otq8KxXQqJ3arqJ+ztNfzFwm4wif+4
+         j+U3vZPmlX7zQOVDia589PORNnFmjhK5IRf5sSQIXabUCcrzzXwQxggqvRfSDXkEuRQW
+         fbGuu9xinIJzLjMsUP+I0KOyVttNMojBDizg1sTS/+x5lav+75OOHrVRTX5dWgZgpbc1
+         C6uw==
+X-Forwarded-Encrypted: i=1; AJvYcCVw6MJAej5ygtv8QepJyvm89TPdvuC5X/dMDeH24kshTFMNaBpPgQsdHwcrdCjItt29tsVXnFRZYovs9aD0uK3V3qys
+X-Gm-Message-State: AOJu0Yx42PN8DQiACztcHNrJlZhLrhOnzzpskvrOhRyPT7lDFWQISktt
+	t65U57ayOSRqiHKjYULJpVtrIRHHi0SMQx3dc/P6Xt1IC3EQREvar/pJB4Mz01xbrl/T9NGj2mo
+	I
+X-Google-Smtp-Source: AGHT+IHkv0xLQlJx9nmGqPzFCA5HSn/x5Ym5Kxlwi2kfYV/zoIdIVyZNAL9J7SEi3/cktsuxGCgFKQ==
+X-Received: by 2002:ac2:592f:0:b0:51f:4d57:6812 with SMTP id 2adb3069b0e04-5220fd7c8dcmr23637379e87.19.1716286744270;
+        Tue, 21 May 2024 03:19:04 -0700 (PDT)
+Received: from localhost.localdomain ([104.28.232.6])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a5a179c7fcfsm1577106566b.119.2024.05.21.03.19.03
+        (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
+        Tue, 21 May 2024 03:19:03 -0700 (PDT)
+From: Ignat Korchagin <ignat@cloudflare.com>
+To: stable@vger.kernel.org,
+	bpf@vger.kernel.org
+Cc: kernel-team@cloudflare.com,
+	Ignat Korchagin <ignat@cloudflare.com>,
+	Pengfei Xu <pengfei.xu@intel.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Hou Tao <houtao1@huawei.com>
+Subject: [PATCH 6.6.y] bpf: Add missing BPF_LINK_TYPE invocations
+Date: Tue, 21 May 2024 11:18:26 +0100
+Message-Id: <20240521101826.95373-1-ignat@cloudflare.com>
+X-Mailer: git-send-email 2.39.3 (Apple Git-146)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <81afa4ccc661a1598b659958164c7a73cf211d21.camel@intel.com>
 
-On Tue, May 21, 2024 at 01:31:53AM +0000, Edgecombe, Rick P wrote:
-> On Mon, 2024-05-20 at 00:18 +0200, Jiri Olsa wrote:
-> > anyway I think we can fix that in another way by using the optimized
-> > trampoline,
-> > but returning to the user space through iret when shadow stack is detected
-> > (as I did in the first version, before you adjusted it to the sysret path).
-> > 
-> > we need to update the return address on stack only when returning through the
-> > trampoline, but we can jump to original return address directly from syscall
-> > through iret.. which is slower, but with shadow stack we don't care
-> > 
-> > basically the only change is adding the shstk_is_enabled check to the
-> > following condition in SYSCALL_DEFINE0(uretprobe):
-> > 
-> >         if (regs->sp != sp || shstk_is_enabled())
-> >                 return regs->ax;
-> 
-> On the surface it sounds reasonable. Thanks.
-> 
-> And then I guess if tradeoffs are seen differently in the future, and we want to
-> enable the fast path for shadow stack we can go with your other solution. So
-> this just simply fixes things functionally without much code.
+From: Jiri Olsa <jolsa@kernel.org>
 
-yes, if we want to enable the fast path for shadow stack in future
-we'll need to remove that shstk_is_enabled and push extra frame on
-shadow stack
+commit 117211aa739a926e6555cfea883be84bee6f1695 upstream.
 
-jirka
+Pengfei Xu reported [1] Syzkaller/KASAN issue found in bpf_link_show_fdinfo.
+
+The reason is missing BPF_LINK_TYPE invocation for uprobe multi
+link and for several other links, adding that.
+
+[1] https://lore.kernel.org/bpf/ZXptoKRSLspnk2ie@xpf.sh.intel.com/
+
+Fixes: 89ae89f53d20 ("bpf: Add multi uprobe link")
+Fixes: e420bed02507 ("bpf: Add fd-based tcx multi-prog infra with link support")
+Fixes: 84601d6ee68a ("bpf: add bpf_link support for BPF_NETFILTER programs")
+Fixes: 35dfaad7188c ("netkit, bpf: Add bpf programmable net device")
+Reported-by: Pengfei Xu <pengfei.xu@intel.com>
+Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+Tested-by: Pengfei Xu <pengfei.xu@intel.com>
+Acked-by: Hou Tao <houtao1@huawei.com>
+Link: https://lore.kernel.org/bpf/20231215230502.2769743-1-jolsa@kernel.org
+Cc: stable@vger.kernel.org # 6.6
+Signed-off-by: Ignat Korchagin <ignat@cloudflare.com>
+---
+Hi,
+
+We have experienced a KASAN warning in production on a 6.6 kernel, similar to
+[1]. This backported patch was adjusted to apply onto 6.6 stable branch: the
+only change is dropping the BPF_LINK_TYPE(BPF_LINK_TYPE_NETKIT, netkit)
+definition from the header as netkit was only introduced in 6.7 and 6.7 has the
+backport already.
+
+I was not able to run the syzkaller reproducer from [1], but we have not seen
+the KASAN warning in production since applying this patch internally.
+
+Regards,
+Ignat 
+
+ include/linux/bpf_types.h | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/include/linux/bpf_types.h b/include/linux/bpf_types.h
+index fc0d6f32c687..dfaae3e3ec15 100644
+--- a/include/linux/bpf_types.h
++++ b/include/linux/bpf_types.h
+@@ -142,9 +142,12 @@ BPF_LINK_TYPE(BPF_LINK_TYPE_ITER, iter)
+ #ifdef CONFIG_NET
+ BPF_LINK_TYPE(BPF_LINK_TYPE_NETNS, netns)
+ BPF_LINK_TYPE(BPF_LINK_TYPE_XDP, xdp)
++BPF_LINK_TYPE(BPF_LINK_TYPE_NETFILTER, netfilter)
++BPF_LINK_TYPE(BPF_LINK_TYPE_TCX, tcx)
+ #endif
+ #ifdef CONFIG_PERF_EVENTS
+ BPF_LINK_TYPE(BPF_LINK_TYPE_PERF_EVENT, perf)
+ #endif
+ BPF_LINK_TYPE(BPF_LINK_TYPE_KPROBE_MULTI, kprobe_multi)
+ BPF_LINK_TYPE(BPF_LINK_TYPE_STRUCT_OPS, struct_ops)
++BPF_LINK_TYPE(BPF_LINK_TYPE_UPROBE_MULTI, uprobe_multi)
+-- 
+2.39.2
+
 
