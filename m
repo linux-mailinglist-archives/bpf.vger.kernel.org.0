@@ -1,63 +1,63 @@
-Return-Path: <bpf+bounces-30134-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-30135-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1EB1D8CB253
-	for <lists+bpf@lfdr.de>; Tue, 21 May 2024 18:40:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id BCB878CB265
+	for <lists+bpf@lfdr.de>; Tue, 21 May 2024 18:43:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9A4FE1F22960
-	for <lists+bpf@lfdr.de>; Tue, 21 May 2024 16:40:07 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7523A1F229F7
+	for <lists+bpf@lfdr.de>; Tue, 21 May 2024 16:43:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 156E31442F6;
-	Tue, 21 May 2024 16:40:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B46C147C99;
+	Tue, 21 May 2024 16:43:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KWzoU0PZ"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fD3WuYjy"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D8AB1CA80;
-	Tue, 21 May 2024 16:40:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 65D551CA80;
+	Tue, 21 May 2024 16:43:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716309600; cv=none; b=e0C338iPyLdTUN/qILc/vdIjWK9pTgwQnaI7fPGyHH5WO2wPLY35JPYvnRiC7eJnCZNxPcAkmITXAOLZsFWhnaBiM3KQdJAG5/fdBirjzQRm3K/DaousxJ/pQNerVO5fEiGz3ydX60Ddlqub5AqZ30Fa3W76gGo6Av7mouLNZh8=
+	t=1716309822; cv=none; b=POsFjimTzen2Stm+Jqk/O9iW12HGUiW4PZfjMH7uv+5GVYOP3XjPKkAft78TF+hCE0TNV0YgAd+uhK90up+BN5YX+mp6hCku40FlX8xTmZdBEZc/CD0ziJBXX9OjdRjNH1MZxxh/ubG3pVoChvOmqDtbx6cuHcTjfrzPEpp6zXQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716309600; c=relaxed/simple;
-	bh=DVQA79nAV89v/vOYQVh9+5YPKXdr+s2r4gOfo9ZPLpc=;
+	s=arc-20240116; t=1716309822; c=relaxed/simple;
+	bh=v3vUZ+fHxZKCGYbCtA6MhT3zouHQA1W2ZrEaVPPX2wU=;
 	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=URjMECeaIbkAOCIZoHVNmXyY3s+JYpBa4RFf1vfdASEi4bmYWttP2IxsnaKqwBhSThKRJ97fQrT6DqDCduEgWOGz0AWDdpBPxvsJb7T2HGcSCgVh5cm6xqw/zg/IkEcBW27xodGagqtjo0AB59zUD7kj4sPz2YQnlltowjlTJE8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KWzoU0PZ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 85C43C2BD11;
-	Tue, 21 May 2024 16:39:59 +0000 (UTC)
+	 MIME-Version:Content-Type; b=JuGt5D9Gt1Ucnlb/ag5oJSF8rT8baF8MQhEa6M6BllYMIB1/Uhvu4mq2gdiohTOqFcsZloeMtTAuVSf+MkdLKN1Oni1yYcH06quSwp60R5yc/hmb5TepU9HPzbYTq44ylZG3TakZoN6IumqTzYUwrpttLL9VqgP6c32nHhvdIB0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fD3WuYjy; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 84422C2BD11;
+	Tue, 21 May 2024 16:43:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1716309600;
-	bh=DVQA79nAV89v/vOYQVh9+5YPKXdr+s2r4gOfo9ZPLpc=;
+	s=k20201202; t=1716309822;
+	bh=v3vUZ+fHxZKCGYbCtA6MhT3zouHQA1W2ZrEaVPPX2wU=;
 	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-	b=KWzoU0PZy2xmR2e8CBeSJLQmhF/d1L+1C+0YQj2XyBqFYvJ17jZL7lrKjrI9qkYBw
-	 ttqikMltUBSFM+kdw5gTV/KOn63eq776q6j6RWaFnN//Dq4IFCe/8tBkcQ0mR5CCLx
-	 A+mqNZtxTpDzEmVPzAApsWjLg1BgnIYxMY69WH2FdHWMG4gKwQ7m+fiQ8RCpLhirCc
-	 7P8b9jj1WXz5hc+Earjs/zDbIjIDkCVo+rEqZOD2qM8Q7MN0BRkigcJtCsK9midVFx
-	 kb+hQD5d1jPgzJcYqqpE3xSlbptbR+XxiWpwKL3RF7DZo1/EVnSIcL5zEvV/BnQe4O
-	 3mGSkZw6dxQWQ==
+	b=fD3WuYjyxftV84YDlFyx0rHHTQPYLwkdScP/TVe8uhOVyRY8hYjADrHxi9HNgS5B+
+	 893r8/GtQFk8ymSVU0nEV9qKemeLHETQUrDB/c7C6hb6JUHnfQPA0zOZCNPheHHd1I
+	 chm4F1aeFEnpcJtrDi/yo2feyb+iBTDsP7WT+8w8uMUhJ9exH2ImPw4+1tjWgV5tzr
+	 Bzg45VOtNnuXseepEaMAPtGhr0zMtElXJY/HCX/ybN0wzqU9vgLVDTF/+sScV9py4W
+	 M9X2nM8nVL+aLFWmdjVeu4PPiWAkjIFSbJxc9swExy9RUin4ZpHCDHF3ZIZ5stukmG
+	 Db1stfMy3ODFw==
 From: =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
-To: Xiao Wang <xiao.w.wang@intel.com>, paul.walmsley@sifive.com,
- palmer@dabbelt.com, aou@eecs.berkeley.edu, luke.r.nels@gmail.com,
- xi.wang@gmail.com
-Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
- martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org,
- yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org,
- sdf@google.com, haoluo@google.com, jolsa@kernel.org,
- linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
- bpf@vger.kernel.org, pulehui@huawei.com, haicheng.li@intel.com, Xiao Wang
- <xiao.w.wang@intel.com>
-Subject: Re: [PATCH] riscv, bpf: Introduce shift add helper with Zba
- optimization
-In-Reply-To: <20240520071631.2980798-1-xiao.w.wang@intel.com>
-References: <20240520071631.2980798-1-xiao.w.wang@intel.com>
-Date: Tue, 21 May 2024 18:39:56 +0200
-Message-ID: <874jardspv.fsf@all.your.base.are.belong.to.us>
+To: kernel test robot <lkp@intel.com>, Andrew Morton
+ <akpm@linux-foundation.org>
+Cc: Linux Memory Management List <linux-mm@kvack.org>,
+ amd-gfx@lists.freedesktop.org, bpf@vger.kernel.org,
+ dmaengine@vger.kernel.org, dri-devel@lists.freedesktop.org,
+ imx@lists.linux.dev, intel-gfx@lists.freedesktop.org,
+ intel-xe@lists.freedesktop.org, linux-arch@vger.kernel.org,
+ linux-hardening@vger.kernel.org, linux-pm@vger.kernel.org,
+ linux-renesas-soc@vger.kernel.org, linux-riscv@lists.infradead.org,
+ netdev@vger.kernel.org, nouveau@lists.freedesktop.org
+Subject: Re: [linux-next:master] BUILD REGRESSION
+ 124cfbcd6d185d4f50be02d5f5afe61578916773
+In-Reply-To: <202405220033.NXFpd4Af-lkp@intel.com>
+References: <202405220033.NXFpd4Af-lkp@intel.com>
+Date: Tue, 21 May 2024 18:43:38 +0200
+Message-ID: <87wmnncdz9.fsf@all.your.base.are.belong.to.us>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -67,21 +67,31 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
 
-Xiao Wang <xiao.w.wang@intel.com> writes:
+kernel test robot <lkp@intel.com> writes:
 
-> Zba extension is very useful for generating addresses that index into arr=
-ay
-> of basic data types. This patch introduces sh2add and sh3add helpers for
-> RV32 and RV64 respectively, to accelerate pointer array addressing.
+> tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-n=
+ext.git master
+> branch HEAD: 124cfbcd6d185d4f50be02d5f5afe61578916773  Add linux-next spe=
+cific files for 20240521
+
+[...]
+
+> Error/Warning ids grouped by kconfigs:
 >
-> Signed-off-by: Xiao Wang <xiao.w.wang@intel.com>
+> gcc_recent_errors
 
-This is dependent on [1], and given it hasn't been accepted yet, I'd
-make this patch part of that series.
+[...]
+
+> |-- riscv-randconfig-r054-20240521
+> |   `--
+> drivers-irqchip-irq-riscv-imsic-early.c:error:too-many-arguments-to-funct=
+ion-riscv_ipi_set_virq_range
+
+FWIW, discussion/patch here [1]
 
 
 Bj=C3=B6rn
 
-[1] https://lore.kernel.org/linux-riscv/20240516090430.493122-1-xiao.w.wang=
-@intel.com/
+[1] https://lore.kernel.org/linux-riscv/mhng-10b71228-cf3e-42ca-9abf-5464b1=
+5093f1@palmer-ri-x1c9/
 
