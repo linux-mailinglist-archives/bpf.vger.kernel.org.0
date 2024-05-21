@@ -1,236 +1,155 @@
-Return-Path: <bpf+bounces-30112-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-30113-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 56D048CAD96
-	for <lists+bpf@lfdr.de>; Tue, 21 May 2024 13:49:53 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7B95C8CAE62
+	for <lists+bpf@lfdr.de>; Tue, 21 May 2024 14:35:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0E0F2281E60
-	for <lists+bpf@lfdr.de>; Tue, 21 May 2024 11:49:52 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A015E1C216F1
+	for <lists+bpf@lfdr.de>; Tue, 21 May 2024 12:35:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F885770E6;
-	Tue, 21 May 2024 11:49:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 54FBC763F1;
+	Tue, 21 May 2024 12:35:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KRATUtNB"
+	dkim=pass (2048-bit key) header.d=mojatatu-com.20230601.gappssmtp.com header.i=@mojatatu-com.20230601.gappssmtp.com header.b="OpYhDLpM"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com [209.85.218.45])
+Received: from mail-yw1-f175.google.com (mail-yw1-f175.google.com [209.85.128.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EFCD476EEA;
-	Tue, 21 May 2024 11:49:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6AD8628E7
+	for <bpf@vger.kernel.org>; Tue, 21 May 2024 12:35:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716292145; cv=none; b=osN6zRyXf7zlXf3ySZpmqf2lwId24eGGiwZLAbXlSwZS4FVvD1IrJl0bbGIRZvnPdMk7MXQPxe003nzb3U/rBrth+FTk5ypCjqAIdqNXVOOK+c7Ic3r6gnTvVadTWVHsIbPw0Pc5o/y9z8vLZrbLcm+XSwLo9fYBbZPGz+3KRGw=
+	t=1716294921; cv=none; b=bw3MZ7emYNm1XuCybjRk6+mRwnwPcno/KfB/fSiLGojNCoe9S238gwloVdJsrIoN8Ko5Hib0BRlGPag34EUsyAugWWW/CJUtiU4LhdCJHD5dNtn+wCUuVEjnq9+GSXQjw8VhcegYxVmUr+VwOmamqA6WbFCSaGEuFwhNMP0xIFo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716292145; c=relaxed/simple;
-	bh=IrfXhbXwURjgjuHcPJbS1Tsok2bkF7dHlUYlkUOlva0=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=sIvJ8+cAYCjmGq1xrrMt/usb9ncrpy5TUwstgdSCxzZx/Q2ftBBjObnkF6hS9UyS15Cpiy+aoNiwTNxuGb9rFp0jqL+A8fSz6VBvup0OZ+1xn6IqPB7KsUNpGvR5Po/gobST7YgFxc6pqetGXXiAzVq+ee9MwnCMIH/lkL+iWno=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=KRATUtNB; arc=none smtp.client-ip=209.85.218.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-a59b49162aeso818450966b.3;
-        Tue, 21 May 2024 04:49:03 -0700 (PDT)
+	s=arc-20240116; t=1716294921; c=relaxed/simple;
+	bh=HABtfUr6wHg3IQCNHw1tVM/wml9YbMFqp7NRcxzIM7E=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=omjiqgZjNCYs0GP0rc+sAp5j/GRmLjLpS/PuUMFOn+w6x4NfRIhcL0pk6QfTNsP+nTGHwheood8VG/hol5v9SHU1cOY58a0M4RAkT4JptJjcffrfg8Pj2FT4xyV/NLjNJWKFsdoF3l6SGNVr5NUv8B+lHOdB6W8fQEfKrgURtRI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=mojatatu.com; spf=none smtp.mailfrom=mojatatu.com; dkim=pass (2048-bit key) header.d=mojatatu-com.20230601.gappssmtp.com header.i=@mojatatu-com.20230601.gappssmtp.com header.b=OpYhDLpM; arc=none smtp.client-ip=209.85.128.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=mojatatu.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=mojatatu.com
+Received: by mail-yw1-f175.google.com with SMTP id 00721157ae682-61bed738438so36476897b3.2
+        for <bpf@vger.kernel.org>; Tue, 21 May 2024 05:35:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1716292142; x=1716896942; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=P1AwFEaypQQLUmXbNtkojgKjia4yiQwYD/QyNFzC+5c=;
-        b=KRATUtNBBi935SBhY6BDOfpCu0zFcbutBY9zw7KMKnnpi/CwYYKwq5USs2qkNeArkj
-         pL829Mq4IiOgCCt1yBOjSgGyzqd7Cv5n0xrax3nT9qGKz63QPIiKTA3gD1p84+ItUObB
-         J8VGqHHpsQWjB9E90X3jB00o05LPjSFV3USSR42Mfp/Pv/oMHhtvIyzSGjMCv6ODyFn8
-         JBI29GocO8GHajLZrf5vGdtQ9/v4iTbwDbvOeQbsSbc72K16D0vgDQXO+dzopkYQL5Qd
-         HWhyLLh1dI8mvi8d3C8SO1iEQsNnWn5qI87sM41XaYAHeL6NiEumnCzLRqA5EUWeyzH9
-         lAGA==
+        d=mojatatu-com.20230601.gappssmtp.com; s=20230601; t=1716294919; x=1716899719; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=HABtfUr6wHg3IQCNHw1tVM/wml9YbMFqp7NRcxzIM7E=;
+        b=OpYhDLpMLM8lLhtihAB6isC1D6iEbKLV4XElofJyWwccS01evQBUC2+CmKFtxJNdnI
+         AZYa3cv2pNyj05py8TwIpmKjddlHHyCJ1I8f9oIXkYDVuAwdoLx9FjI4vysc9R4JjgXP
+         HR0u0tianbw4S8+XC3ac1+kAqzne72nzg9FGeegWy2x9Rl8Cr6XKeE9VAkWoSB/CLVvS
+         ++II1p7uyuJSkzGogb2kyStt2ZoT6zq7GkRgMnpR0hK2fh8kMx908Y36mKWNH25E8eNy
+         mOfl/iJvwgzBfYcVg3gkJMiulRTPqVzVK+7jWWhZGQhZ+45xAVl/HKhUl23vW+Ej1SIT
+         iOwQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1716292142; x=1716896942;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=P1AwFEaypQQLUmXbNtkojgKjia4yiQwYD/QyNFzC+5c=;
-        b=IO8hz3APQ3BnKsVxW/QkE9PU6jOIFXhJ2Hh04uDVU7AVv4LxOinuzj0f8qGWPX66qv
-         rJeQm9C+jT5JWceccwoGATL13t6b6yaLVpXXCi0uL4f+kfxu327Hle2sNrxkmKeWDqI0
-         Ve2bSvz/qaMpdR6ozJqCynTMknOF0+pGwBWURA174wJ/0m4G/MTIMmA+NMj6Kc30ffT0
-         cMFwI/lqXQ1CUrA2ZZgtTJ9Tn3K6b5jKlErb2GrcfgLyfJIgJmG2XAmiLjaVg6JiNPBH
-         eid6wUY0GJwPGb7/GNpdMEdzmeQNMeX7u5cMoqzsNURH2xKHJRU+NS1gHvBsjcRyKuGo
-         zE+w==
-X-Forwarded-Encrypted: i=1; AJvYcCXES8Ete+7MD9Kz4oe0OwR+HsDQhZebPmTUkbD5CiR2XUJWar/Sw1m+ZDj8uHkAHoB7AZipa161R9e6MTnGkGEIOVK+HjAiMnozFjkxQxtFIRry4zYTexyW5Crq8br0EWvFykB4P4sLgsShN3jLf7GYpbIyR1mHS2yX8ZTqvGmLP9fft392MIkJ2uaQPNs7Tw83lfCR+z9sEqmR3ZYoMtuevsd1GFJRoH8P4prZUaafwE5AaAXMzUDgu27q
-X-Gm-Message-State: AOJu0YyMEpzPulLwJZKDVoew5g3cV1OzGmW2Ftn+Ep9are/ilWdW09/Q
-	uqSg3pRxCBCqxuQlAuUS0X6Sb160ILs7kRYu0di/VckS3RckqsQG
-X-Google-Smtp-Source: AGHT+IGwOqATHZsFbhwbjGwzE+zJgNafqxC0GyQxz3SfE0Isw4IdDy3aa3zuC1fKlhcm7n7zVqrcQw==
-X-Received: by 2002:a17:906:305a:b0:a59:db0f:6be4 with SMTP id a640c23a62f3a-a5a2d534ec4mr2038795166b.5.1716292141970;
-        Tue, 21 May 2024 04:49:01 -0700 (PDT)
-Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a5a178923fesm1599960166b.64.2024.05.21.04.49.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 May 2024 04:49:01 -0700 (PDT)
-From: Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Tue, 21 May 2024 13:48:59 +0200
-To: Alejandro Colomar <alx@kernel.org>
-Cc: Steven Rostedt <rostedt@goodmis.org>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Oleg Nesterov <oleg@redhat.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>, linux-kernel@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org, linux-api@vger.kernel.org,
-	linux-man@vger.kernel.org, x86@kernel.org, bpf@vger.kernel.org,
-	Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-	John Fastabend <john.fastabend@gmail.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	"Borislav Petkov (AMD)" <bp@alien8.de>,
-	Ingo Molnar <mingo@redhat.com>, Andy Lutomirski <luto@kernel.org>,
-	"Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
-	Deepak Gupta <debug@rivosinc.com>
-Subject: Re: [PATCHv6 9/9] man2: Add uretprobe syscall page
-Message-ID: <ZkyKKwfhNZxrGWsa@krava>
-References: <20240521104825.1060966-1-jolsa@kernel.org>
- <20240521104825.1060966-10-jolsa@kernel.org>
- <j6qxudmvwccpqnle4evabxbswdygmx35bgqwhemuzsjs5iuydv@fk2iumwucifx>
+        d=1e100.net; s=20230601; t=1716294919; x=1716899719;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=HABtfUr6wHg3IQCNHw1tVM/wml9YbMFqp7NRcxzIM7E=;
+        b=D/etvtl30dollkHTLMjJStg6pj1H5RnPRE6S98n3tZEYJYNAII5bJ++IDgnC827bts
+         OCC3Sx+SOSpV98Yh251B2etAwHFM53aH9og2bBnJDFCmUOOEtZRe4zXg9vFU18l1S7J8
+         7JPfk5ysONFWv8MWiMhB/2f4SmjtWz0jwQcZq/7QiOMICjgDcTWI2gOX07YeSTR/4BAi
+         5yDlPysx+1TAmYLUX6zJhwERBKgvH2KlyZtXhNylhtCjyy7lWWmNiYX+VA9TTyF5BRqX
+         dpojBq4Bn7O57jxCccsAFlbcfdLcNd8MdNvmI0wGmHrl3Y6wk7ds4H5BpL5xLEVDnev/
+         OUYw==
+X-Forwarded-Encrypted: i=1; AJvYcCX5edIZlg1MvdcpZgiVd2hxWv9yjTDgCfkbTAPaBaLi04AZMfCP6hNPMx5JnD1WeE+XrlHLZ4esyD6N1GbhCgqHwkb8
+X-Gm-Message-State: AOJu0Yw/XFu26KyFWx0fut9ROKAWx0cscdHEVNNsXsS6ngnFDIN0YlOn
+	19pj/5NIHLLKb4K7INB/hh9CsKXUooBTKG0y0f83C0qfOqLI8uQS072gc7W/xa9uj4wL9OdFqoE
+	BNmN1T7G4Lin4d1aW9jYNLj3gbTzA4AmBhq67
+X-Google-Smtp-Source: AGHT+IGqgZEJHg+PMqQ32lsx1dAhh3ttCrHFm4uv/mja2rTb8hQ0HnLwXjrEHlI97NnkZQEQkD5JwEVrMFVyjVMsc0Q=
+X-Received: by 2002:a05:690c:60c1:b0:61b:92d9:f7e8 with SMTP id
+ 00721157ae682-622affc09ebmr399755867b3.23.1716294919363; Tue, 21 May 2024
+ 05:35:19 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <j6qxudmvwccpqnle4evabxbswdygmx35bgqwhemuzsjs5iuydv@fk2iumwucifx>
+References: <20240410140141.495384-1-jhs@mojatatu.com> <41736ea4e81666e911fee5b880d9430ffffa9a58.camel@redhat.com>
+ <CAM0EoM=982OctjvSQpx0kR7e+JnQLhvZ=sM-tNB4xNiu7nhH5Q@mail.gmail.com>
+ <CAM0EoM=VhVn2sGV40SYttQyaiCn8gKaKHTUqFxB_WzKrayJJfQ@mail.gmail.com>
+ <87cf4830e2e46c1882998162526e108fb424a0f7.camel@redhat.com>
+ <CAM0EoMkJwR0K-fF7qo0PfRw4Sf+=2L0L=rOcH5A2ELwagLrZMw@mail.gmail.com>
+ <CAM0EoMmfDoZ9_ZdK-ZjHjFAjuNN8fVK+R57_UaFqAm=wA0AWVA@mail.gmail.com>
+ <82ee1013ca0164053e9fb1259eaf676343c430e8.camel@redhat.com>
+ <CAADnVQLugkg+ahAapskRaE86=RnwpY8v=Nre8pn=sa4fTEoTyA@mail.gmail.com>
+ <CAM0EoM=2wHem54vTeVq4H1W5pawYuHNt-aS9JyG8iQORbaw5pA@mail.gmail.com> <CAM0EoMmCz5usVSLq_wzR3s7UcaKifa-X58zr6hkPXuSBnwFX3w@mail.gmail.com>
+In-Reply-To: <CAM0EoMmCz5usVSLq_wzR3s7UcaKifa-X58zr6hkPXuSBnwFX3w@mail.gmail.com>
+From: Jamal Hadi Salim <jhs@mojatatu.com>
+Date: Tue, 21 May 2024 08:35:07 -0400
+Message-ID: <CAM0EoMmsB5jHZ=4oJc_Yzm=RFDUHWh9yexdG6_bPFS4_CFuiog@mail.gmail.com>
+Subject: On the NACKs on P4TC patches
+To: Paolo Abeni <pabeni@redhat.com>
+Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, 
+	Network Development <netdev@vger.kernel.org>, "Chatterjee, Deb" <deb.chatterjee@intel.com>, 
+	Anjali Singhai Jain <anjali.singhai@intel.com>, "Limaye, Namrata" <namrata.limaye@intel.com>, 
+	tom Herbert <tom@sipanda.io>, Marcelo Ricardo Leitner <mleitner@redhat.com>, 
+	"Shirshyad, Mahesh" <Mahesh.Shirshyad@amd.com>, "Osinski, Tomasz" <tomasz.osinski@intel.com>, 
+	Jiri Pirko <jiri@resnulli.us>, Cong Wang <xiyou.wangcong@gmail.com>, 
+	"David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
+	Jakub Kicinski <kuba@kernel.org>, Vlad Buslov <vladbu@nvidia.com>, Simon Horman <horms@kernel.org>, 
+	Khalid Manaa <khalidm@nvidia.com>, =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>, 
+	Victor Nogueira <victor@mojatatu.com>, Pedro Tammela <pctammela@mojatatu.com>, 
+	"Jain, Vipin" <Vipin.Jain@amd.com>, "Daly, Dan" <dan.daly@intel.com>, 
+	Andy Fingerhut <andy.fingerhut@gmail.com>, Chris Sommers <chris.sommers@keysight.com>, 
+	Matty Kadosh <mattyk@nvidia.com>, bpf <bpf@vger.kernel.org>, lwn@lwn.net
+Content-Type: text/plain; charset="UTF-8"
 
-On Tue, May 21, 2024 at 01:36:25PM +0200, Alejandro Colomar wrote:
-> Hi Jiri,
-> 
-> On Tue, May 21, 2024 at 12:48:25PM GMT, Jiri Olsa wrote:
-> > Adding man page for new uretprobe syscall.
-> > 
-> > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> > ---
-> >  man2/uretprobe.2 | 50 ++++++++++++++++++++++++++++++++++++++++++++++++
-> >  1 file changed, 50 insertions(+)
-> >  create mode 100644 man2/uretprobe.2
-> > 
-> > diff --git a/man2/uretprobe.2 b/man2/uretprobe.2
-> > new file mode 100644
-> > index 000000000000..690fe3b1a44f
-> > --- /dev/null
-> > +++ b/man2/uretprobe.2
-> > @@ -0,0 +1,50 @@
-> > +.\" Copyright (C) 2024, Jiri Olsa <jolsa@kernel.org>
-> > +.\"
-> > +.\" SPDX-License-Identifier: Linux-man-pages-copyleft
-> > +.\"
-> > +.TH uretprobe 2 (date) "Linux man-pages (unreleased)"
-> > +.SH NAME
-> > +uretprobe \- execute pending return uprobes
-> > +.SH SYNOPSIS
-> > +.nf
-> > +.B int uretprobe(void)
-> > +.fi
-> 
-> What header file provides this system call?
+As stated a few times, we strongly disagree with the nature of the
+Nacks from Alexei, Daniel and John. We dont think there is good ground
+for the Nacks.
 
-there's no header, it's used/called only by user space trampoline
-provided by kernel, it's not expected to be called by user
+A brief history on the P4TC patches:
 
-> 
-> > +.SH DESCRIPTION
-> > +The
-> > +.BR uretprobe ()
-> > +syscall is an alternative to breakpoint instructions for
-> > +triggering return uprobe consumers.
-> > +.P
-> > +Calls to
-> > +.BR uretprobe ()
-> > +suscall are only made from the user-space trampoline provided by the kernel.
-> 
-> s/suscall/system call/
+We posted V1 in January 2023. The main objection then was that we
+needed to use eBPF. After some discussion and investigation on our
+part we found that using kfuncs would satisfy our goals as well as the
+objections raised. We posted 28 RFC patches looking for feedback from
+eBPF and other folks with V2 in May 2023 - these patches were not
+ready but we were nevertheless soliciting for feedback. By Version 7
+in October/2023 we removed the RFC tag (meaning we are asking for
+inclusion). In Version 8 we sent the first 15 patches as series
+1(following netdev rules that allow only 15 patches); 5 of these
+patches are trivial tc core patches. Starting with V8 and upto V14 the
+releases were mostly suggested changes (much thanks to folks who made
+suggestions for technical changes) and at one point it was a bug fix
+for an issue caught by our syzkaller instance.
 
-ugh leftover sry
+When it seemed like Paolo was heading towards applying series 1 given
+the feedback, Alexei nacked patch 14 when we released V14, see:
+https://lore.kernel.org/bpf/20240404122338.372945-5-jhs@mojatatu.com/
+V15 only change was adding Alexei's nack. V15 was followed by Daniel
+and then John also nacking the same patch 14. V16's only change was to
+add these extra Nacks.
 
-> 
-> > +Calls from any other place result in a
-> > +.BR SIGILL .
-> 
-> Maybe add an ERRORS section?
-> 
-> > +
-> 
-> We don't use blank lines; it causes a groff(1) warning, and other
-> problems.  Instead, use '.P'.
-> 
-> > +.SH RETURN VALUE
-> > +The
-> > +.BR uretprobe ()
-> > +syscall return value is architecture-specific.
-> > +
-> 
-> .P
-> 
-> > +.SH VERSIONS
-> > +This syscall is not specified in POSIX,
-> 
-> Redundant with "STANDARDS: None.".
-> 
-> > +and details of its behavior vary across systems.
-> 
-> Keep this.
+At that point(v16) i asked for the series to be applied despite the
+Nacks because, frankly, the Nacks have no merit. Paolo was not
+comfortable applying patches with Nacks and tried to mediate. In his
+mediation effort he asked if we could remove eBPF - and our answer was
+no because after all that time we have become dependent on it and
+frankly there was no technical reason not to use eBPF. Paolo then
+asked if we could satisfy one of the points Alexei raised in terms of
+clearing table entries when an eBPF program was unloaded. We spent a
+week investigating and came to a conclusion that we could do it as a
+compromise (even though it is not something fitting to our
+requirements and there is existing code that we copied from doing
+exactly what Alexei is objecting to). Alexei rejected this offer. This
+puts Paolo in a difficult position because it is clear there is no
+compromise to be had. I feel we are in uncharted teritory.
 
-ok
+Since we are in a quagmire, I am asking for a third party mediator to
+review the objections and validate if they have merit.
+I have created a web page to capture all the objections raised by the
+3 gents over a period of time at:
+https://github.com/p4tc-dev/pushback-patches
+If any of the 3 people feel i have misrepresented their objections or
+missed an important detail please let me know and i will fix the page.
 
-> 
-> > +.SH STANDARDS
-> > +None.
-> > +.SH HISTORY
-> > +TBD
-> > +.SH NOTES
-> > +The
-> > +.BR uretprobe ()
-> > +syscall was initially introduced for the x86_64 architecture where it was shown
-> > +to be faster than breakpoint traps. It might be extended to other architectures.
-> 
-> Please use semantic newlines.
-> 
-> $ MANWIDTH=72 man man-pages | sed -n '/Use semantic newlines/,/^$/p'
->    Use semantic newlines
->      In the source of a manual page, new sentences should be started on
->      new lines, long sentences should be split  into  lines  at  clause
->      breaks  (commas,  semicolons, colons, and so on), and long clauses
->      should be split at phrase boundaries.  This convention,  sometimes
->      known as "semantic newlines", makes it easier to see the effect of
->      patches, which often operate at the level of individual sentences,
->      clauses, or phrases.
-
-ok
-
-thanks,
-jirka
-
-> 
-> > +.P
-> > +The
-> > +.BR uretprobe ()
-> > +syscall exists only to allow the invocation of return uprobe consumers.
-> 
-> s/syscall/system call/
-> 
-> > +It should
-> > +.B never
-> > +be called directly.
-> > +Details of the arguments (if any) passed to
-> > +.BR uretprobe ()
-> > +and the return value are architecture-specific.
-> > -- 
-> > 2.44.0
-> 
-> Have a lovely day!
-> Alex
-> 
-> -- 
-> <https://www.alejandro-colomar.es/>
-
-
+cheers,
+jamal
 
