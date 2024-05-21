@@ -1,146 +1,171 @@
-Return-Path: <bpf+bounces-30170-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-30171-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B7B1D8CB60C
-	for <lists+bpf@lfdr.de>; Wed, 22 May 2024 00:37:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id D141C8CB62B
+	for <lists+bpf@lfdr.de>; Wed, 22 May 2024 00:53:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6DE642828E4
-	for <lists+bpf@lfdr.de>; Tue, 21 May 2024 22:37:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 770E5281DAE
+	for <lists+bpf@lfdr.de>; Tue, 21 May 2024 22:53:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE60B149C65;
-	Tue, 21 May 2024 22:37:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 80FB8148820;
+	Tue, 21 May 2024 22:53:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MMZgOruN"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hR2u9WAJ"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f50.google.com (mail-ej1-f50.google.com [209.85.218.50])
+Received: from mail-yw1-f171.google.com (mail-yw1-f171.google.com [209.85.128.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E23DF58AC1
-	for <bpf@vger.kernel.org>; Tue, 21 May 2024 22:37:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 86143168BD
+	for <bpf@vger.kernel.org>; Tue, 21 May 2024 22:53:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716331036; cv=none; b=iE5CHTl1memOXof7i4IzJFtNmLyWqdD2o2L0/eWh2R9rX/X0wmaN+0wuMY7/8OUKPiVywxlX3IbBuiUzhkMCYvFaC07pxiUZ2D1phVdFBcuglURI4wAo1t7eZYQHug/geZu9dwW+zT2O0AyqDmkQrY+68iL1oMMLr4zwODGd5u8=
+	t=1716331983; cv=none; b=nB6d/sAjwUyyNIlrTXtn97xC8n48oz4uXFCjAl62F/MdDVSBNy9KmMCr4vsW5tO1vTgksrr0mPAgt2XjsaKmU1oj1ZO6syKTvrKu7s+9f5jipuGmI0OypAhnMXUkzrZKR7mKxgIEgzT/WIWUFg5XT4j8jPbvEMqrCcp9/IFOyyI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716331036; c=relaxed/simple;
-	bh=j7y9QYXVE7mNh63y1+xS3zSPnmIFL7OS5uANizmB4e0=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=LgVbKYcOD3+13Fw4AN+9hBcMpbWTXhEsvFdVTD8T2T1zU3iwwrxqrNS+LBN2rgzXhDVGl3UObvqiJIU2RAVZLKfHkI/xxnf12mQn1LbMaSmF+8OiU+ZVRF0/aqKL3s6wdqwpDKADtFIBQbUZiQQLUEXFrY4XlkcM6hntbkvJ1Rk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=MMZgOruN; arc=none smtp.client-ip=209.85.218.50
+	s=arc-20240116; t=1716331983; c=relaxed/simple;
+	bh=5vt5uNJOvKCrJXPakyXdK5tT6pHazjb/XlrSmr99xMQ=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=N1+5/kp2WHOFJntSUF++0yUdaZ6th3mUJSHbtDS55RaqH/QqU+xakZPyWAB1keOKWdtjVp5jHe9EiXywDvWJg7WUTuGtlJfbaxDQrQy3BdjgIuZnUhIvtu5PyHrGXWlBRs/LULVkr2LsyBxHyHPpJWWgAkh2vGDt0C0gkozznfk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hR2u9WAJ; arc=none smtp.client-ip=209.85.128.171
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f50.google.com with SMTP id a640c23a62f3a-a59a609dd3fso60334766b.0
-        for <bpf@vger.kernel.org>; Tue, 21 May 2024 15:37:14 -0700 (PDT)
+Received: by mail-yw1-f171.google.com with SMTP id 00721157ae682-61be674f5d1so41230157b3.2
+        for <bpf@vger.kernel.org>; Tue, 21 May 2024 15:53:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1716331033; x=1716935833; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=j7y9QYXVE7mNh63y1+xS3zSPnmIFL7OS5uANizmB4e0=;
-        b=MMZgOruNTQRJkTqT0P//Tc5Pl2e5Pfg6kZYeEc/1ikI/ltg9Y5sJxBYB/1gsKxjifd
-         UZUKBIpWdAezcYEEaZh4354WmdCERo21K3/kVzvonDINNNF3InR9mXhyKRSLXMzZil0i
-         uNmzGVsH3H1+06Qypq62Iw+6NcOC3M9YLVQERWych7PHXD++iM69ZtoTu8673AF8Mg2O
-         K96zqgiVatJxYQeVazHfmyhxb2+ThJRE3mPbAwTWN1rFfzAW4MWBh2ZffEAaymmMBd04
-         IYIOArubZc/eCzQDdgP7KK7GArwsnVVzpYR7ZKWjcZHN2MqEVPJoMta13o2zWqOkdY+h
-         6nKA==
+        d=gmail.com; s=20230601; t=1716331980; x=1716936780; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=yt6qbsNkDbFN4skJv9vyYrsyxVhc0Jxm0wzro/tcqns=;
+        b=hR2u9WAJXllakI0KibxWQpd06Zkajacjb/ttboUPxqPx/b+ae5heGK7HYFsg3AEVkR
+         AEJ7t4Jor4GbW+q/Oekpk9ylEMR49AJOtDWleY9XBYRltceDzqdzx8pIOK3oE0Hr18L1
+         Gm9lCtfVa3HlxLDwzEhQr/Jar39O231kddixTPqicUyom9AYDNbeoHU0yCDudCO4WlX+
+         hTOxPU5bJ1Wee45WQ3UgeMpaoT1MeV5fr4sgerk/eLdUE05bOVob1gZS8H3GihWi/20l
+         pQUuSU4nPwpmjV0rb81qqYixvWPrcJ6az5z4bgZKnuyUrL/no5c1C9Jd/9CMZ2hpe73Z
+         JsBA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1716331033; x=1716935833;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=j7y9QYXVE7mNh63y1+xS3zSPnmIFL7OS5uANizmB4e0=;
-        b=Gc0R0nzTpPEM55hYH9ctCg5eQoDFqxdjasf7s/5Gn9uEbO5U7LX0Q/A2YPhD+V+xHG
-         +7SVqSsHfcONneGpvfZHFRt3osIi2FS+64n38x1f4lEGO/NVE7F8NxJooB0f3JviKHsZ
-         W48M2Tx93jL9OvplA26RTpTK+KpbPSNmOj36DXCX2y4dwKJAZOcx/3V7NC2YA5ubu60O
-         XxEXsKK+YtqLgEh5eNRNWWy3lNNyezWt18kI4bsIX/63aS+6u9xoUcMsNBh1RPV7RPvD
-         /cyHkFJe8KzfRbwVAh532eGKm4rybKD7hwHWL9p0+X/CyCM+9h4cQsLQaFApSNYvkjni
-         hG+g==
-X-Forwarded-Encrypted: i=1; AJvYcCUyjtcgbt2NSdskQrosyfGR+eRCAPVDjLIcj3vYhQJYpZZTSjAZyelntgeT/U2tlpX0LmHU6BIVm5SzKk7SRiTDbSs3
-X-Gm-Message-State: AOJu0YwKGnT4PeJ+r5Kg5DsNZf11MywIMlrz1AgK0ChqDpGca7MzTCQr
-	xssBZkZh9kggUM4gmLK29bt8Xkq4hf47asx137+TbDM/3VAk1vwJN4sZ5w+8ogdz++1FgOdvY1R
-	5mlprvVgUiDtYHfnvg1zFZWqyQgj7kw==
-X-Google-Smtp-Source: AGHT+IH0I4GsSqgXU7iPsYPOxFWaEeSyOBywcmxM2I4DVVUaprCR7XwqNF8s6ORgU+UwtiY3/D37ksEKSDMQ3cgI6Iw=
-X-Received: by 2002:a17:906:7c53:b0:a5a:3908:f4ad with SMTP id
- a640c23a62f3a-a62230f84a1mr30010366b.10.1716331033027; Tue, 21 May 2024
- 15:37:13 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1716331980; x=1716936780;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=yt6qbsNkDbFN4skJv9vyYrsyxVhc0Jxm0wzro/tcqns=;
+        b=EN2n9q0qMJqH321+XAZyG+dw+d29giodcOEknuNzWoLdjhnJUCtIFRCPPSfvh6R0HR
+         4i4rhKWtJ1rIVMcofkU1aAgYioTS5YNo7DCJ2XB2zn9jR/xAtABvpuRgjMcELGXD+I/1
+         E4wNYGJGwVyfCxd56ntVWSUrd8AQlwIkorOrDC6DojiQz8ObjtyDNKBPSpNePwgzmvrd
+         ZZOof0Mu3n6LbDicqT8w+x/ZSaSHKYfjWVZbUjjWE/wbvP9g7U/ISVnvxexsMO+6sWF1
+         cQce7o6ZeztapHsgzOUASRGgGeKeRuUJScS4CTMaeLcvLdbZJ72DtWeQWBvWdZXSaTwt
+         jxhw==
+X-Gm-Message-State: AOJu0Yw4uhgsGD+lM85AP/RLd6ZLFrye8fD3TgKUw1ubBMJ3zrf2fkB0
+	r3bl3opfjhuDwxYaOV1ABr4923nM9NiimRMCN7mmdPiN1/nyN1Tv3YOldQ==
+X-Google-Smtp-Source: AGHT+IG8JiGU0oCkD+lJIc73HvkDxnnYzA54JlyvwtTVXzgo4N8S0WWfN20d9k1WVmp0Qsu8BswZaw==
+X-Received: by 2002:a25:aa0a:0:b0:df4:7ad3:497c with SMTP id 3f1490d57ef6-df4e0fc3696mr556921276.64.1716331979673;
+        Tue, 21 May 2024 15:52:59 -0700 (PDT)
+Received: from kickker.attlocal.net ([2600:1700:6cf8:1240:1437:59a6:29be:9221])
+        by smtp.gmail.com with ESMTPSA id 3f1490d57ef6-debd385be51sm5584956276.54.2024.05.21.15.51.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 21 May 2024 15:52:58 -0700 (PDT)
+From: Kui-Feng Lee <thinker.li@gmail.com>
+To: bpf@vger.kernel.org,
+	ast@kernel.org,
+	martin.lau@linux.dev,
+	song@kernel.org,
+	kernel-team@meta.com,
+	andrii@kernel.org
+Cc: sinquersw@gmail.com,
+	kuifeng@meta.com,
+	Kui-Feng Lee <thinker.li@gmail.com>
+Subject: [PATCH bpf-next v4 0/7] Notify user space when a struct_ops object is detached/unregistered
+Date: Tue, 21 May 2024 15:51:14 -0700
+Message-Id: <20240521225121.770930-1-thinker.li@gmail.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240517102246.4070184-1-alan.maguire@oracle.com>
- <b647e0d1d225f9d21e78c6ffedb722507f42eff0.camel@gmail.com>
- <3ae296b2-402a-4e17-b874-e067c57fc091@oracle.com> <81bbbbad95244dd74801497414c2cdad88815f83.camel@gmail.com>
- <CAEf4BzbdoXTeTSx-1Vu+sA6MKphQq91p1TwnSkK3Yv3msa7h9Q@mail.gmail.com>
- <eda720142ac52a9bd9599f5444a2c2897255b5c4.camel@gmail.com>
- <CAEf4BzbghAqpTSfWH_v10uK4ynXqG5Nm2e-_xTWFOF=bmLqd_Q@mail.gmail.com> <9cf02a374ab97ceaaed04a8d4148be93877555dd.camel@gmail.com>
-In-Reply-To: <9cf02a374ab97ceaaed04a8d4148be93877555dd.camel@gmail.com>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Tue, 21 May 2024 15:36:56 -0700
-Message-ID: <CAEf4BzYicrfnfM32V3fLgCCQJesedX9guiY0VDgFReUEywm3AA@mail.gmail.com>
-Subject: Re: [PATCH v4 bpf-next 00/11] bpf: support resilient split BTF
-To: Eduard Zingerman <eddyz87@gmail.com>
-Cc: Alan Maguire <alan.maguire@oracle.com>, andrii@kernel.org, jolsa@kernel.org, 
-	acme@redhat.com, quentin@isovalent.com, mykolal@fb.com, ast@kernel.org, 
-	daniel@iogearbox.net, martin.lau@linux.dev, song@kernel.org, 
-	yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org, 
-	sdf@google.com, haoluo@google.com, houtao1@huawei.com, bpf@vger.kernel.org, 
-	masahiroy@kernel.org, mcgrof@kernel.org, nathan@kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Tue, May 21, 2024 at 3:15=E2=80=AFPM Eduard Zingerman <eddyz87@gmail.com=
-> wrote:
->
-> On Tue, 2024-05-21 at 15:01 -0700, Andrii Nakryiko wrote:
-> > On Tue, May 21, 2024 at 12:08=E2=80=AFPM Eduard Zingerman <eddyz87@gmai=
-l.com> wrote:
-> > >
-> > > On Tue, 2024-05-21 at 11:54 -0700, Andrii Nakryiko wrote:
-> > >
-> > > [...]
-> > >
-> > > > I'm probably leaning towards not doing automatic relocations in
-> > > > btf__parse(), tbh. Distilled BTF is a rather special kernel-specifi=
-c
-> > > > feature, if we need to teach resolve_btfids and bpftool to do
-> > > > something extra for that case (i.e., call another API for relocatio=
-n,
-> > > > if necessary), then it's fine, doesn't seems like a problem.
-> > >
-> > > My point is that with current implementation it does not even make
-> > > sense to call btf__parse() for an ELF with distilled base,
-> > > because it would fail.
-> >
-> > True (unless application loaded .BTF.base as stand-alone BTF first,
-> > but it's pretty advanced scenario)
->
-> In this scenario .BTF.base would be relocated against .BTF.base,
-> which is useless but not a failure.
-> Maybe having the _opts() variant with additional degree of control
-> (e.g. whether to ignore .BTF.base) is interesting as well.
-> On the other hand, for such use-cases libbpf provides btf__parse()
-> that accepts raw binary input, and application can extract ELF
-> contents by itself.
+The subsystems managing struct_ops objects may need to detach a
+struct_ops object due to errors or other reasons. It would be useful
+to notify user space programs so that error recovery or logging can be
+carried out.
 
-I was just being pedantic :) We can always add a new _opts() variant
-later, if necessary. I don't think this scenario is going to be a real
-scenario, so no need to worry about it too much.
+This patch set enables the detach feature for struct_ops links and
+send an event to epoll when a link is detached.  Subsystems could call
+link->ops->detach() to detach a link and notify user space programs
+through epoll.
 
->
-> [...]
->
-> > I see what you are saying about resolve_btfids needing the changes
-> > either way, and that's true. But instead of adding (unnecessary, IMO)
-> > -R argument, resolve_btfids should be able to detect .BTF.base section
-> > presence and infer that this is distilled BTF case, and thus proceed
-> > with ignoring `-B <vmlinux>` argument (we can even complain that `-B
-> > vmlinux` is specified if distilled BTF is used, not sure.
->
-> +1 for complaining about -B vmlinux when .BTF.base should be used.
+The signatures of callback functions in "struct bpf_struct_ops" have
+been changed as well to pass an extra link argument to
+subsystems. Subsystems could detach the links received from reg() and
+update() callbacks if there is. This also provides a way that
+subsystems can distinguish registrations for an object that has been
+registered multiple times for several links.
 
-ok, let's
+However, bpf struct_ops maps without BPF_F_LINK have no any link.
+Subsystems will receive NULL link pointer for this case.
+
+---
+Changes from v3:
+
+ - Add a comment to explain why holding update_mutex is not necessary
+   in bpf_struct_ops_link_create()
+
+ - Use rcu_access_pointer() in bpf_struct_ops_map_link_poll().
+
+Changes from v2:
+
+ - Rephrased commit logs and comments.
+
+ - Addressed some mistakes from patch splitting.
+
+ - Replace mutex with spinlock in bpf_testmod.c to address lockdep
+   Splat and simplify the implementation.
+
+ - Fix an argument passing to rcu_dereference_protected().
+
+Changes from v1:
+
+ - Pass a link to reg, unreg, and update callbacks.
+
+ - Provide a function to detach a link from underlying subsystems.
+
+ - Add a kfunc to mimic detachments from subsystems, and provide a
+   flexible way to control when to do detachments.
+
+ - Add two tests to detach a link from the subsystem after the refcount
+   of the link drops to zero.
+
+v3: https://lore.kernel.org/all/20240510002942.1253354-1-thinker.li@gmail.com/
+v2: https://lore.kernel.org/all/20240507055600.2382627-1-thinker.li@gmail.com/
+v1: https://lore.kernel.org/all/20240429213609.487820-1-thinker.li@gmail.com/
+
+Kui-Feng Lee (7):
+  bpf: pass bpf_struct_ops_link to callbacks in bpf_struct_ops.
+  bpf: enable detaching links of struct_ops objects.
+  bpf: support epoll from bpf struct_ops links.
+  bpf: export bpf_link_inc_not_zero.
+  selftests/bpf: test struct_ops with epoll
+  selftests/bpf: detach a struct_ops link from the subsystem managing
+    it.
+  selftests/bpf: make sure bpf_testmod handling racing link destroying
+    well.
+
+ include/linux/bpf.h                           |  13 +-
+ kernel/bpf/bpf_struct_ops.c                   |  90 ++++++++--
+ kernel/bpf/syscall.c                          |  14 +-
+ net/bpf/bpf_dummy_struct_ops.c                |   4 +-
+ net/ipv4/bpf_tcp_ca.c                         |   6 +-
+ .../bpf/bpf_test_no_cfi/bpf_test_no_cfi.c     |   4 +-
+ .../selftests/bpf/bpf_testmod/bpf_testmod.c   |  48 ++++-
+ .../bpf/bpf_testmod/bpf_testmod_kfunc.h       |   1 +
+ .../bpf/prog_tests/test_struct_ops_module.c   | 168 ++++++++++++++++++
+ .../selftests/bpf/progs/struct_ops_detach.c   |  16 ++
+ 10 files changed, 339 insertions(+), 25 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/progs/struct_ops_detach.c
+
+-- 
+2.34.1
+
 
