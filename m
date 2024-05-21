@@ -1,56 +1,57 @@
-Return-Path: <bpf+bounces-30130-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-30131-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1E6A48CB240
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 048F68CB23F
 	for <lists+bpf@lfdr.de>; Tue, 21 May 2024 18:34:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 89F3CB22632
-	for <lists+bpf@lfdr.de>; Tue, 21 May 2024 16:34:40 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 287D01C21D05
+	for <lists+bpf@lfdr.de>; Tue, 21 May 2024 16:34:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 95BE71442F6;
-	Tue, 21 May 2024 16:34:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB7291448DA;
+	Tue, 21 May 2024 16:34:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fKXacbSX"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UoS2T6SP"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 197567F49A
-	for <bpf@vger.kernel.org>; Tue, 21 May 2024 16:34:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 54CE0282EE
+	for <bpf@vger.kernel.org>; Tue, 21 May 2024 16:34:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716309258; cv=none; b=WH9JzdxVRsrPLVCX9sLxVVSLx0Bd/jVKyo3FS5eEJIqJ3DH655hNhmisXx43VOuk+HHV1lUwccyub5ccPdl7lxUfIkZhdrwqsUlQTzETzfIBMEwPe11pueXlIamnrTRH8JMjLTBOZcc1LHkYcoRxFzR6ZSs+zeMLm2ymkUWlPs0=
+	t=1716309261; cv=none; b=RdhUrZozbiFO9uxklTby6totRMMS4K5h0SRC0n/c3koDrMFiG9PmJfErbRy4UTfKDBgfOhNvq8+1FLWsTljfvTNil9RlgBjEKcI3O37AUlE4SL2iPCJZpzKoGHj88DfdvXy2TV++82wo84Q0Oqo1mW/U7BXtuowl909ZbWPnAIg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716309258; c=relaxed/simple;
-	bh=UOr8jcDQNy+75ZDhZJrIzzSRkorBpelOnSWmF5UQPOo=;
+	s=arc-20240116; t=1716309261; c=relaxed/simple;
+	bh=Yqux7nSuFfyauKcuXg94gdqjx6nIFom1rp0gLXu0IIc=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=dy1fGLov+4YCZ1UAa0f1hhj61zuJ086xay+/bN37xFOmwaX73PYsemNT52BnAjFZ6PDZtGIblTySzw8LW3mMfN5yUVrpBz5b7P+oVAz7//mCb5/aAB6x5qbdATeLB4wFyYuVWazAM0+nYqnbAQItOoDbdV94hLrX0Cn3Y0lgBfs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fKXacbSX; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7D4F8C2BD11;
-	Tue, 21 May 2024 16:34:17 +0000 (UTC)
+	 MIME-Version; b=ulrx8HPLYge7K/kiycr+rEHpILw9yJS5FOUQwPJTIZ8rSHlAsoaN1xBPYqw968pG/5ML7N1GgOVgC3dsP1m916XUGEBt4pF3lvt6S8vuM7Dfb2uUlGHl4mnMu6M/2zXgQbIg9Jvyxp93xnHuZAuJcxk/FvFn5Zruenfn5VPe7JQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UoS2T6SP; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BFA2AC32786;
+	Tue, 21 May 2024 16:34:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1716309257;
-	bh=UOr8jcDQNy+75ZDhZJrIzzSRkorBpelOnSWmF5UQPOo=;
+	s=k20201202; t=1716309260;
+	bh=Yqux7nSuFfyauKcuXg94gdqjx6nIFom1rp0gLXu0IIc=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=fKXacbSXeSWOJRK8j4tekTS2hnDkZHNlzNAB7/iHt2MFWuDlY9wj8E0yfhZ7uiuk+
-	 gmkgubfn0p5CdYPfTm1maedCCMACusMMs4vozCF6I3coe8w+VDjk1SAYnVlC8LYvZT
-	 U1YPw1YPCBQbAgo/2C3t0rDQ3iQlhDm/n5027zHsc/OSlwqjmCo2gHzARfS0E7I4un
-	 vHiKpfoDi/wFhL/2JyrpjvCqTU/7eMF+DW+s4MHr65pSGpeLeAWoeo1UE28HDn0kK3
-	 TqgeSktdsNu97F8jpHy921V3QHSBSvVQ2YAjjniyHbIL1gYVQrQXaGPEHLXWfAroyk
-	 1PR2UhuZz2h+Q==
+	b=UoS2T6SPDjfhPoxndaP3eEOr5FCltP5+wjcv5XCMTD0KUy+aAinmwAeG3NVRVuzBG
+	 s7RbC9nUYVD5Ps15te8LbesD+ds9y2/yJ4VLUBX9QlO24GJegnqjcjMKQkWSdyg9rQ
+	 nJVISn/gY4Sh//3E52zZKAoMgSE1+FhRPVoLAdh3js5kXilR8ErnapRx0rCaIyY+sF
+	 IgVYTN+pyEua8R+cMc+YgWenV4ATieV/ZGjPzURd5a7duHUYkwP5oZkxXd1l2cCf5T
+	 QOjuATXSETStTzjrjzqGDsTCnwSwGt6kU99s5x9EnVqq6LHHIW1eSXTCfshveNl567
+	 pa3aGUUV9sIXw==
 From: Andrii Nakryiko <andrii@kernel.org>
 To: bpf@vger.kernel.org,
 	ast@kernel.org,
 	daniel@iogearbox.net,
 	martin.lau@kernel.org
 Cc: andrii@kernel.org,
-	kernel-team@meta.com
-Subject: [PATCH v2 bpf 4/5] selftests/bpf: extend multi-uprobe tests with child thread case
-Date: Tue, 21 May 2024 09:34:00 -0700
-Message-ID: <20240521163401.3005045-5-andrii@kernel.org>
+	kernel-team@meta.com,
+	Jiri Olsa <jolsa@kernel.org>
+Subject: [PATCH v2 bpf 5/5] selftests/bpf: extend multi-uprobe tests with USDTs
+Date: Tue, 21 May 2024 09:34:01 -0700
+Message-ID: <20240521163401.3005045-6-andrii@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240521163401.3005045-1-andrii@kernel.org>
 References: <20240521163401.3005045-1-andrii@kernel.org>
@@ -62,250 +63,152 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Extend existing multi-uprobe tests to test that PID filtering works
-correctly. We already have child *process* tests, but we need also child
-*thread* tests. This patch adds spawn_thread() helper to start child
-thread, wait for it to be ready, and then instruct it to trigger desired
-uprobes.
+Validate libbpf's USDT-over-multi-uprobe logic by adding USDTs to
+existing multi-uprobe tests. This checks correct libbpf fallback to
+singular uprobes (when run on older kernels with buggy PID filtering).
+We reuse already established child process and child thread testing
+infrastructure, so additions are minimal. These test fail on either
+older kernels or older version of libbpf that doesn't detect PID
+filtering problems.
 
-Additionally, we extend BPF-side code to track thread ID, not just
-process ID. Also we detect whether extraneous triggerings with
-unexpected process IDs happened, and validate that none of that happened
-in practice.
-
-These changes prove that fixed PID filtering logic for multi-uprobe
-works as expected. These tests fail on old kernels.
-
+Acked-by: Jiri Olsa <jolsa@kernel.org>
 Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
 ---
- .../bpf/prog_tests/uprobe_multi_test.c        | 107 ++++++++++++++++--
- .../selftests/bpf/progs/uprobe_multi.c        |  17 ++-
- 2 files changed, 115 insertions(+), 9 deletions(-)
+ .../bpf/prog_tests/uprobe_multi_test.c        | 25 ++++++++++++++
+ .../selftests/bpf/progs/uprobe_multi.c        | 33 +++++++++++++++++--
+ 2 files changed, 56 insertions(+), 2 deletions(-)
 
 diff --git a/tools/testing/selftests/bpf/prog_tests/uprobe_multi_test.c b/tools/testing/selftests/bpf/prog_tests/uprobe_multi_test.c
-index 38fda42fd70f..677232d31432 100644
+index 677232d31432..bf6ca8e3eb13 100644
 --- a/tools/testing/selftests/bpf/prog_tests/uprobe_multi_test.c
 +++ b/tools/testing/selftests/bpf/prog_tests/uprobe_multi_test.c
-@@ -1,6 +1,7 @@
- // SPDX-License-Identifier: GPL-2.0
+@@ -8,6 +8,7 @@
+ #include "uprobe_multi_usdt.skel.h"
+ #include "bpf/libbpf_internal.h"
+ #include "testing_helpers.h"
++#include "../sdt.h"
  
- #include <unistd.h>
-+#include <pthread.h>
- #include <test_progs.h>
- #include "uprobe_multi.skel.h"
- #include "uprobe_multi_bench.skel.h"
-@@ -27,7 +28,10 @@ noinline void uprobe_multi_func_3(void)
+ static char test_data[] = "test_data";
  
+@@ -26,6 +27,11 @@ noinline void uprobe_multi_func_3(void)
+ 	asm volatile ("");
+ }
+ 
++noinline void usdt_trigger(void)
++{
++	STAP_PROBE(test, pid_filter_usdt);
++}
++
  struct child {
  	int go[2];
-+	int c2p[2]; /* child -> parent channel */
- 	int pid;
-+	int tid;
-+	pthread_t thread;
- };
+ 	int c2p[2]; /* child -> parent channel */
+@@ -90,6 +96,7 @@ static struct child *spawn_child(void)
+ 		uprobe_multi_func_1();
+ 		uprobe_multi_func_2();
+ 		uprobe_multi_func_3();
++		usdt_trigger();
  
- static void release_child(struct child *child)
-@@ -38,6 +42,10 @@ static void release_child(struct child *child)
- 		return;
- 	close(child->go[1]);
- 	close(child->go[0]);
-+	if (child->thread)
-+		pthread_join(child->thread, NULL);
-+	close(child->c2p[0]);
-+	close(child->c2p[1]);
- 	if (child->pid > 0)
- 		waitpid(child->pid, &child_status, 0);
- }
-@@ -63,7 +71,7 @@ static struct child *spawn_child(void)
- 	if (pipe(child.go))
- 		return NULL;
+ 		exit(errno);
+ 	}
+@@ -117,6 +124,7 @@ static void *child_thread(void *ctx)
+ 	uprobe_multi_func_1();
+ 	uprobe_multi_func_2();
+ 	uprobe_multi_func_3();
++	usdt_trigger();
  
--	child.pid = fork();
-+	child.pid = child.tid = fork();
- 	if (child.pid < 0) {
- 		release_child(&child);
- 		errno = EINVAL;
-@@ -89,6 +97,66 @@ static struct child *spawn_child(void)
- 	return &child;
- }
- 
-+static void *child_thread(void *ctx)
-+{
-+	struct child *child = ctx;
-+	int c = 0, err;
-+
-+	child->tid = syscall(SYS_gettid);
-+
-+	/* let parent know we are ready */
-+	err = write(child->c2p[1], &c, 1);
-+	if (err != 1)
-+		pthread_exit(&err);
-+
-+	/* wait for parent's kick */
-+	err = read(child->go[0], &c, 1);
-+	if (err != 1)
-+		pthread_exit(&err);
-+
-+	uprobe_multi_func_1();
-+	uprobe_multi_func_2();
-+	uprobe_multi_func_3();
-+
-+	err = 0;
-+	pthread_exit(&err);
-+}
-+
-+static struct child *spawn_thread(void)
-+{
-+	static struct child child;
-+	int c, err;
-+
-+	/* pipe to notify child to execute the trigger functions */
-+	if (pipe(child.go))
-+		return NULL;
-+	/* pipe to notify parent that child thread is ready */
-+	if (pipe(child.c2p)) {
-+		close(child.go[0]);
-+		close(child.go[1]);
-+		return NULL;
-+	}
-+
-+	child.pid = getpid();
-+
-+	err = pthread_create(&child.thread, NULL, child_thread, &child);
-+	if (err) {
-+		err = -errno;
-+		close(child.go[0]);
-+		close(child.go[1]);
-+		close(child.c2p[0]);
-+		close(child.c2p[1]);
-+		errno = -err;
-+		return NULL;
-+	}
-+
-+	err = read(child.c2p[0], &c, 1);
-+	if (!ASSERT_EQ(err, 1, "child_thread_ready"))
-+		return NULL;
-+
-+	return &child;
-+}
-+
- static void uprobe_multi_test_run(struct uprobe_multi *skel, struct child *child)
- {
- 	skel->bss->uprobe_multi_func_1_addr = (__u64) uprobe_multi_func_1;
-@@ -103,15 +171,22 @@ static void uprobe_multi_test_run(struct uprobe_multi *skel, struct child *child
- 	 * passed at the probe attach.
- 	 */
- 	skel->bss->pid = child ? 0 : getpid();
-+	skel->bss->expect_pid = child ? child->pid : 0;
-+
-+	/* trigger all probes, if we are testing child *process*, just to make
-+	 * sure that PID filtering doesn't let through activations from wrong
-+	 * PIDs; when we test child *thread*, we don't want to do this to
-+	 * avoid double counting number of triggering events
-+	 */
-+	if (!child || !child->thread) {
-+		uprobe_multi_func_1();
-+		uprobe_multi_func_2();
-+		uprobe_multi_func_3();
-+	}
+ 	err = 0;
+ 	pthread_exit(&err);
+@@ -182,6 +190,7 @@ static void uprobe_multi_test_run(struct uprobe_multi *skel, struct child *child
+ 		uprobe_multi_func_1();
+ 		uprobe_multi_func_2();
+ 		uprobe_multi_func_3();
++		usdt_trigger();
+ 	}
  
  	if (child)
- 		kick_child(child);
+@@ -269,8 +278,24 @@ __test_attach_api(const char *binary, const char *pattern, struct bpf_uprobe_mul
+ 	if (!ASSERT_OK_PTR(skel->links.uprobe_extra, "bpf_program__attach_uprobe_multi"))
+ 		goto cleanup;
  
--	/* trigger all probes */
--	uprobe_multi_func_1();
--	uprobe_multi_func_2();
--	uprobe_multi_func_3();
--
- 	/*
- 	 * There are 2 entry and 2 exit probe called for each uprobe_multi_func_[123]
- 	 * function and each slepable probe (6) increments uprobe_multi_sleep_result.
-@@ -126,8 +201,12 @@ static void uprobe_multi_test_run(struct uprobe_multi *skel, struct child *child
- 
- 	ASSERT_EQ(skel->bss->uprobe_multi_sleep_result, 6, "uprobe_multi_sleep_result");
- 
--	if (child)
-+	ASSERT_FALSE(skel->bss->bad_pid_seen, "bad_pid_seen");
++	/* Attach (uprobe-backed) USDTs */
++	skel->links.usdt_pid = bpf_program__attach_usdt(skel->progs.usdt_pid, pid, binary,
++							"test", "pid_filter_usdt", NULL);
++	if (!ASSERT_OK_PTR(skel->links.usdt_pid, "attach_usdt_pid"))
++		goto cleanup;
 +
++	skel->links.usdt_extra = bpf_program__attach_usdt(skel->progs.usdt_extra, -1, binary,
++							  "test", "pid_filter_usdt", NULL);
++	if (!ASSERT_OK_PTR(skel->links.usdt_extra, "attach_usdt_extra"))
++		goto cleanup;
++
+ 	uprobe_multi_test_run(skel, child);
+ 
++	ASSERT_FALSE(skel->bss->bad_pid_seen_usdt, "bad_pid_seen_usdt");
 +	if (child) {
- 		ASSERT_EQ(skel->bss->child_pid, child->pid, "uprobe_multi_child_pid");
-+		ASSERT_EQ(skel->bss->child_tid, child->tid, "uprobe_multi_child_tid");
++		ASSERT_EQ(skel->bss->child_pid_usdt, child->pid, "usdt_multi_child_pid");
++		ASSERT_EQ(skel->bss->child_tid_usdt, child->tid, "usdt_multi_child_tid");
 +	}
+ cleanup:
+ 	uprobe_multi__destroy(skel);
  }
- 
- static void test_skel_api(void)
-@@ -210,6 +289,13 @@ test_attach_api(const char *binary, const char *pattern, struct bpf_uprobe_multi
- 		return;
- 
- 	__test_attach_api(binary, pattern, opts, child);
-+
-+	/* pid filter (thread) */
-+	child = spawn_thread();
-+	if (!ASSERT_OK_PTR(child, "spawn_thread"))
-+		return;
-+
-+	__test_attach_api(binary, pattern, opts, child);
- }
- 
- static void test_attach_api_pattern(void)
-@@ -495,6 +581,13 @@ static void test_link_api(void)
- 		return;
- 
- 	__test_link_api(child);
-+
-+	/* pid filter (thread) */
-+	child = spawn_thread();
-+	if (!ASSERT_OK_PTR(child, "spawn_thread"))
-+		return;
-+
-+	__test_link_api(child);
- }
- 
- static void test_bench_attach_uprobe(void)
 diff --git a/tools/testing/selftests/bpf/progs/uprobe_multi.c b/tools/testing/selftests/bpf/progs/uprobe_multi.c
-index 419d9aa28fce..86a7ff5d3726 100644
+index 86a7ff5d3726..44190efcdba2 100644
 --- a/tools/testing/selftests/bpf/progs/uprobe_multi.c
 +++ b/tools/testing/selftests/bpf/progs/uprobe_multi.c
-@@ -22,6 +22,10 @@ __u64 uprobe_multi_sleep_result = 0;
+@@ -1,8 +1,8 @@
+ // SPDX-License-Identifier: GPL-2.0
+-#include <linux/bpf.h>
++#include "vmlinux.h"
+ #include <bpf/bpf_helpers.h>
+ #include <bpf/bpf_tracing.h>
+-#include <stdbool.h>
++#include <bpf/usdt.bpf.h>
  
+ char _license[] SEC("license") = "GPL";
+ 
+@@ -23,9 +23,12 @@ __u64 uprobe_multi_sleep_result = 0;
  int pid = 0;
  int child_pid = 0;
-+int child_tid = 0;
-+
-+int expect_pid = 0;
-+bool bad_pid_seen = false;
+ int child_tid = 0;
++int child_pid_usdt = 0;
++int child_tid_usdt = 0;
+ 
+ int expect_pid = 0;
+ bool bad_pid_seen = false;
++bool bad_pid_seen_usdt = false;
  
  bool test_cookie = false;
  void *user_ptr = 0;
-@@ -36,11 +40,19 @@ static __always_inline bool verify_sleepable_user_copy(void)
- 
- static void uprobe_multi_check(void *ctx, bool is_return, bool is_sleep)
- {
--	child_pid = bpf_get_current_pid_tgid() >> 32;
-+	__u64 cur_pid_tgid = bpf_get_current_pid_tgid();
-+	__u32 cur_pid;
- 
--	if (pid && child_pid != pid)
-+	cur_pid = cur_pid_tgid >> 32;
-+	if (pid && cur_pid != pid)
- 		return;
- 
-+	if (expect_pid && cur_pid != expect_pid)
-+		bad_pid_seen = true;
-+
-+	child_pid = cur_pid_tgid >> 32;
-+	child_tid = (__u32)cur_pid_tgid;
-+
- 	__u64 cookie = test_cookie ? bpf_get_attach_cookie(ctx) : 0;
- 	__u64 addr = bpf_get_func_ip(ctx);
- 
-@@ -97,5 +109,6 @@ int uretprobe_sleep(struct pt_regs *ctx)
- SEC("uprobe.multi//proc/self/exe:uprobe_multi_func_*")
- int uprobe_extra(struct pt_regs *ctx)
- {
-+	/* we need this one just to mix PID-filtered and global uprobes */
+@@ -112,3 +115,29 @@ int uprobe_extra(struct pt_regs *ctx)
+ 	/* we need this one just to mix PID-filtered and global uprobes */
  	return 0;
  }
++
++SEC("usdt")
++int usdt_pid(struct pt_regs *ctx)
++{
++	__u64 cur_pid_tgid = bpf_get_current_pid_tgid();
++	__u32 cur_pid;
++
++	cur_pid = cur_pid_tgid >> 32;
++	if (pid && cur_pid != pid)
++		return 0;
++
++	if (expect_pid && cur_pid != expect_pid)
++		bad_pid_seen_usdt = true;
++
++	child_pid_usdt = cur_pid_tgid >> 32;
++	child_tid_usdt = (__u32)cur_pid_tgid;
++
++	return 0;
++}
++
++SEC("usdt")
++int usdt_extra(struct pt_regs *ctx)
++{
++	/* we need this one just to mix PID-filtered and global USDT probes */
++	return 0;
++}
 -- 
 2.43.0
 
