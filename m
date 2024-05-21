@@ -1,97 +1,136 @@
-Return-Path: <bpf+bounces-30135-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-30136-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id BCB878CB265
-	for <lists+bpf@lfdr.de>; Tue, 21 May 2024 18:43:55 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id CF0638CB285
+	for <lists+bpf@lfdr.de>; Tue, 21 May 2024 18:54:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7523A1F229F7
-	for <lists+bpf@lfdr.de>; Tue, 21 May 2024 16:43:55 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5EDA3283CDB
+	for <lists+bpf@lfdr.de>; Tue, 21 May 2024 16:54:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B46C147C99;
-	Tue, 21 May 2024 16:43:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F95F130A54;
+	Tue, 21 May 2024 16:54:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fD3WuYjy"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lSKrLQqr"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com [209.85.218.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 65D551CA80;
-	Tue, 21 May 2024 16:43:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9FE911799D;
+	Tue, 21 May 2024 16:54:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716309822; cv=none; b=POsFjimTzen2Stm+Jqk/O9iW12HGUiW4PZfjMH7uv+5GVYOP3XjPKkAft78TF+hCE0TNV0YgAd+uhK90up+BN5YX+mp6hCku40FlX8xTmZdBEZc/CD0ziJBXX9OjdRjNH1MZxxh/ubG3pVoChvOmqDtbx6cuHcTjfrzPEpp6zXQ=
+	t=1716310460; cv=none; b=H/e0WhxmlEiMDi/hFTgeFxRDQzYp6vcgYwivCBVMsQaUuQzUtyoFUbjGnL47g8Qq0WjaChjF2IL9FSczqvJDu7rGY5AnGRKQen1HZYTlnCt00h+f1Hu/lhR1WdOMzdz42Iul7BS3H3/oo7m8X+JS8uarzWJ+8xG3PJp0pDOa6aE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716309822; c=relaxed/simple;
-	bh=v3vUZ+fHxZKCGYbCtA6MhT3zouHQA1W2ZrEaVPPX2wU=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=JuGt5D9Gt1Ucnlb/ag5oJSF8rT8baF8MQhEa6M6BllYMIB1/Uhvu4mq2gdiohTOqFcsZloeMtTAuVSf+MkdLKN1Oni1yYcH06quSwp60R5yc/hmb5TepU9HPzbYTq44ylZG3TakZoN6IumqTzYUwrpttLL9VqgP6c32nHhvdIB0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fD3WuYjy; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 84422C2BD11;
-	Tue, 21 May 2024 16:43:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1716309822;
-	bh=v3vUZ+fHxZKCGYbCtA6MhT3zouHQA1W2ZrEaVPPX2wU=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-	b=fD3WuYjyxftV84YDlFyx0rHHTQPYLwkdScP/TVe8uhOVyRY8hYjADrHxi9HNgS5B+
-	 893r8/GtQFk8ymSVU0nEV9qKemeLHETQUrDB/c7C6hb6JUHnfQPA0zOZCNPheHHd1I
-	 chm4F1aeFEnpcJtrDi/yo2feyb+iBTDsP7WT+8w8uMUhJ9exH2ImPw4+1tjWgV5tzr
-	 Bzg45VOtNnuXseepEaMAPtGhr0zMtElXJY/HCX/ybN0wzqU9vgLVDTF/+sScV9py4W
-	 M9X2nM8nVL+aLFWmdjVeu4PPiWAkjIFSbJxc9swExy9RUin4ZpHCDHF3ZIZ5stukmG
-	 Db1stfMy3ODFw==
-From: =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
-To: kernel test robot <lkp@intel.com>, Andrew Morton
- <akpm@linux-foundation.org>
-Cc: Linux Memory Management List <linux-mm@kvack.org>,
- amd-gfx@lists.freedesktop.org, bpf@vger.kernel.org,
- dmaengine@vger.kernel.org, dri-devel@lists.freedesktop.org,
- imx@lists.linux.dev, intel-gfx@lists.freedesktop.org,
- intel-xe@lists.freedesktop.org, linux-arch@vger.kernel.org,
- linux-hardening@vger.kernel.org, linux-pm@vger.kernel.org,
- linux-renesas-soc@vger.kernel.org, linux-riscv@lists.infradead.org,
- netdev@vger.kernel.org, nouveau@lists.freedesktop.org
-Subject: Re: [linux-next:master] BUILD REGRESSION
- 124cfbcd6d185d4f50be02d5f5afe61578916773
-In-Reply-To: <202405220033.NXFpd4Af-lkp@intel.com>
-References: <202405220033.NXFpd4Af-lkp@intel.com>
-Date: Tue, 21 May 2024 18:43:38 +0200
-Message-ID: <87wmnncdz9.fsf@all.your.base.are.belong.to.us>
+	s=arc-20240116; t=1716310460; c=relaxed/simple;
+	bh=+vtfrcRqf77D03066rTOmGDjG3OT3H/KHdFfQBL6VIM=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=kbiWBmWjcSQmW8Wi3vMkgQz8k59IoEavuILAyiPxd4tIoMqmBr3HmxViclwabe90ij+a7aqGH1VyEOewiJxsFefhoy9dtfXe0TooLR5/wTjV6qn0fQbw9xZMZPBZEYcfNEYX2vp/6iW79jeRGXWtby0Nvk8/0uNLOciWTzmB2f4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=lSKrLQqr; arc=none smtp.client-ip=209.85.218.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-a621cb07d8fso19116266b.2;
+        Tue, 21 May 2024 09:54:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1716310457; x=1716915257; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=iog+LV8+cUjTXWrVLrD8l3qRhz72G5h5/sZmX6riTd4=;
+        b=lSKrLQqrCrO0Aur6CBDOaFBxwcZIsz/2FgYWfsiqLPvnEXnX+cDkRpUhyJbvKN7C7m
+         37qmaqcIMF3aIsfQx7A1s5VGJMHjeqbS7eKVrsgxOhf9wJt3OhfOrGHXVzAMCSRBzwpi
+         ZPHbl99qju08vyExwz0Fh1Vb/eawPrlKMizNZGznppmZPW6i3zBQs/kaB71EZ1jXjU+t
+         gLE/4h0szmLaH+7xI56cgfJhgxDlogZzimVJw1Unzy9gU7p3/YCc0YMHyLoZt7OeW6jp
+         rb6a7X1Sxn3a4fr/nXK1VCYffvsBPVoHdx9URNlimTDtcG6GImNEpRw0mGaEFHgNRGTt
+         AZTA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1716310457; x=1716915257;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=iog+LV8+cUjTXWrVLrD8l3qRhz72G5h5/sZmX6riTd4=;
+        b=BVgp97lOOTJWq/Nvn6fUVqCVaEWymHmMSJnkZOkcfMi4cDSNXbXXMRXpSOU68j6pJD
+         pMXONZkkMTdol6ynXpBGqLcOoWlmttb9oPvM4Ed8yLhcJ1r4doq97+qKuy0RHYOllZZ2
+         hU0NwG4DBXmECoxH0iK3dqYPYNx8S2PHGeW1qz2dhtRH2Zgr5306gMdmcElzZLkX3aSH
+         qL1VEx0bla9nAVQZIKrYIp4/ESUIKzhtLjd5LNgbbj6RmBQxR6jvmC/+HlmdX6/lr0g5
+         9DdLxBLdJdnDRMtyRt1p7zu7VW0D+Ocz3uBENBeDQHJYJ45nEPzO++AnxmNiGUccnBqP
+         cqmw==
+X-Forwarded-Encrypted: i=1; AJvYcCWpB/N72P5GElmuTSsCTMSkzz2WfCl/KKlEczh5faZbZ2C6n0/+rMIwJTuTorVUqCRfCtkPLSsfgsnB22v+cOuWNcM057Mkb6L0mw9So7FqaC9g/dvTX1CU9CknWjk+H+T4TJ5oQZskPjvZijPyawA6hJwRCfhwAXyzhnFcbBNxOKOj8ECEAUlmFe1wGuGiPu9xsoLs1jaItPqfo0mJKZDmjwYQQOFqsdSedutELQWMfW+HZsQUPrMU2fkT
+X-Gm-Message-State: AOJu0Yw+5Og7oyeQqzSAI070x8Yne8pIoLRCk7RQc0V4OYqIkylSQIVI
+	zQ5N+tljMkc9hXhvIzCSggBDim+0y3S2OKAAn8WBH0EQMXMg1e4X
+X-Google-Smtp-Source: AGHT+IHihcWtHfnN1F+F4jj7X3d2CSrOlvQTa629P5Jl56OpV1qeh7unKFtsHyiUf9ptGT/xBAvQLQ==
+X-Received: by 2002:a17:907:77cd:b0:a58:e71d:d74 with SMTP id a640c23a62f3a-a5a2d55a8c7mr2386588366b.13.1716310456605;
+        Tue, 21 May 2024 09:54:16 -0700 (PDT)
+Received: from krava ([83.240.61.240])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a5a1781d342sm1645720066b.6.2024.05.21.09.54.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 21 May 2024 09:54:16 -0700 (PDT)
+From: Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date: Tue, 21 May 2024 18:54:13 +0200
+To: Oleg Nesterov <oleg@redhat.com>
+Cc: Steven Rostedt <rostedt@goodmis.org>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>, linux-kernel@vger.kernel.org,
+	linux-trace-kernel@vger.kernel.org, linux-api@vger.kernel.org,
+	linux-man@vger.kernel.org, x86@kernel.org, bpf@vger.kernel.org,
+	Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	"Borislav Petkov (AMD)" <bp@alien8.de>,
+	Ingo Molnar <mingo@redhat.com>, Andy Lutomirski <luto@kernel.org>,
+	"Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
+	Deepak Gupta <debug@rivosinc.com>
+Subject: Re: [PATCHv6 bpf-next 1/9] x86/shstk: Make return uprobe work with
+ shadow stack
+Message-ID: <ZkzRtTI72YPAMhIp@krava>
+References: <20240521104825.1060966-1-jolsa@kernel.org>
+ <20240521104825.1060966-2-jolsa@kernel.org>
+ <20240521142221.GA19434@redhat.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240521142221.GA19434@redhat.com>
 
-kernel test robot <lkp@intel.com> writes:
+On Tue, May 21, 2024 at 04:22:21PM +0200, Oleg Nesterov wrote:
+> On 05/21, Jiri Olsa wrote:
+> >
+> > Currently the application with enabled shadow stack will crash
+> > if it sets up return uprobe. The reason is the uretprobe kernel
+> > code changes the user space task's stack, but does not update
+> > shadow stack accordingly.
+> >
+> > Adding new functions to update values on shadow stack and using
+> > them in uprobe code to keep shadow stack in sync with uretprobe
+> > changes to user stack.
+> 
+> I don't think my ack has any value in this area but looks good to me.
+> 
+> Reviewed-by: Oleg Nesterov <oleg@redhat.com>
+> 
+> 
+> > Fixes: 8b1c23543436 ("x86/shstk: Add return uprobe support")
+> 
+> Hmm... Was this commit ever applied?
 
-> tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-n=
-ext.git master
-> branch HEAD: 124cfbcd6d185d4f50be02d5f5afe61578916773  Add linux-next spe=
-cific files for 20240521
+should have been:
+  488af8ea7131 x86/shstk: Wire in shadow stack interface
 
-[...]
+will send new version
 
-> Error/Warning ids grouped by kconfigs:
->
-> gcc_recent_errors
+thanks,
+jirka
 
-[...]
-
-> |-- riscv-randconfig-r054-20240521
-> |   `--
-> drivers-irqchip-irq-riscv-imsic-early.c:error:too-many-arguments-to-funct=
-ion-riscv_ipi_set_virq_range
-
-FWIW, discussion/patch here [1]
-
-
-Bj=C3=B6rn
-
-[1] https://lore.kernel.org/linux-riscv/mhng-10b71228-cf3e-42ca-9abf-5464b1=
-5093f1@palmer-ri-x1c9/
+> 
+> Oleg.
+> 
 
