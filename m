@@ -1,184 +1,215 @@
-Return-Path: <bpf+bounces-30120-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-30121-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1C4398CB187
-	for <lists+bpf@lfdr.de>; Tue, 21 May 2024 17:39:16 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6448E8CB1F9
+	for <lists+bpf@lfdr.de>; Tue, 21 May 2024 18:12:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 34E311C21714
-	for <lists+bpf@lfdr.de>; Tue, 21 May 2024 15:39:15 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 81B541C21F3D
+	for <lists+bpf@lfdr.de>; Tue, 21 May 2024 16:12:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 26E33146D71;
-	Tue, 21 May 2024 15:39:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 704DA1CAB7;
+	Tue, 21 May 2024 16:12:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KwITdQ4g"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XFVEbKll"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-lj1-f171.google.com (mail-lj1-f171.google.com [209.85.208.171])
+Received: from mail-pg1-f170.google.com (mail-pg1-f170.google.com [209.85.215.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EDAF0446B4;
-	Tue, 21 May 2024 15:39:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 87D9C182DB
+	for <bpf@vger.kernel.org>; Tue, 21 May 2024 16:12:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716305947; cv=none; b=ZBLlZ4aug7YL+0Za06gp37+qKGPV1+DEvCXLi4CBE9NRHNBQiAs5j+ssiiFE1I69DZ80sLhMF9HvzLNvpQpEK192+QFvoQbKOhNsJox0lDlj8uiQ8iBF2cpQF1ZqWx+BpwdFmoQrK7IQXmvfeZTxxIaakiMaVt4KO8a3hv9Ay3A=
+	t=1716307958; cv=none; b=onUk5N3fHut8NHXYDYJYBMs8aPd7RxZ1EfAztFYe4u4DHDRS2lW+Bz92IE8s33kIMdkyVDvGEcR1/UZd3dPAoVq8u1NAS3ODgCYYOhFH7v23xiKrybrrJTMeQpgnabobKERayWsrmC0CLiWE+Jk56244QORz5KR5GYop+uepP3g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716305947; c=relaxed/simple;
-	bh=SaoDykVHDT1haqx/gobymWgMMDw49xu2u/ehUnA457s=;
+	s=arc-20240116; t=1716307958; c=relaxed/simple;
+	bh=lTmi57M6pmx61JMX619vJQ1iVovNp69plB1UeFD0wyc=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=IAzxM2hx7LY3UirLuYNC7fWFW0OkhRtzcTOKOGq33qcHXJAb1DEdXERBFuW/+I4XOYXJFUbRbNOvY+As0SktBc2pblptmi+2I4t5OMryVu3y6kjl3l7/y0FTtXCnpiG7c4n0k05SVChQLXvRuJaDKy3JOorKBUtFRbt0MNWGXlQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=KwITdQ4g; arc=none smtp.client-ip=209.85.208.171
+	 To:Cc:Content-Type; b=N54gGyMq1BYRmZNiInq0L8xEGrxCNCY4FTeGwynLAPBl+S+k2RAilD9dBodCoZx+RUMIk/vQFzxO496UJMXzp4QrO+ioTPKXxNaEDZfrd852lM28U+maVkf0NFZFooEsLzpWe0ozWiSlziydrkfUEMJCesnc6e/toIjjQ0o9Hn8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=XFVEbKll; arc=none smtp.client-ip=209.85.215.170
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f171.google.com with SMTP id 38308e7fff4ca-2e1fa824504so50413911fa.0;
-        Tue, 21 May 2024 08:39:05 -0700 (PDT)
+Received: by mail-pg1-f170.google.com with SMTP id 41be03b00d2f7-657a07878easo517251a12.0
+        for <bpf@vger.kernel.org>; Tue, 21 May 2024 09:12:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1716305944; x=1716910744; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1716307956; x=1716912756; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Re8Wl04dqGPF7qQ9KzoZRZT9kKy3SUlswFv2Sj3Vy1Q=;
-        b=KwITdQ4gtEzQKyC1uafxOdr/5QHc9+PBSIHoFNJwmcXyy3Ply8NLEWh/dhiiL9ylYb
-         GH3CSQtelaFDz3GYZvpmBv038A/F+AVEBdPfgo3QSTG2vhkqzpC7WlVeYNV/G8vrcNgk
-         Wfucfb/w00TNrKgMch1M5+3j9M6xGI5rh3tEmo8zijDhgchA9RJ30ZbU48qQDKwysNSm
-         OkWmapsKz1M4keo7ACeW84qFcU0QZU5yyN+Ju2fS90rXMKgt5UaY3kC083dNiZ8bsEEv
-         B9RCuxEiMLMwJ7hDLtNFxMuVDiXkpTbDiRyaG1qCoWkwmJ5NhMzEfwWRyOH7sZRlkf7G
-         9DiQ==
+        bh=giIa5jL76PLbCeLJNv7/HXt+kLRUPlOtIiiq0GSvxsw=;
+        b=XFVEbKll39VQ+knlpb8FG2yOBWMn17nyuHrX2NPfsnbuumj3e7fRYqLboWhgTegYEX
+         ZpY9J+KdH0SGqjQyBQLhH8ASkYUXNDVkd9sB4Bpv7UfUHGdAXKzAZCGvJRq6njRQ0g+5
+         Yi32X/9qsUEd3LVmjXZrsE2OHXFJ+BMgqF7h6m82MqcODRW/iPPY1K+t6algQOkfEVhb
+         L8R6IF1xAHeZyHPITQnBZW2qbg+Ju9/Z3W4PaI31UYSJYeZROUQtEPHyYvZioxHniEp8
+         pQMSRfJg1rW4L0hOj72x2fky5PzQHihaNdotuCOQQeT4CgswePj6bUpje4aB4+G80eeE
+         0EpA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1716305944; x=1716910744;
+        d=1e100.net; s=20230601; t=1716307956; x=1716912756;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Re8Wl04dqGPF7qQ9KzoZRZT9kKy3SUlswFv2Sj3Vy1Q=;
-        b=NaACMrIZG1kIy+CP/G2rahlebpYGvVSI57dmUNYIoRpgKBKNbiMapClwoO4nH7j152
-         fMqCx8+Fx53uIKyqBgXf4Hl2Cv7Oa8pdgPvIoDv9EFIjjgZEHxvLYI/bj0PvIC22cNXt
-         HJFHx9JKE28D27g4tRpIM0lR2eneFP4AfmIy2UY7nMmBmeEc22fJyH1NguFTFJ5Ird8i
-         4pjd3mCWkM8ddU4UINngIcuwcK3FKDkbsCmvp5cYW6G1n7eloJzDuwudnWtqREruBPea
-         1tCVg0m2j4L168VVfy0xnoq47ZQTXS9lpHe0Pj4iksSD5HE/V67WPBM9SsQDtGyTaZs8
-         oq9w==
-X-Forwarded-Encrypted: i=1; AJvYcCXrBs9LHGFJrBuk/T403KjeJsFwetJYRjdSkFAExi1utniFaVds4dt0TuZI4R2Q9iRcZaLBA0as0y4LFgUysYdvn6Dn0raHqp97g/F3kTinZ9ps7RA3GPqJmlooT2RtES9+ZfZNqryJYxcpciDnF+im4vxc3Lc+a8Mf
-X-Gm-Message-State: AOJu0Yxree6V//rhlX+vM8qXcEKdklmdnfmKnRj9a2ae6cGRg4/unjsX
-	C+U7tvLzqw1qHZDJbZjEhrgwBHt6U7nr9ZSYfnvqb4b4TZXvlR6iiz4KujzjpR0G3unEnXTkg65
-	ZB2LmhTNBacpKETp8aTGR/665+/M=
-X-Google-Smtp-Source: AGHT+IFaGIESxaIVgOuXFNadzUbBxUG8lqP5Jsv9vQbu94Ihc13oMyxcq9BJ/Wa9ujLSsAIJ+axGQK/3JuRVLT8D5pc=
-X-Received: by 2002:a2e:9e48:0:b0:2e5:67bc:6f2 with SMTP id
- 38308e7fff4ca-2e567bc07c3mr158550351fa.44.1716305943818; Tue, 21 May 2024
- 08:39:03 -0700 (PDT)
+        bh=giIa5jL76PLbCeLJNv7/HXt+kLRUPlOtIiiq0GSvxsw=;
+        b=syvGkwe+D+MqV7oYWKu6pmow1W1ZG/dto3ypons697Di/YrUF09zU06TUCeKmjo3aq
+         VbZD0zyim3qQbFsYbM5/zPinaO7wAvLCS5+oWOeDk6iwLshwPISVoshyJ93UkCLUdKXe
+         xLAeyObDyjrPZG9kvGA27LCb0ZzVFunk9WF9rNJbpf/DyoQmn6oyaCyD8duXHvSrXC+/
+         JUHdhxfI3mNvRBET/reNATlhm3SLhTfHYkeP3Bxgi1s8GbDuuO9X9ufDWI8Xmt0Zgd3x
+         oq6M5KgWLDOV+NPYueS/OBDLHMhE/xjTR8eY6D0LnUdoWm8o9aNdC4MOBXOodt6Zt0f/
+         XfwA==
+X-Forwarded-Encrypted: i=1; AJvYcCUJHju5oCKiAcjTEmSvOrr+KWun3d4a6KBPZv09mActoIDekyAgfLoNtByCj2SI6aUUC2k+rtDPgDr6ItKc854rIPgU
+X-Gm-Message-State: AOJu0YxbWp8icYHc+ezbpRAoEEbRyq1akWkosgvhzNMPksYsbgyl1L7y
+	D19V7JXsZkAQagiWSMRM2FuwhMMbWtOJXW0y1gxc4XZDoEHq5O0tcCikpBYcwjZES5uNLCn6s6M
+	hcbmakgTm8KPOfgTlftLVEBKGk18=
+X-Google-Smtp-Source: AGHT+IFotBffOT2zkeCBM8khXzeYlXTclazty+KTYoYWIPgeJ+BasR0xp99t7wTIOanrLrsF8pg8Ypdx2qCHt+6Mey4=
+X-Received: by 2002:a17:90a:fb8c:b0:2b4:329e:e373 with SMTP id
+ 98e67ed59e1d1-2bd92e9a9e3mr2766370a91.6.1716307955656; Tue, 21 May 2024
+ 09:12:35 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <838e7959-a360-4ac1-b36a-a3469236129b@I-love.SAKURA.ne.jp>
-In-Reply-To: <838e7959-a360-4ac1-b36a-a3469236129b@I-love.SAKURA.ne.jp>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Tue, 21 May 2024 08:38:52 -0700
-Message-ID: <CAADnVQKuPJv-GNH9SAWL-esSERMXJmSamWRe7AG3cW=NTnf51w@mail.gmail.com>
-Subject: Re: [PATCH] bpf, sockmap: defer sk_psock_free_link() using RCU
-To: Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
-Cc: John Fastabend <john.fastabend@gmail.com>, Jakub Sitnicki <jakub@cloudflare.com>, 
-	"David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
-	Network Development <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>, 
-	LKML <linux-kernel@vger.kernel.org>
+References: <20240520234720.1748918-1-andrii@kernel.org> <20240520234720.1748918-4-andrii@kernel.org>
+ <Zkxxsx6WQ4H-r6Lt@krava>
+In-Reply-To: <Zkxxsx6WQ4H-r6Lt@krava>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Tue, 21 May 2024 09:12:23 -0700
+Message-ID: <CAEf4Bzag8RxJBwg=gSi_imFsbeyPyNdu1Doq581eJg=aGgOYNA@mail.gmail.com>
+Subject: Re: [PATCH bpf 3/5] libbpf: detect broken PID filtering logic for multi-uprobe
+To: Jiri Olsa <olsajiri@gmail.com>
+Cc: Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org, ast@kernel.org, 
+	daniel@iogearbox.net, martin.lau@kernel.org, kernel-team@meta.com
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Sun, May 12, 2024 at 12:22=E2=80=AFAM Tetsuo Handa
-<penguin-kernel@i-love.sakura.ne.jp> wrote:
+On Tue, May 21, 2024 at 3:04=E2=80=AFAM Jiri Olsa <olsajiri@gmail.com> wrot=
+e:
 >
-> If a BPF program is attached to kfree() event, calling kfree()
-> with psock->link_lock held triggers lockdep warning.
+> On Mon, May 20, 2024 at 04:47:18PM -0700, Andrii Nakryiko wrote:
+> > Libbpf is automatically (and transparently to user) detecting
+> > multi-uprobe support in the kernel, and, if supported, uses
+> > multi-uprobes to improve USDT attachment speed.
+> >
+> > USDTs can be attached system-wide or for the specific process by PID. I=
+n
+> > the latter case, we rely on correct kernel logic of not triggering USDT
+> > for unrelated processes.
+> >
+> > As such, on older kernels that do support multi-uprobes, but still have
+> > broken PID filtering logic, we need to fall back to singular uprobes.
+> >
+> > Unfortunately, whether user is using PID filtering or not is known at
+> > the attachment time, which happens after relevant BPF programs were
+> > loaded into the kernel. Also unfortunately, we need to make a call
+> > whether to use multi-uprobes or singular uprobe for SEC("usdt") program=
+s
+> > during BPF object load time, at which point we have no information abou=
+t
+> > possible PID filtering.
+> >
+> > The distinction between single and multi-uprobes is small, but importan=
+t
+> > for the kernel. Multi-uprobes get BPF_TRACE_UPROBE_MULTI attach type,
+> > and kernel internally substitiute different implementation of some of
+> > BPF helpers (e.g., bpf_get_attach_cookie()) depending on whether uprobe
+> > is multi or singular. So, multi-uprobes and singular uprobes cannot be
+> > intermixed.
+> >
+> > All the above implies that we have to make an early and conservative
+> > call about the use of multi-uprobes. And so this patch modifies libbpf'=
+s
+> > existing feature detector for multi-uprobe support to also check correc=
+t
+> > PID filtering. If PID filtering is not yet fixed, we fall back to
+> > singular uprobes for USDTs.
+> >
+> > This extension to feature detection is simple thanks to kernel's -EINVA=
+L
+> > addition for pid < 0.
+> >
+> > Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+> > ---
+> >  tools/lib/bpf/features.c | 31 ++++++++++++++++++++++++++++++-
+> >  1 file changed, 30 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/tools/lib/bpf/features.c b/tools/lib/bpf/features.c
+> > index a336786a22a3..cff8640ca66f 100644
+> > --- a/tools/lib/bpf/features.c
+> > +++ b/tools/lib/bpf/features.c
+> > @@ -392,11 +392,40 @@ static int probe_uprobe_multi_link(int token_fd)
+> >       link_fd =3D bpf_link_create(prog_fd, -1, BPF_TRACE_UPROBE_MULTI, =
+&link_opts);
+> >       err =3D -errno; /* close() can clobber errno */
+> >
+> > +     if (link_fd >=3D 0 || err !=3D -EBADF) {
+> > +             close(link_fd);
+> > +             close(prog_fd);
+> > +             return 0;
+> > +     }
+> > +
+> > +     /* Initial multi-uprobe support in kernel didn't handle PID filte=
+ring
+> > +      * correctly (it was doing thread filtering, not process filterin=
+g).
+> > +      * So now we'll detect if PID filtering logic was fixed, and, if =
+not,
+> > +      * we'll pretend multi-uprobes are not supported, if not.
+> > +      * Multi-uprobes are used in USDT attachment logic, and we need t=
+o be
+> > +      * conservative here, because multi-uprobe selection happens earl=
+y at
+> > +      * load time, while the use of PID filtering is known late at
+> > +      * attachment time, at which point it's too late to undo multi-up=
+robe
+> > +      * selection.
+> > +      *
+> > +      * Creating uprobe with pid =3D=3D -1 for (invalid) '/' binary wi=
+ll fail
+> > +      * early with -EINVAL on kernels with fixed PID filtering logic;
+> > +      * otherwise -ESRCH would be returned if passed correct binary pa=
+th
+> > +      * (but we'll just get -BADF, of course).
+> > +      */
+> > +     link_opts.uprobe_multi.pid =3D -1, /* invalid PID */
 >
-> Defer kfree() using RCU so that the attached BPF program runs
-> without holding psock->link_lock.
+>                                        ^ s/,/;/
 >
-> Reported-by: syzbot+ec941d6e24f633a59172@syzkaller.appspotmail.com
-> Closes: https://syzkaller.appspot.com/bug?extid=3Dec941d6e24f633a59172
-> Tested-by: syzbot+ec941d6e24f633a59172@syzkaller.appspotmail.com
-> Reported-by: syzbot+a4ed4041b9bea8177ac3@syzkaller.appspotmail.com
-> Closes: https://syzkaller.appspot.com/bug?extid=3Da4ed4041b9bea8177ac3
-> Tested-by: syzbot+a4ed4041b9bea8177ac3@syzkaller.appspotmail.com
-> Signed-off-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-> ---
->  include/linux/skmsg.h | 7 +++++--
->  net/core/skmsg.c      | 2 ++
->  net/core/sock_map.c   | 2 ++
->  3 files changed, 9 insertions(+), 2 deletions(-)
->
-> diff --git a/include/linux/skmsg.h b/include/linux/skmsg.h
-> index a509caf823d6..66590f20b777 100644
-> --- a/include/linux/skmsg.h
-> +++ b/include/linux/skmsg.h
-> @@ -66,7 +66,10 @@ enum sk_psock_state_bits {
->  };
->
->  struct sk_psock_link {
-> -       struct list_head                list;
-> +       union {
-> +               struct list_head        list;
-> +               struct rcu_head         rcu;
-> +       };
->         struct bpf_map                  *map;
->         void                            *link_raw;
->  };
-> @@ -418,7 +421,7 @@ static inline struct sk_psock_link *sk_psock_init_lin=
-k(void)
->
->  static inline void sk_psock_free_link(struct sk_psock_link *link)
->  {
-> -       kfree(link);
-> +       kfree_rcu(link, rcu);
->  }
->
->  struct sk_psock_link *sk_psock_link_pop(struct sk_psock *psock);
-> diff --git a/net/core/skmsg.c b/net/core/skmsg.c
-> index fd20aae30be2..9cebfeecd3c9 100644
-> --- a/net/core/skmsg.c
-> +++ b/net/core/skmsg.c
-> @@ -791,10 +791,12 @@ static void sk_psock_link_destroy(struct sk_psock *=
-psock)
->  {
->         struct sk_psock_link *link, *tmp;
->
-> +       rcu_read_lock();
->         list_for_each_entry_safe(link, tmp, &psock->link, list) {
->                 list_del(&link->list);
->                 sk_psock_free_link(link);
->         }
-> +       rcu_read_unlock();
->  }
->
->  void sk_psock_stop(struct sk_psock *psock)
-> diff --git a/net/core/sock_map.c b/net/core/sock_map.c
-> index 8598466a3805..8bec4b7a8ec7 100644
-> --- a/net/core/sock_map.c
-> +++ b/net/core/sock_map.c
-> @@ -142,6 +142,7 @@ static void sock_map_del_link(struct sock *sk,
->         bool strp_stop =3D false, verdict_stop =3D false;
->         struct sk_psock_link *link, *tmp;
->
-> +       rcu_read_lock();
->         spin_lock_bh(&psock->link_lock);
+> so this affects just USDT load/attach, you right?
 
-I think this is incorrect.
-spin_lock_bh may sleep in RT and it won't be safe to do in rcu cs.
+good eye, fixing :)
 
-pw-bot: cr
+and yes, for libbpf this affects only USDTs. If user uses multi-uprobe
+directly through bpf_program__attach_uprobe_multi(), they will need to
+do similar feature detection, if they care about PID filtering.
 
->         list_for_each_entry_safe(link, tmp, &psock->link, list) {
->                 if (link->link_raw =3D=3D link_raw) {
-> @@ -159,6 +160,7 @@ static void sock_map_del_link(struct sock *sk,
->                 }
->         }
->         spin_unlock_bh(&psock->link_lock);
-> +       rcu_read_unlock();
->         if (strp_stop || verdict_stop) {
->                 write_lock_bh(&sk->sk_callback_lock);
->                 if (strp_stop)
-> --
-> 2.34.1
 >
+> Acked-by: Jiri Olsa <jolsa@kernel.org>
+>
+> thanks,
+> jirka
+>
+>
+> > +     link_opts.uprobe_multi.path =3D "/"; /* invalid path */
+> > +     link_opts.uprobe_multi.offsets =3D &offset;
+> > +     link_opts.uprobe_multi.cnt =3D 1;
+> > +
+> > +     link_fd =3D bpf_link_create(prog_fd, -1, BPF_TRACE_UPROBE_MULTI, =
+&link_opts);
+> > +     err =3D -errno; /* close() can clobber errno */
+> > +
+> >       if (link_fd >=3D 0)
+> >               close(link_fd);
+> >       close(prog_fd);
+> >
+> > -     return link_fd < 0 && err =3D=3D -EBADF;
+> > +     return link_fd < 0 && err =3D=3D -EINVAL;
+> >  }
+> >
+> >  static int probe_kern_bpf_cookie(int token_fd)
+> > --
+> > 2.43.0
+> >
+> >
 
