@@ -1,159 +1,116 @@
-Return-Path: <bpf+bounces-30115-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-30116-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4161E8CAF4F
-	for <lists+bpf@lfdr.de>; Tue, 21 May 2024 15:22:09 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4705C8CB05F
+	for <lists+bpf@lfdr.de>; Tue, 21 May 2024 16:24:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 729801C21966
-	for <lists+bpf@lfdr.de>; Tue, 21 May 2024 13:22:08 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id F05CE1F242C9
+	for <lists+bpf@lfdr.de>; Tue, 21 May 2024 14:24:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD0F8770FF;
-	Tue, 21 May 2024 13:21:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3CFF81304A7;
+	Tue, 21 May 2024 14:24:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Wcos3SJS"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="ZF36BHxs"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B617219EA;
-	Tue, 21 May 2024 13:21:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E190C130A63
+	for <bpf@vger.kernel.org>; Tue, 21 May 2024 14:24:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716297719; cv=none; b=NCbsVgt2RA4dpxKPovqqK3oSHTJR9Jg/jk9rJBBM3c9ttSzUSKvQ1ZmW1kHraHtfh8Vh9HGCFXQn4SbDnWVCb9XKEnVgXT2rar+RMa5L+XwG3uQ8dzqjANuUFaZpQslNIAmAVPFdV5AQkoJH15szKl3DqTQGkGi0nP5W8cwfaUQ=
+	t=1716301460; cv=none; b=ZX428cpFPrZgvZx4Y2Sy25KF/596iCY0ZCCyXbk6dlqh6fTX3IgRgtLl3XT13O81XPH9Mbd2pitiK3AACTD12wIt7pGKV/O0iKYJ6LUmkMTrZaBIQgytPEElFi7MQbLKY9/NidsUx47c4vmAZm67x4PWI1HTyeO2Nqsb44f57dA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716297719; c=relaxed/simple;
-	bh=0wG1udqEQNqr6KzpJKxfIni8SGXpPlxbIKY+RZRKKQQ=;
+	s=arc-20240116; t=1716301460; c=relaxed/simple;
+	bh=tfhs4G1UxiGQsBmQ8SRV1xtzgUc9WBEgAUO1utJnNF0=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=OZGip9/Vh008kPSHler8wqtitz5a/3aHpFTbptqrFE7ZkFClcUgZGPXqmipcQ3I0UNAFV3C49Ouam3ziIqArYXt43Emfecem1jUJUjNSCZn8J4+Xva5jR2MVSHl/nNMVi1hKZ+mC0iDs0DQhwYWnjkNiibPRdgyk5op1MYu9BBE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Wcos3SJS; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5D428C2BD11;
-	Tue, 21 May 2024 13:21:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1716297718;
-	bh=0wG1udqEQNqr6KzpJKxfIni8SGXpPlxbIKY+RZRKKQQ=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Wcos3SJSdvWxZKow+LiqhVc1o6wDOiaFG/jfKxv7qQJ8pRHovxeyuGDisWTKygW7s
-	 HDmeYceKJPqM0qb0Nx93Mg1a1fqsOyyEskzQrbOh08vdTk6cLxOiuuz8S803jWY1lP
-	 rUCew21qN621jgw+gbSPOGeIbgIxuA68QN2QPVK2cur1al6TUeeZ5M/wSDr8Z5h1Nz
-	 MZTuhbeF4Vgn4MF2RMdTA2ZUiWi9edHE85jjGPqgYIOT9Ks8Nj78BUj1niAkBygpuK
-	 mWuv6bxP1Dph+li08NFSrGETR1F4XPTwkGOqpdeXno2666HtJI+0rlt4YH1tLxu1H5
-	 v6b9aR+9iN7tg==
-Date: Tue, 21 May 2024 15:21:54 +0200
-From: Lorenzo Bianconi <lorenzo@kernel.org>
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: bpf <bpf@vger.kernel.org>, Pablo Neira Ayuso <pablo@netfilter.org>,
-	Jozsef Kadlecsik <kadlec@netfilter.org>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	netfilter-devel <netfilter-devel@vger.kernel.org>,
-	Network Development <netdev@vger.kernel.org>,
+	 Content-Type:Content-Disposition:In-Reply-To; b=n2UqpDZgeSX5CrKLgnWzSgQc0MZGg7nq8+RmaaCTsw8HjBBDAQmzMhIa//c5VltPDnJY2z3Wa6ROcO411kXaOTDgr11V7SVMpjsjLcbvZ3oTzUKzT4jn0F/Rulo7aqG1QPiXC1nPdAZhSN71pu7U63NLeojt+91ejxsEQcSbUFs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=ZF36BHxs; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1716301457;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=tfhs4G1UxiGQsBmQ8SRV1xtzgUc9WBEgAUO1utJnNF0=;
+	b=ZF36BHxsXr9O53h2Ysup3TijYa7kldv5apP5guKa663x3+iwL07Qyt+3HhMNF996WXrMgB
+	zJ7EXE0Km8Wgf9WjKcdkEe13R1QwyWJya8nBYMqAwD8936ViUWBw5mappK/MRzyCXoU47f
+	cbZ7QKGzlCDzdLnQxuS6XaPuU5oFt/o=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-554-nhnsxC0UO6SnsoRjeBDPPg-1; Tue,
+ 21 May 2024 10:24:12 -0400
+X-MC-Unique: nhnsxC0UO6SnsoRjeBDPPg-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.rdu2.redhat.com [10.11.54.7])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id C79A11C03150;
+	Tue, 21 May 2024 14:23:53 +0000 (UTC)
+Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.224.64])
+	by smtp.corp.redhat.com (Postfix) with SMTP id CBF361C0948E;
+	Tue, 21 May 2024 14:23:48 +0000 (UTC)
+Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
+	oleg@redhat.com; Tue, 21 May 2024 16:22:27 +0200 (CEST)
+Date: Tue, 21 May 2024 16:22:21 +0200
+From: Oleg Nesterov <oleg@redhat.com>
+To: Jiri Olsa <jolsa@kernel.org>
+Cc: Steven Rostedt <rostedt@goodmis.org>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
 	Alexei Starovoitov <ast@kernel.org>,
 	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Lorenzo Bianconi <lorenzo.bianconi@redhat.com>,
-	Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>,
-	Florian Westphal <fw@strlen.de>,
-	Jesper Dangaard Brouer <hawk@kernel.org>,
-	Simon Horman <horms@kernel.org>, donhunte@redhat.com,
-	Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Subject: Re: [PATCH bpf-next v2 2/4] netfilter: add
- bpf_xdp_flow_offload_lookup kfunc
-Message-ID: <Zkyf8mj9G8I0Pr1R@lore-rh-laptop>
-References: <cover.1716026761.git.lorenzo@kernel.org>
- <0ddc5e4fcc6a38c74c185063e73ef4c496eaa7ca.1716026761.git.lorenzo@kernel.org>
- <CAADnVQLaM1eTH75-PQQA--uYbYaEwBzbJJ-KjgeqGb3i0QyM=g@mail.gmail.com>
+	Andrii Nakryiko <andrii@kernel.org>, linux-kernel@vger.kernel.org,
+	linux-trace-kernel@vger.kernel.org, linux-api@vger.kernel.org,
+	linux-man@vger.kernel.org, x86@kernel.org, bpf@vger.kernel.org,
+	Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	"Borislav Petkov (AMD)" <bp@alien8.de>,
+	Ingo Molnar <mingo@redhat.com>, Andy Lutomirski <luto@kernel.org>,
+	"Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
+	Deepak Gupta <debug@rivosinc.com>
+Subject: Re: [PATCHv6 bpf-next 1/9] x86/shstk: Make return uprobe work with
+ shadow stack
+Message-ID: <20240521142221.GA19434@redhat.com>
+References: <20240521104825.1060966-1-jolsa@kernel.org>
+ <20240521104825.1060966-2-jolsa@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="2FMRN5GJ+J7Ubfdq"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAADnVQLaM1eTH75-PQQA--uYbYaEwBzbJJ-KjgeqGb3i0QyM=g@mail.gmail.com>
+In-Reply-To: <20240521104825.1060966-2-jolsa@kernel.org>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.7
+
+On 05/21, Jiri Olsa wrote:
+>
+> Currently the application with enabled shadow stack will crash
+> if it sets up return uprobe. The reason is the uretprobe kernel
+> code changes the user space task's stack, but does not update
+> shadow stack accordingly.
+>
+> Adding new functions to update values on shadow stack and using
+> them in uprobe code to keep shadow stack in sync with uretprobe
+> changes to user stack.
+
+I don't think my ack has any value in this area but looks good to me.
+
+Reviewed-by: Oleg Nesterov <oleg@redhat.com>
 
 
---2FMRN5GJ+J7Ubfdq
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> Fixes: 8b1c23543436 ("x86/shstk: Add return uprobe support")
 
-> On Sat, May 18, 2024 at 3:13=E2=80=AFAM Lorenzo Bianconi <lorenzo@kernel.=
-org> wrote:
+Hmm... Was this commit ever applied?
 
-[...]
->=20
-> I think it needs to be KF_RET_NULL.
-> And most likely KF_TRUSTED_ARGS as well.
+Oleg.
 
-ack, I will fix it in v2.
-
->=20
-> Also the "offload" doesn't fit in the name.
-> The existing code calls it "offload", because it's actually
-> pushing the rules to HW (if I understand the code),
-> but here it's just a lookup from xdp.
-> So call it
-> bpf_xdp_flow_lookup() ?
-
-ack fine, I do not have a strong opinion on it. I will fix it in v2.
-
->=20
-> Though "flow" is a bit too generic here.
-> nf_flow maybe?
-
-ack, I will fix it in v2.
-
-Regards,
-Lorenzo
-
->=20
-> > +BTF_KFUNCS_END(nf_ft_kfunc_set)
-> > +
-> > +static const struct btf_kfunc_id_set nf_flow_offload_kfunc_set =3D {
-> > +       .owner =3D THIS_MODULE,
-> > +       .set   =3D &nf_ft_kfunc_set,
-> > +};
-> > +
-> > +int nf_flow_offload_register_bpf(void)
-> > +{
-> > +       return register_btf_kfunc_id_set(BPF_PROG_TYPE_XDP,
-> > +                                        &nf_flow_offload_kfunc_set);
-> > +}
-> > +EXPORT_SYMBOL_GPL(nf_flow_offload_register_bpf);
-> > diff --git a/net/netfilter/nf_flow_table_inet.c b/net/netfilter/nf_flow=
-_table_inet.c
-> > index 6eef15648b7b0..6175f7556919d 100644
-> > --- a/net/netfilter/nf_flow_table_inet.c
-> > +++ b/net/netfilter/nf_flow_table_inet.c
-> > @@ -98,7 +98,7 @@ static int __init nf_flow_inet_module_init(void)
-> >         nft_register_flowtable_type(&flowtable_ipv6);
-> >         nft_register_flowtable_type(&flowtable_inet);
-> >
-> > -       return 0;
-> > +       return nf_flow_offload_register_bpf();
-> >  }
-> >
-> >  static void __exit nf_flow_inet_module_exit(void)
-> > --
-> > 2.45.1
-> >
-
---2FMRN5GJ+J7Ubfdq
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQTquNwa3Txd3rGGn7Y6cBh0uS2trAUCZkyf7wAKCRA6cBh0uS2t
-rHcwAP4i1YL9ydDyCeFaN9CiByTUMLVBw+6Sfn70BANpG3gWcwD+KOv5o2rdtf0B
-q6DT7wUICMMSfrnYthQfpkOOS2OM7A8=
-=Jm+l
------END PGP SIGNATURE-----
-
---2FMRN5GJ+J7Ubfdq--
 
