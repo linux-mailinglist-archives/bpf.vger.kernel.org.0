@@ -1,126 +1,143 @@
-Return-Path: <bpf+bounces-30151-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-30152-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 276578CB3D6
-	for <lists+bpf@lfdr.de>; Tue, 21 May 2024 20:48:24 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 468C08CB3E7
+	for <lists+bpf@lfdr.de>; Tue, 21 May 2024 20:54:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D199D2829C1
-	for <lists+bpf@lfdr.de>; Tue, 21 May 2024 18:48:22 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id ABC611F2234F
+	for <lists+bpf@lfdr.de>; Tue, 21 May 2024 18:54:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1AC51148858;
-	Tue, 21 May 2024 18:48:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B9D3147C95;
+	Tue, 21 May 2024 18:54:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b="ayD/YF31"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TNoxeFT/"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f51.google.com (mail-ej1-f51.google.com [209.85.218.51])
+Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0C8161C69C
-	for <bpf@vger.kernel.org>; Tue, 21 May 2024 18:48:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B097F26AF5
+	for <bpf@vger.kernel.org>; Tue, 21 May 2024 18:54:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716317293; cv=none; b=rxYX/mcHRM9BR4K5wptrOWWYwqBOMXt0HxX3VcjeBwlFRfB8SmkuFc0AB7Y7lvOxFKFVKjyge+KSeCDZJYThoU5nodzpP4v6BWXnGCoOORVFQ2gXOroAxvZYDRRbrV0+9LedkLyvOti1gcMyfqRMWUi5J2wGfpnLKgMPzqjmR7o=
+	t=1716317669; cv=none; b=p4xCoHmj4BDn7W9zQAP6FA88N9ONG0YH/qyhR51J+F9Fm9YeR++F6I6lRPj+CcXlP1jNEIUNlutMd3O5y1mQSOa8hQgGU9jqY2Gk5lLbtzs1EpEKIcSF2vJRSM3c/1zK3ZrOoECBjareA1w/LVFyhxTRvgCSdS6P4Cpid1dAlhQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716317293; c=relaxed/simple;
-	bh=LNVqPFrD15mPoYptpTPAV/FgXo4EuDLhS2IHIgpVvVw=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=Zk8XxrQ6eS2WW+srNq01ZDbVCcyAaiEZFjsQ3YGgBnGTatIH/tcjyqypybCzJYkcVES+3BonM6LvIFwj7GXHs0C9b5sCskrLw0GF0fidrcbM142AjJwUV/tF4DWlfvQKfbC4zFpTIKZEAoHgyN3QQppVzK8WuchxGyGSkarnjR0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com; spf=pass smtp.mailfrom=cloudflare.com; dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b=ayD/YF31; arc=none smtp.client-ip=209.85.218.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cloudflare.com
-Received: by mail-ej1-f51.google.com with SMTP id a640c23a62f3a-a5a5cb0e6b7so924442466b.1
-        for <bpf@vger.kernel.org>; Tue, 21 May 2024 11:48:11 -0700 (PDT)
+	s=arc-20240116; t=1716317669; c=relaxed/simple;
+	bh=0agBoaXAjgbEvq66q9+uFQtr4XJIdYCHOH9KYlcYJ14=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=hfYtZRJv+575cHmu5EDP/GYzt6zNa1oEZI6AJdRGsXcVbDQokN+DWrKt8w9gBXmBsFRdabLvhv162o2QPRHunY6aWou2sX+1vL2uOE9huIPFXqkaeMASRJmYbrgcejzmT11PxYIKP5QDYkWXaTYQxlu39o+fXLxWtQhUlZE95SI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=TNoxeFT/; arc=none smtp.client-ip=209.85.214.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f170.google.com with SMTP id d9443c01a7336-1ec486198b6so4276175ad.1
+        for <bpf@vger.kernel.org>; Tue, 21 May 2024 11:54:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google09082023; t=1716317290; x=1716922090; darn=vger.kernel.org;
-        h=mime-version:message-id:date:user-agent:references:in-reply-to
-         :subject:cc:to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=TBBomwXn0DM772nuekwi6UD6QZQUxUGf+kbYusNDyPI=;
-        b=ayD/YF3115BrqUUzwEzRCv6B4c/SjgTh1R84kInti8wY+nmDiIDNrre4Jq/dQJAv6/
-         Dux5BQh6TCKEejQY4P0Hdd2fezHhlpFVqblIHl/MVnWRyWEERJuRQwbwXik90cgi56h9
-         Pia0xrXmYECixJi+c7ZY4AB4qah089tZKhoWZ6p/tlUiV9QF8QBU+gyPiBpGuVHrfrzq
-         /7Jo89p9nXQyrzSbIevd4X8mfWo6z1+wDMJVBIZFw6NhgPAdqJoizd0KUW5lrBNNIWAi
-         Q6yjsWfzKNVO/Apoe4ZFM64ifyfxc/+QmXhAODbmoq5qh6ouB3pYBVg5qvaipHcgOTDM
-         fLwA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1716317290; x=1716922090;
-        h=mime-version:message-id:date:user-agent:references:in-reply-to
-         :subject:cc:to:from:x-gm-message-state:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1716317667; x=1716922467; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=TBBomwXn0DM772nuekwi6UD6QZQUxUGf+kbYusNDyPI=;
-        b=fpmQS9H6YAn+sJzCOESMzunw5GpJjLu0EoclswQziY/HcYwDVOOLQh0m2DwqDnHQlG
-         em4QuB8PXSRM1OZBj8XejpOn++BYAf8G8HxpqZ7NhxNBySytLXAdpPQRbMIxFoSrInx5
-         YvZr3MfX7s8+z2PnLZsJDuyaX0A7qeX/YJ8iCan3oZhRrjDzB9IUiwaDdWFNFYoxPHrB
-         Lvb3Wh0J3hFEYzXTwvWhrdjKIk938uVOnFByMDn837lX9jszNZ7/9Izw2EFa+PVtUrbi
-         xYgYolQwB3iOre+PfUN6wg3MNAgAWchVjMs02ZWgKGQ6JOIAnv0FnmHVbSxmTGoVNMdB
-         jgwQ==
-X-Forwarded-Encrypted: i=1; AJvYcCW7j5UkzUvC93i8FSmUm1UMVsHtoprD2VDzmTCBxgyc2onvHJcm7th/FjCIYtmi2GxzY6YOKJbjYCB4/QkZblHxc7fX
-X-Gm-Message-State: AOJu0YzonMa6tkd7LlLqS8qtIIvq/VOoNTBuU+lGKHYnkTXRVfbyId2h
-	x3j9rfSgXHnx0P1vQ50aqdeNYQOEU5MDfOm7qaZqal+3Ig08jez//qZPxvp0WtZiUh7ZObHT+Wm
-	2
-X-Google-Smtp-Source: AGHT+IGwzI5vKnF5RscLl5qzclGErCciKuC7xjKohu60VtKLxkJ4nTDhs+enXEqJCFYG+J00QOQiTQ==
-X-Received: by 2002:a17:906:81d8:b0:a59:b784:ced5 with SMTP id a640c23a62f3a-a5a2d6797f9mr1904402666b.67.1716317290430;
-        Tue, 21 May 2024 11:48:10 -0700 (PDT)
-Received: from cloudflare.com ([2a09:bac5:5063:2387::38a:3a])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a5a7b53fc8fsm1049418566b.38.2024.05.21.11.48.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 May 2024 11:48:09 -0700 (PDT)
-From: Jakub Sitnicki <jakub@cloudflare.com>
-To: syzbot <syzbot+ec941d6e24f633a59172@syzkaller.appspotmail.com>
-Cc: andrii@kernel.org,  ast@kernel.org,  bpf@vger.kernel.org,
-  daniel@iogearbox.net,  davem@davemloft.net,  edumazet@google.com,
-  john.fastabend@gmail.com,  kuba@kernel.org,
-  linux-kernel@vger.kernel.org,  netdev@vger.kernel.org,
-  pabeni@redhat.com,  syzkaller-bugs@googlegroups.com,
-  xrivendell7@gmail.com
-Subject: Re: [syzbot] [net?] [bpf?] possible deadlock in
- sock_hash_delete_elem (2)
-In-Reply-To: <000000000000d0b87206170dd88f@google.com> (syzbot's message of
-	"Fri, 26 Apr 2024 23:08:19 -0700")
-References: <000000000000d0b87206170dd88f@google.com>
-User-Agent: mu4e 1.12.4; emacs 29.1
-Date: Tue, 21 May 2024 20:48:08 +0200
-Message-ID: <87jzjnxaqf.fsf@cloudflare.com>
+        bh=rpQZAYR099QaGhv2TUeiWWNC9V5at2Qqsa/7/icTdVo=;
+        b=TNoxeFT/mar5/52XqL1GmtN+dv26BmPxIau/nCpcn+37wvbdD7pb+4iHRJcaLlV+Ni
+         YbCUU6YEbpHLOA05Ge0HT4tSA75RaOs9sM6PLdhMq9UiHhIZHLoUvx9Ax5xNe2HvJd0o
+         w+eRuTeWktX8ZTK+ZERopSfZmiHY3cytz9mDoQPgXslThpSdqfm9Varveeydznx4pfyt
+         eZPLwpxwMRjUiCMLFdyXhd4jk/yHyxZnNmSUvw68u9xFDKJvZDSGOzMPDHjYEnLffQ3x
+         1SDh/HzzzJAmwMbTMxeIRGu/XH5KNlvdhWsAoKbAIBtzE12cPXuxk9aSmFpzgBs0a2EU
+         Galg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1716317667; x=1716922467;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=rpQZAYR099QaGhv2TUeiWWNC9V5at2Qqsa/7/icTdVo=;
+        b=dxkkvqO7hf82NfATo2KsbBUMQ6o9LXXf75O8ubtJVr9g6vuXeY8xg/WFOfpoyrICHf
+         w563tFBTHq3P5Fcn91bn80T6vOOEgIBNBPNDaYYH9chHxlMDomyYaAuJbnmqMUJwDTcp
+         dOwjLOBBM9n6yYT7O/1UyDC09OobOxU+keTUQsVGIG7MZwM/dfuqAcUCmUiyfk9gccT3
+         EvVtK/SltlEUQHbXyNs0Zn7TmpO1fxTcOwVrPIWjh2AFhGLU8iOhCz1IjI1XgLCdUuPb
+         0d6YOc5es/cXdV9JeTY2Q/uhrW+ouIi6vYQUkkQ77XO50Lk5589rY5JOYV13ByVpUbUu
+         8Aiw==
+X-Forwarded-Encrypted: i=1; AJvYcCWWs6Bop+RTHLKt0/yMaFE0EDCxGcHbdr2TZhGbriGOUzrVHihmyZKsg5AbKkOF/ZzI61dpAG2JVQk87ol1PlqxEMv9
+X-Gm-Message-State: AOJu0Yw06hnb3plT3EvEHoNrRHpuWYWIT2Hyj4HzNa1xSwWF9AyJl+6Q
+	ARMtvBO/0bkfTLFGdbcXhvFoJpiHNZiyTYnrK+K/YqnbwiYxIy137zwkLlRCP8d87rU1UEsQCPg
+	ai2F/lPbBlZisp59VwzwNTZccXPQ=
+X-Google-Smtp-Source: AGHT+IFRhMoULAn7R7WVa7f1UNWrBdng113twb2RKfsV8ekxfgin9FY4weQJEd89zatb1+ndCNrXKzI0hFKuqnxZF8g=
+X-Received: by 2002:a17:902:f54f:b0:1f3:10ce:2ab3 with SMTP id
+ d9443c01a7336-1f310ce2e63mr29880275ad.16.1716317666957; Tue, 21 May 2024
+ 11:54:26 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20240517102246.4070184-1-alan.maguire@oracle.com>
+ <b647e0d1d225f9d21e78c6ffedb722507f42eff0.camel@gmail.com>
+ <3ae296b2-402a-4e17-b874-e067c57fc091@oracle.com> <81bbbbad95244dd74801497414c2cdad88815f83.camel@gmail.com>
+In-Reply-To: <81bbbbad95244dd74801497414c2cdad88815f83.camel@gmail.com>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Tue, 21 May 2024 11:54:14 -0700
+Message-ID: <CAEf4BzbdoXTeTSx-1Vu+sA6MKphQq91p1TwnSkK3Yv3msa7h9Q@mail.gmail.com>
+Subject: Re: [PATCH v4 bpf-next 00/11] bpf: support resilient split BTF
+To: Eduard Zingerman <eddyz87@gmail.com>
+Cc: Alan Maguire <alan.maguire@oracle.com>, andrii@kernel.org, jolsa@kernel.org, 
+	acme@redhat.com, quentin@isovalent.com, mykolal@fb.com, ast@kernel.org, 
+	daniel@iogearbox.net, martin.lau@linux.dev, song@kernel.org, 
+	yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org, 
+	sdf@google.com, haoluo@google.com, houtao1@huawei.com, bpf@vger.kernel.org, 
+	masahiroy@kernel.org, mcgrof@kernel.org, nathan@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-#syz test: git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git master
+On Tue, May 21, 2024 at 9:19=E2=80=AFAM Eduard Zingerman <eddyz87@gmail.com=
+> wrote:
+>
+> On Tue, 2024-05-21 at 10:15 +0100, Alan Maguire wrote:
+>
+> [...]
+>
+> > This is a neat approach, and as you say it eliminates the need to modif=
+y
+> > bpftool to handle distilled base BTF and relocation.  The only wrinkle
+> > is resolve_btfids; we call resolve_btfids for modules with a "-B
+> > vmlinux" argument, so in that case we'd be calling btf_parse_elf() with
+> > both a split and base BTF. According to the approach outlined above,
+> > we'd relocate split BTF - originally relative to .BTF.base - to be
+> > relative to vmlinux BTF, but in the case of resolve_btfids we don't wan=
+t
+> > that relocation. We want the BTF ids to reflect the distilled base BTF
+> > ids since they will be relocated later on module load along with the
+> > split BTF references themselves.
+>
+> You are correct, I missed this detail, resolve_btfids needs distilled
+> base instead of vmlinux for out of tree modules.
+>
+> > We can handle this by having a -R flag to skip relocation; it would
+> > simply ensure we first try calling btf__parse(), falling back to
+> > btf__parse_split(); we need the fallback logic as it is possible the
+> > pahole version didn't add .BTF.base sections. This logic would only be
+> > activated for out-of-tree module builds so seems acceptable to me. If
+> > that makes sense, with your permission I can rework the series to
+> > include your BTF parsing patch.
+>
+> Makes sense to me, but I'm curious whether you and Andrii consider
+> this a good interface, compared to _opts version.
+>
 
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 77da1f438bec..f6e694457886 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -8882,7 +8882,8 @@ static bool may_update_sockmap(struct bpf_verifier_env *env, int func_id)
- 	enum bpf_attach_type eatype = env->prog->expected_attach_type;
- 	enum bpf_prog_type type = resolve_prog_type(env->prog);
- 
--	if (func_id != BPF_FUNC_map_update_elem)
-+	if (func_id != BPF_FUNC_map_update_elem &&
-+	    func_id != BPF_FUNC_map_delete_elem)
- 		return false;
- 
- 	/* It's not possible to get access to a locked struct sock in these
-@@ -8988,7 +8989,6 @@ static int check_map_func_compatibility(struct bpf_verifier_env *env,
- 	case BPF_MAP_TYPE_SOCKMAP:
- 		if (func_id != BPF_FUNC_sk_redirect_map &&
- 		    func_id != BPF_FUNC_sock_map_update &&
--		    func_id != BPF_FUNC_map_delete_elem &&
- 		    func_id != BPF_FUNC_msg_redirect_map &&
- 		    func_id != BPF_FUNC_sk_select_reuseport &&
- 		    func_id != BPF_FUNC_map_lookup_elem &&
-@@ -8998,7 +8998,6 @@ static int check_map_func_compatibility(struct bpf_verifier_env *env,
- 	case BPF_MAP_TYPE_SOCKHASH:
- 		if (func_id != BPF_FUNC_sk_redirect_hash &&
- 		    func_id != BPF_FUNC_sock_hash_update &&
--		    func_id != BPF_FUNC_map_delete_elem &&
- 		    func_id != BPF_FUNC_msg_redirect_hash &&
- 		    func_id != BPF_FUNC_sk_select_reuseport &&
- 		    func_id != BPF_FUNC_map_lookup_elem &&
+Hey, sorry for delays, just getting back to reviewing patches, I will
+go through this revision today.
+
+I'm probably leaning towards not doing automatic relocations in
+btf__parse(), tbh. Distilled BTF is a rather special kernel-specific
+feature, if we need to teach resolve_btfids and bpftool to do
+something extra for that case (i.e., call another API for relocation,
+if necessary), then it's fine, doesn't seems like a problem.
+
+Much worse is having to do some workarounds to prevent an API from
+doing some undesired extra steps (like in resolve_btfids not wanting a
+relocation). Orthogonality FTW, IMO.
+
+
+> Thanks,
+> Eduard
 
