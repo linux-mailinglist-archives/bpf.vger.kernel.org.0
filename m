@@ -1,271 +1,190 @@
-Return-Path: <bpf+bounces-30094-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-30095-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 498408CAB6E
-	for <lists+bpf@lfdr.de>; Tue, 21 May 2024 12:04:38 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id AFB7B8CAB6F
+	for <lists+bpf@lfdr.de>; Tue, 21 May 2024 12:04:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E4529281733
-	for <lists+bpf@lfdr.de>; Tue, 21 May 2024 10:04:36 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 441A71F21907
+	for <lists+bpf@lfdr.de>; Tue, 21 May 2024 10:04:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 481E9657A7;
-	Tue, 21 May 2024 10:04:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B8CB86A8AD;
+	Tue, 21 May 2024 10:04:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VYmK+cQC"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="eqIL/9E3"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-f53.google.com (mail-ed1-f53.google.com [209.85.208.53])
+Received: from mail-ej1-f51.google.com (mail-ej1-f51.google.com [209.85.218.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0BF57224F0
-	for <bpf@vger.kernel.org>; Tue, 21 May 2024 10:04:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD56F56475
+	for <bpf@vger.kernel.org>; Tue, 21 May 2024 10:04:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716285871; cv=none; b=Q0kYp3AefMX0MlXOkZ1LVUw+d3QNQ19lJg4PxtkhR7cq1gEnZCkOlkgGmcoo/xhzcXG87ZLz2YfO9pexYVDwJo/8MJu2rsS4k9ueBCkKCM0SRWGpgji4yL3B3qljL25QUtQDCsJffz7oCy1ToK6+34JttIjTeQQV3614/UhwNSc=
+	t=1716285882; cv=none; b=Tt9lK/JLgg5fjUjslNIsV4JWCu6kdJ2fUuT9/LKRGvLirwXWtd1fmh9tJIrPhPsqnJJjZ3TyXmQ5Ev76r16+PMu16h+Nyg1t+jQ+SSp4NeaoNhrHAF7ETcZvEDqyk2WAI5eALiVeah3BXqbo+TiXUlX+PwUFbPDoBr1mXtXqd+A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716285871; c=relaxed/simple;
-	bh=sAHP/tuCS0qnB5xMmdn8pFjEP5toVMOx2T9cIa0Fhdg=;
+	s=arc-20240116; t=1716285882; c=relaxed/simple;
+	bh=mvdhMLjxwVm2Lw8vONSzdqyo0QAyub9hYVppd0JPOdA=;
 	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=f77Pro6VKpX3OKfnurdI3ZObTTvcjzMAGBBO9QpX74FIYAfG4YDDVQGZu/LyMJ4iXAzqykh6JM2JnVZBcVtZIW2+Ez9yiFiSauF6rtPkgT0IDa6OfPmiTt79B98fx2PMxGBF6EJDmRAoJqzVbDLg5sxVI78Z0nWEiYUAnnOzKtk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=VYmK+cQC; arc=none smtp.client-ip=209.85.208.53
+	 Content-Type:Content-Disposition:In-Reply-To; b=QkcMSS7mm0GKBP3HxH5e4ZMIGBdwhSRXPrU7HLWBRW4aFoNUI7AVlQal6RQMAI0Cp1hrbYiYUBy5n8BWHf9yNxV4M8hNe9yDRnE4ok4sVqU/2Z6u9vj4IwijkeOkhM2p0AKOFH6C6kk8FuFXmtpd1RIbRqWRGIziLKmqMy8xDYs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=eqIL/9E3; arc=none smtp.client-ip=209.85.218.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f53.google.com with SMTP id 4fb4d7f45d1cf-56e1f3462caso8768443a12.3
-        for <bpf@vger.kernel.org>; Tue, 21 May 2024 03:04:29 -0700 (PDT)
+Received: by mail-ej1-f51.google.com with SMTP id a640c23a62f3a-a59e4136010so874107766b.3
+        for <bpf@vger.kernel.org>; Tue, 21 May 2024 03:04:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1716285868; x=1716890668; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=+PXDhJb5CTA3QbLRXbH1PQBgs5Palh7itilO7W2tsNk=;
-        b=VYmK+cQCht0YXdanoEk9gtzrZCykRpFB3beBNo251CwcAsrf2jTFNeOBqaOChZ7j7B
-         TognSg8lR9N9BjWkMBnCAZfLzpR5noKIsmojQFaSUger5v4RpgecLx/6vHc4uzyBffd6
-         HWI4fASmQXQnKU6rbg7hyjWs9DkJwHcWtrTt1Qqd7mrGPlIVca3xFQ77UDomC1C3A/GG
-         URgeFUjhFSkVTHwyKtZrldfkAhKg9XyBADuCQhUVGEL/6+wwC5brp1uhvzYtv9MZgWMh
-         vzhi1beLBGaxjNunN5UmAx9QefY2vZTNXte36uQyTqVwuVUr6SlhH5oC1/RvbIrxkuvN
-         46yw==
+        d=gmail.com; s=20230601; t=1716285879; x=1716890679; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=eU3/SsODIXhLY+ShpzvtQ03ydaX3LndQs6DacnjRhfY=;
+        b=eqIL/9E3yisD0A8yDZKs3m+UM5PxF5/Vdo0WLXwfjipjFv23SCC1KWdp1phpsenOBq
+         88+qsElYT0yUJ2W37u5/aGZhbTOu1YvU/6f6NXJf//2wnlShT8CGo0czP4a3EXwAfQ+N
+         x5OdQBbA8gV+DZsUiuiofhz8HJ/xXLI2gyVmEwlkaqV3/rQJegL0w0JcSD83XhPEYi6/
+         7+k+UMKnEuJUgTF8Y9RCLToTjevcVS1OLfATeLT7+o6nDSGCe03asFAsf+2bBvOxDABA
+         4tKk7OxnGKWkWsvZGTvwTs16bPcTo8kSkmdrqvVkCA1JrhYKa31axCDB4lzayp9qoy/J
+         iqLA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1716285868; x=1716890668;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=+PXDhJb5CTA3QbLRXbH1PQBgs5Palh7itilO7W2tsNk=;
-        b=hySZiEJBqRzMzpfg9M5suz+0YeDbNGZ68jlSa7W+A8NBbcOmGaLuOzO3eCDIIw0hE7
-         vCfxAT0GIrEFlQMptxBlTdWT+ZlCRT3or4CB1bpJy/ulJn89bxvOJU6w708vry1NAVeC
-         ilOXAsKF1A6Kw1XCvqoPFJbv4fRdZMUN9sasqm2QFSNF2CxqTo3ZM2EBvZb4jvk6b0Rz
-         I+Bjp/7XCnoasNzVunZdtoAqWWuozbg5520M1KzMIbOZ96icVAbVHat8tUftKPUfMjTO
-         3nF6IdvsyHvNcba9qythRB24wqmR6oH7HSxH89xngu/qCXoDbgHw5TiOv/530cNHYVj6
-         4Qyw==
-X-Forwarded-Encrypted: i=1; AJvYcCXbmPzjw6xOpjbr0VsZ+qhoyYcCq5nJT7VvvdOJ39sjQ6T9bes22vJ8W2i9zQbMSGblW2wCmAPhyvi+wYLsMR1xd78N
-X-Gm-Message-State: AOJu0YxfvPHXhwKZ/Q6nIJzqwGIPTJrnHtNgQyvpdpLzbW8w2y0Zzz/9
-	71eeL/jzGsImDXf/VPCGoo49oUzM7n2lRUfbDl8iXVpe0E4XUfY9
-X-Google-Smtp-Source: AGHT+IGq6KyK2MzlcuZSbCfkbvRuuTlKbra6Zh1xmPKro3fjmaJRIOHMc1LDRSaz4dAxn+g13RCTFQ==
-X-Received: by 2002:a50:870d:0:b0:56d:fca5:4245 with SMTP id 4fb4d7f45d1cf-5734d5c0f47mr20953865a12.10.1716285868164;
-        Tue, 21 May 2024 03:04:28 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1716285879; x=1716890679;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=eU3/SsODIXhLY+ShpzvtQ03ydaX3LndQs6DacnjRhfY=;
+        b=vZFeV1jdNgzqP21edqRcu8KZgUy/Wh4wxAoSpyLU1NoAlZHTCo3rVJOk7ROjo8NKnG
+         rf/wk9N0HGV+NKtLEpDWefhh7JBf0cUY7CJL4Cq0MZNUvT/WCVM7xxzICngrpQqzfYUv
+         ZZDggj1l/RcDi5L/rt1QxkaxUHFhN6YmbXgxzRvw7Yh9+0L0EhgFWxDQrWoxduQICrX5
+         M9g8CcYcyeeXjw0Xl69PCgQBPD6/2eIIAlgL7fJqQRUZwctuNyLHUbdZfb/sR3Qg/I7j
+         lATmK5uqKdRNDfhwtV/fTzhqNMs5iVKtqWVW/7ALNEUtB8ZKn/UPDi+BNM7ER4GQEtmb
+         Ux/A==
+X-Gm-Message-State: AOJu0Yz8Bqv/LAmu0NruacWp0S+97KY6hnweI9FnMMgRfW7b+ZB3qQkI
+	52aGdFxsXBjWSVnZC1W5R3Vq9VpBRF4Lm+AeGQa2EtJ1gXJyGEtf
+X-Google-Smtp-Source: AGHT+IHAu8LautGZMxHhWsYf9SEcp5RSmDRkPv45q5VfeVRyhrMKvNm3/4T9iOdPO2MgnUiyuGYpdA==
+X-Received: by 2002:a17:906:2298:b0:a5a:3579:b908 with SMTP id a640c23a62f3a-a5a3579bb63mr1883935166b.38.1716285877810;
+        Tue, 21 May 2024 03:04:37 -0700 (PDT)
 Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
-        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-574ec5fb906sm9010471a12.30.2024.05.21.03.04.27
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a5a1787c70asm1585584966b.56.2024.05.21.03.04.37
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 May 2024 03:04:27 -0700 (PDT)
+        Tue, 21 May 2024 03:04:37 -0700 (PDT)
 From: Jiri Olsa <olsajiri@gmail.com>
 X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Tue, 21 May 2024 12:04:25 +0200
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
-	ast@kernel.org, daniel@iogearbox.net, martin.lau@kernel.org,
-	kernel-team@meta.com
-Subject: Re: [PATCH bpf 5/5] selftests/bpf: extend multi-uprobe tests with
- USDTs
-Message-ID: <Zkxxqayh9VtHGQuj@krava>
+Date: Tue, 21 May 2024 12:04:35 +0200
+To: Andrii Nakryiko <andrii@kernel.org>
+Cc: bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+	martin.lau@kernel.org, kernel-team@meta.com
+Subject: Re: [PATCH bpf 3/5] libbpf: detect broken PID filtering logic for
+ multi-uprobe
+Message-ID: <Zkxxsx6WQ4H-r6Lt@krava>
 References: <20240520234720.1748918-1-andrii@kernel.org>
- <20240520234720.1748918-6-andrii@kernel.org>
- <CAEf4BzaZxUV4t5T8itBydzgm2r4XKThZ9WQLgsJ9auZEfQTntg@mail.gmail.com>
+ <20240520234720.1748918-4-andrii@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAEf4BzaZxUV4t5T8itBydzgm2r4XKThZ9WQLgsJ9auZEfQTntg@mail.gmail.com>
+In-Reply-To: <20240520234720.1748918-4-andrii@kernel.org>
 
-On Mon, May 20, 2024 at 09:54:40PM -0700, Andrii Nakryiko wrote:
-> On Mon, May 20, 2024 at 4:47 PM Andrii Nakryiko <andrii@kernel.org> wrote:
-> >
-> > Validate libbpf's USDT-over-multi-uprobe logic by adding USDTs to
-> > existing multi-uprobe tests. This checks correct libbpf fallback to
-> > singular uprobes (when run on older kernels with buggy PID filtering).
-> > We reuse already established child process and child thread testing
-> > infrastructure, so additions are minimal. These test fail on either
-> > older kernels or older version of libbpf that doesn't detect PID
-> > filtering problems.
-> >
-> > Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-> > ---
-> >  .../bpf/prog_tests/uprobe_multi_test.c        | 22 +++++++++++++
-> >  .../selftests/bpf/progs/uprobe_multi.c        | 33 +++++++++++++++++--
-> >  2 files changed, 53 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/tools/testing/selftests/bpf/prog_tests/uprobe_multi_test.c b/tools/testing/selftests/bpf/prog_tests/uprobe_multi_test.c
-> > index 677232d31432..85d46e568e90 100644
-> > --- a/tools/testing/selftests/bpf/prog_tests/uprobe_multi_test.c
-> > +++ b/tools/testing/selftests/bpf/prog_tests/uprobe_multi_test.c
-> > @@ -8,6 +8,7 @@
-> >  #include "uprobe_multi_usdt.skel.h"
-> >  #include "bpf/libbpf_internal.h"
-> >  #include "testing_helpers.h"
-> > +#include "../sdt.h"
-> >
-> >  static char test_data[] = "test_data";
-> >
-> > @@ -26,6 +27,11 @@ noinline void uprobe_multi_func_3(void)
-> >         asm volatile ("");
-> >  }
-> >
-> > +noinline void usdt_trigger(void)
-> > +{
-> > +       STAP_PROBE(test, pid_filter_usdt);
-> > +}
-> > +
-> >  struct child {
-> >         int go[2];
-> >         int c2p[2]; /* child -> parent channel */
-> > @@ -269,8 +275,24 @@ __test_attach_api(const char *binary, const char *pattern, struct bpf_uprobe_mul
-> >         if (!ASSERT_OK_PTR(skel->links.uprobe_extra, "bpf_program__attach_uprobe_multi"))
-> >                 goto cleanup;
-> >
-> > +       /* Attach (uprobe-backed) USDTs */
-> > +       skel->links.usdt_pid = bpf_program__attach_usdt(skel->progs.usdt_pid, pid, binary,
-> > +                                                       "test", "pid_filter_usdt", NULL);
-> > +       if (!ASSERT_OK_PTR(skel->links.usdt_pid, "attach_usdt_pid"))
-> > +               goto cleanup;
-> > +
-> > +       skel->links.usdt_extra = bpf_program__attach_usdt(skel->progs.usdt_extra, -1, binary,
-> > +                                                         "test", "pid_filter_usdt", NULL);
-> > +       if (!ASSERT_OK_PTR(skel->links.usdt_extra, "attach_usdt_extra"))
-> > +               goto cleanup;
-> > +
-> >         uprobe_multi_test_run(skel, child);
-> >
-> > +       ASSERT_FALSE(skel->bss->bad_pid_seen_usdt, "bad_pid_seen_usdt");
-> > +       if (child) {
-> > +               ASSERT_EQ(skel->bss->child_pid_usdt, child->pid, "usdt_multi_child_pid");
-> > +               ASSERT_EQ(skel->bss->child_tid_usdt, child->tid, "usdt_multi_child_tid");
-> > +       }
-> >  cleanup:
-> >         uprobe_multi__destroy(skel);
-> >  }
-> > diff --git a/tools/testing/selftests/bpf/progs/uprobe_multi.c b/tools/testing/selftests/bpf/progs/uprobe_multi.c
-> > index 86a7ff5d3726..44190efcdba2 100644
-> > --- a/tools/testing/selftests/bpf/progs/uprobe_multi.c
-> > +++ b/tools/testing/selftests/bpf/progs/uprobe_multi.c
-> > @@ -1,8 +1,8 @@
-> >  // SPDX-License-Identifier: GPL-2.0
-> > -#include <linux/bpf.h>
-> > +#include "vmlinux.h"
-> >  #include <bpf/bpf_helpers.h>
-> >  #include <bpf/bpf_tracing.h>
-> > -#include <stdbool.h>
-> > +#include <bpf/usdt.bpf.h>
-> >
-> >  char _license[] SEC("license") = "GPL";
-> >
-> > @@ -23,9 +23,12 @@ __u64 uprobe_multi_sleep_result = 0;
-> >  int pid = 0;
-> >  int child_pid = 0;
-> >  int child_tid = 0;
-> > +int child_pid_usdt = 0;
-> > +int child_tid_usdt = 0;
-> >
-> >  int expect_pid = 0;
-> >  bool bad_pid_seen = false;
-> > +bool bad_pid_seen_usdt = false;
-> >
-> >  bool test_cookie = false;
-> >  void *user_ptr = 0;
-> > @@ -112,3 +115,29 @@ int uprobe_extra(struct pt_regs *ctx)
-> >         /* we need this one just to mix PID-filtered and global uprobes */
-> >         return 0;
-> >  }
-> > +
-> > +SEC("usdt")
-> > +int usdt_pid(struct pt_regs *ctx)
-> > +{
-> > +       __u64 cur_pid_tgid = bpf_get_current_pid_tgid();
-> > +       __u32 cur_pid;
-> > +
-> > +       cur_pid = cur_pid_tgid >> 32;
-> > +       if (pid && cur_pid != pid)
-> > +               return 0;
-> > +
-> > +       if (expect_pid && cur_pid != expect_pid)
-> > +               bad_pid_seen_usdt = true;
-> > +
-> > +       child_pid_usdt = cur_pid_tgid >> 32;
-> > +       child_tid_usdt = (__u32)cur_pid_tgid;
-> > +
-> > +       return 0;
-> > +}
-> > +
-> > +SEC("usdt")
-> > +int usdt_extra(struct pt_regs *ctx)
-> > +{
-> > +       /* we need this one just to mix PID-filtered and global USDT probes */
-> > +       return 0;
-> > +}
-> > --
-> > 2.43.0
-> >
+On Mon, May 20, 2024 at 04:47:18PM -0700, Andrii Nakryiko wrote:
+> Libbpf is automatically (and transparently to user) detecting
+> multi-uprobe support in the kernel, and, if supported, uses
+> multi-uprobes to improve USDT attachment speed.
 > 
-> I lost the following during the final rebase before submitting,
-> sigh... With the piece below tests are passing again:
+> USDTs can be attached system-wide or for the specific process by PID. In
+> the latter case, we rely on correct kernel logic of not triggering USDT
+> for unrelated processes.
 > 
-> diff --git a/tools/testing/selftests/bpf/prog_tests/uprobe_multi_test.c
-> b/tools/testing/selftests/bpf/prog_tests/uprobe_multi_test.c
-> index 85d46e568e90..bf6ca8e3eb13 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/uprobe_multi_test.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/uprobe_multi_test.c
-> @@ -96,6 +96,7 @@ static struct child *spawn_child(void)
->                 uprobe_multi_func_1();
->                 uprobe_multi_func_2();
->                 uprobe_multi_func_3();
-> +               usdt_trigger();
+> As such, on older kernels that do support multi-uprobes, but still have
+> broken PID filtering logic, we need to fall back to singular uprobes.
 > 
->                 exit(errno);
->         }
-> @@ -123,6 +124,7 @@ static void *child_thread(void *ctx)
->         uprobe_multi_func_1();
->         uprobe_multi_func_2();
->         uprobe_multi_func_3();
-> +       usdt_trigger();
+> Unfortunately, whether user is using PID filtering or not is known at
+> the attachment time, which happens after relevant BPF programs were
+> loaded into the kernel. Also unfortunately, we need to make a call
+> whether to use multi-uprobes or singular uprobe for SEC("usdt") programs
+> during BPF object load time, at which point we have no information about
+> possible PID filtering.
 > 
->         err = 0;
->         pthread_exit(&err);
-> @@ -188,6 +190,7 @@ static void uprobe_multi_test_run(struct
-> uprobe_multi *skel, struct child *child
->                 uprobe_multi_func_1();
->                 uprobe_multi_func_2();
->                 uprobe_multi_func_3();
-> +               usdt_trigger();
->         }
+> The distinction between single and multi-uprobes is small, but important
+> for the kernel. Multi-uprobes get BPF_TRACE_UPROBE_MULTI attach type,
+> and kernel internally substitiute different implementation of some of
+> BPF helpers (e.g., bpf_get_attach_cookie()) depending on whether uprobe
+> is multi or singular. So, multi-uprobes and singular uprobes cannot be
+> intermixed.
 > 
->         if (child)
+> All the above implies that we have to make an early and conservative
+> call about the use of multi-uprobes. And so this patch modifies libbpf's
+> existing feature detector for multi-uprobe support to also check correct
+> PID filtering. If PID filtering is not yet fixed, we fall back to
+> singular uprobes for USDTs.
 > 
+> This extension to feature detection is simple thanks to kernel's -EINVAL
+> addition for pid < 0.
 > 
-> I'll wait till tomorrow for any feedback and will post v2.
+> Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+> ---
+>  tools/lib/bpf/features.c | 31 ++++++++++++++++++++++++++++++-
+>  1 file changed, 30 insertions(+), 1 deletion(-)
+> 
+> diff --git a/tools/lib/bpf/features.c b/tools/lib/bpf/features.c
+> index a336786a22a3..cff8640ca66f 100644
+> --- a/tools/lib/bpf/features.c
+> +++ b/tools/lib/bpf/features.c
+> @@ -392,11 +392,40 @@ static int probe_uprobe_multi_link(int token_fd)
+>  	link_fd = bpf_link_create(prog_fd, -1, BPF_TRACE_UPROBE_MULTI, &link_opts);
+>  	err = -errno; /* close() can clobber errno */
+>  
+> +	if (link_fd >= 0 || err != -EBADF) {
+> +		close(link_fd);
+> +		close(prog_fd);
+> +		return 0;
+> +	}
+> +
+> +	/* Initial multi-uprobe support in kernel didn't handle PID filtering
+> +	 * correctly (it was doing thread filtering, not process filtering).
+> +	 * So now we'll detect if PID filtering logic was fixed, and, if not,
+> +	 * we'll pretend multi-uprobes are not supported, if not.
+> +	 * Multi-uprobes are used in USDT attachment logic, and we need to be
+> +	 * conservative here, because multi-uprobe selection happens early at
+> +	 * load time, while the use of PID filtering is known late at
+> +	 * attachment time, at which point it's too late to undo multi-uprobe
+> +	 * selection.
+> +	 *
+> +	 * Creating uprobe with pid == -1 for (invalid) '/' binary will fail
+> +	 * early with -EINVAL on kernels with fixed PID filtering logic;
+> +	 * otherwise -ESRCH would be returned if passed correct binary path
+> +	 * (but we'll just get -BADF, of course).
+> +	 */
+> +	link_opts.uprobe_multi.pid = -1, /* invalid PID */
 
-tests are passing for me with the changes above
+                                       ^ s/,/;/
 
-> 
-> I'm also curious about logistics? Do we want to get everything through
-> the bpf tree? Or bpf-next? Or split somehow? Thoughts?
-> 
-> I think the fix in patch #1 is important enough to backport to stable
-> kernels (multi-uprobes went into upstream v6.6 kernel, FYI).
+so this affects just USDT load/attach, you right?
 
-agreed, perhaps also the patch #3 for libbpf detection?
+Acked-by: Jiri Olsa <jolsa@kernel.org>
 
+thanks,
 jirka
+
+
+> +	link_opts.uprobe_multi.path = "/"; /* invalid path */
+> +	link_opts.uprobe_multi.offsets = &offset;
+> +	link_opts.uprobe_multi.cnt = 1;
+> +
+> +	link_fd = bpf_link_create(prog_fd, -1, BPF_TRACE_UPROBE_MULTI, &link_opts);
+> +	err = -errno; /* close() can clobber errno */
+> +
+>  	if (link_fd >= 0)
+>  		close(link_fd);
+>  	close(prog_fd);
+>  
+> -	return link_fd < 0 && err == -EBADF;
+> +	return link_fd < 0 && err == -EINVAL;
+>  }
+>  
+>  static int probe_kern_bpf_cookie(int token_fd)
+> -- 
+> 2.43.0
+> 
+> 
 
