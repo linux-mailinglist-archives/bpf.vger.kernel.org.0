@@ -1,276 +1,181 @@
-Return-Path: <bpf+bounces-30088-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-30089-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id CC74C8CA788
-	for <lists+bpf@lfdr.de>; Tue, 21 May 2024 07:05:36 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 44B598CA7A4
+	for <lists+bpf@lfdr.de>; Tue, 21 May 2024 07:31:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 835AF2822AD
-	for <lists+bpf@lfdr.de>; Tue, 21 May 2024 05:05:35 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9B049B2202B
+	for <lists+bpf@lfdr.de>; Tue, 21 May 2024 05:31:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B2B32E85E;
-	Tue, 21 May 2024 05:05:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 91C3E3F8C7;
+	Tue, 21 May 2024 05:30:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="SVrDvF/8"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RhOTSKuM"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f42.google.com (mail-wr1-f42.google.com [209.85.221.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E664D610C
-	for <bpf@vger.kernel.org>; Tue, 21 May 2024 05:05:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 169B58836;
+	Tue, 21 May 2024 05:30:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716267930; cv=none; b=F1Z7XzRNm6roEXnM6uksfvnf/kVwua/hMu4mTyWWDuIykI7kExpBhBOzMRdc9J7Pi12+HinZllL4gSH91ZHmY4Law8Y3NysatXbhbMjNgakTfSJ4eZTizqLL6yMWPYAaZlOO0xsz9vOUdOfU1ZMA5UDOzt4AeREfv+q5nY/Jzv4=
+	t=1716269453; cv=none; b=rqwDHVr5qknyNjha3/H/zrlj8SU245Bl2kN84JZbdDAx4bBQ3QFjRIhWetErI6FhFa0mDBGptWjBT/VYoif4T7yVXpQhzM9piLgQqPpzVa5m1gUoEywo1V1WVT1WCXEFkLG/UbwBQrQOR1Yj829/bzND1RZ0+QQn20xp5NiTUkA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716267930; c=relaxed/simple;
-	bh=/8HUVTjrAJ8tUzF4HfsquKWjSNokSKO9JPIqu2bkZLI=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Ph6QyctBeXsxI0GPYlW2RzX+ks92snQ/xijic4mZf1090V/j1hPFE3Yscy2X2oqGYfcutL85N6gcpmsG3/QPSFQ77wMhr18HIXsaYWdDtGhy3a/Z3PFlPs8Mt/MJBaIavkPbeDhtzl8dKpJ8cNMbupeoe7xrGTV/75jz+JuZBkU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=SVrDvF/8; arc=none smtp.client-ip=209.85.221.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f42.google.com with SMTP id ffacd0b85a97d-354cd8da8b9so628436f8f.0
-        for <bpf@vger.kernel.org>; Mon, 20 May 2024 22:05:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1716267927; x=1716872727; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=5yblH263Nbykd3X5HQaWaA72wyQoYHx5y0IXfD1SSYc=;
-        b=SVrDvF/87jUDWJwgTLZWGefl+yCNSFJv4M6RTVWK8x6fTL5fkx3bUD5Y9EENH7N7wx
-         ABTEtjMKO+HgIikXg21ZHGlfGqWtzDfhdynT4Lg63ZgKu4rv3ShbJE/1HZBM33X0AAdQ
-         5CB5mLFG7iy0ljravRylts97DI3RZGs9OL7jTWzzx5fcKw4yFJaZo3Q0ZAmjIVy6MvHH
-         bM7vSH+KrEM1ZdL9qu/sTeC2HhOT9jdtfyDIKg57bK/WUwFfVpuCf67JBVQbcXVbaNg3
-         bua0DbGOpgNOwuD5HgyrvVdstE4EQA/iVnMuSQRAPWAB1Jbh2FRfjixQ16Owot6Hmp2/
-         nmLw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1716267927; x=1716872727;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=5yblH263Nbykd3X5HQaWaA72wyQoYHx5y0IXfD1SSYc=;
-        b=P/gVV/tSHiB719/6ABGg9ZgCmSURR/3kAfqki7bzWnAJh5NBTyYJKcWvGYz9GopLzK
-         CSy28np7Ttc8YKzK1b2EGbLJowipuKRii589aOleosH122smzd3OaSpVrEWfoC8nSnyH
-         pCPOtgxhMTwYCbyD2JcgQyaR2XM7axZOwfT0nN45hn9v90hx00i8wo/Cz4XaZXyidEVc
-         5h/TrBbYVluicL5jYY0vgasMQZdtF3POP+yvA2GiWZxNwZNH/8OOn8IrSd0fhIK6+o9x
-         qKKBIKgUguIIM+pHLWHoaygVV1d0vVjdfZw/gmRKA5rimvB5VWEuHa07Qj4bYzirZhKZ
-         ln2g==
-X-Forwarded-Encrypted: i=1; AJvYcCVvP1t2bg5Slcb2m4DRufh80UXdWkIQ1/WLXvslawLC411GcugrtMT+lSt0kro1IEquc6y84EIHu0DF7VcENajBaaql
-X-Gm-Message-State: AOJu0YxtklWQAJ0mT80jMoDu1NVFBLfvUZTHdskpbJhmU9BJRdcGQmbL
-	repF5AFILtGyl4zE138RIUdZ49iQAzaUnjrglwxqTHgq9fV8cWLBLvecDtYjZqi/qzAWtPO6TyQ
-	/NWxlPWTtov3Otb+IQht8g1lsaYk=
-X-Google-Smtp-Source: AGHT+IGOQUJNyoNnWyGqnQ19VPoD28DAlxO8qKW7kf2aqG016g5uYTsIeDT60n5iqRuxj3gF9FwTJQx1PQidQVpwlXs=
-X-Received: by 2002:a5d:4801:0:b0:34d:2343:b881 with SMTP id
- ffacd0b85a97d-3504a96a343mr21724443f8f.43.1716267926858; Mon, 20 May 2024
- 22:05:26 -0700 (PDT)
+	s=arc-20240116; t=1716269453; c=relaxed/simple;
+	bh=tmFYAnZ399DtCaaCLZqcJMIYNXQT2/24auFWFxtMNHw=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=HtTkDDj8dNWqWLU0zrhUXmw65SNyElGIiU1k2yFscnmlyg666FzGq5s81eOEWzgJlSD7dE3eoy2bgLkhn/8IdHNY/xyW2wEjqu4Vke88w8IQMJ/4MpciH0WoiVW2h+lu1CBvm7XdDYFvuUnkCm9dLmqfRFtOVopeWZXGNENgr6Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RhOTSKuM; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7B8DCC2BD11;
+	Tue, 21 May 2024 05:30:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1716269452;
+	bh=tmFYAnZ399DtCaaCLZqcJMIYNXQT2/24auFWFxtMNHw=;
+	h=From:To:Cc:Subject:Date:From;
+	b=RhOTSKuMx2i5jsmJkj+EjHrXkq9apEsdvXzzQ0CHQeUlexGVMaOY6ZxTPt2xv7lb7
+	 +5hfVPG8mqr6Ko76Uo7Pxg1Oylnpq0r4x6hgERQm1UbOElL1yY0MnaDNWULdpQDAYM
+	 VTqjQ247kucKClu/ewzUA6u8sDMzQmkYSEWEAQ7UWokuEMNAaVnajEiftGY1FMC7v7
+	 kbguqNtqXhq3WSeJ+WT0AQGLyRiNQo5gezPxF2l3QDEHRsGXrxi1IjvuE/QUdefar2
+	 ToOGjRMaocQv32AuBnO+gynleLRINkiQ52YsfqFN8/3MrTyc/iTAG3Nc7mJvpKiIpi
+	 0ktmzcjnR3sGw==
+From: Andrii Nakryiko <andrii@kernel.org>
+To: linux-trace-kernel@vger.kernel.org,
+	rostedt@goodmis.org,
+	mhiramat@kernel.org
+Cc: bpf@vger.kernel.org,
+	oleg@redhat.com,
+	jolsa@kernel.org,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Breno Leitao <leitao@debian.org>
+Subject: [PATCH] uprobes: prevent mutex_lock() under rcu_read_lock()
+Date: Mon, 20 May 2024 22:30:17 -0700
+Message-ID: <20240521053017.3708530-1-andrii@kernel.org>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240520234720.1748918-1-andrii@kernel.org> <20240520234720.1748918-6-andrii@kernel.org>
- <CAEf4BzaZxUV4t5T8itBydzgm2r4XKThZ9WQLgsJ9auZEfQTntg@mail.gmail.com>
-In-Reply-To: <CAEf4BzaZxUV4t5T8itBydzgm2r4XKThZ9WQLgsJ9auZEfQTntg@mail.gmail.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Mon, 20 May 2024 22:05:13 -0700
-Message-ID: <CAADnVQLZZiMDkc6O0WCnBxkJKkeXubUPtCQO5h8BihJ0DeS=yQ@mail.gmail.com>
-Subject: Re: [PATCH bpf 5/5] selftests/bpf: extend multi-uprobe tests with USDTs
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Martin KaFai Lau <martin.lau@kernel.org>, Kernel Team <kernel-team@meta.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Mon, May 20, 2024 at 9:54=E2=80=AFPM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
->
-> On Mon, May 20, 2024 at 4:47=E2=80=AFPM Andrii Nakryiko <andrii@kernel.or=
-g> wrote:
-> >
-> > Validate libbpf's USDT-over-multi-uprobe logic by adding USDTs to
-> > existing multi-uprobe tests. This checks correct libbpf fallback to
-> > singular uprobes (when run on older kernels with buggy PID filtering).
-> > We reuse already established child process and child thread testing
-> > infrastructure, so additions are minimal. These test fail on either
-> > older kernels or older version of libbpf that doesn't detect PID
-> > filtering problems.
-> >
-> > Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-> > ---
-> >  .../bpf/prog_tests/uprobe_multi_test.c        | 22 +++++++++++++
-> >  .../selftests/bpf/progs/uprobe_multi.c        | 33 +++++++++++++++++--
-> >  2 files changed, 53 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/tools/testing/selftests/bpf/prog_tests/uprobe_multi_test.c=
- b/tools/testing/selftests/bpf/prog_tests/uprobe_multi_test.c
-> > index 677232d31432..85d46e568e90 100644
-> > --- a/tools/testing/selftests/bpf/prog_tests/uprobe_multi_test.c
-> > +++ b/tools/testing/selftests/bpf/prog_tests/uprobe_multi_test.c
-> > @@ -8,6 +8,7 @@
-> >  #include "uprobe_multi_usdt.skel.h"
-> >  #include "bpf/libbpf_internal.h"
-> >  #include "testing_helpers.h"
-> > +#include "../sdt.h"
-> >
-> >  static char test_data[] =3D "test_data";
-> >
-> > @@ -26,6 +27,11 @@ noinline void uprobe_multi_func_3(void)
-> >         asm volatile ("");
-> >  }
-> >
-> > +noinline void usdt_trigger(void)
-> > +{
-> > +       STAP_PROBE(test, pid_filter_usdt);
-> > +}
-> > +
-> >  struct child {
-> >         int go[2];
-> >         int c2p[2]; /* child -> parent channel */
-> > @@ -269,8 +275,24 @@ __test_attach_api(const char *binary, const char *=
-pattern, struct bpf_uprobe_mul
-> >         if (!ASSERT_OK_PTR(skel->links.uprobe_extra, "bpf_program__atta=
-ch_uprobe_multi"))
-> >                 goto cleanup;
-> >
-> > +       /* Attach (uprobe-backed) USDTs */
-> > +       skel->links.usdt_pid =3D bpf_program__attach_usdt(skel->progs.u=
-sdt_pid, pid, binary,
-> > +                                                       "test", "pid_fi=
-lter_usdt", NULL);
-> > +       if (!ASSERT_OK_PTR(skel->links.usdt_pid, "attach_usdt_pid"))
-> > +               goto cleanup;
-> > +
-> > +       skel->links.usdt_extra =3D bpf_program__attach_usdt(skel->progs=
-.usdt_extra, -1, binary,
-> > +                                                         "test", "pid_=
-filter_usdt", NULL);
-> > +       if (!ASSERT_OK_PTR(skel->links.usdt_extra, "attach_usdt_extra")=
-)
-> > +               goto cleanup;
-> > +
-> >         uprobe_multi_test_run(skel, child);
-> >
-> > +       ASSERT_FALSE(skel->bss->bad_pid_seen_usdt, "bad_pid_seen_usdt")=
-;
-> > +       if (child) {
-> > +               ASSERT_EQ(skel->bss->child_pid_usdt, child->pid, "usdt_=
-multi_child_pid");
-> > +               ASSERT_EQ(skel->bss->child_tid_usdt, child->tid, "usdt_=
-multi_child_tid");
-> > +       }
-> >  cleanup:
-> >         uprobe_multi__destroy(skel);
-> >  }
-> > diff --git a/tools/testing/selftests/bpf/progs/uprobe_multi.c b/tools/t=
-esting/selftests/bpf/progs/uprobe_multi.c
-> > index 86a7ff5d3726..44190efcdba2 100644
-> > --- a/tools/testing/selftests/bpf/progs/uprobe_multi.c
-> > +++ b/tools/testing/selftests/bpf/progs/uprobe_multi.c
-> > @@ -1,8 +1,8 @@
-> >  // SPDX-License-Identifier: GPL-2.0
-> > -#include <linux/bpf.h>
-> > +#include "vmlinux.h"
-> >  #include <bpf/bpf_helpers.h>
-> >  #include <bpf/bpf_tracing.h>
-> > -#include <stdbool.h>
-> > +#include <bpf/usdt.bpf.h>
-> >
-> >  char _license[] SEC("license") =3D "GPL";
-> >
-> > @@ -23,9 +23,12 @@ __u64 uprobe_multi_sleep_result =3D 0;
-> >  int pid =3D 0;
-> >  int child_pid =3D 0;
-> >  int child_tid =3D 0;
-> > +int child_pid_usdt =3D 0;
-> > +int child_tid_usdt =3D 0;
-> >
-> >  int expect_pid =3D 0;
-> >  bool bad_pid_seen =3D false;
-> > +bool bad_pid_seen_usdt =3D false;
-> >
-> >  bool test_cookie =3D false;
-> >  void *user_ptr =3D 0;
-> > @@ -112,3 +115,29 @@ int uprobe_extra(struct pt_regs *ctx)
-> >         /* we need this one just to mix PID-filtered and global uprobes=
- */
-> >         return 0;
-> >  }
-> > +
-> > +SEC("usdt")
-> > +int usdt_pid(struct pt_regs *ctx)
-> > +{
-> > +       __u64 cur_pid_tgid =3D bpf_get_current_pid_tgid();
-> > +       __u32 cur_pid;
-> > +
-> > +       cur_pid =3D cur_pid_tgid >> 32;
-> > +       if (pid && cur_pid !=3D pid)
-> > +               return 0;
-> > +
-> > +       if (expect_pid && cur_pid !=3D expect_pid)
-> > +               bad_pid_seen_usdt =3D true;
-> > +
-> > +       child_pid_usdt =3D cur_pid_tgid >> 32;
-> > +       child_tid_usdt =3D (__u32)cur_pid_tgid;
-> > +
-> > +       return 0;
-> > +}
-> > +
-> > +SEC("usdt")
-> > +int usdt_extra(struct pt_regs *ctx)
-> > +{
-> > +       /* we need this one just to mix PID-filtered and global USDT pr=
-obes */
-> > +       return 0;
-> > +}
-> > --
-> > 2.43.0
-> >
->
-> I lost the following during the final rebase before submitting,
-> sigh... With the piece below tests are passing again:
->
-> diff --git a/tools/testing/selftests/bpf/prog_tests/uprobe_multi_test.c
-> b/tools/testing/selftests/bpf/prog_tests/uprobe_multi_test.c
-> index 85d46e568e90..bf6ca8e3eb13 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/uprobe_multi_test.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/uprobe_multi_test.c
-> @@ -96,6 +96,7 @@ static struct child *spawn_child(void)
->                 uprobe_multi_func_1();
->                 uprobe_multi_func_2();
->                 uprobe_multi_func_3();
-> +               usdt_trigger();
->
->                 exit(errno);
->         }
-> @@ -123,6 +124,7 @@ static void *child_thread(void *ctx)
->         uprobe_multi_func_1();
->         uprobe_multi_func_2();
->         uprobe_multi_func_3();
-> +       usdt_trigger();
->
->         err =3D 0;
->         pthread_exit(&err);
-> @@ -188,6 +190,7 @@ static void uprobe_multi_test_run(struct
-> uprobe_multi *skel, struct child *child
->                 uprobe_multi_func_1();
->                 uprobe_multi_func_2();
->                 uprobe_multi_func_3();
-> +               usdt_trigger();
->         }
->
->         if (child)
->
->
-> I'll wait till tomorrow for any feedback and will post v2.
+Recent changes made uprobe_cpu_buffer preparation lazy, and moved it
+deeper into __uprobe_trace_func(). This is problematic because
+__uprobe_trace_func() is called inside rcu_read_lock()/rcu_read_unlock()
+block, which then calls prepare_uprobe_buffer() -> uprobe_buffer_get() ->
+mutex_lock(&ucb->mutex), leading to a splat about using mutex under
+non-sleepable RCU:
 
-pls wait for review from Jiri.
+  BUG: sleeping function called from invalid context at kernel/locking/mutex.c:585
+   in_atomic(): 0, irqs_disabled(): 0, non_block: 0, pid: 98231, name: stress-ng-sigq
+   preempt_count: 0, expected: 0
+   RCU nest depth: 1, expected: 0
+   ...
+   Call Trace:
+    <TASK>
+    dump_stack_lvl+0x3d/0xe0
+    __might_resched+0x24c/0x270
+    ? prepare_uprobe_buffer+0xd5/0x1d0
+    __mutex_lock+0x41/0x820
+    ? ___perf_sw_event+0x206/0x290
+    ? __perf_event_task_sched_in+0x54/0x660
+    ? __perf_event_task_sched_in+0x54/0x660
+    prepare_uprobe_buffer+0xd5/0x1d0
+    __uprobe_trace_func+0x4a/0x140
+    uprobe_dispatcher+0x135/0x280
+    ? uprobe_dispatcher+0x94/0x280
+    uprobe_notify_resume+0x650/0xec0
+    ? atomic_notifier_call_chain+0x21/0x110
+    ? atomic_notifier_call_chain+0xf8/0x110
+    irqentry_exit_to_user_mode+0xe2/0x1e0
+    asm_exc_int3+0x35/0x40
+   RIP: 0033:0x7f7e1d4da390
+   Code: 33 04 00 0f 1f 80 00 00 00 00 f3 0f 1e fa b9 01 00 00 00 e9 b2 fc ff ff 66 90 f3 0f 1e fa 31 c9 e9 a5 fc ff ff 0f 1f 44 00 00 <cc> 0f 1e fa b8 27 00 00 00 0f 05 c3 0f 1f 40 00 f3 0f 1e fa b8 6e
+   RSP: 002b:00007ffd2abc3608 EFLAGS: 00000246
+   RAX: 0000000000000000 RBX: 0000000076d325f1 RCX: 0000000000000000
+   RDX: 0000000076d325f1 RSI: 000000000000000a RDI: 00007ffd2abc3690
+   RBP: 000000000000000a R08: 00017fb700000000 R09: 00017fb700000000
+   R10: 00017fb700000000 R11: 0000000000000246 R12: 0000000000017ff2
+   R13: 00007ffd2abc3610 R14: 0000000000000000 R15: 00007ffd2abc3780
+    </TASK>
 
-> I'm also curious about logistics? Do we want to get everything through
-> the bpf tree? Or bpf-next? Or split somehow? Thoughts?
+Luckily, it's easy to fix by moving prepare_uprobe_buffer() to be called
+slightly earlier: into uprobe_trace_func() and uretprobe_trace_func(), outside
+of RCU locked section. This still keeps this buffer preparation lazy and helps
+avoid the overhead when it's not needed. E.g., if there is only BPF uprobe
+handler installed on a given uprobe, buffer won't be initialized.
 
-I think the whole thing through bpf tree makes it the easiest for everyone.
+Note, the other user of prepare_uprobe_buffer(), __uprobe_perf_func(), is not
+affected, as it doesn't prepare buffer under RCU read lock.
+
+Fixes: 1b8f85defbc8 ("uprobes: prepare uprobe args buffer lazily")
+Reported-by: Breno Leitao <leitao@debian.org>
+Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+---
+ kernel/trace/trace_uprobe.c | 14 +++++++++-----
+ 1 file changed, 9 insertions(+), 5 deletions(-)
+
+diff --git a/kernel/trace/trace_uprobe.c b/kernel/trace/trace_uprobe.c
+index 8541fa1494ae..c98e3b3386ba 100644
+--- a/kernel/trace/trace_uprobe.c
++++ b/kernel/trace/trace_uprobe.c
+@@ -970,19 +970,17 @@ static struct uprobe_cpu_buffer *prepare_uprobe_buffer(struct trace_uprobe *tu,
+ 
+ static void __uprobe_trace_func(struct trace_uprobe *tu,
+ 				unsigned long func, struct pt_regs *regs,
+-				struct uprobe_cpu_buffer **ucbp,
++				struct uprobe_cpu_buffer *ucb,
+ 				struct trace_event_file *trace_file)
+ {
+ 	struct uprobe_trace_entry_head *entry;
+ 	struct trace_event_buffer fbuffer;
+-	struct uprobe_cpu_buffer *ucb;
+ 	void *data;
+ 	int size, esize;
+ 	struct trace_event_call *call = trace_probe_event_call(&tu->tp);
+ 
+ 	WARN_ON(call != trace_file->event_call);
+ 
+-	ucb = prepare_uprobe_buffer(tu, regs, ucbp);
+ 	if (WARN_ON_ONCE(ucb->dsize > PAGE_SIZE))
+ 		return;
+ 
+@@ -1014,13 +1012,16 @@ static int uprobe_trace_func(struct trace_uprobe *tu, struct pt_regs *regs,
+ 			     struct uprobe_cpu_buffer **ucbp)
+ {
+ 	struct event_file_link *link;
++	struct uprobe_cpu_buffer *ucb;
+ 
+ 	if (is_ret_probe(tu))
+ 		return 0;
+ 
++	ucb = prepare_uprobe_buffer(tu, regs, ucbp);
++
+ 	rcu_read_lock();
+ 	trace_probe_for_each_link_rcu(link, &tu->tp)
+-		__uprobe_trace_func(tu, 0, regs, ucbp, link->file);
++		__uprobe_trace_func(tu, 0, regs, ucb, link->file);
+ 	rcu_read_unlock();
+ 
+ 	return 0;
+@@ -1031,10 +1032,13 @@ static void uretprobe_trace_func(struct trace_uprobe *tu, unsigned long func,
+ 				 struct uprobe_cpu_buffer **ucbp)
+ {
+ 	struct event_file_link *link;
++	struct uprobe_cpu_buffer *ucb;
++
++	ucb = prepare_uprobe_buffer(tu, regs, ucbp);
+ 
+ 	rcu_read_lock();
+ 	trace_probe_for_each_link_rcu(link, &tu->tp)
+-		__uprobe_trace_func(tu, func, regs, ucbp, link->file);
++		__uprobe_trace_func(tu, func, regs, ucb, link->file);
+ 	rcu_read_unlock();
+ }
+ 
+-- 
+2.43.0
+
 
