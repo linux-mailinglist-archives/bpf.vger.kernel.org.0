@@ -1,336 +1,267 @@
-Return-Path: <bpf+bounces-30086-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-30087-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 12C1A8CA6B5
-	for <lists+bpf@lfdr.de>; Tue, 21 May 2024 05:15:19 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id C27338CA77C
+	for <lists+bpf@lfdr.de>; Tue, 21 May 2024 06:55:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 41A25282757
-	for <lists+bpf@lfdr.de>; Tue, 21 May 2024 03:15:17 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B15F9B21E75
+	for <lists+bpf@lfdr.de>; Tue, 21 May 2024 04:55:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 75F861BF37;
-	Tue, 21 May 2024 03:15:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 85B46286BD;
+	Tue, 21 May 2024 04:54:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="WEKqPsHI"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="O0yFqc97"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f201.google.com (mail-pf1-f201.google.com [209.85.210.201])
+Received: from mail-pl1-f176.google.com (mail-pl1-f176.google.com [209.85.214.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0439BBA53
-	for <bpf@vger.kernel.org>; Tue, 21 May 2024 03:15:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A1306125
+	for <bpf@vger.kernel.org>; Tue, 21 May 2024 04:54:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716261309; cv=none; b=BI1ah40e7cP3C1MTwWVXqxyXPPdWekZec5xyx9WqkMSulnNAHmtZUSCRDSQe/GbpPFrFSyvWcJ4U1h5DFwhyKng6slVcuA2IPImf3//hDKA1esyfqwRkgxgiL2bTx3AZAU8ZCYFlRYGL16+TL6ZN412Rv4MtZm/gORtqvyiGQz4=
+	t=1716267295; cv=none; b=hhfrmm4LaCkj5c3JGvKua+6YpGFdKuB58eFKghNixXCUDOEinb5SzTNg1R98gOZa2s29YPsebmKB6xX/dPaqO2N+HU7FnfuMMinfE3jFGHCjBEG8dMekf1wsVnA0kKIULxvJcOagu/DRBs/klcd5wsRVYn03giuACqmWUnlrfVI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716261309; c=relaxed/simple;
-	bh=iHysDecOttwIFdH4smp5oFCmHAlrwA4qmEKVYK8hNXY=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=QI+Lqgx60JHoefTmp9jsTTzXagvF2JDjzy/DwW3ADhaSsenbGMfkxSsAmpHKXs3B5/amty+gp0jX5Fq9VW/VFSwzqxJhg6BywNEA864BJE0escHBPpTnCuZZ8bBBA/Fev9cZ+/yQzK4azpPALyJ+h51Gs1vaWwXOWslQCKwONIA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--sdf.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=WEKqPsHI; arc=none smtp.client-ip=209.85.210.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--sdf.bounces.google.com
-Received: by mail-pf1-f201.google.com with SMTP id d2e1a72fcca58-6f3efd63657so11387028b3a.2
-        for <bpf@vger.kernel.org>; Mon, 20 May 2024 20:15:06 -0700 (PDT)
+	s=arc-20240116; t=1716267295; c=relaxed/simple;
+	bh=VSUhZOOlsUoh71Q44pcpzujNeX2dJ5dS460pZ7l5PlQ=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Hfnp+/9wChUGUVNZ9XI3R2QvMMyOJn872z5NMnY5aHuQVTnRmBwozlHd6FpG0/Ei3/72jTfmz4sPWuc74I4npl2ZA7IdReNPhSaVfNDLs1A8RT4dhJ7klIE5mrVZpgX1ulLHhO2oNP+TdHf5hZXvWRP2bHOdHQadZfckA7nKBA8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=O0yFqc97; arc=none smtp.client-ip=209.85.214.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f176.google.com with SMTP id d9443c01a7336-1eeb1a4c10aso97962075ad.3
+        for <bpf@vger.kernel.org>; Mon, 20 May 2024 21:54:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1716261306; x=1716866106; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=8rofaiJOkgI0u+L/hMvBVHKuVQV1ohwi1Ww3tpTCPoc=;
-        b=WEKqPsHICbdHC+l/VUDZS3nNWmJqL/kiYS7/NkUQLg2apGruvHTt63lxSzy6TBEa6p
-         W7Fi0AAZtFeRjymM7PBoHiQkQAdcz9WDWDyAK1TxCoYjm53faw6leNCt6umwPA64qYV4
-         zofyQgU95Fmhc87Zkr8keQbCKpf4rrUm+9yEvZxhOa183XAtf1hjtiF7mVKxnZu1Wqsf
-         VM/LURlmIWP4GCVXfz6/A+duHuXYToBLHwJhaOHImDomCT7m7KOSn0XfJJ0+btIKy0s1
-         +kEfhte//Gwu6Jx2I1sQPDGpZOsI1mWTH7S3r9JV9PkjHwKvvVCDk6ADKn4SOzaX+zE5
-         1How==
+        d=gmail.com; s=20230601; t=1716267293; x=1716872093; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=VFmIQ4JTOcquvuPpsBqSC7VuGai7jlk57yd6W0Lesv0=;
+        b=O0yFqc97yv13Jk6/mXKlXEXKDl1Mr6uTZxDysTb7z5/pOo1G/Vr6CcTB6BxLQoRaTU
+         H63K2pjDb5xzDqQ0k89/Q+J9+HmrboIoZYKkgWgu3xjjzAj8yYFN4Zub182uySs6s0Wc
+         4ZQ5u3OsvUZYgvbzN7c7Kk27/6TbOzdcoNL9dyuAu0yWO+fmakWtacPEIuxjmyuS+mOO
+         V4pdIw+dEYSVaytkxZriCRnHzk1jCNEQ9ds/mKwfwI3hpINm8BhoPfY3eVcFybsy+xrr
+         8DruozX+sC0CI0owDrcpiSh8n4e2aRNtE3/z0QbiA3X8h6pG5hG9pSNXmCcmd4Aig1f0
+         eF3Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1716261306; x=1716866106;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=8rofaiJOkgI0u+L/hMvBVHKuVQV1ohwi1Ww3tpTCPoc=;
-        b=RhvH2Giq06b4NLwjZz9/zG1KUpCixkrnMRk5kHjHDtnD7ldiVlmE2747XB9+TzLEqc
-         xlrAIM0tJ2gA+aF3QOOO2/VF60EpYrOWRoO47Np41Ert/aQoHextGIsKwsnfqlFZtUTg
-         ciYnOnm8XNnrpLKFzEz8bVwKU7vS6sYjpyzY6IYBxuGi237QdryGe8Gam7f/yEpJjSSh
-         9y9FhR6RZWTA97a03alHdwMH1BAJNp+8W8MicRQ3LmmmFBTd/kEbhWYN3FVU2WGq0TMJ
-         ZDAyuIXTgLRsA39rxiUs16DMYa4KBjEcbvm1INkyKp0D1da4wI8pX95v9b3lvgueKtX+
-         usUg==
-X-Forwarded-Encrypted: i=1; AJvYcCUh383cPoQUBZrghECGUWRKZRoQ/84wuuh0ggFwlmQzYwLwBsNiGWRkZtlycpRV0hAZ5U3ILjiXzbEsYeyBjd9VLRB+
-X-Gm-Message-State: AOJu0YzvkR1RwyLMDJMIoZLXSV8qxmpvU3xvM717uXY17Of1LUojud6U
-	0OPiVXtosazQqLhJpHlutVmX1YqttsP210lH4IfNDODEFnOlr3ahr0nhlql0UhGOUA==
-X-Google-Smtp-Source: AGHT+IFSnTDwSKRETum7a5rl6TifbFmC49dhr+wfOyP2QWT5i+3rjrf5XuyAJDIr716nOVQXixFr0bc=
-X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
- (user=sdf job=sendgmr) by 2002:a05:6a00:1384:b0:6ec:f5b8:58cc with SMTP id
- d2e1a72fcca58-6f4e0395b9dmr1224901b3a.6.1716261306229; Mon, 20 May 2024
- 20:15:06 -0700 (PDT)
-Date: Mon, 20 May 2024 20:15:04 -0700
-In-Reply-To: <20240510192412.3297104-18-amery.hung@bytedance.com>
+        d=1e100.net; s=20230601; t=1716267293; x=1716872093;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=VFmIQ4JTOcquvuPpsBqSC7VuGai7jlk57yd6W0Lesv0=;
+        b=kizkYDW6cbjcBeJQxBHQm7VIxfK5glsj9+OgoFgu8bT78Msm/O6nluFQ+mr/17fL4d
+         CYdw+aPN7slmjc0mbwvG//Eb8XIUe7yZsiMTEy4pZgZCgaN42wgsP0ncaBBM3vOC2YSP
+         7hBraOudjGhy9Ndl0L1UYex9je+1GS6xmYIDqUoE13MbCwOI2PhZNFRmVY0R4OXQiPSV
+         1HCbfLxlxexO/BwDavYFYUxXq1HMOiEeFjGPJtMF3tf27zPpZYdEZsOkRiaruxuOdS1s
+         NBaqX+bxON6Jkzd6Tjyk5f3O5bML7Valsw68f5qy1hFMq6HJiFKmDbP8vyx+Jnqf0U/u
+         9Ovg==
+X-Gm-Message-State: AOJu0YyKf2NOjc+JwzdC5ROxJkhDpWH+Yq8kbAl7OOV10zFNozzuISKq
+	h87+cgFkRTBh8X1nqajtQ5c5U07qr6l333YuGNOYwNaT7RFoJgZ/VuRMOqwNdgMmtS9W8v35nNp
+	lNwGx/GIgcgi5Ujj4XauLhYP67F2ylHNP
+X-Google-Smtp-Source: AGHT+IGDJ0r3MkWY7ObyFdfEZbbKHyGAR1qlO/cPC/nIAhTGb6GF1+Uq/3/D7c7qjm5SaoB1/iMpkXSu7aNgrMfn2mg=
+X-Received: by 2002:a17:90b:100d:b0:2b6:2ef4:e2aa with SMTP id
+ 98e67ed59e1d1-2b6cc780466mr24522315a91.25.1716267292693; Mon, 20 May 2024
+ 21:54:52 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240510192412.3297104-1-amery.hung@bytedance.com> <20240510192412.3297104-18-amery.hung@bytedance.com>
-Message-ID: <ZkwRuEExDs8QnVu1@google.com>
-Subject: Re: [RFC PATCH v8 17/20] selftests: Add a basic fifo qdisc test
-From: Stanislav Fomichev <sdf@google.com>
-To: Amery Hung <ameryhung@gmail.com>
-Cc: netdev@vger.kernel.org, bpf@vger.kernel.org, yangpeihao@sjtu.edu.cn, 
-	daniel@iogearbox.net, andrii@kernel.org, martin.lau@kernel.org, 
-	sinquersw@gmail.com, toke@redhat.com, jhs@mojatatu.com, jiri@resnulli.us, 
-	xiyou.wangcong@gmail.com, yepeilin.cs@gmail.com
-Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+References: <20240520234720.1748918-1-andrii@kernel.org> <20240520234720.1748918-6-andrii@kernel.org>
+In-Reply-To: <20240520234720.1748918-6-andrii@kernel.org>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Mon, 20 May 2024 21:54:40 -0700
+Message-ID: <CAEf4BzaZxUV4t5T8itBydzgm2r4XKThZ9WQLgsJ9auZEfQTntg@mail.gmail.com>
+Subject: Re: [PATCH bpf 5/5] selftests/bpf: extend multi-uprobe tests with USDTs
+To: Andrii Nakryiko <andrii@kernel.org>
+Cc: bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net, 
+	martin.lau@kernel.org, kernel-team@meta.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 05/10, Amery Hung wrote:
-> This selftest shows a bare minimum fifo qdisc, which simply enqueues skbs
-> into the back of a bpf list and dequeues from the front of the list.
-> 
-> Signed-off-by: Amery Hung <amery.hung@bytedance.com>
+On Mon, May 20, 2024 at 4:47=E2=80=AFPM Andrii Nakryiko <andrii@kernel.org>=
+ wrote:
+>
+> Validate libbpf's USDT-over-multi-uprobe logic by adding USDTs to
+> existing multi-uprobe tests. This checks correct libbpf fallback to
+> singular uprobes (when run on older kernels with buggy PID filtering).
+> We reuse already established child process and child thread testing
+> infrastructure, so additions are minimal. These test fail on either
+> older kernels or older version of libbpf that doesn't detect PID
+> filtering problems.
+>
+> Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
 > ---
->  .../selftests/bpf/prog_tests/bpf_qdisc.c      | 161 ++++++++++++++++++
->  .../selftests/bpf/progs/bpf_qdisc_common.h    |  23 +++
->  .../selftests/bpf/progs/bpf_qdisc_fifo.c      |  83 +++++++++
->  3 files changed, 267 insertions(+)
->  create mode 100644 tools/testing/selftests/bpf/prog_tests/bpf_qdisc.c
->  create mode 100644 tools/testing/selftests/bpf/progs/bpf_qdisc_common.h
->  create mode 100644 tools/testing/selftests/bpf/progs/bpf_qdisc_fifo.c
-> 
-> diff --git a/tools/testing/selftests/bpf/prog_tests/bpf_qdisc.c b/tools/testing/selftests/bpf/prog_tests/bpf_qdisc.c
-> new file mode 100644
-> index 000000000000..295d0216e70f
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/prog_tests/bpf_qdisc.c
-> @@ -0,0 +1,161 @@
-> +#include <linux/pkt_sched.h>
-> +#include <linux/rtnetlink.h>
-> +#include <test_progs.h>
-> +
-> +#include "network_helpers.h"
-> +#include "bpf_qdisc_fifo.skel.h"
-> +
-> +#ifndef ENOTSUPP
-> +#define ENOTSUPP 524
-> +#endif
-> +
-> +#define LO_IFINDEX 1
-> +
-> +static const unsigned int total_bytes = 10 * 1024 * 1024;
-> +static int stop;
-> +
-> +static void *server(void *arg)
+>  .../bpf/prog_tests/uprobe_multi_test.c        | 22 +++++++++++++
+>  .../selftests/bpf/progs/uprobe_multi.c        | 33 +++++++++++++++++--
+>  2 files changed, 53 insertions(+), 2 deletions(-)
+>
+> diff --git a/tools/testing/selftests/bpf/prog_tests/uprobe_multi_test.c b=
+/tools/testing/selftests/bpf/prog_tests/uprobe_multi_test.c
+> index 677232d31432..85d46e568e90 100644
+> --- a/tools/testing/selftests/bpf/prog_tests/uprobe_multi_test.c
+> +++ b/tools/testing/selftests/bpf/prog_tests/uprobe_multi_test.c
+> @@ -8,6 +8,7 @@
+>  #include "uprobe_multi_usdt.skel.h"
+>  #include "bpf/libbpf_internal.h"
+>  #include "testing_helpers.h"
+> +#include "../sdt.h"
+>
+>  static char test_data[] =3D "test_data";
+>
+> @@ -26,6 +27,11 @@ noinline void uprobe_multi_func_3(void)
+>         asm volatile ("");
+>  }
+>
+> +noinline void usdt_trigger(void)
 > +{
-> +	int lfd = (int)(long)arg, err = 0, fd;
-> +	ssize_t nr_sent = 0, bytes = 0;
-> +	char batch[1500];
-> +
-> +	fd = accept(lfd, NULL, NULL);
-> +	while (fd == -1) {
-> +		if (errno == EINTR)
-> +			continue;
-> +		err = -errno;
-> +		goto done;
-> +	}
-> +
-> +	if (settimeo(fd, 0)) {
-> +		err = -errno;
-> +		goto done;
-> +	}
-> +
-> +	while (bytes < total_bytes && !READ_ONCE(stop)) {
-> +		nr_sent = send(fd, &batch,
-> +			       MIN(total_bytes - bytes, sizeof(batch)), 0);
-> +		if (nr_sent == -1 && errno == EINTR)
-> +			continue;
-> +		if (nr_sent == -1) {
-> +			err = -errno;
-> +			break;
-> +		}
-> +		bytes += nr_sent;
-> +	}
-> +
-> +	ASSERT_EQ(bytes, total_bytes, "send");
-> +
-> +done:
-> +	if (fd >= 0)
-> +		close(fd);
-> +	if (err) {
-> +		WRITE_ONCE(stop, 1);
-> +		return ERR_PTR(err);
-> +	}
-> +	return NULL;
+> +       STAP_PROBE(test, pid_filter_usdt);
 > +}
 > +
-> +static void do_test(char *qdisc)
+>  struct child {
+>         int go[2];
+>         int c2p[2]; /* child -> parent channel */
+> @@ -269,8 +275,24 @@ __test_attach_api(const char *binary, const char *pa=
+ttern, struct bpf_uprobe_mul
+>         if (!ASSERT_OK_PTR(skel->links.uprobe_extra, "bpf_program__attach=
+_uprobe_multi"))
+>                 goto cleanup;
+>
+> +       /* Attach (uprobe-backed) USDTs */
+> +       skel->links.usdt_pid =3D bpf_program__attach_usdt(skel->progs.usd=
+t_pid, pid, binary,
+> +                                                       "test", "pid_filt=
+er_usdt", NULL);
+> +       if (!ASSERT_OK_PTR(skel->links.usdt_pid, "attach_usdt_pid"))
+> +               goto cleanup;
+> +
+> +       skel->links.usdt_extra =3D bpf_program__attach_usdt(skel->progs.u=
+sdt_extra, -1, binary,
+> +                                                         "test", "pid_fi=
+lter_usdt", NULL);
+> +       if (!ASSERT_OK_PTR(skel->links.usdt_extra, "attach_usdt_extra"))
+> +               goto cleanup;
+> +
+>         uprobe_multi_test_run(skel, child);
+>
+> +       ASSERT_FALSE(skel->bss->bad_pid_seen_usdt, "bad_pid_seen_usdt");
+> +       if (child) {
+> +               ASSERT_EQ(skel->bss->child_pid_usdt, child->pid, "usdt_mu=
+lti_child_pid");
+> +               ASSERT_EQ(skel->bss->child_tid_usdt, child->tid, "usdt_mu=
+lti_child_tid");
+> +       }
+>  cleanup:
+>         uprobe_multi__destroy(skel);
+>  }
+> diff --git a/tools/testing/selftests/bpf/progs/uprobe_multi.c b/tools/tes=
+ting/selftests/bpf/progs/uprobe_multi.c
+> index 86a7ff5d3726..44190efcdba2 100644
+> --- a/tools/testing/selftests/bpf/progs/uprobe_multi.c
+> +++ b/tools/testing/selftests/bpf/progs/uprobe_multi.c
+> @@ -1,8 +1,8 @@
+>  // SPDX-License-Identifier: GPL-2.0
+> -#include <linux/bpf.h>
+> +#include "vmlinux.h"
+>  #include <bpf/bpf_helpers.h>
+>  #include <bpf/bpf_tracing.h>
+> -#include <stdbool.h>
+> +#include <bpf/usdt.bpf.h>
+>
+>  char _license[] SEC("license") =3D "GPL";
+>
+> @@ -23,9 +23,12 @@ __u64 uprobe_multi_sleep_result =3D 0;
+>  int pid =3D 0;
+>  int child_pid =3D 0;
+>  int child_tid =3D 0;
+> +int child_pid_usdt =3D 0;
+> +int child_tid_usdt =3D 0;
+>
+>  int expect_pid =3D 0;
+>  bool bad_pid_seen =3D false;
+> +bool bad_pid_seen_usdt =3D false;
+>
+>  bool test_cookie =3D false;
+>  void *user_ptr =3D 0;
+> @@ -112,3 +115,29 @@ int uprobe_extra(struct pt_regs *ctx)
+>         /* we need this one just to mix PID-filtered and global uprobes *=
+/
+>         return 0;
+>  }
+> +
+> +SEC("usdt")
+> +int usdt_pid(struct pt_regs *ctx)
 > +{
-> +	DECLARE_LIBBPF_OPTS(bpf_tc_hook, hook, .ifindex = LO_IFINDEX,
-> +			    .attach_point = BPF_TC_QDISC,
-> +			    .parent = TC_H_ROOT,
-> +			    .handle = 0x8000000,
-> +			    .qdisc = qdisc);
-> +	struct sockaddr_in6 sa6 = {};
-> +	ssize_t nr_recv = 0, bytes = 0;
-> +	int lfd = -1, fd = -1;
-> +	pthread_t srv_thread;
-> +	socklen_t addrlen = sizeof(sa6);
-> +	void *thread_ret;
-> +	char batch[1500];
-> +	int err;
+> +       __u64 cur_pid_tgid =3D bpf_get_current_pid_tgid();
+> +       __u32 cur_pid;
 > +
-> +	WRITE_ONCE(stop, 0);
+> +       cur_pid =3D cur_pid_tgid >> 32;
+> +       if (pid && cur_pid !=3D pid)
+> +               return 0;
 > +
-> +	err = bpf_tc_hook_create(&hook);
-> +	if (!ASSERT_OK(err, "attach qdisc"))
-> +		return;
+> +       if (expect_pid && cur_pid !=3D expect_pid)
+> +               bad_pid_seen_usdt =3D true;
 > +
-> +	lfd = start_server(AF_INET6, SOCK_STREAM, NULL, 0, 0);
-> +	if (!ASSERT_NEQ(lfd, -1, "socket")) {
-> +		bpf_tc_hook_destroy(&hook);
-> +		return;
-> +	}
+> +       child_pid_usdt =3D cur_pid_tgid >> 32;
+> +       child_tid_usdt =3D (__u32)cur_pid_tgid;
 > +
-> +	fd = socket(AF_INET6, SOCK_STREAM, 0);
-> +	if (!ASSERT_NEQ(fd, -1, "socket")) {
-> +		bpf_tc_hook_destroy(&hook);
-> +		close(lfd);
-> +		return;
-> +	}
-> +
-> +	if (settimeo(lfd, 0) || settimeo(fd, 0))
-> +		goto done;
-> +
-> +	err = getsockname(lfd, (struct sockaddr *)&sa6, &addrlen);
-> +	if (!ASSERT_NEQ(err, -1, "getsockname"))
-> +		goto done;
-> +
-> +	/* connect to server */
-> +	err = connect(fd, (struct sockaddr *)&sa6, addrlen);
-> +	if (!ASSERT_NEQ(err, -1, "connect"))
-> +		goto done;
-> +
-> +	err = pthread_create(&srv_thread, NULL, server, (void *)(long)lfd);
-> +	if (!ASSERT_OK(err, "pthread_create"))
-> +		goto done;
-> +
-> +	/* recv total_bytes */
-> +	while (bytes < total_bytes && !READ_ONCE(stop)) {
-> +		nr_recv = recv(fd, &batch,
-> +			       MIN(total_bytes - bytes, sizeof(batch)), 0);
-> +		if (nr_recv == -1 && errno == EINTR)
-> +			continue;
-> +		if (nr_recv == -1)
-> +			break;
-> +		bytes += nr_recv;
-> +	}
-> +
-> +	ASSERT_EQ(bytes, total_bytes, "recv");
-> +
-> +	WRITE_ONCE(stop, 1);
-> +	pthread_join(srv_thread, &thread_ret);
-> +	ASSERT_OK(IS_ERR(thread_ret), "thread_ret");
-> +
-> +done:
-> +	close(lfd);
-> +	close(fd);
-> +
-> +	bpf_tc_hook_destroy(&hook);
-> +	return;
+> +       return 0;
 > +}
 > +
-> +static void test_fifo(void)
+> +SEC("usdt")
+> +int usdt_extra(struct pt_regs *ctx)
 > +{
-> +	struct bpf_qdisc_fifo *fifo_skel;
-> +	struct bpf_link *link;
-> +
-> +	fifo_skel = bpf_qdisc_fifo__open_and_load();
-> +	if (!ASSERT_OK_PTR(fifo_skel, "bpf_qdisc_fifo__open_and_load"))
-> +		return;
-> +
-> +	link = bpf_map__attach_struct_ops(fifo_skel->maps.fifo);
-> +	if (!ASSERT_OK_PTR(link, "bpf_map__attach_struct_ops")) {
-> +		bpf_qdisc_fifo__destroy(fifo_skel);
-> +		return;
-> +	}
-> +
-> +	do_test("bpf_fifo");
-> +
-> +	bpf_link__destroy(link);
-> +	bpf_qdisc_fifo__destroy(fifo_skel);
+> +       /* we need this one just to mix PID-filtered and global USDT prob=
+es */
+> +       return 0;
 > +}
-> +
-> +void test_bpf_qdisc(void)
-> +{
-> +	if (test__start_subtest("fifo"))
-> +		test_fifo();
-> +}
-> diff --git a/tools/testing/selftests/bpf/progs/bpf_qdisc_common.h b/tools/testing/selftests/bpf/progs/bpf_qdisc_common.h
-> new file mode 100644
-> index 000000000000..96ab357de28e
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/progs/bpf_qdisc_common.h
-> @@ -0,0 +1,23 @@
-> +#ifndef _BPF_QDISC_COMMON_H
-> +#define _BPF_QDISC_COMMON_H
-> +
-> +#define NET_XMIT_SUCCESS        0x00
-> +#define NET_XMIT_DROP           0x01    /* skb dropped                  */
-> +#define NET_XMIT_CN             0x02    /* congestion notification      */
-> +
-> +#define TC_PRIO_CONTROL  7
-> +#define TC_PRIO_MAX      15
-> +
-> +void bpf_skb_set_dev(struct sk_buff *skb, struct Qdisc *sch) __ksym;
-> +u32 bpf_skb_get_hash(struct sk_buff *p) __ksym;
-> +void bpf_skb_release(struct sk_buff *p) __ksym;
-> +void bpf_qdisc_skb_drop(struct sk_buff *p, struct bpf_sk_buff_ptr *to_free) __ksym;
-> +void bpf_qdisc_watchdog_schedule(struct Qdisc *sch, u64 expire, u64 delta_ns) __ksym;
-> +bool bpf_qdisc_find_class(struct Qdisc *sch, u32 classid) __ksym;
-> +int bpf_qdisc_create_child(struct Qdisc *sch, u32 min,
-> +			   struct netlink_ext_ack *extack) __ksym;
-> +int bpf_qdisc_enqueue(struct sk_buff *skb, struct Qdisc *sch, u32 classid,
-> +		      struct bpf_sk_buff_ptr *to_free_list) __ksym;
-> +struct sk_buff *bpf_qdisc_dequeue(struct Qdisc *sch, u32 classid) __ksym;
-> +
-> +#endif
-> diff --git a/tools/testing/selftests/bpf/progs/bpf_qdisc_fifo.c b/tools/testing/selftests/bpf/progs/bpf_qdisc_fifo.c
-> new file mode 100644
-> index 000000000000..433fd9c3639c
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/progs/bpf_qdisc_fifo.c
-> @@ -0,0 +1,83 @@
-> +#include <vmlinux.h>
-> +#include "bpf_experimental.h"
-> +#include "bpf_qdisc_common.h"
-> +
-> +char _license[] SEC("license") = "GPL";
-> +
-> +#define private(name) SEC(".data." #name) __hidden __attribute__((aligned(8)))
-> +
-> +private(B) struct bpf_spin_lock q_fifo_lock;
-> +private(B) struct bpf_list_head q_fifo __contains_kptr(sk_buff, bpf_list);
-> +
-> +unsigned int q_limit = 1000;
-> +unsigned int q_qlen = 0;
-> +
-> +SEC("struct_ops/bpf_fifo_enqueue")
-> +int BPF_PROG(bpf_fifo_enqueue, struct sk_buff *skb, struct Qdisc *sch,
-> +	     struct bpf_sk_buff_ptr *to_free)
-> +{
-> +	q_qlen++;
-> +	if (q_qlen > q_limit) {
-> +		bpf_qdisc_skb_drop(skb, to_free);
-> +		return NET_XMIT_DROP;
-> +	}
+> --
+> 2.43.0
+>
 
-[..]
+I lost the following during the final rebase before submitting,
+sigh... With the piece below tests are passing again:
 
-> +	bpf_spin_lock(&q_fifo_lock);
-> +	bpf_list_excl_push_back(&q_fifo, &skb->bpf_list);
-> +	bpf_spin_unlock(&q_fifo_lock);
+diff --git a/tools/testing/selftests/bpf/prog_tests/uprobe_multi_test.c
+b/tools/testing/selftests/bpf/prog_tests/uprobe_multi_test.c
+index 85d46e568e90..bf6ca8e3eb13 100644
+--- a/tools/testing/selftests/bpf/prog_tests/uprobe_multi_test.c
++++ b/tools/testing/selftests/bpf/prog_tests/uprobe_multi_test.c
+@@ -96,6 +96,7 @@ static struct child *spawn_child(void)
+                uprobe_multi_func_1();
+                uprobe_multi_func_2();
+                uprobe_multi_func_3();
++               usdt_trigger();
 
-Can you also expand a bit on the locking here and elsewhere? And how it
-interplays with TCQ_F_NOLOCK?
+                exit(errno);
+        }
+@@ -123,6 +124,7 @@ static void *child_thread(void *ctx)
+        uprobe_multi_func_1();
+        uprobe_multi_func_2();
+        uprobe_multi_func_3();
++       usdt_trigger();
 
-As I mentioned at lsfmmbpf, I don't think there is a lot of similar
-locking in the existing C implementations? So why do we need it here?
+        err =3D 0;
+        pthread_exit(&err);
+@@ -188,6 +190,7 @@ static void uprobe_multi_test_run(struct
+uprobe_multi *skel, struct child *child
+                uprobe_multi_func_1();
+                uprobe_multi_func_2();
+                uprobe_multi_func_3();
++               usdt_trigger();
+        }
+
+        if (child)
+
+
+I'll wait till tomorrow for any feedback and will post v2.
+
+I'm also curious about logistics? Do we want to get everything through
+the bpf tree? Or bpf-next? Or split somehow? Thoughts?
+
+I think the fix in patch #1 is important enough to backport to stable
+kernels (multi-uprobes went into upstream v6.6 kernel, FYI).
 
