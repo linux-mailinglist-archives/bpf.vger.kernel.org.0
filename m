@@ -1,46 +1,46 @@
-Return-Path: <bpf+bounces-30255-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-30256-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 892258CB889
-	for <lists+bpf@lfdr.de>; Wed, 22 May 2024 03:39:04 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9ADAA8CB88A
+	for <lists+bpf@lfdr.de>; Wed, 22 May 2024 03:39:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 449412833F3
-	for <lists+bpf@lfdr.de>; Wed, 22 May 2024 01:39:03 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CCF6B1C20951
+	for <lists+bpf@lfdr.de>; Wed, 22 May 2024 01:39:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A308FA94F;
-	Wed, 22 May 2024 01:38:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9C8747483;
+	Wed, 22 May 2024 01:38:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DQ0UPcnK"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ofRodtza"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1DDB579C4;
-	Wed, 22 May 2024 01:38:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C278BA4D;
+	Wed, 22 May 2024 01:38:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716341935; cv=none; b=ieDJaSuJ5hCCUJ26L0bU0EjQm/L5lQZW19Rs8gqirLisXX1KOTRsXYiUc7nIrbqca2nBov6nRLjF4z01QgAe9CCPOgTWzXL9YIyv23p+7OytSEhHeI41XSiKduWLh4UD7ODSeQ88snpXToHh0X4ZSoyeuK8N1TOCLBqZuXmDrdM=
+	t=1716341938; cv=none; b=EYG1EmnajJhy7/Kc9DKWxhOU4scpipw5+ql1OnECBd5cFapihtZ3oFR0MZCxP/Wa0dXKOsaNdryDovpiHkt4uyQrj94boHm+78Dc9Ziw8UxKLfEn41K5H0LCnAaHsrKar9vOI1kFvvis0Qij8HyzrwCf9QKoDWOC2kWmMlBNjmg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716341935; c=relaxed/simple;
-	bh=VrP1X4Gz4MX8XOFsrUPiW3NaGtzmRwltDxE5E1Rzj6k=;
+	s=arc-20240116; t=1716341938; c=relaxed/simple;
+	bh=IcCH6HvV+fA+Q/OECgPQYvioKi/QPVoGcj2BlQkwI7Y=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=hcT5VEUwBQ4DrzrXRg2Bl7jw5G3ZCDVJqpx4Aq1znNANmp7Owp9FIhcUJJZtrjQ+A4JjOTE7I52rZ1CJqVBuLowkvax6YUjOBfh9esm+BzNse9udO7CUjtzn0Tu9WZO6Qdw1fIKarthTzzO+hUgd3lQV/GADEsKA9XOI7FA6cFI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DQ0UPcnK; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 85F1BC2BD11;
-	Wed, 22 May 2024 01:38:54 +0000 (UTC)
+	 MIME-Version; b=aexvW7Sjm3nynFRS2puI/mwr+u2RGUICdMZ40WU9ApyVLJPkKed8rjiXmHIBmWu3ZH7Xi5mDIlNbxlInfcun95DReyTqMxl2a5PxX7WRJwGeLI2sLqcyme8ui0SvEx4z49cKrZbbRIVpEgpYZmtP8vFN7eYYTcqBCgHuG4hskww=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ofRodtza; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BFCECC2BD11;
+	Wed, 22 May 2024 01:38:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1716341934;
-	bh=VrP1X4Gz4MX8XOFsrUPiW3NaGtzmRwltDxE5E1Rzj6k=;
+	s=k20201202; t=1716341938;
+	bh=IcCH6HvV+fA+Q/OECgPQYvioKi/QPVoGcj2BlQkwI7Y=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=DQ0UPcnKifjz85E/M1a+NpC7LhZpHBqX8L6+vSwlTBge217zXkMPmkVVjcAVmOy6q
-	 wTl6+V7MkIDMlMgMwnYSjHVj58iNg+DysNrUDopazwnajbuQaEoVCllQeDCbca/n2S
-	 5o2K/LsaNk/MeyOHhdC2CdIR6RJ+k8MXgyLT8OE8cl/ky/OFNV9hSDq44YX6fzS77O
-	 ZyE32SjLKWmQDAE8QT6oA+W6bDuWpx06BsQImafLIUpsU4fPiY5EPllDTby7E0zehc
-	 CtvwTCZ6abuw4+hI3bU+jJTSnMOUlfv5l1AbHjAy5gPP6Cs4x2HIOYK+Xv7OSDoRoM
-	 ohxc5y45RuBNw==
+	b=ofRodtza/FgNXE4xmXfyT4qa1AIfvDq5rkLcxsb9CLEGMEZeFAGHyMnZJSVcW7CBt
+	 kV3HYqpoaRNKCppfCGuQIMu3w3ZGKQJQKLhlXROkxNMGdSq7u7MqHgI7oMNSbOotDX
+	 IllNutuhJ6T9tPNGWWAMQ+sqL6WYKgqYGlUsCbIpAqxTrmsL1xBQN0UVjjO9LihbfL
+	 VPADmJTeiO9kUiL+jiQ/RZgZ0FNnGz+GFu/x1VIMxV/+2KUV1VvQI7ZW4UAueuJPwe
+	 tJTSAk5etDMA8kLNtXByBB06FfE6qGrdM2DsgeakG+fyr89Z4c8/C9UtN/SdNJYeYr
+	 PI1XH/4MNO/pQ==
 From: Andrii Nakryiko <andrii@kernel.org>
 To: linux-trace-kernel@vger.kernel.org,
 	rostedt@goodmis.org,
@@ -52,11 +52,10 @@ Cc: x86@kernel.org,
 	bpf@vger.kernel.org,
 	rihams@fb.com,
 	linux-perf-users@vger.kernel.org,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Riham Selim <rihams@meta.com>
-Subject: [PATCH v2 2/4] perf,uprobes: fix user stack traces in the presence of pending uretprobes
-Date: Tue, 21 May 2024 18:38:43 -0700
-Message-ID: <20240522013845.1631305-3-andrii@kernel.org>
+	Andrii Nakryiko <andrii@kernel.org>
+Subject: [PATCH v2 3/4] perf,x86: avoid missing caller address in stack traces captured in uprobe
+Date: Tue, 21 May 2024 18:38:44 -0700
+Message-ID: <20240522013845.1631305-4-andrii@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240522013845.1631305-1-andrii@kernel.org>
 References: <20240522013845.1631305-1-andrii@kernel.org>
@@ -68,131 +67,99 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-When kernel has pending uretprobes installed, it hijacks original user
-function return address on the stack with a uretprobe trampoline
-address. There could be multiple such pending uretprobes (either on
-different user functions or on the same recursive one) at any given
-time within the same task.
+When tracing user functions with uprobe functionality, it's common to
+install the probe (e.g., a BPF program) at the first instruction of the
+function. This is often going to be `push %rbp` instruction in function
+preamble, which means that within that function frame pointer hasn't
+been established yet. This leads to consistently missing an actual
+caller of the traced function, because perf_callchain_user() only
+records current IP (capturing traced function) and then following frame
+pointer chain (which would be caller's frame, containing the address of
+caller's caller).
 
-This approach interferes with the user stack trace capture logic, which
-would report suprising addresses (like 0x7fffffffe000) that correspond
-to a special "[uprobes]" section that kernel installs in the target
-process address space for uretprobe trampoline code, while logically it
-should be an address somewhere within the calling function of another
-traced user function.
+So when we have target_1 -> target_2 -> target_3 call chain and we are
+tracing an entry to target_3, captured stack trace will report
+target_1 -> target_3 call chain, which is wrong and confusing.
 
-This is easy to correct for, though. Uprobes subsystem keeps track of
-pending uretprobes and records original return addresses. This patch is
-using this to do a post-processing step and restore each trampoline
-address entries with correct original return address. This is done only
-if there are pending uretprobes for current task.
+This patch proposes a x86-64-specific heuristic to detect `push %rbp`
+instruction being traced. If that's the case, with the assumption that
+applicatoin is compiled with frame pointers, this instruction would be
+a strong indicator that this is the entry to the function. In that case,
+return address is still pointed to by %rsp, so we fetch it and add to
+stack trace before proceeding to unwind the rest using frame
+pointer-based logic.
 
-This is a similar approach to what fprobe/kretprobe infrastructure is
-doing when capturing kernel stack traces in the presence of pending
-return probes.
-
-Reported-by: Riham Selim <rihams@meta.com>
 Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
 ---
- kernel/events/callchain.c | 43 ++++++++++++++++++++++++++++++++++++++-
- kernel/events/uprobes.c   |  9 ++++++++
- 2 files changed, 51 insertions(+), 1 deletion(-)
+ arch/x86/events/core.c  | 20 ++++++++++++++++++++
+ include/linux/uprobes.h |  2 ++
+ kernel/events/uprobes.c |  2 ++
+ 3 files changed, 24 insertions(+)
 
-diff --git a/kernel/events/callchain.c b/kernel/events/callchain.c
-index 1273be84392c..b17e3323f7f6 100644
---- a/kernel/events/callchain.c
-+++ b/kernel/events/callchain.c
-@@ -11,6 +11,7 @@
- #include <linux/perf_event.h>
- #include <linux/slab.h>
- #include <linux/sched/task_stack.h>
-+#include <linux/uprobes.h>
+diff --git a/arch/x86/events/core.c b/arch/x86/events/core.c
+index 5b0dd07b1ef1..82d5570b58ff 100644
+--- a/arch/x86/events/core.c
++++ b/arch/x86/events/core.c
+@@ -2884,6 +2884,26 @@ perf_callchain_user(struct perf_callchain_entry_ctx *entry, struct pt_regs *regs
+ 		return;
  
- #include "internal.h"
- 
-@@ -176,13 +177,51 @@ put_callchain_entry(int rctx)
- 	put_recursion_context(this_cpu_ptr(callchain_recursion), rctx);
- }
- 
-+static void fixup_uretprobe_trampoline_entries(struct perf_callchain_entry *entry,
-+					       int start_entry_idx)
-+{
+ 	pagefault_disable();
++
 +#ifdef CONFIG_UPROBES
-+	struct uprobe_task *utask = current->utask;
-+	struct return_instance *ri;
-+	__u64 *cur_ip, *last_ip, tramp_addr;
-+
-+	if (likely(!utask || !utask->return_instances))
-+		return;
-+
-+	cur_ip = &entry->ip[start_entry_idx];
-+	last_ip = &entry->ip[entry->nr - 1];
-+	ri = utask->return_instances;
-+	tramp_addr = uprobe_get_trampoline_vaddr();
-+
 +	/*
-+	 * If there are pending uretprobes for the current thread, they are
-+	 * recorded in a list inside utask->return_instances; each such
-+	 * pending uretprobe replaces traced user function's return address on
-+	 * the stack, so when stack trace is captured, instead of seeing
-+	 * actual function's return address, we'll have one or many uretprobe
-+	 * trampoline addresses in the stack trace, which are not helpful and
-+	 * misleading to users.
-+	 * So here we go over the pending list of uretprobes, and each
-+	 * encountered trampoline address is replaced with actual return
-+	 * address.
++	 * If we are called from uprobe handler, and we are indeed at the very
++	 * entry to user function (which is normally a `push %rbp` instruction,
++	 * under assumption of application being compiled with frame pointers),
++	 * we should read return address from *regs->sp before proceeding
++	 * to follow frame pointers, otherwise we'll skip immediate caller
++	 * as %rbp is not yet setup.
 +	 */
-+	while (ri && cur_ip <= last_ip) {
-+		if (*cur_ip == tramp_addr) {
-+			*cur_ip = ri->orig_ret_vaddr;
-+			ri = ri->next;
-+		}
-+		cur_ip++;
++	if (current->utask) {
++		struct arch_uprobe *auprobe = current->utask->auprobe;
++		u64 ret_addr;
++
++		if (auprobe && auprobe->insn[0] == 0x55 /* push %rbp */ &&
++		    !__get_user(ret_addr, (const u64 __user *)regs->sp))
++			perf_callchain_store(entry, ret_addr);
 +	}
 +#endif
-+}
 +
- struct perf_callchain_entry *
- get_perf_callchain(struct pt_regs *regs, u32 init_nr, bool kernel, bool user,
- 		   u32 max_stack, bool crosstask, bool add_mark)
- {
- 	struct perf_callchain_entry *entry;
- 	struct perf_callchain_entry_ctx ctx;
--	int rctx;
-+	int rctx, start_entry_idx;
+ 	while (entry->nr < entry->max_stack) {
+ 		if (!valid_user_frame(fp, sizeof(frame)))
+ 			break;
+diff --git a/include/linux/uprobes.h b/include/linux/uprobes.h
+index 0c57eec85339..7b785cd30d86 100644
+--- a/include/linux/uprobes.h
++++ b/include/linux/uprobes.h
+@@ -76,6 +76,8 @@ struct uprobe_task {
+ 	struct uprobe			*active_uprobe;
+ 	unsigned long			xol_vaddr;
  
- 	entry = get_callchain_entry(&rctx);
- 	if (!entry)
-@@ -215,7 +254,9 @@ get_perf_callchain(struct pt_regs *regs, u32 init_nr, bool kernel, bool user,
- 			if (add_mark)
- 				perf_callchain_store_context(&ctx, PERF_CONTEXT_USER);
- 
-+			start_entry_idx = entry->nr;
- 			perf_callchain_user(&ctx, regs);
-+			fixup_uretprobe_trampoline_entries(entry, start_entry_idx);
- 		}
- 	}
- 
++	struct arch_uprobe              *auprobe;
++
+ 	struct return_instance		*return_instances;
+ 	unsigned int			depth;
+ };
 diff --git a/kernel/events/uprobes.c b/kernel/events/uprobes.c
-index d60d24f0f2f4..1c99380dc89d 100644
+index 1c99380dc89d..504693845187 100644
 --- a/kernel/events/uprobes.c
 +++ b/kernel/events/uprobes.c
-@@ -2149,6 +2149,15 @@ static void handle_trampoline(struct pt_regs *regs)
+@@ -2072,6 +2072,7 @@ static void handler_chain(struct uprobe *uprobe, struct pt_regs *regs)
+ 	bool need_prep = false; /* prepare return uprobe, when needed */
  
- 		instruction_pointer_set(regs, ri->orig_ret_vaddr);
- 		do {
-+			/* pop current instance from the stack of pending return instances,
-+			 * as it's not pending anymore: we just fixed up original
-+			 * instruction pointer in regs and are about to call handlers;
-+			 * this allows fixup_uretprobe_trampoline_entries() to properly fix up
-+			 * captured stack traces from uretprobe handlers, in which pending
-+			 * trampoline addresses on the stack are replaced with correct
-+			 * original return addresses
-+			 */
-+			utask->return_instances = ri->next;
- 			if (valid)
- 				handle_uretprobe_chain(ri, regs);
- 			ri = free_ret_instance(ri);
+ 	down_read(&uprobe->register_rwsem);
++	current->utask->auprobe = &uprobe->arch;
+ 	for (uc = uprobe->consumers; uc; uc = uc->next) {
+ 		int rc = 0;
+ 
+@@ -2086,6 +2087,7 @@ static void handler_chain(struct uprobe *uprobe, struct pt_regs *regs)
+ 
+ 		remove &= rc;
+ 	}
++	current->utask->auprobe = NULL;
+ 
+ 	if (need_prep && !remove)
+ 		prepare_uretprobe(uprobe, regs); /* put bp at return */
 -- 
 2.43.0
 
