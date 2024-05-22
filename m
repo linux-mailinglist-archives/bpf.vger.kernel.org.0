@@ -1,314 +1,183 @@
-Return-Path: <bpf+bounces-30315-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-30316-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C1C468CC591
-	for <lists+bpf@lfdr.de>; Wed, 22 May 2024 19:33:57 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5EF278CC595
+	for <lists+bpf@lfdr.de>; Wed, 22 May 2024 19:34:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4BA311F22911
-	for <lists+bpf@lfdr.de>; Wed, 22 May 2024 17:33:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C66421F22C46
+	for <lists+bpf@lfdr.de>; Wed, 22 May 2024 17:34:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 055A01422B6;
-	Wed, 22 May 2024 17:33:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A97C1422B8;
+	Wed, 22 May 2024 17:34:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hUsXbAn4"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mAfJcdHX"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f171.google.com (mail-pg1-f171.google.com [209.85.215.171])
+Received: from mail-yb1-f169.google.com (mail-yb1-f169.google.com [209.85.219.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0EDDF76048
-	for <bpf@vger.kernel.org>; Wed, 22 May 2024 17:33:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4AC4376048
+	for <bpf@vger.kernel.org>; Wed, 22 May 2024 17:34:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716399231; cv=none; b=tPyisrc4ideCznNe1l+TMnw4XIG/vO6rAQei3VV2V6bi2CSoLkI9h8+97dxKLRQWBtcs4mdFWKi0O9LLeTvmFK2q77EV2jEIM/pmVQIlNXP2KGfsoRMGNEgmYbdznDOktRmIvBpM0RgfakDaG/WW3992T0yn5/Elv+uIgeXdH7o=
+	t=1716399248; cv=none; b=joa7RX40zra6XLPWv3e+/kx5wl8YF28qeO+bxgvNwnvirwPykIQUfEZBW5BgS6hcnh8NpzZ/sGBlRUq15wFxkYdsot+EYAHi1XjFlk+293HOhQlYPeYeG8gHMn8S36+ymTOUdNVnsnMnqJyBQ2UfoUPzcwU48I3YT6CwU2pNRPc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716399231; c=relaxed/simple;
-	bh=Xkma6qKWzXr9pBKAYY7gfwbomIFHP0ZJkJnKmA7bK9U=;
+	s=arc-20240116; t=1716399248; c=relaxed/simple;
+	bh=PJRV17z0YKT7WdKwElz8Gtyvorzhx/mgkohKREg8JoU=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=QAskkWWmN1iu10VxSW9+UrtFOz7bp2nqt+NMY07RrIvVTVPQLQL7i120SAMIwDCr0pzm+qDc68S/h+NJihlBmpjOK7dSsK7oLz+iVsjXVhmzwSebDx3WSZ7TXaywMc1610V/+rwu3m/hS6zawZFYoo/+s6wMK7lNb8SwQjWoYV4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hUsXbAn4; arc=none smtp.client-ip=209.85.215.171
+	 To:Cc:Content-Type; b=uMIs6yLLbvvke9oKDBM7N9EwXU9BdibPSVjQiUm5yfNron3o3B43qybAXaOX68KPWCHpelI+8mVRaeUpBkBSIZn+dW/lAB210xKCl9aoQ+e/+JyFJ38NeEKuvIA+pwa2RXGeiHA7mzPs493cj7ujOMSNjsPudBLtnPG0G3aIvL0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mAfJcdHX; arc=none smtp.client-ip=209.85.219.169
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f171.google.com with SMTP id 41be03b00d2f7-5d4d15ec7c5so2415103a12.1
-        for <bpf@vger.kernel.org>; Wed, 22 May 2024 10:33:49 -0700 (PDT)
+Received: by mail-yb1-f169.google.com with SMTP id 3f1490d57ef6-dc6cbe1ac75so921489276.1
+        for <bpf@vger.kernel.org>; Wed, 22 May 2024 10:34:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1716399229; x=1717004029; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1716399246; x=1717004046; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Ct6+wB54jhc2iyTd2a6sxqvVClIIwykE5awV2ALmN78=;
-        b=hUsXbAn4qbzXeL8wQDIBystaSUHRQVCG1/yMFaliS3ZyO6btFeU0Eh0eke3+v+cX9m
-         +cigr7JkWkVo1sC/YcOLNw5xlGm/SdITL1umEtx7uBq0D+kaFkUnqL1PpvMUDze91VSN
-         g15TCx13GwSdqJ3t9VqzTX44WGNk9nXxxh6YtTiO2uGB0MfkODmGnmXdckXAbiywF/zB
-         mPU5ithYxffxWCrd1vXfn1PRl2qJ/fXCKOZycni2Chl0dZnjUKoFP18PwyB1YOtYk6XZ
-         eblBJkkox96aK/hkzNDPJ4q+K9bjJS0S2Xp5T0em2rLfW06t4yJNzLzP32vNTtvNrS9j
-         a9Qg==
+        bh=u5njBBAVBmAl8lad7cqRkTCGeZGU2mFB9jktNk1LZ3s=;
+        b=mAfJcdHX56pGTMbhILp2PdVsFhkyIAZXBgLTFaSiiP5fi8Qp6j29ksabeeTWp7p7VS
+         WfUAyzCxbIX167fqvE71LZWpocSVwVyEHsoSzhvP7E/bgD+U4L8FAlfBV7BfxnFbDt8A
+         jeUz+oLz3jD+x88DJbedpVXaDAjd5ai2/iBJXNL5cbAjO7ii3uA2fE5iOlAG6bGSj8yh
+         ixcMMcTooL1JSXm5JG27HPMRY1y6yXBCjHBJVjSyBBwW9LesT+K+ernB2huEdU1jP+s0
+         SNucwQHzq5TWASjE+kbiU7kTSZURJpFJQE+3BD/ikWAb94Af8TMMR4bjA34X6T/oV+K2
+         5WHg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1716399229; x=1717004029;
+        d=1e100.net; s=20230601; t=1716399246; x=1717004046;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Ct6+wB54jhc2iyTd2a6sxqvVClIIwykE5awV2ALmN78=;
-        b=MeiHiU3S1Jt6egL8uziDj/fFJz7vQEZBjj51M6rY/yoMYwV8lYdyqauO28N44bY1rX
-         S73h4W9hsDTn3Y/yw+8M7uSGEZgVME7LnR4ewl0FtEnfGbwJwIXY+W2bKVtW5MRkrsAj
-         a9UDDX4LdDUlvc+gfTZF5SNgiQIE5zXs3YXw8Cm8yVAgyz7p4wX+nlw0SXUhHbjEdc2E
-         gU87Ij6J8Odj8/7RnbZSFZx/0VnMqmco6LOrYw7rJeK/StBvdeB5GOMFN9+8UWrn4G8b
-         Fid7SKBz8F+YX7fsqgSxjcRNYyvDgsVZOzXrJwrGA+J2fH/Y1DUP/f/pgUY6N8Y/72mU
-         lQfw==
-X-Gm-Message-State: AOJu0YwOM4qZskyxZk9hWW+bsxq/qUjGfdS0BeLCyCwg16Jn63PQefiJ
-	JA9tjAgRAqG0AYkN0ZB0z3C6YEZYwOmDxAeD8qXWSYOXnR6+Zg7p2kOlGnWlgbXOAcdXerQwD9y
-	/AqQcg51yVWzy6KRRr77rjXSIh/o=
-X-Google-Smtp-Source: AGHT+IEXQDi29I5LeFJcpo5yygne9lc/dTo66x2Nm6BEnnBtcYuZv2/F3OJlAnd+EVuGeD6zv4QzBUX9TvDcSRRPyHU=
-X-Received: by 2002:a17:90a:d450:b0:2a2:b097:dabc with SMTP id
- 98e67ed59e1d1-2bd9f5a0ad4mr3664960a91.31.1716399229324; Wed, 22 May 2024
- 10:33:49 -0700 (PDT)
+        bh=u5njBBAVBmAl8lad7cqRkTCGeZGU2mFB9jktNk1LZ3s=;
+        b=w3R2hSJzmfCsUo07Y6k2Gj8MSffcHZIc3idaaTl3syHzEnt8SzOHYQC9xV6l5RVM7u
+         q5AeroplKkK1HBlM54TqecMhLOLHTjmK+164fGw56NgvqN/lsdOq0ORbmVDjFJfBm0qH
+         VdwYvdjA07PiQJJbsX7vYJbjk2ojzH8RXj3wxUCZ6NGcY6wmDDPfXSXH7xeaukuyot33
+         2f6JJf8/RPYHZbDjkZagEE6g9Vq3N3BQ3sP+nc3ubDD5pGYLmP+D1cY01BzSnD0Awi6+
+         J2lLxpIevNng/sW47SbCxPqGibE4hkL/KwrXL+mvhAWimoRzgtm+kYgY9o4Qiktg6TGF
+         k1Ow==
+X-Forwarded-Encrypted: i=1; AJvYcCUgDzbBaL/E0IXLcR5vPj60Plp1eChdCQYKf0Ab7ylOjVXJ+Si4zVuk0fO0EQ/ShzZ99fhqfOrTFH0sDNaVCxpgFMBi
+X-Gm-Message-State: AOJu0YxBEDj+CnV3s6lAYNCDGOdBQTa52cjdUbHQ0xarvnM2B6eY+iGq
+	F9bfm4fRNIB/Aj2pYfHbVZNut7NHRy8qtca6LTetsEYAGn7QxC4+5w9WYx5pmR4Dv/Up0wP6zsa
+	ntY2z2olzlE+IpB+copoHqCNFhhkTog==
+X-Google-Smtp-Source: AGHT+IFXXtsYQHwpduXnF3H/v7Vg3/z9N7IMlSDgwkVXe3caLTRe8yg4HqN7z5R4wUDgu97J7D6xDBR1CeZRCfw3u70=
+X-Received: by 2002:a25:ce8c:0:b0:df1:cdf5:d2c1 with SMTP id
+ 3f1490d57ef6-df4e0982817mr2122838276.0.1716399246188; Wed, 22 May 2024
+ 10:34:06 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240522024713.59136-1-alexei.starovoitov@gmail.com>
-In-Reply-To: <20240522024713.59136-1-alexei.starovoitov@gmail.com>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Wed, 22 May 2024 10:33:37 -0700
-Message-ID: <CAEf4BzaJyju+0r=PnaJyv4zYnUbiAfxtXk5oQqPrVGqN4F++fQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] bpf: Relax precision marking in open coded iters
- and may_goto loop.
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>, eddyz87@gmail.com
-Cc: bpf@vger.kernel.org, daniel@iogearbox.net, andrii@kernel.org, 
-	martin.lau@kernel.org, memxor@gmail.com, kernel-team@fb.com
+References: <20240510002942.1253354-1-thinker.li@gmail.com>
+ <20240510002942.1253354-7-thinker.li@gmail.com> <20240521225252.GA3845630@bytedance>
+ <033f0d5a-5e3d-4e53-9301-5075b6d74480@gmail.com>
+In-Reply-To: <033f0d5a-5e3d-4e53-9301-5075b6d74480@gmail.com>
+From: Amery Hung <ameryhung@gmail.com>
+Date: Wed, 22 May 2024 10:33:55 -0700
+Message-ID: <CAMB2axO4odR3L0jpnirB9-ng_CLmEPbmNhvnfdboOam5QGSgwA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 6/7] selftests/bpf: detach a struct_ops link
+ from the subsystem managing it.
+To: Kui-Feng Lee <sinquersw@gmail.com>
+Cc: Kui-Feng Lee <thinker.li@gmail.com>, bpf@vger.kernel.org, ast@kernel.org, 
+	martin.lau@linux.dev, song@kernel.org, kernel-team@meta.com, 
+	andrii@kernel.org, kuifeng@meta.com
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, May 21, 2024 at 7:47=E2=80=AFPM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
+On Tue, May 21, 2024 at 5:31=E2=80=AFPM Kui-Feng Lee <sinquersw@gmail.com> =
+wrote:
 >
-> From: Alexei Starovoitov <ast@kernel.org>
 >
-> Motivation for the patch
-> ------------------------
-> Open coded iterators and may_goto is a great mechanism to implement loops=
-,
-> but counted loops are problematic. For example:
->   for (i =3D 0; i < 100 && can_loop; i++)
-> is verified as a bounded loop, since i < 100 condition forces the verifie=
-r
-> to mark 'i' as precise and loop states at different iterations are not eq=
-uivalent.
-> That removes the benefit of open coded iterators and may_goto.
-> The workaround is to do:
->   int zero =3D 0; /* global or volatile variable */
->   for (i =3D zero; i < 100 && can_loop; i++)
-> to hide from the verifier the value of 'i'.
-> It's unnatural and so far users didn't learn such odd programming pattern=
-.
 >
-> This patch aims to improve the verifier to support
->   for (i =3D 0; i < 100000 && can_loop; i++)
-> as open coded iter loop (when 'i' doesn't need to be precise).
+> On 5/21/24 15:56, Amery Hung wrote:
+> > On Thu, May 09, 2024 at 05:29:41PM -0700, Kui-Feng Lee wrote:
+> >> Not only a user space program can detach a struct_ops link, the subsys=
+tem
+> >> managing a link can also detach the link. This patch adds a kfunc to
+> >> simulate detaching a link by the subsystem managing it and makes sure =
+user
+> >> space programs get notified through epoll.
+> >>
+> >> Signed-off-by: Kui-Feng Lee <thinker.li@gmail.com>
+> >> ---
+> >>   .../selftests/bpf/bpf_testmod/bpf_testmod.c   | 42 ++++++++++++
+> >>   .../bpf/bpf_testmod/bpf_testmod_kfunc.h       |  1 +
+> >>   .../bpf/prog_tests/test_struct_ops_module.c   | 67 +++++++++++++++++=
+++
+> >>   .../selftests/bpf/progs/struct_ops_detach.c   |  7 ++
+> >>   4 files changed, 117 insertions(+)
+> >>
+> >> diff --git a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c b/t=
+ools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
+> >> index 1150e758e630..1f347eed6c18 100644
+> >> --- a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
+> >> +++ b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
+> >> @@ -741,6 +741,38 @@ __bpf_kfunc int bpf_kfunc_call_kernel_getpeername=
+(struct addr_args *args)
+> >>      return err;
+> >>   }
+> >>
+> >> +static DEFINE_SPINLOCK(detach_lock);
+> >> +static struct bpf_link *link_to_detach;
+> >> +
+> >> +__bpf_kfunc int bpf_dummy_do_link_detach(void)
+> >> +{
+> >> +    struct bpf_link *link;
+> >> +    int ret =3D -ENOENT;
+> >> +
+> >> +    /* A subsystem must ensure that a link is valid when detaching th=
+e
+> >> +     * link. In order to achieve that, the subsystem may need to obta=
+in
+> >> +     * a lock to safeguard a table that holds the pointer to the link
+> >> +     * being detached. However, the subsystem cannot invoke
+> >> +     * link->ops->detach() while holding the lock because other tasks
+> >> +     * may be in the process of unregistering, which could lead to
+> >> +     * acquiring the same lock and causing a deadlock. This is why
+> >> +     * bpf_link_inc_not_zero() is used to maintain the link's validit=
+y.
+> >> +     */
+> >> +    spin_lock(&detach_lock);
+> >> +    link =3D link_to_detach;
+> >> +    /* Make sure the link is still valid by increasing its refcnt */
+> >> +    if (link && IS_ERR(bpf_link_inc_not_zero(link)))
+> >> +            link =3D NULL;
+> >> +    spin_unlock(&detach_lock);
+> >> +
+> >
+> > I know it probably doesn't matter in this example, but where would you =
+set
+> > link_to_detach to NULL if reg and unreg can be called multiple times?
 >
-> Algorithm
-> ---------
-> First of all:
->    if (is_may_goto_insn_at(env, insn_idx)) {
-> +          update_loop_entry(cur, &sl->state);
->            if (states_equal(env, &sl->state, cur, RANGE_WITHIN)) {
-> -                  update_loop_entry(cur, &sl->state);
+> For the same link if there is, reg() can be called only once
+> except if unreg() has been called for the previous reg() call on the
+> same link. Unreg() can only be called for once after a reg() call on the
+> same link.
 >
-> This should be correct, since reaching the same insn should
-> satisfy "if h1 in path" requirement of update_loop_entry() algorithm.
-> It's too conservative to update loop_entry only on a state match.
+> For struct_ops map with link, unreg() is called by
+> bpf_struct_ops_map_link_dealloc() and bpf_struct_ops_map_link_detach().
+> The former one is called for a link only if the refcnt of the link has
+> dropped to zero. The later one is called for a link only if the refcnt
+> is not zero, and it holds update_mutex. Once unreg() has been called,
+> link->map will be cleared as well. So, unreg() should not be called
+> twice on the same link except it is registered again.
 >
-> With that the get_loop_entry() can be used to gate is_branch_taken() logi=
-c.
-> When 'if (i < 1000)' is done within open coded iterator or in a loop with=
- may_goto
-> don't invoke is_branch_taken() logic.
-> When it's skipped don't do reg_bounds_sanity_check(), since it will surel=
-y
-> see range violations.
->
-> Now, consider progs/iters_task_vma.c that has the following logic:
->     bpf_for_each(...) {
->        if (i > 1000)
-
-I'm wondering, maybe we should change rules around handling inequality
-(>, >=3D, <, <=3D) comparisons for register(s) that have a constant value
-(or maybe actually any value).
-
-My reasoning is the following. When we have something like this `if (i
-> 1000)` condition, that means that for fallthrough branch whether i
-is 0, or 1, or 2, or whatever doesn't really matter, because the code
-presumably works for any value in [0, 999] range, right? So maybe in
-addition to marking it precise and keeping i's range estimate the
-same, we should extend this range according to inequality condition?
-
-That is, even if we know on first iteration that i is 0 (!precise),
-when we simulate this conditional jump instruction, adjust i's range
-to be [0, 999] (precise) in the fallthrough branch, and [1000,
-U64_MAX] in the true branch?
-
-I.e., make conditional jumps into "range widening" instructions?
-
-Have you thought about this approach? Do you think it will work in
-practice? I'm sure it can't be as simple, but still, worth
-considering. Curious also to hear Eduard's opinion as well, he's dealt
-with this a lot in the past.
-
->           break;
->
->        arr[i] =3D ..;
->     }
->
-> Skipping precision mark at if (i > 1000) keeps 'i' imprecise,
-> but arr[i] will mark 'i' as precise anyway, because 'arr' is a map.
-> On the next iteration of the loop the patch does copy_precision()
-> that copies precision markings for top of the loop into next state
-> of the loop. So on the next iteration 'i' will be seen as precise.
->
-> Hence the key part of the patch:
-> -       pred =3D is_branch_taken(dst_reg, src_reg, opcode, is_jmp32);
-> +       if (!get_loop_entry(this_branch) || src_reg->precise || dst_reg->=
-precise ||
-> +           (BPF_SRC(insn->code) =3D=3D BPF_K && insn->imm =3D=3D 0))
-> +               pred =3D is_branch_taken(dst_reg, src_reg, opcode, is_jmp=
-32);
->
-> !get_loop_entry(this_branch) -> if not inside open coded iter keep
->   existing is_branch_taken() logic, since bounded loop relies on it.
->
-> src_reg->precise || dst_reg->precise -> if later inside the loop the 'i' =
-was
->   actually marked as precise then we have to do is_branch_taken() and abo=
-ve
->   bpf_for_each() will be verified as a bounded loop checking all 1000
->   iterations. Otherwise we will keep incrementing 'i' and it will eventua=
-lly
->   get out of bounds in arr[i] and the verifier will reject such memory ac=
-cess.
->
-> BPF_SRC(insn->code) =3D=3D BPF_K && insn->imm =3D=3D 0 -> if it's a check=
- for
->   an exit condition from open coded iterator then do is_branch_taken() as=
- well.
->   Otherwise all open coded iterators won't work.
->
-> Now consider the same example:
->     bpf_for_each(...) {
->        if (i > 1000)
->           break;
->
->        arr[i] =3D ..;
->     }
-> but 'arr' is an arena pointer. In this case 'i > 1000' will keep 'i' as
-> imprecise and arr[i] will keep it as imprecise as well.
-> And the whole loop will be verified with open coded iterator logic.
->
-> Now the following works:
-> -       for (i =3D zero; i < 1000; i++)
-> +       for (i =3D 0; i < 100000 && can_loop; i++) {
->                 htab_update_elem(htab, i, i);
-> +               arr[i] =3D i; // either arr1 or arr2
-> +       }
-> +char __arena arr1[100000]; /* works */
-> +char arr2[100000]; /* runs into 1M limit */
->
-> So the users can now use 'for (i =3D 0;...' pattern everywhere and
-> the verifier will fall back to bounded loop logic and precise 'i'
-> when 'i' is used in map-style memory access.
-> For arena based algorithms 'i' will stay imprecise.
->
-> -       for (i =3D zero; i < ARR_SZ && can_loop; i++)
-> +       /* i =3D 0 is ok here, since i is not used in memory access */
-> +       for (i =3D 0; i < ARR_SZ && can_loop; i++)
->                 sum +=3D i;
-> +
-> +       /* have to use i =3D zero due to arr[i] where arr is not an arena=
- */
->         for (i =3D zero; i < ARR_SZ; i++) {
->                 barrier_var(i);
->                 sum +=3D i + arr[i];
->
-> and i =3D zero workaround in iter_obfuscate_counter() can be removed.
->
-> copy_precision() is a hack, of course, to demonstrate an idea.
->
-> Signed-off-by: Alexei Starovoitov <ast@kernel.org>
-> ---
-
-There is a lot to think about here, I'll try to get to this
-today/tomorrow. But for now veristat is concerned about this change
-([0]):
-
-|File                              |Program
-|Verdict                |States Diff (%)|
-|----------------------------------|---------------------------------|-----=
-------------------|---------------|
-|arena_htab_asm.bpf.o              |arena_htab_asm
-|success                |-80.91 %       |
-|core_kern.bpf.o                   |balancer_ingress
-|success -> failure (!!)|+0.00 %        |
-|dynptr_success.bpf.o              |test_read_write
-|success -> failure (!!)|+0.00 %        |
-|iters.bpf.o                       |checkpoint_states_deletion
-|success -> failure (!!)|+0.00 %        |
-|iters.bpf.o                       |iter_multiple_sequential_loops
-|success                |-11.43 %       |
-|iters.bpf.o                       |iter_obfuscate_counter
-|success                |+30.00 %       |
-|iters.bpf.o                       |iter_pragma_unroll_loop
-|success                |-23.08 %       |
-|iters.bpf.o                       |iter_subprog_iters
-|success                |+1.14 %        |
-|iters.bpf.o                       |loop_state_deps1
-|failure                |+7.14 %        |
-|iters.bpf.o                       |loop_state_deps2
-|failure                |-2.17 %        |
-|iters_task_vma.bpf.o              |iter_task_vma_for_each
-|success -> failure (!!)|+99.20 %       |
-|linked_list.bpf.o                 |global_list_push_pop_multiple
-|success -> failure (!!)|+0.00 %        |
-|linked_list.bpf.o                 |inner_map_list_push_pop_multiple
-|success -> failure (!!)|+0.00 %        |
-|linked_list.bpf.o                 |map_list_push_pop_multiple
-|success -> failure (!!)|+0.00 %        |
-|test_seg6_loop.bpf.o              |__add_egr_x
-|success -> failure (!!)|+0.00 %        |
-|test_sysctl_loop1.bpf.o           |sysctl_tcp_mem
-|success -> failure (!!)|+0.00 %        |
-|test_sysctl_loop2.bpf.o           |sysctl_tcp_mem
-|success -> failure (!!)|+0.00 %        |
-|test_verif_scale2.bpf.o           |balancer_ingress
-|success -> failure (!!)|+0.00 %        |
-|verifier_bounds.bpf.o             |bound_greater_than_u32_max
-|success -> failure (!!)|+0.00 %        |
-|verifier_bounds.bpf.o
-|crossing_32_bit_signed_boundary_2|success -> failure (!!)|+0.00 %
-   |
-|verifier_bounds.bpf.o
-|crossing_64_bit_signed_boundary_2|success -> failure (!!)|+0.00 %
-   |
-|verifier_iterating_callbacks.bpf.o|cond_break2
-|success                |+75.00 %       |
-|verifier_iterating_callbacks.bpf.o|cond_break3
-|success                |+66.67 %       |
-|verifier_iterating_callbacks.bpf.o|cond_break4
-|success                |+300.00 %      |
-|verifier_iterating_callbacks.bpf.o|cond_break5
-|success                |+266.67 %      |
-
-  [0] https://github.com/kernel-patches/bpf/actions/runs/9184700207/job/252=
-57587541
-
->  kernel/bpf/verifier.c                         | 94 +++++++++++++++++--
->  .../testing/selftests/bpf/progs/arena_htab.c  | 11 ++-
->  tools/testing/selftests/bpf/progs/iters.c     | 18 +---
->  .../bpf/progs/verifier_iterating_callbacks.c  | 17 ++--
->  4 files changed, 112 insertions(+), 28 deletions(-)
+> Does that answer your question?
 >
 
-[...]
+Thanks for the detailed explanation. That makes sense to me.
+
+> >
+> >> +    if (link) {
+> >> +            ret =3D link->ops->detach(link);
+> >> +            bpf_link_put(link);
+> >> +    }
+> >> +
+> >> +    return ret;
+> >> +}
+> >
+> > [...]
 
