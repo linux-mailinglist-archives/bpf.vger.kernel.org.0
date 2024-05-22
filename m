@@ -1,174 +1,213 @@
-Return-Path: <bpf+bounces-30286-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-30287-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 09C858CBF45
-	for <lists+bpf@lfdr.de>; Wed, 22 May 2024 12:31:19 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id DDA268CBFC6
+	for <lists+bpf@lfdr.de>; Wed, 22 May 2024 13:00:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9D636B21284
-	for <lists+bpf@lfdr.de>; Wed, 22 May 2024 10:31:15 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 09D661C21BC9
+	for <lists+bpf@lfdr.de>; Wed, 22 May 2024 11:00:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D2C280035;
-	Wed, 22 May 2024 10:31:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 748FA824A3;
+	Wed, 22 May 2024 10:59:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rfCayVRX"
 X-Original-To: bpf@vger.kernel.org
-Received: from www262.sakura.ne.jp (www262.sakura.ne.jp [202.181.97.72])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 81F3150269
-	for <bpf@vger.kernel.org>; Wed, 22 May 2024 10:31:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.181.97.72
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D681C811FB;
+	Wed, 22 May 2024 10:59:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716373869; cv=none; b=aZW2JHOvgSkptG5g3oGP/WFyUcHU4+FVRtj6nnfYh3oMh3ylJuA2syY/mJnV+MhM/J5ZkK46P7uoKY6EimEsXtlpIDvtL1bEs3qNKUJBeZtpW+z+3brogdHylxC5d8xE0QQSOyiaICm+YrD1JursizqhY5YK+2EViLGBTPRWu3I=
+	t=1716375593; cv=none; b=XddNN+Ib6sgLfkobDkNEGrn8PRhoweRmhGIaRL6X75SzdWWzjZbI4jx3qWjY0AOqY6K1NxutHSKhx+lly+K/K5+tRhRVLj5qBJu1LNLUgzgbwBUJIbloKWP2hdaVlbY5oqt1u4OG0vYGQrQmasmTYR9YiyrL+qlAuydVPK/QL/s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716373869; c=relaxed/simple;
-	bh=rxFk8HEHcSjxEGIA+UOVFBH3zOZ9OBbzCE67oj1TzPI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=l1jgSI3BpjBx5hWS/7Qhg0tZCcaOpMJL6iOj7lsyCRnbgTUglxyOpgnL3sVAgLaAQ9HyuVDladYYeuR9IgKDOciuLBBjqSoinAWXjO5m0i6IQa56fgaXfQDJF3R5Yx7d8CHpo6/EUsBbKt9/0knhP/ffvnMDUYV2szqhZHlClrU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=I-love.SAKURA.ne.jp; spf=pass smtp.mailfrom=I-love.SAKURA.ne.jp; arc=none smtp.client-ip=202.181.97.72
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=I-love.SAKURA.ne.jp
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=I-love.SAKURA.ne.jp
-Received: from fsav119.sakura.ne.jp (fsav119.sakura.ne.jp [27.133.134.246])
-	by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 44MAUxO7084776;
-	Wed, 22 May 2024 19:30:59 +0900 (JST)
-	(envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
-Received: from www262.sakura.ne.jp (202.181.97.72)
- by fsav119.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav119.sakura.ne.jp);
- Wed, 22 May 2024 19:30:59 +0900 (JST)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav119.sakura.ne.jp)
-Received: from [192.168.1.6] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
-	(authenticated bits=0)
-	by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 44MAUwdV084772
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
-	Wed, 22 May 2024 19:30:59 +0900 (JST)
-	(envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
-Message-ID: <f77290fe-a94e-498b-bbbf-429ba0ce49c2@I-love.SAKURA.ne.jp>
-Date: Wed, 22 May 2024 19:30:58 +0900
+	s=arc-20240116; t=1716375593; c=relaxed/simple;
+	bh=XaYc48nWQB8aUx5U/Gx056TfLX/HyLCwVB+Go/sd0LU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Ms318d4mQ/ElncX/FXSGoHpFJfQe6Aol8BzDQNCea2D474jC7K8DrL7ugpX4oK/UL/DEv7G+OOuL8bEUqifIaeuLmHB+cc43vX5B5GSzouYt8iBJSjUPyLpIEmrMkd40Dqu7qpgB7im1HXNzVW+41GJI4ypoQYTiUJ4Gd69WGQo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rfCayVRX; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 44C89C2BD11;
+	Wed, 22 May 2024 10:59:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1716375592;
+	bh=XaYc48nWQB8aUx5U/Gx056TfLX/HyLCwVB+Go/sd0LU=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=rfCayVRXLu7f1ARZtR4PKS7x50GnD3g4npuB1isGy4VpvuQyXQk+E4kkFKZESF42S
+	 cwkfrPSlpZvX8oQEDMDqZwzs1wPgQo1RbXKXCRTvKhMPATgKhYNgBopZYq1C5DcQZT
+	 6uWb2Kqova43fqDiJ2MVj9Chw+M/Lm1r2hTWGB6KmhN9JgRnf817QWWtIuh0/VEMlq
+	 +O4xTxeJDugSw46UEwtdmrPdAGII9yuub6sGt6+rrspIIqIkIXZS+zcqoPU63g1BIg
+	 K6bKhfvN4Ujuc8fGNoTpbLgmRrHSFrT/MDvj8ZGvODJwcvkT/GGGHZAdweUj+TXV5j
+	 YvMM1ZveMv+pQ==
+Date: Wed, 22 May 2024 12:59:46 +0200
+From: Alejandro Colomar <alx@kernel.org>
+To: Jiri Olsa <olsajiri@gmail.com>
+Cc: Steven Rostedt <rostedt@goodmis.org>, 
+	Masami Hiramatsu <mhiramat@kernel.org>, Oleg Nesterov <oleg@redhat.com>, 
+	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org, 
+	linux-api@vger.kernel.org, linux-man@vger.kernel.org, x86@kernel.org, bpf@vger.kernel.org, 
+	Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>, 
+	John Fastabend <john.fastabend@gmail.com>, Peter Zijlstra <peterz@infradead.org>, 
+	Thomas Gleixner <tglx@linutronix.de>, "Borislav Petkov (AMD)" <bp@alien8.de>, 
+	Ingo Molnar <mingo@redhat.com>, Andy Lutomirski <luto@kernel.org>, 
+	"Edgecombe, Rick P" <rick.p.edgecombe@intel.com>, Deepak Gupta <debug@rivosinc.com>
+Subject: Re: [PATCHv6 9/9] man2: Add uretprobe syscall page
+Message-ID: <vqw4ibum2hfnxjkfp7io5ugmwaeok4tynchi3utmzp6xnsmjig@fbjxwmm6u6v3>
+References: <20240521104825.1060966-1-jolsa@kernel.org>
+ <20240521104825.1060966-10-jolsa@kernel.org>
+ <j6qxudmvwccpqnle4evabxbswdygmx35bgqwhemuzsjs5iuydv@fk2iumwucifx>
+ <ZkyKKwfhNZxrGWsa@krava>
+ <Zk0C_vm3T2L79-_W@krava>
+ <o5pkz3eenii6p6sm7dl2fsgy4fqqaq2qbn2rbxddhkvaarvwgm@dkjjknb44qp2>
+ <Zk2k0ttdR7abKSuv@krava>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] bpf, sockmap: defer sk_psock_free_link() using RCU
-To: Jakub Sitnicki <jakub@cloudflare.com>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Eric Dumazet <edumazet@google.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        Hillf Danton <hdanton@sina.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>
-References: <838e7959-a360-4ac1-b36a-a3469236129b@I-love.SAKURA.ne.jp>
- <20240521225918.2147-1-hdanton@sina.com> <877cfmxjie.fsf@cloudflare.com>
-Content-Language: en-US
-From: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-In-Reply-To: <877cfmxjie.fsf@cloudflare.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="q46npir5oijusqfi"
+Content-Disposition: inline
+In-Reply-To: <Zk2k0ttdR7abKSuv@krava>
 
-On 2024/05/22 18:50, Jakub Sitnicki wrote:
-> On Wed, May 22, 2024 at 06:59 AM +08, Hillf Danton wrote:
->> On Tue, 21 May 2024 08:38:52 -0700 Alexei Starovoitov <alexei.starovoitov@gmail.com>
->>> On Sun, May 12, 2024 at 12:22=E2=80=AFAM Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp> wrote:
->>>> --- a/net/core/sock_map.c
->>>> +++ b/net/core/sock_map.c
->>>> @@ -142,6 +142,7 @@ static void sock_map_del_link(struct sock *sk,
->>>>         bool strp_stop =3D false, verdict_stop =3D false;
->>>>         struct sk_psock_link *link, *tmp;
->>>>
->>>> +       rcu_read_lock();
->>>>         spin_lock_bh(&psock->link_lock);
->>>
->>> I think this is incorrect.
->>> spin_lock_bh may sleep in RT and it won't be safe to do in rcu cs.
->>
->> Could you specify why it won't be safe in rcu cs if you are right?
->> What does rcu look like in RT if not nothing?
-> 
-> RCU readers can't block, while spinlock RT doesn't disable preemption.
-> 
-> https://docs.kernel.org/RCU/rcu.html
-> https://docs.kernel.org/locking/locktypes.html#spinlock-t-and-preempt-rt
-> 
 
-I didn't catch what you mean.
+--q46npir5oijusqfi
+Content-Type: text/plain; protected-headers=v1; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+From: Alejandro Colomar <alx@kernel.org>
+To: Jiri Olsa <olsajiri@gmail.com>
+Cc: Steven Rostedt <rostedt@goodmis.org>, 
+	Masami Hiramatsu <mhiramat@kernel.org>, Oleg Nesterov <oleg@redhat.com>, 
+	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org, 
+	linux-api@vger.kernel.org, linux-man@vger.kernel.org, x86@kernel.org, bpf@vger.kernel.org, 
+	Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>, 
+	John Fastabend <john.fastabend@gmail.com>, Peter Zijlstra <peterz@infradead.org>, 
+	Thomas Gleixner <tglx@linutronix.de>, "Borislav Petkov (AMD)" <bp@alien8.de>, 
+	Ingo Molnar <mingo@redhat.com>, Andy Lutomirski <luto@kernel.org>, 
+	"Edgecombe, Rick P" <rick.p.edgecombe@intel.com>, Deepak Gupta <debug@rivosinc.com>
+Subject: Re: [PATCHv6 9/9] man2: Add uretprobe syscall page
+References: <20240521104825.1060966-1-jolsa@kernel.org>
+ <20240521104825.1060966-10-jolsa@kernel.org>
+ <j6qxudmvwccpqnle4evabxbswdygmx35bgqwhemuzsjs5iuydv@fk2iumwucifx>
+ <ZkyKKwfhNZxrGWsa@krava>
+ <Zk0C_vm3T2L79-_W@krava>
+ <o5pkz3eenii6p6sm7dl2fsgy4fqqaq2qbn2rbxddhkvaarvwgm@dkjjknb44qp2>
+ <Zk2k0ttdR7abKSuv@krava>
+MIME-Version: 1.0
+In-Reply-To: <Zk2k0ttdR7abKSuv@krava>
 
-https://elixir.bootlin.com/linux/latest/source/include/linux/spinlock_rt.h#L43 defines spin_lock() for RT as
+Hi Jirka,
 
-static __always_inline void spin_lock(spinlock_t *lock)
-{
-	rt_spin_lock(lock);
-}
+On Wed, May 22, 2024 at 09:54:58AM GMT, Jiri Olsa wrote:
+> ok, thanks
+>=20
+> jirka
+>=20
+>=20
+> ---
+> diff --git a/man/man2/uretprobe.2 b/man/man2/uretprobe.2
+> new file mode 100644
+> index 000000000000..5b5f340b59b6
+> --- /dev/null
+> +++ b/man/man2/uretprobe.2
+> @@ -0,0 +1,56 @@
+> +.\" Copyright (C) 2024, Jiri Olsa <jolsa@kernel.org>
+> +.\"
+> +.\" SPDX-License-Identifier: Linux-man-pages-copyleft
+> +.\"
+> +.TH uretprobe 2 (date) "Linux man-pages (unreleased)"
+> +.SH NAME
+> +uretprobe \- execute pending return uprobes
+> +.SH SYNOPSIS
+> +.nf
+> +.B int uretprobe(void)
+> +.fi
+> +.SH DESCRIPTION
+> +The
+> +.BR uretprobe ()
+> +system call is an alternative to breakpoint instructions for triggering =
+return
+> +uprobe consumers.
+> +.P
+> +Calls to
+> +.BR uretprobe ()
+> +system call are only made from the user-space trampoline provided by the=
+ kernel.
+> +Calls from any other place result in a
+> +.BR SIGILL .
+> +.SH RETURN VALUE
+> +The
+> +.BR uretprobe ()
+> +system call return value is architecture-specific.
+> +.SH ERRORS
+> +.TP
+> +.B SIGILL
+> +The
+> +.BR uretprobe ()
+> +system call was called by user.
 
-and https://elixir.bootlin.com/linux/v6.9/source/include/linux/spinlock_rt.h#L85 defines spin_lock_bh() for RT as
+Maybe 'a user-space program'?
+Anyway, LGTM.  Thanks!
 
-static __always_inline void spin_lock_bh(spinlock_t *lock)
-{
-	/* Investigate: Drop bh when blocking ? */
-	local_bh_disable();
-	rt_spin_lock(lock);
-}
+	Reviewed-by: Alejandro Colomar <alx@kernel.org>
 
-and https://elixir.bootlin.com/linux/latest/source/kernel/locking/spinlock_rt.c#L54 defines rt_spin_lock() for RT as
+Have a lovely day!
+Alex
 
-void __sched rt_spin_lock(spinlock_t *lock)
-{
-	spin_acquire(&lock->dep_map, 0, 0, _RET_IP_);
-	__rt_spin_lock(lock);
-}
+> +.SH VERSIONS
+> +Details of the
+> +.BR uretprobe ()
+> +system call behavior vary across systems.
+> +.SH STANDARDS
+> +None.
+> +.SH HISTORY
+> +TBD
+> +.SH NOTES
+> +The
+> +.BR uretprobe ()
+> +system call was initially introduced for the x86_64 architecture
+> +where it was shown to be faster than breakpoint traps.
+> +It might be extended to other architectures.
+> +.P
+> +The
+> +.BR uretprobe ()
+> +system call exists only to allow the invocation of return uprobe consume=
+rs.
+> +It should
+> +.B never
+> +be called directly.
+> +Details of the arguments (if any) passed to
+> +.BR uretprobe ()
+> +and the return value are architecture-specific.
 
-and https://elixir.bootlin.com/linux/v6.9/source/kernel/locking/spinlock_rt.c#L46 defines __rt_spin_lock() for RT as
+--=20
+<https://www.alejandro-colomar.es/>
 
-static __always_inline void __rt_spin_lock(spinlock_t *lock)
-{
-	rtlock_might_resched();
-	rtlock_lock(&lock->lock);
-	rcu_read_lock();
-	migrate_disable();
-}
+--q46npir5oijusqfi
+Content-Type: application/pgp-signature; name="signature.asc"
 
-. You can see that calling spin_lock() or spin_lock_bh() automatically starts RCU critical section, can't you?
+-----BEGIN PGP SIGNATURE-----
 
-If spin_lock_bh() for RT might sleep and calling spin_lock_bh() under RCU critical section is not safe,
-how can
+iQIzBAABCgAdFiEE6jqH8KTroDDkXfJAnowa+77/2zIFAmZN0BwACgkQnowa+77/
+2zK38w/9FtV+ULMKrpnQryO/Z1ZIRX+42KpBbiPHaiHHSyuos+4ywVOTOXGd26C2
+a/u972Scjw0DfwezA/t7sRKALOzBHD2L2+Y3U6HfD9AlEWQ2PY8AfcMB260c46jf
+opjOZRsBLQMtcJY6RBzXNH7eiACs5XO+IpD7BCj8EJ+HbLD53Ogk722A6C4kcD8o
+N4id9bgR9Z4RG28TFkP+rsq+LmQqTrWDkdHzC6cd+CLnu4wb7wszCiuTubRzBfsw
+Mm85aU3fCl9BKaKJCblneLhB4/FU1VkDIFscx//fT8VIEUKPh3Pepv0HFVyHrpFP
+8hsUo/DyhJyfWllz0ubmmf9VODKoMHtVYP4HGl/JVPYGdhHc+YCjUsV/IaIUnElC
+XOpCQHsN6GDYboebdCb+QhiD0CsVlhiTzAz1jbeJA/eY76sW4z44I5PQAouICbI5
+G8W4xjDa2SVqJVlzGmfdnfOote6pzyvep++igKI06UYPT8LJ2pRDRQZ1/DFLQWc5
+tnwu3XlQCRG7lSMKi9qPI7AEOvmnxilnYPhVXrvnjjYMwHVs36n8efsBB16K62hv
+nDjVWWoV6FxDdQjsYI9kSfB4zTrERIQzP0H64xqr4f6pgtZVnmkNPU+c84QMhv6E
+UWiI7K5BeWmloEQ8uuyqW4RLwCWF3891HxXTH6baw3WdpFYsdpU=
+=uEkW
+-----END PGP SIGNATURE-----
 
-  spin_lock(&lock1);
-  spin_lock(&lock2);
-  // do something
-  spin_unlock(&lock2);
-  spin_unlock(&lock1);
-
-or
-
-  spin_lock_bh(&lock1);
-  spin_lock(&lock2);
-  // do something
-  spin_unlock(&lock2);
-  spin_unlock_bh(&lock1);
-
-be possible?
-
-Unless rcu_read_lock() is implemented in a way that is safe to do
-
-  rcu_read_lock();
-  spin_lock(&lock2);
-  // do something
-  spin_unlock(&lock2);
-  rcu_read_unlock();
-
-and
-
-  rcu_read_lock();
-  spin_lock_bh(&lock2);
-  // do something
-  spin_unlock_bh(&lock2);
-  rcu_read_unlock();
-
-, I think RT kernels can't run safely.
-
-Locking primitive ordering is too much complicated/distributed.
-We need documentation using safe/unsafe ordering examples.
-
+--q46npir5oijusqfi--
 
