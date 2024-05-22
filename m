@@ -1,200 +1,123 @@
-Return-Path: <bpf+bounces-30297-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-30298-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id D716E8CC0B0
-	for <lists+bpf@lfdr.de>; Wed, 22 May 2024 13:52:36 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 268808CC0CC
+	for <lists+bpf@lfdr.de>; Wed, 22 May 2024 14:02:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4AD851F23916
-	for <lists+bpf@lfdr.de>; Wed, 22 May 2024 11:52:36 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D5A5128396E
+	for <lists+bpf@lfdr.de>; Wed, 22 May 2024 12:02:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8004313D53F;
-	Wed, 22 May 2024 11:52:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C397B13D614;
+	Wed, 22 May 2024 12:02:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QTS0mQxV"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nelYOGVG"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f52.google.com (mail-ej1-f52.google.com [209.85.218.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 71C6713D52B;
-	Wed, 22 May 2024 11:52:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D3E07E567;
+	Wed, 22 May 2024 12:02:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716378747; cv=none; b=kcwKnWgvPo7Lc6A9Nz2uUWGpOonY5y6WK+1EuJqaccLQU6rZ42bB5RO7/0NOM3ePGJJsp0pHeKvfeXoXBCr3e+FITNRNjfQ5BzjsMxU/Kb0jQiiLQNDEveTJ1aqK7WxgZ4+e46VGfL9HjLXdTuTzLwZPfmkYWK8vS9Zl5AXVOx0=
+	t=1716379347; cv=none; b=R7WVlurDdKi28QbABouA1RcZ3w3f59zrrrdhWTdeQItqi8SJHI0+SMMGfbxwLFLfErwA2hMRgTNX593phLZcaLO85JvRBXz4jnySWk81Psg9C9b5OLJ3SsyrOBtBxhgK1cSuRyRaAcscjQtE1h4oWRg4gPcPH2uUBlN0LfuKTvM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716378747; c=relaxed/simple;
-	bh=V0ezwHb1SaiH1+ZYoXStNv5UQt4JId9YALb5RVn1Ucg=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=RIgmgWHh5TBmflwLpdMm5QT7jL8/0pfmt0iU0DhFFwes4ydF2WOYf2jOrEB+HUwwLppPLaVYB7FiCdu7Pswofur2/54UKKXGc13BSla4d7aEf9vNiKb29fOG1HMNvlV33t1P6lsjnGt9pxXp6lh+cZL3RZyUSO6AGCBE8CIWxM4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QTS0mQxV; arc=none smtp.client-ip=209.85.218.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f52.google.com with SMTP id a640c23a62f3a-a5a88339780so957421966b.0;
-        Wed, 22 May 2024 04:52:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1716378744; x=1716983544; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=2NZDi+r+QkvMtUro+zrAmR/vp+4eEqWnBDxJ0ocZk70=;
-        b=QTS0mQxVKuYpkYFd4xHjvbC5PCdjAlWft83wvb8Kuyt7xqnMb5r43mQakXOO/EH78a
-         knlLqWeHix+JyLQ5LNc70rG8eEl/0y3CgTVKf8Ful0JC5UgRP5lTIJB7cLKv1m1CIoZD
-         CapcGdslDBrJpq1gCvwvaddtVVHuDcjlhDlJQcBopCEFD0FrFo90I49rikiA7FqanzGt
-         e5NNdrMWgeUi7P0U3+M7wVTG9XO02UB04lIR5arWfJ4FjMGTjiThE9xWHD6F5OplBwD2
-         QxLA6p08wnngMk23/a3A+EJR+UhMjhP+8ryXZovggwi66abtXPhQ/N7Z2l2ZNaqm2Rza
-         vUcg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1716378744; x=1716983544;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=2NZDi+r+QkvMtUro+zrAmR/vp+4eEqWnBDxJ0ocZk70=;
-        b=Gfob/p5cWXjhaeVJ2PLeQFHo2v2tKyiPq5UC3b27ftRmedErTUhFaojJDIkceLqofs
-         lU6gs5T/lfDe/w+TpnxFqgwhxRg39zttNLzJoH7NphJMtPm33EaChivE7hQyIo3XM34P
-         12kla5e0jpe7Zbzu/XkcE00sN+pENUnOtGw8FnrEjJPekNUCwMr/F4vZ+gk27b2NPI1B
-         mZn4wQaH03wY/eMcj/IqgcOLVGkEtQBkbcOI5sECgW6/NRpXdlGIhLsYFcxa2ZHMHAhQ
-         8iVNPo+HzhRQ8fI8559iebQd0qXD6rggLVhMjKWVWYp5TQNrgARymaIoB8fcRgl6rpVp
-         lDkw==
-X-Forwarded-Encrypted: i=1; AJvYcCVsG6cKf7GKDKMlifRRISzIXU1x0pbjRullOFIt5AiQGWgFJH7FFYN3E0ttPpjwTr6n0TVpR9iLfw3Q4Ds9lpV7z3WhxG35QQaJjWputnrTj84+DQieeG8AQHJA08hMDHt/O+PPcW1Y8iN6HLtLuuIDdyHL1KNXw/ckI4y7U9X1SjFDG5Eq1n05Dp/Z5nnHpGHfKtvQAapCbMZWQu9yX6YsjNBhVns7JHC8RXmyY5KoA81DyHyhNQJjUfqK
-X-Gm-Message-State: AOJu0YwLVLYtdERM8iK/p+skzzdZ2dxVSrWGrVxN7hgQyYEWxTm9AEeW
-	MgIV9U+gRYEa1iQqPoZrKrroiIVDkERqbKjL8GYxpsyvhxswIfuX
-X-Google-Smtp-Source: AGHT+IG0tIXBxMyZCTnOq3svjh4Vc3mtAvxvyuEgllvUJQwfYc+QzEtuie6pZpf9ZLtwIAorl/GhfQ==
-X-Received: by 2002:a17:906:4716:b0:a5a:2d30:b8c1 with SMTP id a640c23a62f3a-a622807afb0mr114977366b.14.1716378743470;
-        Wed, 22 May 2024 04:52:23 -0700 (PDT)
-Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a5cdce8f916sm929375466b.223.2024.05.22.04.52.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 22 May 2024 04:52:23 -0700 (PDT)
-From: Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Wed, 22 May 2024 13:52:20 +0200
-To: Alejandro Colomar <alx@kernel.org>
-Cc: Jiri Olsa <olsajiri@gmail.com>, Steven Rostedt <rostedt@goodmis.org>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Oleg Nesterov <oleg@redhat.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>, linux-kernel@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org, linux-api@vger.kernel.org,
-	linux-man@vger.kernel.org, x86@kernel.org, bpf@vger.kernel.org,
-	Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-	John Fastabend <john.fastabend@gmail.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	"Borislav Petkov (AMD)" <bp@alien8.de>,
-	Ingo Molnar <mingo@redhat.com>, Andy Lutomirski <luto@kernel.org>,
-	"Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
-	Deepak Gupta <debug@rivosinc.com>
-Subject: Re: [PATCHv6 9/9] man2: Add uretprobe syscall page
-Message-ID: <Zk3cdJKGbzwbda2e@krava>
-References: <20240521104825.1060966-1-jolsa@kernel.org>
- <20240521104825.1060966-10-jolsa@kernel.org>
- <j6qxudmvwccpqnle4evabxbswdygmx35bgqwhemuzsjs5iuydv@fk2iumwucifx>
- <ZkyKKwfhNZxrGWsa@krava>
- <Zk0C_vm3T2L79-_W@krava>
- <o5pkz3eenii6p6sm7dl2fsgy4fqqaq2qbn2rbxddhkvaarvwgm@dkjjknb44qp2>
- <Zk2k0ttdR7abKSuv@krava>
- <vqw4ibum2hfnxjkfp7io5ugmwaeok4tynchi3utmzp6xnsmjig@fbjxwmm6u6v3>
+	s=arc-20240116; t=1716379347; c=relaxed/simple;
+	bh=EMJVT5ZakDgrWxq+Pzu18YJ1rO0NK5CfLgZ0nMojMYU=;
+	h=Mime-Version:Content-Type:Date:Message-Id:Cc:Subject:From:To:
+	 References:In-Reply-To; b=cODyXcsgilbrdorx/IdwE875wq9/a0OhTUxSR4u0jK2hWo1jMt4A+UbclZaMDrfDRYT5E8Mpe53u1PxXi8QeEquZicmRIFPJqtEgyAlNgzSSszN6gNaMBfF1X75slUIKhKeA5vJ1iwC3pRerbyreKZiavMZf66J8gRN8EU3Uj/M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nelYOGVG; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 85904C2BD11;
+	Wed, 22 May 2024 12:02:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1716379346;
+	bh=EMJVT5ZakDgrWxq+Pzu18YJ1rO0NK5CfLgZ0nMojMYU=;
+	h=Date:Cc:Subject:From:To:References:In-Reply-To:From;
+	b=nelYOGVGN6SeA/MqZPRrHYH3CNr81B6sLCq+x2diVvbQ/bjR2LAKWPe2UjlLFI76V
+	 4BxzcsJbNXwbJH1mUzNt8/c6ww8iujAX9repqNTCFMl3o1cD32xzBOfID9S5hd2SQY
+	 hIpgm23AwqT4s+QO23a9cDRtMBEexa2UpkCc77kEhq6n/uwRJGmm/EeUOQHBLOT8FC
+	 hHGbvNvdVWZoDhGwLf2cn+lSmMOrwqxQ49xatAopsHB9N7gDGIOeL60WEp/oAlLnoS
+	 x5WGOuEzlh9k18P8tsZYMm8H9toKZ/NnCe/KmhseHzTPiIkNGHqXtgpaf+2ibeR04N
+	 c+17AzCNNwi2A==
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <vqw4ibum2hfnxjkfp7io5ugmwaeok4tynchi3utmzp6xnsmjig@fbjxwmm6u6v3>
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date: Wed, 22 May 2024 15:02:19 +0300
+Message-Id: <D1G5P3B6BWGG.3EOYXHHI5MYPZ@kernel.org>
+Cc: <linux-kernel@vger.kernel.org>, <linux-kselftest@vger.kernel.org>,
+ <kernel-team@android.com>, <linux-security-module@vger.kernel.org>,
+ <netdev@vger.kernel.org>, <linux-riscv@lists.infradead.org>,
+ <bpf@vger.kernel.org>, "kernel test robot" <oliver.sang@intel.com>,
+ <linux-sgx@vger.kernel.org>
+Subject: Re: [PATCH v5 57/68] selftests/sgx: Compile with -D_GNU_SOURCE
+From: "Jarkko Sakkinen" <jarkko@kernel.org>
+To: "Edward Liaw" <edliaw@google.com>, <shuah@kernel.org>,
+ =?utf-8?q?Micka=C3=ABl_Sala=C3=BCn?= <mic@digikod.net>,
+ =?utf-8?q?G=C3=BCnther_Noack?= <gnoack@google.com>, "Christian Brauner"
+ <brauner@kernel.org>, "Richard Cochran" <richardcochran@gmail.com>, "Paul
+ Walmsley" <paul.walmsley@sifive.com>, "Palmer Dabbelt"
+ <palmer@dabbelt.com>, "Albert Ou" <aou@eecs.berkeley.edu>, "Alexei
+ Starovoitov" <ast@kernel.org>, "Daniel Borkmann" <daniel@iogearbox.net>,
+ "David S. Miller" <davem@davemloft.net>, "Jakub Kicinski"
+ <kuba@kernel.org>, "Jesper Dangaard Brouer" <hawk@kernel.org>, "John
+ Fastabend" <john.fastabend@gmail.com>, "Dave Hansen"
+ <dave.hansen@linux.intel.com>, "Andrew Morton" <akpm@linux-foundation.org>,
+ "Muhammad Usama Anjum" <usama.anjum@collabora.com>
+X-Mailer: aerc 0.17.0
+References: <20240522005913.3540131-1-edliaw@google.com>
+ <20240522005913.3540131-58-edliaw@google.com>
+In-Reply-To: <20240522005913.3540131-58-edliaw@google.com>
 
-On Wed, May 22, 2024 at 12:59:46PM +0200, Alejandro Colomar wrote:
-> Hi Jirka,
-> 
-> On Wed, May 22, 2024 at 09:54:58AM GMT, Jiri Olsa wrote:
-> > ok, thanks
-> > 
-> > jirka
-> > 
-> > 
-> > ---
-> > diff --git a/man/man2/uretprobe.2 b/man/man2/uretprobe.2
-> > new file mode 100644
-> > index 000000000000..5b5f340b59b6
-> > --- /dev/null
-> > +++ b/man/man2/uretprobe.2
-> > @@ -0,0 +1,56 @@
-> > +.\" Copyright (C) 2024, Jiri Olsa <jolsa@kernel.org>
-> > +.\"
-> > +.\" SPDX-License-Identifier: Linux-man-pages-copyleft
-> > +.\"
-> > +.TH uretprobe 2 (date) "Linux man-pages (unreleased)"
-> > +.SH NAME
-> > +uretprobe \- execute pending return uprobes
-> > +.SH SYNOPSIS
-> > +.nf
-> > +.B int uretprobe(void)
-> > +.fi
-> > +.SH DESCRIPTION
-> > +The
-> > +.BR uretprobe ()
-> > +system call is an alternative to breakpoint instructions for triggering return
-> > +uprobe consumers.
-> > +.P
-> > +Calls to
-> > +.BR uretprobe ()
-> > +system call are only made from the user-space trampoline provided by the kernel.
-> > +Calls from any other place result in a
-> > +.BR SIGILL .
-> > +.SH RETURN VALUE
-> > +The
-> > +.BR uretprobe ()
-> > +system call return value is architecture-specific.
-> > +.SH ERRORS
-> > +.TP
-> > +.B SIGILL
-> > +The
-> > +.BR uretprobe ()
-> > +system call was called by user.
-> 
-> Maybe 'a user-space program'?
-> Anyway, LGTM.  Thanks!
-> 
-> 	Reviewed-by: Alejandro Colomar <alx@kernel.org>
+On Wed May 22, 2024 at 3:57 AM EEST, Edward Liaw wrote:
+> Add -D_GNU_SOURCE to HOST_CFLAGS and remove #define _GNU_SOURCE.
+>
+> Fixes: 809216233555 ("selftests/harness: remove use of LINE_MAX")
+> Reported-by: kernel test robot <oliver.sang@intel.com>
+> Closes: https://lore.kernel.org/oe-lkp/202404301040.3bea5782-oliver.sang@=
+intel.com
+> Signed-off-by: Edward Liaw <edliaw@google.com>
+> ---
+>  tools/testing/selftests/sgx/Makefile    | 2 +-
+>  tools/testing/selftests/sgx/sigstruct.c | 1 -
+>  2 files changed, 1 insertion(+), 2 deletions(-)
+>
+> diff --git a/tools/testing/selftests/sgx/Makefile b/tools/testing/selftes=
+ts/sgx/Makefile
+> index 867f88ce2570..272da790d9ae 100644
+> --- a/tools/testing/selftests/sgx/Makefile
+> +++ b/tools/testing/selftests/sgx/Makefile
+> @@ -12,7 +12,7 @@ OBJCOPY :=3D $(CROSS_COMPILE)objcopy
+>  endif
+> =20
+>  INCLUDES :=3D -I$(top_srcdir)/tools/include
+> -HOST_CFLAGS :=3D -Wall -Werror -g $(INCLUDES) -fPIC
+> +HOST_CFLAGS :=3D -Wall -Werror -g $(INCLUDES) -fPIC -D_GNU_SOURCE
+>  HOST_LDFLAGS :=3D -z noexecstack -lcrypto
+>  ENCL_CFLAGS +=3D -Wall -Werror -static-pie -nostdlib -ffreestanding -fPI=
+E \
+>  	       -fno-stack-protector -mrdrnd $(INCLUDES)
+> diff --git a/tools/testing/selftests/sgx/sigstruct.c b/tools/testing/self=
+tests/sgx/sigstruct.c
+> index d73b29becf5b..200034a0fee5 100644
+> --- a/tools/testing/selftests/sgx/sigstruct.c
+> +++ b/tools/testing/selftests/sgx/sigstruct.c
+> @@ -1,7 +1,6 @@
+>  // SPDX-License-Identifier: GPL-2.0
+>  /*  Copyright(c) 2016-20 Intel Corporation. */
+> =20
+> -#define _GNU_SOURCE
+>  #include <assert.h>
+>  #include <getopt.h>
+>  #include <stdbool.h>
 
-ok, will change, thanks a lot
+Reviewed-by: Jarkko Sakkinen <jarkko@kernel.org>
 
-jirka
-
-> 
-> Have a lovely day!
-> Alex
-> 
-> > +.SH VERSIONS
-> > +Details of the
-> > +.BR uretprobe ()
-> > +system call behavior vary across systems.
-> > +.SH STANDARDS
-> > +None.
-> > +.SH HISTORY
-> > +TBD
-> > +.SH NOTES
-> > +The
-> > +.BR uretprobe ()
-> > +system call was initially introduced for the x86_64 architecture
-> > +where it was shown to be faster than breakpoint traps.
-> > +It might be extended to other architectures.
-> > +.P
-> > +The
-> > +.BR uretprobe ()
-> > +system call exists only to allow the invocation of return uprobe consumers.
-> > +It should
-> > +.B never
-> > +be called directly.
-> > +Details of the arguments (if any) passed to
-> > +.BR uretprobe ()
-> > +and the return value are architecture-specific.
-> 
-> -- 
-> <https://www.alejandro-colomar.es/>
-
-
+BR, Jarkko
 
