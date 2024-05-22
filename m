@@ -1,140 +1,109 @@
-Return-Path: <bpf+bounces-30326-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-30327-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id C99D88CC678
-	for <lists+bpf@lfdr.de>; Wed, 22 May 2024 20:40:55 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 192058CC79A
+	for <lists+bpf@lfdr.de>; Wed, 22 May 2024 22:04:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 44923B21181
-	for <lists+bpf@lfdr.de>; Wed, 22 May 2024 18:40:53 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C718D282AB5
+	for <lists+bpf@lfdr.de>; Wed, 22 May 2024 20:04:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 45ED3146591;
-	Wed, 22 May 2024 18:40:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C47F91419BA;
+	Wed, 22 May 2024 20:04:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="ZiAfGJ8/"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Ehtr33Rd"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-io1-f49.google.com (mail-io1-f49.google.com [209.85.166.49])
+Received: from mail-wr1-f42.google.com (mail-wr1-f42.google.com [209.85.221.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 366D5145FF6
-	for <bpf@vger.kernel.org>; Wed, 22 May 2024 18:40:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D60DCF4E7
+	for <bpf@vger.kernel.org>; Wed, 22 May 2024 20:04:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716403240; cv=none; b=MdpPoICKM6fevv20iHFafNd1deya/cE8u6QOt6f+Ib/omdoxmZ+Awlwdernhp3PKAasU6Ljft2+khR+4CFfjdUIGecQtt73EYmu35kW/ADM7KSB4DECnKnDbn2N2yEF2VrqORadIbno64OK12OisSB9bgWwHUuG0zHegIiNDCtw=
+	t=1716408248; cv=none; b=kMC0s64QDRH1LcBfeso7xvmbkAA0454512ZFHdau0wyR0wjH96kUzxtJB/Wa0MBSL69DwaBtdR5FQM5cHJVoP9OycICHxZRPDfV8DnHacm5Lg+z6fOsu2fl76upBh4dKLpZClXDXOYShF016YHLVC75PwfyJMqdcYPlzazlf90s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716403240; c=relaxed/simple;
-	bh=pvfNI1321JVtef7N+59lYxiObUuoIkn6QTtflB1MBjE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Jmgk/8BFp0Ry6MWTPK3F3geDfpjPq8uLNCfRC4QDpDExZRj6LJOyjaxBamgFhCw7/bZj4VEJiOvrXVTCjYCQc4S/nD91KEni6ZoQR7HgRlcEW7ylBTT68swhOyFCYcfxTBtxNty8ZQ4lSbt7CXB8a1r90dtLOj/7vu+TlooZ8oA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=ZiAfGJ8/; arc=none smtp.client-ip=209.85.166.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
-Received: by mail-io1-f49.google.com with SMTP id ca18e2360f4ac-7e24aa659abso22434839f.3
-        for <bpf@vger.kernel.org>; Wed, 22 May 2024 11:40:39 -0700 (PDT)
+	s=arc-20240116; t=1716408248; c=relaxed/simple;
+	bh=0S0r/8WLVka2Cs2oMxvctUNJiVLN9GcQQp/WTKR9tyI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=dTT9cw2zgAsfVBUBdSlu8cC6ig6FBr7/5j992ZW8dPQhdCrmZNTLHHm07gwiwSFELh5kWKwYxmzZQtnJHl6vK0yMAMi0Nr5xwLosDF6uetBkXRoyW9ScH2ym9v8Cv+h4dPEAY9a5RGuwbwJ+T4GqvKFyXceXGlAbeNAz1rBnY4k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Ehtr33Rd; arc=none smtp.client-ip=209.85.221.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f42.google.com with SMTP id ffacd0b85a97d-34d9c9f2cf0so1401439f8f.3
+        for <bpf@vger.kernel.org>; Wed, 22 May 2024 13:04:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google; t=1716403238; x=1717008038; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=2CkJWPtWzq2cjcP7a09if5B9kWWmXWyc6FlwIT3mHR0=;
-        b=ZiAfGJ8/7Tp3Wp5CYTquG8GZV24qMCLf0ceknIzVUcWQ/8PEFow+ystDmKwo3No7nx
-         Gs0VPJw/OIHVC7sIc/TknKQExOnL7DRsjptWGKUDfxLt4Hpfmkob/lyeltGGr/tH1dpJ
-         g8lwbAoUPdmzQL8TWpUmDt1wjZrxz0Fp1sbNU=
+        d=gmail.com; s=20230601; t=1716408245; x=1717013045; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=0S0r/8WLVka2Cs2oMxvctUNJiVLN9GcQQp/WTKR9tyI=;
+        b=Ehtr33Rdk1zVmvDhcXdjyRAHGbbOaSCR5lHtb8TGVTV0GOwWESCSpddi1knKBzn5Yt
+         ILQJt5oKuHGoE4Bcs98B1GocGSpMT5Tkw8cM2Y6GmPJ2Q+088PpTBtKtixzfX4sU4VSv
+         RJQPdMGzyNFUF2K/Nl1b+1WA5DL3wznMexPuZg9u8i3ZQAsDJGHzhNkzgn9KrtnL48fd
+         jZrOgDJROmlKh3kWxV3fjIFxyOMeQVsbbRlsqF5gPBjf9bP33bsK2NWpR3W3Sx0qWxKo
+         72nXy6jaYAwgtMsCEYZXeH8FSdjOLqICYpIEuWVmhNMgrjAPfikWDT4dBadcL31jxklJ
+         GONw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1716403238; x=1717008038;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=2CkJWPtWzq2cjcP7a09if5B9kWWmXWyc6FlwIT3mHR0=;
-        b=Ua4RwZtvTDEfHVeQGYn0LAdTUoDvy9qhCCpwfVHaYXq7nDVJhWtiWUmMQstCrHblLF
-         6vwMuWo7oVpcWyyM0SFQrJRzGp1/Ir4JTCVzxzA9B2tBn3EI+KN/jIUKC2whg+3UDtiX
-         LFx0h16rto36kAJMWSHsrYi32OTW8JZETuCB+chOkJxGL0RpVAhDxxPTsysCdd9M4slf
-         Mn8ptK8Qj+FpFzGNiOGPju5f6LMabCG/T87bXzFJ7hAlbcbYKCdluEUJ/1UHVeJ9zhrJ
-         vPpEif/vqHdHDNelH0PuRfsEF9sbz5FKxkdBkb6QvRuOSaQXDhidwFLMQA0cLYU7aYkZ
-         wxRg==
-X-Forwarded-Encrypted: i=1; AJvYcCXdkm17Pz9okgovp+6zIU0/NTYn3AsGFaLdXXlrUTpmuRu1eODkqy73+Ab75BA0DDH6DClBLga+ZGqh3QvrP/AJUucX
-X-Gm-Message-State: AOJu0Yw/1tFvfoMLCw/4dNZoiT1V9kr7xT4FQa0iBYuuj0voUwR6n8Ba
-	qBXFDjL2QUaq0q8MUN8bYz8bQ4SeU9juS1rTKo/clO32CWS8LWNhcxqyRrDVatU=
-X-Google-Smtp-Source: AGHT+IHfJbSzf9eR6h+5NiCKdgJYC/D5h2NHJ2n/qeMndC5IVVrtGPtwRsxEDeIFRtYop2k9g8p2Vw==
-X-Received: by 2002:a05:6602:420a:b0:7de:b279:fb3e with SMTP id ca18e2360f4ac-7e37db353b9mr293535939f.1.1716403238250;
-        Wed, 22 May 2024 11:40:38 -0700 (PDT)
-Received: from [192.168.1.128] ([38.175.170.29])
-        by smtp.gmail.com with ESMTPSA id 8926c6da1cb9f-48a42b0e43dsm4496318173.101.2024.05.22.11.40.37
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 22 May 2024 11:40:37 -0700 (PDT)
-Message-ID: <7a7d6b6c-0f28-4ffe-9bf2-a25c088636db@linuxfoundation.org>
-Date: Wed, 22 May 2024 12:40:36 -0600
+        d=1e100.net; s=20230601; t=1716408245; x=1717013045;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=0S0r/8WLVka2Cs2oMxvctUNJiVLN9GcQQp/WTKR9tyI=;
+        b=To3nPa7d8ny+/0OlcNrcUZFvHjEbBnEgcfxuKDj7HlFKHb5HF6AgIdLDOut2MKUHRK
+         +w790nON5znhUsbuNQMkAok6cKFEtaKsPmmtJYKWJdUryyFlo1UYxfyI6I88KdB0jp9a
+         ZRBwWCYPgREE06D39hdf04p/GrzOCG+WnNoNalhD6blGAj9MsM6WhdkY0WcSRgDxddhk
+         loDVWCOGw0NS6IcwtKUG+8J5AE8hg/5g4jROBm/uTEGdIk+iXeiMtyDK9fxsgUhapYRw
+         68KF7hXVj/0HpyrSiifcE34XXl4bk83z0eQ6eq1IDJqFnqOAv0I+YUHuWGDUOQ3erZaO
+         Z0Qg==
+X-Gm-Message-State: AOJu0YwTNsMePJu4DaF8D0/gH+fHXHVesJLTcsRx6ROUTOsEIZx4Squ1
+	3S6kzhtMP47gs1Phn++2jaksOHHTjrht39/Y0OM2I6fte5e/EK9K6828+g2RXQ22ZS63mJaCQGV
+	wa9isQt8bNUISad0GpP55nxXpMHBydI6n
+X-Google-Smtp-Source: AGHT+IEG93jGYvwokn1WQ4oOrC+kdjhpILt2Ry1WSs1Lmjbpv1umbyAfT+y1Jzr8BT6+l5xC7b/kZPYnjLuGY1dmxRE=
+X-Received: by 2002:adf:a394:0:b0:354:e0f0:2943 with SMTP id
+ ffacd0b85a97d-354e0f0297bmr2071888f8f.37.1716408244819; Wed, 22 May 2024
+ 13:04:04 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 00/68] Define _GNU_SOURCE for sources using
-To: Edward Liaw <edliaw@google.com>, Jakub Kicinski <kuba@kernel.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>, shuah@kernel.org,
- =?UTF-8?Q?Micka=C3=ABl_Sala=C3=BCn?= <mic@digikod.net>,
- =?UTF-8?Q?G=C3=BCnther_Noack?= <gnoack@google.com>,
- Christian Brauner <brauner@kernel.org>,
- Richard Cochran <richardcochran@gmail.com>,
- Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt
- <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>,
- Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- "David S. Miller" <davem@davemloft.net>,
- Jesper Dangaard Brouer <hawk@kernel.org>,
- John Fastabend <john.fastabend@gmail.com>, linux-kernel@vger.kernel.org,
- linux-kselftest@vger.kernel.org, kernel-team@android.com,
- linux-security-module@vger.kernel.org, netdev@vger.kernel.org,
- linux-riscv@lists.infradead.org, bpf@vger.kernel.org,
- Shuah Khan <skhan@linuxfoundation.org>
-References: <20240522005913.3540131-1-edliaw@google.com>
- <6caf3332-9ed9-4257-9532-4fd71c465c0d@linuxfoundation.org>
- <20240522101349.565a745e@kernel.org>
- <CAG4es9VZ3r34sUkp31+GCrA_XOq6WqwUUitPMQFViLL83mezYg@mail.gmail.com>
-Content-Language: en-US
-From: Shuah Khan <skhan@linuxfoundation.org>
-In-Reply-To: <CAG4es9VZ3r34sUkp31+GCrA_XOq6WqwUUitPMQFViLL83mezYg@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+References: <3faf9614-d61c-47a4-b8ba-6d97ae71fd44@google.com>
+In-Reply-To: <3faf9614-d61c-47a4-b8ba-6d97ae71fd44@google.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Wed, 22 May 2024 13:03:53 -0700
+Message-ID: <CAADnVQJw=mEX7ZEKffGMUm9my1Di9wFHwayhz+4vno_fypmnsQ@mail.gmail.com>
+Subject: Re: BPF timers in hard irq context?
+To: Barret Rhoden <brho@google.com>
+Cc: bpf <bpf@vger.kernel.org>, Dohyun Kim <dohyunkim@google.com>, 
+	Neel Natu <neelnatu@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 5/22/24 11:44, Edward Liaw wrote:
-> On Wed, May 22, 2024 at 10:13 AM Jakub Kicinski <kuba@kernel.org> wrote:
->>
->> On Wed, 22 May 2024 10:19:33 -0600 Shuah Khan wrote:
->>> On 5/21/24 18:56, Edward Liaw wrote:
->>>> Centralizes the definition of _GNU_SOURCE into KHDR_INCLUDES and removes
->>>> redefinitions of _GNU_SOURCE from source code.
->>>>
->>>> 809216233555 ("selftests/harness: remove use of LINE_MAX") introduced
->>>> asprintf into kselftest_harness.h, which is a GNU extension and needs
->>>
->>> Easier solution to define LINE_MAX locally. In gerenal it is advisable
->>> to not add local defines, but it is desirable in some cases to avoid
->>> churn like this one.
->>
->> Will the patch that Andrew applied:
->> https://lore.kernel.org/all/20240519213733.2AE81C32781@smtp.kernel.org/
->> make its way to Linus? As you say that's a much simpler fix.
-> 
+On Tue, May 21, 2024 at 2:59=E2=80=AFPM Barret Rhoden <brho@google.com> wro=
+te:
+>
+> hi -
+>
+> we've noticed some variability in bpf timer expiration that goes away if
+> we change the timers to run in hardirq context.
 
-Thank you Jakub. Yes. This is a simpler fix.
+What kind of variability are we talking about?
 
-> Right, this patch series may be unnecessary after all, since the
-> problem is fixed by that patch.
-> 
-> It might be better to drop the series unless it is desirable to
-> centralize the declaration of _GNU_SOURCE to the root Makefile /
-> lib.mk.  If that is still wanted, maybe a more palatable approach
-> would be to surround every instance of #define _GNU_SOURCE with
-> #ifndef _GNU_SOURCE first, then induce the change to CFLAGS in lib.mk.
-> That would prevent a partial merge from triggering build warnings.
+> i imagine the use of softirqs was to keep the potentially long-running
+> timer callback out of hardirq, but is there anything particularly
+> dangerous about making them run in hardirq?
 
-Please drop this series.
+exactly what you said. We don't have a good mechanism to
+keep bpf prog runtime tiny enough for hardirq.
 
-thanks,
--- Shuah
+> would you all be open to a patch that makes that a flag or something?
+> e.g. BPF_F_TIMER_HARDIRQ.
 
+There are very few users of MODE_*_HARD in the kernel.
+Even the most demanding users like networking are using soft.
+
+Have you tried BPF_F_TIMER_CPU_PIN to reduce jitter?
 
