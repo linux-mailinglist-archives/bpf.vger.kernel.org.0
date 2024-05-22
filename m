@@ -1,45 +1,46 @@
-Return-Path: <bpf+bounces-30334-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-30335-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id E9EB78CC850
-	for <lists+bpf@lfdr.de>; Wed, 22 May 2024 23:56:29 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5A2358CC852
+	for <lists+bpf@lfdr.de>; Wed, 22 May 2024 23:56:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8B1DEB20E9A
-	for <lists+bpf@lfdr.de>; Wed, 22 May 2024 21:56:27 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CC2AD1F21E4E
+	for <lists+bpf@lfdr.de>; Wed, 22 May 2024 21:56:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED1D0146A8C;
-	Wed, 22 May 2024 21:56:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 749C2146D5B;
+	Wed, 22 May 2024 21:56:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="b7/kSKMT"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="iAudHEua"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 694551BF2A;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E920D146A84;
 	Wed, 22 May 2024 21:56:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716414978; cv=none; b=j1JbZ3g8MHLk2qcMLtpiCFUo8kPUr4bSc556w6tgB+LdNuuvnk+CSq5abBVBYqbgugmlpGN+R7ZiQ5MpjG5RvbwsKX2aMz/yPR+dyKafxoMDK9Q3r1lWQk/OIbKt3IRAGTSA/l91HN7xScaDx+cWN4QVFZHcduVV2bzyFrYcSqU=
+	t=1716414979; cv=none; b=iORrN7MASLscuqjGcFbxNrvhgSKue7dezSDqD0ImFwYhYnhEzG43TJ+tAjCRVG5R9VcBPS96lhNCLGp/Tu1rNPVegT5/EnnelNX5os/HwjxXy9SVs8hjPtTFO5XJCXcJCiAueKCOOeMRqc8cX5yzU1UPv9toRV0A0x2tiDTDZ7w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716414978; c=relaxed/simple;
-	bh=1vIOH6m5r66YlxdDfT/tB9LNZ0Lyw5wBqQXHVST2wCE=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=MB8qf5YMxaQj7dEu4oqqR17Cf8Bf6MlloaVCtf3M6JePB5y60w4FFzJRkJLeZt26ZfiKv2a81MclF9oPjclv6oMkPklm7GZmraPbktf1e2BukdB5zZf6yWmmwBYBnCCwsLLO+trl38tjFKDGmpCpkpEPNi+jJA3VSwZ1s/4wWAQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=b7/kSKMT; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7C9EDC2BBFC;
-	Wed, 22 May 2024 21:56:17 +0000 (UTC)
+	s=arc-20240116; t=1716414979; c=relaxed/simple;
+	bh=JtuRxcCvglFcfjf50Tet8nXRDQxwrVBlbIJSMK5vXig=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=E/KaW255hX/kcovZRFlE6V1kweG2xWztZlT2kw86HLJL3aXGKB3uXhv3L5fUfAmTHiLGTkfXQ2+wRKBzkmTvbJe2RfnWPT2ndJQ4iFUDvJ2807CM0jG/uSaAorpB1Zi9TtAD1Rqx4kEF6kiRLCZbXQekIbB6Er3MQ0MiORjOhWg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=iAudHEua; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1ACD2C4AF08;
+	Wed, 22 May 2024 21:56:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1716414977;
-	bh=1vIOH6m5r66YlxdDfT/tB9LNZ0Lyw5wBqQXHVST2wCE=;
-	h=From:To:Cc:Subject:Date:From;
-	b=b7/kSKMTKaLJ79zb0GDtrhYJiH5qxIKxWy0FQP0FlJtPgt7AZZlHWvaJdWxjIzoS8
-	 zAfIRxExSSVcjPSwrMzJHR+YapZkmwQe3usN2JzAh1ms5E+zbmfuVcDIS3DoBzQHxD
-	 WQSUM31I2cmn6mS77XUvrQmbZp8BS42PhrQk2SfpDRlbw/lBGA0035xXf3d2d4G7HE
-	 pljJ6df7fspy9jxTYUYrvX4AxBboiYar1hI23beXg75V79ImzogBzpQR6vdpnZ+2dL
-	 4jsjEQnVAw6pVm31FrLrGxOFktWVT1WXQPqdX7yskWagiQyciYyqCZhULdsc2T+xak
-	 dO45PQ3Sq2tXA==
+	s=k20201202; t=1716414978;
+	bh=JtuRxcCvglFcfjf50Tet8nXRDQxwrVBlbIJSMK5vXig=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=iAudHEua+RG/yoSgYXxU/MothI/bnwiRRNq1aeOcQOGHR0mK52i4cCJIJWbSit3vs
+	 yW0fEE6nOnnzYeLA0fqgHvEzMQEmdbCHLrN0/7h391fSk6pi8oJXramn3vBYU5Ih8/
+	 W/7lS1pUaK5G59KTitSugn5wi9mVUHQItXdSfG6dDCCyvZ+t7PWVCcZo0wKd1kjzVs
+	 QPQhHAknv8xMqoJdoPKWB4huW/LdEDg927g9lyTXaThMW+tFRRdwXswWFxfvlxhr7I
+	 gKLHyL83KOB/MpYERZ/CCvYfUpTSvpMv0EjtpaVqR19k7VpYNhmUqR2oHw1fBYb/7T
+	 Logz6RQFc2k3Q==
 From: Namhyung Kim <namhyung@kernel.org>
 To: Arnaldo Carvalho de Melo <acme@kernel.org>,
 	Ian Rogers <irogers@google.com>,
@@ -54,10 +55,12 @@ Cc: Jiri Olsa <jolsa@kernel.org>,
 	Stephane Eranian <eranian@google.com>,
 	Song Liu <song@kernel.org>,
 	bpf@vger.kernel.org
-Subject: [RFC 0/6] perf record: Use pinned BPF program for filter (v1)
-Date: Wed, 22 May 2024 14:56:10 -0700
-Message-ID: <20240522215616.762195-1-namhyung@kernel.org>
+Subject: [PATCH 1/6] perf bpf-filter: Make filters map a single entry hashmap
+Date: Wed, 22 May 2024 14:56:11 -0700
+Message-ID: <20240522215616.762195-2-namhyung@kernel.org>
 X-Mailer: git-send-email 2.45.1.288.g0e0cd299f1-goog
+In-Reply-To: <20240522215616.762195-1-namhyung@kernel.org>
+References: <20240522215616.762195-1-namhyung@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -66,69 +69,247 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Hello,
+And the value is now an array.  This is to support multiple filter
+entries in the map later.
 
-This is to support the unprivileged BPF filter for profiling per-task events.
-Until now only root (or any user with CAP_BPF) can use the filter and we
-cannot add a new unprivileged BPF program types.  After talking with the BPF
-folks at LSF/MM/BPF 2024, I was told that this is the way to go.  Finally I
-managed to make it working with pinned BPF objects. :)
+No functional changes intended.
 
-But it requires the one-time setup (by root) before using it like below.
+Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+---
+ tools/perf/util/bpf-filter.c                 | 81 ++++++++++++++------
+ tools/perf/util/bpf_skel/sample-filter.h     |  3 +-
+ tools/perf/util/bpf_skel/sample_filter.bpf.c | 37 +++++----
+ 3 files changed, 78 insertions(+), 43 deletions(-)
 
-  # perf record --setup-filter pin
-
-This will load the BPF program and maps and pin them in the BPF-fs.  Then
-normal users can use the filter.
-
-  $ perf record -o- -e cycles:u --filter 'period < 10000' perf test -w noploop | perf script -i-
-  [ perf record: Woken up 1 times to write data ]
-  [ perf record: Captured and wrote 0.011 MB - ]
-        perf  759982 448227.214189:          1 cycles:u:      7f153719f4d0 _start+0x0 (/usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2)
-        perf  759982 448227.214195:          1 cycles:u:      7f153719f4d0 _start+0x0 (/usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2)
-        perf  759982 448227.214196:          7 cycles:u:      7f153719f4d0 _start+0x0 (/usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2)
-        perf  759982 448227.214196:        223 cycles:u:      7f153719f4d0 _start+0x0 (/usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2)
-        perf  759982 448227.214198:       9475 cycles:u:  ffffffff8ee012a0 [unknown] ([unknown])
-        perf  759982 448227.548608:          1 cycles:u:      559a9f03c81c noploop+0x5c (/home/namhyung/linux/tools/perf/perf)
-        perf  759982 448227.548611:          1 cycles:u:      559a9f03c81c noploop+0x5c (/home/namhyung/linux/tools/perf/perf)
-        perf  759982 448227.548612:         12 cycles:u:      559a9f03c81c noploop+0x5c (/home/namhyung/linux/tools/perf/perf)
-        perf  759982 448227.548613:        466 cycles:u:      559a9f03c81c noploop+0x5c (/home/namhyung/linux/tools/perf/perf)
-
-It's also possible to unload (and unpin, of course) using this command:
-
-  # perf record --setup-filter unpin
-
-The code is avaiable in 'perf/pinned-filter-v1' branch at
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/namhyung/linux-perf.git
-
-Thanks,
-Namhyung
-
-
-Namhyung Kim (6):
-  perf bpf-filter: Make filters map a single entry hashmap
-  perf bpf-filter: Pass 'target' to perf_bpf_filter__prepare()
-  perf bpf-filter: Split per-task filter use case
-  perf bpf-filter: Support pin/unpin BPF object
-  perf record: Fix a potential error handling issue
-  perf record: Add --setup-filter option
-
- tools/perf/Documentation/perf-record.txt     |   5 +
- tools/perf/builtin-record.c                  |  23 +-
- tools/perf/builtin-stat.c                    |   2 +-
- tools/perf/builtin-trace.c                   |   2 +-
- tools/perf/util/bpf-filter.c                 | 369 +++++++++++++++++--
- tools/perf/util/bpf-filter.h                 |  19 +-
- tools/perf/util/bpf_skel/sample-filter.h     |   4 +-
- tools/perf/util/bpf_skel/sample_filter.bpf.c |  58 ++-
- tools/perf/util/evlist.c                     |   5 +-
- tools/perf/util/evlist.h                     |   4 +-
- tools/perf/util/python.c                     |   3 +-
- 11 files changed, 428 insertions(+), 66 deletions(-)
-
-
-base-commit: ea558c86248b4955e5c5f3c0c921df450880605e
+diff --git a/tools/perf/util/bpf-filter.c b/tools/perf/util/bpf-filter.c
+index b51544996046..12e9c7dbb4dd 100644
+--- a/tools/perf/util/bpf-filter.c
++++ b/tools/perf/util/bpf-filter.c
+@@ -87,71 +87,102 @@ static int check_sample_flags(struct evsel *evsel, struct perf_bpf_filter_expr *
+ 
+ int perf_bpf_filter__prepare(struct evsel *evsel)
+ {
+-	int i, x, y, fd;
++	int i, x, y, fd, ret;
+ 	struct sample_filter_bpf *skel;
+ 	struct bpf_program *prog;
+ 	struct bpf_link *link;
+ 	struct perf_bpf_filter_expr *expr;
++	struct perf_bpf_filter_entry *entry;
++
++	entry = calloc(MAX_FILTERS, sizeof(*entry));
++	if (entry == NULL)
++		return -1;
+ 
+ 	skel = sample_filter_bpf__open_and_load();
+ 	if (!skel) {
+ 		pr_err("Failed to load perf sample-filter BPF skeleton\n");
+-		return -1;
++		ret = -EPERM;
++		goto err;
+ 	}
+ 
+ 	i = 0;
+ 	fd = bpf_map__fd(skel->maps.filters);
+ 	list_for_each_entry(expr, &evsel->bpf_filters, list) {
+-		struct perf_bpf_filter_entry entry = {
+-			.op = expr->op,
+-			.part = expr->part,
+-			.flags = expr->sample_flags,
+-			.value = expr->val,
+-		};
++		if (check_sample_flags(evsel, expr) < 0) {
++			ret = -EINVAL;
++			goto err;
++		}
+ 
+-		if (check_sample_flags(evsel, expr) < 0)
+-			return -1;
++		if (i == MAX_FILTERS) {
++			ret = -E2BIG;
++			goto err;
++		}
+ 
+-		bpf_map_update_elem(fd, &i, &entry, BPF_ANY);
++		entry[i].op = expr->op;
++		entry[i].part = expr->part;
++		entry[i].flags = expr->sample_flags;
++		entry[i].value = expr->val;
+ 		i++;
+ 
+ 		if (expr->op == PBF_OP_GROUP_BEGIN) {
+ 			struct perf_bpf_filter_expr *group;
+ 
+ 			list_for_each_entry(group, &expr->groups, list) {
+-				struct perf_bpf_filter_entry group_entry = {
+-					.op = group->op,
+-					.part = group->part,
+-					.flags = group->sample_flags,
+-					.value = group->val,
+-				};
+-				bpf_map_update_elem(fd, &i, &group_entry, BPF_ANY);
++				if (i == MAX_FILTERS) {
++					ret = -E2BIG;
++					goto err;
++				}
++
++				entry[i].op = group->op;
++				entry[i].part = group->part;
++				entry[i].flags = group->sample_flags;
++				entry[i].value = group->val;
+ 				i++;
+ 			}
+ 
+-			memset(&entry, 0, sizeof(entry));
+-			entry.op = PBF_OP_GROUP_END;
+-			bpf_map_update_elem(fd, &i, &entry, BPF_ANY);
++			if (i == MAX_FILTERS) {
++				ret = -E2BIG;
++				goto err;
++			}
++
++			entry[i].op = PBF_OP_GROUP_END;
+ 			i++;
+ 		}
+ 	}
+ 
+-	if (i > MAX_FILTERS) {
+-		pr_err("Too many filters: %d (max = %d)\n", i, MAX_FILTERS);
+-		return -1;
++	if (i < MAX_FILTERS) {
++		/* to terminate the loop early */
++		entry[i].op = PBF_OP_DONE;
++		i++;
++	}
++
++	/* The filters map has only one entry for now */
++	i = 0;
++	if (bpf_map_update_elem(fd, &i, entry, BPF_ANY) < 0) {
++		ret = -errno;
++		pr_err("Failed to update the filter map\n");
++		goto err;
+ 	}
++
+ 	prog = skel->progs.perf_sample_filter;
+ 	for (x = 0; x < xyarray__max_x(evsel->core.fd); x++) {
+ 		for (y = 0; y < xyarray__max_y(evsel->core.fd); y++) {
+ 			link = bpf_program__attach_perf_event(prog, FD(evsel, x, y));
+ 			if (IS_ERR(link)) {
+ 				pr_err("Failed to attach perf sample-filter program\n");
+-				return PTR_ERR(link);
++				ret = PTR_ERR(link);
++				goto err;
+ 			}
+ 		}
+ 	}
++	free(entry);
+ 	evsel->bpf_skel = skel;
+ 	return 0;
++
++err:
++	free(entry);
++	sample_filter_bpf__destroy(skel);
++	return ret;
+ }
+ 
+ int perf_bpf_filter__destroy(struct evsel *evsel)
+diff --git a/tools/perf/util/bpf_skel/sample-filter.h b/tools/perf/util/bpf_skel/sample-filter.h
+index 2e96e1ab084a..cf18f570eef4 100644
+--- a/tools/perf/util/bpf_skel/sample-filter.h
++++ b/tools/perf/util/bpf_skel/sample-filter.h
+@@ -14,6 +14,7 @@ enum perf_bpf_filter_op {
+ 	PBF_OP_AND,
+ 	PBF_OP_GROUP_BEGIN,
+ 	PBF_OP_GROUP_END,
++	PBF_OP_DONE,
+ };
+ 
+ /* BPF map entry for filtering */
+@@ -24,4 +25,4 @@ struct perf_bpf_filter_entry {
+ 	__u64 value;
+ };
+ 
+-#endif /* PERF_UTIL_BPF_SKEL_SAMPLE_FILTER_H */
+\ No newline at end of file
++#endif /* PERF_UTIL_BPF_SKEL_SAMPLE_FILTER_H */
+diff --git a/tools/perf/util/bpf_skel/sample_filter.bpf.c b/tools/perf/util/bpf_skel/sample_filter.bpf.c
+index fb94f5280626..5f17cd6458b7 100644
+--- a/tools/perf/util/bpf_skel/sample_filter.bpf.c
++++ b/tools/perf/util/bpf_skel/sample_filter.bpf.c
+@@ -9,10 +9,10 @@
+ 
+ /* BPF map that will be filled by user space */
+ struct filters {
+-	__uint(type, BPF_MAP_TYPE_ARRAY);
++	__uint(type, BPF_MAP_TYPE_HASH);
+ 	__type(key, int);
+-	__type(value, struct perf_bpf_filter_entry);
+-	__uint(max_entries, MAX_FILTERS);
++	__type(value, struct perf_bpf_filter_entry[MAX_FILTERS]);
++	__uint(max_entries, 1);
+ } filters SEC(".maps");
+ 
+ int dropped;
+@@ -144,35 +144,35 @@ int perf_sample_filter(void *ctx)
+ 
+ 	kctx = bpf_cast_to_kern_ctx(ctx);
+ 
+-	for (i = 0; i < MAX_FILTERS; i++) {
+-		int key = i; /* needed for verifier :( */
++	i = 0;
++	entry = bpf_map_lookup_elem(&filters, &i);
++	if (entry == NULL)
++		goto drop;
+ 
+-		entry = bpf_map_lookup_elem(&filters, &key);
+-		if (entry == NULL)
+-			break;
+-		sample_data = perf_get_sample(kctx, entry);
++	for (i = 0; i < MAX_FILTERS; i++) {
++		sample_data = perf_get_sample(kctx, &entry[i]);
+ 
+-		switch (entry->op) {
++		switch (entry[i].op) {
+ 		case PBF_OP_EQ:
+-			CHECK_RESULT(sample_data, ==, entry->value)
++			CHECK_RESULT(sample_data, ==, entry[i].value)
+ 			break;
+ 		case PBF_OP_NEQ:
+-			CHECK_RESULT(sample_data, !=, entry->value)
++			CHECK_RESULT(sample_data, !=, entry[i].value)
+ 			break;
+ 		case PBF_OP_GT:
+-			CHECK_RESULT(sample_data, >, entry->value)
++			CHECK_RESULT(sample_data, >, entry[i].value)
+ 			break;
+ 		case PBF_OP_GE:
+-			CHECK_RESULT(sample_data, >=, entry->value)
++			CHECK_RESULT(sample_data, >=, entry[i].value)
+ 			break;
+ 		case PBF_OP_LT:
+-			CHECK_RESULT(sample_data, <, entry->value)
++			CHECK_RESULT(sample_data, <, entry[i].value)
+ 			break;
+ 		case PBF_OP_LE:
+-			CHECK_RESULT(sample_data, <=, entry->value)
++			CHECK_RESULT(sample_data, <=, entry[i].value)
+ 			break;
+ 		case PBF_OP_AND:
+-			CHECK_RESULT(sample_data, &, entry->value)
++			CHECK_RESULT(sample_data, &, entry[i].value)
+ 			break;
+ 		case PBF_OP_GROUP_BEGIN:
+ 			in_group = 1;
+@@ -183,6 +183,9 @@ int perf_sample_filter(void *ctx)
+ 				goto drop;
+ 			in_group = 0;
+ 			break;
++		case PBF_OP_DONE:
++			/* no failures so far, accept it */
++			return 1;
+ 		}
+ 	}
+ 	/* generate sample data */
 -- 
 2.45.1.288.g0e0cd299f1-goog
 
