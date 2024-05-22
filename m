@@ -1,64 +1,81 @@
-Return-Path: <bpf+bounces-30257-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-30259-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2DD9C8CB88B
-	for <lists+bpf@lfdr.de>; Wed, 22 May 2024 03:39:16 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id EB1DD8CB911
+	for <lists+bpf@lfdr.de>; Wed, 22 May 2024 04:47:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7EEFFB24C00
-	for <lists+bpf@lfdr.de>; Wed, 22 May 2024 01:39:13 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1A7131C2034A
+	for <lists+bpf@lfdr.de>; Wed, 22 May 2024 02:47:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 43775D29E;
-	Wed, 22 May 2024 01:39:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 898C11E4A2;
+	Wed, 22 May 2024 02:47:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hGX8tKYp"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="E9ga+xF/"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B68B7BA4D;
-	Wed, 22 May 2024 01:39:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C6BC26293
+	for <bpf@vger.kernel.org>; Wed, 22 May 2024 02:47:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716341941; cv=none; b=L0GtQl0O7r9KPn2WR8nQTQXxZHqj7iQG9iw6ofreFO2u7bh8gsqzHm50C0lrzCnye+92ZLtxIWuafj/ocGCoZ2qM72XpRfDl+VdnFYHf+w17B/zadQF8HosVgj33JQsU7fqCR5IfcMUsGsWbcmyfAamRiNBds+NIRtvlw2fsLJo=
+	t=1716346041; cv=none; b=khg7QEKeAvv8ylGQrKIEfeCHlNxdv/6pky6rpI0U4YBk9pO6sePaxmnPTUYEm0q2MyfPyhoHo2vJrpCMlYZmbszpB2phhXunyW8YvTAxpzgHw+pSX+JOkotnz1kgLWTUXUt+Fn486RBS3WaT+uL1uJ732xfU9YSNVBISyFPyVFk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716341941; c=relaxed/simple;
-	bh=AdIHiAuVg2hn61op8w/bLkkUCBP555S8lXKMcjxkn9g=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=oW5NI5JxJFlD4SCRvGi698ohYRaOfVek9cZ1KoHFMjja2cSIlVMzIp+THt4WvcQWbQXsw1tOX5NjzAZUntc54ApBwR2hR+Z2czyVDDwhi23+Ujz7j2fv1u8+XmsggoeBdrOGQ2q5sxIiR2ltWbKHPtRIYHPwhMUHzdvjQK6JDs8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hGX8tKYp; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0E684C2BD11;
-	Wed, 22 May 2024 01:39:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1716341941;
-	bh=AdIHiAuVg2hn61op8w/bLkkUCBP555S8lXKMcjxkn9g=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=hGX8tKYpxlmqA9NcrWOOoBSPwM2XovlJzzsRYz3VOZvaPQI9MLfJ9Dx8s7ih3b7SU
-	 CDBRhNniVp8e00RcXrVXZKyTHMVHRxZjZTTuhD9WySYYZ3030PtcRdh/gbuPBfQArV
-	 kHwg+y4ssLnZA4Ek4A8JOKjOMERTjQkGScXZj0U40fc4X5bPTBKpFgTU2PpxIkLXZ7
-	 QX2gdHCFyFLE6LQuNmWUVWf4r25rnYsgshnrw7MlL/cs/TI/FrtivZgaFhWcij+77M
-	 4f0Gd2X/TbINmJmOK8BrMDHSFJMTBZmb5E/u/HsnIhUX+1oc/vOXMIXxYg5HMG7NbG
-	 NvmaC/zlS534g==
-From: Andrii Nakryiko <andrii@kernel.org>
-To: linux-trace-kernel@vger.kernel.org,
-	rostedt@goodmis.org,
-	mhiramat@kernel.org
-Cc: x86@kernel.org,
-	peterz@infradead.org,
-	mingo@redhat.com,
-	tglx@linutronix.de,
-	bpf@vger.kernel.org,
-	rihams@fb.com,
-	linux-perf-users@vger.kernel.org,
-	Andrii Nakryiko <andrii@kernel.org>
-Subject: [PATCH v2 4/4] selftests/bpf: add test validating uprobe/uretprobe stack traces
-Date: Tue, 21 May 2024 18:38:45 -0700
-Message-ID: <20240522013845.1631305-5-andrii@kernel.org>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240522013845.1631305-1-andrii@kernel.org>
-References: <20240522013845.1631305-1-andrii@kernel.org>
+	s=arc-20240116; t=1716346041; c=relaxed/simple;
+	bh=JMSK5Kgp2ibp/jL8V6puEswzVK2vqH755gBAWXwSn1c=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=usMomy5kfdYBX5v4XhyzvlF0oGSK11pIW94eTMl9a87KDJ6GRIXnkqXz8bDqXVAlF0iGcrj/fAp9sNMEXbTzryCIAuuqfILqi5czN9SiVhnvvIGUcIN/tgXuMncd0wYOvOZFM3TOgFl/MaGhi2F3rAwSz7P5PDRGyKoufmeaRXw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=E9ga+xF/; arc=none smtp.client-ip=209.85.214.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-1ecc23e6c9dso109216085ad.2
+        for <bpf@vger.kernel.org>; Tue, 21 May 2024 19:47:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1716346038; x=1716950838; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Ip97ZryjgvDw0E3emd452VFF721rwhMu9VSqnkvJOKA=;
+        b=E9ga+xF/jq2ef3X7uPTwaU9RxJDEy1/0E9PdWMC59PnsOVWgrJExn7dDgkiOcK3Ca6
+         t1t9tW7JmZhNKDRfu3BnB1+e+ri1FR0FJsoX0Xj5VR7jpzzNN6+dWwoRdDzpfB0Rc5Qe
+         Ab3t+BbfeUcUMCKcPRJ8GyrdChLUMDbVog6eF1Vu9AnbMVJT6lC3s7/Ag9y0pQhtMS32
+         X6rDOxrwujQdx9rJT1CQhuJzRhKWAiShQRzyZ2pAKDOw7XDbM8TxT2Qnsa2UjbJ1Jvyo
+         ns2wz8D1vxYNt6EPVK/grbb132OL6f2FtrAGlr406cXXo0nwDBm4QLn9Wbjpj9DuUWGs
+         8ZaA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1716346038; x=1716950838;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Ip97ZryjgvDw0E3emd452VFF721rwhMu9VSqnkvJOKA=;
+        b=aGUA3X9w59G+iV1J3I3AU6Zku3Zsf6H1Y0ldeVVvlUnF1pFTF7NGZT4arAWSdfu6Y/
+         S0xA3/rs3XndJ6yYELMPWeky5yWKMdx1RydMZYd6tP1L4iRIo4yUtu0HAPnbbtXF7Nlq
+         N9vwwskcUnSnnrXZDXHnR6XcSkrCKOjKs2kI+kdPL1X+8kArg2WXfEylnR6mpvB02Ana
+         9WSlt5Nv9RZnJ7pvVXeOvubJ8AlYWKvdDlz2rKNtPBicjJaZuJNoHGXFyF4GPbuiLxBu
+         zzNd0UUACUc/Ii5Sr5ItMX4YVXBJ+zByAQQnFAjZfrojfpd/UM2CXE5GR0l9k/7/A9AN
+         +R/w==
+X-Gm-Message-State: AOJu0YxWcTi4Lu1wqfKXIyKXmwUGHxdaT9o9u3fEgmGKMu3iTvCSMSiW
+	+MoVz3myHVll5HCbg+tZS1Ol8/a17So7Ei/gR5zx8zJohitBPHD4Ll7G6g==
+X-Google-Smtp-Source: AGHT+IENtx68chO53RMB//cq/A6ZQvMBOOAescZvUjFvatvsZRItG99ptnWncwrNBRYnEnLvxCejfg==
+X-Received: by 2002:a17:902:da8d:b0:1f2:f7ff:96af with SMTP id d9443c01a7336-1f31c9f4ef0mr7999245ad.69.1716346037663;
+        Tue, 21 May 2024 19:47:17 -0700 (PDT)
+Received: from macbook-pro-49.dhcp.thefacebook.com ([2620:10d:c090:400::5:acf5])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-1ef0c035c42sm227846255ad.187.2024.05.21.19.47.16
+        (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
+        Tue, 21 May 2024 19:47:17 -0700 (PDT)
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To: bpf@vger.kernel.org
+Cc: daniel@iogearbox.net,
+	andrii@kernel.org,
+	martin.lau@kernel.org,
+	memxor@gmail.com,
+	eddyz87@gmail.com,
+	kernel-team@fb.com
+Subject: [PATCH bpf-next] bpf: Relax precision marking in open coded iters and may_goto loop.
+Date: Tue, 21 May 2024 19:47:13 -0700
+Message-Id: <20240522024713.59136-1-alexei.starovoitov@gmail.com>
+X-Mailer: git-send-email 2.39.3 (Apple Git-146)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -67,357 +84,442 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Add a set of tests to validate that stack traces captured from or in the
-presence of active uprobes and uretprobes are valid and complete.
+From: Alexei Starovoitov <ast@kernel.org>
 
-For this we use BPF program that are installed either on entry or exit
-of user function, plus deep-nested USDT. One of target funtions
-(target_1) is recursive to generate two different entries in the stack
-trace for the same uprobe/uretprobe, testing potential edge conditions.
+Motivation for the patch
+------------------------
+Open coded iterators and may_goto is a great mechanism to implement loops,
+but counted loops are problematic. For example:
+  for (i = 0; i < 100 && can_loop; i++)
+is verified as a bounded loop, since i < 100 condition forces the verifier
+to mark 'i' as precise and loop states at different iterations are not equivalent.
+That removes the benefit of open coded iterators and may_goto.
+The workaround is to do:
+  int zero = 0; /* global or volatile variable */
+  for (i = zero; i < 100 && can_loop; i++)
+to hide from the verifier the value of 'i'.
+It's unnatural and so far users didn't learn such odd programming pattern.
 
-Without fixes in this patch set, we get something like this for one of
-the scenarios:
+This patch aims to improve the verifier to support
+  for (i = 0; i < 100000 && can_loop; i++)
+as open coded iter loop (when 'i' doesn't need to be precise).
 
- caller: 0x758fff - 0x7595ab
- target_1: 0x758fd5 - 0x758fff
- target_2: 0x758fca - 0x758fd5
- target_3: 0x758fbf - 0x758fca
- target_4: 0x758fb3 - 0x758fbf
- ENTRY #0: 0x758fb3 (in target_4)
- ENTRY #1: 0x758fd3 (in target_2)
- ENTRY #2: 0x758ffd (in target_1)
- ENTRY #3: 0x7fffffffe000
- ENTRY #4: 0x7fffffffe000
- ENTRY #5: 0x6f8f39
- ENTRY #6: 0x6fa6f0
- ENTRY #7: 0x7f403f229590
+Algorithm
+---------
+First of all:
+   if (is_may_goto_insn_at(env, insn_idx)) {
++          update_loop_entry(cur, &sl->state);
+           if (states_equal(env, &sl->state, cur, RANGE_WITHIN)) {
+-                  update_loop_entry(cur, &sl->state);
 
-Entry #3 and #4 (0x7fffffffe000) are uretprobe trampoline addresses
-which obscure actual target_1 and another target_1 invocations. Also
-note that between entry #0 and entry #1 we are missing an entry for
-target_3, which is fixed in patch #2.
+This should be correct, since reaching the same insn should
+satisfy "if h1 in path" requirement of update_loop_entry() algorithm.
+It's too conservative to update loop_entry only on a state match.
 
-With all the fixes, we get desired full stack traces:
+With that the get_loop_entry() can be used to gate is_branch_taken() logic.
+When 'if (i < 1000)' is done within open coded iterator or in a loop with may_goto
+don't invoke is_branch_taken() logic.
+When it's skipped don't do reg_bounds_sanity_check(), since it will surely
+see range violations.
 
- caller: 0x758fff - 0x7595ab
- target_1: 0x758fd5 - 0x758fff
- target_2: 0x758fca - 0x758fd5
- target_3: 0x758fbf - 0x758fca
- target_4: 0x758fb3 - 0x758fbf
- ENTRY #0: 0x758fb7 (in target_4)
- ENTRY #1: 0x758fc8 (in target_3)
- ENTRY #2: 0x758fd3 (in target_2)
- ENTRY #3: 0x758ffd (in target_1)
- ENTRY #4: 0x758ff3 (in target_1)
- ENTRY #5: 0x75922c (in caller)
- ENTRY #6: 0x6f8f39
- ENTRY #7: 0x6fa6f0
- ENTRY #8: 0x7f986adc4cd0
+Now, consider progs/iters_task_vma.c that has the following logic:
+    bpf_for_each(...) {
+       if (i > 1000)
+          break;
 
-Now there is a logical and complete sequence of function calls.
+       arr[i] = ..;
+    }
 
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+Skipping precision mark at if (i > 1000) keeps 'i' imprecise,
+but arr[i] will mark 'i' as precise anyway, because 'arr' is a map.
+On the next iteration of the loop the patch does copy_precision()
+that copies precision markings for top of the loop into next state
+of the loop. So on the next iteration 'i' will be seen as precise.
+
+Hence the key part of the patch:
+-       pred = is_branch_taken(dst_reg, src_reg, opcode, is_jmp32);
++       if (!get_loop_entry(this_branch) || src_reg->precise || dst_reg->precise ||
++           (BPF_SRC(insn->code) == BPF_K && insn->imm == 0))
++               pred = is_branch_taken(dst_reg, src_reg, opcode, is_jmp32);
+
+!get_loop_entry(this_branch) -> if not inside open coded iter keep
+  existing is_branch_taken() logic, since bounded loop relies on it.
+
+src_reg->precise || dst_reg->precise -> if later inside the loop the 'i' was
+  actually marked as precise then we have to do is_branch_taken() and above
+  bpf_for_each() will be verified as a bounded loop checking all 1000
+  iterations. Otherwise we will keep incrementing 'i' and it will eventually
+  get out of bounds in arr[i] and the verifier will reject such memory access.
+
+BPF_SRC(insn->code) == BPF_K && insn->imm == 0 -> if it's a check for
+  an exit condition from open coded iterator then do is_branch_taken() as well.
+  Otherwise all open coded iterators won't work.
+
+Now consider the same example:
+    bpf_for_each(...) {
+       if (i > 1000)
+          break;
+
+       arr[i] = ..;
+    }
+but 'arr' is an arena pointer. In this case 'i > 1000' will keep 'i' as
+imprecise and arr[i] will keep it as imprecise as well.
+And the whole loop will be verified with open coded iterator logic.
+
+Now the following works:
+-       for (i = zero; i < 1000; i++)
++       for (i = 0; i < 100000 && can_loop; i++) {
+                htab_update_elem(htab, i, i);
++               arr[i] = i; // either arr1 or arr2
++       }
++char __arena arr1[100000]; /* works */
++char arr2[100000]; /* runs into 1M limit */
+
+So the users can now use 'for (i = 0;...' pattern everywhere and
+the verifier will fall back to bounded loop logic and precise 'i'
+when 'i' is used in map-style memory access.
+For arena based algorithms 'i' will stay imprecise.
+
+-       for (i = zero; i < ARR_SZ && can_loop; i++)
++       /* i = 0 is ok here, since i is not used in memory access */
++       for (i = 0; i < ARR_SZ && can_loop; i++)
+                sum += i;
++
++       /* have to use i = zero due to arr[i] where arr is not an arena */
+        for (i = zero; i < ARR_SZ; i++) {
+                barrier_var(i);
+                sum += i + arr[i];
+
+and i = zero workaround in iter_obfuscate_counter() can be removed.
+
+copy_precision() is a hack, of course, to demonstrate an idea.
+
+Signed-off-by: Alexei Starovoitov <ast@kernel.org>
 ---
- .../bpf/prog_tests/uretprobe_stack.c          | 186 ++++++++++++++++++
- .../selftests/bpf/progs/uretprobe_stack.c     |  96 +++++++++
- 2 files changed, 282 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/uretprobe_stack.c
- create mode 100644 tools/testing/selftests/bpf/progs/uretprobe_stack.c
+ kernel/bpf/verifier.c                         | 94 +++++++++++++++++--
+ .../testing/selftests/bpf/progs/arena_htab.c  | 11 ++-
+ tools/testing/selftests/bpf/progs/iters.c     | 18 +---
+ .../bpf/progs/verifier_iterating_callbacks.c  | 17 ++--
+ 4 files changed, 112 insertions(+), 28 deletions(-)
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/uretprobe_stack.c b/tools/testing/selftests/bpf/prog_tests/uretprobe_stack.c
-new file mode 100644
-index 000000000000..6deb8d560ddd
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/uretprobe_stack.c
-@@ -0,0 +1,186 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2024 Meta Platforms, Inc. and affiliates. */
-+
-+#include <test_progs.h>
-+#include "uretprobe_stack.skel.h"
-+#include "../sdt.h"
-+
-+/* We set up target_1() -> target_2() -> target_3() -> target_4() -> USDT()
-+ * call chain, each being traced by our BPF program. On entry or return from
-+ * each target_*() we are capturing user stack trace and recording it in
-+ * global variable, so that user space part of the test can validate it.
-+ *
-+ * Note, we put each target function into a custom section to get those
-+ * __start_XXX/__stop_XXX symbols, generated by linker for us, which allow us
-+ * to know address range of those functions
-+ */
-+__attribute__((section("uprobe__target_4")))
-+__weak int target_4(void)
-+{
-+	STAP_PROBE1(uretprobe_stack, target, 42);
-+	return 42;
-+}
-+
-+extern const void *__start_uprobe__target_4;
-+extern const void *__stop_uprobe__target_4;
-+
-+__attribute__((section("uprobe__target_3")))
-+__weak int target_3(void)
-+{
-+	return target_4();
-+}
-+
-+extern const void *__start_uprobe__target_3;
-+extern const void *__stop_uprobe__target_3;
-+
-+__attribute__((section("uprobe__target_2")))
-+__weak int target_2(void)
-+{
-+	return target_3();
-+}
-+
-+extern const void *__start_uprobe__target_2;
-+extern const void *__stop_uprobe__target_2;
-+
-+__attribute__((section("uprobe__target_1")))
-+__weak int target_1(int depth)
-+{
-+	if (depth < 1)
-+		return 1 + target_1(depth + 1);
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index 77da1f438bec..7a1606ccf692 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -14882,7 +14882,7 @@ static int reg_set_min_max(struct bpf_verifier_env *env,
+ 			   struct bpf_reg_state *true_reg2,
+ 			   struct bpf_reg_state *false_reg1,
+ 			   struct bpf_reg_state *false_reg2,
+-			   u8 opcode, bool is_jmp32)
++			   u8 opcode, bool is_jmp32, bool ignore_bad_range)
+ {
+ 	int err;
+ 
+@@ -14903,6 +14903,8 @@ static int reg_set_min_max(struct bpf_verifier_env *env,
+ 	reg_bounds_sync(true_reg1);
+ 	reg_bounds_sync(true_reg2);
+ 
++	if (ignore_bad_range)
++		return 0;
+ 	err = reg_bounds_sanity_check(env, true_reg1, "true_reg1");
+ 	err = err ?: reg_bounds_sanity_check(env, true_reg2, "true_reg2");
+ 	err = err ?: reg_bounds_sanity_check(env, false_reg1, "false_reg1");
+@@ -15177,7 +15179,11 @@ static int check_cond_jmp_op(struct bpf_verifier_env *env,
+ 	}
+ 
+ 	is_jmp32 = BPF_CLASS(insn->code) == BPF_JMP32;
+-	pred = is_branch_taken(dst_reg, src_reg, opcode, is_jmp32);
++	if (!get_loop_entry(this_branch) || src_reg->precise || dst_reg->precise ||
++	    (BPF_SRC(insn->code) == BPF_K && insn->imm == 0))
++		pred = is_branch_taken(dst_reg, src_reg, opcode, is_jmp32);
 +	else
-+		return target_2();
-+}
-+
-+extern const void *__start_uprobe__target_1;
-+extern const void *__stop_uprobe__target_1;
-+
-+extern const void *__start_uretprobe_stack_sec;
-+extern const void *__stop_uretprobe_stack_sec;
-+
-+struct range {
-+	long start;
-+	long stop;
-+};
-+
-+static struct range targets[] = {
-+	{}, /* we want target_1 to map to target[1], so need 1-based indexing */
-+	{ (long)&__start_uprobe__target_1, (long)&__stop_uprobe__target_1 },
-+	{ (long)&__start_uprobe__target_2, (long)&__stop_uprobe__target_2 },
-+	{ (long)&__start_uprobe__target_3, (long)&__stop_uprobe__target_3 },
-+	{ (long)&__start_uprobe__target_4, (long)&__stop_uprobe__target_4 },
-+};
-+
-+static struct range caller = {
-+	(long)&__start_uretprobe_stack_sec,
-+	(long)&__stop_uretprobe_stack_sec,
-+};
-+
-+static void validate_stack(__u64 *ips, int stack_len, int cnt, ...)
++		pred = -2;
+ 	if (pred >= 0) {
+ 		/* If we get here with a dst_reg pointer type it is because
+ 		 * above is_branch_taken() special cased the 0 comparison.
+@@ -15229,13 +15235,13 @@ static int check_cond_jmp_op(struct bpf_verifier_env *env,
+ 		err = reg_set_min_max(env,
+ 				      &other_branch_regs[insn->dst_reg],
+ 				      &other_branch_regs[insn->src_reg],
+-				      dst_reg, src_reg, opcode, is_jmp32);
++				      dst_reg, src_reg, opcode, is_jmp32, pred == -2);
+ 	} else /* BPF_SRC(insn->code) == BPF_K */ {
+ 		err = reg_set_min_max(env,
+ 				      &other_branch_regs[insn->dst_reg],
+ 				      src_reg /* fake one */,
+ 				      dst_reg, src_reg /* same fake one */,
+-				      opcode, is_jmp32);
++				      opcode, is_jmp32, pred == -2);
+ 	}
+ 	if (err)
+ 		return err;
+@@ -17217,6 +17223,81 @@ static int propagate_precision(struct bpf_verifier_env *env,
+ 	return 0;
+ }
+ 
++static void __copy_precision(struct bpf_verifier_env *env,
++			     struct bpf_verifier_state *cur,
++			     const struct bpf_verifier_state *old)
 +{
-+	int i, j;
-+	va_list args;
++	struct bpf_reg_state *state_reg;
++	struct bpf_func_state *state, *cur_fr;
++	int i, fr;
++	bool first;
 +
-+	if (!ASSERT_GT(stack_len, 0, "stack_len"))
-+		return;
-+
-+	stack_len /= 8;
-+
-+	/* check if we have enough entries to satisfy test expectations */
-+	if (!ASSERT_GE(stack_len, cnt, "stack_len2"))
-+		return;
-+
-+	if (env.verbosity >= VERBOSE_NORMAL) {
-+		printf("caller: %#lx - %#lx\n", caller.start, caller.stop);
-+		for (i = 1; i < ARRAY_SIZE(targets); i++)
-+			printf("target_%d: %#lx - %#lx\n", i, targets[i].start, targets[i].stop);
-+		for (i = 0; i < stack_len; i++) {
-+			for (j = 1; j < ARRAY_SIZE(targets); j++) {
-+				if (ips[i] >= targets[j].start && ips[i] < targets[j].stop)
-+					break;
++	for (fr = min(cur->curframe, old->curframe); fr >= 0; fr--) {
++		state = old->frame[fr];
++		cur_fr = cur->frame[fr];
++		state_reg = state->regs;
++		first = true;
++		verbose(env, "XX old state:");
++		print_verifier_state(env, state, true);
++		for (i = 0; i < BPF_REG_FP; i++, state_reg++) {
++			if (state_reg->type != SCALAR_VALUE ||
++			    !state_reg->precise ||
++			    !(state_reg->live & REG_LIVE_READ))
++				continue;
++			if (env->log.level & BPF_LOG_LEVEL2) {
++				if (first)
++					verbose(env, "XX frame %d: propagating r%d", fr, i);
++				else
++					verbose(env, ",r%d", i);
 +			}
-+			if (j < ARRAY_SIZE(targets)) { /* found target match */
-+				printf("ENTRY #%d: %#lx (in target_%d)\n", i, (long)ips[i], j);
-+			} else if (ips[i] >= caller.start && ips[i] < caller.stop) {
-+				printf("ENTRY #%d: %#lx (in caller)\n", i, (long)ips[i]);
-+			} else {
-+				printf("ENTRY #%d: %#lx\n", i, (long)ips[i]);
-+			}
++			cur_fr->regs[i].precise = true;
++			first = false;
 +		}
++
++		for (i = 0; i < min(cur_fr->allocated_stack, state->allocated_stack) / BPF_REG_SIZE; i++) {
++			if (!is_spilled_reg(&state->stack[i]))
++				continue;
++			state_reg = &state->stack[i].spilled_ptr;
++			if (state_reg->type != SCALAR_VALUE ||
++			    !state_reg->precise ||
++			    !(state_reg->live & REG_LIVE_READ))
++				continue;
++			if (env->log.level & BPF_LOG_LEVEL2) {
++				if (first)
++					verbose(env, "XX frame %d: propagating fp%d",
++						fr, (-i - 1) * BPF_REG_SIZE);
++				else
++					verbose(env, ",fp%d", (-i - 1) * BPF_REG_SIZE);
++			}
++			cur_fr->stack[i].spilled_ptr.precise = true;
++			first = false;
++		}
++		if (!first)
++			verbose(env, "\n");
 +	}
-+
-+	va_start(args, cnt);
-+
-+	for (i = cnt - 1; i >= 0; i--) {
-+		/* most recent entry is the deepest target function */
-+		const struct range *t = va_arg(args, const struct range *);
-+
-+		ASSERT_GE(ips[i], t->start, "addr_start");
-+		ASSERT_LT(ips[i], t->stop, "addr_stop");
-+	}
-+
-+	va_end(args);
 +}
 +
-+/* __weak prevents inlining */
-+__attribute__((section("uretprobe_stack_sec")))
-+__weak void test_uretprobe_stack(void)
++static void copy_precision(struct bpf_verifier_env *env,
++			   struct bpf_verifier_state *cur,
++			   const struct bpf_verifier_state *old)
 +{
-+	LIBBPF_OPTS(bpf_uprobe_opts, uprobe_opts);
-+	struct uretprobe_stack *skel;
-+	int err;
-+
-+	skel = uretprobe_stack__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "skel_open"))
++	if (!old)
 +		return;
-+
-+	err = uretprobe_stack__attach(skel);
-+	if (!ASSERT_OK(err, "skel_attach"))
-+		goto cleanup;
-+
-+	/* trigger */
-+	ASSERT_EQ(target_1(0), 42 + 1, "trigger_return");
-+
 +	/*
-+	 * Stacks captured on ENTRY uprobes
++	 * parent state unlikely to have precise registers
++	 * due to mark_all_scalars_imprecise(), but let's try anyway.
 +	 */
-+
-+	/* (uprobe 1) target_1 in stack trace*/
-+	validate_stack(skel->bss->entry_stack1, skel->bss->entry1_len,
-+		       2, &caller, &targets[1]);
-+	/* (uprobe 1, recursed) */
-+	validate_stack(skel->bss->entry_stack1_recur, skel->bss->entry1_recur_len,
-+		       3, &caller, &targets[1], &targets[1]);
-+	/* (uprobe 2) caller -> target_1 -> target_1 -> target_2 */
-+	validate_stack(skel->bss->entry_stack2, skel->bss->entry2_len,
-+		       4, &caller, &targets[1], &targets[1], &targets[2]);
-+	/* (uprobe 3) */
-+	validate_stack(skel->bss->entry_stack3, skel->bss->entry3_len,
-+		       5, &caller, &targets[1], &targets[1], &targets[2], &targets[3]);
-+	/* (uprobe 4) caller -> target_1 -> target_1 -> target_2 -> target_3 -> target_4 */
-+	validate_stack(skel->bss->entry_stack4, skel->bss->entry4_len,
-+		       6, &caller, &targets[1], &targets[1], &targets[2], &targets[3], &targets[4]);
-+
-+	/* (USDT): full caller -> target_1 -> target_1 -> target_2 (uretprobed)
-+	 *              -> target_3 -> target_4 (uretprobes) chain
-+	 */
-+	validate_stack(skel->bss->usdt_stack, skel->bss->usdt_len,
-+		       6, &caller, &targets[1], &targets[1], &targets[2], &targets[3], &targets[4]);
-+
++	__copy_precision(env, cur, old);
++	old = old->parent;
++	if (!old)
++		return;
 +	/*
-+	 * Now stacks captured on the way out in EXIT uprobes
++	 * This one might have precise scalars, since precision propagation
++	 * from array access will mark them in the parent.
 +	 */
-+
-+	/* (uretprobe 4) everything up to target_4, but excluding it */
-+	validate_stack(skel->bss->exit_stack4, skel->bss->exit4_len,
-+		       5, &caller, &targets[1], &targets[1], &targets[2], &targets[3]);
-+	/* we didn't install uretprobes on target_2 and target_3 */
-+	/* (uretprobe 1, recur) first target_1 call only */
-+	validate_stack(skel->bss->exit_stack1_recur, skel->bss->exit1_recur_len,
-+		       2, &caller, &targets[1]);
-+	/* (uretprobe 1) just a caller in the stack trace */
-+	validate_stack(skel->bss->exit_stack1, skel->bss->exit1_len,
-+		       1, &caller);
-+
-+cleanup:
-+	uretprobe_stack__destroy(skel);
-+}
-diff --git a/tools/testing/selftests/bpf/progs/uretprobe_stack.c b/tools/testing/selftests/bpf/progs/uretprobe_stack.c
-new file mode 100644
-index 000000000000..9fdcf396b8f4
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/uretprobe_stack.c
-@@ -0,0 +1,96 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2024 Meta Platforms, Inc. and affiliates. */
-+#include <vmlinux.h>
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_tracing.h>
-+#include <bpf/usdt.bpf.h>
-+
-+char _license[] SEC("license") = "GPL";
-+
-+__u64 entry_stack1[32], exit_stack1[32];
-+__u64 entry_stack1_recur[32], exit_stack1_recur[32];
-+__u64 entry_stack2[32];
-+__u64 entry_stack3[32];
-+__u64 entry_stack4[32], exit_stack4[32];
-+__u64 usdt_stack[32];
-+
-+int entry1_len, exit1_len;
-+int entry1_recur_len, exit1_recur_len;
-+int entry2_len, exit2_len;
-+int entry3_len, exit3_len;
-+int entry4_len, exit4_len;
-+int usdt_len;
-+
-+#define SZ sizeof(usdt_stack)
-+
-+SEC("uprobe//proc/self/exe:target_1")
-+int BPF_UPROBE(uprobe_1)
-+{
-+	/* target_1 is recursive wit depth of 2, so we capture two separate
-+	 * stack traces, depending on which occurence it is
-+	 */
-+	static bool recur = false;
-+
-+	if (!recur)
-+		entry1_len = bpf_get_stack(ctx, &entry_stack1, SZ, BPF_F_USER_STACK);
-+	else
-+		entry1_recur_len = bpf_get_stack(ctx, &entry_stack1_recur, SZ, BPF_F_USER_STACK);
-+
-+	recur = true;
-+	return 0;
++	__copy_precision(env, cur, old);
 +}
 +
-+SEC("uretprobe//proc/self/exe:target_1")
-+int BPF_URETPROBE(uretprobe_1)
-+{
-+	/* see above, target_1 is recursive */
-+	static bool recur = false;
+ static bool states_maybe_looping(struct bpf_verifier_state *old,
+ 				 struct bpf_verifier_state *cur)
+ {
+@@ -17409,6 +17490,7 @@ static int is_state_visited(struct bpf_verifier_env *env, int insn_idx)
+ 			 * => unsafe memory access at 11 would not be caught.
+ 			 */
+ 			if (is_iter_next_insn(env, insn_idx)) {
++				update_loop_entry(cur, &sl->state);
+ 				if (states_equal(env, &sl->state, cur, RANGE_WITHIN)) {
+ 					struct bpf_func_state *cur_frame;
+ 					struct bpf_reg_state *iter_state, *iter_reg;
+@@ -17426,15 +17508,14 @@ static int is_state_visited(struct bpf_verifier_env *env, int insn_idx)
+ 					spi = __get_spi(iter_reg->off + iter_reg->var_off.value);
+ 					iter_state = &func(env, iter_reg)->stack[spi].spilled_ptr;
+ 					if (iter_state->iter.state == BPF_ITER_STATE_ACTIVE) {
+-						update_loop_entry(cur, &sl->state);
+ 						goto hit;
+ 					}
+ 				}
+ 				goto skip_inf_loop_check;
+ 			}
+ 			if (is_may_goto_insn_at(env, insn_idx)) {
++				update_loop_entry(cur, &sl->state);
+ 				if (states_equal(env, &sl->state, cur, RANGE_WITHIN)) {
+-					update_loop_entry(cur, &sl->state);
+ 					goto hit;
+ 				}
+ 				goto skip_inf_loop_check;
+@@ -18066,6 +18147,7 @@ static int do_check(struct bpf_verifier_env *env)
+ 						return err;
+ 					break;
+ 				} else {
++					copy_precision(env, env->cur_state, env->cur_state->parent);
+ 					do_print_state = true;
+ 					continue;
+ 				}
+diff --git a/tools/testing/selftests/bpf/progs/arena_htab.c b/tools/testing/selftests/bpf/progs/arena_htab.c
+index 1e6ac187a6a0..ac45700ca5ad 100644
+--- a/tools/testing/selftests/bpf/progs/arena_htab.c
++++ b/tools/testing/selftests/bpf/progs/arena_htab.c
+@@ -18,24 +18,31 @@ void __arena *htab_for_user;
+ bool skip = false;
+ 
+ int zero = 0;
++char __arena arr1[100000]; /* works */
++char arr2[100000]; /* runs into 1M limit */
+ 
+ SEC("syscall")
+ int arena_htab_llvm(void *ctx)
+ {
+ #if defined(__BPF_FEATURE_ADDR_SPACE_CAST) || defined(BPF_ARENA_FORCE_ASM)
+ 	struct htab __arena *htab;
++	char __arena *arr = arr1;
+ 	__u64 i;
+ 
+ 	htab = bpf_alloc(sizeof(*htab));
+ 	cast_kern(htab);
+ 	htab_init(htab);
+ 
++	cast_kern(arr);
 +
-+	/* NOTE: order of returns is reversed to order of entries */
-+	if (!recur)
-+		exit1_recur_len = bpf_get_stack(ctx, &exit_stack1_recur, SZ, BPF_F_USER_STACK);
-+	else
-+		exit1_len = bpf_get_stack(ctx, &exit_stack1, SZ, BPF_F_USER_STACK);
+ 	/* first run. No old elems in the table */
+-	for (i = zero; i < 1000; i++)
++	for (i = 0; i < 100000 && can_loop; i++) {
+ 		htab_update_elem(htab, i, i);
++		arr[i] = i;
++	}
+ 
+ 	/* should replace all elems with new ones */
+-	for (i = zero; i < 1000; i++)
++	for (i = 0; i < 100000 && can_loop; i++)
+ 		htab_update_elem(htab, i, i);
+ 	cast_user(htab);
+ 	htab_for_user = htab;
+diff --git a/tools/testing/selftests/bpf/progs/iters.c b/tools/testing/selftests/bpf/progs/iters.c
+index fe65e0952a1e..dfc2c9cc0529 100644
+--- a/tools/testing/selftests/bpf/progs/iters.c
++++ b/tools/testing/selftests/bpf/progs/iters.c
+@@ -188,6 +188,8 @@ int iter_pragma_unroll_loop(const void *ctx)
+ 	for (i = 0; i < 3; i++) {
+ 		v = bpf_iter_num_next(&it);
+ 		bpf_printk("ITER_BASIC: E3 VAL: i=%d v=%d", i, v ? *v : -1);
++		if (!v)
++			break;
+ 	}
+ 	bpf_iter_num_destroy(&it);
+ 
+@@ -243,6 +245,8 @@ int iter_multiple_sequential_loops(const void *ctx)
+ 	for (i = 0; i < 3; i++) {
+ 		v = bpf_iter_num_next(&it);
+ 		bpf_printk("ITER_BASIC: E3 VAL: i=%d v=%d", i, v ? *v : -1);
++		if (!v)
++			break;
+ 	}
+ 	bpf_iter_num_destroy(&it);
+ 
+@@ -291,10 +295,7 @@ int iter_obfuscate_counter(const void *ctx)
+ {
+ 	struct bpf_iter_num it;
+ 	int *v, sum = 0;
+-	/* Make i's initial value unknowable for verifier to prevent it from
+-	 * pruning if/else branch inside the loop body and marking i as precise.
+-	 */
+-	int i = zero;
++	int i = 0;
+ 
+ 	MY_PID_GUARD();
+ 
+@@ -304,15 +305,6 @@ int iter_obfuscate_counter(const void *ctx)
+ 
+ 		i += 1;
+ 
+-		/* If we initialized i as `int i = 0;` above, verifier would
+-		 * track that i becomes 1 on first iteration after increment
+-		 * above, and here verifier would eagerly prune else branch
+-		 * and mark i as precise, ruining open-coded iterator logic
+-		 * completely, as each next iteration would have a different
+-		 * *precise* value of i, and thus there would be no
+-		 * convergence of state. This would result in reaching maximum
+-		 * instruction limit, no matter what the limit is.
+-		 */
+ 		if (i == 1)
+ 			x = 123;
+ 		else
+diff --git a/tools/testing/selftests/bpf/progs/verifier_iterating_callbacks.c b/tools/testing/selftests/bpf/progs/verifier_iterating_callbacks.c
+index bd676d7e615f..bd45a328fa85 100644
+--- a/tools/testing/selftests/bpf/progs/verifier_iterating_callbacks.c
++++ b/tools/testing/selftests/bpf/progs/verifier_iterating_callbacks.c
+@@ -318,8 +318,11 @@ int cond_break1(const void *ctx)
+ 	unsigned long i;
+ 	unsigned int sum = 0;
+ 
+-	for (i = zero; i < ARR_SZ && can_loop; i++)
++	/* i = 0 is ok here, since i is not used in memory access */
++	for (i = 0; i < ARR_SZ && can_loop; i++)
+ 		sum += i;
 +
-+	recur = true;
-+	return 0;
-+}
-+
-+SEC("uprobe//proc/self/exe:target_2")
-+int BPF_UPROBE(uprobe_2)
-+{
-+	entry2_len = bpf_get_stack(ctx, &entry_stack2, SZ, BPF_F_USER_STACK);
-+	return 0;
-+}
-+
-+/* no uretprobe for target_2 */
-+
-+SEC("uprobe//proc/self/exe:target_3")
-+int BPF_UPROBE(uprobe_3)
-+{
-+	entry3_len = bpf_get_stack(ctx, &entry_stack3, SZ, BPF_F_USER_STACK);
-+	return 0;
-+}
-+
-+/* no uretprobe for target_3 */
-+
-+SEC("uprobe//proc/self/exe:target_4")
-+int BPF_UPROBE(uprobe_4)
-+{
-+	entry4_len = bpf_get_stack(ctx, &entry_stack4, SZ, BPF_F_USER_STACK);
-+	return 0;
-+}
-+
-+SEC("uretprobe//proc/self/exe:target_4")
-+int BPF_URETPROBE(uretprobe_4)
-+{
-+	exit4_len = bpf_get_stack(ctx, &exit_stack4, SZ, BPF_F_USER_STACK);
-+	return 0;
-+}
-+
-+SEC("usdt//proc/self/exe:uretprobe_stack:target")
-+int BPF_USDT(usdt_probe)
-+{
-+	usdt_len = bpf_get_stack(ctx, &usdt_stack, SZ, BPF_F_USER_STACK);
-+	return 0;
-+}
++	/* have to use i = zero due to arr[i] where arr is not an arena */
+ 	for (i = zero; i < ARR_SZ; i++) {
+ 		barrier_var(i);
+ 		sum += i + arr[i];
+@@ -336,8 +339,8 @@ int cond_break2(const void *ctx)
+ 	int i, j;
+ 	int sum = 0;
+ 
+-	for (i = zero; i < 1000 && can_loop; i++)
+-		for (j = zero; j < 1000; j++) {
++	for (i = 0; i < 1000 && can_loop; i++)
++		for (j = 0; j < 1000; j++) {
+ 			sum += i + j;
+ 			cond_break;
+ 	}
+@@ -348,7 +351,7 @@ static __noinline int loop(void)
+ {
+ 	int i, sum = 0;
+ 
+-	for (i = zero; i <= 1000000 && can_loop; i++)
++	for (i = 0; i <= 1000000 && can_loop; i++)
+ 		sum += i;
+ 
+ 	return sum;
+@@ -365,7 +368,7 @@ SEC("socket")
+ __success __retval(1)
+ int cond_break4(const void *ctx)
+ {
+-	int cnt = zero;
++	int cnt = 0;
+ 
+ 	for (;;) {
+ 		/* should eventually break out of the loop */
+@@ -378,7 +381,7 @@ int cond_break4(const void *ctx)
+ 
+ static __noinline int static_subprog(void)
+ {
+-	int cnt = zero;
++	int cnt = 0;
+ 
+ 	for (;;) {
+ 		cond_break;
+@@ -392,7 +395,7 @@ SEC("socket")
+ __success __retval(1)
+ int cond_break5(const void *ctx)
+ {
+-	int cnt1 = zero, cnt2;
++	int cnt1 = 0, cnt2;
+ 
+ 	for (;;) {
+ 		cond_break;
 -- 
 2.43.0
 
