@@ -1,227 +1,138 @@
-Return-Path: <bpf+bounces-30269-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-30270-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 78EFA8CBCAD
-	for <lists+bpf@lfdr.de>; Wed, 22 May 2024 10:09:49 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C41448CBCC7
+	for <lists+bpf@lfdr.de>; Wed, 22 May 2024 10:18:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9C2E71C20D65
-	for <lists+bpf@lfdr.de>; Wed, 22 May 2024 08:09:48 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 46999B21BC3
+	for <lists+bpf@lfdr.de>; Wed, 22 May 2024 08:18:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F7517F470;
-	Wed, 22 May 2024 08:09:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B6FB97F482;
+	Wed, 22 May 2024 08:17:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b="VLIYO4Y4"
+	dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b="Ae3AipL7"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f47.google.com (mail-ej1-f47.google.com [209.85.218.47])
+Received: from mail-ej1-f46.google.com (mail-ej1-f46.google.com [209.85.218.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5AE44770FB
-	for <bpf@vger.kernel.org>; Wed, 22 May 2024 08:09:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C81A5524D7
+	for <bpf@vger.kernel.org>; Wed, 22 May 2024 08:17:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716365381; cv=none; b=otmliBfRgRjYiY2O7yRkMGJJebQMvMHqObOUu5v0Sg4mKXfGoqPTC5e/dS73H8mtOl166LStlQ3TkTRD7K3TBgPdap5uXYFgEr5prY/bMjqqDuDhi2WYxmR+2x/hHlHyJkJC/C5g4qj7pEsJgBBGUplCxb+v8oTUi7e7HBdSmnw=
+	t=1716365877; cv=none; b=pslSXHT+S3htGFNasm3SQOOuiefSulYrY4bYHuqyWwfopsJdZRpOc/a/vVDPZ15S7Jbqp5rVhfWJFp5dfxEkIAnM1l1BuJH8x9FY2bSNFtWl2boBUe/mAAPm6MqXaFALHRD8ndEXnSB0OKyWUO+nar4Kvea/3tYXNIjli90k04g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716365381; c=relaxed/simple;
-	bh=HTSAkOfvYuC9hUkLVTxjoov6viq5nfiMgRTmN1j9YxY=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=ctxINa0S6WhExti6Uejxxx7mbki5mCzW5d0HiM3l9aPehy6xixue6NLlToVqG37ZjgSKMIDmgyLqc7B9bf4kqOQlNBRH9i1GblRjbii6ELaqGh+n83G1M79Z/3oDavHVkh1pAqjxAXYQk9Ah7d0g2JcvfOlAgQt+IiPresi0LaM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com; spf=pass smtp.mailfrom=cloudflare.com; dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b=VLIYO4Y4; arc=none smtp.client-ip=209.85.218.47
+	s=arc-20240116; t=1716365877; c=relaxed/simple;
+	bh=KRBeh0DdzrLvU7l5ny5ENlQMSYfiQWMjqFDiggLGPn0=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=HOehQqsSyUJzjnZxSVKW6qAqMTjsTJo+5TlHNcIBLKG5csTbY9GsIsc+K32G3eB9dEkwn6nErYqHsGpBSRQjZpyIxeIM6823AefItdqXdSKGdPKah1R2+F77yu+3mYQjxjL3YJxx2D54PgpsiJq2RGhMZcogt7Pqmq4hBiamfLg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com; spf=pass smtp.mailfrom=cloudflare.com; dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b=Ae3AipL7; arc=none smtp.client-ip=209.85.218.46
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cloudflare.com
-Received: by mail-ej1-f47.google.com with SMTP id a640c23a62f3a-a5a7d28555bso1004638766b.1
-        for <bpf@vger.kernel.org>; Wed, 22 May 2024 01:09:39 -0700 (PDT)
+Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-a59a352bbd9so108470966b.1
+        for <bpf@vger.kernel.org>; Wed, 22 May 2024 01:17:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google09082023; t=1716365377; x=1716970177; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=Xq9ju8yuRG9zlq1ssdeG2Wi6UKR7EhZ3LYktIzrnaHw=;
-        b=VLIYO4Y4pOfw/LsXaZoNTlfDuhqJh5ZD6FGYyxtK0Bi0Zt68JDbiH1zciTC/Rg5I73
-         cmHv0OfLrEZ31EEZ6qk0/SGiNjm9Oul4Qgve3POm2DwqdbacohQmCLKA1grnVeYOrgZq
-         2gg5BchGSQysOelk6IFEpGm06vsgRKYlmgYIW38dsqsZYQkALC2DKruQvreFzKYlCWAD
-         nLbOWbkY/KwFiLfYih0w9hpraH7D0g0SPdS6HaQg0Q6IdWKcg2fiVhWIv6OsMpd93XQw
-         TMYFf7a7uZqgBhBaPMv8UFMpdEoNMiCASPz7iXGSqFXCKLYDLdGsXg/FIpYz2LYn/KQz
-         d84A==
+        d=cloudflare.com; s=google09082023; t=1716365873; x=1716970673; darn=vger.kernel.org;
+        h=mime-version:message-id:date:user-agent:references:in-reply-to
+         :subject:cc:to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=ZMZX+gUjvefttmyDfynhRPtuaQ62yDGI7HlZysTaOMc=;
+        b=Ae3AipL7vM4KWmKtyt07bPyr7/Zfq9ZshsEvoeJLdaXYRVYGzJ9NxTrD5aSGaApbIy
+         fuMPVdz65r+LED5HW/CmANhnqTMXHJIgt3hWNVjnqgm/sODMcRLybiX3Iv59lr5Ze26m
+         FLAwCSZaZyeMahwB61RX/OiGLbHyXUW/mwUxuQQ2hinITDIvRA7N4skMrl004LXyOs5P
+         8HdeJ74VTKGStpIclTGkETdld5PiUw35uelhnTh4GwnPr4sL2BEYp+HIWn79Qju5aBkE
+         sw5JM6EhYUryCalqVBCrAMQFTKejyeTkqc7BYT5FEEEqj8B29MSl51KDZbDlItwy5HQ0
+         Gp8Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1716365377; x=1716970177;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Xq9ju8yuRG9zlq1ssdeG2Wi6UKR7EhZ3LYktIzrnaHw=;
-        b=jtflsvPP8V6h6XHhFeOQA9gZyEQPt4+h2yfOfOomhNfowoww0Atvag70BbxdAGWras
-         uUQucWqHCVvukD1LhO9vPzwgNcqGeszkwQFUhMNfADmLUw/ICRVSkd3aOJ2ZN9ShlADs
-         JX4VzKKTtKv25YR+16OVLDOmMdFsXCQskj7A34Q7Iu8O7rMRd4OE4yi1aoBkWcCLyitl
-         qfRD163sYCURmegpPl3SZnfgJFCai4h+3rYaNKAnNUogFu9dlz2Y90HZDT2doQhoQ5vF
-         xDXxs9mei5scmwUIaRFgBgqIM+MymZyZr8t/JO0NZOX8X8Xyxaai1myWTuh12IbwlUGE
-         jIjw==
-X-Gm-Message-State: AOJu0YwLK2a/adSd+hesf6N6l26V1Afb/+t4OGzbS239w9ormr3dU8cA
-	GaaIjqt8348ybYOlnthUZ0mOQOlzDZBboHE2VhzW+cTeflx3jH4XhqOjepm0cd/DMIuTSjxyhya
-	N
-X-Google-Smtp-Source: AGHT+IGstuf+E6eoUXnXG3g0majoDgIfzyLmMnkjz+pFVkzINmxxHBKor7gJYutVvHOmkXgyMqtPhw==
-X-Received: by 2002:a17:906:259a:b0:a59:a0b6:638 with SMTP id a640c23a62f3a-a622819aea3mr68572366b.61.1716365377206;
-        Wed, 22 May 2024 01:09:37 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1716365873; x=1716970673;
+        h=mime-version:message-id:date:user-agent:references:in-reply-to
+         :subject:cc:to:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ZMZX+gUjvefttmyDfynhRPtuaQ62yDGI7HlZysTaOMc=;
+        b=QVHzqSCLd2jAzXf7LSCmbqNOtwF/d7jBfuoCtgBjOpUIfEOtUIF9iDIJeWFqaLwj29
+         luaQGjlNwGYh2LD/zZH97TLglp7wwslJHaI6HD2Fdr3nqZ8ZtSYGb+J4nZgplxVxtFVP
+         k5pjnqwJE1Bg4STFEJ0SHgQP4JbxT28p9sXBuLwUyYmOZH6esc8Yqc+O+aHTmqqRh3ns
+         FWaOIyeuK1EESScEnmudVUm+/Kroas/IXiJUv0+kAKKSnxl6qn5OzBJtZzTScTWHE4e2
+         v5c6pW253qK84X4EZ7ypxjRgCcxhGSwP1Wx5jW1BAABq8tGZA4iFzmcVcggFfLI9esIs
+         ikJw==
+X-Forwarded-Encrypted: i=1; AJvYcCXHD9PMA7HDpr2rWBcXw1X6VJOYxDno+9yOX6R5MQqbUPn8zjSczruAv/E3pJb9JGzIfQ5qQ7kC2OklLRV6PVOsnX9w
+X-Gm-Message-State: AOJu0Ywio9yTH342s/anQIoDW+ngwCDAnXITBy7lDul8Hb7AVzmS2r++
+	/1uvayb5em2/szSuSVp0ObH/gkGxD6yaG/c5MjsIA5B/7FavBnkD/s2X7hlqy2A=
+X-Google-Smtp-Source: AGHT+IEDc5zZ/BMuk/6O/B8g9U1NqatChVZfiw6B2VP0OFFSX7TPukAxT+LyMOUNoDWUaW+9sE0kAw==
+X-Received: by 2002:a17:906:497:b0:a5c:d4b2:6a44 with SMTP id a640c23a62f3a-a5d59db36acmr1077008366b.16.1716365873228;
+        Wed, 22 May 2024 01:17:53 -0700 (PDT)
 Received: from cloudflare.com ([2a09:bac5:5063:2dc::49:b7])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a5a179c7df7sm1728517866b.111.2024.05.22.01.09.36
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a5a179c7df7sm1729610566b.111.2024.05.22.01.17.52
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 22 May 2024 01:09:36 -0700 (PDT)
+        Wed, 22 May 2024 01:17:52 -0700 (PDT)
 From: Jakub Sitnicki <jakub@cloudflare.com>
-To: bpf@vger.kernel.org
-Cc: netdev@vger.kernel.org,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	John Fastabend <john.fastabend@gmail.com>
-Subject: [PATCH bpf-next] selftests/bpf: test_sockmap, use section names understood by libbpf
-Date: Wed, 22 May 2024 10:09:36 +0200
-Message-Id: <20240522080936.2475833-1-jakub@cloudflare.com>
-X-Mailer: git-send-email 2.40.1
+To: patchwork-bot+netdevbpf@kernel.org
+Cc: Geliang Tang <geliang@kernel.org>,  andrii@kernel.org,
+  eddyz87@gmail.com,  mykolal@fb.com,  ast@kernel.org,
+  daniel@iogearbox.net,  martin.lau@linux.dev,  song@kernel.org,
+  yonghong.song@linux.dev,  john.fastabend@gmail.com,  kpsingh@kernel.org,
+  sdf@google.com,  haoluo@google.com,  jolsa@kernel.org,  shuah@kernel.org,
+  tanggeliang@kylinos.cn,  bpf@vger.kernel.org,
+  linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH bpf-next] selftests/bpf: Fix prog numbers in test_sockmap
+In-Reply-To: <171631563033.25358.8200564796951629702.git-patchwork-notify@kernel.org>
+	(patchwork-bot's message of "Tue, 21 May 2024 18:20:30 +0000")
+References: <9c10d9f974f07fcb354a43a8eca67acb2fafc587.1715926605.git.tanggeliang@kylinos.cn>
+	<171631563033.25358.8200564796951629702.git-patchwork-notify@kernel.org>
+User-Agent: mu4e 1.12.4; emacs 29.1
+Date: Wed, 22 May 2024 10:17:51 +0200
+Message-ID: <87bk4yxntc.fsf@cloudflare.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 
-libbpf can deduce program type and attach type from the ELF section name.
-We don't need to pass it out-of-band if we switch to libbpf convention [1].
+On Tue, May 21, 2024 at 06:20 PM GMT, patchwork-bot+netdevbpf@kernel.org wrote:
+> Hello:
+>
+> This patch was applied to bpf/bpf-next.git (master)
+> by Andrii Nakryiko <andrii@kernel.org>:
+>
+> On Fri, 17 May 2024 14:21:46 +0800 you wrote:
+>> From: Geliang Tang <tanggeliang@kylinos.cn>
+>> 
+>> bpf_prog5 and bpf_prog7 are removed from progs/test_sockmap_kern.h in
+>> commit d79a32129b21 ("bpf: Selftests, remove prints from sockmap tests"),
+>> now there are only 9 progs in it, not 11:
+>> 
+>> 	SEC("sk_skb1")
+>> 	int bpf_prog1(struct __sk_buff *skb)
+>> 	SEC("sk_skb2")
+>> 	int bpf_prog2(struct __sk_buff *skb)
+>> 	SEC("sk_skb3")
+>> 	int bpf_prog3(struct __sk_buff *skb)
+>> 	SEC("sockops")
+>> 	int bpf_sockmap(struct bpf_sock_ops *skops)
+>> 	SEC("sk_msg1")
+>> 	int bpf_prog4(struct sk_msg_md *msg)
+>> 	SEC("sk_msg2")
+>> 	int bpf_prog6(struct sk_msg_md *msg)
+>> 	SEC("sk_msg3")
+>> 	int bpf_prog8(struct sk_msg_md *msg)
+>> 	SEC("sk_msg4")
+>> 	int bpf_prog9(struct sk_msg_md *msg)
+>> 	SEC("sk_msg5")
+>> 	int bpf_prog10(struct sk_msg_md *msg)
+>> 
+>> [...]
+>
+> Here is the summary with links:
+>   - [bpf-next] selftests/bpf: Fix prog numbers in test_sockmap
+>     https://git.kernel.org/bpf/bpf-next/c/6c8d7598dfed
+>
+> You are awesome, thank you!
 
-[1] https://docs.kernel.org/bpf/libbpf/program_types.html
+We don't need prog_types and attach_types at all.
+I was too late too comment so here's a patch to address that:
 
-Signed-off-by: Jakub Sitnicki <jakub@cloudflare.com>
----
- .../selftests/bpf/progs/test_sockmap_kern.h   | 17 +++++-----
- tools/testing/selftests/bpf/test_sockmap.c    | 31 -------------------
- 2 files changed, 9 insertions(+), 39 deletions(-)
-
-diff --git a/tools/testing/selftests/bpf/progs/test_sockmap_kern.h b/tools/testing/selftests/bpf/progs/test_sockmap_kern.h
-index 99d2ea9fb658..3dff0813730b 100644
---- a/tools/testing/selftests/bpf/progs/test_sockmap_kern.h
-+++ b/tools/testing/selftests/bpf/progs/test_sockmap_kern.h
-@@ -92,7 +92,7 @@ struct {
- 	__uint(value_size, sizeof(int));
- } tls_sock_map SEC(".maps");
- 
--SEC("sk_skb1")
-+SEC("sk_skb/stream_parser")
- int bpf_prog1(struct __sk_buff *skb)
- {
- 	int *f, two = 2;
-@@ -104,7 +104,7 @@ int bpf_prog1(struct __sk_buff *skb)
- 	return skb->len;
- }
- 
--SEC("sk_skb2")
-+SEC("sk_skb/stream_verdict")
- int bpf_prog2(struct __sk_buff *skb)
- {
- 	__u32 lport = skb->local_port;
-@@ -151,7 +151,7 @@ static inline void bpf_write_pass(struct __sk_buff *skb, int offset)
- 		memcpy(c + offset, "PASS", 4);
- }
- 
--SEC("sk_skb3")
-+SEC("sk_skb/stream_verdict")
- int bpf_prog3(struct __sk_buff *skb)
- {
- 	int err, *f, ret = SK_PASS;
-@@ -233,7 +233,7 @@ int bpf_sockmap(struct bpf_sock_ops *skops)
- 	return 0;
- }
- 
--SEC("sk_msg1")
-+SEC("sk_msg")
- int bpf_prog4(struct sk_msg_md *msg)
- {
- 	int *bytes, zero = 0, one = 1, two = 2, three = 3, four = 4, five = 5;
-@@ -263,7 +263,7 @@ int bpf_prog4(struct sk_msg_md *msg)
- 	return SK_PASS;
- }
- 
--SEC("sk_msg2")
-+SEC("sk_msg")
- int bpf_prog6(struct sk_msg_md *msg)
- {
- 	int zero = 0, one = 1, two = 2, three = 3, four = 4, five = 5, key = 0;
-@@ -308,7 +308,7 @@ int bpf_prog6(struct sk_msg_md *msg)
- #endif
- }
- 
--SEC("sk_msg3")
-+SEC("sk_msg")
- int bpf_prog8(struct sk_msg_md *msg)
- {
- 	void *data_end = (void *)(long) msg->data_end;
-@@ -329,7 +329,8 @@ int bpf_prog8(struct sk_msg_md *msg)
- 
- 	return SK_PASS;
- }
--SEC("sk_msg4")
-+
-+SEC("sk_msg")
- int bpf_prog9(struct sk_msg_md *msg)
- {
- 	void *data_end = (void *)(long) msg->data_end;
-@@ -347,7 +348,7 @@ int bpf_prog9(struct sk_msg_md *msg)
- 	return SK_PASS;
- }
- 
--SEC("sk_msg5")
-+SEC("sk_msg")
- int bpf_prog10(struct sk_msg_md *msg)
- {
- 	int *bytes, *start, *end, *start_push, *end_push, *start_pop, *pop;
-diff --git a/tools/testing/selftests/bpf/test_sockmap.c b/tools/testing/selftests/bpf/test_sockmap.c
-index 4499b3cfc3a6..ddc6a9cef36f 100644
---- a/tools/testing/selftests/bpf/test_sockmap.c
-+++ b/tools/testing/selftests/bpf/test_sockmap.c
-@@ -1783,30 +1783,6 @@ char *map_names[] = {
- 	"tls_sock_map",
- };
- 
--int prog_attach_type[] = {
--	BPF_SK_SKB_STREAM_PARSER,
--	BPF_SK_SKB_STREAM_VERDICT,
--	BPF_SK_SKB_STREAM_VERDICT,
--	BPF_CGROUP_SOCK_OPS,
--	BPF_SK_MSG_VERDICT,
--	BPF_SK_MSG_VERDICT,
--	BPF_SK_MSG_VERDICT,
--	BPF_SK_MSG_VERDICT,
--	BPF_SK_MSG_VERDICT,
--};
--
--int prog_type[] = {
--	BPF_PROG_TYPE_SK_SKB,
--	BPF_PROG_TYPE_SK_SKB,
--	BPF_PROG_TYPE_SK_SKB,
--	BPF_PROG_TYPE_SOCK_OPS,
--	BPF_PROG_TYPE_SK_MSG,
--	BPF_PROG_TYPE_SK_MSG,
--	BPF_PROG_TYPE_SK_MSG,
--	BPF_PROG_TYPE_SK_MSG,
--	BPF_PROG_TYPE_SK_MSG,
--};
--
- static int populate_progs(char *bpf_file)
- {
- 	struct bpf_program *prog;
-@@ -1825,13 +1801,6 @@ static int populate_progs(char *bpf_file)
- 		return -1;
- 	}
- 
--	bpf_object__for_each_program(prog, obj) {
--		bpf_program__set_type(prog, prog_type[i]);
--		bpf_program__set_expected_attach_type(prog,
--						      prog_attach_type[i]);
--		i++;
--	}
--
- 	i = bpf_object__load(obj);
- 	i = 0;
- 	bpf_object__for_each_program(prog, obj) {
--- 
-2.40.1
-
+https://lore.kernel.org/bpf/20240522080936.2475833-1-jakub@cloudflare.com/
 
