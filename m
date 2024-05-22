@@ -1,256 +1,227 @@
-Return-Path: <bpf+bounces-30268-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-30269-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id E0E5B8CBC7C
-	for <lists+bpf@lfdr.de>; Wed, 22 May 2024 09:55:16 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 78EFA8CBCAD
+	for <lists+bpf@lfdr.de>; Wed, 22 May 2024 10:09:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 54CA31F2283D
-	for <lists+bpf@lfdr.de>; Wed, 22 May 2024 07:55:16 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9C2E71C20D65
+	for <lists+bpf@lfdr.de>; Wed, 22 May 2024 08:09:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3053F7E583;
-	Wed, 22 May 2024 07:55:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F7517F470;
+	Wed, 22 May 2024 08:09:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KiWSTZc2"
+	dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b="VLIYO4Y4"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f53.google.com (mail-wr1-f53.google.com [209.85.221.53])
+Received: from mail-ej1-f47.google.com (mail-ej1-f47.google.com [209.85.218.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 15BEB7D3F5;
-	Wed, 22 May 2024 07:55:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5AE44770FB
+	for <bpf@vger.kernel.org>; Wed, 22 May 2024 08:09:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716364505; cv=none; b=hXvjPu8p2DpVbaQcXMcf8qfA4Axa4/FT6USY5Y43einn5jF/heH8TIw7KIPUpK3NHDXGhbW8M2kDhgMhOkkLt4vfB2418sbBv+V0EhWnl5SSOBGEwjM06AbirGjDxmT/ad5vdWRYRfDeMO+b08AvLFhITD9mYl3ZQZXtU8USzhc=
+	t=1716365381; cv=none; b=otmliBfRgRjYiY2O7yRkMGJJebQMvMHqObOUu5v0Sg4mKXfGoqPTC5e/dS73H8mtOl166LStlQ3TkTRD7K3TBgPdap5uXYFgEr5prY/bMjqqDuDhi2WYxmR+2x/hHlHyJkJC/C5g4qj7pEsJgBBGUplCxb+v8oTUi7e7HBdSmnw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716364505; c=relaxed/simple;
-	bh=DdDjo/FDiOgPMkdXr0NfnzwZ3Z18E8np1Z5caXxRP9Y=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=VL8kv+Dz9IIo+MiSlOWyvwlysiSkxcOtInqnS3Dx/nFa1tnf4eHhsaf7APXJrTUprz9sM8ASqP4E7ZHOlYUjLThos4uewv5bIzRzL+rlCkftNjLs0prke6pMIcT4kmha77r1Q1VXObL4FbGFxzW+9FWG8zoQikS9nvGexUUAR6E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=KiWSTZc2; arc=none smtp.client-ip=209.85.221.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f53.google.com with SMTP id ffacd0b85a97d-354de97586cso319102f8f.0;
-        Wed, 22 May 2024 00:55:02 -0700 (PDT)
+	s=arc-20240116; t=1716365381; c=relaxed/simple;
+	bh=HTSAkOfvYuC9hUkLVTxjoov6viq5nfiMgRTmN1j9YxY=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=ctxINa0S6WhExti6Uejxxx7mbki5mCzW5d0HiM3l9aPehy6xixue6NLlToVqG37ZjgSKMIDmgyLqc7B9bf4kqOQlNBRH9i1GblRjbii6ELaqGh+n83G1M79Z/3oDavHVkh1pAqjxAXYQk9Ah7d0g2JcvfOlAgQt+IiPresi0LaM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com; spf=pass smtp.mailfrom=cloudflare.com; dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b=VLIYO4Y4; arc=none smtp.client-ip=209.85.218.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cloudflare.com
+Received: by mail-ej1-f47.google.com with SMTP id a640c23a62f3a-a5a7d28555bso1004638766b.1
+        for <bpf@vger.kernel.org>; Wed, 22 May 2024 01:09:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1716364501; x=1716969301; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=Uzr0sl4QQMjCNSxyJObQ0Q87Cq15Drd+3aEObwMgsYs=;
-        b=KiWSTZc2/u7OYCikImaM+3ByyRKamq+owzP7o6LkQjnBrU6iyvx1rxeDZ+egEhQ6qe
-         8mdRaA4nUiHUy17waEkYt+JPu7uDKH6074WXufPMcKBT+LyRqOhyfZ0vg8yPCxqWNNgO
-         F6agQ+AcBoMKXMJlT9Sbfqsx1zU/F2TtL5ooujmqMzDEkCnCa3svE6Iv03u0s8F24/6S
-         kf+urGtAOUi2mxEMH4hwBFTtHtYY/wfHDT0jouI4FMsKnUR6nhilewbc80mHB/+7+jfa
-         cMXtCENnaTbdThBji+wFTCZyQ7NgH5FeO0+4fTS+Ruf2lOnXal+svvANO5YuOHnfGIHW
-         2l6A==
+        d=cloudflare.com; s=google09082023; t=1716365377; x=1716970177; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Xq9ju8yuRG9zlq1ssdeG2Wi6UKR7EhZ3LYktIzrnaHw=;
+        b=VLIYO4Y4pOfw/LsXaZoNTlfDuhqJh5ZD6FGYyxtK0Bi0Zt68JDbiH1zciTC/Rg5I73
+         cmHv0OfLrEZ31EEZ6qk0/SGiNjm9Oul4Qgve3POm2DwqdbacohQmCLKA1grnVeYOrgZq
+         2gg5BchGSQysOelk6IFEpGm06vsgRKYlmgYIW38dsqsZYQkALC2DKruQvreFzKYlCWAD
+         nLbOWbkY/KwFiLfYih0w9hpraH7D0g0SPdS6HaQg0Q6IdWKcg2fiVhWIv6OsMpd93XQw
+         TMYFf7a7uZqgBhBaPMv8UFMpdEoNMiCASPz7iXGSqFXCKLYDLdGsXg/FIpYz2LYn/KQz
+         d84A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1716364501; x=1716969301;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Uzr0sl4QQMjCNSxyJObQ0Q87Cq15Drd+3aEObwMgsYs=;
-        b=MA33ExrkEnHwQKZK8HaL5RBRo5VgK7UyTcEPdwMZOmjQJWwrp46/gYpMoWsWo2bpWc
-         dGlRSrE2G/SnrsQ9G/N4mDFg7lKXaj5aB+D0lTZdb0koaZTLepxthvy7Xc35Y5AeGbX+
-         yNqXMWpcZS/qvnGSqZNhnc+xzLeCoKuW4Lo4lMak8A/+UjoDwHRFCXmd2EkEolvsjWMa
-         9B4xJWkt5OAqDZbtWo69/AFHF9YK9vIQzsHo6wF8RVNYBKz8tv2UMJpOvT2B0aIBoDSP
-         ntF/eNvHDv/N6j1K4IFlEU6ZnaX0S8t6K1tSnnKuOFzoTElRMuAeIxvC7ztY1smEDaQi
-         ZNOg==
-X-Forwarded-Encrypted: i=1; AJvYcCWGJqlzP2osCirgpVrtU9NAEm3rBRczcjLDYyrO6KUAKeyWXXUuO7hj2rfs2mU4HMR3Leej1VjpQYKg4v4g72UiNwKnpdPaCyrRrZXi3ZeCFlMA5uDw9+WoRiWaGsLQ92lv9o7oG7xfGrfl6dP9VYjkYc3zG6QsuF3S410pUz4LY8JN7W5Mof7FgCqj1AHsQzlsBdh/cA4EFRJraDWLZHks33wgWw9Hsnvhd+kQvTeYrDaBpzWdcdXWqImJ
-X-Gm-Message-State: AOJu0Yygv4MOCXkg9psnwRFnTDN7mJFWzw+0dwr7tIj+oKKnP4HwFnGM
-	+yvH0C+PtPhm67tPgulhzzpwHH2ga+O5vRTc60Y6IfSrLiOfM1J5
-X-Google-Smtp-Source: AGHT+IFlFYN8l/AArJT6QXVg4LOkcTXz9Zoe+wcrglUn97ZwbHHO866jMAGQGE+l61RC7QCEmvV+qw==
-X-Received: by 2002:adf:ea0c:0:b0:351:debf:a3a2 with SMTP id ffacd0b85a97d-354d8d85d63mr780762f8f.52.1716364500858;
-        Wed, 22 May 2024 00:55:00 -0700 (PDT)
-Received: from krava ([212.20.115.60])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3518d817ee2sm29904561f8f.2.2024.05.22.00.54.59
+        d=1e100.net; s=20230601; t=1716365377; x=1716970177;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Xq9ju8yuRG9zlq1ssdeG2Wi6UKR7EhZ3LYktIzrnaHw=;
+        b=jtflsvPP8V6h6XHhFeOQA9gZyEQPt4+h2yfOfOomhNfowoww0Atvag70BbxdAGWras
+         uUQucWqHCVvukD1LhO9vPzwgNcqGeszkwQFUhMNfADmLUw/ICRVSkd3aOJ2ZN9ShlADs
+         JX4VzKKTtKv25YR+16OVLDOmMdFsXCQskj7A34Q7Iu8O7rMRd4OE4yi1aoBkWcCLyitl
+         qfRD163sYCURmegpPl3SZnfgJFCai4h+3rYaNKAnNUogFu9dlz2Y90HZDT2doQhoQ5vF
+         xDXxs9mei5scmwUIaRFgBgqIM+MymZyZr8t/JO0NZOX8X8Xyxaai1myWTuh12IbwlUGE
+         jIjw==
+X-Gm-Message-State: AOJu0YwLK2a/adSd+hesf6N6l26V1Afb/+t4OGzbS239w9ormr3dU8cA
+	GaaIjqt8348ybYOlnthUZ0mOQOlzDZBboHE2VhzW+cTeflx3jH4XhqOjepm0cd/DMIuTSjxyhya
+	N
+X-Google-Smtp-Source: AGHT+IGstuf+E6eoUXnXG3g0majoDgIfzyLmMnkjz+pFVkzINmxxHBKor7gJYutVvHOmkXgyMqtPhw==
+X-Received: by 2002:a17:906:259a:b0:a59:a0b6:638 with SMTP id a640c23a62f3a-a622819aea3mr68572366b.61.1716365377206;
+        Wed, 22 May 2024 01:09:37 -0700 (PDT)
+Received: from cloudflare.com ([2a09:bac5:5063:2dc::49:b7])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a5a179c7df7sm1728517866b.111.2024.05.22.01.09.36
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 22 May 2024 00:55:00 -0700 (PDT)
-From: Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Wed, 22 May 2024 09:54:58 +0200
-To: Alejandro Colomar <alx@kernel.org>
-Cc: Jiri Olsa <olsajiri@gmail.com>, Steven Rostedt <rostedt@goodmis.org>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Oleg Nesterov <oleg@redhat.com>,
+        Wed, 22 May 2024 01:09:36 -0700 (PDT)
+From: Jakub Sitnicki <jakub@cloudflare.com>
+To: bpf@vger.kernel.org
+Cc: netdev@vger.kernel.org,
 	Alexei Starovoitov <ast@kernel.org>,
 	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>, linux-kernel@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org, linux-api@vger.kernel.org,
-	linux-man@vger.kernel.org, x86@kernel.org, bpf@vger.kernel.org,
-	Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-	John Fastabend <john.fastabend@gmail.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	"Borislav Petkov (AMD)" <bp@alien8.de>,
-	Ingo Molnar <mingo@redhat.com>, Andy Lutomirski <luto@kernel.org>,
-	"Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
-	Deepak Gupta <debug@rivosinc.com>
-Subject: Re: [PATCHv6 9/9] man2: Add uretprobe syscall page
-Message-ID: <Zk2k0ttdR7abKSuv@krava>
-References: <20240521104825.1060966-1-jolsa@kernel.org>
- <20240521104825.1060966-10-jolsa@kernel.org>
- <j6qxudmvwccpqnle4evabxbswdygmx35bgqwhemuzsjs5iuydv@fk2iumwucifx>
- <ZkyKKwfhNZxrGWsa@krava>
- <Zk0C_vm3T2L79-_W@krava>
- <o5pkz3eenii6p6sm7dl2fsgy4fqqaq2qbn2rbxddhkvaarvwgm@dkjjknb44qp2>
+	Andrii Nakryiko <andrii@kernel.org>,
+	John Fastabend <john.fastabend@gmail.com>
+Subject: [PATCH bpf-next] selftests/bpf: test_sockmap, use section names understood by libbpf
+Date: Wed, 22 May 2024 10:09:36 +0200
+Message-Id: <20240522080936.2475833-1-jakub@cloudflare.com>
+X-Mailer: git-send-email 2.40.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <o5pkz3eenii6p6sm7dl2fsgy4fqqaq2qbn2rbxddhkvaarvwgm@dkjjknb44qp2>
+Content-Transfer-Encoding: 8bit
 
-On Tue, May 21, 2024 at 10:54:36PM +0200, Alejandro Colomar wrote:
-> Hi Jirka,
-> 
-> On Tue, May 21, 2024 at 10:24:30PM GMT, Jiri Olsa wrote:
-> > how about the change below?
-> 
-> Much better.  I still have a few comments below.  :-)
-> 
-> > 
-> > thanks,
-> > jirka
-> > 
-> > 
-> > ---
-> > diff --git a/man/man2/uretprobe.2 b/man/man2/uretprobe.2
-> > new file mode 100644
-> > index 000000000000..959b7a47102b
-> > --- /dev/null
-> > +++ b/man/man2/uretprobe.2
-> > @@ -0,0 +1,55 @@
-> > +.\" Copyright (C) 2024, Jiri Olsa <jolsa@kernel.org>
-> > +.\"
-> > +.\" SPDX-License-Identifier: Linux-man-pages-copyleft
-> > +.\"
-> > +.TH uretprobe 2 (date) "Linux man-pages (unreleased)"
-> > +.SH NAME
-> > +uretprobe \- execute pending return uprobes
-> > +.SH SYNOPSIS
-> > +.nf
-> > +.B int uretprobe(void)
-> > +.fi
-> > +.SH DESCRIPTION
-> > +The
-> > +.BR uretprobe ()
-> > +system call is an alternative to breakpoint instructions for triggering return
-> > +uprobe consumers.
-> > +.P
-> > +Calls to
-> > +.BR uretprobe ()
-> > +system call are only made from the user-space trampoline provided by the kernel.
-> > +Calls from any other place result in a
-> > +.BR SIGILL .
-> > +.SH RETURN VALUE
-> > +The
-> > +.BR uretprobe ()
-> > +system call return value is architecture-specific.
-> > +.SH ERRORS
-> > +.BR SIGILL
-> 
-> This should be a tagged paragraph, preceeded with '.TP'.  See any manual
-> page with an ERRORS section for an example.
-> 
-> Also, BR is Bold alternating with Roman, but this is just bold, so it
-> should use '.B'.
-> 
-> .TP
-> .B SIGILL
+libbpf can deduce program type and attach type from the ELF section name.
+We don't need to pass it out-of-band if we switch to libbpf convention [1].
 
-ok
+[1] https://docs.kernel.org/bpf/libbpf/program_types.html
 
-> 
-> > +The
-> > +.BR uretprobe ()
-> > +system call was called by user.
-> > +.SH VERSIONS
-> > +Details of the
-> > +.BR uretprobe ()
-> > +system call behavior vary across systems.
-> > +.SH STANDARDS
-> > +None.
-> > +.SH HISTORY
-> > +TBD
-> > +.SH NOTES
-> > +The
-> > +.BR uretprobe ()
-> > +system call was initially introduced for the x86_64 architecture where it was shown
-> 
-> We have a strong-ish limit at column 80.  Please break after
-> 'architecture', which is a clause boundary.
-> 
-
-ok, thanks
-
-jirka
-
-
+Signed-off-by: Jakub Sitnicki <jakub@cloudflare.com>
 ---
-diff --git a/man/man2/uretprobe.2 b/man/man2/uretprobe.2
-new file mode 100644
-index 000000000000..5b5f340b59b6
---- /dev/null
-+++ b/man/man2/uretprobe.2
-@@ -0,0 +1,56 @@
-+.\" Copyright (C) 2024, Jiri Olsa <jolsa@kernel.org>
-+.\"
-+.\" SPDX-License-Identifier: Linux-man-pages-copyleft
-+.\"
-+.TH uretprobe 2 (date) "Linux man-pages (unreleased)"
-+.SH NAME
-+uretprobe \- execute pending return uprobes
-+.SH SYNOPSIS
-+.nf
-+.B int uretprobe(void)
-+.fi
-+.SH DESCRIPTION
-+The
-+.BR uretprobe ()
-+system call is an alternative to breakpoint instructions for triggering return
-+uprobe consumers.
-+.P
-+Calls to
-+.BR uretprobe ()
-+system call are only made from the user-space trampoline provided by the kernel.
-+Calls from any other place result in a
-+.BR SIGILL .
-+.SH RETURN VALUE
-+The
-+.BR uretprobe ()
-+system call return value is architecture-specific.
-+.SH ERRORS
-+.TP
-+.B SIGILL
-+The
-+.BR uretprobe ()
-+system call was called by user.
-+.SH VERSIONS
-+Details of the
-+.BR uretprobe ()
-+system call behavior vary across systems.
-+.SH STANDARDS
-+None.
-+.SH HISTORY
-+TBD
-+.SH NOTES
-+The
-+.BR uretprobe ()
-+system call was initially introduced for the x86_64 architecture
-+where it was shown to be faster than breakpoint traps.
-+It might be extended to other architectures.
-+.P
-+The
-+.BR uretprobe ()
-+system call exists only to allow the invocation of return uprobe consumers.
-+It should
-+.B never
-+be called directly.
-+Details of the arguments (if any) passed to
-+.BR uretprobe ()
-+and the return value are architecture-specific.
+ .../selftests/bpf/progs/test_sockmap_kern.h   | 17 +++++-----
+ tools/testing/selftests/bpf/test_sockmap.c    | 31 -------------------
+ 2 files changed, 9 insertions(+), 39 deletions(-)
+
+diff --git a/tools/testing/selftests/bpf/progs/test_sockmap_kern.h b/tools/testing/selftests/bpf/progs/test_sockmap_kern.h
+index 99d2ea9fb658..3dff0813730b 100644
+--- a/tools/testing/selftests/bpf/progs/test_sockmap_kern.h
++++ b/tools/testing/selftests/bpf/progs/test_sockmap_kern.h
+@@ -92,7 +92,7 @@ struct {
+ 	__uint(value_size, sizeof(int));
+ } tls_sock_map SEC(".maps");
+ 
+-SEC("sk_skb1")
++SEC("sk_skb/stream_parser")
+ int bpf_prog1(struct __sk_buff *skb)
+ {
+ 	int *f, two = 2;
+@@ -104,7 +104,7 @@ int bpf_prog1(struct __sk_buff *skb)
+ 	return skb->len;
+ }
+ 
+-SEC("sk_skb2")
++SEC("sk_skb/stream_verdict")
+ int bpf_prog2(struct __sk_buff *skb)
+ {
+ 	__u32 lport = skb->local_port;
+@@ -151,7 +151,7 @@ static inline void bpf_write_pass(struct __sk_buff *skb, int offset)
+ 		memcpy(c + offset, "PASS", 4);
+ }
+ 
+-SEC("sk_skb3")
++SEC("sk_skb/stream_verdict")
+ int bpf_prog3(struct __sk_buff *skb)
+ {
+ 	int err, *f, ret = SK_PASS;
+@@ -233,7 +233,7 @@ int bpf_sockmap(struct bpf_sock_ops *skops)
+ 	return 0;
+ }
+ 
+-SEC("sk_msg1")
++SEC("sk_msg")
+ int bpf_prog4(struct sk_msg_md *msg)
+ {
+ 	int *bytes, zero = 0, one = 1, two = 2, three = 3, four = 4, five = 5;
+@@ -263,7 +263,7 @@ int bpf_prog4(struct sk_msg_md *msg)
+ 	return SK_PASS;
+ }
+ 
+-SEC("sk_msg2")
++SEC("sk_msg")
+ int bpf_prog6(struct sk_msg_md *msg)
+ {
+ 	int zero = 0, one = 1, two = 2, three = 3, four = 4, five = 5, key = 0;
+@@ -308,7 +308,7 @@ int bpf_prog6(struct sk_msg_md *msg)
+ #endif
+ }
+ 
+-SEC("sk_msg3")
++SEC("sk_msg")
+ int bpf_prog8(struct sk_msg_md *msg)
+ {
+ 	void *data_end = (void *)(long) msg->data_end;
+@@ -329,7 +329,8 @@ int bpf_prog8(struct sk_msg_md *msg)
+ 
+ 	return SK_PASS;
+ }
+-SEC("sk_msg4")
++
++SEC("sk_msg")
+ int bpf_prog9(struct sk_msg_md *msg)
+ {
+ 	void *data_end = (void *)(long) msg->data_end;
+@@ -347,7 +348,7 @@ int bpf_prog9(struct sk_msg_md *msg)
+ 	return SK_PASS;
+ }
+ 
+-SEC("sk_msg5")
++SEC("sk_msg")
+ int bpf_prog10(struct sk_msg_md *msg)
+ {
+ 	int *bytes, *start, *end, *start_push, *end_push, *start_pop, *pop;
+diff --git a/tools/testing/selftests/bpf/test_sockmap.c b/tools/testing/selftests/bpf/test_sockmap.c
+index 4499b3cfc3a6..ddc6a9cef36f 100644
+--- a/tools/testing/selftests/bpf/test_sockmap.c
++++ b/tools/testing/selftests/bpf/test_sockmap.c
+@@ -1783,30 +1783,6 @@ char *map_names[] = {
+ 	"tls_sock_map",
+ };
+ 
+-int prog_attach_type[] = {
+-	BPF_SK_SKB_STREAM_PARSER,
+-	BPF_SK_SKB_STREAM_VERDICT,
+-	BPF_SK_SKB_STREAM_VERDICT,
+-	BPF_CGROUP_SOCK_OPS,
+-	BPF_SK_MSG_VERDICT,
+-	BPF_SK_MSG_VERDICT,
+-	BPF_SK_MSG_VERDICT,
+-	BPF_SK_MSG_VERDICT,
+-	BPF_SK_MSG_VERDICT,
+-};
+-
+-int prog_type[] = {
+-	BPF_PROG_TYPE_SK_SKB,
+-	BPF_PROG_TYPE_SK_SKB,
+-	BPF_PROG_TYPE_SK_SKB,
+-	BPF_PROG_TYPE_SOCK_OPS,
+-	BPF_PROG_TYPE_SK_MSG,
+-	BPF_PROG_TYPE_SK_MSG,
+-	BPF_PROG_TYPE_SK_MSG,
+-	BPF_PROG_TYPE_SK_MSG,
+-	BPF_PROG_TYPE_SK_MSG,
+-};
+-
+ static int populate_progs(char *bpf_file)
+ {
+ 	struct bpf_program *prog;
+@@ -1825,13 +1801,6 @@ static int populate_progs(char *bpf_file)
+ 		return -1;
+ 	}
+ 
+-	bpf_object__for_each_program(prog, obj) {
+-		bpf_program__set_type(prog, prog_type[i]);
+-		bpf_program__set_expected_attach_type(prog,
+-						      prog_attach_type[i]);
+-		i++;
+-	}
+-
+ 	i = bpf_object__load(obj);
+ 	i = 0;
+ 	bpf_object__for_each_program(prog, obj) {
+-- 
+2.40.1
+
 
