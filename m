@@ -1,148 +1,92 @@
-Return-Path: <bpf+bounces-30308-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-30309-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A7BF48CC4E0
-	for <lists+bpf@lfdr.de>; Wed, 22 May 2024 18:27:15 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0B7128CC4E8
+	for <lists+bpf@lfdr.de>; Wed, 22 May 2024 18:35:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 57CD72826CE
-	for <lists+bpf@lfdr.de>; Wed, 22 May 2024 16:27:14 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A3308B2129C
+	for <lists+bpf@lfdr.de>; Wed, 22 May 2024 16:35:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 87F1E1411E0;
-	Wed, 22 May 2024 16:27:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB321824BF;
+	Wed, 22 May 2024 16:35:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="njkpv+mU"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f47.google.com (mail-pj1-f47.google.com [209.85.216.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-186.mta1.migadu.com (out-186.mta1.migadu.com [95.215.58.186])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E9F6C13D8AA;
-	Wed, 22 May 2024 16:27:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E97E46AD7
+	for <bpf@vger.kernel.org>; Wed, 22 May 2024 16:35:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.186
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716395227; cv=none; b=qrdZ1PFQ3M7lO9aoSbMSnIVqFKwQ7mG9CPKtGeZ4tt9OWZzTO9iHdCgAfkiP5VVG8bxgsnn3fdVYTRqfqPCa1rnGKUqgbeR7kmX9mQ1Z0Q01bASYlL+HwU5go5wtsCS0sVqYBIJ+8XjMp9keUssxyB+cpniIAzufV5VfVOYEoNk=
+	t=1716395707; cv=none; b=OyaA4IYnQrTJ6lkcEyNrlenJFMF9amdaj/0B+Phen0Onhc04ksDJfHjDVC1cB5bH6zrW8wSnKLCo7iLxZTPQG/MrWjZvWlHquVrt6yRxSiFdIzArd+O43WU9fmMcLnZ+3qw09b5QYg64FHbiLC+0xr+qZNMalI+/O+3pZHwasxE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716395227; c=relaxed/simple;
-	bh=RxdI4F1CKShHGVqWnvdKwtmWY+Plt0lPfkZWLBQ25so=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=arUfP7RbJFE71uqq6sX8AT3s+UbFdnS7zr+KFU8FgleKr1fPR1JwpwrlBRHaZz+R275z5A2UsGYrpE1i0nxq/tmmLb9Mu/vHic9r8GxdglTY+wAbd4ZtC0sKppFT+KgrgTC+bHa4LzNuOuJrIX6ME6F+alryhkkJDIWdla10APY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.216.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f47.google.com with SMTP id 98e67ed59e1d1-2b9dcc745a4so2223307a91.2;
-        Wed, 22 May 2024 09:27:05 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1716395225; x=1717000025;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=71bEdcCFAmtnhRQcl2H8cfdDF/yHlhWYnXTomnqsrKc=;
-        b=BbuiukBl18V40IhHFesoyvib/8QCFGHOmwgVS9I0I6H0BSbQh2DiRdHKJWGD7+W9JV
-         AQny2iPc+GqMtawPM6uYvlndly4BGLsVN2cja9aIjO4sK9oR7nR5Dr6HegusUNheD3on
-         REK0djE1vNqHGB1/wcPDeY7SQEHhJCi3/+N4qwBzKm5YqlkOaDAGB2D9/cwv8/Uo0P2W
-         voibaTlNtDNQpX/eZguamyWYhV4n+LeYTRo+wvwI08GX3JGYxaD+4x90PDUNzPitEFL6
-         eSZ+U2a0s4sAfw0zhWFPPs0HYANtyob+7vXDgcPICu/lQhSMoW/YCnUadcHP67ZVQ0SO
-         Jvyg==
-X-Forwarded-Encrypted: i=1; AJvYcCUqou7TjMHrHb1qX9kClg/F+Xhedvdi4sqA1aqcMiH3UVFOrVOAM4FVUs5sGiNEljc5V3QLG133nQJcZNQtg29jdajATMZnaXKfCVnfFbtvVzi8kph2Zc4jEU44cq/eeuIMn/F0WHraAQ8ookACJs3QgjzGPahQilXAqn+STDt8+X+2aw==
-X-Gm-Message-State: AOJu0YyQ3qUjvKAqi8Q0sbC/bKfwGrRKHOOuIRZcwnX2lDgcL36Cqfnk
-	lyS8xC2r3LlfVHqPDg75wZx7tGCL9HeMqy34fHKJh3ksVrBzETOlisyhmt2Z8aaNP1MUbmFbnKo
-	dJNX/gloNAJio5xsFTcJ4WOdhisg=
-X-Google-Smtp-Source: AGHT+IGWE9gpTA5nNjGHhEjGrcBHdnlVHlvBKEjJN9nhqa6bh9ue7l3uNmtMY/c0FUQvqszCGGc+MVbAoNoqkYdYNn8=
-X-Received: by 2002:a17:90a:17a5:b0:2ad:c098:ebca with SMTP id
- 98e67ed59e1d1-2bd9f4895a1mr2492001a91.20.1716395225061; Wed, 22 May 2024
- 09:27:05 -0700 (PDT)
+	s=arc-20240116; t=1716395707; c=relaxed/simple;
+	bh=oU0BB9g8bIVIXXjLHXITuySQHBbOjsp4ChyKahHxbHQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:Cc:From:
+	 In-Reply-To:Content-Type; b=gUQdGPIhy8OmNnfEDRwwGu0dwGzl3SG9+njggDH/p4VuhmD8D2MBcf1Wi95aazgenRAN9i+pVjXAVvt1dj/Y0p5QrsHoqlCs7BByAweRry8hx+sQTh00PrCt+TOpGcu/AhA/+D42vC4XG/AGdad8/3Z7ozbhz8lX1rNZS6S64h4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=njkpv+mU; arc=none smtp.client-ip=95.215.58.186
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Envelope-To: eddyz87@gmail.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1716395702;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=dxEbekp/q9D8LpJlilROj+MvrDm2qM+L5TSI2BeVAQc=;
+	b=njkpv+mUWWPVtHcTgqCidwqCdE9P6lPbLZYvcU18lsDnvcWHLojpcSYaegFtOfbAGjIo0O
+	Tui7RhRjnudOpt3oBMr0YQ//3yXGY8cPgFyPPi+Hm2Uhzl7c58FUAvMmiY26MvpfovofZf
+	sYJfhPnIyranhyrK3xyWX67OhDV3KXw=
+X-Envelope-To: kuba@kernel.org
+X-Envelope-To: ast@kernel.org
+X-Envelope-To: mykolal@fb.com
+X-Envelope-To: martin.lau@linux.dev
+X-Envelope-To: andrii@kernel.org
+X-Envelope-To: bpf@vger.kernel.org
+Message-ID: <20db6269-80cb-47f9-8d36-5a3443680450@linux.dev>
+Date: Wed, 22 May 2024 17:34:57 +0100
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240515193610.2350456-1-yabinc@google.com>
-In-Reply-To: <20240515193610.2350456-1-yabinc@google.com>
-From: Namhyung Kim <namhyung@kernel.org>
-Date: Wed, 22 May 2024 09:26:52 -0700
-Message-ID: <CAM9d7cjmJHC91Q-_V7trfW-LtQVbraSHzm--iDiBi7LgNwD2DA@mail.gmail.com>
-Subject: Re: [PATCH v5 0/3] perf/core: Check sample_type in sample data saving
- helper functions
-To: Yabin Cui <yabinc@google.com>
-Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
-	Arnaldo Carvalho de Melo <acme@kernel.org>, Mark Rutland <mark.rutland@arm.com>, 
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Ian Rogers <irogers@google.com>, Adrian Hunter <adrian.hunter@intel.com>, 
-	linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH bpf-next v2 0/4] bpf: make trusted args nullable
+To: Eduard Zingerman <eddyz87@gmail.com>
+References: <20240510122823.1530682-1-vadfed@meta.com>
+ <4c8a90dbdc4677b57b19bc0d8b4109e3b6537aec.camel@gmail.com>
+ <912ac775-1505-468b-9030-88cbbf8e30f2@linux.dev>
+ <836e4a4ca07872fed42c0b2327dddecf47c572c0.camel@gmail.com>
+Content-Language: en-US
+Cc: Jakub Kicinski <kuba@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+ Mykola Lysenko <mykolal@fb.com>, Martin KaFai Lau <martin.lau@linux.dev>,
+ Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Vadim Fedorenko <vadim.fedorenko@linux.dev>
+In-Reply-To: <836e4a4ca07872fed42c0b2327dddecf47c572c0.camel@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-Hello,
+On 22/05/2024 16:23, Eduard Zingerman wrote:
+> On Wed, 2024-05-22 at 13:35 +0100, Vadim Fedorenko wrote:
+> 
+> [...]
+> 
+>> I'm not really sure how I can test it without fully replicating crypto
+>> tests. We don't have any other kfuncs with nullable dynptrs yet to test,
+>> maybe we should revisit this part once we have more functions with
+>> nullable parameters.
+> 
+> kfuncs for testing could be defined in
+> tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c:bpf_testmod.c,
+> e.g. see bpf_testmod_test_mod_kfunc().
 
-On Wed, May 15, 2024 at 12:36=E2=80=AFPM Yabin Cui <yabinc@google.com> wrot=
-e:
->
-> Hello,
->
-> We use helper functions to save raw data, callchain and branch stack in
-> perf_sample_data. These functions update perf_sample_data->dyn_size witho=
-ut
-> checking event->attr.sample_type, which may result in unused space
-> allocated in sample records. To prevent this from happening, this patchse=
-t
-> enforces checking sample_type of an event in these helper functions.
->
-> Thanks,
-> Yabin
->
->
-> Changes since v1:
->  - Check event->attr.sample_type & PERF_SAMPLE_RAW before
->    calling perf_sample_save_raw_data().
->  - Subject has been changed to reflect the change of solution.
->
-> Changes since v2:
->  - Move sample_type check into perf_sample_save_raw_data().
->  - (New patch) Move sample_type check into perf_sample_save_callchain().
->  - (New patch) Move sample_type check into perf_sample_save_brstack().
->
-> Changes since v3:
->  - Fix -Werror=3Dimplicit-function-declaration by moving has_branch_stack=
-().
->
-> Changes since v4:
->  - Give a warning if data->sample_flags is already set when calling the
->    helper functions.
->
-> Original commit message from v1:
->   perf/core: Trim dyn_size if raw data is absent
->
-> Original commit message from v2/v3:
->   perf/core: Save raw sample data conditionally based on sample type
->
->
-> Yabin Cui (3):
->   perf/core: Save raw sample data conditionally based on sample type
->   perf/core: Check sample_type in perf_sample_save_callchain
->   perf/core: Check sample_type in perf_sample_save_brstack
+alright, thanks for the pointer, I'll add some tests with kfuncs.
 
-Acked-by: Namhyung Kim <namhyung@kernel.org>
-
-Thanks,
-Namhyung
-
-
->
->  arch/s390/kernel/perf_cpum_cf.c    |  2 +-
->  arch/s390/kernel/perf_pai_crypto.c |  2 +-
->  arch/s390/kernel/perf_pai_ext.c    |  2 +-
->  arch/x86/events/amd/core.c         |  3 +--
->  arch/x86/events/amd/ibs.c          |  5 ++---
->  arch/x86/events/core.c             |  3 +--
->  arch/x86/events/intel/ds.c         |  9 +++-----
->  include/linux/perf_event.h         | 26 +++++++++++++++++-----
->  kernel/events/core.c               | 35 +++++++++++++++---------------
->  kernel/trace/bpf_trace.c           | 11 +++++-----
->  10 files changed, 55 insertions(+), 43 deletions(-)
->
-> --
-> 2.45.0.rc1.225.g2a3ae87e7f-goog
->
 
