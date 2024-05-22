@@ -1,144 +1,129 @@
-Return-Path: <bpf+bounces-30332-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-30333-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 79C3E8CC81E
-	for <lists+bpf@lfdr.de>; Wed, 22 May 2024 23:22:13 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 204698CC84D
+	for <lists+bpf@lfdr.de>; Wed, 22 May 2024 23:55:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1AD081F2237D
-	for <lists+bpf@lfdr.de>; Wed, 22 May 2024 21:22:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C46942817E8
+	for <lists+bpf@lfdr.de>; Wed, 22 May 2024 21:55:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 72EB31465A6;
-	Wed, 22 May 2024 21:22:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3752B146A69;
+	Wed, 22 May 2024 21:54:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="sDWie67Q"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="C6qAolW7"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-182.mta0.migadu.com (out-182.mta0.migadu.com [91.218.175.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-il1-f169.google.com (mail-il1-f169.google.com [209.85.166.169])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D627146D68
-	for <bpf@vger.kernel.org>; Wed, 22 May 2024 21:21:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C3021BF2A
+	for <bpf@vger.kernel.org>; Wed, 22 May 2024 21:54:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716412920; cv=none; b=OirGsKUQ7mr8aU/j3119kMgtcS7wKUd9vTNUm5ZuwtXtYKvpOgO34jweYhyU725JBR7sXBnYDgR14dsdqWaAeNVF8y7/PuTtOrSb5jQZGqAyfQX7tl5kq6zf0ASp59KC4nPQzbFcr53esSfY3k313Fw/l2pO3zgAGPsaGFfTTMs=
+	t=1716414898; cv=none; b=n2FCfJUt8rMW9KK/b8TKBfhvUawTd4Wc3UVFt+kd1NLUZZmECdpoHpDwko6gnSR+hCcGR7wD+KxfSsyuqRtKoy4w2VQ+TXqOzW73w3ul78U5JVnzHh2KUY5NtkxNDRaD/5knpzcux+8AYq9axzvxpm+Zv7JcYEf9f9Iqvo5Sutc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716412920; c=relaxed/simple;
-	bh=SSgk8482ZaF89bgG3EdFDqQTlXtPCmkeFX0QoOj4SAo=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=s8tNPRoCECXIW+I83aC9Z9Z3rhLoPiIpvXBjsHt8EKLZG3rXenkkzCYHalNGwUBnBd91kFH1DousT52OQGaRkUPGpTCF6wklXHHirvlctCAoyvZbpHWlBQkoE61K5/B46Vs7TywFOiQy2Tf/8T55zklNulUdhMPzBQFgFLNvRRU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=sDWie67Q; arc=none smtp.client-ip=91.218.175.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Envelope-To: horms@kernel.org
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1716412916;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=onLSCHAGlv69WP5loYzyOhQjtl4gRyVJX/kSKV/blNw=;
-	b=sDWie67QeCzYpP6e5u6R5un4iPHjlsQOP7to9GVS1K24Pn5/QdwrfV48THVX4kEeON9pwF
-	2eXa9xXEIOFHpTmTc06Yd1xB4LKCEUAap11yZia4FWDOoQtQyc0gxt+gUK3N/kATV0qUSG
-	+qAWGy3OxqPBlMn6Ar9TPHRd+fLubSA=
-X-Envelope-To: martin.lau@linux.dev
-X-Envelope-To: andrii@kernel.org
-X-Envelope-To: ast@kernel.org
-X-Envelope-To: mykolal@fb.com
-X-Envelope-To: kuba@kernel.org
-X-Envelope-To: bpf@vger.kernel.org
-X-Envelope-To: netdev@vger.kernel.org
-Message-ID: <8fdc5079-149b-4690-9036-c906059659e1@linux.dev>
-Date: Wed, 22 May 2024 22:21:53 +0100
+	s=arc-20240116; t=1716414898; c=relaxed/simple;
+	bh=d2jIFu4KbfWYVWjh9HnFb/jvGF1J3I6Xs6fPNB7rWnM=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=Lh0nCuA9Ze86Dxujk712HjbVxWzAlYCBY+/qSnpFaDXXElZdk+Sc/etn7Ocp1wUwj4xMfzalaWUL79uqrkmCNnUWRuO2Ni4ciXfglNK63X3URzm9hk/XfNtvAazgIoJPIlXoKckuJOxtCOtxZldEvLvTF8g03dMCKy+D2xsz/ts=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=C6qAolW7; arc=none smtp.client-ip=209.85.166.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-il1-f169.google.com with SMTP id e9e14a558f8ab-36c96441a41so26438955ab.3
+        for <bpf@vger.kernel.org>; Wed, 22 May 2024 14:54:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1716414896; x=1717019696; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=Se7xI3yk1WXbQvliYKcH+++1hiS92tc0W9LzHgVaP/E=;
+        b=C6qAolW7UsAIp59TsZwKAmMnGfGK1lf9j6FLNvJImaGqyoqdcIPhKUf5qlj3fWj3hv
+         NolYQBr3l1XGinJXCjXguYEmyvWEhbqCA+sqfjgaykriKv+CT3mZbQCaWV0VDqBGfJyR
+         6Ky7Xbsv0y+2Ge+nDXLKHC1PFccQkSCNuapj+k5VlGNC4mm7Dmlq8foY8IPNIlWMKqMb
+         KYLq7RVr7+eNAfvDt4kbc9kuJ9XVzVuczjBHNakYLNafF50myLHJXwkjEla+F9arjSwf
+         Vkdg6x13MX0N+28RUPTiZ4V27u+83gC3Qn93q14vj6eNjt9oCnECLfSWCBk3p6eQbPVn
+         ilMQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1716414896; x=1717019696;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Se7xI3yk1WXbQvliYKcH+++1hiS92tc0W9LzHgVaP/E=;
+        b=V+HDWtvJCG2hJgSku1uE0f6Zb/f8Y3ArINqJCUaiGgjRglf/H7WFuPmE89GK1hcTK5
+         0DEypdMfpacJyf39iBrTP3g1Anw1sJrRnjmUoj5iImxuSKTyXoIY+RSTLFjoNhP77AjZ
+         7/IHHTSX9vAepmH6gvp4hydYL47qJQnFLurqkBqNUmEZtmbBokNB1JK0+UDQxl6+JSwE
+         s1YE/BJ54h8s42Vm+dmRdcMS5Bl6XFvRQstmSYtpJB/FNbmjzTu2nZU3ojMJGWKEl9gR
+         8zdMnlPfgsWjKjgskTU5U5i9VT+lkLNzSn3NDYiM7FBKv1aQDojRQKYGikMcwnsbTEkb
+         1iWA==
+X-Gm-Message-State: AOJu0YzYXiKyl5paEsWQ++Nxq6x3wVEUTQJJyk9mef7/oaJwa/wYFeN5
+	p8A7tA7+OScMq0wCM4byOxibr9Hejrec0b+zqly2h8bthNuouDm/
+X-Google-Smtp-Source: AGHT+IHDlY+SXyOgcrZMO1+evDk8uRHqoPsaEtJuMrgv85sLZ/TM5kw3zI2k7SGw7I/ijjHqIT0VUQ==
+X-Received: by 2002:a05:6e02:12cd:b0:36c:5023:232c with SMTP id e9e14a558f8ab-371fbdf55ebmr45170715ab.22.1716414896632;
+        Wed, 22 May 2024 14:54:56 -0700 (PDT)
+Received: from ?IPv6:2604:3d08:6979:1160::3424? ([2604:3d08:6979:1160::3424])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-6f4d2a665c0sm22889176b3a.3.2024.05.22.14.54.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 22 May 2024 14:54:56 -0700 (PDT)
+Message-ID: <2b64287f18f11fc5d9e8a8c834da6d010a92e5b1.camel@gmail.com>
+Subject: Re: [PATCH bpf-next] bpf: Relax precision marking in open coded
+ iters and may_goto loop.
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: bpf <bpf@vger.kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+ Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau
+ <martin.lau@kernel.org>, Kumar Kartikeya Dwivedi <memxor@gmail.com>, Kernel
+ Team <kernel-team@fb.com>
+Date: Wed, 22 May 2024 14:54:55 -0700
+In-Reply-To: <CAADnVQJ_c0XTsNY_bfHL0qWfzpEdgy+-mJ1oqtHVppvxA2_TCw@mail.gmail.com>
+References: <20240522024713.59136-1-alexei.starovoitov@gmail.com>
+	 <78fa1f7e442579a968a99b00230c6aa0f280679d.camel@gmail.com>
+	 <CAADnVQJ_c0XTsNY_bfHL0qWfzpEdgy+-mJ1oqtHVppvxA2_TCw@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.44.4-0ubuntu2 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next 1/2] bpf: add CHECKSUM_COMPLETE to bpf test progs
-To: Simon Horman <horms@kernel.org>
-Cc: Martin KaFai Lau <martin.lau@linux.dev>,
- Andrii Nakryiko <andrii@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
- Mykola Lysenko <mykolal@fb.com>, Jakub Kicinski <kuba@kernel.org>,
- bpf@vger.kernel.org, netdev@vger.kernel.org
-References: <20240522145712.3523593-1-vadfed@meta.com>
- <20240522183207.GB883722@kernel.org>
-Content-Language: en-US
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Vadim Fedorenko <vadim.fedorenko@linux.dev>
-In-Reply-To: <20240522183207.GB883722@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
 
-On 22/05/2024 19:32, Simon Horman wrote:
-> On Wed, May 22, 2024 at 07:57:10AM -0700, Vadim Fedorenko wrote:
->> Add special flag to validate that TC BPF program properly updates
->> checksum information in skb.
->>
->> Signed-off-by: Vadim Fedorenko <vadfed@meta.com>
-> 
-> ...
-> 
->> diff --git a/net/bpf/test_run.c b/net/bpf/test_run.c
->> index f6aad4ed2ab2..841552785c65 100644
->> --- a/net/bpf/test_run.c
->> +++ b/net/bpf/test_run.c
->> @@ -974,10 +974,13 @@ int bpf_prog_test_run_skb(struct bpf_prog *prog, const union bpf_attr *kattr,
->>   	int hh_len = ETH_HLEN;
->>   	struct sk_buff *skb;
->>   	struct sock *sk;
->> +	__wsum csum;
->> +	__sum16 sum;
-> 
-> Hi Vadim,
-> 
-> sum seems to be is unused in this function.
-> And, fwiiw, the scope of csum looks like it could be reduced.
+On Wed, 2024-05-22 at 14:13 -0700, Alexei Starovoitov wrote:
 
-Ah, leftover from previous iteration, thanks for catching it!
-Ok, I'll move csum to the "if" block in v2.
+[...]
 
->>   	void *data;
->>   	int ret;
->>   
->> -	if (kattr->test.flags || kattr->test.cpu || kattr->test.batch_size)
->> +	if ((kattr->test.flags & ~BPF_F_TEST_SKB_CHECKSUM_COMPLETE) ||
->> +	    kattr->test.cpu || kattr->test.batch_size)
->>   		return -EINVAL;
->>   
->>   	data = bpf_test_init(kattr, kattr->test.data_size_in,
->> @@ -1025,6 +1028,12 @@ int bpf_prog_test_run_skb(struct bpf_prog *prog, const union bpf_attr *kattr,
->>   
->>   	skb_reserve(skb, NET_SKB_PAD + NET_IP_ALIGN);
->>   	__skb_put(skb, size);
->> +
->> +	if (kattr->test.flags & BPF_F_TEST_SKB_CHECKSUM_COMPLETE) {
->> +		skb->csum = skb_checksum(skb, 0, skb->len, 0);
->> +		skb->ip_summed = CHECKSUM_COMPLETE;
->> +	}
->> +
->>   	if (ctx && ctx->ifindex > 1) {
->>   		dev = dev_get_by_index(net, ctx->ifindex);
->>   		if (!dev) {
->> @@ -1079,6 +1088,14 @@ int bpf_prog_test_run_skb(struct bpf_prog *prog, const union bpf_attr *kattr,
->>   	}
->>   	convert_skb_to___skb(skb, ctx);
->>   
->> +	if (kattr->test.flags & BPF_F_TEST_SKB_CHECKSUM_COMPLETE) {
->> +		csum = skb_checksum(skb, 0, skb->len, 0);
->> +		if (skb->csum != csum) {
->> +			ret = -EINVAL;
->> +			goto out;
->> +		}
->> +	}
->> +
->>   	size = skb->len;
->>   	/* bpf program can never convert linear skb to non-linear */
->>   	if (WARN_ON_ONCE(skb_is_nonlinear(skb)))
-> 
-> ...
+> Agree with this conclusion.
+> As discussed offlist we can add a check that
+> Si->parent->parent...->parent =3D=3D Sk.
+> to make the algorithm "by the book".
+> I'll play with that.
 
+Actually, I don't think this is necessary, here is the code for
+update_loop_entry():
+
+    static void update_loop_entry(struct bpf_verifier_state *cur,
+                                  struct bpf_verifier_state *hdr)
+    {
+            struct bpf_verifier_state *cur1, *hdr1;
+
+            cur1 =3D get_loop_entry(cur) ?: cur;
+            hdr1 =3D get_loop_entry(hdr) ?: hdr;
+            if (hdr1->branches && hdr1->dfs_depth <=3D cur1->dfs_depth) {
+                    cur->loop_entry =3D hdr;
+                    hdr->used_as_loop_entry =3D true;
+            }
+    }
+   =20
+It relies on the following properties:
+- every state in the current DFS path (except current)
+  has branches > 0;
+- states not in the DFS path are either:
+  - in explored_states, are fully explored and have branches =3D=3D 0;
+  - in env->stack, are not yet explored and have branches =3D=3D 0
+    (and also not reachable from is_state_visited()).
+
+So, I don't think there is a need to check that hdr1 is in the parent
+chain for cur1.
 
