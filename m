@@ -1,81 +1,99 @@
-Return-Path: <bpf+bounces-30267-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-30268-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C1E728CBC49
-	for <lists+bpf@lfdr.de>; Wed, 22 May 2024 09:46:48 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id E0E5B8CBC7C
+	for <lists+bpf@lfdr.de>; Wed, 22 May 2024 09:55:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 752C3282257
-	for <lists+bpf@lfdr.de>; Wed, 22 May 2024 07:46:47 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 54CA31F2283D
+	for <lists+bpf@lfdr.de>; Wed, 22 May 2024 07:55:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC6147A15A;
-	Wed, 22 May 2024 07:46:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3053F7E583;
+	Wed, 22 May 2024 07:55:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jPCVS+oe"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KiWSTZc2"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f44.google.com (mail-wm1-f44.google.com [209.85.128.44])
+Received: from mail-wr1-f53.google.com (mail-wr1-f53.google.com [209.85.221.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B347F7E0E9
-	for <bpf@vger.kernel.org>; Wed, 22 May 2024 07:46:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 15BEB7D3F5;
+	Wed, 22 May 2024 07:55:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716364002; cv=none; b=UqtvjK0rFB7v4T9Ff8SptVzeC1l0tPwF11+ArbuugqF+T1nQyi/PoddcZkwokEsJU8wjR41TCV4LnjzR8tBn/w73sOVzej3wqMu99ZMbKGxhvR3vP1535pXiktd3x07pO703iWWt8jyi/QFZ+cBiNL5QqAB25dRy70yPz8Ynts0=
+	t=1716364505; cv=none; b=hXvjPu8p2DpVbaQcXMcf8qfA4Axa4/FT6USY5Y43einn5jF/heH8TIw7KIPUpK3NHDXGhbW8M2kDhgMhOkkLt4vfB2418sbBv+V0EhWnl5SSOBGEwjM06AbirGjDxmT/ad5vdWRYRfDeMO+b08AvLFhITD9mYl3ZQZXtU8USzhc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716364002; c=relaxed/simple;
-	bh=BplKZYfeeazDK99PAqPgmY6zYovd79dQEeEk9ZldFUI=;
+	s=arc-20240116; t=1716364505; c=relaxed/simple;
+	bh=DdDjo/FDiOgPMkdXr0NfnzwZ3Z18E8np1Z5caXxRP9Y=;
 	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=L4/Cgw3OjYsm9kOhdYMjrrPciql6M6VBhUvdH8royy/XOdOpj4lx7r5pCrBpTYTktc6Q6CnLP1qA4YDV0iyfe15QXks3rZC0JKHIv2GLUpGNo873U/g/eLrX6JfM4iejr1iFjxVHhJ2MoDDZ+z4X/hmOZGQ6vDXn8FTEHd+wyY8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jPCVS+oe; arc=none smtp.client-ip=209.85.128.44
+	 Content-Type:Content-Disposition:In-Reply-To; b=VL8kv+Dz9IIo+MiSlOWyvwlysiSkxcOtInqnS3Dx/nFa1tnf4eHhsaf7APXJrTUprz9sM8ASqP4E7ZHOlYUjLThos4uewv5bIzRzL+rlCkftNjLs0prke6pMIcT4kmha77r1Q1VXObL4FbGFxzW+9FWG8zoQikS9nvGexUUAR6E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=KiWSTZc2; arc=none smtp.client-ip=209.85.221.53
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f44.google.com with SMTP id 5b1f17b1804b1-4202cea9941so37760845e9.1
-        for <bpf@vger.kernel.org>; Wed, 22 May 2024 00:46:40 -0700 (PDT)
+Received: by mail-wr1-f53.google.com with SMTP id ffacd0b85a97d-354de97586cso319102f8f.0;
+        Wed, 22 May 2024 00:55:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1716363999; x=1716968799; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1716364501; x=1716969301; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=AxBn75YmCs9vqdfjX1FgL8PF2TgRSpEiRdEachISmco=;
-        b=jPCVS+oeFkD3sPU5d/G3b3x1m2s27VrbxPd1IpBy0PWofH6JmB5l9N/I6rLiuLkQeC
-         9DEyXQoCml1GEcaHxXhuQhr3ipt7TEnigld8kEIxuMPb9uFCowEOuyHzVAJ3zgn50Xoe
-         CEL71ryLs2uHUqQeKx8YpPu1+g8IxVRItLUQBzbcaKCE89EdZ3UWRz3N611HaHg6dNCd
-         9hG8F8GIkJKpaZKHcu04I+hnDojqA1ZIwlzNr/wfvB9gPYO3VWyoUYVovZz5j9ApeSCd
-         LBeWh32GqGI0NopKROby2lkGABtm+uwxsgoW0KA6xzHbZq4sQ/CuHMj6avvysnxhRxzm
-         Nd0Q==
+        bh=Uzr0sl4QQMjCNSxyJObQ0Q87Cq15Drd+3aEObwMgsYs=;
+        b=KiWSTZc2/u7OYCikImaM+3ByyRKamq+owzP7o6LkQjnBrU6iyvx1rxeDZ+egEhQ6qe
+         8mdRaA4nUiHUy17waEkYt+JPu7uDKH6074WXufPMcKBT+LyRqOhyfZ0vg8yPCxqWNNgO
+         F6agQ+AcBoMKXMJlT9Sbfqsx1zU/F2TtL5ooujmqMzDEkCnCa3svE6Iv03u0s8F24/6S
+         kf+urGtAOUi2mxEMH4hwBFTtHtYY/wfHDT0jouI4FMsKnUR6nhilewbc80mHB/+7+jfa
+         cMXtCENnaTbdThBji+wFTCZyQ7NgH5FeO0+4fTS+Ruf2lOnXal+svvANO5YuOHnfGIHW
+         2l6A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1716363999; x=1716968799;
+        d=1e100.net; s=20230601; t=1716364501; x=1716969301;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=AxBn75YmCs9vqdfjX1FgL8PF2TgRSpEiRdEachISmco=;
-        b=wDA4Xi1cdiBbmpiJTJiggxxqCAVhFc8bP96601ydgWOCH8nwO5fHvmg9NiUY2Q1KFc
-         iU5g7diBaFTha/DuA0QWPzuUbaNR3G8ssx5E23oC7C6NGWpEu3AOuoPJ2lR1wPcaAsl1
-         g0pA7k1oJkXPnghyJw0a1iqiicHR0J9byeGcxJaNFn9agNgG80SqjQ+IjE5Pq5FvG36d
-         eGpOigYn+gbQb8l0QS2N3QiNI39LIKRWNefAurSHkr7RLrKzCmzjxod5gT4kyZG/oa2Q
-         gVJdmeOEu/h6MatUxHElQP9Snx5tdTQAuS8Q1P/9+NIROTBThs3oRmv7bOhpilIC9ASz
-         6gwQ==
-X-Gm-Message-State: AOJu0YxNiG/b2iWkRn1VEHXFGgfmsBdSltCaFvwLEysmEIGJmmMM4wpK
-	EaXSH1o8++wvJlbvmCXZEfU5ojQHEG7twQwZn8+JLt3xXtfk+y93U8g9AQ==
-X-Google-Smtp-Source: AGHT+IHek0hOr+yExBhavF5sliVFIgXlYV/8zqmD02DSpQxRytCqhIomK2CJEklnO7kNtn9ihRCpZg==
-X-Received: by 2002:a7b:cb0b:0:b0:420:104e:27ec with SMTP id 5b1f17b1804b1-420fd31096cmr8627975e9.15.1716363998793;
-        Wed, 22 May 2024 00:46:38 -0700 (PDT)
+        bh=Uzr0sl4QQMjCNSxyJObQ0Q87Cq15Drd+3aEObwMgsYs=;
+        b=MA33ExrkEnHwQKZK8HaL5RBRo5VgK7UyTcEPdwMZOmjQJWwrp46/gYpMoWsWo2bpWc
+         dGlRSrE2G/SnrsQ9G/N4mDFg7lKXaj5aB+D0lTZdb0koaZTLepxthvy7Xc35Y5AeGbX+
+         yNqXMWpcZS/qvnGSqZNhnc+xzLeCoKuW4Lo4lMak8A/+UjoDwHRFCXmd2EkEolvsjWMa
+         9B4xJWkt5OAqDZbtWo69/AFHF9YK9vIQzsHo6wF8RVNYBKz8tv2UMJpOvT2B0aIBoDSP
+         ntF/eNvHDv/N6j1K4IFlEU6ZnaX0S8t6K1tSnnKuOFzoTElRMuAeIxvC7ztY1smEDaQi
+         ZNOg==
+X-Forwarded-Encrypted: i=1; AJvYcCWGJqlzP2osCirgpVrtU9NAEm3rBRczcjLDYyrO6KUAKeyWXXUuO7hj2rfs2mU4HMR3Leej1VjpQYKg4v4g72UiNwKnpdPaCyrRrZXi3ZeCFlMA5uDw9+WoRiWaGsLQ92lv9o7oG7xfGrfl6dP9VYjkYc3zG6QsuF3S410pUz4LY8JN7W5Mof7FgCqj1AHsQzlsBdh/cA4EFRJraDWLZHks33wgWw9Hsnvhd+kQvTeYrDaBpzWdcdXWqImJ
+X-Gm-Message-State: AOJu0Yygv4MOCXkg9psnwRFnTDN7mJFWzw+0dwr7tIj+oKKnP4HwFnGM
+	+yvH0C+PtPhm67tPgulhzzpwHH2ga+O5vRTc60Y6IfSrLiOfM1J5
+X-Google-Smtp-Source: AGHT+IFlFYN8l/AArJT6QXVg4LOkcTXz9Zoe+wcrglUn97ZwbHHO866jMAGQGE+l61RC7QCEmvV+qw==
+X-Received: by 2002:adf:ea0c:0:b0:351:debf:a3a2 with SMTP id ffacd0b85a97d-354d8d85d63mr780762f8f.52.1716364500858;
+        Wed, 22 May 2024 00:55:00 -0700 (PDT)
 Received: from krava ([212.20.115.60])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-41f87d20488sm523072165e9.25.2024.05.22.00.46.38
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3518d817ee2sm29904561f8f.2.2024.05.22.00.54.59
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 22 May 2024 00:46:38 -0700 (PDT)
+        Wed, 22 May 2024 00:55:00 -0700 (PDT)
 From: Jiri Olsa <olsajiri@gmail.com>
 X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Wed, 22 May 2024 09:46:36 +0200
-To: Andrii Nakryiko <andrii@kernel.org>
-Cc: bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-	martin.lau@kernel.org, kernel-team@meta.com
-Subject: Re: [PATCH v2 bpf 4/5] selftests/bpf: extend multi-uprobe tests with
- child thread case
-Message-ID: <Zk2i3Ohmnv52Zn08@krava>
-References: <20240521163401.3005045-1-andrii@kernel.org>
- <20240521163401.3005045-5-andrii@kernel.org>
+Date: Wed, 22 May 2024 09:54:58 +0200
+To: Alejandro Colomar <alx@kernel.org>
+Cc: Jiri Olsa <olsajiri@gmail.com>, Steven Rostedt <rostedt@goodmis.org>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Oleg Nesterov <oleg@redhat.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>, linux-kernel@vger.kernel.org,
+	linux-trace-kernel@vger.kernel.org, linux-api@vger.kernel.org,
+	linux-man@vger.kernel.org, x86@kernel.org, bpf@vger.kernel.org,
+	Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	"Borislav Petkov (AMD)" <bp@alien8.de>,
+	Ingo Molnar <mingo@redhat.com>, Andy Lutomirski <luto@kernel.org>,
+	"Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
+	Deepak Gupta <debug@rivosinc.com>
+Subject: Re: [PATCHv6 9/9] man2: Add uretprobe syscall page
+Message-ID: <Zk2k0ttdR7abKSuv@krava>
+References: <20240521104825.1060966-1-jolsa@kernel.org>
+ <20240521104825.1060966-10-jolsa@kernel.org>
+ <j6qxudmvwccpqnle4evabxbswdygmx35bgqwhemuzsjs5iuydv@fk2iumwucifx>
+ <ZkyKKwfhNZxrGWsa@krava>
+ <Zk0C_vm3T2L79-_W@krava>
+ <o5pkz3eenii6p6sm7dl2fsgy4fqqaq2qbn2rbxddhkvaarvwgm@dkjjknb44qp2>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -84,260 +102,155 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240521163401.3005045-5-andrii@kernel.org>
+In-Reply-To: <o5pkz3eenii6p6sm7dl2fsgy4fqqaq2qbn2rbxddhkvaarvwgm@dkjjknb44qp2>
 
-On Tue, May 21, 2024 at 09:34:00AM -0700, Andrii Nakryiko wrote:
-> Extend existing multi-uprobe tests to test that PID filtering works
-> correctly. We already have child *process* tests, but we need also child
-> *thread* tests. This patch adds spawn_thread() helper to start child
-> thread, wait for it to be ready, and then instruct it to trigger desired
-> uprobes.
+On Tue, May 21, 2024 at 10:54:36PM +0200, Alejandro Colomar wrote:
+> Hi Jirka,
 > 
-> Additionally, we extend BPF-side code to track thread ID, not just
-> process ID. Also we detect whether extraneous triggerings with
-> unexpected process IDs happened, and validate that none of that happened
-> in practice.
+> On Tue, May 21, 2024 at 10:24:30PM GMT, Jiri Olsa wrote:
+> > how about the change below?
 > 
-> These changes prove that fixed PID filtering logic for multi-uprobe
-> works as expected. These tests fail on old kernels.
+> Much better.  I still have a few comments below.  :-)
 > 
-> Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+> > 
+> > thanks,
+> > jirka
+> > 
+> > 
+> > ---
+> > diff --git a/man/man2/uretprobe.2 b/man/man2/uretprobe.2
+> > new file mode 100644
+> > index 000000000000..959b7a47102b
+> > --- /dev/null
+> > +++ b/man/man2/uretprobe.2
+> > @@ -0,0 +1,55 @@
+> > +.\" Copyright (C) 2024, Jiri Olsa <jolsa@kernel.org>
+> > +.\"
+> > +.\" SPDX-License-Identifier: Linux-man-pages-copyleft
+> > +.\"
+> > +.TH uretprobe 2 (date) "Linux man-pages (unreleased)"
+> > +.SH NAME
+> > +uretprobe \- execute pending return uprobes
+> > +.SH SYNOPSIS
+> > +.nf
+> > +.B int uretprobe(void)
+> > +.fi
+> > +.SH DESCRIPTION
+> > +The
+> > +.BR uretprobe ()
+> > +system call is an alternative to breakpoint instructions for triggering return
+> > +uprobe consumers.
+> > +.P
+> > +Calls to
+> > +.BR uretprobe ()
+> > +system call are only made from the user-space trampoline provided by the kernel.
+> > +Calls from any other place result in a
+> > +.BR SIGILL .
+> > +.SH RETURN VALUE
+> > +The
+> > +.BR uretprobe ()
+> > +system call return value is architecture-specific.
+> > +.SH ERRORS
+> > +.BR SIGILL
+> 
+> This should be a tagged paragraph, preceeded with '.TP'.  See any manual
+> page with an ERRORS section for an example.
+> 
+> Also, BR is Bold alternating with Roman, but this is just bold, so it
+> should use '.B'.
+> 
+> .TP
+> .B SIGILL
 
-Acked-by: Jiri Olsa <jolsa@kernel.org>
+ok
+
+> 
+> > +The
+> > +.BR uretprobe ()
+> > +system call was called by user.
+> > +.SH VERSIONS
+> > +Details of the
+> > +.BR uretprobe ()
+> > +system call behavior vary across systems.
+> > +.SH STANDARDS
+> > +None.
+> > +.SH HISTORY
+> > +TBD
+> > +.SH NOTES
+> > +The
+> > +.BR uretprobe ()
+> > +system call was initially introduced for the x86_64 architecture where it was shown
+> 
+> We have a strong-ish limit at column 80.  Please break after
+> 'architecture', which is a clause boundary.
+> 
+
+ok, thanks
 
 jirka
 
-> ---
->  .../bpf/prog_tests/uprobe_multi_test.c        | 107 ++++++++++++++++--
->  .../selftests/bpf/progs/uprobe_multi.c        |  17 ++-
->  2 files changed, 115 insertions(+), 9 deletions(-)
-> 
-> diff --git a/tools/testing/selftests/bpf/prog_tests/uprobe_multi_test.c b/tools/testing/selftests/bpf/prog_tests/uprobe_multi_test.c
-> index 38fda42fd70f..677232d31432 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/uprobe_multi_test.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/uprobe_multi_test.c
-> @@ -1,6 +1,7 @@
->  // SPDX-License-Identifier: GPL-2.0
->  
->  #include <unistd.h>
-> +#include <pthread.h>
->  #include <test_progs.h>
->  #include "uprobe_multi.skel.h"
->  #include "uprobe_multi_bench.skel.h"
-> @@ -27,7 +28,10 @@ noinline void uprobe_multi_func_3(void)
->  
->  struct child {
->  	int go[2];
-> +	int c2p[2]; /* child -> parent channel */
->  	int pid;
-> +	int tid;
-> +	pthread_t thread;
->  };
->  
->  static void release_child(struct child *child)
-> @@ -38,6 +42,10 @@ static void release_child(struct child *child)
->  		return;
->  	close(child->go[1]);
->  	close(child->go[0]);
-> +	if (child->thread)
-> +		pthread_join(child->thread, NULL);
-> +	close(child->c2p[0]);
-> +	close(child->c2p[1]);
->  	if (child->pid > 0)
->  		waitpid(child->pid, &child_status, 0);
->  }
-> @@ -63,7 +71,7 @@ static struct child *spawn_child(void)
->  	if (pipe(child.go))
->  		return NULL;
->  
-> -	child.pid = fork();
-> +	child.pid = child.tid = fork();
->  	if (child.pid < 0) {
->  		release_child(&child);
->  		errno = EINVAL;
-> @@ -89,6 +97,66 @@ static struct child *spawn_child(void)
->  	return &child;
->  }
->  
-> +static void *child_thread(void *ctx)
-> +{
-> +	struct child *child = ctx;
-> +	int c = 0, err;
-> +
-> +	child->tid = syscall(SYS_gettid);
-> +
-> +	/* let parent know we are ready */
-> +	err = write(child->c2p[1], &c, 1);
-> +	if (err != 1)
-> +		pthread_exit(&err);
-> +
-> +	/* wait for parent's kick */
-> +	err = read(child->go[0], &c, 1);
-> +	if (err != 1)
-> +		pthread_exit(&err);
-> +
-> +	uprobe_multi_func_1();
-> +	uprobe_multi_func_2();
-> +	uprobe_multi_func_3();
-> +
-> +	err = 0;
-> +	pthread_exit(&err);
-> +}
-> +
-> +static struct child *spawn_thread(void)
-> +{
-> +	static struct child child;
-> +	int c, err;
-> +
-> +	/* pipe to notify child to execute the trigger functions */
-> +	if (pipe(child.go))
-> +		return NULL;
-> +	/* pipe to notify parent that child thread is ready */
-> +	if (pipe(child.c2p)) {
-> +		close(child.go[0]);
-> +		close(child.go[1]);
-> +		return NULL;
-> +	}
-> +
-> +	child.pid = getpid();
-> +
-> +	err = pthread_create(&child.thread, NULL, child_thread, &child);
-> +	if (err) {
-> +		err = -errno;
-> +		close(child.go[0]);
-> +		close(child.go[1]);
-> +		close(child.c2p[0]);
-> +		close(child.c2p[1]);
-> +		errno = -err;
-> +		return NULL;
-> +	}
-> +
-> +	err = read(child.c2p[0], &c, 1);
-> +	if (!ASSERT_EQ(err, 1, "child_thread_ready"))
-> +		return NULL;
-> +
-> +	return &child;
-> +}
-> +
->  static void uprobe_multi_test_run(struct uprobe_multi *skel, struct child *child)
->  {
->  	skel->bss->uprobe_multi_func_1_addr = (__u64) uprobe_multi_func_1;
-> @@ -103,15 +171,22 @@ static void uprobe_multi_test_run(struct uprobe_multi *skel, struct child *child
->  	 * passed at the probe attach.
->  	 */
->  	skel->bss->pid = child ? 0 : getpid();
-> +	skel->bss->expect_pid = child ? child->pid : 0;
-> +
-> +	/* trigger all probes, if we are testing child *process*, just to make
-> +	 * sure that PID filtering doesn't let through activations from wrong
-> +	 * PIDs; when we test child *thread*, we don't want to do this to
-> +	 * avoid double counting number of triggering events
-> +	 */
-> +	if (!child || !child->thread) {
-> +		uprobe_multi_func_1();
-> +		uprobe_multi_func_2();
-> +		uprobe_multi_func_3();
-> +	}
->  
->  	if (child)
->  		kick_child(child);
->  
-> -	/* trigger all probes */
-> -	uprobe_multi_func_1();
-> -	uprobe_multi_func_2();
-> -	uprobe_multi_func_3();
-> -
->  	/*
->  	 * There are 2 entry and 2 exit probe called for each uprobe_multi_func_[123]
->  	 * function and each slepable probe (6) increments uprobe_multi_sleep_result.
-> @@ -126,8 +201,12 @@ static void uprobe_multi_test_run(struct uprobe_multi *skel, struct child *child
->  
->  	ASSERT_EQ(skel->bss->uprobe_multi_sleep_result, 6, "uprobe_multi_sleep_result");
->  
-> -	if (child)
-> +	ASSERT_FALSE(skel->bss->bad_pid_seen, "bad_pid_seen");
-> +
-> +	if (child) {
->  		ASSERT_EQ(skel->bss->child_pid, child->pid, "uprobe_multi_child_pid");
-> +		ASSERT_EQ(skel->bss->child_tid, child->tid, "uprobe_multi_child_tid");
-> +	}
->  }
->  
->  static void test_skel_api(void)
-> @@ -210,6 +289,13 @@ test_attach_api(const char *binary, const char *pattern, struct bpf_uprobe_multi
->  		return;
->  
->  	__test_attach_api(binary, pattern, opts, child);
-> +
-> +	/* pid filter (thread) */
-> +	child = spawn_thread();
-> +	if (!ASSERT_OK_PTR(child, "spawn_thread"))
-> +		return;
-> +
-> +	__test_attach_api(binary, pattern, opts, child);
->  }
->  
->  static void test_attach_api_pattern(void)
-> @@ -495,6 +581,13 @@ static void test_link_api(void)
->  		return;
->  
->  	__test_link_api(child);
-> +
-> +	/* pid filter (thread) */
-> +	child = spawn_thread();
-> +	if (!ASSERT_OK_PTR(child, "spawn_thread"))
-> +		return;
-> +
-> +	__test_link_api(child);
->  }
->  
->  static void test_bench_attach_uprobe(void)
-> diff --git a/tools/testing/selftests/bpf/progs/uprobe_multi.c b/tools/testing/selftests/bpf/progs/uprobe_multi.c
-> index 419d9aa28fce..86a7ff5d3726 100644
-> --- a/tools/testing/selftests/bpf/progs/uprobe_multi.c
-> +++ b/tools/testing/selftests/bpf/progs/uprobe_multi.c
-> @@ -22,6 +22,10 @@ __u64 uprobe_multi_sleep_result = 0;
->  
->  int pid = 0;
->  int child_pid = 0;
-> +int child_tid = 0;
-> +
-> +int expect_pid = 0;
-> +bool bad_pid_seen = false;
->  
->  bool test_cookie = false;
->  void *user_ptr = 0;
-> @@ -36,11 +40,19 @@ static __always_inline bool verify_sleepable_user_copy(void)
->  
->  static void uprobe_multi_check(void *ctx, bool is_return, bool is_sleep)
->  {
-> -	child_pid = bpf_get_current_pid_tgid() >> 32;
-> +	__u64 cur_pid_tgid = bpf_get_current_pid_tgid();
-> +	__u32 cur_pid;
->  
-> -	if (pid && child_pid != pid)
-> +	cur_pid = cur_pid_tgid >> 32;
-> +	if (pid && cur_pid != pid)
->  		return;
->  
-> +	if (expect_pid && cur_pid != expect_pid)
-> +		bad_pid_seen = true;
-> +
-> +	child_pid = cur_pid_tgid >> 32;
-> +	child_tid = (__u32)cur_pid_tgid;
-> +
->  	__u64 cookie = test_cookie ? bpf_get_attach_cookie(ctx) : 0;
->  	__u64 addr = bpf_get_func_ip(ctx);
->  
-> @@ -97,5 +109,6 @@ int uretprobe_sleep(struct pt_regs *ctx)
->  SEC("uprobe.multi//proc/self/exe:uprobe_multi_func_*")
->  int uprobe_extra(struct pt_regs *ctx)
->  {
-> +	/* we need this one just to mix PID-filtered and global uprobes */
->  	return 0;
->  }
-> -- 
-> 2.43.0
-> 
-> 
+
+---
+diff --git a/man/man2/uretprobe.2 b/man/man2/uretprobe.2
+new file mode 100644
+index 000000000000..5b5f340b59b6
+--- /dev/null
++++ b/man/man2/uretprobe.2
+@@ -0,0 +1,56 @@
++.\" Copyright (C) 2024, Jiri Olsa <jolsa@kernel.org>
++.\"
++.\" SPDX-License-Identifier: Linux-man-pages-copyleft
++.\"
++.TH uretprobe 2 (date) "Linux man-pages (unreleased)"
++.SH NAME
++uretprobe \- execute pending return uprobes
++.SH SYNOPSIS
++.nf
++.B int uretprobe(void)
++.fi
++.SH DESCRIPTION
++The
++.BR uretprobe ()
++system call is an alternative to breakpoint instructions for triggering return
++uprobe consumers.
++.P
++Calls to
++.BR uretprobe ()
++system call are only made from the user-space trampoline provided by the kernel.
++Calls from any other place result in a
++.BR SIGILL .
++.SH RETURN VALUE
++The
++.BR uretprobe ()
++system call return value is architecture-specific.
++.SH ERRORS
++.TP
++.B SIGILL
++The
++.BR uretprobe ()
++system call was called by user.
++.SH VERSIONS
++Details of the
++.BR uretprobe ()
++system call behavior vary across systems.
++.SH STANDARDS
++None.
++.SH HISTORY
++TBD
++.SH NOTES
++The
++.BR uretprobe ()
++system call was initially introduced for the x86_64 architecture
++where it was shown to be faster than breakpoint traps.
++It might be extended to other architectures.
++.P
++The
++.BR uretprobe ()
++system call exists only to allow the invocation of return uprobe consumers.
++It should
++.B never
++be called directly.
++Details of the arguments (if any) passed to
++.BR uretprobe ()
++and the return value are architecture-specific.
 
