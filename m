@@ -1,119 +1,192 @@
-Return-Path: <bpf+bounces-30282-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-30283-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9223E8CBE8F
-	for <lists+bpf@lfdr.de>; Wed, 22 May 2024 11:51:02 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id E3ED28CBF02
+	for <lists+bpf@lfdr.de>; Wed, 22 May 2024 12:09:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C2AF01C20DD8
-	for <lists+bpf@lfdr.de>; Wed, 22 May 2024 09:51:01 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9BC7B1F21FC3
+	for <lists+bpf@lfdr.de>; Wed, 22 May 2024 10:09:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 61DA881734;
-	Wed, 22 May 2024 09:50:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E65681AC3;
+	Wed, 22 May 2024 10:09:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b="WAtc0UB1"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Tnd1D6SG"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-f51.google.com (mail-ed1-f51.google.com [209.85.208.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E26781721
-	for <bpf@vger.kernel.org>; Wed, 22 May 2024 09:50:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D51901CD13;
+	Wed, 22 May 2024 10:09:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716371454; cv=none; b=OD4CmQbvABhrxXHaGluIDo5MNE0jnwx1T71OsZ+TdSNgLmMVyYt1zKRYd7R2lYXbEhht+Fa2PSeG2IrBOZEdW4r0AcxbcVm7w3oFu2No497NTogPxegNG5mIh37LXtXR06VPigeFd8ywaFIjb7BJW/98JlGgBJOKsHv7sGKXd2o=
+	t=1716372546; cv=none; b=NG44P04lMVbI/tX6mXYZVYjXZXF2T2iM5Tynqdr6ZG1q7NEPf0A8/AeJuEPpwYNznoJjDfhNe+hpatzhvCj2V3AmKW4iVt2/N23HmBxv1hnG1/3vsQorC7sgISSmLUkIZzKGOfA9qm3DDGRaIMTI+V6QyXYSAaE+0uX6agGk/48=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716371454; c=relaxed/simple;
-	bh=z43IRORribiar+crAULWZYDN90oM49HFlRGZRltN8G0=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=dhQSHSl2hdKTLEX+sw0Jpz3n7152HMdXSURnnDGcop7183cL9Ej4sOqai4SbemrBi0ddt+jeOQe2u2B2tqLijMfG6fExnG0gOfqotbZgbLpAZ3phg9a8lTgSPlfNdbadLGQaUgPkPYjkzBhn+/0mKM2Z/2wLp3A5EJroZCSYdvQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com; spf=pass smtp.mailfrom=cloudflare.com; dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b=WAtc0UB1; arc=none smtp.client-ip=209.85.208.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cloudflare.com
-Received: by mail-ed1-f51.google.com with SMTP id 4fb4d7f45d1cf-5751237a79bso7536021a12.2
-        for <bpf@vger.kernel.org>; Wed, 22 May 2024 02:50:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google09082023; t=1716371451; x=1716976251; darn=vger.kernel.org;
-        h=mime-version:message-id:date:user-agent:references:in-reply-to
-         :subject:cc:to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=6Ex3aZZm4D5w1Bed0krlBVY2vwDtVuYFV3j7+qw0Xbw=;
-        b=WAtc0UB1D3Hd742ZwdnqYpr6O0lvNl1gqruHB38kJy923OBTpHm/5br0k71CoIhEt9
-         uNTMn+YXSMpskc4SNk+PDCkLS4xboE3clGiD9eklRIoP0+/o6ksmpNS11z/lNJ7sK7Ag
-         oNGwkzrH3f1TveO5UEQ4BqH8dBGF7nIdqUy/iZIGrvUSfX7uNSAv6T91gcUj7emGlVzg
-         UJEI1/fIrXi9Zrgig+s97RPgFPgEggzPvDaavwFjsCsKLmlsV/Jt/QuiVnyBgJ84E28J
-         LFzM4J6ArPz/9aLm2EVhVA5JCPq98vuwuh6BqPpKyBn0QR6nsLXaBKEp/7/3uLRrqmUs
-         P32A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1716371451; x=1716976251;
-        h=mime-version:message-id:date:user-agent:references:in-reply-to
-         :subject:cc:to:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=6Ex3aZZm4D5w1Bed0krlBVY2vwDtVuYFV3j7+qw0Xbw=;
-        b=UhhW3cgcP4fIgT3qUrVzaSOKV/WEua0Em57/R4UzBLY0xcHw8eJlPFDHG8gtDwKAic
-         xNlMdQycFo3KqQOiX7Y97FaWUmGc0XRBeys2Kz4CLmFDzZxrNFUzwbSKSNl5PnOBC4tO
-         dQdR9Owyv6DYxqK6M5CS9/K7NASaCJ2hbMOom7DGRk5kuqEtHvj7sDM3QupPbsMa6mlN
-         tIH3OdiRs8ryc5yX91MJ5bEHtYK5/z5o7s2vLGlj0iBm4XcKUpMA0qSlPUQl5bLkAYOq
-         sJixHJUPrLbYqjPGj4wqJ5o9pQbRpWdfvvHQPwmfPJvF42KcDLfqlYztKVLPrMM9+Kbb
-         PTaA==
-X-Forwarded-Encrypted: i=1; AJvYcCW+Nf8yAlTCUXpUHKEfnhf3gOGWglwWkCuX1RL0qhRQvOHqven7Rz1mb6RNZv1wtZp0URWQFxTgZanOdds+X6N518ae
-X-Gm-Message-State: AOJu0YwXzxyXLUyZbY3efn/Wy8tOEspv9KIkyanaxop/kbwBfx1s+LyL
-	Nk+FO8X5LEBvpIcFLzp28sKxYSGpVs22/oa1BejmzM6vEYXp/iC1Tg0ZDcXtBGA=
-X-Google-Smtp-Source: AGHT+IFLQ42GWSxj9rsp3TwgQQW8TBhyqtoMwkS/OgPeeXi9ZNzYopUkWWXHbVb297fqpZltZcpo7g==
-X-Received: by 2002:a50:9fe7:0:b0:572:1589:eb98 with SMTP id 4fb4d7f45d1cf-57832a4c441mr778308a12.12.1716371451466;
-        Wed, 22 May 2024 02:50:51 -0700 (PDT)
-Received: from cloudflare.com ([2a09:bac5:5063:2dc::49:b7])
-        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-5733c2cb54csm17950603a12.60.2024.05.22.02.50.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 22 May 2024 02:50:50 -0700 (PDT)
-From: Jakub Sitnicki <jakub@cloudflare.com>
-To: Hillf Danton <hdanton@sina.com>
-Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>,  Tetsuo Handa
- <penguin-kernel@i-love.sakura.ne.jp>,  Eric Dumazet <edumazet@google.com>,
-  Linus Torvalds <torvalds@linux-foundation.org>,  bpf
- <bpf@vger.kernel.org>,  LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] bpf, sockmap: defer sk_psock_free_link() using RCU
-In-Reply-To: <20240521225918.2147-1-hdanton@sina.com> (Hillf Danton's message
-	of "Wed, 22 May 2024 06:59:18 +0800")
-References: <838e7959-a360-4ac1-b36a-a3469236129b@I-love.SAKURA.ne.jp>
-	<20240521225918.2147-1-hdanton@sina.com>
-User-Agent: mu4e 1.12.4; emacs 29.1
-Date: Wed, 22 May 2024 11:50:49 +0200
-Message-ID: <877cfmxjie.fsf@cloudflare.com>
+	s=arc-20240116; t=1716372546; c=relaxed/simple;
+	bh=acKYv/QEKvNHAThP10G1yTBlwY36qPXgLkN7FrJFuiQ=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=XcSWz8W/aX1qYYO7ouBwCFD04olPpMS+/bGUmrShl1ycajsl6DVcdVRKMy/eYXfsBojSmgOPYr0/mRMJDBh4z1VX3sbbgM54QUCFXpyrjotZbdI4m0lMo560CyzRlyaTulpomQ5WeG9FtLgBZ0otCPBezb5Z/30TBMaMVgANucc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Tnd1D6SG; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4A335C2BD11;
+	Wed, 22 May 2024 10:09:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1716372546;
+	bh=acKYv/QEKvNHAThP10G1yTBlwY36qPXgLkN7FrJFuiQ=;
+	h=From:To:Cc:Subject:Date:From;
+	b=Tnd1D6SGqIdi7EHCm7tNaaphJTa+6qSJg0RXXvMXho9odCkILSqIYGpjIZnsQTwxo
+	 0dgzIhEhA3uxtX9LFmDt9gD2TNVdxJkB1OKR/5VYIipShcEo4LreSRMyulWKS8zECb
+	 Rbet1pBHOHK/dwQ+E8laEBrp7tIWlbqg4B9wAbJ2ljOcdN+4DJnrpqFHnAQVkpLHIn
+	 oe+fQ/GpHghMLXB+GiyFZfdt8YU6Prk6AhvR7qJizs4ubkm2EQq2LVnkDoF8VuQer8
+	 bPq4xLrrbC5MKgqb7/+EkKkesHyNEV1jwxFguDqFnO9PgLBTO9S0mTi9VF5X500muB
+	 6AtIWia38iJMQ==
+From: Geliang Tang <geliang@kernel.org>
+To: Andrii Nakryiko <andrii@kernel.org>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Mykola Lysenko <mykolal@fb.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>,
+	Stanislav Fomichev <sdf@google.com>,
+	Hao Luo <haoluo@google.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Shuah Khan <shuah@kernel.org>,
+	Jakub Sitnicki <jakub@cloudflare.com>
+Cc: Geliang Tang <tanggeliang@kylinos.cn>,
+	bpf@vger.kernel.org,
+	linux-kselftest@vger.kernel.org
+Subject: [PATCH bpf-next] selftests/bpf: Use prog_attach_type to attach in test_sockmap
+Date: Wed, 22 May 2024 18:08:53 +0800
+Message-ID: <e27d7d0c1e0e79b0acd22ac6ad5d8f9f00225303.1716372485.git.tanggeliang@kylinos.cn>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
 
-On Wed, May 22, 2024 at 06:59 AM +08, Hillf Danton wrote:
-> On Tue, 21 May 2024 08:38:52 -0700 Alexei Starovoitov <alexei.starovoitov@gmail.com>
->> On Sun, May 12, 2024 at 12:22=E2=80=AFAM Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp> wrote:
->> > --- a/net/core/sock_map.c
->> > +++ b/net/core/sock_map.c
->> > @@ -142,6 +142,7 @@ static void sock_map_del_link(struct sock *sk,
->> >         bool strp_stop =3D false, verdict_stop =3D false;
->> >         struct sk_psock_link *link, *tmp;
->> >
->> > +       rcu_read_lock();
->> >         spin_lock_bh(&psock->link_lock);
->> 
->> I think this is incorrect.
->> spin_lock_bh may sleep in RT and it won't be safe to do in rcu cs.
->
-> Could you specify why it won't be safe in rcu cs if you are right?
-> What does rcu look like in RT if not nothing?
+From: Geliang Tang <tanggeliang@kylinos.cn>
 
-RCU readers can't block, while spinlock RT doesn't disable preemption.
+Since prog_attach_type[] array is defined, it makes sense to use it paired
+with prog_fd[] array for bpf_prog_attach() and bpf_prog_detach2() instead
+of open-coding.
 
-https://docs.kernel.org/RCU/rcu.html
-https://docs.kernel.org/locking/locktypes.html#spinlock-t-and-preempt-rt
+Signed-off-by: Geliang Tang <tanggeliang@kylinos.cn>
+---
+ tools/testing/selftests/bpf/test_sockmap.c | 44 +++++++++++-----------
+ 1 file changed, 22 insertions(+), 22 deletions(-)
 
-I've finally gotten around to testing proposed fix that just disallows
-map_delete_elem on sockmap/sockhash from BPF tracing progs
-completely. This should put an end to this saga of syzkaller reports.
+diff --git a/tools/testing/selftests/bpf/test_sockmap.c b/tools/testing/selftests/bpf/test_sockmap.c
+index 4499b3cfc3a6..8c8208b82c5e 100644
+--- a/tools/testing/selftests/bpf/test_sockmap.c
++++ b/tools/testing/selftests/bpf/test_sockmap.c
+@@ -65,6 +65,18 @@ int map_fd[9];
+ struct bpf_map *maps[9];
+ int prog_fd[9];
+ 
++int prog_attach_type[] = {
++	BPF_SK_SKB_STREAM_PARSER,
++	BPF_SK_SKB_STREAM_VERDICT,
++	BPF_SK_SKB_STREAM_VERDICT,
++	BPF_CGROUP_SOCK_OPS,
++	BPF_SK_MSG_VERDICT,
++	BPF_SK_MSG_VERDICT,
++	BPF_SK_MSG_VERDICT,
++	BPF_SK_MSG_VERDICT,
++	BPF_SK_MSG_VERDICT,
++};
++
+ int txmsg_pass;
+ int txmsg_redir;
+ int txmsg_drop;
+@@ -961,7 +973,7 @@ static int run_options(struct sockmap_options *options, int cg_fd,  int test)
+ 	/* Attach programs to sockmap */
+ 	if (!txmsg_omit_skb_parser) {
+ 		err = bpf_prog_attach(prog_fd[0], map_fd[0],
+-				      BPF_SK_SKB_STREAM_PARSER, 0);
++				      prog_attach_type[0], 0);
+ 		if (err) {
+ 			fprintf(stderr,
+ 				"ERROR: bpf_prog_attach (sockmap %i->%i): %d (%s)\n",
+@@ -971,7 +983,7 @@ static int run_options(struct sockmap_options *options, int cg_fd,  int test)
+ 	}
+ 
+ 	err = bpf_prog_attach(prog_fd[1], map_fd[0],
+-				BPF_SK_SKB_STREAM_VERDICT, 0);
++			      prog_attach_type[1], 0);
+ 	if (err) {
+ 		fprintf(stderr, "ERROR: bpf_prog_attach (sockmap): %d (%s)\n",
+ 			err, strerror(errno));
+@@ -982,7 +994,7 @@ static int run_options(struct sockmap_options *options, int cg_fd,  int test)
+ 	if (txmsg_ktls_skb) {
+ 		if (!txmsg_omit_skb_parser) {
+ 			err = bpf_prog_attach(prog_fd[0], map_fd[8],
+-					      BPF_SK_SKB_STREAM_PARSER, 0);
++					      prog_attach_type[0], 0);
+ 			if (err) {
+ 				fprintf(stderr,
+ 					"ERROR: bpf_prog_attach (TLS sockmap %i->%i): %d (%s)\n",
+@@ -992,7 +1004,7 @@ static int run_options(struct sockmap_options *options, int cg_fd,  int test)
+ 		}
+ 
+ 		err = bpf_prog_attach(prog_fd[2], map_fd[8],
+-				      BPF_SK_SKB_STREAM_VERDICT, 0);
++				      prog_attach_type[2], 0);
+ 		if (err) {
+ 			fprintf(stderr, "ERROR: bpf_prog_attach (TLS sockmap): %d (%s)\n",
+ 				err, strerror(errno));
+@@ -1001,7 +1013,7 @@ static int run_options(struct sockmap_options *options, int cg_fd,  int test)
+ 	}
+ 
+ 	/* Attach to cgroups */
+-	err = bpf_prog_attach(prog_fd[3], cg_fd, BPF_CGROUP_SOCK_OPS, 0);
++	err = bpf_prog_attach(prog_fd[3], cg_fd, prog_attach_type[3], 0);
+ 	if (err) {
+ 		fprintf(stderr, "ERROR: bpf_prog_attach (groups): %d (%s)\n",
+ 			err, strerror(errno));
+@@ -1279,11 +1291,11 @@ static int run_options(struct sockmap_options *options, int cg_fd,  int test)
+ 		fprintf(stderr, "unknown test\n");
+ out:
+ 	/* Detatch and zero all the maps */
+-	bpf_prog_detach2(prog_fd[3], cg_fd, BPF_CGROUP_SOCK_OPS);
+-	bpf_prog_detach2(prog_fd[0], map_fd[0], BPF_SK_SKB_STREAM_PARSER);
+-	bpf_prog_detach2(prog_fd[1], map_fd[0], BPF_SK_SKB_STREAM_VERDICT);
+-	bpf_prog_detach2(prog_fd[0], map_fd[8], BPF_SK_SKB_STREAM_PARSER);
+-	bpf_prog_detach2(prog_fd[2], map_fd[8], BPF_SK_SKB_STREAM_VERDICT);
++	bpf_prog_detach2(prog_fd[3], cg_fd, prog_attach_type[3]);
++	bpf_prog_detach2(prog_fd[0], map_fd[0], prog_attach_type[0]);
++	bpf_prog_detach2(prog_fd[1], map_fd[0], prog_attach_type[1]);
++	bpf_prog_detach2(prog_fd[0], map_fd[8], prog_attach_type[0]);
++	bpf_prog_detach2(prog_fd[2], map_fd[8], prog_attach_type[2]);
+ 
+ 	if (tx_prog_fd >= 0)
+ 		bpf_prog_detach2(tx_prog_fd, map_fd[1], BPF_SK_MSG_VERDICT);
+@@ -1783,18 +1795,6 @@ char *map_names[] = {
+ 	"tls_sock_map",
+ };
+ 
+-int prog_attach_type[] = {
+-	BPF_SK_SKB_STREAM_PARSER,
+-	BPF_SK_SKB_STREAM_VERDICT,
+-	BPF_SK_SKB_STREAM_VERDICT,
+-	BPF_CGROUP_SOCK_OPS,
+-	BPF_SK_MSG_VERDICT,
+-	BPF_SK_MSG_VERDICT,
+-	BPF_SK_MSG_VERDICT,
+-	BPF_SK_MSG_VERDICT,
+-	BPF_SK_MSG_VERDICT,
+-};
+-
+ int prog_type[] = {
+ 	BPF_PROG_TYPE_SK_SKB,
+ 	BPF_PROG_TYPE_SK_SKB,
+-- 
+2.43.0
 
-https://lore.kernel.org/all/87jzjnxaqf.fsf@cloudflare.com/
 
