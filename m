@@ -1,183 +1,125 @@
-Return-Path: <bpf+bounces-30316-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-30317-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5EF278CC595
-	for <lists+bpf@lfdr.de>; Wed, 22 May 2024 19:34:14 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 24E688CC5C6
+	for <lists+bpf@lfdr.de>; Wed, 22 May 2024 19:45:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C66421F22C46
-	for <lists+bpf@lfdr.de>; Wed, 22 May 2024 17:34:13 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 567E41C20E6D
+	for <lists+bpf@lfdr.de>; Wed, 22 May 2024 17:45:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A97C1422B8;
-	Wed, 22 May 2024 17:34:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E6E5145B17;
+	Wed, 22 May 2024 17:45:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mAfJcdHX"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="bDr7EHc1"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yb1-f169.google.com (mail-yb1-f169.google.com [209.85.219.169])
+Received: from mail-ed1-f49.google.com (mail-ed1-f49.google.com [209.85.208.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4AC4376048
-	for <bpf@vger.kernel.org>; Wed, 22 May 2024 17:34:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9DC7D46BF
+	for <bpf@vger.kernel.org>; Wed, 22 May 2024 17:45:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716399248; cv=none; b=joa7RX40zra6XLPWv3e+/kx5wl8YF28qeO+bxgvNwnvirwPykIQUfEZBW5BgS6hcnh8NpzZ/sGBlRUq15wFxkYdsot+EYAHi1XjFlk+293HOhQlYPeYeG8gHMn8S36+ymTOUdNVnsnMnqJyBQ2UfoUPzcwU48I3YT6CwU2pNRPc=
+	t=1716399907; cv=none; b=dOBOxHfsm+wcKhgDregu4HLGe3e1grqajr/RTVpj2/WHOKwtz0U6dsMHAmUiiQDmBo5lA27oBeoLYWh8iN9LKbhSJezwOoAX2vpTG9wJPStnztE0GmKdt53wX23XP+88FS1PDrstANXra/6tSeQXGbfZSkNTXDc4D+u21I6P3do=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716399248; c=relaxed/simple;
-	bh=PJRV17z0YKT7WdKwElz8Gtyvorzhx/mgkohKREg8JoU=;
+	s=arc-20240116; t=1716399907; c=relaxed/simple;
+	bh=3aciCKn2C/o/gcIQNjenoGJmglB3BvsgYJj98ymPKks=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=uMIs6yLLbvvke9oKDBM7N9EwXU9BdibPSVjQiUm5yfNron3o3B43qybAXaOX68KPWCHpelI+8mVRaeUpBkBSIZn+dW/lAB210xKCl9aoQ+e/+JyFJ38NeEKuvIA+pwa2RXGeiHA7mzPs493cj7ujOMSNjsPudBLtnPG0G3aIvL0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mAfJcdHX; arc=none smtp.client-ip=209.85.219.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yb1-f169.google.com with SMTP id 3f1490d57ef6-dc6cbe1ac75so921489276.1
-        for <bpf@vger.kernel.org>; Wed, 22 May 2024 10:34:07 -0700 (PDT)
+	 To:Cc:Content-Type; b=c5F3XtnSmsj1fF/zJinoYrx1VaPUEtuVIRxSxoJZvKAiql90zPnXO/9Zxf/IYuehRJsnAu9xNbjlmg78rDu4kNUNzFKkeQciI2G6dFsZkqQzW3njgr68UsnQ7ZQoQwbexobI/Cj9pWM/bGPvO7Maw0wi/LqGLaUl2+Mo9i0uiyQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=bDr7EHc1; arc=none smtp.client-ip=209.85.208.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ed1-f49.google.com with SMTP id 4fb4d7f45d1cf-572f6c56cdaso1351a12.0
+        for <bpf@vger.kernel.org>; Wed, 22 May 2024 10:45:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1716399246; x=1717004046; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1716399904; x=1717004704; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=u5njBBAVBmAl8lad7cqRkTCGeZGU2mFB9jktNk1LZ3s=;
-        b=mAfJcdHX56pGTMbhILp2PdVsFhkyIAZXBgLTFaSiiP5fi8Qp6j29ksabeeTWp7p7VS
-         WfUAyzCxbIX167fqvE71LZWpocSVwVyEHsoSzhvP7E/bgD+U4L8FAlfBV7BfxnFbDt8A
-         jeUz+oLz3jD+x88DJbedpVXaDAjd5ai2/iBJXNL5cbAjO7ii3uA2fE5iOlAG6bGSj8yh
-         ixcMMcTooL1JSXm5JG27HPMRY1y6yXBCjHBJVjSyBBwW9LesT+K+ernB2huEdU1jP+s0
-         SNucwQHzq5TWASjE+kbiU7kTSZURJpFJQE+3BD/ikWAb94Af8TMMR4bjA34X6T/oV+K2
-         5WHg==
+        bh=46egnT16tVwxmfnNBO145wZ0ppbM6j0s2l6EqdlS1tY=;
+        b=bDr7EHc1MQM5ge0wW8OyziytM+KI9E3eZrfmhBpB7f0+41x3yLL9B1B6ElILkf29yO
+         Pk8CobJhB3P8uOybyqMajfjrh99bd+lgZo+zxeBdSiJpC7BWjSFdtt2wnwuZ9t9H+Ycd
+         b1/Pb4jUGgbxIUoPA559+8ouk0/BKWUo9Hf79eerxdA1XwJpx6KzXMwes3KXToRoZPvu
+         MVe3Zz+NNTK4CuFUwIVrMzK9XJ5QLzrnAT6T3tl/er7MmBxzu8mgRuhx+1Nmsg9RdGTC
+         AfUE5qhwqdndruylfGtcaxXTqklGRid7IdYw3uY0QiLCeI4lEI4l/c5HezuDjyn6hpqF
+         1Saw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1716399246; x=1717004046;
+        d=1e100.net; s=20230601; t=1716399904; x=1717004704;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=u5njBBAVBmAl8lad7cqRkTCGeZGU2mFB9jktNk1LZ3s=;
-        b=w3R2hSJzmfCsUo07Y6k2Gj8MSffcHZIc3idaaTl3syHzEnt8SzOHYQC9xV6l5RVM7u
-         q5AeroplKkK1HBlM54TqecMhLOLHTjmK+164fGw56NgvqN/lsdOq0ORbmVDjFJfBm0qH
-         VdwYvdjA07PiQJJbsX7vYJbjk2ojzH8RXj3wxUCZ6NGcY6wmDDPfXSXH7xeaukuyot33
-         2f6JJf8/RPYHZbDjkZagEE6g9Vq3N3BQ3sP+nc3ubDD5pGYLmP+D1cY01BzSnD0Awi6+
-         J2lLxpIevNng/sW47SbCxPqGibE4hkL/KwrXL+mvhAWimoRzgtm+kYgY9o4Qiktg6TGF
-         k1Ow==
-X-Forwarded-Encrypted: i=1; AJvYcCUgDzbBaL/E0IXLcR5vPj60Plp1eChdCQYKf0Ab7ylOjVXJ+Si4zVuk0fO0EQ/ShzZ99fhqfOrTFH0sDNaVCxpgFMBi
-X-Gm-Message-State: AOJu0YxBEDj+CnV3s6lAYNCDGOdBQTa52cjdUbHQ0xarvnM2B6eY+iGq
-	F9bfm4fRNIB/Aj2pYfHbVZNut7NHRy8qtca6LTetsEYAGn7QxC4+5w9WYx5pmR4Dv/Up0wP6zsa
-	ntY2z2olzlE+IpB+copoHqCNFhhkTog==
-X-Google-Smtp-Source: AGHT+IFXXtsYQHwpduXnF3H/v7Vg3/z9N7IMlSDgwkVXe3caLTRe8yg4HqN7z5R4wUDgu97J7D6xDBR1CeZRCfw3u70=
-X-Received: by 2002:a25:ce8c:0:b0:df1:cdf5:d2c1 with SMTP id
- 3f1490d57ef6-df4e0982817mr2122838276.0.1716399246188; Wed, 22 May 2024
- 10:34:06 -0700 (PDT)
+        bh=46egnT16tVwxmfnNBO145wZ0ppbM6j0s2l6EqdlS1tY=;
+        b=Z7qlXPLeI7E5c/XA48Y7oTFsS253aCElwTCO4CIpRYRXui8gxEGl0OSN7O+ZZR/0DD
+         9EpFGsPxwrkbrsdJEAmzI7m+t0tEx9qnKdEEctdhljlgBaeRRwO/w8yHysXnwjrwdfyM
+         uU6mRJYED9ZS/fMoOT0OYwt9nRwQi6r1vKvE7hnZwktsFjT+rSf73YmNs5oS+YzRPjbL
+         9Cva4bPyBtw+Z2xCCMK9dtZ0ZkmquXY2E4p/30pNtzg2qvPnIbUDooSbZjzrdWGFlKBO
+         sGaL3CBXt7MomWNhIha4poBWowfVRlmoGLKtj6X3aVQzadu4VeBL1hsvuXRIJSu5irev
+         dE2w==
+X-Forwarded-Encrypted: i=1; AJvYcCUK5BeVB1DBCFqyTsSn1C9lXggRV5IXIJ5VHvXp8K9Fjw4LQQY5jbHIGAdVw2X/Bl6WJ8u25Yo99ood63TeWwtsqYXU
+X-Gm-Message-State: AOJu0YyikPFyV6DLzEwnqQfdGGmmLsaruz6wI/XlfTj7MYBfxz7DE3jG
+	JWj8CCBDzQLjinP37N1rdqssM1/44WsFi3avNRnccMKx2wmfySf4oLlYjYBTiDiEGySnvAUkMW9
+	RL7Q9C6iaSrwxZA6Jab0X1nIKpY1Bxwu/NfpS
+X-Google-Smtp-Source: AGHT+IEv8xe30GVN53LXujFuOLIK2Susr76GRSHxvaCa6Bcn17UOTkMRnicosfESbnqEFHs+NH8WrFmg8Sb7+erv/0Q=
+X-Received: by 2002:a05:6402:2685:b0:572:e6fb:ab07 with SMTP id
+ 4fb4d7f45d1cf-5783237b9e4mr236808a12.7.1716399903775; Wed, 22 May 2024
+ 10:45:03 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240510002942.1253354-1-thinker.li@gmail.com>
- <20240510002942.1253354-7-thinker.li@gmail.com> <20240521225252.GA3845630@bytedance>
- <033f0d5a-5e3d-4e53-9301-5075b6d74480@gmail.com>
-In-Reply-To: <033f0d5a-5e3d-4e53-9301-5075b6d74480@gmail.com>
-From: Amery Hung <ameryhung@gmail.com>
-Date: Wed, 22 May 2024 10:33:55 -0700
-Message-ID: <CAMB2axO4odR3L0jpnirB9-ng_CLmEPbmNhvnfdboOam5QGSgwA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 6/7] selftests/bpf: detach a struct_ops link
- from the subsystem managing it.
-To: Kui-Feng Lee <sinquersw@gmail.com>
-Cc: Kui-Feng Lee <thinker.li@gmail.com>, bpf@vger.kernel.org, ast@kernel.org, 
-	martin.lau@linux.dev, song@kernel.org, kernel-team@meta.com, 
-	andrii@kernel.org, kuifeng@meta.com
+References: <20240522005913.3540131-1-edliaw@google.com> <6caf3332-9ed9-4257-9532-4fd71c465c0d@linuxfoundation.org>
+ <20240522101349.565a745e@kernel.org>
+In-Reply-To: <20240522101349.565a745e@kernel.org>
+From: Edward Liaw <edliaw@google.com>
+Date: Wed, 22 May 2024 10:44:36 -0700
+Message-ID: <CAG4es9VZ3r34sUkp31+GCrA_XOq6WqwUUitPMQFViLL83mezYg@mail.gmail.com>
+Subject: Re: [PATCH v5 00/68] Define _GNU_SOURCE for sources using
+To: Jakub Kicinski <kuba@kernel.org>
+Cc: Shuah Khan <skhan@linuxfoundation.org>, Andrew Morton <akpm@linux-foundation.org>, 
+	shuah@kernel.org, =?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@digikod.net>, 
+	=?UTF-8?Q?G=C3=BCnther_Noack?= <gnoack@google.com>, 
+	Christian Brauner <brauner@kernel.org>, Richard Cochran <richardcochran@gmail.com>, 
+	Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, 
+	Albert Ou <aou@eecs.berkeley.edu>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, "David S. Miller" <davem@davemloft.net>, 
+	Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, linux-kernel@vger.kernel.org, 
+	linux-kselftest@vger.kernel.org, kernel-team@android.com, 
+	linux-security-module@vger.kernel.org, netdev@vger.kernel.org, 
+	linux-riscv@lists.infradead.org, bpf@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, May 21, 2024 at 5:31=E2=80=AFPM Kui-Feng Lee <sinquersw@gmail.com> =
-wrote:
+On Wed, May 22, 2024 at 10:13=E2=80=AFAM Jakub Kicinski <kuba@kernel.org> w=
+rote:
 >
->
->
-> On 5/21/24 15:56, Amery Hung wrote:
-> > On Thu, May 09, 2024 at 05:29:41PM -0700, Kui-Feng Lee wrote:
-> >> Not only a user space program can detach a struct_ops link, the subsys=
-tem
-> >> managing a link can also detach the link. This patch adds a kfunc to
-> >> simulate detaching a link by the subsystem managing it and makes sure =
-user
-> >> space programs get notified through epoll.
-> >>
-> >> Signed-off-by: Kui-Feng Lee <thinker.li@gmail.com>
-> >> ---
-> >>   .../selftests/bpf/bpf_testmod/bpf_testmod.c   | 42 ++++++++++++
-> >>   .../bpf/bpf_testmod/bpf_testmod_kfunc.h       |  1 +
-> >>   .../bpf/prog_tests/test_struct_ops_module.c   | 67 +++++++++++++++++=
-++
-> >>   .../selftests/bpf/progs/struct_ops_detach.c   |  7 ++
-> >>   4 files changed, 117 insertions(+)
-> >>
-> >> diff --git a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c b/t=
-ools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
-> >> index 1150e758e630..1f347eed6c18 100644
-> >> --- a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
-> >> +++ b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
-> >> @@ -741,6 +741,38 @@ __bpf_kfunc int bpf_kfunc_call_kernel_getpeername=
-(struct addr_args *args)
-> >>      return err;
-> >>   }
-> >>
-> >> +static DEFINE_SPINLOCK(detach_lock);
-> >> +static struct bpf_link *link_to_detach;
-> >> +
-> >> +__bpf_kfunc int bpf_dummy_do_link_detach(void)
-> >> +{
-> >> +    struct bpf_link *link;
-> >> +    int ret =3D -ENOENT;
-> >> +
-> >> +    /* A subsystem must ensure that a link is valid when detaching th=
-e
-> >> +     * link. In order to achieve that, the subsystem may need to obta=
-in
-> >> +     * a lock to safeguard a table that holds the pointer to the link
-> >> +     * being detached. However, the subsystem cannot invoke
-> >> +     * link->ops->detach() while holding the lock because other tasks
-> >> +     * may be in the process of unregistering, which could lead to
-> >> +     * acquiring the same lock and causing a deadlock. This is why
-> >> +     * bpf_link_inc_not_zero() is used to maintain the link's validit=
-y.
-> >> +     */
-> >> +    spin_lock(&detach_lock);
-> >> +    link =3D link_to_detach;
-> >> +    /* Make sure the link is still valid by increasing its refcnt */
-> >> +    if (link && IS_ERR(bpf_link_inc_not_zero(link)))
-> >> +            link =3D NULL;
-> >> +    spin_unlock(&detach_lock);
-> >> +
+> On Wed, 22 May 2024 10:19:33 -0600 Shuah Khan wrote:
+> > On 5/21/24 18:56, Edward Liaw wrote:
+> > > Centralizes the definition of _GNU_SOURCE into KHDR_INCLUDES and remo=
+ves
+> > > redefinitions of _GNU_SOURCE from source code.
+> > >
+> > > 809216233555 ("selftests/harness: remove use of LINE_MAX") introduced
+> > > asprintf into kselftest_harness.h, which is a GNU extension and needs
 > >
-> > I know it probably doesn't matter in this example, but where would you =
-set
-> > link_to_detach to NULL if reg and unreg can be called multiple times?
+> > Easier solution to define LINE_MAX locally. In gerenal it is advisable
+> > to not add local defines, but it is desirable in some cases to avoid
+> > churn like this one.
 >
-> For the same link if there is, reg() can be called only once
-> except if unreg() has been called for the previous reg() call on the
-> same link. Unreg() can only be called for once after a reg() call on the
-> same link.
->
-> For struct_ops map with link, unreg() is called by
-> bpf_struct_ops_map_link_dealloc() and bpf_struct_ops_map_link_detach().
-> The former one is called for a link only if the refcnt of the link has
-> dropped to zero. The later one is called for a link only if the refcnt
-> is not zero, and it holds update_mutex. Once unreg() has been called,
-> link->map will be cleared as well. So, unreg() should not be called
-> twice on the same link except it is registered again.
->
-> Does that answer your question?
->
+> Will the patch that Andrew applied:
+> https://lore.kernel.org/all/20240519213733.2AE81C32781@smtp.kernel.org/
+> make its way to Linus? As you say that's a much simpler fix.
 
-Thanks for the detailed explanation. That makes sense to me.
+Right, this patch series may be unnecessary after all, since the
+problem is fixed by that patch.
 
-> >
-> >> +    if (link) {
-> >> +            ret =3D link->ops->detach(link);
-> >> +            bpf_link_put(link);
-> >> +    }
-> >> +
-> >> +    return ret;
-> >> +}
-> >
-> > [...]
+It might be better to drop the series unless it is desirable to
+centralize the declaration of _GNU_SOURCE to the root Makefile /
+lib.mk.  If that is still wanted, maybe a more palatable approach
+would be to surround every instance of #define _GNU_SOURCE with
+#ifndef _GNU_SOURCE first, then induce the change to CFLAGS in lib.mk.
+That would prevent a partial merge from triggering build warnings.
 
