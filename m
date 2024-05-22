@@ -1,66 +1,50 @@
-Return-Path: <bpf+bounces-30340-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-30341-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 48CAA8CC85D
-	for <lists+bpf@lfdr.de>; Wed, 22 May 2024 23:57:38 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 412E88CC8D3
+	for <lists+bpf@lfdr.de>; Thu, 23 May 2024 00:10:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 73EED1C20DF5
-	for <lists+bpf@lfdr.de>; Wed, 22 May 2024 21:57:37 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 829B4280DED
+	for <lists+bpf@lfdr.de>; Wed, 22 May 2024 22:10:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6DA3D148839;
-	Wed, 22 May 2024 21:56:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 47252146A91;
+	Wed, 22 May 2024 22:10:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KZrQl0R/"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ODDZJX6f"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E50611487E3;
-	Wed, 22 May 2024 21:56:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB06980617;
+	Wed, 22 May 2024 22:10:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716414982; cv=none; b=X9Gp46fy1UQiPyZ3w/OZVP6p1gevtSlHb5Qa/Wueq395DchIdrD3Nptb9mYlyGhksjzUp8wP4fZ8Ue8PJuPqLiumRCopAh2/yhYvfBt0rpmUcelrFG978suxckF8v3mgC9hcAU6p8Y2phOxaZDhVtB98XANqiPDG/vaUkABZLXg=
+	t=1716415829; cv=none; b=jwDaRyIRvbznDgYb9XdQAF0Y1IOzjOm1+jbjxpTxHMkpSAVLAmocZZwDML35uqlUat1iBQ/6/URilaOwGzGxXp1Cz/+xHSdf6hNPnNDDhuvLWYWyQUeonBimpJGdJYpX+hbtNh6lITjbETb6NaWwVhNRlkqzuZ6XkLhl2MaI6pQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716414982; c=relaxed/simple;
-	bh=Z4r4Kvmu8bvtpq0F56IFeFFxcPQskBGSqOlqhqZnnvY=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=PnI2HvEELIiXNj9gIZlvRYvR8Z6X6UXSDwVysGVLZQ/8Zf0QyAxTMr5GvL3F8cJbOVc1x1XtJqQoHtWhcWNsMdSxgElbx5B7djmqUhcmIJHHpShGcxXjIruHg9DvmMhzV6t9n45AwSCHfW+lGEm+O6/RL2Ab7Hf7wWCV7ps52Z4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KZrQl0R/; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 190ABC4AF0A;
-	Wed, 22 May 2024 21:56:21 +0000 (UTC)
+	s=arc-20240116; t=1716415829; c=relaxed/simple;
+	bh=oSFNzMpDKtK4eH1YetPIyVYw4X0A4rqOFX0DW5tdTNc=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=mD123gVt3PddbyPPfcaA2B7cMYr+2jMIJQBCFuerI5IZwC0F3lten2ekcf8x/3W7Zk8rdfi31Qi54SJU0eJENVFVLIp0x4VzQq9BAf6YEQ5XaIB3brSTvQ/eyFP3XV0ZCSrkcKInTCihY8fyM3un9UBUoUhYJ8AzGwdGlWlXN20=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ODDZJX6f; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 7C33DC32781;
+	Wed, 22 May 2024 22:10:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1716414981;
-	bh=Z4r4Kvmu8bvtpq0F56IFeFFxcPQskBGSqOlqhqZnnvY=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=KZrQl0R/lbG8f4A7szWgDJYqmLYn7KOIeQeMfrtQxitWHeoO/sYd4zuepi/Rp+fCI
-	 e4zAfV5f47LS1zMIKgwVOVtSlhSN6mc796VSgUuWO1V/VqEKwiZzHxfklGrRUk2U6r
-	 4PrqUUFqGuC/ZiWBBGnt5Ge70Ff7NVneaTImxXAsmLC4VLZjxAjocOupoa0Zrdqp45
-	 XlYv0cFvjCOL93fJCOTtu/WaCQYDa3c9ihmfNHFjhhYVtfX3tYDoRCDjBHU/DMAxUk
-	 /OC/cN+YzUX2/D3D9PWPSUKFvXGy4aZhlLzz6J8lMXJ2QniKoGTumkiGYQ0W5QPJsw
-	 9BIz6HXdxxjew==
-From: Namhyung Kim <namhyung@kernel.org>
-To: Arnaldo Carvalho de Melo <acme@kernel.org>,
-	Ian Rogers <irogers@google.com>,
-	Kan Liang <kan.liang@linux.intel.com>
-Cc: Jiri Olsa <jolsa@kernel.org>,
-	Adrian Hunter <adrian.hunter@intel.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Ingo Molnar <mingo@kernel.org>,
-	LKML <linux-kernel@vger.kernel.org>,
-	linux-perf-users@vger.kernel.org,
-	KP Singh <kpsingh@kernel.org>,
-	Stephane Eranian <eranian@google.com>,
-	Song Liu <song@kernel.org>,
-	bpf@vger.kernel.org
-Subject: [PATCH 6/6] perf record: Add --setup-filter option
-Date: Wed, 22 May 2024 14:56:16 -0700
-Message-ID: <20240522215616.762195-7-namhyung@kernel.org>
-X-Mailer: git-send-email 2.45.1.288.g0e0cd299f1-goog
-In-Reply-To: <20240522215616.762195-1-namhyung@kernel.org>
-References: <20240522215616.762195-1-namhyung@kernel.org>
+	s=k20201202; t=1716415829;
+	bh=oSFNzMpDKtK4eH1YetPIyVYw4X0A4rqOFX0DW5tdTNc=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=ODDZJX6faefd3ZMlCma75vd8YuzK2IBEBbPsiJiErLHTIqhie1EY2gjtENuJKNO/w
+	 AMOHu7huK5i/b6Oi8231Od5OxJaNiwVEdhjCNkn/aeo/brPfPda17gDL3nwRi0/XA7
+	 spU8wPqzcFohQ5JtVHvjrc0eZrtkTTOxzgoCQrKJw5cwamIFEuWMUpze/rn/m2ggE3
+	 MSkXnJV2MSOhn0JfcRhNK7hYbKQLaAm+7JS7w2j7/9Aw7nmzjV5kNyuzLQpV3Bnrxc
+	 JTSwNhc/2cKbqGUyGVZekDUhkAZ6VTRat/Z+t9RqpKtYl9+wYz86QApKYO0aKpnc0J
+	 FOZqgawrDYOPQ==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 5F9BAC4361C;
+	Wed, 22 May 2024 22:10:29 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -68,82 +52,53 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf-next v4 1/2] net: netfilter: Make ct zone opts
+ configurable for bpf ct helpers
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <171641582938.6470.8952877618010663411.git-patchwork-notify@kernel.org>
+Date: Wed, 22 May 2024 22:10:29 +0000
+References: <20240522050712.732558-1-brad@faucet.nz>
+In-Reply-To: <20240522050712.732558-1-brad@faucet.nz>
+To: Brad Cowie <brad@faucet.nz>
+Cc: bpf@vger.kernel.org, martin.lau@linux.dev, lorenzo@kernel.org,
+ memxor@gmail.com, pablo@netfilter.org, davem@davemloft.net, kuba@kernel.org,
+ pabeni@redhat.com, ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+ song@kernel.org, john.fastabend@gmail.com, sdf@google.com, jolsa@kernel.org,
+ netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
+ netdev@vger.kernel.org
 
-To allow BPF filters for unprivileged users it needs to pin the BPF
-objects to BPF-fs first.  Let's add a new option to pin and unpin the
-objects easily.
+Hello:
 
-  $ sudo perf record --setup-filter pin
+This series was applied to bpf/bpf-next.git (master)
+by Martin KaFai Lau <martin.lau@kernel.org>:
 
-The above command would pin BPF program and maps for the filter when the
-system has BPF-fs (usually at /sys/fs/bpf/).  To unpin the objects,
-users can run the following command (as root).
+On Wed, 22 May 2024 17:07:11 +1200 you wrote:
+> Add ct zone id and direction to bpf_ct_opts so that arbitrary ct zones
+> can be used for xdp/tc bpf ct helper functions bpf_{xdp,skb}_ct_alloc
+> and bpf_{xdp,skb}_ct_lookup.
+> 
+> Signed-off-by: Brad Cowie <brad@faucet.nz>
+> ---
+> v2 -> v3:
+>   - Remove whitespace changes
+>   - Add reserved padding options
+>   - If ct_zone_id is set when opts size isn't 16, return -EINVAL
+>   - Remove ct_zone_flags
+>     (not used by nf_conntrack_alloc or nf_conntrack_find_get)
+> 
+> [...]
 
-  $ sudo perf record --setup-filter unpin
+Here is the summary with links:
+  - [bpf-next,v4,1/2] net: netfilter: Make ct zone opts configurable for bpf ct helpers
+    https://git.kernel.org/bpf/bpf-next/c/ece4b2969041
+  - [bpf-next,v4,2/2] selftests/bpf: Update tests for new ct zone opts for nf_conntrack kfuncs
+    https://git.kernel.org/bpf/bpf-next/c/a87f34e742d2
 
-Signed-off-by: Namhyung Kim <namhyung@kernel.org>
----
- tools/perf/Documentation/perf-record.txt |  5 +++++
- tools/perf/builtin-record.c              | 15 +++++++++++++++
- 2 files changed, 20 insertions(+)
-
-diff --git a/tools/perf/Documentation/perf-record.txt b/tools/perf/Documentation/perf-record.txt
-index 6015fdd08fb6..e51a492dc8e0 100644
---- a/tools/perf/Documentation/perf-record.txt
-+++ b/tools/perf/Documentation/perf-record.txt
-@@ -828,6 +828,11 @@ filtered through the mask provided by -C option.
- 	only, as of now.  So the applications built without the frame
- 	pointer might see bogus addresses.
- 
-+--setup-filter=<action>::
-+	Prepare BPF filter to be used by regular users.  The action should be
-+	either "pin" or "unpin".  The filter can be used after it's pinned.
-+
-+
- include::intel-hybrid.txt[]
- 
- SEE ALSO
-diff --git a/tools/perf/builtin-record.c b/tools/perf/builtin-record.c
-index 3a5a24dec356..4dababd0d338 100644
---- a/tools/perf/builtin-record.c
-+++ b/tools/perf/builtin-record.c
-@@ -171,6 +171,7 @@ struct record {
- 	bool			timestamp_filename;
- 	bool			timestamp_boundary;
- 	bool			off_cpu;
-+	const char		*filter_action;
- 	struct switch_output	switch_output;
- 	unsigned long long	samples;
- 	unsigned long		output_max_size;	/* = 0: unlimited */
-@@ -3573,6 +3574,8 @@ static struct option __record_options[] = {
- 			    "write collected trace data into several data files using parallel threads",
- 			    record__parse_threads),
- 	OPT_BOOLEAN(0, "off-cpu", &record.off_cpu, "Enable off-cpu analysis"),
-+	OPT_STRING(0, "setup-filter", &record.filter_action, "pin|unpin",
-+		   "BPF filter action"),
- 	OPT_END()
- };
- 
-@@ -4102,6 +4105,18 @@ int cmd_record(int argc, const char **argv)
- 		pr_warning("WARNING: --timestamp-filename option is not available in parallel streaming mode.\n");
- 	}
- 
-+	if (rec->filter_action) {
-+		if (!strcmp(rec->filter_action, "pin"))
-+			err = perf_bpf_filter__pin();
-+		else if (!strcmp(rec->filter_action, "unpin"))
-+			err = perf_bpf_filter__unpin();
-+		else {
-+			pr_warning("Unknown BPF filter action: %s\n", rec->filter_action);
-+			err = -EINVAL;
-+		}
-+		goto out_opts;
-+	}
-+
- 	/*
- 	 * Allow aliases to facilitate the lookup of symbols for address
- 	 * filters. Refer to auxtrace_parse_filters().
+You are awesome, thank you!
 -- 
-2.45.1.288.g0e0cd299f1-goog
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
 
 
