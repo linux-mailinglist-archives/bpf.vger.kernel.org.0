@@ -1,311 +1,170 @@
-Return-Path: <bpf+bounces-30180-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-30182-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1C93B8CB638
-	for <lists+bpf@lfdr.de>; Wed, 22 May 2024 01:00:08 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8062E8CB6C2
+	for <lists+bpf@lfdr.de>; Wed, 22 May 2024 02:31:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8329E1F21DA5
-	for <lists+bpf@lfdr.de>; Tue, 21 May 2024 23:00:07 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2AFA028433F
+	for <lists+bpf@lfdr.de>; Wed, 22 May 2024 00:31:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1AEFB149DFF;
-	Tue, 21 May 2024 22:59:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E848A23CB;
+	Wed, 22 May 2024 00:31:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YxgmLrGx"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Ri/9V2JG"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com [209.85.218.45])
+Received: from mail-yb1-f174.google.com (mail-yb1-f174.google.com [209.85.219.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C338814A0BD
-	for <bpf@vger.kernel.org>; Tue, 21 May 2024 22:59:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F04EB1865
+	for <bpf@vger.kernel.org>; Wed, 22 May 2024 00:31:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716332395; cv=none; b=cnpFeKXBmiTODNR8ToDT5CVXaTvNPdlUqtNriW14FSUPdA4z2Y6E44shZnR9HtzbPRin+cZT/M2h77kVcc+fY/s9wgzEA4fsKdwq08aYUbMQ+JWk0Qb6v6EmFODnBQUFYsnKBVe3QdtzBIkgQZPC/+W50WBxWDnh60tYC7VH/So=
+	t=1716337877; cv=none; b=d+dfaYdKFvTqRt6rpmGQPCn0/qp577Eyuow4eFutfpP8aVuD79t504X4ZOlU1n4nj4l7TbHrBmrUHbukEteKbDyWelzb4tloV+434wtWNzeNltLS7Em5p2/ivx3y5aUq4t6fugOrDn1Gr70yhTG67muKv/DZmf9WjtksKAKFEc4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716332395; c=relaxed/simple;
-	bh=Qkf+WjdMwVJE8ohLc88NT1D6coogcJqPXc77rnzyRmU=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=G/H5sgiPMAFg49FdjL/bQpIwzVGv6FApl0r4Szg51Fwn2lvaPt65/cN3WMMP7rMKMsxN3EI/3e7CJmqch9Vj2Xkvp3u7GGlX6yFEW07grLK2m4+WiftwYpqRuGozBS1qPMltUkVcH/x3IUK48EnKpNEYdsieNazrzEEUHWSTvPw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=YxgmLrGx; arc=none smtp.client-ip=209.85.218.45
+	s=arc-20240116; t=1716337877; c=relaxed/simple;
+	bh=EfkIEPItPSzRwVj9H3pZ+l86Tv5tNrlMU7YPt3ktJwM=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=aT5IgcWhaJRiw7RZwLlfRSq0kLQJncjUF79VkzBvThX/X1tmV6gDGmkMe8SbH6OjT9tezwodfGFVe1MAxRVnloKgNiuPHsM8QJH6pZ630LmF6CoybRg2RgsF+/FS0ZcNNd9+a3TMOzzRPAWc+fjhjKl5c4dVHJsz1jmFg8KcLXI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Ri/9V2JG; arc=none smtp.client-ip=209.85.219.174
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-a5a5cb0e6b7so943199466b.1
-        for <bpf@vger.kernel.org>; Tue, 21 May 2024 15:59:53 -0700 (PDT)
+Received: by mail-yb1-f174.google.com with SMTP id 3f1490d57ef6-df4ada85a82so3197264276.2
+        for <bpf@vger.kernel.org>; Tue, 21 May 2024 17:31:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1716332392; x=1716937192; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=BoWs5O4G5FHpPR3fSb44Wf4A70/dwyTbWBoYWSh7uis=;
-        b=YxgmLrGxhIFqLbi+MThRB6yqD2KooxTSzPjPqGbfqjzGqZYHPqm8wcz/ySyGoKIwQ5
-         TbLCCXO2erE957b/Z8L1qvIwWomBUGECLc1Ro4uXUuKaPzi88QdmsaD4mikP2UThPoAS
-         iobpHHF9KnwMeyu+uwY27l0TxOmy17y1K8OjpPsaU3fRrDc9tEUSOwkxjMzKdsj6dSmy
-         dUtotyD3wxdunTto33yCdEUWCyD7Ma5u8i11A7KV2jnoxXtfNPC/vh/qMT5sNMaOT6On
-         Kom5AmpaPUYhJsh2FokzOtcLa81/U8giLVeOoNpsLJh0oLr+nHbeCcWzT3Al19mjwr58
-         rwvw==
+        d=gmail.com; s=20230601; t=1716337875; x=1716942675; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=ryYYAPa2pw5DSEA6bKabjewmnEwdR/um6nOF3WArx30=;
+        b=Ri/9V2JGTE50YXQUjmG1tOwzZ9EUYQBscwC/2tGZtBHlD/jWTByq+TEujR6QRhS7aP
+         ULekAwYMbuSZM9vlM5fbVvz4zocxaCpuS3NqGv1oJIE5bvWdbh+HYPaVj4k3SgQmDThm
+         C+WOOr8ya2h+rjpCvKPwfPCKakkup7+E1MJsApLtAD5SlZ7xk4PLeh1MAVXFQB5uY+TW
+         a43BVcrVITOon09pseVFmHN8B9emWuT6y29U5mgAMSMyv9s10JJjlKrL/6HgISa7DD86
+         SO4lxPR4BtAymZWFjtmnfriW1ODbrZf6cfvouMLdRxKJ+Ue28XS/MUYscmcVtAI4XspC
+         enzQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1716332392; x=1716937192;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=BoWs5O4G5FHpPR3fSb44Wf4A70/dwyTbWBoYWSh7uis=;
-        b=plgEHTiW/2yhWgm3w3E6MVfyBaao6jvUZhXrxRKnVPAHj/f2sJathdBHl6j/PYAUQt
-         71aKqECMsi97HzhALYzt8LSPwRRXdK5krRCxptg7VoArbct3ic88Duk3rrz+ed9xYbF5
-         n66FhtiDq2NntvBkjlJzyWArrEQN7th43ue3q+yZ3Qwu2eOC1psOTTAVZRkYCQZwztPe
-         pX7xcOzX6lCiXCkUXaOYkUmvvju9P6PMn5wdI/z6I+smuhv0W4kNvk9DU1LraQn0tUeX
-         yqIACRtZIrPqT9HQvRlw8iOZ2wxp7LfZ9WyEqQgXYo9wupzzGJTltgOlFV6rPAYq/HbR
-         Fu7w==
-X-Forwarded-Encrypted: i=1; AJvYcCUY7PBkjoLXCPgkEGNMtBE/m0sfvyiG0ZZYu+Qu4D4+IgdkW5peqwL/LY3TdWPopDILKjOPTk4ac9fzNEUcl0U+LeNi
-X-Gm-Message-State: AOJu0YzWtg5QCHe5X68YDBOJcgFcdSNKBcsavC70jdZbiRddCKManJXp
-	+OnlWc1si7aJtKkuObn87mwrjW3s+A1omK13kdRQnJb1o5r5Kyryv4zj+FmrbILyVIVGE7NrIUd
-	eTTq1p5gnrEPJfBbofmEdMCklGz5mDA==
-X-Google-Smtp-Source: AGHT+IGUdK18qcdPDfW3T5n5ms+OEeief12kX74B0I1Au7JpwPNqFiuJwY09asZDzHmmJ997BVpa1XXk5dcaTrlLjR4=
-X-Received: by 2002:a17:906:3a90:b0:a59:9b52:cfc5 with SMTP id
- a640c23a62f3a-a62280a05a2mr9277266b.37.1716332391977; Tue, 21 May 2024
- 15:59:51 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1716337875; x=1716942675;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ryYYAPa2pw5DSEA6bKabjewmnEwdR/um6nOF3WArx30=;
+        b=MhC3fZd3LK5v5VXYaNxIMGAaN1mqr35ABgFj/5Xlc2srchhtBc6fEwo7Cz19THcr3N
+         CDqDZgnEWYtEBj9syrEuL2x1+Z1IFifawxwAt86XTDLzaDPC6mK3ZGjdmKHnzyY8mGD6
+         Xs6bOQF8BaNGlZg/8DGNoJebja1+uGjHuKQ7XGBRlOMztqU58KVNDnqKrSb9Ilu80IX8
+         ib3pUslM+Q4rUg97vhr0QKJdVLpnkpEQ5C010RL7p4YXtEuRMPi9MUSPB10JuJp+khDk
+         +0GRXqeBGsSjKrCWjOizREvcLjNh4KCKOYI6tJw1QUF7zHShy0QA0kCBK1zVON0fN6We
+         Wy9Q==
+X-Gm-Message-State: AOJu0YwdI2tWT2UMrhvA/OXjOA8xg31sGwGziycPcotoInDQRsuw57N8
+	E0dIgt14B7ux+RMHHVHM+gX46iSQnVD9BPijsd3JjLWxBLUtnyXg
+X-Google-Smtp-Source: AGHT+IFZgSBhLXi6vLn9Um6oQn67zqrX1nOYv27AYijRuNTHL7csKn8YMZWXa/+5FoNZwSZwGcv2rw==
+X-Received: by 2002:a25:1c4:0:b0:deb:3c96:cc73 with SMTP id 3f1490d57ef6-df4e0e362b9mr914824276.42.1716337874972;
+        Tue, 21 May 2024 17:31:14 -0700 (PDT)
+Received: from ?IPV6:2600:1700:6cf8:1240:1437:59a6:29be:9221? ([2600:1700:6cf8:1240:1437:59a6:29be:9221])
+        by smtp.gmail.com with ESMTPSA id 3f1490d57ef6-debd3713845sm5771873276.3.2024.05.21.17.31.13
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 21 May 2024 17:31:14 -0700 (PDT)
+Message-ID: <033f0d5a-5e3d-4e53-9301-5075b6d74480@gmail.com>
+Date: Tue, 21 May 2024 17:31:12 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240517102246.4070184-1-alan.maguire@oracle.com> <20240517102246.4070184-11-alan.maguire@oracle.com>
-In-Reply-To: <20240517102246.4070184-11-alan.maguire@oracle.com>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Tue, 21 May 2024 15:59:36 -0700
-Message-ID: <CAEf4BzYt7QwXXW41B6H5+OAQ81r7eCNf4YVYVd8wFHDceXJ4+g@mail.gmail.com>
-Subject: Re: [PATCH v4 bpf-next 10/11] libbpf,bpf: share BTF relocate-related
- code with kernel
-To: Alan Maguire <alan.maguire@oracle.com>
-Cc: andrii@kernel.org, jolsa@kernel.org, acme@redhat.com, 
-	quentin@isovalent.com, eddyz87@gmail.com, mykolal@fb.com, ast@kernel.org, 
-	daniel@iogearbox.net, martin.lau@linux.dev, song@kernel.org, 
-	yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org, 
-	sdf@google.com, haoluo@google.com, houtao1@huawei.com, bpf@vger.kernel.org, 
-	masahiroy@kernel.org, mcgrof@kernel.org, nathan@kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH bpf-next v3 6/7] selftests/bpf: detach a struct_ops link
+ from the subsystem managing it.
+To: Amery Hung <ameryhung@gmail.com>, Kui-Feng Lee <thinker.li@gmail.com>
+Cc: bpf@vger.kernel.org, ast@kernel.org, martin.lau@linux.dev,
+ song@kernel.org, kernel-team@meta.com, andrii@kernel.org, kuifeng@meta.com
+References: <20240510002942.1253354-1-thinker.li@gmail.com>
+ <20240510002942.1253354-7-thinker.li@gmail.com>
+ <20240521225252.GA3845630@bytedance>
+Content-Language: en-US
+From: Kui-Feng Lee <sinquersw@gmail.com>
+In-Reply-To: <20240521225252.GA3845630@bytedance>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Fri, May 17, 2024 at 3:24=E2=80=AFAM Alan Maguire <alan.maguire@oracle.c=
-om> wrote:
->
-> Share relocation implementation with the kernel.  As part of this,
-> we also need the type/string visitation functions so add them to a
-> btf_common.c file that also gets shared with the kernel. Relocation
-> code in kernel and userspace is identical save for the impementation
 
-typo: implementation
 
-> of the reparenting of split BTF to the relocated base BTF and
-> retrieval of BTF header from "struct btf"; these small functions
-> need separate user-space and kernel implementations.
->
-> One other wrinkle on the kernel side is we have to map .BTF.ids in
-> modules as they were generated with the type ids used at BTF encoding
-> time. btf_relocate() optionally returns an array mapping from old BTF
-> ids to relocated ids, so we use that to fix up these references where
-> needed for kfuncs.
->
-> Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
-> ---
->  include/linux/btf.h          |  45 ++++++++++
->  kernel/bpf/Makefile          |   8 ++
->  kernel/bpf/btf.c             | 166 +++++++++++++++++++++++++----------
->  tools/lib/bpf/Build          |   2 +-
->  tools/lib/bpf/btf.c          | 130 ---------------------------
->  tools/lib/bpf/btf_common.c   | 143 ++++++++++++++++++++++++++++++
+On 5/21/24 15:56, Amery Hung wrote:
+> On Thu, May 09, 2024 at 05:29:41PM -0700, Kui-Feng Lee wrote:
+>> Not only a user space program can detach a struct_ops link, the subsystem
+>> managing a link can also detach the link. This patch adds a kfunc to
+>> simulate detaching a link by the subsystem managing it and makes sure user
+>> space programs get notified through epoll.
+>>
+>> Signed-off-by: Kui-Feng Lee <thinker.li@gmail.com>
+>> ---
+>>   .../selftests/bpf/bpf_testmod/bpf_testmod.c   | 42 ++++++++++++
+>>   .../bpf/bpf_testmod/bpf_testmod_kfunc.h       |  1 +
+>>   .../bpf/prog_tests/test_struct_ops_module.c   | 67 +++++++++++++++++++
+>>   .../selftests/bpf/progs/struct_ops_detach.c   |  7 ++
+>>   4 files changed, 117 insertions(+)
+>>
+>> diff --git a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
+>> index 1150e758e630..1f347eed6c18 100644
+>> --- a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
+>> +++ b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
+>> @@ -741,6 +741,38 @@ __bpf_kfunc int bpf_kfunc_call_kernel_getpeername(struct addr_args *args)
+>>   	return err;
+>>   }
+>>   
+>> +static DEFINE_SPINLOCK(detach_lock);
+>> +static struct bpf_link *link_to_detach;
+>> +
+>> +__bpf_kfunc int bpf_dummy_do_link_detach(void)
+>> +{
+>> +	struct bpf_link *link;
+>> +	int ret = -ENOENT;
+>> +
+>> +	/* A subsystem must ensure that a link is valid when detaching the
+>> +	 * link. In order to achieve that, the subsystem may need to obtain
+>> +	 * a lock to safeguard a table that holds the pointer to the link
+>> +	 * being detached. However, the subsystem cannot invoke
+>> +	 * link->ops->detach() while holding the lock because other tasks
+>> +	 * may be in the process of unregistering, which could lead to
+>> +	 * acquiring the same lock and causing a deadlock. This is why
+>> +	 * bpf_link_inc_not_zero() is used to maintain the link's validity.
+>> +	 */
+>> +	spin_lock(&detach_lock);
+>> +	link = link_to_detach;
+>> +	/* Make sure the link is still valid by increasing its refcnt */
+>> +	if (link && IS_ERR(bpf_link_inc_not_zero(link)))
+>> +		link = NULL;
+>> +	spin_unlock(&detach_lock);
+>> +
+> 
+> I know it probably doesn't matter in this example, but where would you set
+> link_to_detach to NULL if reg and unreg can be called multiple times?
 
-not a big fan of "btf_common" name, it tells nothing about what that
-is about. Thinking a bit ahead, we are going to replace all those
-callback-calling visitor helpers with iterators soon, so maybe we can
-call this btf_iter.c (or at least btf_utils.c) for a more meaningful
-name?
+For the same link if there is, reg() can be called only once
+except if unreg() has been called for the previous reg() call on the
+same link. Unreg() can only be called for once after a reg() call on the
+same link.
 
->  tools/lib/bpf/btf_relocate.c |  23 +++++
->  7 files changed, 341 insertions(+), 176 deletions(-)
->  create mode 100644 tools/lib/bpf/btf_common.c
->
+For struct_ops map with link, unreg() is called by
+bpf_struct_ops_map_link_dealloc() and bpf_struct_ops_map_link_detach().
+The former one is called for a link only if the refcnt of the link has
+dropped to zero. The later one is called for a link only if the refcnt
+is not zero, and it holds update_mutex. Once unreg() has been called,
+link->map will be cleared as well. So, unreg() should not be called
+twice on the same link except it is registered again.
 
-[...]
+Does that answer your question?
 
->  #ifdef CONFIG_BPF_SYSCALL
->  const struct btf_type *btf_type_by_id(const struct btf *btf, u32 type_id=
-);
-> +void btf_set_base_btf(struct btf *btf, struct btf *base_btf);
-> +int btf_relocate(struct btf *btf, const struct btf *base_btf, __u32 **ma=
-p_ids);
-> +int btf_type_visit_type_ids(struct btf_type *t, type_id_visit_fn visit, =
-void *ctx);
-> +int btf_type_visit_str_offs(struct btf_type *t, str_off_visit_fn visit, =
-void *ctx);
->  const char *btf_name_by_offset(const struct btf *btf, u32 offset);
-> +const char *btf_str_by_offset(const struct btf *btf, u32 offset);
->  struct btf *btf_parse_vmlinux(void);
->  struct btf *bpf_prog_get_target_btf(const struct bpf_prog *prog);
->  u32 *btf_kfunc_id_set_contains(const struct btf *btf, u32 kfunc_btf_id,
-> @@ -543,6 +564,30 @@ static inline const struct btf_type *btf_type_by_id(=
-const struct btf *btf,
->  {
->         return NULL;
->  }
-> +
-> +static inline void btf_set_base_btf(struct btf *btf, struct btf *base_bt=
-f)
-> +{
-> +       return;
-> +}
-> +
-> +static inline int btf_relocate(void *log, struct btf *btf, const struct =
-btf *base_btf,
-> +                              __u32 **map_ids)
-> +{
-> +       return 0;
-
--EOPNOTSUPP?
-
-> +}
-> +
-> +static inline int btf_type_visit_type_ids(struct btf_type *t, type_id_vi=
-sit_fn visit,
-> +                                         void *ctx)
-> +{
-> +       return 0;
-
-ditto
-
-> +}
-> +
-> +static inline int btf_type_visit_str_offs(struct btf_type *t, str_off_vi=
-sit_fn visit,
-> +                                         void *ctx)
-> +{
-> +       return 0;
-
-ditto
-
-> +}
-> +
->  static inline const char *btf_name_by_offset(const struct btf *btf,
->                                              u32 offset)
->  {
-> diff --git a/kernel/bpf/Makefile b/kernel/bpf/Makefile
-> index 7eb9ad3a3ae6..612eef1228ca 100644
-> --- a/kernel/bpf/Makefile
-> +++ b/kernel/bpf/Makefile
-> @@ -52,3 +52,11 @@ obj-$(CONFIG_BPF_PRELOAD) +=3D preload/
->  obj-$(CONFIG_BPF_SYSCALL) +=3D relo_core.o
->  $(obj)/relo_core.o: $(srctree)/tools/lib/bpf/relo_core.c FORCE
->         $(call if_changed_rule,cc_o_c)
-> +
-> +obj-$(CONFIG_BPF_SYSCALL) +=3D btf_common.o
-> +$(obj)/btf_common.o: $(srctree)/tools/lib/bpf/btf_common.c FORCE
-> +       $(call if_changed_rule,cc_o_c)
-> +
-> +obj-$(CONFIG_BPF_SYSCALL) +=3D btf_relocate.o
-> +$(obj)/btf_relocate.o: $(srctree)/tools/lib/bpf/btf_relocate.c FORCE
-> +       $(call if_changed_rule,cc_o_c)
-
-I believe make should allow us to do this with one rule, see all those
-magical % rules
-
-> diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-> index 821063660d9f..ebc127da4d79 100644
-> --- a/kernel/bpf/btf.c
-> +++ b/kernel/bpf/btf.c
-> @@ -274,6 +274,7 @@ struct btf {
->         u32 start_str_off; /* first string offset (0 for base BTF) */
->         char name[MODULE_NAME_LEN];
->         bool kernel_btf;
-> +       __u32 *base_map; /* map from distilled base BTF -> vmlinux BTF id=
-s */
-
-please point out that it's an ID map in the name, so base_id_map. map
-by itself is confusing.
-
->  };
->
->  enum verifier_phase {
-> @@ -530,6 +531,11 @@ static bool btf_type_is_decl_tag_target(const struct=
- btf_type *t)
->                btf_type_is_var(t) || btf_type_is_typedef(t);
->  }
->
-> +static bool btf_is_vmlinux(const struct btf *btf)
-> +{
-> +       return btf->kernel_btf && !btf->base_btf;
-
-there is actually a helper like this somewhere in the kernel. I can't
-recall the name, but it checks the name ("vmlinux"), it would be nice
-to avoid duplication of logic
-
-> +}
-> +
->  u32 btf_nr_types(const struct btf *btf)
->  {
->         u32 total =3D 0;
-> @@ -772,7 +778,7 @@ static bool __btf_name_char_ok(char c, bool first)
->         return true;
->  }
->
-
-[...]
-
-> +struct btf *btf_parse_vmlinux(void)
-> +{
-> +       struct btf_verifier_env *env =3D NULL;
-> +       struct bpf_verifier_log *log;
-> +       struct btf *btf;
-> +       int err;
-> +
-> +       env =3D kzalloc(sizeof(*env), GFP_KERNEL | __GFP_NOWARN);
-> +       if (!env)
-> +               return ERR_PTR(-ENOMEM);
-> +
-> +       log =3D &env->log;
-> +       log->level =3D BPF_LOG_KERNEL;
-> +       btf =3D btf_parse_base(env, "vmlinux", __start_BTF, __stop_BTF - =
-__start_BTF);
-> +       if (!IS_ERR(btf)) {
-
-nit: let's keep success case logic linear, instead of nesting it. It's
-better to have a few goto err_out for error condition, but have a
-linear unnested steps for success
-
-> +               /* btf_parse_vmlinux() runs under bpf_verifier_lock */
-> +               bpf_ctx_convert.t =3D btf_type_by_id(btf, bpf_ctx_convert=
-_btf_id[0]);
-> +               err =3D btf_alloc_id(btf);
-> +               if (err) {
-> +                       btf_free(btf);
-> +                       btf =3D ERR_PTR(err);
-> +               }
-> +       }
-> +       btf_verifier_env_free(env);
-> +       return btf;
-> +}
-> +
->  #ifdef CONFIG_DEBUG_INFO_BTF_MODULES
->
-> -static struct btf *btf_parse_module(const char *module_name, const void =
-*data, unsigned int data_size)
-> +/* If .BTF_ids section was created with distilled base BTF, both base an=
-d
-> + * split BTF ids will need to be mapped to actual base/split ids for
-> + * BTF now that it has been relocated.
-> + */
-> +static __u32 btf_id_map(const struct btf *btf, __u32 id)
-
-... and this should be named "btf_map_id" (prefix + verb + subject),
-IMO (or even better btf_remap_id or btf_relocate_id, actually)
-
->  {
-> +       if (!btf->base_btf || !btf->base_map)
-> +               return id;
-> +       return btf->base_map[id];
-> +}
-> +
-
-[...]
+> 
+>> +	if (link) {
+>> +		ret = link->ops->detach(link);
+>> +		bpf_link_put(link);
+>> +	}
+>> +
+>> +	return ret;
+>> +}
+> 
+> [...]
 
