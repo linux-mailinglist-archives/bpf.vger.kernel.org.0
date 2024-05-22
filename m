@@ -1,112 +1,174 @@
-Return-Path: <bpf+bounces-30285-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-30286-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id D43768CBF3D
-	for <lists+bpf@lfdr.de>; Wed, 22 May 2024 12:26:57 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 09C858CBF45
+	for <lists+bpf@lfdr.de>; Wed, 22 May 2024 12:31:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 76E5A1F2326D
-	for <lists+bpf@lfdr.de>; Wed, 22 May 2024 10:26:57 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9D636B21284
+	for <lists+bpf@lfdr.de>; Wed, 22 May 2024 10:31:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 34747823D9;
-	Wed, 22 May 2024 10:26:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b="M/fcUBwc"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D2C280035;
+	Wed, 22 May 2024 10:31:09 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f53.google.com (mail-ej1-f53.google.com [209.85.218.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from www262.sakura.ne.jp (www262.sakura.ne.jp [202.181.97.72])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A59381ADB
-	for <bpf@vger.kernel.org>; Wed, 22 May 2024 10:26:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 81F3150269
+	for <bpf@vger.kernel.org>; Wed, 22 May 2024 10:31:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.181.97.72
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716373610; cv=none; b=hMdzKFAEv1M0yUy9hFyTQgivgDN0s5vbkEE/wM2PHETAXN6hLppxAn6cT6oqO6L8mghv/TBAOkmuhlewk3o68D+t+whmGAdlXRSENAE0oJdngwxRCq+L91UjBN1Ma7gLB9FdaQGqrFnj5sV3iHceIwrViV7R6qutIpMNacsFxcA=
+	t=1716373869; cv=none; b=aZW2JHOvgSkptG5g3oGP/WFyUcHU4+FVRtj6nnfYh3oMh3ylJuA2syY/mJnV+MhM/J5ZkK46P7uoKY6EimEsXtlpIDvtL1bEs3qNKUJBeZtpW+z+3brogdHylxC5d8xE0QQSOyiaICm+YrD1JursizqhY5YK+2EViLGBTPRWu3I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716373610; c=relaxed/simple;
-	bh=EiqFByx4pqQUBLzEI8fePySLwwEEWt4/esFRg1FpJ8E=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=LvwfV3/5JdY7zvRGQZ+X5xLrDmcWfN1lWOYwtgzEVadHiZBvJ2PFHdq/xwNMqTDPtTtodX4Be+hTHWzmboCh3kAtKNpaiBdbBJt/uX4JXul5Q8MEXsjZmr8lvpqboBLwlqpfOOqTtVTSv1AeibQW4Y2PUAfEko2TrPCloSkqnrc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com; spf=pass smtp.mailfrom=cloudflare.com; dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b=M/fcUBwc; arc=none smtp.client-ip=209.85.218.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cloudflare.com
-Received: by mail-ej1-f53.google.com with SMTP id a640c23a62f3a-a59cf8140d0so792377266b.3
-        for <bpf@vger.kernel.org>; Wed, 22 May 2024 03:26:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google09082023; t=1716373607; x=1716978407; darn=vger.kernel.org;
-        h=mime-version:message-id:date:user-agent:references:in-reply-to
-         :subject:cc:to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=EiqFByx4pqQUBLzEI8fePySLwwEEWt4/esFRg1FpJ8E=;
-        b=M/fcUBwcDwYlRnSfLN1Dv4luk+jpdQZq+wFtII+jgdJB+qwDudKu9a6mSBdjsfacjV
-         BEioc/uqLQsXAv2fM/7x4SEgQZjpnoI25Y2CyLWuebncHl18It3G/4rpTtoyrbUKCjf3
-         ENxfvFFTtaynyqLmAmpxEJWTpj2dnY8l/CcAIsWmNqJHNtgGqHWhrgG6ABSizKlLMTmL
-         RQ7jsd2WVDduJpPfBb+l1Kq3awBGNWG/ejDe1lPdoKgSE2SSAvqtol0fZ5CPf21nqETw
-         8AMnxFsANmDCsAuIeyV6j4i0A+TuecnvBQQJE+0gLeFSvdT0isfupsWwLNavuV120mXQ
-         NAfg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1716373607; x=1716978407;
-        h=mime-version:message-id:date:user-agent:references:in-reply-to
-         :subject:cc:to:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=EiqFByx4pqQUBLzEI8fePySLwwEEWt4/esFRg1FpJ8E=;
-        b=Xa/+0ILzb/mNpj8On9aU3Qk4lwUB91anVLpUuU0DiTR+QHpRAqRaoUN/4gvXlQ7vtu
-         ews5G+EfotXenVUJDEwf5s/y9abfK6z3q2cphXYoXHldC9BCIrzw2KkMXzbwfU3200IA
-         qPuEj5nCJ3ISNTY3BCeGd/MatX1Z/8bJYBto94Qtf4ZgsY4Glu/8XrWPOXiu9DPZ60/U
-         1TGowHPdh+7YMZ6ChTJCDjaSbnhYkMac0gQJqDHayJc1ZxX9xRb8SK2eaVcqN+HAlfiq
-         yjdbuSTRoBO8m9SOLGx6eaAgmwhwdTboe1pZnsiftXr0XXB73FRdZ6CWQel2dcPziOi6
-         p2kA==
-X-Gm-Message-State: AOJu0Yyfu4pxjUXoyvGbzQP3PvFgQo2M3UGmttMyB7Hz6lOSs4BRk2gO
-	zM0Tt413evtC60a9jJIByNWjsfvDMAUplUGMwTwmyif3MHsSSkqnkwNqCab6PMWewRlYz5ucT0a
-	5
-X-Google-Smtp-Source: AGHT+IEP/6XynI+slqQOfjG7Oa0psj7j191FWOA/gt+y5Cr4KEWT51OKC8Yid974EYSzdefmC02jNg==
-X-Received: by 2002:a17:906:b181:b0:a5a:88ff:fe81 with SMTP id a640c23a62f3a-a622809547fmr90147766b.20.1716373607565;
-        Wed, 22 May 2024 03:26:47 -0700 (PDT)
-Received: from cloudflare.com ([2a09:bac5:5063:2dc::49:b7])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a5a691870absm1299004866b.124.2024.05.22.03.26.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 22 May 2024 03:26:46 -0700 (PDT)
-From: Jakub Sitnicki <jakub@cloudflare.com>
-To: Geliang Tang <geliang@kernel.org>
-Cc: bpf@vger.kernel.org,  netdev@vger.kernel.org,  Alexei Starovoitov
- <ast@kernel.org>,  Daniel Borkmann <daniel@iogearbox.net>,  Andrii
- Nakryiko <andrii@kernel.org>,  John Fastabend <john.fastabend@gmail.com>
-Subject: Re: [PATCH bpf-next] selftests/bpf: test_sockmap, use section names
- understood by libbpf
-In-Reply-To: <ec9b6e588ab9c25e0c4f9d1d8822d91896e87b35.camel@kernel.org>
-	(Geliang Tang's message of "Wed, 22 May 2024 18:12:31 +0800")
-References: <20240522080936.2475833-1-jakub@cloudflare.com>
-	<ec9b6e588ab9c25e0c4f9d1d8822d91896e87b35.camel@kernel.org>
-User-Agent: mu4e 1.12.4; emacs 29.1
-Date: Wed, 22 May 2024 12:26:44 +0200
-Message-ID: <87zfsiw3a3.fsf@cloudflare.com>
+	s=arc-20240116; t=1716373869; c=relaxed/simple;
+	bh=rxFk8HEHcSjxEGIA+UOVFBH3zOZ9OBbzCE67oj1TzPI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=l1jgSI3BpjBx5hWS/7Qhg0tZCcaOpMJL6iOj7lsyCRnbgTUglxyOpgnL3sVAgLaAQ9HyuVDladYYeuR9IgKDOciuLBBjqSoinAWXjO5m0i6IQa56fgaXfQDJF3R5Yx7d8CHpo6/EUsBbKt9/0knhP/ffvnMDUYV2szqhZHlClrU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=I-love.SAKURA.ne.jp; spf=pass smtp.mailfrom=I-love.SAKURA.ne.jp; arc=none smtp.client-ip=202.181.97.72
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=I-love.SAKURA.ne.jp
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=I-love.SAKURA.ne.jp
+Received: from fsav119.sakura.ne.jp (fsav119.sakura.ne.jp [27.133.134.246])
+	by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 44MAUxO7084776;
+	Wed, 22 May 2024 19:30:59 +0900 (JST)
+	(envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
+Received: from www262.sakura.ne.jp (202.181.97.72)
+ by fsav119.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav119.sakura.ne.jp);
+ Wed, 22 May 2024 19:30:59 +0900 (JST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav119.sakura.ne.jp)
+Received: from [192.168.1.6] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
+	(authenticated bits=0)
+	by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 44MAUwdV084772
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
+	Wed, 22 May 2024 19:30:59 +0900 (JST)
+	(envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
+Message-ID: <f77290fe-a94e-498b-bbbf-429ba0ce49c2@I-love.SAKURA.ne.jp>
+Date: Wed, 22 May 2024 19:30:58 +0900
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] bpf, sockmap: defer sk_psock_free_link() using RCU
+To: Jakub Sitnicki <jakub@cloudflare.com>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Eric Dumazet <edumazet@google.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        Hillf Danton <hdanton@sina.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>
+References: <838e7959-a360-4ac1-b36a-a3469236129b@I-love.SAKURA.ne.jp>
+ <20240521225918.2147-1-hdanton@sina.com> <877cfmxjie.fsf@cloudflare.com>
+Content-Language: en-US
+From: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+In-Reply-To: <877cfmxjie.fsf@cloudflare.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Wed, May 22, 2024 at 06:12 PM +08, Geliang Tang wrote:
-> On Wed, 2024-05-22 at 10:09 +0200, Jakub Sitnicki wrote:
+On 2024/05/22 18:50, Jakub Sitnicki wrote:
+> On Wed, May 22, 2024 at 06:59 AM +08, Hillf Danton wrote:
+>> On Tue, 21 May 2024 08:38:52 -0700 Alexei Starovoitov <alexei.starovoitov@gmail.com>
+>>> On Sun, May 12, 2024 at 12:22=E2=80=AFAM Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp> wrote:
+>>>> --- a/net/core/sock_map.c
+>>>> +++ b/net/core/sock_map.c
+>>>> @@ -142,6 +142,7 @@ static void sock_map_del_link(struct sock *sk,
+>>>>         bool strp_stop =3D false, verdict_stop =3D false;
+>>>>         struct sk_psock_link *link, *tmp;
+>>>>
+>>>> +       rcu_read_lock();
+>>>>         spin_lock_bh(&psock->link_lock);
+>>>
+>>> I think this is incorrect.
+>>> spin_lock_bh may sleep in RT and it won't be safe to do in rcu cs.
+>>
+>> Could you specify why it won't be safe in rcu cs if you are right?
+>> What does rcu look like in RT if not nothing?
+> 
+> RCU readers can't block, while spinlock RT doesn't disable preemption.
+> 
+> https://docs.kernel.org/RCU/rcu.html
+> https://docs.kernel.org/locking/locktypes.html#spinlock-t-and-preempt-rt
+> 
 
-[...]
+I didn't catch what you mean.
 
-> prog_attach_type is still used by my commit:
->
-> https://lore.kernel.org/bpf/e27d7d0c1e0e79b0acd22ac6ad5d8f9f00225303.1716372485.git.tanggeliang@kylinos.cn/T/#u
->
-> Please review it for me.
->
-> If my commit is acceptable, this patch will conflict with it. It's a
-> bit strange to delete this prog_attach_type in your patch and then add
-> it back in my commit. So could you please rebase this patch on my
-> commit in that case. Sorry for the trouble.
+https://elixir.bootlin.com/linux/latest/source/include/linux/spinlock_rt.h#L43 defines spin_lock() for RT as
 
-If you want to help improve and modernize this test code, I suggest
-switching attachments to bpf_link instead, they are now available for
-sockmap:
+static __always_inline void spin_lock(spinlock_t *lock)
+{
+	rt_spin_lock(lock);
+}
 
-https://lore.kernel.org/bpf/20240408152451.4162024-1-yonghong.song@linux.dev/
+and https://elixir.bootlin.com/linux/v6.9/source/include/linux/spinlock_rt.h#L85 defines spin_lock_bh() for RT as
+
+static __always_inline void spin_lock_bh(spinlock_t *lock)
+{
+	/* Investigate: Drop bh when blocking ? */
+	local_bh_disable();
+	rt_spin_lock(lock);
+}
+
+and https://elixir.bootlin.com/linux/latest/source/kernel/locking/spinlock_rt.c#L54 defines rt_spin_lock() for RT as
+
+void __sched rt_spin_lock(spinlock_t *lock)
+{
+	spin_acquire(&lock->dep_map, 0, 0, _RET_IP_);
+	__rt_spin_lock(lock);
+}
+
+and https://elixir.bootlin.com/linux/v6.9/source/kernel/locking/spinlock_rt.c#L46 defines __rt_spin_lock() for RT as
+
+static __always_inline void __rt_spin_lock(spinlock_t *lock)
+{
+	rtlock_might_resched();
+	rtlock_lock(&lock->lock);
+	rcu_read_lock();
+	migrate_disable();
+}
+
+. You can see that calling spin_lock() or spin_lock_bh() automatically starts RCU critical section, can't you?
+
+If spin_lock_bh() for RT might sleep and calling spin_lock_bh() under RCU critical section is not safe,
+how can
+
+  spin_lock(&lock1);
+  spin_lock(&lock2);
+  // do something
+  spin_unlock(&lock2);
+  spin_unlock(&lock1);
+
+or
+
+  spin_lock_bh(&lock1);
+  spin_lock(&lock2);
+  // do something
+  spin_unlock(&lock2);
+  spin_unlock_bh(&lock1);
+
+be possible?
+
+Unless rcu_read_lock() is implemented in a way that is safe to do
+
+  rcu_read_lock();
+  spin_lock(&lock2);
+  // do something
+  spin_unlock(&lock2);
+  rcu_read_unlock();
+
+and
+
+  rcu_read_lock();
+  spin_lock_bh(&lock2);
+  // do something
+  spin_unlock_bh(&lock2);
+  rcu_read_unlock();
+
+, I think RT kernels can't run safely.
+
+Locking primitive ordering is too much complicated/distributed.
+We need documentation using safe/unsafe ordering examples.
+
 
