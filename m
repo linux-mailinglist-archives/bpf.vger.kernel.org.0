@@ -1,130 +1,191 @@
-Return-Path: <bpf+bounces-30330-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-30331-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id CEB6B8CC80B
-	for <lists+bpf@lfdr.de>; Wed, 22 May 2024 23:14:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 526358CC816
+	for <lists+bpf@lfdr.de>; Wed, 22 May 2024 23:19:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 894CB284898
-	for <lists+bpf@lfdr.de>; Wed, 22 May 2024 21:14:15 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 12BB22825EF
+	for <lists+bpf@lfdr.de>; Wed, 22 May 2024 21:19:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E2F3914658D;
-	Wed, 22 May 2024 21:14:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D5A7F7D09D;
+	Wed, 22 May 2024 21:19:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CkuIM2nu"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="c6ncbalb"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f47.google.com (mail-wr1-f47.google.com [209.85.221.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-171.mta0.migadu.com (out-171.mta0.migadu.com [91.218.175.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F2B2C1CAA6
-	for <bpf@vger.kernel.org>; Wed, 22 May 2024 21:14:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 486B4F4E7
+	for <bpf@vger.kernel.org>; Wed, 22 May 2024 21:18:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716412451; cv=none; b=RTKL44Y8UWidwfiYX773KTI/2qpeP/7GJDQzJQobdgRAxTUI/7O8KHmf5wJDKj/IhzuoqBnkZ7J+pCMMXdHR51cOSTO4qAugtzpnuPNsURn0JAsnxi/DAmaeNpfZZBPMqMiWapK77vYTXqW2YwHlgN7Z+kAyB2dhsruxLdNiIIA=
+	t=1716412743; cv=none; b=gvWvFpPRbiaZjs0Lw7uqcWt15K2B4PoMEg34PO2JVDwNman1CETs8N0FRo2n6QM+jF8MeNlunoSfRioqICBy9vupobPZxEHHcchNoz6WqbOW0LQOVpfl4yD64q5QnYRGQNcaE8DGFHh6mYHqbnA25LV7Y8DLUA0op9wCgG8C1ds=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716412451; c=relaxed/simple;
-	bh=oh5mFcp2etupYvHbgzAuzNJYbCB32Y38pDy0zxwmVUw=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Vo04zKWwH3/08a2tXfzVaYp/0LVm9HPl07b2Im8t3F6owT4D7aJhqtzYFS0T0NCXaiqwhAelZGGXLwNnijEdW7/gMx2zRZeKTAlRsOvLRs5/V9B0sLIRiYlpAcFWNzcuG1syZTiJ+QwIwTSYuGcmjUirs3kDwllO6lYoOd8X0NU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CkuIM2nu; arc=none smtp.client-ip=209.85.221.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f47.google.com with SMTP id ffacd0b85a97d-34dc129accaso1275897f8f.0
-        for <bpf@vger.kernel.org>; Wed, 22 May 2024 14:14:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1716412448; x=1717017248; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=g416yFBVjE/oAx6LwxVnMCBmx4UxICWa/utg4BbTh/I=;
-        b=CkuIM2nuXpVtQLae3G0filR9QImGobdsNLvA6CFFrfgw8aanU0c20ZVdt6UyF9ycEo
-         aDDot7oF/G29EcO1iFEnRcN4CXSVwBCmq24wDebMLDVDREESoNJgvf8ad6lv1ej/ddFu
-         xF3XV99TInIP/ECi5nlBUFJWoFqmGWhi4fxOA3iA7aWNrKuM4l8sDjNJ4IZZ8zsHXqsv
-         qlefQfRCfcCDh+UlU+69svBHq8lVpvqtqPran/XAZXrcb35fdRg8BCwUEwYe7y85GL17
-         7WQdYnV3tjFKl0JRbzy1BSYvkP84atF/ytBeUk7bytDeNhNsOu108ZvsnrAflIBfJ+Yi
-         TvNg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1716412448; x=1717017248;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=g416yFBVjE/oAx6LwxVnMCBmx4UxICWa/utg4BbTh/I=;
-        b=GVk4MUOEmaHSdZyZiyahYTi1PvDjbGkUydmhd1di8Xa6VEf8YrT+KZoFEIP52B+xwX
-         4OvZD5vc3vW6C0DVEHFQTcMZzEyfE3bu7LuMhNk7f501ZxzqMWtvnR3DIaxoOTsFsXlE
-         +z/yoz5i06SVLLcX65gFtVgD1Itb51oXcET37uabeaPOG38ykOJmkia08FJ7yW0Vx4GR
-         V8tkdUVDyotv8nm8PjHUGfwbfRFpr260B5GcAfOwzzUDLL8xCIRxsgii2w0QyOvrn/gL
-         vWZ0KCVYvnEeDaBlEDf2U9LxA0FGi9CMMVfBp3ipxGVjCMCpRIZsluSwpaDUeStgkNli
-         Ovlw==
-X-Gm-Message-State: AOJu0YzTHGVr0pcRxmSr3zgu6Aap6+d4lh1KMrhVnoZhlskKYfOA0tzH
-	PHGsm95A9OocyAJ4T3LKr0fFxK1ySJrOlrLLIkemIcF7M0wpHysvGAJRXXfBeHjRjm45GOPQ8Ml
-	83AdN+jWn42qIsm9MAzmm1nESglfb3CLM
-X-Google-Smtp-Source: AGHT+IEh2nOHDJcgVeU4Iu6Z34oPnIUUkLp6QrvWf2X++NBRk6UX8zLxFdGDV648ocnG6a0HgV+d3bHsNL7fuUd+6cc=
-X-Received: by 2002:a5d:4c4a:0:b0:34a:1b90:198d with SMTP id
- ffacd0b85a97d-354d8d991b7mr2428283f8f.55.1716412448098; Wed, 22 May 2024
- 14:14:08 -0700 (PDT)
+	s=arc-20240116; t=1716412743; c=relaxed/simple;
+	bh=oDAV2yil6A1vCx6CKLnHvCJmTqC6W8DF9/0pqySHX04=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=M9NYz82qI6T8b9RuCNq4zo6Pr/LzL2cwDQEl/mb3+d6HQagDpMFwY99xNiaN/IN4C+IvG3A8MOAppG6XZg3MxX8r0ZWUH0zpReacMibytPvrPWFSMQZyaJosA74ZMgKgznoo9RJEadPKCPwSTDY1ajHtlbr2LgWSjIihlWtQTC0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=c6ncbalb; arc=none smtp.client-ip=91.218.175.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Envelope-To: martin.lau@linux.dev
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1716412738;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=EcLKXoM1yfdGlPL5kvCwkXkP4LsOLbWEupxR0XZPWxk=;
+	b=c6ncbalb44HoK+ncOVLI3G+wiATZUWE3OzNT1JFd7zQdSJtPKJUlHnYlMw6f8VgzC+tEVr
+	NX1vtt3w+NOyzZCQjPYbug2UCX9M0eJfSBF0a8rOHXdM9XgE42PBzm6YF1Wi96b0gK2pMT
+	HMOUyzZo44TaKujsDex4F2UI8snGL4I=
+X-Envelope-To: eddyz87@gmail.com
+X-Envelope-To: bpf@vger.kernel.org
+X-Envelope-To: andrii@kernel.org
+X-Envelope-To: ast@kernel.org
+X-Envelope-To: mykolal@fb.com
+X-Envelope-To: kuba@kernel.org
+Message-ID: <d9a672d7-c595-4e8e-aef6-1ba1155f3549@linux.dev>
+Date: Wed, 22 May 2024 22:18:53 +0100
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240522024713.59136-1-alexei.starovoitov@gmail.com> <78fa1f7e442579a968a99b00230c6aa0f280679d.camel@gmail.com>
-In-Reply-To: <78fa1f7e442579a968a99b00230c6aa0f280679d.camel@gmail.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Wed, 22 May 2024 14:13:56 -0700
-Message-ID: <CAADnVQJ_c0XTsNY_bfHL0qWfzpEdgy+-mJ1oqtHVppvxA2_TCw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] bpf: Relax precision marking in open coded iters
- and may_goto loop.
-To: Eduard Zingerman <eddyz87@gmail.com>
-Cc: bpf <bpf@vger.kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@kernel.org>, 
-	Kumar Kartikeya Dwivedi <memxor@gmail.com>, Kernel Team <kernel-team@fb.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH bpf-next v2 4/4] selftests: bpf: crypto: adjust bench to
+ use nullable IV
+To: Martin KaFai Lau <martin.lau@linux.dev>,
+ Eduard Zingerman <eddyz87@gmail.com>
+Cc: bpf@vger.kernel.org, Andrii Nakryiko <andrii@kernel.org>,
+ Alexei Starovoitov <ast@kernel.org>, Mykola Lysenko <mykolal@fb.com>,
+ Jakub Kicinski <kuba@kernel.org>
+References: <20240510122823.1530682-1-vadfed@meta.com>
+ <20240510122823.1530682-5-vadfed@meta.com>
+ <73add1b3-b1e4-4d83-85b3-5be45f2658d6@linux.dev>
+Content-Language: en-US
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Vadim Fedorenko <vadim.fedorenko@linux.dev>
+In-Reply-To: <73add1b3-b1e4-4d83-85b3-5be45f2658d6@linux.dev>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-On Wed, May 22, 2024 at 1:18=E2=80=AFPM Eduard Zingerman <eddyz87@gmail.com=
-> wrote:
->
-> On Tue, 2024-05-21 at 19:47 -0700, Alexei Starovoitov wrote:
->
-> [...]
->
-> Regarding this part, since we discussed it off-list
-> (I'll continue with the rest of the patch a bit later).
->
-> > First of all:
-> >    if (is_may_goto_insn_at(env, insn_idx)) {
-> > +          update_loop_entry(cur, &sl->state);
-> >            if (states_equal(env, &sl->state, cur, RANGE_WITHIN)) {
-> > -                  update_loop_entry(cur, &sl->state);
-> >
-> > This should be correct, since reaching the same insn should
-> > satisfy "if h1 in path" requirement of update_loop_entry() algorithm.
-> > It's too conservative to update loop_entry only on a state match.
->
-> So, this basically changes the definition of the verifier states loop.
-> Previously, we considered a state loop to be such a sequence of states
-> Si -> ... -> Sj -> ... -> Sk that states_equal(Si, Sk, RANGE_WITHIN)
-> is true.
->
-> With this change Si -> ... -> Sj -> ... Sk is a loop if call sites and
-> instruction pointers for Si and Sk match.
->
-> Whether or not Si and Sk are in the loop influences two things:
-> (a) if exact comparison is needed for states cache;
-> (b) if widening transformation could be applied to some scalars.
->
-> As far as I understand, all pairs (Si, Sk) marked as a loop using old
-> definition would be marked as such using new definition
-> (in a addition to some new pairs).
->
-> I think that it is safe to apply (a) and (b) in strictly more cases.
+On 22/05/2024 19:01, Martin KaFai Lau wrote:
+> On 5/10/24 5:28 AM, Vadim Fedorenko wrote:
+>> The bench shows some improvements, around 4% faster on decrypt.
+> 
+> The original intention is to make the crypto kfunc more ergonomic to use 
+> such that the bpf prog does not have to initialize a zero length dynptr 
+> for the optional dynptr argument.
+> 
+> This performance boost is a decent surprise considering the crypto 
+> operation should be pretty heavy. (thanks for having the crypto 
+> benchmark handy).
+> 
+> Do you have a chance to get a perf record to confirm where the cycles is 
+> saved?
 
-Agree with this conclusion.
-As discussed offlist we can add a check that
-Si->parent->parent...->parent =3D=3D Sk.
-to make the algorithm "by the book".
-I'll play with that.
+Not really, but it's just initialization part changed, I was using the
+same base commit to do the comparison.
+
+> 
+> Why it only helps decrypt?
+
+It helps both, I just didn't show encrypt output, but it's the same 4%
+
+> 
+> Inlining it would be nice (as Eduard mentioned in another thread). I 
+> also wonder if Eduard's work on the no caller saved registers could help 
+> the dynptr kfunc? I think the dynptr kfunc optimization could be a 
+> followup.
+> 
+>>
+>> Before:
+>>
+>> Benchmark 'crypto-decrypt' started.
+>> Iter   0 (325.719us): hits    5.105M/s (  5.105M/prod), drops 
+>> 0.000M/s, total operations    5.105M/s
+>> Iter   1 (-17.295us): hits    5.224M/s (  5.224M/prod), drops 
+>> 0.000M/s, total operations    5.224M/s
+>> Iter   2 (  5.504us): hits    4.630M/s (  4.630M/prod), drops 
+>> 0.000M/s, total operations    4.630M/s
+>> Iter   3 (  9.239us): hits    5.148M/s (  5.148M/prod), drops 
+>> 0.000M/s, total operations    5.148M/s
+>> Iter   4 ( 37.885us): hits    5.198M/s (  5.198M/prod), drops 
+>> 0.000M/s, total operations    5.198M/s
+>> Iter   5 (-53.282us): hits    5.167M/s (  5.167M/prod), drops 
+>> 0.000M/s, total operations    5.167M/s
+>> Iter   6 (-17.809us): hits    5.186M/s (  5.186M/prod), drops 
+>> 0.000M/s, total operations    5.186M/s
+>> Summary: hits    5.092 ± 0.228M/s (  5.092M/prod), drops    0.000 
+>> ±0.000M/s, total operations    5.092 ± 0.228M/s
+>>
+>> After:
+>>
+>> Benchmark 'crypto-decrypt' started.
+>> Iter   0 (268.912us): hits    5.312M/s (  5.312M/prod), drops 
+>> 0.000M/s, total operations    5.312M/s
+>> Iter   1 (124.869us): hits    5.354M/s (  5.354M/prod), drops 
+>> 0.000M/s, total operations    5.354M/s
+>> Iter   2 (-36.801us): hits    5.334M/s (  5.334M/prod), drops 
+>> 0.000M/s, total operations    5.334M/s
+>> Iter   3 (254.628us): hits    5.334M/s (  5.334M/prod), drops 
+>> 0.000M/s, total operations    5.334M/s
+>> Iter   4 (-77.691us): hits    5.275M/s (  5.275M/prod), drops 
+>> 0.000M/s, total operations    5.275M/s
+>> Iter   5 (-164.510us): hits    5.313M/s (  5.313M/prod), drops 
+>> 0.000M/s, total operations    5.313M/s
+>> Iter   6 (-81.376us): hits    5.346M/s (  5.346M/prod), drops 
+>> 0.000M/s, total operations    5.346M/s
+>> Summary: hits    5.326 ± 0.029M/s (  5.326M/prod), drops    0.000 
+>> ±0.000M/s, total operations    5.326 ± 0.029M/s
+>>
+>> Signed-off-by: Vadim Fedorenko <vadfed@meta.com>
+>> ---
+>>   tools/testing/selftests/bpf/progs/crypto_bench.c | 10 ++++------
+>>   1 file changed, 4 insertions(+), 6 deletions(-)
+>>
+>> diff --git a/tools/testing/selftests/bpf/progs/crypto_bench.c 
+>> b/tools/testing/selftests/bpf/progs/crypto_bench.c
+>> index e61fe0882293..4ac956b26240 100644
+>> --- a/tools/testing/selftests/bpf/progs/crypto_bench.c
+>> +++ b/tools/testing/selftests/bpf/progs/crypto_bench.c
+>> @@ -57,7 +57,7 @@ int crypto_encrypt(struct __sk_buff *skb)
+>>   {
+>>       struct __crypto_ctx_value *v;
+>>       struct bpf_crypto_ctx *ctx;
+>> -    struct bpf_dynptr psrc, pdst, iv;
+>> +    struct bpf_dynptr psrc, pdst;
+>>       v = crypto_ctx_value_lookup();
+>>       if (!v) {
+>> @@ -73,9 +73,8 @@ int crypto_encrypt(struct __sk_buff *skb)
+>>       bpf_dynptr_from_skb(skb, 0, &psrc);
+>>       bpf_dynptr_from_mem(dst, len, 0, &pdst);
+>> -    bpf_dynptr_from_mem(dst, 0, 0, &iv);
+>> -    status = bpf_crypto_encrypt(ctx, &psrc, &pdst, &iv);
+>> +    status = bpf_crypto_encrypt(ctx, &psrc, &pdst, NULL);
+>>       __sync_add_and_fetch(&hits, 1);
+>>       return 0;
+>> @@ -84,7 +83,7 @@ int crypto_encrypt(struct __sk_buff *skb)
+>>   SEC("tc")
+>>   int crypto_decrypt(struct __sk_buff *skb)
+>>   {
+>> -    struct bpf_dynptr psrc, pdst, iv;
+>> +    struct bpf_dynptr psrc, pdst;
+>>       struct __crypto_ctx_value *v;
+>>       struct bpf_crypto_ctx *ctx;
+>> @@ -98,9 +97,8 @@ int crypto_decrypt(struct __sk_buff *skb)
+>>       bpf_dynptr_from_skb(skb, 0, &psrc);
+>>       bpf_dynptr_from_mem(dst, len, 0, &pdst);
+>> -    bpf_dynptr_from_mem(dst, 0, 0, &iv);
+>> -    status = bpf_crypto_decrypt(ctx, &psrc, &pdst, &iv);
+>> +    status = bpf_crypto_decrypt(ctx, &psrc, &pdst, NULL);
+>>       __sync_add_and_fetch(&hits, 1);
+>>       return 0;
+> 
+
 
