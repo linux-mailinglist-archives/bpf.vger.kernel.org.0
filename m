@@ -1,59 +1,64 @@
-Return-Path: <bpf+bounces-30378-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-30379-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D8F3B8CCC95
-	for <lists+bpf@lfdr.de>; Thu, 23 May 2024 08:57:25 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 28B7D8CCCAB
+	for <lists+bpf@lfdr.de>; Thu, 23 May 2024 09:03:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8B36B283C8E
-	for <lists+bpf@lfdr.de>; Thu, 23 May 2024 06:57:24 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 908B4B221F0
+	for <lists+bpf@lfdr.de>; Thu, 23 May 2024 07:03:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE52913C916;
-	Thu, 23 May 2024 06:57:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A72A13C9B1;
+	Thu, 23 May 2024 07:03:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Rh7qIvpc"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cDxwxxZK"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5EB6313C669;
-	Thu, 23 May 2024 06:57:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C445A13AA24;
+	Thu, 23 May 2024 07:03:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716447437; cv=none; b=JDy7bTxL4BoxCI9Ziuus9jP8QaoDRkGPAZjA8ttvC6zpItGqB19HI0gkJ8USdKwUWJ4W+0eLBmfuanx7VPKrvKMaFTgKM4CcMPEB1d9xOjHV17a8EXB1znVfAq+sxLLaSiYWs2IFxCCS/iB2ZALaKpx0XYDnKsQF5bNDYcnLYao=
+	t=1716447829; cv=none; b=POw4puAw97PN8L2WWwwd5+9PrHrtETNstbvAE7YcOLx6DyyjED5qbfNmo/HgAQhw3Q39UvlM0wHxA+rAD4xCcVtFR62AQhLnfPDsAStjAdSZB1DoyBIb4VCL2Pht3IFhZbAW+nDD0V9gFdHdHy8weV4rRUksf1LoMUh30rS2zbo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716447437; c=relaxed/simple;
-	bh=zqy9LRS2BxrJ5FvPMI7iDJJ18eToRkadWgBxZ7S8G2A=;
+	s=arc-20240116; t=1716447829; c=relaxed/simple;
+	bh=xIcbRPGzdTAXs2WNxd0mi0Vbycy28GbQ0IRPVhzR40Q=;
 	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=dyo+0kWFDuk7tcvvMO9XFmX33IGEa6Ss3jmlhysjsJRQlKWyWTqMrX7lBcaM2+MXJ6e0UCJyshebHM0Swai3D9A7ArTELMaO7oIP0cbJ/3Nv03etUPxi4KJSrhC4EV6g060WuDGiHWkbiMQ4WD+C3Eh3KyCy69Or7SoXjTeFLqE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Rh7qIvpc; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8E1A8C2BD10;
-	Thu, 23 May 2024 06:57:14 +0000 (UTC)
+	 Content-Type:MIME-Version; b=lgA9TFKE2XzDzJSQsAZg4z8x6ocDlqGodkV4tQIkwuz4op851kwPj06Hj6knNc6Lj/5EFZwu6Kj/iUrc6V8h+3TGKqsuoGmAB134SWo4pONu/MTWafUtkiCQiD2wtmO3xEwIwkOonjGQ9qUKW+7mK/n38ZSdTIGP7i2GVNzfYq8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cDxwxxZK; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CB017C2BD10;
+	Thu, 23 May 2024 07:03:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1716447437;
-	bh=zqy9LRS2BxrJ5FvPMI7iDJJ18eToRkadWgBxZ7S8G2A=;
+	s=k20201202; t=1716447829;
+	bh=xIcbRPGzdTAXs2WNxd0mi0Vbycy28GbQ0IRPVhzR40Q=;
 	h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-	b=Rh7qIvpcuP0jnD+OhEiNXl3JqweDwb4zFQXEf8Gcj6YWMp2huO/UB9ndeFMICqesI
-	 QI/jB9wYWgCX0JLtQgR32/BQxjcq7KvyOxZAg+4Ioc6rb/ZmssJxcB7E32MU3s5PeV
-	 dUGlQkhGPbLeWzyeNfxcOFn4U3NpY0/qpuENA1PpUoCgV6MR72xsABlMWG5e8m8+pU
-	 At9GLtgVqQvKHTW/IXX9crPG7GT8ss8fgtEfs/Kd1b46TAvO2I2mVPKpkIRvXd8Gxi
-	 //+NksYuzn+IPRMva1vOWMleNy2g/FTkaix6D5hoCfy3KObGR/UeoogZ0JGUm98WDG
-	 cx/8MwRnQCjjQ==
-Message-ID: <63ec3781fcc3ca361b28bf8f258dd94b63ede142.camel@kernel.org>
-Subject: Re: [PATCH bpf-next] selftests/bpf: test_sockmap, use section names
- understood by libbpf
+	b=cDxwxxZKGl3LJ/raRP5TzNGi3xSxshQVmJ2HOpBGJbV5dLg1Db1HHoJNuaJQ+Abud
+	 QYXJrHmm35W39YfIF2qfQZP7w7hzdnr94g3ZChJ93kZpcP28aXLDe3QKK2m5dWzny3
+	 KuWciZdoQGPIOphDK8DzzU5kI8YfdyX3MCRj/AGlbwbtWKdNEXHDjFD1JdwmLhWmaE
+	 OCtQuWDqhKvbV3hDuSH7gfLVv3ecG1++kC6QWPxALVfDv4qorSayHnV27bflO4gKge
+	 JlZKvUGvaz8XaPUWFDjy+HBc5xpPo0yc7PwijDLmDysbcQzcuGIpPqV98o6xb9wkOj
+	 AESGqIAxU5Gjw==
+Message-ID: <7a9df605cea389db8f76f5543cce3730faa0e5e3.camel@kernel.org>
+Subject: Re: [PATCH bpf-next] selftests/bpf: Use prog_attach_type to attach
+ in test_sockmap
 From: Geliang Tang <geliang@kernel.org>
-To: Jakub Sitnicki <jakub@cloudflare.com>
-Cc: bpf@vger.kernel.org, netdev@vger.kernel.org, Alexei Starovoitov
-	 <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko
-	 <andrii@kernel.org>, John Fastabend <john.fastabend@gmail.com>
-Date: Thu, 23 May 2024 14:57:11 +0800
-In-Reply-To: <87zfsiw3a3.fsf@cloudflare.com>
-References: <20240522080936.2475833-1-jakub@cloudflare.com>
-	 <ec9b6e588ab9c25e0c4f9d1d8822d91896e87b35.camel@kernel.org>
-	 <87zfsiw3a3.fsf@cloudflare.com>
+To: Andrii Nakryiko <andrii@kernel.org>, Eduard Zingerman
+ <eddyz87@gmail.com>,  Mykola Lysenko <mykolal@fb.com>, Alexei Starovoitov
+ <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Martin KaFai Lau
+ <martin.lau@linux.dev>, Song Liu <song@kernel.org>, Yonghong Song
+ <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, KP
+ Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo
+ <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,  Shuah Khan
+ <shuah@kernel.org>, Jakub Sitnicki <jakub@cloudflare.com>
+Cc: Geliang Tang <tanggeliang@kylinos.cn>, bpf@vger.kernel.org, 
+	linux-kselftest@vger.kernel.org
+Date: Thu, 23 May 2024 15:03:41 +0800
+In-Reply-To: <e27d7d0c1e0e79b0acd22ac6ad5d8f9f00225303.1716372485.git.tanggeliang@kylinos.cn>
+References: 
+	<e27d7d0c1e0e79b0acd22ac6ad5d8f9f00225303.1716372485.git.tanggeliang@kylinos.cn>
 Autocrypt: addr=geliang@kernel.org; prefer-encrypt=mutual;
  keydata=mQINBGWKTg4BEAC/Subk93zbjSYPahLCGMgjylhY/s/R2ebALGJFp13MPZ9qWlbVC8O+X
  lU/4reZtYKQ715MWe5CwJGPyTACILENuXY0FyVyjp/jl2u6XYnpuhw1ugHMLNJ5vbuwkc1I29nNe8
@@ -114,48 +119,158 @@ List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-Hi Jakub,
+This patch is "Rejected", according to Jakub's comments:
 
-On Wed, 2024-05-22 at 12:26 +0200, Jakub Sitnicki wrote:
-> On Wed, May 22, 2024 at 06:12 PM +08, Geliang Tang wrote:
-> > On Wed, 2024-05-22 at 10:09 +0200, Jakub Sitnicki wrote:
-> 
-> [...]
-> 
-> > prog_attach_type is still used by my commit:
-> > 
-> > https://lore.kernel.org/bpf/e27d7d0c1e0e79b0acd22ac6ad5d8f9f00225303.1716372485.git.tanggeliang@kylinos.cn/T/#u
-
-I changes my commit above as "Rejected". So this patch is ready to
-apply now.
-
-> > Please review it for me.
-> > 
-> > If my commit is acceptable, this patch will conflict with it. It's
-> > a
-> > bit strange to delete this prog_attach_type in your patch and then
-> > add
-> > it back in my commit. So could you please rebase this patch on my
-> > commit in that case. Sorry for the trouble.
-> 
-> If you want to help improve and modernize this test code, I suggest
-> switching attachments to bpf_link instead, they are now available for
-> sockmap:
-
-Here's the patches for switching attachments to bpf_link, together with
-some small fixes and cleanups:
-
-https://patchwork.kernel.org/project/netdevbpf/cover/cover.1716446893.git.tanggeliang@kylinos.cn/
-
-Please review them for me.
+https://lore.kernel.org/bpf/87zfsiw3a3.fsf@cloudflare.com/
 
 Thanks,
 -Geliang
 
+On Wed, 2024-05-22 at 18:08 +0800, Geliang Tang wrote:
+> From: Geliang Tang <tanggeliang@kylinos.cn>
 > 
-> https://lore.kernel.org/bpf/20240408152451.4162024-1-yonghong.song@linux.dev/
+> Since prog_attach_type[] array is defined, it makes sense to use it
+> paired
+> with prog_fd[] array for bpf_prog_attach() and bpf_prog_detach2()
+> instead
+> of open-coding.
 > 
+> Signed-off-by: Geliang Tang <tanggeliang@kylinos.cn>
+> ---
+>  tools/testing/selftests/bpf/test_sockmap.c | 44 +++++++++++---------
+> --
+>  1 file changed, 22 insertions(+), 22 deletions(-)
+> 
+> diff --git a/tools/testing/selftests/bpf/test_sockmap.c
+> b/tools/testing/selftests/bpf/test_sockmap.c
+> index 4499b3cfc3a6..8c8208b82c5e 100644
+> --- a/tools/testing/selftests/bpf/test_sockmap.c
+> +++ b/tools/testing/selftests/bpf/test_sockmap.c
+> @@ -65,6 +65,18 @@ int map_fd[9];
+>  struct bpf_map *maps[9];
+>  int prog_fd[9];
+>  
+> +int prog_attach_type[] = {
+> +	BPF_SK_SKB_STREAM_PARSER,
+> +	BPF_SK_SKB_STREAM_VERDICT,
+> +	BPF_SK_SKB_STREAM_VERDICT,
+> +	BPF_CGROUP_SOCK_OPS,
+> +	BPF_SK_MSG_VERDICT,
+> +	BPF_SK_MSG_VERDICT,
+> +	BPF_SK_MSG_VERDICT,
+> +	BPF_SK_MSG_VERDICT,
+> +	BPF_SK_MSG_VERDICT,
+> +};
+> +
+>  int txmsg_pass;
+>  int txmsg_redir;
+>  int txmsg_drop;
+> @@ -961,7 +973,7 @@ static int run_options(struct sockmap_options
+> *options, int cg_fd,  int test)
+>  	/* Attach programs to sockmap */
+>  	if (!txmsg_omit_skb_parser) {
+>  		err = bpf_prog_attach(prog_fd[0], map_fd[0],
+> -				      BPF_SK_SKB_STREAM_PARSER, 0);
+> +				      prog_attach_type[0], 0);
+>  		if (err) {
+>  			fprintf(stderr,
+>  				"ERROR: bpf_prog_attach (sockmap %i-
+> >%i): %d (%s)\n",
+> @@ -971,7 +983,7 @@ static int run_options(struct sockmap_options
+> *options, int cg_fd,  int test)
+>  	}
+>  
+>  	err = bpf_prog_attach(prog_fd[1], map_fd[0],
+> -				BPF_SK_SKB_STREAM_VERDICT, 0);
+> +			      prog_attach_type[1], 0);
+>  	if (err) {
+>  		fprintf(stderr, "ERROR: bpf_prog_attach (sockmap):
+> %d (%s)\n",
+>  			err, strerror(errno));
+> @@ -982,7 +994,7 @@ static int run_options(struct sockmap_options
+> *options, int cg_fd,  int test)
+>  	if (txmsg_ktls_skb) {
+>  		if (!txmsg_omit_skb_parser) {
+>  			err = bpf_prog_attach(prog_fd[0], map_fd[8],
+> -					     
+> BPF_SK_SKB_STREAM_PARSER, 0);
+> +					      prog_attach_type[0],
+> 0);
+>  			if (err) {
+>  				fprintf(stderr,
+>  					"ERROR: bpf_prog_attach (TLS
+> sockmap %i->%i): %d (%s)\n",
+> @@ -992,7 +1004,7 @@ static int run_options(struct sockmap_options
+> *options, int cg_fd,  int test)
+>  		}
+>  
+>  		err = bpf_prog_attach(prog_fd[2], map_fd[8],
+> -				      BPF_SK_SKB_STREAM_VERDICT, 0);
+> +				      prog_attach_type[2], 0);
+>  		if (err) {
+>  			fprintf(stderr, "ERROR: bpf_prog_attach (TLS
+> sockmap): %d (%s)\n",
+>  				err, strerror(errno));
+> @@ -1001,7 +1013,7 @@ static int run_options(struct sockmap_options
+> *options, int cg_fd,  int test)
+>  	}
+>  
+>  	/* Attach to cgroups */
+> -	err = bpf_prog_attach(prog_fd[3], cg_fd,
+> BPF_CGROUP_SOCK_OPS, 0);
+> +	err = bpf_prog_attach(prog_fd[3], cg_fd,
+> prog_attach_type[3], 0);
+>  	if (err) {
+>  		fprintf(stderr, "ERROR: bpf_prog_attach (groups): %d
+> (%s)\n",
+>  			err, strerror(errno));
+> @@ -1279,11 +1291,11 @@ static int run_options(struct sockmap_options
+> *options, int cg_fd,  int test)
+>  		fprintf(stderr, "unknown test\n");
+>  out:
+>  	/* Detatch and zero all the maps */
+> -	bpf_prog_detach2(prog_fd[3], cg_fd, BPF_CGROUP_SOCK_OPS);
+> -	bpf_prog_detach2(prog_fd[0], map_fd[0],
+> BPF_SK_SKB_STREAM_PARSER);
+> -	bpf_prog_detach2(prog_fd[1], map_fd[0],
+> BPF_SK_SKB_STREAM_VERDICT);
+> -	bpf_prog_detach2(prog_fd[0], map_fd[8],
+> BPF_SK_SKB_STREAM_PARSER);
+> -	bpf_prog_detach2(prog_fd[2], map_fd[8],
+> BPF_SK_SKB_STREAM_VERDICT);
+> +	bpf_prog_detach2(prog_fd[3], cg_fd, prog_attach_type[3]);
+> +	bpf_prog_detach2(prog_fd[0], map_fd[0],
+> prog_attach_type[0]);
+> +	bpf_prog_detach2(prog_fd[1], map_fd[0],
+> prog_attach_type[1]);
+> +	bpf_prog_detach2(prog_fd[0], map_fd[8],
+> prog_attach_type[0]);
+> +	bpf_prog_detach2(prog_fd[2], map_fd[8],
+> prog_attach_type[2]);
+>  
+>  	if (tx_prog_fd >= 0)
+>  		bpf_prog_detach2(tx_prog_fd, map_fd[1],
+> BPF_SK_MSG_VERDICT);
+> @@ -1783,18 +1795,6 @@ char *map_names[] = {
+>  	"tls_sock_map",
+>  };
+>  
+> -int prog_attach_type[] = {
+> -	BPF_SK_SKB_STREAM_PARSER,
+> -	BPF_SK_SKB_STREAM_VERDICT,
+> -	BPF_SK_SKB_STREAM_VERDICT,
+> -	BPF_CGROUP_SOCK_OPS,
+> -	BPF_SK_MSG_VERDICT,
+> -	BPF_SK_MSG_VERDICT,
+> -	BPF_SK_MSG_VERDICT,
+> -	BPF_SK_MSG_VERDICT,
+> -	BPF_SK_MSG_VERDICT,
+> -};
+> -
+>  int prog_type[] = {
+>  	BPF_PROG_TYPE_SK_SKB,
+>  	BPF_PROG_TYPE_SK_SKB,
 
 
