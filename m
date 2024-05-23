@@ -1,160 +1,134 @@
-Return-Path: <bpf+bounces-30429-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-30430-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3E5948CDA5F
-	for <lists+bpf@lfdr.de>; Thu, 23 May 2024 21:03:57 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id BAEDD8CDA66
+	for <lists+bpf@lfdr.de>; Thu, 23 May 2024 21:06:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C192DB22F97
-	for <lists+bpf@lfdr.de>; Thu, 23 May 2024 19:03:54 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7527E282C37
+	for <lists+bpf@lfdr.de>; Thu, 23 May 2024 19:06:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB29B82D9A;
-	Thu, 23 May 2024 19:03:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0639882863;
+	Thu, 23 May 2024 19:06:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fq88AgYh"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="SrkRVSXj"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yw1-f182.google.com (mail-yw1-f182.google.com [209.85.128.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-173.mta1.migadu.com (out-173.mta1.migadu.com [95.215.58.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0150F762DC
-	for <bpf@vger.kernel.org>; Thu, 23 May 2024 19:03:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 94BE533985
+	for <bpf@vger.kernel.org>; Thu, 23 May 2024 19:06:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716491022; cv=none; b=i2T6Vh/xgznLw6+E2GnwMdApWb8z5yMVKbqqm+msHNzlK65wII65OPcPv+3WdwxVy/Sm9JPduEEUV4vb/DQxcm9EKIQKJQKNbr07uYig6dVmPzQ4p6gK2F0FzloHkOSUCu8M2YrzoB30LMg9UUf1ev5z2092ZD7Egc+Gnj4vJU0=
+	t=1716491200; cv=none; b=YOc6DaO0+lrSBwhp/aBSSqep+TmjOqFjZHw1nr/sFbVDKEL6Osu9HVO7lz9TlwTpCm2W3q4KofzsvebfA4zzxA4+vrI0bqLFeH8tfxBrPGURN6XZXvoiU6wGroD5S2hnnVS6NWPAI2kWHdNNqAG4ao7TjtDy3Ez47ivnwtuhK5k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716491022; c=relaxed/simple;
-	bh=7xUohBlGBsb61Ko3LeMnSvZhUrhXb9vWMwxZekEUIqI=;
+	s=arc-20240116; t=1716491200; c=relaxed/simple;
+	bh=j3flo5l00FtdW96ZfTYmz3Ii+MzBsr13pNH0ETvfftg=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=aqEhFtalvjGtd4P4E8HeR7cVTBby+QVVKYBfXPnkKz4yTNkPTJCAuxBdGfJhG0sstBwo3vsOZz9TeugpIJts5tJkCwxQfYcTEA3Uw/S+Q2+Ln86cPpyFR5lL/RnCFduw+kIWTgiG0/D0cZxCRIrBuWX5e4vb6/ur9By03q/pPgQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=fq88AgYh; arc=none smtp.client-ip=209.85.128.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f182.google.com with SMTP id 00721157ae682-62a08099115so1165247b3.0
-        for <bpf@vger.kernel.org>; Thu, 23 May 2024 12:03:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1716491020; x=1717095820; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=iy+4y+zNQHyusobkROUZgBI7D+CSHPX6lKYfU2YxTnk=;
-        b=fq88AgYhsFo0ma2YICwPstqCgGT6nRDuA75WwBAnN+QBLwDhhxaSI51tFJzUhaMEBj
-         JK2wmSCJrl6YxaIDJfC2EuyA2nGbDh1dItG56KRWCJ4uahk6bxrTGOhiXfxMPzWN9FnI
-         4k4MTn+DQtXQZ/0olRR20IL8dYNRLPUO4w4CmxsZ6g/ihe8X/1jylEtb8VpN8mCdQ3xL
-         aOp7VQCt2lxdIdKkzUD2nU/f1Wj/xWiyE1Vo4oRxN9aVCU9Zkar98+rQCaO+mEkofxkj
-         jZEIDvLVQ3x4mjyneRw3YkHpz7AlFwfDK5Mu2A/7StvqEZxHe1+eF5tSl4td47nRMhDW
-         S+qQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1716491020; x=1717095820;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=iy+4y+zNQHyusobkROUZgBI7D+CSHPX6lKYfU2YxTnk=;
-        b=uScceA43Zkt2/rB7y6QKno2iT4LJ19I4MgF/gNBTr+JdDL5JU+xLY9nTLyIT5i5BTH
-         YkrV7zfmA27mOjwlMIbFQjox4lnu+KZH1Kx52gezHQ+9TjeWsZ+HptErqO8kcQhsW9jw
-         +9TXOBkopszOgNdw7N818JJZ21LQss6ZzUXYW/2u3g+sKEQglP0G1tOAarciQ315+BDH
-         2/EZFht7MOUWRQNmIo67Z28GxqY8jO90TERdbiwIJRu20MYMcixvD2U6fZAfjHUZarkD
-         CkTWuVbPYY4uaavJIqk5uZ+4Iss+kpug6BN6kv6grl82G/bMNB5OqAIQOMUILLwZrtv0
-         0h9g==
-X-Gm-Message-State: AOJu0YzPaEh3G/C1cnDkMdxfpqLDYWEXgjfze/pv1jJxngo9O/wULhjP
-	S7krN0UkfOerRBZ8VkuSMyDgTieMfUHN35btY0Lcgf1Ev82b1dYu
-X-Google-Smtp-Source: AGHT+IHZLViTurEstQ5Mw0f1waUF8+JdTHpPh8uIGPW+GIslFCgQV2R3lD3ZktNekq8gxOVDvryiPA==
-X-Received: by 2002:a81:4314:0:b0:61b:1f0d:838b with SMTP id 00721157ae682-62a08d8a0ddmr238517b3.14.1716491019335;
-        Thu, 23 May 2024 12:03:39 -0700 (PDT)
-Received: from ?IPV6:2600:1700:6cf8:1240:a2b5:fcfb:857c:2908? ([2600:1700:6cf8:1240:a2b5:fcfb:857c:2908])
-        by smtp.gmail.com with ESMTPSA id 00721157ae682-627f2438b10sm5110367b3.97.2024.05.23.12.03.38
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 23 May 2024 12:03:38 -0700 (PDT)
-Message-ID: <d51165a1-c85f-4216-bb12-9615aee5f857@gmail.com>
-Date: Thu, 23 May 2024 12:03:37 -0700
+	 In-Reply-To:Content-Type; b=BF0kck7T/U2fl8fWz6JS/Pd0BbRXA6A2O2e3Z3jqI4lVFhT0rslBq/a9Oe2mEFkESXbd4VZx5wUm3lGeXkIzut/2Ef6yRzxXD33MERVpjrPs7soU/o/ZXsDjg6ZgjbhDxi2n9cMzCsOmF9MZagRiolMmv9AfZyUfrqdlEGkH0HA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=SrkRVSXj; arc=none smtp.client-ip=95.215.58.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Envelope-To: geliang@kernel.org
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1716491196;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=gd8SEEEwJ/GbynmyIxCgVpoqrktcLO7iOrDAG1e0Zeo=;
+	b=SrkRVSXjJYHgDqTioVSSWUFlF0MHU3yIhgHILFvCjuqxE5TaQ6F/snGsR0tPouy+1FX7mc
+	FdcFBlpcTZbW2blsxeHfOjdb1yJCqp+s2eo5L4uMbqH8OWaFrU8Nc4VfssiRZB5CR3pSEh
+	voR08CHyQQwA5anLKsN43C/t3g7b1zk=
+X-Envelope-To: andrii@kernel.org
+X-Envelope-To: eddyz87@gmail.com
+X-Envelope-To: mykolal@fb.com
+X-Envelope-To: ast@kernel.org
+X-Envelope-To: daniel@iogearbox.net
+X-Envelope-To: song@kernel.org
+X-Envelope-To: yonghong.song@linux.dev
+X-Envelope-To: john.fastabend@gmail.com
+X-Envelope-To: kpsingh@kernel.org
+X-Envelope-To: sdf@google.com
+X-Envelope-To: haoluo@google.com
+X-Envelope-To: jolsa@kernel.org
+X-Envelope-To: shuah@kernel.org
+X-Envelope-To: tanggeliang@kylinos.cn
+X-Envelope-To: bpf@vger.kernel.org
+X-Envelope-To: linux-kselftest@vger.kernel.org
+Message-ID: <5c6beff5-2fb0-489b-917d-688a98f51175@linux.dev>
+Date: Thu, 23 May 2024 12:06:29 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH bpf-next v4 3/7] bpf: support epoll from bpf struct_ops
- links.
-To: Martin KaFai Lau <martin.lau@linux.dev>,
- Kui-Feng Lee <thinker.li@gmail.com>
-Cc: bpf@vger.kernel.org, ast@kernel.org, song@kernel.org,
- kernel-team@meta.com, andrii@kernel.org, kuifeng@meta.com
-References: <20240521225121.770930-1-thinker.li@gmail.com>
- <20240521225121.770930-4-thinker.li@gmail.com>
- <a04e275d-4b29-4a6a-b142-dec5b376f2b9@linux.dev>
- <787e0274-5592-4b74-8a7f-3d1962d41d35@gmail.com>
- <e03759c1-09bc-46ce-ba2d-47cff1471eff@linux.dev>
+Subject: Re: [PATCH bpf-next v3 2/8] selftests/bpf: Drop type parameter of
+ start_server_addr
+To: Geliang Tang <geliang@kernel.org>
+Cc: Andrii Nakryiko <andrii@kernel.org>, Eduard Zingerman
+ <eddyz87@gmail.com>, Mykola Lysenko <mykolal@fb.com>,
+ Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>,
+ John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
+ Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
+ Jiri Olsa <jolsa@kernel.org>, Shuah Khan <shuah@kernel.org>,
+ Geliang Tang <tanggeliang@kylinos.cn>, bpf@vger.kernel.org,
+ linux-kselftest@vger.kernel.org
+References: <cover.1716369375.git.tanggeliang@kylinos.cn>
+ <65dd42dd91d678740e9c05e32852f5e01ba2b7bc.1716369375.git.tanggeliang@kylinos.cn>
 Content-Language: en-US
-From: Kui-Feng Lee <sinquersw@gmail.com>
-In-Reply-To: <e03759c1-09bc-46ce-ba2d-47cff1471eff@linux.dev>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Martin KaFai Lau <martin.lau@linux.dev>
+In-Reply-To: <65dd42dd91d678740e9c05e32852f5e01ba2b7bc.1716369375.git.tanggeliang@kylinos.cn>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
+On 5/22/24 2:23 AM, Geliang Tang wrote:
+> diff --git a/tools/testing/selftests/bpf/prog_tests/sk_assign.c b/tools/testing/selftests/bpf/prog_tests/sk_assign.c
+> index 0b9bd1d6f7cc..517d1186e386 100644
+> --- a/tools/testing/selftests/bpf/prog_tests/sk_assign.c
+> +++ b/tools/testing/selftests/bpf/prog_tests/sk_assign.c
+> @@ -255,6 +255,9 @@ void test_sk_assign(void)
+>   
+>   	for (i = 0; i < ARRAY_SIZE(tests) && !READ_ONCE(stop); i++) {
+>   		struct test_sk_cfg *test = &tests[i];
+> +		struct network_helper_opts opts = {
+> +			.type = test->type,
 
+I think dropping the type arg from the start_server_addr (and other existing 
+helpers) is wrong.
 
-On 5/23/24 11:34, Martin KaFai Lau wrote:
-> On 5/23/24 11:24 AM, Kui-Feng Lee wrote:
->>
->>
->> On 5/23/24 10:23, Martin KaFai Lau wrote:
->>> On 5/21/24 3:51 PM, Kui-Feng Lee wrote:
->>>> +static __poll_t bpf_link_poll(struct file *file, struct 
->>>> poll_table_struct *pts)
->>>> +{
->>>> +    struct bpf_link *link = file->private_data;
->>>> +
->>>> +    if (link->ops->poll)
->>>> +        return link->ops->poll(file, pts);
->>>> +
->>>> +    return 0;
->>>
->>> The current bpf_link_fops.poll is NULL before this patch. From 
->>> vfs_poll, it seems to be DEFAULT_POLLMASK for this case. Please 
->>> double check.
->>
->>
->> Yes, it returns DEFAULT_POLLMASK if file->f_op->epoll is NULL. But,
->> before this patch, link can not be added to an epoll. See the
->> explanation below.
-> 
-> How about select() and poll() that do not need epoll_ctl() setup?
+"type" is the common case that tests usually want to specify here (at least 
+between SOCK_STREAM and SOCK_DGRAM). It becomes optional (opts) now and have a 
+more complicated way to pass it to the the start_server_addr, connect_to_addr...etc.
 
-AFAIK, they just don't check it at all, calling vfs_poll() directly.
+imo, the opts.{type, proto, noconnect} is at least a bit non intuitive or 
+unnecessary. The only use case now is in test_bpf_ip_check_defrag_ok which ends 
+up bypassing most (or at least some) of the connect_to_fd_opts() logic. May be 
+that test should have its own connect_to_fd_opts() instead. However, lets leave 
+this potential cleanup out for later and not complicate this set further.
 
-> 
->>
->>>
->>>> +}
->>>> +
->>>>   static const struct file_operations bpf_link_fops = {
->>>>   #ifdef CONFIG_PROC_FS
->>>>       .show_fdinfo    = bpf_link_show_fdinfo,
->>>> @@ -3157,6 +3167,7 @@ static const struct file_operations 
->>>> bpf_link_fops = {
->>>>       .release    = bpf_link_release,
->>>>       .read        = bpf_dummy_read,
->>>>       .write        = bpf_dummy_write,
->>>> +    .poll        = bpf_link_poll,
->>>
->>> Same here. What does the epoll_ctl(EPOLL_CTL_ADD) currently expect 
->>> for link (e.g. cgroup) that does not support poll?
->>>
->>
->> epoll_ctl() always returns -EPERM for files not supporting poll.
->> Should I add another instance of struct file_operations to keep the
->> consistency for other types of links?
-> 
-> imo, it makes sense to have another instance for link that supports poll 
-> such that epoll_ctl(EPOLL_CTL_ADD) can fail early for the unsupported 
-> links.
+Please keep type as the individual arg to the helper functions.
 
-Ok! I will add another instance.
+pw-bot: cr
 
-> 
->>
->>>>   };
->>>
-> 
+> +		};
+>   		const struct sockaddr *addr;
+>   		const int zero = 0;
+>   		int err;
+> @@ -263,9 +266,8 @@ void test_sk_assign(void)
+>   			continue;
+>   		prepare_addr(test->addr, test->family, BIND_PORT, false);
+>   		addr = (const struct sockaddr *)test->addr;
+> -		server = start_server_addr(test->type,
+> -					   (const struct sockaddr_storage *)addr,
+> -					   test->len, NULL);
+> +		server = start_server_addr((const struct sockaddr_storage *)addr,
+> +					   test->len, &opts);
+
 
