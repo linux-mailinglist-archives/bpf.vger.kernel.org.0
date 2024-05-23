@@ -1,71 +1,71 @@
-Return-Path: <bpf+bounces-30439-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-30440-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id CB4E78CDD20
-	for <lists+bpf@lfdr.de>; Fri, 24 May 2024 01:09:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2835A8CDD21
+	for <lists+bpf@lfdr.de>; Fri, 24 May 2024 01:09:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3F88A1F215DF
-	for <lists+bpf@lfdr.de>; Thu, 23 May 2024 23:09:05 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 90E8A1F21CE2
+	for <lists+bpf@lfdr.de>; Thu, 23 May 2024 23:09:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 363E6128808;
-	Thu, 23 May 2024 23:08:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 79AE9128812;
+	Thu, 23 May 2024 23:08:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WyNKSq2w"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XWLR9T1s"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yw1-f181.google.com (mail-yw1-f181.google.com [209.85.128.181])
+Received: from mail-yw1-f173.google.com (mail-yw1-f173.google.com [209.85.128.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3965912838F
-	for <bpf@vger.kernel.org>; Thu, 23 May 2024 23:08:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 64E7084D25
+	for <bpf@vger.kernel.org>; Thu, 23 May 2024 23:08:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716505737; cv=none; b=R0i1PE2EAHllchfwsaADoT8O3Z8LGol+C6nmGOjrraFoAnru2J75FA07dJJ4QX9c2yzw1gt3gU5yxq3VS/0NoIEltvSSnsteEsz3F4nDZitNmg+dfekBZ32Vrf8colVkeEr1Rv8wgcEK1XkCrsxLRSqzb0X8QZpku4ByZaB5Vdw=
+	t=1716505739; cv=none; b=vD2pR2X3JJhFas6BZq8VBTqrkY31LcLWXBQiZO7avr2pfblOWH0bFyVd0wf4oNecaE4A4H2guCO6BnsZDbs2iLyVa9+RlPGw9PJtACBOE853iq+kkoZ0avLV9cFj3GqleM4Q3OBCE8bRanTIybnWaalpllVzDAOX+qrNl+PiBqU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716505737; c=relaxed/simple;
-	bh=xppD84te++LZ4ApfbZ1oIZIJ9J0Hv6djDyNJeWeu1pk=;
+	s=arc-20240116; t=1716505739; c=relaxed/simple;
+	bh=MWDCpjl9BLy3RGzWzjmcFwlOX12n4Lxxz8u31F8OV80=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=dqN7YCO07sUddBSUGUZwrhP5kkUmkDZXPxxdS1FMQqltMXbscyNxlsQ8ns2Dtbbk1oz8r3yyxCxP5rkKn50dpfGg5lmHZo6Yzslo3L0Ye5asVr0CM3724VSKUvI1DF3LjDAoLe15popeGEmrtedzD083idy0yB0DQch5SA4RnWs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=WyNKSq2w; arc=none smtp.client-ip=209.85.128.181
+	 MIME-Version; b=K81QuhB6EkNOShGH916v3Rj2sZg4hi7R4iJ+GwJjfaIhhSpz/PiA7x/RvuRdUbxayiF5KvcxwlarP6InOHqSigUBT7UVNRzvQ9QrUVHIx8mSVYJ2FUah/BsxStMeNAIF6BWQef0il/hE2sRlYnzFa6A3UI60wonJ29ms+Gf9s/k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=XWLR9T1s; arc=none smtp.client-ip=209.85.128.173
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f181.google.com with SMTP id 00721157ae682-627788ce780so29193257b3.0
-        for <bpf@vger.kernel.org>; Thu, 23 May 2024 16:08:55 -0700 (PDT)
+Received: by mail-yw1-f173.google.com with SMTP id 00721157ae682-62a087bc74bso2609527b3.2
+        for <bpf@vger.kernel.org>; Thu, 23 May 2024 16:08:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1716505735; x=1717110535; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1716505736; x=1717110536; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=UuNnsh+t+vm30XUZlxFAiVM4aWEhFtEMhV1CFeDWxlE=;
-        b=WyNKSq2wBOl6CjoM6yuYDyRW8jHJh1lMg6kSxp3L6vut4J490JgOXAdLHuhtu+O/Q8
-         qrsj1vmipFUlTMlmXBYVkmipWRYqcTKvi8wEHAUbx/Xlmgouj4tq5b6Zwv5TjQGQ2jTF
-         xLITWjuxP867plvF/FnhMahMM/vr5q/B+5M5qWa9c3H1RSYKZvw3QZued5OKCXaPZFe3
-         GTKJZSQJ78RlINjQtpi9OviPZWAQ3O2/1yieGDDWMsuO9jLY67EUcGWhJfVETzPGbkk0
-         x4Lg0l84XbMLE7F+jdzb7F/lRG2EYIZMqmoAbFIA46GY6hwPOA0uzLTpksjXzcYWQotS
-         Jabw==
+        bh=JsUJ/ZUPCANLU2SOSyqnWVxDYlfF/YXSX4GUUYnQdmY=;
+        b=XWLR9T1skpg1XSsvc+4RLOQAPZ8ypWQpMB+Z8QPpQ2ixRQSovUu7OwdnaJPgYoVmlR
+         OlsF4VRVvt2t3P8KPGAsb9XNQNJn9qDqX69ceCpQFvH3lz0ucNk+agHbXmvsu+6JRE3Z
+         7Kd9qtDp7+I8sbPaYAUD/uIRiuogWrT2s8BN8C84PBN4KPe2nEL9ZK5ZHYetFRjLrATr
+         //00SXInLSKCFeqMWPF+t5gTaHKUBN9D7q2+uQVhSvr7jA7kybmM/RlP1UizM4Q3MOcB
+         TSHc4TQ0UYQQX2v/FFhrMPPbu/7mfhm27+ZOFM5eaRBvQpMLyPSvktU7ZEAmGFg6E/aV
+         ogeA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1716505735; x=1717110535;
+        d=1e100.net; s=20230601; t=1716505736; x=1717110536;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=UuNnsh+t+vm30XUZlxFAiVM4aWEhFtEMhV1CFeDWxlE=;
-        b=D3MBFHbjhZiC2Y3qu6PuYqhf5fLyS6YndY6GKgn6+44chDcqlxTpdEk00NX6gWDzdR
-         Mr0ArtYutWK9LYE6VRtTKpT3CCWuxJCAnxi7WySycBlgNJhjHGLldANqlMRIpfcOk9g2
-         jrlHo7oTjsjitl9bXtWEtzYyl5ulRS7lppHScD7IHqCpoPs3Su2Ob0iMnuBMvgSe2dZ/
-         qje6VViV8ySRICLgkctaKFmQPEvJKtzh89nj7pFlpkhrTZ+t98CQqA/I7WsKW1RWJPlH
-         phI1Q0rGyF8rX+zUwZSBTnvbUqhAOzw3FIco+7ML3V3XH+0EavcJIVNRuCuVhsz3w/iV
-         zKDA==
-X-Gm-Message-State: AOJu0Yy4Xbp53xW3gb3+j1KqWm+5p5DyNJ2gbSJ3TtrXv9vsvA4ii4Fh
-	h1JvhEBlo6DGre9w9dPi2AtzTvuebGbuia/cEi/NUxQrgDAF7PMNOXRxxw==
-X-Google-Smtp-Source: AGHT+IG0z9m1wVo5wgQqNkltG/CeaTafiJIwgb+qSGSC31CAwEkOFRJ3MgKbY4DS9j6Jf+gB2u89iA==
-X-Received: by 2002:a81:4ec1:0:b0:61b:33ae:e065 with SMTP id 00721157ae682-62a08b38427mr5872957b3.0.1716505734467;
-        Thu, 23 May 2024 16:08:54 -0700 (PDT)
+        bh=JsUJ/ZUPCANLU2SOSyqnWVxDYlfF/YXSX4GUUYnQdmY=;
+        b=YVNNL45tWXWwEYYmMLfD30FpsluPbD8gOKdAh1lEg6kAekALJEVz9WBbfGF+Ycy8Da
+         YscQ/etZynEVTHOX3Opcf+4y04uIIJKbNtSquuBkWPr6PtI69VSNn9ZGycUtqyVKi+it
+         Rb8/lM53eRTle2GIkStkWChIFkbQq0dCmIjNC3MHkUxmyQlGfOmndbrrLLcX8/HEA7tX
+         /koSxKCq1v1HmjS1cKFSPyntpT+EV6w+gJbrcp3EO5vWvZubtoxD3r6e1RST33J0G4QR
+         ru+8CorFgETNiyuiGhvFVcI4ZmXWOKVOEVraqkKHI5BDtE0I01B3ySB/YvXYgUXBaUJv
+         sRBQ==
+X-Gm-Message-State: AOJu0YyZnKQ1ArHBpjL6iZrXkb9WiZESQ41r9aFJhg/KIgPK5bfD/M9m
+	P39qyBKC+jvksOub/cBcPgTgQLZxsSqjttiCZZjcWQ5hA5xemsVK9Y9v3Q==
+X-Google-Smtp-Source: AGHT+IExVd9a5w5wA9Hgfxvdgo+IqYXLuBrgfOlhSG2QrOJUcWYRl16Iy/U3Q4bKHVqQOpm6g72g9g==
+X-Received: by 2002:a0d:d454:0:b0:61d:fd33:d065 with SMTP id 00721157ae682-62a08d8abe8mr6501767b3.15.1716505735842;
+        Thu, 23 May 2024 16:08:55 -0700 (PDT)
 Received: from kickker.attlocal.net ([2600:1700:6cf8:1240:b7f1:1457:70d4:ab6c])
-        by smtp.gmail.com with ESMTPSA id 00721157ae682-62a0a37d5d0sm474087b3.16.2024.05.23.16.08.53
+        by smtp.gmail.com with ESMTPSA id 00721157ae682-62a0a37d5d0sm474087b3.16.2024.05.23.16.08.54
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 23 May 2024 16:08:54 -0700 (PDT)
+        Thu, 23 May 2024 16:08:55 -0700 (PDT)
 From: Kui-Feng Lee <thinker.li@gmail.com>
 To: bpf@vger.kernel.org,
 	ast@kernel.org,
@@ -76,9 +76,9 @@ To: bpf@vger.kernel.org,
 Cc: sinquersw@gmail.com,
 	kuifeng@meta.com,
 	Kui-Feng Lee <thinker.li@gmail.com>
-Subject: [PATCH bpf-next v5 2/8] bpf: enable detaching links of struct_ops objects.
-Date: Thu, 23 May 2024 16:08:42 -0700
-Message-Id: <20240523230848.2022072-3-thinker.li@gmail.com>
+Subject: [PATCH bpf-next v5 3/8] bpf: support epoll from bpf struct_ops links.
+Date: Thu, 23 May 2024 16:08:43 -0700
+Message-Id: <20240523230848.2022072-4-thinker.li@gmail.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240523230848.2022072-1-thinker.li@gmail.com>
 References: <20240523230848.2022072-1-thinker.li@gmail.com>
@@ -90,123 +90,176 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Implement the detach callback in bpf_link_ops for struct_ops so that user
-programs can detach a struct_ops link. The subsystems that struct_ops
-objects are registered to can also use this callback to detach the links
-being passed to them.
+Add epoll support to bpf struct_ops links to trigger EPOLLHUP event upon
+detachment.
+
+This patch implements the "poll" of the "struct file_operations" for BPF
+links and introduces a new "poll" operator in the "struct bpf_link_ops". By
+implementing "poll" of "struct bpf_link_ops" for the links of struct_ops,
+the file descriptor of a struct_ops link can be added to an epoll file
+descriptor to receive EPOLLHUP events.
 
 Signed-off-by: Kui-Feng Lee <thinker.li@gmail.com>
 ---
- kernel/bpf/bpf_struct_ops.c | 53 ++++++++++++++++++++++++++++++++-----
- 1 file changed, 47 insertions(+), 6 deletions(-)
+ include/linux/bpf.h         |  1 +
+ kernel/bpf/bpf_struct_ops.c | 17 +++++++++++++++++
+ kernel/bpf/syscall.c        | 31 ++++++++++++++++++++++++++-----
+ 3 files changed, 44 insertions(+), 5 deletions(-)
 
+diff --git a/include/linux/bpf.h b/include/linux/bpf.h
+index b600767ebe02..5f7496ef8b7c 100644
+--- a/include/linux/bpf.h
++++ b/include/linux/bpf.h
+@@ -1612,6 +1612,7 @@ struct bpf_link_ops {
+ 			      struct bpf_link_info *info);
+ 	int (*update_map)(struct bpf_link *link, struct bpf_map *new_map,
+ 			  struct bpf_map *old_map);
++	__poll_t (*poll)(struct file *file, struct poll_table_struct *pts);
+ };
+ 
+ struct bpf_tramp_link {
 diff --git a/kernel/bpf/bpf_struct_ops.c b/kernel/bpf/bpf_struct_ops.c
-index 1542dded7489..f2439acd9757 100644
+index f2439acd9757..855a1b2b6e79 100644
 --- a/kernel/bpf/bpf_struct_ops.c
 +++ b/kernel/bpf/bpf_struct_ops.c
-@@ -1057,9 +1057,6 @@ static void bpf_struct_ops_map_link_dealloc(struct bpf_link *link)
- 	st_map = (struct bpf_struct_ops_map *)
- 		rcu_dereference_protected(st_link->map, true);
- 	if (st_map) {
--		/* st_link->map can be NULL if
--		 * bpf_struct_ops_link_create() fails to register.
--		 */
- 		st_map->st_ops_desc->st_ops->unreg(&st_map->kvalue.data, link);
- 		bpf_map_put(&st_map->map);
- 	}
-@@ -1075,7 +1072,8 @@ static void bpf_struct_ops_map_link_show_fdinfo(const struct bpf_link *link,
- 	st_link = container_of(link, struct bpf_struct_ops_link, link);
- 	rcu_read_lock();
- 	map = rcu_dereference(st_link->map);
--	seq_printf(seq, "map_id:\t%d\n", map->id);
-+	if (map)
-+		seq_printf(seq, "map_id:\t%d\n", map->id);
- 	rcu_read_unlock();
- }
+@@ -12,6 +12,7 @@
+ #include <linux/mutex.h>
+ #include <linux/btf_ids.h>
+ #include <linux/rcupdate_wait.h>
++#include <linux/poll.h>
  
-@@ -1088,7 +1086,8 @@ static int bpf_struct_ops_map_link_fill_link_info(const struct bpf_link *link,
- 	st_link = container_of(link, struct bpf_struct_ops_link, link);
- 	rcu_read_lock();
- 	map = rcu_dereference(st_link->map);
--	info->struct_ops.map_id = map->id;
-+	if (map)
-+		info->struct_ops.map_id = map->id;
- 	rcu_read_unlock();
+ struct bpf_struct_ops_value {
+ 	struct bpf_struct_ops_common_value common;
+@@ -56,6 +57,7 @@ struct bpf_struct_ops_map {
+ struct bpf_struct_ops_link {
+ 	struct bpf_link link;
+ 	struct bpf_map __rcu *map;
++	wait_queue_head_t wait_hup;
+ };
+ 
+ static DEFINE_MUTEX(update_mutex);
+@@ -1167,15 +1169,28 @@ static int bpf_struct_ops_map_link_detach(struct bpf_link *link)
+ 
+ 	mutex_unlock(&update_mutex);
+ 
++	wake_up_interruptible_poll(&st_link->wait_hup, EPOLLHUP);
++
  	return 0;
  }
-@@ -1113,6 +1112,10 @@ static int bpf_struct_ops_map_link_update(struct bpf_link *link, struct bpf_map
- 	mutex_lock(&update_mutex);
  
- 	old_map = rcu_dereference_protected(st_link->map, lockdep_is_held(&update_mutex));
-+	if (!old_map) {
-+		err = -ENOLINK;
-+		goto err_out;
-+	}
- 	if (expected_old_map && old_map != expected_old_map) {
- 		err = -EPERM;
- 		goto err_out;
-@@ -1139,8 +1142,37 @@ static int bpf_struct_ops_map_link_update(struct bpf_link *link, struct bpf_map
- 	return err;
- }
- 
-+static int bpf_struct_ops_map_link_detach(struct bpf_link *link)
++static __poll_t bpf_struct_ops_map_link_poll(struct file *file,
++					     struct poll_table_struct *pts)
 +{
-+	struct bpf_struct_ops_link *st_link = container_of(link, struct bpf_struct_ops_link, link);
-+	struct bpf_struct_ops_map *st_map;
-+	struct bpf_map *map;
++	struct bpf_struct_ops_link *st_link = file->private_data;
 +
-+	mutex_lock(&update_mutex);
++	poll_wait(file, &st_link->wait_hup, pts);
 +
-+	map = rcu_dereference_protected(st_link->map, lockdep_is_held(&update_mutex));
-+	if (!map) {
-+		mutex_unlock(&update_mutex);
-+		return 0;
-+	}
-+	st_map = container_of(map, struct bpf_struct_ops_map, map);
-+
-+	st_map->st_ops_desc->st_ops->unreg(&st_map->kvalue.data, link);
-+
-+	rcu_assign_pointer(st_link->map, NULL);
-+	/* Pair with bpf_map_get() in bpf_struct_ops_link_create() or
-+	 * bpf_map_inc() in bpf_struct_ops_map_link_update().
-+	 */
-+	bpf_map_put(&st_map->map);
-+
-+	mutex_unlock(&update_mutex);
-+
-+	return 0;
++	return rcu_access_pointer(st_link->map) ? 0 : EPOLLHUP;
 +}
 +
  static const struct bpf_link_ops bpf_struct_ops_map_lops = {
  	.dealloc = bpf_struct_ops_map_link_dealloc,
-+	.detach = bpf_struct_ops_map_link_detach,
+ 	.detach = bpf_struct_ops_map_link_detach,
  	.show_fdinfo = bpf_struct_ops_map_link_show_fdinfo,
  	.fill_link_info = bpf_struct_ops_map_link_fill_link_info,
  	.update_map = bpf_struct_ops_map_link_update,
-@@ -1176,13 +1208,22 @@ int bpf_struct_ops_link_create(union bpf_attr *attr)
- 	if (err)
- 		goto err_out;
++	.poll = bpf_struct_ops_map_link_poll,
+ };
  
-+	/* Init link->map before calling reg() in case being detached
-+	 * immediately.
-+	 */
-+	RCU_INIT_POINTER(link->map, map);
+ int bpf_struct_ops_link_create(union bpf_attr *attr)
+@@ -1213,6 +1228,8 @@ int bpf_struct_ops_link_create(union bpf_attr *attr)
+ 	 */
+ 	RCU_INIT_POINTER(link->map, map);
+ 
++	init_waitqueue_head(&link->wait_hup);
 +
-+	mutex_lock(&update_mutex);
+ 	mutex_lock(&update_mutex);
  	err = st_map->st_ops_desc->st_ops->reg(st_map->kvalue.data, &link->link);
  	if (err) {
-+		RCU_INIT_POINTER(link->map, NULL);
-+		mutex_unlock(&update_mutex);
- 		bpf_link_cleanup(&link_primer);
-+		/* The link has been free by bpf_link_cleanup() */
- 		link = NULL;
- 		goto err_out;
+diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+index 13ad74ecf2cd..741f91153fe6 100644
+--- a/kernel/bpf/syscall.c
++++ b/kernel/bpf/syscall.c
+@@ -3150,6 +3150,13 @@ static void bpf_link_show_fdinfo(struct seq_file *m, struct file *filp)
+ }
+ #endif
+ 
++static __poll_t bpf_link_poll(struct file *file, struct poll_table_struct *pts)
++{
++	struct bpf_link *link = file->private_data;
++
++	return link->ops->poll(file, pts);
++}
++
+ static const struct file_operations bpf_link_fops = {
+ #ifdef CONFIG_PROC_FS
+ 	.show_fdinfo	= bpf_link_show_fdinfo,
+@@ -3159,6 +3166,16 @@ static const struct file_operations bpf_link_fops = {
+ 	.write		= bpf_dummy_write,
+ };
+ 
++static const struct file_operations bpf_link_fops_poll = {
++#ifdef CONFIG_PROC_FS
++	.show_fdinfo	= bpf_link_show_fdinfo,
++#endif
++	.release	= bpf_link_release,
++	.read		= bpf_dummy_read,
++	.write		= bpf_dummy_write,
++	.poll		= bpf_link_poll,
++};
++
+ static int bpf_link_alloc_id(struct bpf_link *link)
+ {
+ 	int id;
+@@ -3201,7 +3218,9 @@ int bpf_link_prime(struct bpf_link *link, struct bpf_link_primer *primer)
+ 		return id;
  	}
--	RCU_INIT_POINTER(link->map, map);
-+	mutex_unlock(&update_mutex);
  
- 	return bpf_link_settle(&link_primer);
+-	file = anon_inode_getfile("bpf_link", &bpf_link_fops, link, O_CLOEXEC);
++	file = anon_inode_getfile("bpf_link",
++				  link->ops->poll ? &bpf_link_fops_poll : &bpf_link_fops,
++				  link, O_CLOEXEC);
+ 	if (IS_ERR(file)) {
+ 		bpf_link_free_id(id);
+ 		put_unused_fd(fd);
+@@ -3229,7 +3248,9 @@ int bpf_link_settle(struct bpf_link_primer *primer)
  
+ int bpf_link_new_fd(struct bpf_link *link)
+ {
+-	return anon_inode_getfd("bpf-link", &bpf_link_fops, link, O_CLOEXEC);
++	return anon_inode_getfd("bpf-link",
++				link->ops->poll ? &bpf_link_fops_poll : &bpf_link_fops,
++				link, O_CLOEXEC);
+ }
+ 
+ struct bpf_link *bpf_link_get_from_fd(u32 ufd)
+@@ -3239,7 +3260,7 @@ struct bpf_link *bpf_link_get_from_fd(u32 ufd)
+ 
+ 	if (!f.file)
+ 		return ERR_PTR(-EBADF);
+-	if (f.file->f_op != &bpf_link_fops) {
++	if (f.file->f_op != &bpf_link_fops && f.file->f_op != &bpf_link_fops_poll) {
+ 		fdput(f);
+ 		return ERR_PTR(-EINVAL);
+ 	}
+@@ -4966,7 +4987,7 @@ static int bpf_obj_get_info_by_fd(const union bpf_attr *attr,
+ 					     uattr);
+ 	else if (f.file->f_op == &btf_fops)
+ 		err = bpf_btf_get_info_by_fd(f.file, f.file->private_data, attr, uattr);
+-	else if (f.file->f_op == &bpf_link_fops)
++	else if (f.file->f_op == &bpf_link_fops || f.file->f_op == &bpf_link_fops_poll)
+ 		err = bpf_link_get_info_by_fd(f.file, f.file->private_data,
+ 					      attr, uattr);
+ 	else
+@@ -5101,7 +5122,7 @@ static int bpf_task_fd_query(const union bpf_attr *attr,
+ 	if (!file)
+ 		return -EBADF;
+ 
+-	if (file->f_op == &bpf_link_fops) {
++	if (file->f_op == &bpf_link_fops || file->f_op == &bpf_link_fops_poll) {
+ 		struct bpf_link *link = file->private_data;
+ 
+ 		if (link->ops == &bpf_raw_tp_link_lops) {
 -- 
 2.34.1
 
