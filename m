@@ -1,71 +1,71 @@
-Return-Path: <bpf+bounces-30417-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-30418-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BAE3C8CD944
-	for <lists+bpf@lfdr.de>; Thu, 23 May 2024 19:42:29 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B95198CD94D
+	for <lists+bpf@lfdr.de>; Thu, 23 May 2024 19:42:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7020C28385F
-	for <lists+bpf@lfdr.de>; Thu, 23 May 2024 17:42:28 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0E582B2258E
+	for <lists+bpf@lfdr.de>; Thu, 23 May 2024 17:42:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B4D77F481;
-	Thu, 23 May 2024 17:42:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7DD5F7E116;
+	Thu, 23 May 2024 17:42:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="knyrCRTa"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="l2Ln+t11"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yw1-f170.google.com (mail-yw1-f170.google.com [209.85.128.170])
+Received: from mail-yw1-f180.google.com (mail-yw1-f180.google.com [209.85.128.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1CB187F486
-	for <bpf@vger.kernel.org>; Thu, 23 May 2024 17:42:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 61B54763F2
+	for <bpf@vger.kernel.org>; Thu, 23 May 2024 17:42:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716486138; cv=none; b=lPEtf2Ejb4fOFtw5T8p1NHQpaVPUK/G9HSwaq4Cf43C9CSfNyS1vOrewAtngKiN6DgBuYYSUToTHSiI8393fPmEZKFx0Dbkj1zZxKTBOsbBbDG9x34kSF/9+qPPeWBQxh/Hg8c+yJEDknvvrVyD9oz684fV8mAZNGRP9R9zzbqM=
+	t=1716486140; cv=none; b=qvakpS9532JzM1YJtDNkBqGeXw9T0D8ZNhaHSMHyvfM+TTyDSjN3FvIkt5FI/IJjqbMMsBMlxwlxuehH69MnnSKNJ4Jb0pUe06D2BwRDVt/TTTTfSYUWm0aAwisVSmW9S3jqjRdiiBTrJ/CPVobUcN0XAIEOxJ93+DJSvEW7fs8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716486138; c=relaxed/simple;
-	bh=AfPVNo1WOUDkeqpBoOWizg53TqtuNzGhAMFb5lNqTho=;
+	s=arc-20240116; t=1716486140; c=relaxed/simple;
+	bh=6ddzF50xdfvUTLbRPmh03d817gxeSkpTT82lJoW/bdU=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=up58SyqkBCJOdBqh6aj+V+8LUIdi8J3A456OVzNFVNIVYysFNyJpymWbdlKL7XygPrl1noPQmhy/1DwzAaN5dvVcHKlvU2MvgMkRQlrMGrscJ4QTiFf6zqGYBzmG7mal3UHKN69hlD/zS7O5Q9XXCoBQ0NldncYKu4ESHhgJ0b4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=knyrCRTa; arc=none smtp.client-ip=209.85.128.170
+	 MIME-Version; b=C+Ufo6p+Ex/AILyWNN6ylBhcfLh7pjl81t38NTvpxlu3s4mScjIO1nmhrcGDUIumBpzwIxh3i69iXlxlTTL233N5kA517nuovuKYAnQw+KcisdrwCH5+LE1i0tVq6FP+deGcsmAiiaddIBWFwiZm8f5g/dkGZzLS7Fuo+ufH/Bg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=l2Ln+t11; arc=none smtp.client-ip=209.85.128.180
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f170.google.com with SMTP id 00721157ae682-62a080a171dso6547b3.0
-        for <bpf@vger.kernel.org>; Thu, 23 May 2024 10:42:16 -0700 (PDT)
+Received: by mail-yw1-f180.google.com with SMTP id 00721157ae682-6114c9b4d83so57967707b3.3
+        for <bpf@vger.kernel.org>; Thu, 23 May 2024 10:42:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1716486136; x=1717090936; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1716486137; x=1717090937; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=xtdQr/zEufaVdZNG//MSA6qPzIpwLHsz9vFprtP/cME=;
-        b=knyrCRTaZJGZLB5Yh1LOXaOMxjYA1hNHUIk8ybchLH2RnXGHBMJ5AT83M9Qgo3ucY0
-         2OQkWPnWYFMVRBYniDrVIQ7cxhrt1ziAtiDLQXJlcLbj8ohKAltEL+6BvIGaO2+J333T
-         0HsiS/HDDQW57TabCgb8XoMHSiUZr7AUVDd7b9MVXIkRrn/5kBJZGUO/UKrC23/7BpC+
-         u9a7EUjD/nLKkuxly6J4LczWAghxZGdtcNkhakQ51agWk1F4827zpGUomrtnPNFf1aLG
-         8GXD7XfaSF7gdVaN6C18oTKRts3GSb1LJPBhIzShOQ8jzZ9Facm41cVoABO2i7AS2krW
-         9b8w==
+        bh=54DvYQpAAB02Xh88RZICeBNDEtLg9JnAjUy2/MHSl1w=;
+        b=l2Ln+t11/LzlK/VRGklKAib8BYhcj+tZdGyYr8FOapHBFnZeSZKxxGfBcKtarUX5L2
+         JOVM4mPwMupkxZfB8FXqEqPgDxSemVHtR/qZe2RfdqzW9dfjRj/PADGV6Smt0+UNQs4V
+         wQlhcFErOA1GCje+pJZsDdKVMmmPsa70QPES6mhyn/OsXDyoqgsWyEUAhDQqi72kmx2a
+         PZmVoxUNZDt7irzw730fu8W8R7ctxWKpl4VZ09jsPnXBrQabY18VUyynAwG8MNIXJKAx
+         53Qy881aPg09rmT4gwYxLM4ohrIPriKC7UlzwVqQfVzO79Ikyp9vQX6Kt7xcVnGgbDE4
+         E33Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1716486136; x=1717090936;
+        d=1e100.net; s=20230601; t=1716486137; x=1717090937;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=xtdQr/zEufaVdZNG//MSA6qPzIpwLHsz9vFprtP/cME=;
-        b=d4/iBDDtdxIa0PXvJzBS32kfgU/zzyBuPrucgSubGMSAP7sS7eLchIY0/0G9O6LAbL
-         o75vwJsvNkpafYyHcRWTnaMlc8LvbwO9z4M3u3QcW7OCnXFxXHqH3Vqfp8YuPOtBWlo2
-         no4qxb5wf4A1rBwD1iu3mzdx3/BzwCVKPfaSrukNLofB13feFICkv0OJJMlz1EqNEzOp
-         Mo4uZx3tygxEc6kem1lnd+/plWWm2VTOic8AH78qjvSc9S6+QOYOeG00Y7hJPIbHCT9x
-         Rqxxaw+Fn2U6TUc4l4xsgVwFax3FaMICVF7mGHHy3HohJTcRJLeqWVzAApPvI1Gln/wN
-         l2ng==
-X-Gm-Message-State: AOJu0Yzg5YWl+M0jS9BL1pQ261GNl++HKiVJlHrhjTSC7yudwbxtI9Wn
-	L105CP16lBl11LpINuODg0pMVaMGds9F7MQ+fenkS4wI5vwVYREQax0W2g==
-X-Google-Smtp-Source: AGHT+IF06h4TqOrTWk9YihojP1RVpznBghkflUAsJCptmHVlEBPHzvZaH7qD2sV8rNh7E5s9+YXlbg==
-X-Received: by 2002:a0d:c3c4:0:b0:61a:cea1:3c63 with SMTP id 00721157ae682-627e482ebe1mr57925677b3.47.1716486135853;
-        Thu, 23 May 2024 10:42:15 -0700 (PDT)
+        bh=54DvYQpAAB02Xh88RZICeBNDEtLg9JnAjUy2/MHSl1w=;
+        b=wN1Oqryy2shAFiz/rpo8MOX9e+U2u3mov4OOVGocQrcHTMQ2qfL4d3bS42lvkDXJcG
+         QMj6+HP8m8MqsnNEPF/GTpC6Z/3IEqkevSXtNQ8tA1c3NaGaMn1LaogIq6NGWdBKVHdy
+         Am+TmD8eYs1othDi635h5JBx8gzW8SKjLAzzOKx1b+Cu2n4TshnRA20FCFNYjsNujRHS
+         1nxHAdHYIor7mu67j2VDrsRgjKXEc5sagGSE+LSPouzEplCbdfKoqLdC+YfOuG9dOsFW
+         olqV8GMuv7KAY7P2okyg0XuxANJR7o/SznIcxYwoyD6/hf10YVM8ZeQacQD1mXdPVCfP
+         oRJg==
+X-Gm-Message-State: AOJu0YzGtRKt2XbCUeP8t3I1iRAymKfMv3q7T29Q2tECI4FX48LW/T+W
+	ci2s9rpMlwaJ9PN09e9mPhqzvWjgB/PpiDCCf9cmH12aTwvq3P6+H1oIWA==
+X-Google-Smtp-Source: AGHT+IHr9UIkxAVA+O7zsOGJSdI/4CFIOyqP6AmaYw1m3gbrkfMGeEKGj6rsgUlDGiZzkqqKrAR2dA==
+X-Received: by 2002:a0d:d415:0:b0:627:972f:bac3 with SMTP id 00721157ae682-627e4688f57mr62096587b3.8.1716486137051;
+        Thu, 23 May 2024 10:42:17 -0700 (PDT)
 Received: from kickker.attlocal.net ([2600:1700:6cf8:1240:a2b5:fcfb:857c:2908])
-        by smtp.gmail.com with ESMTPSA id 00721157ae682-6209e2514bbsm63652277b3.42.2024.05.23.10.42.13
+        by smtp.gmail.com with ESMTPSA id 00721157ae682-6209e2514bbsm63652277b3.42.2024.05.23.10.42.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 23 May 2024 10:42:14 -0700 (PDT)
+        Thu, 23 May 2024 10:42:16 -0700 (PDT)
 From: Kui-Feng Lee <thinker.li@gmail.com>
 To: bpf@vger.kernel.org,
 	ast@kernel.org,
@@ -77,9 +77,9 @@ To: bpf@vger.kernel.org,
 Cc: sinquersw@gmail.com,
 	kuifeng@meta.com,
 	Kui-Feng Lee <thinker.li@gmail.com>
-Subject: [PATCH bpf-next v7 6/9] bpf: limit the number of levels of a nested struct type.
-Date: Thu, 23 May 2024 10:41:59 -0700
-Message-Id: <20240523174202.461236-7-thinker.li@gmail.com>
+Subject: [PATCH bpf-next v7 7/9] selftests/bpf: Test kptr arrays and kptrs in nested struct fields.
+Date: Thu, 23 May 2024 10:42:00 -0700
+Message-Id: <20240523174202.461236-8-thinker.li@gmail.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240523174202.461236-1-thinker.li@gmail.com>
 References: <20240523174202.461236-1-thinker.li@gmail.com>
@@ -91,116 +91,226 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Limit the number of levels looking into struct types to avoid running out
-of stack space.
+Make sure that BPF programs can declare global kptr arrays and kptr fields
+in struct types that is the type of a global variable or the type of a
+nested descendant field in a global variable.
+
+An array with only one element is special case, that it treats the element
+like a non-array kptr field. Nested arrays are also tested to ensure they
+are handled properly.
 
 Acked-by: Eduard Zingerman <eddyz87@gmail.com>
 Signed-off-by: Kui-Feng Lee <thinker.li@gmail.com>
 ---
- kernel/bpf/btf.c | 30 +++++++++++++++++++-----------
- 1 file changed, 19 insertions(+), 11 deletions(-)
+ .../selftests/bpf/prog_tests/cpumask.c        |   5 +
+ .../selftests/bpf/progs/cpumask_success.c     | 171 ++++++++++++++++++
+ 2 files changed, 176 insertions(+)
 
-diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-index 5e2b231a9af4..7928d920056f 100644
---- a/kernel/bpf/btf.c
-+++ b/kernel/bpf/btf.c
-@@ -3536,7 +3536,8 @@ static int btf_repeat_fields(struct btf_field_info *info,
+diff --git a/tools/testing/selftests/bpf/prog_tests/cpumask.c b/tools/testing/selftests/bpf/prog_tests/cpumask.c
+index ecf89df78109..2570bd4b0cb2 100644
+--- a/tools/testing/selftests/bpf/prog_tests/cpumask.c
++++ b/tools/testing/selftests/bpf/prog_tests/cpumask.c
+@@ -18,6 +18,11 @@ static const char * const cpumask_success_testcases[] = {
+ 	"test_insert_leave",
+ 	"test_insert_remove_release",
+ 	"test_global_mask_rcu",
++	"test_global_mask_array_one_rcu",
++	"test_global_mask_array_rcu",
++	"test_global_mask_array_l2_rcu",
++	"test_global_mask_nested_rcu",
++	"test_global_mask_nested_deep_rcu",
+ 	"test_cpumask_weight",
+ };
  
- static int btf_find_struct_field(const struct btf *btf,
- 				 const struct btf_type *t, u32 field_mask,
--				 struct btf_field_info *info, int info_cnt);
-+				 struct btf_field_info *info, int info_cnt,
-+				 u32 level);
+diff --git a/tools/testing/selftests/bpf/progs/cpumask_success.c b/tools/testing/selftests/bpf/progs/cpumask_success.c
+index 7a1e64c6c065..fd8106831c32 100644
+--- a/tools/testing/selftests/bpf/progs/cpumask_success.c
++++ b/tools/testing/selftests/bpf/progs/cpumask_success.c
+@@ -12,6 +12,31 @@ char _license[] SEC("license") = "GPL";
  
- /* Find special fields in the struct type of a field.
-  *
-@@ -3547,11 +3548,15 @@ static int btf_find_struct_field(const struct btf *btf,
- static int btf_find_nested_struct(const struct btf *btf, const struct btf_type *t,
- 				  u32 off, u32 nelems,
- 				  u32 field_mask, struct btf_field_info *info,
--				  int info_cnt)
-+				  int info_cnt, u32 level)
- {
- 	int ret, err, i;
+ int pid, nr_cpus;
  
--	ret = btf_find_struct_field(btf, t, field_mask, info, info_cnt);
-+	level++;
-+	if (level >= MAX_RESOLVE_DEPTH)
-+		return -E2BIG;
++struct kptr_nested {
++	struct bpf_cpumask __kptr * mask;
++};
 +
-+	ret = btf_find_struct_field(btf, t, field_mask, info, info_cnt, level);
- 
- 	if (ret <= 0)
- 		return ret;
-@@ -3579,7 +3584,8 @@ static int btf_find_field_one(const struct btf *btf,
- 			      int var_idx,
- 			      u32 off, u32 expected_size,
- 			      u32 field_mask, u32 *seen_mask,
--			      struct btf_field_info *info, int info_cnt)
-+			      struct btf_field_info *info, int info_cnt,
-+			      u32 level)
++struct kptr_nested_pair {
++	struct bpf_cpumask __kptr * mask_1;
++	struct bpf_cpumask __kptr * mask_2;
++};
++
++struct kptr_nested_mid {
++	int dummy;
++	struct kptr_nested m;
++};
++
++struct kptr_nested_deep {
++	struct kptr_nested_mid ptrs[2];
++	struct kptr_nested_pair ptr_pairs[3];
++};
++
++private(MASK) static struct bpf_cpumask __kptr * global_mask_array[2];
++private(MASK) static struct bpf_cpumask __kptr * global_mask_array_l2[2][1];
++private(MASK) static struct bpf_cpumask __kptr * global_mask_array_one[1];
++private(MASK) static struct kptr_nested global_mask_nested[2];
++private(MASK_DEEP) static struct kptr_nested_deep global_mask_nested_deep;
++
+ static bool is_test_task(void)
  {
- 	int ret, align, sz, field_type;
- 	struct btf_field_info tmp;
-@@ -3607,7 +3613,7 @@ static int btf_find_field_one(const struct btf *btf,
- 		if (expected_size && expected_size != sz * nelems)
- 			return 0;
- 		ret = btf_find_nested_struct(btf, var_type, off, nelems, field_mask,
--					     &info[0], info_cnt);
-+					     &info[0], info_cnt, level);
- 		return ret;
- 	}
- 
-@@ -3668,7 +3674,8 @@ static int btf_find_field_one(const struct btf *btf,
- 
- static int btf_find_struct_field(const struct btf *btf,
- 				 const struct btf_type *t, u32 field_mask,
--				 struct btf_field_info *info, int info_cnt)
-+				 struct btf_field_info *info, int info_cnt,
-+				 u32 level)
- {
- 	int ret, idx = 0;
- 	const struct btf_member *member;
-@@ -3687,7 +3694,7 @@ static int btf_find_struct_field(const struct btf *btf,
- 		ret = btf_find_field_one(btf, t, member_type, i,
- 					 off, 0,
- 					 field_mask, &seen_mask,
--					 &info[idx], info_cnt - idx);
-+					 &info[idx], info_cnt - idx, level);
- 		if (ret < 0)
- 			return ret;
- 		idx += ret;
-@@ -3697,7 +3704,7 @@ static int btf_find_struct_field(const struct btf *btf,
- 
- static int btf_find_datasec_var(const struct btf *btf, const struct btf_type *t,
- 				u32 field_mask, struct btf_field_info *info,
--				int info_cnt)
-+				int info_cnt, u32 level)
- {
- 	int ret, idx = 0;
- 	const struct btf_var_secinfo *vsi;
-@@ -3710,7 +3717,8 @@ static int btf_find_datasec_var(const struct btf *btf, const struct btf_type *t,
- 		off = vsi->offset;
- 		ret = btf_find_field_one(btf, var, var_type, -1, off, vsi->size,
- 					 field_mask, &seen_mask,
--					 &info[idx], info_cnt - idx);
-+					 &info[idx], info_cnt - idx,
-+					 level);
- 		if (ret < 0)
- 			return ret;
- 		idx += ret;
-@@ -3723,9 +3731,9 @@ static int btf_find_field(const struct btf *btf, const struct btf_type *t,
- 			  int info_cnt)
- {
- 	if (__btf_type_is_struct(t))
--		return btf_find_struct_field(btf, t, field_mask, info, info_cnt);
-+		return btf_find_struct_field(btf, t, field_mask, info, info_cnt, 0);
- 	else if (btf_type_is_datasec(t))
--		return btf_find_datasec_var(btf, t, field_mask, info, info_cnt);
-+		return btf_find_datasec_var(btf, t, field_mask, info, info_cnt, 0);
- 	return -EINVAL;
+ 	int cur_pid = bpf_get_current_pid_tgid() >> 32;
+@@ -460,6 +485,152 @@ int BPF_PROG(test_global_mask_rcu, struct task_struct *task, u64 clone_flags)
+ 	return 0;
  }
  
++SEC("tp_btf/task_newtask")
++int BPF_PROG(test_global_mask_array_one_rcu, struct task_struct *task, u64 clone_flags)
++{
++	struct bpf_cpumask *local, *prev;
++
++	if (!is_test_task())
++		return 0;
++
++	/* Kptr arrays with one element are special cased, being treated
++	 * just like a single pointer.
++	 */
++
++	local = create_cpumask();
++	if (!local)
++		return 0;
++
++	prev = bpf_kptr_xchg(&global_mask_array_one[0], local);
++	if (prev) {
++		bpf_cpumask_release(prev);
++		err = 3;
++		return 0;
++	}
++
++	bpf_rcu_read_lock();
++	local = global_mask_array_one[0];
++	if (!local) {
++		err = 4;
++		bpf_rcu_read_unlock();
++		return 0;
++	}
++
++	bpf_rcu_read_unlock();
++
++	return 0;
++}
++
++static int _global_mask_array_rcu(struct bpf_cpumask **mask0,
++				  struct bpf_cpumask **mask1)
++{
++	struct bpf_cpumask *local;
++
++	if (!is_test_task())
++		return 0;
++
++	/* Check if two kptrs in the array work and independently */
++
++	local = create_cpumask();
++	if (!local)
++		return 0;
++
++	bpf_rcu_read_lock();
++
++	local = bpf_kptr_xchg(mask0, local);
++	if (local) {
++		err = 1;
++		goto err_exit;
++	}
++
++	/* [<mask 0>, NULL] */
++	if (!*mask0 || *mask1) {
++		err = 2;
++		goto err_exit;
++	}
++
++	local = create_cpumask();
++	if (!local) {
++		err = 9;
++		goto err_exit;
++	}
++
++	local = bpf_kptr_xchg(mask1, local);
++	if (local) {
++		err = 10;
++		goto err_exit;
++	}
++
++	/* [<mask 0>, <mask 1>] */
++	if (!*mask0 || !*mask1 || *mask0 == *mask1) {
++		err = 11;
++		goto err_exit;
++	}
++
++err_exit:
++	if (local)
++		bpf_cpumask_release(local);
++	bpf_rcu_read_unlock();
++	return 0;
++}
++
++SEC("tp_btf/task_newtask")
++int BPF_PROG(test_global_mask_array_rcu, struct task_struct *task, u64 clone_flags)
++{
++	return _global_mask_array_rcu(&global_mask_array[0], &global_mask_array[1]);
++}
++
++SEC("tp_btf/task_newtask")
++int BPF_PROG(test_global_mask_array_l2_rcu, struct task_struct *task, u64 clone_flags)
++{
++	return _global_mask_array_rcu(&global_mask_array_l2[0][0], &global_mask_array_l2[1][0]);
++}
++
++SEC("tp_btf/task_newtask")
++int BPF_PROG(test_global_mask_nested_rcu, struct task_struct *task, u64 clone_flags)
++{
++	return _global_mask_array_rcu(&global_mask_nested[0].mask, &global_mask_nested[1].mask);
++}
++
++/* Ensure that the field->offset has been correctly advanced from one
++ * nested struct or array sub-tree to another. In the case of
++ * kptr_nested_deep, it comprises two sub-trees: ktpr_1 and kptr_2.  By
++ * calling bpf_kptr_xchg() on every single kptr in both nested sub-trees,
++ * the verifier should reject the program if the field->offset of any kptr
++ * is incorrect.
++ *
++ * For instance, if we have 10 kptrs in a nested struct and a program that
++ * accesses each kptr individually with bpf_kptr_xchg(), the compiler
++ * should emit instructions to access 10 different offsets if it works
++ * correctly. If the field->offset values of any pair of them are
++ * incorrectly the same, the number of unique offsets in btf_record for
++ * this nested struct should be less than 10. The verifier should fail to
++ * discover some of the offsets emitted by the compiler.
++ *
++ * Even if the field->offset values of kptrs are not duplicated, the
++ * verifier should fail to find a btf_field for the instruction accessing a
++ * kptr if the corresponding field->offset is pointing to a random
++ * incorrect offset.
++ */
++SEC("tp_btf/task_newtask")
++int BPF_PROG(test_global_mask_nested_deep_rcu, struct task_struct *task, u64 clone_flags)
++{
++	int r, i;
++
++	r = _global_mask_array_rcu(&global_mask_nested_deep.ptrs[0].m.mask,
++				   &global_mask_nested_deep.ptrs[1].m.mask);
++	if (r)
++		return r;
++
++	for (i = 0; i < 3; i++) {
++		r = _global_mask_array_rcu(&global_mask_nested_deep.ptr_pairs[i].mask_1,
++					   &global_mask_nested_deep.ptr_pairs[i].mask_2);
++		if (r)
++			return r;
++	}
++	return 0;
++}
++
+ SEC("tp_btf/task_newtask")
+ int BPF_PROG(test_cpumask_weight, struct task_struct *task, u64 clone_flags)
+ {
 -- 
 2.34.1
 
