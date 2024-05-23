@@ -1,140 +1,140 @@
-Return-Path: <bpf+bounces-30383-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-30384-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A29CC8CD197
-	for <lists+bpf@lfdr.de>; Thu, 23 May 2024 13:57:56 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id DF7828CD1C2
+	for <lists+bpf@lfdr.de>; Thu, 23 May 2024 14:06:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4E01B1F22A31
-	for <lists+bpf@lfdr.de>; Thu, 23 May 2024 11:57:56 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1CB961C21011
+	for <lists+bpf@lfdr.de>; Thu, 23 May 2024 12:06:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A600013BC35;
-	Thu, 23 May 2024 11:57:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8353813C688;
+	Thu, 23 May 2024 12:06:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kroah.com header.i=@kroah.com header.b="3Bei+NqQ";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="hB3LTyjW"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KNJcSTxU"
 X-Original-To: bpf@vger.kernel.org
-Received: from wfhigh5-smtp.messagingengine.com (wfhigh5-smtp.messagingengine.com [64.147.123.156])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A574113BAFA;
-	Thu, 23 May 2024 11:57:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.156
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F294E13B5B0;
+	Thu, 23 May 2024 12:06:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716465469; cv=none; b=d7XRjwIWtMkwSf1dhYWmLJYIBkrHCNKuSs156Hi2JfSb9mVXQ44R94UgDVJGkzaFsnNWBDnQnAISl3NaetD1vbTU4v6tavDQxRFCYm1FloSrthrHZgbIFWN9A/ZbKNiJ9ItIL4YJux2s8239oZs52Ay8mGcrgy4JChmoGXNDWZg=
+	t=1716465990; cv=none; b=gzT3qb9syDQq1irTsMGqyMeYez8gOXvmUC7lSzy/n5VizY6O9gKqGDospITizaBbLfhx/orDwgkNjeAUwqImdpapHWSA3dI7PRzBQOekYJmxfFoza9sJFHWDngQN3XI1JCzGDkqotWbBr2TIySd/cj3VPJEi9+XkzSbh6JvPvhk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716465469; c=relaxed/simple;
-	bh=QM5IKcZN5RvrcFQh2uL0RP3WbNIjDxPpRh4An5D/hC4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=YBE3ofnmYBgCsjo9qFGgZ+WBiv1z+H/pRcnrMS1t1wpdGWH/5nYvcZVRLHmtAlfZBvFJ2Ytcmh4y+unKdCis4qc8RW6r63yNOa5H7yeyZ4DWpcK3jR3GsJ2Dg6WvjBCRp5QvnDTw30/XchOQzW2jX9NrIBIk2bRnKI/XZcwyzgE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=kroah.com; spf=pass smtp.mailfrom=kroah.com; dkim=pass (2048-bit key) header.d=kroah.com header.i=@kroah.com header.b=3Bei+NqQ; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=hB3LTyjW; arc=none smtp.client-ip=64.147.123.156
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=kroah.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kroah.com
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-	by mailfhigh.west.internal (Postfix) with ESMTP id D77EF180017F;
-	Thu, 23 May 2024 07:57:45 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute4.internal (MEProxy); Thu, 23 May 2024 07:57:47 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=cc
-	:cc:content-type:content-type:date:date:from:from:in-reply-to
-	:in-reply-to:message-id:mime-version:references:reply-to:subject
-	:subject:to:to; s=fm1; t=1716465465; x=1716551865; bh=cdF/5ks+gM
-	MxZAFnyrmZUGOhVVo9SQKIKtB3OVCVODA=; b=3Bei+NqQmDoWoGVY0MQphhb+I7
-	tzv8g0BS8dh8OEACHJQy3k2e2pyFgueihF/2OjyDrHmsdvvV+FC/CPy29O1rCsH7
-	Z0FaE7u8UKUthir76AsFN4qxsc+cRzRhymKh0kRnfi7VqOK7fu0gmT8q1ZiCnJ/V
-	Qo6MiEaX9LUKSJtcwoeqWV2k02l+/5TrsHFBaRhMJDF7yDkPK7DrO3O9lEH7+URa
-	7rXAvqIx7Pj+C8nQEc1X8BaurMTOl11fnSlYGBYxzSYYxxS5QZyJgYVlN+SpjtUM
-	aTJpey7dtm1Z+hBcj5FD+WopEvKjE81eTCczFBYCsHa5vIdrFxXN5PJEYVPA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm1; t=1716465465; x=1716551865; bh=cdF/5ks+gMMxZAFnyrmZUGOhVVo9
-	SQKIKtB3OVCVODA=; b=hB3LTyjWhjUayDyxwERFyr53FYdxivNpvdrgVLIFtrQs
-	Q97T4ENMb/8dHjtKwL0+sHeiP2v88TSDq9x4pWCCRq/fcJy+ZReihKiL2oNdyfzI
-	kbkicjwcsYpUUgPLZ6NRYAva3/vP56yw/lM4rUC/0T4KFJmzKQPfSbIWm+OBBqBj
-	cEVo1QkP5UAzbozAFMlyxXBJW1n0iEqKirzLyxTtb72T0vxpbvhOxDZj5RXNBkWU
-	1gyoiU49/ZE0Z9BD3yS7XxAMpMo+Rx8HRl/WLthptaX6c9T0f2TC5ZJ9kpOQOs3X
-	YGe++7ohm4Civh1oCUVqbwFm9ddI+Ol9NDzxD7Vv/g==
-X-ME-Sender: <xms:OS9PZoNEL8YIpvYR2RKQSkJYnCiT0JtVBG_2mEA9c8poI0yVia25qg>
-    <xme:OS9PZu_5Z-R5qAJZ4ugr0ijfVPjzhB18ss3B0qNfTcmVbOCXF37P9uJzXs6Vimb6z
-    Iv0LKsTyEQKpQ>
-X-ME-Received: <xmr:OS9PZvR8hkxQ8EBy-ysPJ0AfS6dDxMAeWumgFQaWz7_T9D8BqW51uRNeB4EroK4xFcldU48NqM3yfyRkN366qS5Qd7lr7xhsinQq_Q>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrvdeiiedggeehucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvfevuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepifhrvghg
-    ucfmjfcuoehgrhgvgheskhhrohgrhhdrtghomheqnecuggftrfgrthhtvghrnhepgeehue
-    ehgfdtledutdelkeefgeejteegieekheefudeiffdvudeffeelvedttddvnecuffhomhgr
-    ihhnpehkvghrnhgvlhdrohhrghenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmh
-    epmhgrihhlfhhrohhmpehgrhgvgheskhhrohgrhhdrtghomh
-X-ME-Proxy: <xmx:OS9PZgvYWXcHRCwNgPFWakA-RS2V-9B9eY5MnAivxQhsQtJ25VoGeg>
-    <xmx:OS9PZgejwnm0cks63IRSc8Y4cpPsXYYVE-uK0SYRKZWT4R1XrDOarQ>
-    <xmx:OS9PZk1QspP1RbVvOlluQNK2AYZ1UQaETCllNbSTVWBgIN51ebYBfA>
-    <xmx:OS9PZk_wqlZ6fqYp_c2Rp_Ojg1TUIq1a1Q1Ot-suPx6cjTG699u2Ig>
-    <xmx:OS9PZjtIxR4Ppi-r3mhFG5aVY1HhWAuiol9AG_Np5W4oTWegDt-UsW3->
-Feedback-ID: i787e41f1:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 23 May 2024 07:57:44 -0400 (EDT)
-Date: Thu, 23 May 2024 13:57:43 +0200
-From: Greg KH <greg@kroah.com>
-To: Ignat Korchagin <ignat@cloudflare.com>
-Cc: stable@vger.kernel.org, bpf@vger.kernel.org, kernel-team@cloudflare.com,
-	Pengfei Xu <pengfei.xu@intel.com>, Jiri Olsa <jolsa@kernel.org>,
-	Andrii Nakryiko <andrii@kernel.org>, Hou Tao <houtao1@huawei.com>
-Subject: Re: [PATCH 6.6.y] bpf: Add missing BPF_LINK_TYPE invocations
-Message-ID: <2024052328-squatting-umpire-a826@gregkh>
-References: <20240521101826.95373-1-ignat@cloudflare.com>
+	s=arc-20240116; t=1716465990; c=relaxed/simple;
+	bh=32RUCdj43ocdMDqq7keOomYt+BgvvmixO708yHMa+eQ=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=VQ3+/6piLWLskZ8lx/aoJbo1zau3Jt/GAtrvaNGcmZQem5ci9lrfk46evOpw82fEUfSqU6qVz6HxzU+1OnFAOH5DNOLZULhp3Vt4MxWfB7UZ3Oz/gs9JU2I5L+Elsaa375PHATfJmnnUU8EW8h30bhk4A2OgYcPP3Glg8rkcrfs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KNJcSTxU; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1D84EC2BD10;
+	Thu, 23 May 2024 12:06:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1716465989;
+	bh=32RUCdj43ocdMDqq7keOomYt+BgvvmixO708yHMa+eQ=;
+	h=From:To:Cc:Subject:Date:From;
+	b=KNJcSTxUu8K+ogmrX8Cx/Yhk5Yw6kqXODXQkaS/j9ASQMUE25BtMSJJrR7F87kY8Z
+	 /aoIAd0HUOj+kK+Mhk/9dP92Z+HUOj/yTYFo8REhN/rWj5aPb0N7KXop4QdmEy6m2v
+	 kah62sRA9gOrAP0MnGiIftmzgF2BUxc2yUa94jbZKIWPOc7d7SDIWeHbkDqTbtZF2G
+	 vE15jKe4aY/JOrAZ76GVURi+M7iMjpWQCKImJSDSBSzLD8GgGSbdLkLOzf0kFk/agq
+	 42bpGp8PfmPPiRvcT7X1PKfmyGT0AUEn1YkzlGtM/ItYZjRKwEBvt8+dvnXzCvfAWr
+	 jciEirHymfpOA==
+From: Lorenzo Bianconi <lorenzo@kernel.org>
+To: bpf@vger.kernel.org
+Cc: pablo@netfilter.org,
+	kadlec@netfilter.org,
+	davem@davemloft.net,
+	edumazet@google.com,
+	kuba@kernel.org,
+	pabeni@redhat.com,
+	netfilter-devel@vger.kernel.org,
+	netdev@vger.kernel.org,
+	ast@kernel.org,
+	daniel@iogearbox.net,
+	andrii@kernel.org,
+	martin.lau@linux.dev,
+	eddyz87@gmail.com,
+	lorenzo.bianconi@redhat.com,
+	toke@redhat.com,
+	fw@strlen.de,
+	hawk@kernel.org,
+	horms@kernel.org,
+	donhunte@redhat.com,
+	memxor@gmail.com
+Subject: [PATCH v3 bpf-next 0/3] netfilter: Add the capability to offload flowtable in XDP layer
+Date: Thu, 23 May 2024 14:06:15 +0200
+Message-ID: <cover.1716465377.git.lorenzo@kernel.org>
+X-Mailer: git-send-email 2.45.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240521101826.95373-1-ignat@cloudflare.com>
+Content-Transfer-Encoding: 8bit
 
-On Tue, May 21, 2024 at 11:18:26AM +0100, Ignat Korchagin wrote:
-> From: Jiri Olsa <jolsa@kernel.org>
-> 
-> commit 117211aa739a926e6555cfea883be84bee6f1695 upstream.
-> 
-> Pengfei Xu reported [1] Syzkaller/KASAN issue found in bpf_link_show_fdinfo.
-> 
-> The reason is missing BPF_LINK_TYPE invocation for uprobe multi
-> link and for several other links, adding that.
-> 
-> [1] https://lore.kernel.org/bpf/ZXptoKRSLspnk2ie@xpf.sh.intel.com/
-> 
-> Fixes: 89ae89f53d20 ("bpf: Add multi uprobe link")
-> Fixes: e420bed02507 ("bpf: Add fd-based tcx multi-prog infra with link support")
-> Fixes: 84601d6ee68a ("bpf: add bpf_link support for BPF_NETFILTER programs")
-> Fixes: 35dfaad7188c ("netkit, bpf: Add bpf programmable net device")
-> Reported-by: Pengfei Xu <pengfei.xu@intel.com>
-> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-> Tested-by: Pengfei Xu <pengfei.xu@intel.com>
-> Acked-by: Hou Tao <houtao1@huawei.com>
-> Link: https://lore.kernel.org/bpf/20231215230502.2769743-1-jolsa@kernel.org
-> Cc: stable@vger.kernel.org # 6.6
-> Signed-off-by: Ignat Korchagin <ignat@cloudflare.com>
-> ---
-> Hi,
-> 
-> We have experienced a KASAN warning in production on a 6.6 kernel, similar to
-> [1]. This backported patch was adjusted to apply onto 6.6 stable branch: the
-> only change is dropping the BPF_LINK_TYPE(BPF_LINK_TYPE_NETKIT, netkit)
-> definition from the header as netkit was only introduced in 6.7 and 6.7 has the
-> backport already.
-> 
-> I was not able to run the syzkaller reproducer from [1], but we have not seen
-> the KASAN warning in production since applying this patch internally.
+Introduce bpf_xdp_flow_lookup kfunc in order to perform the lookup of
+a given flowtable entry based on the fib tuple of incoming traffic.
+bpf_xdp_flow_lookup can be used as building block to offload in XDP
+the sw flowtable processing when the hw support is not available.
 
-Looks good, thanks for the backport, now queued up.
+This series has been tested running the xdp_flowtable_offload eBPF program
+on an ixgbe 10Gbps NIC (eno2) in order to XDP_REDIRECT the TCP traffic to
+a veth pair (veth0-veth1) based on the content of the nf_flowtable as soon
+as the TCP connection is in the established state:
 
-greg k-h
+[tcp client] (eno1) == LAN == (eno2) xdp_flowtable_offload [XDP_REDIRECT] --> veth0 == veth1 [tcp server]
+
+table inet filter {
+	flowtable ft {
+		hook ingress priority filter
+		devices = { eno2, veth0 }
+	}
+	chain forward {
+		type filter hook forward priority filter
+		meta l4proto { tcp, udp } flow add @ft
+	}
+}
+
+-  sw flowtable [1 TCP stream, T = 300s]: ~ 6.2 Gbps
+- xdp flowtable [1 TCP stream, T = 300s]: ~ 7.6 Gbps
+
+-  sw flowtable [3 TCP stream, T = 300s]: ~ 7.7 Gbps
+- xdp flowtable [3 TCP stream, T = 300s]: ~ 8.8 Gbps
+
+Changes since v2:
+- introduce bpf_flowtable_opts struct in bpf_xdp_flow_lookup signature
+- get rid of xdp_flowtable_offload bpf sample
+- get rid of test_xdp_flowtable.sh for selftest and rely on prog_tests instead
+- rename bpf_xdp_flow_offload_lookup in bpf_xdp_flow_lookup
+Changes since v1:
+- return NULL in bpf_xdp_flow_offload_lookup kfunc in case of error
+- take into account kfunc registration possible failures
+Changes since RFC:
+- fix compilation error if BTF is not enabled
+
+Florian Westphal (1):
+  netfilter: nf_tables: add flowtable map for xdp offload
+
+Lorenzo Bianconi (2):
+  netfilter: add bpf_xdp_flow_lookup kfunc
+  selftests/bpf: Add selftest for bpf_xdp_flow_lookup kfunc
+
+ include/net/netfilter/nf_flow_table.h         |  12 ++
+ net/netfilter/Makefile                        |   5 +
+ net/netfilter/nf_flow_table_bpf.c             | 117 ++++++++++++
+ net/netfilter/nf_flow_table_inet.c            |   2 +-
+ net/netfilter/nf_flow_table_offload.c         | 161 ++++++++++++++++-
+ tools/testing/selftests/bpf/config            |  13 ++
+ .../selftests/bpf/prog_tests/xdp_flowtable.c  | 168 ++++++++++++++++++
+ .../selftests/bpf/progs/xdp_flowtable.c       | 145 +++++++++++++++
+ 8 files changed, 620 insertions(+), 3 deletions(-)
+ create mode 100644 net/netfilter/nf_flow_table_bpf.c
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/xdp_flowtable.c
+ create mode 100644 tools/testing/selftests/bpf/progs/xdp_flowtable.c
+
+-- 
+2.45.1
+
 
