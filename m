@@ -1,190 +1,133 @@
-Return-Path: <bpf+bounces-30420-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-30421-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 55D328CD94E
-	for <lists+bpf@lfdr.de>; Thu, 23 May 2024 19:42:39 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5A7618CD996
+	for <lists+bpf@lfdr.de>; Thu, 23 May 2024 20:02:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 83FD0B21197
-	for <lists+bpf@lfdr.de>; Thu, 23 May 2024 17:42:36 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6F2711C21402
+	for <lists+bpf@lfdr.de>; Thu, 23 May 2024 18:02:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 07FC281723;
-	Thu, 23 May 2024 17:42:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D022582893;
+	Thu, 23 May 2024 18:02:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="e2D63vQw"
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="MLES0gKj"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yw1-f180.google.com (mail-yw1-f180.google.com [209.85.128.180])
+Received: from mail-il1-f179.google.com (mail-il1-f179.google.com [209.85.166.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 09CA2763F2
-	for <bpf@vger.kernel.org>; Thu, 23 May 2024 17:42:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B20D4824B1
+	for <bpf@vger.kernel.org>; Thu, 23 May 2024 18:02:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716486142; cv=none; b=qHffClVBSMFIJ/emP9gVv9eL9ciLOQJIgCHYKNVFeSNxdE0XBGIhJPNs4LJNelAInUUaOnBsi1/jCQg4Mvv+sdflZptfc+RuvqRArpreFSKCyfJUzXCZerwr0AbuSB2pEUivNhtZyqbr7VYnaZhLUVgrqF2VSXher40Bzj7Hn70=
+	t=1716487323; cv=none; b=BdDR/S5EYIVXEXf9MFWuFouxki4RhTQCXKs4qvrlWKWV0kfKrD8LQEQs5hoNrbsHFBLT/DvjGDRFXiHeLVLX/aR6yPj83wy+LKkINT6kFtKrWUOmfLgwYcQ9vF2yqhMvTESYM3ojb2LkDGEifEjPuZtpqTuYbYiMSEVQpSakWxs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716486142; c=relaxed/simple;
-	bh=pnfwEmhJaGJnnF5pQds6sqgpSop4ID4OueH53SaCbNw=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=ItSbxpNwmroAvUoEOk+tYjgP1phYZJPCZenEA9A4GsMEn6NG7RFaYwQnX6KRlJImlA7vJYYMkl8QVLNZBtHPhxjCdKFmqI6tKzCOFqVpBmvBD0ISuTUU4oYggjm8GZ7FI9sG9uYVkg/kD3+vP64d0fFxbKGAKXLCrgcbSH7pPr4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=e2D63vQw; arc=none smtp.client-ip=209.85.128.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f180.google.com with SMTP id 00721157ae682-627f5b7b75bso9804717b3.0
-        for <bpf@vger.kernel.org>; Thu, 23 May 2024 10:42:20 -0700 (PDT)
+	s=arc-20240116; t=1716487323; c=relaxed/simple;
+	bh=3k6WvpZBot26hna6+k0egsJmF3ju+afeCCSsoYxl4Ow=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=XtlO4mEk+iak13z45eP+2oqvhy7iN5kpkfg1I1YEqyHDFJlOUCgGCfIgTV0FgRRO8Azu4hzr0j9I8+SWsWypQmXZWdjP68HWDEy5Gmmq8lHhw0vSGOxOAHFEIqZOFgIznqKzpdO5wim1HtBZXEUr3ImFIAxe86aV5vpoc6+cDEc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=MLES0gKj; arc=none smtp.client-ip=209.85.166.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
+Received: by mail-il1-f179.google.com with SMTP id e9e14a558f8ab-3737b3c6411so10115ab.2
+        for <bpf@vger.kernel.org>; Thu, 23 May 2024 11:02:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1716486140; x=1717090940; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=/3VSzMOsCVcU1vd0IqZVW+SxoJr/0Bn4dYKhvg3D3Hk=;
-        b=e2D63vQwayuA7Xumn+hRbd14sVxU9mU+Qkf6tJC0lgJv8/iznRVxmEovs4A9YSpN/x
-         9mLTg73pykCT49N9ct49x9mlorGbsm9sqMJxSlP4n0KF+lZMiawcj2SawVUFL3D0J/mV
-         w0xmMdLOd/WZRrP/4Y04kkm9/y06DwmmovrLvpgqNTu1ObGJfH5M+uyyaU7pIrA0Aksv
-         g/4V1pvFCYYZwvF58fPjxpLp7Ho8p35ZKAxDPWTwRn4ZiMd3cr1bQz4VUiXbn+cA+ymQ
-         lfAFcbKI/FtTF/nrw0AwkaEPNw1YQHrXFUIZBAgZqflaAPfQMqp9eMmRexi/NB2S47vB
-         yniQ==
+        d=linuxfoundation.org; s=google; t=1716487321; x=1717092121; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=CcmoKrno51oIESzU6CRBDsbzTPCeYv0t1iR5nNF3XwI=;
+        b=MLES0gKjNB1Q6Gv7e0DHXND23LLPEB++Jh+KAE8VPYFIcSh0+73GBKU00MsCF9pMfB
+         OfsQ/nyVm4UDg8yDyjQArOR1PlSgYO84JyE65KnZrh3f7Dh2E36SBomicsALB4BxBbpo
+         aJSP5LxrI+0MnwS28KbgVgWHcKecjadnLcXF4=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1716486140; x=1717090940;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=/3VSzMOsCVcU1vd0IqZVW+SxoJr/0Bn4dYKhvg3D3Hk=;
-        b=xUjjsMNR8xakLZnrLRSoQrzYZeBZKhXCrW89z7JPitLLK5hUXT2kcb5c/qD7TFqqa3
-         4E/jrrm3pvn0QNCXx/Ol6vONxNJYfhbfytd6l/cjaeBH8dGsONZ/uEUml5g+Ym22abo9
-         F/zM5wvZD9ASjqFE8A06H50inPeXh46V2NIZKejKBoHYAkorKAUv2RlrMNfWm6z7xpwL
-         MuKM67nJnfB6gRiPtWRPAgIBWFWzih2AYG51n5uBHeHcUY+Vk1mQKDPpmCRR/MpmBh7I
-         Hdbj6EPVLX6kL1jNEF35rlToKb9dq74rP0PAP7IXLsLy3VTXDKrK8L4vOshLhFKSO0lV
-         0CDQ==
-X-Gm-Message-State: AOJu0YzxE0BrYgCzRaFPrLWcDm789cTIiyBQGpM/dbOsSzLRpJ+JPb35
-	FwbKtwMkla+B29QYgHaV2P1H2H6NDAB5n///GtD+2V8Ih1duzhnve7t2zQ==
-X-Google-Smtp-Source: AGHT+IGa0ExyWcX7eFVT9z0nWb503IWwGU073NA0AJ+N3/BtbHiWr2NT6MIgCf4qIYCkogdQOpC+2Q==
-X-Received: by 2002:a05:690c:c99:b0:618:88d1:f15f with SMTP id 00721157ae682-627fb1ca4c5mr23859287b3.0.1716486139899;
-        Thu, 23 May 2024 10:42:19 -0700 (PDT)
-Received: from kickker.attlocal.net ([2600:1700:6cf8:1240:a2b5:fcfb:857c:2908])
-        by smtp.gmail.com with ESMTPSA id 00721157ae682-6209e2514bbsm63652277b3.42.2024.05.23.10.42.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 23 May 2024 10:42:19 -0700 (PDT)
-From: Kui-Feng Lee <thinker.li@gmail.com>
-To: bpf@vger.kernel.org,
-	ast@kernel.org,
-	martin.lau@linux.dev,
-	song@kernel.org,
-	kernel-team@meta.com,
-	andrii@kernel.org,
-	eddyz87@gmail.com
-Cc: sinquersw@gmail.com,
-	kuifeng@meta.com,
-	Kui-Feng Lee <thinker.li@gmail.com>
-Subject: [PATCH bpf-next v7 9/9] selftests/bpf: Test global bpf_list_head arrays.
-Date: Thu, 23 May 2024 10:42:02 -0700
-Message-Id: <20240523174202.461236-10-thinker.li@gmail.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240523174202.461236-1-thinker.li@gmail.com>
-References: <20240523174202.461236-1-thinker.li@gmail.com>
+        d=1e100.net; s=20230601; t=1716487321; x=1717092121;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=CcmoKrno51oIESzU6CRBDsbzTPCeYv0t1iR5nNF3XwI=;
+        b=LbG+PzW3SrAunWUAEXynDvqGD7cs6rdFZdfeqQE5uRrash4y/XznKl2CbcYWH8l3Le
+         gKDG1lMKd0En6M1hyOBGkTrzUcpQs91gffFzahb8xe2SqquDHlVhsGpT14T7KxBh/2W8
+         TfdezHXtIQbPpEW0eEW5ovLLLbTHO4w78oUkkHfSC3Wji1bH7bwsRkJVNwFsidIs5+GW
+         QAsOPj4pCfQ8wVkg170snBceXcQzrbW21Kl1I6eWmNav8bTo6ybKqnqNrUuDn0gMPKjn
+         rrMydYgJlFNEvaKW4Qv1+JziyF9207CG7QQ0V7nhmt3cYqvqxVr5Ro/CAJcRYQgJazaL
+         tQcQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVF7DkmGO1PAohcb5MlNN6E1f+EOBeb9wadgfyJX01zItsncOL3m1fPX+n7Axpiv3W+DQocxUHitf3iW7tJmC7AHoQ0
+X-Gm-Message-State: AOJu0YxcF7lnZ3DV+U6vRVXo318b6z5WbFgdfnzT1ZigRcPuLaQBF1ZZ
+	sir4ofvB3klBhbvEANA4PYuK5zaM7VYp06J94KGhXGcefXjYyaYBoOds6RhXwI4=
+X-Google-Smtp-Source: AGHT+IHFL67Z83I3o40zCsNMJ+ZoJnLtFsbE/QtO0U+1g9W23Ofor/d2rDbzaegpkLYOLJ/pxEIroQ==
+X-Received: by 2002:a05:6e02:1fc1:b0:36c:3856:4386 with SMTP id e9e14a558f8ab-3737b3cad00mr209585ab.3.1716487320819;
+        Thu, 23 May 2024 11:02:00 -0700 (PDT)
+Received: from [192.168.1.128] ([38.175.170.29])
+        by smtp.gmail.com with ESMTPSA id e9e14a558f8ab-3737a5e826bsm519205ab.73.2024.05.23.11.01.59
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 23 May 2024 11:02:00 -0700 (PDT)
+Message-ID: <d5471e30-227d-4e6d-9bbd-90a74bd9006b@linuxfoundation.org>
+Date: Thu, 23 May 2024 12:01:59 -0600
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v5 02/68] kselftest: Desecalate reporting of missing
+ _GNU_SOURCE
+To: John Hubbard <jhubbard@nvidia.com>, Edward Liaw <edliaw@google.com>,
+ Mark Brown <broonie@kernel.org>
+Cc: shuah@kernel.org, =?UTF-8?Q?Micka=C3=ABl_Sala=C3=BCn?= <mic@digikod.net>,
+ =?UTF-8?Q?G=C3=BCnther_Noack?= <gnoack@google.com>,
+ Christian Brauner <brauner@kernel.org>,
+ Richard Cochran <richardcochran@gmail.com>,
+ Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt
+ <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>,
+ Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>,
+ Jesper Dangaard Brouer <hawk@kernel.org>,
+ John Fastabend <john.fastabend@gmail.com>, Kees Cook
+ <keescook@chromium.org>, Andy Lutomirski <luto@amacapital.net>,
+ Will Drewry <wad@chromium.org>, linux-kernel@vger.kernel.org,
+ linux-kselftest@vger.kernel.org, kernel-team@android.com,
+ linux-security-module@vger.kernel.org, netdev@vger.kernel.org,
+ linux-riscv@lists.infradead.org, bpf@vger.kernel.org,
+ Shuah Khan <skhan@linuxfoundation.org>
+References: <20240522005913.3540131-1-edliaw@google.com>
+ <20240522005913.3540131-3-edliaw@google.com>
+ <94b73291-5b8a-480d-942d-cfc72971c2f5@sirena.org.uk>
+ <CAG4es9WAASaSG+Xgp31-kLT3G8wpeT5vAqbCA4r=Z8G_zAF73w@mail.gmail.com>
+ <9e2677ec-1d54-4969-907b-112b71ef8dd3@nvidia.com>
+Content-Language: en-US
+From: Shuah Khan <skhan@linuxfoundation.org>
+In-Reply-To: <9e2677ec-1d54-4969-907b-112b71ef8dd3@nvidia.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
-Make sure global arrays of bpf_list_heads and fields of bpf_list_heads in
-nested struct types work correctly.
+On 5/22/24 20:28, John Hubbard wrote:
+> On 5/22/24 10:46 AM, Edward Liaw wrote:
+>> On Wed, May 22, 2024 at 4:21 AM Mark Brown <broonie@kernel.org> wrote:
+>>> On Wed, May 22, 2024 at 12:56:48AM +0000, Edward Liaw wrote:
+> ...
+>>> You've not provided a Signed-off-by for this so people can't do anything
+>>> with it, please see Documentation/process/submitting-patches.rst for
+>>> details on what this is and why it's important.
+>>
+>> Sorry, my mistake, I forgot to add it after cherry-picking.  If added
+> 
+> Adding this to your .gitconfig would cover you for cases like this, I think
+> it's pretty common to do this:
+> 
+> [format]
+>      signoff = true
+> 
+> 
 
-Acked-by: Eduard Zingerman <eddyz87@gmail.com>
-Signed-off-by: Kui-Feng Lee <thinker.li@gmail.com>
----
- .../selftests/bpf/prog_tests/linked_list.c    | 12 ++++++
- .../testing/selftests/bpf/progs/linked_list.c | 42 +++++++++++++++++++
- 2 files changed, 54 insertions(+)
+Mark, Edward,
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/linked_list.c b/tools/testing/selftests/bpf/prog_tests/linked_list.c
-index 2fb89de63bd2..77d07e0a4a55 100644
---- a/tools/testing/selftests/bpf/prog_tests/linked_list.c
-+++ b/tools/testing/selftests/bpf/prog_tests/linked_list.c
-@@ -183,6 +183,18 @@ static void test_linked_list_success(int mode, bool leave_in_map)
- 	if (!leave_in_map)
- 		clear_fields(skel->maps.bss_A);
- 
-+	ret = bpf_prog_test_run_opts(bpf_program__fd(skel->progs.global_list_push_pop_nested), &opts);
-+	ASSERT_OK(ret, "global_list_push_pop_nested");
-+	ASSERT_OK(opts.retval, "global_list_push_pop_nested retval");
-+	if (!leave_in_map)
-+		clear_fields(skel->maps.bss_A);
-+
-+	ret = bpf_prog_test_run_opts(bpf_program__fd(skel->progs.global_list_array_push_pop), &opts);
-+	ASSERT_OK(ret, "global_list_array_push_pop");
-+	ASSERT_OK(opts.retval, "global_list_array_push_pop retval");
-+	if (!leave_in_map)
-+		clear_fields(skel->maps.bss_A);
-+
- 	if (mode == PUSH_POP)
- 		goto end;
- 
-diff --git a/tools/testing/selftests/bpf/progs/linked_list.c b/tools/testing/selftests/bpf/progs/linked_list.c
-index 26205ca80679..f69bf3e30321 100644
---- a/tools/testing/selftests/bpf/progs/linked_list.c
-+++ b/tools/testing/selftests/bpf/progs/linked_list.c
-@@ -11,6 +11,22 @@
- 
- #include "linked_list.h"
- 
-+struct head_nested_inner {
-+	struct bpf_spin_lock lock;
-+	struct bpf_list_head head __contains(foo, node2);
-+};
-+
-+struct head_nested {
-+	int dummy;
-+	struct head_nested_inner inner;
-+};
-+
-+private(C) struct bpf_spin_lock glock_c;
-+private(C) struct bpf_list_head ghead_array[2] __contains(foo, node2);
-+private(C) struct bpf_list_head ghead_array_one[1] __contains(foo, node2);
-+
-+private(D) struct head_nested ghead_nested;
-+
- static __always_inline
- int list_push_pop(struct bpf_spin_lock *lock, struct bpf_list_head *head, bool leave_in_map)
- {
-@@ -309,6 +325,32 @@ int global_list_push_pop(void *ctx)
- 	return test_list_push_pop(&glock, &ghead);
- }
- 
-+SEC("tc")
-+int global_list_push_pop_nested(void *ctx)
-+{
-+	return test_list_push_pop(&ghead_nested.inner.lock, &ghead_nested.inner.head);
-+}
-+
-+SEC("tc")
-+int global_list_array_push_pop(void *ctx)
-+{
-+	int r;
-+
-+	r = test_list_push_pop(&glock_c, &ghead_array[0]);
-+	if (r)
-+		return r;
-+
-+	r = test_list_push_pop(&glock_c, &ghead_array[1]);
-+	if (r)
-+		return r;
-+
-+	/* Arrays with only one element is a special case, being treated
-+	 * just like a bpf_list_head variable by the verifier, not an
-+	 * array.
-+	 */
-+	return test_list_push_pop(&glock_c, &ghead_array_one[0]);
-+}
-+
- SEC("tc")
- int map_list_push_pop_multiple(void *ctx)
- {
--- 
-2.34.1
+Is this patch still necessary of the series is dropped?
+
+thanks,
+-- Shuah
 
 
