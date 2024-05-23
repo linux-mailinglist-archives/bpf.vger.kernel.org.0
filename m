@@ -1,35 +1,35 @@
-Return-Path: <bpf+bounces-30446-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-30447-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C45E18CDD2A
-	for <lists+bpf@lfdr.de>; Fri, 24 May 2024 01:09:54 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 736778CDD5D
+	for <lists+bpf@lfdr.de>; Fri, 24 May 2024 01:14:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 80C2D28569D
-	for <lists+bpf@lfdr.de>; Thu, 23 May 2024 23:09:53 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 119D41F21168
+	for <lists+bpf@lfdr.de>; Thu, 23 May 2024 23:14:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EAD10128804;
-	Thu, 23 May 2024 23:09:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF1621292EE;
+	Thu, 23 May 2024 23:14:16 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 98A4E126F27;
-	Thu, 23 May 2024 23:09:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C1291292D9;
+	Thu, 23 May 2024 23:14:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716505788; cv=none; b=T8t9JR+uCzcKDooinb26oOYuRXz70jmKQRb88vMousMPp38+N4sRPNziUkOaxbJ2Q355SuQhO1HEgnojJFEmzdd+uSn7TUCvNPItXmh+olffYzWK6aUPOBk1Aa3bbnBlS4Xbq+p8Fd0zBhi+YZ/1pWyGEdr+QNJvf7V5ZKcvpZk=
+	t=1716506056; cv=none; b=BSQ1t+YT0K1ls14JBAZGV1uwReF2ik4kKDgRjUajkOTlo2KOs7ntsRDx5hFXvHlDQGWnGkRXnAqFOJxScW5gFmT0D/eLiWTaZaWkm73eSo0/ROw6xxfaHkEb52Y/B6SOSu27uQ5r0HrThO3+Z7ZTLXbIhU5BtrDQnJQgf8u3aCI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716505788; c=relaxed/simple;
-	bh=1ZerqhZiEm0bGWbV+jNKn+Dq0L+J1awgxyJkbjTBq+g=;
+	s=arc-20240116; t=1716506056; c=relaxed/simple;
+	bh=EC4mMstx3GoDVOr94WNVc788fgZGZZasw7u9LmyR0Sw=;
 	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=PRgePn3SU12vAWHevKZ3rBZ0w6wdx4WWSYcfGU//IBiFWfOf0F5QUGxQW/eCJ5wRZwidAACEZHjTy88yEZkgpImL2ymP8fjqvwyHSyYpYfvKfzD8ieBMnPU0a5Ih7czDZvXqEnA7SAD/GsDhdzvuwUOrj94sUexlXiSfqmc3aEA=
+	 MIME-Version:Content-Type; b=VQNfKcLIooKZPfodgBZWZaaTFbNgWk3dtG6veOczl6y2+9/Uc/wEKGfJcVMqjEbYXYHDA2FxvPngsH/ZwChKdGaqxD5fYWK8d/LjV7eTL/p+ZgpRUQINAVLBG9DpCgbnwpjGvuk/MpkPHFmSmTgb0hbciQxQ6SbGu1ZN3Aaw9fw=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id ED0A8C2BD10;
-	Thu, 23 May 2024 23:09:45 +0000 (UTC)
-Date: Thu, 23 May 2024 19:10:31 -0400
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E45F5C32789;
+	Thu, 23 May 2024 23:14:13 +0000 (UTC)
+Date: Thu, 23 May 2024 19:14:59 -0400
 From: Steven Rostedt <rostedt@goodmis.org>
 To: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
 Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, Florent Revest
@@ -41,12 +41,12 @@ Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, Florent Revest
  Alan Maguire <alan.maguire@oracle.com>, Mark Rutland
  <mark.rutland@arm.com>, Peter Zijlstra <peterz@infradead.org>, Thomas
  Gleixner <tglx@linutronix.de>, Guo Ren <guoren@kernel.org>
-Subject: Re: [PATCH v10 01/36] tracing: Add a comment about ftrace_regs
- definition
-Message-ID: <20240523191031.7574d944@gandalf.local.home>
-In-Reply-To: <171509089214.162236.6201493898649663823.stgit@devnote2>
+Subject: Re: [PATCH v10 03/36] x86: tracing: Add ftrace_regs definition in
+ the header
+Message-ID: <20240523191459.3858aecf@gandalf.local.home>
+In-Reply-To: <171509091569.162236.17928081833857878443.stgit@devnote2>
 References: <171509088006.162236.7227326999861366050.stgit@devnote2>
-	<171509089214.162236.6201493898649663823.stgit@devnote2>
+	<171509091569.162236.17928081833857878443.stgit@devnote2>
 X-Mailer: Claws Mail 3.20.0git84 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -57,74 +57,48 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 
-On Tue,  7 May 2024 23:08:12 +0900
+On Tue,  7 May 2024 23:08:35 +0900
 "Masami Hiramatsu (Google)" <mhiramat@kernel.org> wrote:
 
 > From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
 > 
-> To clarify what will be expected on ftrace_regs, add a comment to the
-> architecture independent definition of the ftrace_regs.
+> Add ftrace_regs definition for x86_64 in the ftrace header to
+> clarify what register will be accessible from ftrace_regs.
 > 
 > Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-> Acked-by: Mark Rutland <mark.rutland@arm.com>
 > ---
->  Changes in v8:
->   - Update that the saved registers depends on the context.
 >  Changes in v3:
->   - Add instruction pointer
+>   - Add rip to be saved.
 >  Changes in v2:
->   - newly added.
+>   - Newly added.
 > ---
->  include/linux/ftrace.h |   26 ++++++++++++++++++++++++++
->  1 file changed, 26 insertions(+)
+>  arch/x86/include/asm/ftrace.h |    6 ++++++
+>  1 file changed, 6 insertions(+)
 > 
-> diff --git a/include/linux/ftrace.h b/include/linux/ftrace.h
-> index 54d53f345d14..b81f1afa82a1 100644
-> --- a/include/linux/ftrace.h
-> +++ b/include/linux/ftrace.h
-> @@ -118,6 +118,32 @@ extern int ftrace_enabled;
+> diff --git a/arch/x86/include/asm/ftrace.h b/arch/x86/include/asm/ftrace.h
+> index cf88cc8cc74d..c88bf47f46da 100644
+> --- a/arch/x86/include/asm/ftrace.h
+> +++ b/arch/x86/include/asm/ftrace.h
+> @@ -36,6 +36,12 @@ static inline unsigned long ftrace_call_adjust(unsigned long addr)
 >  
->  #ifndef CONFIG_HAVE_DYNAMIC_FTRACE_WITH_ARGS
->  
-> +/**
-> + * ftrace_regs - ftrace partial/optimal register set
-> + *
-> + * ftrace_regs represents a group of registers which is used at the
-> + * function entry and exit. There are three types of registers.
-> + *
-> + * - Registers for passing the parameters to callee, including the stack
-> + *   pointer. (e.g. rcx, rdx, rdi, rsi, r8, r9 and rsp on x86_64)
-> + * - Registers for passing the return values to caller.
-> + *   (e.g. rax and rdx on x86_64)
-> + * - Registers for hooking the function call and return including the
-> + *   frame pointer (the frame pointer is architecture/config dependent)
-> + *   (e.g. rip, rbp and rsp for x86_64)
-> + *
-> + * Also, architecture dependent fields can be used for internal process.
-> + * (e.g. orig_ax on x86_64)
-> + *
-> + * On the function entry, those registers will be restored except for
-> + * the stack pointer, so that user can change the function parameters
-> + * and instruction pointer (e.g. live patching.)
-> + * On the function exit, only registers which is used for return values
-> + * are restored.
+>  #ifdef CONFIG_HAVE_DYNAMIC_FTRACE_WITH_ARGS
+>  struct ftrace_regs {
+> +	/*
+> +	 * On the x86_64, the ftrace_regs saves;
+> +	 * rax, rcx, rdx, rdi, rsi, r8, r9, rbp, rip and rsp.
+> +	 * Also orig_ax is used for passing direct trampoline address.
+> +	 * x86_32 doesn't support ftrace_regs.
 
-I wonder if we should also add a note about some architectures in some
-circumstances may store all pt_regs in ftrace_regs. For example, if an
-architecture supports FTRACE_WITH_REGS, it may pass the pt_regs within the
-ftrace_regs. If that is the case, then ftrace_get_regs() called on it will
-return a pointer to a valid pt_regs, or NULL if it is not supported or the
-ftrace_regs does not have a all the registers.
+Should add a comment that if fregs->regs.cs is set, then all of the pt_regs
+is valid. And x86_32 does support ftrace_regs, it just doesn't support
+having a subset of it.
 
 -- Steve
 
 
-> + *
-> + * NOTE: user *must not* access regs directly, only do it via APIs, because
-> + * the member can be changed according to the architecture.
-> + */
->  struct ftrace_regs {
+> +	 */
 >  	struct pt_regs		regs;
 >  };
+>  
 
 
