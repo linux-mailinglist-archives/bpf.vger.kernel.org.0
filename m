@@ -1,82 +1,108 @@
-Return-Path: <bpf+bounces-30354-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-30355-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id D02858CCA64
-	for <lists+bpf@lfdr.de>; Thu, 23 May 2024 03:43:10 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 98A5C8CCABA
+	for <lists+bpf@lfdr.de>; Thu, 23 May 2024 04:27:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 76272B214D5
-	for <lists+bpf@lfdr.de>; Thu, 23 May 2024 01:43:08 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4FB671F220A2
+	for <lists+bpf@lfdr.de>; Thu, 23 May 2024 02:27:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4EF4028EC;
-	Thu, 23 May 2024 01:43:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 445386FA8;
+	Thu, 23 May 2024 02:27:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="SkAm4yGc"
 X-Original-To: bpf@vger.kernel.org
-Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
+Received: from out30-132.freemail.mail.aliyun.com (out30-132.freemail.mail.aliyun.com [115.124.30.132])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 456A717C2;
-	Thu, 23 May 2024 01:42:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.190
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF012567F;
+	Thu, 23 May 2024 02:27:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.132
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716428582; cv=none; b=YDNqWer5Z1y2N8BALvJCe1JlfuayY5rthOox/IZ/A4YF5+e/E+VygSq84hV4GBW77gyVU7d0P7IqUFQDmFQ70TPZ7Eo4lDZThEMzB549fhAZULIhJ7MsyK7bPicRUbKofaBnvFeOj3XFXCxQZYJL53Ks/s8xtEJ9vpEmdmUcNbY=
+	t=1716431239; cv=none; b=n9rvTVKN8bkDAmAmmRyoiitd8/ol/GAZp+f2LTQPBRjS6vH0DoI2VfkRrm/RZfIBbYaMgPbbGbTARMMZBruyPdlGqOepRYT+eKzeWBsm2Tvb2XURVQ6fyGFAPeoWZ9zMBbafwHFhhvXLtbDXLXbJXHszIdg6lxVGcc7DqkHIu30=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716428582; c=relaxed/simple;
-	bh=eeUvrJQaoEchYn+M2SIKzuf4GCNGNI557vCfeFKSwy4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=HsSAjUxeZHM2pPpMjA1iTUAYMmwPqRtX7gh2PfNBNUN2kDX8yW32Dxc5DBBw98Pk8ChXK0r0H1aJLAwrLiSkdYoybutDUqlhdJJEnUD+ds4CbCsGw8xrs5TNEvhPEv3QPEqC8NPMw7NAvyvFUCivlB8ZS3NFAcLlw8keF+SviuY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.190
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.44])
-	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4Vl9np6vh4z2CjFs;
-	Thu, 23 May 2024 09:39:26 +0800 (CST)
-Received: from kwepemf100007.china.huawei.com (unknown [7.202.181.221])
-	by mail.maildlp.com (Postfix) with ESMTPS id 7863D140153;
-	Thu, 23 May 2024 09:42:56 +0800 (CST)
-Received: from [10.67.109.184] (10.67.109.184) by
- kwepemf100007.china.huawei.com (7.202.181.221) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.4; Thu, 23 May 2024 09:42:55 +0800
-Message-ID: <e769b8a5-dd11-4cf5-95bb-4399dd836113@huawei.com>
-Date: Thu, 23 May 2024 09:42:54 +0800
+	s=arc-20240116; t=1716431239; c=relaxed/simple;
+	bh=c92CD0brkSJltp7H73QZo8C15p8obsM+Db9+oGP7FQE=;
+	h=Message-ID:Subject:Date:From:To:Cc:References:In-Reply-To; b=E1MjZ8ewRrKc0hyZmX2abgJNnrdtzf/j5UG1DyqnJNqBCB34IrAyOqbi9SMQYIweReb6vIMhH/rwN6VYEjZUd+15WzdYwkqxFEOF5EzPBpQzAUwy8lgIQCHKH1GmXNSGJMBMC/sm8IqUdboOeb59P4nvvJDRaBvXghcA+f9uRkc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=SkAm4yGc; arc=none smtp.client-ip=115.124.30.132
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1716431234; h=Message-ID:Subject:Date:From:To;
+	bh=7l4HsM0fJXj4gH6QAm5oEIfdcY7Awf4Ih9BDFuuNwCI=;
+	b=SkAm4yGcV43S/G1mrE1csxOnPrgl7LAa5hczKdzgpmEstgunHiguH0s9RQ639gOR3AFuCNXwhN9peTCRlliCeASVwgXzv/gcztKgUpAjwOgKu8yl+WCxA8CeUy/NDHdKzJMgDtRx/mP4n3g/gRcH+s5aqcdJd9qY5RN9OSgt5BA=
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R191e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=maildocker-contentspam033045046011;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=14;SR=0;TI=SMTPD_---0W711jQ9_1716431232;
+Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0W711jQ9_1716431232)
+          by smtp.aliyun-inc.com;
+          Thu, 23 May 2024 10:27:13 +0800
+Message-ID: <1716431200.2626963-1-xuanzhuo@linux.alibaba.com>
+Subject: Re: [PATCH net-next 0/7] virtnet_net: prepare for af-xdp
+Date: Thu, 23 May 2024 10:26:40 +0800
+From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+To: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Cc: "David S. Miller" <davem@davemloft.net>,
+ Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>,
+ Paolo Abeni <pabeni@redhat.com>,
+ "Michael S. Tsirkin" <mst@redhat.com>,
+ Jason Wang <jasowang@redhat.com>,
+ Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>,
+ Jesper Dangaard Brouer <hawk@kernel.org>,
+ John Fastabend <john.fastabend@gmail.com>,
+ virtualization@lists.linux.dev,
+ bpf@vger.kernel.org,
+ netdev@vger.kernel.org
+References: <20240508080514.99458-1-xuanzhuo@linux.alibaba.com>
+In-Reply-To: <20240508080514.99458-1-xuanzhuo@linux.alibaba.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] riscv, bpf: Use STACK_ALIGN macro for size rounding up
-Content-Language: en-US
-To: Xiao Wang <xiao.w.wang@intel.com>
-CC: <paul.walmsley@sifive.com>, <palmer@dabbelt.com>, <aou@eecs.berkeley.edu>,
-	<luke.r.nels@gmail.com>, <xi.wang@gmail.com>, <bjorn@kernel.org>,
-	<ast@kernel.org>, <daniel@iogearbox.net>, <andrii@kernel.org>,
-	<martin.lau@linux.dev>, <eddyz87@gmail.com>, <song@kernel.org>,
-	<yonghong.song@linux.dev>, <john.fastabend@gmail.com>, <kpsingh@kernel.org>,
-	<sdf@google.com>, <haoluo@google.com>, <jolsa@kernel.org>,
-	<linux-riscv@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-	<bpf@vger.kernel.org>, <haicheng.li@intel.com>
-References: <20240522054507.3941595-1-xiao.w.wang@intel.com>
-From: Pu Lehui <pulehui@huawei.com>
-In-Reply-To: <20240522054507.3941595-1-xiao.w.wang@intel.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- kwepemf100007.china.huawei.com (7.202.181.221)
 
+Any comments for this.
 
-On 2024/5/22 13:45, Xiao Wang wrote:
-> Use the macro STACK_ALIGN that is defined in asm/processor.h for stack size
-> rounding up, just like bpf_jit_comp32.c does.
-> 
-> Signed-off-by: Xiao Wang <xiao.w.wang@intel.com>
-> ---
->   arch/riscv/net/bpf_jit_comp64.c | 6 +++---
->   1 file changed, 3 insertions(+), 3 deletions(-)
+Thanks.
 
-It met a patching conflict. I think you should target for the bpf-next tree.
-https://github.com/kernel-patches/bpf/pull/7080
+On Wed,  8 May 2024 16:05:07 +0800, Xuan Zhuo <xuanzhuo@linux.alibaba.com> wrote:
+> This patch set prepares for supporting af-xdp zerocopy.
+> There is no feature change in this patch set.
+> I just want to reduce the patch num of the final patch set,
+> so I split the patch set.
+>
+> #1-#3 add independent directory for virtio-net
+> #4-#7 do some refactor, the sub-functions will be used by the subsequent commits
+>
+> Thanks.
+>
+> Xuan Zhuo (7):
+>   virtio_net: independent directory
+>   virtio_net: move core structures to virtio_net.h
+>   virtio_net: add prefix virtnet to all struct inside virtio_net.h
+>   virtio_net: separate virtnet_rx_resize()
+>   virtio_net: separate virtnet_tx_resize()
+>   virtio_net: separate receive_mergeable
+>   virtio_net: separate receive_buf
+>
+>  MAINTAINERS                                   |   2 +-
+>  drivers/net/Kconfig                           |   9 +-
+>  drivers/net/Makefile                          |   2 +-
+>  drivers/net/virtio/Kconfig                    |  12 +
+>  drivers/net/virtio/Makefile                   |   8 +
+>  drivers/net/virtio/virtnet.h                  | 246 ++++++++
+>  .../{virtio_net.c => virtio/virtnet_main.c}   | 534 ++++++------------
+>  7 files changed, 452 insertions(+), 361 deletions(-)
+>  create mode 100644 drivers/net/virtio/Kconfig
+>  create mode 100644 drivers/net/virtio/Makefile
+>  create mode 100644 drivers/net/virtio/virtnet.h
+>  rename drivers/net/{virtio_net.c => virtio/virtnet_main.c} (94%)
+>
+> --
+> 2.32.0.3.g01195cf9f
+>
 
