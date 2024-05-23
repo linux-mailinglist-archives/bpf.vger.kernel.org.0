@@ -1,262 +1,253 @@
-Return-Path: <bpf+bounces-30350-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-30351-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 13F698CCA32
-	for <lists+bpf@lfdr.de>; Thu, 23 May 2024 02:55:02 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9EA308CCA3B
+	for <lists+bpf@lfdr.de>; Thu, 23 May 2024 03:06:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 92BC31F22A21
-	for <lists+bpf@lfdr.de>; Thu, 23 May 2024 00:55:01 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 66E85B21C51
+	for <lists+bpf@lfdr.de>; Thu, 23 May 2024 01:06:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A1F91860;
-	Thu, 23 May 2024 00:54:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7FAD617FF;
+	Thu, 23 May 2024 01:06:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=sipanda-io.20230601.gappssmtp.com header.i=@sipanda-io.20230601.gappssmtp.com header.b="T/VNGJIU"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="e3KsP54c"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-vk1-f170.google.com (mail-vk1-f170.google.com [209.85.221.170])
+Received: from mail-yw1-f169.google.com (mail-yw1-f169.google.com [209.85.128.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 25FD7A34
-	for <bpf@vger.kernel.org>; Thu, 23 May 2024 00:54:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 77D9D17EF
+	for <bpf@vger.kernel.org>; Thu, 23 May 2024 01:06:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716425694; cv=none; b=VGZbPWQ9gdv8nZzF9KfRp18JNpOIg1NKEaEPXnY8cpuyzp6uWNkfPE8cR/zEtD0rM09W+Cx1e5SVWjspem9SdkSupAEUuvM67Zqdb7v9Jbzd+T1W9Uyqs2oD/h3+5xnLFosTkB0pPHT/7/frIdwHMX/1JCjTv4j98/5/UyLED0w=
+	t=1716426373; cv=none; b=kcu0AlLJByIU2o6if/2CUmrw0FUAxVCkrmpEcca5Mn0cLX65q9fScuAf+4J1IpvjFn4lo2zzsTh4yv1xAXOU6P0sTJlVgtA2EaQfEq3AAhL5ulyCqKgZI7eEBLomb7HuLbDdEt3SpRd+mDUzy8sKudb4XDnYMk77TGARemGa8v4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716425694; c=relaxed/simple;
-	bh=O1WHjZJymFnGRouBJaPdjzV5wjlbGyIE+SCp4B78YRk=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=RaTYXXpCwSE8jZuDLzlLRXNNeHwraiqCtItr0MpqPUO0s5T5RylsFIQOLiBu69IMTb2dY215/YRTs6bwO8gQc+O/iJXJlhQ+GoIi3aMuDVhG/IVzwWdCMgeksGCi+xn6276QC+jkr6QT1p7yHh1D1jOGkhkAlc6ec9HRVkss6cU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sipanda.io; spf=pass smtp.mailfrom=sipanda.io; dkim=pass (2048-bit key) header.d=sipanda-io.20230601.gappssmtp.com header.i=@sipanda-io.20230601.gappssmtp.com header.b=T/VNGJIU; arc=none smtp.client-ip=209.85.221.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sipanda.io
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sipanda.io
-Received: by mail-vk1-f170.google.com with SMTP id 71dfb90a1353d-4df550a4d4fso1638874e0c.2
-        for <bpf@vger.kernel.org>; Wed, 22 May 2024 17:54:51 -0700 (PDT)
+	s=arc-20240116; t=1716426373; c=relaxed/simple;
+	bh=/lzG7N8HRRuJAEICZpQKiSVgOSJ26jUCEV+Q7IFSI+0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=c00girb+oFALyxZ+j2Z6QmiOZYTWPkoxS2u4u0sBi152kAc77SxUlKdBlNJeVf/0xH8r3IsA+cSHO1Wi7ndvwu2uw7915S70q8OkICgvI1plQV+kepFpJB9+iM0sIik0GQGuTfjsq/GVbl7gGEx2OmxN9+Xrjn9ZEd4J3ecTTNI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=e3KsP54c; arc=none smtp.client-ip=209.85.128.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yw1-f169.google.com with SMTP id 00721157ae682-627f5b7b75bso3243747b3.0
+        for <bpf@vger.kernel.org>; Wed, 22 May 2024 18:06:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sipanda-io.20230601.gappssmtp.com; s=20230601; t=1716425691; x=1717030491; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=rgj4UmFTr180aw+Q9LOrencRDZA3L6tGCCpIwP02e/g=;
-        b=T/VNGJIUGHzpqa+GsdECSZkdPuOyQkUEee41mLUihCtY375wBv68zj16ZOo9zriB2e
-         KAxk+2E2kgJa4ZK+EUSWJHBH7clqhPgauZQzkBC5xahf9Crf42i9vRbZ4XUbhdo+RFIf
-         xDQWqJRqFYpFN2QaY6E/AEvjiC6gNpJBilJG2FIGqqpNLhrnDYaGudsWJyccoSsspRr0
-         hRXXbS8UMGdDd4CqyrCZBkVx9wvM3NRVaBBnSsgm8uq0LBYc4ZyC9xZDNImsctt+Ez/p
-         9l3lum4zGJTGr4ht3z0KJ/GiSwBCd4d/6KNuey2J4fXQ6jVlqlTEDERjhqXROKn4VV9G
-         KBwQ==
+        d=gmail.com; s=20230601; t=1716426370; x=1717031170; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=I+hyC9kKIJm71KxO3GvQ0uNFEfo/Pu1LbXa9+dx28FU=;
+        b=e3KsP54cXrJ20TJZYgX0t6r9CvjsZDebVrgROnAdg4MvG7QIiC56h1yrqaizChfFKD
+         Qi+TlXuTpCT2S03fn4EBapi0voMDi7YKUEJ4SoJ6L8ob8pBQFMKYTkOFSnOTMtxgAWM9
+         oOmm94j+hVNZEyG8cZGO3GukpbCw35tPALSQ4lbhdIL3fbqsHOeLlpOoW11wZxeWQSFE
+         iPDCXnWhcZPeOo98UqLom8n6ju5/wYiHhNxHzmT4TxHxazzLShuOr2y+ZZuWo0jpmNLk
+         0OrPkiOG3NuaJlZ4wrH3RoCj6kxJIxh4zgz1YzBKq75wQGqu5/DV60yFIUNnBCp2EBVy
+         Y+oQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1716425691; x=1717030491;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=rgj4UmFTr180aw+Q9LOrencRDZA3L6tGCCpIwP02e/g=;
-        b=vZ84NNdXxbPeI04FnO2S/lDiwCeb1LMdzoOF1GbKV1ilKr+phL0jPsYFXm07aLWDhW
-         sGm6RRNrZmLEm5Hzd6YJFGpPJU+utmh+f4aS0vh7yEk9q4uLzkCxP64KdGVoiOJduhWV
-         YDZnXKeGrXZQuNnGPLHt/hXuPDcSb6zUTr6Ki8aO6x8YzsatPpc0R6E6bSI2/uB40Q6U
-         igbY4DUSRy4xKjcBTo8OaCn16Hchw0eT2cwSKSIwZZIV2e0wqyOY2ga0Q0TSow2Ir7B9
-         GXOUV47bKeudApQ4g3UONihYDiOXp3D/Qr6Tbc/A6RElgumwbWhk7WUzds2gKx6G5s80
-         lb4Q==
-X-Forwarded-Encrypted: i=1; AJvYcCWzdtaAcTPnKq3zrZKa/kPYnVWGvUa0637euKbrbVZQm45TCtjz/k5+PFB+D7JuZqjLmZe+oaf9PYH5NCY6CfuY8A+u
-X-Gm-Message-State: AOJu0Yx3/DTVHiVaRajSHq9RUitkCDu9ees5PEtmpPFm+zz8rzPSVxAj
-	V0wRz3b40BYl22T3lsHEYpL7wg3Y3eIYpG9VoQPRbpgCDbV5RuezSKfZNj+I6lASZyq0UEVyyxt
-	lpgBSA5wo8JK4/efzPJ26xIlCzdpBo6aSQinQKA==
-X-Google-Smtp-Source: AGHT+IFVzPRkwAhHK0CMph+h3235lUDV2e5htJVe7dQOMJ9f+PovoOXaKnXTRbHdAYMEG0hmim4xuU3UQSsREUlxDhg=
-X-Received: by 2002:a05:6122:2218:b0:4df:7ba8:5c73 with SMTP id
- 71dfb90a1353d-4e21862b088mr3833224e0c.14.1716425690827; Wed, 22 May 2024
- 17:54:50 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1716426370; x=1717031170;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=I+hyC9kKIJm71KxO3GvQ0uNFEfo/Pu1LbXa9+dx28FU=;
+        b=ZapXMFM/Aw9i9YNSXgV42YnZ6d0av5GWcCectUaZxWQDCHfp7Ny7RhISaC7ZxLF4f0
+         VVLquuZGMKV17VpXA7B7q9bq1Y2gGrdNnhjy+n7db25LTREvDI7bPk//zK5cNE0wN0Sc
+         f0XESr7dVVZmWljWG3KW24os/Y+51Pu6ihskJZUI/Z1p/cdzZa2QqEJvnJilinAA7imh
+         vtfM1M9RULCOJceyu1UBw/4/OqiGcwre3xc7DwvxUq2aSwORYo8WJxv+6ggCE5AfmBDL
+         wQnJMK9G2H5zIxw8a7W6wAlrVeLAs6ZV7ZO7OQSv6WJlhmhTrGF/zfpXzB7gJt1KD7wq
+         fHtw==
+X-Forwarded-Encrypted: i=1; AJvYcCVxqqLwEFJqvwjLvaoypo7W/PLRPXVjh5jRorzLfafNRIelVTTPacEPYIGDJAOJ60g+HhebO+2cUc8MkG0fTsHMePky
+X-Gm-Message-State: AOJu0YwgZ21ndNiT6yOHrIMi8QtffChyx8/te7gH0bf8wQ20RjpYWgm0
+	kB/w7r02FQDnLnRrcLqW1KxfWEIBG/x+tEr/dXUQB94wO/0fpowk
+X-Google-Smtp-Source: AGHT+IG60hqKD5VGVxdJ4XuBkpk/q9qC5OgnNY6s07ynKODaYLeiHdmn3tuxxFc5isJvA2vSPt+gvA==
+X-Received: by 2002:a81:a150:0:b0:618:a587:7a41 with SMTP id 00721157ae682-6283499fabamr6155137b3.16.1716426370284;
+        Wed, 22 May 2024 18:06:10 -0700 (PDT)
+Received: from ?IPV6:2600:1700:6cf8:1240:e51c:68a4:2c6a:a550? ([2600:1700:6cf8:1240:e51c:68a4:2c6a:a550])
+        by smtp.gmail.com with ESMTPSA id 00721157ae682-6209e26e166sm59887917b3.58.2024.05.22.18.06.08
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 22 May 2024 18:06:09 -0700 (PDT)
+Message-ID: <456f98bc-a430-4fa4-b2d0-344fe50821f4@gmail.com>
+Date: Wed, 22 May 2024 18:06:07 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240410140141.495384-1-jhs@mojatatu.com> <41736ea4e81666e911fee5b880d9430ffffa9a58.camel@redhat.com>
- <CAM0EoM=982OctjvSQpx0kR7e+JnQLhvZ=sM-tNB4xNiu7nhH5Q@mail.gmail.com>
- <CAM0EoM=VhVn2sGV40SYttQyaiCn8gKaKHTUqFxB_WzKrayJJfQ@mail.gmail.com>
- <87cf4830e2e46c1882998162526e108fb424a0f7.camel@redhat.com>
- <CAM0EoMkJwR0K-fF7qo0PfRw4Sf+=2L0L=rOcH5A2ELwagLrZMw@mail.gmail.com>
- <CAM0EoMmfDoZ9_ZdK-ZjHjFAjuNN8fVK+R57_UaFqAm=wA0AWVA@mail.gmail.com>
- <82ee1013ca0164053e9fb1259eaf676343c430e8.camel@redhat.com>
- <CAADnVQLugkg+ahAapskRaE86=RnwpY8v=Nre8pn=sa4fTEoTyA@mail.gmail.com>
- <CAM0EoM=2wHem54vTeVq4H1W5pawYuHNt-aS9JyG8iQORbaw5pA@mail.gmail.com>
- <CAM0EoMmCz5usVSLq_wzR3s7UcaKifa-X58zr6hkPXuSBnwFX3w@mail.gmail.com>
- <CAM0EoMmsB5jHZ=4oJc_Yzm=RFDUHWh9yexdG6_bPFS4_CFuiog@mail.gmail.com>
- <20240522151933.6f422e63@kernel.org> <CAM0EoMmFrp5X5OzMbum5i_Bjng7Bhtk1YvWpacW6FV6Oy-3avg@mail.gmail.com>
- <SN6PR17MB211069668AF4C8031B116B9D96EB2@SN6PR17MB2110.namprd17.prod.outlook.com>
-In-Reply-To: <SN6PR17MB211069668AF4C8031B116B9D96EB2@SN6PR17MB2110.namprd17.prod.outlook.com>
-From: Tom Herbert <tom@sipanda.io>
-Date: Wed, 22 May 2024 17:54:39 -0700
-Message-ID: <CAOuuhY9b6WZd6eunVGr6QQ=sd7KLvx7OVn4ozzon3+ABRQaYeQ@mail.gmail.com>
-Subject: Re: On the NACKs on P4TC patches
-To: Chris Sommers <chris.sommers@keysight.com>
-Cc: Jamal Hadi Salim <jhs@mojatatu.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
-	Alexei Starovoitov <alexei.starovoitov@gmail.com>, Network Development <netdev@vger.kernel.org>, 
-	"Chatterjee, Deb" <deb.chatterjee@intel.com>, Anjali Singhai Jain <anjali.singhai@intel.com>, 
-	"Limaye, Namrata" <namrata.limaye@intel.com>, Marcelo Ricardo Leitner <mleitner@redhat.com>, 
-	"Shirshyad, Mahesh" <Mahesh.Shirshyad@amd.com>, "Osinski, Tomasz" <tomasz.osinski@intel.com>, 
-	Jiri Pirko <jiri@resnulli.us>, Cong Wang <xiyou.wangcong@gmail.com>, 
-	"David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
-	Vlad Buslov <vladbu@nvidia.com>, Simon Horman <horms@kernel.org>, Khalid Manaa <khalidm@nvidia.com>, 
-	=?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>, 
-	Victor Nogueira <victor@mojatatu.com>, Pedro Tammela <pctammela@mojatatu.com>, 
-	"Jain, Vipin" <Vipin.Jain@amd.com>, "Daly, Dan" <dan.daly@intel.com>, 
-	Andy Fingerhut <andy.fingerhut@gmail.com>, Matty Kadosh <mattyk@nvidia.com>, bpf <bpf@vger.kernel.org>, 
-	"lwn@lwn.net" <lwn@lwn.net>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 bpf-next 07/11] libbpf: split BTF relocation
+To: Alan Maguire <alan.maguire@oracle.com>, andrii@kernel.org,
+ jolsa@kernel.org, acme@redhat.com, quentin@isovalent.com
+Cc: eddyz87@gmail.com, mykolal@fb.com, ast@kernel.org, daniel@iogearbox.net,
+ martin.lau@linux.dev, song@kernel.org, yonghong.song@linux.dev,
+ john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
+ haoluo@google.com, houtao1@huawei.com, bpf@vger.kernel.org,
+ masahiroy@kernel.org, mcgrof@kernel.org, nathan@kernel.org
+References: <20240517102246.4070184-1-alan.maguire@oracle.com>
+ <20240517102246.4070184-8-alan.maguire@oracle.com>
+Content-Language: en-US
+From: Kui-Feng Lee <sinquersw@gmail.com>
+In-Reply-To: <20240517102246.4070184-8-alan.maguire@oracle.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Wed, May 22, 2024 at 5:09=E2=80=AFPM Chris Sommers
-<chris.sommers@keysight.com> wrote:
->
-> > On Wed, May 22, 2024 at 6:19=E2=80=AFPM Jakub Kicinski <kuba@kernel.org=
-> wrote:
-> > >
-> > > Hi Jamal!
-> > >
-> > > On Tue, 21 May 2024 08:35:07 -0400 Jamal Hadi Salim wrote:
-> > > > At that point(v16) i asked for the series to be applied despite the
-> > > > Nacks because, frankly, the Nacks have no merit. Paolo was not
-> > > > comfortable applying patches with Nacks and tried to mediate. In hi=
-s
-> > > > mediation effort he asked if we could remove eBPF - and our answer =
-was
-> > > > no because after all that time we have become dependent on it and
-> > > > frankly there was no technical reason not to use eBPF.
-> > >
-> > > I'm not fully clear on who you're appealing to, and I may be missing
-> > > some points. But maybe it will be more useful than hurtful if I clari=
-fy
-> > > my point of view.
-> > >
-> > > AFAIU BPF folks disagree with the use of their subsystem, and they
-> > > point out that P4 pipelines can be implemented using BPF in the first
-> > > place.
-> > > To which you reply that you like (a highly dated type of) a netlink
-> > > interface, and (handwavey) ability to configure the data path SW or
-> > > HW via the same interface.
-> >
-> > It's not what I "like" , rather it is a requirement to support both
-> > s/w and h/w offload. The TC model is the traditional approach to
-> > deploy these models. I addressed the same comment you are making above
-> > in #1a and #1b  (https://urldefense.com/v3/__https://github.com/p4tc-de=
-v/pushback-patches__;!!I5pVk4LIGAfnvw!kaZ6EmPxEqGLG8JMw-_L0BgYq48Pe25wj6pHM=
-F6BVei5WsRgwMeLQupmvgvLyN-LgXacKBzzs0-w2zKP2A$).
-> >
-> > OTOH, "BPF folks disagree with the use of their subsystem" is a
-> > problematic statement. Is BPF infra for the kernel community or is it
-> > something the ebpf folks can decide, at their whim, to allow who they
-> > like to use or not. We are not changing any BPF code. And there's
-> > already a case where the interfaces are used exactly as we used them
-> > in the conntrack code i pointed to in the page (we literally copied
-> > that code). Why is it ok for conntrack code to use exactly the same
-> > approach but not us?
-> >
-> > > AFAICT there's some but not very strong support for P4TC,
-> >
-> > I dont agree. Paolo asked this question and afaik Intel, AMD (both
-> > build P4-native NICs) and the folks interested in the MS DASH project
-> > responded saying they are in support. Look at who is being Cced. A lot
-> > of these folks who attend biweekly discussion calls on P4TC. Sample:
-> > https://urldefense.com/v3/__https://lore.kernel.org/netdev/IA0PR17MB707=
-0B51A955FB8595FFBA5FB965E2@IA0PR17MB7070.namprd17.prod.outlook.com/__;!!I5p=
-Vk4LIGAfnvw!kaZ6EmPxEqGLG8JMw-_L0BgYq48Pe25wj6pHMF6BVei5WsRgwMeLQupmvgvLyN-=
-LgXacKBzzs09TFzoQBw$
-> >
-> +1
-> > > and it
-> > > doesn't benefit or solve any problems of the broader networking stack
-> > > (e.g. expressing or configuring parser graphs in general)
-> > >
-> >
->
-> Huh? As a DSL, P4 has already been proven to be an extremely effective an=
-d popular way to express parse graphs, stack manipulation, and stateful pro=
-gramming. Yesterday, I used the P4TC dev branch to implement something in o=
-ne sitting, which includes parsing RoCEv2 network stacks. I just cut and pa=
-sted P4 code originally written for a P4 ASIC into a working P4TC example t=
-o add functionality. It took mere seconds to compile and launch it, and a f=
-ew minutes to test it. I know of no other workflow which provides such quic=
-k turnaround and is so accessible. I'd like it to be as ubiquitous as eBPF =
-itself.
 
-Chris,
 
-When you say "it took mere seconds to compile and launch" are you
-taking into account the ramp up time that it takes to learn P4 and
-become proficient to do something interesting? Considering that P4
-syntax is very different from typical languages than networking
-programmers are typically familiar with, this ramp up time is
-non-zero. OTOH, eBPF is ubiquitous because it's primarily programmed
-in Restricted C-- this makes it easy for many programmers since they
-don't have to learn a completely new language and so the ramp up time
-for the average networking programmer is much less for using eBPF.
+On 5/17/24 03:22, Alan Maguire wrote:
+> Map distilled base BTF type ids referenced in split BTF and their
+> references to the base BTF passed in, and if the mapping succeeds,
+> reparent the split BTF to the base BTF.
+> 
+> Relocation is done by first verifying that distilled base BTF
+> only consists of named INT, FLOAT, ENUM, FWD, STRUCT and
+> UNION kinds; then we sort these to speed lookups.  Once sorted,
+> the base BTF is iterated, and for each relevant kind we check
+> for an equivalent in distilled base BTF.  When found, the
+> mapping from distilled -> base BTF id and string offset is recorded.
+> 
+> Once all mappings are established, we can update type ids
+> and string offsets in split BTF and reparent it to the new base.
+> 
+> Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
+> ---
+[...]
+> +/* Comparison between base BTF type (search type) and distilled base types (target).
+> + * Because there is no bsearch_r() we need to use the search key - which also is
+> + * the first element of struct btf_relocate * - as a means to retrieve the
+> + * struct btf_relocate *.
+> + */
+> +static int cmp_base_and_distilled_btf_types(const void *idbase, const void *iddist)
+> +{
+> +	struct btf_relocate *r = (struct btf_relocate *)idbase;
+> +	const struct btf_type *tbase = btf_type_by_id(r->base_btf, *(__u32 *)idbase);
 
-This is really the fundamental problem with DSLs, they require
-specialized skill sets in a programming language for a narrow use case
-(and specialized compilers, tool chains, debugging, etc)-- this means
-a DSL only makes sense if there is no other means to accomplish the
-same effects using a commodity language with perhaps a specialized
-library (it's not just in the networking realm, consider the
-advantages of using CUDA-C instead of a DLS for GPUs). Personally, I
-don't believe that P4 has yet to be proven necessary for programming a
-datapath-- for instance we can program a parser in declarative
-representation in C,
-https://netdevconf.info/0x16/papers/11/High%20Performance%20Programmable%20=
-Parsers.pdf.
+"*(__u32 *)idbase" together with the previous line is a little difficult
+to decrypt. Using "r->search_id" here is more intuitive, easier to read.
 
-So unless P4 is proven necessary, then I'm doubtful it will ever be a
-ubiquitous way to program the kernel-- it seems much more likely that
-people will continue to use C and eBPF, and for those users that want
-to use P4 they can use P4->eBPF compiler.
+> +	const struct btf_type *tdist = btf_type_by_id(r->dist_base_btf, *(__u32 *)iddist);
+> +
+> +	return strcmp(btf__name_by_offset(r->base_btf, tbase->name_off),
+> +		      btf__name_by_offset(r->dist_base_btf, tdist->name_off));
+> +}
+> +
+> +/* Build a map from distilled base BTF ids to base BTF ids. To do so, iterate
+> + * through base BTF looking up distilled type (using binary search) equivalents.
+> + */
+> +static int btf_relocate_map_distilled_base(struct btf_relocate *r)
+> +{
+> +	struct btf_type *t;
+> +	const char *name;
+> +	__u32 id;
+> +
+> +	/* generate a sort index array of type ids sorted by name for distilled
+> +	 * base BTF to speed lookups.
+> +	 */
+> +	for (id = 1; id < r->nr_dist_base_types; id++)
+> +		r->dist_base_index[id] = id;
+> +	qsort_r(r->dist_base_index, r->nr_dist_base_types, sizeof(__u32), cmp_btf_types,
+> +		(struct btf *)r->dist_base_btf);
+> +
+> +	for (id = 1; id < r->nr_base_types; id++) {
+> +		struct btf_type *dist_t;
+> +		int dist_kind, kind;
+> +		bool compat_kind;
+> +		__u32 *dist_id;
+> +
+> +		t = btf_type_by_id(r->base_btf, id);
+> +		kind = btf_kind(t);
+> +		/* distilled base consists of named types only. */
+> +		if (!t->name_off)
+> +			continue;
+> +		switch (kind) {
+> +		case BTF_KIND_INT:
+> +		case BTF_KIND_FLOAT:
+> +		case BTF_KIND_ENUM:
+> +		case BTF_KIND_ENUM64:
+> +		case BTF_KIND_FWD:
+> +		case BTF_KIND_STRUCT:
+> +		case BTF_KIND_UNION:
+> +			break;
+> +		default:
+> +			continue;
+> +		}
+> +		r->search_id = id;
+> +		dist_id = bsearch(&r->search_id, r->dist_base_index, r->nr_dist_base_types,
+> +				  sizeof(__u32), cmp_base_and_distilled_btf_types);
+> +		if (!dist_id)
+> +			continue;
+> +		if (!*dist_id || *dist_id > r->nr_dist_base_types) {
+> +			pr_warn("base BTF id [%d] maps to invalid distilled base BTF id [%d]\n",
+> +				id, *dist_id);
+> +			return -EINVAL;
+> +		}
+> +		/* validate that kinds are compatible */
+> +		dist_t = btf_type_by_id(r->dist_base_btf, *dist_id);
+> +		dist_kind = btf_kind(dist_t);
+> +		name = btf__name_by_offset(r->dist_base_btf, dist_t->name_off);
+> +		compat_kind = dist_kind == kind;
+> +		if (!compat_kind) {
+> +			switch (dist_kind) {
+> +			case BTF_KIND_FWD:
+> +				compat_kind = kind == BTF_KIND_STRUCT || kind == BTF_KIND_UNION;
+> +				break;
+> +			case BTF_KIND_ENUM:
+> +				compat_kind = kind == BTF_KIND_ENUM64;
+> +				break;
+> +			default:
+> +				break;
+> +			}
+> +			if (!compat_kind) {
+> +				pr_warn("kind incompatibility (%d != %d) between distilled base type '%s'[%d] and base type [%d]\n",
+> +					dist_kind, kind, name, *dist_id, id);
+> +				return -EINVAL;
+> +			}
+> +		}
+> +		/* validate that int, float struct, union sizes are compatible;
+> +		 * distilled base BTF encodes an empty STRUCT/UNION with
+> +		 * specific size for cases where a type is embedded in a split
+> +		 * type (so has to preserve size info).  Do not error out
+> +		 * on mismatch as another size match may occur for an
+> +		 * identically-named type.
+> +		 */
+> +		switch (btf_kind(dist_t)) {
+> +		case BTF_KIND_INT:
+> +			if (*(__u32 *)(t + 1) != *(__u32 *)(dist_t + 1))
+> +				continue;
 
-Tom
->
-> > I am not sure where the parser thing comes from - the parser is
-> > generated as eBPF.
-> >
-> > > So from my perspective, the submission is neither technically strong
-> > > enough, nor broadly useful enough to consider making questionable pre=
-cedents
-> > > for, i.e. to override maintainers on how their subsystems are extende=
-d.
-> I disagree vehemently on the "broadly useful enough" comment.
-> >
-> > I believe as a community nobody should just have the power to nack
-> > things just because - as i stated in the page, not even Linus. That
-> > code doesnt touch anything to do with eBPF maintainers (meaning things
-> > they have to fix when an issue shows up) neither does it "extend" as
-> > you state any ebpf code and it is all part of the networking
-> > subsystem. Sure,  anybody has the right to nack but  I contend that
-> > nacks should be based on technical reasons. I have listed all the
-> > objections in that page and how i have responded to them over time.
-> > Someone needs to look at those objectively and say if they are valid.
-> > The arguement made so far(By Paolo and now by you)  is "we cant
-> > override maintainers on how their subsystems are used" then we are in
-> > uncharted territory, thats why i am asking for arbitration.
-> >
-> > cheers,
-> > jamal
-> Maintainers: I am perplexed and dismayed that this is getting so much pus=
-hback. None of the objections, regardless of their merits (or not) seem to =
-outweigh the potential benefits to end-users. I am extremely interested in =
-using P4TC, it adds a lot of value and reuses so much existing Linux infra.=
- The custom extern model is compelling. The control plane CRUDXPS will tie =
-nicely into P4Runtime and TDI. I have an application which needs to run pur=
-ely in SW - no HW offload, so prior suggestions to wait for it to "approve"=
- this is frustrating.  I could use this yesterday. Furthermore, as an activ=
-e contributor to sonic-dash, where we model the pipeline in P4, I can state=
- that P4TC could be a compelling alternative to bmv2, which is slow, long i=
-n the tooth and lacks PNA support.
->
-> I beseech the NACKers to take a deep breath, reevaluate any entrenched po=
-sitions and consider how much goodness this will add, even if this is not y=
-our preference for implementing datapaths. It doesn't have to be. That can =
-and should be decided by the larger community. This could open the door to =
-thousands of creative developers who are comfortable in P4 but not adept in=
- low-level networking code. P4 had a significant impact on democratizing ne=
-twork programming, and that was just on bmv2 and Tofino, which is EOL. Maki=
-ng performant and powerful P4TC ubiquitous on virtually any Linux server co=
-uld have a similar effect, just like eBPF opened a lot of doors to non-kern=
-el programmers to do interesting things. Be a part of that transformation!
+I know we have code like this here and there. But, could we just use
+btf_int_encoding() and btf_int_offset() or invent another function to
+return this value and make this comparison more meaningful?
+Or just a line of comment to explain what it is.
+
+> +			if (t->size != dist_t->size)
+> +				continue;
+> +			break;
+> +		case BTF_KIND_FLOAT:
+> +		case BTF_KIND_STRUCT:
+> +		case BTF_KIND_UNION:
+> +			if (t->size != dist_t->size)
+> +				continue;
+> +			break;
+> +		default:
+> +			break;
+> +		}
+> +		/* map id and name */
+> +		r->map[*dist_id] = id;
+> +		r->str_map[dist_t->name_off] = t->name_off;
+> +	}
+> +	/* ensure all distilled BTF ids have a mapping... */
+> +	for (id = 1; id < r->nr_dist_base_types; id++) {
+> +		if (r->map[id])
+> +			continue;
+> +		t = btf_type_by_id(r->dist_base_btf, id);
+> +		name = btf__name_by_offset(r->dist_base_btf, t->name_off);
+> +		pr_warn("distilled base BTF type '%s' [%d] is not mapped to base BTF id\n",
+> +			name, id);
+> +		return -EINVAL;
+> +	}
+> +	return 0;
+> +}
+[...]
+
 
