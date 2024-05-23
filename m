@@ -1,225 +1,136 @@
-Return-Path: <bpf+bounces-30423-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-30424-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4C9E68CD9B1
-	for <lists+bpf@lfdr.de>; Thu, 23 May 2024 20:09:57 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 22A2F8CD9B5
+	for <lists+bpf@lfdr.de>; Thu, 23 May 2024 20:13:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 02580282709
-	for <lists+bpf@lfdr.de>; Thu, 23 May 2024 18:09:56 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CB9891F21D84
+	for <lists+bpf@lfdr.de>; Thu, 23 May 2024 18:13:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F27F136B17;
-	Thu, 23 May 2024 18:09:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D12788249B;
+	Thu, 23 May 2024 18:13:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="KECJ8dpf"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="2X/9CXkz"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-171.mta1.migadu.com (out-171.mta1.migadu.com [95.215.58.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed1-f43.google.com (mail-ed1-f43.google.com [209.85.208.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A1D09537FF
-	for <bpf@vger.kernel.org>; Thu, 23 May 2024 18:09:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D50697E766
+	for <bpf@vger.kernel.org>; Thu, 23 May 2024 18:13:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716487794; cv=none; b=pQI6lsvNW73eFdnKRjCI514MwTHSqBf1H1h+bdNiYhdsBU1w+/pLUOrSerAQfosqy8vj+9CGMAVzLmVtmzKokopO+a2QfdMzefxD+ubYS6a+HCBncTOv5BHfnokEuhg1qvz1YPfdseupJdXgvIyZyS8cJCFvd/QLkbk/IWe+p1k=
+	t=1716488003; cv=none; b=Fz/kNqO+81EGoYkloF8ZuAupqIXtMeivPW1CeRewmQrkLlSw700UEDHSRCc3k1QmZKAXWvsU3R27CbWPDGq+xrMaScjmARulUwem3s3YzSxDj/Ui9bm7SjIBHKhRVmmLVHT30MxIQhQg7j6oShv7aU62nFMgixPuEQe8TTLZQRI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716487794; c=relaxed/simple;
-	bh=fx7c/uIrebsEUNN0jqxoqKKb9qWdx9BGKGAsdA1rQ28=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=j8dp09u+WMggo+SoOo7oycZa3D3sFqxTjynMlA7zP6QRymRfeg+9un367kEz+anFawTJnyaWyUJLBu4uLvzeTjFUR1eo/2ffDlj4sxXpT32v9OGhib/TdaNpMT9KYv+FYEnIKyGUVZ6V2ME1bwxVj8pLMK7SVGNx85DrwZ0N8jY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=KECJ8dpf; arc=none smtp.client-ip=95.215.58.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Envelope-To: thinker.li@gmail.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1716487789;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=rYPwczL09IvGUMXox487Rmbi/l1CYXVVss6pxvrqyBQ=;
-	b=KECJ8dpfIxDtZBHSpEIwtZoQQIjGWzvKAdGVrKeTaOMAW0pVyrB9DNFcfyrmOm51q04pT1
-	+7qmGceziYRcQtzDwJzlYi5+08Pk5v+gSQ6aBjooWnI3AB/POEXQ+mkYZYCWhHvwQjQVeF
-	gi0DMk5Hb7UVUKPGywwLjaShLGiM85I=
-X-Envelope-To: bpf@vger.kernel.org
-X-Envelope-To: ast@kernel.org
-X-Envelope-To: song@kernel.org
-X-Envelope-To: kernel-team@meta.com
-X-Envelope-To: andrii@kernel.org
-X-Envelope-To: sinquersw@gmail.com
-X-Envelope-To: kuifeng@meta.com
-Message-ID: <025ebd13-fcd1-4abe-b5c1-d845c057200d@linux.dev>
-Date: Thu, 23 May 2024 11:09:44 -0700
+	s=arc-20240116; t=1716488003; c=relaxed/simple;
+	bh=zsnTKCdVkvI0k+jxRH2TuSi7PFifNDtiAicq3/1spJA=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=grn8uc7HmWb7nxZ3be/Bd3UGXX5pgA40zAJ9iCmf1dCIxbr8HWVWKNtEQ1UUGEngCDGTb6jIBy+auWD/DtGM+Q09scxH4fMfm1LJUiB/hLThbZopBq9pnmvI75ToUMyUZvNhEbw7EbfyDCUgwpwt4MlFGHAimZlZ/dbU43DU8QE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=2X/9CXkz; arc=none smtp.client-ip=209.85.208.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ed1-f43.google.com with SMTP id 4fb4d7f45d1cf-5724736770cso1239a12.1
+        for <bpf@vger.kernel.org>; Thu, 23 May 2024 11:13:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1716488000; x=1717092800; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=TmV9pjx2Z/cgyKoVK6PJ6k9Fa04AQ2nQf51yC2c36Uc=;
+        b=2X/9CXkzUa2XXZf7Pc6ONJBU1W/rvJ4wSpgHYq2AexrqD9KxQIdkteHQRvbnQ7Nu6i
+         7whqhSAEFey88amyy43L2nGMCCb0zl7EGVf/rhm5gJDBD/dh3BYxadgIe1Aqizu+n8eR
+         tNloqYgm7JQBR/3xPhVDvsIBPrEGgxdT5WXve8uf7mnGdFHCBRwPRG/xj1LdXVzGqImg
+         Nl9fVZJgYUt/kPF/b0R2I6DAMQh6feIwKOe08Y/wIoAnTySIUhOn9JwpKy5kHDhkEahl
+         WEgwfKhhrey4SacY6KSCQ+5jzUB+5lhy68+PkmDMEC/aFnI9Cp8ad69dRLJxTH6ybTeo
+         3r4A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1716488000; x=1717092800;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=TmV9pjx2Z/cgyKoVK6PJ6k9Fa04AQ2nQf51yC2c36Uc=;
+        b=n+mfvbYh54925bxpaDj0XY8H9vXWQYk4kwuqFoZV8/hQ3+UHxDEA3V7fInHRk6UZa4
+         R+wb00XnzBqyyGiI+orTEztk/Gi/3pbu3/NP/MWv4DBrue9jcQk2Lc8XC1w/x54fVXwh
+         CSHDnPalHNh5dGBwjt4I8f1FsK+UZ6PvEo6/HlBJUlddaA2+MZ9zcW6JeiLMFDnG4Wp8
+         glIdZPH0TAULldpg5BJJeoz4tZ+7zuYbP8ZhFgn1qKj8dF6hbtxJo+K3tw94KApsbcXF
+         Vafx9h2AVXfPZZBUxJK898ckRjdrn00G6yH6pQWwpQjxfKoX06fmnfK7bo7OJKHi5bd3
+         tBLQ==
+X-Forwarded-Encrypted: i=1; AJvYcCW9Spd2QZS3R8LF/f9H4Kp+KAC/3BiWTwmrttpMcYHpnfmwIXuznibO6BPAp4B8Y7E1szhoY5kbxa+TMt3Js00PsIqF
+X-Gm-Message-State: AOJu0Yx/oB7DUXhYYoL4qF+t5Cw/wVDuR2hRE0MuhW94XJdz28VGZ+lT
+	x6KQLRVAfTkUt1a3qngn9btnaC83lRCZIU48r+1feH2iDKlAlqOGH2/bX/286qC3VksR82HanZ8
+	TLFYLnS4aRTVptW1rTvGi9fUWPpBwRSOlj/w1
+X-Google-Smtp-Source: AGHT+IH4XyN34wwdQO+LD1omzn19g4Z0hsO4LF5HJg6/COqxImkywXTVpGaksCMO62vMlBB+i2WN/mYDnRwwA5mbJXU=
+X-Received: by 2002:aa7:c941:0:b0:578:33c0:f00e with SMTP id
+ 4fb4d7f45d1cf-578510d677dmr19276a12.0.1716487999947; Thu, 23 May 2024
+ 11:13:19 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next v4 2/7] bpf: enable detaching links of struct_ops
- objects.
-To: Kui-Feng Lee <thinker.li@gmail.com>
-Cc: bpf@vger.kernel.org, ast@kernel.org, song@kernel.org,
- kernel-team@meta.com, andrii@kernel.org, sinquersw@gmail.com,
- kuifeng@meta.com
-References: <20240521225121.770930-1-thinker.li@gmail.com>
- <20240521225121.770930-3-thinker.li@gmail.com>
-Content-Language: en-US
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Martin KaFai Lau <martin.lau@linux.dev>
-In-Reply-To: <20240521225121.770930-3-thinker.li@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+References: <20240522005913.3540131-1-edliaw@google.com> <20240522005913.3540131-3-edliaw@google.com>
+ <94b73291-5b8a-480d-942d-cfc72971c2f5@sirena.org.uk> <CAG4es9WAASaSG+Xgp31-kLT3G8wpeT5vAqbCA4r=Z8G_zAF73w@mail.gmail.com>
+ <9e2677ec-1d54-4969-907b-112b71ef8dd3@nvidia.com> <d5471e30-227d-4e6d-9bbd-90a74bd9006b@linuxfoundation.org>
+In-Reply-To: <d5471e30-227d-4e6d-9bbd-90a74bd9006b@linuxfoundation.org>
+From: Edward Liaw <edliaw@google.com>
+Date: Thu, 23 May 2024 11:12:52 -0700
+Message-ID: <CAG4es9XU2fMo7hBv81vpn1JGKFWt9gExOhyAyRtOc-5OR5eiLQ@mail.gmail.com>
+Subject: Re: [PATCH v5 02/68] kselftest: Desecalate reporting of missing _GNU_SOURCE
+To: Shuah Khan <skhan@linuxfoundation.org>
+Cc: John Hubbard <jhubbard@nvidia.com>, Mark Brown <broonie@kernel.org>, shuah@kernel.org, 
+	=?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@digikod.net>, 
+	=?UTF-8?Q?G=C3=BCnther_Noack?= <gnoack@google.com>, 
+	Christian Brauner <brauner@kernel.org>, Richard Cochran <richardcochran@gmail.com>, 
+	Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, 
+	Albert Ou <aou@eecs.berkeley.edu>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, "David S. Miller" <davem@davemloft.net>, 
+	Jakub Kicinski <kuba@kernel.org>, Jesper Dangaard Brouer <hawk@kernel.org>, 
+	John Fastabend <john.fastabend@gmail.com>, Kees Cook <keescook@chromium.org>, 
+	Andy Lutomirski <luto@amacapital.net>, Will Drewry <wad@chromium.org>, linux-kernel@vger.kernel.org, 
+	linux-kselftest@vger.kernel.org, kernel-team@android.com, 
+	linux-security-module@vger.kernel.org, netdev@vger.kernel.org, 
+	linux-riscv@lists.infradead.org, bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 5/21/24 3:51 PM, Kui-Feng Lee wrote:
-> Implement the detach callback in bpf_link_ops for struct_ops so that user
-> programs can detach a struct_ops link. The subsystems that struct_ops
-> objects are registered to can also use this callback to detach the links
-> being passed to them.
-> 
-> Signed-off-by: Kui-Feng Lee <thinker.li@gmail.com>
-> ---
->   kernel/bpf/bpf_struct_ops.c | 63 +++++++++++++++++++++++++++++++++----
->   1 file changed, 57 insertions(+), 6 deletions(-)
-> 
-> diff --git a/kernel/bpf/bpf_struct_ops.c b/kernel/bpf/bpf_struct_ops.c
-> index 1542dded7489..fb6e8a3190ef 100644
-> --- a/kernel/bpf/bpf_struct_ops.c
-> +++ b/kernel/bpf/bpf_struct_ops.c
-> @@ -1057,9 +1057,6 @@ static void bpf_struct_ops_map_link_dealloc(struct bpf_link *link)
->   	st_map = (struct bpf_struct_ops_map *)
->   		rcu_dereference_protected(st_link->map, true);
->   	if (st_map) {
-> -		/* st_link->map can be NULL if
-> -		 * bpf_struct_ops_link_create() fails to register.
-> -		 */
->   		st_map->st_ops_desc->st_ops->unreg(&st_map->kvalue.data, link);
->   		bpf_map_put(&st_map->map);
->   	}
-> @@ -1075,7 +1072,8 @@ static void bpf_struct_ops_map_link_show_fdinfo(const struct bpf_link *link,
->   	st_link = container_of(link, struct bpf_struct_ops_link, link);
->   	rcu_read_lock();
->   	map = rcu_dereference(st_link->map);
-> -	seq_printf(seq, "map_id:\t%d\n", map->id);
-> +	if (map)
-> +		seq_printf(seq, "map_id:\t%d\n", map->id);
->   	rcu_read_unlock();
->   }
->   
-> @@ -1088,7 +1086,8 @@ static int bpf_struct_ops_map_link_fill_link_info(const struct bpf_link *link,
->   	st_link = container_of(link, struct bpf_struct_ops_link, link);
->   	rcu_read_lock();
->   	map = rcu_dereference(st_link->map);
-> -	info->struct_ops.map_id = map->id;
-> +	if (map)
-> +		info->struct_ops.map_id = map->id;
->   	rcu_read_unlock();
->   	return 0;
->   }
-> @@ -1113,6 +1112,10 @@ static int bpf_struct_ops_map_link_update(struct bpf_link *link, struct bpf_map
->   	mutex_lock(&update_mutex);
->   
->   	old_map = rcu_dereference_protected(st_link->map, lockdep_is_held(&update_mutex));
-> +	if (!old_map) {
-> +		err = -EINVAL;
+On Thu, May 23, 2024 at 11:02=E2=80=AFAM Shuah Khan <skhan@linuxfoundation.=
+org> wrote:
+>
+> On 5/22/24 20:28, John Hubbard wrote:
+> > On 5/22/24 10:46 AM, Edward Liaw wrote:
+> >> On Wed, May 22, 2024 at 4:21=E2=80=AFAM Mark Brown <broonie@kernel.org=
+> wrote:
+> >>> On Wed, May 22, 2024 at 12:56:48AM +0000, Edward Liaw wrote:
+> > ...
+> >>> You've not provided a Signed-off-by for this so people can't do anyth=
+ing
+> >>> with it, please see Documentation/process/submitting-patches.rst for
+> >>> details on what this is and why it's important.
+> >>
+> >> Sorry, my mistake, I forgot to add it after cherry-picking.  If added
+> >
+> > Adding this to your .gitconfig would cover you for cases like this, I t=
+hink
+> > it's pretty common to do this:
+> >
+> > [format]
+> >      signoff =3D true
+> >
+> >
 
-Just noticed this while checking the return value in patch 3.
+Thanks Mark, I'll add that.
 
-This should be -ENOLINK such that it is consistent to the other links' 
-.update_prog (e.g. cgroup, tcx, net_namespace...).
+>
+> Mark, Edward,
+>
+> Is this patch still necessary of the series is dropped?
+>
+> thanks,
+> -- Shuah
+>
 
-> +		goto err_out;
-> +	}
->   	if (expected_old_map && old_map != expected_old_map) {
->   		err = -EPERM;
->   		goto err_out;
-> @@ -1139,8 +1142,37 @@ static int bpf_struct_ops_map_link_update(struct bpf_link *link, struct bpf_map
->   	return err;
->   }
->   
-> +static int bpf_struct_ops_map_link_detach(struct bpf_link *link)
-> +{
-> +	struct bpf_struct_ops_link *st_link = container_of(link, struct bpf_struct_ops_link, link);
-> +	struct bpf_struct_ops_map *st_map;
-> +	struct bpf_map *map;
-> +
-> +	mutex_lock(&update_mutex);
-> +
-> +	map = rcu_dereference_protected(st_link->map, lockdep_is_held(&update_mutex));
-> +	if (!map) {
-> +		mutex_unlock(&update_mutex);
-> +		return -EINVAL;
-
-Same here but should be always 0 (detach always succeeds).
-
-> +	}
-> +	st_map = container_of(map, struct bpf_struct_ops_map, map);
-> +
-> +	st_map->st_ops_desc->st_ops->unreg(&st_map->kvalue.data, link);
-> +
-> +	rcu_assign_pointer(st_link->map, NULL);
-> +	/* Pair with bpf_map_get() in bpf_struct_ops_link_create() or
-> +	 * bpf_map_inc() in bpf_struct_ops_map_link_update().
-> +	 */
-> +	bpf_map_put(&st_map->map);
-> +
-> +	mutex_unlock(&update_mutex);
-> +
-> +	return 0;
-> +}
-> +
->   static const struct bpf_link_ops bpf_struct_ops_map_lops = {
->   	.dealloc = bpf_struct_ops_map_link_dealloc,
-> +	.detach = bpf_struct_ops_map_link_detach,
->   	.show_fdinfo = bpf_struct_ops_map_link_show_fdinfo,
->   	.fill_link_info = bpf_struct_ops_map_link_fill_link_info,
->   	.update_map = bpf_struct_ops_map_link_update,
-> @@ -1176,13 +1208,32 @@ int bpf_struct_ops_link_create(union bpf_attr *attr)
->   	if (err)
->   		goto err_out;
->   
-> +	/* Init link->map before calling reg() in case being detached
-> +	 * immediately.
-> +	 */
-> +	RCU_INIT_POINTER(link->map, map);
-> +
-> +	/* Once reg() is called, the object and link is already available
-> +	 * to the subsystem, and it can call
-> +	 * bpf_struct_ops_map_link_detach() to unreg() it. However, it is
-> +	 * sfae not holding update_mutex here.
-> +	 *
-> +	 * In the case of failure in reg(), the subsystem has no reason to
-> +	 * call bpf_struct_ops_map_link_detach() since the object is not
-> +	 * accepted by it. In the case of success, the subsystem may call
-> +	 * bpf_struct_ops_map_link_detach() to unreg() it, but we don't
-> +	 * change the content of the link anymore except changing link->id
-> +	 * in bpf_link_settle(). So, it is safe to not hold update_mutex
-> +	 * here.
-
-After sleeping on the RCU_INIT_POINTER dance and re-reading this comment, I need 
-to walk back my early reply.
-
-Instead of having comment to explain the RCU_INIT_POINTER dance (resetting it to 
-NULL on reg() err because bpf_struct_ops_map_link_dealloc is not supposed to 
-unreg when the reg did fail), how about simplifying it and just take the 
-update_mutex here such that the subsystem cannot detach until the 
-RCU_INIT_POINTER(link->map, map) is done. Performance is not a concern here, so 
-I would prefer simplicity.
-
-> +	 */
->   	err = st_map->st_ops_desc->st_ops->reg(st_map->kvalue.data, &link->link);
->   	if (err) {
-> +		RCU_INIT_POINTER(link->map, NULL);
->   		bpf_link_cleanup(&link_primer);
-> +		/* The link has been free by bpf_link_cleanup() */
->   		link = NULL;
->   		goto err_out;
->   	}
-> -	RCU_INIT_POINTER(link->map, map);
->   
->   	return bpf_link_settle(&link_primer);
->   
-
+No, it is not necessary anymore.
 
