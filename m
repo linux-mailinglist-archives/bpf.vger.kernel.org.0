@@ -1,69 +1,50 @@
-Return-Path: <bpf+bounces-30434-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-30435-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D70838CDBA3
-	for <lists+bpf@lfdr.de>; Thu, 23 May 2024 22:53:57 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id D92AF8CDBD4
+	for <lists+bpf@lfdr.de>; Thu, 23 May 2024 23:20:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 19B492842AA
-	for <lists+bpf@lfdr.de>; Thu, 23 May 2024 20:53:56 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 755D4280CF6
+	for <lists+bpf@lfdr.de>; Thu, 23 May 2024 21:20:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB4C585284;
-	Thu, 23 May 2024 20:53:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 42A26127E0C;
+	Thu, 23 May 2024 21:20:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BJkYhAS2"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-lj1-f181.google.com (mail-lj1-f181.google.com [209.85.208.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 03C6984FB1
-	for <bpf@vger.kernel.org>; Thu, 23 May 2024 20:53:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A7C1E14A82;
+	Thu, 23 May 2024 21:20:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716497631; cv=none; b=NfW2Js54ArRo/2oxalS04xe6qRRN2bAjZitvwC51U/ZuBkRznrCD5rw34mRtyndFEjZZ+GhXPSa8Q49k+JywqnyWNmZSd3juobJnSkBpourgVv2+gdpTQHhIphPqm7sZXAKZGvhFt2Acnad57dIrG0/UnvSZ8+ZFqfOGG4zjSHU=
+	t=1716499232; cv=none; b=UBX9Ye9jXmH9qwFzMRq5fwl1VEWokuYhGDvJDenbbzdfWQ9LEtjzp1cYQMv+J5s7K6ChEOpzWP4O3LUqyP/hNWexOnHQR8Rfm7qL052JvLuO9Yp/OnVq6LzHIRkBJ+/+0MfR+XWsopMvbGd85jNVZPxnTI7yj381bKaCDr1vO9Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716497631; c=relaxed/simple;
-	bh=ss3JtrMhosGvm+4ic1huq/MW0DeyeugcAZhDIMSSSRY=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=GSsH/cXyqXEt6GXfG+dQ092PaoxKcsV3xmxzVOFI2Ln58zScyaSE+EzpxS0xjtbsGQecRFhQacnNUWySLxGBj58uHM0A6bmTg/DebMw2x9sFaUZjoKPG1Dcr/6dylHQpjHlMHUk8ECMIkDqBo1L0GXfQUyHszgp32bEw3QhgcRM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.208.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f181.google.com with SMTP id 38308e7fff4ca-2e95a7622cfso1979951fa.2
-        for <bpf@vger.kernel.org>; Thu, 23 May 2024 13:53:49 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1716497628; x=1717102428;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=5YK3PrwXXixlX2DnsKKSaolamZJCENyZh6+9FehPXCc=;
-        b=Dlwx1kthKnuGC6e46R4+2V9YJqcUHFbeA3Xt9/po757fpmwdull+vDl4FTGMLMWCx5
-         lzdy7D0hZMmfFeO9Iu5LdqFrjo0sJYP6xchgAVIyNXuflODqMO4QCe46ImJDP9BPL4WK
-         hhxgkDUbgBrOqdIWeo+eDQAaaasmLwHh27nLJpUwLSxMlTH2+Y/3D74fB8go+KSdgoeK
-         jjZ17dZ7VOIQs1hHoq4iHSuHAgzTxqHeyDMe3RFRZPgGbh6ffKFP7t4uLb6zLK3oJjkF
-         PyI9g1a/ypGw7XJHHPqFzrx3FSqdIRP/j4GV+r4W5JOyoe3GHD5iucj90jJQMWcRd952
-         2qKw==
-X-Gm-Message-State: AOJu0Ywz+Y4NqKOWw4VEyl3jFPp63GA2PfWOHY4QLKwpoKJ9/OdiNcqZ
-	SM7qoskg8eEfToHN+r8QbMd0FstsjYgnZxwB9a8dWdHKiceczAP/GuEx+A==
-X-Google-Smtp-Source: AGHT+IHQGQiOXSM3NeM9Zz0n8pZRTpuAZssQRGn5euTxjynLxwm5DEJ0TP2n4rfzQ+4APM3ZUBTzZw==
-X-Received: by 2002:a2e:b003:0:b0:2e7:134d:f79a with SMTP id 38308e7fff4ca-2e95b03e0d8mr1735821fa.10.1716497627853;
-        Thu, 23 May 2024 13:53:47 -0700 (PDT)
-Received: from yatsenko-fedora-K2202N0103767.thefacebook.com ([2620:10d:c092:500::7:4857])
-        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-578524bb79esm180752a12.92.2024.05.23.13.53.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 23 May 2024 13:53:47 -0700 (PDT)
-From: Mykyta@web.codeaurora.org, Yatsenko@web.codeaurora.org,
-	mykyta.yatsenko5@gmail.com
-To: bpf@vger.kernel.org,
-	ast@kernel.org,
-	andrii@kernel.org,
-	daniel@iogearbox.net,
-	kafai@meta.com,
-	kernel-team@meta.com
-Cc: Mykyta Yatsenko <yatsenko@meta.com>
-Subject: [PATCH bpf-next] libbpf: configure log verbosity with env variable
-Date: Thu, 23 May 2024 21:53:37 +0100
-Message-ID: <20240523205337.951410-1-yatsenko@meta.com>
-X-Mailer: git-send-email 2.45.0
+	s=arc-20240116; t=1716499232; c=relaxed/simple;
+	bh=jTjkNKGExpJBKmG7zWy/AKQEUbl8V5IN2OYICFQ6Q0Q=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=hXfVrEZgNgsbQiZCdS64U/Er4WTYCwbwTN5c/UUFoUzZqxODWexEfP/YCu0dfDPn89gWnPB9Jiu2p5LukI68S6mxdlrTd5DBBUxon0nxwIPpEnLGDBt3E2Ddke1OVgYmouoNDESSdVWUyNuOFNAlE0addy9Ef6NqnN8ko+gTiDw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BJkYhAS2; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 3271AC3277B;
+	Thu, 23 May 2024 21:20:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1716499232;
+	bh=jTjkNKGExpJBKmG7zWy/AKQEUbl8V5IN2OYICFQ6Q0Q=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=BJkYhAS29VwBfFPZbs/+s1kpFkUB3zhaz6bCnz7AnQEZQ1U/t3HZZl3s5r4csf61N
+	 pGeScF+lta/zy1vo3Qb9UI43wkX58JJBEHJy3O/cdqDGLqmq/3E49URpV/fsk21898
+	 0iUNpwMBzA3h7zADJrrDkRkDh31S1j0IytUorAH7bSh+xlVSyneBpYd2CqRXXnAP+B
+	 N57L704gS9eNh5Ycl5w0eCdPhUZVRBsmkNAA8Wi2eiE7WQBYM/LeddAiHwNaMgS8Ed
+	 4bZ0latRcTsXTR9qka1HougXl5pF85U3dfdPXznfxyR78M6mkQBMOVEkEJvOmTqZqb
+	 mgoMkMavmDC8A==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 16370C54BB3;
+	Thu, 23 May 2024 21:20:32 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -71,48 +52,47 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf-next v8 0/3] Replace mono_delivery_time with tstamp_type
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <171649923208.17278.8893614240560861833.git-patchwork-notify@kernel.org>
+Date: Thu, 23 May 2024 21:20:32 +0000
+References: <20240509211834.3235191-1-quic_abchauha@quicinc.com>
+In-Reply-To: <20240509211834.3235191-1-quic_abchauha@quicinc.com>
+To: Abhishek Chauhan <quic_abchauha@quicinc.com>
+Cc: davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+ pabeni@redhat.com, netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+ ahalaney@redhat.com, willemdebruijn.kernel@gmail.com, martin.lau@kernel.org,
+ martin.lau@linux.dev, daniel@iogearbox.net, bpf@vger.kernel.org,
+ kernel@quicinc.com
 
-From: Mykyta Yatsenko <yatsenko@meta.com>
+Hello:
 
-Configure logging verbosity by setting LIBBPF_LOG environment
-variable. Only applying to default logger. Once user set their custom
-logging callback, it is up to them to filter.
+This series was applied to bpf/bpf-next.git (master)
+by Martin KaFai Lau <martin.lau@kernel.org>:
 
-Signed-off-by: Mykyta Yatsenko <yatsenko@meta.com>
----
- tools/lib/bpf/libbpf.c | 18 +++++++++++++++++-
- 1 file changed, 17 insertions(+), 1 deletion(-)
+On Thu,  9 May 2024 14:18:31 -0700 you wrote:
+> Patch 1 :- This patch takes care of only renaming the mono delivery
+> timestamp to tstamp_type with no change in functionality of
+> existing available code in kernel also
+> Starts assigning tstamp_type with either mono or real and
+> introduces a new enum in the skbuff.h, again no change in functionality
+> of the existing available code in kernel , just making the code scalable.
+> 
+> [...]
 
-diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index 5401f2df463d..8805607073da 100644
---- a/tools/lib/bpf/libbpf.c
-+++ b/tools/lib/bpf/libbpf.c
-@@ -229,7 +229,23 @@ static const char * const prog_type_name[] = {
- static int __base_pr(enum libbpf_print_level level, const char *format,
- 		     va_list args)
- {
--	if (level == LIBBPF_DEBUG)
-+	static enum libbpf_print_level env_level = LIBBPF_INFO;
-+	static bool initialized;
-+
-+	if (!initialized) {
-+		char *verbosity;
-+
-+		initialized = true;
-+		verbosity = getenv("LIBBPF_LOG");
-+		if (verbosity) {
-+			if (strcmp(verbosity, "warn") == 0)
-+				env_level = LIBBPF_WARN;
-+			else if (strcmp(verbosity, "debug") == 0)
-+				env_level = LIBBPF_DEBUG;
-+		}
-+	}
-+
-+	if (env_level < level)
- 		return 0;
- 
- 	return vfprintf(stderr, format, args);
+Here is the summary with links:
+  - [bpf-next,v8,1/3] net: Rename mono_delivery_time to tstamp_type for scalabilty
+    https://git.kernel.org/bpf/bpf-next/c/4d25ca2d6801
+  - [bpf-next,v8,2/3] net: Add additional bit to support clockid_t timestamp type
+    https://git.kernel.org/bpf/bpf-next/c/1693c5db6ab8
+  - [bpf-next,v8,3/3] selftests/bpf: Handle forwarding of UDP CLOCK_TAI packets
+    https://git.kernel.org/bpf/bpf-next/c/c34e3ab2a76e
+
+You are awesome, thank you!
 -- 
-2.45.0
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
 
 
