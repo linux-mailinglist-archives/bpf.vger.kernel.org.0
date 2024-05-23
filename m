@@ -1,71 +1,71 @@
-Return-Path: <bpf+bounces-30441-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-30443-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C8C328CDD22
-	for <lists+bpf@lfdr.de>; Fri, 24 May 2024 01:09:09 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id CB7DA8CDD24
+	for <lists+bpf@lfdr.de>; Fri, 24 May 2024 01:09:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8326B285732
-	for <lists+bpf@lfdr.de>; Thu, 23 May 2024 23:09:08 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 41D231F2145B
+	for <lists+bpf@lfdr.de>; Thu, 23 May 2024 23:09:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9484512880A;
-	Thu, 23 May 2024 23:09:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 78740128828;
+	Thu, 23 May 2024 23:09:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="E2dRbAB4"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="aA8AId6f"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yw1-f181.google.com (mail-yw1-f181.google.com [209.85.128.181])
+Received: from mail-yw1-f169.google.com (mail-yw1-f169.google.com [209.85.128.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B0A08128814
-	for <bpf@vger.kernel.org>; Thu, 23 May 2024 23:08:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 77843128377
+	for <bpf@vger.kernel.org>; Thu, 23 May 2024 23:09:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716505741; cv=none; b=HB0/0RA0DMFfUid8fj0SWtrwuW9iZlL+PO7So1ZXNWqaXv3aNILBlscNeQFedV9oo+Xdjf7KuHQ6YeOU2lSTLaJcJ/zVK+niOAHJqxf3P6CcRe23HivZf9KaPUWQKzjQI/EFHjOy0fTzgRzXUWdCL/49sTZ2r6RaRirQVOWB6Do=
+	t=1716505743; cv=none; b=C6BTLPf764DlzSY5y3XezbRKe8/l9QxOryUAG5qjV0f92WgPBoTQZrSebRgBh6AwKtTyCLCByAWVuuK7Uc7QYbMrRfzGdsu6gJkqVLzMSmslTGlFMm5mM62D5FcIcEDiz6ATYEWmQ1MMnY2oODojAV2j0YRT7974bxchJF8mhDc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716505741; c=relaxed/simple;
-	bh=pqzVqwQ++8qd6amXfFidlSgABpQlHOg/9TLDkfHrsJk=;
+	s=arc-20240116; t=1716505743; c=relaxed/simple;
+	bh=0moVWm5H0/PxkymYi1Wkc4v/Yc9p3AxXBq0vFZgiFh0=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=FIJ4QlD/nStaTnA4jTF6d/uOCzipIhOJ1P4rvBEohaTQrTnIPKKDgYPF31Mh4mJ1SbCVNvwXmXICLVVSxLYHG5CNmG9T9cRxQ0+ISDWG5GF612kbelH1ckisWp1KQIf59VvCmRcH13lEcciR3owI4fnfCl/29lbe9a/lNvW2p8w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=E2dRbAB4; arc=none smtp.client-ip=209.85.128.181
+	 MIME-Version; b=EdOaMOkv2HiPGffFfkxlo8Kkn5RY/pV9Ly6ItCmPeUvQYJPl61nDAg0TrLwgmHKpxHs37gUiuBJoRQYWCFk0wxJ3WH1QF3oiiq3HGIck7vrBZAhJoDXEO1QUDiVlwhFu1Qo6Lorr82Eu2MAollnbROz4PwzCL5u+DYxG/2miRQA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=aA8AId6f; arc=none smtp.client-ip=209.85.128.169
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f181.google.com with SMTP id 00721157ae682-62a08438b9aso3018627b3.3
-        for <bpf@vger.kernel.org>; Thu, 23 May 2024 16:08:59 -0700 (PDT)
+Received: by mail-yw1-f169.google.com with SMTP id 00721157ae682-62a08270b46so3298427b3.1
+        for <bpf@vger.kernel.org>; Thu, 23 May 2024 16:09:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1716505738; x=1717110538; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1716505740; x=1717110540; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=404ZgiGbr0O6+NfupkiGmQYModIgXFWM0DgrDzRNv/s=;
-        b=E2dRbAB4wSAfcV5XvhELmHr28K9R2ASyDUppGMf5U55a+LKGbOeNIox83tMZR5C3mW
-         6+Jo14iTCk9xZsaEuB9skxp6Fa7Cy+X46RHHwqbNwhvbjDMPHI8MRpjiAEoKqr/wSKoO
-         ecZf42qR5FW1YVIyczvjPrI50CMZKf4Mq5/rzEuLt9ZnQ1vykLnhONAMSdGwHQgLoFuY
-         z6UldOyzFJoRZ7rzJWJBePTj8S5JwV+WZ9QshFzbnj8tFZzZEzY76AB+5LZJDXh7Po3W
-         AucdM5ocLIMe7YLs6KZiji8Revna69tLFEwjr41pFUsr3iQWT7pfY3vdsx1Bid6tMvlr
-         vBBw==
+        bh=WzaF0DPOk0k2y1diONsO/hU9U1jewZi8cQG8L4Jq9yg=;
+        b=aA8AId6fFXnCGxoFV/eI5Tv1UbQY8z8cKua8FreGCA2c2YmEfeauvUi78c+AMpQV8N
+         O/iCBTOkKfaTGfqN4jw/WxJ2z8r3K0PJEJZLhpW3Zk70/grnropVwuYpVFXMLS/o9fbu
+         BCpFjxkoCxJbLLg3uzdevJVTtx9GWlQtdLnz5MBFGmqu2E/h7OKNxcFaQ2yZwUFJ3CDz
+         ofIbzHNupKQKHXJdGuZ6BC1DK9dLUcGWZDQZwpqUZk2fruoikMS3sI3jTOF/7ZJixmRR
+         B47MgqxBz2IwgHs6MBwIp06pa5xGwAjvephAvahDGMtkvu0dU1l3yZffKpMR30181Xr+
+         3YXA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1716505738; x=1717110538;
+        d=1e100.net; s=20230601; t=1716505740; x=1717110540;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=404ZgiGbr0O6+NfupkiGmQYModIgXFWM0DgrDzRNv/s=;
-        b=wjNx0zsglJA9yT01w2G1M1ql0hPYDHOo6lO6JKa/wKHznBy1XBgJGPFfDSfrvl8Blh
-         8UILRemhH0wcq5XYMx6YxlwEEvJ5naeEQSjPUfGd1mWBlFWt2gwwxISS2QdlOKef+Rcp
-         MaJru8rLuGWQE7NDp7SuR+Ezi7khUwPDrjCQ9b0EGba7wVT4EowLbCBSZGU9NFvSjKAQ
-         ZbJIGozXozEEVQutbMmBXj5emLFH3iquSL+EMA0stUhhT7jVydkn7+eqWD3OygBvQj+5
-         PMCgqwKk1vX8h1jWkURI09mi2QTu92icwu+nraIQpKVahCoLyseSTyAmqe+Y6jjBF+V+
-         s5zg==
-X-Gm-Message-State: AOJu0Ywe1j96sSoRH7KbVMhqKLMNqjucl3zr7pVy79NZUxNGv8em14NL
-	z45x1n9gCDb8PcmKJH+Zz0DGt9CRljE9uVURZv9cgx/a0ur3SN2e4FhvAA==
-X-Google-Smtp-Source: AGHT+IF9opjUd69Ht69YX4u+TSBz8WsRmnubiOtF5ZEPjbrhEvEJ9jMRRzRRPWBl+pQDB9asFZh6RA==
-X-Received: by 2002:a0d:e883:0:b0:615:4653:1c11 with SMTP id 00721157ae682-62a08d9544emr6136667b3.12.1716505737075;
-        Thu, 23 May 2024 16:08:57 -0700 (PDT)
+        bh=WzaF0DPOk0k2y1diONsO/hU9U1jewZi8cQG8L4Jq9yg=;
+        b=aW5n1pu8iLkUvQ5n7Vd7bEXL8vU41rFnw7+DS4iBQn5NV2lDvD2URp9MWFkSBYaPzj
+         L8JkKP9B9XZ5aqdmg85XQl6THBTlYxd/U7GWFS5SHaS3zSMGk1yi16p7h67y/+nmjeqV
+         +QpidXWNnn5GMhdccvPg60Vz5d8/dShdenFYu+F9wr5OakomwSskUkbOpGjwNy+U7NJk
+         Daoq7/13xyvhiWPw+Zzbkpg+J01q3mJhV3BlUFq1Po7XCX+OmvezxAJSMklg6qb/0G/T
+         fAOMIZzvrQ3m1OPhY7cUHSCOFRxUCL81vDkgU6DjBSHX/W7HMXGPuYTLI4l7DGjtV92U
+         7biw==
+X-Gm-Message-State: AOJu0YxvXnGnWiuQUDDqYDoqxUtsQFO6Re6rIXDBIE4qJK+2ld13BMfZ
+	GbADSxpWThW8f/d5A6B8Q0A6vYywnPAqhySje1hY87LYMSsGNevDFiB64w==
+X-Google-Smtp-Source: AGHT+IF5jbunHcaIlHq0U3DlFOFkc5XM4vOrtMm8nX9OAfKVPgoHu6WNGmy4q/7f5+hnvdL1u6HHuQ==
+X-Received: by 2002:a05:690c:fcb:b0:61a:cc3c:ae69 with SMTP id 00721157ae682-62a08da023dmr6827027b3.18.1716505738322;
+        Thu, 23 May 2024 16:08:58 -0700 (PDT)
 Received: from kickker.attlocal.net ([2600:1700:6cf8:1240:b7f1:1457:70d4:ab6c])
-        by smtp.gmail.com with ESMTPSA id 00721157ae682-62a0a37d5d0sm474087b3.16.2024.05.23.16.08.55
+        by smtp.gmail.com with ESMTPSA id 00721157ae682-62a0a37d5d0sm474087b3.16.2024.05.23.16.08.57
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 23 May 2024 16:08:56 -0700 (PDT)
+        Thu, 23 May 2024 16:08:57 -0700 (PDT)
 From: Kui-Feng Lee <thinker.li@gmail.com>
 To: bpf@vger.kernel.org,
 	ast@kernel.org,
@@ -76,9 +76,9 @@ To: bpf@vger.kernel.org,
 Cc: sinquersw@gmail.com,
 	kuifeng@meta.com,
 	Kui-Feng Lee <thinker.li@gmail.com>
-Subject: [PATCH bpf-next v5 4/8] bpf: export bpf_link_inc_not_zero.
-Date: Thu, 23 May 2024 16:08:44 -0700
-Message-Id: <20240523230848.2022072-5-thinker.li@gmail.com>
+Subject: [PATCH bpf-next v5 5/8] selftests/bpf: test struct_ops with epoll
+Date: Thu, 23 May 2024 16:08:45 -0700
+Message-Id: <20240523230848.2022072-6-thinker.li@gmail.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240523230848.2022072-1-thinker.li@gmail.com>
 References: <20240523230848.2022072-1-thinker.li@gmail.com>
@@ -90,56 +90,121 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-bpf_link_inc_not_zero() will be used by kernel modules.  We will use it in
-bpf_testmod.c later.
+Verify whether a user space program is informed through epoll with EPOLLHUP
+when a struct_ops object is detached.
 
+The BPF code in selftests/bpf/progs/struct_ops_module.c has become
+complex. Therefore, struct_ops_detach.c has been added to segregate the BPF
+code for detachment tests from the BPF code for other tests based on the
+recommendation of Andrii Nakryiko.
+
+Suggested-by: Andrii Nakryiko <andrii@kernel.org>
 Signed-off-by: Kui-Feng Lee <thinker.li@gmail.com>
 ---
- include/linux/bpf.h  | 6 ++++++
- kernel/bpf/syscall.c | 3 ++-
- 2 files changed, 8 insertions(+), 1 deletion(-)
+ .../bpf/prog_tests/test_struct_ops_module.c   | 57 +++++++++++++++++++
+ .../selftests/bpf/progs/struct_ops_detach.c   |  9 +++
+ 2 files changed, 66 insertions(+)
+ create mode 100644 tools/testing/selftests/bpf/progs/struct_ops_detach.c
 
-diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-index 5f7496ef8b7c..6b592094f9b4 100644
---- a/include/linux/bpf.h
-+++ b/include/linux/bpf.h
-@@ -2351,6 +2351,7 @@ int bpf_link_prime(struct bpf_link *link, struct bpf_link_primer *primer);
- int bpf_link_settle(struct bpf_link_primer *primer);
- void bpf_link_cleanup(struct bpf_link_primer *primer);
- void bpf_link_inc(struct bpf_link *link);
-+struct bpf_link *bpf_link_inc_not_zero(struct bpf_link *link);
- void bpf_link_put(struct bpf_link *link);
- int bpf_link_new_fd(struct bpf_link *link);
- struct bpf_link *bpf_link_get_from_fd(u32 ufd);
-@@ -2722,6 +2723,11 @@ static inline void bpf_link_inc(struct bpf_link *link)
+diff --git a/tools/testing/selftests/bpf/prog_tests/test_struct_ops_module.c b/tools/testing/selftests/bpf/prog_tests/test_struct_ops_module.c
+index 29e183a80f49..bbcf12696a6b 100644
+--- a/tools/testing/selftests/bpf/prog_tests/test_struct_ops_module.c
++++ b/tools/testing/selftests/bpf/prog_tests/test_struct_ops_module.c
+@@ -3,9 +3,12 @@
+ #include <test_progs.h>
+ #include <time.h>
+ 
++#include <sys/epoll.h>
++
+ #include "struct_ops_module.skel.h"
+ #include "struct_ops_nulled_out_cb.skel.h"
+ #include "struct_ops_forgotten_cb.skel.h"
++#include "struct_ops_detach.skel.h"
+ 
+ static void check_map_info(struct bpf_map_info *info)
  {
+@@ -242,6 +245,58 @@ static void test_struct_ops_forgotten_cb(void)
+ 	struct_ops_forgotten_cb__destroy(skel);
  }
  
-+static inline struct bpf_link *bpf_link_inc_not_zero(struct bpf_link *link)
++/* Detach a link from a user space program */
++static void test_detach_link(void)
 +{
-+	return NULL;
++	struct epoll_event ev, events[2];
++	struct struct_ops_detach *skel;
++	struct bpf_link *link = NULL;
++	int fd, epollfd = -1, nfds;
++	int err;
++
++	skel = struct_ops_detach__open_and_load();
++	if (!ASSERT_OK_PTR(skel, "struct_ops_detach__open_and_load"))
++		return;
++
++	link = bpf_map__attach_struct_ops(skel->maps.testmod_do_detach);
++	if (!ASSERT_OK_PTR(link, "attach_struct_ops"))
++		goto cleanup;
++
++	fd = bpf_link__fd(link);
++	if (!ASSERT_GE(fd, 0, "link_fd"))
++		goto cleanup;
++
++	epollfd = epoll_create1(0);
++	if (!ASSERT_GE(epollfd, 0, "epoll_create1"))
++		goto cleanup;
++
++	ev.events = EPOLLHUP;
++	ev.data.fd = fd;
++	err = epoll_ctl(epollfd, EPOLL_CTL_ADD, fd, &ev);
++	if (!ASSERT_OK(err, "epoll_ctl"))
++		goto cleanup;
++
++	err = bpf_link__detach(link);
++	if (!ASSERT_OK(err, "detach_link"))
++		goto cleanup;
++
++	/* Wait for EPOLLHUP */
++	nfds = epoll_wait(epollfd, events, 2, 500);
++	if (!ASSERT_EQ(nfds, 1, "epoll_wait"))
++		goto cleanup;
++
++	if (!ASSERT_EQ(events[0].data.fd, fd, "epoll_wait_fd"))
++		goto cleanup;
++	if (!ASSERT_TRUE(events[0].events & EPOLLHUP, "events[0].events"))
++		goto cleanup;
++
++cleanup:
++	if (epollfd >= 0)
++		close(epollfd);
++	bpf_link__destroy(link);
++	struct_ops_detach__destroy(skel);
 +}
 +
- static inline void bpf_link_put(struct bpf_link *link)
+ void serial_test_struct_ops_module(void)
  {
- }
-diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-index 741f91153fe6..0d59de63540d 100644
---- a/kernel/bpf/syscall.c
-+++ b/kernel/bpf/syscall.c
-@@ -5432,10 +5432,11 @@ static int link_detach(union bpf_attr *attr)
- 	return ret;
+ 	if (test__start_subtest("struct_ops_load"))
+@@ -254,5 +309,7 @@ void serial_test_struct_ops_module(void)
+ 		test_struct_ops_nulled_out_cb();
+ 	if (test__start_subtest("struct_ops_forgotten_cb"))
+ 		test_struct_ops_forgotten_cb();
++	if (test__start_subtest("test_detach_link"))
++		test_detach_link();
  }
  
--static struct bpf_link *bpf_link_inc_not_zero(struct bpf_link *link)
-+struct bpf_link *bpf_link_inc_not_zero(struct bpf_link *link)
- {
- 	return atomic64_fetch_add_unless(&link->refcnt, 1, 0) ? link : ERR_PTR(-ENOENT);
- }
-+EXPORT_SYMBOL(bpf_link_inc_not_zero);
- 
- struct bpf_link *bpf_link_by_id(u32 id)
- {
+diff --git a/tools/testing/selftests/bpf/progs/struct_ops_detach.c b/tools/testing/selftests/bpf/progs/struct_ops_detach.c
+new file mode 100644
+index 000000000000..45eacc2ca657
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/struct_ops_detach.c
+@@ -0,0 +1,9 @@
++// SPDX-License-Identifier: GPL-2.0
++/* Copyright (c) 2024 Meta Platforms, Inc. and affiliates. */
++#include <vmlinux.h>
++#include "../bpf_testmod/bpf_testmod.h"
++
++char _license[] SEC("license") = "GPL";
++
++SEC(".struct_ops.link")
++struct bpf_testmod_ops testmod_do_detach;
 -- 
 2.34.1
 
