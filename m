@@ -1,123 +1,140 @@
-Return-Path: <bpf+bounces-30382-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-30383-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id EAA8F8CCF53
-	for <lists+bpf@lfdr.de>; Thu, 23 May 2024 11:32:13 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A29CC8CD197
+	for <lists+bpf@lfdr.de>; Thu, 23 May 2024 13:57:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8B6E81F225E3
-	for <lists+bpf@lfdr.de>; Thu, 23 May 2024 09:32:13 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4E01B1F22A31
+	for <lists+bpf@lfdr.de>; Thu, 23 May 2024 11:57:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 66F0B13D27A;
-	Thu, 23 May 2024 09:32:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A600013BC35;
+	Thu, 23 May 2024 11:57:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MyMk/sgC"
+	dkim=pass (2048-bit key) header.d=kroah.com header.i=@kroah.com header.b="3Bei+NqQ";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="hB3LTyjW"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from wfhigh5-smtp.messagingengine.com (wfhigh5-smtp.messagingengine.com [64.147.123.156])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D2FF1446AE;
-	Thu, 23 May 2024 09:32:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A574113BAFA;
+	Thu, 23 May 2024 11:57:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.156
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716456723; cv=none; b=fuI7Ng5I5T3iRlHYE20eXuC2WVrO84SJUFK2il8OGMjMK69p0D1aIMrO5z/8T/BnyFJon5X9ySE/e/H4e3knB0tHB9byXReXB29V5cVOZmkZ3Y+WUr36YZRZ1hSbqe/hOWeapdTqR2TN8MnU5NM6eQ52K0oCO8mWn6lhosQvm1E=
+	t=1716465469; cv=none; b=d7XRjwIWtMkwSf1dhYWmLJYIBkrHCNKuSs156Hi2JfSb9mVXQ44R94UgDVJGkzaFsnNWBDnQnAISl3NaetD1vbTU4v6tavDQxRFCYm1FloSrthrHZgbIFWN9A/ZbKNiJ9ItIL4YJux2s8239oZs52Ay8mGcrgy4JChmoGXNDWZg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716456723; c=relaxed/simple;
-	bh=cX95jCA9O9tZPPJJ58l7jYy+M8WwvnaiJK+eob7aWZU=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=isz0nXBtIxQqRLtB8GCUar5U+Q+3iSiG7QZB5U8cxeb0P9qVPYd673JA8RUOGHBs7gxEWBRnuPNfR/XqICGkAv2oYENawPlvlnCwHcMvkeeQrFLOPyntWTphKVRJkwzNV2fR7MYl5EsH8VrY3otEtpJVFF36dKyX+VO7tzD1J88=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MyMk/sgC; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 65C1AC32789;
-	Thu, 23 May 2024 09:32:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1716456722;
-	bh=cX95jCA9O9tZPPJJ58l7jYy+M8WwvnaiJK+eob7aWZU=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=MyMk/sgCm4Q27fBluf6XB5lx0hpYaSEIPIpXLanxP5xeatHdBIy2u26ExI5w1HW6Q
-	 utLVTkmDRCuAAudcNK3H28LxRpTI1Ri/C7htoqGBahyHoBWr5rjHnrME4rcmK7d7UF
-	 4CRf8+YKUqsixfD/3bvUxtiu1VvQsqxIbXygbNkSWO4NkpX4c+QPB1nCeFXiOS0vxC
-	 xuUdznkt6Ucbb3MWHR6H2wv0i4RvWux768VtrOJHZgxoWT2J36BdFZyC36M7NKUCdt
-	 fEnk+CIq2NDLJmvhBq8V62012iaIp4PMssjvhWreTbZt8Xsf7G2LSVmoK0Y8VkXx74
-	 BTx5EpywBkuVA==
-Received: by mail-lj1-f180.google.com with SMTP id 38308e7fff4ca-2e724bc466fso57252431fa.3;
-        Thu, 23 May 2024 02:32:02 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCXfLjblEv+gN2/eBWQjcglhfs7RKhksCbPrFBxmcYTg+bNfnHB04RJEZvvPfZIZE3UWWOwxqAmhq+M92VWGsFdE4vCyKZAhaiwls10/sIu/+q2NNcRbBpCiqsvHe8p/EoLsybX47Pky/kXBHFqk+f8+siAsnPUug4Auw4REmA==
-X-Gm-Message-State: AOJu0Yyg1Rt54kZL+dNzlG/LC+8faMQF3J1b79B8hidgqkJBHDKwu37R
-	mpqbdXNNGxw8/O+7B0it9d/u4BnsxzFxDyzQ9odlp+NKwIqMNNG/6RLih1Mknjz8cwLF0xam9iR
-	wQh5eMbVbiFniklGiCYS9ncQwHzQ=
-X-Google-Smtp-Source: AGHT+IHqpQAHZywXcdOOBq3HuHn8WSR7/eN+fpGHKcdJVZzoWrlOpapeJsSx+A82sHWTBHqOUYj9QhP+mCcn3nBDWro=
-X-Received: by 2002:a05:651c:216:b0:2e1:f338:d228 with SMTP id
- 38308e7fff4ca-2e9494cf3d6mr39701131fa.20.1716456720722; Thu, 23 May 2024
- 02:32:00 -0700 (PDT)
+	s=arc-20240116; t=1716465469; c=relaxed/simple;
+	bh=QM5IKcZN5RvrcFQh2uL0RP3WbNIjDxPpRh4An5D/hC4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=YBE3ofnmYBgCsjo9qFGgZ+WBiv1z+H/pRcnrMS1t1wpdGWH/5nYvcZVRLHmtAlfZBvFJ2Ytcmh4y+unKdCis4qc8RW6r63yNOa5H7yeyZ4DWpcK3jR3GsJ2Dg6WvjBCRp5QvnDTw30/XchOQzW2jX9NrIBIk2bRnKI/XZcwyzgE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=kroah.com; spf=pass smtp.mailfrom=kroah.com; dkim=pass (2048-bit key) header.d=kroah.com header.i=@kroah.com header.b=3Bei+NqQ; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=hB3LTyjW; arc=none smtp.client-ip=64.147.123.156
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=kroah.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kroah.com
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+	by mailfhigh.west.internal (Postfix) with ESMTP id D77EF180017F;
+	Thu, 23 May 2024 07:57:45 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute4.internal (MEProxy); Thu, 23 May 2024 07:57:47 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=cc
+	:cc:content-type:content-type:date:date:from:from:in-reply-to
+	:in-reply-to:message-id:mime-version:references:reply-to:subject
+	:subject:to:to; s=fm1; t=1716465465; x=1716551865; bh=cdF/5ks+gM
+	MxZAFnyrmZUGOhVVo9SQKIKtB3OVCVODA=; b=3Bei+NqQmDoWoGVY0MQphhb+I7
+	tzv8g0BS8dh8OEACHJQy3k2e2pyFgueihF/2OjyDrHmsdvvV+FC/CPy29O1rCsH7
+	Z0FaE7u8UKUthir76AsFN4qxsc+cRzRhymKh0kRnfi7VqOK7fu0gmT8q1ZiCnJ/V
+	Qo6MiEaX9LUKSJtcwoeqWV2k02l+/5TrsHFBaRhMJDF7yDkPK7DrO3O9lEH7+URa
+	7rXAvqIx7Pj+C8nQEc1X8BaurMTOl11fnSlYGBYxzSYYxxS5QZyJgYVlN+SpjtUM
+	aTJpey7dtm1Z+hBcj5FD+WopEvKjE81eTCczFBYCsHa5vIdrFxXN5PJEYVPA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm1; t=1716465465; x=1716551865; bh=cdF/5ks+gMMxZAFnyrmZUGOhVVo9
+	SQKIKtB3OVCVODA=; b=hB3LTyjWhjUayDyxwERFyr53FYdxivNpvdrgVLIFtrQs
+	Q97T4ENMb/8dHjtKwL0+sHeiP2v88TSDq9x4pWCCRq/fcJy+ZReihKiL2oNdyfzI
+	kbkicjwcsYpUUgPLZ6NRYAva3/vP56yw/lM4rUC/0T4KFJmzKQPfSbIWm+OBBqBj
+	cEVo1QkP5UAzbozAFMlyxXBJW1n0iEqKirzLyxTtb72T0vxpbvhOxDZj5RXNBkWU
+	1gyoiU49/ZE0Z9BD3yS7XxAMpMo+Rx8HRl/WLthptaX6c9T0f2TC5ZJ9kpOQOs3X
+	YGe++7ohm4Civh1oCUVqbwFm9ddI+Ol9NDzxD7Vv/g==
+X-ME-Sender: <xms:OS9PZoNEL8YIpvYR2RKQSkJYnCiT0JtVBG_2mEA9c8poI0yVia25qg>
+    <xme:OS9PZu_5Z-R5qAJZ4ugr0ijfVPjzhB18ss3B0qNfTcmVbOCXF37P9uJzXs6Vimb6z
+    Iv0LKsTyEQKpQ>
+X-ME-Received: <xmr:OS9PZvR8hkxQ8EBy-ysPJ0AfS6dDxMAeWumgFQaWz7_T9D8BqW51uRNeB4EroK4xFcldU48NqM3yfyRkN366qS5Qd7lr7xhsinQq_Q>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrvdeiiedggeehucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvfevuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepifhrvghg
+    ucfmjfcuoehgrhgvgheskhhrohgrhhdrtghomheqnecuggftrfgrthhtvghrnhepgeehue
+    ehgfdtledutdelkeefgeejteegieekheefudeiffdvudeffeelvedttddvnecuffhomhgr
+    ihhnpehkvghrnhgvlhdrohhrghenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmh
+    epmhgrihhlfhhrohhmpehgrhgvgheskhhrohgrhhdrtghomh
+X-ME-Proxy: <xmx:OS9PZgvYWXcHRCwNgPFWakA-RS2V-9B9eY5MnAivxQhsQtJ25VoGeg>
+    <xmx:OS9PZgejwnm0cks63IRSc8Y4cpPsXYYVE-uK0SYRKZWT4R1XrDOarQ>
+    <xmx:OS9PZk1QspP1RbVvOlluQNK2AYZ1UQaETCllNbSTVWBgIN51ebYBfA>
+    <xmx:OS9PZk_wqlZ6fqYp_c2Rp_Ojg1TUIq1a1Q1Ot-suPx6cjTG699u2Ig>
+    <xmx:OS9PZjtIxR4Ppi-r3mhFG5aVY1HhWAuiol9AG_Np5W4oTWegDt-UsW3->
+Feedback-ID: i787e41f1:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
+ 23 May 2024 07:57:44 -0400 (EDT)
+Date: Thu, 23 May 2024 13:57:43 +0200
+From: Greg KH <greg@kroah.com>
+To: Ignat Korchagin <ignat@cloudflare.com>
+Cc: stable@vger.kernel.org, bpf@vger.kernel.org, kernel-team@cloudflare.com,
+	Pengfei Xu <pengfei.xu@intel.com>, Jiri Olsa <jolsa@kernel.org>,
+	Andrii Nakryiko <andrii@kernel.org>, Hou Tao <houtao1@huawei.com>
+Subject: Re: [PATCH 6.6.y] bpf: Add missing BPF_LINK_TYPE invocations
+Message-ID: <2024052328-squatting-umpire-a826@gregkh>
+References: <20240521101826.95373-1-ignat@cloudflare.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240522114755.318238-1-masahiroy@kernel.org> <20240522114755.318238-3-masahiroy@kernel.org>
-In-Reply-To: <20240522114755.318238-3-masahiroy@kernel.org>
-From: Ard Biesheuvel <ardb@kernel.org>
-Date: Thu, 23 May 2024 11:31:49 +0200
-X-Gmail-Original-Message-ID: <CAMj1kXHwEMxAhj=zCBRCAxE8MXhzT95CTtAin+fPQr3DSJ46fA@mail.gmail.com>
-Message-ID: <CAMj1kXHwEMxAhj=zCBRCAxE8MXhzT95CTtAin+fPQr3DSJ46fA@mail.gmail.com>
-Subject: Re: [PATCH 2/3] kbuild: remove PROVIDE() for kallsyms symbols
-To: Masahiro Yamada <masahiroy@kernel.org>
-Cc: linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	bpf@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>, Nathan Chancellor <nathan@kernel.org>, 
-	Nicolas Schier <nicolas@fjasle.eu>, linux-arch@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240521101826.95373-1-ignat@cloudflare.com>
 
-On Wed, 22 May 2024 at 13:48, Masahiro Yamada <masahiroy@kernel.org> wrote:
->
-> This reimplements commit 951bcae6c5a0 ("kallsyms: Avoid weak references
-> for kallsyms symbols").
->
-> I am not a big fan of PROVIDE() because it always satisfies the linker
-> even in situations that should result in a link error. In other words,
-> it can potentially shift a compile-time error into a run-time error.
->
+On Tue, May 21, 2024 at 11:18:26AM +0100, Ignat Korchagin wrote:
+> From: Jiri Olsa <jolsa@kernel.org>
+> 
+> commit 117211aa739a926e6555cfea883be84bee6f1695 upstream.
+> 
+> Pengfei Xu reported [1] Syzkaller/KASAN issue found in bpf_link_show_fdinfo.
+> 
+> The reason is missing BPF_LINK_TYPE invocation for uprobe multi
+> link and for several other links, adding that.
+> 
+> [1] https://lore.kernel.org/bpf/ZXptoKRSLspnk2ie@xpf.sh.intel.com/
+> 
+> Fixes: 89ae89f53d20 ("bpf: Add multi uprobe link")
+> Fixes: e420bed02507 ("bpf: Add fd-based tcx multi-prog infra with link support")
+> Fixes: 84601d6ee68a ("bpf: add bpf_link support for BPF_NETFILTER programs")
+> Fixes: 35dfaad7188c ("netkit, bpf: Add bpf programmable net device")
+> Reported-by: Pengfei Xu <pengfei.xu@intel.com>
+> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+> Tested-by: Pengfei Xu <pengfei.xu@intel.com>
+> Acked-by: Hou Tao <houtao1@huawei.com>
+> Link: https://lore.kernel.org/bpf/20231215230502.2769743-1-jolsa@kernel.org
+> Cc: stable@vger.kernel.org # 6.6
+> Signed-off-by: Ignat Korchagin <ignat@cloudflare.com>
+> ---
+> Hi,
+> 
+> We have experienced a KASAN warning in production on a 6.6 kernel, similar to
+> [1]. This backported patch was adjusted to apply onto 6.6 stable branch: the
+> only change is dropping the BPF_LINK_TYPE(BPF_LINK_TYPE_NETKIT, netkit)
+> definition from the header as netkit was only introduced in 6.7 and 6.7 has the
+> backport already.
+> 
+> I was not able to run the syzkaller reproducer from [1], but we have not seen
+> the KASAN warning in production since applying this patch internally.
 
-I don't disagree. However, I did realize that, in this particular
-case, we could at least make the preliminary symbol definitions
-conditional on CONFIG_KALLSYMS rather than always providing them.
+Looks good, thanks for the backport, now queued up.
 
-This approach is also fine with me, though.
-
-
-> Duplicating kallsyms_* in vmlinux.lds.h also reduces maintainability.
->
-> As an alternative solution, this commit prepends one more kallsyms step.
->
->     KSYMS   .tmp_vmlinux.kallsyms0.S          # added
->     AS      .tmp_vmlinux.kallsyms0.o          # added
->     LD      .tmp_vmlinux.btf
->     BTF     .btf.vmlinux.bin.o
->     LD      .tmp_vmlinux.kallsyms1
->     NM      .tmp_vmlinux.kallsyms1.syms
->     KSYMS   .tmp_vmlinux.kallsyms1.S
->     AS      .tmp_vmlinux.kallsyms1.o
->     LD      .tmp_vmlinux.kallsyms2
->     NM      .tmp_vmlinux.kallsyms2.syms
->     KSYMS   .tmp_vmlinux.kallsyms2.S
->     AS      .tmp_vmlinux.kallsyms2.o
->     LD      vmlinux
->
-> Step 0 takes /dev/null as input, and generates .tmp_vmlinux.kallsyms0.o,
-> which has a valid kallsyms format with the empty symbol list, and can be
-> linked to vmlinux. Since it is really small, the added compile-time cost
-> is negligible.
->
-
-OK, so the number of linker invocations is the same, right? The
-difference is that the kallsyms symbol references are satisfied by a
-dummy object?
-
-That seems reasonable to me.
-
-For the series,
-
-Acked-by: Ard Biesheuvel <ardb@kernel.org>
+greg k-h
 
