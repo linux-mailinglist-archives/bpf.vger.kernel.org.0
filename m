@@ -1,111 +1,92 @@
-Return-Path: <bpf+bounces-30495-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-30496-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 10C478CE707
-	for <lists+bpf@lfdr.de>; Fri, 24 May 2024 16:30:46 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3C69C8CE70A
+	for <lists+bpf@lfdr.de>; Fri, 24 May 2024 16:31:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 792D8B211B7
-	for <lists+bpf@lfdr.de>; Fri, 24 May 2024 14:30:43 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EADE6B21616
+	for <lists+bpf@lfdr.de>; Fri, 24 May 2024 14:31:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9251C12C47A;
-	Fri, 24 May 2024 14:30:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="SyKRYPXt"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7DD7312C47C;
+	Fri, 24 May 2024 14:31:01 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C12B85268;
-	Fri, 24 May 2024 14:30:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.133.104.62
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2BB0F1AACC;
+	Fri, 24 May 2024 14:31:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716561036; cv=none; b=VqvHZv7LVUidyM6lqzFhzhjWyXTed4e3dNNUAQBVGoXp8KhMJyZDduOdrSWUnABGLwtOUXzd2AJ8yAZcCHoQ1DwiwupF+UOTWGBH2wx9+gWcv06j8vJg1ftIk9tmrXtlJE8NHThrvuqxJy+kBOQdCGSHY25RjNiZaq4l0cTe3SU=
+	t=1716561061; cv=none; b=r2KVktV2AXWqbIUoZ/LhU7G+8oQX2hRAwIHy4c6yLs4bbOb/9P1XpaUS358rx6XS4oXnLrikArJAb+xGagw/mg75SPcHFTM6AIYOs2oEqTNBBjuhysAp6aSTzBHT7HnH/Y2nn3WSyUa7hY27vW2Lwn336TCZgyskzI2Ydf4M4rw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716561036; c=relaxed/simple;
-	bh=qFRZhnD/p+pLSzPnbjviQjaEYa6hMFFXlAZTDb+RQxI=;
-	h=Subject:From:To:Cc:References:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=W8sl5dcqgjxmZCXDY9E0CW8ZaCIRdPq3xs1YV8WJh/qvcOQ0OYJjCvE0IjivOtod/e2xIOJlM7lZ2YIBzra68jptSGv9JrC2tStZewXAHjUq22G82fh/rJkwhp3ppNfDKmRy79S6qkg5tkPFVmvgBpDdfX/cYDccuHd2r4ihKIQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=SyKRYPXt; arc=none smtp.client-ip=213.133.104.62
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iogearbox.net
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
-	In-Reply-To:MIME-Version:Date:Message-ID:References:Cc:To:From:Subject:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
-	bh=6NBTN3gP3XRC5yswrkvPve4S2HuHh2J1YMADcEHnH60=; b=SyKRYPXtSci/rwupCzQlINgP9T
-	kF4JVznumiUoZygiZAAzfcEkbtRuuqhKjt1OSU2ogHKR4AQp/1KvAyuud7IZxpXpWf1ZDlUyCGUZQ
-	Ao1CqnDPIWouyI6gscH0RKwnWJcQhb5L1zK80Kd6MJWpKe2zq3CZV0cyOM7pFoE2A4NmNaBEyqP0+
-	OkgYy7dwg2qxpawBp2Yud7h8K1HBzDhtw6f22sKwpqizv0p1tNA8TupR0qGkcykAHX533gWzq7B0W
-	dVfNEFu9OBV7hN4I3qZax0FZgNghx6J3d2cJ7XaPyf7u3oUXgneyeVSsp5ijtlU/851/2eTIZNMKI
-	83mG55qA==;
-Received: from sslproxy01.your-server.de ([78.46.139.224])
-	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1sAVwF-0005YE-Sl; Fri, 24 May 2024 16:30:31 +0200
-Received: from [178.197.248.14] (helo=linux.home)
-	by sslproxy01.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1sAVwF-0006Pc-2e;
-	Fri, 24 May 2024 16:30:31 +0200
-Subject: Re: [PATCH bpf 3/5] netkit: Fix syncing peer device mtu with primary
-From: Daniel Borkmann <daniel@iogearbox.net>
-To: Nikolay Aleksandrov <razor@blackwall.org>, martin.lau@kernel.org
-Cc: bpf@vger.kernel.org, netdev@vger.kernel.org, Joe Stringer <joe@cilium.io>
-References: <20240524130115.9854-1-daniel@iogearbox.net>
- <20240524130115.9854-3-daniel@iogearbox.net>
- <984f7580-890d-4644-b8ad-144505a882e4@blackwall.org>
- <b6465a83-0aae-72be-5050-f9de85d3bf31@iogearbox.net>
-Message-ID: <36e9b554-96d1-641f-d521-245dc8a7463f@iogearbox.net>
-Date: Fri, 24 May 2024 16:30:30 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+	s=arc-20240116; t=1716561061; c=relaxed/simple;
+	bh=aOZq1tNo2kEdYYZTGQpJMZiV8l/3wuWC+gR87EmXRAY=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=SWgFwn1e0Dax7p3vwytrHcKHLk05SEP1vrxU6sUuFVHnvYp4TD6zjoxgIHsmhS9QzOSX+WOAGfvXf1qGnrzC1hYWsfi326CmA3MiZ1kEhBFarwspF6KG98c7ggXJHkSgNs8ArEMGrizsB0tOZCTfaXBb622SHJOjmr5kyYUShvg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 84EB9C2BBFC;
+	Fri, 24 May 2024 14:30:58 +0000 (UTC)
+Date: Fri, 24 May 2024 10:31:44 -0400
+From: Steven Rostedt <rostedt@goodmis.org>
+To: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
+Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, Florent Revest
+ <revest@chromium.org>, linux-trace-kernel@vger.kernel.org, LKML
+ <linux-kernel@vger.kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>,
+ bpf <bpf@vger.kernel.org>, Sven Schnelle <svens@linux.ibm.com>, Alexei
+ Starovoitov <ast@kernel.org>, Jiri Olsa <jolsa@kernel.org>, Arnaldo
+ Carvalho de Melo <acme@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ Alan Maguire <alan.maguire@oracle.com>, Mark Rutland
+ <mark.rutland@arm.com>, Peter Zijlstra <peterz@infradead.org>, Thomas
+ Gleixner <tglx@linutronix.de>, Guo Ren <guoren@kernel.org>
+Subject: Re: [PATCH v10 03/36] x86: tracing: Add ftrace_regs definition in
+ the header
+Message-ID: <20240524103144.4cd800c0@gandalf.local.home>
+In-Reply-To: <20240524103754.1df43a670eeb15bca9df48c7@kernel.org>
+References: <171509088006.162236.7227326999861366050.stgit@devnote2>
+	<171509091569.162236.17928081833857878443.stgit@devnote2>
+	<20240523191459.3858aecf@gandalf.local.home>
+	<20240524103754.1df43a670eeb15bca9df48c7@kernel.org>
+X-Mailer: Claws Mail 3.20.0git84 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <b6465a83-0aae-72be-5050-f9de85d3bf31@iogearbox.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.10/27285/Fri May 24 10:30:55 2024)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On 5/24/24 4:20 PM, Daniel Borkmann wrote:
-> On 5/24/24 4:15 PM, Nikolay Aleksandrov wrote:
->> On 5/24/24 16:01, Daniel Borkmann wrote:
->>> Implement the ndo_change_mtu callback in netkit in order to align the MTU
->>> to the primary device. This is needed in order to sync MTUs to the latter
->>> from the control plane (e.g. Cilium) which does not have access into the
->>> Pod's netns.
->>>
->>> Fixes: 35dfaad7188c ("netkit, bpf: Add bpf programmable net device")
->>> Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
->>> Cc: Joe Stringer <joe@cilium.io>
->>> ---
->>>   drivers/net/netkit.c | 20 ++++++++++++++++++++
->>>   1 file changed, 20 insertions(+)
->>>
->>
->> This one has unexpected behaviour IMO. If the app sets the MTU and we
->> silently overwrite, then it may continue working and thinking the MTU
->> was changed leading to unexpected problems. I think it'd be better to
->> keep the MTU synced explicitly (e.g. when set on main device, then
->> set it on peer as well) and error out when trying to set it without
->> the proper capabilities.
+On Fri, 24 May 2024 10:37:54 +0900
+Masami Hiramatsu (Google) <mhiramat@kernel.org> wrote:
+> > >  
+> > >  #ifdef CONFIG_HAVE_DYNAMIC_FTRACE_WITH_ARGS
+> > >  struct ftrace_regs {
+> > > +	/*
+> > > +	 * On the x86_64, the ftrace_regs saves;
+> > > +	 * rax, rcx, rdx, rdi, rsi, r8, r9, rbp, rip and rsp.
+> > > +	 * Also orig_ax is used for passing direct trampoline address.
+> > > +	 * x86_32 doesn't support ftrace_regs.  
+> > 
+> > Should add a comment that if fregs->regs.cs is set, then all of the pt_regs
+> > is valid.  
 > 
-> Makes sense, I'll look into this, thanks Nik!
+> But what about rbx and r1*? Only regs->cs should be care for pt_regs?
+> Or, did you mean "the ftrace_regs is valid"?
 
-I'll drop this one for now, and have a future extension on nk device
-creation to lock such attributes or not so its flexible.
+Yeah, on x86_64 ftrace_regs uses regs.cs to denote if it is valid or not:
 
-Thanks,
-Daniel
+static __always_inline struct pt_regs *
+arch_ftrace_get_regs(struct ftrace_regs *fregs)
+{
+	/* Only when FL_SAVE_REGS is set, cs will be non zero */
+	if (!fregs->regs.cs)
+		return NULL;
+	return &fregs->regs;
+}
+
+
+-- Steve
 
