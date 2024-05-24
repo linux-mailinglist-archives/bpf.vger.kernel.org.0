@@ -1,129 +1,141 @@
-Return-Path: <bpf+bounces-30532-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-30533-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D38898CEB91
-	for <lists+bpf@lfdr.de>; Fri, 24 May 2024 22:58:13 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id EF6398CEB9C
+	for <lists+bpf@lfdr.de>; Fri, 24 May 2024 23:03:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 057691C20BE3
-	for <lists+bpf@lfdr.de>; Fri, 24 May 2024 20:58:13 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8CDD4B216A0
+	for <lists+bpf@lfdr.de>; Fri, 24 May 2024 21:03:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 788A51311BD;
-	Fri, 24 May 2024 20:54:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 34D3F84D03;
+	Fri, 24 May 2024 21:03:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="mERfR1mx"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="aPTWeVLa"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-181.mta1.migadu.com (out-181.mta1.migadu.com [95.215.58.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-lj1-f173.google.com (mail-lj1-f173.google.com [209.85.208.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F40DA130E21
-	for <bpf@vger.kernel.org>; Fri, 24 May 2024 20:54:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2CD323C47C;
+	Fri, 24 May 2024 21:03:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716584086; cv=none; b=m0DCU8vwcLk5HwO85fRYcvYhqCCr1HcCN0IFEVsLp8qu3+dhsSU/J0Xrc9/SVpEReLawz7vnrRvFcShavMXKAadMEORGCuhkmr3d3Awd1U/4PU60GXsmAPaESqRqJSk0AWQJ5VEnkUFrXFn2T2bhrxpRrwr2k8WmRe+wmoM3nL0=
+	t=1716584604; cv=none; b=TNNp1UoVAIwH3ZsFnPhnMqc6ILIlp35N9OFqXKt4cqDlx6OiHxTPzip5a4lK9iGgknvFW0DB2+GUHuUed+pfgRAZSMjXCs8HGPRprflJeYzpODjk8zjrkPzrTusmjWKRC1xuKQCSDaHEIIBkQti3EDzG+iZU02RQoQ5Yii++1As=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716584086; c=relaxed/simple;
-	bh=yVLnqnImDkLFBBkIeEe/zgwmiPIxTIKbwkixkJw+qwQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Hgli4+DcnqFYjNVCocksYhLo4SMq6YLsxnheShuAqw5sAvTl6P1CRpP/P2N3yHVMTyUbL7fNNiaMm1/EJlbsu7MMNFnUHfA5Sh6DY4HNi+dn6n6BSIPWBphQ7WPfrncGpVStfYzj0Gbk2+ulgGEUpa6QsOtIz3Szv7sJte5QIkE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=mERfR1mx; arc=none smtp.client-ip=95.215.58.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Envelope-To: alexei.starovoitov@gmail.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1716584083;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=UDBEhv0HyRq4SxPfnYiersMvCncgSbh57JB8QLDUSf4=;
-	b=mERfR1mxob98mIV5u9s05Sqgi34cydLJe3b6Rp9wJI7b90tooaBtcUUeAKZ73gaSl+JpG2
-	onqBSqtOmv79lojTxR4OlD7PRhhfnEUIqd/z7s8d7wxb8UqVfSnQPILACiazJXhreAahj+
-	/LXFFO9Z+jTyyfvefZAKMgoY4LqgiIk=
-X-Envelope-To: ameryhung@gmail.com
-X-Envelope-To: netdev@vger.kernel.org
-X-Envelope-To: bpf@vger.kernel.org
-X-Envelope-To: yangpeihao@sjtu.edu.cn
-X-Envelope-To: daniel@iogearbox.net
-X-Envelope-To: andrii@kernel.org
-X-Envelope-To: martin.lau@kernel.org
-X-Envelope-To: sinquersw@gmail.com
-X-Envelope-To: toke@redhat.com
-X-Envelope-To: jhs@mojatatu.com
-X-Envelope-To: jiri@resnulli.us
-X-Envelope-To: sdf@google.com
-X-Envelope-To: xiyou.wangcong@gmail.com
-X-Envelope-To: yepeilin.cs@gmail.com
-Message-ID: <dfbea3d6-f24b-4fc3-8a78-13745fc4042e@linux.dev>
-Date: Fri, 24 May 2024 13:54:33 -0700
+	s=arc-20240116; t=1716584604; c=relaxed/simple;
+	bh=UvvZgf/c7R2Kuz7t2PBciYgKKn+4xkq6ebZaQLyY6oM=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=VwK4Y/HSLfTpbgtVBLT++5yPBjI79oHuwHrOtZPRouPwrocWTBZK3kD4WKIo1qZKlpvRL35cFJZVFhmjsHnkOxbF+WOADzcKeJyQeCQNHjb3hhN97ke6VdXLSnT4Uc1bTta/bCRKES6/p3HHxRGyK/ogSfDFbhW53XW53MK3tYk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=aPTWeVLa; arc=none smtp.client-ip=209.85.208.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f173.google.com with SMTP id 38308e7fff4ca-2e724bc46c4so69083151fa.2;
+        Fri, 24 May 2024 14:03:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1716584601; x=1717189401; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=jfTzYX+duGMsU7h/VpsgnG4SbDyXgyQ9P7UXQAwHfVg=;
+        b=aPTWeVLaspchA5msb3QDFifp1gd5kW4gMuvVd/xGBKQKEUunIZ69dlIl/i9jHOc6ZZ
+         6N8J2aRFHxd7KU2aUP/qI5N5RiGesaqb3VOZ5BCo/yRwYUFEerM53Tac6UD+H9c7Bq4K
+         iXKb7ALmMkC9jfgqPXeCfXfzKfKppT/u0/ahP0WrML2TTmvHZBD0ivQwrAB/uTBiAjPQ
+         JSqR0Ta1nN3AgRGQ3nCRGqcZxP9qe6+dMDDw+eHYIEJchhB1PqhF2504oN8e1OXy8irO
+         QXiKlMt6Q1u9wHYNkGZuIzei4e9mvrDXoJAbkbg/2zcLsan51nLuM3DTwUOsxq5tXggQ
+         0c3Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1716584601; x=1717189401;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=jfTzYX+duGMsU7h/VpsgnG4SbDyXgyQ9P7UXQAwHfVg=;
+        b=iK84pa3xC+jDKksszQrbFNFSAMCJtFuIHYKojTBFUUigllOlBoRkIOdMzMpnJUz4ks
+         Ie5qiEpjQsdjVtvLXfHu+9S//1WrTr+LgQESMD6jjZBnmnmZPviXa+YnJBhEjjG9Z0+c
+         4eOA/va4OrldJZn71qWztt0+n/Ku7Zmd9m+jiG8vQ8QY1aZ3okSuYKx6EUjkkId1034K
+         rBA0RQpcHugNJ/an2HrV9PgHYGl/RE46au65RbWOWXWO5L/9OVKvJRKq68ZGwqkK4Mw1
+         +d5J9K5pGktECHcFKuRqWvRwDznQumpQtE2EeN3EDIBcFEXBrhM+XR38tSMhztTAt8na
+         wywQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUNavcBdq31TyeqmOCiVPBgtuSdPDjT6GUKiSJuJFNexQxj2ivxohGsyehNTGeD8UI3+2Nu56d7lmenPa3TyfZ4NtSYtjaAElfza5F6xrC5cE8A1X9gAMe6iEzEvrkRkph89wkr4vly5BE/7bj9h0ZM9YCPv6vNuyvk
+X-Gm-Message-State: AOJu0YyFkB7qfj0PYO3h2u+7ubDIkA4xrY1tbmww1vyp3iaQpho+jXwA
+	iM/UI7tZvgjO0aX9reoLKfV1V04tQKq0jQxiK0iXq+1R5mjdwziL
+X-Google-Smtp-Source: AGHT+IFsvg+3eW+uFt+8zbMHGOvvmM7wbkkNlpRI+IgIK/fpNCjG+0mt4y0mWAeB+ZHjQFEWsw7fgQ==
+X-Received: by 2002:a19:381d:0:b0:523:889a:ebd with SMTP id 2adb3069b0e04-52964ea947bmr1972965e87.24.1716584601070;
+        Fri, 24 May 2024 14:03:21 -0700 (PDT)
+Received: from localhost ([95.79.182.53])
+        by smtp.gmail.com with ESMTPSA id 2adb3069b0e04-52970e1ef56sm236078e87.228.2024.05.24.14.03.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 24 May 2024 14:03:20 -0700 (PDT)
+From: Serge Semin <fancer.lancer@gmail.com>
+To: Russell King <linux@armlinux.org.uk>,
+	Alexandre Torgue <alexandre.torgue@foss.st.com>,
+	Jose Abreu <joabreu@synopsys.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Maxime Coquelin <mcoquelin.stm32@gmail.com>
+Cc: Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Jesper Dangaard Brouer <hawk@kernel.org>,
+	John Fastabend <john.fastabend@gmail.com>,
+	bpf@vger.kernel.org,
+	netdev@vger.kernel.org,
+	linux-stm32@st-md-mailman.stormreply.com,
+	linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH RFC net-next 1/3] net: stmmac: Prevent RGSMIIIS IRQs flood
+Date: Sat, 25 May 2024 00:02:57 +0300
+Message-ID: <20240524210304.9164-1-fancer.lancer@gmail.com>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <ZkDuJAx7atDXjf5m@shell.armlinux.org.uk>
+References: <ZkDuJAx7atDXjf5m@shell.armlinux.org.uk>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [RFC PATCH v8 18/20] selftests: Add a bpf fq qdisc to selftest
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Amery Hung <ameryhung@gmail.com>,
- Network Development <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
- yangpeihao@sjtu.edu.cn, Daniel Borkmann <daniel@iogearbox.net>,
- Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau
- <martin.lau@kernel.org>, Kui-Feng Lee <sinquersw@gmail.com>,
- =?UTF-8?Q?Toke_H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
- Jamal Hadi Salim <jhs@mojatatu.com>, Jiri Pirko <jiri@resnulli.us>,
- Stanislav Fomichev <sdf@google.com>, Cong Wang <xiyou.wangcong@gmail.com>,
- Peilin Ye <yepeilin.cs@gmail.com>
-References: <20240510192412.3297104-1-amery.hung@bytedance.com>
- <20240510192412.3297104-19-amery.hung@bytedance.com>
- <6ad06909-7ef4-4f8c-be97-fe5c73bc14a3@linux.dev>
- <CAADnVQLLqy=MTK_u2FMrxUEZRojYPUZrc-ZG=Gcj-=SaH9Q=XA@mail.gmail.com>
-Content-Language: en-US
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Martin KaFai Lau <martin.lau@linux.dev>
-In-Reply-To: <CAADnVQLLqy=MTK_u2FMrxUEZRojYPUZrc-ZG=Gcj-=SaH9Q=XA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
 
-On 5/24/24 12:33 PM, Alexei Starovoitov wrote:
-> On Thu, May 23, 2024 at 11:25 PM Martin KaFai Lau <martin.lau@linux.dev> wrote:
->>
->>> +
->>> +unsigned long time_next_delayed_flow = ~0ULL;
->>> +unsigned long unthrottle_latency_ns = 0ULL;
->>> +unsigned long ktime_cache = 0;
->>> +unsigned long dequeue_now;
->>> +unsigned int fq_qlen = 0;
->>
->> I suspect some of these globals may be more natural if it is stored private to
->> an individual Qdisc instance. i.e. qdisc_priv(). e.g. in the sch_mq setup.
->>
->> A high level idea is to allow the SEC(".struct_ops.link") to specify its own
->> Qdisc_ops.priv_size.
->>
->> The bpf prog could use it as a simple u8 array memory area to write anything but
->> the verifier can't learn a lot from it. It will be more useful if it can work
->> like map_value(s) to the verifier such that the verifier can also see the
->> bpf_rb_root/bpf_list_head/bpf_spin_lock...etc.
-> 
-> Qdisc_ops.priv_size is too qdsic specific.
+Without reading the GMAC_RGSMIIIS/MAC_PHYIF_Control_Status the IRQ line
+won't be de-asserted causing interrupt handler executed over and over. As
+a quick-fix let's just dummy-read the CSR for now.
 
-Instead of priv_size, may be something like a bpf_local_storage for Qdisc is 
-closer to how other kernel objects (sk/task/cgrp) are doing it now. Like 
-bpf_sk_storage that goes away with the sk. It needs a storage that goes away 
-with the Qdisc.
+Signed-off-by: Serge Semin <fancer.lancer@gmail.com>
+---
+ drivers/net/ethernet/stmicro/stmmac/dwmac1000_core.c | 2 ++
+ drivers/net/ethernet/stmicro/stmmac/dwmac4_core.c    | 2 ++
+ 2 files changed, 4 insertions(+)
 
-I was thinking using priv_size to work something like a bpf_local_storage 
-without the pointer array redirection by pre-defining all map_values it wants to 
-store in the Qdisc, so the total size of the pre-defined map_values will be the 
-priv_size. However, I haven't thought through how it should look like from 
-bpf_prog.c to the kernel. It is an optimization of the bpf_local_storage.
-
-> imo using globals here is fine. bpf prog can use hash map or arena
-> to store per-netdev or per-qdisc data.
-> The less custom things the better.
-
+diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac1000_core.c b/drivers/net/ethernet/stmicro/stmmac/dwmac1000_core.c
+index adb872d5719f..2ae8467c588e 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/dwmac1000_core.c
++++ b/drivers/net/ethernet/stmicro/stmmac/dwmac1000_core.c
+@@ -304,6 +304,8 @@ static int dwmac1000_irq_status(struct mac_device_info *hw,
+ 	dwmac_pcs_isr(ioaddr, GMAC_PCS_BASE, intr_status, x);
+ 
+ 	if (intr_status & PCS_RGSMIIIS_IRQ) {
++		/* TODO Dummy-read to clear the IRQ status */
++		readl(ioaddr + GMAC_RGSMIIIS);
+ 		phylink_pcs_change(&hw->mac_pcs, false);
+ 		x->irq_rgmii_n++;
+ 	}
+diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac4_core.c b/drivers/net/ethernet/stmicro/stmmac/dwmac4_core.c
+index a892d361a4e4..cd2ca1d0222c 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/dwmac4_core.c
++++ b/drivers/net/ethernet/stmicro/stmmac/dwmac4_core.c
+@@ -896,6 +896,8 @@ static int dwmac4_irq_status(struct mac_device_info *hw,
+ 
+ 	dwmac_pcs_isr(ioaddr, GMAC_PCS_BASE, intr_status, x);
+ 	if (intr_status & PCS_RGSMIIIS_IRQ) {
++		/* TODO Dummy-read to clear the IRQ status */
++		readl(ioaddr + GMAC_PHYIF_CONTROL_STATUS);
+ 		phylink_pcs_change(&hw->mac_pcs, false);
+ 		x->irq_rgmii_n++;
+ 	}
+-- 
+2.43.0
 
 
