@@ -1,72 +1,72 @@
-Return-Path: <bpf+bounces-30534-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-30535-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 38E678CEB9F
-	for <lists+bpf@lfdr.de>; Fri, 24 May 2024 23:03:53 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0DA688CEBA2
+	for <lists+bpf@lfdr.de>; Fri, 24 May 2024 23:04:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A05AB1F2199B
-	for <lists+bpf@lfdr.de>; Fri, 24 May 2024 21:03:52 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B907C282096
+	for <lists+bpf@lfdr.de>; Fri, 24 May 2024 21:04:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2276D8627C;
-	Fri, 24 May 2024 21:03:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DEA5E12CD82;
+	Fri, 24 May 2024 21:03:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dXhmjXxy"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="m6EFTu0s"
 X-Original-To: bpf@vger.kernel.org
 Received: from mail-lf1-f41.google.com (mail-lf1-f41.google.com [209.85.167.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC42581736;
-	Fri, 24 May 2024 21:03:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD5C186134;
+	Fri, 24 May 2024 21:03:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716584606; cv=none; b=mEy5DONTIfhWlyMGVCHXEMYGGtJHQu7oI6PlmZwnpF8MjyFCoNLE18LM+GgOn+NjZW/M7b6sp6fnmbfhiPT8rscMbXyBZ5Hsyvuwzd7i6rgzyN/ImWjoU+I9mBB5DtBYZZGu13xFFbswuA5wNzgHYcDj5F0cyi5EjG3Gu8CaaJM=
+	t=1716584608; cv=none; b=aAerPGxL5BxUzUnofBU3R6tQzJBI4cKcARcKnYj4ocSEXV8bQptC8dpc+Y3qERV97OakLJWQR9LvU75pTD1buLOK4HAC/Mh4+3RqOzBmDxAlRbe9NmK+He8fUjHL/yqw4gSjmtx+ScVI8Ddq4KXEAsMvWw7Uw4iPlEB/1sQX8fQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716584606; c=relaxed/simple;
-	bh=BmmOFiaM3c9lqEmGJRdRDqzqAs68U0g+JY7m5ZCB0HM=;
+	s=arc-20240116; t=1716584608; c=relaxed/simple;
+	bh=2+xqMRQGLIjTOS81Zq0gKeXzmKGYY1z4ywWc8kW4mAg=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=qAz2dxcQsMF196CgyZGE07r/rCKoyPYCNPWwl6kHqDYuBVH/bMJ2sHE8L6w3vUkEPE+E0HovbxcZ+v/cN1Ta+0vrs7QPStgrRDlngPDNX8JF704/53cYjOjreVo9mT6WZIHtOGo77fzZE8ETKIeCKGtt0dQuNsPOG596dJxhbaE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=dXhmjXxy; arc=none smtp.client-ip=209.85.167.41
+	 MIME-Version; b=oxRWfWUak2/nM4wO1mKkBT08vJ7TA/Y9G13W/ppP05JnkVPEmJOCorcT0N4svizlOkrcvQgBOzkaMACYT6egpdyH+5IEWiibhwiNAw7wwVX49Tcd20ETdo0hq+rxYKT3zjjEnbbzTQuZE1zRRddJnu9JauerNjNj0PE83opJ7KE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=m6EFTu0s; arc=none smtp.client-ip=209.85.167.41
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f41.google.com with SMTP id 2adb3069b0e04-5295e488248so1484667e87.2;
-        Fri, 24 May 2024 14:03:24 -0700 (PDT)
+Received: by mail-lf1-f41.google.com with SMTP id 2adb3069b0e04-529646df247so1279356e87.3;
+        Fri, 24 May 2024 14:03:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1716584603; x=1717189403; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1716584605; x=1717189405; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=hxT1J6TEpAgvO5DZP/UxXlPe1jaIeEw8wHuXNfn0DlA=;
-        b=dXhmjXxyoBUhdE63vQgwIYKM8YNEwu9gPnu6Sib2Q/5hsNrjvmgBem3FBBin5Eaygn
-         zqME2CWJ2Yx6VbOUra5B/GjnTDI5Mj0ji8h9RlpchEU45K+aq0GiLhhYDkJecNgsjUmm
-         +r0Sskkrb2+4aaUAD6vA/rm6P+FCipJCtxXBTWzHvB8AqOOK/1fXygzvVREz7PK6uMeX
-         2Ym6d+TIN4OQnggTnxhrhraz8JvwI1HNCrfPS/noU1vmyJVPZJ/4aDBKM6Yq/92T04An
-         GtSSUeoUNrmX6O+sUOfRAlryJcjzpBUY1iBuBA//W4ep9lUDhO+Ym83116gRh1GzDOp0
-         UoXg==
+        bh=6SsA/DX4FQd1mwIvYQLseyq3XbpKYYuZmRUlHTPnong=;
+        b=m6EFTu0s2pP20C32HFzg94WJbzyue+Esc5/8jhEbh0LtHXxHmC5Z0X05ZeU+HR45yk
+         SbouVuGHrFQIJAGL+icTAB+mdEWBW6ymdmO7jkt6MSpNxHJgJoGpywxNECgRjmsZCsPk
+         /Rj8/ygw6kZtp181wTdHB/ZUxWj8JKs/cFxzFQ+YyAjPGvWO71CQuOcX2epoIBd9k/H6
+         Zw9+tY5v2pB91H8Vjsi48U6A8SPPAPu+Hyq4R/CsTHciYGcWGoa/CJu5zqxBW6PDQOSJ
+         7/lbrvRqRN8QSgxIdNVuysFyM+1Q09qwSgnNoNqEg/kjLC8a4zVvwCKnq5b0gQZ1/WG4
+         dIDA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1716584603; x=1717189403;
+        d=1e100.net; s=20230601; t=1716584605; x=1717189405;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=hxT1J6TEpAgvO5DZP/UxXlPe1jaIeEw8wHuXNfn0DlA=;
-        b=OAXlloDOKT3A3epvviI1JvtHlxuoLRCfilhQ/5l49aXxtceKMVX1GGN4PPDvV9cIVW
-         w/qlehkxt+EKbxO6zFBC0nFDopDnRJ6UpP2/jJmFT0Q/YSa2UzQ6C+Liwc8d8NSv4IfS
-         hXL4svs2OmH/eoaGWZnn5muQBYg47Ji1x+vF7sHeWNJmlUriTS03oNtfD3KhfJWdkR50
-         Wdk1OcGwnHJfSWoWfGm8y4DfiVN4BnomCkh7mXf3VoNqBdj0wJ7Wv4TJKv8z/CZVNt7/
-         7QwvIiZKZwdssVbcujnh/zdxVp/I1UPN+UDq2E+Mr2R65PqREE9cMJ7hZVml+c77ZQqp
-         UtdA==
-X-Forwarded-Encrypted: i=1; AJvYcCUsLTL3Sg/nItrGOqL01hD82cvzCWB5+3DbZRM+RJwnknyNbUMYIprzuJVlU1LDf3c1tdncopeJg0TPZFjBd1hGFHOv2xrewhLQeZtILl3u/6bjm+D4jAf7a986sUwOXGH49hZ3s+q88uj6T9uh3yuZKASBAKK1wO/H
-X-Gm-Message-State: AOJu0YyrxmahBN1PGGqZVbuL98s2hYiock+idcEQo88yp9UwGcpqmHP8
-	qN1gpeEYDh+pq63PsuwR4eFIDlrj9KjCxcHxYSrawyP2vV0ChAiT
-X-Google-Smtp-Source: AGHT+IHiFHbJSkm3a+YnVrAqiEBUxqU0zl1zz3q7VRqSYd34a0x8WLy+5xT5KHOoe8SsJpqmPTpH8g==
-X-Received: by 2002:a05:6512:3b86:b0:51e:2282:63cf with SMTP id 2adb3069b0e04-529666db5f9mr2844583e87.45.1716584602922;
-        Fri, 24 May 2024 14:03:22 -0700 (PDT)
+        bh=6SsA/DX4FQd1mwIvYQLseyq3XbpKYYuZmRUlHTPnong=;
+        b=eTmMtP1RbxyOaScf3HX//DhNJNoyQwV9m7sj7/+nxzq7jrVvDkToEYrBHdnGgkcaIR
+         bEwKgk/NJ0pvWqslmrHPIHwdIFI1ER/fhXONOGRabEx50nIJ3v4t8rG1eDMAkfK0YPjs
+         NqZI954Ne7vT7E/5TU4vAViiGAzHOpoz5sxMbNSe9w1Cr/mLqZl17loZsEYSy5iT20S3
+         q0MPpjoshvtY8loF765AW1Cx6E5Z2kMsuGMZRbprLVFNpF1Z3aNHfSgKpzIXXuKf5CML
+         XtotB2fnziNAOCXVev343yYY0OU9sL8VjLgPzTwZ1QW9UI8JkiH3YAfV189QP9rql2mX
+         qGBw==
+X-Forwarded-Encrypted: i=1; AJvYcCUZwu7vK3yf/+xyYvURQKHDGb5O9vMrOyGtY58MeNpoxO5vfwYbJe5MKIvAF09+5BdXbFq6SKlX0/ryj3MxRW46ctu19gJ43208upi1pO2y1rPe65c8C+o5KqKmU/a57ivynoEinGsEqXMyeRf8ZX+s2n+pFC+IQ2M7
+X-Gm-Message-State: AOJu0YxrFiPOCLeV0Qxjg3l/EhGsIwpwQTwqzHz0dEGxcQd/YYlaOg/E
+	CeoJcRmG40hEVFVJF1uYNO6vHd1OXIvYkO6jq8CJPjms14D7WPRn
+X-Google-Smtp-Source: AGHT+IG0PT+7TnzaGJ6HfS/LUBBacBaRk08p6C1KaUcsx5/G5OJ+ElDL8rqeNbSK5PYnnNXLPfqj6Q==
+X-Received: by 2002:ac2:454c:0:b0:523:a924:3268 with SMTP id 2adb3069b0e04-52964109a01mr1779610e87.6.1716584604952;
+        Fri, 24 May 2024 14:03:24 -0700 (PDT)
 Received: from localhost ([95.79.182.53])
-        by smtp.gmail.com with ESMTPSA id 2adb3069b0e04-5296ee4aa90sm241351e87.92.2024.05.24.14.03.22
+        by smtp.gmail.com with ESMTPSA id 2adb3069b0e04-5297066bcd6sm237510e87.164.2024.05.24.14.03.24
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 24 May 2024 14:03:22 -0700 (PDT)
+        Fri, 24 May 2024 14:03:24 -0700 (PDT)
 From: Serge Semin <fancer.lancer@gmail.com>
 To: Russell King <linux@armlinux.org.uk>,
 	Alexandre Torgue <alexandre.torgue@foss.st.com>,
@@ -75,9 +75,7 @@ To: Russell King <linux@armlinux.org.uk>,
 	Eric Dumazet <edumazet@google.com>,
 	Jakub Kicinski <kuba@kernel.org>,
 	Paolo Abeni <pabeni@redhat.com>,
-	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-	Byungho An <bh74.an@samsung.com>,
-	Giuseppe CAVALLARO <peppe.cavallaro@st.com>
+	Maxime Coquelin <mcoquelin.stm32@gmail.com>
 Cc: Alexei Starovoitov <ast@kernel.org>,
 	Daniel Borkmann <daniel@iogearbox.net>,
 	Jesper Dangaard Brouer <hawk@kernel.org>,
@@ -87,9 +85,9 @@ Cc: Alexei Starovoitov <ast@kernel.org>,
 	linux-stm32@st-md-mailman.stormreply.com,
 	linux-arm-kernel@lists.infradead.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH RFC net-next 2/3] net: stmmac: Activate Inband/PCS flag based on the selected iface
-Date: Sat, 25 May 2024 00:02:58 +0300
-Message-ID: <20240524210304.9164-2-fancer.lancer@gmail.com>
+Subject: [PATCH RFC net-next 3/3] net: stmmac: Drop TBI/RTBI PCS flags
+Date: Sat, 25 May 2024 00:02:59 +0300
+Message-ID: <20240524210304.9164-3-fancer.lancer@gmail.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240524210304.9164-1-fancer.lancer@gmail.com>
 References: <ZkDuJAx7atDXjf5m@shell.armlinux.org.uk>
@@ -102,62 +100,114 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-The HWFEATURE.PCSSEL flag is set if the PCS block has been synthesized
-into the DW GMAC controller. It's always done if the controller supports
-at least one of the SGMII, TBI, RTBI PHY interfaces. If none of these
-interfaces support was activated during the IP-core synthesize the PCS
-block won't be activated either and the HWFEATURE.PCSSEL flag won't be
-set. Based on that the RGMII in-band status detection procedure
-implemented in the driver hasn't been working for the devices with the
-RGMII interface support and with none of the SGMII, TBI, RTBI PHY
-interfaces available in the device.
+First of all the flags are never set by any of the driver parts. If nobody
+have them set then the respective statements will always have the same
+result. Thus the statements can be simplified or even dropped with no risk
+to break things.
 
-Fix that just by dropping the dma_cap.pcs flag check from the conditional
-statement responsible for the In-band/PCS functionality activation. If the
-RGMII interface is supported by the device then the in-band link status
-detection will be also supported automatically (it's always embedded into
-the RGMII RTL code). If the SGMII interface is supported by the device
-then the PCS block will be supported too (it's unconditionally synthesized
-into the controller). The later is also correct for the TBI/RTBI PHY
-interfaces.
+Secondly shall any of the TBI or RTBI flag is set the MDIO-bus
+registration will be bypassed. Why? It really seems weird. It's perfectly
+fine to have a TBI/RTBI-capable PHY configured over the MDIO bus
+interface.
 
-Note while at it drop the netdev_dbg() calls since at the moment of the
-stmmac_check_pcs_mode() invocation the network device isn't registered. So
-the debug prints will be for the unknown/NULL device.
+Based on the notes above the TBI/RTBI PCS flags can be freely dropped thus
+simplifying the driver code.
 
-Fixes: e58bb43f5e43 ("stmmac: initial support to manage pcs modes")
 Signed-off-by: Serge Semin <fancer.lancer@gmail.com>
 ---
- .../net/ethernet/stmicro/stmmac/stmmac_main.c    | 16 ++++------------
- 1 file changed, 4 insertions(+), 12 deletions(-)
+ drivers/net/ethernet/stmicro/stmmac/common.h  |  2 -
+ .../net/ethernet/stmicro/stmmac/stmmac_main.c | 37 ++++++-------------
+ 2 files changed, 11 insertions(+), 28 deletions(-)
 
+diff --git a/drivers/net/ethernet/stmicro/stmmac/common.h b/drivers/net/ethernet/stmicro/stmmac/common.h
+index b02b905bc892..40a930ea4ff3 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/common.h
++++ b/drivers/net/ethernet/stmicro/stmmac/common.h
+@@ -268,8 +268,6 @@ struct stmmac_safety_stats {
+ /* PCS defines */
+ #define STMMAC_PCS_RGMII	(1 << 0)
+ #define STMMAC_PCS_SGMII	(1 << 1)
+-#define STMMAC_PCS_TBI		(1 << 2)
+-#define STMMAC_PCS_RTBI		(1 << 3)
+ 
+ #define SF_DMA_MODE 1		/* DMA STORE-AND-FORWARD Operation Mode */
+ 
 diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-index 90c065920af2..6c4e90b1fea3 100644
+index 6c4e90b1fea3..06f95dfdf09e 100644
 --- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
 +++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-@@ -1146,18 +1146,10 @@ static void stmmac_check_pcs_mode(struct stmmac_priv *priv)
+@@ -471,13 +471,6 @@ bool stmmac_eee_init(struct stmmac_priv *priv)
  {
- 	int interface = priv->plat->mac_interface;
+ 	int eee_tw_timer = priv->eee_tw_timer;
  
--	if (priv->dma_cap.pcs) {
--		if ((interface == PHY_INTERFACE_MODE_RGMII) ||
--		    (interface == PHY_INTERFACE_MODE_RGMII_ID) ||
--		    (interface == PHY_INTERFACE_MODE_RGMII_RXID) ||
--		    (interface == PHY_INTERFACE_MODE_RGMII_TXID)) {
--			netdev_dbg(priv->dev, "PCS RGMII support enabled\n");
--			priv->hw->pcs = STMMAC_PCS_RGMII;
--		} else if (interface == PHY_INTERFACE_MODE_SGMII) {
--			netdev_dbg(priv->dev, "PCS SGMII support enabled\n");
--			priv->hw->pcs = STMMAC_PCS_SGMII;
+-	/* Using PCS we cannot dial with the phy registers at this stage
+-	 * so we do not support extra feature like EEE.
+-	 */
+-	if (priv->hw->pcs == STMMAC_PCS_TBI ||
+-	    priv->hw->pcs == STMMAC_PCS_RTBI)
+-		return false;
+-
+ 	/* Check if MAC core supports the EEE feature. */
+ 	if (!priv->dma_cap.eee)
+ 		return false;
+@@ -3945,9 +3938,7 @@ static int __stmmac_open(struct net_device *dev,
+ 	if (ret < 0)
+ 		return ret;
+ 
+-	if (priv->hw->pcs != STMMAC_PCS_TBI &&
+-	    priv->hw->pcs != STMMAC_PCS_RTBI &&
+-	    (!priv->hw->xpcs ||
++	if ((!priv->hw->xpcs ||
+ 	     xpcs_get_an_mode(priv->hw->xpcs, mode) != DW_AN_C73) &&
+ 	    !priv->hw->lynx_pcs) {
+ 		ret = stmmac_init_phy(dev);
+@@ -7724,16 +7715,12 @@ int stmmac_dvr_probe(struct device *device,
+ 	if (!pm_runtime_enabled(device))
+ 		pm_runtime_enable(device);
+ 
+-	if (priv->hw->pcs != STMMAC_PCS_TBI &&
+-	    priv->hw->pcs != STMMAC_PCS_RTBI) {
+-		/* MDIO bus Registration */
+-		ret = stmmac_mdio_register(ndev);
+-		if (ret < 0) {
+-			dev_err_probe(priv->device, ret,
+-				      "%s: MDIO bus (id: %d) registration failed\n",
+-				      __func__, priv->plat->bus_id);
+-			goto error_mdio_register;
 -		}
--	}
-+	if (phy_interface_mode_is_rgmii(interface))
-+		priv->hw.pcs = STMMAC_PCS_RGMII;
-+	else if (interface == PHY_INTERFACE_MODE_SGMII)
-+		priv->hw.pcs = STMMAC_PCS_SGMII;
- }
++	ret = stmmac_mdio_register(ndev);
++	if (ret < 0) {
++		dev_err_probe(priv->device, ret,
++			      "MDIO bus (id: %d) registration failed\n",
++			      priv->plat->bus_id);
++		goto error_mdio_register;
+ 	}
  
- /**
+ 	if (priv->plat->speed_mode_2500)
+@@ -7776,9 +7763,7 @@ int stmmac_dvr_probe(struct device *device,
+ 	phylink_destroy(priv->phylink);
+ error_xpcs_setup:
+ error_phy_setup:
+-	if (priv->hw->pcs != STMMAC_PCS_TBI &&
+-	    priv->hw->pcs != STMMAC_PCS_RTBI)
+-		stmmac_mdio_unregister(ndev);
++	stmmac_mdio_unregister(ndev);
+ error_mdio_register:
+ 	stmmac_napi_del(ndev);
+ error_hw_init:
+@@ -7817,9 +7802,9 @@ void stmmac_dvr_remove(struct device *dev)
+ 	if (priv->plat->stmmac_rst)
+ 		reset_control_assert(priv->plat->stmmac_rst);
+ 	reset_control_assert(priv->plat->stmmac_ahb_rst);
+-	if (priv->hw->pcs != STMMAC_PCS_TBI &&
+-	    priv->hw->pcs != STMMAC_PCS_RTBI)
+-		stmmac_mdio_unregister(ndev);
++
++	stmmac_mdio_unregister(ndev);
++
+ 	destroy_workqueue(priv->wq);
+ 	mutex_destroy(&priv->lock);
+ 	bitmap_free(priv->af_xdp_zc_qps);
 -- 
 2.43.0
 
