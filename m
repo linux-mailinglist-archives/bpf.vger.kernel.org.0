@@ -1,61 +1,64 @@
-Return-Path: <bpf+bounces-30510-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-30512-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4911F8CE8C3
-	for <lists+bpf@lfdr.de>; Fri, 24 May 2024 18:36:33 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 84D8C8CE8C7
+	for <lists+bpf@lfdr.de>; Fri, 24 May 2024 18:36:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7ABC81C20F04
-	for <lists+bpf@lfdr.de>; Fri, 24 May 2024 16:36:32 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0E2F82839FC
+	for <lists+bpf@lfdr.de>; Fri, 24 May 2024 16:36:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E65212EBE6;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7858812F378;
 	Fri, 24 May 2024 16:36:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="IedWzaQm"
+	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="NrBws/lc"
 X-Original-To: bpf@vger.kernel.org
 Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D64FC83A0D;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 738F912D77F;
 	Fri, 24 May 2024 16:36:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.133.104.62
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716568585; cv=none; b=PI8WbDcX53Bc26GzvFpAyzDaylZsVsfwUgkKGVzMtzcWz0sVhziHw97UOfKVfOvIZYXMCDUoNJsynxnxNaonaCLKi8BFP3Lzx02NAfAqp5lLpwZW1xrBn9NyIa+ay0HwY3s3ZT3yhlM7IhW9oqI2X5W5Svsd4nbxHTKZjyY4Q/Q=
+	t=1716568586; cv=none; b=CXYNg82X2di1jk16DQMnZLFnxamFEe4aOIngORx/t3lduJ6NIcrOf3AV+5YL+Er+0nmWYG1ov2WpDTaSogTxg4umzCeIOxYUtmLhaXhWMPU4jv0mIRhwUwfypOnkfdPuBoWZyV1NhEgpgQO9JU/3sttQdu7e8lBYfdSoSt9fH0k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716568585; c=relaxed/simple;
-	bh=r7dbGSZS+UZxQmd3Kum0wG+KGiCY04G8988SN7eCPYU=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=N8B4GchYrIygl7atApHMWpPatmjkjws2ErHM/yp9TI6CtdYTFDbw5+jc6FhVKVCS8trKgKvDoAmVlBo2cBwsw5KRcoJPPbGaAtz0FH6g8fj0fZZga5s9dB0xn+Wewg1ql/B8sUlMiyC+5pFGlytoQNacm4rTBal+uUm+XMGC+7U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=IedWzaQm; arc=none smtp.client-ip=213.133.104.62
+	s=arc-20240116; t=1716568586; c=relaxed/simple;
+	bh=IFFrk2TrmPWk0HrnnuyIUMVYLoUi6g+4npqGyyTK5gg=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=l+KxFxLGYaKPsfUF8SrlVlqYSWLEHqqr/dkHMS2e/SOjpCPpb8JoGPLxNf4fgjbC8nHJae3Vc/HvR1wjP3tNR0fMYyo8r1j3LREyclI/bSNCW1TlJA8CWYPCRJNqllx7HHNi4FnkwBT8t+OvEdIPXPG237+qm8h9tMtIMWeV/6o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=NrBws/lc; arc=none smtp.client-ip=213.133.104.62
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iogearbox.net
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:MIME-Version:
-	Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:In-Reply-To:References;
-	bh=cDjjizADC9QJgiIBgN8vyRB9H0Mk619r0v3k1gZ+FbA=; b=IedWzaQmn1IvPQ+7sDOzFzz1uy
-	9fQ/iLb6V5VjCq8w7gZd7lTz0Y/m/dX6IqQKCBIavXD12Zm3CrJzvaIe/JTdTUY4TXuH1ja0mw5q7
-	1+GTdZciuuGbYTdnJez2MpOIKtplCnnOmwfAb9wjOPkP1I8LcyFClLpvmPCXzkvOKUPBn/kdrRCIQ
-	QIV4REcapCAuprreDglCtheHVjpoIsQRl0lKSDtApqpAWoxxum0JCIOpwk8mxJ9fEKOdRRX5M5Ovk
-	YvxGReD7KfD+jkqQ6ULgAI91zsmOk6OIVUr3LFVQZGSLZqbbgkKUyAhYfnncG962gie4b8vg1xgu8
-	w3D45ckg==;
+	References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
+	Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
+	bh=e60LfvlchEiu7e5oiLaH1krDe5mH762VSh8SA9TrKzU=; b=NrBws/lcjYtiPkx6x0nVMFCT2N
+	eruacRNFM24Kc/SCmHl2f55tloWNOE1MSuH806A94qhHEmWlXZ8I+d3ulVUOWAeFm6tM32Cruu26W
+	0OXnfyLcR6/3MOdZTK8zJvhNNfj0pa8/aIwuwxh3UlMJo7uTsPuwkD5dc4aKCP4wnuJ/gv7Yoaeuf
+	DwSEa3uhlAC73wqInjafHXqcSSaCzImFS7mwot8fMU/Hmvb8XYfSIz+pv/FmpWPVmmcjXQTrY6LR1
+	4dUrDmafd9VPMxpY1exBaz5nfiWlFIXdBLKv8+pQPwT7Pv3jPiou+y6TWbGSYy3C5Z0tWe5AsLeZn
+	zizyxXQA==;
 Received: from 14.248.197.178.dynamic.dsl-lte-bonding.zhbmb00p-msn.res.cust.swisscom.ch ([178.197.248.14] helo=localhost)
 	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
 	(Exim 4.94.2)
 	(envelope-from <daniel@iogearbox.net>)
-	id 1sAXu1-000IRK-JE; Fri, 24 May 2024 18:36:21 +0200
+	id 1sAXu2-000IRO-40; Fri, 24 May 2024 18:36:22 +0200
 From: Daniel Borkmann <daniel@iogearbox.net>
 To: martin.lau@kernel.org
 Cc: razor@blackwall.org,
 	bpf@vger.kernel.org,
 	netdev@vger.kernel.org,
 	Daniel Borkmann <daniel@iogearbox.net>
-Subject: [PATCH bpf v2 1/4] netkit: Fix setting mac address in l2 mode
-Date: Fri, 24 May 2024 18:36:16 +0200
-Message-Id: <20240524163619.26001-1-daniel@iogearbox.net>
+Subject: [PATCH bpf v2 2/4] netkit: Fix pkt_type override upon netkit pass verdict
+Date: Fri, 24 May 2024 18:36:17 +0200
+Message-Id: <20240524163619.26001-2-daniel@iogearbox.net>
 X-Mailer: git-send-email 2.21.0
+In-Reply-To: <20240524163619.26001-1-daniel@iogearbox.net>
+References: <20240524163619.26001-1-daniel@iogearbox.net>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -67,90 +70,94 @@ X-Authenticated-Sender: daniel@iogearbox.net
 X-Virus-Scanned: Clear (ClamAV 0.103.10/27285/Fri May 24 10:30:55 2024)
 
 When running Cilium connectivity test suite with netkit in L2 mode, we
-found that it is expected to be able to specify a custom MAC address for
-the devices, in particular, cilium-cni obtains the specified MAC address
-by querying the endpoint and sets the MAC address of the interface inside
-the Pod. Thus, fix the missing support in netkit for L2 mode.
+found that compared to tcx a few tests were failing which pushed traffic
+into an L7 proxy sitting in host namespace. The problem in particular is
+around the invocation of eth_type_trans() in netkit.
+
+In case of tcx, this is run before the tcx ingress is triggered inside
+host namespace and thus if the BPF program uses the bpf_skb_change_type()
+helper the newly set type is retained. However, in case of netkit, the
+late eth_type_trans() invocation overrides the earlier decision from the
+BPF program which eventually leads to the test failure.
+
+Instead of eth_type_trans(), split out the relevant parts, meaning, reset
+of mac header and call to eth_skb_pkt_type() before the BPF program is run
+in order to have the same behavior as with tcx, and refactor a small helper
+called eth_skb_pull_mac() which is run in case it's passed up the stack
+where the mac header must be pulled. With this all connectivity tests pass.
 
 Fixes: 35dfaad7188c ("netkit, bpf: Add bpf programmable net device")
 Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
 Acked-by: Nikolay Aleksandrov <razor@blackwall.org>
 ---
- drivers/net/netkit.c | 26 +++++++++++++++++++++-----
- 1 file changed, 21 insertions(+), 5 deletions(-)
+ drivers/net/netkit.c        | 4 +++-
+ include/linux/etherdevice.h | 8 ++++++++
+ net/ethernet/eth.c          | 4 +---
+ 3 files changed, 12 insertions(+), 4 deletions(-)
 
 diff --git a/drivers/net/netkit.c b/drivers/net/netkit.c
-index a4d2e76a8d58..272894053e2c 100644
+index 272894053e2c..16789cd446e9 100644
 --- a/drivers/net/netkit.c
 +++ b/drivers/net/netkit.c
-@@ -155,6 +155,16 @@ static void netkit_set_multicast(struct net_device *dev)
- 	/* Nothing to do, we receive whatever gets pushed to us! */
+@@ -55,6 +55,7 @@ static void netkit_prep_forward(struct sk_buff *skb, bool xnet)
+ 	skb_scrub_packet(skb, xnet);
+ 	skb->priority = 0;
+ 	nf_skip_egress(skb, true);
++	skb_reset_mac_header(skb);
  }
  
-+static int netkit_set_macaddr(struct net_device *dev, void *sa)
+ static struct netkit *netkit_priv(const struct net_device *dev)
+@@ -78,6 +79,7 @@ static netdev_tx_t netkit_xmit(struct sk_buff *skb, struct net_device *dev)
+ 		     skb_orphan_frags(skb, GFP_ATOMIC)))
+ 		goto drop;
+ 	netkit_prep_forward(skb, !net_eq(dev_net(dev), dev_net(peer)));
++	eth_skb_pkt_type(skb, peer);
+ 	skb->dev = peer;
+ 	entry = rcu_dereference(nk->active);
+ 	if (entry)
+@@ -85,7 +87,7 @@ static netdev_tx_t netkit_xmit(struct sk_buff *skb, struct net_device *dev)
+ 	switch (ret) {
+ 	case NETKIT_NEXT:
+ 	case NETKIT_PASS:
+-		skb->protocol = eth_type_trans(skb, skb->dev);
++		eth_skb_pull_mac(skb);
+ 		skb_postpull_rcsum(skb, eth_hdr(skb), ETH_HLEN);
+ 		if (likely(__netif_rx(skb) == NET_RX_SUCCESS)) {
+ 			dev_sw_netstats_tx_add(dev, 1, len);
+diff --git a/include/linux/etherdevice.h b/include/linux/etherdevice.h
+index 2ad1ffa4ccb9..0ed47d00549b 100644
+--- a/include/linux/etherdevice.h
++++ b/include/linux/etherdevice.h
+@@ -636,6 +636,14 @@ static inline void eth_skb_pkt_type(struct sk_buff *skb,
+ 	}
+ }
+ 
++static inline struct ethhdr *eth_skb_pull_mac(struct sk_buff *skb)
 +{
-+	struct netkit *nk = netkit_priv(dev);
++	struct ethhdr *eth = (struct ethhdr *)skb->data;
 +
-+	if (nk->mode != NETKIT_L2)
-+		return -EOPNOTSUPP;
-+
-+	return eth_mac_addr(dev, sa);
++	skb_pull_inline(skb, ETH_HLEN);
++	return eth;
 +}
 +
- static void netkit_set_headroom(struct net_device *dev, int headroom)
- {
- 	struct netkit *nk = netkit_priv(dev), *nk2;
-@@ -198,6 +208,7 @@ static const struct net_device_ops netkit_netdev_ops = {
- 	.ndo_start_xmit		= netkit_xmit,
- 	.ndo_set_rx_mode	= netkit_set_multicast,
- 	.ndo_set_rx_headroom	= netkit_set_headroom,
-+	.ndo_set_mac_address	= netkit_set_macaddr,
- 	.ndo_get_iflink		= netkit_get_iflink,
- 	.ndo_get_peer_dev	= netkit_peer_dev,
- 	.ndo_get_stats64	= netkit_get_stats,
-@@ -300,9 +311,11 @@ static int netkit_validate(struct nlattr *tb[], struct nlattr *data[],
+ /**
+  * eth_skb_pad - Pad buffer to mininum number of octets for Ethernet frame
+  * @skb: Buffer to pad
+diff --git a/net/ethernet/eth.c b/net/ethernet/eth.c
+index 049c3adeb850..4e3651101b86 100644
+--- a/net/ethernet/eth.c
++++ b/net/ethernet/eth.c
+@@ -161,9 +161,7 @@ __be16 eth_type_trans(struct sk_buff *skb, struct net_device *dev)
+ 	skb->dev = dev;
+ 	skb_reset_mac_header(skb);
  
- 	if (!attr)
- 		return 0;
--	NL_SET_ERR_MSG_ATTR(extack, attr,
--			    "Setting Ethernet address is not supported");
--	return -EOPNOTSUPP;
-+	if (nla_len(attr) != ETH_ALEN)
-+		return -EINVAL;
-+	if (!is_valid_ether_addr(nla_data(attr)))
-+		return -EADDRNOTAVAIL;
-+	return 0;
- }
+-	eth = (struct ethhdr *)skb->data;
+-	skb_pull_inline(skb, ETH_HLEN);
+-
++	eth = eth_skb_pull_mac(skb);
+ 	eth_skb_pkt_type(skb, dev);
  
- static struct rtnl_link_ops netkit_link_ops;
-@@ -365,6 +378,9 @@ static int netkit_new_link(struct net *src_net, struct net_device *dev,
- 		strscpy(ifname, "nk%d", IFNAMSIZ);
- 		ifname_assign_type = NET_NAME_ENUM;
- 	}
-+	if (mode != NETKIT_L2 &&
-+	    (tb[IFLA_ADDRESS] || tbp[IFLA_ADDRESS]))
-+		return -EOPNOTSUPP;
- 
- 	net = rtnl_link_get_net(src_net, tbp);
- 	if (IS_ERR(net))
-@@ -379,7 +395,7 @@ static int netkit_new_link(struct net *src_net, struct net_device *dev,
- 
- 	netif_inherit_tso_max(peer, dev);
- 
--	if (mode == NETKIT_L2)
-+	if (mode == NETKIT_L2 && !(ifmp && tbp[IFLA_ADDRESS]))
- 		eth_hw_addr_random(peer);
- 	if (ifmp && dev->ifindex)
- 		peer->ifindex = ifmp->ifi_index;
-@@ -402,7 +418,7 @@ static int netkit_new_link(struct net *src_net, struct net_device *dev,
- 	if (err < 0)
- 		goto err_configure_peer;
- 
--	if (mode == NETKIT_L2)
-+	if (mode == NETKIT_L2 && !tb[IFLA_ADDRESS])
- 		eth_hw_addr_random(dev);
- 	if (tb[IFLA_IFNAME])
- 		nla_strscpy(dev->name, tb[IFLA_IFNAME], IFNAMSIZ);
+ 	/*
 -- 
 2.34.1
 
