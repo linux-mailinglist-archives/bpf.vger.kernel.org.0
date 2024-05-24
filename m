@@ -1,107 +1,117 @@
-Return-Path: <bpf+bounces-30508-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-30509-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id A39C38CE89B
-	for <lists+bpf@lfdr.de>; Fri, 24 May 2024 18:24:21 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 284138CE8A3
+	for <lists+bpf@lfdr.de>; Fri, 24 May 2024 18:28:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D55D11C20E04
-	for <lists+bpf@lfdr.de>; Fri, 24 May 2024 16:24:20 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D7A5F282C71
+	for <lists+bpf@lfdr.de>; Fri, 24 May 2024 16:28:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6217112EBE1;
-	Fri, 24 May 2024 16:24:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E95CB12EBD5;
+	Fri, 24 May 2024 16:28:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="M9t0BuYi"
+	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="fps5ioFx"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-189.mta0.migadu.com (out-189.mta0.migadu.com [91.218.175.189])
+Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 34C5912E1FE
-	for <bpf@vger.kernel.org>; Fri, 24 May 2024 16:24:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.189
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F37D126F06;
+	Fri, 24 May 2024 16:28:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.133.104.62
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716567853; cv=none; b=apfpGcVsZrojG2iEWFjts008M3jtB2LaS0e2xck66NFyy1T92j6iOxYWlbZ4h+Q91pNi+gWx+OLy0aRPRZuMDECMKYpatTuxREFxFPYsYLpl/Jb0qmrZOUI1jSqmc5uM1OZi/wJ2Lz3ky16Im5SAYrA1yaj2XMVkdPPYLYgKRMA=
+	t=1716568083; cv=none; b=g2skEpvmYiueYHXjHc9bYGXQe7gQTHowdgj6FVyU/iRgxSWtwUCSDxvVs38flFiJAi8W10SrlbL1lT0qZX0Lm/XuYWm8p4MQFULGauH0OxE3vYhf21wB51EWotuD2xC7ctpHwlGzGiqycIVzhEqjlVb/t3gm5AhWU7VGKe5zsys=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716567853; c=relaxed/simple;
-	bh=TyGA7aM492lwlJYubcwxLFpjajXM+DDLCFMHxU8W2yg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=iZe4Oo1BB2OknLHQeTipFRE6BOnd6rW6tiN3TETeZxySxS6PtV5g6BsDCEZzhVhJd5SRJk4H375E4pHt63vBcSXoigeINn84JCfey1jW7JTsk+QGyEZSidXsRG7tD5DHbEm0WJp/zBfsndLrYC/R2gtbpoCSHN4JD9czTSNCxT0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=M9t0BuYi; arc=none smtp.client-ip=91.218.175.189
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Envelope-To: daniel@iogearbox.net
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1716567846;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=0D8vsxOHJyU/xelzOnJBFSCN9LD7iP5KtQ1Pa/+CIXA=;
-	b=M9t0BuYiS6D3URd/AAxNAg/rDepcWVo8bPp7DO1yvp/8X0ykDBtGLrJ9LL9pt4nqviAR0J
-	Gtp3l5eqQWH1KMdyi3IgbcxWVPnq+SgiolallbJJ7A5wJ9g8jJoWCeRjDMfhzjWwuZO7JH
-	+klDKi1fqMyKYIk514ZIagJJ+mGelR8=
-X-Envelope-To: vadfed@meta.com
-X-Envelope-To: martin.lau@linux.dev
-X-Envelope-To: andrii@kernel.org
-X-Envelope-To: ast@kernel.org
-X-Envelope-To: mykolal@fb.com
-X-Envelope-To: kuba@kernel.org
-X-Envelope-To: bpf@vger.kernel.org
-X-Envelope-To: netdev@vger.kernel.org
-Message-ID: <4ed19773-2a26-4652-bd62-0fc0e5c1233e@linux.dev>
-Date: Fri, 24 May 2024 17:23:58 +0100
+	s=arc-20240116; t=1716568083; c=relaxed/simple;
+	bh=hgKjtqpnBrD07Of/GgbgYcb5JsPipLXArOroUIYRbIA=;
+	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=Q/gf720QFZ269V2/F+DAONeIgqEj600+qsk/+SY+tLpPg8BuXgDjy5zAZ3f8WAKAGpLeiHj3Cjl01x8f7zb6u458Yo4p7j2l+7hHssX0yIwiwBgeT7iqp14Nu+1c0NdwCHF/ogqH5ikGYL5gorKvf9F1VLPOh+gFroENhzxrFn8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=fps5ioFx; arc=none smtp.client-ip=213.133.104.62
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iogearbox.net
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
+	In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
+	bh=onK/JX9pXTg9x5dECc3ShsOZLHS6PoRdL7pdGhH0BCs=; b=fps5ioFxHwSMfhRK5cLYtVe9it
+	qo/oP7tChe/oKUBLEWa6qLYNs+AO91fckAjTWYwsK8Y7bwIqdRrQQCV27sCI9CGVMJEZp5TUqABWJ
+	icDK0XxHx4u0LWBY6PASqAy4TSPt6nmQ7KctjvcLLFBNGTgogctUQwCxQgHV0NYPGwXZtEloLjAtH
+	diGkdqFhkr1TFaHf9I0IPrXR22ClSR4sVUDTHrhCvrwiyCsdjAAIwIto+OVaixrM8lXoagPOT6ClJ
+	OjfFEkjs6ncvr6JY+XEf9OyrWLeuJmuOe0R3R9RRUYOJirKjW6fhKhZZE8CrgttmNEGwGs6z5isLV
+	gHZQ3baQ==;
+Received: from sslproxy07.your-server.de ([78.47.199.104])
+	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <daniel@iogearbox.net>)
+	id 1sAXlX-000HnP-PT; Fri, 24 May 2024 18:27:35 +0200
+Received: from [178.197.248.14] (helo=linux.home)
+	by sslproxy07.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <daniel@iogearbox.net>)
+	id 1sAXlX-000Ehc-0g;
+	Fri, 24 May 2024 18:27:34 +0200
+Subject: Re: [PATCH bpf-next] selftests/bpf: Enable INET_XFRM_TUNNEL in config
+To: Geliang Tang <geliang@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
+ Eduard Zingerman <eddyz87@gmail.com>, Mykola Lysenko <mykolal@fb.com>,
+ Alexei Starovoitov <ast@kernel.org>, Martin KaFai Lau
+ <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
+ Yonghong Song <yonghong.song@linux.dev>,
+ John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
+ Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
+ Jiri Olsa <jolsa@kernel.org>, Shuah Khan <shuah@kernel.org>
+Cc: Geliang Tang <tanggeliang@kylinos.cn>, bpf@vger.kernel.org,
+ linux-kselftest@vger.kernel.org, Ilya Leoshkevich <iii@linux.ibm.com>
+References: <acb442e38544bc5c60dcaa61d56ca1e6bbbc82fe.1715823610.git.tanggeliang@kylinos.cn>
+From: Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <978a90ad-2e4c-ac06-30bf-6449444d47f9@iogearbox.net>
+Date: Fri, 24 May 2024 18:27:34 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next v2 2/2] selftests: bpf: validate
- CHECKSUM_COMPLETE option
-To: Daniel Borkmann <daniel@iogearbox.net>, Vadim Fedorenko
- <vadfed@meta.com>, Martin KaFai Lau <martin.lau@linux.dev>,
- Andrii Nakryiko <andrii@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
- Mykola Lysenko <mykolal@fb.com>, Jakub Kicinski <kuba@kernel.org>
-Cc: bpf@vger.kernel.org, netdev@vger.kernel.org
-References: <20240524110659.3612077-1-vadfed@meta.com>
- <20240524110659.3612077-2-vadfed@meta.com>
- <08fda54a-f45e-7140-e5e8-fe2c3542547f@iogearbox.net>
+In-Reply-To: <acb442e38544bc5c60dcaa61d56ca1e6bbbc82fe.1715823610.git.tanggeliang@kylinos.cn>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Vadim Fedorenko <vadim.fedorenko@linux.dev>
-In-Reply-To: <08fda54a-f45e-7140-e5e8-fe2c3542547f@iogearbox.net>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.10/27285/Fri May 24 10:30:55 2024)
 
-On 24/05/2024 17:18, Daniel Borkmann wrote:
-> On 5/24/24 1:06 PM, Vadim Fedorenko wrote:
->> Adjust skb program test to run with checksum validation.
->>
->> Signed-off-by: Vadim Fedorenko <vadfed@meta.com>
+On 5/16/24 3:41 AM, Geliang Tang wrote:
+> From: Geliang Tang <tanggeliang@kylinos.cn>
 > 
-> BPF CI complains :
+> The kconfigs CONFIG_INET_XFRM_TUNNEL and CONFIG_INET6_XFRM_TUNNEL are
+> needed by test_tunnel tests. This patch enables them together with the
+> dependent kconfigs CONFIG_INET_IPCOMP and CONFIG_INET6_IPCOMP.
 > 
->    [...]
->    
-> /tmp/work/bpf/bpf/tools/testing/selftests/bpf/prog_tests/test_skb_pkt_end.c:14:12: error: call to undeclared function 'BIT'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
->       14 |                 .flags = BPF_F_TEST_SKB_CHECKSUM_COMPLETE,
->          |                          ^
->    /tmp/work/bpf/bpf/tools/include/uapi/linux/bpf.h:1429:42: note: 
-> expanded from macro 'BPF_F_TEST_SKB_CHECKSUM_COMPLETE'
->     1429 | #define BPF_F_TEST_SKB_CHECKSUM_COMPLETE        BIT(2)
->          |                                                 ^
->    1 error generated.
->    make: *** [Makefile:654: 
-> /tmp/work/bpf/bpf/tools/testing/selftests/bpf/test_skb_pkt_end.test.o] 
-> Error 1
->    make: *** Waiting for unfinished jobs....
->    make: Leaving directory '/tmp/work/bpf/bpf/tools/testing/selftests/bpf'
->    Error: Process completed with exit code 2.
+> Signed-off-by: Geliang Tang <tanggeliang@kylinos.cn>
+> ---
+>   tools/testing/selftests/bpf/config | 4 ++++
+>   1 file changed, 4 insertions(+)
+> 
+> diff --git a/tools/testing/selftests/bpf/config b/tools/testing/selftests/bpf/config
+> index eeabd798bc3a..8aa56e6bdac1 100644
+> --- a/tools/testing/selftests/bpf/config
+> +++ b/tools/testing/selftests/bpf/config
+> @@ -95,3 +95,7 @@ CONFIG_XDP_SOCKETS=y
+>   CONFIG_XFRM_INTERFACE=y
+>   CONFIG_TCP_CONG_DCTCP=y
+>   CONFIG_TCP_CONG_BBR=y
+> +CONFIG_INET_IPCOMP=y
+> +CONFIG_INET_XFRM_TUNNEL=y
+> +CONFIG_INET6_IPCOMP=y
+> +CONFIG_INET6_XFRM_TUNNEL=y
+> 
 
-Oops, looks like checkpatch.pl was too smart and replaced original
-define with BIT() macro, but in one file only. I'll re-send it with
-fixes.
+[ +Ilya ]
+
+Looks like this triggers a boot hang on s390x :
+
+https://github.com/kernel-patches/bpf/actions/runs/9215175853/job/25353574288
 
