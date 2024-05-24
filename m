@@ -1,149 +1,397 @@
-Return-Path: <bpf+bounces-30485-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-30486-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 68CE68CE5B7
-	for <lists+bpf@lfdr.de>; Fri, 24 May 2024 15:07:01 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C52078CE5D0
+	for <lists+bpf@lfdr.de>; Fri, 24 May 2024 15:14:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 09EEA1F2205E
-	for <lists+bpf@lfdr.de>; Fri, 24 May 2024 13:07:01 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 139E0B21BE4
+	for <lists+bpf@lfdr.de>; Fri, 24 May 2024 13:14:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D82E86657;
-	Fri, 24 May 2024 13:06:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C01511272BF;
+	Fri, 24 May 2024 13:13:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b="Q/UEguK6"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="C6F6b2Ez"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f44.google.com (mail-ej1-f44.google.com [209.85.218.44])
+Received: from mail-pf1-f172.google.com (mail-pf1-f172.google.com [209.85.210.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0FF348663A
-	for <bpf@vger.kernel.org>; Fri, 24 May 2024 13:06:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A925986653;
+	Fri, 24 May 2024 13:13:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716556015; cv=none; b=Wt8/G3/neLNktbLKRUyTRnYsb59oOLf3u0xW9ZBMmwvYNSuNKD8gnb27WkYEdJ0sQUEwrPdYerZL6hCmkr/SjLBfLB8SymKJfaS3yPVWJrEuj4DDh7EghnVmOzAFZuddat9cAeYH0VQp1rduBiP9FcZZLjoQgYCo8NsbAq3O4Hc=
+	t=1716556433; cv=none; b=Ma74+dADJA3blyEnaDjb0C9D/day7qvKpIr1LGdlWa3Hv2xpY9m6MRt5EQb+IXJuuJrL+jvltTIkkZVR2YqhrWiDFB7FwVXnxCk+hakST9zpnEAx8efJIyA1zdfDw29dHFUiLXeyGixZzrWQ+fbLH7xenibUewxM6M0sLAu3hMQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716556015; c=relaxed/simple;
-	bh=5V2+EptcI6TX7J2zROHp8bQdWXegKov5jcgAdU9YNXU=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=uPJVHXetkLNM+9uKz5fgXMjw7flEPf+YwMnF9ddpSQxrBUSSzlmuDVEaoRF43VbjEZOnkLEaOkdtUYRWeeIKM8Epd3DiLHcJ/G5E3nUznp6phPz4qDxm4DfXcjc8Qe+HFGtv7jiT8Cu812PPGAq5rUelhjdlkDRY6bRXtfmnhJU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com; spf=pass smtp.mailfrom=cloudflare.com; dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b=Q/UEguK6; arc=none smtp.client-ip=209.85.218.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cloudflare.com
-Received: by mail-ej1-f44.google.com with SMTP id a640c23a62f3a-a6269ad71b6so100299466b.2
-        for <bpf@vger.kernel.org>; Fri, 24 May 2024 06:06:53 -0700 (PDT)
+	s=arc-20240116; t=1716556433; c=relaxed/simple;
+	bh=NpZ/oUZ/qFvfZ9AsuHyWjL6YZrUCcTTtFcnDyD9oIPw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=gcAz6HRjazqSLWDXVnQHeFlo7tcsvKei3+IRJB1RiPzw1F8tCBZkDVeT0hwDwdszvOLPlbQ4anXzUu/vlm7HMbW5ZQq0Iw/pcOSWWwPJmyc9X1RjoRJoK1W4EyO0jShYlq60YD/S+njaPw7YRxXVf4SRvP+NyokJnkcHU04vVkQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=C6F6b2Ez; arc=none smtp.client-ip=209.85.210.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f172.google.com with SMTP id d2e1a72fcca58-6f8edff35a0so713741b3a.2;
+        Fri, 24 May 2024 06:13:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google09082023; t=1716556012; x=1717160812; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:user-agent
-         :references:in-reply-to:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=5D4uHBRMvW2P1UolsuKrkfSqzKnJV+XORhvSy/dA9yo=;
-        b=Q/UEguK6PDGhX+UCJNFghbk69D3ot1x4AXHDUHp1F5GrDXcIHVtNk8XiQv/llKCHcx
-         S8guw4sF6kLpm2nfhWoU17rvw9igvGEdugb654GiNPT08fYfHz5NjqGSP9s4iW4+SJ+o
-         mDiboXLD+diWqFheZdcTYjJeL8CWAe1OF5zKb79QTddljULshffHKc/NGEQH1CZzzZiN
-         HKvXpOkKe9PkzD2OxvL9731cKYcYndL6O3HlVrvKrZfb5PAEmXh5nNaoUXq4VWrbZ2Bb
-         66o8fm8JVJlEgx2JVw0LqVfQFK1Ulh9wvb+VXfLsI+urkTYhaaZkpxrRY2e3JYi4S5vP
-         6WEA==
+        d=gmail.com; s=20230601; t=1716556431; x=1717161231; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=2MyzfS16StsoZEGeCGtvC6weySmrwWE1DyLms5XkcTk=;
+        b=C6F6b2EzQoii8RZXmM9X34KLVBHW+q6JPbPnOlvkCAujNut7JNzBdYmNVwcdRkOzWN
+         DJqF9dRVTFEfTrAhUBFHN6flzAOqnBG+6smvKqY006f+SqtJxm0ODjo11G5tl3IWNi/j
+         nv3NI39hHilq8ptvlUnaEW2jO6bLXC56ujBU3m+kqYIxwwkqCnwj+Fsq5q77TSN0bKzc
+         kFnayj3Kk+FzQKC9uFMIBaKaqC4g4DXFGiSzJvzvEdkor3JysiAAT+eAlQpoKzGS5ZYl
+         x5+tSln/l5fYB6Gi3s4Ye2I7hZsBFVCgEvTtNA+/L5rX2m6sGnBmPP8jNyAiUqH1kP7k
+         /3xg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1716556012; x=1717160812;
-        h=content-transfer-encoding:mime-version:message-id:date:user-agent
-         :references:in-reply-to:subject:cc:to:from:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=5D4uHBRMvW2P1UolsuKrkfSqzKnJV+XORhvSy/dA9yo=;
-        b=ZuG+cDVvrv243xH3PS01AQESJTXRPzAhSAjIWmJnSrir36OgC2tNH9gYAmI4GfUcVl
-         TMZ6XuSufkr/LC9cEfYy12sVLVVxbiDdidOqfT0JUKiL6UTcEPWogtKBKIWXHgM/jlYJ
-         kLX/tgGMW30xTrVCWyKQ1z0wg/S1T588jKiGTkbDNdFSE9WY/kmYG3eR0StF4tO/KRTj
-         KvIFU5y4EyHt7HWtnCi6/+Mk6JbNc/tzy01eIoB9ZmUsYpHK2+H+062v2/eVsPoMyOWV
-         uRIaHqebQZvzA3OOj6TL2KIKid+yDcSQ4xuhmn70g9rEiYcXHS39zeCWxO/LvGf4rTDg
-         mKyA==
-X-Forwarded-Encrypted: i=1; AJvYcCXxEXIMmBBGoCvEx6tA+qIi/1HyKBGxk0A/gVZ9MBhhLoptlaNh0yZMNVsAws4S7fqKVNNzXcREon0tromJGxy2s+t9
-X-Gm-Message-State: AOJu0YxxalE4Eppc7v6jvihVvDtNelFMEa2tOgqH8wWXMA8YH0bkkTle
-	TY3zM4i9m45eBA1dtKBQXGaxDS1coAdluLAE/qPVisgqc33xrZWHQdmjjrzDJv68z8R1cb5zPJQ
-	r
-X-Google-Smtp-Source: AGHT+IGEG7/JrO6Dtf30LBLhIMaqw1L8qmyybu7t7SjQaXvHTTGgjoVnuSm6jeH023DXQ3qCeIvmug==
-X-Received: by 2002:a17:906:e258:b0:a59:8cd2:5b2c with SMTP id a640c23a62f3a-a62646cd7d5mr152421066b.39.1716556012345;
-        Fri, 24 May 2024 06:06:52 -0700 (PDT)
-Received: from cloudflare.com ([2a09:bac5:5063:2387::38a:47])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a626c9376dasm129455466b.54.2024.05.24.06.06.51
+        d=1e100.net; s=20230601; t=1716556431; x=1717161231;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=2MyzfS16StsoZEGeCGtvC6weySmrwWE1DyLms5XkcTk=;
+        b=G9J55o7ROyOudZYDy7lCJSSV1LqLIHAKEgjIGXRZruMuT0dLumIUjVqDahLspVk32T
+         KEFp79dsUnsJL2mk5Jik3X590OO0b9TkI0YqKuarJoeGSRAiPNINirTDXau5SnccacB1
+         /c5niKgmeRCdb2yi3Kc2Syu7zz3t3HsXV4h6iP+I5XdAYBwPHiRUcLIxaSVNOrPYVLAG
+         /sp4XNcnvcyDwNnCUCNVsXq5DRLiKHZkscq7wrMVtsLh0oVDLLUBQJuAxydxm7MhoVht
+         1J1a2NiNGBVJmVYFyzZ8qaPhHQ8RfLL0lGeZU5b46mXJsVZAgQesKrMJbK95h03gPyG7
+         XvLw==
+X-Forwarded-Encrypted: i=1; AJvYcCXte+NCPxR0O2O1GfYP77Mp28Io1sWiuzyb3hkXSbPrOkmL4O/L/0IBzVBFSVBaTo3CMNcDmfVE9b3oDVbqEGwL8NHJQF/OJDoPZrqTJT/7SMkqcYRePLz/XuWsg0hVbnouvTxx6sloslww43c68V/gjOkorwM1AZsg/udIJMDW8VNfq2q9
+X-Gm-Message-State: AOJu0YxLG5UrvcjM+9sgw4yXXxjODGxhQTao0g0icKbVxmF/yYai/i3D
+	BbQBhgFzx1jmijzdYOLSHwsWuz0uQTsL5sKCbdg2W74Rmw486J/o
+X-Google-Smtp-Source: AGHT+IFRrxATx9NJgczNecyKGG7y0J0O42EKrFRKSSAepsrTmt+PQzg4XPOqPQbYnc9tzWhDRprLsw==
+X-Received: by 2002:a05:6a21:3417:b0:1af:d1f0:b350 with SMTP id adf61e73a8af0-1b212dc14d2mr2235146637.22.1716556430763;
+        Fri, 24 May 2024 06:13:50 -0700 (PDT)
+Received: from archie.me ([103.124.138.155])
+        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-6822635da92sm1127308a12.58.2024.05.24.06.13.49
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 24 May 2024 06:06:51 -0700 (PDT)
-From: Jakub Sitnicki <jakub@cloudflare.com>
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: John Fastabend <john.fastabend@gmail.com>,  Daniel Borkmann
- <daniel@iogearbox.net>,  Hillf Danton <hdanton@sina.com>,  Tetsuo Handa
- <penguin-kernel@i-love.sakura.ne.jp>,  Eric Dumazet <edumazet@google.com>,
-  Linus Torvalds <torvalds@linux-foundation.org>,  bpf
- <bpf@vger.kernel.org>,  LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] bpf, sockmap: defer sk_psock_free_link() using RCU
-In-Reply-To: <CAADnVQKfbaY-pm2H-6U_c=-XyvocSAkNqXg4+Kj7cXGtmajaAA@mail.gmail.com>
- (Alexei
-	Starovoitov's message of "Wed, 22 May 2024 07:57:48 -0700")
-References: <838e7959-a360-4ac1-b36a-a3469236129b@I-love.SAKURA.ne.jp>
-	<20240521225918.2147-1-hdanton@sina.com>
-	<20240522113349.2202-1-hdanton@sina.com> <87o78yvydx.fsf@cloudflare.com>
-	<CAADnVQKfbaY-pm2H-6U_c=-XyvocSAkNqXg4+Kj7cXGtmajaAA@mail.gmail.com>
-User-Agent: mu4e 1.12.4; emacs 29.1
-Date: Fri, 24 May 2024 15:06:50 +0200
-Message-ID: <87a5kfwe8l.fsf@cloudflare.com>
+        Fri, 24 May 2024 06:13:50 -0700 (PDT)
+Received: by archie.me (Postfix, from userid 1000)
+	id 0D8C419395ACB; Fri, 24 May 2024 20:13:45 +0700 (WIB)
+Date: Fri, 24 May 2024 20:13:45 +0700
+From: Bagas Sanjaya <bagasdotme@gmail.com>
+To: Marcel <nitan.marcel@gmail.com>,
+	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Cc: Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
+	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Linux BPF <bpf@vger.kernel.org>,
+	Linux Kernel Tracing <linux-trace-kernel@vger.kernel.org>
+Subject: Re: How to properly fix reading user pointers in bpf in android
+ kernel 4.9?
+Message-ID: <ZlCSiU-OF4W2Rwii@archie.me>
+References: <42DD54A2-D0C2-4A70-B461-7C16D3ECB8D2@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="CXd7A4sW/FByWJu6"
+Content-Disposition: inline
+In-Reply-To: <42DD54A2-D0C2-4A70-B461-7C16D3ECB8D2@gmail.com>
+
+
+--CXd7A4sW/FByWJu6
 Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, May 22, 2024 at 07:57 AM -07, Alexei Starovoitov wrote:
-> On Wed, May 22, 2024 at 5:12=E2=80=AFAM Jakub Sitnicki <jakub@cloudflare.=
-com> wrote:
->>
->> On Wed, May 22, 2024 at 07:33 PM +08, Hillf Danton wrote:
->> > On Wed, 22 May 2024 11:50:49 +0200 Jakub Sitnicki <jakub@cloudflare.co=
-m>
->> > On Wed, May 22, 2024 at 06:59 AM +08, Hillf Danton wrote:
->> >> > On Tue, 21 May 2024 08:38:52 -0700 Alexei Starovoitov <alexei.staro=
-voitov@gmail.com>
->> >> >> On Sun, May 12, 2024 at 12:22=3DE2=3D80=3DAFAM Tetsuo Handa <pengu=
-in-kernel@i-love.sakura.ne.jp> wrote:
->> >> >> > --- a/net/core/sock_map.c
->> >> >> > +++ b/net/core/sock_map.c
->> >> >> > @@ -142,6 +142,7 @@ static void sock_map_del_link(struct sock *s=
-k,
->> >> >> >         bool strp_stop =3D3D false, verdict_stop =3D3D false;
->> >> >> >         struct sk_psock_link *link, *tmp;
->> >> >> >
->> >> >> > +       rcu_read_lock();
->> >> >> >         spin_lock_bh(&psock->link_lock);
->> >> >>
->> >> >> I think this is incorrect.
->> >> >> spin_lock_bh may sleep in RT and it won't be safe to do in rcu cs.
->> >> >
->> >> > Could you specify why it won't be safe in rcu cs if you are right?
->> >> > What does rcu look like in RT if not nothing?
->> >>
->> >> RCU readers can't block, while spinlock RT doesn't disable preemption.
->> >>
->> >> https://docs.kernel.org/RCU/rcu.html
->> >> https://docs.kernel.org/locking/locktypes.html#spinlock-t-and-preempt=
--rt
->> >>
->> >> I've finally gotten around to testing proposed fix that just disallows
->> >> map_delete_elem on sockmap/sockhash from BPF tracing progs
->> >> completely. This should put an end to this saga of syzkaller reports.
->> >>
->> >> https://lore.kernel.org/all/87jzjnxaqf.fsf@cloudflare.com/
->
-> Agree. Let's do that. According to John the delete path is not something
-> that is used in production. It's only a source of trouble with syzbot.
+[also Cc: bpf maintainers and get_maintainer output]
 
-Cool. The proposed API rule would be that if a BPF program type is
-allowed to update a sockmap/sockhash, then it is also allowed to delete
-from it.
+On Thu, May 23, 2024 at 07:52:22PM +0300, Marcel wrote:
+> This seems that it was a long standing problem with the Linux kernel in g=
+eneral. bpf_probe_read should have worked for both kernel and user pointers=
+ but it fails with access error when reading an user one instead.=20
+>=20
+> I know there's a patch upstream that fixes this by introducing new helper=
+s for reading kernel and userspace pointers and I tried to back port them b=
+ack to my kernel but with no success. Tools like bcc fail to use them and i=
+nstead they report that the arguments sent to the helpers are invalid. I as=
+sume this is due to the arguments ARG_CONST_STACK_SIZE and ARG_PTR_TO_RAW_S=
+TACK handle data different in the 4.9 android version and the upstream vers=
+ion but I'm not sure that this is the cause. I left the patch I did below a=
+nd with a link to the kernel I'm working on and maybe someone can take a lo=
+ok and give me an hand (the patch isn't applied yet)
 
-So I need to tweak my patch to allow deletes from sock_ops progs.
-We have a dedicated bpf_sock_map_update() helper there.
+What upstream patch? Has it already been in mainline?
 
-[...]
+>=20
+> <https://github.com/nitanmarcel/android_kernel_oneplus_sdm845-bpf>
+>=20
+> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> index 744b4763b80e..de94c13b7193 100644
+> --- a/include/uapi/linux/bpf.h
+> +++ b/include/uapi/linux/bpf.h
+> @@ -559,6 +559,43 @@ enum bpf_func_id {
+>     */
+>     BPF_FUNC_probe_read_user,
+> =20
+> +   /**
+> +   * int bpf_probe_read_kernel(void *dst, int size, void *src)
+> +   *     Read a kernel pointer safely.
+> +   *     Return: 0 on success or negative error
+> +   */
+> +   BPF_FUNC_probe_read_kernel,
+> +
+> +	/**
+> +	 * int bpf_probe_read_str(void *dst, int size, const void *unsafe_ptr)
+> +	 *     Copy a NUL terminated string from user unsafe address. In case t=
+he string
+> +	 *     length is smaller than size, the target is not padded with furth=
+er NUL
+> +	 *     bytes. In case the string length is larger than size, just count=
+-1
+> +	 *     bytes are copied and the last byte is set to NUL.
+> +	 *     @dst: destination address
+> +	 *     @size: maximum number of bytes to copy, including the trailing N=
+UL
+> +	 *     @unsafe_ptr: unsafe address
+> +	 *     Return:
+> +	 *       > 0 length of the string including the trailing NUL on success
+> +	 *       < 0 error
+> +	 */
+> +	BPF_FUNC_probe_read_user_str,
+> +
+> +	/**
+> +	 * int bpf_probe_read_str(void *dst, int size, const void *unsafe_ptr)
+> +	 *     Copy a NUL terminated string from unsafe address. In case the st=
+ring
+> +	 *     length is smaller than size, the target is not padded with furth=
+er NUL
+> +	 *     bytes. In case the string length is larger than size, just count=
+-1
+> +	 *     bytes are copied and the last byte is set to NUL.
+> +	 *     @dst: destination address
+> +	 *     @size: maximum number of bytes to copy, including the trailing N=
+UL
+> +	 *     @unsafe_ptr: unsafe address
+> +	 *     Return:
+> +	 *       > 0 length of the string including the trailing NUL on success
+> +	 *       < 0 error
+> +	 */
+> +	BPF_FUNC_probe_read_kernel_str,
+> +
+>  	__BPF_FUNC_MAX_ID,
+>  };
+> =20
+> diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+> index a1e37a5d8c88..3478ca744a45 100644
+> --- a/kernel/trace/bpf_trace.c
+> +++ b/kernel/trace/bpf_trace.c
+> @@ -94,7 +94,7 @@ static const struct bpf_func_proto bpf_probe_read_proto=
+ =3D {
+>  	.arg3_type	=3D ARG_ANYTHING,
+>  };
+> =20
+> -BPF_CALL_3(bpf_probe_read_user, void *, dst, u32, size, const void *, un=
+safe_ptr)
+> +BPF_CALL_3(bpf_probe_read_user, void *, dst, u32, size, const void  __us=
+er *, unsafe_ptr)
+>  {
+>  	int ret;
+> =20
+> @@ -115,6 +115,27 @@ static const struct bpf_func_proto bpf_probe_read_us=
+er_proto =3D {
+>  };
+> =20
+> =20
+> +BPF_CALL_3(bpf_probe_read_kernel, void *, dst, u32, size, const void *, =
+unsafe_ptr)
+> +{
+> +	int ret;
+> +
+> +	ret =3D probe_kernel_read(dst, unsafe_ptr, size);
+> +	if (unlikely(ret < 0))
+> +		memset(dst, 0, size);
+> +
+> +	return ret;
+> +}
+> +
+> +static const struct bpf_func_proto bpf_probe_read_kernel_proto =3D {
+> +	.func		=3D bpf_probe_read_kernel,
+> +	.gpl_only	=3D true,
+> +	.ret_type	=3D RET_INTEGER,
+> +	.arg1_type	=3D ARG_PTR_TO_RAW_STACK,
+> +	.arg2_type	=3D ARG_CONST_STACK_SIZE,
+> +	.arg3_type	=3D ARG_ANYTHING,
+> +};
+> +
+> +
+>  BPF_CALL_3(bpf_probe_write_user, void *, unsafe_ptr, const void *, src,
+>  	   u32, size)
+>  {
+> @@ -487,6 +508,69 @@ static const struct bpf_func_proto bpf_probe_read_st=
+r_proto =3D {
+>  	.arg3_type	=3D ARG_ANYTHING,
+>  };
+> =20
+> +
+> +
+> +BPF_CALL_3(bpf_probe_read_user_str, void *, dst, u32, size,
+> +	   const void __user *, unsafe_ptr)
+> +{
+> +	int ret;
+> +
+> +	/*
+> +	 * The strncpy_from_unsafe() call will likely not fill the entire
+> +	 * buffer, but that's okay in this circumstance as we're probing
+> +	 * arbitrary memory anyway similar to bpf_probe_read() and might
+> +	 * as well probe the stack. Thus, memory is explicitly cleared
+> +	 * only in error case, so that improper users ignoring return
+> +	 * code altogether don't copy garbage; otherwise length of string
+> +	 * is returned that can be used for bpf_perf_event_output() et al.
+> +	 */
+> +	ret =3D strncpy_from_unsafe_user(dst, unsafe_ptr, size);
+> +	if (unlikely(ret < 0))
+> +		memset(dst, 0, size);
+> +
+> +	return ret;
+> +}
+> +
+> +static const struct bpf_func_proto bpf_probe_read_user_str_proto =3D {
+> +	.func		=3D bpf_probe_read_user_str,
+> +	.gpl_only	=3D true,
+> +	.ret_type	=3D RET_INTEGER,
+> +	.arg1_type	=3D ARG_PTR_TO_RAW_STACK,
+> +	.arg2_type	=3D ARG_CONST_STACK_SIZE,
+> +	.arg3_type	=3D ARG_ANYTHING,
+> +};
+> +
+> +
+> +BPF_CALL_3(bpf_probe_read_kernel_str, void *, dst, u32, size,
+> +	   const void *, unsafe_ptr)
+> +{
+> +	int ret;
+> +
+> +	/*
+> +	 * The strncpy_from_unsafe() call will likely not fill the entire
+> +	 * buffer, but that's okay in this circumstance as we're probing
+> +	 * arbitrary memory anyway similar to bpf_probe_read() and might
+> +	 * as well probe the stack. Thus, memory is explicitly cleared
+> +	 * only in error case, so that improper users ignoring return
+> +	 * code altogether don't copy garbage; otherwise length of string
+> +	 * is returned that can be used for bpf_perf_event_output() et al.
+> +	 */
+> +	ret =3D strncpy_from_unsafe(dst, unsafe_ptr, size);
+> +	if (unlikely(ret < 0))
+> +		memset(dst, 0, size);
+> +
+> +	return ret;
+> +}
+> +
+> +static const struct bpf_func_proto bpf_probe_read_kernel_str_proto =3D {
+> +	.func		=3D bpf_probe_read_kernel_str,
+> +	.gpl_only	=3D true,
+> +	.ret_type	=3D RET_INTEGER,
+> +	.arg1_type	=3D ARG_PTR_TO_RAW_STACK,
+> +	.arg2_type	=3D ARG_CONST_STACK_SIZE,
+> +	.arg3_type	=3D ARG_ANYTHING,
+> +};
+> +
+>  static const struct bpf_func_proto *tracing_func_proto(enum bpf_func_id =
+func_id)
+>  {
+>  	switch (func_id) {
+> @@ -500,8 +584,14 @@ static const struct bpf_func_proto *tracing_func_pro=
+to(enum bpf_func_id func_id)
+>  		return &bpf_probe_read_proto;
+>  	case BPF_FUNC_probe_read_user:
+>  		return &bpf_probe_read_user_proto;
+> +	case BPF_FUNC_probe_read_kernel:
+> +		return &bpf_probe_read_kernel_proto;
+>  	case BPF_FUNC_probe_read_str:
+>  		return &bpf_probe_read_str_proto;
+> +	case BPF_FUNC_probe_read_user_str:
+> +		return &bpf_probe_read_user_str_proto;
+> +	case BPF_FUNC_probe_read_kernel_str:
+> +		return &bpf_probe_read_kernel_proto;
+>  	case BPF_FUNC_ktime_get_ns:
+>  		return &bpf_ktime_get_ns_proto;
+>  	case BPF_FUNC_tail_call:
+> diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bp=
+f.h
+> index 155ce25c069d..91d5691288a7 100644
+> --- a/tools/include/uapi/linux/bpf.h
+> +++ b/tools/include/uapi/linux/bpf.h
+> @@ -522,7 +522,44 @@ enum bpf_func_id {
+>     *     Return: 0 on success or negative error
+>     */
+>     BPF_FUNC_probe_read_user,
+> +
+> +   /**
+> +   * int bpf_probe_read_kernel(void *dst, int size, void *src)
+> +   *     Read a kernel pointer safely.
+> +   *     Return: 0 on success or negative error
+> +   */
+> +   BPF_FUNC_probe_read_kernel,
+>  =09
+> +	/**
+> +	 * int bpf_probe_read_str(void *dst, int size, const void *unsafe_ptr)
+> +	 *     Copy a NUL terminated string from user unsafe address. In case t=
+he string
+> +	 *     length is smaller than size, the target is not padded with furth=
+er NUL
+> +	 *     bytes. In case the string length is larger than size, just count=
+-1
+> +	 *     bytes are copied and the last byte is set to NUL.
+> +	 *     @dst: destination address
+> +	 *     @size: maximum number of bytes to copy, including the trailing N=
+UL
+> +	 *     @unsafe_ptr: unsafe address
+> +	 *     Return:
+> +	 *       > 0 length of the string including the trailing NUL on success
+> +	 *       < 0 error
+> +	 */
+> +	BPF_FUNC_probe_read_user_str,
+> +
+> +	/**
+> +	 * int bpf_probe_read_str(void *dst, int size, const void *unsafe_ptr)
+> +	 *     Copy a NUL terminated string from unsafe address. In case the st=
+ring
+> +	 *     length is smaller than size, the target is not padded with furth=
+er NUL
+> +	 *     bytes. In case the string length is larger than size, just count=
+-1
+> +	 *     bytes are copied and the last byte is set to NUL.
+> +	 *     @dst: destination address
+> +	 *     @size: maximum number of bytes to copy, including the trailing N=
+UL
+> +	 *     @unsafe_ptr: unsafe address
+> +	 *     Return:
+> +	 *       > 0 length of the string including the trailing NUL on success
+> +	 *       < 0 error
+> +	 */
+> +	BPF_FUNC_probe_read_kernel_str,
+> + =20
+>    __BPF_FUNC_MAX_ID,
+>  };
+
+Confused...
+
+--=20
+An old man doll... just what I always wanted! - Clara
+
+--CXd7A4sW/FByWJu6
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZlCSfgAKCRD2uYlJVVFO
+o4ZtAP9CLCSopm2A/OMtr8IyOqduKGxy0srvZwaoVfXgEeQvhAEA2PKsvM9UK2hk
+B9BbhKmtv2QFUlMjOHkiqPBdWXEIeQk=
+=ggPr
+-----END PGP SIGNATURE-----
+
+--CXd7A4sW/FByWJu6--
 
