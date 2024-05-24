@@ -1,95 +1,69 @@
-Return-Path: <bpf+bounces-30476-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-30478-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6EDB78CE1D1
-	for <lists+bpf@lfdr.de>; Fri, 24 May 2024 09:53:36 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id D3A998CE4A8
+	for <lists+bpf@lfdr.de>; Fri, 24 May 2024 13:07:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id F2D731F210B4
-	for <lists+bpf@lfdr.de>; Fri, 24 May 2024 07:53:35 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1095B1C21666
+	for <lists+bpf@lfdr.de>; Fri, 24 May 2024 11:07:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A6341292FF;
-	Fri, 24 May 2024 07:53:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 46EAB84E0F;
+	Fri, 24 May 2024 11:07:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="mFGme1kC"
+	dkim=pass (2048-bit key) header.d=meta.com header.i=@meta.com header.b="Q67TJrCK"
 X-Original-To: bpf@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.13])
+Received: from mx0a-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F2E86FCC;
-	Fri, 24 May 2024 07:53:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.13
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 33265538A;
+	Fri, 24 May 2024 11:07:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.153.30
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716537191; cv=none; b=DagKg1EkS3VZRoBuyqaqUDgj1Scir6B4BZvP8z5CBug5IdAULvdtFLWMCi9G/PiovKHFbdfnNbxpjHN2+OzJRt1MUpWW61+J9GA69KZQSCI171kEXlN3u+7J54O6QJ3M1lZC4+nXd2T3SzA6zzFElmVJapk2if0T35zzbjzPdAo=
+	t=1716548845; cv=none; b=quNZ3K7n0AO/tpKJcXY743DiG5K3K/Xyyhn700XBc2tJu/JGxYz9I6by+dcabXHVmxq1PXjwNjupcvHWT4ZgPbhMDJD34Iuq2T2pghYPXKRCFm8QAPDl9vleDWVk2BWIXFo7w905Eb1FrDDp5bJBNVbNU0cawIiN20VfCaWI6Tw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716537191; c=relaxed/simple;
-	bh=24rp/WrT9pHPUaGJNcHcPwIVsZW4SZ2btnKiehAt6f4=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=sfwuUhGPmjtzoCx5o1ZG14KylSDXqj9JEvDGUt7eGR5Ir48N6jJTZQ6lwqijquJVIDPBpBtGe8/SUOWXSWfB3z5P2EjKnYZ86v4aSjPe0zzNX21nx9+zcyHT2MtK3ZEfVtmGZnlIfQjrA4SZQ/Gfbxb4VHWARvR0n81v71U0OCY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=mFGme1kC; arc=none smtp.client-ip=192.198.163.13
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1716537189; x=1748073189;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=24rp/WrT9pHPUaGJNcHcPwIVsZW4SZ2btnKiehAt6f4=;
-  b=mFGme1kCTEgr37ucOTwq0YBFHzic8yNSmlti0hKEJkjVVl85JRV6Y61J
-   yoz9jnm0XpPS1ocXSH7dYff4u8IY7X+NTxqc383DgyELMnxYSHSgvc6nC
-   w8Jw37m48/VGqbPEAYHnJwEo78XFcSjAElgsNp42xOlM6mrHNw5/86SvA
-   VOIISl6uyrC4z7w/R2HOd/d6UIIulUx+KTe0QbJL/c37rr5QJyaOopNQo
-   3SpIMItZ0DyHOth6TwWgFyZnOe2Igt918GM1gDQsUx3wFaeQ5RhrhKUK/
-   NWSPIVbPve7fd1RWeNwgsaCUZzlW9fdlgPNuPv8nlRfHgbB9HBAphIphK
-   g==;
-X-CSE-ConnectionGUID: WjAKBFm+SlKo7dKMQL3hXQ==
-X-CSE-MsgGUID: +ydOb32yQW+zygMRWTJ9hg==
-X-IronPort-AV: E=McAfee;i="6600,9927,11081"; a="15846002"
-X-IronPort-AV: E=Sophos;i="6.08,184,1712646000"; 
-   d="scan'208";a="15846002"
-Received: from fmviesa006.fm.intel.com ([10.60.135.146])
-  by fmvoesa107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 May 2024 00:53:09 -0700
-X-CSE-ConnectionGUID: hoI+mS1CT/i21woqbc6A6w==
-X-CSE-MsgGUID: ZE0unwlWR/KX39Mr84rR0g==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.08,184,1712646000"; 
-   d="scan'208";a="33953931"
-Received: from xiao-desktop.sh.intel.com ([10.239.46.158])
-  by fmviesa006.fm.intel.com with ESMTP; 24 May 2024 00:53:03 -0700
-From: Xiao Wang <xiao.w.wang@intel.com>
-To: paul.walmsley@sifive.com,
-	palmer@dabbelt.com,
-	aou@eecs.berkeley.edu,
-	luke.r.nels@gmail.com,
-	xi.wang@gmail.com,
-	bjorn@kernel.org
-Cc: ast@kernel.org,
-	daniel@iogearbox.net,
-	andrii@kernel.org,
-	martin.lau@linux.dev,
-	eddyz87@gmail.com,
-	song@kernel.org,
-	yonghong.song@linux.dev,
-	john.fastabend@gmail.com,
-	kpsingh@kernel.org,
-	sdf@google.com,
-	haoluo@google.com,
-	jolsa@kernel.org,
-	linux-riscv@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	bpf@vger.kernel.org,
-	pulehui@huawei.com,
-	puranjay@kernel.org,
-	haicheng.li@intel.com,
-	Xiao Wang <xiao.w.wang@intel.com>
-Subject: [PATCH bpf-next v4 2/2] riscv, bpf: Introduce shift add helper with Zba optimization
-Date: Fri, 24 May 2024 15:55:43 +0800
-Message-Id: <20240524075543.4050464-3-xiao.w.wang@intel.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20240524075543.4050464-1-xiao.w.wang@intel.com>
-References: <20240524075543.4050464-1-xiao.w.wang@intel.com>
+	s=arc-20240116; t=1716548845; c=relaxed/simple;
+	bh=UE3jy3zFh/c6NQWrovwjNIcisNg3j4klg8dpXsoqg5M=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=kPicNe8vVVK0UKrOh4mKHE3uozMVkIhy0htUqAdRaZB9NlOFM2LRFH4H7Gk4N7JMxsUH/8iBlWxRs0SdKfJRaARqPlS0F0WdnCld/7wc6NDribN3GcJC8GNn6CV7P7ebZvC+c0J4+gFUqMUh4L7ePE4GbUCwJfcloLdd8QFyMwo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=meta.com; spf=pass smtp.mailfrom=meta.com; dkim=pass (2048-bit key) header.d=meta.com header.i=@meta.com header.b=Q67TJrCK; arc=none smtp.client-ip=67.231.153.30
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=meta.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=meta.com
+Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
+	by m0001303.ppops.net (8.17.1.19/8.17.1.19) with ESMTP id 44O7rHcS012621;
+	Fri, 24 May 2024 04:07:18 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=meta.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=s2048-2021-q4;
+ bh=4wVN9uy2SQb3ooGo+DAW3A2Lx0NK5VTY8+0sdFaXHwE=;
+ b=Q67TJrCKqDHt4S3cQ1KPSflEtuttdTLgFeJHWIco40NrWppuiudO1XKuIkZ49T1QMnGq
+ fI8+GPNtZubKrOeCFz8LnrF765VJcAB+TlbNIlyqVws8CUo26r2Ng9DfOJ3tUgPUdSZy
+ j0NcfMV/E+EpgjCfludph4dQVG9Pbd22IBBJKZskqdiQl53MPfU3lj6JxDbuZABqZmGa
+ B3nHzukgBau4cIhRkcZrqN7yoLHd4aSGnLsEb+MsqYpMjOIKaAQo973nKPEfjKO57ZQn
+ N36A1P9bgp44F9iW9y7Yg/Aa3xplDQ9HkpLrknYfwVJBmkhw0jUp/o+DupwnjM0Aa60n 4g== 
+Received: from mail.thefacebook.com ([163.114.134.16])
+	by m0001303.ppops.net (PPS) with ESMTPS id 3yapw68tm5-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+	Fri, 24 May 2024 04:07:17 -0700
+Received: from devvm4158.cln0.facebook.com (2620:10d:c085:108::8) by
+ mail.thefacebook.com (2620:10d:c08b:78::2ac9) with Microsoft SMTP Server id
+ 15.2.1544.11; Fri, 24 May 2024 11:07:14 +0000
+From: Vadim Fedorenko <vadfed@meta.com>
+To: Vadim Fedorenko <vadim.fedorenko@linux.dev>,
+        Martin KaFai Lau
+	<martin.lau@linux.dev>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        "Alexei
+ Starovoitov" <ast@kernel.org>,
+        Mykola Lysenko <mykolal@fb.com>, Jakub
+ Kicinski <kuba@kernel.org>
+CC: Vadim Fedorenko <vadfed@meta.com>, <bpf@vger.kernel.org>,
+        <netdev@vger.kernel.org>
+Subject: [PATCH bpf-next v2 1/2] bpf: add CHECKSUM_COMPLETE to bpf test progs
+Date: Fri, 24 May 2024 04:06:58 -0700
+Message-ID: <20240524110659.3612077-1-vadfed@meta.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -97,114 +71,93 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-ORIG-GUID: qyg0uD1H-3zvb-KtnIr0TXVWDHN6J97b
+X-Proofpoint-GUID: qyg0uD1H-3zvb-KtnIr0TXVWDHN6J97b
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.650,FMLib:17.12.28.16
+ definitions=2024-05-24_04,2024-05-23_01,2024-05-17_01
 
-Zba extension is very useful for generating addresses that index into array
-of basic data types. This patch introduces sh2add and sh3add helpers for
-RV32 and RV64 respectively, to accelerate addressing for array of unsigned
-long data.
+Add special flag to validate that TC BPF program properly updates
+checksum information in skb.
 
-Signed-off-by: Xiao Wang <xiao.w.wang@intel.com>
+Signed-off-by: Vadim Fedorenko <vadfed@meta.com>
 ---
- arch/riscv/net/bpf_jit.h        | 33 +++++++++++++++++++++++++++++++++
- arch/riscv/net/bpf_jit_comp32.c |  3 +--
- arch/riscv/net/bpf_jit_comp64.c |  9 +++------
- 3 files changed, 37 insertions(+), 8 deletions(-)
+ include/uapi/linux/bpf.h       |  2 ++
+ net/bpf/test_run.c             | 17 ++++++++++++++++-
+ tools/include/uapi/linux/bpf.h |  2 ++
+ 3 files changed, 20 insertions(+), 1 deletion(-)
 
-diff --git a/arch/riscv/net/bpf_jit.h b/arch/riscv/net/bpf_jit.h
-index 97041b58237a..1d1c78d4cff1 100644
---- a/arch/riscv/net/bpf_jit.h
-+++ b/arch/riscv/net/bpf_jit.h
-@@ -742,6 +742,17 @@ static inline u16 rvc_swsp(u32 imm8, u8 rs2)
- 	return rv_css_insn(0x6, imm, rs2, 0x2);
- }
+diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+index 90706a47f6ff..f7d458d88111 100644
+--- a/include/uapi/linux/bpf.h
++++ b/include/uapi/linux/bpf.h
+@@ -1425,6 +1425,8 @@ enum {
+ #define BPF_F_TEST_RUN_ON_CPU	(1U << 0)
+ /* If set, XDP frames will be transmitted after processing */
+ #define BPF_F_TEST_XDP_LIVE_FRAMES	(1U << 1)
++/* If set, apply CHECKSUM_COMPLETE to skb and validate the checksum */
++#define BPF_F_TEST_SKB_CHECKSUM_COMPLETE	(1U << 2)
  
-+/* RVZBA instructions. */
-+static inline u32 rvzba_sh2add(u8 rd, u8 rs1, u8 rs2)
-+{
-+	return rv_r_insn(0x10, rs2, rs1, 0x4, rd, 0x33);
-+}
-+
-+static inline u32 rvzba_sh3add(u8 rd, u8 rs1, u8 rs2)
-+{
-+	return rv_r_insn(0x10, rs2, rs1, 0x6, rd, 0x33);
-+}
-+
- /* RVZBB instructions. */
- static inline u32 rvzbb_sextb(u8 rd, u8 rs1)
- {
-@@ -1095,6 +1106,28 @@ static inline void emit_sw(u8 rs1, s32 off, u8 rs2, struct rv_jit_context *ctx)
- 		emit(rv_sw(rs1, off, rs2), ctx);
- }
+ /* type for BPF_ENABLE_STATS */
+ enum bpf_stats_type {
+diff --git a/net/bpf/test_run.c b/net/bpf/test_run.c
+index f6aad4ed2ab2..c6189bb9bf67 100644
+--- a/net/bpf/test_run.c
++++ b/net/bpf/test_run.c
+@@ -977,7 +977,8 @@ int bpf_prog_test_run_skb(struct bpf_prog *prog, const union bpf_attr *kattr,
+ 	void *data;
+ 	int ret;
  
-+static inline void emit_sh2add(u8 rd, u8 rs1, u8 rs2, struct rv_jit_context *ctx)
-+{
-+	if (rvzba_enabled()) {
-+		emit(rvzba_sh2add(rd, rs1, rs2), ctx);
-+		return;
+-	if (kattr->test.flags || kattr->test.cpu || kattr->test.batch_size)
++	if ((kattr->test.flags & ~BPF_F_TEST_SKB_CHECKSUM_COMPLETE) ||
++	    kattr->test.cpu || kattr->test.batch_size)
+ 		return -EINVAL;
+ 
+ 	data = bpf_test_init(kattr, kattr->test.data_size_in,
+@@ -1025,6 +1026,12 @@ int bpf_prog_test_run_skb(struct bpf_prog *prog, const union bpf_attr *kattr,
+ 
+ 	skb_reserve(skb, NET_SKB_PAD + NET_IP_ALIGN);
+ 	__skb_put(skb, size);
++
++	if (kattr->test.flags & BPF_F_TEST_SKB_CHECKSUM_COMPLETE) {
++		skb->csum = skb_checksum(skb, 0, skb->len, 0);
++		skb->ip_summed = CHECKSUM_COMPLETE;
 +	}
 +
-+	emit_slli(rd, rs1, 2, ctx);
-+	emit_add(rd, rd, rs2, ctx);
-+}
+ 	if (ctx && ctx->ifindex > 1) {
+ 		dev = dev_get_by_index(net, ctx->ifindex);
+ 		if (!dev) {
+@@ -1079,6 +1086,15 @@ int bpf_prog_test_run_skb(struct bpf_prog *prog, const union bpf_attr *kattr,
+ 	}
+ 	convert_skb_to___skb(skb, ctx);
+ 
++	if (kattr->test.flags & BPF_F_TEST_SKB_CHECKSUM_COMPLETE) {
++		__wsum csum = skb_checksum(skb, 0, skb->len, 0);
 +
-+static inline void emit_sh3add(u8 rd, u8 rs1, u8 rs2, struct rv_jit_context *ctx)
-+{
-+	if (rvzba_enabled()) {
-+		emit(rvzba_sh3add(rd, rs1, rs2), ctx);
-+		return;
++		if (skb->csum != csum) {
++			ret = -EINVAL;
++			goto out;
++		}
 +	}
 +
-+	emit_slli(rd, rs1, 3, ctx);
-+	emit_add(rd, rd, rs2, ctx);
-+}
-+
- /* RV64-only helper functions. */
- #if __riscv_xlen == 64
+ 	size = skb->len;
+ 	/* bpf program can never convert linear skb to non-linear */
+ 	if (WARN_ON_ONCE(skb_is_nonlinear(skb)))
+diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
+index 90706a47f6ff..f7d458d88111 100644
+--- a/tools/include/uapi/linux/bpf.h
++++ b/tools/include/uapi/linux/bpf.h
+@@ -1425,6 +1425,8 @@ enum {
+ #define BPF_F_TEST_RUN_ON_CPU	(1U << 0)
+ /* If set, XDP frames will be transmitted after processing */
+ #define BPF_F_TEST_XDP_LIVE_FRAMES	(1U << 1)
++/* If set, apply CHECKSUM_COMPLETE to skb and validate the checksum */
++#define BPF_F_TEST_SKB_CHECKSUM_COMPLETE	BIT(2)
  
-diff --git a/arch/riscv/net/bpf_jit_comp32.c b/arch/riscv/net/bpf_jit_comp32.c
-index f5ba73bb153d..592dd86fbf81 100644
---- a/arch/riscv/net/bpf_jit_comp32.c
-+++ b/arch/riscv/net/bpf_jit_comp32.c
-@@ -811,8 +811,7 @@ static int emit_bpf_tail_call(int insn, struct rv_jit_context *ctx)
- 	 * if (!prog)
- 	 *   goto out;
- 	 */
--	emit(rv_slli(RV_REG_T0, lo(idx_reg), 2), ctx);
--	emit(rv_add(RV_REG_T0, RV_REG_T0, lo(arr_reg)), ctx);
-+	emit_sh2add(RV_REG_T0, lo(idx_reg), lo(arr_reg), ctx);
- 	off = offsetof(struct bpf_array, ptrs);
- 	if (is_12b_check(off, insn))
- 		return -1;
-diff --git a/arch/riscv/net/bpf_jit_comp64.c b/arch/riscv/net/bpf_jit_comp64.c
-index 79a001d5533e..30ede3ce42d1 100644
---- a/arch/riscv/net/bpf_jit_comp64.c
-+++ b/arch/riscv/net/bpf_jit_comp64.c
-@@ -380,8 +380,7 @@ static int emit_bpf_tail_call(int insn, struct rv_jit_context *ctx)
- 	 * if (!prog)
- 	 *     goto out;
- 	 */
--	emit_slli(RV_REG_T2, RV_REG_A2, 3, ctx);
--	emit_add(RV_REG_T2, RV_REG_T2, RV_REG_A1, ctx);
-+	emit_sh3add(RV_REG_T2, RV_REG_A2, RV_REG_A1, ctx);
- 	off = offsetof(struct bpf_array, ptrs);
- 	if (is_12b_check(off, insn))
- 		return -1;
-@@ -1097,12 +1096,10 @@ int bpf_jit_emit_insn(const struct bpf_insn *insn, struct rv_jit_context *ctx,
- 			/* Load current CPU number in T1 */
- 			emit_ld(RV_REG_T1, offsetof(struct thread_info, cpu),
- 				RV_REG_TP, ctx);
--			/* << 3 because offsets are 8 bytes */
--			emit_slli(RV_REG_T1, RV_REG_T1, 3, ctx);
- 			/* Load address of __per_cpu_offset array in T2 */
- 			emit_addr(RV_REG_T2, (u64)&__per_cpu_offset, extra_pass, ctx);
--			/* Add offset of current CPU to  __per_cpu_offset */
--			emit_add(RV_REG_T1, RV_REG_T2, RV_REG_T1, ctx);
-+			/* Get address of __per_cpu_offset[cpu] in T1 */
-+			emit_sh3add(RV_REG_T1, RV_REG_T1, RV_REG_T2, ctx);
- 			/* Load __per_cpu_offset[cpu] in T1 */
- 			emit_ld(RV_REG_T1, 0, RV_REG_T1, ctx);
- 			/* Add the offset to Rd */
+ /* type for BPF_ENABLE_STATS */
+ enum bpf_stats_type {
 -- 
-2.25.1
+2.43.0
 
 
