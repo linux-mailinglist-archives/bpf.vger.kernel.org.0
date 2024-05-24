@@ -1,75 +1,119 @@
-Return-Path: <bpf+bounces-30514-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-30515-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 874558CE8E1
-	for <lists+bpf@lfdr.de>; Fri, 24 May 2024 18:47:23 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2D0EA8CE8E2
+	for <lists+bpf@lfdr.de>; Fri, 24 May 2024 18:47:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AB2091C2127C
-	for <lists+bpf@lfdr.de>; Fri, 24 May 2024 16:47:22 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D527328326A
+	for <lists+bpf@lfdr.de>; Fri, 24 May 2024 16:47:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C550C12FB2A;
-	Fri, 24 May 2024 16:46:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC1EA12FF89;
+	Fri, 24 May 2024 16:46:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=googlemail.com header.i=@googlemail.com header.b="X12bJIhr"
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ietf.org header.i=@ietf.org header.b="Pz26iwCF";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ietf.org header.i=@ietf.org header.b="hzHJU4FZ";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=googlemail.com header.i=@googlemail.com header.b="heqNBmMo"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f45.google.com (mail-pj1-f45.google.com [209.85.216.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mail.ietf.org (mail.ietf.org [50.223.129.194])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8CDF512F376
-	for <bpf@vger.kernel.org>; Fri, 24 May 2024 16:46:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A8FF12FB16
+	for <bpf@vger.kernel.org>; Fri, 24 May 2024 16:46:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=50.223.129.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716569189; cv=none; b=GrFnD4WUW2JNXAQnuFDf3HNoZGz4kLbFrDw6yGoyjgv6GBNqKorVrpG5YsunWO+XJHKnFj1XBr8fqwV0Md6QOFdVo/rdKffD9bxPtAdgtMs620PypliKG6huY5Q6bvDZzgAovr9ugLYcYCAZBjvRk6DJX9hhQUDnFcltqfixheA=
+	t=1716569200; cv=none; b=JoP+NE0rdcexQxqXvQiyxx+n6pQvkZXZZiExMSxjB7HH830siPo+M8cwWU7zg7pmoxVOBiiEL/UCeIMZw8Y+l+pTabqWiS2u3V76yWYz3hRuKSJFc2RbWUDy1p/XSCggMpFs7+qV4dlUUf/RM1EsLee6Hu66b4WhxCm5Dg7O/lM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716569189; c=relaxed/simple;
-	bh=J2EyzLCylWAArfjEkXLuQjQ6GKEOQqUnpcaUbkbUP+I=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=b4kX5HaGVpw1VSKBI7kNnnjVNgWlJ6jRnbKKg3PGelF8pUwC0bZbi4XxWXf3nUDe00y1JKPR8HMBDZibAilyX/z793uGtiBxipzj6hPLAP8VDEhOMm1kmmA3/GhGbrwqI0wVttcmfPmRewRa9dRFu1jodNpcgmSdpsqUendg3Bo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=googlemail.com; spf=pass smtp.mailfrom=googlemail.com; dkim=pass (2048-bit key) header.d=googlemail.com header.i=@googlemail.com header.b=X12bJIhr; arc=none smtp.client-ip=209.85.216.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=googlemail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=googlemail.com
-Received: by mail-pj1-f45.google.com with SMTP id 98e67ed59e1d1-2bdf3f4d5ffso1430964a91.3
-        for <bpf@vger.kernel.org>; Fri, 24 May 2024 09:46:27 -0700 (PDT)
+	s=arc-20240116; t=1716569200; c=relaxed/simple;
+	bh=GeOyw2ruDcplWhc9XzsJp1kaNKdKqL7aGQ3lUuJ7RQQ=;
+	h=To:Date:Message-Id:MIME-Version:CC:Subject:Content-Type:From; b=Tf1sP5M6/iaCOCG4Z50cDdv5k/yvEBp/3JFANlJCkit+I4UVXv/7WaMBpnc1ehc1acXI3vhmOm7eUnHDUXAKtmDzkJF1yFmqy34URYIYTKBhqZ++SHpb3EDBWnoCDTQE+403HDvXe/74tAo0A4l5I+qBLefip0Q3VRjrmvdfChg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=dmarc.ietf.org; spf=pass smtp.mailfrom=ietf.org; dkim=pass (1024-bit key) header.d=ietf.org header.i=@ietf.org header.b=Pz26iwCF; dkim=fail (1024-bit key) header.d=ietf.org header.i=@ietf.org header.b=hzHJU4FZ reason="signature verification failed"; dkim=fail (2048-bit key) header.d=googlemail.com header.i=@googlemail.com header.b=heqNBmMo reason="signature verification failed"; arc=none smtp.client-ip=50.223.129.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=dmarc.ietf.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ietf.org
+Received: from ietfa.amsl.com (localhost [IPv6:::1])
+	by ietfa.amsl.com (Postfix) with ESMTP id 75646C1516EB
+	for <bpf@vger.kernel.org>; Fri, 24 May 2024 09:46:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ietf.org; s=ietf1;
+	t=1716569197; bh=GeOyw2ruDcplWhc9XzsJp1kaNKdKqL7aGQ3lUuJ7RQQ=;
+	h=To:Date:CC:Subject:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=Pz26iwCFj81DW6opf2d9tGtn0D9JgA1G6MQ7Y9Mq7ywTiJxvzVGXKuoI2376mgxVl
+	 uBr5Rx5sBhYs0ma+jPlTvRsNZ4bO/ejfal9AeHoxNCAt8Ng2zrsafEbGV2AWSIdRde
+	 25aMfnPPUKNd347xRVacXAGGy2PxB4JM4F1i0tcM=
+Received: from ietfa.amsl.com (localhost [IPv6:::1])
+ by ietfa.amsl.com (Postfix) with ESMTP id 5E807C1519A2
+ for <bpf@vger.kernel.org>; Fri, 24 May 2024 09:46:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ietf.org; s=ietf1;
+ t=1716569197; bh=GeOyw2ruDcplWhc9XzsJp1kaNKdKqL7aGQ3lUuJ7RQQ=;
+ h=From:To:Date:CC:Subject:List-Id:List-Archive:List-Help:List-Owner:
+ List-Post:List-Subscribe:List-Unsubscribe;
+ b=hzHJU4FZhb1frEGwJnt3JMu8Xzyak27LFCWPVIvI9srWk9HLqFwC5sq7Y/IjH4iFx
+ eccHwFpJmHjs2tlOZlf9ZHlVNKKx+m97IoJ7NTRPPwY0JxHK/cpvOincHTrb56srH9
+ k6XyuwfWfnBh+eIxnXEsKVDlunbR5fJo4/77FNvI=
+X-Original-To: bpf@ietfa.amsl.com
+Delivered-To: bpf@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+ by ietfa.amsl.com (Postfix) with ESMTP id 7811FC14F5FC
+ for <bpf@ietfa.amsl.com>; Fri, 24 May 2024 09:46:31 -0700 (PDT)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: -1.846
+X-Spam-Level: 
+Authentication-Results: ietfa.amsl.com (amavisd-new); dkim=pass (2048-bit key)
+ header.d=googlemail.com
+Received: from mail.ietf.org ([50.223.129.194])
+ by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id vxeTNxC5Dbku for <bpf@ietfa.amsl.com>;
+ Fri, 24 May 2024 09:46:27 -0700 (PDT)
+Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com
+ [IPv6:2607:f8b0:4864:20::102b])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest
+ SHA256) (No client certificate requested)
+ by ietfa.amsl.com (Postfix) with ESMTPS id 6B3BAC151087
+ for <bpf@ietf.org>; Fri, 24 May 2024 09:46:27 -0700 (PDT)
+Received: by mail-pj1-x102b.google.com with SMTP id
+ 98e67ed59e1d1-2bf5ba9b1ceso954335a91.0
+ for <bpf@ietf.org>; Fri, 24 May 2024 09:46:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=20230601; t=1716569187; x=1717173987; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=7bMgm1etftre/efThJLmDfD1BLPnIDNtKcvVWKdCOAU=;
-        b=X12bJIhrwEYFBB9Lm4mC18agIRdkndyw2DYsAIqQKOKasX4z/l7JH1GJLjrImUe+iv
-         qMjQcOwmubPffmHGIulQU+c8WgMlrJ1xD+cwDPotNjHLi4zGjrZ1XgIB9ARArlRTzdIw
-         YyWxr1NAIYP/v89z8c4dEgEZgJAp/C2KCKjm8SfDOBLTQJ78rKytlmiNySf/IVe2BTR1
-         Z8FZcLljhcLLdZshPu6YIzJ2zB0cxvegdoRiC6gLzWRvwEX0tOqSLJMCWVlfNibC4a4P
-         0vbGzWtnjnFK+h3wE3ygohupzclny5HAlFzUPcMtLF/HH+HOv8FDblNt3MZXqypZuCHM
-         +z1w==
+ d=googlemail.com; s=20230601; t=1716569187; x=1717173987;
+ darn=ietf.org;
+ h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+ :to:from:from:to:cc:subject:date:message-id:reply-to;
+ bh=7bMgm1etftre/efThJLmDfD1BLPnIDNtKcvVWKdCOAU=;
+ b=heqNBmMoFp0OeypLlCuLfKPCoXZwLvVa8V/rkaE2dV65CJDW0gYiQLM8RaJVQcdOeM
+ kHuyrYW+BkFjRoJ5za6707vfvkGGWCOSwIMkv9vLKmHtDvOxKd4dOPfKjLOSrJWe075z
+ cTcU7QpQZndRPW8eqNWAFtr4xRWaQpUa6IRU/C+Ej98YC1MKECVsl4mVBP/PlC3cS8Wd
+ mYBwEAPfKu0+Ij5PfCoQiY7SyMy5GsQw//4BzJQm48yG33Mo63UVWjU+y7Fq+AhA7Y4L
+ r5TZm912aVOLEpTVxw18ELFb/bk/ZbsM3ag77UoGASvB9YoRm0V5msu3zB0QuTxH1cL4
+ 8siw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1716569187; x=1717173987;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=7bMgm1etftre/efThJLmDfD1BLPnIDNtKcvVWKdCOAU=;
-        b=kVa6mZiEgemCIheSGLxW3nOxNXcAQitoX5yrr0557So57SbuOjlIKgt3buNeg5l04S
-         gA05yBsqvmwyqeDJkvoNthgwaLd5DpWAyZ4BlUpovyIiIuL5BcYknbw1/io5/NiLtKBN
-         tZy5J965kUznj39L8AKtlnt99SiTrVIZBJ9e57v7MnMjpqkOHgQ5eEhjIP1UBfe794Q2
-         m8cPhD63ufoimFwtlaUUHr2JF6bCU1Nd0flSI7W6OimPPcbSHcfg8+xoOukXCoXs6pnl
-         F64S0nYO666DJ6nCQ1lWViOZnC5fI+GTJNN0+gcF4seMq+Wx0lnHYrHwQbUd0lhWF77H
-         IfPA==
-X-Gm-Message-State: AOJu0Yw8Iinjs8X3qESGNPPicvRojCoe9UKCQ+dWgWqpz2aJkhH8esW2
-	lGiUvNbsysU63rztW+otz03h0WhIYNdnoDJsfy0Ou8KrUoz5XLfs4zkzGYAU
+ d=1e100.net; s=20230601; t=1716569187; x=1717173987;
+ h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+ :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+ :reply-to;
+ bh=7bMgm1etftre/efThJLmDfD1BLPnIDNtKcvVWKdCOAU=;
+ b=OGnybfKWpP/w/RPthK3HKNOxqvN15othXw1SCriwQYTjGdn9YsHEPAX0WAUIi1sVGg
+ +So0Dvk2T9VG/NFPmHC4MVE3wm2eHBLvOKIuOb23vpUlgVPhxyxyivJi5euohQC6lJEx
+ lKL+g3vyTwmlDEsYov+sO22FSExsrmUrnzIF7nTxK4qiFw8mZoL7T49lY+x8rhdRY9Sd
+ R3YF41n3iEmLGAqueI80i7DtPrK4CcWYdx25GLh40dOQyG3cEDJPG4ijC1JROp+IS3mm
+ HBOJ5J/ExYbEmaRsnF7ALgiF+akEfXje7K+6lONGOJqqhmyhoItBlbTGncjo+e2njbD2
+ SFQQ==
+X-Gm-Message-State: AOJu0Yy+zBbWozLAb+5o09U6qjU2icGqQq8WZmF0pA+Jc9A5SlLLOAbU
+ km+f+MfVjWLyNkzMI4aSuL7n01uZbZM/FBQq71iJRzA7WIz7n7si
 X-Google-Smtp-Source: AGHT+IE1gYnNhwQay855uIeqaUcL9sAV53/Hga2FDwm0A8Q5qg15iW+hKFgur37l68aqLkRlAGIlBQ==
-X-Received: by 2002:a17:90b:b11:b0:2bd:f690:67c8 with SMTP id 98e67ed59e1d1-2bf5f106605mr2576955a91.27.1716569186459;
-        Fri, 24 May 2024 09:46:26 -0700 (PDT)
-Received: from ubuntu2310.lan (c-67-170-74-237.hsd1.wa.comcast.net. [67.170.74.237])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2bdefa332a0sm2945120a91.33.2024.05.24.09.46.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 24 May 2024 09:46:25 -0700 (PDT)
-From: Dave Thaler <dthaler1968@googlemail.com>
+X-Received: by 2002:a17:90b:b11:b0:2bd:f690:67c8 with SMTP id
+ 98e67ed59e1d1-2bf5f106605mr2576955a91.27.1716569186459;
+ Fri, 24 May 2024 09:46:26 -0700 (PDT)
+Received: from ubuntu2310.lan (c-67-170-74-237.hsd1.wa.comcast.net.
+ [67.170.74.237]) by smtp.gmail.com with ESMTPSA id
+ 98e67ed59e1d1-2bdefa332a0sm2945120a91.33.2024.05.24.09.46.24
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Fri, 24 May 2024 09:46:25 -0700 (PDT)
 X-Google-Original-From: Dave Thaler <dthaler1968@gmail.com>
 To: bpf@vger.kernel.org
-Cc: bpf@ietf.org,
-	Dave Thaler <dthaler1968@gmail.com>
-Subject: [PATCH bpf-next] bpf, docs: Add table captions
 Date: Fri, 24 May 2024 09:46:18 -0700
 Message-Id: <20240524164618.18894-1-dthaler1968@gmail.com>
 X-Mailer: git-send-email 2.40.1
@@ -79,289 +123,301 @@ List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Message-ID-Hash: 42MJGAZJHCAYHTX5VF7HZK5A2SHSFUJH
+X-Message-ID-Hash: 42MJGAZJHCAYHTX5VF7HZK5A2SHSFUJH
+X-MailFrom: dthaler1968@googlemail.com
+X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
+ loop; banned-address; member-moderation; nonmember-moderation; administrivia; 
+ implicit-dest; max-recipients; max-size; news-moderation; no-subject;
+ digests; suspicious-header
+CC: bpf@ietf.org, Dave Thaler <dthaler1968@gmail.com>
+X-Mailman-Version: 3.3.9rc4
+Precedence: list
+Subject: =?utf-8?q?=5BBpf=5D_=5BPATCH_bpf-next=5D_bpf=2C_docs=3A_Add_table_captions?=
+Archived-At: <https://mailarchive.ietf.org/arch/msg/bpf/wu_vtrec-wZdQAqpSi_1P66iHlU>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/bpf>
+List-Help: <mailto:bpf-request@ietf.org?subject=help>
+List-Owner: <mailto:bpf-owner@ietf.org>
+List-Post: <mailto:bpf@ietf.org>
+X-Mailman-Copy: yes
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+X-Original-From: Dave Thaler <dthaler1968@googlemail.com>
+From: Dave Thaler <dthaler1968=40googlemail.com@dmarc.ietf.org>
 
-As suggested by Ines Robles in his IETF GENART review at
-https://datatracker.ietf.org/doc/review-ietf-bpf-isa-02-genart-lc-robles-2024-05-16/
-
-Signed-off-by: Dave Thaler <dthaler1968@gmail.com>
----
- .../bpf/standardization/instruction-set.rst   | 184 ++++++++++--------
- 1 file changed, 102 insertions(+), 82 deletions(-)
-
-diff --git a/Documentation/bpf/standardization/instruction-set.rst b/Documentation/bpf/standardization/instruction-set.rst
-index 00c93eb42..eec3bfb4f 100644
---- a/Documentation/bpf/standardization/instruction-set.rst
-+++ b/Documentation/bpf/standardization/instruction-set.rst
-@@ -25,7 +25,7 @@ Types
- This document refers to integer types with the notation `SN` to specify
- a type's signedness (`S`) and bit width (`N`), respectively.
- 
--.. table:: Meaning of signedness notation.
-+.. table:: Meaning of signedness notation
- 
-   ==== =========
-   S    Meaning
-@@ -34,7 +34,7 @@ a type's signedness (`S`) and bit width (`N`), respectively.
-   s    signed
-   ==== =========
- 
--.. table:: Meaning of bit-width notation.
-+.. table:: Meaning of bit-width notation
- 
-   ===== =========
-   N     Bit width
-@@ -256,18 +256,20 @@ Instruction classes
- 
- The three least significant bits of the 'opcode' field store the instruction class:
- 
--=====  =====  ===============================  ===================================
--class  value  description                      reference
--=====  =====  ===============================  ===================================
--LD     0x0    non-standard load operations     `Load and store instructions`_
--LDX    0x1    load into register operations    `Load and store instructions`_
--ST     0x2    store from immediate operations  `Load and store instructions`_
--STX    0x3    store from register operations   `Load and store instructions`_
--ALU    0x4    32-bit arithmetic operations     `Arithmetic and jump instructions`_
--JMP    0x5    64-bit jump operations           `Arithmetic and jump instructions`_
--JMP32  0x6    32-bit jump operations           `Arithmetic and jump instructions`_
--ALU64  0x7    64-bit arithmetic operations     `Arithmetic and jump instructions`_
--=====  =====  ===============================  ===================================
-+.. table:: Instruction class
-+
-+  =====  =====  ===============================  ===================================
-+  class  value  description                      reference
-+  =====  =====  ===============================  ===================================
-+  LD     0x0    non-standard load operations     `Load and store instructions`_
-+  LDX    0x1    load into register operations    `Load and store instructions`_
-+  ST     0x2    store from immediate operations  `Load and store instructions`_
-+  STX    0x3    store from register operations   `Load and store instructions`_
-+  ALU    0x4    32-bit arithmetic operations     `Arithmetic and jump instructions`_
-+  JMP    0x5    64-bit jump operations           `Arithmetic and jump instructions`_
-+  JMP32  0x6    32-bit jump operations           `Arithmetic and jump instructions`_
-+  ALU64  0x7    64-bit arithmetic operations     `Arithmetic and jump instructions`_
-+  =====  =====  ===============================  ===================================
- 
- Arithmetic and jump instructions
- ================================
-@@ -285,6 +287,8 @@ For arithmetic and jump instructions (``ALU``, ``ALU64``, ``JMP`` and
- **s (source)**
-   the source operand location, which unless otherwise specified is one of:
- 
-+  .. table:: Source operand location
-+
-   ======  =====  ==============================================
-   source  value  description
-   ======  =====  ==============================================
-@@ -305,27 +309,29 @@ The 'code' field encodes the operation as below, where 'src' refers to the
- the source operand and 'dst' refers to the value of the destination
- register.
- 
--=====  =====  =======  ==========================================================
--name   code   offset   description
--=====  =====  =======  ==========================================================
--ADD    0x0    0        dst += src
--SUB    0x1    0        dst -= src
--MUL    0x2    0        dst \*= src
--DIV    0x3    0        dst = (src != 0) ? (dst / src) : 0
--SDIV   0x3    1        dst = (src != 0) ? (dst s/ src) : 0
--OR     0x4    0        dst \|= src
--AND    0x5    0        dst &= src
--LSH    0x6    0        dst <<= (src & mask)
--RSH    0x7    0        dst >>= (src & mask)
--NEG    0x8    0        dst = -dst
--MOD    0x9    0        dst = (src != 0) ? (dst % src) : dst
--SMOD   0x9    1        dst = (src != 0) ? (dst s% src) : dst
--XOR    0xa    0        dst ^= src
--MOV    0xb    0        dst = src
--MOVSX  0xb    8/16/32  dst = (s8,s16,s32)src
--ARSH   0xc    0        :term:`sign extending<Sign Extend>` dst >>= (src & mask)
--END    0xd    0        byte swap operations (see `Byte swap instructions`_ below)
--=====  =====  =======  ==========================================================
-+.. table:: Arithmetic instructions
-+
-+  =====  =====  =======  ==========================================================
-+  name   code   offset   description
-+  =====  =====  =======  ==========================================================
-+  ADD    0x0    0        dst += src
-+  SUB    0x1    0        dst -= src
-+  MUL    0x2    0        dst \*= src
-+  DIV    0x3    0        dst = (src != 0) ? (dst / src) : 0
-+  SDIV   0x3    1        dst = (src != 0) ? (dst s/ src) : 0
-+  OR     0x4    0        dst \|= src
-+  AND    0x5    0        dst &= src
-+  LSH    0x6    0        dst <<= (src & mask)
-+  RSH    0x7    0        dst >>= (src & mask)
-+  NEG    0x8    0        dst = -dst
-+  MOD    0x9    0        dst = (src != 0) ? (dst % src) : dst
-+  SMOD   0x9    1        dst = (src != 0) ? (dst s% src) : dst
-+  XOR    0xa    0        dst ^= src
-+  MOV    0xb    0        dst = src
-+  MOVSX  0xb    8/16/32  dst = (s8,s16,s32)src
-+  ARSH   0xc    0        :term:`sign extending<Sign Extend>` dst >>= (src & mask)
-+  END    0xd    0        byte swap operations (see `Byte swap instructions`_ below)
-+  =====  =====  =======  ==========================================================
- 
- Underflow and overflow are allowed during arithmetic operations, meaning
- the 64-bit or 32-bit value will wrap. If BPF program execution would
-@@ -406,13 +412,15 @@ select what byte order the operation converts from or to. For
- ``ALU64``, the 1-bit source operand field in the opcode is reserved
- and must be set to 0.
- 
--=====  ========  =====  =================================================
--class  source    value  description
--=====  ========  =====  =================================================
--ALU    TO_LE     0      convert between host byte order and little endian
--ALU    TO_BE     1      convert between host byte order and big endian
--ALU64  Reserved  0      do byte swap unconditionally
--=====  ========  =====  =================================================
-+.. table:: Byte swap instructions
-+
-+  =====  ========  =====  =================================================
-+  class  source    value  description
-+  =====  ========  =====  =================================================
-+  ALU    TO_LE     0      convert between host byte order and little endian
-+  ALU    TO_BE     1      convert between host byte order and big endian
-+  ALU64  Reserved  0      do byte swap unconditionally
-+  =====  ========  =====  =================================================
- 
- The 'imm' field encodes the width of the swap operations.  The following widths
- are supported: 16, 32 and 64.  Width 64 operations belong to the base64
-@@ -448,27 +456,29 @@ otherwise identical operations, and indicates the base64 conformance
- group unless otherwise specified.
- The 'code' field encodes the operation as below:
- 
--========  =====  =======  =================================  ===================================================
--code      value  src_reg  description                        notes
--========  =====  =======  =================================  ===================================================
--JA        0x0    0x0      PC += offset                       {JA, K, JMP} only
--JA        0x0    0x0      PC += imm                          {JA, K, JMP32} only
--JEQ       0x1    any      PC += offset if dst == src
--JGT       0x2    any      PC += offset if dst > src          unsigned
--JGE       0x3    any      PC += offset if dst >= src         unsigned
--JSET      0x4    any      PC += offset if dst & src
--JNE       0x5    any      PC += offset if dst != src
--JSGT      0x6    any      PC += offset if dst > src          signed
--JSGE      0x7    any      PC += offset if dst >= src         signed
--CALL      0x8    0x0      call helper function by static ID  {CALL, K, JMP} only, see `Helper functions`_
--CALL      0x8    0x1      call PC += imm                     {CALL, K, JMP} only, see `Program-local functions`_
--CALL      0x8    0x2      call helper function by BTF ID     {CALL, K, JMP} only, see `Helper functions`_
--EXIT      0x9    0x0      return                             {CALL, K, JMP} only
--JLT       0xa    any      PC += offset if dst < src          unsigned
--JLE       0xb    any      PC += offset if dst <= src         unsigned
--JSLT      0xc    any      PC += offset if dst < src          signed
--JSLE      0xd    any      PC += offset if dst <= src         signed
--========  =====  =======  =================================  ===================================================
-+.. table:: Jump instructions
-+
-+  ========  =====  =======  =================================  ===================================================
-+  code      value  src_reg  description                        notes
-+  ========  =====  =======  =================================  ===================================================
-+  JA        0x0    0x0      PC += offset                       {JA, K, JMP} only
-+  JA        0x0    0x0      PC += imm                          {JA, K, JMP32} only
-+  JEQ       0x1    any      PC += offset if dst == src
-+  JGT       0x2    any      PC += offset if dst > src          unsigned
-+  JGE       0x3    any      PC += offset if dst >= src         unsigned
-+  JSET      0x4    any      PC += offset if dst & src
-+  JNE       0x5    any      PC += offset if dst != src
-+  JSGT      0x6    any      PC += offset if dst > src          signed
-+  JSGE      0x7    any      PC += offset if dst >= src         signed
-+  CALL      0x8    0x0      call helper function by static ID  {CALL, K, JMP} only, see `Helper functions`_
-+  CALL      0x8    0x1      call PC += imm                     {CALL, K, JMP} only, see `Program-local functions`_
-+  CALL      0x8    0x2      call helper function by BTF ID     {CALL, K, JMP} only, see `Helper functions`_
-+  EXIT      0x9    0x0      return                             {CALL, K, JMP} only
-+  JLT       0xa    any      PC += offset if dst < src          unsigned
-+  JLE       0xb    any      PC += offset if dst <= src         unsigned
-+  JSLT      0xc    any      PC += offset if dst < src          signed
-+  JSLE      0xd    any      PC += offset if dst <= src         signed
-+  ========  =====  =======  =================================  ===================================================
- 
- where 'PC' denotes the program counter, and the offset to increment by
- is in units of 64-bit instructions relative to the instruction following
-@@ -537,6 +547,8 @@ For load and store instructions (``LD``, ``LDX``, ``ST``, and ``STX``), the
- **mode**
-   The mode modifier is one of:
- 
-+  .. table:: Mode modifier
-+
-     =============  =====  ====================================  =============
-     mode modifier  value  description                           reference
-     =============  =====  ====================================  =============
-@@ -551,6 +563,8 @@ For load and store instructions (``LD``, ``LDX``, ``ST``, and ``STX``), the
- **sz (size)**
-   The size modifier is one of:
- 
-+  .. table:: Size modifier
-+
-     ====  =====  =====================
-     size  value  description
-     ====  =====  =====================
-@@ -619,14 +633,16 @@ The 'imm' field is used to encode the actual atomic operation.
- Simple atomic operation use a subset of the values defined to encode
- arithmetic operations in the 'imm' field to encode the atomic operation:
- 
--========  =====  ===========
--imm       value  description
--========  =====  ===========
--ADD       0x00   atomic add
--OR        0x40   atomic or
--AND       0x50   atomic and
--XOR       0xa0   atomic xor
--========  =====  ===========
-+.. table:: Simple atomic operations
-+
-+  ========  =====  ===========
-+  imm       value  description
-+  ========  =====  ===========
-+  ADD       0x00   atomic add
-+  OR        0x40   atomic or
-+  AND       0x50   atomic and
-+  XOR       0xa0   atomic xor
-+  ========  =====  ===========
- 
- 
- ``{ATOMIC, W, STX}`` with 'imm' = ADD means::
-@@ -640,6 +656,8 @@ XOR       0xa0   atomic xor
- In addition to the simple atomic operations, there also is a modifier and
- two complex atomic operations:
- 
-+.. table:: Complex atomic operations
-+
- ===========  ================  ===========================
- imm          value             description
- ===========  ================  ===========================
-@@ -673,17 +691,19 @@ The following table defines a set of ``{IMM, DW, LD}`` instructions
- with opcode subtypes in the 'src_reg' field, using new terms such as "map"
- defined further below:
- 
--=======  =========================================  ===========  ==============
--src_reg  pseudocode                                 imm type     dst type
--=======  =========================================  ===========  ==============
--0x0      dst = (next_imm << 32) | imm               integer      integer
--0x1      dst = map_by_fd(imm)                       map fd       map
--0x2      dst = map_val(map_by_fd(imm)) + next_imm   map fd       data address
--0x3      dst = var_addr(imm)                        variable id  data address
--0x4      dst = code_addr(imm)                       integer      code address
--0x5      dst = map_by_idx(imm)                      map index    map
--0x6      dst = map_val(map_by_idx(imm)) + next_imm  map index    data address
--=======  =========================================  ===========  ==============
-+.. table:: 64-bit immediate instructions
-+
-+  =======  =========================================  ===========  ==============
-+  src_reg  pseudocode                                 imm type     dst type
-+  =======  =========================================  ===========  ==============
-+  0x0      dst = (next_imm << 32) | imm               integer      integer
-+  0x1      dst = map_by_fd(imm)                       map fd       map
-+  0x2      dst = map_val(map_by_fd(imm)) + next_imm   map fd       data address
-+  0x3      dst = var_addr(imm)                        variable id  data address
-+  0x4      dst = code_addr(imm)                       integer      code address
-+  0x5      dst = map_by_idx(imm)                      map index    map
-+  0x6      dst = map_val(map_by_idx(imm)) + next_imm  map index    data address
-+  =======  =========================================  ===========  ==============
- 
- where
- 
--- 
-2.40.1
-
+QXMgc3VnZ2VzdGVkIGJ5IEluZXMgUm9ibGVzIGluIGhpcyBJRVRGIEdFTkFSVCByZXZpZXcgYXQN
+Cmh0dHBzOi8vZGF0YXRyYWNrZXIuaWV0Zi5vcmcvZG9jL3Jldmlldy1pZXRmLWJwZi1pc2EtMDIt
+Z2VuYXJ0LWxjLXJvYmxlcy0yMDI0LTA1LTE2Lw0KDQpTaWduZWQtb2ZmLWJ5OiBEYXZlIFRoYWxl
+ciA8ZHRoYWxlcjE5NjhAZ21haWwuY29tPg0KLS0tDQogLi4uL2JwZi9zdGFuZGFyZGl6YXRpb24v
+aW5zdHJ1Y3Rpb24tc2V0LnJzdCAgIHwgMTg0ICsrKysrKysrKystLS0tLS0tLQ0KIDEgZmlsZSBj
+aGFuZ2VkLCAxMDIgaW5zZXJ0aW9ucygrKSwgODIgZGVsZXRpb25zKC0pDQoNCmRpZmYgLS1naXQg
+YS9Eb2N1bWVudGF0aW9uL2JwZi9zdGFuZGFyZGl6YXRpb24vaW5zdHJ1Y3Rpb24tc2V0LnJzdCBi
+L0RvY3VtZW50YXRpb24vYnBmL3N0YW5kYXJkaXphdGlvbi9pbnN0cnVjdGlvbi1zZXQucnN0DQpp
+bmRleCAwMGM5M2ViNDIuLmVlYzNiZmI0ZiAxMDA2NDQNCi0tLSBhL0RvY3VtZW50YXRpb24vYnBm
+L3N0YW5kYXJkaXphdGlvbi9pbnN0cnVjdGlvbi1zZXQucnN0DQorKysgYi9Eb2N1bWVudGF0aW9u
+L2JwZi9zdGFuZGFyZGl6YXRpb24vaW5zdHJ1Y3Rpb24tc2V0LnJzdA0KQEAgLTI1LDcgKzI1LDcg
+QEAgVHlwZXMNCiBUaGlzIGRvY3VtZW50IHJlZmVycyB0byBpbnRlZ2VyIHR5cGVzIHdpdGggdGhl
+IG5vdGF0aW9uIGBTTmAgdG8gc3BlY2lmeQ0KIGEgdHlwZSdzIHNpZ25lZG5lc3MgKGBTYCkgYW5k
+IGJpdCB3aWR0aCAoYE5gKSwgcmVzcGVjdGl2ZWx5Lg0KIA0KLS4uIHRhYmxlOjogTWVhbmluZyBv
+ZiBzaWduZWRuZXNzIG5vdGF0aW9uLg0KKy4uIHRhYmxlOjogTWVhbmluZyBvZiBzaWduZWRuZXNz
+IG5vdGF0aW9uDQogDQogICA9PT09ID09PT09PT09PQ0KICAgUyAgICBNZWFuaW5nDQpAQCAtMzQs
+NyArMzQsNyBAQCBhIHR5cGUncyBzaWduZWRuZXNzIChgU2ApIGFuZCBiaXQgd2lkdGggKGBOYCks
+IHJlc3BlY3RpdmVseS4NCiAgIHMgICAgc2lnbmVkDQogICA9PT09ID09PT09PT09PQ0KIA0KLS4u
+IHRhYmxlOjogTWVhbmluZyBvZiBiaXQtd2lkdGggbm90YXRpb24uDQorLi4gdGFibGU6OiBNZWFu
+aW5nIG9mIGJpdC13aWR0aCBub3RhdGlvbg0KIA0KICAgPT09PT0gPT09PT09PT09DQogICBOICAg
+ICBCaXQgd2lkdGgNCkBAIC0yNTYsMTggKzI1NiwyMCBAQCBJbnN0cnVjdGlvbiBjbGFzc2VzDQog
+DQogVGhlIHRocmVlIGxlYXN0IHNpZ25pZmljYW50IGJpdHMgb2YgdGhlICdvcGNvZGUnIGZpZWxk
+IHN0b3JlIHRoZSBpbnN0cnVjdGlvbiBjbGFzczoNCiANCi09PT09PSAgPT09PT0gID09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT0gID09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09DQotY2xhc3MgIHZhbHVlICBkZXNjcmlwdGlvbiAgICAgICAgICAgICAgICAgICAgICByZWZl
+cmVuY2UNCi09PT09PSAgPT09PT0gID09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0gID09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09DQotTEQgICAgIDB4MCAgICBub24tc3Rh
+bmRhcmQgbG9hZCBvcGVyYXRpb25zICAgICBgTG9hZCBhbmQgc3RvcmUgaW5zdHJ1Y3Rpb25zYF8N
+Ci1MRFggICAgMHgxICAgIGxvYWQgaW50byByZWdpc3RlciBvcGVyYXRpb25zICAgIGBMb2FkIGFu
+ZCBzdG9yZSBpbnN0cnVjdGlvbnNgXw0KLVNUICAgICAweDIgICAgc3RvcmUgZnJvbSBpbW1lZGlh
+dGUgb3BlcmF0aW9ucyAgYExvYWQgYW5kIHN0b3JlIGluc3RydWN0aW9uc2BfDQotU1RYICAgIDB4
+MyAgICBzdG9yZSBmcm9tIHJlZ2lzdGVyIG9wZXJhdGlvbnMgICBgTG9hZCBhbmQgc3RvcmUgaW5z
+dHJ1Y3Rpb25zYF8NCi1BTFUgICAgMHg0ICAgIDMyLWJpdCBhcml0aG1ldGljIG9wZXJhdGlvbnMg
+ICAgIGBBcml0aG1ldGljIGFuZCBqdW1wIGluc3RydWN0aW9uc2BfDQotSk1QICAgIDB4NSAgICA2
+NC1iaXQganVtcCBvcGVyYXRpb25zICAgICAgICAgICBgQXJpdGhtZXRpYyBhbmQganVtcCBpbnN0
+cnVjdGlvbnNgXw0KLUpNUDMyICAweDYgICAgMzItYml0IGp1bXAgb3BlcmF0aW9ucyAgICAgICAg
+ICAgYEFyaXRobWV0aWMgYW5kIGp1bXAgaW5zdHJ1Y3Rpb25zYF8NCi1BTFU2NCAgMHg3ICAgIDY0
+LWJpdCBhcml0aG1ldGljIG9wZXJhdGlvbnMgICAgIGBBcml0aG1ldGljIGFuZCBqdW1wIGluc3Ry
+dWN0aW9uc2BfDQotPT09PT0gID09PT09ICA9PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+ICA9PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PQ0KKy4uIHRhYmxlOjogSW5zdHJ1
+Y3Rpb24gY2xhc3MNCisNCisgID09PT09ICA9PT09PSAgPT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PSAgPT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0NCisgIGNsYXNzICB2
+YWx1ZSAgZGVzY3JpcHRpb24gICAgICAgICAgICAgICAgICAgICAgcmVmZXJlbmNlDQorICA9PT09
+PSAgPT09PT0gID09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0gID09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09DQorICBMRCAgICAgMHgwICAgIG5vbi1zdGFuZGFyZCBsb2Fk
+IG9wZXJhdGlvbnMgICAgIGBMb2FkIGFuZCBzdG9yZSBpbnN0cnVjdGlvbnNgXw0KKyAgTERYICAg
+IDB4MSAgICBsb2FkIGludG8gcmVnaXN0ZXIgb3BlcmF0aW9ucyAgICBgTG9hZCBhbmQgc3RvcmUg
+aW5zdHJ1Y3Rpb25zYF8NCisgIFNUICAgICAweDIgICAgc3RvcmUgZnJvbSBpbW1lZGlhdGUgb3Bl
+cmF0aW9ucyAgYExvYWQgYW5kIHN0b3JlIGluc3RydWN0aW9uc2BfDQorICBTVFggICAgMHgzICAg
+IHN0b3JlIGZyb20gcmVnaXN0ZXIgb3BlcmF0aW9ucyAgIGBMb2FkIGFuZCBzdG9yZSBpbnN0cnVj
+dGlvbnNgXw0KKyAgQUxVICAgIDB4NCAgICAzMi1iaXQgYXJpdGhtZXRpYyBvcGVyYXRpb25zICAg
+ICBgQXJpdGhtZXRpYyBhbmQganVtcCBpbnN0cnVjdGlvbnNgXw0KKyAgSk1QICAgIDB4NSAgICA2
+NC1iaXQganVtcCBvcGVyYXRpb25zICAgICAgICAgICBgQXJpdGhtZXRpYyBhbmQganVtcCBpbnN0
+cnVjdGlvbnNgXw0KKyAgSk1QMzIgIDB4NiAgICAzMi1iaXQganVtcCBvcGVyYXRpb25zICAgICAg
+ICAgICBgQXJpdGhtZXRpYyBhbmQganVtcCBpbnN0cnVjdGlvbnNgXw0KKyAgQUxVNjQgIDB4NyAg
+ICA2NC1iaXQgYXJpdGhtZXRpYyBvcGVyYXRpb25zICAgICBgQXJpdGhtZXRpYyBhbmQganVtcCBp
+bnN0cnVjdGlvbnNgXw0KKyAgPT09PT0gID09PT09ICA9PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09ICA9PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PQ0KIA0KIEFyaXRobWV0
+aWMgYW5kIGp1bXAgaW5zdHJ1Y3Rpb25zDQogPT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT0NCkBAIC0yODUsNiArMjg3LDggQEAgRm9yIGFyaXRobWV0aWMgYW5kIGp1bXAgaW5zdHJ1Y3Rp
+b25zIChgYEFMVWBgLCBgYEFMVTY0YGAsIGBgSk1QYGAgYW5kDQogKipzIChzb3VyY2UpKioNCiAg
+IHRoZSBzb3VyY2Ugb3BlcmFuZCBsb2NhdGlvbiwgd2hpY2ggdW5sZXNzIG90aGVyd2lzZSBzcGVj
+aWZpZWQgaXMgb25lIG9mOg0KIA0KKyAgLi4gdGFibGU6OiBTb3VyY2Ugb3BlcmFuZCBsb2NhdGlv
+bg0KKw0KICAgPT09PT09ICA9PT09PSAgPT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PQ0KICAgc291cmNlICB2YWx1ZSAgZGVzY3JpcHRpb24NCiAgID09PT09PSAg
+PT09PT0gID09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0NCkBA
+IC0zMDUsMjcgKzMwOSwyOSBAQCBUaGUgJ2NvZGUnIGZpZWxkIGVuY29kZXMgdGhlIG9wZXJhdGlv
+biBhcyBiZWxvdywgd2hlcmUgJ3NyYycgcmVmZXJzIHRvIHRoZQ0KIHRoZSBzb3VyY2Ugb3BlcmFu
+ZCBhbmQgJ2RzdCcgcmVmZXJzIHRvIHRoZSB2YWx1ZSBvZiB0aGUgZGVzdGluYXRpb24NCiByZWdp
+c3Rlci4NCiANCi09PT09PSAgPT09PT0gID09PT09PT0gID09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0NCi1uYW1lICAgY29kZSAgIG9mZnNl
+dCAgIGRlc2NyaXB0aW9uDQotPT09PT0gID09PT09ICA9PT09PT09ICA9PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09DQotQUREICAgIDB4MCAg
+ICAwICAgICAgICBkc3QgKz0gc3JjDQotU1VCICAgIDB4MSAgICAwICAgICAgICBkc3QgLT0gc3Jj
+DQotTVVMICAgIDB4MiAgICAwICAgICAgICBkc3QgXCo9IHNyYw0KLURJViAgICAweDMgICAgMCAg
+ICAgICAgZHN0ID0gKHNyYyAhPSAwKSA/IChkc3QgLyBzcmMpIDogMA0KLVNESVYgICAweDMgICAg
+MSAgICAgICAgZHN0ID0gKHNyYyAhPSAwKSA/IChkc3Qgcy8gc3JjKSA6IDANCi1PUiAgICAgMHg0
+ICAgIDAgICAgICAgIGRzdCBcfD0gc3JjDQotQU5EICAgIDB4NSAgICAwICAgICAgICBkc3QgJj0g
+c3JjDQotTFNIICAgIDB4NiAgICAwICAgICAgICBkc3QgPDw9IChzcmMgJiBtYXNrKQ0KLVJTSCAg
+ICAweDcgICAgMCAgICAgICAgZHN0ID4+PSAoc3JjICYgbWFzaykNCi1ORUcgICAgMHg4ICAgIDAg
+ICAgICAgIGRzdCA9IC1kc3QNCi1NT0QgICAgMHg5ICAgIDAgICAgICAgIGRzdCA9IChzcmMgIT0g
+MCkgPyAoZHN0ICUgc3JjKSA6IGRzdA0KLVNNT0QgICAweDkgICAgMSAgICAgICAgZHN0ID0gKHNy
+YyAhPSAwKSA/IChkc3QgcyUgc3JjKSA6IGRzdA0KLVhPUiAgICAweGEgICAgMCAgICAgICAgZHN0
+IF49IHNyYw0KLU1PViAgICAweGIgICAgMCAgICAgICAgZHN0ID0gc3JjDQotTU9WU1ggIDB4YiAg
+ICA4LzE2LzMyICBkc3QgPSAoczgsczE2LHMzMilzcmMNCi1BUlNIICAgMHhjICAgIDAgICAgICAg
+IDp0ZXJtOmBzaWduIGV4dGVuZGluZzxTaWduIEV4dGVuZD5gIGRzdCA+Pj0gKHNyYyAmIG1hc2sp
+DQotRU5EICAgIDB4ZCAgICAwICAgICAgICBieXRlIHN3YXAgb3BlcmF0aW9ucyAoc2VlIGBCeXRl
+IHN3YXAgaW5zdHJ1Y3Rpb25zYF8gYmVsb3cpDQotPT09PT0gID09PT09ICA9PT09PT09ICA9PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09DQor
+Li4gdGFibGU6OiBBcml0aG1ldGljIGluc3RydWN0aW9ucw0KKw0KKyAgPT09PT0gID09PT09ICA9
+PT09PT09ICA9PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09DQorICBuYW1lICAgY29kZSAgIG9mZnNldCAgIGRlc2NyaXB0aW9uDQorICA9PT09
+PSAgPT09PT0gID09PT09PT0gID09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT0NCisgIEFERCAgICAweDAgICAgMCAgICAgICAgZHN0ICs9IHNy
+Yw0KKyAgU1VCICAgIDB4MSAgICAwICAgICAgICBkc3QgLT0gc3JjDQorICBNVUwgICAgMHgyICAg
+IDAgICAgICAgIGRzdCBcKj0gc3JjDQorICBESVYgICAgMHgzICAgIDAgICAgICAgIGRzdCA9IChz
+cmMgIT0gMCkgPyAoZHN0IC8gc3JjKSA6IDANCisgIFNESVYgICAweDMgICAgMSAgICAgICAgZHN0
+ID0gKHNyYyAhPSAwKSA/IChkc3Qgcy8gc3JjKSA6IDANCisgIE9SICAgICAweDQgICAgMCAgICAg
+ICAgZHN0IFx8PSBzcmMNCisgIEFORCAgICAweDUgICAgMCAgICAgICAgZHN0ICY9IHNyYw0KKyAg
+TFNIICAgIDB4NiAgICAwICAgICAgICBkc3QgPDw9IChzcmMgJiBtYXNrKQ0KKyAgUlNIICAgIDB4
+NyAgICAwICAgICAgICBkc3QgPj49IChzcmMgJiBtYXNrKQ0KKyAgTkVHICAgIDB4OCAgICAwICAg
+ICAgICBkc3QgPSAtZHN0DQorICBNT0QgICAgMHg5ICAgIDAgICAgICAgIGRzdCA9IChzcmMgIT0g
+MCkgPyAoZHN0ICUgc3JjKSA6IGRzdA0KKyAgU01PRCAgIDB4OSAgICAxICAgICAgICBkc3QgPSAo
+c3JjICE9IDApID8gKGRzdCBzJSBzcmMpIDogZHN0DQorICBYT1IgICAgMHhhICAgIDAgICAgICAg
+IGRzdCBePSBzcmMNCisgIE1PViAgICAweGIgICAgMCAgICAgICAgZHN0ID0gc3JjDQorICBNT1ZT
+WCAgMHhiICAgIDgvMTYvMzIgIGRzdCA9IChzOCxzMTYsczMyKXNyYw0KKyAgQVJTSCAgIDB4YyAg
+ICAwICAgICAgICA6dGVybTpgc2lnbiBleHRlbmRpbmc8U2lnbiBFeHRlbmQ+YCBkc3QgPj49IChz
+cmMgJiBtYXNrKQ0KKyAgRU5EICAgIDB4ZCAgICAwICAgICAgICBieXRlIHN3YXAgb3BlcmF0aW9u
+cyAoc2VlIGBCeXRlIHN3YXAgaW5zdHJ1Y3Rpb25zYF8gYmVsb3cpDQorICA9PT09PSAgPT09PT0g
+ID09PT09PT0gID09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT0NCiANCiBVbmRlcmZsb3cgYW5kIG92ZXJmbG93IGFyZSBhbGxvd2VkIGR1cmlu
+ZyBhcml0aG1ldGljIG9wZXJhdGlvbnMsIG1lYW5pbmcNCiB0aGUgNjQtYml0IG9yIDMyLWJpdCB2
+YWx1ZSB3aWxsIHdyYXAuIElmIEJQRiBwcm9ncmFtIGV4ZWN1dGlvbiB3b3VsZA0KQEAgLTQwNiwx
+MyArNDEyLDE1IEBAIHNlbGVjdCB3aGF0IGJ5dGUgb3JkZXIgdGhlIG9wZXJhdGlvbiBjb252ZXJ0
+cyBmcm9tIG9yIHRvLiBGb3INCiBgYEFMVTY0YGAsIHRoZSAxLWJpdCBzb3VyY2Ugb3BlcmFuZCBm
+aWVsZCBpbiB0aGUgb3Bjb2RlIGlzIHJlc2VydmVkDQogYW5kIG11c3QgYmUgc2V0IHRvIDAuDQog
+DQotPT09PT0gID09PT09PT09ICA9PT09PSAgPT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PQ0KLWNsYXNzICBzb3VyY2UgICAgdmFsdWUgIGRlc2NyaXB0aW9u
+DQotPT09PT0gID09PT09PT09ICA9PT09PSAgPT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PQ0KLUFMVSAgICBUT19MRSAgICAgMCAgICAgIGNvbnZlcnQgYmV0
+d2VlbiBob3N0IGJ5dGUgb3JkZXIgYW5kIGxpdHRsZSBlbmRpYW4NCi1BTFUgICAgVE9fQkUgICAg
+IDEgICAgICBjb252ZXJ0IGJldHdlZW4gaG9zdCBieXRlIG9yZGVyIGFuZCBiaWcgZW5kaWFuDQot
+QUxVNjQgIFJlc2VydmVkICAwICAgICAgZG8gYnl0ZSBzd2FwIHVuY29uZGl0aW9uYWxseQ0KLT09
+PT09ICA9PT09PT09PSAgPT09PT0gID09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT0NCisuLiB0YWJsZTo6IEJ5dGUgc3dhcCBpbnN0cnVjdGlvbnMNCisNCisg
+ID09PT09ICA9PT09PT09PSAgPT09PT0gID09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT0NCisgIGNsYXNzICBzb3VyY2UgICAgdmFsdWUgIGRlc2NyaXB0aW9u
+DQorICA9PT09PSAgPT09PT09PT0gID09PT09ICA9PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09DQorICBBTFUgICAgVE9fTEUgICAgIDAgICAgICBjb252ZXJ0
+IGJldHdlZW4gaG9zdCBieXRlIG9yZGVyIGFuZCBsaXR0bGUgZW5kaWFuDQorICBBTFUgICAgVE9f
+QkUgICAgIDEgICAgICBjb252ZXJ0IGJldHdlZW4gaG9zdCBieXRlIG9yZGVyIGFuZCBiaWcgZW5k
+aWFuDQorICBBTFU2NCAgUmVzZXJ2ZWQgIDAgICAgICBkbyBieXRlIHN3YXAgdW5jb25kaXRpb25h
+bGx5DQorICA9PT09PSAgPT09PT09PT0gID09PT09ICA9PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09DQogDQogVGhlICdpbW0nIGZpZWxkIGVuY29kZXMgdGhl
+IHdpZHRoIG9mIHRoZSBzd2FwIG9wZXJhdGlvbnMuICBUaGUgZm9sbG93aW5nIHdpZHRocw0KIGFy
+ZSBzdXBwb3J0ZWQ6IDE2LCAzMiBhbmQgNjQuICBXaWR0aCA2NCBvcGVyYXRpb25zIGJlbG9uZyB0
+byB0aGUgYmFzZTY0DQpAQCAtNDQ4LDI3ICs0NTYsMjkgQEAgb3RoZXJ3aXNlIGlkZW50aWNhbCBv
+cGVyYXRpb25zLCBhbmQgaW5kaWNhdGVzIHRoZSBiYXNlNjQgY29uZm9ybWFuY2UNCiBncm91cCB1
+bmxlc3Mgb3RoZXJ3aXNlIHNwZWNpZmllZC4NCiBUaGUgJ2NvZGUnIGZpZWxkIGVuY29kZXMgdGhl
+IG9wZXJhdGlvbiBhcyBiZWxvdzoNCiANCi09PT09PT09PSAgPT09PT0gID09PT09PT0gID09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PSAgPT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09DQotY29kZSAgICAgIHZhbHVlICBzcmNfcmVnICBkZXNj
+cmlwdGlvbiAgICAgICAgICAgICAgICAgICAgICAgIG5vdGVzDQotPT09PT09PT0gID09PT09ICA9
+PT09PT09ICA9PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0gID09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PQ0KLUpBICAgICAgICAweDAgICAg
+MHgwICAgICAgUEMgKz0gb2Zmc2V0ICAgICAgICAgICAgICAgICAgICAgICB7SkEsIEssIEpNUH0g
+b25seQ0KLUpBICAgICAgICAweDAgICAgMHgwICAgICAgUEMgKz0gaW1tICAgICAgICAgICAgICAg
+ICAgICAgICAgICB7SkEsIEssIEpNUDMyfSBvbmx5DQotSkVRICAgICAgIDB4MSAgICBhbnkgICAg
+ICBQQyArPSBvZmZzZXQgaWYgZHN0ID09IHNyYw0KLUpHVCAgICAgICAweDIgICAgYW55ICAgICAg
+UEMgKz0gb2Zmc2V0IGlmIGRzdCA+IHNyYyAgICAgICAgICB1bnNpZ25lZA0KLUpHRSAgICAgICAw
+eDMgICAgYW55ICAgICAgUEMgKz0gb2Zmc2V0IGlmIGRzdCA+PSBzcmMgICAgICAgICB1bnNpZ25l
+ZA0KLUpTRVQgICAgICAweDQgICAgYW55ICAgICAgUEMgKz0gb2Zmc2V0IGlmIGRzdCAmIHNyYw0K
+LUpORSAgICAgICAweDUgICAgYW55ICAgICAgUEMgKz0gb2Zmc2V0IGlmIGRzdCAhPSBzcmMNCi1K
+U0dUICAgICAgMHg2ICAgIGFueSAgICAgIFBDICs9IG9mZnNldCBpZiBkc3QgPiBzcmMgICAgICAg
+ICAgc2lnbmVkDQotSlNHRSAgICAgIDB4NyAgICBhbnkgICAgICBQQyArPSBvZmZzZXQgaWYgZHN0
+ID49IHNyYyAgICAgICAgIHNpZ25lZA0KLUNBTEwgICAgICAweDggICAgMHgwICAgICAgY2FsbCBo
+ZWxwZXIgZnVuY3Rpb24gYnkgc3RhdGljIElEICB7Q0FMTCwgSywgSk1QfSBvbmx5LCBzZWUgYEhl
+bHBlciBmdW5jdGlvbnNgXw0KLUNBTEwgICAgICAweDggICAgMHgxICAgICAgY2FsbCBQQyArPSBp
+bW0gICAgICAgICAgICAgICAgICAgICB7Q0FMTCwgSywgSk1QfSBvbmx5LCBzZWUgYFByb2dyYW0t
+bG9jYWwgZnVuY3Rpb25zYF8NCi1DQUxMICAgICAgMHg4ICAgIDB4MiAgICAgIGNhbGwgaGVscGVy
+IGZ1bmN0aW9uIGJ5IEJURiBJRCAgICAge0NBTEwsIEssIEpNUH0gb25seSwgc2VlIGBIZWxwZXIg
+ZnVuY3Rpb25zYF8NCi1FWElUICAgICAgMHg5ICAgIDB4MCAgICAgIHJldHVybiAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAge0NBTEwsIEssIEpNUH0gb25seQ0KLUpMVCAgICAgICAweGEgICAg
+YW55ICAgICAgUEMgKz0gb2Zmc2V0IGlmIGRzdCA8IHNyYyAgICAgICAgICB1bnNpZ25lZA0KLUpM
+RSAgICAgICAweGIgICAgYW55ICAgICAgUEMgKz0gb2Zmc2V0IGlmIGRzdCA8PSBzcmMgICAgICAg
+ICB1bnNpZ25lZA0KLUpTTFQgICAgICAweGMgICAgYW55ICAgICAgUEMgKz0gb2Zmc2V0IGlmIGRz
+dCA8IHNyYyAgICAgICAgICBzaWduZWQNCi1KU0xFICAgICAgMHhkICAgIGFueSAgICAgIFBDICs9
+IG9mZnNldCBpZiBkc3QgPD0gc3JjICAgICAgICAgc2lnbmVkDQotPT09PT09PT0gID09PT09ICA9
+PT09PT09ICA9PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0gID09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PQ0KKy4uIHRhYmxlOjogSnVtcCBp
+bnN0cnVjdGlvbnMNCisNCisgID09PT09PT09ICA9PT09PSAgPT09PT09PSAgPT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09ICA9PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT0NCisgIGNvZGUgICAgICB2YWx1ZSAgc3JjX3JlZyAgZGVzY3JpcHRp
+b24gICAgICAgICAgICAgICAgICAgICAgICBub3Rlcw0KKyAgPT09PT09PT0gID09PT09ICA9PT09
+PT09ICA9PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0gID09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PQ0KKyAgSkEgICAgICAgIDB4MCAgICAw
+eDAgICAgICBQQyArPSBvZmZzZXQgICAgICAgICAgICAgICAgICAgICAgIHtKQSwgSywgSk1QfSBv
+bmx5DQorICBKQSAgICAgICAgMHgwICAgIDB4MCAgICAgIFBDICs9IGltbSAgICAgICAgICAgICAg
+ICAgICAgICAgICAge0pBLCBLLCBKTVAzMn0gb25seQ0KKyAgSkVRICAgICAgIDB4MSAgICBhbnkg
+ICAgICBQQyArPSBvZmZzZXQgaWYgZHN0ID09IHNyYw0KKyAgSkdUICAgICAgIDB4MiAgICBhbnkg
+ICAgICBQQyArPSBvZmZzZXQgaWYgZHN0ID4gc3JjICAgICAgICAgIHVuc2lnbmVkDQorICBKR0Ug
+ICAgICAgMHgzICAgIGFueSAgICAgIFBDICs9IG9mZnNldCBpZiBkc3QgPj0gc3JjICAgICAgICAg
+dW5zaWduZWQNCisgIEpTRVQgICAgICAweDQgICAgYW55ICAgICAgUEMgKz0gb2Zmc2V0IGlmIGRz
+dCAmIHNyYw0KKyAgSk5FICAgICAgIDB4NSAgICBhbnkgICAgICBQQyArPSBvZmZzZXQgaWYgZHN0
+ICE9IHNyYw0KKyAgSlNHVCAgICAgIDB4NiAgICBhbnkgICAgICBQQyArPSBvZmZzZXQgaWYgZHN0
+ID4gc3JjICAgICAgICAgIHNpZ25lZA0KKyAgSlNHRSAgICAgIDB4NyAgICBhbnkgICAgICBQQyAr
+PSBvZmZzZXQgaWYgZHN0ID49IHNyYyAgICAgICAgIHNpZ25lZA0KKyAgQ0FMTCAgICAgIDB4OCAg
+ICAweDAgICAgICBjYWxsIGhlbHBlciBmdW5jdGlvbiBieSBzdGF0aWMgSUQgIHtDQUxMLCBLLCBK
+TVB9IG9ubHksIHNlZSBgSGVscGVyIGZ1bmN0aW9uc2BfDQorICBDQUxMICAgICAgMHg4ICAgIDB4
+MSAgICAgIGNhbGwgUEMgKz0gaW1tICAgICAgICAgICAgICAgICAgICAge0NBTEwsIEssIEpNUH0g
+b25seSwgc2VlIGBQcm9ncmFtLWxvY2FsIGZ1bmN0aW9uc2BfDQorICBDQUxMICAgICAgMHg4ICAg
+IDB4MiAgICAgIGNhbGwgaGVscGVyIGZ1bmN0aW9uIGJ5IEJURiBJRCAgICAge0NBTEwsIEssIEpN
+UH0gb25seSwgc2VlIGBIZWxwZXIgZnVuY3Rpb25zYF8NCisgIEVYSVQgICAgICAweDkgICAgMHgw
+ICAgICAgcmV0dXJuICAgICAgICAgICAgICAgICAgICAgICAgICAgICB7Q0FMTCwgSywgSk1QfSBv
+bmx5DQorICBKTFQgICAgICAgMHhhICAgIGFueSAgICAgIFBDICs9IG9mZnNldCBpZiBkc3QgPCBz
+cmMgICAgICAgICAgdW5zaWduZWQNCisgIEpMRSAgICAgICAweGIgICAgYW55ICAgICAgUEMgKz0g
+b2Zmc2V0IGlmIGRzdCA8PSBzcmMgICAgICAgICB1bnNpZ25lZA0KKyAgSlNMVCAgICAgIDB4YyAg
+ICBhbnkgICAgICBQQyArPSBvZmZzZXQgaWYgZHN0IDwgc3JjICAgICAgICAgIHNpZ25lZA0KKyAg
+SlNMRSAgICAgIDB4ZCAgICBhbnkgICAgICBQQyArPSBvZmZzZXQgaWYgZHN0IDw9IHNyYyAgICAg
+ICAgIHNpZ25lZA0KKyAgPT09PT09PT0gID09PT09ICA9PT09PT09ICA9PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT0gID09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PQ0KIA0KIHdoZXJlICdQQycgZGVub3RlcyB0aGUgcHJvZ3JhbSBjb3VudGVy
+LCBhbmQgdGhlIG9mZnNldCB0byBpbmNyZW1lbnQgYnkNCiBpcyBpbiB1bml0cyBvZiA2NC1iaXQg
+aW5zdHJ1Y3Rpb25zIHJlbGF0aXZlIHRvIHRoZSBpbnN0cnVjdGlvbiBmb2xsb3dpbmcNCkBAIC01
+MzcsNiArNTQ3LDggQEAgRm9yIGxvYWQgYW5kIHN0b3JlIGluc3RydWN0aW9ucyAoYGBMRGBgLCBg
+YExEWGBgLCBgYFNUYGAsIGFuZCBgYFNUWGBgKSwgdGhlDQogKiptb2RlKioNCiAgIFRoZSBtb2Rl
+IG1vZGlmaWVyIGlzIG9uZSBvZjoNCiANCisgIC4uIHRhYmxlOjogTW9kZSBtb2RpZmllcg0KKw0K
+ICAgICA9PT09PT09PT09PT09ICA9PT09PSAgPT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09ICA9PT09PT09PT09PT09DQogICAgIG1vZGUgbW9kaWZpZXIgIHZhbHVlICBkZXNjcmlw
+dGlvbiAgICAgICAgICAgICAgICAgICAgICAgICAgIHJlZmVyZW5jZQ0KICAgICA9PT09PT09PT09
+PT09ICA9PT09PSAgPT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09ICA9PT09PT09
+PT09PT09DQpAQCAtNTUxLDYgKzU2Myw4IEBAIEZvciBsb2FkIGFuZCBzdG9yZSBpbnN0cnVjdGlv
+bnMgKGBgTERgYCwgYGBMRFhgYCwgYGBTVGBgLCBhbmQgYGBTVFhgYCksIHRoZQ0KICoqc3ogKHNp
+emUpKioNCiAgIFRoZSBzaXplIG1vZGlmaWVyIGlzIG9uZSBvZjoNCiANCisgIC4uIHRhYmxlOjog
+U2l6ZSBtb2RpZmllcg0KKw0KICAgICA9PT09ICA9PT09PSAgPT09PT09PT09PT09PT09PT09PT09
+DQogICAgIHNpemUgIHZhbHVlICBkZXNjcmlwdGlvbg0KICAgICA9PT09ICA9PT09PSAgPT09PT09
+PT09PT09PT09PT09PT09DQpAQCAtNjE5LDE0ICs2MzMsMTYgQEAgVGhlICdpbW0nIGZpZWxkIGlz
+IHVzZWQgdG8gZW5jb2RlIHRoZSBhY3R1YWwgYXRvbWljIG9wZXJhdGlvbi4NCiBTaW1wbGUgYXRv
+bWljIG9wZXJhdGlvbiB1c2UgYSBzdWJzZXQgb2YgdGhlIHZhbHVlcyBkZWZpbmVkIHRvIGVuY29k
+ZQ0KIGFyaXRobWV0aWMgb3BlcmF0aW9ucyBpbiB0aGUgJ2ltbScgZmllbGQgdG8gZW5jb2RlIHRo
+ZSBhdG9taWMgb3BlcmF0aW9uOg0KIA0KLT09PT09PT09ICA9PT09PSAgPT09PT09PT09PT0NCi1p
+bW0gICAgICAgdmFsdWUgIGRlc2NyaXB0aW9uDQotPT09PT09PT0gID09PT09ICA9PT09PT09PT09
+PQ0KLUFERCAgICAgICAweDAwICAgYXRvbWljIGFkZA0KLU9SICAgICAgICAweDQwICAgYXRvbWlj
+IG9yDQotQU5EICAgICAgIDB4NTAgICBhdG9taWMgYW5kDQotWE9SICAgICAgIDB4YTAgICBhdG9t
+aWMgeG9yDQotPT09PT09PT0gID09PT09ICA9PT09PT09PT09PQ0KKy4uIHRhYmxlOjogU2ltcGxl
+IGF0b21pYyBvcGVyYXRpb25zDQorDQorICA9PT09PT09PSAgPT09PT0gID09PT09PT09PT09DQor
+ICBpbW0gICAgICAgdmFsdWUgIGRlc2NyaXB0aW9uDQorICA9PT09PT09PSAgPT09PT0gID09PT09
+PT09PT09DQorICBBREQgICAgICAgMHgwMCAgIGF0b21pYyBhZGQNCisgIE9SICAgICAgICAweDQw
+ICAgYXRvbWljIG9yDQorICBBTkQgICAgICAgMHg1MCAgIGF0b21pYyBhbmQNCisgIFhPUiAgICAg
+ICAweGEwICAgYXRvbWljIHhvcg0KKyAgPT09PT09PT0gID09PT09ICA9PT09PT09PT09PQ0KIA0K
+IA0KIGBge0FUT01JQywgVywgU1RYfWBgIHdpdGggJ2ltbScgPSBBREQgbWVhbnM6Og0KQEAgLTY0
+MCw2ICs2NTYsOCBAQCBYT1IgICAgICAgMHhhMCAgIGF0b21pYyB4b3INCiBJbiBhZGRpdGlvbiB0
+byB0aGUgc2ltcGxlIGF0b21pYyBvcGVyYXRpb25zLCB0aGVyZSBhbHNvIGlzIGEgbW9kaWZpZXIg
+YW5kDQogdHdvIGNvbXBsZXggYXRvbWljIG9wZXJhdGlvbnM6DQogDQorLi4gdGFibGU6OiBDb21w
+bGV4IGF0b21pYyBvcGVyYXRpb25zDQorDQogPT09PT09PT09PT0gID09PT09PT09PT09PT09PT0g
+ID09PT09PT09PT09PT09PT09PT09PT09PT09PQ0KIGltbSAgICAgICAgICB2YWx1ZSAgICAgICAg
+ICAgICBkZXNjcmlwdGlvbg0KID09PT09PT09PT09ICA9PT09PT09PT09PT09PT09ICA9PT09PT09
+PT09PT09PT09PT09PT09PT09PT0NCkBAIC02NzMsMTcgKzY5MSwxOSBAQCBUaGUgZm9sbG93aW5n
+IHRhYmxlIGRlZmluZXMgYSBzZXQgb2YgYGB7SU1NLCBEVywgTER9YGAgaW5zdHJ1Y3Rpb25zDQog
+d2l0aCBvcGNvZGUgc3VidHlwZXMgaW4gdGhlICdzcmNfcmVnJyBmaWVsZCwgdXNpbmcgbmV3IHRl
+cm1zIHN1Y2ggYXMgIm1hcCINCiBkZWZpbmVkIGZ1cnRoZXIgYmVsb3c6DQogDQotPT09PT09PSAg
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0gID09PT09PT09PT09ICA9
+PT09PT09PT09PT09PQ0KLXNyY19yZWcgIHBzZXVkb2NvZGUgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICBpbW0gdHlwZSAgICAgZHN0IHR5cGUNCi09PT09PT09ICA9PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PSAgPT09PT09PT09PT0gID09PT09PT09PT09PT09
+DQotMHgwICAgICAgZHN0ID0gKG5leHRfaW1tIDw8IDMyKSB8IGltbSAgICAgICAgICAgICAgIGlu
+dGVnZXIgICAgICBpbnRlZ2VyDQotMHgxICAgICAgZHN0ID0gbWFwX2J5X2ZkKGltbSkgICAgICAg
+ICAgICAgICAgICAgICAgIG1hcCBmZCAgICAgICBtYXANCi0weDIgICAgICBkc3QgPSBtYXBfdmFs
+KG1hcF9ieV9mZChpbW0pKSArIG5leHRfaW1tICAgbWFwIGZkICAgICAgIGRhdGEgYWRkcmVzcw0K
+LTB4MyAgICAgIGRzdCA9IHZhcl9hZGRyKGltbSkgICAgICAgICAgICAgICAgICAgICAgICB2YXJp
+YWJsZSBpZCAgZGF0YSBhZGRyZXNzDQotMHg0ICAgICAgZHN0ID0gY29kZV9hZGRyKGltbSkgICAg
+ICAgICAgICAgICAgICAgICAgIGludGVnZXIgICAgICBjb2RlIGFkZHJlc3MNCi0weDUgICAgICBk
+c3QgPSBtYXBfYnlfaWR4KGltbSkgICAgICAgICAgICAgICAgICAgICAgbWFwIGluZGV4ICAgIG1h
+cA0KLTB4NiAgICAgIGRzdCA9IG1hcF92YWwobWFwX2J5X2lkeChpbW0pKSArIG5leHRfaW1tICBt
+YXAgaW5kZXggICAgZGF0YSBhZGRyZXNzDQotPT09PT09PSAgPT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT0gID09PT09PT09PT09ICA9PT09PT09PT09PT09PQ0KKy4uIHRh
+YmxlOjogNjQtYml0IGltbWVkaWF0ZSBpbnN0cnVjdGlvbnMNCisNCisgID09PT09PT0gID09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09ICA9PT09PT09PT09PSAgPT09PT09
+PT09PT09PT0NCisgIHNyY19yZWcgIHBzZXVkb2NvZGUgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICBpbW0gdHlwZSAgICAgZHN0IHR5cGUNCisgID09PT09PT0gID09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09ICA9PT09PT09PT09PSAgPT09PT09PT09PT09PT0N
+CisgIDB4MCAgICAgIGRzdCA9IChuZXh0X2ltbSA8PCAzMikgfCBpbW0gICAgICAgICAgICAgICBp
+bnRlZ2VyICAgICAgaW50ZWdlcg0KKyAgMHgxICAgICAgZHN0ID0gbWFwX2J5X2ZkKGltbSkgICAg
+ICAgICAgICAgICAgICAgICAgIG1hcCBmZCAgICAgICBtYXANCisgIDB4MiAgICAgIGRzdCA9IG1h
+cF92YWwobWFwX2J5X2ZkKGltbSkpICsgbmV4dF9pbW0gICBtYXAgZmQgICAgICAgZGF0YSBhZGRy
+ZXNzDQorICAweDMgICAgICBkc3QgPSB2YXJfYWRkcihpbW0pICAgICAgICAgICAgICAgICAgICAg
+ICAgdmFyaWFibGUgaWQgIGRhdGEgYWRkcmVzcw0KKyAgMHg0ICAgICAgZHN0ID0gY29kZV9hZGRy
+KGltbSkgICAgICAgICAgICAgICAgICAgICAgIGludGVnZXIgICAgICBjb2RlIGFkZHJlc3MNCisg
+IDB4NSAgICAgIGRzdCA9IG1hcF9ieV9pZHgoaW1tKSAgICAgICAgICAgICAgICAgICAgICBtYXAg
+aW5kZXggICAgbWFwDQorICAweDYgICAgICBkc3QgPSBtYXBfdmFsKG1hcF9ieV9pZHgoaW1tKSkg
+KyBuZXh0X2ltbSAgbWFwIGluZGV4ICAgIGRhdGEgYWRkcmVzcw0KKyAgPT09PT09PSAgPT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0gID09PT09PT09PT09ICA9PT09PT09
+PT09PT09PQ0KIA0KIHdoZXJlDQogDQotLSANCjIuNDAuMQ0KDQotLSAKQnBmIG1haWxpbmcgbGlz
+dCAtLSBicGZAaWV0Zi5vcmcKVG8gdW5zdWJzY3JpYmUgc2VuZCBhbiBlbWFpbCB0byBicGYtbGVh
+dmVAaWV0Zi5vcmcK
 
