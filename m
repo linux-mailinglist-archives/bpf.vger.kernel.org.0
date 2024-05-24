@@ -1,260 +1,199 @@
-Return-Path: <bpf+bounces-30459-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-30460-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5CCCB8CDFBC
-	for <lists+bpf@lfdr.de>; Fri, 24 May 2024 05:23:13 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 154CA8CE030
+	for <lists+bpf@lfdr.de>; Fri, 24 May 2024 06:10:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 139CD281D5A
-	for <lists+bpf@lfdr.de>; Fri, 24 May 2024 03:23:12 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2A98B1C2236E
+	for <lists+bpf@lfdr.de>; Fri, 24 May 2024 04:10:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A8FE22D60C;
-	Fri, 24 May 2024 03:23:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 01A6E38FA3;
+	Fri, 24 May 2024 04:10:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JtlAbsa1"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nLzaZ7cU"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 29B091DA4E;
-	Fri, 24 May 2024 03:23:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 62E4E2231F;
+	Fri, 24 May 2024 04:10:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716520986; cv=none; b=VMvkNlJ+8qm6uKzB2LuFclZyzLJs5ILRGXBUOs1je23bNyKltsWT0sXTtkOcp7HtUqkGn6MtZuBpG2lBu0/c05R0BSGHFbZUSQqpEg4xLnT4qvrkZRzGgX6FnoFa0b9jhhz7DhLsAkGDsqEA3uvktufmfRso0lB38N0Cuiv4Pvw=
+	t=1716523838; cv=none; b=fsu2S6FSeacJ/HtKHEwo2S4XQqvRkrH6iTYKVHouOgKmiNmf5MH45FLckO1GMvEwcg0esvuj5D0GpdgvJh+vjknAx2M4WPVOdRyqeHWJFg+5l3HwkkziLi+v3l32/2ncPXoaEztgCqJrYpATh682NZzY8Nwcdlxp7hDKQIKxZaM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716520986; c=relaxed/simple;
-	bh=zYQ/Nf8RsYjrjdtiVDNHYzDvXVz4aQsUcEHXVFX7htc=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=ZamJKqYVkEJNVcNDpTQq0Mno/x+8eOVD2msHHISo5+T018Iub88rQk+R3Gm+cMRrVw5ZLGFY6gkSNHTRbseQ1pPPQhm09reZn3lQxWDEp0r6SLTtfS0D/YVU6tK1NRUEtpuk6w1w5LGWOqNhRn4te0t0D7imlvow1qrkBgWzvT4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JtlAbsa1; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 10E81C32781;
-	Fri, 24 May 2024 03:22:59 +0000 (UTC)
+	s=arc-20240116; t=1716523838; c=relaxed/simple;
+	bh=nzpWsKa1pd1N9vI62wH3h8UJthDcr+2Eh8LpOgwa7G8=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=LwsfZkTVzVLEHQMbUnGcdz9LFP2sE3FdAXseUheWlOP5uJCXR32Rf2bw1os/g18n3rDRr2eWWxGUsTshpoYm3wGvaZJk7oicX0tZ8GlY2wWe3EocL95aEDEVZaBhD406EqzDxzDCce8QvodExKc7pV+VLx9dS6VlqCstvKID0Gc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nLzaZ7cU; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AED6AC2BBFC;
+	Fri, 24 May 2024 04:10:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1716520986;
-	bh=zYQ/Nf8RsYjrjdtiVDNHYzDvXVz4aQsUcEHXVFX7htc=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=JtlAbsa1dvhwifQieYoiFMiXlZMMWS30f4GbUu1I+P9jwhRFCjF/9lFO4zDQ0isfC
-	 +C4tHP/iieDqcrj/VPPuojshsgXUvCCjkaaqf95wc+LxapuLQoh7+PajdiLLG+eOkk
-	 9QFg9hjGqbb7utJdTE06iEhmfR62WkxGbTXcxhT2HCBAC/mDcnUFvu2F9WTwqaiOzc
-	 nL+SnZuoibs/DRzUmT8SzykqxNTqTFAODHksjcmIqfTgNK4JXRnZ2sBzTL1LhwoR0C
-	 7cE1RVCf8mz7ulmzQjsnT7F6ABxesPZjnVeiGf8EX60IDC2iUDUYVTWjkWnATXuqMq
-	 /UwMgz30Gj0fQ==
-From: Geliang Tang <geliang@kernel.org>
-To: Andrii Nakryiko <andrii@kernel.org>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Mykola Lysenko <mykolal@fb.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>,
-	Stanislav Fomichev <sdf@google.com>,
-	Hao Luo <haoluo@google.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Shuah Khan <shuah@kernel.org>
-Cc: Geliang Tang <tanggeliang@kylinos.cn>,
+	s=k20201202; t=1716523837;
+	bh=nzpWsKa1pd1N9vI62wH3h8UJthDcr+2Eh8LpOgwa7G8=;
+	h=From:To:Cc:Subject:Date:From;
+	b=nLzaZ7cUird5WxdQt5e2VVpw8JxrJVCy0syUHZfzvWwsWMH8CwA5+aoZafhW6ugl2
+	 oGvpcKcOTsM8wbSCrvwm5l7ItE2dfthG0oG/eZ+hhYi/TlOwL1WYcRYGdMNgSsEKAh
+	 pQGmOzuz/2acwyF29ct6CxP1NdGpL7ROM/CMJTeRsLLJ+VXNPeiZdJFon/+b2IN4pf
+	 FRyzs0n/azPekZX1P2NFd90e6UQ4/3pu4QvdIvF838XDxyap6VnMSSO/WHsmtBUIZ9
+	 Z9KRc/pr1ETkTytpRG6trsRrw+aJn7ImLeDz5ZJb7XgqXR8++MYATc8oljBE8DQtwq
+	 lfLE3EfKLog9A==
+From: Andrii Nakryiko <andrii@kernel.org>
+To: linux-fsdevel@vger.kernel.org,
+	brauner@kernel.org,
+	viro@zeniv.linux.org.uk,
+	akpm@linux-foundation.org
+Cc: linux-kernel@vger.kernel.org,
 	bpf@vger.kernel.org,
-	linux-kselftest@vger.kernel.org
-Subject: [PATCH bpf-next v4 6/6] selftests/bpf: Add post_connect_cb callback
-Date: Fri, 24 May 2024 11:21:54 +0800
-Message-ID: <d112fc05a838d2cbc744314af12fab14d95eb442.1716520609.git.tanggeliang@kylinos.cn>
+	gregkh@linuxfoundation.org,
+	linux-mm@kvack.org,
+	liam.howlett@oracle.com,
+	surenb@google.com,
+	rppt@kernel.org,
+	Andrii Nakryiko <andrii@kernel.org>
+Subject: [PATCH v2 0/9] ioctl()-based API to query VMAs from /proc/<pid>/maps
+Date: Thu, 23 May 2024 21:10:22 -0700
+Message-ID: <20240524041032.1048094-1-andrii@kernel.org>
 X-Mailer: git-send-email 2.43.0
-In-Reply-To: <cover.1716520609.git.tanggeliang@kylinos.cn>
-References: <cover.1716520609.git.tanggeliang@kylinos.cn>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-From: Geliang Tang <tanggeliang@kylinos.cn>
+Implement binary ioctl()-based interface to /proc/<pid>/maps file to allow
+applications to query VMA information more efficiently than reading *all* VMAs
+nonselectively through text-based interface of /proc/<pid>/maps file.
 
-For getting rid of the second parameter of do_test(), this patch adds a
-new callback post_connect_cb in struct network_helper_opts, it will be
-invoked after connect_fd_to_addr() in connect_to_fd_opts().
+Patch #3 goes into a lot of details and background on some common patterns of
+using /proc/<pid>/maps in the area of performance profiling and subsequent
+symbolization of captured stack traces. As mentioned in that patch, patterns
+of VMA querying can differ depending on specific use case, but can generally
+be grouped into two main categories: the need to query a small subset of VMAs
+covering a given batch of addresses, or reading/storing/caching all
+(typically, executable) VMAs upfront for later processing.
 
-Then define a dctcp dedicated post_connect_cb callback, invoking
-bpf_map_lookup_elem() in it, named stg_post_connect_cb() and set it in
-test_dctcp().
+The new PROCMAP_QUERY ioctl() API added in this patch set was motivated by the
+former pattern of usage. Patch #9 adds a tool that faithfully reproduces an
+efficient VMA matching pass of a symbolizer, collecting a subset of covering
+VMAs for a given set of addresses as efficiently as possible. This tool is
+serving both as a testing ground, as well as a benchmarking tool.
+It implements everything both for currently existing text-based
+/proc/<pid>/maps interface, as well as for newly-added PROCMAP_QUERY ioctl().
 
-Signed-off-by: Geliang Tang <tanggeliang@kylinos.cn>
----
- tools/testing/selftests/bpf/network_helpers.c |  7 ++-
- tools/testing/selftests/bpf/network_helpers.h |  1 +
- .../selftests/bpf/prog_tests/bpf_tcp_ca.c     | 44 ++++++++++---------
- 3 files changed, 30 insertions(+), 22 deletions(-)
+But based on discussion on previous revision of this patch set, it turned out
+that this ioctl() API is competitive with highly-optimized text-based
+pre-processing pattern that perf tool is using. Based on perf discussion, this
+revision adds more flexibility in specifying a subset of VMAs that are of
+interest. Now it's possible to specify desired permissions of VMAs (e.g.,
+request only executable ones) and/or restrict to only a subset of VMAs that
+have file backing. This further improves the efficiency when using this new
+API thanks to more selective (executable VMAs only) querying.
 
-diff --git a/tools/testing/selftests/bpf/network_helpers.c b/tools/testing/selftests/bpf/network_helpers.c
-index e20caef06aae..75589597c17e 100644
---- a/tools/testing/selftests/bpf/network_helpers.c
-+++ b/tools/testing/selftests/bpf/network_helpers.c
-@@ -353,10 +353,15 @@ int connect_to_fd_opts(int server_fd, const struct network_helper_opts *opts)
- 	    opts->post_socket_cb(fd, opts->cb_opts))
- 		goto error_close;
- 
--	if (!opts->noconnect)
-+	if (!opts->noconnect) {
- 		if (connect_fd_to_addr(fd, &addr, addrlen, opts->must_fail))
- 			goto error_close;
- 
-+		if (opts->post_connect_cb &&
-+		    opts->post_connect_cb(fd, opts->cb_opts))
-+			goto error_close;
-+	}
-+
- 	return fd;
- 
- error_close:
-diff --git a/tools/testing/selftests/bpf/network_helpers.h b/tools/testing/selftests/bpf/network_helpers.h
-index 11eea8e2e4f1..b387e8142f3c 100644
---- a/tools/testing/selftests/bpf/network_helpers.h
-+++ b/tools/testing/selftests/bpf/network_helpers.h
-@@ -28,6 +28,7 @@ struct network_helper_opts {
- 	int type;
- 	int proto;
- 	int (*post_socket_cb)(int fd, void *opts);
-+	int (*post_connect_cb)(int fd, void *opts);
- 	void *cb_opts;
- };
- 
-diff --git a/tools/testing/selftests/bpf/prog_tests/bpf_tcp_ca.c b/tools/testing/selftests/bpf/prog_tests/bpf_tcp_ca.c
-index cde796f82206..a2501e5aaa7d 100644
---- a/tools/testing/selftests/bpf/prog_tests/bpf_tcp_ca.c
-+++ b/tools/testing/selftests/bpf/prog_tests/bpf_tcp_ca.c
-@@ -39,11 +39,9 @@ static int settcpca(int fd, const char *tcp_ca)
- 	return 0;
- }
- 
--static void do_test(const struct network_helper_opts *opts,
--		    const struct bpf_map *sk_stg_map)
-+static void do_test(const struct network_helper_opts *opts)
- {
- 	int lfd = -1, fd = -1;
--	int err;
- 
- 	lfd = start_server_str(AF_INET6, SOCK_STREAM, NULL, 0, opts);
- 	if (!ASSERT_NEQ(lfd, -1, "socket"))
-@@ -54,16 +52,6 @@ static void do_test(const struct network_helper_opts *opts,
- 	if (!ASSERT_NEQ(fd, -1, "connect_to_fd_opts"))
- 		goto done;
- 
--	if (sk_stg_map) {
--		int tmp_stg;
--
--		err = bpf_map_lookup_elem(bpf_map__fd(sk_stg_map), &fd,
--					  &tmp_stg);
--		if (!ASSERT_ERR(err, "bpf_map_lookup_elem(sk_stg_map)") ||
--				!ASSERT_EQ(errno, ENOENT, "bpf_map_lookup_elem(sk_stg_map)"))
--			goto done;
--	}
--
- 	ASSERT_OK(send_recv_data(lfd, fd, total_bytes), "send_recv_data");
- 
- done:
-@@ -101,7 +89,7 @@ static void test_cubic(void)
- 		return;
- 	}
- 
--	do_test(&opts, NULL);
-+	do_test(&opts);
- 
- 	ASSERT_EQ(cubic_skel->bss->bpf_cubic_acked_called, 1, "pkts_acked called");
- 
-@@ -120,6 +108,19 @@ static int stg_post_socket_cb(int fd, void *opts)
- 	return bpf_map_update_elem(cb_opts->map_fd, &fd, &expected_stg, BPF_NOEXIST);
- }
- 
-+static int stg_post_connect_cb(int fd, void *opts)
-+{
-+	struct cb_opts *cb_opts = (struct cb_opts *)opts;
-+	int tmp_stg;
-+	int err;
-+
-+	err = bpf_map_lookup_elem(cb_opts->map_fd, &fd, &tmp_stg);
-+	if (!ASSERT_ERR(err, "bpf_map_lookup_elem(sk_stg_map)") ||
-+			!ASSERT_EQ(errno, ENOENT, "bpf_map_lookup_elem(sk_stg_map)"))
-+		return err;
-+	return 0;
-+}
-+
- static void test_dctcp(void)
- {
- 	struct cb_opts cb_opts = {
-@@ -127,6 +128,7 @@ static void test_dctcp(void)
- 	};
- 	struct network_helper_opts opts = {
- 		.post_socket_cb	= stg_post_socket_cb,
-+		.post_connect_cb = stg_post_connect_cb,
- 		.cb_opts	= &cb_opts,
- 	};
- 	struct bpf_dctcp *dctcp_skel;
-@@ -143,7 +145,7 @@ static void test_dctcp(void)
- 	}
- 
- 	cb_opts.map_fd = bpf_map__fd(dctcp_skel->maps.sk_stg_map);
--	do_test(&opts, dctcp_skel->maps.sk_stg_map);
-+	do_test(&opts);
- 	ASSERT_EQ(dctcp_skel->bss->stg_result, expected_stg, "stg_result");
- 
- 	bpf_link__destroy(link);
-@@ -344,14 +346,14 @@ static void test_update_ca(void)
- 	link = bpf_map__attach_struct_ops(skel->maps.ca_update_1);
- 	ASSERT_OK_PTR(link, "attach_struct_ops");
- 
--	do_test(&opts, NULL);
-+	do_test(&opts);
- 	saved_ca1_cnt = skel->bss->ca1_cnt;
- 	ASSERT_GT(saved_ca1_cnt, 0, "ca1_ca1_cnt");
- 
- 	err = bpf_link__update_map(link, skel->maps.ca_update_2);
- 	ASSERT_OK(err, "update_map");
- 
--	do_test(&opts, NULL);
-+	do_test(&opts);
- 	ASSERT_EQ(skel->bss->ca1_cnt, saved_ca1_cnt, "ca2_ca1_cnt");
- 	ASSERT_GT(skel->bss->ca2_cnt, 0, "ca2_ca2_cnt");
- 
-@@ -380,14 +382,14 @@ static void test_update_wrong(void)
- 	link = bpf_map__attach_struct_ops(skel->maps.ca_update_1);
- 	ASSERT_OK_PTR(link, "attach_struct_ops");
- 
--	do_test(&opts, NULL);
-+	do_test(&opts);
- 	saved_ca1_cnt = skel->bss->ca1_cnt;
- 	ASSERT_GT(saved_ca1_cnt, 0, "ca1_ca1_cnt");
- 
- 	err = bpf_link__update_map(link, skel->maps.ca_wrong);
- 	ASSERT_ERR(err, "update_map");
- 
--	do_test(&opts, NULL);
-+	do_test(&opts);
- 	ASSERT_GT(skel->bss->ca1_cnt, saved_ca1_cnt, "ca2_ca1_cnt");
- 
- 	bpf_link__destroy(link);
-@@ -417,7 +419,7 @@ static void test_mixed_links(void)
- 	link = bpf_map__attach_struct_ops(skel->maps.ca_update_1);
- 	ASSERT_OK_PTR(link, "attach_struct_ops");
- 
--	do_test(&opts, NULL);
-+	do_test(&opts);
- 	ASSERT_GT(skel->bss->ca1_cnt, 0, "ca1_ca1_cnt");
- 
- 	err = bpf_link__update_map(link, skel->maps.ca_no_link);
-@@ -524,7 +526,7 @@ static void test_cc_cubic(void)
- 		return;
- 	}
- 
--	do_test(&opts, NULL);
-+	do_test(&opts);
- 
- 	bpf_link__destroy(link);
- 	bpf_cc_cubic__destroy(cc_cubic_skel);
+In addition to a custom benchmarking tool from patch #9, and experimental perf
+integration (available at [0]), Daniel Mueller has since also implemented an
+experimental integration into blazesym (see [1]), a library used for stack
+trace symbolization by our server fleet-wide profiler and another on-device
+profiler agent that runs on weaker ARM devices. The latter ARM-based device
+profiler is especially sensitive to performance, and so we benchmarked and
+compared text-based /proc/<pid>/maps solution to the equivalent one using
+PROCMAP_QUERY ioctl().
+
+Results are very encouraging, giving us 5x improvement for end-to-end
+so-called "address normalization" pass, which is the part of the symbolization
+process that happens locally on ARM device, before being sent out for further
+heavier-weight processing on more powerful remote server. Note that this is
+not an artificial microbenchmark. It's a full end-to-end API call being
+measured with real-world data on real-world device.
+
+  TEXT-BASED
+  ==========
+  Benchmarking main/normalize_process_no_build_ids_uncached_maps
+  main/normalize_process_no_build_ids_uncached_maps
+	  time:   [49.777 µs 49.982 µs 50.250 µs]
+
+  IOCTL-BASED
+  ===========
+  Benchmarking main/normalize_process_no_build_ids_uncached_maps
+  main/normalize_process_no_build_ids_uncached_maps
+	  time:   [10.328 µs 10.391 µs 10.457 µs]
+	  change: [−79.453% −79.304% −79.166%] (p = 0.00 < 0.02)
+	  Performance has improved.
+
+You can see above that we see the drop from 50µs down to 10µs for exactly
+the same amount of work, with the same data and target process.
+
+Results for more synthentic benchmarks that hammer /proc/<pid>/maps processing
+specifically can be found in patch #9. In short, we see about ~40x improvement
+with our custom benchmark tool (it varies depending on captured set of
+addresses, previous revision used a different set of captured addresses,
+giving about ~35x improvement). And even for perf-based benchmark it's on par
+or slightly ahead when using permission-based filtering (fetching only
+executable VMAs).
+
+Another big change since v1 is the use of RCU-protected per-VMA lock during
+querying, which is what has been requested by mm folks in favor of current
+mmap_lock-based protection used by /proc/<pid>/maps text-based implementation.
+For that, we added a new internal API that is equivalent to find_vma(), see
+patch #1.
+
+One thing that did not change was basing this new API as an ioctl() command
+on /proc/<pid>/maps file. An ioctl-based API on top of pidfd was considered,
+but has its own downsides. Implementing ioctl() directly on pidfd will cause
+access permission checks on every single ioctl(), which leads to performance
+concerns and potential spam of capable() audit messages. It also prevents
+a nice pattern, possible with /proc/<pid>/maps, in which application opens
+/proc/self/maps FD (requiring no additional capabilities) and passed this FD
+to profiling agent for querying. To achieve similar pattern, a new file would
+have to be created from pidf just for VMA querying, which is considered to be
+inferior to just querying /proc/<pid>/maps FD as proposed in current approach.
+These aspects were discussed in the hallway track at recent LSF/MM/BPF 2024
+and sticking to procfs ioctl() was the final agreement we arrived at.
+
+This patch set is based on top of next-20240522 tag in linux-next tree.
+
+  [0] https://github.com/anakryiko/linux/commits/procfs-proc-maps-ioctl-v2/
+  [1] https://github.com/libbpf/blazesym/pull/675
+
+v1->v2:
+  - per-VMA lock is used, if possible (Liam, Suren);
+  - added file-backed VMA querying (perf folks);
+  - added permission-based VMA querying (perf folks);
+  - split out build ID into separate patch (Suren);
+  - better documented API, added mention of ioctl() into procfs docs (Greg).
+
+Andrii Nakryiko (9):
+  mm: add find_vma()-like API but RCU protected and taking VMA lock
+  fs/procfs: extract logic for getting VMA name constituents
+  fs/procfs: implement efficient VMA querying API for /proc/<pid>/maps
+  fs/procfs: use per-VMA RCU-protected locking in PROCMAP_QUERY API
+  fs/procfs: add build ID fetching to PROCMAP_QUERY API
+  docs/procfs: call out ioctl()-based PROCMAP_QUERY command existence
+  tools: sync uapi/linux/fs.h header into tools subdir
+  selftests/bpf: make use of PROCMAP_QUERY ioctl if available
+  selftests/bpf: add simple benchmark tool for /proc/<pid>/maps APIs
+
+ Documentation/filesystems/proc.rst          |   8 +
+ fs/proc/task_mmu.c                          | 378 ++++++++++++--
+ include/linux/mm.h                          |   8 +
+ include/uapi/linux/fs.h                     | 156 +++++-
+ mm/memory.c                                 |  62 +++
+ tools/include/uapi/linux/fs.h               | 550 ++++++++++++++++++++
+ tools/testing/selftests/bpf/.gitignore      |   1 +
+ tools/testing/selftests/bpf/Makefile        |   2 +-
+ tools/testing/selftests/bpf/procfs_query.c  | 386 ++++++++++++++
+ tools/testing/selftests/bpf/test_progs.c    |   3 +
+ tools/testing/selftests/bpf/test_progs.h    |   2 +
+ tools/testing/selftests/bpf/trace_helpers.c | 104 +++-
+ 12 files changed, 1589 insertions(+), 71 deletions(-)
+ create mode 100644 tools/include/uapi/linux/fs.h
+ create mode 100644 tools/testing/selftests/bpf/procfs_query.c
+
 -- 
 2.43.0
 
