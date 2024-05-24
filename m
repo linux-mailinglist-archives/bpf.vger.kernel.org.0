@@ -1,126 +1,122 @@
-Return-Path: <bpf+bounces-30522-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-30523-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DED038CEA4D
-	for <lists+bpf@lfdr.de>; Fri, 24 May 2024 21:30:39 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id B21B48CEA51
+	for <lists+bpf@lfdr.de>; Fri, 24 May 2024 21:34:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9B0E3281D0E
-	for <lists+bpf@lfdr.de>; Fri, 24 May 2024 19:30:38 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 544AA1F232BC
+	for <lists+bpf@lfdr.de>; Fri, 24 May 2024 19:34:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B66765E091;
-	Fri, 24 May 2024 19:30:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 64FE75D477;
+	Fri, 24 May 2024 19:34:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Ulzdx/3z"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kuQQw5jh"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182])
+Received: from mail-wr1-f51.google.com (mail-wr1-f51.google.com [209.85.221.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F1CEE5CDE9;
-	Fri, 24 May 2024 19:30:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 75EF41CFB2;
+	Fri, 24 May 2024 19:34:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716579033; cv=none; b=HBJOpjZQkMdylN7GT4CYxrdU7z+OgnAgsLD4QIuh7kV7lA5ADmjKlTSuTdrZWnVdZwaHUM8zSzIiMMDi/AbtOnVtgchopkMyygaJCqD7Oft22pEuC7R7v09u8DHHo8qtPuRbZqcPwPhCGks9b47XMtjDAueMC4gpzip4xfTEPn8=
+	t=1716579243; cv=none; b=sDZGJB4DIYYlAV8nFs9nTZacXUSVkyfvvTmi0uyq2yuhkVaCx1KhPwnqX4Rw+Ea7i3iBnjp2rOfbi49wq7tyA9v+PbGdMLlqxV27q95dO2VDSQ59dW4VdRhvzwZZ7aVCDgatGvA4VJG9YlFNol+ewl9oOkTtofZxbtF2oOxrJCM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716579033; c=relaxed/simple;
-	bh=dzHU3P7qRxjg2ho0r9MNensCeoxNpPcQCmFpOL/oYJM=;
+	s=arc-20240116; t=1716579243; c=relaxed/simple;
+	bh=5owtB7N7sYNPWMNez38xq1JpwdPsm3eY7gGG9HRQMLg=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=fnqtJfzBRM5QCN/b9OWVfYHSKuZ8rQwZ+ynWgzbPISlelMN/uW2gg60rwlxwYmMkYunzlXaBhpsIH3wVBB+g8CPtrM2do/IzwXbCGCd12ShpA5fpMqpl5iDvoGGah/7uO5lhYI9jjCiCknLmW9KElgIQ38UFlO5kRDD3cGM+0z4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Ulzdx/3z; arc=none smtp.client-ip=209.85.214.182
+	 To:Cc:Content-Type; b=ljFySFGxzmpOM7ub8yQPs+cKmsZbqP3oEBErseD83aKTkfVYPH7CQKiqYo2Ku5eu+3Aw5FifrZDYdfdtJW0kr64Xd8d87M5HfJelwe9ie7SNJo8ttDd1BKrwvj3KiD6ZtLZutG32g6dvas21mSHlSLcN6NLCRpvjuhylJnTuBsA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kuQQw5jh; arc=none smtp.client-ip=209.85.221.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f182.google.com with SMTP id d9443c01a7336-1f32b1b5429so21791305ad.2;
-        Fri, 24 May 2024 12:30:31 -0700 (PDT)
+Received: by mail-wr1-f51.google.com with SMTP id ffacd0b85a97d-351d309bbcfso2394882f8f.3;
+        Fri, 24 May 2024 12:34:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1716579031; x=1717183831; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1716579240; x=1717184040; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=dzHU3P7qRxjg2ho0r9MNensCeoxNpPcQCmFpOL/oYJM=;
-        b=Ulzdx/3zkLYBhCIXLDCB3IAMbe0FHGpUsNyY/BosEydFd5j+G8yMgXmY17JwvNBYGt
-         7m3v+dBkQDUOQSxRP+KbfKg2NazeMeFPNFKJp9icZKsVuqSt4mNdp8wZsiCOyTU1XLjf
-         pTx6hE77O7JG51cvDVf1WITsVYvWZunVDRpifVhHobzwyo4y2zl8ETcPkc6dtN+UHJPh
-         Ih3sdiO3ddxJclK9+KU1f/yjpT3dZSEucBd2luExtUNtIxMh1hXNH6ix7SJj/YnzOwcV
-         e4ZkjDPw4ZYIATY4/6TkkQw8sOs8iVlvjZuAuMWtMdAtodh4/35oM28oaAoEc62VCMy4
-         y1rA==
+        bh=5owtB7N7sYNPWMNez38xq1JpwdPsm3eY7gGG9HRQMLg=;
+        b=kuQQw5jh2U7ynZ8CqOUNjX/73FDIiHPSwtivAiqj1K3BmmZrFmnnmZUI1+Htly12WQ
+         4YGoWiwct3rN/cBXFbzFQuxdAQREwrG7sxPhRUHJRUnPV241VkJalwR3qH8szyxym12r
+         LU6TRZGA2wVh74KHJcX48YkVYm+XcFG5LDU5nmAoUtpUzmBZNQYbiJGMCbK+FSKJst3l
+         8uuzxTrDFuzfc6o+8lw+FNkDBYszV9TPE3cBeQj4i+xk22kVq1KbWwEn19mBNfg0OLET
+         QaXdlcXA8JiVszE9lTbAQjz8paTMplUG7bDkDAlY3cLHYxqViiJGHWuqg9nw4jp6biSp
+         bGVw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1716579031; x=1717183831;
+        d=1e100.net; s=20230601; t=1716579240; x=1717184040;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=dzHU3P7qRxjg2ho0r9MNensCeoxNpPcQCmFpOL/oYJM=;
-        b=PV6zHif/uRqu2XwnoBMWQmff7A1Ilf+b3l0deaCpXQ4Pm+ZL1+vAFb7ilmJ37n+IL7
-         8UJuI+kEJE7YvKDET15e2Yy0jzY+Sy6mM7tQe3ShU1H89T7ESpO8lDFy/hKINjdxAE4J
-         HNE5YQd8yXzydm8qh0eFfv7li7IupViKV9Oo4jOHjaXCtFm5e+Fig6U6nQp3Ov5ypoZH
-         hNQrsui0qPy5pCIRl91ZHKDIYwGsW8fdtmD2+dh0l+0SQ7jW9vBqWIuJXxkgNiVLgk00
-         5BDKw/5D/wf4ZXY5xUJj/aa14FrGpkBBSqCbEASd7XLofyXpWECFkM4JVXuo4e+LQP44
-         4oaw==
-X-Forwarded-Encrypted: i=1; AJvYcCWp11Cw/58Rz5v8bmNjrD2S9apEhtC74GTxEacIOzfY3WbdHvfb/MDnuY98P+jbnLVzJ1YMTLKH6tVZ5ZEcIOgQ9lBZhD2UESvTtCGgx+LF9mhuSUIMf9IOOe7miITJpPVGx4HXjKj7bxFvWmeN/d27Oiivy2CuWL8Ew3g6uSYJSQ==
-X-Gm-Message-State: AOJu0Yx/yxdvV0WCDwhPeDBJc1wAO646U5woOsg+7hnVi/TkM5NuBpBD
-	7K3l6Z0+eF7oWYro01m6zbzUXaRxof45ExxzitfJ6wprkbvXIQG0E8nnjRvV6D9UjIVqapVAPdf
-	nM6ug/k5L2jTbvQen3sz09UNdJ2Q=
-X-Google-Smtp-Source: AGHT+IErPGmKm79ivkmkKeo0JgNi86h6exL4rS7HdkRJQeYCQL17fT0j3PSVuuXjGNENXBV8IjvDmTQR0TXeOsBeJjw=
-X-Received: by 2002:a17:902:ecc6:b0:1f3:4348:15ca with SMTP id
- d9443c01a7336-1f4486f294bmr43420585ad.25.1716579031155; Fri, 24 May 2024
- 12:30:31 -0700 (PDT)
+        bh=5owtB7N7sYNPWMNez38xq1JpwdPsm3eY7gGG9HRQMLg=;
+        b=Zee+hIGtNPzn6Szl25xyN5qsoJhSwvxp8mPIOTvoiHmy/JjY+2eObOlH/CKPpAquiy
+         FSDj9rl13RYdX9ODSmxogob6al31ITerOtdEfxHf4c76sVZhJXABq2LOc3lUGSZdgXFs
+         tGug9RjbNzZ2xA49UTtld6poIEhQFk58BgYwCkT91mp7yOf+qEmxhphjnzzjF4MUYOmq
+         uDWf0VQ1Kdv87rl+bPo0Gg9WifIv/xj8QPrJGWeT5+SswdhUWYK4a6mVnGrSumM0nMag
+         I5IDfclFl9ESf5XgCMv0p6XFcjkXo5UlEZjTR++TBhhN47PTZxZCSV/5fQrvTgyu/HEG
+         xcBg==
+X-Forwarded-Encrypted: i=1; AJvYcCXqZU3KKB/K1sT0b9o+40CEgA6edMXPPNu+G7vn1yCjQazcQURWgpthi4tKR+5y3oH59/adsmj20PreVmy4oGBDky8xiwHLW/LfvwdbIp7dAglc0hCRX+GXcEQV
+X-Gm-Message-State: AOJu0YwOuJ8Od8m4Sc9g5+nFuxaTsByiUICCkAYtN9OpA46ADCGI6or1
+	i94oFnH5QYuxyFYeRD4AjsugEwjg7oRBeBSS/ONLkIA51r/DsbEi6mqCasYWBlMR0Lqr8gPYQst
+	G6YPlMlzCgcThvP9g/8qUeHYPKS8=
+X-Google-Smtp-Source: AGHT+IGF+DtPnkp/OUyjdDrjTVCLmbxKWp4HcZUGyz+IcSi2Bk7m0AS5OW0YzvDXoy+bse4Pr9W4CZ7ZyVyFWyX9GI4=
+X-Received: by 2002:a05:6000:d88:b0:354:f34c:646f with SMTP id
+ ffacd0b85a97d-3552fe020afmr2168724f8f.58.1716579239553; Fri, 24 May 2024
+ 12:33:59 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240524041032.1048094-1-andrii@kernel.org> <20240524103212.382d10aed85f2e843e86febb@linux-foundation.org>
-In-Reply-To: <20240524103212.382d10aed85f2e843e86febb@linux-foundation.org>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Fri, 24 May 2024 12:30:18 -0700
-Message-ID: <CAEf4BzaT0yVenLQWc7Be+Y+yYhrfUR=gi-PyzVarQam9WqzESw@mail.gmail.com>
-Subject: Re: [PATCH v2 0/9] ioctl()-based API to query VMAs from /proc/<pid>/maps
-To: Andrew Morton <akpm@linux-foundation.org>
-Cc: Andrii Nakryiko <andrii@kernel.org>, linux-fsdevel@vger.kernel.org, brauner@kernel.org, 
-	viro@zeniv.linux.org.uk, linux-kernel@vger.kernel.org, bpf@vger.kernel.org, 
-	gregkh@linuxfoundation.org, linux-mm@kvack.org, liam.howlett@oracle.com, 
-	surenb@google.com, rppt@kernel.org
+References: <20240510192412.3297104-1-amery.hung@bytedance.com>
+ <20240510192412.3297104-19-amery.hung@bytedance.com> <6ad06909-7ef4-4f8c-be97-fe5c73bc14a3@linux.dev>
+In-Reply-To: <6ad06909-7ef4-4f8c-be97-fe5c73bc14a3@linux.dev>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Fri, 24 May 2024 12:33:47 -0700
+Message-ID: <CAADnVQLLqy=MTK_u2FMrxUEZRojYPUZrc-ZG=Gcj-=SaH9Q=XA@mail.gmail.com>
+Subject: Re: [RFC PATCH v8 18/20] selftests: Add a bpf fq qdisc to selftest
+To: Martin KaFai Lau <martin.lau@linux.dev>
+Cc: Amery Hung <ameryhung@gmail.com>, Network Development <netdev@vger.kernel.org>, 
+	bpf <bpf@vger.kernel.org>, yangpeihao@sjtu.edu.cn, 
+	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
+	Martin KaFai Lau <martin.lau@kernel.org>, Kui-Feng Lee <sinquersw@gmail.com>, 
+	=?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>, 
+	Jamal Hadi Salim <jhs@mojatatu.com>, Jiri Pirko <jiri@resnulli.us>, Stanislav Fomichev <sdf@google.com>, 
+	Cong Wang <xiyou.wangcong@gmail.com>, Peilin Ye <yepeilin.cs@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, May 24, 2024 at 10:32=E2=80=AFAM Andrew Morton
-<akpm@linux-foundation.org> wrote:
+On Thu, May 23, 2024 at 11:25=E2=80=AFPM Martin KaFai Lau <martin.lau@linux=
+.dev> wrote:
 >
-> On Thu, 23 May 2024 21:10:22 -0700 Andrii Nakryiko <andrii@kernel.org> wr=
-ote:
+> > +
+> > +unsigned long time_next_delayed_flow =3D ~0ULL;
+> > +unsigned long unthrottle_latency_ns =3D 0ULL;
+> > +unsigned long ktime_cache =3D 0;
+> > +unsigned long dequeue_now;
+> > +unsigned int fq_qlen =3D 0;
 >
-> > Implement binary ioctl()-based interface to /proc/<pid>/maps file
+> I suspect some of these globals may be more natural if it is stored priva=
+te to
+> an individual Qdisc instance. i.e. qdisc_priv(). e.g. in the sch_mq setup=
+.
 >
-> Why an ioctl rather than a read() of (say) a sysfs file?
+> A high level idea is to allow the SEC(".struct_ops.link") to specify its =
+own
+> Qdisc_ops.priv_size.
+>
+> The bpf prog could use it as a simple u8 array memory area to write anyth=
+ing but
+> the verifier can't learn a lot from it. It will be more useful if it can =
+work
+> like map_value(s) to the verifier such that the verifier can also see the
+> bpf_rb_root/bpf_list_head/bpf_spin_lock...etc.
 
-This is effectively a request/response kind of API. User provides at
-least address and a set of flags (that determine what subset of VMAs
-are of interest), and optionally could provide buffer pointers for
-extra variable-length data (e.g., VMA name). I'm not sure how to
-achieve this with read() syscall.
-
-Kernel has already established an approach to support these
-input/output binary-based protocols and how to handle extensibility
-and backwards/forward compatibility. And so we are using that here as
-well. ioctl() is just an existing mechanism for passing a pointer to
-such binary request/response structure in the context of some process
-(also note that normally it will be a different process from the
-actual user process that is using this API, that's always the case for
-profiling, for example).
-
-As for the sysfs as a location for this file. It doesn't matter much
-to me where to open some file, but it has to be a per-PID file,
-because each process has its own set of VMAs. Applications often will
-be querying VMAs across many processes, depending on incoming data (in
-our cases, profiling stack trace address data). So this eliminates
-something like prctl().
-
-Does sysfs have an existing per-process hierarchy of files or
-directories that would be a natural match here? As I mentioned,
-/proc/PID/maps does seem like a natural fit in this case, because it
-represents the set of VMAs of a specified process. And this new API is
-just an alternative (to text-based read() protocol) way of querying
-this set of VMAs.
+Qdisc_ops.priv_size is too qdsic specific.
+imo using globals here is fine. bpf prog can use hash map or arena
+to store per-netdev or per-qdisc data.
+The less custom things the better.
 
