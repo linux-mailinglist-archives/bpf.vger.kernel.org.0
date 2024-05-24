@@ -1,139 +1,154 @@
-Return-Path: <bpf+bounces-30449-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-30450-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3B8FF8CDF0B
-	for <lists+bpf@lfdr.de>; Fri, 24 May 2024 02:59:57 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 816178CDF15
+	for <lists+bpf@lfdr.de>; Fri, 24 May 2024 03:09:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E9239282653
-	for <lists+bpf@lfdr.de>; Fri, 24 May 2024 00:59:55 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 278E21F22720
+	for <lists+bpf@lfdr.de>; Fri, 24 May 2024 01:09:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B292A6138;
-	Fri, 24 May 2024 00:59:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 78E6EB662;
+	Fri, 24 May 2024 01:09:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YS4D6qDo"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nXhv6Pqn"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f45.google.com (mail-wr1-f45.google.com [209.85.221.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF92981F
-	for <bpf@vger.kernel.org>; Fri, 24 May 2024 00:59:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E0B7A5CAC;
+	Fri, 24 May 2024 01:09:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716512391; cv=none; b=e9ZanyQNB0tR9AA8YQaGHWWryMf8y9+gZ43yMuDvDQ9B/Jxc5X2B8ObcE8PNfyRvNdOrWBVE5U6GTwlct588/tuRRtNpXwHW+CEnEFwJly/t2ShAvQ/IML27/7wJU4iXTMvTZ8Nqq5QNiUuQ3MPQQUIQByqahtPAD8W+76iW1VU=
+	t=1716512964; cv=none; b=AmcqlJ3icAeKpSjLvXJ2i1AKhvp966PcxbuLKxa54Ku5TDlZfDxLf1gbRy0ZFCuaymlu0rvmhNBC80hHbm6cINgFsKM002bMaQA6BxXvwk4eRhAW3dXDPwVaOhj+zU7Ahq+pfagD1i7LI4VT7sXgc82w9ScyOkyEi/FXsSriBN8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716512391; c=relaxed/simple;
-	bh=QxsX++cyOwnAy1udmhMfTSFAkPB78kozjWnVzukiL6o=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=d+OzLKPd8Ka9IBRjY2qJXsoa6+6CXeAzUeK2lPnrk9zJtdkQGnHmNoaqxSZDADYZVuF5Ox3cvQdOlQSE6fXV2ZLJSJQ9K5xHWXRzL1FlSKctpMU40fsjExQwzFHowUKesBWggeX4ZIcPLxTCp3Gx5JbUjA7QmPEn7UByY3yaZvw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=YS4D6qDo; arc=none smtp.client-ip=209.85.221.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f45.google.com with SMTP id ffacd0b85a97d-354de3c5d00so1230408f8f.1
-        for <bpf@vger.kernel.org>; Thu, 23 May 2024 17:59:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1716512388; x=1717117188; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=fWw1PPrJrBTQSrqYDqZSFZtTbrotPvB64y+sZCtvy+Q=;
-        b=YS4D6qDoMoUs9yRfXdK6LPmKVTgPxz3qnRKiwcg0N+oxQbxTrFjbXCXqEphyrCDzHB
-         mGu+yyNEyG8dV6l/VyKcoOHjDc3kBgjMXKFN29nNdsuDaUQ9PiHAhBJMF2g+fE2cOyOw
-         9TfnwMCnXyeFkPwVbO8vuxb5hw/ysT3YrTKla42GAog0QPxmObLDGSjJ80IunwBxeqZx
-         2C2PZTWdT+z0hrO+DKMdyMAoqn62s84Ctq9R0SCj8bVYKKAyZULH4H1DMzCTVX7zlRH8
-         GQYsKuDWcdYfiotKIPxFMSma51X8kkdLLkp3HeqRYWBRKV8zX+bmp3OtI3co1p35aY3e
-         r8zA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1716512388; x=1717117188;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=fWw1PPrJrBTQSrqYDqZSFZtTbrotPvB64y+sZCtvy+Q=;
-        b=S1Peyap6QVtTijwT8y5qvKLDXKBPYqs759vOS6hQ0owO7X86D/T1zM55SyKNznCXae
-         OMu1K2KrJhJoirOYpqOrv3jk0I13Turwkjm0wA4aYuGmKloTaATjXMSsAyfyGcsPRQKX
-         unaJbm5o8sjFEzeJ0CJAlsemqfLq0+l1lhzyOgQEiLWNpzlgamQSYVfbHjChYMA93Ra1
-         s2CTKU+9BhFzMbjQd1UpTKkrmiSPOKpjtkNTeSBsxWVBJ2XZjXGR/ZDpuomUVaopmsKW
-         9TpZGouyo34pdsnqE6GMCEUgBQN4MmlUoJYfBrLBTOAFguqvVeyJ739hnq/gjfdwUpGY
-         Kf/Q==
-X-Gm-Message-State: AOJu0YyVWo3/KGrYbnYMtUr6xBu81GrcVTULjU/wYYhjaNuqcUIzSKW/
-	1o0F0XFdcGb1mpVj+v/glQDcoJoK0sVOioBDltWX+lFHZi47fVZwgvQ82gL9FEYakJIG81M+Ek1
-	TJekz2Cpi8d5rdzYgeZM3E0+GiNBd4A==
-X-Google-Smtp-Source: AGHT+IGkzqOASjEKVswLFSYUGJ/YED7OOVhkav8CH6lTyP1P3EbB5NlMY86JjygJgEudcSzI+iHdQ1YBVrJd67DOPak=
-X-Received: by 2002:a5d:584e:0:b0:355:95bd:9d01 with SMTP id
- ffacd0b85a97d-35595bd9db3mr391037f8f.1.1716512387451; Thu, 23 May 2024
- 17:59:47 -0700 (PDT)
+	s=arc-20240116; t=1716512964; c=relaxed/simple;
+	bh=N5i8ODqIWK6xce8rPBypOBonIZKEmwJfgSq3wA+sDiM=;
+	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
+	 Mime-Version:Content-Type; b=nphwmOB4Raz3jdXhLYXDQcfA8GEpQ5So6bUtq3eIWZpQGQrcv10P0LMb7IJdw2iUhbbDtRq0AByo2CwG3tb3BS9VusiGX2EmKwWKE/WiA/4OSlJjC4asWcYnK1irtdKvuu8pmwnOPJl6M3Zo73fdvc0mqbg6MnDdKD6dmjo7Urk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nXhv6Pqn; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D14EDC3277B;
+	Fri, 24 May 2024 01:09:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1716512963;
+	bh=N5i8ODqIWK6xce8rPBypOBonIZKEmwJfgSq3wA+sDiM=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=nXhv6PqnFOr8LrGFjDqcJYW7eIwONusPVONYtH+Uxt0hcT+HI9cmsYnY1HkEZQqWN
+	 bqixDnXsLQRr0fJomyfPw5AepmT+Ls6sAnTU/qaYJ2ee9/6KN1fG5J+tEZB2E3EMgp
+	 THHdNP8nhRtqwPTHiNFhyeocUj+frWH/Dm3fw9Qziacqot2VXv8OBb3WfH3GtpHqST
+	 E7erDiXA3vnJhxnyH+mXsGkHqjp+UD+Oenn1HonCfuxfP49TV0RBY5lzQGIniZFRyE
+	 pr/niEFe+bRLtLnCSOtmPEL0DSU+EfnGxv/X5JfiDquxMFHjpIb4mo9+SDA3FyCx9a
+	 JwBOIxB+ogI+Q==
+Date: Fri, 24 May 2024 10:09:17 +0900
+From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To: Steven Rostedt <rostedt@goodmis.org>
+Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, Florent Revest
+ <revest@chromium.org>, linux-trace-kernel@vger.kernel.org, LKML
+ <linux-kernel@vger.kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>,
+ bpf <bpf@vger.kernel.org>, Sven Schnelle <svens@linux.ibm.com>, Alexei
+ Starovoitov <ast@kernel.org>, Jiri Olsa <jolsa@kernel.org>, Arnaldo
+ Carvalho de Melo <acme@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ Alan Maguire <alan.maguire@oracle.com>, Mark Rutland
+ <mark.rutland@arm.com>, Peter Zijlstra <peterz@infradead.org>, Thomas
+ Gleixner <tglx@linutronix.de>, Guo Ren <guoren@kernel.org>
+Subject: Re: [PATCH v10 01/36] tracing: Add a comment about ftrace_regs
+ definition
+Message-Id: <20240524100917.6983301f9df6da716591f136@kernel.org>
+In-Reply-To: <20240523191031.7574d944@gandalf.local.home>
+References: <171509088006.162236.7227326999861366050.stgit@devnote2>
+	<171509089214.162236.6201493898649663823.stgit@devnote2>
+	<20240523191031.7574d944@gandalf.local.home>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20240523064219.42465-1-alexei.starovoitov@gmail.com>
-In-Reply-To: <20240523064219.42465-1-alexei.starovoitov@gmail.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Thu, 23 May 2024 17:59:35 -0700
-Message-ID: <CAADnVQLjAV8i3KO2hqRoQ9Yab+mq4z4N7NkCgw-Qpq+bqm-HsA@mail.gmail.com>
-Subject: Re: [PATCH v2 bpf-next] bpf: Relax precision marking in open coded
- iters and may_goto loop.
-To: bpf <bpf@vger.kernel.org>
-Cc: Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
-	Martin KaFai Lau <martin.lau@kernel.org>, Kumar Kartikeya Dwivedi <memxor@gmail.com>, Eddy Z <eddyz87@gmail.com>, 
-	Kernel Team <kernel-team@fb.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Wed, May 22, 2024 at 11:42=E2=80=AFPM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
->
-> From: Alexei Starovoitov <ast@kernel.org>
->
-> v1->v2:
-> - Replaced copy precision logic with faster and more accurate alternative=
-.
->   See find_precision().
+On Thu, 23 May 2024 19:10:31 -0400
+Steven Rostedt <rostedt@goodmis.org> wrote:
 
-...
+> On Tue,  7 May 2024 23:08:12 +0900
+> "Masami Hiramatsu (Google)" <mhiramat@kernel.org> wrote:
+> 
+> > From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+> > 
+> > To clarify what will be expected on ftrace_regs, add a comment to the
+> > architecture independent definition of the ftrace_regs.
+> > 
+> > Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+> > Acked-by: Mark Rutland <mark.rutland@arm.com>
+> > ---
+> >  Changes in v8:
+> >   - Update that the saved registers depends on the context.
+> >  Changes in v3:
+> >   - Add instruction pointer
+> >  Changes in v2:
+> >   - newly added.
+> > ---
+> >  include/linux/ftrace.h |   26 ++++++++++++++++++++++++++
+> >  1 file changed, 26 insertions(+)
+> > 
+> > diff --git a/include/linux/ftrace.h b/include/linux/ftrace.h
+> > index 54d53f345d14..b81f1afa82a1 100644
+> > --- a/include/linux/ftrace.h
+> > +++ b/include/linux/ftrace.h
+> > @@ -118,6 +118,32 @@ extern int ftrace_enabled;
+> >  
+> >  #ifndef CONFIG_HAVE_DYNAMIC_FTRACE_WITH_ARGS
+> >  
+> > +/**
+> > + * ftrace_regs - ftrace partial/optimal register set
+> > + *
+> > + * ftrace_regs represents a group of registers which is used at the
+> > + * function entry and exit. There are three types of registers.
+> > + *
+> > + * - Registers for passing the parameters to callee, including the stack
+> > + *   pointer. (e.g. rcx, rdx, rdi, rsi, r8, r9 and rsp on x86_64)
+> > + * - Registers for passing the return values to caller.
+> > + *   (e.g. rax and rdx on x86_64)
+> > + * - Registers for hooking the function call and return including the
+> > + *   frame pointer (the frame pointer is architecture/config dependent)
+> > + *   (e.g. rip, rbp and rsp for x86_64)
+> > + *
+> > + * Also, architecture dependent fields can be used for internal process.
+> > + * (e.g. orig_ax on x86_64)
+> > + *
+> > + * On the function entry, those registers will be restored except for
+> > + * the stack pointer, so that user can change the function parameters
+> > + * and instruction pointer (e.g. live patching.)
+> > + * On the function exit, only registers which is used for return values
+> > + * are restored.
+> 
+> I wonder if we should also add a note about some architectures in some
+> circumstances may store all pt_regs in ftrace_regs. For example, if an
+> architecture supports FTRACE_WITH_REGS, it may pass the pt_regs within the
+> ftrace_regs. If that is the case, then ftrace_get_regs() called on it will
+> return a pointer to a valid pt_regs, or NULL if it is not supported or the
+> ftrace_regs does not have a all the registers.
 
-> +static void find_precise_reg(struct bpf_reg_state *cur_reg)
-> +{
-> +       struct bpf_reg_state *reg;
-> +
-> +       reg =3D cur_reg->parent;
-> +       while (reg && reg->type =3D=3D SCALAR_VALUE) {
-> +               /*
-> +                * propagate_liveness() might not have happened for this =
-states yet.
-> +                * Intermediate reg missing LIVE_READ mark is not an issu=
-e.
-> +                */
-> +               if (reg->precise && (reg->live & REG_LIVE_READ)) {
-> +                       cur_reg->precise =3D true;
-> +                       break;
-> +               }
-> +               reg =3D reg->parent;
-> +       }
-> +}
-> +
-> +static void find_precision(struct bpf_verifier_state *cur_state)
-> +{
-> +       struct bpf_func_state *state;
-> +       struct bpf_reg_state *reg;
-> +
-> +       if (!get_loop_entry(cur_state))
-> +               return;
-> +       bpf_for_each_reg_in_vstate(cur_state, state, reg, ({
-> +               if (reg->type !=3D SCALAR_VALUE || reg->precise)
-> +                       continue;
-> +               find_precise_reg(reg);
-> +       }));
-> +}
+Agreed. That case also should be noted. Thanks for pointing!
 
-This turned out to be an ok idea for a good case and
-horrible idea when loop doesn't converge, since walking parentage
-chain is very expensive when loop is reaching million of iterations.
-There will be a v3 with fixes.
 
-pw-bot: cr
+> 
+> -- Steve
+> 
+> 
+> > + *
+> > + * NOTE: user *must not* access regs directly, only do it via APIs, because
+> > + * the member can be changed according to the architecture.
+> > + */
+> >  struct ftrace_regs {
+> >  	struct pt_regs		regs;
+> >  };
+> 
+
+
+-- 
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
