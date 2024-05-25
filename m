@@ -1,262 +1,175 @@
-Return-Path: <bpf+bounces-30586-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-30588-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D71678CEEDC
-	for <lists+bpf@lfdr.de>; Sat, 25 May 2024 14:09:09 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0C3518CEFD8
+	for <lists+bpf@lfdr.de>; Sat, 25 May 2024 17:33:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8D26E28196A
-	for <lists+bpf@lfdr.de>; Sat, 25 May 2024 12:09:08 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2F6F01C20944
+	for <lists+bpf@lfdr.de>; Sat, 25 May 2024 15:33:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BDCF945006;
-	Sat, 25 May 2024 12:09:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1EC7F4EB45;
+	Sat, 25 May 2024 15:33:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tMxcX0JV"
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ietf.org header.i=@ietf.org header.b="ZHAVbpWx";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ietf.org header.i=@ietf.org header.b="lQmcOUqm";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=googlemail.com header.i=@googlemail.com header.b="kYOd1CK6"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mail.ietf.org (mail.ietf.org [50.223.129.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 429254204B;
-	Sat, 25 May 2024 12:09:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C9E351DFFC
+	for <bpf@vger.kernel.org>; Sat, 25 May 2024 15:33:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=50.223.129.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716638942; cv=none; b=HE+VPfaJgbamozjKEaWEZAN2RR3FotpUmjp1PMqe7i/f8dM46cUoPzEjkj3oVN4/ip527Tz/3jMNEVuCr3hzCM1wWo4XuW+dTiGKBfa+hwQ7LPZm9yXDBBqZg88KfOCcmRE8TMHdBMU6NIfceZw2WZ56O9FZZujLwVHZomZD1LU=
+	t=1716651233; cv=none; b=Ir6UX5pKmo4fKBmAR2KXXbnP8JY5CD+hAlkEdh66ukxpFq/0L0jH1I2kZxbSGCTM1ikSOER1A1zWyudGybVDLBB3OPPXKT7pfDc/AmQzslCdY/oX17Q/aWsgzGemOAG6k4EL/5oD5m6t+5jFwSKHAmpDwEk84aG+/67Ry3OzUaQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716638942; c=relaxed/simple;
-	bh=Z9oReom4OcpwOIk6DSXKNHCUKdLqN5YiEZpEcZFsHrk=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=s55SuEsfOLL9YDRG1dIcYJbCeetbie7oWDU1fnknqQGy62FPrP7lCQUEvdqrIhw8UI99+NpsMkwEWKw3UUDpmCW86HvFW73Y7rf/poQ2dE6HcoU1YF8+Ppbpd1lT8MANNhh9okflmeMrn4Fl/dVXTD0MPyTYVrI50n/K8xeAoDg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tMxcX0JV; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3F375C3277B;
-	Sat, 25 May 2024 12:08:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1716638942;
-	bh=Z9oReom4OcpwOIk6DSXKNHCUKdLqN5YiEZpEcZFsHrk=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=tMxcX0JVREIg0peQmaMg44VKTutYxxwT/8ym1tE2cpH/LTvKjfadIv0tLYIllBezz
-	 k561DIEQBjmxCKn6XD1pO4DCG/uM/Wtf4OCpjbuXSprHp7YfNdQfY7Nc1c04nkrZKG
-	 iTv1tL5W/DipOuqgfoqaWrZV3KSkChIbFt3bqkhsce9jYCXQemw8UE6YzF6etkNIvK
-	 YnSXUjn/BzLB1FNqf1yfpBbDhPYNgKSBSA/7GPYsoWs1Gy72TCVa1kL6OJYWKWnclR
-	 EUSyjGPgY4yJUbFPMrjHAAGJfx6wcksfQfL0WAw/1AFzV+WKCkmH6SbzhwMaRb6BnI
-	 HugxxJbuDmp/Q==
-From: Geliang Tang <geliang@kernel.org>
-To: Andrii Nakryiko <andrii@kernel.org>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Mykola Lysenko <mykolal@fb.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>,
-	Stanislav Fomichev <sdf@google.com>,
-	Hao Luo <haoluo@google.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Shuah Khan <shuah@kernel.org>
-Cc: Geliang Tang <tanggeliang@kylinos.cn>,
-	bpf@vger.kernel.org,
-	linux-kselftest@vger.kernel.org
-Subject: [PATCH bpf-next v5 7/7] selftests/bpf: Add post_connect_cb callback
-Date: Sat, 25 May 2024 20:08:21 +0800
-Message-ID: <3c5e8bd6c38cbe233daee6e0359a99d8d22ed821.1716638248.git.tanggeliang@kylinos.cn>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <cover.1716638248.git.tanggeliang@kylinos.cn>
-References: <cover.1716638248.git.tanggeliang@kylinos.cn>
+	s=arc-20240116; t=1716651233; c=relaxed/simple;
+	bh=HmzY/e6/lrsYHcYzUC4KA8e0GCzuXfBjW5ubZ6NBYQw=;
+	h=To:Date:Message-Id:MIME-Version:CC:Subject:Content-Type:From; b=BhIwEm4a0FYRhXjPz6Sby+s/MsWYkmU76JZUXtpBeK63mI4ZMKp13fKmsRHNk7nfGfhv7Bov6SmIjTmQsEfJNImWSg1vqnfcBgtv0XeNCdTiCDAOXEjvGhwZy++4ehqrfL94RwPeUqrhJNLaAQBayYGTDOkBx2h83WtBI7+pH8g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=dmarc.ietf.org; spf=pass smtp.mailfrom=ietf.org; dkim=pass (1024-bit key) header.d=ietf.org header.i=@ietf.org header.b=ZHAVbpWx; dkim=fail (1024-bit key) header.d=ietf.org header.i=@ietf.org header.b=lQmcOUqm reason="signature verification failed"; dkim=fail (2048-bit key) header.d=googlemail.com header.i=@googlemail.com header.b=kYOd1CK6 reason="signature verification failed"; arc=none smtp.client-ip=50.223.129.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=dmarc.ietf.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ietf.org
+Received: from ietfa.amsl.com (localhost [IPv6:::1])
+	by ietfa.amsl.com (Postfix) with ESMTP id 7EB7BC14CEFD
+	for <bpf@vger.kernel.org>; Sat, 25 May 2024 08:33:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ietf.org; s=ietf1;
+	t=1716651225; bh=HmzY/e6/lrsYHcYzUC4KA8e0GCzuXfBjW5ubZ6NBYQw=;
+	h=To:Date:CC:Subject:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=ZHAVbpWxDrJWxDdyvXncv0dIoTL+olaSY1FTyywvoI/xpuYSYQi3wYgWLBrUE7Mbp
+	 2ZlYifHr2ibEtCADlrkaW6AjighyuppQMEV81swHURRbhPFJVXf48sKn3yKCkOvoOb
+	 vgkUMWIP3i+YiBlO8tSn/kCk2DjxqgvO7ICWDGCs=
+Received: from ietfa.amsl.com (localhost [IPv6:::1])
+ by ietfa.amsl.com (Postfix) with ESMTP id 601E2C14CE3F
+ for <bpf@vger.kernel.org>; Sat, 25 May 2024 08:33:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ietf.org; s=ietf1;
+ t=1716651225; bh=HmzY/e6/lrsYHcYzUC4KA8e0GCzuXfBjW5ubZ6NBYQw=;
+ h=From:To:Date:CC:Subject:List-Id:List-Archive:List-Help:List-Owner:
+ List-Post:List-Subscribe:List-Unsubscribe;
+ b=lQmcOUqmlVoboa84upDN6KAVbZeQuXEDNtIplGknJFPEK3T7WP3C44YUJSi5uyM9r
+ Idq0lhZ81+FJipi16CKC/K48zdeYwz8KeLZTuZm2w7LJlscnsuQd2PZF2oJzRXwTW6
+ wYP+dgWzNQwsYb3kPcXKUjPHOjvxtfKvBoWM1UBA=
+X-Original-To: bpf@ietfa.amsl.com
+Delivered-To: bpf@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+ by ietfa.amsl.com (Postfix) with ESMTP id E4271C14F60F
+ for <bpf@ietfa.amsl.com>; Sat, 25 May 2024 08:33:39 -0700 (PDT)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: -6.845
+X-Spam-Level: 
+Authentication-Results: ietfa.amsl.com (amavisd-new); dkim=pass (2048-bit key)
+ header.d=googlemail.com
+Received: from mail.ietf.org ([50.223.129.194])
+ by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id V9LRHed56Diy for <bpf@ietfa.amsl.com>;
+ Sat, 25 May 2024 08:33:36 -0700 (PDT)
+Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com
+ [IPv6:2607:f8b0:4864:20::62a])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest
+ SHA256) (No client certificate requested)
+ by ietfa.amsl.com (Postfix) with ESMTPS id 14642C14F604
+ for <bpf@ietf.org>; Sat, 25 May 2024 08:33:36 -0700 (PDT)
+Received: by mail-pl1-x62a.google.com with SMTP id
+ d9443c01a7336-1f082d92864so137453335ad.1
+ for <bpf@ietf.org>; Sat, 25 May 2024 08:33:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=googlemail.com; s=20230601; t=1716651215; x=1717256015;
+ darn=ietf.org;
+ h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+ :to:from:from:to:cc:subject:date:message-id:reply-to;
+ bh=WhgM3TzL1k+cJvnIJ9yiuydwQ2hP9//8jGA/WrlIoG8=;
+ b=kYOd1CK6gZm8lW3q5WdNLQmbys/YDbS111UuTv5TwMgCC4Bc2B6Xp4lz+zOmpmvvLf
+ Esrv5Fo6PqWOyNtJQktFg8wDqCJd1axZmIdObg+2QcEcHFRDXgU5g7LazX10+z88JK9e
+ mbzpDEa6fT2gbl1esE5gO4/eTevhjG1TsXVASJ/1XHsEY+jbj687xWsotSGdWyrQcNpQ
+ Va5+LNFpKOYg04d43egsXRDXIAV08N1KsIICEVgdUP6ZdiiATZN9tMI1fHAFVd2BHTAT
+ gAYWpTT8mHuyCR5aboXUM7wouJIkIyuOXqna5aTGQ5qOBiduQ1DtoED6N2h6mzVq0dPm
+ eQrg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20230601; t=1716651215; x=1717256015;
+ h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+ :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+ :reply-to;
+ bh=WhgM3TzL1k+cJvnIJ9yiuydwQ2hP9//8jGA/WrlIoG8=;
+ b=A85z0X6qtUuvD/hlnOWYhekGZedYRSuutRhGs3/UFu4/nsLAzmBjCBLzrulzAJXYQ9
+ mtN2zBe8D9znr7Ub/X5mSPxQ1kSUGP/Bke8acEGybVgrKcBBizc/Dk3X0yHyNub5RNcn
+ hb8BH14xyNB1llwxRUvVFs+GDuQoE6aIfl973yg7nXNAsAuaSkf5eRBnuIvBiQUnAXqA
+ 8xL9lJSNzO4anbcn3iqMclkyTZC8x9lNiPAoytdGlwAdMcKXmACqMgYLLzVLv9qcY9B4
+ 8b9Bol6U2soLX4aL+L/P/GQLyzRIkJPbhiqroZ44PL5tsbVyhcHzBBRquswnfhWRFQCR
+ 7Njw==
+X-Gm-Message-State: AOJu0YxQ7wsvhRWQKV0/N231YxJvtPYzYo2keQdDCSj2pa7P63PuLpDr
+ vHToRwmCaxCA4Q9QjrIUllJs3BQPH2nSIIWWK0YXrrKjAUySDs37
+X-Google-Smtp-Source: AGHT+IEmDQZqj1300++gHaFZYQuNrJSs/0y3Sdlv2EkEsUW2Ya+rfHEBXre6C5l12oDbAJ4B7Us7tA==
+X-Received: by 2002:a17:902:f68a:b0:1ea:cb6f:ee5b with SMTP id
+ d9443c01a7336-1f44883876dmr63477225ad.38.1716651215310;
+ Sat, 25 May 2024 08:33:35 -0700 (PDT)
+Received: from localhost.localdomain (c-67-170-74-237.hsd1.wa.comcast.net.
+ [67.170.74.237]) by smtp.gmail.com with ESMTPSA id
+ d9443c01a7336-1f44c7cadf4sm31468335ad.109.2024.05.25.08.33.34
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Sat, 25 May 2024 08:33:34 -0700 (PDT)
+X-Google-Original-From: Dave Thaler <dthaler1968@gmail.com>
+To: bpf@vger.kernel.org
+Date: Sat, 25 May 2024 08:33:32 -0700
+Message-Id: <20240525153332.21355-1-dthaler1968@gmail.com>
+X-Mailer: git-send-email 2.40.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Message-ID-Hash: VXMPKSSYS7HYBLF75LAL46AVGP2TUFG7
+X-Message-ID-Hash: VXMPKSSYS7HYBLF75LAL46AVGP2TUFG7
+X-MailFrom: dthaler1968@googlemail.com
+X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
+ loop; banned-address; member-moderation; nonmember-moderation; administrivia; 
+ implicit-dest; max-recipients; max-size; news-moderation; no-subject;
+ digests; suspicious-header
+CC: bpf@ietf.org, Dave Thaler <dthaler1968@gmail.com>
+X-Mailman-Version: 3.3.9rc4
+Precedence: list
+Subject: =?utf-8?q?=5BBpf=5D_=5BPATCH_bpf-next=5D_bpf=2C_docs=3A_Clarify_call_local_o?=
+ =?utf-8?q?ffset?=
+Archived-At: <https://mailarchive.ietf.org/arch/msg/bpf/ihI1175Pg574h-biBvimsce2ayA>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/bpf>
+List-Help: <mailto:bpf-request@ietf.org?subject=help>
+List-Owner: <mailto:bpf-owner@ietf.org>
+List-Post: <mailto:bpf@ietf.org>
+X-Mailman-Copy: yes
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+X-Original-From: Dave Thaler <dthaler1968@googlemail.com>
+From: Dave Thaler <dthaler1968=40googlemail.com@dmarc.ietf.org>
 
-From: Geliang Tang <tanggeliang@kylinos.cn>
-
-For getting rid of the second parameter of do_test(), this patch adds a
-new callback post_connect_cb in struct network_helper_opts, it will be
-invoked after connect_fd_to_addr() in connect_to_fd_opts().
-
-Then define a dctcp dedicated post_connect_cb callback, invoking
-bpf_map_lookup_elem() in it, named stg_post_connect_cb() and set it in
-test_dctcp().
-
-Signed-off-by: Geliang Tang <tanggeliang@kylinos.cn>
----
- tools/testing/selftests/bpf/network_helpers.c |  7 ++-
- tools/testing/selftests/bpf/network_helpers.h |  1 +
- .../selftests/bpf/prog_tests/bpf_tcp_ca.c     | 45 ++++++++++---------
- 3 files changed, 31 insertions(+), 22 deletions(-)
-
-diff --git a/tools/testing/selftests/bpf/network_helpers.c b/tools/testing/selftests/bpf/network_helpers.c
-index e20caef06aae..75589597c17e 100644
---- a/tools/testing/selftests/bpf/network_helpers.c
-+++ b/tools/testing/selftests/bpf/network_helpers.c
-@@ -353,10 +353,15 @@ int connect_to_fd_opts(int server_fd, const struct network_helper_opts *opts)
- 	    opts->post_socket_cb(fd, opts->cb_opts))
- 		goto error_close;
- 
--	if (!opts->noconnect)
-+	if (!opts->noconnect) {
- 		if (connect_fd_to_addr(fd, &addr, addrlen, opts->must_fail))
- 			goto error_close;
- 
-+		if (opts->post_connect_cb &&
-+		    opts->post_connect_cb(fd, opts->cb_opts))
-+			goto error_close;
-+	}
-+
- 	return fd;
- 
- error_close:
-diff --git a/tools/testing/selftests/bpf/network_helpers.h b/tools/testing/selftests/bpf/network_helpers.h
-index 11eea8e2e4f1..b387e8142f3c 100644
---- a/tools/testing/selftests/bpf/network_helpers.h
-+++ b/tools/testing/selftests/bpf/network_helpers.h
-@@ -28,6 +28,7 @@ struct network_helper_opts {
- 	int type;
- 	int proto;
- 	int (*post_socket_cb)(int fd, void *opts);
-+	int (*post_connect_cb)(int fd, void *opts);
- 	void *cb_opts;
- };
- 
-diff --git a/tools/testing/selftests/bpf/prog_tests/bpf_tcp_ca.c b/tools/testing/selftests/bpf/prog_tests/bpf_tcp_ca.c
-index 9a7c3dc39008..e6fc6dfbcb7b 100644
---- a/tools/testing/selftests/bpf/prog_tests/bpf_tcp_ca.c
-+++ b/tools/testing/selftests/bpf/prog_tests/bpf_tcp_ca.c
-@@ -39,11 +39,9 @@ static int settcpca(int fd, const char *tcp_ca)
- 	return 0;
- }
- 
--static void do_test(const struct network_helper_opts *opts,
--		    const struct bpf_map *sk_stg_map)
-+static void do_test(const struct network_helper_opts *opts)
- {
- 	int lfd = -1, fd = -1;
--	int err;
- 
- 	lfd = start_server_str(AF_INET6, SOCK_STREAM, NULL, 0, opts);
- 	if (!ASSERT_NEQ(lfd, -1, "socket"))
-@@ -54,16 +52,6 @@ static void do_test(const struct network_helper_opts *opts,
- 	if (!ASSERT_NEQ(fd, -1, "connect_to_fd_opts"))
- 		goto done;
- 
--	if (sk_stg_map) {
--		int tmp_stg;
--
--		err = bpf_map_lookup_elem(bpf_map__fd(sk_stg_map), &fd,
--					  &tmp_stg);
--		if (!ASSERT_ERR(err, "bpf_map_lookup_elem(sk_stg_map)") ||
--				!ASSERT_EQ(errno, ENOENT, "bpf_map_lookup_elem(sk_stg_map)"))
--			goto done;
--	}
--
- 	ASSERT_OK(send_recv_data(lfd, fd, total_bytes), "send_recv_data");
- 
- done:
-@@ -100,7 +88,7 @@ static void test_cubic(void)
- 		return;
- 	}
- 
--	do_test(&opts, NULL);
-+	do_test(&opts);
- 
- 	ASSERT_EQ(cubic_skel->bss->bpf_cubic_acked_called, 1, "pkts_acked called");
- 
-@@ -125,6 +113,20 @@ static int stg_post_socket_cb(int fd, void *opts)
- 	return 0;
- }
- 
-+static int stg_post_connect_cb(int fd, void *opts)
-+{
-+	struct cb_opts *cb_opts = (struct cb_opts *)opts;
-+	int tmp_stg;
-+	int err;
-+
-+	err = bpf_map_lookup_elem(cb_opts->map_fd, &fd, &tmp_stg);
-+	if (!ASSERT_ERR(err, "bpf_map_lookup_elem(sk_stg_map)") ||
-+			!ASSERT_EQ(errno, ENOENT, "bpf_map_lookup_elem(sk_stg_map)"))
-+		return err;
-+
-+	return 0;
-+}
-+
- static void test_dctcp(void)
- {
- 	struct cb_opts cb_opts = {
-@@ -132,6 +134,7 @@ static void test_dctcp(void)
- 	};
- 	struct network_helper_opts opts = {
- 		.post_socket_cb	= stg_post_socket_cb,
-+		.post_connect_cb = stg_post_connect_cb,
- 		.cb_opts	= &cb_opts,
- 	};
- 	struct bpf_dctcp *dctcp_skel;
-@@ -148,7 +151,7 @@ static void test_dctcp(void)
- 	}
- 
- 	cb_opts.map_fd = bpf_map__fd(dctcp_skel->maps.sk_stg_map);
--	do_test(&opts, dctcp_skel->maps.sk_stg_map);
-+	do_test(&opts);
- 	ASSERT_EQ(dctcp_skel->bss->stg_result, expected_stg, "stg_result");
- 
- 	bpf_link__destroy(link);
-@@ -352,14 +355,14 @@ static void test_update_ca(void)
- 	link = bpf_map__attach_struct_ops(skel->maps.ca_update_1);
- 	ASSERT_OK_PTR(link, "attach_struct_ops");
- 
--	do_test(&opts, NULL);
-+	do_test(&opts);
- 	saved_ca1_cnt = skel->bss->ca1_cnt;
- 	ASSERT_GT(saved_ca1_cnt, 0, "ca1_ca1_cnt");
- 
- 	err = bpf_link__update_map(link, skel->maps.ca_update_2);
- 	ASSERT_OK(err, "update_map");
- 
--	do_test(&opts, NULL);
-+	do_test(&opts);
- 	ASSERT_EQ(skel->bss->ca1_cnt, saved_ca1_cnt, "ca2_ca1_cnt");
- 	ASSERT_GT(skel->bss->ca2_cnt, 0, "ca2_ca2_cnt");
- 
-@@ -388,14 +391,14 @@ static void test_update_wrong(void)
- 	link = bpf_map__attach_struct_ops(skel->maps.ca_update_1);
- 	ASSERT_OK_PTR(link, "attach_struct_ops");
- 
--	do_test(&opts, NULL);
-+	do_test(&opts);
- 	saved_ca1_cnt = skel->bss->ca1_cnt;
- 	ASSERT_GT(saved_ca1_cnt, 0, "ca1_ca1_cnt");
- 
- 	err = bpf_link__update_map(link, skel->maps.ca_wrong);
- 	ASSERT_ERR(err, "update_map");
- 
--	do_test(&opts, NULL);
-+	do_test(&opts);
- 	ASSERT_GT(skel->bss->ca1_cnt, saved_ca1_cnt, "ca2_ca1_cnt");
- 
- 	bpf_link__destroy(link);
-@@ -425,7 +428,7 @@ static void test_mixed_links(void)
- 	link = bpf_map__attach_struct_ops(skel->maps.ca_update_1);
- 	ASSERT_OK_PTR(link, "attach_struct_ops");
- 
--	do_test(&opts, NULL);
-+	do_test(&opts);
- 	ASSERT_GT(skel->bss->ca1_cnt, 0, "ca1_ca1_cnt");
- 
- 	err = bpf_link__update_map(link, skel->maps.ca_no_link);
-@@ -532,7 +535,7 @@ static void test_cc_cubic(void)
- 		return;
- 	}
- 
--	do_test(&opts, NULL);
-+	do_test(&opts);
- 
- 	bpf_link__destroy(link);
- 	bpf_cc_cubic__destroy(cc_cubic_skel);
--- 
-2.43.0
-
+SW4gdGhlIEp1bXAgaW5zdHJ1Y3Rpb25zIHNlY3Rpb24gaXQgZXhwbGFpbnMgdGhhdCB0aGUgb2Zm
+c2V0IGlzDQoicmVsYXRpdmUgdG8gdGhlIGluc3RydWN0aW9uIGZvbGxvd2luZyB0aGUganVtcCBp
+bnN0cnVjdGlvbiIuDQpCdXQgdGhlIHByb2dyYW0tbG9jYWwgc2VjdGlvbiBjb25mdXNpbmdseSBz
+YWlkICJyZWZlcmVuY2VkIGJ5DQpvZmZzZXQgZnJvbSB0aGUgY2FsbCBpbnN0cnVjdGlvbiwgc2lt
+aWxhciB0byBKQSIuDQoNClRoaXMgcGF0Y2ggdXBkYXRlcyB0aGF0IHNlbnRlbmNlIHdpdGggY29u
+c2lzdGVudCB3b3JkaW5nLCBzYXlpbmcNCml0J3MgcmVsYXRpdmUgdG8gdGhlIGluc3RydWN0aW9u
+IGZvbGxvd2luZyB0aGUgY2FsbCBpbnN0cnVjdGlvbi4NCg0KU2lnbmVkLW9mZi1ieTogRGF2ZSBU
+aGFsZXIgPGR0aGFsZXIxOTY4QGdtYWlsLmNvbT4NCi0tLQ0KIERvY3VtZW50YXRpb24vYnBmL3N0
+YW5kYXJkaXphdGlvbi9pbnN0cnVjdGlvbi1zZXQucnN0IHwgMiArLQ0KIDEgZmlsZSBjaGFuZ2Vk
+LCAxIGluc2VydGlvbigrKSwgMSBkZWxldGlvbigtKQ0KDQpkaWZmIC0tZ2l0IGEvRG9jdW1lbnRh
+dGlvbi9icGYvc3RhbmRhcmRpemF0aW9uL2luc3RydWN0aW9uLXNldC5yc3QgYi9Eb2N1bWVudGF0
+aW9uL2JwZi9zdGFuZGFyZGl6YXRpb24vaW5zdHJ1Y3Rpb24tc2V0LnJzdA0KaW5kZXggMDBjOTNl
+YjQyLi42YmI1YWU3ZTQgMTAwNjQ0DQotLS0gYS9Eb2N1bWVudGF0aW9uL2JwZi9zdGFuZGFyZGl6
+YXRpb24vaW5zdHJ1Y3Rpb24tc2V0LnJzdA0KKysrIGIvRG9jdW1lbnRhdGlvbi9icGYvc3RhbmRh
+cmRpemF0aW9uL2luc3RydWN0aW9uLXNldC5yc3QNCkBAIC01MjAsNyArNTIwLDcgQEAgaWRlbnRp
+ZmllcyB0aGUgaGVscGVyIG5hbWUgYW5kIHR5cGUuDQogUHJvZ3JhbS1sb2NhbCBmdW5jdGlvbnMN
+CiB+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fg0KIFByb2dyYW0tbG9jYWwgZnVuY3Rpb25zIGFyZSBm
+dW5jdGlvbnMgZXhwb3NlZCBieSB0aGUgc2FtZSBCUEYgcHJvZ3JhbSBhcyB0aGUNCi1jYWxsZXIs
+IGFuZCBhcmUgcmVmZXJlbmNlZCBieSBvZmZzZXQgZnJvbSB0aGUgY2FsbCBpbnN0cnVjdGlvbiwg
+c2ltaWxhciB0bw0KK2NhbGxlciwgYW5kIGFyZSByZWZlcmVuY2VkIGJ5IG9mZnNldCBmcm9tIHRo
+ZSBpbnN0cnVjdGlvbiBmb2xsb3dpbmcgdGhlIGNhbGwgaW5zdHJ1Y3Rpb24sIHNpbWlsYXIgdG8N
+CiBgYEpBYGAuICBUaGUgb2Zmc2V0IGlzIGVuY29kZWQgaW4gdGhlICdpbW0nIGZpZWxkIG9mIHRo
+ZSBjYWxsIGluc3RydWN0aW9uLg0KIEFuIGBgRVhJVGBgIHdpdGhpbiB0aGUgcHJvZ3JhbS1sb2Nh
+bCBmdW5jdGlvbiB3aWxsIHJldHVybiB0byB0aGUgY2FsbGVyLg0KIA0KLS0gDQoyLjQwLjENCg0K
+LS0gCkJwZiBtYWlsaW5nIGxpc3QgLS0gYnBmQGlldGYub3JnClRvIHVuc3Vic2NyaWJlIHNlbmQg
+YW4gZW1haWwgdG8gYnBmLWxlYXZlQGlldGYub3JnCg==
 
