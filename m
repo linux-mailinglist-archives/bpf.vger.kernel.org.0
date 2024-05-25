@@ -1,41 +1,41 @@
-Return-Path: <bpf+bounces-30564-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-30565-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id E33408CED92
-	for <lists+bpf@lfdr.de>; Sat, 25 May 2024 04:38:19 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6BCCC8CED93
+	for <lists+bpf@lfdr.de>; Sat, 25 May 2024 04:38:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 202BF1C20E94
-	for <lists+bpf@lfdr.de>; Sat, 25 May 2024 02:38:19 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D4E061F21C40
+	for <lists+bpf@lfdr.de>; Sat, 25 May 2024 02:38:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A18662BB1B;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD4FB2D057;
 	Sat, 25 May 2024 02:36:55 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4900D2555B;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 669C428DD1;
 	Sat, 25 May 2024 02:36:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716604615; cv=none; b=M6uJ4q65peQbc0g3SdToJgGKCga8/76TYgOnVv8X+RFzWyGXqRdwMBD5UFtoXMJfe8wPRlpTKpLZfeEySJKWyZV13brk/iL0GlgCobI2HCDRjr0DKcmgin1xYMxMZfV/VfP/RwRZt7DEzKQEpFq89msmPSDbbBEU9fmA40+E0zQ=
+	t=1716604615; cv=none; b=CxPFTYibP3tpJszEmj8XcXvFCCtk09ImzZ+vL/vAAcGDyQB0HMbrJCe312AJBo/r6CHnbHoRyo9+VtfBjDI1v9u7YPpiyvFw07ot71k0PlizwOrTEPzCNJW4TD1D0T8C7T0V2rv1hYX66Tg6Or62BQg/MwVADz56t1WoIksdrQA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1716604615; c=relaxed/simple;
-	bh=thcMow/SAZdTsefHHRMVlJB1R1mY9N9R73UMp4wZwxc=;
+	bh=pT1Qo6CHsMs4Cw+fcD0C6pCyluUKTWozMiIBQ3lQvfU=;
 	h=Message-ID:Date:From:To:Cc:Subject:References:MIME-Version:
-	 Content-Type; b=JquFaJjQz7CJXyyBxUBtYMHnsOvhZUOmQYyvHYlPUzDX7HMEmOkyv3rdGHm9h+Fr/lIaO60M+irR/j40buE43OEOsd9Y7+mqY4Zw6N5kB5fWHFMIaA6LHXITMyZ5mvF0cLiSrbiucl5LuMkSmLd2SjnnlP8tQiNmrCoIzbdfiLU=
+	 Content-Type; b=phQu3/mNb41EwvF94CISFYoi2Y3FA/jtm8xb+DEfI1N9oAW+oA2rt6vVz9B3TPtrA72adPebjqhslfVUENhnr/djg6w2Ex1rScu5fSR/SJ93taqgmCCw1vRNolt276Gzo3LGXsDhQs6Xqv3nkJQ5vNVwyDQids54b/sIUFyO8+U=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8C852C4AF17;
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9137DC4DE0F;
 	Sat, 25 May 2024 02:36:54 +0000 (UTC)
 Received: from rostedt by gandalf with local (Exim 4.97)
 	(envelope-from <rostedt@goodmis.org>)
-	id 1sAhHz-00000007DN4-0LNu;
+	id 1sAhHz-00000007DNZ-10vA;
 	Fri, 24 May 2024 22:37:43 -0400
-Message-ID: <20240525023742.944236388@goodmis.org>
+Message-ID: <20240525023743.101188314@goodmis.org>
 User-Agent: quilt/0.68
-Date: Fri, 24 May 2024 22:37:03 -0400
+Date: Fri, 24 May 2024 22:37:04 -0400
 From: Steven Rostedt <rostedt@goodmis.org>
 To: linux-kernel@vger.kernel.org,
  linux-trace-kernel@vger.kernel.org
@@ -56,7 +56,7 @@ Cc: Masami Hiramatsu <mhiramat@kernel.org>,
  Peter Zijlstra <peterz@infradead.org>,
  Thomas Gleixner <tglx@linutronix.de>,
  Guo Ren <guoren@kernel.org>
-Subject: [PATCH 11/20] function_graph: Use a simple LRU for fgraph_array index number
+Subject: [PATCH 12/20] function_graph: Add "task variables" per task for fgraph_ops
 References: <20240525023652.903909489@goodmis.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -66,161 +66,169 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 
-From: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
+From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
 
-Since the fgraph_array index is used for the bitmap on the shadow
-stack, it may leave some entries after a function_graph instance is
-removed. Thus if another instance reuses the fgraph_array index soon
-after releasing it, the fgraph may confuse to call the newer callback
-for the entries which are pushed by the older instance.
-To avoid reusing the fgraph_array index soon after releasing, introduce
-a simple LRU table for managing the index number. This will reduce the
-possibility of this confusion.
+Add a "task variables" array on the tasks shadow ret_stack that is the
+size of longs for each possible registered fgraph_ops. That's a total
+of 16, taking up 8 * 16 = 128 bytes (out of a page size 4k).
 
-Link: https://lore.kernel.org/linux-trace-kernel/171509103267.162236.6885097397289135378.stgit@devnote2
+This will allow for fgraph_ops to do specific features on a per task basis
+having a way to maintain state for each task.
 
+Co-developed with Masami Hiramatsu:
+Link: https://lore.kernel.org/linux-trace-kernel/171509104383.162236.12239656156685718550.stgit@devnote2
+
+Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
 Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 ---
- kernel/trace/fgraph.c | 71 ++++++++++++++++++++++++++++++-------------
- 1 file changed, 50 insertions(+), 21 deletions(-)
+ include/linux/ftrace.h |  1 +
+ kernel/trace/fgraph.c  | 74 +++++++++++++++++++++++++++++++++++++++++-
+ 2 files changed, 74 insertions(+), 1 deletion(-)
 
+diff --git a/include/linux/ftrace.h b/include/linux/ftrace.h
+index e5b41683ffb9..80eb1ab3cae3 100644
+--- a/include/linux/ftrace.h
++++ b/include/linux/ftrace.h
+@@ -1087,6 +1087,7 @@ ftrace_graph_get_ret_stack(struct task_struct *task, int skip);
+ 
+ unsigned long ftrace_graph_ret_addr(struct task_struct *task, int *idx,
+ 				    unsigned long ret, unsigned long *retp);
++unsigned long *fgraph_get_task_var(struct fgraph_ops *gops);
+ 
+ /*
+  * Sometimes we don't want to trace a function with the function
 diff --git a/kernel/trace/fgraph.c b/kernel/trace/fgraph.c
-index 67fa7fbf6aac..8e029d5e94f6 100644
+index 8e029d5e94f6..0d536a48f696 100644
 --- a/kernel/trace/fgraph.c
 +++ b/kernel/trace/fgraph.c
-@@ -125,10 +125,48 @@ enum {
+@@ -55,6 +55,10 @@
+  * on the return of the function being traced, this is what will be on the
+  * task's shadow ret_stack: (the stack grows upward)
+  *
++ *  ret_stack[SHADOW_STACK_OFFSET]
++ * | SHADOW_STACK_TASK_VARS(ret_stack)[15]      |
++ * ...
++ * | SHADOW_STACK_TASK_VARS(ret_stack)[0]       |
+  *  ret_stack[SHADOW_STACK_MAX_OFFSET]
+  * ...
+  * |                                            | <- task->curr_ret_stack
+@@ -117,11 +121,19 @@ enum {
+ #define SHADOW_STACK_SIZE	(PAGE_SIZE)
+ #define SHADOW_STACK_OFFSET	(SHADOW_STACK_SIZE / sizeof(long))
+ /* Leave on a buffer at the end */
+-#define SHADOW_STACK_MAX_OFFSET (SHADOW_STACK_OFFSET - (FGRAPH_FRAME_OFFSET + 1))
++#define SHADOW_STACK_MAX_OFFSET				\
++	(SHADOW_STACK_OFFSET - (FGRAPH_FRAME_OFFSET + 1 + FGRAPH_ARRAY_SIZE))
+ 
+ /* RET_STACK():		Return the frame from a given @offset from task @t */
+ #define RET_STACK(t, offset) ((struct ftrace_ret_stack *)(&(t)->ret_stack[offset]))
+ 
++/*
++ * Each fgraph_ops has a reservered unsigned long at the end (top) of the
++ * ret_stack to store task specific state.
++ */
++#define SHADOW_STACK_TASK_VARS(ret_stack) \
++	((unsigned long *)(&(ret_stack)[SHADOW_STACK_OFFSET - FGRAPH_ARRAY_SIZE]))
++
  DEFINE_STATIC_KEY_FALSE(kill_ftrace_graph);
  int ftrace_graph_active;
  
--static int fgraph_array_cnt;
--
- static struct fgraph_ops *fgraph_array[FGRAPH_ARRAY_SIZE];
- 
-+/* LRU index table for fgraph_array */
-+static int fgraph_lru_table[FGRAPH_ARRAY_SIZE];
-+static int fgraph_lru_next;
-+static int fgraph_lru_last;
-+
-+/* Initialize fgraph_lru_table with unused index */
-+static void fgraph_lru_init(void)
-+{
-+	int i;
-+
-+	for (i = 0; i < FGRAPH_ARRAY_SIZE; i++)
-+		fgraph_lru_table[i] = i;
-+}
-+
-+/* Release the used index to the LRU table */
-+static int fgraph_lru_release_index(int idx)
-+{
-+	if (idx < 0 || idx >= FGRAPH_ARRAY_SIZE ||
-+	    WARN_ON_ONCE(fgraph_lru_table[fgraph_lru_last] != -1))
-+		return -1;
-+
-+	fgraph_lru_table[fgraph_lru_last] = idx;
-+	fgraph_lru_last = (fgraph_lru_last + 1) % FGRAPH_ARRAY_SIZE;
-+	return 0;
-+}
-+
-+/* Allocate a new index from LRU table */
-+static int fgraph_lru_alloc_index(void)
-+{
-+	int idx = fgraph_lru_table[fgraph_lru_next];
-+
-+	/* No id is available */
-+	if (idx == -1)
-+		return -1;
-+
-+	fgraph_lru_table[fgraph_lru_next] = -1;
-+	fgraph_lru_next = (fgraph_lru_next + 1) % FGRAPH_ARRAY_SIZE;
-+	return idx;
-+}
-+
- /* Get the FRAME_OFFSET from the word from the @offset on ret_stack */
- static inline int get_frame_offset(struct task_struct *t, int offset)
+@@ -212,6 +224,44 @@ static void return_run(struct ftrace_graph_ret *trace, struct fgraph_ops *ops)
  {
-@@ -375,7 +413,7 @@ int function_graph_enter(unsigned long ret, unsigned long func,
- 	if (offset < 0)
- 		goto out;
+ }
  
--	for (i = 0; i < fgraph_array_cnt; i++) {
-+	for (i = 0; i < FGRAPH_ARRAY_SIZE; i++) {
- 		struct fgraph_ops *gops = fgraph_array[i];
++static void ret_stack_set_task_var(struct task_struct *t, int idx, long val)
++{
++	unsigned long *gvals = SHADOW_STACK_TASK_VARS(t->ret_stack);
++
++	gvals[idx] = val;
++}
++
++static unsigned long *
++ret_stack_get_task_var(struct task_struct *t, int idx)
++{
++	unsigned long *gvals = SHADOW_STACK_TASK_VARS(t->ret_stack);
++
++	return &gvals[idx];
++}
++
++static void ret_stack_init_task_vars(unsigned long *ret_stack)
++{
++	unsigned long *gvals = SHADOW_STACK_TASK_VARS(ret_stack);
++
++	memset(gvals, 0, sizeof(*gvals) * FGRAPH_ARRAY_SIZE);
++}
++
++/**
++ * fgraph_get_task_var - retrieve a task specific state variable
++ * @gops: The ftrace_ops that owns the task specific variable
++ *
++ * Every registered fgraph_ops has a task state variable
++ * reserved on the task's ret_stack. This function returns the
++ * address to that variable.
++ *
++ * Returns the address to the fgraph_ops @gops tasks specific
++ * unsigned long variable.
++ */
++unsigned long *fgraph_get_task_var(struct fgraph_ops *gops)
++{
++	return ret_stack_get_task_var(current, gops->idx);
++}
++
+ /*
+  * @offset: The offset into @t->ret_stack to find the ret_stack entry
+  * @frame_offset: Where to place the offset into @t->ret_stack of that entry
+@@ -803,6 +853,7 @@ static int alloc_retstack_tasklist(unsigned long **ret_stack_list)
  
- 		if (gops == &fgraph_stub)
-@@ -927,7 +965,7 @@ int register_ftrace_graph(struct fgraph_ops *gops)
+ 		if (t->ret_stack == NULL) {
+ 			atomic_set(&t->trace_overrun, 0);
++			ret_stack_init_task_vars(ret_stack_list[start]);
+ 			t->curr_ret_stack = 0;
+ 			t->curr_ret_depth = -1;
+ 			/* Make sure the tasks see the 0 first: */
+@@ -863,6 +914,7 @@ static void
+ graph_init_task(struct task_struct *t, unsigned long *ret_stack)
  {
- 	int command = 0;
- 	int ret = 0;
--	int i;
-+	int i = -1;
+ 	atomic_set(&t->trace_overrun, 0);
++	ret_stack_init_task_vars(ret_stack);
+ 	t->ftrace_timestamp = 0;
+ 	t->curr_ret_stack = 0;
+ 	t->curr_ret_depth = -1;
+@@ -961,6 +1013,24 @@ static int start_graph_tracing(void)
+ 	return ret;
+ }
  
- 	mutex_lock(&ftrace_lock);
- 
-@@ -943,21 +981,16 @@ int register_ftrace_graph(struct fgraph_ops *gops)
- 		/* The array must always have real data on it */
- 		for (i = 0; i < FGRAPH_ARRAY_SIZE; i++)
- 			fgraph_array[i] = &fgraph_stub;
-+		fgraph_lru_init();
- 	}
- 
--	/* Look for an available spot */
--	for (i = 0; i < FGRAPH_ARRAY_SIZE; i++) {
--		if (fgraph_array[i] == &fgraph_stub)
--			break;
--	}
--	if (i >= FGRAPH_ARRAY_SIZE) {
-+	i = fgraph_lru_alloc_index();
-+	if (i < 0 || WARN_ON_ONCE(fgraph_array[i] != &fgraph_stub)) {
- 		ret = -ENOSPC;
- 		goto out;
- 	}
- 
- 	fgraph_array[i] = gops;
--	if (i + 1 > fgraph_array_cnt)
--		fgraph_array_cnt = i + 1;
- 	gops->idx = i;
- 
- 	ftrace_graph_active++;
-@@ -981,6 +1014,7 @@ int register_ftrace_graph(struct fgraph_ops *gops)
- 	if (ret) {
- 		fgraph_array[i] = &fgraph_stub;
- 		ftrace_graph_active--;
-+		fgraph_lru_release_index(i);
- 	}
- out:
- 	mutex_unlock(&ftrace_lock);
-@@ -990,25 +1024,20 @@ int register_ftrace_graph(struct fgraph_ops *gops)
- void unregister_ftrace_graph(struct fgraph_ops *gops)
++static void init_task_vars(int idx)
++{
++	struct task_struct *g, *t;
++	int cpu;
++
++	for_each_online_cpu(cpu) {
++		if (idle_task(cpu)->ret_stack)
++			ret_stack_set_task_var(idle_task(cpu), idx, 0);
++	}
++
++	read_lock(&tasklist_lock);
++	for_each_process_thread(g, t) {
++		if (t->ret_stack)
++			ret_stack_set_task_var(t, idx, 0);
++	}
++	read_unlock(&tasklist_lock);
++}
++
+ int register_ftrace_graph(struct fgraph_ops *gops)
  {
  	int command = 0;
--	int i;
+@@ -1007,6 +1077,8 @@ int register_ftrace_graph(struct fgraph_ops *gops)
+ 		ftrace_graph_return = return_run;
+ 		ftrace_graph_entry = entry_run;
+ 		command = FTRACE_START_FUNC_RET;
++	} else {
++		init_task_vars(gops->idx);
+ 	}
  
- 	mutex_lock(&ftrace_lock);
- 
- 	if (unlikely(!ftrace_graph_active))
- 		goto out;
- 
--	if (unlikely(gops->idx < 0 || gops->idx >= fgraph_array_cnt))
-+	if (unlikely(gops->idx < 0 || gops->idx >= FGRAPH_ARRAY_SIZE ||
-+		     fgraph_array[gops->idx] != gops))
- 		goto out;
- 
--	WARN_ON_ONCE(fgraph_array[gops->idx] != gops);
-+	if (fgraph_lru_release_index(gops->idx) < 0)
-+		goto out;
- 
- 	fgraph_array[gops->idx] = &fgraph_stub;
--	if (gops->idx + 1 == fgraph_array_cnt) {
--		i = gops->idx;
--		while (i >= 0 && fgraph_array[i] == &fgraph_stub)
--			i--;
--		fgraph_array_cnt = i + 1;
--	}
- 
- 	ftrace_graph_active--;
- 
+ 	ret = ftrace_startup(&gops->ops, command);
 -- 
 2.43.0
 
