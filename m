@@ -1,217 +1,143 @@
-Return-Path: <bpf+bounces-30576-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-30577-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 92CFB8CEDC7
-	for <lists+bpf@lfdr.de>; Sat, 25 May 2024 05:56:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id AEA1F8CEE5C
+	for <lists+bpf@lfdr.de>; Sat, 25 May 2024 11:44:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E9F981F2197E
-	for <lists+bpf@lfdr.de>; Sat, 25 May 2024 03:56:44 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 27C0E1F217E4
+	for <lists+bpf@lfdr.de>; Sat, 25 May 2024 09:44:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F28762F2F;
-	Sat, 25 May 2024 03:56:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 22B571F92F;
+	Sat, 25 May 2024 09:44:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=vahedi.org header.i=@vahedi.org header.b="owQSQSqF"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tYJtmxYW"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-189.mta1.migadu.com (out-189.mta1.migadu.com [95.215.58.189])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E4C0C138E
-	for <bpf@vger.kernel.org>; Sat, 25 May 2024 03:56:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.189
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D46C2F34;
+	Sat, 25 May 2024 09:44:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716609398; cv=none; b=mYFPxWTg879c6FME9D7n7aHQ3WSO+ajN+UmVcmh8y2xuPKgvOHmBYv+PGpFVfISmg4Y8pek8wn4lCm8XKv4IR+B6Sqtjsl5S8sc2DiH8NWewiWgpr+SviYxgtPqfHirElceVVutQ/Hhi5rdkHgmHMxjEJB5rMiXOo0gWQlsxWt0=
+	t=1716630260; cv=none; b=awdXoCI0v1esZ1T3zOZsOsD3lo1B4Y32tXtIfMFdR1enysVJ5PE4SGPFb0tTCtXWQ+7zwjjgDqM5108hDI4bqrGThCZnmJ0GIW5tuHzB2J/kq26F8dIwGWy0PQbeoBTP1oQUKtm6H24zP7RY0zVipvswuS4dpuUZjtlsLoT8Z1Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716609398; c=relaxed/simple;
-	bh=VTq+Xedy9UIJWuKp7p2kMUev4eiuFF7NTxn6pDn5J5c=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=oQXS1OfVHu3rznjYFGHpwkeqMA93zT3sAHdeoTa30s8cqU+kYBdxtcwAjoHiARYL2RQf5uZhZ8ZKWna3WGIX011xNvD2qR6CguQ2DVV8VaDcMrj5uAkdmJgvsQkiYoZfpHZ/m65yXnWpRqf7PmGw1etbq8UfI0sApz0UKILy4xc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=vahedi.org; spf=pass smtp.mailfrom=vahedi.org; dkim=pass (2048-bit key) header.d=vahedi.org header.i=@vahedi.org header.b=owQSQSqF; arc=none smtp.client-ip=95.215.58.189
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=vahedi.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=vahedi.org
-X-Envelope-To: bpf@vger.kernel.org
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vahedi.org; s=key1;
-	t=1716609391;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=ESjsEOrjOSUIfpoJSGAmqJmoqMNxjpwHbfQn63f4et0=;
-	b=owQSQSqFjjRZyiqkZ1lWmrHkb+jDpAVPpTMBtoA0eogMnMYaTrerBBvWNg9E5wlJ7U038L
-	TKTUXEyk0C7Xltx6Ohr0kRPxexeYtxSgp4uy4A2ZrLoD2rsVolmmhHBWXCmbwoJmsYWNkB
-	v++GPO6jxBRhG5io7GQ12w1tAUVkWkb2BEJQFhz/eVwBNkxVuvWjCBod4/JZ8FOhxI/Oin
-	bCDrcEdyopMhHrTnSPN5Wd/ElyKqmFkAEKzuqzT+d6wA6PfLpcTM/TEt2etaW3vFEQS3vN
-	s/RppA0LsAxAZ+3rVvnLqdfv9lgvxBFKeh1EvAWo+Az16ZSygoSme2WD8A1Omg==
-X-Envelope-To: list+bpf@vahedi.org
-X-Envelope-To: shahab@synopsys.com
-X-Envelope-To: vgupta@kernel.org
-X-Envelope-To: ast@kernel.org
-X-Envelope-To: linux-snps-arc@lists.infradead.org
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Shahab Vahedi <list+bpf@vahedi.org>
-To: bpf@vger.kernel.org
-Cc: Shahab Vahedi <list+bpf@vahedi.org>,
-	Shahab Vahedi <shahab@synopsys.com>,
-	Vineet Gupta <vgupta@kernel.org>,
-	Alexei Starovoitov <ast@kernel.org>,
-	linux-snps-arc@lists.infradead.org
-Subject: [PATCH bpf-next] ARC, bpf: Fix issues reported by the static analyzers
-Date: Sat, 25 May 2024 05:56:28 +0200
-Message-Id: <20240525035628.1026-1-list+bpf@vahedi.org>
+	s=arc-20240116; t=1716630260; c=relaxed/simple;
+	bh=QGYXWnMmAcQH0S/ZvqQBsiamdeIE/ZeX9XXDq5EIp1E=;
+	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
+	 Mime-Version:Content-Type; b=EyzMKSLe0WxVG3JMvbCi/Z5cNziReUdOzm7GUaLAGtBRg+aji7SUmHvwAYQeY2g2/Wc+qvNheAfqaM1yE/opluVlBHV6eicy5/wXUG9tRXPHqH2YdXYcxgojXVwqwU8JApJkA8qZP295XbiaXxrTO43fUb5Dyub1SouwUaVKeNA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tYJtmxYW; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 36434C2BD11;
+	Sat, 25 May 2024 09:44:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1716630260;
+	bh=QGYXWnMmAcQH0S/ZvqQBsiamdeIE/ZeX9XXDq5EIp1E=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=tYJtmxYWb1A3mWtjziwqmuClDOKboe4NvqQSW2Em2UQ7N1C0cLwKsZToXZhnZ7Ufb
+	 cxr7E774rEquqweViWpdww1fOcmdaQTweNZqurH1wFdCIQpY04HRklB82qBtpjUFUC
+	 7Bv4ITZaO40Iwt3PgkbPitUGQIsNjKjknWkHeZfRTSOYwVEA0rYViVHV0NEfoS05My
+	 KrLIJwXaKJeGT438WAr+qF/H2PAqlLKOnvLxIXmbFd2JYJp5pDviUCjfwjbgEcIg4c
+	 U+Zg3D9CXUP9XdiXBwZjUyfMrWRnH5862nbXxB/Owg0gVQ09bTmoO9MI44kCOjiGhR
+	 U8K6OkeH8t/4Q==
+Date: Sat, 25 May 2024 18:44:14 +0900
+From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To: Steven Rostedt <rostedt@goodmis.org>
+Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, Florent Revest
+ <revest@chromium.org>, linux-trace-kernel@vger.kernel.org, LKML
+ <linux-kernel@vger.kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>,
+ bpf <bpf@vger.kernel.org>, Sven Schnelle <svens@linux.ibm.com>, Alexei
+ Starovoitov <ast@kernel.org>, Jiri Olsa <jolsa@kernel.org>, Arnaldo
+ Carvalho de Melo <acme@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ Alan Maguire <alan.maguire@oracle.com>, Mark Rutland
+ <mark.rutland@arm.com>, Peter Zijlstra <peterz@infradead.org>, Thomas
+ Gleixner <tglx@linutronix.de>, Guo Ren <guoren@kernel.org>
+Subject: Re: [PATCH v10 07/36] function_graph: Allow multiple users to
+ attach to function graph
+Message-Id: <20240525184414.a9e1953e0a9cd390b3e75513@kernel.org>
+In-Reply-To: <20240524213208.36f274c8@gandalf.local.home>
+References: <171509088006.162236.7227326999861366050.stgit@devnote2>
+	<171509096221.162236.8806372072523195752.stgit@devnote2>
+	<20240524213208.36f274c8@gandalf.local.home>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-From: Shahab Vahedi <shahab@synopsys.com>
+On Fri, 24 May 2024 21:32:08 -0400
+Steven Rostedt <rostedt@goodmis.org> wrote:
 
-Also updated couple of comments along the way.
+> On Tue,  7 May 2024 23:09:22 +0900
+> "Masami Hiramatsu (Google)" <mhiramat@kernel.org> wrote:
+> 
+> > @@ -109,6 +244,21 @@ ftrace_push_return_trace(unsigned long ret, unsigned long func,
+> >  	if (!current->ret_stack)
+> >  		return -EBUSY;
+> >  
+> > +	/*
+> > +	 * At first, check whether the previous fgraph callback is pushed by
+> > +	 * the fgraph on the same function entry.
+> > +	 * But if @func is the self tail-call function, we also need to ensure
+> > +	 * the ret_stack is not for the previous call by checking whether the
+> > +	 * bit of @fgraph_idx is set or not.
+> > +	 */
+> > +	ret_stack = get_ret_stack(current, current->curr_ret_stack, &offset);
+> > +	if (ret_stack && ret_stack->func == func &&
+> > +	    get_fgraph_type(current, offset + FGRAPH_FRAME_OFFSET) == FGRAPH_TYPE_BITMAP &&
+> > +	    !is_fgraph_index_set(current, offset + FGRAPH_FRAME_OFFSET, fgraph_idx))
+> > +		return offset + FGRAPH_FRAME_OFFSET;
+> > +
+> > +	val = (FGRAPH_TYPE_RESERVED << FGRAPH_TYPE_SHIFT) | FGRAPH_FRAME_OFFSET;
+> > +
+> >  	BUILD_BUG_ON(SHADOW_STACK_SIZE % sizeof(long));
+> 
+> I'm trying to figure out what the above is trying to do. This gets called
+> once in function_graph_enter() (or function_graph_enter_ops()). What
+> exactly are you trying to catch here?
 
-One of the issues reported was indeed a bug in the code:
+Aah, good catch! This was originally for catching the self tail-call case with
+multiple fgraph callback on the same function, but it was my misread.
+In later patch ([12/36]), we introduced function_graph_enter_ops() so that
+we can skip checking hash table and directly pass the fgraph_ops to user
+callback. I thought this function_graph_enter_ops() is used even if multiple
+fgraph is set on the same function. In this case, we always need to check the
+stack can be reused(pushed by other fgraph_ops on the same function) or not.
+But as we discussed, the function_graph_enter_ops() is used only when only
+one fgraph is set on the function (if there are multiple fgraphs are set on
+the same function, use function_graph_enter() ), we are sure that 
+ftrace_push_return_trace() is called only once on hooking the function entry.
+Thus we don't need to reuse it.
 
-  memset(ctx, 0, sizeof(ctx))      // original line
-  memset(ctx, 0, sizeof(*ctx))     // fixed line
+> 
+> Is it from this email:
+> 
+>   https://lore.kernel.org/all/20231110105154.df937bf9f200a0c16806c522@kernel.org/
+> 
+> As that's the last version before you added the above code.
+> 
+> But you also noticed it may not be needed, but triggered a crash without it
+> in v3:
+> 
+>   https://lore.kernel.org/all/20231205234511.3839128259dfec153ea7da81@kernel.org/
+> 
+> I removed this code in my version and it runs just fine. Perhaps there was
+> another bug that this was hiding that you fixed in later versions?
 
-That was a nice catch.
+No problem. I think we can remove this block safely.
 
-Reported-by: kernel test robot <lkp@intel.com>
-Closes: https://lore.kernel.org/oe-kbuild-all/202405222314.UG5F2NHn-lkp@intel.com/
-Closes: https://lore.kernel.org/oe-kbuild-all/202405232036.Xqoc3b0J-lkp@intel.com/
-Signed-off-by: Shahab Vahedi <shahab@synopsys.com>
----
- arch/arc/net/bpf_jit.h       |  2 +-
- arch/arc/net/bpf_jit_arcv2.c | 10 ++++++----
- arch/arc/net/bpf_jit_core.c  | 22 +++++++++++-----------
- 3 files changed, 18 insertions(+), 16 deletions(-)
+Thank you,
 
-diff --git a/arch/arc/net/bpf_jit.h b/arch/arc/net/bpf_jit.h
-index 34dfcac531d5..d688bb422fd5 100644
---- a/arch/arc/net/bpf_jit.h
-+++ b/arch/arc/net/bpf_jit.h
-@@ -39,7 +39,7 @@
- 
- /************** Functions that the back-end must provide **************/
- /* Extension for 32-bit operations. */
--inline u8 zext(u8 *buf, u8 rd);
-+u8 zext(u8 *buf, u8 rd);
- /***** Moves *****/
- u8 mov_r32(u8 *buf, u8 rd, u8 rs, u8 sign_ext);
- u8 mov_r32_i32(u8 *buf, u8 reg, s32 imm);
-diff --git a/arch/arc/net/bpf_jit_arcv2.c b/arch/arc/net/bpf_jit_arcv2.c
-index 31bfb6e9ce00..4458e409ca0a 100644
---- a/arch/arc/net/bpf_jit_arcv2.c
-+++ b/arch/arc/net/bpf_jit_arcv2.c
-@@ -62,7 +62,7 @@ enum {
-  *   If/when we decide to add ARCv2 instructions that do use register pairs,
-  *   the mapping, hopefully, doesn't need to be revisited.
-  */
--const u8 bpf2arc[][2] = {
-+static const u8 bpf2arc[][2] = {
- 	/* Return value from in-kernel function, and exit value from eBPF */
- 	[BPF_REG_0] = {ARC_R_8, ARC_R_9},
- 	/* Arguments from eBPF program to in-kernel function */
-@@ -1302,7 +1302,7 @@ static u8 arc_b(u8 *buf, s32 offset)
- 
- /************* Packers (Deal with BPF_REGs) **************/
- 
--inline u8 zext(u8 *buf, u8 rd)
-+u8 zext(u8 *buf, u8 rd)
- {
- 	if (rd != BPF_REG_FP)
- 		return arc_movi_r(buf, REG_HI(rd), 0);
-@@ -2235,6 +2235,7 @@ u8 gen_swap(u8 *buf, u8 rd, u8 size, u8 endian, bool force, bool do_zext)
- 			break;
- 		default:
- 			/* The caller must have handled this. */
-+			break;
- 		}
- 	} else {
- 		/*
-@@ -2253,6 +2254,7 @@ u8 gen_swap(u8 *buf, u8 rd, u8 size, u8 endian, bool force, bool do_zext)
- 			break;
- 		default:
- 			/* The caller must have handled this. */
-+			break;
- 		}
- 	}
- 
-@@ -2517,7 +2519,7 @@ u8 arc_epilogue(u8 *buf, u32 usage, u16 frame_size)
- #define JCC64_NR_OF_JMPS 3	/* Number of jumps in jcc64 template. */
- #define JCC64_INSNS_TO_END 3	/* Number of insn. inclusive the 2nd jmp to end. */
- #define JCC64_SKIP_JMP 1	/* Index of the "skip" jump to "end". */
--const struct {
-+static const struct {
- 	/*
- 	 * "jit_off" is common between all "jmp[]" and is coupled with
- 	 * "cond" of each "jmp[]" instance. e.g.:
-@@ -2883,7 +2885,7 @@ u8 gen_jmp_64(u8 *buf, u8 rd, u8 rs, u8 cond, u32 curr_off, u32 targ_off)
-  * The "ARC_CC_SET" becomes "CC_unequal" because of the "tst"
-  * instruction that precedes the conditional branch.
-  */
--const u8 arcv2_32_jmps[ARC_CC_LAST] = {
-+static const u8 arcv2_32_jmps[ARC_CC_LAST] = {
- 	[ARC_CC_UGT] = CC_great_u,
- 	[ARC_CC_UGE] = CC_great_eq_u,
- 	[ARC_CC_ULT] = CC_less_u,
-diff --git a/arch/arc/net/bpf_jit_core.c b/arch/arc/net/bpf_jit_core.c
-index 6f6b4ffccf2c..e3628922c24a 100644
---- a/arch/arc/net/bpf_jit_core.c
-+++ b/arch/arc/net/bpf_jit_core.c
-@@ -159,7 +159,7 @@ static void jit_dump(const struct jit_context *ctx)
- /* Initialise the context so there's no garbage. */
- static int jit_ctx_init(struct jit_context *ctx, struct bpf_prog *prog)
- {
--	memset(ctx, 0, sizeof(ctx));
-+	memset(ctx, 0, sizeof(*ctx));
- 
- 	ctx->orig_prog = prog;
- 
-@@ -167,7 +167,7 @@ static int jit_ctx_init(struct jit_context *ctx, struct bpf_prog *prog)
- 	ctx->prog = bpf_jit_blind_constants(prog);
- 	if (IS_ERR(ctx->prog))
- 		return PTR_ERR(ctx->prog);
--	ctx->blinded = (ctx->prog == ctx->orig_prog ? false : true);
-+	ctx->blinded = (ctx->prog != ctx->orig_prog);
- 
- 	/* If the verifier doesn't zero-extend, then we have to do it. */
- 	ctx->do_zext = !ctx->prog->aux->verifier_zext;
-@@ -1182,12 +1182,12 @@ static int jit_prepare(struct jit_context *ctx)
- }
- 
- /*
-- * All the "handle_*()" functions have been called before by the
-- * "jit_prepare()". If there was an error, we would know by now.
-- * Therefore, no extra error checking at this point, other than
-- * a sanity check at the end that expects the calculated length
-- * (jit.len) to be equal to the length of generated instructions
-- * (jit.index).
-+ * jit_compile() is the real compilation phase. jit_prepare() is
-+ * invoked before jit_compile() as a dry-run to make sure everything
-+ * will go OK and allocate the necessary memory.
-+ *
-+ * In the end, jit_compile() checks if it has produced the same number
-+ * of instructions as jit_prepare() would.
-  */
- static int jit_compile(struct jit_context *ctx)
- {
-@@ -1407,9 +1407,9 @@ static struct bpf_prog *do_extra_pass(struct bpf_prog *prog)
- 
- /*
-  * This function may be invoked twice for the same stream of BPF
-- * instructions. The "extra pass" happens, when there are "call"s
-- * involved that their addresses are not known during the first
-- * invocation.
-+ * instructions. The "extra pass" happens, when there are
-+ * (re)locations involved that their addresses are not known
-+ * during the first run.
-  */
- struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *prog)
- {
+> 
+> -- Steve
+> 
+
+
 -- 
-2.39.4
-
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
