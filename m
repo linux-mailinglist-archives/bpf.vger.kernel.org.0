@@ -1,57 +1,57 @@
-Return-Path: <bpf+bounces-30673-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-30674-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id DCF4C8D0554
-	for <lists+bpf@lfdr.de>; Mon, 27 May 2024 17:07:35 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E976F8D0561
+	for <lists+bpf@lfdr.de>; Mon, 27 May 2024 17:08:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4E114291014
-	for <lists+bpf@lfdr.de>; Mon, 27 May 2024 15:07:34 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6EDA42930B0
+	for <lists+bpf@lfdr.de>; Mon, 27 May 2024 15:08:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2BEB415FA7D;
-	Mon, 27 May 2024 14:45:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0AC5E1667D2;
+	Mon, 27 May 2024 14:48:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AbtqagT7"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ATImrzxb"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9CB511E880;
-	Mon, 27 May 2024 14:45:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7CAD71E4AE;
+	Mon, 27 May 2024 14:48:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716821103; cv=none; b=uMDFaldd1uac7bmp7RKITGTmcSNl5bMWtCuVRg+8MZQofnquXA4OsQ/VfbXQ7UHhj+Urr8CW3a54fb4FqjQQw/U31J4TwGAII706Z11aChE7e0u9ar8UAMX9ikmkoXJaZ30zpSFFCxc98FtfqyYIwvsUnGevQv/+/NF3PsJLAKE=
+	t=1716821281; cv=none; b=umMyPqMa9zvQzfprEkMFNWC+iyJqnAChaNyYZEUZzoHUEfCnV5ikvF4/mG7glCkziVYG/OoCkntqqgYbmuEKs5A4mOXNLKa5Mdg7s6xyo1WfAjkzoLmtcR2xuAeNY3AZSqH07oh2JJwvEuuct0Tw0Tp//gLLzhYJY1SNU5wd7nE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716821103; c=relaxed/simple;
+	s=arc-20240116; t=1716821281; c=relaxed/simple;
 	bh=VXnbAOzlX5khZRJQ6AYi/xPQV7jrRzp/lColep2hVG0=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ab95/K5Q2YsxSTmq5m4tuUkeW26oWNzAMYf5+xw2XAL5IRkG+fmWECQs6j4C9lYAzeDrp2B1KpAKARqkokJ0WC5vS2P92GzxyWMBKHKpZnpW9VPx5P1zMaxz0ThUyIyovQ1aTq2sY2ATzV/YZNeivuNjMESosQSg0KHMWv62PrY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AbtqagT7; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 76561C2BBFC;
-	Mon, 27 May 2024 14:45:01 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=k5eMipAJ8lnG69ey7ob875d7bOai7Rdnw7RkNMQvbvmB51KaV5Hphp43zfMaDkrOKNFU0q/n/Zv62kjqs8ykv+yKOv9qRd+vIy1ZDi2aaQCKeV5M6BeCzPTN4uL9LKj2Vk7WaNTZClrNGJ1Wn2Uz1U/czfnWhS7ojxmcjn+uQ/E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ATImrzxb; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 58456C2BBFC;
+	Mon, 27 May 2024 14:47:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1716821103;
+	s=k20201202; t=1716821281;
 	bh=VXnbAOzlX5khZRJQ6AYi/xPQV7jrRzp/lColep2hVG0=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=AbtqagT7PwxotFoUVXTqMfQJ/fE70pIVZfyTh2LGvEjh81AKA1Rb0clmKHv0nv8l/
-	 yjY7C0nX0B1whePcMiozqdxgtVhOWxbM5KPLKxPBIJ0YkXj/qKRyJp5Q5t131xvH80
-	 pxHaGaedQdcPq66Ox5+gy8TfA5O8d2ycbF55wE29H0I2TWK/8IXc58/StEdQvs6f3d
-	 pOGp4qJAaD0nNIb3/hh/1xH+C+0OC7UGa2VHZN1oi4uS8Jw/JEviK/LU/M53cGLJMb
-	 3vtsVRaF1T3XytmZioBfYqvyAStr+jaGkmUDSTMv+8rafpYqE8h/qQ0SmEr1jk7vLe
-	 Xfj7vA8Or50OA==
-Date: Mon, 27 May 2024 16:44:58 +0200
+	b=ATImrzxbQ1jcc9FZ981C6P8gzvc6cXTYrKfXTtMGkkTs9JnwchCCJVu4P1CJyn9Kr
+	 M5hTu+2eooQQHPGNJA8PA+wWfdnO2jjuZC5iAdD5iYiIunbRpVAVgy0stajzARE3DE
+	 DzkidkX+vCLS0ENmuU1EWCK8vhGNyyBg+2DnW9wekAod749WmT4Z13l3Mmr+utZOHn
+	 VYLjggPZLF7HGUPnd1zajBdBW3Y2p+YCqoEZsulQVnyFq2niiI/MynyDyU9smdn2Nf
+	 hFpA7vGKYPBGHz+yNJ44AwTizbjp5mxNer5UrODYR+Gi8nckrVtUf2+RrEu0bJRkK+
+	 VbFpZQwRT02Zg==
+Date: Mon, 27 May 2024 16:47:56 +0200
 From: Benjamin Tissoires <bentiss@kernel.org>
 To: Sasha Levin <sashal@kernel.org>
 Cc: linux-kernel@vger.kernel.org, stable@vger.kernel.org, 
 	Peter Hutterer <peter.hutterer@who-t.net>, jikos@kernel.org, linux-input@vger.kernel.org, 
 	bpf@vger.kernel.org
-Subject: Re: [PATCH AUTOSEL 5.4 5/6] HID: bpf: add in-tree HID-BPF fix for
+Subject: Re: [PATCH AUTOSEL 5.10 12/13] HID: bpf: add in-tree HID-BPF fix for
  the HP Elite Presenter Mouse
-Message-ID: <nz63ghdnk3v3a3omyeh5p3psbt4zel2qjhaj3fih5sfylljen3@tuj2akvofxlk>
-References: <20240527141950.3854993-1-sashal@kernel.org>
- <20240527141950.3854993-5-sashal@kernel.org>
+Message-ID: <5ocqdxukiatz6fmdatqzykwyws4anvaofb2zklppozfrmds2cg@fx564mmcorh7>
+References: <20240527141901.3854691-1-sashal@kernel.org>
+ <20240527141901.3854691-12-sashal@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -60,7 +60,7 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240527141950.3854993-5-sashal@kernel.org>
+In-Reply-To: <20240527141901.3854691-12-sashal@kernel.org>
 
 On May 27 2024, Sasha Levin wrote:
 > From: Benjamin Tissoires <bentiss@kernel.org>
