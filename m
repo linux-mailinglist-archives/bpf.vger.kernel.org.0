@@ -1,655 +1,193 @@
-Return-Path: <bpf+bounces-30625-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-30626-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C83CA8CF709
-	for <lists+bpf@lfdr.de>; Mon, 27 May 2024 02:38:02 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3D5648CF70E
+	for <lists+bpf@lfdr.de>; Mon, 27 May 2024 02:44:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 78CD0281779
-	for <lists+bpf@lfdr.de>; Mon, 27 May 2024 00:38:01 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 04E1C1C20D5A
+	for <lists+bpf@lfdr.de>; Mon, 27 May 2024 00:44:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B04B91854;
-	Mon, 27 May 2024 00:37:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FOKiMVuz"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B7AB923D7;
+	Mon, 27 May 2024 00:44:26 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-io1-f78.google.com (mail-io1-f78.google.com [209.85.166.78])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D2F363D;
-	Mon, 27 May 2024 00:37:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF84B64D
+	for <bpf@vger.kernel.org>; Mon, 27 May 2024 00:44:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.78
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716770274; cv=none; b=ZwxZhqGb7nCnlyLvlo/Vg6JgJnPeLYkfZ+xO8MpDuER/lEce64gKwrLEA9pdfAVubl0wmj4t6I0GvQsMFA+dObNsh9OWI6zQni4paR06qwQWcebOqO5h3ZDbC0zxxzpOken8n1vIXPRvl8O2T/SnkHGPubVmG7Fm+jCxLYtNxSc=
+	t=1716770666; cv=none; b=TpAlKXTdPuCN1qVh4V4G4B0m4d+BhUyI5sX5UBp3Es7Fc3P3NLcNiEEwociStWj5YMQp4SOOw4DWd6LV5yV1d0IGnoRkO5/N3MiQ54fJPIXCDK798LblVFsnHD3mKjvU6qtnDDR6kGmdfKBunaRY1uz1vXeJeYV6iU8FtK+w6Ts=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716770274; c=relaxed/simple;
-	bh=spc22D8wakV8WfQEq031qHVo06q7/aB7ns3y8i5StbM=;
-	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
-	 Mime-Version:Content-Type; b=e4tDoL45JmVW5nHpZCzRhBBnwcaou8z0twdxbOcx+jN9lDN+MocSA9Kt1bi9A+VFE7oEHynM4btmcG75J0OB2/HB/ce+f0OHhqxx+6MP2EH4UDjH3JJoNE6ZuG+4SgbR01ecl02FQHgoQYQ0CQ5gI1dqEpOfPE7IaKV/0/vwNyw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FOKiMVuz; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5D7DCC2BD10;
-	Mon, 27 May 2024 00:37:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1716770273;
-	bh=spc22D8wakV8WfQEq031qHVo06q7/aB7ns3y8i5StbM=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=FOKiMVuz09HkOS3BvxMhQ4gs5B4k9qbolmlJ9k5JzkEXjIAsBWtKUzeTjHU9Ewg0X
-	 OKOVLwlUS9YXFuiCtG85/v7M6H6y2bcsWPvCkrafm9+rgW09nEYcpxGUh6FSz8FIxI
-	 UKON09dNAzJCH6Sz4cNBc8tGwTmKPgn+xDnYBxhAUkkZtEtyocuGNWjzAh+2n8LgVe
-	 PKGNn0A3ndREk032sVi8fVqO2q/2O3ucxh59Dpu3ZwNk2ZYxao1cBYrhDXA5pO2Yj9
-	 TXJZZyxhQLaRtE2hVIrjRHxdRjO5mbtZThHvEXv+/IyZEogFdn+cieHhuzexBW6cc6
-	 +ajZwV/qihRAA==
-Date: Mon, 27 May 2024 09:37:47 +0900
-From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To: Steven Rostedt <rostedt@goodmis.org>
-Cc: linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org, Masami
- Hiramatsu <mhiramat@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
- Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Andrew Morton
- <akpm@linux-foundation.org>, Alexei Starovoitov
- <alexei.starovoitov@gmail.com>, Florent Revest <revest@chromium.org>,
- Martin KaFai Lau <martin.lau@linux.dev>, bpf <bpf@vger.kernel.org>, Sven
- Schnelle <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>, Jiri
- Olsa <jolsa@kernel.org>, Arnaldo Carvalho de Melo <acme@kernel.org>, Daniel
- Borkmann <daniel@iogearbox.net>, Alan Maguire <alan.maguire@oracle.com>,
- Peter Zijlstra <peterz@infradead.org>, Thomas Gleixner
- <tglx@linutronix.de>, Guo Ren <guoren@kernel.org>
-Subject: Re: [PATCH 00/20] function_graph: Allow multiple users for function
- graph tracing
-Message-Id: <20240527093747.cb9e49d660684158e8173133@kernel.org>
-In-Reply-To: <20240525023652.903909489@goodmis.org>
-References: <20240525023652.903909489@goodmis.org>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1716770666; c=relaxed/simple;
+	bh=YLLNooDN0/HSLN7Bhkuq2J+Ulv9x3CHF8Y6DFTcgCJ0=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=Vz45F+RrMqRWcps0yUDBL+gDLvzOEuT20EeOhWI++Mws/uQpo5cUgFu7jWpDOag+nRQ1ldU7IT1AJVhrkDPEi8Bz8pE/vD45Vf7xoQvzYjb2NXU3a/7rwtzJJ+RbO1YUN+NTrKboBOIczDJrSAMYNPQujiBgTNIgz7puriX+Qpg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.78
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f78.google.com with SMTP id ca18e2360f4ac-7e20341b122so500306639f.1
+        for <bpf@vger.kernel.org>; Sun, 26 May 2024 17:44:24 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1716770664; x=1717375464;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=fZ9DVVzJCjcM9K5tX8UBkpT2XOidm8OOyTP+Gai07qA=;
+        b=C1vu8hWETBYc1cQnYvqBU0PdI9tXzQu0q2pPi6rfm7QrMJ2VTGBsr859xVKZpbUJMR
+         xCrhJxn4NyrIIYr7wPZ8l/YfI25hAoR8/NxAN2WKJcul/UCD1KJqKh+Fj22D7GlqKRI1
+         LG4Yu2TEm++h4Ikosw7pYYDHZXvwfpREoVmkFKHDmRkxFc2MloQvVqfZSImF9vO/kcoD
+         fhufEnqPPwjj+SbA7tQdqQBHE5SdDxlb8YdyrdcPx4MamrJDJm0zTeowV+3krBZ9kdYT
+         DjYgWLHs1GvIEzSwDMRf+Sa8MdAMjTnX2+UI24oDOM4068wyzixGMtgPTvR0dmYtO9SU
+         dePg==
+X-Forwarded-Encrypted: i=1; AJvYcCUWTPDsYL/3P2Yr5gDnrsl4CzKCj881yMdt2xIJeSP996jAP8bmv/nDzF/rwB5JTSVztU6sTVccOBb5Mx49SfkjHuR6
+X-Gm-Message-State: AOJu0Yy5RdPbBgRcO7asNAAywxwxKYMS52FkNOzBJwFV7F64KlXUYk45
+	m+D/Z6RbuMQVJQHv8FhSbqmTmijN3qQtkQrdUdrydpJCax5uwcShc/uvqQEvbRYjYtqPkTsNd4Y
+	n132aqA9aaDeAlWu0KGMFAYmZYW/KuAuq1woCi5F19/VYuUwy7fVcJmw=
+X-Google-Smtp-Source: AGHT+IHMlVRdAWGtoNpjOKcE4YDn0zSO/EMtUtMcJLJnv+K2DPvBDguh57Z07+BRVKH7F0Mwgv4E/eDPvo6mchXNV683oFBTta6F
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+X-Received: by 2002:a05:6638:2c83:b0:488:d489:3963 with SMTP id
+ 8926c6da1cb9f-4b03f6329b1mr173553173.1.1716770664201; Sun, 26 May 2024
+ 17:44:24 -0700 (PDT)
+Date: Sun, 26 May 2024 17:44:24 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000099cf25061964d113@google.com>
+Subject: [syzbot] [bpf?] [net?] general protection fault in dev_map_enqueue (2)
+From: syzbot <syzbot+cca39e6e84a367a7e6f6@syzkaller.appspotmail.com>
+To: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org, 
+	daniel@iogearbox.net, davem@davemloft.net, eddyz87@gmail.com, 
+	haoluo@google.com, hawk@kernel.org, john.fastabend@gmail.com, 
+	jolsa@kernel.org, kpsingh@kernel.org, kuba@kernel.org, 
+	linux-kernel@vger.kernel.org, martin.lau@linux.dev, netdev@vger.kernel.org, 
+	sdf@google.com, song@kernel.org, syzkaller-bugs@googlegroups.com, 
+	yonghong.song@linux.dev
+Content-Type: text/plain; charset="UTF-8"
 
-On Fri, 24 May 2024 22:36:52 -0400
-Steven Rostedt <rostedt@goodmis.org> wrote:
+Hello,
 
-> [
->   Resend for some of you as I missed a comma in the Cc and
->   quilt died sending this out.
-> ]
-> 
-> This is a continuation of the function graph multi user code.
-> I wrote a proof of concept back in 2019 of this code[1] and
-> Masami started cleaning it up. I started from Masami's work v10
-> that can be found here:
-> 
->  https://lore.kernel.org/linux-trace-kernel/171509088006.162236.7227326999861366050.stgit@devnote2/
-> 
-> This is *only* the code that allows multiple users of function
-> graph tracing. This is not the fprobe work that Masami is working
-> to add on top of it. As Masami took my proof of concept, there
-> was still several things I disliked about that code. Instead of
-> having Masami clean it up even more, I decided to take over on just
-> my code and change it up a bit.
-> 
-> The biggest changes from where Masami left off is mostly renaming more
-> variables, macros, and function names. I fixed up the current comments
-> and added more to make the code a bit more understandable.
-> 
-> At the end of the series, I added two patches to optimize the entry
-> and exit. On entry, there was a loop that iterated the 16 elements
-> of the fgraph_array[] looking for any that may have a gops registered
-> to it. It's quite a waste to do that loop if there's only one
-> registered user. To fix that, I added a fgraph_array_bitmask that has
-> its bits set that correspond to the elements of the array. Then
-> a simple for_each_set_bit() is used for the iteration. I do the same
-> thing at the exit callback of the function where it iterates over the
-> bits of the bitmap saved on the ret_stack.
-> 
-> I also noticed that Masami added code to handle tail calls in the
-> unwinder and had that in one of my patches. I took that code out
-> and made it a separate patch with Masami as the author.
-> 
-> The diff between this and Masami's last update is at the end of this email.
+syzbot found the following issue on:
 
-Thanks for update the patches!
-I think your changes are good. I just have some comments and replied.
-So, the plan is to push this series in the tracing/for-next? I will
-port my fprobe part on it and run some tests.
+HEAD commit:    8f6a15f095a6 Merge tag 'cocci-for-6.10' of git://git.kerne..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=136bd8fc980000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=6be91306a8917025
+dashboard link: https://syzkaller.appspot.com/bug?extid=cca39e6e84a367a7e6f6
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
 
-Thank you,
+Unfortunately, I don't have any reproducer for this issue yet.
 
-> 
-> Based on Linus commit: 0eb03c7e8e2a4cc3653eb5eeb2d2001182071215
-> 
-> [1] https://lore.kernel.org/all/20190525031633.811342628@goodmis.org/
-> 
-> Masami Hiramatsu (Google) (3):
->       function_graph: Handle tail calls for stack unwinding
->       function_graph: Use a simple LRU for fgraph_array index number
->       ftrace: Add multiple fgraph storage selftest
-> 
-> Steven Rostedt (Google) (2):
->       function_graph: Use for_each_set_bit() in __ftrace_return_to_handler()
->       function_graph: Use bitmask to loop on fgraph entry
-> 
-> Steven Rostedt (VMware) (15):
->       function_graph: Convert ret_stack to a series of longs
->       fgraph: Use BUILD_BUG_ON() to make sure we have structures divisible by long
->       function_graph: Add an array structure that will allow multiple callbacks
->       function_graph: Allow multiple users to attach to function graph
->       function_graph: Remove logic around ftrace_graph_entry and return
->       ftrace/function_graph: Pass fgraph_ops to function graph callbacks
->       ftrace: Allow function_graph tracer to be enabled in instances
->       ftrace: Allow ftrace startup flags to exist without dynamic ftrace
->       function_graph: Have the instances use their own ftrace_ops for filtering
->       function_graph: Add "task variables" per task for fgraph_ops
->       function_graph: Move set_graph_function tests to shadow stack global var
->       function_graph: Move graph depth stored data to shadow stack global var
->       function_graph: Move graph notrace bit to shadow stack global var
->       function_graph: Implement fgraph_reserve_data() and fgraph_retrieve_data()
->       function_graph: Add selftest for passing local variables
-> 
-> ----
->  arch/arm64/kernel/ftrace.c           |  21 +-
->  arch/loongarch/kernel/ftrace_dyn.c   |  15 +-
->  arch/powerpc/kernel/trace/ftrace.c   |   3 +-
->  arch/riscv/kernel/ftrace.c           |  15 +-
->  arch/x86/kernel/ftrace.c             |  19 +-
->  include/linux/ftrace.h               |  42 +-
->  include/linux/sched.h                |   2 +-
->  include/linux/trace_recursion.h      |  39 --
->  kernel/trace/fgraph.c                | 994 ++++++++++++++++++++++++++++-------
->  kernel/trace/ftrace.c                |  11 +-
->  kernel/trace/ftrace_internal.h       |   2 -
->  kernel/trace/trace.h                 |  94 +++-
->  kernel/trace/trace_functions.c       |   8 +
->  kernel/trace/trace_functions_graph.c |  96 ++--
->  kernel/trace/trace_irqsoff.c         |  10 +-
->  kernel/trace/trace_sched_wakeup.c    |  10 +-
->  kernel/trace/trace_selftest.c        | 259 ++++++++-
->  17 files changed, 1330 insertions(+), 310 deletions(-)
-> 
-> 
-> diff --git a/kernel/trace/fgraph.c b/kernel/trace/fgraph.c
-> index 3313e4b83aa2..1aae521e5997 100644
-> --- a/kernel/trace/fgraph.c
-> +++ b/kernel/trace/fgraph.c
-> @@ -18,29 +18,36 @@
->  #include "ftrace_internal.h"
->  #include "trace.h"
->  
-> -#define FGRAPH_FRAME_SIZE sizeof(struct ftrace_ret_stack)
-> -#define FGRAPH_FRAME_OFFSET DIV_ROUND_UP(FGRAPH_FRAME_SIZE, sizeof(long))
->  
->  /*
-> - * On entry to a function (via function_graph_enter()), a new ftrace_ret_stack
-> - * is allocated on the task's ret_stack with bitmap entry, then each
-> - * fgraph_ops on the fgraph_array[]'s entryfunc is called and if that returns
-> - * non-zero, the index into the fgraph_array[] for that fgraph_ops is recorded
-> - * on the bitmap entry as a bit flag.
-> - *
-> - * The top of the ret_stack (when not empty) will always have a reference
-> - * to the last ftrace_ret_stack saved. All references to the
-> - * ftrace_ret_stack has the format of:
-> + * FGRAPH_FRAME_SIZE:	Size in bytes of the meta data on the shadow stack
-> + * FGRAPH_FRAME_OFFSET:	Size in long words of the meta data frame
-> + */
-> +#define FGRAPH_FRAME_SIZE	sizeof(struct ftrace_ret_stack)
-> +#define FGRAPH_FRAME_OFFSET	DIV_ROUND_UP(FGRAPH_FRAME_SIZE, sizeof(long))
-> +
-> +/*
-> + * On entry to a function (via function_graph_enter()), a new fgraph frame
-> + * (ftrace_ret_stack) is pushed onto the stack as well as a word that
-> + * holds a bitmask and a type (called "bitmap"). The bitmap is defined as:
->   *
->   * bits:  0 -  9	offset in words from the previous ftrace_ret_stack
-> - *			(bitmap type should have FGRAPH_FRAME_OFFSET always)
-> + *
->   * bits: 10 - 11	Type of storage
->   *			  0 - reserved
->   *			  1 - bitmap of fgraph_array index
->   *			  2 - reserved data
->   *
-> - * For bitmap of fgraph_array index
-> + * For type with "bitmap of fgraph_array index" (FGRAPH_TYPE_BITMAP):
->   *  bits: 12 - 27	The bitmap of fgraph_ops fgraph_array index
-> + *			That is, it's a bitmask of 0-15 (16 bits)
-> + *			where if a corresponding ops in the fgraph_array[]
-> + *			expects a callback from the return of the function
-> + *			it's corresponding bit will be set.
-> + *
-> + *
-> + * The top of the ret_stack (when not empty) will always have a reference
-> + * word that points to the last fgraph frame that was saved.
->   *
->   * For reserved data:
->   *  bits: 12 - 17	The size in words that is stored
-> @@ -52,7 +59,7 @@
->   * stored two words of data, this is what will be on the task's shadow
->   * ret_stack: (the stack grows upward)
->   *
-> - *  ret_stack[SHADOW_STACK_IN_WORD]
-> + *  ret_stack[SHADOW_STACK_OFFSET]
->   * | SHADOW_STACK_TASK_VARS(ret_stack)[15]      |
->   * ...
->   * | SHADOW_STACK_TASK_VARS(ret_stack)[0]       |
-> @@ -60,6 +67,8 @@
->   * ...
->   * |                                            | <- task->curr_ret_stack
->   * +--------------------------------------------+
-> + * | (3 << 12) | (3 << 10) | FGRAPH_FRAME_OFFSET|
-> + * |         *or put another way*               |
->   * | (3 << FGRAPH_DATA_INDEX_SHIFT)| \          | This is for fgraph_ops[3].
->   * | ((2 - 1) << FGRAPH_DATA_SHIFT)| \          | The data size is 2 words.
->   * | (FGRAPH_TYPE_DATA << FGRAPH_TYPE_SHIFT)| \ |
-> @@ -67,7 +76,9 @@
->   * +--------------------------------------------+ ( It is 4 words from the ret_stack)
->   * |            STORED DATA WORD 2              |
->   * |            STORED DATA WORD 1              |
-> - * +------i-------------------------------------+
-> + * +--------------------------------------------+
-> + * | (9 << 12) | (1 << 10) | FGRAPH_FRAME_OFFSET|
-> + * |         *or put another way*               |
->   * | (BIT(3)|BIT(0)) << FGRAPH_INDEX_SHIFT | \  |
->   * | FGRAPH_TYPE_BITMAP << FGRAPH_TYPE_SHIFT| \ |
->   * | (offset1:FGRAPH_FRAME_OFFSET)              | <- the offset1 is from here
-> @@ -82,17 +93,24 @@
->   *
->   * If a backtrace is required, and the real return pointer needs to be
->   * fetched, then it looks at the task's curr_ret_stack offset, if it
-> - * is greater than zero (reserved, or right before poped), it would mask
-> + * is greater than zero (reserved, or right before popped), it would mask
->   * the value by FGRAPH_FRAME_OFFSET_MASK to get the offset of the
->   * ftrace_ret_stack structure stored on the shadow stack.
->   */
->  
-> -#define FGRAPH_FRAME_OFFSET_SIZE	10
-> -#define FGRAPH_FRAME_OFFSET_MASK	GENMASK(FGRAPH_FRAME_OFFSET_SIZE - 1, 0)
-> +/*
-> + * The following is for the top word on the stack:
-> + *
-> + *   FGRAPH_FRAME_OFFSET (0-9) holds the offset delta to the fgraph frame
-> + *   FGRAPH_TYPE (10-11) holds the type of word this is.
-> + *     (RESERVED or BITMAP)
-> + */
-> +#define FGRAPH_FRAME_OFFSET_BITS	10
-> +#define FGRAPH_FRAME_OFFSET_MASK	GENMASK(FGRAPH_FRAME_OFFSET_BITS - 1, 0)
->  
-> -#define FGRAPH_TYPE_SIZE	2
-> -#define FGRAPH_TYPE_MASK	GENMASK(FGRAPH_TYPE_SIZE - 1, 0)
-> -#define FGRAPH_TYPE_SHIFT	FGRAPH_FRAME_OFFSET_SIZE
-> +#define FGRAPH_TYPE_BITS	2
-> +#define FGRAPH_TYPE_MASK	GENMASK(FGRAPH_TYPE_BITS - 1, 0)
-> +#define FGRAPH_TYPE_SHIFT	FGRAPH_FRAME_OFFSET_BITS
->  
->  enum {
->  	FGRAPH_TYPE_RESERVED	= 0,
-> @@ -100,31 +118,48 @@ enum {
->  	FGRAPH_TYPE_DATA	= 2,
->  };
->  
-> -#define FGRAPH_INDEX_SIZE	16
-> -#define FGRAPH_INDEX_MASK	GENMASK(FGRAPH_INDEX_SIZE - 1, 0)
-> -#define FGRAPH_INDEX_SHIFT	(FGRAPH_TYPE_SHIFT + FGRAPH_TYPE_SIZE)
-> +/*
-> + * For BITMAP type:
-> + *   FGRAPH_INDEX (12-27) bits holding the gops index wanting return callback called
-> + */
-> +#define FGRAPH_INDEX_BITS	16
-> +#define FGRAPH_INDEX_MASK	GENMASK(FGRAPH_INDEX_BITS - 1, 0)
-> +#define FGRAPH_INDEX_SHIFT	(FGRAPH_TYPE_SHIFT + FGRAPH_TYPE_BITS)
->  
-> -/* The data size == 0 means 1 word, and 31 (=2^5 - 1) means 32 words. */
-> -#define FGRAPH_DATA_SIZE	5
-> -#define FGRAPH_DATA_MASK	GENMASK(FGRAPH_DATA_SIZE - 1, 0)
-> -#define FGRAPH_DATA_SHIFT	(FGRAPH_TYPE_SHIFT + FGRAPH_TYPE_SIZE)
-> -#define FGRAPH_MAX_DATA_SIZE (sizeof(long) * (1 << FGRAPH_DATA_SIZE))
-> +/*
-> + * For DATA type:
-> + *  FGRAPH_DATA (12-17) bits hold the size of data (in words)
-> + *  FGRAPH_INDEX (18-23) bits hold the index for which gops->idx the data is for
-> + *
-> + * Note:
-> + *  data_size == 0 means 1 word, and 31 (=2^5 - 1) means 32 words.
-> + */
-> +#define FGRAPH_DATA_BITS	5
-> +#define FGRAPH_DATA_MASK	GENMASK(FGRAPH_DATA_BITS - 1, 0)
-> +#define FGRAPH_DATA_SHIFT	(FGRAPH_TYPE_SHIFT + FGRAPH_TYPE_BITS)
-> +#define FGRAPH_MAX_DATA_SIZE (sizeof(long) * (1 << FGRAPH_DATA_BITS))
->  
-> -#define FGRAPH_DATA_INDEX_SIZE	4
-> -#define FGRAPH_DATA_INDEX_MASK	GENMASK(FGRAPH_DATA_INDEX_SIZE - 1, 0)
-> -#define FGRAPH_DATA_INDEX_SHIFT	(FGRAPH_DATA_SHIFT + FGRAPH_DATA_SIZE)
-> +#define FGRAPH_DATA_INDEX_BITS	4
-> +#define FGRAPH_DATA_INDEX_MASK	GENMASK(FGRAPH_DATA_INDEX_BITS - 1, 0)
-> +#define FGRAPH_DATA_INDEX_SHIFT	(FGRAPH_DATA_SHIFT + FGRAPH_DATA_BITS)
->  
->  #define FGRAPH_MAX_INDEX	\
-> -	((FGRAPH_INDEX_SIZE << FGRAPH_DATA_SIZE) + FGRAPH_RET_INDEX)
-> +	((FGRAPH_INDEX_SIZE << FGRAPH_DATA_BITS) + FGRAPH_RET_INDEX)
->  
-> -#define FGRAPH_ARRAY_SIZE	FGRAPH_INDEX_SIZE
-> +#define FGRAPH_ARRAY_SIZE	FGRAPH_INDEX_BITS
->  
-> -#define SHADOW_STACK_SIZE (PAGE_SIZE)
-> -#define SHADOW_STACK_IN_WORD (SHADOW_STACK_SIZE / sizeof(long))
-> +/*
-> + * SHADOW_STACK_SIZE:	The size in bytes of the entire shadow stack
-> + * SHADOW_STACK_OFFSET:	The size in long words of the shadow stack
-> + * SHADOW_STACK_MAX_OFFSET: The max offset of the stack for a new frame to be added
-> + */
-> +#define SHADOW_STACK_SIZE	(PAGE_SIZE)
-> +#define SHADOW_STACK_OFFSET	(SHADOW_STACK_SIZE / sizeof(long))
->  /* Leave on a buffer at the end */
->  #define SHADOW_STACK_MAX_OFFSET				\
-> -	(SHADOW_STACK_IN_WORD - (FGRAPH_FRAME_OFFSET + 1 + FGRAPH_ARRAY_SIZE))
-> +	(SHADOW_STACK_OFFSET - (FGRAPH_FRAME_OFFSET + 1 + FGRAPH_ARRAY_SIZE))
->  
-> +/* RET_STACK():		Return the frame from a given @offset from task @t */
->  #define RET_STACK(t, offset) ((struct ftrace_ret_stack *)(&(t)->ret_stack[offset]))
->  
->  /*
-> @@ -132,12 +167,13 @@ enum {
->   * ret_stack to store task specific state.
->   */
->  #define SHADOW_STACK_TASK_VARS(ret_stack) \
-> -	((unsigned long *)(&(ret_stack)[SHADOW_STACK_IN_WORD - FGRAPH_ARRAY_SIZE]))
-> +	((unsigned long *)(&(ret_stack)[SHADOW_STACK_OFFSET - FGRAPH_ARRAY_SIZE]))
->  
->  DEFINE_STATIC_KEY_FALSE(kill_ftrace_graph);
->  int ftrace_graph_active;
->  
->  static struct fgraph_ops *fgraph_array[FGRAPH_ARRAY_SIZE];
-> +static unsigned long fgraph_array_bitmask;
->  
->  /* LRU index table for fgraph_array */
->  static int fgraph_lru_table[FGRAPH_ARRAY_SIZE];
-> @@ -162,6 +198,8 @@ static int fgraph_lru_release_index(int idx)
->  
->  	fgraph_lru_table[fgraph_lru_last] = idx;
->  	fgraph_lru_last = (fgraph_lru_last + 1) % FGRAPH_ARRAY_SIZE;
-> +
-> +	clear_bit(idx, &fgraph_array_bitmask);
->  	return 0;
->  }
->  
-> @@ -176,70 +214,77 @@ static int fgraph_lru_alloc_index(void)
->  
->  	fgraph_lru_table[fgraph_lru_next] = -1;
->  	fgraph_lru_next = (fgraph_lru_next + 1) % FGRAPH_ARRAY_SIZE;
-> +
-> +	set_bit(idx, &fgraph_array_bitmask);
->  	return idx;
->  }
->  
-> +/* Get the offset to the fgraph frame from a ret_stack value */
->  static inline int __get_offset(unsigned long val)
->  {
->  	return val & FGRAPH_FRAME_OFFSET_MASK;
->  }
->  
-> +/* Get the type of word from a ret_stack value */
->  static inline int __get_type(unsigned long val)
->  {
->  	return (val >> FGRAPH_TYPE_SHIFT) & FGRAPH_TYPE_MASK;
->  }
->  
-> +/* Get the data_index for a DATA type ret_stack word */
->  static inline int __get_data_index(unsigned long val)
->  {
->  	return (val >> FGRAPH_DATA_INDEX_SHIFT) & FGRAPH_DATA_INDEX_MASK;
->  }
->  
-> +/* Get the data_size for a DATA type ret_stack word */
->  static inline int __get_data_size(unsigned long val)
->  {
->  	return ((val >> FGRAPH_DATA_SHIFT) & FGRAPH_DATA_MASK) + 1;
->  }
->  
-> +/* Get the word from the ret_stack at @offset */
->  static inline unsigned long get_fgraph_entry(struct task_struct *t, int offset)
->  {
->  	return t->ret_stack[offset];
->  }
->  
-> +/* Get the FRAME_OFFSET from the word from the @offset on ret_stack */
->  static inline int get_frame_offset(struct task_struct *t, int offset)
->  {
->  	return __get_offset(t->ret_stack[offset]);
->  }
->  
-> +/* Get FGRAPH_TYPE from the word from the @offset at ret_stack */
->  static inline int get_fgraph_type(struct task_struct *t, int offset)
->  {
->  	return __get_type(t->ret_stack[offset]);
->  }
->  
-> +/* For BITMAP type: get the bitmask from the @offset at ret_stack */
->  static inline unsigned long
-> -get_fgraph_index_bitmap(struct task_struct *t, int offset)
-> +get_bitmap_bits(struct task_struct *t, int offset)
->  {
->  	return (t->ret_stack[offset] >> FGRAPH_INDEX_SHIFT) & FGRAPH_INDEX_MASK;
->  }
->  
-> +/* For BITMAP type: set the bits in the bitmap bitmask at @offset on ret_stack */
->  static inline void
-> -set_fgraph_index_bitmap(struct task_struct *t, int offset, unsigned long bitmap)
-> -{
-> -	t->ret_stack[offset] = (bitmap << FGRAPH_INDEX_SHIFT) |
-> -		(FGRAPH_TYPE_BITMAP << FGRAPH_TYPE_SHIFT) | FGRAPH_FRAME_OFFSET;
-> -}
-> -
-> -static inline bool is_fgraph_index_set(struct task_struct *t, int offset, int idx)
-> +set_bitmap_bits(struct task_struct *t, int offset, unsigned long bitmap)
->  {
-> -	return !!(get_fgraph_index_bitmap(t, offset) & BIT(idx));
-> +	t->ret_stack[offset] |= (bitmap << FGRAPH_INDEX_SHIFT);
->  }
->  
-> +/* Write the bitmap to the ret_stack at @offset (does index, offset and bitmask) */
->  static inline void
-> -add_fgraph_index_bitmap(struct task_struct *t, int offset, unsigned long bitmap)
-> +set_bitmap(struct task_struct *t, int offset, unsigned long bitmap)
->  {
-> -	t->ret_stack[offset] |= (bitmap << FGRAPH_INDEX_SHIFT);
-> +	t->ret_stack[offset] = (bitmap << FGRAPH_INDEX_SHIFT) |
-> +		(FGRAPH_TYPE_BITMAP << FGRAPH_TYPE_SHIFT) | FGRAPH_FRAME_OFFSET;
->  }
->  
-> -/* Note: @offset is the offset of FGRAPH_TYPE_DATA entry. */
-> -static inline void *get_fgraph_data(struct task_struct *t, int offset)
-> +/* For DATA type: get the data saved under the ret_stack word at @offset */
-> +static inline void *get_data_type_data(struct task_struct *t, int offset)
->  {
->  	unsigned long val = t->ret_stack[offset];
->  
-> @@ -249,7 +294,8 @@ static inline void *get_fgraph_data(struct task_struct *t, int offset)
->  	return (void *)&t->ret_stack[offset];
->  }
->  
-> -static inline unsigned long make_fgraph_data(int idx, int size, int offset)
-> +/* Create the ret_stack word for a DATA type */
-> +static inline unsigned long make_data_type_val(int idx, int size, int offset)
->  {
->  	return (idx << FGRAPH_DATA_INDEX_SHIFT) |
->  		((size - 1) << FGRAPH_DATA_SHIFT) |
-> @@ -326,7 +372,7 @@ void *fgraph_reserve_data(int idx, int size_bytes)
->  	if (unlikely(curr_ret_stack >= SHADOW_STACK_MAX_OFFSET))
->  		return NULL;
->  
-> -	val = make_fgraph_data(idx, data_size, __get_offset(val) + data_size + 1);
-> +	val = make_data_type_val(idx, data_size, __get_offset(val) + data_size + 1);
->  
->  	/* Set the last word to be reserved */
->  	current->ret_stack[curr_ret_stack - 1] = val;
-> @@ -371,7 +417,7 @@ void *fgraph_retrieve_data(int idx, int *size_bytes)
->  found:
->  	if (size_bytes)
->  		*size_bytes = __get_data_size(val) * sizeof(long);
-> -	return get_fgraph_data(current, offset);
-> +	return get_data_type_data(current, offset);
->  }
->  
->  /**
-> @@ -394,6 +440,9 @@ unsigned long *fgraph_get_task_var(struct fgraph_ops *gops)
->   * @offset: The offset into @t->ret_stack to find the ret_stack entry
->   * @frame_offset: Where to place the offset into @t->ret_stack of that entry
->   *
-> + * Returns a pointer to the previous ret_stack below @offset or NULL
-> + *   when it reaches the bottom of the stack.
-> + *
->   * Calling this with:
->   *
->   *   offset = task->curr_ret_stack;
-> @@ -493,30 +542,21 @@ ftrace_push_return_trace(unsigned long ret, unsigned long func,
->  	if (!current->ret_stack)
->  		return -EBUSY;
->  
-> -	/*
-> -	 * At first, check whether the previous fgraph callback is pushed by
-> -	 * the fgraph on the same function entry.
-> -	 * But if @func is the self tail-call function, we also need to ensure
-> -	 * the ret_stack is not for the previous call by checking whether the
-> -	 * bit of @fgraph_idx is set or not.
-> -	 */
-> -	ret_stack = get_ret_stack(current, current->curr_ret_stack, &offset);
-> -	if (ret_stack && ret_stack->func == func &&
-> -	    get_fgraph_type(current, offset + FGRAPH_FRAME_OFFSET) == FGRAPH_TYPE_BITMAP &&
-> -	    !is_fgraph_index_set(current, offset + FGRAPH_FRAME_OFFSET, fgraph_idx))
-> -		return offset + FGRAPH_FRAME_OFFSET;
-> +	BUILD_BUG_ON(SHADOW_STACK_SIZE % sizeof(long));
->  
-> +	/* Set val to "reserved" with the delta to the new fgraph frame */
->  	val = (FGRAPH_TYPE_RESERVED << FGRAPH_TYPE_SHIFT) | FGRAPH_FRAME_OFFSET;
->  
-> -	BUILD_BUG_ON(SHADOW_STACK_SIZE % sizeof(long));
-> -
->  	/*
->  	 * We must make sure the ret_stack is tested before we read
->  	 * anything else.
->  	 */
->  	smp_rmb();
->  
-> -	/* The return trace stack is full */
-> +	/*
-> +	 * Check if there's room on the shadow stack to fit a fraph frame
-> +	 * and a bitmap word.
-> +	 */
->  	if (current->curr_ret_stack + FGRAPH_FRAME_OFFSET + 1 >= SHADOW_STACK_MAX_OFFSET) {
->  		atomic_inc(&current->trace_overrun);
->  		return -EBUSY;
-> @@ -545,7 +585,7 @@ ftrace_push_return_trace(unsigned long ret, unsigned long func,
->  	 * at least a correct offset!
->  	 */
->  	barrier();
-> -	current->curr_ret_stack = offset + 1;
-> +	WRITE_ONCE(current->curr_ret_stack, offset + 1);
->  	/*
->  	 * This next barrier is to ensure that an interrupt coming in
->  	 * will not corrupt what we are about to write.
-> @@ -597,7 +637,8 @@ int function_graph_enter(unsigned long ret, unsigned long func,
->  	if (offset < 0)
->  		goto out;
->  
-> -	for (i = 0; i < FGRAPH_ARRAY_SIZE; i++) {
-> +	for_each_set_bit(i, &fgraph_array_bitmask,
-> +			 sizeof(fgraph_array_bitmask) * BITS_PER_BYTE) {
->  		struct fgraph_ops *gops = fgraph_array[i];
->  		int save_curr_ret_stack;
->  
-> @@ -620,7 +661,7 @@ int function_graph_enter(unsigned long ret, unsigned long func,
->  	 * Since this function uses fgraph_idx = 0 as a tail-call checking
->  	 * flag, set that bit always.
->  	 */
-> -	set_fgraph_index_bitmap(current, offset, bitmap | BIT(0));
-> +	set_bitmap(current, offset, bitmap | BIT(0));
->  
->  	return 0;
->   out_ret:
-> @@ -659,9 +700,9 @@ int function_graph_enter_ops(unsigned long ret, unsigned long func,
->  	save_curr_ret_stack = current->curr_ret_stack;
->  	if (gops->entryfunc(&trace, gops)) {
->  		if (type == FGRAPH_TYPE_RESERVED)
-> -			set_fgraph_index_bitmap(current, offset, BIT(gops->idx));
-> +			set_bitmap(current, offset, BIT(gops->idx));
->  		else
-> -			add_fgraph_index_bitmap(current, offset, BIT(gops->idx));
-> +			set_bitmap_bits(current, offset, BIT(gops->idx));
->  		return 0;
->  	} else
->  		current->curr_ret_stack = save_curr_ret_stack;
-> @@ -791,12 +832,11 @@ static unsigned long __ftrace_return_to_handler(struct fgraph_ret_regs *ret_regs
->  	trace.retval = fgraph_ret_regs_return_value(ret_regs);
->  #endif
->  
-> -	bitmap = get_fgraph_index_bitmap(current, offset);
-> -	for (i = 0; i < FGRAPH_ARRAY_SIZE; i++) {
-> +	bitmap = get_bitmap_bits(current, offset);
-> +
-> +	for_each_set_bit(i, &bitmap, sizeof(bitmap) * BITS_PER_BYTE) {
->  		struct fgraph_ops *gops = fgraph_array[i];
->  
-> -		if (!(bitmap & BIT(i)))
-> -			continue;
->  		if (gops == &fgraph_stub)
->  			continue;
->  
-> @@ -879,9 +919,10 @@ unsigned long ftrace_graph_ret_addr(struct task_struct *task, int *idx,
->  				    unsigned long ret, unsigned long *retp)
->  {
->  	struct ftrace_ret_stack *ret_stack;
-> +	unsigned long return_handler = (unsigned long)dereference_kernel_function_descriptor(return_to_handler);
->  	int i = task->curr_ret_stack;
->  
-> -	if (ret != (unsigned long)dereference_kernel_function_descriptor(return_to_handler))
-> +	if (ret != return_handler)
->  		return ret;
->  
->  	while (i > 0) {
-> @@ -891,14 +932,13 @@ unsigned long ftrace_graph_ret_addr(struct task_struct *task, int *idx,
->  		/*
->  		 * For the tail-call, there would be 2 or more ftrace_ret_stacks on
->  		 * the ret_stack, which records "return_to_handler" as the return
-> -		 * address excpt for the last one.
-> +		 * address except for the last one.
->  		 * But on the real stack, there should be 1 entry because tail-call
->  		 * reuses the return address on the stack and jump to the next function.
->  		 * Thus we will continue to find real return address.
->  		 */
->  		if (ret_stack->retp == retp &&
-> -		    ret_stack->ret !=
-> -		    (unsigned long)dereference_kernel_function_descriptor(return_to_handler))
-> +		    ret_stack->ret != return_handler)
->  			return ret_stack->ret;
->  	}
->  
-> @@ -909,10 +949,11 @@ unsigned long ftrace_graph_ret_addr(struct task_struct *task, int *idx,
->  				    unsigned long ret, unsigned long *retp)
->  {
->  	struct ftrace_ret_stack *ret_stack;
-> +	unsigned long return_handler = (unsigned long)dereference_kernel_function_descriptor(return_to_handler);
->  	int offset = task->curr_ret_stack;
->  	int i;
->  
-> -	if (ret != (unsigned long)dereference_kernel_function_descriptor(return_to_handler))
-> +	if (ret != return_handler)
->  		return ret;
->  
->  	if (!idx)
-> @@ -921,8 +962,7 @@ unsigned long ftrace_graph_ret_addr(struct task_struct *task, int *idx,
->  	i = *idx;
->  	do {
->  		ret_stack = get_ret_stack(task, offset, &offset);
-> -		if (ret_stack && ret_stack->ret ==
-> -		    (unsigned long)dereference_kernel_function_descriptor(return_to_handler))
-> +		if (ret_stack && ret_stack->ret == return_handler)
->  			continue;
->  		i--;
->  	} while (i >= 0 && ret_stack);
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/02867060d65d/disk-8f6a15f0.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/4bb75fbf6fb1/vmlinux-8f6a15f0.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/fd38cadddf33/bzImage-8f6a15f0.xz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+cca39e6e84a367a7e6f6@syzkaller.appspotmail.com
+
+Oops: general protection fault, probably for non-canonical address 0xdffffc000000003b: 0000 [#1] PREEMPT SMP KASAN PTI
+KASAN: null-ptr-deref in range [0x00000000000001d8-0x00000000000001df]
+CPU: 0 PID: 12830 Comm: syz-executor.1 Not tainted 6.9.0-syzkaller-10323-g8f6a15f095a6 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 04/02/2024
+RIP: 0010:__xdp_enqueue kernel/bpf/devmap.c:484 [inline]
+RIP: 0010:dev_map_enqueue+0x70/0x3e0 kernel/bpf/devmap.c:541
+Code: c5 18 48 89 e8 48 c1 e8 03 42 80 3c 30 00 74 08 48 89 ef e8 b2 10 3a 00 48 8b 5d 00 49 8d af d8 01 00 00 48 89 e8 48 c1 e8 03 <42> 0f b6 04 30 84 c0 0f 85 3a 02 00 00 8b 6d 00 89 ee 83 e6 04 31
+RSP: 0018:ffffc900031ff678 EFLAGS: 00010202
+RAX: 000000000000003b RBX: ffff888023efa078 RCX: 0000000000040000
+RDX: ffffc90015e01000 RSI: 0000000000000ba1 RDI: 0000000000000ba2
+RBP: 00000000000001d9 R08: ffffffff895b0946 R09: ffffffff895b0903
+R10: 0000000000000004 R11: ffff888020d73c00 R12: ffff888058f06000
+R13: ffff888021fff070 R14: dffffc0000000000 R15: 0000000000000001
+FS:  00007f9f791576c0(0000) GS:ffff8880b9400000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000001b30823000 CR3: 000000002e298000 CR4: 00000000003506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ __xdp_do_redirect_frame net/core/filter.c:4397 [inline]
+ xdp_do_redirect_frame+0x2a6/0x660 net/core/filter.c:4451
+ xdp_test_run_batch net/bpf/test_run.c:336 [inline]
+ bpf_test_run_xdp_live+0xe60/0x1e60 net/bpf/test_run.c:384
+ bpf_prog_test_run_xdp+0x80e/0x11b0 net/bpf/test_run.c:1275
+ bpf_prog_test_run+0x33a/0x3b0 kernel/bpf/syscall.c:4291
+ __sys_bpf+0x48d/0x810 kernel/bpf/syscall.c:5705
+ __do_sys_bpf kernel/bpf/syscall.c:5794 [inline]
+ __se_sys_bpf kernel/bpf/syscall.c:5792 [inline]
+ __x64_sys_bpf+0x7c/0x90 kernel/bpf/syscall.c:5792
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0xf5/0x240 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+RIP: 0033:0x7f9f7847cee9
+Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 e1 20 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f9f791570c8 EFLAGS: 00000246 ORIG_RAX: 0000000000000141
+RAX: ffffffffffffffda RBX: 00007f9f785ac050 RCX: 00007f9f7847cee9
+RDX: 0000000000000048 RSI: 00000000200000c0 RDI: 000000000000000a
+RBP: 00007f9f784c949e R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 000000000000006e R14: 00007f9f785ac050 R15: 00007ffc7dc03298
+ </TASK>
+Modules linked in:
+---[ end trace 0000000000000000 ]---
+RIP: 0010:__xdp_enqueue kernel/bpf/devmap.c:484 [inline]
+RIP: 0010:dev_map_enqueue+0x70/0x3e0 kernel/bpf/devmap.c:541
+Code: c5 18 48 89 e8 48 c1 e8 03 42 80 3c 30 00 74 08 48 89 ef e8 b2 10 3a 00 48 8b 5d 00 49 8d af d8 01 00 00 48 89 e8 48 c1 e8 03 <42> 0f b6 04 30 84 c0 0f 85 3a 02 00 00 8b 6d 00 89 ee 83 e6 04 31
+RSP: 0018:ffffc900031ff678 EFLAGS: 00010202
+RAX: 000000000000003b RBX: ffff888023efa078 RCX: 0000000000040000
+RDX: ffffc90015e01000 RSI: 0000000000000ba1 RDI: 0000000000000ba2
+RBP: 00000000000001d9 R08: ffffffff895b0946 R09: ffffffff895b0903
+R10: 0000000000000004 R11: ffff888020d73c00 R12: ffff888058f06000
+R13: ffff888021fff070 R14: dffffc0000000000 R15: 0000000000000001
+FS:  00007f9f791576c0(0000) GS:ffff8880b9400000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000001b30823000 CR3: 000000002e298000 CR4: 00000000003506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+----------------
+Code disassembly (best guess), 1 bytes skipped:
+   0:	18 48 89             	sbb    %cl,-0x77(%rax)
+   3:	e8 48 c1 e8 03       	call   0x3e8c150
+   8:	42 80 3c 30 00       	cmpb   $0x0,(%rax,%r14,1)
+   d:	74 08                	je     0x17
+   f:	48 89 ef             	mov    %rbp,%rdi
+  12:	e8 b2 10 3a 00       	call   0x3a10c9
+  17:	48 8b 5d 00          	mov    0x0(%rbp),%rbx
+  1b:	49 8d af d8 01 00 00 	lea    0x1d8(%r15),%rbp
+  22:	48 89 e8             	mov    %rbp,%rax
+  25:	48 c1 e8 03          	shr    $0x3,%rax
+* 29:	42 0f b6 04 30       	movzbl (%rax,%r14,1),%eax <-- trapping instruction
+  2e:	84 c0                	test   %al,%al
+  30:	0f 85 3a 02 00 00    	jne    0x270
+  36:	8b 6d 00             	mov    0x0(%rbp),%ebp
+  39:	89 ee                	mov    %ebp,%esi
+  3b:	83 e6 04             	and    $0x4,%esi
+  3e:	31                   	.byte 0x31
 
 
--- 
-Masami Hiramatsu (Google) <mhiramat@kernel.org>
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
 
