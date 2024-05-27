@@ -1,193 +1,334 @@
-Return-Path: <bpf+bounces-30626-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-30627-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3D5648CF70E
-	for <lists+bpf@lfdr.de>; Mon, 27 May 2024 02:44:35 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id CEED18CF73D
+	for <lists+bpf@lfdr.de>; Mon, 27 May 2024 03:16:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 04E1C1C20D5A
-	for <lists+bpf@lfdr.de>; Mon, 27 May 2024 00:44:34 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 477221F21C82
+	for <lists+bpf@lfdr.de>; Mon, 27 May 2024 01:16:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B7AB923D7;
-	Mon, 27 May 2024 00:44:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B23781FBA;
+	Mon, 27 May 2024 01:16:30 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-io1-f78.google.com (mail-io1-f78.google.com [209.85.166.78])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF84B64D
-	for <bpf@vger.kernel.org>; Mon, 27 May 2024 00:44:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.78
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 642C038C;
+	Mon, 27 May 2024 01:16:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716770666; cv=none; b=TpAlKXTdPuCN1qVh4V4G4B0m4d+BhUyI5sX5UBp3Es7Fc3P3NLcNiEEwociStWj5YMQp4SOOw4DWd6LV5yV1d0IGnoRkO5/N3MiQ54fJPIXCDK798LblVFsnHD3mKjvU6qtnDDR6kGmdfKBunaRY1uz1vXeJeYV6iU8FtK+w6Ts=
+	t=1716772590; cv=none; b=ZRqYFAlwl0+GtTa3jJUtIBUGA2nplMz7RVFi/FmnSY11EvIjRXS42THK5jmzbxKOo5eiCMG6viApPGcI1xG45m23/lgoLBFwU/eWtx+IahqOhbMQfq3gRM8+/RGV2j4ZM5AYTU7oc+FXcKOUzkawf46ozCS+osLEf2JJEBrD89g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716770666; c=relaxed/simple;
-	bh=YLLNooDN0/HSLN7Bhkuq2J+Ulv9x3CHF8Y6DFTcgCJ0=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=Vz45F+RrMqRWcps0yUDBL+gDLvzOEuT20EeOhWI++Mws/uQpo5cUgFu7jWpDOag+nRQ1ldU7IT1AJVhrkDPEi8Bz8pE/vD45Vf7xoQvzYjb2NXU3a/7rwtzJJ+RbO1YUN+NTrKboBOIczDJrSAMYNPQujiBgTNIgz7puriX+Qpg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.78
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f78.google.com with SMTP id ca18e2360f4ac-7e20341b122so500306639f.1
-        for <bpf@vger.kernel.org>; Sun, 26 May 2024 17:44:24 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1716770664; x=1717375464;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=fZ9DVVzJCjcM9K5tX8UBkpT2XOidm8OOyTP+Gai07qA=;
-        b=C1vu8hWETBYc1cQnYvqBU0PdI9tXzQu0q2pPi6rfm7QrMJ2VTGBsr859xVKZpbUJMR
-         xCrhJxn4NyrIIYr7wPZ8l/YfI25hAoR8/NxAN2WKJcul/UCD1KJqKh+Fj22D7GlqKRI1
-         LG4Yu2TEm++h4Ikosw7pYYDHZXvwfpREoVmkFKHDmRkxFc2MloQvVqfZSImF9vO/kcoD
-         fhufEnqPPwjj+SbA7tQdqQBHE5SdDxlb8YdyrdcPx4MamrJDJm0zTeowV+3krBZ9kdYT
-         DjYgWLHs1GvIEzSwDMRf+Sa8MdAMjTnX2+UI24oDOM4068wyzixGMtgPTvR0dmYtO9SU
-         dePg==
-X-Forwarded-Encrypted: i=1; AJvYcCUWTPDsYL/3P2Yr5gDnrsl4CzKCj881yMdt2xIJeSP996jAP8bmv/nDzF/rwB5JTSVztU6sTVccOBb5Mx49SfkjHuR6
-X-Gm-Message-State: AOJu0Yy5RdPbBgRcO7asNAAywxwxKYMS52FkNOzBJwFV7F64KlXUYk45
-	m+D/Z6RbuMQVJQHv8FhSbqmTmijN3qQtkQrdUdrydpJCax5uwcShc/uvqQEvbRYjYtqPkTsNd4Y
-	n132aqA9aaDeAlWu0KGMFAYmZYW/KuAuq1woCi5F19/VYuUwy7fVcJmw=
-X-Google-Smtp-Source: AGHT+IHMlVRdAWGtoNpjOKcE4YDn0zSO/EMtUtMcJLJnv+K2DPvBDguh57Z07+BRVKH7F0Mwgv4E/eDPvo6mchXNV683oFBTta6F
+	s=arc-20240116; t=1716772590; c=relaxed/simple;
+	bh=hgb0zfnLV7BoxmFrRxX+n/XHKuKXwMbq4hFC46FTxtc=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=YmEKI64PTyMaqduvJwWyWcfoKSAq2UCHzx+hw3BbS8ui+2h1XI5M+ytrv10NbnwJ3TZ8WFDYxHTpnUE3oUvalum0iE/cGOyoqePkHXNTTClhLIXca5ofJ5wVIaXD5n4t6LtHrn11sLaw+qjCh+keiJXHaoeARoGc+m3JY44Zx88=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A8F26C2BD10;
+	Mon, 27 May 2024 01:16:27 +0000 (UTC)
+Date: Sun, 26 May 2024 21:17:19 -0400
+From: Steven Rostedt <rostedt@goodmis.org>
+To: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
+Cc: linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org, Mark
+ Rutland <mark.rutland@arm.com>, Mathieu Desnoyers
+ <mathieu.desnoyers@efficios.com>, Andrew Morton
+ <akpm@linux-foundation.org>, Alexei Starovoitov
+ <alexei.starovoitov@gmail.com>, Florent Revest <revest@chromium.org>,
+ Martin KaFai Lau <martin.lau@linux.dev>, bpf <bpf@vger.kernel.org>, Sven
+ Schnelle <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>, Jiri
+ Olsa <jolsa@kernel.org>, Arnaldo Carvalho de Melo <acme@kernel.org>, Daniel
+ Borkmann <daniel@iogearbox.net>, Alan Maguire <alan.maguire@oracle.com>,
+ Peter Zijlstra <peterz@infradead.org>, Thomas Gleixner
+ <tglx@linutronix.de>, Guo Ren <guoren@kernel.org>
+Subject: Re: [PATCH 04/20] function_graph: Allow multiple users to attach to
+ function graph
+Message-ID: <20240526211719.0c4c2835@gandalf.local.home>
+In-Reply-To: <20240527093436.7060d358a64cc2ea3213b07b@kernel.org>
+References: <20240525023652.903909489@goodmis.org>
+	<20240525023741.836661178@goodmis.org>
+	<20240527093436.7060d358a64cc2ea3213b07b@kernel.org>
+X-Mailer: Claws Mail 3.20.0git84 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:2c83:b0:488:d489:3963 with SMTP id
- 8926c6da1cb9f-4b03f6329b1mr173553173.1.1716770664201; Sun, 26 May 2024
- 17:44:24 -0700 (PDT)
-Date: Sun, 26 May 2024 17:44:24 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000099cf25061964d113@google.com>
-Subject: [syzbot] [bpf?] [net?] general protection fault in dev_map_enqueue (2)
-From: syzbot <syzbot+cca39e6e84a367a7e6f6@syzkaller.appspotmail.com>
-To: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org, 
-	daniel@iogearbox.net, davem@davemloft.net, eddyz87@gmail.com, 
-	haoluo@google.com, hawk@kernel.org, john.fastabend@gmail.com, 
-	jolsa@kernel.org, kpsingh@kernel.org, kuba@kernel.org, 
-	linux-kernel@vger.kernel.org, martin.lau@linux.dev, netdev@vger.kernel.org, 
-	sdf@google.com, song@kernel.org, syzkaller-bugs@googlegroups.com, 
-	yonghong.song@linux.dev
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-Hello,
+On Mon, 27 May 2024 09:34:36 +0900
+Masami Hiramatsu (Google) <mhiramat@kernel.org> wrote:
 
-syzbot found the following issue on:
+> > @@ -110,11 +253,13 @@ void ftrace_graph_stop(void)
+> >  /* Add a function return address to the trace stack on thread info.*/
+> >  static int
+> >  ftrace_push_return_trace(unsigned long ret, unsigned long func,
+> > -			 unsigned long frame_pointer, unsigned long *retp)
+> > +			 unsigned long frame_pointer, unsigned long *retp,
+> > +			 int fgraph_idx)  
+> 
+> We do not need this fgraph_idx parameter anymore because this removed
+> reuse-frame check.
 
-HEAD commit:    8f6a15f095a6 Merge tag 'cocci-for-6.10' of git://git.kerne..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=136bd8fc980000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=6be91306a8917025
-dashboard link: https://syzkaller.appspot.com/bug?extid=cca39e6e84a367a7e6f6
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+Agreed. Will remove.
 
-Unfortunately, I don't have any reproducer for this issue yet.
+> 
+> >  {
+> >  	struct ftrace_ret_stack *ret_stack;
+> >  	unsigned long long calltime;
+> > -	int index;
+> > +	unsigned long val;
+> > +	int offset;
+> >  
+> >  	if (unlikely(ftrace_graph_is_dead()))
+> >  		return -EBUSY;
+> > @@ -124,24 +269,57 @@ ftrace_push_return_trace(unsigned long ret, unsigned long func,
+> >  
+> >  	BUILD_BUG_ON(SHADOW_STACK_SIZE % sizeof(long));
+> >  
+> > +	/* Set val to "reserved" with the delta to the new fgraph frame */
+> > +	val = (FGRAPH_TYPE_RESERVED << FGRAPH_TYPE_SHIFT) | FGRAPH_FRAME_OFFSET;
+> > +
+> >  	/*
+> >  	 * We must make sure the ret_stack is tested before we read
+> >  	 * anything else.
+> >  	 */
+> >  	smp_rmb();
+> >  
+> > -	/* The return trace stack is full */
+> > -	if (current->curr_ret_stack >= SHADOW_STACK_MAX_INDEX) {
+> > +	/*
+> > +	 * Check if there's room on the shadow stack to fit a fraph frame
+> > +	 * and a bitmap word.
+> > +	 */
+> > +	if (current->curr_ret_stack + FGRAPH_FRAME_OFFSET + 1 >= SHADOW_STACK_MAX_OFFSET) {
+> >  		atomic_inc(&current->trace_overrun);
+> >  		return -EBUSY;
+> >  	}
+> >  
+> >  	calltime = trace_clock_local();
+> >  
+> > -	index = current->curr_ret_stack;
+> > -	RET_STACK_INC(current->curr_ret_stack);
+> > -	ret_stack = RET_STACK(current, index);
+> > +	offset = READ_ONCE(current->curr_ret_stack);
+> > +	ret_stack = RET_STACK(current, offset);
+> > +	offset += FGRAPH_FRAME_OFFSET;
+> > +
+> > +	/* ret offset = FGRAPH_FRAME_OFFSET ; type = reserved */
+> > +	current->ret_stack[offset] = val;
+> > +	ret_stack->ret = ret;
+> > +	/*
+> > +	 * The unwinders expect curr_ret_stack to point to either zero
+> > +	 * or an offset where to find the next ret_stack. Even though the
+> > +	 * ret stack might be bogus, we want to write the ret and the
+> > +	 * offset to find the ret_stack before we increment the stack point.
+> > +	 * If an interrupt comes in now before we increment the curr_ret_stack
+> > +	 * it may blow away what we wrote. But that's fine, because the
+> > +	 * offset will still be correct (even though the 'ret' won't be).
+> > +	 * What we worry about is the offset being correct after we increment
+> > +	 * the curr_ret_stack and before we update that offset, as if an
+> > +	 * interrupt comes in and does an unwind stack dump, it will need
+> > +	 * at least a correct offset!
+> > +	 */
+> >  	barrier();
+> > +	WRITE_ONCE(current->curr_ret_stack, offset + 1);
+> > +	/*
+> > +	 * This next barrier is to ensure that an interrupt coming in
+> > +	 * will not corrupt what we are about to write.
+> > +	 */
+> > +	barrier();
+> > +
+> > +	/* Still keep it reserved even if an interrupt came in */
+> > +	current->ret_stack[offset] = val;
+> > +
+> >  	ret_stack->ret = ret;
+> >  	ret_stack->func = func;
+> >  	ret_stack->calltime = calltime;
+> > @@ -151,7 +329,7 @@ ftrace_push_return_trace(unsigned long ret, unsigned long func,
+> >  #ifdef HAVE_FUNCTION_GRAPH_RET_ADDR_PTR
+> >  	ret_stack->retp = retp;
+> >  #endif
+> > -	return 0;
+> > +	return offset;
+> >  }
+> >  
+> >  /*
+> > @@ -168,49 +346,67 @@ ftrace_push_return_trace(unsigned long ret, unsigned long func,
+> >  # define MCOUNT_INSN_SIZE 0
+> >  #endif
+> >  
+> > +/* If the caller does not use ftrace, call this function. */
+> >  int function_graph_enter(unsigned long ret, unsigned long func,
+> >  			 unsigned long frame_pointer, unsigned long *retp)
+> >  {
+> >  	struct ftrace_graph_ent trace;
+> > +	unsigned long bitmap = 0;
+> > +	int offset;
+> > +	int i;
+> >  
+> >  	trace.func = func;
+> >  	trace.depth = ++current->curr_ret_depth;
+> >  
+> > -	if (ftrace_push_return_trace(ret, func, frame_pointer, retp))
+> > +	offset = ftrace_push_return_trace(ret, func, frame_pointer, retp, 0);
+> > +	if (offset < 0)
+> >  		goto out;
+> >  
+> > -	/* Only trace if the calling function expects to */
+> > -	if (!fgraph_array[0]->entryfunc(&trace))
+> > +	for (i = 0; i < fgraph_array_cnt; i++) {
+> > +		struct fgraph_ops *gops = fgraph_array[i];
+> > +
+> > +		if (gops == &fgraph_stub)
+> > +			continue;
+> > +
+> > +		if (gops->entryfunc(&trace))
+> > +			bitmap |= BIT(i);
+> > +	}
+> > +
+> > +	if (!bitmap)
+> >  		goto out_ret;
+> >  
+> > +	/*
+> > +	 * Since this function uses fgraph_idx = 0 as a tail-call checking
+> > +	 * flag, set that bit always.
+> > +	 */  
+> 
+> This comment is also out-of-date.
+> 
+> > +	set_bitmap(current, offset, bitmap | BIT(0));  
+> 
+> And we do not need to set BIT(0) anymore.
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/02867060d65d/disk-8f6a15f0.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/4bb75fbf6fb1/vmlinux-8f6a15f0.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/fd38cadddf33/bzImage-8f6a15f0.xz
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+cca39e6e84a367a7e6f6@syzkaller.appspotmail.com
-
-Oops: general protection fault, probably for non-canonical address 0xdffffc000000003b: 0000 [#1] PREEMPT SMP KASAN PTI
-KASAN: null-ptr-deref in range [0x00000000000001d8-0x00000000000001df]
-CPU: 0 PID: 12830 Comm: syz-executor.1 Not tainted 6.9.0-syzkaller-10323-g8f6a15f095a6 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 04/02/2024
-RIP: 0010:__xdp_enqueue kernel/bpf/devmap.c:484 [inline]
-RIP: 0010:dev_map_enqueue+0x70/0x3e0 kernel/bpf/devmap.c:541
-Code: c5 18 48 89 e8 48 c1 e8 03 42 80 3c 30 00 74 08 48 89 ef e8 b2 10 3a 00 48 8b 5d 00 49 8d af d8 01 00 00 48 89 e8 48 c1 e8 03 <42> 0f b6 04 30 84 c0 0f 85 3a 02 00 00 8b 6d 00 89 ee 83 e6 04 31
-RSP: 0018:ffffc900031ff678 EFLAGS: 00010202
-RAX: 000000000000003b RBX: ffff888023efa078 RCX: 0000000000040000
-RDX: ffffc90015e01000 RSI: 0000000000000ba1 RDI: 0000000000000ba2
-RBP: 00000000000001d9 R08: ffffffff895b0946 R09: ffffffff895b0903
-R10: 0000000000000004 R11: ffff888020d73c00 R12: ffff888058f06000
-R13: ffff888021fff070 R14: dffffc0000000000 R15: 0000000000000001
-FS:  00007f9f791576c0(0000) GS:ffff8880b9400000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000001b30823000 CR3: 000000002e298000 CR4: 00000000003506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- __xdp_do_redirect_frame net/core/filter.c:4397 [inline]
- xdp_do_redirect_frame+0x2a6/0x660 net/core/filter.c:4451
- xdp_test_run_batch net/bpf/test_run.c:336 [inline]
- bpf_test_run_xdp_live+0xe60/0x1e60 net/bpf/test_run.c:384
- bpf_prog_test_run_xdp+0x80e/0x11b0 net/bpf/test_run.c:1275
- bpf_prog_test_run+0x33a/0x3b0 kernel/bpf/syscall.c:4291
- __sys_bpf+0x48d/0x810 kernel/bpf/syscall.c:5705
- __do_sys_bpf kernel/bpf/syscall.c:5794 [inline]
- __se_sys_bpf kernel/bpf/syscall.c:5792 [inline]
- __x64_sys_bpf+0x7c/0x90 kernel/bpf/syscall.c:5792
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0xf5/0x240 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
-RIP: 0033:0x7f9f7847cee9
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 e1 20 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007f9f791570c8 EFLAGS: 00000246 ORIG_RAX: 0000000000000141
-RAX: ffffffffffffffda RBX: 00007f9f785ac050 RCX: 00007f9f7847cee9
-RDX: 0000000000000048 RSI: 00000000200000c0 RDI: 000000000000000a
-RBP: 00007f9f784c949e R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-R13: 000000000000006e R14: 00007f9f785ac050 R15: 00007ffc7dc03298
- </TASK>
-Modules linked in:
----[ end trace 0000000000000000 ]---
-RIP: 0010:__xdp_enqueue kernel/bpf/devmap.c:484 [inline]
-RIP: 0010:dev_map_enqueue+0x70/0x3e0 kernel/bpf/devmap.c:541
-Code: c5 18 48 89 e8 48 c1 e8 03 42 80 3c 30 00 74 08 48 89 ef e8 b2 10 3a 00 48 8b 5d 00 49 8d af d8 01 00 00 48 89 e8 48 c1 e8 03 <42> 0f b6 04 30 84 c0 0f 85 3a 02 00 00 8b 6d 00 89 ee 83 e6 04 31
-RSP: 0018:ffffc900031ff678 EFLAGS: 00010202
-RAX: 000000000000003b RBX: ffff888023efa078 RCX: 0000000000040000
-RDX: ffffc90015e01000 RSI: 0000000000000ba1 RDI: 0000000000000ba2
-RBP: 00000000000001d9 R08: ffffffff895b0946 R09: ffffffff895b0903
-R10: 0000000000000004 R11: ffff888020d73c00 R12: ffff888058f06000
-R13: ffff888021fff070 R14: dffffc0000000000 R15: 0000000000000001
-FS:  00007f9f791576c0(0000) GS:ffff8880b9400000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000001b30823000 CR3: 000000002e298000 CR4: 00000000003506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-----------------
-Code disassembly (best guess), 1 bytes skipped:
-   0:	18 48 89             	sbb    %cl,-0x77(%rax)
-   3:	e8 48 c1 e8 03       	call   0x3e8c150
-   8:	42 80 3c 30 00       	cmpb   $0x0,(%rax,%r14,1)
-   d:	74 08                	je     0x17
-   f:	48 89 ef             	mov    %rbp,%rdi
-  12:	e8 b2 10 3a 00       	call   0x3a10c9
-  17:	48 8b 5d 00          	mov    0x0(%rbp),%rbx
-  1b:	49 8d af d8 01 00 00 	lea    0x1d8(%r15),%rbp
-  22:	48 89 e8             	mov    %rbp,%rax
-  25:	48 c1 e8 03          	shr    $0x3,%rax
-* 29:	42 0f b6 04 30       	movzbl (%rax,%r14,1),%eax <-- trapping instruction
-  2e:	84 c0                	test   %al,%al
-  30:	0f 85 3a 02 00 00    	jne    0x270
-  36:	8b 6d 00             	mov    0x0(%rbp),%ebp
-  39:	89 ee                	mov    %ebp,%esi
-  3b:	83 e6 04             	and    $0x4,%esi
-  3e:	31                   	.byte 0x31
+Right. When looking at your first comment, I did a search for fgraph_idx
+and noticed this code, and realized it should be removed too. And of
+course, you noticed it too ;-)
 
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+> 
+> > +
+> >  	return 0;
+> >   out_ret:
+> > -	RET_STACK_DEC(current->curr_ret_stack);
+> > +	current->curr_ret_stack -= FGRAPH_FRAME_OFFSET + 1;
+> >   out:
+> >  	current->curr_ret_depth--;
+> >  	return -EBUSY;
+> >  }
+> >  
+> >  /* Retrieve a function return address to the trace stack on thread info.*/
+> > -static void
+> > +static struct ftrace_ret_stack *
+> >  ftrace_pop_return_trace(struct ftrace_graph_ret *trace, unsigned long *ret,
+> > -			unsigned long frame_pointer)
+> > +			unsigned long frame_pointer, int *offset)
+> >  {
+> >  	struct ftrace_ret_stack *ret_stack;
+> > -	int index;
+> >  
+> > -	index = current->curr_ret_stack;
+> > -	RET_STACK_DEC(index);
+> > +	ret_stack = get_ret_stack(current, current->curr_ret_stack, offset);
+> >  
+> > -	if (unlikely(index < 0 || index > SHADOW_STACK_MAX_INDEX)) {
+> > +	if (unlikely(!ret_stack)) {
+> >  		ftrace_graph_stop();
+> > -		WARN_ON(1);
+> > +		WARN(1, "Bad function graph ret_stack pointer: %d",
+> > +		     current->curr_ret_stack);
+> >  		/* Might as well panic, otherwise we have no where to go */
+> >  		*ret = (unsigned long)panic;
+> > -		return;
+> > +		return NULL;
+> >  	}
+> >  
+> > -	ret_stack = RET_STACK(current, index);
+> >  #ifdef HAVE_FUNCTION_GRAPH_FP_TEST
+> >  	/*
+> >  	 * The arch may choose to record the frame pointer used
+> > @@ -230,26 +426,29 @@ ftrace_pop_return_trace(struct ftrace_graph_ret *trace, unsigned long *ret,
+> >  		ftrace_graph_stop();
+> >  		WARN(1, "Bad frame pointer: expected %lx, received %lx\n"
+> >  		     "  from func %ps return to %lx\n",
+> > -		     current->ret_stack[index].fp,
+> > +		     ret_stack->fp,
+> >  		     frame_pointer,
+> >  		     (void *)ret_stack->func,
+> >  		     ret_stack->ret);
+> >  		*ret = (unsigned long)panic;
+> > -		return;
+> > +		return NULL;
+> >  	}
+> >  #endif
+> >  
+> > +	*offset += FGRAPH_FRAME_OFFSET;
+> >  	*ret = ret_stack->ret;
+> >  	trace->func = ret_stack->func;
+> >  	trace->calltime = ret_stack->calltime;
+> >  	trace->overrun = atomic_read(&current->trace_overrun);
+> > -	trace->depth = current->curr_ret_depth--;
+> > +	trace->depth = current->curr_ret_depth;
+> >  	/*
+> >  	 * We still want to trace interrupts coming in if
+> >  	 * max_depth is set to 1. Make sure the decrement is
+> >  	 * seen before ftrace_graph_return.
+> >  	 */
+> >  	barrier();
+> > +
+> > +	return ret_stack;
+> >  }
+> >  
+> >  /*
+> > @@ -287,30 +486,47 @@ struct fgraph_ret_regs;
+> >  static unsigned long __ftrace_return_to_handler(struct fgraph_ret_regs *ret_regs,
+> >  						unsigned long frame_pointer)
+> >  {
+> > +	struct ftrace_ret_stack *ret_stack;
+> >  	struct ftrace_graph_ret trace;
+> > +	unsigned long bitmap;
+> >  	unsigned long ret;
+> > +	int offset;
+> > +	int i;
+> > +
+> > +	ret_stack = ftrace_pop_return_trace(&trace, &ret, frame_pointer, &offset);
+> > +
+> > +	if (unlikely(!ret_stack)) {
+> > +		ftrace_graph_stop();
+> > +		WARN_ON(1);
+> > +		/* Might as well panic. What else to do? */
+> > +		return (unsigned long)panic;
+> > +	}
+> >  
+> > -	ftrace_pop_return_trace(&trace, &ret, frame_pointer);
+> > +	trace.rettime = trace_clock_local();
+> >  #ifdef CONFIG_FUNCTION_GRAPH_RETVAL
+> >  	trace.retval = fgraph_ret_regs_return_value(ret_regs);
+> >  #endif
+> > -	trace.rettime = trace_clock_local();
+> > -	fgraph_array[0]->retfunc(&trace);
+> > +
+> > +	bitmap = get_bitmap_bits(current, offset);
+> > +	for (i = 0; i < FGRAPH_ARRAY_SIZE; i++) {
+> > +		struct fgraph_ops *gops = fgraph_array[i];
+> > +
+> > +		if (!(bitmap & BIT(i)))
+> > +			continue;
+> > +		if (gops == &fgraph_stub)  
+> 
+> nit: here, we can make this check unlikely() because the above
+> bitmap check already filtered. (Some sleepable functions leave
+> the return frame on shadow stack after gops is unregistered. But it
+> also rare compared with living time.)
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+Sure.
 
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
+Thanks for the review.
 
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
+-- Steve
 
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
 
