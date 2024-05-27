@@ -1,325 +1,511 @@
-Return-Path: <bpf+bounces-30699-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-30700-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 156AA8D0F66
-	for <lists+bpf@lfdr.de>; Mon, 27 May 2024 23:25:53 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id CBCC48D105E
+	for <lists+bpf@lfdr.de>; Tue, 28 May 2024 00:45:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B4B082815B3
-	for <lists+bpf@lfdr.de>; Mon, 27 May 2024 21:25:51 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 576111F21B62
+	for <lists+bpf@lfdr.de>; Mon, 27 May 2024 22:45:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E20D816132B;
-	Mon, 27 May 2024 21:25:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D98E167294;
+	Mon, 27 May 2024 22:45:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=layalina-io.20230601.gappssmtp.com header.i=@layalina-io.20230601.gappssmtp.com header.b="dNyqEWFx"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TXwY2dms"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f53.google.com (mail-wm1-f53.google.com [209.85.128.53])
+Received: from mail-wr1-f51.google.com (mail-wr1-f51.google.com [209.85.221.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F97853389
-	for <bpf@vger.kernel.org>; Mon, 27 May 2024 21:25:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB173167265
+	for <bpf@vger.kernel.org>; Mon, 27 May 2024 22:44:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716845146; cv=none; b=AjAENbCD+utcrPCPUNf19V3pYld0J7MuM3u7dvjTXG3DaNfGyJMfVYDu99w+brvnkDVPdSaJJQMUN1+mwBMNuTZ91k6R1CPPR4e+XH/Nqgihp4Qp3zgEQVonJwhGbT87f9rT7maoxPPhN106+1wlR8XdwkDJ8VmCaPLCrj0XdQA=
+	t=1716849900; cv=none; b=Eby+bPIRJ06S/Z6cITiZuNZK/PokrrD7ZvIgQSTmSyXpclOEe3lXxr5CwxGhezYSUHzf1G/4RuqtO4bmFHUjiQfLhdtJkYOAexinQE3xOGVGXjtroTatBqN0TgkTtd3IHDksfBYXhJJRbQvRgeDb5eZHe3ymzIFby5QPU9UvQ68=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716845146; c=relaxed/simple;
-	bh=LdG7ktowhnjzEdPoZ+Ttq4iNXdNn5ME5OBb1WfTkjew=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=DhuQVhnQAuFIvh76yEfXTADV0dvUECb6YlDVq1XIZ1QhCDtq65lZm+HE03Kxel0Nt23C0xuaR8Hkns1qI5gYaTezcYmmRx6vfjHhH3ep9SI4CwHHskuaoOhotPUxeEZntfDr3iDZgK/hFmUoUNhbRz6SWtmi+Uo+owHfqTH7wF8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=layalina.io; spf=pass smtp.mailfrom=layalina.io; dkim=pass (2048-bit key) header.d=layalina-io.20230601.gappssmtp.com header.i=@layalina-io.20230601.gappssmtp.com header.b=dNyqEWFx; arc=none smtp.client-ip=209.85.128.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=layalina.io
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=layalina.io
-Received: by mail-wm1-f53.google.com with SMTP id 5b1f17b1804b1-4202ca70289so874565e9.1
-        for <bpf@vger.kernel.org>; Mon, 27 May 2024 14:25:44 -0700 (PDT)
+	s=arc-20240116; t=1716849900; c=relaxed/simple;
+	bh=hCv6yl5mw6/q3N1s4M6FJ1Tc2rdxtla6CrsFe0ys0+o=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=HkhF8S5gCoavVGdQd0a6D3LeLbMRydCP7V1Vac40gXuhPVp/u8xBowlgJRoqQ8Pv8oxBMal1QGajeN57EAbvB6jxrzgQYHasRzYgvQift281kcLx7Z6C3vfLAGA79Mler+1Nfqkm0QoMeRfRIKt8mhXdFSPLRZOEchOG5EOmRGA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=TXwY2dms; arc=none smtp.client-ip=209.85.221.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f51.google.com with SMTP id ffacd0b85a97d-356c4e926a3so138520f8f.1
+        for <bpf@vger.kernel.org>; Mon, 27 May 2024 15:44:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=layalina-io.20230601.gappssmtp.com; s=20230601; t=1716845143; x=1717449943; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=A7HC5A2aTc83IoX0PVow5xufAISx19nMRBT1reOH5cg=;
-        b=dNyqEWFxxX3QJ9zmQcl6JbU880eqreRaUNxNw+d/ZNf3ySneSISnlZK5x59XHsgZ8b
-         05G1G+6yIjspIR9OIW0aFDM9alvsroAJSciwKue+5plDyJ0JX4Am31k078cVGdFEq4is
-         +ScXkAGlMr3ta6ERFYI7TDykyjUYvgbiT3k68oFOjXkJBOy3dgQkF+64nSUrd7jj1vYB
-         WmuAHlrZQT45cVOSVPhvMBsBg4umw4pud19WEHYJah+06adcEvlNqsQQesdQRDkQzuuH
-         87ochuk0ft4c0FGI1fQaP6jJuEKVMj0PrzCJhUhMzNLpbWlQIRLbN7NT8/5L55PCg3Jc
-         dO9A==
+        d=gmail.com; s=20230601; t=1716849896; x=1717454696; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=wGVftqpU1/5ZEtw6gJzRx0gRL093OPfWqAnmcv+bGwM=;
+        b=TXwY2dmsPqt08cDxyZXptmKPDADbAjEL4Vmp3KaTk2bn486JUxpznKJ+2fNQIx/iRL
+         P/DeAjRB6ojKw0BaFUGz842g5nqGr4tnochU4UNquyoclU4D7gNz0YhZtEi+HvucRTEF
+         NXNZqPgSVVCqHYULppYU8ujt4NY2T4iDwpLReNFZ5TDjiqRFv2u1bnyGx/ZhuSFBVKTN
+         5xCpDVAEyjj1/+7qpBzFs2vXqUayHIaPtuxP/RVfuPUt1g50P4CN9/6Lu+8u0ZQRnukz
+         7bSEjpjtV1LU01yQHkJwULyH7W1XEZUMpkJ8mGVSl9NAgXurhxjhX05vplBA5zIjXkeZ
+         /LXQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1716845143; x=1717449943;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=A7HC5A2aTc83IoX0PVow5xufAISx19nMRBT1reOH5cg=;
-        b=mWTIKlYTnJnp32WK6+G84xBPkb2wnHUI03sAors8t4W3ZeVQxdpzjcW1dwM3nKiFfk
-         hVpdw+dCE4YNmCteO+EEfHV9s57/md9zOXskgkdF6psE3vfTfMmngubwQO31hiibjm0W
-         zsnmfyms5gJEQaERd7En0Phk/t24ke2x6K88F7fYIegWB7iAunV1OEs4RYYDxAaS2hj2
-         rW7G0S+tEEATq+CW4QITV3tOPiM81eyjbv6qkUcR20M3/dnmJm/F2y0kivVA2OwfZL76
-         Ptr6PM9jM77GsFase3RbIHgcFDQi/UnNmiZLr8QA7Vgk0F4lkpusprysynZkuRVwLHvc
-         kWHw==
-X-Forwarded-Encrypted: i=1; AJvYcCUzdhjmHDByjrr4NmL/Xzfh5GfbfvQ4VYVuJukG5+qSWt6LWcI2/SrWhCaArhu2hXNfOK3mkOeiF+qhXkYfYN0obzQv
-X-Gm-Message-State: AOJu0YxIl6LOZ4DHFv3BvWR47SH4SQ46RdJnDKr4UETcuyO/7p/zIytE
-	utYkYCK4Cu02aL2Nr3o1WbsGAxJcqROJwBlFPEi2nBUbUUS8J3GM3X9+uRZwzys=
-X-Google-Smtp-Source: AGHT+IFItlgiowD1lpOXhBLswf+hJiQT8hJaOWHUuO8HHxQlu17vMeRwoNhNTg4OgDWHWokTneDkJQ==
-X-Received: by 2002:a05:600c:46c4:b0:41a:e995:b924 with SMTP id 5b1f17b1804b1-42108a0b91dmr63716165e9.33.1716845142595;
-        Mon, 27 May 2024 14:25:42 -0700 (PDT)
-Received: from airbuntu (host81-157-90-255.range81-157.btcentralplus.com. [81.157.90.255])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3557a1c9379sm9849541f8f.73.2024.05.27.14.25.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 May 2024 14:25:42 -0700 (PDT)
-Date: Mon, 27 May 2024 22:25:40 +0100
-From: Qais Yousef <qyousef@layalina.io>
-To: David Vernet <void@manifault.com>
-Cc: Steven Rostedt <rostedt@goodmis.org>,
-	Peter Zijlstra <peterz@infradead.org>, Tejun Heo <tj@kernel.org>,
-	torvalds@linux-foundation.org, mingo@redhat.com,
-	juri.lelli@redhat.com, vincent.guittot@linaro.org,
-	dietmar.eggemann@arm.com, bsegall@google.com, mgorman@suse.de,
-	bristot@redhat.com, vschneid@redhat.com, ast@kernel.org,
-	daniel@iogearbox.net, andrii@kernel.org, martin.lau@kernel.org,
-	joshdon@google.com, brho@google.com, pjt@google.com,
-	derkling@google.com, haoluo@google.com, dvernet@meta.com,
-	dschatzberg@meta.com, dskarlat@cs.cmu.edu, riel@surriel.com,
-	changwoo@igalia.com, himadrics@inria.fr, memxor@gmail.com,
-	andrea.righi@canonical.com, joel@joelfernandes.org,
-	linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-	kernel-team@meta.com
-Subject: Re: [PATCHSET v6] sched: Implement BPF extensible scheduler class
-Message-ID: <20240527212540.u66l3svj3iigj7ig@airbuntu>
-References: <20240501151312.635565-1-tj@kernel.org>
- <20240502084800.GY30852@noisy.programming.kicks-ass.net>
- <ZjPnb1vdt80FrksA@slm.duckdns.org>
- <20240503085232.GC30852@noisy.programming.kicks-ass.net>
- <ZjgWzhruwo8euPC0@slm.duckdns.org>
- <20240513080359.GI30852@noisy.programming.kicks-ass.net>
- <20240513142646.4dc5484d@rorschach.local.home>
- <20240514000715.4765jfpwi5ovlizj@airbuntu>
- <20240514213402.GB295811@maniforge>
+        d=1e100.net; s=20230601; t=1716849896; x=1717454696;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=wGVftqpU1/5ZEtw6gJzRx0gRL093OPfWqAnmcv+bGwM=;
+        b=cSsWaepGivDaMHz7M81pQjp0fVti1dB51rUQHaZ1PfBhi0o7KLs4akli705XU2TqDE
+         ieXcTFXpL98ubykBtYnjvpngHZMD1+p8MB5DrwZo+bnc3hmqhjbw8clYHkJYMWDtuqIt
+         +qeEnS1F5WWyZrbHeJuErI6/W4ESSDFaucxpndJEQb2V3EqfYYNbRnoRAsT2GHgGdmMH
+         NOHX3cl7oWZ8JNTAmJTyYLF+7lzX+MGrlxKnVwZeAFqpcZNcOlTQBxP20TJB/AxCMfwA
+         iS6PTAqxKVCd7YdkzTwJKeEXGJL7GMkenbCF5l7anbQ8HihnysUTPCRXcp48ejoWQSxu
+         zIUQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVeliIaQ9gdg0HADy4bLv3iHdxFjz9ZH3CPk+C3xjzivXtrRRD2wkWgClTajWY1W8OVX8i0Op3/bx8wMw+bLtuFx4U7
+X-Gm-Message-State: AOJu0YwGiGbGT6+J/X5uBpNHpzvuy0mYRn6Hcee5rG3obU1HVNKqLNnb
+	FvW1v3AjIbCcJp5ky870ZIBZQ872maWsuJNRAso5Hkwbqzd7VNKz7gyMNkYIXMv6qQZ5uqPbWvg
+	fgR9c40+xS+i0EgcSpo9DjMvQQmo=
+X-Google-Smtp-Source: AGHT+IFXnyQ8uJxzz9ocbmpnYG6BTT0oEs5LLhGgomPFu+Vzp6LKKEPzTsLNL9W7s+dg4FdC1vhKC+Zeg9E/nEh2GTM=
+X-Received: by 2002:adf:ea0c:0:b0:34d:837a:9d08 with SMTP id
+ ffacd0b85a97d-3552fdfd452mr7258969f8f.61.1716849895857; Mon, 27 May 2024
+ 15:44:55 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240514213402.GB295811@maniforge>
+References: <20240525031156.13545-1-alexei.starovoitov@gmail.com> <91453e3f-66b0-4927-a756-bd18f9e6bf05@moroto.mountain>
+In-Reply-To: <91453e3f-66b0-4927-a756-bd18f9e6bf05@moroto.mountain>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Mon, 27 May 2024 15:44:44 -0700
+Message-ID: <CAADnVQLWbPd2skY1Lzs8oJ=9Ag9e2qD9Khhb4ycQRimZqdeBfA@mail.gmail.com>
+Subject: Re: [PATCH v3 bpf-next 1/2] bpf: Relax precision marking in open
+ coded iters and may_goto loop.
+To: Dan Carpenter <dan.carpenter@linaro.org>
+Cc: oe-kbuild@lists.linux.dev, bpf <bpf@vger.kernel.org>, 
+	kbuild test robot <lkp@intel.com>, oe-kbuild-all@lists.linux.dev, 
+	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
+	Martin KaFai Lau <martin.lau@kernel.org>, Kumar Kartikeya Dwivedi <memxor@gmail.com>, Eddy Z <eddyz87@gmail.com>, 
+	Kernel Team <kernel-team@fb.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 05/14/24 16:34, David Vernet wrote:
-> On Tue, May 14, 2024 at 01:07:15AM +0100, Qais Yousef wrote:
-> 
-> [...]
-> 
-> > > > 
-> > > > How does this BPF muck translate into better quality patches for me?
-> > > 
-> > > Here's how we will be using it (we will likely be porting sched_ext to
-> > > ChromeOS regardless of its acceptance).
-> > > 
-> > > Doing testing of scheduler changes in the field is extremely time
-> > > consuming and complex. We tested EEVDF vs CFS by backporting EEVDF to
-> > > 5.15 (as that is the kernel version we are using on the chromebooks we
-> > > were testing on), and then we need to add a user space "switch" to
-> > > change the scheduler. Note, this also risks causing a bug in adding
-> > > these changes. Then we push the kernel out, and then start our
-> > > experiment that enables our feature to a small percentage, and slowly
-> > > increases the number of users until we have a enough for a statistical
-> > > result.
-> > > 
-> > > What sched_ext would give us is a easy way to try different scheduling
-> > > algorithms and get feedback much quicker. Once we determine a solution
-> > > that improves things, we would then spend the time to implement it in
-> > > the scheduler, and yes, send it upstream.
-> > > 
-> > > To me, sched_ext should never be the final solution, but it can be
-> > > extremely useful in testing various changes quickly in the field. Which
-> > > to me would encourage more contributions.
-> 
-> Hello Qais,
-> 
-> [...]
-> 
-> > I really don't buy the rapid development aspect too. The scheduler was heavily
-> 
-> There are already several examples from users who have shown that the rapid
-> development and experimentation is extremely useful. Imagine if you're
-> iterating on the scheduler to improve p99 frame rates on the Steam Deck, as
-> Changwoo described. It's much more efficient to be able to just tweak and load
-> a BPF scheduler (that is safe and can't crash the machine) to try some random
-> idea out than it is to:
-> 
-> 1. Tweak and recompile the kernel
-> 2. Reinstall the kernel on the Steam Deck
-> 3. Reboot the Steam Deck
-> 4. Reload a game and let caches rewarm
-> 5. Measure FPS
-> 
-> You're talking about a 5 second compile job + 1 second to reload a safe BPF
-> scheduler vs. having to do all of the above steps _and_ potentially making a
-> mistake that brings the machine down. These benefits are also extremely useful
-> for testing workloads on production servers, etc. Let’s also not forget that
-> unlike many other kernel features, you probably can’t get reliable scheduling
-> results from running in a VM. The experimentation overhead is very real.
+On Mon, May 27, 2024 at 12:26=E2=80=AFAM Dan Carpenter <dan.carpenter@linar=
+o.org> wrote:
+>
+> Hi Alexei,
+>
+> kernel test robot noticed the following build warnings:
+>
+> url:    https://github.com/intel-lab-lkp/linux/commits/Alexei-Starovoitov=
+/selftests-bpf-Remove-i-zero-workaround-and-add-new-tests/20240525-111247
+> base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git =
+master
+> patch link:    https://lore.kernel.org/r/20240525031156.13545-1-alexei.st=
+arovoitov%40gmail.com
+> patch subject: [PATCH v3 bpf-next 1/2] bpf: Relax precision marking in op=
+en coded iters and may_goto loop.
+> config: nios2-randconfig-r071-20240526 (https://download.01.org/0day-ci/a=
+rchive/20240526/202405260726.0H6QiGNy-lkp@intel.com/config)
+> compiler: nios2-linux-gcc (GCC) 13.2.0
+>
+> If you fix the issue in a separate patch/commit (i.e. not just a new vers=
+ion of
+> the same patch/commit), kindly add following tags
+> | Reported-by: kernel test robot <lkp@intel.com>
+> | Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
+> | Closes: https://lore.kernel.org/r/202405260726.0H6QiGNy-lkp@intel.com/
+>
+> New smatch warnings:
+> kernel/bpf/verifier.c:15315 check_cond_jmp_op() error: uninitialized symb=
+ol 'other_dst_reg'.
+>
+> Old smatch warnings:
+> arch/nios2/include/asm/thread_info.h:62 current_thread_info() error: unin=
+itialized symbol 'sp'.
+>
+> vim +/other_dst_reg +15315 kernel/bpf/verifier.c
+>
+> 58e2af8b3a6b58 Jakub Kicinski     2016-09-21  15108  static int check_con=
+d_jmp_op(struct bpf_verifier_env *env,
+> 17a5267067f3c3 Alexei Starovoitov 2014-09-26  15109                      =
+    struct bpf_insn *insn, int *insn_idx)
+> 17a5267067f3c3 Alexei Starovoitov 2014-09-26  15110  {
+> f4d7e40a5b7157 Alexei Starovoitov 2017-12-14  15111     struct bpf_verifi=
+er_state *this_branch =3D env->cur_state;
+> f4d7e40a5b7157 Alexei Starovoitov 2017-12-14  15112     struct bpf_verifi=
+er_state *other_branch;
+> f4d7e40a5b7157 Alexei Starovoitov 2017-12-14  15113     struct bpf_reg_st=
+ate *regs =3D this_branch->frame[this_branch->curframe]->regs;
+> fb8d251ee2a6bf Alexei Starovoitov 2019-06-15  15114     struct bpf_reg_st=
+ate *dst_reg, *other_branch_regs, *src_reg =3D NULL;
+> 689049426b9d3b Alexei Starovoitov 2024-05-24  15115     struct bpf_reg_st=
+ate *eq_branch_regs, *other_dst_reg, *other_src_reg =3D NULL;
+> c31534267c180f Andrii Nakryiko    2023-11-01  15116     struct bpf_reg_st=
+ate fake_reg =3D {};
+> 17a5267067f3c3 Alexei Starovoitov 2014-09-26  15117     u8 opcode =3D BPF=
+_OP(insn->code);
+> 689049426b9d3b Alexei Starovoitov 2024-05-24  15118     bool is_jmp32, ig=
+nore_pred;
+> 689049426b9d3b Alexei Starovoitov 2024-05-24  15119     bool has_src_reg =
+=3D false;
+> fb8d251ee2a6bf Alexei Starovoitov 2019-06-15  15120     int pred =3D -1;
+> 17a5267067f3c3 Alexei Starovoitov 2014-09-26  15121     int err;
+> 17a5267067f3c3 Alexei Starovoitov 2014-09-26  15122
+> 092ed0968bb648 Jiong Wang         2019-01-26  15123     /* Only condition=
+al jumps are expected to reach here. */
+> 011832b97b311b Alexei Starovoitov 2024-03-05  15124     if (opcode =3D=3D=
+ BPF_JA || opcode > BPF_JCOND) {
+> 092ed0968bb648 Jiong Wang         2019-01-26  15125             verbose(e=
+nv, "invalid BPF_JMP/JMP32 opcode %x\n", opcode);
+> 17a5267067f3c3 Alexei Starovoitov 2014-09-26  15126             return -E=
+INVAL;
+> 17a5267067f3c3 Alexei Starovoitov 2014-09-26  15127     }
+> 17a5267067f3c3 Alexei Starovoitov 2014-09-26  15128
+> 011832b97b311b Alexei Starovoitov 2024-03-05  15129     if (opcode =3D=3D=
+ BPF_JCOND) {
+> 011832b97b311b Alexei Starovoitov 2024-03-05  15130             struct bp=
+f_verifier_state *cur_st =3D env->cur_state, *queued_st, *prev_st;
+> 011832b97b311b Alexei Starovoitov 2024-03-05  15131             int idx =
+=3D *insn_idx;
+> 011832b97b311b Alexei Starovoitov 2024-03-05  15132
+> 011832b97b311b Alexei Starovoitov 2024-03-05  15133             if (insn-=
+>code !=3D (BPF_JMP | BPF_JCOND) ||
+> 011832b97b311b Alexei Starovoitov 2024-03-05  15134                 insn-=
+>src_reg !=3D BPF_MAY_GOTO ||
+> 011832b97b311b Alexei Starovoitov 2024-03-05  15135                 insn-=
+>dst_reg || insn->imm || insn->off =3D=3D 0) {
+> 011832b97b311b Alexei Starovoitov 2024-03-05  15136                     v=
+erbose(env, "invalid may_goto off %d imm %d\n",
+> 011832b97b311b Alexei Starovoitov 2024-03-05  15137                      =
+       insn->off, insn->imm);
+> 011832b97b311b Alexei Starovoitov 2024-03-05  15138                     r=
+eturn -EINVAL;
+> 011832b97b311b Alexei Starovoitov 2024-03-05  15139             }
+> 011832b97b311b Alexei Starovoitov 2024-03-05  15140             prev_st =
+=3D find_prev_entry(env, cur_st->parent, idx);
+> 011832b97b311b Alexei Starovoitov 2024-03-05  15141
+> 011832b97b311b Alexei Starovoitov 2024-03-05  15142             /* branch=
+ out 'fallthrough' insn as a new state to explore */
+> 011832b97b311b Alexei Starovoitov 2024-03-05  15143             queued_st=
+ =3D push_stack(env, idx + 1, idx, false);
+> 011832b97b311b Alexei Starovoitov 2024-03-05  15144             if (!queu=
+ed_st)
+> 011832b97b311b Alexei Starovoitov 2024-03-05  15145                     r=
+eturn -ENOMEM;
+> 011832b97b311b Alexei Starovoitov 2024-03-05  15146
+> 011832b97b311b Alexei Starovoitov 2024-03-05  15147             queued_st=
+->may_goto_depth++;
+> 011832b97b311b Alexei Starovoitov 2024-03-05  15148             if (prev_=
+st)
+> 011832b97b311b Alexei Starovoitov 2024-03-05  15149                     w=
+iden_imprecise_scalars(env, prev_st, queued_st);
+> 011832b97b311b Alexei Starovoitov 2024-03-05  15150             *insn_idx=
+ +=3D insn->off;
+> 011832b97b311b Alexei Starovoitov 2024-03-05  15151             return 0;
+> 011832b97b311b Alexei Starovoitov 2024-03-05  15152     }
+> 011832b97b311b Alexei Starovoitov 2024-03-05  15153
+> d75e30dddf7344 Yafang Shao        2023-08-23  15154     /* check src2 ope=
+rand */
+> d75e30dddf7344 Yafang Shao        2023-08-23  15155     err =3D check_reg=
+_arg(env, insn->dst_reg, SRC_OP);
+> d75e30dddf7344 Yafang Shao        2023-08-23  15156     if (err)
+> d75e30dddf7344 Yafang Shao        2023-08-23  15157             return er=
+r;
+> d75e30dddf7344 Yafang Shao        2023-08-23  15158
+> d75e30dddf7344 Yafang Shao        2023-08-23  15159     dst_reg =3D &regs=
+[insn->dst_reg];
+> 17a5267067f3c3 Alexei Starovoitov 2014-09-26  15160     if (BPF_SRC(insn-=
+>code) =3D=3D BPF_X) {
+> 17a5267067f3c3 Alexei Starovoitov 2014-09-26  15161             if (insn-=
+>imm !=3D 0) {
+> 092ed0968bb648 Jiong Wang         2019-01-26  15162                     v=
+erbose(env, "BPF_JMP/JMP32 uses reserved fields\n");
+> 17a5267067f3c3 Alexei Starovoitov 2014-09-26  15163                     r=
+eturn -EINVAL;
+> 17a5267067f3c3 Alexei Starovoitov 2014-09-26  15164             }
+> 17a5267067f3c3 Alexei Starovoitov 2014-09-26  15165
+> 17a5267067f3c3 Alexei Starovoitov 2014-09-26  15166             /* check =
+src1 operand */
+> dc503a8ad98474 Edward Cree        2017-08-15  15167             err =3D c=
+heck_reg_arg(env, insn->src_reg, SRC_OP);
+> 17a5267067f3c3 Alexei Starovoitov 2014-09-26  15168             if (err)
+> 17a5267067f3c3 Alexei Starovoitov 2014-09-26  15169                     r=
+eturn err;
+> 1be7f75d1668d6 Alexei Starovoitov 2015-10-07  15170
+> 689049426b9d3b Alexei Starovoitov 2024-05-24  15171             has_src_r=
+eg =3D true;
+> d75e30dddf7344 Yafang Shao        2023-08-23  15172             src_reg =
+=3D &regs[insn->src_reg];
+> d75e30dddf7344 Yafang Shao        2023-08-23  15173             if (!(reg=
+_is_pkt_pointer_any(dst_reg) && reg_is_pkt_pointer_any(src_reg)) &&
+> d75e30dddf7344 Yafang Shao        2023-08-23  15174                 is_po=
+inter_value(env, insn->src_reg)) {
+> 61bd5218eef349 Jakub Kicinski     2017-10-09  15175                     v=
+erbose(env, "R%d pointer comparison prohibited\n",
+> 1be7f75d1668d6 Alexei Starovoitov 2015-10-07  15176                      =
+       insn->src_reg);
+> 1be7f75d1668d6 Alexei Starovoitov 2015-10-07  15177                     r=
+eturn -EACCES;
+> 1be7f75d1668d6 Alexei Starovoitov 2015-10-07  15178             }
+> 17a5267067f3c3 Alexei Starovoitov 2014-09-26  15179     } else {
+> 17a5267067f3c3 Alexei Starovoitov 2014-09-26  15180             if (insn-=
+>src_reg !=3D BPF_REG_0) {
+> 092ed0968bb648 Jiong Wang         2019-01-26  15181                     v=
+erbose(env, "BPF_JMP/JMP32 uses reserved fields\n");
+> 17a5267067f3c3 Alexei Starovoitov 2014-09-26  15182                     r=
+eturn -EINVAL;
+> 17a5267067f3c3 Alexei Starovoitov 2014-09-26  15183             }
+> c31534267c180f Andrii Nakryiko    2023-11-01  15184             src_reg =
+=3D &fake_reg;
+> c31534267c180f Andrii Nakryiko    2023-11-01  15185             src_reg->=
+type =3D SCALAR_VALUE;
+> c31534267c180f Andrii Nakryiko    2023-11-01  15186             __mark_re=
+g_known(src_reg, insn->imm);
+> 17a5267067f3c3 Alexei Starovoitov 2014-09-26  15187     }
+> 17a5267067f3c3 Alexei Starovoitov 2014-09-26  15188
+> 092ed0968bb648 Jiong Wang         2019-01-26  15189     is_jmp32 =3D BPF_=
+CLASS(insn->code) =3D=3D BPF_JMP32;
+> 689049426b9d3b Alexei Starovoitov 2024-05-24  15190     if (dst_reg->type=
+ !=3D SCALAR_VALUE || src_reg->type !=3D SCALAR_VALUE)
+> 689049426b9d3b Alexei Starovoitov 2024-05-24  15191             ignore_pr=
+ed =3D false;
+> 689049426b9d3b Alexei Starovoitov 2024-05-24  15192     /*
+> 689049426b9d3b Alexei Starovoitov 2024-05-24  15193      * Compilers ofte=
+n optimize loop exit condition to equality, so
+> 689049426b9d3b Alexei Starovoitov 2024-05-24  15194      *      for (i =
+=3D 0; i < 100; i++) arr[i] =3D 1
+> 689049426b9d3b Alexei Starovoitov 2024-05-24  15195      * becomes
+> 689049426b9d3b Alexei Starovoitov 2024-05-24  15196      *      for (i =
+=3D 0; i !=3D 100; i++) arr[1] =3D 1
+> 689049426b9d3b Alexei Starovoitov 2024-05-24  15197      * Hence treat !=
+=3D and =3D=3D conditions specially in the verifier.
+> 689049426b9d3b Alexei Starovoitov 2024-05-24  15198      * Widen only not=
+-predicted branch and keep predict branch as is. Example:
+> 689049426b9d3b Alexei Starovoitov 2024-05-24  15199      *    r1 =3D 0
+> 689049426b9d3b Alexei Starovoitov 2024-05-24  15200      *    goto L1
+> 689049426b9d3b Alexei Starovoitov 2024-05-24  15201      * L2:
+> 689049426b9d3b Alexei Starovoitov 2024-05-24  15202      *    arr[r1] =3D=
+ 1
+> 689049426b9d3b Alexei Starovoitov 2024-05-24  15203      *    r1++
+> 689049426b9d3b Alexei Starovoitov 2024-05-24  15204      * L1:
+> 689049426b9d3b Alexei Starovoitov 2024-05-24  15205      *    if r1 !=3D =
+100 goto L2
+> 689049426b9d3b Alexei Starovoitov 2024-05-24  15206      *    fallthrough=
+: r1=3D100 after widening
+> 689049426b9d3b Alexei Starovoitov 2024-05-24  15207      *    other_branc=
+h: r1 stays as-is (0, 1, 2, ..)
+> 689049426b9d3b Alexei Starovoitov 2024-05-24  15208      *
+> 689049426b9d3b Alexei Starovoitov 2024-05-24  15209      *  Also recogniz=
+e the case where both LHS and RHS are constant and
+> 689049426b9d3b Alexei Starovoitov 2024-05-24  15210      *  equal to each=
+ other. In this case don't widen at all and take the
+> 689049426b9d3b Alexei Starovoitov 2024-05-24  15211      *  predicted pat=
+h. This key heuristic allows the verifier detect loop
+> 689049426b9d3b Alexei Starovoitov 2024-05-24  15212      *  end condition=
+ and 'for (i =3D 0; i !=3D 100; i++)' is validated just
+> 689049426b9d3b Alexei Starovoitov 2024-05-24  15213      *  like bounded =
+loop.
+> 689049426b9d3b Alexei Starovoitov 2024-05-24  15214      */
+> 689049426b9d3b Alexei Starovoitov 2024-05-24  15215     else if (is_reg_c=
+onst(dst_reg, is_jmp32) && is_reg_const(src_reg, is_jmp32) &&
+> 689049426b9d3b Alexei Starovoitov 2024-05-24  15216         reg_const_val=
+ue(dst_reg, is_jmp32) =3D=3D reg_const_value(src_reg, is_jmp32))
+> 689049426b9d3b Alexei Starovoitov 2024-05-24  15217             ignore_pr=
+ed =3D false;
+> 689049426b9d3b Alexei Starovoitov 2024-05-24  15218     else
+> 689049426b9d3b Alexei Starovoitov 2024-05-24  15219             ignore_pr=
+ed =3D (get_loop_entry(this_branch) ||
+> 689049426b9d3b Alexei Starovoitov 2024-05-24  15220                      =
+      this_branch->may_goto_depth) &&
+> 689049426b9d3b Alexei Starovoitov 2024-05-24  15221                      =
+       /* Gate widen_reg() logic */
+> 689049426b9d3b Alexei Starovoitov 2024-05-24  15222                      =
+       env->bpf_capable;
+> 689049426b9d3b Alexei Starovoitov 2024-05-24  15223
+> c31534267c180f Andrii Nakryiko    2023-11-01  15224     pred =3D is_branc=
+h_taken(dst_reg, src_reg, opcode, is_jmp32);
+> 689049426b9d3b Alexei Starovoitov 2024-05-24  15225     if (pred >=3D 0 &=
+& !ignore_pred) {
+> cac616db39c207 John Fastabend     2020-05-21  15226             /* If we =
+get here with a dst_reg pointer type it is because
+> cac616db39c207 John Fastabend     2020-05-21  15227              * above =
+is_branch_taken() special cased the 0 comparison.
+> cac616db39c207 John Fastabend     2020-05-21  15228              */
+> cac616db39c207 John Fastabend     2020-05-21  15229             if (!__is=
+_pointer_value(false, dst_reg))
+> b5dc0163d8fd78 Alexei Starovoitov 2019-06-15  15230                     e=
+rr =3D mark_chain_precision(env, insn->dst_reg);
+> 6d94e741a8ff81 Alexei Starovoitov 2020-11-10  15231             if (BPF_S=
+RC(insn->code) =3D=3D BPF_X && !err &&
+> 6d94e741a8ff81 Alexei Starovoitov 2020-11-10  15232                 !__is=
+_pointer_value(false, src_reg))
+> b5dc0163d8fd78 Alexei Starovoitov 2019-06-15  15233                     e=
+rr =3D mark_chain_precision(env, insn->src_reg);
+> b5dc0163d8fd78 Alexei Starovoitov 2019-06-15  15234             if (err)
+> b5dc0163d8fd78 Alexei Starovoitov 2019-06-15  15235                     r=
+eturn err;
+> b5dc0163d8fd78 Alexei Starovoitov 2019-06-15  15236     }
+> 9183671af6dbf6 Daniel Borkmann    2021-05-28  15237
+> 689049426b9d3b Alexei Starovoitov 2024-05-24  15238     if (pred < 0 || i=
+gnore_pred) {
+> 689049426b9d3b Alexei Starovoitov 2024-05-24  15239             other_bra=
+nch =3D push_stack(env, *insn_idx + insn->off + 1, *insn_idx,
+> 689049426b9d3b Alexei Starovoitov 2024-05-24  15240                      =
+                 false);
+> 689049426b9d3b Alexei Starovoitov 2024-05-24  15241             if (!othe=
+r_branch)
+> 689049426b9d3b Alexei Starovoitov 2024-05-24  15242                     r=
+eturn -EFAULT;
+> 689049426b9d3b Alexei Starovoitov 2024-05-24  15243             other_bra=
+nch_regs =3D other_branch->frame[other_branch->curframe]->regs;
+> 689049426b9d3b Alexei Starovoitov 2024-05-24  15244             other_dst=
+_reg =3D &other_branch_regs[insn->dst_reg];
+> 689049426b9d3b Alexei Starovoitov 2024-05-24  15245             if (has_s=
+rc_reg)
+> 689049426b9d3b Alexei Starovoitov 2024-05-24  15246                     o=
+ther_src_reg =3D &other_branch_regs[insn->src_reg];
+> 689049426b9d3b Alexei Starovoitov 2024-05-24  15247     }
+>
+> other_dst_reg not set on else path.
+>
+> 689049426b9d3b Alexei Starovoitov 2024-05-24  15248
+> 4f7b3e82589e0d Alexei Starovoitov 2018-12-03  15249     if (pred =3D=3D 1=
+) {
+> 9183671af6dbf6 Daniel Borkmann    2021-05-28  15250             /* Only f=
+ollow the goto, ignore fall-through. If needed, push
+> 9183671af6dbf6 Daniel Borkmann    2021-05-28  15251              * the fa=
+ll-through branch for simulation under speculative
+> 9183671af6dbf6 Daniel Borkmann    2021-05-28  15252              * execut=
+ion.
+> 9183671af6dbf6 Daniel Borkmann    2021-05-28  15253              */
+> 9183671af6dbf6 Daniel Borkmann    2021-05-28  15254             if (!env-=
+>bypass_spec_v1 &&
+> 9183671af6dbf6 Daniel Borkmann    2021-05-28  15255                 !sani=
+tize_speculative_path(env, insn, *insn_idx + 1,
+> 9183671af6dbf6 Daniel Borkmann    2021-05-28  15256                      =
+                      *insn_idx))
+> 9183671af6dbf6 Daniel Borkmann    2021-05-28  15257                     r=
+eturn -EFAULT;
+> 1a8a315f008a58 Andrii Nakryiko    2023-10-11  15258             if (env->=
+log.level & BPF_LOG_LEVEL)
+> 1a8a315f008a58 Andrii Nakryiko    2023-10-11  15259                     p=
+rint_insn_state(env, this_branch->frame[this_branch->curframe]);
+> 689049426b9d3b Alexei Starovoitov 2024-05-24  15260             if (ignor=
+e_pred) {
+> 689049426b9d3b Alexei Starovoitov 2024-05-24  15261                     /=
+* dst and src regs are scalars. Widen them */
+> 689049426b9d3b Alexei Starovoitov 2024-05-24  15262                     w=
+iden_reg(dst_reg);
+> 689049426b9d3b Alexei Starovoitov 2024-05-24  15263                     i=
+f (has_src_reg)
+> 689049426b9d3b Alexei Starovoitov 2024-05-24  15264                      =
+       widen_reg(src_reg);
+> 689049426b9d3b Alexei Starovoitov 2024-05-24  15265                     /=
+*
+> 689049426b9d3b Alexei Starovoitov 2024-05-24  15266                      =
+* Widen other branch only if not comparing for equlity.
+> 689049426b9d3b Alexei Starovoitov 2024-05-24  15267                      =
+* Example:
+> 689049426b9d3b Alexei Starovoitov 2024-05-24  15268                      =
+*   r1 =3D 1
+> 689049426b9d3b Alexei Starovoitov 2024-05-24  15269                      =
+*   if (r1 < 100)
+> 689049426b9d3b Alexei Starovoitov 2024-05-24  15270                      =
+* will produce
+> 689049426b9d3b Alexei Starovoitov 2024-05-24  15271                      =
+*   [0, 99] and [100, UMAX] after widening and reg_set_min_max().
+> 689049426b9d3b Alexei Starovoitov 2024-05-24  15272                      =
+*
+> 689049426b9d3b Alexei Starovoitov 2024-05-24  15273                      =
+*   r1 =3D 1
+> 689049426b9d3b Alexei Starovoitov 2024-05-24  15274                      =
+*   if (r1 =3D=3D 100)
+> 689049426b9d3b Alexei Starovoitov 2024-05-24  15275                      =
+* will produce
+> 689049426b9d3b Alexei Starovoitov 2024-05-24  15276                      =
+*    [1] and [100] after widening in other_branch and reg_set_min_max().
+> 689049426b9d3b Alexei Starovoitov 2024-05-24  15277                      =
+*/
+> 689049426b9d3b Alexei Starovoitov 2024-05-24  15278                     i=
+f (opcode !=3D BPF_JEQ && opcode !=3D BPF_JNE) {
+> 689049426b9d3b Alexei Starovoitov 2024-05-24  15279                      =
+       widen_reg(other_dst_reg);
+> 689049426b9d3b Alexei Starovoitov 2024-05-24  15280                      =
+       if (has_src_reg)
+> 689049426b9d3b Alexei Starovoitov 2024-05-24  15281                      =
+               widen_reg(other_src_reg);
+> 689049426b9d3b Alexei Starovoitov 2024-05-24  15282                     }
+> 689049426b9d3b Alexei Starovoitov 2024-05-24  15283             } else {
+> 17a5267067f3c3 Alexei Starovoitov 2014-09-26  15284                     *=
+insn_idx +=3D insn->off;
+> 17a5267067f3c3 Alexei Starovoitov 2014-09-26  15285                     r=
+eturn 0;
+> 689049426b9d3b Alexei Starovoitov 2024-05-24  15286             }
+> 4f7b3e82589e0d Alexei Starovoitov 2018-12-03  15287     } else if (pred =
+=3D=3D 0) {
+> 9183671af6dbf6 Daniel Borkmann    2021-05-28  15288             /* Only f=
+ollow the fall-through branch, since that's where the
+> 9183671af6dbf6 Daniel Borkmann    2021-05-28  15289              * progra=
+m will go. If needed, push the goto branch for
+> 9183671af6dbf6 Daniel Borkmann    2021-05-28  15290              * simula=
+tion under speculative execution.
+> 9183671af6dbf6 Daniel Borkmann    2021-05-28  15291              */
+> 9183671af6dbf6 Daniel Borkmann    2021-05-28  15292             if (!env-=
+>bypass_spec_v1 &&
+> 9183671af6dbf6 Daniel Borkmann    2021-05-28  15293                 !sani=
+tize_speculative_path(env, insn,
+> 9183671af6dbf6 Daniel Borkmann    2021-05-28  15294                      =
+                      *insn_idx + insn->off + 1,
+> 9183671af6dbf6 Daniel Borkmann    2021-05-28  15295                      =
+                      *insn_idx))
+> 9183671af6dbf6 Daniel Borkmann    2021-05-28  15296                     r=
+eturn -EFAULT;
+> 1a8a315f008a58 Andrii Nakryiko    2023-10-11  15297             if (env->=
+log.level & BPF_LOG_LEVEL)
+> 1a8a315f008a58 Andrii Nakryiko    2023-10-11  15298                     p=
+rint_insn_state(env, this_branch->frame[this_branch->curframe]);
+> 689049426b9d3b Alexei Starovoitov 2024-05-24  15299             if (ignor=
+e_pred) {
+> 689049426b9d3b Alexei Starovoitov 2024-05-24  15300                     i=
+f (opcode !=3D BPF_JEQ && opcode !=3D BPF_JNE) {
+> 689049426b9d3b Alexei Starovoitov 2024-05-24  15301                      =
+       widen_reg(dst_reg);
+> 689049426b9d3b Alexei Starovoitov 2024-05-24  15302                      =
+       if (has_src_reg)
+> 689049426b9d3b Alexei Starovoitov 2024-05-24  15303                      =
+               widen_reg(src_reg);
+> 689049426b9d3b Alexei Starovoitov 2024-05-24  15304                     }
+> 689049426b9d3b Alexei Starovoitov 2024-05-24  15305                     w=
+iden_reg(other_dst_reg);
+> 689049426b9d3b Alexei Starovoitov 2024-05-24  15306                     i=
+f (has_src_reg)
+> 689049426b9d3b Alexei Starovoitov 2024-05-24  15307                      =
+       widen_reg(other_src_reg);
+> 689049426b9d3b Alexei Starovoitov 2024-05-24  15308             } else {
+> 17a5267067f3c3 Alexei Starovoitov 2014-09-26  15309                     r=
+eturn 0;
+> 17a5267067f3c3 Alexei Starovoitov 2014-09-26  15310             }
+> 689049426b9d3b Alexei Starovoitov 2024-05-24  15311     }
+> 17a5267067f3c3 Alexei Starovoitov 2014-09-26  15312
+> 484611357c19f9 Josef Bacik        2016-09-28  15313     if (BPF_SRC(insn-=
+>code) =3D=3D BPF_X) {
+> 5f99f312bd3bed Andrii Nakryiko    2023-11-11  15314             err =3D r=
+eg_set_min_max(env,
+> 689049426b9d3b Alexei Starovoitov 2024-05-24 @15315                      =
+             other_dst_reg, other_src_reg,
+>                                                                          =
+             ^^^^^^^^^^^^^
+>
+> 4621202adc5bc0 Andrii Nakryiko    2023-11-01  15316                      =
+             dst_reg, src_reg, opcode, is_jmp32);
+> 4621202adc5bc0 Andrii Nakryiko    2023-11-01  15317     } else /* BPF_SRC=
+(insn->code) =3D=3D BPF_K */ {
+> 5f99f312bd3bed Andrii Nakryiko    2023-11-11  15318             err =3D r=
+eg_set_min_max(env,
+> 689049426b9d3b Alexei Starovoitov 2024-05-24  15319                      =
+             other_dst_reg,
+>                                                                          =
+             ^^^^^^^^^^^^^
+> Passed to reg_set_min_max() without being initialized.
 
-What I read here is that I can hack my system quickly. Is the intention to
-extend the kernel? If yes, I can't see how this experimentation is actually
-valid if not implemented in the kernel first taking into account the real
-constraint that you have to deal with sooner or later.
-
-> 
-> [...]
-> 
-> > influenced by the early contributors which come from server market that had
-> > (few) very specific workloads they needed to optimize for and throughput had
-> > a heavier weight vs latency. Fast forward to now, things are different. Even on
-> > server market latency/responsiveness has become more important. Power and
-> > thermal are important on a larger class of systems now too. I'd dare say even
-> > on server market. How do you know when it's okay for an app/task to consume too
-> > much power and when it is not? Hint hint, you can't unless someone in userspace
-> > tells you. Similarly for latency vs throughput. What is the correct way to
-> > write an application to provide this info? Then we can ask what is missing in
-> > the scheduler to enable this.
-> 
-> Hmm, you seem to be arguing that the way forward here is to have our one
-> general purpose scheduler be entirely driven by user space hinting. Assuming
-> I’m not misunderstanding you, I strongly disagree with this sentiment.  User
-> space hinting can be powerful, but I think we need to have a general purpose
-> scheduler that's completely agnostic to whatever is running in user space.
-> We’ve also been able to get strong results from sched_ext schedulers that don’t
-> use any user space hinting.
-
-I'm curious. If you believe in general purpose system, what work was done to
-improve the current one? What debugging and analysis was done to improve the
-current situation? It seems you reached a conclusion that we need something
-different - but no reasons behind it why is that.
-
-Is the problem with the default behavior of the system? Or are your problems
-focused on corner cases where things seem to fail?
-
-> 
-> Also, even if this ended up being the way forward, I don’t see it being
-> practical to implement. Wouldn’t it require us to update all of user space
-
-People swear by Apple's GCD by the way. It'd be really great if someone can
-create something similar that works properly on Linux. I have never tried the
-libdispatch port to see how well it does.
-
-And have you seen these?
-
-	https://developer.android.com/stories/games/mediatek-adpf
-
-> globally just to update how it interfaces with the scheduler?
-
-I think you're confusing default scheduler behavior and dealing with corner
-cases that are impossible for the scheduler to resolve. These corner cases are
-when help is needed. Note that the thermal API is actually info from the system
-to the app. If the app decides to listen, then they can help reduce the thermal
-impact without causing throttling. If they decide not to listen, then the best
-the system can do is throttle everything hard to protect from damage. And under
-bad thermal pressure, the scheduler can know which tasks to prioritize to
-performance if it has explicit knowledge/hints.
-
-If the default behavior is not working for you; could you provide more details
-on what goes wrong? It's unlikely that a new algorithm is the solution, but
-likely a bug somewhere or some configuration problem.
-
-And if someone wants to optimize for best perf, power and thermal, they need to
-do the work. There's only so much you can do on their behalf that is actually
-scalable.
-
-System designers want apps (all type of apps) to take best advantage of the
-hardware they built.
-
-App writers want to write portable software that gives the desired experience
-on all type of systems without special optimization.
-
-> 
-> [...]
-> 
-> > Note the original min/wakeup_granularity_ns, latency_ns etc were tuned by
-> > default for throughput by the way (server market bias). You can manipulate
-> > those and get better latencies.
-> 
-> Those knobs aren't available anymore in EEVDF.
-
-I generalized my statement as I didn't expect many have moved to 6.6 LTS, which
-is the only one that has EEVDF.
-
-EEVDF has base_slice_ns. What value do you read on your system? What is your
-TICK value and how m any CPUs do you have?
-
->  
-> [...]
-> 
-> > point IMO, not the scheduler algorithm. If the latter need to change, it needs
-> > to be as the result of this friction - which what EEVDF came about from to my
-> > understanding. To enable implementing a latency interface easier. But Vincent
-> > had a working implementation with CFS too which I think would have worked fine
-> > by the way.
-> 
-> This friction is nothing new. It's why we already find ourselves in the
-> unfortunate position of having a large corpus of out of tree scheduler patches.
-> If there is a lot of performance being left on the table, vendors are going to
-> find a way to get that performance. Corporations don't need our consent to ship
-> kernels with custom schedulers on their devices. They've already been doing it
-> for years, and it's ultimately the users who suffer.
-
-I think everyone agrees on the need to improve. But..
-
-> 
-> I genuinely believe that the fair.c scheduler will benefit from being able to
-> apply ideas conceived in a sched_ext scheduler which end up working well for
-> general use cases. For example, in scx_rusty, we’re able to get very good
-> interactivity [0] by determining a task’s deadline as a function of its average
-
-.. I am really failing to see why you jumped to the fact we need a new
-scheduler. And you'll find a lot of skepticism about the validity of your
-results. We have no clue what kind of unknown constraint you've left out with
-these test. And how limited your environment is.
-
-> runtime (along with some other great ideas that Changwoo first added to
-> scx_lavd) rather than from its eligibility + slice as with what EEVDF does.
-
-You'll find soon that the concept of runtime is hard. And generally there's
-a big soup of tasks running in the system. Most of which have no real deadline.
-Only few do. And corner cases are the complexity of any situation when you
-have more tasks that need to run immediately than you have CPUs to distribute
-them on. I don't think we can figure this out automatically based on runtime.
-
-> Over the course of a day or two, I tried way more ideas that didn’t work than
-> would have been possible in that time frame than with a recompile-reboot cycle,
-> and ended up finding one that seems to work very well. It would be awesome if
-> these ideas were added to EEVDF so that everyone can benefit.
-
-Why do you think they're applicable? And how do you know you're not working
-around different problems? Or have missed constraints in your testing once
-applied will make the whole results invalid?
-
-Too many unknowns IMHO. I am not against a different scheduler algorithm if it
-proves to be a more generic default. But you'll find first you have to explain
-what has failed in current one and what kind of analysis made you reach this
-conclusion. And then you'll find you'll need to actually do it in the kernel
-taking into account all the constraints that you must handle to prove it is
-still as valid as you initially thought.
-
-And I can only share my experience, I don't think the algorithm itself is the
-bottleneck here. The devil is in the corner cases. And these are hard to deal
-with without explicit hints.
-
-The biggest issue I see generally with the default behavior is that
-traditionally it has been biased towards throughput because those folks are
-the one that keep reporting regressions when anything changes on the list.
-
-Please add your voice and report problems when you notice things don't work for
-you. That's the best way to ensure there's visibility of these issues. It seems
-to me you're hitting problems that people expect to work. But I have no clue
-what problems you have. I am not sure if this was reported somewhere else, but
-it seems not.
-
-
-Thanks!
-
---
-Qais Yousef
+No. It's initialized when passed. It's a false positive.
+Try to make smatch smarter?
 
