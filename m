@@ -1,73 +1,73 @@
-Return-Path: <bpf+bounces-30684-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-30685-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 080838D08F4
-	for <lists+bpf@lfdr.de>; Mon, 27 May 2024 18:50:28 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 966508D08F6
+	for <lists+bpf@lfdr.de>; Mon, 27 May 2024 18:52:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 41261B22784
-	for <lists+bpf@lfdr.de>; Mon, 27 May 2024 16:50:21 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C68661C21C31
+	for <lists+bpf@lfdr.de>; Mon, 27 May 2024 16:52:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6FC1F15A857;
-	Mon, 27 May 2024 16:50:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A41A15A857;
+	Mon, 27 May 2024 16:52:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mmirMGPN"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LFD/E+Y5"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f178.google.com (mail-pl1-f178.google.com [209.85.214.178])
+Received: from mail-pj1-f52.google.com (mail-pj1-f52.google.com [209.85.216.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C21C91E4BF
-	for <bpf@vger.kernel.org>; Mon, 27 May 2024 16:50:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D6611E4BF
+	for <bpf@vger.kernel.org>; Mon, 27 May 2024 16:52:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716828614; cv=none; b=jQagfF+7D0pfPWk8vUNeLDPxrY16Y6tziEfR+VJqVt+/Cj3ECzqOZK2yFhlBggWA7eFZWAMiZ3403FCeLTNb5EoSGcLC7hV4JetUtHGtzlwB1Dd+8Kl/CCZefIsjZl/VbZzff+92XJjn/1DoyFjx0NfHiYGyFWhBeLuUmHzJQCc=
+	t=1716828772; cv=none; b=n5O47RyBeAYB6UnSSOgbbWuzSQlR2m+2I65zfAD99qxM+ajAHMlFHHVjyfFL6d+/rwq93fRtS/KSqVdII8B5uqyCfu3ysKLodwSiYa8y0fmpW/Re/DoEMFMgcy2qJEUcPIvJNWaYnIApKNVvSnndOvfyENmTw5ds8a5mUOV1TUw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716828614; c=relaxed/simple;
-	bh=TRVSm/mBd30f1l12udjKeb4f7aiDZost7G8lwJP45oo=;
+	s=arc-20240116; t=1716828772; c=relaxed/simple;
+	bh=Xfzhprpn2/1jvN2HF4Wdn147/vP2my6gAEX6tVH1H+0=;
 	h=Date:From:To:Cc:Message-ID:In-Reply-To:References:Subject:
-	 Mime-Version:Content-Type; b=Yt8AaJUWjJwEKCp5i6k2PZWtOpyEhwAPN3BYjn7MSSTaPl/6soaI882c+oBxZTmyUg5XgZcpe7PxnprJzYbnlv2gkbwY/0YMwx0MQ1PQpOjpkADHhWyZ/Ft3wQF9wqAlWSl5A6nT4QsCErKrr7wzO5acAWQ72kjYWrPYgyzLpRg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mmirMGPN; arc=none smtp.client-ip=209.85.214.178
+	 Mime-Version:Content-Type; b=Q3YEYoqfM5xXrJwTB3T0LHGCiE/dFm7GNtGeu6W+GTv2PSONeM3GPSr3dufFo/Ds1Ts4s4b3t1PFGz/1u3mYnvDfcWie5jI0+VCL9WJv6J8Nr9Q4nkpnuCJ2st+DAboqXM2Gqyn/TNbaG4quXqOxk6lVc0Qw8bSLRx2uC2zfbBE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=LFD/E+Y5; arc=none smtp.client-ip=209.85.216.52
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f178.google.com with SMTP id d9443c01a7336-1f45d6500b4so16739815ad.1
-        for <bpf@vger.kernel.org>; Mon, 27 May 2024 09:50:12 -0700 (PDT)
+Received: by mail-pj1-f52.google.com with SMTP id 98e67ed59e1d1-2bdf11888a5so3222254a91.0
+        for <bpf@vger.kernel.org>; Mon, 27 May 2024 09:52:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1716828612; x=1717433412; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1716828771; x=1717433571; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:subject:references
          :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=oMkeMxxyqUGb3pVpAqws3hMzovA0EZCtRONC+Ru2eN8=;
-        b=mmirMGPN6h+rmnoqu/JPqhp2X0p6bWqevTTLbv7tNYUDwciu1bhxll7chbyk3Uh7WY
-         mFvTOU6gnyPOF/fSXdTNHhyZ0AAX4XVOnfimOtoKOlYruWsWwFMu5EE26RqvPezAPtA1
-         HzNtGBGErYsIDntispn4v+w6V4yQlRPF92bLj3tLmuSDYdQxAzAmkgmb6QXk4hm/97Va
-         eMBpA2nzz3a0r6ynSt7cgXmb0cpUhOuwb+aq3Z5rVZEVZcrtJeQb6X6wNe01zi8B41Yr
-         rOOndNYJfRIR86u0qd7FxBvn2yEpczDrc+UghuoMAeD9spR3H2w5EqeBO/zB2fmN8CHR
-         bRJA==
+        bh=wLQpnwYPCA8D152wyrglyZUyUZVXkAPry0kezXYUSqE=;
+        b=LFD/E+Y5WXYno2lQUuy3rO14qua9GrPFyddTPubt5j8TtTlq8Vh+AIYwUz56SVwYIO
+         aNJi1ofSLvfPwcEJOTWiZSTxggiL4K83kD+JBbUB140/tnzwhx93xro1cErrkSlrYUGB
+         n8wAlOF4Pa1jjvAfqNgrGAPHqnVLU26hRbnmEv/WHiTyQIpHTmdeCsclyQvnqWyaMM+1
+         xszNVwk+t3ELrX9nEV69VHfXslxdDvhmZ7+FG2NUAGfo32mJObaBpGE8PXeRGi+Xsvny
+         OXY6fjJyVf6tF+Ja7Xt23i45lek9YwRZow09iSgo7AElYbt2nN0XHVe1PHrbs9tbPLFR
+         1UGw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1716828612; x=1717433412;
+        d=1e100.net; s=20230601; t=1716828771; x=1717433571;
         h=content-transfer-encoding:mime-version:subject:references
          :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=oMkeMxxyqUGb3pVpAqws3hMzovA0EZCtRONC+Ru2eN8=;
-        b=xIPtHcOZNUlmpRAQnje8S5Ojq22Fig1u39SoM+23WfPou9G3xh9R/jG9fQzEU1+VWN
-         GKkjq69ewbQX43SRfxOeSjSzt2fxNDYRN6lXIyMkZlhBGAkDMhN1nDQ4eSBbSyjtgCdA
-         D9gitYAOF+k/ofnOhESrq9/NxubLBSaPXsDlWiqV+O9UwKTrPg+oiFcMI8G0r7186CCH
-         oZwJT+Yxi3S6Yh9QkdXK37HenNjnLNo6AicQ9QoMkMLyWffJ0Sfdgqtznd0JgafUq0Kc
-         gP2to6FzqKzkXNgnyvuEP9M/gYbYzHlCD1grKpK5tQYI/AM0t7WzBHOLA1vgh41h9WMe
-         2pRg==
-X-Forwarded-Encrypted: i=1; AJvYcCVkBD+Cnic/Ceyc0rT19mTlm+RubrHvb0Y75nT70HQKxQ91WzxbprQFnDmALYsGgJUpptuCNBOQGDtZ7w9doCipn/cc
-X-Gm-Message-State: AOJu0Yy+w8udnd5hlxwQ+IugioIzkINTrlDkg/t6Up2tKtQCOs0MfGyT
-	sS9fCPa3Z/ARsYwODdjt/FPfM3ebGG6wHyK0ijWJaPyJtgakq8ie
-X-Google-Smtp-Source: AGHT+IEBBotYOwuiJWsDLpxtnLPlwhFZi5v3hxCuWnCPdYSsAlREktE7PdAt4Yd9Pfw51ngKjFZy4A==
-X-Received: by 2002:a17:903:2347:b0:1f2:fca9:731c with SMTP id d9443c01a7336-1f4486d51a5mr106311975ad.8.1716828612025;
-        Mon, 27 May 2024 09:50:12 -0700 (PDT)
+        bh=wLQpnwYPCA8D152wyrglyZUyUZVXkAPry0kezXYUSqE=;
+        b=qDBFyqWJ6Z4A/X3ogZ9RT3Eb6KwXVnQNUItje0q9Nzm0mb2Q1cZjhXIfGXV8op8f84
+         lUB3ipf98TWsAWnTBLOTcCbU2NH/bZq7m/rlCY161RbytyJioIO0nR4Y3JiUW99iPWBw
+         l2AF2XFqPNC9pqbEyyQE1+6p49imSg+iSEPmQm5KvpUKQvH9LNhUCftVbgxKZh7aUoOM
+         NUheBnCOwns8PN1MzGb9fGnj9SZnwdWg6fX0mEIlDu4ZYTPUQuNpQ5vsk/+97R5dJcFq
+         AZVCiksBAe0B0j721NoGklTtItpMVl6mUlE+yFjLlZ56fgr5H0E+ite+uGCSqaw3EWJb
+         UyXQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVNOh0qnwbtu7kwFyfIA+VPmcB2Y5Mnq6tIs6FNl4+UROS3GvVK0VC08QW0mDepGGMEdohJC9UseqoQfcdmmevufsWO
+X-Gm-Message-State: AOJu0Yw7VKBVRoqAMwRc3vV1CVLP+m0atXRdviy5ErLfRFs3EQeNTfIS
+	8oQTibUTpmfZzAZre99AnOUC68TDciYEZfnY7gif9oS04p54N6wN
+X-Google-Smtp-Source: AGHT+IFe7YRk7eLXz8A7nNEehy5DXv1XLOtpsRUdizQc3V6NMtOAOTctznzHyqtVW/O9h5kcdA4wbw==
+X-Received: by 2002:a17:90a:d184:b0:2b6:228a:3d83 with SMTP id 98e67ed59e1d1-2bf5f20809emr8692525a91.39.1716828770752;
+        Mon, 27 May 2024 09:52:50 -0700 (PDT)
 Received: from localhost ([98.97.41.203])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-1f44c9711bdsm65205555ad.145.2024.05.27.09.50.11
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2bf5f50d2a0sm6043111a91.22.2024.05.27.09.52.50
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 May 2024 09:50:11 -0700 (PDT)
-Date: Mon, 27 May 2024 09:50:10 -0700
+        Mon, 27 May 2024 09:52:50 -0700 (PDT)
+Date: Mon, 27 May 2024 09:52:49 -0700
 From: John Fastabend <john.fastabend@gmail.com>
 To: Jakub Sitnicki <jakub@cloudflare.com>, 
  bpf@vger.kernel.org
@@ -77,12 +77,12 @@ Cc: Alexei Starovoitov <ast@kernel.org>,
  Hillf Danton <hdanton@sina.com>, 
  Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>, 
  kernel-team@cloudflare.com
-Message-ID: <6654b9c2b30bf_1c762088d@john.notmuch>
-In-Reply-To: <20240527-sockmap-verify-deletes-v1-2-944b372f2101@cloudflare.com>
+Message-ID: <6654ba618009f_1c76208cc@john.notmuch>
+In-Reply-To: <20240527-sockmap-verify-deletes-v1-3-944b372f2101@cloudflare.com>
 References: <20240527-sockmap-verify-deletes-v1-0-944b372f2101@cloudflare.com>
- <20240527-sockmap-verify-deletes-v1-2-944b372f2101@cloudflare.com>
-Subject: RE: [PATCH bpf 2/3] Revert "bpf, sockmap: Prevent lock inversion
- deadlock in map delete elem"
+ <20240527-sockmap-verify-deletes-v1-3-944b372f2101@cloudflare.com>
+Subject: RE: [PATCH bpf 3/3] selftests/bpf: Cover verifier checks for mutating
+ sockmap/sockhash
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -94,14 +94,11 @@ Content-Type: text/plain;
 Content-Transfer-Encoding: 7bit
 
 Jakub Sitnicki wrote:
-> This reverts commit ff91059932401894e6c86341915615c5eb0eca48.
-> 
-> This check is no longer needed. BPF programs attached to tracepoints are
-> now rejected by the verifier when they attempt to delete from a
-> sockmap/sockhash maps.
+> Verifier enforces that only certain program types can mutate sock{map,hash}
+> maps, that is update it or delete from it. Add test coverage for these
+> checks so we don't regress.
 > 
 > Signed-off-by: Jakub Sitnicki <jakub@cloudflare.com>
-> ---
 
 Acked-by: John Fastabend <john.fastabend@gmail.com>
 
