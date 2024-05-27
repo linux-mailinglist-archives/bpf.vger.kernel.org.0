@@ -1,257 +1,201 @@
-Return-Path: <bpf+bounces-30691-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-30692-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id EACE18D093A
-	for <lists+bpf@lfdr.de>; Mon, 27 May 2024 19:12:43 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id BB9628D097B
+	for <lists+bpf@lfdr.de>; Mon, 27 May 2024 19:39:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6F59B1F22106
-	for <lists+bpf@lfdr.de>; Mon, 27 May 2024 17:12:43 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DBB5C1C21C1C
+	for <lists+bpf@lfdr.de>; Mon, 27 May 2024 17:39:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 78A7B15E5B6;
-	Mon, 27 May 2024 17:12:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B66A215F314;
+	Mon, 27 May 2024 17:39:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dvZbSzSx"
+	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="FE/m8D2D"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f176.google.com (mail-pf1-f176.google.com [209.85.210.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 943C817E902;
-	Mon, 27 May 2024 17:12:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5120315E5A0;
+	Mon, 27 May 2024 17:39:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.133.104.62
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716829955; cv=none; b=OycLGBhcEQ65o9wWuQ3jQNCDFgjD/Dx4v9T1PGMSEXpEBZlzXtnDhPCLsAWnYDGQ8xYfVnaRHdk5fjXV4Id1qZ13M2gk1BTyJZ/v20Bsqj7TwLliP6J6xh1MM5F0guFJSSWA1Y5bZR/07SolMZaKgzQ0TbH+HUkMADwPFPKmVFM=
+	t=1716831552; cv=none; b=eSn8SxOR+Kpnq9eacXIyV5LQIpgcqJKJxywSU6Pk1+RpaXEGV1p7pzj1eeRQVE2rcIOGwGXFMwKmD/DNuox3q0Uozaf2IhqILyH0KmfdgCSs6MCXcuEZVD0VTaUi2VqHBHu9X6yC44QBlBOeLpVSP5ecnlA/OoS/VCmUDB6leQs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716829955; c=relaxed/simple;
-	bh=pqNRpjAOxcRthRPPrejlOHLt3qRMZdMxjxDbu9u4qWY=;
-	h=Date:From:To:Cc:Message-ID:In-Reply-To:References:Subject:
-	 Mime-Version:Content-Type; b=IjmiavZf3+lUClZsQjwtBtzWi53yAYcB8QO+QKlP6dOBMrTPYG0flb9iefudTeOk2aEUyZvqlmkDse7M0gvUb1jT7GIzC9zksCaNVEsT+GqmWVHxLShXfIkI8P5y857OgwRQNYh+LI/dfXxirRSbTKRkb5J8xtBw/P+EieRJSU8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=dvZbSzSx; arc=none smtp.client-ip=209.85.210.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f176.google.com with SMTP id d2e1a72fcca58-6f8ecafd28cso2749329b3a.3;
-        Mon, 27 May 2024 10:12:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1716829953; x=1717434753; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Czg/ac8KMZ0qJyvYiTYaCutSE45TkfB2OVJ/WTZ4Qxw=;
-        b=dvZbSzSxJAwupWCnQcRAcy56b80TO7maUmQHFNbDDv6EnWXy4HIELU7qzOl8unWkPl
-         6ORuMJEOp01luaGRJS/rMT+r5bIbra2WxdAGkUyYE2R6H+sywmjZEkeqnsC8a2x2kmEd
-         ZN6L12rzyQAWxVe42vNfWwbdeFBnPpo7BA42Yu0o7YrRYGla9IzR0I0VPGMXX5GD7Hhy
-         MlJKR3gePXPs8FLvpYSrKnGr4JliMEfuYgfkQNerV8VLuMCoRR783q4pCsDpPgkLN5hg
-         95bLUfWYT4lQ14e1/zUB78x7QV0JC01fRxr6kQPPg2qHs+MkGBB4JdVQTFrrmq41teuX
-         SYnQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1716829953; x=1717434753;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=Czg/ac8KMZ0qJyvYiTYaCutSE45TkfB2OVJ/WTZ4Qxw=;
-        b=kbJ0xdWmJLvNsYIMTKfM0tSY3onEshDCeffOSKrlA7uYEJHNFdjWmghKaSz5F5th0G
-         pFuPuTXQwjra7wynm8xZiVeUGnQFSaNN9mCSbyHNfjrDdIzNTXj64hRka7G5Isj30aZU
-         rZYuFUEKaBrJeGoC0smNR6AoivuhvJE9lQQKAmhEprivglnrZ90FfVPD0Uc0BSZ32xYN
-         +xhNcSnrXlL+zJiZE+jEP9vCMtGIzF7q60LmBscMaII75L1IPMK3MSpwVeSHgJMpQjCf
-         JOSH2wzYdh9UyVO9ypcVMPxbMVYDs1FOQM/pPEmB0nA2KWeUyIYhYoIFkN8RfNzAIqvm
-         +ieQ==
-X-Forwarded-Encrypted: i=1; AJvYcCU8xoJ3M1L72xuAII/GEu/KXUjjg80L/ZkCa4ROyu8dGtp2yMClzWHy4dScQd2X7myS2heGW/uR6+AWOdof7y2NTLhCnpkIsXkOQ123YxR81tj6cB2riUh/6hnSQHNQ6RZQzwLU
-X-Gm-Message-State: AOJu0Yx62JymLJC4YmcCN9ow6YZ9XSTpV3Rgso9WGRqGj+uU1MRNEeVD
-	u1cVXXE6yPqeSLueUatQ2Y69I5lC5PC24ppCWwcjjvZ2Wu9jPv3Y
-X-Google-Smtp-Source: AGHT+IFQTJF4RCgPEkHhqjE+9+4j0ui8zWD++G/TLALf1iJcabxhibkJ8PB6qddmnV57XytzRyWorQ==
-X-Received: by 2002:a05:6a20:a124:b0:1a9:3cda:dc3c with SMTP id adf61e73a8af0-1b212f94ef1mr10554731637.61.1716829952725;
-        Mon, 27 May 2024 10:12:32 -0700 (PDT)
-Received: from localhost ([98.97.41.203])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-6f8fcbeac2dsm5076378b3a.104.2024.05.27.10.12.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 May 2024 10:12:32 -0700 (PDT)
-Date: Mon, 27 May 2024 10:12:31 -0700
-From: John Fastabend <john.fastabend@gmail.com>
-To: Geliang Tang <geliang@kernel.org>, 
- Andrii Nakryiko <andrii@kernel.org>, 
- Eduard Zingerman <eddyz87@gmail.com>, 
- Mykola Lysenko <mykolal@fb.com>, 
- Alexei Starovoitov <ast@kernel.org>, 
- Daniel Borkmann <daniel@iogearbox.net>, 
- Martin KaFai Lau <martin.lau@linux.dev>, 
- Song Liu <song@kernel.org>, 
- Yonghong Song <yonghong.song@linux.dev>, 
- John Fastabend <john.fastabend@gmail.com>, 
- KP Singh <kpsingh@kernel.org>, 
- Stanislav Fomichev <sdf@google.com>, 
- Hao Luo <haoluo@google.com>, 
- Jiri Olsa <jolsa@kernel.org>, 
- Shuah Khan <shuah@kernel.org>, 
- Jakub Sitnicki <jakub@cloudflare.com>
-Cc: Geliang Tang <tanggeliang@kylinos.cn>, 
- bpf@vger.kernel.org, 
- linux-kselftest@vger.kernel.org
-Message-ID: <6654beff96840_23de2086e@john.notmuch>
-In-Reply-To: <32cf8376a810e2e9c719f8e4cfb97132ed2d1f9c.1716446893.git.tanggeliang@kylinos.cn>
-References: <cover.1716446893.git.tanggeliang@kylinos.cn>
- <32cf8376a810e2e9c719f8e4cfb97132ed2d1f9c.1716446893.git.tanggeliang@kylinos.cn>
-Subject: RE: [PATCH bpf-next 3/8] selftests/bpf: Use bpf_link attachments in
- test_sockmap
+	s=arc-20240116; t=1716831552; c=relaxed/simple;
+	bh=goVdYu7r26wJ0sXKjwoIL9ttC9JisKqyD4m+gDIxmoY=;
+	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=mq+JBSZrolReFs6mnrrUDg8q4JIUrxjZrXy75H008IIT3MPpw9aANpIX9ciUORd2QOItoSKxipKdM2PKibD/BTH395YXWT3H0V/kxK4Lj1/tfycQm+tGnmWSpRS9h2WT52geO8k1NkhFU7FHaxO3HmaiOV6nu/P8KiAU5Gv2V/Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=FE/m8D2D; arc=none smtp.client-ip=213.133.104.62
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iogearbox.net
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
+	In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
+	bh=et6LmSUIQ8i5W3yfJk1TquNJGf0VY0XegwDDTqD1iSs=; b=FE/m8D2DdK6Fiz8JfjGoNybaEQ
+	CCoQST7PdCwxMcksKMbxCoIBgOwSGvyOwVqKGdczluJn9h/g7+Zy319z26rCxgZl4o6VOQ3y1wztI
+	di6WmGTJqxXlXqvjJ/SIFU/3GledcP0SgMTtdchFg0wNYFJBGxpztbisCoglSAXxZBu/sF++q4OlB
+	7kIHPnlpXiFNHNKNZuI3/weVsug8WlvqADNTPOx5dM4Hgi5BzahzAuK3OwqBQMhNKixaJibmberOq
+	SugU7l07nX2xkgoFlJTDgHqFnk8z4G8/i47v0ztrSy4rcKhruIUXByBmzKrP8IU5HPDmJOYa5yuU2
+	V1GmfTvw==;
+Received: from sslproxy07.your-server.de ([78.47.199.104])
+	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <daniel@iogearbox.net>)
+	id 1sBeJM-000KAa-Ql; Mon, 27 May 2024 19:39:04 +0200
+Received: from [178.197.248.14] (helo=linux.home)
+	by sslproxy07.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <daniel@iogearbox.net>)
+	id 1sBeJM-0004ko-2N;
+	Mon, 27 May 2024 19:39:04 +0200
+Subject: Re: [Patch bpf] vmalloc: relax is_vmalloc_or_module_addr() check
+To: Mike Rapoport <rppt@kernel.org>
+Cc: Cong Wang <xiyou.wangcong@gmail.com>, netdev@vger.kernel.org,
+ linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+ bpf@vger.kernel.org, Cong Wang <cong.wang@bytedance.com>,
+ Luis Chamberlain <mcgrof@kernel.org>
+References: <20240526230648.188550-1-xiyou.wangcong@gmail.com>
+ <1f39f888-989f-658b-a107-90ffe1347d0f@iogearbox.net>
+ <ZlSKjd6-6-no-x9W@kernel.org>
+From: Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <f9e6d91c-22ac-5322-a2d1-5e1d10c683d2@iogearbox.net>
+Date: Mon, 27 May 2024 19:39:03 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
+MIME-Version: 1.0
+In-Reply-To: <ZlSKjd6-6-no-x9W@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.10/27288/Mon May 27 10:29:01 2024)
 
-Geliang Tang wrote:
-> From: Geliang Tang <tanggeliang@kylinos.cn>
+On 5/27/24 3:28 PM, Mike Rapoport wrote:
+> On Mon, May 27, 2024 at 03:11:50PM +0200, Daniel Borkmann wrote:
+>> On 5/27/24 1:06 AM, Cong Wang wrote:
+>>> From: Cong Wang <cong.wang@bytedance.com>
+>>>
+>>> After commit 2c9e5d4a0082 ("bpf: remove CONFIG_BPF_JIT dependency on CONFIG_MODULES of")
+>>> CONFIG_BPF_JIT does not depend on CONFIG_MODULES any more and bpf jit
+>>> also uses the MODULES_VADDR ~ MODULES_END memory region. But
+>>> is_vmalloc_or_module_addr() still checks CONFIG_MODULES, which then
+>>> returns false for a bpf jit memory region when CONFIG_MODULES is not
+>>> defined. It leads to the following kernel BUG:
+>>>
+>>> [    1.567023] ------------[ cut here ]------------
+>>> [    1.567883] kernel BUG at mm/vmalloc.c:745!
+>>> [    1.568477] Oops: invalid opcode: 0000 [#1] PREEMPT SMP KASAN NOPTI
+>>> [    1.569367] CPU: 0 PID: 1 Comm: swapper/0 Not tainted 6.9.0+ #448
+>>> [    1.570247] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.15.0-1 04/01/2014
+>>> [    1.570786] RIP: 0010:vmalloc_to_page+0x48/0x1ec
+>>> [    1.570786] Code: 0f 00 00 e8 eb 1a 05 00 b8 37 00 00 00 48 ba fe ff ff ff ff 1f 00 00 4c 03 25 76 49 c6 02 48 c1 e0 28 48 01 e8 48 39 d0 76 02 <0f> 0b 4c 89 e7 e8 bf 1a 05 00 49 8b 04 24 48 a9 9f ff ff ff 0f 84
+>>> [    1.570786] RSP: 0018:ffff888007787960 EFLAGS: 00010212
+>>> [    1.570786] RAX: 000036ffa0000000 RBX: 0000000000000640 RCX: ffffffff8147e93c
+>>> [    1.570786] RDX: 00001ffffffffffe RSI: dffffc0000000000 RDI: ffffffff840e32c8
+>>> [    1.570786] RBP: ffffffffa0000000 R08: 0000000000000000 R09: 0000000000000000
+>>> [    1.570786] R10: ffff888007787a88 R11: ffffffff8475d8e7 R12: ffffffff83e80ff8
+>>> [    1.570786] R13: 0000000000000640 R14: 0000000000000640 R15: 0000000000000640
+>>> [    1.570786] FS:  0000000000000000(0000) GS:ffff88806cc00000(0000) knlGS:0000000000000000
+>>> [    1.570786] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+>>> [    1.570786] CR2: ffff888006a01000 CR3: 0000000003e80000 CR4: 0000000000350ef0
+>>> [    1.570786] Call Trace:
+>>> [    1.570786]  <TASK>
+>>> [    1.570786]  ? __die_body+0x1b/0x58
+>>> [    1.570786]  ? die+0x31/0x4b
+>>> [    1.570786]  ? do_trap+0x9d/0x138
+>>> [    1.570786]  ? vmalloc_to_page+0x48/0x1ec
+>>> [    1.570786]  ? do_error_trap+0xcd/0x102
+>>> [    1.570786]  ? vmalloc_to_page+0x48/0x1ec
+>>> [    1.570786]  ? vmalloc_to_page+0x48/0x1ec
+>>> [    1.570786]  ? handle_invalid_op+0x2f/0x38
+>>> [    1.570786]  ? vmalloc_to_page+0x48/0x1ec
+>>> [    1.570786]  ? exc_invalid_op+0x2b/0x41
+>>> [    1.570786]  ? asm_exc_invalid_op+0x16/0x20
+>>> [    1.570786]  ? vmalloc_to_page+0x26/0x1ec
+>>> [    1.570786]  ? vmalloc_to_page+0x48/0x1ec
+>>> [    1.570786]  __text_poke+0xb6/0x458
+>>> [    1.570786]  ? __pfx_text_poke_memcpy+0x10/0x10
+>>> [    1.570786]  ? __pfx___mutex_lock+0x10/0x10
+>>> [    1.570786]  ? __pfx___text_poke+0x10/0x10
+>>> [    1.570786]  ? __pfx_get_random_u32+0x10/0x10
+>>> [    1.570786]  ? srso_return_thunk+0x5/0x5f
+>>> [    1.570786]  text_poke_copy_locked+0x70/0x84
+>>> [    1.570786]  text_poke_copy+0x32/0x4f
+>>> [    1.570786]  bpf_arch_text_copy+0xf/0x27
+>>> [    1.570786]  bpf_jit_binary_pack_finalize+0x26/0x5a
+>>> [    1.570786]  bpf_int_jit_compile+0x576/0x8ad
+>>> [    1.570786]  ? __pfx_bpf_int_jit_compile+0x10/0x10
+>>> [    1.570786]  ? srso_return_thunk+0x5/0x5f
+>>> [    1.570786]  ? __kmalloc_node_track_caller+0x2b5/0x2e0
+>>> [    1.570786]  bpf_prog_select_runtime+0x7c/0x199
+>>> [    1.570786]  bpf_prepare_filter+0x1e9/0x25b
+>>> [    1.570786]  ? __pfx_bpf_prepare_filter+0x10/0x10
+>>> [    1.570786]  ? srso_return_thunk+0x5/0x5f
+>>> [    1.570786]  ? _find_next_bit+0x29/0x7e
+>>> [    1.570786]  bpf_prog_create+0xb8/0xe0
+>>> [    1.570786]  ptp_classifier_init+0x75/0xa1
+>>> [    1.570786]  ? __pfx_ptp_classifier_init+0x10/0x10
+>>> [    1.570786]  ? srso_return_thunk+0x5/0x5f
+>>> [    1.570786]  ? register_pernet_subsys+0x36/0x42
+>>> [    1.570786]  ? srso_return_thunk+0x5/0x5f
+>>> [    1.570786]  sock_init+0x99/0xa3
+>>> [    1.570786]  ? __pfx_sock_init+0x10/0x10
+>>> [    1.570786]  do_one_initcall+0x104/0x2c4
+>>> [    1.570786]  ? __pfx_do_one_initcall+0x10/0x10
+>>> [    1.570786]  ? parameq+0x25/0x2d
+>>> [    1.570786]  ? rcu_is_watching+0x1c/0x3c
+>>> [    1.570786]  ? trace_kmalloc+0x81/0xb2
+>>> [    1.570786]  ? srso_return_thunk+0x5/0x5f
+>>> [    1.570786]  ? __kmalloc+0x29c/0x2c7
+>>> [    1.570786]  ? srso_return_thunk+0x5/0x5f
+>>> [    1.570786]  do_initcalls+0xf9/0x123
+>>> [    1.570786]  kernel_init_freeable+0x24f/0x289
+>>> [    1.570786]  ? __pfx_kernel_init+0x10/0x10
+>>> [    1.570786]  kernel_init+0x19/0x13a
+>>> [    1.570786]  ret_from_fork+0x24/0x41
+>>> [    1.570786]  ? __pfx_kernel_init+0x10/0x10
+>>> [    1.570786]  ret_from_fork_asm+0x1a/0x30
+>>> [    1.570786]  </TASK>
+>>> [    1.570819] ---[ end trace 0000000000000000 ]---
+>>> [    1.571463] RIP: 0010:vmalloc_to_page+0x48/0x1ec
+>>> [    1.572111] Code: 0f 00 00 e8 eb 1a 05 00 b8 37 00 00 00 48 ba fe ff ff ff ff 1f 00 00 4c 03 25 76 49 c6 02 48 c1 e0 28 48 01 e8 48 39 d0 76 02 <0f> 0b 4c 89 e7 e8 bf 1a 05 00 49 8b 04 24 48 a9 9f ff ff ff 0f 84
+>>> [    1.574632] RSP: 0018:ffff888007787960 EFLAGS: 00010212
+>>> [    1.575129] RAX: 000036ffa0000000 RBX: 0000000000000640 RCX: ffffffff8147e93c
+>>> [    1.576097] RDX: 00001ffffffffffe RSI: dffffc0000000000 RDI: ffffffff840e32c8
+>>> [    1.577084] RBP: ffffffffa0000000 R08: 0000000000000000 R09: 0000000000000000
+>>> [    1.578077] R10: ffff888007787a88 R11: ffffffff8475d8e7 R12: ffffffff83e80ff8
+>>> [    1.578810] R13: 0000000000000640 R14: 0000000000000640 R15: 0000000000000640
+>>> [    1.579823] FS:  0000000000000000(0000) GS:ffff88806cc00000(0000) knlGS:0000000000000000
+>>> [    1.580992] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+>>> [    1.581869] CR2: ffff888006a01000 CR3: 0000000003e80000 CR4: 0000000000350ef0
+>>> [    1.582800] Kernel panic - not syncing: Fatal exception
+>>> [    1.583765] ---[ end Kernel panic - not syncing: Fatal exception ]---
+>>>
+>>> Fixes: 2c9e5d4a0082 ("bpf: remove CONFIG_BPF_JIT dependency on CONFIG_MODULES of")
+>>> Cc: Luis Chamberlain <mcgrof@kernel.org>
+>>> Cc: Mike Rapoport (IBM) <rppt@kernel.org>
+>>> Signed-off-by: Cong Wang <cong.wang@bytedance.com>
+>>
+>> Thanks for the fix!
+>>
+>> Mike/Luis, do you plan to pick this up or rather prefer if we route it to
+>> Linus (with your Ack assuming it looks good to you)?
 > 
-> Switch attachments to bpf_link using bpf_program__attach_sockmap() instead
-> of bpf_prog_attach().
+> I'm fine with routing this via bpf, but usually vmalloc patches go via mm
+> tree, so it's more up to Andrew.
 
-Sorry it took me a few days to get to this.
-
-Is there a reason to push this to links vs just leave it as is? I had
-a plan to port all the test_sockmap tests into prog_tests anyways. I'll
-try to push some initial patch next week.
-
-The one advantage of test_sockmap is we can have it run for longer
-runs by pushing different options through so might be worth keeping
-just for that.
-
-If you really want links here I'm OK with that I guess just asking.
+All good, so once Cong sends v2, lets have Andrew pick up the fix.
 
 Thanks,
-John
-
-> 
-> This patch adds a new array progs[] to replace prog_fd[] array, set in
-> populate_progs() for each program in bpf object.
-> 
-> And another new array links[] to save the attached bpf_link. It is
-> initalized as NULL in populate_progs, set as the return valuses of
-> bpf_program__attach_sockmap(), and detached by bpf_link__detach().
-> 
-> Signed-off-by: Geliang Tang <tanggeliang@kylinos.cn>
-> ---
->  tools/testing/selftests/bpf/test_sockmap.c | 59 ++++++++++++----------
->  1 file changed, 31 insertions(+), 28 deletions(-)
-> 
-> diff --git a/tools/testing/selftests/bpf/test_sockmap.c b/tools/testing/selftests/bpf/test_sockmap.c
-> index e7dbf49a2ca6..d7581bbbc473 100644
-> --- a/tools/testing/selftests/bpf/test_sockmap.c
-> +++ b/tools/testing/selftests/bpf/test_sockmap.c
-> @@ -64,6 +64,8 @@ int failed;
->  int map_fd[9];
->  struct bpf_map *maps[9];
->  int prog_fd[9];
-> +struct bpf_program *progs[9];
-> +struct bpf_link *links[9];
->  
->  int txmsg_pass;
->  int txmsg_redir;
-> @@ -960,43 +962,39 @@ static int run_options(struct sockmap_options *options, int cg_fd,  int test)
->  
->  	/* Attach programs to sockmap */
->  	if (!txmsg_omit_skb_parser) {
-> -		err = bpf_prog_attach(prog_fd[0], map_fd[0],
-> -				      BPF_SK_SKB_STREAM_PARSER, 0);
-> -		if (err) {
-> +		links[0] = bpf_program__attach_sockmap(progs[0], map_fd[0]);
-> +		if (!links[0]) {
->  			fprintf(stderr,
-> -				"ERROR: bpf_prog_attach (sockmap %i->%i): %d (%s)\n",
-> -				prog_fd[0], map_fd[0], err, strerror(errno));
-> -			return err;
-> +				"ERROR: bpf_program__attach_sockmap (sockmap %i->%i): (%s)\n",
-> +				bpf_program__fd(progs[0]), map_fd[0], strerror(errno));
-> +			return -1;
->  		}
->  	}
->  
-> -	err = bpf_prog_attach(prog_fd[1], map_fd[0],
-> -				BPF_SK_SKB_STREAM_VERDICT, 0);
-> -	if (err) {
-> -		fprintf(stderr, "ERROR: bpf_prog_attach (sockmap): %d (%s)\n",
-> -			err, strerror(errno));
-> -		return err;
-> +	links[1] = bpf_program__attach_sockmap(progs[1], map_fd[0]);
-> +	if (!links[1]) {
-> +		fprintf(stderr, "ERROR: bpf_program__attach_sockmap (sockmap): (%s)\n",
-> +			strerror(errno));
-> +		return -1;
->  	}
->  
->  	/* Attach programs to TLS sockmap */
->  	if (txmsg_ktls_skb) {
->  		if (!txmsg_omit_skb_parser) {
-> -			err = bpf_prog_attach(prog_fd[0], map_fd[8],
-> -					      BPF_SK_SKB_STREAM_PARSER, 0);
-> -			if (err) {
-> +			links[2] = bpf_program__attach_sockmap(progs[0], map_fd[8]);
-> +			if (!links[2]) {
->  				fprintf(stderr,
-> -					"ERROR: bpf_prog_attach (TLS sockmap %i->%i): %d (%s)\n",
-> -					prog_fd[0], map_fd[8], err, strerror(errno));
-> -				return err;
-> +					"ERROR: bpf_program__attach_sockmap (TLS sockmap %i->%i): (%s)\n",
-> +					bpf_program__fd(progs[0]), map_fd[8], strerror(errno));
-> +				return -1;
->  			}
->  		}
->  
-> -		err = bpf_prog_attach(prog_fd[2], map_fd[8],
-> -				      BPF_SK_SKB_STREAM_VERDICT, 0);
-> -		if (err) {
-> -			fprintf(stderr, "ERROR: bpf_prog_attach (TLS sockmap): %d (%s)\n",
-> -				err, strerror(errno));
-> -			return err;
-> +		links[3] = bpf_program__attach_sockmap(progs[2], map_fd[8]);
-> +		if (!links[3]) {
-> +			fprintf(stderr, "ERROR: bpf_program__attach_sockmap (TLS sockmap): (%s)\n",
-> +				strerror(errno));
-> +			return -1;
->  		}
->  	}
->  
-> @@ -1281,10 +1279,11 @@ static int run_options(struct sockmap_options *options, int cg_fd,  int test)
->  out:
->  	/* Detatch and zero all the maps */
->  	bpf_prog_detach2(prog_fd[3], cg_fd, BPF_CGROUP_SOCK_OPS);
-> -	bpf_prog_detach2(prog_fd[0], map_fd[0], BPF_SK_SKB_STREAM_PARSER);
-> -	bpf_prog_detach2(prog_fd[1], map_fd[0], BPF_SK_SKB_STREAM_VERDICT);
-> -	bpf_prog_detach2(prog_fd[0], map_fd[8], BPF_SK_SKB_STREAM_PARSER);
-> -	bpf_prog_detach2(prog_fd[2], map_fd[8], BPF_SK_SKB_STREAM_VERDICT);
-> +
-> +	for (i = 0; i < ARRAY_SIZE(links); i++) {
-> +		if (links[i])
-> +			bpf_link__detach(links[i]);
-> +	}
->  
->  	if (tx_prog_fd > 0)
->  		bpf_prog_detach2(tx_prog_fd, map_fd[1], BPF_SK_MSG_VERDICT);
-> @@ -1836,6 +1835,7 @@ static int populate_progs(char *bpf_file)
->  	i = bpf_object__load(obj);
->  	i = 0;
->  	bpf_object__for_each_program(prog, obj) {
-> +		progs[i] = prog;
->  		prog_fd[i] = bpf_program__fd(prog);
->  		i++;
->  	}
-> @@ -1850,6 +1850,9 @@ static int populate_progs(char *bpf_file)
->  		}
->  	}
->  
-> +	for (i = 0; i < ARRAY_SIZE(links); i++)
-> +		links[i] = NULL;
-> +
->  	return 0;
->  }
->  
-> -- 
-> 2.43.0
-> 
-
-
+Daniel
 
