@@ -1,68 +1,64 @@
-Return-Path: <bpf+bounces-30652-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-30653-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6CED58D0457
-	for <lists+bpf@lfdr.de>; Mon, 27 May 2024 16:43:43 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 509638D034B
+	for <lists+bpf@lfdr.de>; Mon, 27 May 2024 16:22:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B2276B31537
-	for <lists+bpf@lfdr.de>; Mon, 27 May 2024 14:21:15 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 830741C221CF
+	for <lists+bpf@lfdr.de>; Mon, 27 May 2024 14:22:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E88B116F8F9;
-	Mon, 27 May 2024 14:13:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 64F52161310;
+	Mon, 27 May 2024 14:14:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FtEmFOjy"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Cu8bRAz3"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A00315EFA3;
-	Mon, 27 May 2024 14:13:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D15D0160862;
+	Mon, 27 May 2024 14:14:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716819208; cv=none; b=gU8g6k6y6Z1rHzUZ6tlT2rb/Zg6M1VqfO/nEVxafS61LmJcup/tOYg04N3O7IOPg2oFnOzjUBQ/LU2vfKt8rw/GWF4tJcPgncKbme2JX0cD0se6PlBNvjt7i46G7xnYXrFlKUMcNmSmvkPBWnz05q7InoPwaa41mMXLBQlRF9Yk=
+	t=1716819261; cv=none; b=h4XAtvUgcVYj1ohrN4woh1ARaBb7RIZ3Cfc2gUbQkYN83Bjjy8Us6hFHPMfIwGH6P+z/Abxvr0X+fNuy9G1WUkhFt2C5Avl9MPbeR88/Uivr+BuDTXhtbLBFD2O8F4x0+vmiMJ1mYKQ50G29u4QwwnIfKq0IA9P8Lanhc46Kga8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716819208; c=relaxed/simple;
-	bh=EcBCWvFnweJKxtHmfsqqva2IFqtU+n6mRWMhxtPDRsc=;
+	s=arc-20240116; t=1716819261; c=relaxed/simple;
+	bh=XJT5PosjIpIPOtzXYX+0KCa2o6P9JjTzNvWXyP20SQQ=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=VAJm1YEHwAmDD+1AIedTQfcw9lTzcwWdWSg6Ytava7tuHfK6kdZWK9jdk6VBfWJNXSVC13D/YIPJvOpVyicRdDHATAEybOLvbXGU3OzI5mg8r95alqlDclmgCRx8FiwWGuEMAYuASpH/YXN7lQ70V4BZKACgOq837NKV7QPn7UE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FtEmFOjy; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A8D32C32781;
-	Mon, 27 May 2024 14:13:26 +0000 (UTC)
+	 MIME-Version; b=h81H1Oy4dkWecap4NxOHTkGnrwpVklQNol1XLQOUC+pnxGJXJgE0hK3sk2sok89wbFimGzEjd1BuzZU9YQDuazibNIvCbCq0csTb4lO7hmPMKLCnMOT3drdLtWAFzqjfA/WYBYyQNJgy+PTzpYNkHmvjuHXDlLa4QI+BpWC2HRc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Cu8bRAz3; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 411B0C2BBFC;
+	Mon, 27 May 2024 14:14:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1716819208;
-	bh=EcBCWvFnweJKxtHmfsqqva2IFqtU+n6mRWMhxtPDRsc=;
+	s=k20201202; t=1716819261;
+	bh=XJT5PosjIpIPOtzXYX+0KCa2o6P9JjTzNvWXyP20SQQ=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=FtEmFOjyIVcnjLWwbL1sUgf+GQ5GRtWF7HuZ6N0764egAvVTHxKXWh+IRo56Thoo/
-	 EBbgS8MmLFg4gdGInfjODwAd/iKyvLM1MSDvyXxlzfY3tjqs9UeR0oT6auYJV+Osig
-	 aM7RJvIC/4cSztyDQ2g4BvF4Xn1CNjxAtHNOHBw9inOIgF4KEAFr3jDjo6YOGdBnWB
-	 LYAvVnT1nf5Tu7vKWmzt56R7TNqxH/tIgvrTk3dGUhUd/GIkzkVUzeF4demVj3qh65
-	 ceGq8J4J4Wf4T+FGaVB4skDwo+ym96FAsJ1NTSUGftwnZesnHLBgGynoRN25VobuiW
-	 OPonBWnbUhIOw==
+	b=Cu8bRAz3XczMj8LsxapXxD2HP+F9abQIeXWgb4rIRIAjEXjTblZaE9JLZWGVET3/O
+	 1RvNt5MB2sAcamrPJXFEtyYyH8wSOHLrjirBEEwFkTsYU4qqgef/sWphcWYOgzQ55z
+	 Q7j1UL0sPq1eK3rWKQKlUuk68DKz/HlBT4JfahL9TE4QKNVwGjQBrkO4rtTmHCiBED
+	 zBOnO1q7XbSzbyMBlNcvJ+jQnGfu059A+PFQe4V4MFZmxYyeiCNKVFDpeIGzqbe+11
+	 klBHSZAx4RnnOAQjqHm2OSF49ezSQvgfqpyvIsHoG5rSHiBXyppCwXlTDJNt0AHkGd
+	 tmLcaxb2QQ8ug==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: "Jose E. Marchesi" <jose.marchesi@oracle.com>,
-	david.faust@oracle.com,
-	cupertino.miranda@oracle.com,
-	Yonghong Song <yonghong.song@linux.dev>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Alexei Starovoitov <ast@kernel.org>,
+Cc: "Alessandro Carminati (Red Hat)" <alessandro.carminati@gmail.com>,
+	Andrii Nakryiko <andrii@kernel.org>,
 	Sasha Levin <sashal@kernel.org>,
-	andrii@kernel.org,
+	ast@kernel.org,
 	daniel@iogearbox.net,
+	eddyz87@gmail.com,
 	shuah@kernel.org,
-	john.fastabend@gmail.com,
 	bpf@vger.kernel.org,
 	linux-kselftest@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.9 32/35] bpf: avoid uninitialized warnings in verifier_global_subprogs.c
-Date: Mon, 27 May 2024 10:11:37 -0400
-Message-ID: <20240527141214.3844331-32-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.8 02/30] selftests/bpf: Prevent client connect before server bind in test_tc_tunnel.sh
+Date: Mon, 27 May 2024 10:13:11 -0400
+Message-ID: <20240527141406.3852821-2-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240527141214.3844331-1-sashal@kernel.org>
-References: <20240527141214.3844331-1-sashal@kernel.org>
+In-Reply-To: <20240527141406.3852821-1-sashal@kernel.org>
+References: <20240527141406.3852821-1-sashal@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -71,70 +67,82 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
-X-stable-base: Linux 6.9.2
+X-stable-base: Linux 6.8.11
 Content-Transfer-Encoding: 8bit
 
-From: "Jose E. Marchesi" <jose.marchesi@oracle.com>
+From: "Alessandro Carminati (Red Hat)" <alessandro.carminati@gmail.com>
 
-[ Upstream commit cd3fc3b9782130a5bc1dc3dfccffbc1657637a93 ]
+[ Upstream commit f803bcf9208a2540acb4c32bdc3616673169f490 ]
 
-[Changes from V1:
-- The warning to disable is -Wmaybe-uninitialized, not -Wuninitialized.
-- This warning is only supported in GCC.]
+In some systems, the netcat server can incur in delay to start listening.
+When this happens, the test can randomly fail in various points.
+This is an example error message:
 
-The BPF selftest verifier_global_subprogs.c contains code that
-purposedly performs out of bounds access to memory, to check whether
-the kernel verifier is able to catch them.  For example:
+   # ip gre none gso
+   # encap 192.168.1.1 to 192.168.1.2, type gre, mac none len 2000
+   # test basic connectivity
+   # Ncat: Connection refused.
 
-  __noinline int global_unsupp(const int *mem)
-  {
-	if (!mem)
-		return 0;
-	return mem[100]; /* BOOM */
-  }
+The issue stems from a race condition between the netcat client and server.
+The test author had addressed this problem by implementing a sleep, which
+I have removed in this patch.
+This patch introduces a function capable of sleeping for up to two seconds.
+However, it can terminate the waiting period early if the port is reported
+to be listening.
 
-With -O1 and higher and no inlining, GCC notices this fact and emits a
-"maybe uninitialized" warning.  This is by design.  Note that the
-emission of these warnings is highly dependent on the precise
-optimizations that are performed.
-
-This patch adds a compiler pragma to verifier_global_subprogs.c to
-ignore these warnings.
-
-Tested in bpf-next master.
-No regressions.
-
-Signed-off-by: Jose E. Marchesi <jose.marchesi@oracle.com>
-Cc: david.faust@oracle.com
-Cc: cupertino.miranda@oracle.com
-Cc: Yonghong Song <yonghong.song@linux.dev>
-Cc: Eduard Zingerman <eddyz87@gmail.com>
-Acked-by: Yonghong Song <yonghong.song@linux.dev>
-Link: https://lore.kernel.org/r/20240507184756.1772-1-jose.marchesi@oracle.com
-Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+Signed-off-by: Alessandro Carminati (Red Hat) <alessandro.carminati@gmail.com>
+Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+Link: https://lore.kernel.org/bpf/20240314105911.213411-1-alessandro.carminati@gmail.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- .../testing/selftests/bpf/progs/verifier_global_subprogs.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+ tools/testing/selftests/bpf/test_tc_tunnel.sh | 13 ++++++++++++-
+ 1 file changed, 12 insertions(+), 1 deletion(-)
 
-diff --git a/tools/testing/selftests/bpf/progs/verifier_global_subprogs.c b/tools/testing/selftests/bpf/progs/verifier_global_subprogs.c
-index baff5ffe94051..a9fc30ed4d732 100644
---- a/tools/testing/selftests/bpf/progs/verifier_global_subprogs.c
-+++ b/tools/testing/selftests/bpf/progs/verifier_global_subprogs.c
-@@ -8,6 +8,13 @@
- #include "xdp_metadata.h"
- #include "bpf_kfuncs.h"
+diff --git a/tools/testing/selftests/bpf/test_tc_tunnel.sh b/tools/testing/selftests/bpf/test_tc_tunnel.sh
+index 910044f08908a..7989ec6084545 100755
+--- a/tools/testing/selftests/bpf/test_tc_tunnel.sh
++++ b/tools/testing/selftests/bpf/test_tc_tunnel.sh
+@@ -72,7 +72,6 @@ cleanup() {
+ server_listen() {
+ 	ip netns exec "${ns2}" nc "${netcat_opt}" -l "${port}" > "${outfile}" &
+ 	server_pid=$!
+-	sleep 0.2
+ }
  
-+/* The compiler may be able to detect the access to uninitialized
-+   memory in the routines performing out of bound memory accesses and
-+   emit warnings about it.  This is the case of GCC. */
-+#if !defined(__clang__)
-+#pragma GCC diagnostic ignored "-Wmaybe-uninitialized"
-+#endif
+ client_connect() {
+@@ -93,6 +92,16 @@ verify_data() {
+ 	fi
+ }
+ 
++wait_for_port() {
++	for i in $(seq 20); do
++		if ip netns exec "${ns2}" ss ${2:--4}OHntl | grep -q "$1"; then
++			return 0
++		fi
++		sleep 0.1
++	done
++	return 1
++}
 +
- int arr[1];
- int unkn_idx;
- const volatile bool call_dead_subprog = false;
+ set -e
+ 
+ # no arguments: automated test, run all
+@@ -193,6 +202,7 @@ setup
+ # basic communication works
+ echo "test basic connectivity"
+ server_listen
++wait_for_port ${port} ${netcat_opt}
+ client_connect
+ verify_data
+ 
+@@ -204,6 +214,7 @@ ip netns exec "${ns1}" tc filter add dev veth1 egress \
+ 	section "encap_${tuntype}_${mac}"
+ echo "test bpf encap without decap (expect failure)"
+ server_listen
++wait_for_port ${port} ${netcat_opt}
+ ! client_connect
+ 
+ if [[ "$tuntype" =~ "udp" ]]; then
 -- 
 2.43.0
 
