@@ -1,58 +1,58 @@
-Return-Path: <bpf+bounces-30650-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-30651-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CCFF48D02E2
-	for <lists+bpf@lfdr.de>; Mon, 27 May 2024 16:13:10 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CC3328D0402
+	for <lists+bpf@lfdr.de>; Mon, 27 May 2024 16:37:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 89E6F29A970
-	for <lists+bpf@lfdr.de>; Mon, 27 May 2024 14:13:09 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 375FAB313F5
+	for <lists+bpf@lfdr.de>; Mon, 27 May 2024 14:20:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7BEA215FA7C;
-	Mon, 27 May 2024 14:12:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E82816F85A;
+	Mon, 27 May 2024 14:13:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uDXLWkD1"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="osi+wxSS"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F187B15FA68;
-	Mon, 27 May 2024 14:12:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7DD2015EFA3;
+	Mon, 27 May 2024 14:13:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716819143; cv=none; b=d2Ta3v+mUsK1ePcfwxX6875+1lehEcQiDE/nwDar6bjQMJ7TCrZGqEWG2zr0yCxQR+HaR1INRu325A5DZ47zXFwsS//6T5K+OAwCuFhgRpPLjMexx7lnHezmTXRefKXPLq/8VtI/jwEPIeclidLPAKPErzvd1+54fkhjAeSU58I=
+	t=1716819203; cv=none; b=Q09IUyJU+7yKoFpQbUb18/Xw6ZyRAK8XY81jZyxynkCbld7BjNwdz1Rr4WS59Uu1HtG/FurHMoDiqWAzDzWwhTM6XlRGLjL41Sjj9pwVG17N6ampX5gH/dqTBrQAY4RRc3o6skwI9SqGXCg/uV47m5/hLiqid1fo46oFrWDot8U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716819143; c=relaxed/simple;
-	bh=HrTEdUzVuB12p0SLte4yR5sIXNZvCTC49ZZH/0a3r8o=;
+	s=arc-20240116; t=1716819203; c=relaxed/simple;
+	bh=HksO7wi2Tu4etRYRKkyII0g6QFyH1LvtCOoKVJ36MLg=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=CPgW371rU8wNKzlixRtIBfaXvhHZfRTIf3BP0RKf8PVna7qy560beEcQfraaW4YgihZ/s7N6uCiAT5A8rVszgRlfLnvIXq+RNuqRtDrc6aAFV0SOcptCBAZBDvK3h7aEdF1uBGgxJ9QJsSstYg7cPT2vmbOIDJRa+xyqDBLntkI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=uDXLWkD1; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B3E51C2BBFC;
-	Mon, 27 May 2024 14:12:21 +0000 (UTC)
+	 MIME-Version; b=hlOQLIkZ3f38Ecc5BuQ7gM3NjKAX6XIb+9fMTEYUk2chrTCEsgt1n5oJCjM396l96o5RXOyRDUQh9Pt4PBmkLHeeBzF9nyyui8Vjv9J+KhdMKZAdDuKE0VCPpcFwSkAwH7LOPNFOaxe3kdIw11rtnOYVK0IrE4dxh9cNAh6KPh8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=osi+wxSS; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 76FFAC2BBFC;
+	Mon, 27 May 2024 14:13:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1716819142;
-	bh=HrTEdUzVuB12p0SLte4yR5sIXNZvCTC49ZZH/0a3r8o=;
+	s=k20201202; t=1716819203;
+	bh=HksO7wi2Tu4etRYRKkyII0g6QFyH1LvtCOoKVJ36MLg=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=uDXLWkD1nmVnKXp9ts/EVvNEYh1mEPHky2W+KngWs3JRsJkNIWPUew6yZRxrybl8B
-	 LdPY4/yfTxj1o9ZBeJegJ9WCKPnUKL4O4zYcricgmHlkwHSXTQz7lBHlPcepUP4Hm2
-	 38wdT6p1ToPz5cpQFY0CKpDn82ABIa0zsqufnYzC4a/PwVV0E4lYbFa0nJeTnyuHF6
-	 WqlsNkiEV2BbqXU+ppP2d9rZiS/28peJqL0wf7SKgFNtubqQ/MZ2xoAD08auyQPMv8
-	 C4Ex3jxRmKAakheC/q5A9aF8hIFE+aYY10OL6XflJtgVGh/WBGlHvLoYBB1jQX1JpT
-	 4lbcyfC4g5mWA==
+	b=osi+wxSSYXyfvMHBjmF/Y65q+erqgIo0H8rYK+g/p+CosV32DUxxjVGWOP4ltfYtM
+	 7esqmSXJyM4fwkqLE9RfwoRyVKmW+cI6qgo/HsiFKsE1qv8sFj/KZbZDWCMg+IL9cv
+	 eSHn27uNNYH+mtC1hw9evFaY6Vk6i8kR7OO+d1Of1stTGW8R/ES0IfOYn973Lu12Fj
+	 9fTW8UFonVXvhh29xZwxU2E+Z/yPcH+Sl6tYpP9GXYAXbZJ6FpIvDEvTOoXnkRHAzm
+	 Fymtowf1eXxKup723IWSo4XATaenSuUuHFGU2ja+GerACT3lgTWmH+kLx9Z4fyFAwq
+	 ndU8Tf+Hlacuw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Alexei Starovoitov <ast@kernel.org>,
-	syzbot+1fa663a2100308ab6eab@syzkaller.appspotmail.com,
-	Andrii Nakryiko <andrii@kernel.org>,
+Cc: Benjamin Tissoires <bentiss@kernel.org>,
+	Peter Hutterer <peter.hutterer@who-t.net>,
 	Sasha Levin <sashal@kernel.org>,
-	daniel@iogearbox.net,
+	jikos@kernel.org,
+	linux-input@vger.kernel.org,
 	bpf@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.9 04/35] bpf: Avoid kfree_rcu() under lock in bpf_lpm_trie.
-Date: Mon, 27 May 2024 10:11:09 -0400
-Message-ID: <20240527141214.3844331-4-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.9 31/35] HID: bpf: add in-tree HID-BPF fix for the HP Elite Presenter Mouse
+Date: Mon, 27 May 2024 10:11:36 -0400
+Message-ID: <20240527141214.3844331-31-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240527141214.3844331-1-sashal@kernel.org>
 References: <20240527141214.3844331-1-sashal@kernel.org>
@@ -67,100 +67,92 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.9.2
 Content-Transfer-Encoding: 8bit
 
-From: Alexei Starovoitov <ast@kernel.org>
+From: Benjamin Tissoires <bentiss@kernel.org>
 
-[ Upstream commit 59f2f841179aa6a0899cb9cf53659149a35749b7 ]
+[ Upstream commit 4e6d2a297dd5be26ad409b7a05b20bd033d1c95e ]
 
-syzbot reported the following lock sequence:
-cpu 2:
-  grabs timer_base lock
-    spins on bpf_lpm lock
+Duplicate of commit 0db117359e47 ("HID: add quirk for 03f0:464a HP Elite
+Presenter Mouse"), but in a slightly better way.
 
-cpu 1:
-  grab rcu krcp lock
-    spins on timer_base lock
+This time we actually change the application collection, making clearer
+for userspace what the second mouse is.
 
-cpu 0:
-  grab bpf_lpm lock
-    spins on rcu krcp lock
+Note that having both hid-quirks fix and this HID-BPF fix is not a
+problem at all.
 
-bpf_lpm lock can be the same.
-timer_base lock can also be the same due to timer migration.
-but rcu krcp lock is always per-cpu, so it cannot be the same lock.
-Hence it's a false positive.
-To avoid lockdep complaining move kfree_rcu() after spin_unlock.
-
-Reported-by: syzbot+1fa663a2100308ab6eab@syzkaller.appspotmail.com
-Signed-off-by: Alexei Starovoitov <ast@kernel.org>
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-Link: https://lore.kernel.org/bpf/20240329171439.37813-1-alexei.starovoitov@gmail.com
+Link: https://lore.kernel.org/r/20240410-bpf_sources-v1-4-a8bf16033ef8@kernel.org
+Reviewed-by: Peter Hutterer <peter.hutterer@who-t.net>
+Signed-off-by: Benjamin Tissoires <bentiss@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/bpf/lpm_trie.c | 13 +++++++++----
- 1 file changed, 9 insertions(+), 4 deletions(-)
+ .../hid/bpf/progs/HP__Elite-Presenter.bpf.c   | 58 +++++++++++++++++++
+ 1 file changed, 58 insertions(+)
+ create mode 100644 drivers/hid/bpf/progs/HP__Elite-Presenter.bpf.c
 
-diff --git a/kernel/bpf/lpm_trie.c b/kernel/bpf/lpm_trie.c
-index 050fe1ebf0f7d..d0febf07051ed 100644
---- a/kernel/bpf/lpm_trie.c
-+++ b/kernel/bpf/lpm_trie.c
-@@ -308,6 +308,7 @@ static long trie_update_elem(struct bpf_map *map,
- {
- 	struct lpm_trie *trie = container_of(map, struct lpm_trie, map);
- 	struct lpm_trie_node *node, *im_node = NULL, *new_node = NULL;
-+	struct lpm_trie_node *free_node = NULL;
- 	struct lpm_trie_node __rcu **slot;
- 	struct bpf_lpm_trie_key_u8 *key = _key;
- 	unsigned long irq_flags;
-@@ -382,7 +383,7 @@ static long trie_update_elem(struct bpf_map *map,
- 			trie->n_entries--;
- 
- 		rcu_assign_pointer(*slot, new_node);
--		kfree_rcu(node, rcu);
-+		free_node = node;
- 
- 		goto out;
- 	}
-@@ -429,6 +430,7 @@ static long trie_update_elem(struct bpf_map *map,
- 	}
- 
- 	spin_unlock_irqrestore(&trie->lock, irq_flags);
-+	kfree_rcu(free_node, rcu);
- 
- 	return ret;
- }
-@@ -437,6 +439,7 @@ static long trie_update_elem(struct bpf_map *map,
- static long trie_delete_elem(struct bpf_map *map, void *_key)
- {
- 	struct lpm_trie *trie = container_of(map, struct lpm_trie, map);
-+	struct lpm_trie_node *free_node = NULL, *free_parent = NULL;
- 	struct bpf_lpm_trie_key_u8 *key = _key;
- 	struct lpm_trie_node __rcu **trim, **trim2;
- 	struct lpm_trie_node *node, *parent;
-@@ -506,8 +509,8 @@ static long trie_delete_elem(struct bpf_map *map, void *_key)
- 		else
- 			rcu_assign_pointer(
- 				*trim2, rcu_access_pointer(parent->child[0]));
--		kfree_rcu(parent, rcu);
--		kfree_rcu(node, rcu);
-+		free_parent = parent;
-+		free_node = node;
- 		goto out;
- 	}
- 
-@@ -521,10 +524,12 @@ static long trie_delete_elem(struct bpf_map *map, void *_key)
- 		rcu_assign_pointer(*trim, rcu_access_pointer(node->child[1]));
- 	else
- 		RCU_INIT_POINTER(*trim, NULL);
--	kfree_rcu(node, rcu);
-+	free_node = node;
- 
- out:
- 	spin_unlock_irqrestore(&trie->lock, irq_flags);
-+	kfree_rcu(free_parent, rcu);
-+	kfree_rcu(free_node, rcu);
- 
- 	return ret;
- }
+diff --git a/drivers/hid/bpf/progs/HP__Elite-Presenter.bpf.c b/drivers/hid/bpf/progs/HP__Elite-Presenter.bpf.c
+new file mode 100644
+index 0000000000000..3d14bbb6f2762
+--- /dev/null
++++ b/drivers/hid/bpf/progs/HP__Elite-Presenter.bpf.c
+@@ -0,0 +1,58 @@
++// SPDX-License-Identifier: GPL-2.0-only
++/* Copyright (c) 2023 Benjamin Tissoires
++ */
++
++#include "vmlinux.h"
++#include "hid_bpf.h"
++#include "hid_bpf_helpers.h"
++#include <bpf/bpf_tracing.h>
++
++#define VID_HP 0x03F0
++#define PID_ELITE_PRESENTER 0x464A
++
++HID_BPF_CONFIG(
++	HID_DEVICE(BUS_BLUETOOTH, HID_GROUP_GENERIC, VID_HP, PID_ELITE_PRESENTER)
++);
++
++/*
++ * Already fixed as of commit 0db117359e47 ("HID: add quirk for 03f0:464a
++ * HP Elite Presenter Mouse") in the kernel, but this is a slightly better
++ * fix.
++ *
++ * The HP Elite Presenter Mouse HID Record Descriptor shows
++ * two mice (Report ID 0x1 and 0x2), one keypad (Report ID 0x5),
++ * two Consumer Controls (Report IDs 0x6 and 0x3).
++ * Prior to these fixes it registers one mouse, one keypad
++ * and one Consumer Control, and it was usable only as a
++ * digital laser pointer (one of the two mouses).
++ * We replace the second mouse collection with a pointer collection,
++ * allowing to use the device both as a mouse and a digital laser
++ * pointer.
++ */
++
++SEC("fmod_ret/hid_bpf_rdesc_fixup")
++int BPF_PROG(hid_fix_rdesc, struct hid_bpf_ctx *hctx)
++{
++	__u8 *data = hid_bpf_get_data(hctx, 0 /* offset */, 4096 /* size */);
++
++	if (!data)
++		return 0; /* EPERM check */
++
++	/* replace application mouse by application pointer on the second collection */
++	if (data[79] == 0x02)
++		data[79] = 0x01;
++
++	return 0;
++}
++
++SEC("syscall")
++int probe(struct hid_bpf_probe_args *ctx)
++{
++	ctx->retval = ctx->rdesc_size != 264;
++	if (ctx->retval)
++		ctx->retval = -EINVAL;
++
++	return 0;
++}
++
++char _license[] SEC("license") = "GPL";
 -- 
 2.43.0
 
