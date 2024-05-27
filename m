@@ -1,135 +1,128 @@
-Return-Path: <bpf+bounces-30694-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-30696-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C7C658D0A95
-	for <lists+bpf@lfdr.de>; Mon, 27 May 2024 21:02:06 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2AAFA8D0E11
+	for <lists+bpf@lfdr.de>; Mon, 27 May 2024 21:36:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8297E28177A
-	for <lists+bpf@lfdr.de>; Mon, 27 May 2024 19:02:05 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D91A7280CEE
+	for <lists+bpf@lfdr.de>; Mon, 27 May 2024 19:36:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 335251649A8;
-	Mon, 27 May 2024 19:01:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD3D0161306;
+	Mon, 27 May 2024 19:36:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b="e4xleDS6"
 X-Original-To: bpf@vger.kernel.org
-Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-lj1-f179.google.com (mail-lj1-f179.google.com [209.85.208.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 640E2DDA9;
-	Mon, 27 May 2024 19:00:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.153.30
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A0C4515FCFB
+	for <bpf@vger.kernel.org>; Mon, 27 May 2024 19:36:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716836460; cv=none; b=eqvzIcwDiJz0xtlVOQa93kiyPIrsST8ukI0XGjW/+S/xzdAWRPImSsQojKidZ5ehvgYy7Z9p6c1gOe7lxZEQCZmxM4dO1+pRtxw2stywG0FID/YgCL92AsvTSYZT48fantUkEadqGJzWGPLvlhDXg7FiUEGFbIgImUcRojyT4eY=
+	t=1716838596; cv=none; b=nDWRN4Zc8ymS/BjGlySoOEyyMKDtptuloApunwxHZTdcCkjQgHVndECfgOu4Cyxvdj8VuUNl/6qBMxRZLdpFJzoLBmuOXDuhqmQpFzWNq4/uc1uojR1KKAO7vaxuRXLN1gzp+7w270Bl787AumX+NSuhqSUGIT6Z19P8TiM+Zls=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716836460; c=relaxed/simple;
-	bh=c0wTFKp9XQXRgUFgtFgR9AuRbrYxnV5EJTEpQx/c25k=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=tXY+bOM+fcbmjSZ+nTpcjKxwxNsCdfUeujQKNbIqGGcnWYJ0AvO+UNd4McGNwmkI8EHwhUhdjwzPUha4Q/EXnPYUMU8wO7h1KudVILUvwd9fH6+KSL5hHfrMqLoC1hmgK5+BYIwBDe0DiAfnQ8ACndFY7mbriX5wjWoqfKmj/QA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=meta.com; spf=pass smtp.mailfrom=meta.com; arc=none smtp.client-ip=67.231.153.30
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=meta.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=meta.com
-Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
-	by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 44RIQb8T007199;
-	Mon, 27 May 2024 12:00:24 -0700
-DKIM-Signature: =?UTF-8?Q?v=3D1;_a=3Drsa-sha256;_c=3Drelaxed/relaxed;_d=3Dmeta.com;_h=3Dc?=
- =?UTF-8?Q?c:content-transfer-encoding:content-type:date:from:in-reply-to:?=
- =?UTF-8?Q?message-id:mime-version:references:subject:to;_s=3Ds2048-2021-q?=
- =?UTF-8?Q?4;_bh=3D7geuP4fh0kfWIQEG10bAFf8y5oNk1kPaQirayNWOM44=3D;_b=3DPP/?=
- =?UTF-8?Q?8OkqGURhdvgDRtEzPLuATNDLoKjQCiuN0jBlXEOkW2gdyt1fh2C6yjcssjnADwn?=
- =?UTF-8?Q?1H_IULvEAgv4H8H/gOzJjc1XGyEr9t+zt9k1YSbjIbEfOHLD7z8t6cFNJ2rARa2?=
- =?UTF-8?Q?ozVfw+kd_w2iuOFxmx0TPVQD9XgNtCjYhesqxx7fcGLmuZ4hhAdh2EWxNHKm1ty?=
- =?UTF-8?Q?LJRpMSfosGhiu1_6mTZkq+JZ6rCaMny0LGiNWLK0pqc/gzL+HibYTH5MDi4GrHp?=
- =?UTF-8?Q?cw0CDMNPmW8npEdIy6nL_zi4+Owe8ET9xd6qAp93vmxGq7Zoo5gu6IWkQf3ASYk?=
- =?UTF-8?Q?xdziDv6dJg5OdI4AZJ3VQwEOlA_uA=3D=3D_?=
-Received: from maileast.thefacebook.com ([163.114.130.16])
-	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3ybdr3234w-3
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-	Mon, 27 May 2024 12:00:24 -0700
-Received: from devvm4158.cln0.facebook.com (2620:10d:c0a8:1b::30) by
- mail.thefacebook.com (2620:10d:c0a9:6f::237c) with Microsoft SMTP Server id
- 15.2.1544.11; Mon, 27 May 2024 19:00:22 +0000
-From: Vadim Fedorenko <vadfed@meta.com>
-To: Vadim Fedorenko <vadim.fedorenko@linux.dev>,
-        Martin KaFai Lau
-	<martin.lau@linux.dev>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        "Alexei
- Starovoitov" <ast@kernel.org>,
-        Mykola Lysenko <mykolal@fb.com>, Jakub
- Kicinski <kuba@kernel.org>
-CC: Vadim Fedorenko <vadfed@meta.com>, <bpf@vger.kernel.org>,
-        <netdev@vger.kernel.org>
-Subject: [PATCH bpf-next v3 2/2] selftests: bpf: validate CHECKSUM_COMPLETE option
-Date: Mon, 27 May 2024 11:59:28 -0700
-Message-ID: <20240527185928.1871649-2-vadfed@meta.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240527185928.1871649-1-vadfed@meta.com>
-References: <20240527185928.1871649-1-vadfed@meta.com>
+	s=arc-20240116; t=1716838596; c=relaxed/simple;
+	bh=hBztDfsju7jvSHs2X1CbqXJ/9RFgcXepl00UZcxNhpE=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=gB5GlCO3+c3FxHj/+zzlNG8dfILY64mJ+xlqjOjQNB768+8ZyNKcG7eeiU/Ta1+OpVKdyPV8W+84riD5bfKEXx8TD3vLWR3bhvSy+xv6s21eFUtxwvulVgx/BADeKEwWbwUN5RK0KdvleIAKIvYUa6ROc/E9+CaN5nP1c9G92/g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com; spf=pass smtp.mailfrom=cloudflare.com; dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b=e4xleDS6; arc=none smtp.client-ip=209.85.208.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cloudflare.com
+Received: by mail-lj1-f179.google.com with SMTP id 38308e7fff4ca-2e724bc46c4so323951fa.2
+        for <bpf@vger.kernel.org>; Mon, 27 May 2024 12:36:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google09082023; t=1716838593; x=1717443393; darn=vger.kernel.org;
+        h=mime-version:message-id:date:user-agent:references:in-reply-to
+         :subject:cc:to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=460uV27lQordnsc0AJG+gZtSNZZpMZFmTeFH7GJ2IBs=;
+        b=e4xleDS6EG0oMlnL6PmBruyD0LaoAb459sRhAlFi2ibiZ5JPYDKF3FxwEPryode+z5
+         MafddPavtJkECGK6LuZU7pNs2d88ZZ7bqvCl3ki71MgVYnqbaqgBBZMlnEHWKGAkaFTl
+         cp1UD0KDnVGd3QX8AR+0z9kh+oDKEMtg8BgtmeNnSUM7+0EBgBric6pnAq4H04dM5Mwm
+         m+fU/YkiKRzyFl6fyfpUhJQuUECKqDmx5QPAYfwbrtl2+KWdGje1WnJWzg7DPh7zFdRY
+         bpBu4Ir9gDMevfvpwd2rpUYELSjCEx+aQEpF7kVnNOY+5/ZNu8t6MLxbIj6/h5tt4nER
+         etNw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1716838593; x=1717443393;
+        h=mime-version:message-id:date:user-agent:references:in-reply-to
+         :subject:cc:to:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=460uV27lQordnsc0AJG+gZtSNZZpMZFmTeFH7GJ2IBs=;
+        b=uDHRZvVugVtm/cCR2gZFY4Nqpe4/4DQ4jE8/rMDmPVzW6O+oEwrTu1SYxSj0SoPa7g
+         fTS0WU+4TvCOwycCxC0+TOfp8VKaYvPb1tukloeKF6Q3ngjwU1U4tnv2AH0VH1NeXLnQ
+         O5F+fM30nFr/xhE5P5V4JipANdnOpLTf+sG7JP8C700HuWkb9l1HD6kSt4UsJ3XBOjdd
+         RdTorUg2naAAb89qhCLcyAcR3VVAienFqcTMfQeubfS9KafyDd8hwzhiTD4Bh2RxJ+Rl
+         64gJXqby+wKFpaYF4rowwWnAiux0sjzxpCjVKZ2Tj3IclqY44DbaQnTZz8K1uM6Qo5q+
+         h4xQ==
+X-Forwarded-Encrypted: i=1; AJvYcCV3OLRLvgrftWjv1OIUlRyzLnvIG/iP1vuTMkrj17E5XITWrdcqhCqgVm1kwW9TITHkByruvnhQehNF82SBANSJkCJq
+X-Gm-Message-State: AOJu0Yynpvm1TvKb+AXJAzuaeMQ8py/mElNhAyQCPDKYxc9m221GTKKh
+	a5fOE6tQMEuzqe42Mq5xFQZYvw7P6sOjgO+7OIJS4mJhEV/9AYJKnQD4qsQ7sLY=
+X-Google-Smtp-Source: AGHT+IEojifswV/dPUHHhC/U3xFxhX87rNTI4M2ybuWgK1NozFiNdYtCGW3FO7XEsv5sFQh1P0K/Pw==
+X-Received: by 2002:a2e:9e9a:0:b0:2e1:5644:24e7 with SMTP id 38308e7fff4ca-2e95b1cbdd2mr60399711fa.13.1716838592717;
+        Mon, 27 May 2024 12:36:32 -0700 (PDT)
+Received: from cloudflare.com ([2a09:bac5:5063:2387::38a:20])
+        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-57967499969sm3641328a12.22.2024.05.27.12.36.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 27 May 2024 12:36:32 -0700 (PDT)
+From: Jakub Sitnicki <jakub@cloudflare.com>
+To: John Fastabend <john.fastabend@gmail.com>
+Cc: Geliang Tang <geliang@kernel.org>,  Andrii Nakryiko <andrii@kernel.org>,
+  Eduard Zingerman <eddyz87@gmail.com>,  Mykola Lysenko <mykolal@fb.com>,
+  Alexei Starovoitov <ast@kernel.org>,  Daniel Borkmann
+ <daniel@iogearbox.net>,  Martin KaFai Lau <martin.lau@linux.dev>,  Song
+ Liu <song@kernel.org>,  Yonghong Song <yonghong.song@linux.dev>,  KP Singh
+ <kpsingh@kernel.org>,  Stanislav Fomichev <sdf@google.com>,  Hao Luo
+ <haoluo@google.com>,  Jiri Olsa <jolsa@kernel.org>,  Shuah Khan
+ <shuah@kernel.org>,  Geliang Tang <tanggeliang@kylinos.cn>,
+  bpf@vger.kernel.org,  linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH bpf-next 3/8] selftests/bpf: Use bpf_link attachments in
+ test_sockmap
+In-Reply-To: <6654beff96840_23de2086e@john.notmuch> (John Fastabend's message
+	of "Mon, 27 May 2024 10:12:31 -0700")
+References: <cover.1716446893.git.tanggeliang@kylinos.cn>
+	<32cf8376a810e2e9c719f8e4cfb97132ed2d1f9c.1716446893.git.tanggeliang@kylinos.cn>
+	<6654beff96840_23de2086e@john.notmuch>
+User-Agent: mu4e 1.12.4; emacs 29.1
+Date: Mon, 27 May 2024 21:36:31 +0200
+Message-ID: <87wmnfujwg.fsf@cloudflare.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Proofpoint-GUID: N8rjF6Oi7ZTwtRAAQkoqWuYf5bPMlzjO
-X-Proofpoint-ORIG-GUID: N8rjF6Oi7ZTwtRAAQkoqWuYf5bPMlzjO
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.650,FMLib:17.12.28.16
- definitions=2024-05-27_04,2024-05-27_01,2024-05-17_01
 
-Adjust skb program test to run with checksum validation.
+On Mon, May 27, 2024 at 10:12 AM -07, John Fastabend wrote:
+> Geliang Tang wrote:
+>> From: Geliang Tang <tanggeliang@kylinos.cn>
+>> 
+>> Switch attachments to bpf_link using bpf_program__attach_sockmap() instead
+>> of bpf_prog_attach().
+>
+> Sorry it took me a few days to get to this.
+>
+> Is there a reason to push this to links vs just leave it as is? I had
+> a plan to port all the test_sockmap tests into prog_tests anyways. I'll
+> try to push some initial patch next week.
+>
+> The one advantage of test_sockmap is we can have it run for longer
+> runs by pushing different options through so might be worth keeping
+> just for that.
+>
+> If you really want links here I'm OK with that I guess just asking.
 
-Signed-off-by: Vadim Fedorenko <vadfed@meta.com>
----
- .../selftests/bpf/prog_tests/test_skb_pkt_end.c       |  1 +
- tools/testing/selftests/bpf/progs/skb_pkt_end.c       | 11 ++++++++++-
- 2 files changed, 11 insertions(+), 1 deletion(-)
+It was me who suggested the switch to bpf_link in reaction to a series
+of cleanups to prog_type and prog_attach_type submitted by Geliang.
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/test_skb_pkt_end.c b/tools/testing/selftests/bpf/prog_tests/test_skb_pkt_end.c
-index ae93411fd582..09ca13bdf6ca 100644
---- a/tools/testing/selftests/bpf/prog_tests/test_skb_pkt_end.c
-+++ b/tools/testing/selftests/bpf/prog_tests/test_skb_pkt_end.c
-@@ -11,6 +11,7 @@ static int sanity_run(struct bpf_program *prog)
- 		.data_in = &pkt_v4,
- 		.data_size_in = sizeof(pkt_v4),
- 		.repeat = 1,
-+		.flags = BPF_F_TEST_SKB_CHECKSUM_COMPLETE,
- 	);
- 
- 	prog_fd = bpf_program__fd(prog);
-diff --git a/tools/testing/selftests/bpf/progs/skb_pkt_end.c b/tools/testing/selftests/bpf/progs/skb_pkt_end.c
-index db4abd2682fc..3bb4451524a1 100644
---- a/tools/testing/selftests/bpf/progs/skb_pkt_end.c
-+++ b/tools/testing/selftests/bpf/progs/skb_pkt_end.c
-@@ -33,6 +33,8 @@ int main_prog(struct __sk_buff *skb)
- 	struct iphdr *ip = NULL;
- 	struct tcphdr *tcp;
- 	__u8 proto = 0;
-+	int urg_ptr;
-+	u32 offset;
- 
- 	if (!(ip = get_iphdr(skb)))
- 		goto out;
-@@ -48,7 +50,14 @@ int main_prog(struct __sk_buff *skb)
- 	if (!tcp)
- 		goto out;
- 
--	return tcp->urg_ptr;
-+	urg_ptr = tcp->urg_ptr;
-+
-+	/* Checksum validation part */
-+	proto++;
-+	offset = sizeof(struct ethhdr) + offsetof(struct iphdr, protocol);
-+	bpf_skb_store_bytes(skb, offset, &proto, sizeof(proto), BPF_F_RECOMPUTE_CSUM);
-+
-+	return urg_ptr;
- out:
- 	return -1;
- }
--- 
-2.43.0
+Relevant threads:
 
+https://lore.kernel.org/bpf/9c10d9f974f07fcb354a43a8eca67acb2fafc587.1715926605.git.tanggeliang@kylinos.cn
+https://lore.kernel.org/bpf/20240522080936.2475833-1-jakub@cloudflare.com
+https://lore.kernel.org/bpf/e27d7d0c1e0e79b0acd22ac6ad5d8f9f00225303.1716372485.git.tanggeliang@kylinos.cn
+
+I thought bpf_links added more value than cleaning up "old style"
+attachments.
 
