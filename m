@@ -1,61 +1,58 @@
-Return-Path: <bpf+bounces-30664-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-30665-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8FB448D0447
-	for <lists+bpf@lfdr.de>; Mon, 27 May 2024 16:42:02 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 13CBC8D0465
+	for <lists+bpf@lfdr.de>; Mon, 27 May 2024 16:45:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4B544381800
-	for <lists+bpf@lfdr.de>; Mon, 27 May 2024 14:42:01 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A83A61F20F11
+	for <lists+bpf@lfdr.de>; Mon, 27 May 2024 14:45:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E4535210199;
-	Mon, 27 May 2024 14:18:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB348155CBA;
+	Mon, 27 May 2024 14:18:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ANKJfZ+M"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PqUadv46"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6275021018D;
-	Mon, 27 May 2024 14:18:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 47912155CAA;
+	Mon, 27 May 2024 14:18:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716819505; cv=none; b=ZYU+LFAFW7DU7Hh8nOAdx7ONc2j51f0r6zqrvk75fGW5PV6lH4p15KBkOqiRNAqaJHVLGnFcspvvOFJ91t+uXFiHu96Q3VTBTw7Osfrm2lNhuK8iLQ2ued7U/UY/c6YOBX7drcxd2QSrkYxH9pf7hiuCUXXQ0uSkLes0HHe0SJg=
+	t=1716819528; cv=none; b=oIIy9VHkFZbru64KCDAMtKkvdm1CuI2++at90AsR7bmj1aYLM9tdSZXgOJz66rSoFjw3mPXeyjf9Q6QXsuSJerK6HS3UC5rdl20APAkGJdfHFCAIF1/fj3bu2B0ysWAMPQHav/f+OKbLlX+Fkea2YNNTQNqV6A8EehLrS7sUIEY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716819505; c=relaxed/simple;
-	bh=ghUWs1LmzOKfE9kwZ8fW+hQ9Z40C1Qr6BXgVYGLeZaQ=;
+	s=arc-20240116; t=1716819528; c=relaxed/simple;
+	bh=HksO7wi2Tu4etRYRKkyII0g6QFyH1LvtCOoKVJ36MLg=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=VueUJjAMKB4qDi/U0iu7UUzVVMmbAs+xdc0FzD5IQ+moc1BdtXAk4msSG8njhQ5++etbIusddLl1nYxzGWBMj5LC+/kvT/jBTNiTRpD0FBshmCmue1mzeR6pbzqAeXaBgO1w2Vvr92MzDQumZhavwAB1rITSMsSXEnk0oNnazFY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ANKJfZ+M; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AA09BC2BBFC;
-	Mon, 27 May 2024 14:18:23 +0000 (UTC)
+	 MIME-Version; b=YGsOO875+gnN6sbWfmCt9FpXPmpPoyJzbGxmDg/cVAof64Nsv7gzRJCgHXCnJsoh2OvMxlt4HRicpgLjrv7UyaD8WbLlqrd31KQocdNa0yCORoXy2dEVdYbhngjprEZLHncm16jrHgF7xZ+1SMC29Ou9f2NU4mz8UZSlptgdZWc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PqUadv46; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2B36FC4AF09;
+	Mon, 27 May 2024 14:18:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1716819504;
-	bh=ghUWs1LmzOKfE9kwZ8fW+hQ9Z40C1Qr6BXgVYGLeZaQ=;
+	s=k20201202; t=1716819528;
+	bh=HksO7wi2Tu4etRYRKkyII0g6QFyH1LvtCOoKVJ36MLg=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=ANKJfZ+MFFqu6BsEADtaOMF8TGaBtxXXQtmDwhJxe4CbPaBpw+I7MBs1xGcmuHX1Q
-	 y16wEmmjHIGap57WMPyXUD0G8aR7irI1sFPNmIZDXWT/vRIbNKaAVTSmRUTrYM5q30
-	 xc74zRFJUkhBVUs15MPJKoUqYtXZ2WZQJk4HRcHuXLMS+GhVytftT8xougr0x+UAYN
-	 6T3nP7YWZXFJhzEXZh7IfAA6ai0RXwedHVdSrNan+qaBe8Q3TN5k//p59oIYNCbrAu
-	 HbJod8ARxKOCxSYjcqy/HA21cyZwPr2FiRDrYfQSxrLL8Kp/eor8voj17J/T2QFPAJ
-	 Mv/fSMZEndaDw==
+	b=PqUadv467otSItlbmohnF5e1uJ4i/pisLvupB39A4yHVgCeYAEfcqCRFAYE5EAsph
+	 YRjnTgqhL0M4RhcM2tIBq5fk4GYClQvF41UAmqYvrsVwMn9Re18fMcoE7xBBQ6hvGa
+	 1Mv34xc2qWCXvyI5ZkTeCquf3fJHTFXz1Z9pLZYfOHtL1xamIyesNFlk9SqSNDUzPQ
+	 Kt59X6K4Rd2RN+bmEGBmY1aGFyWVhPii43r27D0HcY9QJomzfOqx2lh+mqXYDNmjxq
+	 AoE4ppvqnrRrqTGtT+b7mZ5Ytc7kTBfOAOGVlHoZGXumt6wVIXMHiepeyo9amf4+Es
+	 6Xe7zvALbMNrw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Yonghong Song <yonghong.song@linux.dev>,
-	Daniel Borkmann <daniel@iogearbox.net>,
+Cc: Benjamin Tissoires <bentiss@kernel.org>,
+	Peter Hutterer <peter.hutterer@who-t.net>,
 	Sasha Levin <sashal@kernel.org>,
-	andrii@kernel.org,
-	eddyz87@gmail.com,
-	ast@kernel.org,
-	shuah@kernel.org,
-	bpf@vger.kernel.org,
-	linux-kselftest@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.15 02/13] selftests/bpf: Fix flaky test btf_map_in_map/lookup_update
-Date: Mon, 27 May 2024 10:17:56 -0400
-Message-ID: <20240527141819.3854376-2-sashal@kernel.org>
+	jikos@kernel.org,
+	linux-input@vger.kernel.org,
+	bpf@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.15 12/13] HID: bpf: add in-tree HID-BPF fix for the HP Elite Presenter Mouse
+Date: Mon, 27 May 2024 10:18:06 -0400
+Message-ID: <20240527141819.3854376-12-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240527141819.3854376-1-sashal@kernel.org>
 References: <20240527141819.3854376-1-sashal@kernel.org>
@@ -70,85 +67,92 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 5.15.160
 Content-Transfer-Encoding: 8bit
 
-From: Yonghong Song <yonghong.song@linux.dev>
+From: Benjamin Tissoires <bentiss@kernel.org>
 
-[ Upstream commit 14bb1e8c8d4ad5d9d2febb7d19c70a3cf536e1e5 ]
+[ Upstream commit 4e6d2a297dd5be26ad409b7a05b20bd033d1c95e ]
 
-Recently, I frequently hit the following test failure:
+Duplicate of commit 0db117359e47 ("HID: add quirk for 03f0:464a HP Elite
+Presenter Mouse"), but in a slightly better way.
 
-  [root@arch-fb-vm1 bpf]# ./test_progs -n 33/1
-  test_lookup_update:PASS:skel_open 0 nsec
-  [...]
-  test_lookup_update:PASS:sync_rcu 0 nsec
-  test_lookup_update:FAIL:map1_leak inner_map1 leaked!
-  #33/1    btf_map_in_map/lookup_update:FAIL
-  #33      btf_map_in_map:FAIL
+This time we actually change the application collection, making clearer
+for userspace what the second mouse is.
 
-In the test, after map is closed and then after two rcu grace periods,
-it is assumed that map_id is not available to user space.
+Note that having both hid-quirks fix and this HID-BPF fix is not a
+problem at all.
 
-But the above assumption cannot be guaranteed. After zero or one
-or two rcu grace periods in different siturations, the actual
-freeing-map-work is put into a workqueue. Later on, when the work
-is dequeued, the map will be actually freed.
-See bpf_map_put() in kernel/bpf/syscall.c.
-
-By using workqueue, there is no ganrantee that map will be actually
-freed after a couple of rcu grace periods. This patch removed
-such map leak detection and then the test can pass consistently.
-
-Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
-Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-Link: https://lore.kernel.org/bpf/20240322061353.632136-1-yonghong.song@linux.dev
+Link: https://lore.kernel.org/r/20240410-bpf_sources-v1-4-a8bf16033ef8@kernel.org
+Reviewed-by: Peter Hutterer <peter.hutterer@who-t.net>
+Signed-off-by: Benjamin Tissoires <bentiss@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- .../selftests/bpf/prog_tests/btf_map_in_map.c | 26 +------------------
- 1 file changed, 1 insertion(+), 25 deletions(-)
+ .../hid/bpf/progs/HP__Elite-Presenter.bpf.c   | 58 +++++++++++++++++++
+ 1 file changed, 58 insertions(+)
+ create mode 100644 drivers/hid/bpf/progs/HP__Elite-Presenter.bpf.c
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/btf_map_in_map.c b/tools/testing/selftests/bpf/prog_tests/btf_map_in_map.c
-index eb90a6b8850d2..f4d753185001a 100644
---- a/tools/testing/selftests/bpf/prog_tests/btf_map_in_map.c
-+++ b/tools/testing/selftests/bpf/prog_tests/btf_map_in_map.c
-@@ -25,7 +25,7 @@ static void test_lookup_update(void)
- 	int map1_fd, map2_fd, map3_fd, map4_fd, map5_fd, map1_id, map2_id;
- 	int outer_arr_fd, outer_hash_fd, outer_arr_dyn_fd;
- 	struct test_btf_map_in_map *skel;
--	int err, key = 0, val, i, fd;
-+	int err, key = 0, val, i;
- 
- 	skel = test_btf_map_in_map__open_and_load();
- 	if (CHECK(!skel, "skel_open", "failed to open&load skeleton\n"))
-@@ -102,30 +102,6 @@ static void test_lookup_update(void)
- 	CHECK(map1_id == 0, "map1_id", "failed to get ID 1\n");
- 	CHECK(map2_id == 0, "map2_id", "failed to get ID 2\n");
- 
--	test_btf_map_in_map__destroy(skel);
--	skel = NULL;
--
--	/* we need to either wait for or force synchronize_rcu(), before
--	 * checking for "still exists" condition, otherwise map could still be
--	 * resolvable by ID, causing false positives.
--	 *
--	 * Older kernels (5.8 and earlier) freed map only after two
--	 * synchronize_rcu()s, so trigger two, to be entirely sure.
--	 */
--	CHECK(kern_sync_rcu(), "sync_rcu", "failed\n");
--	CHECK(kern_sync_rcu(), "sync_rcu", "failed\n");
--
--	fd = bpf_map_get_fd_by_id(map1_id);
--	if (CHECK(fd >= 0, "map1_leak", "inner_map1 leaked!\n")) {
--		close(fd);
--		goto cleanup;
--	}
--	fd = bpf_map_get_fd_by_id(map2_id);
--	if (CHECK(fd >= 0, "map2_leak", "inner_map2 leaked!\n")) {
--		close(fd);
--		goto cleanup;
--	}
--
- cleanup:
- 	test_btf_map_in_map__destroy(skel);
- }
+diff --git a/drivers/hid/bpf/progs/HP__Elite-Presenter.bpf.c b/drivers/hid/bpf/progs/HP__Elite-Presenter.bpf.c
+new file mode 100644
+index 0000000000000..3d14bbb6f2762
+--- /dev/null
++++ b/drivers/hid/bpf/progs/HP__Elite-Presenter.bpf.c
+@@ -0,0 +1,58 @@
++// SPDX-License-Identifier: GPL-2.0-only
++/* Copyright (c) 2023 Benjamin Tissoires
++ */
++
++#include "vmlinux.h"
++#include "hid_bpf.h"
++#include "hid_bpf_helpers.h"
++#include <bpf/bpf_tracing.h>
++
++#define VID_HP 0x03F0
++#define PID_ELITE_PRESENTER 0x464A
++
++HID_BPF_CONFIG(
++	HID_DEVICE(BUS_BLUETOOTH, HID_GROUP_GENERIC, VID_HP, PID_ELITE_PRESENTER)
++);
++
++/*
++ * Already fixed as of commit 0db117359e47 ("HID: add quirk for 03f0:464a
++ * HP Elite Presenter Mouse") in the kernel, but this is a slightly better
++ * fix.
++ *
++ * The HP Elite Presenter Mouse HID Record Descriptor shows
++ * two mice (Report ID 0x1 and 0x2), one keypad (Report ID 0x5),
++ * two Consumer Controls (Report IDs 0x6 and 0x3).
++ * Prior to these fixes it registers one mouse, one keypad
++ * and one Consumer Control, and it was usable only as a
++ * digital laser pointer (one of the two mouses).
++ * We replace the second mouse collection with a pointer collection,
++ * allowing to use the device both as a mouse and a digital laser
++ * pointer.
++ */
++
++SEC("fmod_ret/hid_bpf_rdesc_fixup")
++int BPF_PROG(hid_fix_rdesc, struct hid_bpf_ctx *hctx)
++{
++	__u8 *data = hid_bpf_get_data(hctx, 0 /* offset */, 4096 /* size */);
++
++	if (!data)
++		return 0; /* EPERM check */
++
++	/* replace application mouse by application pointer on the second collection */
++	if (data[79] == 0x02)
++		data[79] = 0x01;
++
++	return 0;
++}
++
++SEC("syscall")
++int probe(struct hid_bpf_probe_args *ctx)
++{
++	ctx->retval = ctx->rdesc_size != 264;
++	if (ctx->retval)
++		ctx->retval = -EINVAL;
++
++	return 0;
++}
++
++char _license[] SEC("license") = "GPL";
 -- 
 2.43.0
 
