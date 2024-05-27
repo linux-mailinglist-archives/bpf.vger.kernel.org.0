@@ -1,124 +1,149 @@
-Return-Path: <bpf+bounces-30647-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-30648-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 290838D02C2
-	for <lists+bpf@lfdr.de>; Mon, 27 May 2024 16:07:57 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 64F628D036D
+	for <lists+bpf@lfdr.de>; Mon, 27 May 2024 16:24:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5A57D1C21BD5
-	for <lists+bpf@lfdr.de>; Mon, 27 May 2024 14:07:56 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9338CB2A097
+	for <lists+bpf@lfdr.de>; Mon, 27 May 2024 14:12:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F1D815FA92;
-	Mon, 27 May 2024 14:00:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6FCE015F3E6;
+	Mon, 27 May 2024 14:12:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="N1KgTtpm"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FE/Dz5Rv"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f193.google.com (mail-pf1-f193.google.com [209.85.210.193])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A134915ECE7;
-	Mon, 27 May 2024 14:00:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.193
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA5FC15F311;
+	Mon, 27 May 2024 14:12:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716818429; cv=none; b=nd7aGiVJXgjai/EEFzcv21ae7r1UkLp46UvkRs5dB+OvB6NcLxHpdSnrtQXhuEb9Ixg0pFPdCn8cyfBv4/mm2dK4P+QFs4dTwswL1Pyx+DIEBF3N8BvU+BIbmZBiHnCi5deeRgnBow3sLD4mReilRU7xdA8uNce33vVqQnHPHCE=
+	t=1716819139; cv=none; b=iszCYSM+8I0GH86d7ZRDiw/lTl3xZbc8N4mQX6rXvGnVFcaDLpCwOduwivK6cSSfs4As/0UphhW31noOmqipvnHtifzuMTs5cmn2qQG02c6YFMhH3/abqByRQzLiDdlJiINI/FgihUNrqy2MtkFaW97V9M3pmF+ywL5mLWnfCqU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716818429; c=relaxed/simple;
-	bh=C+1tPGApB2vY2STWPtBY6qjLrBhTd6qsZaU8j09B7f4=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=YdIzNAZR892h8sfMEZeyt1gLZ3+HBuHKLQznFB0Y/Ae5Mt2KQ7uQd2SLdLp6Mz6fmSSGB3/JdtWBN2tXmIwj1BUsk4wgz5y1YmSVoffjdY4peVKVqhnmgwirtugRcpIW8EvG2uAu4S07zFpsqw2FeLUQ6zkyibpMiGQf31J5r9A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=N1KgTtpm; arc=none smtp.client-ip=209.85.210.193
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f193.google.com with SMTP id d2e1a72fcca58-701ae8698d8so124192b3a.0;
-        Mon, 27 May 2024 07:00:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1716818428; x=1717423228; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=4TY/wlrJh5pwz9DH42R4v/71GLr5C1YLgWTdRX4V5jw=;
-        b=N1KgTtpmRUamj1yFcNBPaLmu4t8mrDLLdctoY4Ne7TWZoFiMp8Q/dkzCzy1/VdfPeX
-         39dFuHqnTiOkWXCmHmDi+tWbVdXb8MQTncuh5Go35d7sOvEplg2h+DSLMyes5uXFrdpo
-         2jbMMyj8KMC6eDtpQosixYfvpyb5t0QVt1FRZjBtVqokv8O1U0rykPWlRpOYwXk2AnNF
-         f6x00+k8+ohsdmDDCx0CK5+5ctiDxEXH9yTBQuS4cB7IfcXVMlSzoZdOlZ0SsSJ6EM/j
-         koGYMdRcy4biWkV6M4lfLmre3CyrE3xT1sbYDtJBxko7+sY9+uRVKupUHFmc35i/E2b7
-         D0BQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1716818428; x=1717423228;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=4TY/wlrJh5pwz9DH42R4v/71GLr5C1YLgWTdRX4V5jw=;
-        b=tDn/hGaGMXwdHGKfDThH8xUBcvYEiy3IjUdX13MMlViQuAp5A2aMk10m3Bu45N6jqp
-         h9yGUSdpZvpiY6kDU8RJiSxDPSxl/TDpyx+PiB8MS7tc4s1QIvM0/5bMh3zIK7XI4yDl
-         d0yPhenIbSU6/HBtS1heFKw8655X5qcs5QzkAdW0vwpdmN/N1B206yz486mQDfw7ozLg
-         lIXFULZRFZ77NDUGWRRL5B+dveUlYTLxnkvvzQGcnrNFSbFy3UOd8DM+a/BjNdlpRAoX
-         dqupAMu03cmc9idD+KVGHd79GZu7YncxL+ULssc9UkMM9/mT3vsjHdqdMbkJ8FuKuOLC
-         PfgA==
-X-Forwarded-Encrypted: i=1; AJvYcCVIrtfAwyFpFEy1ceCjmCcwfAHIs4n8GYvZvYh+p9+LuH1F57aztn6G/ksrPHIHR0q3y4u1uitAUvMZzCBJ8Oypt03cRh0enoEueU7CobQTjfFljOwCjDEFrTvyud0cME64kmKfC2kYf0Pjv8XsFxYE1Eqx3XmeHYbe
-X-Gm-Message-State: AOJu0YzRw+R4GF23OzagxcCJzm67xaS3WrkAzNOOqvONdbGRija6183S
-	DPykG2cDGuSOe2T/gbdxenYFeK9/IAS3ET1qUyNHAtqlDyE+oLyl
-X-Google-Smtp-Source: AGHT+IG1y3hyXS6rQ8h83tfkcOWfC6ohR6WHfSS7FY5mVqgldixau5o4vfJtoDm1zmR8cz+64fR+cQ==
-X-Received: by 2002:a05:6a20:3d88:b0:1af:b86d:b6dc with SMTP id adf61e73a8af0-1b212f63dfdmr10693850637.55.1716818427764;
-        Mon, 27 May 2024 07:00:27 -0700 (PDT)
-Received: from localhost.localdomain ([124.126.229.82])
-        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-682265494dcsm6053319a12.74.2024.05.27.07.00.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 May 2024 07:00:27 -0700 (PDT)
-From: Fred Li <dracodingfly@gmail.com>
-To: dracodingfly@gmail.com
-Cc: andrii@kernel.org,
+	s=arc-20240116; t=1716819139; c=relaxed/simple;
+	bh=XJT5PosjIpIPOtzXYX+0KCa2o6P9JjTzNvWXyP20SQQ=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=atB2Ch86ELQ4TpGEdyzAsWCkPQEkCBREVVCKHtwHs2hoKxjR8m4LklJzOSB0RW4tMxDxjN4knGV/al7YwNOXm6zP/ycR+puW8yw1DTc1yKJxdwaQJli4S+nLEHaY0mSENZ3F+bcvkNAwbAMhPVMTKxIElnF7P+ynoVNkMpjpa7c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FE/Dz5Rv; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 30839C32789;
+	Mon, 27 May 2024 14:12:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1716819138;
+	bh=XJT5PosjIpIPOtzXYX+0KCa2o6P9JjTzNvWXyP20SQQ=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=FE/Dz5RvVvPUJRbCwdDx+5mGOxMFQ7nUkiIcLN6sV694gng9zkVnMu604jxldJl39
+	 XJpGaZ71kdTBJCB1N6iKxhzWkVyeghO/UXeU3jm7Yy/a0/SA1ofuQdeHL8hCQKIoc5
+	 10Kz5P2+LrPjrcgcmYw5y7vWpquyupRMB6JCA2Lg+o1ekqCTLDTQa/vk8oa3ns8+5s
+	 B0wcTP0rWCXszzB/5bW1oo+MvP1Msv6PqNFuAizV9A05eiQmE35yEmsdRQLi7busdv
+	 Z1iTR2/OsuQH2MlTEf9AWNxcgg1v2LlEG+eujN+r8V4eO8LqZ3sZEFEJGhpqsjTpVR
+	 PuT64TNA5HA1w==
+From: Sasha Levin <sashal@kernel.org>
+To: linux-kernel@vger.kernel.org,
+	stable@vger.kernel.org
+Cc: "Alessandro Carminati (Red Hat)" <alessandro.carminati@gmail.com>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Sasha Levin <sashal@kernel.org>,
+	eddyz87@gmail.com,
 	ast@kernel.org,
-	bpf@vger.kernel.org,
 	daniel@iogearbox.net,
-	davem@davemloft.net,
-	john.fastabend@gmail.com,
-	kafai@fb.com,
-	kpsingh@kernel.org,
-	kuba@kernel.org,
-	linux-kernel@vger.kernel.org,
-	netdev@vger.kernel.org,
-	songliubraving@fb.com,
-	yhs@fb.com
-Subject: Re: [PATCH] test_bpf: Add an skb_segment test for a non linear frag_list whose head_frag=1 and gso_size was mangled
-Date: Mon, 27 May 2024 21:59:45 +0800
-Message-Id: <20240527135945.89764-1-dracodingfly@gmail.com>
-X-Mailer: git-send-email 2.32.1 (Apple Git-133)
-In-Reply-To: <20240517154028.70588-1-dracodingfly@gmail.com>
-References: <20240517154028.70588-1-dracodingfly@gmail.com>
+	shuah@kernel.org,
+	bpf@vger.kernel.org,
+	linux-kselftest@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.9 02/35] selftests/bpf: Prevent client connect before server bind in test_tc_tunnel.sh
+Date: Mon, 27 May 2024 10:11:07 -0400
+Message-ID: <20240527141214.3844331-2-sashal@kernel.org>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20240527141214.3844331-1-sashal@kernel.org>
+References: <20240527141214.3844331-1-sashal@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+X-stable: review
+X-Patchwork-Hint: Ignore
+X-stable-base: Linux 6.9.2
 Content-Transfer-Encoding: 8bit
 
-For kernel 6.6.8, when sg is true and skb_headlen(list_skb) != len, it also has 
-chance run into this BUG_ON() line 4548.
-'''
-4544                 hsize = skb_headlen(head_skb) - offset;
-4545 
-4546                 if (hsize <= 0 && i >= nfrags && skb_headlen(list_skb) &&
-4547                     (skb_headlen(list_skb) == len || sg)) {
-4548                         BUG_ON(skb_headlen(list_skb) > len);
-4549 
-4550                         nskb = skb_clone(list_skb, GFP_ATOMIC);
-'''
+From: "Alessandro Carminati (Red Hat)" <alessandro.carminati@gmail.com>
 
-As commit 9e4b7a99a03a("net: gso: fix panic on frag_list with mixed head alloc types")
-said. It walk the frag_list in skb_segment and clear NETIF_F_SG when there is non head_frag 
-skb. 
+[ Upstream commit f803bcf9208a2540acb4c32bdc3616673169f490 ]
 
-But for frag_list only with one head_frag, NETIF_F_SG was not cleared, if skb_headlen(list_skb) != len,
-in this case, maybe we can fix it with run into segment as commit 13acc94eff122(net: permit skb_segment on 
-head_frag frag_list skb). 
+In some systems, the netcat server can incur in delay to start listening.
+When this happens, the test can randomly fail in various points.
+This is an example error message:
 
-Any suggestions for resolving this issue.
+   # ip gre none gso
+   # encap 192.168.1.1 to 192.168.1.2, type gre, mac none len 2000
+   # test basic connectivity
+   # Ncat: Connection refused.
 
-Thanks
+The issue stems from a race condition between the netcat client and server.
+The test author had addressed this problem by implementing a sleep, which
+I have removed in this patch.
+This patch introduces a function capable of sleeping for up to two seconds.
+However, it can terminate the waiting period early if the port is reported
+to be listening.
 
-Fred Li
+Signed-off-by: Alessandro Carminati (Red Hat) <alessandro.carminati@gmail.com>
+Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+Link: https://lore.kernel.org/bpf/20240314105911.213411-1-alessandro.carminati@gmail.com
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ tools/testing/selftests/bpf/test_tc_tunnel.sh | 13 ++++++++++++-
+ 1 file changed, 12 insertions(+), 1 deletion(-)
+
+diff --git a/tools/testing/selftests/bpf/test_tc_tunnel.sh b/tools/testing/selftests/bpf/test_tc_tunnel.sh
+index 910044f08908a..7989ec6084545 100755
+--- a/tools/testing/selftests/bpf/test_tc_tunnel.sh
++++ b/tools/testing/selftests/bpf/test_tc_tunnel.sh
+@@ -72,7 +72,6 @@ cleanup() {
+ server_listen() {
+ 	ip netns exec "${ns2}" nc "${netcat_opt}" -l "${port}" > "${outfile}" &
+ 	server_pid=$!
+-	sleep 0.2
+ }
+ 
+ client_connect() {
+@@ -93,6 +92,16 @@ verify_data() {
+ 	fi
+ }
+ 
++wait_for_port() {
++	for i in $(seq 20); do
++		if ip netns exec "${ns2}" ss ${2:--4}OHntl | grep -q "$1"; then
++			return 0
++		fi
++		sleep 0.1
++	done
++	return 1
++}
++
+ set -e
+ 
+ # no arguments: automated test, run all
+@@ -193,6 +202,7 @@ setup
+ # basic communication works
+ echo "test basic connectivity"
+ server_listen
++wait_for_port ${port} ${netcat_opt}
+ client_connect
+ verify_data
+ 
+@@ -204,6 +214,7 @@ ip netns exec "${ns1}" tc filter add dev veth1 egress \
+ 	section "encap_${tuntype}_${mac}"
+ echo "test bpf encap without decap (expect failure)"
+ server_listen
++wait_for_port ${port} ${netcat_opt}
+ ! client_connect
+ 
+ if [[ "$tuntype" =~ "udp" ]]; then
+-- 
+2.43.0
+
 
