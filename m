@@ -1,46 +1,46 @@
-Return-Path: <bpf+bounces-30670-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-30671-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D94158D04AC
-	for <lists+bpf@lfdr.de>; Mon, 27 May 2024 16:52:30 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id E6F1C8D04BC
+	for <lists+bpf@lfdr.de>; Mon, 27 May 2024 16:53:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 15BFB28DCCA
-	for <lists+bpf@lfdr.de>; Mon, 27 May 2024 14:52:27 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 803361F214B0
+	for <lists+bpf@lfdr.de>; Mon, 27 May 2024 14:53:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A2EA316B74E;
-	Mon, 27 May 2024 14:20:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 98FE617B415;
+	Mon, 27 May 2024 14:20:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ovhMEQbp"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gCowWLh2"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2569716B743;
-	Mon, 27 May 2024 14:20:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1669F17B408;
+	Mon, 27 May 2024 14:20:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716819604; cv=none; b=j4rujLXCJbX6m+zIy/xUjqgeP2mli0aHxoQ/pD9y6LKKf733HbzAuzbTZg9dCVPDRTcDmxVyQ/jKRAlr06T8NFJAsSys5F5H0J27t7Eu7BqK9x7GDfQ7bRFNEij5crk9PUemNMVS46Qn300cBGRwF+xZeH1TVzwOnWWhaCD9AlI=
+	t=1716819626; cv=none; b=ubZ92oPOrZKHjqOzCdtCxtOmohpEafVp8enuYIddwa5vZhytIdRvSRbgww7+3isPj602tZQTDo5+hhJKYYciYZxnpY2fPGSt93VB/xA1ndSt5r2vd5EFH2CsL8KBCPeIsSL7ZGYz6nJIaSlg7XgNF2O4/WqpnNMLe5ialVGYB90=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716819604; c=relaxed/simple;
+	s=arc-20240116; t=1716819626; c=relaxed/simple;
 	bh=HksO7wi2Tu4etRYRKkyII0g6QFyH1LvtCOoKVJ36MLg=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=u7tP7AHloRGEZKMCYJ9teHrB8BLxVQmnDNXcs35MICTnQI0OfpL6s14yn8NcqBCLieJwGsYp3Y7+PtbMXfLoXEb188+c2KtsJxkFncfbkiHiAzBSPS5ZA+dlwixD6DJIARhmf/NPc7gd41DMcbYrzyx/fkXGJ8+hjOS3dSbZnNg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ovhMEQbp; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AD4A8C32789;
-	Mon, 27 May 2024 14:20:02 +0000 (UTC)
+	 MIME-Version; b=gUPEMuXU+LTQOJj1SufUTLuzntPAcDdpqtg//1VAej+NfAUX4BkYzBVR1kWtxgSgd9bzhja32b2N/bvIoIWJ1wl8LUffALqB8zlAKFSLnnvl4dswVZprbEouFH3ZN9tsRTBQfq91UlrneUiBsflBsbiWpwlr6Mpiq0funBVqMoQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gCowWLh2; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0D3D5C2BBFC;
+	Mon, 27 May 2024 14:20:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1716819603;
+	s=k20201202; t=1716819626;
 	bh=HksO7wi2Tu4etRYRKkyII0g6QFyH1LvtCOoKVJ36MLg=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=ovhMEQbpfeUItaL5SCdiX4JIYXdjkcHjg8EkGIQXdN7CSaRJCu3rCEBeQSwxgOmxy
-	 iDaXJqUFHqOzIag0zWPHda1hJDDTIppYMUXA9M5F1G62kUl5310NjcybF2pLOXHWxm
-	 RTpfew2P6zSjcvoGR9cvtig/kMAPlKBZFHyiQtr2ICAn1e9n1SOjnvkQHbJUVIGGJ+
-	 bGAwmssu1zMQW9JxiK4Bt5Gj5tb0UtD8zWFxyRCVVDurYWUkQZ85Bhzvet6ri9xZiu
-	 ktZVJs0uZjjUNpnn4CSd6jSaNgtx6UeqdUwXj8pdnY+cullbA2DmwANeEO/FtMcKYM
-	 i1xcyNjcKuE2Q==
+	b=gCowWLh2sXP/MWEQjNYGiFN4hrc5UeFPjw73TNCi9svpFlcJvzaOH/xuo2yVwjiMM
+	 EpfVhiLzOCEOrcVyAqu2XAtdUCUSctk5QvrPcwyhofOd0bN7KJ4VAmyQb8vtRCUZbB
+	 UJuIvmV3ySdF7P0SP8F/98Eo5iwR9liznem+h39XIQ79qnbDnmbW8GtuFbbJVj5Oac
+	 /4IYro19RRQTGqZbO1v2oq/vFeEBlj6GHjdrBIT6Dn0s1rcmfEXj5Bkp5oc3RJ6I6B
+	 g1sQy/ALWl1CI47X49/n0s+RhpbHBj8Jqdyab2bJ6cD9X4TQpDc23YwAOI9UG1xJBh
+	 sw6cIuEJHB/nQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
@@ -50,12 +50,12 @@ Cc: Benjamin Tissoires <bentiss@kernel.org>,
 	jikos@kernel.org,
 	linux-input@vger.kernel.org,
 	bpf@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 5/6] HID: bpf: add in-tree HID-BPF fix for the HP Elite Presenter Mouse
-Date: Mon, 27 May 2024 10:19:42 -0400
-Message-ID: <20240527141950.3854993-5-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.19 3/3] HID: bpf: add in-tree HID-BPF fix for the HP Elite Presenter Mouse
+Date: Mon, 27 May 2024 10:20:05 -0400
+Message-ID: <20240527142010.3855135-3-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240527141950.3854993-1-sashal@kernel.org>
-References: <20240527141950.3854993-1-sashal@kernel.org>
+In-Reply-To: <20240527142010.3855135-1-sashal@kernel.org>
+References: <20240527142010.3855135-1-sashal@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -64,7 +64,7 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
-X-stable-base: Linux 5.4.277
+X-stable-base: Linux 4.19.315
 Content-Transfer-Encoding: 8bit
 
 From: Benjamin Tissoires <bentiss@kernel.org>
