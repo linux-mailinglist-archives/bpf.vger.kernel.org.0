@@ -1,47 +1,47 @@
-Return-Path: <bpf+bounces-30619-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-30620-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 15BA28CF6DF
-	for <lists+bpf@lfdr.de>; Mon, 27 May 2024 01:59:00 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A86EA8CF6E9
+	for <lists+bpf@lfdr.de>; Mon, 27 May 2024 02:04:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A966DB2133C
-	for <lists+bpf@lfdr.de>; Sun, 26 May 2024 23:58:57 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6334A28168C
+	for <lists+bpf@lfdr.de>; Mon, 27 May 2024 00:04:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B893613A3EC;
-	Sun, 26 May 2024 23:58:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A0AEF624;
+	Mon, 27 May 2024 00:04:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FhkSU46r"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XPHIv4TU"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 359EF2F46;
-	Sun, 26 May 2024 23:58:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 21B94161;
+	Mon, 27 May 2024 00:04:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716767928; cv=none; b=obLl4FGX8hBfTYyP3XeKv4e1LXvMvS0kR61fBpKozdCrIXtDXZbPJYA2l7M2rmWRtUSWuBhOUgDB0O/toAj2/YrI7tNaol1Z/W+yXmqlBJ488uyK0pdDLXXzJy9IUo6OKxYxjAi59dnrN5mO+Zh6dKTSEmhsifpsdy5GvsLZ5Dg=
+	t=1716768281; cv=none; b=JfLnv9pDaaC8echBKxcBAJyCvFJ2co7lXgXIt9LjNI48OPzLwzloV08Cb4k5QdteQdMSz24+QzQa/IM74XqHSN7iSS9rK/92cLSd23QmXj1Pmp7F30OWZKECR5HsFSk2UUF4iJUBkFPH6fkxXkI4t7suEtJD6h5hz31jAyOpIow=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716767928; c=relaxed/simple;
-	bh=b5DjLreslgkKOr9CzOVLysgDaJanR6GoFnpSSYrVds8=;
+	s=arc-20240116; t=1716768281; c=relaxed/simple;
+	bh=PcmYPBGo2XhGqyaercyt+IZ2k2DlEHd7kUXcc3kQ2Eg=;
 	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
-	 Mime-Version:Content-Type; b=Uinj/T572ZhMG5s2kTSGAP+1tQJEC48ortG8BU4cGrFYfKSxL5BbyJWNA/Mzg+4UpbEeFFP+WOoosr+RKCsejDAVgx949uVKl8pb3r/8EQVYrJNyPLCEj6TXFzeQ9gKB5AB1+o9HGgVduo5Onzj9Fo939e8kNP67Pj371ymFNss=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FhkSU46r; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AA695C2BD10;
-	Sun, 26 May 2024 23:58:43 +0000 (UTC)
+	 Mime-Version:Content-Type; b=Na0WHFF7aW9Q4nVEU4fthGx/N5WKgbf2qLTvr8BZCTbUR4ZYBKK94wZofRm/DiaA9bXZKjLdG16kmIZLs8xIXMcjuP+QCUB0uAbdtHNzGS1d2Vc1E/GnmjNg2HMbSuYEMlujl7muZ0Y3tNmqJs8IIqysy89qJzoA1yc436U3Npw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XPHIv4TU; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A68FBC2BD10;
+	Mon, 27 May 2024 00:04:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1716767927;
-	bh=b5DjLreslgkKOr9CzOVLysgDaJanR6GoFnpSSYrVds8=;
+	s=k20201202; t=1716768280;
+	bh=PcmYPBGo2XhGqyaercyt+IZ2k2DlEHd7kUXcc3kQ2Eg=;
 	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=FhkSU46roOIGOu8nIldG3jCi4RxCCFFDyPlOZyPQyxBDbhepVHZ2WLgQOdF8vz3mb
-	 PW5sy69JxHdL4CbT0EG17DhGOe526wzeE8No3ViQmEjnkT1ySuAmyi8EiDeprm3WWe
-	 UEwqadlcyyAWHkDvUPWsGmQINx2acb4ZUtFdpIMKNjzsAui7P2QKF39jifsB8eYwun
-	 8H5FfVF2PNo/b7MHUkevltyd+FZ8TX338mHJ4ZFdzdiDspJnzQV6/wXQkK7AqGstGO
-	 rNSolmr21+EE5BrSmTRHZjPbbEPojScl8UKv5FwOl62Vsr6HLHis//Zq+LMOx0KiTP
-	 jNPTpY89nTgOQ==
-Date: Mon, 27 May 2024 08:58:41 +0900
+	b=XPHIv4TUHywo6ZiY57edG8kmeD1+Rq26K8hDgEJMBVnMLGbM9vHo1Oy8CL+dTsGpY
+	 mQi3lpj9L/726bC4JQz4oY48jQrnT+iM0YOR/2HpzfJd7W6XAaGEGAiMXMACo67O+L
+	 GNzm3KMhZzmiWDLJNW5Gg0I8O0kjMSIdE0VNnU03cxndP5IqGF+0tc54/lM5e+q910
+	 pVM/rise3d+5ZJpDNoYYZZiLQrL1UorcdoXt7grS4Mb/kRLrNxWYlnBrOsT9J533qJ
+	 nTcaXRdGOy0UE84Xl/Kmq29Vp5v+Ohkq4WG8rJJwouDUZh5CeloxpfkGyYb6ekbATa
+	 M20Pi0Yu92zfw==
+Date: Mon, 27 May 2024 09:04:34 +0900
 From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
 To: Steven Rostedt <rostedt@goodmis.org>
 Cc: linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org, Masami
@@ -57,7 +57,7 @@ Cc: linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org, Masami
  <tglx@linutronix.de>, Guo Ren <guoren@kernel.org>
 Subject: Re: [PATCH 19/20] function_graph: Use for_each_set_bit() in
  __ftrace_return_to_handler()
-Message-Id: <20240527085841.63b97b1b1926ff9c0a21fb46@kernel.org>
+Message-Id: <20240527090434.37e309d0280d6d8f116edc85@kernel.org>
 In-Reply-To: <20240525023744.231570357@goodmis.org>
 References: <20240525023652.903909489@goodmis.org>
 	<20240525023744.231570357@goodmis.org>
@@ -81,13 +81,6 @@ Steven Rostedt <rostedt@goodmis.org> wrote:
 > use for_each_set_bit() on the bitmap itself. This will only iterate for
 > the number of set bits.
 > 
-
-Looks good to me.
-
-Reviewed-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-
-Thanks,
-
 > Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 > ---
 >  kernel/trace/fgraph.c | 5 ++---
@@ -109,12 +102,10 @@ Thanks,
 > -		if (!(bitmap & BIT(i)))
 > -			continue;
 >  		if (gops == &fgraph_stub)
->  			continue;
->  
-> -- 
-> 2.43.0
-> 
-> 
+
+Ah, nit: maybe this is unlikely()?
+
+Thank you,
 
 
 -- 
