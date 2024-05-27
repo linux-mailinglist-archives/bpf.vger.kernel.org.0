@@ -1,61 +1,61 @@
-Return-Path: <bpf+bounces-30668-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-30669-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7EB0B8D058C
-	for <lists+bpf@lfdr.de>; Mon, 27 May 2024 17:12:53 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 090D58D049E
+	for <lists+bpf@lfdr.de>; Mon, 27 May 2024 16:50:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 17E43B32F27
-	for <lists+bpf@lfdr.de>; Mon, 27 May 2024 14:50:14 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8C01B1F20846
+	for <lists+bpf@lfdr.de>; Mon, 27 May 2024 14:50:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A27F169396;
-	Mon, 27 May 2024 14:19:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3504A169AF0;
+	Mon, 27 May 2024 14:19:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tVA0uv9Q"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ljaiOn2P"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8DEA4169378;
-	Mon, 27 May 2024 14:19:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A5052169ADD;
+	Mon, 27 May 2024 14:19:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716819582; cv=none; b=bwaVNF9dMIyMQEt6LZ2HW7z7mcBcYeXhXblLD3mvzjMe7hfMmFjPMwaKsXe0qGYWQsL2sRz9s2PlIJcZPzznQbNruSDA/qChpyKKeGvp+0rX/1HHNbSZ+kSX2fX/j3SOOyscf//2+kvH0GceuUYYerbicWKnpkqcPPD7Z8omNqw=
+	t=1716819592; cv=none; b=Z24hleKr427PWELOK6gyJSySMc+xUGAPQMuHgWfYWM2TB2WPF2zKwb72RLf5WbnfitB/IuI+ybbeaaTjGoWorl2TOmh6BVfkXlzynCRJWulwz/plKRSMqPX2b/ME2Yhbp3Vw2gbz4DDwoaeQxvTgIjNyS7Dkqd5bROei33XQZ6I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716819582; c=relaxed/simple;
-	bh=HksO7wi2Tu4etRYRKkyII0g6QFyH1LvtCOoKVJ36MLg=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=XsL8COQW1KP+4OxvmiTGBxDF23HWExodGYfs3CgExrmO/hqJ2GANy9/IrdHUHCcts2R3Y9WOf26y+6Lb1vzigaRYZC95Rz0oSYgvHRHUkLG/8c4FSoYT/h015ME4ZWg/VjvdxrvHkh9PQmzADg57i1kTEiRUifez61r4HbSdV0o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tVA0uv9Q; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 21EFDC32781;
-	Mon, 27 May 2024 14:19:41 +0000 (UTC)
+	s=arc-20240116; t=1716819592; c=relaxed/simple;
+	bh=egnv+4LYG9kf+MAFhOdp1ZtsU4oJCToVCs7HH+OYNpM=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Oz3cOOSxUqMqyzKtk0/HV0ToEUuVl/Q2q1NM9kgRs0hWYd1squ9aFy9Ls65OARW755WV8eIcuADcj/gOBJzrA2rjcGLalFo6n8ITdrejENj/FWBvmG2zfXb6TKt6gBDB91Z0snTVu1Xj50ZELMCbfSJ7G6P0RWFRFsgZZtdW6K4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ljaiOn2P; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 51524C2BBFC;
+	Mon, 27 May 2024 14:19:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1716819582;
-	bh=HksO7wi2Tu4etRYRKkyII0g6QFyH1LvtCOoKVJ36MLg=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=tVA0uv9Qm+44cXSkHStDJy0zM89Kpe8CmrF9swBuwJz0240yLv7l3IWWSIYtq8Mdo
-	 BKBa/xirAQeUnc0j53L6J/SUujcV8oSMJKxD1csNW9qUEn7mlpv/7bofUrLuHdZunU
-	 vD6ohsC6RjEmKAmmf24iP8OJTwwbwFV3x9dzyXRZRpo0e9wBHD2oDXBw9s5yO/tHYK
-	 EnIQgNEJlBQbzq0rq6CdnPAwtCQ17nWqkbaHizdPGRbIuyYY95qH0/5z8sAcWks2Q/
-	 vvsGz+wV8Ws1z9kT+Lz69mofonKcVQFyZnrhiQeQcgUXqXVQVz9sLSAaKZCczvMlQH
-	 uuj7eZeI69TBA==
+	s=k20201202; t=1716819592;
+	bh=egnv+4LYG9kf+MAFhOdp1ZtsU4oJCToVCs7HH+OYNpM=;
+	h=From:To:Cc:Subject:Date:From;
+	b=ljaiOn2PmkfYv6gOTLOT8ZuL5QBDlHtu3fs4MPkkJE9MI2Crwt8PZAjPsr6EPaxXd
+	 GQ89mz7LsMm81s0zqzkys7anU0pw8znASvtpcUcK8x9FzvhuPCfxVtHKRuArFzGOlL
+	 CxOHdl0/vodjnQlVOpYpSKZQHIYE4/1oBJAhdEoI9deU2ZxcRZSByyvcFRqcBu2lB5
+	 C7rCIzghfwJ8EnnjUdVjjN+2d8wu+OKRn8f9PDArkt/UyW9c+IkxRtkn3tyQxyxVKK
+	 jHJcvf1aF+T0RezMYU2iDwLRf4uc4YDVtu4xfP7s8SwHlILS8dnxDI2VkT6QZ72coC
+	 2uwXiCkEdnhwg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Benjamin Tissoires <bentiss@kernel.org>,
-	Peter Hutterer <peter.hutterer@who-t.net>,
+Cc: "Alessandro Carminati (Red Hat)" <alessandro.carminati@gmail.com>,
+	Andrii Nakryiko <andrii@kernel.org>,
 	Sasha Levin <sashal@kernel.org>,
-	jikos@kernel.org,
-	linux-input@vger.kernel.org,
-	bpf@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.10 12/13] HID: bpf: add in-tree HID-BPF fix for the HP Elite Presenter Mouse
-Date: Mon, 27 May 2024 10:18:49 -0400
-Message-ID: <20240527141901.3854691-12-sashal@kernel.org>
+	eddyz87@gmail.com,
+	ast@kernel.org,
+	daniel@iogearbox.net,
+	shuah@kernel.org,
+	bpf@vger.kernel.org,
+	linux-kselftest@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.4 1/6] selftests/bpf: Prevent client connect before server bind in test_tc_tunnel.sh
+Date: Mon, 27 May 2024 10:19:38 -0400
+Message-ID: <20240527141950.3854993-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240527141901.3854691-1-sashal@kernel.org>
-References: <20240527141901.3854691-1-sashal@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -64,95 +64,82 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
-X-stable-base: Linux 5.10.218
+X-stable-base: Linux 5.4.277
 Content-Transfer-Encoding: 8bit
 
-From: Benjamin Tissoires <bentiss@kernel.org>
+From: "Alessandro Carminati (Red Hat)" <alessandro.carminati@gmail.com>
 
-[ Upstream commit 4e6d2a297dd5be26ad409b7a05b20bd033d1c95e ]
+[ Upstream commit f803bcf9208a2540acb4c32bdc3616673169f490 ]
 
-Duplicate of commit 0db117359e47 ("HID: add quirk for 03f0:464a HP Elite
-Presenter Mouse"), but in a slightly better way.
+In some systems, the netcat server can incur in delay to start listening.
+When this happens, the test can randomly fail in various points.
+This is an example error message:
 
-This time we actually change the application collection, making clearer
-for userspace what the second mouse is.
+   # ip gre none gso
+   # encap 192.168.1.1 to 192.168.1.2, type gre, mac none len 2000
+   # test basic connectivity
+   # Ncat: Connection refused.
 
-Note that having both hid-quirks fix and this HID-BPF fix is not a
-problem at all.
+The issue stems from a race condition between the netcat client and server.
+The test author had addressed this problem by implementing a sleep, which
+I have removed in this patch.
+This patch introduces a function capable of sleeping for up to two seconds.
+However, it can terminate the waiting period early if the port is reported
+to be listening.
 
-Link: https://lore.kernel.org/r/20240410-bpf_sources-v1-4-a8bf16033ef8@kernel.org
-Reviewed-by: Peter Hutterer <peter.hutterer@who-t.net>
-Signed-off-by: Benjamin Tissoires <bentiss@kernel.org>
+Signed-off-by: Alessandro Carminati (Red Hat) <alessandro.carminati@gmail.com>
+Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+Link: https://lore.kernel.org/bpf/20240314105911.213411-1-alessandro.carminati@gmail.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- .../hid/bpf/progs/HP__Elite-Presenter.bpf.c   | 58 +++++++++++++++++++
- 1 file changed, 58 insertions(+)
- create mode 100644 drivers/hid/bpf/progs/HP__Elite-Presenter.bpf.c
+ tools/testing/selftests/bpf/test_tc_tunnel.sh | 13 ++++++++++++-
+ 1 file changed, 12 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/hid/bpf/progs/HP__Elite-Presenter.bpf.c b/drivers/hid/bpf/progs/HP__Elite-Presenter.bpf.c
-new file mode 100644
-index 0000000000000..3d14bbb6f2762
---- /dev/null
-+++ b/drivers/hid/bpf/progs/HP__Elite-Presenter.bpf.c
-@@ -0,0 +1,58 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/* Copyright (c) 2023 Benjamin Tissoires
-+ */
-+
-+#include "vmlinux.h"
-+#include "hid_bpf.h"
-+#include "hid_bpf_helpers.h"
-+#include <bpf/bpf_tracing.h>
-+
-+#define VID_HP 0x03F0
-+#define PID_ELITE_PRESENTER 0x464A
-+
-+HID_BPF_CONFIG(
-+	HID_DEVICE(BUS_BLUETOOTH, HID_GROUP_GENERIC, VID_HP, PID_ELITE_PRESENTER)
-+);
-+
-+/*
-+ * Already fixed as of commit 0db117359e47 ("HID: add quirk for 03f0:464a
-+ * HP Elite Presenter Mouse") in the kernel, but this is a slightly better
-+ * fix.
-+ *
-+ * The HP Elite Presenter Mouse HID Record Descriptor shows
-+ * two mice (Report ID 0x1 and 0x2), one keypad (Report ID 0x5),
-+ * two Consumer Controls (Report IDs 0x6 and 0x3).
-+ * Prior to these fixes it registers one mouse, one keypad
-+ * and one Consumer Control, and it was usable only as a
-+ * digital laser pointer (one of the two mouses).
-+ * We replace the second mouse collection with a pointer collection,
-+ * allowing to use the device both as a mouse and a digital laser
-+ * pointer.
-+ */
-+
-+SEC("fmod_ret/hid_bpf_rdesc_fixup")
-+int BPF_PROG(hid_fix_rdesc, struct hid_bpf_ctx *hctx)
-+{
-+	__u8 *data = hid_bpf_get_data(hctx, 0 /* offset */, 4096 /* size */);
-+
-+	if (!data)
-+		return 0; /* EPERM check */
-+
-+	/* replace application mouse by application pointer on the second collection */
-+	if (data[79] == 0x02)
-+		data[79] = 0x01;
-+
-+	return 0;
+diff --git a/tools/testing/selftests/bpf/test_tc_tunnel.sh b/tools/testing/selftests/bpf/test_tc_tunnel.sh
+index 7c76b841b17bb..21bde60c95230 100755
+--- a/tools/testing/selftests/bpf/test_tc_tunnel.sh
++++ b/tools/testing/selftests/bpf/test_tc_tunnel.sh
+@@ -71,7 +71,6 @@ cleanup() {
+ server_listen() {
+ 	ip netns exec "${ns2}" nc "${netcat_opt}" -l -p "${port}" > "${outfile}" &
+ 	server_pid=$!
+-	sleep 0.2
+ }
+ 
+ client_connect() {
+@@ -92,6 +91,16 @@ verify_data() {
+ 	fi
+ }
+ 
++wait_for_port() {
++	for i in $(seq 20); do
++		if ip netns exec "${ns2}" ss ${2:--4}OHntl | grep -q "$1"; then
++			return 0
++		fi
++		sleep 0.1
++	done
++	return 1
 +}
 +
-+SEC("syscall")
-+int probe(struct hid_bpf_probe_args *ctx)
-+{
-+	ctx->retval = ctx->rdesc_size != 264;
-+	if (ctx->retval)
-+		ctx->retval = -EINVAL;
-+
-+	return 0;
-+}
-+
-+char _license[] SEC("license") = "GPL";
+ set -e
+ 
+ # no arguments: automated test, run all
+@@ -183,6 +192,7 @@ setup
+ # basic communication works
+ echo "test basic connectivity"
+ server_listen
++wait_for_port ${port} ${netcat_opt}
+ client_connect
+ verify_data
+ 
+@@ -194,6 +204,7 @@ ip netns exec "${ns1}" tc filter add dev veth1 egress \
+ 	section "encap_${tuntype}_${mac}"
+ echo "test bpf encap without decap (expect failure)"
+ server_listen
++wait_for_port ${port} ${netcat_opt}
+ ! client_connect
+ 
+ if [[ "$tuntype" =~ "udp" ]]; then
 -- 
 2.43.0
 
