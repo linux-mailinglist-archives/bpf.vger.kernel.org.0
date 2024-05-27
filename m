@@ -1,156 +1,191 @@
-Return-Path: <bpf+bounces-30643-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-30644-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 82D968CFEE2
-	for <lists+bpf@lfdr.de>; Mon, 27 May 2024 13:23:43 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0E5498D0101
+	for <lists+bpf@lfdr.de>; Mon, 27 May 2024 15:12:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 36CA5280E43
-	for <lists+bpf@lfdr.de>; Mon, 27 May 2024 11:23:42 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B4278286FCA
+	for <lists+bpf@lfdr.de>; Mon, 27 May 2024 13:12:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C6AC613C82D;
-	Mon, 27 May 2024 11:22:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 465C113AD23;
+	Mon, 27 May 2024 13:12:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b="Md2dvVf/"
+	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="g0pdTC18"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f41.google.com (mail-ej1-f41.google.com [209.85.218.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B0A7113C822
-	for <bpf@vger.kernel.org>; Mon, 27 May 2024 11:22:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA2897D405;
+	Mon, 27 May 2024 13:11:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.133.104.62
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716808945; cv=none; b=tDnOlKflapsAZWNP6EEPeakxIdnfnDvubySvhqBgISYlBuLpAYAEcGoNi3uQACKj+Dg86fD0Z9SW0HbTaMVmlDFq6sQ5bPdJqLUkbYR4mDPeHinUpbMLwiefsuHw/+TJdV308lJSflqJ56XVkZTREpRSngro412z+FqHdf3Hm8o=
+	t=1716815522; cv=none; b=sdlVKRTF5f5Z7gqMdqQwjEeVsVRKWWLF6zoo8AU2AGuRKV8UVOYfetKlOEQC+6RnvSsK0e7uNTmyM60DXY22jfhVlmDoH784XtIzuFwnQyD8K7ulKx8ZgKp8DDhVach3dAEJNzJYRCEyDJa1GTT8rLwNxR+mCfWkr+lmJAWtFcY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716808945; c=relaxed/simple;
-	bh=88POcvOWFFjPPQWCit/6miZynfoeEN1gpEssKj4qSgU=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=QLJripdgq/MkcC5sFC2z6+XqAc6YBdwpwN8nsPuy7XFBP9/UYpXQ+Djr6jyJXiZ033UGB9rnjM0n9bdayUg0yaLK8pStCYqFLr+zQaROJJ5OQV1QYQj/zlYBq0tg7Oy+uWQ7Yhnd2EW/ZtEpM/spapL/RfR02n/uzTvaPp0tjFw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com; spf=pass smtp.mailfrom=cloudflare.com; dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b=Md2dvVf/; arc=none smtp.client-ip=209.85.218.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cloudflare.com
-Received: by mail-ej1-f41.google.com with SMTP id a640c23a62f3a-a6267639e86so355596666b.2
-        for <bpf@vger.kernel.org>; Mon, 27 May 2024 04:22:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google09082023; t=1716808942; x=1717413742; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:user-agent
-         :references:in-reply-to:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=eLptiP5qkymbmbX9UsdRdz023vOqmxKFBh0YRmvGv1M=;
-        b=Md2dvVf/doenhWB6q1z18CIBpb1+DAdMiaeYMtqTIiB4sSWQkKKWBDtRW39Xujysb8
-         DBm47LAAAwVpE8kg0V4ec87EToNwM1ckYBL8dbBas+kM/iNk4eBIvrETqmaerH/Is0mZ
-         e6thb8v1nUpd0Pt3Z9emAjTUYZd15TzvujOOXZUqjRpOfAv3wJO/Anig6h77bgnmRC1U
-         Yms42EaqFrmGZ1RKfJXZLaZcMo5hjm2ESEjxdFNmOkx3MuomlhebPs/5zDh9/wPdcZo8
-         Dge+Tm4Jp9nPbmY5dp7rPcShNsD90h55pepcDG3MqbCj1NObkGff7tqro4UiRo7QKesC
-         v10w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1716808942; x=1717413742;
-        h=content-transfer-encoding:mime-version:message-id:date:user-agent
-         :references:in-reply-to:subject:cc:to:from:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=eLptiP5qkymbmbX9UsdRdz023vOqmxKFBh0YRmvGv1M=;
-        b=Q5QIlJBHVLTQSkb/3MB6TT4Gg0ygKTzY0EYxz3eBu+vrIAu83q1VAlkBeN2tu4MraR
-         99KXHVGnHuiF/0C3Egkk5jBIWmdJFRCGcG+3svjw3+MilPbLlvgA8+Bb0Oq+xcmEk6oG
-         Wd7sYulU2MW6+g1TabJJHcaI4B9uamCESZ4p1h8/ngh/yN/CD7ckQsHF51hUrrZQMMPn
-         CwpZbIC2vUVw8OrrjIPOIx5fB2gAl8d+sMj2x4Ari341dN2T+x6trrbTjeZ6GAO23dto
-         gxwpizneV8c2Tq9YdXT7feG5SwMzgcylYJN6iP4Q99igIpjjWK+840VkNy0t7Eic9sEN
-         FzmQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXzQcchJJSzbkzDj4qKMa5PWK8qYbgRU585IYu061AeHkdiVNiOG+w/DzLFdsZa4KdSfmdlLlHHKO4g//H1/xjbGMUG
-X-Gm-Message-State: AOJu0Yz7fX75ZTTxpC4+yYCX3Kx3n/7TJopIFl2tVJ6QFyhZBmyNTm9i
-	i4Dku15J9AH9bZe5Z0kzjQu9IP+3h1sLWSLGX8WWHc+1S4x6oLrf5Koq/SZ6rpI=
-X-Google-Smtp-Source: AGHT+IEZdlj1VzyTR7Ta4LFCgyFZzIs4D4+uzViTqz7y8iQel3WIQ/7/p0r19rtv0ZF0a3iVzioFGg==
-X-Received: by 2002:a17:906:314e:b0:a59:c319:f1dc with SMTP id a640c23a62f3a-a62642daa92mr608591766b.4.1716808942029;
-        Mon, 27 May 2024 04:22:22 -0700 (PDT)
-Received: from cloudflare.com ([2a09:bac5:5063:2387::38a:20])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a62bee266a1sm259856066b.159.2024.05.27.04.22.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 May 2024 04:22:21 -0700 (PDT)
-From: Jakub Sitnicki <jakub@cloudflare.com>
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: John Fastabend <john.fastabend@gmail.com>,  Daniel Borkmann
- <daniel@iogearbox.net>,  Hillf Danton <hdanton@sina.com>,  Tetsuo Handa
- <penguin-kernel@i-love.sakura.ne.jp>,  Eric Dumazet <edumazet@google.com>,
-  Linus Torvalds <torvalds@linux-foundation.org>,  bpf
- <bpf@vger.kernel.org>,  LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] bpf, sockmap: defer sk_psock_free_link() using RCU
-In-Reply-To: <87a5kfwe8l.fsf@cloudflare.com> (Jakub Sitnicki's message of
-	"Fri, 24 May 2024 15:06:50 +0200")
-References: <838e7959-a360-4ac1-b36a-a3469236129b@I-love.SAKURA.ne.jp>
-	<20240521225918.2147-1-hdanton@sina.com>
-	<20240522113349.2202-1-hdanton@sina.com> <87o78yvydx.fsf@cloudflare.com>
-	<CAADnVQKfbaY-pm2H-6U_c=-XyvocSAkNqXg4+Kj7cXGtmajaAA@mail.gmail.com>
-	<87a5kfwe8l.fsf@cloudflare.com>
-User-Agent: mu4e 1.12.4; emacs 29.1
-Date: Mon, 27 May 2024 13:22:19 +0200
-Message-ID: <871q5nwlck.fsf@cloudflare.com>
+	s=arc-20240116; t=1716815522; c=relaxed/simple;
+	bh=yAjc/CRBIyHBMERfH9pfmqQKiZyxBnW8DCsCRsUh0h8=;
+	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=JwBb76XXcr5RUjDV2gJow0+ceku8f+Dg6fsXKb+QZhJdLJ52vrAuSdDcHDvRzUfsalBrIVSODf3arDMvJRdOdbylwxhKebOsufc8EZz0xhWlPpadeJdkYRbLxaB3fBXx400W09cMonPf6snrsT6D6xf9NRAe1FLDHw48NtSzZb8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=g0pdTC18; arc=none smtp.client-ip=213.133.104.62
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iogearbox.net
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
+	In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
+	bh=oZjVcx9f2W1nJX3ekNr5Flk/1LEdQ2H2XBF9DSGsQok=; b=g0pdTC18j9Kli9oqXG14Kk2ese
+	nMEBl72DupxfG0XKyaOFY/l6QFZuUBMG8UlFXX0hOjkH6yNOI2N2wrXe1sYOYys9aHFfLH/JH0rkN
+	jOuAtzMpFDnFXGvMVaPtjBkFbDLusUas+KCMv5/UXK/SYCP4XqbGEE/9QD+p1FybRqHpJBYj4zlAE
+	LYgHcZTiUAPuxxe7TrjX6RbYF+LJH9Zfmhuz4U0CFKr2lJ2IVctbimMe0dy7EV5v1l2h8e2kj9tB1
+	RKRil/8sCa6SNXqE+gO//kiocGf7aU+4ivWaPvr04iAR/vSVBVcacja3/sxLUxu9R3Khq3G2jDh+B
+	6SIY+EiQ==;
+Received: from sslproxy06.your-server.de ([78.46.172.3])
+	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <daniel@iogearbox.net>)
+	id 1sBa8l-000FpF-FC; Mon, 27 May 2024 15:11:51 +0200
+Received: from [178.197.248.14] (helo=linux.home)
+	by sslproxy06.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <daniel@iogearbox.net>)
+	id 1sBa8k-000AIM-2A;
+	Mon, 27 May 2024 15:11:50 +0200
+Subject: Re: [Patch bpf] vmalloc: relax is_vmalloc_or_module_addr() check
+To: Cong Wang <xiyou.wangcong@gmail.com>, netdev@vger.kernel.org
+Cc: linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+ bpf@vger.kernel.org, Cong Wang <cong.wang@bytedance.com>,
+ Luis Chamberlain <mcgrof@kernel.org>, Mike Rapoport <rppt@kernel.org>
+References: <20240526230648.188550-1-xiyou.wangcong@gmail.com>
+From: Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <1f39f888-989f-658b-a107-90ffe1347d0f@iogearbox.net>
+Date: Mon, 27 May 2024 15:11:50 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20240526230648.188550-1-xiyou.wangcong@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.10/27288/Mon May 27 10:29:01 2024)
 
-On Fri, May 24, 2024 at 03:06 PM +02, Jakub Sitnicki wrote:
-> On Wed, May 22, 2024 at 07:57 AM -07, Alexei Starovoitov wrote:
->> On Wed, May 22, 2024 at 5:12=E2=80=AFAM Jakub Sitnicki <jakub@cloudflare=
-.com> wrote:
->>>
->>> On Wed, May 22, 2024 at 07:33 PM +08, Hillf Danton wrote:
->>> > On Wed, 22 May 2024 11:50:49 +0200 Jakub Sitnicki <jakub@cloudflare.c=
-om>
->>> > On Wed, May 22, 2024 at 06:59 AM +08, Hillf Danton wrote:
->>> >> > On Tue, 21 May 2024 08:38:52 -0700 Alexei Starovoitov <alexei.star=
-ovoitov@gmail.com>
->>> >> >> On Sun, May 12, 2024 at 12:22=3DE2=3D80=3DAFAM Tetsuo Handa <peng=
-uin-kernel@i-love.sakura.ne.jp> wrote:
->>> >> >> > --- a/net/core/sock_map.c
->>> >> >> > +++ b/net/core/sock_map.c
->>> >> >> > @@ -142,6 +142,7 @@ static void sock_map_del_link(struct sock *=
-sk,
->>> >> >> >         bool strp_stop =3D3D false, verdict_stop =3D3D false;
->>> >> >> >         struct sk_psock_link *link, *tmp;
->>> >> >> >
->>> >> >> > +       rcu_read_lock();
->>> >> >> >         spin_lock_bh(&psock->link_lock);
->>> >> >>
->>> >> >> I think this is incorrect.
->>> >> >> spin_lock_bh may sleep in RT and it won't be safe to do in rcu cs.
->>> >> >
->>> >> > Could you specify why it won't be safe in rcu cs if you are right?
->>> >> > What does rcu look like in RT if not nothing?
->>> >>
->>> >> RCU readers can't block, while spinlock RT doesn't disable preemptio=
-n.
->>> >>
->>> >> https://docs.kernel.org/RCU/rcu.html
->>> >> https://docs.kernel.org/locking/locktypes.html#spinlock-t-and-preemp=
-t-rt
->>> >>
->>> >> I've finally gotten around to testing proposed fix that just disallo=
-ws
->>> >> map_delete_elem on sockmap/sockhash from BPF tracing progs
->>> >> completely. This should put an end to this saga of syzkaller reports.
->>> >>
->>> >> https://lore.kernel.org/all/87jzjnxaqf.fsf@cloudflare.com/
->>
->> Agree. Let's do that. According to John the delete path is not something
->> that is used in production. It's only a source of trouble with syzbot.
->
-> Cool. The proposed API rule would be that if a BPF program type is
-> allowed to update a sockmap/sockhash, then it is also allowed to delete
-> from it.
->
-> So I need to tweak my patch to allow deletes from sock_ops progs.
-> We have a dedicated bpf_sock_map_update() helper there.
->
-> [...]
+On 5/27/24 1:06 AM, Cong Wang wrote:
+> From: Cong Wang <cong.wang@bytedance.com>
+> 
+> After commit 2c9e5d4a0082 ("bpf: remove CONFIG_BPF_JIT dependency on CONFIG_MODULES of")
+> CONFIG_BPF_JIT does not depend on CONFIG_MODULES any more and bpf jit
+> also uses the MODULES_VADDR ~ MODULES_END memory region. But
+> is_vmalloc_or_module_addr() still checks CONFIG_MODULES, which then
+> returns false for a bpf jit memory region when CONFIG_MODULES is not
+> defined. It leads to the following kernel BUG:
+> 
+> [    1.567023] ------------[ cut here ]------------
+> [    1.567883] kernel BUG at mm/vmalloc.c:745!
+> [    1.568477] Oops: invalid opcode: 0000 [#1] PREEMPT SMP KASAN NOPTI
+> [    1.569367] CPU: 0 PID: 1 Comm: swapper/0 Not tainted 6.9.0+ #448
+> [    1.570247] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.15.0-1 04/01/2014
+> [    1.570786] RIP: 0010:vmalloc_to_page+0x48/0x1ec
+> [    1.570786] Code: 0f 00 00 e8 eb 1a 05 00 b8 37 00 00 00 48 ba fe ff ff ff ff 1f 00 00 4c 03 25 76 49 c6 02 48 c1 e0 28 48 01 e8 48 39 d0 76 02 <0f> 0b 4c 89 e7 e8 bf 1a 05 00 49 8b 04 24 48 a9 9f ff ff ff 0f 84
+> [    1.570786] RSP: 0018:ffff888007787960 EFLAGS: 00010212
+> [    1.570786] RAX: 000036ffa0000000 RBX: 0000000000000640 RCX: ffffffff8147e93c
+> [    1.570786] RDX: 00001ffffffffffe RSI: dffffc0000000000 RDI: ffffffff840e32c8
+> [    1.570786] RBP: ffffffffa0000000 R08: 0000000000000000 R09: 0000000000000000
+> [    1.570786] R10: ffff888007787a88 R11: ffffffff8475d8e7 R12: ffffffff83e80ff8
+> [    1.570786] R13: 0000000000000640 R14: 0000000000000640 R15: 0000000000000640
+> [    1.570786] FS:  0000000000000000(0000) GS:ffff88806cc00000(0000) knlGS:0000000000000000
+> [    1.570786] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> [    1.570786] CR2: ffff888006a01000 CR3: 0000000003e80000 CR4: 0000000000350ef0
+> [    1.570786] Call Trace:
+> [    1.570786]  <TASK>
+> [    1.570786]  ? __die_body+0x1b/0x58
+> [    1.570786]  ? die+0x31/0x4b
+> [    1.570786]  ? do_trap+0x9d/0x138
+> [    1.570786]  ? vmalloc_to_page+0x48/0x1ec
+> [    1.570786]  ? do_error_trap+0xcd/0x102
+> [    1.570786]  ? vmalloc_to_page+0x48/0x1ec
+> [    1.570786]  ? vmalloc_to_page+0x48/0x1ec
+> [    1.570786]  ? handle_invalid_op+0x2f/0x38
+> [    1.570786]  ? vmalloc_to_page+0x48/0x1ec
+> [    1.570786]  ? exc_invalid_op+0x2b/0x41
+> [    1.570786]  ? asm_exc_invalid_op+0x16/0x20
+> [    1.570786]  ? vmalloc_to_page+0x26/0x1ec
+> [    1.570786]  ? vmalloc_to_page+0x48/0x1ec
+> [    1.570786]  __text_poke+0xb6/0x458
+> [    1.570786]  ? __pfx_text_poke_memcpy+0x10/0x10
+> [    1.570786]  ? __pfx___mutex_lock+0x10/0x10
+> [    1.570786]  ? __pfx___text_poke+0x10/0x10
+> [    1.570786]  ? __pfx_get_random_u32+0x10/0x10
+> [    1.570786]  ? srso_return_thunk+0x5/0x5f
+> [    1.570786]  text_poke_copy_locked+0x70/0x84
+> [    1.570786]  text_poke_copy+0x32/0x4f
+> [    1.570786]  bpf_arch_text_copy+0xf/0x27
+> [    1.570786]  bpf_jit_binary_pack_finalize+0x26/0x5a
+> [    1.570786]  bpf_int_jit_compile+0x576/0x8ad
+> [    1.570786]  ? __pfx_bpf_int_jit_compile+0x10/0x10
+> [    1.570786]  ? srso_return_thunk+0x5/0x5f
+> [    1.570786]  ? __kmalloc_node_track_caller+0x2b5/0x2e0
+> [    1.570786]  bpf_prog_select_runtime+0x7c/0x199
+> [    1.570786]  bpf_prepare_filter+0x1e9/0x25b
+> [    1.570786]  ? __pfx_bpf_prepare_filter+0x10/0x10
+> [    1.570786]  ? srso_return_thunk+0x5/0x5f
+> [    1.570786]  ? _find_next_bit+0x29/0x7e
+> [    1.570786]  bpf_prog_create+0xb8/0xe0
+> [    1.570786]  ptp_classifier_init+0x75/0xa1
+> [    1.570786]  ? __pfx_ptp_classifier_init+0x10/0x10
+> [    1.570786]  ? srso_return_thunk+0x5/0x5f
+> [    1.570786]  ? register_pernet_subsys+0x36/0x42
+> [    1.570786]  ? srso_return_thunk+0x5/0x5f
+> [    1.570786]  sock_init+0x99/0xa3
+> [    1.570786]  ? __pfx_sock_init+0x10/0x10
+> [    1.570786]  do_one_initcall+0x104/0x2c4
+> [    1.570786]  ? __pfx_do_one_initcall+0x10/0x10
+> [    1.570786]  ? parameq+0x25/0x2d
+> [    1.570786]  ? rcu_is_watching+0x1c/0x3c
+> [    1.570786]  ? trace_kmalloc+0x81/0xb2
+> [    1.570786]  ? srso_return_thunk+0x5/0x5f
+> [    1.570786]  ? __kmalloc+0x29c/0x2c7
+> [    1.570786]  ? srso_return_thunk+0x5/0x5f
+> [    1.570786]  do_initcalls+0xf9/0x123
+> [    1.570786]  kernel_init_freeable+0x24f/0x289
+> [    1.570786]  ? __pfx_kernel_init+0x10/0x10
+> [    1.570786]  kernel_init+0x19/0x13a
+> [    1.570786]  ret_from_fork+0x24/0x41
+> [    1.570786]  ? __pfx_kernel_init+0x10/0x10
+> [    1.570786]  ret_from_fork_asm+0x1a/0x30
+> [    1.570786]  </TASK>
+> [    1.570819] ---[ end trace 0000000000000000 ]---
+> [    1.571463] RIP: 0010:vmalloc_to_page+0x48/0x1ec
+> [    1.572111] Code: 0f 00 00 e8 eb 1a 05 00 b8 37 00 00 00 48 ba fe ff ff ff ff 1f 00 00 4c 03 25 76 49 c6 02 48 c1 e0 28 48 01 e8 48 39 d0 76 02 <0f> 0b 4c 89 e7 e8 bf 1a 05 00 49 8b 04 24 48 a9 9f ff ff ff 0f 84
+> [    1.574632] RSP: 0018:ffff888007787960 EFLAGS: 00010212
+> [    1.575129] RAX: 000036ffa0000000 RBX: 0000000000000640 RCX: ffffffff8147e93c
+> [    1.576097] RDX: 00001ffffffffffe RSI: dffffc0000000000 RDI: ffffffff840e32c8
+> [    1.577084] RBP: ffffffffa0000000 R08: 0000000000000000 R09: 0000000000000000
+> [    1.578077] R10: ffff888007787a88 R11: ffffffff8475d8e7 R12: ffffffff83e80ff8
+> [    1.578810] R13: 0000000000000640 R14: 0000000000000640 R15: 0000000000000640
+> [    1.579823] FS:  0000000000000000(0000) GS:ffff88806cc00000(0000) knlGS:0000000000000000
+> [    1.580992] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> [    1.581869] CR2: ffff888006a01000 CR3: 0000000003e80000 CR4: 0000000000350ef0
+> [    1.582800] Kernel panic - not syncing: Fatal exception
+> [    1.583765] ---[ end Kernel panic - not syncing: Fatal exception ]---
+> 
+> Fixes: 2c9e5d4a0082 ("bpf: remove CONFIG_BPF_JIT dependency on CONFIG_MODULES of")
+> Cc: Luis Chamberlain <mcgrof@kernel.org>
+> Cc: Mike Rapoport (IBM) <rppt@kernel.org>
+> Signed-off-by: Cong Wang <cong.wang@bytedance.com>
 
-Posted:
+Thanks for the fix!
 
-https://lore.kernel.org/r/20240527-sockmap-verify-deletes-v1-0-944b372f2101=
-@cloudflare.com
+Mike/Luis, do you plan to pick this up or rather prefer if we route it to
+Linus (with your Ack assuming it looks good to you)?
+
+Thanks,
+Daniel
 
