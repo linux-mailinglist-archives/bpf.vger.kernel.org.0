@@ -1,184 +1,124 @@
-Return-Path: <bpf+bounces-30646-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-30647-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 65CCD8D0188
-	for <lists+bpf@lfdr.de>; Mon, 27 May 2024 15:31:45 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 290838D02C2
+	for <lists+bpf@lfdr.de>; Mon, 27 May 2024 16:07:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1BDA7287A4D
-	for <lists+bpf@lfdr.de>; Mon, 27 May 2024 13:31:44 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5A57D1C21BD5
+	for <lists+bpf@lfdr.de>; Mon, 27 May 2024 14:07:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9871915EFC1;
-	Mon, 27 May 2024 13:30:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F1D815FA92;
+	Mon, 27 May 2024 14:00:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZpD51+ht"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="N1KgTtpm"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f193.google.com (mail-pf1-f193.google.com [209.85.210.193])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A9CC15EFAF;
-	Mon, 27 May 2024 13:30:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A134915ECE7;
+	Mon, 27 May 2024 14:00:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.193
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716816635; cv=none; b=MLhADOHjBQtBxTT52CXizWLJyqUwfKpWazF56eDQdOrx25CYbHXc6K2ytx3AIe2pvTcsecAxGlPBPJlrzRLUggTOJiO7vMnhayhtX6Qz4iHN5srFtJQMi3exkOzMSDfWQjslSTcdJbCJ/GdE6Y8ozOCYgNbeH6BJX0c6oZb2PUI=
+	t=1716818429; cv=none; b=nd7aGiVJXgjai/EEFzcv21ae7r1UkLp46UvkRs5dB+OvB6NcLxHpdSnrtQXhuEb9Ixg0pFPdCn8cyfBv4/mm2dK4P+QFs4dTwswL1Pyx+DIEBF3N8BvU+BIbmZBiHnCi5deeRgnBow3sLD4mReilRU7xdA8uNce33vVqQnHPHCE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716816635; c=relaxed/simple;
-	bh=XKIExmxJ0QbTZF18xt6QtZCjep9rcJmkPdgH9omxsFs=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=EsqcPuYRZ66ZtTpqD1/HzShpIkgSj5tbPZad4XWZDKVGJmpq1Wxpe8yZ9+d3eqgtYUsY9z2sqxmXqAiyG0fAMq2gwP5ibkpZPj8zPgJG8tQM62h7AODyslFeGKe6mDoU1+OOkBLG2snxOC8oibevv0FgKIe8KbtoKAe1mxwkSIk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZpD51+ht; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 86FF9C32789;
-	Mon, 27 May 2024 13:30:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1716816634;
-	bh=XKIExmxJ0QbTZF18xt6QtZCjep9rcJmkPdgH9omxsFs=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=ZpD51+htCJ6SFNZuke4BoLNDvsbG3BwXps9XuSfgY/V7RDJK8uYWK6mMo74/X1Icx
-	 h+VP95NwwrBsKTJG9dhNotAvQhppQanZL4MNveYrxuY+7fVPPyBsQtRCk3ccH9ByUp
-	 fHUHV2WvCNAbAydO1Lsq1Ejk55SXEhpUfJ1Wa7hyKmtiAmZjv/LsjLEZAZ7nf/xHpp
-	 5yIXXe0gYaYxNXFgVpEGHZKvMP32oStRf+3rEJreqskl6VLKbUXTJpMXc1Nh2z8tkx
-	 CMLIg0DckUDs4HJ0ZaIpkXiYAMjC4nJQSZZayCfl6hElOWhtLHV6Xhrf5gkCyQRW1g
-	 U+CWs9DdjZ1mA==
-Date: Mon, 27 May 2024 16:28:45 +0300
-From: Mike Rapoport <rppt@kernel.org>
-To: Daniel Borkmann <daniel@iogearbox.net>
-Cc: Cong Wang <xiyou.wangcong@gmail.com>, netdev@vger.kernel.org,
-	linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
-	bpf@vger.kernel.org, Cong Wang <cong.wang@bytedance.com>,
-	Luis Chamberlain <mcgrof@kernel.org>
-Subject: Re: [Patch bpf] vmalloc: relax is_vmalloc_or_module_addr() check
-Message-ID: <ZlSKjd6-6-no-x9W@kernel.org>
-References: <20240526230648.188550-1-xiyou.wangcong@gmail.com>
- <1f39f888-989f-658b-a107-90ffe1347d0f@iogearbox.net>
+	s=arc-20240116; t=1716818429; c=relaxed/simple;
+	bh=C+1tPGApB2vY2STWPtBY6qjLrBhTd6qsZaU8j09B7f4=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=YdIzNAZR892h8sfMEZeyt1gLZ3+HBuHKLQznFB0Y/Ae5Mt2KQ7uQd2SLdLp6Mz6fmSSGB3/JdtWBN2tXmIwj1BUsk4wgz5y1YmSVoffjdY4peVKVqhnmgwirtugRcpIW8EvG2uAu4S07zFpsqw2FeLUQ6zkyibpMiGQf31J5r9A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=N1KgTtpm; arc=none smtp.client-ip=209.85.210.193
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f193.google.com with SMTP id d2e1a72fcca58-701ae8698d8so124192b3a.0;
+        Mon, 27 May 2024 07:00:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1716818428; x=1717423228; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=4TY/wlrJh5pwz9DH42R4v/71GLr5C1YLgWTdRX4V5jw=;
+        b=N1KgTtpmRUamj1yFcNBPaLmu4t8mrDLLdctoY4Ne7TWZoFiMp8Q/dkzCzy1/VdfPeX
+         39dFuHqnTiOkWXCmHmDi+tWbVdXb8MQTncuh5Go35d7sOvEplg2h+DSLMyes5uXFrdpo
+         2jbMMyj8KMC6eDtpQosixYfvpyb5t0QVt1FRZjBtVqokv8O1U0rykPWlRpOYwXk2AnNF
+         f6x00+k8+ohsdmDDCx0CK5+5ctiDxEXH9yTBQuS4cB7IfcXVMlSzoZdOlZ0SsSJ6EM/j
+         koGYMdRcy4biWkV6M4lfLmre3CyrE3xT1sbYDtJBxko7+sY9+uRVKupUHFmc35i/E2b7
+         D0BQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1716818428; x=1717423228;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=4TY/wlrJh5pwz9DH42R4v/71GLr5C1YLgWTdRX4V5jw=;
+        b=tDn/hGaGMXwdHGKfDThH8xUBcvYEiy3IjUdX13MMlViQuAp5A2aMk10m3Bu45N6jqp
+         h9yGUSdpZvpiY6kDU8RJiSxDPSxl/TDpyx+PiB8MS7tc4s1QIvM0/5bMh3zIK7XI4yDl
+         d0yPhenIbSU6/HBtS1heFKw8655X5qcs5QzkAdW0vwpdmN/N1B206yz486mQDfw7ozLg
+         lIXFULZRFZ77NDUGWRRL5B+dveUlYTLxnkvvzQGcnrNFSbFy3UOd8DM+a/BjNdlpRAoX
+         dqupAMu03cmc9idD+KVGHd79GZu7YncxL+ULssc9UkMM9/mT3vsjHdqdMbkJ8FuKuOLC
+         PfgA==
+X-Forwarded-Encrypted: i=1; AJvYcCVIrtfAwyFpFEy1ceCjmCcwfAHIs4n8GYvZvYh+p9+LuH1F57aztn6G/ksrPHIHR0q3y4u1uitAUvMZzCBJ8Oypt03cRh0enoEueU7CobQTjfFljOwCjDEFrTvyud0cME64kmKfC2kYf0Pjv8XsFxYE1Eqx3XmeHYbe
+X-Gm-Message-State: AOJu0YzRw+R4GF23OzagxcCJzm67xaS3WrkAzNOOqvONdbGRija6183S
+	DPykG2cDGuSOe2T/gbdxenYFeK9/IAS3ET1qUyNHAtqlDyE+oLyl
+X-Google-Smtp-Source: AGHT+IG1y3hyXS6rQ8h83tfkcOWfC6ohR6WHfSS7FY5mVqgldixau5o4vfJtoDm1zmR8cz+64fR+cQ==
+X-Received: by 2002:a05:6a20:3d88:b0:1af:b86d:b6dc with SMTP id adf61e73a8af0-1b212f63dfdmr10693850637.55.1716818427764;
+        Mon, 27 May 2024 07:00:27 -0700 (PDT)
+Received: from localhost.localdomain ([124.126.229.82])
+        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-682265494dcsm6053319a12.74.2024.05.27.07.00.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 27 May 2024 07:00:27 -0700 (PDT)
+From: Fred Li <dracodingfly@gmail.com>
+To: dracodingfly@gmail.com
+Cc: andrii@kernel.org,
+	ast@kernel.org,
+	bpf@vger.kernel.org,
+	daniel@iogearbox.net,
+	davem@davemloft.net,
+	john.fastabend@gmail.com,
+	kafai@fb.com,
+	kpsingh@kernel.org,
+	kuba@kernel.org,
+	linux-kernel@vger.kernel.org,
+	netdev@vger.kernel.org,
+	songliubraving@fb.com,
+	yhs@fb.com
+Subject: Re: [PATCH] test_bpf: Add an skb_segment test for a non linear frag_list whose head_frag=1 and gso_size was mangled
+Date: Mon, 27 May 2024 21:59:45 +0800
+Message-Id: <20240527135945.89764-1-dracodingfly@gmail.com>
+X-Mailer: git-send-email 2.32.1 (Apple Git-133)
+In-Reply-To: <20240517154028.70588-1-dracodingfly@gmail.com>
+References: <20240517154028.70588-1-dracodingfly@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1f39f888-989f-658b-a107-90ffe1347d0f@iogearbox.net>
+Content-Transfer-Encoding: 8bit
 
-On Mon, May 27, 2024 at 03:11:50PM +0200, Daniel Borkmann wrote:
-> On 5/27/24 1:06 AM, Cong Wang wrote:
-> > From: Cong Wang <cong.wang@bytedance.com>
-> > 
-> > After commit 2c9e5d4a0082 ("bpf: remove CONFIG_BPF_JIT dependency on CONFIG_MODULES of")
-> > CONFIG_BPF_JIT does not depend on CONFIG_MODULES any more and bpf jit
-> > also uses the MODULES_VADDR ~ MODULES_END memory region. But
-> > is_vmalloc_or_module_addr() still checks CONFIG_MODULES, which then
-> > returns false for a bpf jit memory region when CONFIG_MODULES is not
-> > defined. It leads to the following kernel BUG:
-> > 
-> > [    1.567023] ------------[ cut here ]------------
-> > [    1.567883] kernel BUG at mm/vmalloc.c:745!
-> > [    1.568477] Oops: invalid opcode: 0000 [#1] PREEMPT SMP KASAN NOPTI
-> > [    1.569367] CPU: 0 PID: 1 Comm: swapper/0 Not tainted 6.9.0+ #448
-> > [    1.570247] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.15.0-1 04/01/2014
-> > [    1.570786] RIP: 0010:vmalloc_to_page+0x48/0x1ec
-> > [    1.570786] Code: 0f 00 00 e8 eb 1a 05 00 b8 37 00 00 00 48 ba fe ff ff ff ff 1f 00 00 4c 03 25 76 49 c6 02 48 c1 e0 28 48 01 e8 48 39 d0 76 02 <0f> 0b 4c 89 e7 e8 bf 1a 05 00 49 8b 04 24 48 a9 9f ff ff ff 0f 84
-> > [    1.570786] RSP: 0018:ffff888007787960 EFLAGS: 00010212
-> > [    1.570786] RAX: 000036ffa0000000 RBX: 0000000000000640 RCX: ffffffff8147e93c
-> > [    1.570786] RDX: 00001ffffffffffe RSI: dffffc0000000000 RDI: ffffffff840e32c8
-> > [    1.570786] RBP: ffffffffa0000000 R08: 0000000000000000 R09: 0000000000000000
-> > [    1.570786] R10: ffff888007787a88 R11: ffffffff8475d8e7 R12: ffffffff83e80ff8
-> > [    1.570786] R13: 0000000000000640 R14: 0000000000000640 R15: 0000000000000640
-> > [    1.570786] FS:  0000000000000000(0000) GS:ffff88806cc00000(0000) knlGS:0000000000000000
-> > [    1.570786] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> > [    1.570786] CR2: ffff888006a01000 CR3: 0000000003e80000 CR4: 0000000000350ef0
-> > [    1.570786] Call Trace:
-> > [    1.570786]  <TASK>
-> > [    1.570786]  ? __die_body+0x1b/0x58
-> > [    1.570786]  ? die+0x31/0x4b
-> > [    1.570786]  ? do_trap+0x9d/0x138
-> > [    1.570786]  ? vmalloc_to_page+0x48/0x1ec
-> > [    1.570786]  ? do_error_trap+0xcd/0x102
-> > [    1.570786]  ? vmalloc_to_page+0x48/0x1ec
-> > [    1.570786]  ? vmalloc_to_page+0x48/0x1ec
-> > [    1.570786]  ? handle_invalid_op+0x2f/0x38
-> > [    1.570786]  ? vmalloc_to_page+0x48/0x1ec
-> > [    1.570786]  ? exc_invalid_op+0x2b/0x41
-> > [    1.570786]  ? asm_exc_invalid_op+0x16/0x20
-> > [    1.570786]  ? vmalloc_to_page+0x26/0x1ec
-> > [    1.570786]  ? vmalloc_to_page+0x48/0x1ec
-> > [    1.570786]  __text_poke+0xb6/0x458
-> > [    1.570786]  ? __pfx_text_poke_memcpy+0x10/0x10
-> > [    1.570786]  ? __pfx___mutex_lock+0x10/0x10
-> > [    1.570786]  ? __pfx___text_poke+0x10/0x10
-> > [    1.570786]  ? __pfx_get_random_u32+0x10/0x10
-> > [    1.570786]  ? srso_return_thunk+0x5/0x5f
-> > [    1.570786]  text_poke_copy_locked+0x70/0x84
-> > [    1.570786]  text_poke_copy+0x32/0x4f
-> > [    1.570786]  bpf_arch_text_copy+0xf/0x27
-> > [    1.570786]  bpf_jit_binary_pack_finalize+0x26/0x5a
-> > [    1.570786]  bpf_int_jit_compile+0x576/0x8ad
-> > [    1.570786]  ? __pfx_bpf_int_jit_compile+0x10/0x10
-> > [    1.570786]  ? srso_return_thunk+0x5/0x5f
-> > [    1.570786]  ? __kmalloc_node_track_caller+0x2b5/0x2e0
-> > [    1.570786]  bpf_prog_select_runtime+0x7c/0x199
-> > [    1.570786]  bpf_prepare_filter+0x1e9/0x25b
-> > [    1.570786]  ? __pfx_bpf_prepare_filter+0x10/0x10
-> > [    1.570786]  ? srso_return_thunk+0x5/0x5f
-> > [    1.570786]  ? _find_next_bit+0x29/0x7e
-> > [    1.570786]  bpf_prog_create+0xb8/0xe0
-> > [    1.570786]  ptp_classifier_init+0x75/0xa1
-> > [    1.570786]  ? __pfx_ptp_classifier_init+0x10/0x10
-> > [    1.570786]  ? srso_return_thunk+0x5/0x5f
-> > [    1.570786]  ? register_pernet_subsys+0x36/0x42
-> > [    1.570786]  ? srso_return_thunk+0x5/0x5f
-> > [    1.570786]  sock_init+0x99/0xa3
-> > [    1.570786]  ? __pfx_sock_init+0x10/0x10
-> > [    1.570786]  do_one_initcall+0x104/0x2c4
-> > [    1.570786]  ? __pfx_do_one_initcall+0x10/0x10
-> > [    1.570786]  ? parameq+0x25/0x2d
-> > [    1.570786]  ? rcu_is_watching+0x1c/0x3c
-> > [    1.570786]  ? trace_kmalloc+0x81/0xb2
-> > [    1.570786]  ? srso_return_thunk+0x5/0x5f
-> > [    1.570786]  ? __kmalloc+0x29c/0x2c7
-> > [    1.570786]  ? srso_return_thunk+0x5/0x5f
-> > [    1.570786]  do_initcalls+0xf9/0x123
-> > [    1.570786]  kernel_init_freeable+0x24f/0x289
-> > [    1.570786]  ? __pfx_kernel_init+0x10/0x10
-> > [    1.570786]  kernel_init+0x19/0x13a
-> > [    1.570786]  ret_from_fork+0x24/0x41
-> > [    1.570786]  ? __pfx_kernel_init+0x10/0x10
-> > [    1.570786]  ret_from_fork_asm+0x1a/0x30
-> > [    1.570786]  </TASK>
-> > [    1.570819] ---[ end trace 0000000000000000 ]---
-> > [    1.571463] RIP: 0010:vmalloc_to_page+0x48/0x1ec
-> > [    1.572111] Code: 0f 00 00 e8 eb 1a 05 00 b8 37 00 00 00 48 ba fe ff ff ff ff 1f 00 00 4c 03 25 76 49 c6 02 48 c1 e0 28 48 01 e8 48 39 d0 76 02 <0f> 0b 4c 89 e7 e8 bf 1a 05 00 49 8b 04 24 48 a9 9f ff ff ff 0f 84
-> > [    1.574632] RSP: 0018:ffff888007787960 EFLAGS: 00010212
-> > [    1.575129] RAX: 000036ffa0000000 RBX: 0000000000000640 RCX: ffffffff8147e93c
-> > [    1.576097] RDX: 00001ffffffffffe RSI: dffffc0000000000 RDI: ffffffff840e32c8
-> > [    1.577084] RBP: ffffffffa0000000 R08: 0000000000000000 R09: 0000000000000000
-> > [    1.578077] R10: ffff888007787a88 R11: ffffffff8475d8e7 R12: ffffffff83e80ff8
-> > [    1.578810] R13: 0000000000000640 R14: 0000000000000640 R15: 0000000000000640
-> > [    1.579823] FS:  0000000000000000(0000) GS:ffff88806cc00000(0000) knlGS:0000000000000000
-> > [    1.580992] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> > [    1.581869] CR2: ffff888006a01000 CR3: 0000000003e80000 CR4: 0000000000350ef0
-> > [    1.582800] Kernel panic - not syncing: Fatal exception
-> > [    1.583765] ---[ end Kernel panic - not syncing: Fatal exception ]---
-> > 
-> > Fixes: 2c9e5d4a0082 ("bpf: remove CONFIG_BPF_JIT dependency on CONFIG_MODULES of")
-> > Cc: Luis Chamberlain <mcgrof@kernel.org>
-> > Cc: Mike Rapoport (IBM) <rppt@kernel.org>
-> > Signed-off-by: Cong Wang <cong.wang@bytedance.com>
-> 
-> Thanks for the fix!
-> 
-> Mike/Luis, do you plan to pick this up or rather prefer if we route it to
-> Linus (with your Ack assuming it looks good to you)?
+For kernel 6.6.8, when sg is true and skb_headlen(list_skb) != len, it also has 
+chance run into this BUG_ON() line 4548.
+'''
+4544                 hsize = skb_headlen(head_skb) - offset;
+4545 
+4546                 if (hsize <= 0 && i >= nfrags && skb_headlen(list_skb) &&
+4547                     (skb_headlen(list_skb) == len || sg)) {
+4548                         BUG_ON(skb_headlen(list_skb) > len);
+4549 
+4550                         nskb = skb_clone(list_skb, GFP_ATOMIC);
+'''
 
-I'm fine with routing this via bpf, but usually vmalloc patches go via mm
-tree, so it's more up to Andrew.
- 
-> Thanks,
-> Daniel
+As commit 9e4b7a99a03a("net: gso: fix panic on frag_list with mixed head alloc types")
+said. It walk the frag_list in skb_segment and clear NETIF_F_SG when there is non head_frag 
+skb. 
 
--- 
-Sincerely yours,
-Mike.
+But for frag_list only with one head_frag, NETIF_F_SG was not cleared, if skb_headlen(list_skb) != len,
+in this case, maybe we can fix it with run into segment as commit 13acc94eff122(net: permit skb_segment on 
+head_frag frag_list skb). 
+
+Any suggestions for resolving this issue.
+
+Thanks
+
+Fred Li
 
