@@ -1,83 +1,67 @@
-Return-Path: <bpf+bounces-30644-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-30645-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0E5498D0101
-	for <lists+bpf@lfdr.de>; Mon, 27 May 2024 15:12:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 787D68D0172
+	for <lists+bpf@lfdr.de>; Mon, 27 May 2024 15:27:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B4278286FCA
-	for <lists+bpf@lfdr.de>; Mon, 27 May 2024 13:12:09 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2B4522899E4
+	for <lists+bpf@lfdr.de>; Mon, 27 May 2024 13:27:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 465C113AD23;
-	Mon, 27 May 2024 13:12:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2943315EFA2;
+	Mon, 27 May 2024 13:27:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="g0pdTC18"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kwQT7jWa"
 X-Original-To: bpf@vger.kernel.org
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA2897D405;
-	Mon, 27 May 2024 13:11:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.133.104.62
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A25B315ECE7;
+	Mon, 27 May 2024 13:27:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716815522; cv=none; b=sdlVKRTF5f5Z7gqMdqQwjEeVsVRKWWLF6zoo8AU2AGuRKV8UVOYfetKlOEQC+6RnvSsK0e7uNTmyM60DXY22jfhVlmDoH784XtIzuFwnQyD8K7ulKx8ZgKp8DDhVach3dAEJNzJYRCEyDJa1GTT8rLwNxR+mCfWkr+lmJAWtFcY=
+	t=1716816461; cv=none; b=dl0pO2EGpGhKW/XEALB3aAk2CXUNQ/Xdb/TYfqoOAvyQH7WOS2uhP4KkR3lsRNL3S73TpHNU7XERrriuSaQPTf/k82/ahc4ry3dvIvnLECluIlILlfQcThpc4N9SlL2eyWLnZJAQVIdw5Php6AZ0zA6LlyUEa+5Cd48gUYFU6cs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716815522; c=relaxed/simple;
-	bh=yAjc/CRBIyHBMERfH9pfmqQKiZyxBnW8DCsCRsUh0h8=;
-	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=JwBb76XXcr5RUjDV2gJow0+ceku8f+Dg6fsXKb+QZhJdLJ52vrAuSdDcHDvRzUfsalBrIVSODf3arDMvJRdOdbylwxhKebOsufc8EZz0xhWlPpadeJdkYRbLxaB3fBXx400W09cMonPf6snrsT6D6xf9NRAe1FLDHw48NtSzZb8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=g0pdTC18; arc=none smtp.client-ip=213.133.104.62
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iogearbox.net
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
-	In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
-	bh=oZjVcx9f2W1nJX3ekNr5Flk/1LEdQ2H2XBF9DSGsQok=; b=g0pdTC18j9Kli9oqXG14Kk2ese
-	nMEBl72DupxfG0XKyaOFY/l6QFZuUBMG8UlFXX0hOjkH6yNOI2N2wrXe1sYOYys9aHFfLH/JH0rkN
-	jOuAtzMpFDnFXGvMVaPtjBkFbDLusUas+KCMv5/UXK/SYCP4XqbGEE/9QD+p1FybRqHpJBYj4zlAE
-	LYgHcZTiUAPuxxe7TrjX6RbYF+LJH9Zfmhuz4U0CFKr2lJ2IVctbimMe0dy7EV5v1l2h8e2kj9tB1
-	RKRil/8sCa6SNXqE+gO//kiocGf7aU+4ivWaPvr04iAR/vSVBVcacja3/sxLUxu9R3Khq3G2jDh+B
-	6SIY+EiQ==;
-Received: from sslproxy06.your-server.de ([78.46.172.3])
-	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1sBa8l-000FpF-FC; Mon, 27 May 2024 15:11:51 +0200
-Received: from [178.197.248.14] (helo=linux.home)
-	by sslproxy06.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1sBa8k-000AIM-2A;
-	Mon, 27 May 2024 15:11:50 +0200
+	s=arc-20240116; t=1716816461; c=relaxed/simple;
+	bh=PG17aG7jguWncrVjP8NipYKQkmc8tXJesn99NtwIu78=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=QIx9/yn174eJJ93JI6VVzXKOU2jPdpE4c3+ZQMbFn5b5aPJbtJ6dXf7utRq1/MqPpbj7F+q6FbD30QkBge/KMU6Pi86mRkfvT6uX4hNyKGadGPd6hchskdDa0ps/JkoV+YZlUJkh5fLzsgSO4UkVSnxnd3/NnrMf9jxSQNopGRQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kwQT7jWa; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0480FC32781;
+	Mon, 27 May 2024 13:27:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1716816461;
+	bh=PG17aG7jguWncrVjP8NipYKQkmc8tXJesn99NtwIu78=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=kwQT7jWa4lQAXzmuLAM8NsQpZnd7dQc1YKLJaF0bJxQEQNwkAXksUPF+wjxY1mQP6
+	 mOkX5pw1P5aTzweCbh9XDLsARtxT8nNzWQsXzDD52KS0V6yT5xGLcAMq1qPyPh4re+
+	 XYuTl6h3mxIXhvRQAFg5Yii5DM4ncMfpQHqdJ0g0N77ZoqRzPSJOPBGwhXec+1KhJb
+	 3pA9T+klo0dfrmV2kwYkqR8XtluBIz+8NdaD9z27sEVP7Ed2coNhtQq/6cmg5PFfMF
+	 8kZcXs6qvKyWACPmMCPl79C0SrDBfivPiP/mP8hSgrlDnN0pLcJoit1lVhKkoeJy0f
+	 g31LDGZjMVoIw==
+Date: Mon, 27 May 2024 16:25:54 +0300
+From: Mike Rapoport <rppt@kernel.org>
+To: Cong Wang <xiyou.wangcong@gmail.com>
+Cc: netdev@vger.kernel.org, linux-mm@kvack.org,
+	Andrew Morton <akpm@linux-foundation.org>, bpf@vger.kernel.org,
+	Cong Wang <cong.wang@bytedance.com>,
+	Luis Chamberlain <mcgrof@kernel.org>
 Subject: Re: [Patch bpf] vmalloc: relax is_vmalloc_or_module_addr() check
-To: Cong Wang <xiyou.wangcong@gmail.com>, netdev@vger.kernel.org
-Cc: linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
- bpf@vger.kernel.org, Cong Wang <cong.wang@bytedance.com>,
- Luis Chamberlain <mcgrof@kernel.org>, Mike Rapoport <rppt@kernel.org>
+Message-ID: <ZlSJ4jl6-t02Us3i@kernel.org>
 References: <20240526230648.188550-1-xiyou.wangcong@gmail.com>
-From: Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <1f39f888-989f-658b-a107-90ffe1347d0f@iogearbox.net>
-Date: Mon, 27 May 2024 15:11:50 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 In-Reply-To: <20240526230648.188550-1-xiyou.wangcong@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.10/27288/Mon May 27 10:29:01 2024)
 
-On 5/27/24 1:06 AM, Cong Wang wrote:
+On Sun, May 26, 2024 at 04:06:48PM -0700, Cong Wang wrote:
 > From: Cong Wang <cong.wang@bytedance.com>
 > 
 > After commit 2c9e5d4a0082 ("bpf: remove CONFIG_BPF_JIT dependency on CONFIG_MODULES of")
@@ -180,12 +164,35 @@ On 5/27/24 1:06 AM, Cong Wang wrote:
 > Cc: Luis Chamberlain <mcgrof@kernel.org>
 > Cc: Mike Rapoport (IBM) <rppt@kernel.org>
 > Signed-off-by: Cong Wang <cong.wang@bytedance.com>
+> ---
+>  mm/vmalloc.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/mm/vmalloc.c b/mm/vmalloc.c
+> index 125427cbdb87..168a5c7c2fdf 100644
+> --- a/mm/vmalloc.c
+> +++ b/mm/vmalloc.c
+> @@ -714,7 +714,7 @@ int is_vmalloc_or_module_addr(const void *x)
+>  	 * and fall back on vmalloc() if that fails. Others
+>  	 * just put it in the vmalloc space.
+>  	 */
+> -#if defined(CONFIG_MODULES) && defined(MODULES_VADDR)
+> +#if defined(MODULES_VADDR)
 
-Thanks for the fix!
+Let's make it 
 
-Mike/Luis, do you plan to pick this up or rather prefer if we route it to
-Linus (with your Ack assuming it looks good to you)?
+#if defined(CONFIG_EXECMEM) && defined(MODULES_VADDR)
 
-Thanks,
-Daniel
+to avoid increasing kernel size on systems that don't use modules and BPF
+
+>  	unsigned long addr = (unsigned long)kasan_reset_tag(x);
+>  	if (addr >= MODULES_VADDR && addr < MODULES_END)
+>  		return 1;
+> -- 
+> 2.34.1
+> 
+
+-- 
+Sincerely yours,
+Mike.
 
