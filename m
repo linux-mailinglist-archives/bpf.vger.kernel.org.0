@@ -1,223 +1,216 @@
-Return-Path: <bpf+bounces-30785-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-30786-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7EB698D25A7
-	for <lists+bpf@lfdr.de>; Tue, 28 May 2024 22:20:32 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A945B8D25D7
+	for <lists+bpf@lfdr.de>; Tue, 28 May 2024 22:30:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A29601C2311E
-	for <lists+bpf@lfdr.de>; Tue, 28 May 2024 20:20:31 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3AC181F2477A
+	for <lists+bpf@lfdr.de>; Tue, 28 May 2024 20:30:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C59C178363;
-	Tue, 28 May 2024 20:20:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F23E0178367;
+	Tue, 28 May 2024 20:30:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dj5vThgV"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GSqc7N9W"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182])
+Received: from mail-ej1-f50.google.com (mail-ej1-f50.google.com [209.85.218.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8559138DE0;
-	Tue, 28 May 2024 20:20:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D36E1F4EB;
+	Tue, 28 May 2024 20:30:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716927625; cv=none; b=kumXx2gZqieFR9oK/R+y+LKqxjTcy8sPBHbDNOJZUwrJ9Ad6vsGse5/5BfTXfcMMUMbvG3QULCYxrUVi2fA0ow3qqRbG/WxhEqTwRis9AIi/Lh2dUgfsTbRFHp/aEgjxC8uVMXvgWa57Wd6pTTJauK2M+ynwUIwGVDM8m6ZpxpI=
+	t=1716928247; cv=none; b=T1lPXxzC058affAIykZxIAgCMT1FuHEp73EotraniMclhn/lWMh1Qn9si02SXr4wL0DxMaKGAo0ZjZL5T0bq1ca61pSAO7gznDhvF/cXUei5BB+u30PzMhJbLzhBGEUIDG9R0x89OtSzyFv7DOZyRMe5gBD6GO0c9gt0n3y9g0E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716927625; c=relaxed/simple;
-	bh=9nxkQndVkEqFqgKDqGv6JljTe2j+JwreE7eODbC9Neo=;
-	h=Date:From:To:Cc:Message-ID:In-Reply-To:References:Subject:
-	 Mime-Version:Content-Type; b=XzJuZG6+dY6aE8aZf4R0nupylozsLXYGKBZQCxyT1/AtNlkCH6RaJvd4TrKVCRoQ3vXBBQa7DkBZH05lsAciO6PNoy3kvWBXW9dmsw3if2jhHIMaM96LpnjfihJ3jQKlla9PqH+53XhPVm99J7D6v2cznfxV9Z3vxYAF0iuaOtk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=dj5vThgV; arc=none smtp.client-ip=209.85.214.182
+	s=arc-20240116; t=1716928247; c=relaxed/simple;
+	bh=ZP1V1PX5xMJHcGzZ3BmWo98GFHHt8uSTJsjW7Y+4B0M=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=GzBY95y2yWTbM9rwOtPybFgWY1RX6vhWntb8Q/Da/zsgZNeIETJBXlF6swWpbiShZ4l6kToqsVeQJfasY0TunK/39GVaF+GNqN0novVMDPt/XSioC64QHhmRtxKSyHporb0ttC3aPtB9lgrk6qstYOHZEAXsOCJYs9P6MMBuAik=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=GSqc7N9W; arc=none smtp.client-ip=209.85.218.50
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f182.google.com with SMTP id d9443c01a7336-1f4a5344ec7so1546535ad.1;
-        Tue, 28 May 2024 13:20:23 -0700 (PDT)
+Received: by mail-ej1-f50.google.com with SMTP id a640c23a62f3a-a59a609dd3fso38090966b.0;
+        Tue, 28 May 2024 13:30:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1716927623; x=1717532423; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=bB1n4uA6XWEYiTk9cyE4enxqgqP/0efJliwy3+pDOe0=;
-        b=dj5vThgV5pyJXUKzrfQmNmuRQGfRQM4M1QBSx57200VxyOhe31l3Kz5jwmtJa3kkdQ
-         AJ4F3V8QNx1fZ71pKftJYfG+MS2M3PJw9Z+yDxrFtJ4/0nOCuKLywJpqA+rw4cb/K7cT
-         iiWRiYP4DovV05LDs+wxdt0w3D0CiWqyXywHsy7Ew35Ojts9VC+bRqec87Wh0Uzekbqz
-         uEwq2WkZ6SQcJfz9ml5pkfYDhdvw4M71FDDYA6qPQplHP90nUJ/ARetdsarw2DgvGW9H
-         DMvFVltPaXfAHBpk1XTYyQVwa/cy1so7U0idkTDJQAPUp+Gzkc5NasS1JpaTAPZdiRbi
-         BSQw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1716927623; x=1717532423;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
+        d=gmail.com; s=20230601; t=1716928244; x=1717533044; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=bB1n4uA6XWEYiTk9cyE4enxqgqP/0efJliwy3+pDOe0=;
-        b=ZbcYQU37nTbchlsfWWSJoHlsmIlmRo9P+Fp74D8gUq+h4Aw9TJX72wnK+TZSGJWnKe
-         LpSmaqmXsadQQSrHNs9ALzduJFnVH/PN9L/GUs0trhWAJjx5POQLF1gidMdGr1d7riQx
-         7Oz5FNfWhoSrQPApznVzyo+/siDA8go/KXeGAkXlMkGMigspLVR/GsNuwAM/VaadGq2f
-         7MU08KjodMMzKfZWgm+P4l0xOKIZHUWT23SukplpTtmcQzypnCXCcpRU7g9LaRwN/0ud
-         wXXYTOXFf5s9orZTCVgnOKWTxF5lCCGeDA2lUad97l4UhLk4UdY14s3y8OMusTJtLO0Q
-         eBmg==
-X-Forwarded-Encrypted: i=1; AJvYcCWRykTj8EM1l/m7OIUlcy15YOioLm1si0VOSYVnDafC5Yqo/HVfScmRmi3pCjc6cAPJM+/kxMqU2/ZAqpDZhj7CYW/rMWrqpIyEE8bDqBIwWsGftsCvqYZNvE7l
-X-Gm-Message-State: AOJu0Yylb2dU8utWa4t43L7/OYQj0RflVd50oB4+BqYVmJWJxgCEQxtR
-	B+GdvfPHllYcGygUjjmib8ydMxvTFrgo2Zkw+0ujwpjXNlIX4FgL
-X-Google-Smtp-Source: AGHT+IGfD25o8NZnevXMrCddQ+nfonvi/MK7jT1lQz9Ncdv926CzW0j8u3buvCuFU4KNH/KISkc/9w==
-X-Received: by 2002:a17:902:a718:b0:1f3:81c:c17 with SMTP id d9443c01a7336-1f4eaabfc4dmr1404715ad.23.1716927622663;
-        Tue, 28 May 2024 13:20:22 -0700 (PDT)
-Received: from localhost ([98.97.41.203])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-1f44c9683d4sm84904905ad.178.2024.05.28.13.20.22
+        bh=wxa9leDMBQqxY4da9JkyLPvpBxzGSOQBoL3fVq0BhEQ=;
+        b=GSqc7N9Wup95911Hp3+MjMNTf9AxwGC0X8MYs3L0FYFemg8RoZrwhLRb6iwK+0/oRn
+         iNZ1tZvtD0bBGKRR2CPVUljgCH44xq56VOC/3hdi7ep98O0RRb+XySIYNi3zmBePLPPY
+         9DWRqBJD2dRX3P8yXS84Zr9b5JJEJaUCjMm8SpbvQCYV3wYQoTqHCc6YUzj+/bFFB85R
+         myUicxnzW8NYv18NTMKCsYbfuEd2HAAhC6ZBhwTb7c56hm2jndivx1dJeMwJEpAtjeh+
+         H6ua2c0QR3klDn14TlDUBoJHv9Tv/s/C/FdrDOMztzOws0etb+gQEdd1Y2/98M2i1zIc
+         GxWA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1716928244; x=1717533044;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=wxa9leDMBQqxY4da9JkyLPvpBxzGSOQBoL3fVq0BhEQ=;
+        b=vEvtQfYP9k5nLFm7oGcgKnQ2oiypmp0F9do41gdSXSFPxyE+RMs3l+j/5SInpu6qku
+         H6CXedcCbDHk+ysPbfg4UgDZ19YFRIWO33EZom6KaZNon+fFtw7Hk/HHXr9Oesrn3JBp
+         gWRQtz9DGjaSOQ6Li7YrcOsfQ5wMpTHwfUvgrHtEFaD09+3sVHkDCZtzHhuoJDGFWNBW
+         DWmmyB5xMg+F/da1ZBHcT6YETAQFJbjtmUxSfgHiilEZPFGSeK4W6MvDHwowR/hOC8Uw
+         h0dthdppSASR/7JQwAV3ZYpAWrbDd/xholZfSDHX4DXhY4cnCfaul8vb7ewcxZNyo0sv
+         h1qQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWVoGGx8oH4UeF5+N3u7HuJDeycSzmT64n7yJJ0ENOqyxB3HpLtrdVToM2eYil5EYNKMf+jO0tnlDXOGXnJb7jBqzM9
+X-Gm-Message-State: AOJu0YyFMOfT3gN84scK56Clv319WycoHU47Sirun9AY8F6Lym37CAZi
+	vItmr0LILjaUjO6p7wsdEwx3UxY5dEaHNlU2X7S+gtQ3/JzydcGE
+X-Google-Smtp-Source: AGHT+IFr5kgtYaMOxMY5JPPqiEfEKrj0VBMZhNOOBDwbkpnacPbU6enNJr768HawA8aG44+8QJueCg==
+X-Received: by 2002:a17:906:a294:b0:a5c:dad0:c464 with SMTP id a640c23a62f3a-a642d267093mr14114466b.6.1716928243936;
+        Tue, 28 May 2024 13:30:43 -0700 (PDT)
+Received: from krava ([83.240.60.166])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a6283119b12sm569946766b.192.2024.05.28.13.30.43
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 28 May 2024 13:20:22 -0700 (PDT)
-Date: Tue, 28 May 2024 13:20:19 -0700
-From: John Fastabend <john.fastabend@gmail.com>
-To: Jakub Sitnicki <jakub@cloudflare.com>, 
- Thadeu Lima de Souza Cascardo <cascardo@igalia.com>
-Cc: netdev@vger.kernel.org, 
- Cong Wang <cong.wang@bytedance.com>, 
- Eric Dumazet <edumazet@google.com>, 
- Daniel Borkmann <daniel@iogearbox.net>, 
- John Fastabend <john.fastabend@gmail.com>, 
- "David S. Miller" <davem@davemloft.net>, 
- Jakub Kicinski <kuba@kernel.org>, 
- Alexei Starovoitov <ast@kernel.org>, 
- Paolo Abeni <pabeni@redhat.com>, 
- bpf@vger.kernel.org, 
- kernel-dev@igalia.com, 
- syzbot+07a2e4a1a57118ef7355@syzkaller.appspotmail.com, 
- stable@vger.kernel.org
-Message-ID: <66563c8385546_2f7f208bf@john.notmuch>
-In-Reply-To: <875xuzwpjb.fsf@cloudflare.com>
-References: <20240524144702.1178377-1-cascardo@igalia.com>
- <875xuzwpjb.fsf@cloudflare.com>
-Subject: Re: [PATCH net v2] sock_map: avoid race between sock_map_close and
- sk_psock_put
+        Tue, 28 May 2024 13:30:43 -0700 (PDT)
+From: Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date: Tue, 28 May 2024 22:30:41 +0200
+To: Andrii Nakryiko <andrii@kernel.org>
+Cc: linux-trace-kernel@vger.kernel.org, rostedt@goodmis.org,
+	mhiramat@kernel.org, bpf@vger.kernel.org,
+	Matt Wu <wuqiang.matt@bytedance.com>
+Subject: Re: [PATCH 2/2] objpool: cache nr_possible_cpus() and avoid caching
+ nr_cpu_ids
+Message-ID: <ZlY-8ZI_irTK9MAk@krava>
+References: <20240424215214.3956041-1-andrii@kernel.org>
+ <20240424215214.3956041-3-andrii@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240424215214.3956041-3-andrii@kernel.org>
 
-Jakub Sitnicki wrote:
-> On Fri, May 24, 2024 at 11:47 AM -03, Thadeu Lima de Souza Cascardo wrote:
-> > sk_psock_get will return NULL if the refcount of psock has gone to 0, which
-> > will happen when the last call of sk_psock_put is done. However,
-> > sk_psock_drop may not have finished yet, so the close callback will still
-> > point to sock_map_close despite psock being NULL.
-> >
-> > This can be reproduced with a thread deleting an element from the sock map,
-> > while the second one creates a socket, adds it to the map and closes it.
-> >
-> > That will trigger the WARN_ON_ONCE:
-> >
-> > ------------[ cut here ]------------
-> > WARNING: CPU: 1 PID: 7220 at net/core/sock_map.c:1701 sock_map_close+0x2a2/0x2d0 net/core/sock_map.c:1701
-> > Modules linked in:
-> > CPU: 1 PID: 7220 Comm: syz-executor380 Not tainted 6.9.0-syzkaller-07726-g3c999d1ae3c7 #0
-> > Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 04/02/2024
-> > RIP: 0010:sock_map_close+0x2a2/0x2d0 net/core/sock_map.c:1701
-> > Code: df e8 92 29 88 f8 48 8b 1b 48 89 d8 48 c1 e8 03 42 80 3c 20 00 74 08 48 89 df e8 79 29 88 f8 4c 8b 23 eb 89 e8 4f 15 23 f8 90 <0f> 0b 90 48 83 c4 08 5b 41 5c 41 5d 41 5e 41 5f 5d e9 13 26 3d 02
-> > RSP: 0018:ffffc9000441fda8 EFLAGS: 00010293
-> > RAX: ffffffff89731ae1 RBX: ffffffff94b87540 RCX: ffff888029470000
-> > RDX: 0000000000000000 RSI: ffffffff8bcab5c0 RDI: ffffffff8c1faba0
-> > RBP: 0000000000000000 R08: ffffffff92f9b61f R09: 1ffffffff25f36c3
-> > R10: dffffc0000000000 R11: fffffbfff25f36c4 R12: ffffffff89731840
-> > R13: ffff88804b587000 R14: ffff88804b587000 R15: ffffffff89731870
-> > FS:  000055555e080380(0000) GS:ffff8880b9500000(0000) knlGS:0000000000000000
-> > CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> > CR2: 0000000000000000 CR3: 00000000207d4000 CR4: 0000000000350ef0
-> > Call Trace:
-> >  <TASK>
-> >  unix_release+0x87/0xc0 net/unix/af_unix.c:1048
-> >  __sock_release net/socket.c:659 [inline]
-> >  sock_close+0xbe/0x240 net/socket.c:1421
-> >  __fput+0x42b/0x8a0 fs/file_table.c:422
-> >  __do_sys_close fs/open.c:1556 [inline]
-> >  __se_sys_close fs/open.c:1541 [inline]
-> >  __x64_sys_close+0x7f/0x110 fs/open.c:1541
-> >  do_syscall_x64 arch/x86/entry/common.c:52 [inline]
-> >  do_syscall_64+0xf5/0x240 arch/x86/entry/common.c:83
-> >  entry_SYSCALL_64_after_hwframe+0x77/0x7f
-> > RIP: 0033:0x7fb37d618070
-> > Code: 00 00 48 c7 c2 b8 ff ff ff f7 d8 64 89 02 b8 ff ff ff ff eb d4 e8 10 2c 00 00 80 3d 31 f0 07 00 00 74 17 b8 03 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 48 c3 0f 1f 80 00 00 00 00 48 83 ec 18 89 7c
-> > RSP: 002b:00007ffcd4a525d8 EFLAGS: 00000202 ORIG_RAX: 0000000000000003
-> > RAX: ffffffffffffffda RBX: 0000000000000005 RCX: 00007fb37d618070
-> > RDX: 0000000000000010 RSI: 00000000200001c0 RDI: 0000000000000004
-> > RBP: 0000000000000000 R08: 0000000100000000 R09: 0000000100000000
-> > R10: 0000000000000000 R11: 0000000000000202 R12: 0000000000000000
-> > R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
-> >  </TASK>
-> >
-> > Use sk_psock, which will only check that the pointer is not been set to
-> > NULL yet, which should only happen after the callbacks are restored. If,
-> > then, a reference can still be gotten, we may call sk_psock_stop and cancel
-> > psock->work.
-> >
-> > As suggested by Paolo Abeni, reorder the condition so the control flow is
-> > less convoluted.
-> >
-> > After that change, the reproducer does not trigger the WARN_ON_ONCE
-> > anymore.
-> >
-> > Suggested-by: Paolo Abeni <pabeni@redhat.com>
-> > Reported-by: syzbot+07a2e4a1a57118ef7355@syzkaller.appspotmail.com
-> > Closes: https://syzkaller.appspot.com/bug?extid=07a2e4a1a57118ef7355
-> > Fixes: aadb2bb83ff7 ("sock_map: Fix a potential use-after-free in sock_map_close()")
-> > Fixes: 5b4a79ba65a1 ("bpf, sockmap: Don't let sock_map_{close,destroy,unhash} call itself")
-> > Cc: stable@vger.kernel.org
-> > Signed-off-by: Thadeu Lima de Souza Cascardo <cascardo@igalia.com>
-> > ---
-> >
-> > v2: change control flow as suggested by Paolo Abeni
-> >
-> > v1: https://lore.kernel.org/netdev/20240520214153.847619-1-cascardo@igalia.com/
-> >
-> > ---
-> >  net/core/sock_map.c | 16 ++++++++++------
-> >  1 file changed, 10 insertions(+), 6 deletions(-)
-> >
-> > diff --git a/net/core/sock_map.c b/net/core/sock_map.c
-> > index 9402889840bf..c3179567a99a 100644
-> > --- a/net/core/sock_map.c
-> > +++ b/net/core/sock_map.c
-> > @@ -1680,19 +1680,23 @@ void sock_map_close(struct sock *sk, long timeout)
-> >  
-> >  	lock_sock(sk);
-> >  	rcu_read_lock();
-> > -	psock = sk_psock_get(sk);
-> > -	if (unlikely(!psock)) {
-> > -		rcu_read_unlock();
-> > -		release_sock(sk);
-> > -		saved_close = READ_ONCE(sk->sk_prot)->close;
-> > -	} else {
-> > +	psock = sk_psock(sk);
-> > +	if (likely(psock)) {
-> >  		saved_close = psock->saved_close;
-> >  		sock_map_remove_links(sk, psock);
-> > +		psock = sk_psock_get(sk);
-> > +		if (unlikely(!psock))
-> > +			goto no_psock;
-> >  		rcu_read_unlock();
-> >  		sk_psock_stop(psock);
-> >  		release_sock(sk);
-> >  		cancel_delayed_work_sync(&psock->work);
-> >  		sk_psock_put(sk, psock);
-> > +	} else {
-> > +		saved_close = READ_ONCE(sk->sk_prot)->close;
-> > +no_psock:
-> > +		rcu_read_unlock();
-> > +		release_sock(sk);
-> >  	}
-> >  
-> >  	/* Make sure we do not recurse. This is a bug.
+On Wed, Apr 24, 2024 at 02:52:14PM -0700, Andrii Nakryiko wrote:
+> Profiling shows that calling nr_possible_cpus() in objpool_pop() takes
+> a noticeable amount of CPU (when profiled on 80-core machine), as we
+> need to recalculate number of set bits in a CPU bit mask. This number
+> can't change, so there is no point in paying the price for recalculating
+> it. As such, cache this value in struct objpool_head and use it in
+> objpool_pop().
 > 
-> Thanks.
+> On the other hand, cached pool->nr_cpus isn't necessary, as it's not
+> used in hot path and is also a pretty trivial value to retrieve. So drop
+> pool->nr_cpus in favor of using nr_cpu_ids everywhere. This way the size
+> of struct objpool_head remains the same, which is a nice bonus.
 > 
-> Acked-by: Jakub Sitnicki <jakub@cloudflare.com>
+> Same BPF selftests benchmarks were used to evaluate the effect. Using
+> changes in previous patch (inlining of objpool_pop/objpool_push) as
+> baseline, here are the differences:
+> 
+> BASELINE
+> ========
+> kretprobe      :    9.937 ± 0.174M/s
+> kretprobe-multi:   10.440 ± 0.108M/s
+> 
+> AFTER
+> =====
+> kretprobe      :   10.106 ± 0.120M/s (+1.7%)
+> kretprobe-multi:   10.515 ± 0.180M/s (+0.7%)
 
-LGTM as well. Thanks.
+nice, overall lgtm
 
-Reviewed-by: John Fastabend <john.fastabend@gmail.com>
+jirka
+
+> 
+> Cc: Matt (Qiang) Wu <wuqiang.matt@bytedance.com>
+> Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+> ---
+>  include/linux/objpool.h |  6 +++---
+>  lib/objpool.c           | 12 ++++++------
+>  2 files changed, 9 insertions(+), 9 deletions(-)
+> 
+> diff --git a/include/linux/objpool.h b/include/linux/objpool.h
+> index d8b1f7b91128..cb1758eaa2d3 100644
+> --- a/include/linux/objpool.h
+> +++ b/include/linux/objpool.h
+> @@ -73,7 +73,7 @@ typedef int (*objpool_fini_cb)(struct objpool_head *head, void *context);
+>   * struct objpool_head - object pooling metadata
+>   * @obj_size:   object size, aligned to sizeof(void *)
+>   * @nr_objs:    total objs (to be pre-allocated with objpool)
+> - * @nr_cpus:    local copy of nr_cpu_ids
+> + * @nr_possible_cpus: cached value of num_possible_cpus()
+>   * @capacity:   max objs can be managed by one objpool_slot
+>   * @gfp:        gfp flags for kmalloc & vmalloc
+>   * @ref:        refcount of objpool
+> @@ -85,7 +85,7 @@ typedef int (*objpool_fini_cb)(struct objpool_head *head, void *context);
+>  struct objpool_head {
+>  	int                     obj_size;
+>  	int                     nr_objs;
+> -	int                     nr_cpus;
+> +	int                     nr_possible_cpus;
+>  	int                     capacity;
+>  	gfp_t                   gfp;
+>  	refcount_t              ref;
+> @@ -176,7 +176,7 @@ static inline void *objpool_pop(struct objpool_head *pool)
+>  	raw_local_irq_save(flags);
+>  
+>  	cpu = raw_smp_processor_id();
+> -	for (i = 0; i < num_possible_cpus(); i++) {
+> +	for (i = 0; i < pool->nr_possible_cpus; i++) {
+>  		obj = __objpool_try_get_slot(pool, cpu);
+>  		if (obj)
+>  			break;
+> diff --git a/lib/objpool.c b/lib/objpool.c
+> index f696308fc026..234f9d0bd081 100644
+> --- a/lib/objpool.c
+> +++ b/lib/objpool.c
+> @@ -50,7 +50,7 @@ objpool_init_percpu_slots(struct objpool_head *pool, int nr_objs,
+>  {
+>  	int i, cpu_count = 0;
+>  
+> -	for (i = 0; i < pool->nr_cpus; i++) {
+> +	for (i = 0; i < nr_cpu_ids; i++) {
+>  
+>  		struct objpool_slot *slot;
+>  		int nodes, size, rc;
+> @@ -60,8 +60,8 @@ objpool_init_percpu_slots(struct objpool_head *pool, int nr_objs,
+>  			continue;
+>  
+>  		/* compute how many objects to be allocated with this slot */
+> -		nodes = nr_objs / num_possible_cpus();
+> -		if (cpu_count < (nr_objs % num_possible_cpus()))
+> +		nodes = nr_objs / pool->nr_possible_cpus;
+> +		if (cpu_count < (nr_objs % pool->nr_possible_cpus))
+>  			nodes++;
+>  		cpu_count++;
+>  
+> @@ -103,7 +103,7 @@ static void objpool_fini_percpu_slots(struct objpool_head *pool)
+>  	if (!pool->cpu_slots)
+>  		return;
+>  
+> -	for (i = 0; i < pool->nr_cpus; i++)
+> +	for (i = 0; i < nr_cpu_ids; i++)
+>  		kvfree(pool->cpu_slots[i]);
+>  	kfree(pool->cpu_slots);
+>  }
+> @@ -130,13 +130,13 @@ int objpool_init(struct objpool_head *pool, int nr_objs, int object_size,
+>  
+>  	/* initialize objpool pool */
+>  	memset(pool, 0, sizeof(struct objpool_head));
+> -	pool->nr_cpus = nr_cpu_ids;
+> +	pool->nr_possible_cpus = num_possible_cpus();
+>  	pool->obj_size = object_size;
+>  	pool->capacity = capacity;
+>  	pool->gfp = gfp & ~__GFP_ZERO;
+>  	pool->context = context;
+>  	pool->release = release;
+> -	slot_size = pool->nr_cpus * sizeof(struct objpool_slot);
+> +	slot_size = nr_cpu_ids * sizeof(struct objpool_slot);
+>  	pool->cpu_slots = kzalloc(slot_size, pool->gfp);
+>  	if (!pool->cpu_slots)
+>  		return -ENOMEM;
+> -- 
+> 2.43.0
+> 
+> 
 
