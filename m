@@ -1,110 +1,276 @@
-Return-Path: <bpf+bounces-30710-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-30711-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 81B768D1876
-	for <lists+bpf@lfdr.de>; Tue, 28 May 2024 12:23:32 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AF67E8D187A
+	for <lists+bpf@lfdr.de>; Tue, 28 May 2024 12:24:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1AB43B27F46
-	for <lists+bpf@lfdr.de>; Tue, 28 May 2024 10:23:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 64A9F286E68
+	for <lists+bpf@lfdr.de>; Tue, 28 May 2024 10:24:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 779E416B725;
-	Tue, 28 May 2024 10:23:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="0gQC9ZPn"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 01F9416B731;
+	Tue, 28 May 2024 10:24:33 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [78.32.30.218])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-io1-f77.google.com (mail-io1-f77.google.com [209.85.166.77])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 806F315E96;
-	Tue, 28 May 2024 10:23:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=78.32.30.218
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 17C1E15E96
+	for <bpf@vger.kernel.org>; Tue, 28 May 2024 10:24:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.77
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716891802; cv=none; b=uas+o0OUDj2rtVcgJpbDIt6nd3acTso4iHbwCZegHncJP5yq8OozhFKzj3QUvqhgFYeqaapfyO2zS8OkfKR3GbTuB7fi6+EEVWK+7jts+yLfDGNtw4joq/OwTI6eC/0QloJaWjLYDbhx93qmHg9lxEqQ0BO7vLkFlWqc5aygLiA=
+	t=1716891872; cv=none; b=XEJ5bknuuapK/cKMIjhBLNlGTihUzkU+svqyFWYBfPdqGawxCUFqk3pe8q6kjCL9OkJ8UuNvJA2YFrEWKaEvlivKFNKl3gKMku4/De38bQrBJyAzEelWfmVB5/F99ss3jN84tODDaXVYAHUEKUDCIMO2UAT5d1e8WvFWOjblnes=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716891802; c=relaxed/simple;
-	bh=ch5ac9DBIgqbQiYKszbFUqZeKjUsPbq/tOX9tgLBZQU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=PwAdSLEP0FtoG109Mj1jFaNTqMhSSDq3Zr3unw4353HnW88qJncvOYGW9yEOMFWuxFaRVXH2VnyLC7ime0c4irUPeusdz+lOkTpw4l+TVf+6oHFco4EHDkqEdFCz6/JkO207n5oxT+Sk++5FhcfGgcZo8jzQXSbBA+O3Pv9H02Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk; spf=none smtp.mailfrom=armlinux.org.uk; dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b=0gQC9ZPn; arc=none smtp.client-ip=78.32.30.218
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=armlinux.org.uk
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=Zttd9Ti6dlrdltMOkpQrnFnbw+iW5a9NAfwZ4M3vUCo=; b=0gQC9ZPnrBS+TIfGGqnRL5Ztk3
-	jMr9cYdK88WgnFC83V1Z/DwVomq7NX5ByBjlenoZ6mvHkTf8pGfS8A6K4t/nek2oXGny4mK2uvVOi
-	vZrn7eJwzLGRRduhpR5HCwUjEhQwYrLjOIK4BGgEtE/fzJHyl5MsB/D2WgS3pnuHp0NYmylntRyFz
-	eCxYkovFdtOMVxNZV2ZiCEaPrC/vWIwlJfj7J5tkDAshChoGXVvQUnDrFPt57wPWaY+gjPpsOof5e
-	AIkYygEsEOM2dXQ9Qmu+XiopiEG26vzY1bhyU55Sh0wI//yEL6U49w/jng2Zcxwwt2uef7DDXRwqh
-	l0/zKlRQ==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:37478)
-	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <linux@armlinux.org.uk>)
-	id 1sBtyy-0004cT-2s;
-	Tue, 28 May 2024 11:23:04 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-	(envelope-from <linux@shell.armlinux.org.uk>)
-	id 1sBtyz-0003BN-Qy; Tue, 28 May 2024 11:23:05 +0100
-Date: Tue, 28 May 2024 11:23:05 +0100
-From: "Russell King (Oracle)" <linux@armlinux.org.uk>
-To: Serge Semin <fancer.lancer@gmail.com>
-Cc: Alexandre Torgue <alexandre.torgue@foss.st.com>,
-	Jose Abreu <joabreu@synopsys.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Jesper Dangaard Brouer <hawk@kernel.org>,
-	John Fastabend <john.fastabend@gmail.com>, bpf@vger.kernel.org,
-	netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH RFC net-next 3/3] net: stmmac: Drop TBI/RTBI PCS flags
-Message-ID: <ZlWwiQxvvAKd39gN@shell.armlinux.org.uk>
-References: <ZkDuJAx7atDXjf5m@shell.armlinux.org.uk>
- <20240524210304.9164-1-fancer.lancer@gmail.com>
- <20240524210304.9164-3-fancer.lancer@gmail.com>
+	s=arc-20240116; t=1716891872; c=relaxed/simple;
+	bh=31OGuaV9aenUbYstvP3OWUzHmKJ/s7yx5CfFt82fx6g=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=TU8tDY7QROlvVjmRjmn2eOa2o424sphZlWXh9UmfEeqY3HBJcIcOdbNtmvqwBsEyx4wssW/O1ukVWsNPRwOXg2d1Nh5rDb3KKm1C4WNKBGhdWKm4RACpUcOFSXFZVzHcvYqtH4jg4w48LxIXr4rv0Z9ZomXxcIdUDMWEeyuVhfc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.77
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f77.google.com with SMTP id ca18e2360f4ac-7e8e5d55441so87800039f.1
+        for <bpf@vger.kernel.org>; Tue, 28 May 2024 03:24:30 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1716891870; x=1717496670;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=mQWTSLy1P083So9rNiEd0kJbhrBWsk01pnRr27WGpzI=;
+        b=xCZ8Xa5C1BvghFdbCfdOUYAm+drFIhQcn3ctW50Cm52O6RZYoN6/OejSqhJkY35m74
+         3dGinKq59bj4uPWEmG+JhMvG7KcpKv1/MrZ28Cnx3u30TQkFCqAsA+gxOzwIMXRwduaX
+         zjbQfUHQHKp9UWWfPAQR2Okgg/dAQh3hq2uQ/UUU33rIJh8z6vRhfUTXKqRfA/cPfHSL
+         IJUNrnPV2pOdt8eBDrZ585oVBRofzS8n2w4rCzq450yDmkQx90/AWPSSBLcVQkCE1G6v
+         L6Pu7xh9+78mMTh6kSUa5RCDnpcL9Mn4+HfxkBUjoHi0wwe0h/wxzyaHx9ty+VZpDahY
+         HU/g==
+X-Forwarded-Encrypted: i=1; AJvYcCUy44r0gQDD2N8az7zlKRU8tANpH0FiC4Zus6E3vYUWMsPhpvApwC+uXJRx0CXNST8sqSfYI0FtLDdjTi+ORpvLK+P9
+X-Gm-Message-State: AOJu0YzGVfMoSeQJrv0X+bHa4MPbMwg2z6hIXeLqSz9w84Yl6Zz6FRiY
+	L8MrVRXEtdPG+DQgl+r6mxysa/BYQ7vzSNFFCSWSZ5MgihTOwduRd28Vmjn6yye+ZW1EKasu6qU
+	jZkg9Kqme6eb5jKvp/Dq5q30bFwdSJ/TOAmCiZaaZLl84iIghsSlJZAM=
+X-Google-Smtp-Source: AGHT+IEA1yjeVzYff20hYz3dpAq2rdmd7ayPkp3OjIeHTBR97cXcpfVxXBUAA+MkE0kWKd5QOBWOKZa7TWFztFbU+KB4Ey6E9+YH
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240524210304.9164-3-fancer.lancer@gmail.com>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+X-Received: by 2002:a05:6602:14d5:b0:7da:5250:5bf8 with SMTP id
+ ca18e2360f4ac-7e8c73e7d2fmr66795439f.4.1716891870319; Tue, 28 May 2024
+ 03:24:30 -0700 (PDT)
+Date: Tue, 28 May 2024 03:24:30 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000000c68660619810ae1@google.com>
+Subject: [syzbot] [bpf?] [net?] possible deadlock in sock_map_update_common (2)
+From: syzbot <syzbot+ec4e4d5b7c4c6e654865@syzkaller.appspotmail.com>
+To: akpm@linux-foundation.org, andrii@kernel.org, ast@kernel.org, 
+	bpf@vger.kernel.org, daniel@iogearbox.net, davem@davemloft.net, 
+	eddyz87@gmail.com, edumazet@google.com, jakub@cloudflare.com, 
+	john.fastabend@gmail.com, kuba@kernel.org, linux-fsdevel@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-mm@kvack.org, netdev@vger.kernel.org, 
+	pabeni@redhat.com, sdf@google.com, syzkaller-bugs@googlegroups.com, 
+	willy@infradead.org
+Content-Type: text/plain; charset="UTF-8"
 
-On Sat, May 25, 2024 at 12:02:59AM +0300, Serge Semin wrote:
-> First of all the flags are never set by any of the driver parts. If nobody
-> have them set then the respective statements will always have the same
-> result. Thus the statements can be simplified or even dropped with no risk
-> to break things.
-> 
-> Secondly shall any of the TBI or RTBI flag is set the MDIO-bus
-> registration will be bypassed. Why? It really seems weird. It's perfectly
-> fine to have a TBI/RTBI-capable PHY configured over the MDIO bus
-> interface.
-> 
-> Based on the notes above the TBI/RTBI PCS flags can be freely dropped thus
-> simplifying the driver code.
-> 
-> Signed-off-by: Serge Semin <fancer.lancer@gmail.com>
+Hello,
 
-I think this patch can come first in the series, along with another
-few patches that remove stuff. Any objection?
+syzbot found the following issue on:
 
-Thanks.
+HEAD commit:    f980f13e4eb2 bpf, docs: Clarify call local offset
+git tree:       bpf-next
+console+strace: https://syzkaller.appspot.com/x/log.txt?x=13826cd8980000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=17ffd15f654c98ba
+dashboard link: https://syzkaller.appspot.com/bug?extid=ec4e4d5b7c4c6e654865
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=119d1344980000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=16a2cfa4980000
 
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/32f23b88a8fb/disk-f980f13e.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/8b8362511367/vmlinux-f980f13e.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/9a15c1af52d3/bzImage-f980f13e.xz
+
+The issue was bisected to:
+
+commit 68ca5d4eebb8c4de246ee5f634eee26bc689562d
+Author: Andrii Nakryiko <andrii@kernel.org>
+Date:   Tue Mar 19 23:38:50 2024 +0000
+
+    bpf: support BPF cookie in raw tracepoint (raw_tp, tp_btf) programs
+
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=11813c64980000
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=13813c64980000
+console output: https://syzkaller.appspot.com/x/log.txt?x=15813c64980000
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+ec4e4d5b7c4c6e654865@syzkaller.appspotmail.com
+Fixes: 68ca5d4eebb8 ("bpf: support BPF cookie in raw tracepoint (raw_tp, tp_btf) programs")
+
+======================================================
+WARNING: possible circular locking dependency detected
+6.9.0-syzkaller-08566-gf980f13e4eb2 #0 Not tainted
+------------------------------------------------------
+syz-executor324/5101 is trying to acquire lock:
+ffff8880299562b0 (&psock->link_lock){+...}-{2:2}, at: spin_lock_bh include/linux/spinlock.h:356 [inline]
+ffff8880299562b0 (&psock->link_lock){+...}-{2:2}, at: sock_map_add_link net/core/sock_map.c:146 [inline]
+ffff8880299562b0 (&psock->link_lock){+...}-{2:2}, at: sock_map_update_common+0x31c/0x5b0 net/core/sock_map.c:515
+
+but task is already holding lock:
+ffff88805d83da20 (&stab->lock){+.-.}-{2:2}, at: spin_lock_bh include/linux/spinlock.h:356 [inline]
+ffff88805d83da20 (&stab->lock){+.-.}-{2:2}, at: sock_map_update_common+0x1b6/0x5b0 net/core/sock_map.c:505
+
+which lock already depends on the new lock.
+
+
+the existing dependency chain (in reverse order) is:
+
+-> #1 (&stab->lock){+.-.}-{2:2}:
+       lock_acquire+0x1ed/0x550 kernel/locking/lockdep.c:5754
+       __raw_spin_lock_bh include/linux/spinlock_api_smp.h:126 [inline]
+       _raw_spin_lock_bh+0x35/0x50 kernel/locking/spinlock.c:178
+       spin_lock_bh include/linux/spinlock.h:356 [inline]
+       __sock_map_delete net/core/sock_map.c:429 [inline]
+       sock_map_delete_elem+0x175/0x250 net/core/sock_map.c:461
+       bpf_prog_5f1d5fee127b8728+0x42/0x4b
+       bpf_dispatcher_nop_func include/linux/bpf.h:1243 [inline]
+       __bpf_prog_run include/linux/filter.h:691 [inline]
+       bpf_prog_run include/linux/filter.h:698 [inline]
+       __bpf_trace_run kernel/trace/bpf_trace.c:2403 [inline]
+       bpf_trace_run2+0x2ec/0x540 kernel/trace/bpf_trace.c:2444
+       trace_kfree include/trace/events/kmem.h:94 [inline]
+       kfree+0x2bd/0x3b0 mm/slub.c:4450
+       sk_psock_free_link include/linux/skmsg.h:425 [inline]
+       sock_map_del_link net/core/sock_map.c:170 [inline]
+       sock_map_unref+0x3ac/0x5e0 net/core/sock_map.c:192
+       sock_hash_delete_elem+0x392/0x400 net/core/sock_map.c:961
+       bpf_prog_2c29ac5cdc6b1842+0x42/0x46
+       bpf_dispatcher_nop_func include/linux/bpf.h:1243 [inline]
+       __bpf_prog_run include/linux/filter.h:691 [inline]
+       bpf_prog_run include/linux/filter.h:698 [inline]
+       __bpf_trace_run kernel/trace/bpf_trace.c:2403 [inline]
+       bpf_trace_run1+0x2ca/0x520 kernel/trace/bpf_trace.c:2443
+       trace_ext4_da_reserve_space include/trace/events/ext4.h:1248 [inline]
+       ext4_da_reserve_space+0x4c4/0x530 fs/ext4/inode.c:1477
+       ext4_insert_delayed_block fs/ext4/inode.c:1652 [inline]
+       ext4_da_map_blocks fs/ext4/inode.c:1777 [inline]
+       ext4_da_get_block_prep+0x955/0x1420 fs/ext4/inode.c:1817
+       ext4_block_write_begin+0x53b/0x1850 fs/ext4/inode.c:1055
+       ext4_da_write_begin+0x5f8/0xa70 fs/ext4/inode.c:2894
+       generic_perform_write+0x322/0x640 mm/filemap.c:3974
+       ext4_buffered_write_iter+0xc6/0x350 fs/ext4/file.c:299
+       ext4_file_write_iter+0x1de/0x1a10
+       call_write_iter include/linux/fs.h:2120 [inline]
+       new_sync_write fs/read_write.c:497 [inline]
+       vfs_write+0xa2d/0xc50 fs/read_write.c:590
+       ksys_write+0x1a0/0x2c0 fs/read_write.c:643
+       do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+       do_syscall_64+0xf5/0x240 arch/x86/entry/common.c:83
+       entry_SYSCALL_64_after_hwframe+0x77/0x7f
+
+-> #0 (&psock->link_lock){+...}-{2:2}:
+       check_prev_add kernel/locking/lockdep.c:3134 [inline]
+       check_prevs_add kernel/locking/lockdep.c:3253 [inline]
+       validate_chain+0x18cb/0x58e0 kernel/locking/lockdep.c:3869
+       __lock_acquire+0x1346/0x1fd0 kernel/locking/lockdep.c:5137
+       lock_acquire+0x1ed/0x550 kernel/locking/lockdep.c:5754
+       __raw_spin_lock_bh include/linux/spinlock_api_smp.h:126 [inline]
+       _raw_spin_lock_bh+0x35/0x50 kernel/locking/spinlock.c:178
+       spin_lock_bh include/linux/spinlock.h:356 [inline]
+       sock_map_add_link net/core/sock_map.c:146 [inline]
+       sock_map_update_common+0x31c/0x5b0 net/core/sock_map.c:515
+       sock_map_update_elem_sys+0x55f/0x910 net/core/sock_map.c:594
+       map_update_elem+0x53a/0x6f0 kernel/bpf/syscall.c:1654
+       __sys_bpf+0x76f/0x810 kernel/bpf/syscall.c:5675
+       __do_sys_bpf kernel/bpf/syscall.c:5794 [inline]
+       __se_sys_bpf kernel/bpf/syscall.c:5792 [inline]
+       __x64_sys_bpf+0x7c/0x90 kernel/bpf/syscall.c:5792
+       do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+       do_syscall_64+0xf5/0x240 arch/x86/entry/common.c:83
+       entry_SYSCALL_64_after_hwframe+0x77/0x7f
+
+other info that might help us debug this:
+
+ Possible unsafe locking scenario:
+
+       CPU0                    CPU1
+       ----                    ----
+  lock(&stab->lock);
+                               lock(&psock->link_lock);
+                               lock(&stab->lock);
+  lock(&psock->link_lock);
+
+ *** DEADLOCK ***
+
+3 locks held by syz-executor324/5101:
+ #0: ffff888076792718 (sk_lock-AF_INET){+.+.}-{0:0}, at: lock_sock include/net/sock.h:1595 [inline]
+ #0: ffff888076792718 (sk_lock-AF_INET){+.+.}-{0:0}, at: sock_map_sk_acquire net/core/sock_map.c:129 [inline]
+ #0: ffff888076792718 (sk_lock-AF_INET){+.+.}-{0:0}, at: sock_map_update_elem_sys+0x1cc/0x910 net/core/sock_map.c:590
+ #1: ffffffff8e333d20 (rcu_read_lock){....}-{1:2}, at: rcu_lock_acquire include/linux/rcupdate.h:329 [inline]
+ #1: ffffffff8e333d20 (rcu_read_lock){....}-{1:2}, at: rcu_read_lock include/linux/rcupdate.h:781 [inline]
+ #1: ffffffff8e333d20 (rcu_read_lock){....}-{1:2}, at: sock_map_sk_acquire net/core/sock_map.c:130 [inline]
+ #1: ffffffff8e333d20 (rcu_read_lock){....}-{1:2}, at: sock_map_update_elem_sys+0x1d8/0x910 net/core/sock_map.c:590
+ #2: ffff88805d83da20 (&stab->lock){+.-.}-{2:2}, at: spin_lock_bh include/linux/spinlock.h:356 [inline]
+ #2: ffff88805d83da20 (&stab->lock){+.-.}-{2:2}, at: sock_map_update_common+0x1b6/0x5b0 net/core/sock_map.c:505
+
+stack backtrace:
+CPU: 0 PID: 5101 Comm: syz-executor324 Not tainted 6.9.0-syzkaller-08566-gf980f13e4eb2 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 04/02/2024
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0x241/0x360 lib/dump_stack.c:114
+ check_noncircular+0x36a/0x4a0 kernel/locking/lockdep.c:2187
+ check_prev_add kernel/locking/lockdep.c:3134 [inline]
+ check_prevs_add kernel/locking/lockdep.c:3253 [inline]
+ validate_chain+0x18cb/0x58e0 kernel/locking/lockdep.c:3869
+ __lock_acquire+0x1346/0x1fd0 kernel/locking/lockdep.c:5137
+ lock_acquire+0x1ed/0x550 kernel/locking/lockdep.c:5754
+ __raw_spin_lock_bh include/linux/spinlock_api_smp.h:126 [inline]
+ _raw_spin_lock_bh+0x35/0x50 kernel/locking/spinlock.c:178
+ spin_lock_bh include/linux/spinlock.h:356 [inline]
+ sock_map_add_link net/core/sock_map.c:146 [inline]
+ sock_map_update_common+0x31c/0x5b0 net/core/sock_map.c:515
+ sock_map_update_elem_sys+0x55f/0x910 net/core/sock_map.c:594
+ map_update_elem+0x53a/0x6f0 kernel/bpf/syscall.c:1654
+ __sys_bpf+0x76f/0x810 kernel/bpf/syscall.c:5675
+ __do_sys_bpf kernel/bpf/syscall.c:5794 [inline]
+ __se_sys_bpf kernel/bpf/syscall.c:5792 [inline]
+ __x64_sys_bpf+0x7c/0x90 kernel/bpf/syscall.c:5792
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0xf5/0x240 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+RIP: 0033:0x7f869864f729
+Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 d1 19 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007ffc0c535468 EFLAGS: 00000246 ORIG_RAX: 0000000000000141
+RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 00007f869864f729
+RDX: 0000000000000020 RSI: 00000000200000c0 RDI: 0000000000000002
+RBP: 0000000000000000 R08: 0000000100000000 R09: 0000000100000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
+ </TASK>
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
 
