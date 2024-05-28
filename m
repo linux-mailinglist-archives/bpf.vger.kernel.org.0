@@ -1,155 +1,122 @@
-Return-Path: <bpf+bounces-30705-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-30706-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8DE168D13BA
-	for <lists+bpf@lfdr.de>; Tue, 28 May 2024 07:13:00 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 88B988D176F
+	for <lists+bpf@lfdr.de>; Tue, 28 May 2024 11:42:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1C8A31F23B60
-	for <lists+bpf@lfdr.de>; Tue, 28 May 2024 05:13:00 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B42661C21900
+	for <lists+bpf@lfdr.de>; Tue, 28 May 2024 09:42:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 74748446AF;
-	Tue, 28 May 2024 05:12:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B56C16ABC6;
+	Tue, 28 May 2024 09:42:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="aOUgv6/M"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PlSLy4w8"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f43.google.com (mail-ej1-f43.google.com [209.85.218.43])
+Received: from mail-lf1-f52.google.com (mail-lf1-f52.google.com [209.85.167.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A446A3E487
-	for <bpf@vger.kernel.org>; Tue, 28 May 2024 05:12:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B14F169AC9;
+	Tue, 28 May 2024 09:42:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716873168; cv=none; b=KJoI8ELjUY66IMaRgAw0LCNafW0ZMnj9BIBMGrSaEw/7Cu/8rOiZzHUZ9wnpfapIQjGymNaKfB6DhMS31g9Ew3RhnJG2O6zCYkWSnCvtru04mNZ3PN3i+dMkqg7OFxF4XMThoFABbgbl+VOAEUdraCAPKkfPWoCzDuhx0t7YgDA=
+	t=1716889363; cv=none; b=Nk9du9jvWARmp9D1JDOVO9J/5cCOsb0mGtZq/9+9WCpmi6A/WRM+KNApyOLGxpX+20Uo4vnHbg61iINew3YUkEpiAFcTHh87y8dklJHxbDSTLN2xpzls2lTJsL0HADsa6nYTsKpl+D8hPVgMJ2NYTFvJoF3EDVYfsndtOkIoaKg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716873168; c=relaxed/simple;
-	bh=2ZGZeycdp5GJxWuvBsZV8gpu6cM4WHkuZaGF7VCG6/k=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=A2gsJTSPKEXGM5CR23RJ2B/dBfpEq0nNckvrms+JBPgrc3Jal7a82Mq3FvfJBWRtzNYxVzrDsepl9GAklRGOM+DflSywVLJ8qhrkCXobZmQTkSDDuDGDEldmDsP7Ocsru3q0jog8+k26DnBb7tHoBg+byERZq3hx9b+KeOc37Dc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=aOUgv6/M; arc=none smtp.client-ip=209.85.218.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
-Received: by mail-ej1-f43.google.com with SMTP id a640c23a62f3a-a6341cf2c99so17569166b.0
-        for <bpf@vger.kernel.org>; Mon, 27 May 2024 22:12:45 -0700 (PDT)
+	s=arc-20240116; t=1716889363; c=relaxed/simple;
+	bh=qfLyJtmax/jZ+eAaCvC7e67XX9TGTXKhgERpUQNkjH8=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=DsS8w4vl4LH5+fODbiMNUZj5rg5OWMUFzuu3YgtGW6rhvQrSohruM55E0H5QFmR4sMKXZ0F+IAJh5X3x5p42qsZptj5Q/cUiRiWI20gf0kEnkmY7ipSyWiaKLUWcVknR0olOdUNQw1wD8TTIWw7PaNKzY2+EMj5XtclgQZpxa3U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=PlSLy4w8; arc=none smtp.client-ip=209.85.167.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lf1-f52.google.com with SMTP id 2adb3069b0e04-52389c1308dso785920e87.3;
+        Tue, 28 May 2024 02:42:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1716873164; x=1717477964; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=sEzBOXaIzbfMi17IPevGDHsDdowwd5GTFXbnEzHCSrk=;
-        b=aOUgv6/MvoCU8iHGHkp26EK5gjdQdCZHrrTzdBdwTVMK0ur4bBtHGtoQLmbHL+pZBz
-         XANS12lTfjoTB+IR7PZQnWvWwL+1W590Y/BMhp0cK4y6SXUM6w6lqyPBemGVjkRf9Iw0
-         pDAMkZJIPiCCiU9kPoSzKPFc64SMW86CKrlue1IJ2ea4iSwSpHumYTjhqJt7drxi0/FO
-         h/nHGeGURQPuokI6OXNCskMKwHhVsT40Il3Hr8p6SsffgSWjbt8Fmgpy959eoj0DijYr
-         1VFpsEbFJnpZw3xFRshPj8yD4L8h7jI/NtFx1vsIil4KvB86I8i3kCPbF8X9E3N3UGGg
-         qiRw==
+        d=gmail.com; s=20230601; t=1716889359; x=1717494159; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=JGOI2J3FbR+ob+LmVGOsGjzCJpew9van2Zh3gScMtnI=;
+        b=PlSLy4w8caOEn8GkGAMk9ozPxv4rZ/aqpyRuFpOW1tGLO2gwptft0fWg/FY/io3fmL
+         sxb5lDOss3SGQSZNKe9MtgfojgSfZBsEbeusMCr3FNxR6S57Aw7fjX74yosxPK9UceRk
+         lS80zblMNqHISaRd1UHocxZfPn49JS07AcjMxtR4Ehn2Xqtu+ZF12cTJNJy4aa+7uc8d
+         qaoPLXXKgkXQC3Ef/o6Qau7GXuTBeDIiOn6LN5UgDfmuUrmy9MPTvzY3KrFrk5mlWCZr
+         lWFFOvt1bh37zlOdyfN3yfDVi7KDaK583eunL1BjyLhoo1D17sK7sOalrM1O1Fr/KsAG
+         7BTw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1716873164; x=1717477964;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=sEzBOXaIzbfMi17IPevGDHsDdowwd5GTFXbnEzHCSrk=;
-        b=QgMd0yWtU4bDUozjpV5oVpDSt1a6eq71+CiUCLwVMihbeWiMYtzEOg6JcLS/Zv5Czt
-         XT1mxQFpJ84BEmZXXx1ubN+ZtxX+RpTE76fkmRQf7D2FwFn+D4TZnYktU1RBlwQGK4xi
-         0SVxSLTKjq2nsYzHML6Wyf4MHj/F3/qjpqNLIJKXkToQymwhSpLbcjlYK9z4MJz7JYrR
-         d5QxONhE1Tom4VbRR7EFlOx0Cq2NnVa3gUxyaj7R385E7T0bXroEuz57NeaNKSfLKM4O
-         ke7VePxeTEqakaMDu+PNcNl1a/JnhAhYBqukgpGNvdm4f+tmx9da0nURQurpQrb+UeWt
-         Ibvg==
-X-Forwarded-Encrypted: i=1; AJvYcCXYlMf8teZFpeNE/NhJD9YNpeynr3gCGUDO7HEDjXl+CL8V73DIdhuPRuo79bWRAW4DgQY4xYo4hYM555MqULn2pYwi
-X-Gm-Message-State: AOJu0YxhgL9hTUlgHKeR+KmIzjAr/IaBLg/SoJC1tocKQifnurfLYBxA
-	H7gIvEEqfsfetPmF6+SBt/mS7LSHDRrR3oeLyfnOqhsNXR9kLapXVnui0C75Fv0fb/7dRh9nfUZ
-	KUgcDnPVlT34k+HzimG/Y7AiXfgOxcScEAW9B3A==
-X-Google-Smtp-Source: AGHT+IEgxGjpAfcQgJZPSZI09AOkDzjS2yiXb3qyIvWjw9VwAJvJ9LR53vE4/EKu6a8gJSxYcCVxmFt54915XaKYz7w=
-X-Received: by 2002:a17:906:69a:b0:a5a:7ce8:f52c with SMTP id
- a640c23a62f3a-a62641b1fccmr653519166b.16.1716873163902; Mon, 27 May 2024
- 22:12:43 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1716889359; x=1717494159;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=JGOI2J3FbR+ob+LmVGOsGjzCJpew9van2Zh3gScMtnI=;
+        b=nxq38ZWTJTRqGf6xUXe7CQNf8VXG55VlIqzx7UqPI6XvGsffNqx2UIebqM61fxXjhz
+         qYjwpVsJw0MeQxJ6ECHy24a7pAAlhIdh3PaUlgKLVaHrta/MLf8SpvzmLGNSAUNEkjZL
+         iM3QEIp4Na8mFuRXw80/KUrrVlkx4HPwkT2xzus8rl1QCZtzbGb2sPC/n06/U8RXuRUr
+         Gx50yPmyh/k2nWc81SFJd6y0MQ6xO5bwrDDkMPzanosf4rmluAU1XP3AeEmAtfLYtycV
+         isOS7Hw44ex+fWDJU9dJjm617wF+Cp8zx1zeQ/1wMPrIVKiNfstm49Z1ImXVRZtg4fXi
+         Wcgw==
+X-Forwarded-Encrypted: i=1; AJvYcCV2rbpDeAYwynGDrNKLShGLQ91q7h4Ostw/rd47VTIJpG4MrvaLo/q0AuKhjbwXvOCEOA+51oQYFPS0Xq6CptTyK2gGEimnLEFryGn7997Sdd7G0r1cTKjlNY1x2gHlda04wRKpAIHis/8qXnps5aJeRQQ0H6qAS/2kc/qfaw==
+X-Gm-Message-State: AOJu0Yxzn7EprNu/qe4Q1tV1k9mngf7Pk7dkWbp/CSZ6Pkgvyr4Wxhxz
+	NFxNLN/y+XGiZpwUrhqJnTsQYDkQKs9EKbItS703lnNdQiyzRpgM
+X-Google-Smtp-Source: AGHT+IFlYhYgNNNQ1wITN1+9f9HdlVJxGanJiZQ7t7o1+FR679Fx/NlkuEWMH/d5GYnhY4Rz+401iA==
+X-Received: by 2002:a05:6512:2396:b0:51a:f596:9d53 with SMTP id 2adb3069b0e04-529664dad37mr9975256e87.42.1716889359003;
+        Tue, 28 May 2024 02:42:39 -0700 (PDT)
+Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-420fd37f19fsm130468165e9.1.2024.05.28.02.42.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 28 May 2024 02:42:38 -0700 (PDT)
+From: Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date: Tue, 28 May 2024 11:42:37 +0200
+To: Masahiro Yamada <masahiroy@kernel.org>
+Cc: linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
+	bpf@vger.kernel.org, Ard Biesheuvel <ardb@kernel.org>,
+	Arnd Bergmann <arnd@arndb.de>,
+	Nathan Chancellor <nathan@kernel.org>,
+	Nicolas Schier <nicolas@fjasle.eu>, linux-arch@vger.kernel.org
+Subject: Re: [PATCH 0/3] kbuild: remove PROVIDE() and refactor vmlinux_link
+ steps
+Message-ID: <ZlWnDT1S7n4XrAb5@krava>
+References: <20240522114755.318238-1-masahiroy@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240527153137.271933-1-alexghiti@rivosinc.com> <ZlSuIu1aFLzAiH_1@krava>
-In-Reply-To: <ZlSuIu1aFLzAiH_1@krava>
-From: Alexandre Ghiti <alexghiti@rivosinc.com>
-Date: Tue, 28 May 2024 07:12:31 +0200
-Message-ID: <CAHVXubhSXjFKP_7qfw0GMvrrVinwvCKizAiC2Xeu5EP6U0JpKQ@mail.gmail.com>
-Subject: Re: [PATCH -fixes] bpf: resolve_btfids: Fix integer overflow when
- calling elf_update()
-To: Jiri Olsa <olsajiri@gmail.com>
-Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
-	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
-	bpf@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-riscv@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240522114755.318238-1-masahiroy@kernel.org>
 
-Hi Jiri,
+On Wed, May 22, 2024 at 08:47:52PM +0900, Masahiro Yamada wrote:
+> 
+>  - Remove PROVIDE() in the linker script
+>  - Merge temporary vmlinux link steps for BTF and kallsyms
+> 
+> 
+> 
+> Masahiro Yamada (3):
+>   kbuild: refactor variables in scripts/link-vmlinux.sh
+>   kbuild: remove PROVIDE() for kallsyms symbols
+>   kbuild: merge temp vmlinux for CONFIG_DEBUG_INFO_BTF and
+>     CONFIG_KALLSYMS
 
-On Mon, May 27, 2024 at 6:00=E2=80=AFPM Jiri Olsa <olsajiri@gmail.com> wrot=
-e:
->
-> On Mon, May 27, 2024 at 05:31:37PM +0200, Alexandre Ghiti wrote:
-> > The following error was encoutered in [1]:
-> >
-> > FAILED elf_update(WRITE): no error
->
-> hi,
-> this fix got already in, check this patch:
->   https://patchwork.kernel.org/project/netdevbpf/patch/20240514070931.199=
-694-1-friedrich.vock@gmx.de/
+lgtm, fyi I ran bpf CI on top of this change and passed
 
-Damn, I missed this.
+https://github.com/kernel-patches/bpf/pull/7104
 
-If possible, I think that adding the link to the bug report (or at
-least the "FAILED elf_update(WRITE): no error" string) would make
-sense, since it is not a "potential" overflow anymore.
+jirka
 
-Thanks,
-
-Alex
-
->
-> thanks,
-> jirka
->
-> >
-> > elf_update() returns the total size of the file which here happens to b=
-e
-> > a ~2.5GB vmlinux file: this size overflows the integer used to hold the
-> > return value of elf_update() and is then interpreted as being negative.
-> >
-> > So fix this by using the correct type expected by elf_update() which is
-> > off_t.
-> >
-> > Fixes: fbbb68de80a4 ("bpf: Add resolve_btfids tool to resolve BTF IDs i=
-n ELF object")
-> > Link: https://bugzilla.kernel.org/show_bug.cgi?id=3D218887 [1]
-> > Signed-off-by: Alexandre Ghiti <alexghiti@rivosinc.com>
-> > ---
-> >  tools/bpf/resolve_btfids/main.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> >
-> > diff --git a/tools/bpf/resolve_btfids/main.c b/tools/bpf/resolve_btfids=
-/main.c
-> > index d9520cb826b3..af393c7dee1f 100644
-> > --- a/tools/bpf/resolve_btfids/main.c
-> > +++ b/tools/bpf/resolve_btfids/main.c
-> > @@ -728,7 +728,7 @@ static int sets_patch(struct object *obj)
-> >
-> >  static int symbols_patch(struct object *obj)
-> >  {
-> > -     int err;
-> > +     off_t err;
-> >
-> >       if (__symbols_patch(obj, &obj->structs)  ||
-> >           __symbols_patch(obj, &obj->unions)   ||
-> > --
-> > 2.39.2
-> >
+> 
+>  include/asm-generic/vmlinux.lds.h | 19 -------
+>  kernel/kallsyms_internal.h        |  5 --
+>  scripts/kallsyms.c                |  6 ---
+>  scripts/link-vmlinux.sh           | 87 ++++++++++++++++---------------
+>  4 files changed, 45 insertions(+), 72 deletions(-)
+> 
+> -- 
+> 2.40.1
+> 
+> 
 
