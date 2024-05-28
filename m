@@ -1,49 +1,49 @@
-Return-Path: <bpf+bounces-30707-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-30708-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 69E9A8D1829
-	for <lists+bpf@lfdr.de>; Tue, 28 May 2024 12:10:55 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3F5ED8D1857
+	for <lists+bpf@lfdr.de>; Tue, 28 May 2024 12:20:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E39B7B26AA9
-	for <lists+bpf@lfdr.de>; Tue, 28 May 2024 10:10:52 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AD671B27713
+	for <lists+bpf@lfdr.de>; Tue, 28 May 2024 10:20:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 82BB116ABEB;
-	Tue, 28 May 2024 10:10:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2FAFA16ABE2;
+	Tue, 28 May 2024 10:20:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Rg5ickJh"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HPEFKegA"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 022A317E8F4;
-	Tue, 28 May 2024 10:10:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A406015E96;
+	Tue, 28 May 2024 10:20:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716891035; cv=none; b=f+zNws0cteDdjaVlv9RdLXePQYTGn93+1jYjMfoN3xrk1vzmTqTBoAMnTiRy3Rr3BE/ypr9ixsAbJtkmRK13WFST/smG+f3GC2SEKxK3D+vXi1BFl+YlDn2rOC6K+WnOjEgR7CHoMU84uqc7tybiha5JUykGvaWJMGDQM9amibc=
+	t=1716891630; cv=none; b=LizhnNC3oHFvi460WOYAwQlHDr6hewK+QslakA1Ewrt80B7+YZpSqhOl1rOAD6r5q3kTosjNM7eaq48ePjW+6AW3SNmnI2wQUGkwvPhi9a01kzQKmqelLTvM+ECakcGzBmsTXBodXmihkUPETiNDI8OGu3CC714HhauX719MHqs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716891035; c=relaxed/simple;
-	bh=05aPiNKFD4tFZIrEuAyb4WYu8G/i5Urh30k7lvnUUfg=;
+	s=arc-20240116; t=1716891630; c=relaxed/simple;
+	bh=XPE9r6ln1qemfRDv7biBuJ2KZj87/YszG/QpHYmPiNY=;
 	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=kxnfl+QpohbGLckgHq+1plloNgsZMSITBdXwBnV0ildOQ05tnzk/s+asu6MFMth+K1ETnV6LlaUZR7qD78Hf6ktyUYBVp85mwMUN0Q1fS2vgHc0EglyfJ2PqDS8j0O7DO9plA+Yr5AJhAQ8lH8VzU7wq2OaV5EyxN4+RYywDSbs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Rg5ickJh; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 43010C32781;
-	Tue, 28 May 2024 10:10:34 +0000 (UTC)
+	 In-Reply-To:To:Cc; b=Ha4ONcm6W2tiblEHb0NEosYGsoKzxMwYmurWswYgRbfHO65LZvapo/o1RYjZJxvy+Y4eqDbQqu3D2DIVqc3WbO53W1XLTVPuUJgS2NMIW9xPibXaVStd/+tV7jbbuGGidV3hBTjebsCvdsfh1NbtyfBA8frOsbXgk8StTup0M/w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HPEFKegA; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 1485AC32782;
+	Tue, 28 May 2024 10:20:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1716891034;
-	bh=05aPiNKFD4tFZIrEuAyb4WYu8G/i5Urh30k7lvnUUfg=;
+	s=k20201202; t=1716891630;
+	bh=XPE9r6ln1qemfRDv7biBuJ2KZj87/YszG/QpHYmPiNY=;
 	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=Rg5ickJhhL5ppwDl03Aad1ycW6BEuXF6RzlAC4rp7ueBqY8+A/+DYl76sH5LvEbXY
-	 OFaJopdDkI4RbKWSywmRyBQa1fGBgLtQyffqQ6Oix2Sw7BtU0LjeL8GosHPc20x67o
-	 oh9hTSlB2R5AI7RvaopS4m6+CL8ghD5qCmls1xvxIfBHYGT2U8o2/zqgb+CiztPpch
-	 Ne1oyxWIyieEjMKSZBlXOhaO/ra+TOVoWSJIapwhAyjHIWQCQ822TBbiwOleP7D891
-	 SvJWNlwRja/IRKHOkmPdqOAiftoXWSTTymVDRawrDpiZ+xaPHmLm+HF9pxY3XtO45n
-	 TrqvEFD2q0jNg==
+	b=HPEFKegAwY7IRVEcryFyvVjtAsGYv02kcQvFjCcUAC943Y4fZrRMnIwiz/sK7+xUb
+	 4B+SdbwagxDnlsxMsqKRkSrI0+VHCo2YxBT4SbcqzkayRGTHYNdojKCQm3UI2c83Ad
+	 fix2n7LJdxM5xvIiAoQwWMUE9hl21noG0j/qk55AjFKUQAHRvZtWdfNxSht+vpA77D
+	 hPgy23b/rVYGLgRplIQ/2ho2YYy01yizluFlMMg8U+mh04QUr2uxh6rvm39h4VMzeb
+	 fnCdBgp9EJKaDJWvezEx3rlW2KAFWwSZS8TGMwWHoLNeJkH3ZvfM+day0e3hYyMdyF
+	 lkVfbEtRJMG5g==
 Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 36155C4361C;
-	Tue, 28 May 2024 10:10:34 +0000 (UTC)
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id EEF2CC4361B;
+	Tue, 28 May 2024 10:20:29 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -52,37 +52,40 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH] net: filter: use DEV_STAT_INC()
+Subject: Re: [PATCH net v2] sock_map: avoid race between sock_map_close and
+ sk_psock_put
 From: patchwork-bot+netdevbpf@kernel.org
 Message-Id: 
- <171689103421.16293.16635020515732508425.git-patchwork-notify@kernel.org>
-Date: Tue, 28 May 2024 10:10:34 +0000
-References: <20240523033520.4029314-1-jiangyunshui@kylinos.cn>
-In-Reply-To: <20240523033520.4029314-1-jiangyunshui@kylinos.cn>
-To: Yunshui Jiang <jiangyunshui@kylinos.cn>
-Cc: bpf@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
- martin.lau@linux.dev, daniel@iogearbox.net, john.fastabend@gmail.com,
- edumazet@google.com, syzkaller@googlegroups.com
+ <171689162997.24184.10361719946392416490.git-patchwork-notify@kernel.org>
+Date: Tue, 28 May 2024 10:20:29 +0000
+References: <20240524144702.1178377-1-cascardo@igalia.com>
+In-Reply-To: <20240524144702.1178377-1-cascardo@igalia.com>
+To: Thadeu Lima de Souza Cascardo <cascardo@igalia.com>
+Cc: netdev@vger.kernel.org, cong.wang@bytedance.com, jakub@cloudflare.com,
+ edumazet@google.com, daniel@iogearbox.net, john.fastabend@gmail.com,
+ davem@davemloft.net, kuba@kernel.org, ast@kernel.org, pabeni@redhat.com,
+ bpf@vger.kernel.org, kernel-dev@igalia.com,
+ syzbot+07a2e4a1a57118ef7355@syzkaller.appspotmail.com, stable@vger.kernel.org
 
 Hello:
 
-This patch was applied to bpf/bpf-next.git (master)
-by Daniel Borkmann <daniel@iogearbox.net>:
+This patch was applied to netdev/net.git (main)
+by Paolo Abeni <pabeni@redhat.com>:
 
-On Thu, 23 May 2024 11:35:20 +0800 you wrote:
-> syzbot/KCSAN reported that races happen when multiple cpus
-> updating dev->stats.tx_error concurrently.
+On Fri, 24 May 2024 11:47:02 -0300 you wrote:
+> sk_psock_get will return NULL if the refcount of psock has gone to 0, which
+> will happen when the last call of sk_psock_put is done. However,
+> sk_psock_drop may not have finished yet, so the close callback will still
+> point to sock_map_close despite psock being NULL.
 > 
-> Adopt SMP safe DEV_STATS_INC() to update dev->stats fields.
-> 
-> Reported-by: syzbot <syzkaller@googlegroups.com>
-> Signed-off-by: yunshui <jiangyunshui@kylinos.cn>
+> This can be reproduced with a thread deleting an element from the sock map,
+> while the second one creates a socket, adds it to the map and closes it.
 > 
 > [...]
 
 Here is the summary with links:
-  - net: filter: use DEV_STAT_INC()
-    https://git.kernel.org/bpf/bpf-next/c/d9cbd8343b01
+  - [net,v2] sock_map: avoid race between sock_map_close and sk_psock_put
+    https://git.kernel.org/netdev/net/c/4b4647add7d3
 
 You are awesome, thank you!
 -- 
