@@ -1,92 +1,88 @@
-Return-Path: <bpf+bounces-30715-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-30716-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 863658D1B0B
-	for <lists+bpf@lfdr.de>; Tue, 28 May 2024 14:22:59 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 794288D1B13
+	for <lists+bpf@lfdr.de>; Tue, 28 May 2024 14:24:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0C4D91F236ED
-	for <lists+bpf@lfdr.de>; Tue, 28 May 2024 12:22:59 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 34E2E282D03
+	for <lists+bpf@lfdr.de>; Tue, 28 May 2024 12:24:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B340516D4FD;
-	Tue, 28 May 2024 12:22:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF31316D9B8;
+	Tue, 28 May 2024 12:23:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XiWP9to7"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ez5Wmyq2"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-lf1-f43.google.com (mail-lf1-f43.google.com [209.85.167.43])
+Received: from mail-lj1-f182.google.com (mail-lj1-f182.google.com [209.85.208.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A013E74409;
-	Tue, 28 May 2024 12:22:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E19CF13AD30;
+	Tue, 28 May 2024 12:23:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716898967; cv=none; b=mdFuct3OPkXk8hu5OBKAcGmCWymaS67GRkTw9ruA+QLmugpPINe4QiFxA3Sz53O2tfpfxfkdYf2wPxVd+Nu7muZYBNo4X+y0aWyTarQlkA+/VwZw4ejw0/jDAnLkQ3OEC7FDBUF8ZqXqNzR66j3dpkj8wartGs6xwhCd99Azctc=
+	t=1716899023; cv=none; b=PF6U8MLilJZxiAWAgl7Z/RhbIIjwxsUSIkMzmZqZtHB9LgCIFbV80FsPCFVnw8WzMuJ91HfBi0vg+CIQLIrBPN4lqfikDB4EwjDl2QWZhT53dvyOUDpH1+Q75793BnAz5xYaNt9s+9l+8dIttcBbkZCJGmkseNW7gEtJ2S+yD+M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716898967; c=relaxed/simple;
-	bh=1bxpJkJTAuic/fEmME52PUTrYmhkNBSpSDXr2ojsc7M=;
+	s=arc-20240116; t=1716899023; c=relaxed/simple;
+	bh=2NXpz5mcHjtgnf3Pi3Kz583uD1DOKBbm6BYbngGKYxg=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=mnTPmw8YojPaamICGBVj9NOcTwy7RhzUEWNkLbgoiZlLdNj2YWj5IReuik3tvkr6BFYKg/qFmTYG9MaP1hLnBUmhN6AbZYKZqIOrASj1WjcuO5Z9FuwZZCOD3qWGcsMCQ47ef0poJav78bwOVf/u1znA/pmsJiTN+5K3PJqdXCM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=XiWP9to7; arc=none smtp.client-ip=209.85.167.43
+	 Content-Type:Content-Disposition:In-Reply-To; b=EHqbaSf9n+fD5o5BzLUFyfZ5a0yf8DUhnv5GVzUqnz7wsZRrupg64asZ6ceD0oOUY7464sh2HcTVXgdcU6XMLzTFiFPtDXYGhtVqD8c/QWIlvmd1YO7jODPZH8n2PFuCZrpCegSOGhto/vwhyZHDnKKATgJ4dlFLoFwCQKuRcd4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ez5Wmyq2; arc=none smtp.client-ip=209.85.208.182
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f43.google.com with SMTP id 2adb3069b0e04-529661f2552so969003e87.2;
-        Tue, 28 May 2024 05:22:45 -0700 (PDT)
+Received: by mail-lj1-f182.google.com with SMTP id 38308e7fff4ca-2e724bc46c4so7656921fa.2;
+        Tue, 28 May 2024 05:23:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1716898964; x=1717503764; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1716899019; x=1717503819; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=30d0TTe0qu/2T+a0CP2Ht/sekYc/5hfNw/7/ZEtYxu8=;
-        b=XiWP9to7IFMPMEwMVWyuNamCW2AhljULMH0OE+mg44H7qr4kpYnUL08Tp+FXTE8Lbp
-         B+1Y4SEEG+UlBlUORgIf7onkSfpLIjQrGPh8HHjmfmM0dNefHmQvnZH3nwji55WaLBAf
-         +Oipm+gNzKC6c503rRe1C96Y4EfpHJ5OqCAcdlpF/mEuFmTv8UKNZodz4u0BZ2xfecfq
-         8eaEGHh8RQrC0hRXRJgGbZx3YdBVnKhdxr1HUuTuJ+y1wpzyGm0ex1llAMqh669qJqhF
-         //MbFxY4EgNUEoQ8LuFoVHPBBrNdKQTrGsvEGnk8gxnG6+AvRNiTJj6Me+S4e9tpv7c9
-         zI0Q==
+        bh=gQ6Bwt6k8qoK6vNlq9lM1iWxCwSqpepkOmDB+x80ufY=;
+        b=ez5Wmyq2vGh1z++0rEmA+zbkFycIwd3Z+xPFEYZdOaT2/BjLCIgoMKvlPRuEfDEtx1
+         hQnddwcybtkTmyVOu7DDPtBmYhOdUBkCI6SEsxv5VohTWmNPiSoynB3Qo01XGEZjwrU5
+         nKOZ8yrN19QIguv2a78Xhrsv9/9Vb4rETFNwYR+dzaqFEw0RrJRND1UlFrjp0JsCpNt0
+         NmVJdPQPeDHHFoEyTIAFQNUNqhJPN6tDYU2KbVZXMX8oWO45T2pObxWKodeCin2C31RX
+         U69PXXdKICx+CtjGjEj7BQ1hkF2yMVEnByytXf76eQJ3bjwPiQmqe8imSQ5sq913zXDE
+         He4g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1716898964; x=1717503764;
+        d=1e100.net; s=20230601; t=1716899019; x=1717503819;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=30d0TTe0qu/2T+a0CP2Ht/sekYc/5hfNw/7/ZEtYxu8=;
-        b=gmNgGZ7wZRvi6A+m+m9CGZWDd9n+TcY21SWNWLyD/oQC03M9oL5AEHjVvDAhAsWPUu
-         8MXJjXn5/PtIF+kLVI70I9G7+PsbYAM7f4Euq+5vkWAmHAbEGvCnnOeSuzjVA4n7ML7N
-         kSlMTIcP4eWDhRBZUMhLqxqhtxZaP6X2Netm9wBJBlT8dSdtSaVStLaYfdvPE8ZjIU9q
-         mSrWpUsuqL7Eb+FmCZWu2vVIVVE4Yo4ZZf6PmsMvpUm7KgmQtQ1l5EVim6jgFArlMcZg
-         BMfcpXnqkQ87G0QYbQ1K8FI2vUyDe+4MO9fojwQ+pipsX9TU7zLdPHLj8OOq11yI9ymf
-         9iyQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXn3zJE10QsQoGBesvH4wriei/+TDF/3AsG6hSSeZ9Hda3CBaGW8egTjkixFtpCa+VRERTnYGTBOfFfxjiP6wnKYacETDi2Llwv0n/PfLMUO/5TuYF+zfVKYhiKGzcgBwRrWmM+ORXE1EG+eYWdNSC+nPq/znfZxint
-X-Gm-Message-State: AOJu0YwI3+frBebg8wUClyNI3SCs/7LNl8JM0KNKTLB8O+etbD2+Fn6u
-	G5AryOLLA3Rt25I4leysEZ6WsT88ndDGbOC6S4ZxGMvs0vd+R3tO
-X-Google-Smtp-Source: AGHT+IEFpxm72+ZufBEpOzTdYaIOWqK1qFRYEzUeMkVy/VVpK/unVesitw9GPmLNPR4IWW5XCaPpGg==
-X-Received: by 2002:a19:5e04:0:b0:51a:f84d:1188 with SMTP id 2adb3069b0e04-52964e93a0dmr7396162e87.19.1716898963461;
-        Tue, 28 May 2024 05:22:43 -0700 (PDT)
+        bh=gQ6Bwt6k8qoK6vNlq9lM1iWxCwSqpepkOmDB+x80ufY=;
+        b=gQHQnVlTV102h6iZICZ0Zn+XZYlr7QQZDQAoF00VsxjmXfHc8I64PpCCQ3P8lZzhiz
+         bjQeuObipv7v0HNlvqa9ilwPniQ5aR0D1/Y9+5tmmJ9vnO44ogKnxNqKx4HQxDhxx3t6
+         hs3WeleslZeWfBbGMs6vjee0wvpwH3cClUXik6Z4w9AAWojS4l2gL3/zsvOQnaYmb5QH
+         cBJWfF+4WoJeRsBIHkLTw53GkCvD26mhHuMstKL8JVcWECASOk+FXE5FlnroLvHGSMDk
+         oh+lS6cGf+lA5itVePntRzTDLioFXxnMYCQbKBbkXpOOzdHE6pAggVJ+D9xkKIsFbjCk
+         AncQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXW7xf6yIUFflGGCDouHnlPZw4dvrn2F/C1xc0tO+YDWyhTj0X/+6cwHNoUK98ub9c+fFmap1/ZT88gXhK2McbRWmAqiKJFFQFhjglmqJlVSdhXjcMEnMXksvMzCMxt5JEMNphwnUhZDONyFZewuDFps+UiJOS3nfVV
+X-Gm-Message-State: AOJu0YyCJNMeB932Avty1R1bLivTYRd6YWpZNS/9FMEYHlWlY3XY553n
+	zXpcdfSwXR7Su5gdK1JjQJWlwzF+/aqK4kdQ7mxAC7d4vCZOV+h0
+X-Google-Smtp-Source: AGHT+IHz9ffk7NLOvFZgMKCrkgUQ1nrZnBgj6Z2qyuDmAybj85WSiQ54kGWQnsIP/wPIZZp0KHBKgA==
+X-Received: by 2002:a2e:8203:0:b0:2e9:821a:82fd with SMTP id 38308e7fff4ca-2e9821a83d7mr20353621fa.27.1716899018827;
+        Tue, 28 May 2024 05:23:38 -0700 (PDT)
 Received: from mobilestation ([178.176.56.174])
-        by smtp.gmail.com with ESMTPSA id 2adb3069b0e04-5296e888b33sm920102e87.8.2024.05.28.05.22.42
+        by smtp.gmail.com with ESMTPSA id 38308e7fff4ca-2e9838eb29csm3340441fa.115.2024.05.28.05.23.37
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 28 May 2024 05:22:43 -0700 (PDT)
-Date: Tue, 28 May 2024 15:22:40 +0300
+        Tue, 28 May 2024 05:23:38 -0700 (PDT)
+Date: Tue, 28 May 2024 15:23:35 +0300
 From: Serge Semin <fancer.lancer@gmail.com>
 To: "Russell King (Oracle)" <linux@armlinux.org.uk>
 Cc: Alexandre Torgue <alexandre.torgue@foss.st.com>, 
 	Jose Abreu <joabreu@synopsys.com>, "David S. Miller" <davem@davemloft.net>, 
 	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, 
 	Paolo Abeni <pabeni@redhat.com>, Maxime Coquelin <mcoquelin.stm32@gmail.com>, 
-	Byungho An <bh74.an@samsung.com>, Giuseppe CAVALLARO <peppe.cavallaro@st.com>, 
 	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
 	Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, bpf@vger.kernel.org, 
 	netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com, 
 	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH RFC net-next 2/3] net: stmmac: Activate Inband/PCS flag
- based on the selected iface
-Message-ID: <mflda2pvhiilceh4qkyq43jedgx3fxeo7mbs2cfa5c44veygg2@muhwd4gj5mth>
+Subject: Re: [PATCH RFC net-next 3/3] net: stmmac: Drop TBI/RTBI PCS flags
+Message-ID: <f73mceuqpbj7nwmefahhwacpbol6meomywupvxw5abpojbpqie@hhrg3mgfql24>
 References: <ZkDuJAx7atDXjf5m@shell.armlinux.org.uk>
  <20240524210304.9164-1-fancer.lancer@gmail.com>
- <20240524210304.9164-2-fancer.lancer@gmail.com>
- <ZlNoLHoHjt3BsFde@shell.armlinux.org.uk>
- <fvjrnunu4lriegq3z7xkefsts6ybn2vkxmve6xzi73krjgvcj6@bhf4b4xx3x72>
- <ZlWwMzMZrwb5fscN@shell.armlinux.org.uk>
+ <20240524210304.9164-3-fancer.lancer@gmail.com>
+ <ZlWwiQxvvAKd39gN@shell.armlinux.org.uk>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -95,60 +91,34 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZlWwMzMZrwb5fscN@shell.armlinux.org.uk>
+In-Reply-To: <ZlWwiQxvvAKd39gN@shell.armlinux.org.uk>
 
-On Tue, May 28, 2024 at 11:21:39AM +0100, Russell King (Oracle) wrote:
-> On Mon, May 27, 2024 at 12:57:02AM +0300, Serge Semin wrote:
-> > On Sun, May 26, 2024 at 05:49:48PM +0100, Russell King (Oracle) wrote:
-> > > On Sat, May 25, 2024 at 12:02:58AM +0300, Serge Semin wrote:
-> > > > The HWFEATURE.PCSSEL flag is set if the PCS block has been synthesized
-> > > > into the DW GMAC controller. It's always done if the controller supports
-> > > > at least one of the SGMII, TBI, RTBI PHY interfaces. If none of these
-> > > > interfaces support was activated during the IP-core synthesize the PCS
-> > > > block won't be activated either and the HWFEATURE.PCSSEL flag won't be
-> > > > set. Based on that the RGMII in-band status detection procedure
-> > > > implemented in the driver hasn't been working for the devices with the
-> > > > RGMII interface support and with none of the SGMII, TBI, RTBI PHY
-> > > > interfaces available in the device.
-> > > > 
-> > > > Fix that just by dropping the dma_cap.pcs flag check from the conditional
-> > > > statement responsible for the In-band/PCS functionality activation. If the
-> > > > RGMII interface is supported by the device then the in-band link status
-> > > > detection will be also supported automatically (it's always embedded into
-> > > > the RGMII RTL code). If the SGMII interface is supported by the device
-> > > > then the PCS block will be supported too (it's unconditionally synthesized
-> > > > into the controller). The later is also correct for the TBI/RTBI PHY
-> > > > interfaces.
-> > > > 
-> > > > Note while at it drop the netdev_dbg() calls since at the moment of the
-> > > > stmmac_check_pcs_mode() invocation the network device isn't registered. So
-> > > > the debug prints will be for the unknown/NULL device.
-> > > 
+On Tue, May 28, 2024 at 11:23:05AM +0100, Russell King (Oracle) wrote:
+> On Sat, May 25, 2024 at 12:02:59AM +0300, Serge Semin wrote:
+> > First of all the flags are never set by any of the driver parts. If nobody
+> > have them set then the respective statements will always have the same
+> > result. Thus the statements can be simplified or even dropped with no risk
+> > to break things.
 > > 
-> > > Thanks. As this is a fix, shouldn't it be submitted for the net tree as
-> > > it seems to be fixing a bug in the driver as it stands today?
+> > Secondly shall any of the TBI or RTBI flag is set the MDIO-bus
+> > registration will be bypassed. Why? It really seems weird. It's perfectly
+> > fine to have a TBI/RTBI-capable PHY configured over the MDIO bus
+> > interface.
 > > 
-> > From one point of view it could be submitted for the net tree indeed,
-> > but on the second thought are you sure we should be doing that seeing
-> > it will activate the RGMII-inband detection and the code with the
-> > netif-carrier toggling behind the phylink back? Who knows what new
-> > regressions the activated PCS-code can cause?..
+> > Based on the notes above the TBI/RTBI PCS flags can be freely dropped thus
+> > simplifying the driver code.
+> > 
+> > Signed-off-by: Serge Semin <fancer.lancer@gmail.com>
 > 
-> If it's not a fix that is suitable without the remainder of the patch
-> set, this should be stated in the commit description and it shouldn't
-> have a Fixes: tag.
-> 
-> The reason is because it wouldn't be stable kernel material without the
-> other patches - if stable picks it up without the other patches then
-> it could end up being applied without the other patches resulting in
-> the situation you mention above.
-> 
-> Shall I remove the Fixes: tag?
+> I think this patch can come first in the series, along with another
+> few patches that remove stuff. Any objection?
 
-Let's drop it then, so not to cause confusion for the maintainers.
+No objection.
 
 -Serge(y)
 
+> 
+> Thanks.
 > 
 > -- 
 > RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
