@@ -1,311 +1,164 @@
-Return-Path: <bpf+bounces-30787-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-30788-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4CA728D2603
-	for <lists+bpf@lfdr.de>; Tue, 28 May 2024 22:37:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0957A8D2712
+	for <lists+bpf@lfdr.de>; Tue, 28 May 2024 23:33:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 021B428839A
-	for <lists+bpf@lfdr.de>; Tue, 28 May 2024 20:37:05 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B344B2866AF
+	for <lists+bpf@lfdr.de>; Tue, 28 May 2024 21:33:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 064B4179201;
-	Tue, 28 May 2024 20:36:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EFC4217B4EC;
+	Tue, 28 May 2024 21:33:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Bk5SsJiQ"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="eKKTTVsO";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="/F8BJdjs";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="eKKTTVsO";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="/F8BJdjs"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f48.google.com (mail-pj1-f48.google.com [209.85.216.48])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0923675809;
-	Tue, 28 May 2024 20:36:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C4BF17E8EB;
+	Tue, 28 May 2024 21:33:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716928617; cv=none; b=G8Bs6J0CKXAaJX0kUdQGZ9NpjI8F7M410vxd+o+qlWU239LHc+Q71AImUItYVH/6y5r53Mdi8g7JTV7xSbBBOB74yqJ49gjRSiJjKqPw6wVGL4F96rXo4I8/YUu2s2qV2GVl+bvma9ywRnEob0T9w2SUq8QhJixUybV3FKWFUV8=
+	t=1716931982; cv=none; b=RvOQllArNdxJtmd53xXz/GDPwvvT6me6WbkXclEeZ/o+HkZBo+TM3/l8ChYIVVfoLOs7dvWThclvpjTeG2lNCa7XMZWdnFQ+J1twHdpBeWVhuxMDBLEI/A2w433Bk9BR/vo+cTK37IKbcFJ6G60/e53iel54nQxp8oX+/pjNkrY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716928617; c=relaxed/simple;
-	bh=ulwdA7kgSS1yzkdDFfJhanLMiaSrjQN9Ozxf+YqYC8E=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Content-Type; b=P6T1TlUHfJE4lrFLVj5lwGOEt0bYJzy0qghTrUD/VzkJjDkuhljVVMbj6GkLB8DDLtKCJNi59ZD6DwrxEsnJ/UtI0ZEmBq4jRaW7owyFCDfS2tk9ujaptPVpI0rIhuZmOrwK7LfYRoPDSHLE4VEUYL8I8n11z5MHfYyHlfa1wbU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Bk5SsJiQ; arc=none smtp.client-ip=209.85.216.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f48.google.com with SMTP id 98e67ed59e1d1-2bdf446f3d1so1042997a91.3;
-        Tue, 28 May 2024 13:36:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1716928615; x=1717533415; darn=vger.kernel.org;
-        h=content-transfer-encoding:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ShhpbTYkbNzOOiZyKHXPgvAm+XC4MBjMN7onACro4uw=;
-        b=Bk5SsJiQbnW99BgJWl7ZkuCHXroexP17FP+ctUFEso78D+2G7tHSnTyN29F8RG1pTv
-         H3mON5dgA3o1TfwQoKe4RNe5K36X7EtV828O8cBskeBBRexYRnbrxmGFKSSgQe6e9t88
-         TBmrq5ObmQ6NX3aJjWnq33K3zR5+7uDMbf6BGyhufBpTQT3abpsDBVwHahc3X6Q11qot
-         kDUXuP5TUFc/qg9P0svaz3d/44wbjYiGPxBjoAF0qzeSsXAW5fmu3hYS+vVJxRWcGr4o
-         +MwvV/Q7jL7oVZTii02bg8sYEDhxFSyHZgmboj5LsuNqYfYFTO3RGjs7tO/fU5g3UA3G
-         RGRQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1716928615; x=1717533415;
-        h=content-transfer-encoding:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ShhpbTYkbNzOOiZyKHXPgvAm+XC4MBjMN7onACro4uw=;
-        b=wq9vCDxxIbxMsKowYhg5kVX5jUrO1nVpOJGSFxcgo36ZLRjCHuXktT44rXBDpmP/YD
-         tOBSraOrMvkY6rLl4iXIMlyamyRMz827OWOu9Hf9ntnWIGdl6J1vs5OCRqlVS2FSvDGN
-         9sd+vlZoNTewcuuHrt1NTsmv7ZBUxm4yH4zMcrrI61K9ZzuUfE0Dq7hTb7gE1jtH0rpv
-         47YykV0LCfIuGo8FA24ToyqoSRrckdLqbUadkpZ5RQiWu4/cqyb9hfnJb7YJErOtqGz+
-         3dL59QmaFOaaiEZhyqtx9WfyItcr7EHP+Q/Ca50L8ji4YlqGYIrWpNsGbYcfFQnh4QGc
-         6CbA==
-X-Forwarded-Encrypted: i=1; AJvYcCUmsILGQ2C8WYxM2dtbF3vUUcFLk0hUEAnaD6PGacLVh/iSA0PaTfHc/yyXHgKw0mZ3gj++19+Ra2Hkj+xRhnOqstOgSD3AtNJT0s84gpwiUfjWYdDvaJHvQMwYMBGrWschck5hAj0GenXIxiLKSAKLPU17g1opzlr5/tOAfrwf5g==
-X-Gm-Message-State: AOJu0YydlPrMksJReHJYWJ3YEFwjSy7zmRxwP1YERfTFHJebKNV69pIR
-	Sw6CC5E0BMQOmfXvI0lExkAyHHNzfVZvd5yxxasbg5vIYiKadN/NXScpSgIcu2go57nZmHjh2yY
-	Wlc5IgoZOxaCUmxMdIiMmE17a9P0=
-X-Google-Smtp-Source: AGHT+IHCnozhEFi9S2dOEuRQWFG1HUI+x08ibqkACVSV+SfjqJkUqAwwhGL/3AemhXz6T/B8lXbnqnpNdb9tuIv4TSs=
-X-Received: by 2002:a17:90a:f684:b0:2b4:32ae:8d29 with SMTP id
- 98e67ed59e1d1-2bf5f754e0dmr10595116a91.45.1716928615104; Tue, 28 May 2024
- 13:36:55 -0700 (PDT)
+	s=arc-20240116; t=1716931982; c=relaxed/simple;
+	bh=N/F1cQTv+lmMXzChgNuNTRRn1ZHxZm+fiOMR2NPxtaE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Ti5ZnX/PMEbySxdlNQ24jmMhw1xN44lT2gVH5JssRokOboIaGE5qFtMdoNUGJK35h2vb+usRzr5LM3xtors4dR+Ei3AcJTtFB3TDnCyb7xq1WpA1f4/V909CDbptgcTPlRyCJ7dXuqYRX29EteSItNxydwUFoVLBeZ+6LqPu0R8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=eKKTTVsO; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=/F8BJdjs; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=eKKTTVsO; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=/F8BJdjs; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id D3A0D2045D;
+	Tue, 28 May 2024 21:32:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1716931978;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Y271KPi+tCyRmzKrDCwqISkFoY5mXolXM/ZhCYK6JPs=;
+	b=eKKTTVsOye+aPNKRzZ122169aw7bdpQ6y9COLPAXegCVrG5iSFsKe8NmabTrtfzVmJzDv5
+	Ne2IuD4WBUJ9KFI2/n+OeUSe50fsuI871CPGI9BXPcJJwGF3yCfpaEpNu/AstvRM8I1NMM
+	jJQ5ZoiYnmImiq61l3/GUCVuppLSong=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1716931978;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Y271KPi+tCyRmzKrDCwqISkFoY5mXolXM/ZhCYK6JPs=;
+	b=/F8BJdjswiKMjas+DwonGKmjEG3HjzGZ3ZDNGxX+svqxoF5eTGLjTUR3XiAExDuzESXHh8
+	mDMDQki+foK9VsAA==
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1716931978;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Y271KPi+tCyRmzKrDCwqISkFoY5mXolXM/ZhCYK6JPs=;
+	b=eKKTTVsOye+aPNKRzZ122169aw7bdpQ6y9COLPAXegCVrG5iSFsKe8NmabTrtfzVmJzDv5
+	Ne2IuD4WBUJ9KFI2/n+OeUSe50fsuI871CPGI9BXPcJJwGF3yCfpaEpNu/AstvRM8I1NMM
+	jJQ5ZoiYnmImiq61l3/GUCVuppLSong=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1716931978;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Y271KPi+tCyRmzKrDCwqISkFoY5mXolXM/ZhCYK6JPs=;
+	b=/F8BJdjswiKMjas+DwonGKmjEG3HjzGZ3ZDNGxX+svqxoF5eTGLjTUR3XiAExDuzESXHh8
+	mDMDQki+foK9VsAA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id AB93113A5D;
+	Tue, 28 May 2024 21:32:58 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id jMu/KYpNVmbCTwAAD6G6ig
+	(envelope-from <dsterba@suse.cz>); Tue, 28 May 2024 21:32:58 +0000
+Date: Tue, 28 May 2024 23:32:49 +0200
+From: David Sterba <dsterba@suse.cz>
+To: kernel test robot <lkp@intel.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>,
+	Linux Memory Management List <linux-mm@kvack.org>,
+	amd-gfx@lists.freedesktop.org, bpf@vger.kernel.org,
+	dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
+	intel-xe@lists.freedesktop.org, linux-btrfs@vger.kernel.org,
+	linux-hardening@vger.kernel.org, linux-mtd@lists.infradead.org,
+	linux-pm@vger.kernel.org, netdev@vger.kernel.org,
+	nouveau@lists.freedesktop.org
+Subject: Re: [linux-next:master] BUILD REGRESSION
+ 6dc544b66971c7f9909ff038b62149105272d26a
+Message-ID: <20240528213249.GH8631@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <202405290242.YsJ4ENkU-lkp@intel.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240524041032.1048094-1-andrii@kernel.org> <20240524041032.1048094-5-andrii@kernel.org>
- <eciqv22jtpw6uveqih3jarjqulm5g3nxhlec5ytk2pltlltxnw@47agja2den2b>
-In-Reply-To: <eciqv22jtpw6uveqih3jarjqulm5g3nxhlec5ytk2pltlltxnw@47agja2den2b>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Tue, 28 May 2024 13:36:42 -0700
-Message-ID: <CAEf4BzbphUBPnA7iDz5pis17GRwzpqsduftV_JHyf1Ce0MMqzw@mail.gmail.com>
-Subject: Re: [PATCH v2 4/9] fs/procfs: use per-VMA RCU-protected locking in
- PROCMAP_QUERY API
-To: "Liam R. Howlett" <Liam.Howlett@oracle.com>, Andrii Nakryiko <andrii@kernel.org>, 
-	linux-fsdevel@vger.kernel.org, brauner@kernel.org, viro@zeniv.linux.org.uk, 
-	akpm@linux-foundation.org, linux-kernel@vger.kernel.org, bpf@vger.kernel.org, 
-	gregkh@linuxfoundation.org, linux-mm@kvack.org, surenb@google.com, 
-	rppt@kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <202405290242.YsJ4ENkU-lkp@intel.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Level: 
+X-Spamd-Result: default: False [-3.58 / 50.00];
+	BAYES_HAM(-2.58)[98.11%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	HAS_REPLYTO(0.30)[dsterba@suse.cz];
+	NEURAL_HAM_SHORT(-0.20)[-0.999];
+	MIME_GOOD(-0.10)[text/plain];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	ARC_NA(0.00)[];
+	TO_DN_SOME(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[14];
+	RCVD_TLS_ALL(0.00)[];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	REPLYTO_ADDR_EQ_FROM(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.cz:replyto]
+X-Spam-Score: -3.58
+X-Spam-Flag: NO
 
-On Fri, May 24, 2024 at 12:48=E2=80=AFPM Liam R. Howlett
-<Liam.Howlett@oracle.com> wrote:
->
-> * Andrii Nakryiko <andrii@kernel.org> [240524 00:10]:
-> > Attempt to use RCU-protected per-VAM lock when looking up requested VMA
-> > as much as possible, only falling back to mmap_lock if per-VMA lock
-> > failed. This is done so that querying of VMAs doesn't interfere with
-> > other critical tasks, like page fault handling.
-> >
-> > This has been suggested by mm folks, and we make use of a newly added
-> > internal API that works like find_vma(), but tries to use per-VMA lock.
->
-> Thanks for doing this.
->
-> >
-> > Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-> > ---
-> >  fs/proc/task_mmu.c | 42 ++++++++++++++++++++++++++++++++++--------
-> >  1 file changed, 34 insertions(+), 8 deletions(-)
-> >
-> > diff --git a/fs/proc/task_mmu.c b/fs/proc/task_mmu.c
-> > index 8ad547efd38d..2b14d06d1def 100644
-> > --- a/fs/proc/task_mmu.c
-> > +++ b/fs/proc/task_mmu.c
-> > @@ -389,12 +389,30 @@ static int pid_maps_open(struct inode *inode, str=
-uct file *file)
-> >  )
-> >
-> >  static struct vm_area_struct *query_matching_vma(struct mm_struct *mm,
-> > -                                              unsigned long addr, u32 =
-flags)
-> > +                                              unsigned long addr, u32 =
-flags,
-> > +                                              bool *mm_locked)
-> >  {
-> >       struct vm_area_struct *vma;
-> > +     bool mmap_locked;
-> > +
-> > +     *mm_locked =3D mmap_locked =3D false;
-> >
-> >  next_vma:
-> > -     vma =3D find_vma(mm, addr);
-> > +     if (!mmap_locked) {
-> > +             /* if we haven't yet acquired mmap_lock, try to use less =
-disruptive per-VMA */
-> > +             vma =3D find_and_lock_vma_rcu(mm, addr);
-> > +             if (IS_ERR(vma)) {
->
-> There is a chance that find_and_lock_vma_rcu() will return NULL when
-> there should never be a NULL.
->
-> If you follow the MAP_FIXED call to mmap(), you'll land in map_region()
-> which does two operations: munmap(), then the mmap().  Since this was
-> behind a lock, it was fine.  Now that we're transitioning to rcu
-> readers, it's less ideal.  We have a race where we will see that gap.
-> In this implementation we may return NULL if the MAP_FIXED is at the end
-> of the address space.
->
-> It might also cause issues if we are searching for a specific address
-> and we will skip a VMA that is currently being inserted by MAP_FIXED.
->
-> The page fault handler doesn't have this issue as it looks for a
-> specific address then falls back to the lock if one is not found.
->
-> This problem needs to be fixed prior to shifting the existing proc maps
-> file to using rcu read locks as well.  We have a solution that isn't
-> upstream or on the ML, but is being tested and will go upstream.
+On Wed, May 29, 2024 at 02:19:47AM +0800, kernel test robot wrote:
+> tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git master
+> branch HEAD: 6dc544b66971c7f9909ff038b62149105272d26a  Add linux-next specific files for 20240528
+> 
+> Error/Warning reports:
+> 
+> https://lore.kernel.org/oe-kbuild-all/202405282036.maEDO54Q-lkp@intel.com
+> https://lore.kernel.org/oe-kbuild-all/202405282148.jaF0FLhu-lkp@intel.com
+> https://lore.kernel.org/oe-kbuild-all/202405282308.UEzt6hqC-lkp@intel.com
+> 
+> Error/Warning: (recently discovered and may have been fixed)
+> 
+> drivers/dma-buf/udmabuf.c:45:(.text+0x140): undefined reference to `vmf_insert_pfn'
+> fs/btrfs/fiemap.c:822:26: warning: 'last_extent_end' may be used uninitialized [-Wmaybe-uninitialized]
 
-Ok, any ETA for that? Can it be retrofitted into
-find_and_lock_vma_rcu() once the fix lands? It's not ideal, but I
-think it's acceptable (for now) for this new API to have this race,
-given it seems quite unlikely to be hit in practice.
+The report says it's gcc 13.2, that one I use (and expect others as well
+as it's a recent one) and we also have -Wmaybe-uninitialized enabled in
+fs/btrfs/ to catch such warnings. Yet this is reported on mips64, is
+there something special about that compiler+architecture?
 
-Worst case, we can leave the per-VMA RCU-protected bits out until we
-have this solution in place, and then add it back when ready.
-
->
-> > +                     /* failed to take per-VMA lock, fallback to mmap_=
-lock */
-> > +                     if (mmap_read_lock_killable(mm))
-> > +                             return ERR_PTR(-EINTR);
-> > +
-> > +                     *mm_locked =3D mmap_locked =3D true;
-> > +                     vma =3D find_vma(mm, addr);
->
-> If you lock the vma here then drop the mmap lock, then you should be
-> able to simplify the code by avoiding the passing of the mmap_locked
-> variable around.
->
-> It also means we don't need to do an unlokc_vma() call, which indicates
-> we are going to end the vma read but actually may be unlocking the mm.
->
-> This is exactly why I think we need a common pattern and infrastructure
-> to do this sort of walking.
->
-> Please have a look at userfaultfd patches here [1].  Note that
-> vma_start_read() cannot be used in the mmap_read_lock() critical
-> section.
-
-Ok, so you'd like me to do something like below, right?
-
-vma =3D find_vma(mm, addr);
-if (vma)
-    down_read(&vma->vm_lock->lock)
-mmap_read_unlock(mm);
-
-... and for the rest of logic always assume having per-VMA lock. ...
-
-
-The problem here is that I think we can't assume per-VMA lock, because
-it's gated by CONFIG_PER_VMA_LOCK, so I think we'll have to deal with
-this mmap_locked flag either way. Or am I missing anything?
-
-I don't think the flag makes things that much worse, tbh, but I'm
-happy to accommodate any better solution that would work regardless of
-CONFIG_PER_VMA_LOCK.
-
->
-> > +             }
-> > +     } else {
-> > +             /* if we have mmap_lock, get through the search as fast a=
-s possible */
-> > +             vma =3D find_vma(mm, addr);
->
-> I think the only way we get here is if we are contending on the mmap
-> lock.  This is actually where we should try to avoid holding the lock?
->
-> > +     }
-> >
-> >       /* no VMA found */
-> >       if (!vma)
-> > @@ -428,18 +446,25 @@ static struct vm_area_struct *query_matching_vma(=
-struct mm_struct *mm,
-> >  skip_vma:
-> >       /*
-> >        * If the user needs closest matching VMA, keep iterating.
-> > +      * But before we proceed we might need to unlock current VMA.
-> >        */
-> >       addr =3D vma->vm_end;
-> > +     if (!mmap_locked)
-> > +             vma_end_read(vma);
-> >       if (flags & PROCMAP_QUERY_COVERING_OR_NEXT_VMA)
-> >               goto next_vma;
-> >  no_vma:
-> > -     mmap_read_unlock(mm);
-> > +     if (mmap_locked)
-> > +             mmap_read_unlock(mm);
-> >       return ERR_PTR(-ENOENT);
-> >  }
-> >
-> > -static void unlock_vma(struct vm_area_struct *vma)
-> > +static void unlock_vma(struct vm_area_struct *vma, bool mm_locked)
->
-> Confusing function name, since it may not be doing anything with the
-> vma lock.
-
-Would "unlock_vma_or_mm()" be ok?
-
->
-> >  {
-> > -     mmap_read_unlock(vma->vm_mm);
-> > +     if (mm_locked)
-> > +             mmap_read_unlock(vma->vm_mm);
-> > +     else
-> > +             vma_end_read(vma);
-> >  }
-> >
-> >  static int do_procmap_query(struct proc_maps_private *priv, void __use=
-r *uarg)
-> > @@ -447,6 +472,7 @@ static int do_procmap_query(struct proc_maps_privat=
-e *priv, void __user *uarg)
-> >       struct procmap_query karg;
-> >       struct vm_area_struct *vma;
-> >       struct mm_struct *mm;
-> > +     bool mm_locked;
-> >       const char *name =3D NULL;
-> >       char *name_buf =3D NULL;
-> >       __u64 usize;
-> > @@ -475,7 +501,7 @@ static int do_procmap_query(struct proc_maps_privat=
-e *priv, void __user *uarg)
-> >       if (!mm || !mmget_not_zero(mm))
-> >               return -ESRCH;
-> >
-> > -     vma =3D query_matching_vma(mm, karg.query_addr, karg.query_flags)=
-;
-> > +     vma =3D query_matching_vma(mm, karg.query_addr, karg.query_flags,=
- &mm_locked);
-> >       if (IS_ERR(vma)) {
-> >               mmput(mm);
-> >               return PTR_ERR(vma);
-> > @@ -542,7 +568,7 @@ static int do_procmap_query(struct proc_maps_privat=
-e *priv, void __user *uarg)
-> >       }
-> >
-> >       /* unlock vma/mm_struct and put mm_struct before copying data to =
-user */
-> > -     unlock_vma(vma);
-> > +     unlock_vma(vma, mm_locked);
-> >       mmput(mm);
-> >
-> >       if (karg.vma_name_size && copy_to_user((void __user *)karg.vma_na=
-me_addr,
-> > @@ -558,7 +584,7 @@ static int do_procmap_query(struct proc_maps_privat=
-e *priv, void __user *uarg)
-> >       return 0;
-> >
-> >  out:
-> > -     unlock_vma(vma);
-> > +     unlock_vma(vma, mm_locked);
-> >       mmput(mm);
-> >       kfree(name_buf);
-> >       return err;
-> > --
-> > 2.43.0
-> >
->
-> [1]. https://lore.kernel.org/linux-mm/20240215182756.3448972-5-lokeshgidr=
-a@google.com/
->
-> Thanks,
-> Liam
+The warning is IMO a false positive, the maybe-uninitialized variable is
+passed as pointer but initialized on success and never used on failure.
+We can safely silence the warning by initializing the variable to 0 but
+this may be pointing to a problem with mips64+gcc namely because other
+compiler+host combinations do not warn abou that.
 
