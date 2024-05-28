@@ -1,216 +1,311 @@
-Return-Path: <bpf+bounces-30786-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-30787-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A945B8D25D7
-	for <lists+bpf@lfdr.de>; Tue, 28 May 2024 22:30:53 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4CA728D2603
+	for <lists+bpf@lfdr.de>; Tue, 28 May 2024 22:37:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3AC181F2477A
-	for <lists+bpf@lfdr.de>; Tue, 28 May 2024 20:30:53 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 021B428839A
+	for <lists+bpf@lfdr.de>; Tue, 28 May 2024 20:37:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F23E0178367;
-	Tue, 28 May 2024 20:30:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 064B4179201;
+	Tue, 28 May 2024 20:36:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GSqc7N9W"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Bk5SsJiQ"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f50.google.com (mail-ej1-f50.google.com [209.85.218.50])
+Received: from mail-pj1-f48.google.com (mail-pj1-f48.google.com [209.85.216.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D36E1F4EB;
-	Tue, 28 May 2024 20:30:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0923675809;
+	Tue, 28 May 2024 20:36:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716928247; cv=none; b=T1lPXxzC058affAIykZxIAgCMT1FuHEp73EotraniMclhn/lWMh1Qn9si02SXr4wL0DxMaKGAo0ZjZL5T0bq1ca61pSAO7gznDhvF/cXUei5BB+u30PzMhJbLzhBGEUIDG9R0x89OtSzyFv7DOZyRMe5gBD6GO0c9gt0n3y9g0E=
+	t=1716928617; cv=none; b=G8Bs6J0CKXAaJX0kUdQGZ9NpjI8F7M410vxd+o+qlWU239LHc+Q71AImUItYVH/6y5r53Mdi8g7JTV7xSbBBOB74yqJ49gjRSiJjKqPw6wVGL4F96rXo4I8/YUu2s2qV2GVl+bvma9ywRnEob0T9w2SUq8QhJixUybV3FKWFUV8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716928247; c=relaxed/simple;
-	bh=ZP1V1PX5xMJHcGzZ3BmWo98GFHHt8uSTJsjW7Y+4B0M=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=GzBY95y2yWTbM9rwOtPybFgWY1RX6vhWntb8Q/Da/zsgZNeIETJBXlF6swWpbiShZ4l6kToqsVeQJfasY0TunK/39GVaF+GNqN0novVMDPt/XSioC64QHhmRtxKSyHporb0ttC3aPtB9lgrk6qstYOHZEAXsOCJYs9P6MMBuAik=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=GSqc7N9W; arc=none smtp.client-ip=209.85.218.50
+	s=arc-20240116; t=1716928617; c=relaxed/simple;
+	bh=ulwdA7kgSS1yzkdDFfJhanLMiaSrjQN9Ozxf+YqYC8E=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Content-Type; b=P6T1TlUHfJE4lrFLVj5lwGOEt0bYJzy0qghTrUD/VzkJjDkuhljVVMbj6GkLB8DDLtKCJNi59ZD6DwrxEsnJ/UtI0ZEmBq4jRaW7owyFCDfS2tk9ujaptPVpI0rIhuZmOrwK7LfYRoPDSHLE4VEUYL8I8n11z5MHfYyHlfa1wbU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Bk5SsJiQ; arc=none smtp.client-ip=209.85.216.48
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f50.google.com with SMTP id a640c23a62f3a-a59a609dd3fso38090966b.0;
-        Tue, 28 May 2024 13:30:45 -0700 (PDT)
+Received: by mail-pj1-f48.google.com with SMTP id 98e67ed59e1d1-2bdf446f3d1so1042997a91.3;
+        Tue, 28 May 2024 13:36:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1716928244; x=1717533044; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=wxa9leDMBQqxY4da9JkyLPvpBxzGSOQBoL3fVq0BhEQ=;
-        b=GSqc7N9Wup95911Hp3+MjMNTf9AxwGC0X8MYs3L0FYFemg8RoZrwhLRb6iwK+0/oRn
-         iNZ1tZvtD0bBGKRR2CPVUljgCH44xq56VOC/3hdi7ep98O0RRb+XySIYNi3zmBePLPPY
-         9DWRqBJD2dRX3P8yXS84Zr9b5JJEJaUCjMm8SpbvQCYV3wYQoTqHCc6YUzj+/bFFB85R
-         myUicxnzW8NYv18NTMKCsYbfuEd2HAAhC6ZBhwTb7c56hm2jndivx1dJeMwJEpAtjeh+
-         H6ua2c0QR3klDn14TlDUBoJHv9Tv/s/C/FdrDOMztzOws0etb+gQEdd1Y2/98M2i1zIc
-         GxWA==
+        d=gmail.com; s=20230601; t=1716928615; x=1717533415; darn=vger.kernel.org;
+        h=content-transfer-encoding:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ShhpbTYkbNzOOiZyKHXPgvAm+XC4MBjMN7onACro4uw=;
+        b=Bk5SsJiQbnW99BgJWl7ZkuCHXroexP17FP+ctUFEso78D+2G7tHSnTyN29F8RG1pTv
+         H3mON5dgA3o1TfwQoKe4RNe5K36X7EtV828O8cBskeBBRexYRnbrxmGFKSSgQe6e9t88
+         TBmrq5ObmQ6NX3aJjWnq33K3zR5+7uDMbf6BGyhufBpTQT3abpsDBVwHahc3X6Q11qot
+         kDUXuP5TUFc/qg9P0svaz3d/44wbjYiGPxBjoAF0qzeSsXAW5fmu3hYS+vVJxRWcGr4o
+         +MwvV/Q7jL7oVZTii02bg8sYEDhxFSyHZgmboj5LsuNqYfYFTO3RGjs7tO/fU5g3UA3G
+         RGRQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1716928244; x=1717533044;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=wxa9leDMBQqxY4da9JkyLPvpBxzGSOQBoL3fVq0BhEQ=;
-        b=vEvtQfYP9k5nLFm7oGcgKnQ2oiypmp0F9do41gdSXSFPxyE+RMs3l+j/5SInpu6qku
-         H6CXedcCbDHk+ysPbfg4UgDZ19YFRIWO33EZom6KaZNon+fFtw7Hk/HHXr9Oesrn3JBp
-         gWRQtz9DGjaSOQ6Li7YrcOsfQ5wMpTHwfUvgrHtEFaD09+3sVHkDCZtzHhuoJDGFWNBW
-         DWmmyB5xMg+F/da1ZBHcT6YETAQFJbjtmUxSfgHiilEZPFGSeK4W6MvDHwowR/hOC8Uw
-         h0dthdppSASR/7JQwAV3ZYpAWrbDd/xholZfSDHX4DXhY4cnCfaul8vb7ewcxZNyo0sv
-         h1qQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWVoGGx8oH4UeF5+N3u7HuJDeycSzmT64n7yJJ0ENOqyxB3HpLtrdVToM2eYil5EYNKMf+jO0tnlDXOGXnJb7jBqzM9
-X-Gm-Message-State: AOJu0YyFMOfT3gN84scK56Clv319WycoHU47Sirun9AY8F6Lym37CAZi
-	vItmr0LILjaUjO6p7wsdEwx3UxY5dEaHNlU2X7S+gtQ3/JzydcGE
-X-Google-Smtp-Source: AGHT+IFr5kgtYaMOxMY5JPPqiEfEKrj0VBMZhNOOBDwbkpnacPbU6enNJr768HawA8aG44+8QJueCg==
-X-Received: by 2002:a17:906:a294:b0:a5c:dad0:c464 with SMTP id a640c23a62f3a-a642d267093mr14114466b.6.1716928243936;
-        Tue, 28 May 2024 13:30:43 -0700 (PDT)
-Received: from krava ([83.240.60.166])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a6283119b12sm569946766b.192.2024.05.28.13.30.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 28 May 2024 13:30:43 -0700 (PDT)
-From: Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Tue, 28 May 2024 22:30:41 +0200
-To: Andrii Nakryiko <andrii@kernel.org>
-Cc: linux-trace-kernel@vger.kernel.org, rostedt@goodmis.org,
-	mhiramat@kernel.org, bpf@vger.kernel.org,
-	Matt Wu <wuqiang.matt@bytedance.com>
-Subject: Re: [PATCH 2/2] objpool: cache nr_possible_cpus() and avoid caching
- nr_cpu_ids
-Message-ID: <ZlY-8ZI_irTK9MAk@krava>
-References: <20240424215214.3956041-1-andrii@kernel.org>
- <20240424215214.3956041-3-andrii@kernel.org>
+        d=1e100.net; s=20230601; t=1716928615; x=1717533415;
+        h=content-transfer-encoding:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ShhpbTYkbNzOOiZyKHXPgvAm+XC4MBjMN7onACro4uw=;
+        b=wq9vCDxxIbxMsKowYhg5kVX5jUrO1nVpOJGSFxcgo36ZLRjCHuXktT44rXBDpmP/YD
+         tOBSraOrMvkY6rLl4iXIMlyamyRMz827OWOu9Hf9ntnWIGdl6J1vs5OCRqlVS2FSvDGN
+         9sd+vlZoNTewcuuHrt1NTsmv7ZBUxm4yH4zMcrrI61K9ZzuUfE0Dq7hTb7gE1jtH0rpv
+         47YykV0LCfIuGo8FA24ToyqoSRrckdLqbUadkpZ5RQiWu4/cqyb9hfnJb7YJErOtqGz+
+         3dL59QmaFOaaiEZhyqtx9WfyItcr7EHP+Q/Ca50L8ji4YlqGYIrWpNsGbYcfFQnh4QGc
+         6CbA==
+X-Forwarded-Encrypted: i=1; AJvYcCUmsILGQ2C8WYxM2dtbF3vUUcFLk0hUEAnaD6PGacLVh/iSA0PaTfHc/yyXHgKw0mZ3gj++19+Ra2Hkj+xRhnOqstOgSD3AtNJT0s84gpwiUfjWYdDvaJHvQMwYMBGrWschck5hAj0GenXIxiLKSAKLPU17g1opzlr5/tOAfrwf5g==
+X-Gm-Message-State: AOJu0YydlPrMksJReHJYWJ3YEFwjSy7zmRxwP1YERfTFHJebKNV69pIR
+	Sw6CC5E0BMQOmfXvI0lExkAyHHNzfVZvd5yxxasbg5vIYiKadN/NXScpSgIcu2go57nZmHjh2yY
+	Wlc5IgoZOxaCUmxMdIiMmE17a9P0=
+X-Google-Smtp-Source: AGHT+IHCnozhEFi9S2dOEuRQWFG1HUI+x08ibqkACVSV+SfjqJkUqAwwhGL/3AemhXz6T/B8lXbnqnpNdb9tuIv4TSs=
+X-Received: by 2002:a17:90a:f684:b0:2b4:32ae:8d29 with SMTP id
+ 98e67ed59e1d1-2bf5f754e0dmr10595116a91.45.1716928615104; Tue, 28 May 2024
+ 13:36:55 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240424215214.3956041-3-andrii@kernel.org>
+References: <20240524041032.1048094-1-andrii@kernel.org> <20240524041032.1048094-5-andrii@kernel.org>
+ <eciqv22jtpw6uveqih3jarjqulm5g3nxhlec5ytk2pltlltxnw@47agja2den2b>
+In-Reply-To: <eciqv22jtpw6uveqih3jarjqulm5g3nxhlec5ytk2pltlltxnw@47agja2den2b>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Tue, 28 May 2024 13:36:42 -0700
+Message-ID: <CAEf4BzbphUBPnA7iDz5pis17GRwzpqsduftV_JHyf1Ce0MMqzw@mail.gmail.com>
+Subject: Re: [PATCH v2 4/9] fs/procfs: use per-VMA RCU-protected locking in
+ PROCMAP_QUERY API
+To: "Liam R. Howlett" <Liam.Howlett@oracle.com>, Andrii Nakryiko <andrii@kernel.org>, 
+	linux-fsdevel@vger.kernel.org, brauner@kernel.org, viro@zeniv.linux.org.uk, 
+	akpm@linux-foundation.org, linux-kernel@vger.kernel.org, bpf@vger.kernel.org, 
+	gregkh@linuxfoundation.org, linux-mm@kvack.org, surenb@google.com, 
+	rppt@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Apr 24, 2024 at 02:52:14PM -0700, Andrii Nakryiko wrote:
-> Profiling shows that calling nr_possible_cpus() in objpool_pop() takes
-> a noticeable amount of CPU (when profiled on 80-core machine), as we
-> need to recalculate number of set bits in a CPU bit mask. This number
-> can't change, so there is no point in paying the price for recalculating
-> it. As such, cache this value in struct objpool_head and use it in
-> objpool_pop().
-> 
-> On the other hand, cached pool->nr_cpus isn't necessary, as it's not
-> used in hot path and is also a pretty trivial value to retrieve. So drop
-> pool->nr_cpus in favor of using nr_cpu_ids everywhere. This way the size
-> of struct objpool_head remains the same, which is a nice bonus.
-> 
-> Same BPF selftests benchmarks were used to evaluate the effect. Using
-> changes in previous patch (inlining of objpool_pop/objpool_push) as
-> baseline, here are the differences:
-> 
-> BASELINE
-> ========
-> kretprobe      :    9.937 ± 0.174M/s
-> kretprobe-multi:   10.440 ± 0.108M/s
-> 
-> AFTER
-> =====
-> kretprobe      :   10.106 ± 0.120M/s (+1.7%)
-> kretprobe-multi:   10.515 ± 0.180M/s (+0.7%)
+On Fri, May 24, 2024 at 12:48=E2=80=AFPM Liam R. Howlett
+<Liam.Howlett@oracle.com> wrote:
+>
+> * Andrii Nakryiko <andrii@kernel.org> [240524 00:10]:
+> > Attempt to use RCU-protected per-VAM lock when looking up requested VMA
+> > as much as possible, only falling back to mmap_lock if per-VMA lock
+> > failed. This is done so that querying of VMAs doesn't interfere with
+> > other critical tasks, like page fault handling.
+> >
+> > This has been suggested by mm folks, and we make use of a newly added
+> > internal API that works like find_vma(), but tries to use per-VMA lock.
+>
+> Thanks for doing this.
+>
+> >
+> > Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+> > ---
+> >  fs/proc/task_mmu.c | 42 ++++++++++++++++++++++++++++++++++--------
+> >  1 file changed, 34 insertions(+), 8 deletions(-)
+> >
+> > diff --git a/fs/proc/task_mmu.c b/fs/proc/task_mmu.c
+> > index 8ad547efd38d..2b14d06d1def 100644
+> > --- a/fs/proc/task_mmu.c
+> > +++ b/fs/proc/task_mmu.c
+> > @@ -389,12 +389,30 @@ static int pid_maps_open(struct inode *inode, str=
+uct file *file)
+> >  )
+> >
+> >  static struct vm_area_struct *query_matching_vma(struct mm_struct *mm,
+> > -                                              unsigned long addr, u32 =
+flags)
+> > +                                              unsigned long addr, u32 =
+flags,
+> > +                                              bool *mm_locked)
+> >  {
+> >       struct vm_area_struct *vma;
+> > +     bool mmap_locked;
+> > +
+> > +     *mm_locked =3D mmap_locked =3D false;
+> >
+> >  next_vma:
+> > -     vma =3D find_vma(mm, addr);
+> > +     if (!mmap_locked) {
+> > +             /* if we haven't yet acquired mmap_lock, try to use less =
+disruptive per-VMA */
+> > +             vma =3D find_and_lock_vma_rcu(mm, addr);
+> > +             if (IS_ERR(vma)) {
+>
+> There is a chance that find_and_lock_vma_rcu() will return NULL when
+> there should never be a NULL.
+>
+> If you follow the MAP_FIXED call to mmap(), you'll land in map_region()
+> which does two operations: munmap(), then the mmap().  Since this was
+> behind a lock, it was fine.  Now that we're transitioning to rcu
+> readers, it's less ideal.  We have a race where we will see that gap.
+> In this implementation we may return NULL if the MAP_FIXED is at the end
+> of the address space.
+>
+> It might also cause issues if we are searching for a specific address
+> and we will skip a VMA that is currently being inserted by MAP_FIXED.
+>
+> The page fault handler doesn't have this issue as it looks for a
+> specific address then falls back to the lock if one is not found.
+>
+> This problem needs to be fixed prior to shifting the existing proc maps
+> file to using rcu read locks as well.  We have a solution that isn't
+> upstream or on the ML, but is being tested and will go upstream.
 
-nice, overall lgtm
+Ok, any ETA for that? Can it be retrofitted into
+find_and_lock_vma_rcu() once the fix lands? It's not ideal, but I
+think it's acceptable (for now) for this new API to have this race,
+given it seems quite unlikely to be hit in practice.
 
-jirka
+Worst case, we can leave the per-VMA RCU-protected bits out until we
+have this solution in place, and then add it back when ready.
 
-> 
-> Cc: Matt (Qiang) Wu <wuqiang.matt@bytedance.com>
-> Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-> ---
->  include/linux/objpool.h |  6 +++---
->  lib/objpool.c           | 12 ++++++------
->  2 files changed, 9 insertions(+), 9 deletions(-)
-> 
-> diff --git a/include/linux/objpool.h b/include/linux/objpool.h
-> index d8b1f7b91128..cb1758eaa2d3 100644
-> --- a/include/linux/objpool.h
-> +++ b/include/linux/objpool.h
-> @@ -73,7 +73,7 @@ typedef int (*objpool_fini_cb)(struct objpool_head *head, void *context);
->   * struct objpool_head - object pooling metadata
->   * @obj_size:   object size, aligned to sizeof(void *)
->   * @nr_objs:    total objs (to be pre-allocated with objpool)
-> - * @nr_cpus:    local copy of nr_cpu_ids
-> + * @nr_possible_cpus: cached value of num_possible_cpus()
->   * @capacity:   max objs can be managed by one objpool_slot
->   * @gfp:        gfp flags for kmalloc & vmalloc
->   * @ref:        refcount of objpool
-> @@ -85,7 +85,7 @@ typedef int (*objpool_fini_cb)(struct objpool_head *head, void *context);
->  struct objpool_head {
->  	int                     obj_size;
->  	int                     nr_objs;
-> -	int                     nr_cpus;
-> +	int                     nr_possible_cpus;
->  	int                     capacity;
->  	gfp_t                   gfp;
->  	refcount_t              ref;
-> @@ -176,7 +176,7 @@ static inline void *objpool_pop(struct objpool_head *pool)
->  	raw_local_irq_save(flags);
->  
->  	cpu = raw_smp_processor_id();
-> -	for (i = 0; i < num_possible_cpus(); i++) {
-> +	for (i = 0; i < pool->nr_possible_cpus; i++) {
->  		obj = __objpool_try_get_slot(pool, cpu);
->  		if (obj)
->  			break;
-> diff --git a/lib/objpool.c b/lib/objpool.c
-> index f696308fc026..234f9d0bd081 100644
-> --- a/lib/objpool.c
-> +++ b/lib/objpool.c
-> @@ -50,7 +50,7 @@ objpool_init_percpu_slots(struct objpool_head *pool, int nr_objs,
->  {
->  	int i, cpu_count = 0;
->  
-> -	for (i = 0; i < pool->nr_cpus; i++) {
-> +	for (i = 0; i < nr_cpu_ids; i++) {
->  
->  		struct objpool_slot *slot;
->  		int nodes, size, rc;
-> @@ -60,8 +60,8 @@ objpool_init_percpu_slots(struct objpool_head *pool, int nr_objs,
->  			continue;
->  
->  		/* compute how many objects to be allocated with this slot */
-> -		nodes = nr_objs / num_possible_cpus();
-> -		if (cpu_count < (nr_objs % num_possible_cpus()))
-> +		nodes = nr_objs / pool->nr_possible_cpus;
-> +		if (cpu_count < (nr_objs % pool->nr_possible_cpus))
->  			nodes++;
->  		cpu_count++;
->  
-> @@ -103,7 +103,7 @@ static void objpool_fini_percpu_slots(struct objpool_head *pool)
->  	if (!pool->cpu_slots)
->  		return;
->  
-> -	for (i = 0; i < pool->nr_cpus; i++)
-> +	for (i = 0; i < nr_cpu_ids; i++)
->  		kvfree(pool->cpu_slots[i]);
->  	kfree(pool->cpu_slots);
->  }
-> @@ -130,13 +130,13 @@ int objpool_init(struct objpool_head *pool, int nr_objs, int object_size,
->  
->  	/* initialize objpool pool */
->  	memset(pool, 0, sizeof(struct objpool_head));
-> -	pool->nr_cpus = nr_cpu_ids;
-> +	pool->nr_possible_cpus = num_possible_cpus();
->  	pool->obj_size = object_size;
->  	pool->capacity = capacity;
->  	pool->gfp = gfp & ~__GFP_ZERO;
->  	pool->context = context;
->  	pool->release = release;
-> -	slot_size = pool->nr_cpus * sizeof(struct objpool_slot);
-> +	slot_size = nr_cpu_ids * sizeof(struct objpool_slot);
->  	pool->cpu_slots = kzalloc(slot_size, pool->gfp);
->  	if (!pool->cpu_slots)
->  		return -ENOMEM;
-> -- 
-> 2.43.0
-> 
-> 
+>
+> > +                     /* failed to take per-VMA lock, fallback to mmap_=
+lock */
+> > +                     if (mmap_read_lock_killable(mm))
+> > +                             return ERR_PTR(-EINTR);
+> > +
+> > +                     *mm_locked =3D mmap_locked =3D true;
+> > +                     vma =3D find_vma(mm, addr);
+>
+> If you lock the vma here then drop the mmap lock, then you should be
+> able to simplify the code by avoiding the passing of the mmap_locked
+> variable around.
+>
+> It also means we don't need to do an unlokc_vma() call, which indicates
+> we are going to end the vma read but actually may be unlocking the mm.
+>
+> This is exactly why I think we need a common pattern and infrastructure
+> to do this sort of walking.
+>
+> Please have a look at userfaultfd patches here [1].  Note that
+> vma_start_read() cannot be used in the mmap_read_lock() critical
+> section.
+
+Ok, so you'd like me to do something like below, right?
+
+vma =3D find_vma(mm, addr);
+if (vma)
+    down_read(&vma->vm_lock->lock)
+mmap_read_unlock(mm);
+
+... and for the rest of logic always assume having per-VMA lock. ...
+
+
+The problem here is that I think we can't assume per-VMA lock, because
+it's gated by CONFIG_PER_VMA_LOCK, so I think we'll have to deal with
+this mmap_locked flag either way. Or am I missing anything?
+
+I don't think the flag makes things that much worse, tbh, but I'm
+happy to accommodate any better solution that would work regardless of
+CONFIG_PER_VMA_LOCK.
+
+>
+> > +             }
+> > +     } else {
+> > +             /* if we have mmap_lock, get through the search as fast a=
+s possible */
+> > +             vma =3D find_vma(mm, addr);
+>
+> I think the only way we get here is if we are contending on the mmap
+> lock.  This is actually where we should try to avoid holding the lock?
+>
+> > +     }
+> >
+> >       /* no VMA found */
+> >       if (!vma)
+> > @@ -428,18 +446,25 @@ static struct vm_area_struct *query_matching_vma(=
+struct mm_struct *mm,
+> >  skip_vma:
+> >       /*
+> >        * If the user needs closest matching VMA, keep iterating.
+> > +      * But before we proceed we might need to unlock current VMA.
+> >        */
+> >       addr =3D vma->vm_end;
+> > +     if (!mmap_locked)
+> > +             vma_end_read(vma);
+> >       if (flags & PROCMAP_QUERY_COVERING_OR_NEXT_VMA)
+> >               goto next_vma;
+> >  no_vma:
+> > -     mmap_read_unlock(mm);
+> > +     if (mmap_locked)
+> > +             mmap_read_unlock(mm);
+> >       return ERR_PTR(-ENOENT);
+> >  }
+> >
+> > -static void unlock_vma(struct vm_area_struct *vma)
+> > +static void unlock_vma(struct vm_area_struct *vma, bool mm_locked)
+>
+> Confusing function name, since it may not be doing anything with the
+> vma lock.
+
+Would "unlock_vma_or_mm()" be ok?
+
+>
+> >  {
+> > -     mmap_read_unlock(vma->vm_mm);
+> > +     if (mm_locked)
+> > +             mmap_read_unlock(vma->vm_mm);
+> > +     else
+> > +             vma_end_read(vma);
+> >  }
+> >
+> >  static int do_procmap_query(struct proc_maps_private *priv, void __use=
+r *uarg)
+> > @@ -447,6 +472,7 @@ static int do_procmap_query(struct proc_maps_privat=
+e *priv, void __user *uarg)
+> >       struct procmap_query karg;
+> >       struct vm_area_struct *vma;
+> >       struct mm_struct *mm;
+> > +     bool mm_locked;
+> >       const char *name =3D NULL;
+> >       char *name_buf =3D NULL;
+> >       __u64 usize;
+> > @@ -475,7 +501,7 @@ static int do_procmap_query(struct proc_maps_privat=
+e *priv, void __user *uarg)
+> >       if (!mm || !mmget_not_zero(mm))
+> >               return -ESRCH;
+> >
+> > -     vma =3D query_matching_vma(mm, karg.query_addr, karg.query_flags)=
+;
+> > +     vma =3D query_matching_vma(mm, karg.query_addr, karg.query_flags,=
+ &mm_locked);
+> >       if (IS_ERR(vma)) {
+> >               mmput(mm);
+> >               return PTR_ERR(vma);
+> > @@ -542,7 +568,7 @@ static int do_procmap_query(struct proc_maps_privat=
+e *priv, void __user *uarg)
+> >       }
+> >
+> >       /* unlock vma/mm_struct and put mm_struct before copying data to =
+user */
+> > -     unlock_vma(vma);
+> > +     unlock_vma(vma, mm_locked);
+> >       mmput(mm);
+> >
+> >       if (karg.vma_name_size && copy_to_user((void __user *)karg.vma_na=
+me_addr,
+> > @@ -558,7 +584,7 @@ static int do_procmap_query(struct proc_maps_privat=
+e *priv, void __user *uarg)
+> >       return 0;
+> >
+> >  out:
+> > -     unlock_vma(vma);
+> > +     unlock_vma(vma, mm_locked);
+> >       mmput(mm);
+> >       kfree(name_buf);
+> >       return err;
+> > --
+> > 2.43.0
+> >
+>
+> [1]. https://lore.kernel.org/linux-mm/20240215182756.3448972-5-lokeshgidr=
+a@google.com/
+>
+> Thanks,
+> Liam
 
