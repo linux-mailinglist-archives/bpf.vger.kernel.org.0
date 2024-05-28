@@ -1,142 +1,189 @@
-Return-Path: <bpf+bounces-30757-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-30759-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 763C18D226C
-	for <lists+bpf@lfdr.de>; Tue, 28 May 2024 19:24:48 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5F5FB8D227B
+	for <lists+bpf@lfdr.de>; Tue, 28 May 2024 19:30:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 32DFD281AD6
-	for <lists+bpf@lfdr.de>; Tue, 28 May 2024 17:24:47 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8C4911C22D32
+	for <lists+bpf@lfdr.de>; Tue, 28 May 2024 17:30:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A542174ED0;
-	Tue, 28 May 2024 17:24:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 613741BC4B;
+	Tue, 28 May 2024 17:30:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Mok5sHVq"
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ietf.org header.i=@ietf.org header.b="PeSFhknS";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ietf.org header.i=@ietf.org header.b="PeSFhknS";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Ultoer0K"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-qt1-f174.google.com (mail-qt1-f174.google.com [209.85.160.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mail.ietf.org (mail.ietf.org [50.223.129.194])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA5B97D07D;
-	Tue, 28 May 2024 17:24:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 96ED42563
+	for <bpf@vger.kernel.org>; Tue, 28 May 2024 17:30:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=50.223.129.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716917079; cv=none; b=maui89gzaBihvKVQ6LZnStWFRMiu83n9P54orIOdWUYsTTH0YKEmSX6l/VC0zqfsieFE6MX/n81L/fjIZGOQbkKSBgAFzAKXycrkCCbqFWqzGmjsjKWBtLnyJ5Jmt72uuQVrmDEXTcOJopF99XdNOK+aBmm1htpdigbDrNHDwLw=
+	t=1716917412; cv=none; b=dPzWGUsqt/DmaZoPzesI6m7JjgJiDLJLlP6gAuYNPuB2RrAxm+C5VvSJLJP7g+qq9S47MMPz3yi5MDtYfi08t94oOD3BhPu2zyKetuZ7h2OlIS3sxphkHo3H3wtxmGarrx18jTZGGtbiw8wIu96anNKXpVwnvqTwmqvYpLhraMY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716917079; c=relaxed/simple;
-	bh=JpfOrfm/RN6ZNydj18l4u8gIZn6ywPDO/Ii8ISAxU9g=;
-	h=Date:From:To:Cc:Message-ID:In-Reply-To:References:Subject:
-	 Mime-Version:Content-Type; b=JNeIB/LRvk4rimzHQwPK34YoX9IBUPra9/atBWDSAVQ8/6Xh6oKdlz0Qoxu69Ay9r8gK+VdniCwq9v0uZp9mzKsIQ1rfH40AMrvt7AyeYXhMhUq2t22tKXXpW2ZC/93Lc9Gbmd3K5jfpHFkwIVTLSitJ9sBhiZVJtEKSUjr90RQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Mok5sHVq; arc=none smtp.client-ip=209.85.160.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qt1-f174.google.com with SMTP id d75a77b69052e-43fb094da40so297991cf.0;
-        Tue, 28 May 2024 10:24:37 -0700 (PDT)
+	s=arc-20240116; t=1716917412; c=relaxed/simple;
+	bh=KX0CG7H6tkYzSBCDT9o+Q1CaM/Y52ycKzIJrJvhl+2s=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:To:CC:
+	 Subject:Content-Type; b=MzVyLt/K5AxcXDly+fFkMIud44OFjhgD9P40gWi5nczhrLLoR0AyTWVNYdy6Hahb7HYn40sma9oGqwomUobVwaaHrGDY5DDEeRYKeq2RwbHxQPQhOhhrLgaYCjX4LjwMABMn/2myAkgyWiUVlOiqK+aMCILwe0JXq5P3cVsnrB0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=ietf.org; dkim=pass (1024-bit key) header.d=ietf.org header.i=@ietf.org header.b=PeSFhknS; dkim=pass (1024-bit key) header.d=ietf.org header.i=@ietf.org header.b=PeSFhknS; dkim=fail (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Ultoer0K reason="signature verification failed"; arc=none smtp.client-ip=50.223.129.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ietf.org
+Received: from ietfa.amsl.com (localhost [IPv6:::1])
+	by ietfa.amsl.com (Postfix) with ESMTP id 30C3CC14F6E3
+	for <bpf@vger.kernel.org>; Tue, 28 May 2024 10:30:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ietf.org; s=ietf1;
+	t=1716917411; bh=KX0CG7H6tkYzSBCDT9o+Q1CaM/Y52ycKzIJrJvhl+2s=;
+	h=References:In-Reply-To:From:Date:To:CC:Subject:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe;
+	b=PeSFhknSmq6dUUAEfOpQt0APqqzzTQ5tlp9+jtz/Gc0JQZ6AUW7taojEk+DCBlrOk
+	 mwMnup2J3XHHthUmoFMst5el7++WK6BtKeP2kGkOeiHfeNv0UpkCCQjFrDK5dDgpLt
+	 hqsDoNupkRIOxamZBeTKFKI3YXn2SZpaQLTW7QiI=
+X-Mailbox-Line: From bpf-bounces+bpf=vger.kernel.org@ietf.org  Tue May 28 10:30:11 2024
+Received: from ietfa.amsl.com (localhost [IPv6:::1])
+	by ietfa.amsl.com (Postfix) with ESMTP id 12293C18DBB4
+	for <bpf@vger.kernel.org>; Tue, 28 May 2024 10:30:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ietf.org; s=ietf1;
+	t=1716917411; bh=KX0CG7H6tkYzSBCDT9o+Q1CaM/Y52ycKzIJrJvhl+2s=;
+	h=References:In-Reply-To:From:Date:To:CC:Subject:List-Id:
+	 List-Archive:List-Help:List-Owner:List-Post:List-Subscribe:
+	 List-Unsubscribe;
+	b=PeSFhknSmq6dUUAEfOpQt0APqqzzTQ5tlp9+jtz/Gc0JQZ6AUW7taojEk+DCBlrOk
+	 mwMnup2J3XHHthUmoFMst5el7++WK6BtKeP2kGkOeiHfeNv0UpkCCQjFrDK5dDgpLt
+	 hqsDoNupkRIOxamZBeTKFKI3YXn2SZpaQLTW7QiI=
+X-Original-To: bpf@ietfa.amsl.com
+Delivered-To: bpf@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+	by ietfa.amsl.com (Postfix) with ESMTP id AC21CC14F6E3
+	for <bpf@ietfa.amsl.com>; Tue, 28 May 2024 10:30:05 -0700 (PDT)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: -2.097
+X-Spam-Level: 
+Authentication-Results: ietfa.amsl.com (amavisd-new); dkim=pass (2048-bit key)
+	header.d=gmail.com
+Received: from mail.ietf.org ([50.223.129.194])
+	by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id m6IW9xn0ndux for <bpf@ietfa.amsl.com>;
+	Tue, 28 May 2024 10:30:04 -0700 (PDT)
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com
+ [IPv6:2a00:1450:4864:20::130])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest
+ SHA256)
+	(No client certificate requested)
+	by ietfa.amsl.com (Postfix) with ESMTPS id C83BBC14F6B2
+	for <bpf@ietf.org>; Tue, 28 May 2024 10:30:04 -0700 (PDT)
+Received: by mail-lf1-x130.google.com with SMTP id
+ 2adb3069b0e04-5295d509178so1453830e87.1
+        for <bpf@ietf.org>; Tue, 28 May 2024 10:30:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1716917076; x=1717521876; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1716917402; x=1717522202; darn=ietf.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=ThOVm46gYp9/Cn7ASNZ0mQAfmQpKcIWWQc+98ymb318=;
-        b=Mok5sHVqgQRDScxstnDJJladEh+s+Hgi9F7K+UcKsm4+c0CCtlAIvVaB7mlH6MljXl
-         GRH7ISpBI6cRao3nrXJWUgPdGuIFjGZgde9OZBMsbsaCFyp7gxvT8Wl7m77Iu4pIxfWS
-         5yUnOPJOuQdjnHv99FTPV09R5QBaxMEWPjaSTnPS7blSvmOi/dscHTG7Rfk8w6CGPzle
-         sHEqEDXufY09efL5D2AY0PWUJLzl1kohW3AVZE1/TL4cZ8g/1Rw+w8eWDTDpMLdxTPK5
-         3v0q1m3XphWnS3oar5UxG74fEMF2ink+suib3w5dURhqJ1cj/1UPfWodF7kbnNaGOi1l
-         TVoA==
+        bh=b7OeA641zFpMpjc2geYL3Cgq7EpWyJRiF2B77FMBQKk=;
+        b=Ultoer0KibHZsHVRtPOjnJs/+hGfM1J3VSiQs8tsaQln/esNpyH4stN4QgfV6YCPQq
+         3PO/vbfkvMhA/FC6tLfAaZ1qt+EAXAcd4qGJk3PK0AMLU0jZD+/kVvag+xF6sudh8f71
+         rXRHaJFLTW/Js8rSwcNsCii1v/ZOFGmjGnR+yyfjrvSINS2mBqhF7WAq/mM4lGrPH2jw
+         ut8ZreU1g6gTACV82yEfc4AvX8FQOjrZAcfsphhHuR11eI6BnV6gVfaHqGfJKV+6G4/i
+         fg8D64OfqOqsiajvRtjtUIS/Go48rb3NyWGO0a9Xc1ql9JkGNnTY/iO48laBtKu0gdKm
+         NeSQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1716917076; x=1717521876;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=ThOVm46gYp9/Cn7ASNZ0mQAfmQpKcIWWQc+98ymb318=;
-        b=rnku5NdqDYxdA86Eda/FR7n9q2pnN26rW9QbJQfagdF9KUcbi2rYiGw9ITbpjOUp8M
-         0x/S3nQAYLSPH2EPzS/ABvvLv5Mk2dQByX0Ov8a9pFjbJgIL85xAAqvSlwtj0nfsJ7aW
-         UI6jugaiaSS+tGWSUUmmHEd8HiOywDRI7so/JRfuUEednmS6c42Pgc6S0a1E1RmU4QsR
-         dauQZ7mNKCs3XF8L3Rcqbis01/6biri06fnREf9bk+dB68elrcsGqQblWmz498nCzBoj
-         EpFUrfRlmnR+DMwk3Up8vZHb/qQR4liS6Mcc4cgLU3htOLy19PHM0ksVPoutdCUImm+V
-         g63Q==
-X-Forwarded-Encrypted: i=1; AJvYcCX4EQnptR0KGOKDvepvOK0RsvKKbknRtyh1aiMK3ZnL+inlshb1cKu4Ixfg+J+xhuIzUzvCr+DYqYBGP4XuhxAHsjq3kcJ7vQmegjJbFsT8bIYJNBdRC2bxQ7WSuicc4Nw23bv25MQAECm2i2BUaKfs+IrBy4hwgs4q
-X-Gm-Message-State: AOJu0YytZaukA/uvgOBVqgptJGCkvrDQp9+VwtpEIgYf4pukgb9v0kgr
-	KPlUuLIIzi71aRN6to1XEdXj4wqfLvh2lIAP9BFwbKjiJgyz6nBu
-X-Google-Smtp-Source: AGHT+IHmE7KwWW/A6BnWKuk+2M8Ye5aS8UEuzeJBkO8gGRyfB9v09wmMfK5BrpYl8vMuNh2Iux6GXg==
-X-Received: by 2002:a05:622a:1346:b0:43c:7755:961c with SMTP id d75a77b69052e-43fa7431750mr305065511cf.5.1716917076577;
-        Tue, 28 May 2024 10:24:36 -0700 (PDT)
-Received: from localhost (112.49.199.35.bc.googleusercontent.com. [35.199.49.112])
-        by smtp.gmail.com with ESMTPSA id d75a77b69052e-43fd54f4a5dsm11821051cf.97.2024.05.28.10.24.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 28 May 2024 10:24:35 -0700 (PDT)
-Date: Tue, 28 May 2024 13:24:35 -0400
-From: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-To: "Abhishek Chauhan (ABC)" <quic_abchauha@quicinc.com>, 
- "David S. Miller" <davem@davemloft.net>, 
- Eric Dumazet <edumazet@google.com>, 
- Jakub Kicinski <kuba@kernel.org>, 
- Paolo Abeni <pabeni@redhat.com>, 
- netdev@vger.kernel.org, 
- linux-kernel@vger.kernel.org, 
- Andrew Halaney <ahalaney@redhat.com>, 
- Willem de Bruijn <willemdebruijn.kernel@gmail.com>, 
- Martin KaFai Lau <martin.lau@kernel.org>, 
- Martin KaFai Lau <martin.lau@linux.dev>, 
- Daniel Borkmann <daniel@iogearbox.net>, 
- bpf <bpf@vger.kernel.org>
-Cc: kernel@quicinc.com, 
- Willem de Bruijn <willemb@google.com>
-Message-ID: <665613536e82e_2a1fb929437@willemb.c.googlers.com.notmuch>
-In-Reply-To: <6bdba7b6-fd22-4ea5-a356-12268674def1@quicinc.com>
-References: <20240509211834.3235191-1-quic_abchauha@quicinc.com>
- <20240509211834.3235191-2-quic_abchauha@quicinc.com>
- <6bdba7b6-fd22-4ea5-a356-12268674def1@quicinc.com>
-Subject: Re: [PATCH bpf-next v8 1/3] net: Rename mono_delivery_time to
- tstamp_type for scalabilty
+        d=1e100.net; s=20230601; t=1716917402; x=1717522202;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=b7OeA641zFpMpjc2geYL3Cgq7EpWyJRiF2B77FMBQKk=;
+        b=Cujyl9fdKeRd9lIKoeU6kW9euOKWMjnZGv5xTQ6nMZfK/vPmlffzUmhDdNGF+5pibB
+         6DeauyK3kBhEuuRMh594ZP21Nt+jTl9A6In57fAsv2mj7MFJ/KBnRf+2D9dom4bIJf4X
+         dB3M15ulQXeIcoam9WlCpTEilWP/XFQTrA6C+zt/wV3YtpdS3DhEtIwIQUftPYAlvNjr
+         V57nEPdoCFySNmNXoTIlJuGvXqlsEVepI1s4ScxYtxQe3taERhh9xKD/uKaZh03m8fLG
+         FZZ2bE3VO+H7vyhMVuFSwMfe1dFvCtyNDKiDMGfkDn2snJIrFWq+KEwHheKxrwJ3INvZ
+         5+HA==
+X-Gm-Message-State: AOJu0Yx/QKsRTg5AZH00w7j+OdR8KM216olv4JMeh4uC0z6aGQAk9+iD
+	1lzrvx94MAZmNN5H7RR/72Vei9l+swV9kSXfUXNOyscvY8UAAFWbU8sAVhTDeaXGPR09EEcd71s
+	MPsMnokQpoMWUYLyeRHfNLL2Je8w=
+X-Google-Smtp-Source: 
+ AGHT+IH6mKa5yx1rre9qKe1AnXrjVEsskOmjedKaCWbuzXB+Ac4qx4PbU12UxZl9XoSi73QdzN2IVw0UBCgUm7mEDDg=
+X-Received: by 2002:a05:6512:b10:b0:516:c5c2:cba8 with SMTP id
+ 2adb3069b0e04-52964eac446mr14770807e87.12.1716917402228; Tue, 28 May 2024
+ 10:30:02 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+References: 
+ <PH0PR21MB19101A296E6A180AD99EDD3898F12@PH0PR21MB1910.namprd21.prod.outlook.com>
+ <PH0PR21MB191058745A71A705F199B19A98F12@PH0PR21MB1910.namprd21.prod.outlook.com>
+In-Reply-To: 
+ <PH0PR21MB191058745A71A705F199B19A98F12@PH0PR21MB1910.namprd21.prod.outlook.com>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Tue, 28 May 2024 10:29:47 -0700
+Message-ID: 
+ <CAEf4BzZf=7Sb9Zf7Bt_oJh=Pq6b=03wspmr8iJSY-KRyJVZ3nw@mail.gmail.com>
+To: Shankar Seal <Shankar.Seal=40microsoft.com@dmarc.ietf.org>
+Message-ID-Hash: OKXJPKSU6TTWN3C4MGMBMK2HVI24BAJD
+X-Message-ID-Hash: OKXJPKSU6TTWN3C4MGMBMK2HVI24BAJD
+X-MailFrom: andrii.nakryiko@gmail.com
+X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
+ loop; banned-address; member-moderation; nonmember-moderation; administrivia;
+ implicit-dest; max-recipients; max-size; news-moderation; no-subject;
+ digests; suspicious-header
+CC: "bpf@ietf.org" <bpf@ietf.org>, "bpf@vger.kernel.org" <bpf@vger.kernel.org>
+X-Mailman-Version: 3.3.9rc4
+Precedence: list
+Subject: =?utf-8?q?=5BBpf=5D_Re=3A_Writing_into_a_ring_buffer_map_from_user_space?=
+Archived-At: 
+ <https://mailarchive.ietf.org/arch/msg/bpf/UxJgJlKQvnNBtYvlGK0kUQEOwl0>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/bpf>
+List-Help: <mailto:bpf-request@ietf.org?subject=help>
+List-Owner: <mailto:bpf-owner@ietf.org>
+List-Post: <mailto:bpf@ietf.org>
+X-Mailman-Copy: yes
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 
-Abhishek Chauhan (ABC) wrote:
-
-> > +static inline void skb_set_delivery_type_by_clockid(struct sk_buff *skb,
-> > +						    ktime_t kt, clockid_t clockid)
-> > +{
-> > +	u8 tstamp_type = SKB_CLOCK_REALTIME;
-> > +
-> > +	switch (clockid) {
-> > +	case CLOCK_REALTIME:
-> > +		break;
-> > +	case CLOCK_MONOTONIC:
-> > +		tstamp_type = SKB_CLOCK_MONOTONIC;
-> > +		break;
-> > +	default:
-> 
-> Willem and Martin, I was thinking we should remove this warn_on_once from below line. Some systems also use panic on warn. 
-> So i think this might result in unnecessary crashes. 
-> 
-> Let me know what you think. 
-> 
-> Logs which are complaining. 
-> https://syzkaller.appspot.com/x/log.txt?x=118c3ae8980000
-
-I received reports too. Agreed that we need to fix these reports.
-
-The alternative is to limit sk_clockid to supported ones, by failing
-setsockopt SO_TXTIME on an unsupported clock.
-
-That changes established ABI behavior. But I don't see how another
-clock can be used in any realistic way anyway.
-
-Putting it out there as an option. It's riskier, but in the end I
-believe a better fix than just allowing this state to continue.
-
-A third option would be to not fail the system call, but silently
-fall back to CLOCK_REALTIME. Essentially what happens in the datapath
-in skb_set_delivery_type_by_clockid now. That is surprising behavior,
-we should not do that.
+T24gVHVlLCBNYXkgMjgsIDIwMjQgYXQgOTozMuKAr0FNIFNoYW5rYXIgU2VhbA0KPFNoYW5rYXIu
+U2VhbD00MG1pY3Jvc29mdC5jb21AZG1hcmMuaWV0Zi5vcmc+IHdyb3RlOg0KPg0KPiBBZGRpbmcg
+YnBmQHZnZXIua2VybmVsLm9yZw0KPg0KPiBBIGNvbW1vbiB1c2UgY2FzZSBvZiBhbiBCUEYgcmlu
+ZyBidWZmZXIgbWFwIHRvIHVzZSBhcyBhIHF1ZXVlIG9mIGV2ZW50cyBnZW5lcmF0ZWQgYnkgQlBG
+IHByb2dyYW1zIHRoYXQgY2FuIGJlIHJlYWQgaW4tb3JkZXIgYnkgdXNlciBzcGFjZSBhcHBsaWNh
+dGlvbnMuIEkgaGF2ZSBhIHNjZW5hcmlvIHJlcXVpcmVtZW50IGZvciBhIHVzZXIgc3BhY2UgYXBw
+bGljYXRpb24gdG8gd3JpdGUgaW50byBhIHJpbmcgYnVmZmVyIChvciBzaW1pbGFyKSBtYXAsIHN1
+Y2ggdGhhdCBldmVudHMgYnkgQlBGIHByb2dyYW1zIGluIGtlcm5lbCBhbmQgdXNlciBzcGFjZSBh
+cHBsaWNhdGlvbnMgYXJlIGludGVybGVhdmVkIGluIHRoZSBvcmRlciB0aGV5IHdlcmUgZ2VuZXJh
+dGVkLCB0aGF0IGNhbiBiZSBjb25zdW1lZCBieSBhbm90aGVyIHVzZXIgc3BhY2UgYXBwbGljYXRp
+b24NCj4NCj4gSSB3b3VsZCBsaWtlIHRvIGltcGxlbWVudCB0aGlzIG5ldyBmZWF0dXJlIGluIHRo
+ZSBodHRwczovL2dpdGh1Yi5jb20vbWljcm9zb2Z0L2VicGYtZm9yLXdpbmRvd3MgcHJvamVjdC4g
+QnV0IGJlZm9yZSBJIGdvIGFoZWFkIHdpdGggdGhlIGltcGxlbWVudGF0aW9uLCBJIHdhbnRlZCB0
+byBjaGVjayBpZiB0aGVyZSBpcyBhbnkgd2F5IHRvIGFjY29tcGxpc2ggdGhpcyBpbiBMaW51eCB0
+b2RheT8gSWYgbm90LCBpcyB0aGVyZSBhbnkgcmVhc29uIHdoeSB0aGlzIHNob3VsZCBub3QgYmUg
+ZG9uZT8NCg0KWWVzLCB0aGVyZSBpcy4gU2VlIHVzZXJfcmluZ19idWZmZXIgKFswXSwgWzFdKS4N
+Cg0KICBbMF0gaHR0cHM6Ly9naXRodWIuY29tL3RvcnZhbGRzL2xpbnV4L2Jsb2IvbWFzdGVyL3Rv
+b2xzL3Rlc3Rpbmcvc2VsZnRlc3RzL2JwZi9wcm9nX3Rlc3RzL3VzZXJfcmluZ2J1Zi5jDQogIFsx
+XSBodHRwczovL2dpdGh1Yi5jb20vdG9ydmFsZHMvbGludXgvYmxvYi9tYXN0ZXIvdG9vbHMvdGVz
+dGluZy9zZWxmdGVzdHMvYnBmL3Byb2dzL3VzZXJfcmluZ2J1Zl9zdWNjZXNzLmMNCg0KPg0KPiBU
+aGFua3MsDQo+IFNoYW5rYXINCj4g4Ka24KaC4KaV4KawIOCmtuCngOCmsg0KPg0KPg0KPg0KPiBf
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXw0KPiBGcm9tOiBTaGFua2FyIFNlYWwNCj4g
+U2VudDogVHVlc2RheSwgTWF5IDI4LCAyMDI0IDEyOjQwIEFNDQo+IFRvOiBicGZAaWV0Zi5vcmcg
+PGJwZkBpZXRmLm9yZz4NCj4gU3ViamVjdDogV3JpdGluZyBpbnRvIGEgcmluZyBidWZmZXIgbWFw
+IGZyb20gdXNlciBzcGFjZQ0KPg0KPg0KPiBJIGhhdmUgYSBzY2VuYXJpbyByZXF1aXJlbWVudCBm
+b3IgYSB1c2VyIHNwYWNlIGFwcGxpY2F0aW9uIHRvIHdyaXRlIGludG8gYSByaW5nIGJ1ZmZlciBl
+QlBGIG1hcCB0aGF0IEkgd291bGQgbGlrZSB0byBpbXBsZW1lbnQgaW4gdGhlIGh0dHBzOi8vZ2l0
+aHViLmNvbS9taWNyb3NvZnQvZWJwZi1mb3Itd2luZG93cyBwcm9qZWN0LiBJcyB0aGVyZSBhbnkg
+d2F5IHRvIGFjY29tcGxpc2ggdGhpcyBpbiBMaW51eCB0b2RheT8gSWYgbm90LCBpcyB0aGVyZSBh
+bnkgcmVhc29uIHdoeSB0aGlzIHNob3VsZCBub3QgYmUgZG9uZT8NCj4NCj4NCj4gVGhhbmtzLA0K
+PiBTaGFua2FyDQo+IOCmtuCmguCmleCmsCDgprbgp4DgprINCj4NCj4NCj4NCj4gLS0NCj4gQnBm
+IG1haWxpbmcgbGlzdCAtLSBicGZAaWV0Zi5vcmcNCj4gVG8gdW5zdWJzY3JpYmUgc2VuZCBhbiBl
+bWFpbCB0byBicGYtbGVhdmVAaWV0Zi5vcmcNCg0KLS0gCkJwZiBtYWlsaW5nIGxpc3QgLS0gYnBm
+QGlldGYub3JnClRvIHVuc3Vic2NyaWJlIHNlbmQgYW4gZW1haWwgdG8gYnBmLWxlYXZlQGlldGYu
+b3JnCg==
 
