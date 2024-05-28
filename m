@@ -1,135 +1,164 @@
-Return-Path: <bpf+bounces-30702-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-30703-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id EB3A48D11A2
-	for <lists+bpf@lfdr.de>; Tue, 28 May 2024 04:08:18 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 242058D1337
+	for <lists+bpf@lfdr.de>; Tue, 28 May 2024 06:10:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9FEA42846C6
-	for <lists+bpf@lfdr.de>; Tue, 28 May 2024 02:08:17 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 552F51C20F10
+	for <lists+bpf@lfdr.de>; Tue, 28 May 2024 04:10:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9BE5ED53B;
-	Tue, 28 May 2024 02:08:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 583E117C6A;
+	Tue, 28 May 2024 04:10:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="hiHQCh2E"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="d7s6NEW7"
 X-Original-To: bpf@vger.kernel.org
-Received: from out30-132.freemail.mail.aliyun.com (out30-132.freemail.mail.aliyun.com [115.124.30.132])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f171.google.com (mail-pl1-f171.google.com [209.85.214.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 61CDB168BE;
-	Tue, 28 May 2024 02:08:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.132
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93F6B17BD6
+	for <bpf@vger.kernel.org>; Tue, 28 May 2024 04:10:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716862090; cv=none; b=QHwghbwF4k7JfIJ81Ek20dE8ItitJbfLbufxjJFTlYzTLS2fULSyZU38G1AMQacaAYu4BwCawghN57MliUOGfzlAQHzK8uwIbvqjb7n25cqG9aEBbU2nQvaLY8Du8yi2ozpqsQXsMPc+bQhKxONJg84SGaUDZRE0GjJ12AJ5RV0=
+	t=1716869447; cv=none; b=T9aMFmQH0+iGoQbGPS11h4G+Ks+peBxW1ilvNv3OnkFNTt86X2tr6SDADGGyrHJsz4JHBw7yUsx9optzd9nun44sZ9IilBIvc89G+bGEjWHHMVlUr1iJBH+COpCn9U66fOuVZB7NZR9yEFgvcfh6UPTNb8XhUPVHUs3/mQneeY4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716862090; c=relaxed/simple;
-	bh=bGdpMC8w5NDXkvYx9bP9RlgD8bYpxSq37c5brwI9jHk=;
-	h=Message-ID:Subject:Date:From:To:Cc:References:In-Reply-To:
-	 Content-Type; b=tHGnF5NL3ljcGXVxx/Swfsz5Ma5ukM4usMrtSPuwK7Ep6VBXNAz9k7TcwoO8k7ZPVYtX9se0LpcJCwkSBP9Bxm1NWDmSfsNKD3iTNfIODOxmsL6lQdFUyXHt6CtFiNwl70nfKMsLx5ng8tlWWPVUX0hcs4v/M0bt3RvcB9f1tpU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=hiHQCh2E; arc=none smtp.client-ip=115.124.30.132
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1716862079; h=Message-ID:Subject:Date:From:To:Content-Type;
-	bh=kbM3v+okdOZwQr8Ru327hBw//y8G7Jb+NPx7ac9Ui1A=;
-	b=hiHQCh2EOaXep7DzxM9iw41NrEGVGjrNbEcNRRoxG03wXgU0MCfN7xmWLeO+e9+l8kjWyN0uNUBzBQjWYmFesEwbjevo5RWLBo0V/HT8Cg/vLZx2UkvmDPry3gNQHSAoWjc5PQ9hUW+yVw3AoQq8CSj2jPvwPfZFXlwub42AaiY=
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R551e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=maildocker-contentspam033068173054;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=13;SR=0;TI=SMTPD_---0W7O67O4_1716862077;
-Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0W7O67O4_1716862077)
-          by smtp.aliyun-inc.com;
-          Tue, 28 May 2024 10:07:58 +0800
-Message-ID: <1716862000.5541763-1-xuanzhuo@linux.alibaba.com>
-Subject: Re: [PATCH net-next 0/7] virtnet_net: prepare for af-xdp
-Date: Tue, 28 May 2024 10:06:40 +0800
-From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-To: Jason Wang <jasowang@redhat.com>
-Cc: "David S. Miller" <davem@davemloft.net>,
- Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>,
- Paolo Abeni <pabeni@redhat.com>,
- "Michael S. Tsirkin" <mst@redhat.com>,
- Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>,
- Jesper Dangaard Brouer <hawk@kernel.org>,
- John Fastabend <john.fastabend@gmail.com>,
- virtualization@lists.linux.dev,
- bpf@vger.kernel.org,
- netdev@vger.kernel.org
-References: <20240508080514.99458-1-xuanzhuo@linux.alibaba.com>
- <1716431200.2626963-1-xuanzhuo@linux.alibaba.com>
- <CACGkMEsKgwgATiuiA4_DcrwtoGp4XT__GakKVYNJ=EcOOG9zew@mail.gmail.com>
-In-Reply-To: <CACGkMEsKgwgATiuiA4_DcrwtoGp4XT__GakKVYNJ=EcOOG9zew@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
+	s=arc-20240116; t=1716869447; c=relaxed/simple;
+	bh=QIJ1fBoBjuXIRHSDSPzfUWRQlC5niyfwgy+ObH6Xs1E=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=bJ0C5pGev3Y7LOMZAxcpzuOiJwaHfeTCpnJ8RBv5BTwOP0YrqADSByFHaA8fP4i7vbnhVTjQoTpQZDWR5Vy54qyndaRleY9zXjZ4zDojGZJe/VeJnvr0AKJhI8I5VKfGU1y94Kd0oYYvYfYyDPmspb4p5qdQCGl068U0DC+F3W8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=d7s6NEW7; arc=none smtp.client-ip=209.85.214.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f171.google.com with SMTP id d9443c01a7336-1f480624d0dso3257535ad.1
+        for <bpf@vger.kernel.org>; Mon, 27 May 2024 21:10:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1716869446; x=1717474246; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=TQ752EyCh9fFYBo8OGzWkVIrzN5As7ijtVXtP8RxL90=;
+        b=d7s6NEW7kiM5+Cg+m+JeIzJC/QsIE5UK5mp6/E+nu8+K/n6LJpAim+wpnFUZEFTnxg
+         vgINnpHmh+IERbBw52cbWj6dflW5gjy24iIsPjgYrd+i4dCiE/fEKEUhsFfKGYMIKUe4
+         ttR16RS+HS8X/oybPHhOS2kSdIg3QiHoBH4xUNIyD6XLwBr5hvt65WurIg/Lmr+7LM6+
+         K2WJsNQh2FBY7eDOFMbPCSp9wQ7ydswsuviV4v+8ZXKjeDMAfMhgnKLBbCte+vqruKQr
+         LaZSk0VkcLhr3aq+6LjBp5NQ9zsNXp1NBvncklP4C/FkRgpA62YA12mIVUWNQx3yGmmQ
+         CEcg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1716869446; x=1717474246;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=TQ752EyCh9fFYBo8OGzWkVIrzN5As7ijtVXtP8RxL90=;
+        b=WCPDBbx9JzUmfcFDDYHHdKAboW8MG7P6v6ffOaREsYZZFTmzsQiE/v2MTCLCBIpyhy
+         H15wLl/n0aRk7aOyeNjOimmTkNl2mhiJe/LDzD3TRiRsxvEfz4S/1SNA2DCa5rF2UYga
+         +7cDfl9ihsD1peTI2cZhrEH/l9UJNHMpcwmEqyXz6JEiwsRlaZ1l8N14DI0PgRE1//Ag
+         9J3JnQtPXWYq6sFDi7PENJcQoLDvg4c2YvYdqk2ghmYnvj1R0aW5AbqHBHG84TqnLFl8
+         GoLsPg+WxztnXbsRbKFDVTOP/JmVoJOY9eUNN29lUwBPhHIjBaBO3ho+DDCTJIzxDi0N
+         iq5g==
+X-Forwarded-Encrypted: i=1; AJvYcCX8YzZChHKZuwHlERadVKEp4JkGt591IbXMW8aqRkKWXLVFiWF7zyJD+qWPQCxaO+TozwMdSuE6XzqyBAO4esnOokjs
+X-Gm-Message-State: AOJu0YyIvbLMNAJ0v+AXoMKOEl+75Lw773N425+PflAUbAOr/wF714T5
+	Jlah05OWogprJISlerb+F3Rl6qXVOyEDT+kAUHRn1ICA07xtwcsa
+X-Google-Smtp-Source: AGHT+IE1YiOuY2h0YKl8PeItC3IcSELCmYLCK/Eqve/FE3lX4+CxSVUPX49LEnXM9usGuYX5UbmrJg==
+X-Received: by 2002:a17:902:c405:b0:1f4:5278:5bed with SMTP id d9443c01a7336-1f45278630emr158257285ad.42.1716869445739;
+        Mon, 27 May 2024 21:10:45 -0700 (PDT)
+Received: from ?IPv6:2604:3d08:6979:1160::3424? ([2604:3d08:6979:1160::3424])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-1f44c9683b3sm69492675ad.163.2024.05.27.21.10.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 27 May 2024 21:10:45 -0700 (PDT)
+Message-ID: <90874d4e32e7fe937c6774ad34d1617592b8abc8.camel@gmail.com>
+Subject: Re: [PATCH v3 bpf-next 1/2] bpf: Relax precision marking in open
+ coded iters and may_goto loop.
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>, bpf@vger.kernel.org
+Cc: daniel@iogearbox.net, andrii@kernel.org, martin.lau@kernel.org, 
+	memxor@gmail.com, kernel-team@fb.com
+Date: Mon, 27 May 2024 21:10:44 -0700
+In-Reply-To: <20240525031156.13545-1-alexei.starovoitov@gmail.com>
+References: <20240525031156.13545-1-alexei.starovoitov@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.44.4-0ubuntu2 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
 
-On Mon, 27 May 2024 11:38:49 +0800, Jason Wang <jasowang@redhat.com> wrote:
-> On Thu, May 23, 2024 at 10:27=E2=80=AFAM Xuan Zhuo <xuanzhuo@linux.alibab=
-a.com> wrote:
-> >
-> > Any comments for this.
-> >
-> > Thanks.
->
-> Will have a look.
->
-> Btw, does Michael happy with moving files into a dedicated directory?
+On Fri, 2024-05-24 at 20:11 -0700, Alexei Starovoitov wrote:
+> From: Alexei Starovoitov <ast@kernel.org>
 
+[...]
 
-Based on our previous discussions, I believe that he is okay.
+> With that the get_loop_entry() can be used to gate is_branch_taken() logi=
+c.
+> When the verifier sees 'r1 > 1000' inside the loop and it can predict it
+> instead of marking r1 as precise it widens both branches, so r1 becomes
+> [0, 1000] in fallthrough and [1001, UMAX] in other_branch.
+>=20
+> Consider the loop:
+>     bpf_for_each(...) {
+>        if (r1 > 1000)
+>           break;
+>=20
+>        arr[r1] =3D ..;
+>     }
+> At arr[r1] access the r1 is bounded and the loop can quickly converge.
+>=20
+> Unfortunately compilers (both GCC and LLVM) often optimize loop exit
+> condition to equality, so
+>  for (i =3D 0; i < 100; i++) arr[i] =3D 1
+> becomes
+>  for (i =3D 0; i !=3D 100; i++) arr[1] =3D 1
+>=20
+> Hence treat !=3D and =3D=3D conditions specially in the verifier.
+> Widen only not-predicted branch and keep predict branch as is. Example:
+>   r1 =3D 0
+>   goto L1
+> L2:
+>   arr[r1] =3D 1
+>   r1++
+> L1:
+>   if r1 !=3D 100 goto L2
+>   fallthrough: r1=3D100 after widening
+>   other_branch: r1 stays as-is (0, 1, 2, ..)
 
-Thanks
+[...]
 
+I'm not sure how much of a deal-breaker this is, but proposed
+heuristics precludes verification for the following program:
 
->
-> Thanks
->
-> >
-> > On Wed,  8 May 2024 16:05:07 +0800, Xuan Zhuo <xuanzhuo@linux.alibaba.c=
-om> wrote:
-> > > This patch set prepares for supporting af-xdp zerocopy.
-> > > There is no feature change in this patch set.
-> > > I just want to reduce the patch num of the final patch set,
-> > > so I split the patch set.
-> > >
-> > > #1-#3 add independent directory for virtio-net
-> > > #4-#7 do some refactor, the sub-functions will be used by the subsequ=
-ent commits
-> > >
-> > > Thanks.
-> > >
-> > > Xuan Zhuo (7):
-> > >   virtio_net: independent directory
-> > >   virtio_net: move core structures to virtio_net.h
-> > >   virtio_net: add prefix virtnet to all struct inside virtio_net.h
-> > >   virtio_net: separate virtnet_rx_resize()
-> > >   virtio_net: separate virtnet_tx_resize()
-> > >   virtio_net: separate receive_mergeable
-> > >   virtio_net: separate receive_buf
-> > >
-> > >  MAINTAINERS                                   |   2 +-
-> > >  drivers/net/Kconfig                           |   9 +-
-> > >  drivers/net/Makefile                          |   2 +-
-> > >  drivers/net/virtio/Kconfig                    |  12 +
-> > >  drivers/net/virtio/Makefile                   |   8 +
-> > >  drivers/net/virtio/virtnet.h                  | 246 ++++++++
-> > >  .../{virtio_net.c =3D> virtio/virtnet_main.c}   | 534 ++++++--------=
-----
-> > >  7 files changed, 452 insertions(+), 361 deletions(-)
-> > >  create mode 100644 drivers/net/virtio/Kconfig
-> > >  create mode 100644 drivers/net/virtio/Makefile
-> > >  create mode 100644 drivers/net/virtio/virtnet.h
-> > >  rename drivers/net/{virtio_net.c =3D> virtio/virtnet_main.c} (94%)
-> > >
-> > > --
-> > > 2.32.0.3.g01195cf9f
-> > >
-> >
->
+  char arr[10];
+ =20
+  SEC("socket")
+  __success __flag(BPF_F_TEST_STATE_FREQ)
+  int simple_loop(const void *ctx)
+  {
+  	struct bpf_iter_num it;
+  	int *v, sum =3D 0, i =3D 0;
+ =20
+  	bpf_iter_num_new(&it, 0, 10);
+  	while ((v =3D bpf_iter_num_next(&it))) {
+  		if (i < 5)
+  			sum +=3D arr[i++];
+  	}
+  	bpf_iter_num_destroy(&it);
+  	return sum;
+  }
+
+The presence of the loop with bpf_iter_num creates a set of states
+with non-null loop_header, which in turn switches-off predictions for
+comparison operations inside the loop.
+This looks like a bad a compose-ability of verifier features to me.
+
+--
+
+Instead of heuristics, maybe rely on hints from the programmer?
+E.g. add a kfunc `u64 bpf_widen(u64)` which will be compiled as an
+identity function, but would instruct verifier to drop precision for a
+specific value. When work on no_caller_saved_registers finishes this
+even could be available w/o runtime cost.
+(And at the moment could be emulated by something like `rX /=3D 1`).
 
