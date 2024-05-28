@@ -1,72 +1,137 @@
-Return-Path: <bpf+bounces-30767-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-30768-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id ED3758D245F
-	for <lists+bpf@lfdr.de>; Tue, 28 May 2024 21:16:40 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 25DB18D24A2
+	for <lists+bpf@lfdr.de>; Tue, 28 May 2024 21:30:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7C94BB237BF
-	for <lists+bpf@lfdr.de>; Tue, 28 May 2024 19:16:38 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AA1D5281EBE
+	for <lists+bpf@lfdr.de>; Tue, 28 May 2024 19:30:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 77D1E17837E;
-	Tue, 28 May 2024 19:09:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CBF07172769;
+	Tue, 28 May 2024 19:30:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AmoNzAPG"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="PiXETvYR"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out-183.mta0.migadu.com (out-183.mta0.migadu.com [91.218.175.183])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD5C8171E59;
-	Tue, 28 May 2024 19:09:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F8B14CB4B
+	for <bpf@vger.kernel.org>; Tue, 28 May 2024 19:30:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.183
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716923370; cv=none; b=dkdwX7QwUdPq1zV25EX13kHlsR04gFeDwZdocqJ0hy8aHnDCNt9EyC37lNom/ApUrz3CmiSq/E/BLf1dtf4mYS4wBXJ3eDjtxGJOS2t3kqFa6chEKaXGyhLRxN65TDQi1zTEC/TvjXfPrw5kY1eIDIxRO7U49VQXbEol3PLxdsk=
+	t=1716924650; cv=none; b=OztyMYqguQ9FE1UoGb1DfuM55DEpud6Y11ixJ/jOuTZ8gh60IKSxT//EWebzyf34WidZFwnV2LQABAY0ctczQ1PaUcxxTuT6FhmigqaQ6cD+Yufs0gwx/ow+FZtBwnxt56WLXsn1qkvhdNnD7etddpGtThpwLjM+P4gWlLF51uE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716923370; c=relaxed/simple;
-	bh=TXpIOoXYGmt2pBtqg047ViZFwCKWKQ4ykKIKvnN77vU=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=CluQqAarjvuFy96NwUe7KkYyXlFnhfY778xo/8d/VEgo+4fykMm84kzs8y98jROO5jcypKf3tpdD43LaK2vBrUoAkeRCgbwgV2cJSrzCQ1tMS33wKfzt5hlf6Luf1MwrJ7O06oZZCXNu4aCHx8CEcLvZH7FlwRj7Wx9Xh0XyPcM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AmoNzAPG; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E94BEC3277B;
-	Tue, 28 May 2024 19:09:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1716923369;
-	bh=TXpIOoXYGmt2pBtqg047ViZFwCKWKQ4ykKIKvnN77vU=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=AmoNzAPG5OwWLUnUTGJZOanCQpM32jwGBiGV4Kj4DqPwhtvLBjX7A3wqKxlxsCTWE
-	 4YlTKJUUMXV5uh6+0WPRfwCkH273a1cf0bd5KJpsqdkMUyjI6Vgtfz1tnOzv9bb0IH
-	 pMIQ8j+lj9q4gKVtxV33VbBEs7s44f0JV+UutHCBHJeOxjqLgUm1R9HpH/wGhKV05q
-	 Tr3TqW24CFEenXZNnu4wZ5SQQw1yk33QrWKJC/VFE/kzwHVqEjPvoMDBH3Bh/1I71B
-	 V7tsnBW37DNfRz4Y/6LLe430oK/3rEAzLFnvf7ROuluDFMibMDvOjr8B9MyGzvce2H
-	 RwlYJMYFmJ7FQ==
-Date: Tue, 28 May 2024 12:09:28 -0700
-From: Jakub Kicinski <kuba@kernel.org>
-To: kernel test robot <lkp@intel.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>, Linux Memory Management List
- <linux-mm@kvack.org>, amd-gfx@lists.freedesktop.org, bpf@vger.kernel.org,
- dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
- intel-xe@lists.freedesktop.org, linux-btrfs@vger.kernel.org,
- linux-hardening@vger.kernel.org, linux-mtd@lists.infradead.org,
- linux-pm@vger.kernel.org, netdev@vger.kernel.org,
- nouveau@lists.freedesktop.org
-Subject: Re: [linux-next:master] BUILD REGRESSION
- 6dc544b66971c7f9909ff038b62149105272d26a
-Message-ID: <20240528120928.633cca9d@kernel.org>
-In-Reply-To: <202405290242.YsJ4ENkU-lkp@intel.com>
-References: <202405290242.YsJ4ENkU-lkp@intel.com>
+	s=arc-20240116; t=1716924650; c=relaxed/simple;
+	bh=fI4YZIUdESe+KXQcRqR67vysxo0zhiFA5TgqGIaSsnk=;
+	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:References:
+	 In-Reply-To:Content-Type; b=iwWyXlCzNe2DTtc5rG9HmTqe27yd1P2uTSf81jM2/91rIH9D5XZjN4c/CPMUtQYsAFzBfxLILbvMAepMxAqlYzm7vkV222XWvp5kbuHV49kIGUEZuCCA928n9vhL2lSo31d4HiJFU6dF46z4feEFVrUgViJmtGC+P1a+7CGWGpI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=PiXETvYR; arc=none smtp.client-ip=91.218.175.183
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Envelope-To: willemdebruijn.kernel@gmail.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1716924646;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=gz3k3DiyCGoMOQPg4X/3emTcMizgWP/27mI/YhTD5m0=;
+	b=PiXETvYR6IRMfXEe4gOpDNS9DV3O6W5Gp/M9XzKmFpHzF3IzhEUJabyVl4aKIkY6A9mOQT
+	iWn91fhLI0re1yqfYGa1lq6hNJCm5Y1NbaEitw8hyImb02S6L8FGAx+V9l0wb/W4Td4y6C
+	M5NLDgB6mMCoLSKpQhDcsOYZygSBmig=
+X-Envelope-To: quic_abchauha@quicinc.com
+X-Envelope-To: kernel@quicinc.com
+X-Envelope-To: willemb@google.com
+X-Envelope-To: davem@davemloft.net
+X-Envelope-To: edumazet@google.com
+X-Envelope-To: kuba@kernel.org
+X-Envelope-To: pabeni@redhat.com
+X-Envelope-To: netdev@vger.kernel.org
+X-Envelope-To: linux-kernel@vger.kernel.org
+X-Envelope-To: ahalaney@redhat.com
+X-Envelope-To: martin.lau@kernel.org
+X-Envelope-To: daniel@iogearbox.net
+X-Envelope-To: bpf@vger.kernel.org
+Message-ID: <d1c18889-ef48-4cb8-8b81-474b3b7ddd81@linux.dev>
+Date: Tue, 28 May 2024 12:30:37 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Martin KaFai Lau <martin.lau@linux.dev>
+Subject: Re: [PATCH bpf-next v8 1/3] net: Rename mono_delivery_time to
+ tstamp_type for scalabilty
+To: Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+ "Abhishek Chauhan (ABC)" <quic_abchauha@quicinc.com>
+Cc: kernel@quicinc.com, Willem de Bruijn <willemb@google.com>,
+ "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+ netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+ Andrew Halaney <ahalaney@redhat.com>,
+ Martin KaFai Lau <martin.lau@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>, bpf <bpf@vger.kernel.org>
+References: <20240509211834.3235191-1-quic_abchauha@quicinc.com>
+ <20240509211834.3235191-2-quic_abchauha@quicinc.com>
+ <6bdba7b6-fd22-4ea5-a356-12268674def1@quicinc.com>
+ <665613536e82e_2a1fb929437@willemb.c.googlers.com.notmuch>
+Content-Language: en-US
+In-Reply-To: <665613536e82e_2a1fb929437@willemb.c.googlers.com.notmuch>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-On Wed, 29 May 2024 02:19:47 +0800 kernel test robot wrote:
-> |   `-- net-ipv6-route.c-rt6_fill_node()-error:we-previously-assumed-dst-could-be-null-(see-line-)
+On 5/28/24 10:24 AM, Willem de Bruijn wrote:
+> Abhishek Chauhan (ABC) wrote:
+> 
+>>> +static inline void skb_set_delivery_type_by_clockid(struct sk_buff *skb,
+>>> +						    ktime_t kt, clockid_t clockid)
+>>> +{
+>>> +	u8 tstamp_type = SKB_CLOCK_REALTIME;
+>>> +
+>>> +	switch (clockid) {
+>>> +	case CLOCK_REALTIME:
+>>> +		break;
+>>> +	case CLOCK_MONOTONIC:
+>>> +		tstamp_type = SKB_CLOCK_MONOTONIC;
+>>> +		break;
+>>> +	default:
+>>
+>> Willem and Martin, I was thinking we should remove this warn_on_once from below line. Some systems also use panic on warn.
+>> So i think this might result in unnecessary crashes.
+>>
+>> Let me know what you think.
+>>
+>> Logs which are complaining.
+>> https://syzkaller.appspot.com/x/log.txt?x=118c3ae8980000
+> 
+> I received reports too. Agreed that we need to fix these reports.
+> 
+> The alternative is to limit sk_clockid to supported ones, by failing
+> setsockopt SO_TXTIME on an unsupported clock.
+> 
+> That changes established ABI behavior. But I don't see how another
+> clock can be used in any realistic way anyway.
+> 
+> Putting it out there as an option. It's riskier, but in the end I
+> believe a better fix than just allowing this state to continue.
 
-Is there a way for us to mark this as false positive?
+Failing early would be my preference also. The current ABI is arguably at least 
+confusing (if not broken) considering other clockid is silently ignored by the 
+kernel.
+
+> 
+> A third option would be to not fail the system call, but silently
+> fall back to CLOCK_REALTIME. Essentially what happens in the datapath
+> in skb_set_delivery_type_by_clockid now. That is surprising behavior,
+> we should not do that.
+
+Not sure if it makes sense to go back to this option only after there is 
+breakage report with a legit usage?
+
 
