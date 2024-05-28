@@ -1,122 +1,93 @@
-Return-Path: <bpf+bounces-30706-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-30707-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 88B988D176F
-	for <lists+bpf@lfdr.de>; Tue, 28 May 2024 11:42:52 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 69E9A8D1829
+	for <lists+bpf@lfdr.de>; Tue, 28 May 2024 12:10:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B42661C21900
-	for <lists+bpf@lfdr.de>; Tue, 28 May 2024 09:42:51 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E39B7B26AA9
+	for <lists+bpf@lfdr.de>; Tue, 28 May 2024 10:10:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B56C16ABC6;
-	Tue, 28 May 2024 09:42:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 82BB116ABEB;
+	Tue, 28 May 2024 10:10:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PlSLy4w8"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Rg5ickJh"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-lf1-f52.google.com (mail-lf1-f52.google.com [209.85.167.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B14F169AC9;
-	Tue, 28 May 2024 09:42:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 022A317E8F4;
+	Tue, 28 May 2024 10:10:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716889363; cv=none; b=Nk9du9jvWARmp9D1JDOVO9J/5cCOsb0mGtZq/9+9WCpmi6A/WRM+KNApyOLGxpX+20Uo4vnHbg61iINew3YUkEpiAFcTHh87y8dklJHxbDSTLN2xpzls2lTJsL0HADsa6nYTsKpl+D8hPVgMJ2NYTFvJoF3EDVYfsndtOkIoaKg=
+	t=1716891035; cv=none; b=f+zNws0cteDdjaVlv9RdLXePQYTGn93+1jYjMfoN3xrk1vzmTqTBoAMnTiRy3Rr3BE/ypr9ixsAbJtkmRK13WFST/smG+f3GC2SEKxK3D+vXi1BFl+YlDn2rOC6K+WnOjEgR7CHoMU84uqc7tybiha5JUykGvaWJMGDQM9amibc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716889363; c=relaxed/simple;
-	bh=qfLyJtmax/jZ+eAaCvC7e67XX9TGTXKhgERpUQNkjH8=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=DsS8w4vl4LH5+fODbiMNUZj5rg5OWMUFzuu3YgtGW6rhvQrSohruM55E0H5QFmR4sMKXZ0F+IAJh5X3x5p42qsZptj5Q/cUiRiWI20gf0kEnkmY7ipSyWiaKLUWcVknR0olOdUNQw1wD8TTIWw7PaNKzY2+EMj5XtclgQZpxa3U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=PlSLy4w8; arc=none smtp.client-ip=209.85.167.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f52.google.com with SMTP id 2adb3069b0e04-52389c1308dso785920e87.3;
-        Tue, 28 May 2024 02:42:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1716889359; x=1717494159; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=JGOI2J3FbR+ob+LmVGOsGjzCJpew9van2Zh3gScMtnI=;
-        b=PlSLy4w8caOEn8GkGAMk9ozPxv4rZ/aqpyRuFpOW1tGLO2gwptft0fWg/FY/io3fmL
-         sxb5lDOss3SGQSZNKe9MtgfojgSfZBsEbeusMCr3FNxR6S57Aw7fjX74yosxPK9UceRk
-         lS80zblMNqHISaRd1UHocxZfPn49JS07AcjMxtR4Ehn2Xqtu+ZF12cTJNJy4aa+7uc8d
-         qaoPLXXKgkXQC3Ef/o6Qau7GXuTBeDIiOn6LN5UgDfmuUrmy9MPTvzY3KrFrk5mlWCZr
-         lWFFOvt1bh37zlOdyfN3yfDVi7KDaK583eunL1BjyLhoo1D17sK7sOalrM1O1Fr/KsAG
-         7BTw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1716889359; x=1717494159;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=JGOI2J3FbR+ob+LmVGOsGjzCJpew9van2Zh3gScMtnI=;
-        b=nxq38ZWTJTRqGf6xUXe7CQNf8VXG55VlIqzx7UqPI6XvGsffNqx2UIebqM61fxXjhz
-         qYjwpVsJw0MeQxJ6ECHy24a7pAAlhIdh3PaUlgKLVaHrta/MLf8SpvzmLGNSAUNEkjZL
-         iM3QEIp4Na8mFuRXw80/KUrrVlkx4HPwkT2xzus8rl1QCZtzbGb2sPC/n06/U8RXuRUr
-         Gx50yPmyh/k2nWc81SFJd6y0MQ6xO5bwrDDkMPzanosf4rmluAU1XP3AeEmAtfLYtycV
-         isOS7Hw44ex+fWDJU9dJjm617wF+Cp8zx1zeQ/1wMPrIVKiNfstm49Z1ImXVRZtg4fXi
-         Wcgw==
-X-Forwarded-Encrypted: i=1; AJvYcCV2rbpDeAYwynGDrNKLShGLQ91q7h4Ostw/rd47VTIJpG4MrvaLo/q0AuKhjbwXvOCEOA+51oQYFPS0Xq6CptTyK2gGEimnLEFryGn7997Sdd7G0r1cTKjlNY1x2gHlda04wRKpAIHis/8qXnps5aJeRQQ0H6qAS/2kc/qfaw==
-X-Gm-Message-State: AOJu0Yxzn7EprNu/qe4Q1tV1k9mngf7Pk7dkWbp/CSZ6Pkgvyr4Wxhxz
-	NFxNLN/y+XGiZpwUrhqJnTsQYDkQKs9EKbItS703lnNdQiyzRpgM
-X-Google-Smtp-Source: AGHT+IFlYhYgNNNQ1wITN1+9f9HdlVJxGanJiZQ7t7o1+FR679Fx/NlkuEWMH/d5GYnhY4Rz+401iA==
-X-Received: by 2002:a05:6512:2396:b0:51a:f596:9d53 with SMTP id 2adb3069b0e04-529664dad37mr9975256e87.42.1716889359003;
-        Tue, 28 May 2024 02:42:39 -0700 (PDT)
-Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-420fd37f19fsm130468165e9.1.2024.05.28.02.42.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 28 May 2024 02:42:38 -0700 (PDT)
-From: Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Tue, 28 May 2024 11:42:37 +0200
-To: Masahiro Yamada <masahiroy@kernel.org>
-Cc: linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
-	bpf@vger.kernel.org, Ard Biesheuvel <ardb@kernel.org>,
-	Arnd Bergmann <arnd@arndb.de>,
-	Nathan Chancellor <nathan@kernel.org>,
-	Nicolas Schier <nicolas@fjasle.eu>, linux-arch@vger.kernel.org
-Subject: Re: [PATCH 0/3] kbuild: remove PROVIDE() and refactor vmlinux_link
- steps
-Message-ID: <ZlWnDT1S7n4XrAb5@krava>
-References: <20240522114755.318238-1-masahiroy@kernel.org>
+	s=arc-20240116; t=1716891035; c=relaxed/simple;
+	bh=05aPiNKFD4tFZIrEuAyb4WYu8G/i5Urh30k7lvnUUfg=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=kxnfl+QpohbGLckgHq+1plloNgsZMSITBdXwBnV0ildOQ05tnzk/s+asu6MFMth+K1ETnV6LlaUZR7qD78Hf6ktyUYBVp85mwMUN0Q1fS2vgHc0EglyfJ2PqDS8j0O7DO9plA+Yr5AJhAQ8lH8VzU7wq2OaV5EyxN4+RYywDSbs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Rg5ickJh; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 43010C32781;
+	Tue, 28 May 2024 10:10:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1716891034;
+	bh=05aPiNKFD4tFZIrEuAyb4WYu8G/i5Urh30k7lvnUUfg=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=Rg5ickJhhL5ppwDl03Aad1ycW6BEuXF6RzlAC4rp7ueBqY8+A/+DYl76sH5LvEbXY
+	 OFaJopdDkI4RbKWSywmRyBQa1fGBgLtQyffqQ6Oix2Sw7BtU0LjeL8GosHPc20x67o
+	 oh9hTSlB2R5AI7RvaopS4m6+CL8ghD5qCmls1xvxIfBHYGT2U8o2/zqgb+CiztPpch
+	 Ne1oyxWIyieEjMKSZBlXOhaO/ra+TOVoWSJIapwhAyjHIWQCQ822TBbiwOleP7D891
+	 SvJWNlwRja/IRKHOkmPdqOAiftoXWSTTymVDRawrDpiZ+xaPHmLm+HF9pxY3XtO45n
+	 TrqvEFD2q0jNg==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 36155C4361C;
+	Tue, 28 May 2024 10:10:34 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240522114755.318238-1-masahiroy@kernel.org>
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH] net: filter: use DEV_STAT_INC()
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <171689103421.16293.16635020515732508425.git-patchwork-notify@kernel.org>
+Date: Tue, 28 May 2024 10:10:34 +0000
+References: <20240523033520.4029314-1-jiangyunshui@kylinos.cn>
+In-Reply-To: <20240523033520.4029314-1-jiangyunshui@kylinos.cn>
+To: Yunshui Jiang <jiangyunshui@kylinos.cn>
+Cc: bpf@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+ martin.lau@linux.dev, daniel@iogearbox.net, john.fastabend@gmail.com,
+ edumazet@google.com, syzkaller@googlegroups.com
 
-On Wed, May 22, 2024 at 08:47:52PM +0900, Masahiro Yamada wrote:
-> 
->  - Remove PROVIDE() in the linker script
->  - Merge temporary vmlinux link steps for BTF and kallsyms
-> 
-> 
-> 
-> Masahiro Yamada (3):
->   kbuild: refactor variables in scripts/link-vmlinux.sh
->   kbuild: remove PROVIDE() for kallsyms symbols
->   kbuild: merge temp vmlinux for CONFIG_DEBUG_INFO_BTF and
->     CONFIG_KALLSYMS
+Hello:
 
-lgtm, fyi I ran bpf CI on top of this change and passed
+This patch was applied to bpf/bpf-next.git (master)
+by Daniel Borkmann <daniel@iogearbox.net>:
 
-https://github.com/kernel-patches/bpf/pull/7104
+On Thu, 23 May 2024 11:35:20 +0800 you wrote:
+> syzbot/KCSAN reported that races happen when multiple cpus
+> updating dev->stats.tx_error concurrently.
+> 
+> Adopt SMP safe DEV_STATS_INC() to update dev->stats fields.
+> 
+> Reported-by: syzbot <syzkaller@googlegroups.com>
+> Signed-off-by: yunshui <jiangyunshui@kylinos.cn>
+> 
+> [...]
 
-jirka
+Here is the summary with links:
+  - net: filter: use DEV_STAT_INC()
+    https://git.kernel.org/bpf/bpf-next/c/d9cbd8343b01
 
-> 
->  include/asm-generic/vmlinux.lds.h | 19 -------
->  kernel/kallsyms_internal.h        |  5 --
->  scripts/kallsyms.c                |  6 ---
->  scripts/link-vmlinux.sh           | 87 ++++++++++++++++---------------
->  4 files changed, 45 insertions(+), 72 deletions(-)
-> 
-> -- 
-> 2.40.1
-> 
-> 
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
 
