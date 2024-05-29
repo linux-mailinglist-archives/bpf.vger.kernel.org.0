@@ -1,119 +1,122 @@
-Return-Path: <bpf+bounces-30842-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-30843-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 00B2B8D3911
-	for <lists+bpf@lfdr.de>; Wed, 29 May 2024 16:24:50 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id AA5508D3948
+	for <lists+bpf@lfdr.de>; Wed, 29 May 2024 16:32:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 321DD1C226F5
-	for <lists+bpf@lfdr.de>; Wed, 29 May 2024 14:24:49 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 420281F272D8
+	for <lists+bpf@lfdr.de>; Wed, 29 May 2024 14:32:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 91057158219;
-	Wed, 29 May 2024 14:24:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE3F91591F8;
+	Wed, 29 May 2024 14:32:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="FzEFmOaG"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="lw7DCMNr"
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f50.google.com (mail-ej1-f50.google.com [209.85.218.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AEDD1157E9B
-	for <bpf@vger.kernel.org>; Wed, 29 May 2024 14:24:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B9CD41591EE
+	for <bpf@vger.kernel.org>; Wed, 29 May 2024 14:32:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716992680; cv=none; b=B2SMiJiqxNf8Oy/u9fsq04qo4zqOGM958U9xF8P5Tgy5scaqEZD5APQTSP8pQ5SNO1kONWD13r2Qa/pbMruHHT2VpCFqp2IPLJZcFT4P97+N5WPTUjkXtFXSrsLFFdVn3CWXTleZUQH7uBhsCEShYSSfW721WOisJB1LCBFarNA=
+	t=1716993158; cv=none; b=Fpbki0ysw7Zl+44JwaSZ4JWwYMLLSQ3QGmgQE6yvKaDtVlK9PS8pjSMeuZk1T/s+TCSMRD9DLDXvPjHTjCFBKD9SZcDueycxMkVJMS/kmSIBCxH6jhreYlc513Od/wnK1Xraw8PcgRaVGr8Suj/zeqMofj6UH14JrIRovfP9kcg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716992680; c=relaxed/simple;
-	bh=JAxbuHoQBZ49w41Mn9Exw5TKZvwkktDZUEKmSaoKOFo=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=Lr/eq6iRnEXIs/Wz9tn5Ay9YNvkO8K7EFO3wt9EdrFIqi2nS7r41N2u2A1cQoPuH+rihoK8xT7+lRjy1DHSTUmQ1VFw5gMQ1y2Q7Bekk/JbAAhL/nDDAiLuS4mXutuUR2X2KXOki2xftQ/TO0p5lZbILiL+ibjBsv0NTFhX322k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=FzEFmOaG; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1716992677;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=CaOh1l0Lu41LPYOrXz2nXavJQHgEuj8sHreCoqbxNhY=;
-	b=FzEFmOaGCXkqxhm7fCBba5UnkYALl43qLXF+V8HJ2UrDth5YQTYjXuQolAMSVYHjjTTHaT
-	w3yvTxaAVCZ0LoaeH5SrWYNou439nfpg+/O8y+GsWa1CmeFvXmyMx/mYD6nNL+ZxhMTGpe
-	tTr7q1bivPAkSYBEaoU4aUHX4P1a7PI=
-Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
- [209.85.218.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-195-ofbY-NLvP-eZ8T3nRezuSQ-1; Wed, 29 May 2024 10:24:36 -0400
-X-MC-Unique: ofbY-NLvP-eZ8T3nRezuSQ-1
-Received: by mail-ej1-f72.google.com with SMTP id a640c23a62f3a-a5a812308daso108176766b.0
-        for <bpf@vger.kernel.org>; Wed, 29 May 2024 07:24:36 -0700 (PDT)
+	s=arc-20240116; t=1716993158; c=relaxed/simple;
+	bh=TTnJdiN0dwICsVBBJaHkeqayhfOm8yBlF5WnhM/KfCo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=M3Zz+ivjMlDmOp2+bvO+4JzGjM9OzQ2lnL7gff478OaiaVcQGBYtNeWuKz/SBMbb+ETjI07cUpREY4qgjrvryts01wtJACHqMoKaqRtEebGvBVCdKPTdZlcu+AFhWzc9kvWjyZfDW5RD9jta7PNqzDxA0C1G+Tl31+YdE6+mDFo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=lw7DCMNr; arc=none smtp.client-ip=209.85.218.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ej1-f50.google.com with SMTP id a640c23a62f3a-a6266ffdba8so217757966b.1
+        for <bpf@vger.kernel.org>; Wed, 29 May 2024 07:32:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1716993155; x=1717597955; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=c8pfVjY3N0YvfyGWCKtQaCGQHSMzwUk6OlNcqAVvSgk=;
+        b=lw7DCMNrQbnyXjW2hU6FsmrTQR6HJC76eLqzcRlSaourB3VMVrLoq3TGUhqx2NTagI
+         uyvwU1PMP8gndYGk/QBpU0pcey9uov0xwNa6zGjfeHHVmF3l22QXV852bvroUTC8OwRD
+         WOUTbP/e4Y7Nkwk5e+azmOnKTGma2h6pb+oV7kUZKXXWTCCPId6m2vCOfCGRSj6wHYeW
+         gRmIoeJ4LOmqKP+/V80gBb62nOI33Md9PPK1GybM0tPHFF9RuSOSGVeChnQnRnTt/qpO
+         0vXEcZB2r8yQmQHCC277s8/PmMMRgFzKpXoBBwhj+/QVWJJWs+oSNNaxYSiwwrwYG83y
+         97Dg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1716992675; x=1717597475;
-        h=content-transfer-encoding:mime-version:message-id:date:references
-         :in-reply-to:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=CaOh1l0Lu41LPYOrXz2nXavJQHgEuj8sHreCoqbxNhY=;
-        b=kTvY/0EC/kU4brine6KmOQ/vBI7AKS/Q7OhVyrGn0e3X7TuiOExR5uS1W6mqpF3IaD
-         LSq7qDwEmHOeB3Ea9PAMt0ML2qBdNNxEN6BoJskjP7/LAcl3+tqPGAxWwhnVOlFZB0qx
-         Oi6D+Z0r34JmIia9IQV47wWCk5aUUGkiMiRaMwrzdiJ5nxJChiQYobHQNqGpOYKTS8r0
-         5btE4l7S63623HOjZNc1yMQiF7SKGnqlqU55CuLcxVPN0pMypO/AX7p3pgtWe0pb/EZ8
-         pK6GmAOpSNMa5/WLiDEhOO8QvViCv3vk/aVMRioeadW+qXbMPkL0dCsD13PEIzweWlT/
-         0riQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVlZkkfft6AuNknWUkPSWIl/GYPH0xqWZo4FbFxRlL0ZOeIndwFezyWcl6VFI870mgrsMHW6SeiWN+vaERGFG24iul9
-X-Gm-Message-State: AOJu0YzWVzI0fl70qGlrD4aevLNAtu1KjdNaz3ppB+jA+NxqXqFlGT8L
-	9VWXqnfIeGwOws3z04agJ7y9hAjEy2ro+j9ra0dh2RbybdOsgo4Nb9mp33to5VdMwRab48aa2GO
-	6Nz5Ld/RvTfNXiaWBDVAy3gOlxYU+jho0DdXb00pXfVKHrs4PSQ==
-X-Received: by 2002:a17:906:413:b0:a63:4e95:5639 with SMTP id a640c23a62f3a-a634e95579dmr280208566b.47.1716992675165;
-        Wed, 29 May 2024 07:24:35 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IEoMcMMypUJzk39vMbEP225084t98GDv20PFArbG9E2Gd05mxwJZaA+E/zvafN6DVb5r8Z9aA==
-X-Received: by 2002:a17:906:413:b0:a63:4e95:5639 with SMTP id a640c23a62f3a-a634e95579dmr280206566b.47.1716992674677;
-        Wed, 29 May 2024 07:24:34 -0700 (PDT)
-Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a626c8176e1sm715455666b.8.2024.05.29.07.24.34
+        d=1e100.net; s=20230601; t=1716993155; x=1717597955;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=c8pfVjY3N0YvfyGWCKtQaCGQHSMzwUk6OlNcqAVvSgk=;
+        b=eAqnOTzNThmBjXXPpgIQUDvJoUKvvS9KpiYah6YQNkDExwGk3rWpxH7dyYcga5+lC3
+         tNiCam3wU4CGNQPcQFB5pfPcD+u/iQbL93M6D8I7V15KoWl4bUvMArg1JevJPgO+9iLB
+         LJGGU/UZRXJVxVjXDWy0NVp/ZTlW8y0GPJ1akN890kE5bNNEPGWLN8+j/n7S0gBheoWX
+         MT7egXh3vUhtnc6qJJyo5ZSPhzolY+Xp3XxKr2H4rBlXg1iqjPz708YT+LDV/vh7c9/J
+         NdXJ3bNC4SCehIYrg37n8O52o4fiVdyC32QitCPKwyKuq0FuNFKFbA2gT4Ft5AkH9AKv
+         TFuw==
+X-Forwarded-Encrypted: i=1; AJvYcCUe0z6IkFXK5k5NgXDp1ow/wSWXB3VfBRG5wWwWegXuGS4yV8kffpdqnWB+ZWiSN9qwNv+bmB+UpCVdQusynEBIeMg2
+X-Gm-Message-State: AOJu0Yw6JRJUVKqWbZBbzMncsqWZZA/nTYaxEItX5EUDfAMWq4Iev5y5
+	LOIeob9kiWFKTVEIjD/FojIv36HybwO6xywT2g26pRVBVlFFnHJUPVk3rlcte+Q=
+X-Google-Smtp-Source: AGHT+IEUwk0uKpLzXpRtjkdBL2ciZJRWEWE/oGee9dpShKyJmD7Xq6zpbrYB2/9lN0ss8bGEsHD1fA==
+X-Received: by 2002:a17:906:6bd4:b0:a63:3586:a4ca with SMTP id a640c23a62f3a-a633586a5b0mr412085066b.11.1716993154764;
+        Wed, 29 May 2024 07:32:34 -0700 (PDT)
+Received: from localhost ([102.222.70.76])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a626c93a812sm726509066b.50.2024.05.29.07.32.33
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 29 May 2024 07:24:34 -0700 (PDT)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-	id EFBDF12F7EDE; Wed, 29 May 2024 16:24:33 +0200 (CEST)
-From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To: Thorsten Blum <thorsten.blum@toblux.com>, Alexei Starovoitov
- <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, "David S.
- Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, Jesper
- Dangaard Brouer <hawk@kernel.org>, John Fastabend
- <john.fastabend@gmail.com>, Andrii Nakryiko <andrii@kernel.org>, Martin
- KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>,
- Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, KP
- Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo
- <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>
-Cc: netdev@vger.kernel.org, bpf@vger.kernel.org,
- linux-kernel@vger.kernel.org, Thorsten Blum <thorsten.blum@toblux.com>
-Subject: Re: [PATCH] bpf, devmap: Remove unnecessary if check in for loop
-In-Reply-To: <20240529101900.103913-2-thorsten.blum@toblux.com>
-References: <20240529101900.103913-2-thorsten.blum@toblux.com>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date: Wed, 29 May 2024 16:24:33 +0200
-Message-ID: <874jaghf1a.fsf@toke.dk>
+        Wed, 29 May 2024 07:32:34 -0700 (PDT)
+Date: Wed, 29 May 2024 17:32:30 +0300
+From: Dan Carpenter <dan.carpenter@linaro.org>
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: oe-kbuild@lists.linux.dev, bpf <bpf@vger.kernel.org>,
+	kbuild test robot <lkp@intel.com>, oe-kbuild-all@lists.linux.dev,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@kernel.org>,
+	Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+	Eddy Z <eddyz87@gmail.com>, Kernel Team <kernel-team@fb.com>
+Subject: Re: [PATCH v3 bpf-next 1/2] bpf: Relax precision marking in open
+ coded iters and may_goto loop.
+Message-ID: <6ae809b7-a25e-493b-9488-0bf6e7afbfd0@moroto.mountain>
+References: <20240525031156.13545-1-alexei.starovoitov@gmail.com>
+ <91453e3f-66b0-4927-a756-bd18f9e6bf05@moroto.mountain>
+ <CAADnVQLWbPd2skY1Lzs8oJ=9Ag9e2qD9Khhb4ycQRimZqdeBfA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAADnVQLWbPd2skY1Lzs8oJ=9Ag9e2qD9Khhb4ycQRimZqdeBfA@mail.gmail.com>
 
-Thorsten Blum <thorsten.blum@toblux.com> writes:
+On Mon, May 27, 2024 at 03:44:44PM -0700, Alexei Starovoitov wrote:
+> > 484611357c19f9 Josef Bacik        2016-09-28  15313     if (BPF_SRC(insn->code) == BPF_X) {
+> > 5f99f312bd3bed Andrii Nakryiko    2023-11-11  15314             err = reg_set_min_max(env,
+> > 689049426b9d3b Alexei Starovoitov 2024-05-24 @15315                                   other_dst_reg, other_src_reg,
+> >                                                                                       ^^^^^^^^^^^^^
+> >
+> > 4621202adc5bc0 Andrii Nakryiko    2023-11-01  15316                                   dst_reg, src_reg, opcode, is_jmp32);
+> > 4621202adc5bc0 Andrii Nakryiko    2023-11-01  15317     } else /* BPF_SRC(insn->code) == BPF_K */ {
+> > 5f99f312bd3bed Andrii Nakryiko    2023-11-11  15318             err = reg_set_min_max(env,
+> > 689049426b9d3b Alexei Starovoitov 2024-05-24  15319                                   other_dst_reg,
+> >                                                                                       ^^^^^^^^^^^^^
+> > Passed to reg_set_min_max() without being initialized.
+> 
+> No. It's initialized when passed. It's a false positive.
+> Try to make smatch smarter?
 
-> The iterator variable dst cannot be NULL and the if check can be
-> removed.
->
-> Remove it and fix the following Coccinelle/coccicheck warning reported
-> by itnull.cocci:
->
-> 	ERROR: iterator variable bound on line 762 cannot be NULL
->
-> Signed-off-by: Thorsten Blum <thorsten.blum@toblux.com>
+Ah yes.  I didn't read it carefully enough.
 
-Reviewed-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
+The kbuild bot doesn't use cross function analysis.  So it didn't know
+that pred can only be -1, 0, or 1.  If you have cross function analysis
+this should work.  Unfortunately cross function analysis is too slow to
+scale enough for the zero day bot.
+
+regards,
+dan carpenter
+
 
 
