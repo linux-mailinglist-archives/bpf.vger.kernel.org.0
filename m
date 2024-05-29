@@ -1,59 +1,59 @@
-Return-Path: <bpf+bounces-30853-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-30854-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id EB4F18D3C8D
-	for <lists+bpf@lfdr.de>; Wed, 29 May 2024 18:32:25 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id AAB258D3C8E
+	for <lists+bpf@lfdr.de>; Wed, 29 May 2024 18:32:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9398028862E
-	for <lists+bpf@lfdr.de>; Wed, 29 May 2024 16:32:24 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DB9371C23EAA
+	for <lists+bpf@lfdr.de>; Wed, 29 May 2024 16:32:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D1D901A38E8;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE5641A38F1;
 	Wed, 29 May 2024 16:29:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="Trwtg++c";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="n0TUtsOy"
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="TwEDAwx7";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="IbnYqrEe"
 X-Original-To: bpf@vger.kernel.org
 Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 174D718734A;
-	Wed, 29 May 2024 16:29:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 97F32199EA9;
+	Wed, 29 May 2024 16:29:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717000182; cv=none; b=A3O/c5IguGzWIKFFJUAXQg9f87Qvwk5KjPq0V8B70vcXcBku+zuwLj6m/wCwdUCPWgARAUmXw5Ey/wyD7vb9fvRh4wTZcQu4+4YRc8vjauVHJHALf2jeBp9+VwxpLKSfnpmtqvp9j13p+eK0fkVK5hrXfHwrAeMYjp7BU2gj6vE=
+	t=1717000182; cv=none; b=UCP0NsamtZ0sD52Tv5Cn+Z9uyOaMFhtppsmAdizLSoQT0ONxMKu3eQXfKR+6n6qzuahZ8jzwRMKMcvwVCWJx9tOfwcMMBCnHCDQWagpe+WIhusd+0IeAX/1kO8jpKikyLOAsfEh+TPYOV7WGAVZAx7sgUF0e0JGxIJmVOBicUi0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1717000182; c=relaxed/simple;
-	bh=f49pIcC90uouPuwDyv/aXW+vyT3FgClyt0ZYDNCGKRw=;
+	bh=fxJVmdO1CTi7V8vAAKfth09PKKmQR961Uj2IUC0/xxM=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=huXHBQkP8N7yW+FQiTnkSl72UPpANr1Ch+Ld8CZHjwjkRxBpIPRTle0tE/VpnGc26rQDjY/brYw9RH1PQa9bZSgFDFh6JrlXOO55K1uI/KneCTgNY0wHIbDatmtPhhgLcHWXk6MCWNLjNNf4wbYshjm5Hd8i38TF+ARdKM77/18=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=Trwtg++c; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=n0TUtsOy; arc=none smtp.client-ip=193.142.43.55
+	 MIME-Version; b=Ao0vWSAfUljwJd0CuhQmNRIWjlOHOAk2B6NBH4PPVf4MJ5/kj6sO7t7y+BVPxrPswm673ub+XfJlmQYz08G1Hgx6dpoJpSZoEPJkUtRoytka8DXr99sAVpWCPlRbzMnZPQPbALaMg+W3qMCVSihztYAIGc+yQSzKjUCjQRrcYHc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=TwEDAwx7; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=IbnYqrEe; arc=none smtp.client-ip=193.142.43.55
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
 From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1717000178;
+	s=2020; t=1717000179;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=NFjC1AYiTOqw3rC3z2gomjP0qeae2FRXS7jgtGN7DWk=;
-	b=Trwtg++cfNHUfE0NU2KKHRhu7GtNnhxoYwtbPpAKs7aga7celcdDm2hIr7DFTw4PH5iU3d
-	CAx7v5ZYkHbiFSIVs80ulDN2vR0YezMuRaQc19/hU9IAEBD5WYtLIThn5dvknsvC++pm6h
-	G0Kjug/UcnP+StLrQpAftMKOVYvz3IpgEvJFo16SKTGa3RNJcTPrVCBA2QnzqqZswNnDhn
-	OtJgXJZ0kNvtA3h8boFgs2WhAH3MCUWb7jwFONX7kixNMbljzd1jShfEfk1nT5RuWUPqkU
-	Fvq0DwJdqAeTYjOG5Nsu3HGjX1692045ZlrfT/EsiTJNeQ9uqytVUM2JovM9cw==
+	bh=hJt9gmCzXKZq1/EDvJLFPCVcIT0BYHNB+LSrBaTimp0=;
+	b=TwEDAwx7ARzPeMjReH8HhvWvqUfhfTXjvztXEF5dbScZcc0x62YozqRWO1yU5XK8RdZh1u
+	y7/q5XpP0iFkYFyRVwEFg8ZuDjxWCN0fw8C2/3kiJEsLIpE52XQwgLQoKJ5ZOL3L1aEy6O
+	GsEd6nIfWHBc55YzrrinIXpJC7M6Zzt/gYdMTIlZBwgSwU19BNYpdD5XkeTuvywzhC0NRo
+	hrThz0X6Hvj6dJVAeV/iyOL1ToXZKqHbJIXhITRNHNzfd1plSJ+SdsXyjDXnG9Xo6b5xB8
+	HT6dOav8wokLQcAljmKKNaS7bRVOrxPgYku2ZTuKDCqeeUBuhAoXR6i/DCiVMQ==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1717000178;
+	s=2020e; t=1717000179;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=NFjC1AYiTOqw3rC3z2gomjP0qeae2FRXS7jgtGN7DWk=;
-	b=n0TUtsOyhxnec/bKE73DTV9qzdwIOG3gx4kIE62wYOmW7o4eEKMumgf5CS7nCrXnezqFeP
-	Kb5Y+2DMwbtKEJDw==
+	bh=hJt9gmCzXKZq1/EDvJLFPCVcIT0BYHNB+LSrBaTimp0=;
+	b=IbnYqrEe2vJffzwqDYM3f8oH8QEk+orIrQVt16u2C6VGNlAChyFXLuxBTRX8zgaC7Tdqmr
+	qPPO+jOweOb1M8CA==
 To: linux-kernel@vger.kernel.org,
 	netdev@vger.kernel.org
 Cc: "David S. Miller" <davem@davemloft.net>,
@@ -71,7 +71,6 @@ Cc: "David S. Miller" <davem@davemloft.net>,
 	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
 	Alexei Starovoitov <ast@kernel.org>,
 	Andrii Nakryiko <andrii@kernel.org>,
-	David Ahern <dsahern@kernel.org>,
 	Hao Luo <haoluo@google.com>,
 	Jiri Olsa <jolsa@kernel.org>,
 	John Fastabend <john.fastabend@gmail.com>,
@@ -81,9 +80,9 @@ Cc: "David S. Miller" <davem@davemloft.net>,
 	Stanislav Fomichev <sdf@google.com>,
 	Yonghong Song <yonghong.song@linux.dev>,
 	bpf@vger.kernel.org
-Subject: [PATCH v3 net-next 12/15] seg6: Use nested-BH locking for seg6_bpf_srh_states.
-Date: Wed, 29 May 2024 18:02:35 +0200
-Message-ID: <20240529162927.403425-13-bigeasy@linutronix.de>
+Subject: [PATCH v3 net-next 13/15] net: Use nested-BH locking for bpf_scratchpad.
+Date: Wed, 29 May 2024 18:02:36 +0200
+Message-ID: <20240529162927.403425-14-bigeasy@linutronix.de>
 In-Reply-To: <20240529162927.403425-1-bigeasy@linutronix.de>
 References: <20240529162927.403425-1-bigeasy@linutronix.de>
 Precedence: bulk
@@ -94,34 +93,16 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 
-The access to seg6_bpf_srh_states is protected by disabling preemption.
-Based on the code, the entry point is input_action_end_bpf() and
-every other function (the bpf helper functions bpf_lwt_seg6_*()), that
-is accessing seg6_bpf_srh_states, should be called from within
-input_action_end_bpf().
+bpf_scratchpad is a per-CPU variable and relies on disabled BH for its
+locking. Without per-CPU locking in local_bh_disable() on PREEMPT_RT
+this data structure requires explicit locking.
 
-input_action_end_bpf() accesses seg6_bpf_srh_states first at the top of
-the function and then disables preemption. This looks wrong because if
-preemption needs to be disabled as part of the locking mechanism then
-the variable shouldn't be accessed beforehand.
-
-Looking at how it is used via test_lwt_seg6local.sh then
-input_action_end_bpf() is always invoked from softirq context. If this
-is always the case then the preempt_disable() statement is superfluous.
-If this is not always invoked from softirq then disabling only
-preemption is not sufficient.
-
-Replace the preempt_disable() statement with nested-BH locking. This is
-not an equivalent replacement as it assumes that the invocation of
-input_action_end_bpf() always occurs in softirq context and thus the
-preempt_disable() is superfluous.
-Add a local_lock_t the data structure and use local_lock_nested_bh() in
-guard notation for locking. Add lockdep_assert_held() to ensure the lock
-is held while the per-CPU variable is referenced in the helper functions.
+Add a local_lock_t to the data structure and use local_lock_nested_bh()
+for locking. This change adds only lockdep coverage and does not alter
+the functional behaviour for !PREEMPT_RT.
 
 Cc: Alexei Starovoitov <ast@kernel.org>
 Cc: Andrii Nakryiko <andrii@kernel.org>
-Cc: David Ahern <dsahern@kernel.org>
 Cc: Hao Luo <haoluo@google.com>
 Cc: Jiri Olsa <jolsa@kernel.org>
 Cc: John Fastabend <john.fastabend@gmail.com>
@@ -133,124 +114,36 @@ Cc: Yonghong Song <yonghong.song@linux.dev>
 Cc: bpf@vger.kernel.org
 Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 ---
- include/net/seg6_local.h |  1 +
- net/core/filter.c        |  3 +++
- net/ipv6/seg6_local.c    | 22 ++++++++++++++--------
- 3 files changed, 18 insertions(+), 8 deletions(-)
+ net/core/filter.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-diff --git a/include/net/seg6_local.h b/include/net/seg6_local.h
-index 3fab9dec2ec45..888c1ce6f5272 100644
---- a/include/net/seg6_local.h
-+++ b/include/net/seg6_local.h
-@@ -19,6 +19,7 @@ extern int seg6_lookup_nexthop(struct sk_buff *skb, struc=
-t in6_addr *nhaddr,
- extern bool seg6_bpf_has_valid_srh(struct sk_buff *skb);
-=20
- struct seg6_bpf_srh_state {
-+	local_lock_t bh_lock;
- 	struct ipv6_sr_hdr *srh;
- 	u16 hdrlen;
- 	bool valid;
 diff --git a/net/core/filter.c b/net/core/filter.c
-index 7c46ecba3b01b..ba1a739a9bedc 100644
+index ba1a739a9bedc..d6cf1a63c3f43 100644
 --- a/net/core/filter.c
 +++ b/net/core/filter.c
-@@ -6450,6 +6450,7 @@ BPF_CALL_4(bpf_lwt_seg6_store_bytes, struct sk_buff *=
-, skb, u32, offset,
- 	void *srh_tlvs, *srh_end, *ptr;
- 	int srhoff =3D 0;
+@@ -1658,9 +1658,12 @@ struct bpf_scratchpad {
+ 		__be32 diff[MAX_BPF_STACK / sizeof(__be32)];
+ 		u8     buff[MAX_BPF_STACK];
+ 	};
++	local_lock_t	bh_lock;
+ };
 =20
-+	lockdep_assert_held(&srh_state->bh_lock);
- 	if (srh =3D=3D NULL)
- 		return -EINVAL;
-=20
-@@ -6506,6 +6507,7 @@ BPF_CALL_4(bpf_lwt_seg6_action, struct sk_buff *, skb,
- 	int hdroff =3D 0;
- 	int err;
-=20
-+	lockdep_assert_held(&srh_state->bh_lock);
- 	switch (action) {
- 	case SEG6_LOCAL_ACTION_END_X:
- 		if (!seg6_bpf_has_valid_srh(skb))
-@@ -6582,6 +6584,7 @@ BPF_CALL_3(bpf_lwt_seg6_adjust_srh, struct sk_buff *,=
- skb, u32, offset,
- 	int srhoff =3D 0;
- 	int ret;
-=20
-+	lockdep_assert_held(&srh_state->bh_lock);
- 	if (unlikely(srh =3D=3D NULL))
- 		return -EINVAL;
-=20
-diff --git a/net/ipv6/seg6_local.c b/net/ipv6/seg6_local.c
-index 24e2b4b494cb0..c4828c6620f07 100644
---- a/net/ipv6/seg6_local.c
-+++ b/net/ipv6/seg6_local.c
-@@ -1380,7 +1380,9 @@ static int input_action_end_b6_encap(struct sk_buff *=
-skb,
- 	return err;
- }
-=20
--DEFINE_PER_CPU(struct seg6_bpf_srh_state, seg6_bpf_srh_states);
-+DEFINE_PER_CPU(struct seg6_bpf_srh_state, seg6_bpf_srh_states) =3D {
+-static DEFINE_PER_CPU(struct bpf_scratchpad, bpf_sp);
++static DEFINE_PER_CPU(struct bpf_scratchpad, bpf_sp) =3D {
 +	.bh_lock	=3D INIT_LOCAL_LOCK(bh_lock),
 +};
 =20
- bool seg6_bpf_has_valid_srh(struct sk_buff *skb)
- {
-@@ -1388,6 +1390,7 @@ bool seg6_bpf_has_valid_srh(struct sk_buff *skb)
- 		this_cpu_ptr(&seg6_bpf_srh_states);
- 	struct ipv6_sr_hdr *srh =3D srh_state->srh;
+ static inline int __bpf_try_make_writable(struct sk_buff *skb,
+ 					  unsigned int write_len)
+@@ -2029,6 +2032,7 @@ BPF_CALL_5(bpf_csum_diff, __be32 *, from, u32, from_s=
+ize,
+ 		     diff_size > sizeof(sp->diff)))
+ 		return -EINVAL;
 =20
-+	lockdep_assert_held(&srh_state->bh_lock);
- 	if (unlikely(srh =3D=3D NULL))
- 		return false;
-=20
-@@ -1408,8 +1411,7 @@ bool seg6_bpf_has_valid_srh(struct sk_buff *skb)
- static int input_action_end_bpf(struct sk_buff *skb,
- 				struct seg6_local_lwt *slwt)
- {
--	struct seg6_bpf_srh_state *srh_state =3D
--		this_cpu_ptr(&seg6_bpf_srh_states);
-+	struct seg6_bpf_srh_state *srh_state;
- 	struct ipv6_sr_hdr *srh;
- 	int ret;
-=20
-@@ -1420,10 +1422,14 @@ static int input_action_end_bpf(struct sk_buff *skb,
- 	}
- 	advance_nextseg(srh, &ipv6_hdr(skb)->daddr);
-=20
--	/* preempt_disable is needed to protect the per-CPU buffer srh_state,
--	 * which is also accessed by the bpf_lwt_seg6_* helpers
-+	/* The access to the per-CPU buffer srh_state is protected by running
-+	 * always in softirq context (with disabled BH). On PREEMPT_RT the
-+	 * required locking is provided by the following local_lock_nested_bh()
-+	 * statement. It is also accessed by the bpf_lwt_seg6_* helpers via
-+	 * bpf_prog_run_save_cb().
- 	 */
--	preempt_disable();
-+	local_lock_nested_bh(&seg6_bpf_srh_states.bh_lock);
-+	srh_state =3D this_cpu_ptr(&seg6_bpf_srh_states);
- 	srh_state->srh =3D srh;
- 	srh_state->hdrlen =3D srh->hdrlen << 3;
- 	srh_state->valid =3D true;
-@@ -1446,15 +1452,15 @@ static int input_action_end_bpf(struct sk_buff *skb,
-=20
- 	if (srh_state->srh && !seg6_bpf_has_valid_srh(skb))
- 		goto drop;
-+	local_unlock_nested_bh(&seg6_bpf_srh_states.bh_lock);
-=20
--	preempt_enable();
- 	if (ret !=3D BPF_REDIRECT)
- 		seg6_lookup_nexthop(skb, NULL, 0);
-=20
- 	return dst_input(skb);
-=20
- drop:
--	preempt_enable();
-+	local_unlock_nested_bh(&seg6_bpf_srh_states.bh_lock);
- 	kfree_skb(skb);
- 	return -EINVAL;
- }
++	guard(local_lock_nested_bh)(&bpf_sp.bh_lock);
+ 	for (i =3D 0; i < from_size / sizeof(__be32); i++, j++)
+ 		sp->diff[j] =3D ~from[i];
+ 	for (i =3D 0; i <   to_size / sizeof(__be32); i++, j++)
 --=20
 2.45.1
 
