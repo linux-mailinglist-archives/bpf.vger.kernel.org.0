@@ -1,176 +1,233 @@
-Return-Path: <bpf+bounces-30814-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-30815-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id C7B2B8D2A24
-	for <lists+bpf@lfdr.de>; Wed, 29 May 2024 03:55:56 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9E8848D2AB4
+	for <lists+bpf@lfdr.de>; Wed, 29 May 2024 04:18:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2EFBBB26A4F
-	for <lists+bpf@lfdr.de>; Wed, 29 May 2024 01:55:54 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 53F122854BA
+	for <lists+bpf@lfdr.de>; Wed, 29 May 2024 02:18:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4119615AAD7;
-	Wed, 29 May 2024 01:55:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9133B15ADB4;
+	Wed, 29 May 2024 02:18:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=sipanda-io.20230601.gappssmtp.com header.i=@sipanda-io.20230601.gappssmtp.com header.b="I0rPraVk"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Rv4Cwxou"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ua1-f45.google.com (mail-ua1-f45.google.com [209.85.222.45])
+Received: from mail-oa1-f48.google.com (mail-oa1-f48.google.com [209.85.160.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 040B713E41D
-	for <bpf@vger.kernel.org>; Wed, 29 May 2024 01:55:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB09C2F2A
+	for <bpf@vger.kernel.org>; Wed, 29 May 2024 02:18:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716947745; cv=none; b=D/VNE/yAdezvebDG7ap7pbU+k1cNUFzdjON4tBe+FiZPa/AFzKysJXki8cT6vkFI+zZfIqj6bjJUTGV6+/mdExHW+Ub7jDq+rUUQP9ZPbzDSvK5HHkz6c3d2gDyYofS5/pXM9Xbr5ucaMFDWN0M6Rk+IQyjRjp/t6WZ+xmeKMNM=
+	t=1716949091; cv=none; b=mMzkjHNDVkOhZlB5UpOr1jWDuRwizgDZnLYpYpb6Et+cFyeEGdnJ19KJZD6Ec9kJoxi+q6j+E6bW/6ezRY47FqLTwam+ZslfuoE5sTQ8JIq16+KDXZor5Rzjbk4rOuuxeUNdp62cN/vYtH7QxZWEyFjMzAz2KKU+rFsviAltJb0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716947745; c=relaxed/simple;
-	bh=gl5d94vCrFp3d6iHTt10IDlGno2r7cIf6q1g+eLycX8=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=apKi0RQp7zoEiLpbP6FPdXNFAh96SIciemU0cpppCnpUAqB3MpWie1xyidIpRjpQ9rW7sA4nVxTisKPSl2rSyd+vHU5oCrJwe8/37szeH96DLeDOwdzXyLQ9Ac42oJCV9P/v/xXK0Nbs1emYyukGOQL6Pt3p2vss+SZZwj1KNeM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sipanda.io; spf=pass smtp.mailfrom=sipanda.io; dkim=pass (2048-bit key) header.d=sipanda-io.20230601.gappssmtp.com header.i=@sipanda-io.20230601.gappssmtp.com header.b=I0rPraVk; arc=none smtp.client-ip=209.85.222.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sipanda.io
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sipanda.io
-Received: by mail-ua1-f45.google.com with SMTP id a1e0cc1a2514c-804cb4ad47dso216418241.0
-        for <bpf@vger.kernel.org>; Tue, 28 May 2024 18:55:43 -0700 (PDT)
+	s=arc-20240116; t=1716949091; c=relaxed/simple;
+	bh=EgYl1HMPH5m33eOAq3Ik89tKYoe2oZzg7V9cZLnBNQ4=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=dslS50SG/jB4YvVvkN4jGH7f7kNuhag2X1H1UF9bMX9R/IH1oxjj26pRfzmrBRV7uK56WjlhP/miWPSuukyQOQFsvFUNwygmkmaW/BO6AjoD4JxdVxbbs+sZbJISy0Rs/4JnHBRfC9XkezN//uO4+L4w9kN5INIIEiXfidKTzN4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Rv4Cwxou; arc=none smtp.client-ip=209.85.160.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oa1-f48.google.com with SMTP id 586e51a60fabf-24542b8607fso707842fac.1
+        for <bpf@vger.kernel.org>; Tue, 28 May 2024 19:18:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sipanda-io.20230601.gappssmtp.com; s=20230601; t=1716947743; x=1717552543; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=e9VpmvbG8RAKWbbKskbeNWoxWX+Wed3L4uHFkBsflys=;
-        b=I0rPraVkOp9SJ+/+04sar7z+NQuhwrRVKdyskRczuBcqdmx+jemeexDB95jOBVkHnv
-         YbaXxp5lQLeBEqop+I6WMjFEn7e77CN4Wx1zsFALQRHLn+NBMKHF02+P8peVHIQZZ08W
-         QDtRXV4O3KrjcHr/g9kwu2a8e9vFzNIIIRRwAxBn2ohfv0IR2ZrPwyDvrhafHq8spKet
-         +oiHywdmrszvpuDZX6zUleFiPXpEk+0E00TaaQrzL4YUpSrOocRdS8PNYDU2O4B7Lq4j
-         rOs4VAadiqLAUE4qYGYL7HThTgpoa46zAvHIFcK0y3MEoFArRcPtx7JSpYu/SplICs34
-         0iwg==
+        d=gmail.com; s=20230601; t=1716949089; x=1717553889; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=4EIorbBUKOzHauWJM1q8p0DMkTlkQdz3nlZ3/nrPOLw=;
+        b=Rv4CwxouTfnNZgncVoxUwpZEutl4hyGAko9qEsNMgKVyihlNmv94blOnXYDxzGy9hv
+         mMPYzVeibualF7T92RawYXP9TmR2O/khOUH7copdJky83txOa6+d4V+JD13mgsgW5fgk
+         5NclOW7UaxvfkA3pnjDClLvNnaQ8Vq/Z18+CO89S04Jnh4gb8Dd6jNvcdI0TmlQrxN64
+         Q3iHZygR6mqzesTVSdpFhYdaYRIrSfe4WA9wzjRhkx20c/Nycu5/zZxTWxUeVOyd7Gz7
+         ISfZ6Sqv0MwBpx+eB5NtBb7MAdU1BNb7m/Pf+EYR6QNOyNBifiX7UotZG2QSG+IlufH9
+         Lbyw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1716947743; x=1717552543;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=e9VpmvbG8RAKWbbKskbeNWoxWX+Wed3L4uHFkBsflys=;
-        b=dduYHcY/NeksI+EnZkBpGQdIMFZ+4e4trebgBsC5qKwAFh3b81Q3b8ebmMcTExPuHR
-         OiOwdPA6lauzp5BAE6kZ9gX4oXbU+QSv/NrzngGpZbw7drRz4n6W5/Ai0y+3WC6yyj+1
-         olikjqvnSSnuq8wjTgJTepKH/un/bpCrnv+WsI7JM82DahMEQiztRmIGhF3n9Milrb3m
-         9IR43aKdSvFYYOjfOmcm7cJ+Ho4KzdoFgril19DL9vB7aKh6tHo+5pfizc4zGTnAS631
-         mS4IJG6AUsyguzPa53d2w7N2eamJVuoF4aM+T3gk37gg2dhBzSFxl0MB3ffiNwRGl0An
-         juSg==
-X-Forwarded-Encrypted: i=1; AJvYcCVefeh/qh5zIL5zuZy9901aJonpNOeBGNhbS1TPM2zm5jDgnbrcPqwWt9alMFDyDCVo4C3oWYBlpv4oOM/LvHuicuEM
-X-Gm-Message-State: AOJu0YzI4RDBM0x/NJ90avMTWkG+QfRReCF+ruRUgnpwn7cVbR2djUrL
-	0w9e1/wjpAQTzhiIG1pBmMS28pyf9lHvgyR0VkW3WaZLTlVrDM1xaOuTmglO6Qjji5PiJuugUgt
-	XNpOI7yMz103CfNVBC5VCob6xmgNYI+CW7XEJWA==
-X-Google-Smtp-Source: AGHT+IH0HQSeva4lisoe/8jexKhm+YJfWr9Hmhs8L8dSz4wr8FenbE0Zu9XFfBoSGGnEFw6pQzkeWSt11g57RTCTZ2o=
-X-Received: by 2002:a67:c598:0:b0:48b:a0b2:f6f9 with SMTP id
- ada2fe7eead31-48ba0b2f842mr243749137.12.1716947741285; Tue, 28 May 2024
- 18:55:41 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1716949089; x=1717553889;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=4EIorbBUKOzHauWJM1q8p0DMkTlkQdz3nlZ3/nrPOLw=;
+        b=dQ/ZwVX+3+B89TBJKB1PWj2F/hpNtF+hgFBt+sNu95Af3+AcWHGsx847Jq/MF8dVAq
+         4pg6D8VxCdm2NFiCwV+N5R2EoBBM9EfSfQVTbPrZnKJF3f/HokcIuI2oxUx+MSqFVyog
+         Dl7M/cicOu/5oKRoQa6Lk4cwhP5wNeiGmoN4ozbzVw9l1WXPq79t+N4WFQXbxSqihkTQ
+         eIznMwU258HTBfDjsTr6VcO0Vg6ePEe5qaJZwu9chGH8xIJRvOj0wKlcD76oeY/Ppio9
+         XpbzPGGSd3C937Mss6Vka7JIYV+sdCqro974qkgiKHOO+oO5K4nj+47dbKedomeWezt9
+         A+ag==
+X-Gm-Message-State: AOJu0Yz6z3gjR+BEbKp7Az1ovgViDxd/JYU7XavmDHaeskNLJTg+CvuN
+	drtJ28NGTMVQLb+7tRA7CJhRrmGEnCO8Hk88Qbpg1Tq11mujlGGx
+X-Google-Smtp-Source: AGHT+IENNHPPY9DW2ldU1se5GNDwmDIiKDn4fYScOfRrQOmqr4ZpdDJ5D9aIzGS7MDhMFZgfg4Fjcw==
+X-Received: by 2002:a05:6870:a2c9:b0:24f:c6d7:6aae with SMTP id 586e51a60fabf-24fc6d7788emr11907747fac.35.1716949088481;
+        Tue, 28 May 2024 19:18:08 -0700 (PDT)
+Received: from ?IPv6:2604:3d08:6979:1160::3424? ([2604:3d08:6979:1160::3424])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-6f8fc36e5f1sm7263279b3a.94.2024.05.28.19.18.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 28 May 2024 19:18:07 -0700 (PDT)
+Message-ID: <a8612f7bada4cf00d47e74c1507f9ad262e8a08f.camel@gmail.com>
+Subject: Re: [PATCH v3 bpf-next 1/2] bpf: Relax precision marking in open
+ coded iters and may_goto loop.
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: bpf <bpf@vger.kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+ Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau
+ <martin.lau@kernel.org>, Kumar Kartikeya Dwivedi <memxor@gmail.com>, Kernel
+ Team <kernel-team@fb.com>
+Date: Tue, 28 May 2024 19:18:06 -0700
+In-Reply-To: <ceec0883544b6855b7d1fda2884de775414a56c4.camel@gmail.com>
+References: <20240525031156.13545-1-alexei.starovoitov@gmail.com>
+	 <90874d4e32e7fe937c6774ad34d1617592b8abc8.camel@gmail.com>
+	 <CAADnVQJdaQT_KPEjvmniCTeUed3jY0mzDNLUhKbFjpbjApMJrA@mail.gmail.com>
+	 <ceec0883544b6855b7d1fda2884de775414a56c4.camel@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.44.4-0ubuntu2 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240410140141.495384-1-jhs@mojatatu.com> <41736ea4e81666e911fee5b880d9430ffffa9a58.camel@redhat.com>
- <CAM0EoM=982OctjvSQpx0kR7e+JnQLhvZ=sM-tNB4xNiu7nhH5Q@mail.gmail.com>
- <CAM0EoM=VhVn2sGV40SYttQyaiCn8gKaKHTUqFxB_WzKrayJJfQ@mail.gmail.com>
- <87cf4830e2e46c1882998162526e108fb424a0f7.camel@redhat.com>
- <CAM0EoMkJwR0K-fF7qo0PfRw4Sf+=2L0L=rOcH5A2ELwagLrZMw@mail.gmail.com>
- <CAM0EoMmfDoZ9_ZdK-ZjHjFAjuNN8fVK+R57_UaFqAm=wA0AWVA@mail.gmail.com>
- <82ee1013ca0164053e9fb1259eaf676343c430e8.camel@redhat.com>
- <CAADnVQLugkg+ahAapskRaE86=RnwpY8v=Nre8pn=sa4fTEoTyA@mail.gmail.com>
- <CAM0EoM=2wHem54vTeVq4H1W5pawYuHNt-aS9JyG8iQORbaw5pA@mail.gmail.com>
- <CAM0EoMmCz5usVSLq_wzR3s7UcaKifa-X58zr6hkPXuSBnwFX3w@mail.gmail.com>
- <CAM0EoMmsB5jHZ=4oJc_Yzm=RFDUHWh9yexdG6_bPFS4_CFuiog@mail.gmail.com>
- <20240522151933.6f422e63@kernel.org> <CAM0EoMmFrp5X5OzMbum5i_Bjng7Bhtk1YvWpacW6FV6Oy-3avg@mail.gmail.com>
- <CO1PR11MB499350FC06A5B87E4C770CCE93F42@CO1PR11MB4993.namprd11.prod.outlook.com>
- <MW4PR12MB71927C9E4B94871B45F845DF97F52@MW4PR12MB7192.namprd12.prod.outlook.com>
- <MW4PR12MB719209644426A0F5AE18D2E897F62@MW4PR12MB7192.namprd12.prod.outlook.com>
- <66563bc85f5d0_2f7f2087@john.notmuch> <CO1PR11MB49932999F5467416D4F7197693F12@CO1PR11MB4993.namprd11.prod.outlook.com>
- <66566c7c6778d_52e720851@john.notmuch>
-In-Reply-To: <66566c7c6778d_52e720851@john.notmuch>
-From: Tom Herbert <tom@sipanda.io>
-Date: Tue, 28 May 2024 18:55:29 -0700
-Message-ID: <CAOuuhY9SU5WbFjF2BjT3JgZ2Oz7Bm+ZtvA4RVdfV+WOV4j6n4g@mail.gmail.com>
-Subject: IR for Programmable Datapaths [WAS Re: On the NACKs on P4TC patches]
-To: John Fastabend <john.fastabend@gmail.com>
-Cc: "Singhai, Anjali" <anjali.singhai@intel.com>, "Jain, Vipin" <Vipin.Jain@amd.com>, 
-	"Hadi Salim, Jamal" <jhs@mojatatu.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
-	Alexei Starovoitov <alexei.starovoitov@gmail.com>, Network Development <netdev@vger.kernel.org>, 
-	"Chatterjee, Deb" <deb.chatterjee@intel.com>, "Limaye, Namrata" <namrata.limaye@intel.com>, 
-	Marcelo Ricardo Leitner <mleitner@redhat.com>, "Shirshyad, Mahesh" <Mahesh.Shirshyad@amd.com>, 
-	"Osinski, Tomasz" <tomasz.osinski@intel.com>, Jiri Pirko <jiri@resnulli.us>, 
-	Cong Wang <xiyou.wangcong@gmail.com>, "David S. Miller" <davem@davemloft.net>, 
-	Eric Dumazet <edumazet@google.com>, Vlad Buslov <vladbu@nvidia.com>, Simon Horman <horms@kernel.org>, 
-	Khalid Manaa <khalidm@nvidia.com>, =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>, 
-	Victor Nogueira <victor@mojatatu.com>, "Tammela, Pedro" <pctammela@mojatatu.com>, 
-	"Daly, Dan" <dan.daly@intel.com>, Andy Fingerhut <andy.fingerhut@gmail.com>, 
-	"Sommers, Chris" <chris.sommers@keysight.com>, Matty Kadosh <mattyk@nvidia.com>, 
-	bpf <bpf@vger.kernel.org>, "lwn@lwn.net" <lwn@lwn.net>, 
-	Felipe Magno de Almeida <felipe@sipanda.io>, 
-	Julio De Bastiani <julio.bastiani@expertisesolutions.com.br>
-Content-Type: text/plain; charset="UTF-8"
 
-> None of above requires P4TC. For different architectures you
-> build optimal backend compilers. You have a Xilenx backend,
-> an Intel backend, and a Linux CPU based backend. I see no
-> reason to constrain the software case to map to a pipeline
-> model for example. Software running on a CPU has very different
-> characteristics from something running on a TOR, or FPGA.
-> Trying to push all these into one backend "model" will result
-> in suboptimal result for every target. At the end of the
-> day my .02$, P4 is a DSL it needs a target dependent compiler
-> in front of it. I want to optimize my software pipeline the
-> compiler should compress tables as much as possible and
-> search for a O(1) lookup even if getting that key is somewhat
-> expensive. Conversely a TCAM changes the game. An FPGA is
-> going to be flexible and make lots of tradeoffs here of which
-> I'm not an expert. Also by avoiding loading the DSL into the kernel
-> you leave room for others to build new/better/worse DSLs as they
-> please.
->
+On Tue, 2024-05-28 at 18:08 -0700, Eduard Zingerman wrote:
 
-I think the general ask here is to define an Intermediate
-Representation that describes a programmed data path where it's a
-combination of declarative and imperative elements (parsers and table
-descriptions are better in declarative representation, functional
-logic seems more imperative). We also want references to accelerators
-with dynamic runtime binding to hardware (there are some interesting
-tricks we can do in the loader for a CPU target-- will talk about at
-Netdev). With a good IR we can decouple the frontend from the backend
-target which enables mixing and matching programming languages with
-arbitrary HW or SW targets. So a good IR potentially enables a lot of
-flexibility and freedom on both sides of the equation.
+[...]
 
-An IR also facilitates reasonable kernel offload via signing images
-with a hash of the IR. So for instance, a frontend compiler could
-compile a P4 program into the IR. That code could then be compiled
-into a SW target, say eBPF, and maybe P4 hardware. Each image has the
-hash of the IR. At runtime, the eBPF code could be loaded into the
-kernel. The hardware image can be loaded into the device using a side
-band mechanism. To offload, we would query the device-- if the hash
-reported by the device matches the hash in the eBPF then we know that
-the offload is viable. No jits, no pushing firmware bits through the
-kernel, no need for device capabilities flags, and avoids the pitfalls
-of TC flower.
+> > Because your guess at the reason for the verifier reject is not correct=
+.
+> > It's signed stuff that is causing issues.
+> > s/int i/__u32 i/
+> > and this test is passing the verifier with just 143 insn processed.
+>=20
+> I'm reading through verifier log, will get back shortly.
 
-There is one challenge here in how to deal with offloads that are
-already integrated into the kernel. I think GRO is a great example.
-GRO has been especially elusive as an offload since it requires a
-device to autonomously parse packets on input.  We really want a GRO
-offload that parses the same exact protocols the kernel does
-(including encapsulations), but also implements the exact same logic
-in timers and pushing reassembled segments. So this needs to be
-programmable. The problem with the technique I described is that GRO
-is integrated into the kernel so we have no basis for a hash. I think
-the answer here is to start replacing fixed kernel C code with eBPF
-even in the critical path (we already talked about replacing flow
-dissector with eBPF).
+Ok, so it is a bit more subtle than I thought.
+Comparing verification log for master and v3 here is the state in
+which they diverge and v3 rejects the program:
 
-Anyway, we have been working on this. There's Common Parser
-Representation in json (formerly known CPL that we talked about at
-Netdev). For execution logic, LLVM IR seems fine (btrw, MLIR is really
-useful by the way!). We're just starting to look at tables (probably
-also json). If there's interest I could share more...
+    from 14 to 15: R0=3Drdonly_mem(id=3D6,ref_obj_id=3D1,sz=3D4) R6=3Dscala=
+r(id=3D5) R7=3D2
+                   R10=3Dfp0 fp-8=3Diter_num(ref_id=3D1,state=3Dactive,dept=
+h=3D3) refs=3D1
+    15: R0=3Drdonly_mem(id=3D6,ref_obj_id=3D1,sz=3D4) R6=3Dscalar(id=3D5)
+        R7=3D2 R10=3Dfp0 fp-8=3Diter_num(ref_id=3D1,state=3Dactive,depth=3D=
+3) refs=3D1
+    15: (55) if r0 !=3D 0x0 goto pc+5       ; R0=3Drdonly_mem(id=3D6,ref_ob=
+j_id=3D1,sz=3D4) refs=3D1
+    ; if (i < 5) @ verifier_loops1.c:298
+0-> 21: (65) if r7 s> 0x4 goto pc-10      ; R7=3D2 refs=3D1
+    21: refs=3D1
+    ; sum +=3D arr[i++]; @ verifier_loops1.c:299
+1-> 22: (bf) r1 =3D r7                      ; R1_w=3Dscalar(id=3D7,smax=3D4=
+) R7=3Dscalar(id=3D7,smax=3D4) refs=3D1
+2-> 23: (67) r1 <<=3D 3                     ; R1_w=3Dscalar(smax=3D0x7fffff=
+fffffffff8,
+                                                        umax=3D0xffffffffff=
+fffff8,
+                                                        smax32=3D0x7ffffff8=
+,
+                                                        umax32=3D0xfffffff8=
+,
+                                                        var_off=3D(0x0; 0xf=
+ffffffffffffff8)) refs=3D1
+    24: (18) r2 =3D 0xffffc900000f6000      ; R2_w=3Dmap_value(map=3Dverifi=
+er.bss,ks=3D4,vs=3D80) refs=3D1
+    26: (0f) r2 +=3D r1
+    mark_precise: frame0: last_idx 26 first_idx 21 subseq_idx -1=20
+    ...
+    math between map_value pointer and register with unbounded min value is=
+ not allowed
 
-Tom
+At point (0) the r7 is tracked as 2, at point (1) it is widened by the
+following code in the falltrhough branch processing:
+
++		if (ignore_pred) {
++			if (opcode !=3D BPF_JEQ && opcode !=3D BPF_JNE) {
++				widen_reg(dst_reg);
++				if (has_src_reg)
++					widen_reg(src_reg);
++			}
++			widen_reg(other_dst_reg);
++			if (has_src_reg)
++				widen_reg(other_src_reg);
++		} else {
+
+Here src_reg is a fake register set to 4,
+because comparison instruction is BPF_K it does not get widened.
+So, reg_set_min_max() produces range [-SMIN,+4] for R7.
+And at (2) all goes south because of the "<<" logic.
+Switch to unsigned values helps because umax range is computed
+instead of smax at point (1).
+
+However, below is an example where if comparison is BPF_X.
+Note that I obfuscated constant 5 as a volatile variable.
+And here is what happens when verifier rejects the program:
+
+    from 16 to 17: R0=3Drdonly_mem(id=3D6,ref_obj_id=3D1,sz=3D4) R6=3Dscala=
+r(id=3D5)
+                   R7=3D2 R10=3Dfp0 fp-8=3D5 fp-16=3Diter_num(ref_id=3D1,st=
+ate=3Dactive,depth=3D3) refs=3D1
+    17: R0=3Drdonly_mem(id=3D6,ref_obj_id=3D1,sz=3D4) R6=3Dscalar(id=3D5)
+        R7=3D2 R10=3Dfp0 fp-8=3D5 fp-16=3Diter_num(ref_id=3D1,state=3Dactiv=
+e,depth=3D3) refs=3D1
+    17: (55) if r0 !=3D 0x0 goto pc+5       ; R0=3Drdonly_mem(id=3D6,ref_ob=
+j_id=3D1,sz=3D4) refs=3D1
+    ; if (i < five) @ verifier_loops1.c:299
+    23: (79) r1 =3D *(u64 *)(r10 -8)        ; R1=3D5 R10=3Dfp0 fp-8=3D5 ref=
+s=3D1
+0-> 24: (3d) if r7 >=3D r1 goto pc-11       ; R1=3D5 R7=3D2 refs=3D1
+    24: refs=3D1
+    ; sum +=3D arr[i++]; @ verifier_loops1.c:300
+1-> 25: (bf) r1 =3D r7                      ; R1_w=3Dscalar(id=3D7,umax=3D0=
+xfffffffffffffffe)
+                                            R7=3Dscalar(id=3D7,umax=3D0xfff=
+ffffffffffffe) refs=3D1
+    26: (67) r1 <<=3D 3                     ; R1_w=3Dscalar(smax=3D0x7fffff=
+fffffffff8,umax=3D0xfffffffffffffff8,
+                                                        smax32=3D0x7ffffff8=
+,umax32=3D0xfffffff8,
+                                                        var_off=3D(0x0; 0xf=
+ffffffffffffff8)) refs=3D1
+    27: (18) r2 =3D 0xffffc90000112000      ; R2_w=3Dmap_value(map=3Dverifi=
+er.bss,ks=3D4,vs=3D80) refs=3D1
+    29: (0f) r2 +=3D r1
+
+Note R7 has exact value 2 at point (0) and is widened to
+umax=3D0xfffffffffffffffe at point (1).
+Widening happens at the same point as before, but this time src_reg is
+widened as well, so there is no upper bound for r7 anymore.
+
+---
+
+diff --git a/tools/testing/selftests/bpf/progs/verifier_loops1.c b/tools/te=
+sting/selftests/bpf/progs/verifier_loops1.c
+index e07b43b78fd2..0249fb63f18b 100644
+--- a/tools/testing/selftests/bpf/progs/verifier_loops1.c
++++ b/tools/testing/selftests/bpf/progs/verifier_loops1.c
+@@ -283,4 +283,24 @@ exit_%=3D:                                           \
+        : __clobber_all);
+ }
+=20
++unsigned long arr[10];
++
++SEC("socket")
++__success __flag(BPF_F_TEST_STATE_FREQ)
++int simple_loop(const void *ctx)
++{
++      volatile unsigned long five =3D 5;
++      unsigned long sum =3D 0, i =3D 0;
++      struct bpf_iter_num it;
++      int *v;
++
++      bpf_iter_num_new(&it, 0, 10);
++      while ((v =3D bpf_iter_num_next(&it))) {
++              if (i < five)
++                      sum +=3D arr[i++];
++      }
++      bpf_iter_num_destroy(&it);
++      return sum;
++}
++
 
