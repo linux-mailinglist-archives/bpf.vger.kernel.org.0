@@ -1,105 +1,92 @@
-Return-Path: <bpf+bounces-30810-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-30811-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1C7AF8D29D3
-	for <lists+bpf@lfdr.de>; Wed, 29 May 2024 03:16:18 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7B7588D29ED
+	for <lists+bpf@lfdr.de>; Wed, 29 May 2024 03:25:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id AEE1D1F259A2
-	for <lists+bpf@lfdr.de>; Wed, 29 May 2024 01:16:17 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 21B231F27776
+	for <lists+bpf@lfdr.de>; Wed, 29 May 2024 01:25:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DEBE515AAD7;
-	Wed, 29 May 2024 01:16:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CCB0D15ADB0;
+	Wed, 29 May 2024 01:25:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="QyCmql2V"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rmYmxVQR"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-173.mta1.migadu.com (out-173.mta1.migadu.com [95.215.58.173])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 582AC1E86E
-	for <bpf@vger.kernel.org>; Wed, 29 May 2024 01:16:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5320A15AADE
+	for <bpf@vger.kernel.org>; Wed, 29 May 2024 01:25:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716945366; cv=none; b=jl4W4VTchFre0VxjYEFaV1PqBtsOV29v2wUijh8ydPfRQNmyw+AaUDnSEePhnhGEchKfNA78Y4+c8aTAwZdbs4ylrdYVh6j50UGhubB89152HKadOfunmyPV+wI7S9htDDFeMuYeMSXh42g2Xfu3aJK+gM7Rn2LjZs+U6guqHsU=
+	t=1716945905; cv=none; b=plz5pfvoRJEGWh99F4TUo3Pvs0ItWebdW1D+BKRT5X6VbDjjDMty3maB/OmL+udbVYI/4BXp1GgfLPGytO7LaDo3Ggl8l8E1BIkUmDqY2idbOkt4wqV8+dgGA+M9GgVs3HWegsuqN3FkaTjo3HvFimrAEq+CFmjB0tA4qiNA13o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716945366; c=relaxed/simple;
-	bh=VbXMKPFRNM4rvJJUONqIaV2ZyDimdXjJrsK52bXShYY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=qEBLLNiWIZWxPaiPEco30zxDgCcI468syZmnu/OUk+HhkFO3E4k/d48CHtuQC7UjuFyHO52PrarLBV7B2ZcB+Ec4eCzjpwMLMrM0gp/OYRdpkNeXYbXSDekAp5jXL5bI5xy8FeFVeqArzUQaT2hjYRs+q4FROJldQjksfIhMr/k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=QyCmql2V; arc=none smtp.client-ip=95.215.58.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Envelope-To: quic_abchauha@quicinc.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1716945360;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=zssiFsZDZZBTEpQvJYkG+CokD4QQQjIoL2kKugnyhxk=;
-	b=QyCmql2V6OXKrZ5ZFlBeyb7JhYtjR5HEBKolnaVUPPakCu3U10iMi69Syi2uzvPpMvqQdu
-	xFLJOQRaYAUoUs3/KycH3emfzXHatBCSXSetYR5/bBS/vKmy4qlT3tE1UHXWtajEsoPz0w
-	sCKE3vb9kULn95vxftruVdj+vMYmDeI=
-X-Envelope-To: davem@davemloft.net
-X-Envelope-To: edumazet@google.com
-X-Envelope-To: kuba@kernel.org
-X-Envelope-To: pabeni@redhat.com
-X-Envelope-To: netdev@vger.kernel.org
-X-Envelope-To: linux-kernel@vger.kernel.org
-X-Envelope-To: ahalaney@redhat.com
-X-Envelope-To: willemdebruijn.kernel@gmail.com
-X-Envelope-To: martin.lau@kernel.org
-X-Envelope-To: daniel@iogearbox.net
-X-Envelope-To: bpf@vger.kernel.org
-X-Envelope-To: kernel@quicinc.com
-X-Envelope-To: syzbot+d7b227731ec589e7f4f0@syzkaller.appspotmail.com
-X-Envelope-To: syzbot+30a35a2e9c5067cc43fa@syzkaller.appspotmail.com
-Message-ID: <2c363f12-dd52-4163-bbcd-9a017cff6dd4@linux.dev>
-Date: Tue, 28 May 2024 18:15:51 -0700
+	s=arc-20240116; t=1716945905; c=relaxed/simple;
+	bh=zf8s5RHrZA8BEOuRcxEqi4aPDsDD+nIYBPFtOZfVC/g=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=DnHto7ZvmdRHpYv2GqZ9GWy+qFrL0rQ3y71hcFbQmQAuBp1Gx54+XlJoEnFJ2tYqxJ3Ar0v2qy9W4AtZDifxivFy55+WG49QETVdRVxd6Z7ICTplNYmjEsiJuao3YPCvjM228f05PyZaW8651eCOoSrNRi2lJMMYo4Fd0v1ZCf0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rmYmxVQR; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id CBB74C3277B;
+	Wed, 29 May 2024 01:25:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1716945904;
+	bh=zf8s5RHrZA8BEOuRcxEqi4aPDsDD+nIYBPFtOZfVC/g=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=rmYmxVQRcc0SOrKj4HRTTf1DLipqAkkdKpd+CH+elFu0wCEtJMnaBXvA1QvapZHdK
+	 Vl1GzNwViWgvxWmly0Sc61Lhp44ZtKz1bFg2N7sqP7VPi4j/jVD3Oq5Lj/XNRgluis
+	 6C78hYOmc+AGycX3KYSonpMYhOI9yfFbbCJv397st8DWwrVTpvwwo14HFg3Dfg3t8W
+	 dPofaMLsM1k8KWclY8tnHoLl2q+0qUicx/HVewxQwqcpzpxsWUVVHOsTtipHouDSCB
+	 p8+yISYoBO4r79aa4kcXJ5GyNdZbuk+OjxClwowpW7nx2XsV88cz5dy/8ArpsD0xXY
+	 pmwocnUBNOonw==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id AC210D2D0E9;
+	Wed, 29 May 2024 01:25:04 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH net] net: validate SO_TXTIME clockid coming from userspace
-To: Abhishek Chauhan <quic_abchauha@quicinc.com>
-Cc: "David S. Miller" <davem@davemloft.net>,
- Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
- Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, Andrew Halaney <ahalaney@redhat.com>,
- Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
- Martin KaFai Lau <martin.lau@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>, bpf <bpf@vger.kernel.org>,
- kernel@quicinc.com, syzbot+d7b227731ec589e7f4f0@syzkaller.appspotmail.com,
- syzbot+30a35a2e9c5067cc43fa@syzkaller.appspotmail.com
-References: <20240528224935.1020828-1-quic_abchauha@quicinc.com>
-Content-Language: en-US
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Martin KaFai Lau <martin.lau@linux.dev>
-In-Reply-To: <20240528224935.1020828-1-quic_abchauha@quicinc.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf-next] selftests/bpf: fix inet_csk_accept prototype in
+ test_sk_storage_tracing.c
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <171694590470.19217.3411263321012385916.git-patchwork-notify@kernel.org>
+Date: Wed, 29 May 2024 01:25:04 +0000
+References: <20240528223218.3445297-1-andrii@kernel.org>
+In-Reply-To: <20240528223218.3445297-1-andrii@kernel.org>
+To: Andrii Nakryiko <andrii@kernel.org>
+Cc: bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+ martin.lau@kernel.org, kernel-team@meta.com
 
-On 5/28/24 3:49 PM, Abhishek Chauhan wrote:
-> Currently there are no strict checks while setting SO_TXTIME
-> from userspace. With the recent development in skb->tstamp_type
-> clockid with unsupported clocks results in warn_on_once, which causes
-> unnecessary aborts in some systems which enables panic on warns.
+Hello:
+
+This patch was applied to bpf/bpf.git (master)
+by Alexei Starovoitov <ast@kernel.org>:
+
+On Tue, 28 May 2024 15:32:18 -0700 you wrote:
+> Recent kernel change ([0]) changed inet_csk_accept() prototype. Adapt
+> progs/test_sk_storage_tracing.c to take that into account.
 > 
-> Add validation in setsockopt to support only CLOCK_REALTIME,
-> CLOCK_MONOTONIC and CLOCK_TAI to be set from userspace.
+>   [0] 92ef0fd55ac8 ("net: change proto and proto_ops accept type")
 > 
-> Link: https://lore.kernel.org/netdev/bc037db4-58bb-4861-ac31-a361a93841d3@linux.dev/
-> Link: https://lore.kernel.org/lkml/20240509211834.3235191-1-quic_abchauha@quicinc.com/
-> Fixes: 1693c5db6ab8 ("net: Add additional bit to support clockid_t timestamp type")
+> Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+> 
+> [...]
 
-Patch lgtm. This should target for net-next instead of net. The Fixes patch is 
-in net-next only.
+Here is the summary with links:
+  - [bpf-next] selftests/bpf: fix inet_csk_accept prototype in test_sk_storage_tracing.c
+    https://git.kernel.org/bpf/bpf/c/9dfdb706e164
 
-Acked-by: Martin KaFai Lau <martin.lau@kernel.org>
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
 
 
