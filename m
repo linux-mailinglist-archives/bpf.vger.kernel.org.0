@@ -1,103 +1,108 @@
-Return-Path: <bpf+bounces-30878-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-30879-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 103C18D415E
-	for <lists+bpf@lfdr.de>; Thu, 30 May 2024 00:26:25 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2B4898D4169
+	for <lists+bpf@lfdr.de>; Thu, 30 May 2024 00:32:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5D876B24901
-	for <lists+bpf@lfdr.de>; Wed, 29 May 2024 22:26:22 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BFF9F1F235F5
+	for <lists+bpf@lfdr.de>; Wed, 29 May 2024 22:32:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3772D16C680;
-	Wed, 29 May 2024 22:26:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6501A16F0DE;
+	Wed, 29 May 2024 22:32:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="hK9yJm8C"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZVYzEaJg"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-181.mta1.migadu.com (out-181.mta1.migadu.com [95.215.58.181])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 823B615B0E6
-	for <bpf@vger.kernel.org>; Wed, 29 May 2024 22:26:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E0AF8169AC5
+	for <bpf@vger.kernel.org>; Wed, 29 May 2024 22:32:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717021576; cv=none; b=dk42a54fNMtz3zNbrnqvEkCewL4jZ0ttb2pXHqvTJazBVKxJjxxM5NFGMPwl0hPhO4d+log6DE80vzNfzLRsQoA45oReJiV+O7edqXMkSkI3YNMdQBFiEIZWvEtgE72Rt2qqLEsn8/VUy1bmn3eRp8r6MY1GnVffbYUpaEUFIys=
+	t=1717021969; cv=none; b=qiksEjFi0rraqL3qAkyWItTsCwK1Mbxwq+hsl63pVbTHKXKUcnA8JzQMkC+StVcW50wtDteLyrnV9uT4yNePwheQNhNCUvdH0yC2CJqgqlfMYyRfzZjJDP22Is6kmJ+YyCJK9uACJFmD8P30bHHYu+yp+irx0cLblMZP1Lr5a+Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717021576; c=relaxed/simple;
-	bh=OJ+JnQo4aG8k+kz1XB4lOYpAcvZlc18m9kz/g97kzNc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=CYeu22NbY2a6NWRz0nsUYc38sO08wEAlRIrL7WOuUk7yOEfZyy5J1HhdujZ1strvmGIesSumsGwbRP8dY+ae4Py95hCASEn1UFXARl0oN/IC7yqcQxoRG95AFuJ56D7TajOYqNIoHoibIqBmA2NVp96d+3vxEBKnQUGlkv53BXw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=hK9yJm8C; arc=none smtp.client-ip=95.215.58.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Envelope-To: thinker.li@gmail.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1717021571;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Fje6aM7qihzObEUySFTO/tDIyF5ti/yJf0DF4cnHrG0=;
-	b=hK9yJm8CuidsU9EhbJBXegoOkUbtyLuEP+qIm2NIIlzLnMlExtYeCgFQejqtzX8MJZ1sld
-	JHKvLSd+YadKIkdJPsapFGkz41KuO6jb+9exCU7gEZAZ1cWi+bW7TmBf7oG3Ga3ZJwXJS5
-	wagneJ9aZ4oms7vsBeTniQOkBUMtYKo=
-X-Envelope-To: bpf@vger.kernel.org
-X-Envelope-To: ast@kernel.org
-X-Envelope-To: song@kernel.org
-X-Envelope-To: kernel-team@meta.com
-X-Envelope-To: andrii@kernel.org
-X-Envelope-To: sinquersw@gmail.com
-X-Envelope-To: kuifeng@meta.com
-Message-ID: <029a0b33-b596-4bc3-8c53-e1230ed896bb@linux.dev>
-Date: Wed, 29 May 2024 15:26:04 -0700
+	s=arc-20240116; t=1717021969; c=relaxed/simple;
+	bh=vEk0TtXp/VZOdERM7/MLigZoBedl/T8Iwtg28gSG9yk=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=crFo32UeBp52ZrlpvUx/xyiLbEPD5B20HDidjrsu2RmRMM6T4+NchIUmqffAs+HcMXcJuDxvU3qYMKI0+KZdO7cIuiJC13GHHt0dBCyYYmeGq7uEaNG1/cjjGhrfd7zJs2543hxzatQRwubmRkIWIA7mq5IfAVaWJ4ZKzp1zdII=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZVYzEaJg; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3A556C113CC;
+	Wed, 29 May 2024 22:32:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1717021968;
+	bh=vEk0TtXp/VZOdERM7/MLigZoBedl/T8Iwtg28gSG9yk=;
+	h=From:To:Cc:Subject:Date:From;
+	b=ZVYzEaJgHERyarq96bLzWKa/m+gceWF7UoaAwASidorZZoQ9+5vB3UqMgfNKefZTg
+	 fh6+szT832nsL40W7UvsxwF6+BKRQcQ4NfawA9t5RUhKQzLVYTYohRJJG8zsVPOIYd
+	 MF6TY9IQrMGHEaDN4JjBe6qjnqkLS8F1kncRG9hZfgrspWgDbYYYucTUENhk5eZllg
+	 8OG/i/hqW8maI6f2x/Px39+AAT4u2Q4Sx8XUwhoulkKmuK6lUIgb2eSWrZbgcS3+UN
+	 qjlKSXu8/SCbTuaCNz7ML/Y8B+kykWOKjSyJVu1Lg2S2d+LUYVI1ulPXO8MjAOILvE
+	 PIjL5inhApxjw==
+From: Andrii Nakryiko <andrii@kernel.org>
+To: bpf@vger.kernel.org,
+	ast@kernel.org,
+	daniel@iogearbox.net,
+	martin.lau@kernel.org
+Cc: andrii@kernel.org,
+	kernel-team@meta.com,
+	Lennart Poettering <lennart@poettering.net>
+Subject: [PATCH bpf-next] libbpf: keep FD_CLOEXEC flag when dup()'ing FD
+Date: Wed, 29 May 2024 15:32:39 -0700
+Message-ID: <20240529223239.504241-1-andrii@kernel.org>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next v6 5/8] selftests/bpf: test struct_ops with epoll
-To: Kui-Feng Lee <thinker.li@gmail.com>
-Cc: bpf@vger.kernel.org, ast@kernel.org, song@kernel.org,
- kernel-team@meta.com, andrii@kernel.org, sinquersw@gmail.com,
- kuifeng@meta.com
-References: <20240524223036.318800-1-thinker.li@gmail.com>
- <20240524223036.318800-6-thinker.li@gmail.com>
-Content-Language: en-US
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Martin KaFai Lau <martin.lau@linux.dev>
-In-Reply-To: <20240524223036.318800-6-thinker.li@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+Content-Transfer-Encoding: 8bit
 
-On 5/24/24 3:30 PM, Kui-Feng Lee wrote:
-> diff --git a/tools/testing/selftests/bpf/progs/struct_ops_detach.c b/tools/testing/selftests/bpf/progs/struct_ops_detach.c
-> new file mode 100644
-> index 000000000000..45eacc2ca657
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/progs/struct_ops_detach.c
-> @@ -0,0 +1,9 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/* Copyright (c) 2024 Meta Platforms, Inc. and affiliates. */
-> +#include <vmlinux.h>
-> +#include "../bpf_testmod/bpf_testmod.h"
-> +
-> +char _license[] SEC("license") = "GPL";
-> +
-> +SEC(".struct_ops.link")
-> +struct bpf_testmod_ops testmod_do_detach
+Make sure to preserve and/or enforce FD_CLOEXEC flag on duped FDs.
+Use dup3() with O_CLOEXEC flag for that.
 
-I was trying if the set can go without patch 6/7 but patch 5 cannot compile by 
-itself... :(
+Without this fix libbpf effectively clears FD_CLOEXEC flag on each of BPF
+map/prog FD, which is definitely not the right or expected behavior.
 
-progs/struct_ops_detach.c:6:16: error: expected ';' after top level declarator
-     6 | char _license[] SEC("license") = "GPL";
-       |                ^
-       |                ;
-progs/struct_ops_detach.c:8:5: error: expected parameter declarator
-     8 | SEC(".struct_ops.link")
+Reported-by: Lennart Poettering <lennart@poettering.net>
+Fixes: bc308d011ab8 ("libbpf: call dup2() syscall directly")
+Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+---
+ tools/lib/bpf/libbpf_internal.h | 10 +++-------
+ 1 file changed, 3 insertions(+), 7 deletions(-)
 
-pw-bot: cr
+diff --git a/tools/lib/bpf/libbpf_internal.h b/tools/lib/bpf/libbpf_internal.h
+index a0dcfb82e455..7e7e686008c6 100644
+--- a/tools/lib/bpf/libbpf_internal.h
++++ b/tools/lib/bpf/libbpf_internal.h
+@@ -597,13 +597,9 @@ static inline int ensure_good_fd(int fd)
+ 	return fd;
+ }
+ 
+-static inline int sys_dup2(int oldfd, int newfd)
++static inline int sys_dup3(int oldfd, int newfd, int flags)
+ {
+-#ifdef __NR_dup2
+-	return syscall(__NR_dup2, oldfd, newfd);
+-#else
+-	return syscall(__NR_dup3, oldfd, newfd, 0);
+-#endif
++	return syscall(__NR_dup3, oldfd, newfd, flags);
+ }
+ 
+ /* Point *fixed_fd* to the same file that *tmp_fd* points to.
+@@ -614,7 +610,7 @@ static inline int reuse_fd(int fixed_fd, int tmp_fd)
+ {
+ 	int err;
+ 
+-	err = sys_dup2(tmp_fd, fixed_fd);
++	err = sys_dup3(tmp_fd, fixed_fd, O_CLOEXEC);
+ 	err = err < 0 ? -errno : 0;
+ 	close(tmp_fd); /* clean up temporary FD */
+ 	return err;
+-- 
+2.43.0
+
 
