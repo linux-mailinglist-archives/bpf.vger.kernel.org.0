@@ -1,172 +1,163 @@
-Return-Path: <bpf+bounces-30863-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-30864-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 66F018D3E5B
-	for <lists+bpf@lfdr.de>; Wed, 29 May 2024 20:32:16 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 65ED08D3EED
+	for <lists+bpf@lfdr.de>; Wed, 29 May 2024 21:34:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DBC2D1F24115
-	for <lists+bpf@lfdr.de>; Wed, 29 May 2024 18:32:15 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 802DC1C20C75
+	for <lists+bpf@lfdr.de>; Wed, 29 May 2024 19:34:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B1A41C0DD0;
-	Wed, 29 May 2024 18:32:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0144A199E9E;
+	Wed, 29 May 2024 19:34:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="Usol3I7a"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mvSBY69j"
 X-Original-To: bpf@vger.kernel.org
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 73D7415B990;
-	Wed, 29 May 2024 18:32:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F383842045
+	for <bpf@vger.kernel.org>; Wed, 29 May 2024 19:34:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717007526; cv=none; b=uuSs+Bug2iK1WZb9o5h59ou6532j0+EjftMSskry2BEIiyJs3K++UZQ/Icwh9ZkvZdRH72ixNLtjIEDzWMRAQWqbx13d3pRDYXq6R9TpAk+wbEzrUSdFLn72LyqE207wZ7pUmyDXG5LGsO8dno8OYLSv3kqFTDpDVUB+eOl6ZfE=
+	t=1717011271; cv=none; b=IOJQg5NY5bYBXyk+m6q1IOMY9KQnEl5oIUK2IXFZM5A9A5ZEHhHf9beLggi+pr/ImwrbQn840pU/ncfUoGuLqWIt4dPW30TWMdwDeUC5IYQOZwK7dB5oHEyNIWP/EBzZm28tzI8zTuWgdFd04gw7WJTLKkGkKwc90Ph1L2Dxctg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717007526; c=relaxed/simple;
-	bh=b5KUfmV+0BQDlwndzSzEsRg0XBiTwxcg8iE04GTa7Vg=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=AFU5vpIKdZdyWW5IhwOi/Q7vvttrDIZHBSo/o3v/8mDu9FfB0nUFpe0YFQBrMCRN2GQ/7VkBQ5ExeLZ8vCpAs1Ac04B43NFoy8D32gzRNDVFv7ivXWnJ2oUwL/UnEP5yUVLvwiItdX+Q9R+tT6zTz0rYOGl7lhznWT0yP7R4gQ8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=qualcomm.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=Usol3I7a; arc=none smtp.client-ip=205.220.168.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qualcomm.com
-Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 44THlM7D015796;
-	Wed, 29 May 2024 18:31:35 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	cc:content-transfer-encoding:date:from:message-id:mime-version
-	:subject:to; s=qcppdkim1; bh=Il5puEjjGoo/eUo4Gn88zcACE3zHPOHAVn7
-	nercTcfc=; b=Usol3I7aN2TTS5wvxwxtkFg3Nc+zhPf7Hc4r7g8rExm+ahFjE6u
-	Uuncj2HyH/FTbznYj0JC2m8OU4b8W+3Yvt42HBUaFoHkIhrMVAlJqifs1VHbOUEh
-	+mxASwbQliptGUxzdwHh9IzjDSAjUZiWhUYg7nCN6PhtthyGqZoNATuJvBomnc+1
-	LJQjZ7ho0p8j1c/Ebu7AWbSRMAdzPVRlY3GAKjqdpH5kWZ7Yez7bl0ypmZO5QEJf
-	nFpvNNRDVPoElxvmvTSFXXHxUYYVwKVOObF1BKGx96/d/BLsKzfbQXPi8D73rNeo
-	IqvrEK0dIpEaHqNZSfQYn6aJp7xO1se5SsQ==
-Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3ydyws1nsu-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 29 May 2024 18:31:35 +0000 (GMT)
-Received: from pps.filterd (NALASPPMTA05.qualcomm.com [127.0.0.1])
-	by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTP id 44TISEq3010782;
-	Wed, 29 May 2024 18:31:34 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-	by NALASPPMTA05.qualcomm.com (PPS) with ESMTPS id 3ydwwpdr08-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 29 May 2024 18:31:34 +0000
-Received: from NALASPPMTA05.qualcomm.com (NALASPPMTA05.qualcomm.com [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 44TIQZVJ007931;
-	Wed, 29 May 2024 18:31:33 GMT
-Received: from hu-devc-lv-u20-a-new.qualcomm.com (hu-abchauha-lv.qualcomm.com [10.81.25.35])
-	by NALASPPMTA05.qualcomm.com (PPS) with ESMTPS id 44TIVXKo016136
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 29 May 2024 18:31:33 +0000
-Received: by hu-devc-lv-u20-a-new.qualcomm.com (Postfix, from userid 214165)
-	id 51E84220D3; Wed, 29 May 2024 11:31:30 -0700 (PDT)
-From: Abhishek Chauhan <quic_abchauha@quicinc.com>
-To: "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Andrew Halaney <ahalaney@redhat.com>,
-        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-        Martin KaFai Lau <martin.lau@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Daniel Borkmann <daniel@iogearbox.net>, bpf <bpf@vger.kernel.org>
-Cc: kernel@quicinc.com, syzbot+d7b227731ec589e7f4f0@syzkaller.appspotmail.com,
-        syzbot+30a35a2e9c5067cc43fa@syzkaller.appspotmail.com
-Subject: [PATCH net-next v2] net: validate SO_TXTIME clockid coming from  userspace
-Date: Wed, 29 May 2024 11:31:30 -0700
-Message-Id: <20240529183130.1717083-1-quic_abchauha@quicinc.com>
-X-Mailer: git-send-email 2.25.1
+	s=arc-20240116; t=1717011271; c=relaxed/simple;
+	bh=ZfIitmtzGwl5VPEaKN/6kNUjbHE/4oSNMSSElo4qmvk=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=rSmnIvWAJ6VVfwsxMZXZHJnkwMS2+XdOOR8oO823Yytf5RN0RigXm4NUKc5wNltvtLBxJDALvNqAgB61SytatjTlzTXVFVmbbKYY9ANAxu/mVdsIsMyI1/limVTmkZcEQqY8iWLRGBgA7dYi4CAM8G4AfNZDVY9eYqN+28pEkak=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mvSBY69j; arc=none smtp.client-ip=209.85.128.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-42120fc8d1dso805635e9.2
+        for <bpf@vger.kernel.org>; Wed, 29 May 2024 12:34:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1717011268; x=1717616068; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=wxWIGRdqMaUIhQkfS53/FIAQqDlbd1Iee0ROS9pkZW0=;
+        b=mvSBY69jR0hLpqTjUwnbkb8oh/eyaxEHgSECUI/Z+p/nvA/y0Jsl5e+mglkUuINnzL
+         fImxjveMhRUatrRazUx7y7rUrYvBL3sH6VvF/4OmT3Z8vYaFg2Vii6ycxm8welDoc9jr
+         aAFBiJjhbibxyMBztwv5zGFjsSBb+C58hlkWCl2lNo5Yy6Y+4b5IY4CR6ZZe31W1+db8
+         6I4AFPTAYHPsslUFxkOkgFmy4JvbHDMlNyjULejZpf4M2HSxQWaQwHwlWOdCspiUPY6g
+         CT9O87GCqGkmKSTE+j7zi7TtML9XMdISAgtBHwsea0QLSVmpgSE45W9ljTgeSPo9T/sO
+         rbPA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1717011268; x=1717616068;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=wxWIGRdqMaUIhQkfS53/FIAQqDlbd1Iee0ROS9pkZW0=;
+        b=D2ZiDy002L+kHM1uL/EJZs8SzdWfWE57fH7sLnD25RRMwQQS9dVBKSJZH6irpP5wCu
+         QSkRefct8mY198yJQdcWslR+mkdmJpD1ObO2+FPudMkPI8YDvG8SE/ptvoFt1reY9H9d
+         cyJDB0OhbxL9S9ral9Cawr38ErmQZgYroqyPyTt71vz191zufkR1vIK64g5eWA3yFR0b
+         FQBBUzwHSAKw/Q+0MHehTtEEnBjt3cSkzzb49Cl6S1RyudcZRiI/VlwVxzuw34Wi3Hvn
+         EZ3+cvCgXYURAw/npwtUfG+yliiLum+ljLbDvvOaPXC/rKDPYp8dG5u7dWjzRO4+RseJ
+         gajw==
+X-Forwarded-Encrypted: i=1; AJvYcCUnOo81dL21Z62Jh5FzIEcc9NQ6Egu5PTTCQ/knIJUKFnrli3jPzGEPmZruxZqN61y8ZhU0vgAnDBOaCX5I+8D9qidX
+X-Gm-Message-State: AOJu0YzfZ0/CgGY+glq3rw5TMq7SGiCokdWLdh6ZteL0Lo9/HX0etLcF
+	6+d5Pus62eRIMWkFflXzfiyhmEHu1wCX8e1xssj4qOw67bpGvzyn
+X-Google-Smtp-Source: AGHT+IHz7pxi2RC/1VdeL1JDDsKX3upcxLL6XfDtLSyz4rGEzHhD4xqDnOSwz/QKTDp10PbHV6AH5Q==
+X-Received: by 2002:a05:600c:35c9:b0:418:3eb7:e8c6 with SMTP id 5b1f17b1804b1-421278130d6mr1252475e9.5.1717011268010;
+        Wed, 29 May 2024 12:34:28 -0700 (PDT)
+Received: from krava ([83.240.61.58])
+        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-57852404d8esm8770166a12.47.2024.05.29.12.34.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 29 May 2024 12:34:27 -0700 (PDT)
+From: Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date: Wed, 29 May 2024 21:34:25 +0200
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+	bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
+	Yonghong Song <yhs@fb.com>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@chromium.org>,
+	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
+	Viktor Malik <vmalik@redhat.com>,
+	"Masami Hiramatsu (Google)" <mhiramat@kernel.org>,
+	Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: [PATCH] bpf: Use an UNUSED id for bpf_session_cookie without
+ FPROBE
+Message-ID: <ZleDQSK4TgJLJDUl@krava>
+References: <20240529124412.VZAF98oL@linutronix.de>
+ <CAADnVQKdAo-=DMMyLJaAR_CHBZq=W=LsYxk=Tna2G+tXLnfLqg@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-QCInternal: smtphost
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: nMSxEiVRugjInCAbig439WwEWISOeAKg
-X-Proofpoint-GUID: nMSxEiVRugjInCAbig439WwEWISOeAKg
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.650,FMLib:17.12.28.16
- definitions=2024-05-29_14,2024-05-28_01,2024-05-17_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 phishscore=0
- malwarescore=0 impostorscore=0 suspectscore=0 mlxscore=0 mlxlogscore=999
- priorityscore=1501 spamscore=0 lowpriorityscore=0 bulkscore=0
- clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2405170001 definitions=main-2405290129
+In-Reply-To: <CAADnVQKdAo-=DMMyLJaAR_CHBZq=W=LsYxk=Tna2G+tXLnfLqg@mail.gmail.com>
 
-Currently there are no strict checks while setting SO_TXTIME
-from userspace. With the recent development in skb->tstamp_type
-clockid with unsupported clocks results in warn_on_once, which causes
-unnecessary aborts in some systems which enables panic on warns.
+On Wed, May 29, 2024 at 09:18:48AM -0700, Alexei Starovoitov wrote:
+> On Wed, May 29, 2024 at 5:44 AM Sebastian Andrzej Siewior
+> <bigeasy@linutronix.de> wrote:
+> >
+> > bpf_session_cookie() is only available with CONFIG_FPROBE=y leading to
+> > an unresolved symbol otherwise.
+> >
+> > Use BTF_ID_UNUSED instead of bpf_session_cookie for CONFIG_FPROBE=n.
+> >
+> > Fixes: 5c919acef8514 ("bpf: Add support for kprobe session cookie")
+> > Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+> > ---
+> >  kernel/bpf/verifier.c | 4 ++++
+> >  1 file changed, 4 insertions(+)
+> >
+> > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> > index 77da1f438becc..436f72bfcb9b9 100644
+> > --- a/kernel/bpf/verifier.c
+> > +++ b/kernel/bpf/verifier.c
+> > @@ -11124,7 +11124,11 @@ BTF_ID(func, bpf_iter_css_task_new)
+> >  #else
+> >  BTF_ID_UNUSED
+> >  #endif
+> > +#ifdef CONFIG_FPROBE
+> >  BTF_ID(func, bpf_session_cookie)
+> > +#else
+> > +BTF_ID_UNUSED
+> > +#endif
+> 
+> Instead of this fix..
+> Jiri,
+> maybe remove ifdef CONFIG_FPROBE hiding of this kfunc
+> in kernel/tace/bpf_trace.c ?
+> The less ifdef-s the better. imo
 
-Add validation in setsockopt to support only CLOCK_REALTIME,
-CLOCK_MONOTONIC and CLOCK_TAI to be set from userspace.
+yes, that seems to work
 
-Link: https://lore.kernel.org/netdev/bc037db4-58bb-4861-ac31-a361a93841d3@linux.dev/
-Link: https://lore.kernel.org/lkml/6bdba7b6-fd22-4ea5-a356-12268674def1@quicinc.com/
-Fixes: 1693c5db6ab8 ("net: Add additional bit to support clockid_t timestamp type")
-Reported-by: syzbot+d7b227731ec589e7f4f0@syzkaller.appspotmail.com
-Closes: https://syzkaller.appspot.com/bug?extid=d7b227731ec589e7f4f0
-Reported-by: syzbot+30a35a2e9c5067cc43fa@syzkaller.appspotmail.com
-Closes: https://syzkaller.appspot.com/bug?extid=30a35a2e9c5067cc43fa
-Signed-off-by: Abhishek Chauhan <quic_abchauha@quicinc.com>
-Acked-by: Martin KaFai Lau <martin.lau@kernel.org>
+Sebastian, do you want to send it as v2 or should I post it?
+
+thanks,
+jirka
+
+
 ---
-Changes since v1 
-- Moved from net to net-next since 
-  Fixes tag is available only on net-next
-  as mentioned by Martin 
-- Added direct link to design discussion as 
-  mentioned by Willem.
-- Parameter in the sockopt_validate_clockid
-  is of type __kernel_clockid_t so changed it from 
-  int to __kernel_clockid_t as mentioned by 
-  Willem.
-- Added Acked-by tag. 
-
- net/core/sock.c | 16 ++++++++++++++++
- 1 file changed, 16 insertions(+)
-
-diff --git a/net/core/sock.c b/net/core/sock.c
-index 8629f9aecf91..d497285f283a 100644
---- a/net/core/sock.c
-+++ b/net/core/sock.c
-@@ -1083,6 +1083,17 @@ bool sockopt_capable(int cap)
+diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+index f5154c051d2c..cc90d56732eb 100644
+--- a/kernel/trace/bpf_trace.c
++++ b/kernel/trace/bpf_trace.c
+@@ -3519,7 +3519,6 @@ static u64 bpf_uprobe_multi_entry_ip(struct bpf_run_ctx *ctx)
  }
- EXPORT_SYMBOL(sockopt_capable);
+ #endif /* CONFIG_UPROBES */
  
-+static int sockopt_validate_clockid(__kernel_clockid_t value)
-+{
-+	switch (value) {
-+	case CLOCK_REALTIME:
-+	case CLOCK_MONOTONIC:
-+	case CLOCK_TAI:
-+		return 0;
-+	}
-+	return -EINVAL;
-+}
-+
- /*
-  *	This is meant for all protocols to use and covers goings on
-  *	at the socket level. Everything here is generic.
-@@ -1497,6 +1508,11 @@ int sk_setsockopt(struct sock *sk, int level, int optname,
- 			ret = -EPERM;
- 			break;
- 		}
-+
-+		ret = sockopt_validate_clockid(sk_txtime.clockid);
-+		if (ret)
-+			break;
-+
- 		sock_valbool_flag(sk, SOCK_TXTIME, true);
- 		sk->sk_clockid = sk_txtime.clockid;
- 		sk->sk_txtime_deadline_mode =
--- 
-2.25.1
-
+-#ifdef CONFIG_FPROBE
+ __bpf_kfunc_start_defs();
+ 
+ __bpf_kfunc bool bpf_session_is_return(void)
+@@ -3568,4 +3567,3 @@ static int __init bpf_kprobe_multi_kfuncs_init(void)
+ }
+ 
+ late_initcall(bpf_kprobe_multi_kfuncs_init);
+-#endif
 
