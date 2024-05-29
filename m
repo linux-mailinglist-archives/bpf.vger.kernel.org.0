@@ -1,374 +1,172 @@
-Return-Path: <bpf+bounces-30856-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-30850-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id CE3738D3C9C
-	for <lists+bpf@lfdr.de>; Wed, 29 May 2024 18:33:59 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 13E1C8D3BC3
+	for <lists+bpf@lfdr.de>; Wed, 29 May 2024 18:05:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E11DCB26F02
-	for <lists+bpf@lfdr.de>; Wed, 29 May 2024 16:33:56 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BE46F281FC0
+	for <lists+bpf@lfdr.de>; Wed, 29 May 2024 16:05:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D1EE1C68B1;
-	Wed, 29 May 2024 16:29:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 573F31836D2;
+	Wed, 29 May 2024 16:05:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="aqMgYRrP";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="Q+CJ7f0x"
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="OYadAFve"
 X-Original-To: bpf@vger.kernel.org
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B5781A0B08;
-	Wed, 29 May 2024 16:29:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 687AD42044;
+	Wed, 29 May 2024 16:05:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717000185; cv=none; b=XQkjmLmpHwpEbXg7ar9Fq/kYFi/l+2kM39D9yrLlBStWYIPHO1TRzwC2TgOwcohlu7UDXyjLS5q2fmypm1ACI3q8SA4LwNM1C50pC0KAE3JrebErkCZrQGi1cvn4twFbd5BUofQ3bL+s7Mgi5mI4xndKNCwxlTrxW2UTq89E/qc=
+	t=1716998720; cv=none; b=Q7fefEVeGPvvQJgo+DERsqYs5BIHjuutXaGqd7j86T/srMKIDIUDuO2bCunil+eUDbLf3MgPdUNhRzkXO9Ud/8Tv6hmvgYvD+6fVhTePcIH+b8tmRJ9NHbJalnr4Jnms3AVdD0ulk3EnW/SxA9PYQzoXArfA+TrdybBhttqj2lE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717000185; c=relaxed/simple;
-	bh=K+N7SScThVDvFeOZ74YnMYdDplqfJcdqL7SNISd4pK4=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=ciz42QNHNsp5xl6DvHqXqk4sFcb27/tNneFC/uvGR8BQp+UOa9Z/WfI2fuK/YcdCpUF6MJYK1uLc3B6zAJcmsO2nzoPB3Kp01BBt+RwtEWhd6xI2crnvaPqr6DGg5q5XgkviTwM5LgxFuBZtEBkyNvrTlzCNJAtJqEgRJd56FFM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=aqMgYRrP; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=Q+CJ7f0x; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1717000180;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=q5Jik/z8apqNPvVA8Qi90r3XumHNfaJX3DcXJHJQJHI=;
-	b=aqMgYRrP64DXOPYtPPQCSWCqPFMeMTjwo5GFvoJXNLlvkR/r1KxZgxYAR9XgTB/C6h4wEM
-	4/SzMjLdBa8SujwpQ2i2tU48Lrz6JQLWaLOE+BB4uHD3L24/LYjakkogordVvvOpilffnD
-	CKI+3wG9PqbLGBXhOpvqfcOcx9+Z8ppXux66gfAOfccoTcs1JI5CYZ2Z5wQJSHVmeWzAN+
-	8yNktZExpm39+A2PfJUur5nRjMM/HOsxKx/G4ZAbSjphPqGmhRfGvNt+QaVLtQMertEkEE
-	ADeDpbKVrAyz9TDs6U2El0bN1PYa4QVJT/Sy5N+wZpOfANfhD+nS97x23yUNFw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1717000180;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=q5Jik/z8apqNPvVA8Qi90r3XumHNfaJX3DcXJHJQJHI=;
-	b=Q+CJ7f0xbTjRfywlvsqTb7BHffgDbBdhPdcv4zOq00FSoxJw5/FGIagrFYl+oloRl9nzLs
-	jCogmtNgyx8r/BBg==
-To: linux-kernel@vger.kernel.org,
-	netdev@vger.kernel.org
-Cc: "David S. Miller" <davem@davemloft.net>,
-	Boqun Feng <boqun.feng@gmail.com>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Frederic Weisbecker <frederic@kernel.org>,
-	Ingo Molnar <mingo@redhat.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Waiman Long <longman@redhat.com>,
-	Will Deacon <will@kernel.org>,
-	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-	=?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn@kernel.org>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Hao Luo <haoluo@google.com>,
-	Jesper Dangaard Brouer <hawk@kernel.org>,
-	Jiri Olsa <jolsa@kernel.org>,
-	John Fastabend <john.fastabend@gmail.com>,
-	Jonathan Lemon <jonathan.lemon@gmail.com>,
-	KP Singh <kpsingh@kernel.org>,
-	Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-	Magnus Karlsson <magnus.karlsson@intel.com>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Song Liu <song@kernel.org>,
-	Stanislav Fomichev <sdf@google.com>,
-	=?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	bpf@vger.kernel.org
-Subject: [PATCH v3 net-next 15/15] net: Move per-CPU flush-lists to bpf_net_context on PREEMPT_RT.
-Date: Wed, 29 May 2024 18:02:38 +0200
-Message-ID: <20240529162927.403425-16-bigeasy@linutronix.de>
-In-Reply-To: <20240529162927.403425-1-bigeasy@linutronix.de>
-References: <20240529162927.403425-1-bigeasy@linutronix.de>
+	s=arc-20240116; t=1716998720; c=relaxed/simple;
+	bh=gt5rwrr05fd8R3dFco0BPD0V9ATpbhhRHWZLtS9tMYc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=oa6OeyOJsyuDmmkUOODl6vZGuvINFMBwlSIbPPzVKUyWcfWfy00wzdUERQEAbWmk4hxoueBeihrZAgS1l/7cqy4tLVaE3BdLip5H5kmmAiRFtnYGiIAOkJCoDYDEF5l8lhis6U4t4Gwniw+MrHjNJFcZGc3hW3BqL6OLTcYZ3HI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=OYadAFve; arc=none smtp.client-ip=205.220.180.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 44TApiKD032629;
+	Wed, 29 May 2024 16:04:54 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	cc:content-transfer-encoding:content-type:date:from:in-reply-to
+	:message-id:mime-version:references:subject:to; s=qcppdkim1; bh=
+	3y//tl+TCZv9BP/UPxsuXIME5LjiaLN+uQZckGjm1hQ=; b=OYadAFve3Ca9fuee
+	9AtxgvdSj+51mfink7tiLiWLtNhAIqXRaNL/riJ4XBtSh1Q9+0ldwGsYLSiF2Q0i
+	7lxjWBy3rnV5Bklhklo0a+Tn5w21MHyDUoXh0YB56LrIM55o81mGv8ebiwp9LshU
+	HEXMu22zhMzrcf2sIW11wtc/CWfq3nQAR4hqSe3iREN1xba/dPS5QFpAoUdP8NUK
+	tVetDBbhEd6FviEqod+hT27i/ofh9I0vJvyuP3c/zAjgzsi148la6XWSBWJsBHkw
+	E2I/zWcQMPXY1EXafIlU9AZGcd5dGD+5bELGAAk+e+yDruNjdfoLY9sNcLBhse5t
+	ogG7kA==
+Received: from nasanppmta05.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3yba0x9e09-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 29 May 2024 16:04:53 +0000 (GMT)
+Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
+	by NASANPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 44TG4qCB012594
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 29 May 2024 16:04:52 GMT
+Received: from [10.110.47.143] (10.80.80.8) by nasanex01a.na.qualcomm.com
+ (10.52.223.231) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9; Wed, 29 May
+ 2024 09:04:47 -0700
+Message-ID: <f27a87dd-52d3-460c-ae07-cf598eebcce4@quicinc.com>
+Date: Wed, 29 May 2024 09:04:46 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net] net: validate SO_TXTIME clockid coming from userspace
+Content-Language: en-US
+To: Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+        "David S. Miller"
+	<davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>, Jakub Kicinski
+	<kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, Andrew Halaney <ahalaney@redhat.com>,
+        "Martin
+ KaFai Lau" <martin.lau@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Daniel Borkmann <daniel@iogearbox.net>, bpf <bpf@vger.kernel.org>
+CC: <kernel@quicinc.com>,
+        <syzbot+d7b227731ec589e7f4f0@syzkaller.appspotmail.com>,
+        <syzbot+30a35a2e9c5067cc43fa@syzkaller.appspotmail.com>
+References: <20240528224935.1020828-1-quic_abchauha@quicinc.com>
+ <665734886e2a9_31b2672946e@willemb.c.googlers.com.notmuch>
+ <3d04ff60-c01b-4718-ae3d-70d19ee2019a@quicinc.com>
+ <6657510aa54a4_32016c29461@willemb.c.googlers.com.notmuch>
+From: "Abhishek Chauhan (ABC)" <quic_abchauha@quicinc.com>
+In-Reply-To: <6657510aa54a4_32016c29461@willemb.c.googlers.com.notmuch>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nasanex01a.na.qualcomm.com (10.52.223.231)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: g2-mAer2FxIIp9H5zv9k4hWYkYH9BIeV
+X-Proofpoint-ORIG-GUID: g2-mAer2FxIIp9H5zv9k4hWYkYH9BIeV
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.650,FMLib:17.12.28.16
+ definitions=2024-05-29_12,2024-05-28_01,2024-05-17_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 impostorscore=0
+ mlxlogscore=999 priorityscore=1501 clxscore=1015 bulkscore=0 phishscore=0
+ malwarescore=0 mlxscore=0 adultscore=0 suspectscore=0 lowpriorityscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2405170001
+ definitions=main-2405290111
 
-The per-CPU flush lists, which are accessed from within the NAPI callback
-(xdp_do_flush() for instance), are per-CPU. There are subject to the
-same problem as struct bpf_redirect_info.
 
-Add the per-CPU lists cpu_map_flush_list, dev_map_flush_list and
-xskmap_map_flush_list to struct bpf_net_context. Add wrappers for the
-access.
 
-Cc: "Bj=C3=B6rn T=C3=B6pel" <bjorn@kernel.org>
-Cc: Alexei Starovoitov <ast@kernel.org>
-Cc: Andrii Nakryiko <andrii@kernel.org>
-Cc: Eduard Zingerman <eddyz87@gmail.com>
-Cc: Hao Luo <haoluo@google.com>
-Cc: Jesper Dangaard Brouer <hawk@kernel.org>
-Cc: Jiri Olsa <jolsa@kernel.org>
-Cc: John Fastabend <john.fastabend@gmail.com>
-Cc: Jonathan Lemon <jonathan.lemon@gmail.com>
-Cc: KP Singh <kpsingh@kernel.org>
-Cc: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-Cc: Magnus Karlsson <magnus.karlsson@intel.com>
-Cc: Martin KaFai Lau <martin.lau@linux.dev>
-Cc: Song Liu <song@kernel.org>
-Cc: Stanislav Fomichev <sdf@google.com>
-Cc: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
-Cc: Yonghong Song <yonghong.song@linux.dev>
-Cc: bpf@vger.kernel.org
-Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
----
- include/linux/filter.h | 32 ++++++++++++++++++++++++++++++++
- kernel/bpf/cpumap.c    | 19 +++----------------
- kernel/bpf/devmap.c    | 11 +++--------
- net/xdp/xsk.c          | 12 ++++--------
- 4 files changed, 42 insertions(+), 32 deletions(-)
-
-diff --git a/include/linux/filter.h b/include/linux/filter.h
-index a0d0ea356f925..f94115d154890 100644
---- a/include/linux/filter.h
-+++ b/include/linux/filter.h
-@@ -746,6 +746,9 @@ struct bpf_redirect_info {
-=20
- struct bpf_net_context {
- 	struct bpf_redirect_info ri;
-+	struct list_head cpu_map_flush_list;
-+	struct list_head dev_map_flush_list;
-+	struct list_head xskmap_map_flush_list;
- };
-=20
- static inline struct bpf_net_context *bpf_net_ctx_set(struct bpf_net_conte=
-xt *bpf_net_ctx)
-@@ -754,6 +757,14 @@ static inline struct bpf_net_context *bpf_net_ctx_set(=
-struct bpf_net_context *bp
-=20
- 	if (tsk->bpf_net_context !=3D NULL)
- 		return NULL;
-+
-+	if (IS_ENABLED(CONFIG_BPF_SYSCALL)) {
-+		INIT_LIST_HEAD(&bpf_net_ctx->cpu_map_flush_list);
-+		INIT_LIST_HEAD(&bpf_net_ctx->dev_map_flush_list);
-+	}
-+	if (IS_ENABLED(CONFIG_XDP_SOCKETS))
-+		INIT_LIST_HEAD(&bpf_net_ctx->xskmap_map_flush_list);
-+
- 	tsk->bpf_net_context =3D bpf_net_ctx;
- 	return bpf_net_ctx;
- }
-@@ -776,6 +787,27 @@ static inline struct bpf_redirect_info *bpf_net_ctx_ge=
-t_ri(void)
- 	return &bpf_net_ctx->ri;
- }
-=20
-+static inline struct list_head *bpf_net_ctx_get_cpu_map_flush_list(void)
-+{
-+	struct bpf_net_context *bpf_net_ctx =3D bpf_net_ctx_get();
-+
-+	return &bpf_net_ctx->cpu_map_flush_list;
-+}
-+
-+static inline struct list_head *bpf_net_ctx_get_dev_flush_list(void)
-+{
-+	struct bpf_net_context *bpf_net_ctx =3D bpf_net_ctx_get();
-+
-+	return &bpf_net_ctx->dev_map_flush_list;
-+}
-+
-+static inline struct list_head *bpf_net_ctx_get_xskmap_flush_list(void)
-+{
-+	struct bpf_net_context *bpf_net_ctx =3D bpf_net_ctx_get();
-+
-+	return &bpf_net_ctx->xskmap_map_flush_list;
-+}
-+
- DEFINE_FREE(bpf_net_ctx_clear, struct bpf_net_context *, bpf_net_ctx_clear=
-(_T));
-=20
- /* flags for bpf_redirect_info kern_flags */
-diff --git a/kernel/bpf/cpumap.c b/kernel/bpf/cpumap.c
-index 66974bd027109..068e994ed781a 100644
---- a/kernel/bpf/cpumap.c
-+++ b/kernel/bpf/cpumap.c
-@@ -79,8 +79,6 @@ struct bpf_cpu_map {
- 	struct bpf_cpu_map_entry __rcu **cpu_map;
- };
-=20
--static DEFINE_PER_CPU(struct list_head, cpu_map_flush_list);
--
- static struct bpf_map *cpu_map_alloc(union bpf_attr *attr)
- {
- 	u32 value_size =3D attr->value_size;
-@@ -709,7 +707,7 @@ static void bq_flush_to_queue(struct xdp_bulk_queue *bq)
-  */
- static void bq_enqueue(struct bpf_cpu_map_entry *rcpu, struct xdp_frame *x=
-dpf)
- {
--	struct list_head *flush_list =3D this_cpu_ptr(&cpu_map_flush_list);
-+	struct list_head *flush_list =3D bpf_net_ctx_get_cpu_map_flush_list();
- 	struct xdp_bulk_queue *bq =3D this_cpu_ptr(rcpu->bulkq);
-=20
- 	if (unlikely(bq->count =3D=3D CPU_MAP_BULK_SIZE))
-@@ -761,7 +759,7 @@ int cpu_map_generic_redirect(struct bpf_cpu_map_entry *=
-rcpu,
-=20
- void __cpu_map_flush(void)
- {
--	struct list_head *flush_list =3D this_cpu_ptr(&cpu_map_flush_list);
-+	struct list_head *flush_list =3D bpf_net_ctx_get_cpu_map_flush_list();
- 	struct xdp_bulk_queue *bq, *tmp;
-=20
- 	list_for_each_entry_safe(bq, tmp, flush_list, flush_node) {
-@@ -775,20 +773,9 @@ void __cpu_map_flush(void)
- #ifdef CONFIG_DEBUG_NET
- bool cpu_map_check_flush(void)
- {
--	if (list_empty(this_cpu_ptr(&cpu_map_flush_list)))
-+	if (list_empty(bpf_net_ctx_get_cpu_map_flush_list()))
- 		return false;
- 	__cpu_map_flush();
- 	return true;
- }
- #endif
--
--static int __init cpu_map_init(void)
--{
--	int cpu;
--
--	for_each_possible_cpu(cpu)
--		INIT_LIST_HEAD(&per_cpu(cpu_map_flush_list, cpu));
--	return 0;
--}
--
--subsys_initcall(cpu_map_init);
-diff --git a/kernel/bpf/devmap.c b/kernel/bpf/devmap.c
-index 4e2cdbb5629f2..9a66ac78a22ad 100644
---- a/kernel/bpf/devmap.c
-+++ b/kernel/bpf/devmap.c
-@@ -83,7 +83,6 @@ struct bpf_dtab {
- 	u32 n_buckets;
- };
-=20
--static DEFINE_PER_CPU(struct list_head, dev_flush_list);
- static DEFINE_SPINLOCK(dev_map_lock);
- static LIST_HEAD(dev_map_list);
-=20
-@@ -408,7 +407,7 @@ static void bq_xmit_all(struct xdp_dev_bulk_queue *bq, =
-u32 flags)
-  */
- void __dev_flush(void)
- {
--	struct list_head *flush_list =3D this_cpu_ptr(&dev_flush_list);
-+	struct list_head *flush_list =3D bpf_net_ctx_get_dev_flush_list();
- 	struct xdp_dev_bulk_queue *bq, *tmp;
-=20
- 	list_for_each_entry_safe(bq, tmp, flush_list, flush_node) {
-@@ -422,7 +421,7 @@ void __dev_flush(void)
- #ifdef CONFIG_DEBUG_NET
- bool dev_check_flush(void)
- {
--	if (list_empty(this_cpu_ptr(&dev_flush_list)))
-+	if (list_empty(bpf_net_ctx_get_dev_flush_list()))
- 		return false;
- 	__dev_flush();
- 	return true;
-@@ -453,7 +452,7 @@ static void *__dev_map_lookup_elem(struct bpf_map *map,=
- u32 key)
- static void bq_enqueue(struct net_device *dev, struct xdp_frame *xdpf,
- 		       struct net_device *dev_rx, struct bpf_prog *xdp_prog)
- {
--	struct list_head *flush_list =3D this_cpu_ptr(&dev_flush_list);
-+	struct list_head *flush_list =3D bpf_net_ctx_get_dev_flush_list();
- 	struct xdp_dev_bulk_queue *bq =3D this_cpu_ptr(dev->xdp_bulkq);
-=20
- 	if (unlikely(bq->count =3D=3D DEV_MAP_BULK_SIZE))
-@@ -1156,15 +1155,11 @@ static struct notifier_block dev_map_notifier =3D {
-=20
- static int __init dev_map_init(void)
- {
--	int cpu;
--
- 	/* Assure tracepoint shadow struct _bpf_dtab_netdev is in sync */
- 	BUILD_BUG_ON(offsetof(struct bpf_dtab_netdev, dev) !=3D
- 		     offsetof(struct _bpf_dtab_netdev, dev));
- 	register_netdevice_notifier(&dev_map_notifier);
-=20
--	for_each_possible_cpu(cpu)
--		INIT_LIST_HEAD(&per_cpu(dev_flush_list, cpu));
- 	return 0;
- }
-=20
-diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
-index 727aa20be4bde..8b0b557408fc2 100644
---- a/net/xdp/xsk.c
-+++ b/net/xdp/xsk.c
-@@ -35,8 +35,6 @@
- #define TX_BATCH_SIZE 32
- #define MAX_PER_SOCKET_BUDGET (TX_BATCH_SIZE)
-=20
--static DEFINE_PER_CPU(struct list_head, xskmap_flush_list);
--
- void xsk_set_rx_need_wakeup(struct xsk_buff_pool *pool)
- {
- 	if (pool->cached_need_wakeup & XDP_WAKEUP_RX)
-@@ -375,7 +373,7 @@ static int xsk_rcv(struct xdp_sock *xs, struct xdp_buff=
- *xdp)
-=20
- int __xsk_map_redirect(struct xdp_sock *xs, struct xdp_buff *xdp)
- {
--	struct list_head *flush_list =3D this_cpu_ptr(&xskmap_flush_list);
-+	struct list_head *flush_list =3D bpf_net_ctx_get_xskmap_flush_list();
- 	int err;
-=20
- 	err =3D xsk_rcv(xs, xdp);
-@@ -390,7 +388,7 @@ int __xsk_map_redirect(struct xdp_sock *xs, struct xdp_=
-buff *xdp)
-=20
- void __xsk_map_flush(void)
- {
--	struct list_head *flush_list =3D this_cpu_ptr(&xskmap_flush_list);
-+	struct list_head *flush_list =3D bpf_net_ctx_get_xskmap_flush_list();
- 	struct xdp_sock *xs, *tmp;
-=20
- 	list_for_each_entry_safe(xs, tmp, flush_list, flush_node) {
-@@ -402,7 +400,7 @@ void __xsk_map_flush(void)
- #ifdef CONFIG_DEBUG_NET
- bool xsk_map_check_flush(void)
- {
--	if (list_empty(this_cpu_ptr(&xskmap_flush_list)))
-+	if (list_empty(bpf_net_ctx_get_xskmap_flush_list()))
- 		return false;
- 	__xsk_map_flush();
- 	return true;
-@@ -1775,7 +1773,7 @@ static struct pernet_operations xsk_net_ops =3D {
-=20
- static int __init xsk_init(void)
- {
--	int err, cpu;
-+	int err;
-=20
- 	err =3D proto_register(&xsk_proto, 0 /* no slab */);
- 	if (err)
-@@ -1793,8 +1791,6 @@ static int __init xsk_init(void)
- 	if (err)
- 		goto out_pernet;
-=20
--	for_each_possible_cpu(cpu)
--		INIT_LIST_HEAD(&per_cpu(xskmap_flush_list, cpu));
- 	return 0;
-=20
- out_pernet:
---=20
-2.45.1
-
+On 5/29/2024 9:00 AM, Willem de Bruijn wrote:
+> Abhishek Chauhan (ABC) wrote:
+>>
+>>
+>> On 5/29/2024 6:58 AM, Willem de Bruijn wrote:
+>>> minor: double space before userspace
+>>>
+>>> Abhishek Chauhan wrote:
+>>>> Currently there are no strict checks while setting SO_TXTIME
+>>>> from userspace. With the recent development in skb->tstamp_type
+>>>> clockid with unsupported clocks results in warn_on_once, which causes
+>>>> unnecessary aborts in some systems which enables panic on warns.
+>>>>
+>>>> Add validation in setsockopt to support only CLOCK_REALTIME,
+>>>> CLOCK_MONOTONIC and CLOCK_TAI to be set from userspace.
+>>>>
+>>>> Link: https://lore.kernel.org/netdev/bc037db4-58bb-4861-ac31-a361a93841d3@linux.dev/
+>>>> Link: https://lore.kernel.org/lkml/20240509211834.3235191-1-quic_abchauha@quicinc.com/
+>>>
+>>> These discussions can be found directly from the referenced commit?
+>>> If any, I'd like to the conversation we had that arrived at this
+>>> approach.
+>>>
+>> Not Directly but from the patch series. 
+>> 1. First link is for why we introduced skb->tstamp_type 
+>> 2. Second link points to the series were we discussed on two approach to solve the problem 
+>> one being limit the skclockid to just TAI,MONO and REALTIME. 
+> 
+> Ah, I missed that.
+> Perhaps point directly to the start of that follow-up conversation?
+> Thanks Willem, Let me do that when i raise the net-next patch. 
+> https://lore.kernel.org/lkml/6bdba7b6-fd22-4ea5-a356-12268674def1@quicinc.com/
+> 
+>>
+>>
+>>>> Fixes: 1693c5db6ab8 ("net: Add additional bit to support clockid_t timestamp type")
+>>>> Reported-by: syzbot+d7b227731ec589e7f4f0@syzkaller.appspotmail.com
+>>>> Closes: https://syzkaller.appspot.com/bug?extid=d7b227731ec589e7f4f0
+>>>> Reported-by: syzbot+30a35a2e9c5067cc43fa@syzkaller.appspotmail.com
+>>>> Closes: https://syzkaller.appspot.com/bug?extid=30a35a2e9c5067cc43fa
+>>>> Signed-off-by: Abhishek Chauhan <quic_abchauha@quicinc.com>
+>>>> ---
+>>>>  net/core/sock.c | 16 ++++++++++++++++
+>>>>  1 file changed, 16 insertions(+)
+>>>>
+>>>> diff --git a/net/core/sock.c b/net/core/sock.c
+>>>> index 8629f9aecf91..f8374be9d8c9 100644
+>>>> --- a/net/core/sock.c
+>>>> +++ b/net/core/sock.c
+>>>> @@ -1083,6 +1083,17 @@ bool sockopt_capable(int cap)
+>>>>  }
+>>>>  EXPORT_SYMBOL(sockopt_capable);
+>>>>  
+>>>> +static int sockopt_validate_clockid(int value)
+>>>
+>>> sock_txtime.clockid has type __kernel_clockid_t.
+>>>
+>>
+>>  __kernel_clockid_t is typedef of int.  
+>> It is now, but the stricter type definition exists for a reason.
+> Try to keep the strict types where possible. Besides aiding
+> syntactic checks, it also helps self document code.
+Okay i see what you are saying. Makes sense. I will change it to __kernel_clockid_t
 
