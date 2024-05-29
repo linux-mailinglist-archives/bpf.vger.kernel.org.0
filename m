@@ -1,219 +1,122 @@
-Return-Path: <bpf+bounces-30859-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-30860-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B8BDC8D3D4E
-	for <lists+bpf@lfdr.de>; Wed, 29 May 2024 19:20:40 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3A0738D3D5B
+	for <lists+bpf@lfdr.de>; Wed, 29 May 2024 19:23:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 708B6282D4E
-	for <lists+bpf@lfdr.de>; Wed, 29 May 2024 17:20:39 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EA0942836DB
+	for <lists+bpf@lfdr.de>; Wed, 29 May 2024 17:23:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 28A051A38DF;
-	Wed, 29 May 2024 17:20:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 790291A0B13;
+	Wed, 29 May 2024 17:23:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="OahVjF+u"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="V2OadvfJ"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-f49.google.com (mail-ed1-f49.google.com [209.85.208.49])
+Received: from mail-wr1-f51.google.com (mail-wr1-f51.google.com [209.85.221.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA60F1A2C17
-	for <bpf@vger.kernel.org>; Wed, 29 May 2024 17:20:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8681A13DB9F;
+	Wed, 29 May 2024 17:23:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717003225; cv=none; b=ouYOYKKWD6pFt9CoVtwSpSkczIV2s5V2SUeuawayg0mXa1Lf2BYaVSDJ2mFmTaNS6pkZi3rPRONh3klgcl0w7dIt7PIpWs41nj5o4lIuNWfMdKCg+WGkp9rlerI49Qe2vD3kY8kRA5tYFoiiViIb/puWdePlhFPh1k+tPIg9Ncg=
+	t=1717003406; cv=none; b=dIZcSufo/V8NVIemfc1cwFixKSWiYUUG5LKjZJ0gpnm5ngFwIerwj5UC5+yUPyJs03GrCyqaE1pYa4acVtAObaIgqNBfnXRApYhgthWEpkH0JEcUFLF33RMA//+hBQCD6KiQfM4SdnAXq4HXAq132RMBo9+1AotKZmLQeQsJibk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717003225; c=relaxed/simple;
-	bh=7Dvlwp3cj9kBhnrZACSLGYw+fDrt3VMF9KkgcqNKF7g=;
+	s=arc-20240116; t=1717003406; c=relaxed/simple;
+	bh=18fR52IAgMh259ZAMQQuaorP+DAd2ZN9ZaPUdgLSpPY=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=dRuOv58JPd/NHGUS/Zv61BUdxsDc0dEpLoVsB7f6+BdjRRx6K6HVRD8+ZbcssKPgW5m/HpbbaZSF7hK1N90rWmCQf88UK4vCq5TV/IJ/dnj1uFSNV4rNDl/VznOkPBjA7kV0fMnHK3QPimAMkbR5JjtXWCTEr9FLSz3mePdmo6E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=OahVjF+u; arc=none smtp.client-ip=209.85.208.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ed1-f49.google.com with SMTP id 4fb4d7f45d1cf-5789733769dso356763a12.1
-        for <bpf@vger.kernel.org>; Wed, 29 May 2024 10:20:21 -0700 (PDT)
+	 To:Cc:Content-Type; b=iaF8rs9cZb3DpV9ovbtHxWrCHeU6Zba26GtSQ1Un6q5jUMSzjAYFoNgHrkY97SPPWbE1U3a7pMQEzRLF8NEeuPU8cVfVliGjR3pK6spMEgcxjCAjCTdHWO3ZJHDsX+CVs3FxWgbuLZmwlZ03LTDn3YqvgkSaqkFrubjva4bV7AM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=V2OadvfJ; arc=none smtp.client-ip=209.85.221.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f51.google.com with SMTP id ffacd0b85a97d-354fb2d8f51so2038889f8f.3;
+        Wed, 29 May 2024 10:23:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1717003220; x=1717608020; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1717003403; x=1717608203; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=T6S92XYKao8zmEwYTt3a/Nczc/mks5grdh4+BnfyPTc=;
-        b=OahVjF+uze/S9Yn0R/e+72J80Eo14Ndb0JX3BX7MdTwFUtnWHqryLwOZV9e/HwNRn/
-         KCzJSttyBaVlcSU8Aii7iGYJnLXOnG/vYNoV9ub7xA++Wb/uaDy335X6NZe/d0MZ4KmA
-         Yemfy5Zcudp9/S6EY/5hs9Z0auOiK+7PZnIHC97KPZtxaRwTe04/w8S7LccXPI7E7tWD
-         PEuSnKcy5PguqBJ+VJOY+H20C1JqxCF7VOzCbyV9PZf5dOwX7ILRV2T4KIDbhzzMEIgf
-         F2HFp+dgVFKGX0yDYiaEGS6Kw/9n2i+uyrYYhyw+0lo+xD51tEUpd0vb5ywrXcox0zmZ
-         d3nw==
+        bh=4oTlJu6nFvobrmRIU2tbUcCs8hZRqj/c25H324zaAeU=;
+        b=V2OadvfJCFcyYMxlz1eGDUKoL/Mn3eAKXzgnBwrJHtajSjMrv1JKmL+cI4i1LE1eRs
+         e1xzK/ykcr4jhwjUUpuTf30XLl5qsTDBfe7gryyxtJolGfR8pX1SikPJXv631BZ6DtDm
+         KGZh9Qs/Fx9HsVQnUJc6gt9N53tGTS+N+V2LaJFHyl4ESIBdnKQ/XkIBWZaZUwUgpsoZ
+         ps82CqkBwSx2+3ZvulsdwwPWMudHaQTYEOZuUQzl64CzyIIegQDVUHSu5+HMubNwQo+b
+         vBRYniAqZY2hKGNAsgLDUsu+hYebo/9TT5cxtSQkJtCXGrDHC+EhzSs8MsqALjtAeINM
+         4guQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1717003220; x=1717608020;
+        d=1e100.net; s=20230601; t=1717003403; x=1717608203;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=T6S92XYKao8zmEwYTt3a/Nczc/mks5grdh4+BnfyPTc=;
-        b=q9sg/GrKWDrOnQJSj+qaKtNgHhgCLKAQ6Y/+vL5qC5bd3EI0hX6vOJvRhVE3mAWkX6
-         1chpj42GIxT5inx4ACPCAJmTr9SUGbBol3k5dtWnVQ+GLjTDpFcySmNyJTBmJCK5q+/d
-         R5tdaUQJ4hNIcrA935du9QYIJJviUFu1DGYbTYgaDKSaMouK+vfCgmoT8D/cTVWEKK79
-         P618sPRpIaddPBMHXg/dbt41ZkvDvrBmdrj2sPw4HDmLUzMTAgeHxH2JZ2kH2iXlUtEp
-         rK+l7joSl/IndJC23FM6u/njx/4xqPl5RXl/88QV7BzHwR+hz++cHpH9xgR8ULC6jtTq
-         yG8g==
-X-Forwarded-Encrypted: i=1; AJvYcCXuL2C5mDPIOQM6zhgE91444Xttx/HhCP/G2IDLtxXkMlp8t8T1zBY40OSzhtp9mxXHGv32wV9QMvmXBN0kurAc+piz
-X-Gm-Message-State: AOJu0YzQlBwQu6BxM9xwwSjX6VaEvi4vhoTiKcWrgknr10Vz/jlAp24G
-	qLyagEHBHRziyYSM0gPOeJUTNHoUGk2WQLyfpISNoSkcetOXEz+lFNmDaqN43aoMlED2WwD/5FS
-	+LT/ErBlX+RO1fyXVuIGH7YV+rMTFqZQQevnf
-X-Google-Smtp-Source: AGHT+IFAhIhHvER4srrkWNvWRV5ZrC6gug/SN6NLXzcRRgpzDjuVBSfERRb5LBk6wrj7S1gKnfcF1nodGURXGds/8UM=
-X-Received: by 2002:a17:906:2dc2:b0:a62:c41d:c25f with SMTP id
- a640c23a62f3a-a642d6b1573mr258384666b.21.1717003219656; Wed, 29 May 2024
- 10:20:19 -0700 (PDT)
+        bh=4oTlJu6nFvobrmRIU2tbUcCs8hZRqj/c25H324zaAeU=;
+        b=vChhCvO6UuxoeYzJsZSiQNKQsAJGf9hCaC/oIeBTXAyZ86okL8rVmhtX4Wbvq+UCdY
+         DaoJtntEwitYfY7bIVZXxD/IURc4VMxV4b5zgTUTlvMYXxwelvPt08P1xbR1fv8tsWgO
+         pO86oMoI5Ha/zWH1U2GUd2kPLYBHQFgPeCFuJ9zbX1Z//jhHPO1LzPufy3Q4vph37fAw
+         ObzYrf1UgVKsxpCMM8eWEAvo3Isydg7gt7az52NRfa9urYcqJxL05GtoB/vRUvZgWWdc
+         s/Coi4phCWC6+AOteLmhkq+boXRfQlhYxzkQKMxl1fYsLTqVMsf6KYirrRBmn4vwj9Jy
+         +DtA==
+X-Forwarded-Encrypted: i=1; AJvYcCWcaJ/BAyALl8qxAblak3BNtD8khXtU367VqqTxfNFcHpbnKfRVl5MDx7lkHIpcIk2wKAqTEDqxKyISmaoszCrQ2vI14hEaIgEOyBTr9FzM3B899qlfYZziOQQGFfV7kGyR
+X-Gm-Message-State: AOJu0YzGSFk8nN0vu50wB6lo5Hjpl0lq4hAXBR8CwSuqNaiOk/qddm4k
+	yFC1hX/jeyUBMxcfsn0m7FpP+vGcGF5Er9CcKp8ZveGNN3Rq9YAtExpPDNG0U1Iikt3Dl0Kj8uH
+	QdzSQtbvw5g0mnGwU1yWPl70io0S2rw==
+X-Google-Smtp-Source: AGHT+IGpW3zz43rA4mJN32yG/mGPPz6Xbo2I0jI9HaXGLdQA/pEkhjf2SNyyGfCB0NB/wOtg8hevfpqijFim0ZGYt6c=
+X-Received: by 2002:adf:fa82:0:b0:354:df9f:1010 with SMTP id
+ ffacd0b85a97d-35529d31074mr10209426f8f.24.1717003402564; Wed, 29 May 2024
+ 10:23:22 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240510232128.1105145-1-almasrymina@google.com>
- <20240510232128.1105145-12-almasrymina@google.com> <9097e78d-0e7d-43bd-bafd-e53a4872a4d1@davidwei.uk>
- <CAHS8izOe-uYjm0ttQgHOFpvp_Tj4_oRHV6d1Y1sWJAZJdCdCBA@mail.gmail.com> <29464e46-e196-47aa-9ff5-23173099c95e@gmail.com>
-In-Reply-To: <29464e46-e196-47aa-9ff5-23173099c95e@gmail.com>
-From: Mina Almasry <almasrymina@google.com>
-Date: Wed, 29 May 2024 10:20:03 -0700
-Message-ID: <CAHS8izOnD3J3i+z1nxg=AZQW9dm0w2JBtbg2=oouiER8xqeRPA@mail.gmail.com>
-Subject: Re: [PATCH net-next v9 11/14] tcp: RX path for devmem TCP
-To: Pavel Begunkov <asml.silence@gmail.com>
-Cc: David Wei <dw@davidwei.uk>, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-doc@vger.kernel.org, linux-alpha@vger.kernel.org, 
-	linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org, 
-	sparclinux@vger.kernel.org, linux-trace-kernel@vger.kernel.org, 
-	linux-arch@vger.kernel.org, bpf@vger.kernel.org, 
-	linux-kselftest@vger.kernel.org, linux-media@vger.kernel.org, 
-	dri-devel@lists.freedesktop.org, Donald Hunter <donald.hunter@gmail.com>, 
-	Jakub Kicinski <kuba@kernel.org>, "David S. Miller" <davem@davemloft.net>, 
-	Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, 
-	Jonathan Corbet <corbet@lwn.net>, Richard Henderson <richard.henderson@linaro.org>, 
-	Ivan Kokshaysky <ink@jurassic.park.msu.ru>, Matt Turner <mattst88@gmail.com>, 
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
-	"James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>, Helge Deller <deller@gmx.de>, 
-	Andreas Larsson <andreas@gaisler.com>, Jesper Dangaard Brouer <hawk@kernel.org>, 
-	Ilias Apalodimas <ilias.apalodimas@linaro.org>, Steven Rostedt <rostedt@goodmis.org>, 
-	Masami Hiramatsu <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
-	Arnd Bergmann <arnd@arndb.de>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
-	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+References: <20240529065311.1218230-1-namhyung@kernel.org> <Zlbn3DOGrzHlw95h@krava>
+ <CAM9d7ci0g+ObA7w-tXU9cyjzRUFgXjZ4b9Atx2+oV4Anhraeyg@mail.gmail.com>
+In-Reply-To: <CAM9d7ci0g+ObA7w-tXU9cyjzRUFgXjZ4b9Atx2+oV4Anhraeyg@mail.gmail.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Wed, 29 May 2024 10:23:10 -0700
+Message-ID: <CAADnVQ+qqx8=WjpMjZyqzCb+02zpw9=wVAwWfyHL_O4Xpadukw@mail.gmail.com>
+Subject: Re: [PATCH v2] bpf: Allocate bpf_event_entry with node info
+To: Namhyung Kim <namhyung@kernel.org>
+Cc: Jiri Olsa <olsajiri@gmail.com>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
 	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
 	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
-	Jiri Olsa <jolsa@kernel.org>, Steffen Klassert <steffen.klassert@secunet.com>, 
-	Herbert Xu <herbert@gondor.apana.org.au>, David Ahern <dsahern@kernel.org>, 
-	Willem de Bruijn <willemdebruijn.kernel@gmail.com>, Shuah Khan <shuah@kernel.org>, 
-	Sumit Semwal <sumit.semwal@linaro.org>, =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>, 
-	Jason Gunthorpe <jgg@ziepe.ca>, Yunsheng Lin <linyunsheng@huawei.com>, 
-	Shailend Chand <shailend@google.com>, Harshitha Ramamurthy <hramamurthy@google.com>, 
-	Shakeel Butt <shakeel.butt@linux.dev>, Jeroen de Borst <jeroendb@google.com>, 
-	Praveen Kaligineedi <pkaligineedi@google.com>, Willem de Bruijn <willemb@google.com>, 
-	Kaiyuan Zhang <kaiyuanz@google.com>
+	LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>, 
+	Aleksei Shchekotikhin <alekseis@google.com>, Nilay Vaish <nilayvaish@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, May 28, 2024 at 7:42=E2=80=AFPM Pavel Begunkov <asml.silence@gmail.=
-com> wrote:
+On Wed, May 29, 2024 at 9:54=E2=80=AFAM Namhyung Kim <namhyung@kernel.org> =
+wrote:
 >
-> On 5/28/24 18:36, Mina Almasry wrote:
-> > On Wed, May 22, 2024 at 11:02=E2=80=AFPM David Wei <dw@davidwei.uk> wro=
-te:
-> ...
-> >>> +                      */
-> >>> +                     if (!skb_frag_net_iov(frag)) {
-> >>> +                             net_err_ratelimited("Found non-dmabuf s=
-kb with net_iov");
-> >>> +                             err =3D -ENODEV;
-> >>> +                             goto out;
-> >>> +                     }
-> >>> +
-> >>> +                     niov =3D skb_frag_net_iov(frag);
-> >>
-> >> Sorry if we've already discussed this.
-> >>
-> >> We have this additional hunk:
-> >>
-> >> + if (niov->pp->mp_ops !=3D &dmabuf_devmem_ops) {
-> >> +       err =3D -ENODEV;
-> >> +       goto out;
-> >> + }
-> >>
-> >> In case one of our skbs end up here, skb_frag_is_net_iov() and
-> >> !skb_frags_readable(). Does this even matter? And if so then is there =
-a
-> >> better way to distinguish between our two types of net_iovs?
+> Hi Jiri,
+>
+> On Wed, May 29, 2024 at 1:31=E2=80=AFAM Jiri Olsa <olsajiri@gmail.com> wr=
+ote:
 > >
-> > Thanks for bringing this up, yes, maybe we do need a way to
-> > distinguish, but it's not 100% critical, no? It's mostly for debug
-> > checking?
->
-> Not really. io_uring definitely wouldn't want the devmem completion path
-> taking an iov and basically stashing it into a socket (via refcount),
-> that's a lifetime problem. Nor we'd have all the binding/chunk_owner
-> parts you have and probably use there.
->
-> Same the other way around, you don't want io_uring grabbing your iov
-> and locking it up, it won't even be possible to return it back. We
-> also may want to have access to backing pages for different fallback
-> purposes, for which we need to know the iov came from this particular
-> ring.
->
-> It shouldn't happen for a behaving user, but most of it would likely
-> be exploitable one way or another.
->
-> > I would say add a helper, like net_iov_is_dmabuf() or net_iov_is_io_uri=
-ng().
->
-> We're verifying that the context the iov bound to is the current
-> context (e.g. io_uring instance) we're executing from. If we can
-> agree that mp_priv should be a valid pointer, the check would look
-> like:
->
-> if (pp->mp_priv =3D=3D io_uring_ifq)
->
-> > Checking for niov->pp->mp_ops seems a bit hacky to me, and may be
-> > outright broken. IIRC niov's can be disconnected from the page_pool
-> > via page_pool_clear_pp_info(), and niov->pp may be null. Abstractly
->
-> It's called in the release path like page_pool_return_page(),
-> I can't imagine someone can sanely clear it while inflight ...
->
-
-Ah, yes, I wasn't sure what happens to the inflight pages when the pp
-gets destroyed. I thought maybe the pp would return the inflight
-pages, but it looks to me like the pp just returns the free pages in
-the alloc cache and the ptr_ring, and the pp stays alive until all the
-inflight pages are freed. So indeed niov->pp should always be valid
-while it's in flight. I still prefer to have the memory type to be
-part of the niov itself, but I don't feel strongly at this point; up
-to you.
-
-> > speaking the niov type maybe should be a property of the niov itself,
-> > and not the pp the niov is attached to.
->
-> ... but I can just stash all that in niov->owner,
-> struct dmabuf_genpool_chunk_owner you have. That might be even
-> cleaner. And regardless of it I'll be making some minor changes
-> to the structure to make it generic.
->
-> > It is not immediately obvious to me what the best thing to do here is,
-> > maybe it's best to add a flag to niov or to use niov->pp_magic for
-> > this.
+> > On Tue, May 28, 2024 at 11:53:11PM -0700, Namhyung Kim wrote:
+> > > It was reported that accessing perf_event map entry caused pretty hig=
+h
+> > > LLC misses in get_map_perf_counter().  As reading perf_event is allow=
+ed
+> > > for the local CPU only, I think we can use the target CPU of the even=
+t
+> > > as hint for the allocation like in perf_event_alloc() so that the eve=
+nt
+> > > and the entry can be in the same node at least.
 > >
-> > I would humbly ask that your follow up patchset takes care of this
-> > bit, if possible. I think mine is doing quite a bit of heavy lifting
-> > as is (and I think may be close to ready?), when it comes to concerns
-> > of devmem + io_uring coexisting if you're able to take care, awesome,
-> > if not, I can look into squashing some fix.
+> > looks good, is there any profile to prove the gain?
 >
-> Let it be this way then. It's not a problem while there is
-> only one such a provider.
->
+> No, at this point.  I'm not sure if it'd help LLC hit ratio but
+> I think it should improve the memory latency.
 
-Thank you!
-
---=20
-Thanks,
-Mina
+I have the same concern as Jiri.
+Without numbers this is just a code churn.
+Does this patch really make a difference?
+Without numbers maintainers would have to believe the "just trust me" part.
+So..
+pw-bot: cr
 
