@@ -1,271 +1,166 @@
-Return-Path: <bpf+bounces-30848-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-30849-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7AB0D8D3B79
-	for <lists+bpf@lfdr.de>; Wed, 29 May 2024 17:54:12 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 11D7F8D3B96
+	for <lists+bpf@lfdr.de>; Wed, 29 May 2024 18:00:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CA1E9B27674
-	for <lists+bpf@lfdr.de>; Wed, 29 May 2024 15:54:09 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A36871F29022
+	for <lists+bpf@lfdr.de>; Wed, 29 May 2024 16:00:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E627181D1D;
-	Wed, 29 May 2024 15:53:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D9D46181D15;
+	Wed, 29 May 2024 16:00:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MNCxfDIy"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="biw8bEiY"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yw1-f182.google.com (mail-yw1-f182.google.com [209.85.128.182])
+Received: from mail-qv1-f54.google.com (mail-qv1-f54.google.com [209.85.219.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 43803180A92
-	for <bpf@vger.kernel.org>; Wed, 29 May 2024 15:53:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 01AC9C8DE;
+	Wed, 29 May 2024 16:00:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716998033; cv=none; b=aGdDefckNAu4/EWzAY2wt7rfM4JiChJUv6DSZWpBAauCZSdWwSJW8KRzpD5EY8xeFVf6vV7ZODZIa7srdu6EQ8lGQwvuVAeCrcuGcXVuJj4eWKYHr+qwuvldPSgh78Lf9JXttZmLb43g3I7ICaeNND2ol2gB/Xpdr2Qtjjbk8ws=
+	t=1716998414; cv=none; b=nAE3OY8XTAlC9y6hUHhj1CzELXH09Xaf3SZ1ngGTvPeAB6wGGR0xrkPMDwz/DrjL5BkzxH2y0fhUyYNXfxO/RXrwQ6wKtnGmXscoUgtUAuuYUMOy8EptmSysIuCsbTXP630fRZBz00a5d7f3lD7mdmbyk8FhGJgMXYx31JNZtTI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716998033; c=relaxed/simple;
-	bh=hc+Ru3V6pFQMLzJDflChoi6bCAfmhV9ItfUvAIPqD/I=;
-	h=MIME-Version:From:Date:Message-ID:Subject:To:Cc:Content-Type; b=dVudbKa05HmWG1JrIVylR51cQ8wygoh8yShi+y0XwSQJoDfSsJJYhlJQ478D2e3D8qgXbXUp9VATqtqXmVEfcS20kmvHNbVtZ7O/UT7lWGTZcETDEgByuSNVdkDprWsiWJgFywFNdZtX0HMTDMz35B2G/bunp/LQTm74dc8n3N4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=MNCxfDIy; arc=none smtp.client-ip=209.85.128.182
+	s=arc-20240116; t=1716998414; c=relaxed/simple;
+	bh=1YrDqDCjeozpqGC+Hig4LtVmdC1ddiYzZ7fRqmZVvk8=;
+	h=Date:From:To:Cc:Message-ID:In-Reply-To:References:Subject:
+	 Mime-Version:Content-Type; b=qilFlm8HF44c4KQ3twKurQYN23s9ZdZiuhyUrJwn9qzKci/9sL/v51ShDAH6IfOsudCO6DZUanwiJ5BYK/cclAbMKDjEGobA1ad62FRPuFh0F3SOi3/itzbAnS5L3WoiYO6Uzvar6veG4LFndPD0YdmMqGyx3s7yW6oU1a/jAqo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=biw8bEiY; arc=none smtp.client-ip=209.85.219.54
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f182.google.com with SMTP id 00721157ae682-62a052f74c1so960807b3.1
-        for <bpf@vger.kernel.org>; Wed, 29 May 2024 08:53:52 -0700 (PDT)
+Received: by mail-qv1-f54.google.com with SMTP id 6a1803df08f44-6ada6a476c2so2307256d6.2;
+        Wed, 29 May 2024 09:00:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1716998031; x=1717602831; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=FilTeUxjUEyp2GMUt7QzBYSV8PtAyS8ZTNEDfUbrojM=;
-        b=MNCxfDIyddkNgDi1I2VxVNvuiZ65jdfeJIWUF/TksqQHwSdFK5vaXrpJ7mEiveYU7H
-         Z6SMCDvCuZTu1gAlrd3cOvhkqsncQc1eg7Q7+VW9KON8hoB+5QkOs5k2eq561PDE8lLO
-         cOJ/FmiEr3ApuEbkBj1m3wX8dElz6HrbQ53+7zIE/2WQ08d4v5whVqFOD/1qQ6NPUX+T
-         CPhuUH91Yhu5L8JtpLEKm4sfVqGGm2zA5QKdT1ab0TZuQWo27oBXGKeiizfE8wK9Zrvk
-         xDfGezOiBerDZsZc34EKCto+8FG2GPaXncYW2oNFfYLm7Bf1Sp33Hwblt7r8QdqlFJt1
-         NPyw==
+        d=gmail.com; s=20230601; t=1716998412; x=1717603212; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=C4K2QerpQV9MXwwRc8iWQmIO1ZXCMRqUdixm5NbWUn0=;
+        b=biw8bEiYTNtYI1zmd3UQ0J0nFog37n3hjEawOOoivrGXM+5ykYYnrF1uh24b4lOb5s
+         PZEg2RmU3+I054r6Z6R1Mc1dequT8trlk2m5Gv/hpar3KJ7CbsL5eY2UJFkscdIWgyy6
+         lj76QLE8Y4sv4JbCF0lRwZYJ/gqNBIhmjlZd8rkZw0S2gsLnhdlMNlicXExOvvifzsGR
+         53wDToKkdRVjvaodatASTzxl6WxI6pK3P6GGEeAgt25v6EFBGtE07lUxm5f9l8cs7ysC
+         VLwtOI8bN3pdk07xyy19mrGSORC8JjtH29NEJa3mftIZ7MbtReZAC7E9tzbGrKhAsiuh
+         iBbg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1716998031; x=1717602831;
-        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=FilTeUxjUEyp2GMUt7QzBYSV8PtAyS8ZTNEDfUbrojM=;
-        b=epncIKiC4fuPzEauwcNnOzSZRz4SUwrkJkRpbwIu4QfQyoaztIN5PXXFgaNNnK+tHQ
-         L8RXKXXLE936HPozfGzoU8/kkImwYl+mMmRCg9Ci8KaS5MoXuSGc6xcHaEk1eN2SVLBk
-         BCIfLfpafop3s63nrrg3+x2jM7PlMhrvwGU2zpn+GBQBQfps+YAYmnkqfTvfEoVj0daH
-         xVBrYkUqW/JIbwsXoOyU12DFRnjdoj8cawG3q7JV7dNNzn2DS2fQfRj794L5MawsURgl
-         L/efcerAd2YIeLEZJVqfn3CbcKgn+1Yae6PpKeyYQuj25jKazXPySmKtzlMOfFycafrj
-         ZRWQ==
-X-Gm-Message-State: AOJu0YzwtsM98tUFTXjIUPQ5lW556/2YX7iTZF2+EgD8HkMmEjDAooqu
-	dC+zty2FcOGdyQPWpYagjGys2VbkOjzpGCjJgiWBpNXQMASqtb2eCWegtx448XWr0BQ/871Yyy2
-	XYRPe1ZJxHmmszlJEzYkb8a4dijw=
-X-Google-Smtp-Source: AGHT+IG6GgmSiYB7jSKKDv3WQ81t1KHFPgipJDw6Q0T+6NeS5jroadSMLkYm+XEFFx8SDOke1Xp0bxP60QOQedB+cEk=
-X-Received: by 2002:a05:690c:a91:b0:627:dde4:6338 with SMTP id
- 00721157ae682-62c5d2a1d4emr17510397b3.6.1716998031232; Wed, 29 May 2024
- 08:53:51 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1716998412; x=1717603212;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=C4K2QerpQV9MXwwRc8iWQmIO1ZXCMRqUdixm5NbWUn0=;
+        b=sE8EVTmbdLKLiMZ3MXuE1JEkgzrIBSXg0Oa9t5nbMLRqBtqETmfjVxCGkpmfGKVFa3
+         DuPEGnTeOr5oKieXfaAPJdBgPIQmWI9DpJMYmvOW2rBkrgTY2LOr9QNu9AtxvHclY4nJ
+         PmBWpXZlBzUyhclNDO59vqVSARJG8Z0Ncbjb0hD8pgVjgMbLzWNBpLPrDev5cmViI4HH
+         YF0ig9j7mEakr4V5C+WopYN/0+drgFJAVGg+y8DX8n93KYxLUKj2s2kBb9jjESqykEX+
+         V0x4zzJCKe9gURjPAQPjOD+5MCLFve8MfWW4oFj5XZpR2NZsV88OONKEvNqu4sI/jUeQ
+         UUUQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUqGBA5mWHR5jptpATBq/eRaDuctDbJWmagCSGIubwCpNCJ/+q3eEIU1WvxxqP8SABztMip1XqKtxOortrMfGxrTZNA9KICSK60+1R9RnrkR1kw5Es1wdS8eqwFxRFO7a42L+sRPCd511LJNAS9FGo/jPCKoPk/Dz6A
+X-Gm-Message-State: AOJu0YydFc6/h4kLFXtnadIDaW5Gqv3tjvjMpc6G+t/I6cN9ykvIsYl9
+	u2LFxFfpa62rjDakn4Ug6MvNmQOagP//IKg2Ca5jP3BpZ1wXBi6A
+X-Google-Smtp-Source: AGHT+IFzEpUQnUlI4obDYYxa0z+QrEmFjwt3H70uQKkQqLvIjFiB2vDL3+3CuPrTs+bzE6KDv1w/Qg==
+X-Received: by 2002:a05:6214:4a09:b0:6ab:82d6:f01c with SMTP id 6a1803df08f44-6abcd0ceedbmr202350816d6.39.1716998411358;
+        Wed, 29 May 2024 09:00:11 -0700 (PDT)
+Received: from localhost (112.49.199.35.bc.googleusercontent.com. [35.199.49.112])
+        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-6ad67329467sm45432966d6.95.2024.05.29.09.00.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 29 May 2024 09:00:10 -0700 (PDT)
+Date: Wed, 29 May 2024 12:00:10 -0400
+From: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+To: "Abhishek Chauhan (ABC)" <quic_abchauha@quicinc.com>, 
+ Willem de Bruijn <willemdebruijn.kernel@gmail.com>, 
+ "David S. Miller" <davem@davemloft.net>, 
+ Eric Dumazet <edumazet@google.com>, 
+ Jakub Kicinski <kuba@kernel.org>, 
+ Paolo Abeni <pabeni@redhat.com>, 
+ netdev@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, 
+ Andrew Halaney <ahalaney@redhat.com>, 
+ Martin KaFai Lau <martin.lau@kernel.org>, 
+ Martin KaFai Lau <martin.lau@linux.dev>, 
+ Daniel Borkmann <daniel@iogearbox.net>, 
+ bpf <bpf@vger.kernel.org>
+Cc: kernel@quicinc.com, 
+ syzbot+d7b227731ec589e7f4f0@syzkaller.appspotmail.com, 
+ syzbot+30a35a2e9c5067cc43fa@syzkaller.appspotmail.com
+Message-ID: <6657510aa54a4_32016c29461@willemb.c.googlers.com.notmuch>
+In-Reply-To: <3d04ff60-c01b-4718-ae3d-70d19ee2019a@quicinc.com>
+References: <20240528224935.1020828-1-quic_abchauha@quicinc.com>
+ <665734886e2a9_31b2672946e@willemb.c.googlers.com.notmuch>
+ <3d04ff60-c01b-4718-ae3d-70d19ee2019a@quicinc.com>
+Subject: Re: [PATCH net] net: validate SO_TXTIME clockid coming from userspace
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-From: Amery Hung <ameryhung@gmail.com>
-Date: Wed, 29 May 2024 08:53:39 -0700
-Message-ID: <CAMB2axP3gGsdQC+CYXjBCxk++9U5upfmBAK2g9=ZNnD7N8tY3A@mail.gmail.com>
-Subject: Potential deadlock in bpf_lpm_trie
-To: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>
-Cc: bpf@vger.kernel.org, pgovind2@uci.edu, 
-	"hsinweih@uci.edu" <hsinweih@uci.edu>
-Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 7bit
 
-Hello,
+Abhishek Chauhan (ABC) wrote:
+> 
+> 
+> On 5/29/2024 6:58 AM, Willem de Bruijn wrote:
+> > minor: double space before userspace
+> > 
+> > Abhishek Chauhan wrote:
+> >> Currently there are no strict checks while setting SO_TXTIME
+> >> from userspace. With the recent development in skb->tstamp_type
+> >> clockid with unsupported clocks results in warn_on_once, which causes
+> >> unnecessary aborts in some systems which enables panic on warns.
+> >>
+> >> Add validation in setsockopt to support only CLOCK_REALTIME,
+> >> CLOCK_MONOTONIC and CLOCK_TAI to be set from userspace.
+> >>
+> >> Link: https://lore.kernel.org/netdev/bc037db4-58bb-4861-ac31-a361a93841d3@linux.dev/
+> >> Link: https://lore.kernel.org/lkml/20240509211834.3235191-1-quic_abchauha@quicinc.com/
+> > 
+> > These discussions can be found directly from the referenced commit?
+> > If any, I'd like to the conversation we had that arrived at this
+> > approach.
+> > 
+> Not Directly but from the patch series. 
+> 1. First link is for why we introduced skb->tstamp_type 
+> 2. Second link points to the series were we discussed on two approach to solve the problem 
+> one being limit the skclockid to just TAI,MONO and REALTIME. 
 
-We are developing a tool to perform static analysis on the bpf
-subsystem to detect locking violations. Our tool reported the
-spin_lock_irqsave() in trie_delete_elem() and trie_update_elem() that
-could be called from an NMI. If a bpf program holding the lock is
-interrupted by the same program in NMI, a deadlock can happen. The
-report was generated for kernel version 6.6-rc4, however, we believe
-this should still exist in the latest kernel.
+Ah, I missed that.
+Perhaps point directly to the start of that follow-up conversation?
 
-We tried to validate the report on v6.7 and v5.15 kernels by running a
-PoC and found that trie->lock is not the only problematic lock.
-Lockdep also complained about memcg_stock.stock_lock used in
-lpm_trie_node_alloc() and krc.lock used in kfree_rcu(). Therefore, I
-wonder if we should just return error when in NMI for
-trie_delete_elem() and trie_update_elem() assuming there is no such
-use case.
+https://lore.kernel.org/lkml/6bdba7b6-fd22-4ea5-a356-12268674def1@quicinc.com/
 
-Below is one of the splats and the PoC is attached at the end.
+> 
+> 
+> >> Fixes: 1693c5db6ab8 ("net: Add additional bit to support clockid_t timestamp type")
+> >> Reported-by: syzbot+d7b227731ec589e7f4f0@syzkaller.appspotmail.com
+> >> Closes: https://syzkaller.appspot.com/bug?extid=d7b227731ec589e7f4f0
+> >> Reported-by: syzbot+30a35a2e9c5067cc43fa@syzkaller.appspotmail.com
+> >> Closes: https://syzkaller.appspot.com/bug?extid=30a35a2e9c5067cc43fa
+> >> Signed-off-by: Abhishek Chauhan <quic_abchauha@quicinc.com>
+> >> ---
+> >>  net/core/sock.c | 16 ++++++++++++++++
+> >>  1 file changed, 16 insertions(+)
+> >>
+> >> diff --git a/net/core/sock.c b/net/core/sock.c
+> >> index 8629f9aecf91..f8374be9d8c9 100644
+> >> --- a/net/core/sock.c
+> >> +++ b/net/core/sock.c
+> >> @@ -1083,6 +1083,17 @@ bool sockopt_capable(int cap)
+> >>  }
+> >>  EXPORT_SYMBOL(sockopt_capable);
+> >>  
+> >> +static int sockopt_validate_clockid(int value)
+> > 
+> > sock_txtime.clockid has type __kernel_clockid_t.
+> > 
+> 
+>  __kernel_clockid_t is typedef of int.  
 
-I am also copying Priya who is developing the tool.
-
-Thanks,
-Amery
-
-================================
-WARNING: inconsistent lock state
-5.15.26+ #42 Not tainted
---------------------------------
-inconsistent {INITIAL USE} -> {IN-NMI} usage.
-test_prog_user/262 [HC1[1]:SC0[0]:HE0:SE1] takes:
-ffff9ec37dc20fb0 (krc.lock){..-.}-{2:2}, at: kvfree_call_rcu+0x6d/0x330
-{INITIAL USE} state was registered at:
-  lock_acquire+0xc8/0x2d0
-  _raw_spin_lock_irqsave+0x48/0x60
-  kfree_rcu_scheduler_running+0x4c/0xa6
-  rcu_set_runtime_mode+0x1e/0x2b
-  do_one_initcall+0x5b/0x2d0
-  kernel_init_freeable+0x28e/0x2f5
-  kernel_init+0x16/0x110
-  ret_from_fork+0x22/0x30
-irq event stamp: 6852
-hardirqs last  enabled at (6851): [<ffffffffa3600d82>]
-asm_sysvec_apic_timer_interrupt+0x12/0x20
-hardirqs last disabled at (6852): [<ffffffffa35d1e4b>] exc_nmi+0xab/0x180
-softirqs last  enabled at (6850): [<ffffffffa2a9afc9>] __irq_exit_rcu+0xb9/0xe0
-softirqs last disabled at (6845): [<ffffffffa2a9afc9>] __irq_exit_rcu+0xb9/0xe0
-
-other info that might help us debug this:
- Possible unsafe locking scenario:
-
-       CPU0
-       ----
-  lock(krc.lock);
-  <Interrupt>
-    lock(krc.lock);
-
- *** DEADLOCK ***
-
-no locks held by test_prog_user/262.
-
-stack backtrace:
-CPU: 0 PID: 262 Comm: test_prog_user Not tainted 5.15.26+ #42
-Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.15.0-1 04/01/2014
-Call Trace:
- <TASK>
- dump_stack_lvl+0x57/0x72
- lock_acquire.cold+0x43/0x48
- ? kvfree_call_rcu+0x6d/0x330
- _raw_spin_lock+0x2c/0x40
- ? kvfree_call_rcu+0x6d/0x330
- kvfree_call_rcu+0x6d/0x330
- trie_delete_elem+0x198/0x200
- bpf_prog_e10e7f0a82b8b6d9_trie_perf+0x70/0xefc
- bpf_overflow_handler+0xb3/0x1f0
- __perf_event_overflow+0x52/0x100
- handle_pmi_common+0x1f7/0x350
- ? lock_acquire+0xc8/0x2d0
- ? __lock_acquire+0x393/0x1d80
- ? lock_is_held_type+0xa5/0x120
- ? find_held_lock+0x2b/0x80
- intel_pmu_handle_irq+0x119/0x2d0
- ? nmi_handle+0x5/0x250
- perf_event_nmi_handler+0x28/0x50
- nmi_handle+0xce/0x250
- default_do_nmi+0x40/0x120
- exc_nmi+0x160/0x180
- asm_exc_nmi+0x8e/0xd7
-RIP: 0033:0x56257e1be3e8
-Code: fd ff ff 48 89 85 68 ff ff ff 48 83 bd 68 ff ff ff 00 75 16 48
-8d 05 7f 0c 00 00 48 89 c7 e8 1f fd ff ff b8 01 00 00 00 eb 02 <eb> fe
-48 8b 55 f8 64 48 2b 14 25 28 00 00 00 74 05 e8 c2 fc ff ff
-RSP: 002b:00007ffd8b296f10 EFLAGS: 00000206
-RAX: 000056257ff9a730 RBX: 00007ffd8b2970e8 RCX: 00007f6b04fe6b3b
-RDX: 0000000000000000 RSI: 0000000000002400 RDI: 0000000000000006
-RBP: 00007ffd8b296fd0 R08: 0000000000000028 R09: 0000000600000005
-R10: 0000000000000029 R11: 0000000000000246 R12: 0000000000000000
-R13: 00007ffd8b297100 R14: 000056257e1c0d80 R15: 00007f6b05159020
- </TASK>
-
-
-The lockdep warning can be triggered using the following user and bpf programs.
-================================
-
-#include <bpf/bpf.h>
-#include <bpf/libbpf.h>
-#include <linux/perf_event.h>
-#include <sys/syscall.h>
-#include <unistd.h>
-
-long perf_event_open(struct perf_event_attr* event_attr, pid_t pid, int cpu,
-                     int group_fd, unsigned long flags)
-{
-    return syscall(__NR_perf_event_open, event_attr, pid, cpu, group_fd, flags);
-}
-
-int main(int argc, char **argv)
-{
-        struct bpf_program* prog;
-        struct bpf_object* obj;
-        struct bpf_link* link;
-        int ret, pfd;
-
-        obj = bpf_object__open(argv[1]);
-        if (!obj) {
-                perror("bpf_object__open");
-                return 1;
-        }
-
-        ret = bpf_object__load(obj);
-        if (ret) {
-                perror("bpf_object__load");
-                return 1;
-        }
-
-        struct perf_event_attr attr_type_hw = {
-                .type = PERF_TYPE_HARDWARE,
-                .config = PERF_COUNT_HW_CPU_CYCLES,
-                .sample_freq = 50,
-                .inherit = 1,
-                .freq = 1,
-        };
-        pfd = perf_event_open(&attr_type_hw, 0, -1, -1, 0);
-        if (!pfd) {
-                perror("perf_event_open");
-                return 1;
-        }
-
-        prog = bpf_object__next_program(obj, NULL);
-        if (!prog) {
-                perror("bpf_object__next_program");
-                return 1;
-        }
-
-        link = bpf_program__attach_perf_event(prog, pfd);
-        if (!link) {
-                perror("bpf_program__attach_perf_event");
-                return 1;
-        }
-
-        while (true) {};
-        return 0;
-}
-
-==============================
-
-struct ipv4_lpm_key {
-        __u32 prefixlen;
-        __u32 data;
-};
-
-struct {
-        __uint(type, BPF_MAP_TYPE_LPM_TRIE);
-        __type(key, struct ipv4_lpm_key);
-        __type(value, __u32);
-        __uint(map_flags, BPF_F_NO_PREALLOC);
-        __uint(max_entries, 255);
-} pb SEC(".maps");
-
-SEC("perf_event")
-int trie_perf(void *ctx)
-{
-        struct ipv4_lpm_key key = { .prefixlen=2 , .data=2};
-        long init_val = 1;
-        long *value;
-
-        bpf_map_update_elem(&pb, &key, &init_val, BPF_ANY);
-        value = bpf_map_lookup_elem(&pb, &key);
-        int ret = bpf_map_delete_elem(&pb, &key);
-        return 0;
-}
+It is now, but the stricter type definition exists for a reason.
+Try to keep the strict types where possible. Besides aiding
+syntactic checks, it also helps self document code.
 
