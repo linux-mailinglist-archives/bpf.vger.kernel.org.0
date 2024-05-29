@@ -1,146 +1,84 @@
-Return-Path: <bpf+bounces-30826-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-30827-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 10CDF8D3196
-	for <lists+bpf@lfdr.de>; Wed, 29 May 2024 10:36:39 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 99DEF8D3345
+	for <lists+bpf@lfdr.de>; Wed, 29 May 2024 11:41:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A2C3D1F2243A
-	for <lists+bpf@lfdr.de>; Wed, 29 May 2024 08:36:38 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4FC651F25E3B
+	for <lists+bpf@lfdr.de>; Wed, 29 May 2024 09:41:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F1A2B16F0DC;
-	Wed, 29 May 2024 08:31:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B678016A386;
+	Wed, 29 May 2024 09:41:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="eSlKwQV6"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NghQR9Gc"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f44.google.com (mail-wm1-f44.google.com [209.85.128.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF3CE16A380;
-	Wed, 29 May 2024 08:31:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 369A316A375;
+	Wed, 29 May 2024 09:41:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716971490; cv=none; b=Mleta4djfW7Y57eolemQY6XXeAfwmU7USDHmqEEvSgBmT4Ofe8hOyHwjejvwhrfOlJLyvhBzs4NG233ueh1V2OY4wL9AziIqJdNiPRTB2r5Nuejo6TMvzxgRS1X3BtrBNjGyEh7OdM1H5LRU2oE/i5bVDDJm9dvEhzZ3oX62DRI=
+	t=1716975693; cv=none; b=p5RyNoHoAJeDGr0cr246+NgiU3lOZDbDU8lAVTbyTviOkUElO3YJmZjCef6MwTR6adIipZ3SxJisGEn569HmYWEn0wBhPCJThGAzgEig7QiJLHgzv4kTa0R4sAncrKE5YGNMwMnIY7zx87da3CNTLE7QYKjf9/e/EVSMOUVOeoY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716971490; c=relaxed/simple;
-	bh=g8wLVx6SzI7f5hfBWjCx8/IiFtnpI5IJH84ulc3VsEM=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=i9efdMUX5247T9Ry709p23zO0JelV/jtT5L5wiP9eE5KM6MfoK9sEbh/9t0X8k6Qce1/gIB7GNq4ZHLV3j6f/b1wfToAvq+nltltveq1eOQ56jdXBNgWIIKOhVKCp2wxSPTkz+U7OwZtfEVrCyXZJv0fLOJRdWoxD8z8YY4o4tM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=eSlKwQV6; arc=none smtp.client-ip=209.85.128.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f44.google.com with SMTP id 5b1f17b1804b1-42101a2ac2cso15301675e9.0;
-        Wed, 29 May 2024 01:31:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1716971487; x=1717576287; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=rn7yPS61VZDyN0hXW0NrmYKzmNUSInF0ZrwB9evZ1F8=;
-        b=eSlKwQV65+3CTLQvtQrK4CTKupGaewTEFgzelyuGJx2eT2E93IlP6IMcNqPy4sYU2u
-         7O8DFaPj5YoWwQrL2Lk+rHTTkzeCIR1o5iPQcRRI9LLVbPPBMWIkjvhlAttlUiWddqXc
-         EXQkIHIXKP6+K/lBfSizSPyJKZ4HYB+T0Cg9rY0kh/CItemTiHWICxxIY+aODcjFBdvj
-         3TXqAuMJvP+90SNN7x7xKfctY9nPxrbcCJeZVwK1YyS0xkEZMaODEO/ufLvUsfRJd3dJ
-         hv8fkuO/3msPnLoP7Mhmvwl9l6zJht84i3QS+zn0GUNJ1L4XjRPbzdHNh79QGzhcsAhl
-         +IGw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1716971487; x=1717576287;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=rn7yPS61VZDyN0hXW0NrmYKzmNUSInF0ZrwB9evZ1F8=;
-        b=u76IGlEtY7brFr7aMwLI1rF7NPWdXFfc1GaEzEedJ4L7li9NtWoGzB2GJO/WAW4+t9
-         V4E8kwf5X6XmlezL9pcTWza5nSBvUtgl9ZOn9otryNedlm8JbOmR9gdBl2+QNuI1FS9d
-         vP82guQWpEzQCJN8LQQqizBslaBr+1MBj0RD5rK0qtWZV+e8yBZB8MWelCFDHBf/Ncol
-         yXma7yuY8IXBPMpGvrboG6a+vfwaF2pyW635IxkFB2L9QJirvrf0xKBWvBCFKDLGuONU
-         bpQ5nfQ4FvKLMhwExBR1iHxyRiDsHAZJoVJFsjqHAFOCIqiihG4vSph3nVD86e74pvIc
-         tJ+g==
-X-Forwarded-Encrypted: i=1; AJvYcCW1BpSWuw6eO90jppbWx6/JAzJNZMO1TB7qMWhjCTGiXCoBzKJ0LNZ8P5oA76gDJG4pVf5mzcrQ3NxphMYrqgRgzwfTSTn3xnLg4145j4KyV09LL2TFNnPmBESOeG2hYY9r
-X-Gm-Message-State: AOJu0YxLUsk9oDJJ8Z8AovKTuopx3MjBTsQUGtJXPQKWCYCQkNz73bRd
-	0IuY9AieWRHSG2vDyE3y2wxY2AvUmRIMJbeS25spQY0fxLCFu2to
-X-Google-Smtp-Source: AGHT+IHI3lJArJXzafeVRrKWqyHrhTUty+cf9AUiuyoKb+lHZLYh8EC0aY14fLhOqSAqg6nNMo5YFQ==
-X-Received: by 2002:adf:e444:0:b0:356:4cfa:b4b9 with SMTP id ffacd0b85a97d-3564cfaecfdmr8805125f8f.2.1716971486900;
-        Wed, 29 May 2024 01:31:26 -0700 (PDT)
-Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-358a33e6f03sm9046320f8f.36.2024.05.29.01.31.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 29 May 2024 01:31:26 -0700 (PDT)
-From: Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Wed, 29 May 2024 10:31:24 +0200
-To: Namhyung Kim <namhyung@kernel.org>
-Cc: Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
-	Hao Luo <haoluo@google.com>, LKML <linux-kernel@vger.kernel.org>,
-	bpf@vger.kernel.org, Aleksei Shchekotikhin <alekseis@google.com>,
-	Nilay Vaish <nilayvaish@google.com>
-Subject: Re: [PATCH v2] bpf: Allocate bpf_event_entry with node info
-Message-ID: <Zlbn3DOGrzHlw95h@krava>
-References: <20240529065311.1218230-1-namhyung@kernel.org>
+	s=arc-20240116; t=1716975693; c=relaxed/simple;
+	bh=uir9LFW50J4kp4Duy6Ppyxb5DdxOsTxyGiQdBZqAzR8=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=FE/obeTHbqLzUWx+7kPqLxSoRhc4AlGEm0Kjn9aQ1IZXeCj+ZwZfGNncfl6f1D/CLu2tcT7VkjSNV2Vg0u5nLadu8GVXcpgya/6e0zKXNfo1lvx6VUOW0zVo3fLMT//iP/Dn8GVUVnZjWJ+l4Cq6Zd/JXXws2YJepNMtJGzDIqw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NghQR9Gc; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0E69BC2BD10;
+	Wed, 29 May 2024 09:41:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1716975692;
+	bh=uir9LFW50J4kp4Duy6Ppyxb5DdxOsTxyGiQdBZqAzR8=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+	b=NghQR9GcPFym7Ye0xUvNEdcm2BliFOBrPccsChz71UUsd5/+PmDIrPK1jexIdphWz
+	 k3eqy8NYXh82zI6F6JX7saXnx+mABFVAyxRfD1R+cCtP2wsOufnfA/HCitcrFF3zPC
+	 4AkVP4mMFiD13IsEhcfJLGRawnKfDh27Ym1WgSPudsJuSXmseDhAbphoyMqncllW9q
+	 YhqXJSRGVoCBtS3sZFBBP+T8wrlZ9H6LNypRj1pp7gnyT56ur5gynRW9ESXPklSri/
+	 9l9E0a9L58NS1AwI53DoaOBc4icUAk3Z2tnP+4JO+cEEdQyevffKOj7AbpND/geAnA
+	 WudziyTLhiUAw==
+From: =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
+To: Xiao Wang <xiao.w.wang@intel.com>, paul.walmsley@sifive.com,
+ palmer@dabbelt.com, aou@eecs.berkeley.edu, luke.r.nels@gmail.com,
+ xi.wang@gmail.com, daniel@iogearbox.net
+Cc: ast@kernel.org, andrii@kernel.org, martin.lau@linux.dev,
+ eddyz87@gmail.com, song@kernel.org, yonghong.song@linux.dev,
+ john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
+ haoluo@google.com, jolsa@kernel.org, linux-riscv@lists.infradead.org,
+ linux-kernel@vger.kernel.org, bpf@vger.kernel.org, pulehui@huawei.com,
+ puranjay@kernel.org, haicheng.li@intel.com, Xiao Wang
+ <xiao.w.wang@intel.com>
+Subject: Re: [PATCH bpf-next v4 2/2] riscv, bpf: Introduce shift add helper
+ with Zba optimization
+In-Reply-To: <20240524075543.4050464-3-xiao.w.wang@intel.com>
+References: <20240524075543.4050464-1-xiao.w.wang@intel.com>
+ <20240524075543.4050464-3-xiao.w.wang@intel.com>
+Date: Wed, 29 May 2024 11:41:28 +0200
+Message-ID: <87ikyx2bw7.fsf@all.your.base.are.belong.to.us>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240529065311.1218230-1-namhyung@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, May 28, 2024 at 11:53:11PM -0700, Namhyung Kim wrote:
-> It was reported that accessing perf_event map entry caused pretty high
-> LLC misses in get_map_perf_counter().  As reading perf_event is allowed
-> for the local CPU only, I think we can use the target CPU of the event
-> as hint for the allocation like in perf_event_alloc() so that the event
-> and the entry can be in the same node at least.
+Xiao,
 
-looks good, is there any profile to prove the gain?
+Xiao Wang <xiao.w.wang@intel.com> writes:
 
-jirka
+> Zba extension is very useful for generating addresses that index into arr=
+ay
+> of basic data types. This patch introduces sh2add and sh3add helpers for
+> RV32 and RV64 respectively, to accelerate addressing for array of unsigned
+> long data.
 
-> 
-> Reported-by: Aleksei Shchekotikhin <alekseis@google.com>
-> Reported-by: Nilay Vaish <nilayvaish@google.com>
-> Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+This patched slipped! Apologies for the slow reply.
 
-> ---
-> v2) fix build errors
-> 
->  kernel/bpf/arraymap.c | 11 +++++++++--
->  1 file changed, 9 insertions(+), 2 deletions(-)
-> 
-> diff --git a/kernel/bpf/arraymap.c b/kernel/bpf/arraymap.c
-> index feabc0193852..067f7cf27042 100644
-> --- a/kernel/bpf/arraymap.c
-> +++ b/kernel/bpf/arraymap.c
-> @@ -1194,10 +1194,17 @@ static struct bpf_event_entry *bpf_event_entry_gen(struct file *perf_file,
->  						   struct file *map_file)
->  {
->  	struct bpf_event_entry *ee;
-> +	struct perf_event *event = perf_file->private_data;
-> +	int node = -1;
->  
-> -	ee = kzalloc(sizeof(*ee), GFP_KERNEL);
-> +#ifdef CONFIG_PERF_EVENTS
-> +	if (event->cpu >= 0)
-> +		node = cpu_to_node(event->cpu);
-> +#endif
-> +
-> +	ee = kzalloc_node(sizeof(*ee), GFP_KERNEL, node);
->  	if (ee) {
-> -		ee->event = perf_file->private_data;
-> +		ee->event = event;
->  		ee->perf_file = perf_file;
->  		ee->map_file = map_file;
->  	}
-> -- 
-> 2.45.1.288.g0e0cd299f1-goog
-> 
+Acked-by: Bj=C3=B6rn T=C3=B6pel <bjorn@kernel.org>
 
