@@ -1,174 +1,151 @@
-Return-Path: <bpf+bounces-30920-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-30921-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EA0B08D4643
-	for <lists+bpf@lfdr.de>; Thu, 30 May 2024 09:42:09 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7D9118D467C
+	for <lists+bpf@lfdr.de>; Thu, 30 May 2024 09:55:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 27CC41C215EB
-	for <lists+bpf@lfdr.de>; Thu, 30 May 2024 07:42:09 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AF7F71C20B14
+	for <lists+bpf@lfdr.de>; Thu, 30 May 2024 07:55:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 906D44D8D6;
-	Thu, 30 May 2024 07:41:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C09D3144312;
+	Thu, 30 May 2024 07:55:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nnGmsLi+"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="MJHl6+dZ"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 170FB4D8A0;
-	Thu, 30 May 2024 07:41:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E2CFF7407F
+	for <bpf@vger.kernel.org>; Thu, 30 May 2024 07:55:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717054916; cv=none; b=NINdXerQAHV/LqxqsrVmwZUIImuurfKiAIit6V2VGlQEUKRoSTm8lZLduP96xeXFoiD4kEx9OdsB/9veYF4ixTJ3+DQBG6ENofjpShtzvy3dxgJ2IzQGxGglRiNEYQuTHareIxA13sB1aSnK7YvA6a/Psdyzu7Lbjkwk0QtTpXY=
+	t=1717055748; cv=none; b=eA2bLZOURTtFSVRfPfvAb88Kk82P3/60ZhsRMIY7/IWEpt9YRYp97wZUGkCVhRSC0hj+Jia4R/GdfCbOxsxazm89wSnaYlYvlWxQiVMkdY1p+3w23GBoW8Ltng+z+ePg14ri/oTmY6tLGInZq0HtB3EVcCxke9UjkrgrX/13ubk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717054916; c=relaxed/simple;
-	bh=IYEJ53AgPCYwmivBTBsq0j/rl3dzTTkkvNgNdoVK9y0=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=BRXbO9VgeIU+M4AdEU94M0VOKgcdJe8SOqkqi6BCMdPFS3V6BsIsEejx4Y7fSk/IpBFzs6eeurWVLjWaCcr7TuOQiESSpv4ve+cDeaRY0vsNArG4UEXja4lG9WH7NqapM/oTSRhdeEKnfKtVKsoiE0HnNO/UPFB6gxnV0gs4JFE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nnGmsLi+; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 94D78C4AF07;
-	Thu, 30 May 2024 07:41:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1717054915;
-	bh=IYEJ53AgPCYwmivBTBsq0j/rl3dzTTkkvNgNdoVK9y0=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=nnGmsLi+C07oxtmKISXR5y8NuaIEFPZxupf8qQ/1kf6w/EVVBHnhf5ChzHzPgNkvL
-	 XSV8ubdUONaubN6VfsBj4EvNzXb7bjzuUhXo4ulVZ5aY7Ga1gC1uzzc1TCIP3mtoOc
-	 GN3EpTeSCPgrkPBMgwFsZfufQtXgdSSYhSY+cUSa5Yu9X81EnfLQtkmJHUBm+QoXY3
-	 tVcepyw+mV/F4G8lg2JA1uGJZl10aPVgQnPA3q44sgeSG3Bg9ZJCb9uhGm6B9n6wNZ
-	 FmOh4UZQvLYZuED60aZyvrPCdO/M+zGBEFf0EE/U2EfcWH8nE0+b2UL294BWw/NuJm
-	 tmtC3qH8h4D0w==
-From: Geliang Tang <geliang@kernel.org>
-To: Andrii Nakryiko <andrii@kernel.org>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Mykola Lysenko <mykolal@fb.com>,
+	s=arc-20240116; t=1717055748; c=relaxed/simple;
+	bh=aTbMjVPTC8GXV/q5t+biiMKXiTweLG8tXz9RUUVAAC4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Rzh2k+1mp3orZCyyoiDLuS/r8v3XGYcLdbfMFdp4Yk1zW1wux0R6a0E61BjPp3+0Bf4QkkN3L5paZILVS5+jbhFxeYYbu4FYVl278K+O81+l1AsgJse+WzCKeKpa2vdSZM1aPuuDajdCbsHBK2Ll35gDKd4by+kaYj7kmi80dsI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=MJHl6+dZ; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1717055745;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=OeTb7oEj2cbUagJqckhiCADw6n46hzpmlEhiRtW4rVw=;
+	b=MJHl6+dZzSHryDWJmTlG/8uPAi3tP1Ui+TH/RQ15kduj5Ar7T69uVG22cwIQGXLqIdJX2m
+	Tt41wev0chMe82HrL9zxX5gs3wvLK4/A1caqWyXFMfamDrA4JMCvnxrN+/MEp6M7Frg/hv
+	srfpXSaCoyZcgo02Ki/Ydp8yYfegmJQ=
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
+ [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-621-XRO7eaqgP8eaiqA5FxWUQA-1; Thu, 30 May 2024 03:55:43 -0400
+X-MC-Unique: XRO7eaqgP8eaiqA5FxWUQA-1
+Received: by mail-wm1-f70.google.com with SMTP id 5b1f17b1804b1-4201f100188so5391975e9.0
+        for <bpf@vger.kernel.org>; Thu, 30 May 2024 00:55:43 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1717055742; x=1717660542;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=OeTb7oEj2cbUagJqckhiCADw6n46hzpmlEhiRtW4rVw=;
+        b=UPZtDe9PmKG3av1c2SL7V8Ov/cBhqTTyCAHdYi/Vcd30ketosIn+wtOor2KAgGICQV
+         QqRdorQSygxhM3SmxszcL9DnJE4ikFJTRXju/XPMti+4SERy1R8Eh7SawXX6Rp81iaMy
+         /mjJaBRd9tdtkkpbCGfZJvigRNQd9F8p8FllT5jx4zSl04B3oI806UOd+lfSHn5GfkQO
+         zcrVGEbblUSVWzk8CKkAYodCrP2/VbN2Gm5B40dFuZENf64ZiRO50nZ6VCarI51k7pi4
+         Wfay8jQQJHqJtiMNHIUaSgVCG1bW0C6qfNIuZbQHR/lryRpsAKAuOPCoYhhusAK9H2pt
+         PkDA==
+X-Forwarded-Encrypted: i=1; AJvYcCX8ucn529wSk6acY9hynrPhYRQYPxC6XvfhL5uEsXY+EiJajDGAAx/Va/oMg9lxoGfJt4vqgWPVQPdnYTE8qS+V9wSr
+X-Gm-Message-State: AOJu0YxAPxZ/6AvS8n7nZ/RPSc4DIPsvSQxIwDe1muOtjRUU+Hp0/nKh
+	3fs46uUCW4AyOtm4utrcuBUMio2/0+E56U6Aob+VrCiXgHUdDWvWQYDPa0LCeEbzL9se9f9H/uq
+	p8E0WRqTjBtQY8h2CcM+7JaNhvDDphOEI5PPKW8u8vW9HU2DX7A==
+X-Received: by 2002:a05:600c:46d1:b0:41c:2313:da92 with SMTP id 5b1f17b1804b1-421278158aemr17009675e9.4.1717055742288;
+        Thu, 30 May 2024 00:55:42 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IE8HukkuvxeZ/smNud2JY7Qr6ffHwWhMWtkGft9V4+i+ULhflQAWD/DnZ3kmA1eTSQA+wTj8w==
+X-Received: by 2002:a05:600c:46d1:b0:41c:2313:da92 with SMTP id 5b1f17b1804b1-421278158aemr17009325e9.4.1717055741647;
+        Thu, 30 May 2024 00:55:41 -0700 (PDT)
+Received: from redhat.com ([2a02:14f:179:fb20:c957:3427:ac94:f0a3])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-42127084ca2sm16602315e9.41.2024.05.30.00.55.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 30 May 2024 00:55:40 -0700 (PDT)
+Date: Thu, 30 May 2024 03:55:35 -0400
+From: "Michael S. Tsirkin" <mst@redhat.com>
+To: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Cc: netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Jason Wang <jasowang@redhat.com>,
+	Eugenio =?iso-8859-1?Q?P=E9rez?= <eperezma@redhat.com>,
 	Alexei Starovoitov <ast@kernel.org>,
 	Daniel Borkmann <daniel@iogearbox.net>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
+	Jesper Dangaard Brouer <hawk@kernel.org>,
 	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>,
-	Stanislav Fomichev <sdf@google.com>,
-	Hao Luo <haoluo@google.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Shuah Khan <shuah@kernel.org>
-Cc: Geliang Tang <tanggeliang@kylinos.cn>,
-	bpf@vger.kernel.org,
-	linux-kselftest@vger.kernel.org
-Subject: [PATCH bpf-next 5/5] selftests/bpf: Drop useless arguments of do_test in bpf_tcp_ca
-Date: Thu, 30 May 2024 15:41:12 +0800
-Message-ID: <7056eab111d78a05bce29d2821228dc93f240de4.1717054461.git.tanggeliang@kylinos.cn>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <cover.1717054461.git.tanggeliang@kylinos.cn>
-References: <cover.1717054461.git.tanggeliang@kylinos.cn>
+	virtualization@lists.linux.dev, bpf@vger.kernel.org
+Subject: Re: [PATCH net-next v1 0/7] virtnet_net: prepare for af-xdp
+Message-ID: <20240530034921-mutt-send-email-mst@kernel.org>
+References: <20240530072649.102437-1-xuanzhuo@linux.alibaba.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240530072649.102437-1-xuanzhuo@linux.alibaba.com>
 
-From: Geliang Tang <tanggeliang@kylinos.cn>
+On Thu, May 30, 2024 at 03:26:42PM +0800, Xuan Zhuo wrote:
+> This patch set prepares for supporting af-xdp zerocopy.
+> There is no feature change in this patch set.
+> I just want to reduce the patch num of the final patch set,
+> so I split the patch set.
+> 
+> #1-#3 add independent directory for virtio-net
+> #4-#7 do some refactor, the sub-functions will be used by the subsequent commits
+> 
+> Thanks.
+> 
+> v1:
+>     1. resend for the new net-next merge window
 
-bpf_map_lookup_elem() has been removed from do_test(), it makes the
-sk_stg_map argument of do_test() useless. In addition, two exactly the
-same opts are passed in all the places where do_test() is invoked, so
-cli_opts argument can be dropped too.
+What I said at the time is
 
-This patch drops these two useless arguments of do_test() in bpf_tcp_ca.c.
+	I am fine adding xsk in a new file or just adding in same file working on a split later.
 
-Signed-off-by: Geliang Tang <tanggeliang@kylinos.cn>
----
- .../selftests/bpf/prog_tests/bpf_tcp_ca.c     | 20 +++++++++----------
- 1 file changed, 9 insertions(+), 11 deletions(-)
+Given this was a year ago and all we keep seing is "prepare" patches,
+I am inclined to say do it in the reverse order: add
+af-xdp first then do the split when it's clear there is not
+a lot of code sharing going on.
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/bpf_tcp_ca.c b/tools/testing/selftests/bpf/prog_tests/bpf_tcp_ca.c
-index 1b27d0232cbd..67358adf5db3 100644
---- a/tools/testing/selftests/bpf/prog_tests/bpf_tcp_ca.c
-+++ b/tools/testing/selftests/bpf/prog_tests/bpf_tcp_ca.c
-@@ -67,13 +67,11 @@ static bool start_test(char *addr_str,
- 	return false;
- }
- 
--static void do_test(const struct network_helper_opts *opts,
--		    const struct network_helper_opts *cli_opts,
--		    const struct bpf_map *sk_stg_map)
-+static void do_test(const struct network_helper_opts *opts)
- {
- 	int lfd = -1, fd = -1;
- 
--	if (!start_test(NULL, opts, cli_opts, &lfd, &fd))
-+	if (!start_test(NULL, opts, opts, &lfd, &fd))
- 		goto done;
- 
- 	ASSERT_OK(send_recv_data(lfd, fd, total_bytes), "send_recv_data");
-@@ -114,7 +112,7 @@ static void test_cubic(void)
- 		return;
- 	}
- 
--	do_test(&opts, &opts, NULL);
-+	do_test(&opts);
- 
- 	ASSERT_EQ(cubic_skel->bss->bpf_cubic_acked_called, 1, "pkts_acked called");
- 
-@@ -382,14 +380,14 @@ static void test_update_ca(void)
- 	link = bpf_map__attach_struct_ops(skel->maps.ca_update_1);
- 	ASSERT_OK_PTR(link, "attach_struct_ops");
- 
--	do_test(&opts, &opts, NULL);
-+	do_test(&opts);
- 	saved_ca1_cnt = skel->bss->ca1_cnt;
- 	ASSERT_GT(saved_ca1_cnt, 0, "ca1_ca1_cnt");
- 
- 	err = bpf_link__update_map(link, skel->maps.ca_update_2);
- 	ASSERT_OK(err, "update_map");
- 
--	do_test(&opts, &opts, NULL);
-+	do_test(&opts);
- 	ASSERT_EQ(skel->bss->ca1_cnt, saved_ca1_cnt, "ca2_ca1_cnt");
- 	ASSERT_GT(skel->bss->ca2_cnt, 0, "ca2_ca2_cnt");
- 
-@@ -418,14 +416,14 @@ static void test_update_wrong(void)
- 	link = bpf_map__attach_struct_ops(skel->maps.ca_update_1);
- 	ASSERT_OK_PTR(link, "attach_struct_ops");
- 
--	do_test(&opts, &opts, NULL);
-+	do_test(&opts);
- 	saved_ca1_cnt = skel->bss->ca1_cnt;
- 	ASSERT_GT(saved_ca1_cnt, 0, "ca1_ca1_cnt");
- 
- 	err = bpf_link__update_map(link, skel->maps.ca_wrong);
- 	ASSERT_ERR(err, "update_map");
- 
--	do_test(&opts, &opts, NULL);
-+	do_test(&opts);
- 	ASSERT_GT(skel->bss->ca1_cnt, saved_ca1_cnt, "ca2_ca1_cnt");
- 
- 	bpf_link__destroy(link);
-@@ -455,7 +453,7 @@ static void test_mixed_links(void)
- 	link = bpf_map__attach_struct_ops(skel->maps.ca_update_1);
- 	ASSERT_OK_PTR(link, "attach_struct_ops");
- 
--	do_test(&opts, &opts, NULL);
-+	do_test(&opts);
- 	ASSERT_GT(skel->bss->ca1_cnt, 0, "ca1_ca1_cnt");
- 
- 	err = bpf_link__update_map(link, skel->maps.ca_no_link);
-@@ -562,7 +560,7 @@ static void test_cc_cubic(void)
- 		return;
- 	}
- 
--	do_test(&opts, &opts, NULL);
-+	do_test(&opts);
- 
- 	bpf_link__destroy(link);
- 	bpf_cc_cubic__destroy(cc_cubic_skel);
--- 
-2.43.0
+
+> 
+> Xuan Zhuo (7):
+>   virtio_net: independent directory
+>   virtio_net: move core structures to virtio_net.h
+>   virtio_net: add prefix virtnet to all struct inside virtio_net.h
+>   virtio_net: separate virtnet_rx_resize()
+>   virtio_net: separate virtnet_tx_resize()
+>   virtio_net: separate receive_mergeable
+>   virtio_net: separate receive_buf
+> 
+>  MAINTAINERS                                   |   2 +-
+>  drivers/net/Kconfig                           |   9 +-
+>  drivers/net/Makefile                          |   2 +-
+>  drivers/net/virtio/Kconfig                    |  12 +
+>  drivers/net/virtio/Makefile                   |   8 +
+>  drivers/net/virtio/virtnet.h                  | 248 ++++++++
+>  .../{virtio_net.c => virtio/virtnet_main.c}   | 536 ++++++------------
+>  7 files changed, 454 insertions(+), 363 deletions(-)
+>  create mode 100644 drivers/net/virtio/Kconfig
+>  create mode 100644 drivers/net/virtio/Makefile
+>  create mode 100644 drivers/net/virtio/virtnet.h
+>  rename drivers/net/{virtio_net.c => virtio/virtnet_main.c} (94%)
+> 
+> --
+> 2.32.0.3.g01195cf9f
 
 
