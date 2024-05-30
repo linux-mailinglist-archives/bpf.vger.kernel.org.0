@@ -1,156 +1,113 @@
-Return-Path: <bpf+bounces-30951-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-30952-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id DF3978D5098
-	for <lists+bpf@lfdr.de>; Thu, 30 May 2024 19:09:40 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3BBD38D5100
+	for <lists+bpf@lfdr.de>; Thu, 30 May 2024 19:28:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9C9CA283F36
-	for <lists+bpf@lfdr.de>; Thu, 30 May 2024 17:09:39 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CED011F232EC
+	for <lists+bpf@lfdr.de>; Thu, 30 May 2024 17:28:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E94BD45949;
-	Thu, 30 May 2024 17:09:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D9A2D4654E;
+	Thu, 30 May 2024 17:27:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="FTeqwjxX"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lLERB+W8"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-f44.google.com (mail-ed1-f44.google.com [209.85.208.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 138BD44393
-	for <bpf@vger.kernel.org>; Thu, 30 May 2024 17:09:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5204446421;
+	Thu, 30 May 2024 17:27:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717088974; cv=none; b=YEWbcdl4iIOmkHRRFEkrYUDyx89SU//DtgK3aiSJfk4bG9nSdtiRetKtI8c7B2G7D2JPmoBg1YDuKbOh/YxlIHRSBoAXirYPQb+52dAYHdRVeyPRyvDTPkDezdTARNMEbAi6mF/J2Te9ENQrYf6Mz6LnXIDFhgjFrNumd6UgJXA=
+	t=1717090072; cv=none; b=KHKvmAqnLiTZ4K44NaT8MjG5gUEpH31zruUA4aNuSk1P0QmGry3x3NQR5IlZZWA5p5UnFK+7tfQV8ZyQJulpED4vLwComjKR+COLV3LrH5lefpI6pwhiE4YnZK5swm6xeK8QQuMsDpc93U5bcCY2FGeUOILPEfq+l9yXg/i5ZQo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717088974; c=relaxed/simple;
-	bh=ISMBEGYvs6Ggfh4zAnluIkAqOvgPIgi6xlOIbBfiDjU=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=l5cNNq2fQjSHYa0qfTJKlk/Ji0YX80XlUP3MEpEMjl79KtTWCm9dlRAlxcvn1dpLXbhExsbIy/h0ruyjyIa0BnKfz1KuEKPCnvxn2sbHmtWSWsRtsBPhD9RSUwjNiL5yW3skHNGOOKq1On44w7sPh46CB7j89QQLc9g6SvhZkac=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=FTeqwjxX; arc=none smtp.client-ip=209.85.208.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
-Received: by mail-ed1-f44.google.com with SMTP id 4fb4d7f45d1cf-57869599ed5so1349537a12.2
-        for <bpf@vger.kernel.org>; Thu, 30 May 2024 10:09:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1717088969; x=1717693769; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=0RbDTER8Si5DdP/iY8qDxMi4BdBirbgu4Xhjb4Zt2gM=;
-        b=FTeqwjxXnQScjYPlUQLbTu3nbZs3NOLu+MD6M7uyDZPuAR+tvBCGta6QBxsO5V/dV0
-         zAeBFbiEYDl2o71e/m0XFVFV861362YluaxYDhI0jJxj683NKLl98N3FW/tkq1MjdKnU
-         enZEAygp7OYIFGeUUxjaLivCd/2lJPCQ3mv4A=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1717088969; x=1717693769;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=0RbDTER8Si5DdP/iY8qDxMi4BdBirbgu4Xhjb4Zt2gM=;
-        b=QiGd/WS+tHbutOKxnlXes5jber5c1m8Iog5fKVcLYOIHJnFYlvSqHzWhFfYk1siddK
-         nLXrUHeDU90LAig5gfnK6T+dW10CoxsefSbgVxyFa+m2oVS0mELoUyC9xNcYFikXIccK
-         c+pvhpG3d69g/P5pg3D06WECdp8B2Q8qYwB0mYsON2udHc3D6ZRMwKsJc3NidpSjuc9z
-         3qsECAsWrMG9T36ZCBLmKjw5PglcDkTR3/gT+ZdLvLBxwLfg451glH+mX3zv+aOtMMbA
-         nU6LTLgbMrq5Urzbe2H+GKfE3jsDYAnQAa8mWGV5VJg+HrDyFT3A35/DgIJ48gYmF8LC
-         3HAQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXrgQ3ZRnW8w6hzbUbaHcAvwn7U2qsT/U4ShnKKmHP2VkCi3EMnIbEQ1pYahwmKcqb+NU3hErGDu2FT1VAFN8iCAS1Q
-X-Gm-Message-State: AOJu0YwryGouGD9v99ik8K8idLZR/3RLBva6UkldjkFaHzILVCTap/mx
-	Ucy4Nyu2rSgnj33fuEK2IgKwT8a4r7uVrgDZ84qgFvi+rdoLJj1TdBbm1WMDNrI9LJ9LkVQtKWs
-	zRNLuUg==
-X-Google-Smtp-Source: AGHT+IGd0KEyQIUSRir5Jxm4tx/KSY9C9CcOriReracHSx+sckPEHk9/cGxoHiOvj2tGCNthnye5Ig==
-X-Received: by 2002:a17:906:cb86:b0:a59:a431:a8ce with SMTP id a640c23a62f3a-a65e8d2303emr190349866b.2.1717088969081;
-        Thu, 30 May 2024 10:09:29 -0700 (PDT)
-Received: from mail-ed1-f48.google.com (mail-ed1-f48.google.com. [209.85.208.48])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a626c97a029sm844109366b.93.2024.05.30.10.09.27
-        for <bpf@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 30 May 2024 10:09:27 -0700 (PDT)
-Received: by mail-ed1-f48.google.com with SMTP id 4fb4d7f45d1cf-57a23997da3so940511a12.3
-        for <bpf@vger.kernel.org>; Thu, 30 May 2024 10:09:27 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCUMFn2eQ5OPaTcXMeb41kowyru/ixawqUZj6V0GGTRDxP+C7BcyIDUqNcUg9Gcqk74oi3707Qc/+JE30UlYyWIZuCsK
-X-Received: by 2002:a17:906:1c92:b0:a67:8fc4:7ad1 with SMTP id
- a640c23a62f3a-a678fc47b48mr22998866b.63.1717088967176; Thu, 30 May 2024
- 10:09:27 -0700 (PDT)
+	s=arc-20240116; t=1717090072; c=relaxed/simple;
+	bh=EkqPzNjUDQoN8lPfXqwKVpp8+X0/wVz+5NkoJWj35ko=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition:In-Reply-To; b=Xb8isxAO6+HFq/qkT1WQeTJlTAvHwyN2xabtOEMpvIn/9HcBlat2ysBFOpuH55yu1W4b94EcfPLXeRWhJgVPm2FUUQ5OQNKMnFbFvpKZRusmJgvneTrz5cKNev30XlFTyPm+s+cmbPdLbUEvX/iae8FmE4nerf98t0HSTRtgfcE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lLERB+W8; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6AACBC2BBFC;
+	Thu, 30 May 2024 17:27:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1717090071;
+	bh=EkqPzNjUDQoN8lPfXqwKVpp8+X0/wVz+5NkoJWj35ko=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:From;
+	b=lLERB+W86acD27TYDzKVQXQn1QMtGGWa3wwzsNOnVvZNcpsS+eXwViREODp86cbJI
+	 rSJe96C7mr2uk7xEx2WcAWaFri7i5u7e/PgmXIaWd19TSaJf9xcagmzCgg4hwS09kq
+	 hxySEa23v54kQxPNYOiJ7LK5ZMkwq+6ZXJTI8QFOcKQu0C4DdWnK57+kTEbnmPxQf2
+	 P1waAtfMiozVsWzyLACVBQ6mxVU6MSbvpz1d5y8ZWCELAxxSmkovDqU95WZ8fGpq2K
+	 KWa0Ny/gIzNGzi6NoZo+xzMnoiKxHlfpNyBJ4yfnEAYP0fweLpMy2hOamY7a0KRwEB
+	 MqR2BFyNUnTxQ==
+Date: Thu, 30 May 2024 12:27:49 -0500
+From: Bjorn Helgaas <helgaas@kernel.org>
+To: Frank Li <Frank.li@nxp.com>
+Cc: Richard Zhu <hongxing.zhu@nxp.com>,
+	Lucas Stach <l.stach@pengutronix.de>,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
+	Shawn Guo <shawnguo@kernel.org>,
+	Sascha Hauer <s.hauer@pengutronix.de>,
+	Pengutronix Kernel Team <kernel@pengutronix.de>,
+	Fabio Estevam <festevam@gmail.com>,
+	NXP Linux Team <linux-imx@nxp.com>,
+	Philipp Zabel <p.zabel@pengutronix.de>,
+	Liam Girdwood <lgirdwood@gmail.com>,
+	Mark Brown <broonie@kernel.org>,
+	Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>, linux-pci@vger.kernel.org,
+	imx@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+	devicetree@vger.kernel.org, Jason Liu <jason.hui.liu@nxp.com>,
+	Conor Dooley <conor.dooley@microchip.com>
+Subject: Re: [PATCH v5 00/12] PCI: imx6: Fix\rename\clean up and add lut
+ information for imx95
+Message-ID: <20240530172749.GA552716@bhelgaas>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <Zlb-ojvGgdGZRvR8@gardel-login> <Zlhupe1tXj8ZS1go@krava> <ZliKX5EOU9eWhd2U@gardel-login>
-In-Reply-To: <ZliKX5EOU9eWhd2U@gardel-login>
-From: Linus Torvalds <torvalds@linux-foundation.org>
-Date: Thu, 30 May 2024 10:09:10 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wjYUxZ97QnWbEQLgyS-6bSvKbRBdFrwp2RREKddxz0EKg@mail.gmail.com>
-Message-ID: <CAHk-=wjYUxZ97QnWbEQLgyS-6bSvKbRBdFrwp2RREKddxz0EKg@mail.gmail.com>
-Subject: Re: bpf kernel code leaks internal error codes to userspace
-To: Lennart Poettering <mzxreary@0pointer.net>
-Cc: Jiri Olsa <olsajiri@gmail.com>, bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZldDIabPAa7NEmDQ@lizhi-Precision-Tower-5810>
 
-On Thu, 30 May 2024 at 07:17, Lennart Poettering <mzxreary@0pointer.net> wrote:
->
-> Linus, what's the policy if some subsystem by mistake is leaking
-> internal kernel error codes (such as ENOTSUP) to userspace?
+On Wed, May 29, 2024 at 11:00:49AM -0400, Frank Li wrote:
+> On Tue, May 28, 2024 at 05:31:36PM -0500, Bjorn Helgaas wrote:
+> > On Tue, May 28, 2024 at 03:39:13PM -0400, Frank Li wrote:
+> ...
 
-Try to fix it, and stop leaking silly garbage in the hope that nobody cared.
+> > > Base on linux-pci/controller/imx
+> > 
+> > This applies cleanly to the pci/controller/gpio branch, which has some
+> > minor rework in pci-imx6.c.
+> > 
+> > When we apply this, I think we should do it on a a pci/controller/imx6
+> > branch that is based on "main" (v6.10-rc1).
+> > 
+> > I can resolve the conflicts with pci/controller/gpio when building
+> > pci/next.
+> 
+> Sorry, I forget update this. It should be base on linux-pci/next
+> (e3fca37312892122d73f8c5293c0d1cc8c34500b). 
 
-And in most cases, people don't actually care, because they don't know
-to even test for non-standard errno values.
+I prefer patches that are based on -rc1, i.e., the pci/main branch,
+not on the pci/next branch.
 
-In fact it is _very_ rare that some actual program - outside of some
-test suite - cares about the errno values outside of the really
-special ones
+If a series *requires* functionality that is already on a topic
+branch, you can base it on that branch instead of on pci/main.
 
-So things like "EAGAIN" and "EINTR" have real semantic meaning and
-people test for them and do something explicitly different. Sometimes
-a few others too, but those are the two obvious ones.
+This series happens to touch some of the same code as
+pci/controller/gpio, but it doesn't require those gpio changes, so it
+does not need to be based on pci/controller/gpio.
 
-The rest are *almost* always entirely interchangeable and only result
-in different error messages, not different _behavior_.
+Having this series based on pci/main means that if we update or drop
+the gpio branch for some reason, this series will still make sense.
 
-But then occasionally if it turns out that user space then breaks
-because some random case actually tested for a _particular_ error, and
-we have to put the silly garbage back.
-
-Congrats, you have now invented a new ABI that you will support until
-the end of time (or until user space stops caring, whichever comes
-first).
-
-That said, while I think ENOTSUPP should not be encouraged because
-it's so non-standard, I think the ship on ENOTSUPP has long since
-sailed.
-
-Yes, yes, the comment may say "These should never be seen by user
-programs." but that comment is historically about ERESTARTSYS and
-friends, that are supposed to be turned into EINTR (and a restart etc
-depending on process flags and signal details).
-
-And nobody reads comments anyway, and perhaps more importantly, they
-by definition have no semantic meaning, so...
-
-We have a ton of code that returns ENOTSUPP - not in the least limited
-to bpf - and while we have a checkpatch rule for it, it's more of a
-"don't add new ones".  Even that one is likely not really relevant.
-
-And yes, some of them may get translated, but the very first one I
-randomly looked at was a proc_handler thing for some driver, and read
--> ...->read_iter() -> proc_sys_read() -> proc_sys_call_handler() ->
-...->proc_handler() most definitely does not.
-
-ENOTSUPP in particular is very understandable, because the "standard"
-error names are garbage that nobody would ever use. EOPNOTSUPP? Never
-heard of it.
-
-The standard errno for that is EINVAL, and people actively avoid it
-because it's _so_ common, so everybody goes "I want to make it clear
-that this is somethign else" and then they pick some other random name
-that sounds likely. And ENOTSUPP is right there and sounds very likely
-indeed.
-
-If we really cared, we should have made them have a very different
-naming syntax, I'm afraid. Something explicitly inconvenient to make
-people not want to use it. Like __INTERNAL_ONLY_ENOTSUPP.
-
-                   Linus
+Bjorn
 
