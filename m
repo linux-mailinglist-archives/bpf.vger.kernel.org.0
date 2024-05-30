@@ -1,113 +1,111 @@
-Return-Path: <bpf+bounces-30952-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-30953-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3BBD38D5100
-	for <lists+bpf@lfdr.de>; Thu, 30 May 2024 19:28:02 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id C17A58D5185
+	for <lists+bpf@lfdr.de>; Thu, 30 May 2024 19:53:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CED011F232EC
-	for <lists+bpf@lfdr.de>; Thu, 30 May 2024 17:28:01 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5AE0DB22522
+	for <lists+bpf@lfdr.de>; Thu, 30 May 2024 17:53:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D9A2D4654E;
-	Thu, 30 May 2024 17:27:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B71747A40;
+	Thu, 30 May 2024 17:53:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lLERB+W8"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="e6prGzJa"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out-175.mta0.migadu.com (out-175.mta0.migadu.com [91.218.175.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5204446421;
-	Thu, 30 May 2024 17:27:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE8A7219FD
+	for <bpf@vger.kernel.org>; Thu, 30 May 2024 17:53:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717090072; cv=none; b=KHKvmAqnLiTZ4K44NaT8MjG5gUEpH31zruUA4aNuSk1P0QmGry3x3NQR5IlZZWA5p5UnFK+7tfQV8ZyQJulpED4vLwComjKR+COLV3LrH5lefpI6pwhiE4YnZK5swm6xeK8QQuMsDpc93U5bcCY2FGeUOILPEfq+l9yXg/i5ZQo=
+	t=1717091608; cv=none; b=hq5zC95iJ0sSeFp6H3vT2rY4tE4RkCoIg7BJyjd2GdOhsAP7EYflL+hsA3wH3IDQ1vUwc1BJ2PoTh5v7mWftn159nZQ17JTyQCk1QesrrECCpV97fgRLOruSF8zgVZjyTeSdtpxQ888Z/VXnim5T/QI6LBQkBkVUvFDnEJ3OK+k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717090072; c=relaxed/simple;
-	bh=EkqPzNjUDQoN8lPfXqwKVpp8+X0/wVz+5NkoJWj35ko=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To; b=Xb8isxAO6+HFq/qkT1WQeTJlTAvHwyN2xabtOEMpvIn/9HcBlat2ysBFOpuH55yu1W4b94EcfPLXeRWhJgVPm2FUUQ5OQNKMnFbFvpKZRusmJgvneTrz5cKNev30XlFTyPm+s+cmbPdLbUEvX/iae8FmE4nerf98t0HSTRtgfcE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lLERB+W8; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6AACBC2BBFC;
-	Thu, 30 May 2024 17:27:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1717090071;
-	bh=EkqPzNjUDQoN8lPfXqwKVpp8+X0/wVz+5NkoJWj35ko=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:From;
-	b=lLERB+W86acD27TYDzKVQXQn1QMtGGWa3wwzsNOnVvZNcpsS+eXwViREODp86cbJI
-	 rSJe96C7mr2uk7xEx2WcAWaFri7i5u7e/PgmXIaWd19TSaJf9xcagmzCgg4hwS09kq
-	 hxySEa23v54kQxPNYOiJ7LK5ZMkwq+6ZXJTI8QFOcKQu0C4DdWnK57+kTEbnmPxQf2
-	 P1waAtfMiozVsWzyLACVBQ6mxVU6MSbvpz1d5y8ZWCELAxxSmkovDqU95WZ8fGpq2K
-	 KWa0Ny/gIzNGzi6NoZo+xzMnoiKxHlfpNyBJ4yfnEAYP0fweLpMy2hOamY7a0KRwEB
-	 MqR2BFyNUnTxQ==
-Date: Thu, 30 May 2024 12:27:49 -0500
-From: Bjorn Helgaas <helgaas@kernel.org>
-To: Frank Li <Frank.li@nxp.com>
-Cc: Richard Zhu <hongxing.zhu@nxp.com>,
-	Lucas Stach <l.stach@pengutronix.de>,
-	Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
-	Shawn Guo <shawnguo@kernel.org>,
-	Sascha Hauer <s.hauer@pengutronix.de>,
-	Pengutronix Kernel Team <kernel@pengutronix.de>,
-	Fabio Estevam <festevam@gmail.com>,
-	NXP Linux Team <linux-imx@nxp.com>,
-	Philipp Zabel <p.zabel@pengutronix.de>,
-	Liam Girdwood <lgirdwood@gmail.com>,
-	Mark Brown <broonie@kernel.org>,
-	Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>, linux-pci@vger.kernel.org,
-	imx@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-	devicetree@vger.kernel.org, Jason Liu <jason.hui.liu@nxp.com>,
-	Conor Dooley <conor.dooley@microchip.com>
-Subject: Re: [PATCH v5 00/12] PCI: imx6: Fix\rename\clean up and add lut
- information for imx95
-Message-ID: <20240530172749.GA552716@bhelgaas>
+	s=arc-20240116; t=1717091608; c=relaxed/simple;
+	bh=9xO8qwDHsnXsyZiM7uC0Z3qRbVj/TsXP/wAY+IFQJT8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:Cc:
+	 In-Reply-To:Content-Type; b=Y12mm5AxAMlo8KvZAa57ZkKkq2Z0GfKC/pRAHaLNMAdukgiEomT/QiKvhERnuLiC9aPIehX4N3LpQBVru0fnys1ihC6LkCcdKVYUkP6AnloHBRXQ6id6EiVWlF+1acp/TBewi9iiyKwgI+CM8nsFpRDaPcJv1WE+HnSyN6p/BNY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=e6prGzJa; arc=none smtp.client-ip=91.218.175.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Envelope-To: sinquersw@gmail.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1717091604;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=8dc84CPtUbQBaF/JoypnFxNdD+HfkLN4zkbQouQu22c=;
+	b=e6prGzJaSXFg7hTY9AAyFhxOHsjBxorFxxhmx1qgIty0j6BuWGMfu1Bs+oFwtcR+Q1S4R6
+	2WHJOjIL17C2VBIIz6kRob6jJF9rVP+6Q8dumZ1wj0JeR7ylxU1Ylf+9YzPRFgqrZi0W/O
+	AlLgcUC15hDUc9XbJdrZIuTqLwSew/o=
+X-Envelope-To: thinker.li@gmail.com
+X-Envelope-To: bpf@vger.kernel.org
+X-Envelope-To: ast@kernel.org
+X-Envelope-To: song@kernel.org
+X-Envelope-To: kernel-team@meta.com
+X-Envelope-To: andrii@kernel.org
+X-Envelope-To: kuifeng@meta.com
+Message-ID: <8818eaa4-b32c-41a6-82c9-6230d635e89f@linux.dev>
+Date: Thu, 30 May 2024 10:53:14 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZldDIabPAa7NEmDQ@lizhi-Precision-Tower-5810>
+Subject: Re: [PATCH bpf-next v6 6/8] selftests/bpf: detach a struct_ops link
+ from the subsystem managing it.
+To: Kuifeng Lee <sinquersw@gmail.com>, Kui-Feng Lee <thinker.li@gmail.com>
+References: <20240524223036.318800-1-thinker.li@gmail.com>
+ <20240524223036.318800-7-thinker.li@gmail.com>
+ <f0b0e283-9312-4f11-9636-2ea690262180@linux.dev>
+ <CAHE2DV0RBf9JbkmngsdKdER5F2KmUXwY_JH44Z09DsY0VNa37A@mail.gmail.com>
+Content-Language: en-US
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Martin KaFai Lau <martin.lau@linux.dev>
+Cc: bpf@vger.kernel.org, ast@kernel.org, song@kernel.org,
+ kernel-team@meta.com, andrii@kernel.org, Kui-Feng Lee <kuifeng@meta.com>
+In-Reply-To: <CAHE2DV0RBf9JbkmngsdKdER5F2KmUXwY_JH44Z09DsY0VNa37A@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-On Wed, May 29, 2024 at 11:00:49AM -0400, Frank Li wrote:
-> On Tue, May 28, 2024 at 05:31:36PM -0500, Bjorn Helgaas wrote:
-> > On Tue, May 28, 2024 at 03:39:13PM -0400, Frank Li wrote:
-> ...
+[ The mailing list got dropped in your reply, so CC back the list ]
 
-> > > Base on linux-pci/controller/imx
-> > 
-> > This applies cleanly to the pci/controller/gpio branch, which has some
-> > minor rework in pci-imx6.c.
-> > 
-> > When we apply this, I think we should do it on a a pci/controller/imx6
-> > branch that is based on "main" (v6.10-rc1).
-> > 
-> > I can resolve the conflicts with pci/controller/gpio when building
-> > pci/next.
+On 5/29/24 11:05 PM, Kuifeng Lee wrote:
+> On Wed, May 29, 2024 at 2:51 PM Martin KaFai Lau <martin.lau@linux.dev> wrote:
+>>
+>> On 5/24/24 3:30 PM, Kui-Feng Lee wrote:
+>>> @@ -832,11 +865,20 @@ static int bpf_dummy_reg(void *kdata, struct bpf_link *link)
+>>>        if (ops->test_2)
+>>>                ops->test_2(4, ops->data);
+>>>
+>>> +     spin_lock(&detach_lock);
+>>> +     if (!link_to_detach)
+>>> +             link_to_detach = link;
+>>
+>> bpf_testmod_ops is used in a few different tests now. Can you check if
+>> "./test_progs -j <num_of_parallel_workers>" will work considering link_to_detach
+>> here is the very first registered link.
 > 
-> Sorry, I forget update this. It should be base on linux-pci/next
-> (e3fca37312892122d73f8c5293c0d1cc8c34500b). 
+> Yes, it works.  Since the test in test_struct_ops_modules.c is serial,
+> no other test will
+> be run simultaneously. And its subtests are run one after another.
 
-I prefer patches that are based on -rc1, i.e., the pci/main branch,
-not on the pci/next branch.
+just did a quick search on "bpf_map__attach_struct_ops", how about the other 
+tests like struct_ops_autocreate.c and test_struct_ops_multi_pages.c ?
 
-If a series *requires* functionality that is already on a topic
-branch, you can base it on that branch instead of on pci/main.
 
-This series happens to touch some of the same code as
-pci/controller/gpio, but it doesn't require those gpio changes, so it
-does not need to be based on pci/controller/gpio.
+> 
+>>
+>>> +     spin_unlock(&detach_lock);
+>>> +
+>>>        return 0;
+>>>    }
+>>
 
-Having this series based on pci/main means that if we update or drop
-the gpio branch for some reason, this series will still make sense.
-
-Bjorn
 
