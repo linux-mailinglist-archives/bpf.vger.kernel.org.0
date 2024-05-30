@@ -1,45 +1,45 @@
-Return-Path: <bpf+bounces-30913-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-30908-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B82D88D4610
-	for <lists+bpf@lfdr.de>; Thu, 30 May 2024 09:28:11 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B8FE18D4602
+	for <lists+bpf@lfdr.de>; Thu, 30 May 2024 09:27:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DC0EA1C218CB
-	for <lists+bpf@lfdr.de>; Thu, 30 May 2024 07:28:10 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E02CFB23674
+	for <lists+bpf@lfdr.de>; Thu, 30 May 2024 07:27:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E47DA74041;
-	Thu, 30 May 2024 07:27:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E0B363DAC08;
+	Thu, 30 May 2024 07:26:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="WzmFLsZJ"
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="xqvSCvQl"
 X-Original-To: bpf@vger.kernel.org
-Received: from out30-130.freemail.mail.aliyun.com (out30-130.freemail.mail.aliyun.com [115.124.30.130])
+Received: from out30-101.freemail.mail.aliyun.com (out30-101.freemail.mail.aliyun.com [115.124.30.101])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 598745588C;
-	Thu, 30 May 2024 07:27:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A634142E94;
+	Thu, 30 May 2024 07:26:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.101
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717054024; cv=none; b=XwjXyv9ByQDSgSj61Zu9YiZnuLK6mQViPMno82WUfXE4S3qK8Pu41Hl6CAGINMPAD+wwOREj0PAsR/5mc57g2drm00Gd3GSgBzWX9OjjxPl9v/+b1GrWDDMmahv9Ft/Gg4jkgeeibmD07KOJY6jEeQbnyEpbImM0vD0WXypgvCg=
+	t=1717054019; cv=none; b=aZe63YCP2rHnGQxhdhfI2LBrMf5Q+xt892EhHzgNfHlAb8zsfwtbACCbZAs+E3l/d6VO3fPO2nKL6fuewoTV5iMbGYE1TvC49jgjjRI03xIegh+s5v8JWKo6FHa8t/HbjjBN8PnqTXt255j8kkYaaF7rFgYnFjadL0420t05qD4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717054024; c=relaxed/simple;
-	bh=/Y++BUgwmsAi4LotPXXUDwwIyfSH2FaWbU9WaBlSza8=;
+	s=arc-20240116; t=1717054019; c=relaxed/simple;
+	bh=5OvxsHhjEexMwZGfW0AFHhf4IWSOdSS4DEsgoNBVI1g=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=XSlU/2YxIsqyUYLO16mMAwBe9w/29I6JHwSMttEkEgxgdvtuBLFtWqMkYiOU64cQ3y4TkMDLcgvLZq59w0sVpkqNZDrQmGd74HUmzX4lrTXh2VMC82zmoFtsb9UascJAx3NCLJjn38HaTWeVA6oaQEmddxGJcRPfecaIBYZP7lw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=WzmFLsZJ; arc=none smtp.client-ip=115.124.30.130
+	 MIME-Version; b=Wuipk2kIQ7v2Xhft2DqPY3Oik03UpL16vAV36tKpZDvSZ9GQZqL1KC1Eepi1/KYa04xgEdDXpBiw16hkDEu6s1aeM8GyQdU0kZ3vnMT8lHgOH8wL7iLDbi2dWgLvslAMVFKacs45Ty5CrxtL3Pwv28UjQFBSfuCZZdnX05l+GaY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=xqvSCvQl; arc=none smtp.client-ip=115.124.30.101
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
 DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
 	d=linux.alibaba.com; s=default;
 	t=1717054013; h=From:To:Subject:Date:Message-Id:MIME-Version;
-	bh=AzVVmzVGUvpPZ1lBvI2l0KxHDg3VLj9A3OfOYHQ+Y6w=;
-	b=WzmFLsZJ/T3cV3NcZfjaU6SHQ0WrGHvaOgt9W7RkAtscH6xy2TN06oLCUsLw8Z+ckyOQX5nu3ou2XaeNCJHGNptwooK55pd1eMpBmhuIeIb9NCoVRDNd7ZAZAd85+cxaT1dVlPxRKPGN3lLFvtOgC+NP7cE7MyYQxekmyOaxu4s=
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R211e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=maildocker-contentspam033045046011;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=15;SR=0;TI=SMTPD_---0W7WD.wE_1717054011;
-Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0W7WD.wE_1717054011)
+	bh=vkNzzJlQWcZohewCG1sc8APZbuGTvCkrLCa8UijfkIk=;
+	b=xqvSCvQlTleS6UYdKoUVakcjGPbKGaeQE5Xjz17ff8/TApbEygQbqFVtFfmvFkx8z0VCUcehT++YmIgJUlOr2GpLh8Z9x8zUW9V4PWyRNNDffHsCbF+PV77n7/UB60KeYysPmF1YIq+wJ1z9r/cyYulgxdlXGp5J+4opTE1GYY0=
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R811e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=maildocker-contentspam033045075189;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=15;SR=0;TI=SMTPD_---0W7WApj0_1717054012;
+Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0W7WApj0_1717054012)
           by smtp.aliyun-inc.com;
-          Thu, 30 May 2024 15:26:52 +0800
+          Thu, 30 May 2024 15:26:53 +0800
 From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
 To: netdev@vger.kernel.org
 Cc: "David S. Miller" <davem@davemloft.net>,
@@ -56,9 +56,9 @@ Cc: "David S. Miller" <davem@davemloft.net>,
 	John Fastabend <john.fastabend@gmail.com>,
 	virtualization@lists.linux.dev,
 	bpf@vger.kernel.org
-Subject: [PATCH net-next v1 2/7] virtio_net: move core structures to virtio_net.h
-Date: Thu, 30 May 2024 15:26:44 +0800
-Message-Id: <20240530072649.102437-3-xuanzhuo@linux.alibaba.com>
+Subject: [PATCH net-next v1 3/7] virtio_net: add prefix virtnet to all struct inside virtio_net.h
+Date: Thu, 30 May 2024 15:26:45 +0800
+Message-Id: <20240530072649.102437-4-xuanzhuo@linux.alibaba.com>
 X-Mailer: git-send-email 2.32.0.3.g01195cf9f
 In-Reply-To: <20240530072649.102437-1-xuanzhuo@linux.alibaba.com>
 References: <20240530072649.102437-1-xuanzhuo@linux.alibaba.com>
@@ -71,552 +71,501 @@ MIME-Version: 1.0
 X-Git-Hash: 12be1d34ab2c
 Content-Transfer-Encoding: 8bit
 
-Move some core structures (send_queue, receive_queue, virtnet_info)
-definitions and the relative structures definitions into the
-virtio_net.h file.
-
-That will be used by the other c code files.
+We move some structures to the header file, but these structures do not
+prefixed with virtnet. This patch adds virtnet for these.
 
 Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
 Acked-by: Jason Wang <jasowang@redhat.com>
 ---
- drivers/net/virtio/virtnet.h      | 239 ++++++++++++++++++++++++++++++
- drivers/net/virtio/virtnet_main.c | 235 +----------------------------
- 2 files changed, 241 insertions(+), 233 deletions(-)
- create mode 100644 drivers/net/virtio/virtnet.h
+ drivers/net/virtio/virtnet.h      |  12 ++--
+ drivers/net/virtio/virtnet_main.c | 110 +++++++++++++++---------------
+ 2 files changed, 61 insertions(+), 61 deletions(-)
 
 diff --git a/drivers/net/virtio/virtnet.h b/drivers/net/virtio/virtnet.h
-new file mode 100644
-index 000000000000..e46db9491605
---- /dev/null
+index e46db9491605..d4cc4ddb0786 100644
+--- a/drivers/net/virtio/virtnet.h
 +++ b/drivers/net/virtio/virtnet.h
-@@ -0,0 +1,239 @@
-+/* SPDX-License-Identifier: GPL-2.0-or-later */
-+
-+#ifndef __VIRTIO_NET_H__
-+#define __VIRTIO_NET_H__
-+
-+#include <linux/ethtool.h>
-+#include <linux/average.h>
-+
-+/* RX packet size EWMA. The average packet size is used to determine the packet
-+ * buffer size when refilling RX rings. As the entire RX ring may be refilled
-+ * at once, the weight is chosen so that the EWMA will be insensitive to short-
-+ * term, transient changes in packet size.
-+ */
-+DECLARE_EWMA(pkt_len, 0, 64)
-+
-+struct virtnet_sq_stats {
-+	struct u64_stats_sync syncp;
-+	u64_stats_t packets;
-+	u64_stats_t bytes;
-+	u64_stats_t xdp_tx;
-+	u64_stats_t xdp_tx_drops;
-+	u64_stats_t kicks;
-+	u64_stats_t tx_timeouts;
-+	u64_stats_t stop;
-+	u64_stats_t wake;
-+};
-+
-+struct virtnet_rq_stats {
-+	struct u64_stats_sync syncp;
-+	u64_stats_t packets;
-+	u64_stats_t bytes;
-+	u64_stats_t drops;
-+	u64_stats_t xdp_packets;
-+	u64_stats_t xdp_tx;
-+	u64_stats_t xdp_redirects;
-+	u64_stats_t xdp_drops;
-+	u64_stats_t kicks;
-+};
-+
-+struct virtnet_interrupt_coalesce {
-+	u32 max_packets;
-+	u32 max_usecs;
-+};
-+
-+/* The dma information of pages allocated at a time. */
-+struct virtnet_rq_dma {
-+	dma_addr_t addr;
-+	u32 ref;
-+	u16 len;
-+	u16 need_sync;
-+};
-+
-+/* Internal representation of a send virtqueue */
-+struct send_queue {
-+	/* Virtqueue associated with this send _queue */
-+	struct virtqueue *vq;
-+
-+	/* TX: fragments + linear part + virtio header */
-+	struct scatterlist sg[MAX_SKB_FRAGS + 2];
-+
-+	/* Name of the send queue: output.$index */
-+	char name[16];
-+
-+	struct virtnet_sq_stats stats;
-+
-+	struct virtnet_interrupt_coalesce intr_coal;
-+
-+	struct napi_struct napi;
-+
-+	/* Record whether sq is in reset state. */
-+	bool reset;
-+};
-+
-+/* Internal representation of a receive virtqueue */
-+struct receive_queue {
-+	/* Virtqueue associated with this receive_queue */
-+	struct virtqueue *vq;
-+
-+	struct napi_struct napi;
-+
-+	struct bpf_prog __rcu *xdp_prog;
-+
-+	struct virtnet_rq_stats stats;
-+
-+	/* The number of rx notifications */
-+	u16 calls;
-+
-+	/* Is dynamic interrupt moderation enabled? */
-+	bool dim_enabled;
-+
-+	/* Used to protect dim_enabled and inter_coal */
-+	struct mutex dim_lock;
-+
-+	/* Dynamic Interrupt Moderation */
-+	struct dim dim;
-+
-+	u32 packets_in_napi;
-+
-+	struct virtnet_interrupt_coalesce intr_coal;
-+
-+	/* Chain pages by the private ptr. */
-+	struct page *pages;
-+
-+	/* Average packet length for mergeable receive buffers. */
-+	struct ewma_pkt_len mrg_avg_pkt_len;
-+
-+	/* Page frag for packet buffer allocation. */
-+	struct page_frag alloc_frag;
-+
-+	/* RX: fragments + linear part + virtio header */
-+	struct scatterlist sg[MAX_SKB_FRAGS + 2];
-+
-+	/* Min single buffer size for mergeable buffers case. */
-+	unsigned int min_buf_len;
-+
-+	/* Name of this receive queue: input.$index */
-+	char name[16];
-+
-+	struct xdp_rxq_info xdp_rxq;
-+
-+	/* Record the last dma info to free after new pages is allocated. */
-+	struct virtnet_rq_dma *last_dma;
-+};
-+
-+/* This structure can contain rss message with maximum settings for indirection table and keysize
-+ * Note, that default structure that describes RSS configuration virtio_net_rss_config
-+ * contains same info but can't handle table values.
-+ * In any case, structure would be passed to virtio hw through sg_buf split by parts
-+ * because table sizes may be differ according to the device configuration.
-+ */
-+#define VIRTIO_NET_RSS_MAX_KEY_SIZE     40
-+#define VIRTIO_NET_RSS_MAX_TABLE_LEN    128
-+struct virtio_net_ctrl_rss {
-+	u32 hash_types;
-+	u16 indirection_table_mask;
-+	u16 unclassified_queue;
-+	u16 indirection_table[VIRTIO_NET_RSS_MAX_TABLE_LEN];
-+	u16 max_tx_vq;
-+	u8 hash_key_length;
-+	u8 key[VIRTIO_NET_RSS_MAX_KEY_SIZE];
-+};
-+
-+struct virtnet_info {
-+	struct virtio_device *vdev;
-+	struct virtqueue *cvq;
-+	struct net_device *dev;
-+	struct send_queue *sq;
-+	struct receive_queue *rq;
-+	unsigned int status;
-+
-+	/* Max # of queue pairs supported by the device */
-+	u16 max_queue_pairs;
-+
-+	/* # of queue pairs currently used by the driver */
-+	u16 curr_queue_pairs;
-+
-+	/* # of XDP queue pairs currently used by the driver */
-+	u16 xdp_queue_pairs;
-+
-+	/* xdp_queue_pairs may be 0, when xdp is already loaded. So add this. */
-+	bool xdp_enabled;
-+
-+	/* I like... big packets and I cannot lie! */
-+	bool big_packets;
-+
-+	/* number of sg entries allocated for big packets */
-+	unsigned int big_packets_num_skbfrags;
-+
-+	/* Host will merge rx buffers for big packets (shake it! shake it!) */
-+	bool mergeable_rx_bufs;
-+
-+	/* Host supports rss and/or hash report */
-+	bool has_rss;
-+	bool has_rss_hash_report;
-+	u8 rss_key_size;
-+	u16 rss_indir_table_size;
-+	u32 rss_hash_types_supported;
-+	u32 rss_hash_types_saved;
-+	struct virtio_net_ctrl_rss rss;
-+
-+	/* Has control virtqueue */
-+	bool has_cvq;
-+
-+	/* Lock to protect the control VQ */
-+	struct mutex cvq_lock;
-+
-+	/* Host can handle any s/g split between our header and packet data */
-+	bool any_header_sg;
-+
-+	/* Packet virtio header size */
-+	u8 hdr_len;
-+
-+	/* Work struct for delayed refilling if we run low on memory. */
-+	struct delayed_work refill;
-+
-+	/* Is delayed refill enabled? */
-+	bool refill_enabled;
-+
-+	/* The lock to synchronize the access to refill_enabled */
-+	spinlock_t refill_lock;
-+
-+	/* Work struct for config space updates */
-+	struct work_struct config_work;
-+
-+	/* Work struct for setting rx mode */
-+	struct work_struct rx_mode_work;
-+
-+	/* OK to queue work setting RX mode? */
-+	bool rx_mode_work_enabled;
-+
-+	/* Does the affinity hint is set for virtqueues? */
-+	bool affinity_hint_set;
-+
-+	/* CPU hotplug instances for online & dead */
-+	struct hlist_node node;
-+	struct hlist_node node_dead;
-+
-+	struct control_buf *ctrl;
-+
-+	/* Ethtool settings */
-+	u8 duplex;
-+	u32 speed;
-+
-+	/* Is rx dynamic interrupt moderation enabled? */
-+	bool rx_dim_enabled;
-+
-+	/* Interrupt coalescing settings */
-+	struct virtnet_interrupt_coalesce intr_coal_tx;
-+	struct virtnet_interrupt_coalesce intr_coal_rx;
-+
-+	unsigned long guest_offloads;
-+	unsigned long guest_offloads_capable;
-+
-+	/* failover when STANDBY feature enabled */
-+	struct failover *failover;
-+
-+	u64 device_stats_cap;
-+};
-+#endif
-diff --git a/drivers/net/virtio/virtnet_main.c b/drivers/net/virtio/virtnet_main.c
-index 4a802c0ea2cb..faff5d719440 100644
---- a/drivers/net/virtio/virtnet_main.c
-+++ b/drivers/net/virtio/virtnet_main.c
-@@ -6,7 +6,6 @@
- //#define DEBUG
- #include <linux/netdevice.h>
- #include <linux/etherdevice.h>
--#include <linux/ethtool.h>
- #include <linux/module.h>
- #include <linux/virtio.h>
- #include <linux/virtio_net.h>
-@@ -16,7 +15,6 @@
- #include <linux/if_vlan.h>
- #include <linux/slab.h>
- #include <linux/cpu.h>
--#include <linux/average.h>
- #include <linux/filter.h>
- #include <linux/kernel.h>
- #include <linux/dim.h>
-@@ -26,6 +24,8 @@
- #include <net/netdev_rx_queue.h>
- #include <net/netdev_queues.h>
- 
-+#include "virtnet.h"
-+
- static int napi_weight = NAPI_POLL_WEIGHT;
- module_param(napi_weight, int, 0444);
- 
-@@ -49,13 +49,6 @@ module_param(napi_tx, bool, 0644);
- 
- #define VIRTIO_XDP_FLAG	BIT(0)
- 
--/* RX packet size EWMA. The average packet size is used to determine the packet
-- * buffer size when refilling RX rings. As the entire RX ring may be refilled
-- * at once, the weight is chosen so that the EWMA will be insensitive to short-
-- * term, transient changes in packet size.
-- */
--DECLARE_EWMA(pkt_len, 0, 64)
--
- #define VIRTNET_DRIVER_VERSION "1.0.0"
- 
- static const unsigned long guest_offloads[] = {
-@@ -87,30 +80,6 @@ struct virtnet_sq_free_stats {
- 	u64 bytes;
+@@ -51,8 +51,8 @@ struct virtnet_rq_dma {
  };
  
--struct virtnet_sq_stats {
--	struct u64_stats_sync syncp;
--	u64_stats_t packets;
--	u64_stats_t bytes;
--	u64_stats_t xdp_tx;
--	u64_stats_t xdp_tx_drops;
--	u64_stats_t kicks;
--	u64_stats_t tx_timeouts;
--	u64_stats_t stop;
--	u64_stats_t wake;
--};
--
--struct virtnet_rq_stats {
--	struct u64_stats_sync syncp;
--	u64_stats_t packets;
--	u64_stats_t bytes;
--	u64_stats_t drops;
--	u64_stats_t xdp_packets;
--	u64_stats_t xdp_tx;
--	u64_stats_t xdp_redirects;
--	u64_stats_t xdp_drops;
--	u64_stats_t kicks;
--};
--
- #define VIRTNET_SQ_STAT(name, m) {name, offsetof(struct virtnet_sq_stats, m), -1}
- #define VIRTNET_RQ_STAT(name, m) {name, offsetof(struct virtnet_rq_stats, m), -1}
- 
-@@ -265,212 +234,12 @@ static const struct virtnet_stat_desc virtnet_stats_tx_speed_desc_qstat[] = {
- #define VIRTNET_Q_TYPE_TX 1
- #define VIRTNET_Q_TYPE_CQ 2
- 
--struct virtnet_interrupt_coalesce {
--	u32 max_packets;
--	u32 max_usecs;
--};
--
--/* The dma information of pages allocated at a time. */
--struct virtnet_rq_dma {
--	dma_addr_t addr;
--	u32 ref;
--	u16 len;
--	u16 need_sync;
--};
--
--/* Internal representation of a send virtqueue */
+ /* Internal representation of a send virtqueue */
 -struct send_queue {
 -	/* Virtqueue associated with this send _queue */
--	struct virtqueue *vq;
--
--	/* TX: fragments + linear part + virtio header */
--	struct scatterlist sg[MAX_SKB_FRAGS + 2];
--
--	/* Name of the send queue: output.$index */
--	char name[16];
--
--	struct virtnet_sq_stats stats;
--
--	struct virtnet_interrupt_coalesce intr_coal;
--
--	struct napi_struct napi;
--
--	/* Record whether sq is in reset state. */
--	bool reset;
--};
--
--/* Internal representation of a receive virtqueue */
--struct receive_queue {
--	/* Virtqueue associated with this receive_queue */
--	struct virtqueue *vq;
--
--	struct napi_struct napi;
--
--	struct bpf_prog __rcu *xdp_prog;
--
--	struct virtnet_rq_stats stats;
--
--	/* The number of rx notifications */
--	u16 calls;
--
--	/* Is dynamic interrupt moderation enabled? */
--	bool dim_enabled;
--
--	/* Used to protect dim_enabled and inter_coal */
--	struct mutex dim_lock;
--
--	/* Dynamic Interrupt Moderation */
--	struct dim dim;
--
--	u32 packets_in_napi;
--
--	struct virtnet_interrupt_coalesce intr_coal;
--
--	/* Chain pages by the private ptr. */
--	struct page *pages;
--
--	/* Average packet length for mergeable receive buffers. */
--	struct ewma_pkt_len mrg_avg_pkt_len;
--
--	/* Page frag for packet buffer allocation. */
--	struct page_frag alloc_frag;
--
--	/* RX: fragments + linear part + virtio header */
--	struct scatterlist sg[MAX_SKB_FRAGS + 2];
--
--	/* Min single buffer size for mergeable buffers case. */
--	unsigned int min_buf_len;
--
--	/* Name of this receive queue: input.$index */
--	char name[16];
--
--	struct xdp_rxq_info xdp_rxq;
--
--	/* Record the last dma info to free after new pages is allocated. */
--	struct virtnet_rq_dma *last_dma;
--};
--
--/* This structure can contain rss message with maximum settings for indirection table and keysize
-- * Note, that default structure that describes RSS configuration virtio_net_rss_config
-- * contains same info but can't handle table values.
-- * In any case, structure would be passed to virtio hw through sg_buf split by parts
-- * because table sizes may be differ according to the device configuration.
-- */
--#define VIRTIO_NET_RSS_MAX_KEY_SIZE     40
--#define VIRTIO_NET_RSS_MAX_TABLE_LEN    128
--struct virtio_net_ctrl_rss {
--	u32 hash_types;
--	u16 indirection_table_mask;
--	u16 unclassified_queue;
--	u16 indirection_table[VIRTIO_NET_RSS_MAX_TABLE_LEN];
--	u16 max_tx_vq;
--	u8 hash_key_length;
--	u8 key[VIRTIO_NET_RSS_MAX_KEY_SIZE];
--};
--
- /* Control VQ buffers: protected by the rtnl lock */
- struct control_buf {
- 	struct virtio_net_ctrl_hdr hdr;
- 	virtio_net_ctrl_ack status;
++struct virtnet_sq {
++	/* Virtqueue associated with this virtnet_sq */
+ 	struct virtqueue *vq;
+ 
+ 	/* TX: fragments + linear part + virtio header */
+@@ -72,8 +72,8 @@ struct send_queue {
  };
  
--struct virtnet_info {
--	struct virtio_device *vdev;
--	struct virtqueue *cvq;
--	struct net_device *dev;
+ /* Internal representation of a receive virtqueue */
+-struct receive_queue {
+-	/* Virtqueue associated with this receive_queue */
++struct virtnet_rq {
++	/* Virtqueue associated with this virtnet_rq */
+ 	struct virtqueue *vq;
+ 
+ 	struct napi_struct napi;
+@@ -144,8 +144,8 @@ struct virtnet_info {
+ 	struct virtio_device *vdev;
+ 	struct virtqueue *cvq;
+ 	struct net_device *dev;
 -	struct send_queue *sq;
 -	struct receive_queue *rq;
--	unsigned int status;
--
--	/* Max # of queue pairs supported by the device */
--	u16 max_queue_pairs;
--
--	/* # of queue pairs currently used by the driver */
--	u16 curr_queue_pairs;
--
--	/* # of XDP queue pairs currently used by the driver */
--	u16 xdp_queue_pairs;
--
--	/* xdp_queue_pairs may be 0, when xdp is already loaded. So add this. */
--	bool xdp_enabled;
--
--	/* I like... big packets and I cannot lie! */
--	bool big_packets;
--
--	/* number of sg entries allocated for big packets */
--	unsigned int big_packets_num_skbfrags;
--
--	/* Host will merge rx buffers for big packets (shake it! shake it!) */
--	bool mergeable_rx_bufs;
--
--	/* Host supports rss and/or hash report */
--	bool has_rss;
--	bool has_rss_hash_report;
--	u8 rss_key_size;
--	u16 rss_indir_table_size;
--	u32 rss_hash_types_supported;
--	u32 rss_hash_types_saved;
--	struct virtio_net_ctrl_rss rss;
--
--	/* Has control virtqueue */
--	bool has_cvq;
--
--	/* Lock to protect the control VQ */
--	struct mutex cvq_lock;
--
--	/* Host can handle any s/g split between our header and packet data */
--	bool any_header_sg;
--
--	/* Packet virtio header size */
--	u8 hdr_len;
--
--	/* Work struct for delayed refilling if we run low on memory. */
--	struct delayed_work refill;
--
--	/* Is delayed refill enabled? */
--	bool refill_enabled;
--
--	/* The lock to synchronize the access to refill_enabled */
--	spinlock_t refill_lock;
--
--	/* Work struct for config space updates */
--	struct work_struct config_work;
--
--	/* Work struct for setting rx mode */
--	struct work_struct rx_mode_work;
--
--	/* OK to queue work setting RX mode? */
--	bool rx_mode_work_enabled;
--
--	/* Does the affinity hint is set for virtqueues? */
--	bool affinity_hint_set;
--
--	/* CPU hotplug instances for online & dead */
--	struct hlist_node node;
--	struct hlist_node node_dead;
--
--	struct control_buf *ctrl;
--
--	/* Ethtool settings */
--	u8 duplex;
--	u32 speed;
--
--	/* Is rx dynamic interrupt moderation enabled? */
--	bool rx_dim_enabled;
--
--	/* Interrupt coalescing settings */
--	struct virtnet_interrupt_coalesce intr_coal_tx;
--	struct virtnet_interrupt_coalesce intr_coal_rx;
--
--	unsigned long guest_offloads;
--	unsigned long guest_offloads_capable;
--
--	/* failover when STANDBY feature enabled */
--	struct failover *failover;
--
--	u64 device_stats_cap;
--};
--
- struct padded_vnet_hdr {
- 	struct virtio_net_hdr_v1_hash hdr;
- 	/*
++	struct virtnet_sq *sq;
++	struct virtnet_rq *rq;
+ 	unsigned int status;
+ 
+ 	/* Max # of queue pairs supported by the device */
+diff --git a/drivers/net/virtio/virtnet_main.c b/drivers/net/virtio/virtnet_main.c
+index faff5d719440..fc28fadf944e 100644
+--- a/drivers/net/virtio/virtnet_main.c
++++ b/drivers/net/virtio/virtnet_main.c
+@@ -275,7 +275,7 @@ static struct xdp_frame *ptr_to_xdp(void *ptr)
+ 	return (struct xdp_frame *)((unsigned long)ptr & ~VIRTIO_XDP_FLAG);
+ }
+ 
+-static void __free_old_xmit(struct send_queue *sq, bool in_napi,
++static void __free_old_xmit(struct virtnet_sq *sq, bool in_napi,
+ 			    struct virtnet_sq_free_stats *stats)
+ {
+ 	unsigned int len;
+@@ -344,7 +344,7 @@ skb_vnet_common_hdr(struct sk_buff *skb)
+  * private is used to chain pages for big packets, put the whole
+  * most recent used list in the beginning for reuse
+  */
+-static void give_pages(struct receive_queue *rq, struct page *page)
++static void give_pages(struct virtnet_rq *rq, struct page *page)
+ {
+ 	struct page *end;
+ 
+@@ -354,7 +354,7 @@ static void give_pages(struct receive_queue *rq, struct page *page)
+ 	rq->pages = page;
+ }
+ 
+-static struct page *get_a_page(struct receive_queue *rq, gfp_t gfp_mask)
++static struct page *get_a_page(struct virtnet_rq *rq, gfp_t gfp_mask)
+ {
+ 	struct page *p = rq->pages;
+ 
+@@ -368,7 +368,7 @@ static struct page *get_a_page(struct receive_queue *rq, gfp_t gfp_mask)
+ }
+ 
+ static void virtnet_rq_free_buf(struct virtnet_info *vi,
+-				struct receive_queue *rq, void *buf)
++				struct virtnet_rq *rq, void *buf)
+ {
+ 	if (vi->mergeable_rx_bufs)
+ 		put_page(virt_to_head_page(buf));
+@@ -483,7 +483,7 @@ static struct sk_buff *virtnet_build_skb(void *buf, unsigned int buflen,
+ 
+ /* Called from bottom half context */
+ static struct sk_buff *page_to_skb(struct virtnet_info *vi,
+-				   struct receive_queue *rq,
++				   struct virtnet_rq *rq,
+ 				   struct page *page, unsigned int offset,
+ 				   unsigned int len, unsigned int truesize,
+ 				   unsigned int headroom)
+@@ -581,7 +581,7 @@ static struct sk_buff *page_to_skb(struct virtnet_info *vi,
+ 	return skb;
+ }
+ 
+-static void virtnet_rq_unmap(struct receive_queue *rq, void *buf, u32 len)
++static void virtnet_rq_unmap(struct virtnet_rq *rq, void *buf, u32 len)
+ {
+ 	struct page *page = virt_to_head_page(buf);
+ 	struct virtnet_rq_dma *dma;
+@@ -610,7 +610,7 @@ static void virtnet_rq_unmap(struct receive_queue *rq, void *buf, u32 len)
+ 	put_page(page);
+ }
+ 
+-static void *virtnet_rq_get_buf(struct receive_queue *rq, u32 *len, void **ctx)
++static void *virtnet_rq_get_buf(struct virtnet_rq *rq, u32 *len, void **ctx)
+ {
+ 	void *buf;
+ 
+@@ -621,7 +621,7 @@ static void *virtnet_rq_get_buf(struct receive_queue *rq, u32 *len, void **ctx)
+ 	return buf;
+ }
+ 
+-static void virtnet_rq_init_one_sg(struct receive_queue *rq, void *buf, u32 len)
++static void virtnet_rq_init_one_sg(struct virtnet_rq *rq, void *buf, u32 len)
+ {
+ 	struct virtnet_rq_dma *dma;
+ 	dma_addr_t addr;
+@@ -641,7 +641,7 @@ static void virtnet_rq_init_one_sg(struct receive_queue *rq, void *buf, u32 len)
+ 	rq->sg[0].length = len;
+ }
+ 
+-static void *virtnet_rq_alloc(struct receive_queue *rq, u32 size, gfp_t gfp)
++static void *virtnet_rq_alloc(struct virtnet_rq *rq, u32 size, gfp_t gfp)
+ {
+ 	struct page_frag *alloc_frag = &rq->alloc_frag;
+ 	struct virtnet_rq_dma *dma;
+@@ -713,7 +713,7 @@ static void virtnet_rq_set_premapped(struct virtnet_info *vi)
+ static void virtnet_rq_unmap_free_buf(struct virtqueue *vq, void *buf)
+ {
+ 	struct virtnet_info *vi = vq->vdev->priv;
+-	struct receive_queue *rq;
++	struct virtnet_rq *rq;
+ 	int i = vq2rxq(vq);
+ 
+ 	rq = &vi->rq[i];
+@@ -724,7 +724,7 @@ static void virtnet_rq_unmap_free_buf(struct virtqueue *vq, void *buf)
+ 	virtnet_rq_free_buf(vi, rq, buf);
+ }
+ 
+-static void free_old_xmit(struct send_queue *sq, bool in_napi)
++static void free_old_xmit(struct virtnet_sq *sq, bool in_napi)
+ {
+ 	struct virtnet_sq_free_stats stats = {0};
+ 
+@@ -754,7 +754,7 @@ static bool is_xdp_raw_buffer_queue(struct virtnet_info *vi, int q)
+ 
+ static void check_sq_full_and_disable(struct virtnet_info *vi,
+ 				      struct net_device *dev,
+-				      struct send_queue *sq)
++				      struct virtnet_sq *sq)
+ {
+ 	bool use_napi = sq->napi.weight;
+ 	int qnum;
+@@ -794,7 +794,7 @@ static void check_sq_full_and_disable(struct virtnet_info *vi,
+ }
+ 
+ static int __virtnet_xdp_xmit_one(struct virtnet_info *vi,
+-				   struct send_queue *sq,
++				   struct virtnet_sq *sq,
+ 				   struct xdp_frame *xdpf)
+ {
+ 	struct virtio_net_hdr_mrg_rxbuf *hdr;
+@@ -884,9 +884,9 @@ static int virtnet_xdp_xmit(struct net_device *dev,
+ {
+ 	struct virtnet_info *vi = netdev_priv(dev);
+ 	struct virtnet_sq_free_stats stats = {0};
+-	struct receive_queue *rq = vi->rq;
++	struct virtnet_rq *rq = vi->rq;
+ 	struct bpf_prog *xdp_prog;
+-	struct send_queue *sq;
++	struct virtnet_sq *sq;
+ 	int nxmit = 0;
+ 	int kicks = 0;
+ 	int ret;
+@@ -1026,7 +1026,7 @@ static unsigned int virtnet_get_headroom(struct virtnet_info *vi)
+  * across multiple buffers (num_buf > 1), and we make sure buffers
+  * have enough headroom.
+  */
+-static struct page *xdp_linearize_page(struct receive_queue *rq,
++static struct page *xdp_linearize_page(struct virtnet_rq *rq,
+ 				       int *num_buf,
+ 				       struct page *p,
+ 				       int offset,
+@@ -1107,7 +1107,7 @@ static struct sk_buff *receive_small_build_skb(struct virtnet_info *vi,
+ 
+ static struct sk_buff *receive_small_xdp(struct net_device *dev,
+ 					 struct virtnet_info *vi,
+-					 struct receive_queue *rq,
++					 struct virtnet_rq *rq,
+ 					 struct bpf_prog *xdp_prog,
+ 					 void *buf,
+ 					 unsigned int xdp_headroom,
+@@ -1194,7 +1194,7 @@ static struct sk_buff *receive_small_xdp(struct net_device *dev,
+ 
+ static struct sk_buff *receive_small(struct net_device *dev,
+ 				     struct virtnet_info *vi,
+-				     struct receive_queue *rq,
++				     struct virtnet_rq *rq,
+ 				     void *buf, void *ctx,
+ 				     unsigned int len,
+ 				     unsigned int *xdp_xmit,
+@@ -1241,7 +1241,7 @@ static struct sk_buff *receive_small(struct net_device *dev,
+ 
+ static struct sk_buff *receive_big(struct net_device *dev,
+ 				   struct virtnet_info *vi,
+-				   struct receive_queue *rq,
++				   struct virtnet_rq *rq,
+ 				   void *buf,
+ 				   unsigned int len,
+ 				   struct virtnet_rq_stats *stats)
+@@ -1262,7 +1262,7 @@ static struct sk_buff *receive_big(struct net_device *dev,
+ 	return NULL;
+ }
+ 
+-static void mergeable_buf_free(struct receive_queue *rq, int num_buf,
++static void mergeable_buf_free(struct virtnet_rq *rq, int num_buf,
+ 			       struct net_device *dev,
+ 			       struct virtnet_rq_stats *stats)
+ {
+@@ -1336,7 +1336,7 @@ static struct sk_buff *build_skb_from_xdp_buff(struct net_device *dev,
+ /* TODO: build xdp in big mode */
+ static int virtnet_build_xdp_buff_mrg(struct net_device *dev,
+ 				      struct virtnet_info *vi,
+-				      struct receive_queue *rq,
++				      struct virtnet_rq *rq,
+ 				      struct xdp_buff *xdp,
+ 				      void *buf,
+ 				      unsigned int len,
+@@ -1424,7 +1424,7 @@ static int virtnet_build_xdp_buff_mrg(struct net_device *dev,
+ }
+ 
+ static void *mergeable_xdp_get_buf(struct virtnet_info *vi,
+-				   struct receive_queue *rq,
++				   struct virtnet_rq *rq,
+ 				   struct bpf_prog *xdp_prog,
+ 				   void *ctx,
+ 				   unsigned int *frame_sz,
+@@ -1499,7 +1499,7 @@ static void *mergeable_xdp_get_buf(struct virtnet_info *vi,
+ 
+ static struct sk_buff *receive_mergeable_xdp(struct net_device *dev,
+ 					     struct virtnet_info *vi,
+-					     struct receive_queue *rq,
++					     struct virtnet_rq *rq,
+ 					     struct bpf_prog *xdp_prog,
+ 					     void *buf,
+ 					     void *ctx,
+@@ -1559,7 +1559,7 @@ static struct sk_buff *receive_mergeable_xdp(struct net_device *dev,
+ 
+ static struct sk_buff *receive_mergeable(struct net_device *dev,
+ 					 struct virtnet_info *vi,
+-					 struct receive_queue *rq,
++					 struct virtnet_rq *rq,
+ 					 void *buf,
+ 					 void *ctx,
+ 					 unsigned int len,
+@@ -1704,7 +1704,7 @@ static void virtio_skb_set_hash(const struct virtio_net_hdr_v1_hash *hdr_hash,
+ 	skb_set_hash(skb, __le32_to_cpu(hdr_hash->hash_value), rss_hash_type);
+ }
+ 
+-static void receive_buf(struct virtnet_info *vi, struct receive_queue *rq,
++static void receive_buf(struct virtnet_info *vi, struct virtnet_rq *rq,
+ 			void *buf, unsigned int len, void **ctx,
+ 			unsigned int *xdp_xmit,
+ 			struct virtnet_rq_stats *stats)
+@@ -1764,7 +1764,7 @@ static void receive_buf(struct virtnet_info *vi, struct receive_queue *rq,
+  * not need to use  mergeable_len_to_ctx here - it is enough
+  * to store the headroom as the context ignoring the truesize.
+  */
+-static int add_recvbuf_small(struct virtnet_info *vi, struct receive_queue *rq,
++static int add_recvbuf_small(struct virtnet_info *vi, struct virtnet_rq *rq,
+ 			     gfp_t gfp)
+ {
+ 	char *buf;
+@@ -1792,7 +1792,7 @@ static int add_recvbuf_small(struct virtnet_info *vi, struct receive_queue *rq,
+ 	return err;
+ }
+ 
+-static int add_recvbuf_big(struct virtnet_info *vi, struct receive_queue *rq,
++static int add_recvbuf_big(struct virtnet_info *vi, struct virtnet_rq *rq,
+ 			   gfp_t gfp)
+ {
+ 	struct page *first, *list = NULL;
+@@ -1841,7 +1841,7 @@ static int add_recvbuf_big(struct virtnet_info *vi, struct receive_queue *rq,
+ 	return err;
+ }
+ 
+-static unsigned int get_mergeable_buf_len(struct receive_queue *rq,
++static unsigned int get_mergeable_buf_len(struct virtnet_rq *rq,
+ 					  struct ewma_pkt_len *avg_pkt_len,
+ 					  unsigned int room)
+ {
+@@ -1859,7 +1859,7 @@ static unsigned int get_mergeable_buf_len(struct receive_queue *rq,
+ }
+ 
+ static int add_recvbuf_mergeable(struct virtnet_info *vi,
+-				 struct receive_queue *rq, gfp_t gfp)
++				 struct virtnet_rq *rq, gfp_t gfp)
+ {
+ 	struct page_frag *alloc_frag = &rq->alloc_frag;
+ 	unsigned int headroom = virtnet_get_headroom(vi);
+@@ -1913,7 +1913,7 @@ static int add_recvbuf_mergeable(struct virtnet_info *vi,
+  * before we're receiving packets, or from refill_work which is
+  * careful to disable receiving (using napi_disable).
+  */
+-static bool try_fill_recv(struct virtnet_info *vi, struct receive_queue *rq,
++static bool try_fill_recv(struct virtnet_info *vi, struct virtnet_rq *rq,
+ 			  gfp_t gfp)
+ {
+ 	int err;
+@@ -1945,7 +1945,7 @@ static bool try_fill_recv(struct virtnet_info *vi, struct receive_queue *rq,
+ static void skb_recv_done(struct virtqueue *rvq)
+ {
+ 	struct virtnet_info *vi = rvq->vdev->priv;
+-	struct receive_queue *rq = &vi->rq[vq2rxq(rvq)];
++	struct virtnet_rq *rq = &vi->rq[vq2rxq(rvq)];
+ 
+ 	rq->calls++;
+ 	virtqueue_napi_schedule(&rq->napi, rvq);
+@@ -1996,7 +1996,7 @@ static void refill_work(struct work_struct *work)
+ 	int i;
+ 
+ 	for (i = 0; i < vi->curr_queue_pairs; i++) {
+-		struct receive_queue *rq = &vi->rq[i];
++		struct virtnet_rq *rq = &vi->rq[i];
+ 
+ 		napi_disable(&rq->napi);
+ 		still_empty = !try_fill_recv(vi, rq, GFP_KERNEL);
+@@ -2010,7 +2010,7 @@ static void refill_work(struct work_struct *work)
+ 	}
+ }
+ 
+-static int virtnet_receive(struct receive_queue *rq, int budget,
++static int virtnet_receive(struct virtnet_rq *rq, int budget,
+ 			   unsigned int *xdp_xmit)
+ {
+ 	struct virtnet_info *vi = rq->vq->vdev->priv;
+@@ -2064,11 +2064,11 @@ static int virtnet_receive(struct receive_queue *rq, int budget,
+ 	return packets;
+ }
+ 
+-static void virtnet_poll_cleantx(struct receive_queue *rq)
++static void virtnet_poll_cleantx(struct virtnet_rq *rq)
+ {
+ 	struct virtnet_info *vi = rq->vq->vdev->priv;
+ 	unsigned int index = vq2rxq(rq->vq);
+-	struct send_queue *sq = &vi->sq[index];
++	struct virtnet_sq *sq = &vi->sq[index];
+ 	struct netdev_queue *txq = netdev_get_tx_queue(vi->dev, index);
+ 
+ 	if (!sq->napi.weight || is_xdp_raw_buffer_queue(vi, index))
+@@ -2098,7 +2098,7 @@ static void virtnet_poll_cleantx(struct receive_queue *rq)
+ 	}
+ }
+ 
+-static void virtnet_rx_dim_update(struct virtnet_info *vi, struct receive_queue *rq)
++static void virtnet_rx_dim_update(struct virtnet_info *vi, struct virtnet_rq *rq)
+ {
+ 	struct dim_sample cur_sample = {};
+ 
+@@ -2118,10 +2118,10 @@ static void virtnet_rx_dim_update(struct virtnet_info *vi, struct receive_queue
+ 
+ static int virtnet_poll(struct napi_struct *napi, int budget)
+ {
+-	struct receive_queue *rq =
+-		container_of(napi, struct receive_queue, napi);
++	struct virtnet_rq *rq =
++		container_of(napi, struct virtnet_rq, napi);
+ 	struct virtnet_info *vi = rq->vq->vdev->priv;
+-	struct send_queue *sq;
++	struct virtnet_sq *sq;
+ 	unsigned int received;
+ 	unsigned int xdp_xmit = 0;
+ 	bool napi_complete;
+@@ -2224,7 +2224,7 @@ static int virtnet_open(struct net_device *dev)
+ 
+ static int virtnet_poll_tx(struct napi_struct *napi, int budget)
+ {
+-	struct send_queue *sq = container_of(napi, struct send_queue, napi);
++	struct virtnet_sq *sq = container_of(napi, struct virtnet_sq, napi);
+ 	struct virtnet_info *vi = sq->vq->vdev->priv;
+ 	unsigned int index = vq2txq(sq->vq);
+ 	struct netdev_queue *txq;
+@@ -2274,7 +2274,7 @@ static int virtnet_poll_tx(struct napi_struct *napi, int budget)
+ 	return 0;
+ }
+ 
+-static int xmit_skb(struct send_queue *sq, struct sk_buff *skb)
++static int xmit_skb(struct virtnet_sq *sq, struct sk_buff *skb)
+ {
+ 	struct virtio_net_hdr_mrg_rxbuf *hdr;
+ 	const unsigned char *dest = ((struct ethhdr *)skb->data)->h_dest;
+@@ -2325,7 +2325,7 @@ static netdev_tx_t start_xmit(struct sk_buff *skb, struct net_device *dev)
+ {
+ 	struct virtnet_info *vi = netdev_priv(dev);
+ 	int qnum = skb_get_queue_mapping(skb);
+-	struct send_queue *sq = &vi->sq[qnum];
++	struct virtnet_sq *sq = &vi->sq[qnum];
+ 	int err;
+ 	struct netdev_queue *txq = netdev_get_tx_queue(dev, qnum);
+ 	bool kick = !netdev_xmit_more();
+@@ -2379,7 +2379,7 @@ static netdev_tx_t start_xmit(struct sk_buff *skb, struct net_device *dev)
+ }
+ 
+ static int virtnet_rx_resize(struct virtnet_info *vi,
+-			     struct receive_queue *rq, u32 ring_num)
++			     struct virtnet_rq *rq, u32 ring_num)
+ {
+ 	bool running = netif_running(vi->dev);
+ 	int err, qindex;
+@@ -2404,7 +2404,7 @@ static int virtnet_rx_resize(struct virtnet_info *vi,
+ }
+ 
+ static int virtnet_tx_resize(struct virtnet_info *vi,
+-			     struct send_queue *sq, u32 ring_num)
++			     struct virtnet_sq *sq, u32 ring_num)
+ {
+ 	bool running = netif_running(vi->dev);
+ 	struct netdev_queue *txq;
+@@ -2566,8 +2566,8 @@ static void virtnet_stats(struct net_device *dev,
+ 
+ 	for (i = 0; i < vi->max_queue_pairs; i++) {
+ 		u64 tpackets, tbytes, terrors, rpackets, rbytes, rdrops;
+-		struct receive_queue *rq = &vi->rq[i];
+-		struct send_queue *sq = &vi->sq[i];
++		struct virtnet_rq *rq = &vi->rq[i];
++		struct virtnet_sq *sq = &vi->sq[i];
+ 
+ 		do {
+ 			start = u64_stats_fetch_begin(&sq->stats.syncp);
+@@ -2969,8 +2969,8 @@ static int virtnet_set_ringparam(struct net_device *dev,
+ {
+ 	struct virtnet_info *vi = netdev_priv(dev);
+ 	u32 rx_pending, tx_pending;
+-	struct receive_queue *rq;
+-	struct send_queue *sq;
++	struct virtnet_rq *rq;
++	struct virtnet_sq *sq;
+ 	int i, err;
+ 
+ 	if (ring->rx_mini_pending || ring->rx_jumbo_pending)
+@@ -3937,8 +3937,8 @@ static void virtnet_get_ethtool_stats(struct net_device *dev,
+ 		dev_warn(&vi->dev->dev, "Failed to get hw stats.\n");
+ 
+ 	for (i = 0; i < vi->curr_queue_pairs; i++) {
+-		struct receive_queue *rq = &vi->rq[i];
+-		struct send_queue *sq = &vi->sq[i];
++		struct virtnet_rq *rq = &vi->rq[i];
++		struct virtnet_sq *sq = &vi->sq[i];
+ 
+ 		stats_base = (const u8 *)&rq->stats;
+ 		do {
+@@ -4164,8 +4164,8 @@ static int virtnet_send_notf_coal_vq_cmds(struct virtnet_info *vi,
+ static void virtnet_rx_dim_work(struct work_struct *work)
+ {
+ 	struct dim *dim = container_of(work, struct dim, work);
+-	struct receive_queue *rq = container_of(dim,
+-			struct receive_queue, dim);
++	struct virtnet_rq *rq = container_of(dim,
++			struct virtnet_rq, dim);
+ 	struct virtnet_info *vi = rq->vq->vdev->priv;
+ 	struct net_device *dev = vi->dev;
+ 	struct dim_cq_moder update_moder;
+@@ -4507,7 +4507,7 @@ static void virtnet_get_queue_stats_rx(struct net_device *dev, int i,
+ 				       struct netdev_queue_stats_rx *stats)
+ {
+ 	struct virtnet_info *vi = netdev_priv(dev);
+-	struct receive_queue *rq = &vi->rq[i];
++	struct virtnet_rq *rq = &vi->rq[i];
+ 	struct virtnet_stats_ctx ctx = {0};
+ 
+ 	virtnet_stats_ctx_init(vi, &ctx, (void *)stats, true);
+@@ -4520,7 +4520,7 @@ static void virtnet_get_queue_stats_tx(struct net_device *dev, int i,
+ 				       struct netdev_queue_stats_tx *stats)
+ {
+ 	struct virtnet_info *vi = netdev_priv(dev);
+-	struct send_queue *sq = &vi->sq[i];
++	struct virtnet_sq *sq = &vi->sq[i];
+ 	struct virtnet_stats_ctx ctx = {0};
+ 
+ 	virtnet_stats_ctx_init(vi, &ctx, (void *)stats, true);
+@@ -4865,7 +4865,7 @@ static int virtnet_set_features(struct net_device *dev,
+ static void virtnet_tx_timeout(struct net_device *dev, unsigned int txqueue)
+ {
+ 	struct virtnet_info *priv = netdev_priv(dev);
+-	struct send_queue *sq = &priv->sq[txqueue];
++	struct virtnet_sq *sq = &priv->sq[txqueue];
+ 	struct netdev_queue *txq = netdev_get_tx_queue(dev, txqueue);
+ 
+ 	u64_stats_update_begin(&sq->stats.syncp);
 -- 
 2.32.0.3.g01195cf9f
 
