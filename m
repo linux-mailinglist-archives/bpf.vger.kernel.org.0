@@ -1,401 +1,168 @@
-Return-Path: <bpf+bounces-30983-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-30984-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0F0588D5608
-	for <lists+bpf@lfdr.de>; Fri, 31 May 2024 01:08:48 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6830F8D566F
+	for <lists+bpf@lfdr.de>; Fri, 31 May 2024 01:45:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5E77EB26C03
-	for <lists+bpf@lfdr.de>; Thu, 30 May 2024 23:08:45 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B40C4B21E8B
+	for <lists+bpf@lfdr.de>; Thu, 30 May 2024 23:45:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 98E2018411B;
-	Thu, 30 May 2024 23:08:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 360F717C7DF;
+	Thu, 30 May 2024 23:45:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IrO4qU00"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TpySWyf8"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f172.google.com (mail-pf1-f172.google.com [209.85.210.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0AD7974042;
-	Thu, 30 May 2024 23:08:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C1B921350;
+	Thu, 30 May 2024 23:45:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717110515; cv=none; b=Hgv5w11puaOUUew6nvKWu2OffuNCVU1xtVhCtpwvDHU8D4mlaLR2Bh35uRhb9guui4ZVApdF8Tc9Nm0b5OPgDOqGci9oxeDY0yATSZKedjswqSk5jDkCTfx7VanFQr0y50mDi7xPtbI4qcM6mGg+lNFVLsNNRXP2fD9VQjGD2GI=
+	t=1717112712; cv=none; b=omAnDkOK3hMOdyL/CPyR1PHD+JjfB6j5OBoKb5kTbRuNRlYO8BW8y8xPKKRI+VXNTvH/mcofMovHDYFEYICCrTp8GhLQrobO45OIia2Ipw770wQUcJWqDHlyaXzhEuqZ81xNiI9YhGUf+Zk6dSKZNd2aYRyivDMHeog5TQ6a8xk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717110515; c=relaxed/simple;
-	bh=xv63xkQ/N35UIXFUqB556y/E/zx8WT/ylXiP/7xc2yc=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To; b=J7APB/n2Az/hExRbMIt85VuplMlmWBmraMFLRHZq94nZdlVX4ieU/fueZFdEsBK5MtojEfK8s1RSW2YFOeAThT5WMddn+1sJaX86M3tLjy7diLaO3EFCGQd+gPvhWH/vZP4ftzTFW03nfFT5udSMlh/yyfKclhCJJrk1Pz1lsAs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=IrO4qU00; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 33AF6C2BBFC;
-	Thu, 30 May 2024 23:08:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1717110514;
-	bh=xv63xkQ/N35UIXFUqB556y/E/zx8WT/ylXiP/7xc2yc=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:From;
-	b=IrO4qU00oIEISHIrYH786TC5X6IV4zMrAW/cMDr1eqJdXlJddTBcHViUN9MZieXzR
-	 5/vmP+ezlB3Q7O8OiIqOVyd6cTb/wzMGvFwGtGeJJGJz2zxhAYqsX9KbSSkTPBt9Ks
-	 0xt7rFWxo14YpEcBpQYnprHgL2g8f5tQKXzbwRTUgifFi6MsFFENqJcQtxk9X3Y/0t
-	 bX+nfPeUCKG1KkQn2slT/3+CMIXUVGXkxGHYUsU5UJ6mrf5KQXP5HU4Jb/LylKWh5o
-	 LQBUsfsXrTsnk2S2QA47hreLv+Mr0xIb8XfbMDf5Sxk1UhXjj2eFRQvr2Xo1HzSVYE
-	 nZ78FGY4lh+1g==
-Date: Thu, 30 May 2024 18:08:32 -0500
-From: Bjorn Helgaas <helgaas@kernel.org>
-To: Frank Li <Frank.Li@nxp.com>
-Cc: Richard Zhu <hongxing.zhu@nxp.com>,
-	Lucas Stach <l.stach@pengutronix.de>,
-	Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
-	Shawn Guo <shawnguo@kernel.org>,
-	Sascha Hauer <s.hauer@pengutronix.de>,
-	Pengutronix Kernel Team <kernel@pengutronix.de>,
-	Fabio Estevam <festevam@gmail.com>,
-	NXP Linux Team <linux-imx@nxp.com>,
-	Philipp Zabel <p.zabel@pengutronix.de>,
-	Liam Girdwood <lgirdwood@gmail.com>,
-	Mark Brown <broonie@kernel.org>,
-	Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>, linux-pci@vger.kernel.org,
-	imx@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-	devicetree@vger.kernel.org, Will Deacon <will@kernel.org>,
-	Robin Murphy <robin.murphy@arm.com>, Joerg Roedel <joro@8bytes.org>,
-	Jason Gunthorpe <jgg@ziepe.ca>,
-	Alyssa Rosenzweig <alyssa@rosenzweig.io>,
-	Marc Zyngier <maz@kernel.org>
-Subject: Re: [PATCH v5 08/12] PCI: imx6: Config look up table(LUT) to support
- MSI ITS and IOMMU for i.MX95
-Message-ID: <20240530230832.GA474962@bhelgaas>
+	s=arc-20240116; t=1717112712; c=relaxed/simple;
+	bh=4Oc+m3+Nk8x6Y8I3QBKXaT6ViIsQwI7wH5+yiVXpBJ8=;
+	h=Date:From:To:Cc:Message-ID:In-Reply-To:References:Subject:
+	 Mime-Version:Content-Type; b=p2T0bACcoJOWvPfLjxBWoAvPltj2ljxFafJdL0GOqjuHvDLbOPxg4hIBTrMnD7OqTp2aUiJvwbSSLToeN9fQv/X2qaE6kOQkb6HEm+GEdx7VVNnkGClIwocSv7nkE8MMoJ7G3/npZ+HS6Zl9RTlCUgHvHiPITUqgE1fRIs1muAg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=TpySWyf8; arc=none smtp.client-ip=209.85.210.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f172.google.com with SMTP id d2e1a72fcca58-702492172e3so28377b3a.0;
+        Thu, 30 May 2024 16:45:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1717112709; x=1717717509; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=M3G+jDsv4wEnRcKQbCAKA4BnjOF/6ofEOjGAIR3T0nk=;
+        b=TpySWyf8izaiE160FngxfWJYzkmThrrgasG3eg8QiV8GfekMqYJHjJzfkcsetFvqmm
+         gz7qP6alyuzEiV8yVXr6Y+FzLAwzZg89V5T6YrlMZx8K2i/osQsN3HmxdZ8sP93cjthL
+         FLM4xMtBQBZeopYy3u7PgL/Qo8uWl/fIQWahPMpee44iEnc28O1zAiHuoFT0KE4YurRV
+         XgI56fuBpALo3Gl/clkQaRwm5pze+SWt6zxgD+upPIMxpf8/k091EHLG3RpQbCwr3pvk
+         99wGulvOcUZn6wS7flU6DrBLC1KdLgd9ot0V5na6ilcUewUCYoYjyDIQIBrGoc1a6uFl
+         auOg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1717112709; x=1717717509;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=M3G+jDsv4wEnRcKQbCAKA4BnjOF/6ofEOjGAIR3T0nk=;
+        b=NzpGf9MybQ3he/L4PuCWhREWROuza1jcSflnsZ9pI9SRCPEviz3jESumUqJxre9irP
+         +eFoZrjbQpRZJT1MhWyecWrjJuRXb+lITzq2r2V94X/jJRl+4KGmos9rOT3otyZogvMq
+         9k3NRngo2NijURiGQbjaA2fiOk7Ks1GMdv2ePoEwHYoaShE5wNQUuKeYdsEj3xoIxMLy
+         yNFIMtGQ1+MxL+Bapm2U+1yCsUccFNvzyeKohaaH0rcoeCR/mTaxlFGisXgO2Jmg/y9Z
+         +izAJ0FvCMNfDBlAUboim753BITbnzX09gxWsWhFRfRBsMVLq3jGalz9aQH9JvXdrxpy
+         o98A==
+X-Forwarded-Encrypted: i=1; AJvYcCVzFsYLZiGhFGw95g7uM9lacaGi4tEH2m+uy+wolo2954P8XDXBhwGkFU6wCymdxNG4V74PD6JJfaWSm0h7SU08NP3smOqw0dIuFvfJ7mskzJm8EcosC7+eNeROUiGbcwPHN249
+X-Gm-Message-State: AOJu0YyUElesJj0mUPG9cn9x/EryR8uwjm2GW7LZqFlteD7KM7jYub0L
+	c9zLFHo2i3wyexY3rHIU1kATD3h5/eEFombmHhgcqB/NuLIa+G8aGAGBFw==
+X-Google-Smtp-Source: AGHT+IHfch8tKdn3OUAXb+7Qwy6NmKkJfTE8vlQSEIgIkyCUzwEWSpleVlq1uR9EBMm/rwKfI/RfMg==
+X-Received: by 2002:a05:6a21:3949:b0:1b0:1025:2d5 with SMTP id adf61e73a8af0-1b26f16ea33mr508541637.36.1717112709246;
+        Thu, 30 May 2024 16:45:09 -0700 (PDT)
+Received: from localhost ([98.97.41.203])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-70242ae9d45sm275640b3a.132.2024.05.30.16.45.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 30 May 2024 16:45:08 -0700 (PDT)
+Date: Thu, 30 May 2024 16:45:06 -0700
+From: John Fastabend <john.fastabend@gmail.com>
+To: Geliang Tang <geliang@kernel.org>, 
+ Jakub Sitnicki <jakub@cloudflare.com>, 
+ John Fastabend <john.fastabend@gmail.com>
+Cc: Andrii Nakryiko <andrii@kernel.org>, 
+ Eduard Zingerman <eddyz87@gmail.com>, 
+ Mykola Lysenko <mykolal@fb.com>, 
+ Alexei Starovoitov <ast@kernel.org>, 
+ Daniel Borkmann <daniel@iogearbox.net>, 
+ Martin KaFai Lau <martin.lau@linux.dev>, 
+ Song Liu <song@kernel.org>, 
+ Yonghong Song <yonghong.song@linux.dev>, 
+ KP Singh <kpsingh@kernel.org>, 
+ Stanislav Fomichev <sdf@google.com>, 
+ Hao Luo <haoluo@google.com>, 
+ Jiri Olsa <jolsa@kernel.org>, 
+ Shuah Khan <shuah@kernel.org>, 
+ Geliang Tang <tanggeliang@kylinos.cn>, 
+ bpf@vger.kernel.org, 
+ linux-kselftest@vger.kernel.org
+Message-ID: <66590f821d120_e5072085a@john.notmuch>
+In-Reply-To: <577531139c4db3cb35f3f40e23587bcb9815b0ba.camel@kernel.org>
+References: <cover.1716446893.git.tanggeliang@kylinos.cn>
+ <32cf8376a810e2e9c719f8e4cfb97132ed2d1f9c.1716446893.git.tanggeliang@kylinos.cn>
+ <6654beff96840_23de2086e@john.notmuch>
+ <87wmnfujwg.fsf@cloudflare.com>
+ <577531139c4db3cb35f3f40e23587bcb9815b0ba.camel@kernel.org>
+Subject: Re: [PATCH bpf-next 3/8] selftests/bpf: Use bpf_link attachments in
+ test_sockmap
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240528-pci2_upstream-v5-8-750aa7edb8e2@nxp.com>
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 7bit
 
-[+cc IOMMU and pcie-apple.c folks for comment]
-
-On Tue, May 28, 2024 at 03:39:21PM -0400, Frank Li wrote:
-> For the i.MX95, configuration of a LUT is necessary to convert Bus Device
-> Function (BDF) to stream IDs, which are utilized by both IOMMU and ITS.
-> This involves examining the msi-map and smmu-map to ensure consistent
-> mapping of PCI BDF to the same stream IDs. Subsequently, LUT-related
-> registers are configured. In the absence of an msi-map, the built-in MSI
-> controller is utilized as a fallback.
+Geliang Tang wrote:
+> On Mon, 2024-05-27 at 21:36 +0200, Jakub Sitnicki wrote:
+> > On Mon, May 27, 2024 at 10:12 AM -07, John Fastabend wrote:
+> > > Geliang Tang wrote:
+> > > > From: Geliang Tang <tanggeliang@kylinos.cn>
+> > > > 
+> > > > Switch attachments to bpf_link using
+> > > > bpf_program__attach_sockmap() instead
+> > > > of bpf_prog_attach().
+> > > 
+> > > Sorry it took me a few days to get to this.
+> > > 
+> > > Is there a reason to push this to links vs just leave it as is? I
+> > > had
+> > > a plan to port all the test_sockmap tests into prog_tests anyways.
+> > > I'll
+> > > try to push some initial patch next week.
 > 
-> Additionally, register a PCI bus notifier to trigger imx_pcie_add_device()
-> upon the appearance of a new PCI device and when the bus is an iMX6 PCI
-> controller. This function configures the correct LUT based on Device Tree
-> Settings (DTS).
+> Great, I strongly agree with porting them into prog_tests. I am also
+> willing to participate in implementing this plan together.
 
-This scheme is pretty similar to apple_pcie_bus_notifier().  If we
-have to do this, I wish it were *more* similar, i.e., copy the
-function names, bitmap tracking, code structure, etc.
+I have a first patch that starts to move things I'll dig it up here.
+Still a bit behind on everything as you see its Thr already.
 
-I don't really know how stream IDs work, but I assume they are used on
-most or all arm64 platforms, so I'm a little surprised that of all the
-PCI host drivers used on arm64, only pcie-apple.c and pci-imx6.c need
-this notifier.  
-
-There's this path, which is pretty generic and does at least the
-of_map_id() part of what you're doing in imx_pcie_add_device():
-
-    __driver_probe_device
-      really_probe
-        pci_dma_configure                       # pci_bus_type.dma_configure
-          of_dma_configure
-            of_dma_configure_id
-              of_iommu_configure
-                of_pci_iommu_init
-                  of_iommu_configure_dev_id
-                    of_map_id
-                    of_iommu_xlate
-                      ops = iommu_ops_from_fwnode
-                      iommu_fwspec_init
-                      ops->of_xlate(dev, iommu_spec)
-
-Maybe this needs to be extended somehow with a hook to do the
-device-specific work like updating the LUT?  Just speculating here,
-the IOMMU folks will know how this is expected to work.
-
-Some typos and minor comments below.
-
-> Signed-off-by: Frank Li <Frank.Li@nxp.com>
-> ---
->  drivers/pci/controller/dwc/pci-imx6.c | 175 +++++++++++++++++++++++++++++++++-
->  1 file changed, 174 insertions(+), 1 deletion(-)
 > 
-> diff --git a/drivers/pci/controller/dwc/pci-imx6.c b/drivers/pci/controller/dwc/pci-imx6.c
-> index 29309ad0e352b..8ecc00049e20b 100644
-> --- a/drivers/pci/controller/dwc/pci-imx6.c
-> +++ b/drivers/pci/controller/dwc/pci-imx6.c
-> @@ -54,6 +54,22 @@
->  #define IMX95_PE0_GEN_CTRL_3			0x1058
->  #define IMX95_PCIE_LTSSM_EN			BIT(0)
->  
-> +#define IMX95_PE0_LUT_ACSCTRL			0x1008
-> +#define IMX95_PEO_LUT_RWA			BIT(16)
-> +#define IMX95_PE0_LUT_ENLOC			GENMASK(4, 0)
-> +
-> +#define IMX95_PE0_LUT_DATA1			0x100c
-> +#define IMX95_PE0_LUT_VLD			BIT(31)
-> +#define IMX95_PE0_LUT_DAC_ID			GENMASK(10, 8)
-> +#define IMX95_PE0_LUT_STREAM_ID			GENMASK(5, 0)
-> +
-> +#define IMX95_PE0_LUT_DATA2			0x1010
-> +#define IMX95_PE0_LUT_REQID			GENMASK(31, 16)
-> +#define IMX95_PE0_LUT_MASK			GENMASK(15, 0)
-> +
-> +#define IMX95_SID_MASK				GENMASK(5, 0)
-> +#define IMX95_MAX_LUT				32
-> +
->  #define to_imx_pcie(x)	dev_get_drvdata((x)->dev)
->  
->  enum imx_pcie_variants {
-> @@ -79,6 +95,7 @@ enum imx_pcie_variants {
->  #define IMX_PCIE_FLAG_HAS_PHY_RESET		BIT(5)
->  #define IMX_PCIE_FLAG_HAS_SERDES		BIT(6)
->  #define IMX_PCIE_FLAG_SUPPORT_64BIT		BIT(7)
-> +#define IMX_PCIE_FLAG_MONITOR_DEV		BIT(8)
->  
->  #define imx_check_flag(pci, val)     (pci->drvdata->flags & val)
->  
-> @@ -132,6 +149,8 @@ struct imx_pcie {
->  	struct device		*pd_pcie_phy;
->  	struct phy		*phy;
->  	const struct imx_pcie_drvdata *drvdata;
-> +
-> +	struct mutex		lock;
->  };
->  
->  /* Parameters for the waiting for PCIe PHY PLL to lock on i.MX7 */
-> @@ -215,6 +234,66 @@ static int imx95_pcie_init_phy(struct imx_pcie *imx_pcie)
->  	return 0;
->  }
->  
-> +static int imx_pcie_config_lut(struct imx_pcie *imx_pcie, u16 reqid, u8 sid)
-> +{
-> +	struct dw_pcie *pci = imx_pcie->pci;
-> +	struct device *dev = pci->dev;
-> +	u32 data1, data2;
-> +	int i;
-> +
-> +	if (sid >= 64) {
-> +		dev_err(dev, "Invalid SID for index %d\n", sid);
-> +		return -EINVAL;
-> +	}
-> +
-> +	guard(mutex)(&imx_pcie->lock);
-> +
-> +	for (i = 0; i < IMX95_MAX_LUT; i++) {
-> +		regmap_write(imx_pcie->iomuxc_gpr, IMX95_PE0_LUT_ACSCTRL, IMX95_PEO_LUT_RWA | i);
-> +
-> +		regmap_read(imx_pcie->iomuxc_gpr, IMX95_PE0_LUT_DATA1, &data1);
-> +		if (data1 & IMX95_PE0_LUT_VLD)
-> +			continue;
-> +
-> +		data1 = FIELD_PREP(IMX95_PE0_LUT_DAC_ID, 0);
-> +		data1 |= FIELD_PREP(IMX95_PE0_LUT_STREAM_ID, sid);
-> +		data1 |= IMX95_PE0_LUT_VLD;
-> +
-> +		regmap_write(imx_pcie->iomuxc_gpr, IMX95_PE0_LUT_DATA1, data1);
-> +
-> +		data2 = 0xffff;
-> +		data2 |= FIELD_PREP(IMX95_PE0_LUT_REQID, reqid);
-> +
-> +		regmap_write(imx_pcie->iomuxc_gpr, IMX95_PE0_LUT_DATA2, data2);
-> +
-> +		regmap_write(imx_pcie->iomuxc_gpr, IMX95_PE0_LUT_ACSCTRL, i);
-> +
-> +		return 0;
-> +	}
-> +
-> +	dev_err(dev, "All lut already used\n");
-> +	return -EINVAL;
-> +}
-> +
-> +static void imx_pcie_remove_lut(struct imx_pcie *imx_pcie, u16 reqid)
-> +{
-> +	u32 data2 = 0;
-> +	int i;
-> +
-> +	guard(mutex)(&imx_pcie->lock);
-> +
-> +	for (i = 0; i < IMX95_MAX_LUT; i++) {
-> +		regmap_write(imx_pcie->iomuxc_gpr, IMX95_PE0_LUT_ACSCTRL, IMX95_PEO_LUT_RWA | i);
-> +
-> +		regmap_read(imx_pcie->iomuxc_gpr, IMX95_PE0_LUT_DATA2, &data2);
-> +		if (FIELD_GET(IMX95_PE0_LUT_REQID, data2) == reqid) {
-> +			regmap_write(imx_pcie->iomuxc_gpr, IMX95_PE0_LUT_DATA1, 0);
-> +			regmap_write(imx_pcie->iomuxc_gpr, IMX95_PE0_LUT_DATA2, 0);
-> +			regmap_write(imx_pcie->iomuxc_gpr, IMX95_PE0_LUT_ACSCTRL, i);
-> +		}
-> +	}
-> +}
-> +
->  static void imx_pcie_configure_type(struct imx_pcie *imx_pcie)
->  {
->  	const struct imx_pcie_drvdata *drvdata = imx_pcie->drvdata;
-> @@ -1232,6 +1311,85 @@ static int imx_pcie_resume_noirq(struct device *dev)
->  	return 0;
->  }
->  
-> +static bool imx_pcie_match_device(struct pci_bus *bus);
-
-Can you add the imx_pcie_match_device() earlier in the file so we
-don't need this forward declaration?
-
-> +static int imx_pcie_add_device(struct imx_pcie *imx_pcie, struct pci_dev *pdev)
-> +{
-> +	u32 sid_i = 0, sid_m = 0, rid = pci_dev_id(pdev);
-> +	struct device *dev = imx_pcie->pci->dev;
-> +	int err;
-> +
-> +	err = of_map_id(dev->of_node, rid, "iommu-map", "iommu-map-mask", NULL, &sid_i);
-> +	if (err)
-> +		return err;
-> +
-> +	err = of_map_id(dev->of_node, rid, "msi-map", "msi-map-mask", NULL, &sid_m);
-> +	if (err)
-> +		return err;
-> +
-> +	if (sid_i != rid && sid_m != rid)
-> +		if ((sid_i & IMX95_SID_MASK) != (sid_m & IMX95_SID_MASK)) {
-> +			dev_err(dev, "its and iommu stream id miss match, please check dts file\n");
-> +			return -EINVAL;
-> +		}
-> +
-> +	/* if iommu-map is not existed then use msi-map's stream id*/
-
-Capitalize consistently, e.g., the most comments in this file start
-with a capital letter.
-
-s/is not existed/does not exist/
-
-Add space before closing */
-
-> +	if (sid_i == rid)
-> +		sid_i = sid_m;
-> +
-> +	sid_i &= IMX95_SID_MASK;
-> +
-> +	if (sid_i != rid)
-> +		return imx_pcie_config_lut(imx_pcie, rid, sid_i);
-> +
-> +	/* Use dwc built-in MSI controller */
-> +	return 0;
-> +}
-> +
-> +static void imx_pcie_del_device(struct imx_pcie *imx_pcie, struct pci_dev *pdev)
-> +{
-> +	imx_pcie_remove_lut(imx_pcie, pci_dev_id(pdev));
-> +}
-> +
-> +
-> +static int imx_pcie_bus_notifier(struct notifier_block *nb, unsigned long action, void *data)
-> +{
-> +	struct pci_host_bridge *host;
-> +	struct imx_pcie *imx_pcie;
-> +	struct pci_dev *pdev;
-> +	int err;
-> +
-> +	pdev = to_pci_dev(data);
-> +	host = pci_find_host_bridge(pdev->bus);
-> +
-> +	if (!imx_pcie_match_device(host->bus))
-> +		return NOTIFY_OK;
-> +
-> +	imx_pcie = to_imx_pcie(to_dw_pcie_from_pp(host->sysdata));
-> +
-> +	if (!imx_check_flag(imx_pcie, IMX_PCIE_FLAG_MONITOR_DEV))
-> +		return NOTIFY_OK;
-> +
-> +	switch (action) {
-> +	case BUS_NOTIFY_ADD_DEVICE:
-> +		err = imx_pcie_add_device(imx_pcie, pdev);
-> +		if (err)
-> +			return notifier_from_errno(err);
-> +		break;
-> +	case BUS_NOTIFY_DEL_DEVICE:
-> +		imx_pcie_del_device(imx_pcie, pdev);
-> +		break;
-> +	default:
-> +		return NOTIFY_DONE;
-> +	}
-> +
-> +	return NOTIFY_OK;
-> +}
-> +
-> +static struct notifier_block imx_pcie_nb = {
-> +	.notifier_call = imx_pcie_bus_notifier,
-> +};
-> +
->  static const struct dev_pm_ops imx_pcie_pm_ops = {
->  	NOIRQ_SYSTEM_SLEEP_PM_OPS(imx_pcie_suspend_noirq,
->  				  imx_pcie_resume_noirq)
-> @@ -1264,6 +1422,8 @@ static int imx_pcie_probe(struct platform_device *pdev)
->  	imx_pcie->pci = pci;
->  	imx_pcie->drvdata = of_device_get_match_data(dev);
->  
-> +	mutex_init(&imx_pcie->lock);
-> +
->  	/* Find the PHY if one is defined, only imx7d uses it */
->  	np = of_parse_phandle(node, "fsl,imx7d-pcie-phy", 0);
->  	if (np) {
-> @@ -1551,7 +1711,8 @@ static const struct imx_pcie_drvdata drvdata[] = {
->  	},
->  	[IMX95] = {
->  		.variant = IMX95,
-> -		.flags = IMX_PCIE_FLAG_HAS_SERDES,
-> +		.flags = IMX_PCIE_FLAG_HAS_SERDES |
-> +			 IMX_PCIE_FLAG_MONITOR_DEV,
->  		.clk_names = imx8mq_clks,
->  		.clks_cnt = ARRAY_SIZE(imx8mq_clks),
->  		.ltssm_off = IMX95_PE0_GEN_CTRL_3,
-> @@ -1687,6 +1848,8 @@ DECLARE_PCI_FIXUP_CLASS_HEADER(PCI_VENDOR_ID_SYNOPSYS, 0xabcd,
->  
->  static int __init imx_pcie_init(void)
->  {
-> +	int ret;
-> +
->  #ifdef CONFIG_ARM
->  	struct device_node *np;
->  
-> @@ -1705,7 +1868,17 @@ static int __init imx_pcie_init(void)
->  	hook_fault_code(8, imx6q_pcie_abort_handler, SIGBUS, 0,
->  			"external abort on non-linefetch");
->  #endif
-> +	ret = bus_register_notifier(&pci_bus_type, &imx_pcie_nb);
-> +	if (ret)
-> +		return ret;
-
-I think this should go in imx6_pcie_probe().
-
->  	return platform_driver_register(&imx_pcie_driver);
->  }
-> +
-> +static void __exit imx_pcie_exit(void)
-> +{
-> +	bus_unregister_notifier(&pci_bus_type, &imx_pcie_nb);
-
-It looks like this driver is removable?
-
-What happens when an external abort occurs after the
-imx6q_pcie_abort_handler() text is removed?
-
-> +}
-> +
->  device_initcall(imx_pcie_init);
-> +__exitcall(imx_pcie_exit);
+> > > 
+> > > The one advantage of test_sockmap is we can have it run for longer
+> > > runs by pushing different options through so might be worth keeping
+> > > just for that.
+> > > 
+> > > If you really want links here I'm OK with that I guess just asking.
+> > 
+> > It was me who suggested the switch to bpf_link in reaction to a
+> > series
+> > of cleanups to prog_type and prog_attach_type submitted by Geliang.
 > 
-> -- 
-> 2.34.1
+> Yes, patches 3-5 address Jakub's suggestion: switching attachments to
+> bpf_link.
+
+OK. Lets just take them the series lgtm. Jakub any other comments?
+
 > 
+> > Relevant threads:
+> > 
+> > https://lore.kernel.org/bpf/9c10d9f974f07fcb354a43a8eca67acb2fafc587.1715926605.git.tanggeliang@kylinos.cn
+> > https://lore.kernel.org/bpf/20240522080936.2475833-1-jakub@cloudflare.com
+> > https://lore.kernel.org/bpf/e27d7d0c1e0e79b0acd22ac6ad5d8f9f00225303.1716372485.git.tanggeliang@kylinos.cn
+> > 
+> > I thought bpf_links added more value than cleaning up "old style"
+> > attachments.
+> 
+> Other patches 1-2, 6-8 are small fixes which I found while trying to
+> solve the NONBLOCK issue [1]. Yes, I haven't given up on solving this
+> issue yet. I think it must be solved, since there is a bug somewhere.
+> WDYT?
+
+Yes I think this is an actual issue with the stream parser waking up
+sockets before the data is copied into the recv buffers.
 
