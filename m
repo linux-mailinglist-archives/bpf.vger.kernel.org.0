@@ -1,107 +1,180 @@
-Return-Path: <bpf+bounces-30980-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-30981-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9644B8D5592
-	for <lists+bpf@lfdr.de>; Fri, 31 May 2024 00:40:40 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id AB3148D55E9
+	for <lists+bpf@lfdr.de>; Fri, 31 May 2024 01:02:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 542B6285C97
-	for <lists+bpf@lfdr.de>; Thu, 30 May 2024 22:40:39 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 601311F263B0
+	for <lists+bpf@lfdr.de>; Thu, 30 May 2024 23:02:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A7F1182D07;
-	Thu, 30 May 2024 22:40:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A79617618E;
+	Thu, 30 May 2024 23:02:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="miwX9CLn"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Xt4i73yr"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out-171.mta0.migadu.com (out-171.mta0.migadu.com [91.218.175.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA8D64D8CF
-	for <bpf@vger.kernel.org>; Thu, 30 May 2024 22:40:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D1C9A15666B
+	for <bpf@vger.kernel.org>; Thu, 30 May 2024 23:02:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717108834; cv=none; b=e/0/ArwzUw37QCX6CSK+INYn5MslZceU1WWny0tP/7PYfa3/mK4LT9dtZckIuY1JSPvG0+ZCQqBz/6rxbtsHAnV/iETmaB2PmxLVC6G3wPXD0MHFDMeLfwSnIQkcud+xXO/NswCEQ7cap+B1YXDI3vr3/XTHuCRGuWkJpk0h/2Y=
+	t=1717110138; cv=none; b=Oh9miezpjwe9pkx6CX5wMSa3JsSzm4DLR+qRXk1RC4Ix85/3fjCxTFJ+wu4Ng16fDQEzEgGomLFHO3U0jDVR3ZLe9PG3Aa8w/uYEAXv0OB5mFTeU++S0JYLYAwS2vtRr0pRajc67XFQ1ktWuZOuyoPEic0TFh1geAjC5HkvjvY4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717108834; c=relaxed/simple;
-	bh=VKYj0SrUVfgjI4Fs0WTWSHA6VKCmeVagb0yd6MgjWd0=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=s5IhLuAibuzWxaltalT04FG6wcrFl8caTGWqy6LTq6F1EOd0GOq7erFwklw1VRW4DurQi0RM/u5DwshcLG7Yo17D6ZKQLWsJhPkFpkYP2RxUUiK5IKLwt5uwZA8YxZ1OCDtLyBEAsiSP+IUl+RrfgUJhw4sx736twv9HoC4+Ka4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=miwX9CLn; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 6AB68C32789;
-	Thu, 30 May 2024 22:40:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1717108833;
-	bh=VKYj0SrUVfgjI4Fs0WTWSHA6VKCmeVagb0yd6MgjWd0=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=miwX9CLnZ9qEoUI3qPqUxBqKtMy3IhDb2jwILh1kaByxFZD82+7SuDiUqIBrouAuz
-	 +Uvhz+fmSu1sFnod4jcEhi+KG+JBZzJxKcVaMayNq9XZ1sO1rEl2eeEdTJGZB3KsAF
-	 lzOk7jgR2/IYyarDJh2BnexG8m2xcKb1qwjC8u7p2ljv3Pn0xfaBl3hi2TEJUS9JwF
-	 E5wZL3rlXgLmnVi15cpEv617kKXB9s47hyLgLk/QbJ7QQZP6jweDHUdsA484uirYUh
-	 jjyWZ4hrF3CjdLNkUHB/4AqjucbsRy3QhGXyLyhuA192wai+5mZK4KDN7t3/0lymHa
-	 WYKx9+iX7AheQ==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 4F881CF21F3;
-	Thu, 30 May 2024 22:40:33 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1717110138; c=relaxed/simple;
+	bh=Nxs6HeBBLWdAqGdDt3YuWo3M5XfYU20i8pUELBOaAbM=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:Cc:
+	 In-Reply-To:Content-Type; b=hFq/4UXeLFyboKRtDHPyEuoPDhH7JD0R4nBZjinFOzEfE43iTwFGO4/iNLMJLjedEdfuiin/51YbE8cyWWYxsemTZO8LGDkm7XV2fKIPzD7vVY2QVdWysoGd1ItuglGrAx/GNFvX/S/I2Nw1tD35K2LWLAMK5QY6Ty+bMtXBL0A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Xt4i73yr; arc=none smtp.client-ip=91.218.175.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Envelope-To: thinker.li@gmail.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1717110133;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=cjyXrLel29S3ypn1P2rTPHBdmBw77pyRLwg9iERo0fs=;
+	b=Xt4i73yrAf2bStNWWVJ9Ot2euMU+LM2PmVzKvPQKRA4NJrhB4RVeUPL+5LF7X663gsbmDV
+	4F4Xp2z5u9WuToZPX2nWx0N9cGSdgA5hLbv+5O9d73lgEBRnXJkx5p1xdLQ2lnUR6A1NXq
+	eFAqb9vwtpv/TR2cMNJ35l1smecWMSc=
+X-Envelope-To: bpf@vger.kernel.org
+X-Envelope-To: ast@kernel.org
+X-Envelope-To: kernel-team@meta.com
+X-Envelope-To: andrii@kernel.org
+X-Envelope-To: sinquersw@gmail.com
+X-Envelope-To: kuifeng@meta.com
+Message-ID: <08348ecb-5c6d-4937-8bfd-13e2b4d28260@linux.dev>
+Date: Thu, 30 May 2024 16:02:04 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next v7 0/8] Notify user space when a struct_ops object is
- detached/unregistered
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <171710883332.22324.8286442445839775054.git-patchwork-notify@kernel.org>
-Date: Thu, 30 May 2024 22:40:33 +0000
+Subject: Re: [PATCH bpf-next v7 6/8] selftests/bpf: detach a struct_ops link
+ from the subsystem managing it.
+To: thinker.li@gmail.com
 References: <20240530065946.979330-1-thinker.li@gmail.com>
-In-Reply-To: <20240530065946.979330-1-thinker.li@gmail.com>
-To: Kui-Feng Lee <thinker.li@gmail.com>
-Cc: bpf@vger.kernel.org, ast@kernel.org, martin.lau@linux.dev,
- kernel-team@meta.com, andrii@kernel.org, sinquersw@gmail.com,
- kuifeng@meta.com
+ <20240530065946.979330-7-thinker.li@gmail.com>
+Content-Language: en-US
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Martin KaFai Lau <martin.lau@linux.dev>
+Cc: bpf@vger.kernel.org, ast@kernel.org, kernel-team@meta.com,
+ andrii@kernel.org, sinquersw@gmail.com, kuifeng@meta.com
+In-Reply-To: <20240530065946.979330-7-thinker.li@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-Hello:
-
-This series was applied to bpf/bpf-next.git (master)
-by Martin KaFai Lau <martin.lau@kernel.org>:
-
-On Wed, 29 May 2024 23:59:38 -0700 you wrote:
-> From: Kui-Feng Lee <kuifeng@meta.com>
+On 5/29/24 11:59 PM, thinker.li@gmail.com wrote:
+> From: Kui-Feng Lee <thinker.li@gmail.com>
 > 
-> The subsystems managing struct_ops objects may need to detach a
-> struct_ops object due to errors or other reasons. It would be useful
-> to notify user space programs so that error recovery or logging can be
-> carried out.
+> Not only a user space program can detach a struct_ops link, the subsystem
+> managing a link can also detach the link. This patch adds a kfunc to
+> simulate detaching a link by the subsystem managing it and makes sure user
+> space programs get notified through epoll.
 > 
-> [...]
+> Signed-off-by: Kui-Feng Lee <thinker.li@gmail.com>
+> ---
+>   .../selftests/bpf/bpf_testmod/bpf_testmod.c   | 42 ++++++++++++
+>   .../bpf/bpf_testmod/bpf_testmod_kfunc.h       |  1 +
+>   .../bpf/prog_tests/test_struct_ops_module.c   | 67 +++++++++++++++++++
+>   .../selftests/bpf/progs/struct_ops_detach.c   |  7 ++
+>   4 files changed, 117 insertions(+)
+> 
+> diff --git a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
+> index 0a09732cde4b..2b3a89609b7e 100644
+> --- a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
+> +++ b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
+> @@ -744,6 +744,38 @@ __bpf_kfunc int bpf_kfunc_call_kernel_getpeername(struct addr_args *args)
+>   	return err;
+>   }
+>   
+> +static DEFINE_SPINLOCK(detach_lock);
+> +static struct bpf_link *link_to_detach;
+> +
+> +__bpf_kfunc int bpf_dummy_do_link_detach(void)
+> +{
+> +	struct bpf_link *link;
+> +	int ret = -ENOENT;
+> +
+> +	/* A subsystem must ensure that a link is valid when detaching the
+> +	 * link. In order to achieve that, the subsystem may need to obtain
+> +	 * a lock to safeguard a table that holds the pointer to the link
+> +	 * being detached. However, the subsystem cannot invoke
+> +	 * link->ops->detach() while holding the lock because other tasks
+> +	 * may be in the process of unregistering, which could lead to
+> +	 * acquiring the same lock and causing a deadlock. This is why
+> +	 * bpf_link_inc_not_zero() is used to maintain the link's validity.
+> +	 */
+> +	spin_lock(&detach_lock);
+> +	link = link_to_detach;
+> +	/* Make sure the link is still valid by increasing its refcnt */
+> +	if (link && IS_ERR(bpf_link_inc_not_zero(link)))
+> +		link = NULL;
+> +	spin_unlock(&detach_lock);
+> +
+> +	if (link) {
+> +		ret = link->ops->detach(link);
+> +		bpf_link_put(link);
+> +	}
+> +
+> +	return ret;
+> +}
+> +
+>   BTF_KFUNCS_START(bpf_testmod_check_kfunc_ids)
+>   BTF_ID_FLAGS(func, bpf_testmod_test_mod_kfunc)
+>   BTF_ID_FLAGS(func, bpf_kfunc_call_test1)
+> @@ -780,6 +812,7 @@ BTF_ID_FLAGS(func, bpf_kfunc_call_kernel_sendmsg, KF_SLEEPABLE)
+>   BTF_ID_FLAGS(func, bpf_kfunc_call_sock_sendmsg, KF_SLEEPABLE)
+>   BTF_ID_FLAGS(func, bpf_kfunc_call_kernel_getsockname, KF_SLEEPABLE)
+>   BTF_ID_FLAGS(func, bpf_kfunc_call_kernel_getpeername, KF_SLEEPABLE)
+> +BTF_ID_FLAGS(func, bpf_dummy_do_link_detach)
+>   BTF_KFUNCS_END(bpf_testmod_check_kfunc_ids)
+>   
+>   static int bpf_testmod_ops_init(struct btf *btf)
+> @@ -832,11 +865,20 @@ static int bpf_dummy_reg(void *kdata, struct bpf_link *link)
+>   	if (ops->test_2)
+>   		ops->test_2(4, ops->data);
+>   
+> +	spin_lock(&detach_lock);
+> +	if (!link_to_detach)
+> +		link_to_detach = link;
+> +	spin_unlock(&detach_lock);
+> +
+>   	return 0;
+>   }
 
-Here is the summary with links:
-  - [bpf-next,v7,1/8] bpf: pass bpf_struct_ops_link to callbacks in bpf_struct_ops.
-    https://git.kernel.org/bpf/bpf-next/c/73287fe22872
-  - [bpf-next,v7,2/8] bpf: enable detaching links of struct_ops objects.
-    https://git.kernel.org/bpf/bpf-next/c/6fb2544ea149
-  - [bpf-next,v7,3/8] bpf: support epoll from bpf struct_ops links.
-    https://git.kernel.org/bpf/bpf-next/c/1adddc97aa44
-  - [bpf-next,v7,4/8] bpf: export bpf_link_inc_not_zero.
-    https://git.kernel.org/bpf/bpf-next/c/67c3e8353f45
-  - [bpf-next,v7,5/8] selftests/bpf: test struct_ops with epoll
-    https://git.kernel.org/bpf/bpf-next/c/1a4b858b6a04
-  - [bpf-next,v7,6/8] selftests/bpf: detach a struct_ops link from the subsystem managing it.
-    (no matching commit)
-  - [bpf-next,v7,7/8] selftests/bpf: make sure bpf_testmod handling racing link destroying well.
-    (no matching commit)
-  - [bpf-next,v7,8/8] bpftool: Change pid_iter.bpf.c to comply with the change of bpf_link_fops.
-    https://git.kernel.org/bpf/bpf-next/c/d14c1fac0c97
+[ ... ]
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+>   void serial_test_struct_ops_module(void)
+>   {
+>   	if (test__start_subtest("struct_ops_load"))
+> @@ -311,5 +376,7 @@ void serial_test_struct_ops_module(void)
+>   		test_struct_ops_forgotten_cb();
+>   	if (test__start_subtest("test_detach_link"))
+>   		test_detach_link();
+> +	if (test__start_subtest("test_subsystem_detach"))
+> +		test_subsystem_detach();
+
+A summary of the offline discussion with Kui-Feng.
+
+* serial_ is currently unnecessary for the test_struct_ops_module. It was a 
+leftover because of a negative test case that was removed in the later revision 
+of the initial struct_ops kmod support.
+* Better don't renew this currently unnecessary serial_ requirement.
+* The link_to_detach should only be initialized for a particular test. This can 
+be done by checking a poison value in the bpf_testmod_ops.
+* The reg() should complain and error out if the link_to_detach has already been 
+set.
+
+Patch 6 and 7 needs to be a followup. Path 1-5 and 8 look good and are applied. 
+Thanks.
 
 
 
