@@ -1,168 +1,143 @@
-Return-Path: <bpf+bounces-30984-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-30985-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6830F8D566F
-	for <lists+bpf@lfdr.de>; Fri, 31 May 2024 01:45:22 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9FE308D568D
+	for <lists+bpf@lfdr.de>; Fri, 31 May 2024 01:52:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B40C4B21E8B
-	for <lists+bpf@lfdr.de>; Thu, 30 May 2024 23:45:19 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 03C74B22DFF
+	for <lists+bpf@lfdr.de>; Thu, 30 May 2024 23:52:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 360F717C7DF;
-	Thu, 30 May 2024 23:45:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 332B5187350;
+	Thu, 30 May 2024 23:51:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TpySWyf8"
+	dkim=pass (2048-bit key) header.d=davidwei-uk.20230601.gappssmtp.com header.i=@davidwei-uk.20230601.gappssmtp.com header.b="QL4+RqL0"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f172.google.com (mail-pf1-f172.google.com [209.85.210.172])
+Received: from mail-pf1-f173.google.com (mail-pf1-f173.google.com [209.85.210.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C1B921350;
-	Thu, 30 May 2024 23:45:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E7431862B7
+	for <bpf@vger.kernel.org>; Thu, 30 May 2024 23:51:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717112712; cv=none; b=omAnDkOK3hMOdyL/CPyR1PHD+JjfB6j5OBoKb5kTbRuNRlYO8BW8y8xPKKRI+VXNTvH/mcofMovHDYFEYICCrTp8GhLQrobO45OIia2Ipw770wQUcJWqDHlyaXzhEuqZ81xNiI9YhGUf+Zk6dSKZNd2aYRyivDMHeog5TQ6a8xk=
+	t=1717113109; cv=none; b=ezRfUahJc6Tmrt63j4jHiPp68GOJV82bHhQ6Uf1RURT7nXauVpWIUFHzUJcZ4bsgqEt9hDRFuN/Vqm+4dxI9+KYWAthhatqJ7XXZwjrqBrwErQRuOFodogZ31HKJ+EIH4HACOb2voTyFq5kDlbOF+bxpCB+yel234VCYlyT1Nog=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717112712; c=relaxed/simple;
-	bh=4Oc+m3+Nk8x6Y8I3QBKXaT6ViIsQwI7wH5+yiVXpBJ8=;
-	h=Date:From:To:Cc:Message-ID:In-Reply-To:References:Subject:
-	 Mime-Version:Content-Type; b=p2T0bACcoJOWvPfLjxBWoAvPltj2ljxFafJdL0GOqjuHvDLbOPxg4hIBTrMnD7OqTp2aUiJvwbSSLToeN9fQv/X2qaE6kOQkb6HEm+GEdx7VVNnkGClIwocSv7nkE8MMoJ7G3/npZ+HS6Zl9RTlCUgHvHiPITUqgE1fRIs1muAg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=TpySWyf8; arc=none smtp.client-ip=209.85.210.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f172.google.com with SMTP id d2e1a72fcca58-702492172e3so28377b3a.0;
-        Thu, 30 May 2024 16:45:10 -0700 (PDT)
+	s=arc-20240116; t=1717113109; c=relaxed/simple;
+	bh=W93FmhGSt5rN/d9ZkTtKHNbj8y2kiVp3BB6JpqBPjtM=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=qvQ1pXQ1Zz3oHPtIS1aZ/t4mBv0UHd+Gw51CdUzv9n5ioFVaSDbcEa4uCRsYOk1gw/wrIUyISbpNFNEmX95T7lcvfQEGJvdqbxDoXeP5sZ4lGFXO4IDgut95PkoDuXQJdHJl3t/2km1WcE4BJG8/yzEani+TtrTQDMVFtUzx8vY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=davidwei.uk; spf=none smtp.mailfrom=davidwei.uk; dkim=pass (2048-bit key) header.d=davidwei-uk.20230601.gappssmtp.com header.i=@davidwei-uk.20230601.gappssmtp.com header.b=QL4+RqL0; arc=none smtp.client-ip=209.85.210.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=davidwei.uk
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=davidwei.uk
+Received: by mail-pf1-f173.google.com with SMTP id d2e1a72fcca58-702342c60dfso734091b3a.2
+        for <bpf@vger.kernel.org>; Thu, 30 May 2024 16:51:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1717112709; x=1717717509; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=M3G+jDsv4wEnRcKQbCAKA4BnjOF/6ofEOjGAIR3T0nk=;
-        b=TpySWyf8izaiE160FngxfWJYzkmThrrgasG3eg8QiV8GfekMqYJHjJzfkcsetFvqmm
-         gz7qP6alyuzEiV8yVXr6Y+FzLAwzZg89V5T6YrlMZx8K2i/osQsN3HmxdZ8sP93cjthL
-         FLM4xMtBQBZeopYy3u7PgL/Qo8uWl/fIQWahPMpee44iEnc28O1zAiHuoFT0KE4YurRV
-         XgI56fuBpALo3Gl/clkQaRwm5pze+SWt6zxgD+upPIMxpf8/k091EHLG3RpQbCwr3pvk
-         99wGulvOcUZn6wS7flU6DrBLC1KdLgd9ot0V5na6ilcUewUCYoYjyDIQIBrGoc1a6uFl
-         auOg==
+        d=davidwei-uk.20230601.gappssmtp.com; s=20230601; t=1717113107; x=1717717907; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=zLw2WCX7NzhXHaHBtGiNDa+0R1r9ENCFVNNCzI5O8YY=;
+        b=QL4+RqL090NmzqnmmaV35StPPgSYrm0/E5FYyEyBNDFbnjFYn4+7lynHidmbHWfEVL
+         1iBcOwtdX/+OmGH9OHA6Ly9dCXC0kAmMRNt7jsngsMzCorwTnvSYwsuvbd/30RasDM2J
+         CgWFzSw7fo3h/P0Vna2SEUkG3BW1pwRp2ZYJmicLk3iur+HVCLaN4mTrgCpO4EGR65xr
+         zvIJIWco9NeeSE1nTauAdHI2pE5kFmj0GGL6zKrRbn7msIZJ7JKuUeM9tM4Yd+OHVqGp
+         tw2mwrdzVMXg0wyfG0apx+qaFVSep6SjKcJrNGom1L34fJ84bOjAqASDJTHdFqEXjqA6
+         2XTQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1717112709; x=1717717509;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=M3G+jDsv4wEnRcKQbCAKA4BnjOF/6ofEOjGAIR3T0nk=;
-        b=NzpGf9MybQ3he/L4PuCWhREWROuza1jcSflnsZ9pI9SRCPEviz3jESumUqJxre9irP
-         +eFoZrjbQpRZJT1MhWyecWrjJuRXb+lITzq2r2V94X/jJRl+4KGmos9rOT3otyZogvMq
-         9k3NRngo2NijURiGQbjaA2fiOk7Ks1GMdv2ePoEwHYoaShE5wNQUuKeYdsEj3xoIxMLy
-         yNFIMtGQ1+MxL+Bapm2U+1yCsUccFNvzyeKohaaH0rcoeCR/mTaxlFGisXgO2Jmg/y9Z
-         +izAJ0FvCMNfDBlAUboim753BITbnzX09gxWsWhFRfRBsMVLq3jGalz9aQH9JvXdrxpy
-         o98A==
-X-Forwarded-Encrypted: i=1; AJvYcCVzFsYLZiGhFGw95g7uM9lacaGi4tEH2m+uy+wolo2954P8XDXBhwGkFU6wCymdxNG4V74PD6JJfaWSm0h7SU08NP3smOqw0dIuFvfJ7mskzJm8EcosC7+eNeROUiGbcwPHN249
-X-Gm-Message-State: AOJu0YyUElesJj0mUPG9cn9x/EryR8uwjm2GW7LZqFlteD7KM7jYub0L
-	c9zLFHo2i3wyexY3rHIU1kATD3h5/eEFombmHhgcqB/NuLIa+G8aGAGBFw==
-X-Google-Smtp-Source: AGHT+IHfch8tKdn3OUAXb+7Qwy6NmKkJfTE8vlQSEIgIkyCUzwEWSpleVlq1uR9EBMm/rwKfI/RfMg==
-X-Received: by 2002:a05:6a21:3949:b0:1b0:1025:2d5 with SMTP id adf61e73a8af0-1b26f16ea33mr508541637.36.1717112709246;
-        Thu, 30 May 2024 16:45:09 -0700 (PDT)
-Received: from localhost ([98.97.41.203])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-70242ae9d45sm275640b3a.132.2024.05.30.16.45.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 30 May 2024 16:45:08 -0700 (PDT)
-Date: Thu, 30 May 2024 16:45:06 -0700
-From: John Fastabend <john.fastabend@gmail.com>
-To: Geliang Tang <geliang@kernel.org>, 
- Jakub Sitnicki <jakub@cloudflare.com>, 
- John Fastabend <john.fastabend@gmail.com>
-Cc: Andrii Nakryiko <andrii@kernel.org>, 
- Eduard Zingerman <eddyz87@gmail.com>, 
- Mykola Lysenko <mykolal@fb.com>, 
- Alexei Starovoitov <ast@kernel.org>, 
- Daniel Borkmann <daniel@iogearbox.net>, 
- Martin KaFai Lau <martin.lau@linux.dev>, 
- Song Liu <song@kernel.org>, 
- Yonghong Song <yonghong.song@linux.dev>, 
- KP Singh <kpsingh@kernel.org>, 
- Stanislav Fomichev <sdf@google.com>, 
- Hao Luo <haoluo@google.com>, 
- Jiri Olsa <jolsa@kernel.org>, 
- Shuah Khan <shuah@kernel.org>, 
- Geliang Tang <tanggeliang@kylinos.cn>, 
- bpf@vger.kernel.org, 
- linux-kselftest@vger.kernel.org
-Message-ID: <66590f821d120_e5072085a@john.notmuch>
-In-Reply-To: <577531139c4db3cb35f3f40e23587bcb9815b0ba.camel@kernel.org>
-References: <cover.1716446893.git.tanggeliang@kylinos.cn>
- <32cf8376a810e2e9c719f8e4cfb97132ed2d1f9c.1716446893.git.tanggeliang@kylinos.cn>
- <6654beff96840_23de2086e@john.notmuch>
- <87wmnfujwg.fsf@cloudflare.com>
- <577531139c4db3cb35f3f40e23587bcb9815b0ba.camel@kernel.org>
-Subject: Re: [PATCH bpf-next 3/8] selftests/bpf: Use bpf_link attachments in
- test_sockmap
+        d=1e100.net; s=20230601; t=1717113107; x=1717717907;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=zLw2WCX7NzhXHaHBtGiNDa+0R1r9ENCFVNNCzI5O8YY=;
+        b=ZOcpI4GZbfMBUIH0r5fKTHF89COKYUzCy4Bb3e6iW+7Vr2qX+U3Z3X8y5/6IexmsXw
+         LfletHL7wAJMcjVkQ4d8ztpO7TnqquLvj3yPFaxyrYluCKluzLuRecUd+XvYh+N+LlF5
+         g3UQu6cp89ETA7NJWKol+TuFN7RsQUjmo1a7AQA8FZscLhS3VOOpqWfKe3ym0VKmU31T
+         0vvTtPmb954oestjboeefwYdPqBaHNv3JzLvkN1B2RDV1EkGgy59ujf7wiwTKq5YIP+C
+         0gJG/OjvF+ZvEKTbg+hmc6TL2jyHPo60CvgqCaKdAkM263fOnyBLl8s3159/m0Ja7B14
+         v4FA==
+X-Forwarded-Encrypted: i=1; AJvYcCXtrV56JXOD6LC3Fm5B10M1I21kd2bTe2maoSs7vXT3N5IAAWewmUAEdZHlCryisi2ONN163dZVhGubksr3N2kD2Ja3
+X-Gm-Message-State: AOJu0YxNI9ywyQ6wM6iDD66RgWuwYRBufNBdlrLKH5r6D0Wvp3G3byUK
+	JS/uYvBAVolj5UcPFR4vHBQJooJlz2cV31mB3Tn1JTQnVA8L59emFAxjXUp4U68=
+X-Google-Smtp-Source: AGHT+IGLIircvxxELNZp6hQL4M8a4oqQMuIfbGbj5ESP+8hykh0tgC9NyJcGdtZhysmk5TffXmp10A==
+X-Received: by 2002:a05:6a21:7807:b0:1af:f23c:804a with SMTP id adf61e73a8af0-1b26f245bedmr579669637.38.1717113107315;
+        Thu, 30 May 2024 16:51:47 -0700 (PDT)
+Received: from ?IPV6:2a03:83e0:1156:1:1cbd:da2b:a9f2:881? ([2620:10d:c090:500::4:5439])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-702423c7b7esm298915b3a.13.2024.05.30.16.51.42
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 30 May 2024 16:51:46 -0700 (PDT)
+Message-ID: <49e4d52c-59f1-4321-9012-aabb1e8cc005@davidwei.uk>
+Date: Thu, 30 May 2024 16:51:41 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next v10 01/14] netdev: add netdev_rx_queue_restart()
+Content-Language: en-GB
+To: Mina Almasry <almasrymina@google.com>, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+ linux-alpha@vger.kernel.org, linux-mips@vger.kernel.org,
+ linux-parisc@vger.kernel.org, sparclinux@vger.kernel.org,
+ linux-trace-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
+ bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
+ linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org
+Cc: "David S. Miller" <davem@davemloft.net>,
+ Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+ Paolo Abeni <pabeni@redhat.com>, Donald Hunter <donald.hunter@gmail.com>,
+ Jonathan Corbet <corbet@lwn.net>,
+ Richard Henderson <richard.henderson@linaro.org>,
+ Ivan Kokshaysky <ink@jurassic.park.msu.ru>, Matt Turner
+ <mattst88@gmail.com>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+ "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+ Helge Deller <deller@gmx.de>, Andreas Larsson <andreas@gaisler.com>,
+ Jesper Dangaard Brouer <hawk@kernel.org>,
+ Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+ Steven Rostedt <rostedt@goodmis.org>, Masami Hiramatsu
+ <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+ Arnd Bergmann <arnd@arndb.de>, Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
+ Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman
+ <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
+ Yonghong Song <yonghong.song@linux.dev>,
+ John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
+ Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
+ Jiri Olsa <jolsa@kernel.org>, Steffen Klassert
+ <steffen.klassert@secunet.com>, Herbert Xu <herbert@gondor.apana.org.au>,
+ David Ahern <dsahern@kernel.org>,
+ Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+ Shuah Khan <shuah@kernel.org>, Sumit Semwal <sumit.semwal@linaro.org>,
+ =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+ Pavel Begunkov <asml.silence@gmail.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+ Yunsheng Lin <linyunsheng@huawei.com>, Shailend Chand <shailend@google.com>,
+ Harshitha Ramamurthy <hramamurthy@google.com>,
+ Shakeel Butt <shakeel.butt@linux.dev>, Jeroen de Borst
+ <jeroendb@google.com>, Praveen Kaligineedi <pkaligineedi@google.com>
+References: <20240530201616.1316526-1-almasrymina@google.com>
+ <20240530201616.1316526-2-almasrymina@google.com>
+From: David Wei <dw@davidwei.uk>
+In-Reply-To: <20240530201616.1316526-2-almasrymina@google.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-Geliang Tang wrote:
-> On Mon, 2024-05-27 at 21:36 +0200, Jakub Sitnicki wrote:
-> > On Mon, May 27, 2024 at 10:12 AM -07, John Fastabend wrote:
-> > > Geliang Tang wrote:
-> > > > From: Geliang Tang <tanggeliang@kylinos.cn>
-> > > > 
-> > > > Switch attachments to bpf_link using
-> > > > bpf_program__attach_sockmap() instead
-> > > > of bpf_prog_attach().
-> > > 
-> > > Sorry it took me a few days to get to this.
-> > > 
-> > > Is there a reason to push this to links vs just leave it as is? I
-> > > had
-> > > a plan to port all the test_sockmap tests into prog_tests anyways.
-> > > I'll
-> > > try to push some initial patch next week.
-> 
-> Great, I strongly agree with porting them into prog_tests. I am also
-> willing to participate in implementing this plan together.
+On 2024-05-30 13:16, Mina Almasry wrote:
+[...]
+> +err_start_queue:
+> +	/* Restarting the queue with old_mem should be successful as we haven't
+> +	 * changed any of the queue configuration, and there is not much we can
+> +	 * do to recover from a failure here.
+> +	 *
+> +	 * WARN if the we fail to recover the old rx queue, and at least free
+> +	 * old_mem so we don't also leak that.
+> +	 */
+> +	if (dev->queue_mgmt_ops->ndo_queue_start(dev, old_mem, rxq_idx)) {
+> +		WARN(1,
+> +		     "Failed to restart old queue in error path. RX queue %d may be unhealthy.",
+> +		     rxq_idx);
+> +		dev->queue_mgmt_ops->ndo_queue_mem_free(dev, &old_mem);
 
-I have a first patch that starts to move things I'll dig it up here.
-Still a bit behind on everything as you see its Thr already.
-
-> 
-> > > 
-> > > The one advantage of test_sockmap is we can have it run for longer
-> > > runs by pushing different options through so might be worth keeping
-> > > just for that.
-> > > 
-> > > If you really want links here I'm OK with that I guess just asking.
-> > 
-> > It was me who suggested the switch to bpf_link in reaction to a
-> > series
-> > of cleanups to prog_type and prog_attach_type submitted by Geliang.
-> 
-> Yes, patches 3-5 address Jakub's suggestion: switching attachments to
-> bpf_link.
-
-OK. Lets just take them the series lgtm. Jakub any other comments?
-
-> 
-> > Relevant threads:
-> > 
-> > https://lore.kernel.org/bpf/9c10d9f974f07fcb354a43a8eca67acb2fafc587.1715926605.git.tanggeliang@kylinos.cn
-> > https://lore.kernel.org/bpf/20240522080936.2475833-1-jakub@cloudflare.com
-> > https://lore.kernel.org/bpf/e27d7d0c1e0e79b0acd22ac6ad5d8f9f00225303.1716372485.git.tanggeliang@kylinos.cn
-> > 
-> > I thought bpf_links added more value than cleaning up "old style"
-> > attachments.
-> 
-> Other patches 1-2, 6-8 are small fixes which I found while trying to
-> solve the NONBLOCK issue [1]. Yes, I haven't given up on solving this
-> issue yet. I think it must be solved, since there is a bug somewhere.
-> WDYT?
-
-Yes I think this is an actual issue with the stream parser waking up
-sockets before the data is copied into the recv buffers.
+This should be ->ndo_queue_mem_free(dev, old_mem).
 
