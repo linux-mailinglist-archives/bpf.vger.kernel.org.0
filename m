@@ -1,238 +1,401 @@
-Return-Path: <bpf+bounces-30982-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-30983-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C97418D55F5
-	for <lists+bpf@lfdr.de>; Fri, 31 May 2024 01:05:00 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0F0588D5608
+	for <lists+bpf@lfdr.de>; Fri, 31 May 2024 01:08:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EC0A61C242D1
-	for <lists+bpf@lfdr.de>; Thu, 30 May 2024 23:04:59 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5E77EB26C03
+	for <lists+bpf@lfdr.de>; Thu, 30 May 2024 23:08:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2315C183A61;
-	Thu, 30 May 2024 23:04:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 98E2018411B;
+	Thu, 30 May 2024 23:08:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Dnojee2b"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IrO4qU00"
 X-Original-To: bpf@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 67C731E488;
-	Thu, 30 May 2024 23:04:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.11
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717110290; cv=fail; b=qfqSXAj3I0OizH089PAGbfBRHgK7YVmAzHDhfe19cFpbys6J9NHyJT+gjjO55vsdwmnKW72xEHqhJnU1tzs6qki6cvYbPTN5VcPy1wUvPVtrcQei1Ff20ic5+nMR+RJgK1+g1hpYAV/IRbrT3pBugwXg6iOBbDooPq2YCMjIICc=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717110290; c=relaxed/simple;
-	bh=ov4EZGgob86vQpeH/DJFKKEAW+Urn/0vcG01HP17IwA=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=k3XwBpDTZSPjRX8MMBEosEew1UIfbtAhH7sqKaR1GhpCUAuQEMJs0LdNAroGd9hIw+W/wXmMxEvNyfTNgNUMnl2G7/VcbQC0+C4gLBe8Sm5nLKzSvd1PD2OksAy7trAh8m11yldABA6FbpHIx52HKu4Q+ZDfs7/pWFWDjixpUks=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Dnojee2b; arc=fail smtp.client-ip=198.175.65.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1717110290; x=1748646290;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-id:content-transfer-encoding:
-   mime-version;
-  bh=ov4EZGgob86vQpeH/DJFKKEAW+Urn/0vcG01HP17IwA=;
-  b=Dnojee2b+rDJAWbYQYRs5KfLWvP3lgSIcjcTwqYsmLfosA4MX8EMtk/6
-   JJx2o2QBThA5t+0H7/C69kcdelZVDCn2yKJJaewzKEgOZGmHqomVhnLOM
-   Rrpsd9bXSVl8N/WxE1j5ESN5TcCeowUD9iCWqj9y8qymWrF7qLmQebNph
-   EMu5Whv2GEAXyQ9fzkQGXDCRFukToWFJGs7ejL24lmT+MU5GPAWkNnLO5
-   RkoFvwuEQ+nKG8FGu6hsMKP2nbMG9eIgvbqUQmEFI5jlJErVqLHxYLaIh
-   4aV8PdchmJc4bl6ew1EdZBDPPxtamoBRCcBqKhPFy5sfeHuBDh0HIVy7C
-   w==;
-X-CSE-ConnectionGUID: WTPm/BRGSJaKkTGc60Z1xw==
-X-CSE-MsgGUID: fm06Tx+rTVKLP6gfH9DNlw==
-X-IronPort-AV: E=McAfee;i="6600,9927,11088"; a="24195943"
-X-IronPort-AV: E=Sophos;i="6.08,202,1712646000"; 
-   d="scan'208";a="24195943"
-Received: from orviesa009.jf.intel.com ([10.64.159.149])
-  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 May 2024 16:04:49 -0700
-X-CSE-ConnectionGUID: dwnyYFtCQQOf56J5u6ICRw==
-X-CSE-MsgGUID: NDHu51gsSYq/K1TMZMwfHg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.08,202,1712646000"; 
-   d="scan'208";a="36069071"
-Received: from orsmsx601.amr.corp.intel.com ([10.22.229.14])
-  by orviesa009.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 30 May 2024 16:04:46 -0700
-Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
- ORSMSX601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.39; Thu, 30 May 2024 16:04:46 -0700
-Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
- ORSMSX610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.39; Thu, 30 May 2024 16:04:46 -0700
-Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
- orsmsx611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.39 via Frontend Transport; Thu, 30 May 2024 16:04:46 -0700
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (104.47.59.168)
- by edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.39; Thu, 30 May 2024 16:04:45 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=QGqwyadiydVxZju9FUm8zqcDKNqPB65tihMfXKNh/cyN06pfNZv7GAQ0yGoHeiQxJsJ5xHDcsf2mIPCzpBdNbddck+0nl6nhXycZ7WJa4dTFExgfJ8zCLcH3htRm7uE/9Pb5/YXQ6VLO9PtKQb7fTQ51qCnWxgsxQepKSR2QplmOWEwkZ8rM9o6wOrWR/t6X43LaRe1uK+lQzJo1x9dJN6eF3bgsOhSn88UAky2e4kQU6etG/GusTxFaqvwqCVpJjrLKjB1k1P4KmtCmoB2Qb0f8nNse0NGpBp73syD9ztdTf0Pw4xxVSYbPmGsXorJTpKIUHqGxWtFzRVwRShMSPw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=ov4EZGgob86vQpeH/DJFKKEAW+Urn/0vcG01HP17IwA=;
- b=Tf27U70Quo2BHRYNiH93Gocm0YAXOyYhaxM7GivojOFzC6XM65f/8GHgIHruSsBA+yZDdPpfzaS1ocEt2W01VYXcYDMd376ElSENn27xNCD/jXd2SQld4xfmUXtHjRl4saXZ0TuqEyOkWwd2870I7yNkyOv/DN535Jfo3xkTUYcTRit5GQVBEzi9ZAcoNbgXYAOxFWnyDEVXfH43uEkDS8dpAVFQnvwj7scWIrgy0/hkF/R9VcKdC82eG76cZChUSHpAukmIpPDUHkSPROYTS81e10u4D+MGIqZp7Epw6jIxHKoOKvB6tUE4nNA5Z8APnTxpekecRVzAOrYS6BTSDw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Received: from MN0PR11MB5963.namprd11.prod.outlook.com (2603:10b6:208:372::10)
- by SJ0PR11MB6573.namprd11.prod.outlook.com (2603:10b6:a03:44d::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7611.29; Thu, 30 May
- 2024 23:04:37 +0000
-Received: from MN0PR11MB5963.namprd11.prod.outlook.com
- ([fe80::edb2:a242:e0b8:5ac9]) by MN0PR11MB5963.namprd11.prod.outlook.com
- ([fe80::edb2:a242:e0b8:5ac9%3]) with mapi id 15.20.7633.021; Thu, 30 May 2024
- 23:04:37 +0000
-From: "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>
-To: "jolsa@kernel.org" <jolsa@kernel.org>, "mhiramat@kernel.org"
-	<mhiramat@kernel.org>, "rostedt@goodmis.org" <rostedt@goodmis.org>,
-	"ast@kernel.org" <ast@kernel.org>, "andrii@kernel.org" <andrii@kernel.org>,
-	"oleg@redhat.com" <oleg@redhat.com>, "daniel@iogearbox.net"
-	<daniel@iogearbox.net>
-CC: "debug@rivosinc.com" <debug@rivosinc.com>, "luto@kernel.org"
-	<luto@kernel.org>, "bp@alien8.de" <bp@alien8.de>, "yhs@fb.com" <yhs@fb.com>,
-	"songliubraving@fb.com" <songliubraving@fb.com>, "linux-api@vger.kernel.org"
-	<linux-api@vger.kernel.org>, "x86@kernel.org" <x86@kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"john.fastabend@gmail.com" <john.fastabend@gmail.com>, "tglx@linutronix.de"
-	<tglx@linutronix.de>, "mingo@redhat.com" <mingo@redhat.com>,
-	"linux-trace-kernel@vger.kernel.org" <linux-trace-kernel@vger.kernel.org>,
-	"bpf@vger.kernel.org" <bpf@vger.kernel.org>, "linux-man@vger.kernel.org"
-	<linux-man@vger.kernel.org>, "peterz@infradead.org" <peterz@infradead.org>
-Subject: Re: [PATCHv6 bpf-next 1/9] x86/shstk: Make return uprobe work with
- shadow stack
-Thread-Topic: [PATCHv6 bpf-next 1/9] x86/shstk: Make return uprobe work with
- shadow stack
-Thread-Index: AQHaq2x9FDy849/8iEm3V2kN/KUeoLGwdKIA
-Date: Thu, 30 May 2024 23:04:37 +0000
-Message-ID: <8b70a995dda46c020c9e7c78f0e68560f0b61441.camel@intel.com>
-References: <20240521104825.1060966-1-jolsa@kernel.org>
-	 <20240521104825.1060966-2-jolsa@kernel.org>
-In-Reply-To: <20240521104825.1060966-2-jolsa@kernel.org>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-user-agent: Evolution 3.44.4-0ubuntu2 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: MN0PR11MB5963:EE_|SJ0PR11MB6573:EE_
-x-ms-office365-filtering-correlation-id: 847fefed-9543-403a-69c7-08dc80fce0e0
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;ARA:13230031|7416005|366007|376005|1800799015|38070700009;
-x-microsoft-antispam-message-info: =?utf-8?B?YzNHOUw4UHo5WGNRREJpZjIySjdiT0pPdXgzbTJhNTFldktweUpPTjhiL2Y5?=
- =?utf-8?B?WTQ3Q1kwTXRZb25PZElGbUV2bGVjTUxJUHJySEJJbDdnT2RYVTh0bnRZZnZI?=
- =?utf-8?B?R0ZSTFJmbTNwNVF5dDhnb3E5Y3FYQVlJSmppUDZidEdpUVh1U0grWEpGOFhm?=
- =?utf-8?B?RWF6K1lzUjZkUmFPaU1uWU81T3RjTURKbm9kSUhoV3hwaktreUVKQjJVNjMx?=
- =?utf-8?B?TFJSb1c2NEVuWlVzQ3phRGxlbHpBY0Y5dzZ1ZTNuTjhHeFZkWmszVThDL1Ni?=
- =?utf-8?B?NXFsZkRRS0QxaDRjNVBSaUZDVWdFcTBJQVo0OGtmK0xSMzJaNUpoVVFwaVZl?=
- =?utf-8?B?WlZRQk1Yd2JkQnVBc0V5SFBuNmNyZGRMNURSSGpsSEVuS0JQTmY1OXVkU2hk?=
- =?utf-8?B?UzhqZXgwWnl6SVJpRGFoOXhQQmxKS1Bid1ZQUThwUWFCSXd4R1BaajZhQkZ1?=
- =?utf-8?B?NlhHaHQrM2I3a2NtNGdMZjdIY29RVlhKVjNtNTVKTllNeC82aWJtaTA2V3FJ?=
- =?utf-8?B?VlJ6dFFYRWhFTi9iVFQxeC9nMVI2V1NEZmVCNDVKZk5wRWJTU2dsR0lKUG9l?=
- =?utf-8?B?REVVV1BlRXZrSzFRaFJiWEhKcDdmbHJHZnFtRE9zQVkvYWxELzJkL2JMc0pM?=
- =?utf-8?B?TEJQd3ByelZTRjRMbGFIVnVaZW9MSU9JMGlNem0zVU1wa3o0ckVMc2VXU1RL?=
- =?utf-8?B?TUlzSzZ5ZzJnZlpLOEhqNVQ1RGdiSEx0RE1JZTUzUHRpWEdVcFBkOGhUK2tO?=
- =?utf-8?B?dDdTc0RiaGpja2RmY1N2VGlIUmZqMXR4UUJPSHlCcTVSV1Ardkc4YWRxS2l6?=
- =?utf-8?B?d2RpS2wwb0w4ZDB1TC8zRGJIdWVsV3IvWTlGMEZqZWFvK0Z3dVo0WmhlU3ha?=
- =?utf-8?B?OWk5djB4bjE0RkNHWkFpek1pb0tkcmQxODhqaFp6UTNmUWVUenBvbkV4eFg3?=
- =?utf-8?B?eGRGbytBaGJKUm1yRVg3c1Y0bENrVzVxbEgvWkZmakoyN0dhcVgyTERkaWNm?=
- =?utf-8?B?ejZOLzJPR2tLWDJjS2tUcExQNVhRY28zdVh1M01IMmNrK1V4dGJFQ1U0MHlL?=
- =?utf-8?B?WkNiRkw2d3pnSnZGcVE5S1M0Si9aNlNQS1Y4RUJOVmQwcnpxR2NzWkpPeUYr?=
- =?utf-8?B?QjNzUnorUVhUVGRYRk9OaytTaGY1UXZGMjRON2NZMUs5VlVQOHJ0a0xqWmxD?=
- =?utf-8?B?TUNrQ1l6Q0RGQTFidU0rNFczdXZpNHFWWjJNdGRGaUhsMWs5ek9rUHk1K2hK?=
- =?utf-8?B?cExEcEtLOTZkZVNSbzZaaUMzWmdKbHZBKzlUTVM1Q1RKS3R0Wm9GNTg2WWNz?=
- =?utf-8?B?ZnliVmtXeVJqUnN6eDYzWlp6d2FmQXZYUFU1T2lqckdMcnNMTk92bVVLQzRP?=
- =?utf-8?B?ZlNwdndiWDFaMm53WjR3cDVTS3RoUG5GMlRGTmg2ZFJtVlVOUGQySWgwU2s3?=
- =?utf-8?B?M3BKVlV6Y0g2Q2RXUWRDTWhMYnhMWk9BY29FamlieHNIVWl0UjBZY3FGbzdu?=
- =?utf-8?B?Mzg3bzd0ajgzWVFDUDhLSjUxb0dGVzV5NjRLYzlDTkRtWXhhZ1VKZTBFRmhm?=
- =?utf-8?B?MytIRDQzSTFTb1lEOTRxYVlrODYvb3FCb2FWTTF6Um5BRHNpS0hBdVhCajZG?=
- =?utf-8?B?dnBjUTVZR1RadWpYRTBMSjEzOWkyN1pJZTREWnpIZmRqQ0pzcUo1bWxNUGUy?=
- =?utf-8?B?OGJLL0hpWkZxbmRuTWozNHBVUWpzVStuQWlzZS9USzRxak9iRkVIdHc2d3JI?=
- =?utf-8?B?aUhPZk16U3dqbjZ5UUN1cmxHQkd3RmFGQWpPMDRhVEk2RmMvSlNPVW0wczl5?=
- =?utf-8?B?NTVzOTVCZFlmS3VKellFZz09?=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN0PR11MB5963.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7416005)(366007)(376005)(1800799015)(38070700009);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?SkxWeEwrOE8vdHY5QTNPM0MrTS9EK1YvR2xuVnBtWUNxeTFXVXlUWC9leFFn?=
- =?utf-8?B?c0FqNmFEYVBYbHJrZ1hjamRKbi8za1BlbFRuV3JFVUFtWGJtVnhtNmZ0L1pX?=
- =?utf-8?B?dWhNQzBvRzRiMVViZFBWelllV3FvN01ma0RpQVh5dnh3Z3RtY1lLODk4aDlu?=
- =?utf-8?B?RHgyWEliZ2JEUkloNzlUblBKU20zNjRnQXhSdXp0SVEzcnMvU1c4K1NRT0Ro?=
- =?utf-8?B?VUt1azFBY014S1FxTG42SzZQQUJiUVJNUTE1L09VOHlUbEZuNkk5TmkrV3Ro?=
- =?utf-8?B?NlRzbzRHZHFoT29BdFJQVEtKOHlQVFFwaWxpb0VzbEE5enM2MmlEMVVIYXFT?=
- =?utf-8?B?OTFoOWZYUStCUStGV1gzVVIreHhqM0tkYlBSZHczWW5Oci9XaWlLUEowZC8y?=
- =?utf-8?B?QUgxVlcrMFAzSE1pZGJ0aHpxM01EVFlxUmZnUkdmRXZnVkFrYzVJZnBxd2tu?=
- =?utf-8?B?eUV5aGFVOFBBUFJaNFJ4N1oyejZKdm5ZM3E1WXBuVkEwR2lnYXI3ZWhiNms4?=
- =?utf-8?B?YWNlMTg2UUtwUXRjRC96czZxR1YzOVJRM2hpMHAwaG82emN3SEpUYkxqdWVT?=
- =?utf-8?B?QkRvdDJwWVQzWDhPM2xhcmxkN3ZBdzEwTU9nMzMzSnpFQmFxQXcvOHVkc2pV?=
- =?utf-8?B?MFZXSkExc25oSUtBWktDWWkya1d3cjZ2U3ROQVVUVk81T0w5czMxT2h5SUll?=
- =?utf-8?B?a2FaQXh5RDE2YWdka1RkRUlZUTR2ZGxoUzZrUnd4UG5PVFRqazZNb0RVNDc1?=
- =?utf-8?B?MFBPd2ZubVc4VEhhT05BYm9EU1c2ZjhSNW44Ym5ocEF0M3JDSkkrMGdTODRu?=
- =?utf-8?B?OURXZ0xiM0VKNS9GYnlSUzZ3aktWc0t3SmF2bW00OUcvYjB1ZXFza1dONEl2?=
- =?utf-8?B?ODlORlZhL1gwOUh4cmY1S2JDNXVEa3BaNDNUT3JIMTN6c0d4RERDSlZRREIr?=
- =?utf-8?B?RHUweWRCZUJEVDdWeWNJcUExM2RIUHRoSWJ3OThHVHp6THA0UnMwNEhlaWEz?=
- =?utf-8?B?Wmt5K1hOekxXRUo3YUFqaTIrcGtHT2g1eWduNFNrMk5vck1DZ0VmdXd1dnZP?=
- =?utf-8?B?Y2RUTTA3K0ZFeit4OW1ONWY2UnNjWXFSNTk0NThBMVYwc1g3WnVTcXRBZm92?=
- =?utf-8?B?eW1BSlo5ME04ZFQzSFUxL3FtSjJPaGd1VVppZkpjWDdHRDlrSVBDQ2lxMnJN?=
- =?utf-8?B?TFdXNXNSRTFmMHF5SXN6VzRDZm5iT2ovbUVmSmhRdnYyY2JQN1JHM0hCUlFa?=
- =?utf-8?B?RmJwU1ozNVE5VU1RZmRmTGl0aUlyR3hBcm5Qa0RiTkdWeVNVQWlYU0tBOU5H?=
- =?utf-8?B?R3BUM3RYa25ka01YUFY3M25wUjgrMWJXK05CMmZZdW5lNEwxWXY0NHlXMlRH?=
- =?utf-8?B?MWFjMUZVMWpUaUI5TVowaE1HeUVJZTVYakl2ZERPdEhEK0VZNGVCeTRMUDNz?=
- =?utf-8?B?WlMvWXhlM3o5RmM0UzgrTDRJUGNxU1RHODZZVTNEOXdnU1ZMbG85Vll1c3BF?=
- =?utf-8?B?OXZNamdFQktpbmFsWmMwaFlUUlRqakMxZGFjS2tvRDdYMkZqRlBiY29kVXlL?=
- =?utf-8?B?amVoV0dkVm5lcEdLSS85SXJyTlJLNHQ1bVI3MWZieGJtbWMyVmppOXk1OXE4?=
- =?utf-8?B?TDVibEJaeENpTFVadFE2MGtuck8raDB4empsaDBuZGxXTi9Zb1pMOUs3L1hx?=
- =?utf-8?B?ZXoxSldNNG5wdnpOMjA1UnVGejdWalFqd1RjL3krSUJJVEV3aFB2WURsSVRL?=
- =?utf-8?B?U09HRG1DVGh0ZCt1c0M5R0F1cGY5MjNRYU5uL0UxSU5uQzJaWlJlelhNS2xu?=
- =?utf-8?B?azZ5Y2g1YXhMelBFd202MUhGbDdJdGY0aE0xUkNjRGhtZmhJWFl1dVRvQkxJ?=
- =?utf-8?B?R08rNFZ5NEljUGoyams1NkJZd0FDMWpkV0ZrUXA1QTlraXpCMWg3WWlSNHM0?=
- =?utf-8?B?SkFhek9YVEdzeSthZUl1M1g5bWNOMGluUUFSdU5sVjJDK2c4TDh6ZzcrZDc1?=
- =?utf-8?B?MVRNbTA4dFFkbU1Vd2ppUnNHdktQZzdhek1seG5kYWwyVVQxeEVNOUhqdW53?=
- =?utf-8?B?V0wzY2RLNGRGQit3ZmVoYzVrYkkwekVZSU0wUTRJYzc0VUUyRjBNR3pGbVlJ?=
- =?utf-8?B?V2MrampHWExpZjVINTJTRnBObnFPWG53VDh1MnROeDUvcnVnQStmNTdueTRV?=
- =?utf-8?Q?rW2HEw84FXiV9EY2hHe04OM=3D?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <94D93ABF3869C14DABD919AEEEA576DF@namprd11.prod.outlook.com>
-Content-Transfer-Encoding: base64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0AD7974042;
+	Thu, 30 May 2024 23:08:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1717110515; cv=none; b=Hgv5w11puaOUUew6nvKWu2OffuNCVU1xtVhCtpwvDHU8D4mlaLR2Bh35uRhb9guui4ZVApdF8Tc9Nm0b5OPgDOqGci9oxeDY0yATSZKedjswqSk5jDkCTfx7VanFQr0y50mDi7xPtbI4qcM6mGg+lNFVLsNNRXP2fD9VQjGD2GI=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1717110515; c=relaxed/simple;
+	bh=xv63xkQ/N35UIXFUqB556y/E/zx8WT/ylXiP/7xc2yc=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition:In-Reply-To; b=J7APB/n2Az/hExRbMIt85VuplMlmWBmraMFLRHZq94nZdlVX4ieU/fueZFdEsBK5MtojEfK8s1RSW2YFOeAThT5WMddn+1sJaX86M3tLjy7diLaO3EFCGQd+gPvhWH/vZP4ftzTFW03nfFT5udSMlh/yyfKclhCJJrk1Pz1lsAs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=IrO4qU00; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 33AF6C2BBFC;
+	Thu, 30 May 2024 23:08:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1717110514;
+	bh=xv63xkQ/N35UIXFUqB556y/E/zx8WT/ylXiP/7xc2yc=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:From;
+	b=IrO4qU00oIEISHIrYH786TC5X6IV4zMrAW/cMDr1eqJdXlJddTBcHViUN9MZieXzR
+	 5/vmP+ezlB3Q7O8OiIqOVyd6cTb/wzMGvFwGtGeJJGJz2zxhAYqsX9KbSSkTPBt9Ks
+	 0xt7rFWxo14YpEcBpQYnprHgL2g8f5tQKXzbwRTUgifFi6MsFFENqJcQtxk9X3Y/0t
+	 bX+nfPeUCKG1KkQn2slT/3+CMIXUVGXkxGHYUsU5UJ6mrf5KQXP5HU4Jb/LylKWh5o
+	 LQBUsfsXrTsnk2S2QA47hreLv+Mr0xIb8XfbMDf5Sxk1UhXjj2eFRQvr2Xo1HzSVYE
+	 nZ78FGY4lh+1g==
+Date: Thu, 30 May 2024 18:08:32 -0500
+From: Bjorn Helgaas <helgaas@kernel.org>
+To: Frank Li <Frank.Li@nxp.com>
+Cc: Richard Zhu <hongxing.zhu@nxp.com>,
+	Lucas Stach <l.stach@pengutronix.de>,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
+	Shawn Guo <shawnguo@kernel.org>,
+	Sascha Hauer <s.hauer@pengutronix.de>,
+	Pengutronix Kernel Team <kernel@pengutronix.de>,
+	Fabio Estevam <festevam@gmail.com>,
+	NXP Linux Team <linux-imx@nxp.com>,
+	Philipp Zabel <p.zabel@pengutronix.de>,
+	Liam Girdwood <lgirdwood@gmail.com>,
+	Mark Brown <broonie@kernel.org>,
+	Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>, linux-pci@vger.kernel.org,
+	imx@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+	devicetree@vger.kernel.org, Will Deacon <will@kernel.org>,
+	Robin Murphy <robin.murphy@arm.com>, Joerg Roedel <joro@8bytes.org>,
+	Jason Gunthorpe <jgg@ziepe.ca>,
+	Alyssa Rosenzweig <alyssa@rosenzweig.io>,
+	Marc Zyngier <maz@kernel.org>
+Subject: Re: [PATCH v5 08/12] PCI: imx6: Config look up table(LUT) to support
+ MSI ITS and IOMMU for i.MX95
+Message-ID: <20240530230832.GA474962@bhelgaas>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: MN0PR11MB5963.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 847fefed-9543-403a-69c7-08dc80fce0e0
-X-MS-Exchange-CrossTenant-originalarrivaltime: 30 May 2024 23:04:37.2548
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: hOXFKdvdpOiy7STRau6nk5/UbNkeY08fa6o261WPhzBpiTu17B6uOReBb4xNYEfDcX6sFaE9+wikbz6vvP7ZHqw7KShIxk0rjg/hAHlaquE=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR11MB6573
-X-OriginatorOrg: intel.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240528-pci2_upstream-v5-8-750aa7edb8e2@nxp.com>
 
-T24gVHVlLCAyMDI0LTA1LTIxIGF0IDEyOjQ4ICswMjAwLCBKaXJpIE9sc2Egd3JvdGU6DQo+IEN1
-cnJlbnRseSB0aGUgYXBwbGljYXRpb24gd2l0aCBlbmFibGVkIHNoYWRvdyBzdGFjayB3aWxsIGNy
-YXNoDQo+IGlmIGl0IHNldHMgdXAgcmV0dXJuIHVwcm9iZS4gVGhlIHJlYXNvbiBpcyB0aGUgdXJl
-dHByb2JlIGtlcm5lbA0KPiBjb2RlIGNoYW5nZXMgdGhlIHVzZXIgc3BhY2UgdGFzaydzIHN0YWNr
-LCBidXQgZG9lcyBub3QgdXBkYXRlDQo+IHNoYWRvdyBzdGFjayBhY2NvcmRpbmdseS4NCj4gDQo+
-IEFkZGluZyBuZXcgZnVuY3Rpb25zIHRvIHVwZGF0ZSB2YWx1ZXMgb24gc2hhZG93IHN0YWNrIGFu
-ZCB1c2luZw0KPiB0aGVtIGluIHVwcm9iZSBjb2RlIHRvIGtlZXAgc2hhZG93IHN0YWNrIGluIHN5
-bmMgd2l0aCB1cmV0cHJvYmUNCj4gY2hhbmdlcyB0byB1c2VyIHN0YWNrLg0KPiANCj4gRml4ZXM6
-IDhiMWMyMzU0MzQzNiAoIng4Ni9zaHN0azogQWRkIHJldHVybiB1cHJvYmUgc3VwcG9ydCIpDQo+
-IFNpZ25lZC1vZmYtYnk6IEppcmkgT2xzYSA8am9sc2FAa2VybmVsLm9yZz4NCj4gLS0tDQpBY2tl
-ZC1ieTogUmljayBFZGdlY29tYmUgPHJpY2sucC5lZGdlY29tYmVAaW50ZWwuY29tPg0K
+[+cc IOMMU and pcie-apple.c folks for comment]
+
+On Tue, May 28, 2024 at 03:39:21PM -0400, Frank Li wrote:
+> For the i.MX95, configuration of a LUT is necessary to convert Bus Device
+> Function (BDF) to stream IDs, which are utilized by both IOMMU and ITS.
+> This involves examining the msi-map and smmu-map to ensure consistent
+> mapping of PCI BDF to the same stream IDs. Subsequently, LUT-related
+> registers are configured. In the absence of an msi-map, the built-in MSI
+> controller is utilized as a fallback.
+> 
+> Additionally, register a PCI bus notifier to trigger imx_pcie_add_device()
+> upon the appearance of a new PCI device and when the bus is an iMX6 PCI
+> controller. This function configures the correct LUT based on Device Tree
+> Settings (DTS).
+
+This scheme is pretty similar to apple_pcie_bus_notifier().  If we
+have to do this, I wish it were *more* similar, i.e., copy the
+function names, bitmap tracking, code structure, etc.
+
+I don't really know how stream IDs work, but I assume they are used on
+most or all arm64 platforms, so I'm a little surprised that of all the
+PCI host drivers used on arm64, only pcie-apple.c and pci-imx6.c need
+this notifier.  
+
+There's this path, which is pretty generic and does at least the
+of_map_id() part of what you're doing in imx_pcie_add_device():
+
+    __driver_probe_device
+      really_probe
+        pci_dma_configure                       # pci_bus_type.dma_configure
+          of_dma_configure
+            of_dma_configure_id
+              of_iommu_configure
+                of_pci_iommu_init
+                  of_iommu_configure_dev_id
+                    of_map_id
+                    of_iommu_xlate
+                      ops = iommu_ops_from_fwnode
+                      iommu_fwspec_init
+                      ops->of_xlate(dev, iommu_spec)
+
+Maybe this needs to be extended somehow with a hook to do the
+device-specific work like updating the LUT?  Just speculating here,
+the IOMMU folks will know how this is expected to work.
+
+Some typos and minor comments below.
+
+> Signed-off-by: Frank Li <Frank.Li@nxp.com>
+> ---
+>  drivers/pci/controller/dwc/pci-imx6.c | 175 +++++++++++++++++++++++++++++++++-
+>  1 file changed, 174 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/pci/controller/dwc/pci-imx6.c b/drivers/pci/controller/dwc/pci-imx6.c
+> index 29309ad0e352b..8ecc00049e20b 100644
+> --- a/drivers/pci/controller/dwc/pci-imx6.c
+> +++ b/drivers/pci/controller/dwc/pci-imx6.c
+> @@ -54,6 +54,22 @@
+>  #define IMX95_PE0_GEN_CTRL_3			0x1058
+>  #define IMX95_PCIE_LTSSM_EN			BIT(0)
+>  
+> +#define IMX95_PE0_LUT_ACSCTRL			0x1008
+> +#define IMX95_PEO_LUT_RWA			BIT(16)
+> +#define IMX95_PE0_LUT_ENLOC			GENMASK(4, 0)
+> +
+> +#define IMX95_PE0_LUT_DATA1			0x100c
+> +#define IMX95_PE0_LUT_VLD			BIT(31)
+> +#define IMX95_PE0_LUT_DAC_ID			GENMASK(10, 8)
+> +#define IMX95_PE0_LUT_STREAM_ID			GENMASK(5, 0)
+> +
+> +#define IMX95_PE0_LUT_DATA2			0x1010
+> +#define IMX95_PE0_LUT_REQID			GENMASK(31, 16)
+> +#define IMX95_PE0_LUT_MASK			GENMASK(15, 0)
+> +
+> +#define IMX95_SID_MASK				GENMASK(5, 0)
+> +#define IMX95_MAX_LUT				32
+> +
+>  #define to_imx_pcie(x)	dev_get_drvdata((x)->dev)
+>  
+>  enum imx_pcie_variants {
+> @@ -79,6 +95,7 @@ enum imx_pcie_variants {
+>  #define IMX_PCIE_FLAG_HAS_PHY_RESET		BIT(5)
+>  #define IMX_PCIE_FLAG_HAS_SERDES		BIT(6)
+>  #define IMX_PCIE_FLAG_SUPPORT_64BIT		BIT(7)
+> +#define IMX_PCIE_FLAG_MONITOR_DEV		BIT(8)
+>  
+>  #define imx_check_flag(pci, val)     (pci->drvdata->flags & val)
+>  
+> @@ -132,6 +149,8 @@ struct imx_pcie {
+>  	struct device		*pd_pcie_phy;
+>  	struct phy		*phy;
+>  	const struct imx_pcie_drvdata *drvdata;
+> +
+> +	struct mutex		lock;
+>  };
+>  
+>  /* Parameters for the waiting for PCIe PHY PLL to lock on i.MX7 */
+> @@ -215,6 +234,66 @@ static int imx95_pcie_init_phy(struct imx_pcie *imx_pcie)
+>  	return 0;
+>  }
+>  
+> +static int imx_pcie_config_lut(struct imx_pcie *imx_pcie, u16 reqid, u8 sid)
+> +{
+> +	struct dw_pcie *pci = imx_pcie->pci;
+> +	struct device *dev = pci->dev;
+> +	u32 data1, data2;
+> +	int i;
+> +
+> +	if (sid >= 64) {
+> +		dev_err(dev, "Invalid SID for index %d\n", sid);
+> +		return -EINVAL;
+> +	}
+> +
+> +	guard(mutex)(&imx_pcie->lock);
+> +
+> +	for (i = 0; i < IMX95_MAX_LUT; i++) {
+> +		regmap_write(imx_pcie->iomuxc_gpr, IMX95_PE0_LUT_ACSCTRL, IMX95_PEO_LUT_RWA | i);
+> +
+> +		regmap_read(imx_pcie->iomuxc_gpr, IMX95_PE0_LUT_DATA1, &data1);
+> +		if (data1 & IMX95_PE0_LUT_VLD)
+> +			continue;
+> +
+> +		data1 = FIELD_PREP(IMX95_PE0_LUT_DAC_ID, 0);
+> +		data1 |= FIELD_PREP(IMX95_PE0_LUT_STREAM_ID, sid);
+> +		data1 |= IMX95_PE0_LUT_VLD;
+> +
+> +		regmap_write(imx_pcie->iomuxc_gpr, IMX95_PE0_LUT_DATA1, data1);
+> +
+> +		data2 = 0xffff;
+> +		data2 |= FIELD_PREP(IMX95_PE0_LUT_REQID, reqid);
+> +
+> +		regmap_write(imx_pcie->iomuxc_gpr, IMX95_PE0_LUT_DATA2, data2);
+> +
+> +		regmap_write(imx_pcie->iomuxc_gpr, IMX95_PE0_LUT_ACSCTRL, i);
+> +
+> +		return 0;
+> +	}
+> +
+> +	dev_err(dev, "All lut already used\n");
+> +	return -EINVAL;
+> +}
+> +
+> +static void imx_pcie_remove_lut(struct imx_pcie *imx_pcie, u16 reqid)
+> +{
+> +	u32 data2 = 0;
+> +	int i;
+> +
+> +	guard(mutex)(&imx_pcie->lock);
+> +
+> +	for (i = 0; i < IMX95_MAX_LUT; i++) {
+> +		regmap_write(imx_pcie->iomuxc_gpr, IMX95_PE0_LUT_ACSCTRL, IMX95_PEO_LUT_RWA | i);
+> +
+> +		regmap_read(imx_pcie->iomuxc_gpr, IMX95_PE0_LUT_DATA2, &data2);
+> +		if (FIELD_GET(IMX95_PE0_LUT_REQID, data2) == reqid) {
+> +			regmap_write(imx_pcie->iomuxc_gpr, IMX95_PE0_LUT_DATA1, 0);
+> +			regmap_write(imx_pcie->iomuxc_gpr, IMX95_PE0_LUT_DATA2, 0);
+> +			regmap_write(imx_pcie->iomuxc_gpr, IMX95_PE0_LUT_ACSCTRL, i);
+> +		}
+> +	}
+> +}
+> +
+>  static void imx_pcie_configure_type(struct imx_pcie *imx_pcie)
+>  {
+>  	const struct imx_pcie_drvdata *drvdata = imx_pcie->drvdata;
+> @@ -1232,6 +1311,85 @@ static int imx_pcie_resume_noirq(struct device *dev)
+>  	return 0;
+>  }
+>  
+> +static bool imx_pcie_match_device(struct pci_bus *bus);
+
+Can you add the imx_pcie_match_device() earlier in the file so we
+don't need this forward declaration?
+
+> +static int imx_pcie_add_device(struct imx_pcie *imx_pcie, struct pci_dev *pdev)
+> +{
+> +	u32 sid_i = 0, sid_m = 0, rid = pci_dev_id(pdev);
+> +	struct device *dev = imx_pcie->pci->dev;
+> +	int err;
+> +
+> +	err = of_map_id(dev->of_node, rid, "iommu-map", "iommu-map-mask", NULL, &sid_i);
+> +	if (err)
+> +		return err;
+> +
+> +	err = of_map_id(dev->of_node, rid, "msi-map", "msi-map-mask", NULL, &sid_m);
+> +	if (err)
+> +		return err;
+> +
+> +	if (sid_i != rid && sid_m != rid)
+> +		if ((sid_i & IMX95_SID_MASK) != (sid_m & IMX95_SID_MASK)) {
+> +			dev_err(dev, "its and iommu stream id miss match, please check dts file\n");
+> +			return -EINVAL;
+> +		}
+> +
+> +	/* if iommu-map is not existed then use msi-map's stream id*/
+
+Capitalize consistently, e.g., the most comments in this file start
+with a capital letter.
+
+s/is not existed/does not exist/
+
+Add space before closing */
+
+> +	if (sid_i == rid)
+> +		sid_i = sid_m;
+> +
+> +	sid_i &= IMX95_SID_MASK;
+> +
+> +	if (sid_i != rid)
+> +		return imx_pcie_config_lut(imx_pcie, rid, sid_i);
+> +
+> +	/* Use dwc built-in MSI controller */
+> +	return 0;
+> +}
+> +
+> +static void imx_pcie_del_device(struct imx_pcie *imx_pcie, struct pci_dev *pdev)
+> +{
+> +	imx_pcie_remove_lut(imx_pcie, pci_dev_id(pdev));
+> +}
+> +
+> +
+> +static int imx_pcie_bus_notifier(struct notifier_block *nb, unsigned long action, void *data)
+> +{
+> +	struct pci_host_bridge *host;
+> +	struct imx_pcie *imx_pcie;
+> +	struct pci_dev *pdev;
+> +	int err;
+> +
+> +	pdev = to_pci_dev(data);
+> +	host = pci_find_host_bridge(pdev->bus);
+> +
+> +	if (!imx_pcie_match_device(host->bus))
+> +		return NOTIFY_OK;
+> +
+> +	imx_pcie = to_imx_pcie(to_dw_pcie_from_pp(host->sysdata));
+> +
+> +	if (!imx_check_flag(imx_pcie, IMX_PCIE_FLAG_MONITOR_DEV))
+> +		return NOTIFY_OK;
+> +
+> +	switch (action) {
+> +	case BUS_NOTIFY_ADD_DEVICE:
+> +		err = imx_pcie_add_device(imx_pcie, pdev);
+> +		if (err)
+> +			return notifier_from_errno(err);
+> +		break;
+> +	case BUS_NOTIFY_DEL_DEVICE:
+> +		imx_pcie_del_device(imx_pcie, pdev);
+> +		break;
+> +	default:
+> +		return NOTIFY_DONE;
+> +	}
+> +
+> +	return NOTIFY_OK;
+> +}
+> +
+> +static struct notifier_block imx_pcie_nb = {
+> +	.notifier_call = imx_pcie_bus_notifier,
+> +};
+> +
+>  static const struct dev_pm_ops imx_pcie_pm_ops = {
+>  	NOIRQ_SYSTEM_SLEEP_PM_OPS(imx_pcie_suspend_noirq,
+>  				  imx_pcie_resume_noirq)
+> @@ -1264,6 +1422,8 @@ static int imx_pcie_probe(struct platform_device *pdev)
+>  	imx_pcie->pci = pci;
+>  	imx_pcie->drvdata = of_device_get_match_data(dev);
+>  
+> +	mutex_init(&imx_pcie->lock);
+> +
+>  	/* Find the PHY if one is defined, only imx7d uses it */
+>  	np = of_parse_phandle(node, "fsl,imx7d-pcie-phy", 0);
+>  	if (np) {
+> @@ -1551,7 +1711,8 @@ static const struct imx_pcie_drvdata drvdata[] = {
+>  	},
+>  	[IMX95] = {
+>  		.variant = IMX95,
+> -		.flags = IMX_PCIE_FLAG_HAS_SERDES,
+> +		.flags = IMX_PCIE_FLAG_HAS_SERDES |
+> +			 IMX_PCIE_FLAG_MONITOR_DEV,
+>  		.clk_names = imx8mq_clks,
+>  		.clks_cnt = ARRAY_SIZE(imx8mq_clks),
+>  		.ltssm_off = IMX95_PE0_GEN_CTRL_3,
+> @@ -1687,6 +1848,8 @@ DECLARE_PCI_FIXUP_CLASS_HEADER(PCI_VENDOR_ID_SYNOPSYS, 0xabcd,
+>  
+>  static int __init imx_pcie_init(void)
+>  {
+> +	int ret;
+> +
+>  #ifdef CONFIG_ARM
+>  	struct device_node *np;
+>  
+> @@ -1705,7 +1868,17 @@ static int __init imx_pcie_init(void)
+>  	hook_fault_code(8, imx6q_pcie_abort_handler, SIGBUS, 0,
+>  			"external abort on non-linefetch");
+>  #endif
+> +	ret = bus_register_notifier(&pci_bus_type, &imx_pcie_nb);
+> +	if (ret)
+> +		return ret;
+
+I think this should go in imx6_pcie_probe().
+
+>  	return platform_driver_register(&imx_pcie_driver);
+>  }
+> +
+> +static void __exit imx_pcie_exit(void)
+> +{
+> +	bus_unregister_notifier(&pci_bus_type, &imx_pcie_nb);
+
+It looks like this driver is removable?
+
+What happens when an external abort occurs after the
+imx6q_pcie_abort_handler() text is removed?
+
+> +}
+> +
+>  device_initcall(imx_pcie_init);
+> +__exitcall(imx_pcie_exit);
+> 
+> -- 
+> 2.34.1
+> 
 
