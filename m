@@ -1,88 +1,88 @@
-Return-Path: <bpf+bounces-30890-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-30891-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1EA178D440C
-	for <lists+bpf@lfdr.de>; Thu, 30 May 2024 05:24:47 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id D27028D4410
+	for <lists+bpf@lfdr.de>; Thu, 30 May 2024 05:25:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A7E5C1F231E7
-	for <lists+bpf@lfdr.de>; Thu, 30 May 2024 03:24:46 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8E81E288076
+	for <lists+bpf@lfdr.de>; Thu, 30 May 2024 03:25:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B858A52F74;
-	Thu, 30 May 2024 03:24:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD4B65647B;
+	Thu, 30 May 2024 03:25:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="IE2jKDm0"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="gFbOERoM"
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EEAFF47F60
-	for <bpf@vger.kernel.org>; Thu, 30 May 2024 03:24:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE5CD51C5A
+	for <bpf@vger.kernel.org>; Thu, 30 May 2024 03:25:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717039480; cv=none; b=cqLJoj9B1hXxWjHcCv4AsE+RfqO69Sv2A3Peb8ygcFDrVDjJ4Y3P2mGOJrcajR1INcqK2PJLTVtXj/3eU1raxYTjm/jGnQdWsNSsGyH8WnsYxMVh80siBguWENpTgzUfmKumCxLweXnzKJfaH92AitmT6OIx+F9bY+/yNQ+kSHg=
+	t=1717039511; cv=none; b=TeyQba9hcmBlVgL2nlXmPc0/9YfjBr4JlZNEu3GBKQwaH96ci5mqGooyWtkMn8cie4YSYYdol4XIV3f3YDv0HGi3Qs1OWgucsSKBjQJr2c8TkI1VP43R2aLNGdKk4RJz9CdYmhO0VJJuKRqRDsJosgakm5/c8uHD4bXuiSIu++s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717039480; c=relaxed/simple;
-	bh=a+8/wSWGurAyL1xP57PH/iWopIzIysBpD7hmI2WgIbw=;
+	s=arc-20240116; t=1717039511; c=relaxed/simple;
+	bh=gvyjZd5IaiTDWjDUYVA8c6LUGBpslShBCIPBi4+02T8=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=CnCX2QfPVCQhW/B+FAKer6e/40WZEB5jFpCJkz8JOPrIAdM9jicaSdxlmDUvhNQreJlHNtP47A64xQc5MAma0AvQ7bPVkX9eLzfqVnZfrDUkOcwT6Qvq5ZT6O1rS8g9nesuL0OLc+bwzkTz9tL7aeP7QVmqN6+aOXPaYl40Jhf8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=IE2jKDm0; arc=none smtp.client-ip=170.10.129.124
+	 To:Cc:Content-Type; b=dIoeAuc0YOaDiKQboTMI1WHKVgIs8cJWOvz16QY7Sc+RVNhqTzbmcmGs7n6cujfH8JO/fjlGtcrp7qlxm8NeVnMq9NwD2Hf36liPLxsv242ISrSYaUIk5UGyNC6Vhd94RzxjbkOMOe4z1JKTnJCWFrQIqYOQDlq2HVLoNYu6eQc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=gFbOERoM; arc=none smtp.client-ip=170.10.133.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1717039478;
+	s=mimecast20190719; t=1717039508;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=a+8/wSWGurAyL1xP57PH/iWopIzIysBpD7hmI2WgIbw=;
-	b=IE2jKDm0bTYZzfm7rdDyeS/9Ld0DzLGee7aiyd++w5/zVrIJ5l/WwzJtl14ydD2ajo3x7v
-	9uceTCGB+LEgsSsP9MWEt24o6ZxqM3eG0cneMWW+ZuRZAO1sbotQGuknHV/zYt5tiftEpl
-	cZ4+MfqeqRJqAixkBlnXALwaU4PtpKs=
-Received: from mail-pj1-f69.google.com (mail-pj1-f69.google.com
- [209.85.216.69]) by relay.mimecast.com with ESMTP with STARTTLS
+	bh=gvyjZd5IaiTDWjDUYVA8c6LUGBpslShBCIPBi4+02T8=;
+	b=gFbOERoMGcfFjcdZXZxy671jrTygupA+LZCzzUyZtlpk+DUZoY8VuiLTji/N1hUVInR+dO
+	bsQAgU9A/z97zJvENwj68/TbcQbtAKWLHWQaSokPIZq2+kpuuC9wJ/ty3GJWgYM3PuPeqQ
+	QOur2Nf7j8BUs87bUiZAvz3x5Uc/TMg=
+Received: from mail-pj1-f70.google.com (mail-pj1-f70.google.com
+ [209.85.216.70]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-591-sWa7sg9UOJaZ6K5So2OrcA-1; Wed, 29 May 2024 23:24:36 -0400
-X-MC-Unique: sWa7sg9UOJaZ6K5So2OrcA-1
-Received: by mail-pj1-f69.google.com with SMTP id 98e67ed59e1d1-2c1afd956a6so68171a91.1
-        for <bpf@vger.kernel.org>; Wed, 29 May 2024 20:24:36 -0700 (PDT)
+ us-mta-68-HC3ZN_upNb-x4eGRaba2YQ-1; Wed, 29 May 2024 23:25:07 -0400
+X-MC-Unique: HC3ZN_upNb-x4eGRaba2YQ-1
+Received: by mail-pj1-f70.google.com with SMTP id 98e67ed59e1d1-2c1ab9e588dso397243a91.3
+        for <bpf@vger.kernel.org>; Wed, 29 May 2024 20:25:06 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1717039475; x=1717644275;
+        d=1e100.net; s=20230601; t=1717039506; x=1717644306;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=a+8/wSWGurAyL1xP57PH/iWopIzIysBpD7hmI2WgIbw=;
-        b=wTqK13rnM7n3QOxCFnqMBwIxlek2pNHPpHCnpctZbq6+QaB2nWo419ZbCgMOHhfupf
-         XjMFqNB1OQlvKmh90pkMWtOpllKfrHPYlL7XQbppUqBgzIEumWcIDUsr0z6pkdApp3cJ
-         oyxh3zHUWI73gj3nb+79N5W2YLI6un8+jWJgTfB/FAnyZ32MndG4tvG+bRV5JyeIdLHz
-         C+SE+BXemayyR0K4ULu0+ts3B4wQIsGNYLK2Xgbz8ToS5fNk7Lf4VUsA5OjKuU2j+Wgb
-         RzQzjCPqM0LNYRHYPGlMIBlPHY5iWbxY6NR5rmTj5NHVadv1jjZYwDNo3HfXYC7+FhmW
-         eo4g==
-X-Forwarded-Encrypted: i=1; AJvYcCXLklO7TSY7KTah2KXe2OQWo86TJjY40YRp7NmRR6Tti2o6mX7Nb1fjdtexce7zCWWqUcTu4CpHfHtXcw+qAzkC5p67
-X-Gm-Message-State: AOJu0Yzina0MGxUF6I0GMSRWI+j6Y7hUvmfcOxu12hA/eXkVWMJS2H9f
-	Yh8tCSMJ096Jmu1n869dk48YMNbL5RQGeCUg+xKYvvyDgdehbRHwT1sI+M1cUEpG0hzndgHyDxA
-	FlwiuFNN+2Fjx6DpATES67ra+7rx1BXawCfIfDlD7KYyICXsMcwZGBTxBnY2tg0NYVJ0cm+Yy/0
-	Jta8/A1up+DV/yQYYhefiQPmD0
-X-Received: by 2002:a17:90a:398a:b0:2af:a2a:ad67 with SMTP id 98e67ed59e1d1-2c1abc12489mr1001957a91.4.1717039475260;
-        Wed, 29 May 2024 20:24:35 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHnGrS/Tpu0K+sc6kW8BJyvn+oBs4u8ZwjRYuo5hvIzg+1YBpSRBjPcptyuj5g5pFuW4H/euGjPq4Ov1Fodj2I=
-X-Received: by 2002:a17:90a:398a:b0:2af:a2a:ad67 with SMTP id
- 98e67ed59e1d1-2c1abc12489mr1001935a91.4.1717039474765; Wed, 29 May 2024
- 20:24:34 -0700 (PDT)
+        bh=gvyjZd5IaiTDWjDUYVA8c6LUGBpslShBCIPBi4+02T8=;
+        b=kZkq8eLN/ljZPt4ttP1Jijy+DLvNIabN6jIqJH7uie3BbVpufIWK6t8Hf3rtCvT12c
+         NWWLhYyMnA1ph5ic42+BMGziyPWS1YS50h74F/a/7EWRglZ+u1p5ivzJFKvwvdrjL7vI
+         hKD9lbDTLAJ9h8ABgePChyMFf6VXsHjnXQ77689s5PrpwXU/82kwRkWxN8r4Qu6bxJ5K
+         rUVygUnTrp1EXiY0b9oMEOaSFjHUxUkYuhzQBX270e4ISwXhkqOesdsWdSpX2+qKUoqB
+         Scx+chlnyZKJasS3OOmoLDw/8ymhgiWe8d+gr5rfWwo8Rjwn8kpI99tlNqMCTEUg7G4X
+         +FPg==
+X-Forwarded-Encrypted: i=1; AJvYcCVlq937EZshp+pSYiKUVwt2XMBYQoqcZ/t7VCMVxz2fzgFMHoce/EBS6vmkFe828k1gxP3iBi45Zw9aCYfDyinAfrDI
+X-Gm-Message-State: AOJu0YxqvzHD2r2sI9qnx5SIJpV9ETEDQ1AY6aG0TQjPjMzBDBV1iAYU
+	ngw2J3KCvOkJE1K1mUOohLvBJWMfH/4IisbplaJBNmdhrcWizj9gLiWH0p2tEjZfnl9fXQpIzMY
+	m/pYctmwRF29OwaGtbXusRrY1UgWVBpWUlqhBPZoeTkXX8uZ9whLjFoArJwV33LgmjKDyUFeMhP
+	aFhFX7XUVU1qSBJJGeUGXzuBEaO9qyW83T
+X-Received: by 2002:a17:90b:360f:b0:2bf:8824:c043 with SMTP id 98e67ed59e1d1-2c1ab9fb68dmr1011592a91.18.1717039505527;
+        Wed, 29 May 2024 20:25:05 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IG96xKooU/90RmHTSiFiV3oOPsdUF20/3dw7DdogIGRjKcpmQnv/lRyL3JORNQzenL8VZoz7eZ4oHhGnDiVoTc=
+X-Received: by 2002:a17:90b:360f:b0:2bf:8824:c043 with SMTP id
+ 98e67ed59e1d1-2c1ab9fb68dmr1011570a91.18.1717039505002; Wed, 29 May 2024
+ 20:25:05 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240508080514.99458-1-xuanzhuo@linux.alibaba.com> <20240508080514.99458-7-xuanzhuo@linux.alibaba.com>
-In-Reply-To: <20240508080514.99458-7-xuanzhuo@linux.alibaba.com>
+References: <20240508080514.99458-1-xuanzhuo@linux.alibaba.com> <20240508080514.99458-8-xuanzhuo@linux.alibaba.com>
+In-Reply-To: <20240508080514.99458-8-xuanzhuo@linux.alibaba.com>
 From: Jason Wang <jasowang@redhat.com>
-Date: Thu, 30 May 2024 11:24:23 +0800
-Message-ID: <CACGkMEte0SF-Mo=y5knNODpAtB0jra3rst3rR1kGNPZLY23hjw@mail.gmail.com>
-Subject: Re: [PATCH net-next 6/7] virtio_net: separate receive_mergeable
+Date: Thu, 30 May 2024 11:24:53 +0800
+Message-ID: <CACGkMEswH8X0utO-ORZ8g-4UELfhxxDxdAaycwxUdVR2uxw_ww@mail.gmail.com>
+Subject: Re: [PATCH net-next 7/7] virtio_net: separate receive_buf
 To: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
 Cc: netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>, 
 	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
@@ -95,8 +95,8 @@ Content-Transfer-Encoding: quoted-printable
 On Wed, May 8, 2024 at 4:05=E2=80=AFPM Xuan Zhuo <xuanzhuo@linux.alibaba.co=
 m> wrote:
 >
-> This commit separates the function receive_mergeable(),
-> put the logic of appending frag to the skb as an independent function.
+> This commit separates the function receive_buf(), then we wrap the logic
+> of handling the skb to an independent function virtnet_receive_done().
 > The subsequent commit will reuse it.
 >
 > Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
