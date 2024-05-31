@@ -1,160 +1,218 @@
-Return-Path: <bpf+bounces-31022-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-31023-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 49BA68D61C5
-	for <lists+bpf@lfdr.de>; Fri, 31 May 2024 14:31:14 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4A4148D624D
+	for <lists+bpf@lfdr.de>; Fri, 31 May 2024 15:01:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F36232877F8
-	for <lists+bpf@lfdr.de>; Fri, 31 May 2024 12:31:12 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C66201F270FA
+	for <lists+bpf@lfdr.de>; Fri, 31 May 2024 13:01:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1AC51158D65;
-	Fri, 31 May 2024 12:30:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF8871581FB;
+	Fri, 31 May 2024 13:01:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="U3R8Tcdz"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iBVOefn0"
 X-Original-To: bpf@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D2B65158862;
-	Fri, 31 May 2024 12:30:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D203D158A1D
+	for <bpf@vger.kernel.org>; Fri, 31 May 2024 13:01:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717158639; cv=none; b=dF0BGf1SJ7YCPvlZzSsK6dLGQSobs8VvAw06pSiYf+lhrYVPpHDZnsK2LkScW5x2/V2akjTN8SN5vW1LqaZ1BVZE4ZQqsBaEMCruwXDnSLMVx28NI9LAJVvAsl/4AH5q78WijDirJocEi5sX2SjtyWcBkxuYhg+KxgDp+IW5jmE=
+	t=1717160474; cv=none; b=e4xKUClxhxCh+qsnZCt3TR2NlOokCtnSS92iAPwU0rogQA28AFXOqgc67TNA85x4lWA0FbDzgJ7h4rApcgdPDY7pjnC9moXpPCtnQaKwC/iZkE+pAzwV1JOpWXOqf0M/pxYeiJMcDpO+DWZBFkVEgnuqJ6hkZULbjIs8kPGgpTI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717158639; c=relaxed/simple;
-	bh=elMV5nlVUCpXGxL/arb3/iQCax33bq4ad5idfGKdJL8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=tzbGuvdJ3Ozqwr+u6QnXjpxvHgV7pqYUPezO7naT74O+mjVb4ftOO6bldceelTfTUVRXoCbAga2LOtNAS4fXxBDe5b9BVku+oeBKpW7H9fjMiDWHltfP8T2qL4HuCoOqwoKBYf8Evc5Laj0TqgRHvEtK25RuHmsr8AJoN363TCc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=U3R8Tcdz; arc=none smtp.client-ip=192.198.163.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1717158638; x=1748694638;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=elMV5nlVUCpXGxL/arb3/iQCax33bq4ad5idfGKdJL8=;
-  b=U3R8TcdzJZWV8rKGKK6HC74C4JJypA+e60JfAzFF3dHyA4Vq4qtt2yuV
-   26IEGpISfc4OgDVKUxqlZopJ3rTV1VtYmBznKIJT5/7b7gWWrzke8rwuz
-   uv2CVIEI9ITvfpgSNWu5iZdb6kuhIeoHMnnguSJ0SlG2jh831L8/PIe0W
-   RwXAlbk/Ak4A67mQ5ArU4AczWouLk6xPoI7Y1hmWGqNOH8cRMuyWkotR1
-   Qd7myVd90IFnBbWj5ReL5odTSVMLTw0iyHEp1iUNaRSXuybU3NrHUdVst
-   tIhjqlFybuxsxGl9Lbqg92TALJhj65sy1JSuaTzdGuP6b8zWZGMEyCaxR
-   w==;
-X-CSE-ConnectionGUID: 0FDGtSiYQsiM/jgrw0thZg==
-X-CSE-MsgGUID: Q1q3DAzURoGm8yBpXIReJQ==
-X-IronPort-AV: E=McAfee;i="6600,9927,11088"; a="39093349"
-X-IronPort-AV: E=Sophos;i="6.08,204,1712646000"; 
-   d="scan'208";a="39093349"
-Received: from fmviesa002.fm.intel.com ([10.60.135.142])
-  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 May 2024 05:30:28 -0700
-X-CSE-ConnectionGUID: i98rGWf7SXK/HkAiegwFTA==
-X-CSE-MsgGUID: 6ibuqBWfQRe899Pf5ixvdg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.08,204,1712646000"; 
-   d="scan'208";a="59321521"
-Received: from unknown (HELO 0610945e7d16) ([10.239.97.151])
-  by fmviesa002.fm.intel.com with ESMTP; 31 May 2024 05:30:25 -0700
-Received: from kbuild by 0610945e7d16 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1sD1Oo-000H4b-2B;
-	Fri, 31 May 2024 12:30:22 +0000
-Date: Fri, 31 May 2024 20:29:28 +0800
-From: kernel test robot <lkp@intel.com>
-To: Benjamin Tissoires <bentiss@kernel.org>,
-	Shuah Khan <skhan@linuxfoundation.org>,
-	Jiri Kosina <jikos@kernel.org>, Jonathan Corbet <corbet@lwn.net>,
-	Alexei Starovoitov <ast@kernel.org>
-Cc: oe-kbuild-all@lists.linux.dev, linux-kselftest@vger.kernel.org,
-	linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-	linux-input@vger.kernel.org, linux-doc@vger.kernel.org,
-	Benjamin Tissoires <bentiss@kernel.org>
-Subject: Re: [PATCH HID 03/13] HID: bpf: implement HID-BPF through
- bpf_struct_ops
-Message-ID: <202405312035.U1rZN04z-lkp@intel.com>
-References: <20240528-hid_bpf_struct_ops-v1-3-8c6663df27d8@kernel.org>
+	s=arc-20240116; t=1717160474; c=relaxed/simple;
+	bh=VAAXDEDYBPQ/MeAs5eJw1t8zdZK9YnAZg77cRVOX414=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=oFQLoni9BGfMUlzzOUA762juJeiyxuCUtm3YHHkD2DJiy5+1lGOYT0OLsqdmnuxFYaoWupsVQd7Giy0Q97OXpKexVQCt9dKh/vTwPGNBd0UoDvka7QqW7yIRHq0G4HRtGLuA4ssaW73s9fw6n4hzVPYtTX/ZgHVLzbDwyHgjVDs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=iBVOefn0; arc=none smtp.client-ip=209.85.214.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-1f6342c5faaso6666175ad.2
+        for <bpf@vger.kernel.org>; Fri, 31 May 2024 06:01:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1717160472; x=1717765272; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=f05WHVnGxBtGQVtrJ9BF8vSFxzq0Ph/XQHusiG68p9M=;
+        b=iBVOefn01oD7CaCYx4r9FM5O1tozxopHT9aFfSOjxCvrJWXqXZiZBdikchM8ii8QS3
+         QBJ0vVfXbabAiOMG0pR17cicoKF4wNVetDnbZnVeZCYja52cQsfWDbp0NAaPD1deTcrg
+         lUFK1HQUr4+eIdq197HkZNflyPygvHFO1cbs/I7aCKgbveBX4xVQw/XSxrmuMMvXcgmu
+         Er8Gt6WzuaKJy572cGbWtQenBTMP1l/yBGxjoCaAaAg4pVylDiZ0CRBEZUSZyHx24Ypu
+         lVSwqfvLccFvn2NZpQP7EUgwFKtMVNBK28NZpwawL/rW53W8fMAbhWxwaTYYWt8gbfES
+         JEig==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1717160472; x=1717765272;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=f05WHVnGxBtGQVtrJ9BF8vSFxzq0Ph/XQHusiG68p9M=;
+        b=ICqN62iKQa6V76Qjs36YvsqhMHtZgoPsw+qaV3TWH7heEX2d7sPl+EMzvlurmjsqzr
+         Mcm374Se4iH2K0oPXLTzmBqIOQdqOE4M3bktuNmPvTZ+8rVb0NqSXBv0W/F0nP36RDbW
+         s2jb1537tpTJSSHXFX/8YpAPlwoBAmzZD50B7FvvYfVmHIJT5pquS/+7Ac5CSVXIaOg6
+         14X+S/qtcrnsAk9vxKPC3kkaVRF/yHEZz0qZ9SXPOyWw5UNu7typ3npAha3+Gml6kBi6
+         Z8kj4tVoclIGtFx+SmZ9Obvqw0nu+v33bf3t2LEHhkGTjlOa3lfCQe742OogeEBWiStt
+         KdCQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUZ4ssXhBBwePBkNcTW2v3oXY7VXoTdOKO6LwgHYDEfMWQdspOIJywK7rFvsy2IOo3kltCDpHjgsh5pMrbIQ6BCDM6k
+X-Gm-Message-State: AOJu0Yx56d8M5BOt2BR59o1XsCVt0V1W5a50op8u7K8yceu3V71jpmpW
+	YXq07S0joJ5t5OsIi4mGkMR4RXLwBtDAN9Y3oOtScyVJluvLTaRV
+X-Google-Smtp-Source: AGHT+IGuhqTa0lPUTTxarErgnh1+cgWBlkYL/EOAYUX8GkIrGtBOU/oCkPDqwL3y2WZCDnte1dz2NA==
+X-Received: by 2002:a17:902:d4c9:b0:1ea:201:5843 with SMTP id d9443c01a7336-1f636fd95e5mr20456075ad.6.1717160471720;
+        Fri, 31 May 2024 06:01:11 -0700 (PDT)
+Received: from ?IPV6:240d:1a:2e0:8a00:2ef0:15d5:775:9d93? ([240d:1a:2e0:8a00:2ef0:15d5:775:9d93])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-1f632338adasm15860965ad.16.2024.05.31.06.01.08
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 31 May 2024 06:01:11 -0700 (PDT)
+Message-ID: <576c2804-a1a3-4499-8ede-17ea93d3e7d4@gmail.com>
+Date: Fri, 31 May 2024 22:01:06 +0900
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240528-hid_bpf_struct_ops-v1-3-8c6663df27d8@kernel.org>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] bpftool: Query only cgroup-related attach types
+To: Quentin Monnet <qmo@kernel.org>, bpf@vger.kernel.org
+Cc: daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev,
+ eddyz87@gmail.com, song@kernel.org, yonghong.song@linux.dev,
+ john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
+ haoluo@google.com, jolsa@kernel.org
+References: <20240529131028.41200-1-tadakentaso@gmail.com>
+ <ce5befac-f227-4d2a-bf4b-14e8c7d49052@kernel.org>
+Content-Language: en-US
+From: Kenta Tada <tadakentaso@gmail.com>
+In-Reply-To: <ce5befac-f227-4d2a-bf4b-14e8c7d49052@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Hi Benjamin,
+On 2024/05/30 5:22, Quentin Monnet wrote:
+> On 29/05/2024 14:10, Kenta Tada wrote:
+>> When CONFIG_NETKIT=y,
+>> bpftool-cgroup shows error even if the cgroup's path is correct:
+>>
+>> $ bpftool cgroup tree /sys/fs/cgroup
+>> CgroupPath
+>> ID       AttachType      AttachFlags     Name
+>> Error: can't query bpf programs attached to /sys/fs/cgroup: No such device or address
+>>
+>> From strace and kernel tracing, I found netkit returned ENXIO and this command failed.
+>> I think this AttachType(BPF_NETKIT_PRIMARY) is not relevant to cgroup.
+>>
+>> bpftool-cgroup should query just only cgroup-related attach types.
+>>
+>> Signed-off-by: Kenta Tada <tadakentaso@gmail.com>
+>> ---
+>>  tools/bpf/bpftool/cgroup.c | 47 +++++++++++++++++++++++++++++++++-----
+>>  1 file changed, 41 insertions(+), 6 deletions(-)
+>>
+>> diff --git a/tools/bpf/bpftool/cgroup.c b/tools/bpf/bpftool/cgroup.c
+>> index af6898c0f388..bb2703aa4756 100644
+>> --- a/tools/bpf/bpftool/cgroup.c
+>> +++ b/tools/bpf/bpftool/cgroup.c
+>> @@ -19,6 +19,39 @@
+>>  
+>>  #include "main.h"
+>>  
+>> +static const bool cgroup_attach_types[] = {
+>> +	[BPF_CGROUP_INET_INGRESS] = true,
+>> +	[BPF_CGROUP_INET_EGRESS] = true,
+>> +	[BPF_CGROUP_INET_SOCK_CREATE] = true,
+>> +	[BPF_CGROUP_INET_SOCK_RELEASE] = true,
+>> +	[BPF_CGROUP_INET4_BIND] = true,
+>> +	[BPF_CGROUP_INET6_BIND] = true,
+>> +	[BPF_CGROUP_INET4_POST_BIND] = true,
+>> +	[BPF_CGROUP_INET6_POST_BIND] = true,
+>> +	[BPF_CGROUP_INET4_CONNECT] = true,
+>> +	[BPF_CGROUP_INET6_CONNECT] = true,
+>> +	[BPF_CGROUP_UNIX_CONNECT] = true,
+>> +	[BPF_CGROUP_INET4_GETPEERNAME] = true,
+>> +	[BPF_CGROUP_INET6_GETPEERNAME] = true,
+>> +	[BPF_CGROUP_UNIX_GETPEERNAME] = true,
+>> +	[BPF_CGROUP_INET4_GETSOCKNAME] = true,
+>> +	[BPF_CGROUP_INET6_GETSOCKNAME] = true,
+>> +	[BPF_CGROUP_UNIX_GETSOCKNAME] = true,
+>> +	[BPF_CGROUP_UDP4_SENDMSG] = true,
+>> +	[BPF_CGROUP_UDP6_SENDMSG] = true,
+>> +	[BPF_CGROUP_UNIX_SENDMSG] = true,
+>> +	[BPF_CGROUP_UDP4_RECVMSG] = true,
+>> +	[BPF_CGROUP_UDP6_RECVMSG] = true,
+>> +	[BPF_CGROUP_UNIX_RECVMSG] = true,
+>> +	[BPF_CGROUP_SOCK_OPS] = true,
+>> +	[BPF_CGROUP_DEVICE] = true,
+>> +	[BPF_CGROUP_SYSCTL] = true,
+>> +	[BPF_CGROUP_GETSOCKOPT] = true,
+>> +	[BPF_CGROUP_SETSOCKOPT] = true,
+>> +	[BPF_LSM_CGROUP] = true,
+>> +	[__MAX_BPF_ATTACH_TYPE] = false,
+>> +};
+> 
+> 
+> Thanks for this!
+> 
+> I can't say I'm glad to see another version of the list of
+> cgroup-related attach types (in addition to HELP_SPEC_ATTACH_TYPES and
+> to the manual page). But the alternative would be to explicitly skip
+> BPF_NETKIT_PRIMARY, which is not great, either. Too bad we don't have a
+> way to check whether the type is cgroup-related in libbpf or from the
+> bpf.h headers; but I don't think there's much interest to add it there,
+> so we'll probably have the array. We should account for it in
+> tools/testing/selftests/bpf/test_bpftool_synctypes.py, but I can do this
+> as a follow-up if you don't feel like messing up with the Python script.
 
-kernel test robot noticed the following build warnings:
+I think some bpf management tools require how to get cgroup-related attach types.
+So I'm interested in adding the new API to check whether the type is cgroup-related in libbpf.
 
-[auto build test WARNING on 70ec81c2e2b4005465ad0d042e90b36087c36104]
+Thank you for the information about test_bpftool_synctypes.py.
+BTW, I'm getting some syntax warnings when I use test_bpftool_synctypes.py in Python 3.12.
+Python 3.12 changes the behavior of incorrect escape sequences.
+To try test_bpftool_synctypes, I add r to the head and fix it in my local environment.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Benjamin-Tissoires/HID-rename-struct-hid_bpf_ops-into-hid_ops/20240528-212222
-base:   70ec81c2e2b4005465ad0d042e90b36087c36104
-patch link:    https://lore.kernel.org/r/20240528-hid_bpf_struct_ops-v1-3-8c6663df27d8%40kernel.org
-patch subject: [PATCH HID 03/13] HID: bpf: implement HID-BPF through bpf_struct_ops
-config: i386-buildonly-randconfig-002-20240531 (https://download.01.org/0day-ci/archive/20240531/202405312035.U1rZN04z-lkp@intel.com/config)
-compiler: gcc-7 (Ubuntu 7.5.0-6ubuntu2) 7.5.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240531/202405312035.U1rZN04z-lkp@intel.com/reproduce)
+> 
+> 
+>> +
+>>  #define HELP_SPEC_ATTACH_FLAGS						\
+>>  	"ATTACH_FLAGS := { multi | override }"
+>>  
+>> @@ -187,14 +220,16 @@ static int cgroup_has_attached_progs(int cgroup_fd)
+>>  	bool no_prog = true;
+>>  
+>>  	for (type = 0; type < __MAX_BPF_ATTACH_TYPE; type++) {
+>> -		int count = count_attached_bpf_progs(cgroup_fd, type);
+>> +		if (cgroup_attach_types[type]) {
+> 
+> 
+> Please change here:
+> 
+>                 int count;
+> 
+>                 if (!cgroup_attach_types[type])
+>                         continue;
+> 
+> And no need to further indent the rest of the block.
+> 
+> 
+>> +			int count = count_attached_bpf_progs(cgroup_fd, type);
+>>  
+>> -		if (count < 0 && errno != EINVAL)
+>> -			return -1;
+>> +			if (count < 0 && errno != EINVAL)
+>> +				return -1;
+>>  
+>> -		if (count > 0) {
+>> -			no_prog = false;
+>> -			break;
+>> +			if (count > 0) {
+>> +				no_prog = false;
+>> +				break;
+>> +			}
+>>  		}
+>>  	}
+>>  
+> 
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202405312035.U1rZN04z-lkp@intel.com/
-
-All warnings (new ones prefixed by >>):
-
-   In file included from include/linux/bpf_verifier.h:7:0,
-                    from drivers/hid/bpf/hid_bpf_struct_ops.c:10:
-   drivers/hid/bpf/hid_bpf_struct_ops.c: In function 'hid_bpf_struct_ops_init':
->> include/linux/bpf.h:1844:50: warning: statement with no effect [-Wunused-value]
-    #define register_bpf_struct_ops(st_ops, type) ({ (void *)(st_ops); 0; })
-                                                     ^~~~~~~~~~~~~~~~
-   drivers/hid/bpf/hid_bpf_struct_ops.c:244:9: note: in expansion of macro 'register_bpf_struct_ops'
-     return register_bpf_struct_ops(&bpf_hid_bpf_ops, hid_bpf_ops);
-            ^~~~~~~~~~~~~~~~~~~~~~~
-
-
-vim +1844 include/linux/bpf.h
-
-c196906d50e360d Hou Tao          2021-10-25  1834  
-c196906d50e360d Hou Tao          2021-10-25  1835  int bpf_struct_ops_test_run(struct bpf_prog *prog, const union bpf_attr *kattr,
-c196906d50e360d Hou Tao          2021-10-25  1836  			    union bpf_attr __user *uattr);
-c196906d50e360d Hou Tao          2021-10-25  1837  #endif
-f6be98d19985411 Kui-Feng Lee     2024-01-19  1838  int bpf_struct_ops_desc_init(struct bpf_struct_ops_desc *st_ops_desc,
-f6be98d19985411 Kui-Feng Lee     2024-01-19  1839  			     struct btf *btf,
-f6be98d19985411 Kui-Feng Lee     2024-01-19  1840  			     struct bpf_verifier_log *log);
-1338b93346587a2 Kui-Feng Lee     2024-01-19  1841  void bpf_map_struct_ops_info_fill(struct bpf_map_info *info, struct bpf_map *map);
-1611603537a4b88 Kui-Feng Lee     2024-02-08  1842  void bpf_struct_ops_desc_release(struct bpf_struct_ops_desc *st_ops_desc);
-27ae7997a66174c Martin KaFai Lau 2020-01-08  1843  #else
-f6be98d19985411 Kui-Feng Lee     2024-01-19 @1844  #define register_bpf_struct_ops(st_ops, type) ({ (void *)(st_ops); 0; })
-85d33df357b6346 Martin KaFai Lau 2020-01-08  1845  static inline bool bpf_try_module_get(const void *data, struct module *owner)
-85d33df357b6346 Martin KaFai Lau 2020-01-08  1846  {
-85d33df357b6346 Martin KaFai Lau 2020-01-08  1847  	return try_module_get(owner);
-85d33df357b6346 Martin KaFai Lau 2020-01-08  1848  }
-85d33df357b6346 Martin KaFai Lau 2020-01-08  1849  static inline void bpf_module_put(const void *data, struct module *owner)
-85d33df357b6346 Martin KaFai Lau 2020-01-08  1850  {
-85d33df357b6346 Martin KaFai Lau 2020-01-08  1851  	module_put(owner);
-85d33df357b6346 Martin KaFai Lau 2020-01-08  1852  }
-85d33df357b6346 Martin KaFai Lau 2020-01-08  1853  static inline int bpf_struct_ops_map_sys_lookup_elem(struct bpf_map *map,
-85d33df357b6346 Martin KaFai Lau 2020-01-08  1854  						     void *key,
-85d33df357b6346 Martin KaFai Lau 2020-01-08  1855  						     void *value)
-85d33df357b6346 Martin KaFai Lau 2020-01-08  1856  {
-85d33df357b6346 Martin KaFai Lau 2020-01-08  1857  	return -EINVAL;
-85d33df357b6346 Martin KaFai Lau 2020-01-08  1858  }
-68b04864ca425d1 Kui-Feng Lee     2023-03-22  1859  static inline int bpf_struct_ops_link_create(union bpf_attr *attr)
-68b04864ca425d1 Kui-Feng Lee     2023-03-22  1860  {
-68b04864ca425d1 Kui-Feng Lee     2023-03-22  1861  	return -EOPNOTSUPP;
-68b04864ca425d1 Kui-Feng Lee     2023-03-22  1862  }
-1338b93346587a2 Kui-Feng Lee     2024-01-19  1863  static inline void bpf_map_struct_ops_info_fill(struct bpf_map_info *info, struct bpf_map *map)
-1338b93346587a2 Kui-Feng Lee     2024-01-19  1864  {
-1338b93346587a2 Kui-Feng Lee     2024-01-19  1865  }
-68b04864ca425d1 Kui-Feng Lee     2023-03-22  1866  
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
 
