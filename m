@@ -1,256 +1,262 @@
-Return-Path: <bpf+bounces-31000-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-31004-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 009E18D5C77
-	for <lists+bpf@lfdr.de>; Fri, 31 May 2024 10:14:42 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 693C08D5E5E
+	for <lists+bpf@lfdr.de>; Fri, 31 May 2024 11:34:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EE8511C21BCE
-	for <lists+bpf@lfdr.de>; Fri, 31 May 2024 08:14:40 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2104F2876F4
+	for <lists+bpf@lfdr.de>; Fri, 31 May 2024 09:34:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D9EF7B3EB;
-	Fri, 31 May 2024 08:13:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 842181422C1;
+	Fri, 31 May 2024 09:33:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="T7zlrYX2"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="2C4S76QU";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="j0ilQ40F";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="b77OsGwl";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="y5h1qKUz"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-lf1-f53.google.com (mail-lf1-f53.google.com [209.85.167.53])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 412B85588D;
-	Fri, 31 May 2024 08:13:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D137B7581D;
+	Fri, 31 May 2024 09:33:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717143207; cv=none; b=aFizwI2N7OIRrqq/OIw0WLXIwT8CO2XHdCdAptyYfi67VhzYkkdRAicemZfr2pKz2D4Q21DxXAJQsfyd0p+SMFdxP5HxavxKzLD/HpqAke3qwG5thHudq6/9MmetRFvbNu68u+e9ZZmLRkgHkLI2vGnGJoRTMELT7F4B4c1hmiI=
+	t=1717148025; cv=none; b=oCpD+V9leDPP5fL2VW5+aRUPS9Rd4LthfGkF3Tk+MeXFXD0IX7ECEe/yYDNpNfTx9M/q46aprcpXmS1TitR8zIcEjbPQvRUZx4xiYjHuKvReL9NcnwTdQJci0461BcK6cC9mW9GigWrE8Dy4rHn0YTL4ywjjvRIQYRcbVRRmTeE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717143207; c=relaxed/simple;
-	bh=wDyZkf28JsJ5TohSO2vSxwaGAZmLOJOoNv5aSa1U16w=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=cnhBpTn8p2fwB4MFwFc/cxXtOPhCdd0skN4BBhXVioNbhJGOtcaHnuYET4VbJMscbt4Gn57c6CDg2KbN/kkVKzHRVfEa4qcBaHD8HwIMSnycV4zNeUsIWYN0lBRAhza3pQJ7gSYGhK1ZP3y8pIc0w3IM5wPgZDTWQllJdzNVXWU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=T7zlrYX2; arc=none smtp.client-ip=209.85.167.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f53.google.com with SMTP id 2adb3069b0e04-52b7ebb2668so1991300e87.2;
-        Fri, 31 May 2024 01:13:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1717143203; x=1717748003; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=hwcwTxOA0LgSmJEDTw/wqCjtExC/6SA0GpZ98SrAk50=;
-        b=T7zlrYX29xoaErlFSZOTVH/+RHXCRi7qx4egYe4aY+VpQ9Q7DkKxp4AyZHwwpwMla0
-         eXg68dZimi2nSGcHdDgZrDpQXiPBqN0lIi04BMaUU4toYK3ds6XzrQEjAmjZ68+mMZLX
-         HaVqO8iStMkfPf3WgnNDG39L4flhzsAlXVF8SQIHBgNawef6eIwQ7E1dHb6Et5h8X344
-         GpDvpdupwJlggbxdUTQN9F8HsNflFcu82MzdiTo19/yWaxvmgCJZOQ1ibGnRS37OKL0F
-         1og1hidlk/kEShm24sDmBBhdJcfoS9FRFHifaLt2+DBVZFK8TKeqZcdCAwuePdSHMCTs
-         gaFQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1717143203; x=1717748003;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=hwcwTxOA0LgSmJEDTw/wqCjtExC/6SA0GpZ98SrAk50=;
-        b=QnUw+sVwEO2XQ1NRCg3DjLkUwdaSIb8C9+Nodp5LV8koPxlkIubYbR3OOq6ub7al/m
-         jFsH8MN2P0acJbqwkZ8BKFHqGuF3haUpL4CbQaCXZUFQNFqxHd8jVtuSdgH6yrclkFnl
-         3lQAg+CaATVqAfCjimJFOFW6ntSh/fL3z9JVwygmLgyWtGR1IdQQWTmSin4n8OLYflm+
-         GIxXSA+Eb4ApXMC+j6cwxF6cJkTDQnz8PyN2XM1XySxCkcWnSVGu3nGIdQ3KFpk9N+c/
-         wbtLk/xX2wnE2AIQTqawCeIfg7Yvf3IWB+uso7NMc+O7PG/1ipNaOqI5VZDdnkLItb1i
-         7m4w==
-X-Forwarded-Encrypted: i=1; AJvYcCXMjJyRTCcqZrEG2v9K7N62IaL9pxfu4PsXDbjkm/+R9tmaxrCpp3eLO0lAlpwrVTG/N19g6CJVvr89nK3Dpmh3Pr/KM2uAGd95I0yKz6sdvJcP+u5aG0EnuErrJw==
-X-Gm-Message-State: AOJu0Yxw2VXJEksjIFW7pcnc5cRyHH+PjLqjG7c5fNpdyjSc8IRI+Ij3
-	eutAKkNEObsMDY/2NFZeSIS7N0dqzKkCfIejw8/XkRO7J4Efk2igBFk53w==
-X-Google-Smtp-Source: AGHT+IEUDBohkxpKzw7dY/TJ4dRmwKLweh+N7S8ESJmRBO9axc+Y9g8dsQUVliE4ydd4hmbE60EjTw==
-X-Received: by 2002:a05:6512:2508:b0:529:b691:e37e with SMTP id 2adb3069b0e04-52b895715eemr1045142e87.40.1717143203005;
-        Fri, 31 May 2024 01:13:23 -0700 (PDT)
-Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a67eb621507sm59793966b.222.2024.05.31.01.13.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 31 May 2024 01:13:22 -0700 (PDT)
-From: Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Fri, 31 May 2024 10:13:21 +0200
-To: Hengqi Chen <hengqi.chen@gmail.com>
-Cc: Tony Ambardar <tony.ambardar@gmail.com>, bpf@vger.kernel.org,
-	dwarves@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Arnaldo Carvalho de Melo <acme@kernel.org>
-Subject: Re: Problem with BTF generation on mips64el
-Message-ID: <ZlmGoT9KiYLZd91S@krava>
-References: <ZlkoM6/PSxVcGM6X@kodidev-ubuntu>
- <CAEyhmHT_1N3xwLO2BwVK97ebrABJv52d5dWxzvuNNcF-OF5gKw@mail.gmail.com>
+	s=arc-20240116; t=1717148025; c=relaxed/simple;
+	bh=8gjoT+TE/4gg0f+5avpPGOGc8AONIb5ifzKpT6ZXcwE=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=ezzMY7eMv86Ynj8JViXlFGh//+hsTa6xjHbm90eJqoanQrdQEa6YDY8ZBoLf1LlbBqOqQeGtT9+c+OiID4569UBzeZvqN1h9tMzM73nGWpKh82gsxFCF2gfxd/A5OoyYRWPaoWp5/9GRkAYnEQeNHHBVg3+9XCoQsfclZ+3DcPA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=2C4S76QU; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=j0ilQ40F; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=b77OsGwl; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=y5h1qKUz; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id E94B41F81C;
+	Fri, 31 May 2024 09:33:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1717148020; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=BpUFTa1dewe3YkhU5VOZFY9dIPMuL7ZfkALMLa25ypg=;
+	b=2C4S76QUkLnMyJhMS3n1JXtMaEMxmhlKGrNi5oOY9Iei0ux4xJEpSwUDIBu4OWB4EVi8Fc
+	KT4wFnFgNNGHhRkVI+mo8lSTtBBXrQQ5ya8oU1/lgkFSu6bE5lVs0svSF0VItvQnw8OhJ6
+	FQR1uLE7AdOyJiAJH/KBUabWBYoZrW4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1717148020;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=BpUFTa1dewe3YkhU5VOZFY9dIPMuL7ZfkALMLa25ypg=;
+	b=j0ilQ40FCdAHLD0Ckw+QFwmO1U9OInYDiCMybIXTpUjXlKuawOD4PdXzA9978BHaNCS+6O
+	Tmok1FhxgWXD66Cg==
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1717148019; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=BpUFTa1dewe3YkhU5VOZFY9dIPMuL7ZfkALMLa25ypg=;
+	b=b77OsGwlvfpGYJeQdsEuU0i1rdrN3nA8p45wXqKUe9MhscqB0SpPIAUeNmEFQeELMLviGt
+	UgWZ3c/l0CYrdOSI0u1L8F3W6khOwDcb+WVj29z2oNgjFhPK7DmklGqKU7m/PPHCQx1ro5
+	mgJoeHolbmO+hbwTrBgidiFssRwaZuU=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1717148019;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=BpUFTa1dewe3YkhU5VOZFY9dIPMuL7ZfkALMLa25ypg=;
+	b=y5h1qKUzsPEuaYo9RplJOsl+dgFCZHqjV+0toux2jIT8eqsdle6VNfYgPwwtuI/Xcf98Wz
+	q5/UAZ0tq0QLP5AA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id C3088132C2;
+	Fri, 31 May 2024 09:33:39 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id FZAJL3OZWWZKHQAAD6G6ig
+	(envelope-from <vbabka@suse.cz>); Fri, 31 May 2024 09:33:39 +0000
+From: Vlastimil Babka <vbabka@suse.cz>
+Subject: [PATCH RFC 0/4] static key support for error injection functions
+Date: Fri, 31 May 2024 11:33:31 +0200
+Message-Id: <20240531-fault-injection-statickeys-v1-0-a513fd0a9614@suse.cz>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAEyhmHT_1N3xwLO2BwVK97ebrABJv52d5dWxzvuNNcF-OF5gKw@mail.gmail.com>
+X-B4-Tracking: v=1; b=H4sIAGuZWWYC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
+ vPSU3UzU4B8JSMDIxMDU2MD3bTE0pwS3cy8rNTkEqBa3eKSxJLM5OzUymJdM7MkcyMjo1RLwyR
+ zJaABBUWpaZkVYMOjlYLcnJVia2sB0kvgPXEAAAA=
+To: Akinobu Mita <akinobu.mita@gmail.com>, Christoph Lameter <cl@linux.com>, 
+ David Rientjes <rientjes@google.com>, Alexei Starovoitov <ast@kernel.org>, 
+ Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
+ "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>, 
+ Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>, 
+ "David S. Miller" <davem@davemloft.net>, 
+ Masami Hiramatsu <mhiramat@kernel.org>, 
+ Steven Rostedt <rostedt@goodmis.org>, Mark Rutland <mark.rutland@arm.com>
+Cc: Jiri Olsa <jolsa@kernel.org>, Roman Gushchin <roman.gushchin@linux.dev>, 
+ Hyeonggon Yoo <42.hyeyoo@gmail.com>, linux-kernel@vger.kernel.org, 
+ linux-mm@kvack.org, bpf@vger.kernel.org, linux-trace-kernel@vger.kernel.org, 
+ Vlastimil Babka <vbabka@suse.cz>
+X-Mailer: b4 0.13.0
+X-Spam-Level: 
+X-Spamd-Result: default: False [-2.80 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	SUSPICIOUS_RECIPS(1.50)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	RCVD_TLS_ALL(0.00)[];
+	ARC_NA(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	RCPT_COUNT_TWELVE(0.00)[20];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TO_DN_SOME(0.00)[];
+	TAGGED_RCPT(0.00)[];
+	MID_RHS_MATCH_FROM(0.00)[];
+	R_RATELIMIT(0.00)[to_ip_from(RL5nkphuxq5kxo98ppmuqoc8wo)];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	FREEMAIL_CC(0.00)[kernel.org,linux.dev,gmail.com,vger.kernel.org,kvack.org,suse.cz];
+	FREEMAIL_TO(0.00)[gmail.com,linux.com,google.com,kernel.org,iogearbox.net,linux.ibm.com,intel.com,davemloft.net,goodmis.org,arm.com];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	RCVD_COUNT_TWO(0.00)[2];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo]
+X-Spam-Score: -2.80
+X-Spam-Flag: NO
 
-On Fri, May 31, 2024 at 10:17:53AM +0800, Hengqi Chen wrote:
-> Hi Tony,
-> 
-> On Fri, May 31, 2024 at 9:30 AM Tony Ambardar <tony.ambardar@gmail.com> wrote:
-> >
-> > Hello,
-> >
-> > For some time now I'm seeing multiple issues during BTF generation while
-> > building recent kernels targeting mips64el, and would appreciate some help
-> > to understand and fix the problems.
-> >
-> > Some relate to resolve_btfids:
-> >
-> > >   LD      vmlinux
-> > >   BTFIDS  vmlinux
-> > > WARN: resolve_btfids: unresolved symbol bpf_verify_pkcs7_signature
-> > > WARN: resolve_btfids: unresolved symbol bpf_session_cookie
-> > > WARN: resolve_btfids: unresolved symbol bpf_lookup_user_key
-> > > WARN: resolve_btfids: unresolved symbol bpf_lookup_system_key
-> > > WARN: resolve_btfids: unresolved symbol bpf_key_put
-> > > WARN: resolve_btfids: unresolved symbol bpf_iter_task_next
-> > > WARN: resolve_btfids: unresolved symbol bpf_iter_css_task_new
-> > > WARN: resolve_btfids: unresolved symbol bpf_get_file_xattr
-> > > WARN: resolve_btfids: unresolved symbol bpf_ct_insert_entry
-> > > WARN: resolve_btfids: unresolved symbol bpf_cgroup_release
-> > > WARN: resolve_btfids: unresolved symbol bpf_cgroup_from_id
-> > > WARN: resolve_btfids: unresolved symbol bpf_cgroup_acquire
-> > > WARN: resolve_btfids: unresolved symbol bpf_arena_free_pages
-> > >   NM      System.map
-> > >   SORTTAB vmlinux
-> > >   OBJCOPY vmlinux.32
-> >
-> > These do not appear to be #ifdef-related and have similar past reports [1].
+Incomplete, help needed from ftrace/kprobe and bpf folks.
 
-I can reproduce the warning just for bpf_session_cookie,
-which has fix in progress:
-  https://lore.kernel.org/bpf/20240531071557.MvfIqkn7@linutronix.de/T/#t
+As previously mentioned by myself [1] and others [2] the functions
+designed for error injection can bring visible overhead in fastpaths
+such as slab or page allocation, because even if nothing hooks into them
+at a given moment, they are noninline function calls regardless of
+CONFIG_ options since commits 4f6923fbb352 ("mm: make should_failslab
+always available for fault injection") and af3b854492f3
+("mm/page_alloc.c: allow error injection").
 
-> >
-> > I also see many pahole failures during BTF encoding of modules, such as:
-> >
-> > >   CC [M]  net/ipv6/netfilter/nft_fib_ipv6.mod.o
-> > >   CC [M]  net/ipv6/netfilter/ip6t_REJECT.mod.o
-> > >   CC [M]  net/psample/psample.mod.o
-> > >   LD [M]  crypto/cmac.ko
-> > >   BTF [M] crypto/cmac.ko
-> > > die__process: DW_TAG_compile_unit, DW_TAG_type_unit, DW_TAG_partial_unit
-> > > or DW_TAG_skeleton_unit expected got member (0xd)!
-> 
-> The issue seems to be related to elfutils. Have you tried build from
-> the latest elfutils source ?
-> I saw the latest MIPS backend in elfutils already implemented the
-> reloc_simple_type hook.
+Live patching their callsites has been also suggested in both [1] and
+[2] threads, and this is an attempt to do that with static keys that
+guard the call sites. When disabled, the error injection functions still
+exist and are noinline, but are not being called. Any of the existing
+mechanisms that can inject errors should make sure to enable the
+respective static key. I have added that support to some of them but
+need help with the others.
 
-hi,
-+1, could you also check the pahole version you used?
+- the legacy fault injection, i.e. CONFIG_FAILSLAB and
+  CONFIG_FAIL_PAGE_ALLOC is handled in Patch 1, and can be passed the
+  address of the static key if it exists. The key will be activated if the
+  fault injection probability becomes non-zero, and deactivated in the
+  opposite transition. This also removes the overhead of the evaluation
+  (on top of the noninline function call) when these mechanisms are
+  configured in the kernel but unused at the moment.
 
-jirka
+- the generic error injection using kretprobes with
+  override_function_with_return is handled in patch 2. The
+  ALLOW_ERROR_INJECTION() annotation is extended so that static key
+  address can be passed, and the framework controls it when error
+  injection is enabled or disabled in debugfs for the function.
 
-> 
-> > >   LD [M]  lib/test_bpf.ko
-> > >   BTF [M] lib/test_bpf.ko
-> > > die__process: DW_TAG_compile_unit, DW_TAG_type_unit, DW_TAG_partial_unit
-> > > or DW_TAG_skeleton_unit expected got member (0xd)!
-> > >   LD [M]  lib/crc-ccitt.ko
-> > >   BTF [M] lib/crc-ccitt.ko
-> > > die__process_unit: DW_TAG_compile_unit (0x11) @ <0x9331> not handled!
-> > > die__process_unit: tag not supported 0x11 (compile_unit)!
-> > > die__process: got compile_unit unexpected tag after DW_TAG_compile_unit!
-> > >   LD [M]  lib/libcrc32c.ko
-> > >   BTF [M] lib/libcrc32c.ko
-> > > die__process_unit: DW_TAG_compile_unit (0x11) @ <0x99a5> not handled!
-> > > die__process_unit: tag not supported 0x11 (compile_unit)!
-> > > die__process: got compile_unit unexpected tag after DW_TAG_compile_unit!
-> > >   LD [M]  lib/ts_kmp.ko
-> > >   BTF [M] lib/ts_kmp.ko
-> > >   LD [M]  lib/ts_bm.ko
-> > >   BTF [M] lib/ts_bm.ko
-> > > die__process: DW_TAG_compile_unit, DW_TAG_type_unit, DW_TAG_partial_unit
-> > > or DW_TAG_skeleton_unit expected got member (0xd)!
-> > > die__process: DW_TAG_compile_unit, DW_TAG_type_unit, DW_TAG_partial_unit
-> > > or DW_TAG_skeleton_unit expected got member (0xd)!
-> >
-> > I have seen reports of various similar "die__" messages on the dwarves
-> > list and repo, with the hint of an elfutils connection [2] but nothing
-> > conclusive.
-> >
-> > Details of the git commit and build environment are as follows:
-> >
-> > > $ git log -1 --oneline  bpf/master
-> > > 9dfdb706e164 (bpf/master) selftests/bpf: fix inet_csk_accept prototype in
-> > > test_sk_storage_tracing.c
-> > >
-> > > $ lsb_release -a
-> > > Description:    Ubuntu 22.04.4 LTS
-> > >
-> > > $ cat gcc-compile.txt
-> > > ARCH=mips CROSS_COMPILE=mips64el-linux-gnuabi64- CC="ccache ${CROSS_COMPILE}gcc" make -j6
-> > >
-> > > $ mips64el-linux-gnuabi64-gcc --version
-> > > mips64el-linux-gnuabi64-gcc (Ubuntu 10.3.0-1ubuntu1) 10.3.0
-> > >
-> > > $ mips64el-linux-gnuabi64-ld --version
-> > > GNU ld (GNU Binutils for Ubuntu) 2.38
-> > >
-> > > $ pahole --version
-> > > v1.26
-> > >
-> > > $ ldd $(which pahole)
-> > >         linux-vdso.so.1 (0x00007fff16f3f000)
-> > >         libdw.so.1 => /lib/x86_64-linux-gnu/libdw.so.1 (0x00007fc39d42e000)
-> > >         libelf.so.1 => /lib/x86_64-linux-gnu/libelf.so.1 (0x00007fc39d410000)
-> > >         libz.so.1 => /lib/x86_64-linux-gnu/libz.so.1 (0x00007fc39d3f4000)
-> > >         libc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007fc39d1cb000)
-> > >         liblzma.so.5 => /lib/x86_64-linux-gnu/liblzma.so.5 (0x00007fc39d1a0000)
-> > >         libbz2.so.1.0 => /lib/x86_64-linux-gnu/libbz2.so.1.0 (0x00007fc39d18d000)
-> > >         /lib64/ld-linux-x86-64.so.2 (0x00007fc39d59d000)
-> > >
-> > > $ dpkg -s elfutils
-> > > Package: elfutils
-> > > ...
-> > > Version: 0.186-1build1
-> > > Depends: libasm1 (>= 0.132), libc6 (>= 2.34), libdw1 (= 0.186-1build1),
-> > > libelf1 (= 0.186-1build1), libstdc++6 (>= 4.1.1)
-> >
-> > For reference, I also attached the full .config and build log from the
-> > above.
-> >
-> > I should add this is not only a problem with the latest bpf/master but
-> > also appears to affect the 6.6.x LTS kernel, which I tested while building
-> > a mips64el OpenWrt distro image. That build environment employs the latest
-> > gcc 13.3, binutils 2.42, pahole 1.26, and elfutils 0.191.
-> >
-> > Not only do I see similar warnings from resolve_btfids and pahole, but
-> > while running the distro image I encounter module loading failures that
-> > suggest ELF corruption in some module .ko files, based on the following:
-> >
-> > > root@OpenWrt:/# strace insmod /lib/modules/6.6.30/nf_conntrack.ko
-> > > ...
-> > > init_module(0xfff3e36160, 307448, "")   = -1 EINVAL (Invalid argument)
-> > > ...
-> >
-> > > $ man init_module
-> > > ...
-> > > The following errors may additionally occur for init_module():
-> > > ...
-> > >      EINVAL param_values is invalid, or some part of the ELF image in
-> > >      module_image contains inconsistencies.
-> > > ...
-> >
-> > I'd be grateful if some of the BTF/pahole experts could please review this
-> > issue and share next steps or other details I might provide.
-> >
-> > Thanks,
-> > Tony Ambardar
-> >
-> > Link: https://lore.kernel.org/all/202401211357.OCX9yllM-lkp@intel.com/ [1]
-> > Link: https://github.com/acmel/dwarves/issues/45 [2]
-> 
-> Cheers,
-> Hengqi
-> 
+There are two more users I know of but am not familiar enough to fix up
+myself. I hope people that are more familiar can help me here.
+
+- ftrace seems to be using override_function_with_return from
+  #define ftrace_override_function_with_return but I found no place
+  where the latter is used. I assume it might be hidden behind more
+  macro magic? But the point is if ftrace can be instructed to act like
+  an error injection, it would also have to use some form of metadata
+  (from patch 2 presumably?) to get to the static key and control it.
+
+  If ftrace can only observe the function being called, maybe it
+  wouldn't be wrong to just observe nothing if the static key isn't
+  enabled because nobody is doing the fault injection?
+
+- bpftrace, as can be seen from the example in commit 4f6923fbb352
+  description. I suppose bpf is already aware what functions the
+  currently loaded bpf programs hook into, so that it could look up the
+  static key and control it. Maybe using again the metadata from patch 2,
+  or extending its own, as I've noticed there's e.g. BTF_ID(func,
+  should_failslab)
+
+Now I realize maybe handling this at the k(ret)probe level would be
+sufficient for all cases except the legacy fault injection from Patch 1?
+Also wanted to note that by AFAIU by using the static_key_slow_dec/inc
+API (as done in patches 1/2) should allow all mechanisms to coexist
+naturally without fighting each other on the static key state, and also
+handle the reference count for e.g. active probes or bpf programs if
+there's no similar internal mechanism.
+
+Patches 3 and 4 implement the static keys for the two mm fault injection
+sites in slab and page allocators. For a quick demonstration I've run a
+VM and the simple test from [1] that stresses the slab allocator and got
+this time before the series:
+
+real    0m8.349s
+user    0m0.694s
+sys     0m7.648s
+
+with perf showing
+
+   0.61%  nonexistent  [kernel.kallsyms]  [k] should_failslab.constprop.0
+   0.00%  nonexistent  [kernel.kallsyms]  [k] should_fail_alloc_page                                                                                                                                                                                        ▒
+
+And after the series
+
+real    0m7.924s
+user    0m0.727s
+sys     0m7.191s
+
+and the functions gone from perf report.
+
+There might be other such fault injection callsites in hotpaths of other
+subsystems but I didn't search for them at this point.
+
+[1] https://lore.kernel.org/all/6d5bb852-8703-4abf-a52b-90816bccbd7f@suse.cz/
+[2] https://lore.kernel.org/all/3j5d3p22ssv7xoaghzraa7crcfih3h2qqjlhmjppbp6f42pg2t@kg7qoicog5ye/
+
+Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
+---
+Vlastimil Babka (4):
+      fault-inject: add support for static keys around fault injection sites
+      error-injection: support static keys around injectable functions
+      mm, slab: add static key for should_failslab()
+      mm, page_alloc: add static key for should_fail_alloc_page()
+
+ include/asm-generic/error-injection.h | 13 ++++++++++-
+ include/asm-generic/vmlinux.lds.h     |  2 +-
+ include/linux/error-injection.h       |  9 +++++---
+ include/linux/fault-inject.h          |  7 +++++-
+ kernel/fail_function.c                | 22 +++++++++++++++---
+ lib/error-inject.c                    |  6 ++++-
+ lib/fault-inject.c                    | 43 ++++++++++++++++++++++++++++++++++-
+ mm/fail_page_alloc.c                  |  3 ++-
+ mm/failslab.c                         |  2 +-
+ mm/internal.h                         |  2 ++
+ mm/page_alloc.c                       | 11 ++++++---
+ mm/slab.h                             |  3 +++
+ mm/slub.c                             | 10 +++++---
+ 13 files changed, 114 insertions(+), 19 deletions(-)
+---
+base-commit: 1613e604df0cd359cf2a7fbd9be7a0bcfacfabd0
+change-id: 20240530-fault-injection-statickeys-66b7222e91b7
+
+Best regards,
+-- 
+Vlastimil Babka <vbabka@suse.cz>
+
 
