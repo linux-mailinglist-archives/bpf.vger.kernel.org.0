@@ -1,143 +1,197 @@
-Return-Path: <bpf+bounces-30985-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-30986-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9FE308D568D
-	for <lists+bpf@lfdr.de>; Fri, 31 May 2024 01:52:24 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id DBDCB8D56EA
+	for <lists+bpf@lfdr.de>; Fri, 31 May 2024 02:26:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 03C74B22DFF
-	for <lists+bpf@lfdr.de>; Thu, 30 May 2024 23:52:22 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 93633283B55
+	for <lists+bpf@lfdr.de>; Fri, 31 May 2024 00:26:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 332B5187350;
-	Thu, 30 May 2024 23:51:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 54D664C9A;
+	Fri, 31 May 2024 00:26:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=davidwei-uk.20230601.gappssmtp.com header.i=@davidwei-uk.20230601.gappssmtp.com header.b="QL4+RqL0"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="a5Fex2i1"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f173.google.com (mail-pf1-f173.google.com [209.85.210.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E7431862B7
-	for <bpf@vger.kernel.org>; Thu, 30 May 2024 23:51:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 60A5A1848
+	for <bpf@vger.kernel.org>; Fri, 31 May 2024 00:26:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717113109; cv=none; b=ezRfUahJc6Tmrt63j4jHiPp68GOJV82bHhQ6Uf1RURT7nXauVpWIUFHzUJcZ4bsgqEt9hDRFuN/Vqm+4dxI9+KYWAthhatqJ7XXZwjrqBrwErQRuOFodogZ31HKJ+EIH4HACOb2voTyFq5kDlbOF+bxpCB+yel234VCYlyT1Nog=
+	t=1717115194; cv=none; b=g/1gj88w621jbZ0uwhbOuocZxYCTBxj5Dohp7PEGygAr/hJe2hv8OLJAcBe5JF5RWbz7S7vN9EQlDydU41OqBQxeWmRSs2R3mIZq+FFn65ZvXWBGX2o/i68DhyveuWg+ukCdANmAzrrXFlrv0rg+6aUMJSFt+Zx2utGSKiBmupE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717113109; c=relaxed/simple;
-	bh=W93FmhGSt5rN/d9ZkTtKHNbj8y2kiVp3BB6JpqBPjtM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=qvQ1pXQ1Zz3oHPtIS1aZ/t4mBv0UHd+Gw51CdUzv9n5ioFVaSDbcEa4uCRsYOk1gw/wrIUyISbpNFNEmX95T7lcvfQEGJvdqbxDoXeP5sZ4lGFXO4IDgut95PkoDuXQJdHJl3t/2km1WcE4BJG8/yzEani+TtrTQDMVFtUzx8vY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=davidwei.uk; spf=none smtp.mailfrom=davidwei.uk; dkim=pass (2048-bit key) header.d=davidwei-uk.20230601.gappssmtp.com header.i=@davidwei-uk.20230601.gappssmtp.com header.b=QL4+RqL0; arc=none smtp.client-ip=209.85.210.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=davidwei.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=davidwei.uk
-Received: by mail-pf1-f173.google.com with SMTP id d2e1a72fcca58-702342c60dfso734091b3a.2
-        for <bpf@vger.kernel.org>; Thu, 30 May 2024 16:51:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=davidwei-uk.20230601.gappssmtp.com; s=20230601; t=1717113107; x=1717717907; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=zLw2WCX7NzhXHaHBtGiNDa+0R1r9ENCFVNNCzI5O8YY=;
-        b=QL4+RqL090NmzqnmmaV35StPPgSYrm0/E5FYyEyBNDFbnjFYn4+7lynHidmbHWfEVL
-         1iBcOwtdX/+OmGH9OHA6Ly9dCXC0kAmMRNt7jsngsMzCorwTnvSYwsuvbd/30RasDM2J
-         CgWFzSw7fo3h/P0Vna2SEUkG3BW1pwRp2ZYJmicLk3iur+HVCLaN4mTrgCpO4EGR65xr
-         zvIJIWco9NeeSE1nTauAdHI2pE5kFmj0GGL6zKrRbn7msIZJ7JKuUeM9tM4Yd+OHVqGp
-         tw2mwrdzVMXg0wyfG0apx+qaFVSep6SjKcJrNGom1L34fJ84bOjAqASDJTHdFqEXjqA6
-         2XTQ==
+	s=arc-20240116; t=1717115194; c=relaxed/simple;
+	bh=yF+ay1y7SPCrJDKzpmXB3jKBVDA5cGjvnwHThdq9z8Q=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Gs0thwNqZ5/38YhtlahQ4nTF9oqK9bJxWIHyvbuhNWOpwE1BWXsz2V57A1nQ34NCW20cB6Kcc9bmfjNFDWV36FsV4M+vnYWd0KeRdN9mdeRk2jGP1gT8cFgKhgAmNfLNYK8CE1XWPZ5vZAOjtZLxrBm3ArDxaHtDHKJ//iiq3zo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=a5Fex2i1; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1717115192;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=aipVkvfwSPi3x65R9DjuBZzar5P1bHnBi9T0bdxSFnE=;
+	b=a5Fex2i1nv1Xi3jt6+8pozREehmm5AqQWTqEkiYwYDUnWtpA8lS28UTmJZuPufTCkDQMhA
+	vWJYdjHLY81546HUhLgZl3/jqiVojXjgJ0k6wsPk3QxkKvU9mG/RsGxfdfrIYMN2na1TFN
+	pfHoOrGdEkGX0BXZZU9CZAc9QD0HgZ8=
+Received: from mail-pg1-f199.google.com (mail-pg1-f199.google.com
+ [209.85.215.199]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-360-G9UY5faXN1isB62wU2AAHg-1; Thu, 30 May 2024 20:26:30 -0400
+X-MC-Unique: G9UY5faXN1isB62wU2AAHg-1
+Received: by mail-pg1-f199.google.com with SMTP id 41be03b00d2f7-6507e2f0615so1263854a12.1
+        for <bpf@vger.kernel.org>; Thu, 30 May 2024 17:26:30 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1717113107; x=1717717907;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=zLw2WCX7NzhXHaHBtGiNDa+0R1r9ENCFVNNCzI5O8YY=;
-        b=ZOcpI4GZbfMBUIH0r5fKTHF89COKYUzCy4Bb3e6iW+7Vr2qX+U3Z3X8y5/6IexmsXw
-         LfletHL7wAJMcjVkQ4d8ztpO7TnqquLvj3yPFaxyrYluCKluzLuRecUd+XvYh+N+LlF5
-         g3UQu6cp89ETA7NJWKol+TuFN7RsQUjmo1a7AQA8FZscLhS3VOOpqWfKe3ym0VKmU31T
-         0vvTtPmb954oestjboeefwYdPqBaHNv3JzLvkN1B2RDV1EkGgy59ujf7wiwTKq5YIP+C
-         0gJG/OjvF+ZvEKTbg+hmc6TL2jyHPo60CvgqCaKdAkM263fOnyBLl8s3159/m0Ja7B14
-         v4FA==
-X-Forwarded-Encrypted: i=1; AJvYcCXtrV56JXOD6LC3Fm5B10M1I21kd2bTe2maoSs7vXT3N5IAAWewmUAEdZHlCryisi2ONN163dZVhGubksr3N2kD2Ja3
-X-Gm-Message-State: AOJu0YxNI9ywyQ6wM6iDD66RgWuwYRBufNBdlrLKH5r6D0Wvp3G3byUK
-	JS/uYvBAVolj5UcPFR4vHBQJooJlz2cV31mB3Tn1JTQnVA8L59emFAxjXUp4U68=
-X-Google-Smtp-Source: AGHT+IGLIircvxxELNZp6hQL4M8a4oqQMuIfbGbj5ESP+8hykh0tgC9NyJcGdtZhysmk5TffXmp10A==
-X-Received: by 2002:a05:6a21:7807:b0:1af:f23c:804a with SMTP id adf61e73a8af0-1b26f245bedmr579669637.38.1717113107315;
-        Thu, 30 May 2024 16:51:47 -0700 (PDT)
-Received: from ?IPV6:2a03:83e0:1156:1:1cbd:da2b:a9f2:881? ([2620:10d:c090:500::4:5439])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-702423c7b7esm298915b3a.13.2024.05.30.16.51.42
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 30 May 2024 16:51:46 -0700 (PDT)
-Message-ID: <49e4d52c-59f1-4321-9012-aabb1e8cc005@davidwei.uk>
-Date: Thu, 30 May 2024 16:51:41 -0700
+        d=1e100.net; s=20230601; t=1717115189; x=1717719989;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=aipVkvfwSPi3x65R9DjuBZzar5P1bHnBi9T0bdxSFnE=;
+        b=py/wyF+xfnid+lpZXyGz0v62AmOxSUa5N3r9qg67VgIvo48ZeE8ttlX9n6Trnk9Y+G
+         k8W/ux7UhZvBujVs1XMxf/uDkMi7pgU26xwfMRCpkKdeIH4WMr56cTXcWX2kRcSGiJ1O
+         SaCD71ArUDFwPYn6kfvV6NhjKtWs1Y7gJL0mBYHP/sArfMmO+2hbHXfJc392x7L+Ixe0
+         FSYrMP9jK+Hi7yCG4rHVyIrgrrJGEn3nUyhaNV9NjfZ/F6m300gaG5RI+gFfUJy23Y9S
+         PAlf2t+uw180qILWy1G8UlpH01t6s1s4F+bxe4e0DZ2D7V5UMRuFI6TdUbpViSWKaqOP
+         wTGw==
+X-Forwarded-Encrypted: i=1; AJvYcCVAUVIK3qR6iec82hW0Cv4lNXYam9l8QZ5YVDo5v7E23q2pT+8eA6wPzbj+bjcyChtspVlVm/s7Y95rh+notcCMif7y
+X-Gm-Message-State: AOJu0YzYrtawMRPZyQlSODn0Ii+Jm1Xl0VIMHok8A1XCjnALcbzJXKR6
+	3fnPxC5j1V2kXNX7ni2yvjqWrRdT4hEHjgqRVPX9tUrmxTJul1TKyiHz8fO2KVyK/FX0FQUBsqI
+	93SqLi2Mx+xmvyl9+WtVFpu4vEI0Z8RskFu2NWDiN/Ook7cBC214qnyt28hHLIOarDu4S71ju46
+	nPk/U4ptplNbpg/be09FserBLZyl0cY3zPl5w=
+X-Received: by 2002:a17:90a:ee8d:b0:2c1:903a:70c0 with SMTP id 98e67ed59e1d1-2c1dc56da0cmr314185a91.7.1717115188994;
+        Thu, 30 May 2024 17:26:28 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IG+FKtWSIuvG8wEVIw8VPXf4nzjC1uorNnBomYozkOp7iti04ZRCzNVR/yD4JfFeLec7XdUQrES9X+D7O9driQ=
+X-Received: by 2002:a17:90a:ee8d:b0:2c1:903a:70c0 with SMTP id
+ 98e67ed59e1d1-2c1dc56da0cmr314157a91.7.1717115188478; Thu, 30 May 2024
+ 17:26:28 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next v10 01/14] netdev: add netdev_rx_queue_restart()
-Content-Language: en-GB
-To: Mina Almasry <almasrymina@google.com>, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
- linux-alpha@vger.kernel.org, linux-mips@vger.kernel.org,
- linux-parisc@vger.kernel.org, sparclinux@vger.kernel.org,
- linux-trace-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
- bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
- linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org
-Cc: "David S. Miller" <davem@davemloft.net>,
- Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
- Paolo Abeni <pabeni@redhat.com>, Donald Hunter <donald.hunter@gmail.com>,
- Jonathan Corbet <corbet@lwn.net>,
- Richard Henderson <richard.henderson@linaro.org>,
- Ivan Kokshaysky <ink@jurassic.park.msu.ru>, Matt Turner
- <mattst88@gmail.com>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
- "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
- Helge Deller <deller@gmx.de>, Andreas Larsson <andreas@gaisler.com>,
- Jesper Dangaard Brouer <hawk@kernel.org>,
- Ilias Apalodimas <ilias.apalodimas@linaro.org>,
- Steven Rostedt <rostedt@goodmis.org>, Masami Hiramatsu
- <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
- Arnd Bergmann <arnd@arndb.de>, Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
- Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman
- <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
- Yonghong Song <yonghong.song@linux.dev>,
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
- Jiri Olsa <jolsa@kernel.org>, Steffen Klassert
- <steffen.klassert@secunet.com>, Herbert Xu <herbert@gondor.apana.org.au>,
- David Ahern <dsahern@kernel.org>,
- Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
- Shuah Khan <shuah@kernel.org>, Sumit Semwal <sumit.semwal@linaro.org>,
- =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
- Pavel Begunkov <asml.silence@gmail.com>, Jason Gunthorpe <jgg@ziepe.ca>,
- Yunsheng Lin <linyunsheng@huawei.com>, Shailend Chand <shailend@google.com>,
- Harshitha Ramamurthy <hramamurthy@google.com>,
- Shakeel Butt <shakeel.butt@linux.dev>, Jeroen de Borst
- <jeroendb@google.com>, Praveen Kaligineedi <pkaligineedi@google.com>
-References: <20240530201616.1316526-1-almasrymina@google.com>
- <20240530201616.1316526-2-almasrymina@google.com>
-From: David Wei <dw@davidwei.uk>
-In-Reply-To: <20240530201616.1316526-2-almasrymina@google.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <1717026141-25716-1-git-send-email-si-wei.liu@oracle.com>
+ <CACGkMEugdcKjxMA_3+-gfh4wKOP5vTvYOb2V+MP7VxDiZ6EhiA@mail.gmail.com> <490d42c8-5361-4db4-a5d1-3f992f4b8003@oracle.com>
+In-Reply-To: <490d42c8-5361-4db4-a5d1-3f992f4b8003@oracle.com>
+From: Jason Wang <jasowang@redhat.com>
+Date: Fri, 31 May 2024 08:26:17 +0800
+Message-ID: <CACGkMEvdyFxL1dW81H+=uEqZWqH5-AVOE_0y3DCO-pK4ap==fg@mail.gmail.com>
+Subject: Re: [PATCH] net: tap: validate metadata and length for XDP buff
+ before building up skb
+To: Si-Wei Liu <si-wei.liu@oracle.com>
+Cc: willemdebruijn.kernel@gmail.com, davem@davemloft.net, edumazet@google.com, 
+	kuba@kernel.org, pabeni@redhat.com, netdev@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, bpf@vger.kernel.org, mst@redhat.com, 
+	boris.ostrovsky@oracle.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 2024-05-30 13:16, Mina Almasry wrote:
-[...]
-> +err_start_queue:
-> +	/* Restarting the queue with old_mem should be successful as we haven't
-> +	 * changed any of the queue configuration, and there is not much we can
-> +	 * do to recover from a failure here.
-> +	 *
-> +	 * WARN if the we fail to recover the old rx queue, and at least free
-> +	 * old_mem so we don't also leak that.
-> +	 */
-> +	if (dev->queue_mgmt_ops->ndo_queue_start(dev, old_mem, rxq_idx)) {
-> +		WARN(1,
-> +		     "Failed to restart old queue in error path. RX queue %d may be unhealthy.",
-> +		     rxq_idx);
-> +		dev->queue_mgmt_ops->ndo_queue_mem_free(dev, &old_mem);
+On Fri, May 31, 2024 at 5:05=E2=80=AFAM Si-Wei Liu <si-wei.liu@oracle.com> =
+wrote:
+>
+>
+>
+> On 5/29/2024 7:26 PM, Jason Wang wrote:
+> > On Thu, May 30, 2024 at 8:54=E2=80=AFAM Si-Wei Liu <si-wei.liu@oracle.c=
+om> wrote:
+> >> The cited commit missed to check against the validity of the length
+> >> and various pointers on the XDP buff metadata in the tap_get_user_xdp(=
+)
+> >> path, which could cause a corrupted skb to be sent downstack. For
+> >> instance, tap_get_user() prohibits short frame which has the length
+> >> less than Ethernet header size from being transmitted, while the
+> >> skb_set_network_header() in tap_get_user_xdp() would set skb's
+> >> network_header regardless of the actual XDP buff data size. This
+> >> could either cause out-of-bound access beyond the actual length, or
+> >> confuse the underlayer with incorrect or inconsistent header length
+> >> in the skb metadata.
+> >>
+> >> Propose to drop any frame shorter than the Ethernet header size just
+> >> like how tap_get_user() does. While at it, validate the pointers in
+> >> XDP buff to avoid potential size overrun.
+> >>
+> >> Fixes: 0efac27791ee ("tap: accept an array of XDP buffs through sendms=
+g()")
+> >> Cc: jasowang@redhat.com
+> >> Signed-off-by: Si-Wei Liu <si-wei.liu@oracle.com>
+> >> ---
+> >>   drivers/net/tap.c | 7 +++++++
+> >>   1 file changed, 7 insertions(+)
+> >>
+> >> diff --git a/drivers/net/tap.c b/drivers/net/tap.c
+> >> index bfdd3875fe86..69596479536f 100644
+> >> --- a/drivers/net/tap.c
+> >> +++ b/drivers/net/tap.c
+> >> @@ -1177,6 +1177,13 @@ static int tap_get_user_xdp(struct tap_queue *q=
+, struct xdp_buff *xdp)
+> >>          struct sk_buff *skb;
+> >>          int err, depth;
+> >>
+> >> +       if (unlikely(xdp->data < xdp->data_hard_start ||
+> >> +                    xdp->data_end < xdp->data ||
+> >> +                    xdp->data_end - xdp->data < ETH_HLEN)) {
+> >> +               err =3D -EINVAL;
+> >> +               goto err;
+> >> +       }
+> > For ETH_HLEN check, is it better to do it in vhost-net?
+> Not sure. Initially I thought about this as well, but changed mind.
+> Although the TUN_MSG_PTR interface was specifically customized for
+> vhost-net in the kernel, could there be any userspace app do sendmsg()
+> also with customized TUN_MSG_PTR control message over tap's fd? If
+> that's possible in reality, I guess limiting the fix to only vhost-net
+> in the kernel is narrow scoped.
 
-This should be ->ndo_queue_mem_free(dev, old_mem).
+I think not, sendmsg() can't be used for tuntap.
+
+>
+> Additionally, it seems just the skb delivery path in the tap driver (or
+> tuntap) that populates the relevant skb field needs the ETH_HLEN check,
+> the XDP fast path can just transmit or forward xdp buff as-is without
+> having to check the (header) length of payload data. That said, it may
+> break some guest applications that intentionally send out short frames
+> (for test purpose?)
+
+I don't think so, various hypervisors will just drop short ethernet frames.
+
+> if unconditionally drop all of them from the vhost-net.
+>
+> > It seems tuntap suffers from this as well.
+> True, theoretically I can fix tuntap as well, but I don't have a setup
+> to test out the code change thoroughly. Any volunteer here to do so
+> (test it or fix it)?
+
+It should be easier than the tap. If you can't find one, I can test.
+
+>
+> >
+> > And for the check for other xdp fields, it deserves a BUG_ON() or at
+> > least WARN_ON() as they are set by vhost-net.
+> Hmmm, WARN_ON may be fine (I don't see userspace is prevented from
+> fabricating such invalid addresses through the TUN_MSG_PTR uAPI).
+
+Tap doesn't export socket objects to userspace, so it's not an uAPI.
+
+Thanks
+
+>
+> -Siwei
+> >
+> > Thanks
+> >
+> >> +
+> >>          if (q->flags & IFF_VNET_HDR)
+> >>                  vnet_hdr_len =3D READ_ONCE(q->vnet_hdr_sz);
+> >>
+> >> --
+> >> 2.39.3
+> >>
+>
+
 
