@@ -1,158 +1,111 @@
-Return-Path: <bpf+bounces-30997-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-30998-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AD1A38D5A23
-	for <lists+bpf@lfdr.de>; Fri, 31 May 2024 08:04:29 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 18AE68D5B48
+	for <lists+bpf@lfdr.de>; Fri, 31 May 2024 09:16:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 69D55287E16
-	for <lists+bpf@lfdr.de>; Fri, 31 May 2024 06:04:28 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 80B111F231C6
+	for <lists+bpf@lfdr.de>; Fri, 31 May 2024 07:16:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F4967D06B;
-	Fri, 31 May 2024 06:04:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 130C77D3EC;
+	Fri, 31 May 2024 07:16:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="bx6qcNW7";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="XXfotPbS"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 13DA7EAE7;
-	Fri, 31 May 2024 06:04:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 496CA187569
+	for <bpf@vger.kernel.org>; Fri, 31 May 2024 07:15:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717135463; cv=none; b=ClFjpgKybV2rWyqrOgc9fp7IUYxLZ7XZA5/gQA/+xxE6PiTxVB2FaOApZ1H57tZB8h7vYY9pOFUM1O6ZfcnbZf9/ECX21elpbu6qYrFP5sZP7rHl95CORy6h6C43aG1fRDC4QcPFC1BxnLsHlVDDhLl3F9chkaweUsntCRauo/E=
+	t=1717139761; cv=none; b=hk0hanaqbdHunGhFBI2cxIVN96nuFfgvkOR1YQn1hOHyCkli3FXDT8f1Eg8fk5B2RhBiEZ36QQ1hCwSxdMcYGmLdjTq1rOj9YZOolRPSJQeBmWs9q4IntCACditGaLVuwi7SLYG5/GXW1Agpsu5TlmqtavxmQJYr/a3PhCMmYNA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717135463; c=relaxed/simple;
-	bh=Wt3I7rhRO7bYSol/ivwlZxEcVjCjrgihu846oW6r9sY=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=Fz2jl1AewlPs+RmLCyaNOsBPyk8+ciEGamvpSoRJNjlXp+GlemQstzSlA5z4EpdUA8dxyOo2+6FfzHjdUbLu6J2NfKVkTzhQikKGS2EeDbrsGsJ98lkFIPUXvT59DreRi0JtpwWByDnSJY35IedYLFf9/SDKgZMej0Da8ZGo9x8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 408E5C116B1;
-	Fri, 31 May 2024 06:04:18 +0000 (UTC)
-Date: Fri, 31 May 2024 02:03:46 -0400
-From: Steven Rostedt <rostedt@goodmis.org>
-To: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
-Cc: linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org, Mark
- Rutland <mark.rutland@arm.com>, Mathieu Desnoyers
- <mathieu.desnoyers@efficios.com>, Andrew Morton
- <akpm@linux-foundation.org>, Alexei Starovoitov
- <alexei.starovoitov@gmail.com>, Florent Revest <revest@chromium.org>,
- Martin KaFai Lau <martin.lau@linux.dev>, bpf <bpf@vger.kernel.org>, Sven
- Schnelle <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>, Jiri
- Olsa <jolsa@kernel.org>, Arnaldo Carvalho de Melo <acme@kernel.org>, Daniel
- Borkmann <daniel@iogearbox.net>, Alan Maguire <alan.maguire@oracle.com>,
- Peter Zijlstra <peterz@infradead.org>, Thomas Gleixner
- <tglx@linutronix.de>, Guo Ren <guoren@kernel.org>
-Subject: Re: [PATCH 10/20] function_graph: Have the instances use their own
- ftrace_ops for filtering
-Message-ID: <20240531020346.6c13e2d4@rorschach.local.home>
-In-Reply-To: <20240531121241.c586189caad8d31d597f614d@kernel.org>
-References: <20240525023652.903909489@goodmis.org>
-	<20240525023742.786834257@goodmis.org>
-	<20240530223057.21c2a779@rorschach.local.home>
-	<20240531121241.c586189caad8d31d597f614d@kernel.org>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1717139761; c=relaxed/simple;
+	bh=IXBosl82uOQJBwqVi3otMrjCM2BWJDGFoFA3+BDXU6I=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=k3qSIGGZM1ixMVDh5OGVWL0/AMFJfctAdp4AXvAqANcqd4fzX2FwBMedzWWSoTmzh08VrwSwM+qxA0EONXTO1jkqiMmT6mXZguzoP1PH/q9gYop9DK072WeClkyZg+F2/Y8cW0vZrxZtbGA559sQkPUv7jggrs27BJRY+rPEezk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=bx6qcNW7; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=XXfotPbS; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+Date: Fri, 31 May 2024 09:15:57 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1717139758;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=vXnpc3+gZnC/App0Kg7P27p6yn7PQr1jam5gCBe4D5k=;
+	b=bx6qcNW7qbuRBJXUIChTyX1W5qwGSc7x7bX31ALMCHqwP8toU96AnvnB56pXIpU3tj4vKG
+	OwMp7nHWPe6dVdOyQ9u72Dtjofmqnf3fLg/08TaEAp6qAFcpg85rkULXywu7wYrltoRJmA
+	J0AI5IOgak6A38bn8BRs1uepBKuG6R9M/h1Jgc4y5VYUH2GMrJYn0hmJnQFux+4p/Fm86v
+	cfMFoXLC1sk/XJUUu8IF/LkxjHEp9rAvkq6wEFeDt54WYbMokqSeCTiu8Qxcp3K4N9iIol
+	NsVDd88rNzxAEv93T9Jiehr0ERH1xr5YOei63aTzlBzWJdlSnx5dECL1K9+nUQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1717139758;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=vXnpc3+gZnC/App0Kg7P27p6yn7PQr1jam5gCBe4D5k=;
+	b=XXfotPbSF3+Xega9BMDQrGMMEsDgerRHs2g9AvwJOYaVFY4tbB9WnnJ5dTkpH51WlhsY38
+	YKNb7mdh+0h25+AQ==
+From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To: Jiri Olsa <olsajiri@gmail.com>
+Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+	bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
+	Yonghong Song <yhs@fb.com>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@chromium.org>,
+	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
+	Viktor Malik <vmalik@redhat.com>,
+	"Masami Hiramatsu (Google)" <mhiramat@kernel.org>,
+	Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: [PATCH] bpf: Use an UNUSED id for bpf_session_cookie without
+ FPROBE
+Message-ID: <20240531071557.MvfIqkn7@linutronix.de>
+References: <20240529124412.VZAF98oL@linutronix.de>
+ <CAADnVQKdAo-=DMMyLJaAR_CHBZq=W=LsYxk=Tna2G+tXLnfLqg@mail.gmail.com>
+ <ZleDQSK4TgJLJDUl@krava>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <ZleDQSK4TgJLJDUl@krava>
 
-On Fri, 31 May 2024 12:12:41 +0900
-Masami Hiramatsu (Google) <mhiramat@kernel.org> wrote:
-
-> On Thu, 30 May 2024 22:30:57 -0400
-> Steven Rostedt <rostedt@goodmis.org> wrote:
-> 
-> > On Fri, 24 May 2024 22:37:02 -0400
-> > Steven Rostedt <rostedt@goodmis.org> wrote:
-> >   
-> > > From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
-> > > 
-> > > Allow for instances to have their own ftrace_ops part of the fgraph_ops
-> > > that makes the funtion_graph tracer filter on the set_ftrace_filter file
-> > > of the instance and not the top instance.
-> > > 
-> > > Note that this also requires to update ftrace_graph_func() to call new
-> > > function_graph_enter_ops() instead of function_graph_enter() so that
-> > > it avoid pushing on shadow stack multiple times on the same function.  
+On 2024-05-29 21:34:25 [+0200], Jiri Olsa wrote:
+> > > +#ifdef CONFIG_FPROBE
+> > >  BTF_ID(func, bpf_session_cookie)
+> > > +#else
+> > > +BTF_ID_UNUSED
+> > > +#endif
 > > 
-> > So I found a major design flaw in this patch.
-> >   
-> > > 
-> > > Co-developed with Masami Hiramatsu:
-> > > Link: https://lore.kernel.org/linux-trace-kernel/171509102088.162236.15758883237657317789.stgit@devnote2
-> > > 
-> > > Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
-> > > Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-> > > Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
-> > > ---  
-> >   
-> > > diff --git a/arch/x86/kernel/ftrace.c b/arch/x86/kernel/ftrace.c
-> > > index 8da0e66ca22d..998558cb8f15 100644
-> > > --- a/arch/x86/kernel/ftrace.c
-> > > +++ b/arch/x86/kernel/ftrace.c
-> > > @@ -648,9 +648,24 @@ void ftrace_graph_func(unsigned long ip, unsigned long parent_ip,
-> > >  		       struct ftrace_ops *op, struct ftrace_regs *fregs)
-> > >  {
-> > >  	struct pt_regs *regs = &fregs->regs;
-> > > -	unsigned long *stack = (unsigned long *)kernel_stack_pointer(regs);
-> > > +	unsigned long *parent = (unsigned long *)kernel_stack_pointer(regs);
-> > > +	struct fgraph_ops *gops = container_of(op, struct fgraph_ops, ops);
-> > > +	int bit;
-> > > +
-> > > +	if (unlikely(ftrace_graph_is_dead()))
-> > > +		return;
-> > > +
-> > > +	if (unlikely(atomic_read(&current->tracing_graph_pause)))
-> > > +		return;
-> > >  
-> > > -	prepare_ftrace_return(ip, (unsigned long *)stack, 0);
-> > > +	bit = ftrace_test_recursion_trylock(ip, *parent);
-> > > +	if (bit < 0)
-> > > +		return;
-> > > +
-> > > +	if (!function_graph_enter_ops(*parent, ip, 0, parent, gops))  
-> > 
-> > So each registered graph ops has its own ftrace_ops which gets
-> > registered with ftrace, so this function does get called in a loop (by
-> > the ftrace iterator function). This means that we would need that code
-> > to detect the function_graph_enter_ops() getting called multiple times
-> > for the same function. This means each fgraph_ops gits its own retstack
-> > on the shadow stack.  
+> > Instead of this fix..
+> > Jiri,
+> > maybe remove ifdef CONFIG_FPROBE hiding of this kfunc
+> > in kernel/tace/bpf_trace.c ?
+> > The less ifdef-s the better. imo
 > 
-> Ah, that is my concern and the reason why I added bitmap and stack reuse
-> code in the ftrace_push_return_trace().
-> 
-> > 
-> > I find this a waste of shadow stack resources, and also complicates the
-> > code with having to deal with tail calls and all that.
-> > 
-> > BUT! There's good news! I also thought about another way of handling
-> > this. I have something working, but requires a bit of rewriting the
-> > code. I should have something out in a day or two.  
-> 
-> Hmm, I just wonder why you don't reocver my bitmap check and stack
-> reusing code. Are there any problem on it? (Too complicated?)
-> 
+> yes, that seems to work
+>
+> Sebastian, do you want to send it as v2 or should I post it?
 
-I actually dislike the use of ftrace itself to do the loop. I rather
-have fgraph be in control of it.
+Now that I look again, ifdef CONFIG_FPROBE isn't enough it requires
+additionally CONFIG_UPROBE_EVENTS.
+So the suggested snippet does not work if CONFIG_UPROBE_EVENTS is not
+enabled.
 
-I've come up with a new "subops" assignment, where you can have one
-ftrace_ops represent multiple sub ftrace_ops. Basically, each fgraph
-ops can register its own ftrace_ops under a single graph_ops
-ftrace_ops. The graph_ops will be used to decide what functions call
-the callback, and then the callback does the multiplexing.
+> thanks,
+> jirka
 
-This removes the need to touch the architecture code. It can also be
-used by fprobes to handle the attachments to functions for several
-different sets of callbacks.
-
-I'll send out patches soon.
-
--- Steve
+Sebastian
 
