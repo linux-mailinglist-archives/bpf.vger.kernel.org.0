@@ -1,154 +1,109 @@
-Return-Path: <bpf+bounces-31037-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-31038-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 589398D650D
-	for <lists+bpf@lfdr.de>; Fri, 31 May 2024 16:59:10 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0345A8D65CB
+	for <lists+bpf@lfdr.de>; Fri, 31 May 2024 17:32:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 531E81C2508D
-	for <lists+bpf@lfdr.de>; Fri, 31 May 2024 14:59:09 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 932F31F21A5E
+	for <lists+bpf@lfdr.de>; Fri, 31 May 2024 15:32:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0621074068;
-	Fri, 31 May 2024 14:59:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 986EC158A28;
+	Fri, 31 May 2024 15:31:27 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1EF466F2EB;
-	Fri, 31 May 2024 14:58:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B1CA739FF3;
+	Fri, 31 May 2024 15:31:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717167539; cv=none; b=Ls45+0T4OchJM9U3l5UUcYpV6WHdg0KOEizmpnNXO3BACEpBhy5bB3kICNpQoluajGQFyrlimx+uGFo6sersfmc9W4gRsKPUfTlWgrUnidxBIgujkmGcUiSpKuwlbwDyQ2Sd9aLu6pJN5FEWL9fl0+Hg5INJFizpHw//zM3nbv8=
+	t=1717169487; cv=none; b=XOTibFL6ba3umTM4/Qb0+ubrcSK2tx297wL1b8619btJDLi23Ss8vod1DF922tuOZo2jyEf8LfoPwOBGvMWSwtTB0UKK/eZRNAZoGsfUH5sdH4dzeAMj3w9KNWQ0KYMae3t2VD92tJh3pAApldxCKUPaELcaEXVZ6nddRxcWHE4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717167539; c=relaxed/simple;
-	bh=G/b7RyaoGodqjPBF0FsWhLwSns9WaG79sqo1CfgHyUE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=T5k1zqrQxl4O/40wlCUqyxMu44QfW7iwCZVqjbOYtHwUjAlZP8C7/zxzyRBKSAJrcetMSoRlw7efCKByHXpqiyGqXb6B7WoNQ0P55Fs1hXGrHUK59tYs6TywGighL0QXehqs2lW6OJNWn70UFyQsRrSkeoI86kl9XhVUOYAEUBE=
+	s=arc-20240116; t=1717169487; c=relaxed/simple;
+	bh=wb1cOchvcOujs9HWcw7r/ZrIUMH4fHWuktSZkjSAwAY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=iwNtD4RhyRW0yjyAzAjMb8qB1VuGonUFFeUZwOvUU8D/1uBwtPWvgRYUQFA7JXCEt0kthWjMVjGLBG9htgc8LVhfIml0QAJKGdptfB3pXj6oP6AvC6e5e+XOnkHEvmihfUqZuwKyUvveuP9+QeXOz9w3RiwCkDlrKTg1tqwxG1o=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6911F1424;
-	Fri, 31 May 2024 07:59:21 -0700 (PDT)
-Received: from [10.57.69.119] (unknown [10.57.69.119])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D57253F641;
-	Fri, 31 May 2024 07:58:51 -0700 (PDT)
-Message-ID: <974f1d23-aba8-432e-85b5-0e4b1c2005e7@arm.com>
-Date: Fri, 31 May 2024 15:58:49 +0100
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 559941424;
+	Fri, 31 May 2024 08:31:49 -0700 (PDT)
+Received: from J2N7QTR9R3 (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A56163F641;
+	Fri, 31 May 2024 08:31:21 -0700 (PDT)
+Date: Fri, 31 May 2024 16:31:14 +0100
+From: Mark Rutland <mark.rutland@arm.com>
+To: Vlastimil Babka <vbabka@suse.cz>
+Cc: Akinobu Mita <akinobu.mita@gmail.com>, Christoph Lameter <cl@linux.com>,
+	David Rientjes <rientjes@google.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	"Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
+	Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Steven Rostedt <rostedt@goodmis.org>, Jiri Olsa <jolsa@kernel.org>,
+	Roman Gushchin <roman.gushchin@linux.dev>,
+	Hyeonggon Yoo <42.hyeyoo@gmail.com>, linux-kernel@vger.kernel.org,
+	linux-mm@kvack.org, bpf@vger.kernel.org,
+	linux-trace-kernel@vger.kernel.org
+Subject: Re: [PATCH RFC 0/4] static key support for error injection functions
+Message-ID: <ZlntQn-a7Ycko_j5@J2N7QTR9R3>
+References: <20240531-fault-injection-statickeys-v1-0-a513fd0a9614@suse.cz>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 08/12] PCI: imx6: Config look up table(LUT) to support
- MSI ITS and IOMMU for i.MX95
-To: Bjorn Helgaas <helgaas@kernel.org>, Frank Li <Frank.Li@nxp.com>
-Cc: Richard Zhu <hongxing.zhu@nxp.com>, Lucas Stach <l.stach@pengutronix.de>,
- Lorenzo Pieralisi <lpieralisi@kernel.org>,
- =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>,
- Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
- Shawn Guo <shawnguo@kernel.org>, Sascha Hauer <s.hauer@pengutronix.de>,
- Pengutronix Kernel Team <kernel@pengutronix.de>,
- Fabio Estevam <festevam@gmail.com>, NXP Linux Team <linux-imx@nxp.com>,
- Philipp Zabel <p.zabel@pengutronix.de>, Liam Girdwood <lgirdwood@gmail.com>,
- Mark Brown <broonie@kernel.org>,
- Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, linux-pci@vger.kernel.org,
- imx@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
- linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
- devicetree@vger.kernel.org, Will Deacon <will@kernel.org>,
- Joerg Roedel <joro@8bytes.org>, Jason Gunthorpe <jgg@ziepe.ca>,
- Alyssa Rosenzweig <alyssa@rosenzweig.io>, Marc Zyngier <maz@kernel.org>
-References: <20240530230832.GA474962@bhelgaas>
-From: Robin Murphy <robin.murphy@arm.com>
-Content-Language: en-GB
-In-Reply-To: <20240530230832.GA474962@bhelgaas>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240531-fault-injection-statickeys-v1-0-a513fd0a9614@suse.cz>
 
-On 2024-05-31 12:08 am, Bjorn Helgaas wrote:
-> [+cc IOMMU and pcie-apple.c folks for comment]
+Hi,
+
+On Fri, May 31, 2024 at 11:33:31AM +0200, Vlastimil Babka wrote:
+> Incomplete, help needed from ftrace/kprobe and bpf folks.
+
+> - the generic error injection using kretprobes with
+>   override_function_with_return is handled in patch 2. The
+>   ALLOW_ERROR_INJECTION() annotation is extended so that static key
+>   address can be passed, and the framework controls it when error
+>   injection is enabled or disabled in debugfs for the function.
 > 
-> On Tue, May 28, 2024 at 03:39:21PM -0400, Frank Li wrote:
->> For the i.MX95, configuration of a LUT is necessary to convert Bus Device
->> Function (BDF) to stream IDs, which are utilized by both IOMMU and ITS.
->> This involves examining the msi-map and smmu-map to ensure consistent
->> mapping of PCI BDF to the same stream IDs. Subsequently, LUT-related
->> registers are configured. In the absence of an msi-map, the built-in MSI
->> controller is utilized as a fallback.
->>
->> Additionally, register a PCI bus notifier to trigger imx_pcie_add_device()
->> upon the appearance of a new PCI device and when the bus is an iMX6 PCI
->> controller. This function configures the correct LUT based on Device Tree
->> Settings (DTS).
+> There are two more users I know of but am not familiar enough to fix up
+> myself. I hope people that are more familiar can help me here.
 > 
-> This scheme is pretty similar to apple_pcie_bus_notifier().  If we
-> have to do this, I wish it were *more* similar, i.e., copy the
-> function names, bitmap tracking, code structure, etc.
-> 
-> I don't really know how stream IDs work, but I assume they are used on
-> most or all arm64 platforms, so I'm a little surprised that of all the
-> PCI host drivers used on arm64, only pcie-apple.c and pci-imx6.c need
-> this notifier.
+> - ftrace seems to be using override_function_with_return from
+>   #define ftrace_override_function_with_return but I found no place
+>   where the latter is used. I assume it might be hidden behind more
+>   macro magic? But the point is if ftrace can be instructed to act like
+>   an error injection, it would also have to use some form of metadata
+>   (from patch 2 presumably?) to get to the static key and control it.
 
-This is one of those things that's mostly at the mercy of the PCIe root 
-complex implementation. Typically the SMMU StreamID and/or GIC ITS 
-DeviceID is derived directly from the PCI RID, sometimes with additional 
-high-order bits hard-wired to disambiguate PCI segments. I believe this 
-RID-translation LUT is a particular feature of the the Synopsys IP - I 
-know there's also one on the NXP Layerscape platforms, but on those it's 
-programmed by the bootloader, which also generates the appropriate 
-"msi-map" and "iommu-map" properties to match. Ideally that's what i.MX 
-should do as well, but hey.
+I don't think you've missed anything; nothing currently uses
+ftrace_override_function_with_return(). I added that in commit:
 
-> There's this path, which is pretty generic and does at least the
-> of_map_id() part of what you're doing in imx_pcie_add_device():
-> 
->      __driver_probe_device
->        really_probe
->          pci_dma_configure                       # pci_bus_type.dma_configure
->            of_dma_configure
->              of_dma_configure_id
->                of_iommu_configure
->                  of_pci_iommu_init
->                    of_iommu_configure_dev_id
->                      of_map_id
->                      of_iommu_xlate
->                        ops = iommu_ops_from_fwnode
->                        iommu_fwspec_init
->                        ops->of_xlate(dev, iommu_spec)
-> 
-> Maybe this needs to be extended somehow with a hook to do the
-> device-specific work like updating the LUT?  Just speculating here,
-> the IOMMU folks will know how this is expected to work.
+  94d095ffa0e16bb7 ("ftrace: abstract DYNAMIC_FTRACE_WITH_ARGS accesses")
 
-Note that that particular code path has fundamental issues and much of 
-it needs to go away (I'm working on it, but it's a rich ~8-year-old pile 
-of technical debt...). IOMMU configuration needs to be happening at 
-device_add() time via the IOMMU layer's own bus notifier.
+... so that it was possible to do anything that was possible with
+FTRACE_WITH_REGS and/or kprobes, under the expectation that we might
+want to move fault injection and BPF probes over to fprobes in future,
+as ftrace/fprobes is generally faster than kprobes (e.g. for
+architectures that can't do KPROBES_ON_FTRACE or OPTPROBES).
 
-If it's really necessary to do this programming from Linux, then there's 
-still no point in it being dynamic - the mappings cannot ever change, 
-since the rest of the kernel believes that what the DT said at boot time 
-was already a property of the hardware. It would be a lot more logical, 
-and likely simpler, for the driver to just read the relevant map 
-property and program the entire LUT to match, all in one go at 
-controller probe time. Rather like what's already commonly done with the 
-parsing of "dma-ranges" to program address-translation LUTs for inbound 
-windows.
+That's just the mechanism for the handler to use; I'd expect whatever
+registered the handler to be responsible for flipping the static key,
+and I don't think anything needs to change within ftrace itself.
 
-Plus that would also give a chance of safely dealing with bad DTs 
-specifying invalid ID mappings (by refusing to probe at all). As it is, 
-returning an error from a child's BUS_NOTIFY_ADD_DEVICE does nothing 
-except prevent any further notifiers from running at that point - the 
-device will still be added, allowed to bind a driver, and able to start 
-sending DMA/MSI traffic without the controller being correctly 
-programmed, which at best won't work and at worst may break the whole 
-system.
+>   If ftrace can only observe the function being called, maybe it
+>   wouldn't be wrong to just observe nothing if the static key isn't
+>   enabled because nobody is doing the fault injection?
 
-Thanks,
-Robin.
+Yep, that sounds right to me.
+
+Mark.
 
