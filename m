@@ -1,89 +1,76 @@
-Return-Path: <bpf+bounces-31018-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-31019-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B16478D6097
-	for <lists+bpf@lfdr.de>; Fri, 31 May 2024 13:25:25 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 269708D609E
+	for <lists+bpf@lfdr.de>; Fri, 31 May 2024 13:26:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D3E111C233C2
-	for <lists+bpf@lfdr.de>; Fri, 31 May 2024 11:25:24 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4A3C91C23CCB
+	for <lists+bpf@lfdr.de>; Fri, 31 May 2024 11:26:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D0FD157469;
-	Fri, 31 May 2024 11:25:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 85EAC157480;
+	Fri, 31 May 2024 11:26:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="V3AAlO7s"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="BTj0mDAp"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f54.google.com (mail-ej1-f54.google.com [209.85.218.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [78.32.30.218])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 191B015575A
-	for <bpf@vger.kernel.org>; Fri, 31 May 2024 11:25:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93886157469;
+	Fri, 31 May 2024 11:26:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=78.32.30.218
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717154719; cv=none; b=T2fG+coRPoHq4kVC0Bxv+NyP2l5JCiacPwmsn1l8kGCRzxHJPzkMBcmXZNV/eWqWqtYH7CMWfrSZhf/5PrR/z5jTXxjLltKhkyirqZPwxzV5bYFh9pAHpD5bFZB4WqkUsrN2tkWpEKh1IaMiHTel127eJNXKAMyhQ888RyEojC8=
+	t=1717154768; cv=none; b=XB4+bdoRk713j4e9RXBVG+ydN4Qh6aCVGrvmh4nYmtCuvWz1tmW6kiFj+rVyyN8VxK4eWUqUf2/sOzLg3IIr5jM7C1qyxZRIfAS1ClYuPg2r6mDsTdC/MCFKwydgipx2oVmKgvRTEXOe+BabsojCWb6gRPbHn2JCrmD0IRKq9YI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717154719; c=relaxed/simple;
-	bh=fWUJ437g8evNcSkD9+9GJC+3hqmaNOKkRxKMUblKHT4=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=PMDmJcXFoKYJRXt8uI1EEsVnkyRwRjtHv+GP8yc1D+U7z5fB1o+Zxfaa3hZhoMLBP1docFXveC5fj4g5NwxO6IoZoBcsStdW+48gV4k8y4iFHVHMjvGfb+vemIaYUYSFpM40uZxy+AlzNo/mRQawTfukfsVDiF1SGfN19bdwMng=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=V3AAlO7s; arc=none smtp.client-ip=209.85.218.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f54.google.com with SMTP id a640c23a62f3a-a5cec2c2981so100421766b.1
-        for <bpf@vger.kernel.org>; Fri, 31 May 2024 04:25:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1717154716; x=1717759516; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=i5FVVvSwCCmu0S5jIBqQXKaEjLlRbNlncywpUPqCYDo=;
-        b=V3AAlO7suhB0WauyKkjrge6HxKk+l76FQj4k0zeMaQS258V04XbSesVfxoqlfa4ngz
-         eqfzT0bsChfVZPOc4DCDNj1+jgbqtzAzCJShPCJtjI8SUlnxg+JXZ7lmGJ0NSXWQd5UM
-         OOryfQT4mdk7oQPEgE1WaxYZ9Lb48FpaH2V5LS3Uw28J+CCltNDIRkF9bCHv8rPiVpPH
-         jRAi1l5j6dv7KM1zNR0eqNiu9ZTdyLdjpPQjyfDmx/q5zILCO+T7w6qr9z9SMkdjWjtK
-         PD0Lo6fUpS0azkOGrOwmpMBG/YQn9LvE81nQjDBQ2w+4C2PhmU2TaVb+MfQbwti4pvRl
-         GWUw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1717154716; x=1717759516;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=i5FVVvSwCCmu0S5jIBqQXKaEjLlRbNlncywpUPqCYDo=;
-        b=klrRR+1ea4K0GEKL7NSEg+rcBWGwAU7xnJDQz4Xlf4qNIFRbExrI83bl3BgGDRvdBI
-         78M+Z6JpZfIBLCImkTug0iq7jajay/lMi/UPMntG0pEy5aeoRQBK+Dw8gsg0pRc3j1SC
-         wS6a/XjDtaRz+jswgPbuUBHqzMICsaJThsUBKnkkX92CaORPu/ot5Q7q6u+mebFGSOzs
-         2Xp3meQGjX5PQbAoojTF9Uvd0Pr74cVj6psRtciDHyLfFOp7geTekC+aqslkvD7t9UhB
-         aIbYDR2QGH9IYFWURFrlSnTVwwt1MTHkSbRVbjy534My6SI0U6lcGscaC5LVicV7L9E0
-         a46w==
-X-Forwarded-Encrypted: i=1; AJvYcCVQ7TbHI0XLpdEQsDfgJVQ9iMoqNyeMWQFgFKtcTL0vUxraOTOrWcZEPLcQG6FtEQcKCjXJLh9s+PTLVC7wB1Xm2Yd+
-X-Gm-Message-State: AOJu0YyokpNNSU8pf1mBJmX+kQBJbwicbXsdevFlmBZ13zjDmPCh0guM
-	MyEw8PMWeQ1Cpf06WucnSkzf9CSKnrc6CQSxV7oVsqkgCDme5RlX
-X-Google-Smtp-Source: AGHT+IFOps9iLUZi/wjLlMTJDh9LpDOXYk0yrjE51a6apEq33iXlKezaOKQl1oBVwd8kf1fhHP8hIg==
-X-Received: by 2002:a50:8ad0:0:b0:578:57b9:8e13 with SMTP id 4fb4d7f45d1cf-57a36361c9cmr1268115a12.10.1717154716199;
-        Fri, 31 May 2024 04:25:16 -0700 (PDT)
-Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
-        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-57a31c6d3c3sm902555a12.59.2024.05.31.04.25.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 31 May 2024 04:25:15 -0700 (PDT)
-From: Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Fri, 31 May 2024 13:25:14 +0200
-To: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc: Jiri Olsa <olsajiri@gmail.com>, Alexei Starovoitov <ast@kernel.org>,
+	s=arc-20240116; t=1717154768; c=relaxed/simple;
+	bh=XFV9/tpoxAasMKJ6r6uC8h6xU1uC7yi21wCCQxN0vg8=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=joR+hmoHUJTcrBqy02RjKS0UtgnDELE/WtvheVtzk6eLeb/3/5v1BbNTOFb+wEu5E+6xunG0XiBjhvJ8Osm4fdknlebyieeRUpnowXYA0wtuwdzvWW++wwLbB79EzEEafH5xaYfweq8WKWw5mDljM6C9VZ5VNWy63vpJKsAsWrc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk; spf=none smtp.mailfrom=armlinux.org.uk; dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b=BTj0mDAp; arc=none smtp.client-ip=78.32.30.218
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=armlinux.org.uk
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=armlinux.org.uk; s=pandora-2019; h=Sender:Content-Type:MIME-Version:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-Transfer-Encoding:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Id:
+	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=vJEcpcI3DDmVpZ/th+vmT2vib7QpzkNwo7AkdINnSmk=; b=BTj0mDApK2ybh6JuEQfB5S1nnk
+	6nEj8bw3WgJ/pKoyO6SBCNTkzeFx5L2gvrnvyailtNpBU5p83UcbVN+Kt6xIPkLThD/ihLMSMhd3Z
+	RnSQOXV7uy8TstNZoXAxVNCc6Af4EV7yveDb7kCO0rQPosK26VnJQ0XSl7Ocht4XzF0gWcGMZG9h/
+	kugzczY/vxJvTa8RYxiFMJobEKqGL4dLTWhsRfwVO1bJ3vo6ViJfL8vR1EiLPT2/FYVJZvQlwJZb+
+	ZNfDOBqQ8o3H8jP36Op+aBEH8/5RjrOCgPlAgNIrVKftAB6iuZ9EZbg6aWk65SkqAQoARQK9poOWp
+	G4nlU2uw==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:36288)
+	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <linux@armlinux.org.uk>)
+	id 1sD0OK-0008Qz-1u;
+	Fri, 31 May 2024 12:25:48 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+	(envelope-from <linux@shell.armlinux.org.uk>)
+	id 1sD0OJ-00061r-Kl; Fri, 31 May 2024 12:25:47 +0100
+Date: Fri, 31 May 2024 12:25:47 +0100
+From: "Russell King (Oracle)" <linux@armlinux.org.uk>
+To: Serge Semin <fancer.lancer@gmail.com>
+Cc: Andrew Halaney <ahalaney@redhat.com>,
+	Alexandre Torgue <alexandre.torgue@foss.st.com>,
+	Alexei Starovoitov <ast@kernel.org>, bpf@vger.kernel.org,
 	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
-	Martin KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
-	Yonghong Song <yhs@fb.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Jesper Dangaard Brouer <hawk@kernel.org>,
 	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@chromium.org>,
-	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>
-Subject: Re: [PATCH bpf] bpf: Make session kfuncs global
-Message-ID: <ZlmzmstEQSMp-6_i@krava>
-References: <20240531101550.2768801-1-jolsa@kernel.org>
- <20240531103931.p4f3YsBZ@linutronix.de>
- <ZlmpoWed0NmeZblH@krava>
- <20240531104922.ZgOadg-G@linutronix.de>
+	Jose Abreu <joabreu@synopsys.com>,
+	linux-arm-kernel@lists.infradead.org,
+	linux-stm32@st-md-mailman.stormreply.com,
+	Maxime Coquelin <mcoquelin.stm32@gmail.com>, netdev@vger.kernel.org,
+	Paolo Abeni <pabeni@redhat.com>
+Subject: [PATCH RFC v2 0/8] net: stmmac: convert stmmac "pcs" to phylink
+Message-ID: <Zlmzu7/ANyZxOOQL@shell.armlinux.org.uk>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -92,72 +79,103 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240531104922.ZgOadg-G@linutronix.de>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 
-On Fri, May 31, 2024 at 12:49:22PM +0200, Sebastian Andrzej Siewior wrote:
-> On 2024-05-31 12:42:41 [+0200], Jiri Olsa wrote:
-> > On Fri, May 31, 2024 at 12:39:31PM +0200, Sebastian Andrzej Siewior wrote:
-> > > On 2024-05-31 12:15:50 [+0200], Jiri Olsa wrote:
-> > > > The bpf_session_cookie is unavailable for !CONFIG_FPROBE as reported
-> > > > by Sebastian [1].
-> > > > 
-> > > > Instead of adding more ifdefs, making the session kfuncs globally
-> > > > available as suggested by Alexei. It's still allowed only for
-> > > > session programs, but it won't fail the build.
-> > > 
-> > > but this relies on CONFIG_UPROBE_EVENTS=y
-> > > What about CONFIG_UPROBE_EVENTS=n?
-> > 
-> > hum, I can't see that.. also I tested it with CONFIG_UPROBE_EVENTS=n,
-> > the CONFIG_UPROBES ifdef is ended right above this code..
-> 
-> Your patch + v6.10-rc1 + https://breakpoint.cc/config-2024-03-31.xz
+Hi,
 
-ah there's also CONFIG_KPROBE=n
+This is version 2 of the series switching stmmac to use phylink PCS
+instead of going behind phylink's back.
 
-kernel/trace/bpf_trace.c is enabled with CONFIG_BPF_EVENTS,
-which has:
+Changes since version 1:
+- Addition of patches from Serge Semin to allow RGMII to use the
+  "PCS" code even if priv->dma_cap.pcs is not set (including tweaks
+  by me.)
+- Restructuring of the patch set to be a more logical split.
+- Leave the pcs_ctrl_ane methods until we've worked out what to do
+  with the qcom-ethqos driver (this series may still end up breaking
+  it, but at least we will now successfully compile.)
 
-        depends on BPF_SYSCALL
-        depends on (KPROBE_EVENTS || UPROBE_EVENTS) && PERF_EVENTS
+A reminder that what I want to hear from this patch set are the results
+of testing - and thanks to Serge, the RGMII paths were exercised, but
+I have not had any results for the SGMII side of this.
 
-so I think we chould combine both like below
+There are still a bunch of outstanding questions:
 
-jirka
+- whether we should be using two separate PCS instances, one for
+  RGMII and another for SGMII. If the PCS hardware is not present,
+  but are using RGMII mode, then we probably don't want to be
+  accessing the registers that would've been there for SGMII.
+- what the three interrupts associated with the PCS code actually
+  mean when they fire.
+- which block's status we're reading in the pcs_get_state() method,
+  and whether we should be reading that for both RGMII and SGMII.
+- whether we need to activate phylink's inband mode in more cases
+  (so that the PCS/MAC status gets read and used for the link.)
 
+There's probably more questions to be asked... but really the critical
+thing is to shake out any breakage from making this conversion. Bear
+in mind that I have little knowledge of this hardware, so this
+conversion has been done somewhat blind using only what I can observe
+from the current driver.
 
----
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 77da1f438bec..cb202a289cf6 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -11124,7 +11124,11 @@ BTF_ID(func, bpf_iter_css_task_new)
- #else
- BTF_ID_UNUSED
- #endif
-+#ifdef CONFIG_BPF_EVENTS
- BTF_ID(func, bpf_session_cookie)
-+#else
-+BTF_ID_UNUSED
-+#endif
- 
- static bool is_kfunc_ret_null(struct bpf_kfunc_call_arg_meta *meta)
- {
-diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-index f5154c051d2c..cc90d56732eb 100644
---- a/kernel/trace/bpf_trace.c
-+++ b/kernel/trace/bpf_trace.c
-@@ -3519,7 +3519,6 @@ static u64 bpf_uprobe_multi_entry_ip(struct bpf_run_ctx *ctx)
- }
- #endif /* CONFIG_UPROBES */
- 
--#ifdef CONFIG_FPROBE
- __bpf_kfunc_start_defs();
- 
- __bpf_kfunc bool bpf_session_is_return(void)
-@@ -3568,4 +3567,3 @@ static int __init bpf_kprobe_multi_kfuncs_init(void)
- }
- 
- late_initcall(bpf_kprobe_multi_kfuncs_init);
--#endif
+Original blurb below.
+
+As I noted recently in a thread (and was ignored) stmmac sucks. (I
+won't hide my distain for drivers that make my life as phylink
+maintainer more difficult!)
+
+One of the contract conditions for using phylink is that the driver
+will _not_ mess with the netif carrier. stmmac developers/maintainers
+clearly didn't read that, because stmmac messes with the netif
+carrier, which destroys phylink's guarantee that it'll make certain
+calls in a particular order (e.g. it won't call mac_link_up() twice
+in a row without an intervening mac_link_down().) This is clearly
+stated in the phylink documentation.
+
+Thus, this patch set attempts to fix this. Why does it mess with the
+netif carrier? It has its own independent PCS implementation that
+completely bypasses phylink _while_ phylink is still being used.
+This is not acceptable. Either the driver uses phylink, or it doesn't
+use phylink. There is no half-way house about this. Therefore, this
+driver needs to either be fixed, or needs to stop using phylink.
+
+Since I was ignored when I brought this up, I've hacked together the
+following patch set - and it is hacky at the moment. It's also broken
+because of recentl changes involving dwmac-qcom-ethqos.c - but there
+isn't sufficient information in the driver for me to fix this. The
+driver appears to use SGMII at 2500Mbps, which simply does not exist.
+What interface mode (and neg_mode) does phylink pass to pcs_config()
+in each of the speeds that dwmac-qcom-ethqos.c is interested in.
+Without this information, I can't do that conversion. So for the
+purposes of this, I've just ignored dwmac-qcom-ethqos.c (which means
+it will fail to build.)
+
+The patch splitup is not ideal, but that's not what I'm interested in
+here. What I want to hear is the results of testing - does this switch
+of the RGMII/SGMII "pcs" stuff to a phylink_pcs work for this driver?
+
+Please don't review the patches, but you are welcome to send fixes to
+them. Once we know that the overall implementation works, then I'll
+look at how best to split the patches. In the mean time, the present
+form is more convenient for making changes and fixing things.
+
+There is still more improvement that's needed here.
+
+Thanks.
+
+ drivers/net/ethernet/stmicro/stmmac/Makefile       |   2 +-
+ drivers/net/ethernet/stmicro/stmmac/common.h       |  12 +-
+ .../net/ethernet/stmicro/stmmac/dwmac1000_core.c   | 146 ++++++++++++++-------
+ drivers/net/ethernet/stmicro/stmmac/dwmac4_core.c  | 131 +++++++++++++-----
+ drivers/net/ethernet/stmicro/stmmac/hwif.h         |  19 ++-
+ .../net/ethernet/stmicro/stmmac/stmmac_ethtool.c   | 111 +---------------
+ drivers/net/ethernet/stmicro/stmmac/stmmac_main.c  |  33 ++---
+ drivers/net/ethernet/stmicro/stmmac/stmmac_pcs.c   |  58 ++++++++
+ drivers/net/ethernet/stmicro/stmmac/stmmac_pcs.h   |  34 +----
+ 9 files changed, 298 insertions(+), 248 deletions(-)
+ create mode 100644 drivers/net/ethernet/stmicro/stmmac/stmmac_pcs.c
+
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
 
