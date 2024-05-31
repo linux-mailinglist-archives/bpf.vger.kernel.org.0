@@ -1,88 +1,70 @@
-Return-Path: <bpf+bounces-31009-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-31010-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C476B8D5FD1
-	for <lists+bpf@lfdr.de>; Fri, 31 May 2024 12:38:28 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A00A08D5FD6
+	for <lists+bpf@lfdr.de>; Fri, 31 May 2024 12:39:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 809E7288214
-	for <lists+bpf@lfdr.de>; Fri, 31 May 2024 10:38:27 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6640228805F
+	for <lists+bpf@lfdr.de>; Fri, 31 May 2024 10:39:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2FD74155CBF;
-	Fri, 31 May 2024 10:38:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8660D156238;
+	Fri, 31 May 2024 10:39:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="F0heMktW";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="YN+uNLES"
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="0mGmhixv";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="eeeYtSsy"
 X-Original-To: bpf@vger.kernel.org
 Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 46900155C8E;
-	Fri, 31 May 2024 10:38:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D2D95D51E
+	for <bpf@vger.kernel.org>; Fri, 31 May 2024 10:39:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717151892; cv=none; b=TKYVd6bDWSG2ZyRwwS/8Uj0nYUjNwQSXO2xjOQDZeJDcuN2CZ/fxrl5qNKxesf5S5t2EExkPOlhWxJ6DAzCOwQHkUA7kJFtCGXFhNhQNUjQV6Io+SIYp+5IUdSVCjA+JTaUQItGY2sHLzrXhAuWjL/idntnuyt9mi9XwAZo7O58=
+	t=1717151975; cv=none; b=fQQ/N8zQqdkpcQhnmG5zPfOhiylb0X1wKrufZ7qFORJ2GN8JH1Yc+EJoMYXiEXzFS238LyUzj3RHCmD+wqFMWGzUgKOOekl7l4DpSVhnLxMaK9RiZT9+VQ8TJiFVi/pELUcozlY6w9Wv44oKpOyo6k3ZeVE94HbL2vxsMKn05L4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717151892; c=relaxed/simple;
-	bh=pHEsO2qn1rcaa/CVVCC1rJCGrocpF3xq2ymrPBC1hyM=;
+	s=arc-20240116; t=1717151975; c=relaxed/simple;
+	bh=EIxJZjvraazsTnTddg9DUYD7c+FPA7anhg17pJcX9xY=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=tVa84WxKhoNcvFLGRU7mPDvTn3SYjw7Slnhf/Dyb+0WDQn2nuyX/CyEOOcdFGupdMLE4fV5FfWWjkhxhMRZAQGXCFB31ElW2VCIPcM9z/of7iyW2vZHOO5h7TNkhyZTs+7mbWNfMcVeSI9oStdRlHmsJcVw3tIdVSM2TnMdcvjc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=F0heMktW; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=YN+uNLES; arc=none smtp.client-ip=193.142.43.55
+	 Content-Type:Content-Disposition:In-Reply-To; b=mK1X11mxUX8+UuTwKA/vr2qdGy+q8IpxuGeAs4ivqGtpRdOGQvz935PwqZlOmPCk4rXcUYTPNCWj+VgpGjyJ+4KU5+j2S7emCxxB8uBZmr7rLd0V7EvcxjIJIKKvIsIhzuHY23dQQ/caz2ce3mHwt6oi+dC4q3ZK5enbUbYk6aU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=0mGmhixv; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=eeeYtSsy; arc=none smtp.client-ip=193.142.43.55
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-Date: Fri, 31 May 2024 12:38:07 +0200
+Date: Fri, 31 May 2024 12:39:31 +0200
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1717151889;
+	s=2020; t=1717151972;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=s4acigBe027wOQx0luMaaon6tV311jRRizAmbiQqL3w=;
-	b=F0heMktWAuN3lpcjkR+BkoYknS08e++75PnvWStPB9mL2ifxNdHcKz5weNkFgwFB1j84Qw
-	QMYeUMqjHfYnQDfLmxfG2IMol2YmnIYoV9aDk3SIvCyO9iJc/PrYDZExR53KWU5eBit800
-	A/8ur4BgPCXyYAcK0arCAFyxTYkLdMSj9Go2Y8rByOr4PvmyKltCd8K6hxKDc8uxbiMzhS
-	O/0ecInyrCKM0d9uYSRkS3A/JOTNZ6Up+04k9Kl5vtbZutIm4rIE2mvgdJFOll5X/Ok3EF
-	Wu1wiB8LMEdDeFz3DMTP32t5qruIRsjPHFSDeoImxEjZtLmkFDty3EdUcpWWnA==
+	bh=Ljb/PRuVoI9v8+9q0idJ375NWa4F+/SiJVGWDOV0AVo=;
+	b=0mGmhixvip2sdJ1hz2GrM7HEHPfJftUc86gYttj/r1uqegnAu/XrsgfIUxLhBZ6yIttvQN
+	uO1PDRT0h+41lSY/mm+3gvu9LpqkhJbj/F2i2euNH7l+i+LMj/aBn/b59uzlJkVHtC7T+M
+	vcmJwMJt7WGI+MASRbKgJHG7Aw6dHLmzjBRNf6MoFP/fZBsuzxZZxvVWq8YSnPOPXq669V
+	QyhpxQs8RweTs2UguVnj7ki1TsIRF1qogU9S8V7DD1LiA34Je/9Se+y2geoeu/HrOMpIre
+	zh5K74qz4chZz3W1wFHDL71SXD0eERn8Taqy0TM85pIujNPLzs5qrDYFqTS7HQ==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1717151889;
+	s=2020e; t=1717151972;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=s4acigBe027wOQx0luMaaon6tV311jRRizAmbiQqL3w=;
-	b=YN+uNLESzX+WmX/Q2l0gLeQmgehpBRHwNK7BGf1Ci7es9A7xJHTFdbLQVw8obMJK45/1gV
-	40Y6OrLNtX5SqzCQ==
+	bh=Ljb/PRuVoI9v8+9q0idJ375NWa4F+/SiJVGWDOV0AVo=;
+	b=eeeYtSsyBFA9xQpMcXj3lyL86QiX+DSAdJKGIVxWW6rUg/SL7MNnejVniSVpEHg4i4it2t
+	a2MUJdppfXg7xACA==
 From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-Cc: linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-	"David S. Miller" <davem@davemloft.net>,
-	Boqun Feng <boqun.feng@gmail.com>,
+To: Jiri Olsa <jolsa@kernel.org>
+Cc: Alexei Starovoitov <ast@kernel.org>,
 	Daniel Borkmann <daniel@iogearbox.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Frederic Weisbecker <frederic@kernel.org>,
-	Ingo Molnar <mingo@redhat.com>, Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Waiman Long <longman@redhat.com>, Will Deacon <will@kernel.org>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Eduard Zingerman <eddyz87@gmail.com>, Hao Luo <haoluo@google.com>,
-	Jesper Dangaard Brouer <hawk@kernel.org>,
-	Jiri Olsa <jolsa@kernel.org>,
+	Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
+	Martin KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
+	Yonghong Song <yhs@fb.com>,
 	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
-	Stanislav Fomichev <sdf@google.com>,
-	Yonghong Song <yonghong.song@linux.dev>, bpf@vger.kernel.org
-Subject: Re: [PATCH v3 net-next 14/15] net: Reference bpf_redirect_info via
- task_struct on PREEMPT_RT.
-Message-ID: <20240531103807.QjzIOAOh@linutronix.de>
-References: <20240529162927.403425-1-bigeasy@linutronix.de>
- <20240529162927.403425-15-bigeasy@linutronix.de>
- <87y17sfey6.fsf@toke.dk>
+	KP Singh <kpsingh@chromium.org>,
+	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>
+Subject: Re: [PATCH bpf] bpf: Make session kfuncs global
+Message-ID: <20240531103931.p4f3YsBZ@linutronix.de>
+References: <20240531101550.2768801-1-jolsa@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -91,71 +73,18 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <87y17sfey6.fsf@toke.dk>
+In-Reply-To: <20240531101550.2768801-1-jolsa@kernel.org>
 
-On 2024-05-30 00:09:21 [+0200], Toke H=C3=B8iland-J=C3=B8rgensen wrote:
-> [...]
-> > @@ -240,12 +240,14 @@ static int cpu_map_bpf_prog_run(struct bpf_cpu_ma=
-p_entry *rcpu, void **frames,
-> >  				int xdp_n, struct xdp_cpumap_stats *stats,
-> >  				struct list_head *list)
-> >  {
-> > +	struct bpf_net_context __bpf_net_ctx, *bpf_net_ctx;
-> >  	int nframes;
->=20
-> I think we need to zero-initialise all the context objects we allocate
-> on the stack.
->=20
-> The reason being that an XDP program can return XDP_REDIRECT without
-> calling any of the redirect helpers first; which will lead to
-> xdp_do_redirect() being called without any of the fields in struct
-> bpf_redirect_info having being set. This can lead to a crash if the
-> values happen to be the wrong value; and if we're not initialising the
-> stack space used by this struct, we have no guarantees about what value
-> they will end up with.
+On 2024-05-31 12:15:50 [+0200], Jiri Olsa wrote:
+> The bpf_session_cookie is unavailable for !CONFIG_FPROBE as reported
+> by Sebastian [1].
+> 
+> Instead of adding more ifdefs, making the session kfuncs globally
+> available as suggested by Alexei. It's still allowed only for
+> session programs, but it won't fail the build.
 
-Okay, I can do that.
-
-> >  void bpf_clear_redirect_map(struct bpf_map *map)
-> >  {
-> > -	struct bpf_redirect_info *ri;
-> > -	int cpu;
-> > -
-> > -	for_each_possible_cpu(cpu) {
-> > -		ri =3D per_cpu_ptr(&bpf_redirect_info, cpu);
-> > -		/* Avoid polluting remote cacheline due to writes if
-> > -		 * not needed. Once we pass this test, we need the
-> > -		 * cmpxchg() to make sure it hasn't been changed in
-> > -		 * the meantime by remote CPU.
-> > -		 */
-> > -		if (unlikely(READ_ONCE(ri->map) =3D=3D map))
-> > -			cmpxchg(&ri->map, map, NULL);
-> > -	}
-> > +	/* ri->map is assigned in __bpf_xdp_redirect_map() from within a eBPF
-> > +	 * program/ during NAPI callback. It is used during
-> > +	 * xdp_do_generic_redirect_map()/ __xdp_do_redirect_frame() from the
-> > +	 * redirect callback afterwards. ri->map is cleared after usage.
-> > +	 * The path has no explicit RCU read section but the local_bh_disable=
-()
-> > +	 * is also a RCU read section which makes the complete softirq callba=
-ck
-> > +	 * RCU protected. This in turn makes ri->map RCU protected and it is
-> > +	 * sufficient to wait a grace period to ensure that no "ri->map =3D=
-=3D map"
-> > +	 * exists. dev_map_free() removes the map from the list and then
-> > +	 * invokes synchronize_rcu() after calling this function.
-> > +	 */
-> >  }
->=20
-> With the zeroing of the stack variable mentioned above, I agree that
-> this is not needed anymore, but I think we should just get rid of the
-> function entirely and put a comment in devmap.c instead of the call to
-> the (now empty) function.
-
-I wasn't entirely sure if my reasoning is valid. In that case=E2=80=A6
-
-> -Toke
+but this relies on CONFIG_UPROBE_EVENTS=y
+What about CONFIG_UPROBE_EVENTS=n?
 
 Sebastian
 
