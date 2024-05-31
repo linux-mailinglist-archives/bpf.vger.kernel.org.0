@@ -1,204 +1,225 @@
-Return-Path: <bpf+bounces-31058-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-31059-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EAB598D6816
-	for <lists+bpf@lfdr.de>; Fri, 31 May 2024 19:18:54 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2337C8D6884
+	for <lists+bpf@lfdr.de>; Fri, 31 May 2024 19:53:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A1D5D28ADD0
-	for <lists+bpf@lfdr.de>; Fri, 31 May 2024 17:18:53 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8791EB25D57
+	for <lists+bpf@lfdr.de>; Fri, 31 May 2024 17:53:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1193A17C7A4;
-	Fri, 31 May 2024 17:18:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A08517C7CD;
+	Fri, 31 May 2024 17:53:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="1w8vZTdk"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="J1KgAiDv"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f43.google.com (mail-ej1-f43.google.com [209.85.218.43])
+Received: from mail-pj1-f45.google.com (mail-pj1-f45.google.com [209.85.216.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5271F176242
-	for <bpf@vger.kernel.org>; Fri, 31 May 2024 17:18:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B19F17CA1D;
+	Fri, 31 May 2024 17:53:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717175919; cv=none; b=A7Q9y/KBdPcYs+BKDiREut+eKcb8WcRGbc4DWItZ6I6gt+ouavd/Ca8T+N/yUovoqeXi22N9ViNK2E+4Rncz4kuqCmL8RuR12i/Mu5f6dVO/brW+7iCaBagYVVICoYvLPkZacUWKe9zcecETr9UhhoH6FJIyLWrJqNOSpoWh7K0=
+	t=1717177990; cv=none; b=enHenzLIfglV6oZQN2GLZYVkgul0y8+BOMdqRGK7fEuMdOTVPOTZtWV7wOXoJrcjJS4IuMl07hU64dDn3FACXTbniAECqNmkSAtWtE5JqfhjFCE+VeXmN7hkuauHbiOVSnIz6tQTxOhlDuarP9Fw+GR4617zzQPtbAJvG/VOZT0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717175919; c=relaxed/simple;
-	bh=DS0hDZfNJZkkzFy8Yct62SEoWnrdxNIojjUrc12e2eA=;
+	s=arc-20240116; t=1717177990; c=relaxed/simple;
+	bh=waSx+8OBB0cB30k7vFW7e2Z+l+E4WLh3misPPpnZH8Q=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=UZduVcogQYE/3StwGy6tX97tB11IBfgdAchgRo68xS+t+C93T7rqyvjzxcKEECQsR1XB1SDBhU9dDOyFMT6YDfXJTcZwkgbWeXWbj29LpSk6dxLmEYZp05H7hFiM5xty1vt6lWZYNtMjanGrXBJ19oUq3jfWfq2palri9PO7Fq0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=1w8vZTdk; arc=none smtp.client-ip=209.85.218.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ej1-f43.google.com with SMTP id a640c23a62f3a-a63359aaaa6so289252166b.2
-        for <bpf@vger.kernel.org>; Fri, 31 May 2024 10:18:37 -0700 (PDT)
+	 To:Cc:Content-Type; b=gC35jI7zXzM/oi7cZ582EdBcmROz3tlKFrhD4ZHi3eX85hxI5O/rCTzJgk1xSU7Jb3oB0EDKGi58jffCzOQ6mTzvUK12Gkh1g1T682vP0O/sAAxSiAyGCN9bXs+CStuXPaR2kqu7CIFAv0Vgjj1GjllECdhaozNJJYtaPKq3fA8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=J1KgAiDv; arc=none smtp.client-ip=209.85.216.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f45.google.com with SMTP id 98e67ed59e1d1-2c1e7708cfdso595217a91.2;
+        Fri, 31 May 2024 10:53:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1717175916; x=1717780716; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1717177988; x=1717782788; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=knmodrcY3ruf2qGktj4YBIa4Hu+EWJ5K27FOck3RpeQ=;
-        b=1w8vZTdkn+mPNnfeaWCWFNEU2c0f10pXctds/U0m7HG321kIqRwKj7ZzOISd/4CFbo
-         0Qbb0C43thFfBQ/XGsE/onPkA/f7t8pi9JWwq1JN8Ngl7X+ruw3hQmfOFiWhqsLnNzS5
-         OBCvVAbg9a+tQoCO/5ggZt+VwHVs9xnzRtUXiMEaLuNMklAk7CBhnWORDhd/Q9S6vygi
-         GD6Qyz6ucJSPj0Y50j1WL+MF4Wnki2JP35aph5oXkc6X8OzyQawOa5tNM/6FBQ3wGLb7
-         t3918HXF74NBmQ07gKJ+4DcgFiL3pjccK6f0wXtM7U3pLLAuYavoR900EBrtbxehHdtq
-         P58g==
+        bh=Ok+HgwHbOJUwlMQ8Je/jHasD4pYJWwujaLu9FwWJ6kM=;
+        b=J1KgAiDvWVK39S4J5+KUGqjFWlKGZJ51brcWQ8fr+Dv0tTo9xAfFXz0KZgCpkD6Tr9
+         lN7mlo2V5ZqDMtKgJa6qUsuDvnaP4V+a2SKp+03PJG6I/RsFAEoD36PFbIeM38aCNFIh
+         REWCI6NsP+bUi6GTWATSKPK71gzip87LxFKH0QjlDLgmkWwlkltNNzChwM6+L81YGuSm
+         TAkrsPKG88i7oGSyhm41uy/ETGZKwD5mzciR8WHBOMRctjcb1z7VfrCF8bUMHK+aDmM3
+         suL6lRM1YqX/vRiJK1MCTJXmhJ6KbSakiNFXzJK8kWXg/FEsGlwDwQfmb1wijzpGaYTt
+         dJ9g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1717175916; x=1717780716;
+        d=1e100.net; s=20230601; t=1717177988; x=1717782788;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=knmodrcY3ruf2qGktj4YBIa4Hu+EWJ5K27FOck3RpeQ=;
-        b=vAvwq5r4tlEqPLaZO/fbDTue6lLL5jKsMgj2OptcLhXbGOrjX+d1aWmm68/F3qlvnR
-         yvTVYIaHbaM/6QJdkYM7Df8wKvd67ADUagvVKdjtqssBGnJH5Gz3Pt/tybgUPgNLDjcb
-         vOnLW8I6vR91X0pKZAMfIEuTFTGbTc8qCIZ3LDqmblxXK+46eYiIkJalXqj7zwm790vS
-         GQ//Ted51B/TDg0vdzhfR37eC55rWpx3h6QVIRHy9dlxsi+iAqze2W8BoPZClERcQP1g
-         2whBmWTGQKI5c+++rBP3O5DJgDFkqFBmy2IhsuEt70np1csPFMcBydS4gVNnuhmtyS0c
-         CCoA==
-X-Forwarded-Encrypted: i=1; AJvYcCW/YulNHx0Q4EahZ6nX5dNzKsuLFsZhgCMt+CH0tiUQJVk+UMkRcV4b6VrI/TGu2cI/+Qa/Wxp/fIu+5m6VIFy+Uhqs
-X-Gm-Message-State: AOJu0YzjDRG/ugIOD306c9k5Wg8Yqggd5TwRJKlVrb6j4z4EC8iqGHjX
-	e7V/Uav7tDBYg/NBbArmJV/DSg/WvQxLOErbx/zrQmv5yjWE5snPZyLBNe2lX2iukI+d8gs3jER
-	0kBi0h3NqN8janE6Sg/uJXVS1mIyF9/ZzSAlt
-X-Google-Smtp-Source: AGHT+IFq57opgQgUB+TA+18B1Szt8imqxEQZcxRZEyIW0myS+jg9WzpqrrZiKo7rqzk0TmUBniiGQ6+5D9+jhENDG1U=
-X-Received: by 2002:a17:906:a1c5:b0:a67:b440:e50f with SMTP id
- a640c23a62f3a-a68224472c9mr177860866b.63.1717175915378; Fri, 31 May 2024
- 10:18:35 -0700 (PDT)
+        bh=Ok+HgwHbOJUwlMQ8Je/jHasD4pYJWwujaLu9FwWJ6kM=;
+        b=qxmqKXk1efl/1joPXHQ4ao67q6RhAklF2n8goZOO40ao9iyQyZn7qsMIx49xKOCMXA
+         P7TwE60f3yUVUJ0axlL5rkwpgsrZ18CX8c8pf0wFv4OmXqg5xnfHVWnie+Bjq/hLUMMm
+         Au6dsj9z1v+vQUruvpPpYlktjNUlUE+xt60XB935TnSnDoJB0+u0scgtXsvDrsbsG6ET
+         P6yNTXRl323ysbOzQmqiet7gIPNMranhq38yuYuRmfN0cA015z1Ir50ioG4bi9RWuy+G
+         p1rd3QPh7WX3lJSrHvD24Uk8VWziD1I4CDVA6jtCcnAeHRKgep8B8pkUASNedDF3nwtV
+         9puQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWBvtO6R+pJMoF+oVx0IobNCT2ssc2sq2lqxECC0+MARCwqtVtopcOn0fcfe+9mN4VNB9LwMibNjefKG43Yl4gI+3UErssWsqShcNxDxnH1Liyd79JClY86Ex8mwI/oKtfGJkm/T+v6yy6+glLaYho5rCddVtKrf2Pohihc855kXTtYGXP6hnrU5KNGoFeKp3hd7Gg5erPViHx6hBg3wdQMIStThujo6aA9ULuG6l4pthpgan7OEqu3BBXL
+X-Gm-Message-State: AOJu0YyOd97Kh127rakt/9szjD6F6k88D+12OyFXF3yKhB9/XKCRExge
+	soJc5ghQ96U2+JgJfFcIZvuAVBXZHU2yo0tFbSl+S5WPMov+MFSeUiAUG7WHztidu8BjkaK92Id
+	xgXAUeQZ9+605sxbe+IrT/o/VeIA=
+X-Google-Smtp-Source: AGHT+IHOKpRQLQbhFE4qcc0Y4SOtlKCHPI3lY+kJC3zbGnA8+2fx1XzMDbqjQJvxUvAYRXhX1GIY0qB6MZv/GCX4G8o=
+X-Received: by 2002:a17:90a:5296:b0:2c1:9048:4d95 with SMTP id
+ 98e67ed59e1d1-2c1dc58edd9mr2447955a91.20.1717177987636; Fri, 31 May 2024
+ 10:53:07 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240531-fault-injection-statickeys-v1-0-a513fd0a9614@suse.cz>
- <20240531-fault-injection-statickeys-v1-3-a513fd0a9614@suse.cz> <CAADnVQJ=bNg9nWQPXGjJ11pZnmjntt=zLBqtJng3328T1L-u0g@mail.gmail.com>
-In-Reply-To: <CAADnVQJ=bNg9nWQPXGjJ11pZnmjntt=zLBqtJng3328T1L-u0g@mail.gmail.com>
-From: Yosry Ahmed <yosryahmed@google.com>
-Date: Fri, 31 May 2024 10:17:57 -0700
-Message-ID: <CAJD7tkbvjhtFoycNvqbXVzKh2c=RE_cih7k8tnpDRFXSx7tatg@mail.gmail.com>
-Subject: Re: [PATCH RFC 3/4] mm, slab: add static key for should_failslab()
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Vlastimil Babka <vbabka@suse.cz>, Akinobu Mita <akinobu.mita@gmail.com>, 
-	Christoph Lameter <cl@linux.com>, David Rientjes <rientjes@google.com>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
-	"Naveen N. Rao" <naveen.n.rao@linux.ibm.com>, 
-	Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>, "David S. Miller" <davem@davemloft.net>, 
-	Masami Hiramatsu <mhiramat@kernel.org>, Steven Rostedt <rostedt@goodmis.org>, 
-	Mark Rutland <mark.rutland@arm.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Roman Gushchin <roman.gushchin@linux.dev>, Hyeonggon Yoo <42.hyeyoo@gmail.com>, 
-	LKML <linux-kernel@vger.kernel.org>, linux-mm <linux-mm@kvack.org>, 
-	bpf <bpf@vger.kernel.org>, 
-	linux-trace-kernel <linux-trace-kernel@vger.kernel.org>
+References: <20240523121149.575616-1-jolsa@kernel.org>
+In-Reply-To: <20240523121149.575616-1-jolsa@kernel.org>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Fri, 31 May 2024 10:52:54 -0700
+Message-ID: <CAEf4Bza-+=04GG7Tg4U4pCQ28Oy_2F_5872EPDsX6X3Y=jhEuw@mail.gmail.com>
+Subject: Re: [PATCHv7 bpf-next 0/9] uprobe: uretprobe speed up
+To: Steven Rostedt <rostedt@goodmis.org>, Masami Hiramatsu <mhiramat@kernel.org>
+Cc: Oleg Nesterov <oleg@redhat.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, linux-kernel@vger.kernel.org, 
+	linux-trace-kernel@vger.kernel.org, linux-api@vger.kernel.org, 
+	linux-man@vger.kernel.org, x86@kernel.org, bpf@vger.kernel.org, 
+	Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>, 
+	John Fastabend <john.fastabend@gmail.com>, Peter Zijlstra <peterz@infradead.org>, 
+	Thomas Gleixner <tglx@linutronix.de>, "Borislav Petkov (AMD)" <bp@alien8.de>, Ingo Molnar <mingo@redhat.com>, 
+	Andy Lutomirski <luto@kernel.org>, "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>, 
+	Deepak Gupta <debug@rivosinc.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, May 31, 2024 at 9:44=E2=80=AFAM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
+On Thu, May 23, 2024 at 5:11=E2=80=AFAM Jiri Olsa <jolsa@kernel.org> wrote:
 >
-> On Fri, May 31, 2024 at 2:33=E2=80=AFAM Vlastimil Babka <vbabka@suse.cz> =
-wrote:
-> >
-> > Since commit 4f6923fbb352 ("mm: make should_failslab always available f=
-or
-> > fault injection") should_failslab() is unconditionally a noinline
-> > function. This adds visible overhead to the slab allocation hotpath,
-> > even if the function is empty. With CONFIG_FAILSLAB=3Dy there's additio=
-nal
-> > overhead when the functionality is not enabled by a boot parameter or
-> > debugfs.
-> >
-> > The overhead can be eliminated with a static key around the callsite.
-> > Fault injection and error injection frameworks can now be told that the
-> > this function has a static key associated, and are able to enable and
-> > disable it accordingly.
-> >
-> > Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
-> > ---
-> >  mm/failslab.c |  2 +-
-> >  mm/slab.h     |  3 +++
-> >  mm/slub.c     | 10 +++++++---
-> >  3 files changed, 11 insertions(+), 4 deletions(-)
-> >
-> > diff --git a/mm/failslab.c b/mm/failslab.c
-> > index ffc420c0e767..878fd08e5dac 100644
-> > --- a/mm/failslab.c
-> > +++ b/mm/failslab.c
-> > @@ -9,7 +9,7 @@ static struct {
-> >         bool ignore_gfp_reclaim;
-> >         bool cache_filter;
-> >  } failslab =3D {
-> > -       .attr =3D FAULT_ATTR_INITIALIZER,
-> > +       .attr =3D FAULT_ATTR_INITIALIZER_KEY(&should_failslab_active.ke=
-y),
-> >         .ignore_gfp_reclaim =3D true,
-> >         .cache_filter =3D false,
-> >  };
-> > diff --git a/mm/slab.h b/mm/slab.h
-> > index 5f8f47c5bee0..792e19cb37b8 100644
-> > --- a/mm/slab.h
-> > +++ b/mm/slab.h
-> > @@ -11,6 +11,7 @@
-> >  #include <linux/memcontrol.h>
-> >  #include <linux/kfence.h>
-> >  #include <linux/kasan.h>
-> > +#include <linux/jump_label.h>
-> >
-> >  /*
-> >   * Internal slab definitions
-> > @@ -160,6 +161,8 @@ static_assert(IS_ALIGNED(offsetof(struct slab, free=
-list), sizeof(freelist_aba_t)
-> >   */
-> >  #define slab_page(s) folio_page(slab_folio(s), 0)
-> >
-> > +DECLARE_STATIC_KEY_FALSE(should_failslab_active);
-> > +
-> >  /*
-> >   * If network-based swap is enabled, sl*b must keep track of whether p=
-ages
-> >   * were allocated from pfmemalloc reserves.
-> > diff --git a/mm/slub.c b/mm/slub.c
-> > index 0809760cf789..3bb579760a37 100644
-> > --- a/mm/slub.c
-> > +++ b/mm/slub.c
-> > @@ -3874,13 +3874,15 @@ static __always_inline void maybe_wipe_obj_free=
-ptr(struct kmem_cache *s,
-> >                         0, sizeof(void *));
-> >  }
-> >
-> > +DEFINE_STATIC_KEY_FALSE(should_failslab_active);
-> > +
-> >  noinline int should_failslab(struct kmem_cache *s, gfp_t gfpflags)
-> >  {
-> >         if (__should_failslab(s, gfpflags))
-> >                 return -ENOMEM;
-> >         return 0;
-> >  }
-> > -ALLOW_ERROR_INJECTION(should_failslab, ERRNO);
-> > +ALLOW_ERROR_INJECTION_KEY(should_failslab, ERRNO, &should_failslab_act=
-ive);
-> >
-> >  static __fastpath_inline
-> >  struct kmem_cache *slab_pre_alloc_hook(struct kmem_cache *s, gfp_t fla=
-gs)
-> > @@ -3889,8 +3891,10 @@ struct kmem_cache *slab_pre_alloc_hook(struct km=
-em_cache *s, gfp_t flags)
-> >
-> >         might_alloc(flags);
-> >
-> > -       if (unlikely(should_failslab(s, flags)))
-> > -               return NULL;
-> > +       if (static_branch_unlikely(&should_failslab_active)) {
-> > +               if (should_failslab(s, flags))
-> > +                       return NULL;
-> > +       }
+> hi,
+> as part of the effort on speeding up the uprobes [0] coming with
+> return uprobe optimization by using syscall instead of the trap
+> on the uretprobe trampoline.
 >
-> makes sense.
-> Acked-by: Alexei Starovoitov <ast@kernel.org>
+> The speed up depends on instruction type that uprobe is installed
+> and depends on specific HW type, please check patch 1 for details.
 >
-> Do you have any microbenchmark numbers before/after this optimization?
+> Patches 1-8 are based on bpf-next/master, but patch 2 and 3 are
+> apply-able on linux-trace.git tree probes/for-next branch.
+> Patch 9 is based on man-pages master.
+>
+> v7 changes:
+> - fixes in man page [Alejandro Colomar]
+> - fixed patch #1 fixes tag [Oleg]
+>
+> Also available at:
+>   https://git.kernel.org/pub/scm/linux/kernel/git/jolsa/perf.git
+>   uretprobe_syscall
+>
+> thanks,
+> jirka
+>
+>
+> Notes to check list items in Documentation/process/adding-syscalls.rst:
+>
+> - System Call Alternatives
+>   New syscall seems like the best way in here, because we need
+>   just to quickly enter kernel with no extra arguments processing,
+>   which we'd need to do if we decided to use another syscall.
+>
+> - Designing the API: Planning for Extension
+>   The uretprobe syscall is very specific and most likely won't be
+>   extended in the future.
+>
+>   At the moment it does not take any arguments and even if it does
+>   in future, it's allowed to be called only from trampoline prepared
+>   by kernel, so there'll be no broken user.
+>
+> - Designing the API: Other Considerations
+>   N/A because uretprobe syscall does not return reference to kernel
+>   object.
+>
+> - Proposing the API
+>   Wiring up of the uretprobe system call is in separate change,
+>   selftests and man page changes are part of the patchset.
+>
+> - Generic System Call Implementation
+>   There's no CONFIG option for the new functionality because it
+>   keeps the same behaviour from the user POV.
+>
+> - x86 System Call Implementation
+>   It's 64-bit syscall only.
+>
+> - Compatibility System Calls (Generic)
+>   N/A uretprobe syscall has no arguments and is not supported
+>   for compat processes.
+>
+> - Compatibility System Calls (x86)
+>   N/A uretprobe syscall is not supported for compat processes.
+>
+> - System Calls Returning Elsewhere
+>   N/A.
+>
+> - Other Details
+>   N/A.
+>
+> - Testing
+>   Adding new bpf selftests and ran ltp on top of this change.
+>
+> - Man Page
+>   Attached.
+>
+> - Do not call System Calls in the Kernel
+>   N/A.
+>
+>
+> [0] https://lore.kernel.org/bpf/ZeCXHKJ--iYYbmLj@krava/
+> ---
+> Jiri Olsa (8):
+>       x86/shstk: Make return uprobe work with shadow stack
+>       uprobe: Wire up uretprobe system call
+>       uprobe: Add uretprobe syscall to speed up return probe
+>       selftests/x86: Add return uprobe shadow stack test
+>       selftests/bpf: Add uretprobe syscall test for regs integrity
+>       selftests/bpf: Add uretprobe syscall test for regs changes
+>       selftests/bpf: Add uretprobe syscall call from user space test
+>       selftests/bpf: Add uretprobe shadow stack test
+>
 
-There are numbers in the cover letter for the entire series:
-https://lore.kernel.org/lkml/20240531-fault-injection-statickeys-v1-0-a513f=
-d0a9614@suse.cz/
+Masami, Steven,
+
+It seems like the series is ready to go in. Are you planning to take
+the first 4 patches through your linux-trace tree?
+
+>  arch/x86/entry/syscalls/syscall_64.tbl                      |   1 +
+>  arch/x86/include/asm/shstk.h                                |   4 +
+>  arch/x86/kernel/shstk.c                                     |  16 ++++
+>  arch/x86/kernel/uprobes.c                                   | 124 ++++++=
+++++++++++++++++++++++-
+>  include/linux/syscalls.h                                    |   2 +
+>  include/linux/uprobes.h                                     |   3 +
+>  include/uapi/asm-generic/unistd.h                           |   5 +-
+>  kernel/events/uprobes.c                                     |  24 ++++--
+>  kernel/sys_ni.c                                             |   2 +
+>  tools/include/linux/compiler.h                              |   4 +
+>  tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c       | 123 ++++++=
+++++++++++++++++++++++-
+>  tools/testing/selftests/bpf/prog_tests/uprobe_syscall.c     | 385 ++++++=
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++=
+++++++++++
+>  tools/testing/selftests/bpf/progs/uprobe_syscall.c          |  15 ++++
+>  tools/testing/selftests/bpf/progs/uprobe_syscall_executed.c |  17 ++++
+>  tools/testing/selftests/x86/test_shadow_stack.c             | 145 ++++++=
+++++++++++++++++++++++++++++
+>  15 files changed, 860 insertions(+), 10 deletions(-)
+>  create mode 100644 tools/testing/selftests/bpf/prog_tests/uprobe_syscall=
+.c
+>  create mode 100644 tools/testing/selftests/bpf/progs/uprobe_syscall.c
+>  create mode 100644 tools/testing/selftests/bpf/progs/uprobe_syscall_exec=
+uted.c
+>
+> Jiri Olsa (1):
+>       man2: Add uretprobe syscall page
+>
+>  man/man2/uretprobe.2 | 56 ++++++++++++++++++++++++++++++++++++++++++++++=
+++++++++++
+>  1 file changed, 56 insertions(+)
+>  create mode 100644 man/man2/uretprobe.2
 
