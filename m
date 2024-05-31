@@ -1,137 +1,190 @@
-Return-Path: <bpf+bounces-31035-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-31036-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9B3238D649D
-	for <lists+bpf@lfdr.de>; Fri, 31 May 2024 16:36:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id B74948D64DF
+	for <lists+bpf@lfdr.de>; Fri, 31 May 2024 16:52:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 78790B247FD
-	for <lists+bpf@lfdr.de>; Fri, 31 May 2024 14:36:02 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DD026B2B250
+	for <lists+bpf@lfdr.de>; Fri, 31 May 2024 14:51:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7784B46433;
-	Fri, 31 May 2024 14:35:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B352558B9;
+	Fri, 31 May 2024 14:50:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LD3tAu+e"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="noplJiD1"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE23B3EA86;
-	Fri, 31 May 2024 14:35:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F7BA6F2EB;
+	Fri, 31 May 2024 14:50:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717166157; cv=none; b=i/glmwqo9DJ48rquNN9tfSoYhI9S5CP9CLfOm+iTo5UFwb1rjycX9rcKzydrcywr0Gpuhtt4vYHqh37XFcjG4O+hSm2YaLzUlpjyzvcnixKOpK1FFQKzGrVT9zh9O8VeX2VkSgnF1+IZjuMnpITd1NoheNUAf1njNsRWMPFgQKI=
+	t=1717167029; cv=none; b=lG3Jm3bZ6bi6R4Qm0iiCmZ2ZCdVwSmP/DZxd9XikJ67P9w6h3FmQfg+LEWu50iZCAxlsNJExEzuFlqsa4NpdWAhvz3SRX8ADJzwWjg4RINznhDfg+EaUOx4jX6nOsaQAW3bO1nz5h3jtTDBK5vC7Im8iJYirKbeiQqJicJTuGFs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717166157; c=relaxed/simple;
-	bh=/Ltdv79q3skkml0ifKj3D0gZrv9LGfP0o2gnIsRp+6E=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Mson6biAPtxnYviketqfsJwQ7ivqHxqdNDLQgsQjfDQPfsnxlZNf9XuQF67Ly1ERpPo+yvM8Se8baJ0aVdnUqhcN8K+he2mCSiE+nqibNb/neeCvcHIDBDQ3nl1gmYOUU2AI6CS5JupOcZ033WEKi+GmUeYksZQuJpHeRgP3VJc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=LD3tAu+e; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8A26BC116B1;
-	Fri, 31 May 2024 14:35:49 +0000 (UTC)
+	s=arc-20240116; t=1717167029; c=relaxed/simple;
+	bh=SoFBpNqzbtb+5DiL1b3Xa2w1zfCNY7f9atKzwbTKab0=;
+	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
+	 Mime-Version:Content-Type; b=mgtLhNLpGBNxB0PdvpSJVn6YhLj5vWiSO0mVibDA0BjTFJUYDN5XMc2AMH4aNMqu5GtEaPk+UoSePUOjmPT8AvjaD6P+8dFU/rQGK9IfwgVRuWct/TAynJ34M6r8eCTOYkpwuCAmdxreu1w0/ZggXqcp5pFZ3acRDHChi5rXDlk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=noplJiD1; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 957B3C116B1;
+	Fri, 31 May 2024 14:50:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1717166156;
-	bh=/Ltdv79q3skkml0ifKj3D0gZrv9LGfP0o2gnIsRp+6E=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=LD3tAu+e2GZhlS16l95NYRLhYtJf/bC/FGtKdWqvEJMCGTvsCjzT1oSP4xYjJFXtO
-	 nKkOW0K18ohGEohKEyNOS4W6L+8uNkx3i2ekTEkr5wxwJ+mDlDFpHj82h3wuX7zoIp
-	 v3+sqmTSVOgciQfMyPng5hhEwV/YYGPF54tmOaShwx1ggme3/TiWNGBrF+Xji3teHQ
-	 nwBTWqNeo1OLQ4ZbQAdbF/X8lv8vvXNz4cv+MUsCwHQQxqV9HpS+NfDS2t8D6Z/HMK
-	 EBomR6Du7bgyetQGT3GTgb/4n5KwpFEdMYA87cJLSlMXoZpRJPLiySkY75nHdLHkJa
-	 3aAhimH/2aCxA==
-Date: Fri, 31 May 2024 22:35:46 +0800
-From: Geliang Tang <geliang@kernel.org>
-To: Jakub Sitnicki <jakub@cloudflare.com>,
-	John Fastabend <john.fastabend@gmail.com>
-Cc: Andrii Nakryiko <andrii@kernel.org>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Mykola Lysenko <mykolal@fb.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
-	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-	Shuah Khan <shuah@kernel.org>, bpf@vger.kernel.org,
-	mptcp@lists.linux.dev, linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH bpf-next 3/8] selftests/bpf: Use bpf_link attachments in
- test_sockmap
-Message-ID: <ZlngQqfkS-R1PNqk@T480>
-References: <cover.1716446893.git.tanggeliang@kylinos.cn>
- <32cf8376a810e2e9c719f8e4cfb97132ed2d1f9c.1716446893.git.tanggeliang@kylinos.cn>
- <6654beff96840_23de2086e@john.notmuch>
- <87wmnfujwg.fsf@cloudflare.com>
- <577531139c4db3cb35f3f40e23587bcb9815b0ba.camel@kernel.org>
- <66590f821d120_e5072085a@john.notmuch>
- <87wmnaw7x8.fsf@cloudflare.com>
+	s=k20201202; t=1717167029;
+	bh=SoFBpNqzbtb+5DiL1b3Xa2w1zfCNY7f9atKzwbTKab0=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=noplJiD1JNJetlnp2zOzi5qcDqbPSkw74sQoxNmQDAo2MshMOAQqpSJOyJukYUFwu
+	 pwQJJq6CtfBr+2nfEO6WfL7DkO9SxDJJRv/jptWw7CLxLEeREj3cZ0CVsls45I9ImK
+	 xyu2/Kj/sYtgRi8jlfTebsYG+ZD67Og5DLr5fBRYvfQt1aEw0gq2PSAR1YD5noFp/t
+	 Qi63eq1BK8bhuN6L8jX0ES01kBlVLvMPQD6YnPWRq6znArglYSKhk1JYrjoqH1nMmQ
+	 pV/ayB5yUs89kLcAwko7vUXIVSZAlGg+ilAWUpFxwuhV7NktlDepEd6vNX989fSoTH
+	 yDvcsaNaLV9eA==
+Date: Fri, 31 May 2024 23:50:23 +0900
+From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To: Steven Rostedt <rostedt@goodmis.org>
+Cc: linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org, Mark
+ Rutland <mark.rutland@arm.com>, Mathieu Desnoyers
+ <mathieu.desnoyers@efficios.com>, Andrew Morton
+ <akpm@linux-foundation.org>, Alexei Starovoitov
+ <alexei.starovoitov@gmail.com>, Florent Revest <revest@chromium.org>,
+ Martin KaFai Lau <martin.lau@linux.dev>, bpf <bpf@vger.kernel.org>, Sven
+ Schnelle <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>, Jiri
+ Olsa <jolsa@kernel.org>, Arnaldo Carvalho de Melo <acme@kernel.org>, Daniel
+ Borkmann <daniel@iogearbox.net>, Alan Maguire <alan.maguire@oracle.com>,
+ Peter Zijlstra <peterz@infradead.org>, Thomas Gleixner
+ <tglx@linutronix.de>, Guo Ren <guoren@kernel.org>
+Subject: Re: [PATCH 10/20] function_graph: Have the instances use their own
+ ftrace_ops for filtering
+Message-Id: <20240531235023.a0b2b207362eba2f8b5c16f7@kernel.org>
+In-Reply-To: <20240531020346.6c13e2d4@rorschach.local.home>
+References: <20240525023652.903909489@goodmis.org>
+	<20240525023742.786834257@goodmis.org>
+	<20240530223057.21c2a779@rorschach.local.home>
+	<20240531121241.c586189caad8d31d597f614d@kernel.org>
+	<20240531020346.6c13e2d4@rorschach.local.home>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87wmnaw7x8.fsf@cloudflare.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Fri, May 31, 2024 at 01:13:39PM +0200, Jakub Sitnicki wrote:
-> On Thu, May 30, 2024 at 04:45 PM -07, John Fastabend wrote:
-> > Geliang Tang wrote:
-> >> On Mon, 2024-05-27 at 21:36 +0200, Jakub Sitnicki wrote:
-> >> > On Mon, May 27, 2024 at 10:12 AM -07, John Fastabend wrote:
-> >> > > Geliang Tang wrote:
+On Fri, 31 May 2024 02:03:46 -0400
+Steven Rostedt <rostedt@goodmis.org> wrote:
+
+> On Fri, 31 May 2024 12:12:41 +0900
+> Masami Hiramatsu (Google) <mhiramat@kernel.org> wrote:
 > 
-> [...]
+> > On Thu, 30 May 2024 22:30:57 -0400
+> > Steven Rostedt <rostedt@goodmis.org> wrote:
+> > 
+> > > On Fri, 24 May 2024 22:37:02 -0400
+> > > Steven Rostedt <rostedt@goodmis.org> wrote:
+> > >   
+> > > > From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+> > > > 
+> > > > Allow for instances to have their own ftrace_ops part of the fgraph_ops
+> > > > that makes the funtion_graph tracer filter on the set_ftrace_filter file
+> > > > of the instance and not the top instance.
+> > > > 
+> > > > Note that this also requires to update ftrace_graph_func() to call new
+> > > > function_graph_enter_ops() instead of function_graph_enter() so that
+> > > > it avoid pushing on shadow stack multiple times on the same function.  
+> > > 
+> > > So I found a major design flaw in this patch.
+> > >   
+> > > > 
+> > > > Co-developed with Masami Hiramatsu:
+> > > > Link: https://lore.kernel.org/linux-trace-kernel/171509102088.162236.15758883237657317789.stgit@devnote2
+> > > > 
+> > > > Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+> > > > Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+> > > > Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+> > > > ---  
+> > >   
+> > > > diff --git a/arch/x86/kernel/ftrace.c b/arch/x86/kernel/ftrace.c
+> > > > index 8da0e66ca22d..998558cb8f15 100644
+> > > > --- a/arch/x86/kernel/ftrace.c
+> > > > +++ b/arch/x86/kernel/ftrace.c
+> > > > @@ -648,9 +648,24 @@ void ftrace_graph_func(unsigned long ip, unsigned long parent_ip,
+> > > >  		       struct ftrace_ops *op, struct ftrace_regs *fregs)
+> > > >  {
+> > > >  	struct pt_regs *regs = &fregs->regs;
+> > > > -	unsigned long *stack = (unsigned long *)kernel_stack_pointer(regs);
+> > > > +	unsigned long *parent = (unsigned long *)kernel_stack_pointer(regs);
+> > > > +	struct fgraph_ops *gops = container_of(op, struct fgraph_ops, ops);
+> > > > +	int bit;
+> > > > +
+> > > > +	if (unlikely(ftrace_graph_is_dead()))
+> > > > +		return;
+> > > > +
+> > > > +	if (unlikely(atomic_read(&current->tracing_graph_pause)))
+> > > > +		return;
+> > > >  
+> > > > -	prepare_ftrace_return(ip, (unsigned long *)stack, 0);
+> > > > +	bit = ftrace_test_recursion_trylock(ip, *parent);
+> > > > +	if (bit < 0)
+> > > > +		return;
+> > > > +
+> > > > +	if (!function_graph_enter_ops(*parent, ip, 0, parent, gops))  
+> > > 
+> > > So each registered graph ops has its own ftrace_ops which gets
+> > > registered with ftrace, so this function does get called in a loop (by
+> > > the ftrace iterator function). This means that we would need that code
+> > > to detect the function_graph_enter_ops() getting called multiple times
+> > > for the same function. This means each fgraph_ops gits its own retstack
+> > > on the shadow stack.  
+> > 
+> > Ah, that is my concern and the reason why I added bitmap and stack reuse
+> > code in the ftrace_push_return_trace().
+> > 
+> > > 
+> > > I find this a waste of shadow stack resources, and also complicates the
+> > > code with having to deal with tail calls and all that.
+> > > 
+> > > BUT! There's good news! I also thought about another way of handling
+> > > this. I have something working, but requires a bit of rewriting the
+> > > code. I should have something out in a day or two.  
+> > 
+> > Hmm, I just wonder why you don't reocver my bitmap check and stack
+> > reusing code. Are there any problem on it? (Too complicated?)
+> > 
 > 
-> >> > > The one advantage of test_sockmap is we can have it run for longer
-> >> > > runs by pushing different options through so might be worth keeping
-> >> > > just for that.
-> >> > > 
-> >> > > If you really want links here I'm OK with that I guess just asking.
-> >> > 
-> >> > It was me who suggested the switch to bpf_link in reaction to a
-> >> > series
-> >> > of cleanups to prog_type and prog_attach_type submitted by Geliang.
-> >> 
-> >> Yes, patches 3-5 address Jakub's suggestion: switching attachments to
-> >> bpf_link.
-> >
-> > OK. Lets just take them the series lgtm. Jakub any other comments?
+> I actually dislike the use of ftrace itself to do the loop. I rather
+> have fgraph be in control of it.
+
+(actually, I agreed with you, looping in ftrace may cause trouble)
+
 > 
-> Gave it a run - all looks well. Thanks for the patches.
+> I've come up with a new "subops" assignment, where you can have one
+> ftrace_ops represent multiple sub ftrace_ops. Basically, each fgraph
+> ops can register its own ftrace_ops under a single graph_ops
+> ftrace_ops. The graph_ops will be used to decide what functions call
+> the callback, and then the callback does the multiplexing.
+
+So is it similar to the fprobe/kprobe, use shared signle ftrace_ops,
+but keep each fgraph has own hash table?
+
+> This removes the need to touch the architecture code. It can also be
+> used by fprobes to handle the attachments to functions for several
+> different sets of callbacks.
 > 
-> Geliang, is there some MPTCP+sockmap use-case you're working towards?
+> I'll send out patches soon.
 
-Yes, indeed. I have been working on a task related to MPTCP+sockmap
-recently, at least related to this test_sockmap.c selftest. We recently
-received an issue with MPTCP [1], that is TLS cannot be set on MPTCP
-sockets. The reason is that both MPTCP and TLS are implemented on TCP ULP.
-And each socket only supports one type of TCP ULP.
+OK, I'll wait for that.
 
-I simply modified this test_sockmap.c selftest to support MPTCP, so that
-it can be used as the first version of test for MPTCP+TLS. So I spent some
-time reading and debugging this test.
+Thank you!
 
-The development of MPTCP+TLS is still ongoing, and currently only setsockopt
-part has been successfully supported. The idea is simple, use an array of
-tcp_ulp_ops in a socket, instead of a single one:
+> 
+> -- Steve
+> 
 
-struct inet_connection_sock {
-      ... ...
-      const struct tcp_ulp_ops  *icsk_ulp_ops[ULP_INDEX_MAX];
-      void __rcu                *icsk_ulp_data[ULP_INDEX_MAX];
-}
 
-The entire patch is in my commit "mptcp: tls support" [2]. It's not finish
-yet, but I really want to hear your opinions, especially John's.
-
-[1]
-https://github.com/multipath-tcp/mptcp_net-next/issues/480
-[2]
-https://github.com/geliangtang/mptcp_net-next/commit/bba00a6cde75bab5a2c1c196d49812b4ed6addb0
-
-Thanks,
--Geliang
+-- 
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
