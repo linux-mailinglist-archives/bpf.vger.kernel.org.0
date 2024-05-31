@@ -1,127 +1,114 @@
-Return-Path: <bpf+bounces-31070-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-31071-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id BDF938D6A0B
-	for <lists+bpf@lfdr.de>; Fri, 31 May 2024 21:45:25 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id E7A448D6AFB
+	for <lists+bpf@lfdr.de>; Fri, 31 May 2024 22:43:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EFC9D1C252F4
-	for <lists+bpf@lfdr.de>; Fri, 31 May 2024 19:45:24 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 850BDB244C8
+	for <lists+bpf@lfdr.de>; Fri, 31 May 2024 20:43:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 44E1517C23B;
-	Fri, 31 May 2024 19:45:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 356F017D8B3;
+	Fri, 31 May 2024 20:43:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XHDMZfrS"
+	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="TtXj1Fn+"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C2E10745E4
-	for <bpf@vger.kernel.org>; Fri, 31 May 2024 19:45:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6BAE97D06E;
+	Fri, 31 May 2024 20:42:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.133.104.62
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717184706; cv=none; b=XjJQBDRLCfkhDfeH50016VEzvIx1uXUhYYoADcPpLBZ5jUQW44M4nWRWCtb1AIIy7LKYmx1teRJ7opC3+czT3GtZRsnPE26XnzDvH9TirwxM1q/6KuC8WAUCbSce+UvQVrhDL3F2GAG2Xhxw+mNBKqWMeUSkNrslN4yU0RFm4pc=
+	t=1717188182; cv=none; b=eXMKsurp+Rqwl0gyDCif4Q32zD9ZYFeiQpx/4HVGAoJa/7Ds7aPYb7FzSjKp77K2hwE/kzinI9lPLBDCwX4SF7YTkPrT36Nb1pILFLwXeBqhS0mXCB4vso6My6+aJhky44BlDjEsBe5+h8E6BGxb2uDL7Fd1MxJJ0HOi23oukhU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717184706; c=relaxed/simple;
-	bh=eT0bPR01XmZQ6YhuCbW1FEmI76aTs9jEG57lNIeKwu8=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=cOHQGY/GWZRlzUB44y+Dtw99xfx+JaKxWrfnr+Nyi61w9SaxNKTiT3gfRq4bwfT9gOD6M1t58m7lHl5ZOOPHgLKcPYtKZeRffHQZgih865WFbAmbflPY1cd6SGs40ImkbPMirckZlBG3Ff4N6P9zR47SELc5Rlk2Wx5/F6vKKRA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XHDMZfrS; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6E1A0C116B1;
-	Fri, 31 May 2024 19:45:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1717184706;
-	bh=eT0bPR01XmZQ6YhuCbW1FEmI76aTs9jEG57lNIeKwu8=;
-	h=From:To:Cc:Subject:Date:From;
-	b=XHDMZfrSmfJrjfX0SS6G/JPS9WDQBbhaCuoCaZ7y3fFiLlN+vut5pv1SUAw2sJEkc
-	 bI3g0muQ/VOwHtGqWpRPf47FZlbTTF9zG3kxCF1E5tUS/zI0HlB+SdaKk9yXic1oiq
-	 Ebl7/HcD2tYedFJY06LQutVtVxiSxp1RCbA3FeAVeJeQrMEKe7QlN09kw3j6oW0Xbo
-	 dMyi2wgrukLUULGhCscE1cu241dSXFGSV+BZZyzQ68aoPD5+2An7bQoiD5lNLI6ST9
-	 UkZ8rLmoFWjNJ3LgNdEt/HS+tjMqLRrc77vvQdY0uNbpxE80TuvHW6UsrtEeh3ejhV
-	 S2ksKWEaozRmA==
-From: Jiri Olsa <jolsa@kernel.org>
-To: Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>
-Cc: Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-	bpf@vger.kernel.org,
-	Martin KaFai Lau <kafai@fb.com>,
-	Song Liu <songliubraving@fb.com>,
-	Yonghong Song <yhs@fb.com>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@chromium.org>,
-	Stanislav Fomichev <sdf@google.com>,
-	Hao Luo <haoluo@google.com>
-Subject: [PATCH bpf] bpf: Fix bpf_session_cookie BTF_ID in special_kfunc_set list
-Date: Fri, 31 May 2024 21:45:00 +0200
-Message-ID: <20240531194500.2967187-1-jolsa@kernel.org>
-X-Mailer: git-send-email 2.45.1
+	s=arc-20240116; t=1717188182; c=relaxed/simple;
+	bh=oclolw9Fei/y5RKiWWx9yf16qkjPQ57CCd5agdKlw88=;
+	h=To:Cc:From:Subject:Message-ID:Date:MIME-Version:Content-Type; b=iAhVfpYk0ITY1ycR7wrlvR9uOQjBAoxwgRRzDvubAUyp1D8ADg3+uhrdkvamnY76kogEkju3Lv1tJzewPF/CgfOoR9UM6u7cbSGoV2c9jsam4lh3ZjmCxn3FyjIk310v8QKQgPjJhdMxFzMOjYuHiLRhdbxcDGTrsq5bteMz52g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=TtXj1Fn+; arc=none smtp.client-ip=213.133.104.62
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iogearbox.net
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
+	MIME-Version:Date:Message-ID:Subject:From:Cc:To:Sender:Reply-To:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:In-Reply-To:References;
+	bh=I0/7bKmMexC+bzRjZPRSWWJRNLBu3K4mqV+QnbNuiSQ=; b=TtXj1Fn+t3HG9v6ZnU4pZ1CCeN
+	wWLex3gs9IepN2Ws/GZd+lK8Z4+x//mb6niRCdFJBmt46u/tapPAyqYY714H2TR4Kpo9Syl+XX4/g
+	d9rmhwa2sPdi2eknZu9L5p33WqqRtHmgfKKH/+2wzfZJo0Ts6Lpp2w9luNq3npnMBgQq9r/v9jCtj
+	Rlp/wtHtTFteMSjrFg+wIju+3DTfSKdU5E/MdfTOHZTXqoj/7DgbUwmwQJq3FHjyHAubZExB4DxXu
+	kBP6RaHqUzzFvUDkWJbnSkUc5SbgzYxOBFMi948ICCPQjqj/Ss9NbSpbarj7wsjo68ei3DcFT4NmZ
+	TYdnm3CA==;
+Received: from sslproxy02.your-server.de ([78.47.166.47])
+	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <daniel@iogearbox.net>)
+	id 1sD95U-000P09-Qt; Fri, 31 May 2024 22:42:56 +0200
+Received: from [85.1.206.226] (helo=linux.home)
+	by sslproxy02.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <daniel@iogearbox.net>)
+	id 1sD95V-0006SF-0q;
+	Fri, 31 May 2024 22:42:56 +0200
+To: bpf@vger.kernel.org
+Cc: xdp-newbies@vger.kernel.org
+From: Daniel Borkmann <daniel@iogearbox.net>
+Subject: LPC 2024 BPF Track CFP
+Message-ID: <63792467-9be4-0d84-8fd1-93f63bcee3d9@iogearbox.net>
+Date: Fri, 31 May 2024 22:42:56 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.10/27292/Fri May 31 10:31:14 2024)
 
-The bpf_session_cookie is unavailable for !CONFIG_FPROBE as reported
-by Sebastian [1].
+We are pleased to announce the Call for Proposals (CFP) for the BPF track at
+the 2024 edition of the Linux Plumbers Conference (LPC) which is taking place
+in Vienna, Austria, on September 18th - 20th, 2024. After four years in a row
+of co-locating BPF & Networking Track, this year, we separated the two in
+order to allow for both to grow further individually.
 
-To fix that we remove CONFIG_FPROBE ifdef for session kfuncs, which
-is fine, because there's filter for session programs.
+Note that the conference is planned to be both in person and remote (hybrid).
+CFP submitters should ideally be able to give their presentation in person to
+minimize technical issues, although presenting remotely will also be possible.
 
-Then based on bpf_trace.o dependency:
-  obj-$(CONFIG_BPF_EVENTS) += bpf_trace.o
+The BPF track technical committee consists of:
 
-we add bpf_session_cookie BTF_ID in special_kfunc_set list dependency
-on CONFIG_BPF_EVENTS.
+     Alexei Starovoitov <ast@kernel.org>
+     Daniel Borkmann <daniel@iogearbox.net>
+     Andrii Nakryiko <andrii@kernel.org>
+     Martin Lau <martin.lau@linux.dev>
 
-[1] https://lore.kernel.org/bpf/20240531071557.MvfIqkn7@linutronix.de/T/#m71c6d5ec71db2967288cb79acedc15cc5dbfeec5
-Reported-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Tested-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Suggested-by: Alexei Starovoitov <ast@kernel.org>
-Fixes: 5c919acef8514 ("bpf: Add support for kprobe session cookie")
-Signed-off-by: Jiri Olsa <jolsa@kernel.org>
----
- kernel/bpf/verifier.c    | 4 ++++
- kernel/trace/bpf_trace.c | 2 --
- 2 files changed, 4 insertions(+), 2 deletions(-)
+We are seeking proposals of 30 minutes in length (including Q&A discussion).
 
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 48f3a9acdef3..36ef8e96787e 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -11128,7 +11128,11 @@ BTF_ID(func, bpf_iter_css_task_new)
- #else
- BTF_ID_UNUSED
- #endif
-+#ifdef CONFIG_BPF_EVENTS
- BTF_ID(func, bpf_session_cookie)
-+#else
-+BTF_ID_UNUSED
-+#endif
- 
- static bool is_kfunc_ret_null(struct bpf_kfunc_call_arg_meta *meta)
- {
-diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-index 6249dac61701..d1daeab1bbc1 100644
---- a/kernel/trace/bpf_trace.c
-+++ b/kernel/trace/bpf_trace.c
-@@ -3517,7 +3517,6 @@ static u64 bpf_uprobe_multi_entry_ip(struct bpf_run_ctx *ctx)
- }
- #endif /* CONFIG_UPROBES */
- 
--#ifdef CONFIG_FPROBE
- __bpf_kfunc_start_defs();
- 
- __bpf_kfunc bool bpf_session_is_return(void)
-@@ -3566,4 +3565,3 @@ static int __init bpf_kprobe_multi_kfuncs_init(void)
- }
- 
- late_initcall(bpf_kprobe_multi_kfuncs_init);
--#endif
--- 
-2.45.1
+The gathering is designed to foster collaboration and face to face discussion
+of ongoing development topics as well as to encourage bringing new ideas into
+the development community for the advancement of the BPF subsystem.
 
+Proposals can cover a wide range of topics related to BPF covering improvements
+in areas such as (but not limited to) BPF infrastructure and its use in tracing,
+security, networking, scheduling and beyond, as well as non-kernel components
+like libraries, compilers, testing infra and tools.
+
+Please submit your proposals through the official LPC website at:
+
+     https://lpc.events/event/18/abstracts/
+
+Make sure to select "eBPF Track" in the track pull-down menu.
+
+Proposals must be submitted by August 1st, and submitters will be notified of
+acceptance by August 5th. Final slides (as PDF) are due on the first day of the
+conference.
+
+We are very much looking forward to a great conference and seeing you all!
 
