@@ -1,139 +1,143 @@
-Return-Path: <bpf+bounces-31040-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-31041-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 127D48D65F4
-	for <lists+bpf@lfdr.de>; Fri, 31 May 2024 17:42:19 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id C7BAA8D664B
+	for <lists+bpf@lfdr.de>; Fri, 31 May 2024 18:06:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C097728F49E
-	for <lists+bpf@lfdr.de>; Fri, 31 May 2024 15:42:17 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4860B1F27098
+	for <lists+bpf@lfdr.de>; Fri, 31 May 2024 16:06:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 343171420C8;
-	Fri, 31 May 2024 15:42:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 66BF51586C7;
+	Fri, 31 May 2024 16:06:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="MC/trjpr"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nKvK/ua1"
 X-Original-To: bpf@vger.kernel.org
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C91EC1C6AE;
-	Fri, 31 May 2024 15:42:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.133.104.62
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E193415664C;
+	Fri, 31 May 2024 16:06:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717170131; cv=none; b=QNH7n8RQwVaFtu0T+71hZM8Qf6FBCueMMWuCLKOHWKszXHFfIN5QCbQmAMMs/D9DABTmAHsvhLU6Jw+twZcepdzBS+Y+5MLW/+koOmk8IISJidXrlGzyFjDPUtVlIiegC4tRhyGuVDKHdtPO2Bt6fS7Ws8LipyCdAiYq9WnM3Lg=
+	t=1717171604; cv=none; b=ewytUDEjO2R/nPuThsIXY/b4g43UCFWMTOriHLkAXyJOd39dnJbWpuWjRqWeHGbzJI1tYySjHQhaH4pcopxA5qlZwIRa0ytGZAlZs5i2/I2yU3i8Jh73e37SeOGprTK1xQjqmXaeHfofYuOWWm5vBrgu/h31lbZeviB+Xjfxrjw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717170131; c=relaxed/simple;
-	bh=zoYd0gJpYdaAhfYqVtufyS9K393/+FrO9bwRAXPzseM=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=g20BQDgFztIFFD90WFKvRxOAjVOHsrbs7FNDkHg0s3Z/g3OCYR2Co7ZEWsCoQnNJCSQ9sWyhPqw6y/IAbPWn3FHSpLNAh5Ss8gHoG7MPgEkiIjDWAKkYQ4HhMfw3G9u19sPazVSyYObwfiRrBRM4EF7zpuc8gtOayVdN3mZsofk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=MC/trjpr; arc=none smtp.client-ip=213.133.104.62
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iogearbox.net
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:MIME-Version:
-	Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:In-Reply-To:References;
-	bh=QUasHQjiMDVL7F+S/wQSRjT4b/HaYFkd5OKHznJOtRA=; b=MC/trjprTKzybImHg4pb5wOwWE
-	4iZs+ToFSJabe1TMgiTemQ1oruanqvYQkzAWiOKXBlE8I1SDqMbEc1qMrnqlSUI11aIQzVF3Q3eO7
-	dIS/wnsEUtR9c+7nBP/78cZ7+g9Hc83vfrNREMc4+4Xf+lZ5ge7yt2of8YdqCzBwmI4W4LNHts+XO
-	IfnBcbtD4CfhJm7wFfuWvAQwy3ObFmehQTkGC4fJu3vjQnRev1jX4/wwDXlPOMpy4IaW7dS5/Yuv/
-	pjlJNftM3yuKBHFaBc4XXAh9jgLQ6GPu2TTFYWhOrK/k/waMJoAKVnmSaUxg9URLr0201QK9NUgk7
-	4ACzq6Gw==;
-Received: from 50.249.197.178.dynamic.dsl-lte-bonding.lssmb00p-msn.res.cust.swisscom.ch ([178.197.249.50] helo=localhost)
-	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1sD4Ny-000KKH-M6; Fri, 31 May 2024 17:41:42 +0200
-From: Daniel Borkmann <daniel@iogearbox.net>
-To: netdev@vger.kernel.org
-Cc: bpf@vger.kernel.org,
+	s=arc-20240116; t=1717171604; c=relaxed/simple;
+	bh=z5PxXsoTgmUtXQvYDJWZ5TP/VUZ05dlcLBtZOQh3l8k=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=SQTN5u0QD8netb9JQuB7TzmWVySBWtkZUlEAuOLi6LEQ5aV3a1lSeHoemcroHH1VclbaSLuCCFH8oAlTvwBLF2iK6j3qgXV7t8W2rWO9pACD1nE0SRRUiXcsGNvS8lnZmyvPaSw7T+8DTso/DDG2f24MakC8Uq/c7wAM0MdB70E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nKvK/ua1; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6D0C2C116B1;
+	Fri, 31 May 2024 16:06:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1717171603;
+	bh=z5PxXsoTgmUtXQvYDJWZ5TP/VUZ05dlcLBtZOQh3l8k=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=nKvK/ua1ctJCfZd9jLxbEMdu9rn1O9db7rj2u/kh29J8Ylc/BtRvzD3BnpjNY354b
+	 2ZCo53eYa3GzYpd216PvwKXeAW3bZv/ZtT3vi0SS9eJ3ubWJp7/1Yc2zed94rUfbTB
+	 meeTEw+7W4Co466irI7SUYa6esbtnNSN6blpLKYbWpe13N+BfEsyAJ4kspqb3SPWw+
+	 m6Q89rMyJZ0X+f7X5Uqgox9SChYeD/deOFWmmMBVwg+52fu3s9Gip/k7LuRUSYJ5bi
+	 UCN3Xgo0ndM99EAwErFnCv4L2Yu91MA6ch+jmsU6Eiei33Bc055VcpCOljKYAGMkK0
+	 n49dw51sSSNnQ==
+Date: Fri, 31 May 2024 13:06:41 -0300
+From: Arnaldo Carvalho de Melo <acme@kernel.org>
+To: Tony Ambardar <tony.ambardar@gmail.com>
+Cc: Hengqi Chen <hengqi.chen@gmail.com>, bpf@vger.kernel.org,
+	dwarves@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
 	Daniel Borkmann <daniel@iogearbox.net>,
-	David Bauer <mail@david-bauer.net>,
-	Ido Schimmel <idosch@nvidia.com>,
-	Nikolay Aleksandrov <razor@blackwall.org>,
-	Martin KaFai Lau <martin.lau@kernel.org>
-Subject: [PATCH net] vxlan: Fix regression when dropping packets due to invalid src addresses
-Date: Fri, 31 May 2024 17:41:37 +0200
-Message-Id: <20240531154137.26797-1-daniel@iogearbox.net>
-X-Mailer: git-send-email 2.21.0
+	Andrii Nakryiko <andrii@kernel.org>
+Subject: Re: Problem with BTF generation on mips64el
+Message-ID: <Zln1kZnu2Xxeyngj@x1>
+References: <ZlkoM6/PSxVcGM6X@kodidev-ubuntu>
+ <CAEyhmHT_1N3xwLO2BwVK97ebrABJv52d5dWxzvuNNcF-OF5gKw@mail.gmail.com>
+ <ZlmrQqQSJyNH7fVF@kodidev-ubuntu>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.10/27292/Fri May 31 10:31:14 2024)
+In-Reply-To: <ZlmrQqQSJyNH7fVF@kodidev-ubuntu>
 
-Commit f58f45c1e5b9 ("vxlan: drop packets from invalid src-address")
-has been recently added to vxlan mainly in the context of source
-address snooping/learning so that when it is enabled, an entry in the
-FDB is not being created for an invalid address for the tunnel endpoint.
+On Fri, May 31, 2024 at 03:49:38AM -0700, Tony Ambardar wrote:
+> Hello Hengqi,
+> 
+> On Fri, May 31, 2024 at 10:17:53AM +0800, Hengqi Chen wrote:
+> > Hi Tony,
+> > 
+> > On Fri, May 31, 2024 at 9:30 AM Tony Ambardar <tony.ambardar@gmail.com> wrote:
+> > >
+> > > Hello,
+> > >
+> > > For some time now I'm seeing multiple issues during BTF generation while
+> > > building recent kernels targeting mips64el, and would appreciate some help
+> > > to understand and fix the problems.
+> > >
+> > SNIP
+> > >
+> > > >   CC [M]  net/ipv6/netfilter/nft_fib_ipv6.mod.o
+> > > >   CC [M]  net/ipv6/netfilter/ip6t_REJECT.mod.o
+> > > >   CC [M]  net/psample/psample.mod.o
+> > > >   LD [M]  crypto/cmac.ko
+> > > >   BTF [M] crypto/cmac.ko
+> > > > die__process: DW_TAG_compile_unit, DW_TAG_type_unit, DW_TAG_partial_unit
+> > > > or DW_TAG_skeleton_unit expected got member (0xd)!
 
-Before commit f58f45c1e5b9 vxlan was similarly behaving as geneve in
-that it passed through whichever macs were set in the L2 header. It
-turns out that this change in behavior breaks setups, for example,
-Cilium with netkit in L3 mode for Pods as well as tunnel mode has been
-passing before the change in f58f45c1e5b9 for both vxlan and geneve.
-After mentioned change it is only passing for geneve as in case of
-vxlan packets are dropped due to vxlan_set_mac() returning false as
-source and destination macs are zero which for E/W traffic via tunnel
-is totally fine.
+Can you check the kernel CONFIG_ variables related to DEBUG information
+and post them here? I have this on fedora:
 
-Fix it by only opting into the is_valid_ether_addr() check in
-vxlan_set_mac() when in fact source address snooping/learning is
-actually enabled in vxlan. With this change, the Cilium connectivity
-test suite passes again for both tunnel flavors.
+[acme@nine linux]$ grep CONFIG_DEBUG_INFO /boot/config-5.14.0-362.18.1.el9_3.x86_64 
+CONFIG_DEBUG_INFO=y
+# CONFIG_DEBUG_INFO_REDUCED is not set
+# CONFIG_DEBUG_INFO_COMPRESSED is not set
+# CONFIG_DEBUG_INFO_SPLIT is not set
+CONFIG_DEBUG_INFO_DWARF_TOOLCHAIN_DEFAULT=y
+# CONFIG_DEBUG_INFO_DWARF4 is not set
+# CONFIG_DEBUG_INFO_DWARF5 is not set
+CONFIG_DEBUG_INFO_BTF=y
+CONFIG_DEBUG_INFO_BTF_MODULES=y
+[acme@nine linux]$
 
-Fixes: f58f45c1e5b9 ("vxlan: drop packets from invalid src-address")
-Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-Cc: David Bauer <mail@david-bauer.net>
-Cc: Ido Schimmel <idosch@nvidia.com>
-Cc: Nikolay Aleksandrov <razor@blackwall.org>
-Cc: Martin KaFai Lau <martin.lau@kernel.org>
----
- drivers/net/vxlan/vxlan_core.c | 10 +++++++---
- 1 file changed, 7 insertions(+), 3 deletions(-)
+If you have CONFIG_DEBUG_INFO_SPLIT, CONFIG_DEBUG_INFO_COMPRESSED or
+CONFIG_DEBUG_INFO_REDUCED set to 'y', please try with the values in the
+fedora config.
 
-diff --git a/drivers/net/vxlan/vxlan_core.c b/drivers/net/vxlan/vxlan_core.c
-index f78dd0438843..7353f27b02dc 100644
---- a/drivers/net/vxlan/vxlan_core.c
-+++ b/drivers/net/vxlan/vxlan_core.c
-@@ -1605,6 +1605,7 @@ static bool vxlan_set_mac(struct vxlan_dev *vxlan,
- 			  struct vxlan_sock *vs,
- 			  struct sk_buff *skb, __be32 vni)
- {
-+	bool learning = vxlan->cfg.flags & VXLAN_F_LEARN;
- 	union vxlan_addr saddr;
- 	u32 ifindex = skb->dev->ifindex;
- 
-@@ -1616,8 +1617,11 @@ static bool vxlan_set_mac(struct vxlan_dev *vxlan,
- 	if (ether_addr_equal(eth_hdr(skb)->h_source, vxlan->dev->dev_addr))
- 		return false;
- 
--	/* Ignore packets from invalid src-address */
--	if (!is_valid_ether_addr(eth_hdr(skb)->h_source))
-+	/* Ignore packets from invalid src-address when in learning mode,
-+	 * otherwise let them through e.g. when originating from NOARP
-+	 * devices with all-zero mac, etc.
-+	 */
-+	if (learning && !is_valid_ether_addr(eth_hdr(skb)->h_source))
- 		return false;
- 
- 	/* Get address from the outer IP header */
-@@ -1631,7 +1635,7 @@ static bool vxlan_set_mac(struct vxlan_dev *vxlan,
- #endif
- 	}
- 
--	if ((vxlan->cfg.flags & VXLAN_F_LEARN) &&
-+	if (learning &&
- 	    vxlan_snoop(skb->dev, &saddr, eth_hdr(skb)->h_source, ifindex, vni))
- 		return false;
- 
--- 
-2.34.1
+- Arnaldo
 
+> > The issue seems to be related to elfutils. Have you tried build from
+> > the latest elfutils source ?
+> > I saw the latest MIPS backend in elfutils already implemented the
+> > reloc_simple_type hook.
+> 
+> Good idea. I tried rebuilding elfutils from the latest upstream commit:
+> https://sourceware.org/git/?p=elfutils.git;a=commit;h=935ee131cf7c87296df9412b7e3370085e7c7508
+> 
+> I then linked this elfutils with pahole built from the latest pahole/next:
+> https://git.kernel.org/pub/scm/devel/pahole/pahole.git/commit/?h=next&id=a9ae414fef421bdeb13ff7ffe13271e1e4f58993
+> 
+> I also confirmed resolve_btfids links to the new elfutils, and then rebuilt
+> the kernel with the same config. Unfortunately, the warnings/errors from
+> resolve_btfids and pahole still occur.
+> 
+> > SNIP
+> > >
+> > > I'd be grateful if some of the BTF/pahole experts could please review this
+> > > issue and share next steps or other details I might provide.
+> > >
+> > > Thanks,
+> > > Tony Ambardar
+> > >
+> > > Link: https://lore.kernel.org/all/202401211357.OCX9yllM-lkp@intel.com/ [1]
+> > > Link: https://github.com/acmel/dwarves/issues/45 [2]
+> > 
+> > Cheers,
+> > Hengqi
+> 
+> Thanks for the suggestion,
+> Tony
 
