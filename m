@@ -1,190 +1,154 @@
-Return-Path: <bpf+bounces-31036-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-31037-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id B74948D64DF
-	for <lists+bpf@lfdr.de>; Fri, 31 May 2024 16:52:21 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 589398D650D
+	for <lists+bpf@lfdr.de>; Fri, 31 May 2024 16:59:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DD026B2B250
-	for <lists+bpf@lfdr.de>; Fri, 31 May 2024 14:51:41 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 531E81C2508D
+	for <lists+bpf@lfdr.de>; Fri, 31 May 2024 14:59:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B352558B9;
-	Fri, 31 May 2024 14:50:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="noplJiD1"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0621074068;
+	Fri, 31 May 2024 14:59:00 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F7BA6F2EB;
-	Fri, 31 May 2024 14:50:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1EF466F2EB;
+	Fri, 31 May 2024 14:58:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717167029; cv=none; b=lG3Jm3bZ6bi6R4Qm0iiCmZ2ZCdVwSmP/DZxd9XikJ67P9w6h3FmQfg+LEWu50iZCAxlsNJExEzuFlqsa4NpdWAhvz3SRX8ADJzwWjg4RINznhDfg+EaUOx4jX6nOsaQAW3bO1nz5h3jtTDBK5vC7Im8iJYirKbeiQqJicJTuGFs=
+	t=1717167539; cv=none; b=Ls45+0T4OchJM9U3l5UUcYpV6WHdg0KOEizmpnNXO3BACEpBhy5bB3kICNpQoluajGQFyrlimx+uGFo6sersfmc9W4gRsKPUfTlWgrUnidxBIgujkmGcUiSpKuwlbwDyQ2Sd9aLu6pJN5FEWL9fl0+Hg5INJFizpHw//zM3nbv8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717167029; c=relaxed/simple;
-	bh=SoFBpNqzbtb+5DiL1b3Xa2w1zfCNY7f9atKzwbTKab0=;
-	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
-	 Mime-Version:Content-Type; b=mgtLhNLpGBNxB0PdvpSJVn6YhLj5vWiSO0mVibDA0BjTFJUYDN5XMc2AMH4aNMqu5GtEaPk+UoSePUOjmPT8AvjaD6P+8dFU/rQGK9IfwgVRuWct/TAynJ34M6r8eCTOYkpwuCAmdxreu1w0/ZggXqcp5pFZ3acRDHChi5rXDlk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=noplJiD1; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 957B3C116B1;
-	Fri, 31 May 2024 14:50:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1717167029;
-	bh=SoFBpNqzbtb+5DiL1b3Xa2w1zfCNY7f9atKzwbTKab0=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=noplJiD1JNJetlnp2zOzi5qcDqbPSkw74sQoxNmQDAo2MshMOAQqpSJOyJukYUFwu
-	 pwQJJq6CtfBr+2nfEO6WfL7DkO9SxDJJRv/jptWw7CLxLEeREj3cZ0CVsls45I9ImK
-	 xyu2/Kj/sYtgRi8jlfTebsYG+ZD67Og5DLr5fBRYvfQt1aEw0gq2PSAR1YD5noFp/t
-	 Qi63eq1BK8bhuN6L8jX0ES01kBlVLvMPQD6YnPWRq6znArglYSKhk1JYrjoqH1nMmQ
-	 pV/ayB5yUs89kLcAwko7vUXIVSZAlGg+ilAWUpFxwuhV7NktlDepEd6vNX989fSoTH
-	 yDvcsaNaLV9eA==
-Date: Fri, 31 May 2024 23:50:23 +0900
-From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To: Steven Rostedt <rostedt@goodmis.org>
-Cc: linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org, Mark
- Rutland <mark.rutland@arm.com>, Mathieu Desnoyers
- <mathieu.desnoyers@efficios.com>, Andrew Morton
- <akpm@linux-foundation.org>, Alexei Starovoitov
- <alexei.starovoitov@gmail.com>, Florent Revest <revest@chromium.org>,
- Martin KaFai Lau <martin.lau@linux.dev>, bpf <bpf@vger.kernel.org>, Sven
- Schnelle <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>, Jiri
- Olsa <jolsa@kernel.org>, Arnaldo Carvalho de Melo <acme@kernel.org>, Daniel
- Borkmann <daniel@iogearbox.net>, Alan Maguire <alan.maguire@oracle.com>,
- Peter Zijlstra <peterz@infradead.org>, Thomas Gleixner
- <tglx@linutronix.de>, Guo Ren <guoren@kernel.org>
-Subject: Re: [PATCH 10/20] function_graph: Have the instances use their own
- ftrace_ops for filtering
-Message-Id: <20240531235023.a0b2b207362eba2f8b5c16f7@kernel.org>
-In-Reply-To: <20240531020346.6c13e2d4@rorschach.local.home>
-References: <20240525023652.903909489@goodmis.org>
-	<20240525023742.786834257@goodmis.org>
-	<20240530223057.21c2a779@rorschach.local.home>
-	<20240531121241.c586189caad8d31d597f614d@kernel.org>
-	<20240531020346.6c13e2d4@rorschach.local.home>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1717167539; c=relaxed/simple;
+	bh=G/b7RyaoGodqjPBF0FsWhLwSns9WaG79sqo1CfgHyUE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=T5k1zqrQxl4O/40wlCUqyxMu44QfW7iwCZVqjbOYtHwUjAlZP8C7/zxzyRBKSAJrcetMSoRlw7efCKByHXpqiyGqXb6B7WoNQ0P55Fs1hXGrHUK59tYs6TywGighL0QXehqs2lW6OJNWn70UFyQsRrSkeoI86kl9XhVUOYAEUBE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6911F1424;
+	Fri, 31 May 2024 07:59:21 -0700 (PDT)
+Received: from [10.57.69.119] (unknown [10.57.69.119])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D57253F641;
+	Fri, 31 May 2024 07:58:51 -0700 (PDT)
+Message-ID: <974f1d23-aba8-432e-85b5-0e4b1c2005e7@arm.com>
+Date: Fri, 31 May 2024 15:58:49 +0100
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v5 08/12] PCI: imx6: Config look up table(LUT) to support
+ MSI ITS and IOMMU for i.MX95
+To: Bjorn Helgaas <helgaas@kernel.org>, Frank Li <Frank.Li@nxp.com>
+Cc: Richard Zhu <hongxing.zhu@nxp.com>, Lucas Stach <l.stach@pengutronix.de>,
+ Lorenzo Pieralisi <lpieralisi@kernel.org>,
+ =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>,
+ Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
+ Shawn Guo <shawnguo@kernel.org>, Sascha Hauer <s.hauer@pengutronix.de>,
+ Pengutronix Kernel Team <kernel@pengutronix.de>,
+ Fabio Estevam <festevam@gmail.com>, NXP Linux Team <linux-imx@nxp.com>,
+ Philipp Zabel <p.zabel@pengutronix.de>, Liam Girdwood <lgirdwood@gmail.com>,
+ Mark Brown <broonie@kernel.org>,
+ Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, linux-pci@vger.kernel.org,
+ imx@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
+ linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+ devicetree@vger.kernel.org, Will Deacon <will@kernel.org>,
+ Joerg Roedel <joro@8bytes.org>, Jason Gunthorpe <jgg@ziepe.ca>,
+ Alyssa Rosenzweig <alyssa@rosenzweig.io>, Marc Zyngier <maz@kernel.org>
+References: <20240530230832.GA474962@bhelgaas>
+From: Robin Murphy <robin.murphy@arm.com>
+Content-Language: en-GB
+In-Reply-To: <20240530230832.GA474962@bhelgaas>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
-On Fri, 31 May 2024 02:03:46 -0400
-Steven Rostedt <rostedt@goodmis.org> wrote:
-
-> On Fri, 31 May 2024 12:12:41 +0900
-> Masami Hiramatsu (Google) <mhiramat@kernel.org> wrote:
+On 2024-05-31 12:08 am, Bjorn Helgaas wrote:
+> [+cc IOMMU and pcie-apple.c folks for comment]
 > 
-> > On Thu, 30 May 2024 22:30:57 -0400
-> > Steven Rostedt <rostedt@goodmis.org> wrote:
-> > 
-> > > On Fri, 24 May 2024 22:37:02 -0400
-> > > Steven Rostedt <rostedt@goodmis.org> wrote:
-> > >   
-> > > > From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
-> > > > 
-> > > > Allow for instances to have their own ftrace_ops part of the fgraph_ops
-> > > > that makes the funtion_graph tracer filter on the set_ftrace_filter file
-> > > > of the instance and not the top instance.
-> > > > 
-> > > > Note that this also requires to update ftrace_graph_func() to call new
-> > > > function_graph_enter_ops() instead of function_graph_enter() so that
-> > > > it avoid pushing on shadow stack multiple times on the same function.  
-> > > 
-> > > So I found a major design flaw in this patch.
-> > >   
-> > > > 
-> > > > Co-developed with Masami Hiramatsu:
-> > > > Link: https://lore.kernel.org/linux-trace-kernel/171509102088.162236.15758883237657317789.stgit@devnote2
-> > > > 
-> > > > Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
-> > > > Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-> > > > Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
-> > > > ---  
-> > >   
-> > > > diff --git a/arch/x86/kernel/ftrace.c b/arch/x86/kernel/ftrace.c
-> > > > index 8da0e66ca22d..998558cb8f15 100644
-> > > > --- a/arch/x86/kernel/ftrace.c
-> > > > +++ b/arch/x86/kernel/ftrace.c
-> > > > @@ -648,9 +648,24 @@ void ftrace_graph_func(unsigned long ip, unsigned long parent_ip,
-> > > >  		       struct ftrace_ops *op, struct ftrace_regs *fregs)
-> > > >  {
-> > > >  	struct pt_regs *regs = &fregs->regs;
-> > > > -	unsigned long *stack = (unsigned long *)kernel_stack_pointer(regs);
-> > > > +	unsigned long *parent = (unsigned long *)kernel_stack_pointer(regs);
-> > > > +	struct fgraph_ops *gops = container_of(op, struct fgraph_ops, ops);
-> > > > +	int bit;
-> > > > +
-> > > > +	if (unlikely(ftrace_graph_is_dead()))
-> > > > +		return;
-> > > > +
-> > > > +	if (unlikely(atomic_read(&current->tracing_graph_pause)))
-> > > > +		return;
-> > > >  
-> > > > -	prepare_ftrace_return(ip, (unsigned long *)stack, 0);
-> > > > +	bit = ftrace_test_recursion_trylock(ip, *parent);
-> > > > +	if (bit < 0)
-> > > > +		return;
-> > > > +
-> > > > +	if (!function_graph_enter_ops(*parent, ip, 0, parent, gops))  
-> > > 
-> > > So each registered graph ops has its own ftrace_ops which gets
-> > > registered with ftrace, so this function does get called in a loop (by
-> > > the ftrace iterator function). This means that we would need that code
-> > > to detect the function_graph_enter_ops() getting called multiple times
-> > > for the same function. This means each fgraph_ops gits its own retstack
-> > > on the shadow stack.  
-> > 
-> > Ah, that is my concern and the reason why I added bitmap and stack reuse
-> > code in the ftrace_push_return_trace().
-> > 
-> > > 
-> > > I find this a waste of shadow stack resources, and also complicates the
-> > > code with having to deal with tail calls and all that.
-> > > 
-> > > BUT! There's good news! I also thought about another way of handling
-> > > this. I have something working, but requires a bit of rewriting the
-> > > code. I should have something out in a day or two.  
-> > 
-> > Hmm, I just wonder why you don't reocver my bitmap check and stack
-> > reusing code. Are there any problem on it? (Too complicated?)
-> > 
+> On Tue, May 28, 2024 at 03:39:21PM -0400, Frank Li wrote:
+>> For the i.MX95, configuration of a LUT is necessary to convert Bus Device
+>> Function (BDF) to stream IDs, which are utilized by both IOMMU and ITS.
+>> This involves examining the msi-map and smmu-map to ensure consistent
+>> mapping of PCI BDF to the same stream IDs. Subsequently, LUT-related
+>> registers are configured. In the absence of an msi-map, the built-in MSI
+>> controller is utilized as a fallback.
+>>
+>> Additionally, register a PCI bus notifier to trigger imx_pcie_add_device()
+>> upon the appearance of a new PCI device and when the bus is an iMX6 PCI
+>> controller. This function configures the correct LUT based on Device Tree
+>> Settings (DTS).
 > 
-> I actually dislike the use of ftrace itself to do the loop. I rather
-> have fgraph be in control of it.
-
-(actually, I agreed with you, looping in ftrace may cause trouble)
-
+> This scheme is pretty similar to apple_pcie_bus_notifier().  If we
+> have to do this, I wish it were *more* similar, i.e., copy the
+> function names, bitmap tracking, code structure, etc.
 > 
-> I've come up with a new "subops" assignment, where you can have one
-> ftrace_ops represent multiple sub ftrace_ops. Basically, each fgraph
-> ops can register its own ftrace_ops under a single graph_ops
-> ftrace_ops. The graph_ops will be used to decide what functions call
-> the callback, and then the callback does the multiplexing.
+> I don't really know how stream IDs work, but I assume they are used on
+> most or all arm64 platforms, so I'm a little surprised that of all the
+> PCI host drivers used on arm64, only pcie-apple.c and pci-imx6.c need
+> this notifier.
 
-So is it similar to the fprobe/kprobe, use shared signle ftrace_ops,
-but keep each fgraph has own hash table?
+This is one of those things that's mostly at the mercy of the PCIe root 
+complex implementation. Typically the SMMU StreamID and/or GIC ITS 
+DeviceID is derived directly from the PCI RID, sometimes with additional 
+high-order bits hard-wired to disambiguate PCI segments. I believe this 
+RID-translation LUT is a particular feature of the the Synopsys IP - I 
+know there's also one on the NXP Layerscape platforms, but on those it's 
+programmed by the bootloader, which also generates the appropriate 
+"msi-map" and "iommu-map" properties to match. Ideally that's what i.MX 
+should do as well, but hey.
 
-> This removes the need to touch the architecture code. It can also be
-> used by fprobes to handle the attachments to functions for several
-> different sets of callbacks.
+> There's this path, which is pretty generic and does at least the
+> of_map_id() part of what you're doing in imx_pcie_add_device():
 > 
-> I'll send out patches soon.
-
-OK, I'll wait for that.
-
-Thank you!
-
+>      __driver_probe_device
+>        really_probe
+>          pci_dma_configure                       # pci_bus_type.dma_configure
+>            of_dma_configure
+>              of_dma_configure_id
+>                of_iommu_configure
+>                  of_pci_iommu_init
+>                    of_iommu_configure_dev_id
+>                      of_map_id
+>                      of_iommu_xlate
+>                        ops = iommu_ops_from_fwnode
+>                        iommu_fwspec_init
+>                        ops->of_xlate(dev, iommu_spec)
 > 
-> -- Steve
-> 
+> Maybe this needs to be extended somehow with a hook to do the
+> device-specific work like updating the LUT?  Just speculating here,
+> the IOMMU folks will know how this is expected to work.
 
+Note that that particular code path has fundamental issues and much of 
+it needs to go away (I'm working on it, but it's a rich ~8-year-old pile 
+of technical debt...). IOMMU configuration needs to be happening at 
+device_add() time via the IOMMU layer's own bus notifier.
 
--- 
-Masami Hiramatsu (Google) <mhiramat@kernel.org>
+If it's really necessary to do this programming from Linux, then there's 
+still no point in it being dynamic - the mappings cannot ever change, 
+since the rest of the kernel believes that what the DT said at boot time 
+was already a property of the hardware. It would be a lot more logical, 
+and likely simpler, for the driver to just read the relevant map 
+property and program the entire LUT to match, all in one go at 
+controller probe time. Rather like what's already commonly done with the 
+parsing of "dma-ranges" to program address-translation LUTs for inbound 
+windows.
+
+Plus that would also give a chance of safely dealing with bad DTs 
+specifying invalid ID mappings (by refusing to probe at all). As it is, 
+returning an error from a child's BUS_NOTIFY_ADD_DEVICE does nothing 
+except prevent any further notifiers from running at that point - the 
+device will still be added, allowed to bind a driver, and able to start 
+sending DMA/MSI traffic without the controller being correctly 
+programmed, which at best won't work and at worst may break the whole 
+system.
+
+Thanks,
+Robin.
 
