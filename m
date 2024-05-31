@@ -1,83 +1,85 @@
-Return-Path: <bpf+bounces-30999-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-31000-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E53608D5B49
-	for <lists+bpf@lfdr.de>; Fri, 31 May 2024 09:16:34 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 009E18D5C77
+	for <lists+bpf@lfdr.de>; Fri, 31 May 2024 10:14:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 144331C247E8
-	for <lists+bpf@lfdr.de>; Fri, 31 May 2024 07:16:34 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EE8511C21BCE
+	for <lists+bpf@lfdr.de>; Fri, 31 May 2024 08:14:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 463E57FBC1;
-	Fri, 31 May 2024 07:16:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D9EF7B3EB;
+	Fri, 31 May 2024 08:13:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dzgeReBT"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="T7zlrYX2"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com [209.85.208.54])
+Received: from mail-lf1-f53.google.com (mail-lf1-f53.google.com [209.85.167.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 19BC6187569
-	for <bpf@vger.kernel.org>; Fri, 31 May 2024 07:16:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 412B85588D;
+	Fri, 31 May 2024 08:13:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717139789; cv=none; b=HqoOxWoE0TRZTcZ749l+K+sBxd1Tzxhph9cJeEJfuve5DbuQ+5GmoIUsp2EYm/eYZq7Ke+nyeFrWoM3ZYC1oo+Reg87CjyCsqS8FAkNNk/ELSXm3I5Bm+cREFEU/DKj4QM/YrSMgMLeCMiKgScbINXTSLH4PVZ1J73Z73nfMWss=
+	t=1717143207; cv=none; b=aFizwI2N7OIRrqq/OIw0WLXIwT8CO2XHdCdAptyYfi67VhzYkkdRAicemZfr2pKz2D4Q21DxXAJQsfyd0p+SMFdxP5HxavxKzLD/HpqAke3qwG5thHudq6/9MmetRFvbNu68u+e9ZZmLRkgHkLI2vGnGJoRTMELT7F4B4c1hmiI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717139789; c=relaxed/simple;
-	bh=scbE8qm7+Mt9/n6uv3JXQ4p5D1+X2vZXC7VCe7y+EWw=;
+	s=arc-20240116; t=1717143207; c=relaxed/simple;
+	bh=wDyZkf28JsJ5TohSO2vSxwaGAZmLOJOoNv5aSa1U16w=;
 	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ljav+z5gU4aEd7EFJAfQoYGsSErPUg/VE+mTt5LjgxcwhRi5ARwczfjfoMOZsMzzS3BhccuZuJj0OfhWpR0jJlG3OrvoU9RnorYRpBi8dQ9MejGt0I1nSThzQ3K4KMoNft2wA27DL5881x4tMPDm3D/FfCvHnCHrdpqXWhSOegc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=dzgeReBT; arc=none smtp.client-ip=209.85.208.54
+	 Content-Type:Content-Disposition:In-Reply-To; b=cnhBpTn8p2fwB4MFwFc/cxXtOPhCdd0skN4BBhXVioNbhJGOtcaHnuYET4VbJMscbt4Gn57c6CDg2KbN/kkVKzHRVfEa4qcBaHD8HwIMSnycV4zNeUsIWYN0lBRAhza3pQJ7gSYGhK1ZP3y8pIc0w3IM5wPgZDTWQllJdzNVXWU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=T7zlrYX2; arc=none smtp.client-ip=209.85.167.53
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f54.google.com with SMTP id 4fb4d7f45d1cf-57864327f6eso2675004a12.1
-        for <bpf@vger.kernel.org>; Fri, 31 May 2024 00:16:27 -0700 (PDT)
+Received: by mail-lf1-f53.google.com with SMTP id 2adb3069b0e04-52b7ebb2668so1991300e87.2;
+        Fri, 31 May 2024 01:13:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1717139786; x=1717744586; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1717143203; x=1717748003; darn=vger.kernel.org;
         h=in-reply-to:content-transfer-encoding:content-disposition
          :mime-version:references:message-id:subject:cc:to:date:from:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=lSfEylUPpb/fAOmraunPQcgjr5vmuJYrxop4LDtRXhI=;
-        b=dzgeReBTuTUzs+e2uJgGHT9RW1mls6KXZGsLykAi6hga++5nSCR1+ywDbpzsFtllUg
-         7e5RezfYbv1Oog5++LAGC/gZ3t19Z7sJGSGwF+yHexnLRxua3V31fLWpb2iJVxxiMc6T
-         jrKjUyMnkiPCt9+i/JWOQGhaQDaOO9x2cou6wzVTr0XnVnWJqJ8pM9VZ1geWF++osTi5
-         AESOUg34oNoc73LlWXYPuGoCTcAWp5Jb7yFcvn1QHa9+y7JIowaqOxa7UFkB1hSd59Vk
-         dhdWhivIw2eWC3Z0t4MdpliJiLOSkM/2ivvDt4lr4GcRxJpxDV7Q8H8KEE+dpA0cKctu
-         sOPw==
+        bh=hwcwTxOA0LgSmJEDTw/wqCjtExC/6SA0GpZ98SrAk50=;
+        b=T7zlrYX29xoaErlFSZOTVH/+RHXCRi7qx4egYe4aY+VpQ9Q7DkKxp4AyZHwwpwMla0
+         eXg68dZimi2nSGcHdDgZrDpQXiPBqN0lIi04BMaUU4toYK3ds6XzrQEjAmjZ68+mMZLX
+         HaVqO8iStMkfPf3WgnNDG39L4flhzsAlXVF8SQIHBgNawef6eIwQ7E1dHb6Et5h8X344
+         GpDvpdupwJlggbxdUTQN9F8HsNflFcu82MzdiTo19/yWaxvmgCJZOQ1ibGnRS37OKL0F
+         1og1hidlk/kEShm24sDmBBhdJcfoS9FRFHifaLt2+DBVZFK8TKeqZcdCAwuePdSHMCTs
+         gaFQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1717139786; x=1717744586;
+        d=1e100.net; s=20230601; t=1717143203; x=1717748003;
         h=in-reply-to:content-transfer-encoding:content-disposition
          :mime-version:references:message-id:subject:cc:to:date:from
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=lSfEylUPpb/fAOmraunPQcgjr5vmuJYrxop4LDtRXhI=;
-        b=Z2p35Wm/bgjPUUlW+CE9x+baeIBVBdxU5M+/X3GROp9N077RJcgNDwKv8H0QfxaJcL
-         oJS4H2OS/jG5f8+CflHnMin+xViIgEMHcj+QdL10twt+0ZkAa4KxlI/NL2INhdEmm5lY
-         LsktQK3PnrStvq27bb9zs+W4m+A79Q7J6eEtoY8MVGW4bVpMWONekyPuBL3Y/1STjEWX
-         CgJqIhs2RthiL6WSOjW4etBSqtaNKmESzY7ew+V+BLwj/9K2CUJ1Lc1yS5qca3uh9Y7s
-         kQR9O1w4qOcrCllvy9WEyvcTW1bRhjGRgEPeMvsY/8eKCiivv2qECAonYWsX/p8jl/Pl
-         VKAw==
-X-Forwarded-Encrypted: i=1; AJvYcCWHKyj2q8ddAIsWZX6qM5MNNBzBKU4APUXVthvDXNqz3yXWxym7S7aUhFKMPG5LaGmmve21fp+5yKgcNkqhJM0Kr0/C
-X-Gm-Message-State: AOJu0YxrE65Jn/lo6ZOooYuINYH+JpN9jFjs34qx/+xd3NkRr7nMx/R2
-	7V8QUdUWSDOvsX6in8JXdCuLp4FGpu8Uu8+NY9LwEOaiJKRvn0m1AK3ElQ==
-X-Google-Smtp-Source: AGHT+IEeO1RC+6vgMSSnSbBhW4EKu4iTMR6YVBEd6njMnortdvFNxAqv7iqg1UJ4QM1YH1jMXw9FmQ==
-X-Received: by 2002:a50:8e13:0:b0:578:5f9d:9ab7 with SMTP id 4fb4d7f45d1cf-57a1a313284mr3374636a12.17.1717139785988;
-        Fri, 31 May 2024 00:16:25 -0700 (PDT)
+        bh=hwcwTxOA0LgSmJEDTw/wqCjtExC/6SA0GpZ98SrAk50=;
+        b=QnUw+sVwEO2XQ1NRCg3DjLkUwdaSIb8C9+Nodp5LV8koPxlkIubYbR3OOq6ub7al/m
+         jFsH8MN2P0acJbqwkZ8BKFHqGuF3haUpL4CbQaCXZUFQNFqxHd8jVtuSdgH6yrclkFnl
+         3lQAg+CaATVqAfCjimJFOFW6ntSh/fL3z9JVwygmLgyWtGR1IdQQWTmSin4n8OLYflm+
+         GIxXSA+Eb4ApXMC+j6cwxF6cJkTDQnz8PyN2XM1XySxCkcWnSVGu3nGIdQ3KFpk9N+c/
+         wbtLk/xX2wnE2AIQTqawCeIfg7Yvf3IWB+uso7NMc+O7PG/1ipNaOqI5VZDdnkLItb1i
+         7m4w==
+X-Forwarded-Encrypted: i=1; AJvYcCXMjJyRTCcqZrEG2v9K7N62IaL9pxfu4PsXDbjkm/+R9tmaxrCpp3eLO0lAlpwrVTG/N19g6CJVvr89nK3Dpmh3Pr/KM2uAGd95I0yKz6sdvJcP+u5aG0EnuErrJw==
+X-Gm-Message-State: AOJu0Yxw2VXJEksjIFW7pcnc5cRyHH+PjLqjG7c5fNpdyjSc8IRI+Ij3
+	eutAKkNEObsMDY/2NFZeSIS7N0dqzKkCfIejw8/XkRO7J4Efk2igBFk53w==
+X-Google-Smtp-Source: AGHT+IEUDBohkxpKzw7dY/TJ4dRmwKLweh+N7S8ESJmRBO9axc+Y9g8dsQUVliE4ydd4hmbE60EjTw==
+X-Received: by 2002:a05:6512:2508:b0:529:b691:e37e with SMTP id 2adb3069b0e04-52b895715eemr1045142e87.40.1717143203005;
+        Fri, 31 May 2024 01:13:23 -0700 (PDT)
 Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
-        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-57a31c9c0f1sm675099a12.80.2024.05.31.00.16.25
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a67eb621507sm59793966b.222.2024.05.31.01.13.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 31 May 2024 00:16:25 -0700 (PDT)
+        Fri, 31 May 2024 01:13:22 -0700 (PDT)
 From: Jiri Olsa <olsajiri@gmail.com>
 X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Fri, 31 May 2024 09:16:24 +0200
-To: Lennart Poettering <mzxreary@0pointer.net>
-Cc: Jiri Olsa <olsajiri@gmail.com>, bpf@vger.kernel.org,
-	torvalds@linux-foundation.org
-Subject: Re: bpf kernel code leaks internal error codes to userspace
-Message-ID: <Zll5SJcJxvu_yXgt@krava>
-References: <Zlb-ojvGgdGZRvR8@gardel-login>
- <Zlhupe1tXj8ZS1go@krava>
- <ZliKX5EOU9eWhd2U@gardel-login>
+Date: Fri, 31 May 2024 10:13:21 +0200
+To: Hengqi Chen <hengqi.chen@gmail.com>
+Cc: Tony Ambardar <tony.ambardar@gmail.com>, bpf@vger.kernel.org,
+	dwarves@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Arnaldo Carvalho de Melo <acme@kernel.org>
+Subject: Re: Problem with BTF generation on mips64el
+Message-ID: <ZlmGoT9KiYLZd91S@krava>
+References: <ZlkoM6/PSxVcGM6X@kodidev-ubuntu>
+ <CAEyhmHT_1N3xwLO2BwVK97ebrABJv52d5dWxzvuNNcF-OF5gKw@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -87,106 +89,168 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <ZliKX5EOU9eWhd2U@gardel-login>
+In-Reply-To: <CAEyhmHT_1N3xwLO2BwVK97ebrABJv52d5dWxzvuNNcF-OF5gKw@mail.gmail.com>
 
-On Thu, May 30, 2024 at 04:17:03PM +0200, Lennart Poettering wrote:
-> On Do, 30.05.24 14:18, Jiri Olsa (olsajiri@gmail.com) wrote:
+On Fri, May 31, 2024 at 10:17:53AM +0800, Hengqi Chen wrote:
+> Hi Tony,
 > 
-> > > It seems that the bpf code in the kernel sometimes leaks
-> > > kernel-internal error codes, i.e. those from include/linux/errno.h
-> > > into userspace (as opposed to those from
-> > > include/uapi/asm-generic/errno.h which are public userspace facing
-> > > API).
-> > >
-> > > According to the comments from that internal header file: "These
-> > > should never be seen by user programs."
-> > >
-> > > Specifically, this is about ENOTSUPP, which userspace simply cannot
-> > > handle, there's no error 524 defined in glibc or anywhere else.
-> > >
-> > > We ran into this in systemd recently:
-> > >
-> > > https://github.com/systemd/systemd/issues/32170#issuecomment-2076928761
-> > >
-> > > (a google search reveals others were hit by this too)
-> > >
-> > > We commited a work-around for this for now:
-> > >
-> > > https://github.com/systemd/systemd/pull/33067
-> > >
-> > > But it really sucks to work around this in userspace, this is a kernel
-> > > internal definition after all, conflicting with userspace (where
-> > > ENOTSUPP is just an alias for EOPNOTSUPP), hence not really fixable.
-> > >
-> > > ENOSUPP is kinda useless anyway, since EOPNOTSUPP is pretty much
-> > > equally expressive, and something userspace can actually handle.
-> > >
-> > > Various kernel subsystems have been fixed over the years in similar
-> > > situations. For example:
-> > >
-> > > https://patchwork.kernel.org/project/linux-wireless/patch/20231211085121.3841b71c867d.Idf2ad01d9dfe8d6d6c352bf02deb06e49701ad1d@changeid/
-> > >
-> > > or
-> > >
-> > > https://patchwork.kernel.org/project/linux-media/patch/af5b2e8ac6695383111328267a689bcf1c0ecdb1.1702369869.git.sean@mess.org/
-> > >
-> > > or
-> > >
-> > > https://patchwork.ozlabs.org/project/linux-mtd/patch/20231129064311.272422-1-acelan.kao@canonical.com/
-> > >
-> > > I think BPF should really fix that, too.
+> On Fri, May 31, 2024 at 9:30 AM Tony Ambardar <tony.ambardar@gmail.com> wrote:
 > >
-> > hm, I don't think we can change that, user space already depends
-> > on those values and we'd break it with new value
-> 
-> Are you sure about that? To be able to handle this situation that
-> userspace program whose existance you are indicating would have had to
-> go the extra mile to literally handle error code 524 that is not known
-> to userspace otherwise and handle it. If somebody goes the extra mile
-> to do that, what makes you think that they didn't just handle it as
-> equivalent to regular EOPNOSTUPP? In systemd at least that's what we
-> are doing.
+> > Hello,
+> >
+> > For some time now I'm seeing multiple issues during BTF generation while
+> > building recent kernels targeting mips64el, and would appreciate some help
+> > to understand and fix the problems.
+> >
+> > Some relate to resolve_btfids:
+> >
+> > >   LD      vmlinux
+> > >   BTFIDS  vmlinux
+> > > WARN: resolve_btfids: unresolved symbol bpf_verify_pkcs7_signature
+> > > WARN: resolve_btfids: unresolved symbol bpf_session_cookie
+> > > WARN: resolve_btfids: unresolved symbol bpf_lookup_user_key
+> > > WARN: resolve_btfids: unresolved symbol bpf_lookup_system_key
+> > > WARN: resolve_btfids: unresolved symbol bpf_key_put
+> > > WARN: resolve_btfids: unresolved symbol bpf_iter_task_next
+> > > WARN: resolve_btfids: unresolved symbol bpf_iter_css_task_new
+> > > WARN: resolve_btfids: unresolved symbol bpf_get_file_xattr
+> > > WARN: resolve_btfids: unresolved symbol bpf_ct_insert_entry
+> > > WARN: resolve_btfids: unresolved symbol bpf_cgroup_release
+> > > WARN: resolve_btfids: unresolved symbol bpf_cgroup_from_id
+> > > WARN: resolve_btfids: unresolved symbol bpf_cgroup_acquire
+> > > WARN: resolve_btfids: unresolved symbol bpf_arena_free_pages
+> > >   NM      System.map
+> > >   SORTTAB vmlinux
+> > >   OBJCOPY vmlinux.32
+> >
+> > These do not appear to be #ifdef-related and have similar past reports [1].
 
-cilium/ebpf [1] library is checking return values just for ENOTSUPP(524)
-on multiple places, libbpf has one place to check on that value for
-program type detection AFAICS
+I can reproduce the warning just for bpf_session_cookie,
+which has fix in progress:
+  https://lore.kernel.org/bpf/20240531071557.MvfIqkn7@linutronix.de/T/#t
+
+> >
+> > I also see many pahole failures during BTF encoding of modules, such as:
+> >
+> > >   CC [M]  net/ipv6/netfilter/nft_fib_ipv6.mod.o
+> > >   CC [M]  net/ipv6/netfilter/ip6t_REJECT.mod.o
+> > >   CC [M]  net/psample/psample.mod.o
+> > >   LD [M]  crypto/cmac.ko
+> > >   BTF [M] crypto/cmac.ko
+> > > die__process: DW_TAG_compile_unit, DW_TAG_type_unit, DW_TAG_partial_unit
+> > > or DW_TAG_skeleton_unit expected got member (0xd)!
+> 
+> The issue seems to be related to elfutils. Have you tried build from
+> the latest elfutils source ?
+> I saw the latest MIPS backend in elfutils already implemented the
+> reloc_simple_type hook.
+
+hi,
++1, could you also check the pahole version you used?
 
 jirka
 
-
-[1] https://github.com/cilium/ebpf/
-
 > 
-> Also: if various other subsystems (I linked examples from wireless,
-> media, mtd above) just fixed this, why not bpf, why is it special in
-> this regard?
+> > >   LD [M]  lib/test_bpf.ko
+> > >   BTF [M] lib/test_bpf.ko
+> > > die__process: DW_TAG_compile_unit, DW_TAG_type_unit, DW_TAG_partial_unit
+> > > or DW_TAG_skeleton_unit expected got member (0xd)!
+> > >   LD [M]  lib/crc-ccitt.ko
+> > >   BTF [M] lib/crc-ccitt.ko
+> > > die__process_unit: DW_TAG_compile_unit (0x11) @ <0x9331> not handled!
+> > > die__process_unit: tag not supported 0x11 (compile_unit)!
+> > > die__process: got compile_unit unexpected tag after DW_TAG_compile_unit!
+> > >   LD [M]  lib/libcrc32c.ko
+> > >   BTF [M] lib/libcrc32c.ko
+> > > die__process_unit: DW_TAG_compile_unit (0x11) @ <0x99a5> not handled!
+> > > die__process_unit: tag not supported 0x11 (compile_unit)!
+> > > die__process: got compile_unit unexpected tag after DW_TAG_compile_unit!
+> > >   LD [M]  lib/ts_kmp.ko
+> > >   BTF [M] lib/ts_kmp.ko
+> > >   LD [M]  lib/ts_bm.ko
+> > >   BTF [M] lib/ts_bm.ko
+> > > die__process: DW_TAG_compile_unit, DW_TAG_type_unit, DW_TAG_partial_unit
+> > > or DW_TAG_skeleton_unit expected got member (0xd)!
+> > > die__process: DW_TAG_compile_unit, DW_TAG_type_unit, DW_TAG_partial_unit
+> > > or DW_TAG_skeleton_unit expected got member (0xd)!
+> >
+> > I have seen reports of various similar "die__" messages on the dwarves
+> > list and repo, with the hint of an elfutils connection [2] but nothing
+> > conclusive.
+> >
+> > Details of the git commit and build environment are as follows:
+> >
+> > > $ git log -1 --oneline  bpf/master
+> > > 9dfdb706e164 (bpf/master) selftests/bpf: fix inet_csk_accept prototype in
+> > > test_sk_storage_tracing.c
+> > >
+> > > $ lsb_release -a
+> > > Description:    Ubuntu 22.04.4 LTS
+> > >
+> > > $ cat gcc-compile.txt
+> > > ARCH=mips CROSS_COMPILE=mips64el-linux-gnuabi64- CC="ccache ${CROSS_COMPILE}gcc" make -j6
+> > >
+> > > $ mips64el-linux-gnuabi64-gcc --version
+> > > mips64el-linux-gnuabi64-gcc (Ubuntu 10.3.0-1ubuntu1) 10.3.0
+> > >
+> > > $ mips64el-linux-gnuabi64-ld --version
+> > > GNU ld (GNU Binutils for Ubuntu) 2.38
+> > >
+> > > $ pahole --version
+> > > v1.26
+> > >
+> > > $ ldd $(which pahole)
+> > >         linux-vdso.so.1 (0x00007fff16f3f000)
+> > >         libdw.so.1 => /lib/x86_64-linux-gnu/libdw.so.1 (0x00007fc39d42e000)
+> > >         libelf.so.1 => /lib/x86_64-linux-gnu/libelf.so.1 (0x00007fc39d410000)
+> > >         libz.so.1 => /lib/x86_64-linux-gnu/libz.so.1 (0x00007fc39d3f4000)
+> > >         libc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007fc39d1cb000)
+> > >         liblzma.so.5 => /lib/x86_64-linux-gnu/liblzma.so.5 (0x00007fc39d1a0000)
+> > >         libbz2.so.1.0 => /lib/x86_64-linux-gnu/libbz2.so.1.0 (0x00007fc39d18d000)
+> > >         /lib64/ld-linux-x86-64.so.2 (0x00007fc39d59d000)
+> > >
+> > > $ dpkg -s elfutils
+> > > Package: elfutils
+> > > ...
+> > > Version: 0.186-1build1
+> > > Depends: libasm1 (>= 0.132), libc6 (>= 2.34), libdw1 (= 0.186-1build1),
+> > > libelf1 (= 0.186-1build1), libstdc++6 (>= 4.1.1)
+> >
+> > For reference, I also attached the full .config and build log from the
+> > above.
+> >
+> > I should add this is not only a problem with the latest bpf/master but
+> > also appears to affect the 6.6.x LTS kernel, which I tested while building
+> > a mips64el OpenWrt distro image. That build environment employs the latest
+> > gcc 13.3, binutils 2.42, pahole 1.26, and elfutils 0.191.
+> >
+> > Not only do I see similar warnings from resolve_btfids and pahole, but
+> > while running the distro image I encounter module loading failures that
+> > suggest ELF corruption in some module .ko files, based on the following:
+> >
+> > > root@OpenWrt:/# strace insmod /lib/modules/6.6.30/nf_conntrack.ko
+> > > ...
+> > > init_module(0xfff3e36160, 307448, "")   = -1 EINVAL (Invalid argument)
+> > > ...
+> >
+> > > $ man init_module
+> > > ...
+> > > The following errors may additionally occur for init_module():
+> > > ...
+> > >      EINVAL param_values is invalid, or some part of the ELF image in
+> > >      module_image contains inconsistencies.
+> > > ...
+> >
+> > I'd be grateful if some of the BTF/pahole experts could please review this
+> > issue and share next steps or other details I might provide.
+> >
+> > Thanks,
+> > Tony Ambardar
+> >
+> > Link: https://lore.kernel.org/all/202401211357.OCX9yllM-lkp@intel.com/ [1]
+> > Link: https://github.com/acmel/dwarves/issues/45 [2]
 > 
-> AFAICS the man pages of most syscalls just list errnos that *can* be
-> returned, but usually doesn't list the precise conditions or makes
-> guarantees about it. This specific error is not listed at all on any
-> man page for the bpf() syscall, hence are you really sure this is
-> actually as set in stone as you think it is?
+> Cheers,
+> Hengqi
 > 
-> I mean, bpf() is still a bit of bleeding edge tech, and people playing
-> around with this probably tend to have quite new toolchains even, not
-> old, hard to fix code?
-> 
-> > it's unfortunate, but I don't think we can do much about that,
-> > other than enforcing EOPNOTSUPP for new code
-> 
-> I took the liberty to CC Linus on this:
-> 
-> Linus, what's the policy if some subsystem by mistake is leaking
-> internal kernel error codes (such as ENOTSUP) to userspace? Leave it
-> be as is (i.e. error number not defined in include/uapi/, not
-> documented, but still returned), or fix it to the closest matching
-> public error code (which is probably EOPNOTSUPP in this case)
-> accepting a – mild, I would say – compat break?
-> 
-> [BTW, wouldn't it make sense to add a BUG_ON or so on syscalls that
-> return an error number > 133 or so? This kind of issue is quite a
-> recurring theme, see the patches above, and such a BUG_ON would
-> probably catch 95% of all cases like this.]
-> 
-> Lennart
 
