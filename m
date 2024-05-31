@@ -1,112 +1,137 @@
-Return-Path: <bpf+bounces-31033-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-31035-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4D7208D6465
-	for <lists+bpf@lfdr.de>; Fri, 31 May 2024 16:22:52 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9B3238D649D
+	for <lists+bpf@lfdr.de>; Fri, 31 May 2024 16:36:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DABAC1F2367D
-	for <lists+bpf@lfdr.de>; Fri, 31 May 2024 14:22:51 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 78790B247FD
+	for <lists+bpf@lfdr.de>; Fri, 31 May 2024 14:36:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5688A1CD18;
-	Fri, 31 May 2024 14:22:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7784B46433;
+	Fri, 31 May 2024 14:35:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LD3tAu+e"
 X-Original-To: bpf@vger.kernel.org
-Received: from air.basealt.ru (air.basealt.ru [194.107.17.39])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 80F0E20B0F;
-	Fri, 31 May 2024 14:22:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=194.107.17.39
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE23B3EA86;
+	Fri, 31 May 2024 14:35:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717165358; cv=none; b=faqqx+sG4HfBUO0Ut3KAuRB7yPPHDqJUY+TBLWo94p2nSEJM4yoj2Yya09/S3ecVJ/z/WJYwV3CtEAsom1wDAPnf9c2e5Cw9EYK55q3IAgiuPxMMV/UNLMRQxgglmZRcGFwK2m+xSheMVCcPjvbSCuEl8IZbad1zA3LbGwJeS/Y=
+	t=1717166157; cv=none; b=i/glmwqo9DJ48rquNN9tfSoYhI9S5CP9CLfOm+iTo5UFwb1rjycX9rcKzydrcywr0Gpuhtt4vYHqh37XFcjG4O+hSm2YaLzUlpjyzvcnixKOpK1FFQKzGrVT9zh9O8VeX2VkSgnF1+IZjuMnpITd1NoheNUAf1njNsRWMPFgQKI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717165358; c=relaxed/simple;
-	bh=aF3eWbuN1JPyvYrTyC0cWHxZwRQ8WNZPKTCkF693fJE=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=h85Yr9Y8Ny0vvS9PiTzuSj/N2yxlYPL/ncfPIyxm4wKSUlM8qVT556TesTH0+S/C9DUlyoNpvWJYTwrTYhedXVjyISU52ZP0d6CVd63eO0ZDx0R8ilGx6JspjUMinZcr75HUczI+BMmJN2Ni/OpL6CSozqhMZ9Ls/EhP6DPUVdU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=altlinux.org; spf=pass smtp.mailfrom=altlinux.org; arc=none smtp.client-ip=194.107.17.39
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=altlinux.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=altlinux.org
-Received: by air.basealt.ru (Postfix, from userid 490)
-	id B7AF22F2023C; Fri, 31 May 2024 14:22:34 +0000 (UTC)
-X-Spam-Level: 
-Received: from altlinux.malta.altlinux.ru (obninsk.basealt.ru [217.15.195.17])
-	by air.basealt.ru (Postfix) with ESMTPSA id 62E1A2F2023C;
-	Fri, 31 May 2024 14:22:34 +0000 (UTC)
-From: kovalev@altlinux.org
-To: stable@vger.kernel.org
-Cc: bpf@vger.kernel.org,
-	lvc-project@linuxtesting.org,
-	kovalev@altlinux.org,
-	dutyrok@altlinux.org,
-	oficerovas@altlinux.org
-Subject: [PATCH v2 5.10.y 2/2] bpf: Add explicit cast to 'void *' for __BPF_DISPATCHER_UPDATE()
-Date: Fri, 31 May 2024 17:22:31 +0300
-Message-Id: <20240531142231.51068-3-kovalev@altlinux.org>
-X-Mailer: git-send-email 2.33.8
-In-Reply-To: <20240531142231.51068-1-kovalev@altlinux.org>
-References: <20240531142231.51068-1-kovalev@altlinux.org>
+	s=arc-20240116; t=1717166157; c=relaxed/simple;
+	bh=/Ltdv79q3skkml0ifKj3D0gZrv9LGfP0o2gnIsRp+6E=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Mson6biAPtxnYviketqfsJwQ7ivqHxqdNDLQgsQjfDQPfsnxlZNf9XuQF67Ly1ERpPo+yvM8Se8baJ0aVdnUqhcN8K+he2mCSiE+nqibNb/neeCvcHIDBDQ3nl1gmYOUU2AI6CS5JupOcZ033WEKi+GmUeYksZQuJpHeRgP3VJc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=LD3tAu+e; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8A26BC116B1;
+	Fri, 31 May 2024 14:35:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1717166156;
+	bh=/Ltdv79q3skkml0ifKj3D0gZrv9LGfP0o2gnIsRp+6E=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=LD3tAu+e2GZhlS16l95NYRLhYtJf/bC/FGtKdWqvEJMCGTvsCjzT1oSP4xYjJFXtO
+	 nKkOW0K18ohGEohKEyNOS4W6L+8uNkx3i2ekTEkr5wxwJ+mDlDFpHj82h3wuX7zoIp
+	 v3+sqmTSVOgciQfMyPng5hhEwV/YYGPF54tmOaShwx1ggme3/TiWNGBrF+Xji3teHQ
+	 nwBTWqNeo1OLQ4ZbQAdbF/X8lv8vvXNz4cv+MUsCwHQQxqV9HpS+NfDS2t8D6Z/HMK
+	 EBomR6Du7bgyetQGT3GTgb/4n5KwpFEdMYA87cJLSlMXoZpRJPLiySkY75nHdLHkJa
+	 3aAhimH/2aCxA==
+Date: Fri, 31 May 2024 22:35:46 +0800
+From: Geliang Tang <geliang@kernel.org>
+To: Jakub Sitnicki <jakub@cloudflare.com>,
+	John Fastabend <john.fastabend@gmail.com>
+Cc: Andrii Nakryiko <andrii@kernel.org>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Mykola Lysenko <mykolal@fb.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
+	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+	Shuah Khan <shuah@kernel.org>, bpf@vger.kernel.org,
+	mptcp@lists.linux.dev, linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH bpf-next 3/8] selftests/bpf: Use bpf_link attachments in
+ test_sockmap
+Message-ID: <ZlngQqfkS-R1PNqk@T480>
+References: <cover.1716446893.git.tanggeliang@kylinos.cn>
+ <32cf8376a810e2e9c719f8e4cfb97132ed2d1f9c.1716446893.git.tanggeliang@kylinos.cn>
+ <6654beff96840_23de2086e@john.notmuch>
+ <87wmnfujwg.fsf@cloudflare.com>
+ <577531139c4db3cb35f3f40e23587bcb9815b0ba.camel@kernel.org>
+ <66590f821d120_e5072085a@john.notmuch>
+ <87wmnaw7x8.fsf@cloudflare.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87wmnaw7x8.fsf@cloudflare.com>
 
-From: Nathan Chancellor <nathan@kernel.org>
+On Fri, May 31, 2024 at 01:13:39PM +0200, Jakub Sitnicki wrote:
+> On Thu, May 30, 2024 at 04:45 PM -07, John Fastabend wrote:
+> > Geliang Tang wrote:
+> >> On Mon, 2024-05-27 at 21:36 +0200, Jakub Sitnicki wrote:
+> >> > On Mon, May 27, 2024 at 10:12 AM -07, John Fastabend wrote:
+> >> > > Geliang Tang wrote:
+> 
+> [...]
+> 
+> >> > > The one advantage of test_sockmap is we can have it run for longer
+> >> > > runs by pushing different options through so might be worth keeping
+> >> > > just for that.
+> >> > > 
+> >> > > If you really want links here I'm OK with that I guess just asking.
+> >> > 
+> >> > It was me who suggested the switch to bpf_link in reaction to a
+> >> > series
+> >> > of cleanups to prog_type and prog_attach_type submitted by Geliang.
+> >> 
+> >> Yes, patches 3-5 address Jakub's suggestion: switching attachments to
+> >> bpf_link.
+> >
+> > OK. Lets just take them the series lgtm. Jakub any other comments?
+> 
+> Gave it a run - all looks well. Thanks for the patches.
+> 
+> Geliang, is there some MPTCP+sockmap use-case you're working towards?
 
-[ Upstream commit a679120edfcf3d63f066f53afd425d51b480e533 ]
+Yes, indeed. I have been working on a task related to MPTCP+sockmap
+recently, at least related to this test_sockmap.c selftest. We recently
+received an issue with MPTCP [1], that is TLS cannot be set on MPTCP
+sockets. The reason is that both MPTCP and TLS are implemented on TCP ULP.
+And each socket only supports one type of TCP ULP.
 
-When building with clang:
+I simply modified this test_sockmap.c selftest to support MPTCP, so that
+it can be used as the first version of test for MPTCP+TLS. So I spent some
+time reading and debugging this test.
 
-  kernel/bpf/dispatcher.c:126:33: error: pointer type mismatch ('void *' and 'unsigned int (*)(const void *, const struct bpf_insn *, bpf_func_t)' (aka 'unsigned int (*)(const void *, const struct bpf_insn *, unsigned int (*)(const void *, const struct bpf_insn *))')) [-Werror,-Wpointer-type-mismatch]
-          __BPF_DISPATCHER_UPDATE(d, new ?: &bpf_dispatcher_nop_func);
-                                     ~~~ ^  ~~~~~~~~~~~~~~~~~~~~~~~~
-  ./include/linux/bpf.h:1045:54: note: expanded from macro '__BPF_DISPATCHER_UPDATE'
-          __static_call_update((_d)->sc_key, (_d)->sc_tramp, (_new))
-                                                              ^~~~
-  1 error generated.
+The development of MPTCP+TLS is still ongoing, and currently only setsockopt
+part has been successfully supported. The idea is simple, use an array of
+tcp_ulp_ops in a socket, instead of a single one:
 
-The warning is pointing out that the type of new ('void *') and
-&bpf_dispatcher_nop_func are not compatible, which could have side
-effects coming out of a conditional operator due to promotion rules.
+struct inet_connection_sock {
+      ... ...
+      const struct tcp_ulp_ops  *icsk_ulp_ops[ULP_INDEX_MAX];
+      void __rcu                *icsk_ulp_data[ULP_INDEX_MAX];
+}
 
-Add the explicit cast to 'void *' to make it clear that this is
-expected, as __BPF_DISPATCHER_UPDATE() expands to a call to
-__static_call_update(), which expects a 'void *' as its final argument.
+The entire patch is in my commit "mptcp: tls support" [2]. It's not finish
+yet, but I really want to hear your opinions, especially John's.
 
-Fixes: c86df29d11df ("bpf: Convert BPF_DISPATCHER to use static_call() (not ftrace)")
-Link: https://github.com/ClangBuiltLinux/linux/issues/1755
-Reported-by: kernel test robot <lkp@intel.com>
-Reported-by: "kernelci.org bot" <bot@kernelci.org>
-Signed-off-by: Nathan Chancellor <nathan@kernel.org>
-Acked-by: Björn Töpel <bjorn@kernel.org>
-Acked-by: Yonghong Song <yhs@fb.com>
-Link: https://lore.kernel.org/r/20221107170711.42409-1-nathan@kernel.org
-Signed-off-by: Martin KaFai Lau <martin.lau@kernel.org>
-Signed-off-by: Vasiliy Kovalev <kovalev@altlinux.org>
----
- kernel/bpf/dispatcher.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+[1]
+https://github.com/multipath-tcp/mptcp_net-next/issues/480
+[2]
+https://github.com/geliangtang/mptcp_net-next/commit/bba00a6cde75bab5a2c1c196d49812b4ed6addb0
 
-diff --git a/kernel/bpf/dispatcher.c b/kernel/bpf/dispatcher.c
-index 23042cfb5e809..9959201efc316 100644
---- a/kernel/bpf/dispatcher.c
-+++ b/kernel/bpf/dispatcher.c
-@@ -117,7 +117,7 @@ static void bpf_dispatcher_update(struct bpf_dispatcher *d, int prev_num_progs)
- 			return;
- 	}
- 
--	__BPF_DISPATCHER_UPDATE(d, new ?: &bpf_dispatcher_nop_func);
-+	__BPF_DISPATCHER_UPDATE(d, new ?: (void *)&bpf_dispatcher_nop_func);
- 
- 	if (new)
- 		d->image_off = noff;
--- 
-2.33.8
-
+Thanks,
+-Geliang
 
