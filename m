@@ -1,131 +1,221 @@
-Return-Path: <bpf+bounces-31045-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-31046-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 12F818D66D0
-	for <lists+bpf@lfdr.de>; Fri, 31 May 2024 18:29:23 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5D5C78D66D9
+	for <lists+bpf@lfdr.de>; Fri, 31 May 2024 18:30:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C0F8428AD23
-	for <lists+bpf@lfdr.de>; Fri, 31 May 2024 16:29:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1390328E8BA
+	for <lists+bpf@lfdr.de>; Fri, 31 May 2024 16:30:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B539215B96C;
-	Fri, 31 May 2024 16:29:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B5D815AAB6;
+	Fri, 31 May 2024 16:30:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="LwphYhcW"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lor0OLn5"
 X-Original-To: bpf@vger.kernel.org
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pg1-f175.google.com (mail-pg1-f175.google.com [209.85.215.175])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD487156242;
-	Fri, 31 May 2024 16:29:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 436BC36AF8
+	for <bpf@vger.kernel.org>; Fri, 31 May 2024 16:30:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717172952; cv=none; b=R3ie9zjsgjevyWHCzPNWVFYuARbCFUQZQDL42aJSE4OraThqDach1yQeUjS9Qlg+M+HK5k138QMB9YyDL/Uh7uuPOPxpg7qXmV5C98RFJsfIxs76PM2gQs0C4hEwYSnZlpzP3L+DsyW3hi2TllFSGG7sqkfqlgDNakh9t0pGMpw=
+	t=1717173039; cv=none; b=jAO6xJMYPOL6yBCuE6EiISCEodq/HB4p5SIIUfabBKAodBFFH9eMpjCYNIN5lItTjDIiX//3tAvjXIcduSWck88Qe/1QAC39FFgKWn0+C/+OLeL8G3U1gC1wb2aPDkcuPb1lWq0NY/ANyK1zlyoH5sMgB3s8f8VSEmb4WZAuYWM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717172952; c=relaxed/simple;
-	bh=/dieNpAffYfF3j9dI+41BjDdn/AE2ZDNZQ0kdYwkDMc=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-ID:To:CC; b=a60LPVuV5L8jFNHnPyIoRleCeyXYp4ijWUuDNlh0XaNclmEGModOFfYm2FPiwaoC/TrSsEMPBwDOId6oz+fTsFmBIyOk7dAwtCzT3WZO4/WInmJGkzMsoxmXWOfB3JdZ35gqAVtW/ITt4w0sgsj/8elYqB24Wt/KGws9ITxSpi8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=LwphYhcW; arc=none smtp.client-ip=205.220.180.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 44V8osjB019859;
-	Fri, 31 May 2024 16:28:51 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	cc:content-transfer-encoding:content-type:date:from:message-id
-	:mime-version:subject:to; s=qcppdkim1; bh=Hy60RPDaCxUwgwf6FF4cUM
-	FAxBZJ9nOouJL9XB+bIOs=; b=LwphYhcWNWDUGD+VCVPOV4qhRMCC5wSnj1Gtpr
-	vfLdITbOFqcgT6ghpWOCOjrG8ZZkn11gzuvKVYchZovzs6zBZToCr8sBI0qPpBWS
-	ABZp0b/melukEgJvKznpGOFzfQUJYko1H0hL1D9iKqNfPNhm2e8jYPTAInjDazTp
-	2XCldF6eIySEC5h+MQCdy49x6aX8rGMs9I6YU/JC0WdKkWQp7IBn0Sr4RlQPMaL0
-	QGUhBuIxS/wBOxFIlPLU4RTJPY7QCR0iycKrnXIZQQCsRtc0lmZvEMKRMkrAp0mb
-	0FNZujvhAW5VfsQdCNH9xBrYsV9Iv57dZypEOV95Sm3qPG0Q==
-Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3yba0qqfj8-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 31 May 2024 16:28:51 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 44VGSnDI032720
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 31 May 2024 16:28:49 GMT
-Received: from [169.254.0.1] (10.49.16.6) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9; Fri, 31 May
- 2024 09:28:49 -0700
-From: Jeff Johnson <quic_jjohnson@quicinc.com>
-Date: Fri, 31 May 2024 09:28:43 -0700
-Subject: [PATCH] test_bpf: add missing MODULE_DESCRIPTION()
+	s=arc-20240116; t=1717173039; c=relaxed/simple;
+	bh=m5F7yuv4I2zRf4rf/u4uG4G6zEDoXT/mEhANzCs48Ps=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=ja5K4HppbKwGmVDtmNe5CtmLu6qUAxTHBc6EbUsFgsyeerAjGsx8ad/4y3i03Qz4GvxiFAByFct3DMllYQDPNU1HzcR/w2xKVnvAxrMtSNPkSFEDxcwOxGm3DmBkVy2F+KDUM1Mvn5o0wCB9MuSht8uXy0gLz+PDvH3BJk6bgV4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=lor0OLn5; arc=none smtp.client-ip=209.85.215.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f175.google.com with SMTP id 41be03b00d2f7-6bce380eb9cso1676923a12.0
+        for <bpf@vger.kernel.org>; Fri, 31 May 2024 09:30:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1717173037; x=1717777837; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=iUsxHpp8YkIrW+FWTyPWrcHku77RuSKXqNO4d4a0Zkg=;
+        b=lor0OLn5vjpMEpnu4oiiQaHBSFa3jYE5AZGSPTBsiMAscmKL1HQ0tCRwJRSxoIfpC1
+         XZhx1cPxbyb4cdayRNO7bqVvH0Moo9KfJoym6mot4wIkX0waZE9S7hOVhpNeUvw5Tpyw
+         iJ11N+XBJNCuusmtHYu1vXI0F8NAtnG5VKan55MF4sNZY2utKZTh58a/p4I0Z76H06KY
+         9APdim9QPHXejPFcFHBPoNYtZC6MJ1nOkGelEZ6l8f2YCS919eon7UhMdgIUYHKH5+/u
+         bUBHYFKP2DzL8UgDvpUYNBoSXvIUgP8g+hZDB+G0+q6Yz1SwvP/ZHKxtIbV6KuhTb3FG
+         gFAw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1717173037; x=1717777837;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=iUsxHpp8YkIrW+FWTyPWrcHku77RuSKXqNO4d4a0Zkg=;
+        b=cVoo9rE01BFDxE3oPvnyTgyCXP7t07VfJ58zXvc69UpPGB9SwuTBIjhxWh4Mz7idX4
+         Npd2fU68CtrFV6zSwnWwjaUCVp2cKMImpu1allU/V44BmzvtZ7ITAEyHH3itGAKxqbZ2
+         8TG7IgMQ/2Z58XMXTMDoporbVwkeWV9MF54B2UlY2vNCZKazGoqfqHDpLEUywe7fJddv
+         RypV9pjKHAeqzAy4I/cykFfFyw+5tXSi7KPfYa24NQ6LTh3kkRyxNLHJb41UN9TpC8Lu
+         y0Xhm1KqGUpxyb7nIRULPqdyfAXc9/3ys4HiZnG0i5qFJTzo9hKn4SZq3fjAsskTAvR5
+         rg6A==
+X-Gm-Message-State: AOJu0YxZkcFTWhKDBuasHv0VaIvlWnVaGBn696nezGC9Qyy6a+u3LO0p
+	smxamIgTGHKM34Qo0ZTl0LHS5t5NY1CIzgnM5Ur6GLEBl5VBS0g9l7cX6O+x0ffywKthqyeRODl
+	SJUngw6QkHVPPkR6R7kkPw1q4lgo=
+X-Google-Smtp-Source: AGHT+IHXvPNVBLjF/g+fVqOTwRm1Pks0fW/I4Kjituko1o3u20eb7Ob2OPvACAjj6G1ClaPoCNrny8hZvK3V6XD4Tl0=
+X-Received: by 2002:a17:90b:116:b0:2bd:e316:ae2d with SMTP id
+ 98e67ed59e1d1-2c1dc5711a4mr2263311a91.16.1717173037319; Fri, 31 May 2024
+ 09:30:37 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-ID: <20240531-md-lib-test_bpf-v1-1-868e4bd2f9ed@quicinc.com>
-X-B4-Tracking: v=1; b=H4sIALr6WWYC/x3M0Q6CMAxA0V8hfbYJbCrqrxBjOlakCUzSTkNC+
- Henj+fh3g2MVdjgVm2g/BGTVypoDhX0I6Uno8RicLU71iff4BxxkoCZLT/CMqBrz/HKvvUXclC
- qRXmQ9X/s7sWBjDEopX78fSZJ7xVnsswK+/4FUKXiuoAAAAA=
-To: Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann
-	<daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau
-	<martin.lau@linux.dev>,
-        Eduard Zingerman <eddyz87@gmail.com>, Song Liu
-	<song@kernel.org>,
-        Yonghong Song <yonghong.song@linux.dev>,
-        John Fastabend
-	<john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Stanislav Fomichev
-	<sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-CC: <linux-kernel@vger.kernel.org>, <bpf@vger.kernel.org>,
-        <kernel-janitors@vger.kernel.org>,
-        Jeff Johnson <quic_jjohnson@quicinc.com>
-X-Mailer: b4 0.13.0
-X-ClientProxiedBy: nalasex01c.na.qualcomm.com (10.47.97.35) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: eDUSwnBGnFEXi0bqGp1p8h-0FvhzUD9D
-X-Proofpoint-ORIG-GUID: eDUSwnBGnFEXi0bqGp1p8h-0FvhzUD9D
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.650,FMLib:17.12.28.16
- definitions=2024-05-31_12,2024-05-30_01,2024-05-17_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- suspectscore=0 lowpriorityscore=0 impostorscore=0 clxscore=1011 mlxscore=0
- mlxlogscore=960 malwarescore=0 spamscore=0 adultscore=0 bulkscore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2405170001 definitions=main-2405310123
+References: <20240529131028.41200-1-tadakentaso@gmail.com> <CAEf4Bzbt4FMqAOioJYZpuYDrtiFiT+STMqs_Z8ZhTNLD3AZxzg@mail.gmail.com>
+ <0cec01b4-1ae5-40ea-bccf-f29c41e2cf74@gmail.com>
+In-Reply-To: <0cec01b4-1ae5-40ea-bccf-f29c41e2cf74@gmail.com>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Fri, 31 May 2024 09:30:24 -0700
+Message-ID: <CAEf4BzYGUEGx-BSXtaMRGA3GOW9h+nmYFg2U38g6YbWK9waYSA@mail.gmail.com>
+Subject: Re: [PATCH] bpftool: Query only cgroup-related attach types
+To: Kenta Tada <tadakentaso@gmail.com>
+Cc: bpf@vger.kernel.org, qmo@kernel.org, daniel@iogearbox.net, 
+	andrii@kernel.org, martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org, 
+	yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org, 
+	sdf@google.com, haoluo@google.com, jolsa@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-make allmodconfig && make W=1 C=1 reports:
-WARNING: modpost: missing MODULE_DESCRIPTION() in lib/test_bpf.o
+On Fri, May 31, 2024 at 6:04=E2=80=AFAM Kenta Tada <tadakentaso@gmail.com> =
+wrote:
+>
+> On 2024/05/31 6:20, Andrii Nakryiko wrote:
+> > On Wed, May 29, 2024 at 6:10=E2=80=AFAM Kenta Tada <tadakentaso@gmail.c=
+om> wrote:
+> >>
+> >> When CONFIG_NETKIT=3Dy,
+> >> bpftool-cgroup shows error even if the cgroup's path is correct:
+> >>
+> >> $ bpftool cgroup tree /sys/fs/cgroup
+> >> CgroupPath
+> >> ID       AttachType      AttachFlags     Name
+> >> Error: can't query bpf programs attached to /sys/fs/cgroup: No such de=
+vice or address
+> >>
+> >> From strace and kernel tracing, I found netkit returned ENXIO and this=
+ command failed.
+> >> I think this AttachType(BPF_NETKIT_PRIMARY) is not relevant to cgroup.
+> >>
+> >> bpftool-cgroup should query just only cgroup-related attach types.
+> >>
+> >> Signed-off-by: Kenta Tada <tadakentaso@gmail.com>
+> >> ---
+> >>  tools/bpf/bpftool/cgroup.c | 47 +++++++++++++++++++++++++++++++++----=
+-
+> >>  1 file changed, 41 insertions(+), 6 deletions(-)
+> >>
+> >> diff --git a/tools/bpf/bpftool/cgroup.c b/tools/bpf/bpftool/cgroup.c
+> >> index af6898c0f388..bb2703aa4756 100644
+> >> --- a/tools/bpf/bpftool/cgroup.c
+> >> +++ b/tools/bpf/bpftool/cgroup.c
+> >> @@ -19,6 +19,39 @@
+> >>
+> >>  #include "main.h"
+> >>
+> >> +static const bool cgroup_attach_types[] =3D {
+> >> +       [BPF_CGROUP_INET_INGRESS] =3D true,
+> >> +       [BPF_CGROUP_INET_EGRESS] =3D true,
+> >> +       [BPF_CGROUP_INET_SOCK_CREATE] =3D true,
+> >> +       [BPF_CGROUP_INET_SOCK_RELEASE] =3D true,
+> >> +       [BPF_CGROUP_INET4_BIND] =3D true,
+> >> +       [BPF_CGROUP_INET6_BIND] =3D true,
+> >> +       [BPF_CGROUP_INET4_POST_BIND] =3D true,
+> >> +       [BPF_CGROUP_INET6_POST_BIND] =3D true,
+> >> +       [BPF_CGROUP_INET4_CONNECT] =3D true,
+> >> +       [BPF_CGROUP_INET6_CONNECT] =3D true,
+> >> +       [BPF_CGROUP_UNIX_CONNECT] =3D true,
+> >> +       [BPF_CGROUP_INET4_GETPEERNAME] =3D true,
+> >> +       [BPF_CGROUP_INET6_GETPEERNAME] =3D true,
+> >> +       [BPF_CGROUP_UNIX_GETPEERNAME] =3D true,
+> >> +       [BPF_CGROUP_INET4_GETSOCKNAME] =3D true,
+> >> +       [BPF_CGROUP_INET6_GETSOCKNAME] =3D true,
+> >> +       [BPF_CGROUP_UNIX_GETSOCKNAME] =3D true,
+> >> +       [BPF_CGROUP_UDP4_SENDMSG] =3D true,
+> >> +       [BPF_CGROUP_UDP6_SENDMSG] =3D true,
+> >> +       [BPF_CGROUP_UNIX_SENDMSG] =3D true,
+> >> +       [BPF_CGROUP_UDP4_RECVMSG] =3D true,
+> >> +       [BPF_CGROUP_UDP6_RECVMSG] =3D true,
+> >> +       [BPF_CGROUP_UNIX_RECVMSG] =3D true,
+> >> +       [BPF_CGROUP_SOCK_OPS] =3D true,
+> >> +       [BPF_CGROUP_DEVICE] =3D true,
+> >> +       [BPF_CGROUP_SYSCTL] =3D true,
+> >> +       [BPF_CGROUP_GETSOCKOPT] =3D true,
+> >> +       [BPF_CGROUP_SETSOCKOPT] =3D true,
+> >> +       [BPF_LSM_CGROUP] =3D true,
+> >> +       [__MAX_BPF_ATTACH_TYPE] =3D false,
+> >> +};
+> >> +
+> >>  #define HELP_SPEC_ATTACH_FLAGS                                       =
+  \
+> >>         "ATTACH_FLAGS :=3D { multi | override }"
+> >>
+> >> @@ -187,14 +220,16 @@ static int cgroup_has_attached_progs(int cgroup_=
+fd)
+> >>         bool no_prog =3D true;
+> >>
+> >>         for (type =3D 0; type < __MAX_BPF_ATTACH_TYPE; type++) {
+> >
+> > instead of iterating over all possible attach types and then checking
+> > if attach type is cgroup-related, why not have an array of just cgroup
+> > attach types and iterate it directly?
+> >
+> > pw-bot: cr
+>
+> The size of the bool array is smaller than saving each attachment type as=
+ the value in an integer array.
+> But either is fine.
 
-Add the missing invocation of the MODULE_DESCRIPTION() macro.
+Those few bytes don't matter, it's about it being a cleaner approach.
+You only iterate meaningful types, instead of iterating everything and
+skipping some. In the grand scheme of things it's not that important,
+but I'd go with the list approach as more natural to understand.
 
-Signed-off-by: Jeff Johnson <quic_jjohnson@quicinc.com>
----
- lib/test_bpf.c | 1 +
- 1 file changed, 1 insertion(+)
+>
+> I think the problem is that we don't increase the list of cgroup attach t=
+ypes in multiple files.
+> Do you have any plans to add the new API to check whether the attach type=
+ is cgroup-related in libbpf?
+> I want to call the new API in this patch.
 
-diff --git a/lib/test_bpf.c b/lib/test_bpf.c
-index 207ff87194db..ce5716c3999a 100644
---- a/lib/test_bpf.c
-+++ b/lib/test_bpf.c
-@@ -15706,4 +15706,5 @@ static void __exit test_bpf_exit(void)
- module_init(test_bpf_init);
- module_exit(test_bpf_exit);
- 
-+MODULE_DESCRIPTION("Testsuite for BPF interpreter and BPF JIT compiler");
- MODULE_LICENSE("GPL");
+I'm not convinced we need this API. cgroup-specific attach types are
+just one possible subset of attach types, not sure it's a good idea to
+add a dedicated filtering API for that in libbpf.
 
----
-base-commit: 4a4be1ad3a6efea16c56615f31117590fd881358
-change-id: 20240531-md-lib-test_bpf-276d9e3738a2
-
+>
+> >
+> >
+> >> -               int count =3D count_attached_bpf_progs(cgroup_fd, type=
+);
+> >> +               if (cgroup_attach_types[type]) {
+> >> +                       int count =3D count_attached_bpf_progs(cgroup_=
+fd, type);
+> >>
+> >> -               if (count < 0 && errno !=3D EINVAL)
+> >> -                       return -1;
+> >> +                       if (count < 0 && errno !=3D EINVAL)
+> >> +                               return -1;
+> >>
+> >> -               if (count > 0) {
+> >> -                       no_prog =3D false;
+> >> -                       break;
+> >> +                       if (count > 0) {
+> >> +                               no_prog =3D false;
+> >> +                               break;
+> >> +                       }
+> >>                 }
+> >>         }
+> >>
+> >> --
+> >> 2.43.0
+> >>
+>
 
