@@ -1,83 +1,83 @@
-Return-Path: <bpf+bounces-31063-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-31064-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 22D5F8D694F
-	for <lists+bpf@lfdr.de>; Fri, 31 May 2024 20:58:16 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2C39D8D695F
+	for <lists+bpf@lfdr.de>; Fri, 31 May 2024 21:05:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 84DA3B24576
-	for <lists+bpf@lfdr.de>; Fri, 31 May 2024 18:58:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D4DBC28709D
+	for <lists+bpf@lfdr.de>; Fri, 31 May 2024 19:05:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4BBE87F499;
-	Fri, 31 May 2024 18:58:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 01CDB7F7FC;
+	Fri, 31 May 2024 19:05:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Nryb5NDs"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Dspue9k4"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f177.google.com (mail-pg1-f177.google.com [209.85.215.177])
+Received: from mail-pg1-f171.google.com (mail-pg1-f171.google.com [209.85.215.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 71E757D40E
-	for <bpf@vger.kernel.org>; Fri, 31 May 2024 18:58:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 37F484653C
+	for <bpf@vger.kernel.org>; Fri, 31 May 2024 19:05:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717181886; cv=none; b=h9SGKTUMOBfNL0sYV3j0Ol5j6TXEr545P1y7548mEolMjaU9duJu/spnIMMkTzZFuLdO/vMUtoUR2WTCflR5WcBA/AjeHIVvtqRNzI4mZXhfgFPAEivO9/IU/nucjCN7x6+rouuukxehUWIQG1gmEdN+YgvlA8/ikrkR4xJtWGY=
+	t=1717182307; cv=none; b=FPSFw28YniWPyi2v5DnW1F/BmmVq9JVkX+B1e8k+uy6wqN09TPPoaPK00OT8H9b+FIxCGngsruo5XB4aTetAuAeU0upHB+I7AhyahegkSHn3uO4lwto8oi119xtwlc/CalmzngEs/ao96sL9yx/jTZ5kms4ZAFjZtK0ioN3cFfY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717181886; c=relaxed/simple;
-	bh=rqYo8eNLu5fGHX6BldStI6pNC9fDj6xd+LwIcSu6nYM=;
+	s=arc-20240116; t=1717182307; c=relaxed/simple;
+	bh=aSS5NfYlmOCzU2xc7yd49k//RN6K03Rm2+CptPS4G0M=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=SyllIoIFceulO3cy0jdl8wXV26Te1dY+IdYJT7m8QjZdxIBFSynGq/5xWLxexRwEQ8aUDtl7XHThVG8pC7SGq4P4sicBY8s0pHeSPi3cf3JKIzYCPXDxK3qQbbLO7K6mzUA42sxDyI29UWhz57NzBF2tY9v6jEyW2Cc37F+ytNk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Nryb5NDs; arc=none smtp.client-ip=209.85.215.177
+	 To:Cc:Content-Type; b=FXcP/yoWJKdRHLZkgeQ0MKA4rRtgKJkfnGFpVMP07keYs+HPIQv0goz6qL5duFfIGbxoh3VKTuGrJwWnMRj1FouC1YjMFBbNsX0V2cI3RKG0u1yJmsEil8KdLV4oUE8OdCM8FXn6bZ7dAF7L4FPPxO2Z1j17H1QeTT9LC6F7Hr8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Dspue9k4; arc=none smtp.client-ip=209.85.215.171
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f177.google.com with SMTP id 41be03b00d2f7-681953ad4f2so1700973a12.2
-        for <bpf@vger.kernel.org>; Fri, 31 May 2024 11:58:05 -0700 (PDT)
+Received: by mail-pg1-f171.google.com with SMTP id 41be03b00d2f7-652fd0bb5e6so1840838a12.0
+        for <bpf@vger.kernel.org>; Fri, 31 May 2024 12:05:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1717181885; x=1717786685; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1717182305; x=1717787105; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=+SRub7z8jyW/Y6egcZ7vi+jQUBgA5i40V6zqCpTBx7A=;
-        b=Nryb5NDs4+xVeiTGMbMUjj4etKawhVI6gEYEkV0rgpK3GZ+ij75fVZbADQd+6BPEQP
-         35gFgOepSHF/1o8nEHP/AgKSpW5fLns7VDKAWAT+SGLFYr/GVs/Sm/qo0ZIq6zyH/c32
-         GadFgkEgeFKII6rAv4l6rKKRcEXhz19+Xhltw5j8yWBIUuk8o6QbsyE42DVPvOfc5SBG
-         QaMKzaRGXM4kdL2QlyJ5xNXcw6yrUThNcfR1f2SBMLflYnfShwKb149zqpzbM9kKAnJ5
-         0gBZp/IsfJwMlFl0WYMg13DcUc2XccXHOpMetojpQJvaf5hhZG95OEqJxNrHcoFWSHQj
-         vGuA==
+        bh=EfBPeBkQGCVHW4Y6+Pguw5Z5pdjtdLzHJVPs7W7ViOk=;
+        b=Dspue9k46pC63n/WRStwsx2bBfi39DiVQRxnlHLw8PpRtJ9LOx/ywrXhML8V98ZOzM
+         AXJuIXARjHKciCjtJuME1/j3IS1teOVYPmDWeSeIfw8mGlSAsLNcmH56E+uSL/BSdYgA
+         NdxX8RmatFJo4QVALdXTkJ6618EvQIpAK7U9JD+dTtgdQ14lNe/KLodx7cM08IGOE9gN
+         tPnTLXvUEiPPXkjBsKL8HRDWJnIJlKJQ2XAUHf9v3/G3rYMFbVsyinxesoORN54llwvU
+         heHn7PruEFIAK0EQkToc45Wvc6213iGX4SiML86RkA1Yz06N/6OBRTgaHPhUhmWV7apM
+         zk2g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1717181885; x=1717786685;
+        d=1e100.net; s=20230601; t=1717182305; x=1717787105;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=+SRub7z8jyW/Y6egcZ7vi+jQUBgA5i40V6zqCpTBx7A=;
-        b=Lx73jsUsqSDZqrHfcCioI0kVJKVhqaOFjd7KcF9ZQ9AKF5jpclBY+e6MiiLuBo0piP
-         qzBN9EjEagHMRInKa7KATm93TzoYYNyTxfy77uEiKB7VNGtZADglF2it+I5ypQFWp+67
-         hC4NcAtaD+AZDnEUqSHqN80y34Eunkchj1+w+oRD8RN/tQXsefrNMFxLAGgOVJgdGMNH
-         JU61fwNL932V0VLIvy5vECY68pVUao2x5NnibnsaCyFADVCLX5uwHxvoaI13d90R+0bj
-         lai8Pin/aTBQlD7C5Q88VCuUYcv2ojgf0/sQio9ek6LcvOSzeLBZNc5NUEuiN2AQ55br
-         Z99Q==
-X-Forwarded-Encrypted: i=1; AJvYcCWlZo7o01O2fHyaYQPStoiUsk1BieKB13zNEgCW12a1umou9ooggEhDinaVllW3gHVMZZJiOIugbdowG6n3eZ1GJIAx
-X-Gm-Message-State: AOJu0Yzh///H1YahQZ+I+J3ORn/0/2Kywvpc03Z3G301hRV4mmaV/5ja
-	S/+SU1U+f5NSVq9BPNZoh1rCVlOCMqb1ebXjCGhA1peuREZritbgK5xnwFyTPzKD5lp1nAVGl0d
-	/9dvo3QFoPdIGKMbLmH3d2qFsap8=
-X-Google-Smtp-Source: AGHT+IFAwYIB2LQZRQa7Y5MXk/af392rG/YpDAG/oXvJ1EUJS7nMR23ehpZK6MTsqIbuJAevmvNKeP9uZKa+uP/k0VY=
-X-Received: by 2002:a17:90b:fc4:b0:2bd:d2f9:c22a with SMTP id
- 98e67ed59e1d1-2c1dc59b6aemr2560211a91.29.1717181884701; Fri, 31 May 2024
- 11:58:04 -0700 (PDT)
+        bh=EfBPeBkQGCVHW4Y6+Pguw5Z5pdjtdLzHJVPs7W7ViOk=;
+        b=s1uKwp9pDtzV5LUR18lKVz95mqOlhl7aLoI8Ll8Z5fYyEZ29FiP0gv9NR1/u5hB84+
+         RvTPP9JkGkPqLA14+aYf+XsIzfp+mQLsdU6prWTchOHV247pFkw4ssiNsDb/j2TyyOC4
+         rYftCDkXu5fW2TqIwrIdNdipGnDtw6wsvA2U3KBprlJfWrs03yWFuM4g5xZB3+vpSkMj
+         wuJc/670dehvc4HtB2ksDtWZcPtmGSETzNIoaWMml68eLPWTIU7AtpuXMWobHb8BiO3e
+         j1WzVhg648+et4QM05uOS741q2oM5ntfrrlGCToCLr0jds7peJHCq+50V1YRjsrA71Fx
+         VOrQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWGdvUhOyOqIJfFU2p/ULsWlqpnywVbxyZwii0felgY4xDIeqw6q2TYvqdRKb5jNoWMaO441BMLrrBBC2C0ViBpFZCH
+X-Gm-Message-State: AOJu0YzmTnnUIHv+hRaN12DctOBzvmZeQjZ3en1GLlmEdDTy9L/3GD83
+	TI9zGffRfqXQREhRH6VicUdUBoQ2Kojw6RsLIqdTxyyEJNhlQLiSN6I9S7G9Vl6fAL+zz5KhZVq
+	NEvZnQgQHVTplz/hdc2UJ0FKBM9E=
+X-Google-Smtp-Source: AGHT+IFsg2OVRiyVgFvCk8Wrb0ONQ9Z/ExtCiOOKlQh6/L3B53IE7o8K/xcdiKi56Fd5yY7dMT11FPgIEYiO96t/WWs=
+X-Received: by 2002:a17:90a:dc15:b0:2c1:9e98:70bb with SMTP id
+ 98e67ed59e1d1-2c1dc56c1e8mr2722538a91.10.1717182305553; Fri, 31 May 2024
+ 12:05:05 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240528122408.3154936-1-alan.maguire@oracle.com> <20240528122408.3154936-6-alan.maguire@oracle.com>
-In-Reply-To: <20240528122408.3154936-6-alan.maguire@oracle.com>
+References: <20240528122408.3154936-1-alan.maguire@oracle.com> <20240528122408.3154936-9-alan.maguire@oracle.com>
+In-Reply-To: <20240528122408.3154936-9-alan.maguire@oracle.com>
 From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Fri, 31 May 2024 11:57:52 -0700
-Message-ID: <CAEf4BzYrgm8N+scUtTyN2Nx8SRbandTE8n=o6OkPRYYyTd2K_Q@mail.gmail.com>
-Subject: Re: [PATCH v5 bpf-next 5/9] libbpf: make btf_parse_elf process
- .BTF.base transparently
+Date: Fri, 31 May 2024 12:04:52 -0700
+Message-ID: <CAEf4BzaJQAyHmSOTyQaLCx29zFQZEZnHR+gaTNt-Ae5nvi7G6g@mail.gmail.com>
+Subject: Re: [PATCH v5 bpf-next 8/9] libbpf,bpf: share BTF relocate-related
+ code with kernel
 To: Alan Maguire <alan.maguire@oracle.com>
 Cc: andrii@kernel.org, jolsa@kernel.org, acme@redhat.com, 
 	quentin@isovalent.com, eddyz87@gmail.com, mykolal@fb.com, ast@kernel.org, 
@@ -88,161 +88,76 @@ Cc: andrii@kernel.org, jolsa@kernel.org, acme@redhat.com,
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, May 28, 2024 at 5:26=E2=80=AFAM Alan Maguire <alan.maguire@oracle.c=
+On Tue, May 28, 2024 at 5:25=E2=80=AFAM Alan Maguire <alan.maguire@oracle.c=
 om> wrote:
 >
-> From: Eduard Zingerman <eddyz87@gmail.com>
+> Share relocation implementation with the kernel.  As part of this,
+> we also need the type/string visitation functions so add them to a
+> btf_common.c file that also gets shared with the kernel. Relocation
+> code in kernel and userspace is identical save for the impementation
+> of the reparenting of split BTF to the relocated base BTF and
+> retrieval of BTF header from "struct btf"; these small functions
+> need separate user-space and kernel implementations.
 >
-> Update btf_parse_elf() to check if .BTF.base section is present.
-> The logic is as follows:
+> One other wrinkle on the kernel side is we have to map .BTF.ids in
+> modules as they were generated with the type ids used at BTF encoding
+> time. btf_relocate() optionally returns an array mapping from old BTF
+> ids to relocated ids, so we use that to fix up these references where
+> needed for kfuncs.
 >
->   if .BTF.base section exists:
->      distilled_base :=3D btf_new(.BTF.base)
->   if distilled_base:
->      btf :=3D btf_new(.BTF, .base_btf=3Ddistilled_base)
->      if base_btf:
->         btf_relocate(btf, base_btf)
->   else:
->      btf :=3D btf_new(.BTF)
->   return btf
->
-> In other words:
-> - if .BTF.base section exists, load BTF from it and use it as a base
->   for .BTF load;
-> - if base_btf is specified and .BTF.base section exist, relocate newly
->   loaded .BTF against base_btf.
->
-> Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
+> Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
 > ---
->  tools/lib/bpf/btf.c | 151 +++++++++++++++++++++++++++++---------------
->  tools/lib/bpf/btf.h |   1 +
->  2 files changed, 102 insertions(+), 50 deletions(-)
+>  include/linux/btf.h          |  45 ++++++++++
+>  kernel/bpf/Makefile          |  10 ++-
+>  kernel/bpf/btf.c             | 168 +++++++++++++++++++++++++----------
+>  tools/lib/bpf/Build          |   2 +-
+>  tools/lib/bpf/btf.c          | 130 ---------------------------
+>  tools/lib/bpf/btf_iter.c     | 143 +++++++++++++++++++++++++++++
+>  tools/lib/bpf/btf_relocate.c |  23 +++++
+>  7 files changed, 344 insertions(+), 177 deletions(-)
+>  create mode 100644 tools/lib/bpf/btf_iter.c
 >
-> diff --git a/tools/lib/bpf/btf.c b/tools/lib/bpf/btf.c
-> index cb762d7a5dd7..b57f74eedda0 100644
-> --- a/tools/lib/bpf/btf.c
-> +++ b/tools/lib/bpf/btf.c
-> @@ -114,7 +114,10 @@ struct btf {
->         /* a set of unique strings */
->         struct strset *strs_set;
->         /* whether strings are already deduplicated */
-> -       bool strs_deduped;
-> +       unsigned strs_deduped:1;
-> +
-> +       /* whether base_btf should be freed in btf_free for this instance=
- */
-> +       unsigned owns_base:1;
-
-nit: let's not do bit counting (i.e., bit fields for bool flags) on
-rather big things like struct btf, which are only a few of them and
-4/8 extra bytes just doesn't matter compared to all the other memory
-used for actual data.
-
->
->         /* BTF object FD, if loaded into kernel */
->         int fd;
-> @@ -969,6 +972,8 @@ void btf__free(struct btf *btf)
->         free(btf->raw_data);
->         free(btf->raw_data_swapped);
->         free(btf->type_offs);
-> +       if (btf->owns_base)
-> +               btf__free(btf->base_btf);
->         free(btf);
->  }
->
-> @@ -1084,53 +1089,38 @@ struct btf *btf__new_split(const void *data, __u3=
-2 size, struct btf *base_btf)
->         return libbpf_ptr(btf_new(data, size, base_btf));
->  }
->
-> -static struct btf *btf_parse_elf(const char *path, struct btf *base_btf,
-> -                                struct btf_ext **btf_ext)
-> +struct elf_sections_info {
-> +       Elf_Data *btf_data;
-> +       Elf_Data *btf_ext_data;
-> +       Elf_Data *btf_base_data;
-
-bikeshedding time: elf_sections_info -> btf_elf_data (or
-btf_elf_secs), btf_data -> btf, btf_ext_data -> btf_ext, btf_base_data
--> btf_base ?
-
-> +};
-> +
-> +static int btf_find_elf_sections(Elf *elf, const char *path, struct elf_=
-sections_info *info)
->  {
-> -       Elf_Data *btf_data =3D NULL, *btf_ext_data =3D NULL;
-> -       int err =3D 0, fd =3D -1, idx =3D 0;
-> -       struct btf *btf =3D NULL;
->         Elf_Scn *scn =3D NULL;
-> -       Elf *elf =3D NULL;
-> +       Elf_Data *data;
->         GElf_Ehdr ehdr;
->         size_t shstrndx;
-> +       int idx =3D 0;
 
 [...]
 
-> +       if (!info.btf_data) {
->                 pr_warn("failed to find '%s' ELF section in %s\n", BTF_EL=
-F_SEC, path);
->                 err =3D -ENODATA;
->                 goto done;
->         }
-> -       btf =3D btf_new(btf_data->d_buf, btf_data->d_size, base_btf);
+> +static inline struct btf_decl_tag *btf_decl_tag(const struct btf_type *t=
+)
+> +{
+> +       return (struct btf_decl_tag *)(t + 1);
+> +}
 > +
-> +       if (info.btf_base_data) {
-> +               distilled_base_btf =3D btf_new(info.btf_base_data->d_buf,=
- info.btf_base_data->d_size,
-> +                                            NULL);
-
-with the above bikeshedding suggestion, and distilled_base_btf ->
-dist_base_btf, let's get it to be a less verbose single-line statement
-
-> +               err =3D libbpf_get_error(distilled_base_btf);
-
-boo to using libbpf_get_error() in new code. btf_new() is internal, so
-IS_ERR()/PTR_ERR(), please
-
-pw-bot: cr
-
-
-> +               if (err) {
-> +                       distilled_base_btf =3D NULL;
-> +                       goto done;
-> +               }
-> +       }
-> +
-> +       btf =3D btf_new(info.btf_data->d_buf, info.btf_data->d_size,
-> +                     distilled_base_btf ? distilled_base_btf : base_btf)=
-;
-
-dist_base_btf ?: base_btf
-
->         err =3D libbpf_get_error(btf);
-
-ditto, IS_ERR/PTR_ERR
-
->         if (err)
->                 goto done;
+>  static inline int btf_id_cmp_func(const void *a, const void *b)
+>  {
+>         const int *pa =3D a, *pb =3D b;
+> @@ -515,9 +528,17 @@ static inline const struct bpf_struct_ops_desc *bpf_=
+struct_ops_find(struct btf *
+>  }
+>  #endif
 >
-> +       if (distilled_base_btf && base_btf) {
-> +               err =3D btf__relocate(btf, base_btf);
-> +               if (err)
-> +                       goto done;
-> +               btf__free(distilled_base_btf);
-> +               distilled_base_btf =3D NULL;
-> +       }
+> +typedef int (*type_id_visit_fn)(__u32 *type_id, void *ctx);
+> +typedef int (*str_off_visit_fn)(__u32 *str_off, void *ctx);
 > +
-> +       if (distilled_base_btf)
-> +               btf->owns_base =3D true;
 
-should we reset this to false when changing base in btf__relocate()?
+let me take a quick stab at implementing type/str field iterator in
+libbpf. If I don't get stuck anywhere, maybe you can just rebase on
+that and avoid the callback hell and the need for this
+callback-vs-iter churn in the kernel code as well
 
-> +
->         switch (gelf_getclass(elf)) {
->         case ELFCLASS32:
->                 btf__set_pointer_size(btf, 4);
+>  #ifdef CONFIG_BPF_SYSCALL
+>  const struct btf_type *btf_type_by_id(const struct btf *btf, u32 type_id=
+);
+> +void btf_set_base_btf(struct btf *btf, const struct btf *base_btf);
+> +int btf_relocate(struct btf *btf, const struct btf *base_btf, __u32 **ma=
+p_ids);
+> +int btf_type_visit_type_ids(struct btf_type *t, type_id_visit_fn visit, =
+void *ctx);
+> +int btf_type_visit_str_offs(struct btf_type *t, str_off_visit_fn visit, =
+void *ctx);
+>  const char *btf_name_by_offset(const struct btf *btf, u32 offset);
+> +const char *btf_str_by_offset(const struct btf *btf, u32 offset);
+>  struct btf *btf_parse_vmlinux(void);
+>  struct btf *bpf_prog_get_target_btf(const struct bpf_prog *prog);
+>  u32 *btf_kfunc_id_set_contains(const struct btf *btf, u32 kfunc_btf_id,
 
 [...]
 
