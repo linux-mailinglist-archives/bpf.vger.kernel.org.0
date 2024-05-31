@@ -1,104 +1,161 @@
-Return-Path: <bpf+bounces-31008-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-31009-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3BE288D5F5A
-	for <lists+bpf@lfdr.de>; Fri, 31 May 2024 12:16:02 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id C476B8D5FD1
+	for <lists+bpf@lfdr.de>; Fri, 31 May 2024 12:38:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CF9F41F24519
-	for <lists+bpf@lfdr.de>; Fri, 31 May 2024 10:16:01 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 809E7288214
+	for <lists+bpf@lfdr.de>; Fri, 31 May 2024 10:38:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C45B149C76;
-	Fri, 31 May 2024 10:15:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2FD74155CBF;
+	Fri, 31 May 2024 10:38:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="QqGtQAiS"
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="F0heMktW";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="YN+uNLES"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 07D7A17554
-	for <bpf@vger.kernel.org>; Fri, 31 May 2024 10:15:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 46900155C8E;
+	Fri, 31 May 2024 10:38:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717150556; cv=none; b=lJRX9unHIfn60s+oqsJPTMqzliGoJePsiNmpFCeGOZ7dvm19kUipsYvMZma/cRIWhFDTzRDCj0JOpUwJaymMyX+NpUgDyuFGy5CFaCEUQQP4beT1zhhVFV1/Gyg9U0hnQg50hOEo1py3JoWJ3Znd77iyCx4jTECZIWD1TeNeh5k=
+	t=1717151892; cv=none; b=TKYVd6bDWSG2ZyRwwS/8Uj0nYUjNwQSXO2xjOQDZeJDcuN2CZ/fxrl5qNKxesf5S5t2EExkPOlhWxJ6DAzCOwQHkUA7kJFtCGXFhNhQNUjQV6Io+SIYp+5IUdSVCjA+JTaUQItGY2sHLzrXhAuWjL/idntnuyt9mi9XwAZo7O58=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717150556; c=relaxed/simple;
-	bh=e1SYhcuKraD1xKh4F2eTmybtyvKsDfq1A14bzEoeQKQ=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=VcDr311RKr8YKWStwZdNUN7Nj4V0X2L34T49rle+KDGQKu/a/7pVU+DICTycEiBOhfA2o2O7e2m2tzISNbCZP8y3sLi0QksmY1SCCFvu0VSOKoVBcMjREawF5kY1jnrJVLVpuCCbB+JYKNit6veEKPgFeLLbEwtPDcmJHIMZm1Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=QqGtQAiS; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 548E8C116B1;
-	Fri, 31 May 2024 10:15:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1717150555;
-	bh=e1SYhcuKraD1xKh4F2eTmybtyvKsDfq1A14bzEoeQKQ=;
-	h=From:To:Cc:Subject:Date:From;
-	b=QqGtQAiSADvF2dtzji8ZxM+zF8+QTNWb4jRkGeM8eOv2ZcmBOR2ZtbF1C0ykmVfp4
-	 VPWLVgxt3OjAAuKQdhCNjr07f7/tq7QcHntL/8SJGzjrIn1jNjveJueIAcvo92zCfz
-	 Nb7Yi43LQoQnEq2XyXdNqZUb9S7r4Ntc4IG0XQSI0LvIVxyWH6gxbinMhcyIl4/3eM
-	 UaxdBeRtgabilWiIYoQcvhBjNEiXrWXYsqSh1fq2LRVcRbM2Ex03NS7/fHRuP9E6bL
-	 /YakgumkSEAHYIyRFoubdFDS5l7suvOItzMWocf8Kwv8IPM5Qiv3K9U5LQa6km7B8R
-	 mCo/1Za5iYeLw==
-From: Jiri Olsa <jolsa@kernel.org>
-To: Alexei Starovoitov <ast@kernel.org>,
+	s=arc-20240116; t=1717151892; c=relaxed/simple;
+	bh=pHEsO2qn1rcaa/CVVCC1rJCGrocpF3xq2ymrPBC1hyM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=tVa84WxKhoNcvFLGRU7mPDvTn3SYjw7Slnhf/Dyb+0WDQn2nuyX/CyEOOcdFGupdMLE4fV5FfWWjkhxhMRZAQGXCFB31ElW2VCIPcM9z/of7iyW2vZHOO5h7TNkhyZTs+7mbWNfMcVeSI9oStdRlHmsJcVw3tIdVSM2TnMdcvjc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=F0heMktW; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=YN+uNLES; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+Date: Fri, 31 May 2024 12:38:07 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1717151889;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=s4acigBe027wOQx0luMaaon6tV311jRRizAmbiQqL3w=;
+	b=F0heMktWAuN3lpcjkR+BkoYknS08e++75PnvWStPB9mL2ifxNdHcKz5weNkFgwFB1j84Qw
+	QMYeUMqjHfYnQDfLmxfG2IMol2YmnIYoV9aDk3SIvCyO9iJc/PrYDZExR53KWU5eBit800
+	A/8ur4BgPCXyYAcK0arCAFyxTYkLdMSj9Go2Y8rByOr4PvmyKltCd8K6hxKDc8uxbiMzhS
+	O/0ecInyrCKM0d9uYSRkS3A/JOTNZ6Up+04k9Kl5vtbZutIm4rIE2mvgdJFOll5X/Ok3EF
+	Wu1wiB8LMEdDeFz3DMTP32t5qruIRsjPHFSDeoImxEjZtLmkFDty3EdUcpWWnA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1717151889;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=s4acigBe027wOQx0luMaaon6tV311jRRizAmbiQqL3w=;
+	b=YN+uNLESzX+WmX/Q2l0gLeQmgehpBRHwNK7BGf1Ci7es9A7xJHTFdbLQVw8obMJK45/1gV
+	40Y6OrLNtX5SqzCQ==
+From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
+Cc: linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+	"David S. Miller" <davem@davemloft.net>,
+	Boqun Feng <boqun.feng@gmail.com>,
 	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>
-Cc: Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-	bpf@vger.kernel.org,
-	Martin KaFai Lau <kafai@fb.com>,
-	Song Liu <songliubraving@fb.com>,
-	Yonghong Song <yhs@fb.com>,
+	Eric Dumazet <edumazet@google.com>,
+	Frederic Weisbecker <frederic@kernel.org>,
+	Ingo Molnar <mingo@redhat.com>, Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Waiman Long <longman@redhat.com>, Will Deacon <will@kernel.org>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Eduard Zingerman <eddyz87@gmail.com>, Hao Luo <haoluo@google.com>,
+	Jesper Dangaard Brouer <hawk@kernel.org>,
+	Jiri Olsa <jolsa@kernel.org>,
 	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@chromium.org>,
+	KP Singh <kpsingh@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
 	Stanislav Fomichev <sdf@google.com>,
-	Hao Luo <haoluo@google.com>
-Subject: [PATCH bpf] bpf: Make session kfuncs global
-Date: Fri, 31 May 2024 12:15:50 +0200
-Message-ID: <20240531101550.2768801-1-jolsa@kernel.org>
-X-Mailer: git-send-email 2.45.1
+	Yonghong Song <yonghong.song@linux.dev>, bpf@vger.kernel.org
+Subject: Re: [PATCH v3 net-next 14/15] net: Reference bpf_redirect_info via
+ task_struct on PREEMPT_RT.
+Message-ID: <20240531103807.QjzIOAOh@linutronix.de>
+References: <20240529162927.403425-1-bigeasy@linutronix.de>
+ <20240529162927.403425-15-bigeasy@linutronix.de>
+ <87y17sfey6.fsf@toke.dk>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <87y17sfey6.fsf@toke.dk>
 
-The bpf_session_cookie is unavailable for !CONFIG_FPROBE as reported
-by Sebastian [1].
+On 2024-05-30 00:09:21 [+0200], Toke H=C3=B8iland-J=C3=B8rgensen wrote:
+> [...]
+> > @@ -240,12 +240,14 @@ static int cpu_map_bpf_prog_run(struct bpf_cpu_ma=
+p_entry *rcpu, void **frames,
+> >  				int xdp_n, struct xdp_cpumap_stats *stats,
+> >  				struct list_head *list)
+> >  {
+> > +	struct bpf_net_context __bpf_net_ctx, *bpf_net_ctx;
+> >  	int nframes;
+>=20
+> I think we need to zero-initialise all the context objects we allocate
+> on the stack.
+>=20
+> The reason being that an XDP program can return XDP_REDIRECT without
+> calling any of the redirect helpers first; which will lead to
+> xdp_do_redirect() being called without any of the fields in struct
+> bpf_redirect_info having being set. This can lead to a crash if the
+> values happen to be the wrong value; and if we're not initialising the
+> stack space used by this struct, we have no guarantees about what value
+> they will end up with.
 
-Instead of adding more ifdefs, making the session kfuncs globally
-available as suggested by Alexei. It's still allowed only for
-session programs, but it won't fail the build.
+Okay, I can do that.
 
-[1] https://lore.kernel.org/bpf/20240531071557.MvfIqkn7@linutronix.de/T/#m71c6d5ec71db2967288cb79acedc15cc5dbfeec5
-Reported-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Suggested-by: Alexei Starovoitov <ast@kernel.org>
-Fixes: 5c919acef8514 ("bpf: Add support for kprobe session cookie")
-Signed-off-by: Jiri Olsa <jolsa@kernel.org>
----
- kernel/trace/bpf_trace.c | 2 --
- 1 file changed, 2 deletions(-)
+> >  void bpf_clear_redirect_map(struct bpf_map *map)
+> >  {
+> > -	struct bpf_redirect_info *ri;
+> > -	int cpu;
+> > -
+> > -	for_each_possible_cpu(cpu) {
+> > -		ri =3D per_cpu_ptr(&bpf_redirect_info, cpu);
+> > -		/* Avoid polluting remote cacheline due to writes if
+> > -		 * not needed. Once we pass this test, we need the
+> > -		 * cmpxchg() to make sure it hasn't been changed in
+> > -		 * the meantime by remote CPU.
+> > -		 */
+> > -		if (unlikely(READ_ONCE(ri->map) =3D=3D map))
+> > -			cmpxchg(&ri->map, map, NULL);
+> > -	}
+> > +	/* ri->map is assigned in __bpf_xdp_redirect_map() from within a eBPF
+> > +	 * program/ during NAPI callback. It is used during
+> > +	 * xdp_do_generic_redirect_map()/ __xdp_do_redirect_frame() from the
+> > +	 * redirect callback afterwards. ri->map is cleared after usage.
+> > +	 * The path has no explicit RCU read section but the local_bh_disable=
+()
+> > +	 * is also a RCU read section which makes the complete softirq callba=
+ck
+> > +	 * RCU protected. This in turn makes ri->map RCU protected and it is
+> > +	 * sufficient to wait a grace period to ensure that no "ri->map =3D=
+=3D map"
+> > +	 * exists. dev_map_free() removes the map from the list and then
+> > +	 * invokes synchronize_rcu() after calling this function.
+> > +	 */
+> >  }
+>=20
+> With the zeroing of the stack variable mentioned above, I agree that
+> this is not needed anymore, but I think we should just get rid of the
+> function entirely and put a comment in devmap.c instead of the call to
+> the (now empty) function.
 
-diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-index f5154c051d2c..cc90d56732eb 100644
---- a/kernel/trace/bpf_trace.c
-+++ b/kernel/trace/bpf_trace.c
-@@ -3519,7 +3519,6 @@ static u64 bpf_uprobe_multi_entry_ip(struct bpf_run_ctx *ctx)
- }
- #endif /* CONFIG_UPROBES */
- 
--#ifdef CONFIG_FPROBE
- __bpf_kfunc_start_defs();
- 
- __bpf_kfunc bool bpf_session_is_return(void)
-@@ -3568,4 +3567,3 @@ static int __init bpf_kprobe_multi_kfuncs_init(void)
- }
- 
- late_initcall(bpf_kprobe_multi_kfuncs_init);
--#endif
--- 
-2.45.1
+I wasn't entirely sure if my reasoning is valid. In that case=E2=80=A6
 
+> -Toke
+
+Sebastian
 
