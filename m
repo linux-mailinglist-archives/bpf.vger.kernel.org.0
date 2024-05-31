@@ -1,108 +1,178 @@
-Return-Path: <bpf+bounces-31055-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-31056-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8A2388D677C
-	for <lists+bpf@lfdr.de>; Fri, 31 May 2024 18:56:06 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3113B8D67CF
+	for <lists+bpf@lfdr.de>; Fri, 31 May 2024 19:11:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 450D62853FE
-	for <lists+bpf@lfdr.de>; Fri, 31 May 2024 16:56:05 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DC4AF28B5C9
+	for <lists+bpf@lfdr.de>; Fri, 31 May 2024 17:11:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7358015CD7F;
-	Fri, 31 May 2024 16:55:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D96B2176242;
+	Fri, 31 May 2024 17:11:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QFQpyJUg"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hyW4jm2k"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f42.google.com (mail-wr1-f42.google.com [209.85.221.42])
+Received: from mail-wr1-f43.google.com (mail-wr1-f43.google.com [209.85.221.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 77F85158869
-	for <bpf@vger.kernel.org>; Fri, 31 May 2024 16:55:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA577156242
+	for <bpf@vger.kernel.org>; Fri, 31 May 2024 17:11:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717174544; cv=none; b=m31BnLKg4CEg5sEeR8DH1wvhwMOSJtnwP63ULLNxONEda6bBAcHdierq5g/Ac5ebrgwc5IbXJDAB/tZa6RDeb/pwIFd9B2P0tNw6AGBSEXWbrpb/vJplllycl7U1mbvX7eXMBTHlum6TpmEAKhP1w8/2a3SNM4zO3jNxkPfGTuk=
+	t=1717175466; cv=none; b=FFr3eIXrtlhhTf/Jf+K/f1N5Oz79bw+T6EICMWrP+0h8Sfp8Kl0/RVHXFH+7Eqj8UBbVY4AcXvtdhv12RZFdnKOSDAYqnKayv8SBs39z94706+1f5zgw3MU6WySI2op1eyhBaFzhmQqXEh7isfiyJId7LFBfwQFQuRp/kYPdb/U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717174544; c=relaxed/simple;
-	bh=1lxgFlb777rziaLZ+lY+B+VzP8Kp3io1m3gGNeDjLvo=;
+	s=arc-20240116; t=1717175466; c=relaxed/simple;
+	bh=bTt7imYbyKD/I8HgrwYnIWUEqxdQXWx2Um9hNR1HECE=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=pbobUd683ucmsIqG/kW+10D6kjmHonsJgAwEwrCM7UBomOpe19xdI64WS7G1edLEvXR0NbTyApfN0N0dfmJnlpoeg0nEhVrLmx5EAgxVGPqWvLUQ7bjh1wKSa6JK3a6PXTmpA/ZxD4paaUjxzvWTC9UAUUgHMmv3nPKYPoDNEqg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QFQpyJUg; arc=none smtp.client-ip=209.85.221.42
+	 To:Cc:Content-Type; b=STt2E8+2OoqczhBglubiofSuy9ED7kVvWUJgZ/qq3AwN5CmeHzN2HFKRSl17Z6SICpCUbEFIl9X7pjCK2aeOnnvHtmNz/3nBeAqaumqyi7WIupntArHfC4x1Zafx9c8DM8rufYI1Q4Xjsw5ASpRT2qZCyGWFNvrxiE1BtrCnI/c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hyW4jm2k; arc=none smtp.client-ip=209.85.221.43
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f42.google.com with SMTP id ffacd0b85a97d-35dbdd76417so1572214f8f.3
-        for <bpf@vger.kernel.org>; Fri, 31 May 2024 09:55:42 -0700 (PDT)
+Received: by mail-wr1-f43.google.com with SMTP id ffacd0b85a97d-35dc984b3d2so1504801f8f.1
+        for <bpf@vger.kernel.org>; Fri, 31 May 2024 10:11:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1717174541; x=1717779341; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1717175463; x=1717780263; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=AQY6KeUNSzMzvNfb6qKOB5uCpAIDGiAhWyjSBF9LF9U=;
-        b=QFQpyJUgbsiA7wNw11e54zn806e2Ijk5Qrh+ZkU3wkngoBa/RqrC50Msg2eIIp+Y3S
-         t+GfpgVQeGzN9XB5GUNYUIehD8BiOBfxpUJfv+dR4HfdR3Tu2yUs6A+qdNRQZp7dVERE
-         0Pik9nymlGCRpczRy7kVspZ5MqddcmAF+AHKOYyNG3gAcJfH4/1D67fAZjx0lqfC25p8
-         BNmBpGa57IxRaDpZQavznvMr/Y2R8RpS+Cf81DoZQxPUnkD+bsx8kt9rLPs8EleBGR7b
-         ARp5rCNvyQHsLBWRA217UMWzmakNQhYErq6zmX3OoApltLIssEtRVMMcdkuduN+xB3Nk
-         LV1w==
+        bh=bTt7imYbyKD/I8HgrwYnIWUEqxdQXWx2Um9hNR1HECE=;
+        b=hyW4jm2kn2NPK14eQ5rD5BIS7HToasFxfR3nu93L5+qhrUFcw8dwg7DbzMTnaxLoiJ
+         HVDjGkfpdcqgm5JP0t5H1dr6Bh1MXHXy8gLIiAKArUqXWgH6yqnmRRei5nHr14Kdimiq
+         dyb4CzY/Qi84m6WCzTIF08Djhy7R3JZkebpVPMBYLJNLSQBlZceUStXN3kvDfHU23f2T
+         FVgjkpe5+2ffZiuHS8lxNDr5otvgxd4HiL6tJL+H7bT8inivPt6m/BkjnmRQhhB9iBgX
+         Z7rBaSO/OPhFK3IwF74le2fVUCoGxZexysIRgKBELQ79m1RTd1xJl+LClomE57rH54eL
+         gz+A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1717174541; x=1717779341;
+        d=1e100.net; s=20230601; t=1717175463; x=1717780263;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=AQY6KeUNSzMzvNfb6qKOB5uCpAIDGiAhWyjSBF9LF9U=;
-        b=o+DxxNrTrdabiWnPS1g4DOH1+QuIXJD4L0Hmfqu1dfwlj3ufiUdD3beUXJZuupoamF
-         VgKTiOb8NuQfb2dVtZ12hyy6W489jfMxvXBeeRen5yMVMAxWrDwbYJ1KbuenJkI6J7tt
-         DS6AZ6IsWmnITEMDpZDCku1ZfrDcttHXGxY1P/g2uhhGIrg7OSm8jRWCDVOQwqn3oro5
-         7GwuRAFrwxGvcPELNxIgLZM/fuY0mhrZU/QjxlckzyQ8QUxzYhNHivAjBj2S9f20norw
-         XsJ9qeMiI2pOnoJi2sZiUxKoMm19ODZfWi7kmP6aNk7PE95s281+zi/cWP+szqvikwGY
-         LAEQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVBst0UKK/EMxIfjg74+tDXf9pxybUS45gc8JQDb3kK6SaEVPxYuZyiZ0n9zeZnwNOC9pz65rSJ0ls+ivqmzMN/pOih
-X-Gm-Message-State: AOJu0YxOnpc5EOldxYPuHiJEBpK5nKPdTR/O+EX/8O6LcxW/aKqPvHl3
-	rqvVd+4kmW03SnfYgJTQ8tZ/y+qze6DVRqvZBXs/dJdond9/KDfJXFN2iWodkSf5Z5QEfXI5LiW
-	uyg7J4NBncCgijmlBAYdNG4aRiQ4=
-X-Google-Smtp-Source: AGHT+IGjIBLcPtv+zDnPs4Zkbu+kAlHMkSriR+fFYf4UIgUZd8fWWbuZzGpNcn2pKUgu4fD5haHKWTLOyzK7zW87lRQ=
-X-Received: by 2002:a5d:438e:0:b0:354:c43d:d5a with SMTP id
- ffacd0b85a97d-35e0f26984cmr2240607f8f.24.1717174540500; Fri, 31 May 2024
- 09:55:40 -0700 (PDT)
+        bh=bTt7imYbyKD/I8HgrwYnIWUEqxdQXWx2Um9hNR1HECE=;
+        b=FL9TTLtgoT1037nT9wlWqdW75spdld69vpT8jA5ALskOlbuqJSyOMu9b6lh/YupIyn
+         O96f9J2Mve1gnR7FmK6wiO8Jqrj+92qO2MNOcGbAssXgq4xrZMvfuZ8cY7Lko6bZ4Iwb
+         rUhnqEQRARQirhk/dcwx5PtGR54H2D0SsGmLhKGNek8jpbTgdiMbndehMBcKdaiJcBwA
+         nh6LvUJqsXnQ4AuO3vrj54JgblNhxTEWSzPVOY/to+SOHeSh4XcuTVAy8ZkhEsGvQR+0
+         7PthMDAEtNSQTaz5Q2duJsy1sYfB2/TieFsHNVV+1pFnoKDv86glGuiYE7atO7PXDxmc
+         fkIQ==
+X-Forwarded-Encrypted: i=1; AJvYcCX846qWOExinRbUsAY8Qm+Hd1vbNkM4jQkWdbCZMayVWEjrXAyRiqD4YRlcelN1M2RUs12BKdOrYwG8/NDRNhjF1QXt
+X-Gm-Message-State: AOJu0Yxe+640fOYJt5r/tbNc/D/gyPu9K43wtJeViSjSpTBf53oRbg6g
+	Xk5gweIkGSdh3QP2Kdp+L9yJaY4YKgkg87Phjqf4HQR2ahoe85ZkIMzyB7irVBMARcrqvme9AQ3
+	miLs5YBq+fieNXr+6N1gh28rKIILsGKvF
+X-Google-Smtp-Source: AGHT+IFrq3ehfzM7EwfxZrwx5pCAHRiaYf3A2Z2YOJUrYXSsH992ZIM6oVrHeHEDM4kT7mG/PlEuAFEGh3N+JFehS/k=
+X-Received: by 2002:adf:e58a:0:b0:354:fb6c:219a with SMTP id
+ ffacd0b85a97d-35e0f25978cmr2056782f8f.9.1717175463104; Fri, 31 May 2024
+ 10:11:03 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240531101550.2768801-1-jolsa@kernel.org> <20240531103931.p4f3YsBZ@linutronix.de>
- <ZlmpoWed0NmeZblH@krava> <20240531104922.ZgOadg-G@linutronix.de>
- <ZlmzmstEQSMp-6_i@krava> <20240531140422.w6TjGRAt@linutronix.de>
-In-Reply-To: <20240531140422.w6TjGRAt@linutronix.de>
+References: <Zlb-ojvGgdGZRvR8@gardel-login> <Zlhupe1tXj8ZS1go@krava>
+ <ZliKX5EOU9eWhd2U@gardel-login> <Zll5SJcJxvu_yXgt@krava>
+In-Reply-To: <Zll5SJcJxvu_yXgt@krava>
 From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Fri, 31 May 2024 09:55:29 -0700
-Message-ID: <CAADnVQKvQuHBa2TavmuYJzQzi8ZHf+euJ8rHEr_VJkDD7+w3xg@mail.gmail.com>
-Subject: Re: [PATCH bpf] bpf: Make session kfuncs global
-To: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc: Jiri Olsa <olsajiri@gmail.com>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>, 
-	Martin KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>, 
-	John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@chromium.org>, 
-	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>
+Date: Fri, 31 May 2024 10:10:51 -0700
+Message-ID: <CAADnVQ+KddRh_tm1w1FLWhakZoNAKQCnCBJqEAJO22HGLP-vbQ@mail.gmail.com>
+Subject: Re: bpf kernel code leaks internal error codes to userspace
+To: Jiri Olsa <olsajiri@gmail.com>
+Cc: Lennart Poettering <mzxreary@0pointer.net>, bpf <bpf@vger.kernel.org>, 
+	Linus Torvalds <torvalds@linux-foundation.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, May 31, 2024 at 7:04=E2=80=AFAM Sebastian Andrzej Siewior
-<bigeasy@linutronix.de> wrote:
+On Fri, May 31, 2024 at 12:16=E2=80=AFAM Jiri Olsa <olsajiri@gmail.com> wro=
+te:
 >
-> On 2024-05-31 13:25:14 [+0200], Jiri Olsa wrote:
-> > ah there's also CONFIG_KPROBE=3Dn
+> On Thu, May 30, 2024 at 04:17:03PM +0200, Lennart Poettering wrote:
+> > On Do, 30.05.24 14:18, Jiri Olsa (olsajiri@gmail.com) wrote:
 > >
-> > kernel/trace/bpf_trace.c is enabled with CONFIG_BPF_EVENTS,
-> > which has:
+> > > > It seems that the bpf code in the kernel sometimes leaks
+> > > > kernel-internal error codes, i.e. those from include/linux/errno.h
+> > > > into userspace (as opposed to those from
+> > > > include/uapi/asm-generic/errno.h which are public userspace facing
+> > > > API).
+> > > >
+> > > > According to the comments from that internal header file: "These
+> > > > should never be seen by user programs."
+> > > >
+> > > > Specifically, this is about ENOTSUPP, which userspace simply cannot
+> > > > handle, there's no error 524 defined in glibc or anywhere else.
+> > > >
+> > > > We ran into this in systemd recently:
+> > > >
+> > > > https://github.com/systemd/systemd/issues/32170#issuecomment-207692=
+8761
+> > > >
+> > > > (a google search reveals others were hit by this too)
+> > > >
+> > > > We commited a work-around for this for now:
+> > > >
+> > > > https://github.com/systemd/systemd/pull/33067
+> > > >
+> > > > But it really sucks to work around this in userspace, this is a ker=
+nel
+> > > > internal definition after all, conflicting with userspace (where
+> > > > ENOTSUPP is just an alias for EOPNOTSUPP), hence not really fixable=
+.
+> > > >
+> > > > ENOSUPP is kinda useless anyway, since EOPNOTSUPP is pretty much
+> > > > equally expressive, and something userspace can actually handle.
+> > > >
+> > > > Various kernel subsystems have been fixed over the years in similar
+> > > > situations. For example:
+> > > >
+> > > > https://patchwork.kernel.org/project/linux-wireless/patch/202312110=
+85121.3841b71c867d.Idf2ad01d9dfe8d6d6c352bf02deb06e49701ad1d@changeid/
+> > > >
+> > > > or
+> > > >
+> > > > https://patchwork.kernel.org/project/linux-media/patch/af5b2e8ac669=
+5383111328267a689bcf1c0ecdb1.1702369869.git.sean@mess.org/
+> > > >
+> > > > or
+> > > >
+> > > > https://patchwork.ozlabs.org/project/linux-mtd/patch/20231129064311=
+.272422-1-acelan.kao@canonical.com/
+> > > >
+> > > > I think BPF should really fix that, too.
+> > >
+> > > hm, I don't think we can change that, user space already depends
+> > > on those values and we'd break it with new value
 > >
-> >         depends on BPF_SYSCALL
-> >         depends on (KPROBE_EVENTS || UPROBE_EVENTS) && PERF_EVENTS
-> >
-> > so I think we chould combine both like below
+> > Are you sure about that? To be able to handle this situation that
+> > userspace program whose existance you are indicating would have had to
+> > go the extra mile to literally handle error code 524 that is not known
+> > to userspace otherwise and handle it. If somebody goes the extra mile
+> > to do that, what makes you think that they didn't just handle it as
+> > equivalent to regular EOPNOSTUPP? In systemd at least that's what we
+> > are doing.
 >
-> Yes, this would work.
+> cilium/ebpf [1] library is checking return values just for ENOTSUPP(524)
+> on multiple places, libbpf has one place to check on that value for
+> program type detection AFAICS
+>
+> jirka
+>
+>
+> [1] https://github.com/cilium/ebpf/
 
-Makes sense to me as well. Pls respin.
+fwiw both libraries can be changed to check for both error codes
+ENOTSUPP and EOPNOTSUPP,
+but, as noted earlier, the problem is not limited to bpf.
+cilium library mentions
+commit cb9a19fe4aa5 ("uprobes: Introduce prepare_uprobe()")
+back from 2012.
+Where installing uprobe would return ENOTSUPP to user space.
+
+On bpf side we've switched to EOPNOTSUPP for any new code long ago,
+but didn't adjust old code, because the damage was done before bpf existed.
+
+$ git grep EOPNOTSUPP kernel/bpf|wc -l
+56
+$ git grep ENOTSUPP kernel/bpf|wc -l
+61
 
