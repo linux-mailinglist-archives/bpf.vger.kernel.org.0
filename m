@@ -1,127 +1,163 @@
-Return-Path: <bpf+bounces-31017-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-31018-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BD09C8D605E
-	for <lists+bpf@lfdr.de>; Fri, 31 May 2024 13:13:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id B16478D6097
+	for <lists+bpf@lfdr.de>; Fri, 31 May 2024 13:25:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E0C061C20AAE
-	for <lists+bpf@lfdr.de>; Fri, 31 May 2024 11:13:50 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D3E111C233C2
+	for <lists+bpf@lfdr.de>; Fri, 31 May 2024 11:25:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A9257156F5F;
-	Fri, 31 May 2024 11:13:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D0FD157469;
+	Fri, 31 May 2024 11:25:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b="DFgamvD7"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="V3AAlO7s"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f41.google.com (mail-ej1-f41.google.com [209.85.218.41])
+Received: from mail-ej1-f54.google.com (mail-ej1-f54.google.com [209.85.218.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE30B156F46
-	for <bpf@vger.kernel.org>; Fri, 31 May 2024 11:13:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 191B015575A
+	for <bpf@vger.kernel.org>; Fri, 31 May 2024 11:25:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717154025; cv=none; b=USgyFv9IMolRUtIvnPoLCRRKLO3Ej25tp6ntoY4a6x5wtZ3vesGQ2C8mrJskXX8YcFu9Bs1bTWvEp/1foThMxOcFl0FiOY8ofCsF2ZOwd7gPlPH854e5LhlgBO1GsLcmD8VQXTZ5LYHQr1hb2pEF1ikwiGDZJ2LSC2/sQHXhKOY=
+	t=1717154719; cv=none; b=T2fG+coRPoHq4kVC0Bxv+NyP2l5JCiacPwmsn1l8kGCRzxHJPzkMBcmXZNV/eWqWqtYH7CMWfrSZhf/5PrR/z5jTXxjLltKhkyirqZPwxzV5bYFh9pAHpD5bFZB4WqkUsrN2tkWpEKh1IaMiHTel127eJNXKAMyhQ888RyEojC8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717154025; c=relaxed/simple;
-	bh=b3A47GKp3DVbDjtboyMRPNUCGOfNcSUH5VJJp458EUY=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=uT9uHyFYYFbbXotKyx8T1ItJRSgBGWlkWfRZucKtbSBqY0lefcsEZPNXr8CLXW+XOUMwR2oYU7P9uh7MDMpbe7DiFv0jZU71AolXqNahLFcfVbL92gDSPOyjLK8g+mLqUjwAJEfxlhTvbCuSGWFb40ZvkouiUqvP0IQEM8BMOWc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com; spf=pass smtp.mailfrom=cloudflare.com; dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b=DFgamvD7; arc=none smtp.client-ip=209.85.218.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cloudflare.com
-Received: by mail-ej1-f41.google.com with SMTP id a640c23a62f3a-a635a74e0deso218376466b.0
-        for <bpf@vger.kernel.org>; Fri, 31 May 2024 04:13:43 -0700 (PDT)
+	s=arc-20240116; t=1717154719; c=relaxed/simple;
+	bh=fWUJ437g8evNcSkD9+9GJC+3hqmaNOKkRxKMUblKHT4=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=PMDmJcXFoKYJRXt8uI1EEsVnkyRwRjtHv+GP8yc1D+U7z5fB1o+Zxfaa3hZhoMLBP1docFXveC5fj4g5NwxO6IoZoBcsStdW+48gV4k8y4iFHVHMjvGfb+vemIaYUYSFpM40uZxy+AlzNo/mRQawTfukfsVDiF1SGfN19bdwMng=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=V3AAlO7s; arc=none smtp.client-ip=209.85.218.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f54.google.com with SMTP id a640c23a62f3a-a5cec2c2981so100421766b.1
+        for <bpf@vger.kernel.org>; Fri, 31 May 2024 04:25:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google09082023; t=1717154022; x=1717758822; darn=vger.kernel.org;
-        h=mime-version:message-id:date:user-agent:references:in-reply-to
-         :subject:cc:to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=Skowyj1GrS+nqOzj9o4sPhgAkjxMx0n01JEJn6nXjeY=;
-        b=DFgamvD7fWNZ3ekk7r3dttyp6qGzYlWvuonpHDwWdV7Q+lQAkLxVv2aXBedB4/gs4Y
-         NtqSEizsJlZdAob+p53/h71nk2oYFr58gT8PWVtY4mwcRP2IBcLeyI0Zcr5x2qBg92KA
-         V+McSmAMFibkYBkCCaGfNYSgLBEBWBGMG359uXBmQLXI32WNUKewnfEL6hRmn+yLyVjC
-         6oEWHaViIpu1ECCyPbpVLGXgrpWgulySgknkhO1yp1SqN3YmEoAzk7qEBswDjvx8zlw6
-         YJtTXtiP0GLyB4a8bHrHJC4JeIEH7lCclbbltcWxwSDD0CUnaCuh9sRVeC/WAiTjoAdW
-         Wi9Q==
+        d=gmail.com; s=20230601; t=1717154716; x=1717759516; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=i5FVVvSwCCmu0S5jIBqQXKaEjLlRbNlncywpUPqCYDo=;
+        b=V3AAlO7suhB0WauyKkjrge6HxKk+l76FQj4k0zeMaQS258V04XbSesVfxoqlfa4ngz
+         eqfzT0bsChfVZPOc4DCDNj1+jgbqtzAzCJShPCJtjI8SUlnxg+JXZ7lmGJ0NSXWQd5UM
+         OOryfQT4mdk7oQPEgE1WaxYZ9Lb48FpaH2V5LS3Uw28J+CCltNDIRkF9bCHv8rPiVpPH
+         jRAi1l5j6dv7KM1zNR0eqNiu9ZTdyLdjpPQjyfDmx/q5zILCO+T7w6qr9z9SMkdjWjtK
+         PD0Lo6fUpS0azkOGrOwmpMBG/YQn9LvE81nQjDBQ2w+4C2PhmU2TaVb+MfQbwti4pvRl
+         GWUw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1717154022; x=1717758822;
-        h=mime-version:message-id:date:user-agent:references:in-reply-to
-         :subject:cc:to:from:x-gm-message-state:from:to:cc:subject:date
+        d=1e100.net; s=20230601; t=1717154716; x=1717759516;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Skowyj1GrS+nqOzj9o4sPhgAkjxMx0n01JEJn6nXjeY=;
-        b=ot0051hbCwt+rpMVFIUATpPDE1xRndD8CYRbddWisurFs+40uRDqtq65Y1QAkpIphh
-         BYq13fx16u7u6D3gOII5nWpUf7uDHajbbQP4tyYwi6wCpwn6C+NXVxDc5NipS1X+zmCQ
-         w7dB9dPgBOIPeLVdK79CwS55WA4kotq25SKiTz5L0s4IIG56GzHTsZLlMTZXG3ld2Ttn
-         waZXgPwpyF5esrHczv2r8yfdgtzlE7RQ3kMWAl3HQqppDo9p3iTBXXVG26cJwj8c/9GK
-         icUGm9zrW3Kxo7TNrwK40q4uyHvXUF11DyEVAIifIHNDtD9ni/qpWvl/lVzHYK6YrmmD
-         9e+w==
-X-Forwarded-Encrypted: i=1; AJvYcCWnHQXHo+nHuZylz6Vk83i71r85R3EMQyZ2ex2AOZJBFiqr51pO2tgytrIYDbp1cTfbq2FEzraHTh8kGcMQkJNpL45J
-X-Gm-Message-State: AOJu0Yy1eC2i59pnDvKVRQs68SsplovMVOBC0/NIqzP0NCLmp1n1nGiN
-	uXaM1Gx4jp3L8num4760qsUxpuBVsM5iHUIWs63xCXRmtgQPlT19uG9UE9DhcHY=
-X-Google-Smtp-Source: AGHT+IGaxXHFTVRHEsvv6q9z+YGNFkpqNRVrzgFepTWblfIrwjh5IyPMmzwEBN+iYaMSGdvj8ETx6g==
-X-Received: by 2002:a17:906:6046:b0:a64:3518:f904 with SMTP id a640c23a62f3a-a681fe4e25emr106111666b.7.1717154021966;
-        Fri, 31 May 2024 04:13:41 -0700 (PDT)
-Received: from cloudflare.com ([2a09:bac5:5063:2387::38a:19])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a68519892c8sm49491166b.65.2024.05.31.04.13.40
+        bh=i5FVVvSwCCmu0S5jIBqQXKaEjLlRbNlncywpUPqCYDo=;
+        b=klrRR+1ea4K0GEKL7NSEg+rcBWGwAU7xnJDQz4Xlf4qNIFRbExrI83bl3BgGDRvdBI
+         78M+Z6JpZfIBLCImkTug0iq7jajay/lMi/UPMntG0pEy5aeoRQBK+Dw8gsg0pRc3j1SC
+         wS6a/XjDtaRz+jswgPbuUBHqzMICsaJThsUBKnkkX92CaORPu/ot5Q7q6u+mebFGSOzs
+         2Xp3meQGjX5PQbAoojTF9Uvd0Pr74cVj6psRtciDHyLfFOp7geTekC+aqslkvD7t9UhB
+         aIbYDR2QGH9IYFWURFrlSnTVwwt1MTHkSbRVbjy534My6SI0U6lcGscaC5LVicV7L9E0
+         a46w==
+X-Forwarded-Encrypted: i=1; AJvYcCVQ7TbHI0XLpdEQsDfgJVQ9iMoqNyeMWQFgFKtcTL0vUxraOTOrWcZEPLcQG6FtEQcKCjXJLh9s+PTLVC7wB1Xm2Yd+
+X-Gm-Message-State: AOJu0YyokpNNSU8pf1mBJmX+kQBJbwicbXsdevFlmBZ13zjDmPCh0guM
+	MyEw8PMWeQ1Cpf06WucnSkzf9CSKnrc6CQSxV7oVsqkgCDme5RlX
+X-Google-Smtp-Source: AGHT+IFOps9iLUZi/wjLlMTJDh9LpDOXYk0yrjE51a6apEq33iXlKezaOKQl1oBVwd8kf1fhHP8hIg==
+X-Received: by 2002:a50:8ad0:0:b0:578:57b9:8e13 with SMTP id 4fb4d7f45d1cf-57a36361c9cmr1268115a12.10.1717154716199;
+        Fri, 31 May 2024 04:25:16 -0700 (PDT)
+Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
+        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-57a31c6d3c3sm902555a12.59.2024.05.31.04.25.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 31 May 2024 04:13:41 -0700 (PDT)
-From: Jakub Sitnicki <jakub@cloudflare.com>
-To: Geliang Tang <geliang@kernel.org>, John Fastabend
- <john.fastabend@gmail.com>
-Cc: Andrii Nakryiko <andrii@kernel.org>,  Eduard Zingerman
- <eddyz87@gmail.com>,  Mykola Lysenko <mykolal@fb.com>,  Alexei Starovoitov
- <ast@kernel.org>,  Daniel Borkmann <daniel@iogearbox.net>,  Martin KaFai
- Lau <martin.lau@linux.dev>,  Song Liu <song@kernel.org>,  Yonghong Song
- <yonghong.song@linux.dev>,  KP Singh <kpsingh@kernel.org>,  Stanislav
- Fomichev <sdf@google.com>,  Hao Luo <haoluo@google.com>,  Jiri Olsa
- <jolsa@kernel.org>,  Shuah Khan <shuah@kernel.org>,  Geliang Tang
- <tanggeliang@kylinos.cn>,  bpf@vger.kernel.org,
-  linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH bpf-next 3/8] selftests/bpf: Use bpf_link attachments in
- test_sockmap
-In-Reply-To: <66590f821d120_e5072085a@john.notmuch> (John Fastabend's message
-	of "Thu, 30 May 2024 16:45:06 -0700")
-References: <cover.1716446893.git.tanggeliang@kylinos.cn>
-	<32cf8376a810e2e9c719f8e4cfb97132ed2d1f9c.1716446893.git.tanggeliang@kylinos.cn>
-	<6654beff96840_23de2086e@john.notmuch> <87wmnfujwg.fsf@cloudflare.com>
-	<577531139c4db3cb35f3f40e23587bcb9815b0ba.camel@kernel.org>
-	<66590f821d120_e5072085a@john.notmuch>
-User-Agent: mu4e 1.12.4; emacs 29.1
-Date: Fri, 31 May 2024 13:13:39 +0200
-Message-ID: <87wmnaw7x8.fsf@cloudflare.com>
+        Fri, 31 May 2024 04:25:15 -0700 (PDT)
+From: Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date: Fri, 31 May 2024 13:25:14 +0200
+To: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc: Jiri Olsa <olsajiri@gmail.com>, Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
+	Martin KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
+	Yonghong Song <yhs@fb.com>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@chromium.org>,
+	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>
+Subject: Re: [PATCH bpf] bpf: Make session kfuncs global
+Message-ID: <ZlmzmstEQSMp-6_i@krava>
+References: <20240531101550.2768801-1-jolsa@kernel.org>
+ <20240531103931.p4f3YsBZ@linutronix.de>
+ <ZlmpoWed0NmeZblH@krava>
+ <20240531104922.ZgOadg-G@linutronix.de>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240531104922.ZgOadg-G@linutronix.de>
 
-On Thu, May 30, 2024 at 04:45 PM -07, John Fastabend wrote:
-> Geliang Tang wrote:
->> On Mon, 2024-05-27 at 21:36 +0200, Jakub Sitnicki wrote:
->> > On Mon, May 27, 2024 at 10:12 AM -07, John Fastabend wrote:
->> > > Geliang Tang wrote:
+On Fri, May 31, 2024 at 12:49:22PM +0200, Sebastian Andrzej Siewior wrote:
+> On 2024-05-31 12:42:41 [+0200], Jiri Olsa wrote:
+> > On Fri, May 31, 2024 at 12:39:31PM +0200, Sebastian Andrzej Siewior wrote:
+> > > On 2024-05-31 12:15:50 [+0200], Jiri Olsa wrote:
+> > > > The bpf_session_cookie is unavailable for !CONFIG_FPROBE as reported
+> > > > by Sebastian [1].
+> > > > 
+> > > > Instead of adding more ifdefs, making the session kfuncs globally
+> > > > available as suggested by Alexei. It's still allowed only for
+> > > > session programs, but it won't fail the build.
+> > > 
+> > > but this relies on CONFIG_UPROBE_EVENTS=y
+> > > What about CONFIG_UPROBE_EVENTS=n?
+> > 
+> > hum, I can't see that.. also I tested it with CONFIG_UPROBE_EVENTS=n,
+> > the CONFIG_UPROBES ifdef is ended right above this code..
+> 
+> Your patch + v6.10-rc1 + https://breakpoint.cc/config-2024-03-31.xz
 
-[...]
+ah there's also CONFIG_KPROBE=n
 
->> > > The one advantage of test_sockmap is we can have it run for longer
->> > > runs by pushing different options through so might be worth keeping
->> > > just for that.
->> > > 
->> > > If you really want links here I'm OK with that I guess just asking.
->> > 
->> > It was me who suggested the switch to bpf_link in reaction to a
->> > series
->> > of cleanups to prog_type and prog_attach_type submitted by Geliang.
->> 
->> Yes, patches 3-5 address Jakub's suggestion: switching attachments to
->> bpf_link.
->
-> OK. Lets just take them the series lgtm. Jakub any other comments?
+kernel/trace/bpf_trace.c is enabled with CONFIG_BPF_EVENTS,
+which has:
 
-Gave it a run - all looks well. Thanks for the patches.
+        depends on BPF_SYSCALL
+        depends on (KPROBE_EVENTS || UPROBE_EVENTS) && PERF_EVENTS
 
-Geliang, is there some MPTCP+sockmap use-case you're working towards?
+so I think we chould combine both like below
+
+jirka
+
+
+---
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index 77da1f438bec..cb202a289cf6 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -11124,7 +11124,11 @@ BTF_ID(func, bpf_iter_css_task_new)
+ #else
+ BTF_ID_UNUSED
+ #endif
++#ifdef CONFIG_BPF_EVENTS
+ BTF_ID(func, bpf_session_cookie)
++#else
++BTF_ID_UNUSED
++#endif
+ 
+ static bool is_kfunc_ret_null(struct bpf_kfunc_call_arg_meta *meta)
+ {
+diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+index f5154c051d2c..cc90d56732eb 100644
+--- a/kernel/trace/bpf_trace.c
++++ b/kernel/trace/bpf_trace.c
+@@ -3519,7 +3519,6 @@ static u64 bpf_uprobe_multi_entry_ip(struct bpf_run_ctx *ctx)
+ }
+ #endif /* CONFIG_UPROBES */
+ 
+-#ifdef CONFIG_FPROBE
+ __bpf_kfunc_start_defs();
+ 
+ __bpf_kfunc bool bpf_session_is_return(void)
+@@ -3568,4 +3567,3 @@ static int __init bpf_kprobe_multi_kfuncs_init(void)
+ }
+ 
+ late_initcall(bpf_kprobe_multi_kfuncs_init);
+-#endif
 
