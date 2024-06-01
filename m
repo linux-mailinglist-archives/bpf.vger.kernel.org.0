@@ -1,96 +1,96 @@
-Return-Path: <bpf+bounces-31098-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-31099-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 807398D71E9
-	for <lists+bpf@lfdr.de>; Sat,  1 Jun 2024 22:54:04 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id E31F18D71EA
+	for <lists+bpf@lfdr.de>; Sat,  1 Jun 2024 22:57:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BF8BDB216F4
-	for <lists+bpf@lfdr.de>; Sat,  1 Jun 2024 20:54:01 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5E5F51F21CCF
+	for <lists+bpf@lfdr.de>; Sat,  1 Jun 2024 20:57:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 70D27154C0B;
-	Sat,  1 Jun 2024 20:53:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F36FC154C11;
+	Sat,  1 Jun 2024 20:57:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="Cxib2fJx";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="b3SFhczq";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="xeC6hnOL";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="nZaSFi5Q"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="tpknI5pC";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="17HFFBhh";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="Ca9BZNED";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="n0u95+ll"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E48C1CAA6;
-	Sat,  1 Jun 2024 20:53:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE7E41CAA6;
+	Sat,  1 Jun 2024 20:57:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717275234; cv=none; b=fMZP2qQHV63tio3etqK6wA/flTMBTFAXUJVDcgQzGS5xUa064D0hCR/kbHcSuV28ZdkL7HIbk2qmArQUnK5ymZaekjlD/WnHn0s7+sb3eS87jBuw77kAHky2z39O6QIm3KLPAu7qN2qHhFn3vOFjDc6kb1nn7Wycb1ynCNDeUpg=
+	t=1717275453; cv=none; b=bXrqGhIPOd8ZKHaDi9B+nc53GNo8ONw70VNMA8Tv3jXFFzXAYgomrEO4Zzm3WBFgm/YvdH8d9BG0q1OuT7i2j9eYX/OoMkh7VnAbXJVOfnHO89PUt76vVRymqyPjTyRenIV3mHUKKqgIJK9k9TErBQYyJa9VSyWRpJApqDr3loE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717275234; c=relaxed/simple;
-	bh=zmGlOio8fwOq328cx754nKkHBll8pV+fC/JnKNKp85I=;
+	s=arc-20240116; t=1717275453; c=relaxed/simple;
+	bh=fDnSI924w+lWGTroEDCTpTzFk2Ipb3IKwyuboq33CQs=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=MGWUOg7Ka40ynV6G+0XXnMslb/LTK2aSnVfZEe7kBIxjba/Jk296aVaI20eBKP9KdNaLlRWwi14NxOQnBjoaNO37RjUJDiIg/eLkZkn8CKonyAyhNumAgAw0nqGpBxU3ffl1XEKFTDk2hrD/JUMagquGnRDK0nNxrFIBsmxPeHg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=Cxib2fJx; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=b3SFhczq; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=xeC6hnOL; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=nZaSFi5Q; arc=none smtp.client-ip=195.135.223.131
+	 In-Reply-To:Content-Type; b=uXIMKr+DjpwGF6opDE5Ar6e1peoVNvAOdBG2py52EZ4cHDFapm1+hxoEwvw56HzRsIEfjaGUxZQJ13HsuMs3T/WkoOHAU5VB/AVO52aAsdBchP6gl5s7IPuAQIVPR6eBAMAmDRaiLH2eTpEOJONii12sUguKbvEOq1WbZ3x+PTc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=tpknI5pC; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=17HFFBhh; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=Ca9BZNED; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=n0u95+ll; arc=none smtp.client-ip=195.135.223.131
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
 Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 2DC011FEEA;
-	Sat,  1 Jun 2024 20:53:49 +0000 (UTC)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id DE4BE1FEE9;
+	Sat,  1 Jun 2024 20:57:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1717275230; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1717275450; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=Ptk5drCFwpLg9lSfuRWyk/LcrEFvlG2GrYpochrY8dI=;
-	b=Cxib2fJxW3mQLOJyDR61T/AV5YjYePMYW4dM4RG4F7Ws1ua7vgcPa4IDp75RvDJzhuD3I1
-	PeSHr6Zbe5Ls8BJ3ngiY3E6wxz5bU1uNut9TrS9DhmAWvrUtTJj85JtQzm8EyZYIao4hve
-	uMfvu6C3g1ns93ZKDCseCM/2bKuO7qM=
+	bh=sdwLj2tSWPNRHYkE+3C7SIZSn6lY5twCIc2iCsFfwNM=;
+	b=tpknI5pCyrN+tGi6dibNCwO/BkeEgWCtHethdmF3THSqZfZF/1/CgAMt5WB+hGp5LQP97p
+	zBSXoipUbdS8pT6FbwML/EUHueDFWMK1VY2GeFI3oJzZbuMYp9zY8BWALhvo17l0N7PqEX
+	DzWhr6oYEhgyhROB9tpEdbJi7kQW83U=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1717275230;
+	s=susede2_ed25519; t=1717275450;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=Ptk5drCFwpLg9lSfuRWyk/LcrEFvlG2GrYpochrY8dI=;
-	b=b3SFhczqu64YCnft+yeg/FAGAvRPe41JtA4uWd0JIZKAb4nxe2LjK61hn1AVwuhI87XGoX
-	AqpoT1GZe+zpWCBg==
+	bh=sdwLj2tSWPNRHYkE+3C7SIZSn6lY5twCIc2iCsFfwNM=;
+	b=17HFFBhh4Ul/dDi3Zdi/u0u2X9H0e68qPFVOx1G7S1Y5e5AOv3c1Ci3Vmc86SFyX9dFlay
+	l4Eu1BWI3nEeSuAg==
 Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=xeC6hnOL;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=nZaSFi5Q
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=Ca9BZNED;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=n0u95+ll
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1717275229; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1717275449; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=Ptk5drCFwpLg9lSfuRWyk/LcrEFvlG2GrYpochrY8dI=;
-	b=xeC6hnOL2V/vTOwe6k9v+h5jymBx+6wyIzOREynZrvgekCTdC0OLjIXltJDNXWPOUy5cJI
-	lF+nsL+YbAJDyKfz3IE2sHA+dATkcV0TS/+SzJK3gzbob2RAFFdtdr4Xu5g+ysNwC//1FT
-	krLPxOVd7JptBgmhNLhxDZRdBs7TL60=
+	bh=sdwLj2tSWPNRHYkE+3C7SIZSn6lY5twCIc2iCsFfwNM=;
+	b=Ca9BZNEDts/a/va7zEWTVUH/mGZ7SLs5vPuuMjFiGsJkD3AWQc+qn2mxZx16ZE9qUlIQDt
+	g+Rdp/jF3VFIBanR8bqEo8a8hcTIiWM5cZ7BugEgld9tByCPPZRh1rZEcN82s+BvVMI0g9
+	2mAlgcb/kIajOxAgweBAEFA6zM4l9bM=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1717275229;
+	s=susede2_ed25519; t=1717275449;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=Ptk5drCFwpLg9lSfuRWyk/LcrEFvlG2GrYpochrY8dI=;
-	b=nZaSFi5QMELda2Ux4+mKWF/vp7oiuqDoEf8xfpiBOKs3Y3ljnLu4ZNkl2HDXXJOxPR444l
-	VO40tm2RM/YBj/AQ==
+	bh=sdwLj2tSWPNRHYkE+3C7SIZSn6lY5twCIc2iCsFfwNM=;
+	b=n0u95+ll0YnCbLbkSfdozk+of17rlI8cH8DQQfIyWSm7t39n2Z9khEMyyHWpWAGQSp1jtb
+	lGtqytl3W+U6LZAw==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 01789137C3;
-	Sat,  1 Jun 2024 20:53:48 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id ABDCB137C3;
+	Sat,  1 Jun 2024 20:57:29 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id VNc9O1yKW2bYTgAAD6G6ig
-	(envelope-from <vbabka@suse.cz>); Sat, 01 Jun 2024 20:53:48 +0000
-Message-ID: <718071ea-e39f-473a-ad84-10dba436815f@suse.cz>
-Date: Sat, 1 Jun 2024 22:53:48 +0200
+	id Z8NOKTmLW2a6TwAAD6G6ig
+	(envelope-from <vbabka@suse.cz>); Sat, 01 Jun 2024 20:57:29 +0000
+Message-ID: <dd02a8cd-a554-4756-b229-656bfc218954@suse.cz>
+Date: Sat, 1 Jun 2024 22:57:29 +0200
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -98,9 +98,9 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH RFC 0/4] static key support for error injection functions
+Subject: Re: [PATCH RFC 3/4] mm, slab: add static key for should_failslab()
 Content-Language: en-US
-To: Roman Gushchin <roman.gushchin@linux.dev>
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
 Cc: Akinobu Mita <akinobu.mita@gmail.com>, Christoph Lameter <cl@linux.com>,
  David Rientjes <rientjes@google.com>, Alexei Starovoitov <ast@kernel.org>,
  Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
@@ -109,11 +109,13 @@ Cc: Akinobu Mita <akinobu.mita@gmail.com>, Christoph Lameter <cl@linux.com>,
  "David S. Miller" <davem@davemloft.net>,
  Masami Hiramatsu <mhiramat@kernel.org>, Steven Rostedt
  <rostedt@goodmis.org>, Mark Rutland <mark.rutland@arm.com>,
- Jiri Olsa <jolsa@kernel.org>, Hyeonggon Yoo <42.hyeyoo@gmail.com>,
- linux-kernel@vger.kernel.org, linux-mm@kvack.org, bpf@vger.kernel.org,
- linux-trace-kernel@vger.kernel.org
+ Jiri Olsa <jolsa@kernel.org>, Roman Gushchin <roman.gushchin@linux.dev>,
+ Hyeonggon Yoo <42.hyeyoo@gmail.com>, LKML <linux-kernel@vger.kernel.org>,
+ linux-mm <linux-mm@kvack.org>, bpf <bpf@vger.kernel.org>,
+ linux-trace-kernel <linux-trace-kernel@vger.kernel.org>
 References: <20240531-fault-injection-statickeys-v1-0-a513fd0a9614@suse.cz>
- <ZlpfuiLRKa7wGD9y@P9FQF9L96D.corp.robot.car>
+ <20240531-fault-injection-statickeys-v1-3-a513fd0a9614@suse.cz>
+ <CAADnVQJ=bNg9nWQPXGjJ11pZnmjntt=zLBqtJng3328T1L-u0g@mail.gmail.com>
 From: Vlastimil Babka <vbabka@suse.cz>
 Autocrypt: addr=vbabka@suse.cz; keydata=
  xsFNBFZdmxYBEADsw/SiUSjB0dM+vSh95UkgcHjzEVBlby/Fg+g42O7LAEkCYXi/vvq31JTB
@@ -154,97 +156,65 @@ Autocrypt: addr=vbabka@suse.cz; keydata=
  w9XOLH1IIWh7RURU7G1iOfEfmImFeC3cbbS73LQEFGe1urxvIH5K/7vX+FkNcr9ujwWuPE9b
  1C2o4i/yZPLXIVy387EjA6GZMqvQUFuSTs/GeBcv0NjIQi8867H3uLjz+mQy63fAitsDwLmR
  EP+ylKVEKb0Q2A==
-In-Reply-To: <ZlpfuiLRKa7wGD9y@P9FQF9L96D.corp.robot.car>
+In-Reply-To: <CAADnVQJ=bNg9nWQPXGjJ11pZnmjntt=zLBqtJng3328T1L-u0g@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Spam-Flag: NO
-X-Spam-Score: -3.00
-X-Rspamd-Action: no action
-X-Rspamd-Queue-Id: 2DC011FEEA
 X-Spam-Level: 
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
 X-Spamd-Result: default: False [-3.00 / 50.00];
 	BAYES_HAM(-3.00)[100.00%];
 	SUSPICIOUS_RECIPS(1.50)[];
 	NEURAL_HAM_LONG(-1.00)[-1.000];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
 	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
 	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
 	XM_UA_NO_VERSION(0.01)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	RCPT_COUNT_TWELVE(0.00)[19];
+	MX_GOOD(-0.01)[];
 	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	TO_DN_ALL(0.00)[];
+	FREEMAIL_TO(0.00)[gmail.com];
+	RCPT_COUNT_TWELVE(0.00)[20];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
 	MIME_TRACE(0.00)[0:+];
 	ARC_NA(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
 	FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	FREEMAIL_CC(0.00)[gmail.com,linux.com,google.com,kernel.org,iogearbox.net,linux.ibm.com,intel.com,davemloft.net,goodmis.org,arm.com,vger.kernel.org,kvack.org];
-	RCVD_TLS_ALL(0.00)[];
+	FREEMAIL_CC(0.00)[gmail.com,linux.com,google.com,kernel.org,iogearbox.net,linux.ibm.com,intel.com,davemloft.net,goodmis.org,arm.com,linux.dev,vger.kernel.org,kvack.org];
 	RCVD_COUNT_TWO(0.00)[2];
 	FROM_EQ_ENVFROM(0.00)[];
 	FROM_HAS_DN(0.00)[];
-	TO_DN_SOME(0.00)[];
+	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
 	MID_RHS_MATCH_FROM(0.00)[];
-	TAGGED_RCPT(0.00)[];
-	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
-	DKIM_TRACE(0.00)[suse.cz:+];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns]
+	TAGGED_RCPT(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
+	DKIM_TRACE(0.00)[suse.cz:+];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.cz:dkim,suse.cz:email]
+X-Rspamd-Action: no action
+X-Rspamd-Queue-Id: DE4BE1FEE9
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Spam-Flag: NO
+X-Spam-Score: -3.00
 
-On 6/1/24 1:39 AM, Roman Gushchin wrote:
-> On Fri, May 31, 2024 at 11:33:31AM +0200, Vlastimil Babka wrote:
->> Incomplete, help needed from ftrace/kprobe and bpf folks.
->> 
->> As previously mentioned by myself [1] and others [2] the functions
->> designed for error injection can bring visible overhead in fastpaths
->> such as slab or page allocation, because even if nothing hooks into them
->> at a given moment, they are noninline function calls regardless of
->> CONFIG_ options since commits 4f6923fbb352 ("mm: make should_failslab
->> always available for fault injection") and af3b854492f3
->> ("mm/page_alloc.c: allow error injection").
->> 
->> Live patching their callsites has been also suggested in both [1] and
->> [2] threads, and this is an attempt to do that with static keys that
->> guard the call sites. When disabled, the error injection functions still
->> exist and are noinline, but are not being called. Any of the existing
->> mechanisms that can inject errors should make sure to enable the
->> respective static key. I have added that support to some of them but
->> need help with the others.
+On 5/31/24 6:43 PM, Alexei Starovoitov wrote:
+> On Fri, May 31, 2024 at 2:33 AM Vlastimil Babka <vbabka@suse.cz> wrote:
+>>         might_alloc(flags);
+>>
+>> -       if (unlikely(should_failslab(s, flags)))
+>> -               return NULL;
+>> +       if (static_branch_unlikely(&should_failslab_active)) {
+>> +               if (should_failslab(s, flags))
+>> +                       return NULL;
+>> +       }
 > 
-> I think it's a clever idea and makes total sense!
+> makes sense.
+> Acked-by: Alexei Starovoitov <ast@kernel.org>
 
-Thanks!
+Thanks :) but please note the cover letter where I explain how I need help
+with the bpftrace side (and ftrace, but that seems sorted). Without that
+part, bpftrace will silently stop doing the injection as the static key will
+remain disabled.
 
->> 
->> Patches 3 and 4 implement the static keys for the two mm fault injection
->> sites in slab and page allocators. For a quick demonstration I've run a
->> VM and the simple test from [1] that stresses the slab allocator and got
->> this time before the series:
->> 
->> real    0m8.349s
->> user    0m0.694s
->> sys     0m7.648s
->> 
->> with perf showing
->> 
->>    0.61%  nonexistent  [kernel.kallsyms]  [k] should_failslab.constprop.0
->>    0.00%  nonexistent  [kernel.kallsyms]  [k] should_fail_alloc_page                                                                                                                                                                                        ▒
->> 
->> And after the series
->> 
->> real    0m7.924s
->> user    0m0.727s
->> sys     0m7.191s
-> 
-> Is "user" increase a measurement error or it's real?
+> Do you have any microbenchmark numbers before/after this optimization?
 
-Hm interesting, I have actually did the measurement 3 times even though I
-pasted just one, and it's consistent. But could be just artifact of where
-things landed in the cache, and might change a bit with every kernel
-build/boot. Will see. There's no reason why this should affect user time.
-
-> Otherwise, nice savings!
-
+Also in cover letter, but will include it in the patch commit log next time.
 
