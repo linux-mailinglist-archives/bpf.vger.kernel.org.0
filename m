@@ -1,179 +1,208 @@
-Return-Path: <bpf+bounces-31082-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-31083-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8E2518D6D6F
-	for <lists+bpf@lfdr.de>; Sat,  1 Jun 2024 03:59:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0991D8D6D9A
+	for <lists+bpf@lfdr.de>; Sat,  1 Jun 2024 05:08:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E4028B241EE
-	for <lists+bpf@lfdr.de>; Sat,  1 Jun 2024 01:59:36 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6C888B2334E
+	for <lists+bpf@lfdr.de>; Sat,  1 Jun 2024 03:08:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B455C6FB9;
-	Sat,  1 Jun 2024 01:59:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA4C56FB6;
+	Sat,  1 Jun 2024 03:08:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="aZswFm/b"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RUfXUcmj"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f169.google.com (mail-pg1-f169.google.com [209.85.215.169])
+Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com [209.85.128.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D8E7315CE
-	for <bpf@vger.kernel.org>; Sat,  1 Jun 2024 01:59:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC1836FA8
+	for <bpf@vger.kernel.org>; Sat,  1 Jun 2024 03:08:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717207169; cv=none; b=HPV81FLQWOGJpMUu3dLOxXqF2MjR3GimiJTEpg0nL5kazv5ETTsxo8xTE6Yt8CA7v/oT4TQ7KYUvr1mAcwfUsErfESqKl4ERhHbi5pleCSdtaXmGpKQOsQWFNjNwbjm6qK5oJONO+90b5sJhUHMBKPIbRspoM6Mhhs9ZeRysKLE=
+	t=1717211328; cv=none; b=sMGhpKQxILUoQwrNaCKgrJwx/hNhtby/I+oGF/1lhxz9Gz5s0ynvJC8L+iAF3TPtKiin4HR3Nosp9+ZN8sGvOp6HxKVOCzk1gQH4ILSMP9qzbXwCWSMNoWBc5eeOkmVzHZOQy7S8SEHSLmYC2hs7BN0sL9jjrauCB9xuOLynNhQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717207169; c=relaxed/simple;
-	bh=ztEA5nn7xI+TL3BQPN69tvQZUfOlJ7O3PfcB0g2++4Q=;
+	s=arc-20240116; t=1717211328; c=relaxed/simple;
+	bh=KOJ2aLiDGQE4im7BL/2WV0cROJJz5MfmO4q/C8xyqr8=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=BZXVdsjKPdVLR2CEzUgnzvKrg22yQANzQDMt+wsx+a7vBd6KgkvpUGyOcR8d9lub4MDnfaAlwtgJZEbEznQVIsu/6LW82L6XTXOTADSopVAgZs7EWewldrQgRXSur3ztwAfivZYxPv6Uc83uK+CVuabOXqqNPf/brlx/WzUby6M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=aZswFm/b; arc=none smtp.client-ip=209.85.215.169
+	 To:Cc:Content-Type; b=Bi2f/E8ahE43uZSoou+W0xQPJL2uUkwimk/c5cNJMa0YarvF4FiVyLY4nrj89k2fp/jlNEFNhPnrc9jfKJjmYP6xHoSIvF/HfmXcMgAOa0QsrCLq+NJV0cjLrU3grrOgXHUA22NQYXuDJ+TPtS5Jz0ga5EknHnULbDN98EKOvhU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=RUfXUcmj; arc=none smtp.client-ip=209.85.128.45
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f169.google.com with SMTP id 41be03b00d2f7-681953ad4f2so1911856a12.2
-        for <bpf@vger.kernel.org>; Fri, 31 May 2024 18:59:27 -0700 (PDT)
+Received: by mail-wm1-f45.google.com with SMTP id 5b1f17b1804b1-4210aa00c94so25478795e9.1
+        for <bpf@vger.kernel.org>; Fri, 31 May 2024 20:08:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1717207167; x=1717811967; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1717211325; x=1717816125; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=NX6rsHmGDlcP3zI7nFcSJyEBqBJJePs9cWexWtIx9GY=;
-        b=aZswFm/b4oFsKk/BK6j1Lz8FjzWn+zwCggo1skQ9KC4bqDoyRqdZ1ZGFaSKHG5lgwv
-         Jdi5iEVeEXuFcnCN6eeJkRB66a4aEHyczhAYuHUviBDrGDlIHQzTV/L02cXiiCZMVGwI
-         QjnYel9QN6Q77IieXn3XTg5IfPiNDU/fWMX/H47qwuzbH02NnAZElG0PNCCmMz11dVIr
-         +IsqeF9VTf3a+5cnpks4xW9V/KedBSlsCc01nd9txaUE5r4alZA9dFy6AQaD9S5PJ9jM
-         08E62M/O2IwNXj4KcdSnJiw6wVDJbPxroYIPvyY0yGrIc19+qAOGxbAB4Kz5tSzn9iAZ
-         AoEw==
+        bh=8OA8XgYzhLls0SQ7qQyEk3bhtyA/uRjiORWzOBU5sis=;
+        b=RUfXUcmjlQYzOqmdiJ62PKcbFY75xPF+ua/mNZX674vbhMjxx8vgJfnB8o43MvWZ3P
+         DkJKzOggD2qd1GDPucYGlLdPCrunqWQpMZvdunSUo6ADoIZTDGssvAj/pbglh+7RSBpF
+         8Hbth6Vio4EqZal00oWQYgbJA9h9wRqa5h069rGlsgYdUYwP5R9A/rCbSBfUIrYBsbOc
+         TE/VC1dlCTw8n9Jbye6kzjJXbCNdOVLTvGC9yJgWpCFOZ+wj4E8KvBndJLDXZi9QgdWT
+         j6rRCsqhIc803vKy/tFzPu7cmL0m5C24nl1Pg0Zs5ALpnIW19vJFwICrAYBfktxdg7X3
+         MIug==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1717207167; x=1717811967;
+        d=1e100.net; s=20230601; t=1717211325; x=1717816125;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=NX6rsHmGDlcP3zI7nFcSJyEBqBJJePs9cWexWtIx9GY=;
-        b=ERMJPhcSFjXMYkxC9Cyrd2bowIioda21ybi9IY4FxcidllIOntIj3Ymr27tppRjmtF
-         kwZ879iaLIezkTbKgCZWb74amDxgFJ6Mey+uhxHQkMpIE7VVSm3SsSPoRuxC0DMfy9q/
-         3Yz5DjnWabFUaWd+yPjSpOGsOOs6RHrbCC8DwoC/ZYgJGvdhKCy0mB5eONUbRNPWG3XN
-         OYA77bUxZSu2h7tn8sdrPPZWnz11J1YeJzLMiZYNcEq0IZqoV5efuwNqbMkJtWmcWl3C
-         Al3Qfl4eC0jibZO4sZDChz04jIJyUQ8rlx0Fdgu3bFa4eBpkVBX4ojRiLRchIbbV3iWk
-         F1Lw==
-X-Forwarded-Encrypted: i=1; AJvYcCWOoqWzPWivFRR8+5x7jkXwlE73iaquJx9mRVsO+W8GaVq6/q0zwkFvmZEM/KZC9brumDs0xbqVMgD+0zIE1xuu/gGW
-X-Gm-Message-State: AOJu0Ywz6lGLk3nAKvvuyGK542j73UBq9ehmDWLeOAPk62b00IRUOaEi
-	zElr6nQDyIn/L3iHhmEj2QqpbIKbJuE1cmtvOJtN8U2Xljitv/EqNcl1wOdoqlRNUDigy2ExhMH
-	JKXT4lRrTxfydJ2+EGWMKn5HsWu4=
-X-Google-Smtp-Source: AGHT+IFHhyfBXFVKRb/qBiWQYwOmwJqe6jSQr8UZ0OzfyjBcH07Z/vhiN+P9w2JU3oDCBd1IBfAE6JrqvYl0lbs0kkU=
-X-Received: by 2002:a17:90b:d89:b0:2bd:b43f:4b with SMTP id
- 98e67ed59e1d1-2c1dc5cad3amr3460710a91.31.1717207167003; Fri, 31 May 2024
- 18:59:27 -0700 (PDT)
+        bh=8OA8XgYzhLls0SQ7qQyEk3bhtyA/uRjiORWzOBU5sis=;
+        b=XMdaxkh1OBsLQscRmaLBbPhscita5mp5/mgOEBfcJL0IalmN0z1lMkNzxlI1zbDLSa
+         XqQmNcXIBZxo8gbGlvzh61LRXEHB68ZIluzulz63kcczqc64ylB/go4aZBLhhJOjaZ87
+         gGh4yHWzvo3lV/oS/p5+ywyENAy+sJdxpUKnKdRSv4FBOyxW5Ofdi8YY4tyvFgYPAGFu
+         N1Py9X/zNeaZGweaumEhTC+/anJ81kBpTMTyn9clBMRb1YG5dVxrmC+f0wMI2rfK6BON
+         ofg86gLyW7F/8bRG4fvKVMnZ0/I1rsA4bTsPQz7GNR4DezxKqMwAxsoD2h1v5M3sx856
+         Bk7A==
+X-Gm-Message-State: AOJu0YyJtzr3XXPSTV5HDv1wB7+zFUQJN4el4ir7+HXwTtPOH8O4nsM0
+	1+ZF/Hl07tNmDS7Lh/DTB74UIZUDObGOHeEvKmbzKcr4I3p+FNOnRwUE1molnKJmvVlMuGeoLlJ
+	/SDlPJOdgZedqDH1WcFVxSaaXKg4=
+X-Google-Smtp-Source: AGHT+IGPqUoJHPn5dGc63gjSRSU/LN0vzW7OmxIv5ca3pX/GzbB7Ub3jG/6K0b1X2oNPJV9ZXB4tR0ImHv9Ts8JX/A8=
+X-Received: by 2002:a05:600c:3595:b0:420:1078:a74c with SMTP id
+ 5b1f17b1804b1-4212e075798mr27943165e9.20.1717211324924; Fri, 31 May 2024
+ 20:08:44 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240528122408.3154936-1-alan.maguire@oracle.com>
- <20240528122408.3154936-9-alan.maguire@oracle.com> <CAEf4BzaJQAyHmSOTyQaLCx29zFQZEZnHR+gaTNt-Ae5nvi7G6g@mail.gmail.com>
-In-Reply-To: <CAEf4BzaJQAyHmSOTyQaLCx29zFQZEZnHR+gaTNt-Ae5nvi7G6g@mail.gmail.com>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Fri, 31 May 2024 18:59:14 -0700
-Message-ID: <CAEf4BzZ4Z38GspkSi8QjdGTfwFvNZ3aVPjGjU-6XQte+dKwWVQ@mail.gmail.com>
-Subject: Re: [PATCH v5 bpf-next 8/9] libbpf,bpf: share BTF relocate-related
- code with kernel
-To: Alan Maguire <alan.maguire@oracle.com>
-Cc: andrii@kernel.org, jolsa@kernel.org, acme@redhat.com, 
-	quentin@isovalent.com, eddyz87@gmail.com, mykolal@fb.com, ast@kernel.org, 
-	daniel@iogearbox.net, martin.lau@linux.dev, song@kernel.org, 
-	yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org, 
-	sdf@google.com, haoluo@google.com, houtao1@huawei.com, bpf@vger.kernel.org, 
-	masahiroy@kernel.org, mcgrof@kernel.org, nathan@kernel.org
+References: <20240525031156.13545-1-alexei.starovoitov@gmail.com>
+ <90874d4e32e7fe937c6774ad34d1617592b8abc8.camel@gmail.com>
+ <CAADnVQJdaQT_KPEjvmniCTeUed3jY0mzDNLUhKbFjpbjApMJrA@mail.gmail.com>
+ <ceec0883544b6855b7d1fda2884de775414a56c4.camel@gmail.com>
+ <a8612f7bada4cf00d47e74c1507f9ad262e8a08f.camel@gmail.com>
+ <CAADnVQKczx0pNt7f8vYmknyg7cBxrr8raOpVKmxfnSjT3UO1OQ@mail.gmail.com> <62cf34743e05aacfc754fbb84a0e1eeba14e76d2.camel@gmail.com>
+In-Reply-To: <62cf34743e05aacfc754fbb84a0e1eeba14e76d2.camel@gmail.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Fri, 31 May 2024 20:08:33 -0700
+Message-ID: <CAADnVQLh34wMpHMaSA+4mpfGbPWB3U6TgU6ozBzCUbY0pWdM7A@mail.gmail.com>
+Subject: Re: [PATCH v3 bpf-next 1/2] bpf: Relax precision marking in open
+ coded iters and may_goto loop.
+To: Eduard Zingerman <eddyz87@gmail.com>
+Cc: bpf <bpf@vger.kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@kernel.org>, 
+	Kumar Kartikeya Dwivedi <memxor@gmail.com>, Kernel Team <kernel-team@fb.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, May 31, 2024 at 12:04=E2=80=AFPM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
+On Wed, May 29, 2024 at 3:14=E2=80=AFAM Eduard Zingerman <eddyz87@gmail.com=
+> wrote:
 >
-> On Tue, May 28, 2024 at 5:25=E2=80=AFAM Alan Maguire <alan.maguire@oracle=
-.com> wrote:
-> >
-> > Share relocation implementation with the kernel.  As part of this,
-> > we also need the type/string visitation functions so add them to a
-> > btf_common.c file that also gets shared with the kernel. Relocation
-> > code in kernel and userspace is identical save for the impementation
-> > of the reparenting of split BTF to the relocated base BTF and
-> > retrieval of BTF header from "struct btf"; these small functions
-> > need separate user-space and kernel implementations.
-> >
-> > One other wrinkle on the kernel side is we have to map .BTF.ids in
-> > modules as they were generated with the type ids used at BTF encoding
-> > time. btf_relocate() optionally returns an array mapping from old BTF
-> > ids to relocated ids, so we use that to fix up these references where
-> > needed for kfuncs.
-> >
-> > Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
-> > ---
-> >  include/linux/btf.h          |  45 ++++++++++
-> >  kernel/bpf/Makefile          |  10 ++-
-> >  kernel/bpf/btf.c             | 168 +++++++++++++++++++++++++----------
-> >  tools/lib/bpf/Build          |   2 +-
-> >  tools/lib/bpf/btf.c          | 130 ---------------------------
-> >  tools/lib/bpf/btf_iter.c     | 143 +++++++++++++++++++++++++++++
-> >  tools/lib/bpf/btf_relocate.c |  23 +++++
-> >  7 files changed, 344 insertions(+), 177 deletions(-)
-> >  create mode 100644 tools/lib/bpf/btf_iter.c
-> >
+> On Tue, 2024-05-28 at 20:22 -0700, Alexei Starovoitov wrote:
 >
 > [...]
 >
-> > +static inline struct btf_decl_tag *btf_decl_tag(const struct btf_type =
-*t)
-> > +{
-> > +       return (struct btf_decl_tag *)(t + 1);
-> > +}
-> > +
-> >  static inline int btf_id_cmp_func(const void *a, const void *b)
-> >  {
-> >         const int *pa =3D a, *pb =3D b;
-> > @@ -515,9 +528,17 @@ static inline const struct bpf_struct_ops_desc *bp=
-f_struct_ops_find(struct btf *
-> >  }
-> >  #endif
 > >
-> > +typedef int (*type_id_visit_fn)(__u32 *type_id, void *ctx);
-> > +typedef int (*str_off_visit_fn)(__u32 *str_off, void *ctx);
-> > +
 >
-> let me take a quick stab at implementing type/str field iterator in
-> libbpf. If I don't get stuck anywhere, maybe you can just rebase on
-> that and avoid the callback hell and the need for this
-> callback-vs-iter churn in the kernel code as well
+> > > However, below is an example where if comparison is BPF_X.
+> > > Note that I obfuscated constant 5 as a volatile variable.
+> > > And here is what happens when verifier rejects the program:
+> >
+> > Sounds pretty much like: doctor it hurts when I do that.
 >
-
-Sent it out as one RFC patch (which unfortunately makes it harder to
-see iterator logic, sorry; but I ran out of time to split it
-properly), see [0].
-It is especially nice when per-field logic is very simple (like
-bpftool's gen.c logic, where we just remap ID). Please take a look and
-let me know what you think.
-
-  [0] https://patchwork.kernel.org/project/netdevbpf/patch/20240601014505.3=
-443241-1-andrii@kernel.org/
-
-> >  #ifdef CONFIG_BPF_SYSCALL
-> >  const struct btf_type *btf_type_by_id(const struct btf *btf, u32 type_=
-id);
-> > +void btf_set_base_btf(struct btf *btf, const struct btf *base_btf);
-> > +int btf_relocate(struct btf *btf, const struct btf *base_btf, __u32 **=
-map_ids);
-> > +int btf_type_visit_type_ids(struct btf_type *t, type_id_visit_fn visit=
-, void *ctx);
-> > +int btf_type_visit_str_offs(struct btf_type *t, str_off_visit_fn visit=
-, void *ctx);
-> >  const char *btf_name_by_offset(const struct btf *btf, u32 offset);
-> > +const char *btf_str_by_offset(const struct btf *btf, u32 offset);
-> >  struct btf *btf_parse_vmlinux(void);
-> >  struct btf *bpf_prog_get_target_btf(const struct bpf_prog *prog);
-> >  u32 *btf_kfunc_id_set_contains(const struct btf *btf, u32 kfunc_btf_id=
-,
+> Well, the point is not in the volatile variable but in the BPF_X
+> comparison instruction. The bound might a size of some buffer,
+> e.g. encoded like this:
 >
-> [...]
+> struct foo {
+>   int *items;
+>   int max_items; // suppose this is 5 for some verification path
+> };               // and 7 for another.
+>
+> And you don't need bpf_for specifically, an outer loop with
+> can_loop should also lead to get_loop_entry(...) being non-NULL.
+
+Right. Open coded iters and can_loop have the same convergence
+property. They both need loop iterations to look like infinite
+loop (same states) while bounded loop logic needs the opposite.
+It needs loop states to be different otherwise it's an infinite loop
+and prog is rejected.
+So it's simply impossible for the verifier to excel in both.
+The heuristic I'm adding is trying to make it work well
+for open coded iters and focusing on converging when loop count
+is high and impractical for a bounded loop.
+At the same time the heuristic is trying not to degrade a corner
+case where bounded loop logic might help (by recognizing
+const_dst ?=3D const_src and not widening equality operation).
+But heuristic is not going to be perfect.
+
+As I said it's two steps forward and minimal step back.
+I'm adding the following selftests:
+       volatile const int limit =3D 100000; /* global */
+        while ((v =3D bpf_iter_num_next(&it))) {
+                if (i < limit)
+                        sum +=3D arr[i++];
+        }
+influenced by your test and it passes due to widening logic.
+Such a test is an impossible task for a bounded loop.
+Hence this step forward for open coded iters is much
+bigger than corner case loss of bounded loop logic inside
+open coded iter.
+
+> > > +      volatile unsigned long five =3D 5;
+> > > +      unsigned long sum =3D 0, i =3D 0;
+> > > +      struct bpf_iter_num it;
+> > > +      int *v;
+> > > +
+> > > +      bpf_iter_num_new(&it, 0, 10);
+> > > +      while ((v =3D bpf_iter_num_next(&it))) {
+> > > +              if (i < five)
+> > > +                      sum +=3D arr[i++];
+> >
+> > If you're saying that the verifier should accept that
+> > no matter what then I have to disagree.
+> > Not interested in avoiding issues in programs that
+> > are actively looking to explore a verifier implementation detail.
+>
+> I don't think that this is a very exotic pattern,
+> such code could be written if one has a buffer with a dynamic bound
+> and seeks to fill it with items from some collection applying filtering.
+
+After thinking more I had to agree. Hence I added it as a test.
+volatile on stack is exotic and impractical, but
+volatile const int limit;
+as global var is a very real use case.
+
+My widening logic was indeed too broad for BPF_X case.
+reg_set_min_max() will see two unknown scalars and there will be
+nothing to learn bounds from.
+I'm fixing it with a double call to reg_set_min_max().
+Once for src and other_src and 2nd time for dst and other_dst.
+This way "i < five" is properly widened for both registers.
+
+> I do not insist that varifier should accept such programs,
+> but since we are going for heuristics to do the widening,
+> I think we should try and figure out a few examples when
+> heuristics breaks, just to understand if that is ok.
+
+btw the existing widen_imprecise_scalars() heuristic
+for open coded iters is more or less the same thing.
+It may hurt bounded loop logic too. A bit of hand waving:
+while ((v =3D bpf_iter_num_next(&it))) {
+   if (i < 100) {
+        j++;
+        i++;
+        // use 'j' such that it's safe only when 'j' is precise.
+  }
+
+Without this patch 'i < 100' will force precision on 'i',
+but widen_imprecise_scalars() might widen 'j'.
+
+At the end the users would need to understand how the
+verifier widened 'i < 100' to write progs with open coded iters
+and normal maps.
+Or they will switch to may_goto and arena and things will "just work".
+
+In arena progs we currently do a ton of useless mark_chain_precision
+work because of 'i < 100' conditions. When all other pointers are arena
+pointers they don't trigger precision marking.
+Only 'i < 100' do. So after this patch the verifier is doing a lot
+less work for arena programs. That's another reason why I want
+to remove precision marking after is_branch_taken.
+
+Anyway, v4 will be soon.
 
