@@ -1,191 +1,165 @@
-Return-Path: <bpf+bounces-31150-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-31151-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id DCF038D7626
-	for <lists+bpf@lfdr.de>; Sun,  2 Jun 2024 16:20:04 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0B1F88D772B
+	for <lists+bpf@lfdr.de>; Sun,  2 Jun 2024 18:35:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 922EB282825
-	for <lists+bpf@lfdr.de>; Sun,  2 Jun 2024 14:20:03 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 898D91F21462
+	for <lists+bpf@lfdr.de>; Sun,  2 Jun 2024 16:35:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA64441C6D;
-	Sun,  2 Jun 2024 14:19:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1DEC655C3A;
+	Sun,  2 Jun 2024 16:35:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="aeZtNGj8"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Dq0bR5SS"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f44.google.com (mail-wr1-f44.google.com [209.85.221.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 329AD40861;
-	Sun,  2 Jun 2024 14:19:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F1DF4778C;
+	Sun,  2 Jun 2024 16:35:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717337997; cv=none; b=BDvyWzcFf8b/ut+Iyr5rGpK/Zys2kaXXROlEA/cYdgOGmneE0uT5btdr3tzXyBLOvBVpFyrLJ3lf3U0QqIzjz4hoD9llFCQZJET5sKchhmE72JQ5INnuQnLaNM2hL1kFZHksfdy3fu0QeIGd4B5bwOPfpjl/8dEMRBMH/QsgVIQ=
+	t=1717346134; cv=none; b=j6vpniDYZWD6y1/mxQLawKOG2KReIJ11EnVJ+TvoRF7s2EazFCI9dSvk4PmNFZMZxtDwqLys7W4aSmpB9louPUdqG9I74xQMVT0gw0jDf5lVAMJlhTIn+4k3S4T7oHgTcurxNQ4IEui5tEqba+97JutZw4SSlvu6RNXIUdMOXS4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717337997; c=relaxed/simple;
-	bh=SeH9oWFSVri/bYiL+0r6iXfVRwtJYCiDV4spRm85XH0=;
-	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
-	 Mime-Version:Content-Type; b=ET6Vk4icDIFvzFbwrITYHn8LupPoojii9wUvVBekNUcM1dFNt9BP/e4Jo972cqikMJXJxzFQ09oYw6cZCZUmmu20Os0C1KbdODvckAvxAjaY0+dzyUnPocWh/ZHNfWz1qt9vQ+6uNWLBRPoVxxZtebyJIVr0CD20G0av8j7InjI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=aeZtNGj8; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id ADE04C2BBFC;
-	Sun,  2 Jun 2024 14:19:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1717337996;
-	bh=SeH9oWFSVri/bYiL+0r6iXfVRwtJYCiDV4spRm85XH0=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=aeZtNGj80P6dBrMVhzxBiC8mLZ9bYoUrqmjdD1dEvU+6K0j5kGcQ3+RwXldhxqspA
-	 x+cNLqDPTlDhsmZ/k06h+3sQeO9EMu2CpvFATRODDEt7O0Cpwf/7sSAOzeGLePKgw0
-	 uFfoLJ2++QZQUHQIPo88cMO/TxUy4IEphA6QNOzR6QJd2uVfjbV+3cA4WPU8c5BJlh
-	 c7u9OznZuzTZtyEIRsBExkYRo45mdJnj9zH61RljTC6obWI55KX5iXtvw90b3q3pFf
-	 PkarPFFsgewNvIHhvk0+MX/EAIhp9CPaLsEoyZXtftQv83jaCBu0ThMALHgJHXtEYS
-	 xOey6ph3aoZKw==
-Date: Sun, 2 Jun 2024 23:19:50 +0900
-From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To: Vlastimil Babka <vbabka@suse.cz>
-Cc: Akinobu Mita <akinobu.mita@gmail.com>, Christoph Lameter <cl@linux.com>,
- David Rientjes <rientjes@google.com>, Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko
- <andrii@kernel.org>, "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>, Anil S
- Keshavamurthy <anil.s.keshavamurthy@intel.com>, "David S. Miller"
- <davem@davemloft.net>, Steven Rostedt <rostedt@goodmis.org>, Mark Rutland
- <mark.rutland@arm.com>, Jiri Olsa <jolsa@kernel.org>, Roman Gushchin
- <roman.gushchin@linux.dev>, Hyeonggon Yoo <42.hyeyoo@gmail.com>,
- linux-kernel@vger.kernel.org, linux-mm@kvack.org, bpf@vger.kernel.org,
- linux-trace-kernel@vger.kernel.org
-Subject: Re: [PATCH RFC 2/4] error-injection: support static keys around
- injectable functions
-Message-Id: <20240602231950.cbb7bc65fce96934fb10dc06@kernel.org>
-In-Reply-To: <20240531-fault-injection-statickeys-v1-2-a513fd0a9614@suse.cz>
-References: <20240531-fault-injection-statickeys-v1-0-a513fd0a9614@suse.cz>
-	<20240531-fault-injection-statickeys-v1-2-a513fd0a9614@suse.cz>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1717346134; c=relaxed/simple;
+	bh=r82fZk9re4kiB+HKLO6WiG+MsU1AilTXXjpCSldZGF4=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=cgiusQ02nKF9IbKvqjPUre0ANZUKP3qYfw2iMxvCrdmaDNWlLP7nq9vbu2N1fNSAM39MibB7vmYEbEugTH+8+GsCVrWzeXyS58t+ku+kL2OWw5bkKewZh2YbK+PDUxwNwmrmCLlSlSs9c6+YBLTrTFGtjPxnS7iqm7Spk83enVY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Dq0bR5SS; arc=none smtp.client-ip=209.85.221.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f44.google.com with SMTP id ffacd0b85a97d-35e4be5bd7fso1031565f8f.1;
+        Sun, 02 Jun 2024 09:35:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1717346131; x=1717950931; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=d3F/P98Vvj42F4uAlpuFuX2wB1pLK9ulXz/7ywvM+Wo=;
+        b=Dq0bR5SSvLVJ/5Dn6QjQ5w2YIldf+IfZ0xkc1xKade5APFOCExr0/FnICwX0lhQRa8
+         jr/tfDnYEaaqa2SjNZFCLZ9tWsoKdP/+m2vzQhuB7TG24oIUT8hKTdi+PDPTb2fgz+B+
+         bViAs8giwixJNssKv8VB8B9rWj/dGMxdx1raTiwqO41ER4j3J3WGCKgE+Xa2xkji3GSY
+         Ty3gTenupusY+/gxFtmzg2VuTMLS8LlthcCJM5etJMCKmOhnEOqnyUiszitFwbV/bXvR
+         uTAtItJMIDRNaitycIrd/1cj60VtVg2pD/hkrMMZrzyNDt2e56+ndzNDIiTpgEpRFFy0
+         jNlQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1717346131; x=1717950931;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=d3F/P98Vvj42F4uAlpuFuX2wB1pLK9ulXz/7ywvM+Wo=;
+        b=b6kdWulmwitQk0J5s2r7V5rr9H1yDphIPItGHTZkFok5s1ix5zhZWF2Ej9xsoUc+LD
+         jyqZDCmzsryiYasG/BBqGBQrcEPw3851lKI9TPvQzmuIFgU8hM2wCEsSY7L0SLbvPM56
+         +cryL9zlrsm9nH44zYfC20WAwjFtpe6vuzVgV0is6zI51uj+jVEWzTlkvw3Rr3IZTrrz
+         3fWGL0TqQzccOYdLgJDs9yHA/OpXL3ICYdj/yHjH2eel7or6aIsGO5m66S5jVeUhI/rg
+         MaHoe2VZVmqdmZfc226khIVnkwHeJ+pSOXxIMEMOrutCKdaiLKTAlpqoDazX2Ib8lF4E
+         CzNw==
+X-Forwarded-Encrypted: i=1; AJvYcCVrgmXB0PuuGJj+puScnUvFQ7aWafW6MAxiyptzbF4HYsBhX4eEt5rjfMPUeSlco4CVYXmK+ck6HDIA561M6DQyt5yl7rN6hnjj+wiD/oqEahEUDCidZspBg9e6yLEQp2bF1fjIYkNrx9/x3D9KBFKMnGckzwOBrFX6lzilWGqjuD7ls0EH3/cUGxw/kbyIwSryGQvVioruwycl8kqYyAZTMulQrE7uUd6abqXLTW3Q86mBwQRWAIj/rGCLmVGKd8e4mcJomb3aElRf1cD73EaTEU7j5lQxgYlLrPq07w==
+X-Gm-Message-State: AOJu0YykYsI3+waM/jc63H4bVjXouhyZQ/nF80QtBMAaidTWNor++76H
+	pF8Ul1cb1wTCY7DlaJC77feJ80Bi57AU4yrrPipLkav1c5WyJ6kfMesb4cMUGqaz63d/GZG660V
+	HwcOo8vctnSUFv0kjukbktrhlblQ=
+X-Google-Smtp-Source: AGHT+IGhoPhpe51Y6Tp0rsrrRoTYtVnReDI2hgHxSRyGOSVnzBaep7p/mha6bjIlUVzy7MousDnj/U19epRohpFPBTE=
+X-Received: by 2002:a5d:4f01:0:b0:354:f66f:9292 with SMTP id
+ ffacd0b85a97d-35e0f28441amr4419798f8f.28.1717346131116; Sun, 02 Jun 2024
+ 09:35:31 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+References: <20240602023754.25443-1-laoar.shao@gmail.com> <20240602023754.25443-2-laoar.shao@gmail.com>
+ <87ikysdmsi.fsf@email.froward.int.ebiederm.org> <CALOAHbAASdjLjfDv5ZH7uj=oChKE6iYnwjKFMu6oabzqfs2QUw@mail.gmail.com>
+In-Reply-To: <CALOAHbAASdjLjfDv5ZH7uj=oChKE6iYnwjKFMu6oabzqfs2QUw@mail.gmail.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Sun, 2 Jun 2024 09:35:19 -0700
+Message-ID: <CAADnVQJ_RPg_xTjuO=+3G=4auZkS-t-F2WTs18rU2PbVdJVbdQ@mail.gmail.com>
+Subject: Re: [PATCH 1/6] fs/exec: Drop task_lock() inside __get_task_comm()
+To: Yafang Shao <laoar.shao@gmail.com>
+Cc: "Eric W. Biederman" <ebiederm@xmission.com>, Linus Torvalds <torvalds@linux-foundation.org>, 
+	linux-mm <linux-mm@kvack.org>, Linux-Fsdevel <linux-fsdevel@vger.kernel.org>, 
+	linux-trace-kernel <linux-trace-kernel@vger.kernel.org>, audit@vger.kernel.org, 
+	LSM List <linux-security-module@vger.kernel.org>, selinux@vger.kernel.org, 
+	bpf <bpf@vger.kernel.org>, Alexander Viro <viro@zeniv.linux.org.uk>, 
+	Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>, Kees Cook <keescook@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, 31 May 2024 11:33:33 +0200
-Vlastimil Babka <vbabka@suse.cz> wrote:
+On Sat, Jun 1, 2024 at 11:57=E2=80=AFPM Yafang Shao <laoar.shao@gmail.com> =
+wrote:
+>
+> On Sun, Jun 2, 2024 at 11:52=E2=80=AFAM Eric W. Biederman <ebiederm@xmiss=
+ion.com> wrote:
+> >
+> > Yafang Shao <laoar.shao@gmail.com> writes:
+> >
+> > > Quoted from Linus [0]:
+> > >
+> > >   Since user space can randomly change their names anyway, using lock=
+ing
+> > >   was always wrong for readers (for writers it probably does make sen=
+se
+> > >   to have some lock - although practically speaking nobody cares ther=
+e
+> > >   either, but at least for a writer some kind of race could have
+> > >   long-term mixed results
+> >
+> > Ugh.
+> > Ick.
+> >
+> > This code is buggy.
+> >
+> > I won't argue that Linus is wrong, about removing the
+> > task_lock.
+> >
+> > Unfortunately strscpy_pad does not work properly with the
+> > task_lock removed, and buf_size larger that TASK_COMM_LEN.
+> > There is a race that will allow reading past the end
+> > of tsk->comm, if we read while tsk->common is being
+> > updated.
+>
+> It appears so. Thanks for pointing it out. Additionally, other code,
+> such as the BPF helper bpf_get_current_comm(), also uses strscpy_pad()
+> directly without the task_lock. It seems we should change that as
+> well.
 
-> Error injectable functions cannot be inlined and since some are called
-> from hot paths, this incurrs overhead even if no error injection is
-> enabled for them.
-> 
-> To remove this overhead when disabled, allow the callsites of error
-> injectable functions to put the calls behind a static key, which the
-> framework can control when error injection is enabled or disabled for
-> the function.
-> 
-> Introduce a new ALLOW_ERROR_INJECTION_KEY() macro that adds a parameter
-> with the static key's address, and store it in struct
-> error_injection_entry. This new field has caused a mismatch when
-> populating the injection list from the _error_injection_whitelist
-> section with the current STRUCT_ALIGN(), so change the alignment to 8.
-> 
-> During the population, copy the key's address also to struct ei_entry,
-> and make it possible to retrieve it along with the error type by
-> get_injectable_error_type().
-> 
-> Finally, make the processing of writes to the debugfs inject file enable
-> the static key when the function is added to the injection list, and
-> disable when removed.
-> 
-> Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
-> ---
->  include/asm-generic/error-injection.h | 13 ++++++++++++-
->  include/asm-generic/vmlinux.lds.h     |  2 +-
->  include/linux/error-injection.h       |  9 ++++++---
->  kernel/fail_function.c                | 22 +++++++++++++++++++---
->  lib/error-inject.c                    |  6 +++++-
->  5 files changed, 43 insertions(+), 9 deletions(-)
-> 
-> diff --git a/include/asm-generic/error-injection.h b/include/asm-generic/error-injection.h
-> index b05253f68eaa..eed2731f3820 100644
-> --- a/include/asm-generic/error-injection.h
-> +++ b/include/asm-generic/error-injection.h
-> @@ -12,6 +12,7 @@ enum {
->  
->  struct error_injection_entry {
->  	unsigned long	addr;
-> +	unsigned long	static_key_addr;
->  	int		etype;
->  };
->  
-> @@ -25,16 +26,26 @@ struct pt_regs;
->   * 'Error Injectable Functions' section.
->   */
->  #define ALLOW_ERROR_INJECTION(fname, _etype)				\
-> -static struct error_injection_entry __used				\
-> +static struct error_injection_entry __used __aligned(8)			\
->  	__section("_error_injection_whitelist")				\
->  	_eil_addr_##fname = {						\
->  		.addr = (unsigned long)fname,				\
->  		.etype = EI_ETYPE_##_etype,				\
->  	}
->  
-> +#define ALLOW_ERROR_INJECTION_KEY(fname, _etype, key)			\
-> +static struct error_injection_entry __used __aligned(8)			\
-> +	__section("_error_injection_whitelist")				\
-> +	_eil_addr_##fname = {						\
-> +		.addr = (unsigned long)fname,				\
-> +		.static_key_addr = (unsigned long)key,			\
-> +		.etype = EI_ETYPE_##_etype,				\
-> +	}
-> +
->  void override_function_with_return(struct pt_regs *regs);
->  #else
->  #define ALLOW_ERROR_INJECTION(fname, _etype)
-> +#define ALLOW_ERROR_INJECTION_KEY(fname, _etype, key)
->  
->  static inline void override_function_with_return(struct pt_regs *regs) { }
->  #endif
-> diff --git a/include/asm-generic/vmlinux.lds.h b/include/asm-generic/vmlinux.lds.h
-> index 5703526d6ebf..1b15a0af2a00 100644
-> --- a/include/asm-generic/vmlinux.lds.h
-> +++ b/include/asm-generic/vmlinux.lds.h
-> @@ -248,7 +248,7 @@
->  
->  #ifdef CONFIG_FUNCTION_ERROR_INJECTION
->  #define ERROR_INJECT_WHITELIST()			\
-> -	STRUCT_ALIGN();					\
-> +	. = ALIGN(8);					\
->  	BOUNDED_SECTION(_error_injection_whitelist)
->  #else
->  #define ERROR_INJECT_WHITELIST()
-> diff --git a/include/linux/error-injection.h b/include/linux/error-injection.h
-> index 20e738f4eae8..bec81b57a9d5 100644
-> --- a/include/linux/error-injection.h
-> +++ b/include/linux/error-injection.h
-> @@ -6,10 +6,12 @@
->  #include <linux/errno.h>
->  #include <asm-generic/error-injection.h>
->  
-> +struct static_key;
-> +
->  #ifdef CONFIG_FUNCTION_ERROR_INJECTION
->  
-> -extern bool within_error_injection_list(unsigned long addr);
-> -extern int get_injectable_error_type(unsigned long addr);
-> +bool within_error_injection_list(unsigned long addr);
-> +int get_injectable_error_type(unsigned long addr, struct static_key **key_addr);
+Hmm. What race do you see?
+If lock is removed from __get_task_comm() it probably can be removed from
+__set_task_comm() as well.
+And both are calling strscpy_pad to write and read comm.
+So I don't see how it would read past sizeof(comm),
+because 'buf' passed into __set_task_comm is NUL-terminated.
+So the concurrent read will find it.
 
-This seems like an add-hoc change. Since this is called in a cold path
-(only used when adding new function), can you add new 
-`struct static_key *get_injection_key(unsigned long addr)`
-to find the static_key from the address?
+> >
+> > So __get_task_comm needs to look something like:
+> >
+> > char *__get_task_comm(char *buf, size_t buf_size, struct task_struct *t=
+sk)
+> > {
+> >         size_t len =3D buf_size;
+> >         if (len > TASK_COMM_LEN)
+> >                 len =3D TASK_COMM_LEN;
+> >         memcpy(buf, tsk->comm, len);
+> >         buf[len -1] =3D '\0';
+> >         return buf;
+> > }
+>
+> Thanks for your suggestion.
+>
+> >
+> > What shows up in buf past the '\0' is not guaranteed in the above
+> > version but I would be surprised if anyone cares.
+>
+> I believe we pad it to prevent the leakage of kernel data. In this
+> case, since no kernel data will be leaked, the following change may be
+> unnecessary.
 
-Other part looks good to me.
-
-Thank you,
-
-
-
--- 
-Masami Hiramatsu (Google) <mhiramat@kernel.org>
+It's not about leaking of kernel data, but more about not writing
+garbage past NUL.
+Because comm[] is a part of some record that is used as a key
+in a hash map.
 
