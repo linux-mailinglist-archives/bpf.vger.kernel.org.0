@@ -1,69 +1,71 @@
-Return-Path: <bpf+bounces-31143-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-31144-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2F4648D754F
-	for <lists+bpf@lfdr.de>; Sun,  2 Jun 2024 14:25:25 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6CFCE8D7550
+	for <lists+bpf@lfdr.de>; Sun,  2 Jun 2024 14:25:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A9C401F21A77
-	for <lists+bpf@lfdr.de>; Sun,  2 Jun 2024 12:25:24 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8FB961C210A4
+	for <lists+bpf@lfdr.de>; Sun,  2 Jun 2024 12:25:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B93F839FF4;
-	Sun,  2 Jun 2024 12:25:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A0DE13A29C;
+	Sun,  2 Jun 2024 12:25:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MbGdD4rA"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iE18SI1m"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f172.google.com (mail-pf1-f172.google.com [209.85.210.172])
+Received: from mail-io1-f51.google.com (mail-io1-f51.google.com [209.85.166.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD0B438DF2
-	for <bpf@vger.kernel.org>; Sun,  2 Jun 2024 12:25:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BDD3E38DF2
+	for <bpf@vger.kernel.org>; Sun,  2 Jun 2024 12:25:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717331118; cv=none; b=lGmDxPZPiQxYTTsizhVkvXIaw5OiKxHDpZM6PVwivoBkj8CmP+vN8Q1DX2tgW2o9o5je1TIdO4gDfeCxWCyP/5SSFM6cCZzz15SYNqOEWzMZt/GIpr85kNJ5MyALrGKGjHn3Bpf/ww9m63SyYFBVqxWLWEuXHHkPplLvRAO9bOE=
+	t=1717331121; cv=none; b=iYI9neFp3qaVV6cj5mAgQDu2rN30Wq7UkxH1gAfQZDg/SfIvx16DPuCYE3rG+07roGGjico8QuXLWm455bFoRHszRoal4GRn+OXGPCOQiY309K6vTmer3bIrsfrP6W47gfwBQ9VfL+kvc4LrAle5ZnH1pDuSKjfUfQFRcnoevSg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717331118; c=relaxed/simple;
-	bh=xx8D96BC45E8uU+cjA+on/cqMp6pXHJfssmSwG8AslE=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=nldHPn3wHwjrEvi2MKNzbFcC5G86FQpmKt1BGuswCSwr9pH6KgH6yIdYrhMythx/G+SalLc6enu7y1kbjLOaarra07I1XKUoAJJNLy4y67oAIezUIv28NRxhW3zdF+yT+0gvC58nKxmycueE+9kbVqy8aIuXKH6DMdpP4bJqp7k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=MbGdD4rA; arc=none smtp.client-ip=209.85.210.172
+	s=arc-20240116; t=1717331121; c=relaxed/simple;
+	bh=/NWLJpAp6WyHoqyJM8ptSDqXquXUD/eNAIQPCqGsth0=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=dFJrW49zHrtu7pr8gaGWKeKgT6krJuT33JIhCGQ/uBZNvBKCrS+Z16JFXQ0BU8U4543kPyqBIbxFYk8xhf+ZWUGLN9S2lq3YmqNRiim170VlB8FVrFLPOGI1Cd6ngcZHBaU8r++w+fgfxbZhuzugmmHaKrTahTyGVi/2c8zDa3s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=iE18SI1m; arc=none smtp.client-ip=209.85.166.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f172.google.com with SMTP id d2e1a72fcca58-702621d8725so541920b3a.0
-        for <bpf@vger.kernel.org>; Sun, 02 Jun 2024 05:25:16 -0700 (PDT)
+Received: by mail-io1-f51.google.com with SMTP id ca18e2360f4ac-7e9113f0cc8so149008039f.2
+        for <bpf@vger.kernel.org>; Sun, 02 Jun 2024 05:25:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1717331115; x=1717935915; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=Qq4OdyrFnzEatH/mALSK8870bjUA3Kob6K2HdNXeR4E=;
-        b=MbGdD4rAgIl2nUvU8wx+YvIzbdPn0NwSXdKp8LMJX9nenZmnukFkPkSd0Xfq+k1UyV
-         z+lzgybaCJGngBkPOE71wLYJyr6Ky6XKQHbHydZf0zAPTacFM/fp866OFIU98pbuxffX
-         fZPBOhB2vO7K28PNxKl9VaxOlRMH8c/vYbycFnK+U5dQ6t4w14Yzmn0gIADLnYnFjIea
-         0rz+QXGYvG/Z3ZYxEj6AUkHjWAGWoKY6E+qRpUTmuvB1nkbG5szPfhFFXQp6eNeTGNQv
-         0sy+QZDy5MPKw4Xxs7KwTMLRuTKdC76fQ0YyZqENBky1oBWfJR4l08rmk4kYuoS4d7UC
-         KOEw==
+        d=gmail.com; s=20230601; t=1717331117; x=1717935917; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=16cwHBYsC4fBGL5DHiEXEg+jLqoS3mXtK6Q+iZcxcN0=;
+        b=iE18SI1mpCAXnXEJEE7SIOWbSvt0CHul0ckKj4K4wKoPzgyM0ICV1apJRJgv2e0/y/
+         pUCj3zYYS24ZTF+sW9j4p5QYXw0fet5vBlulo26aHGC7EfYsCVUkmGil9ri247ooNc28
+         vBQcePXfsYr7GPHdPVS96Lceeum9/yTdFL4x0OTDPaXSpIH5d9qtiiYHGlUzx/wUK400
+         103yQdatmd5k51p/AZd4EM7tivsGjdFbatH43wklffAmiD2RTqopwmx5kt7lNCLa/Ttb
+         MViLrc8Dj9V2IDa31S9/N3uL4t1w/kciYVC0oNqC4KvhvbMDmGr/rRoJpycwsfnB7cm9
+         g+gg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1717331115; x=1717935915;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Qq4OdyrFnzEatH/mALSK8870bjUA3Kob6K2HdNXeR4E=;
-        b=Zsi21Px82sX4DMS6HgVUCl8P/GaFZAfrSMgnX+LnCeclmM1JOUt80owL1l/EVJCtf9
-         Hia2y7JHjzfQ2vWxKT5tu2kNNhXcwNdcBkaeJk3L+RJcgS7AwQTB6AYYZ+OawCVlpxhO
-         dIEm95Ykd9oWwPpaT5mQO/bDQ1a9zkf6+dwMszzx1LV0DDfvrwCarvlDntuhCxLKyAwt
-         rr6d2ooP2HykmlvfI9mAoisYPELIVDWqUhkWOvTnCvDBpndRfc7lnF75vwsNh5a/GbYr
-         G1hSjhRHrlXc8eVEDIX8FISefM3TujGZannUCBM7Ay4cXw4ZuE+jgwgQw24JQcP6wXUW
-         A0+A==
-X-Gm-Message-State: AOJu0Yx3ngI5OYr7d2t/0WJGalWgbaAWWSSUa5SOuvZbEr0XJQnbq5Tm
-	whObK658vmdWwHeWet6twSIcg3PhN3KqZVaygqi+JaYB9J21MKcoCfNPLg==
-X-Google-Smtp-Source: AGHT+IHjrQ0HiCJ0NRnrEcl3vyrARMr25w3zjstGynt6E22ksMHN8H+xAoO7aUs06J/WSyC4CakccQ==
-X-Received: by 2002:a05:6a00:4a85:b0:6f0:be31:8577 with SMTP id d2e1a72fcca58-7024789b03dmr5061356b3a.22.1717331114785;
-        Sun, 02 Jun 2024 05:25:14 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1717331117; x=1717935917;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=16cwHBYsC4fBGL5DHiEXEg+jLqoS3mXtK6Q+iZcxcN0=;
+        b=aQnkINQxzzT3ZdO/CX0TNTeHcZfwLk9ParFOnpm8qgmF9D3Whvg5tLB6wSW7/gPYgO
+         L6azlzNyKxIZBFhVGRF3K78KvaQdha6Df+FgRkeC6z0m1aTqjTpGcwhCo+Qk/nwiTK4S
+         U7Z6bOmbolV8AQxn7FleYZ//3R3lK9I025Wxt2oF5rcmtWPE1H95Zlf7UD4yTBCyirpx
+         9Ly08yZ31wGRt7rCxX6vi/wyOqhUvgfSSrqx66fHfN4E5ny0w7vTj2YFG3l6oqtjsMjN
+         /iO/KkHB/SG+wKDCkScO6ZOjEXNruZbDZmL88etlbY/DIrVFN3pBTWjcp/6Us0hnGCHN
+         J9cA==
+X-Gm-Message-State: AOJu0YwhDur09yUW9dwqYnOT4cKC4HMEPItwd0On748OpWxhp+PQlgWp
+	uYNvP7rtrMM03kapfNt/tdCTxCbneIN9kU9AxV47n0xZzwVdDp+JBsC+vQ==
+X-Google-Smtp-Source: AGHT+IEESUhvZ/jOQljINn0M1GQenQocrWhd1zrdKITVyFm+M1qyeBQfDSIiVU5+mRREFV24mlKEMA==
+X-Received: by 2002:a05:6602:15c8:b0:7e1:8839:a32 with SMTP id ca18e2360f4ac-7eafff2d9dbmr827983239f.16.1717331117270;
+        Sun, 02 Jun 2024 05:25:17 -0700 (PDT)
 Received: from localhost.localdomain (bb116-14-181-187.singnet.com.sg. [116.14.181.187])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-702423dc0ebsm3965332b3a.68.2024.06.02.05.25.12
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-702423dc0ebsm3965332b3a.68.2024.06.02.05.25.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 02 Jun 2024 05:25:14 -0700 (PDT)
+        Sun, 02 Jun 2024 05:25:16 -0700 (PDT)
 From: Leon Hwang <hffilwlqm@gmail.com>
 To: bpf@vger.kernel.org
 Cc: ast@kernel.org,
@@ -71,10 +73,12 @@ Cc: ast@kernel.org,
 	andrii@kernel.org,
 	toke@redhat.com,
 	hffilwlqm@gmail.com
-Subject: [RFC PATCH bpf-next 0/2] bpf: Fix updating attached freplace to PROG_ARRAY map
-Date: Sun,  2 Jun 2024 20:24:19 +0800
-Message-ID: <20240602122421.50892-1-hffilwlqm@gmail.com>
+Subject: [RFC PATCH bpf-next 1/2] bpf: Fix updating attached freplace to PROG_ARRAY map
+Date: Sun,  2 Jun 2024 20:24:20 +0800
+Message-ID: <20240602122421.50892-2-hffilwlqm@gmail.com>
 X-Mailer: git-send-email 2.44.0
+In-Reply-To: <20240602122421.50892-1-hffilwlqm@gmail.com>
+References: <20240602122421.50892-1-hffilwlqm@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -83,8 +87,13 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-When I try to run selftests to confirm that I fix the tailcall hierarchy
-issue[0], it hits a kernel NULL pointer dereference BUG.
+Since commit 1c123c567fb138eb ("bpf: Resolve fext program type when
+checking map compatibility"), freplace prog can be used as tail-callee.
+
+However, when freplace prog has been attached and then updates to
+PROG_ARRAY map, it will panic, because the updating checks prog type of
+freplace prog by 'prog->aux->dst_prog->type' and 'prog->aux->dst_prog' of
+freplace prog is NULL.
 
 [309049.036402] BUG: kernel NULL pointer dereference, address: 0000000000000004
 [309049.036419] #PF: supervisor read access in kernel mode
@@ -129,43 +138,36 @@ issue[0], it hits a kernel NULL pointer dereference BUG.
 [309049.036723]  ? common_interrupt+0x54/0xb0
 [309049.036729]  entry_SYSCALL_64_after_hwframe+0x73/0x7b
 
-It causes by these two commits:
+Why 'prog->aux->dst_prog' of freplace prog is NULL? It causes by commit 3aac1ead5eb6
+("bpf: Move prog->aux->linked_prog and trampoline into bpf_link on attach").
 
-- commit 1c123c567fb1 ("bpf: Resolve fext program type when checking map compatibility")
-- commit 3aac1ead5eb6 ("bpf: Move prog->aux->linked_prog and trampoline into bpf_link on attach")
+As 'prog->aux->dst_prog' of freplace prog is set as NULL when attach,
+freplace prog does not have stable prog type. But when to update
+freplace prog to PROG_ARRAY map, it requires checking prog type. They are
+conflict in theory.
 
-After freplace attachment, 'prog->aux->dst_prog' is set as NULL. Then,
-when to update freplace prog to PROG_ARRAY map, 'resolve_prog_type()'
-resolves freplace prog type by 'prog->aux->dst_prog->type'. Finally, the
-BUG hits.
+This patch is unable to resolve this issue thoroughly. It resolves prog
+type of freplace prog by 'prog->aux->saved_dst_prog_type' to avoid panic.
 
-This patchset resolves freplace prog type by
-'prog->aux->saved_dst_prog_type' to avoid the BUG.
+Fixes: 1c123c567fb1 ("bpf: Resolve fext program type when checking map compatibility")
+Signed-off-by: Leon Hwang <hffilwlqm@gmail.com>
+---
+ include/linux/bpf_verifier.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-However, it does not resolve this issue thoroughly, because the prog type
-of freplace prog is not stable as freplace prog can attach to different
-types of prog.
-
-So, I raise an RFC PATCH to discuss how to resolve it thoroughly.
-
-Links:
-[0] https://lore.kernel.org/bpf/6203dd01-789d-f02c-5293-def4c1b18aef@gmail.com/
-
-Leon Hwang (2):
-  bpf: Fix updating attached freplace to PROG_ARRAY map
-  selftests/bpf: Add testcase for updating attached freplace prog to
-    PROG_ARRAY map
-
- include/linux/bpf_verifier.h                  |  2 +-
- .../selftests/bpf/prog_tests/tailcalls.c      | 82 +++++++++++++++++++
- .../selftests/bpf/progs/tailcall_freplace.c   | 34 ++++++++
- .../testing/selftests/bpf/progs/tc_bpf2bpf.c  | 21 +++++
- 4 files changed, 138 insertions(+), 1 deletion(-)
- create mode 100644 tools/testing/selftests/bpf/progs/tailcall_freplace.c
- create mode 100644 tools/testing/selftests/bpf/progs/tc_bpf2bpf.c
-
-
-base-commit: c939103fc8ef1df0984b8665f157ff88e51373fe
+diff --git a/include/linux/bpf_verifier.h b/include/linux/bpf_verifier.h
+index 50aa87f8d77ff..b648a96ca310b 100644
+--- a/include/linux/bpf_verifier.h
++++ b/include/linux/bpf_verifier.h
+@@ -845,7 +845,7 @@ static inline u32 type_flag(u32 type)
+ static inline enum bpf_prog_type resolve_prog_type(const struct bpf_prog *prog)
+ {
+ 	return prog->type == BPF_PROG_TYPE_EXT ?
+-		prog->aux->dst_prog->type : prog->type;
++		prog->aux->saved_dst_prog_type : prog->type;
+ }
+ 
+ static inline bool bpf_prog_check_recur(const struct bpf_prog *prog)
 -- 
 2.44.0
 
