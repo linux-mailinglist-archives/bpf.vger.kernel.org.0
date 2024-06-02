@@ -1,71 +1,71 @@
-Return-Path: <bpf+bounces-31144-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-31145-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6CFCE8D7550
-	for <lists+bpf@lfdr.de>; Sun,  2 Jun 2024 14:25:27 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0D5568D7551
+	for <lists+bpf@lfdr.de>; Sun,  2 Jun 2024 14:25:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8FB961C210A4
-	for <lists+bpf@lfdr.de>; Sun,  2 Jun 2024 12:25:26 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 307081C21098
+	for <lists+bpf@lfdr.de>; Sun,  2 Jun 2024 12:25:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A0DE13A29C;
-	Sun,  2 Jun 2024 12:25:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CC9973B2A2;
+	Sun,  2 Jun 2024 12:25:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iE18SI1m"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JpouTQiG"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-io1-f51.google.com (mail-io1-f51.google.com [209.85.166.51])
+Received: from mail-pf1-f172.google.com (mail-pf1-f172.google.com [209.85.210.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BDD3E38DF2
-	for <bpf@vger.kernel.org>; Sun,  2 Jun 2024 12:25:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA7433B1AC
+	for <bpf@vger.kernel.org>; Sun,  2 Jun 2024 12:25:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717331121; cv=none; b=iYI9neFp3qaVV6cj5mAgQDu2rN30Wq7UkxH1gAfQZDg/SfIvx16DPuCYE3rG+07roGGjico8QuXLWm455bFoRHszRoal4GRn+OXGPCOQiY309K6vTmer3bIrsfrP6W47gfwBQ9VfL+kvc4LrAle5ZnH1pDuSKjfUfQFRcnoevSg=
+	t=1717331123; cv=none; b=IFW0Cwg4szBu15h4Ljh+GBa2XRQ4FyaasT3kFunKOAuatq9EmCcQMNIhqW+iILQd1IZk5mtLrlYGS72HRYCXLIPSrb42CFcdvOvdGP1Y0sHWMpn15M7po08VV9/8RKuyYaN0MFeGyNi1gOWzinkoWKgEAvGYSHzFAMkxYyvVMP4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717331121; c=relaxed/simple;
-	bh=/NWLJpAp6WyHoqyJM8ptSDqXquXUD/eNAIQPCqGsth0=;
+	s=arc-20240116; t=1717331123; c=relaxed/simple;
+	bh=/viBrLTzTh460412xUuXQfBIfNOtMPxRMbyWkKqiUME=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=dFJrW49zHrtu7pr8gaGWKeKgT6krJuT33JIhCGQ/uBZNvBKCrS+Z16JFXQ0BU8U4543kPyqBIbxFYk8xhf+ZWUGLN9S2lq3YmqNRiim170VlB8FVrFLPOGI1Cd6ngcZHBaU8r++w+fgfxbZhuzugmmHaKrTahTyGVi/2c8zDa3s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=iE18SI1m; arc=none smtp.client-ip=209.85.166.51
+	 MIME-Version; b=LomsEVFNo0NTs5qGNWzJy/5fB6+Lixz6rbLEZkVyy6hTDgcf0VXr4L/3APY7jEOpAroLf854q3PQVgUH3J1wnIgi4ClYmyEi1u3zkUhG6Z1EAJiCRFL3toBKTKNOcsavkLqOmm6lLOo5pAz9Cuzw2uBFu3cis/CFnM9TMUcrV5I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=JpouTQiG; arc=none smtp.client-ip=209.85.210.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-io1-f51.google.com with SMTP id ca18e2360f4ac-7e9113f0cc8so149008039f.2
-        for <bpf@vger.kernel.org>; Sun, 02 Jun 2024 05:25:19 -0700 (PDT)
+Received: by mail-pf1-f172.google.com with SMTP id d2e1a72fcca58-7024791a950so1308893b3a.0
+        for <bpf@vger.kernel.org>; Sun, 02 Jun 2024 05:25:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1717331117; x=1717935917; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1717331120; x=1717935920; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=16cwHBYsC4fBGL5DHiEXEg+jLqoS3mXtK6Q+iZcxcN0=;
-        b=iE18SI1mpCAXnXEJEE7SIOWbSvt0CHul0ckKj4K4wKoPzgyM0ICV1apJRJgv2e0/y/
-         pUCj3zYYS24ZTF+sW9j4p5QYXw0fet5vBlulo26aHGC7EfYsCVUkmGil9ri247ooNc28
-         vBQcePXfsYr7GPHdPVS96Lceeum9/yTdFL4x0OTDPaXSpIH5d9qtiiYHGlUzx/wUK400
-         103yQdatmd5k51p/AZd4EM7tivsGjdFbatH43wklffAmiD2RTqopwmx5kt7lNCLa/Ttb
-         MViLrc8Dj9V2IDa31S9/N3uL4t1w/kciYVC0oNqC4KvhvbMDmGr/rRoJpycwsfnB7cm9
-         g+gg==
+        bh=Jj/4lZtklNs69HktwAk7FvEtlxhu4qvh1cteuOyN0NE=;
+        b=JpouTQiGHMxerOQaSekP5JzEC0DlrRJAxhgSOXzctGnG1zWcMnAZ3MzJtalvnK3pxY
+         Bg4a9P8l+h+4gsNslWB8VVP/2Ay5Pwlu0XBleVRPQcvbNGgpUspxPqlUg6ACXPsRZmfI
+         8a1MaViY9frhpR3yqMCE4oBujzYA1Sqj3UHcsCiaqgF7Nbtt9i21BboxoKSRBgP67e6P
+         x+zNh2AsqIvFDm1PRo9/tEB5T1/WIlNOCE7YTqJDURjRRI/DvDZSmkZJDBNc0KiRDxBi
+         7k4HNRYOdFzkA2pIop+x0bbjEOmAJIaXX8+dqNYCMwoEixItDkS1hzABZ7pVylMBirSo
+         WD0Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1717331117; x=1717935917;
+        d=1e100.net; s=20230601; t=1717331120; x=1717935920;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=16cwHBYsC4fBGL5DHiEXEg+jLqoS3mXtK6Q+iZcxcN0=;
-        b=aQnkINQxzzT3ZdO/CX0TNTeHcZfwLk9ParFOnpm8qgmF9D3Whvg5tLB6wSW7/gPYgO
-         L6azlzNyKxIZBFhVGRF3K78KvaQdha6Df+FgRkeC6z0m1aTqjTpGcwhCo+Qk/nwiTK4S
-         U7Z6bOmbolV8AQxn7FleYZ//3R3lK9I025Wxt2oF5rcmtWPE1H95Zlf7UD4yTBCyirpx
-         9Ly08yZ31wGRt7rCxX6vi/wyOqhUvgfSSrqx66fHfN4E5ny0w7vTj2YFG3l6oqtjsMjN
-         /iO/KkHB/SG+wKDCkScO6ZOjEXNruZbDZmL88etlbY/DIrVFN3pBTWjcp/6Us0hnGCHN
-         J9cA==
-X-Gm-Message-State: AOJu0YwhDur09yUW9dwqYnOT4cKC4HMEPItwd0On748OpWxhp+PQlgWp
-	uYNvP7rtrMM03kapfNt/tdCTxCbneIN9kU9AxV47n0xZzwVdDp+JBsC+vQ==
-X-Google-Smtp-Source: AGHT+IEESUhvZ/jOQljINn0M1GQenQocrWhd1zrdKITVyFm+M1qyeBQfDSIiVU5+mRREFV24mlKEMA==
-X-Received: by 2002:a05:6602:15c8:b0:7e1:8839:a32 with SMTP id ca18e2360f4ac-7eafff2d9dbmr827983239f.16.1717331117270;
-        Sun, 02 Jun 2024 05:25:17 -0700 (PDT)
+        bh=Jj/4lZtklNs69HktwAk7FvEtlxhu4qvh1cteuOyN0NE=;
+        b=Lpn8At6vXp8c0nKBIbDkB3dFFWk0OwZRQeyVwGI8eIcs3bxyQawx/Y3MpxNTxR3jQX
+         BM+3ZaRxQFxC8yZrs4+Hgnf+Bh89diZNsRqzg6vQXfxVeZbJrN9AUYW8gMjMSemD1gxj
+         uUM90R26TuDJ2us1AbBXa9SC2kVVAn4vYQPTQgChHuZTSjKXdJNEAoLhsgzkCsQzbXUL
+         CAo/oIkm8qtejuM10Qp/DeKNP+3RSj+/kfz2mRrUezKBySzdWjFC0oIPIgGnI3DeyzRa
+         RJig/NGqFucbmriXNbVHiOimj4Z+UBbLQT8f7DR15Bk2lyIjNIiKH7JoGlgzXl8U47Is
+         1gUw==
+X-Gm-Message-State: AOJu0YwUB6ooAFys4jQ5+ltL6DjBBjt+CEwdZwTAfkWFYVdm+zQipzGi
+	z6LyIgCdb0W8fTKEyTTOvkoQf2mK5nh1Pa4dLgNWhXHNYmrH76LKSAH+Lg==
+X-Google-Smtp-Source: AGHT+IHFwQHRpiN96pj19oOWP357zL/N9pCXzUGJwr9yUBO3G9xNfErjhbv8ZfFmJPhc6uBT27WwzQ==
+X-Received: by 2002:a05:6a21:789c:b0:1b0:20e9:d215 with SMTP id adf61e73a8af0-1b26f16ec7bmr10443130637.14.1717331119825;
+        Sun, 02 Jun 2024 05:25:19 -0700 (PDT)
 Received: from localhost.localdomain (bb116-14-181-187.singnet.com.sg. [116.14.181.187])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-702423dc0ebsm3965332b3a.68.2024.06.02.05.25.15
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-702423dc0ebsm3965332b3a.68.2024.06.02.05.25.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 02 Jun 2024 05:25:16 -0700 (PDT)
+        Sun, 02 Jun 2024 05:25:19 -0700 (PDT)
 From: Leon Hwang <hffilwlqm@gmail.com>
 To: bpf@vger.kernel.org
 Cc: ast@kernel.org,
@@ -73,9 +73,9 @@ Cc: ast@kernel.org,
 	andrii@kernel.org,
 	toke@redhat.com,
 	hffilwlqm@gmail.com
-Subject: [RFC PATCH bpf-next 1/2] bpf: Fix updating attached freplace to PROG_ARRAY map
-Date: Sun,  2 Jun 2024 20:24:20 +0800
-Message-ID: <20240602122421.50892-2-hffilwlqm@gmail.com>
+Subject: [RFC PATCH bpf-next 2/2] selftests/bpf: Add testcase for updating attached freplace prog to PROG_ARRAY map
+Date: Sun,  2 Jun 2024 20:24:21 +0800
+Message-ID: <20240602122421.50892-3-hffilwlqm@gmail.com>
 X-Mailer: git-send-email 2.44.0
 In-Reply-To: <20240602122421.50892-1-hffilwlqm@gmail.com>
 References: <20240602122421.50892-1-hffilwlqm@gmail.com>
@@ -87,87 +87,195 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Since commit 1c123c567fb138eb ("bpf: Resolve fext program type when
-checking map compatibility"), freplace prog can be used as tail-callee.
+Add a selftest to confirm the issue, panic when update attached freplace
+prog to PROG_ARRAY map, has been fixed.
 
-However, when freplace prog has been attached and then updates to
-PROG_ARRAY map, it will panic, because the updating checks prog type of
-freplace prog by 'prog->aux->dst_prog->type' and 'prog->aux->dst_prog' of
-freplace prog is NULL.
+cd tools/testing/selftests/bpf; ./test_progs -t tailcall
+324/18  tailcalls/tailcall_freplace:OK
+324     tailcalls:OK
+Summary: 1/18 PASSED, 0 SKIPPED, 0 FAILED
 
-[309049.036402] BUG: kernel NULL pointer dereference, address: 0000000000000004
-[309049.036419] #PF: supervisor read access in kernel mode
-[309049.036426] #PF: error_code(0x0000) - not-present page
-[309049.036432] PGD 0 P4D 0
-[309049.036437] Oops: 0000 [#1] PREEMPT SMP NOPTI
-[309049.036444] CPU: 2 PID: 788148 Comm: test_progs Not tainted 6.8.0-31-generic #31-Ubuntu
-[309049.036465] Hardware name: VMware, Inc. VMware20,1/440BX Desktop Reference Platform, BIOS VMW201.00V.21805430.B64.2305221830 05/22/2023
-[309049.036477] RIP: 0010:bpf_prog_map_compatible+0x2a/0x140
-[309049.036488] Code: 0f 1f 44 00 00 55 48 89 e5 41 57 41 56 49 89 fe 41 55 41 54 53 44 8b 6e 04 48 89 f3 41 83 fd 1c 75 0c 48 8b 46 38 48 8b 40 70 <44> 8b 68 04 f6 43 03 01 75 1c 48 8b 43 38 44 0f b6 a0 89 00 00 00
-[309049.036505] RSP: 0018:ffffb2e080fd7ce0 EFLAGS: 00010246
-[309049.036513] RAX: 0000000000000000 RBX: ffffb2e0807c1000 RCX: 0000000000000000
-[309049.036521] RDX: 0000000000000000 RSI: ffffb2e0807c1000 RDI: ffff990290259e00
-[309049.036528] RBP: ffffb2e080fd7d08 R08: 0000000000000000 R09: 0000000000000000
-[309049.036536] R10: 0000000000000000 R11: 0000000000000000 R12: ffff990290259e00
-[309049.036543] R13: 000000000000001c R14: ffff990290259e00 R15: ffff99028e29c400
-[309049.036551] FS:  00007b82cbc28140(0000) GS:ffff9903b3f00000(0000) knlGS:0000000000000000
-[309049.036559] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[309049.036566] CR2: 0000000000000004 CR3: 0000000101286002 CR4: 00000000003706f0
-[309049.036573] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-[309049.036581] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-[309049.036588] Call Trace:
-[309049.036592]  <TASK>
-[309049.036597]  ? show_regs+0x6d/0x80
-[309049.036604]  ? __die+0x24/0x80
-[309049.036619]  ? page_fault_oops+0x99/0x1b0
-[309049.036628]  ? do_user_addr_fault+0x2ee/0x6b0
-[309049.036634]  ? exc_page_fault+0x83/0x1b0
-[309049.036641]  ? asm_exc_page_fault+0x27/0x30
-[309049.036649]  ? bpf_prog_map_compatible+0x2a/0x140
-[309049.036656]  prog_fd_array_get_ptr+0x2c/0x70
-[309049.036664]  bpf_fd_array_map_update_elem+0x37/0x130
-[309049.036671]  bpf_map_update_value+0x1d3/0x260
-[309049.036677]  map_update_elem+0x1fa/0x360
-[309049.036683]  __sys_bpf+0x54c/0xa10
-[309049.036689]  __x64_sys_bpf+0x1a/0x30
-[309049.036694]  x64_sys_call+0x1936/0x25c0
-[309049.036700]  do_syscall_64+0x7f/0x180
-[309049.036706]  ? do_syscall_64+0x8c/0x180
-[309049.036712]  ? do_syscall_64+0x8c/0x180
-[309049.036717]  ? irqentry_exit+0x43/0x50
-[309049.036723]  ? common_interrupt+0x54/0xb0
-[309049.036729]  entry_SYSCALL_64_after_hwframe+0x73/0x7b
-
-Why 'prog->aux->dst_prog' of freplace prog is NULL? It causes by commit 3aac1ead5eb6
-("bpf: Move prog->aux->linked_prog and trampoline into bpf_link on attach").
-
-As 'prog->aux->dst_prog' of freplace prog is set as NULL when attach,
-freplace prog does not have stable prog type. But when to update
-freplace prog to PROG_ARRAY map, it requires checking prog type. They are
-conflict in theory.
-
-This patch is unable to resolve this issue thoroughly. It resolves prog
-type of freplace prog by 'prog->aux->saved_dst_prog_type' to avoid panic.
-
-Fixes: 1c123c567fb1 ("bpf: Resolve fext program type when checking map compatibility")
 Signed-off-by: Leon Hwang <hffilwlqm@gmail.com>
 ---
- include/linux/bpf_verifier.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ .../selftests/bpf/prog_tests/tailcalls.c      | 82 +++++++++++++++++++
+ .../selftests/bpf/progs/tailcall_freplace.c   | 34 ++++++++
+ .../testing/selftests/bpf/progs/tc_bpf2bpf.c  | 21 +++++
+ 3 files changed, 137 insertions(+)
+ create mode 100644 tools/testing/selftests/bpf/progs/tailcall_freplace.c
+ create mode 100644 tools/testing/selftests/bpf/progs/tc_bpf2bpf.c
 
-diff --git a/include/linux/bpf_verifier.h b/include/linux/bpf_verifier.h
-index 50aa87f8d77ff..b648a96ca310b 100644
---- a/include/linux/bpf_verifier.h
-+++ b/include/linux/bpf_verifier.h
-@@ -845,7 +845,7 @@ static inline u32 type_flag(u32 type)
- static inline enum bpf_prog_type resolve_prog_type(const struct bpf_prog *prog)
- {
- 	return prog->type == BPF_PROG_TYPE_EXT ?
--		prog->aux->dst_prog->type : prog->type;
-+		prog->aux->saved_dst_prog_type : prog->type;
+diff --git a/tools/testing/selftests/bpf/prog_tests/tailcalls.c b/tools/testing/selftests/bpf/prog_tests/tailcalls.c
+index 59993fc9c0d7e..d0c6f0d2a4233 100644
+--- a/tools/testing/selftests/bpf/prog_tests/tailcalls.c
++++ b/tools/testing/selftests/bpf/prog_tests/tailcalls.c
+@@ -3,6 +3,8 @@
+ #include <test_progs.h>
+ #include <network_helpers.h>
+ #include "tailcall_poke.skel.h"
++#include "tailcall_freplace.skel.h"
++#include "tc_bpf2bpf.skel.h"
+ 
+ 
+ /* test_tailcall_1 checks basic functionality by patching multiple locations
+@@ -1187,6 +1189,84 @@ static void test_tailcall_poke(void)
+ 	tailcall_poke__destroy(call);
  }
  
- static inline bool bpf_prog_check_recur(const struct bpf_prog *prog)
++static void test_tailcall_freplace(void)
++{
++	struct tailcall_freplace *skel = NULL;
++	struct tc_bpf2bpf *tgt_skel = NULL;
++	struct bpf_link *freplace = NULL;
++	struct bpf_map *data_map;
++	int prog_fd, data_fd;
++	char buff[128] = {};
++	__u32 key = 0;
++	int err, val;
++
++	LIBBPF_OPTS(bpf_test_run_opts, topts,
++		    .data_in = buff,
++		    .data_size_in = sizeof(buff),
++		    .repeat = 1,
++	);
++
++	skel = tailcall_freplace__open();
++	if (!ASSERT_OK_PTR(skel, "open skel"))
++		goto out;
++
++	tgt_skel = tc_bpf2bpf__open_and_load();
++	if (!ASSERT_OK_PTR(tgt_skel, "open tgt_skel"))
++		goto out;
++
++	err = bpf_program__set_attach_target(skel->progs.entry,
++					     bpf_program__fd(tgt_skel->progs.entry),
++					     "subprog");
++	if (!ASSERT_OK(err, "set_attach_target"))
++		goto out;
++
++	err = tailcall_freplace__load(skel);
++	if (!ASSERT_OK(err, "load skel"))
++		goto out;
++
++	freplace = bpf_program__attach_freplace(skel->progs.entry,
++						bpf_program__fd(tgt_skel->progs.entry),
++						"subprog");
++	if (!ASSERT_OK_PTR(freplace, "attatch_freplace"))
++		goto out;
++
++	prog_fd = bpf_program__fd(skel->progs.entry);
++	if (!ASSERT_GE(prog_fd, 0, "prog_fd"))
++		goto out;
++
++	err = bpf_map_update_elem(bpf_map__fd(skel->maps.jmp_table), &key,
++				  &prog_fd, BPF_ANY);
++	if (!ASSERT_OK(err, "update jmp_table"))
++		goto out;
++
++	prog_fd = bpf_program__fd(tgt_skel->progs.entry);
++	if (!ASSERT_GE(prog_fd, 0, "prog_fd"))
++		goto out;
++
++	err = bpf_prog_test_run_opts(prog_fd, &topts);
++	ASSERT_OK(err, "test_run");
++	ASSERT_EQ(topts.retval, 1, "test_run retval");
++
++	data_map = bpf_object__find_map_by_name(skel->obj, ".bss");
++	if (!ASSERT_FALSE(!data_map || !bpf_map__is_internal(data_map),
++			  "find .bss map"))
++		goto out;
++
++	data_fd = bpf_map__fd(data_map);
++	if (!ASSERT_GE(data_fd, 0, ".bss map_fd"))
++		goto out;
++
++	key = 0;
++	err = bpf_map_lookup_elem(data_fd, &key, &val);
++	ASSERT_OK(err, "tailcall count");
++	ASSERT_EQ(val, 34, "tailcall count");
++
++out:
++	bpf_link__destroy(freplace);
++	tc_bpf2bpf__destroy(tgt_skel);
++	tailcall_freplace__destroy(skel);
++}
++
+ void test_tailcalls(void)
+ {
+ 	if (test__start_subtest("tailcall_1"))
+@@ -1223,4 +1303,6 @@ void test_tailcalls(void)
+ 		test_tailcall_bpf2bpf_fentry_entry();
+ 	if (test__start_subtest("tailcall_poke"))
+ 		test_tailcall_poke();
++	if (test__start_subtest("tailcall_freplace"))
++		test_tailcall_freplace();
+ }
+diff --git a/tools/testing/selftests/bpf/progs/tailcall_freplace.c b/tools/testing/selftests/bpf/progs/tailcall_freplace.c
+new file mode 100644
+index 0000000000000..fe25343e9d2fa
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/tailcall_freplace.c
+@@ -0,0 +1,34 @@
++// SPDX-License-Identifier: GPL-2.0
++
++#include <linux/bpf.h>
++#include <bpf/bpf_helpers.h>
++#include "bpf_legacy.h"
++
++struct {
++	__uint(type, BPF_MAP_TYPE_PROG_ARRAY);
++	__uint(max_entries, 1);
++	__uint(key_size, sizeof(__u32));
++	__uint(value_size, sizeof(__u32));
++} jmp_table SEC(".maps");
++
++int count = 0;
++
++__noinline int
++subprog(struct __sk_buff *skb)
++{
++	volatile int ret = 1;
++
++	count++;
++
++	bpf_tail_call_static(skb, &jmp_table, 0);
++
++	return ret;
++}
++
++SEC("freplace")
++int entry(struct __sk_buff *skb)
++{
++	return subprog(skb);
++}
++
++char __license[] SEC("license") = "GPL";
+diff --git a/tools/testing/selftests/bpf/progs/tc_bpf2bpf.c b/tools/testing/selftests/bpf/progs/tc_bpf2bpf.c
+new file mode 100644
+index 0000000000000..54abda6c3246e
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/tc_bpf2bpf.c
+@@ -0,0 +1,21 @@
++// SPDX-License-Identifier: GPL-2.0
++
++#include <linux/bpf.h>
++#include <bpf/bpf_helpers.h>
++#include "bpf_legacy.h"
++
++__noinline int
++subprog(struct __sk_buff *skb)
++{
++	volatile int ret = 1;
++
++	return ret;
++}
++
++SEC("tc")
++int entry(struct __sk_buff *skb)
++{
++	return subprog(skb);
++}
++
++char __license[] SEC("license") = "GPL";
 -- 
 2.44.0
 
