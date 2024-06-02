@@ -1,124 +1,182 @@
-Return-Path: <bpf+bounces-31160-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-31161-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 63DF88D77BD
-	for <lists+bpf@lfdr.de>; Sun,  2 Jun 2024 22:11:37 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3F8BC8D782C
+	for <lists+bpf@lfdr.de>; Sun,  2 Jun 2024 22:47:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1F7AB281C41
-	for <lists+bpf@lfdr.de>; Sun,  2 Jun 2024 20:11:36 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CB21B1F21027
+	for <lists+bpf@lfdr.de>; Sun,  2 Jun 2024 20:47:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC412757F6;
-	Sun,  2 Jun 2024 20:11:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A34F177F11;
+	Sun,  2 Jun 2024 20:47:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="TF/kv0wr"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="YWjQ9pVN"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-lj1-f177.google.com (mail-lj1-f177.google.com [209.85.208.177])
+Received: from mail-pl1-f175.google.com (mail-pl1-f175.google.com [209.85.214.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D6EF76EB55
-	for <bpf@vger.kernel.org>; Sun,  2 Jun 2024 20:11:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DEE5529AB
+	for <bpf@vger.kernel.org>; Sun,  2 Jun 2024 20:47:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717359089; cv=none; b=fFE0qFCUS4Pv2w6iaqVN6eUQBmskNhy77rf9eAENjLCBtjrGabpb3dB/p6jxvf+4/zsN6TNOBG9jmmmsyZ7qIceMl/EtOhFcSGkgxR3VBW+TXQSG1GH6JwmBIA/5slzeoHmxtjuCaW7mTtVLaqltfPI45PupuU/lgLtf/cc4Mxs=
+	t=1717361258; cv=none; b=JKUg+3gQm0uvh0BpWXzk6Kp4LxxMIPq7l4g0uSrfaBJwkoxcScfT/PJIri5cEH0g02nuhbMpJyUItYgtkBMB/QXwXPzVlCpobYrxpNYcSj1mY0Bea5I0O5dSmosXl18as507sEMXnAoa8u/wTjWCew5VLFSsZzftN3b4LLakKg8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717359089; c=relaxed/simple;
-	bh=pPpQRofU4aUuWzH8F/QKbmIvQmhWX6HwGWlPQg5XjJs=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=pbox+ji2P3O8yRQbXOgFjJGrq7gaaISEAiz0L8Z9P+UHK4KUxxF4LGj7qz551nEWWjoYDgPHR0DsRxDWvm1wDHH5TN01jVjPoR+UFEkbQbcRK/yZMtS7+N9JWbl/NpGCMx+VRHVEb/5r7EqC7bE9RpdqfoaCPUaZVG6AmXX6dNg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=TF/kv0wr; arc=none smtp.client-ip=209.85.208.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
-Received: by mail-lj1-f177.google.com with SMTP id 38308e7fff4ca-2e95a1eff78so49063841fa.0
-        for <bpf@vger.kernel.org>; Sun, 02 Jun 2024 13:11:27 -0700 (PDT)
+	s=arc-20240116; t=1717361258; c=relaxed/simple;
+	bh=zGxnj9cPkR7CN59vRwgIWsvFPmeqrcWRYugiGmLy2Fw=;
+	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=X6+h5utgP3s+SVE3ivRDaJwknknu65DsrqBCu+lk+ovOOqMhe8PwZ+DVPhAOzxog8qFhpEkQW3y4zFSmU/SlDQBmNNyIg6+NXT1OqYKle4QfJtwTuWLApnkpYbR86e6nRqQN5V8YVZ6+02uKB8/l2JIwY9wjy6HDabm7xRBiFs4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=YWjQ9pVN; arc=none smtp.client-ip=209.85.214.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-pl1-f175.google.com with SMTP id d9443c01a7336-1ee5f3123d8so167715ad.1
+        for <bpf@vger.kernel.org>; Sun, 02 Jun 2024 13:47:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1717359086; x=1717963886; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=ePqimL8VaYhHEJxz6pSQAbNa/K23yw/URyexsY++IVA=;
-        b=TF/kv0wrvU7CMD/1W6pdUuFiz9Lbwi4grNGC/o0BgG9oAogSjQmTfmkE8VCpSAcYoZ
-         5jDtGz0A02AyWPDSM1vbeb8dBu+Czmf2sPpMXUPNC+OD2CcK8oA/3/wUhnSMDNuwNqjM
-         T7IACHmfTs2o3k7Y2QBqEiFfXliZzGut61kEw=
+        d=google.com; s=20230601; t=1717361256; x=1717966056; darn=vger.kernel.org;
+        h=content-id:mime-version:references:message-id:in-reply-to:subject
+         :cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=faX60ecICkYxHjtv7PonXRM66RWfo/WBRMB+odShUo8=;
+        b=YWjQ9pVN02mN/Zp9lXwTs9wKyQ+MRUlBdtUe/T4NBsyCW2MIt2YC806/nsL0uqzMER
+         34S9/F2pO3PHw5ptJ6+ghRdy9wJ1mmUCGI9RLkzoBj2f9vZ9TOLoaY86aVEIwQP/fKK2
+         cxt0L9GLWOov8zjyb1ZXY9ZEOkuhoHrggUasv+zcUjotPOzkqHumN1eu5k+6hkVsJaZ1
+         P5xrKi48SG53xSafoA+V60P9BIOd1WWBwF1WgwD4YuFCsccXPEu+GWEmftCDKkDxJLv5
+         8mcWIXXTfZuL+J/VwQhWbxe+7fdXcBG1qq9r3ieJJs7Bl+WhHcocE9IZ24goqCzoq6Dt
+         iOAg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1717359086; x=1717963886;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=ePqimL8VaYhHEJxz6pSQAbNa/K23yw/URyexsY++IVA=;
-        b=fPlSAtXT9NY09xTbm/TH3XD0FO9ibZhXVuLdWpxqa9Bt+YLnZwHde/8VQVJz6W79jN
-         PPLq5X3HUmuBl3o5IheVYSBH3SQ+P/OIVw6SE0vVZulNsoO87Z7qQln9JpY4QOLDcRok
-         el2ZtUP9FK9FbKk8i+bXkRsDkOxA1wxMRErJkCrxJpXEpwu155tJVyTGpg3HIChlhhqA
-         RdOZKKnR+b/RvliGP1Rz3SBcnelMYpSXrKNoWLjssN0kL3qC7CgbHpiXBGtgPBR/JF+e
-         0uMaE8l/D8dk7LzWyrD3KUr46WQVo21WDilHe6l457Ky0m1VXr+UVCHjMSIcPBTyjvMV
-         d7Tw==
-X-Forwarded-Encrypted: i=1; AJvYcCXx3fL1zZv1tGhvW7EkFmCFUJMJ4gRyWHmIrG5yt6I++Q6IQAsu9Rp9g3aY4AaW7ESweDBdheRQf+bWLDjhQCf8b+dS
-X-Gm-Message-State: AOJu0YxQosK1MqQst1+eB7IPgIt13pOq8djd06tpBPlfJdGgCtjAOx4i
-	/Cv6bEwM9P54pdlkAKa5cbn4V7Y3b+y0aLnZuChy6AZ50/4ofd1nc1VLgYUtKjLPnDc3mwgRG0K
-	+
-X-Google-Smtp-Source: AGHT+IFu4SYB9nzgrSEWQyA8Y8fkF67KFL60ttDqgKv227Fv+eciAveYelY8ptxbqsN1tI5jhMKDlw==
-X-Received: by 2002:a2e:bc23:0:b0:2ea:89f6:258f with SMTP id 38308e7fff4ca-2ea94f9493bmr70996901fa.0.1717359085863;
-        Sun, 02 Jun 2024 13:11:25 -0700 (PDT)
-Received: from mail-lf1-f52.google.com (mail-lf1-f52.google.com. [209.85.167.52])
-        by smtp.gmail.com with ESMTPSA id 38308e7fff4ca-2eab105ac59sm888441fa.66.2024.06.02.13.11.24
-        for <bpf@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 02 Jun 2024 13:11:25 -0700 (PDT)
-Received: by mail-lf1-f52.google.com with SMTP id 2adb3069b0e04-52b912198a6so1103916e87.0
-        for <bpf@vger.kernel.org>; Sun, 02 Jun 2024 13:11:24 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCW+sfXAn3Ky96QVdSjwTl0S2Y+s/AbQ0ZhwN40aorn+FnNUJQQArwrynLdvWfFZOjhvodX1kHr+t2aouY0DLOpK5Q08
-X-Received: by 2002:ac2:5dc3:0:b0:51a:f689:b4df with SMTP id
- 2adb3069b0e04-52b896bde2emr5480833e87.44.1717359084107; Sun, 02 Jun 2024
- 13:11:24 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1717361256; x=1717966056;
+        h=content-id:mime-version:references:message-id:in-reply-to:subject
+         :cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=faX60ecICkYxHjtv7PonXRM66RWfo/WBRMB+odShUo8=;
+        b=b4RsQWnj62eHJ86Xip5dAhmtesodj7JV9ejV+AaxUwNh5ycv0B1zAEHtswiErbzl7Z
+         kbtO7Eb6laC9NCHmEwWzzngpXx1Yt8f+KMb/4CGORdEC4N5DnnSqNhPv8JT6I1JAjHBH
+         1ifBYkWKoUo83+1MwiaafdJUs7UgyAPl/1hierVg8PMuW/j7lL6vV0PsObdOKkB9A5xl
+         RMT1VcDQKDmswRS6Izrm0PeMRZkfc1YW/sLSIJtDdynGh6ZgqJQc61MhakPkCHoQU6BD
+         by3VhPONZknjZs7q6wQUGXsjY9N3B6PzJ05Oyo/11ik+fGdZh/2hAaID9JbR4i32t/PH
+         fevA==
+X-Forwarded-Encrypted: i=1; AJvYcCWHjlILOCeMMMBM07c7i0Q9PG4/DCfTuzHtHQhB5WHWnFmEAiaHlTWX+TNFxYJ60EchwSH3e67qApagAZJ9cQWe+41y
+X-Gm-Message-State: AOJu0YwTEAea9gq6VY//XezRgKRQ000hqL5AwpdyF1vDO26l2W+Ptc8D
+	uciw5Z/I7cANJgct5uGKl2uDJk+zZtvhXH9BUEggS5sYIg1LLiPD399y3yAxVQ==
+X-Google-Smtp-Source: AGHT+IHAcKXBQFsPDQM4NMHbQr6pqvh0k2z/Yyd2cS2NVZFKE2pPvtyCt3fAEKic6duvJwDcVFm13g==
+X-Received: by 2002:a17:902:d2ca:b0:1f6:7fce:5684 with SMTP id d9443c01a7336-1f67fce5889mr178905ad.3.1717361255487;
+        Sun, 02 Jun 2024 13:47:35 -0700 (PDT)
+Received: from [2620:0:1008:15:abfd:526b:c7dd:75a1] ([2620:0:1008:15:abfd:526b:c7dd:75a1])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-1f6324032f9sm51317705ad.242.2024.06.02.13.47.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 02 Jun 2024 13:47:34 -0700 (PDT)
+Date: Sun, 2 Jun 2024 13:47:34 -0700 (PDT)
+From: David Rientjes <rientjes@google.com>
+To: Vlastimil Babka <vbabka@suse.cz>
+cc: Akinobu Mita <akinobu.mita@gmail.com>, Christoph Lameter <cl@linux.com>, 
+    Alexei Starovoitov <ast@kernel.org>, 
+    Daniel Borkmann <daniel@iogearbox.net>, 
+    Andrii Nakryiko <andrii@kernel.org>, 
+    "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>, 
+    Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>, 
+    "David S. Miller" <davem@davemloft.net>, 
+    Masami Hiramatsu <mhiramat@kernel.org>, 
+    Steven Rostedt <rostedt@goodmis.org>, Mark Rutland <mark.rutland@arm.com>, 
+    Jiri Olsa <jolsa@kernel.org>, Roman Gushchin <roman.gushchin@linux.dev>, 
+    Hyeonggon Yoo <42.hyeyoo@gmail.com>, linux-kernel@vger.kernel.org, 
+    linux-mm@kvack.org, bpf@vger.kernel.org, 
+    linux-trace-kernel@vger.kernel.org
+Subject: Re: [PATCH RFC 0/4] static key support for error injection
+ functions
+In-Reply-To: <20240531-fault-injection-statickeys-v1-0-a513fd0a9614@suse.cz>
+Message-ID: <71ebaa45-dbd0-b39d-4b33-88da3f497297@google.com>
+References: <20240531-fault-injection-statickeys-v1-0-a513fd0a9614@suse.cz>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240602023754.25443-1-laoar.shao@gmail.com> <20240602023754.25443-2-laoar.shao@gmail.com>
- <87ikysdmsi.fsf@email.froward.int.ebiederm.org> <CALOAHbAASdjLjfDv5ZH7uj=oChKE6iYnwjKFMu6oabzqfs2QUw@mail.gmail.com>
- <CAADnVQJ_RPg_xTjuO=+3G=4auZkS-t-F2WTs18rU2PbVdJVbdQ@mail.gmail.com> <874jabdygo.fsf@email.froward.int.ebiederm.org>
-In-Reply-To: <874jabdygo.fsf@email.froward.int.ebiederm.org>
-From: Linus Torvalds <torvalds@linux-foundation.org>
-Date: Sun, 2 Jun 2024 13:11:07 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wgkgtCjr3aHFnFifYtKnvet0M9jehfMFYhYpL_F7Jbmtg@mail.gmail.com>
-Message-ID: <CAHk-=wgkgtCjr3aHFnFifYtKnvet0M9jehfMFYhYpL_F7Jbmtg@mail.gmail.com>
-Subject: Re: [PATCH 1/6] fs/exec: Drop task_lock() inside __get_task_comm()
-To: "Eric W. Biederman" <ebiederm@xmission.com>
-Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, Yafang Shao <laoar.shao@gmail.com>, 
-	linux-mm <linux-mm@kvack.org>, Linux-Fsdevel <linux-fsdevel@vger.kernel.org>, 
-	linux-trace-kernel <linux-trace-kernel@vger.kernel.org>, audit@vger.kernel.org, 
-	LSM List <linux-security-module@vger.kernel.org>, selinux@vger.kernel.org, 
-	bpf <bpf@vger.kernel.org>, Alexander Viro <viro@zeniv.linux.org.uk>, 
-	Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>, Kees Cook <keescook@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/mixed; BOUNDARY="2003064516-301007669-1717361061=:1421375"
+Content-ID: <32fac6fa-e3d4-f025-6ec2-7b80eb8e0bc1@google.com>
 
-On Sun, 2 Jun 2024 at 10:53, Eric W. Biederman <ebiederm@xmission.com> wrote:
->
-> The read may race with a write that is changing the location
-> of '\0'.  Especially if the new value is shorter than
-> the old value.
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-It *shouldn't* happen.
+--2003064516-301007669-1717361061=:1421375
+Content-Type: text/plain; CHARSET=UTF-8
+Content-Transfer-Encoding: 8BIT
+Content-ID: <985832d3-71c9-2701-ec5d-29c3bfccabf1@google.com>
 
-So 'strscpy()' itself is written to be NUL-safe, in that if it ever
-copies a NUL character, it will stop. Admittedly the byte loop at the
-end might technically need a READ_ONCE() for that to eb strictly true
-in theory, but in practice it already is.
+On Fri, 31 May 2024, Vlastimil Babka wrote:
 
-And even if the new string is shorter, the comm[] array will always
-have a NUL terminator _somewhere_, in how the last byte is never
-non-NUL.
+> Patches 3 and 4 implement the static keys for the two mm fault injection
+> sites in slab and page allocators. For a quick demonstration I've run a
+> VM and the simple test from [1] that stresses the slab allocator and got
+> this time before the series:
+> 
+> real    0m8.349s
+> user    0m0.694s
+> sys     0m7.648s
+> 
+> with perf showing
+> 
+>    0.61%  nonexistent  [kernel.kallsyms]  [k] should_failslab.constprop.0
+>    0.00%  nonexistent  [kernel.kallsyms]  [k] should_fail_alloc_page                                                                                                                                                                                        ▒
+> 
+> And after the series
+> 
+> real    0m7.924s
+> user    0m0.727s
+> sys     0m7.191s
+> 
+> and the functions gone from perf report.
+> 
 
-Now, the only real issue is if something writes *to* the  comm[] array
-without following the rules properly - like writing a non-NULL
-character to the end of the array before then filling it in with NUL
-again.
+Impressive results that will no doubt be a win for kernels that enable 
+these options.
 
-But that would be a bug on the comm[] writing side, I feel, not a bug
-on the reader side.
+Both CONFIG_FAILSLAB and CONFIG_FAIL_PAGE_ALLOC go out of their way to 
+have no overhead, both in performance and kernel text overhead, when the 
+.config options are disabled.
 
-               Linus
+Do we have any insight into the distros or users that enable either of 
+these options and are expecting optimal performance?  I would have assumed 
+that while CONFIG_FAULT_INJECTION may be enabled that any users who would 
+care deeply about this would have disabled both of these debug options.
+
+> There might be other such fault injection callsites in hotpaths of other
+> subsystems but I didn't search for them at this point.
+> 
+> [1] https://lore.kernel.org/all/6d5bb852-8703-4abf-a52b-90816bccbd7f@suse.cz/
+> [2] https://lore.kernel.org/all/3j5d3p22ssv7xoaghzraa7crcfih3h2qqjlhmjppbp6f42pg2t@kg7qoicog5ye/
+> 
+> Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
+> ---
+> Vlastimil Babka (4):
+>       fault-inject: add support for static keys around fault injection sites
+>       error-injection: support static keys around injectable functions
+>       mm, slab: add static key for should_failslab()
+>       mm, page_alloc: add static key for should_fail_alloc_page()
+> 
+>  include/asm-generic/error-injection.h | 13 ++++++++++-
+>  include/asm-generic/vmlinux.lds.h     |  2 +-
+>  include/linux/error-injection.h       |  9 +++++---
+>  include/linux/fault-inject.h          |  7 +++++-
+>  kernel/fail_function.c                | 22 +++++++++++++++---
+>  lib/error-inject.c                    |  6 ++++-
+>  lib/fault-inject.c                    | 43 ++++++++++++++++++++++++++++++++++-
+>  mm/fail_page_alloc.c                  |  3 ++-
+>  mm/failslab.c                         |  2 +-
+>  mm/internal.h                         |  2 ++
+>  mm/page_alloc.c                       | 11 ++++++---
+>  mm/slab.h                             |  3 +++
+>  mm/slub.c                             | 10 +++++---
+>  13 files changed, 114 insertions(+), 19 deletions(-)
+> ---
+> base-commit: 1613e604df0cd359cf2a7fbd9be7a0bcfacfabd0
+> change-id: 20240530-fault-injection-statickeys-66b7222e91b7
+> 
+> Best regards,
+> -- 
+> Vlastimil Babka <vbabka@suse.cz>
+> 
+> 
+--2003064516-301007669-1717361061=:1421375--
 
