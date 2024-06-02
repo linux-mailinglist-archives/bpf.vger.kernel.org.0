@@ -1,84 +1,106 @@
-Return-Path: <bpf+bounces-31168-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-31169-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 40BB98D7928
-	for <lists+bpf@lfdr.de>; Mon,  3 Jun 2024 01:33:57 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8B2AC8D792E
+	for <lists+bpf@lfdr.de>; Mon,  3 Jun 2024 01:40:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D47121F217A6
-	for <lists+bpf@lfdr.de>; Sun,  2 Jun 2024 23:33:56 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4614D281C03
+	for <lists+bpf@lfdr.de>; Sun,  2 Jun 2024 23:40:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D7087F481;
-	Sun,  2 Jun 2024 23:33:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 78DF57E583;
+	Sun,  2 Jun 2024 23:40:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Qh1ej48X"
+	dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b="b9Zto2ql"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [62.89.141.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 11FBF78283;
-	Sun,  2 Jun 2024 23:33:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E12397E0F0;
+	Sun,  2 Jun 2024 23:40:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=62.89.141.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717371227; cv=none; b=Kqk5LORIc4J7oHJxBlHB9sM8T4xD6G9MAwbvSkIjDAbPN6ezU+xIlrJ1RRGuEtyRDvJIS0xVchSoAurob7Bam45f+8q8aO3HAYxaQOti2ox5UNz4EB+t2zAmStBfczn9cb/o5MD+2puqPG14WG7DGfedsUFdTK4qwEA7tDrSkWE=
+	t=1717371653; cv=none; b=OLMU8QVtOX95L51pL8xXuzSSfKFbCAn0z2U35fxpaBPAR46DD1PmEb5Y4nno8MZHkAaFjCTOrDFVtJmEdVvnD6veLrESjg2hKgLmTAqpvEkmCTMU10azLSrFZIIkoJS69LCn1cdKFRuiZ0bytOoUjTOerT4OYKG7EAA21CHsNy0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717371227; c=relaxed/simple;
-	bh=cdM87lmlrIHNiUm1YK2XV5w3mcdumawnrY5eacXrA3E=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=sSwrSDz9tiSFCAjxjsWZTLEDyCzg2eQbeHvfllQlDOdksYFbVPdWe/BAaho8tN99MuOmRy69riC2IkvpFv0pucujKHaN2q9V4I3U7OM1JApo4Wrta9HSCjunbhGKxJhrIEpR+0aAOfgqc7J/iEl/53jq2RjY0t+VNd05H3YrHcw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Qh1ej48X; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 83D6FC2BBFC;
-	Sun,  2 Jun 2024 23:33:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1717371226;
-	bh=cdM87lmlrIHNiUm1YK2XV5w3mcdumawnrY5eacXrA3E=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=Qh1ej48Xs5WtSkUNTSWqioP0oVtnycasxVxcMSkmEQNPjluzrPeItZVYma4u1FgMQ
-	 /AtQLAn9AAE1b3LSM/i4kE/IKJwn3zMZoe9CO9n0K1nzPKLokzguif6ySQeLtkriy3
-	 BDpKWbxLmtnN8C8xUDup1nDUdT2Ezb1cDRI2kYqYPgerYMPFSkjAXR4jnxX60BVkAj
-	 GR2GTSErDvEapbeW+Mf0xhhYIbbAiHrWNDSf3KHprfk1ThDM8rDla61dEdYiAqdCgN
-	 oW6xeqzOmedggyJ72z/0lrhKLivKiWeiGQ6zcZu73LULhkPfwKkcH9B+puG51FIa5t
-	 bBiu9Jhvagpxg==
-Message-ID: <746e0ddd-de6c-49f6-b836-3b8fcc5f18c5@kernel.org>
-Date: Mon, 3 Jun 2024 00:33:41 +0100
+	s=arc-20240116; t=1717371653; c=relaxed/simple;
+	bh=wciVkNuwhwY4OTo/xulZWhg3SFEd/UWQ6aVQlAMFztI=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=OQhXhDBcqt7zbx+krykd43r6tlADoz90DUlM+LQTKeNsa+pYk1QmKsAb/EU+c5O3N2TrAZnz8vhxRhSkhOqlMUHHhNZ/iFy4G1ZOMiZTyWCWd7v8Y3KFRswAI4ppmw7bLe548RrQ8yhpeyFe0MB9zapDFf3mId7Hw3EXVTermFI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk; spf=none smtp.mailfrom=ftp.linux.org.uk; dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b=b9Zto2ql; arc=none smtp.client-ip=62.89.141.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ftp.linux.org.uk
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=linux.org.uk; s=zeniv-20220401; h=Sender:Content-Type:MIME-Version:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-Transfer-Encoding:
+	Content-ID:Content-Description:In-Reply-To:References;
+	bh=QeKeMAaWVODrDwUwn91S5aAuc1MqdQB3qKAhmDsvwh8=; b=b9Zto2qlZQfegPbM823SALknHO
+	ySFQQDuzGSu5qpWoc08sOLuSyfMqvBNAIyXIQPTn6t+gs8fgGioC/Q791XvGOjEJlaDp9NvPv26a/
+	ogBBqNLZ4T9KsHMy/w6cLhU9E9EXJyI6qE7naUTmJTbHVhtEZCz5iri3pXRznmwzhgCTCcZ0b9W5q
+	uOOhEoe6gvbQRIqeEG7Z/CAj99JH5Rb9+fbiUTImp3lMvUh+TOMyFf8luS55Xwrx56f+XzUklNr2O
+	cU4FJ2h6PVo/PaRUECUNtypdpBXetGzeul+tDpETZgQGlkQZcrRl++cbpyTOflrseKWeTffPjc85Q
+	iEL/coCw==;
+Received: from viro by zeniv.linux.org.uk with local (Exim 4.96 #2 (Red Hat Linux))
+	id 1sDuoi-00B7rQ-2e;
+	Sun, 02 Jun 2024 23:40:48 +0000
+Date: Mon, 3 Jun 2024 00:40:48 +0100
+From: Al Viro <viro@zeniv.linux.org.uk>
+To: Benjamin Tissoires <bentiss@kernel.org>
+Cc: linux-fsdevel@vger.kernel.org, bpf@vger.kernel.org
+Subject: [RFC] misuse of descriptor tables in HID-BPF
+Message-ID: <20240602234048.GF1629371@ZenIV>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird Beta
-Subject: Re: [PATCH] tools/bpf: matric typo erro
-To: Swan Beaujard <beaujardswan@gmail.com>
-Cc: Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
- Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman
- <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
- Yonghong Song <yonghong.song@linux.dev>,
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
- Jiri Olsa <jolsa@kernel.org>, bpf@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20240602225812.81171-1-beaujardswan@gmail.com>
-From: Quentin Monnet <qmo@kernel.org>
-Content-Language: en-GB
-In-Reply-To: <20240602225812.81171-1-beaujardswan@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Sender: Al Viro <viro@ftp.linux.org.uk>
 
-On 02/06/2024 23:58, Swan Beaujard wrote:
-> Corrected typo in bpftool profiler.
-> 
-> Changed all instances of 'MATRICS' to 'METRICS' in the profiler.bpf.c file.
-> 
-> Signed-off-by: Swan Beaujard <beaujardswan@gmail.com>
-Acked-by: Quentin Monnet <qmo@kernel.org>
+static int hid_bpf_insert_prog(int prog_fd, struct bpf_prog *prog)
+{
+        int i, index = -1, map_fd = -1, err = -EINVAL;
 
-For future bpftool patches, please use directly "bpftool:" rather than
-"tools/bpf:" as component prefix for the commit object, and make sure to
-have a clear title ("erro" seems to be a typo itself).
+        /* retrieve a fd of our prog_array map in BPF */
+        map_fd = skel_map_get_fd_by_id(jmp_table.map->id);
 
-Thanks!
+	...
+
+        /* insert the program in the jump table */
+        err = skel_map_update_elem(map_fd, &index, &prog_fd, 0);
+        if (err)
+                goto out;
+
+	...
+
+        if (err < 0)
+                __hid_bpf_do_release_prog(map_fd, index);
+        if (map_fd >= 0)
+                close_fd(map_fd);
+        return err;
+}
+
+What.  The.  Hell?
+
+Folks, descriptor table is a shared object.  It is NOT safe to use
+as a scratchpad.
+
+Another thread might do whatever it bloody wants to anything inserted
+there.  It may close your descriptor, it may replace it with something
+entirely unrelated to what you've placed there, etc.
+
+This is fundamentally broken.  The same goes for anything that tries
+to play similar games.  Don't use descriptor tables that way.
+
+Kernel-side descriptors should be used only for marshalling - they can
+be passed by userland (and should be resolved to struct file *, with
+no expectations that repeated call of fget() would yield the same
+pointer) and they can be returned _to_ userland - after you've allocated
+them and associated them with struct file *.
+
+Using them as handles for internal objects is an equivalent of playing
+in the traffic - think of it as evolution in action.
 
