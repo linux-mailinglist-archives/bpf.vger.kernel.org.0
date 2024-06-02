@@ -1,125 +1,123 @@
-Return-Path: <bpf+bounces-31108-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-31109-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 01A5C8D732F
-	for <lists+bpf@lfdr.de>; Sun,  2 Jun 2024 04:47:34 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 893E08D7335
+	for <lists+bpf@lfdr.de>; Sun,  2 Jun 2024 05:10:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F3F24B21264
-	for <lists+bpf@lfdr.de>; Sun,  2 Jun 2024 02:47:30 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B1EC71C20C4F
+	for <lists+bpf@lfdr.de>; Sun,  2 Jun 2024 03:10:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C42B79C2;
-	Sun,  2 Jun 2024 02:47:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 00FD28C04;
+	Sun,  2 Jun 2024 03:09:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ItFYeV9i"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="QRMkliUx"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ot1-f41.google.com (mail-ot1-f41.google.com [209.85.210.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C08511859;
-	Sun,  2 Jun 2024 02:47:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 770578BF3;
+	Sun,  2 Jun 2024 03:09:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717296439; cv=none; b=ZIT8vHVGHi1UeboLtSA7UFAJvsglPSMC7IMUiJdWhINswhu2aHIdYk5MawARVlF521ENcywam3iWQG5Vv7yXHfQSnpd+zB3wlozD91WCkPbVKhzHLj3stt6FCxdna2B49Q1gNSU3Gb38EDlIi2CszhSwNjHjQvDFiEKeY3LJ/F4=
+	t=1717297794; cv=none; b=RPfhaEAPlWi0rRf7dyzqfSj5zbaJ5u48TrEdTMY+F/aNhUt8OH8iqoAWUG+JmB7fBtTCXMfAevcuvS9yssXB5ptqLm0ktAEaE10h8IVDhqJCfRTcUkdjka1y6YkcqwUDFhjdOjrUhEZrmvfWk9uI0ZRGlq19uefT8Dh6UabhPiM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717296439; c=relaxed/simple;
-	bh=c88VhkTo2sPOlFRrPrweVXH7AtkGnW5PCWNhKi/l810=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=JflzSeNzv1gCwu3QLQrUK7IhYC/G8gCDse/Du+rBfN4l3lvQfXQX15ucA2Y9qBCqZDV8dMaKqaAQB2QPNaBaTgTnMewbQyvqCwK0/p6gTDUBwAstUrowY40jtzKWJM7LTF1pwS4hqErBfTXQbFSH3m6fnMr58B+sO8sZ0Ixj2ic=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ItFYeV9i; arc=none smtp.client-ip=209.85.210.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ot1-f41.google.com with SMTP id 46e09a7af769-6f8d2ec8652so1988066a34.3;
-        Sat, 01 Jun 2024 19:47:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1717296437; x=1717901237; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=bu3o/1wkpiEjxw3AW0N2UpaOJE3SQdUz6rVg/pLPlFs=;
-        b=ItFYeV9ieaE51n7dzNZlB6kO4BqgAQKRiL/8br0Y62A6z6DfUA+fRhpcRDQLsUX3vU
-         qpYYs8Cy64JdtA5wulLNM0aradWFlG/v6L06xB4/4Utnrq1ecZ4qgRooXEl0I2kghZXM
-         3xrTE7yWzAq4TfsjsDn+JP2vemz6LF5YugPbiS7Aznz1uaQepsJ+ly0Tn1wldWnoVSxT
-         Mk2JnrUp0hmtHNY8emGIO+wPyIoK39ki8FSy3bhnnxGeyH6WZjCbOtGOMVr5uT4qibRs
-         ztARHSmX9TNz5MYAFhbREhXDHpDXl68ZABIh3vDf6d1Kw+7xnvJK88Aj/kwcdH0msYbO
-         4gig==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1717296437; x=1717901237;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=bu3o/1wkpiEjxw3AW0N2UpaOJE3SQdUz6rVg/pLPlFs=;
-        b=WWAW4lXZ0XDtBw/hMdv2H8G80gMmR0LR3sOaGxMnD7KGJnPxJVA80CVDY/didzCliW
-         rYW4e9SFrkmgdEWPiEW7fP9b4BS0jdORgjdZYVHSevww2ZMbdny8XEHfLlbYh2Oy8xNL
-         Ff3JMtAIbEBuCYexh2mEQgo22xiqN+RkZukHm2PYu/qkMWR+IX3Xb9Y87GHUODJg7Z1W
-         Usqb24ZolUhU24oNZFeIRVi2xu37qAgNyCvprg78yg/faCuIgQr075D/7K7aQMqhz+CV
-         HElS9FCWbYCKW9wRWKTnD8icqYMXkyn4iV5qgokhjUWAuLqjCOfDbKrSZWRFS5IFlJnO
-         NtkA==
-X-Forwarded-Encrypted: i=1; AJvYcCVriXAF4w3RiaVCNBR6yIDqxHc3RDau5/NyCVkKXTmGQZ4vcvQdAawZV9Gl4xJo8aIS50GV5/Q9DdAa9Qq3c1Gl1SMJ3+wUwOcqWhrtYuIdlSYRbC5ts5iWuUEwgLNjPzbC1dMm+9s/8db5ScxUlP/cdpU4nyzEYkIu9s8yqD3YwxPTb8AQCT5nmjbrxeuPPCFLk1/7bOtFj9SrzCu38hM+sgD4cLWqIkEPRlOClwIZoG50OEV847FLeP/QjobxUqAzA/GglmNWc2XHvDJkj1aXVSmKYlOnIEPW04gS0A==
-X-Gm-Message-State: AOJu0YzYLVQl6VaUK1BeFk55sZSGBDauDybmzq3aoODxoRO/D4+luS32
-	9nsFFN7SwzRkbmiS7Dy8IypZUG+8vgz6CrBn+yq0z/CBHw5i9B0/
-X-Google-Smtp-Source: AGHT+IFc6pB9c2/xDQu9bENUVRyBXhBelq6v1sdhKRdECc7iHQz2zEq+tFq0IQc1xoKSQZnnKrMN/w==
-X-Received: by 2002:a9d:6c07:0:b0:6f9:91c:f275 with SMTP id 46e09a7af769-6f911fba0c7mr5694846a34.38.1717296436688;
-        Sat, 01 Jun 2024 19:47:16 -0700 (PDT)
-Received: from localhost.localdomain ([39.144.45.187])
-        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-6c353f0aef3sm3289959a12.10.2024.06.01.19.47.10
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sat, 01 Jun 2024 19:47:16 -0700 (PDT)
-From: Yafang Shao <laoar.shao@gmail.com>
-To: laoar.shao@gmail.com,
-	torvalds@linux-foundation.org
-Cc: linux-mm@kvack.org,
-	linux-fsdevel@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org,
-	audit@vger.kernel.org,
-	linux-security-module@vger.kernel.org,
-	selinux@vger.kernel.org,
-	bpf@vger.kernel.org,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Mykola Lysenko <mykolal@fb.com>
-Subject: [PATCH 6/6] selftests/bpf: Replace memcpy() with __get_task_comm()
-Date: Sun,  2 Jun 2024 10:46:58 +0800
-Message-Id: <20240602024658.25922-1-laoar.shao@gmail.com>
-X-Mailer: git-send-email 2.30.1 (Apple Git-130)
-In-Reply-To: <20240602023754.25443-1-laoar.shao@gmail.com>
-References: <20240602023754.25443-1-laoar.shao@gmail.com>
+	s=arc-20240116; t=1717297794; c=relaxed/simple;
+	bh=mxKHFv4b0GpvtdP6ln5iryWXR3VuD8H8Rh5UyDDSVWQ=;
+	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
+	 Mime-Version:Content-Type; b=mdKxp7hr1HBluD3WWoGoCxDxHxMTOgjOCoaJDpOnXLO8efgcz0z2SA9q9GFuTHXYvql0EEBURwThVS5K3XHYTcpaDv1htg4YKZrz9/pwH2RHZ4IjzsM12G+XKfrNXbqUHtOHdfzRgqffpk4lg/b43yRLL4j8AcMUj2wQuUTOV08=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=QRMkliUx; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6C58EC3277B;
+	Sun,  2 Jun 2024 03:09:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1717297794;
+	bh=mxKHFv4b0GpvtdP6ln5iryWXR3VuD8H8Rh5UyDDSVWQ=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=QRMkliUxoT2FNriuvjGQ2nm0MZSVY7Z9ZR9LUhy+haKlUOpl2Vxu4nErbAuUZKCq+
+	 dL7X+XVZOVH0T33b+1Ba1aesvMtb81r3MMj+shFRdUYz9bgWDjRVA+GvPAvqx2TUDa
+	 VgyWqhV+18C/KmGCi1MJe41B76zLqcTVzrPikbr9Q52VpnBBNj8UxRyUjDUuL7611q
+	 I9Sbre88fye0ZgIs2Eu6JT1FGZtOxkgYWE1jdjHZ9fWJTCXj3tA2AxnPcPNDySrrYD
+	 GJL2p6d+NM7UnnXGCdjEVci+QMAaVrknXSVHmpJXDEmuAL7D6/0KyQlZTlIgkc644Y
+	 0mSM49r3kA04Q==
+Date: Sun, 2 Jun 2024 12:09:50 +0900
+From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To: syzbot <syzbot+list0820d438c1905c75bc71@syzkaller.appspotmail.com>
+Cc: linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+ syzkaller-bugs@googlegroups.com, bpf@vger.kernel.org
+Subject: Re: [syzbot] Monthly trace report (May 2024)
+Message-Id: <20240602120950.8f08ef16ad9c485db374c08d@kernel.org>
+In-Reply-To: <00000000000061fac40619ba66f6@google.com>
+References: <00000000000061fac40619ba66f6@google.com>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-Using __get_task_comm() to read the task comm ensures that the name is
-always NUL-terminated, regardless of the source string. This approach also
-facilitates future extensions to the task comm.
+On Thu, 30 May 2024 23:50:32 -0700
+syzbot <syzbot+list0820d438c1905c75bc71@syzkaller.appspotmail.com> wrote:
 
-Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
-Cc: Andrii Nakryiko <andrii@kernel.org>
-Cc: Eduard Zingerman <eddyz87@gmail.com>
-Cc: Mykola Lysenko <mykolal@fb.com>
----
- tools/testing/selftests/bpf/bpf_testmod/bpf_testmod-events.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> Hello trace maintainers/developers,
+> 
+> This is a 31-day syzbot report for the trace subsystem.
+> All related reports/information can be found at:
+> https://syzkaller.appspot.com/upstream/s/trace
+> 
+> During the period, 1 new issues were detected and 0 were fixed.
+> In total, 10 issues are still open and 35 have been fixed so far.
+> 
+> Some of the still happening issues:
+> 
+> Ref Crashes Repro Title
+> <1> 705     Yes   WARNING in format_decode (3)
+>                   https://syzkaller.appspot.com/bug?extid=e2c932aec5c8a6e1d31c
 
-diff --git a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod-events.h b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod-events.h
-index 11ee801e75e7..e5df95b56c53 100644
---- a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod-events.h
-+++ b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod-events.h
-@@ -20,7 +20,7 @@ TRACE_EVENT(bpf_testmod_test_read,
- 	),
- 	TP_fast_assign(
- 		__entry->pid = task->pid;
--		memcpy(__entry->comm, task->comm, TASK_COMM_LEN);
-+		__get_task_comm(__entry->comm, TASK_COMM_LEN, task);
- 		__entry->off = ctx->off;
- 		__entry->len = ctx->len;
- 	),
+Could you send this to bpf folks? It seems bpf_trace_printk caused this errror.
+(Maybe skipping fmt string check?)
+
+> <2> 26      Yes   INFO: task hung in blk_trace_ioctl (4)
+>                   https://syzkaller.appspot.com/bug?extid=ed812ed461471ab17a0c
+
+This looks like debugfs_mutex lock leakage. Need to rerun with lockdep.
+
+> <3> 7       Yes   WARNING in get_probe_ref
+>                   https://syzkaller.appspot.com/bug?extid=8672dcb9d10011c0a160
+
+Hm, fail on register_trace_block_rq_insert(). blktrace issue.
+
+> <4> 6       Yes   INFO: task hung in blk_trace_remove (2)
+>                   https://syzkaller.appspot.com/bug?extid=2373f6be3e6de4f92562
+
+This looks like debugfs_mutex lock leakage too.
+
+> <5> 5       Yes   general protection fault in bpf_get_attach_cookie_tracing
+>                   https://syzkaller.appspot.com/bug?extid=3ab78ff125b7979e45f9
+
+This is also BPF problem.
+
+Thank you,
+
+> 
+> ---
+> This report is generated by a bot. It may contain errors.
+> See https://goo.gl/tpsmEJ for more information about syzbot.
+> syzbot engineers can be reached at syzkaller@googlegroups.com.
+> 
+> To disable reminders for individual bugs, reply with the following command:
+> #syz set <Ref> no-reminders
+> 
+> To change bug's subsystems, reply with:
+> #syz set <Ref> subsystems: new-subsystem
+> 
+> You may send multiple commands in a single email message.
+
+
 -- 
-2.39.1
-
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
