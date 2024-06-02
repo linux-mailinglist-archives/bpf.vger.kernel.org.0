@@ -1,41 +1,41 @@
-Return-Path: <bpf+bounces-31132-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-31133-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7FDB88D7362
-	for <lists+bpf@lfdr.de>; Sun,  2 Jun 2024 05:39:40 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0F3B58D7364
+	for <lists+bpf@lfdr.de>; Sun,  2 Jun 2024 05:39:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1F95C1F21F49
-	for <lists+bpf@lfdr.de>; Sun,  2 Jun 2024 03:39:40 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3EB381C20FD1
+	for <lists+bpf@lfdr.de>; Sun,  2 Jun 2024 03:39:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 35E7640848;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F6A540C03;
 	Sun,  2 Jun 2024 03:37:28 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C9D483BBF4;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E05DC3CF6A;
 	Sun,  2 Jun 2024 03:37:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717299447; cv=none; b=j7rtz/Qwi9HFEMt2zLMIJa5ag0tgojVwopBZrmcRK0xNE65HqdF5YrgOqMuZFs1mubkJ4HP4AqAjeN7EOMW/JK1SL6zDPLG05+PrwtSnPPVFGT1vn2R7nmPaIyRY6yBWKDMWc0PM7rKx521uaEwShz5Qv4/XTCHFKFA9fNlWNKc=
+	t=1717299447; cv=none; b=R9WtAFzKW7imS3+ddn2EHuGXRD281OI3yj5EPf9tKn76yg9B5fTcEs7JYSvSem0DrWI0nZhiZRKviimTsHZQNT6ZzP1h9pzdg550fSjPYEUGV04+Em3FmI6iUgD1qR6XFkExO4WSN+itkMHsdgtmDjVhKTvWbocyL+Siglm8VLM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1717299447; c=relaxed/simple;
-	bh=zNX+8r8t+PUCLhsB1Ks9Ro5ISDleDaihMu+uhUeTdwc=;
+	bh=Mp/RBRnPhJxFELiieLyMmnfwMLk/QV2Kygzld2RQi0M=;
 	h=Message-ID:Date:From:To:Cc:Subject:References:MIME-Version:
-	 Content-Type; b=n17Hnf240/8Vfh2m6XxamP9cv0sCEG82Iht1KgohfzpJ2KCwqIT2QJLY7bzppiN+wcvYZhHN/ULBNORYGzAdJmSoNQliDWYR5mW59d4EEluBGJvgUI+c1c4bFLxwZTCw9e+v2VaF90KzDCeI2J5PJHTy1uRAB3tmcioT/yS1feE=
+	 Content-Type; b=NENnshHD5HOlwAVyVDGDG3uwyN87DeS5bsuAIKVP3uzLSj7TcFZTbutzsIfq5TmuuG/eCOdNRcj5iWdyk1TdHpDycwad50OF8vhbrBRVgf8Wk7kahkjT5nHukXSFkxqNUQgAkhRpHHL3VGYtVnSr0XkMjdoIJTor/I9oB2AC8cw=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AF5DAC4AF08;
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CBE08C4AF07;
 	Sun,  2 Jun 2024 03:37:27 +0000 (UTC)
 Received: from rostedt by gandalf with local (Exim 4.97)
 	(envelope-from <rostedt@goodmis.org>)
-	id 1sDc3G-000000094UR-46LC;
-	Sat, 01 Jun 2024 23:38:34 -0400
-Message-ID: <20240602033834.833336234@goodmis.org>
+	id 1sDc3H-000000094Ux-0Zkd;
+	Sat, 01 Jun 2024 23:38:35 -0400
+Message-ID: <20240602033834.997761817@goodmis.org>
 User-Agent: quilt/0.68
-Date: Sat, 01 Jun 2024 23:38:07 -0400
+Date: Sat, 01 Jun 2024 23:38:08 -0400
 From: Steven Rostedt <rostedt@goodmis.org>
 To: linux-kernel@vger.kernel.org,
  linux-trace-kernel@vger.kernel.org
@@ -56,7 +56,7 @@ Cc: Masami Hiramatsu <mhiramat@kernel.org>,
  Peter Zijlstra <peterz@infradead.org>,
  Thomas Gleixner <tglx@linutronix.de>,
  Guo Ren <guoren@kernel.org>
-Subject: [PATCH v2 23/27] function_graph: Use bitmask to loop on fgraph entry
+Subject: [PATCH v2 24/27] function_graph: Use static_call and branch to optimize entry function
 References: <20240602033744.563858532@goodmis.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -68,64 +68,154 @@ Content-Type: text/plain; charset=UTF-8
 
 From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 
-Instead of looping through all the elements of fgraph_array[] to see if
-there's an gops attached to one and then calling its gops->func(). Create
-a fgraph_array_bitmask that sets bits when an index in the array is
-reserved (via the simple lru algorithm). Then only the bits set in this
-bitmask needs to be looked at where only elements in the array that have
-ops registered need to be looked at.
+In most cases function graph is used by a single user. Instead of calling
+a loop to call function graph callbacks in this case, call the function
+entry callback directly.
 
-Note, we do not care about races. If a bit is set before the gops is
-assigned, it only wastes time looking at the element and ignoring it (as
-it did before this bitmask is added).
+Add a static_key that will be used to set the function graph logic to
+either do the loop (when more than one callback is registered) or to call
+the callback directly if there is only one registered callback.
 
-Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
-Reviewed-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
 Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 ---
- kernel/trace/fgraph.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+ kernel/trace/fgraph.c | 77 ++++++++++++++++++++++++++++++++++++-------
+ 1 file changed, 66 insertions(+), 11 deletions(-)
 
 diff --git a/kernel/trace/fgraph.c b/kernel/trace/fgraph.c
-index 0827b67f746d..4d566a0a741d 100644
+index 4d566a0a741d..7c3b0261b1bb 100644
 --- a/kernel/trace/fgraph.c
 +++ b/kernel/trace/fgraph.c
-@@ -172,6 +172,7 @@ DEFINE_STATIC_KEY_FALSE(kill_ftrace_graph);
- int ftrace_graph_active;
+@@ -11,6 +11,7 @@
+ #include <linux/jump_label.h>
+ #include <linux/suspend.h>
+ #include <linux/ftrace.h>
++#include <linux/static_call.h>
+ #include <linux/slab.h>
  
- static struct fgraph_ops *fgraph_array[FGRAPH_ARRAY_SIZE];
-+static unsigned long fgraph_array_bitmask;
+ #include <trace/events/sched.h>
+@@ -511,6 +512,10 @@ static struct fgraph_ops fgraph_stub = {
+ 	.retfunc = ftrace_graph_ret_stub,
+ };
  
- /* LRU index table for fgraph_array */
- static int fgraph_lru_table[FGRAPH_ARRAY_SIZE];
-@@ -196,6 +197,8 @@ static int fgraph_lru_release_index(int idx)
- 
- 	fgraph_lru_table[fgraph_lru_last] = idx;
- 	fgraph_lru_last = (fgraph_lru_last + 1) % FGRAPH_ARRAY_SIZE;
++static struct fgraph_ops *fgraph_direct_gops = &fgraph_stub;
++DEFINE_STATIC_CALL(fgraph_func, ftrace_graph_entry_stub);
++DEFINE_STATIC_KEY_TRUE(fgraph_do_direct);
 +
-+	clear_bit(idx, &fgraph_array_bitmask);
- 	return 0;
- }
- 
-@@ -210,6 +213,8 @@ static int fgraph_lru_alloc_index(void)
- 
- 	fgraph_lru_table[fgraph_lru_next] = -1;
- 	fgraph_lru_next = (fgraph_lru_next + 1) % FGRAPH_ARRAY_SIZE;
-+
-+	set_bit(idx, &fgraph_array_bitmask);
- 	return idx;
- }
- 
-@@ -631,7 +636,8 @@ int function_graph_enter(unsigned long ret, unsigned long func,
+ /**
+  * ftrace_graph_stop - set to permanently disable function graph tracing
+  *
+@@ -636,21 +641,34 @@ int function_graph_enter(unsigned long ret, unsigned long func,
  	if (offset < 0)
  		goto out;
  
--	for (i = 0; i < FGRAPH_ARRAY_SIZE; i++) {
+-	for_each_set_bit(i, &fgraph_array_bitmask,
+-			 sizeof(fgraph_array_bitmask) * BITS_PER_BYTE) {
+-		struct fgraph_ops *gops = fgraph_array[i];
+-		int save_curr_ret_stack;
+-
+-		if (gops == &fgraph_stub)
+-			continue;
++#ifdef CONFIG_HAVE_STATIC_CALL
++	if (static_branch_likely(&fgraph_do_direct)) {
++		int save_curr_ret_stack = current->curr_ret_stack;
+ 
+-		save_curr_ret_stack = current->curr_ret_stack;
+-		if (ftrace_ops_test(&gops->ops, func, NULL) &&
+-		    gops->entryfunc(&trace, gops))
+-			bitmap |= BIT(i);
++		if (static_call(fgraph_func)(&trace, fgraph_direct_gops))
++			bitmap |= BIT(fgraph_direct_gops->idx);
+ 		else
+ 			/* Clear out any saved storage */
+ 			current->curr_ret_stack = save_curr_ret_stack;
++	} else
++#endif
++	{
++		for_each_set_bit(i, &fgraph_array_bitmask,
++					 sizeof(fgraph_array_bitmask) * BITS_PER_BYTE) {
++			struct fgraph_ops *gops = fgraph_array[i];
++			int save_curr_ret_stack;
++
++			if (gops == &fgraph_stub)
++				continue;
++
++			save_curr_ret_stack = current->curr_ret_stack;
++			if (ftrace_ops_test(&gops->ops, func, NULL) &&
++			    gops->entryfunc(&trace, gops))
++				bitmap |= BIT(i);
++			else
++				/* Clear out any saved storage */
++				current->curr_ret_stack = save_curr_ret_stack;
++		}
+ 	}
+ 
+ 	if (!bitmap)
+@@ -1155,6 +1173,8 @@ void fgraph_update_pid_func(void)
+ 			gops = container_of(op, struct fgraph_ops, ops);
+ 			gops->entryfunc = ftrace_pids_enabled(op) ?
+ 				fgraph_pid_func : gops->saved_func;
++			if (ftrace_graph_active == 1)
++				static_call_update(fgraph_func, gops->entryfunc);
+ 		}
+ 	}
+ }
+@@ -1209,6 +1229,32 @@ static void init_task_vars(int idx)
+ 	read_unlock(&tasklist_lock);
+ }
+ 
++static void ftrace_graph_enable_direct(bool enable_branch)
++{
++	trace_func_graph_ent_t func = NULL;
++	int i;
++
 +	for_each_set_bit(i, &fgraph_array_bitmask,
 +			 sizeof(fgraph_array_bitmask) * BITS_PER_BYTE) {
- 		struct fgraph_ops *gops = fgraph_array[i];
- 		int save_curr_ret_stack;
++		func = fgraph_array[i]->entryfunc;
++		fgraph_direct_gops = fgraph_array[i];
++	 }
++	if (WARN_ON_ONCE(!func))
++		return;
++
++	static_call_update(fgraph_func, func);
++	if (enable_branch)
++		static_branch_disable(&fgraph_do_direct);
++}
++
++static void ftrace_graph_disable_direct(bool disable_branch)
++{
++	if (disable_branch)
++		static_branch_disable(&fgraph_do_direct);
++	static_call_update(fgraph_func, ftrace_graph_entry_stub);
++	fgraph_direct_gops = &fgraph_stub;
++}
++
+ int register_ftrace_graph(struct fgraph_ops *gops)
+ {
+ 	int command = 0;
+@@ -1235,7 +1281,11 @@ int register_ftrace_graph(struct fgraph_ops *gops)
  
+ 	ftrace_graph_active++;
+ 
++	if (ftrace_graph_active == 2)
++		ftrace_graph_disable_direct(true);
++
+ 	if (ftrace_graph_active == 1) {
++		ftrace_graph_enable_direct(false);
+ 		register_pm_notifier(&ftrace_suspend_notifier);
+ 		ret = start_graph_tracing();
+ 		if (ret)
+@@ -1292,6 +1342,11 @@ void unregister_ftrace_graph(struct fgraph_ops *gops)
+ 
+ 	ftrace_shutdown_subops(&graph_ops, &gops->ops, command);
+ 
++	if (ftrace_graph_active == 1)
++		ftrace_graph_enable_direct(true);
++	else if (!ftrace_graph_active)
++		ftrace_graph_disable_direct(false);
++
+ 	if (!ftrace_graph_active) {
+ 		ftrace_graph_return = ftrace_stub_graph;
+ 		ftrace_graph_entry = ftrace_graph_entry_stub;
 -- 
 2.43.0
 
