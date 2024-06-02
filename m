@@ -1,165 +1,289 @@
-Return-Path: <bpf+bounces-31164-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-31165-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D831E8D7835
-	for <lists+bpf@lfdr.de>; Sun,  2 Jun 2024 23:07:08 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 728698D7837
+	for <lists+bpf@lfdr.de>; Sun,  2 Jun 2024 23:08:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 015C01C209B8
-	for <lists+bpf@lfdr.de>; Sun,  2 Jun 2024 21:07:08 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 200C4B21263
+	for <lists+bpf@lfdr.de>; Sun,  2 Jun 2024 21:08:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5353E76EEA;
-	Sun,  2 Jun 2024 21:07:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E6E377115;
+	Sun,  2 Jun 2024 21:08:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="du4qhe7x"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="xAoIyPs2";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="aSXhDgJ9";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="xAoIyPs2";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="aSXhDgJ9"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3AA7A81F;
-	Sun,  2 Jun 2024 21:06:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6FCC08493;
+	Sun,  2 Jun 2024 21:08:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717362420; cv=none; b=dmdeciQ9+RggqurspW4yvzu1m6iXww3pB/NFr/wbYWqoVPk5hDx4DBwfekohPNCTFKbBPcrN6E6na4pHysf5pL0S1sieU2liP8nSdl23ojfcLnWiV8YF5XUD4mCgdu2cYmyWpi91cjfTZju+ql34k6Qs6YU55DPgljtRlLg5UWk=
+	t=1717362495; cv=none; b=kP6Whzf+TBZGLid+N7G3bLPBlM2MUdEJiDq6ljI4Ybv9SbFisiiNHRHz5KeFBc8lXAto5IVVCY5I89jdnNBlASpfwYzi1tMoLFbcV8Ny8jAzLGrY9Gk/Y3AMBOt3IqvMZM3tv+hdMTDL4QDyANs5aEmsW3zdrC90Wlu7hdRxNug=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717362420; c=relaxed/simple;
-	bh=OGAM9AAuO65imAAPVgw+QhYz5OoRAm3Xj8ZIOpiNhjI=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=bkdc9VnIJ4BuWDb/EPHIJ1/k63lwOMUOpj7+dEiHSlfX7bDfHfSCFVoEc6BXuFLFe5dKaL/JFAFT9gpld6HE5mthnjX95aR0e86JF4xVVaqfPwDU3JQ62xg8eWYz/VEkTgLsCa/1a6bNnsF+A/8gWBSe1UpJpvKilDNbU4gnZ7k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=du4qhe7x; arc=none smtp.client-ip=209.85.128.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-42122ac2f38so20743185e9.1;
-        Sun, 02 Jun 2024 14:06:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1717362417; x=1717967217; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=nP94ybM9FNYb88tz7HD/3vY+krh+IlSjX7kjHLs0wAc=;
-        b=du4qhe7xNAltU2sYWi7qpAEmx16AfG/FIeicBjyw6Nv3xkTD8vRsg/tmRrWg78SpIu
-         TrF0XUFLDIshoptKmq39DdIj7P+DIMfsOkWnnarDuN+udDYDkD3jPXqvNdW/Jeyj8EH/
-         aPxpAOZDLQDMwWzeevsAeUphbHbDo2dYSHK2wRNrWcKYptyuSQtPf51uL6YtFwO/aoar
-         50Je7U/v0w6ghV6Kkjq0OUXFun+vs+I/jMEEYLDIz8YSd6Jf6Zs+VUFb5KceTdhSpoMe
-         BscItxzrNwIHM85gYU5CR8yWgVM4mBzQNrUNjOwDyajtIsP4kiOyZc3PzQkcegsBtK/R
-         X75A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1717362417; x=1717967217;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=nP94ybM9FNYb88tz7HD/3vY+krh+IlSjX7kjHLs0wAc=;
-        b=hqk/IZ2fktYocJCblm9ntxg6raeiZglen/93Mssv2gzmDyukV787/rJEr3tB1TrOR5
-         pxrbB3HazzrHJi2EbZEF5NWVQGW1yywL58pAAxcd3K/1GMXhRkX6YK2bllm5/2DcvKj7
-         njBzrjEBy581wIL0ZO14jBHJ2u9UYJ2M+ClwXFFyWrPliGvAiE6VgnnQXvahk+ayqCNE
-         W8HthXcbCgSgx8h5NVl1s0jRcXjzSC849QuOyQwmsZhhIiqwyHzCXW4ijXqBM9uSFm/5
-         kB26bjU+YWSpGq0E+BKzNOtrNEslocKE8RC9YkjceYRMjpx/OuVdbStsMjZahvqwIw5c
-         XAyw==
-X-Forwarded-Encrypted: i=1; AJvYcCWhDOzSBl8kwcM/efi0JlsF3Hh1UuGmicv12/d/MoG3rg4z5uKa5SdqxMNknM44H3c8tOpQ7VS4WRLNETEpnnyMz5i4v5zBz41CmxH5K06LhmHnB0YxoTH9hrDdsFGPPZzaTIQeTfhbrlJSZq0LCoNQVvLB4Cmp04ebKhzIkn4IJoXZYwzK
-X-Gm-Message-State: AOJu0YwXLZSfmChmniuAIXh4iFtSfk9q5sQr8+56ZANOFwoFqDPe8kfA
-	KC9qlNhx3jsve1L5vmkXhnxUz0Ph5vm9YFcwGFReKxncXT79LCZd
-X-Google-Smtp-Source: AGHT+IE9bKDGV2rae0v7hv3k7gf4Dv+ETcHfnP82kQkmzUNLWD1YWO3uYbNFTz/pADFJD16sGpjrTw==
-X-Received: by 2002:a05:600c:474a:b0:420:29dd:84d4 with SMTP id 5b1f17b1804b1-4212ddb68e8mr65427985e9.13.1717362417280;
-        Sun, 02 Jun 2024 14:06:57 -0700 (PDT)
-Received: from krava ([83.240.60.202])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4213cd1c075sm14484845e9.0.2024.06.02.14.06.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 02 Jun 2024 14:06:57 -0700 (PDT)
-From: Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Sun, 2 Jun 2024 23:06:54 +0200
-To: Jiri Olsa <olsajiri@gmail.com>
-Cc: Masami Hiramatsu <mhiramat@kernel.org>,
-	syzbot <syzbot+list0820d438c1905c75bc71@syzkaller.appspotmail.com>,
-	linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
-	syzkaller-bugs@googlegroups.com, bpf@vger.kernel.org
-Subject: Re: [syzbot] Monthly trace report (May 2024)
-Message-ID: <Zlze7nGNJcAvKJR2@krava>
-References: <00000000000061fac40619ba66f6@google.com>
- <20240602120950.8f08ef16ad9c485db374c08d@kernel.org>
- <Zlzbm0rvNN9XY5v_@krava>
+	s=arc-20240116; t=1717362495; c=relaxed/simple;
+	bh=QASph2uY1fq4HnU0wZtjG1pIF1jvY+VFOelBy4FoHog=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=ZaU6w+j8dZjZMm4tEq5w/b1pyHkIs2PfN5U3AntJQTm2u8xPue2YQIbQD6nRjNZICuBr4XojqrIJN7WRC0YByTpMhqRJhLwmGan19eMlzDkaLx4ykyKhKo1vwd1RnXKgYsV1Fov4VvJIHynFoIqZMH80diRIsKcyPBTVpb0KvW8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=xAoIyPs2; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=aSXhDgJ9; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=xAoIyPs2; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=aSXhDgJ9; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 2501022134;
+	Sun,  2 Jun 2024 21:08:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1717362491; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=tQZEL/vbM6wKuOYcR4luQQldeA8eAyr6eXnPVohUWho=;
+	b=xAoIyPs2nTlPuXCvTy9BLDzkeK3XIxu4KrdpEnjl8vEwe1c5tZwUZwxCH9m1GJS3l8kOEo
+	q6cU7KRkvTGXBdt/ZklFK4Y/pIKfOXxsRxWGpFj5LYVdvOUaJpsqyDz6m+mVa3Dyc6pJUO
+	NMEI8sToe2CKOO3/KmRsV2aQCeEaKYc=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1717362491;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=tQZEL/vbM6wKuOYcR4luQQldeA8eAyr6eXnPVohUWho=;
+	b=aSXhDgJ9nCrdqhhFTzYHoMz8jOuP0qkmQxZazYXkE/ROGrigeg61nXgB+kMyfXujAaFchM
+	piBSnd/cL+qA+FAA==
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=xAoIyPs2;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=aSXhDgJ9
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1717362491; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=tQZEL/vbM6wKuOYcR4luQQldeA8eAyr6eXnPVohUWho=;
+	b=xAoIyPs2nTlPuXCvTy9BLDzkeK3XIxu4KrdpEnjl8vEwe1c5tZwUZwxCH9m1GJS3l8kOEo
+	q6cU7KRkvTGXBdt/ZklFK4Y/pIKfOXxsRxWGpFj5LYVdvOUaJpsqyDz6m+mVa3Dyc6pJUO
+	NMEI8sToe2CKOO3/KmRsV2aQCeEaKYc=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1717362491;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=tQZEL/vbM6wKuOYcR4luQQldeA8eAyr6eXnPVohUWho=;
+	b=aSXhDgJ9nCrdqhhFTzYHoMz8jOuP0qkmQxZazYXkE/ROGrigeg61nXgB+kMyfXujAaFchM
+	piBSnd/cL+qA+FAA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id ECED713A97;
+	Sun,  2 Jun 2024 21:08:10 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id ZW4ROTrfXGbvOQAAD6G6ig
+	(envelope-from <vbabka@suse.cz>); Sun, 02 Jun 2024 21:08:10 +0000
+Message-ID: <f21161e9-1da6-4015-907d-e419ec5056da@suse.cz>
+Date: Sun, 2 Jun 2024 23:08:10 +0200
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Zlzbm0rvNN9XY5v_@krava>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH RFC 0/4] static key support for error injection functions
+To: David Rientjes <rientjes@google.com>
+Cc: Akinobu Mita <akinobu.mita@gmail.com>, Christoph Lameter <cl@linux.com>,
+ Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ Andrii Nakryiko <andrii@kernel.org>,
+ "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
+ Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
+ "David S. Miller" <davem@davemloft.net>,
+ Masami Hiramatsu <mhiramat@kernel.org>, Steven Rostedt
+ <rostedt@goodmis.org>, Mark Rutland <mark.rutland@arm.com>,
+ Jiri Olsa <jolsa@kernel.org>, Roman Gushchin <roman.gushchin@linux.dev>,
+ Hyeonggon Yoo <42.hyeyoo@gmail.com>, linux-kernel@vger.kernel.org,
+ linux-mm@kvack.org, bpf@vger.kernel.org, linux-trace-kernel@vger.kernel.org
+References: <20240531-fault-injection-statickeys-v1-0-a513fd0a9614@suse.cz>
+ <71ebaa45-dbd0-b39d-4b33-88da3f497297@google.com>
+Content-Language: en-US
+From: Vlastimil Babka <vbabka@suse.cz>
+Autocrypt: addr=vbabka@suse.cz; keydata=
+ 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
+ EP+ylKVEKb0Q2A==
+In-Reply-To: <71ebaa45-dbd0-b39d-4b33-88da3f497297@google.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Level: 
+X-Spamd-Result: default: False [-3.00 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	SUSPICIOUS_RECIPS(1.50)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	NEURAL_HAM_SHORT(-0.20)[-0.999];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	XM_UA_NO_VERSION(0.01)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	ARC_NA(0.00)[];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	RCPT_COUNT_TWELVE(0.00)[19];
+	MIME_TRACE(0.00)[0:+];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	FREEMAIL_CC(0.00)[gmail.com,linux.com,kernel.org,iogearbox.net,linux.ibm.com,intel.com,davemloft.net,goodmis.org,arm.com,linux.dev,vger.kernel.org,kvack.org];
+	RCVD_TLS_ALL(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	TO_DN_SOME(0.00)[];
+	MID_RHS_MATCH_FROM(0.00)[];
+	TAGGED_RCPT(0.00)[];
+	DWL_DNSWL_BLOCKED(0.00)[suse.cz:dkim];
+	DKIM_TRACE(0.00)[suse.cz:+];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim,suse.cz:email]
+X-Rspamd-Action: no action
+X-Rspamd-Queue-Id: 2501022134
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Spam-Flag: NO
+X-Spam-Score: -3.00
 
-On Sun, Jun 02, 2024 at 10:52:43PM +0200, Jiri Olsa wrote:
-> On Sun, Jun 02, 2024 at 12:09:50PM +0900, Masami Hiramatsu wrote:
-> > On Thu, 30 May 2024 23:50:32 -0700
-> > syzbot <syzbot+list0820d438c1905c75bc71@syzkaller.appspotmail.com> wrote:
-> > 
-> > > Hello trace maintainers/developers,
-> > > 
-> > > This is a 31-day syzbot report for the trace subsystem.
-> > > All related reports/information can be found at:
-> > > https://syzkaller.appspot.com/upstream/s/trace
-> > > 
-> > > During the period, 1 new issues were detected and 0 were fixed.
-> > > In total, 10 issues are still open and 35 have been fixed so far.
-> > > 
-> > > Some of the still happening issues:
-> > > 
-> > > Ref Crashes Repro Title
-> > > <1> 705     Yes   WARNING in format_decode (3)
-> > >                   https://syzkaller.appspot.com/bug?extid=e2c932aec5c8a6e1d31c
-> > 
-> > Could you send this to bpf folks? It seems bpf_trace_printk caused this errror.
-> > (Maybe skipping fmt string check?)
-> > 
-> > > <2> 26      Yes   INFO: task hung in blk_trace_ioctl (4)
-> > >                   https://syzkaller.appspot.com/bug?extid=ed812ed461471ab17a0c
-> > 
-> > This looks like debugfs_mutex lock leakage. Need to rerun with lockdep.
-> > 
-> > > <3> 7       Yes   WARNING in get_probe_ref
-> > >                   https://syzkaller.appspot.com/bug?extid=8672dcb9d10011c0a160
-> > 
-> > Hm, fail on register_trace_block_rq_insert(). blktrace issue.
-> > 
-> > > <4> 6       Yes   INFO: task hung in blk_trace_remove (2)
-> > >                   https://syzkaller.appspot.com/bug?extid=2373f6be3e6de4f92562
-> > 
-> > This looks like debugfs_mutex lock leakage too.
-> > 
-> > > <5> 5       Yes   general protection fault in bpf_get_attach_cookie_tracing
-> > >                   https://syzkaller.appspot.com/bug?extid=3ab78ff125b7979e45f9
-> > 
-> > This is also BPF problem.
+On 6/2/24 10:47 PM, David Rientjes wrote:
+> On Fri, 31 May 2024, Vlastimil Babka wrote:
 > 
-> this one seems to be easy to fix, can't reproduce with either the change
-> below or with instrumenting __bpf_prog_test_run_raw_tp to set current->bpf_ctx
-> as in __bpf_trace_run
+>> Patches 3 and 4 implement the static keys for the two mm fault injection
+>> sites in slab and page allocators. For a quick demonstration I've run a
+>> VM and the simple test from [1] that stresses the slab allocator and got
+>> this time before the series:
+>> 
+>> real    0m8.349s
+>> user    0m0.694s
+>> sys     0m7.648s
+>> 
+>> with perf showing
+>> 
+>>    0.61%  nonexistent  [kernel.kallsyms]  [k] should_failslab.constprop.0
+>>    0.00%  nonexistent  [kernel.kallsyms]  [k] should_fail_alloc_page                                                                                                                                                                                        ▒
+>> 
+>> And after the series
+>> 
+>> real    0m7.924s
+>> user    0m0.727s
+>> sys     0m7.191s
+>> 
+>> and the functions gone from perf report.
+>> 
 > 
-> will send a patch
-> 
-> thanks,
-> jirka
-> 
-> 
-> ---
-> diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-> index 593efccc2030..fc303c20f402 100644
-> --- a/kernel/trace/bpf_trace.c
-> +++ b/kernel/trace/bpf_trace.c
-> @@ -1148,6 +1148,8 @@ BPF_CALL_1(bpf_get_attach_cookie_trace, void *, ctx)
+> Impressive results that will no doubt be a win for kernels that enable 
+> these options.
 
-nah sry, sent wrong change, should be in bpf_get_attach_cookie_tracing
-will send formal patch
+Oh, I should have been more clear about it. This was done with both of these
+options disabled. It's measuring just removing the overhead of calling the
+empty noninline function, otherwise the difference would be larger. CPU
+mitigations (defaults) were enabled though, which affects the cost of
+function calls (this was in KVM guest on Ryzen 2700).
 
-jirka
+> Both CONFIG_FAILSLAB and CONFIG_FAIL_PAGE_ALLOC go out of their way to 
+> have no overhead, both in performance and kernel text overhead, when the 
+> .config options are disabled.
 
->  {
->  	struct bpf_trace_run_ctx *run_ctx;
->  
-> +	if (!current->bpf_ctx)
-> +		return 0;
->  	run_ctx = container_of(current->bpf_ctx, struct bpf_trace_run_ctx, run_ctx);
->  	return run_ctx->bpf_cookie;
->  }
+Except the unavoidable function call overhead since commits 4f6923fbb352 and
+af3b854492f3.
+
+> Do we have any insight into the distros or users that enable either of 
+> these options and are expecting optimal performance?  I would have assumed 
+> that while CONFIG_FAULT_INJECTION may be enabled that any users who would 
+> care deeply about this would have disabled both of these debug options.
+
+Eliminating the empty function call overhead, which is currently not
+possible to configure out in any way, was my primary goal. For our distro we
+disable the options and they are enabled only in a debug kernel option. So
+the additional benefit of the static key is we could enable them with no
+cost, and have them available for when needed, without the need to change
+kernel. This is great for debugging functionality in general
+(debug_pagealloc, page_owner), maybe this would be less likely to be useful,
+but one never knows.
+
+>> There might be other such fault injection callsites in hotpaths of other
+>> subsystems but I didn't search for them at this point.
+>> 
+>> [1] https://lore.kernel.org/all/6d5bb852-8703-4abf-a52b-90816bccbd7f@suse.cz/
+>> [2] https://lore.kernel.org/all/3j5d3p22ssv7xoaghzraa7crcfih3h2qqjlhmjppbp6f42pg2t@kg7qoicog5ye/
+>> 
+>> Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
+>> ---
+>> Vlastimil Babka (4):
+>>       fault-inject: add support for static keys around fault injection sites
+>>       error-injection: support static keys around injectable functions
+>>       mm, slab: add static key for should_failslab()
+>>       mm, page_alloc: add static key for should_fail_alloc_page()
+>> 
+>>  include/asm-generic/error-injection.h | 13 ++++++++++-
+>>  include/asm-generic/vmlinux.lds.h     |  2 +-
+>>  include/linux/error-injection.h       |  9 +++++---
+>>  include/linux/fault-inject.h          |  7 +++++-
+>>  kernel/fail_function.c                | 22 +++++++++++++++---
+>>  lib/error-inject.c                    |  6 ++++-
+>>  lib/fault-inject.c                    | 43 ++++++++++++++++++++++++++++++++++-
+>>  mm/fail_page_alloc.c                  |  3 ++-
+>>  mm/failslab.c                         |  2 +-
+>>  mm/internal.h                         |  2 ++
+>>  mm/page_alloc.c                       | 11 ++++++---
+>>  mm/slab.h                             |  3 +++
+>>  mm/slub.c                             | 10 +++++---
+>>  13 files changed, 114 insertions(+), 19 deletions(-)
+>> ---
+>> base-commit: 1613e604df0cd359cf2a7fbd9be7a0bcfacfabd0
+>> change-id: 20240530-fault-injection-statickeys-66b7222e91b7
+>> 
+>> Best regards,
+>> -- 
+>> Vlastimil Babka <vbabka@suse.cz>
+>> 
+>> 
+
 
