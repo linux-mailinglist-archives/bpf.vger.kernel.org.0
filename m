@@ -1,41 +1,41 @@
-Return-Path: <bpf+bounces-31246-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-31243-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 85C088D8981
-	for <lists+bpf@lfdr.de>; Mon,  3 Jun 2024 21:09:42 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 12DD88D897D
+	for <lists+bpf@lfdr.de>; Mon,  3 Jun 2024 21:09:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D67A8B24E99
-	for <lists+bpf@lfdr.de>; Mon,  3 Jun 2024 19:09:39 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 78FFA1F25873
+	for <lists+bpf@lfdr.de>; Mon,  3 Jun 2024 19:09:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3ECEF13D2A8;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 34F13139D0B;
 	Mon,  3 Jun 2024 19:07:14 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB15613CFB3;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8EA6813CF8E;
 	Mon,  3 Jun 2024 19:07:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717441633; cv=none; b=kPnUzO296ST+RR8YhA+9rq3S42iKacroBC1e9onR/gsTWu1/+/yftZ9HMg7dYOu08YOG1bIB6va8bnDZbNs9JhZ9pfa+CRDz4wTOusXqGuTuH+rHyGl/r+rL21HhSp+igbEs+h8r8Vzmu1MAd9Do1lc3fZ7znZ5F6NoxnLNgQBQ=
+	t=1717441633; cv=none; b=sxboobSDAp6Mn0ODegrczCOzlRuYmw4M5yeony0YG4ThQ7aosW/+GpjnC3zY4GoOHDv9N80hSdBl01NAdDLzdbNY7j7S+mEMU7mgEkzNn7UR68gdoDTP9CYi+fVXkAinR1xn9mTpH4w1keIOSL8733UyYjBbogz8Lax5Y8sU0mQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1717441633; c=relaxed/simple;
-	bh=6xxEZTPjtuAvunSxyIUoXlUZBxO25j8sGdXoLzd16gA=;
+	bh=3l/gu/FYcbjCAMjbkxPSB7XC3G/80oVuZGVp8xWdyDQ=;
 	h=Message-ID:Date:From:To:Cc:Subject:References:MIME-Version:
-	 Content-Type; b=Q+FJef+UCRp3nw+8IeT35wJKFkAJb05lF7BmyN4TxQ73R9SmluYQuQ8HAF9BuZ9/aM/E2z91pOVDcBYHdVdbF/icTY8D1TButOcExglxOgNuSfyktMt7aDRq9sVgDdrOlYy6n5lSCUJTxLvPWYpbjAI+x/KvSRfzm+3toR+uB0k=
+	 Content-Type; b=XIMeV0Ogzyu4n9WM0cFd9PtIxtt7mVOZdLod+XMVnuUSfeXbAWoXEkJrLIRGkO4OhoHbOVwG+ZwAUzkh+u1lD9OSObhhjNDbRFh65nuJ6qXdtAhhtyNr1ghVahwhBkML4s4ZeD2FoSb67Rr2gdzpOWnOXB18I4d00YlDN9aprMI=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1E325C4AF15;
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3942AC4AF0C;
 	Mon,  3 Jun 2024 19:07:13 +0000 (UTC)
 Received: from rostedt by gandalf with local (Exim 4.97)
 	(envelope-from <rostedt@goodmis.org>)
-	id 1sED2e-00000009TvR-0Q6v;
+	id 1sED2e-00000009Tvx-16NC;
 	Mon, 03 Jun 2024 15:08:24 -0400
-Message-ID: <20240603190823.959703050@goodmis.org>
+Message-ID: <20240603190824.122952310@goodmis.org>
 User-Agent: quilt/0.68
-Date: Mon, 03 Jun 2024 15:07:23 -0400
+Date: Mon, 03 Jun 2024 15:07:24 -0400
 From: Steven Rostedt <rostedt@goodmis.org>
 To: linux-kernel@vger.kernel.org,
  linux-trace-kernel@vger.kernel.org
@@ -56,8 +56,7 @@ Cc: Masami Hiramatsu <mhiramat@kernel.org>,
  Peter Zijlstra <peterz@infradead.org>,
  Thomas Gleixner <tglx@linutronix.de>,
  Guo Ren <guoren@kernel.org>
-Subject: [PATCH v3 19/27] function_graph: Implement fgraph_reserve_data() and
- fgraph_retrieve_data()
+Subject: [PATCH v3 20/27] function_graph: Add selftest for passing local variables
 References: <20240603190704.663840775@goodmis.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -69,328 +68,206 @@ Content-Type: text/plain; charset=UTF-8
 
 From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
 
-Added functions that can be called by a fgraph_ops entryfunc and retfunc to
-store state between the entry of the function being traced to the exit of
-the same function. The fgraph_ops entryfunc() may call
-fgraph_reserve_data() to store up to 32 words onto the task's shadow
-ret_stack and this then can be retrieved by fgraph_retrieve_data() called
-by the corresponding retfunc().
+Add boot up selftest that passes variables from a function entry to a
+function exit, and make sure that they do get passed around.
 
 Co-developed with Masami Hiramatsu:
-Link: https://lore.kernel.org/linux-trace-kernel/171509109089.162236.11372474169781184034.stgit@devnote2
+Link: https://lore.kernel.org/linux-trace-kernel/171509110271.162236.11047551496319744627.stgit@devnote2
 
 Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
 Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 ---
- include/linux/ftrace.h |   3 +
- kernel/trace/fgraph.c  | 191 +++++++++++++++++++++++++++++++++++++++--
- 2 files changed, 186 insertions(+), 8 deletions(-)
+ kernel/trace/trace_selftest.c | 169 ++++++++++++++++++++++++++++++++++
+ 1 file changed, 169 insertions(+)
 
-diff --git a/include/linux/ftrace.h b/include/linux/ftrace.h
-index 82cfc8e09cfd..9f61556a9491 100644
---- a/include/linux/ftrace.h
-+++ b/include/linux/ftrace.h
-@@ -1053,6 +1053,9 @@ struct fgraph_ops {
- 	int				idx;
- };
+diff --git a/kernel/trace/trace_selftest.c b/kernel/trace/trace_selftest.c
+index f8f55fd79e53..fcdc744c245e 100644
+--- a/kernel/trace/trace_selftest.c
++++ b/kernel/trace/trace_selftest.c
+@@ -756,6 +756,173 @@ trace_selftest_startup_function(struct tracer *trace, struct trace_array *tr)
  
-+void *fgraph_reserve_data(int idx, int size_bytes);
-+void *fgraph_retrieve_data(int idx, int *size_bytes);
-+
- /*
-  * Stack of return addresses for functions
-  * of a thread.
-diff --git a/kernel/trace/fgraph.c b/kernel/trace/fgraph.c
-index baa08249ffd5..f207b7ae5f46 100644
---- a/kernel/trace/fgraph.c
-+++ b/kernel/trace/fgraph.c
-@@ -31,12 +31,11 @@
-  * holds a bitmask and a type (called "bitmap"). The bitmap is defined as:
-  *
-  * bits:  0 -  9	offset in words from the previous ftrace_ret_stack
-- *			Currently, this will always be set to FGRAPH_FRAME_OFFSET
-- *			to get to the fgraph frame.
-  *
-  * bits: 10 - 11	Type of storage
-  *			  0 - reserved
-  *			  1 - bitmap of fgraph_array index
-+ *			  2 - reserved data
-  *
-  * For type with "bitmap of fgraph_array index" (FGRAPH_TYPE_BITMAP):
-  *  bits: 12 - 27	The bitmap of fgraph_ops fgraph_array index
-@@ -49,10 +48,15 @@
-  * The top of the ret_stack (when not empty) will always have a reference
-  * word that points to the last fgraph frame that was saved.
-  *
-+ * For reserved data:
-+ *  bits: 12 - 17	The size in words that is stored
-+ *  bits: 18 - 23	The index of fgraph_array, which shows who is stored
-+ *
-  * That is, at the end of function_graph_enter, if the first and forth
-  * fgraph_ops on the fgraph_array[] (index 0 and 3) needs their retfunc called
-- * on the return of the function being traced, this is what will be on the
-- * task's shadow ret_stack: (the stack grows upward)
-+ * on the return of the function being traced, and the forth fgraph_ops
-+ * stored two words of data, this is what will be on the task's shadow
-+ * ret_stack: (the stack grows upward)
-  *
-  *  ret_stack[SHADOW_STACK_OFFSET]
-  * | SHADOW_STACK_TASK_VARS(ret_stack)[15]      |
-@@ -62,11 +66,21 @@
-  * ...
-  * |                                            | <- task->curr_ret_stack
-  * +--------------------------------------------+
-+ * | (3 << 12) | (3 << 10) | FGRAPH_FRAME_OFFSET|
-+ * |         *or put another way*               |
-+ * | (3 << FGRAPH_DATA_INDEX_SHIFT)| \          | This is for fgraph_ops[3].
-+ * | ((2 - 1) << FGRAPH_DATA_SHIFT)| \          | The data size is 2 words.
-+ * | (FGRAPH_TYPE_DATA << FGRAPH_TYPE_SHIFT)| \ |
-+ * | (offset2:FGRAPH_FRAME_OFFSET+3)            | <- the offset2 is from here
-+ * +--------------------------------------------+ ( It is 4 words from the ret_stack)
-+ * |            STORED DATA WORD 2              |
-+ * |            STORED DATA WORD 1              |
-+ * +--------------------------------------------+
-  * | (9 << 12) | (1 << 10) | FGRAPH_FRAME_OFFSET|
-  * |         *or put another way*               |
-  * | (BIT(3)|BIT(0)) << FGRAPH_INDEX_SHIFT | \  |
-  * | FGRAPH_TYPE_BITMAP << FGRAPH_TYPE_SHIFT| \ |
-- * | (offset:FGRAPH_FRAME_OFFSET)               | <- the offset is from here
-+ * | (offset1:FGRAPH_FRAME_OFFSET)              | <- the offset1 is from here
-  * +--------------------------------------------+
-  * | struct ftrace_ret_stack                    |
-  * |   (stores the saved ret pointer)           | <- the offset points here
-@@ -100,6 +114,7 @@
- enum {
- 	FGRAPH_TYPE_RESERVED	= 0,
- 	FGRAPH_TYPE_BITMAP	= 1,
-+	FGRAPH_TYPE_DATA	= 2,
- };
+ #ifdef CONFIG_FUNCTION_GRAPH_TRACER
  
- /*
-@@ -110,6 +125,26 @@ enum {
- #define FGRAPH_INDEX_MASK	GENMASK(FGRAPH_INDEX_BITS - 1, 0)
- #define FGRAPH_INDEX_SHIFT	(FGRAPH_TYPE_SHIFT + FGRAPH_TYPE_BITS)
- 
-+/*
-+ * For DATA type:
-+ *  FGRAPH_DATA (12-17) bits hold the size of data (in words)
-+ *  FGRAPH_INDEX (18-23) bits hold the index for which gops->idx the data is for
-+ *
-+ * Note:
-+ *  data_size == 0 means 1 word, and 31 (=2^5 - 1) means 32 words.
-+ */
-+#define FGRAPH_DATA_BITS	5
-+#define FGRAPH_DATA_MASK	GENMASK(FGRAPH_DATA_BITS - 1, 0)
-+#define FGRAPH_DATA_SHIFT	(FGRAPH_TYPE_SHIFT + FGRAPH_TYPE_BITS)
-+#define FGRAPH_MAX_DATA_SIZE (sizeof(long) * (1 << FGRAPH_DATA_BITS))
++#ifdef CONFIG_DYNAMIC_FTRACE
 +
-+#define FGRAPH_DATA_INDEX_BITS	4
-+#define FGRAPH_DATA_INDEX_MASK	GENMASK(FGRAPH_DATA_INDEX_BITS - 1, 0)
-+#define FGRAPH_DATA_INDEX_SHIFT	(FGRAPH_DATA_SHIFT + FGRAPH_DATA_BITS)
++#define BYTE_NUMBER 123
++#define SHORT_NUMBER 12345
++#define WORD_NUMBER 1234567890
++#define LONG_NUMBER 1234567890123456789LL
 +
-+#define FGRAPH_MAX_INDEX	\
-+	((FGRAPH_INDEX_SIZE << FGRAPH_DATA_BITS) + FGRAPH_RET_INDEX)
++static int fgraph_store_size __initdata;
++static const char *fgraph_store_type_name __initdata;
++static char *fgraph_error_str __initdata;
++static char fgraph_error_str_buf[128] __initdata;
 +
- #define FGRAPH_ARRAY_SIZE	FGRAPH_INDEX_BITS
- 
- /*
-@@ -178,16 +213,46 @@ static int fgraph_lru_alloc_index(void)
- 	return idx;
- }
- 
-+/* Get the offset to the fgraph frame from a ret_stack value */
-+static inline int __get_offset(unsigned long val)
++static __init int store_entry(struct ftrace_graph_ent *trace,
++			      struct fgraph_ops *gops)
 +{
-+	return val & FGRAPH_FRAME_OFFSET_MASK;
-+}
++	const char *type = fgraph_store_type_name;
++	int size = fgraph_store_size;
++	void *p;
 +
-+/* Get the type of word from a ret_stack value */
-+static inline int __get_type(unsigned long val)
-+{
-+	return (val >> FGRAPH_TYPE_SHIFT) & FGRAPH_TYPE_MASK;
-+}
-+
-+/* Get the data_index for a DATA type ret_stack word */
-+static inline int __get_data_index(unsigned long val)
-+{
-+	return (val >> FGRAPH_DATA_INDEX_SHIFT) & FGRAPH_DATA_INDEX_MASK;
-+}
-+
-+/* Get the data_size for a DATA type ret_stack word */
-+static inline int __get_data_size(unsigned long val)
-+{
-+	return ((val >> FGRAPH_DATA_SHIFT) & FGRAPH_DATA_MASK) + 1;
-+}
-+
-+/* Get the word from the ret_stack at @offset */
-+static inline unsigned long get_fgraph_entry(struct task_struct *t, int offset)
-+{
-+	return t->ret_stack[offset];
-+}
-+
- /* Get the FRAME_OFFSET from the word from the @offset on ret_stack */
- static inline int get_frame_offset(struct task_struct *t, int offset)
- {
--	return t->ret_stack[offset] & FGRAPH_FRAME_OFFSET_MASK;
-+	return __get_offset(t->ret_stack[offset]);
- }
- 
- /* Get FGRAPH_TYPE from the word from the @offset at ret_stack */
- static inline int get_fgraph_type(struct task_struct *t, int offset)
- {
--	return (t->ret_stack[offset] >> FGRAPH_TYPE_SHIFT) & FGRAPH_TYPE_MASK;
-+	return __get_type(t->ret_stack[offset]);
- }
- 
- /* For BITMAP type: get the bitmask from the @offset at ret_stack */
-@@ -212,6 +277,25 @@ set_bitmap(struct task_struct *t, int offset, unsigned long bitmap)
- 		(FGRAPH_TYPE_BITMAP << FGRAPH_TYPE_SHIFT) | FGRAPH_FRAME_OFFSET;
- }
- 
-+/* For DATA type: get the data saved under the ret_stack word at @offset */
-+static inline void *get_data_type_data(struct task_struct *t, int offset)
-+{
-+	unsigned long val = t->ret_stack[offset];
-+
-+	if (__get_type(val) != FGRAPH_TYPE_DATA)
-+		return NULL;
-+	offset -= __get_data_size(val);
-+	return (void *)&t->ret_stack[offset];
-+}
-+
-+/* Create the ret_stack word for a DATA type */
-+static inline unsigned long make_data_type_val(int idx, int size, int offset)
-+{
-+	return (idx << FGRAPH_DATA_INDEX_SHIFT) |
-+		((size - 1) << FGRAPH_DATA_SHIFT) |
-+		(FGRAPH_TYPE_DATA << FGRAPH_TYPE_SHIFT) | offset;
-+}
-+
- /* ftrace_graph_entry set to this to tell some archs to run function graph */
- static int entry_run(struct ftrace_graph_ent *trace, struct fgraph_ops *ops)
- {
-@@ -245,6 +329,91 @@ static void ret_stack_init_task_vars(unsigned long *ret_stack)
- 	memset(gvals, 0, sizeof(*gvals) * FGRAPH_ARRAY_SIZE);
- }
- 
-+/**
-+ * fgraph_reserve_data - Reserve storage on the task's ret_stack
-+ * @idx:	The index of fgraph_array
-+ * @size_bytes: The size in bytes to reserve
-+ *
-+ * Reserves space of up to FGRAPH_MAX_DATA_SIZE bytes on the
-+ * task's ret_stack shadow stack, for a given fgraph_ops during
-+ * the entryfunc() call. If entryfunc() returns zero, the storage
-+ * is discarded. An entryfunc() can only call this once per iteration.
-+ * The fgraph_ops retfunc() can retrieve this stored data with
-+ * fgraph_retrieve_data().
-+ *
-+ * Returns: On success, a pointer to the data on the stack.
-+ *   Otherwise, NULL if there's not enough space left on the
-+ *   ret_stack for the data, or if fgraph_reserve_data() was called
-+ *   more than once for a single entryfunc() call.
-+ */
-+void *fgraph_reserve_data(int idx, int size_bytes)
-+{
-+	unsigned long val;
-+	void *data;
-+	int curr_ret_stack = current->curr_ret_stack;
-+	int data_size;
-+
-+	if (size_bytes > FGRAPH_MAX_DATA_SIZE)
-+		return NULL;
-+
-+	/* Convert the data size to number of longs. */
-+	data_size = (size_bytes + sizeof(long) - 1) >> (sizeof(long) == 4 ? 2 : 3);
-+
-+	val = get_fgraph_entry(current, curr_ret_stack - 1);
-+	data = &current->ret_stack[curr_ret_stack];
-+
-+	curr_ret_stack += data_size + 1;
-+	if (unlikely(curr_ret_stack >= SHADOW_STACK_MAX_OFFSET))
-+		return NULL;
-+
-+	val = make_data_type_val(idx, data_size, __get_offset(val) + data_size + 1);
-+
-+	/* Set the last word to be reserved */
-+	current->ret_stack[curr_ret_stack - 1] = val;
-+
-+	/* Make sure interrupts see this */
-+	barrier();
-+	current->curr_ret_stack = curr_ret_stack;
-+	/* Again sync with interrupts, and reset reserve */
-+	current->ret_stack[curr_ret_stack - 1] = val;
-+
-+	return data;
-+}
-+
-+/**
-+ * fgraph_retrieve_data - Retrieve stored data from fgraph_reserve_data()
-+ * @idx:	the index of fgraph_array (fgraph_ops::idx)
-+ * @size_bytes: pointer to retrieved data size.
-+ *
-+ * This is to be called by a fgraph_ops retfunc(), to retrieve data that
-+ * was stored by the fgraph_ops entryfunc() on the function entry.
-+ * That is, this will retrieve the data that was reserved on the
-+ * entry of the function that corresponds to the exit of the function
-+ * that the fgraph_ops retfunc() is called on.
-+ *
-+ * Returns: The stored data from fgraph_reserve_data() called by the
-+ *    matching entryfunc() for the retfunc() this is called from.
-+ *   Or NULL if there was nothing stored.
-+ */
-+void *fgraph_retrieve_data(int idx, int *size_bytes)
-+{
-+	int offset = current->curr_ret_stack - 1;
-+	unsigned long val;
-+
-+	val = get_fgraph_entry(current, offset);
-+	while (__get_type(val) == FGRAPH_TYPE_DATA) {
-+		if (__get_data_index(val) == idx)
-+			goto found;
-+		offset -= __get_data_size(val) + 1;
-+		val = get_fgraph_entry(current, offset);
++	p = fgraph_reserve_data(gops->idx, size);
++	if (!p) {
++		snprintf(fgraph_error_str_buf, sizeof(fgraph_error_str_buf),
++			 "Failed to reserve %s\n", type);
++		fgraph_error_str = fgraph_error_str_buf;
++		return 0;
 +	}
-+	return NULL;
-+found:
-+	if (size_bytes)
-+		*size_bytes = __get_data_size(val) * sizeof(long);
-+	return get_data_type_data(current, offset);
++
++	switch (fgraph_store_size) {
++	case 1:
++		*(char *)p = BYTE_NUMBER;
++		break;
++	case 2:
++		*(short *)p = SHORT_NUMBER;
++		break;
++	case 4:
++		*(int *)p = WORD_NUMBER;
++		break;
++	case 8:
++		*(long long *)p = LONG_NUMBER;
++		break;
++	}
++
++	return 1;
 +}
 +
- /**
-  * fgraph_get_task_var - retrieve a task specific state variable
-  * @gops: The ftrace_ops that owns the task specific variable
-@@ -464,13 +633,18 @@ int function_graph_enter(unsigned long ret, unsigned long func,
- 
- 	for (i = 0; i < FGRAPH_ARRAY_SIZE; i++) {
- 		struct fgraph_ops *gops = fgraph_array[i];
-+		int save_curr_ret_stack;
- 
- 		if (gops == &fgraph_stub)
- 			continue;
- 
-+		save_curr_ret_stack = current->curr_ret_stack;
- 		if (ftrace_ops_test(&gops->ops, func, NULL) &&
- 		    gops->entryfunc(&trace, gops))
- 			bitmap |= BIT(i);
-+		else
-+			/* Clear out any saved storage */
-+			current->curr_ret_stack = save_curr_ret_stack;
- 	}
- 
- 	if (!bitmap)
-@@ -626,7 +800,8 @@ static unsigned long __ftrace_return_to_handler(struct fgraph_ret_regs *ret_regs
- 	 * curr_ret_stack is after that.
- 	 */
- 	barrier();
--	current->curr_ret_stack -= FGRAPH_FRAME_OFFSET + 1;
-+	current->curr_ret_stack = offset - FGRAPH_FRAME_OFFSET;
++static __init void store_return(struct ftrace_graph_ret *trace,
++				struct fgraph_ops *gops)
++{
++	const char *type = fgraph_store_type_name;
++	long long expect = 0;
++	long long found = -1;
++	int size;
++	char *p;
 +
- 	current->curr_ret_depth--;
- 	return ret;
- }
++	p = fgraph_retrieve_data(gops->idx, &size);
++	if (!p) {
++		snprintf(fgraph_error_str_buf, sizeof(fgraph_error_str_buf),
++			 "Failed to retrieve %s\n", type);
++		fgraph_error_str = fgraph_error_str_buf;
++		return;
++	}
++	if (fgraph_store_size > size) {
++		snprintf(fgraph_error_str_buf, sizeof(fgraph_error_str_buf),
++			 "Retrieved size %d is smaller than expected %d\n",
++			 size, (int)fgraph_store_size);
++		fgraph_error_str = fgraph_error_str_buf;
++		return;
++	}
++
++	switch (fgraph_store_size) {
++	case 1:
++		expect = BYTE_NUMBER;
++		found = *(char *)p;
++		break;
++	case 2:
++		expect = SHORT_NUMBER;
++		found = *(short *)p;
++		break;
++	case 4:
++		expect = WORD_NUMBER;
++		found = *(int *)p;
++		break;
++	case 8:
++		expect = LONG_NUMBER;
++		found = *(long long *)p;
++		break;
++	}
++
++	if (found != expect) {
++		snprintf(fgraph_error_str_buf, sizeof(fgraph_error_str_buf),
++			 "%s returned not %lld but %lld\n", type, expect, found);
++		fgraph_error_str = fgraph_error_str_buf;
++		return;
++	}
++	fgraph_error_str = NULL;
++}
++
++static struct fgraph_ops store_bytes __initdata = {
++	.entryfunc		= store_entry,
++	.retfunc		= store_return,
++};
++
++static int __init test_graph_storage_type(const char *name, int size)
++{
++	char *func_name;
++	int len;
++	int ret;
++
++	fgraph_store_type_name = name;
++	fgraph_store_size = size;
++
++	snprintf(fgraph_error_str_buf, sizeof(fgraph_error_str_buf),
++		 "Failed to execute storage %s\n", name);
++	fgraph_error_str = fgraph_error_str_buf;
++
++	pr_cont("PASSED\n");
++	pr_info("Testing fgraph storage of %d byte%s: ", size, size > 1 ? "s" : "");
++
++	func_name = "*" __stringify(DYN_FTRACE_TEST_NAME);
++	len = strlen(func_name);
++
++	ret = ftrace_set_filter(&store_bytes.ops, func_name, len, 1);
++	if (ret && ret != -ENODEV) {
++		pr_cont("*Could not set filter* ");
++		return -1;
++	}
++
++	ret = register_ftrace_graph(&store_bytes);
++	if (ret) {
++		pr_warn("Failed to init store_bytes fgraph tracing\n");
++		return -1;
++	}
++
++	DYN_FTRACE_TEST_NAME();
++
++	unregister_ftrace_graph(&store_bytes);
++
++	if (fgraph_error_str) {
++		pr_cont("*** %s ***", fgraph_error_str);
++		return -1;
++	}
++
++	return 0;
++}
++/* Test the storage passed across function_graph entry and return */
++static __init int test_graph_storage(void)
++{
++	int ret;
++
++	ret = test_graph_storage_type("byte", 1);
++	if (ret)
++		return ret;
++	ret = test_graph_storage_type("short", 2);
++	if (ret)
++		return ret;
++	ret = test_graph_storage_type("word", 4);
++	if (ret)
++		return ret;
++	ret = test_graph_storage_type("long long", 8);
++	if (ret)
++		return ret;
++	return 0;
++}
++#else
++static inline int test_graph_storage(void) { return 0; }
++#endif /* CONFIG_DYNAMIC_FTRACE */
++
+ /* Maximum number of functions to trace before diagnosing a hang */
+ #define GRAPH_MAX_FUNC_TEST	100000000
+ 
+@@ -913,6 +1080,8 @@ trace_selftest_startup_function_graph(struct tracer *trace,
+ 	ftrace_set_global_filter(NULL, 0, 1);
+ #endif
+ 
++	ret = test_graph_storage();
++
+ 	/* Don't test dynamic tracing, the function tracer already did */
+ out:
+ 	/* Stop it if we failed */
 -- 
 2.43.0
 
