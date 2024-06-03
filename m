@@ -1,172 +1,217 @@
-Return-Path: <bpf+bounces-31263-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-31264-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 10F0A8E0025
-	for <lists+bpf@lfdr.de>; Mon,  3 Jun 2024 23:28:41 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (unknown [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 20EAC8F9A47
+	for <lists+bpf@lfdr.de>; Mon,  3 Jun 2024 23:41:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BF31A28AFBC
-	for <lists+bpf@lfdr.de>; Mon,  3 Jun 2024 21:28:39 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CCAF3282702
+	for <lists+bpf@lfdr.de>; Mon,  3 Jun 2024 21:39:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F419913C3F5;
-	Mon,  3 Jun 2024 21:28:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E635813C832;
+	Mon,  3 Jun 2024 21:39:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="cIGOnWDt"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="jCYQ+nHb"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f179.google.com (mail-pg1-f179.google.com [209.85.215.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2940B13C3EB
-	for <bpf@vger.kernel.org>; Mon,  3 Jun 2024 21:28:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5CDF313BAE5
+	for <bpf@vger.kernel.org>; Mon,  3 Jun 2024 21:39:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717450093; cv=none; b=SvmkhktQ0kgbE+UMqSVigLXvxISmNqahdzvWziJCjjDQ2cSHgYn7r9bm30m1xWfCX+wl/ytMocKnmelyPvFrdynAb/RFDtrVEDemd5KxIidQLOtO6lYQBmtfNB4Qlo8/jO74p6yjz94H1mFo8apC12EQYiVYlpnBfSfyNeK90uM=
+	t=1717450760; cv=none; b=HtYhQth0B3Im0GhvCbQivhNzsC4OSegxTkhDxsifuStuH7DlkGBhNiB4JZMsOvTSyJdwvRqLYykI76Q9TwiyIWfwu2MA+3kyfIs/9/JYbgznEG5LdEh8yzhkegzdOHoBEvoCAzxD6VeHyBSiDm4pcG9qmdD6yveLP0YE0mPYDy8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717450093; c=relaxed/simple;
-	bh=vWNBfcLurLUiGAV6VfUdDDhkjyW72gQ/QRDbYdx1K+A=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=BuSzycEnfZ9Se9Xdbo6pdG6DM2sNkSX+3GEN+7DlEWZkSwy5tpm2+nbKhE7I9YBRgaWKuMUzuRhVdkXBHlh3oxxR1RV3GwPaZt+yJNLN4c5OC6mp678rQRfiFPh26h1C+AdYBmiqK2gbJI3DcLgK91BEC+Z0zOc2UjN0orLqADE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=cIGOnWDt; arc=none smtp.client-ip=209.85.215.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f179.google.com with SMTP id 41be03b00d2f7-681953ad4f2so3607736a12.2
-        for <bpf@vger.kernel.org>; Mon, 03 Jun 2024 14:28:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1717450091; x=1718054891; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=hLpic3nkdu36ZzEzLDQ4Legrv+wA9sJFqGyoWH6k0dg=;
-        b=cIGOnWDtHUU41pPF2w1yTpfovoDSZVvlF0WuM5f51qxaNeVM6tdzLCiwyGKvBb2dzp
-         +Zsq8i+gfLq0M01sJNjviPeAF7A7+EoudHvI02DCW6KWeBxYKHgmKaWNauy53gCasTGQ
-         fb//H4MvkggrS5JW2IwqJlrjdVV5UTvcrlH62KLVYWEIhr0lJqeDaaZwmmSHKLyY8Y++
-         FaWk9MsnzykqOiKuISc3v757mfoaqj/Wy5CkRIwfRDsw+B8cX0JnUNIAdklFQnH1KESQ
-         R1iUSpDgwoEpW/L90Ta0Bw9Jcg8DLmzBZS2G5prFp6QW2kPd5zyOk6+fW+6RBSMqD+Xr
-         0A1Q==
+	s=arc-20240116; t=1717450760; c=relaxed/simple;
+	bh=pAMuOKHLSKkVmer1pkthrJ1jf8sw7MaNVjVlfzCWgNY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ciUCrRa3sJI5satwT6lBQztln7ysnH9AjCgD5shU/2AuvYfANiEfWx0d32GIZxLPsNy8MEMLuncnAjBm7TDqaOSca469aQml9PwzRfbTOLQWsKuenynmeihtPxAFQLXDpwRHb+NnhTkDSYq7HnCaaQXU8Qmb7Z4SteTStm2LKZ0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=jCYQ+nHb; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1717450757;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=rW72wPodY1wqzDmVcaAF9S5heqN9gcWtpGc5h9hRyuM=;
+	b=jCYQ+nHb34pJDXqfy0wqCXsg1Jsx+cr7RoOFYm7ZabbbU1MFpsTJaohUuqFckTB0f1UVvv
+	QISYM4UYPWgHq081XON0T4BosGD7LVDEtt4Rci5zHiLUWsaD+jjEKErXU6K1aF6xwqm9sF
+	PNDUsmPvv72ySgKL1mNla+8EaWlSfvY=
+Received: from mail-oi1-f200.google.com (mail-oi1-f200.google.com
+ [209.85.167.200]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-493-8hAc4q_NNsie5r5NN7PU-Q-1; Mon, 03 Jun 2024 17:39:16 -0400
+X-MC-Unique: 8hAc4q_NNsie5r5NN7PU-Q-1
+Received: by mail-oi1-f200.google.com with SMTP id 5614622812f47-3d1fde80c6dso8361b6e.2
+        for <bpf@vger.kernel.org>; Mon, 03 Jun 2024 14:39:15 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1717450091; x=1718054891;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=hLpic3nkdu36ZzEzLDQ4Legrv+wA9sJFqGyoWH6k0dg=;
-        b=rjd0pnhT8Jf5dCkZ1Fq6vquhRAvUVCFxUiN5DFzPsNq++SzlmcpGjViYXMDXupgRKV
-         DH3PK711E+yONS0dgk9FPc9jtQRi+CwKqsFlz8ra1Mf3SiPPfjDTtMnrf1mYe9X0fgoK
-         VwcS+sLZPiVy75vmVmKZt/L+V0J30PQfWWFdM2CXgGlzdiTSEKsIjClPQtMZUt0PpZyR
-         N+3WfPFVf54UZpp/kE3/2ZrNF5N2PLrJM60uM4iDcFvVAOpxPfvDJQ/ImhYi9QqZhTbE
-         dqM3jLRT0i3sKRudAuto9QUbcTKVI/8wSz09MKCL04xW01SEwACWzZ9/3PueQLhF7LQw
-         Hohw==
-X-Forwarded-Encrypted: i=1; AJvYcCWphAsUoGyXIYIYF1NRg5izruwjnNc+Bhjn0btk6FNlFH3vF9JEMybXuXKy1vIDQ0KaLHJy3mPLvyXylS1abxH1XxUA
-X-Gm-Message-State: AOJu0YykvWpUpjbDgBqJSZhs1EqauJ8Gb0+sAa5KL7/Ymmybv3a64KTk
-	Nx6wI3H8Wd5OCtHvEmoSzGe7VSIw+cHd1xPY2cTZSqmevtngkBxieuekZfa85sXOJmZra1xN1LW
-	LMyS+kGDtBpQAPpqtbvJwAy90ibA=
-X-Google-Smtp-Source: AGHT+IGqPlj0swq6oJYMXKhThhyC3myutFEvmZNeVi+XCmV670C605epdMnTxpnbaonVy4Yg0bS6rSvIMm+WC30fqyE=
-X-Received: by 2002:a17:90a:fe12:b0:2c2:93b:cb2f with SMTP id
- 98e67ed59e1d1-2c2093bcba8mr5530500a91.31.1717450091324; Mon, 03 Jun 2024
- 14:28:11 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1717450755; x=1718055555;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=rW72wPodY1wqzDmVcaAF9S5heqN9gcWtpGc5h9hRyuM=;
+        b=GNmTeP1TbvLFnvWJzpQk9pDRPo1ee+fXuWVRssQz51hJOkdvfDLF+bRqKdR0Wsj7IV
+         VV1skDT7D3sz58ULajYip+PJlXetc5bJg4B3w9ePgcuhS4xDmQZe6LRiKzJhYD0pULfN
+         MNGLQ/oUtpJUTxHbqj4WQ7CLGNWdheXWGWP3N4EVJZBzH8GYkxgJus41Oi+cu7IoN09O
+         bu6K7Mpy7q6/WtP+VfdXJuPFMrrh+WVlMkMVNsGDl9NSTTOqKmvEh3v9AT8RH7p02FsZ
+         A09UJLKTCgWxme2nNrQ62J8yAhpQeEW9NxvEItT+rmFF3oRxM+rsbpK5LJmrdHF2s/tt
+         3V0w==
+X-Forwarded-Encrypted: i=1; AJvYcCVnq9Fp5jonJKcuvv6NPGhdXsGO4BSIjJzVlTUzLUj30EDLDyPvcSlg3MIEbCA2O6aHGnN5XHosDmzeNPXcBabVHHhj
+X-Gm-Message-State: AOJu0YyxhvzERgsICz8iFq6+F2717SFf0eAxfSmle3QwkWTM/eFlgbB2
+	cmq2FcFbnpWLeBp9/d4TggF2QTR5A0TdlI/F2y0JNQsD5xQGbAXwZMWUh1Bn5cZ4VvexHQ4IR3I
+	Ls6LElzlqARaDn3HsxpNML6WWXKtlxO+BZH0exNMX/PAcCWGIig==
+X-Received: by 2002:a05:6808:1415:b0:3c9:9404:6c99 with SMTP id 5614622812f47-3d1e35b9151mr13207011b6e.42.1717450754997;
+        Mon, 03 Jun 2024 14:39:14 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IE0ANFMBW6FTFEVnKixIfi5ytjIlsmW/YQ1Vrkemo+hu+JY0Vxa8xEcTgWh83KSdzdWL3Pt3Q==
+X-Received: by 2002:a05:6808:1415:b0:3c9:9404:6c99 with SMTP id 5614622812f47-3d1e35b9151mr13206977b6e.42.1717450753926;
+        Mon, 03 Jun 2024 14:39:13 -0700 (PDT)
+Received: from x1gen2nano ([2600:1700:1ff0:d0e0::33])
+        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-6ae4a74dee1sm33877926d6.56.2024.06.03.14.39.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 03 Jun 2024 14:39:13 -0700 (PDT)
+Date: Mon, 3 Jun 2024 16:39:11 -0500
+From: Andrew Halaney <ahalaney@redhat.com>
+To: "Russell King (Oracle)" <linux@armlinux.org.uk>
+Cc: Serge Semin <fancer.lancer@gmail.com>, 
+	Alexandre Torgue <alexandre.torgue@foss.st.com>, Alexei Starovoitov <ast@kernel.org>, bpf@vger.kernel.org, 
+	Daniel Borkmann <daniel@iogearbox.net>, "David S. Miller" <davem@davemloft.net>, 
+	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, 
+	Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, 
+	Jose Abreu <joabreu@synopsys.com>, linux-arm-kernel@lists.infradead.org, 
+	linux-stm32@st-md-mailman.stormreply.com, Maxime Coquelin <mcoquelin.stm32@gmail.com>, 
+	netdev@vger.kernel.org, Paolo Abeni <pabeni@redhat.com>
+Subject: Re: [PATCH RFC v2 0/8] net: stmmac: convert stmmac "pcs" to phylink
+Message-ID: <tukyfritbypmq3cf2mkasoaqq7lbjf6owaltghosx37df4cg3b@4mpglxfda25a>
+References: <Zlmzu7/ANyZxOOQL@shell.armlinux.org.uk>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240601014505.3443241-1-andrii@kernel.org> <ZlxobN6wOiXgifAB@krava>
-In-Reply-To: <ZlxobN6wOiXgifAB@krava>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Mon, 3 Jun 2024 14:27:58 -0700
-Message-ID: <CAEf4BzbTzjh_1oYqHTsB=VpJS-fSpxz0VtSJX7o4yQg_0pszBg@mail.gmail.com>
-Subject: Re: [PATCH RFC bpf-next] libbpf: implement BTF field iterator
-To: Jiri Olsa <olsajiri@gmail.com>
-Cc: Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org, ast@kernel.org, 
-	daniel@iogearbox.net, martin.lau@kernel.org, kernel-team@meta.com, 
-	Eduard Zingerman <eddyz87@gmail.com>, Alan Maguire <alan.maguire@oracle.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Zlmzu7/ANyZxOOQL@shell.armlinux.org.uk>
 
-On Sun, Jun 2, 2024 at 5:41=E2=80=AFAM Jiri Olsa <olsajiri@gmail.com> wrote=
-:
->
-> On Fri, May 31, 2024 at 06:45:05PM -0700, Andrii Nakryiko wrote:
-> > Switch from callback-based iteration over BTF type ID and string offset
-> > fields to an iterator-based approach.
-> >
-> > Switch all existing internal use cases to this new iterator.
-> >
-> > We have .BTF.ext fields iteration, those could be switched to
-> > iterator-based implementation as well, but this is left as a follow up.
-> >
-> > We also convert bpftool's use of this libbpf-internal API.
-> >
-> > Cc: Eduard Zingerman <eddyz87@gmail.com>
-> > Cc: Alan Maguire <alan.maguire@oracle.com>
-> > Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-> > ---
-> >  tools/bpf/bpftool/gen.c         |  17 +-
-> >  tools/lib/bpf/btf.c             | 334 ++++++++++++++++++--------------
-> >  tools/lib/bpf/libbpf_internal.h |  26 ++-
-> >  tools/lib/bpf/linker.c          |  55 +++---
-> >  4 files changed, 253 insertions(+), 179 deletions(-)
-> >
-> > diff --git a/tools/bpf/bpftool/gen.c b/tools/bpf/bpftool/gen.c
-> > index b3979ddc0189..7b9c0255a2cf 100644
-> > --- a/tools/bpf/bpftool/gen.c
-> > +++ b/tools/bpf/bpftool/gen.c
-> > @@ -2379,15 +2379,6 @@ static int btfgen_record_obj(struct btfgen_info =
-*info, const char *obj_path)
-> >       return err;
-> >  }
-> >
-> > -static int btfgen_remap_id(__u32 *type_id, void *ctx)
-> > -{
-> > -     unsigned int *ids =3D ctx;
-> > -
-> > -     *type_id =3D ids[*type_id];
-> > -
-> > -     return 0;
-> > -}
-> > -
-> >  /* Generate BTF from relocation information previously recorded */
-> >  static struct btf *btfgen_get_btf(struct btfgen_info *info)
-> >  {
-> > @@ -2466,11 +2457,13 @@ static struct btf *btfgen_get_btf(struct btfgen=
-_info *info)
-> >
-> >       /* second pass: fix up type ids */
-> >       for (i =3D 1; i < btf__type_cnt(btf_new); i++) {
-> > +             struct btf_field_iter it;
-> >               struct btf_type *btf_type =3D (struct btf_type *) btf__ty=
-pe_by_id(btf_new, i);
-> > +             __u32 *type_id;
-> >
-> > -             err =3D btf_type_visit_type_ids(btf_type, btfgen_remap_id=
-, ids);
-> > -             if (err)
-> > -                     goto err_out;
-> > +             btf_field_iter_init(&it, btf_type, BTF_FIELD_ITER_IDS);
->
-> lgtm, should we check return value from btf_field_iter_init?
+On Fri, May 31, 2024 at 12:25:47PM GMT, Russell King (Oracle) wrote:
+> Hi,
+> 
+> This is version 2 of the series switching stmmac to use phylink PCS
+> instead of going behind phylink's back.
+> 
+> Changes since version 1:
+> - Addition of patches from Serge Semin to allow RGMII to use the
+>   "PCS" code even if priv->dma_cap.pcs is not set (including tweaks
+>   by me.)
+> - Restructuring of the patch set to be a more logical split.
+> - Leave the pcs_ctrl_ane methods until we've worked out what to do
+>   with the qcom-ethqos driver (this series may still end up breaking
+>   it, but at least we will now successfully compile.)
+> 
+> A reminder that what I want to hear from this patch set are the results
+> of testing - and thanks to Serge, the RGMII paths were exercised, but
+> I have not had any results for the SGMII side of this.
 
-yeah, it should never fail, but if BTF is corrupted it might, so
-better safe than sorry, I'll add checks
+I took this for a brief spin on the sa8775p-ride eval board from
+Qualcomm, as a reminder here's the dts to show the setup:
 
->
-> jirka
->
-> > +             while ((type_id =3D btf_field_iter_next(&it)))
-> > +                     *type_id =3D ids[*type_id];
-> >       }
-> >
-> >       free(ids);
-> > diff --git a/tools/lib/bpf/btf.c b/tools/lib/bpf/btf.c
-> > index 2d0840ef599a..0c39f9b3f98b 100644
-> > --- a/tools/lib/bpf/btf.c
-> > +++ b/tools/lib/bpf/btf.c
-> > @@ -1739,9 +1739,8 @@ struct btf_pipe {
-> >       struct hashmap *str_off_map; /* map string offsets from src to ds=
-t */
-> >  };
-> >
+    https://elixir.bootlin.com/linux/v6.9-rc3/source/arch/arm64/boot/dts/qcom/sa8775p-ride.dts#L288
 
-[...] (trimming is good)
+I didn't notice any issues with traffic on either interface (there's two
+stmmac device instances, both using SGMII to a marvell 88ea1512 phy).
+Did some basic link up / down tests, iperf3, etc.
+
+If there's anything in specific you'd like exercised, please let me
+know. I'll try and find time to look over the patches more carefully
+tomorrow for review purposes, but I only know what I know from reading
+the driver some, so I can't answer any of the open questions with any
+official documentation.
+
+Tested-by: Andrew Halaney <ahalaney@redhat.com>
+
+> 
+> There are still a bunch of outstanding questions:
+> 
+> - whether we should be using two separate PCS instances, one for
+>   RGMII and another for SGMII. If the PCS hardware is not present,
+>   but are using RGMII mode, then we probably don't want to be
+>   accessing the registers that would've been there for SGMII.
+> - what the three interrupts associated with the PCS code actually
+>   mean when they fire.
+> - which block's status we're reading in the pcs_get_state() method,
+>   and whether we should be reading that for both RGMII and SGMII.
+> - whether we need to activate phylink's inband mode in more cases
+>   (so that the PCS/MAC status gets read and used for the link.)
+> 
+> There's probably more questions to be asked... but really the critical
+> thing is to shake out any breakage from making this conversion. Bear
+> in mind that I have little knowledge of this hardware, so this
+> conversion has been done somewhat blind using only what I can observe
+> from the current driver.
+> 
+> Original blurb below.
+> 
+> As I noted recently in a thread (and was ignored) stmmac sucks. (I
+> won't hide my distain for drivers that make my life as phylink
+> maintainer more difficult!)
+> 
+> One of the contract conditions for using phylink is that the driver
+> will _not_ mess with the netif carrier. stmmac developers/maintainers
+> clearly didn't read that, because stmmac messes with the netif
+> carrier, which destroys phylink's guarantee that it'll make certain
+> calls in a particular order (e.g. it won't call mac_link_up() twice
+> in a row without an intervening mac_link_down().) This is clearly
+> stated in the phylink documentation.
+> 
+> Thus, this patch set attempts to fix this. Why does it mess with the
+> netif carrier? It has its own independent PCS implementation that
+> completely bypasses phylink _while_ phylink is still being used.
+> This is not acceptable. Either the driver uses phylink, or it doesn't
+> use phylink. There is no half-way house about this. Therefore, this
+> driver needs to either be fixed, or needs to stop using phylink.
+> 
+> Since I was ignored when I brought this up, I've hacked together the
+> following patch set - and it is hacky at the moment. It's also broken
+> because of recentl changes involving dwmac-qcom-ethqos.c - but there
+> isn't sufficient information in the driver for me to fix this. The
+> driver appears to use SGMII at 2500Mbps, which simply does not exist.
+> What interface mode (and neg_mode) does phylink pass to pcs_config()
+> in each of the speeds that dwmac-qcom-ethqos.c is interested in.
+> Without this information, I can't do that conversion. So for the
+> purposes of this, I've just ignored dwmac-qcom-ethqos.c (which means
+> it will fail to build.)
+> 
+> The patch splitup is not ideal, but that's not what I'm interested in
+> here. What I want to hear is the results of testing - does this switch
+> of the RGMII/SGMII "pcs" stuff to a phylink_pcs work for this driver?
+> 
+> Please don't review the patches, but you are welcome to send fixes to
+> them. Once we know that the overall implementation works, then I'll
+> look at how best to split the patches. In the mean time, the present
+> form is more convenient for making changes and fixing things.
+> 
+> There is still more improvement that's needed here.
+> 
+> Thanks.
+> 
+>  drivers/net/ethernet/stmicro/stmmac/Makefile       |   2 +-
+>  drivers/net/ethernet/stmicro/stmmac/common.h       |  12 +-
+>  .../net/ethernet/stmicro/stmmac/dwmac1000_core.c   | 146 ++++++++++++++-------
+>  drivers/net/ethernet/stmicro/stmmac/dwmac4_core.c  | 131 +++++++++++++-----
+>  drivers/net/ethernet/stmicro/stmmac/hwif.h         |  19 ++-
+>  .../net/ethernet/stmicro/stmmac/stmmac_ethtool.c   | 111 +---------------
+>  drivers/net/ethernet/stmicro/stmmac/stmmac_main.c  |  33 ++---
+>  drivers/net/ethernet/stmicro/stmmac/stmmac_pcs.c   |  58 ++++++++
+>  drivers/net/ethernet/stmicro/stmmac/stmmac_pcs.h   |  34 +----
+>  9 files changed, 298 insertions(+), 248 deletions(-)
+>  create mode 100644 drivers/net/ethernet/stmicro/stmmac/stmmac_pcs.c
+> 
+> -- 
+> RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+> FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
+> 
+
 
