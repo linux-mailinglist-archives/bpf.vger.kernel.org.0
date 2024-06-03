@@ -1,211 +1,148 @@
-Return-Path: <bpf+bounces-31256-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-31257-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C99D98D8ADD
-	for <lists+bpf@lfdr.de>; Mon,  3 Jun 2024 22:29:58 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id BF9FA8D8B3C
+	for <lists+bpf@lfdr.de>; Mon,  3 Jun 2024 23:04:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 53D451F26273
-	for <lists+bpf@lfdr.de>; Mon,  3 Jun 2024 20:29:58 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5F4C71F2338E
+	for <lists+bpf@lfdr.de>; Mon,  3 Jun 2024 21:04:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F40E13B59A;
-	Mon,  3 Jun 2024 20:29:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD97113B596;
+	Mon,  3 Jun 2024 21:04:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CIgKQPSs"
+	dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b="VMn4yVx1"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-vs1-f44.google.com (mail-vs1-f44.google.com [209.85.217.44])
+Received: from mail-yw1-f174.google.com (mail-yw1-f174.google.com [209.85.128.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4028B4BAA6;
-	Mon,  3 Jun 2024 20:29:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.217.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C0B657C8D
+	for <bpf@vger.kernel.org>; Mon,  3 Jun 2024 21:04:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717446588; cv=none; b=YBa3leX5rVfq6oQjWk1FGNcLdvqAN+WhwYuKVAAC9a3xzO7Qg6gQb48UT56mUB353oc3VvnTbmzqIWZZE/uUNMXkv5HjLAGMLUjprGbtK3JvGXmvVKmQ/g29pVJuTLmn/3qfWT9AkYubl89JCufA+TJYny9MP2GW3bcEC6YCPso=
+	t=1717448650; cv=none; b=dWGCIVVEMSZkLwvKpsjOGFyncPN+xPOkmbqgaXxIi+7H2YgBwT1Fyr223es6JZtyoKstfb/f47wtwjZ3yoN6llggzRB7BdI8evWXF5jgayDpjPsNzlwuQoRlh3TDwbKA88vXMYA4klCVnQVq1cXiCy7623T7sSCYKZTRmwUj6Js=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717446588; c=relaxed/simple;
-	bh=j3gfTKddyYWmSxXQuoNeqUkMME14BCZN3zYIx14emZI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=u3nYVN5UxhzpfabPNsvmAKlW158Qw2NAtrGWrLD1+whytjN3zGzn/QxqwNkfYKDzQpAks0LALcMaQPckVQGTky/B4OWGQ9V3v4ZD/mLeCFr8I43Vxht9Po6wsFPwhrq5VmL5w3ovZN0s2Hy8VRQfjmp6bDHS0tIi6a4c+vWuD7o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CIgKQPSs; arc=none smtp.client-ip=209.85.217.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-vs1-f44.google.com with SMTP id ada2fe7eead31-48bc4350b19so117088137.2;
-        Mon, 03 Jun 2024 13:29:47 -0700 (PDT)
+	s=arc-20240116; t=1717448650; c=relaxed/simple;
+	bh=kx2kvEZgNc5XsnnewjVka9co2H4QjUYDuU73T0I0Hl8=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=F/GENLWXQGfw28ieQbRjuSa59+XfgAiH/AOhkO2toG5yLjFg2XWj4Ovia4xBVcee5pyyMbWYK1EwwtJq0Qyik2RSny807wAe40ITcdmttWVqj7qiQbnJAg3LU3QawKy3+90SYtWRyZ0l5zTXgmz+tdvLPn5SGLN3N2reM4vkdh4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com; spf=pass smtp.mailfrom=paul-moore.com; dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b=VMn4yVx1; arc=none smtp.client-ip=209.85.128.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=paul-moore.com
+Received: by mail-yw1-f174.google.com with SMTP id 00721157ae682-62a08b250a2so4324907b3.3
+        for <bpf@vger.kernel.org>; Mon, 03 Jun 2024 14:04:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1717446586; x=1718051386; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=5X2AoY/lQVZz1FKCa6KHvqy44zzQ3mhz+ruaolMEMaw=;
-        b=CIgKQPSsPWAcarOJaRigCbKR+zq29KpWz8a+jmm17mqJpFPCt/Mqs9mpufx2Qu6sXC
-         nL1bUPZPlBiKAY22lRqq16AWCEsn4IsvD7uVEWWTNaeJPAabCxYVRw1uv5A5ZH2zPfMF
-         o7fwnM2FPZTYlq9izkvEEOT8byIcWkCbJtoFRUtgOcOFK/JsIDY4OIie/fDJzIkmpJv1
-         6eyb7YNbo0r/eZn0zzBgymutBz4QWaIO+lxdzowRKJSA0mhaAwLE52BrsURwnOnE8nFz
-         WlwSUbUq17GrUbf13mUiGkCFlN9W6pkXIlJCmsalk7racxvNuTuTdFu6fpcoPlxR/aNe
-         wa5Q==
+        d=paul-moore.com; s=google; t=1717448647; x=1718053447; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=A4Xwo04AxfSK0W6mUhqUjoHJv2i+cgsYyuXRU+BzfeA=;
+        b=VMn4yVx1AYSFygWtRu5+IglA1BVBZXIDkLMZdFsI6Mm7qdpKVMCWvLyJPV3NTT4HzC
+         0CulDm2WXkRXh1cnRTQGZUtR3Xd4CuCUWIplnYH4Q3S0QWgiNSXrdHbBrfIf9vdhPVrR
+         Ad6jqImA/J1vJLVb4a1EsfeN6pYWwd5afsuAj2gK97uEYtYJ3MTdvbi7irvogUFApxI6
+         o+zdNcpF0+/AvnYCUQoTJ8CGE/+vgqlhwNKZ0nBNaDibw5tpHyEg0a8f2NWwBwJOZCzv
+         5smUPWJI72Y4dnho+rlH2lXeDxKpR2tLinCMumyyk/0/96vhtngi+EtetW0uJgE4wux+
+         87pg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1717446586; x=1718051386;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=5X2AoY/lQVZz1FKCa6KHvqy44zzQ3mhz+ruaolMEMaw=;
-        b=lW39H0rDDt1iD27C0ABZImSJZJOasptR5rropCe5Ia8lKPeaKai6fHpLQnsikXXFuS
-         THFY1ptO7Rf5UdKa5kll5mDG0ERnmBPDr+jukm8sewsnl43ju+443gU9uNAjybG7Rrxs
-         ogC9UQwOGl1nDDp5jNuSreH3Gprue51EhsD6aQzmmQtZtly9g/8c/LvRfWr/ElJh7N2w
-         v6Ejo09zlvl6PHb2hIE0x2BknIZKVDyqJE6Dh0Nw0OMxJngIEPWddDczbuMDqa67/o9q
-         Z7vPP+Ioyx+MQfAXPB//7Rpe/1e63BX1PkSEXk2SqXGU11AD6koX/2T6VPmLj1Y2cLeY
-         mT+A==
-X-Forwarded-Encrypted: i=1; AJvYcCUoMw7bZuaZaa/37v2HyYsn1g3dpSzzG/2v3nI71TD3giDUpqE4Xm2yiNanM95lZuN2LWsSiVRuwpTAkmrnBx98xjCR9wZd8OAu6G907xZF9NKWNWw+jhSxhuxRvEWoB1k+GAarXFx5u/9OSmUKOhNa0URuaqL88HXLfMEJr9GWJQlEO5hm+R8HNFibmzkRgeI+xTqatbX5gQ==
-X-Gm-Message-State: AOJu0YyPLIvIIrfPzjnl/CI9d1WUnI+GqbQ3Rc7uwOJQ7TCnXT4lwUfJ
-	78hXc/9IdsIV37JSNs8+MOz9JEnzBVhHB28ymBE8TZFq4QBQlEJk
-X-Google-Smtp-Source: AGHT+IGWrKHzvzbDJxYZB9izbaKjENhQiSF4aLl0mt855tkbfFf0g9cOXHABW4R9S8b+9ENLJgRQIw==
-X-Received: by 2002:a05:6122:309e:b0:4eb:152e:cf92 with SMTP id 71dfb90a1353d-4eb152ed501mr5250710e0c.0.1717446586037;
-        Mon, 03 Jun 2024 13:29:46 -0700 (PDT)
-Received: from ?IPV6:2a02:2f04:920e:e000:3b36:462:775e:2626? ([2a02:2f04:920e:e000:3b36:462:775e:2626])
-        by smtp.gmail.com with ESMTPSA id af79cd13be357-794f2efc67csm311044785a.20.2024.06.03.13.29.41
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 03 Jun 2024 13:29:45 -0700 (PDT)
-Message-ID: <7edbdb11-5135-4f26-be12-c86f4dc4c0ff@gmail.com>
-Date: Mon, 3 Jun 2024 23:29:38 +0300
+        d=1e100.net; s=20230601; t=1717448647; x=1718053447;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=A4Xwo04AxfSK0W6mUhqUjoHJv2i+cgsYyuXRU+BzfeA=;
+        b=ajHT7nCW5ImFYzj2tfhIXY/tUiw0xNldtCXQHZxdBkufaMJQm84xmxVBKRwNByUZM3
+         mDgmHjiq4wDcqzDT6OTC7yepoS1CylzCO12OF9VReJdfirR9ItHcsKfLs7PRjm14aXPU
+         OLlDaa+YkT2n30K7tU61BnnubjZgUTHFfgo6HpfG+RMKN/e1RW7BqAO0Y8ftteGg8Bvs
+         mXIHTumj4LfmEbLsVtGe20q0TziHTFqfZ79zKK/WvndC9/T3swkw9WyieU7DhkgeLurj
+         QgFuphGMXSmKt/ZbxKqRVEb54ONJy94QBHoThj/dOlZ3d0iSCqxWiTYSfCjfwqBo3aTv
+         teJg==
+X-Forwarded-Encrypted: i=1; AJvYcCVFUsPl71NRNROp8p7kbb7y5K1/l65uWeuGK6sByOm5D1K2BgslQiRoBgSxjOvQ45fAYo6H3xVDfFMIBjnu9lHJE0hV
+X-Gm-Message-State: AOJu0YwirKHkydCltWX5jtnudulxEzfsDM2pfX/cTgmNA1lN9qR9TYMw
+	essstIShNA8FQ7bNFZ5hfbUwEzpcusotJG7wm5GVBWlfnJOqWHZEC+PFUTXcL8kWU5SlPmlZ0yS
+	ZIElxyrWVC/bQrT7/pUulqBmeddDp8InkMcZY
+X-Google-Smtp-Source: AGHT+IGR+FpbhgOaypOj8EHAJX7D2rLdNzF0sO2h5xEd4/ttL81NSVdpzxrwxGxotbOO4RE/GArlcQx7GP4z1mOA6C8=
+X-Received: by 2002:a05:690c:82e:b0:627:de5d:cf36 with SMTP id
+ 00721157ae682-62c79777753mr103683987b3.39.1717448646572; Mon, 03 Jun 2024
+ 14:04:06 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 08/12] PCI: imx6: Config look up table(LUT) to support
- MSI ITS and IOMMU for i.MX95
-To: Robin Murphy <robin.murphy@arm.com>, Bjorn Helgaas <helgaas@kernel.org>,
- Frank Li <Frank.Li@nxp.com>
-Cc: Richard Zhu <hongxing.zhu@nxp.com>, Lucas Stach <l.stach@pengutronix.de>,
- Lorenzo Pieralisi <lpieralisi@kernel.org>,
- =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>,
- Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
- Shawn Guo <shawnguo@kernel.org>, Sascha Hauer <s.hauer@pengutronix.de>,
- Pengutronix Kernel Team <kernel@pengutronix.de>,
- Fabio Estevam <festevam@gmail.com>, NXP Linux Team <linux-imx@nxp.com>,
- Philipp Zabel <p.zabel@pengutronix.de>, Liam Girdwood <lgirdwood@gmail.com>,
- Mark Brown <broonie@kernel.org>,
- Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, linux-pci@vger.kernel.org,
- imx@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
- linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
- devicetree@vger.kernel.org, Will Deacon <will@kernel.org>,
- Joerg Roedel <joro@8bytes.org>, Jason Gunthorpe <jgg@ziepe.ca>,
- Alyssa Rosenzweig <alyssa@rosenzweig.io>, Marc Zyngier <maz@kernel.org>
-References: <20240530230832.GA474962@bhelgaas>
- <974f1d23-aba8-432e-85b5-0e4b1c2005e7@arm.com>
-Content-Language: en-US
-From: Laurentiu Tudor <tudor.laurentiu.oss@gmail.com>
-In-Reply-To: <974f1d23-aba8-432e-85b5-0e4b1c2005e7@arm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+References: <20240602023754.25443-1-laoar.shao@gmail.com> <20240602023754.25443-4-laoar.shao@gmail.com>
+In-Reply-To: <20240602023754.25443-4-laoar.shao@gmail.com>
+From: Paul Moore <paul@paul-moore.com>
+Date: Mon, 3 Jun 2024 17:03:55 -0400
+Message-ID: <CAHC9VhRBN94QRGAmjZKDk_H0GxAEn-PBE4_2tTwuwfXps1Hr5A@mail.gmail.com>
+Subject: Re: [PATCH 3/6] auditsc: Replace memcpy() with __get_task_comm()
+To: Yafang Shao <laoar.shao@gmail.com>
+Cc: torvalds@linux-foundation.org, linux-mm@kvack.org, 
+	linux-fsdevel@vger.kernel.org, linux-trace-kernel@vger.kernel.org, 
+	audit@vger.kernel.org, linux-security-module@vger.kernel.org, 
+	selinux@vger.kernel.org, bpf@vger.kernel.org, Eric Paris <eparis@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+On Sat, Jun 1, 2024 at 10:38=E2=80=AFPM Yafang Shao <laoar.shao@gmail.com> =
+wrote:
+>
+> Using __get_task_comm() to read the task comm ensures that the name is
+> always NUL-terminated, regardless of the source string. This approach als=
+o
+> facilitates future extensions to the task comm.
+>
+> Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
+> Cc: Paul Moore <paul@paul-moore.com>
+> Cc: Eric Paris <eparis@redhat.com>
+> ---
+>  kernel/auditsc.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
 
+Assuming you've sorted out all the problems identified earlier in the
+patchset and __get_task_comm() no longer takes task_lock() this should
+be okay from an audit perspective.
 
-On 5/31/24 17:58, Robin Murphy wrote:
-> On 2024-05-31 12:08 am, Bjorn Helgaas wrote:
->> [+cc IOMMU and pcie-apple.c folks for comment]
->>
->> On Tue, May 28, 2024 at 03:39:21PM -0400, Frank Li wrote:
->>> For the i.MX95, configuration of a LUT is necessary to convert Bus 
->>> Device
->>> Function (BDF) to stream IDs, which are utilized by both IOMMU and ITS.
->>> This involves examining the msi-map and smmu-map to ensure consistent
->>> mapping of PCI BDF to the same stream IDs. Subsequently, LUT-related
->>> registers are configured. In the absence of an msi-map, the built-in MSI
->>> controller is utilized as a fallback.
->>>
->>> Additionally, register a PCI bus notifier to trigger 
->>> imx_pcie_add_device()
->>> upon the appearance of a new PCI device and when the bus is an iMX6 PCI
->>> controller. This function configures the correct LUT based on Device 
->>> Tree
->>> Settings (DTS).
->>
->> This scheme is pretty similar to apple_pcie_bus_notifier().  If we
->> have to do this, I wish it were *more* similar, i.e., copy the
->> function names, bitmap tracking, code structure, etc.
->>
->> I don't really know how stream IDs work, but I assume they are used on
->> most or all arm64 platforms, so I'm a little surprised that of all the
->> PCI host drivers used on arm64, only pcie-apple.c and pci-imx6.c need
->> this notifier.
-> 
-> This is one of those things that's mostly at the mercy of the PCIe root 
-> complex implementation. Typically the SMMU StreamID and/or GIC ITS 
-> DeviceID is derived directly from the PCI RID, sometimes with additional 
-> high-order bits hard-wired to disambiguate PCI segments. I believe this 
-> RID-translation LUT is a particular feature of the the Synopsys IP - I 
-> know there's also one on the NXP Layerscape platforms, but on those it's 
-> programmed by the bootloader, which also generates the appropriate 
-> "msi-map" and "iommu-map" properties to match. Ideally that's what i.MX 
-> should do as well, but hey.
+Acked-by: Paul Moore <paul@paul-moore.com>
 
-That's usually fine, except when SRIOV and/or hotplug devices (that is, 
-not discoverable at bootloader time) come into play. We came up with 
-this "solution" to cover these more dynamic scenarios.
+> diff --git a/kernel/auditsc.c b/kernel/auditsc.c
+> index 6f0d6fb6523f..0459a141dc86 100644
+> --- a/kernel/auditsc.c
+> +++ b/kernel/auditsc.c
+> @@ -2730,7 +2730,7 @@ void __audit_ptrace(struct task_struct *t)
+>         context->target_uid =3D task_uid(t);
+>         context->target_sessionid =3D audit_get_sessionid(t);
+>         security_task_getsecid_obj(t, &context->target_sid);
+> -       memcpy(context->target_comm, t->comm, TASK_COMM_LEN);
+> +       __get_task_comm(context->target_comm, TASK_COMM_LEN, t);
+>  }
+>
+>  /**
+> @@ -2757,7 +2757,7 @@ int audit_signal_info_syscall(struct task_struct *t=
+)
+>                 ctx->target_uid =3D t_uid;
+>                 ctx->target_sessionid =3D audit_get_sessionid(t);
+>                 security_task_getsecid_obj(t, &ctx->target_sid);
+> -               memcpy(ctx->target_comm, t->comm, TASK_COMM_LEN);
+> +               __get_task_comm(ctx->target_comm, TASK_COMM_LEN, t);
+>                 return 0;
+>         }
+>
+> @@ -2778,7 +2778,7 @@ int audit_signal_info_syscall(struct task_struct *t=
+)
+>         axp->target_uid[axp->pid_count] =3D t_uid;
+>         axp->target_sessionid[axp->pid_count] =3D audit_get_sessionid(t);
+>         security_task_getsecid_obj(t, &axp->target_sid[axp->pid_count]);
+> -       memcpy(axp->target_comm[axp->pid_count], t->comm, TASK_COMM_LEN);
+> +       __get_task_comm(axp->target_comm[axp->pid_count], TASK_COMM_LEN, =
+t);
+>         axp->pid_count++;
+>
+>         return 0;
+> --
+> 2.39.1
 
-https://source.denx.de/u-boot/u-boot/-/commit/2a5bbb13cc39102a68fcc31056925427ab44b591
-
----
-Best Regards, Laurentiu
-
->> There's this path, which is pretty generic and does at least the
->> of_map_id() part of what you're doing in imx_pcie_add_device():
->>
->>      __driver_probe_device
->>        really_probe
->>          pci_dma_configure                       # 
->> pci_bus_type.dma_configure
->>            of_dma_configure
->>              of_dma_configure_id
->>                of_iommu_configure
->>                  of_pci_iommu_init
->>                    of_iommu_configure_dev_id
->>                      of_map_id
->>                      of_iommu_xlate
->>                        ops = iommu_ops_from_fwnode
->>                        iommu_fwspec_init
->>                        ops->of_xlate(dev, iommu_spec)
->>
->> Maybe this needs to be extended somehow with a hook to do the
->> device-specific work like updating the LUT?  Just speculating here,
->> the IOMMU folks will know how this is expected to work.
-> 
-> Note that that particular code path has fundamental issues and much of 
-> it needs to go away (I'm working on it, but it's a rich ~8-year-old pile 
-> of technical debt...). IOMMU configuration needs to be happening at 
-> device_add() time via the IOMMU layer's own bus notifier.
-> 
-> If it's really necessary to do this programming from Linux, then there's 
-> still no point in it being dynamic - the mappings cannot ever change, 
-> since the rest of the kernel believes that what the DT said at boot time 
-> was already a property of the hardware. It would be a lot more logical, 
-> and likely simpler, for the driver to just read the relevant map 
-> property and program the entire LUT to match, all in one go at 
-> controller probe time. Rather like what's already commonly done with the 
-> parsing of "dma-ranges" to program address-translation LUTs for inbound 
-> windows.
-> 
-> Plus that would also give a chance of safely dealing with bad DTs 
-> specifying invalid ID mappings (by refusing to probe at all). As it is, 
-> returning an error from a child's BUS_NOTIFY_ADD_DEVICE does nothing 
-> except prevent any further notifiers from running at that point - the 
-> device will still be added, allowed to bind a driver, and able to start 
-> sending DMA/MSI traffic without the controller being correctly 
-> programmed, which at best won't work and at worst may break the whole 
-> system.
-> 
-> Thanks,
-> Robin.
-> 
-> _______________________________________________
-> linux-arm-kernel mailing list
-> linux-arm-kernel@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+--=20
+paul-moore.com
 
