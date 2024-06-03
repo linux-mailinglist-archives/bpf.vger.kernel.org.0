@@ -1,52 +1,52 @@
-Return-Path: <bpf+bounces-31178-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-31179-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id BFB468D7A25
-	for <lists+bpf@lfdr.de>; Mon,  3 Jun 2024 04:46:51 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id BB33E8D7A60
+	for <lists+bpf@lfdr.de>; Mon,  3 Jun 2024 05:11:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7B241280F88
-	for <lists+bpf@lfdr.de>; Mon,  3 Jun 2024 02:46:50 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DF5B41C20873
+	for <lists+bpf@lfdr.de>; Mon,  3 Jun 2024 03:11:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CCAB2B663;
-	Mon,  3 Jun 2024 02:46:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB27BEAC8;
+	Mon,  3 Jun 2024 03:11:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YyzFy5ZX"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Q87XzTeI"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 49BC8AD35;
-	Mon,  3 Jun 2024 02:46:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4603CD29B;
+	Mon,  3 Jun 2024 03:11:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717382803; cv=none; b=q9kKsSWFoQNbW26VB/svcpzfnMFenuL4r7nPM8z+TWvi1aL3ml1U3O3qzhJ3dnWWFnwzLLwmn7MD5oH43d/EuXD3W7UKZkFUa1pnRfTwDcsPrp1qsFnkrnA8qG3qqxjaZTqDMKG1tl5C3bW1cUdWD+IIk8wTPA1xkmKaX+hiklc=
+	t=1717384274; cv=none; b=CCI3RwVqDu/sMOx7TjqQgQYHCRCbAdWjY+vaGk4vI46BNODPRcs56F1VLtpfBmcDuN9yiyTtUDhmT4PW66NLoV7K9Hqct5DKlshWwA5v7BsebDQAsU1yMl5pFzxBuCZ6oGDR9lDJHsoUI0+ir3SCUVeA3KKIxSi3vnSv2RsnVhE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717382803; c=relaxed/simple;
-	bh=hUy2QzJqjW+BmS42fRWN5RITmP+ikPzZbR/VgKNapZ4=;
+	s=arc-20240116; t=1717384274; c=relaxed/simple;
+	bh=3Iq570y1O+dBo8MJ2sPHzPkoGj+5BwKLE3Cc+XpquIM=;
 	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
-	 Mime-Version:Content-Type; b=nDUMhMctd4JSCfPU2VnAJUJ24Vl/CJRsDHsfC0NGCMGbF+vhdoKCiPZymNx8tKY/QuOIbMAXDqJ6M5Sdwg1nqnIiocdXyHxz9U0hHqLOry4PefM5pU/jbq+U3eCya8tlz6OsFczaWnowPdwYrVjUT1IErusecu85EbqSNnCHqgQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YyzFy5ZX; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 944DAC2BBFC;
-	Mon,  3 Jun 2024 02:46:38 +0000 (UTC)
+	 Mime-Version:Content-Type; b=hANIdZTNkcIRzbvCChL/R+/OUgNSn6rKBAcKfn9Mqdc7Uhvjt2wVfqgeGOm2Dg1CIqtnxeGkaHlE0LaG7UUJ4PA3AKXrxlylXo/b1mqLloBE3jcKxp0uPzM64trMihSLZeO6NRPn2os6YFSZ5nR4NIfCCQgyj8iYm7KaPEi1EBY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Q87XzTeI; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 91E3BC2BBFC;
+	Mon,  3 Jun 2024 03:11:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1717382802;
-	bh=hUy2QzJqjW+BmS42fRWN5RITmP+ikPzZbR/VgKNapZ4=;
+	s=k20201202; t=1717384273;
+	bh=3Iq570y1O+dBo8MJ2sPHzPkoGj+5BwKLE3Cc+XpquIM=;
 	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=YyzFy5ZXAdsf4yQwWKi/nxyorWVS+sxftkUFmJAA9Nkbq2yEkrazh8xULU7LqpH/o
-	 NDv24cefagH8eTH2swd0ak/N4rQCDmL2d5nRONe1F+0cIvdV2BEOVYq4nwOZ8Pgh8T
-	 Whqa49Pt6R5q7Eqa8dlpIru1eQdjYzHzT20v5ejHVH8Y9IeWTCELpO22NAoiTsVohh
-	 gY9dyLlPy4duRUiBRehICnIn7EKIaYyVGVV/Vtvje/+IxKARVjKGz5Z3YrsF4Mfybp
-	 KyahpqeSCcZi4bWpVkU9zMLap7s/IqQ2DtXUg+USMmpStzNxc9IrQv5Te9y3sj+Sum
-	 20VD+amXMkCgw==
-Date: Mon, 3 Jun 2024 11:46:36 +0900
+	b=Q87XzTeIn36G6VKkzd3klnjoRwuJx1+4sDBMRy151kFh4/0iJTfypOkcYOK8SK2yF
+	 /w6OjaDqtGEsSPrKXe3wgYorMOyqCMvpFX6nilqxa7tRiH8RwmYA8n8ud9HXgcLIlX
+	 X7wubovvf+4BhflpOTO4NdPE9SBgGc/654TY6X+X/e0XwvJTE8wiQRq2ekqRmcoMq/
+	 xHlYuBfI/HST9boq6S07YDuAW3YMh/gsLf/1YIB0/jze3lkf6yLfMN+vz7m6WvFtZB
+	 XjXScuTcP/HKOhDBDfyXtXuVxPKLgWBWY0/wnXbBtziyRisTF5KkzpMz9JGtXExL8/
+	 jLCnyrETOJR3A==
+Date: Mon, 3 Jun 2024 12:11:07 +0900
 From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
 To: Steven Rostedt <rostedt@goodmis.org>
-Cc: linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org, Mark
- Rutland <mark.rutland@arm.com>, Mathieu Desnoyers
- <mathieu.desnoyers@efficios.com>, Andrew Morton
+Cc: linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org, Masami
+ Hiramatsu <mhiramat@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
+ Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Andrew Morton
  <akpm@linux-foundation.org>, Alexei Starovoitov
  <alexei.starovoitov@gmail.com>, Florent Revest <revest@chromium.org>,
  Martin KaFai Lau <martin.lau@linux.dev>, bpf <bpf@vger.kernel.org>, Sven
@@ -55,14 +55,12 @@ Cc: linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org, Mark
  Borkmann <daniel@iogearbox.net>, Alan Maguire <alan.maguire@oracle.com>,
  Peter Zijlstra <peterz@infradead.org>, Thomas Gleixner
  <tglx@linutronix.de>, Guo Ren <guoren@kernel.org>
-Subject: Re: [PATCH v2 10/27] ftrace: Add subops logic to allow one ops to
- manage many
-Message-Id: <20240603114636.63b5abe2189cb732bec2474c@kernel.org>
-In-Reply-To: <20240602220613.3f9eac04@gandalf.local.home>
+Subject: Re: [PATCH v2 24/27] function_graph: Use static_call and branch to
+ optimize entry function
+Message-Id: <20240603121107.42f98858ebb790805f75c9b1@kernel.org>
+In-Reply-To: <20240602033834.997761817@goodmis.org>
 References: <20240602033744.563858532@goodmis.org>
-	<20240602033832.709653366@goodmis.org>
-	<20240603103316.3af9dea3214a5d2bde721cd8@kernel.org>
-	<20240602220613.3f9eac04@gandalf.local.home>
+	<20240602033834.997761817@goodmis.org>
 X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -73,144 +71,179 @@ Mime-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 
-On Sun, 2 Jun 2024 22:06:13 -0400
+On Sat, 01 Jun 2024 23:38:08 -0400
 Steven Rostedt <rostedt@goodmis.org> wrote:
 
-> > > +/* Make @ops trace evenything except what all its subops do not trace */
-> > > +static struct ftrace_hash *intersect_hashes(struct ftrace_ops *ops)
-> > > +{
-> > > +	struct ftrace_hash *new_hash = NULL;
-> > > +	struct ftrace_ops *subops;
-> > > +	int size_bits;
-> > > +	int ret;
-> > > +
-> > > +	list_for_each_entry(subops, &ops->subop_list, list) {
-> > > +		struct ftrace_hash *next_hash;
-> > > +
-> > > +		if (!new_hash) {
-> > > +			size_bits = subops->func_hash->notrace_hash->size_bits;
-> > > +			new_hash = alloc_and_copy_ftrace_hash(size_bits, ops->func_hash->notrace_hash);
-> > > +			if (!new_hash)
-> > > +				return NULL;  
-> > 
-> > If the first subops has EMPTY_HASH, this allocates small empty hash (!= EMPTY_HASH)
-> > on `new_hash`.
+> From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 > 
-> Could we just change the above to be: ?
+> In most cases function graph is used by a single user. Instead of calling
+> a loop to call function graph callbacks in this case, call the function
+> entry callback directly.
 > 
-> 			new_hash = ftrace_hash_empty(ops->func_hash->notrace_hash) ? EMPTY_HASH :
-> 				alloc_and_copy_ftrace_hash(size_bits, ops->func_hash->notrace_hash);
-> 			if (!new_hash)
-> 				return NULL;  
+> Add a static_key that will be used to set the function graph logic to
+> either do the loop (when more than one callback is registered) or to call
+> the callback directly if there is only one registered callback.
 
-Yeah, and if new_hash is EMPTY_HASH, we don't need looping on the rest of
-the hashes, right?
+I understand this works, but my concern is that, if we use fprobe
+and function_graph at the same time, does it always loop on both gops?
 
-> 
-> 
-> > 
-> > > +			continue;
-> > > +		}
-> > > +		size_bits = new_hash->size_bits;
-> > > +		next_hash = new_hash;  
-> > 
-> > And it is assigned to `next_hash`.
-> > 
-> > > +		new_hash = alloc_ftrace_hash(size_bits);
-> > > +		ret = intersect_hash(&new_hash, next_hash, subops->func_hash->notrace_hash);  
-> > 
-> > Since the `next_hash` != EMPTY_HASH but it is empty, this keeps `new_hash`
-> > empty but allocated.
-> > 
-> > > +		free_ftrace_hash(next_hash);
-> > > +		if (ret < 0) {
-> > > +			free_ftrace_hash(new_hash);
-> > > +			return NULL;
-> > > +		}
-> > > +		/* Nothing more to do if new_hash is empty */
-> > > +		if (new_hash == EMPTY_HASH)  
-> > 
-> > Since `new_hash` is empty but != EMPTY_HASH, this does not pass. Keep looping on.
-> > 
-> > > +			break;
-> > > +	}
-> > > +	return new_hash;  
-> > 
-> > And this will return empty but not EMPTY_HASH hash.
-> > 
-> > 
-> > So, we need;
-> > 
-> > #define FTRACE_EMPTY_HASH_OR_NULL(hash)	(!(hash) || (hash) == EMPTY_HASH)
-> > 
-> > if (FTRACE_EMPTY_HASH_OR_NULL(subops->func_hash->notrace_hash)) {
-> > 	free_ftrace_hash(new_hash);
-> > 	new_hash = EMPTY_HASH;
-> > 	break;
-> > }
-> > 
-> > at the beginning of the loop.
-> > Also, at the end of the loop,
-> > 
-> > if (ftrace_hash_empty(new_hash)) {
-> > 	free_ftrace_hash(new_hash);
-> > 	new_hash = EMPTY_HASH;
-> > 	break;
-> > }
+I mean if those are the subops of one ftrace_ops, ftrace_trampoline
+will always call the same function_graph_enter() for both gops, and loop
+on the gops list.
 
-And we still need this (I think this should be done in intersect_hash(), we just
-need to count the number of entries.) 
+For example, if there are 2 fgraph_ops, one has "vfs_*" filter and
+another has "sched_*" filter, those does not cover each other.
 
-> > 
-> > > +}
-> > > +
-> > > +/* Returns 0 on equal or non-zero on non-equal */
-> > > +static int compare_ops(struct ftrace_hash *A, struct ftrace_hash *B)  
-> > 
-> > nit: Isn't it better to be `bool hash_equal()` and return true if A == B ?
-> 
-> Sure. I guess I was thinking too much of strcmp() logic :-p
-
-Yeah, it's the curse of the C programmer :( (even it is good for sorting.)
+Are there any way to solve this issue? I think my previous series
+calls function_graph_enter_ops() directly from trampoline (If it works
+correctly...)
 
 Thank you,
 
 > 
-> > 
-> > Thank you,
+> Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+> ---
+>  kernel/trace/fgraph.c | 77 ++++++++++++++++++++++++++++++++++++-------
+>  1 file changed, 66 insertions(+), 11 deletions(-)
 > 
-> Thanks for the review.
+> diff --git a/kernel/trace/fgraph.c b/kernel/trace/fgraph.c
+> index 4d566a0a741d..7c3b0261b1bb 100644
+> --- a/kernel/trace/fgraph.c
+> +++ b/kernel/trace/fgraph.c
+> @@ -11,6 +11,7 @@
+>  #include <linux/jump_label.h>
+>  #include <linux/suspend.h>
+>  #include <linux/ftrace.h>
+> +#include <linux/static_call.h>
+>  #include <linux/slab.h>
+>  
+>  #include <trace/events/sched.h>
+> @@ -511,6 +512,10 @@ static struct fgraph_ops fgraph_stub = {
+>  	.retfunc = ftrace_graph_ret_stub,
+>  };
+>  
+> +static struct fgraph_ops *fgraph_direct_gops = &fgraph_stub;
+> +DEFINE_STATIC_CALL(fgraph_func, ftrace_graph_entry_stub);
+> +DEFINE_STATIC_KEY_TRUE(fgraph_do_direct);
+> +
+>  /**
+>   * ftrace_graph_stop - set to permanently disable function graph tracing
+>   *
+> @@ -636,21 +641,34 @@ int function_graph_enter(unsigned long ret, unsigned long func,
+>  	if (offset < 0)
+>  		goto out;
+>  
+> -	for_each_set_bit(i, &fgraph_array_bitmask,
+> -			 sizeof(fgraph_array_bitmask) * BITS_PER_BYTE) {
+> -		struct fgraph_ops *gops = fgraph_array[i];
+> -		int save_curr_ret_stack;
+> -
+> -		if (gops == &fgraph_stub)
+> -			continue;
+> +#ifdef CONFIG_HAVE_STATIC_CALL
+> +	if (static_branch_likely(&fgraph_do_direct)) {
+> +		int save_curr_ret_stack = current->curr_ret_stack;
+>  
+> -		save_curr_ret_stack = current->curr_ret_stack;
+> -		if (ftrace_ops_test(&gops->ops, func, NULL) &&
+> -		    gops->entryfunc(&trace, gops))
+> -			bitmap |= BIT(i);
+> +		if (static_call(fgraph_func)(&trace, fgraph_direct_gops))
+> +			bitmap |= BIT(fgraph_direct_gops->idx);
+>  		else
+>  			/* Clear out any saved storage */
+>  			current->curr_ret_stack = save_curr_ret_stack;
+> +	} else
+> +#endif
+> +	{
+> +		for_each_set_bit(i, &fgraph_array_bitmask,
+> +					 sizeof(fgraph_array_bitmask) * BITS_PER_BYTE) {
+> +			struct fgraph_ops *gops = fgraph_array[i];
+> +			int save_curr_ret_stack;
+> +
+> +			if (gops == &fgraph_stub)
+> +				continue;
+> +
+> +			save_curr_ret_stack = current->curr_ret_stack;
+> +			if (ftrace_ops_test(&gops->ops, func, NULL) &&
+> +			    gops->entryfunc(&trace, gops))
+> +				bitmap |= BIT(i);
+> +			else
+> +				/* Clear out any saved storage */
+> +				current->curr_ret_stack = save_curr_ret_stack;
+> +		}
+>  	}
+>  
+>  	if (!bitmap)
+> @@ -1155,6 +1173,8 @@ void fgraph_update_pid_func(void)
+>  			gops = container_of(op, struct fgraph_ops, ops);
+>  			gops->entryfunc = ftrace_pids_enabled(op) ?
+>  				fgraph_pid_func : gops->saved_func;
+> +			if (ftrace_graph_active == 1)
+> +				static_call_update(fgraph_func, gops->entryfunc);
+>  		}
+>  	}
+>  }
+> @@ -1209,6 +1229,32 @@ static void init_task_vars(int idx)
+>  	read_unlock(&tasklist_lock);
+>  }
+>  
+> +static void ftrace_graph_enable_direct(bool enable_branch)
+> +{
+> +	trace_func_graph_ent_t func = NULL;
+> +	int i;
+> +
+> +	for_each_set_bit(i, &fgraph_array_bitmask,
+> +			 sizeof(fgraph_array_bitmask) * BITS_PER_BYTE) {
+> +		func = fgraph_array[i]->entryfunc;
+> +		fgraph_direct_gops = fgraph_array[i];
+> +	 }
+> +	if (WARN_ON_ONCE(!func))
+> +		return;
+> +
+> +	static_call_update(fgraph_func, func);
+> +	if (enable_branch)
+> +		static_branch_disable(&fgraph_do_direct);
+> +}
+> +
+> +static void ftrace_graph_disable_direct(bool disable_branch)
+> +{
+> +	if (disable_branch)
+> +		static_branch_disable(&fgraph_do_direct);
+> +	static_call_update(fgraph_func, ftrace_graph_entry_stub);
+> +	fgraph_direct_gops = &fgraph_stub;
+> +}
+> +
+>  int register_ftrace_graph(struct fgraph_ops *gops)
+>  {
+>  	int command = 0;
+> @@ -1235,7 +1281,11 @@ int register_ftrace_graph(struct fgraph_ops *gops)
+>  
+>  	ftrace_graph_active++;
+>  
+> +	if (ftrace_graph_active == 2)
+> +		ftrace_graph_disable_direct(true);
+> +
+>  	if (ftrace_graph_active == 1) {
+> +		ftrace_graph_enable_direct(false);
+>  		register_pm_notifier(&ftrace_suspend_notifier);
+>  		ret = start_graph_tracing();
+>  		if (ret)
+> @@ -1292,6 +1342,11 @@ void unregister_ftrace_graph(struct fgraph_ops *gops)
+>  
+>  	ftrace_shutdown_subops(&graph_ops, &gops->ops, command);
+>  
+> +	if (ftrace_graph_active == 1)
+> +		ftrace_graph_enable_direct(true);
+> +	else if (!ftrace_graph_active)
+> +		ftrace_graph_disable_direct(false);
+> +
+>  	if (!ftrace_graph_active) {
+>  		ftrace_graph_return = ftrace_stub_graph;
+>  		ftrace_graph_entry = ftrace_graph_entry_stub;
+> -- 
+> 2.43.0
 > 
-> -- Steve
-> 
-> > 
-> > > +{
-> > > +	struct ftrace_func_entry *entry;
-> > > +	int size;
-> > > +	int i;
-> > > +
-> > > +	if (!A || A == EMPTY_HASH)
-> > > +		return !(!B || B == EMPTY_HASH);
-> > > +
-> > > +	if (!B || B == EMPTY_HASH)
-> > > +		return !(!A || A == EMPTY_HASH);
-> > > +
-> > > +	if (A->count != B->count)
-> > > +		return 1;
-> > > +
-> > > +	size = 1 << A->size_bits;
-> > > +	for (i = 0; i < size; i++) {
-> > > +		hlist_for_each_entry(entry, &A->buckets[i], hlist) {
-> > > +			if (!__ftrace_lookup_ip(B, entry->ip))
-> > > +				return 1;
-> > > +		}
-> > > +	}
-> > > +
-> > > +	return 0;
-> > > +}
-> > > +  
-> > 
-> > 
 > 
 
 
