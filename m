@@ -1,95 +1,96 @@
-Return-Path: <bpf+bounces-31203-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-31204-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E691D8D859E
-	for <lists+bpf@lfdr.de>; Mon,  3 Jun 2024 16:59:21 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BE4B98D85AA
+	for <lists+bpf@lfdr.de>; Mon,  3 Jun 2024 17:00:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A065E280E0D
-	for <lists+bpf@lfdr.de>; Mon,  3 Jun 2024 14:59:20 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EB76F1C21D8B
+	for <lists+bpf@lfdr.de>; Mon,  3 Jun 2024 15:00:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 75C0F12FF9C;
-	Mon,  3 Jun 2024 14:59:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 73FF912D755;
+	Mon,  3 Jun 2024 15:00:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lT6+eTPm"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 255EE82D8E;
-	Mon,  3 Jun 2024 14:59:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB6384688;
+	Mon,  3 Jun 2024 15:00:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717426755; cv=none; b=IMSHv0ik0ILYQi8OmthABXVW3gyLzFwEOUFFIF9A3PVzbPo/kU4ClL7szOXsMOmGSVQudw9d2nOUwypPdGnEQ357ffcUrRmt0qbJSkKcWDr56xg+UTgV77OPjlOZAFHQeR5pFPasJKYd9iyxyEbabQHS39GesvM74rq3QEQZRC4=
+	t=1717426832; cv=none; b=Wrw7Wg3sppVwPgn/UexAwAqslmfZsOD+wZnB5ZAXAQennpRMppfEXm5okszR+2STGHZtb8XSfaLTVXzThxDWzMc88QQxJA3x77DtMVqN71WI7saCN2EVNtxk/ogXSRJlvY5G4TI+f6pjU0PC6yOCLhYYXJORogW5z/cbJQcVdbY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717426755; c=relaxed/simple;
-	bh=DBDHC1nWAFD49PJim5SC6PnxIBcdo9JUB9EaWjVgVdk=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=ALfkmID1jDe50mKnHzT/1EreJiADrMzocU/MKs7Un7ASXS7HXTcvCquOmSGmThy/GfzZf4Am8Z0dKS+c+US2df3xxebT6p0aD6qtQPMp1CNNacB5UU3WkXww3Bq48gIpqtMEL1ElOsewPtoo57kSNMvEQ+4TxOckZmy1pxVi66E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DCDD1C2BD10;
-	Mon,  3 Jun 2024 14:59:09 +0000 (UTC)
-Date: Mon, 3 Jun 2024 11:00:18 -0400
-From: Steven Rostedt <rostedt@goodmis.org>
-To: "Masami Hiramatsu (Google)" <mhiramat@kernel.org>
-Cc: linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org, Mark
- Rutland <mark.rutland@arm.com>, Mathieu Desnoyers
- <mathieu.desnoyers@efficios.com>, Andrew Morton
- <akpm@linux-foundation.org>, Alexei Starovoitov
- <alexei.starovoitov@gmail.com>, Florent Revest <revest@chromium.org>,
- Martin KaFai Lau <martin.lau@linux.dev>, bpf <bpf@vger.kernel.org>, Sven
- Schnelle <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>, Jiri
- Olsa <jolsa@kernel.org>, Arnaldo Carvalho de Melo <acme@kernel.org>, Daniel
- Borkmann <daniel@iogearbox.net>, Alan Maguire <alan.maguire@oracle.com>,
- Peter Zijlstra <peterz@infradead.org>, Thomas Gleixner
- <tglx@linutronix.de>, Guo Ren <guoren@kernel.org>
-Subject: Re: [PATCH v2 24/27] function_graph: Use static_call and branch to
- optimize entry function
-Message-ID: <20240603110018.1cdd6746@gandalf.local.home>
-In-Reply-To: <20240603121107.42f98858ebb790805f75c9b1@kernel.org>
-References: <20240602033744.563858532@goodmis.org>
-	<20240602033834.997761817@goodmis.org>
-	<20240603121107.42f98858ebb790805f75c9b1@kernel.org>
-X-Mailer: Claws Mail 3.20.0git84 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1717426832; c=relaxed/simple;
+	bh=x9/P7shtMeW26Xh3QlGPi0H9bRUzWYXDZKt8zMV07eo=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=ZcsMf+pIRKImgO6mi+k6H8AcpeyR2cKfW2k8wGfxBrJW1gxZHUWMTUtPKGiz3z4/224DQ16nPuektZiy+B7FkAJUUddPMrMUN9GnLfPyzeK3TgYgwf8tFrtHjV3p64tPMvi6tMmwyJQKie2sOPPCz0swPMGkUYwHQCBIy5f0VqM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lT6+eTPm; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 70B34C4AF0C;
+	Mon,  3 Jun 2024 15:00:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1717426831;
+	bh=x9/P7shtMeW26Xh3QlGPi0H9bRUzWYXDZKt8zMV07eo=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=lT6+eTPmvta6TTTauNkGVIgB23d8R9+jEBcqhcPUvp0WvGBmHzkp/FPmvxCq4NzGt
+	 dSdOf3fnhbUh4GQVKvheMVYlUfiV+JiOPeuts2ElbBu3BcGMq5yq9iAFVoXdfnl7SU
+	 AblKhMtraXJlpozQAZaxrlNztDDoPza6aTRAOdM4ZHMhSp7Bx/aO2zot4ElOMPGMfS
+	 E86TWl3yVvpKbZhvEN+a1+EY0+CSU0nBgpZ2jRcQPPm3QdvZcBPBGVTzOp8A2DlfrM
+	 JYauQVenUQWwmZJZdliXHkt7bEZhFzNg4xMOhBhaMEbc5UHpWrLnHAw1BO6IDTkVoV
+	 9LzWEs6Jfv9QQ==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 56F62C43617;
+	Mon,  3 Jun 2024 15:00:31 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH 0/3] Dead structs in tools/testing/selftests/bpf
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <171742683133.27164.9364551031995074993.git-patchwork-notify@kernel.org>
+Date: Mon, 03 Jun 2024 15:00:31 +0000
+References: <20240602234112.225107-1-linux@treblig.org>
+In-Reply-To: <20240602234112.225107-1-linux@treblig.org>
+To: Dr. David Alan Gilbert <linux@treblig.org>
+Cc: andrii@kernel.org, eddyz87@gmail.com, mykolal@fb.com, kpsingh@kernel.org,
+ shuah@kernel.org, bpf@vger.kernel.org, linux-kernel@vger.kernel.org
 
-On Mon, 3 Jun 2024 12:11:07 +0900
-Masami Hiramatsu (Google) <mhiramat@kernel.org> wrote:
+Hello:
 
-> > From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
-> > 
-> > In most cases function graph is used by a single user. Instead of calling
-> > a loop to call function graph callbacks in this case, call the function
-> > entry callback directly.
-> > 
-> > Add a static_key that will be used to set the function graph logic to
-> > either do the loop (when more than one callback is registered) or to call
-> > the callback directly if there is only one registered callback.  
-> 
-> I understand this works, but my concern is that, if we use fprobe
-> and function_graph at the same time, does it always loop on both gops?
-> 
-> I mean if those are the subops of one ftrace_ops, ftrace_trampoline
-> will always call the same function_graph_enter() for both gops, and loop
-> on the gops list.
-> 
-> For example, if there are 2 fgraph_ops, one has "vfs_*" filter and
-> another has "sched_*" filter, those does not cover each other.
-> 
-> Are there any way to solve this issue? I think my previous series
-> calls function_graph_enter_ops() directly from trampoline (If it works
-> correctly...)
+This series was applied to bpf/bpf-next.git (master)
+by Daniel Borkmann <daniel@iogearbox.net>:
 
-Yes, but that gets a bit complex, and requires the changing of all archs.
-If it starts to become a problem, I rather add that as a feature. That is,
-we can always go back to it. But for now, lets keep the complexity down.
+On Mon,  3 Jun 2024 00:41:09 +0100 you wrote:
+> From: "Dr. David Alan Gilbert" <linux@treblig.org>
+> 
+> Hi,
+>   Clean out a bunch of old structs in selftests/bpf.
+> I've been using a 'make test_progs' as a build test.
+> 
+> Signed-off-by: Dr. David Alan Gilbert <linux@treblig.org>
+> 
+> [...]
 
--- Steve
+Here is the summary with links:
+  - [1/3] selftests/bpf: remove unused struct 'scale_test_def'
+    https://git.kernel.org/bpf/bpf-next/c/dfa7c9ffa607
+  - [2/3] selftests/bpf: remove unused 'key_t' structs
+    https://git.kernel.org/bpf/bpf-next/c/3f67639d8e58
+  - [3/3] selftests/bpf: remove unused struct 'libcap'
+    https://git.kernel.org/bpf/bpf-next/c/a450d36b05fa
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
 
