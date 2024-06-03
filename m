@@ -1,168 +1,123 @@
-Return-Path: <bpf+bounces-31193-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-31195-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 32F978D8208
-	for <lists+bpf@lfdr.de>; Mon,  3 Jun 2024 14:17:06 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0687C8D82FF
+	for <lists+bpf@lfdr.de>; Mon,  3 Jun 2024 14:56:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9793D1F22CD7
-	for <lists+bpf@lfdr.de>; Mon,  3 Jun 2024 12:17:05 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 354421C21278
+	for <lists+bpf@lfdr.de>; Mon,  3 Jun 2024 12:56:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A50212AADD;
-	Mon,  3 Jun 2024 12:16:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 19A7C12C554;
+	Mon,  3 Jun 2024 12:56:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Ezy40xEY"
+	dkim=pass (4096-bit key) header.d=david-bauer.net header.i=@david-bauer.net header.b="KBXegAQJ"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f176.google.com (mail-pl1-f176.google.com [209.85.214.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from perseus.uberspace.de (perseus.uberspace.de [95.143.172.134])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A619129E8E;
-	Mon,  3 Jun 2024 12:16:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C84C12C52E
+	for <bpf@vger.kernel.org>; Mon,  3 Jun 2024 12:55:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.143.172.134
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717417016; cv=none; b=h7QVtPP9DbPlRmGFsW7UWceqq1qvGc1auDaTMQYB0y6mi+H0SDTlCtAh/VqYNCAl7k8JLKXAfRvT/J/wodZ2O2WkryoPN7Sn4WVzkaiI9AgorH+G3nhB0fm6YbWQqqLWquBXxrubMfPN1Pp+elb8zvhUkLXXOIY+h3aPd5CUIVk=
+	t=1717419363; cv=none; b=PlZmTA1sCDzLD/tW/yHVtBtuyYM60F4G3HTD5Q654WhU4LQnuaJThaqst9Ua3OldOo1Xaa4mwrZ35su8/WB3ZAVBFIXGn1ORQagH+T/wLg3QwzgjENO5Z5N0VVkmlc8vmqgAN9GtEcnQi2pOHGryNOAWk66cbAN18IAO1hrOdOA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717417016; c=relaxed/simple;
-	bh=gAwp8yYUnceVBn5scRDmLBn983/3nY5FUXQpnAfxA4I=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=jaDUCjZGsfwatOBpQOmLAPsDFch1e4DWbkZWo1OYHy1fFymV95OGPTarXXPq2SBsxHdk1jwm8LLfc93ZZG9fg1/aqragURlFAxcgvEQqvO4Tqb7qBC02warCr++IU+osK2p6P8DofbZ+mgzWd3fGpPrXIc+FamfN16DwsbUb8kA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Ezy40xEY; arc=none smtp.client-ip=209.85.214.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f176.google.com with SMTP id d9443c01a7336-1f480624d0fso31811415ad.1;
-        Mon, 03 Jun 2024 05:16:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1717417014; x=1718021814; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=dV9DumgWigNz8izFoAXbyFQWDVcRbsgIhRa9w5EE8so=;
-        b=Ezy40xEYPaFhezMeejSvFt2kZ+MgZYhbDIyuKQV+vZsJIYR2Vt+qlVTSjOi92h28gS
-         6HH2bYiqEAH75hlGgr/VkDnKj59r2iTmbW6h/3rIZ8OczCwuMP/BciHeTDXIwu1YGYUU
-         3ShiXRoTVB9WmtClWh1ejp+ISa4Cqc4JtsEMT9PmdNkag8u5HUSpVRl1EBH7q9Zzuthd
-         MmFVlw5S55Q/TZAoEFk0WMUCUuALbT0Kx81LIHNtgfAhOlmOdawgW8PokhKz4uVX/K5L
-         b2YW6/Yft/Gw6256jpwEJckiM+iRHbuqtvLNy0JLatvFf7tPSNAI7vRJErXcQ4K1329W
-         u/qg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1717417014; x=1718021814;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=dV9DumgWigNz8izFoAXbyFQWDVcRbsgIhRa9w5EE8so=;
-        b=kh4Rul2Rx+2JK/bHppAL4AjuGJ7V0cpQXGwbvBOf5uZgPZ279nz4/nOd0y42Mi76Zn
-         Ht9bxHm8retdGu4lpebSWiKkdSHxz0moatwcHqc7AjdV3ULiee7zXclBuwPptJp7JjI+
-         JU5nahtcOCIONrO/o6SeqvcgcclYxen6NXze7EHv6q/1jsd5PkaD2Tj7rClhYh6QfihE
-         sH/ONPQMxp/GrqBR89QlBg72vFz/n23/jGvtxngI/7cd/C2i1qiz+SZmu/LZVvYVE6Zj
-         45wabiVagrfcgQo6buR5NNchqV7Bbeq0+HyHR6PdR9GYiAUi8Fqyyi4c3UIRft+AY7E4
-         qauA==
-X-Forwarded-Encrypted: i=1; AJvYcCWL1PJxPjF8FJbeh9821nplamOHt7ZY7qNhmg4v/G0FNAVSqbY3K/d7ozPmSLO0VqTjp1muD3307hM0NQ6TmLXumjsd2hJ+
-X-Gm-Message-State: AOJu0YwUZXcUGIv/4bwUaNZKPViLWa+UR+Qljs1ADwLTz06LLN10tcUQ
-	lNGaq5P5Ihnu3jWFRAvyPH59YywWtneOFFmrjiYFbI2pjm9Mx/1SFDHIRnOj
-X-Google-Smtp-Source: AGHT+IGdxb+vI/H6XZG0Ofw/pjF/mGH+P4AD2GKh7+hySgsW8eiq5miB/tAJIU7b2PA+6FyFrFVPxw==
-X-Received: by 2002:a17:90a:e00a:b0:2bd:fa57:b35c with SMTP id 98e67ed59e1d1-2c1dc590a25mr7119648a91.28.1717417013620;
-        Mon, 03 Jun 2024 05:16:53 -0700 (PDT)
-Received: from localhost.localdomain (69-172-146-21.cable.teksavvy.com. [69.172.146.21])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2c1a776f526sm8340820a91.13.2024.06.03.05.16.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 03 Jun 2024 05:16:53 -0700 (PDT)
-From: Tony Ambardar <tony.ambardar@gmail.com>
-X-Google-Original-From: Tony Ambardar <Tony.Ambardar@gmail.com>
-To: bpf@vger.kernel.org
-Cc: Tony Ambardar <Tony.Ambardar@gmail.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>,
-	Stanislav Fomichev <sdf@google.com>,
-	Hao Luo <haoluo@google.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Miguel Ojeda <ojeda@kernel.org>,
-	kernel test robot <lkp@intel.com>,
-	stable@vger.kernel.org
-Subject: [PATCH bpf v1 2/2] bpf: Harden __bpf_kfunc tag against linker kfunc removal
-Date: Mon,  3 Jun 2024 05:16:44 -0700
-Message-Id: <5ed38a5ed9e30232682ac9a57a9ca4bc0a1b9bd3.1717413886.git.Tony.Ambardar@gmail.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <cover.1717413886.git.Tony.Ambardar@gmail.com>
-References: <Zl2GtXy7+Xfr66lX@kodidev-ubuntu> <cover.1717413886.git.Tony.Ambardar@gmail.com>
+	s=arc-20240116; t=1717419363; c=relaxed/simple;
+	bh=+7sr3QxfhNoWxuNn1t2yX0rvSmA4G8LYQ28H9HbpGZI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=B8ssjNlaIzNvJYlLfjffJ8I29YuH4YQrLYb3D92lg4zDilBlM51M3Qaa0EdcPxkSsYf75SgEiaVWiSM8urcMWOn14OfeDMOLEk0ltEBz8x+Eax71T1Wrd4DmeJnmex3JGWEGi+Et6Ui4lr5exW4ss1VR5LKSDES7kLQLz9xVgwQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=david-bauer.net; spf=pass smtp.mailfrom=david-bauer.net; dkim=pass (4096-bit key) header.d=david-bauer.net header.i=@david-bauer.net header.b=KBXegAQJ; arc=none smtp.client-ip=95.143.172.134
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=david-bauer.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=david-bauer.net
+Received: (qmail 8953 invoked by uid 988); 3 Jun 2024 12:49:16 -0000
+Authentication-Results: perseus.uberspace.de;
+	auth=pass (plain)
+Received: from unknown (HELO unkown) (::1)
+	by perseus.uberspace.de (Haraka/3.0.1) with ESMTPSA; Mon, 03 Jun 2024 14:49:16 +0200
+Message-ID: <a42ed416-3623-4c14-a20f-43f9a7c487ae@david-bauer.net>
+Date: Mon, 3 Jun 2024 14:49:15 +0200
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 net] vxlan: Fix regression when dropping packets due to
+ invalid src addresses
+To: Daniel Borkmann <daniel@iogearbox.net>, netdev@vger.kernel.org
+Cc: bpf@vger.kernel.org, Ido Schimmel <idosch@nvidia.com>,
+ Nikolay Aleksandrov <razor@blackwall.org>,
+ Martin KaFai Lau <martin.lau@kernel.org>
+References: <20240603085926.7918-1-daniel@iogearbox.net>
+Content-Language: en-US
+From: David Bauer <mail@david-bauer.net>
+Autocrypt: addr=mail@david-bauer.net; keydata=
+ xjMEZgynMBYJKwYBBAHaRw8BAQdA+32xE63/l6uaRAU+fPDToCtlZtYJhzI/dt3I6VxixXnN
+ IkRhdmlkIEJhdWVyIDxtYWlsQGRhdmlkLWJhdWVyLm5ldD7CjwQTFggANxYhBLPGu7DmE/84
+ Uyu0uW0x5c9UngunBQJmDKcwBQkFo5qAAhsDBAsJCAcFFQgJCgsFFgIDAQAACgkQbTHlz1Se
+ C6eKAwEA8B6TGkUMw8X7Kv3JdBIoDqJG9+fZuuwlmFsRrdyDyHkBAPtLydDdancCVWNucImJ
+ GSk+M80qzgemqIBjFXW0CZYPzjgEZgynMBIKKwYBBAGXVQEFAQEHQPIm0qo7519c7VUOTAUD
+ 4OR6mZJXFJDJBprBfnXZUlY4AwEIB8J+BBgWCAAmFiEEs8a7sOYT/zhTK7S5bTHlz1SeC6cF
+ AmYMpzAFCQWjmoACGwwACgkQbTHlz1SeC6fP2AD8CduoErEo6JePUdZXwZ1e58+lAeXOLLvC
+ 2kj1OiLjqK4BANoZuHf/ku8ARYjUdIEgfgOzMX/OdYvn0HiaoEfMg7oB
+In-Reply-To: <20240603085926.7918-1-daniel@iogearbox.net>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Rspamd-Bar: ---
+X-Rspamd-Report: BAYES_HAM(-2.99017) XM_UA_NO_VERSION(0.01) MIME_GOOD(-0.1)
+X-Rspamd-Score: -3.08017
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+	d=david-bauer.net; s=uberspace;
+	h=from:to:cc:subject:date;
+	bh=+7sr3QxfhNoWxuNn1t2yX0rvSmA4G8LYQ28H9HbpGZI=;
+	b=KBXegAQJQ8YNd+00GLk4JqsQDIw61n1KqOOlZ9QL7z4TnxuNNj3JOkSQUZ5jOZatV1Qnvj2Gxq
+	Y67wjm32vKqyW0LSDeAYu9NSL2Qzq1gMCcqvasyJ6oYYbcd/H0ba5uZszaP546NYH+qO0dmPRthL
+	q7zEyjNaYA86HvHHwRWp1bFMXQ8hcgG7yTeG0enXdx7yGEhlpHlEpnhODcUS4yP/kZTGG5qfl8Ub
+	e9kSM8jj12kGkEd5dWXHCDNGmiYHR6SrqbBI7HDbUmn/IOnmRQ24exd1DDekBlCnv3fhwo6e3ic3
+	vythOh9OUufecP82aIkBcLG2E/w8pd7b3Y9nRKa9Js7s7PNhikJp/U0cfSbZEojorpDn8gvpQcai
+	LI4GXD+3ssoRSuPEjRjQOSi1F7xF6uQVAgmi/YHvC2OrIbdijoEGj/V6wrqFTPkK9Rh8YuLqpn24
+	6ZMXAxwH5g/ZkOw2+lGl7bpvculSoi5O48eXXuedu/kXynnxvzgoWGTDpmbWFfhtnCL6SBjxemgi
+	PA6aqpnxG/lVrPFtHfM7/p4DzKR5vMUuNtlQx1LLQtWK2bXgmG5PjlhmSfpl0Ghf3ybT2CLrxmrf
+	9TFL6pQqcnOLSdyN5BrcDutq2SHsYSqkCQ7BfVVkywyRkiLKOPHNFYV39Ket4sJ0KGlNsR62lHdC
+	E=
 
-BPF kfuncs are often not directly referenced and may be inadvertently
-removed by optimization steps during kernel builds, thus the __bpf_kfunc
-tag mitigates against this removal by including the __used macro. However,
-this macro alone does not prevent removal during linking, and may still
-yield build warnings (e.g. on mips64el):
 
-    LD      vmlinux
-    BTFIDS  vmlinux
-  WARN: resolve_btfids: unresolved symbol bpf_verify_pkcs7_signature
-  WARN: resolve_btfids: unresolved symbol bpf_lookup_user_key
-  WARN: resolve_btfids: unresolved symbol bpf_lookup_system_key
-  WARN: resolve_btfids: unresolved symbol bpf_key_put
-  WARN: resolve_btfids: unresolved symbol bpf_iter_task_next
-  WARN: resolve_btfids: unresolved symbol bpf_iter_css_task_new
-  WARN: resolve_btfids: unresolved symbol bpf_get_file_xattr
-  WARN: resolve_btfids: unresolved symbol bpf_ct_insert_entry
-  WARN: resolve_btfids: unresolved symbol bpf_cgroup_release
-  WARN: resolve_btfids: unresolved symbol bpf_cgroup_from_id
-  WARN: resolve_btfids: unresolved symbol bpf_cgroup_acquire
-  WARN: resolve_btfids: unresolved symbol bpf_arena_free_pages
-    NM      System.map
-    SORTTAB vmlinux
-    OBJCOPY vmlinux.32
 
-Update the __bpf_kfunc tag to better guard against linker optimization by
-including the new __retain compiler macro, which fixes the warnings above.
+On 6/3/24 10:59, Daniel Borkmann wrote:
+> Commit f58f45c1e5b9 ("vxlan: drop packets from invalid src-address")
+> has recently been added to vxlan mainly in the context of source
+> address snooping/learning so that when it is enabled, an entry in the
+> FDB is not being created for an invalid address for the corresponding
+> tunnel endpoint.
+> 
+> Before commit f58f45c1e5b9 vxlan was similarly behaving as geneve in
+> that it passed through whichever macs were set in the L2 header. It
+> turns out that this change in behavior breaks setups, for example,
+> Cilium with netkit in L3 mode for Pods as well as tunnel mode has been
+> passing before the change in f58f45c1e5b9 for both vxlan and geneve.
+> After mentioned change it is only passing for geneve as in case of
+> vxlan packets are dropped due to vxlan_set_mac() returning false as
+> source and destination macs are zero which for E/W traffic via tunnel
+> is totally fine.
+> 
+> Fix it by only opting into the is_valid_ether_addr() check in
+> vxlan_set_mac() when in fact source address snooping/learning is
+> actually enabled in vxlan. This is done by moving the check into
+> vxlan_snoop(). With this change, the Cilium connectivity test suite
+> passes again for both tunnel flavors.
+> 
+> Fixes: f58f45c1e5b9 ("vxlan: drop packets from invalid src-address")
+> Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+> Cc: David Bauer <mail@david-bauer.net>
+> Cc: Ido Schimmel <idosch@nvidia.com>
+> Cc: Nikolay Aleksandrov <razor@blackwall.org>
+> Cc: Martin KaFai Lau <martin.lau@kernel.org>
 
-Verify the __retain macro with readelf by checking object flags for 'R':
+Reviewed-by: David Bauer <mail@david-bauer.net>
 
-  $ readelf -Wa kernel/trace/bpf_trace.o
-  Section Headers:
-    [Nr]  Name              Type     Address  Off  Size ES Flg Lk Inf Al
-  ...
-    [178] .text.bpf_key_put PROGBITS 00000000 6420 0050 00 AXR  0   0  8
-  ...
-  Key to Flags:
-  ...
-    R (retain), D (mbind), p (processor specific)
-
-Link: https://lore.kernel.org/bpf/ZlmGoT9KiYLZd91S@krava/T/
-Reported-by: kernel test robot <lkp@intel.com>
-Closes: https://lore.kernel.org/r/202401211357.OCX9yllM-lkp@intel.com/
-Fixes: 57e7c169cd6a ("bpf: Add __bpf_kfunc tag for marking kernel functions as kfuncs")
-Cc: stable@vger.kernel.org # v6.6+
-Signed-off-by: Tony Ambardar <Tony.Ambardar@gmail.com>
----
- include/linux/btf.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/include/linux/btf.h b/include/linux/btf.h
-index f9e56fd12a9f..7c3e40c3295e 100644
---- a/include/linux/btf.h
-+++ b/include/linux/btf.h
-@@ -82,7 +82,7 @@
-  * as to avoid issues such as the compiler inlining or eliding either a static
-  * kfunc, or a global kfunc in an LTO build.
-  */
--#define __bpf_kfunc __used noinline
-+#define __bpf_kfunc __used __retain noinline
- 
- #define __bpf_kfunc_start_defs()					       \
- 	__diag_push();							       \
--- 
-2.34.1
-
+Best
+David
 
