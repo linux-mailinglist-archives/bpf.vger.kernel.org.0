@@ -1,194 +1,86 @@
-Return-Path: <bpf+bounces-31251-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-31252-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id BECC08D8988
-	for <lists+bpf@lfdr.de>; Mon,  3 Jun 2024 21:10:16 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4B3E68D8A21
+	for <lists+bpf@lfdr.de>; Mon,  3 Jun 2024 21:27:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 79103285B75
-	for <lists+bpf@lfdr.de>; Mon,  3 Jun 2024 19:10:15 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7C2B81C23C70
+	for <lists+bpf@lfdr.de>; Mon,  3 Jun 2024 19:27:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A76113D626;
-	Mon,  3 Jun 2024 19:07:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A851113B2AD;
+	Mon,  3 Jun 2024 19:27:10 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from gnu.wildebeest.org (gnu.wildebeest.org [45.83.234.184])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC31413D533;
-	Mon,  3 Jun 2024 19:07:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 603C6137748;
+	Mon,  3 Jun 2024 19:27:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.83.234.184
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717441634; cv=none; b=H7RmO7s9v6U9E3TfQzxqsvopvPEuD8lwynJCMbf8gCpyg0PBkHT+OX2nJmBT2R8193QzzIHGEfQUxtazcrCsBwN+wi3eyCCzk++mKkrdZ9xw82rKBkM3+eWuX5RljlC/OKMRswbmHH7XkO5TCSOWHiQ/7a2ogfvEFYzaotPSTEI=
+	t=1717442830; cv=none; b=AusiQV0tu7bS5MmtRvEDTeE6zO8MpTkPJ1X8VCaqrBlo8/kLjAqPZYloUXKo5DR09sNKHkLT+pcjbFM2zYCoxxenIdLo1AJdBjYVZiwBkP8J713oGBFF0mlg9Xkq3npoCNK3LZm4HcB7JiRmZJqe7SNxWP4hYGgHc0oRXJH97CI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717441634; c=relaxed/simple;
-	bh=k1HP8hCmLs5gvyhDOaCFwFm3nHs+PuYGEdirt95Vwq8=;
-	h=Message-ID:Date:From:To:Cc:Subject:References:MIME-Version:
-	 Content-Type; b=IlETiHMohi+q3ig8Q4k1M2/E6vG+3evuC+I4sl0SFOMbjeMDsJ09vMzRQ4jfiUXk4xFiJKWHG0VmOM/ncjF5BRsKVVPkil58lcAac90rb757K42xzQJDAUXLe5krUtut3I8rTJ47JS3mYWxmK4IG6x6XG2XgDxb/2JO/B1cRJIQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 590F4C4AF07;
-	Mon,  3 Jun 2024 19:07:14 +0000 (UTC)
-Received: from rostedt by gandalf with local (Exim 4.97)
-	(envelope-from <rostedt@goodmis.org>)
-	id 1sED2f-00000009TzS-1dXK;
-	Mon, 03 Jun 2024 15:08:25 -0400
-Message-ID: <20240603190825.252845939@goodmis.org>
-User-Agent: quilt/0.68
-Date: Mon, 03 Jun 2024 15:07:31 -0400
-From: Steven Rostedt <rostedt@goodmis.org>
-To: linux-kernel@vger.kernel.org,
- linux-trace-kernel@vger.kernel.org
-Cc: Masami Hiramatsu <mhiramat@kernel.org>,
- Mark Rutland <mark.rutland@arm.com>,
- Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
- Andrew Morton <akpm@linux-foundation.org>,
- Alexei Starovoitov <alexei.starovoitov@gmail.com>,
- Florent Revest <revest@chromium.org>,
- Martin KaFai Lau <martin.lau@linux.dev>,
- bpf <bpf@vger.kernel.org>,
- Sven Schnelle <svens@linux.ibm.com>,
- Alexei Starovoitov <ast@kernel.org>,
- Jiri Olsa <jolsa@kernel.org>,
- Arnaldo Carvalho de Melo <acme@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>,
- Alan Maguire <alan.maguire@oracle.com>,
- Peter Zijlstra <peterz@infradead.org>,
- Thomas Gleixner <tglx@linutronix.de>,
- Guo Ren <guoren@kernel.org>
-Subject: [PATCH v3 27/27] selftests/ftrace: Add fgraph-multi.tc test
-References: <20240603190704.663840775@goodmis.org>
+	s=arc-20240116; t=1717442830; c=relaxed/simple;
+	bh=X4Y5oxKxs00wWrWKIghJZ7QZja4AWcSliWr1zt5dwpU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=IOcOD6RX3E/lasi901xyBHki2kBXuiLekUjlQ3TPmgq3Oa5rq8r/owhOC1PxSVUXn7vlH1lb4PO7+IFQLC6pAUEYo12NTnHCmZL5pnD5ubCT40yZ7F06XXyiRVpKlgEw84o/tZkQsq5tDmi2lg5JZ/gaQge2sUpQvbm2dDDwfJQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=klomp.org; spf=pass smtp.mailfrom=klomp.org; arc=none smtp.client-ip=45.83.234.184
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=klomp.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=klomp.org
+Received: by gnu.wildebeest.org (Postfix, from userid 1000)
+	id E6634302732A; Mon,  3 Jun 2024 21:18:33 +0200 (CEST)
+Date: Mon, 3 Jun 2024 21:18:33 +0200
+From: Mark Wielaard <mark@klomp.org>
+To: Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc: Tony Ambardar <tony.ambardar@gmail.com>, Mark Wielaard <mjw@redhat.com>,
+	Hengqi Chen <hengqi.chen@gmail.com>, bpf@vger.kernel.org,
+	dwarves@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>
+Subject: Re: elfutils DWARF problem was: Re: Problem with BTF generation on
+ mips64el
+Message-ID: <20240603191833.GD4421@gnu.wildebeest.org>
+References: <ZlkoM6/PSxVcGM6X@kodidev-ubuntu>
+ <CAEyhmHT_1N3xwLO2BwVK97ebrABJv52d5dWxzvuNNcF-OF5gKw@mail.gmail.com>
+ <ZlmrQqQSJyNH7fVF@kodidev-ubuntu>
+ <Zln1kZnu2Xxeyngj@x1>
+ <Zl2m4RP7BwhZ0J6l@kodidev-ubuntu>
+ <Zl3Zp5r9m6X_i_J4@x1>
+ <Zl4AHfG6Gg5Htdgc@x1>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Zl4AHfG6Gg5Htdgc@x1>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 
-From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
+Hi,
 
-Add a test that creates 3 instances and enables function_graph tracer in
-each as well as the top instance, where each will enable a filter (but one
-that traces all functions) and check that they are filtering properly.
+On Mon, Jun 03, 2024 at 02:40:45PM -0300, Arnaldo Carvalho de Melo wrote:
+> Couldn't find a way to ask eu-readelf for more verbose output, where we
+> could perhaps get some clue as to why it produces nothing while binutils
+> readelf manages to grok it, Mark, do you know some other way to ask
+> eu-readelf to produce more debug output?
+> 
+> I'm unsure if the netdevsim.ko file was left in a semi encoded BTF state
+> that then made eu-readelf to not be able to process it while pahole,
+> that uses eltuils' libraries, was able to process the first two CUs for
+> a kernel module and all the CUs for the vmlinux file :-\
 
-Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
----
- .../ftrace/test.d/ftrace/fgraph-multi.tc      | 103 ++++++++++++++++++
- 1 file changed, 103 insertions(+)
- create mode 100644 tools/testing/selftests/ftrace/test.d/ftrace/fgraph-multi.tc
+I haven't looked at the vmlinux file. But for the .ko file the issue
+is that the elfutils MIPS backend isn't complete. Specifically MIPS
+relocations aren't recognized (and so cannot be applied). There are
+some pending patches which try to fix that:
 
-diff --git a/tools/testing/selftests/ftrace/test.d/ftrace/fgraph-multi.tc b/tools/testing/selftests/ftrace/test.d/ftrace/fgraph-multi.tc
-new file mode 100644
-index 000000000000..ff88f97e41fb
---- /dev/null
-+++ b/tools/testing/selftests/ftrace/test.d/ftrace/fgraph-multi.tc
-@@ -0,0 +1,103 @@
-+#!/bin/sh
-+# SPDX-License-Identifier: GPL-2.0
-+# description: ftrace - function graph filters
-+# requires: set_ftrace_filter function_graph:tracer
-+
-+# Make sure that function graph filtering works
-+
-+INSTANCE1="instances/test1_$$"
-+INSTANCE2="instances/test2_$$"
-+INSTANCE3="instances/test3_$$"
-+
-+WD=`pwd`
-+
-+do_reset() {
-+    cd $WD
-+    if [ -d $INSTANCE1 ]; then
-+	echo nop > $INSTANCE1/current_tracer
-+	rmdir $INSTANCE1
-+    fi
-+    if [ -d $INSTANCE2 ]; then
-+	echo nop > $INSTANCE2/current_tracer
-+	rmdir $INSTANCE2
-+    fi
-+    if [ -d $INSTANCE3 ]; then
-+	echo nop > $INSTANCE3/current_tracer
-+	rmdir $INSTANCE3
-+    fi
-+}
-+
-+mkdir $INSTANCE1
-+if ! grep -q function_graph $INSTANCE1/available_tracers; then
-+    echo "function_graph not allowed with instances"
-+    rmdir $INSTANCE1
-+    exit_unsupported
-+fi
-+
-+mkdir $INSTANCE2
-+mkdir $INSTANCE3
-+
-+fail() { # msg
-+    do_reset
-+    echo $1
-+    exit_fail
-+}
-+
-+disable_tracing
-+clear_trace
-+
-+do_test() {
-+    REGEX=$1
-+    TEST=$2
-+
-+    # filter something, schedule is always good
-+    if ! echo "$REGEX" > set_ftrace_filter; then
-+	fail "can not enable filter $REGEX"
-+    fi
-+
-+    echo > trace
-+    echo function_graph > current_tracer
-+    enable_tracing
-+    sleep 1
-+    # search for functions (has "{" or ";" on the line)
-+    echo 0 > tracing_on
-+    count=`cat trace | grep -v '^#' | grep -e '{' -e ';' | grep -v "$TEST" | wc -l`
-+    echo 1 > tracing_on
-+    if [ $count -ne 0 ]; then
-+	fail "Graph filtering not working by itself against $TEST?"
-+    fi
-+
-+    # Make sure we did find something
-+    echo 0 > tracing_on
-+    count=`cat trace | grep -v '^#' | grep -e '{' -e ';' | grep "$TEST" | wc -l`
-+    echo 1 > tracing_on
-+    if [ $count -eq 0 ]; then
-+	fail "No traces found with $TEST?"
-+    fi
-+}
-+
-+do_test '*sched*' 'sched'
-+cd $INSTANCE1
-+do_test '*lock*' 'lock'
-+cd $WD
-+cd $INSTANCE2
-+do_test '*rcu*' 'rcu'
-+cd $WD
-+cd $INSTANCE3
-+echo function_graph > current_tracer
-+
-+sleep 1
-+count=`cat trace | grep -v '^#' | grep -e '{' -e ';' | grep "$TEST" | wc -l`
-+if [ $count -eq 0 ]; then
-+    fail "No traces found with all tracing?"
-+fi
-+
-+cd $WD
-+echo nop > current_tracer
-+echo nop > $INSTANCE1/current_tracer
-+echo nop > $INSTANCE2/current_tracer
-+echo nop > $INSTANCE3/current_tracer
-+
-+do_reset
-+
-+exit 0
--- 
-2.43.0
+https://patchwork.sourceware.org/project/elfutils/list/?series=31601
 
+Cheers,
 
+Mark
 
