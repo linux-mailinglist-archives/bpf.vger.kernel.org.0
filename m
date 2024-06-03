@@ -1,252 +1,262 @@
-Return-Path: <bpf+bounces-31179-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-31180-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id BB33E8D7A60
-	for <lists+bpf@lfdr.de>; Mon,  3 Jun 2024 05:11:21 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5AFA58D7BD6
+	for <lists+bpf@lfdr.de>; Mon,  3 Jun 2024 08:45:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DF5B41C20873
-	for <lists+bpf@lfdr.de>; Mon,  3 Jun 2024 03:11:20 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 11546282FC0
+	for <lists+bpf@lfdr.de>; Mon,  3 Jun 2024 06:45:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB27BEAC8;
-	Mon,  3 Jun 2024 03:11:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E9BBE2D052;
+	Mon,  3 Jun 2024 06:45:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Q87XzTeI"
+	dkim=pass (1024-bit key) header.d=marvell.com header.i=@marvell.com header.b="vlMwdhqT"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mx0b-0016f401.pphosted.com (mx0b-0016f401.pphosted.com [67.231.156.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4603CD29B;
-	Mon,  3 Jun 2024 03:11:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717384274; cv=none; b=CCI3RwVqDu/sMOx7TjqQgQYHCRCbAdWjY+vaGk4vI46BNODPRcs56F1VLtpfBmcDuN9yiyTtUDhmT4PW66NLoV7K9Hqct5DKlshWwA5v7BsebDQAsU1yMl5pFzxBuCZ6oGDR9lDJHsoUI0+ir3SCUVeA3KKIxSi3vnSv2RsnVhE=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717384274; c=relaxed/simple;
-	bh=3Iq570y1O+dBo8MJ2sPHzPkoGj+5BwKLE3Cc+XpquIM=;
-	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
-	 Mime-Version:Content-Type; b=hANIdZTNkcIRzbvCChL/R+/OUgNSn6rKBAcKfn9Mqdc7Uhvjt2wVfqgeGOm2Dg1CIqtnxeGkaHlE0LaG7UUJ4PA3AKXrxlylXo/b1mqLloBE3jcKxp0uPzM64trMihSLZeO6NRPn2os6YFSZ5nR4NIfCCQgyj8iYm7KaPEi1EBY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Q87XzTeI; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 91E3BC2BBFC;
-	Mon,  3 Jun 2024 03:11:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1717384273;
-	bh=3Iq570y1O+dBo8MJ2sPHzPkoGj+5BwKLE3Cc+XpquIM=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=Q87XzTeIn36G6VKkzd3klnjoRwuJx1+4sDBMRy151kFh4/0iJTfypOkcYOK8SK2yF
-	 /w6OjaDqtGEsSPrKXe3wgYorMOyqCMvpFX6nilqxa7tRiH8RwmYA8n8ud9HXgcLIlX
-	 X7wubovvf+4BhflpOTO4NdPE9SBgGc/654TY6X+X/e0XwvJTE8wiQRq2ekqRmcoMq/
-	 xHlYuBfI/HST9boq6S07YDuAW3YMh/gsLf/1YIB0/jze3lkf6yLfMN+vz7m6WvFtZB
-	 XjXScuTcP/HKOhDBDfyXtXuVxPKLgWBWY0/wnXbBtziyRisTF5KkzpMz9JGtXExL8/
-	 jLCnyrETOJR3A==
-Date: Mon, 3 Jun 2024 12:11:07 +0900
-From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To: Steven Rostedt <rostedt@goodmis.org>
-Cc: linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org, Masami
- Hiramatsu <mhiramat@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
- Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Andrew Morton
- <akpm@linux-foundation.org>, Alexei Starovoitov
- <alexei.starovoitov@gmail.com>, Florent Revest <revest@chromium.org>,
- Martin KaFai Lau <martin.lau@linux.dev>, bpf <bpf@vger.kernel.org>, Sven
- Schnelle <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>, Jiri
- Olsa <jolsa@kernel.org>, Arnaldo Carvalho de Melo <acme@kernel.org>, Daniel
- Borkmann <daniel@iogearbox.net>, Alan Maguire <alan.maguire@oracle.com>,
- Peter Zijlstra <peterz@infradead.org>, Thomas Gleixner
- <tglx@linutronix.de>, Guo Ren <guoren@kernel.org>
-Subject: Re: [PATCH v2 24/27] function_graph: Use static_call and branch to
- optimize entry function
-Message-Id: <20240603121107.42f98858ebb790805f75c9b1@kernel.org>
-In-Reply-To: <20240602033834.997761817@goodmis.org>
-References: <20240602033744.563858532@goodmis.org>
-	<20240602033834.997761817@goodmis.org>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B1ACA5CB0;
+	Mon,  3 Jun 2024 06:45:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=67.231.156.173
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1717397144; cv=fail; b=KqtQCy+d83I+m52AxpgA9VwulVpekrTayym+2e1VbkKxymoRDD46+loXxvtBQTpPEXVz91di/Ut7zTnzEL1jkK5LzfpkgmSDNPeh4RdFKMBPmLNb02Cd7rZadRUlUa7XYyBm3DkmK6g3S7y1O51dLCHEjwu8013okejjEtqN3B0=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1717397144; c=relaxed/simple;
+	bh=ITeOG9xtF0haWEqwG/V7qhnsByCJ84jRz/HET+l2ypw=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=chZDP5cJEeRH0DDsSK8NK2iylgKrDr+shms2IR76yYoflAzOuBPJl5jSI8LUxgGtNqU4PLvGs0nT5w2TTVbcKlRVskDzEPqwkzrO/UtjVGONYp4+588UhDdJn+oQGBErm3uf5JvEb/f2JsttaVR+Xy9G+l9FlCzqA0x4gjEnaPg=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=marvell.com; spf=pass smtp.mailfrom=marvell.com; dkim=pass (1024-bit key) header.d=marvell.com header.i=@marvell.com header.b=vlMwdhqT; arc=fail smtp.client-ip=67.231.156.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=marvell.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=marvell.com
+Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
+	by mx0b-0016f401.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 452N02am016268;
+	Sun, 2 Jun 2024 23:45:14 -0700
+Received: from nam04-dm6-obe.outbound.protection.outlook.com (mail-dm6nam04lp2040.outbound.protection.outlook.com [104.47.73.40])
+	by mx0b-0016f401.pphosted.com (PPS) with ESMTPS id 3yg35hbvnm-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Sun, 02 Jun 2024 23:45:14 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=DdsB5HbvoDKPwGYbkiov5bxwpw6+Gttwx/2ocgaQ+TOYUM/LIZh5I41L6fCJcYHVO/HQ0Ptvf+DHstlGJCzFyaOPIBqD9WNHhQckHaE4BlM194UyAheW+gbaX9elRqnLxIkXOmKK5lcqlbgluaL0nMoTNw++9PTm0LM8igAnBlNH84p7N2tLMUcWVfJshDs19h67xTR2VMglGfZtig6uhFJ2Yp/ZE6nqodd9EVemGCfKH6sCDIXkOSLsPesHf2THh6ik4wSuFJsFTt5831Cyz6ezhbmBlR+YEE1hHdb6ACfbUeeD4kZOI2gPSGXVIaETyQz06rf7EUVWGKMIsfst8g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=zqOtGdWokWpZ2LU4r/SHz9HmQilBFzPUmprUCBEBDhY=;
+ b=MsP0ibZbn73dYvYoh1rryXwFpZ58Xad5S4w+118I27/u9kl0c574hKbGrUd8mEpR0r84C2qfbTeRAuZ+lHv5XMBne36nsh2aDvu5RLPQsGn6kU1SgxCizGMy/e6ReX7W56uD0MLZ/Or6WY5oFOEo2qWQ5v/ardLexoJStHcDZVUptPWiL9Zp14EFh0viI8UWP+fkZ9ahbmfpKfOKIajdA23StEEi9y+/UwzhlmRn6Vq8UMiag2W56/+huw6Vz9HRFkC815SUNwZkRXvnE/w7W1IhEh1jQVx4iKM7ouXxlGs+LOhoafBd8WKJ4FGnUPSFZWyVgFarNPv5yKzL/g958w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=marvell.com; dmarc=pass action=none header.from=marvell.com;
+ dkim=pass header.d=marvell.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=zqOtGdWokWpZ2LU4r/SHz9HmQilBFzPUmprUCBEBDhY=;
+ b=vlMwdhqTLbkuEboCZZuBJ8EsarFBIBgjHEWE3GZFhd78VPys7QtvHoBnJzgwKSrmcw3/qUR/bP8nDYDyqvd2xdM8N+du9vNeG/zHeDq4I3qjgWehtUJNWxPPXVGHOHVfM0XG/cxnb42on8F5hSW5wDeLyF5Rcf57bf7eWcV07I0=
+Received: from PH0PR18MB4474.namprd18.prod.outlook.com (2603:10b6:510:ea::22)
+ by MN0PR18MB6116.namprd18.prod.outlook.com (2603:10b6:208:4bd::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7633.21; Mon, 3 Jun
+ 2024 06:45:09 +0000
+Received: from PH0PR18MB4474.namprd18.prod.outlook.com
+ ([fe80::ba6a:d051:575b:324e]) by PH0PR18MB4474.namprd18.prod.outlook.com
+ ([fe80::ba6a:d051:575b:324e%4]) with mapi id 15.20.7633.021; Mon, 3 Jun 2024
+ 06:45:09 +0000
+From: Hariprasad Kelam <hkelam@marvell.com>
+To: Daniel Borkmann <daniel@iogearbox.net>,
+        "netdev@vger.kernel.org"
+	<netdev@vger.kernel.org>
+CC: "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        David Bauer
+	<mail@david-bauer.net>, Ido Schimmel <idosch@nvidia.com>,
+        Nikolay Aleksandrov
+	<razor@blackwall.org>,
+        Martin KaFai Lau <martin.lau@kernel.org>
+Subject: [PATCH net] vxlan: Fix regression when dropping packets due to
+ invalid src addresses
+Thread-Topic: [PATCH net] vxlan: Fix regression when dropping packets due to
+ invalid src addresses
+Thread-Index: AQHatYGTnYHLz6wfiUqfZHIAnfyM0Q==
+Date: Mon, 3 Jun 2024 06:45:09 +0000
+Message-ID: 
+ <PH0PR18MB4474EF3DC991F456E6D1C524DEFF2@PH0PR18MB4474.namprd18.prod.outlook.com>
+References: <20240531154137.26797-1-daniel@iogearbox.net>
+In-Reply-To: <20240531154137.26797-1-daniel@iogearbox.net>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: PH0PR18MB4474:EE_|MN0PR18MB6116:EE_
+x-ms-office365-filtering-correlation-id: 19f2e590-a404-4f94-f9d7-08dc8398b659
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;ARA:13230031|1800799015|376005|366007|38070700009;
+x-microsoft-antispam-message-info: 
+ =?us-ascii?Q?z9eyJGrJ9CCf7mS+Wx54R6ddxM6ljUh4+px4QxQmSlnyEpoPb8mOgthS/dns?=
+ =?us-ascii?Q?H7vNUuidRulb4OSdNDBp39+L6nR7USzmI2vmCT8lVFxTl86BV+U0DaTEO/Ks?=
+ =?us-ascii?Q?bg7pJWpKHu3+P62WuTUKx+zMn/8nZaY8+RQcLwrBrMhDFAculdJ2ltO5X9Ot?=
+ =?us-ascii?Q?uvCZxVLNNkTdFEQpOi+Hdh433JTR5dSXr+MH4r+lDZ/Pegysa094ToI1pNDb?=
+ =?us-ascii?Q?m+VbEEGUWrH3MeGQDLiIsuL9H78E6eQQunnvi0BlhmbZegwV+YAr1mIxWj/J?=
+ =?us-ascii?Q?WvAk+qQtqrjLgOhf+wD7RlUSHTkzxyQbllOJ+3eYzL2TwRgk9lDBcHgv27fv?=
+ =?us-ascii?Q?LXVHk4M6xEjJsIo52RQzxdGr30BWlfKbSf1YuOuXksmT5+AOddLGrNUxUVKK?=
+ =?us-ascii?Q?/MwTQUVFzPf9sTWZWpMWJoRdCYLxog9b3G1iMYoEj7WYj3WiIU9JJq89a8jE?=
+ =?us-ascii?Q?uuwWbfYSSpuXOQlDr1nM03nm7F0xXaW/I1N6SvcvDYVmQ/K1FqNl7Kqgd/nu?=
+ =?us-ascii?Q?nRnwVJFZBXpXgHYXcr6H6NUFmH6Th72R8MzPGfd1EG9EblzLunI5SPvSGJzB?=
+ =?us-ascii?Q?+ylFgYAjrgg2X6H6ek/WBP6Q3JSBT6Raqvzwy8V85Stbig/X3JXVNN+VEiI5?=
+ =?us-ascii?Q?5gQzCEEHp3noAnVzidnEQCEePUIlmS7iVG6mCpimpoe8qWcDfgrMdS0s0yCu?=
+ =?us-ascii?Q?Q+qXC9L1zeKo5QUdStL0oRFf/5gZcbh2/SrnM4A0xU4bR7yN23yb87eqDhjY?=
+ =?us-ascii?Q?DJVvRoYJZd5u3OSBiJw6GPMA9TSTVZ/ApjPR+Sr8N5eoL3mg3VI5VqceFrul?=
+ =?us-ascii?Q?ik6LAdpExmIcdXJ6AdJuQwwkSmovXK7EamUL5luHkFwtwcBfpJIfH+uwlpkX?=
+ =?us-ascii?Q?an76KRG3ytA2hJhM8vr0/wF7JpcSd7VP7KRFor+FULF1+5+EyG+cDz1wSKSg?=
+ =?us-ascii?Q?2vMq8SS2PMsEn4jLYAwrfliCOgf2H14yChPueeGSf+dRrj5rBXEvq01Mpd+z?=
+ =?us-ascii?Q?YovKcVT0pFvZLSzrdbeftS/LeLWJ8gMG6beWKvngbFkE2R+vEaisLG+Nts6J?=
+ =?us-ascii?Q?nrMF/J1ZGCh2hGMfTU+pU5aIXQYt7HYk9ltfM6FRt/sl63tM5ckf3qzomPE7?=
+ =?us-ascii?Q?oadfsx5ruZTZ6xpzquvOBIPjaaA3TaWve4V8heRvC1iIfjQJeevnGOvhXHAQ?=
+ =?us-ascii?Q?H5MDYWi0jljVdwGfnqGWv+fcGf/KmdVFcLxF+J58s+ar9lnHMKoyIuNEyIMn?=
+ =?us-ascii?Q?+0rZl3POb0pd7+2Q/U6HEzyv6r33WvtRu17u9EKK6pryHx6l+LFMm3Rbmk8M?=
+ =?us-ascii?Q?K8gAHbmXYbMOzkYeAN98EgaT9PiZOgcHDka5HHhG8g6Mrw=3D=3D?=
+x-forefront-antispam-report: 
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR18MB4474.namprd18.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(1800799015)(376005)(366007)(38070700009);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: 
+ =?us-ascii?Q?Q89s+nTIyvi1WeR88RF+m2Kw8+HUNgvKgSW9Rs2tmq9eiF57jMYnrDIbGpJj?=
+ =?us-ascii?Q?Jikdmcfu2KmDVg75MRro47tL9d1nFVjHGSSihxQGEMLltxUPNpkdFY6i63O6?=
+ =?us-ascii?Q?DOI7bpcfcLp/xOo6EpqZqrElNE0vW9AIrDE7CNBzfuaI02WBqGjLijNPw5zt?=
+ =?us-ascii?Q?a53eNpDhGIH51KcPxooFstyFu4IZEVuYkwnR8HcBXS90nFJiyMcZ55yOgBwN?=
+ =?us-ascii?Q?yJf9zgulgYiFtt+vEY3Ss56CeBcXvGcYkuxn7jKz7K2vymJyKbE+2FXgOlKI?=
+ =?us-ascii?Q?YHQ3R73VSyelgYApA9v/E1FPlmeRR3cncB32T9DSCGjuZYhIlSlzLrn3hDXZ?=
+ =?us-ascii?Q?QfNH6dCGdMtfBjoFHoVNPa8HepPQyt951zekSubbXpTEdx/pdpijzl9c/YB4?=
+ =?us-ascii?Q?0FqE178I+jI7HpPRgnsBV2bwBF8Vxw5Ki1q3s9FS91xk2z0Opm/nic0Hu5R1?=
+ =?us-ascii?Q?N7ihIXfjUbLmp2EnvWsZM9DlJICcDETEonS2Su5bPuOUNCVDGM/coLvx+q/H?=
+ =?us-ascii?Q?07j20Fx9HqD9Fp6ShKh2KiE5Ve3OMV2VZdpZ4gZxUPRAoej5a5NfaUMIGI94?=
+ =?us-ascii?Q?bWgv672kl48G9+2MStBIXiS8kF6nr1d16yUdCc5CW2mpgixuIlcxOqPtaXka?=
+ =?us-ascii?Q?rHwJo8GvQsmrC/7Pasf6rNFZAUB7vDW0Xfwyc7So/XUz+yo/WcMyYCwzu3cm?=
+ =?us-ascii?Q?Qorzywtr/sQ5YvJYvKsUeXOIaeSTNIgbt1LIqayUoJNsq4LHJtRHLlDwUQjy?=
+ =?us-ascii?Q?2n+Yu1cLSq1oCp0Wb1a3vQB1XLYuMNjmGAyaKCtl2xhzq6T8ngkexQbbQZJD?=
+ =?us-ascii?Q?gvWPcBpxhhxh/FZw5FbkkGyYSC0f2XhHsqaU8/lJbjppl3B9eK8UYHCAfmf7?=
+ =?us-ascii?Q?yWpmGMEhywTxy4yn6IRKRmZc8tpZd1muGK7Kgb+8mgirdFQgzqeWti+Eo+2a?=
+ =?us-ascii?Q?CmzIjqs84uXTD7KideIWSy0GOZM/xGEGPsD88NMAwxO8b3ICPLC9hSuqcldo?=
+ =?us-ascii?Q?XchRWJ7glWgXt7K+r7Mc0Elir66emxvEM82aNX6yPriNDwyezHvsNVeOrMc7?=
+ =?us-ascii?Q?wkj5oPnomlSGh8hmolk0kiWatJoGmwMTTvur6XQG12Y8ngV3L68igPA2X7ZL?=
+ =?us-ascii?Q?AczHjxME0KTdRe1+f9EHXrImdW0fqCJCJmpM4EqDm+8X2E0YqvFh7uAPB0dB?=
+ =?us-ascii?Q?VOWGrJN6NMCYSwmbrYo1TiwvY2p/27Kuc/EE6NU23jJ+hFVP4z+BhO6VXQEF?=
+ =?us-ascii?Q?OwVHf6jjiOgD9Jc0lBWwOHDmy7rTZjRpZN9MHwr4g+R3/dMH7dTgRVRIaHdM?=
+ =?us-ascii?Q?9UoRzuj5wFw8qmaahGRNYLsTtSOkwQIkwumsadMby7lEwoIoy6D0WhW0wONX?=
+ =?us-ascii?Q?8cqCuu9sobswstKTHF8TKjNYYFBeKVF4ZvrhwMRzXShJNIagnQ6Ru2FqCvUS?=
+ =?us-ascii?Q?kfWhNaDLeL7MFxuqF1VYzRPfxReKTsaShqZ7Vubq0njfOf2YjlrVr3pKa0A0?=
+ =?us-ascii?Q?1et3HJ0PA7PMn88BoYyJChKh0h8OWwOmf3wBf7FkelrsSALHIoANn+jKFFTk?=
+ =?us-ascii?Q?+GMjourM8SfnGcwv8go=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+X-OriginatorOrg: marvell.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR18MB4474.namprd18.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 19f2e590-a404-4f94-f9d7-08dc8398b659
+X-MS-Exchange-CrossTenant-originalarrivaltime: 03 Jun 2024 06:45:09.6825
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 70e1fb47-1155-421d-87fc-2e58f638b6e0
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: /0RTf9Ikbpg2OgAJa2469hGHjF7YMGn/dHTvWpX5LiXh/Trk75j6t5c6lsWE0CofRFfjBf88gQxx2xeK2w1nIg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN0PR18MB6116
+X-Proofpoint-GUID: xqs6h2kfsm87erP9gGBsbWXmrXOswWS0
+X-Proofpoint-ORIG-GUID: xqs6h2kfsm87erP9gGBsbWXmrXOswWS0
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.650,FMLib:17.12.28.16
+ definitions=2024-06-02_15,2024-05-30_01,2024-05-17_01
 
-On Sat, 01 Jun 2024 23:38:08 -0400
-Steven Rostedt <rostedt@goodmis.org> wrote:
 
-> From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
-> 
-> In most cases function graph is used by a single user. Instead of calling
-> a loop to call function graph callbacks in this case, call the function
-> entry callback directly.
-> 
-> Add a static_key that will be used to set the function graph logic to
-> either do the loop (when more than one callback is registered) or to call
-> the callback directly if there is only one registered callback.
 
-I understand this works, but my concern is that, if we use fprobe
-and function_graph at the same time, does it always loop on both gops?
-
-I mean if those are the subops of one ftrace_ops, ftrace_trampoline
-will always call the same function_graph_enter() for both gops, and loop
-on the gops list.
-
-For example, if there are 2 fgraph_ops, one has "vfs_*" filter and
-another has "sched_*" filter, those does not cover each other.
-
-Are there any way to solve this issue? I think my previous series
-calls function_graph_enter_ops() directly from trampoline (If it works
-correctly...)
-
-Thank you,
-
-> 
-> Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+> Commit f58f45c1e5b9 ("vxlan: drop packets from invalid src-address") has
+> been recently added to vxlan mainly in the context of source address
+> snooping/learning so that when it is enabled, an entry in the FDB is not =
+being
+> created for an invalid address for the tunnel endpoint.
+>=20
+> Before commit f58f45c1e5b9 vxlan was similarly behaving as geneve in that=
+ it
+> passed through whichever macs were set in the L2 header. It turns out tha=
+t
+> this change in behavior breaks setups, for example, Cilium with netkit in=
+ L3
+> mode for Pods as well as tunnel mode has been passing before the change i=
+n
+> f58f45c1e5b9 for both vxlan and geneve.
+> After mentioned change it is only passing for geneve as in case of vxlan
+> packets are dropped due to vxlan_set_mac() returning false as source and
+> destination macs are zero which for E/W traffic via tunnel is totally fin=
+e.
+>=20
+> Fix it by only opting into the is_valid_ether_addr() check in
+> vxlan_set_mac() when in fact source address snooping/learning is actually
+> enabled in vxlan. With this change, the Cilium connectivity test suite pa=
+sses
+> again for both tunnel flavors.
+>=20
+> Fixes: f58f45c1e5b9 ("vxlan: drop packets from invalid src-address")
+> Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+> Cc: David Bauer <mail@david-bauer.net>
+> Cc: Ido Schimmel <idosch@nvidia.com>
+> Cc: Nikolay Aleksandrov <razor@blackwall.org>
+> Cc: Martin KaFai Lau <martin.lau@kernel.org>
 > ---
->  kernel/trace/fgraph.c | 77 ++++++++++++++++++++++++++++++++++++-------
->  1 file changed, 66 insertions(+), 11 deletions(-)
-> 
-> diff --git a/kernel/trace/fgraph.c b/kernel/trace/fgraph.c
-> index 4d566a0a741d..7c3b0261b1bb 100644
-> --- a/kernel/trace/fgraph.c
-> +++ b/kernel/trace/fgraph.c
-> @@ -11,6 +11,7 @@
->  #include <linux/jump_label.h>
->  #include <linux/suspend.h>
->  #include <linux/ftrace.h>
-> +#include <linux/static_call.h>
->  #include <linux/slab.h>
->  
->  #include <trace/events/sched.h>
-> @@ -511,6 +512,10 @@ static struct fgraph_ops fgraph_stub = {
->  	.retfunc = ftrace_graph_ret_stub,
->  };
->  
-> +static struct fgraph_ops *fgraph_direct_gops = &fgraph_stub;
-> +DEFINE_STATIC_CALL(fgraph_func, ftrace_graph_entry_stub);
-> +DEFINE_STATIC_KEY_TRUE(fgraph_do_direct);
-> +
->  /**
->   * ftrace_graph_stop - set to permanently disable function graph tracing
->   *
-> @@ -636,21 +641,34 @@ int function_graph_enter(unsigned long ret, unsigned long func,
->  	if (offset < 0)
->  		goto out;
->  
-> -	for_each_set_bit(i, &fgraph_array_bitmask,
-> -			 sizeof(fgraph_array_bitmask) * BITS_PER_BYTE) {
-> -		struct fgraph_ops *gops = fgraph_array[i];
-> -		int save_curr_ret_stack;
-> -
-> -		if (gops == &fgraph_stub)
-> -			continue;
-> +#ifdef CONFIG_HAVE_STATIC_CALL
-> +	if (static_branch_likely(&fgraph_do_direct)) {
-> +		int save_curr_ret_stack = current->curr_ret_stack;
->  
-> -		save_curr_ret_stack = current->curr_ret_stack;
-> -		if (ftrace_ops_test(&gops->ops, func, NULL) &&
-> -		    gops->entryfunc(&trace, gops))
-> -			bitmap |= BIT(i);
-> +		if (static_call(fgraph_func)(&trace, fgraph_direct_gops))
-> +			bitmap |= BIT(fgraph_direct_gops->idx);
->  		else
->  			/* Clear out any saved storage */
->  			current->curr_ret_stack = save_curr_ret_stack;
-> +	} else
-> +#endif
-> +	{
-> +		for_each_set_bit(i, &fgraph_array_bitmask,
-> +					 sizeof(fgraph_array_bitmask) * BITS_PER_BYTE) {
-> +			struct fgraph_ops *gops = fgraph_array[i];
-> +			int save_curr_ret_stack;
-> +
-> +			if (gops == &fgraph_stub)
-> +				continue;
-> +
-> +			save_curr_ret_stack = current->curr_ret_stack;
-> +			if (ftrace_ops_test(&gops->ops, func, NULL) &&
-> +			    gops->entryfunc(&trace, gops))
-> +				bitmap |= BIT(i);
-> +			else
-> +				/* Clear out any saved storage */
-> +				current->curr_ret_stack = save_curr_ret_stack;
-> +		}
->  	}
->  
->  	if (!bitmap)
-> @@ -1155,6 +1173,8 @@ void fgraph_update_pid_func(void)
->  			gops = container_of(op, struct fgraph_ops, ops);
->  			gops->entryfunc = ftrace_pids_enabled(op) ?
->  				fgraph_pid_func : gops->saved_func;
-> +			if (ftrace_graph_active == 1)
-> +				static_call_update(fgraph_func, gops->entryfunc);
->  		}
->  	}
->  }
-> @@ -1209,6 +1229,32 @@ static void init_task_vars(int idx)
->  	read_unlock(&tasklist_lock);
->  }
->  
-> +static void ftrace_graph_enable_direct(bool enable_branch)
-> +{
-> +	trace_func_graph_ent_t func = NULL;
-> +	int i;
-> +
-> +	for_each_set_bit(i, &fgraph_array_bitmask,
-> +			 sizeof(fgraph_array_bitmask) * BITS_PER_BYTE) {
-> +		func = fgraph_array[i]->entryfunc;
-> +		fgraph_direct_gops = fgraph_array[i];
-> +	 }
-> +	if (WARN_ON_ONCE(!func))
-> +		return;
-> +
-> +	static_call_update(fgraph_func, func);
-> +	if (enable_branch)
-> +		static_branch_disable(&fgraph_do_direct);
-> +}
-> +
-> +static void ftrace_graph_disable_direct(bool disable_branch)
-> +{
-> +	if (disable_branch)
-> +		static_branch_disable(&fgraph_do_direct);
-> +	static_call_update(fgraph_func, ftrace_graph_entry_stub);
-> +	fgraph_direct_gops = &fgraph_stub;
-> +}
-> +
->  int register_ftrace_graph(struct fgraph_ops *gops)
+>  drivers/net/vxlan/vxlan_core.c | 10 +++++++---
+>  1 file changed, 7 insertions(+), 3 deletions(-)
+>=20
+> diff --git a/drivers/net/vxlan/vxlan_core.c b/drivers/net/vxlan/vxlan_cor=
+e.c
+> index f78dd0438843..7353f27b02dc 100644
+> --- a/drivers/net/vxlan/vxlan_core.c
+> +++ b/drivers/net/vxlan/vxlan_core.c
+> @@ -1605,6 +1605,7 @@ static bool vxlan_set_mac(struct vxlan_dev *vxlan,
+>  			  struct vxlan_sock *vs,
+>  			  struct sk_buff *skb, __be32 vni)
 >  {
->  	int command = 0;
-> @@ -1235,7 +1281,11 @@ int register_ftrace_graph(struct fgraph_ops *gops)
->  
->  	ftrace_graph_active++;
->  
-> +	if (ftrace_graph_active == 2)
-> +		ftrace_graph_disable_direct(true);
-> +
->  	if (ftrace_graph_active == 1) {
-> +		ftrace_graph_enable_direct(false);
->  		register_pm_notifier(&ftrace_suspend_notifier);
->  		ret = start_graph_tracing();
->  		if (ret)
-> @@ -1292,6 +1342,11 @@ void unregister_ftrace_graph(struct fgraph_ops *gops)
->  
->  	ftrace_shutdown_subops(&graph_ops, &gops->ops, command);
->  
-> +	if (ftrace_graph_active == 1)
-> +		ftrace_graph_enable_direct(true);
-> +	else if (!ftrace_graph_active)
-> +		ftrace_graph_disable_direct(false);
-> +
->  	if (!ftrace_graph_active) {
->  		ftrace_graph_return = ftrace_stub_graph;
->  		ftrace_graph_entry = ftrace_graph_entry_stub;
-> -- 
-> 2.43.0
-> 
-> 
+> +	bool learning =3D vxlan->cfg.flags & VXLAN_F_LEARN;
+>  	union vxlan_addr saddr;
+>  	u32 ifindex =3D skb->dev->ifindex;
+>  =20
+
+  Not related to this change,  can you adjust existing declaration align to=
+ reverse X-mas tree?
+
+Thanks,
+Hariprasad k
 
 
--- 
-Masami Hiramatsu (Google) <mhiramat@kernel.org>
+> @@ -1616,8 +1617,11 @@ static bool vxlan_set_mac(struct vxlan_dev *vxlan,
+>  	if (ether_addr_equal(eth_hdr(skb)->h_source, vxlan->dev-
+> >dev_addr))
+>  		return false;
+>=20
+> -	/* Ignore packets from invalid src-address */
+> -	if (!is_valid_ether_addr(eth_hdr(skb)->h_source))
+> +	/* Ignore packets from invalid src-address when in learning mode,
+> +	 * otherwise let them through e.g. when originating from NOARP
+> +	 * devices with all-zero mac, etc.
+> +	 */
+> +	if (learning && !is_valid_ether_addr(eth_hdr(skb)->h_source))
+>  		return false;
+>=20
+>  	/* Get address from the outer IP header */ @@ -1631,7 +1635,7 @@
+> static bool vxlan_set_mac(struct vxlan_dev *vxlan,  #endif
+>  	}
+>=20
+> -	if ((vxlan->cfg.flags & VXLAN_F_LEARN) &&
+> +	if (learning &&
+>  	    vxlan_snoop(skb->dev, &saddr, eth_hdr(skb)->h_source, ifindex,
+> vni))
+>  		return false;
+>=20
+> --
+> 2.34.1
+>=20
+
 
