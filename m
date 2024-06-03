@@ -1,154 +1,154 @@
-Return-Path: <bpf+bounces-31259-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-31260-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A9D498D8B50
-	for <lists+bpf@lfdr.de>; Mon,  3 Jun 2024 23:09:23 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B7F588D8B54
+	for <lists+bpf@lfdr.de>; Mon,  3 Jun 2024 23:16:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 56B5C1F24383
-	for <lists+bpf@lfdr.de>; Mon,  3 Jun 2024 21:09:23 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4FEE3B227B7
+	for <lists+bpf@lfdr.de>; Mon,  3 Jun 2024 21:16:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 357E113B5AF;
-	Mon,  3 Jun 2024 21:09:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E1C613B5A6;
+	Mon,  3 Jun 2024 21:16:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Z3QYqkXz"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NW+zwNn9"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f181.google.com (mail-pg1-f181.google.com [209.85.215.181])
+Received: from mail-pg1-f170.google.com (mail-pg1-f170.google.com [209.85.215.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D66B12DD9B;
-	Mon,  3 Jun 2024 21:09:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D09920ED
+	for <bpf@vger.kernel.org>; Mon,  3 Jun 2024 21:16:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717448956; cv=none; b=aq+kKELmj1kr9V0DV9BD4yrwKPv5KWzOQYQCk4A7CrVH8BTPwSH/Q1HTyZuUsBUQEa+Uwe4RsXW2xL67p3M1b/P/rLGqL3xBM8WkCh0l3JFZe+lNLCgGSO/LU/QgT1eHEwiphy9T2M6A/vFaKc2ucVfOQ/8AV8LQJwvQOjJsJ5s=
+	t=1717449381; cv=none; b=pVw3xXiuW3/KA1h5hTizN2sLSRgOFdj98oKUYRo+0pateMyQG+mdD0UKKUJHiV+2AZ08YuRUdbSUwvHWzy5Tk2RECbCtzyIqttu1iqhwFbt1gBXLJHSAoPkytIlzJRBzmzwRyr8TeavvvrNyxxmsjeJdB0wYm4P06hno4DYa2XA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717448956; c=relaxed/simple;
-	bh=FYMKuCZBNDGCJKtAN5IjD+OzRu9w9AkloL6NPNOIgJA=;
+	s=arc-20240116; t=1717449381; c=relaxed/simple;
+	bh=hIx6t0nhYLMHdaO37b8asuLHTkVl5VC2MQxa6fAcbz8=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=luxcCxi+fYBEvmvu/RBFk+xGAszf+/URfG9FWscW+NIr0JSLOfLHjFLdWpnqwoACXAxw/1FZ7sHWzdYdjAdctwO6iRg2av7Yx9xRG9wV7vREaFf8im+cYl46bsm7YreAkEgb7L0AuCtCjfrO+Tj0xrx2Q07qcepe5pMLhGpLUI0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Z3QYqkXz; arc=none smtp.client-ip=209.85.215.181
+	 To:Cc:Content-Type; b=qwByWLDcOUlG4K0Sqy3dO9I9ogQKwdpRtucL9Z1bSFvt6nX0Dvf271ruQef+kJvd+WfWZvKDXebQ2SFFqmahY7+8ZGBcKyHNOhfu6Piqi4GcKgMejkfyaOZZOCjf0LaE7ET4CLOuWPP++J+DZtKV9zqZ3TIILFXv3c4PGoCn65k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=NW+zwNn9; arc=none smtp.client-ip=209.85.215.170
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f181.google.com with SMTP id 41be03b00d2f7-6c7bf648207so2011443a12.0;
-        Mon, 03 Jun 2024 14:09:15 -0700 (PDT)
+Received: by mail-pg1-f170.google.com with SMTP id 41be03b00d2f7-66afccbee0cso3373886a12.1
+        for <bpf@vger.kernel.org>; Mon, 03 Jun 2024 14:16:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1717448954; x=1718053754; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1717449379; x=1718054179; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=S8FuhmBlBhWpMWq8F+ZJQOzO498/a/MW4e39UXkeSyY=;
-        b=Z3QYqkXzy0lgIZvm1lZKQOq719pMXP9dtAd458tBGct+dkKB/oG2BfyvJ79HSn+g+7
-         Tuf/ttHoO4o6mLOdzph34DCqLhdGWW14d/0wcC4NDIylf6oMubqhl7df3RVo0CkPawjP
-         bj1w/LP5GihqoLya4XJ6Sz9T5IU/Ky83l5mYsb8NXd1Wr5F6WRnHngffmn12nbp5ICqb
-         ezsqpjIcyD+FWZAI8zHWx/7xlm8zZR9bg9mQqXpWVW1wpRWYSK6jJyQSgRrDQpAh+gRc
-         n9pYoRmuZzC3D888yghH47gcf/uYyEAZS5+EkCFJ9EOXLFhV2vKRhdAp1Ucd2JXWtq5T
-         133w==
+        bh=XLZI3X1KE6eJTWWQKNq7hBt6UB9x8TVy8NAM+R20QaY=;
+        b=NW+zwNn9ZfgxUVXn24C5oM4nZ4/OoQ6lu9EB8i9pzi3pY4rYA+Nt0p7wYtsEkUc/g/
+         WLlD/9tE/NsZWha5wTABstuitabL2GemimBXeiFfB/8SNktDsBoAQNRjXOnsU+P0YvEu
+         0MziWjRj45gHCahIPWbLUoXwkniwYZSkoZYSzIIH6SxuOj6dG3VSCKWfaUhsABm9sqmt
+         2do198F3ueZPsM1cGuSZCdbliU2OcD0geYryBF3PjpVfuws7OCZoSK4qPOzpDaz0NMcF
+         Q6X79D7UdL9SGf/f5H+sp7vvQdQpVlLVg7TwuOTLjNJGI3e8rDIJJMUneq2qSqV1Gsqj
+         6wHw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1717448954; x=1718053754;
+        d=1e100.net; s=20230601; t=1717449379; x=1718054179;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=S8FuhmBlBhWpMWq8F+ZJQOzO498/a/MW4e39UXkeSyY=;
-        b=kHzhWVtPQvbC5Dx+ZhOUfWQ7OJ5tzBFaCdjeLdespBhNxkAfuRFxRLJ2kn/qNuDQQo
-         EKLuyRG3R++7FiAA43+nW+32FTIKSV3/Ix575ffz/Il74WgDp0PKGr9XMYCh+ukyvGro
-         f9N5qzh0GGh0Wk+HXA51CF7CoJFtRs/FfIuhmXZVUDBfC8Fju8tQ70WRKsEUN95wGk++
-         fdQrBjxNM3o4SxjZwabfHxx6A7wW1bBw3OC3jO6DGJt0UtZdZWUf8SeNzTeRtq+JK6H+
-         +iV0jDKvnog70h/ZUbNQNrDoB5ZUU24mRE4DtOJPCPdr2IQ4Pp/mHBzbQk0Ebn5fI/rU
-         PDCw==
-X-Forwarded-Encrypted: i=1; AJvYcCVD6QcrhqlksowvHeu2iFqqD2ELq//6LUVqSYe2luXvE0R/MNeHh4tagcp0en4ANlv6zysuTZnO/sc8stTcBSqxuh6hAhAbvY5vfa1aO3ESVGwwoOY+JvBoWHzBlDZw0LINO/iOjw==
-X-Gm-Message-State: AOJu0YxwPgtmhwd2J9g3sReFPp7DUNxKia3yMp6Dy56KsaJB1eMbnJy0
-	FrH6eS8Nyt19q9crjFMYYmc9+EXk60Q7kHJwpyMXQ+b6FWlDAmyfntqOuPx1raWqrU88Oeph7Nl
-	wZMEPO5/SHbVIY7NmTt4k2wCFkio=
-X-Google-Smtp-Source: AGHT+IFuhoFUoqSTzvg6xQH0NPagQC4ex8JcR5NVISkIk+0LbYt4WFhHfjLE9pCgQaE483MWlyAy+ZeHAd9EYSQudxs=
-X-Received: by 2002:a17:90b:a4d:b0:2c1:a77c:6673 with SMTP id
- 98e67ed59e1d1-2c1dc5c0e68mr9908568a91.38.1717448954505; Mon, 03 Jun 2024
- 14:09:14 -0700 (PDT)
+        bh=XLZI3X1KE6eJTWWQKNq7hBt6UB9x8TVy8NAM+R20QaY=;
+        b=MfGs3M0WlkQ5Ayl31OUsWio8NvVQrAAV6xfzcRjKBVvXI5HEpONzUIQTu7Z/AUkLD0
+         NMNtWh9Z1SMHto7dea5YwUI0t7hNswtRoqcEzK4d7K5JTKVLBomqPYSvK+fLNEkqIkfU
+         W1R2AZX0Q0FIFE2VBbcFNqJjJgDhnh1yXR1FR1OLJ5YtEdpahcKPCPj+qznnw5yAV5eR
+         udG0rkipxfYTsqfUCcoWtq9WUDa9nrDtrq1acuIwA8XC6KXgpoKHB3bmbHwBg6+W2fSF
+         ysmtGaKymf85/B+ixrouXew1inmn036IV49kdKZJOlSFmKnhim9DOCc4iJYcJjobdmjR
+         119w==
+X-Forwarded-Encrypted: i=1; AJvYcCV5AondUyuugnuvHvLKiM4WoW6Z7l47NycweDUU31wECcNs4IvXB7A84mEgaX1Fl6g9H0UDmyVsGiTMHbWpmD2kUkb4
+X-Gm-Message-State: AOJu0YwXwz31RGGvHmbiHOVHrWLKhf2cKrVfWBfKfhtX1LNYQN+QbRJ7
+	EaDtKWAEq29H1XR/sim5uLwMfAWRpb/3fNHuUtmvcnSK1xHLaQBZhQYVYIQ2lnUkkQTa60j1icn
+	6K/8LrIZQMoj7r7xPksCUozI4D/0=
+X-Google-Smtp-Source: AGHT+IEN08Y3Hs4Vghg6W2uYSnJc2fHHJaHUrdnqnI/xS1ROsb0sBHaKTFjIqhXLPo9ybLjCwBVicvS/1o6tIY9+EAg=
+X-Received: by 2002:a17:90a:5296:b0:2c1:9048:4d95 with SMTP id
+ 98e67ed59e1d1-2c1dc58edd9mr8856789a91.20.1717449378689; Mon, 03 Jun 2024
+ 14:16:18 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240522013845.1631305-1-andrii@kernel.org>
-In-Reply-To: <20240522013845.1631305-1-andrii@kernel.org>
+References: <20240529223239.504241-1-andrii@kernel.org> <Zlg_Wrcj-nN8Gine@gardel-login>
+In-Reply-To: <Zlg_Wrcj-nN8Gine@gardel-login>
 From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Mon, 3 Jun 2024 14:09:02 -0700
-Message-ID: <CAEf4BzZLG43F_phpTFJB7CHZkxJt8es1R_vXT6vpVpyaZnz9gw@mail.gmail.com>
-Subject: Re: [PATCH v2 0/4] Fix user stack traces captured from uprobes
-To: Andrii Nakryiko <andrii@kernel.org>
-Cc: linux-trace-kernel@vger.kernel.org, rostedt@goodmis.org, 
-	mhiramat@kernel.org, x86@kernel.org, peterz@infradead.org, mingo@redhat.com, 
-	tglx@linutronix.de, bpf@vger.kernel.org, rihams@fb.com, 
-	linux-perf-users@vger.kernel.org
+Date: Mon, 3 Jun 2024 14:16:06 -0700
+Message-ID: <CAEf4BzZgGhBJSzq_iJxXhKJAuvNBP995WBSAx2VUqM_=NR6bAg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] libbpf: keep FD_CLOEXEC flag when dup()'ing FD
+To: Lennart Poettering <lennart@poettering.net>
+Cc: Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org, ast@kernel.org, 
+	daniel@iogearbox.net, martin.lau@kernel.org, kernel-team@meta.com
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, May 21, 2024 at 6:38=E2=80=AFPM Andrii Nakryiko <andrii@kernel.org>=
- wrote:
+On Thu, May 30, 2024 at 1:57=E2=80=AFAM Lennart Poettering
+<lennart@poettering.net> wrote:
 >
-> This patch set reports two issues with captured stack traces.
+> On Mi, 29.05.24 15:32, Andrii Nakryiko (andrii@kernel.org) wrote:
 >
-> First issue, fixed in patch #2, deals with fixing up uretprobe trampoline
-> addresses in captured stack trace. This issue happens when there are pend=
-ing
-> return probes, for which kernel hijacks some of the return addresses on u=
-ser
-> stacks. The code is matching those special uretprobe trampoline addresses=
- with
-> the list of pending return probe instances and replaces them with actual
-> return addresses. This is the same fixup logic that fprobe/kretprobe has =
-for
-> kernel stack traces.
+> > Make sure to preserve and/or enforce FD_CLOEXEC flag on duped FDs.
+> > Use dup3() with O_CLOEXEC flag for that.
+> >
+> > Without this fix libbpf effectively clears FD_CLOEXEC flag on each of B=
+PF
+> > map/prog FD, which is definitely not the right or expected behavior.
 >
-> Second issue, which patch #3 is fixing with the help of heuristic, is hav=
-ing
-> to do with capturing user stack traces in entry uprobes. At the very entr=
-ance
-> to user function, frame pointer in rbp register is not yet setup, so actu=
-al
-> caller return address is still pointed to by rsp. Patch is using a simple
-> heuristic, looking for `push %rbp` instruction, to fetch this extra direc=
-t
-> caller return address, before proceeding to unwind the stack using rbp.
+> Thanks!
 >
-> Patch #4 adds tests into BPF selftests, that validate that captured stack
-> traces at various points is what we expect to get. This patch, while bein=
-g BPF
-> selftests, is isolated from any other BPF selftests changes and can go in
-> through non-BPF tree without the risk of merge conflicts.
+> lgtm, superficially.
+
+This is now in libbpf v1.4.3 bug fix release ([0])
+
+  [0] https://github.com/libbpf/libbpf/releases/tag/v1.4.3
+
 >
-> Patches are based on latest linux-trace/probes/for-next.
+> > Reported-by: Lennart Poettering <lennart@poettering.net>
+> > Fixes: bc308d011ab8 ("libbpf: call dup2() syscall directly")
+> > Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+> > ---
+> >  tools/lib/bpf/libbpf_internal.h | 10 +++-------
+> >  1 file changed, 3 insertions(+), 7 deletions(-)
+> >
+> > diff --git a/tools/lib/bpf/libbpf_internal.h b/tools/lib/bpf/libbpf_int=
+ernal.h
+> > index a0dcfb82e455..7e7e686008c6 100644
+> > --- a/tools/lib/bpf/libbpf_internal.h
+> > +++ b/tools/lib/bpf/libbpf_internal.h
+> > @@ -597,13 +597,9 @@ static inline int ensure_good_fd(int fd)
+> >       return fd;
+> >  }
+> >
+> > -static inline int sys_dup2(int oldfd, int newfd)
+> > +static inline int sys_dup3(int oldfd, int newfd, int flags)
+> >  {
+> > -#ifdef __NR_dup2
+> > -     return syscall(__NR_dup2, oldfd, newfd);
+> > -#else
+> > -     return syscall(__NR_dup3, oldfd, newfd, 0);
+> > -#endif
+> > +     return syscall(__NR_dup3, oldfd, newfd, flags);
+> >  }
+> >
+> >  /* Point *fixed_fd* to the same file that *tmp_fd* points to.
+> > @@ -614,7 +610,7 @@ static inline int reuse_fd(int fixed_fd, int tmp_fd=
+)
+> >  {
+> >       int err;
+> >
+> > -     err =3D sys_dup2(tmp_fd, fixed_fd);
+> > +     err =3D sys_dup3(tmp_fd, fixed_fd, O_CLOEXEC);
+> >       err =3D err < 0 ? -errno : 0;
+> >       close(tmp_fd); /* clean up temporary FD */
+> >       return err;
+> > --
+> > 2.43.0
+> >
+> >
 >
-> v1->v2:
->   - fixed GCC aggressively inlining test_uretprobe_stack() function (BPF =
-CI);
->   - fixed comments (Peter).
->
-> Andrii Nakryiko (4):
->   uprobes: rename get_trampoline_vaddr() and make it global
->   perf,uprobes: fix user stack traces in the presence of pending
->     uretprobes
->   perf,x86: avoid missing caller address in stack traces captured in
->     uprobe
->   selftests/bpf: add test validating uprobe/uretprobe stack traces
->
->  arch/x86/events/core.c                        |  20 ++
->  include/linux/uprobes.h                       |   3 +
->  kernel/events/callchain.c                     |  43 +++-
->  kernel/events/uprobes.c                       |  17 +-
->  .../bpf/prog_tests/uretprobe_stack.c          | 186 ++++++++++++++++++
->  .../selftests/bpf/progs/uretprobe_stack.c     |  96 +++++++++
->  6 files changed, 361 insertions(+), 4 deletions(-)
->  create mode 100644 tools/testing/selftests/bpf/prog_tests/uretprobe_stac=
-k.c
->  create mode 100644 tools/testing/selftests/bpf/progs/uretprobe_stack.c
+> Lennart
 >
 > --
-> 2.43.0
->
-
-Friendly ping. This is a real issue in practice that our production
-users are eager to be fixed, please help to get it upstream. Thanks!
+> Lennart Poettering, Berlin
 
