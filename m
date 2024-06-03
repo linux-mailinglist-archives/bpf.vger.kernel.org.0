@@ -1,46 +1,46 @@
-Return-Path: <bpf+bounces-31276-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-31277-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 34F9C8FA652
-	for <lists+bpf@lfdr.de>; Tue,  4 Jun 2024 01:17:51 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 703158FA653
+	for <lists+bpf@lfdr.de>; Tue,  4 Jun 2024 01:17:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E611228AAE5
-	for <lists+bpf@lfdr.de>; Mon,  3 Jun 2024 23:17:49 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2E43C28AB44
+	for <lists+bpf@lfdr.de>; Mon,  3 Jun 2024 23:17:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC1B483CDA;
-	Mon,  3 Jun 2024 23:17:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2954B13B7BD;
+	Mon,  3 Jun 2024 23:17:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="P2mf6lFK"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IS3kGMPH"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 768881E49B
-	for <bpf@vger.kernel.org>; Mon,  3 Jun 2024 23:17:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A87EB84055
+	for <bpf@vger.kernel.org>; Mon,  3 Jun 2024 23:17:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717456652; cv=none; b=R22eqxX3WcSgNHDjmNiE26DxR0tPBQ2peFLNfyNu2KdJMR4aIjYDONCix21qgXWhWb7nRHQ6yDYWZZr2GKNH/QtTyapUOo4JUfYJGVholKDPzl/hkVjomWH5xT+YSxOthAh3p8amHLbO5HzQc6LxHKVDD5iFks1kwb+f2jnkOuY=
+	t=1717456655; cv=none; b=R/6rtJJslX4tocDeuHrOr5cMjTE4m8+nKqzq50lNy3C9iP6GTfT+YAxB5lWosEbMtJCQD9f8IEmgIyzXmqyEZMZWBtqt2kgpts4CXdhCHiYqjorvYpP90lfQ2fo+9wR8LbBQlQ49OgsuC8zcJ44VTMy87rHGIrmcwiUIcxb0Flg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717456652; c=relaxed/simple;
-	bh=oTVSjxR+jA2OgYfl8Msx3bwXu90sHWszDziL9fwBy3A=;
+	s=arc-20240116; t=1717456655; c=relaxed/simple;
+	bh=DAbruQv5kKT15Q4Uucq3RZAxlQHuTATCqOHNs7CR+v0=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=uu928kCIBPjxGPe0uOZSktv5hJsfn+k9ZBDu+nWLkfq95N5CwrbgcFQl9YkEz1In72ZdA19HxQIII/EIC+5XHfpbU6iiVDsYhuRKMhIYUisN9Myzsux/Dnj0uzh5oDIIVPk6wrAypXWyt7AZ4dA02BGbyoRbOXqzWW/IUE8graQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=P2mf6lFK; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CBE82C32782;
-	Mon,  3 Jun 2024 23:17:31 +0000 (UTC)
+	 MIME-Version; b=TP/RZI1PiwB4nE8azrYLF8vTUEj0jfyHrxm1tTGBxQfJjZorQQn8GVeOGUTVjQLFw1GgdclhJgLMJ/+pawysYujh4r0AGNmkmEFM2zWQEoCOoVhyJWRLNi7G8kGbuIG4mbkTe623WnbkRgvVojTDr1s/kXT+H5zPH5aFrI5pqRM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=IS3kGMPH; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 11D43C2BD10;
+	Mon,  3 Jun 2024 23:17:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1717456652;
-	bh=oTVSjxR+jA2OgYfl8Msx3bwXu90sHWszDziL9fwBy3A=;
+	s=k20201202; t=1717456655;
+	bh=DAbruQv5kKT15Q4Uucq3RZAxlQHuTATCqOHNs7CR+v0=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=P2mf6lFKX/MR45XeqxZYeKkPmdZT109LFXBA36gmN7HQrmXNAPZ4j2XSfVu6V8/MR
-	 NYUtk15fC3CN3zz1PUgydyLuF0ft2Ym4Oc3FGHA4jyBNkrX7QSSquPAHIkjnQ1Y3fk
-	 KpaR++VSP02Y8iYfMa62qYvc1fPhQ5JQ9TKS3YJ1faFoorQtd489cDDdqdLa3S5/PO
-	 o7NATCeqwo7V2gAYI/awIEzfdySCAoHShTsU+uWdfp8NlDsf0RyAkAdFlPhuME0Cmj
-	 fwv5GPmbpDdLHE1/zRzLAT2C+qOj/HQGDbAqpgmUts/9Kxr5H0GEeIlChqruthfIDA
-	 eWHhLnl7KUQVw==
+	b=IS3kGMPHNoaY7+XvaDbqRfBPVbJMgKSanhuqVGQXorZr3OJAFM7Mg1B570AlbjQza
+	 JXrq70+4YmhVRVfgQlltMdKJEDNOP27kbRi5sxiuZT4zRTXkgdzHxJye72zwb9cwAx
+	 /Sqkf/NU4fyBkw475EqTQFqT89ZaeI7kGakJ6p01mpxXhsy04hpYbuvXdmaatqcHzI
+	 0g+YN8TmnBJtw/D2vIUx7aRSOOPVPh+oqaaDQxJpRhrlYuZbVrKr0iNzh3HzCoY4Wh
+	 i3HeMqtq7LE+2z7orcr7SdZgejjWe2JpeFw/KlpAYkKcLJAyuV/K3lQdfOhWDg6pZz
+	 N9l57s9geAruA==
 From: Andrii Nakryiko <andrii@kernel.org>
 To: bpf@vger.kernel.org,
 	ast@kernel.org,
@@ -50,9 +50,9 @@ Cc: alan.maguire@oracle.com,
 	eddyz87@gmail.com,
 	jolsa@kernel.org,
 	Andrii Nakryiko <andrii@kernel.org>
-Subject: [PATCH bpf-next 2/5] libbpf: make use of BTF field iterator in BPF linker code
-Date: Mon,  3 Jun 2024 16:17:16 -0700
-Message-ID: <20240603231720.1893487-3-andrii@kernel.org>
+Subject: [PATCH bpf-next 3/5] libbpf: make use of BTF field iterator in BTF handling code
+Date: Mon,  3 Jun 2024 16:17:17 -0700
+Message-ID: <20240603231720.1893487-4-andrii@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240603231720.1893487-1-andrii@kernel.org>
 References: <20240603231720.1893487-1-andrii@kernel.org>
@@ -64,113 +64,164 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Switch all BPF linker code dealing with iterating BTF type ID and string
-offset fields to new btf_field_iter facilities.
+Use new BTF field iterator logic to replace all the callback-based
+visitor calls. There is still a .BTF.ext callback-based visitor APIs
+that should be converted, which will happens as a follow up.
 
 Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
 ---
- tools/lib/bpf/linker.c | 60 ++++++++++++++++++++++++++----------------
- 1 file changed, 38 insertions(+), 22 deletions(-)
+ tools/lib/bpf/btf.c | 76 ++++++++++++++++++++++++++++++++-------------
+ 1 file changed, 54 insertions(+), 22 deletions(-)
 
-diff --git a/tools/lib/bpf/linker.c b/tools/lib/bpf/linker.c
-index 0d4be829551b..be6539e59cf6 100644
---- a/tools/lib/bpf/linker.c
-+++ b/tools/lib/bpf/linker.c
-@@ -957,19 +957,35 @@ static int check_btf_str_off(__u32 *str_off, void *ctx)
- static int linker_sanity_check_btf(struct src_obj *obj)
+diff --git a/tools/lib/bpf/btf.c b/tools/lib/bpf/btf.c
+index 50ff8b6eaf36..3fe20a902b42 100644
+--- a/tools/lib/bpf/btf.c
++++ b/tools/lib/bpf/btf.c
+@@ -1739,9 +1739,8 @@ struct btf_pipe {
+ 	struct hashmap *str_off_map; /* map string offsets from src to dst */
+ };
+ 
+-static int btf_rewrite_str(__u32 *str_off, void *ctx)
++static int btf_rewrite_str(struct btf_pipe *p, __u32 *str_off)
  {
+-	struct btf_pipe *p = ctx;
+ 	long mapped_off;
+ 	int off, err;
+ 
+@@ -1774,7 +1773,9 @@ static int btf_rewrite_str(__u32 *str_off, void *ctx)
+ int btf__add_type(struct btf *btf, const struct btf *src_btf, const struct btf_type *src_type)
+ {
+ 	struct btf_pipe p = { .src = src_btf, .dst = btf };
++	struct btf_field_iter it;
  	struct btf_type *t;
--	int i, n, err = 0;
-+	int i, n, err;
++	__u32 *str_off;
+ 	int sz, err;
  
- 	if (!obj->btf)
- 		return 0;
+ 	sz = btf_type_size(src_type);
+@@ -1791,26 +1792,17 @@ int btf__add_type(struct btf *btf, const struct btf *src_btf, const struct btf_t
  
- 	n = btf__type_cnt(obj->btf);
- 	for (i = 1; i < n; i++) {
+ 	memcpy(t, src_type, sz);
+ 
+-	err = btf_type_visit_str_offs(t, btf_rewrite_str, &p);
++	err = btf_field_iter_init(&it, t, BTF_FIELD_ITER_STRS);
+ 	if (err)
+ 		return libbpf_err(err);
+ 
+-	return btf_commit_type(btf, sz);
+-}
+-
+-static int btf_rewrite_type_ids(__u32 *type_id, void *ctx)
+-{
+-	struct btf *btf = ctx;
+-
+-	if (!*type_id) /* nothing to do for VOID references */
+-		return 0;
++	while ((str_off = btf_field_iter_next(&it))) {
++		err = btf_rewrite_str(&p, str_off);
++		if (err)
++			return libbpf_err(err);
++	}
+ 
+-	/* we haven't updated btf's type count yet, so
+-	 * btf->start_id + btf->nr_types - 1 is the type ID offset we should
+-	 * add to all newly added BTF types
+-	 */
+-	*type_id += btf->start_id + btf->nr_types - 1;
+-	return 0;
++	return btf_commit_type(btf, sz);
+ }
+ 
+ static size_t btf_dedup_identity_hash_fn(long key, void *ctx);
+@@ -1858,6 +1850,9 @@ int btf__add_btf(struct btf *btf, const struct btf *src_btf)
+ 	memcpy(t, src_btf->types_data, data_sz);
+ 
+ 	for (i = 0; i < cnt; i++) {
 +		struct btf_field_iter it;
 +		__u32 *type_id, *str_off;
-+		const char *s;
 +
- 		t = btf_type_by_id(obj->btf, i);
+ 		sz = btf_type_size(t);
+ 		if (sz < 0) {
+ 			/* unlikely, has to be corrupted src_btf */
+@@ -1869,15 +1864,31 @@ int btf__add_btf(struct btf *btf, const struct btf *src_btf)
+ 		*off = t - btf->types_data;
  
--		err = err ?: btf_type_visit_type_ids(t, check_btf_type_id, obj->btf);
--		err = err ?: btf_type_visit_str_offs(t, check_btf_str_off, obj->btf);
+ 		/* add, dedup, and remap strings referenced by this BTF type */
+-		err = btf_type_visit_str_offs(t, btf_rewrite_str, &p);
++		err = btf_field_iter_init(&it, t, BTF_FIELD_ITER_STRS);
+ 		if (err)
+ 			goto err_out;
++		while ((str_off = btf_field_iter_next(&it))) {
++			err = btf_rewrite_str(&p, str_off);
++			if (err)
++				goto err_out;
++		}
+ 
+ 		/* remap all type IDs referenced from this BTF type */
+-		err = btf_type_visit_type_ids(t, btf_rewrite_type_ids, btf);
 +		err = btf_field_iter_init(&it, t, BTF_FIELD_ITER_IDS);
  		if (err)
- 			return err;
+ 			goto err_out;
+ 
 +		while ((type_id = btf_field_iter_next(&it))) {
-+			if (*type_id >= n)
-+				return -EINVAL;
++			if (!*type_id) /* nothing to do for VOID references */
++				continue;
++
++			/* we haven't updated btf's type count yet, so
++			 * btf->start_id + btf->nr_types - 1 is the type ID offset we should
++			 * add to all newly added BTF types
++			 */
++			*type_id += btf->start_id + btf->nr_types - 1;
 +		}
 +
-+		err = btf_field_iter_init(&it, t, BTF_FIELD_ITER_STRS);
-+		if (err)
-+			return err;
+ 		/* go to next type data and type offset index entry */
+ 		t += sz;
+ 		off++;
+@@ -3453,11 +3464,19 @@ static int btf_for_each_str_off(struct btf_dedup *d, str_off_visit_fn fn, void *
+ 	int i, r;
+ 
+ 	for (i = 0; i < d->btf->nr_types; i++) {
++		struct btf_field_iter it;
+ 		struct btf_type *t = btf_type_by_id(d->btf, d->btf->start_id + i);
++		__u32 *str_off;
+ 
+-		r = btf_type_visit_str_offs(t, fn, ctx);
++		r = btf_field_iter_init(&it, t, BTF_FIELD_ITER_STRS);
+ 		if (r)
+ 			return r;
++
 +		while ((str_off = btf_field_iter_next(&it))) {
-+			s = btf__str_by_offset(obj->btf, *str_off);
-+			if (!s)
-+				return -EINVAL;
++			r = fn(str_off, ctx);
++			if (r)
++				return r;
 +		}
  	}
  
- 	return 0;
-@@ -2234,26 +2250,10 @@ static int linker_fixup_btf(struct src_obj *obj)
- 	return 0;
- }
+ 	if (!d->btf_ext)
+@@ -4919,10 +4938,23 @@ static int btf_dedup_remap_types(struct btf_dedup *d)
  
--static int remap_type_id(__u32 *type_id, void *ctx)
--{
--	int *id_map = ctx;
--	int new_id = id_map[*type_id];
--
--	/* Error out if the type wasn't remapped. Ignore VOID which stays VOID. */
--	if (new_id == 0 && *type_id != 0) {
--		pr_warn("failed to find new ID mapping for original BTF type ID %u\n", *type_id);
--		return -EINVAL;
--	}
--
--	*type_id = id_map[*type_id];
--
--	return 0;
--}
--
- static int linker_append_btf(struct bpf_linker *linker, struct src_obj *obj)
- {
- 	const struct btf_type *t;
--	int i, j, n, start_id, id;
-+	int i, j, n, start_id, id, err;
- 	const char *name;
- 
- 	if (!obj->btf)
-@@ -2324,9 +2324,25 @@ static int linker_append_btf(struct bpf_linker *linker, struct src_obj *obj)
- 	n = btf__type_cnt(linker->btf);
- 	for (i = start_id; i < n; i++) {
- 		struct btf_type *dst_t = btf_type_by_id(linker->btf, i);
+ 	for (i = 0; i < d->btf->nr_types; i++) {
+ 		struct btf_type *t = btf_type_by_id(d->btf, d->btf->start_id + i);
 +		struct btf_field_iter it;
 +		__u32 *type_id;
  
--		if (btf_type_visit_type_ids(dst_t, remap_type_id, obj->btf_type_map))
--			return -EINVAL;
-+		err = btf_field_iter_init(&it, dst_t, BTF_FIELD_ITER_IDS);
-+		if (err)
-+			return err;
+-		r = btf_type_visit_type_ids(t, btf_dedup_remap_type_id, d);
++		r = btf_field_iter_init(&it, t, BTF_FIELD_ITER_IDS);
+ 		if (r)
+ 			return r;
 +
 +		while ((type_id = btf_field_iter_next(&it))) {
-+			int new_id = obj->btf_type_map[*type_id];
++			__u32 resolved_id, new_id;
 +
-+			/* Error out if the type wasn't remapped. Ignore VOID which stays VOID. */
-+			if (new_id == 0 && *type_id != 0) {
-+				pr_warn("failed to find new ID mapping for original BTF type ID %u\n",
-+					*type_id);
++			resolved_id = resolve_type_id(d, *type_id);
++			new_id = d->hypot_map[resolved_id];
++			if (new_id > BTF_MAX_NR_TYPES)
 +				return -EINVAL;
-+			}
 +
-+			*type_id = obj->btf_type_map[*type_id];
++			*type_id = new_id;
 +		}
  	}
  
- 	/* Rewrite VAR/FUNC underlying types (i.e., FUNC's FUNC_PROTO and VAR's
+ 	if (!d->btf_ext)
 -- 
 2.43.0
 
