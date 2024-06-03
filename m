@@ -1,98 +1,98 @@
-Return-Path: <bpf+bounces-31212-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-31211-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id A4C528D869C
-	for <lists+bpf@lfdr.de>; Mon,  3 Jun 2024 17:54:48 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9F7CE8D8695
+	for <lists+bpf@lfdr.de>; Mon,  3 Jun 2024 17:54:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C360F1C216CA
-	for <lists+bpf@lfdr.de>; Mon,  3 Jun 2024 15:54:47 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5626C281440
+	for <lists+bpf@lfdr.de>; Mon,  3 Jun 2024 15:54:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 99EF2137774;
-	Mon,  3 Jun 2024 15:53:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D973136E34;
+	Mon,  3 Jun 2024 15:53:41 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
+Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 90119132126
-	for <bpf@vger.kernel.org>; Mon,  3 Jun 2024 15:53:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.165.32
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 431132576F
+	for <bpf@vger.kernel.org>; Mon,  3 Jun 2024 15:53:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.177.32
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717430022; cv=fail; b=ZLir3BFkoQAALMynGxYwekoEu0Cg3qMU0TqDudTnMOBhCSRJMNBgUljO4C3miRDgGZ5M6p9euAvoGkW6/3xFBUcigJuaeOTHhREIoJa1B4h6zxvLRc5qaNecqWJkN6icHY/M77TzkvitGmwxx9hGK57AiGHa4FMDG78CdZadvP4=
+	t=1717430021; cv=fail; b=GXgV7Na+trFlUN+dfOJ/0qr8FXixHrYsAyA2+7hhmNIG26ZXHxPAe72f0rbsyAWI4SJ8CG3LQEKWfetUuO3wQNrtO8Y7+97d1rjFW67eZ1/ZSBlE6KgI42fG+jSL4d84nonLW51OZzQHkC1dRqPIm7GhwwFpbc7Hch8QiXEqn7o=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717430022; c=relaxed/simple;
-	bh=J/AhYAmNNLE+e7zFWp35oIA33i5FYYKpbfIunKqOFDo=;
+	s=arc-20240116; t=1717430021; c=relaxed/simple;
+	bh=3WHSVKioFQrrBdK2GmNAhHsiCoA+nU3v54MORpb2abA=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=WlhfxNYGQSl6GlGMwfzTTW8XUMjmNjBs+GURiKKw8T3ZZ/Sa0RKusl0gbdY5F9TCS+4XHy4xKqJJ+frI8el9TPWljPzMKQoD4bjtL+Y89S6G7LFM/MZeYMaFVtRVtA2PsnXtp/vg/PIcW9rhpSu77Zdn603W0OgUaqq7JHb9CaA=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; arc=fail smtp.client-ip=205.220.165.32
+	 Content-Type:MIME-Version; b=JZAhgLdCGpYtKwOJAOc+2QY2kQAowQiJ2ty13YhlOsjUu+gDENUEWSpZnAQ1c2+I2LCk3ziv/8ZLxIzyB8XA3Rh3YMt7A+yNlRkhJJA1NsFUfE7J0S5f54F6Yjqb1IiMDbgCunekx8P12lEmF0J8H/X3SXiBOlVlm0EAaTNy/7U=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; arc=fail smtp.client-ip=205.220.177.32
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=oracle.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
-Received: from pps.filterd (m0246627.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 453CJNWx022449;
+Received: from pps.filterd (m0246632.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 453CGB1f024393;
 	Mon, 3 Jun 2024 15:53:37 GMT
 DKIM-Signature: =?UTF-8?Q?v=3D1;_a=3Drsa-sha256;_c=3Drelaxed/relaxed;_d=3Doracle.com;_h?=
  =?UTF-8?Q?=3Dcc:content-transfer-encoding:content-type:date:from:in-reply?=
  =?UTF-8?Q?-to:message-id:mime-version:references:subject:to;_s=3Dcorp-202?=
- =?UTF-8?Q?3-11-20;_bh=3Du+/6sGGbnPlHO2kWKtUXzIhOD9FTJgq9M+SagEbDDLo=3D;_b?=
- =?UTF-8?Q?=3DZfRgxtHZm9ZKakKyxZn4RMIopVwB241jR1jBOw0/SJi4S1pHXzvDxteoKS5Y?=
- =?UTF-8?Q?3pESrpgO_gjNY/CQumQ6s492sSNjp8jCg8WBN5AFapefn+OpVyIS1uwlYAMpESx?=
- =?UTF-8?Q?wQPqPeR91CYE2A_qLpTGsCphNZGoUIZC0MWQwsQ4TUq4g8I3q82IauNrLj6X8ki?=
- =?UTF-8?Q?ouGJvSLbdrEPlr6YJGKi_cgQVqb/6KQ6PIDh2uzu9vASb6xEN9Xpi8pkp2hMJgf?=
- =?UTF-8?Q?t2Z/Z689DPhOIk1haHL3dH+TNA_kyljdHVFDMKLwkjnaLnKEk7td5198z+gx7AZ?=
- =?UTF-8?Q?gSMcNjn5CXLMIuq/AXZgHxlMZ/Se6/zX_EA=3D=3D_?=
+ =?UTF-8?Q?3-11-20;_bh=3DUx2u+CMiuFcdgbPKzRgs4C1AYBcJL4odDIDVdRfox1M=3D;_b?=
+ =?UTF-8?Q?=3DBwS+ssaY30Yh90IZqjJovWN15MTaim0FO0mjJgywT3+/9AbzcjnEW6CUWEee?=
+ =?UTF-8?Q?LvMZFzSa_c5L2I1Q/cbKyrVIXMm7Y7ZTukdeFi+PMQkqShI0pSdQmQJzkMQB+rW?=
+ =?UTF-8?Q?IGFCrJsHc6oEPF_T8+wu9ecxc9tkuKqoxzjmUMidz6Eaac5OLzVfQxiVWj4V8o9?=
+ =?UTF-8?Q?I2CLzkOG3D4x9UtoeOoJ_6ylVTXua/nbLenXI/hrG/cd4srTS/1UAQWVnX9C2MU?=
+ =?UTF-8?Q?1nVFJyQQgaIyqsYTHSPCl9h19a_AzbpRj1kiPxd7m3s6G0t48aXGp0V4lz6KXRd?=
+ =?UTF-8?Q?Am4SkT2Mvldg9mipjniXVigj63ziEQWo_cA=3D=3D_?=
 Received: from phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta03.appoci.oracle.com [138.1.37.129])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3yfv58b5q9-1
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3yfuyu355s-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Mon, 03 Jun 2024 15:53:37 +0000
+Received: from pps.filterd (phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+	by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 453FGVMT020722;
+	Mon, 3 Jun 2024 15:53:36 GMT
+Received: from nam11-dm6-obe.outbound.protection.outlook.com (mail-dm6nam11lp2168.outbound.protection.outlook.com [104.47.57.168])
+	by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3ygrj0pre4-2
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
 	Mon, 03 Jun 2024 15:53:36 +0000
-Received: from pps.filterd (phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-	by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 453FGVMS020722;
-	Mon, 3 Jun 2024 15:53:35 GMT
-Received: from nam11-dm6-obe.outbound.protection.outlook.com (mail-dm6nam11lp2168.outbound.protection.outlook.com [104.47.57.168])
-	by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3ygrj0pre4-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Mon, 03 Jun 2024 15:53:35 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Nj4/2OBK4LWZmKXwN+RYF3KUqqx7JVLKZdNv35mCoGT4yBtJ5TSCN+y/El/XFmHFQ9Fziim1BerG/XLb2nMuTswx11qiaVNdGnt2HEXhj5q2WJU/jZjd8ok4rZzrIE1Rq0+XFoCTW2piBu1vG+40KPjmkAYdAEH9fARqflY/zy2qN8uir7JxQuKYhvMAal34aZ+gz/I6ar9ajb88kY8BgZBBd7SpaDeXnVBbQnnVVj9AqAfbGUoXRkUv/1TSu0ukLBSIFWXh1uByCtm8cr/XiLbA+PiGBU2McdVdkVa3wUkrhOUWukoHV06IJfOGpab+/PqkKt4yBDoh94CvqJmvqA==
+ b=hTDlBV1IAn9G/0yy/OfwRs9Nag5DrfQkirGl/7l5D2IvhUmkk6BdO2Wezv4AX0YEaVtxhIkbrph1QUc/n0CcLQQpkCwmsLcC4hK5CJlVuM98SPy0DIOMAX2Ar4+5QNZ6ky/r8bAz2VPST/BsBVsH+cBBZyGdCoxQczszcOoIhN9L+eglNoPeXsHA2tVYy2oj/NzOyCL9UowWe/dawUVTHzqZ5k83Em0Ub8uN6NGOcx/1mEXi/rdYgRLrE/UFZbJEuFtV/6PVo3oBullbahjwQtEl9m6zRQCL865e34e+fkN98skKwliMSigSmczKPxGu540dI3ZgUFHbEAbjT2Nz2w==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=u+/6sGGbnPlHO2kWKtUXzIhOD9FTJgq9M+SagEbDDLo=;
- b=TUh2qG/WnpIkhiaIqC2iyfW6sUG+KM5ORj9m7AVRDD6okCR3EaFl3YHxS1m1oQt7e18vcvvLgzaeJnjZ7ZQoSCEDktyk1KMUh6SBK6CQJZCrN/J9P7701J2m1e/Q8Ni2lxFKSYfzVunufkHG5iD8QTt11ZpasCLXE47JQ5JvWllPKGkOoWsGJJNdG3MlxQigvq2fgOdco9IDb3hcvW+bMPef7Q2WaophmUKDs1KICVC8I6e9If1ryUE8clANW0rg8AhIQ0J0SiJbkA1CJndI5iWhpSWHrNinu2iW1g8c15g4JJUvnY/SKInCBdV5ggHEeoBK0gjkTGLvGdo3WoXJmw==
+ bh=Ux2u+CMiuFcdgbPKzRgs4C1AYBcJL4odDIDVdRfox1M=;
+ b=l0faoThF5B894pAaDnzWwLSfnejJkRLvN/G3VZD3uuLbMj5rqq26uTjLI6XypHoCQYerdZVmTWTrq1au5SU8R3jCEE7rFIE2CzJv3V1uSmS9MpJ5WtnwNgafDuaq7R4YNx/4D3nR/ajOsZgLNoY3AkDMoCsDU+1aFzRvmRc/fSxL1lVwlVy6VMBEZ7KGtmP0fxAMFOrwwYal6hH3tr4ZycS7KWokaiWi+wBDXjq13tn4mxbkxRJHLnqIbnvW394oDs4Ye1sDsd7NZ2jCCpydnfY1BmPAYsLhiSnFYPChzNlT3HhtgYp1wBP1xNURbBZhQlTGz0uGegGEPZ91zPSSFQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
  dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=u+/6sGGbnPlHO2kWKtUXzIhOD9FTJgq9M+SagEbDDLo=;
- b=c5OdBVH4WvJPF8/73bwTJzmju8ZWXrnZv2egGWZgahHJ4NvOWoyOY04zpAFoPeesP2pE3BRbGTQDrbMbUOs8uiDDDr6BEQMpAn6vXgvrgHHs41G69XrNkbxUL6tOYcUz1jwI2NFgcAs0vAC+VeJF1Kf8v26bVt7prtrXyNI8PTk=
+ bh=Ux2u+CMiuFcdgbPKzRgs4C1AYBcJL4odDIDVdRfox1M=;
+ b=I6cczN3R6JPCeB/hR/bHaUA3heX0ZVTU3tTe8jLuVDU2c37GzUy59fUVh3nYfXbCeyF7UvgGzeerRS6vJ2OxZAPxHC+eSKqGqK2ZVABRL+i+Uh1QTZBR3COTXtam5KkLZfjy4TkxZs4fJufsVAG5QQ5JT7tlV7CBcJzi7V/k5Ik=
 Received: from CH2PR10MB4373.namprd10.prod.outlook.com (2603:10b6:610:a9::22)
  by SA1PR10MB7790.namprd10.prod.outlook.com (2603:10b6:806:3b1::6) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7611.30; Mon, 3 Jun
- 2024 15:53:33 +0000
+ 2024 15:53:34 +0000
 Received: from CH2PR10MB4373.namprd10.prod.outlook.com
  ([fe80::ce3e:31a5:f731:d5ae]) by CH2PR10MB4373.namprd10.prod.outlook.com
  ([fe80::ce3e:31a5:f731:d5ae%6]) with mapi id 15.20.7633.021; Mon, 3 Jun 2024
- 15:53:28 +0000
+ 15:53:34 +0000
 From: Cupertino Miranda <cupertino.miranda@oracle.com>
 To: bpf@vger.kernel.org
 Cc: Cupertino Miranda <cupertino.miranda@oracle.com>, jose.marchesi@oracle.com,
         david.faust@oracle.com, Yonghong Song <yonghong.song@linux.dev>,
         Eduard Zingerman <eddyz87@gmail.com>,
         Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Subject: [PATCH bpf-next 1/2] selftests/bpf: Support checks against a regular expression.
-Date: Mon,  3 Jun 2024 16:53:07 +0100
-Message-Id: <20240603155308.199254-2-cupertino.miranda@oracle.com>
+Subject: [PATCH bpf-next 2/2] selftests/bpf: Match tests against regular expression.
+Date: Mon,  3 Jun 2024 16:53:08 +0100
+Message-Id: <20240603155308.199254-3-cupertino.miranda@oracle.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20240603155308.199254-1-cupertino.miranda@oracle.com>
 References: <20240603155308.199254-1-cupertino.miranda@oracle.com>
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-ClientProxiedBy: AM8P190CA0022.EURP190.PROD.OUTLOOK.COM
- (2603:10a6:20b:219::27) To CH2PR10MB4373.namprd10.prod.outlook.com
+X-ClientProxiedBy: AS4P195CA0009.EURP195.PROD.OUTLOOK.COM
+ (2603:10a6:20b:5e2::17) To CH2PR10MB4373.namprd10.prod.outlook.com
  (2603:10b6:610:a9::22)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -102,78 +102,78 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
 X-MS-TrafficTypeDiagnostic: CH2PR10MB4373:EE_|SA1PR10MB7790:EE_
-X-MS-Office365-Filtering-Correlation-Id: 0b4ac21f-e580-47df-99e2-08dc83e54f38
+X-MS-Office365-Filtering-Correlation-Id: 40a4f7b8-cc9c-479e-3122-08dc83e552b5
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;ARA:13230031|376005|1800799015|366007;
 X-Microsoft-Antispam-Message-Info: 
-	=?us-ascii?Q?swo0gqzRvhH1sYZHrmCyUOp9bXdnHm92rYHuUEpQetHIxd6F0W9LERqcqQVi?=
- =?us-ascii?Q?BrKNyLA+usys7pOh/J/nWMZVc6/Ooi6hy35Z9zTwRzgT4w0vO9t3ujanqdw+?=
- =?us-ascii?Q?UVQNEKH1e5n/IJtOiTTz2YXIUceUhPXQCAUuXkI2W/WEByUM9EYy1p+pD/oo?=
- =?us-ascii?Q?aUt0EHGWMzASlkeeHqTImVTaa19ZtG0IyZqOYLVDyZJKo2vF0Kur7u7KRuIw?=
- =?us-ascii?Q?LnS/I4A4SAtzVT9h9CBhS0TNE7yFXhLrxjWS6JFgDiYuE6Iz8eRNOOuhKVbv?=
- =?us-ascii?Q?jNBDmR3/5I9SUjmf8wyR46g5oiqiUL9V1ht2NqKS+Dci4ts3CP+KvXr6lfaR?=
- =?us-ascii?Q?wXhSeFcW7/GhRFiu2w8MHEBAAO+gNgR1iLeCk44UH4u6R9OVDvmruBei4/QR?=
- =?us-ascii?Q?PM7I0Ql+cAWWZ1yBcsUUQ0L1z5/SFIeCSGw0oymLtNcMZ6WN53FA+B1phWwq?=
- =?us-ascii?Q?xiKJKGyeP9M5Rj9pzwOO5R7h5fOHYQiprj8Edeb00LbVVSDmJ8OEVpS6damO?=
- =?us-ascii?Q?JqOozZ3mnfEEPNymdEv6ist06djl8mbZGKi8GispohTE0JcZyIz2XQPzGhdK?=
- =?us-ascii?Q?iwVzAlTC9onH4Z1gjo8YEGzXstvU1sQAKZ+8nfHj1vjhNHRvejBXRC1qnYO6?=
- =?us-ascii?Q?Gs4xhtFNUf2nUlUkqBWIjMymgRkkOELjCqTH75s+mvgLfWywNYXfXLVCJLzf?=
- =?us-ascii?Q?cUfv9A9wHX7cWe+iuF/11v8Go0XwQgdQziFPitZTPYgIwzm8a5MY7wFymC+t?=
- =?us-ascii?Q?CP0dCyWFkCA4WYrvR6RF2238LdKBs7OUsTU2f+ai5ay+U60VvprFKA1uQFr0?=
- =?us-ascii?Q?Cf0z8OaH54Zw4+hk1MG6bU41Flc84yuvLyJWp7+S1uUhXqPXgcBZi0dTxPm8?=
- =?us-ascii?Q?pyktUytFQ+MIa8Pd7w5wc1rXoWXOer8KNUnlGi6h3gTXp0keoqO4m8eEOIb6?=
- =?us-ascii?Q?lTPWz46LReAs0FxFdTituXL8bVkgOybWnXUHKtFUASzTA/rXWZSgNEJ1s+8X?=
- =?us-ascii?Q?H5HCD33x5pGzM/KQruy54Nqcc/5QXhZmF1DejZc6B51TkkTbLFRVUFmxmqwC?=
- =?us-ascii?Q?eZMFvtWHfj7Gx/9UL+RPd8ZphIkSPyEYFC8ScH8cis0ZtiUnyuGZw82bmYng?=
- =?us-ascii?Q?It/DHeWIkPdI9iQ2NBqYXjylX8tpfZKPutsbu7+ZcpoZGkFQ7pwueBVqFz8V?=
- =?us-ascii?Q?I3cIvVUqB/rdSBmebLI0m0Ev3NhY1E6+sQyi+RXYjkYcLe33NJ0As6RH1qIN?=
- =?us-ascii?Q?NNX12d+h70Uwj6rmtY75f7ZxzI0aiG9VUag2jKTCLA=3D=3D?=
+	=?us-ascii?Q?IcyRNXdqBQOq0NMKybKmcadTMnSN+/K4zt9hH6ks7kWQ4d+ZZBcE59wh3qd4?=
+ =?us-ascii?Q?clhlvGf16tScjbXTIhEgJJKbPLU+t8b3tgZfo8fTJOul5RtSD59XTvLjmhdu?=
+ =?us-ascii?Q?ulJY9Eh8JQE+xXeD+/qPB4wnbTQyvjiF/xMxuAha70zFIfx6fnhZqr+tTd+M?=
+ =?us-ascii?Q?EmA/il2hxINpvvdNfiW6JleJk2gpj24/bJgpJnQnpv2m2igyHgvUL8Q9aAF0?=
+ =?us-ascii?Q?m9B4Ysnonru4GWIIuJsQ6h4uF6FvCduzCSYireFPIVknkHcmC4CJBvo4iMIY?=
+ =?us-ascii?Q?TNLEiRDShAymgwafqHpxjSm4U4nsMUtrvAc8cXlEiTmCeZ0gRxvgM4GHxvNM?=
+ =?us-ascii?Q?AXMIhIZApWy1gpAEx6ljaAg4pdMpO+FUzsr2Zc5/fF72Xt2T48NZ4iA18IT4?=
+ =?us-ascii?Q?js4BALcQzuV44NlugQrhZ8Q+wLDNYRyfZ+WN6GppGrD07RQSzvebR0qVrryv?=
+ =?us-ascii?Q?K8Q6gN92tJAm22X7E2FF3DQ6n/KFW9s/kb1wBzxp6ysSo8WiPLr8Y42FlT4L?=
+ =?us-ascii?Q?QjKiOziA0lxJ2wue2c+ac/oEbMsldqS7zf3J6pzg9kqy9lES+pdsKkuDI9tt?=
+ =?us-ascii?Q?d83Z3OqyzcFLnkHX21vOP1xnHFDDvsrjM6JrHvbCEv0VIz5mef+IRQ2myDvP?=
+ =?us-ascii?Q?xcN+V4IciHl7JEN2KahlLbgI6Aw1/sy5toBbvMkwYmDX+vP0vZPXWB4Kc+1A?=
+ =?us-ascii?Q?OWIXFTEeaMyKhsn06ILPeplv+26kxvf6aSdRKVYQp8ZNz8F5Q9x/pGdMCRgL?=
+ =?us-ascii?Q?Dfod7pOLL1j7Sn3d5LyPgd0Ap1pculE7HVOpYOqCoGag/5VZwt9K3ToEoOpC?=
+ =?us-ascii?Q?57xgcy5wWrHCs+YFwyowfeaCG4bD/6Xb7QMb1s5prZ+RY4WckS0QsHjCtYUT?=
+ =?us-ascii?Q?IJAO5Dtjufs9neAv20eFYHEX/OJRiu7lTGxUJhwKkmpySkfskFN/PYHdShUh?=
+ =?us-ascii?Q?qBzuBWm7kYqO5e9qtl+2bZERCis0y8HvJ4K/l3Cm+fcxYRHhjHJuqyBVn4/m?=
+ =?us-ascii?Q?T2kg2qxhR/5JDFbmfzaUYKOV3iff5GlfLKWDTVTmZqYjrK2UKZP7PNFmvUVn?=
+ =?us-ascii?Q?9s0fknGscmRdjIIACoKtszdTPDPnMgPJsB7u4pazEYWpIcqWFUp8LWzRPdJI?=
+ =?us-ascii?Q?jd6IvBH6foGd59ZeYzs9xVkDYVnFHIRNwUcxIBkg+DvFuZy4z2Y1ogDDPODI?=
+ =?us-ascii?Q?zfdB+neI1fi7IPpH2IPb1RitO4A2oY6gZIsxBWA0GlDLg2+A4qR4nlr92PoM?=
+ =?us-ascii?Q?GFdg4nG5lgoB0odrHn5rpE1/RGE5y7CBEhdOyyi+vA=3D=3D?=
 X-Forefront-Antispam-Report: 
 	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH2PR10MB4373.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(1800799015)(366007);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0: 
-	=?us-ascii?Q?WuG7sh5J9nv+5n4el+xapA+Ho+6oVYdSph8wau4rVtucKJ9eHxz/nT75A5jn?=
- =?us-ascii?Q?BcxFNqN6rx0oQM6Sl2CSh46L/BxKGzR1bzQvlP1g+fBvTLZ95tKjQ62SQycN?=
- =?us-ascii?Q?tQPUipjiKXGbKVleKtLv/VaSkQ38W+ew2Lj3q3yVWwv1codeokA5BmqZx0AF?=
- =?us-ascii?Q?CVqgVyL958SxcFC92mITclQrju58DsfQm+bFEp4HHzBpuBMFlx/Dc+gsv3xE?=
- =?us-ascii?Q?aSqoPdD0hYha/pqd5ERg0pG/D1F1ouIAf6AUsObbJFbXF+36fj8M3gNUfXbs?=
- =?us-ascii?Q?QIXWs9m6N5kgBewM1uGZvq/9cEzLrBvc0jBz9T9zv8TZmL0opVdEX2aENrW7?=
- =?us-ascii?Q?qNAMHrcI9knBgBz5iHuhZglgdL4A89CHTFqNznrHPLxSRuBW/jqCrRjt7DWq?=
- =?us-ascii?Q?Rmd71aIOyLrtWHM9Uq2I54rMAPBdUONTPDau1LA7pDlocrRODXdPO7oIVpWm?=
- =?us-ascii?Q?9Pu1q1Jq6Fh04qo2L7XVgKzeV0+yLjiZ4hrH7cTFWdAV0AYyPKDfqrVtzof0?=
- =?us-ascii?Q?MdJ6hH1nV3ecNFrZhVSlDiAAjNwlhk3jUiZN7epjsi7pkSYJG60GJ/Q76XgY?=
- =?us-ascii?Q?FVsit0AvmtTb3xwaBbsuigNcMXLgScC6SFojgAWggMCm3rboIl67LmPgMdp5?=
- =?us-ascii?Q?BwkNd6Lq49cchY8JwtIorSTM8DW5gIUojXnNSHRuWEqM4cYPO7PbUS6fu5jT?=
- =?us-ascii?Q?zcNjGMGrX9zj3PxJp9AakOb9yyfJXlPczn+0Zmpu3e+BRg1ZXjRgnpJbCvx9?=
- =?us-ascii?Q?jOQ53kyK8zO9oQfUWYWtcCy7ls9pH1crliP/OpNg+8R4W2tItnI/t/2EJTdk?=
- =?us-ascii?Q?QUX9pzdSdbihT5Dk4VkVccIvarlfZwTotaQlSuHDbDSwZkyjynJTfDPQ7dyY?=
- =?us-ascii?Q?5ZIx/C4Dck9BZynCk/O9MCsaJxLSDn9NHjj2fEIfSxfPOD2Ptc/bWYKdTEo7?=
- =?us-ascii?Q?ECP6w+i0tCMtaHHPov3mqcI0r+XsGkG9CusWF8ZaBzZKyNsb/XB6s54pznE2?=
- =?us-ascii?Q?00GFSR1fL7hIeoHS+T4atufVz/HUnLVq8o+rvVzltwUx7V9M8LWQII0sHkAv?=
- =?us-ascii?Q?1Q7GTvnccguAZbh0/pcWJrgL8/QeNM5+YGhhQgwtyzQUvNvmda/vMnCz82bI?=
- =?us-ascii?Q?k/lf3EzRGFWAO+kppI93Bpgl1E0ZYe/bV+Ktci7JSeXC8/Jh6bRxJzP1rQ4W?=
- =?us-ascii?Q?9fJOc9iC7lNEPMzUd/xwaEzT+tog5FYx3zKrVqnxbff2AO2kor6cV+8IMHIS?=
- =?us-ascii?Q?5nVyc8Dg6qS6hWnzEewBjdw+CAk+rGQl0tWnbvxpT4ewSl1aBMyOoqywf1uO?=
- =?us-ascii?Q?DPPplxr5J8igud+TpcU7/xPNe2kTkGz6aj+lQ34nJfA6d/keuNELj9P8pGes?=
- =?us-ascii?Q?uQBoTx8YnvegoCBXWB3SgKI9w0UT47iyZmuhVMOIon61w6R+3JMH53HR6Lx5?=
- =?us-ascii?Q?8zYgCzwQ7EIcNkjNvaMFJxjfwQ0/Rrvnr67F6SU3d4qQR/Pn5XDYwloHYpYK?=
- =?us-ascii?Q?PpVwUCQeLYlFoHmjP9B87eay6JzDdbk7odY4Vr4NBlApICccq2TKy6bXGotq?=
- =?us-ascii?Q?Ha8PnXAnJCkuwGvpZ3nmSpHu8J9erdPAMyyMUGdMRCFTHxvxi8uSwQYZzXAh?=
- =?us-ascii?Q?LI+3Hk7HRA5oxQiTVsJNv2U=3D?=
+	=?us-ascii?Q?fJaashlQB5D8E4kQr7lFTxBsxbQB6jKtWyqqjeM2pOZY9rGDJsx0uy4Zhsng?=
+ =?us-ascii?Q?bXQuBMPRqw5EtEOwF/Gb5G9PV5N04dAr9vxaY2N2Xra0/5ZCK85nHxwtyjwj?=
+ =?us-ascii?Q?8jEz5yyMjoCQdkk4qGP8YClIQRxNoU+T5M/qBAuKsUhrnBLlSSaLyqWmVVqv?=
+ =?us-ascii?Q?pa3zQOL6j9KHz2CbijEoc+X/PxptPcWNwnbwd2uumHl1mK7N34Lct+bQ8aWo?=
+ =?us-ascii?Q?0EPUDVqU+VRbJjDJ8He5uB0DHJHKcb4fhuY9a4Q6NyMc31KxtFL2LSFDpjnK?=
+ =?us-ascii?Q?+1mVX63aEIcLAk7TtKHLs0P+EZVMn2Gf0KCOcNSnEgizcoerwZuOFI/Ys1A+?=
+ =?us-ascii?Q?FVM7dLLyjJmdw81hrEshgRkQa3PyME5e7Ybtzz6lQKtXr20e8ol84TDfKIxw?=
+ =?us-ascii?Q?lCE/n5mi7UalZ73QgL903cf6JJIYnRLe/X7IHjH2iyK3xvdH0qNxxRxtscn/?=
+ =?us-ascii?Q?xiKrLuxPX2fpMnlY5r+BNgEo/5EbjEeocbZs5GSCA2SloU1oJHQ/T59OlOzW?=
+ =?us-ascii?Q?HcnbMAVLQvjet948Aw/ij0M0FR/zLgX2TzEAy4VYr3zh2HTW2TZ+4jju+zai?=
+ =?us-ascii?Q?armDdxku9dfz8j4D9cdzIKMWXbbD5EN8fUNljxTiPmQqHZYfGwfa/7cm/lHA?=
+ =?us-ascii?Q?k5gybt+ZYv1OdP96epyEJzK8FAQJXo/AmGGNwrycsmlwCqSgfyhZDSg6VA87?=
+ =?us-ascii?Q?3hZmnnvZ20xb5QvOsJdFEANK70x5qXYZ65oI5CbOQzVp2h0s1oUSJyuSRwAk?=
+ =?us-ascii?Q?Ujnvj4PAG+I9fLyy6cGqZ6vQWrmHVkMVlcCpSgUcYFrO3XiBScr/rKH8qUP4?=
+ =?us-ascii?Q?3xY1xLAQDBfZhuWIiuuYR5CjzntSjVeVC73djzkywCDFUER3m1/tQJWhF0cD?=
+ =?us-ascii?Q?3/g4cbrPBo+YHt3xGqgByqbtVQj1Tg6W6JWy37DYlfhOWR8ecdqljzuUmGUt?=
+ =?us-ascii?Q?CsIbICENRRPMGTLwkIN6rdcqF77MCFSzSd5HFjPbb7GrLCx1KDpD4W4tdGzU?=
+ =?us-ascii?Q?WLYICKUdK9Gv0SZF+pVXKFgJkcSsh6UZ1JbwrVsaQJxjl8njK/dd7YDbt9SR?=
+ =?us-ascii?Q?j6/ke0grGI+8NS++OMGPPDNV3+r7/TW8wPBl82cwnWwLSz8qoMbWt1W8O52v?=
+ =?us-ascii?Q?WfFbmqphzocZk7s0ufOGykm5YNQP8FH35mPfkTlad+dRpXqDcMz4XST9dtkU?=
+ =?us-ascii?Q?nIXM79oRUKhMkCBM5E9z7LsfwVEZk653behv0Az+YyqndgNHZ3KwIkmTac9G?=
+ =?us-ascii?Q?LIoEEKRKuEOawJ96TS6bGuW3UJhW+ZbYwCTRcTzpJFl3jYEcNo/lDEZGqYOg?=
+ =?us-ascii?Q?AI3s78o+Mw8GPmmTRvcIbTtEAE4eMx7VBw0rw69aRAEVXEEoF2C5eSH41uUG?=
+ =?us-ascii?Q?RSz75NQlYkv+1JbiVeeTncNkFBjuxS2SQvD2Wz2HUDdh36qwAro1HKLO9eHR?=
+ =?us-ascii?Q?SJMczpfaBaCw9PCyeibvKShJUC1FTqzQwKLRwPjz/WkDMu/aPY7Q45UbCUI4?=
+ =?us-ascii?Q?B8uQPRpdeQPTov/GQzwOMHivOw5/XF1goeb+gQ00dPPZosDPJr2Yh8Sg5vyX?=
+ =?us-ascii?Q?i65gcBgg1Wih4Td/pr+uJjX4zoAlxfI5uRMelkZBJn+RIoGZg+RhSk9UEXcV?=
+ =?us-ascii?Q?AiAqVhlpz8W90GYyZ/wnkGQ=3D?=
 X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: 
-	T/H8u13lp06UJUhWCbF90kgWhIlvbQnDo9V0daB2k9KMihTOo4ydgBDkSJfbvBg68g2z2u2ELybW6dwFeOza2GRFSwWyTrNl6ZW3QhV9F0zGb9Lv1DvF5Bb9VFj/qc68njY5houwgajf+9k1bhCyDJLeazP2kN6hVMhyoJvgb1b8rGMbl0LGetA0swJKWCWpxN7NNVqqw6MbVjHv1T2+/rn3KzpfEnvKSilNAidiXjN2bTYBT0l1QqwhqJtCZInku//88CTd7odBbCkApu73FlIu26Q5upOzI0qbCH5phRFHIGXdBoW8v+XzlMFyMonbI9Gafn5ux5zGf/TlPlcgTOVHhFeEX7/kNn4cITYghCWoPFWmEaGzlRbaDSEHr0AiBIvLkOaQquiA5dEMsDoLuiLm54EiMrUxnqgH5tSPTaWbRg9FpYEbcbfaBLhAJGoEcNzTY5mK13VqjhYdcxaoIJl8VV64Ta+FvYzh/cR+cA8HeZ8RpisNJEboko1az8YJ8rGyfcq85gRLZrrAP5chIV7nj+vnc+jqlDmGf8++mxy06Z4HERn6dG2kYxjWJraqwP8boaHVn2gO1IEmOZ8SLAe2ze5k2LQsjxO6xMKVv/I=
+	zrf3fj+jwMdYTD1zn3Sa01atbZhuql5Q1PvWQ669WjFPv1JhlTyFlseQJsYwU1qK8jmP9+l1hLP/kFxm0TXqNKZ7svUt7qifHLjBbBezJbpv90TB/XYU+pb40+W6zmmgv6YAoDYx7M5/0TYI9TsKeRt+SzyyDEpBFh7yoXMBB9dK6jf/Xmmf51hcbSaJf6YJvPOJf1CXcnLlYx+DZ1qrOQMlvWJ5y7MFEb6ABroNIaQ+iInRH4voVdEhaAgDVULxMm3oi6sG+Uvg3l3RNqU9SGynizzBm6fU3eXJTNib796sLOCpIdTK5n4trUrCoXdcG2f636ghtDIXHivUgC1PIrUZf92RU3lkYE0nGlCA3zCqrAP6FLrl4rj7HJPePeFhJIYukBV114fEC3U+9viZV12N+uiCUKFT7t/8q14L8KxVP/Cf2LOhNA18yMMwGf6vP5iInp+HtypjfUtmBqMFL/h7LB528HFMzMBapUJ2Hs0b8ZTmBlP0pJfSYAOpmkQdwhjYvXtxk1IPSxOU5mct5JKnqa8jdo94/2Q/n7NekO9k6+cY31fzU1QaMyyH3ycd6nKqmaJcsicFZ/bDIEZqfCGPsfWS+iBwsHLsM1OwNE4=
 X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0b4ac21f-e580-47df-99e2-08dc83e54f38
+X-MS-Exchange-CrossTenant-Network-Message-Id: 40a4f7b8-cc9c-479e-3122-08dc83e552b5
 X-MS-Exchange-CrossTenant-AuthSource: CH2PR10MB4373.namprd10.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Jun 2024 15:53:28.2318
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Jun 2024 15:53:34.0260
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: yw2eCRaxCiD2lVOTNuf4QRMKJ4wLMYlUFIO+ttBDJV0txFZhLvUHKfCHuLtdXQ012Nv9mTOpvkMJ8ZYvOYvrYKQG+FJihOBGClF8+MBjGQA=
+X-MS-Exchange-CrossTenant-UserPrincipalName: or41yzeQwUa+6X5FMwXc3CkR/W4XkZvOidxPnDfsaplDl7Xoei0jxhozozDzCgSKONXW/PclRO0YjsRIxgoSa+zG8svSoJf05GAamCdPAYU=
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR10MB7790
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.650,FMLib:17.12.28.16
@@ -182,272 +182,182 @@ X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 phishs
  adultscore=0 spamscore=0 mlxlogscore=999 suspectscore=0 malwarescore=0
  classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2405010000
  definitions=main-2406030132
-X-Proofpoint-ORIG-GUID: rcoGYCBsH47CsdkFDKJy0cB0ZmZFLjw8
-X-Proofpoint-GUID: rcoGYCBsH47CsdkFDKJy0cB0ZmZFLjw8
+X-Proofpoint-GUID: 2CD0GQ65WzPQR8bhHh_E8wDwpZtOj-YI
+X-Proofpoint-ORIG-GUID: 2CD0GQ65WzPQR8bhHh_E8wDwpZtOj-YI
 
-Add support for __regex and __regex_unpriv macros to check the test
-execution output against a regular expression. This is similar to __msg
-and __msg_unpriv, however those only allow to do full text matching.
+This patch changes a few tests to make use of regular expressions such
+that the test validation would allow to properly verify the tests when
+compiled with GCC.
 
-Signed-off-by: Cupertino Miranda <cupertino.miranda@oracle.com>
+signed-off-by: Cupertino Miranda <cupertino.miranda@oracle.com>
 Cc: jose.marchesi@oracle.com
 Cc: david.faust@oracle.com
 Cc: Yonghong Song <yonghong.song@linux.dev>
 Cc: Eduard Zingerman <eddyz87@gmail.com>
 Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>
 ---
- tools/testing/selftests/bpf/progs/bpf_misc.h |  11 +-
- tools/testing/selftests/bpf/test_loader.c    | 126 ++++++++++++++-----
- 2 files changed, 105 insertions(+), 32 deletions(-)
+ tools/testing/selftests/bpf/progs/dynptr_fail.c          | 6 +++---
+ tools/testing/selftests/bpf/progs/exceptions_assert.c    | 8 ++++----
+ tools/testing/selftests/bpf/progs/rbtree_fail.c          | 8 ++++----
+ tools/testing/selftests/bpf/progs/refcounted_kptr_fail.c | 4 ++--
+ tools/testing/selftests/bpf/progs/verifier_sock.c        | 4 ++--
+ 5 files changed, 15 insertions(+), 15 deletions(-)
 
-diff --git a/tools/testing/selftests/bpf/progs/bpf_misc.h b/tools/testing/selftests/bpf/progs/bpf_misc.h
-index fb2f5513e29e..c0280bd2f340 100644
---- a/tools/testing/selftests/bpf/progs/bpf_misc.h
-+++ b/tools/testing/selftests/bpf/progs/bpf_misc.h
-@@ -7,9 +7,9 @@
-  *
-  * The test_loader sequentially loads each program in a skeleton.
-  * Programs could be loaded in privileged and unprivileged modes.
-- * - __success, __failure, __msg imply privileged mode;
-- * - __success_unpriv, __failure_unpriv, __msg_unpriv imply
-- *   unprivileged mode.
-+ * - __success, __failure, __msg, __regex imply privileged mode;
-+ * - __success_unpriv, __failure_unpriv, __msg_unpriv, __regex_unpriv
-+ *   imply unprivileged mode.
-  * If combination of privileged and unprivileged attributes is present
-  * both modes are used. If none are present privileged mode is implied.
-  *
-@@ -24,6 +24,9 @@
-  *                   Multiple __msg attributes could be specified.
-  * __msg_unpriv      Same as __msg but for unprivileged mode.
-  *
-+ * __regex           Same as __msg, but using a regular expression.
-+ * __regex_unpriv    Same as __msg_unpriv but using a regular expression.
-+ *
-  * __success         Expect program load success in privileged mode.
-  * __success_unpriv  Expect program load success in unprivileged mode.
-  *
-@@ -59,10 +62,12 @@
-  * __auxiliary_unpriv  Same, but load program in unprivileged mode.
+diff --git a/tools/testing/selftests/bpf/progs/dynptr_fail.c b/tools/testing/selftests/bpf/progs/dynptr_fail.c
+index 66a60bfb5867..64cc9d936a13 100644
+--- a/tools/testing/selftests/bpf/progs/dynptr_fail.c
++++ b/tools/testing/selftests/bpf/progs/dynptr_fail.c
+@@ -964,7 +964,7 @@ int dynptr_invalidate_slice_reinit(void *ctx)
+  * mem_or_null pointers.
   */
- #define __msg(msg)		__attribute__((btf_decl_tag("comment:test_expect_msg=" msg)))
-+#define __regex(regex)		__attribute__((btf_decl_tag("comment:test_expect_regex=" regex)))
- #define __failure		__attribute__((btf_decl_tag("comment:test_expect_failure")))
- #define __success		__attribute__((btf_decl_tag("comment:test_expect_success")))
- #define __description(desc)	__attribute__((btf_decl_tag("comment:test_description=" desc)))
- #define __msg_unpriv(msg)	__attribute__((btf_decl_tag("comment:test_expect_msg_unpriv=" msg)))
-+#define __regex_unpriv(regex)	__attribute__((btf_decl_tag("comment:test_expect_regex_unpriv=" regex)))
- #define __failure_unpriv	__attribute__((btf_decl_tag("comment:test_expect_failure_unpriv")))
- #define __success_unpriv	__attribute__((btf_decl_tag("comment:test_expect_success_unpriv")))
- #define __log_level(lvl)	__attribute__((btf_decl_tag("comment:test_log_level="#lvl)))
-diff --git a/tools/testing/selftests/bpf/test_loader.c b/tools/testing/selftests/bpf/test_loader.c
-index 524c38e9cde4..c73fa04bca1b 100644
---- a/tools/testing/selftests/bpf/test_loader.c
-+++ b/tools/testing/selftests/bpf/test_loader.c
-@@ -2,6 +2,7 @@
- /* Copyright (c) 2022 Meta Platforms, Inc. and affiliates. */
- #include <linux/capability.h>
- #include <stdlib.h>
-+#include <regex.h>
- #include <test_progs.h>
- #include <bpf/btf.h>
- 
-@@ -17,9 +18,11 @@
- #define TEST_TAG_EXPECT_FAILURE "comment:test_expect_failure"
- #define TEST_TAG_EXPECT_SUCCESS "comment:test_expect_success"
- #define TEST_TAG_EXPECT_MSG_PFX "comment:test_expect_msg="
-+#define TEST_TAG_EXPECT_REGEX_PFX "comment:test_expect_regex="
- #define TEST_TAG_EXPECT_FAILURE_UNPRIV "comment:test_expect_failure_unpriv"
- #define TEST_TAG_EXPECT_SUCCESS_UNPRIV "comment:test_expect_success_unpriv"
- #define TEST_TAG_EXPECT_MSG_PFX_UNPRIV "comment:test_expect_msg_unpriv="
-+#define TEST_TAG_EXPECT_REGEX_PFX_UNPRIV "comment:test_expect_regex_unpriv="
- #define TEST_TAG_LOG_LEVEL_PFX "comment:test_log_level="
- #define TEST_TAG_PROG_FLAGS_PFX "comment:test_prog_flags="
- #define TEST_TAG_DESCRIPTION_PFX "comment:test_description="
-@@ -46,10 +49,15 @@ enum mode {
- 	UNPRIV = 2
- };
- 
-+struct expect_msg {
-+	const char *msg;
-+	regex_t *regex;
-+};
-+
- struct test_subspec {
- 	char *name;
- 	bool expect_failure;
--	const char **expect_msgs;
-+	struct expect_msg *expect;
- 	size_t expect_msg_cnt;
- 	int retval;
- 	bool execute;
-@@ -91,27 +99,57 @@ static void free_test_spec(struct test_spec *spec)
+ SEC("?raw_tp")
+-__failure __msg("R1 type=scalar expected=percpu_ptr_")
++__failure __regex("R[0-9]+ type=scalar expected=percpu_ptr_")
+ int dynptr_invalidate_slice_or_null(void *ctx)
  {
- 	free(spec->priv.name);
- 	free(spec->unpriv.name);
--	free(spec->priv.expect_msgs);
--	free(spec->unpriv.expect_msgs);
-+	free(spec->priv.expect);
-+	free(spec->unpriv.expect);
+ 	struct bpf_dynptr ptr;
+@@ -982,7 +982,7 @@ int dynptr_invalidate_slice_or_null(void *ctx)
  
- 	spec->priv.name = NULL;
- 	spec->unpriv.name = NULL;
--	spec->priv.expect_msgs = NULL;
--	spec->unpriv.expect_msgs = NULL;
-+	spec->priv.expect = NULL;
-+	spec->unpriv.expect = NULL;
+ /* Destruction of dynptr should also any slices obtained from it */
+ SEC("?raw_tp")
+-__failure __msg("R7 invalid mem access 'scalar'")
++__failure __regex("R[0-9]+ invalid mem access 'scalar'")
+ int dynptr_invalidate_slice_failure(void *ctx)
+ {
+ 	struct bpf_dynptr ptr1;
+@@ -1069,7 +1069,7 @@ int dynptr_read_into_slot(void *ctx)
+ 
+ /* bpf_dynptr_slice()s are read-only and cannot be written to */
+ SEC("?tc")
+-__failure __msg("R0 cannot write into rdonly_mem")
++__failure __regex("R[0-9]+ cannot write into rdonly_mem")
+ int skb_invalid_slice_write(struct __sk_buff *skb)
+ {
+ 	struct bpf_dynptr ptr;
+diff --git a/tools/testing/selftests/bpf/progs/exceptions_assert.c b/tools/testing/selftests/bpf/progs/exceptions_assert.c
+index 5e0a1ca96d4e..deb67d198caf 100644
+--- a/tools/testing/selftests/bpf/progs/exceptions_assert.c
++++ b/tools/testing/selftests/bpf/progs/exceptions_assert.c
+@@ -59,7 +59,7 @@ check_assert(s64, >=, ge_neg, INT_MIN);
+ 
+ SEC("?tc")
+ __log_level(2) __failure
+-__msg(": R0=0 R1=ctx() R2=scalar(smin=0xffffffff80000002,smax=smax32=0x7ffffffd,smin32=0x80000002) R10=fp0")
++__regex(": R0=[^ ]+ R1=ctx() R2=scalar(smin=0xffffffff80000002,smax=smax32=0x7ffffffd,smin32=0x80000002) R10=fp0")
+ int check_assert_range_s64(struct __sk_buff *ctx)
+ {
+ 	struct bpf_sock *sk = ctx->sk;
+@@ -75,7 +75,7 @@ int check_assert_range_s64(struct __sk_buff *ctx)
+ 
+ SEC("?tc")
+ __log_level(2) __failure
+-__msg(": R1=ctx() R2=scalar(smin=umin=smin32=umin32=4096,smax=umax=smax32=umax32=8192,var_off=(0x0; 0x3fff))")
++__regex("R[0-9]=scalar(smin=umin=smin32=umin32=4096,smax=umax=smax32=umax32=8192,var_off=(0x0; 0x3fff))")
+ int check_assert_range_u64(struct __sk_buff *ctx)
+ {
+ 	u64 num = ctx->len;
+@@ -86,7 +86,7 @@ int check_assert_range_u64(struct __sk_buff *ctx)
+ 
+ SEC("?tc")
+ __log_level(2) __failure
+-__msg(": R0=0 R1=ctx() R2=4096 R10=fp0")
++__regex(": R0=[^ ]+ R1=ctx() R2=4096 R10=fp0")
+ int check_assert_single_range_s64(struct __sk_buff *ctx)
+ {
+ 	struct bpf_sock *sk = ctx->sk;
+@@ -114,7 +114,7 @@ int check_assert_single_range_u64(struct __sk_buff *ctx)
+ 
+ SEC("?tc")
+ __log_level(2) __failure
+-__msg(": R1=pkt(off=64,r=64) R2=pkt_end() R6=pkt(r=64) R10=fp0")
++__msg("R1=pkt(off=64,r=64)")
+ int check_assert_generic(struct __sk_buff *ctx)
+ {
+ 	u8 *data_end = (void *)(long)ctx->data_end;
+diff --git a/tools/testing/selftests/bpf/progs/rbtree_fail.c b/tools/testing/selftests/bpf/progs/rbtree_fail.c
+index 3fecf1c6dfe5..8399304eca72 100644
+--- a/tools/testing/selftests/bpf/progs/rbtree_fail.c
++++ b/tools/testing/selftests/bpf/progs/rbtree_fail.c
+@@ -29,7 +29,7 @@ static bool less(struct bpf_rb_node *a, const struct bpf_rb_node *b)
  }
  
- static int push_msg(const char *msg, struct test_subspec *subspec)
+ SEC("?tc")
+-__failure __msg("bpf_spin_lock at off=16 must be held for bpf_rb_root")
++__failure __regex("bpf_spin_lock at off=[0-9]+ must be held for bpf_rb_root")
+ long rbtree_api_nolock_add(void *ctx)
  {
- 	void *tmp;
- 
--	tmp = realloc(subspec->expect_msgs, (1 + subspec->expect_msg_cnt) * sizeof(void *));
-+	tmp = realloc(subspec->expect,
-+		      (1 + subspec->expect_msg_cnt) * sizeof(struct expect_msg));
- 	if (!tmp) {
- 		ASSERT_FAIL("failed to realloc memory for messages\n");
- 		return -ENOMEM;
- 	}
--	subspec->expect_msgs = tmp;
--	subspec->expect_msgs[subspec->expect_msg_cnt++] = msg;
- 
-+	subspec->expect = tmp;
-+	subspec->expect[subspec->expect_msg_cnt].msg = msg;
-+	subspec->expect[subspec->expect_msg_cnt].regex = NULL;
-+	subspec->expect_msg_cnt += 1;
-+	return 0;
-+}
-+
-+static int push_regex(const char *regex_str, struct test_subspec *subspec)
-+{
-+	void *tmp;
-+	int regcomp_res;
-+
-+	tmp = realloc(subspec->expect,
-+		      (1 + subspec->expect_msg_cnt) * sizeof(struct expect_msg));
-+	if (!tmp) {
-+		ASSERT_FAIL("failed to realloc memory for messages\n");
-+		return -ENOMEM;
-+	}
-+	subspec->expect = tmp;
-+
-+	subspec->expect[subspec->expect_msg_cnt].regex = (regex_t *) malloc(sizeof(regex_t));
-+	regcomp_res = regcomp (subspec->expect[subspec->expect_msg_cnt].regex,
-+			       regex_str, REG_EXTENDED|REG_NEWLINE);
-+	if (regcomp_res != 0) {
-+		fprintf(stderr, "Regexp: '%s'\n", regex_str);
-+		ASSERT_FAIL("failed to compile regex\n");
-+		return -EINVAL;
-+	}
-+
-+	subspec->expect[subspec->expect_msg_cnt].msg = regex_str;
-+	subspec->expect_msg_cnt += 1;
- 	return 0;
+ 	struct node_data *n;
+@@ -43,7 +43,7 @@ long rbtree_api_nolock_add(void *ctx)
  }
  
-@@ -243,6 +281,18 @@ static int parse_test_spec(struct test_loader *tester,
- 			if (err)
- 				goto cleanup;
- 			spec->mode_mask |= UNPRIV;
-+		} else if (str_has_pfx(s, TEST_TAG_EXPECT_REGEX_PFX)) {
-+			msg = s + sizeof(TEST_TAG_EXPECT_REGEX_PFX) - 1;
-+			err = push_regex(msg, &spec->priv);
-+			if (err)
-+				goto cleanup;
-+			spec->mode_mask |= PRIV;
-+		} else if (str_has_pfx(s, TEST_TAG_EXPECT_REGEX_PFX_UNPRIV)) {
-+			msg = s + sizeof(TEST_TAG_EXPECT_REGEX_PFX_UNPRIV) - 1;
-+			err = push_regex(msg, &spec->unpriv);
-+			if (err)
-+				goto cleanup;
-+			spec->mode_mask |= UNPRIV;
- 		} else if (str_has_pfx(s, TEST_TAG_RETVAL_PFX)) {
- 			val = s + sizeof(TEST_TAG_RETVAL_PFX) - 1;
- 			err = parse_retval(val, &spec->priv.retval, "__retval");
-@@ -336,16 +386,16 @@ static int parse_test_spec(struct test_loader *tester,
- 			spec->unpriv.execute = spec->priv.execute;
- 		}
- 
--		if (!spec->unpriv.expect_msgs) {
--			size_t sz = spec->priv.expect_msg_cnt * sizeof(void *);
-+		if (!spec->unpriv.expect) {
-+			size_t sz = spec->priv.expect_msg_cnt * sizeof(struct expect_msg);
- 
--			spec->unpriv.expect_msgs = malloc(sz);
--			if (!spec->unpriv.expect_msgs) {
--				PRINT_FAIL("failed to allocate memory for unpriv.expect_msgs\n");
-+			spec->unpriv.expect = malloc(sz);
-+			if (!spec->unpriv.expect) {
-+				PRINT_FAIL("failed to allocate memory for unpriv.expect\n");
- 				err = -ENOMEM;
- 				goto cleanup;
- 			}
--			memcpy(spec->unpriv.expect_msgs, spec->priv.expect_msgs, sz);
-+			memcpy(spec->unpriv.expect, spec->priv.expect, sz);
- 			spec->unpriv.expect_msg_cnt = spec->priv.expect_msg_cnt;
- 		}
- 	}
-@@ -403,26 +453,44 @@ static void validate_case(struct test_loader *tester,
- 			  int load_err)
+ SEC("?tc")
+-__failure __msg("bpf_spin_lock at off=16 must be held for bpf_rb_root")
++__failure __regex("bpf_spin_lock at off=[0-9]+ must be held for bpf_rb_root")
+ long rbtree_api_nolock_remove(void *ctx)
  {
- 	int i, j;
-+	const char *match;
- 
- 	for (i = 0; i < subspec->expect_msg_cnt; i++) {
--		char *match;
- 		const char *expect_msg;
-+		regex_t *regex;
-+		regmatch_t reg_match[1];
-+
-+		expect_msg = subspec->expect[i].msg;
-+		regex = subspec->expect[i].regex;
-+
-+		if (regex == NULL) {
-+			match = strstr(tester->log_buf + tester->next_match_pos, expect_msg);
-+			if (!ASSERT_OK_PTR (match, "expect_msg")) {
-+				/* if we are in verbose mode, we've already emitted log */
-+				if (env.verbosity == VERBOSE_NONE)
-+					emit_verifier_log(tester->log_buf, true /*force*/);
-+				for (j = 0; j < i; j++)
-+					fprintf(stderr,
-+						"MATCHED  MSG: '%s'\n", subspec->expect[j].msg);
-+				fprintf(stderr, "EXPECTED MSG: '%s'\n", expect_msg);
-+				return;
-+			}
-+			tester->next_match_pos = match - tester->log_buf + strlen(expect_msg);
-+		} else {
-+			int match_size = regexec (regex, tester->log_buf + tester->next_match_pos, 1, reg_match, 0);
-+			if (match_size != 1) {
-+				/* if we are in verbose mode, we've already emitted log */
-+				if (env.verbosity == VERBOSE_NONE)
-+					emit_verifier_log(tester->log_buf, true /*force*/);
-+				for (j = 0; j < i; j++)
-+					fprintf(stderr,
-+						"MATCHED  REGEX: '%s'\n", subspec->expect[j].msg);
-+				fprintf(stderr, "EXPECTED REGEX: '%s'\n", expect_msg);
-+				return;
-+			}
- 
--		expect_msg = subspec->expect_msgs[i];
--
--		match = strstr(tester->log_buf + tester->next_match_pos, expect_msg);
--		if (!ASSERT_OK_PTR(match, "expect_msg")) {
--			/* if we are in verbose mode, we've already emitted log */
--			if (env.verbosity == VERBOSE_NONE)
--				emit_verifier_log(tester->log_buf, true /*force*/);
--			for (j = 0; j < i; j++)
--				fprintf(stderr,
--					"MATCHED  MSG: '%s'\n", subspec->expect_msgs[j]);
--			fprintf(stderr, "EXPECTED MSG: '%s'\n", expect_msg);
--			return;
-+			tester->next_match_pos += reg_match[0].rm_eo;
- 		}
--
--		tester->next_match_pos = match - tester->log_buf + strlen(expect_msg);
- 	}
+ 	struct node_data *n;
+@@ -61,7 +61,7 @@ long rbtree_api_nolock_remove(void *ctx)
  }
  
+ SEC("?tc")
+-__failure __msg("bpf_spin_lock at off=16 must be held for bpf_rb_root")
++__failure __regex("bpf_spin_lock at off=[0-9]+ must be held for bpf_rb_root")
+ long rbtree_api_nolock_first(void *ctx)
+ {
+ 	bpf_rbtree_first(&groot);
+@@ -105,7 +105,7 @@ long rbtree_api_remove_unadded_node(void *ctx)
+ }
+ 
+ SEC("?tc")
+-__failure __msg("Unreleased reference id=3 alloc_insn=10")
++__failure __regex("Unreleased reference id=3 alloc_insn=[0-9]+")
+ long rbtree_api_remove_no_drop(void *ctx)
+ {
+ 	struct bpf_rb_node *res;
+diff --git a/tools/testing/selftests/bpf/progs/refcounted_kptr_fail.c b/tools/testing/selftests/bpf/progs/refcounted_kptr_fail.c
+index 1553b9c16aa7..f8d4b7cfcd68 100644
+--- a/tools/testing/selftests/bpf/progs/refcounted_kptr_fail.c
++++ b/tools/testing/selftests/bpf/progs/refcounted_kptr_fail.c
+@@ -32,7 +32,7 @@ static bool less(struct bpf_rb_node *a, const struct bpf_rb_node *b)
+ }
+ 
+ SEC("?tc")
+-__failure __msg("Unreleased reference id=4 alloc_insn=21")
++__failure __regex("Unreleased reference id=4 alloc_insn=[0-9]+")
+ long rbtree_refcounted_node_ref_escapes(void *ctx)
+ {
+ 	struct node_acquire *n, *m;
+@@ -73,7 +73,7 @@ long refcount_acquire_maybe_null(void *ctx)
+ }
+ 
+ SEC("?tc")
+-__failure __msg("Unreleased reference id=3 alloc_insn=9")
++__failure __regex("Unreleased reference id=3 alloc_insn=[0-9]+")
+ long rbtree_refcounted_node_ref_escapes_owning_input(void *ctx)
+ {
+ 	struct node_acquire *n, *m;
+diff --git a/tools/testing/selftests/bpf/progs/verifier_sock.c b/tools/testing/selftests/bpf/progs/verifier_sock.c
+index ee76b51005ab..450b57933c79 100644
+--- a/tools/testing/selftests/bpf/progs/verifier_sock.c
++++ b/tools/testing/selftests/bpf/progs/verifier_sock.c
+@@ -799,7 +799,7 @@ l0_%=:	r0 = *(u32*)(r0 + %[bpf_xdp_sock_queue_id]);	\
+ 
+ SEC("sk_skb")
+ __description("bpf_map_lookup_elem(sockmap, &key)")
+-__failure __msg("Unreleased reference id=2 alloc_insn=6")
++__failure __regex("Unreleased reference id=2 alloc_insn=[0-9]+")
+ __naked void map_lookup_elem_sockmap_key(void)
+ {
+ 	asm volatile ("					\
+@@ -819,7 +819,7 @@ __naked void map_lookup_elem_sockmap_key(void)
+ 
+ SEC("sk_skb")
+ __description("bpf_map_lookup_elem(sockhash, &key)")
+-__failure __msg("Unreleased reference id=2 alloc_insn=6")
++__failure __regex("Unreleased reference id=2 alloc_insn=[0-9]+")
+ __naked void map_lookup_elem_sockhash_key(void)
+ {
+ 	asm volatile ("					\
 -- 
 2.39.2
 
