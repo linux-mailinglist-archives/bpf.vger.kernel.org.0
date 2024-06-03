@@ -1,191 +1,190 @@
-Return-Path: <bpf+bounces-31187-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-31188-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A6D128D80A2
-	for <lists+bpf@lfdr.de>; Mon,  3 Jun 2024 13:14:22 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EEF688D80E9
+	for <lists+bpf@lfdr.de>; Mon,  3 Jun 2024 13:20:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C67951C21C1F
-	for <lists+bpf@lfdr.de>; Mon,  3 Jun 2024 11:14:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A2D75280EB5
+	for <lists+bpf@lfdr.de>; Mon,  3 Jun 2024 11:20:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2699683CD3;
-	Mon,  3 Jun 2024 11:14:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B31583A0D;
+	Mon,  3 Jun 2024 11:20:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mJzAAniK"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mCifjA+M"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f177.google.com (mail-pf1-f177.google.com [209.85.210.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A47B277109
-	for <bpf@vger.kernel.org>; Mon,  3 Jun 2024 11:14:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 569E119E;
+	Mon,  3 Jun 2024 11:20:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717413255; cv=none; b=GwmYe6lvJMEKPxD7u3DqKsKfzeNgsbDCJijYfjqXorZBvGRMTcr/Q37tQzKVvLuW3ZRoecpypddZDakYoVhOCs4H0/dvxYh6Y5VrLLm5AX0a2gjMQBHTHqCeDr4zso+isjlkF1DH5eAEgseYNSeqkyqcpO95l+IicZXL/yXDUWw=
+	t=1717413605; cv=none; b=iE7BMWXIlBfPPb/Dc61qhAYEslnTYb/iHM5YdjIboKB+clB0OkZ1YvuCqeKTc+8gUPB8tyMgSWNzsxBFQRtAsiIlOkRCUM8NTMtJktNRI7rdVOuYUOecP6aZ99XkHP+bznj4/dga/MDVBYE8IfL9+5/18Y0oC2G7F7bGFmBSBfI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717413255; c=relaxed/simple;
-	bh=9wexLSzfBmuLLM9kYTPQws6UgtyEoLMiJ8NjdRDp/FQ=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=XHweIydzEPeGN+5fL1uRSPbs5HQwPW0D+FqQ8DiRTje9Wdxlp4l6iCVuOB305S7SLwlbdQI9P/OdqpAUmQaYOA98aSGtCrxRIjWCFXOWBkVC24YOBUp1dIP51ucca/gKLelaDLBmhB7PS/CLLG9puIWto9G+35LhVbOY1gT3IhQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mJzAAniK; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7D143C2BD10;
-	Mon,  3 Jun 2024 11:14:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1717413255;
-	bh=9wexLSzfBmuLLM9kYTPQws6UgtyEoLMiJ8NjdRDp/FQ=;
-	h=From:To:Cc:Subject:Date:From;
-	b=mJzAAniKaQp/DdyNdU7EIgGDASLf3P+b12VNilzd8fG3VQMBDFWUCRdEf4vCC2UeV
-	 bpl3xa0RKzsiQZHM5HeqvuScclGwScb+KRZrSRfR2R2N51uX+GsXMQ0vf9O+iV/o/n
-	 aUtoXmxajYAOGTHcpf+Y0MEFSvj/P70hFE1I0TEfYki3GCgjA9cqKmRX92+2DOOeF/
-	 z5Oea384P9+N5PVQBhEk54iH/FXLCMxMpOe9ppJcXd8u6bKuLMdjUFpWIv0kvoOWh6
-	 xqzOl+cpmUfHVA9Bor4yQrsIkUA/7p4eT19cC9vgNz1ndoreK9UCS7RYIb6eRr7HGk
-	 QmxxEp5YjPv1A==
-From: Jiri Olsa <jolsa@kernel.org>
-To: Alexei Starovoitov <ast@kernel.org>,
+	s=arc-20240116; t=1717413605; c=relaxed/simple;
+	bh=3xNxXA8/qb3isjI1ZUmIYZUG59ha1dFkpWp/+BJFjV0=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=heg/rUO3yXXIvS9G49NCHoAxv3hxl8UTgFiAtpxDZz0USLfebuUFxhtX54wXYFuJiY616nVMxxmWihE7WqvFKt8yB59jmnszfWYr/88ZVOTOqaAXFthKBwXgg3e4CxgDYnNw4/Qv0I1Vw9C62pfmXAx1DqQDjhJ1C23KYoFQ82U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mCifjA+M; arc=none smtp.client-ip=209.85.210.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f177.google.com with SMTP id d2e1a72fcca58-7023b6d810bso2908968b3a.3;
+        Mon, 03 Jun 2024 04:20:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1717413604; x=1718018404; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=+6FkhswBXO4S1BuMvA9cU711OcEvUvlnhqtxvdxJ/9s=;
+        b=mCifjA+M4fSsw/S1sIpnTwUsFBVl73QS1KTsrLmunw3F4ZDRqhIsWBPtXsF5ozDozN
+         ZWAoSvTTtMeY53E7yTkosri/lkC1vYP/+IvYxJtVOChHJ1RZhrsf5B92iLoHuPnrg0JR
+         6OqJjVBfjtOIQOJSroLKVldU9tUVNVejkN3U89xBAo89dNwQu95rsZr09/GFqExaQzBC
+         aqwqgJAFpftJ7wNI82Ka9GZ8bZcGJr9uoTZjp9d+PwYgIGzTBxRHMw4rrnjM452NVoPp
+         khHhUGH3tYEnAOGJNMHpJ4X01Pqnp0Yk7sBXGT4V2V7ll6DiS0LRxAP4ahu4ibWlXbR3
+         LOnw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1717413604; x=1718018404;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=+6FkhswBXO4S1BuMvA9cU711OcEvUvlnhqtxvdxJ/9s=;
+        b=O2cKJPN3veBHS2fsF1HteS5Vs7HUcGBLJYFkwEUzARhjat2x26yBJ4+I1GJnrmift5
+         1GVKn/sBN5jMx4l1/ap8hLh0hHAc9oiHmHDHn118yZYWZsJcWPFN+oZSBhUtvEsI5W5j
+         Y4jarQRtO2t/9dBSHwvyZA96ZdkAhcrOm5MF0RGR+xlQJpGy6AknHoIPIyYNdMD0VJlV
+         kY707eRt4j//jJ+T5KEFSxPMDy+MXOSSIhmyOlPJ5dkItAbSF/vqWP1ogJQ7HZD9locU
+         BvpusSoj0FR43DGCeckGhQqZME5Or82yCnDTviIA2Zw1JfAbHAD9hZJckh+eZeKV/L+3
+         rd0Q==
+X-Forwarded-Encrypted: i=1; AJvYcCUzR9aGkxUeGxoq8pyQ8Ld6Ku/yPb0245KAqjsiwNL+ZkBSHvcAIQEXhABIUyE8OCUnIb5SBSAcsXQia+tKr2HMMweQFWloRIJcWAihpEMxqc0PgLSXYeV1OXKPlQ==
+X-Gm-Message-State: AOJu0YzyogModEb/3hXzzI48+xEi0zRP6PHaqxe4n0UeuFjbeRygBgF9
+	fDyWb3huZdpPjlWbOlEaI9+Sxor9kKK1929e9Rxi9cnz998oh7l+15pNVQ==
+X-Google-Smtp-Source: AGHT+IG8ssQGMl5tqE4F0Dr3dcCaq4LQuWSVA4Tjtk7Uol3j4c/TsTkGMtfkyRG2lCUXTNCRvBQOeA==
+X-Received: by 2002:a05:6a00:3d08:b0:702:7977:2788 with SMTP id d2e1a72fcca58-70279772b03mr861625b3a.15.1717413603450;
+        Mon, 03 Jun 2024 04:20:03 -0700 (PDT)
+Received: from kodidev-ubuntu (69-172-146-21.cable.teksavvy.com. [69.172.146.21])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7027a267be7sm624889b3a.136.2024.06.03.04.20.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 03 Jun 2024 04:20:03 -0700 (PDT)
+From: Tony Ambardar <tony.ambardar@gmail.com>
+X-Google-Original-From: Tony Ambardar <Tony.Ambardar@gmail.com>
+Date: Mon, 3 Jun 2024 04:20:01 -0700
+To: Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc: Hengqi Chen <hengqi.chen@gmail.com>, bpf@vger.kernel.org,
+	dwarves@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
 	Daniel Borkmann <daniel@iogearbox.net>,
 	Andrii Nakryiko <andrii@kernel.org>
-Cc: syzbot+3ab78ff125b7979e45f9@syzkaller.appspotmail.com,
-	bpf@vger.kernel.org,
-	Martin KaFai Lau <kafai@fb.com>,
-	Song Liu <songliubraving@fb.com>,
-	Yonghong Song <yhs@fb.com>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@chromium.org>,
-	Stanislav Fomichev <sdf@google.com>,
-	Hao Luo <haoluo@google.com>,
-	Masami Hiramatsu <mhiramat@kernel.org>
-Subject: [PATCH bpf] bpf: Set run context for rawtp test_run callback
-Date: Mon,  3 Jun 2024 13:14:08 +0200
-Message-ID: <20240603111408.3981087-1-jolsa@kernel.org>
-X-Mailer: git-send-email 2.45.1
+Subject: Re: Problem with BTF generation on mips64el
+Message-ID: <Zl2m4RP7BwhZ0J6l@kodidev-ubuntu>
+References: <ZlkoM6/PSxVcGM6X@kodidev-ubuntu>
+ <CAEyhmHT_1N3xwLO2BwVK97ebrABJv52d5dWxzvuNNcF-OF5gKw@mail.gmail.com>
+ <ZlmrQqQSJyNH7fVF@kodidev-ubuntu>
+ <Zln1kZnu2Xxeyngj@x1>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <Zln1kZnu2Xxeyngj@x1>
 
-syzbot reported crash when rawtp program executed through the
-test_run interface calls bpf_get_attach_cookie helper or any
-other helper that touches task->bpf_ctx pointer.
+On Fri, May 31, 2024 at 01:06:41PM -0300, Arnaldo Carvalho de Melo wrote:
+> On Fri, May 31, 2024 at 03:49:38AM -0700, Tony Ambardar wrote:
+> > Hello Hengqi,
+> > 
+> > On Fri, May 31, 2024 at 10:17:53AM +0800, Hengqi Chen wrote:
+> > > Hi Tony,
+> > > 
+> > > On Fri, May 31, 2024 at 9:30 AM Tony Ambardar <tony.ambardar@gmail.com> wrote:
+> > > >
+> > > > Hello,
+> > > >
+> > > > For some time now I'm seeing multiple issues during BTF generation while
+> > > > building recent kernels targeting mips64el, and would appreciate some help
+> > > > to understand and fix the problems.
+> > > >
+> > > SNIP
+> > > >
+> > > > >   CC [M]  net/ipv6/netfilter/nft_fib_ipv6.mod.o
+> > > > >   CC [M]  net/ipv6/netfilter/ip6t_REJECT.mod.o
+> > > > >   CC [M]  net/psample/psample.mod.o
+> > > > >   LD [M]  crypto/cmac.ko
+> > > > >   BTF [M] crypto/cmac.ko
+> > > > > die__process: DW_TAG_compile_unit, DW_TAG_type_unit, DW_TAG_partial_unit
+> > > > > or DW_TAG_skeleton_unit expected got member (0xd)!
+> 
+> Can you check the kernel CONFIG_ variables related to DEBUG information
+> and post them here? I have this on fedora:
+> 
+> [acme@nine linux]$ grep CONFIG_DEBUG_INFO /boot/config-5.14.0-362.18.1.el9_3.x86_64 
+> CONFIG_DEBUG_INFO=y
+> # CONFIG_DEBUG_INFO_REDUCED is not set
+> # CONFIG_DEBUG_INFO_COMPRESSED is not set
+> # CONFIG_DEBUG_INFO_SPLIT is not set
+> CONFIG_DEBUG_INFO_DWARF_TOOLCHAIN_DEFAULT=y
+> # CONFIG_DEBUG_INFO_DWARF4 is not set
+> # CONFIG_DEBUG_INFO_DWARF5 is not set
+> CONFIG_DEBUG_INFO_BTF=y
+> CONFIG_DEBUG_INFO_BTF_MODULES=y
+> [acme@nine linux]$
+> 
+> If you have CONFIG_DEBUG_INFO_SPLIT, CONFIG_DEBUG_INFO_COMPRESSED or
+> CONFIG_DEBUG_INFO_REDUCED set to 'y', please try with the values in the
+> fedora config.
 
-We need to setup bpf_ctx pointer in rawtp test_run as well,
-so fixing this by moving __bpf_trace_run in header file and
-using it in test_run callback.
+One more useful observation: the pahole BTF generation problems appear only
+for mips64. If I build the same config for mips32be I see none of those
+"die__process: errors" from pahole and the processed modules load properly.
 
-Also renaming __bpf_trace_run to bpf_prog_run_trace.
+I also tried running pahole under gdb to look further, but lack knowledge
+of pahole and libdw internals, so couldn't narrow things down to a pahole,
+elfutils or compiler-output problem.
 
-Fixes: 7adfc6c9b315 ("bpf: Add bpf_get_attach_cookie() BPF helper to access bpf_cookie value")
-Reported-by: syzbot+3ab78ff125b7979e45f9@syzkaller.appspotmail.com
-Closes: https://syzkaller.appspot.com/bug?extid=3ab78ff125b7979e45f9
-Signed-off-by: Jiri Olsa <jolsa@kernel.org>
----
- include/linux/bpf.h      | 27 +++++++++++++++++++++++++++
- kernel/trace/bpf_trace.c | 28 ++--------------------------
- net/bpf/test_run.c       |  4 +---
- 3 files changed, 30 insertions(+), 29 deletions(-)
+To help troubleshoot further, I packaged my base vmlinux, some module .ko
+files showing problems, and a reproducer script. I've uploaded the tarball
+here:
 
-diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-index 5e694a308081..4eb803b1d308 100644
---- a/include/linux/bpf.h
-+++ b/include/linux/bpf.h
-@@ -2914,6 +2914,33 @@ static inline void bpf_dynptr_set_rdonly(struct bpf_dynptr_kern *ptr)
- }
- #endif /* CONFIG_BPF_SYSCALL */
- 
-+static __always_inline int
-+bpf_prog_run_trace(struct bpf_prog *prog, u64 cookie, u64 *ctx,
-+		   bpf_prog_run_fn run_prog)
-+{
-+	struct bpf_run_ctx *old_run_ctx;
-+	struct bpf_trace_run_ctx run_ctx;
-+	int ret = -1;
-+
-+	cant_sleep();
-+	if (unlikely(this_cpu_inc_return(*(prog->active)) != 1)) {
-+		bpf_prog_inc_misses_counter(prog);
-+		goto out;
-+	}
-+
-+	run_ctx.bpf_cookie = cookie;
-+	old_run_ctx = bpf_set_run_ctx(&run_ctx.run_ctx);
-+
-+	rcu_read_lock();
-+	ret = run_prog(prog, ctx);
-+	rcu_read_unlock();
-+
-+	bpf_reset_run_ctx(old_run_ctx);
-+out:
-+	this_cpu_dec(*(prog->active));
-+	return ret;
-+}
-+
- static __always_inline int
- bpf_probe_read_kernel_common(void *dst, u32 size, const void *unsafe_ptr)
- {
-diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-index d1daeab1bbc1..8a23ef42b76b 100644
---- a/kernel/trace/bpf_trace.c
-+++ b/kernel/trace/bpf_trace.c
-@@ -2383,31 +2383,6 @@ void bpf_put_raw_tracepoint(struct bpf_raw_event_map *btp)
- 	preempt_enable();
- }
- 
--static __always_inline
--void __bpf_trace_run(struct bpf_raw_tp_link *link, u64 *args)
--{
--	struct bpf_prog *prog = link->link.prog;
--	struct bpf_run_ctx *old_run_ctx;
--	struct bpf_trace_run_ctx run_ctx;
--
--	cant_sleep();
--	if (unlikely(this_cpu_inc_return(*(prog->active)) != 1)) {
--		bpf_prog_inc_misses_counter(prog);
--		goto out;
--	}
--
--	run_ctx.bpf_cookie = link->cookie;
--	old_run_ctx = bpf_set_run_ctx(&run_ctx.run_ctx);
--
--	rcu_read_lock();
--	(void) bpf_prog_run(prog, args);
--	rcu_read_unlock();
--
--	bpf_reset_run_ctx(old_run_ctx);
--out:
--	this_cpu_dec(*(prog->active));
--}
--
- #define UNPACK(...)			__VA_ARGS__
- #define REPEAT_1(FN, DL, X, ...)	FN(X)
- #define REPEAT_2(FN, DL, X, ...)	FN(X) UNPACK DL REPEAT_1(FN, DL, __VA_ARGS__)
-@@ -2437,7 +2412,8 @@ void __bpf_trace_run(struct bpf_raw_tp_link *link, u64 *args)
- 	{								\
- 		u64 args[x];						\
- 		REPEAT(x, COPY, __DL_SEM, __SEQ_0_11);			\
--		__bpf_trace_run(link, args);				\
-+		(void) bpf_prog_run_trace(link->link.prog, link->cookie,\
-+					  args, bpf_prog_run);		\
- 	}								\
- 	EXPORT_SYMBOL_GPL(bpf_trace_run##x)
- BPF_TRACE_DEFN_x(1);
-diff --git a/net/bpf/test_run.c b/net/bpf/test_run.c
-index f6aad4ed2ab2..84d1c91b01ab 100644
---- a/net/bpf/test_run.c
-+++ b/net/bpf/test_run.c
-@@ -728,9 +728,7 @@ __bpf_prog_test_run_raw_tp(void *data)
- {
- 	struct bpf_raw_tp_test_run_info *info = data;
- 
--	rcu_read_lock();
--	info->retval = bpf_prog_run(info->prog, info->ctx);
--	rcu_read_unlock();
-+	info->retval = bpf_prog_run_trace(info->prog, 0, info->ctx, bpf_prog_run);
- }
- 
- int bpf_prog_test_run_raw_tp(struct bpf_prog *prog,
--- 
-2.45.1
+https://www.dropbox.com/scl/fi/3ce22fi2q861wqvbq9mwy/repro_die__process.tar.xz?rlkey=ev494phabmfl5qe55xrn1jh3t&st=vrp5mxhh&dl=0
 
+Thanks,
+Tony
+
+> 
+> - Arnaldo
+> 
+> > > The issue seems to be related to elfutils. Have you tried build from
+> > > the latest elfutils source ?
+> > > I saw the latest MIPS backend in elfutils already implemented the
+> > > reloc_simple_type hook.
+> > 
+> > Good idea. I tried rebuilding elfutils from the latest upstream commit:
+> > https://sourceware.org/git/?p=elfutils.git;a=commit;h=935ee131cf7c87296df9412b7e3370085e7c7508
+> > 
+> > I then linked this elfutils with pahole built from the latest pahole/next:
+> > https://git.kernel.org/pub/scm/devel/pahole/pahole.git/commit/?h=next&id=a9ae414fef421bdeb13ff7ffe13271e1e4f58993
+> > 
+> > I also confirmed resolve_btfids links to the new elfutils, and then rebuilt
+> > the kernel with the same config. Unfortunately, the warnings/errors from
+> > resolve_btfids and pahole still occur.
+> > 
+> > > SNIP
+> > > >
+> > > > I'd be grateful if some of the BTF/pahole experts could please review this
+> > > > issue and share next steps or other details I might provide.
+> > > >
+> > > > Thanks,
+> > > > Tony Ambardar
+> > > >
+> > > > Link: https://lore.kernel.org/all/202401211357.OCX9yllM-lkp@intel.com/ [1]
+> > > > Link: https://github.com/acmel/dwarves/issues/45 [2]
+> > > 
+> > > Cheers,
+> > > Hengqi
+> > 
+> > Thanks for the suggestion,
+> > Tony
 
