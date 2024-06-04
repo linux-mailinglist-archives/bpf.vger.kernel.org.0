@@ -1,46 +1,46 @@
-Return-Path: <bpf+bounces-31375-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-31376-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B62258FBCE9
-	for <lists+bpf@lfdr.de>; Tue,  4 Jun 2024 22:02:58 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 03A2C8FBCEC
+	for <lists+bpf@lfdr.de>; Tue,  4 Jun 2024 22:03:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 23606B247E6
-	for <lists+bpf@lfdr.de>; Tue,  4 Jun 2024 20:02:56 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 25E641C2221C
+	for <lists+bpf@lfdr.de>; Tue,  4 Jun 2024 20:03:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F2CDE14B07D;
-	Tue,  4 Jun 2024 20:02:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A2C914B094;
+	Tue,  4 Jun 2024 20:03:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HbfnaHg1"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FeKh8kvg"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E66A14A0AD;
-	Tue,  4 Jun 2024 20:02:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D507114A0AD;
+	Tue,  4 Jun 2024 20:03:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717531368; cv=none; b=rtPQkkupOM5fj6YCIiYuei4D8NEv/EbYFp987YAR7SvfIK+H9bogLtLpGPHWqAsG2Rj+BgJJVZcYSVAFqZ7osbWFyTzMIhktscxuyxpBieUiZj5EFs2IZ5bphljMrDE9+niNaNUyFvx/piaBZPMHM3hCq9axh2BYrr62/NMR9K4=
+	t=1717531382; cv=none; b=UgZyr8E28z839uLRXYn3GWSe+sMX4mrI5hwh3ROJH4O+1et/ILm6MV90BqCXWNdSoWQ1wTF1yUAqtsjAtnr8y++ti+9jo2wI0SQAOAvRN1ZHOYGMy/DGvp9SWxy6qfoB4PjEXWFT36UArWusyCRa3hJ01s/Fjl/J+ucFuoPqGOw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717531368; c=relaxed/simple;
-	bh=DhP26xmiCYD8Xa0bAOGtxlXv9XJ/IAF50228gAf7JVk=;
+	s=arc-20240116; t=1717531382; c=relaxed/simple;
+	bh=VWxqp+tYVmK0gZXdn9ueD+SAmOvJYQ6Mldxj9MWQ6BM=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=QDgZYpVYeSjuuFBQBXNHp8FN8GrGO2tRbFZ2igrJ75JE0qfqB34omwis8iC1bW0WVkr8HVIGJ/WVjJqadRif1hZCZkvC9Gj5bZexkFQKGsh6nSFdk8Okt3OZ6rnsL7h5c5x9cgSQ67X/KNDBHfu/z9d2QPgntlOrDduNwfbWZy8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HbfnaHg1; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C91D1C2BBFC;
-	Tue,  4 Jun 2024 20:02:41 +0000 (UTC)
+	 MIME-Version; b=jvKOojpxzMCVf434ZADVsrUut6DyMxC5DQt5E3QtB7b0+1ZbTv4qutfQ6FeM8Pm7VsXbnTLvSuNY9PF3OI3Xf1INs7mN6fcyE4qO69rPBFgiPGcpUZQbs2YQvXzcpEVgB8D7oJaUu9ALCdST5OgYWwr9FCGCVuSGCZJnJxBZ/NA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FeKh8kvg; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A69A5C2BBFC;
+	Tue,  4 Jun 2024 20:02:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1717531368;
-	bh=DhP26xmiCYD8Xa0bAOGtxlXv9XJ/IAF50228gAf7JVk=;
+	s=k20201202; t=1717531381;
+	bh=VWxqp+tYVmK0gZXdn9ueD+SAmOvJYQ6Mldxj9MWQ6BM=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=HbfnaHg1p545hbvJbRJ0bfSqI36OKWuf/E+KolY5pCHfMofgY5CgLouZ4izkgDfAz
-	 CSLW5Fu1ziUyA7ySapYWU5ErtvL5Acfv8n8yYLnIskSxlEjJt3BEOPfVPVlG9IgDaI
-	 bjlcfpIFiVhr7hlNAwEYlavevUbdcoYuhtE9z1mDyYj6bATIyxes8F+oX9v4ALE0Ny
-	 dIyYQiZl1U2bQksmzS3au+IktCaSXUrt4xxZPzThdWKwBYbuuslLRjZMyXITrRhFDB
-	 KyMnu43r3sZxgBF8m7O+ST9VYyMW3GrUlOCJkcKA6qNVXdJiCVUIuzQyqxFwCeic2n
-	 brN4aV7VHqBIg==
+	b=FeKh8kvgKafkCCYct4p963mpZBZJN/mWofov6bmRzqlEKsGPdRyDlT+gYY9yGaO94
+	 fP/Hn0eRIGs+p5g0rUbx9U5UC54AF3BJNulRaWY3eQZyXhJ6jEGW4C6LESqos0oI+E
+	 6vYNYnZtrfTGpKg1N5Y6p2Ci0uMTMlH11yDXhCh61hiEbnQv6dULRHAwTD6x/a9HkK
+	 WK2Xz9UqDweSA993WD7ug1HX8zuUmk7K9qtgAtgBVn88Vb2Gd9FmhaJss2wj2lT3nA
+	 tJz1bx5COay+eYqbCf605I56ZhA9NjaD68u/Rx/qNWxXT2Q3whQMtHVhwZD6UcaqUx
+	 gZq9deTDA8H6Q==
 From: Jiri Olsa <jolsa@kernel.org>
 To: Oleg Nesterov <oleg@redhat.com>,
 	Peter Zijlstra <peterz@infradead.org>,
@@ -59,9 +59,9 @@ Cc: bpf@vger.kernel.org,
 	Masami Hiramatsu <mhiramat@kernel.org>,
 	linux-kernel@vger.kernel.org,
 	linux-trace-kernel@vger.kernel.org
-Subject: [RFC bpf-next 01/10] uprobe: Add session callbacks to uprobe_consumer
-Date: Tue,  4 Jun 2024 22:02:12 +0200
-Message-ID: <20240604200221.377848-2-jolsa@kernel.org>
+Subject: [RFC bpf-next 02/10] bpf: Add support for uprobe multi session attach
+Date: Tue,  4 Jun 2024 22:02:13 +0200
+Message-ID: <20240604200221.377848-3-jolsa@kernel.org>
 X-Mailer: git-send-email 2.45.1
 In-Reply-To: <20240604200221.377848-1-jolsa@kernel.org>
 References: <20240604200221.377848-1-jolsa@kernel.org>
@@ -73,240 +73,174 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Adding new set of callbacks that are triggered on entry and return
-uprobe execution for the attached function.
+Adding support to attach bpf program for entry and return probe
+of the same function. This is common use case which at the moment
+requires to create two uprobe multi links.
 
-The session means that those callbacks are 'connected' in a way
-that allows to:
-  - control execution of return callback from entry callback
-  - share data between entry and return callbacks
+Adding new BPF_TRACE_UPROBE_SESSION attach type that instructs
+kernel to attach single link program to both entry and exit probe.
 
-The session concept fits to our common use case where we do filtering
-on entry uprobe and based on the result we decide to run the return
-uprobe (or not).
-
-It's also convenient to share the data between session callbacks.
-
-The control of return uprobe execution is done via return value of the
-entry session callback, where 0 means to install and execute return
-uprobe, 1 means to not install.
-
-Current implementation has a restriction that allows to register only
-single consumer with session callbacks for a uprobe and also restricting
-standard callbacks consumers.
-
-Which means that there can be only single user of a uprobe (inode +
-offset) when session consumer is registered to it.
-
-This is because all registered consumers are executed when uprobe or
-return uprobe is hit and wihout additional layer (like fgraph's shadow
-stack) that would keep the state of the return callback, we have no
-way to find out which consumer should be executed.
-
-I'm not sure how big limitation this is for people, our current use
-case seems to be ok with that. Fixing this would be more complex/bigger
-change to uprobes, thoughts?
-
-Hence sending this as RFC to gather more opinions and feedback.
+It's possible to control execution of the bpf program on return
+probe simply by returning zero or non zero from the entry bpf
+program execution to execute or not the bpf program on return
+probe respectively.
 
 Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 ---
- include/linux/uprobes.h | 18 +++++++++++
- kernel/events/uprobes.c | 69 +++++++++++++++++++++++++++++++++++------
- 2 files changed, 78 insertions(+), 9 deletions(-)
+ include/uapi/linux/bpf.h       |  1 +
+ kernel/bpf/syscall.c           |  9 ++++--
+ kernel/trace/bpf_trace.c       | 50 +++++++++++++++++++++++++++++-----
+ tools/include/uapi/linux/bpf.h |  1 +
+ 4 files changed, 52 insertions(+), 9 deletions(-)
 
-diff --git a/include/linux/uprobes.h b/include/linux/uprobes.h
-index f46e0ca0169c..a2f2d5ac3cee 100644
---- a/include/linux/uprobes.h
-+++ b/include/linux/uprobes.h
-@@ -34,6 +34,12 @@ enum uprobe_filter_ctx {
+diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+index 25ea393cf084..b400f50e2c3c 100644
+--- a/include/uapi/linux/bpf.h
++++ b/include/uapi/linux/bpf.h
+@@ -1116,6 +1116,7 @@ enum bpf_attach_type {
+ 	BPF_NETKIT_PRIMARY,
+ 	BPF_NETKIT_PEER,
+ 	BPF_TRACE_KPROBE_SESSION,
++	BPF_TRACE_UPROBE_SESSION,
+ 	__MAX_BPF_ATTACH_TYPE
  };
  
- struct uprobe_consumer {
-+	/*
-+	 * The handler callback return value controls removal of the uprobe.
-+	 *  0 on success, uprobe stays
-+	 *  1 on failure, remove the uprobe
-+	 *    console warning for anything else
-+	 */
- 	int (*handler)(struct uprobe_consumer *self, struct pt_regs *regs);
- 	int (*ret_handler)(struct uprobe_consumer *self,
- 				unsigned long func,
-@@ -42,6 +48,17 @@ struct uprobe_consumer {
- 				enum uprobe_filter_ctx ctx,
- 				struct mm_struct *mm);
- 
-+	/* The handler_session callback return value controls execution of
-+	 * the return uprobe and ret_handler_session callback.
-+	 *  0 on success
-+	 *  1 on failure, DO NOT install/execute the return uprobe
-+	 *    console warning for anything else
-+	 */
-+	int (*handler_session)(struct uprobe_consumer *self, struct pt_regs *regs,
-+			       unsigned long *data);
-+	int (*ret_handler_session)(struct uprobe_consumer *self, unsigned long func,
-+				   struct pt_regs *regs, unsigned long *data);
-+
- 	struct uprobe_consumer *next;
- };
- 
-@@ -85,6 +102,7 @@ struct return_instance {
- 	unsigned long		func;
- 	unsigned long		stack;		/* stack pointer */
- 	unsigned long		orig_ret_vaddr; /* original return address */
-+	unsigned long		data;
- 	bool			chained;	/* true, if instance is nested */
- 
- 	struct return_instance	*next;		/* keep as stack */
-diff --git a/kernel/events/uprobes.c b/kernel/events/uprobes.c
-index 2c83ba776fc7..17b0771272a6 100644
---- a/kernel/events/uprobes.c
-+++ b/kernel/events/uprobes.c
-@@ -750,12 +750,32 @@ static struct uprobe *alloc_uprobe(struct inode *inode, loff_t offset,
- 	return uprobe;
+diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
+index 5070fa20d05c..71d279907a0c 100644
+--- a/kernel/bpf/syscall.c
++++ b/kernel/bpf/syscall.c
+@@ -4048,10 +4048,14 @@ static int bpf_prog_attach_check_attach_type(const struct bpf_prog *prog,
+ 		if (prog->expected_attach_type == BPF_TRACE_UPROBE_MULTI &&
+ 		    attach_type != BPF_TRACE_UPROBE_MULTI)
+ 			return -EINVAL;
++		if (prog->expected_attach_type == BPF_TRACE_UPROBE_SESSION &&
++		    attach_type != BPF_TRACE_UPROBE_SESSION)
++			return -EINVAL;
+ 		if (attach_type != BPF_PERF_EVENT &&
+ 		    attach_type != BPF_TRACE_KPROBE_MULTI &&
+ 		    attach_type != BPF_TRACE_KPROBE_SESSION &&
+-		    attach_type != BPF_TRACE_UPROBE_MULTI)
++		    attach_type != BPF_TRACE_UPROBE_MULTI &&
++		    attach_type != BPF_TRACE_UPROBE_SESSION)
+ 			return -EINVAL;
+ 		return 0;
+ 	case BPF_PROG_TYPE_SCHED_CLS:
+@@ -5314,7 +5318,8 @@ static int link_create(union bpf_attr *attr, bpfptr_t uattr)
+ 		else if (attr->link_create.attach_type == BPF_TRACE_KPROBE_MULTI ||
+ 			 attr->link_create.attach_type == BPF_TRACE_KPROBE_SESSION)
+ 			ret = bpf_kprobe_multi_link_attach(attr, prog);
+-		else if (attr->link_create.attach_type == BPF_TRACE_UPROBE_MULTI)
++		else if (attr->link_create.attach_type == BPF_TRACE_UPROBE_MULTI ||
++			 attr->link_create.attach_type == BPF_TRACE_UPROBE_SESSION)
+ 			ret = bpf_uprobe_multi_link_attach(attr, prog);
+ 		break;
+ 	default:
+diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+index f5154c051d2c..53b111c8e887 100644
+--- a/kernel/trace/bpf_trace.c
++++ b/kernel/trace/bpf_trace.c
+@@ -1642,6 +1642,17 @@ static inline bool is_kprobe_session(const struct bpf_prog *prog)
+ 	return prog->expected_attach_type == BPF_TRACE_KPROBE_SESSION;
  }
  
--static void consumer_add(struct uprobe *uprobe, struct uprobe_consumer *uc)
-+/*
-+ * Make sure all the uprobe consumers have only one type of entry
-+ * callback registered (either handler or handler_session) due to
-+ * different return value actions.
-+ */
-+static int consumer_check(struct uprobe_consumer *curr, struct uprobe_consumer *uc)
++static inline bool is_uprobe_multi(const struct bpf_prog *prog)
 +{
-+	if (!curr)
-+		return 0;
-+	if (curr->handler_session || uc->handler_session)
-+		return -EBUSY;
-+	return 0;
++	return prog->expected_attach_type == BPF_TRACE_UPROBE_MULTI ||
++	       prog->expected_attach_type == BPF_TRACE_UPROBE_SESSION;
 +}
 +
-+static int consumer_add(struct uprobe *uprobe, struct uprobe_consumer *uc)
++static inline bool is_uprobe_session(const struct bpf_prog *prog)
++{
++	return prog->expected_attach_type == BPF_TRACE_UPROBE_SESSION;
++}
++
+ static const struct bpf_func_proto *
+ kprobe_prog_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
  {
-+	int err;
-+
- 	down_write(&uprobe->consumer_rwsem);
--	uc->next = uprobe->consumers;
--	uprobe->consumers = uc;
-+	err = consumer_check(uprobe->consumers, uc);
-+	if (!err) {
-+		uc->next = uprobe->consumers;
-+		uprobe->consumers = uc;
-+	}
- 	up_write(&uprobe->consumer_rwsem);
-+	return err;
+@@ -1659,13 +1670,13 @@ kprobe_prog_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
+ 	case BPF_FUNC_get_func_ip:
+ 		if (is_kprobe_multi(prog))
+ 			return &bpf_get_func_ip_proto_kprobe_multi;
+-		if (prog->expected_attach_type == BPF_TRACE_UPROBE_MULTI)
++		if (is_uprobe_multi(prog))
+ 			return &bpf_get_func_ip_proto_uprobe_multi;
+ 		return &bpf_get_func_ip_proto_kprobe;
+ 	case BPF_FUNC_get_attach_cookie:
+ 		if (is_kprobe_multi(prog))
+ 			return &bpf_get_attach_cookie_proto_kmulti;
+-		if (prog->expected_attach_type == BPF_TRACE_UPROBE_MULTI)
++		if (is_uprobe_multi(prog))
+ 			return &bpf_get_attach_cookie_proto_umulti;
+ 		return &bpf_get_attach_cookie_proto_trace;
+ 	default:
+@@ -3346,6 +3357,26 @@ uprobe_multi_link_ret_handler(struct uprobe_consumer *con, unsigned long func, s
+ 	return uprobe_prog_run(uprobe, func, regs);
  }
  
- /*
-@@ -1114,6 +1134,21 @@ void uprobe_unregister(struct inode *inode, loff_t offset, struct uprobe_consume
- }
- EXPORT_SYMBOL_GPL(uprobe_unregister);
- 
-+static int check_handler(struct uprobe_consumer *uc)
++static int
++uprobe_multi_link_handler_session(struct uprobe_consumer *con, struct pt_regs *regs,
++				  unsigned long *data)
 +{
-+	/* Uprobe must have at least one set consumer. */
-+	if (!uc->handler && !uc->ret_handler &&
-+	    !uc->handler_session && !uc->ret_handler_session)
-+		return -1;
-+	/* Session consumer is exclusive. */
-+	if (uc->handler && uc->handler_session)
-+		return -1;
-+	/* Session consumer must have both entry and return handler. */
-+	if (!!uc->handler_session != !!uc->ret_handler_session)
-+		return -1;
-+	return 0;
++	struct bpf_uprobe *uprobe;
++
++	uprobe = container_of(con, struct bpf_uprobe, consumer);
++	return uprobe_prog_run(uprobe, instruction_pointer(regs), regs);
 +}
 +
- /*
-  * __uprobe_register - register a probe
-  * @inode: the file in which the probe has to be placed.
-@@ -1138,8 +1173,7 @@ static int __uprobe_register(struct inode *inode, loff_t offset,
- 	struct uprobe *uprobe;
- 	int ret;
++static int
++uprobe_multi_link_ret_handler_session(struct uprobe_consumer *con, unsigned long func,
++				      struct pt_regs *regs, unsigned long *data)
++{
++	struct bpf_uprobe *uprobe;
++
++	uprobe = container_of(con, struct bpf_uprobe, consumer);
++	return uprobe_prog_run(uprobe, func, regs);
++}
++
+ static u64 bpf_uprobe_multi_entry_ip(struct bpf_run_ctx *ctx)
+ {
+ 	struct bpf_uprobe_multi_run_ctx *run_ctx;
+@@ -3382,7 +3413,7 @@ int bpf_uprobe_multi_link_attach(const union bpf_attr *attr, struct bpf_prog *pr
+ 	if (sizeof(u64) != sizeof(void *))
+ 		return -EOPNOTSUPP;
  
--	/* Uprobe must have at least one set consumer */
--	if (!uc->handler && !uc->ret_handler)
-+	if (check_handler(uc))
+-	if (prog->expected_attach_type != BPF_TRACE_UPROBE_MULTI)
++	if (!is_uprobe_multi(prog))
  		return -EINVAL;
  
- 	/* copy_insn() uses read_mapping_page() or shmem_read_mapping_page() */
-@@ -1173,11 +1207,14 @@ static int __uprobe_register(struct inode *inode, loff_t offset,
- 	down_write(&uprobe->register_rwsem);
- 	ret = -EAGAIN;
- 	if (likely(uprobe_is_active(uprobe))) {
--		consumer_add(uprobe, uc);
-+		ret = consumer_add(uprobe, uc);
-+		if (ret)
-+			goto fail;
- 		ret = register_for_each_vma(uprobe, uc);
- 		if (ret)
- 			__uprobe_unregister(uprobe, uc);
- 	}
-+ fail:
- 	up_write(&uprobe->register_rwsem);
- 	put_uprobe(uprobe);
+ 	flags = attr->link_create.uprobe_multi.flags;
+@@ -3460,10 +3491,15 @@ int bpf_uprobe_multi_link_attach(const union bpf_attr *attr, struct bpf_prog *pr
  
-@@ -1853,7 +1890,7 @@ static void cleanup_return_instances(struct uprobe_task *utask, bool chained,
- 	utask->return_instances = ri;
- }
+ 		uprobes[i].link = link;
  
--static void prepare_uretprobe(struct uprobe *uprobe, struct pt_regs *regs)
-+static void prepare_uretprobe(struct uprobe *uprobe, struct pt_regs *regs, unsigned long data)
- {
- 	struct return_instance *ri;
- 	struct uprobe_task *utask;
-@@ -1909,6 +1946,7 @@ static void prepare_uretprobe(struct uprobe *uprobe, struct pt_regs *regs)
- 	ri->stack = user_stack_pointer(regs);
- 	ri->orig_ret_vaddr = orig_ret_vaddr;
- 	ri->chained = chained;
-+	ri->data = data;
- 
- 	utask->depth++;
- 	ri->next = utask->return_instances;
-@@ -2070,6 +2108,7 @@ static void handler_chain(struct uprobe *uprobe, struct pt_regs *regs)
- 	struct uprobe_consumer *uc;
- 	int remove = UPROBE_HANDLER_REMOVE;
- 	bool need_prep = false; /* prepare return uprobe, when needed */
-+	unsigned long data = 0;
- 
- 	down_read(&uprobe->register_rwsem);
- 	for (uc = uprobe->consumers; uc; uc = uc->next) {
-@@ -2081,14 +2120,24 @@ static void handler_chain(struct uprobe *uprobe, struct pt_regs *regs)
- 				"bad rc=0x%x from %ps()\n", rc, uc->handler);
- 		}
- 
--		if (uc->ret_handler)
-+		if (uc->handler_session) {
-+			rc = uc->handler_session(uc, regs, &data);
-+			WARN(rc & ~UPROBE_HANDLER_MASK,
-+				"bad rc=0x%x from %ps()\n", rc, uc->handler_session);
+-		if (flags & BPF_F_UPROBE_MULTI_RETURN)
+-			uprobes[i].consumer.ret_handler = uprobe_multi_link_ret_handler;
+-		else
+-			uprobes[i].consumer.handler = uprobe_multi_link_handler;
++		if (is_uprobe_session(prog)) {
++			uprobes[i].consumer.handler_session = uprobe_multi_link_handler_session;
++			uprobes[i].consumer.ret_handler_session = uprobe_multi_link_ret_handler_session;
++		} else {
++			if (flags & BPF_F_UPROBE_MULTI_RETURN)
++				uprobes[i].consumer.ret_handler = uprobe_multi_link_ret_handler;
++			else
++				uprobes[i].consumer.handler = uprobe_multi_link_handler;
 +		}
-+
-+		if (uc->ret_handler || uc->ret_handler_session)
- 			need_prep = true;
  
- 		remove &= rc;
- 	}
+ 		if (pid)
+ 			uprobes[i].consumer.filter = uprobe_multi_link_filter;
+diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
+index 25ea393cf084..b400f50e2c3c 100644
+--- a/tools/include/uapi/linux/bpf.h
++++ b/tools/include/uapi/linux/bpf.h
+@@ -1116,6 +1116,7 @@ enum bpf_attach_type {
+ 	BPF_NETKIT_PRIMARY,
+ 	BPF_NETKIT_PEER,
+ 	BPF_TRACE_KPROBE_SESSION,
++	BPF_TRACE_UPROBE_SESSION,
+ 	__MAX_BPF_ATTACH_TYPE
+ };
  
- 	if (need_prep && !remove)
--		prepare_uretprobe(uprobe, regs); /* put bp at return */
-+		prepare_uretprobe(uprobe, regs, data); /* put bp at return */
-+
-+	/* remove uprobe only for non-session consumers */
-+	if (uprobe->consumers && remove)
-+		remove &= !!uprobe->consumers->handler;
- 
- 	if (remove && uprobe->consumers) {
- 		WARN_ON(!uprobe_is_active(uprobe));
-@@ -2107,6 +2156,8 @@ handle_uretprobe_chain(struct return_instance *ri, struct pt_regs *regs)
- 	for (uc = uprobe->consumers; uc; uc = uc->next) {
- 		if (uc->ret_handler)
- 			uc->ret_handler(uc, ri->func, regs);
-+		if (uc->ret_handler_session)
-+			uc->ret_handler_session(uc, ri->func, regs, &ri->data);
- 	}
- 	up_read(&uprobe->register_rwsem);
- }
 -- 
 2.45.1
 
