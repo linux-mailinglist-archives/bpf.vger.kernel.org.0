@@ -1,142 +1,172 @@
-Return-Path: <bpf+bounces-31358-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-31359-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6F7338FBA1C
-	for <lists+bpf@lfdr.de>; Tue,  4 Jun 2024 19:16:37 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BB6B58FBAB0
+	for <lists+bpf@lfdr.de>; Tue,  4 Jun 2024 19:41:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2893628519B
-	for <lists+bpf@lfdr.de>; Tue,  4 Jun 2024 17:16:36 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7A311B2C001
+	for <lists+bpf@lfdr.de>; Tue,  4 Jun 2024 17:39:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 094BA146D6E;
-	Tue,  4 Jun 2024 17:16:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B0CCD149E03;
+	Tue,  4 Jun 2024 17:39:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XRrv4NXD"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jh/pmGiz"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f175.google.com (mail-pg1-f175.google.com [209.85.215.175])
+Received: from mail-pg1-f182.google.com (mail-pg1-f182.google.com [209.85.215.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D1F97E2;
-	Tue,  4 Jun 2024 17:16:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E3EFF5F860
+	for <bpf@vger.kernel.org>; Tue,  4 Jun 2024 17:39:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717521389; cv=none; b=fKTITyOShOewvPZcom6zceVZT3u14zzfkC9Hm5U1/tbEzR8gY+NmK4uuHBxG7rZqm4NxK/7AhCx69KaWL4F6rII009QpCJz/ucR5DbAPPq7V2PDZfL+gZ6//jAq+sID3tdc1TjAv6Fnv1VXrYq3v3PakC2wVtSZj/lbBbfOMttA=
+	t=1717522756; cv=none; b=hUY5AmxDrNnwG8mV5RhChAYcJKgq5kjcBO9Bi/votBC2+M5obM7sdfS2jAAZ8onVPE4YyTIS4nc1kloByaFfSeyte1BUWly9DZG8wCgsHIxcBRge5hYgLXxcTdcp0Z/0XCxxJ8oDkGP1taRSTDxRHUhhoWm3Zz+aUgVywEmrDY8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717521389; c=relaxed/simple;
-	bh=RkQhcCUGvhc68yqedqJ3dY1m/xst2V0cFQC1POPV47g=;
+	s=arc-20240116; t=1717522756; c=relaxed/simple;
+	bh=IPgo0Hte3ROc/IvXQMAIh5cMQSYi8Ix7HVwOZqMrs/s=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=andcqoXal0Wh5+FD75vjl041/86APmhbG+GhXYhR0JL9cZYUqxA2gfBhZfWF6zc4YWRRZP3kG0zZIDQY3eMRbaauk59FS8Sqf0nk+5D2ozWnW4HPwat1baiJvYS/gYWmNXzFk4bSmNLyZ1S05/omuB2NFWR5jr+71xhvsoiz5FE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=XRrv4NXD; arc=none smtp.client-ip=209.85.215.175
+	 To:Cc:Content-Type; b=H3CP0abv2R14WBpP1Yi2qsfRX86eRZ581U++ls89BgNr71oITIj48xuxO84oeTC2uHGUezRU1fwOKHkKas/lPQRacnCCXsJ4Cjp8/33UpkXwXGpoksSQ87fboNaStY1yWfN2hUj9GTchXfPePeN7txn+tc0m5shcHlWwzSXTX6A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jh/pmGiz; arc=none smtp.client-ip=209.85.215.182
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f175.google.com with SMTP id 41be03b00d2f7-6cc3e134f88so1067208a12.0;
-        Tue, 04 Jun 2024 10:16:27 -0700 (PDT)
+Received: by mail-pg1-f182.google.com with SMTP id 41be03b00d2f7-681953ad4f2so4404383a12.2
+        for <bpf@vger.kernel.org>; Tue, 04 Jun 2024 10:39:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1717521387; x=1718126187; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1717522754; x=1718127554; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=7SPFGeZYux1GhJ/hsA6QEhYw/FILAzVW/x5wsmvaavg=;
-        b=XRrv4NXDKitlXFYtfgRkdwuqSYx/0sjjUALBXow8X4qDnNDXMpPTwEvSDpWS1sQxsp
-         vZdMC6vAWYNrZqxdHIrssTKmOogfM46FO4Je6EsWdlIdHdzT1DRoZeLFLc12YHlXAEzt
-         e/kAvpNLG9EJyKh0CVUTcj4p9e7+EzYGhvs80Enf4MJvhdBBxRnKODwh+k4YOyh7brcF
-         1A0XiJvAjWPxYZCM+nZFu4B6jANWuasQZwy7BIQyLcAD384IpA8X83zgU5mZ3aAHyPyI
-         IO1vc+6E/1M8+sbqArYfLVSYnLM4bMmyJ+GO04WLOF9ERlFS6k5lwHYlSARNVij10+/1
-         N9aQ==
+        bh=oip7sVutF+x6AXa81xuIl+pNHCuhUQp52bI721YGXRg=;
+        b=jh/pmGiz0vA+18pLkkUW26dEsOKO/OMVaXIvpzUJC0/dyZ+24BzM4RPgZ7CST4/vay
+         CR+fhJA6P1JZseMjvhLUYOEdmtlu6il8bPXgqfivbZf552gUX7yuJrnQuvpvNbfWli3q
+         Q1xJL7naGZqFvfklcSsSMhYZjwnNM3ILZheSXd/53bMVs8TFLKEaj3qqLu02e1b03qz5
+         Tla1ItYr9Md5pIoetjtcyx5k9JnOtTvPZag6Td3NRz+ClKMHb4ZZzNlB5wJ+kJO5IUUs
+         I70hXxVOyjjRPimvelLE1EMia14v6Hd95mftcrb4DxjuOJtlpNT1f/nEWps0u7DDvsR1
+         mwFg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1717521387; x=1718126187;
+        d=1e100.net; s=20230601; t=1717522754; x=1718127554;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=7SPFGeZYux1GhJ/hsA6QEhYw/FILAzVW/x5wsmvaavg=;
-        b=Q5M63cSLPOvoCA3viqGlEbCcuC7r3kl6aM/oZtnBNTFAibp8rEF+ixC9D13tDsvuzT
-         V6Sm76fZTMa7GkcCNfod1PHZ3c5XJmN3kNYpV89SlceMjvdQuGd5AuoU1waa7bTSO2BM
-         f6JDSqigLXr+rjeXl6UXMp9q/XEF/1sUkNm6JQDWV2lOTWblNWXiXR05v/YSg85k3IIy
-         8R2toseoTpFw4RxK86Zn46HTN+ETHT6nOi4shziHDtKxZPSX8SWjgRbLa7QTXlEnsrR/
-         4Ath5/8Etsn7X5C9tiGtdB4bIRoo2QringhKn/FBvoFKWHJDsuMYBAK649dH7mjPGvZ0
-         EYXw==
-X-Forwarded-Encrypted: i=1; AJvYcCVag9sLTXpA+Ntxs1J1zE6ZG6reptkQn3sq/8FB61Nrv+47TjfIiSOCw+LvFTi51oTYpJyzT/zq6e0HpVP7akq7u2P8tCIYLz+sfseJN5bwfZxNNS8SAdW2HAqME5wfUS7Xt0dsS9G2Cx997oE04eKuu9vyX5vpGhFSw2MSk41z6Ct7Gb3sOuIViA==
-X-Gm-Message-State: AOJu0YwyIaAtL3FYmicwFLCwPW21FD4IDnT+0oYqe/9m99+iHrB2isUs
-	iMe9CaRNGGt8My+CQkk0BI307mRkuBL7pTWnIxfZxUSvrBCuZol+hW5NXAoD8KNstLIf6nD7INY
-	/9dJjb+rdstJyLO/CMAkFzubeKwc=
-X-Google-Smtp-Source: AGHT+IEDcxzeo4/WotXZhMAU6LLCoOLnWMX1xTVG0+hjNA7Kn3/H4VVWxd7oXR24cOO+MbPXXAaePesnFXNJym1JpFI=
-X-Received: by 2002:a17:90a:db81:b0:2b6:7e55:2aad with SMTP id
- 98e67ed59e1d1-2c27daf65c1mr99644a91.7.1717521387418; Tue, 04 Jun 2024
- 10:16:27 -0700 (PDT)
+        bh=oip7sVutF+x6AXa81xuIl+pNHCuhUQp52bI721YGXRg=;
+        b=TJY6sU6Zv+9Lezx0zWaxCvEd9jpDAfliX6XnNBdEj8VXBhQ/kO7ZIQGqt0YXbUI0US
+         h4xY53hXh+jSrAsb2UxgYr5zK0Ub6NycvsLVU4VjpzerzUc/iAVmtSnwQjESYQ9NtjS4
+         lLPaaAAyVGXNdXWlPZZzLJ2fo0zbDbxML8E+arjFG0BJtc+vS8i8Hu5EkyqCmWed2GEs
+         UpdOG6oWs2249tX1KAircZ0+SnlGJZL8oAwyG4A7IKtpPtMClG3sqRpeeU7cFO1Zwb4x
+         Xi7GNEqFhGWDMGMgW7Fotb3l+pZX2bvsGUTXHaUKCipCtuxNPGofxXnrHT4eIBfP2bJD
+         27BQ==
+X-Gm-Message-State: AOJu0Ywxm+IoMiSxvxESfeHeQgrpTEV1bcwSeLajZrGK6UG3bhNbZ1Pg
+	LsL0oiXUbW9nnK80QJDfW4y2175X0Ki00AQNazGBFuKetW8nk+qGqT7g5qZyiHp9xKLAkQky1Pt
+	3E4ZKft25kmB/fj0efAEQ9+lFVOo=
+X-Google-Smtp-Source: AGHT+IEtND4oL8pLC3uf8r0jpN73wKQpKwm0J7J5hFgSAxVxgFHUiPEx1wmcsklIs93B+UC0JD/bFChmZx+V+yNJTNg=
+X-Received: by 2002:a17:90b:378e:b0:2bd:efa5:5686 with SMTP id
+ 98e67ed59e1d1-2c27db13aafmr148811a91.14.1717522754072; Tue, 04 Jun 2024
+ 10:39:14 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240522013845.1631305-1-andrii@kernel.org> <20240522013845.1631305-3-andrii@kernel.org>
- <20240604231314.e924c51f7b9a18428a8a7f0f@kernel.org>
-In-Reply-To: <20240604231314.e924c51f7b9a18428a8a7f0f@kernel.org>
+References: <20240517190555.4032078-1-eddyz87@gmail.com> <20240517190555.4032078-3-eddyz87@gmail.com>
+ <CAEf4BzbUPTU__d4G3dt6Rga+aNG=kLRxsBM4LJMhYfMKy+RSfQ@mail.gmail.com> <fbb23a418f892cb50470971f8966958f87329b93.camel@gmail.com>
+In-Reply-To: <fbb23a418f892cb50470971f8966958f87329b93.camel@gmail.com>
 From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Tue, 4 Jun 2024 10:16:14 -0700
-Message-ID: <CAEf4BzbneP7Zoo5q54eh4=DVgcwPSiZh3=bZk6T2to88613dnw@mail.gmail.com>
-Subject: Re: [PATCH v2 2/4] perf,uprobes: fix user stack traces in the
- presence of pending uretprobes
-To: Masami Hiramatsu <mhiramat@kernel.org>
-Cc: Andrii Nakryiko <andrii@kernel.org>, linux-trace-kernel@vger.kernel.org, 
-	rostedt@goodmis.org, x86@kernel.org, peterz@infradead.org, mingo@redhat.com, 
-	tglx@linutronix.de, bpf@vger.kernel.org, rihams@fb.com, 
-	linux-perf-users@vger.kernel.org, Riham Selim <rihams@meta.com>
+Date: Tue, 4 Jun 2024 10:39:01 -0700
+Message-ID: <CAEf4Bzad6-zh8KaZXeKwT_K12zXU49Ov9Nc+hZD2mdWM_9TT1g@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 2/4] libbpf: API to access btf_dump emit queue
+ and print single type
+To: Eduard Zingerman <eddyz87@gmail.com>
+Cc: bpf@vger.kernel.org, ast@kernel.org, andrii@kernel.org, 
+	daniel@iogearbox.net, martin.lau@linux.dev, kernel-team@fb.com, 
+	yonghong.song@linux.dev, jose.marchesi@oracle.com, alan.maguire@oracle.com
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Jun 4, 2024 at 7:13=E2=80=AFAM Masami Hiramatsu <mhiramat@kernel.or=
-g> wrote:
+On Sat, Jun 1, 2024 at 12:22=E2=80=AFAM Eduard Zingerman <eddyz87@gmail.com=
+> wrote:
 >
-> On Tue, 21 May 2024 18:38:43 -0700
-> Andrii Nakryiko <andrii@kernel.org> wrote:
+> On Tue, 2024-05-28 at 15:18 -0700, Andrii Nakryiko wrote:
 >
-> > When kernel has pending uretprobes installed, it hijacks original user
-> > function return address on the stack with a uretprobe trampoline
-> > address. There could be multiple such pending uretprobes (either on
-> > different user functions or on the same recursive one) at any given
-> > time within the same task.
-> >
-> > This approach interferes with the user stack trace capture logic, which
-> > would report suprising addresses (like 0x7fffffffe000) that correspond
-> > to a special "[uprobes]" section that kernel installs in the target
-> > process address space for uretprobe trampoline code, while logically it
-> > should be an address somewhere within the calling function of another
-> > traced user function.
-> >
-> > This is easy to correct for, though. Uprobes subsystem keeps track of
-> > pending uretprobes and records original return addresses. This patch is
-> > using this to do a post-processing step and restore each trampoline
-> > address entries with correct original return address. This is done only
-> > if there are pending uretprobes for current task.
-> >
-> > This is a similar approach to what fprobe/kretprobe infrastructure is
-> > doing when capturing kernel stack traces in the presence of pending
-> > return probes.
-> >
+> [...]
 >
-> This looks good to me because this trampoline information is only
-> managed in uprobes. And it should be provided when unwinding user
-> stack.
+> > Speaking of which, for the next revision, can you also integrate all
+> > these new APIs into bpftool to handle the problem that Jose tried to
+> > solve? This might also expose any of the potential issues with API
+> > usage.
 >
-> Reviewed-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+> Hi Andrii,
 >
-> Thank you!
+> Good foresight requesting to re-implement Jose's patch on top of the
 
-Great, thanks for reviewing, Masami!
+yay, I guess it was :)
 
-Would you take this fix through your tree, or where should it be routed to?
+> new API. I did the changes you requested for v1 + tried to make the
+> bpftool changes, results are here:
+>
+> https://github.com/eddyz87/bpf/tree/libbpf-sort-for-dump-api-2
+>
+> The attempt falls flat for the following pattern:
+>
+>   #define __pai __attribute__((preserve_access_index))
+>   typedef struct { int x; } foo  __pai;
+>
+> With the following clang error:
+>
+>   t.c:2:31: error: 'preserve_access_index' attribute only applies to stru=
+cts, unions, and classes
+>     2 | typedef struct { int x; } foo __pai;
+>
+> The correct syntax for this definition is as below:
+>
+>   typedef struct { int x; } __pai foo;
+>
+> This cannot be achieved unless printing of typedefs is done by some
+> custom code in bpftool.
+
+Right, though in this case it probably is still achieved with using
+btf_dump__emit_type_decl() if bpftool detects TYPEDEF -> (anon) STRUCT
+pattern.
+
+But we can get deeper, thanks to horrendous C syntax:
+
+typedef struct { int x; } struct_arr[10];
+
+I think it still is achievable with btf_dump__emit_type_decl() setting
+.field_name option to "__pai struct_arr". It does feel like a hack, of
+course, but should work.
+
+In general, typedef is equivalent to field definition (which is
+intentional by original C syntax inventors, I believe), so maybe
+that's one way to address this.
 
 >
-> > Reported-by: Riham Selim <rihams@meta.com>
-> > Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-> > ---
-> >  kernel/events/callchain.c | 43 ++++++++++++++++++++++++++++++++++++++-
-> >  kernel/events/uprobes.c   |  9 ++++++++
-> >  2 files changed, 51 insertions(+), 1 deletion(-)
-> >
+> So, it looks like we won't be able to ditch callbacks in the end.
 
-[...]
+hopefully we can avoid this still, let's give it some more thought
+before we give up
+
+> Maybe the code for emit queue could be salvaged for the module thing
+> you talked about, please provide a bit more context about it.
+
+We talked offline, but for others. The idea here is when we have split
+BTF of a kernel module, we'd like to be able to dump it just like we
+do it for vmlinux BTF. But for kernel module we'd like to get
+<module>.h which would include only types defined in kernel module,
+skipping types that should be in base BTF (and thus come from
+vmlinux.h).
+
+The idea is that in practice you'd have something like:
+
+#include <vmlinux.h>
+#include <module1.h>
+#include <module2.h>
+
+and that will work together and won't conflict with vmlinux.h.
+
+>
+> Thanks,
+> Eduard
 
