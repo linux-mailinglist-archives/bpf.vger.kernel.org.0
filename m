@@ -1,436 +1,465 @@
-Return-Path: <bpf+bounces-31309-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-31311-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CA2A88FB529
-	for <lists+bpf@lfdr.de>; Tue,  4 Jun 2024 16:24:22 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id A3F8E8FB5DC
+	for <lists+bpf@lfdr.de>; Tue,  4 Jun 2024 16:44:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7EEC828731D
-	for <lists+bpf@lfdr.de>; Tue,  4 Jun 2024 14:24:21 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 12A49B2A48D
+	for <lists+bpf@lfdr.de>; Tue,  4 Jun 2024 14:43:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 033A113957E;
-	Tue,  4 Jun 2024 14:23:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NS9lu6ca"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F9FE144313;
+	Tue,  4 Jun 2024 14:42:15 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 74A4512B145;
-	Tue,  4 Jun 2024 14:23:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB82C143C54;
+	Tue,  4 Jun 2024 14:42:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717511033; cv=none; b=jkJ9+jwp2D552GoO3doDsRttFq6ZOfZbzUa8htQcMY3H0KU5q0cXqtizHMUxAD6QqR70pYYM6YbeuTQSwnyPe53msZvwjFScD/lwFu+tmicB57Ic07jOY/AXJELS6rkYKhngt33EHbaY68b4aDr0GuhKxd4KWPhKsLj+TB5ZLjM=
+	t=1717512135; cv=none; b=nmLAnwCBS31HdEs+IeNUZILFJ0xH9MBWQGCZVVl603uFUMWvt4ak92FSuJbex7dIKA+4QCzse2SKVEmdx3mDrHjQGjkIreiQ14RRuqcrYp/UIDLxi4zoUBXWjC/016Pvsnk+Q6omyYXzLFFIZXbz+RWc+h3+M67EzUhwG2mz7+g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717511033; c=relaxed/simple;
-	bh=+7oPmVZYfcUVbaIyvwTrbaKgghiQpyhG3dCzX35jPVg=;
-	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
-	 Mime-Version:Content-Type; b=hVWLJsbV3rB5TbqJd04OPZYzRqSFvC2HxWKfyKPiWCezeEwOFUonhhW7aRQX1Qs/gOsf1ny/l/NalrDYoIBtoyrTtoHIFwrTzAhdmA5GtTN/r3x/BPmUqBHO0ucr02umRfFXY4vy2OpXWN5/shl51XI2afZRpFWpb9haxyy8pXI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NS9lu6ca; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5C5DBC2BBFC;
-	Tue,  4 Jun 2024 14:23:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1717511033;
-	bh=+7oPmVZYfcUVbaIyvwTrbaKgghiQpyhG3dCzX35jPVg=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=NS9lu6caMICxmkSnj3CDR9UryZ9YmUE+cgWOJ4zBZVSyBRZ2uCgWeoEIq+No7DQu3
-	 XqIui+ywBVnMHGbADm5YIVPSrHG7w3bMVsgCr6ywNnJDcMILh+LJbQ4rUlstmqBST5
-	 sF7/LFceEyuwk4aTVz5l55plTXOfwPtfmXM42NnEMf4uQtGhuMtQq4gO8LgOinB7Sd
-	 Jh4GIXWioEyHXzp6HGudpBtp7nGJc3jExi5yxvobpoRfTXHoiEgOcj9wT5A+jPAZYi
-	 EDGqGil+4xOtY0S5Msw0Er4u2DBCxHJ5/Askuofyx8Tn0o66PQ/dkKBjpw3wLlvgFi
-	 bZPejCfUjqIEQ==
-Date: Tue, 4 Jun 2024 23:23:46 +0900
-From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To: Steven Rostedt <rostedt@goodmis.org>
-Cc: linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org, Mark
- Rutland <mark.rutland@arm.com>, Mathieu Desnoyers
- <mathieu.desnoyers@efficios.com>, Andrew Morton
- <akpm@linux-foundation.org>, Alexei Starovoitov
- <alexei.starovoitov@gmail.com>, Florent Revest <revest@chromium.org>,
- Martin KaFai Lau <martin.lau@linux.dev>, bpf <bpf@vger.kernel.org>, Sven
- Schnelle <svens@linux.ibm.com>, Alexei Starovoitov <ast@kernel.org>, Jiri
- Olsa <jolsa@kernel.org>, Arnaldo Carvalho de Melo <acme@kernel.org>, Daniel
- Borkmann <daniel@iogearbox.net>, Alan Maguire <alan.maguire@oracle.com>,
- Peter Zijlstra <peterz@infradead.org>, Thomas Gleixner
- <tglx@linutronix.de>, Guo Ren <guoren@kernel.org>
-Subject: Re: [PATCH v3 00/27] function_graph: Allow multiple users for
- function graph tracing
-Message-Id: <20240604232346.65a51f71d2f58ae2cca22b15@kernel.org>
-In-Reply-To: <20240604081850.59267aa9@rorschach.local.home>
-References: <20240603190704.663840775@goodmis.org>
-	<20240604081850.59267aa9@rorschach.local.home>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1717512135; c=relaxed/simple;
+	bh=qU8xhCDt9RMOZCSgOY5aMaPJybEq2SOdmfs7FSgnd6I=;
+	h=Message-ID:Date:From:To:Cc:Subject:References:MIME-Version:
+	 Content-Type; b=tcyk6SzbubqXda4sroTPZNfJmBQinKiHmgrC/v7o6KsMwMJKsU9RWO7ABtbnwATArZ2z4Jv+9HQUvaPYpYxmIlMLVOi4y1OD1OJSr6HyesuB0A+qQCLalFiQLEkc/q3n3tzgV8gyPsEg5IuY8Y8BVFVRV0Q1hyOh+1heoY2zBzw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 85950C2BBFC;
+	Tue,  4 Jun 2024 14:42:14 +0000 (UTC)
+Received: from rostedt by gandalf with local (Exim 4.97)
+	(envelope-from <rostedt@goodmis.org>)
+	id 1sEVMc-00000000Yte-1AR1;
+	Tue, 04 Jun 2024 10:42:14 -0400
+Message-ID: <20240604144214.147056566@goodmis.org>
+User-Agent: quilt/0.68
+Date: Tue, 04 Jun 2024 10:41:04 -0400
+From: Steven Rostedt <rostedt@goodmis.org>
+To: linux-kernel@vger.kernel.org
+Cc: Masami Hiramatsu <mhiramat@kernel.org>,
+ Mark Rutland <mark.rutland@arm.com>,
+ Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+ Florent Revest <revest@chromium.org>,
+ Martin KaFai Lau <martin.lau@linux.dev>,
+ bpf <bpf@vger.kernel.org>,
+ Sven Schnelle <svens@linux.ibm.com>,
+ Alexei Starovoitov <ast@kernel.org>,
+ Jiri Olsa <jolsa@kernel.org>,
+ Arnaldo Carvalho de Melo <acme@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>,
+ Alan Maguire <alan.maguire@oracle.com>,
+ Peter Zijlstra <peterz@infradead.org>,
+ Thomas Gleixner <tglx@linutronix.de>,
+ Guo Ren <guoren@kernel.org>
+Subject: [for-next][PATCH 01/27] function_graph: Convert ret_stack to a series of longs
+References: <20240604144103.293353991@goodmis.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 
-On Tue, 4 Jun 2024 08:18:50 -0400
-Steven Rostedt <rostedt@goodmis.org> wrote:
+From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
 
-> 
-> Masami,
-> 
-> This series passed all my tests, are you comfortable with me pushing
-> them to linux-next?
+In order to make it possible to have multiple callbacks registered with the
+function_graph tracer, the retstack needs to be converted from an array of
+ftrace_ret_stack structures to an array of longs. This will allow to store
+the list of callbacks on the stack for the return side of the functions.
 
-Yes, this series looks good to me too.
+Link: https://lore.kernel.org/linux-trace-kernel/171509092742.162236.4427737821399314856.stgit@devnote2
+Link: https://lore.kernel.org/linux-trace-kernel/20240603190821.073111754@goodmis.org
 
+Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Florent Revest <revest@chromium.org>
+Cc: Martin KaFai Lau <martin.lau@linux.dev>
+Cc: bpf <bpf@vger.kernel.org>
+Cc: Sven Schnelle <svens@linux.ibm.com>
+Cc: Alexei Starovoitov <ast@kernel.org>
+Cc: Jiri Olsa <jolsa@kernel.org>
+Cc: Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc: Daniel Borkmann <daniel@iogearbox.net>
+Cc: Alan Maguire <alan.maguire@oracle.com>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Guo Ren <guoren@kernel.org>
 Reviewed-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
+---
+ include/linux/sched.h |   2 +-
+ kernel/trace/fgraph.c | 136 +++++++++++++++++++++++++-----------------
+ 2 files changed, 83 insertions(+), 55 deletions(-)
 
-for the series.
-
-Thank you!
-
-> 
-> -- Steve
-> 
-> 
-> On Mon, 03 Jun 2024 15:07:04 -0400
-> Steven Rostedt <rostedt@goodmis.org> wrote:
-> 
-> > This is a continuation of the function graph multi user code.
-> > I wrote a proof of concept back in 2019 of this code[1] and
-> > Masami started cleaning it up. I started from Masami's work v10
-> > that can be found here:
-> > 
-> >  https://lore.kernel.org/linux-trace-kernel/171509088006.162236.7227326999861366050.stgit@devnote2/
-> > 
-> > This is *only* the code that allows multiple users of function
-> > graph tracing. This is not the fprobe work that Masami is working
-> > to add on top of it. As Masami took my proof of concept, there
-> > was still several things I disliked about that code. Instead of
-> > having Masami clean it up even more, I decided to take over on just
-> > my code and change it up a bit.
-> > 
-> > Changes since v2: https://lore.kernel.org/linux-trace-kernel/20240602033744.563858532@goodmis.org
-> > 
-> > - Added comments describing which hashes the append and intersect
-> >   functions were used for.
-> > 
-> > - Replaced checks of (NULL or EMPTY_HASH) with ftrace_hash_empty()
-> >   helper function.
-> > 
-> > - Added check at the end of intersect_hash() to convert the hash
-> >   to EMPTY hash if it doesn't have any functions.
-> > 
-> > - Renamed compare_ops() to ops_equal() and return boolean (inversed return
-> >   value).
-> > 
-> > - Broke out __ftrace_hash_move_and_update_ops() to use in both
-> >   ftrace_hash_move_and_update_ops() and ftrace_hash_move_and_update_subops().
-> > 
-> > Diff between last version at end of this email.
-> > 
-> > Masami Hiramatsu (Google) (3):
-> >       function_graph: Handle tail calls for stack unwinding
-> >       function_graph: Use a simple LRU for fgraph_array index number
-> >       ftrace: Add multiple fgraph storage selftest
-> > 
-> > Steven Rostedt (Google) (9):
-> >       ftrace: Add subops logic to allow one ops to manage many
-> >       ftrace: Allow subops filtering to be modified
-> >       function_graph: Add pid tracing back to function graph tracer
-> >       function_graph: Use for_each_set_bit() in __ftrace_return_to_handler()
-> >       function_graph: Use bitmask to loop on fgraph entry
-> >       function_graph: Use static_call and branch to optimize entry function
-> >       function_graph: Use static_call and branch to optimize return function
-> >       selftests/ftrace: Add function_graph tracer to func-filter-pid test
-> >       selftests/ftrace: Add fgraph-multi.tc test
-> > 
-> > Steven Rostedt (VMware) (15):
-> >       function_graph: Convert ret_stack to a series of longs
-> >       fgraph: Use BUILD_BUG_ON() to make sure we have structures divisible by long
-> >       function_graph: Add an array structure that will allow multiple callbacks
-> >       function_graph: Allow multiple users to attach to function graph
-> >       function_graph: Remove logic around ftrace_graph_entry and return
-> >       ftrace/function_graph: Pass fgraph_ops to function graph callbacks
-> >       ftrace: Allow function_graph tracer to be enabled in instances
-> >       ftrace: Allow ftrace startup flags to exist without dynamic ftrace
-> >       function_graph: Have the instances use their own ftrace_ops for filtering
-> >       function_graph: Add "task variables" per task for fgraph_ops
-> >       function_graph: Move set_graph_function tests to shadow stack global var
-> >       function_graph: Move graph depth stored data to shadow stack global var
-> >       function_graph: Move graph notrace bit to shadow stack global var
-> >       function_graph: Implement fgraph_reserve_data() and fgraph_retrieve_data()
-> >       function_graph: Add selftest for passing local variables
-> > 
-> > ----
-> >  include/linux/ftrace.h                             |   43 +-
-> >  include/linux/sched.h                              |    2 +-
-> >  include/linux/trace_recursion.h                    |   39 -
-> >  kernel/trace/fgraph.c                              | 1044 ++++++++++++++++----
-> >  kernel/trace/ftrace.c                              |  522 +++++++++-
-> >  kernel/trace/ftrace_internal.h                     |    5 +-
-> >  kernel/trace/trace.h                               |   94 +-
-> >  kernel/trace/trace_functions.c                     |    8 +
-> >  kernel/trace/trace_functions_graph.c               |   96 +-
-> >  kernel/trace/trace_irqsoff.c                       |   10 +-
-> >  kernel/trace/trace_sched_wakeup.c                  |   10 +-
-> >  kernel/trace/trace_selftest.c                      |  259 ++++-
-> >  .../selftests/ftrace/test.d/ftrace/fgraph-multi.tc |  103 ++
-> >  .../ftrace/test.d/ftrace/func-filter-pid.tc        |   27 +-
-> >  14 files changed, 1945 insertions(+), 317 deletions(-)
-> >  create mode 100644 tools/testing/selftests/ftrace/test.d/ftrace/fgraph-multi.tc
-> > 
-> > 
-> > diff --git a/kernel/trace/ftrace.c b/kernel/trace/ftrace.c
-> > index 41fabc6d30e4..da7e6abf48b4 100644
-> > --- a/kernel/trace/ftrace.c
-> > +++ b/kernel/trace/ftrace.c
-> > @@ -3170,7 +3170,7 @@ int ftrace_shutdown(struct ftrace_ops *ops, int command)
-> >  /* Simply make a copy of @src and return it */
-> >  static struct ftrace_hash *copy_hash(struct ftrace_hash *src)
-> >  {
-> > -	if (!src || src == EMPTY_HASH)
-> > +	if (ftrace_hash_empty(src))
-> >  		return EMPTY_HASH;
-> >  
-> >  	return alloc_and_copy_ftrace_hash(src->size_bits, src);
-> > @@ -3187,6 +3187,9 @@ static struct ftrace_hash *copy_hash(struct ftrace_hash *src)
-> >   *
-> >   *  Otherwise, go through all of @new_hash and add anything that @hash
-> >   *  doesn't already have, to @hash.
-> > + *
-> > + *  The filter_hash updates uses just the append_hash() function
-> > + *  and the notrace_hash does not.
-> >   */
-> >  static int append_hash(struct ftrace_hash **hash, struct ftrace_hash *new_hash)
-> >  {
-> > @@ -3195,11 +3198,11 @@ static int append_hash(struct ftrace_hash **hash, struct ftrace_hash *new_hash)
-> >  	int i;
-> >  
-> >  	/* An empty hash does everything */
-> > -	if (!*hash || *hash == EMPTY_HASH)
-> > +	if (ftrace_hash_empty(*hash))
-> >  		return 0;
-> >  
-> >  	/* If new_hash has everything make hash have everything */
-> > -	if (!new_hash || new_hash == EMPTY_HASH) {
-> > +	if (ftrace_hash_empty(new_hash)) {
-> >  		free_ftrace_hash(*hash);
-> >  		*hash = EMPTY_HASH;
-> >  		return 0;
-> > @@ -3217,7 +3220,12 @@ static int append_hash(struct ftrace_hash **hash, struct ftrace_hash *new_hash)
-> >  	return 0;
-> >  }
-> >  
-> > -/* Add to @hash only those that are in both @new_hash1 and @new_hash2 */
-> > +/*
-> > + * Add to @hash only those that are in both @new_hash1 and @new_hash2
-> > + *
-> > + * The notrace_hash updates uses just the intersect_hash() function
-> > + * and the filter_hash does not.
-> > + */
-> >  static int intersect_hash(struct ftrace_hash **hash, struct ftrace_hash *new_hash1,
-> >  			  struct ftrace_hash *new_hash2)
-> >  {
-> > @@ -3229,8 +3237,7 @@ static int intersect_hash(struct ftrace_hash **hash, struct ftrace_hash *new_has
-> >  	 * If new_hash1 or new_hash2 is the EMPTY_HASH then make the hash
-> >  	 * empty as well as empty for notrace means none are notraced.
-> >  	 */
-> > -	if (!new_hash1 || new_hash1 == EMPTY_HASH ||
-> > -	    !new_hash2 || new_hash2 == EMPTY_HASH) {
-> > +	if (ftrace_hash_empty(new_hash1) || ftrace_hash_empty(new_hash2)) {
-> >  		free_ftrace_hash(*hash);
-> >  		*hash = EMPTY_HASH;
-> >  		return 0;
-> > @@ -3245,6 +3252,11 @@ static int intersect_hash(struct ftrace_hash **hash, struct ftrace_hash *new_has
-> >  				return -ENOMEM;
-> >  		}
-> >  	}
-> > +	/* If nothing intersects, make it the empty set */
-> > +	if (ftrace_hash_empty(*hash)) {
-> > +		free_ftrace_hash(*hash);
-> > +		*hash = EMPTY_HASH;
-> > +	}
-> >  	return 0;
-> >  }
-> >  
-> > @@ -3266,7 +3278,7 @@ static struct ftrace_hash *append_hashes(struct ftrace_ops *ops)
-> >  			return NULL;
-> >  		}
-> >  		/* Nothing more to do if new_hash is empty */
-> > -		if (new_hash == EMPTY_HASH)
-> > +		if (ftrace_hash_empty(new_hash))
-> >  			break;
-> >  	}
-> >  	return new_hash;
-> > @@ -3300,59 +3312,76 @@ static struct ftrace_hash *intersect_hashes(struct ftrace_ops *ops)
-> >  			return NULL;
-> >  		}
-> >  		/* Nothing more to do if new_hash is empty */
-> > -		if (new_hash == EMPTY_HASH)
-> > +		if (ftrace_hash_empty(new_hash))
-> >  			break;
-> >  	}
-> >  	return new_hash;
-> >  }
-> >  
-> > -/* Returns 0 on equal or non-zero on non-equal */
-> > -static int compare_ops(struct ftrace_hash *A, struct ftrace_hash *B)
-> > +static bool ops_equal(struct ftrace_hash *A, struct ftrace_hash *B)
-> >  {
-> >  	struct ftrace_func_entry *entry;
-> >  	int size;
-> >  	int i;
-> >  
-> > -	if (!A || A == EMPTY_HASH)
-> > -		return !(!B || B == EMPTY_HASH);
-> > +	if (ftrace_hash_empty(A))
-> > +		return ftrace_hash_empty(B);
-> >  
-> > -	if (!B || B == EMPTY_HASH)
-> > -		return !(!A || A == EMPTY_HASH);
-> > +	if (ftrace_hash_empty(B))
-> > +		return ftrace_hash_empty(A);
-> >  
-> >  	if (A->count != B->count)
-> > -		return 1;
-> > +		return false;
-> >  
-> >  	size = 1 << A->size_bits;
-> >  	for (i = 0; i < size; i++) {
-> >  		hlist_for_each_entry(entry, &A->buckets[i], hlist) {
-> >  			if (!__ftrace_lookup_ip(B, entry->ip))
-> > -				return 1;
-> > +				return false;
-> >  		}
-> >  	}
-> >  
-> > -	return 0;
-> > +	return true;
-> >  }
-> >  
-> > -static int ftrace_hash_move_and_update_ops(struct ftrace_ops *ops,
-> > -					   struct ftrace_hash **orig_hash,
-> > -					   struct ftrace_hash *hash,
-> > -					   int enable);
-> > +static void ftrace_ops_update_code(struct ftrace_ops *ops,
-> > +				   struct ftrace_ops_hash *old_hash);
-> > +
-> > +static int __ftrace_hash_move_and_update_ops(struct ftrace_ops *ops,
-> > +					     struct ftrace_hash **orig_hash,
-> > +					     struct ftrace_hash *hash,
-> > +					     int enable)
-> > +{
-> > +	struct ftrace_ops_hash old_hash_ops;
-> > +	struct ftrace_hash *old_hash;
-> > +	int ret;
-> > +
-> > +	old_hash = *orig_hash;
-> > +	old_hash_ops.filter_hash = ops->func_hash->filter_hash;
-> > +	old_hash_ops.notrace_hash = ops->func_hash->notrace_hash;
-> > +	ret = ftrace_hash_move(ops, enable, orig_hash, hash);
-> > +	if (!ret) {
-> > +		ftrace_ops_update_code(ops, &old_hash_ops);
-> > +		free_ftrace_hash_rcu(old_hash);
-> > +	}
-> > +	return ret;
-> > +}
-> >  
-> >  static int ftrace_update_ops(struct ftrace_ops *ops, struct ftrace_hash *filter_hash,
-> >  			     struct ftrace_hash *notrace_hash)
-> >  {
-> >  	int ret;
-> >  
-> > -	if (compare_ops(filter_hash, ops->func_hash->filter_hash)) {
-> > -		ret = ftrace_hash_move_and_update_ops(ops, &ops->func_hash->filter_hash,
-> > -						      filter_hash, 1);
-> > +	if (!ops_equal(filter_hash, ops->func_hash->filter_hash)) {
-> > +		ret = __ftrace_hash_move_and_update_ops(ops, &ops->func_hash->filter_hash,
-> > +							filter_hash, 1);
-> >  		if (ret < 0)
-> >  			return ret;
-> >  	}
-> >  
-> > -	if (compare_ops(notrace_hash, ops->func_hash->notrace_hash)) {
-> > -		ret = ftrace_hash_move_and_update_ops(ops, &ops->func_hash->notrace_hash,
-> > -						      notrace_hash, 0);
-> > +	if (!ops_equal(notrace_hash, ops->func_hash->notrace_hash)) {
-> > +		ret = __ftrace_hash_move_and_update_ops(ops, &ops->func_hash->notrace_hash,
-> > +							notrace_hash, 0);
-> >  		if (ret < 0)
-> >  			return ret;
-> >  	}
-> > @@ -3438,8 +3467,8 @@ int ftrace_startup_subops(struct ftrace_ops *ops, struct ftrace_ops *subops, int
-> >  	 *   o If either notrace_hash is empty then the final stays empty
-> >  	 *      o Otherwise, the final is an intersection between the hashes
-> >  	 */
-> > -	if (ops->func_hash->filter_hash == EMPTY_HASH ||
-> > -	    subops->func_hash->filter_hash == EMPTY_HASH) {
-> > +	if (ftrace_hash_empty(ops->func_hash->filter_hash) ||
-> > +	    ftrace_hash_empty(subops->func_hash->filter_hash)) {
-> >  		filter_hash = EMPTY_HASH;
-> >  	} else {
-> >  		size_bits = max(ops->func_hash->filter_hash->size_bits,
-> > @@ -3454,8 +3483,8 @@ int ftrace_startup_subops(struct ftrace_ops *ops, struct ftrace_ops *subops, int
-> >  		}
-> >  	}
-> >  
-> > -	if (ops->func_hash->notrace_hash == EMPTY_HASH ||
-> > -	    subops->func_hash->notrace_hash == EMPTY_HASH) {
-> > +	if (ftrace_hash_empty(ops->func_hash->notrace_hash) ||
-> > +	    ftrace_hash_empty(subops->func_hash->notrace_hash)) {
-> >  		notrace_hash = EMPTY_HASH;
-> >  	} else {
-> >  		size_bits = max(ops->func_hash->filter_hash->size_bits,
-> > @@ -3591,7 +3620,7 @@ static int ftrace_hash_move_and_update_subops(struct ftrace_ops *subops,
-> >  	}
-> >  
-> >  	/* Move the hash over to the new hash */
-> > -	ret = ftrace_hash_move_and_update_ops(ops, orig_hash, new_hash, enable);
-> > +	ret = __ftrace_hash_move_and_update_ops(ops, orig_hash, new_hash, enable);
-> >  
-> >  	free_ftrace_hash(new_hash);
-> >  
-> > @@ -4822,11 +4851,6 @@ static int ftrace_hash_move_and_update_ops(struct ftrace_ops *ops,
-> >  					   struct ftrace_hash *hash,
-> >  					   int enable)
-> >  {
-> > -	struct ftrace_ops_hash old_hash_ops;
-> > -	struct ftrace_hash *old_hash;
-> > -	struct ftrace_ops *op;
-> > -	int ret;
-> > -
-> >  	if (ops->flags & FTRACE_OPS_FL_SUBOP)
-> >  		return ftrace_hash_move_and_update_subops(ops, orig_hash, hash, enable);
-> >  
-> > @@ -4838,6 +4862,8 @@ static int ftrace_hash_move_and_update_ops(struct ftrace_ops *ops,
-> >  	 * it will not affect subops that share it.
-> >  	 */
-> >  	if (!(ops->flags & FTRACE_OPS_FL_ENABLED)) {
-> > +		struct ftrace_ops *op;
-> > +
-> >  		/* Check if any other manager subops maps to this hash */
-> >  		do_for_each_ftrace_op(op, ftrace_ops_list) {
-> >  			struct ftrace_ops *subops;
-> > @@ -4851,15 +4877,7 @@ static int ftrace_hash_move_and_update_ops(struct ftrace_ops *ops,
-> >  		} while_for_each_ftrace_op(op);
-> >  	}
-> >  
-> > -	old_hash = *orig_hash;
-> > -	old_hash_ops.filter_hash = ops->func_hash->filter_hash;
-> > -	old_hash_ops.notrace_hash = ops->func_hash->notrace_hash;
-> > -	ret = ftrace_hash_move(ops, enable, orig_hash, hash);
-> > -	if (!ret) {
-> > -		ftrace_ops_update_code(ops, &old_hash_ops);
-> > -		free_ftrace_hash_rcu(old_hash);
-> > -	}
-> > -	return ret;
-> > +	return __ftrace_hash_move_and_update_ops(ops, orig_hash, hash, enable);
-> >  }
-> >  
-> >  static bool module_exists(const char *module)
-> 
-
-
+diff --git a/include/linux/sched.h b/include/linux/sched.h
+index 61591ac6eab6..352939dab3a5 100644
+--- a/include/linux/sched.h
++++ b/include/linux/sched.h
+@@ -1402,7 +1402,7 @@ struct task_struct {
+ 	int				curr_ret_depth;
+ 
+ 	/* Stack of return addresses for return function tracing: */
+-	struct ftrace_ret_stack		*ret_stack;
++	unsigned long			*ret_stack;
+ 
+ 	/* Timestamp for last schedule: */
+ 	unsigned long long		ftrace_timestamp;
+diff --git a/kernel/trace/fgraph.c b/kernel/trace/fgraph.c
+index a130b2d898f7..c62e6db718a0 100644
+--- a/kernel/trace/fgraph.c
++++ b/kernel/trace/fgraph.c
+@@ -25,6 +25,30 @@
+ #define ASSIGN_OPS_HASH(opsname, val)
+ #endif
+ 
++/*
++ * FGRAPH_FRAME_SIZE:	Size in bytes of the meta data on the shadow stack
++ * FGRAPH_FRAME_OFFSET:	Size in long words of the meta data frame
++ * SHADOW_STACK_SIZE:	The size in bytes of the entire shadow stack
++ * SHADOW_STACK_OFFSET:	The size in long words of the shadow stack
++ * SHADOW_STACK_MAX_OFFSET: The max offset of the stack for a new frame to be added
++ */
++#define FGRAPH_FRAME_SIZE	sizeof(struct ftrace_ret_stack)
++#define FGRAPH_FRAME_OFFSET	(ALIGN(FGRAPH_FRAME_SIZE, sizeof(long)) / sizeof(long))
++#define SHADOW_STACK_SIZE (PAGE_SIZE)
++#define SHADOW_STACK_OFFSET			\
++	(ALIGN(SHADOW_STACK_SIZE, sizeof(long)) / sizeof(long))
++/* Leave on a buffer at the end */
++#define SHADOW_STACK_MAX_INDEX (SHADOW_STACK_OFFSET - FGRAPH_FRAME_OFFSET)
++
++/*
++ * RET_STACK():		Return the frame from a given @offset from task @t
++ * RET_STACK_INC():	Reserve one frame size on the stack.
++ * RET_STACK_DEC():	Remove one frame size from the stack.
++ */
++#define RET_STACK(t, index) ((struct ftrace_ret_stack *)(&(t)->ret_stack[index]))
++#define RET_STACK_INC(c) ({ c += FGRAPH_FRAME_OFFSET; })
++#define RET_STACK_DEC(c) ({ c -= FGRAPH_FRAME_OFFSET; })
++
+ DEFINE_STATIC_KEY_FALSE(kill_ftrace_graph);
+ int ftrace_graph_active;
+ 
+@@ -69,6 +93,7 @@ static int
+ ftrace_push_return_trace(unsigned long ret, unsigned long func,
+ 			 unsigned long frame_pointer, unsigned long *retp)
+ {
++	struct ftrace_ret_stack *ret_stack;
+ 	unsigned long long calltime;
+ 	int index;
+ 
+@@ -85,23 +110,25 @@ ftrace_push_return_trace(unsigned long ret, unsigned long func,
+ 	smp_rmb();
+ 
+ 	/* The return trace stack is full */
+-	if (current->curr_ret_stack == FTRACE_RETFUNC_DEPTH - 1) {
++	if (current->curr_ret_stack >= SHADOW_STACK_MAX_INDEX) {
+ 		atomic_inc(&current->trace_overrun);
+ 		return -EBUSY;
+ 	}
+ 
+ 	calltime = trace_clock_local();
+ 
+-	index = ++current->curr_ret_stack;
++	index = current->curr_ret_stack;
++	RET_STACK_INC(current->curr_ret_stack);
++	ret_stack = RET_STACK(current, index);
+ 	barrier();
+-	current->ret_stack[index].ret = ret;
+-	current->ret_stack[index].func = func;
+-	current->ret_stack[index].calltime = calltime;
++	ret_stack->ret = ret;
++	ret_stack->func = func;
++	ret_stack->calltime = calltime;
+ #ifdef HAVE_FUNCTION_GRAPH_FP_TEST
+-	current->ret_stack[index].fp = frame_pointer;
++	ret_stack->fp = frame_pointer;
+ #endif
+ #ifdef HAVE_FUNCTION_GRAPH_RET_ADDR_PTR
+-	current->ret_stack[index].retp = retp;
++	ret_stack->retp = retp;
+ #endif
+ 	return 0;
+ }
+@@ -137,7 +164,7 @@ int function_graph_enter(unsigned long ret, unsigned long func,
+ 
+ 	return 0;
+  out_ret:
+-	current->curr_ret_stack--;
++	RET_STACK_DEC(current->curr_ret_stack);
+  out:
+ 	current->curr_ret_depth--;
+ 	return -EBUSY;
+@@ -148,11 +175,13 @@ static void
+ ftrace_pop_return_trace(struct ftrace_graph_ret *trace, unsigned long *ret,
+ 			unsigned long frame_pointer)
+ {
++	struct ftrace_ret_stack *ret_stack;
+ 	int index;
+ 
+ 	index = current->curr_ret_stack;
++	RET_STACK_DEC(index);
+ 
+-	if (unlikely(index < 0 || index >= FTRACE_RETFUNC_DEPTH)) {
++	if (unlikely(index < 0 || index > SHADOW_STACK_MAX_INDEX)) {
+ 		ftrace_graph_stop();
+ 		WARN_ON(1);
+ 		/* Might as well panic, otherwise we have no where to go */
+@@ -160,6 +189,7 @@ ftrace_pop_return_trace(struct ftrace_graph_ret *trace, unsigned long *ret,
+ 		return;
+ 	}
+ 
++	ret_stack = RET_STACK(current, index);
+ #ifdef HAVE_FUNCTION_GRAPH_FP_TEST
+ 	/*
+ 	 * The arch may choose to record the frame pointer used
+@@ -175,22 +205,22 @@ ftrace_pop_return_trace(struct ftrace_graph_ret *trace, unsigned long *ret,
+ 	 * Note, -mfentry does not use frame pointers, and this test
+ 	 *  is not needed if CC_USING_FENTRY is set.
+ 	 */
+-	if (unlikely(current->ret_stack[index].fp != frame_pointer)) {
++	if (unlikely(ret_stack->fp != frame_pointer)) {
+ 		ftrace_graph_stop();
+ 		WARN(1, "Bad frame pointer: expected %lx, received %lx\n"
+ 		     "  from func %ps return to %lx\n",
+ 		     current->ret_stack[index].fp,
+ 		     frame_pointer,
+-		     (void *)current->ret_stack[index].func,
+-		     current->ret_stack[index].ret);
++		     (void *)ret_stack->func,
++		     ret_stack->ret);
+ 		*ret = (unsigned long)panic;
+ 		return;
+ 	}
+ #endif
+ 
+-	*ret = current->ret_stack[index].ret;
+-	trace->func = current->ret_stack[index].func;
+-	trace->calltime = current->ret_stack[index].calltime;
++	*ret = ret_stack->ret;
++	trace->func = ret_stack->func;
++	trace->calltime = ret_stack->calltime;
+ 	trace->overrun = atomic_read(&current->trace_overrun);
+ 	trace->depth = current->curr_ret_depth--;
+ 	/*
+@@ -251,7 +281,7 @@ static unsigned long __ftrace_return_to_handler(struct fgraph_ret_regs *ret_regs
+ 	 * curr_ret_stack is after that.
+ 	 */
+ 	barrier();
+-	current->curr_ret_stack--;
++	RET_STACK_DEC(current->curr_ret_stack);
+ 
+ 	if (unlikely(!ret)) {
+ 		ftrace_graph_stop();
+@@ -294,12 +324,13 @@ unsigned long ftrace_return_to_handler(unsigned long frame_pointer)
+ struct ftrace_ret_stack *
+ ftrace_graph_get_ret_stack(struct task_struct *task, int idx)
+ {
+-	idx = task->curr_ret_stack - idx;
++	int index = task->curr_ret_stack;
+ 
+-	if (idx >= 0 && idx <= task->curr_ret_stack)
+-		return &task->ret_stack[idx];
++	index -= FGRAPH_FRAME_OFFSET * (idx + 1);
++	if (index < 0)
++		return NULL;
+ 
+-	return NULL;
++	return RET_STACK(task, index);
+ }
+ 
+ /**
+@@ -321,18 +352,20 @@ ftrace_graph_get_ret_stack(struct task_struct *task, int idx)
+ unsigned long ftrace_graph_ret_addr(struct task_struct *task, int *idx,
+ 				    unsigned long ret, unsigned long *retp)
+ {
++	struct ftrace_ret_stack *ret_stack;
+ 	int index = task->curr_ret_stack;
+ 	int i;
+ 
+ 	if (ret != (unsigned long)dereference_kernel_function_descriptor(return_to_handler))
+ 		return ret;
+ 
+-	if (index < 0)
+-		return ret;
++	RET_STACK_DEC(index);
+ 
+-	for (i = 0; i <= index; i++)
+-		if (task->ret_stack[i].retp == retp)
+-			return task->ret_stack[i].ret;
++	for (i = index; i >= 0; RET_STACK_DEC(i)) {
++		ret_stack = RET_STACK(task, i);
++		if (ret_stack->retp == retp)
++			return ret_stack->ret;
++	}
+ 
+ 	return ret;
+ }
+@@ -346,14 +379,15 @@ unsigned long ftrace_graph_ret_addr(struct task_struct *task, int *idx,
+ 		return ret;
+ 
+ 	task_idx = task->curr_ret_stack;
++	RET_STACK_DEC(task_idx);
+ 
+ 	if (!task->ret_stack || task_idx < *idx)
+ 		return ret;
+ 
+ 	task_idx -= *idx;
+-	(*idx)++;
++	RET_STACK_INC(*idx);
+ 
+-	return task->ret_stack[task_idx].ret;
++	return RET_STACK(task, task_idx);
+ }
+ #endif /* HAVE_FUNCTION_GRAPH_RET_ADDR_PTR */
+ 
+@@ -391,7 +425,7 @@ trace_func_graph_ent_t ftrace_graph_entry = ftrace_graph_entry_stub;
+ static trace_func_graph_ent_t __ftrace_graph_entry = ftrace_graph_entry_stub;
+ 
+ /* Try to assign a return stack array on FTRACE_RETSTACK_ALLOC_SIZE tasks. */
+-static int alloc_retstack_tasklist(struct ftrace_ret_stack **ret_stack_list)
++static int alloc_retstack_tasklist(unsigned long **ret_stack_list)
+ {
+ 	int i;
+ 	int ret = 0;
+@@ -399,10 +433,7 @@ static int alloc_retstack_tasklist(struct ftrace_ret_stack **ret_stack_list)
+ 	struct task_struct *g, *t;
+ 
+ 	for (i = 0; i < FTRACE_RETSTACK_ALLOC_SIZE; i++) {
+-		ret_stack_list[i] =
+-			kmalloc_array(FTRACE_RETFUNC_DEPTH,
+-				      sizeof(struct ftrace_ret_stack),
+-				      GFP_KERNEL);
++		ret_stack_list[i] = kmalloc(SHADOW_STACK_SIZE, GFP_KERNEL);
+ 		if (!ret_stack_list[i]) {
+ 			start = 0;
+ 			end = i;
+@@ -420,9 +451,9 @@ static int alloc_retstack_tasklist(struct ftrace_ret_stack **ret_stack_list)
+ 
+ 		if (t->ret_stack == NULL) {
+ 			atomic_set(&t->trace_overrun, 0);
+-			t->curr_ret_stack = -1;
++			t->curr_ret_stack = 0;
+ 			t->curr_ret_depth = -1;
+-			/* Make sure the tasks see the -1 first: */
++			/* Make sure the tasks see the 0 first: */
+ 			smp_wmb();
+ 			t->ret_stack = ret_stack_list[start++];
+ 		}
+@@ -442,6 +473,7 @@ ftrace_graph_probe_sched_switch(void *ignore, bool preempt,
+ 				struct task_struct *next,
+ 				unsigned int prev_state)
+ {
++	struct ftrace_ret_stack *ret_stack;
+ 	unsigned long long timestamp;
+ 	int index;
+ 
+@@ -466,8 +498,11 @@ ftrace_graph_probe_sched_switch(void *ignore, bool preempt,
+ 	 */
+ 	timestamp -= next->ftrace_timestamp;
+ 
+-	for (index = next->curr_ret_stack; index >= 0; index--)
+-		next->ret_stack[index].calltime += timestamp;
++	for (index = next->curr_ret_stack - FGRAPH_FRAME_OFFSET; index >= 0; ) {
++		ret_stack = RET_STACK(next, index);
++		ret_stack->calltime += timestamp;
++		index -= FGRAPH_FRAME_OFFSET;
++	}
+ }
+ 
+ static int ftrace_graph_entry_test(struct ftrace_graph_ent *trace)
+@@ -510,10 +545,10 @@ void update_function_graph_func(void)
+ 		ftrace_graph_entry = __ftrace_graph_entry;
+ }
+ 
+-static DEFINE_PER_CPU(struct ftrace_ret_stack *, idle_ret_stack);
++static DEFINE_PER_CPU(unsigned long *, idle_ret_stack);
+ 
+ static void
+-graph_init_task(struct task_struct *t, struct ftrace_ret_stack *ret_stack)
++graph_init_task(struct task_struct *t, unsigned long *ret_stack)
+ {
+ 	atomic_set(&t->trace_overrun, 0);
+ 	t->ftrace_timestamp = 0;
+@@ -528,7 +563,7 @@ graph_init_task(struct task_struct *t, struct ftrace_ret_stack *ret_stack)
+  */
+ void ftrace_graph_init_idle_task(struct task_struct *t, int cpu)
+ {
+-	t->curr_ret_stack = -1;
++	t->curr_ret_stack = 0;
+ 	t->curr_ret_depth = -1;
+ 	/*
+ 	 * The idle task has no parent, it either has its own
+@@ -538,14 +573,11 @@ void ftrace_graph_init_idle_task(struct task_struct *t, int cpu)
+ 		WARN_ON(t->ret_stack != per_cpu(idle_ret_stack, cpu));
+ 
+ 	if (ftrace_graph_active) {
+-		struct ftrace_ret_stack *ret_stack;
++		unsigned long *ret_stack;
+ 
+ 		ret_stack = per_cpu(idle_ret_stack, cpu);
+ 		if (!ret_stack) {
+-			ret_stack =
+-				kmalloc_array(FTRACE_RETFUNC_DEPTH,
+-					      sizeof(struct ftrace_ret_stack),
+-					      GFP_KERNEL);
++			ret_stack = kmalloc(SHADOW_STACK_SIZE, GFP_KERNEL);
+ 			if (!ret_stack)
+ 				return;
+ 			per_cpu(idle_ret_stack, cpu) = ret_stack;
+@@ -559,15 +591,13 @@ void ftrace_graph_init_task(struct task_struct *t)
+ {
+ 	/* Make sure we do not use the parent ret_stack */
+ 	t->ret_stack = NULL;
+-	t->curr_ret_stack = -1;
++	t->curr_ret_stack = 0;
+ 	t->curr_ret_depth = -1;
+ 
+ 	if (ftrace_graph_active) {
+-		struct ftrace_ret_stack *ret_stack;
++		unsigned long *ret_stack;
+ 
+-		ret_stack = kmalloc_array(FTRACE_RETFUNC_DEPTH,
+-					  sizeof(struct ftrace_ret_stack),
+-					  GFP_KERNEL);
++		ret_stack = kmalloc(SHADOW_STACK_SIZE, GFP_KERNEL);
+ 		if (!ret_stack)
+ 			return;
+ 		graph_init_task(t, ret_stack);
+@@ -576,7 +606,7 @@ void ftrace_graph_init_task(struct task_struct *t)
+ 
+ void ftrace_graph_exit_task(struct task_struct *t)
+ {
+-	struct ftrace_ret_stack	*ret_stack = t->ret_stack;
++	unsigned long *ret_stack = t->ret_stack;
+ 
+ 	t->ret_stack = NULL;
+ 	/* NULL must become visible to IRQs before we free it: */
+@@ -588,12 +618,10 @@ void ftrace_graph_exit_task(struct task_struct *t)
+ /* Allocate a return stack for each task */
+ static int start_graph_tracing(void)
+ {
+-	struct ftrace_ret_stack **ret_stack_list;
++	unsigned long **ret_stack_list;
+ 	int ret, cpu;
+ 
+-	ret_stack_list = kmalloc_array(FTRACE_RETSTACK_ALLOC_SIZE,
+-				       sizeof(struct ftrace_ret_stack *),
+-				       GFP_KERNEL);
++	ret_stack_list = kmalloc(SHADOW_STACK_SIZE, GFP_KERNEL);
+ 
+ 	if (!ret_stack_list)
+ 		return -ENOMEM;
 -- 
-Masami Hiramatsu (Google) <mhiramat@kernel.org>
+2.43.0
+
+
 
