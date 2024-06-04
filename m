@@ -1,148 +1,135 @@
-Return-Path: <bpf+bounces-31355-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-31356-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 494A98FB94A
-	for <lists+bpf@lfdr.de>; Tue,  4 Jun 2024 18:43:23 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 159528FB9CC
+	for <lists+bpf@lfdr.de>; Tue,  4 Jun 2024 19:04:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id F2AE81F22D78
-	for <lists+bpf@lfdr.de>; Tue,  4 Jun 2024 16:43:22 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C4AC0B218F7
+	for <lists+bpf@lfdr.de>; Tue,  4 Jun 2024 17:04:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D9371494A0;
-	Tue,  4 Jun 2024 16:43:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 69B451494DC;
+	Tue,  4 Jun 2024 17:04:41 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D1BF1148847;
-	Tue,  4 Jun 2024 16:43:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B0BE148820;
+	Tue,  4 Jun 2024 17:04:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717519384; cv=none; b=OlCJephw07T+5wvKsyAOGxJ1edQZ/0O0T6Y4aSahpKs3XXLgB03Fo+dCHRuNOCx2SbBWc2QED+gY7rnW3Nb8Qr0ECi8rFyhe6Ct6drLDYTpekI5vclA07hkBXtZPPeKs3SYvXYjMBTR0/n5ofKPveqKYvqlldfXp50K6aOzmi1I=
+	t=1717520681; cv=none; b=r8bqTlEBFKhzSSXM8AZkYrPxj5ovu/40viMo8/Oiwt/PPGa4KchaLg60ZCclPpnd/tppmKGYeVycD9FnM4uG1J4DXXiwsVMTth0y/yHOIq0KDjDCVk3u3LJFVlpBerz6YITnznKwGXSM1rBsKn+xMX38h2rhYN0qpLzDo1eFlkA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717519384; c=relaxed/simple;
-	bh=oPp4w96Wn+D5XlEch5Zme9OLK7LhiUVGAGTFRFKOodA=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=CWbYMHgM1cifiFHLmlbP09OUtTS+Ry8+r19Gr0bqFWtyd+wPaV/Cj+EygfiwmeegBBZjSvzaTldp5y96y09bPFf2cXFMEAHQQqZy3rolER7p7J/LM4AbixTbhjCSsP8BJ4KQaNo1UqHfzC91m503+RhV/tS+fKrrcNewc+/KBnk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E0BBAC2BBFC;
-	Tue,  4 Jun 2024 16:42:46 +0000 (UTC)
-Date: Tue, 4 Jun 2024 12:42:43 -0400
-From: Steven Rostedt <rostedt@goodmis.org>
-To: Jason Gunthorpe <jgg@ziepe.ca>
-Cc: Paolo Abeni <pabeni@redhat.com>, Mina Almasry <almasrymina@google.com>,
- netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-doc@vger.kernel.org, linux-alpha@vger.kernel.org,
- linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
- sparclinux@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
- linux-arch@vger.kernel.org, bpf@vger.kernel.org,
- linux-kselftest@vger.kernel.org, linux-media@vger.kernel.org,
- dri-devel@lists.freedesktop.org, "David S. Miller" <davem@davemloft.net>,
- Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
- Donald Hunter <donald.hunter@gmail.com>, Jonathan Corbet <corbet@lwn.net>,
- Richard Henderson <richard.henderson@linaro.org>, Ivan Kokshaysky
- <ink@jurassic.park.msu.ru>, Matt Turner <mattst88@gmail.com>, Thomas
- Bogendoerfer <tsbogend@alpha.franken.de>, "James E.J. Bottomley"
- <James.Bottomley@hansenpartnership.com>, Helge Deller <deller@gmx.de>,
- Andreas Larsson <andreas@gaisler.com>, Jesper Dangaard Brouer
- <hawk@kernel.org>, Ilias Apalodimas <ilias.apalodimas@linaro.org>, Masami
- Hiramatsu <mhiramat@kernel.org>, Mathieu Desnoyers
- <mathieu.desnoyers@efficios.com>, Arnd Bergmann <arnd@arndb.de>, Alexei
- Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau
- <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu
- <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, John Fastabend
- <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, Stanislav
- Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa
- <jolsa@kernel.org>, Steffen Klassert <steffen.klassert@secunet.com>,
- Herbert Xu <herbert@gondor.apana.org.au>, David Ahern <dsahern@kernel.org>,
- Willem de Bruijn <willemdebruijn.kernel@gmail.com>, Shuah Khan
- <shuah@kernel.org>, Sumit Semwal <sumit.semwal@linaro.org>, Christian
- =?UTF-8?B?S8O2bmln?= <christian.koenig@amd.com>, Pavel Begunkov
- <asml.silence@gmail.com>, David Wei <dw@davidwei.uk>, Yunsheng Lin
- <linyunsheng@huawei.com>, Shailend Chand <shailend@google.com>, Harshitha
- Ramamurthy <hramamurthy@google.com>, Shakeel Butt <shakeel.butt@linux.dev>,
- Jeroen de Borst <jeroendb@google.com>, Praveen Kaligineedi
- <pkaligineedi@google.com>, Willem de Bruijn <willemb@google.com>, Kaiyuan
- Zhang <kaiyuanz@google.com>
-Subject: Re: [PATCH net-next v10 05/14] netdev: netdevice devmem allocator
-Message-ID: <20240604124243.66203a46@gandalf.local.home>
-In-Reply-To: <20240604163158.GB21513@ziepe.ca>
-References: <20240530201616.1316526-1-almasrymina@google.com>
-	<20240530201616.1316526-6-almasrymina@google.com>
-	<bea8b8bf1630309bb004f614e4a3c7f684a6acb6.camel@redhat.com>
-	<20240604121551.07192993@gandalf.local.home>
-	<20240604163158.GB21513@ziepe.ca>
-X-Mailer: Claws Mail 3.20.0git84 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1717520681; c=relaxed/simple;
+	bh=LJWf3QoCZ3rFmQ9GULoPGURQSMideMDjJ/XO70462sI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=RGJYTcz74XgEfSssw39Ku0oGib9go4QCtvpTyj8prFosoFlmQJ/5bsrxBS9F3bgVD8tIuIvZLITUbBt5noj7/w0lk+Vx84ZhkPRtYPfNo/+ZEZ6qp+DY9Gjutd+kleRBb6BQyrJ4B8QjpoCRTtj+7MmCCWpGKwuec2rTNS8ccaU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8F64C1042;
+	Tue,  4 Jun 2024 10:04:55 -0700 (PDT)
+Received: from J2N7QTR9R3 (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 097E53F762;
+	Tue,  4 Jun 2024 10:04:27 -0700 (PDT)
+Date: Tue, 4 Jun 2024 18:04:22 +0100
+From: Mark Rutland <mark.rutland@arm.com>
+To: Steven Rostedt <rostedt@goodmis.org>
+Cc: Masami Hiramatsu <mhiramat@kernel.org>, linux-kernel@vger.kernel.org,
+	linux-trace-kernel@vger.kernel.org,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+	Florent Revest <revest@chromium.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>, bpf <bpf@vger.kernel.org>,
+	Sven Schnelle <svens@linux.ibm.com>,
+	Alexei Starovoitov <ast@kernel.org>, Jiri Olsa <jolsa@kernel.org>,
+	Arnaldo Carvalho de Melo <acme@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Alan Maguire <alan.maguire@oracle.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Thomas Gleixner <tglx@linutronix.de>, Guo Ren <guoren@kernel.org>
+Subject: Re: [PATCH v3 00/27] function_graph: Allow multiple users for
+ function graph tracing
+Message-ID: <Zl9JFnzKGuUM10X2@J2N7QTR9R3>
+References: <20240603190704.663840775@goodmis.org>
+ <20240604081850.59267aa9@rorschach.local.home>
+ <Zl8oWNhkEPleJ3B_@J2N7QTR9R3>
+ <20240604123124.456d19cf@gandalf.local.home>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240604123124.456d19cf@gandalf.local.home>
 
-On Tue, 4 Jun 2024 13:31:58 -0300
-Jason Gunthorpe <jgg@ziepe.ca> wrote:
-
-> On Tue, Jun 04, 2024 at 12:15:51PM -0400, Steven Rostedt wrote:
-> > On Tue, 04 Jun 2024 12:13:15 +0200
-> > Paolo Abeni <pabeni@redhat.com> wrote:
-> >   
-> > > On Thu, 2024-05-30 at 20:16 +0000, Mina Almasry wrote:  
-> > > > diff --git a/net/core/devmem.c b/net/core/devmem.c
-> > > > index d82f92d7cf9ce..d5fac8edf621d 100644
-> > > > --- a/net/core/devmem.c
-> > > > +++ b/net/core/devmem.c
-> > > > @@ -32,6 +32,14 @@ static void net_devmem_dmabuf_free_chunk_owner(struct gen_pool *genpool,
-> > > >  	kfree(owner);
-> > > >  }
-> > > >  
-> > > > +static inline dma_addr_t net_devmem_get_dma_addr(const struct net_iov *niov)    
-> > > 
-> > > Minor nit: please no 'inline' keyword in c files.  
+On Tue, Jun 04, 2024 at 12:31:24PM -0400, Steven Rostedt wrote:
+> On Tue, 4 Jun 2024 15:44:40 +0100
+> Mark Rutland <mark.rutland@arm.com> wrote:
+> 
+> > Hi Steve, Masami,
 > > 
-> > I'm curious. Is this a networking rule? I use 'inline' in my C code all the
-> > time.  
+> > On Tue, Jun 04, 2024 at 08:18:50AM -0400, Steven Rostedt wrote:
+> > > 
+> > > Masami,
+> > > 
+> > > This series passed all my tests, are you comfortable with me pushing
+> > > them to linux-next?  
+> > 
+> > As a heads-up (and not to block pushing this into next), I just gave
+> > this a spin on arm64 atop v6.10-rc2, and running the selftests I see:
+> > 
+> > 	ftrace - function pid filters
+> > 	(instance)  ftrace - function pid filters
+> > 
+> > ... both go from [PASS] to [FAIL].
+> > 
+> > Everything else looks good -- I'll go dig into why that's happening.
+> > 
+> > It's possible that's just something odd with the filesystem I'm using
+> > (e.g. the wnership test failed because this lacks 'stat').
 > 
-> It mostly comes from Documentation/process/coding-style.rst:
+> Thanks for the update. I could be something I missed in patch 13 that had
+> to put back the pid code.
 > 
-> 15) The inline disease
-> ----------------------
-> 
-> There appears to be a common misperception that gcc has a magic "make me
-> faster" speedup option called ``inline``. While the use of inlines can be
-> appropriate (for example as a means of replacing macros, see Chapter 12), it
-> very often is not. Abundant use of the inline keyword leads to a much bigger
-> kernel, which in turn slows the system as a whole down, due to a bigger
-> icache footprint for the CPU and simply because there is less memory
-> available for the pagecache. Just think about it; a pagecache miss causes a
-> disk seek, which easily takes 5 milliseconds. There are a LOT of cpu cycles
-> that can go into these 5 milliseconds.
-> 
-> A reasonable rule of thumb is to not put inline at functions that have more
-> than 3 lines of code in them. An exception to this rule are the cases where
-> a parameter is known to be a compiletime constant, and as a result of this
-> constantness you *know* the compiler will be able to optimize most of your
-> function away at compile time. For a good example of this later case, see
-> the kmalloc() inline function.
-> 
-> Often people argue that adding inline to functions that are static and used
-> only once is always a win since there is no space tradeoff. While this is
-> technically correct, gcc is capable of inlining these automatically without
-> help, and the maintenance issue of removing the inline when a second user
-> appears outweighs the potential value of the hint that tells gcc to do
-> something it would have done anyway.
-> 
+> There may have been something arch specific that I'm unaware about. I'll
+> look at that deeper.
 
-Interesting, as I sped up the ftrace ring buffer by a substantial amount by
-adding strategic __always_inline, noinline, likely() and unlikely()
-throughout the code. It had to do with what was considered the fast path
-and slow path, and not actually the size of the function. gcc got it
-horribly wrong.
+It looks like e are lines in the trace that it doesn't expect:
 
--- Steve
+	+ cat trace
+	+ grep -v ^#
+	+ grep 970
+	+ wc -l
+	+ count_pid=0
+	+ cat trace
+	+ grep -v ^#
+	+ grep -v 970
+	+ wc -l
+	+ count_other=3
+	+ [ 0 -eq 0 -o 3 -ne 0 ]
+	+ fail PID filtering not working?
+
+... where we expect that count_other to be 0.
+
+I hacked in a 'cat trace' just before the 'fail' and that shows:
+
+	+ cat trace
+	# tracer: function_graph
+	#
+	# CPU  DURATION                  FUNCTION CALLS
+	# |     |   |                     |   |   |   |
+	 3) ! 143.685 us  |  kernel_clone();
+	 3) ! 127.055 us  |  kernel_clone();
+	 1) ! 127.170 us  |  kernel_clone();
+	 3) ! 126.840 us  |  kernel_clone();
+
+I'm not sure if that's legitimate output the test is failing to account
+for or if that indicates a kernel-side issue.
+
+Mark.
 
