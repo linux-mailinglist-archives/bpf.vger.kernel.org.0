@@ -1,180 +1,170 @@
-Return-Path: <bpf+bounces-31388-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-31389-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 59BBD8FBE19
-	for <lists+bpf@lfdr.de>; Tue,  4 Jun 2024 23:35:40 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3AC6E8FBE28
+	for <lists+bpf@lfdr.de>; Tue,  4 Jun 2024 23:40:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9C878B216B0
-	for <lists+bpf@lfdr.de>; Tue,  4 Jun 2024 21:35:37 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E8877286BF9
+	for <lists+bpf@lfdr.de>; Tue,  4 Jun 2024 21:40:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4542B14BF91;
-	Tue,  4 Jun 2024 21:35:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4EC9914B977;
+	Tue,  4 Jun 2024 21:40:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="I4jpq3r9"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="aU+L1B+y"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-oo1-f44.google.com (mail-oo1-f44.google.com [209.85.161.44])
+Received: from mail-pj1-f52.google.com (mail-pj1-f52.google.com [209.85.216.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5869914B941
-	for <bpf@vger.kernel.org>; Tue,  4 Jun 2024 21:35:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 88A4913F441
+	for <bpf@vger.kernel.org>; Tue,  4 Jun 2024 21:40:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717536931; cv=none; b=MY5Y0gRSIDTGp0czkaw/rV0uSdrIBIhpKx6/VFavZ9rOB8g7HRbP7sKxnNU+IBY0TW26S/yzA/o5vybCpPWt3ydYX8YCmax8UCcLRUVLFDIflEKU5JxPK4QjXn9ziF06ssBzPXeXhcsYfTzhHTO/yDLVzz7BFnwaMPXAaz0Ee50=
+	t=1717537245; cv=none; b=CsTdBFl8Dtdjb+zJD0ARwOwjDGj5LQhu6PhJKdtjq6K7NEKjx37ZopUmEl63laqgRl9W7XmXtgtYnC2b2NmXdLJuAhAAIqhOivB0JPiJeWBin8Ays2GKiyqfzl9BAUsCv7JTKkLCeImp6E9bjCN59DXGosrtD8tW6peEcV1Y+6w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717536931; c=relaxed/simple;
-	bh=2VYgGO6W/05pQhWDLsiL0TQBeYEYWZg2QeWtsu4Z8Lg=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=p63ole/2skfp35R/Ie2CiWxfzbSmOePI/kHmDwgNkYixAMOTbCz/P/fcOHgyWm5pyMD8jaCSX4b4C0ABJvwnOo5dfWr8D7QUWE7MeGiTSf+4+b3IGsQDx99ccK4Mcz6XV4r2wH53qL4rGD226LZCq1yPCzOEm+8c93FLZYUGvU8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=I4jpq3r9; arc=none smtp.client-ip=209.85.161.44
+	s=arc-20240116; t=1717537245; c=relaxed/simple;
+	bh=fn5CwwedJ/jAxlCtDabN2AQK/qxd3lSqIcW3rd7Dezc=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=NeYSCXcmQKzy4h5xxcFcWWnJb+mSU7x/V48mNmHFAuF7LvVroATBhTMpc70G3Ca46a8CK5BB+tSoorDsnuxlyRsRaLLbxk9si48gOHFcS3UuWv+wFdmxRs0hE5UazrFuh7R7x/rMSDB6iA21pakLz4XoGlHfNIaoA9NiGAb2xdg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=aU+L1B+y; arc=none smtp.client-ip=209.85.216.52
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oo1-f44.google.com with SMTP id 006d021491bc7-5ba33b08550so1772101eaf.2
-        for <bpf@vger.kernel.org>; Tue, 04 Jun 2024 14:35:30 -0700 (PDT)
+Received: by mail-pj1-f52.google.com with SMTP id 98e67ed59e1d1-2c1b9152848so4206962a91.1
+        for <bpf@vger.kernel.org>; Tue, 04 Jun 2024 14:40:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1717536929; x=1718141729; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=nKlhx+0MVT8QGAYWO252hOTNwpL7qqMHuw9d5GfSQM4=;
-        b=I4jpq3r9iDMro5hXjb14Rhvq+JK/FCjMgz5yWFeQtPtFyP212spPAZk3YszyWo7Jpe
-         EpfLaY2w5EA8N3rI7USV9bhPxMZbUb/p5ZT9608i8tvOFErktdIY0p6eRDLXI7QUif7v
-         BKzeB2OtLDvVA1PIzOVpt3xdSDE0FdsWK3uyEO6GHekMAjRVcPagZUjdImOMrfUxJ3cu
-         wyTGsyBXGh4i9fIVwKORiGDI69bWsSKM18fw/0iV9mk+S2OglwD8Oj03raCc+V5WX/fL
-         bKlLAq/Zl4inpcr2BgwpGNK2IJl2GhzF1+AE40NUwZRINd/yK/QbXheW/j5KTXltcGGF
-         A1qA==
+        d=gmail.com; s=20230601; t=1717537244; x=1718142044; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Cf/aOGthtBs4x1sZtCGf1kk1tUTk1vJPPRq/ynTeHcg=;
+        b=aU+L1B+ytPuddhCV5dbiPTl65PGcMwWuxC430XakZtq2pDPTHERpRtFjRwadWHGvlS
+         1Md8LZQyn9PFbxjiYQPIqkR3g0E6nyWCs3IrmSZi94rJ8UVdDjBeS+yOEeGPhbS3Pd3/
+         JW/IBJXMIgUR/EVB4k+QAHqa56Y/Gf+p221KgB+DaAbnP/HkxdnsSJ6rmX7K9Q4oY2t8
+         8/lt4bjco6iZdgChY+B1B/kVImZn3u5C3HtJnVyJBpHOiP+yz43TBZP+sy0pNzBLE2ju
+         MB9kecpdo/lI1sJ4T7jByMsoxDjyMLK8qe93iGB4IlgOtmtootE2h4rvGTfTTaN0Wtub
+         VioA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1717536929; x=1718141729;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=nKlhx+0MVT8QGAYWO252hOTNwpL7qqMHuw9d5GfSQM4=;
-        b=fpT+72+Yc9N2Uf9fw2eO5q7Kx8s0aaTdwrNOuFli+PoTFYGSD2CyNFO4cZcjs28h33
-         x0oMUQfCCY6F1iV95Q8DkQJeaXZyVQMtRvaUdFysC/ZLU4tRnwm4JtV5xQhXJvshsF/E
-         C3733ZVCS2e520n3LrYw6mXuUX4rLmXnSJyCgtaDiJ0O1z66D7953jQfHVoVvy5wdjXE
-         Bt5HLtx5YcTb0gBJLlH7LkUB67GGd0ph509SgRbFK0ej4Fp+AYLMK3AlvwaEvLjxUYpb
-         8TEbzjwTXTcm/FrPWSeFEgSIatb77md2nXvfOSSYFDk52+52KI4r1zvMoHcBt7t6NBM4
-         rb6w==
-X-Forwarded-Encrypted: i=1; AJvYcCVRmAtQKK1J4clHIoFn/6b+FI05coNpiwzEZ3j5FoKqDEy1erfvWnGfRy3ixHWgOZhU5JJq0gjkAGpYhfBe7dGLT8Ko
-X-Gm-Message-State: AOJu0YyP9GxxApFepILgawFZ2DUbU+hbUu2THXLAIMkGwM3zptPgT1Mx
-	1Me4HCEPy3w7FJ0BgX9p3g2wZ0pc5SVmnalpv3XQF1TxsoJ3Q/ks
-X-Google-Smtp-Source: AGHT+IGezzqY+M0nYoNYEjIMRNVxnNSAVB/MzTOoMeJaLxvCmlyGuAQoKxjakWOHZ4mFAhyFyqVdPQ==
-X-Received: by 2002:a05:6870:d892:b0:24f:e53e:84e2 with SMTP id 586e51a60fabf-2512209cf8amr851596fac.54.1717536929006;
-        Tue, 04 Jun 2024 14:35:29 -0700 (PDT)
-Received: from [192.168.0.31] ([38.34.87.7])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7025a83b354sm5282187b3a.33.2024.06.04.14.35.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 04 Jun 2024 14:35:28 -0700 (PDT)
-Message-ID: <592e19d427d20c2046eaf1478addb484419711f7.camel@gmail.com>
-Subject: Re: [PATCH bpf-next 1/2] selftests/bpf: Support checks against a
- regular expression.
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Cupertino Miranda <cupertino.miranda@oracle.com>, bpf@vger.kernel.org
-Cc: jose.marchesi@oracle.com, david.faust@oracle.com, Yonghong Song
-	 <yonghong.song@linux.dev>, Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Tue, 04 Jun 2024 14:35:23 -0700
-In-Reply-To: <20240603155308.199254-2-cupertino.miranda@oracle.com>
-References: <20240603155308.199254-1-cupertino.miranda@oracle.com>
-	 <20240603155308.199254-2-cupertino.miranda@oracle.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.44.4-0ubuntu2 
+        d=1e100.net; s=20230601; t=1717537244; x=1718142044;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Cf/aOGthtBs4x1sZtCGf1kk1tUTk1vJPPRq/ynTeHcg=;
+        b=IToVXbon6JQ0ZxhbJJfupeoJJkbiQ7GyNXl8CaUK4XQfDknLLe/dcKqs8Sb5Qn/IbD
+         r+HQwvAYlUd9rbBoW75jQNeVr4YifqxFp8wE9cTpkoCh4c1bvS3/07Q+e1tTRyI7LBnw
+         PGTLc5+NrA4J9O/sYPVap+m1/ePgoQlw1YfhP9/40nT0HTBV9l53wE73V7lENu/X6+jB
+         25lyVzq3JV338X45Kipf3VnoFeXU54RlihRESaKBfJJ4GFvsexYcMwFqIvn+eyzxP7G/
+         9YWe9EuvOTHZ6h9IXDtHYigwPyvJS8WWDwFCFfdQHrp/Mt15UidObXmgEIyvQ0m7UrAK
+         bE7A==
+X-Forwarded-Encrypted: i=1; AJvYcCX2hTm+f6naby1ipIJ9IFEF4kIvnTokkSIgCc7VxFUyfLE8In2UBFcg+zYw6zdNKi35Oc36CKgi6CGZ702d5sedIbZJ
+X-Gm-Message-State: AOJu0YyZBE2cSS8V6RVWDadAdJ80ofdWOMmRoa0qvCCgI1Os64ro0mdk
+	EprBLvgEkrU67WBU0l393jSD6K/8P+i6iZiFO4+j3TxmcOB6gwGPYwX6sWH8AQCeAgDbBj0O12r
+	Q/t5A/Yjv+8eDCx0IOJBw+1YwWjo1fA==
+X-Google-Smtp-Source: AGHT+IFSLG9wQ9n2epKKFyxMsAK9xRHAmGZWIINz6j3WaX9teBTW/Um/fcCSepWDCOOgjlEon7yPgkkpEK8+nhfcBtU=
+X-Received: by 2002:a17:90a:f00e:b0:2b4:b306:ffbc with SMTP id
+ 98e67ed59e1d1-2c27db117f0mr667004a91.17.1717537243704; Tue, 04 Jun 2024
+ 14:40:43 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+References: <20240603231720.1893487-1-andrii@kernel.org> <20240603231720.1893487-2-andrii@kernel.org>
+ <91750196c22c77d28d016ff51ff4bd3452d499e5.camel@gmail.com>
+In-Reply-To: <91750196c22c77d28d016ff51ff4bd3452d499e5.camel@gmail.com>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Tue, 4 Jun 2024 14:40:31 -0700
+Message-ID: <CAEf4BzZRFB0ATkF+g9U+s7E+MwfhiWefZU7jT_WhLqP3TtQ_Og@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 1/5] libbpf: add BTF field iterator
+To: Eduard Zingerman <eddyz87@gmail.com>
+Cc: Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org, ast@kernel.org, 
+	daniel@iogearbox.net, martin.lau@kernel.org, alan.maguire@oracle.com, 
+	jolsa@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, 2024-06-03 at 16:53 +0100, Cupertino Miranda wrote:
+On Tue, Jun 4, 2024 at 1:37=E2=80=AFPM Eduard Zingerman <eddyz87@gmail.com>=
+ wrote:
+>
+> On Mon, 2024-06-03 at 16:17 -0700, Andrii Nakryiko wrote:
+> > Implement iterator-based type ID and string offset BTF field iterator.
+> > This is used extensively in BTF-handling code and BPF linker code for
+> > various sanity checks, rewriting IDs/offsets, etc. Currently this is
+> > implemented as visitor pattern calling custom callbacks, which makes th=
+e
+> > logic (especially in simple cases) unnecessarily obscure and harder to
+> > follow.
+> >
+> > Having equivalent functionality using iterator pattern makes for simple=
+r
+> > to understand and maintain code. As we add more code for BTF processing
+> > logic in libbpf, it's best to switch to iterator pattern before adding
+> > more callback-based code.
+> >
+> > The idea for iterator-based implementation is to record offsets of
+> > necessary fields within fixed btf_type parts (which should be iterated
+> > just once), and, for kinds that have multiple members (based on vlen
+> > field), record where in each member necessary fields are located.
+> >
+> > Generic iteration code then just keeps track of last offset that was
+> > returned and handles N members correctly. Return type is just u32
+> > pointer, where NULL is returned when all relevant fields were already
+> > iterated.
+> >
+> > Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+> > ---
+>
+> Acked-by: Eduard Zingerman <eddyz87@gmail.com>
+>
+> [...]
+>
+> > +__u32 *btf_field_iter_next(struct btf_field_iter *it)
+> > +{
+> > +     if (!it->p)
+> > +             return NULL;
+> > +
+> > +     if (it->m_idx < 0) {
+> > +             if (it->off_idx < it->desc.t_cnt)
+> > +                     return it->p + it->desc.t_offs[it->off_idx++];
+> > +             /* move to per-member iteration */
+> > +             it->m_idx =3D 0;
+> > +             it->p +=3D sizeof(struct btf_type);
+> > +             it->off_idx =3D 0;
+> > +     }
+> > +
+> > +     /* if type doesn't have members, stop */
+> > +     if (it->desc.m_sz =3D=3D 0) {
+> > +             it->p =3D NULL;
+> > +             return NULL;
+> > +     }
+> > +
+> > +     if (it->off_idx >=3D it->desc.m_cnt) {
+> > +             /* exhausted this member's fields, go to the next member =
+*/
+> > +             it->m_idx++;
+> > +             it->p +=3D it->desc.m_sz;
+> > +             it->off_idx =3D 0;
+> > +     }
+> > +
+> > +     if (it->m_idx < it->vlen)
+> > +             return it->p + it->desc.m_offs[it->off_idx++];
+>
+> Nit: it is a bit confusing that for two 'if' statements above
+>      m_idx is guarded by vlen and off_idx is guarded by m_cnt :)
 
-I think this macro is a long overdue, thank you for working on this.
-A few notes below.
+I'm open to suggestions. m_idx stands for "current member index",
+m_cnt is for "per-member offset count", while "off_idx" is generic
+"offset index" which indexes either a singular set of offsets or
+per-member set of offsets. Easy ;)
 
-[...]
-
-> +static int push_regex(const char *regex_str, struct test_subspec *subspe=
-c)
-> +{
-> +	void *tmp;
-> +	int regcomp_res;
-> +
-> +	tmp =3D realloc(subspec->expect,
-> +		      (1 + subspec->expect_msg_cnt) * sizeof(struct expect_msg));
-> +	if (!tmp) {
-> +		ASSERT_FAIL("failed to realloc memory for messages\n");
-> +		return -ENOMEM;
-> +	}
-> +	subspec->expect =3D tmp;
-> +
-> +	subspec->expect[subspec->expect_msg_cnt].regex =3D (regex_t *) malloc(s=
-izeof(regex_t));
-> +	regcomp_res =3D regcomp (subspec->expect[subspec->expect_msg_cnt].regex=
-,
-> +			       regex_str, REG_EXTENDED|REG_NEWLINE);
-> +	if (regcomp_res !=3D 0) {
-> +		fprintf(stderr, "Regexp: '%s'\n", regex_str);
-> +		ASSERT_FAIL("failed to compile regex\n");
-> +		return -EINVAL;
-> +	}
-
-Maybe also use a regerror() function that could be used to print
-what's wrong with the regex.
-Also, there is a ctx_rewrite.c:compile_regex, it might be interesting
-to extract in from ctx_rewrite.c to testing_helpers.c and use it here.
-
-> +
-> +	subspec->expect[subspec->expect_msg_cnt].msg =3D regex_str;
-> +	subspec->expect_msg_cnt +=3D 1;
->  	return 0;
->  }
-
-[...]
-
-> @@ -403,26 +453,44 @@ static void validate_case(struct test_loader *teste=
-r,
->  			  int load_err)
->  {
->  	int i, j;
-> +	const char *match;
-> =20
->  	for (i =3D 0; i < subspec->expect_msg_cnt; i++) {
-> -		char *match;
->  		const char *expect_msg;
-> +		regex_t *regex;
-> +		regmatch_t reg_match[1];
-> +
-> +		expect_msg =3D subspec->expect[i].msg;
-> +		regex =3D subspec->expect[i].regex;
-> +
-> +		if (regex =3D=3D NULL) {
-> +			match =3D strstr(tester->log_buf + tester->next_match_pos, expect_msg=
-);
-> +			if (!ASSERT_OK_PTR (match, "expect_msg")) {
-> +				/* if we are in verbose mode, we've already emitted log */
-> +				if (env.verbosity =3D=3D VERBOSE_NONE)
-> +					emit_verifier_log(tester->log_buf, true /*force*/);
-> +				for (j =3D 0; j < i; j++)
-> +					fprintf(stderr,
-> +						"MATCHED  MSG: '%s'\n", subspec->expect[j].msg);
-> +				fprintf(stderr, "EXPECTED MSG: '%s'\n", expect_msg);
-> +				return;
-> +			}
-> +			tester->next_match_pos =3D match - tester->log_buf + strlen(expect_ms=
-g);
-> +		} else {
-> +			int match_size =3D regexec (regex, tester->log_buf + tester->next_mat=
-ch_pos, 1, reg_match, 0);
-                                                ^
-Nit:                                            |
-        I think scripts/checkpatch.pl complains about such spaces
-
-[...]
-
-There is no regfree() call in the patch-set,
-could you please extend free_test_spec()?
-
-
+>
+> > +
+> > +     it->p =3D NULL;
+> > +     return NULL;
+> > +}
+> > +
+>
+> [...]
 
