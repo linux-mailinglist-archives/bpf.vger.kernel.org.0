@@ -1,176 +1,195 @@
-Return-Path: <bpf+bounces-31293-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-31294-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0C0348FADA9
-	for <lists+bpf@lfdr.de>; Tue,  4 Jun 2024 10:30:03 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 43FBD8FAEAE
+	for <lists+bpf@lfdr.de>; Tue,  4 Jun 2024 11:24:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 78CF51F23382
-	for <lists+bpf@lfdr.de>; Tue,  4 Jun 2024 08:30:02 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 54E4B1C21164
+	for <lists+bpf@lfdr.de>; Tue,  4 Jun 2024 09:24:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE680142634;
-	Tue,  4 Jun 2024 08:29:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF5A2143C42;
+	Tue,  4 Jun 2024 09:24:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oss.cipunited.com header.i=@oss.cipunited.com header.b="d/Y9EY4/"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="l2cYvu75"
 X-Original-To: bpf@vger.kernel.org
-Received: from va-2-38.ptr.blmpb.com (va-2-38.ptr.blmpb.com [209.127.231.38])
+Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com [209.85.208.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 72699446CF
-	for <bpf@vger.kernel.org>; Tue,  4 Jun 2024 08:29:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.127.231.38
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A48A714372F;
+	Tue,  4 Jun 2024 09:24:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717489795; cv=none; b=bAyMM8qXcy52TKaTehHZglHSMdYr1r0LXcFI+HjNROKGx/a3qQ0YiO2HtAFj8aueUakalZMbvd3SH5fC8UFtm/17XINgvhoyFO+Ipngpk7kXry6l5bPkD3rYSfhF+jUvs8Et7aFQftFdHdHEn02HG9TeTSOMF6f52Evp+VrYP9w=
+	t=1717493071; cv=none; b=AG2NBc6/NoRYWPj/XhLDAa9Gx11BIeG952jx7NeA8gaWq2M4SxgLV9FokFhTegixWpVVPuWKUwst1TQtyC1KWpr3AQPVvh98ZYBQQbp/2EmmHIoorj5aVM8Gz7LDQL0bZihmLbD58/4OlpMdrEcvLFg9WYc9oqOy6D1mDVetvrE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717489795; c=relaxed/simple;
-	bh=DlquuiqYkSNTfzfq5OVV0cpTdtY0M3vPwSLjp3C0Gx8=;
-	h=From:Date:Cc:Message-Id:References:In-Reply-To:To:Subject:
-	 Mime-Version:Content-Type; b=Gzza0Yov6kCWHz5/t0cQJK9BlZe//9aSFRqFBw/5yz6FyCG4KswqgB5k0WJnYz07QPQbe4UryMb7STGA3BjluYnAmIRD8B9c2EynNvcmprATMFdraaEqlMDz5xASVbS8dHAA6MlzGGDNq9vrDFR+xWqFFb1Ky/f/3XZgDbjCcto=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=oss.cipunited.com; spf=pass smtp.mailfrom=oss.cipunited.com; dkim=pass (2048-bit key) header.d=oss.cipunited.com header.i=@oss.cipunited.com header.b=d/Y9EY4/; arc=none smtp.client-ip=209.127.231.38
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=oss.cipunited.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oss.cipunited.com
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
- s=feishu2303200042; d=oss.cipunited.com; t=1717489646;
-  h=from:subject:mime-version:from:date:message-id:subject:to:cc:
- reply-to:content-type:mime-version:in-reply-to:message-id;
- bh=jeyrMUQ5TvLc9+Ekzj3kZZHqcxEPhw/nCPOeHQv80rw=;
- b=d/Y9EY4/XXyrZ5iD1kuoE5cPErB8+0QUmwZ+qPxwlvKESvDFjpDtq8AKR/8zr4CTRS+J/+
- oCkIioVJTGKtVDcGfpT77RmgsHBx/1l52uzI8as8Jzy/+dEk3yxNPs185o3Yo9EBFhZHod
- G7JsaEWiXCMMDaCCxPsFCEP6LQcy9+Pp314kUk2xcTZCoKfK2DT9FKCnI6AdfJS7OqAHKU
- fUSBTBZNnwK2WC4MnCMXURd66TLi5hi1XiIgVHH8rVbk7x82ZgJE7y5bdc9HStRzdndXbh
- vpyFKug4CvoHUx46LTYCts3XT0YhPkKlWFAO6/dWQ3HPyFrTyVs8F0Ke2gHxSw==
-From: "Ying Huang" <ying.huang@oss.cipunited.com>
-Date: Tue, 4 Jun 2024 16:27:22 +0800
-X-Lms-Return-Path: <lba+2665ecfed+ebb5a0+vger.kernel.org+ying.huang@oss.cipunited.com>
-Content-Transfer-Encoding: quoted-printable
-Content-Language: en-US
-Cc: "Arnaldo Carvalho de Melo" <acme@kernel.org>, 
-	"Mark Wielaard" <mjw@redhat.com>, "Hengqi Chen" <hengqi.chen@gmail.com>, 
-	<bpf@vger.kernel.org>, <dwarves@vger.kernel.org>, 
-	"Alexei Starovoitov" <ast@kernel.org>, 
-	"Daniel Borkmann" <daniel@iogearbox.net>, 
-	"Andrii Nakryiko" <andrii@kernel.org>
-Message-Id: <f04c6a54-cad0-4490-89bd-4193b4ad405a@oss.cipunited.com>
-References: <ZlkoM6/PSxVcGM6X@kodidev-ubuntu> <CAEyhmHT_1N3xwLO2BwVK97ebrABJv52d5dWxzvuNNcF-OF5gKw@mail.gmail.com> <ZlmrQqQSJyNH7fVF@kodidev-ubuntu> <Zln1kZnu2Xxeyngj@x1> <Zl2m4RP7BwhZ0J6l@kodidev-ubuntu> <Zl3Zp5r9m6X_i_J4@x1> <Zl4AHfG6Gg5Htdgc@x1> <20240603191833.GD4421@gnu.wildebeest.org> <Zl6OTJXw0LH6uWIN@kodidev-ubuntu>
-X-Original-From: Ying Huang <ying.huang@oss.cipunited.com>
-Received: from [192.168.8.113] ([123.52.16.81]) by smtp.feishu.cn with ESMTPS; Tue, 04 Jun 2024 16:27:24 +0800
-In-Reply-To: <Zl6OTJXw0LH6uWIN@kodidev-ubuntu>
-To: "Tony Ambardar" <tony.ambardar@gmail.com>, 
-	"Mark Wielaard" <mark@klomp.org>
-Subject: Re: elfutils DWARF problem was: Re: Problem with BTF generation on mips64el
+	s=arc-20240116; t=1717493071; c=relaxed/simple;
+	bh=gqPxLLFIvFNLGKkbGgnZi05F9Rbkh8sVZJXJ/mU6COA=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=HDWpgnZuXMUjExEHC/aHCeG3/P3DbY+MSAoH5mJtiGiecc3Kih2zFbtGG2wa3nm0RBr0kVxE9mJWR8OrsN+uOdnkvJYJfQaO5te0TWbDjBOl1TZPvKB3fLNWbi8hMGmgj/o9vPivyzrLJgw5Nkw39X7ENZ3YcH1Saxiy5rQubgA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=l2cYvu75; arc=none smtp.client-ip=209.85.208.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-57a32b0211aso861485a12.2;
+        Tue, 04 Jun 2024 02:24:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1717493068; x=1718097868; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=4ltAuQjMAH++f3qOCnPQRFmbVr9HCwuJEgMaJN+DdMU=;
+        b=l2cYvu75u228DVoSdr60XKmmG0kVXFMwAsh5DANUPOVsrD31YvmNbX+pR/yBTDS69B
+         tCf/47C3PW8R2nI+dEav60jyD8mBtKr5MPCZBKL5JhNmiE5Zfa289s+J4oYIVyJSayzt
+         QY1UFw2JbpYixC96i5kTJ3clc3pMs31RAxlxlhlubpL/nQaAoGaPIxgVIpzhqp7jaFM9
+         +PfXzXrYolfqbffdHrgCcRt8iOOfd6DrnKMGd+d7TlCkR9SDvekWwTtWw/C1fupy6LO5
+         QmvRyS28YmlvpjRPTg4iWrp67gU31XM0qms5XPR8a6AgPbTqkiqkdQDL69+ooc1OfHtQ
+         5JPA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1717493068; x=1718097868;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=4ltAuQjMAH++f3qOCnPQRFmbVr9HCwuJEgMaJN+DdMU=;
+        b=fWagiOwk+eJCYFL5QTILRDZhTcC+63YqtwDp+6RKC/DfkhNoBFKR5cFHvyz4Ve1hhf
+         Awf4kck3JIcHYIRjly6c3pX9Tf3o/W1LhdFS6dRNuIqzso7P9+5xd3KReRIBjq+/7z+y
+         6AjgK0o2IeZyVGt/9GCWIu7ffjS/Udofrf6YFrcS/kMUFQAD5q/FGt8ViGhSOR5UkbEI
+         cmFuKyoR8RAsnV9D3Z+48sig1QQzPehc7TViiZZv2C9SZuZBvL1bBKNCsNn/lVlRCp49
+         mGZKToQhlF1HNBzDIRdVtXuBQhUiZg7koEWI4+Zk1RoV28c2BSmZWT3KFOTjje2wx9O0
+         ulZQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVDEysbYKkH5q0T0svuqDUqZVtMjVzrLoyAkXMtiJyzRi53As6FvvjUAvvYGfsNTVLk2LMAdYnnGEcVgcLG0Nv7tmX/Vi0W5NkJDCwT9FuSSoqXxtJ2CTio/nhAB0WJWX4Z/vA/tQ==
+X-Gm-Message-State: AOJu0YxPrHB7ruv0BvUCed/8jurkYJpmyXOEeKT6Oqkdkli6m+n2E49I
+	C2FTvVd1tuVdey1oWE+dBdUn+qEw8X4MMAoHJtERzSHUtEquv7UL
+X-Google-Smtp-Source: AGHT+IFXekwlYI8XtQwqY8vp2QT4uKTurhfHxbmDUvJeUBfCX5UXw4Mr71KpZ21FPYcf5fCzxUVOyw==
+X-Received: by 2002:a17:907:7241:b0:a62:415b:b5c with SMTP id a640c23a62f3a-a681fc5bffemr914784766b.5.1717493067173;
+        Tue, 04 Jun 2024 02:24:27 -0700 (PDT)
+Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a68ee715f45sm363047066b.94.2024.06.04.02.24.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 04 Jun 2024 02:24:26 -0700 (PDT)
+From: Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date: Tue, 4 Jun 2024 11:24:24 +0200
+To: Andrii Nakryiko <andrii@kernel.org>
+Cc: linux-trace-kernel@vger.kernel.org, rostedt@goodmis.org,
+	mhiramat@kernel.org, x86@kernel.org, peterz@infradead.org,
+	mingo@redhat.com, tglx@linutronix.de, bpf@vger.kernel.org,
+	rihams@fb.com, linux-perf-users@vger.kernel.org
+Subject: Re: [PATCH v2 3/4] perf,x86: avoid missing caller address in stack
+ traces captured in uprobe
+Message-ID: <Zl7dSEnFWCb-4jXR@krava>
+References: <20240522013845.1631305-1-andrii@kernel.org>
+ <20240522013845.1631305-4-andrii@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-User-Agent: Mozilla Thunderbird
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240522013845.1631305-4-andrii@kernel.org>
 
-Hi Tony,
+On Tue, May 21, 2024 at 06:38:44PM -0700, Andrii Nakryiko wrote:
+> When tracing user functions with uprobe functionality, it's common to
+> install the probe (e.g., a BPF program) at the first instruction of the
+> function. This is often going to be `push %rbp` instruction in function
+> preamble, which means that within that function frame pointer hasn't
+> been established yet. This leads to consistently missing an actual
+> caller of the traced function, because perf_callchain_user() only
+> records current IP (capturing traced function) and then following frame
+> pointer chain (which would be caller's frame, containing the address of
+> caller's caller).
+> 
+> So when we have target_1 -> target_2 -> target_3 call chain and we are
+> tracing an entry to target_3, captured stack trace will report
+> target_1 -> target_3 call chain, which is wrong and confusing.
+> 
+> This patch proposes a x86-64-specific heuristic to detect `push %rbp`
+> instruction being traced. If that's the case, with the assumption that
+> applicatoin is compiled with frame pointers, this instruction would be
+> a strong indicator that this is the entry to the function. In that case,
+> return address is still pointed to by %rsp, so we fetch it and add to
+> stack trace before proceeding to unwind the rest using frame
+> pointer-based logic.
+> 
+> Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+> ---
+>  arch/x86/events/core.c  | 20 ++++++++++++++++++++
+>  include/linux/uprobes.h |  2 ++
+>  kernel/events/uprobes.c |  2 ++
+>  3 files changed, 24 insertions(+)
+> 
+> diff --git a/arch/x86/events/core.c b/arch/x86/events/core.c
+> index 5b0dd07b1ef1..82d5570b58ff 100644
+> --- a/arch/x86/events/core.c
+> +++ b/arch/x86/events/core.c
+> @@ -2884,6 +2884,26 @@ perf_callchain_user(struct perf_callchain_entry_ctx *entry, struct pt_regs *regs
+>  		return;
+>  
+>  	pagefault_disable();
+> +
+> +#ifdef CONFIG_UPROBES
+> +	/*
+> +	 * If we are called from uprobe handler, and we are indeed at the very
+> +	 * entry to user function (which is normally a `push %rbp` instruction,
+> +	 * under assumption of application being compiled with frame pointers),
+> +	 * we should read return address from *regs->sp before proceeding
+> +	 * to follow frame pointers, otherwise we'll skip immediate caller
+> +	 * as %rbp is not yet setup.
+> +	 */
+> +	if (current->utask) {
+> +		struct arch_uprobe *auprobe = current->utask->auprobe;
+> +		u64 ret_addr;
+> +
+> +		if (auprobe && auprobe->insn[0] == 0x55 /* push %rbp */ &&
+> +		    !__get_user(ret_addr, (const u64 __user *)regs->sp))
+> +			perf_callchain_store(entry, ret_addr);
+> +	}
+> +#endif
+> +
+>  	while (entry->nr < entry->max_stack) {
+>  		if (!valid_user_frame(fp, sizeof(frame)))
+>  			break;
+> diff --git a/include/linux/uprobes.h b/include/linux/uprobes.h
+> index 0c57eec85339..7b785cd30d86 100644
+> --- a/include/linux/uprobes.h
+> +++ b/include/linux/uprobes.h
+> @@ -76,6 +76,8 @@ struct uprobe_task {
+>  	struct uprobe			*active_uprobe;
+>  	unsigned long			xol_vaddr;
+>  
+> +	struct arch_uprobe              *auprobe;
 
-Yes, I also found that merge will have some conflicts now.
+I wonder we could use active_uprobe for this?
 
-And you can modify the key code as follows to fix the issue about "eu-reade=
-lf -w" could not show info.
+jirka
 
-But this can not fix other display error in the result of the "eu-readelf -=
-w" which need modify the way to get symbol index and type.
-
-> diff --git a/libelf/libelfP.h b/libelf/libelfP.h
-> index bdd2cc6a..6565ee02 100644
-> --- a/libelf/libelfP.h
-> +++ b/libelf/libelfP.h
-> @@ -620,4 +620,5 @@ extern void __libelf_reset_rawdata (Elf_Scn *scn, voi=
-d *buf, size_t size,
->  #define ELF64_MIPS_R_TYPE1(i)          ((i) & 0xff)
->  #define ELF64_MIPS_R_TYPE2(i)           (((i) >> 8) & 0xff)
->  #define ELF64_MIPS_R_TYPE3(i)           (((i) >> 16) & 0xff)
-> +#define is_debug_section_type(type) (type =3D=3D SHT_PROGBITS || type =
-=3D=3D SHT_MIPS_DWARF)
->  #endif  /* libelfP.h */ > diff --git a/src/readelf.c b/src/readelf.c
-> index 0e931184..e88cf67c 100644
-> --- a/src/readelf.c
-> +++ b/src/readelf.c > @@ -12043,7 +12139,7 @@ print_debug (Dwfl_Module *d=
-wflmod, Ebl *ebl, GElf_Ehdr *ehdr)
->  	  GElf_Shdr shdr_mem;
->  	  GElf_Shdr *shdr =3D gelf_getshdr (scn, &shdr_mem);
-> =20
-> -	  if (shdr !=3D NULL && shdr->sh_type =3D=3D SHT_PROGBITS)
-> +	  if (shdr !=3D NULL && is_debug_section_type(shdr->sh_type))
->  	    {
->  	      const char *name =3D elf_strptr (ebl->elf, shstrndx,
->  					     shdr->sh_name);
-> @@ -12073,7 +12169,7 @@ print_debug (Dwfl_Module *dwflmod, Ebl *ebl, GElf=
-_Ehdr *ehdr)
->        GElf_Shdr shdr_mem;
->        GElf_Shdr *shdr =3D gelf_getshdr (scn, &shdr_mem);
-> =20
-> -      if (shdr !=3D NULL && shdr->sh_type =3D=3D SHT_PROGBITS)
-> +      if (shdr !=3D NULL && is_debug_section_type(shdr->sh_type))
->  	{
->  	  static const struct
->  	  {
-
-Thanks,
-
-Ying
-
-
-=E5=9C=A8 2024/6/4 11:47, Tony Ambardar =E5=86=99=E9=81=93:
-> Hi Mark,
->
-> On Mon, Jun 03, 2024 at 09:18:33PM +0200, Mark Wielaard wrote:
->> On Mon, Jun 03, 2024 at 02:40:45PM -0300, Arnaldo Carvalho de Melo wrote=
-:
->>> Couldn't find a way to ask eu-readelf for more verbose output, where we
->>> could perhaps get some clue as to why it produces nothing while binutil=
-s
->>> readelf manages to grok it, Mark, do you know some other way to ask
->>> eu-readelf to produce more debug output?
->>>
->>> I'm unsure if the netdevsim.ko file was left in a semi encoded BTF stat=
-e
->>> that then made eu-readelf to not be able to process it while pahole,
->>> that uses eltuils' libraries, was able to process the first two CUs for
->>> a kernel module and all the CUs for the vmlinux file :-\
->>>
->>> Mark, the whole thread is available at:
->>>
->>> https://lore.kernel.org/all/Zl3Zp5r9m6X_i_J4@x1/T/#u
->> I haven't looked at the vmlinux file. But for the .ko file the issue
->> is that the elfutils MIPS backend isn't complete. Specifically MIPS
->> relocations aren't recognized (and so cannot be applied). There are
->> some pending patches which try to fix that:
->>
->> https://patchwork.sourceware.org/project/elfutils/list/?series=3D31601
-> Earlier in the thread, Hengqi Chen pointed out the latest elfutils backen=
-d
-> work for MIPS, and I locally rebuilt elfutils and then pahole from their
-> respective next/main branches. For elfutils, main (935ee131cf7c) includes
->
->   e259f126 Support Mips architecture
->   f2acb069 stack: Fix stack unwind failure on mips
->   db33cb0c backends: Add register_info, return_value_location, core_note =
-mips
->
-> which partially applies the patchwork series but leaves out the support f=
-or
-> readelf, strip, and elflint.
->
-> I believe this means the vmlinux and .ko files I shared are OK, or is the=
-re
-> more backend work needed for MIPS?
->
-> The bits missing in eu-readelf would explain the blank output both Arnald=
-o
-> and I see from "$ eu-readelf -winfo vmlinux". I tried rebuilding with the
-> patchwork readelf patch locally but ran into merge conflicts.
->
-> CCing Ying Huang for any more insight.
->
-> Thanks,
-> Tony
+> +
+>  	struct return_instance		*return_instances;
+>  	unsigned int			depth;
+>  };
+> diff --git a/kernel/events/uprobes.c b/kernel/events/uprobes.c
+> index 1c99380dc89d..504693845187 100644
+> --- a/kernel/events/uprobes.c
+> +++ b/kernel/events/uprobes.c
+> @@ -2072,6 +2072,7 @@ static void handler_chain(struct uprobe *uprobe, struct pt_regs *regs)
+>  	bool need_prep = false; /* prepare return uprobe, when needed */
+>  
+>  	down_read(&uprobe->register_rwsem);
+> +	current->utask->auprobe = &uprobe->arch;
+>  	for (uc = uprobe->consumers; uc; uc = uc->next) {
+>  		int rc = 0;
+>  
+> @@ -2086,6 +2087,7 @@ static void handler_chain(struct uprobe *uprobe, struct pt_regs *regs)
+>  
+>  		remove &= rc;
+>  	}
+> +	current->utask->auprobe = NULL;
+>  
+>  	if (need_prep && !remove)
+>  		prepare_uretprobe(uprobe, regs); /* put bp at return */
+> -- 
+> 2.43.0
+> 
+> 
 
