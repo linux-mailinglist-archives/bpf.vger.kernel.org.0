@@ -1,106 +1,131 @@
-Return-Path: <bpf+bounces-31392-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-31393-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 636198FC011
-	for <lists+bpf@lfdr.de>; Wed,  5 Jun 2024 01:42:08 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id A74758FC021
+	for <lists+bpf@lfdr.de>; Wed,  5 Jun 2024 01:45:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 20D782852D8
-	for <lists+bpf@lfdr.de>; Tue,  4 Jun 2024 23:42:07 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D9DF01C2283F
+	for <lists+bpf@lfdr.de>; Tue,  4 Jun 2024 23:45:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 63E5F14D446;
-	Tue,  4 Jun 2024 23:42:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 27D1414D6ED;
+	Tue,  4 Jun 2024 23:44:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="vPcNAmgS"
+	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="4DYnlGoH"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-170.mta1.migadu.com (out-170.mta1.migadu.com [95.215.58.170])
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E82414D28E
-	for <bpf@vger.kernel.org>; Tue,  4 Jun 2024 23:42:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 31DC714D6E1;
+	Tue,  4 Jun 2024 23:44:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717544522; cv=none; b=lrFOXHFGu5pHSoy1xEb/pJ89cP4yBO3h2IdcbtS3qcKiGi6uAFrDt9STEUGkzQa1Q2raP5XHj8cLkzHHxydOi4WyfG6Jur0f2W9GsHwLCBr4e1XFMJuJesAfPmWERxY3nxyNR3WU5oNZO3ekValWEpF0f+fmefvJ6Q7qmhj8F0Q=
+	t=1717544694; cv=none; b=jhKIw31WhFvYnKXyu0H5IsHZo7f77H+UuN1+R4PLDribxd3dsikuF2rcxsSBc7yGxeJK4X0F/qFCjvTvZF2ZlHC+1OUynEycIJCgMT76JP4yfWYALzl+cp+leMnnhzvl0dtEDxWpL3L8w3YMpEf2Ngf1YvXasrOjv4JVaEvWVC4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717544522; c=relaxed/simple;
-	bh=c346iAURzRJ62La34kA/lEKDO2ryXmxH0kJJpeCSw8U=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
-	 In-Reply-To:Content-Type; b=ju4c3hWO0OsAyAHcQOLpMn6D5e7R+ggcK9ywBPCScdOPEI3xHRc3uBDJE/EufoYPlBzAJ+USgD64jTNw6+73H4xcv6lBI8mGN4sFIkBHLtS2EcmYEVluRhN/LJXejAWsKtwq0KHQh31qR7oUbt4QwsiU+JxGtMCStyxKYRwek38=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=vPcNAmgS; arc=none smtp.client-ip=95.215.58.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Envelope-To: bpf@vger.kernel.org
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1717544519;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=v0JKup1qX14ye2cWkUAPy8WDFmKcMGklFj8uA5s74UU=;
-	b=vPcNAmgSCrf937WVhaH1QnW5L42Xc5DGXBXaoDHI/NNp9P2jsD1V/oC6jolZ6+fcq19Rw4
-	7mU2OMDp6i1fZn/RH179MvgzrIityTE7qtlljmD6nqk940Trf7Y+Bc18jbFt46IMCOnE/S
-	AR3FypN+hRT/wFpO2JdYfmbABO3knco=
-X-Envelope-To: ast@kernel.org
-X-Envelope-To: andrii@kernel.org
-X-Envelope-To: daniel@iogearbox.net
-X-Envelope-To: kernel-team@fb.com
-X-Envelope-To: martin.lau@kernel.org
-Message-ID: <9ba46c8c-17b0-4600-8b49-1d2c9821be04@linux.dev>
-Date: Tue, 4 Jun 2024 16:41:54 -0700
+	s=arc-20240116; t=1717544694; c=relaxed/simple;
+	bh=5vLaTMhC/f80cHfutQVA8NT+YBHXfBWGgHaK2vOxNpQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=fpDFON7lauewfG4hkWenVziJ1Kgl/ErIQFvYq4Oo7OjpNCysu5PTlAQGzS+/HlBl2OaFfl499s6FmqDfDvPDem2n+JKy59+AlAxmiDYY4LzFX/SMaOj2TQT/RTWHR8lG+TYxcKkdHsBl4c/3V9EiX9UtfM8V+YV1sJfQdnZQvEE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=4DYnlGoH; arc=none smtp.client-ip=156.67.10.101
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+	bh=PhT9KFFOExWQF20U3AwXuDAmtkcJMJ2i2CdJFaJH1tU=; b=4DYnlGoH09CVVe9B8D6eWoe6IX
+	DObz3+SkqGCNdjLs+aUSWP4imauIabFyOz0tYAXBGAaspL4LEEykxzsBt1MplXhQMcu03p7QOuQAx
+	8TnzwFCM/jMxcD752sO5+qJexRWAe9BvXi/lZ0eAt2OWIDNwwpRUDYNeI+HKaBzM6AbI=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+	(envelope-from <andrew@lunn.ch>)
+	id 1sEdpV-00GqyR-E0; Wed, 05 Jun 2024 01:44:37 +0200
+Date: Wed, 5 Jun 2024 01:44:37 +0200
+From: Andrew Lunn <andrew@lunn.ch>
+To: Steven Rostedt <rostedt@goodmis.org>
+Cc: Jason Gunthorpe <jgg@ziepe.ca>, Paolo Abeni <pabeni@redhat.com>,
+	Mina Almasry <almasrymina@google.com>, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+	linux-alpha@vger.kernel.org, linux-mips@vger.kernel.org,
+	linux-parisc@vger.kernel.org, sparclinux@vger.kernel.org,
+	linux-trace-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
+	bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
+	linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Donald Hunter <donald.hunter@gmail.com>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Richard Henderson <richard.henderson@linaro.org>,
+	Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+	Matt Turner <mattst88@gmail.com>,
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	"James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+	Helge Deller <deller@gmx.de>, Andreas Larsson <andreas@gaisler.com>,
+	Jesper Dangaard Brouer <hawk@kernel.org>,
+	Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Arnd Bergmann <arnd@arndb.de>, Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
+	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+	Steffen Klassert <steffen.klassert@secunet.com>,
+	Herbert Xu <herbert@gondor.apana.org.au>,
+	David Ahern <dsahern@kernel.org>,
+	Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+	Shuah Khan <shuah@kernel.org>,
+	Sumit Semwal <sumit.semwal@linaro.org>,
+	Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+	Pavel Begunkov <asml.silence@gmail.com>, David Wei <dw@davidwei.uk>,
+	Yunsheng Lin <linyunsheng@huawei.com>,
+	Shailend Chand <shailend@google.com>,
+	Harshitha Ramamurthy <hramamurthy@google.com>,
+	Shakeel Butt <shakeel.butt@linux.dev>,
+	Jeroen de Borst <jeroendb@google.com>,
+	Praveen Kaligineedi <pkaligineedi@google.com>,
+	Willem de Bruijn <willemb@google.com>,
+	Kaiyuan Zhang <kaiyuanz@google.com>
+Subject: Re: [PATCH net-next v10 05/14] netdev: netdevice devmem allocator
+Message-ID: <3be107ce-3d9f-4528-b9f7-1c9e38da0688@lunn.ch>
+References: <20240530201616.1316526-1-almasrymina@google.com>
+ <20240530201616.1316526-6-almasrymina@google.com>
+ <bea8b8bf1630309bb004f614e4a3c7f684a6acb6.camel@redhat.com>
+ <20240604121551.07192993@gandalf.local.home>
+ <20240604163158.GB21513@ziepe.ca>
+ <20240604124243.66203a46@gandalf.local.home>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH] bpf: Support shadow stack
-Content-Language: en-GB
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Yonghong Song <yonghong.song@linux.dev>
-To: bpf@vger.kernel.org
-Cc: Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>, kernel-team@fb.com,
- Martin KaFai Lau <martin.lau@kernel.org>
-References: <20240604175546.1339303-1-yonghong.song@linux.dev>
- <20240604175552.1339642-1-yonghong.song@linux.dev>
-In-Reply-To: <20240604175552.1339642-1-yonghong.song@linux.dev>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240604124243.66203a46@gandalf.local.home>
 
-Please ignore this patch and the next one shadow stack patch as well.
-These patches are my prototype before lsfmmbpf conference.
-Alexei has suggested a better approach which I will implement and post
-soon.
+> Interesting, as I sped up the ftrace ring buffer by a substantial amount by
+> adding strategic __always_inline, noinline, likely() and unlikely()
+> throughout the code. It had to do with what was considered the fast path
+> and slow path, and not actually the size of the function. gcc got it
+> horribly wrong.
 
-On 6/4/24 10:55 AM, Yonghong Song wrote:
-> Try to add 3rd argument to bpf program where the 3rd argument
-> is the frame pointer to bpf program stack.
->
-> There are a few issues here:
->    - Currently, only main bpf program is using shadow stack.
->      other sub programs (static or global) still use stack.
->      It is POSSIBLE to a hidden register to pass
->      frame pointer (derived from main program) to those static
->      or global functions.
->    - But tail call and ext programs are not working now we
->      we do not know at jit time what programs will be used
->      in tail call and ext. It is possible to do some jit
->      during text_poke time. But that will need additional
->      stack allocation at jit time and that will be complicated.
->    - For xdp program, need to patch jit for xdp dispatcher.
->
-> Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
-> ---
->   arch/x86/net/bpf_jit_comp.c | 105 +++++++++++++++++++++++++++++-------
->   include/linux/bpf-cgroup.h  |   9 ++--
->   include/linux/bpf.h         |  29 ++++++----
->   include/linux/filter.h      |  25 +++++++--
->   kernel/bpf/cgroup.c         |   9 ++--
->   kernel/bpf/core.c           |  36 +++++++++++--
->   kernel/bpf/offload.c        |   3 +-
->   7 files changed, 173 insertions(+), 43 deletions(-)
-[...]
+And what did the compiler people say when you reported gcc was getting
+it wrong?
+
+Our assumption is, the compiler is better than a human at deciding
+this. Or at least, a human who does not spend a long time profiling
+and tuning. If this assumption is not true, we probably should be
+trying to figure out why, and improving the compiler when
+possible. That will benefit everybody.
+
+       Andrew
+
 
