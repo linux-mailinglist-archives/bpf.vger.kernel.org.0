@@ -1,156 +1,195 @@
-Return-Path: <bpf+bounces-31300-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-31301-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 49BBD8FB0B3
-	for <lists+bpf@lfdr.de>; Tue,  4 Jun 2024 13:03:05 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D14D58FB168
+	for <lists+bpf@lfdr.de>; Tue,  4 Jun 2024 13:51:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A2A7FB20319
-	for <lists+bpf@lfdr.de>; Tue,  4 Jun 2024 11:03:02 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 109F61C22299
+	for <lists+bpf@lfdr.de>; Tue,  4 Jun 2024 11:51:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A9F2E144D22;
-	Tue,  4 Jun 2024 11:02:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="cqMCbN+m"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E4D4E145A17;
+	Tue,  4 Jun 2024 11:51:05 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-f48.google.com (mail-ed1-f48.google.com [209.85.208.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A869DDF42
-	for <bpf@vger.kernel.org>; Tue,  4 Jun 2024 11:02:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E76F145A06;
+	Tue,  4 Jun 2024 11:51:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717498977; cv=none; b=WLB4knNHCrDT/JUn6E5OlaI9mMvv0bQDpnMPHzVtB8VYppdw7MCE/3AE6OwwFhP907TcYetIdzZOZEoC/HCetuR4OLUag0xbeHXuLx93AYMORmBuLIxW1E8kMqwKS3zXHnkoq0/FBK6iGpG9L6X8c/VthlEbV/5BfY8VTKifq/U=
+	t=1717501865; cv=none; b=md2vFZbu+1NZouqw5OYqqwGGsywtClyAPInnpxlUVkS3EgTGVwyWW0R6pDpazqS31/7xUYO4Iqm/lZHVepvGApG5PubS5thIxVzY9n7MOK9BRNxSX3jfe3CyBFakTpzfhmCpDjKB8qnpSP0IbLPObA45HOWWhrcXYQprceHidPI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717498977; c=relaxed/simple;
-	bh=Qa/c0W3L64KR05fRkd1/NXfwBRM4+Gef9JTbj07sOds=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=bjrmgCrvq/N8kRJpySueKyxhOJxe9cZOs6kixTFiqoKUonUau9GZXX9Vuzh5EuYwdEDv3g5S6UmgPHY13HR35mHR22KLL7XcaySNX9sI1DMzNxno6IJsxH6KpyhiaZzlQZKyuivlzHAjTy0PSwNMQT1oK3QmKdS2GuysFZN3gZU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=cqMCbN+m; arc=none smtp.client-ip=209.85.208.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f48.google.com with SMTP id 4fb4d7f45d1cf-57a31d63b6bso1131693a12.0
-        for <bpf@vger.kernel.org>; Tue, 04 Jun 2024 04:02:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1717498974; x=1718103774; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=aurQXsI6ZbWk77ADQU/Pa2yA0Ss70NRMZy0Zpuqm3N0=;
-        b=cqMCbN+m9tSO98ghAST0KyfSg3B9CALfFa0XfbgeyhuK1XDBLRwkH0XtNljsXICSZu
-         CFCR6a2LmvZTsDfDzxGxcwU+jkqvi4/dsgQnp07e2Gj+638UbtH7UMs1U12R4TymdABE
-         RL0mg2MbjcydEAEVnoBxHDLwu/oAvAiUrYm9BDVR2vKcG2QTsZWw3lx80cR9zXLVGlcZ
-         nIO6SDqwxZ4JwCFil7MnSTnfANvpAqq7B14PNluntgzEcCieMdtv+3nzvs0zU7z/ofN9
-         rJcFJKc6B8AW5rvpns4+PD7wob1N+AinlpS3UWZCjpvMpc+nNdrsSuhlbp9Vv418Cozh
-         99vw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1717498974; x=1718103774;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=aurQXsI6ZbWk77ADQU/Pa2yA0Ss70NRMZy0Zpuqm3N0=;
-        b=WR2FS/JyjUh/9pISqtS1zkvsubpnfYxSPN40H4O3fX8G7oR22MmWznjxd3WTFYFAD6
-         Vz0oRPi1hohQpV8WEHpXH2+KwTdFsydMKJuPqPK3FHvMX6Dy01qv8twtM7cDAr49NBXp
-         GkT1K6D8XQ/KwzwzUpkJRQuOOMdWKyUq6JkUtuIzSqrR6sB0ARSkzH4pIIIgwwRFN0ii
-         CmPq+ht9aKCAtwaw50iwqqsI4el6SMAINY/zJmArcJw133IOYTPhMYvVBm8iwz9XjbQ+
-         WUpzvLS5gk50htgNte7ijLBxXx3bfOK2iLL5SOT5Yaj1+Ek5jjnewAyQlixVWET4o5/W
-         02sA==
-X-Gm-Message-State: AOJu0YwdKlcfyHLg0+AQ6wwdyPMbmd3tVnKT/MQr+gD8tDFFgHuLErQ1
-	c65HESFi1DVzxRX1RCXSoVhs+YrQdBHoL/0KwBKs4J60SmJNwGIf
-X-Google-Smtp-Source: AGHT+IHdAIqL4qFlptTZsQrOOGp/X1U6quxPcmxEp7AaTJYnnA6eWQ3QZlq8N1/5U6L4Dsj9R+GUDQ==
-X-Received: by 2002:a50:d753:0:b0:57a:2274:850b with SMTP id 4fb4d7f45d1cf-57a363ad0d9mr6930325a12.24.1717498973740;
-        Tue, 04 Jun 2024 04:02:53 -0700 (PDT)
-Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
-        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-57a31c6d4b6sm7188308a12.74.2024.06.04.04.02.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 04 Jun 2024 04:02:53 -0700 (PDT)
-From: Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Tue, 4 Jun 2024 13:02:51 +0200
-To: Andrii Nakryiko <andrii@kernel.org>
-Cc: bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-	martin.lau@kernel.org, alan.maguire@oracle.com, eddyz87@gmail.com
-Subject: Re: [PATCH bpf-next 2/5] libbpf: make use of BTF field iterator in
- BPF linker code
-Message-ID: <Zl70W3wstHhF-6zo@krava>
-References: <20240603231720.1893487-1-andrii@kernel.org>
- <20240603231720.1893487-3-andrii@kernel.org>
+	s=arc-20240116; t=1717501865; c=relaxed/simple;
+	bh=JT1cwdj7kPcar/9vB3M3rkQGDKpmZj4FtWdTQaiaBf8=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=Czv/vjw0lPXbq+Mkl0glbT0Q046hT0SdLSriMYOV+YVTFbcaZ0fdDD3eKrnb3zYWEnxqhOz5oLtKqgu4TRtHSgDYpAq5KkyvA8bHdTEIsSh7e3u9X0h3ERs/l5/riyQ4yfKEJEJE17bsKdhG7WsuetBRo6RgouEEmQJM87gdO8I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.216])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4Vtpng2VG5z4f3nV1;
+	Tue,  4 Jun 2024 19:50:47 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.112])
+	by mail.maildlp.com (Postfix) with ESMTP id 6D5801A01D2;
+	Tue,  4 Jun 2024 19:50:58 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.67.174.193])
+	by APP1 (Coremail) with SMTP id cCh0CgBnOBGd_15metYuOg--.43086S4;
+	Tue, 04 Jun 2024 19:50:55 +0800 (CST)
+From: Luo Gengkun <luogengkun@huaweicloud.com>
+To: linux-kernel@vger.kernel.org
+Cc: mpe@ellerman.id.au,
+	npiggin@gmail.com,
+	christophe.leroy@csgroup.eu,
+	naveen.n.rao@linux.ibm.com,
+	akpm@linux-foundation.org,
+	trix@redhat.com,
+	dianders@chromium.org,
+	luogengkun@huaweicloud.com,
+	mhocko@suse.com,
+	pmladek@suse.com,
+	kernelfans@gmail.com,
+	lecopzer.chen@mediatek.com,
+	song@kernel.org,
+	yaoma@linux.alibaba.com,
+	tglx@linutronix.de,
+	linuxppc-dev@lists.ozlabs.org,
+	bpf@vger.kernel.org
+Subject: [PATCH] watchdog/core: Fix AA deadlock causeb by watchdog
+Date: Tue,  4 Jun 2024 11:57:36 +0000
+Message-Id: <20240604115736.1013341-1-luogengkun@huaweicloud.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240603231720.1893487-3-andrii@kernel.org>
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:cCh0CgBnOBGd_15metYuOg--.43086S4
+X-Coremail-Antispam: 1UD129KBjvJXoWxArW5tFykAF47Aw4UAFWDJwb_yoW5AF47pr
+	9FvFy7tw4UCr4kZayfJ3sxGry8Ca4vgr43GF4DG3yFkF1YkFn8Xrna9FnxXrZ0vrZxZF4j
+	vwn0qrWfta4UtaUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUvF14x267AKxVW5JVWrJwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+	1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
+	JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
+	CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
+	2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
+	W8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2
+	Y2ka0xkIwI1l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4
+	xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a6rW5
+	MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I
+	0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrJr0_WFyUJwCI42IY6I8E87Iv67AK
+	xVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvj
+	fUOmhFUUUUU
+X-CM-SenderInfo: 5oxrwvpqjn3046kxt4xhlfz01xgou0bp/
 
-On Mon, Jun 03, 2024 at 04:17:16PM -0700, Andrii Nakryiko wrote:
-> Switch all BPF linker code dealing with iterating BTF type ID and string
-> offset fields to new btf_field_iter facilities.
-> 
-> Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-> ---
->  tools/lib/bpf/linker.c | 60 ++++++++++++++++++++++++++----------------
->  1 file changed, 38 insertions(+), 22 deletions(-)
-> 
-> diff --git a/tools/lib/bpf/linker.c b/tools/lib/bpf/linker.c
-> index 0d4be829551b..be6539e59cf6 100644
-> --- a/tools/lib/bpf/linker.c
-> +++ b/tools/lib/bpf/linker.c
-> @@ -957,19 +957,35 @@ static int check_btf_str_off(__u32 *str_off, void *ctx)
->  static int linker_sanity_check_btf(struct src_obj *obj)
->  {
->  	struct btf_type *t;
-> -	int i, n, err = 0;
-> +	int i, n, err;
->  
->  	if (!obj->btf)
->  		return 0;
->  
->  	n = btf__type_cnt(obj->btf);
->  	for (i = 1; i < n; i++) {
-> +		struct btf_field_iter it;
-> +		__u32 *type_id, *str_off;
-> +		const char *s;
-> +
->  		t = btf_type_by_id(obj->btf, i);
->  
-> -		err = err ?: btf_type_visit_type_ids(t, check_btf_type_id, obj->btf);
-> -		err = err ?: btf_type_visit_str_offs(t, check_btf_str_off, obj->btf);
-> +		err = btf_field_iter_init(&it, t, BTF_FIELD_ITER_IDS);
->  		if (err)
->  			return err;
-> +		while ((type_id = btf_field_iter_next(&it))) {
-> +			if (*type_id >= n)
-> +				return -EINVAL;
-> +		}
-> +
-> +		err = btf_field_iter_init(&it, t, BTF_FIELD_ITER_STRS);
-> +		if (err)
-> +			return err;
-> +		while ((str_off = btf_field_iter_next(&it))) {
-> +			s = btf__str_by_offset(obj->btf, *str_off);
-> +			if (!s)
-> +				return -EINVAL;
+We found an AA deadlock problem as shown belowed:
 
-nit, we could drop 's' and just do (!btf__str_by_offset(obj->btf, *str_off))
+TaskA				TaskB				WatchDog			system_wq
 
+...
+css_killed_work_fn:
+P(cgroup_mutex)
+...
+								...
+								__lockup_detector_reconfigure:
+								P(cpu_hotplug_lock.read)
+								...
+				...
+				percpu_down_write:
+				P(cpu_hotplug_lock.write)
+												...
+												cgroup_bpf_release:
+												P(cgroup_mutex)
+								smp_call_on_cpu:
+								Wait system_wq
 
-otherwise the patchset lgtm
+cpuset_css_offline:
+P(cpu_hotplug_lock.read)
 
-Acked-by: Jiri Olsa <jolsa@kernel.org>
+WatchDog is waitting for system_wq, who is waitting for cgroup_mutex, to finish
+the jobs, but the owner of the cgroup_mutex is waitting for cpu_hotplug_lock.
+The key point is the cpu_hotplug_lock, cause the system_wq may be waitting other
+lock. What's more, it seems that smp_call_on_cpu doesn't need protection from
+cpu_hotplug_lock. I try to revert the old patch to fix this problem, but I
+encountered some conflicts. Or I should just release and acquire cpu_hotplug_lock
+during between smp_call_on_cpu? I'm looking forward any suggestion :).
 
-jirka
+Fixes: e31d6883f21c ("watchdog/core, powerpc: Lock cpus across reconfiguration")
 
-> +		}
->  	}
->  
->  	return 0;
-> @@ -2234,26 +2250,10 @@ static int linker_fixup_btf(struct src_obj *obj)
->  	return 0;
->  }
+Signed-off-by: Luo Gengkun <luogengkun@huaweicloud.com>
+---
+ arch/powerpc/kernel/watchdog.c | 4 ++++
+ kernel/watchdog.c              | 9 ---------
+ 2 files changed, 4 insertions(+), 9 deletions(-)
 
-SNIP
+diff --git a/arch/powerpc/kernel/watchdog.c b/arch/powerpc/kernel/watchdog.c
+index 8c464a5d8246..f33f532ea7fa 100644
+--- a/arch/powerpc/kernel/watchdog.c
++++ b/arch/powerpc/kernel/watchdog.c
+@@ -550,17 +550,21 @@ void watchdog_hardlockup_stop(void)
+ {
+ 	int cpu;
+ 
++	cpus_read_lock();
+ 	for_each_cpu(cpu, &wd_cpus_enabled)
+ 		stop_watchdog_on_cpu(cpu);
++	cpus_read_unlock();
+ }
+ 
+ void watchdog_hardlockup_start(void)
+ {
+ 	int cpu;
+ 
++	cpus_read_lock();
+ 	watchdog_calc_timeouts();
+ 	for_each_cpu_and(cpu, cpu_online_mask, &watchdog_cpumask)
+ 		start_watchdog_on_cpu(cpu);
++	cpus_read_unlock();
+ }
+ 
+ /*
+diff --git a/kernel/watchdog.c b/kernel/watchdog.c
+index 51915b44ac73..13303a932cde 100644
+--- a/kernel/watchdog.c
++++ b/kernel/watchdog.c
+@@ -867,7 +867,6 @@ int lockup_detector_offline_cpu(unsigned int cpu)
+ 
+ static void __lockup_detector_reconfigure(void)
+ {
+-	cpus_read_lock();
+ 	watchdog_hardlockup_stop();
+ 
+ 	softlockup_stop_all();
+@@ -877,12 +876,6 @@ static void __lockup_detector_reconfigure(void)
+ 		softlockup_start_all();
+ 
+ 	watchdog_hardlockup_start();
+-	cpus_read_unlock();
+-	/*
+-	 * Must be called outside the cpus locked section to prevent
+-	 * recursive locking in the perf code.
+-	 */
+-	__lockup_detector_cleanup();
+ }
+ 
+ void lockup_detector_reconfigure(void)
+@@ -916,11 +909,9 @@ static __init void lockup_detector_setup(void)
+ #else /* CONFIG_SOFTLOCKUP_DETECTOR */
+ static void __lockup_detector_reconfigure(void)
+ {
+-	cpus_read_lock();
+ 	watchdog_hardlockup_stop();
+ 	lockup_detector_update_enable();
+ 	watchdog_hardlockup_start();
+-	cpus_read_unlock();
+ }
+ void lockup_detector_reconfigure(void)
+ {
+-- 
+2.34.1
+
 
