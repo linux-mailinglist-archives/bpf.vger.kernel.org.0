@@ -1,248 +1,177 @@
-Return-Path: <bpf+bounces-31291-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-31292-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id E9FA68FAC4E
-	for <lists+bpf@lfdr.de>; Tue,  4 Jun 2024 09:42:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8C4618FACEE
+	for <lists+bpf@lfdr.de>; Tue,  4 Jun 2024 09:58:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 265C31C20C89
-	for <lists+bpf@lfdr.de>; Tue,  4 Jun 2024 07:42:35 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AFAEF1C20B40
+	for <lists+bpf@lfdr.de>; Tue,  4 Jun 2024 07:58:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE9C2140E5B;
-	Tue,  4 Jun 2024 07:42:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 96A191428FA;
+	Tue,  4 Jun 2024 07:56:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BX273j6L"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NgKn2eVq"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-lj1-f178.google.com (mail-lj1-f178.google.com [209.85.208.178])
+Received: from mail-wm1-f42.google.com (mail-wm1-f42.google.com [209.85.128.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7BE9213E888
-	for <bpf@vger.kernel.org>; Tue,  4 Jun 2024 07:42:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 855701442FB;
+	Tue,  4 Jun 2024 07:56:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717486949; cv=none; b=Kn32K6dsNe9sWDtN2S+JUT4PZfNWWxVYs6DbZVjvKTCiBDVZ95OnYacrmLdedTNwx4mkpnHTsVarqRYqw/qGcgBUiqKfdX82sxpfHTjIysNol29wSi/Gh3TWGlZoNb4zSBI9jfBRMvqrL5JRy0dvG+RDU+75nrxVdYEXN8HMtL4=
+	t=1717487800; cv=none; b=SYHyxjmQTvjF50A4FOBMlxULSrCxkFQm0Sij+4HXLvcjHHq56yEljx4bCf2wHIKfykH9pewb0mcwGvouicPgY6GUP2lvXBg+pZmYLVj+2/FvvtcnHEdorxcOEERMYJL9T8T0ryGqREcAu/1RHxaPeC4j+fz8Co27a1ZcCptsT9A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717486949; c=relaxed/simple;
-	bh=gSlJvYvq7l766YN6f/WHgoWGynnUXRIxmIUBxSDkM1g=;
+	s=arc-20240116; t=1717487800; c=relaxed/simple;
+	bh=4P9STm7Tqu8zS5aS+jowLfgQpDvynJauXla8R+gW8oA=;
 	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=QTQZ+6jotdBbwLYSdNUwhRwxju0JgpvABYfxtQaCS8Z5CiNva8Wsd+Lz+poD3NU0aEm4rlrTcBVHksu9IbXnUebJ5Szi+egHEe2hnLxTjolqPqudhMHlSRgqnh3fhd8eCyNz2Dsv+Z/Xra0XqWU9C93dwV8k1eHlyt3Jwm3klRo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BX273j6L; arc=none smtp.client-ip=209.85.208.178
+	 Content-Type:Content-Disposition:In-Reply-To; b=kidVf0M1c5JOrRKlE3IsIvunLi1VolKMIAZeAjCqre7YsEb3zeJTgwa0G3SZMj5H3QL1WrEARhsJ/5/yyt/d6yzV0OE3EFz5uKjjc0qoHpv26xAHMDpV1RdY77DmTiRLQhudI68eaSS4iYwIJauPCuMQ9yKK9hwKIzrxinJ8ff8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=NgKn2eVq; arc=none smtp.client-ip=209.85.128.42
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f178.google.com with SMTP id 38308e7fff4ca-2eaad2c670aso7858271fa.1
-        for <bpf@vger.kernel.org>; Tue, 04 Jun 2024 00:42:27 -0700 (PDT)
+Received: by mail-wm1-f42.google.com with SMTP id 5b1f17b1804b1-42134bb9677so39241125e9.2;
+        Tue, 04 Jun 2024 00:56:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1717486945; x=1718091745; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=JawoabPgxScGBG3pTtS7BAuxbAtr+7QqrMbL5g0OdYk=;
-        b=BX273j6LuhJTIKi34caiTVu+IrfXeQ5LVpm4fSpKPLAwY5iB4/n2BMfchyqgOtd97m
-         0foE1TAYefEuuGC17uGyzz1Ajd+/b7VovyyYI5d89vS0AiDVjJ0ZSdJDMQ7lRe36KrZ1
-         uQWJfy0bWAkXZBONgWdqP3ZCywDsH9849rtOVylPMzciBhq+vCEUUWH+drr5MEGZWOEF
-         aZPS95OqdHT95NqRYULC268NbYtrgJZpjt0hRx8pehPq6Ql8IPqxZE4R5xci3fJhrC3x
-         j6p0WeQwMAcjflgX8vty8wPY7/XIcuJO7HYHvUsYQfhwk+cjkYctquaIF6++29I91QXx
-         ayUA==
+        d=gmail.com; s=20230601; t=1717487797; x=1718092597; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=O350TIsq9YLAoOoYARKSfDq5NiQ/v55dRM6GNZLiR0Y=;
+        b=NgKn2eVqAxsMISFWV4iN5LAOQ7BdGF6XdmwUBDMs264UpMqAm9MPYqY4NQKE5KhXkP
+         6s/BT8nm1HDCd7+Y7OF8zj8GHLQEHvNsbszu4Aomvgy6OjH/gA4ulQTsfYGveJ3Ptm8W
+         RkMllp7rWS0q2JSnFrQQcbjObE0Wl7RQnVS+Uul7nty1xdvoWIY6UUNZAhWeF+fxBilu
+         psU9fn0CTlDUZBZkPJwK+vqbXJCYcVxE5MdCZoH2O2UhrqbEfWb/tPuD+Fbl5WUqTblu
+         tKvZbSeQka0SZFAZgmHmk2wDGtw+nAXBJTu1jVb5magCqj35g9Gtgbp2GB32V5zyPjIz
+         gYgg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1717486945; x=1718091745;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=JawoabPgxScGBG3pTtS7BAuxbAtr+7QqrMbL5g0OdYk=;
-        b=K0cHGp/ySJIrkcW55MhZ4yctuM3uCffagx1gtJP4aMKKnrkdJq6OCqCu8amOlJG6vB
-         w1rEVcHCOsStuph2Eu9KZB+mQUFlNuIFUvz5AGMpQWXJuJlTme/iM6GBr7zjUgjQj5+A
-         1RPXXPXNAWs1m5zPRUG3QO+AHeyjLkAlr5R5OderAVHTUrPaurtnTGA6/vDO0EcgyleJ
-         UQgY+Y0hp7xNj82z8y7IGzia/T+0j498J2KxBBPMkHv79zJyH7Tuv2Vj2/dO/ZJPvI5T
-         2C/2VlH/Wr06GyY2nG45244wJRgjDeV0/2+OW1sHKP6G9VQYDt4jMbm10REd+h0cO5sU
-         LNWQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUgrU37DY8QNAs3mnsM1DoONQqVGyZp/3miSpQiC+LG1bZ7QtGSl4Abc/Ci0VOI9z2mixanOpOae+AxqYl6foMPXxMF
-X-Gm-Message-State: AOJu0YxPCjILPywOiHecvOpTxlUOZTR5VOPRwL6Iuq/CcZ7XUHcoQ4BD
-	TDrJ2Gx3EYMrSzrVNkHHfw7fdFvwa0Ulxxa3hRYGx+ZwZPFyeVk8
-X-Google-Smtp-Source: AGHT+IGIgyTOpdOo/nAQNexy0tIK9NWIBzlQgvYM4aTYoBMKwqtYIKnAsyuJ63jmj4x3Qxx72EEYCg==
-X-Received: by 2002:a2e:9dd9:0:b0:2ea:8f59:efc8 with SMTP id 38308e7fff4ca-2ea9519b6b0mr73631941fa.40.1717486945228;
-        Tue, 04 Jun 2024 00:42:25 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1717487797; x=1718092597;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=O350TIsq9YLAoOoYARKSfDq5NiQ/v55dRM6GNZLiR0Y=;
+        b=Nvctj6ZqYU6igwZZ92Jaoexp8Te9BCd4MuvAnCTgil4BbAfhmHUA61RqvLlmJnYwW6
+         ncgdYzeZpk20M1GvxHMHHrqhScqPVOM3rdgUst5CXQv3f9ZQp9/exZBHv7lxG9OdO7Go
+         Pf9AUPuCraOU1lmG+LyQxZm9TACf8htZV3gOzvWSYh/gHofTqfp4FR6ASLPt+CP0klVl
+         Jk1djHfbPGCs2ogC6MGHamO1wm56l7GlBlLgTEnLRhz0PVnc5j7d3t34ZiYewG63aW6f
+         +zJ5nk2ZERst34Mo2sSDSS/FomVltwa43LNddl+sWmvcLyKdm4hfIGnxC5Woypnhx8j3
+         JIXA==
+X-Forwarded-Encrypted: i=1; AJvYcCUFEQTKzfyNkOInLANi4CKySYQtnK32pYltHUT3EKLSe6aEWayeQYF39yu4id81hwyEsM3ar0LA5csDZzawEHavp0bleuSD
+X-Gm-Message-State: AOJu0Yw3CrdffXboqWxHlhQfeOzujDcfEFZu7YBrAQMdqO4UIOE1E0DF
+	cWvIGUUKonr6dXtXAyzbFRd5aDYeWp8UOgtQR2AixpUIVfUhLqqZ
+X-Google-Smtp-Source: AGHT+IHhG9sOTYVW20XrZDCQqFAC1654zHonmJAmvCtJ3YZzG5tFQWnvM95IUEMvAQZLQWekwWOZ7g==
+X-Received: by 2002:a05:600c:1f14:b0:421:36da:9438 with SMTP id 5b1f17b1804b1-42136da9466mr91646945e9.28.1717487796665;
+        Tue, 04 Jun 2024 00:56:36 -0700 (PDT)
 Received: from krava ([212.20.115.60])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4212b2bc975sm144903635e9.29.2024.06.04.00.42.24
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4215447035bsm2945455e9.13.2024.06.04.00.56.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 04 Jun 2024 00:42:24 -0700 (PDT)
+        Tue, 04 Jun 2024 00:56:36 -0700 (PDT)
 From: Jiri Olsa <olsajiri@gmail.com>
 X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Tue, 4 Jun 2024 09:42:21 +0200
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Alexei Starovoitov <ast@kernel.org>,
+Date: Tue, 4 Jun 2024 09:56:33 +0200
+To: Tony Ambardar <tony.ambardar@gmail.com>
+Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
 	Daniel Borkmann <daniel@iogearbox.net>,
 	Andrii Nakryiko <andrii@kernel.org>,
-	syzbot+3ab78ff125b7979e45f9@syzkaller.appspotmail.com,
-	bpf <bpf@vger.kernel.org>, Martin KaFai Lau <kafai@fb.com>,
-	Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
 	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@chromium.org>,
-	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
-	Masami Hiramatsu <mhiramat@kernel.org>
-Subject: Re: [PATCH bpf] bpf: Set run context for rawtp test_run callback
-Message-ID: <Zl7FXWhrBg2j-uDR@krava>
-References: <20240603111408.3981087-1-jolsa@kernel.org>
- <CAADnVQJVSTywwCseE_9u9JmsxKowL119yUUmp+w+eYNS=1T73A@mail.gmail.com>
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
+	Hao Luo <haoluo@google.com>, Miguel Ojeda <ojeda@kernel.org>,
+	kernel test robot <lkp@intel.com>, stable@vger.kernel.org
+Subject: Re: [PATCH bpf v2 2/2] bpf: Harden __bpf_kfunc tag against linker
+ kfunc removal
+Message-ID: <Zl7IscCtZVKjgP2h@krava>
+References: <cover.1717413886.git.Tony.Ambardar@gmail.com>
+ <cover.1717477560.git.Tony.Ambardar@gmail.com>
+ <e9c64e9b5c073dabd457ff45128aabcab7630098.1717477560.git.Tony.Ambardar@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAADnVQJVSTywwCseE_9u9JmsxKowL119yUUmp+w+eYNS=1T73A@mail.gmail.com>
+In-Reply-To: <e9c64e9b5c073dabd457ff45128aabcab7630098.1717477560.git.Tony.Ambardar@gmail.com>
 
-On Mon, Jun 03, 2024 at 09:25:47AM -0700, Alexei Starovoitov wrote:
-> On Mon, Jun 3, 2024 at 4:14 AM Jiri Olsa <jolsa@kernel.org> wrote:
-> >
-> > syzbot reported crash when rawtp program executed through the
-> > test_run interface calls bpf_get_attach_cookie helper or any
-> > other helper that touches task->bpf_ctx pointer.
-> >
-> > We need to setup bpf_ctx pointer in rawtp test_run as well,
-> > so fixing this by moving __bpf_trace_run in header file and
-> > using it in test_run callback.
-> >
-> > Also renaming __bpf_trace_run to bpf_prog_run_trace.
-> >
-> > Fixes: 7adfc6c9b315 ("bpf: Add bpf_get_attach_cookie() BPF helper to access bpf_cookie value")
-> > Reported-by: syzbot+3ab78ff125b7979e45f9@syzkaller.appspotmail.com
-> > Closes: https://syzkaller.appspot.com/bug?extid=3ab78ff125b7979e45f9
-> > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> > ---
-> >  include/linux/bpf.h      | 27 +++++++++++++++++++++++++++
-> >  kernel/trace/bpf_trace.c | 28 ++--------------------------
-> >  net/bpf/test_run.c       |  4 +---
-> >  3 files changed, 30 insertions(+), 29 deletions(-)
-> >
-> > diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-> > index 5e694a308081..4eb803b1d308 100644
-> > --- a/include/linux/bpf.h
-> > +++ b/include/linux/bpf.h
-> > @@ -2914,6 +2914,33 @@ static inline void bpf_dynptr_set_rdonly(struct bpf_dynptr_kern *ptr)
-> >  }
-> >  #endif /* CONFIG_BPF_SYSCALL */
-> >
-> > +static __always_inline int
-> > +bpf_prog_run_trace(struct bpf_prog *prog, u64 cookie, u64 *ctx,
-> > +                  bpf_prog_run_fn run_prog)
-> > +{
-> > +       struct bpf_run_ctx *old_run_ctx;
-> > +       struct bpf_trace_run_ctx run_ctx;
-> > +       int ret = -1;
-> > +
-> > +       cant_sleep();
+On Mon, Jun 03, 2024 at 10:23:16PM -0700, Tony Ambardar wrote:
+> BPF kfuncs are often not directly referenced and may be inadvertently
+> removed by optimization steps during kernel builds, thus the __bpf_kfunc
+> tag mitigates against this removal by including the __used macro. However,
+> this macro alone does not prevent removal during linking, and may still
+> yield build warnings (e.g. on mips64el):
 > 
-> I suspect you should see a splat with that.
-
-hum, __bpf_prog_test_run_raw_tp is called with preempt_disable,
-so I think it should be fine
-
+>     LD      vmlinux
+>     BTFIDS  vmlinux
+>   WARN: resolve_btfids: unresolved symbol bpf_verify_pkcs7_signature
+>   WARN: resolve_btfids: unresolved symbol bpf_lookup_user_key
+>   WARN: resolve_btfids: unresolved symbol bpf_lookup_system_key
+>   WARN: resolve_btfids: unresolved symbol bpf_key_put
+>   WARN: resolve_btfids: unresolved symbol bpf_iter_task_next
+>   WARN: resolve_btfids: unresolved symbol bpf_iter_css_task_new
+>   WARN: resolve_btfids: unresolved symbol bpf_get_file_xattr
+>   WARN: resolve_btfids: unresolved symbol bpf_ct_insert_entry
+>   WARN: resolve_btfids: unresolved symbol bpf_cgroup_release
+>   WARN: resolve_btfids: unresolved symbol bpf_cgroup_from_id
+>   WARN: resolve_btfids: unresolved symbol bpf_cgroup_acquire
+>   WARN: resolve_btfids: unresolved symbol bpf_arena_free_pages
+>     NM      System.map
+>     SORTTAB vmlinux
+>     OBJCOPY vmlinux.32
 > 
-> Overall I think it's better to add empty run_ctx to
-> __bpf_prog_test_run_raw_tp()
-> instead of moving such a big function to .h
+> Update the __bpf_kfunc tag to better guard against linker optimization by
+> including the new __retain compiler macro, which fixes the warnings above.
 > 
-> No need for prog->active increments. test_run is running
-> from syscall. If the same prog is attached somewhere as well
-> it may recurse once and it's fine imo.
+> Verify the __retain macro with readelf by checking object flags for 'R':
+> 
+>   $ readelf -Wa kernel/trace/bpf_trace.o
+>   Section Headers:
+>     [Nr]  Name              Type     Address  Off  Size ES Flg Lk Inf Al
+>   ...
+>     [178] .text.bpf_key_put PROGBITS 00000000 6420 0050 00 AXR  0   0  8
+>   ...
+>   Key to Flags:
+>   ...
+>     R (retain), D (mbind), p (processor specific)
+> 
+> Link: https://lore.kernel.org/bpf/ZlmGoT9KiYLZd91S@krava/T/
+> Reported-by: kernel test robot <lkp@intel.com>
+> Closes: https://lore.kernel.org/r/202401211357.OCX9yllM-lkp@intel.com/
+> Fixes: 57e7c169cd6a ("bpf: Add __bpf_kfunc tag for marking kernel functions as kfuncs")
+> Cc: stable@vger.kernel.org # v6.6+
+> Signed-off-by: Tony Ambardar <Tony.Ambardar@gmail.com>
 
-heh, it was my first change, then I was thinking let's not duplicate the
-code and re-use the existing function.. but it's true that there's no
-use for the prog->active intest_run interface
+tested on mips64 cross build and the warnings are gone
+and related functions are in the vmlinux
 
+patchset looks good to me
+
+Tested-by: Jiri Olsa <jolsa@kernel.org>
+Reviewed-by: Jiri Olsa <jolsa@kernel.org>
+
+thanks,
 jirka
 
+> ---
+>  include/linux/btf.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> pw-bot: cr
+> diff --git a/include/linux/btf.h b/include/linux/btf.h
+> index f9e56fd12a9f..7c3e40c3295e 100644
+> --- a/include/linux/btf.h
+> +++ b/include/linux/btf.h
+> @@ -82,7 +82,7 @@
+>   * as to avoid issues such as the compiler inlining or eliding either a static
+>   * kfunc, or a global kfunc in an LTO build.
+>   */
+> -#define __bpf_kfunc __used noinline
+> +#define __bpf_kfunc __used __retain noinline
+>  
+>  #define __bpf_kfunc_start_defs()					       \
+>  	__diag_push();							       \
+> -- 
+> 2.34.1
 > 
-> > +       if (unlikely(this_cpu_inc_return(*(prog->active)) != 1)) {
-> > +               bpf_prog_inc_misses_counter(prog);
-> > +               goto out;
-> > +       }
-> > +
-> > +       run_ctx.bpf_cookie = cookie;
-> > +       old_run_ctx = bpf_set_run_ctx(&run_ctx.run_ctx);
-> > +
-> > +       rcu_read_lock();
-> > +       ret = run_prog(prog, ctx);
-> > +       rcu_read_unlock();
-> > +
-> > +       bpf_reset_run_ctx(old_run_ctx);
-> > +out:
-> > +       this_cpu_dec(*(prog->active));
-> > +       return ret;
-> > +}
-> > +
-> >  static __always_inline int
-> >  bpf_probe_read_kernel_common(void *dst, u32 size, const void *unsafe_ptr)
-> >  {
-> > diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-> > index d1daeab1bbc1..8a23ef42b76b 100644
-> > --- a/kernel/trace/bpf_trace.c
-> > +++ b/kernel/trace/bpf_trace.c
-> > @@ -2383,31 +2383,6 @@ void bpf_put_raw_tracepoint(struct bpf_raw_event_map *btp)
-> >         preempt_enable();
-> >  }
-> >
-> > -static __always_inline
-> > -void __bpf_trace_run(struct bpf_raw_tp_link *link, u64 *args)
-> > -{
-> > -       struct bpf_prog *prog = link->link.prog;
-> > -       struct bpf_run_ctx *old_run_ctx;
-> > -       struct bpf_trace_run_ctx run_ctx;
-> > -
-> > -       cant_sleep();
-> > -       if (unlikely(this_cpu_inc_return(*(prog->active)) != 1)) {
-> > -               bpf_prog_inc_misses_counter(prog);
-> > -               goto out;
-> > -       }
-> > -
-> > -       run_ctx.bpf_cookie = link->cookie;
-> > -       old_run_ctx = bpf_set_run_ctx(&run_ctx.run_ctx);
-> > -
-> > -       rcu_read_lock();
-> > -       (void) bpf_prog_run(prog, args);
-> > -       rcu_read_unlock();
-> > -
-> > -       bpf_reset_run_ctx(old_run_ctx);
-> > -out:
-> > -       this_cpu_dec(*(prog->active));
-> > -}
-> > -
-> >  #define UNPACK(...)                    __VA_ARGS__
-> >  #define REPEAT_1(FN, DL, X, ...)       FN(X)
-> >  #define REPEAT_2(FN, DL, X, ...)       FN(X) UNPACK DL REPEAT_1(FN, DL, __VA_ARGS__)
-> > @@ -2437,7 +2412,8 @@ void __bpf_trace_run(struct bpf_raw_tp_link *link, u64 *args)
-> >         {                                                               \
-> >                 u64 args[x];                                            \
-> >                 REPEAT(x, COPY, __DL_SEM, __SEQ_0_11);                  \
-> > -               __bpf_trace_run(link, args);                            \
-> > +               (void) bpf_prog_run_trace(link->link.prog, link->cookie,\
-> > +                                         args, bpf_prog_run);          \
-> >         }                                                               \
-> >         EXPORT_SYMBOL_GPL(bpf_trace_run##x)
-> >  BPF_TRACE_DEFN_x(1);
-> > diff --git a/net/bpf/test_run.c b/net/bpf/test_run.c
-> > index f6aad4ed2ab2..84d1c91b01ab 100644
-> > --- a/net/bpf/test_run.c
-> > +++ b/net/bpf/test_run.c
-> > @@ -728,9 +728,7 @@ __bpf_prog_test_run_raw_tp(void *data)
-> >  {
-> >         struct bpf_raw_tp_test_run_info *info = data;
-> >
-> > -       rcu_read_lock();
-> > -       info->retval = bpf_prog_run(info->prog, info->ctx);
-> > -       rcu_read_unlock();
-> > +       info->retval = bpf_prog_run_trace(info->prog, 0, info->ctx, bpf_prog_run);
-> >  }
-> >
-> >  int bpf_prog_test_run_raw_tp(struct bpf_prog *prog,
-> > --
-> > 2.45.1
-> >
 
