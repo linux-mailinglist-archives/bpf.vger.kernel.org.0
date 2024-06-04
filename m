@@ -1,41 +1,41 @@
-Return-Path: <bpf+bounces-31318-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-31317-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8E7708FB5ED
-	for <lists+bpf@lfdr.de>; Tue,  4 Jun 2024 16:45:26 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 85FB18FB5DB
+	for <lists+bpf@lfdr.de>; Tue,  4 Jun 2024 16:44:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B747DB2AFCF
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2E7EB1F229B7
 	for <lists+bpf@lfdr.de>; Tue,  4 Jun 2024 14:44:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9CFEB149009;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9ACFB149007;
 	Tue,  4 Jun 2024 14:42:16 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 495A114885E;
-	Tue,  4 Jun 2024 14:42:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 494F814885D;
+	Tue,  4 Jun 2024 14:42:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717512136; cv=none; b=AuYSZLr4YnPZlA/q9GmqFtOL22gtfllLvv/Mdpdjfb3uycLs4enWhTFhqN54nuhaSQqVIh3v/TTVWYIhwShTdovZ+0+2qMMPFfAX3sbaJQY29rkKj+Qh+ywv+drJ3Ak4oBknuSwxwLbvqLxQ0m7Xh+3/wCT9yaVnhU4T0tBUPnU=
+	t=1717512136; cv=none; b=O33WH8H07ldaXil43PtlcVHKiWLNAdYuozxEJ5XInrUplxgSxqdplGyySZHI+KCgrlXoWEYFlhegJLTqRsJTo3+dME5saadUSMfeYfpkE35vXSWVOXLwG6G3TlTQUb7RTkgAwqlqnga2F3JPZUeX8/Ij+RI3UreFhCYB9YK6EqE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1717512136; c=relaxed/simple;
-	bh=qukHWAV7dXBoYPZcjL5cUgG8u9fNMS8mxC/Y9oMi+qM=;
+	bh=swTaasv8PXlkFiPSTEH7yV+crVt6cu1LbDP2CWCm4e4=;
 	h=Message-ID:Date:From:To:Cc:Subject:References:MIME-Version:
-	 Content-Type; b=GuXGi5Vh8zA1YH/50VX5KNDy8SSXFyO/wYEW6A1gXTrn8lkIkXdZopVxl5Ad5/U0pgy94/pv2g9scROmJhZswREZBcKj2G/XGSX8rklF2QjATGTUlRgxcgFLzMiexUrYD5NEO8FoPQQdiKI/zHCbFwd/tVVve41W1x8LAp4nQFM=
+	 Content-Type; b=VaCWNj4Ujw3iRYUXh2DDIEpwiRAINg4/pKPwMD0NYmUwIa/51W9473gIlqAcIZLu6W48KeM+n2vpqflYG9GfekhfHCgSMR9Va0yjrnishsRZaCY/vtab2cv5DcU9EFbdklOm+VWK9hnSCiaE8RYOdqIr6I6/hCMdaeVSCZ8Z0Yo=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A4B3FC4DDF8;
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D038EC4AF55;
 	Tue,  4 Jun 2024 14:42:15 +0000 (UTC)
 Received: from rostedt by gandalf with local (Exim 4.97)
 	(envelope-from <rostedt@goodmis.org>)
-	id 1sEVMd-00000000Yx3-1fJv;
+	id 1sEVMd-00000000YxX-2Kl0;
 	Tue, 04 Jun 2024 10:42:15 -0400
-Message-ID: <20240604144215.259205159@goodmis.org>
+Message-ID: <20240604144215.418546634@goodmis.org>
 User-Agent: quilt/0.68
-Date: Tue, 04 Jun 2024 10:41:11 -0400
+Date: Tue, 04 Jun 2024 10:41:12 -0400
 From: Steven Rostedt <rostedt@goodmis.org>
 To: linux-kernel@vger.kernel.org
 Cc: Masami Hiramatsu <mhiramat@kernel.org>,
@@ -55,7 +55,7 @@ Cc: Masami Hiramatsu <mhiramat@kernel.org>,
  Peter Zijlstra <peterz@infradead.org>,
  Thomas Gleixner <tglx@linutronix.de>,
  Guo Ren <guoren@kernel.org>
-Subject: [for-next][PATCH 08/27] ftrace: Allow function_graph tracer to be enabled in instances
+Subject: [for-next][PATCH 09/27] ftrace: Allow ftrace startup flags to exist without dynamic ftrace
 References: <20240604144103.293353991@goodmis.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -67,14 +67,17 @@ Content-Type: text/plain; charset=UTF-8
 
 From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
 
-Now that function graph tracing can handle more than one user, allow it to
-be enabled in the ftrace instances. Note, the filtering of the functions is
-still joined by the top level set_ftrace_filter and friends, as well as the
-graph and nograph files.
+Some of the flags for ftrace_startup() may be exposed even when
+CONFIG_DYNAMIC_FTRACE is not configured in. This is fine as the difference
+between dynamic ftrace and static ftrace is done within the internals of
+ftrace itself. No need to have use cases fail to compile because dynamic
+ftrace is disabled.
 
-Co-developed with Masami Hiramatsu:
-Link: https://lore.kernel.org/linux-trace-kernel/171509099743.162236.1699959255446248163.stgit@devnote2
-Link: https://lore.kernel.org/linux-trace-kernel/20240603190822.190630762@goodmis.org
+This change is needed to move some of the logic of what is passed to
+ftrace_startup() out of the parameters of ftrace_startup().
+
+Link: https://lore.kernel.org/linux-trace-kernel/171509100890.162236.4362350342549122222.stgit@devnote2
+Link: https://lore.kernel.org/linux-trace-kernel/20240603190822.350654104@goodmis.org
 
 Cc: Mark Rutland <mark.rutland@arm.com>
 Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
@@ -97,267 +100,45 @@ Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 Signed-off-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
 Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 ---
- include/linux/ftrace.h               |  1 +
- kernel/trace/ftrace.c                |  1 +
- kernel/trace/trace.h                 | 13 +++++-
- kernel/trace/trace_functions.c       |  8 ++++
- kernel/trace/trace_functions_graph.c | 65 +++++++++++++++++-----------
- kernel/trace/trace_selftest.c        |  4 +-
- 6 files changed, 64 insertions(+), 28 deletions(-)
+ include/linux/ftrace.h | 18 +++++++++---------
+ 1 file changed, 9 insertions(+), 9 deletions(-)
 
 diff --git a/include/linux/ftrace.h b/include/linux/ftrace.h
-index 4d817b85ac0d..fd656e6d6b7c 100644
+index fd656e6d6b7c..586018744785 100644
 --- a/include/linux/ftrace.h
 +++ b/include/linux/ftrace.h
-@@ -1042,6 +1042,7 @@ extern int ftrace_graph_entry_stub(struct ftrace_graph_ent *trace, struct fgraph
- struct fgraph_ops {
- 	trace_func_graph_ent_t		entryfunc;
- 	trace_func_graph_ret_t		retfunc;
-+	void				*private;
- 	int				idx;
- };
+@@ -509,6 +509,15 @@ static inline void stack_tracer_disable(void) { }
+ static inline void stack_tracer_enable(void) { }
+ #endif
  
-diff --git a/kernel/trace/ftrace.c b/kernel/trace/ftrace.c
-index d18387c0642d..b85f00b0ffe7 100644
---- a/kernel/trace/ftrace.c
-+++ b/kernel/trace/ftrace.c
-@@ -7327,6 +7327,7 @@ __init void ftrace_init_global_array_ops(struct trace_array *tr)
- 	tr->ops = &global_ops;
- 	tr->ops->private = tr;
- 	ftrace_init_trace_array(tr);
-+	init_array_fgraph_ops(tr);
- }
- 
- void ftrace_init_array_ops(struct trace_array *tr, ftrace_func_t func)
-diff --git a/kernel/trace/trace.h b/kernel/trace/trace.h
-index 2575ec243350..a5070f9b977b 100644
---- a/kernel/trace/trace.h
-+++ b/kernel/trace/trace.h
-@@ -397,6 +397,9 @@ struct trace_array {
- 	struct ftrace_ops	*ops;
- 	struct trace_pid_list	__rcu *function_pids;
- 	struct trace_pid_list	__rcu *function_no_pids;
-+#ifdef CONFIG_FUNCTION_GRAPH_TRACER
-+	struct fgraph_ops	*gops;
-+#endif
- #ifdef CONFIG_DYNAMIC_FTRACE
- 	/* All of these are protected by the ftrace_lock */
- 	struct list_head	func_probes;
-@@ -681,7 +684,6 @@ void print_trace_header(struct seq_file *m, struct trace_iterator *iter);
- 
- void trace_graph_return(struct ftrace_graph_ret *trace, struct fgraph_ops *gops);
- int trace_graph_entry(struct ftrace_graph_ent *trace, struct fgraph_ops *gops);
--void set_graph_array(struct trace_array *tr);
- 
- void tracing_start_cmdline_record(void);
- void tracing_stop_cmdline_record(void);
-@@ -892,6 +894,9 @@ extern int __trace_graph_entry(struct trace_array *tr,
- extern void __trace_graph_return(struct trace_array *tr,
- 				 struct ftrace_graph_ret *trace,
- 				 unsigned int trace_ctx);
-+extern void init_array_fgraph_ops(struct trace_array *tr);
-+extern int allocate_fgraph_ops(struct trace_array *tr);
-+extern void free_fgraph_ops(struct trace_array *tr);
- 
- #ifdef CONFIG_DYNAMIC_FTRACE
- extern struct ftrace_hash __rcu *ftrace_graph_hash;
-@@ -1004,6 +1009,12 @@ print_graph_function_flags(struct trace_iterator *iter, u32 flags)
- {
- 	return TRACE_TYPE_UNHANDLED;
- }
-+static inline void init_array_fgraph_ops(struct trace_array *tr) { }
-+static inline int allocate_fgraph_ops(struct trace_array *tr)
-+{
-+	return 0;
-+}
-+static inline void free_fgraph_ops(struct trace_array *tr) { }
- #endif /* CONFIG_FUNCTION_GRAPH_TRACER */
- 
- extern struct list_head ftrace_pids;
-diff --git a/kernel/trace/trace_functions.c b/kernel/trace/trace_functions.c
-index 9f1bfbe105e8..8e8da0d0ee52 100644
---- a/kernel/trace/trace_functions.c
-+++ b/kernel/trace/trace_functions.c
-@@ -80,6 +80,7 @@ void ftrace_free_ftrace_ops(struct trace_array *tr)
- int ftrace_create_function_files(struct trace_array *tr,
- 				 struct dentry *parent)
- {
-+	int ret;
- 	/*
- 	 * The top level array uses the "global_ops", and the files are
- 	 * created on boot up.
-@@ -90,6 +91,12 @@ int ftrace_create_function_files(struct trace_array *tr,
- 	if (!tr->ops)
- 		return -EINVAL;
- 
-+	ret = allocate_fgraph_ops(tr);
-+	if (ret) {
-+		kfree(tr->ops);
-+		return ret;
-+	}
++enum {
++	FTRACE_UPDATE_CALLS		= (1 << 0),
++	FTRACE_DISABLE_CALLS		= (1 << 1),
++	FTRACE_UPDATE_TRACE_FUNC	= (1 << 2),
++	FTRACE_START_FUNC_RET		= (1 << 3),
++	FTRACE_STOP_FUNC_RET		= (1 << 4),
++	FTRACE_MAY_SLEEP		= (1 << 5),
++};
 +
- 	ftrace_create_filter_files(tr->ops, parent);
+ #ifdef CONFIG_DYNAMIC_FTRACE
  
- 	return 0;
-@@ -99,6 +106,7 @@ void ftrace_destroy_function_files(struct trace_array *tr)
- {
- 	ftrace_destroy_filter_files(tr->ops);
- 	ftrace_free_ftrace_ops(tr);
-+	free_fgraph_ops(tr);
- }
+ void ftrace_arch_code_modify_prepare(void);
+@@ -603,15 +612,6 @@ void ftrace_set_global_notrace(unsigned char *buf, int len, int reset);
+ void ftrace_free_filter(struct ftrace_ops *ops);
+ void ftrace_ops_set_global_filter(struct ftrace_ops *ops);
  
- static ftrace_func_t select_trace_function(u32 flags_val)
-diff --git a/kernel/trace/trace_functions_graph.c b/kernel/trace/trace_functions_graph.c
-index b7b142b65299..9ccc904a7703 100644
---- a/kernel/trace/trace_functions_graph.c
-+++ b/kernel/trace/trace_functions_graph.c
-@@ -83,8 +83,6 @@ static struct tracer_flags tracer_flags = {
- 	.opts = trace_opts
- };
- 
--static struct trace_array *graph_array;
--
- /*
-  * DURATION column is being also used to display IRQ signs,
-  * following values are used by print_graph_irq and others
-@@ -132,7 +130,7 @@ static inline int ftrace_graph_ignore_irqs(void)
- int trace_graph_entry(struct ftrace_graph_ent *trace,
- 		      struct fgraph_ops *gops)
- {
--	struct trace_array *tr = graph_array;
-+	struct trace_array *tr = gops->private;
- 	struct trace_array_cpu *data;
- 	unsigned long flags;
- 	unsigned int trace_ctx;
-@@ -242,7 +240,7 @@ void __trace_graph_return(struct trace_array *tr,
- void trace_graph_return(struct ftrace_graph_ret *trace,
- 			struct fgraph_ops *gops)
- {
--	struct trace_array *tr = graph_array;
-+	struct trace_array *tr = gops->private;
- 	struct trace_array_cpu *data;
- 	unsigned long flags;
- 	unsigned int trace_ctx;
-@@ -268,15 +266,6 @@ void trace_graph_return(struct ftrace_graph_ret *trace,
- 	local_irq_restore(flags);
- }
- 
--void set_graph_array(struct trace_array *tr)
--{
--	graph_array = tr;
--
--	/* Make graph_array visible before we start tracing */
--
--	smp_mb();
--}
--
- static void trace_graph_thresh_return(struct ftrace_graph_ret *trace,
- 				      struct fgraph_ops *gops)
- {
-@@ -294,25 +283,53 @@ static void trace_graph_thresh_return(struct ftrace_graph_ret *trace,
- 		trace_graph_return(trace, gops);
- }
- 
--static struct fgraph_ops funcgraph_thresh_ops = {
--	.entryfunc = &trace_graph_entry,
--	.retfunc = &trace_graph_thresh_return,
+-enum {
+-	FTRACE_UPDATE_CALLS		= (1 << 0),
+-	FTRACE_DISABLE_CALLS		= (1 << 1),
+-	FTRACE_UPDATE_TRACE_FUNC	= (1 << 2),
+-	FTRACE_START_FUNC_RET		= (1 << 3),
+-	FTRACE_STOP_FUNC_RET		= (1 << 4),
+-	FTRACE_MAY_SLEEP		= (1 << 5),
 -};
 -
- static struct fgraph_ops funcgraph_ops = {
- 	.entryfunc = &trace_graph_entry,
- 	.retfunc = &trace_graph_return,
- };
- 
-+int allocate_fgraph_ops(struct trace_array *tr)
-+{
-+	struct fgraph_ops *gops;
-+
-+	gops = kzalloc(sizeof(*gops), GFP_KERNEL);
-+	if (!gops)
-+		return -ENOMEM;
-+
-+	gops->entryfunc = &trace_graph_entry;
-+	gops->retfunc = &trace_graph_return;
-+
-+	tr->gops = gops;
-+	gops->private = tr;
-+	return 0;
-+}
-+
-+void free_fgraph_ops(struct trace_array *tr)
-+{
-+	kfree(tr->gops);
-+}
-+
-+__init void init_array_fgraph_ops(struct trace_array *tr)
-+{
-+	tr->gops = &funcgraph_ops;
-+	funcgraph_ops.private = tr;
-+}
-+
- static int graph_trace_init(struct trace_array *tr)
- {
- 	int ret;
- 
--	set_graph_array(tr);
-+	tr->gops->entryfunc = trace_graph_entry;
-+
- 	if (tracing_thresh)
--		ret = register_ftrace_graph(&funcgraph_thresh_ops);
-+		tr->gops->retfunc = trace_graph_thresh_return;
- 	else
--		ret = register_ftrace_graph(&funcgraph_ops);
-+		tr->gops->retfunc = trace_graph_return;
-+
-+	/* Make gops functions are visible before we start tracing */
-+	smp_mb();
-+
-+	ret = register_ftrace_graph(tr->gops);
- 	if (ret)
- 		return ret;
- 	tracing_start_cmdline_record();
-@@ -323,10 +340,7 @@ static int graph_trace_init(struct trace_array *tr)
- static void graph_trace_reset(struct trace_array *tr)
- {
- 	tracing_stop_cmdline_record();
--	if (tracing_thresh)
--		unregister_ftrace_graph(&funcgraph_thresh_ops);
--	else
--		unregister_ftrace_graph(&funcgraph_ops);
-+	unregister_ftrace_graph(tr->gops);
- }
- 
- static int graph_trace_update_thresh(struct trace_array *tr)
-@@ -1365,6 +1379,7 @@ static struct tracer graph_trace __tracer_data = {
- 	.print_header	= print_graph_headers,
- 	.flags		= &tracer_flags,
- 	.set_flag	= func_graph_set_flag,
-+	.allow_instances = true,
- #ifdef CONFIG_FTRACE_SELFTEST
- 	.selftest	= trace_selftest_startup_function_graph,
- #endif
-diff --git a/kernel/trace/trace_selftest.c b/kernel/trace/trace_selftest.c
-index 56f269c0560a..f8f55fd79e53 100644
---- a/kernel/trace/trace_selftest.c
-+++ b/kernel/trace/trace_selftest.c
-@@ -813,7 +813,7 @@ trace_selftest_startup_function_graph(struct tracer *trace,
- 	 * to detect and recover from possible hangs
- 	 */
- 	tracing_reset_online_cpus(&tr->array_buffer);
--	set_graph_array(tr);
-+	fgraph_ops.private = tr;
- 	ret = register_ftrace_graph(&fgraph_ops);
- 	if (ret) {
- 		warn_failed_init_tracer(trace, ret);
-@@ -856,7 +856,7 @@ trace_selftest_startup_function_graph(struct tracer *trace,
- 	cond_resched();
- 
- 	tracing_reset_online_cpus(&tr->array_buffer);
--	set_graph_array(tr);
-+	fgraph_ops.private = tr;
- 
- 	/*
- 	 * Some archs *cough*PowerPC*cough* add characters to the
+ /*
+  * The FTRACE_UPDATE_* enum is used to pass information back
+  * from the ftrace_update_record() and ftrace_test_record()
 -- 
 2.43.0
 
