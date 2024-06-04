@@ -1,166 +1,156 @@
-Return-Path: <bpf+bounces-31299-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-31300-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5CE1D8FB08D
-	for <lists+bpf@lfdr.de>; Tue,  4 Jun 2024 12:53:58 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 49BBD8FB0B3
+	for <lists+bpf@lfdr.de>; Tue,  4 Jun 2024 13:03:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 12BD12844CC
-	for <lists+bpf@lfdr.de>; Tue,  4 Jun 2024 10:53:57 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A2A7FB20319
+	for <lists+bpf@lfdr.de>; Tue,  4 Jun 2024 11:03:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8102414533F;
-	Tue,  4 Jun 2024 10:53:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A9F2E144D22;
+	Tue,  4 Jun 2024 11:02:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="XoGCQM1u"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="cqMCbN+m"
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed1-f48.google.com (mail-ed1-f48.google.com [209.85.208.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 306C5145339
-	for <bpf@vger.kernel.org>; Tue,  4 Jun 2024 10:53:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A869DDF42
+	for <bpf@vger.kernel.org>; Tue,  4 Jun 2024 11:02:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717498425; cv=none; b=TE5iC1ls2e2HSsxG2yxCSAZdUe2uwMu21iXJ9sto+boAX8XQ/QgBcsRXMZ/Riki3V70XxKCgMH17ZXd0Dk9dQ7YtDWI0c52A1NR05NvWjGou5NvG5d6FxqEqCn/zAcrP4PuovWWR9R9W7wLJ7WJazgfYbtjpqyBdTqehU4MbIas=
+	t=1717498977; cv=none; b=WLB4knNHCrDT/JUn6E5OlaI9mMvv0bQDpnMPHzVtB8VYppdw7MCE/3AE6OwwFhP907TcYetIdzZOZEoC/HCetuR4OLUag0xbeHXuLx93AYMORmBuLIxW1E8kMqwKS3zXHnkoq0/FBK6iGpG9L6X8c/VthlEbV/5BfY8VTKifq/U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717498425; c=relaxed/simple;
-	bh=sWJfxrg7DaNSgc2gmCC3cAQqrzVJfSocaCuwhh48x1I=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=iMwoDAY0EYWrmEPRXN0Ks6rkEANSm+tCgaBbmuQmTNiXefxwxVjOuRraTb3tGGMcPicgqgbJtR2C3dxQX0tx4bHc6nYGbV7W/iydR7SjO8rP4N1EkMm6u48CpB/i3ewhBQONm4XPpja+g7IyslS0xF0llA2TolcjxxdzsWhPuTI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=XoGCQM1u; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1717498422;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=woIW2rG36WjVplYf1XFEiaOd0JQOnrJYxOcJXRhrDbw=;
-	b=XoGCQM1uUREZhqrTKNRLKWVMpMs8507DrbhTwSPlwV25zBascauDjOxHZHw5rVU/iIXB7F
-	Fgn88wjHOnmQ5QM2pZDDAkU8XQbCPZIxQa+G9PhajFiIZl0Ysihas57XURxOHTpvHnXvXU
-	/9ULqSruHN6JdMZYEwLOSNOk/dEhwg8=
-Received: from mail-lj1-f200.google.com (mail-lj1-f200.google.com
- [209.85.208.200]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-263-VR5K2ClmNSupg0Pf4DIsnQ-1; Tue, 04 Jun 2024 06:53:40 -0400
-X-MC-Unique: VR5K2ClmNSupg0Pf4DIsnQ-1
-Received: by mail-lj1-f200.google.com with SMTP id 38308e7fff4ca-2ea91c7c801so4723161fa.2
-        for <bpf@vger.kernel.org>; Tue, 04 Jun 2024 03:53:40 -0700 (PDT)
+	s=arc-20240116; t=1717498977; c=relaxed/simple;
+	bh=Qa/c0W3L64KR05fRkd1/NXfwBRM4+Gef9JTbj07sOds=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=bjrmgCrvq/N8kRJpySueKyxhOJxe9cZOs6kixTFiqoKUonUau9GZXX9Vuzh5EuYwdEDv3g5S6UmgPHY13HR35mHR22KLL7XcaySNX9sI1DMzNxno6IJsxH6KpyhiaZzlQZKyuivlzHAjTy0PSwNMQT1oK3QmKdS2GuysFZN3gZU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=cqMCbN+m; arc=none smtp.client-ip=209.85.208.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f48.google.com with SMTP id 4fb4d7f45d1cf-57a31d63b6bso1131693a12.0
+        for <bpf@vger.kernel.org>; Tue, 04 Jun 2024 04:02:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1717498974; x=1718103774; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=aurQXsI6ZbWk77ADQU/Pa2yA0Ss70NRMZy0Zpuqm3N0=;
+        b=cqMCbN+m9tSO98ghAST0KyfSg3B9CALfFa0XfbgeyhuK1XDBLRwkH0XtNljsXICSZu
+         CFCR6a2LmvZTsDfDzxGxcwU+jkqvi4/dsgQnp07e2Gj+638UbtH7UMs1U12R4TymdABE
+         RL0mg2MbjcydEAEVnoBxHDLwu/oAvAiUrYm9BDVR2vKcG2QTsZWw3lx80cR9zXLVGlcZ
+         nIO6SDqwxZ4JwCFil7MnSTnfANvpAqq7B14PNluntgzEcCieMdtv+3nzvs0zU7z/ofN9
+         rJcFJKc6B8AW5rvpns4+PD7wob1N+AinlpS3UWZCjpvMpc+nNdrsSuhlbp9Vv418Cozh
+         99vw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1717498419; x=1718103219;
-        h=mime-version:user-agent:content-transfer-encoding:autocrypt
-         :references:in-reply-to:date:cc:to:from:subject:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=woIW2rG36WjVplYf1XFEiaOd0JQOnrJYxOcJXRhrDbw=;
-        b=lWDfgmFMm5F9S9+wuiGNZtSMi7tGipFF/pPUcAPcw/xIyd0eGdzlOUw/niyXiNruiU
-         ABm6ep1AoKrT1al3+fIsAfjf8xuxX2lthcLq8nNphX4PggJ/8r2/9IxK396HkF4zxH2+
-         LlesD+k2xHiMHmpJpuztHs8/0qqW1LVhEmoeBF1/vdwRO1Ds1iJ20HBlRzCsgns1UaHh
-         7krzxhlRyu0Rs5ICpB7VQJBYR832e4VFydl6BUP/UcbSwy021xt4XfahDrnmKxFWaOtG
-         1qhvd6DeAEqjQsTj8gSdciUJeAD8+Txq0GpfAu6hnARDlEdE7/XFheyLhYe6LMXIDIuv
-         VcUg==
-X-Forwarded-Encrypted: i=1; AJvYcCUzmP2unQnmK3wffjV92jy7Oc42DcdX5Udl13QTStyhO42K6IueZ6DOeVeqqck/BamP7XtiPPNuyDVrtrx5cY1C8InF
-X-Gm-Message-State: AOJu0YxljKldzS8TFoMEDsPXgXlnWBhICaLBK4Dz5++rgm0pXlRA3oP4
-	BFJkKpAMJM2nIgSCFi1gcStBpzIuIS+QP8WUm7i1Lk8zJVYizGZuOXNgjlXnEAgKKv0Hj7VvBwt
-	x/YrR/rhGxCp2mm9vEcle5NAtAZ3FdEND2OnkGXabmfo2xWpUnQ==
-X-Received: by 2002:a2e:8949:0:b0:2ea:9449:7713 with SMTP id 38308e7fff4ca-2ea94f5a049mr64304051fa.0.1717498419100;
-        Tue, 04 Jun 2024 03:53:39 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFmvWfpwajfG6uAbSLakYYmoy41vLEHP3DZ25SAdv9f73cp/s3ZE335ECe8kt5W34Xy9/SQtA==
-X-Received: by 2002:a2e:8949:0:b0:2ea:9449:7713 with SMTP id 38308e7fff4ca-2ea94f5a049mr64303521fa.0.1717498418643;
-        Tue, 04 Jun 2024 03:53:38 -0700 (PDT)
-Received: from gerbillo.redhat.com ([2a0d:3344:1b74:3a10::f71])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4212b84f8e7sm148788635e9.20.2024.06.04.03.53.35
+        d=1e100.net; s=20230601; t=1717498974; x=1718103774;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=aurQXsI6ZbWk77ADQU/Pa2yA0Ss70NRMZy0Zpuqm3N0=;
+        b=WR2FS/JyjUh/9pISqtS1zkvsubpnfYxSPN40H4O3fX8G7oR22MmWznjxd3WTFYFAD6
+         Vz0oRPi1hohQpV8WEHpXH2+KwTdFsydMKJuPqPK3FHvMX6Dy01qv8twtM7cDAr49NBXp
+         GkT1K6D8XQ/KwzwzUpkJRQuOOMdWKyUq6JkUtuIzSqrR6sB0ARSkzH4pIIIgwwRFN0ii
+         CmPq+ht9aKCAtwaw50iwqqsI4el6SMAINY/zJmArcJw133IOYTPhMYvVBm8iwz9XjbQ+
+         WUpzvLS5gk50htgNte7ijLBxXx3bfOK2iLL5SOT5Yaj1+Ek5jjnewAyQlixVWET4o5/W
+         02sA==
+X-Gm-Message-State: AOJu0YwdKlcfyHLg0+AQ6wwdyPMbmd3tVnKT/MQr+gD8tDFFgHuLErQ1
+	c65HESFi1DVzxRX1RCXSoVhs+YrQdBHoL/0KwBKs4J60SmJNwGIf
+X-Google-Smtp-Source: AGHT+IHdAIqL4qFlptTZsQrOOGp/X1U6quxPcmxEp7AaTJYnnA6eWQ3QZlq8N1/5U6L4Dsj9R+GUDQ==
+X-Received: by 2002:a50:d753:0:b0:57a:2274:850b with SMTP id 4fb4d7f45d1cf-57a363ad0d9mr6930325a12.24.1717498973740;
+        Tue, 04 Jun 2024 04:02:53 -0700 (PDT)
+Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
+        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-57a31c6d4b6sm7188308a12.74.2024.06.04.04.02.52
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 04 Jun 2024 03:53:38 -0700 (PDT)
-Message-ID: <9c302fffa10085760eac3d0c64fa66063be3f407.camel@redhat.com>
-Subject: Re: [PATCH net-next v10 11/14] tcp: RX path for devmem TCP
-From: Paolo Abeni <pabeni@redhat.com>
-To: Mina Almasry <almasrymina@google.com>, netdev@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org, 
-	linux-alpha@vger.kernel.org, linux-mips@vger.kernel.org, 
-	linux-parisc@vger.kernel.org, sparclinux@vger.kernel.org, 
-	linux-trace-kernel@vger.kernel.org, linux-arch@vger.kernel.org, 
-	bpf@vger.kernel.org, linux-kselftest@vger.kernel.org, 
-	linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org
-Cc: "David S. Miller" <davem@davemloft.net>, Eric Dumazet
- <edumazet@google.com>,  Jakub Kicinski <kuba@kernel.org>, Donald Hunter
- <donald.hunter@gmail.com>, Jonathan Corbet <corbet@lwn.net>, Richard
- Henderson <richard.henderson@linaro.org>, Ivan Kokshaysky
- <ink@jurassic.park.msu.ru>, Matt Turner <mattst88@gmail.com>, Thomas
- Bogendoerfer <tsbogend@alpha.franken.de>, "James E.J. Bottomley"
- <James.Bottomley@HansenPartnership.com>, Helge Deller <deller@gmx.de>, 
- Andreas Larsson <andreas@gaisler.com>, Jesper Dangaard Brouer
- <hawk@kernel.org>, Ilias Apalodimas <ilias.apalodimas@linaro.org>, Steven
- Rostedt <rostedt@goodmis.org>, Masami Hiramatsu <mhiramat@kernel.org>,
- Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Arnd Bergmann
- <arnd@arndb.de>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann
- <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, Martin KaFai
- Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu
- <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, John Fastabend
- <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, Stanislav
- Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa
- <jolsa@kernel.org>,  Steffen Klassert <steffen.klassert@secunet.com>,
- Herbert Xu <herbert@gondor.apana.org.au>, David Ahern <dsahern@kernel.org>,
- Willem de Bruijn <willemdebruijn.kernel@gmail.com>,  Shuah Khan
- <shuah@kernel.org>, Sumit Semwal <sumit.semwal@linaro.org>, Christian
- =?ISO-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>, Pavel Begunkov
- <asml.silence@gmail.com>, David Wei <dw@davidwei.uk>, Jason Gunthorpe
- <jgg@ziepe.ca>, Yunsheng Lin <linyunsheng@huawei.com>, Shailend Chand
- <shailend@google.com>, Harshitha Ramamurthy <hramamurthy@google.com>,
- Shakeel Butt <shakeel.butt@linux.dev>, Jeroen de Borst
- <jeroendb@google.com>, Praveen Kaligineedi <pkaligineedi@google.com>,
- Willem de Bruijn <willemb@google.com>, Kaiyuan Zhang <kaiyuanz@google.com>
-Date: Tue, 04 Jun 2024 12:53:35 +0200
-In-Reply-To: <20240530201616.1316526-12-almasrymina@google.com>
-References: <20240530201616.1316526-1-almasrymina@google.com>
-	 <20240530201616.1316526-12-almasrymina@google.com>
-Autocrypt: addr=pabeni@redhat.com; prefer-encrypt=mutual; keydata=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
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.4 (3.50.4-1.fc39) 
+        Tue, 04 Jun 2024 04:02:53 -0700 (PDT)
+From: Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date: Tue, 4 Jun 2024 13:02:51 +0200
+To: Andrii Nakryiko <andrii@kernel.org>
+Cc: bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+	martin.lau@kernel.org, alan.maguire@oracle.com, eddyz87@gmail.com
+Subject: Re: [PATCH bpf-next 2/5] libbpf: make use of BTF field iterator in
+ BPF linker code
+Message-ID: <Zl70W3wstHhF-6zo@krava>
+References: <20240603231720.1893487-1-andrii@kernel.org>
+ <20240603231720.1893487-3-andrii@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240603231720.1893487-3-andrii@kernel.org>
 
-On Thu, 2024-05-30 at 20:16 +0000, Mina Almasry wrote:
-> @@ -2317,6 +2318,213 @@ static int tcp_inq_hint(struct sock *sk)
->  	return inq;
+On Mon, Jun 03, 2024 at 04:17:16PM -0700, Andrii Nakryiko wrote:
+> Switch all BPF linker code dealing with iterating BTF type ID and string
+> offset fields to new btf_field_iter facilities.
+> 
+> Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+> ---
+>  tools/lib/bpf/linker.c | 60 ++++++++++++++++++++++++++----------------
+>  1 file changed, 38 insertions(+), 22 deletions(-)
+> 
+> diff --git a/tools/lib/bpf/linker.c b/tools/lib/bpf/linker.c
+> index 0d4be829551b..be6539e59cf6 100644
+> --- a/tools/lib/bpf/linker.c
+> +++ b/tools/lib/bpf/linker.c
+> @@ -957,19 +957,35 @@ static int check_btf_str_off(__u32 *str_off, void *ctx)
+>  static int linker_sanity_check_btf(struct src_obj *obj)
+>  {
+>  	struct btf_type *t;
+> -	int i, n, err = 0;
+> +	int i, n, err;
+>  
+>  	if (!obj->btf)
+>  		return 0;
+>  
+>  	n = btf__type_cnt(obj->btf);
+>  	for (i = 1; i < n; i++) {
+> +		struct btf_field_iter it;
+> +		__u32 *type_id, *str_off;
+> +		const char *s;
+> +
+>  		t = btf_type_by_id(obj->btf, i);
+>  
+> -		err = err ?: btf_type_visit_type_ids(t, check_btf_type_id, obj->btf);
+> -		err = err ?: btf_type_visit_str_offs(t, check_btf_str_off, obj->btf);
+> +		err = btf_field_iter_init(&it, t, BTF_FIELD_ITER_IDS);
+>  		if (err)
+>  			return err;
+> +		while ((type_id = btf_field_iter_next(&it))) {
+> +			if (*type_id >= n)
+> +				return -EINVAL;
+> +		}
+> +
+> +		err = btf_field_iter_init(&it, t, BTF_FIELD_ITER_STRS);
+> +		if (err)
+> +			return err;
+> +		while ((str_off = btf_field_iter_next(&it))) {
+> +			s = btf__str_by_offset(obj->btf, *str_off);
+> +			if (!s)
+> +				return -EINVAL;
+
+nit, we could drop 's' and just do (!btf__str_by_offset(obj->btf, *str_off))
+
+
+otherwise the patchset lgtm
+
+Acked-by: Jiri Olsa <jolsa@kernel.org>
+
+jirka
+
+> +		}
+>  	}
+>  
+>  	return 0;
+> @@ -2234,26 +2250,10 @@ static int linker_fixup_btf(struct src_obj *obj)
+>  	return 0;
 >  }
-> =20
-> +/* batch __xa_alloc() calls and reduce xa_lock()/xa_unlock() overhead. *=
-/
-> +struct tcp_xa_pool {
-> +	u8		max; /* max <=3D MAX_SKB_FRAGS */
-> +	u8		idx; /* idx <=3D max */
-> +	__u32		tokens[MAX_SKB_FRAGS];
-> +	netmem_ref	netmems[MAX_SKB_FRAGS];
-> +};
-> +
-> +static void tcp_xa_pool_commit(struct sock *sk, struct tcp_xa_pool *p,
-> +			       bool lock)
-> +{
-> +	int i;
-> +
-> +	if (!p->max)
-> +		return;
-> +	if (lock)
-> +		xa_lock_bh(&sk->sk_user_frags);
 
-The conditional lock here confuses sparse.
-
-I think you can avoid it providing a unlocked version (no need to check
-for '!p->max' the only caller wanting the unlocked version already
-performs such check) and a locked one, calling the other.
-
-Cheers,
-
-Paolo
-
+SNIP
 
