@@ -1,82 +1,81 @@
-Return-Path: <bpf+bounces-31366-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-31367-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C3BD48FBB60
-	for <lists+bpf@lfdr.de>; Tue,  4 Jun 2024 20:16:37 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 764DE8FBB61
+	for <lists+bpf@lfdr.de>; Tue,  4 Jun 2024 20:16:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C5B6B1C226FB
-	for <lists+bpf@lfdr.de>; Tue,  4 Jun 2024 18:16:36 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 01EFB1F2249F
+	for <lists+bpf@lfdr.de>; Tue,  4 Jun 2024 18:16:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 97927149DED;
-	Tue,  4 Jun 2024 18:16:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 34CAD14A4DB;
+	Tue,  4 Jun 2024 18:16:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HUTFer+h"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Fd+u6eTV"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f50.google.com (mail-pj1-f50.google.com [209.85.216.50])
+Received: from mail-pl1-f175.google.com (mail-pl1-f175.google.com [209.85.214.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A20F12E1CE
-	for <bpf@vger.kernel.org>; Tue,  4 Jun 2024 18:16:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C3DE12E1CE
+	for <bpf@vger.kernel.org>; Tue,  4 Jun 2024 18:16:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717524993; cv=none; b=MYI86LrUtX5oZNDt8kJ0Rma1UqBW7tFZji90H3I+xixCXDg5ZhCdHQCNbefXfRuGSiY+B+BN9Lj44IW7pI22K+RK5mBU7CgPZUzv2DrmNyuiiN/uvwXdPG0RGJ4nmYqN2udjB6kX3fSXPOmkoHVHE2hUJlCd9dJmiBGkeRlj06A=
+	t=1717524996; cv=none; b=VlHJa76l4n778NetCrODrfi/DFOARlmr4fOiP0wTr+N9bWQK0uIpm52fa/k7EYp76mgr4lzWSwXkum9hl0jpAMXeDnLQTIntZY1psnhZZ1ZI2l1cX3ZcUGRqSFlV+Vmp0rkfnW1X8BHzrIeiBnxaSUlRN5mxn4B7T6hmi+Pv/xo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717524993; c=relaxed/simple;
-	bh=n64DU2OCi+IE4UHjy95QNo6uN2dTf8ymLkx8CqKhXdY=;
+	s=arc-20240116; t=1717524996; c=relaxed/simple;
+	bh=IijgShTUtDT3XubshoHCfh6sYcXhQ3gZmcmPyQ1ipcQ=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=hmYWjQ2KhEOf1oxyMdkLwN5DSHpEKQyHYFx9cQLPTQC84AdbzOQ8EBCYf9Vf03U6MQiJIVCd9f+/fi/9WeGOwws9vmRpF6oaw/LJG4rDSb14pC4yudxMhBuXRL3Z4LVdWvjoIzq+jRQtrrVagOu1TzZr5KqrIF1D6cIx9fDYTyw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=HUTFer+h; arc=none smtp.client-ip=209.85.216.50
+	 To:Cc:Content-Type; b=ipJ0YfdN5VD9ZlehQ7/kYaFaWTpLB8HBiB7Gb6mhpEzF+UupDXkkHYLaBou8o2/JdErBDXoYjZYhWR23zf6s+o47Yk7TOD/kMSdfQAZAFZYMWpPhlnlihJKE3iCG3ENgMuShcA9IM0j2eaCISI+Mp5CWJhDoqKIxmH+MJ0zsssI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Fd+u6eTV; arc=none smtp.client-ip=209.85.214.175
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f50.google.com with SMTP id 98e67ed59e1d1-2c24115469bso81331a91.0
-        for <bpf@vger.kernel.org>; Tue, 04 Jun 2024 11:16:31 -0700 (PDT)
+Received: by mail-pl1-f175.google.com with SMTP id d9443c01a7336-1f62217f806so51202775ad.2
+        for <bpf@vger.kernel.org>; Tue, 04 Jun 2024 11:16:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1717524991; x=1718129791; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1717524994; x=1718129794; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=K49Klm7iIz0biN2bctJExjLvOUoR/lEbMdUCiIAjR8g=;
-        b=HUTFer+hg3Z7ATk+QKUCieLT+5mNzl7HzWTODQ9GvbrXlAwEeEPPsf/hwDj49QOaeC
-         wQnUC/CVOkNO+Za1qd11fnf07vwiizoDOuomNsiMThQrjZi4R1KPgISToDxSe9C8IjUS
-         YQaHwKClmRXq0l1+fZoFjU6HdYY3JpSMLsOlEyznb722inPnUqEqHZWZKxMGCHRykvci
-         2MjJoQhxvep7wa9m/Z0t2vHBDrDsHmp/KcqebJM5x9qzy7E7Y6EqcTZRCfaRqsOAgg7x
-         LyAlmVr5xREutRelgWOyzxKNw1j9bPIqL8tu/nCxbQu0GNi2VR/NMyzvwJh/uvt2tqkV
-         Ojqw==
+        bh=mpg/XGfZO6pvDCJx1zTIUPGsLVyUIzkc+dltYl+wqlw=;
+        b=Fd+u6eTVlfHeoXg/7qDmOy2Rh/AWQ9MD07m25LGw361Y7L6QdwSReZ7VtHOHRZfz/E
+         oKY4mDi1/HJu9X/d8UYFkKcdUiO42gDtDAVsl1X1NqjUqAWkGxFXWzwrieVrdfB0nUQI
+         a6cwfEg+ivzBKHvkKJWaed57tyXSKW19TSdHsHHatrackQYWejT9tsGIs27kbvFftJF5
+         3+LELgc12M8qnwRwndfoBLUxFMx0i1+ht6xoy47oKmxWEWnRqi1UHIJjPyayDccZ+bz1
+         b33IrLrnVTwYSFzUIyUag//YZYbQeDoZFSwtWu8sf6flCXwbXY/vKWr+Z0xhW1CTuC1j
+         HA/Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1717524991; x=1718129791;
+        d=1e100.net; s=20230601; t=1717524994; x=1718129794;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=K49Klm7iIz0biN2bctJExjLvOUoR/lEbMdUCiIAjR8g=;
-        b=iUY/8zGf0jfuFWdvuOhU06NlFZAwB4c9TBk6but1ErkPFyBUSxzSN8MufLqeV832ti
-         M/yESMob6kFN3zd7rnROwMV/pP7m1nz6fimqakiXfmA9xn/mcvlJ3NHOubde2BZRZO9W
-         KwTfHWo3frKLvV17+oPPTpb9bSN8GTblt2ze2OnrT36KoMtt2zfQGzcADI4qacvfdEK4
-         wczMwuwtxHOt0sBjGmNfKEg/caUWAhOmovwo+HmQgASzwU2ThwXs6xyIwCU09AM4YZ/M
-         AGpEv961Z+iuxG0lSwYGZtHUbPkJ7tqsTSKSa/tZY3Dh6Sn5sO/6uK7/0I9Hw9+1QbHd
-         bfeA==
-X-Gm-Message-State: AOJu0YzqOf5WhK4iWPhcmK961jiD5nIRSgByFwcgH1o5p4QsFHgKJzTl
-	oJyJ4dUY+LGX/7LZ6HiLaiDZXox1UM21Cl+qYelQpqxd5GkOurXK7cmIdiAr9aWxoA47SHaZOyM
-	bBAnIAmHrXDDi6zWp4zmtxLVPGm4=
-X-Google-Smtp-Source: AGHT+IF1TF6DnP5HAHr3pzirLZylX/Z3+l5+jhW+GAmYksT72/2TR68vgT7D68rpclPCAsegVFb8u3hNQbsSjZ+oXcA=
-X-Received: by 2002:a17:90b:2e87:b0:2c1:af9f:a934 with SMTP id
- 98e67ed59e1d1-2c27cc3ec90mr534740a91.16.1717524990831; Tue, 04 Jun 2024
- 11:16:30 -0700 (PDT)
+        bh=mpg/XGfZO6pvDCJx1zTIUPGsLVyUIzkc+dltYl+wqlw=;
+        b=okFmshIsoaxkuRM9ZTuR0cikzpAet+0F53yhbi9mVgrd/Y8f8klYxep1ju1pfPVIBr
+         rkurX2Y9vM/g4kt+6SPYRri3WhH0ZWwpEtHxgTVbed6upPDr7gVSy4x0UPjFnIP0Le/S
+         S/OHqTdfUJr89LD5qn11nJRC1D0O7tt+sFhXE5MLC7aGrBTRRDTy/GYzyqPNLDhNI2dy
+         MR8AG+lMu0ieYMbrl3ierB+kkMkblgedQWfKC5khDNqee8wzhTsRO20h6ab8Rhod02ay
+         4OlQvskDm88gLP91s6zSi6vAXKQz36jUk5vt46Ft3l9GQZ6Rhv40ulEbW1BfDx3qJIyQ
+         GV8g==
+X-Gm-Message-State: AOJu0YzQ9D2syb1HqSbdArVLPNsfCiL6P2WJ1Vf55jDAH8M8LPEzMyZE
+	T86YVSSZtqLKR0lJgoantc8dNTlMJ3TRfjwm+bQkHjKGvyD+ouCVx5V5fqAGJNOMa4oyvUU6Vr8
+	92cQbhvChC4JRaIKyKdNHW/3Jen4=
+X-Google-Smtp-Source: AGHT+IH9YJUFd6Un0+WAIOdMsDHqkfPlGOqrwpR0zweDiPGeqqd9MOXYf9zBcr6ZpxJyWC54/a8we3gxr8xwFHi7FI0=
+X-Received: by 2002:a17:902:eccf:b0:1f6:77fc:c555 with SMTP id
+ d9443c01a7336-1f6a5a698a4mr3556885ad.45.1717524994392; Tue, 04 Jun 2024
+ 11:16:34 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240603155308.199254-1-cupertino.miranda@oracle.com> <20240603155308.199254-2-cupertino.miranda@oracle.com>
-In-Reply-To: <20240603155308.199254-2-cupertino.miranda@oracle.com>
+References: <20240603155308.199254-1-cupertino.miranda@oracle.com> <20240603155308.199254-3-cupertino.miranda@oracle.com>
+In-Reply-To: <20240603155308.199254-3-cupertino.miranda@oracle.com>
 From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Tue, 4 Jun 2024 11:16:18 -0700
-Message-ID: <CAEf4BzYm7wF3F5s3h6Wa6ObPCo6pzZBEcziRuAELHpO-0ndStA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 1/2] selftests/bpf: Support checks against a
- regular expression.
+Date: Tue, 4 Jun 2024 11:16:22 -0700
+Message-ID: <CAEf4BzbqhhLsRRTP=QFm6Sh4Ku+9dKN4Ezrere0+=nm_8SzwYA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 2/2] selftests/bpf: Match tests against regular expression.
 To: Cupertino Miranda <cupertino.miranda@oracle.com>
 Cc: bpf@vger.kernel.org, jose.marchesi@oracle.com, david.faust@oracle.com, 
 	Yonghong Song <yonghong.song@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>
@@ -86,375 +85,218 @@ Content-Transfer-Encoding: quoted-printable
 On Mon, Jun 3, 2024 at 8:53=E2=80=AFAM Cupertino Miranda
 <cupertino.miranda@oracle.com> wrote:
 >
-> Add support for __regex and __regex_unpriv macros to check the test
-> execution output against a regular expression. This is similar to __msg
-> and __msg_unpriv, however those only allow to do full text matching.
+> This patch changes a few tests to make use of regular expressions such
+> that the test validation would allow to properly verify the tests when
+> compiled with GCC.
 >
-> Signed-off-by: Cupertino Miranda <cupertino.miranda@oracle.com>
+> signed-off-by: Cupertino Miranda <cupertino.miranda@oracle.com>
 > Cc: jose.marchesi@oracle.com
 > Cc: david.faust@oracle.com
 > Cc: Yonghong Song <yonghong.song@linux.dev>
 > Cc: Eduard Zingerman <eddyz87@gmail.com>
 > Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>
 > ---
->  tools/testing/selftests/bpf/progs/bpf_misc.h |  11 +-
->  tools/testing/selftests/bpf/test_loader.c    | 126 ++++++++++++++-----
->  2 files changed, 105 insertions(+), 32 deletions(-)
+>  tools/testing/selftests/bpf/progs/dynptr_fail.c          | 6 +++---
+>  tools/testing/selftests/bpf/progs/exceptions_assert.c    | 8 ++++----
+>  tools/testing/selftests/bpf/progs/rbtree_fail.c          | 8 ++++----
+>  tools/testing/selftests/bpf/progs/refcounted_kptr_fail.c | 4 ++--
+>  tools/testing/selftests/bpf/progs/verifier_sock.c        | 4 ++--
+>  5 files changed, 15 insertions(+), 15 deletions(-)
 >
-
-This is useful, I have a few implementation/stylistical nits below.
-
-pw-bot: cr
-
-
-> diff --git a/tools/testing/selftests/bpf/progs/bpf_misc.h b/tools/testing=
-/selftests/bpf/progs/bpf_misc.h
-> index fb2f5513e29e..c0280bd2f340 100644
-> --- a/tools/testing/selftests/bpf/progs/bpf_misc.h
-> +++ b/tools/testing/selftests/bpf/progs/bpf_misc.h
-> @@ -7,9 +7,9 @@
->   *
->   * The test_loader sequentially loads each program in a skeleton.
->   * Programs could be loaded in privileged and unprivileged modes.
-> - * - __success, __failure, __msg imply privileged mode;
-> - * - __success_unpriv, __failure_unpriv, __msg_unpriv imply
-> - *   unprivileged mode.
-> + * - __success, __failure, __msg, __regex imply privileged mode;
-> + * - __success_unpriv, __failure_unpriv, __msg_unpriv, __regex_unpriv
-> + *   imply unprivileged mode.
->   * If combination of privileged and unprivileged attributes is present
->   * both modes are used. If none are present privileged mode is implied.
->   *
-> @@ -24,6 +24,9 @@
->   *                   Multiple __msg attributes could be specified.
->   * __msg_unpriv      Same as __msg but for unprivileged mode.
->   *
-> + * __regex           Same as __msg, but using a regular expression.
-> + * __regex_unpriv    Same as __msg_unpriv but using a regular expression=
-.
-> + *
->   * __success         Expect program load success in privileged mode.
->   * __success_unpriv  Expect program load success in unprivileged mode.
->   *
-> @@ -59,10 +62,12 @@
->   * __auxiliary_unpriv  Same, but load program in unprivileged mode.
+> diff --git a/tools/testing/selftests/bpf/progs/dynptr_fail.c b/tools/test=
+ing/selftests/bpf/progs/dynptr_fail.c
+> index 66a60bfb5867..64cc9d936a13 100644
+> --- a/tools/testing/selftests/bpf/progs/dynptr_fail.c
+> +++ b/tools/testing/selftests/bpf/progs/dynptr_fail.c
+> @@ -964,7 +964,7 @@ int dynptr_invalidate_slice_reinit(void *ctx)
+>   * mem_or_null pointers.
 >   */
->  #define __msg(msg)             __attribute__((btf_decl_tag("comment:test=
-_expect_msg=3D" msg)))
-> +#define __regex(regex)         __attribute__((btf_decl_tag("comment:test=
-_expect_regex=3D" regex)))
->  #define __failure              __attribute__((btf_decl_tag("comment:test=
-_expect_failure")))
->  #define __success              __attribute__((btf_decl_tag("comment:test=
-_expect_success")))
->  #define __description(desc)    __attribute__((btf_decl_tag("comment:test=
-_description=3D" desc)))
->  #define __msg_unpriv(msg)      __attribute__((btf_decl_tag("comment:test=
-_expect_msg_unpriv=3D" msg)))
-> +#define __regex_unpriv(regex)  __attribute__((btf_decl_tag("comment:test=
-_expect_regex_unpriv=3D" regex)))
->  #define __failure_unpriv       __attribute__((btf_decl_tag("comment:test=
-_expect_failure_unpriv")))
->  #define __success_unpriv       __attribute__((btf_decl_tag("comment:test=
-_expect_success_unpriv")))
->  #define __log_level(lvl)       __attribute__((btf_decl_tag("comment:test=
-_log_level=3D"#lvl)))
-> diff --git a/tools/testing/selftests/bpf/test_loader.c b/tools/testing/se=
-lftests/bpf/test_loader.c
-> index 524c38e9cde4..c73fa04bca1b 100644
-> --- a/tools/testing/selftests/bpf/test_loader.c
-> +++ b/tools/testing/selftests/bpf/test_loader.c
-> @@ -2,6 +2,7 @@
->  /* Copyright (c) 2022 Meta Platforms, Inc. and affiliates. */
->  #include <linux/capability.h>
->  #include <stdlib.h>
-> +#include <regex.h>
->  #include <test_progs.h>
->  #include <bpf/btf.h>
->
-> @@ -17,9 +18,11 @@
->  #define TEST_TAG_EXPECT_FAILURE "comment:test_expect_failure"
->  #define TEST_TAG_EXPECT_SUCCESS "comment:test_expect_success"
->  #define TEST_TAG_EXPECT_MSG_PFX "comment:test_expect_msg=3D"
-> +#define TEST_TAG_EXPECT_REGEX_PFX "comment:test_expect_regex=3D"
->  #define TEST_TAG_EXPECT_FAILURE_UNPRIV "comment:test_expect_failure_unpr=
-iv"
->  #define TEST_TAG_EXPECT_SUCCESS_UNPRIV "comment:test_expect_success_unpr=
-iv"
->  #define TEST_TAG_EXPECT_MSG_PFX_UNPRIV "comment:test_expect_msg_unpriv=
-=3D"
-> +#define TEST_TAG_EXPECT_REGEX_PFX_UNPRIV "comment:test_expect_regex_unpr=
-iv=3D"
->  #define TEST_TAG_LOG_LEVEL_PFX "comment:test_log_level=3D"
->  #define TEST_TAG_PROG_FLAGS_PFX "comment:test_prog_flags=3D"
->  #define TEST_TAG_DESCRIPTION_PFX "comment:test_description=3D"
-> @@ -46,10 +49,15 @@ enum mode {
->         UNPRIV =3D 2
->  };
->
-> +struct expect_msg {
-> +       const char *msg;
-
-let's call this "str"? In both cases we match "message", it's just
-whether it's a substring match or regex match that matters
-
-> +       regex_t *regex;
-
-let's just have `regex_t regex` here, and avoid some more malloc/free dance=
-.
-
-I wouldn't reuse `msg` field to store original regex string, just add
-another field, we are not concerned with saving a few bytes on this,
-but keeping "regex_str" vs "str" separate makes everything simpler
-
-> +};
-> +
->  struct test_subspec {
->         char *name;
->         bool expect_failure;
-> -       const char **expect_msgs;
-> +       struct expect_msg *expect;
-
-I'd keep the name as expect_msgs (you can expect other things, potentially)
-
->         size_t expect_msg_cnt;
->         int retval;
->         bool execute;
-> @@ -91,27 +99,57 @@ static void free_test_spec(struct test_spec *spec)
+>  SEC("?raw_tp")
+> -__failure __msg("R1 type=3Dscalar expected=3Dpercpu_ptr_")
+> +__failure __regex("R[0-9]+ type=3Dscalar expected=3Dpercpu_ptr_")
+>  int dynptr_invalidate_slice_or_null(void *ctx)
 >  {
->         free(spec->priv.name);
->         free(spec->unpriv.name);
-> -       free(spec->priv.expect_msgs);
-> -       free(spec->unpriv.expect_msgs);
-> +       free(spec->priv.expect);
-> +       free(spec->unpriv.expect);
-
-who's going to free regex instances? there has to be regfree() somewhere
-
+>         struct bpf_dynptr ptr;
+> @@ -982,7 +982,7 @@ int dynptr_invalidate_slice_or_null(void *ctx)
 >
->         spec->priv.name =3D NULL;
->         spec->unpriv.name =3D NULL;
-> -       spec->priv.expect_msgs =3D NULL;
-> -       spec->unpriv.expect_msgs =3D NULL;
-> +       spec->priv.expect =3D NULL;
-> +       spec->unpriv.expect =3D NULL;
+>  /* Destruction of dynptr should also any slices obtained from it */
+>  SEC("?raw_tp")
+> -__failure __msg("R7 invalid mem access 'scalar'")
+> +__failure __regex("R[0-9]+ invalid mem access 'scalar'")
+>  int dynptr_invalidate_slice_failure(void *ctx)
+>  {
+>         struct bpf_dynptr ptr1;
+> @@ -1069,7 +1069,7 @@ int dynptr_read_into_slot(void *ctx)
+>
+>  /* bpf_dynptr_slice()s are read-only and cannot be written to */
+>  SEC("?tc")
+> -__failure __msg("R0 cannot write into rdonly_mem")
+> +__failure __regex("R[0-9]+ cannot write into rdonly_mem")
+>  int skb_invalid_slice_write(struct __sk_buff *skb)
+>  {
+>         struct bpf_dynptr ptr;
+> diff --git a/tools/testing/selftests/bpf/progs/exceptions_assert.c b/tool=
+s/testing/selftests/bpf/progs/exceptions_assert.c
+> index 5e0a1ca96d4e..deb67d198caf 100644
+> --- a/tools/testing/selftests/bpf/progs/exceptions_assert.c
+> +++ b/tools/testing/selftests/bpf/progs/exceptions_assert.c
+> @@ -59,7 +59,7 @@ check_assert(s64, >=3D, ge_neg, INT_MIN);
+>
+>  SEC("?tc")
+>  __log_level(2) __failure
+> -__msg(": R0=3D0 R1=3Dctx() R2=3Dscalar(smin=3D0xffffffff80000002,smax=3D=
+smax32=3D0x7ffffffd,smin32=3D0x80000002) R10=3Dfp0")
+> +__regex(": R0=3D[^ ]+ R1=3Dctx() R2=3Dscalar(smin=3D0xffffffff80000002,s=
+max=3Dsmax32=3D0x7ffffffd,smin32=3D0x80000002) R10=3Dfp0")
+
+curious, what R0 value do we end up with with GCC generated code?
+
+>  int check_assert_range_s64(struct __sk_buff *ctx)
+>  {
+>         struct bpf_sock *sk =3D ctx->sk;
+> @@ -75,7 +75,7 @@ int check_assert_range_s64(struct __sk_buff *ctx)
+>
+>  SEC("?tc")
+>  __log_level(2) __failure
+> -__msg(": R1=3Dctx() R2=3Dscalar(smin=3Dumin=3Dsmin32=3Dumin32=3D4096,sma=
+x=3Dumax=3Dsmax32=3Dumax32=3D8192,var_off=3D(0x0; 0x3fff))")
+> +__regex("R[0-9]=3Dscalar(smin=3Dumin=3Dsmin32=3Dumin32=3D4096,smax=3Duma=
+x=3Dsmax32=3Dumax32=3D8192,var_off=3D(0x0; 0x3fff))")
+>  int check_assert_range_u64(struct __sk_buff *ctx)
+>  {
+>         u64 num =3D ctx->len;
+> @@ -86,7 +86,7 @@ int check_assert_range_u64(struct __sk_buff *ctx)
+>
+>  SEC("?tc")
+>  __log_level(2) __failure
+> -__msg(": R0=3D0 R1=3Dctx() R2=3D4096 R10=3Dfp0")
+> +__regex(": R0=3D[^ ]+ R1=3Dctx() R2=3D4096 R10=3Dfp0")
+>  int check_assert_single_range_s64(struct __sk_buff *ctx)
+>  {
+>         struct bpf_sock *sk =3D ctx->sk;
+> @@ -114,7 +114,7 @@ int check_assert_single_range_u64(struct __sk_buff *c=
+tx)
+>
+>  SEC("?tc")
+>  __log_level(2) __failure
+> -__msg(": R1=3Dpkt(off=3D64,r=3D64) R2=3Dpkt_end() R6=3Dpkt(r=3D64) R10=
+=3Dfp0")
+> +__msg("R1=3Dpkt(off=3D64,r=3D64)")
+>  int check_assert_generic(struct __sk_buff *ctx)
+>  {
+>         u8 *data_end =3D (void *)(long)ctx->data_end;
+> diff --git a/tools/testing/selftests/bpf/progs/rbtree_fail.c b/tools/test=
+ing/selftests/bpf/progs/rbtree_fail.c
+> index 3fecf1c6dfe5..8399304eca72 100644
+> --- a/tools/testing/selftests/bpf/progs/rbtree_fail.c
+> +++ b/tools/testing/selftests/bpf/progs/rbtree_fail.c
+> @@ -29,7 +29,7 @@ static bool less(struct bpf_rb_node *a, const struct bp=
+f_rb_node *b)
 >  }
 >
->  static int push_msg(const char *msg, struct test_subspec *subspec)
-
-let's have a single `push_exp_msg(struct test_subspec *subspec, const
-char *str, const char *regex)` helper that will handle both substr and
-regexp cases in one function. Let's not duplicate realloc logic so
-much
-
+>  SEC("?tc")
+> -__failure __msg("bpf_spin_lock at off=3D16 must be held for bpf_rb_root"=
+)
+> +__failure __regex("bpf_spin_lock at off=3D[0-9]+ must be held for bpf_rb=
+_root")
+>  long rbtree_api_nolock_add(void *ctx)
 >  {
->         void *tmp;
->
-> -       tmp =3D realloc(subspec->expect_msgs, (1 + subspec->expect_msg_cn=
-t) * sizeof(void *));
-> +       tmp =3D realloc(subspec->expect,
-> +                     (1 + subspec->expect_msg_cnt) * sizeof(struct expec=
-t_msg));
->         if (!tmp) {
->                 ASSERT_FAIL("failed to realloc memory for messages\n");
->                 return -ENOMEM;
->         }
-> -       subspec->expect_msgs =3D tmp;
-> -       subspec->expect_msgs[subspec->expect_msg_cnt++] =3D msg;
->
-> +       subspec->expect =3D tmp;
-> +       subspec->expect[subspec->expect_msg_cnt].msg =3D msg;
-> +       subspec->expect[subspec->expect_msg_cnt].regex =3D NULL;
-> +       subspec->expect_msg_cnt +=3D 1;
-
-we have named type now, let's have `struct expect_msg *tmp`, and then do
-
-tmp =3D &subspec->expect[subspec->expect_msg_cnt];
-tmp->msg =3D ...
-tmp->regex =3D ...
-
-> +       return 0;
-> +}
-> +
-> +static int push_regex(const char *regex_str, struct test_subspec *subspe=
-c)
-> +{
-> +       void *tmp;
-> +       int regcomp_res;
-> +
-> +       tmp =3D realloc(subspec->expect,
-> +                     (1 + subspec->expect_msg_cnt) * sizeof(struct expec=
-t_msg));
-> +       if (!tmp) {
-> +               ASSERT_FAIL("failed to realloc memory for messages\n");
-> +               return -ENOMEM;
-> +       }
-> +       subspec->expect =3D tmp;
-> +
-> +       subspec->expect[subspec->expect_msg_cnt].regex =3D (regex_t *) ma=
-lloc(sizeof(regex_t));
-> +       regcomp_res =3D regcomp (subspec->expect[subspec->expect_msg_cnt]=
-.regex,
-> +                              regex_str, REG_EXTENDED|REG_NEWLINE);
-
-see above about tmp, we should shorten this (and combine with the above hel=
-per)
-
-> +       if (regcomp_res !=3D 0) {
-> +               fprintf(stderr, "Regexp: '%s'\n", regex_str);
-> +               ASSERT_FAIL("failed to compile regex\n");
-> +               return -EINVAL;
-> +       }
-> +
-> +       subspec->expect[subspec->expect_msg_cnt].msg =3D regex_str;
-> +       subspec->expect_msg_cnt +=3D 1;
->         return 0;
+>         struct node_data *n;
+> @@ -43,7 +43,7 @@ long rbtree_api_nolock_add(void *ctx)
 >  }
 >
-> @@ -243,6 +281,18 @@ static int parse_test_spec(struct test_loader *teste=
-r,
->                         if (err)
->                                 goto cleanup;
->                         spec->mode_mask |=3D UNPRIV;
-> +               } else if (str_has_pfx(s, TEST_TAG_EXPECT_REGEX_PFX)) {
-> +                       msg =3D s + sizeof(TEST_TAG_EXPECT_REGEX_PFX) - 1=
-;
-> +                       err =3D push_regex(msg, &spec->priv);
-> +                       if (err)
-> +                               goto cleanup;
-> +                       spec->mode_mask |=3D PRIV;
-> +               } else if (str_has_pfx(s, TEST_TAG_EXPECT_REGEX_PFX_UNPRI=
-V)) {
-> +                       msg =3D s + sizeof(TEST_TAG_EXPECT_REGEX_PFX_UNPR=
-IV) - 1;
-> +                       err =3D push_regex(msg, &spec->unpriv);
-> +                       if (err)
-> +                               goto cleanup;
-> +                       spec->mode_mask |=3D UNPRIV;
->                 } else if (str_has_pfx(s, TEST_TAG_RETVAL_PFX)) {
->                         val =3D s + sizeof(TEST_TAG_RETVAL_PFX) - 1;
->                         err =3D parse_retval(val, &spec->priv.retval, "__=
-retval");
-> @@ -336,16 +386,16 @@ static int parse_test_spec(struct test_loader *test=
-er,
->                         spec->unpriv.execute =3D spec->priv.execute;
->                 }
->
-> -               if (!spec->unpriv.expect_msgs) {
-> -                       size_t sz =3D spec->priv.expect_msg_cnt * sizeof(=
-void *);
-> +               if (!spec->unpriv.expect) {
-> +                       size_t sz =3D spec->priv.expect_msg_cnt * sizeof(=
-struct expect_msg);
->
-> -                       spec->unpriv.expect_msgs =3D malloc(sz);
-> -                       if (!spec->unpriv.expect_msgs) {
-> -                               PRINT_FAIL("failed to allocate memory for=
- unpriv.expect_msgs\n");
-> +                       spec->unpriv.expect =3D malloc(sz);
-> +                       if (!spec->unpriv.expect) {
-> +                               PRINT_FAIL("failed to allocate memory for=
- unpriv.expect\n");
->                                 err =3D -ENOMEM;
->                                 goto cleanup;
->                         }
-> -                       memcpy(spec->unpriv.expect_msgs, spec->priv.expec=
-t_msgs, sz);
-> +                       memcpy(spec->unpriv.expect, spec->priv.expect, sz=
-);
->                         spec->unpriv.expect_msg_cnt =3D spec->priv.expect=
-_msg_cnt;
->                 }
->         }
-> @@ -403,26 +453,44 @@ static void validate_case(struct test_loader *teste=
-r,
->                           int load_err)
+>  SEC("?tc")
+> -__failure __msg("bpf_spin_lock at off=3D16 must be held for bpf_rb_root"=
+)
+> +__failure __regex("bpf_spin_lock at off=3D[0-9]+ must be held for bpf_rb=
+_root")
+>  long rbtree_api_nolock_remove(void *ctx)
 >  {
->         int i, j;
-> +       const char *match;
->
->         for (i =3D 0; i < subspec->expect_msg_cnt; i++) {
-> -               char *match;
->                 const char *expect_msg;
-> +               regex_t *regex;
-> +               regmatch_t reg_match[1];
-> +
-> +               expect_msg =3D subspec->expect[i].msg;
-> +               regex =3D subspec->expect[i].regex;
-> +
-> +               if (regex =3D=3D NULL) {
-
-if (!regex)
-
-> +                       match =3D strstr(tester->log_buf + tester->next_m=
-atch_pos, expect_msg);
-> +                       if (!ASSERT_OK_PTR (match, "expect_msg")) {
-> +                               /* if we are in verbose mode, we've alrea=
-dy emitted log */
-> +                               if (env.verbosity =3D=3D VERBOSE_NONE)
-> +                                       emit_verifier_log(tester->log_buf=
-, true /*force*/);
-> +                               for (j =3D 0; j < i; j++)
-> +                                       fprintf(stderr,
-> +                                               "MATCHED  MSG: '%s'\n", s=
-ubspec->expect[j].msg);
-> +                               fprintf(stderr, "EXPECTED MSG: '%s'\n", e=
-xpect_msg);
-> +                               return;
-> +                       }
-> +                       tester->next_match_pos =3D match - tester->log_bu=
-f + strlen(expect_msg);
-> +               } else {
-> +                       int match_size =3D regexec (regex, tester->log_bu=
-f + tester->next_match_pos, 1, reg_match, 0);
-> +                       if (match_size !=3D 1) {
-
-ASSERT_EQ(match_size, 1) to stay similar to the substring case above
-with ASSERT_OK_PTR?
-
-> +                               /* if we are in verbose mode, we've alrea=
-dy emitted log */
-> +                               if (env.verbosity =3D=3D VERBOSE_NONE)
-> +                                       emit_verifier_log(tester->log_buf=
-, true /*force*/);
-> +                               for (j =3D 0; j < i; j++)
-> +                                       fprintf(stderr,
-> +                                               "MATCHED  REGEX: '%s'\n",=
- subspec->expect[j].msg);
-> +                               fprintf(stderr, "EXPECTED REGEX: '%s'\n",=
- expect_msg);
-> +                               return;
-> +                       }
-
-let's try to combine substring and regex case and keep verbosity and
-error message output in one place?
-
->
-> -               expect_msg =3D subspec->expect_msgs[i];
-> -
-> -               match =3D strstr(tester->log_buf + tester->next_match_pos=
-, expect_msg);
-> -               if (!ASSERT_OK_PTR(match, "expect_msg")) {
-> -                       /* if we are in verbose mode, we've already emitt=
-ed log */
-> -                       if (env.verbosity =3D=3D VERBOSE_NONE)
-> -                               emit_verifier_log(tester->log_buf, true /=
-*force*/);
-> -                       for (j =3D 0; j < i; j++)
-> -                               fprintf(stderr,
-> -                                       "MATCHED  MSG: '%s'\n", subspec->=
-expect_msgs[j]);
-> -                       fprintf(stderr, "EXPECTED MSG: '%s'\n", expect_ms=
-g);
-> -                       return;
-> +                       tester->next_match_pos +=3D reg_match[0].rm_eo;
->                 }
-> -
-> -               tester->next_match_pos =3D match - tester->log_buf + strl=
-en(expect_msg);
->         }
+>         struct node_data *n;
+> @@ -61,7 +61,7 @@ long rbtree_api_nolock_remove(void *ctx)
 >  }
 >
+>  SEC("?tc")
+> -__failure __msg("bpf_spin_lock at off=3D16 must be held for bpf_rb_root"=
+)
+> +__failure __regex("bpf_spin_lock at off=3D[0-9]+ must be held for bpf_rb=
+_root")
+>  long rbtree_api_nolock_first(void *ctx)
+>  {
+>         bpf_rbtree_first(&groot);
+> @@ -105,7 +105,7 @@ long rbtree_api_remove_unadded_node(void *ctx)
+>  }
+>
+>  SEC("?tc")
+> -__failure __msg("Unreleased reference id=3D3 alloc_insn=3D10")
+> +__failure __regex("Unreleased reference id=3D3 alloc_insn=3D[0-9]+")
+
+this test definitely should have been written in BPF assembly if we
+care to check alloc_insn... Otherwise we just care that there is
+"Unreleased reference" message, we should match on that without
+hard-coding id and alloc_insn?
+
+>  long rbtree_api_remove_no_drop(void *ctx)
+>  {
+>         struct bpf_rb_node *res;
+> diff --git a/tools/testing/selftests/bpf/progs/refcounted_kptr_fail.c b/t=
+ools/testing/selftests/bpf/progs/refcounted_kptr_fail.c
+> index 1553b9c16aa7..f8d4b7cfcd68 100644
+> --- a/tools/testing/selftests/bpf/progs/refcounted_kptr_fail.c
+> +++ b/tools/testing/selftests/bpf/progs/refcounted_kptr_fail.c
+> @@ -32,7 +32,7 @@ static bool less(struct bpf_rb_node *a, const struct bp=
+f_rb_node *b)
+>  }
+>
+>  SEC("?tc")
+> -__failure __msg("Unreleased reference id=3D4 alloc_insn=3D21")
+> +__failure __regex("Unreleased reference id=3D4 alloc_insn=3D[0-9]+")
+
+same, relying on ID and alloc_insns in tests written in C is super fragile.
+
+>  long rbtree_refcounted_node_ref_escapes(void *ctx)
+>  {
+>         struct node_acquire *n, *m;
+> @@ -73,7 +73,7 @@ long refcount_acquire_maybe_null(void *ctx)
+>  }
+>
+>  SEC("?tc")
+> -__failure __msg("Unreleased reference id=3D3 alloc_insn=3D9")
+> +__failure __regex("Unreleased reference id=3D3 alloc_insn=3D[0-9]+")
+>  long rbtree_refcounted_node_ref_escapes_owning_input(void *ctx)
+
+ditto
+
+>  {
+>         struct node_acquire *n, *m;
+> diff --git a/tools/testing/selftests/bpf/progs/verifier_sock.c b/tools/te=
+sting/selftests/bpf/progs/verifier_sock.c
+> index ee76b51005ab..450b57933c79 100644
+> --- a/tools/testing/selftests/bpf/progs/verifier_sock.c
+> +++ b/tools/testing/selftests/bpf/progs/verifier_sock.c
+> @@ -799,7 +799,7 @@ l0_%=3D:      r0 =3D *(u32*)(r0 + %[bpf_xdp_sock_queu=
+e_id]);    \
+>
+>  SEC("sk_skb")
+>  __description("bpf_map_lookup_elem(sockmap, &key)")
+> -__failure __msg("Unreleased reference id=3D2 alloc_insn=3D6")
+> +__failure __regex("Unreleased reference id=3D2 alloc_insn=3D[0-9]+")
+
+same here and below
+
+
+>  __naked void map_lookup_elem_sockmap_key(void)
+>  {
+>         asm volatile ("                                 \
+> @@ -819,7 +819,7 @@ __naked void map_lookup_elem_sockmap_key(void)
+>
+>  SEC("sk_skb")
+>  __description("bpf_map_lookup_elem(sockhash, &key)")
+> -__failure __msg("Unreleased reference id=3D2 alloc_insn=3D6")
+> +__failure __regex("Unreleased reference id=3D2 alloc_insn=3D[0-9]+")
+>  __naked void map_lookup_elem_sockhash_key(void)
+>  {
+>         asm volatile ("                                 \
 > --
 > 2.39.2
 >
