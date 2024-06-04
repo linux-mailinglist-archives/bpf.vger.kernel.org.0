@@ -1,46 +1,46 @@
-Return-Path: <bpf+bounces-31377-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-31378-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E91C08FBCEE
-	for <lists+bpf@lfdr.de>; Tue,  4 Jun 2024 22:03:31 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B505E8FBCF0
+	for <lists+bpf@lfdr.de>; Tue,  4 Jun 2024 22:03:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9F9B728558F
-	for <lists+bpf@lfdr.de>; Tue,  4 Jun 2024 20:03:30 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1FE63B2642E
+	for <lists+bpf@lfdr.de>; Tue,  4 Jun 2024 20:03:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C2F914B091;
-	Tue,  4 Jun 2024 20:03:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6916A14B944;
+	Tue,  4 Jun 2024 20:03:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RHXZ/hjq"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ILEvU0gT"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE214149E08;
-	Tue,  4 Jun 2024 20:03:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC45A146D78;
+	Tue,  4 Jun 2024 20:03:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717531395; cv=none; b=bGAhEURi20ayJrNvOc6MsGDd3xg9DJOKfJA3HzKe2L9v/4Exsc0fxyLJbKhO8d4xn6cHhWq+zsBS+f7mQPIGpDloeeXTFL7PFUUmvVraniMbBGgsoUTUlkTKwIHw5V/BGi7ce1huu2Aq4vvDKpPgmHzW2h1gVUN83VRiKvbV+do=
+	t=1717531407; cv=none; b=XQG8YT2IdSsPg6iow458VgNZIhp9PrDd4kqA+IJZ2Y8HJORGqOdM8gLK5s5kxlO4qG7adaSNJ0iEvyDeFuvgMZSVmwg+Ysf+ZF2XHFUGZYQRWplbPg+IIbKzhqQFCZmKGiTlHokIYVzEGrFDZuYV3/zCkGiASeIdApWMBCMpGW0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717531395; c=relaxed/simple;
-	bh=E3gFFQnUuz21l8S5zyXAsshddo/NRWyVXSgE9gUIth0=;
+	s=arc-20240116; t=1717531407; c=relaxed/simple;
+	bh=DggXebc+5AYH4oM8/iWPJWB6VFy1ERgOM6IPvJ6rIjs=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=DyK0JVoldzMaKteVWJl0HGfPa67L9YVGKTvtLo59b3hLvyuiRIbjr2OtB/sWGco1y+b1YieS0aBvkXQ8ut0E14JXiof6X82RQsJdLrwBl+WA9EnEfnM6ArQYp/yYPMl+g6Q/yaluJ1ryj+3yMPFHXWM5W+G1E/CiYOro2MQq6Bg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RHXZ/hjq; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 60D40C2BBFC;
-	Tue,  4 Jun 2024 20:03:10 +0000 (UTC)
+	 MIME-Version; b=GdapsL4AjmEWo/TDMK5A4lliHBFjtvhG/d0tp0zMl0HlmQWrzuwHYB/xskIklrNQazwQIexhzvuIt89JU1xkZZ4ARFXK2TQf2C5N5j1nF9rRPbd5EElaf5r2pIH468ZWK0eugQoXaJaJojajPYN501kihdioqmdPPG/KU6hPvIE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ILEvU0gT; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D32F7C2BBFC;
+	Tue,  4 Jun 2024 20:03:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1717531394;
-	bh=E3gFFQnUuz21l8S5zyXAsshddo/NRWyVXSgE9gUIth0=;
+	s=k20201202; t=1717531406;
+	bh=DggXebc+5AYH4oM8/iWPJWB6VFy1ERgOM6IPvJ6rIjs=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=RHXZ/hjqnq8YzJ7xKFngyTERrSzaC73vAZ2Oixb/Z88JRX7kzp6a6iNY2OQFPLjsV
-	 QfoDjEd+XoBV78YiCxav4VMZ3OE2Vphx5jcm5OagIeNoJq1C+/tvLfslSWKtI5QCJo
-	 Qc385ThLJ3muo77HFi2MoZ7qv6Ay9OuwmfX+GTUCL3RU1s7RFv0B9q/R8FoxekdwCf
-	 aqbojtaKmMbs8Q26jT5UdnNzUo+1BZIUPhzu7ni0QID+27KwKzAE1N2kkmQ6f/Ea7Z
-	 NlCOTOZQhjZbYDSSswHNe4KdYtiq3TTpFjUIKrgTFGVMbKki3wAYurAsOly+InONXQ
-	 +z0CBa0dHYgiw==
+	b=ILEvU0gTFvCYyzXJcUBLPA4oft6W+BmxISq3P/cmEVVan/6LPmsmuTLbkAhJbgWQn
+	 gIAeCrHBeykLM1cNbVWZcK6qKgTNNnWyCpcRTkYuPTRED6Ne6vcG0Zv1ao/BqxcG/2
+	 E1eT/T6CMjmllRxsluhBxZr/DlnGkIiWqYUGMe7WwGO0gRlbuzGduycAPxnhXvZmsG
+	 Q6YyReZzxwZuMK+gGS9ZV26ycoQtJmQQp8m6VDqVRSVAbyUCGWcJOlv3WViGAymALC
+	 ALMHNn+nkghG0wl/CozwcDe3HDiPtGjvwTHHmCvqVgbyfN8h4Il36CGDp8PumztyMJ
+	 Jh5YUsNhjUKoA==
 From: Jiri Olsa <jolsa@kernel.org>
 To: Oleg Nesterov <oleg@redhat.com>,
 	Peter Zijlstra <peterz@infradead.org>,
@@ -59,9 +59,9 @@ Cc: bpf@vger.kernel.org,
 	Masami Hiramatsu <mhiramat@kernel.org>,
 	linux-kernel@vger.kernel.org,
 	linux-trace-kernel@vger.kernel.org
-Subject: [RFC bpf-next 03/10] bpf: Add support for uprobe multi session context
-Date: Tue,  4 Jun 2024 22:02:14 +0200
-Message-ID: <20240604200221.377848-4-jolsa@kernel.org>
+Subject: [RFC bpf-next 04/10] libbpf: Add support for uprobe multi session attach
+Date: Tue,  4 Jun 2024 22:02:15 +0200
+Message-ID: <20240604200221.377848-5-jolsa@kernel.org>
 X-Mailer: git-send-email 2.45.1
 In-Reply-To: <20240604200221.377848-1-jolsa@kernel.org>
 References: <20240604200221.377848-1-jolsa@kernel.org>
@@ -73,119 +73,160 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Placing bpf_session_run_ctx layer in between bpf_run_ctx and
-bpf_uprobe_multi_run_ctx, so the session data can be retrieved
-from uprobe_multi link.
+Adding support to attach program in uprobe session mode
+with bpf_program__attach_uprobe_multi function.
 
-Plus granting session kfuncs access to uprobe session programs.
+Adding session bool to bpf_uprobe_multi_opts struct that allows
+to load and attach the bpf program via uprobe session.
+the attachment to create uprobe multi session.
+
+Also adding new program loader section that allows:
+SEC("uprobe.session/bpf_fentry_test*")
+
+and loads/attaches uprobe program as uprobe session.
 
 Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 ---
- kernel/trace/bpf_trace.c | 26 ++++++++++++++++----------
- 1 file changed, 16 insertions(+), 10 deletions(-)
+ tools/lib/bpf/bpf.c    |  1 +
+ tools/lib/bpf/libbpf.c | 50 ++++++++++++++++++++++++++++++++++++++++--
+ tools/lib/bpf/libbpf.h |  4 +++-
+ 3 files changed, 52 insertions(+), 3 deletions(-)
 
-diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-index 53b111c8e887..4392807ee8d9 100644
---- a/kernel/trace/bpf_trace.c
-+++ b/kernel/trace/bpf_trace.c
-@@ -3181,7 +3181,7 @@ struct bpf_uprobe_multi_link {
+diff --git a/tools/lib/bpf/bpf.c b/tools/lib/bpf/bpf.c
+index 2a4c71501a17..becdfa701c75 100644
+--- a/tools/lib/bpf/bpf.c
++++ b/tools/lib/bpf/bpf.c
+@@ -776,6 +776,7 @@ int bpf_link_create(int prog_fd, int target_fd,
+ 			return libbpf_err(-EINVAL);
+ 		break;
+ 	case BPF_TRACE_UPROBE_MULTI:
++	case BPF_TRACE_UPROBE_SESSION:
+ 		attr.link_create.uprobe_multi.flags = OPTS_GET(opts, uprobe_multi.flags, 0);
+ 		attr.link_create.uprobe_multi.cnt = OPTS_GET(opts, uprobe_multi.cnt, 0);
+ 		attr.link_create.uprobe_multi.path = ptr_to_u64(OPTS_GET(opts, uprobe_multi.path, 0));
+diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+index d1627a2ca30b..a0044448a708 100644
+--- a/tools/lib/bpf/libbpf.c
++++ b/tools/lib/bpf/libbpf.c
+@@ -9328,6 +9328,7 @@ static int attach_trace(const struct bpf_program *prog, long cookie, struct bpf_
+ static int attach_kprobe_multi(const struct bpf_program *prog, long cookie, struct bpf_link **link);
+ static int attach_kprobe_session(const struct bpf_program *prog, long cookie, struct bpf_link **link);
+ static int attach_uprobe_multi(const struct bpf_program *prog, long cookie, struct bpf_link **link);
++static int attach_uprobe_session(const struct bpf_program *prog, long cookie, struct bpf_link **link);
+ static int attach_lsm(const struct bpf_program *prog, long cookie, struct bpf_link **link);
+ static int attach_iter(const struct bpf_program *prog, long cookie, struct bpf_link **link);
+ 
+@@ -9346,6 +9347,7 @@ static const struct bpf_sec_def section_defs[] = {
+ 	SEC_DEF("kprobe.session+",	KPROBE,	BPF_TRACE_KPROBE_SESSION, SEC_NONE, attach_kprobe_session),
+ 	SEC_DEF("uprobe.multi+",	KPROBE,	BPF_TRACE_UPROBE_MULTI, SEC_NONE, attach_uprobe_multi),
+ 	SEC_DEF("uretprobe.multi+",	KPROBE,	BPF_TRACE_UPROBE_MULTI, SEC_NONE, attach_uprobe_multi),
++	SEC_DEF("uprobe.session+",	KPROBE,	BPF_TRACE_UPROBE_SESSION, SEC_NONE, attach_uprobe_session),
+ 	SEC_DEF("uprobe.multi.s+",	KPROBE,	BPF_TRACE_UPROBE_MULTI, SEC_SLEEPABLE, attach_uprobe_multi),
+ 	SEC_DEF("uretprobe.multi.s+",	KPROBE,	BPF_TRACE_UPROBE_MULTI, SEC_SLEEPABLE, attach_uprobe_multi),
+ 	SEC_DEF("ksyscall+",		KPROBE,	0, SEC_NONE, attach_ksyscall),
+@@ -11682,6 +11684,40 @@ static int attach_uprobe_multi(const struct bpf_program *prog, long cookie, stru
+ 	return ret;
+ }
+ 
++static int attach_uprobe_session(const struct bpf_program *prog, long cookie, struct bpf_link **link)
++{
++	char *binary_path = NULL, *func_name = NULL;
++	LIBBPF_OPTS(bpf_uprobe_multi_opts, opts,
++		.session = true,
++	);
++	int n, ret = -EINVAL;
++	const char *spec;
++
++	*link = NULL;
++
++	spec = prog->sec_name + sizeof("uprobe.session/") - 1;
++	n = sscanf(spec, "%m[^:]:%m[^\n]",
++		   &binary_path, &func_name);
++
++	switch (n) {
++	case 1:
++		/* but auto-attach is impossible. */
++		ret = 0;
++		break;
++	case 2:
++		*link = bpf_program__attach_uprobe_multi(prog, -1, binary_path, func_name, &opts);
++		ret = *link ? 0 : -errno;
++		break;
++	default:
++		pr_warn("prog '%s': invalid format of section definition '%s'\n", prog->name,
++			prog->sec_name);
++		break;
++	}
++	free(binary_path);
++	free(func_name);
++	return ret;
++}
++
+ static void gen_uprobe_legacy_event_name(char *buf, size_t buf_sz,
+ 					 const char *binary_path, uint64_t offset)
+ {
+@@ -11916,10 +11952,12 @@ bpf_program__attach_uprobe_multi(const struct bpf_program *prog,
+ 	const unsigned long *ref_ctr_offsets = NULL, *offsets = NULL;
+ 	LIBBPF_OPTS(bpf_link_create_opts, lopts);
+ 	unsigned long *resolved_offsets = NULL;
++	enum bpf_attach_type attach_type;
+ 	int err = 0, link_fd, prog_fd;
+ 	struct bpf_link *link = NULL;
+ 	char errmsg[STRERR_BUFSIZE];
+ 	char full_path[PATH_MAX];
++	bool retprobe, session;
+ 	const __u64 *cookies;
+ 	const char **syms;
+ 	size_t cnt;
+@@ -11990,12 +12028,20 @@ bpf_program__attach_uprobe_multi(const struct bpf_program *prog,
+ 		offsets = resolved_offsets;
+ 	}
+ 
++	retprobe = OPTS_GET(opts, retprobe, false);
++	session  = OPTS_GET(opts, session, false);
++
++	if (retprobe && session)
++		return libbpf_err_ptr(-EINVAL);
++
++	attach_type = session ? BPF_TRACE_UPROBE_SESSION : BPF_TRACE_UPROBE_MULTI;
++
+ 	lopts.uprobe_multi.path = path;
+ 	lopts.uprobe_multi.offsets = offsets;
+ 	lopts.uprobe_multi.ref_ctr_offsets = ref_ctr_offsets;
+ 	lopts.uprobe_multi.cookies = cookies;
+ 	lopts.uprobe_multi.cnt = cnt;
+-	lopts.uprobe_multi.flags = OPTS_GET(opts, retprobe, false) ? BPF_F_UPROBE_MULTI_RETURN : 0;
++	lopts.uprobe_multi.flags = retprobe ? BPF_F_UPROBE_MULTI_RETURN : 0;
+ 
+ 	if (pid == 0)
+ 		pid = getpid();
+@@ -12009,7 +12055,7 @@ bpf_program__attach_uprobe_multi(const struct bpf_program *prog,
+ 	}
+ 	link->detach = &bpf_link__detach_fd;
+ 
+-	link_fd = bpf_link_create(prog_fd, 0, BPF_TRACE_UPROBE_MULTI, &lopts);
++	link_fd = bpf_link_create(prog_fd, 0, attach_type, &lopts);
+ 	if (link_fd < 0) {
+ 		err = -errno;
+ 		pr_warn("prog '%s': failed to attach multi-uprobe: %s\n",
+diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
+index 26e4e35528c5..04cdb38f527f 100644
+--- a/tools/lib/bpf/libbpf.h
++++ b/tools/lib/bpf/libbpf.h
+@@ -569,10 +569,12 @@ struct bpf_uprobe_multi_opts {
+ 	size_t cnt;
+ 	/* create return uprobes */
+ 	bool retprobe;
++	/* create session kprobes */
++	bool session;
+ 	size_t :0;
  };
  
- struct bpf_uprobe_multi_run_ctx {
--	struct bpf_run_ctx run_ctx;
-+	struct bpf_session_run_ctx session_ctx;
- 	unsigned long entry_ip;
- 	struct bpf_uprobe *uprobe;
- };
-@@ -3294,10 +3294,15 @@ static const struct bpf_link_ops bpf_uprobe_multi_link_lops = {
+-#define bpf_uprobe_multi_opts__last_field retprobe
++#define bpf_uprobe_multi_opts__last_field session
  
- static int uprobe_prog_run(struct bpf_uprobe *uprobe,
- 			   unsigned long entry_ip,
--			   struct pt_regs *regs)
-+			   struct pt_regs *regs,
-+			   bool is_return, void *data)
- {
- 	struct bpf_uprobe_multi_link *link = uprobe->link;
- 	struct bpf_uprobe_multi_run_ctx run_ctx = {
-+		.session_ctx = {
-+			.is_return = is_return,
-+			.data = data,
-+		},
- 		.entry_ip = entry_ip,
- 		.uprobe = uprobe,
- 	};
-@@ -3316,7 +3321,7 @@ static int uprobe_prog_run(struct bpf_uprobe *uprobe,
- 
- 	migrate_disable();
- 
--	old_run_ctx = bpf_set_run_ctx(&run_ctx.run_ctx);
-+	old_run_ctx = bpf_set_run_ctx(&run_ctx.session_ctx.run_ctx);
- 	err = bpf_prog_run(link->link.prog, regs);
- 	bpf_reset_run_ctx(old_run_ctx);
- 
-@@ -3345,7 +3350,7 @@ uprobe_multi_link_handler(struct uprobe_consumer *con, struct pt_regs *regs)
- 	struct bpf_uprobe *uprobe;
- 
- 	uprobe = container_of(con, struct bpf_uprobe, consumer);
--	return uprobe_prog_run(uprobe, instruction_pointer(regs), regs);
-+	return uprobe_prog_run(uprobe, instruction_pointer(regs), regs, false, NULL);
- }
- 
- static int
-@@ -3354,7 +3359,7 @@ uprobe_multi_link_ret_handler(struct uprobe_consumer *con, unsigned long func, s
- 	struct bpf_uprobe *uprobe;
- 
- 	uprobe = container_of(con, struct bpf_uprobe, consumer);
--	return uprobe_prog_run(uprobe, func, regs);
-+	return uprobe_prog_run(uprobe, func, regs, true, NULL);
- }
- 
- static int
-@@ -3364,7 +3369,7 @@ uprobe_multi_link_handler_session(struct uprobe_consumer *con, struct pt_regs *r
- 	struct bpf_uprobe *uprobe;
- 
- 	uprobe = container_of(con, struct bpf_uprobe, consumer);
--	return uprobe_prog_run(uprobe, instruction_pointer(regs), regs);
-+	return uprobe_prog_run(uprobe, instruction_pointer(regs), regs, false, data);
- }
- 
- static int
-@@ -3374,14 +3379,14 @@ uprobe_multi_link_ret_handler_session(struct uprobe_consumer *con, unsigned long
- 	struct bpf_uprobe *uprobe;
- 
- 	uprobe = container_of(con, struct bpf_uprobe, consumer);
--	return uprobe_prog_run(uprobe, func, regs);
-+	return uprobe_prog_run(uprobe, func, regs, true, data);
- }
- 
- static u64 bpf_uprobe_multi_entry_ip(struct bpf_run_ctx *ctx)
- {
- 	struct bpf_uprobe_multi_run_ctx *run_ctx;
- 
--	run_ctx = container_of(current->bpf_ctx, struct bpf_uprobe_multi_run_ctx, run_ctx);
-+	run_ctx = container_of(current->bpf_ctx, struct bpf_uprobe_multi_run_ctx, session_ctx.run_ctx);
- 	return run_ctx->entry_ip;
- }
- 
-@@ -3389,7 +3394,7 @@ static u64 bpf_uprobe_multi_cookie(struct bpf_run_ctx *ctx)
- {
- 	struct bpf_uprobe_multi_run_ctx *run_ctx;
- 
--	run_ctx = container_of(current->bpf_ctx, struct bpf_uprobe_multi_run_ctx, run_ctx);
-+	run_ctx = container_of(current->bpf_ctx, struct bpf_uprobe_multi_run_ctx, session_ctx.run_ctx);
- 	return run_ctx->uprobe->cookie;
- }
- 
-@@ -3586,7 +3591,8 @@ static int bpf_kprobe_multi_filter(const struct bpf_prog *prog, u32 kfunc_id)
- 	if (!btf_id_set8_contains(&kprobe_multi_kfunc_set_ids, kfunc_id))
- 		return 0;
- 
--	if (!is_kprobe_session(prog))
-+	if (!is_kprobe_session(prog) &&
-+	    !is_uprobe_session(prog))
- 		return -EACCES;
- 
- 	return 0;
+ /**
+  * @brief **bpf_program__attach_uprobe_multi()** attaches a BPF program
 -- 
 2.45.1
 
