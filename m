@@ -1,93 +1,108 @@
-Return-Path: <bpf+bounces-31360-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-31361-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A90B68FBAE9
-	for <lists+bpf@lfdr.de>; Tue,  4 Jun 2024 19:50:33 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 033788FBB07
+	for <lists+bpf@lfdr.de>; Tue,  4 Jun 2024 19:56:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 63319288400
-	for <lists+bpf@lfdr.de>; Tue,  4 Jun 2024 17:50:32 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 34B291C223EA
+	for <lists+bpf@lfdr.de>; Tue,  4 Jun 2024 17:56:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 71EDB149C4D;
-	Tue,  4 Jun 2024 17:50:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="E+Pjl1G1"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B9C314A0A8;
+	Tue,  4 Jun 2024 17:56:04 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from 69-171-232-180.mail-mxout.facebook.com (69-171-232-180.mail-mxout.facebook.com [69.171.232.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F123A18635
-	for <bpf@vger.kernel.org>; Tue,  4 Jun 2024 17:50:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F33551474D8
+	for <bpf@vger.kernel.org>; Tue,  4 Jun 2024 17:56:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=69.171.232.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717523429; cv=none; b=ryjWJjkQ3vfiYp2cZbqKaPtZkLSU1unTTJtQxWePmCYsd/FzEhOgWKX95usSNlgk+wvJmnG9O5JChYbuEfGQsb/NK7NWT2vioIybIam4G8MSAK06kqciZ5qVdvxNUKQvQR/PGSFYDsuo11HKyYGsqe+0PbZGrkTcgTdZKnGbktk=
+	t=1717523763; cv=none; b=BJHL3ROROqMhN4oeF6rnONauOKxS8ahE19Ry7KDK9xhHts9EoOumk3C06DRP/X9wiBHQf6EfzQvdM8gOca8xXpG21amOcHvDLapPPIOEuPvSPl35LRUpIykr8qs8AMWWCou94mSTfKMT4jZau+ZF8WRlhJHsXheKdx+pGJ2iPHs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717523429; c=relaxed/simple;
-	bh=yfrKwhuF2jCYAoibO48DdDB5IXgm3Uvvjgp9lDygfZE=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=ldnEdiYQASrfEvQJF8U4pXnXPUDS04okjcgqkvou1AYefAYT0vUdJqH6n0S1qrJA1JdO4b+pgNXRmdi0laEvsEN+WvyPTSXFjU2EnBLJ6e32pnkyQZQhSeSqN2pHXx2iJRp8hkQaiYhzymJgvVymZTwndN940O1u8HJDveB4G8U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=E+Pjl1G1; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 8FB56C4AF08;
-	Tue,  4 Jun 2024 17:50:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1717523428;
-	bh=yfrKwhuF2jCYAoibO48DdDB5IXgm3Uvvjgp9lDygfZE=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=E+Pjl1G1ifYl5VIj3+WZ0nu5al921SChISSCPLwbLqWq+ix+ErqhzR7Xlk/nPzRo4
-	 AJPahF0k7AAjBVOac1cyNCEvkrZIeVhO2HRVVQSa/unYULgU1WNDH6eLBSTmo6GZGG
-	 BnuEEJOFdZvIgpOYQ8v2Bw6287L8VBC8gwQMd8F7SeYWRidBsnsiZLpCGljPLV8JLw
-	 hfiZqOZmh11P1t+i1QNL3rGPW97AdOhwBmBGz9F7ddL2UzX5SCguJud6WBQe65SwDN
-	 wObsexODBwRzvAtZaLU5Xop4vkog1tMDt0X1r+EpCqJMArKY+XAbjnpHlfX6ZclO4P
-	 QbJAYUo7RqgiQ==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 7ADFBC43617;
-	Tue,  4 Jun 2024 17:50:28 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1717523763; c=relaxed/simple;
+	bh=fwORXAf0vGkgNor15LiulCZCerTJbuReDRgx6kQMv88=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=q60NQ8GmOMeV7FLWeQoB8GnoC4WFL/7v8ptSZy68eMHLlP1Zu4Xi4ahOo+eikvxylRzTwHYNpPcSMBPeNX+y9SY3hf08Hr9dS0dK8Hacz+2l45lnDKOhlNe9MVwm/aZeSB0KXURTpivBGFa8QPL7vPRKPjUntQMW9WOK+2ebb5c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.dev; spf=fail smtp.mailfrom=linux.dev; arc=none smtp.client-ip=69.171.232.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=linux.dev
+Received: by devbig309.ftw3.facebook.com (Postfix, from userid 128203)
+	id EEE275189E8D; Tue,  4 Jun 2024 10:55:46 -0700 (PDT)
+From: Yonghong Song <yonghong.song@linux.dev>
+To: bpf@vger.kernel.org
+Cc: Alexei Starovoitov <ast@kernel.org>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	kernel-team@fb.com,
+	Martin KaFai Lau <martin.lau@kernel.org>
+Subject: [PATCH bpf-next] selftests/bpf: Ignore .llvm.<hash> suffix in kallsyms_find()
+Date: Tue,  4 Jun 2024 10:55:46 -0700
+Message-ID: <20240604175546.1339303-1-yonghong.song@linux.dev>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCHv2 bpf] bpf: Set run context for rawtp test_run callback
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <171752342849.2569.1402307140231281372.git-patchwork-notify@kernel.org>
-Date: Tue, 04 Jun 2024 17:50:28 +0000
-References: <20240604150024.359247-1-jolsa@kernel.org>
-In-Reply-To: <20240604150024.359247-1-jolsa@kernel.org>
-To: Jiri Olsa <jolsa@kernel.org>
-Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
- syzbot+3ab78ff125b7979e45f9@syzkaller.appspotmail.com, bpf@vger.kernel.org,
- kafai@fb.com, songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
- kpsingh@chromium.org, sdf@google.com, haoluo@google.com, mhiramat@kernel.org
+Content-Transfer-Encoding: quoted-printable
 
-Hello:
+I hit the following failure when running selftests with
+internal backported upstream kernel:
+  test_ksyms:PASS:kallsyms_fopen 0 nsec
+  test_ksyms:FAIL:ksym_find symbol 'bpf_link_fops' not found
+  #123     ksyms:FAIL
 
-This patch was applied to bpf/bpf.git (master)
-by Andrii Nakryiko <andrii@kernel.org>:
+In /proc/kallsyms, we have
+  $ cat /proc/kallsyms | grep bpf_link_fops
+  ffffffff829f0cb0 d bpf_link_fops.llvm.12608678492448798416
+The CONFIG_LTO_CLANG_THIN is enabled in the kernel which is responsible
+for bpf_link_fops.llvm.12608678492448798416 symbol name.
 
-On Tue,  4 Jun 2024 17:00:24 +0200 you wrote:
-> syzbot reported crash when rawtp program executed through the
-> test_run interface calls bpf_get_attach_cookie helper or any
-> other helper that touches task->bpf_ctx pointer.
-> 
-> Setting the run context (task->bpf_ctx pointer) for test_run
-> callback.
-> 
-> [...]
+In prog_tests/ksyms.c we have
+  kallsyms_find("bpf_link_fops", &link_fops_addr)
+and kallsyms_find() compares "bpf_link_fops" with symbols
+in /proc/kallsyms in order to find the entry. With
+bpf_link_fops.llvm.<hash> in /proc/kallsyms, the kallsyms_find()
+failed.
 
-Here is the summary with links:
-  - [PATCHv2,bpf] bpf: Set run context for rawtp test_run callback
-    https://git.kernel.org/bpf/bpf/c/f472e923bf4b
+To fix the issue, in kallsyms_find(), if a symbol has suffix
+.llvm.<hash>, that suffix will be ignored for comparison.
+This fixed the test failure.
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
+---
+ tools/testing/selftests/bpf/trace_helpers.c | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
 
+diff --git a/tools/testing/selftests/bpf/trace_helpers.c b/tools/testing/=
+selftests/bpf/trace_helpers.c
+index 70e29f316fe7..dc871e642ed5 100644
+--- a/tools/testing/selftests/bpf/trace_helpers.c
++++ b/tools/testing/selftests/bpf/trace_helpers.c
+@@ -221,6 +221,18 @@ int kallsyms_find(const char *sym, unsigned long lon=
+g *addr)
+ 		return -EINVAL;
+=20
+ 	while (fscanf(f, "%llx %c %499s%*[^\n]\n", &value, &type, name) > 0) {
++		/* If CONFIG_LTO_CLANG_THIN is enabled, static variable/function
++		 * symbols could be promoted to global due to cross-file inlining.
++		 * For such cases, clang compiler will add .llvm.<hash> suffix
++		 * to those symbols to avoid potential naming conflict.
++		 * Let us ignore .llvm.<hash> suffix during symbol comparison.
++		 */
++		if (type =3D=3D 'd') {
++			char *res =3D strstr(name, ".llvm.");
++
++			if (res)
++				*res =3D '\0';
++		}
+ 		if (strcmp(name, sym) =3D=3D 0) {
+ 			*addr =3D value;
+ 			goto out;
+--=20
+2.43.0
 
 
