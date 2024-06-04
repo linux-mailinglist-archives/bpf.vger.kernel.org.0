@@ -1,70 +1,72 @@
-Return-Path: <bpf+bounces-31303-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-31304-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1F52C8FB22C
-	for <lists+bpf@lfdr.de>; Tue,  4 Jun 2024 14:30:06 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 594F38FB22E
+	for <lists+bpf@lfdr.de>; Tue,  4 Jun 2024 14:30:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5F7BEB23037
-	for <lists+bpf@lfdr.de>; Tue,  4 Jun 2024 12:30:03 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E540FB2311C
+	for <lists+bpf@lfdr.de>; Tue,  4 Jun 2024 12:30:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 97198146005;
-	Tue,  4 Jun 2024 12:29:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D8850145FE1;
+	Tue,  4 Jun 2024 12:29:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XTWmFolI"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="cz0Aw7iw"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f52.google.com (mail-wr1-f52.google.com [209.85.221.52])
+Received: from mail-wr1-f42.google.com (mail-wr1-f42.google.com [209.85.221.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 878033236;
-	Tue,  4 Jun 2024 12:29:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D9575145FFD;
+	Tue,  4 Jun 2024 12:29:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717504196; cv=none; b=TUIcAEjfBRxGkyg0vERZYBWbJ/U58PXY8gkQVZ3ybzQF7e/mS3AW2aOk3JEvTVJVKbMn0y9muUgbNc/CjWqLmuOD26+EJOj79kPCtfBeZroHPwHQPdZ2g+n+1x3fTHUDHuYDwJ4yUujuQoF3sEy6KPC3NAjFQIG9scPKkOKyVSs=
+	t=1717504197; cv=none; b=sysJdHJEnNgIuCKtcr8O8kfrjgQ4ncK1996j/rORUUdzzS3kpZ1OFN6pgOkVG8hUPQHNlNFNN45Kj028GrisGfwgMUveNfqm4+3Dbalg7d7lH2azAzo4wSgYRFeuFKL73zrpnWCDe3WXcJdqxfiL8zJ6Is4BfWXs7t6uAEvIG3w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717504196; c=relaxed/simple;
-	bh=4JlS2aIeGj0k3WKqynWnDcOqAO2h670JTw/62kYLEi8=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=ry2RufPGN4r98s9/J2cnPD7Y2GdDmB6PiEL5qDAE3vhMxXNYVYevcrxdP2p3xTLbKN+Dr44uZwWp3sW7gW1lXSZ2fvtS/8D3+vyuvJR8xFTX3WB6BJPHsP1tGKl7rH87Zxg2z4zO/eI6ywC4L0v/pos7TZCan6w1y4+eY98j7uM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=XTWmFolI; arc=none smtp.client-ip=209.85.221.52
+	s=arc-20240116; t=1717504197; c=relaxed/simple;
+	bh=B8vI+j7iuvQ3yiBfCrcT5AUKhIr0VQr0/eQqsTOGvjs=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=PTx7Aplo/0CfxKbqZOXgTyLyTbQ/pqSvw+f5O847OFCyOJcn8U4HpymMMWQYIWp8nHbKUfozi8DDChf5Xe5Hm1Ds9qUw9BV7edM6QqWXTkEeTTIV3DwmF4Qb2h5+nr+/QnjBt5oUPOsCmU21+gtoNqkmv6+z0jOx1RM7db3FCz8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=cz0Aw7iw; arc=none smtp.client-ip=209.85.221.42
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f52.google.com with SMTP id ffacd0b85a97d-35e50de01e5so225491f8f.3;
-        Tue, 04 Jun 2024 05:29:54 -0700 (PDT)
+Received: by mail-wr1-f42.google.com with SMTP id ffacd0b85a97d-35e507e30c3so161126f8f.1;
+        Tue, 04 Jun 2024 05:29:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1717504193; x=1718108993; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=SEy/JnpykSFlMVVDpNV9Nfzw4k+5jlopBP5r+KNm31Q=;
-        b=XTWmFolI03BH6tB/cewd4dUM9itp14eQUCZuI8iiYq9DO+KPUrx1f/rhv5zbCEEGrg
-         tViQTjY8EysxxrjG4ylcVo1ZjOzstlRvwo0iei0urhRxoKLFMt9Ebiz+wf9StR7pST4L
-         NASCva2i3nMOGPMc/1eBaXut4twwMn0cSwukI70lFbT0lRmR01NEV6KguBJmkYoP52hn
-         8GcdkoLy/d/x5+0FMcpftsnb42X6zG1ihaaVo47dVrK8EBg3Jo2B253jf47ap5QYHlGs
-         SLrdAgVqF5iVjYHs1CJFiljW526BKtKruvKU5/3MIpz0HG9bXGtKsz2/OekdjnMCaQ4B
-         T0Jg==
+        d=gmail.com; s=20230601; t=1717504194; x=1718108994; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=iIzQ2e1DcWXMu+FVoGgxHHgP/WfJFjXId4AMNdkJL4E=;
+        b=cz0Aw7iwEHWjWS4qs9hPEBwQe5dk+9azC42TJGvCje3P6cFl0dJ27wsPkcRC8Lbtz4
+         ESfCp/WlCo27Asa6QkjEkzN4pKxHpw1MgD7c1DTSg/nxM9qmhh/59xE0/sAdOi5sHXAP
+         k6jfCOQmh7nwQJUg1tZ0N/cAdVlDbdlgLxV0FAOZDgneThlnwha7u3A3DjF1k6/5pFBr
+         K4MCIHy44iTh4ouRvcZRbwZm0R2+knwPgQqQIEeMG+YBzaKcLHghP+UKeHIrbg0/5pqt
+         RyTfqQZ6BeJrKDd+uw0sgtBQzX+X1nG8PgLCBjq5Yr3mT3Tk3FGOhVPFLkwb3mmEr191
+         +X5g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1717504193; x=1718108993;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=SEy/JnpykSFlMVVDpNV9Nfzw4k+5jlopBP5r+KNm31Q=;
-        b=XD02+opakMMzCq0dQ1i5ki10ozr6NRleq/1fBcxRFk2Y+TtS0Vv6c0tSOJZF2gwje9
-         y6Xm+mDiL5uGKWvcG0phIt4laobiXUhaa7qoWN4LwvgW/0qD4tO1Mrr004y+7XO4lH/8
-         /ho7BzF8S66sSpcUYvGjHpKfRu++2G8U2RH/MRZyckiv23dj3NFIm3ZOfIBjXTNLmivT
-         oubUnv2rmx9ptJzbrVsYdC6lY9eZCerXLZrqQ05XnFcCqNiKUwIpSlW83qR6Uctr31Ip
-         dxBmCx3Pp93tnVw8PDC0AFEYFVh0d/T6VJFynm7OibvFCdCNg1ylEFq14c78BOffMbW2
-         5gzA==
-X-Forwarded-Encrypted: i=1; AJvYcCVKL8zIWZBaaZZSrq/QY+JVbncz2qZ4199j/G3LGU5ES77Yvs/GiYez/tSUYHBplan7H0jkkxp0gcx6GuHk1v7+zsBPiuxR+70RQpbu3Bs5zAliYMBCohw4g9ag
-X-Gm-Message-State: AOJu0YzUELQRy7cLOBVEqEdGYnCLN6fIwRYaULBrNWbu22LBQGsXEMdS
-	mcCLbXCL6FYimBhTtNSeugcJKbh7R47Q7bO/olPWMqsB6tGnTKjC
-X-Google-Smtp-Source: AGHT+IHHAHnXTnSBGNZDaCxF/LGnacaJN2CUM/gIw160lQc3t5eeaWcaTG8V3ShyG0Yc81KSkKN2Ww==
-X-Received: by 2002:a5d:51c6:0:b0:35e:7e09:c3cc with SMTP id ffacd0b85a97d-35e7e09dbe8mr1294259f8f.6.1717504192491;
-        Tue, 04 Jun 2024 05:29:52 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1717504194; x=1718108994;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=iIzQ2e1DcWXMu+FVoGgxHHgP/WfJFjXId4AMNdkJL4E=;
+        b=pEXfu5qT9MwFG/TkyHDLZlzzNOYsFvNsxXAqq6GxW+fZ/uPYchy68RjXs6mXQQcxu6
+         ZVcPQlJc4EYnKw20PD3Ha/MiLAnuplSdZeveKgzLE3yyjwVbSRokl/WoFZ1FL6kV7cU2
+         f3p/T68h1wxJXBW1hR7P3G4BoS/05IgX3nGaZ18yPjtgHn8AWwrZweinRXzZsTvdNTJW
+         x804Eeomqn/G2FzP0GfMpyL35cqxRT9QYKPxIRLwOC2zNPKki8Ovn+f4uToRGaTeMXes
+         QvXkPgF3JR58tf6HDAebGPXBK/n7txq4UBLsyG5G8zZoLBq5LEZ0bbXNr0InlODJ4Ozw
+         +mng==
+X-Forwarded-Encrypted: i=1; AJvYcCWaE4byjAXVCZgdI3Cyr+Vd5qsuHv3+8+rOKC6rHdwBWYkYvTzlIhxu6ZgQw8uYeGkrQyRMOqmPdi6ehL6bGnPnQgas4P95lmpppUz1QNgwroyJW+x/yLhELntd
+X-Gm-Message-State: AOJu0YzVXen7s0ZIPI5IsteZlLMRKI/euK3LGuvvyHZj7EDZKc3ooexW
+	5NPfqU1o1dX0YdLbzVGiXv0EF7n6LwY6rdiL5iIeil7VfNR9JLbSSVMMk1fkvLU=
+X-Google-Smtp-Source: AGHT+IHk1odO31RH7Iv0r6fDIxyPSVIVLRySVW3LycgB5iFc6UPnwTEn30btyGgD/sx+W0dMd4LCMg==
+X-Received: by 2002:adf:e881:0:b0:35d:cf2b:9105 with SMTP id ffacd0b85a97d-35e0f32f61bmr8034643f8f.6.1717504193894;
+        Tue, 04 Jun 2024 05:29:53 -0700 (PDT)
 Received: from localhost.localdomain (h-158-174-22-45.NA.cust.bahnhof.se. [158.174.22.45])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-35dd04c10f2sm11409863f8f.10.2024.06.04.05.29.50
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-35dd04c10f2sm11409863f8f.10.2024.06.04.05.29.52
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 04 Jun 2024 05:29:51 -0700 (PDT)
+        Tue, 04 Jun 2024 05:29:53 -0700 (PDT)
 From: Magnus Karlsson <magnus.karlsson@gmail.com>
 To: magnus.karlsson@intel.com,
 	bjorn@kernel.org,
@@ -73,12 +75,13 @@ To: magnus.karlsson@intel.com,
 	netdev@vger.kernel.org,
 	maciej.fijalkowski@intel.com,
 	bpf@vger.kernel.org
-Cc: Magnus Karlsson <magnus.karlsson@gmail.com>,
-	YuvalE@radware.com
-Subject: [PATCH bpf 0/2] Revert "xsk: support redirect to any socket bound to the same umem"
-Date: Tue,  4 Jun 2024 14:29:24 +0200
-Message-ID: <20240604122927.29080-1-magnus.karlsson@gmail.com>
+Cc: YuvalE@radware.com
+Subject: [PATCH bpf 1/2] Revert "xsk: support redirect to any socket bound to the same umem"
+Date: Tue,  4 Jun 2024 14:29:25 +0200
+Message-ID: <20240604122927.29080-2-magnus.karlsson@gmail.com>
 X-Mailer: git-send-email 2.45.1
+In-Reply-To: <20240604122927.29080-1-magnus.karlsson@gmail.com>
+References: <20240604122927.29080-1-magnus.karlsson@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -87,7 +90,9 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Revert "xsk: support redirect to any socket bound to the same umem"
+From: Magnus Karlsson <magnus.karlsson@intel.com>
+
+This reverts commit 2863d665ea41282379f108e4da6c8a2366ba66db.
 
 This patch introduced a potential kernel crash when multiple napi
 instances redirect to the same AF_XDP socket. By removing the
@@ -96,65 +101,35 @@ access the Rx ring at the same time, which will result in a corrupted
 ring state which can lead to a crash when flushing the rings in
 __xsk_flush(). This can happen when the linked list of sockets to
 flush gets corrupted by concurrent accesses. A quick and small fix is
-unfortunately not possible, so let us revert this for now.
+not possible, so let us revert this for now.
 
-[  306.997548] BUG: kernel NULL pointer dereference, address: 0000000000000008
-[  307.088372] #PF: supervisor read access in kernel mode
-[  307.149079] #PF: error_code(0x0000) - not-present page
-[  307.209774] PGD 10f131067 P4D 10f131067 PUD 102642067 PMD 0
-[  307.276608] Oops: 0000 [#1] SMP
-[  307.313712] CPU: 3 PID: 1919 Comm: sp1 Tainted: P           OE     5.15.117-1-ULP-NG #1
-[  307.408219] Hardware name: Radware Radware/Default string, BIOS 5.25 (785A.015) 05/11/2023
-[  307.505779] RIP: 0010:xsk_flush+0xb/0x40
-[  307.552099] Code: a0 03 00 00 01 b8 e4 ff ff ff eb dc 49 83 85 a0 03 00 00 01 b8 e4 ff ff ff eb cd 0f 1f 40 00 48 8b 87 40 03 00 00 55 48 89 e5 <8b> 50 08 48 8b 40 10 89 10 48 8b 87 68 03 00 00 48 8b 80 80 00 00
-[  307.773694] RSP: 0000:ffffb7ae01037c80 EFLAGS: 00010287
-[  307.835401] RAX: 0000000000000000 RBX: ffffa0a88f8ab768 RCX: ffffa0a88f8abac0
-[  307.919670] RDX: ffffa0a88f8abac0 RSI: 0000000000000004 RDI: ffffa0a88f8ab768
-[  308.003922] RBP: ffffb7ae01037c80 R08: ffffa0a10b3e0000 R09: 000000000000769f
-[  308.088172] R10: ffffa0a1035ca000 R11: 000000000d7f9180 R12: ffffa0a88f8ab768
-[  308.172405] R13: ffffa0a88f8ebac0 R14: ffffa0a2ef135300 R15: 0000000000000155
-[  308.256635] FS:  00007ffff7e97a80(0000) GS:ffffa0a88f8c0000(0000) knlGS:0000000000000000
-[  308.352186] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[  308.420043] CR2: 0000000000000008 CR3: 000000010cf6e000 CR4: 0000000000750ee0
-[  308.504309] PKRU: 55555554
-[  308.536296] Call Trace:
-[  308.565209]  <TASK>
-[  308.590026]  ? show_regs+0x56/0x60
-[  308.630218]  ? __die_body+0x1a/0x60
-[  308.671433]  ? __die+0x25/0x30
-[  308.707529]  ? page_fault_oops+0xc0/0x440
-[  308.754897]  ? do_sys_poll+0x47c/0x5e0
-[  308.799188]  ? do_user_addr_fault+0x319/0x6e0
-[  308.850659]  ? exc_page_fault+0x6c/0x130
-[  308.896992]  ? asm_exc_page_fault+0x27/0x30
-[  308.946398]  ? xsk_flush+0xb/0x40
-[  308.985546]  __xsk_map_flush+0x3a/0x80
-[  309.029824]  xdp_do_flush+0x13/0x20
-[  309.071043]  i40e_finalize_xdp_rx+0x44/0x50 [i40e]
-[  309.127653]  i40e_clean_rx_irq_zc+0x132/0x500 [i40e]
-[  309.202736]  i40e_napi_poll+0x119/0x1270 [i40e]
-[  309.256285]  ? xsk_sendmsg+0xf4/0x100
-[  309.315969]  ? sock_sendmsg+0x2e/0x40
-[  309.359244]  __napi_poll+0x23/0x160
-[  309.400482]  net_rx_action+0x232/0x290
-[  309.444778]  __do_softirq+0xd0/0x270
-[  309.487012]  irq_exit_rcu+0x74/0xa0
-[  309.528241]  common_interrupt+0x83/0xa0
-[  309.573577]  asm_common_interrupt+0x27/0x40
+Reported-by: Yuval El-Hanany <YuvalE@radware.com>
+Signed-off-by: Magnus Karlsson <magnus.karlsson@intel.com>
+Link: https://lore.kernel.org/xdp-newbies/8100DBDC-0B7C-49DB-9995-6027F6E63147@radware.com/
+---
+ net/xdp/xsk.c | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
 
-Thanks: Magnus
-
-Magnus Karlsson (2):
-  Revert "xsk: support redirect to any socket bound to the same umem"
-  Revert "xsk: document ability to redirect to any socket bound to the
-    same umem"
-
- Documentation/networking/af_xdp.rst | 33 ++++++++++++-----------------
- net/xdp/xsk.c                       |  5 +----
- 2 files changed, 15 insertions(+), 23 deletions(-)
-
-
-base-commit: 2317dc2c22cc353b699c7d1db47b2fe91f54055c
---
+diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
+index 727aa20be4bd..7d1c0986f9bb 100644
+--- a/net/xdp/xsk.c
++++ b/net/xdp/xsk.c
+@@ -313,13 +313,10 @@ static bool xsk_is_bound(struct xdp_sock *xs)
+ 
+ static int xsk_rcv_check(struct xdp_sock *xs, struct xdp_buff *xdp, u32 len)
+ {
+-	struct net_device *dev = xdp->rxq->dev;
+-	u32 qid = xdp->rxq->queue_index;
+-
+ 	if (!xsk_is_bound(xs))
+ 		return -ENXIO;
+ 
+-	if (!dev->_rx[qid].pool || xs->umem != dev->_rx[qid].pool->umem)
++	if (xs->dev != xdp->rxq->dev || xs->queue_id != xdp->rxq->queue_index)
+ 		return -EINVAL;
+ 
+ 	if (len > xsk_pool_get_rx_frame_size(xs->pool) && !xs->sg) {
+-- 
 2.45.1
+
 
