@@ -1,72 +1,72 @@
-Return-Path: <bpf+bounces-31288-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-31289-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 769E48FA9F2
-	for <lists+bpf@lfdr.de>; Tue,  4 Jun 2024 07:23:40 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 82D888FA9F4
+	for <lists+bpf@lfdr.de>; Tue,  4 Jun 2024 07:23:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 99CF41C2191D
-	for <lists+bpf@lfdr.de>; Tue,  4 Jun 2024 05:23:39 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1D2B91F24C0B
+	for <lists+bpf@lfdr.de>; Tue,  4 Jun 2024 05:23:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D6D513DBA4;
-	Tue,  4 Jun 2024 05:23:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 15FFA13DDBD;
+	Tue,  4 Jun 2024 05:23:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EcYbQrLm"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="AcbbUTLj"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ot1-f47.google.com (mail-ot1-f47.google.com [209.85.210.47])
+Received: from mail-oo1-f51.google.com (mail-oo1-f51.google.com [209.85.161.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE21B13BC0C;
-	Tue,  4 Jun 2024 05:23:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B7CC13D612;
+	Tue,  4 Jun 2024 05:23:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717478611; cv=none; b=P4msZggWht3z5g9H5YZYL5Xnb72LEs30VFnSdPJCaa4fwqhMWV5ZdAfCzpDP8MFT5Eq/dOHLH8KFEOXx/dAWTn78cdTJV8JuFfv8qv5PWi4FvychGyyNQ0cm9rEAWAeDmpqWBNxBemPeWyHLETyro4qCeBY115R3uC1SE7SQYCQ=
+	t=1717478613; cv=none; b=QZLJq4Wkx+iL1lrmUIjSZzh4sR5wpoUUb+TjfREAhYHJbCeSIv3XZ05v/xo8z+IMmFfR/ZqczcuZhZHgNJF1+MvsEEMQL73gF6tigLZ4Fnpwd4PXjLmgCeVdNLHv/dphBbPJAzx3wWx8G+8z+f3Jm9I2T4YFz0Dt1bn7jsJkdbo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717478611; c=relaxed/simple;
-	bh=Py+3C2S2vlJjfwsX1788LiTLhhBSCD+Qb9I0xkOHaSI=;
+	s=arc-20240116; t=1717478613; c=relaxed/simple;
+	bh=gAwp8yYUnceVBn5scRDmLBn983/3nY5FUXQpnAfxA4I=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=mgZ94AF6q0uhZzuetj1TfFvE2ixN7ijgY2duadycFxraQuzHCaG6zYH9QRjXGghu2NACzl39UgD9RqagHt7FWipgxRTdL4RmMFk+h3dC3un+Aylbf98qtreZyLHzacDar5ucGFNoexHmGUVyNXYVoclQ8pTl/F9xldydhnwYNDg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=EcYbQrLm; arc=none smtp.client-ip=209.85.210.47
+	 MIME-Version; b=uNGblZ+lajTDpK46EM37wZt/zmwsyD9+D2afNHZ+DKOolaJ7UScXlZDyakWrzzNakyNTp8B9p9NIRNkH7wq6rM3W9J3HDSlnuU2+NXE8yut6QnUy62y3TJMCQAb3jAK0UAXMQp4doht6lhW/yFnnG24vsfizUQFEzQB+M24yf20=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=AcbbUTLj; arc=none smtp.client-ip=209.85.161.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ot1-f47.google.com with SMTP id 46e09a7af769-6f8ea563a46so394900a34.2;
-        Mon, 03 Jun 2024 22:23:29 -0700 (PDT)
+Received: by mail-oo1-f51.google.com with SMTP id 006d021491bc7-5ba090b0336so2103671eaf.1;
+        Mon, 03 Jun 2024 22:23:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1717478609; x=1718083409; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1717478611; x=1718083411; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=naMt4t31CZge9Me/OZP2bEkQXQbrT9vZr0UBm1SPKCo=;
-        b=EcYbQrLm6AEXCJvyxR6td3aTAvri+zehzZGLqYOU3tJw/8IQefcd4gnTTqRFSJnFbO
-         yaewvjUOkhu+SfOw2I5db/n8SZIlI9dgcsq/6AwGyfmSMPE+vhHFPoSoMqKLQqGvlJpR
-         iUEmUhQYYgzEd2YJFU+mBHFdR8t3tqoMRVge5XlfStYR21BejdLCOTQmq00GGfpkNRHA
-         /AXGxP45qCDyn2IXBsxZb0pzXC6BjJkOdkjAxkirvPbLf+H49ZFw5bePVzvxs5f1Qt1g
-         Dp7W4Xm4MmWkFMKhzdYlDFlpcP4UH62JYqcUwuc3k012kOeEdZkibxjohqyqmLK5c4d2
-         0+Yw==
+        bh=dV9DumgWigNz8izFoAXbyFQWDVcRbsgIhRa9w5EE8so=;
+        b=AcbbUTLjAH8huKng5c9gGfNj2lPQgiA5kLGlAJheHCCiyoY8UMWHa7Yi0sqXqlbIr4
+         8ym67Qihyec/KF+BIqPCZJ7FMc2EtjrkKm8yOO4YUI1wqKUX27n5UGwb+4MFmL9DO8ZD
+         /uMoAu2o6asp0J4peJEWlH8YHL6IBkE6PWEG+cxFLKpYde02Ff4Cq+0AFVeZSIPqC5ZU
+         dR0cYdMoKl0Nc7zPRGtZwVoEx0KnVjuVDzu2UP8jGAHg9Ppz6TO6vOUj7ltuNf2Flced
+         UrNF+7J4TZNhhcJXtc4eR/ymY2XMoIJqJXu8iVTWQJxbelNrAfUecRcDbAwRNKzMgmuS
+         ks5w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1717478609; x=1718083409;
+        d=1e100.net; s=20230601; t=1717478611; x=1718083411;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=naMt4t31CZge9Me/OZP2bEkQXQbrT9vZr0UBm1SPKCo=;
-        b=VL7TwLcdOH1bx5c7CETVsP4WhgPy/Bhc3ftp+LpN0hC3dDmB/ZInc57lAfaYIlU9vJ
-         y8Pc7EdYgZCDk1DTLVghyEGgnZUDuRRyoHbC4sqDuTG+CDnKvcmyqhC8Q2oDHLa3h5PL
-         PeZd5NEpI6FWdRq0iB4N5lAtUtPdOztdetAer8QZSr3bnMOk/v33TKtt0Z7WQr0aE4Aa
-         bhVBpLaCiuRB83nCIEXvW90fq+nZrFt+rzNG3YB754mrzmw8GM5WnQJ8qRXU/vi4RGdt
-         NSZBP4Xtf+W0Gfs72LrSnSRB+FmtFQ/KNl0DPrHRuunel29GS0dDgRj+Vrzrw/REbz0Q
-         Ddfg==
-X-Forwarded-Encrypted: i=1; AJvYcCXofHOAlhcQFGnRQuCzdFKyaqI6GlDNzNihV21INEs4uCcbp3Ydje0OyWEWYh/3PvT8uIXZuQvSpbFkKyAWCv9J9KBaliy7
-X-Gm-Message-State: AOJu0Ywu19duqHKA6AB1oeQlotho/2MwJ0OE/traGdE5mYWGryfKbGqg
-	d5FPspLJXTjtRn5exrmaCyW+hQ6SXwnKP1Dx4f2xxRDOjR8puutqSkfCV/02
-X-Google-Smtp-Source: AGHT+IHOKaSr8ixcDY7+kgSk+umOf4K+1ALXvAmEKMOa3nat11B9JSF4anMXUTwvg/I0lGq3L5+48A==
-X-Received: by 2002:a05:6830:1510:b0:6f1:23de:2f11 with SMTP id 46e09a7af769-6f911f26957mr12689889a34.8.1717478608592;
-        Mon, 03 Jun 2024 22:23:28 -0700 (PDT)
+        bh=dV9DumgWigNz8izFoAXbyFQWDVcRbsgIhRa9w5EE8so=;
+        b=dFxaWp0U6bpdJwYffQPnqYnOEU3AwUAjKSIvljkHpk5PaBg74jqfj/F4cDK7q+E7NG
+         uA35dIklNisNmUJm7NI7Y9wju7QdkO0pEci0LSOKeIwuGzYbRSjuV03CyVq6NRz42JWT
+         9V1wphcsst21FZwa7iXl3FcJlmHaqSXlC9gc2cW/ajlPjEKmT9WXA2nh2y3gPyECeaP5
+         26kJ+RRa5T+9CBhoj5E3z/gzwJf7aGYSYQx+XATgXpd1FECDt5Yh28Jb8nBpbEL8fiTK
+         CYXvy+lfEBiIGo36f2FTM+YZMw1dBKFoH2eBwH3yvqlpkvpnsB57zG8RFdSbWJWiGJ1j
+         wx3w==
+X-Forwarded-Encrypted: i=1; AJvYcCVs6hZW+sT9sLIVShmHq0h4Q32fDDTJWWvs0qFNwt+TFsop35YscH4DtBlIPadSGnAt3uoBeOizv5duN035IuWquo8TB8Yl
+X-Gm-Message-State: AOJu0YwOtRK7GgU+9jheT3hAEK/mW/9xSBJTUzUsOtCnuM0ZvxQ7Qnda
+	oxtwRqZtxSzZr3MjRLnpk6ueWbLVni892A7QlF12XR8eV0uPh2+igLm125wC
+X-Google-Smtp-Source: AGHT+IEdxeEjz09+FO3uavBBt0AAnX1tBSFOFscFyEd7xzuRcMmOsX7zrb/OEpecE/mL8fRqj+5eOQ==
+X-Received: by 2002:a05:6358:a094:b0:198:ee95:e50f with SMTP id e5c5f4694b2df-19b48d78c49mr1398823955d.10.1717478610563;
+        Mon, 03 Jun 2024 22:23:30 -0700 (PDT)
 Received: from localhost.localdomain (69-172-146-21.cable.teksavvy.com. [69.172.146.21])
-        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-6c35937a496sm5303785a12.73.2024.06.03.22.23.27
+        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-6c35937a496sm5303785a12.73.2024.06.03.22.23.28
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 03 Jun 2024 22:23:28 -0700 (PDT)
+        Mon, 03 Jun 2024 22:23:30 -0700 (PDT)
 From: Tony Ambardar <tony.ambardar@gmail.com>
 X-Google-Original-From: Tony Ambardar <Tony.Ambardar@gmail.com>
 To: bpf@vger.kernel.org
@@ -84,10 +84,11 @@ Cc: Tony Ambardar <Tony.Ambardar@gmail.com>,
 	Hao Luo <haoluo@google.com>,
 	Jiri Olsa <jolsa@kernel.org>,
 	Miguel Ojeda <ojeda@kernel.org>,
+	kernel test robot <lkp@intel.com>,
 	stable@vger.kernel.org
-Subject: [PATCH bpf v2 1/2] compiler_types.h: Define __retain for __attribute__((__retain__))
-Date: Mon,  3 Jun 2024 22:23:15 -0700
-Message-Id: <b31bca5a5e6765a0f32cc8c19b1d9cdbfaa822b5.1717477560.git.Tony.Ambardar@gmail.com>
+Subject: [PATCH bpf v2 2/2] bpf: Harden __bpf_kfunc tag against linker kfunc removal
+Date: Mon,  3 Jun 2024 22:23:16 -0700
+Message-Id: <e9c64e9b5c073dabd457ff45128aabcab7630098.1717477560.git.Tony.Ambardar@gmail.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <cover.1717477560.git.Tony.Ambardar@gmail.com>
 References: <cover.1717413886.git.Tony.Ambardar@gmail.com> <cover.1717477560.git.Tony.Ambardar@gmail.com>
@@ -99,60 +100,68 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Some code includes the __used macro to prevent functions and data from
-being optimized out. This macro implements __attribute__((__used__)), which
-operates at the compiler and IR-level, and so still allows a linker to
-remove objects intended to be kept.
+BPF kfuncs are often not directly referenced and may be inadvertently
+removed by optimization steps during kernel builds, thus the __bpf_kfunc
+tag mitigates against this removal by including the __used macro. However,
+this macro alone does not prevent removal during linking, and may still
+yield build warnings (e.g. on mips64el):
 
-Compilers supporting __attribute__((__retain__)) can address this gap by
-setting the flag SHF_GNU_RETAIN on the section of a function/variable,
-indicating to the linker the object should be retained. This attribute is
-available since gcc 11, clang 13, and binutils 2.36.
+    LD      vmlinux
+    BTFIDS  vmlinux
+  WARN: resolve_btfids: unresolved symbol bpf_verify_pkcs7_signature
+  WARN: resolve_btfids: unresolved symbol bpf_lookup_user_key
+  WARN: resolve_btfids: unresolved symbol bpf_lookup_system_key
+  WARN: resolve_btfids: unresolved symbol bpf_key_put
+  WARN: resolve_btfids: unresolved symbol bpf_iter_task_next
+  WARN: resolve_btfids: unresolved symbol bpf_iter_css_task_new
+  WARN: resolve_btfids: unresolved symbol bpf_get_file_xattr
+  WARN: resolve_btfids: unresolved symbol bpf_ct_insert_entry
+  WARN: resolve_btfids: unresolved symbol bpf_cgroup_release
+  WARN: resolve_btfids: unresolved symbol bpf_cgroup_from_id
+  WARN: resolve_btfids: unresolved symbol bpf_cgroup_acquire
+  WARN: resolve_btfids: unresolved symbol bpf_arena_free_pages
+    NM      System.map
+    SORTTAB vmlinux
+    OBJCOPY vmlinux.32
 
-Provide a __retain macro implementing __attribute__((__retain__)), whose
-first user will be the '__bpf_kfunc' tag.
+Update the __bpf_kfunc tag to better guard against linker optimization by
+including the new __retain compiler macro, which fixes the warnings above.
+
+Verify the __retain macro with readelf by checking object flags for 'R':
+
+  $ readelf -Wa kernel/trace/bpf_trace.o
+  Section Headers:
+    [Nr]  Name              Type     Address  Off  Size ES Flg Lk Inf Al
+  ...
+    [178] .text.bpf_key_put PROGBITS 00000000 6420 0050 00 AXR  0   0  8
+  ...
+  Key to Flags:
+  ...
+    R (retain), D (mbind), p (processor specific)
 
 Link: https://lore.kernel.org/bpf/ZlmGoT9KiYLZd91S@krava/T/
+Reported-by: kernel test robot <lkp@intel.com>
+Closes: https://lore.kernel.org/r/202401211357.OCX9yllM-lkp@intel.com/
+Fixes: 57e7c169cd6a ("bpf: Add __bpf_kfunc tag for marking kernel functions as kfuncs")
 Cc: stable@vger.kernel.org # v6.6+
 Signed-off-by: Tony Ambardar <Tony.Ambardar@gmail.com>
 ---
- include/linux/compiler_types.h | 23 +++++++++++++++++++++++
- 1 file changed, 23 insertions(+)
+ include/linux/btf.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/include/linux/compiler_types.h b/include/linux/compiler_types.h
-index 93600de3800b..f14c275950b5 100644
---- a/include/linux/compiler_types.h
-+++ b/include/linux/compiler_types.h
-@@ -143,6 +143,29 @@ static inline void __chk_io_ptr(const volatile void __iomem *ptr) { }
- # define __preserve_most
- #endif
+diff --git a/include/linux/btf.h b/include/linux/btf.h
+index f9e56fd12a9f..7c3e40c3295e 100644
+--- a/include/linux/btf.h
++++ b/include/linux/btf.h
+@@ -82,7 +82,7 @@
+  * as to avoid issues such as the compiler inlining or eliding either a static
+  * kfunc, or a global kfunc in an LTO build.
+  */
+-#define __bpf_kfunc __used noinline
++#define __bpf_kfunc __used __retain noinline
  
-+/*
-+ * Annotating a function/variable with __retain tells the compiler to place
-+ * the object in its own section and set the flag SHF_GNU_RETAIN. This flag
-+ * instructs the linker to retain the object during garbage-cleanup or LTO
-+ * phases.
-+ *
-+ * Note that the __used macro is also used to prevent functions or data
-+ * being optimized out, but operates at the compiler/IR-level and may still
-+ * allow unintended removal of objects during linking.
-+ *
-+ * Optional: only supported since gcc >= 11, clang >= 13
-+ *
-+ *   gcc: https://gcc.gnu.org/onlinedocs/gcc/Common-Function-Attributes.html#index-retain-function-attribute
-+ * clang: https://clang.llvm.org/docs/AttributeReference.html#retain
-+ */
-+#if __has_attribute(__retain__) && \
-+	(defined(CONFIG_LD_DEAD_CODE_DATA_ELIMINATION) || \
-+	 defined(CONFIG_LTO_CLANG))
-+# define __retain			__attribute__((__retain__))
-+#else
-+# define __retain
-+#endif
-+
- /* Compiler specific macros. */
- #ifdef __clang__
- #include <linux/compiler-clang.h>
+ #define __bpf_kfunc_start_defs()					       \
+ 	__diag_push();							       \
 -- 
 2.34.1
 
