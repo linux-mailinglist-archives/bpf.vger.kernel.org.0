@@ -1,99 +1,148 @@
-Return-Path: <bpf+bounces-31417-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-31418-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2854C8FC50E
-	for <lists+bpf@lfdr.de>; Wed,  5 Jun 2024 09:51:56 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id E0C8B8FC645
+	for <lists+bpf@lfdr.de>; Wed,  5 Jun 2024 10:28:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D823328516C
-	for <lists+bpf@lfdr.de>; Wed,  5 Jun 2024 07:51:54 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8C3131F2577E
+	for <lists+bpf@lfdr.de>; Wed,  5 Jun 2024 08:28:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F32A018F2EB;
-	Wed,  5 Jun 2024 07:50:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B1CDE49654;
+	Wed,  5 Jun 2024 08:23:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WSEX49P4"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="P1ixOcqM"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E1694C6E;
-	Wed,  5 Jun 2024 07:50:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 10E984962C;
+	Wed,  5 Jun 2024 08:23:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717573831; cv=none; b=aReCtLPFIrX2KmJpZ1Yf83KzXuP9SnQOZKIDMzoazTRJAr9TeKPv/PqtZIgOPe20L/lR35+nLE6QjFapUVKmWE3liI/1PGrLT+deKvhEHojoR4TLq+6vnVS3BZq6jWBBvXfqtkzVO8JAuAXJUjbdtwdUIFqEUlO9T70aHf3iY/E=
+	t=1717575823; cv=none; b=sASmmRyDBQgL7wVQbK/zMkKLl5Ar2cdiHC8V+dZflx2AKRkFZhd1yEh2WDQWbwrsFN/cE8x4Uhp5+Sun2xhb6bVzgjK7kdLCrpb5pgWhxalZXn8A2vZqxmRgwbqBW96HhInEsGZYAYxEsIqIIP1YqAf1n6+1vbhq6jmyIfPwe+Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717573831; c=relaxed/simple;
-	bh=l60+a+2F773diGs/DhPR4GbCIfTEFMLCq+IM9bitPyo=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=STrAzrsInZ75Kd3QNiH9cGWeMBUKQTLmfVdvXyHRCQfq/96amtyzWNXkrhVXHCmrZTdLlwx7qG/ByaZktsHwJGxUVIM3QvQd4YG8O9v25Ohjcc3y7OjSqyLF9iSQRB/S/rQZrOhlAJFkAykWDp6z6DPC/n6E7gbmuI2J7gzL7Gs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WSEX49P4; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id EA6FEC4AF07;
-	Wed,  5 Jun 2024 07:50:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1717573831;
-	bh=l60+a+2F773diGs/DhPR4GbCIfTEFMLCq+IM9bitPyo=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=WSEX49P4U+iBr63WLV4bHnHJAyBq/JulfSJuXRIe5kZMo3IvnKYFute7tpflDDf7a
-	 cF870mXa5wvnge09hJpy8QAOGQXepOeRHshnWfsIO+IlldBzZ2sHykSRZXR3CwofwD
-	 y5gFf5zt+g+X0vOsKWZNTKLrn5R87E8lBH2aPNn+tcUD7TAw3UFc4zEhjRhadFL2AB
-	 T8MU+lnbvAfQoInOSSds6kxX7PJphbzmp01Ix4D5C37+nsG/TSVYd/axM4opLcl1xS
-	 UMkTqwbOY9mWxC3QeqiEq9Wl0wThprTw6A3JprZhay5ysk+q3jQdD31LcrSt099qGB
-	 dkqR2EV3PiegA==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id E1832C4332C;
-	Wed,  5 Jun 2024 07:50:30 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1717575823; c=relaxed/simple;
+	bh=+6qBXpM4CAtIHbKGm8U2EPi2QBj6ZSNnA68LJ18zkas=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=RD7KuGWeu+K/As377jJhqHGKZ7/O9sr5Qxd8qNKjJf/ccaNyVG4nc9hEAP2NayB8iIFuLHc1j2t/Qws+CttLzqFtZ8syBLzfNieQ51GEaG+CCW3iG9UhjejDTExvtRc2mRMS8RbuKx6NEmJ112xtqAhGoFegBdVeI+k2VydCumc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=P1ixOcqM; arc=none smtp.client-ip=198.137.202.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Transfer-Encoding
+	:Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+	Sender:Reply-To:Content-ID:Content-Description;
+	bh=7xhPdfPc2smXf6F7HsxZ8sv5bz75m1tU4HsrWy1Cu+4=; b=P1ixOcqMYBL1qNqoRQQlMNBcnO
+	cJczue4oUfXvh/G4zstXTx292PLJhGaQv23TkAd4cXeR9h8E7cvo2TJC+0SHMai9QBHndQ8hZLSTc
+	0xw66kP3ze14ks9DdH6S+RPoyBybl6k/w0BakZRcP3JhTtO1Rbgl1uiOE7yuJ5sW/Wvh6s1wZHVcv
+	AEMzPhyWgdqcKSbzV3/PAyCLrKF1l1wsuGU4ZMULxbQuYrL6RKDrJCdn1M3WQkm1oA5sshSZQBPOc
+	Q06JS4sW51P1TfL7UaM6Cdr8ZP7QEo9pg7z+entRzmuY6z8rDrtSKtNr+anTt1+bR/0zNSiXcX0y8
+	zeYEKWZA==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1sElvi-00000005BX0-0Tmg;
+	Wed, 05 Jun 2024 08:23:34 +0000
+Date: Wed, 5 Jun 2024 01:23:34 -0700
+From: Christoph Hellwig <hch@infradead.org>
+To: Mina Almasry <almasrymina@google.com>
+Cc: Christoph Hellwig <hch@infradead.org>, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+	linux-alpha@vger.kernel.org, linux-mips@vger.kernel.org,
+	linux-parisc@vger.kernel.org, sparclinux@vger.kernel.org,
+	linux-trace-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
+	bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
+	linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Donald Hunter <donald.hunter@gmail.com>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Richard Henderson <richard.henderson@linaro.org>,
+	Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+	Matt Turner <mattst88@gmail.com>,
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	"James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+	Helge Deller <deller@gmx.de>, Andreas Larsson <andreas@gaisler.com>,
+	Jesper Dangaard Brouer <hawk@kernel.org>,
+	Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Arnd Bergmann <arnd@arndb.de>, Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
+	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+	Steffen Klassert <steffen.klassert@secunet.com>,
+	Herbert Xu <herbert@gondor.apana.org.au>,
+	David Ahern <dsahern@kernel.org>,
+	Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+	Shuah Khan <shuah@kernel.org>,
+	Sumit Semwal <sumit.semwal@linaro.org>,
+	Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+	Pavel Begunkov <asml.silence@gmail.com>, David Wei <dw@davidwei.uk>,
+	Jason Gunthorpe <jgg@ziepe.ca>,
+	Yunsheng Lin <linyunsheng@huawei.com>,
+	Shailend Chand <shailend@google.com>,
+	Harshitha Ramamurthy <hramamurthy@google.com>,
+	Shakeel Butt <shakeel.butt@linux.dev>,
+	Jeroen de Borst <jeroendb@google.com>,
+	Praveen Kaligineedi <pkaligineedi@google.com>
+Subject: Re: [PATCH net-next v10 02/14] net: page_pool: create hooks for
+ custom page providers
+Message-ID: <ZmAghrRrj_KGgSQR@infradead.org>
+References: <20240530201616.1316526-1-almasrymina@google.com>
+ <20240530201616.1316526-3-almasrymina@google.com>
+ <ZlqzER_ufrhlB28v@infradead.org>
+ <CAHS8izMU_nMEr04J9kXiX6rJqK4nQKA+W-enKLhNxvK7=H2pgA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf 0/2] Revert "xsk: support redirect to any socket bound to
- the same umem"
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <171757383091.23600.1874186480870306313.git-patchwork-notify@kernel.org>
-Date: Wed, 05 Jun 2024 07:50:30 +0000
-References: <20240604122927.29080-1-magnus.karlsson@gmail.com>
-In-Reply-To: <20240604122927.29080-1-magnus.karlsson@gmail.com>
-To: Magnus Karlsson <magnus.karlsson@gmail.com>
-Cc: magnus.karlsson@intel.com, bjorn@kernel.org, ast@kernel.org,
- daniel@iogearbox.net, netdev@vger.kernel.org, maciej.fijalkowski@intel.com,
- bpf@vger.kernel.org, YuvalE@radware.com
+In-Reply-To: <CAHS8izMU_nMEr04J9kXiX6rJqK4nQKA+W-enKLhNxvK7=H2pgA@mail.gmail.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 
-Hello:
-
-This series was applied to bpf/bpf.git (master)
-by Daniel Borkmann <daniel@iogearbox.net>:
-
-On Tue,  4 Jun 2024 14:29:24 +0200 you wrote:
-> Revert "xsk: support redirect to any socket bound to the same umem"
+On Mon, Jun 03, 2024 at 07:17:05AM -0700, Mina Almasry wrote:
+> On Fri, May 31, 2024 at 10:35 PM Christoph Hellwig <hch@infradead.org> wrote:
+> >
+> > On Thu, May 30, 2024 at 08:16:01PM +0000, Mina Almasry wrote:
+> > > I'm unsure if the discussion has been resolved yet. Sending the series
+> > > anyway to get reviews/feedback on the (unrelated) rest of the series.
+> >
+> > As far as I'm concerned it is not.  I've not seen any convincing
+> > argument for more than page/folio allocator including larger order /
+> > huge page and dmabuf.
+> >
 > 
-> This patch introduced a potential kernel crash when multiple napi
-> instances redirect to the same AF_XDP socket. By removing the
-> queue_index check, it is possible for multiple napi instances to
-> access the Rx ring at the same time, which will result in a corrupted
-> ring state which can lead to a crash when flushing the rings in
-> __xsk_flush(). This can happen when the linked list of sockets to
-> flush gets corrupted by concurrent accesses. A quick and small fix is
-> unfortunately not possible, so let us revert this for now.
+> Thanks Christoph, this particular patch series adds dmabuf, so I
+> assume no objection there. I assume the objection is that you want the
+> generic, extensible hooks removed.
+
+Exactly!  Note that this isn't a review of the dmabuf bits as there
+are people more qualified with me.
+
+> To be honest, I don't think the hooks are an integral part of the
+> design, and at this point I think we've argued for them enough. I
+> think we can easily achieve the same thing with just raw if statements
+> in a couple of places. We can always add the hooks if and only if we
+> actually justify many memory providers.
 > 
-> [...]
+> Any objections to me removing the hooks and directing to memory
+> allocations via simple if statements? Something like (very rough
+> draft, doesn't compile):
 
-Here is the summary with links:
-  - [bpf,1/2] Revert "xsk: support redirect to any socket bound to the same umem"
-    https://git.kernel.org/bpf/bpf/c/7fcf26b315bb
-  - [bpf,2/2] Revert "xsk: document ability to redirect to any socket bound to the same umem"
-    https://git.kernel.org/bpf/bpf/c/03e38d315f3c
+I like this approach, thanks! 
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+You might still want to keep the static key, though.
 
