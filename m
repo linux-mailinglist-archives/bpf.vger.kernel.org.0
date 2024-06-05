@@ -1,112 +1,227 @@
-Return-Path: <bpf+bounces-31467-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-31468-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2E88F8FD904
-	for <lists+bpf@lfdr.de>; Wed,  5 Jun 2024 23:33:46 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 46FE08FDA36
+	for <lists+bpf@lfdr.de>; Thu,  6 Jun 2024 01:16:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D1705286D89
-	for <lists+bpf@lfdr.de>; Wed,  5 Jun 2024 21:33:44 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AD7E72828CA
+	for <lists+bpf@lfdr.de>; Wed,  5 Jun 2024 23:16:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1937315FD1D;
-	Wed,  5 Jun 2024 21:25:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 552931667E6;
+	Wed,  5 Jun 2024 23:16:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="VzZ52kPj"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="0axwYly0"
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yb1-f171.google.com (mail-yb1-f171.google.com [209.85.219.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 30F8F15F40C
-	for <bpf@vger.kernel.org>; Wed,  5 Jun 2024 21:25:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E53915FA6E
+	for <bpf@vger.kernel.org>; Wed,  5 Jun 2024 23:16:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717622735; cv=none; b=X6Fye0BUbOahDpx9/xU52Vlixc1tgIv8jlPPPZjmpp3jny1IQritxGLU/UqVsEyUJDtmHuWn+Rp/9dJcNOO58hkdK26hlhydSvSIjKusB1iCKY0igGNIayf0IrJhW7NrbZ2NNVRc4HCwSsqP8Oo0jAZhdGKmiQJLg5fozeEklyA=
+	t=1717629374; cv=none; b=DLtLBXL9MaJyOWl42WKu6dp9F0/JOkMEAqtq2ipulnWKjz4NXa/820JRC9o0MIcTCDNV64WUUjJrM8IwAHReFG28a6q5g4mPipxw5g9+Uk6wl54IkMJoHpbv/av8mmTpiQs+SdRPhxRGp040LuLcQNUR68zwFDEyafRSb1tjh5c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717622735; c=relaxed/simple;
-	bh=vPUsNLtvA3c1wzJPrmq0xqsqKfT7lCp9zPJqLgYvZgg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Z1JMQjA6qzzYr3xzshh1p1jJkt+qszqRFLrVj3zmbJdwYYczWhuyHnjf5vHGuyfcmugEoLdnyuiLOoOjrPwdzpT4pI9TTYgltUJkoPttw0WPuSw6dQOUPMPV6o/SMw59WHGuGrlHwUTCbm0r2Sfug1Jl3Vaw3Xfe6+IIXyHyFNU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=VzZ52kPj; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1717622733;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=vPUsNLtvA3c1wzJPrmq0xqsqKfT7lCp9zPJqLgYvZgg=;
-	b=VzZ52kPjd0bnfhNtU46an20MxrM46xIwoGkD1O9RNn3ZqnBmQo/Q/oDIAbqP6T008dqXpq
-	Es9QJ+KbSqCYbVorHrDuMStGp3kx2d1n0IB1DKSYNGluaWUvgKhkoAXR+/lV4BRdnwFAA5
-	kpXk3YhsSlqLnaRahlzs53GsBO782jQ=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-249-cJTSEEHmPlaMTdqrJfJyqQ-1; Wed, 05 Jun 2024 17:25:30 -0400
-X-MC-Unique: cJTSEEHmPlaMTdqrJfJyqQ-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 9120A85A588;
-	Wed,  5 Jun 2024 21:25:28 +0000 (UTC)
-Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.224.62])
-	by smtp.corp.redhat.com (Postfix) with SMTP id 7534A2166AF9;
-	Wed,  5 Jun 2024 21:25:24 +0000 (UTC)
-Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
-	oleg@redhat.com; Wed,  5 Jun 2024 23:24:00 +0200 (CEST)
-Date: Wed, 5 Jun 2024 23:23:55 +0200
-From: Oleg Nesterov <oleg@redhat.com>
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: Jiri Olsa <jolsa@kernel.org>, Peter Zijlstra <peterz@infradead.org>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
-	Martin KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
-	Yonghong Song <yhs@fb.com>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@chromium.org>,
-	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org
-Subject: Re: [RFC bpf-next 01/10] uprobe: Add session callbacks to
- uprobe_consumer
-Message-ID: <20240605212354.GC19139@redhat.com>
-References: <20240604200221.377848-1-jolsa@kernel.org>
- <20240604200221.377848-2-jolsa@kernel.org>
- <CAEf4BzbzgTzvnPRJ24gdhuxN02_w8iNNFn4URh0vEp-t69oPnA@mail.gmail.com>
- <20240605175619.GH25006@redhat.com>
- <CAEf4Bzbz3vi6ahkUu7yABV-QhkzNCF-ROcRjUpGjt0FRjfDuKQ@mail.gmail.com>
+	s=arc-20240116; t=1717629374; c=relaxed/simple;
+	bh=sCnF1WWhVGW8xVYwTfmbAr1BNfwqxr2DfWhEZMEn4bY=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=PZmIHJQQrvztG99lfnUv7zmAeXQz+75fWnaAf5dfAz06lDcdTuNQFbsiw0ALlU06Nf8A41NV3Wrc6stBreB6c46lFKwqGJjgsoNfEzYonBmX5LtmXTsk8WZY1rKlroJ9P7on/law+yoAwKh+KLCkItQOAr6cPibN4EN5DQJAzak=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=0axwYly0; arc=none smtp.client-ip=209.85.219.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-yb1-f171.google.com with SMTP id 3f1490d57ef6-dfa7faffa3aso452269276.0
+        for <bpf@vger.kernel.org>; Wed, 05 Jun 2024 16:16:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1717629372; x=1718234172; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=It1jGSpY/d5JoW3BH0YDpFaZbUvrsvHdjibkMTnj6oI=;
+        b=0axwYly08R1IzMpbeUenVfvBdvSeJTVQkAqE3dBLDuiuXw2fhLdGKRnP2nmVosxg0H
+         32W3X+n2fWL2hfXb7JH0T4L03t6OMJsk/Rl7dOqCaPwef+STobuFDkhNFrcj3BjL1JVX
+         9SIwpnDv1VgBV2EHFImMur9dBwfNZpQQD0ZWs+73im87Uk0uij2ss+w1ZBYLy/UaXttf
+         JAb/h25UE20Lc+mSoiGPBYPEvnspIV9fyPKZkNOlh1p+saWy+T2Z9Mw5KV/2xfYBrsJG
+         CeImEszUUD9lEUkJG5zZOv6VLSLaaXeLW1uXyO+MzSUDQLihn0Bmc1DgwtTygKubYH39
+         s0qw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1717629372; x=1718234172;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=It1jGSpY/d5JoW3BH0YDpFaZbUvrsvHdjibkMTnj6oI=;
+        b=GkOWx7F+wlBI7qUTbmRYTo9QS2cjjaOtfLvmTyBOOVahZEU1wmAQWu6j1Dapido/z2
+         VaaYeTHTTf3fpYmQkyAwOdR8aujg8HCsrHT9DmEU38uRrxdjbvtcbreAysvmoFbtvDu9
+         ZMvjqWEMvTeKRM8Gv/t8+vrlFAELQKbJp/SqT/yntkxbmm+odmW5zqexcL41iJLzJ2Or
+         wgd4JGrnNRTq9Tloo1SxWmumPa7LOSxp9vGhZ+sd5VqIXWArBVLQ+Ivu+i2uQbsQN5yX
+         jaQFuqAPSggxc4k8vfAfLsnC7c7LI/H2hw8A4WJs8+xp+iZPWjY4u+hRR9oIlsVg/qi1
+         8hdA==
+X-Forwarded-Encrypted: i=1; AJvYcCUbcYJ4PXgERx4+qU1BszmS60fWYUPmLAHwxwgLsgkh6Dec/idSxqFOPopZ5JTrN048/L60+ucP6vsVaPlZDZKFv5kn
+X-Gm-Message-State: AOJu0YzqRTcP0IwLZHBwtNzG6x40zqNJxEYD5Nizqhd+7NV1sJ1If+18
+	esxrp37a8ofzTQ8P93yzzO5OFC2SEiaz0xLAgxPk2T3hK0nPPGtgKwJQUhujxpoEufOCeVVufmZ
+	OL8A/HP1ZhrJEpyFobyja3WiVhja960b93g7tVvtIbWdqN6lH3OBN
+X-Google-Smtp-Source: AGHT+IG//Bbpm13yX5er5mRkf9mAC+1ekahyf3BmUiMZJv5AfaAy7zvY2vctDaLWIjOaU+8qTcrwQqETtL7ybQfO+V0=
+X-Received: by 2002:a25:b299:0:b0:dfa:5d84:716b with SMTP id
+ 3f1490d57ef6-dfacac6b7f4mr3630672276.57.1717629371946; Wed, 05 Jun 2024
+ 16:16:11 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAEf4Bzbz3vi6ahkUu7yABV-QhkzNCF-ROcRjUpGjt0FRjfDuKQ@mail.gmail.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.6
+References: <20240605002459.4091285-1-andrii@kernel.org> <20240605002459.4091285-5-andrii@kernel.org>
+In-Reply-To: <20240605002459.4091285-5-andrii@kernel.org>
+From: Suren Baghdasaryan <surenb@google.com>
+Date: Wed, 5 Jun 2024 16:15:58 -0700
+Message-ID: <CAJuCfpFp38X-tbiRAqS36zXG_ho2wyoRas0hCFLo07pN1noSmg@mail.gmail.com>
+Subject: Re: [PATCH v3 4/9] fs/procfs: use per-VMA RCU-protected locking in
+ PROCMAP_QUERY API
+To: Andrii Nakryiko <andrii@kernel.org>
+Cc: linux-fsdevel@vger.kernel.org, brauner@kernel.org, viro@zeniv.linux.org.uk, 
+	akpm@linux-foundation.org, linux-kernel@vger.kernel.org, bpf@vger.kernel.org, 
+	gregkh@linuxfoundation.org, linux-mm@kvack.org, liam.howlett@oracle.com, 
+	rppt@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 06/05, Andrii Nakryiko wrote:
+On Tue, Jun 4, 2024 at 5:25=E2=80=AFPM Andrii Nakryiko <andrii@kernel.org> =
+wrote:
 >
-> WDYT? It's still fast, and it's simpler than the shadow stack idea, IMO.
+> Attempt to use RCU-protected per-VMA lock when looking up requested VMA
+> as much as possible, only falling back to mmap_lock if per-VMA lock
+> failed. This is done so that querying of VMAs doesn't interfere with
+> other critical tasks, like page fault handling.
+>
+> This has been suggested by mm folks, and we make use of a newly added
+> internal API that works like find_vma(), but tries to use per-VMA lock.
+>
+> We have two sets of setup/query/teardown helper functions with different
+> implementations depending on availability of per-VMA lock (conditioned
+> on CONFIG_PER_VMA_LOCK) to abstract per-VMA lock subtleties.
+>
+> When per-VMA lock is available, lookup is done under RCU, attempting to
+> take a per-VMA lock. If that fails, we fallback to mmap_lock, but then
+> proceed to unconditionally grab per-VMA lock again, dropping mmap_lock
+> immediately. In this configuration mmap_lock is never helf for long,
+> minimizing disruptions while querying.
+>
+> When per-VMA lock is compiled out, we take mmap_lock once, query VMAs
+> using find_vma() API, and then unlock mmap_lock at the very end once as
+> well. In this setup we avoid locking/unlocking mmap_lock on every looked
+> up VMA (depending on query parameters we might need to iterate a few of
+> them).
+>
+> Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+> ---
+>  fs/proc/task_mmu.c | 46 ++++++++++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 46 insertions(+)
+>
+> diff --git a/fs/proc/task_mmu.c b/fs/proc/task_mmu.c
+> index 614fbe5d0667..140032ffc551 100644
+> --- a/fs/proc/task_mmu.c
+> +++ b/fs/proc/task_mmu.c
+> @@ -388,6 +388,49 @@ static int pid_maps_open(struct inode *inode, struct=
+ file *file)
+>                 PROCMAP_QUERY_VMA_FLAGS                         \
+>  )
+>
+> +#ifdef CONFIG_PER_VMA_LOCK
+> +static int query_vma_setup(struct mm_struct *mm)
+> +{
+> +       /* in the presence of per-VMA lock we don't need any setup/teardo=
+wn */
+> +       return 0;
+> +}
+> +
+> +static void query_vma_teardown(struct mm_struct *mm, struct vm_area_stru=
+ct *vma)
+> +{
+> +       /* in the presence of per-VMA lock we need to unlock vma, if pres=
+ent */
+> +       if (vma)
+> +               vma_end_read(vma);
+> +}
+> +
+> +static struct vm_area_struct *query_vma_find_by_addr(struct mm_struct *m=
+m, unsigned long addr)
+> +{
+> +       struct vm_area_struct *vma;
+> +
+> +       /* try to use less disruptive per-VMA lock */
+> +       vma =3D find_and_lock_vma_rcu(mm, addr);
+> +       if (IS_ERR(vma)) {
+> +               /* failed to take per-VMA lock, fallback to mmap_lock */
+> +               if (mmap_read_lock_killable(mm))
+> +                       return ERR_PTR(-EINTR);
+> +
+> +               vma =3D find_vma(mm, addr);
+> +               if (vma) {
+> +                       /*
+> +                        * We cannot use vma_start_read() as it may fail =
+due to
+> +                        * false locked (see comment in vma_start_read())=
+. We
+> +                        * can avoid that by directly locking vm_lock und=
+er
+> +                        * mmap_lock, which guarantees that nobody can lo=
+ck the
+> +                        * vma for write (vma_start_write()) under us.
+> +                        */
+> +                       down_read(&vma->vm_lock->lock);
 
-Andrii. I am alredy sleeping, I'll try to read your email tomorrow.
-Right now I can only say that everything is simpler than the shadow stack ;)
+Hi Andrii,
+The above pattern of locking VMA under mmap_lock and then dropping
+mmap_lock is becoming more common. Matthew had an RFC proposal for an
+API to do this here:
+https://lore.kernel.org/all/ZivhG0yrbpFqORDw@casper.infradead.org/. It
+might be worth reviving that discussion.
 
-> P.S. Regardless, maybe we should change the order in which we insert
-> consumers to uprobe? Right now uprobe consumer added later will be
-> executed first, which, while not wrong, is counter-intuitive.
+> +               }
+> +
+> +               mmap_read_unlock(mm);
 
-Agreed...
+Later on in your code you are calling get_vma_name() which might call
+anon_vma_name() to retrieve user-defined VMA name. After this patch
+this operation will be done without holding mmap_lock, however per
+https://elixir.bootlin.com/linux/latest/source/include/linux/mm_types.h#L58=
+2
+this function has to be called with mmap_lock held for read. Indeed
+with debug flags enabled you should hit this assertion:
+https://elixir.bootlin.com/linux/latest/source/mm/madvise.c#L96.
 
-Even if currently this doesn't really matter, I guess it is supposed
-that uc->handler() is "non-intrusive".
-
-Oleg.
-
+> +       }
+> +
+> +       return vma;
+> +}
+> +#else
+>  static int query_vma_setup(struct mm_struct *mm)
+>  {
+>         return mmap_read_lock_killable(mm);
+> @@ -402,6 +445,7 @@ static struct vm_area_struct *query_vma_find_by_addr(=
+struct mm_struct *mm, unsig
+>  {
+>         return find_vma(mm, addr);
+>  }
+> +#endif
+>
+>  static struct vm_area_struct *query_matching_vma(struct mm_struct *mm,
+>                                                  unsigned long addr, u32 =
+flags)
+> @@ -441,8 +485,10 @@ static struct vm_area_struct *query_matching_vma(str=
+uct mm_struct *mm,
+>  skip_vma:
+>         /*
+>          * If the user needs closest matching VMA, keep iterating.
+> +        * But before we proceed we might need to unlock current VMA.
+>          */
+>         addr =3D vma->vm_end;
+> +       vma_end_read(vma); /* no-op under !CONFIG_PER_VMA_LOCK */
+>         if (flags & PROCMAP_QUERY_COVERING_OR_NEXT_VMA)
+>                 goto next_vma;
+>  no_vma:
+> --
+> 2.43.0
+>
 
