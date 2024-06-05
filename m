@@ -1,131 +1,91 @@
-Return-Path: <bpf+bounces-31393-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-31394-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id A74758FC021
-	for <lists+bpf@lfdr.de>; Wed,  5 Jun 2024 01:45:07 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id DC1D38FC054
+	for <lists+bpf@lfdr.de>; Wed,  5 Jun 2024 02:16:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D9DF01C2283F
-	for <lists+bpf@lfdr.de>; Tue,  4 Jun 2024 23:45:06 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9397F284BA6
+	for <lists+bpf@lfdr.de>; Wed,  5 Jun 2024 00:16:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 27D1414D6ED;
-	Tue,  4 Jun 2024 23:44:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 399ED17D2;
+	Wed,  5 Jun 2024 00:16:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="4DYnlGoH"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WcP/PWfy"
 X-Original-To: bpf@vger.kernel.org
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 31DC714D6E1;
-	Tue,  4 Jun 2024 23:44:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B44C9653
+	for <bpf@vger.kernel.org>; Wed,  5 Jun 2024 00:16:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717544694; cv=none; b=jhKIw31WhFvYnKXyu0H5IsHZo7f77H+UuN1+R4PLDribxd3dsikuF2rcxsSBc7yGxeJK4X0F/qFCjvTvZF2ZlHC+1OUynEycIJCgMT76JP4yfWYALzl+cp+leMnnhzvl0dtEDxWpL3L8w3YMpEf2Ngf1YvXasrOjv4JVaEvWVC4=
+	t=1717546592; cv=none; b=EAqGnFQoN4ACj8wLcRGoP7NoMIXLLxB5nRAuYmQdtkEPIiFQWPZMkHPBef2i5hgn9I1UXTtU/Zyh214TsPIJ31AV5idUtADJpBY7LAltTHbZIwWNxONv8o7zeglWhPWzVhsbSPNAbR6ZLoZMLPv6mWNXold7r44pCEimEZSM08Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717544694; c=relaxed/simple;
-	bh=5vLaTMhC/f80cHfutQVA8NT+YBHXfBWGgHaK2vOxNpQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=fpDFON7lauewfG4hkWenVziJ1Kgl/ErIQFvYq4Oo7OjpNCysu5PTlAQGzS+/HlBl2OaFfl499s6FmqDfDvPDem2n+JKy59+AlAxmiDYY4LzFX/SMaOj2TQT/RTWHR8lG+TYxcKkdHsBl4c/3V9EiX9UtfM8V+YV1sJfQdnZQvEE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=4DYnlGoH; arc=none smtp.client-ip=156.67.10.101
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-	bh=PhT9KFFOExWQF20U3AwXuDAmtkcJMJ2i2CdJFaJH1tU=; b=4DYnlGoH09CVVe9B8D6eWoe6IX
-	DObz3+SkqGCNdjLs+aUSWP4imauIabFyOz0tYAXBGAaspL4LEEykxzsBt1MplXhQMcu03p7QOuQAx
-	8TnzwFCM/jMxcD752sO5+qJexRWAe9BvXi/lZ0eAt2OWIDNwwpRUDYNeI+HKaBzM6AbI=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-	(envelope-from <andrew@lunn.ch>)
-	id 1sEdpV-00GqyR-E0; Wed, 05 Jun 2024 01:44:37 +0200
-Date: Wed, 5 Jun 2024 01:44:37 +0200
-From: Andrew Lunn <andrew@lunn.ch>
-To: Steven Rostedt <rostedt@goodmis.org>
-Cc: Jason Gunthorpe <jgg@ziepe.ca>, Paolo Abeni <pabeni@redhat.com>,
-	Mina Almasry <almasrymina@google.com>, netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-	linux-alpha@vger.kernel.org, linux-mips@vger.kernel.org,
-	linux-parisc@vger.kernel.org, sparclinux@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
-	bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
-	linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Donald Hunter <donald.hunter@gmail.com>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Richard Henderson <richard.henderson@linaro.org>,
-	Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-	Matt Turner <mattst88@gmail.com>,
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	"James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-	Helge Deller <deller@gmx.de>, Andreas Larsson <andreas@gaisler.com>,
-	Jesper Dangaard Brouer <hawk@kernel.org>,
-	Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Arnd Bergmann <arnd@arndb.de>, Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
-	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-	Steffen Klassert <steffen.klassert@secunet.com>,
-	Herbert Xu <herbert@gondor.apana.org.au>,
-	David Ahern <dsahern@kernel.org>,
-	Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-	Shuah Khan <shuah@kernel.org>,
-	Sumit Semwal <sumit.semwal@linaro.org>,
-	Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-	Pavel Begunkov <asml.silence@gmail.com>, David Wei <dw@davidwei.uk>,
-	Yunsheng Lin <linyunsheng@huawei.com>,
-	Shailend Chand <shailend@google.com>,
-	Harshitha Ramamurthy <hramamurthy@google.com>,
-	Shakeel Butt <shakeel.butt@linux.dev>,
-	Jeroen de Borst <jeroendb@google.com>,
-	Praveen Kaligineedi <pkaligineedi@google.com>,
-	Willem de Bruijn <willemb@google.com>,
-	Kaiyuan Zhang <kaiyuanz@google.com>
-Subject: Re: [PATCH net-next v10 05/14] netdev: netdevice devmem allocator
-Message-ID: <3be107ce-3d9f-4528-b9f7-1c9e38da0688@lunn.ch>
-References: <20240530201616.1316526-1-almasrymina@google.com>
- <20240530201616.1316526-6-almasrymina@google.com>
- <bea8b8bf1630309bb004f614e4a3c7f684a6acb6.camel@redhat.com>
- <20240604121551.07192993@gandalf.local.home>
- <20240604163158.GB21513@ziepe.ca>
- <20240604124243.66203a46@gandalf.local.home>
+	s=arc-20240116; t=1717546592; c=relaxed/simple;
+	bh=XEeITvqHaqOmwmDjc8OTaOgHoqQLRyeQWtz05fSSwGo=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=CmzgrW+/H/ncm0KV3s/BoHzIacV45UA97TisddENYVXp44xSTRJVBqmdpS3NTDfqF0vYI7s+Qpnx603ofIBb+0RG0IbJJMJVHpaJEES0SBy8Dw0We3Vt+m21xSMJDmUMfjSO+UoedBblGy6NOwhP71uj3f6PFucsjoPairSMG6M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WcP/PWfy; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 773BAC2BBFC;
+	Wed,  5 Jun 2024 00:16:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1717546591;
+	bh=XEeITvqHaqOmwmDjc8OTaOgHoqQLRyeQWtz05fSSwGo=;
+	h=From:To:Cc:Subject:Date:From;
+	b=WcP/PWfyOBq8l1DLx5sVs81rZfl1fvWW+N2cRyCobzb2dOPwtcIecn6m3cE9rEcrP
+	 poKFCdSLMMlKPor9P1xd3YBOBpe1hxH4UZPh+YGYL3VpzpMggfmK0Eg2eOPNS33fnm
+	 TNiyBk5XmN8i9bzyPjSfI82pbgPTU1b89yU4lSUIyw3mV8agWjqXq8mya1lK7ZQoWl
+	 3B0QZhNhqK74EqvrSkwjuee7WokYoSYys0kjwMrzCvOW8XGMviw7KPsMzFWPxxuaoD
+	 tjw20jWezEC9C1l21TfxNJ9jLF4oZXsNcMG5DBUPIZKGxKFGSnibTJxFuU25oi5tcX
+	 uNRlehqTtxSTw==
+From: Andrii Nakryiko <andrii@kernel.org>
+To: bpf@vger.kernel.org,
+	ast@kernel.org,
+	daniel@iogearbox.net,
+	martin.lau@kernel.org
+Cc: alan.maguire@oracle.com,
+	eddyz87@gmail.com,
+	jolsa@kernel.org,
+	Andrii Nakryiko <andrii@kernel.org>
+Subject: [PATCH v2 bpf-next 0/5] libbpf: BTF field iterator
+Date: Tue,  4 Jun 2024 17:16:24 -0700
+Message-ID: <20240605001629.4061937-1-andrii@kernel.org>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240604124243.66203a46@gandalf.local.home>
+Content-Transfer-Encoding: 8bit
 
-> Interesting, as I sped up the ftrace ring buffer by a substantial amount by
-> adding strategic __always_inline, noinline, likely() and unlikely()
-> throughout the code. It had to do with what was considered the fast path
-> and slow path, and not actually the size of the function. gcc got it
-> horribly wrong.
+Add BTF field (type and string fields, right now) iterator support instead of
+using existing callback-based approaches, which make it harder to understand
+and support BTF-processing code.
 
-And what did the compiler people say when you reported gcc was getting
-it wrong?
+v1->v2:
+  - t_cnt -> t_off_cnt, m_cnt -> m_off_cnt (Eduard);
+  - simpified code in linker.c (Jiri);
+rfcv1->v1:
+  - check errors when initializing iterators (Jiri);
+  - split RFC patch into separate patches.
 
-Our assumption is, the compiler is better than a human at deciding
-this. Or at least, a human who does not spend a long time profiling
-and tuning. If this assumption is not true, we probably should be
-trying to figure out why, and improving the compiler when
-possible. That will benefit everybody.
+Andrii Nakryiko (5):
+  libbpf: add BTF field iterator
+  libbpf: make use of BTF field iterator in BPF linker code
+  libbpf: make use of BTF field iterator in BTF handling code
+  bpftool: use BTF field iterator in btfgen
+  libbpf: remove callback-based type/string BTF field visitor helpers
 
-       Andrew
+ tools/bpf/bpftool/gen.c         |  16 +-
+ tools/lib/bpf/btf.c             | 328 +++++++++++++++++++-------------
+ tools/lib/bpf/libbpf_internal.h |  26 ++-
+ tools/lib/bpf/linker.c          |  58 +++---
+ 4 files changed, 262 insertions(+), 166 deletions(-)
+
+-- 
+2.43.0
 
 
