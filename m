@@ -1,336 +1,455 @@
-Return-Path: <bpf+bounces-31454-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-31455-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9CFAE8FD380
-	for <lists+bpf@lfdr.de>; Wed,  5 Jun 2024 19:04:07 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4846B8FD39A
+	for <lists+bpf@lfdr.de>; Wed,  5 Jun 2024 19:07:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8C8A31C22379
-	for <lists+bpf@lfdr.de>; Wed,  5 Jun 2024 17:04:06 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 71F5EB21D46
+	for <lists+bpf@lfdr.de>; Wed,  5 Jun 2024 17:07:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 75027191471;
-	Wed,  5 Jun 2024 17:03:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7089D18FDB2;
+	Wed,  5 Jun 2024 17:07:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="DgHoz0hF";
-	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="oh6Z/8dB"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="g7qJHDug"
 X-Original-To: bpf@vger.kernel.org
-Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 158A361694;
-	Wed,  5 Jun 2024 17:03:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.177.32
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717607031; cv=fail; b=p48CN+KlaAc/b/Z8A93wf+wkbqTx7gX9U6gw9v/2Z8oRn2t4NTNIFTpTIjLI8aOHwdmgm8ulzUkbIm0+i0OvcpfG2cjayP89XelLoDVyI0ficMPthC+nTKwHs/0ktFPMgcrVM6+PXVbbxXgrql+S1wZKVrVJNzWB2GhlnswMi58=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717607031; c=relaxed/simple;
-	bh=ouaDZg9soh61ampVOSpKd9hjidAJ5EL+7IoQCoA03t4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=kCS0Z8CiputBYhRU66rQrPQmW5a7rFXcL3LJzwLN/XTCoQq3MzucRj6WfX2egRG3bSdTZZ7kYx7e7L3fWpfVKxwvsCSZxvZIPhVMftJtshwlA1bGlWkSkR/mDL25Wwl2vWLdWg/CcFFCoIEJ+6SR1tvNkV0NM1SiBipC+Vbk7i0=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=DgHoz0hF; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=oh6Z/8dB; arc=fail smtp.client-ip=205.220.177.32
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=oracle.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
-Received: from pps.filterd (m0246632.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 455C9ih4005263;
-	Wed, 5 Jun 2024 17:03:32 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=cc :
- content-transfer-encoding : content-type : date : from : in-reply-to :
- message-id : mime-version : references : subject : to; s=corp-2023-11-20;
- bh=knogQTChe1ksDec7fCzmv3UpY6znBUZctN+vi4ALhlU=;
- b=DgHoz0hFa0I4NH31C+p1MIUaegkp57SevBkL5ekEWpzInRhk0XVd7n6okuvsoeStc/b4
- 4PMcXmMh2Ki0uGugk2pSnLy7b9bibRCGW63SdbsKZZ07aQ6bvpjmchdC9UCg6qVjEx4L
- lWYVDY/6MQwyYLJREWbY5mV18nW7vKlN8MWyBZaRyHjV0euOiLcYNnWTzM8tGC5sQh+0
- KBSmT1rbURoWNm04M0TmqJlgwf8xVteoMLbrxxozZd2AR4bkwy7g7SXRVp5xp/FVLztd
- FQ4oSXwU1PJOfv7ZvM42dgljCy+YbkyQtGEKAWJbIlPdwHNSoTjhKzMAzJv5NcmMrZhg /Q== 
-Received: from iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta02.appoci.oracle.com [147.154.18.20])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3yjbrs9t88-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Wed, 05 Jun 2024 17:03:32 +0000
-Received: from pps.filterd (iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-	by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 455G3jdt025099;
-	Wed, 5 Jun 2024 17:03:31 GMT
-Received: from nam10-dm6-obe.outbound.protection.outlook.com (mail-dm6nam10lp2101.outbound.protection.outlook.com [104.47.58.101])
-	by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3ygrtaaycq-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Wed, 05 Jun 2024 17:03:31 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=TyVZwTroLip42VTIUTWVQ/EB3BSuDzyFM3JPmYIX/Wr7eGRBvVeb6z6IhsnK5jZO8Setgj+7IrQxjcSj+qx+XUlOuKh2Cl5iF4BJffMpI1dYJgHGQBbgNab4jFYp11l06X6vkQUcQKuqIniE6H4i0JYF2w/7MHCueDtsr902jTlrocjzI60VW8k28XllJe3fKbDTlT5gdZ0BGmtHhp5Y8zls4YMNfiTTdZ/sVnW38L6XPg4nsGDt/RED3mHLm7TC8XWhnztFZyUr3uAC3bkCcR/n6fQkqrniFLalzlLcUjCJKrw6SKdSThce86khtgLfHjC03YQAOfu/I0nJ4O28Sw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=knogQTChe1ksDec7fCzmv3UpY6znBUZctN+vi4ALhlU=;
- b=YooLHRuktkMmOTdmgrwjxQ4SXlytuAclCC0aIhjJLm4C0Uf5wHHdzQ5+pIfWrChnue7lYooS8DKQvZmCKSXeTQ5J4yftcxs1HEK2uVbr3Sfm5YvrP1VbORqRUFAeHpYOV8Gym4dEGrfeIEvD1R9PxoS8v6lFXeBpsMJ/p7E3ZiBfGNTyumxMxRGixBNWlECtMkfPF2D7yss+BBmDEvJL2NCopaGLJAqjiewpuYLkIs5n+ztRKwx3TRT77//jhJU6DRCSWv7G+sR3fkjgcYZlewqqwT5Z1kqLeTE4y4Z7HBYJKw+tJFDnj4nKsGEd0TFe1aiIe3018xW//ILX9sBsKg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=knogQTChe1ksDec7fCzmv3UpY6znBUZctN+vi4ALhlU=;
- b=oh6Z/8dB4Fnbf1AEwP0MICSd/woeHy9H2yha03waKmy8WFVXnlwfkx9wsj2+TtoHlZhY7nAkbfLKrgLFXLp3TBQHRjjBsGBvBZEOeh7xNTBAI7JwlTWuU/MHIaeAHjrYk9/f5SO1wJfk/zkRJOMJLMqJH7BGuCuJOFtAU28NPjA=
-Received: from DS0PR10MB7933.namprd10.prod.outlook.com (2603:10b6:8:1b8::15)
- by SJ0PR10MB6328.namprd10.prod.outlook.com (2603:10b6:a03:44e::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7633.27; Wed, 5 Jun
- 2024 17:03:29 +0000
-Received: from DS0PR10MB7933.namprd10.prod.outlook.com
- ([fe80::2561:85b0:ae8f:9490]) by DS0PR10MB7933.namprd10.prod.outlook.com
- ([fe80::2561:85b0:ae8f:9490%7]) with mapi id 15.20.7633.021; Wed, 5 Jun 2024
- 17:03:29 +0000
-Date: Wed, 5 Jun 2024 13:03:26 -0400
-From: "Liam R. Howlett" <Liam.Howlett@oracle.com>
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: Matthew Wilcox <willy@infradead.org>, Andrii Nakryiko <andrii@kernel.org>,
-        linux-fsdevel@vger.kernel.org, brauner@kernel.org,
-        viro@zeniv.linux.org.uk, akpm@linux-foundation.org,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        gregkh@linuxfoundation.org, linux-mm@kvack.org, surenb@google.com,
-        rppt@kernel.org
-Subject: Re: [PATCH v3 1/9] mm: add find_vma()-like API but RCU protected and
- taking VMA lock
-Message-ID: <5fmylram4hhrrdl7vf6odyvuxcrvhipsx2ij5z4dsfciuzf4on@qwk7qzze6gbt>
-Mail-Followup-To: "Liam R. Howlett" <Liam.Howlett@oracle.com>, 
-	Andrii Nakryiko <andrii.nakryiko@gmail.com>, Matthew Wilcox <willy@infradead.org>, 
-	Andrii Nakryiko <andrii@kernel.org>, linux-fsdevel@vger.kernel.org, brauner@kernel.org, 
-	viro@zeniv.linux.org.uk, akpm@linux-foundation.org, linux-kernel@vger.kernel.org, 
-	bpf@vger.kernel.org, gregkh@linuxfoundation.org, linux-mm@kvack.org, 
-	surenb@google.com, rppt@kernel.org
-References: <20240605002459.4091285-1-andrii@kernel.org>
- <20240605002459.4091285-2-andrii@kernel.org>
- <Zl-38XrUw9entlFR@casper.infradead.org>
- <uevtozlryyqw5vj2duuzowupknfynmreruiw6m7bcxryjppqpm@7g766emooxfh>
- <CAEf4BzZFpidjJzRMWboZYY03U8M22Yo1sqXconi36V11XA-ZfA@mail.gmail.com>
- <CAEf4BzYDhtkYt=qn2YgrnRkZ0tpa3EPAiCUcBkdUa-9DKN22dQ@mail.gmail.com>
- <CAEf4Bzbzj55LfgTom9KiM1Xe8pfXvpWBd6ETjXQCh7M===G5aw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <CAEf4Bzbzj55LfgTom9KiM1Xe8pfXvpWBd6ETjXQCh7M===G5aw@mail.gmail.com>
-User-Agent: NeoMutt/20231103
-X-ClientProxiedBy: YT4PR01CA0113.CANPRD01.PROD.OUTLOOK.COM
- (2603:10b6:b01:d7::25) To DS0PR10MB7933.namprd10.prod.outlook.com
- (2603:10b6:8:1b8::15)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 28EF4188CAD;
+	Wed,  5 Jun 2024 17:07:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.18
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1717607251; cv=none; b=Lg3vxRMV+7O6ONzYDIUZquk43x4ZMO8/lxNlaTLw9BXAaESMUWQPw3Zg0x2EmTVE3r3X2BaW5oTAlJAGQeM0fVJz9LfsxfOjgNuOG62LA9n+MAwaAsmT9JYa2P94lv/PdyreIUoXMN65ELb+XQ0UFZaqxkb00eE8OuOkMY7vpgo=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1717607251; c=relaxed/simple;
+	bh=Wc2d6oL7dIorQNEBMRjf4sC4r+Df0+y+xQEpxJy5jkE=;
+	h=Date:From:To:Cc:Subject:Message-ID; b=uKzaLiuVQjK0DvGUTCKe29abUtCq7tpgv+x9IO750MFY71fUqOWy/3WnLL/5wjJOa2pSRAIjLfvuMMEYxFZhqzifOspjU0+UaiB6WbdWXPLXiIvYW+IKMENtjmF6uJUa9fTrhFmwuM3xEvTdR/RxzevgCOwzCWTtomLnpIpB2/k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=g7qJHDug; arc=none smtp.client-ip=198.175.65.18
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1717607249; x=1749143249;
+  h=date:from:to:cc:subject:message-id;
+  bh=Wc2d6oL7dIorQNEBMRjf4sC4r+Df0+y+xQEpxJy5jkE=;
+  b=g7qJHDugneKPg0UuXr06FhXboftuo3MgTyBSqMpl6iaoKjCq0mT7trgy
+   w58adTEM/X3U+wqRR1Xa3BCwi3AWRKnLwhduiL1Nj53MGVN+3R28VmE+B
+   RoaTl41/gEfUhm0d4hNR8RRXgTe2IrMfKWqG0R1bTPex1YvYhdaWT/c1V
+   m0exjY+3cIYDjWivViLsrSLJEMskr+CoI7lxTWqCIvpvKQgfXwI5vefp+
+   e78EWWxLzpFUc6L1np20qwgGIxKTXFR2m6xBRy45Lu8ivssxtTQG+9+dQ
+   CfLvszjoXyw/WInQUzo8QxMuongK0j6qx/aB6ZDMozPlpqVMJdOcAhX+k
+   g==;
+X-CSE-ConnectionGUID: fh6dgPbhRqOqhhZi0ufcZA==
+X-CSE-MsgGUID: 9ubcEvvpRvS26IdPDiUDmg==
+X-IronPort-AV: E=McAfee;i="6600,9927,11094"; a="14388017"
+X-IronPort-AV: E=Sophos;i="6.08,217,1712646000"; 
+   d="scan'208";a="14388017"
+Received: from fmviesa007.fm.intel.com ([10.60.135.147])
+  by orvoesa110.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Jun 2024 10:07:28 -0700
+X-CSE-ConnectionGUID: n2ql4dM4RE+mla9ey1nnRw==
+X-CSE-MsgGUID: PTidhW0RRUG6ZStRrMTk6g==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.08,217,1712646000"; 
+   d="scan'208";a="37550069"
+Received: from unknown (HELO 0610945e7d16) ([10.239.97.151])
+  by fmviesa007.fm.intel.com with ESMTP; 05 Jun 2024 10:07:23 -0700
+Received: from kbuild by 0610945e7d16 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1sEu6b-0001yc-1d;
+	Wed, 05 Jun 2024 17:07:21 +0000
+Date: Thu, 06 Jun 2024 01:06:32 +0800
+From: kernel test robot <lkp@intel.com>
+To: Andrew Morton <akpm@linux-foundation.org>
+Cc: Linux Memory Management List <linux-mm@kvack.org>,
+ amd-gfx@lists.freedesktop.org, bpf@vger.kernel.org,
+ dmaengine@vger.kernel.org, dri-devel@lists.freedesktop.org,
+ imx@lists.linux.dev, intel-gfx@lists.freedesktop.org,
+ intel-xe@lists.freedesktop.org, linux-hwmon@vger.kernel.org,
+ linux-input@vger.kernel.org, linux-pm@vger.kernel.org,
+ linux-renesas-soc@vger.kernel.org, linux-trace-kernel@vger.kernel.org
+Subject: [linux-next:master] BUILD REGRESSION
+ 234cb065ad82915ff8d06ce01e01c3e640b674d2
+Message-ID: <202406060125.8GGeEpJs-lkp@intel.com>
+User-Agent: s-nail v14.9.24
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DS0PR10MB7933:EE_|SJ0PR10MB6328:EE_
-X-MS-Office365-Filtering-Correlation-Id: a1eba981-57fa-49f1-33a0-08dc85816c1b
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230031|7416005|376005|366007|1800799015;
-X-Microsoft-Antispam-Message-Info: 
-	=?utf-8?B?blFKRHlac2hWaHVuSlUzSmN4eTNmSGlzVHZHWHpkcFVnZmtGb0ZVazJ6YmZC?=
- =?utf-8?B?M2xHdjdKSzA0ZThvMTNBYlR6MU5CZ0ZONlVjNm5GdTQ5SjVXQUs2UE9nQWRR?=
- =?utf-8?B?endISWRUMmp2OHZlbkZZbmp5aVMzUmU2M2lSbzk1TkFqekk0Qy9zSWh6dlFD?=
- =?utf-8?B?d0kxWDA2RnlFbC9ibEhaQlVxaU5BelJlWWlFVXNzaVRGRk1kSEZXcmNCUytp?=
- =?utf-8?B?Y0pRcHQ2eFAvUVBkU0U2UVhlMnhrOURTWjhNQmgzOHV0RTc1UlB2cGhqVHYr?=
- =?utf-8?B?QXZLYUEzcUxsMVhOOGdtTmhNMkRtYkpIZlVXdXpLcGlxRmtaSWFsdkpDUUpI?=
- =?utf-8?B?b3kvZERwcy9RUmloeFY0L1h1STJUbitER0wvd0dyODQybTVHQ1JEMVJUWThq?=
- =?utf-8?B?VHhsMDY3eStuUmNRejhNTlZwbktzcGZwaWVpVUxoelMvb0ZYVDhhV0xzajUr?=
- =?utf-8?B?bUxaNk5PNERyVWRwM0h3T05hQkFmb1A5VVpwdjBudEZKMXVmRWxMRUhKL0Vm?=
- =?utf-8?B?UkJOeG9yOEpieUkwTzdnV0JIbFRGN0d1eGRyL0ZuNjRFSmVBZVc5Y1pTRFcz?=
- =?utf-8?B?QXVQdGNYWW5qVk1Rb0tia3huNlV3dmYza0ZvS3dkTXV0SFRKWFdiZmNpTnZX?=
- =?utf-8?B?WlBTeW1XM2EzNjdLMzFER3JHcEZCb1doNVFOMlBJU2xJbkFrYU9IWWRndmt0?=
- =?utf-8?B?cHFMa2h4a200eU5od0Yxcm12UThiV1ZtYmtYRlhaRCtuMnd2OHdnWFFaVmNj?=
- =?utf-8?B?bktLNzZyWEdIVDVvNTJWcnVVRTk5UFdqMVNMR1JRTnZtckhKb25NVjJzQlBZ?=
- =?utf-8?B?Uk9GVW1GQkF2WUEwNWEzRG5ic2JDY3dPclRjTEVJeGJlTURpa2lEc2t0NXBN?=
- =?utf-8?B?bkdPcHFNaktab1lRTDIreGZtY29pUWpBY3MxYm04enBnMXg0T0k5bXJGa2Zr?=
- =?utf-8?B?VkpMVzhWTitLY3d2YmtlbGNPVjVFSm5iT095Umcxd1kzOFBVZ1lTTGZrL09p?=
- =?utf-8?B?QXc1aFVsbTBiSWZIUkdEbTAyVW1MYWlWWkxQdUxkS01mRENwcVdNV1B6SVRT?=
- =?utf-8?B?cklyejhNbHkzeXgvS1RUUkU2T0lxQ3ZWVGV4dTFLY3dqS21IbUFQaFAxc0kv?=
- =?utf-8?B?bVl1a1lPN2VyMVlhUTN6SmdPcHR0VEJkaDE5WEs5bGg4YWQ5c1I4OHQ0Si9W?=
- =?utf-8?B?eU1EZkQwVDBrMUlyVlI0Z1R6SGZnbFEvcllNcGFRTk9sV1pDVU9lc0FPT05k?=
- =?utf-8?B?Q0pVOFVvNlM4ZjFtbkpaa0p6eTk4RFZHYzRJRnFpSytZZ21KR0oyb05CNmU5?=
- =?utf-8?B?dW1ZcWkxdmo3Umw5Zit0cnczZ1FEOEtYTS9xU1ZaLzduRU9iNXd2Z0lPbDB4?=
- =?utf-8?B?YWd6ODJ0WCtramJ6cXZTVXUvZ3Vwb0Y4eWE3aUVNb3hzbUJsUjBaV1FGOGdt?=
- =?utf-8?B?ZkJwZzZOa2FlYTJhZ1J4UUVLYXhENmZXTFViditzSGlxeE8vQy81Zkx1SnNZ?=
- =?utf-8?B?SzRkaG9JZFRBT2JyVTB2VlhZUXp6MkdSOEp4dDRmeFEzN0VBaGt3VDFuWE1X?=
- =?utf-8?B?N3dFRDVPbTNOb3g2N1EzTnBxREdGeCtnQ2V5NFdKbVprY3RiYUNLcDEwQXNR?=
- =?utf-8?B?ZWxWb3Jzd0ptVlJJYVhOTGhjVnF4aFdLV08wMzR2VzVHU1dnOFhUazJrV2Iy?=
- =?utf-8?B?aklwTTNMcEx5N3JMZk9ucDNtNldWeEJ6dCtCd1RBVlFORW9ET0hvMU5od280?=
- =?utf-8?Q?xxHZ/x2fh90T8BR/ljWRdFsW7eBFlR0fG8CITNU?=
-X-Forefront-Antispam-Report: 
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS0PR10MB7933.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7416005)(376005)(366007)(1800799015);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: 
-	=?utf-8?B?Z29Db0tKYUZScU0xYXVjK2E2bTlLWXJqNnBxL29CZXNYcDdQOExyeE94ZEJw?=
- =?utf-8?B?R2hOWW8xVXZZRk5TektaM2xubloxNFRNVDcrKzlJeEc5TnR1Z01ZbDZObUxj?=
- =?utf-8?B?Z2VhREh1QkhUUytnL1p1TXpveWQ3eXBLdnpmOUpEamtURXNOcEJ4QkNDOVJ1?=
- =?utf-8?B?VU5xejlCZERxcWRQeUZldmpQQU1LaVlqVXJRTmNJYjVCZVQ3M3JXV2NwNjBn?=
- =?utf-8?B?WjNEZkJKclE4VmZScWtjWkRLWGtxc2VwdDQxTERuNjduT0haa3p1QzdvbWRX?=
- =?utf-8?B?dnowWVdyOFBDOWl4cTFGRUwyTWJOQVBmM3FQeTFnV05Pc2tFZXB1b1FOQmtU?=
- =?utf-8?B?VlI5K2IrSEFxaUM3S1liNEV4RDRERTNCWjl5RVVlaDFkNmZENXp6VjExUjNP?=
- =?utf-8?B?WlBNSG1LUmdFMEZhTExNbElTVWJWeFR1dkNpc3hTRVFKUmswMW5LeUtTenJt?=
- =?utf-8?B?RllJTG1pQmQ4MGNEdzdJRjhtQW5sUmdPd0tWR2FxNm1ycXNhNlI2RlFWUUNU?=
- =?utf-8?B?S3VzRHhDNnQ0bzZFY1Q0VkhhVmRtSW1IQi9RUVc1bysvL2lHeEd2dGlZWXpm?=
- =?utf-8?B?WW50dnJMUWZNWHpCZkxXaTRoVmt4TTBsODQ5QmVBcUx6ZmVBUkxTTDAyb0ZK?=
- =?utf-8?B?VWljcnJrWGJETUZWclgreVgxNEtQVlk4M1FvZi9nREkxclZQMzFWNXVnVDhr?=
- =?utf-8?B?cmgrMlJjS1k5U0RTY0I1N1czMFNDNldTTlZ3TEl6NnZQUGt5Z1hwYSszME9Y?=
- =?utf-8?B?SVZ2cU45Z085RUFQTmJTYVA1bEdKUEUrWFNkaVhPV1R0MmNQN2lGYzg0L3VJ?=
- =?utf-8?B?V2p3NzcwbDZHQ3BLVWFaUzhLcDJEZkdVcU1sQXdMYS9QQ0RNbHVYTkZGOE9L?=
- =?utf-8?B?bHlJSlBObXFuWEdaQ3VnMmR2OThkT2pMK1BtR2hkMklZc2hFd0VsbU1qNjNl?=
- =?utf-8?B?d0Q2bm9hYy92MWtQRG8yUmJYbWp2aTI4WnROSG94eDIxNEtqd1hWQyt4MW1t?=
- =?utf-8?B?M1N2NXBpQjRPOW1USU5IQkw4aFgyYVYxYjhVS2MvdWdxMzhmRGFHNmF3UlU4?=
- =?utf-8?B?Yk9RNEVWOC94a0pXTXEvL0Q0NGpSekRoMUkwcWRKWlpiT1ZFeDRpZTA5cnhs?=
- =?utf-8?B?YUp5YVdJSkdZZ0pqd0c5aU5ZK1ROUER1N3J4dXZMTGJCYmVTdTdEVERLTXBJ?=
- =?utf-8?B?SnA2a29CNVpjZHp2ODcrektMbXo3OXBRNHBlSEFLczNYS3RVQjd0MXB2Y3hn?=
- =?utf-8?B?UlpkYkl2cXY3RDFXNnlRNzJ1cEpwTXM3WUxQUmh1cjZtK251eEFaQ3NxdWVh?=
- =?utf-8?B?M2dWZkdCcUk5M1NuZ21KdGN6NHdtYWhadnh4aEJReXFpUTdOMzJaVkV3UmZr?=
- =?utf-8?B?eDR4UVZma0VTVWxCSEJwM2pla1FEdTBGcFBPeXJsTVpRK1V6bHdwZUZJTDRD?=
- =?utf-8?B?NFBvY3U2WWV3VGpwaFRFYmZKMXZEL3Rxc2ZIMzlZUGpycU11dDg3SHgwWXlD?=
- =?utf-8?B?RS9YVVcvU0Y0UjRUU1BUby83ZFgwZDU4Y1VoaHg5eHJKOG9iNEY4N3NITDJs?=
- =?utf-8?B?SnQyNXkrSXlPNTFFV01PMmQyN1ZjQnNIbjU3TXVPZUNuTXliME5lbHJPZFJt?=
- =?utf-8?B?aFBaTi9WQnRjZFFuMXljdzdwLzVpNnplSzNHczBsOGJuME9kSDhTZG1CN2JU?=
- =?utf-8?B?dWZhRzhHODdQL29icXR4OU1Ga09vZDZudVZhWGZxWlRtUmZjV2dkeGlCZXVE?=
- =?utf-8?B?SlpMOVV0Vlc3Ti9FTDV5MHI4WFcwcjlueFVLazlVR1JDeFBRczBRT2RrT3dh?=
- =?utf-8?B?WU5GVEV0dEZDOFFWdDQ0N1VPbG5EYTZjRnRtZG1WdUtWZFl4U0JvU05XZ2wv?=
- =?utf-8?B?akJKRVlmbE9pbHlQcDd2c1cwWFFRNXNoUjh4Y3dSU0JjczJtMjZYSTlHVUhQ?=
- =?utf-8?B?MlVCL0JyS3J4R2tBc2NOakM3aUFxVGxGOHVUS1BUa3JhTnBHdUN4UzdFYVVw?=
- =?utf-8?B?RjlSL1dQMzYvYUVkR3NCTG5RYmJ1VVdWT1pDRlpMeEQ4ZjVQakpSRVhCVDBY?=
- =?utf-8?B?dHpoTUhvYWhxUE11REplNGpuSUs4YlQwMlV0Nllka2dDeklwSnlVVXRhMU90?=
- =?utf-8?Q?e2TUqFsRgf9ZGuhu7jxELjjQn?=
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: 
-	nKz9gIYmAgmCPyvkY+uJsaX9d+xoAHV5vGsZvp6rqbyaCzc5OpdJzDtyoZyo+rs17VB/Ddw7YjILEaFIMQTmFlSGOTMtBfyqF0xazTckXNJpykHxdylKDOg+0PsrdK8CVWSbPAorQUWE1h3BhfxB03XFRmqerhz2S9WK4z650LrKWmM/SPkq3GLRR7hrX0vmCoVH1mgB1RmfNEBDVTJicQLUkezkFJbr8/bkQBPjW75fh1xBaUcK5cncJd7ojYWTXWjpHKP5Gz76HtHsc9/AfLCGN42QncNmefrBGG5dFDDrAfAj/GR7EkJ/rtrWV4MQ7j86hsut309UtiAHoPQlGRVt8UwE7KI3S+b6+AiwB1kj52AQqQzkbzxsQ4AF/3QuY49XRJ41q4QRizf55zF3P6LWvg3Wwur8Q7JuD/3NaOhtVJRwdU1xSQ20eWQWPLW3W3dtBWBOvmVGouKqc0yU9BWsUXqLCdwqYbFgyl6S+hHaMSLT1YJD7ZhOI7T8zfUUpvaomPXljMxQvtG7a21fjuXnXZ4Lhi+sJHbOkex3yzRcdDHnl4ccXS6MQic0oPWUCtlCrTZRTeVg9Y/XWRM68fv9hffx8ZbUWLO4plqdQJU=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: a1eba981-57fa-49f1-33a0-08dc85816c1b
-X-MS-Exchange-CrossTenant-AuthSource: DS0PR10MB7933.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Jun 2024 17:03:29.2173
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: EriCRQBVWZIJoORrbq/jruEBCWNwq/cTLGyCDlwBqowZMXEFRFCMT86pl473Tv5/x1RcpP+0aLxtvrWUo7CnMw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR10MB6328
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.680,FMLib:17.12.28.16
- definitions=2024-06-05_02,2024-06-05_02,2024-05-17_01
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 bulkscore=0 spamscore=0
- adultscore=0 suspectscore=0 malwarescore=0 mlxscore=0 phishscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2405010000
- definitions=main-2406050129
-X-Proofpoint-ORIG-GUID: 4rGeTEixBOLcx4Or4xTU-11u0p00cTRo
-X-Proofpoint-GUID: 4rGeTEixBOLcx4Or4xTU-11u0p00cTRo
 
-* Andrii Nakryiko <andrii.nakryiko@gmail.com> [240605 12:27]:
-> On Wed, Jun 5, 2024 at 9:24=E2=80=AFAM Andrii Nakryiko
-> <andrii.nakryiko@gmail.com> wrote:
-> >
-> > On Wed, Jun 5, 2024 at 9:13=E2=80=AFAM Andrii Nakryiko
-> > <andrii.nakryiko@gmail.com> wrote:
-> > >
-> > > On Wed, Jun 5, 2024 at 6:33=E2=80=AFAM Liam R. Howlett <Liam.Howlett@=
-oracle.com> wrote:
-> > > >
-> > > > * Matthew Wilcox <willy@infradead.org> [240604 20:57]:
-> > > > > On Tue, Jun 04, 2024 at 05:24:46PM -0700, Andrii Nakryiko wrote:
-> > > > > > +/*
-> > > > > > + * find_and_lock_vma_rcu() - Find and lock the VMA for a given=
- address, or the
-> > > > > > + * next VMA. Search is done under RCU protection, without taki=
-ng or assuming
-> > > > > > + * mmap_lock. Returned VMA is guaranteed to be stable and not =
-isolated.
-> > > > >
-> > > > > You know this is supposed to be the _short_ description, right?
-> > > > > Three lines is way too long.  The full description goes between t=
-he
-> > > > > arguments and the Return: line.
-> > >
-> > > Sure, I'll adjust.
-> > >
-> > > > >
-> > > > > > + * @mm: The mm_struct to check
-> > > > > > + * @addr: The address
-> > > > > > + *
-> > > > > > + * Returns: The VMA associated with addr, or the next VMA.
-> > > > > > + * May return %NULL in the case of no VMA at addr or above.
-> > > > > > + * If the VMA is being modified and can't be locked, -EBUSY is=
- returned.
-> > > > > > + */
-> > > > > > +struct vm_area_struct *find_and_lock_vma_rcu(struct mm_struct =
-*mm,
-> > > > > > +                                        unsigned long address)
-> > > > > > +{
-> > > > > > +   MA_STATE(mas, &mm->mm_mt, address, address);
-> > > > > > +   struct vm_area_struct *vma;
-> > > > > > +   int err;
-> > > > > > +
-> > > > > > +   rcu_read_lock();
-> > > > > > +retry:
-> > > > > > +   vma =3D mas_find(&mas, ULONG_MAX);
-> > > > > > +   if (!vma) {
-> > > > > > +           err =3D 0; /* no VMA, return NULL */
-> > > > > > +           goto inval;
-> > > > > > +   }
-> > > > > > +
-> > > > > > +   if (!vma_start_read(vma)) {
-> > > > > > +           err =3D -EBUSY;
-> > > > > > +           goto inval;
-> > > > > > +   }
-> > > > > > +
-> > > > > > +   /*
-> > > > > > +    * Check since vm_start/vm_end might change before we lock =
-the VMA.
-> > > > > > +    * Note, unlike lock_vma_under_rcu() we are searching for V=
-MA covering
-> > > > > > +    * address or the next one, so we only make sure VMA wasn't=
- updated to
-> > > > > > +    * end before the address.
-> > > > > > +    */
-> > > > > > +   if (unlikely(vma->vm_end <=3D address)) {
-> > > > > > +           err =3D -EBUSY;
-> > > > > > +           goto inval_end_read;
-> > > > > > +   }
-> > > > > > +
-> > > > > > +   /* Check if the VMA got isolated after we found it */
-> > > > > > +   if (vma->detached) {
-> > > > > > +           vma_end_read(vma);
-> > > > > > +           count_vm_vma_lock_event(VMA_LOCK_MISS);
-> > > > > > +           /* The area was replaced with another one */
-> > > > >
-> > > > > Surely you need to mas_reset() before you goto retry?
-> > > >
-> > > > Probably more than that.  We've found and may have adjusted the
-> > > > index/last; we should reconfigure the maple state.  You should prob=
-ably
-> > > > use mas_set(), which will reset the maple state and set the index a=
-nd
-> > > > long to address.
-> > >
-> > > Yep, makes sense, thanks. As for the `unlikely(vma->vm_end <=3D
-> > > address)` case, I presume we want to do the same, right? Basically, o=
-n
-> > > each retry start from the `address` unconditionally, no matter what's
-> > > the reason for retry.
-> >
-> > ah, never mind, we don't retry in that situation, I'll just put
-> > `mas_set(&mas, address);` right before `goto retry;`. Unless we should
-> > actually retry in the case when VMA got moved before the requested
-> > address, not sure, let me know what you think. Presumably retrying
-> > will allow us to get the correct VMA without the need to fall back to
-> > mmap_lock?
->=20
-> sorry, one more question as I look some more around this (unfamiliar
-> to me) piece of code. I see that lock_vma_under_rcu counts
-> VMA_LOCK_MISS on retry, but I see that there is actually a
-> VMA_LOCK_RETRY stat as well. Any reason it's a MISS instead of RETRY?
-> Should I use MISS as well, or actually count a RETRY?
->=20
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git master
+branch HEAD: 234cb065ad82915ff8d06ce01e01c3e640b674d2  Add linux-next specific files for 20240605
 
-VMA_LOCK_MISS is used here because we missed the VMA due to a write
-happening to move the vma (rather rare).  The VMA_LOCK missed the vma.
+Error/Warning reports:
 
-VMA_LOCK_RETRY is used to indicate we need to retry under the mmap lock.
-A retry is needed after the VMA_LOCK did not work under rcu locking.
+https://lore.kernel.org/oe-kbuild-all/202406051521.mroqvR5l-lkp@intel.com
+https://lore.kernel.org/oe-kbuild-all/202406051524.a12JqLqx-lkp@intel.com
+https://lore.kernel.org/oe-kbuild-all/202406051711.dS1sQZ9n-lkp@intel.com
+https://lore.kernel.org/oe-kbuild-all/202406051855.9VIYXbTB-lkp@intel.com
 
-Thanks,
-Liam
+Error/Warning: (recently discovered and may have been fixed)
+
+include/linux/container_of.h:20:54: error: 'struct ftrace_ops' has no member named 'list'
+include/linux/list.h:769:26: error: 'struct ftrace_ops' has no member named 'list'
+include/linux/stddef.h:16:33: error: 'struct ftrace_ops' has no member named 'list'
+kernel/trace/fgraph.c:883:43: error: 'struct ftrace_ops' has no member named 'subop_list'
+kernel/trace/fgraph.c:934:15: error: implicit declaration of function 'ftrace_startup_subops'; did you mean 'ftrace_startup'? [-Werror=implicit-function-declaration]
+kernel/trace/fgraph.c:973:9: error: implicit declaration of function 'ftrace_shutdown_subops'; did you mean 'ftrace_shutdown'? [-Werror=implicit-function-declaration]
+
+Error/Warning ids grouped by kconfigs:
+
+gcc_recent_errors
+|-- arc-randconfig-r061-20240605
+|   |-- drivers-gpu-drm-arm-display-komeda-komeda_dev.c:error:implicit-declaration-of-function-seq_puts
+|   |-- drivers-gpu-drm-arm-display-komeda-komeda_dev.c:error:invalid-use-of-undefined-type-struct-seq_file
+|   `-- drivers-gpu-drm-arm-display-komeda-komeda_dev.c:error:type-defaults-to-int-in-declaration-of-DEFINE_SHOW_ATTRIBUTE
+|-- csky-randconfig-r053-20240605
+|   |-- include-linux-container_of.h:error:struct-ftrace_ops-has-no-member-named-list
+|   |-- include-linux-list.h:error:struct-ftrace_ops-has-no-member-named-list
+|   |-- include-linux-stddef.h:error:struct-ftrace_ops-has-no-member-named-list
+|   |-- kernel-trace-fgraph.c:error:implicit-declaration-of-function-ftrace_shutdown_subops
+|   |-- kernel-trace-fgraph.c:error:implicit-declaration-of-function-ftrace_startup_subops
+|   `-- kernel-trace-fgraph.c:error:struct-ftrace_ops-has-no-member-named-subop_list
+|-- i386-randconfig-061-20240605
+|   `-- drivers-hwmon-cros_ec_hwmon.c:sparse:sparse:cast-to-restricted-__le16
+|-- i386-randconfig-063-20240605
+|   |-- kernel-trace-ftrace.c:sparse:sparse:incorrect-type-in-argument-(different-address-spaces)-expected-struct-ftrace_hash-B-got-struct-ftrace_hash-noderef-__rcu-filter_hash
+|   |-- kernel-trace-ftrace.c:sparse:sparse:incorrect-type-in-argument-(different-address-spaces)-expected-struct-ftrace_hash-B-got-struct-ftrace_hash-noderef-__rcu-notrace_hash
+|   |-- kernel-trace-ftrace.c:sparse:sparse:incorrect-type-in-argument-(different-address-spaces)-expected-struct-ftrace_hash-new_hash-got-struct-ftrace_hash-noderef-__rcu-filter_hash
+|   |-- kernel-trace-ftrace.c:sparse:sparse:incorrect-type-in-argument-(different-address-spaces)-expected-struct-ftrace_hash-new_hash1-got-struct-ftrace_hash-noderef-__rcu-filter_hash
+|   |-- kernel-trace-ftrace.c:sparse:sparse:incorrect-type-in-argument-(different-address-spaces)-expected-struct-ftrace_hash-new_hash2-got-struct-ftrace_hash-noderef-__rcu-filter_hash
+|   |-- kernel-trace-ftrace.c:sparse:sparse:incorrect-type-in-argument-(different-address-spaces)-expected-struct-ftrace_hash-new_hash2-got-struct-ftrace_hash-noderef-__rcu-notrace_hash
+|   |-- kernel-trace-ftrace.c:sparse:sparse:incorrect-type-in-argument-(different-address-spaces)-expected-struct-ftrace_hash-orig_hash-got-struct-ftrace_hash-noderef-__rcu
+|   |-- kernel-trace-ftrace.c:sparse:sparse:incorrect-type-in-argument-(different-address-spaces)-expected-struct-ftrace_hash-src-got-struct-ftrace_hash-noderef-__rcu-filter_hash
+|   |-- kernel-trace-ftrace.c:sparse:sparse:incorrect-type-in-argument-(different-address-spaces)-expected-struct-ftrace_hash-src-got-struct-ftrace_hash-noderef-__rcu-notrace_hash
+|   |-- kernel-trace-ftrace.c:sparse:sparse:incorrect-type-in-assignment-(different-address-spaces)-expected-struct-ftrace_hash-noderef-__rcu-filter_hash-got-struct-ftrace_hash
+|   |-- kernel-trace-ftrace.c:sparse:sparse:incorrect-type-in-assignment-(different-address-spaces)-expected-struct-ftrace_hash-noderef-__rcu-filter_hash-got-struct-ftrace_hash-assigned-filter_hash
+|   |-- kernel-trace-ftrace.c:sparse:sparse:incorrect-type-in-assignment-(different-address-spaces)-expected-struct-ftrace_hash-noderef-__rcu-filter_hash-got-struct-ftrace_hash-save_filter_hash
+|   |-- kernel-trace-ftrace.c:sparse:sparse:incorrect-type-in-assignment-(different-address-spaces)-expected-struct-ftrace_hash-noderef-__rcu-notrace_hash-got-struct-ftrace_hash
+|   |-- kernel-trace-ftrace.c:sparse:sparse:incorrect-type-in-assignment-(different-address-spaces)-expected-struct-ftrace_hash-noderef-__rcu-notrace_hash-got-struct-ftrace_hash-assigned-notrace_hash
+|   |-- kernel-trace-ftrace.c:sparse:sparse:incorrect-type-in-assignment-(different-address-spaces)-expected-struct-ftrace_hash-noderef-__rcu-notrace_hash-got-struct-ftrace_hash-save_notrace_hash
+|   |-- kernel-trace-ftrace.c:sparse:sparse:incorrect-type-in-assignment-(different-address-spaces)-expected-struct-ftrace_hash-save_filter_hash-got-struct-ftrace_hash-noderef-__rcu-filter_hash
+|   `-- kernel-trace-ftrace.c:sparse:sparse:incorrect-type-in-assignment-(different-address-spaces)-expected-struct-ftrace_hash-save_notrace_hash-got-struct-ftrace_hash-noderef-__rcu-notrace_hash
+|-- i386-randconfig-141-20240605
+|   |-- drivers-dma-fsl-edma-common.c-fsl_edma_fill_tcd()-warn:statement-has-no-effect
+|   |-- drivers-dma-fsl-edma-common.c-fsl_edma_set_tcd_regs()-warn:statement-has-no-effect
+|   |-- drivers-dma-fsl-edma-main.c-fsl_edma_probe()-warn:statement-has-no-effect
+|   |-- drivers-dma-fsl-edma-main.c-fsl_edma_resume_early()-warn:statement-has-no-effect
+|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-core-dc_stream.c-dc_stream_get_max_flickerless_instant_vtotal_delta()-warn:always-true-condition-((safe_refresh_v_total-stream-timing.v_total)-)-(-u32max-)
+|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-core-dc_stream.c-dc_stream_get_max_flickerless_instant_vtotal_delta()-warn:always-true-condition-((stream-timing.v_total-safe_refresh_v_total)-)-(-u32max-)
+|   |-- drivers-gpu-drm-amd-amdgpu-amdgpu_vm.c-amdgpu_vm_bo_update()-error:we-previously-assumed-bo-could-be-null-(see-line-)
+|   |-- drivers-gpu-drm-i915-display-intel_dpt.c-intel_dpt_pin_to_ggtt()-error:uninitialized-symbol-vma-.
+|   |-- drivers-gpu-drm-i915-display-intel_fb_pin.c-intel_fb_pin_to_dpt()-error:uninitialized-symbol-vma-.
+|   |-- drivers-gpu-drm-i915-display-intel_fb_pin.c-intel_fb_pin_to_dpt()-error:vma-dereferencing-possible-ERR_PTR()
+|   |-- drivers-gpu-drm-xe-xe_drm_client.c-show_run_ticks()-error:uninitialized-symbol-gpu_timestamp-.
+|   |-- drivers-gpu-drm-xe-xe_drm_client.c-show_run_ticks()-error:uninitialized-symbol-hwe-.
+|   `-- drivers-gpu-drm-xe-xe_sched_job.c-xe_sched_job_arm()-error:uninitialized-symbol-fence-.
+|-- loongarch-defconfig
+|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-hubbub-dcn401-dcn401_hubbub.o:warning:objtool:unexpected-relocation-symbol-type-in-.rela.discard.reachable
+|   `-- drivers-thermal-thermal_trip.o:warning:objtool:unexpected-relocation-symbol-type-in-.rela.discard.reachable
+|-- loongarch-loongson3_defconfig
+|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-hubbub-dcn401-dcn401_hubbub.o:warning:objtool:unexpected-relocation-symbol-type-in-.rela.discard.reachable
+|   `-- drivers-thermal-thermal_trip.o:warning:objtool:unexpected-relocation-symbol-type-in-.rela.discard.reachable
+|-- loongarch-randconfig-r064-20240605
+|   |-- drivers-gpu-drm-arm-display-komeda-komeda_dev.c:error:implicit-declaration-of-function-seq_puts
+|   |-- drivers-gpu-drm-arm-display-komeda-komeda_dev.c:error:invalid-use-of-undefined-type-struct-seq_file
+|   |-- drivers-gpu-drm-arm-display-komeda-komeda_dev.c:error:type-defaults-to-int-in-declaration-of-DEFINE_SHOW_ATTRIBUTE
+|   |-- include-linux-container_of.h:error:struct-ftrace_ops-has-no-member-named-list
+|   |-- include-linux-list.h:error:struct-ftrace_ops-has-no-member-named-list
+|   |-- include-linux-stddef.h:error:struct-ftrace_ops-has-no-member-named-list
+|   |-- kernel-trace-fgraph.c:error:implicit-declaration-of-function-ftrace_shutdown_subops
+|   |-- kernel-trace-fgraph.c:error:implicit-declaration-of-function-ftrace_startup_subops
+|   `-- kernel-trace-fgraph.c:error:struct-ftrace_ops-has-no-member-named-subop_list
+|-- riscv-randconfig-001-20240605
+|   |-- include-linux-container_of.h:error:struct-ftrace_ops-has-no-member-named-list
+|   |-- include-linux-list.h:error:struct-ftrace_ops-has-no-member-named-list
+|   |-- include-linux-stddef.h:error:struct-ftrace_ops-has-no-member-named-list
+|   |-- kernel-trace-fgraph.c:error:implicit-declaration-of-function-ftrace_shutdown_subops
+|   |-- kernel-trace-fgraph.c:error:implicit-declaration-of-function-ftrace_startup_subops
+|   `-- kernel-trace-fgraph.c:error:struct-ftrace_ops-has-no-member-named-subop_list
+|-- sparc64-randconfig-r121-20240605
+|   |-- kernel-trace-fgraph.c:error:implicit-declaration-of-function-ftrace_shutdown_subops
+|   `-- kernel-trace-fgraph.c:error:implicit-declaration-of-function-ftrace_startup_subops
+|-- um-allyesconfig
+|   `-- kernel-bpf-verifier.c:error:pcpu_hot-undeclared-(first-use-in-this-function)
+`-- x86_64-randconfig-003-20240605
+    |-- drivers-input-touchscreen-wacom_w8001.c:warning:Finger-directive-output-may-be-truncated-writing-bytes-into-a-region-of-size-between-and
+    `-- drivers-input-touchscreen-wacom_w8001.c:warning:Pen-directive-output-may-be-truncated-writing-bytes-into-a-region-of-size-between-and
+clang_recent_errors
+|-- arm64-allmodconfig
+|   |-- drivers-gpu-drm-amd-amdgpu-..-display-amdgpu_dm-amdgpu_dm.c:error:arithmetic-between-different-enumeration-types-(-enum-dc_irq_source-and-enum-irq_type-)-Werror-Wenum-enum-conversion
+|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-irq-dce110-irq_service_dce110.c:error:arithmetic-between-different-enumeration-types-(-enum-dc_irq_source-and-enum-irq_type-)-Werror-Wenum-enum-conversion
+|   |-- drivers-gpu-drm-i915-display-intel_cursor.c:error:arithmetic-between-different-enumeration-types-(-enum-pipe-and-enum-intel_display_power_domain-)-Werror-Wenum-enum-conversion
+|   |-- drivers-gpu-drm-i915-display-intel_ddi.c:error:arithmetic-between-different-enumeration-types-(-enum-hpd_pin-and-enum-port-)-Werror-Wenum-enum-conversion
+|   |-- drivers-gpu-drm-i915-display-intel_ddi.c:error:arithmetic-between-different-enumeration-types-(-enum-transcoder-and-enum-intel_display_power_domain-)-Werror-Wenum-enum-conversion
+|   |-- drivers-gpu-drm-i915-display-intel_display.c:error:arithmetic-between-different-enumeration-types-(-enum-phy-and-enum-port-)-Werror-Wenum-enum-conversion
+|   |-- drivers-gpu-drm-i915-display-intel_display.c:error:arithmetic-between-different-enumeration-types-(-enum-pipe-and-enum-intel_display_power_domain-)-Werror-Wenum-enum-conversion
+|   |-- drivers-gpu-drm-i915-display-intel_display.c:error:arithmetic-between-different-enumeration-types-(-enum-tc_port-and-enum-port-)-Werror-Wenum-enum-conversion
+|   |-- drivers-gpu-drm-i915-display-intel_display.c:error:arithmetic-between-different-enumeration-types-(-enum-transcoder-and-enum-intel_display_power_domain-)-Werror-Wenum-enum-conversion
+|   |-- drivers-gpu-drm-i915-display-intel_display_irq.c:error:arithmetic-between-different-enumeration-types-(-enum-pipe-and-enum-intel_display_power_domain-)-Werror-Wenum-enum-conversion
+|   |-- drivers-gpu-drm-i915-display-intel_display_irq.c:error:arithmetic-between-different-enumeration-types-(-enum-transcoder-and-enum-intel_display_power_domain-)-Werror-Wenum-enum-conversion
+|   |-- drivers-gpu-drm-i915-display-intel_dpll_mgr.c:error:arithmetic-between-different-enumeration-types-(-enum-tc_port-and-enum-intel_dpll_id-)-Werror-Wenum-enum-conversion
+|   |-- drivers-gpu-drm-i915-display-intel_hotplug.c:error:arithmetic-between-different-enumeration-types-(-enum-hpd_pin-and-enum-port-)-Werror-Wenum-enum-conversion
+|   |-- drivers-gpu-drm-i915-display-intel_pipe_crc.c:error:arithmetic-between-different-enumeration-types-(-enum-pipe-and-enum-intel_display_power_domain-)-Werror-Wenum-enum-conversion
+|   |-- drivers-gpu-drm-i915-display-intel_tc.c:error:arithmetic-between-different-enumeration-types-(-enum-intel_display_power_domain-and-enum-tc_port-)-Werror-Wenum-enum-conversion
+|   |-- drivers-gpu-drm-i915-display-intel_vdsc.c:error:arithmetic-between-different-enumeration-types-(-enum-pipe-and-enum-intel_display_power_domain-)-Werror-Wenum-enum-conversion
+|   |-- drivers-gpu-drm-i915-display-skl_universal_plane.c:error:arithmetic-between-different-enumeration-types-(-enum-pipe-and-enum-intel_display_power_domain-)-Werror-Wenum-enum-conversion
+|   |-- drivers-gpu-drm-i915-display-skl_watermark.c:error:arithmetic-between-different-enumeration-types-(-enum-pipe-and-enum-intel_display_power_domain-)-Werror-Wenum-enum-conversion
+|   `-- drivers-gpu-drm-renesas-rcar-du-rcar_cmm.c:error:unused-function-rcar_cmm_read-Werror-Wunused-function
+|-- arm64-randconfig-003-20240605
+|   |-- drivers-gpu-drm-amd-amdgpu-amdgpu_gfx.c:error:format-specifies-type-unsigned-char-but-the-argument-has-type-int-Werror-Wformat
+|   `-- drivers-gpu-drm-amd-amdgpu-amdgpu_gfx.c:error:format-specifies-type-unsigned-char-but-the-argument-has-type-u32-(aka-unsigned-int-)-Werror-Wformat
+|-- hexagon-randconfig-001-20240605
+|   `-- drivers-gpu-drm-drm_mm.c:error:function-drm_mm_node_scanned_block-is-not-needed-and-will-not-be-emitted-Werror-Wunneeded-internal-declaration
+|-- i386-randconfig-r131-20240605
+|   |-- kernel-trace-fgraph.c:sparse:sparse:symbol-fgraph_do_direct-was-not-declared.-Should-it-be-static
+|   |-- kernel-trace-ftrace.c:sparse:sparse:incorrect-type-in-argument-(different-address-spaces)-expected-struct-ftrace_hash-B-got-struct-ftrace_hash-noderef-__rcu-filter_hash
+|   |-- kernel-trace-ftrace.c:sparse:sparse:incorrect-type-in-argument-(different-address-spaces)-expected-struct-ftrace_hash-B-got-struct-ftrace_hash-noderef-__rcu-notrace_hash
+|   |-- kernel-trace-ftrace.c:sparse:sparse:incorrect-type-in-argument-(different-address-spaces)-expected-struct-ftrace_hash-new_hash-got-struct-ftrace_hash-noderef-__rcu-filter_hash
+|   |-- kernel-trace-ftrace.c:sparse:sparse:incorrect-type-in-argument-(different-address-spaces)-expected-struct-ftrace_hash-new_hash1-got-struct-ftrace_hash-noderef-__rcu-filter_hash
+|   |-- kernel-trace-ftrace.c:sparse:sparse:incorrect-type-in-argument-(different-address-spaces)-expected-struct-ftrace_hash-new_hash2-got-struct-ftrace_hash-noderef-__rcu-filter_hash
+|   |-- kernel-trace-ftrace.c:sparse:sparse:incorrect-type-in-argument-(different-address-spaces)-expected-struct-ftrace_hash-new_hash2-got-struct-ftrace_hash-noderef-__rcu-notrace_hash
+|   |-- kernel-trace-ftrace.c:sparse:sparse:incorrect-type-in-argument-(different-address-spaces)-expected-struct-ftrace_hash-orig_hash-got-struct-ftrace_hash-noderef-__rcu
+|   |-- kernel-trace-ftrace.c:sparse:sparse:incorrect-type-in-argument-(different-address-spaces)-expected-struct-ftrace_hash-src-got-struct-ftrace_hash-noderef-__rcu-filter_hash
+|   |-- kernel-trace-ftrace.c:sparse:sparse:incorrect-type-in-argument-(different-address-spaces)-expected-struct-ftrace_hash-src-got-struct-ftrace_hash-noderef-__rcu-notrace_hash
+|   |-- kernel-trace-ftrace.c:sparse:sparse:incorrect-type-in-assignment-(different-address-spaces)-expected-struct-ftrace_hash-noderef-__rcu-filter_hash-got-struct-ftrace_hash
+|   |-- kernel-trace-ftrace.c:sparse:sparse:incorrect-type-in-assignment-(different-address-spaces)-expected-struct-ftrace_hash-noderef-__rcu-filter_hash-got-struct-ftrace_hash-assigned-filter_hash
+|   |-- kernel-trace-ftrace.c:sparse:sparse:incorrect-type-in-assignment-(different-address-spaces)-expected-struct-ftrace_hash-noderef-__rcu-filter_hash-got-struct-ftrace_hash-save_filter_hash
+|   |-- kernel-trace-ftrace.c:sparse:sparse:incorrect-type-in-assignment-(different-address-spaces)-expected-struct-ftrace_hash-noderef-__rcu-notrace_hash-got-struct-ftrace_hash
+|   |-- kernel-trace-ftrace.c:sparse:sparse:incorrect-type-in-assignment-(different-address-spaces)-expected-struct-ftrace_hash-noderef-__rcu-notrace_hash-got-struct-ftrace_hash-assigned-notrace_hash
+|   |-- kernel-trace-ftrace.c:sparse:sparse:incorrect-type-in-assignment-(different-address-spaces)-expected-struct-ftrace_hash-noderef-__rcu-notrace_hash-got-struct-ftrace_hash-save_notrace_hash
+|   |-- kernel-trace-ftrace.c:sparse:sparse:incorrect-type-in-assignment-(different-address-spaces)-expected-struct-ftrace_hash-save_filter_hash-got-struct-ftrace_hash-noderef-__rcu-filter_hash
+|   `-- kernel-trace-ftrace.c:sparse:sparse:incorrect-type-in-assignment-(different-address-spaces)-expected-struct-ftrace_hash-save_notrace_hash-got-struct-ftrace_hash-noderef-__rcu-notrace_hash
+|-- riscv-allmodconfig
+|   |-- drivers-gpu-drm-amd-amdgpu-..-display-amdgpu_dm-amdgpu_dm.c:error:arithmetic-between-different-enumeration-types-(-enum-dc_irq_source-and-enum-irq_type-)-Werror-Wenum-enum-conversion
+|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-irq-dce110-irq_service_dce110.c:error:arithmetic-between-different-enumeration-types-(-enum-dc_irq_source-and-enum-irq_type-)-Werror-Wenum-enum-conversion
+|   |-- drivers-gpu-drm-i915-display-intel_cursor.c:error:arithmetic-between-different-enumeration-types-(-enum-pipe-and-enum-intel_display_power_domain-)-Werror-Wenum-enum-conversion
+|   |-- drivers-gpu-drm-i915-display-intel_ddi.c:error:arithmetic-between-different-enumeration-types-(-enum-hpd_pin-and-enum-port-)-Werror-Wenum-enum-conversion
+|   |-- drivers-gpu-drm-i915-display-intel_ddi.c:error:arithmetic-between-different-enumeration-types-(-enum-transcoder-and-enum-intel_display_power_domain-)-Werror-Wenum-enum-conversion
+|   |-- drivers-gpu-drm-i915-display-intel_display.c:error:arithmetic-between-different-enumeration-types-(-enum-phy-and-enum-port-)-Werror-Wenum-enum-conversion
+|   |-- drivers-gpu-drm-i915-display-intel_display.c:error:arithmetic-between-different-enumeration-types-(-enum-pipe-and-enum-intel_display_power_domain-)-Werror-Wenum-enum-conversion
+|   |-- drivers-gpu-drm-i915-display-intel_display.c:error:arithmetic-between-different-enumeration-types-(-enum-tc_port-and-enum-port-)-Werror-Wenum-enum-conversion
+|   |-- drivers-gpu-drm-i915-display-intel_display.c:error:arithmetic-between-different-enumeration-types-(-enum-transcoder-and-enum-intel_display_power_domain-)-Werror-Wenum-enum-conversion
+|   |-- drivers-gpu-drm-i915-display-intel_display_irq.c:error:arithmetic-between-different-enumeration-types-(-enum-pipe-and-enum-intel_display_power_domain-)-Werror-Wenum-enum-conversion
+|   |-- drivers-gpu-drm-i915-display-intel_display_irq.c:error:arithmetic-between-different-enumeration-types-(-enum-transcoder-and-enum-intel_display_power_domain-)-Werror-Wenum-enum-conversion
+|   |-- drivers-gpu-drm-i915-display-intel_dpll_mgr.c:error:arithmetic-between-different-enumeration-types-(-enum-tc_port-and-enum-intel_dpll_id-)-Werror-Wenum-enum-conversion
+|   |-- drivers-gpu-drm-i915-display-intel_hotplug.c:error:arithmetic-between-different-enumeration-types-(-enum-hpd_pin-and-enum-port-)-Werror-Wenum-enum-conversion
+|   |-- drivers-gpu-drm-i915-display-intel_pipe_crc.c:error:arithmetic-between-different-enumeration-types-(-enum-pipe-and-enum-intel_display_power_domain-)-Werror-Wenum-enum-conversion
+|   |-- drivers-gpu-drm-i915-display-intel_tc.c:error:arithmetic-between-different-enumeration-types-(-enum-intel_display_power_domain-and-enum-tc_port-)-Werror-Wenum-enum-conversion
+|   |-- drivers-gpu-drm-i915-display-intel_vdsc.c:error:arithmetic-between-different-enumeration-types-(-enum-pipe-and-enum-intel_display_power_domain-)-Werror-Wenum-enum-conversion
+|   |-- drivers-gpu-drm-i915-display-skl_universal_plane.c:error:arithmetic-between-different-enumeration-types-(-enum-pipe-and-enum-intel_display_power_domain-)-Werror-Wenum-enum-conversion
+|   `-- drivers-gpu-drm-i915-display-skl_watermark.c:error:arithmetic-between-different-enumeration-types-(-enum-pipe-and-enum-intel_display_power_domain-)-Werror-Wenum-enum-conversion
+|-- riscv-allyesconfig
+|   |-- drivers-gpu-drm-amd-amdgpu-..-display-amdgpu_dm-amdgpu_dm.c:error:arithmetic-between-different-enumeration-types-(-enum-dc_irq_source-and-enum-irq_type-)-Werror-Wenum-enum-conversion
+|   `-- drivers-gpu-drm-amd-amdgpu-..-display-dc-irq-dce110-irq_service_dce110.c:error:arithmetic-between-different-enumeration-types-(-enum-dc_irq_source-and-enum-irq_type-)-Werror-Wenum-enum-conversion
+|-- s390-allmodconfig
+|   |-- drivers-gpu-drm-i915-display-intel_cursor.c:error:arithmetic-between-different-enumeration-types-(-enum-pipe-and-enum-intel_display_power_domain-)-Werror-Wenum-enum-conversion
+|   |-- drivers-gpu-drm-i915-display-intel_ddi.c:error:arithmetic-between-different-enumeration-types-(-enum-transcoder-and-enum-intel_display_power_domain-)-Werror-Wenum-enum-conversion
+|   |-- drivers-gpu-drm-i915-display-intel_display.c:error:arithmetic-between-different-enumeration-types-(-enum-phy-and-enum-port-)-Werror-Wenum-enum-conversion
+|   |-- drivers-gpu-drm-i915-display-intel_display.c:error:arithmetic-between-different-enumeration-types-(-enum-transcoder-and-enum-intel_display_power_domain-)-Werror-Wenum-enum-conversion
+|   |-- drivers-gpu-drm-i915-display-intel_display_irq.c:error:arithmetic-between-different-enumeration-types-(-enum-pipe-and-enum-intel_display_power_domain-)-Werror-Wenum-enum-conversion
+|   |-- drivers-gpu-drm-i915-display-intel_display_irq.c:error:arithmetic-between-different-enumeration-types-(-enum-transcoder-and-enum-intel_display_power_domain-)-Werror-Wenum-enum-conversion
+|   |-- drivers-gpu-drm-i915-display-intel_dpll_mgr.c:error:arithmetic-between-different-enumeration-types-(-enum-tc_port-and-enum-intel_dpll_id-)-Werror-Wenum-enum-conversion
+|   |-- drivers-gpu-drm-i915-display-intel_hotplug.c:error:arithmetic-between-different-enumeration-types-(-enum-hpd_pin-and-enum-port-)-Werror-Wenum-enum-conversion
+|   |-- drivers-gpu-drm-i915-display-intel_pipe_crc.c:error:arithmetic-between-different-enumeration-types-(-enum-pipe-and-enum-intel_display_power_domain-)-Werror-Wenum-enum-conversion
+|   |-- drivers-gpu-drm-i915-display-intel_tc.c:error:arithmetic-between-different-enumeration-types-(-enum-intel_display_power_domain-and-enum-tc_port-)-Werror-Wenum-enum-conversion
+|   |-- drivers-gpu-drm-i915-display-intel_vdsc.c:error:arithmetic-between-different-enumeration-types-(-enum-pipe-and-enum-intel_display_power_domain-)-Werror-Wenum-enum-conversion
+|   |-- drivers-gpu-drm-i915-display-skl_universal_plane.c:error:arithmetic-between-different-enumeration-types-(-enum-pipe-and-enum-intel_display_power_domain-)-Werror-Wenum-enum-conversion
+|   `-- drivers-gpu-drm-i915-display-skl_watermark.c:error:arithmetic-between-different-enumeration-types-(-enum-pipe-and-enum-intel_display_power_domain-)-Werror-Wenum-enum-conversion
+`-- x86_64-randconfig-002-20240605
+    `-- drivers-gpu-drm-drm_mm.c:error:function-drm_mm_node_scanned_block-is-not-needed-and-will-not-be-emitted-Werror-Wunneeded-internal-declaration
+
+elapsed time: 754m
+
+configs tested: 180
+configs skipped: 3
+
+tested configs:
+alpha                             allnoconfig   gcc  
+alpha                            allyesconfig   gcc  
+alpha                               defconfig   gcc  
+arc                              allmodconfig   gcc  
+arc                               allnoconfig   gcc  
+arc                              allyesconfig   gcc  
+arc                                 defconfig   gcc  
+arc                   randconfig-001-20240605   gcc  
+arc                   randconfig-002-20240605   gcc  
+arm                              allmodconfig   gcc  
+arm                               allnoconfig   clang
+arm                              allyesconfig   gcc  
+arm                                 defconfig   clang
+arm                            mps2_defconfig   clang
+arm                         mv78xx0_defconfig   clang
+arm                        mvebu_v7_defconfig   clang
+arm                         orion5x_defconfig   clang
+arm                   randconfig-001-20240605   clang
+arm                   randconfig-002-20240605   clang
+arm                   randconfig-003-20240605   clang
+arm                   randconfig-004-20240605   gcc  
+arm64                            allmodconfig   clang
+arm64                             allnoconfig   gcc  
+arm64                               defconfig   gcc  
+arm64                 randconfig-001-20240605   gcc  
+arm64                 randconfig-002-20240605   clang
+arm64                 randconfig-003-20240605   clang
+arm64                 randconfig-004-20240605   clang
+csky                             allmodconfig   gcc  
+csky                              allnoconfig   gcc  
+csky                             allyesconfig   gcc  
+csky                                defconfig   gcc  
+csky                  randconfig-001-20240605   gcc  
+csky                  randconfig-002-20240605   gcc  
+hexagon                          allmodconfig   clang
+hexagon                           allnoconfig   clang
+hexagon                          allyesconfig   clang
+hexagon                             defconfig   clang
+hexagon               randconfig-001-20240605   clang
+hexagon               randconfig-002-20240605   clang
+i386                             allmodconfig   gcc  
+i386                              allnoconfig   gcc  
+i386                             allyesconfig   gcc  
+i386         buildonly-randconfig-001-20240605   gcc  
+i386         buildonly-randconfig-002-20240605   gcc  
+i386         buildonly-randconfig-003-20240605   gcc  
+i386         buildonly-randconfig-004-20240605   gcc  
+i386         buildonly-randconfig-005-20240605   gcc  
+i386         buildonly-randconfig-006-20240605   gcc  
+i386                                defconfig   clang
+i386                  randconfig-001-20240605   gcc  
+i386                  randconfig-002-20240605   clang
+i386                  randconfig-003-20240605   gcc  
+i386                  randconfig-004-20240605   gcc  
+i386                  randconfig-005-20240605   gcc  
+i386                  randconfig-006-20240605   gcc  
+i386                  randconfig-011-20240605   gcc  
+i386                  randconfig-012-20240605   gcc  
+i386                  randconfig-013-20240605   clang
+i386                  randconfig-014-20240605   clang
+i386                  randconfig-015-20240605   gcc  
+i386                  randconfig-016-20240605   clang
+loongarch                        allmodconfig   gcc  
+loongarch                         allnoconfig   gcc  
+loongarch                           defconfig   gcc  
+loongarch                 loongson3_defconfig   gcc  
+loongarch             randconfig-001-20240605   gcc  
+loongarch             randconfig-002-20240605   gcc  
+m68k                             allmodconfig   gcc  
+m68k                              allnoconfig   gcc  
+m68k                             allyesconfig   gcc  
+m68k                          atari_defconfig   gcc  
+m68k                                defconfig   gcc  
+microblaze                       allmodconfig   gcc  
+microblaze                        allnoconfig   gcc  
+microblaze                       allyesconfig   gcc  
+microblaze                          defconfig   gcc  
+mips                              allnoconfig   gcc  
+mips                             allyesconfig   gcc  
+mips                      maltaaprp_defconfig   clang
+mips                          rb532_defconfig   clang
+nios2                            alldefconfig   gcc  
+nios2                            allmodconfig   gcc  
+nios2                             allnoconfig   gcc  
+nios2                            allyesconfig   gcc  
+nios2                               defconfig   gcc  
+nios2                 randconfig-001-20240605   gcc  
+nios2                 randconfig-002-20240605   gcc  
+openrisc                          allnoconfig   gcc  
+openrisc                         allyesconfig   gcc  
+openrisc                            defconfig   gcc  
+parisc                           allmodconfig   gcc  
+parisc                            allnoconfig   gcc  
+parisc                           allyesconfig   gcc  
+parisc                              defconfig   gcc  
+parisc                randconfig-001-20240605   gcc  
+parisc                randconfig-002-20240605   gcc  
+parisc64                            defconfig   gcc  
+powerpc                     akebono_defconfig   clang
+powerpc                          allmodconfig   gcc  
+powerpc                           allnoconfig   gcc  
+powerpc                          allyesconfig   clang
+powerpc                        cell_defconfig   gcc  
+powerpc                        icon_defconfig   gcc  
+powerpc                     ppa8548_defconfig   gcc  
+powerpc                      ppc64e_defconfig   gcc  
+powerpc               randconfig-001-20240605   gcc  
+powerpc               randconfig-002-20240605   gcc  
+powerpc               randconfig-003-20240605   gcc  
+powerpc64             randconfig-001-20240605   gcc  
+powerpc64             randconfig-002-20240605   clang
+powerpc64             randconfig-003-20240605   gcc  
+riscv                            allmodconfig   clang
+riscv                             allnoconfig   gcc  
+riscv                            allyesconfig   clang
+riscv                               defconfig   clang
+riscv                 randconfig-001-20240605   gcc  
+riscv                 randconfig-002-20240605   gcc  
+s390                             allmodconfig   clang
+s390                              allnoconfig   clang
+s390                             allyesconfig   gcc  
+s390                                defconfig   clang
+s390                  randconfig-001-20240605   gcc  
+s390                  randconfig-002-20240605   clang
+sh                               allmodconfig   gcc  
+sh                                allnoconfig   gcc  
+sh                               allyesconfig   gcc  
+sh                                  defconfig   gcc  
+sh                    randconfig-001-20240605   gcc  
+sh                    randconfig-002-20240605   gcc  
+sh                   rts7751r2dplus_defconfig   gcc  
+sh                   sh7770_generic_defconfig   gcc  
+sh                             shx3_defconfig   gcc  
+sparc                            allmodconfig   gcc  
+sparc                             allnoconfig   gcc  
+sparc                               defconfig   gcc  
+sparc64                          allmodconfig   gcc  
+sparc64                          allyesconfig   gcc  
+sparc64                             defconfig   gcc  
+sparc64               randconfig-001-20240605   gcc  
+sparc64               randconfig-002-20240605   gcc  
+um                               allmodconfig   clang
+um                                allnoconfig   clang
+um                               allyesconfig   gcc  
+um                                  defconfig   clang
+um                             i386_defconfig   gcc  
+um                    randconfig-001-20240605   gcc  
+um                    randconfig-002-20240605   clang
+um                           x86_64_defconfig   clang
+x86_64                            allnoconfig   clang
+x86_64                           allyesconfig   clang
+x86_64       buildonly-randconfig-001-20240605   gcc  
+x86_64       buildonly-randconfig-002-20240605   gcc  
+x86_64       buildonly-randconfig-003-20240605   gcc  
+x86_64       buildonly-randconfig-004-20240605   clang
+x86_64       buildonly-randconfig-005-20240605   clang
+x86_64       buildonly-randconfig-006-20240605   clang
+x86_64                              defconfig   gcc  
+x86_64                randconfig-001-20240605   clang
+x86_64                randconfig-002-20240605   clang
+x86_64                randconfig-003-20240605   gcc  
+x86_64                randconfig-004-20240605   clang
+x86_64                randconfig-005-20240605   clang
+x86_64                randconfig-006-20240605   gcc  
+x86_64                randconfig-011-20240605   clang
+x86_64                randconfig-012-20240605   gcc  
+x86_64                randconfig-013-20240605   clang
+x86_64                randconfig-014-20240605   gcc  
+x86_64                randconfig-015-20240605   clang
+x86_64                randconfig-016-20240605   gcc  
+x86_64                randconfig-071-20240605   gcc  
+x86_64                randconfig-072-20240605   clang
+x86_64                randconfig-073-20240605   gcc  
+x86_64                randconfig-074-20240605   gcc  
+x86_64                randconfig-075-20240605   gcc  
+x86_64                randconfig-076-20240605   gcc  
+x86_64                          rhel-8.3-rust   clang
+xtensa                            allnoconfig   gcc  
+xtensa                randconfig-001-20240605   gcc  
+xtensa                randconfig-002-20240605   gcc  
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
