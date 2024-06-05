@@ -1,455 +1,385 @@
-Return-Path: <bpf+bounces-31455-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-31456-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4846B8FD39A
-	for <lists+bpf@lfdr.de>; Wed,  5 Jun 2024 19:07:44 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A53FD8FD409
+	for <lists+bpf@lfdr.de>; Wed,  5 Jun 2024 19:26:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 71F5EB21D46
-	for <lists+bpf@lfdr.de>; Wed,  5 Jun 2024 17:07:41 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2CA061F244C5
+	for <lists+bpf@lfdr.de>; Wed,  5 Jun 2024 17:26:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7089D18FDB2;
-	Wed,  5 Jun 2024 17:07:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A8CB13A3E2;
+	Wed,  5 Jun 2024 17:26:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="g7qJHDug"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fhFdxVgM"
 X-Original-To: bpf@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.18])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pj1-f51.google.com (mail-pj1-f51.google.com [209.85.216.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 28EF4188CAD;
-	Wed,  5 Jun 2024 17:07:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 41B0CD26D;
+	Wed,  5 Jun 2024 17:26:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717607251; cv=none; b=Lg3vxRMV+7O6ONzYDIUZquk43x4ZMO8/lxNlaTLw9BXAaESMUWQPw3Zg0x2EmTVE3r3X2BaW5oTAlJAGQeM0fVJz9LfsxfOjgNuOG62LA9n+MAwaAsmT9JYa2P94lv/PdyreIUoXMN65ELb+XQ0UFZaqxkb00eE8OuOkMY7vpgo=
+	t=1717608371; cv=none; b=aEiZ2pSxELMPNoNlPsKBnVu0UdVFcd5DRVFKugDxkxqi0l9toD5L5QmEtjmegKdo0cqVMrF7rrHlB9zxTxhjT78BjrRnj8GaZRsNNjla5hXhqDOdqmUPlPK7H1QKelof+ylTqHswNAQ6RAa8ITwbHp/xqencLe516K4b6gxcrgI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717607251; c=relaxed/simple;
-	bh=Wc2d6oL7dIorQNEBMRjf4sC4r+Df0+y+xQEpxJy5jkE=;
-	h=Date:From:To:Cc:Subject:Message-ID; b=uKzaLiuVQjK0DvGUTCKe29abUtCq7tpgv+x9IO750MFY71fUqOWy/3WnLL/5wjJOa2pSRAIjLfvuMMEYxFZhqzifOspjU0+UaiB6WbdWXPLXiIvYW+IKMENtjmF6uJUa9fTrhFmwuM3xEvTdR/RxzevgCOwzCWTtomLnpIpB2/k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=g7qJHDug; arc=none smtp.client-ip=198.175.65.18
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1717607249; x=1749143249;
-  h=date:from:to:cc:subject:message-id;
-  bh=Wc2d6oL7dIorQNEBMRjf4sC4r+Df0+y+xQEpxJy5jkE=;
-  b=g7qJHDugneKPg0UuXr06FhXboftuo3MgTyBSqMpl6iaoKjCq0mT7trgy
-   w58adTEM/X3U+wqRR1Xa3BCwi3AWRKnLwhduiL1Nj53MGVN+3R28VmE+B
-   RoaTl41/gEfUhm0d4hNR8RRXgTe2IrMfKWqG0R1bTPex1YvYhdaWT/c1V
-   m0exjY+3cIYDjWivViLsrSLJEMskr+CoI7lxTWqCIvpvKQgfXwI5vefp+
-   e78EWWxLzpFUc6L1np20qwgGIxKTXFR2m6xBRy45Lu8ivssxtTQG+9+dQ
-   CfLvszjoXyw/WInQUzo8QxMuongK0j6qx/aB6ZDMozPlpqVMJdOcAhX+k
-   g==;
-X-CSE-ConnectionGUID: fh6dgPbhRqOqhhZi0ufcZA==
-X-CSE-MsgGUID: 9ubcEvvpRvS26IdPDiUDmg==
-X-IronPort-AV: E=McAfee;i="6600,9927,11094"; a="14388017"
-X-IronPort-AV: E=Sophos;i="6.08,217,1712646000"; 
-   d="scan'208";a="14388017"
-Received: from fmviesa007.fm.intel.com ([10.60.135.147])
-  by orvoesa110.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Jun 2024 10:07:28 -0700
-X-CSE-ConnectionGUID: n2ql4dM4RE+mla9ey1nnRw==
-X-CSE-MsgGUID: PTidhW0RRUG6ZStRrMTk6g==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.08,217,1712646000"; 
-   d="scan'208";a="37550069"
-Received: from unknown (HELO 0610945e7d16) ([10.239.97.151])
-  by fmviesa007.fm.intel.com with ESMTP; 05 Jun 2024 10:07:23 -0700
-Received: from kbuild by 0610945e7d16 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1sEu6b-0001yc-1d;
-	Wed, 05 Jun 2024 17:07:21 +0000
-Date: Thu, 06 Jun 2024 01:06:32 +0800
-From: kernel test robot <lkp@intel.com>
-To: Andrew Morton <akpm@linux-foundation.org>
-Cc: Linux Memory Management List <linux-mm@kvack.org>,
- amd-gfx@lists.freedesktop.org, bpf@vger.kernel.org,
- dmaengine@vger.kernel.org, dri-devel@lists.freedesktop.org,
- imx@lists.linux.dev, intel-gfx@lists.freedesktop.org,
- intel-xe@lists.freedesktop.org, linux-hwmon@vger.kernel.org,
- linux-input@vger.kernel.org, linux-pm@vger.kernel.org,
- linux-renesas-soc@vger.kernel.org, linux-trace-kernel@vger.kernel.org
-Subject: [linux-next:master] BUILD REGRESSION
- 234cb065ad82915ff8d06ce01e01c3e640b674d2
-Message-ID: <202406060125.8GGeEpJs-lkp@intel.com>
-User-Agent: s-nail v14.9.24
+	s=arc-20240116; t=1717608371; c=relaxed/simple;
+	bh=5dWCw+Brz9atJh4vj3HhSF8MF6MQRp/xskwrsvr+usE=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=AgCn7sAAgDpAUP6Y2J53TaCyWsd1651mfJzqLXIDiGkgwfLuFJRUp6cdJQO9Smbi/WzclAMzmiXWAZ48MKRHmqF8I3jPLvXUoYrqnsWykXsIlzxv5M9SkHThck34qZBfc11izVFyxN2EpoQl0eKzkUzKLGXBg7QGvFLiXwbtN8Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=fhFdxVgM; arc=none smtp.client-ip=209.85.216.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f51.google.com with SMTP id 98e67ed59e1d1-2c1b9152848so49553a91.1;
+        Wed, 05 Jun 2024 10:26:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1717608368; x=1718213168; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=49EyYBiI1YH8SQkHy4ti9tHaXkG/IZKT6ZmSZHt+3c8=;
+        b=fhFdxVgML70Xr2NzWDgM7MKUk1yn0z0MgaSlsd2EosOwPV2Kkr8ID4OjM/6rRktYzs
+         jg8Z5z7/oKHiHRVKsNhbxxuTam1+l+m5aOsVyR3aRCVhTZV8L5mbX+3EK3xgC0zd8y/z
+         uZd5QlkdyBRT2SU+f8j+OCtgRTGk67ykZ8eJ/rgBHYENe5xDSqsA+hx9f19ha92GC1tO
+         pNe6lsE7EDuuUkMfJGPi7qeAiceBjmSWyNQQJ+g6DXvV5PXyUvY2Sy1inKIk2pVzhKy/
+         dcj6SFq5+UlWFIcsGRNeUfB3wDKDcJUEePoPClbxRPc8PtPTWZe4eDeOvyCJGSGYXVOX
+         b1PQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1717608368; x=1718213168;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=49EyYBiI1YH8SQkHy4ti9tHaXkG/IZKT6ZmSZHt+3c8=;
+        b=nqiKhkPsyUNrO/nExNQuJoJl0oSP4wLBAv9z0l5iDcOojLyPZltyxmJ48xqIE2roGg
+         2AZCxcDqqo2D8SjWrA4ou+NOC7ZBUiOE65J6AHWoY6APA6ncTR5g08cYu1eKHl65xJ+6
+         kWlkNAj1pPCaQ8huSp5/sKWmf6xSE5ipqOMiqoG3S+zqx6yGLU7bGDTxysfcblBA9NTH
+         Lq7mSb5f1k2A1LbWvw02k+zyov2R5oLpTCJyKxUaNIKcqBhfyHSEVjfLA0YuufK7gPM8
+         BfnmKj1RTksmaJXDPzR55MXc3k6UernSgLasLqAIs0eHeT76gylKyrsp8GzWYeAUDXLl
+         Y1bg==
+X-Forwarded-Encrypted: i=1; AJvYcCUgk2JBpDzbUCxckoYHGYTSjviP3y2wJQh06IFV+KLrqVXZMBX3ok4DTHzbXVjjZpjClVrPyqWXn25y4GPwojVWA2/RSiUTkKb1tdDLBDAKtWvrKiGgNlywAZ5aYY4fwxhbRZJUsrtgFRhedmPzQV1R4AZykGCuLh8Cg0R9HldMn8zoXcct
+X-Gm-Message-State: AOJu0YxWKoVNoPIzslKczG2nvmKBgSIvvOC2eKX7ZEh6k6MkrKOnKqsY
+	a7y3tKRTjhC6SUB+UXvaijkssYgwDBc+iXqo4G7dY9dJWNRJQLORa9yE+BgFCJI0j9SsJMg5Z0F
+	Hz84OFLy73HuXnw1XnVRDjLBdwjs=
+X-Google-Smtp-Source: AGHT+IGf5c99ahdI6HfpId71WS8AZSXe58l8eprbYv33HMmbwASnsDpl3KDevVvSPzBNgAOzU0KEGtVHVTqz4ut8ths=
+X-Received: by 2002:a17:90a:a615:b0:2bd:839f:7f36 with SMTP id
+ 98e67ed59e1d1-2c27db002f8mr2987313a91.10.1717608368339; Wed, 05 Jun 2024
+ 10:26:08 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+References: <20240604200221.377848-1-jolsa@kernel.org> <20240604200221.377848-2-jolsa@kernel.org>
+In-Reply-To: <20240604200221.377848-2-jolsa@kernel.org>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Wed, 5 Jun 2024 10:25:56 -0700
+Message-ID: <CAEf4BzbzgTzvnPRJ24gdhuxN02_w8iNNFn4URh0vEp-t69oPnA@mail.gmail.com>
+Subject: Re: [RFC bpf-next 01/10] uprobe: Add session callbacks to uprobe_consumer
+To: Jiri Olsa <jolsa@kernel.org>
+Cc: Oleg Nesterov <oleg@redhat.com>, Peter Zijlstra <peterz@infradead.org>, 
+	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>, 
+	Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>, 
+	John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@chromium.org>, 
+	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Steven Rostedt <rostedt@goodmis.org>, 
+	Masami Hiramatsu <mhiramat@kernel.org>, linux-kernel@vger.kernel.org, 
+	linux-trace-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git master
-branch HEAD: 234cb065ad82915ff8d06ce01e01c3e640b674d2  Add linux-next specific files for 20240605
+On Tue, Jun 4, 2024 at 1:02=E2=80=AFPM Jiri Olsa <jolsa@kernel.org> wrote:
+>
+> Adding new set of callbacks that are triggered on entry and return
+> uprobe execution for the attached function.
+>
+> The session means that those callbacks are 'connected' in a way
+> that allows to:
+>   - control execution of return callback from entry callback
+>   - share data between entry and return callbacks
+>
+> The session concept fits to our common use case where we do filtering
+> on entry uprobe and based on the result we decide to run the return
+> uprobe (or not).
+>
+> It's also convenient to share the data between session callbacks.
+>
+> The control of return uprobe execution is done via return value of the
+> entry session callback, where 0 means to install and execute return
+> uprobe, 1 means to not install.
+>
+> Current implementation has a restriction that allows to register only
+> single consumer with session callbacks for a uprobe and also restricting
+> standard callbacks consumers.
+>
+> Which means that there can be only single user of a uprobe (inode +
+> offset) when session consumer is registered to it.
+>
+> This is because all registered consumers are executed when uprobe or
+> return uprobe is hit and wihout additional layer (like fgraph's shadow
+> stack) that would keep the state of the return callback, we have no
+> way to find out which consumer should be executed.
+>
+> I'm not sure how big limitation this is for people, our current use
+> case seems to be ok with that. Fixing this would be more complex/bigger
+> change to uprobes, thoughts?
 
-Error/Warning reports:
+I think it's a pretty big limitation, because in production you don't
+always know ahead of time all possible users of uprobe, so any such
+limitations will cause problems, issue reports, investigation, etc.
 
-https://lore.kernel.org/oe-kbuild-all/202406051521.mroqvR5l-lkp@intel.com
-https://lore.kernel.org/oe-kbuild-all/202406051524.a12JqLqx-lkp@intel.com
-https://lore.kernel.org/oe-kbuild-all/202406051711.dS1sQZ9n-lkp@intel.com
-https://lore.kernel.org/oe-kbuild-all/202406051855.9VIYXbTB-lkp@intel.com
+As one possible solution, what if we do
 
-Error/Warning: (recently discovered and may have been fixed)
+struct return_instance {
+    ...
+    u64 session_cookies[];
+};
 
-include/linux/container_of.h:20:54: error: 'struct ftrace_ops' has no member named 'list'
-include/linux/list.h:769:26: error: 'struct ftrace_ops' has no member named 'list'
-include/linux/stddef.h:16:33: error: 'struct ftrace_ops' has no member named 'list'
-kernel/trace/fgraph.c:883:43: error: 'struct ftrace_ops' has no member named 'subop_list'
-kernel/trace/fgraph.c:934:15: error: implicit declaration of function 'ftrace_startup_subops'; did you mean 'ftrace_startup'? [-Werror=implicit-function-declaration]
-kernel/trace/fgraph.c:973:9: error: implicit declaration of function 'ftrace_shutdown_subops'; did you mean 'ftrace_shutdown'? [-Werror=implicit-function-declaration]
+and allocate sizeof(struct return_instance) + 8 *
+<num-of-session-consumers> and then at runtime pass
+&session_cookies[i] as data pointer to session-aware callbacks?
 
-Error/Warning ids grouped by kconfigs:
+>
+> Hence sending this as RFC to gather more opinions and feedback.
+>
+> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> ---
+>  include/linux/uprobes.h | 18 +++++++++++
+>  kernel/events/uprobes.c | 69 +++++++++++++++++++++++++++++++++++------
+>  2 files changed, 78 insertions(+), 9 deletions(-)
+>
+> diff --git a/include/linux/uprobes.h b/include/linux/uprobes.h
+> index f46e0ca0169c..a2f2d5ac3cee 100644
+> --- a/include/linux/uprobes.h
+> +++ b/include/linux/uprobes.h
+> @@ -34,6 +34,12 @@ enum uprobe_filter_ctx {
+>  };
+>
+>  struct uprobe_consumer {
+> +       /*
+> +        * The handler callback return value controls removal of the upro=
+be.
+> +        *  0 on success, uprobe stays
+> +        *  1 on failure, remove the uprobe
+> +        *    console warning for anything else
+> +        */
+>         int (*handler)(struct uprobe_consumer *self, struct pt_regs *regs=
+);
+>         int (*ret_handler)(struct uprobe_consumer *self,
+>                                 unsigned long func,
+> @@ -42,6 +48,17 @@ struct uprobe_consumer {
+>                                 enum uprobe_filter_ctx ctx,
+>                                 struct mm_struct *mm);
+>
+> +       /* The handler_session callback return value controls execution o=
+f
+> +        * the return uprobe and ret_handler_session callback.
+> +        *  0 on success
+> +        *  1 on failure, DO NOT install/execute the return uprobe
+> +        *    console warning for anything else
+> +        */
+> +       int (*handler_session)(struct uprobe_consumer *self, struct pt_re=
+gs *regs,
+> +                              unsigned long *data);
+> +       int (*ret_handler_session)(struct uprobe_consumer *self, unsigned=
+ long func,
+> +                                  struct pt_regs *regs, unsigned long *d=
+ata);
+> +
 
-gcc_recent_errors
-|-- arc-randconfig-r061-20240605
-|   |-- drivers-gpu-drm-arm-display-komeda-komeda_dev.c:error:implicit-declaration-of-function-seq_puts
-|   |-- drivers-gpu-drm-arm-display-komeda-komeda_dev.c:error:invalid-use-of-undefined-type-struct-seq_file
-|   `-- drivers-gpu-drm-arm-display-komeda-komeda_dev.c:error:type-defaults-to-int-in-declaration-of-DEFINE_SHOW_ATTRIBUTE
-|-- csky-randconfig-r053-20240605
-|   |-- include-linux-container_of.h:error:struct-ftrace_ops-has-no-member-named-list
-|   |-- include-linux-list.h:error:struct-ftrace_ops-has-no-member-named-list
-|   |-- include-linux-stddef.h:error:struct-ftrace_ops-has-no-member-named-list
-|   |-- kernel-trace-fgraph.c:error:implicit-declaration-of-function-ftrace_shutdown_subops
-|   |-- kernel-trace-fgraph.c:error:implicit-declaration-of-function-ftrace_startup_subops
-|   `-- kernel-trace-fgraph.c:error:struct-ftrace_ops-has-no-member-named-subop_list
-|-- i386-randconfig-061-20240605
-|   `-- drivers-hwmon-cros_ec_hwmon.c:sparse:sparse:cast-to-restricted-__le16
-|-- i386-randconfig-063-20240605
-|   |-- kernel-trace-ftrace.c:sparse:sparse:incorrect-type-in-argument-(different-address-spaces)-expected-struct-ftrace_hash-B-got-struct-ftrace_hash-noderef-__rcu-filter_hash
-|   |-- kernel-trace-ftrace.c:sparse:sparse:incorrect-type-in-argument-(different-address-spaces)-expected-struct-ftrace_hash-B-got-struct-ftrace_hash-noderef-__rcu-notrace_hash
-|   |-- kernel-trace-ftrace.c:sparse:sparse:incorrect-type-in-argument-(different-address-spaces)-expected-struct-ftrace_hash-new_hash-got-struct-ftrace_hash-noderef-__rcu-filter_hash
-|   |-- kernel-trace-ftrace.c:sparse:sparse:incorrect-type-in-argument-(different-address-spaces)-expected-struct-ftrace_hash-new_hash1-got-struct-ftrace_hash-noderef-__rcu-filter_hash
-|   |-- kernel-trace-ftrace.c:sparse:sparse:incorrect-type-in-argument-(different-address-spaces)-expected-struct-ftrace_hash-new_hash2-got-struct-ftrace_hash-noderef-__rcu-filter_hash
-|   |-- kernel-trace-ftrace.c:sparse:sparse:incorrect-type-in-argument-(different-address-spaces)-expected-struct-ftrace_hash-new_hash2-got-struct-ftrace_hash-noderef-__rcu-notrace_hash
-|   |-- kernel-trace-ftrace.c:sparse:sparse:incorrect-type-in-argument-(different-address-spaces)-expected-struct-ftrace_hash-orig_hash-got-struct-ftrace_hash-noderef-__rcu
-|   |-- kernel-trace-ftrace.c:sparse:sparse:incorrect-type-in-argument-(different-address-spaces)-expected-struct-ftrace_hash-src-got-struct-ftrace_hash-noderef-__rcu-filter_hash
-|   |-- kernel-trace-ftrace.c:sparse:sparse:incorrect-type-in-argument-(different-address-spaces)-expected-struct-ftrace_hash-src-got-struct-ftrace_hash-noderef-__rcu-notrace_hash
-|   |-- kernel-trace-ftrace.c:sparse:sparse:incorrect-type-in-assignment-(different-address-spaces)-expected-struct-ftrace_hash-noderef-__rcu-filter_hash-got-struct-ftrace_hash
-|   |-- kernel-trace-ftrace.c:sparse:sparse:incorrect-type-in-assignment-(different-address-spaces)-expected-struct-ftrace_hash-noderef-__rcu-filter_hash-got-struct-ftrace_hash-assigned-filter_hash
-|   |-- kernel-trace-ftrace.c:sparse:sparse:incorrect-type-in-assignment-(different-address-spaces)-expected-struct-ftrace_hash-noderef-__rcu-filter_hash-got-struct-ftrace_hash-save_filter_hash
-|   |-- kernel-trace-ftrace.c:sparse:sparse:incorrect-type-in-assignment-(different-address-spaces)-expected-struct-ftrace_hash-noderef-__rcu-notrace_hash-got-struct-ftrace_hash
-|   |-- kernel-trace-ftrace.c:sparse:sparse:incorrect-type-in-assignment-(different-address-spaces)-expected-struct-ftrace_hash-noderef-__rcu-notrace_hash-got-struct-ftrace_hash-assigned-notrace_hash
-|   |-- kernel-trace-ftrace.c:sparse:sparse:incorrect-type-in-assignment-(different-address-spaces)-expected-struct-ftrace_hash-noderef-__rcu-notrace_hash-got-struct-ftrace_hash-save_notrace_hash
-|   |-- kernel-trace-ftrace.c:sparse:sparse:incorrect-type-in-assignment-(different-address-spaces)-expected-struct-ftrace_hash-save_filter_hash-got-struct-ftrace_hash-noderef-__rcu-filter_hash
-|   `-- kernel-trace-ftrace.c:sparse:sparse:incorrect-type-in-assignment-(different-address-spaces)-expected-struct-ftrace_hash-save_notrace_hash-got-struct-ftrace_hash-noderef-__rcu-notrace_hash
-|-- i386-randconfig-141-20240605
-|   |-- drivers-dma-fsl-edma-common.c-fsl_edma_fill_tcd()-warn:statement-has-no-effect
-|   |-- drivers-dma-fsl-edma-common.c-fsl_edma_set_tcd_regs()-warn:statement-has-no-effect
-|   |-- drivers-dma-fsl-edma-main.c-fsl_edma_probe()-warn:statement-has-no-effect
-|   |-- drivers-dma-fsl-edma-main.c-fsl_edma_resume_early()-warn:statement-has-no-effect
-|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-core-dc_stream.c-dc_stream_get_max_flickerless_instant_vtotal_delta()-warn:always-true-condition-((safe_refresh_v_total-stream-timing.v_total)-)-(-u32max-)
-|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-core-dc_stream.c-dc_stream_get_max_flickerless_instant_vtotal_delta()-warn:always-true-condition-((stream-timing.v_total-safe_refresh_v_total)-)-(-u32max-)
-|   |-- drivers-gpu-drm-amd-amdgpu-amdgpu_vm.c-amdgpu_vm_bo_update()-error:we-previously-assumed-bo-could-be-null-(see-line-)
-|   |-- drivers-gpu-drm-i915-display-intel_dpt.c-intel_dpt_pin_to_ggtt()-error:uninitialized-symbol-vma-.
-|   |-- drivers-gpu-drm-i915-display-intel_fb_pin.c-intel_fb_pin_to_dpt()-error:uninitialized-symbol-vma-.
-|   |-- drivers-gpu-drm-i915-display-intel_fb_pin.c-intel_fb_pin_to_dpt()-error:vma-dereferencing-possible-ERR_PTR()
-|   |-- drivers-gpu-drm-xe-xe_drm_client.c-show_run_ticks()-error:uninitialized-symbol-gpu_timestamp-.
-|   |-- drivers-gpu-drm-xe-xe_drm_client.c-show_run_ticks()-error:uninitialized-symbol-hwe-.
-|   `-- drivers-gpu-drm-xe-xe_sched_job.c-xe_sched_job_arm()-error:uninitialized-symbol-fence-.
-|-- loongarch-defconfig
-|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-hubbub-dcn401-dcn401_hubbub.o:warning:objtool:unexpected-relocation-symbol-type-in-.rela.discard.reachable
-|   `-- drivers-thermal-thermal_trip.o:warning:objtool:unexpected-relocation-symbol-type-in-.rela.discard.reachable
-|-- loongarch-loongson3_defconfig
-|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-hubbub-dcn401-dcn401_hubbub.o:warning:objtool:unexpected-relocation-symbol-type-in-.rela.discard.reachable
-|   `-- drivers-thermal-thermal_trip.o:warning:objtool:unexpected-relocation-symbol-type-in-.rela.discard.reachable
-|-- loongarch-randconfig-r064-20240605
-|   |-- drivers-gpu-drm-arm-display-komeda-komeda_dev.c:error:implicit-declaration-of-function-seq_puts
-|   |-- drivers-gpu-drm-arm-display-komeda-komeda_dev.c:error:invalid-use-of-undefined-type-struct-seq_file
-|   |-- drivers-gpu-drm-arm-display-komeda-komeda_dev.c:error:type-defaults-to-int-in-declaration-of-DEFINE_SHOW_ATTRIBUTE
-|   |-- include-linux-container_of.h:error:struct-ftrace_ops-has-no-member-named-list
-|   |-- include-linux-list.h:error:struct-ftrace_ops-has-no-member-named-list
-|   |-- include-linux-stddef.h:error:struct-ftrace_ops-has-no-member-named-list
-|   |-- kernel-trace-fgraph.c:error:implicit-declaration-of-function-ftrace_shutdown_subops
-|   |-- kernel-trace-fgraph.c:error:implicit-declaration-of-function-ftrace_startup_subops
-|   `-- kernel-trace-fgraph.c:error:struct-ftrace_ops-has-no-member-named-subop_list
-|-- riscv-randconfig-001-20240605
-|   |-- include-linux-container_of.h:error:struct-ftrace_ops-has-no-member-named-list
-|   |-- include-linux-list.h:error:struct-ftrace_ops-has-no-member-named-list
-|   |-- include-linux-stddef.h:error:struct-ftrace_ops-has-no-member-named-list
-|   |-- kernel-trace-fgraph.c:error:implicit-declaration-of-function-ftrace_shutdown_subops
-|   |-- kernel-trace-fgraph.c:error:implicit-declaration-of-function-ftrace_startup_subops
-|   `-- kernel-trace-fgraph.c:error:struct-ftrace_ops-has-no-member-named-subop_list
-|-- sparc64-randconfig-r121-20240605
-|   |-- kernel-trace-fgraph.c:error:implicit-declaration-of-function-ftrace_shutdown_subops
-|   `-- kernel-trace-fgraph.c:error:implicit-declaration-of-function-ftrace_startup_subops
-|-- um-allyesconfig
-|   `-- kernel-bpf-verifier.c:error:pcpu_hot-undeclared-(first-use-in-this-function)
-`-- x86_64-randconfig-003-20240605
-    |-- drivers-input-touchscreen-wacom_w8001.c:warning:Finger-directive-output-may-be-truncated-writing-bytes-into-a-region-of-size-between-and
-    `-- drivers-input-touchscreen-wacom_w8001.c:warning:Pen-directive-output-may-be-truncated-writing-bytes-into-a-region-of-size-between-and
-clang_recent_errors
-|-- arm64-allmodconfig
-|   |-- drivers-gpu-drm-amd-amdgpu-..-display-amdgpu_dm-amdgpu_dm.c:error:arithmetic-between-different-enumeration-types-(-enum-dc_irq_source-and-enum-irq_type-)-Werror-Wenum-enum-conversion
-|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-irq-dce110-irq_service_dce110.c:error:arithmetic-between-different-enumeration-types-(-enum-dc_irq_source-and-enum-irq_type-)-Werror-Wenum-enum-conversion
-|   |-- drivers-gpu-drm-i915-display-intel_cursor.c:error:arithmetic-between-different-enumeration-types-(-enum-pipe-and-enum-intel_display_power_domain-)-Werror-Wenum-enum-conversion
-|   |-- drivers-gpu-drm-i915-display-intel_ddi.c:error:arithmetic-between-different-enumeration-types-(-enum-hpd_pin-and-enum-port-)-Werror-Wenum-enum-conversion
-|   |-- drivers-gpu-drm-i915-display-intel_ddi.c:error:arithmetic-between-different-enumeration-types-(-enum-transcoder-and-enum-intel_display_power_domain-)-Werror-Wenum-enum-conversion
-|   |-- drivers-gpu-drm-i915-display-intel_display.c:error:arithmetic-between-different-enumeration-types-(-enum-phy-and-enum-port-)-Werror-Wenum-enum-conversion
-|   |-- drivers-gpu-drm-i915-display-intel_display.c:error:arithmetic-between-different-enumeration-types-(-enum-pipe-and-enum-intel_display_power_domain-)-Werror-Wenum-enum-conversion
-|   |-- drivers-gpu-drm-i915-display-intel_display.c:error:arithmetic-between-different-enumeration-types-(-enum-tc_port-and-enum-port-)-Werror-Wenum-enum-conversion
-|   |-- drivers-gpu-drm-i915-display-intel_display.c:error:arithmetic-between-different-enumeration-types-(-enum-transcoder-and-enum-intel_display_power_domain-)-Werror-Wenum-enum-conversion
-|   |-- drivers-gpu-drm-i915-display-intel_display_irq.c:error:arithmetic-between-different-enumeration-types-(-enum-pipe-and-enum-intel_display_power_domain-)-Werror-Wenum-enum-conversion
-|   |-- drivers-gpu-drm-i915-display-intel_display_irq.c:error:arithmetic-between-different-enumeration-types-(-enum-transcoder-and-enum-intel_display_power_domain-)-Werror-Wenum-enum-conversion
-|   |-- drivers-gpu-drm-i915-display-intel_dpll_mgr.c:error:arithmetic-between-different-enumeration-types-(-enum-tc_port-and-enum-intel_dpll_id-)-Werror-Wenum-enum-conversion
-|   |-- drivers-gpu-drm-i915-display-intel_hotplug.c:error:arithmetic-between-different-enumeration-types-(-enum-hpd_pin-and-enum-port-)-Werror-Wenum-enum-conversion
-|   |-- drivers-gpu-drm-i915-display-intel_pipe_crc.c:error:arithmetic-between-different-enumeration-types-(-enum-pipe-and-enum-intel_display_power_domain-)-Werror-Wenum-enum-conversion
-|   |-- drivers-gpu-drm-i915-display-intel_tc.c:error:arithmetic-between-different-enumeration-types-(-enum-intel_display_power_domain-and-enum-tc_port-)-Werror-Wenum-enum-conversion
-|   |-- drivers-gpu-drm-i915-display-intel_vdsc.c:error:arithmetic-between-different-enumeration-types-(-enum-pipe-and-enum-intel_display_power_domain-)-Werror-Wenum-enum-conversion
-|   |-- drivers-gpu-drm-i915-display-skl_universal_plane.c:error:arithmetic-between-different-enumeration-types-(-enum-pipe-and-enum-intel_display_power_domain-)-Werror-Wenum-enum-conversion
-|   |-- drivers-gpu-drm-i915-display-skl_watermark.c:error:arithmetic-between-different-enumeration-types-(-enum-pipe-and-enum-intel_display_power_domain-)-Werror-Wenum-enum-conversion
-|   `-- drivers-gpu-drm-renesas-rcar-du-rcar_cmm.c:error:unused-function-rcar_cmm_read-Werror-Wunused-function
-|-- arm64-randconfig-003-20240605
-|   |-- drivers-gpu-drm-amd-amdgpu-amdgpu_gfx.c:error:format-specifies-type-unsigned-char-but-the-argument-has-type-int-Werror-Wformat
-|   `-- drivers-gpu-drm-amd-amdgpu-amdgpu_gfx.c:error:format-specifies-type-unsigned-char-but-the-argument-has-type-u32-(aka-unsigned-int-)-Werror-Wformat
-|-- hexagon-randconfig-001-20240605
-|   `-- drivers-gpu-drm-drm_mm.c:error:function-drm_mm_node_scanned_block-is-not-needed-and-will-not-be-emitted-Werror-Wunneeded-internal-declaration
-|-- i386-randconfig-r131-20240605
-|   |-- kernel-trace-fgraph.c:sparse:sparse:symbol-fgraph_do_direct-was-not-declared.-Should-it-be-static
-|   |-- kernel-trace-ftrace.c:sparse:sparse:incorrect-type-in-argument-(different-address-spaces)-expected-struct-ftrace_hash-B-got-struct-ftrace_hash-noderef-__rcu-filter_hash
-|   |-- kernel-trace-ftrace.c:sparse:sparse:incorrect-type-in-argument-(different-address-spaces)-expected-struct-ftrace_hash-B-got-struct-ftrace_hash-noderef-__rcu-notrace_hash
-|   |-- kernel-trace-ftrace.c:sparse:sparse:incorrect-type-in-argument-(different-address-spaces)-expected-struct-ftrace_hash-new_hash-got-struct-ftrace_hash-noderef-__rcu-filter_hash
-|   |-- kernel-trace-ftrace.c:sparse:sparse:incorrect-type-in-argument-(different-address-spaces)-expected-struct-ftrace_hash-new_hash1-got-struct-ftrace_hash-noderef-__rcu-filter_hash
-|   |-- kernel-trace-ftrace.c:sparse:sparse:incorrect-type-in-argument-(different-address-spaces)-expected-struct-ftrace_hash-new_hash2-got-struct-ftrace_hash-noderef-__rcu-filter_hash
-|   |-- kernel-trace-ftrace.c:sparse:sparse:incorrect-type-in-argument-(different-address-spaces)-expected-struct-ftrace_hash-new_hash2-got-struct-ftrace_hash-noderef-__rcu-notrace_hash
-|   |-- kernel-trace-ftrace.c:sparse:sparse:incorrect-type-in-argument-(different-address-spaces)-expected-struct-ftrace_hash-orig_hash-got-struct-ftrace_hash-noderef-__rcu
-|   |-- kernel-trace-ftrace.c:sparse:sparse:incorrect-type-in-argument-(different-address-spaces)-expected-struct-ftrace_hash-src-got-struct-ftrace_hash-noderef-__rcu-filter_hash
-|   |-- kernel-trace-ftrace.c:sparse:sparse:incorrect-type-in-argument-(different-address-spaces)-expected-struct-ftrace_hash-src-got-struct-ftrace_hash-noderef-__rcu-notrace_hash
-|   |-- kernel-trace-ftrace.c:sparse:sparse:incorrect-type-in-assignment-(different-address-spaces)-expected-struct-ftrace_hash-noderef-__rcu-filter_hash-got-struct-ftrace_hash
-|   |-- kernel-trace-ftrace.c:sparse:sparse:incorrect-type-in-assignment-(different-address-spaces)-expected-struct-ftrace_hash-noderef-__rcu-filter_hash-got-struct-ftrace_hash-assigned-filter_hash
-|   |-- kernel-trace-ftrace.c:sparse:sparse:incorrect-type-in-assignment-(different-address-spaces)-expected-struct-ftrace_hash-noderef-__rcu-filter_hash-got-struct-ftrace_hash-save_filter_hash
-|   |-- kernel-trace-ftrace.c:sparse:sparse:incorrect-type-in-assignment-(different-address-spaces)-expected-struct-ftrace_hash-noderef-__rcu-notrace_hash-got-struct-ftrace_hash
-|   |-- kernel-trace-ftrace.c:sparse:sparse:incorrect-type-in-assignment-(different-address-spaces)-expected-struct-ftrace_hash-noderef-__rcu-notrace_hash-got-struct-ftrace_hash-assigned-notrace_hash
-|   |-- kernel-trace-ftrace.c:sparse:sparse:incorrect-type-in-assignment-(different-address-spaces)-expected-struct-ftrace_hash-noderef-__rcu-notrace_hash-got-struct-ftrace_hash-save_notrace_hash
-|   |-- kernel-trace-ftrace.c:sparse:sparse:incorrect-type-in-assignment-(different-address-spaces)-expected-struct-ftrace_hash-save_filter_hash-got-struct-ftrace_hash-noderef-__rcu-filter_hash
-|   `-- kernel-trace-ftrace.c:sparse:sparse:incorrect-type-in-assignment-(different-address-spaces)-expected-struct-ftrace_hash-save_notrace_hash-got-struct-ftrace_hash-noderef-__rcu-notrace_hash
-|-- riscv-allmodconfig
-|   |-- drivers-gpu-drm-amd-amdgpu-..-display-amdgpu_dm-amdgpu_dm.c:error:arithmetic-between-different-enumeration-types-(-enum-dc_irq_source-and-enum-irq_type-)-Werror-Wenum-enum-conversion
-|   |-- drivers-gpu-drm-amd-amdgpu-..-display-dc-irq-dce110-irq_service_dce110.c:error:arithmetic-between-different-enumeration-types-(-enum-dc_irq_source-and-enum-irq_type-)-Werror-Wenum-enum-conversion
-|   |-- drivers-gpu-drm-i915-display-intel_cursor.c:error:arithmetic-between-different-enumeration-types-(-enum-pipe-and-enum-intel_display_power_domain-)-Werror-Wenum-enum-conversion
-|   |-- drivers-gpu-drm-i915-display-intel_ddi.c:error:arithmetic-between-different-enumeration-types-(-enum-hpd_pin-and-enum-port-)-Werror-Wenum-enum-conversion
-|   |-- drivers-gpu-drm-i915-display-intel_ddi.c:error:arithmetic-between-different-enumeration-types-(-enum-transcoder-and-enum-intel_display_power_domain-)-Werror-Wenum-enum-conversion
-|   |-- drivers-gpu-drm-i915-display-intel_display.c:error:arithmetic-between-different-enumeration-types-(-enum-phy-and-enum-port-)-Werror-Wenum-enum-conversion
-|   |-- drivers-gpu-drm-i915-display-intel_display.c:error:arithmetic-between-different-enumeration-types-(-enum-pipe-and-enum-intel_display_power_domain-)-Werror-Wenum-enum-conversion
-|   |-- drivers-gpu-drm-i915-display-intel_display.c:error:arithmetic-between-different-enumeration-types-(-enum-tc_port-and-enum-port-)-Werror-Wenum-enum-conversion
-|   |-- drivers-gpu-drm-i915-display-intel_display.c:error:arithmetic-between-different-enumeration-types-(-enum-transcoder-and-enum-intel_display_power_domain-)-Werror-Wenum-enum-conversion
-|   |-- drivers-gpu-drm-i915-display-intel_display_irq.c:error:arithmetic-between-different-enumeration-types-(-enum-pipe-and-enum-intel_display_power_domain-)-Werror-Wenum-enum-conversion
-|   |-- drivers-gpu-drm-i915-display-intel_display_irq.c:error:arithmetic-between-different-enumeration-types-(-enum-transcoder-and-enum-intel_display_power_domain-)-Werror-Wenum-enum-conversion
-|   |-- drivers-gpu-drm-i915-display-intel_dpll_mgr.c:error:arithmetic-between-different-enumeration-types-(-enum-tc_port-and-enum-intel_dpll_id-)-Werror-Wenum-enum-conversion
-|   |-- drivers-gpu-drm-i915-display-intel_hotplug.c:error:arithmetic-between-different-enumeration-types-(-enum-hpd_pin-and-enum-port-)-Werror-Wenum-enum-conversion
-|   |-- drivers-gpu-drm-i915-display-intel_pipe_crc.c:error:arithmetic-between-different-enumeration-types-(-enum-pipe-and-enum-intel_display_power_domain-)-Werror-Wenum-enum-conversion
-|   |-- drivers-gpu-drm-i915-display-intel_tc.c:error:arithmetic-between-different-enumeration-types-(-enum-intel_display_power_domain-and-enum-tc_port-)-Werror-Wenum-enum-conversion
-|   |-- drivers-gpu-drm-i915-display-intel_vdsc.c:error:arithmetic-between-different-enumeration-types-(-enum-pipe-and-enum-intel_display_power_domain-)-Werror-Wenum-enum-conversion
-|   |-- drivers-gpu-drm-i915-display-skl_universal_plane.c:error:arithmetic-between-different-enumeration-types-(-enum-pipe-and-enum-intel_display_power_domain-)-Werror-Wenum-enum-conversion
-|   `-- drivers-gpu-drm-i915-display-skl_watermark.c:error:arithmetic-between-different-enumeration-types-(-enum-pipe-and-enum-intel_display_power_domain-)-Werror-Wenum-enum-conversion
-|-- riscv-allyesconfig
-|   |-- drivers-gpu-drm-amd-amdgpu-..-display-amdgpu_dm-amdgpu_dm.c:error:arithmetic-between-different-enumeration-types-(-enum-dc_irq_source-and-enum-irq_type-)-Werror-Wenum-enum-conversion
-|   `-- drivers-gpu-drm-amd-amdgpu-..-display-dc-irq-dce110-irq_service_dce110.c:error:arithmetic-between-different-enumeration-types-(-enum-dc_irq_source-and-enum-irq_type-)-Werror-Wenum-enum-conversion
-|-- s390-allmodconfig
-|   |-- drivers-gpu-drm-i915-display-intel_cursor.c:error:arithmetic-between-different-enumeration-types-(-enum-pipe-and-enum-intel_display_power_domain-)-Werror-Wenum-enum-conversion
-|   |-- drivers-gpu-drm-i915-display-intel_ddi.c:error:arithmetic-between-different-enumeration-types-(-enum-transcoder-and-enum-intel_display_power_domain-)-Werror-Wenum-enum-conversion
-|   |-- drivers-gpu-drm-i915-display-intel_display.c:error:arithmetic-between-different-enumeration-types-(-enum-phy-and-enum-port-)-Werror-Wenum-enum-conversion
-|   |-- drivers-gpu-drm-i915-display-intel_display.c:error:arithmetic-between-different-enumeration-types-(-enum-transcoder-and-enum-intel_display_power_domain-)-Werror-Wenum-enum-conversion
-|   |-- drivers-gpu-drm-i915-display-intel_display_irq.c:error:arithmetic-between-different-enumeration-types-(-enum-pipe-and-enum-intel_display_power_domain-)-Werror-Wenum-enum-conversion
-|   |-- drivers-gpu-drm-i915-display-intel_display_irq.c:error:arithmetic-between-different-enumeration-types-(-enum-transcoder-and-enum-intel_display_power_domain-)-Werror-Wenum-enum-conversion
-|   |-- drivers-gpu-drm-i915-display-intel_dpll_mgr.c:error:arithmetic-between-different-enumeration-types-(-enum-tc_port-and-enum-intel_dpll_id-)-Werror-Wenum-enum-conversion
-|   |-- drivers-gpu-drm-i915-display-intel_hotplug.c:error:arithmetic-between-different-enumeration-types-(-enum-hpd_pin-and-enum-port-)-Werror-Wenum-enum-conversion
-|   |-- drivers-gpu-drm-i915-display-intel_pipe_crc.c:error:arithmetic-between-different-enumeration-types-(-enum-pipe-and-enum-intel_display_power_domain-)-Werror-Wenum-enum-conversion
-|   |-- drivers-gpu-drm-i915-display-intel_tc.c:error:arithmetic-between-different-enumeration-types-(-enum-intel_display_power_domain-and-enum-tc_port-)-Werror-Wenum-enum-conversion
-|   |-- drivers-gpu-drm-i915-display-intel_vdsc.c:error:arithmetic-between-different-enumeration-types-(-enum-pipe-and-enum-intel_display_power_domain-)-Werror-Wenum-enum-conversion
-|   |-- drivers-gpu-drm-i915-display-skl_universal_plane.c:error:arithmetic-between-different-enumeration-types-(-enum-pipe-and-enum-intel_display_power_domain-)-Werror-Wenum-enum-conversion
-|   `-- drivers-gpu-drm-i915-display-skl_watermark.c:error:arithmetic-between-different-enumeration-types-(-enum-pipe-and-enum-intel_display_power_domain-)-Werror-Wenum-enum-conversion
-`-- x86_64-randconfig-002-20240605
-    `-- drivers-gpu-drm-drm_mm.c:error:function-drm_mm_node_scanned_block-is-not-needed-and-will-not-be-emitted-Werror-Wunneeded-internal-declaration
+We should try to avoid an alternative set of callbacks, IMO. Let's
+extend existing ones with `unsigned long *data`, but specify that
+unless consumer sets some flag on registration that it needs a session
+cookie, we'll pass NULL here? Or just allocate cookie data for each
+registered consumer for simplicity, don't know; given we don't expect
+many consumers on exactly the same uprobe, it might be ok to keep it
+simple.
 
-elapsed time: 754m
 
-configs tested: 180
-configs skipped: 3
-
-tested configs:
-alpha                             allnoconfig   gcc  
-alpha                            allyesconfig   gcc  
-alpha                               defconfig   gcc  
-arc                              allmodconfig   gcc  
-arc                               allnoconfig   gcc  
-arc                              allyesconfig   gcc  
-arc                                 defconfig   gcc  
-arc                   randconfig-001-20240605   gcc  
-arc                   randconfig-002-20240605   gcc  
-arm                              allmodconfig   gcc  
-arm                               allnoconfig   clang
-arm                              allyesconfig   gcc  
-arm                                 defconfig   clang
-arm                            mps2_defconfig   clang
-arm                         mv78xx0_defconfig   clang
-arm                        mvebu_v7_defconfig   clang
-arm                         orion5x_defconfig   clang
-arm                   randconfig-001-20240605   clang
-arm                   randconfig-002-20240605   clang
-arm                   randconfig-003-20240605   clang
-arm                   randconfig-004-20240605   gcc  
-arm64                            allmodconfig   clang
-arm64                             allnoconfig   gcc  
-arm64                               defconfig   gcc  
-arm64                 randconfig-001-20240605   gcc  
-arm64                 randconfig-002-20240605   clang
-arm64                 randconfig-003-20240605   clang
-arm64                 randconfig-004-20240605   clang
-csky                             allmodconfig   gcc  
-csky                              allnoconfig   gcc  
-csky                             allyesconfig   gcc  
-csky                                defconfig   gcc  
-csky                  randconfig-001-20240605   gcc  
-csky                  randconfig-002-20240605   gcc  
-hexagon                          allmodconfig   clang
-hexagon                           allnoconfig   clang
-hexagon                          allyesconfig   clang
-hexagon                             defconfig   clang
-hexagon               randconfig-001-20240605   clang
-hexagon               randconfig-002-20240605   clang
-i386                             allmodconfig   gcc  
-i386                              allnoconfig   gcc  
-i386                             allyesconfig   gcc  
-i386         buildonly-randconfig-001-20240605   gcc  
-i386         buildonly-randconfig-002-20240605   gcc  
-i386         buildonly-randconfig-003-20240605   gcc  
-i386         buildonly-randconfig-004-20240605   gcc  
-i386         buildonly-randconfig-005-20240605   gcc  
-i386         buildonly-randconfig-006-20240605   gcc  
-i386                                defconfig   clang
-i386                  randconfig-001-20240605   gcc  
-i386                  randconfig-002-20240605   clang
-i386                  randconfig-003-20240605   gcc  
-i386                  randconfig-004-20240605   gcc  
-i386                  randconfig-005-20240605   gcc  
-i386                  randconfig-006-20240605   gcc  
-i386                  randconfig-011-20240605   gcc  
-i386                  randconfig-012-20240605   gcc  
-i386                  randconfig-013-20240605   clang
-i386                  randconfig-014-20240605   clang
-i386                  randconfig-015-20240605   gcc  
-i386                  randconfig-016-20240605   clang
-loongarch                        allmodconfig   gcc  
-loongarch                         allnoconfig   gcc  
-loongarch                           defconfig   gcc  
-loongarch                 loongson3_defconfig   gcc  
-loongarch             randconfig-001-20240605   gcc  
-loongarch             randconfig-002-20240605   gcc  
-m68k                             allmodconfig   gcc  
-m68k                              allnoconfig   gcc  
-m68k                             allyesconfig   gcc  
-m68k                          atari_defconfig   gcc  
-m68k                                defconfig   gcc  
-microblaze                       allmodconfig   gcc  
-microblaze                        allnoconfig   gcc  
-microblaze                       allyesconfig   gcc  
-microblaze                          defconfig   gcc  
-mips                              allnoconfig   gcc  
-mips                             allyesconfig   gcc  
-mips                      maltaaprp_defconfig   clang
-mips                          rb532_defconfig   clang
-nios2                            alldefconfig   gcc  
-nios2                            allmodconfig   gcc  
-nios2                             allnoconfig   gcc  
-nios2                            allyesconfig   gcc  
-nios2                               defconfig   gcc  
-nios2                 randconfig-001-20240605   gcc  
-nios2                 randconfig-002-20240605   gcc  
-openrisc                          allnoconfig   gcc  
-openrisc                         allyesconfig   gcc  
-openrisc                            defconfig   gcc  
-parisc                           allmodconfig   gcc  
-parisc                            allnoconfig   gcc  
-parisc                           allyesconfig   gcc  
-parisc                              defconfig   gcc  
-parisc                randconfig-001-20240605   gcc  
-parisc                randconfig-002-20240605   gcc  
-parisc64                            defconfig   gcc  
-powerpc                     akebono_defconfig   clang
-powerpc                          allmodconfig   gcc  
-powerpc                           allnoconfig   gcc  
-powerpc                          allyesconfig   clang
-powerpc                        cell_defconfig   gcc  
-powerpc                        icon_defconfig   gcc  
-powerpc                     ppa8548_defconfig   gcc  
-powerpc                      ppc64e_defconfig   gcc  
-powerpc               randconfig-001-20240605   gcc  
-powerpc               randconfig-002-20240605   gcc  
-powerpc               randconfig-003-20240605   gcc  
-powerpc64             randconfig-001-20240605   gcc  
-powerpc64             randconfig-002-20240605   clang
-powerpc64             randconfig-003-20240605   gcc  
-riscv                            allmodconfig   clang
-riscv                             allnoconfig   gcc  
-riscv                            allyesconfig   clang
-riscv                               defconfig   clang
-riscv                 randconfig-001-20240605   gcc  
-riscv                 randconfig-002-20240605   gcc  
-s390                             allmodconfig   clang
-s390                              allnoconfig   clang
-s390                             allyesconfig   gcc  
-s390                                defconfig   clang
-s390                  randconfig-001-20240605   gcc  
-s390                  randconfig-002-20240605   clang
-sh                               allmodconfig   gcc  
-sh                                allnoconfig   gcc  
-sh                               allyesconfig   gcc  
-sh                                  defconfig   gcc  
-sh                    randconfig-001-20240605   gcc  
-sh                    randconfig-002-20240605   gcc  
-sh                   rts7751r2dplus_defconfig   gcc  
-sh                   sh7770_generic_defconfig   gcc  
-sh                             shx3_defconfig   gcc  
-sparc                            allmodconfig   gcc  
-sparc                             allnoconfig   gcc  
-sparc                               defconfig   gcc  
-sparc64                          allmodconfig   gcc  
-sparc64                          allyesconfig   gcc  
-sparc64                             defconfig   gcc  
-sparc64               randconfig-001-20240605   gcc  
-sparc64               randconfig-002-20240605   gcc  
-um                               allmodconfig   clang
-um                                allnoconfig   clang
-um                               allyesconfig   gcc  
-um                                  defconfig   clang
-um                             i386_defconfig   gcc  
-um                    randconfig-001-20240605   gcc  
-um                    randconfig-002-20240605   clang
-um                           x86_64_defconfig   clang
-x86_64                            allnoconfig   clang
-x86_64                           allyesconfig   clang
-x86_64       buildonly-randconfig-001-20240605   gcc  
-x86_64       buildonly-randconfig-002-20240605   gcc  
-x86_64       buildonly-randconfig-003-20240605   gcc  
-x86_64       buildonly-randconfig-004-20240605   clang
-x86_64       buildonly-randconfig-005-20240605   clang
-x86_64       buildonly-randconfig-006-20240605   clang
-x86_64                              defconfig   gcc  
-x86_64                randconfig-001-20240605   clang
-x86_64                randconfig-002-20240605   clang
-x86_64                randconfig-003-20240605   gcc  
-x86_64                randconfig-004-20240605   clang
-x86_64                randconfig-005-20240605   clang
-x86_64                randconfig-006-20240605   gcc  
-x86_64                randconfig-011-20240605   clang
-x86_64                randconfig-012-20240605   gcc  
-x86_64                randconfig-013-20240605   clang
-x86_64                randconfig-014-20240605   gcc  
-x86_64                randconfig-015-20240605   clang
-x86_64                randconfig-016-20240605   gcc  
-x86_64                randconfig-071-20240605   gcc  
-x86_64                randconfig-072-20240605   clang
-x86_64                randconfig-073-20240605   gcc  
-x86_64                randconfig-074-20240605   gcc  
-x86_64                randconfig-075-20240605   gcc  
-x86_64                randconfig-076-20240605   gcc  
-x86_64                          rhel-8.3-rust   clang
-xtensa                            allnoconfig   gcc  
-xtensa                randconfig-001-20240605   gcc  
-xtensa                randconfig-002-20240605   gcc  
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+>         struct uprobe_consumer *next;
+>  };
+>
+> @@ -85,6 +102,7 @@ struct return_instance {
+>         unsigned long           func;
+>         unsigned long           stack;          /* stack pointer */
+>         unsigned long           orig_ret_vaddr; /* original return addres=
+s */
+> +       unsigned long           data;
+>         bool                    chained;        /* true, if instance is n=
+ested */
+>
+>         struct return_instance  *next;          /* keep as stack */
+> diff --git a/kernel/events/uprobes.c b/kernel/events/uprobes.c
+> index 2c83ba776fc7..17b0771272a6 100644
+> --- a/kernel/events/uprobes.c
+> +++ b/kernel/events/uprobes.c
+> @@ -750,12 +750,32 @@ static struct uprobe *alloc_uprobe(struct inode *in=
+ode, loff_t offset,
+>         return uprobe;
+>  }
+>
+> -static void consumer_add(struct uprobe *uprobe, struct uprobe_consumer *=
+uc)
+> +/*
+> + * Make sure all the uprobe consumers have only one type of entry
+> + * callback registered (either handler or handler_session) due to
+> + * different return value actions.
+> + */
+> +static int consumer_check(struct uprobe_consumer *curr, struct uprobe_co=
+nsumer *uc)
+> +{
+> +       if (!curr)
+> +               return 0;
+> +       if (curr->handler_session || uc->handler_session)
+> +               return -EBUSY;
+> +       return 0;
+> +}
+> +
+> +static int consumer_add(struct uprobe *uprobe, struct uprobe_consumer *u=
+c)
+>  {
+> +       int err;
+> +
+>         down_write(&uprobe->consumer_rwsem);
+> -       uc->next =3D uprobe->consumers;
+> -       uprobe->consumers =3D uc;
+> +       err =3D consumer_check(uprobe->consumers, uc);
+> +       if (!err) {
+> +               uc->next =3D uprobe->consumers;
+> +               uprobe->consumers =3D uc;
+> +       }
+>         up_write(&uprobe->consumer_rwsem);
+> +       return err;
+>  }
+>
+>  /*
+> @@ -1114,6 +1134,21 @@ void uprobe_unregister(struct inode *inode, loff_t=
+ offset, struct uprobe_consume
+>  }
+>  EXPORT_SYMBOL_GPL(uprobe_unregister);
+>
+> +static int check_handler(struct uprobe_consumer *uc)
+> +{
+> +       /* Uprobe must have at least one set consumer. */
+> +       if (!uc->handler && !uc->ret_handler &&
+> +           !uc->handler_session && !uc->ret_handler_session)
+> +               return -1;
+> +       /* Session consumer is exclusive. */
+> +       if (uc->handler && uc->handler_session)
+> +               return -1;
+> +       /* Session consumer must have both entry and return handler. */
+> +       if (!!uc->handler_session !=3D !!uc->ret_handler_session)
+> +               return -1;
+> +       return 0;
+> +}
+> +
+>  /*
+>   * __uprobe_register - register a probe
+>   * @inode: the file in which the probe has to be placed.
+> @@ -1138,8 +1173,7 @@ static int __uprobe_register(struct inode *inode, l=
+off_t offset,
+>         struct uprobe *uprobe;
+>         int ret;
+>
+> -       /* Uprobe must have at least one set consumer */
+> -       if (!uc->handler && !uc->ret_handler)
+> +       if (check_handler(uc))
+>                 return -EINVAL;
+>
+>         /* copy_insn() uses read_mapping_page() or shmem_read_mapping_pag=
+e() */
+> @@ -1173,11 +1207,14 @@ static int __uprobe_register(struct inode *inode,=
+ loff_t offset,
+>         down_write(&uprobe->register_rwsem);
+>         ret =3D -EAGAIN;
+>         if (likely(uprobe_is_active(uprobe))) {
+> -               consumer_add(uprobe, uc);
+> +               ret =3D consumer_add(uprobe, uc);
+> +               if (ret)
+> +                       goto fail;
+>                 ret =3D register_for_each_vma(uprobe, uc);
+>                 if (ret)
+>                         __uprobe_unregister(uprobe, uc);
+>         }
+> + fail:
+>         up_write(&uprobe->register_rwsem);
+>         put_uprobe(uprobe);
+>
+> @@ -1853,7 +1890,7 @@ static void cleanup_return_instances(struct uprobe_=
+task *utask, bool chained,
+>         utask->return_instances =3D ri;
+>  }
+>
+> -static void prepare_uretprobe(struct uprobe *uprobe, struct pt_regs *reg=
+s)
+> +static void prepare_uretprobe(struct uprobe *uprobe, struct pt_regs *reg=
+s, unsigned long data)
+>  {
+>         struct return_instance *ri;
+>         struct uprobe_task *utask;
+> @@ -1909,6 +1946,7 @@ static void prepare_uretprobe(struct uprobe *uprobe=
+, struct pt_regs *regs)
+>         ri->stack =3D user_stack_pointer(regs);
+>         ri->orig_ret_vaddr =3D orig_ret_vaddr;
+>         ri->chained =3D chained;
+> +       ri->data =3D data;
+>
+>         utask->depth++;
+>         ri->next =3D utask->return_instances;
+> @@ -2070,6 +2108,7 @@ static void handler_chain(struct uprobe *uprobe, st=
+ruct pt_regs *regs)
+>         struct uprobe_consumer *uc;
+>         int remove =3D UPROBE_HANDLER_REMOVE;
+>         bool need_prep =3D false; /* prepare return uprobe, when needed *=
+/
+> +       unsigned long data =3D 0;
+>
+>         down_read(&uprobe->register_rwsem);
+>         for (uc =3D uprobe->consumers; uc; uc =3D uc->next) {
+> @@ -2081,14 +2120,24 @@ static void handler_chain(struct uprobe *uprobe, =
+struct pt_regs *regs)
+>                                 "bad rc=3D0x%x from %ps()\n", rc, uc->han=
+dler);
+>                 }
+>
+> -               if (uc->ret_handler)
+> +               if (uc->handler_session) {
+> +                       rc =3D uc->handler_session(uc, regs, &data);
+> +                       WARN(rc & ~UPROBE_HANDLER_MASK,
+> +                               "bad rc=3D0x%x from %ps()\n", rc, uc->han=
+dler_session);
+> +               }
+> +
+> +               if (uc->ret_handler || uc->ret_handler_session)
+>                         need_prep =3D true;
+>
+>                 remove &=3D rc;
+>         }
+>
+>         if (need_prep && !remove)
+> -               prepare_uretprobe(uprobe, regs); /* put bp at return */
+> +               prepare_uretprobe(uprobe, regs, data); /* put bp at retur=
+n */
+> +
+> +       /* remove uprobe only for non-session consumers */
+> +       if (uprobe->consumers && remove)
+> +               remove &=3D !!uprobe->consumers->handler;
+>
+>         if (remove && uprobe->consumers) {
+>                 WARN_ON(!uprobe_is_active(uprobe));
+> @@ -2107,6 +2156,8 @@ handle_uretprobe_chain(struct return_instance *ri, =
+struct pt_regs *regs)
+>         for (uc =3D uprobe->consumers; uc; uc =3D uc->next) {
+>                 if (uc->ret_handler)
+>                         uc->ret_handler(uc, ri->func, regs);
+> +               if (uc->ret_handler_session)
+> +                       uc->ret_handler_session(uc, ri->func, regs, &ri->=
+data);
+>         }
+>         up_read(&uprobe->register_rwsem);
+>  }
+> --
+> 2.45.1
+>
 
