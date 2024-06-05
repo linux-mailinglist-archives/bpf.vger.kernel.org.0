@@ -1,369 +1,143 @@
-Return-Path: <bpf+bounces-31457-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-31458-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id D6CD18FD45C
-	for <lists+bpf@lfdr.de>; Wed,  5 Jun 2024 19:51:54 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C1DE58FD486
+	for <lists+bpf@lfdr.de>; Wed,  5 Jun 2024 19:58:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 465D71F21B34
-	for <lists+bpf@lfdr.de>; Wed,  5 Jun 2024 17:51:54 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5D65C28AA03
+	for <lists+bpf@lfdr.de>; Wed,  5 Jun 2024 17:58:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A7DDC381C7;
-	Wed,  5 Jun 2024 17:51:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A8D321957E6;
+	Wed,  5 Jun 2024 17:58:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="PnMOpkGL"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-lf1-f42.google.com (mail-lf1-f42.google.com [209.85.167.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E93E1BC3C
-	for <bpf@vger.kernel.org>; Wed,  5 Jun 2024 17:51:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 61A55194ACA
+	for <bpf@vger.kernel.org>; Wed,  5 Jun 2024 17:57:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717609909; cv=none; b=DK9WDvnjjakxw866PCUelr0VWU+StXRRp9527hLLM6i7JdaxsryLSUrp1v4gT9Kvgz6ekCOWYglX/vJ3EIQWEfkM70iuVU5wd8CwEESaOVtKW1C/o+qu05bV+Yu32JTiFV1+fp2XiackdmdW1jG0Pd76YLd64WhZMExoZ2a3gUA=
+	t=1717610280; cv=none; b=IptT+d8tPpi2As6F+470RTIfL14lYYULnhndX1LBTyvFfapXe4oqGTNZOB1l2MOxjkm8JSTwi1Hlo5Il4P64bOo04LC8V82FuXdMdNj0BqkiDkRf1NLYSE8uzpC01G6PRM0uGKGLqvmkIBQz2ibQ1rLn5dUFc0ND5MxdacuVnRo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717609909; c=relaxed/simple;
-	bh=BLgGdA1zpowhE6wUq2azMyMjhyNgiCWoPGlwDBVjbBs=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=rVp+hfCwnl4K3oDn72v1jmGIa4SXWaqUfL7WJ5jUVAuHx+1Hn/6I/KBFZgXUbAwTDkR0E3AFXwTU+EVlR06YGf/nbGuaeAHM3lg14cK23X+s3+c2mWr+pJWDdh5/iWMdPepvftAxvar9fVDWqIs2uYZjDFkFWh88LPbnwCg+pEU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.167.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f42.google.com with SMTP id 2adb3069b0e04-52b98fb5c32so190488e87.1
-        for <bpf@vger.kernel.org>; Wed, 05 Jun 2024 10:51:47 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1717609906; x=1718214706;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=+qQix53jRTaSFLOYdXFtja/oDT+KYAVt+Zxj6WPLmNg=;
-        b=Pb+0FgNmU+z0jQPc8pyM6R5H/0O60MFyDhQicsEgdBOrrFeUp4MzZvdsRqgwZhfIRt
-         ZHYwbSmIQXmouwV/8yYoH6TsRbjoZpjQdkW4rhtEZmNdydX5rWecxLEcR/2aVi0bfeLW
-         y/lwA/p/0/4rHFy79tbDdUU+YGKWMY8FHYdALubnUBz9d2AJT6YO+WLE3DBsMWqn1dha
-         rh3gA3oaptRIU8n9gQ4RbAULJtr2QSe4iB6m0rcIU/iA7iEpYFs3X9DG+iNAS6LKhfy4
-         TFpsHB2IG0LRLxV8KfVNLDyiI1IeiapXtQsI8uTfrSgNIq2uK5wHYNi1DZO1VqMlGTQ3
-         k4kg==
-X-Gm-Message-State: AOJu0YxBDxoCpZdZnWXRAE4dqKNNAohLCTOTCtKSX4UeizhLyFsoyHwq
-	1nlrQ1wbBAfrJzk+nsbOkFHDf53wxpTgV+6Msmjjrazylh5TVq9DpLlEXA==
-X-Google-Smtp-Source: AGHT+IGRrVq/kjz5YCR8l11nWC3yEk7P8kBlGYo+1rXwiS2nd1S3pvCzLfyCSEy9sS0bZsRn828N6g==
-X-Received: by 2002:a19:ac03:0:b0:52b:a9cd:d2da with SMTP id 2adb3069b0e04-52bab4e554bmr2380894e87.32.1717609905370;
-        Wed, 05 Jun 2024 10:51:45 -0700 (PDT)
-Received: from yatsenko-fedora-K2202N0103767.thefacebook.com ([2620:10d:c092:500::5:be0])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a6c71fd73fdsm51726566b.141.2024.06.05.10.51.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 05 Jun 2024 10:51:44 -0700 (PDT)
-From: Mykyta@web.codeaurora.org, Yatsenko@web.codeaurora.org,
-	mykyta.yatsenko5@gmail.com
-To: bpf@vger.kernel.org,
-	ast@kernel.org,
-	andrii@kernel.org,
-	daniel@iogearbox.net,
-	kafai@meta.com,
-	kernel-team@meta.com
-Cc: Mykyta Yatsenko <yatsenko@meta.com>
-Subject: [PATCH bpf-next] libbpf: auto-attach skeletons struct_ops
-Date: Wed,  5 Jun 2024 18:51:35 +0100
-Message-ID: <20240605175135.117127-1-yatsenko@meta.com>
-X-Mailer: git-send-email 2.45.0
+	s=arc-20240116; t=1717610280; c=relaxed/simple;
+	bh=M+kTfQgopDw6pRHN5KgPqRjscFYLhvqP2Cm8FVR4IoY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=KTBQBdyOrAjpu/D0m0m3CVcLuHCnq3nc13QtGnpJQBY/Fob+Gm98U040THgSSzFsmjz76pbIBwbT+8LOa8+YDlzS+r990rMlKmInNowBpMf6c3EFU89oG5fnKakRw7nqf8wKIXzAGRlhE8j6wowqsaCAqgqD43Bvlap0Y0v+jMo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=PnMOpkGL; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1717610277;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=VuJ4fNB8fhXRvR11VmS6YjcKZS/vPkYMz+xJwYDKrdE=;
+	b=PnMOpkGL7uTbq05ljgYn+9PAR6iRYVBN3qoXpYP2SKY2xEnBgEjuZAkN4Wp7X7pkFqgKRM
+	/eMbgdgnK4aKlqgdnFXPDqYc6m11bL2v964doScdEWSyiW8clPi0fP/mYznWhMpXUBFESa
+	8BIKD2W/qwYQgCnrg/XVtzNMHKQpGgk=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-688-IkNazG97MHS7anzZWG_1Mw-1; Wed, 05 Jun 2024 13:57:53 -0400
+X-MC-Unique: IkNazG97MHS7anzZWG_1Mw-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.rdu2.redhat.com [10.11.54.2])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id E2D0B85A588;
+	Wed,  5 Jun 2024 17:57:52 +0000 (UTC)
+Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.224.62])
+	by smtp.corp.redhat.com (Postfix) with SMTP id DE3E5408A433;
+	Wed,  5 Jun 2024 17:57:48 +0000 (UTC)
+Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
+	oleg@redhat.com; Wed,  5 Jun 2024 19:56:24 +0200 (CEST)
+Date: Wed, 5 Jun 2024 19:56:19 +0200
+From: Oleg Nesterov <oleg@redhat.com>
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: Jiri Olsa <jolsa@kernel.org>, Peter Zijlstra <peterz@infradead.org>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
+	Martin KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
+	Yonghong Song <yhs@fb.com>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@chromium.org>,
+	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org
+Subject: Re: [RFC bpf-next 01/10] uprobe: Add session callbacks to
+ uprobe_consumer
+Message-ID: <20240605175619.GH25006@redhat.com>
+References: <20240604200221.377848-1-jolsa@kernel.org>
+ <20240604200221.377848-2-jolsa@kernel.org>
+ <CAEf4BzbzgTzvnPRJ24gdhuxN02_w8iNNFn4URh0vEp-t69oPnA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAEf4BzbzgTzvnPRJ24gdhuxN02_w8iNNFn4URh0vEp-t69oPnA@mail.gmail.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.2
 
-From: Mykyta Yatsenko <yatsenko@meta.com>
+On 06/05, Andrii Nakryiko wrote:
+>
+> so any such
+> limitations will cause problems, issue reports, investigation, etc.
 
-Similarly to `bpf_program`, support `bpf_map` automatic attachment in
-`bpf_object__attach_skeleton`. Currently only struct_ops maps could be
-attached.
+Agreed...
 
-Bpftool
-Code-generate links in skeleton struct for struct_ops maps.
-Similarly to `bpf_program_skeleton`, set links in `bpf_map_skeleton`.
+> As one possible solution, what if we do
+>
+> struct return_instance {
+>     ...
+>     u64 session_cookies[];
+> };
+>
+> and allocate sizeof(struct return_instance) + 8 *
+> <num-of-session-consumers> and then at runtime pass
+> &session_cookies[i] as data pointer to session-aware callbacks?
 
-Libbpf
-Extending `bpf_map` with new `autoattach` field to support enabling or
-disabling autoattach functionality, introducing getter/setter for this
-field.
-Extending `bpf_object__(attach|detach)_skeleton` with
-attaching/detaching struct_ops maps.
+I too thought about this, but I guess it is not that simple.
 
-Signed-off-by: Mykyta Yatsenko <yatsenko@meta.com>
----
- tools/bpf/bpftool/gen.c  | 36 +++++++++++++++++++---
- tools/lib/bpf/libbpf.c   | 65 ++++++++++++++++++++++++++++++++++++++--
- tools/lib/bpf/libbpf.h   | 20 +++++++++++++
- tools/lib/bpf/libbpf.map |  2 ++
- 4 files changed, 116 insertions(+), 7 deletions(-)
+Just for example. Suppose we have 2 session-consumers C1 and C2.
+What if uprobe_unregister(C1) comes before the probed function
+returns?
 
-diff --git a/tools/bpf/bpftool/gen.c b/tools/bpf/bpftool/gen.c
-index b3979ddc0189..a8d4db0d8044 100644
---- a/tools/bpf/bpftool/gen.c
-+++ b/tools/bpf/bpftool/gen.c
-@@ -848,7 +848,7 @@ static int gen_trace(struct bpf_object *obj, const char *obj_name, const char *h
- }
- 
- static void
--codegen_maps_skeleton(struct bpf_object *obj, size_t map_cnt, bool mmaped)
-+codegen_maps_skeleton(struct bpf_object *obj, size_t map_cnt, bool mmaped, bool populate_links)
- {
- 	struct bpf_map *map;
- 	char ident[256];
-@@ -888,6 +888,14 @@ codegen_maps_skeleton(struct bpf_object *obj, size_t map_cnt, bool mmaped)
- 			printf("\ts->maps[%zu].mmaped = (void **)&obj->%s;\n",
- 				i, ident);
- 		}
-+
-+		if (populate_links && bpf_map__type(map) == BPF_MAP_TYPE_STRUCT_OPS) {
-+			codegen("\
-+				\n\
-+					s->maps[%zu].link = &obj->links.%s;\n\
-+				",
-+				i, ident);
-+		}
- 		i++;
- 	}
- }
-@@ -1141,7 +1149,7 @@ static void gen_st_ops_shadow_init(struct btf *btf, struct bpf_object *obj)
- static int do_skeleton(int argc, char **argv)
- {
- 	char header_guard[MAX_OBJ_NAME_LEN + sizeof("__SKEL_H__")];
--	size_t map_cnt = 0, prog_cnt = 0, file_sz, mmap_sz;
-+	size_t map_cnt = 0, prog_cnt = 0, attach_map_cnt = 0, file_sz, mmap_sz;
- 	DECLARE_LIBBPF_OPTS(bpf_object_open_opts, opts);
- 	char obj_name[MAX_OBJ_NAME_LEN] = "", *obj_data;
- 	struct bpf_object *obj = NULL;
-@@ -1225,6 +1233,10 @@ static int do_skeleton(int argc, char **argv)
- 			      bpf_map__name(map));
- 			continue;
- 		}
-+
-+		if (bpf_map__type(map) == BPF_MAP_TYPE_STRUCT_OPS)
-+			attach_map_cnt++;
-+
- 		map_cnt++;
- 	}
- 	bpf_object__for_each_program(prog, obj) {
-@@ -1297,6 +1309,9 @@ static int do_skeleton(int argc, char **argv)
- 				       bpf_program__name(prog));
- 		}
- 		printf("\t} progs;\n");
-+	}
-+
-+	if (prog_cnt + attach_map_cnt) {
- 		printf("\tstruct {\n");
- 		bpf_object__for_each_program(prog, obj) {
- 			if (use_loader)
-@@ -1306,6 +1321,19 @@ static int do_skeleton(int argc, char **argv)
- 				printf("\t\tstruct bpf_link *%s;\n",
- 				       bpf_program__name(prog));
- 		}
-+
-+		bpf_object__for_each_map(map, obj) {
-+			if (!get_map_ident(map, ident, sizeof(ident)))
-+				continue;
-+			if (bpf_map__type(map) != BPF_MAP_TYPE_STRUCT_OPS)
-+				continue;
-+
-+			if (use_loader)
-+				printf("t\tint %s_fd;\n", ident);
-+			else
-+				printf("\t\tstruct bpf_link *%s;\n", ident);
-+		}
-+
- 		printf("\t} links;\n");
- 	}
- 
-@@ -1448,7 +1476,7 @@ static int do_skeleton(int argc, char **argv)
- 		obj_name
- 	);
- 
--	codegen_maps_skeleton(obj, map_cnt, true /*mmaped*/);
-+	codegen_maps_skeleton(obj, map_cnt, true /*mmaped*/, true /*links*/);
- 	codegen_progs_skeleton(obj, prog_cnt, true /*populate_links*/);
- 
- 	codegen("\
-@@ -1786,7 +1814,7 @@ static int do_subskeleton(int argc, char **argv)
- 		}
- 	}
- 
--	codegen_maps_skeleton(obj, map_cnt, false /*mmaped*/);
-+	codegen_maps_skeleton(obj, map_cnt, false /*mmaped*/, false /*links*/);
- 	codegen_progs_skeleton(obj, prog_cnt, false /*links*/);
- 
- 	codegen("\
-diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index d1627a2ca30b..ba9cb939c654 100644
---- a/tools/lib/bpf/libbpf.c
-+++ b/tools/lib/bpf/libbpf.c
-@@ -573,6 +573,7 @@ struct bpf_map {
- 	bool reused;
- 	bool autocreate;
- 	__u64 map_extra;
-+	bool autoattach;
- };
- 
- enum extern_type {
-@@ -1400,6 +1401,7 @@ static int init_struct_ops_maps(struct bpf_object *obj, const char *sec_name,
- 		map->def.value_size = type->size;
- 		map->def.max_entries = 1;
- 		map->def.map_flags = strcmp(sec_name, STRUCT_OPS_LINK_SEC) == 0 ? BPF_F_LINK : 0;
-+		map->autoattach = true;
- 
- 		map->st_ops = calloc(1, sizeof(*map->st_ops));
- 		if (!map->st_ops)
-@@ -4819,6 +4821,20 @@ int bpf_map__set_autocreate(struct bpf_map *map, bool autocreate)
- 	return 0;
- }
- 
-+int bpf_map__set_autoattach(struct bpf_map *map, bool autoattach)
-+{
-+	if (!bpf_map__is_struct_ops(map))
-+		return libbpf_err(-EINVAL);
-+
-+	map->autoattach = autoattach;
-+	return 0;
-+}
-+
-+bool bpf_map__autoattach(const struct bpf_map *map)
-+{
-+	return map->autoattach;
-+}
-+
- int bpf_map__reuse_fd(struct bpf_map *map, int fd)
- {
- 	struct bpf_map_info info;
-@@ -12900,8 +12916,10 @@ struct bpf_link *bpf_map__attach_struct_ops(const struct bpf_map *map)
- 	__u32 zero = 0;
- 	int err, fd;
- 
--	if (!bpf_map__is_struct_ops(map))
-+	if (!bpf_map__is_struct_ops(map)) {
-+		pr_warn("map '%s': can't attach non-struct_ops map\n", map->name);
- 		return libbpf_err_ptr(-EINVAL);
-+	}
- 
- 	if (map->fd < 0) {
- 		pr_warn("map '%s': can't attach BPF map without FD (was it created?)\n", map->name);
-@@ -13945,6 +13963,36 @@ int bpf_object__attach_skeleton(struct bpf_object_skeleton *s)
- 		 */
- 	}
- 
-+	/* Skeleton is created with earlier version of bpftool
-+	 * which does not support auto-attachment
-+	 */
-+	if (s->map_skel_sz < sizeof(struct bpf_map_skeleton))
-+		return 0;
-+
-+	for (i = 0; i < s->map_cnt; i++) {
-+		struct bpf_map *map = *s->maps[i].map;
-+		struct bpf_link **link = s->maps[i].link;
-+
-+		if (!map->autocreate || !map->autoattach)
-+			continue;
-+
-+		if (*link)
-+			continue;
-+
-+		/* only struct_ops maps can be attached */
-+		if (!bpf_map__is_struct_ops(map))
-+			continue;
-+		*link = bpf_map__attach_struct_ops(map);
-+
-+		if (!*link) {
-+			const int errcode = errno;
-+
-+			pr_warn("struct_ops %s: failed to auto-attach: %d\n", bpf_map__name(map),
-+				errcode);
-+			return libbpf_err(-errcode);
-+		}
-+	}
-+
- 	return 0;
- }
- 
-@@ -13958,6 +14006,18 @@ void bpf_object__detach_skeleton(struct bpf_object_skeleton *s)
- 		bpf_link__destroy(*link);
- 		*link = NULL;
- 	}
-+
-+	if (s->map_skel_sz < sizeof(struct bpf_map_skeleton))
-+		return;
-+
-+	for (i = 0; i < s->map_cnt; i++) {
-+		struct bpf_link **link = s->maps[i].link;
-+
-+		if (link) {
-+			bpf_link__destroy(*link);
-+			*link = NULL;
-+		}
-+	}
- }
- 
- void bpf_object__destroy_skeleton(struct bpf_object_skeleton *s)
-@@ -13965,8 +14025,7 @@ void bpf_object__destroy_skeleton(struct bpf_object_skeleton *s)
- 	if (!s)
- 		return;
- 
--	if (s->progs)
--		bpf_object__detach_skeleton(s);
-+	bpf_object__detach_skeleton(s);
- 	if (s->obj)
- 		bpf_object__close(*s->obj);
- 	free(s->maps);
-diff --git a/tools/lib/bpf/libbpf.h b/tools/lib/bpf/libbpf.h
-index 26e4e35528c5..641d6ec876e2 100644
---- a/tools/lib/bpf/libbpf.h
-+++ b/tools/lib/bpf/libbpf.h
-@@ -978,6 +978,25 @@ bpf_object__prev_map(const struct bpf_object *obj, const struct bpf_map *map);
- LIBBPF_API int bpf_map__set_autocreate(struct bpf_map *map, bool autocreate);
- LIBBPF_API bool bpf_map__autocreate(const struct bpf_map *map);
- 
-+/**
-+ * @brief **bpf_map__set_autoattach()** sets whether libbpf has to auto-attach
-+ * map during BPF skeleton attach phase.
-+ * @param map the BPF map instance
-+ * @param autoattach whether to attach map during BPF skeleton attach phase
-+ * @return 0 on success; negative error code, otherwise
-+ *
-+ */
-+LIBBPF_API int bpf_map__set_autoattach(struct bpf_map *map, bool autoattach);
-+
-+/**
-+ * @brief **bpf_map__autoattach()** returns whether BPF map is configured to
-+ * auto-attach during BPF skeleton attach phase.
-+ * @param map the BPF map instance
-+ * @return true if map is set to auto-attach during skeleton attach phase; false otherwise
-+ *
-+ */
-+LIBBPF_API bool bpf_map__autoattach(const struct bpf_map *map);
-+
- /**
-  * @brief **bpf_map__fd()** gets the file descriptor of the passed
-  * BPF map
-@@ -1672,6 +1691,7 @@ struct bpf_map_skeleton {
- 	const char *name;
- 	struct bpf_map **map;
- 	void **mmaped;
-+	struct bpf_link **link;
- };
- 
- struct bpf_prog_skeleton {
-diff --git a/tools/lib/bpf/libbpf.map b/tools/lib/bpf/libbpf.map
-index c1ce8aa3520b..40595233dc7f 100644
---- a/tools/lib/bpf/libbpf.map
-+++ b/tools/lib/bpf/libbpf.map
-@@ -419,6 +419,8 @@ LIBBPF_1.4.0 {
- 
- LIBBPF_1.5.0 {
- 	global:
-+		bpf_map__autoattach;
-+		bpf_map__set_autoattach;
- 		bpf_program__attach_sockmap;
- 		ring__consume_n;
- 		ring_buffer__consume_n;
--- 
-2.45.0
+We need something like map_cookie_to_consumer().
+
+> > +       /* The handler_session callback return value controls execution of
+> > +        * the return uprobe and ret_handler_session callback.
+> > +        *  0 on success
+> > +        *  1 on failure, DO NOT install/execute the return uprobe
+> > +        *    console warning for anything else
+> > +        */
+> > +       int (*handler_session)(struct uprobe_consumer *self, struct pt_regs *regs,
+> > +                              unsigned long *data);
+> > +       int (*ret_handler_session)(struct uprobe_consumer *self, unsigned long func,
+> > +                                  struct pt_regs *regs, unsigned long *data);
+> > +
+>
+> We should try to avoid an alternative set of callbacks, IMO. Let's
+> extend existing ones with `unsigned long *data`,
+
+Oh yes, agreed.
+
+And the comment about the return value looks confusing too. I mean, the
+logic doesn't differ from the ret-code from ->handler().
+
+"DO NOT install/execute the return uprobe" is not true if another
+non-session-consumer returns 0.
+
+Oleg.
 
 
