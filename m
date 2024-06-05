@@ -1,143 +1,139 @@
-Return-Path: <bpf+bounces-31458-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-31459-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C1DE58FD486
-	for <lists+bpf@lfdr.de>; Wed,  5 Jun 2024 19:58:20 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8F9CF8FD670
+	for <lists+bpf@lfdr.de>; Wed,  5 Jun 2024 21:28:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5D65C28AA03
-	for <lists+bpf@lfdr.de>; Wed,  5 Jun 2024 17:58:19 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A0CD6B20D72
+	for <lists+bpf@lfdr.de>; Wed,  5 Jun 2024 19:28:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A8D321957E6;
-	Wed,  5 Jun 2024 17:58:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C164E14EC52;
+	Wed,  5 Jun 2024 19:28:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="PnMOpkGL"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lpHP+43d"
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-oi1-f170.google.com (mail-oi1-f170.google.com [209.85.167.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 61A55194ACA
-	for <bpf@vger.kernel.org>; Wed,  5 Jun 2024 17:57:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 06DDF14E2CB;
+	Wed,  5 Jun 2024 19:28:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717610280; cv=none; b=IptT+d8tPpi2As6F+470RTIfL14lYYULnhndX1LBTyvFfapXe4oqGTNZOB1l2MOxjkm8JSTwi1Hlo5Il4P64bOo04LC8V82FuXdMdNj0BqkiDkRf1NLYSE8uzpC01G6PRM0uGKGLqvmkIBQz2ibQ1rLn5dUFc0ND5MxdacuVnRo=
+	t=1717615704; cv=none; b=aEa3xSQgyT7oLcA7JkP+0CUVd+1WkGYcJssgAO8kLn3veuy4PTXZ5TkYHqzR3IuW1CoDME0a525vK6HcQAYJJvz3CyrwgQNSb3VPaPoBOEFxjd2tOeZo9smT/jiJvXbDAN+YaD9XQ5j8Vt1/KhlmaMgsHMOGQ/a9jnMlhvpCkPs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717610280; c=relaxed/simple;
-	bh=M+kTfQgopDw6pRHN5KgPqRjscFYLhvqP2Cm8FVR4IoY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=KTBQBdyOrAjpu/D0m0m3CVcLuHCnq3nc13QtGnpJQBY/Fob+Gm98U040THgSSzFsmjz76pbIBwbT+8LOa8+YDlzS+r990rMlKmInNowBpMf6c3EFU89oG5fnKakRw7nqf8wKIXzAGRlhE8j6wowqsaCAqgqD43Bvlap0Y0v+jMo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=PnMOpkGL; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1717610277;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=VuJ4fNB8fhXRvR11VmS6YjcKZS/vPkYMz+xJwYDKrdE=;
-	b=PnMOpkGL7uTbq05ljgYn+9PAR6iRYVBN3qoXpYP2SKY2xEnBgEjuZAkN4Wp7X7pkFqgKRM
-	/eMbgdgnK4aKlqgdnFXPDqYc6m11bL2v964doScdEWSyiW8clPi0fP/mYznWhMpXUBFESa
-	8BIKD2W/qwYQgCnrg/XVtzNMHKQpGgk=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-688-IkNazG97MHS7anzZWG_1Mw-1; Wed, 05 Jun 2024 13:57:53 -0400
-X-MC-Unique: IkNazG97MHS7anzZWG_1Mw-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.rdu2.redhat.com [10.11.54.2])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id E2D0B85A588;
-	Wed,  5 Jun 2024 17:57:52 +0000 (UTC)
-Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.224.62])
-	by smtp.corp.redhat.com (Postfix) with SMTP id DE3E5408A433;
-	Wed,  5 Jun 2024 17:57:48 +0000 (UTC)
-Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
-	oleg@redhat.com; Wed,  5 Jun 2024 19:56:24 +0200 (CEST)
-Date: Wed, 5 Jun 2024 19:56:19 +0200
-From: Oleg Nesterov <oleg@redhat.com>
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: Jiri Olsa <jolsa@kernel.org>, Peter Zijlstra <peterz@infradead.org>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
-	Martin KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
-	Yonghong Song <yhs@fb.com>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@chromium.org>,
-	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org
-Subject: Re: [RFC bpf-next 01/10] uprobe: Add session callbacks to
- uprobe_consumer
-Message-ID: <20240605175619.GH25006@redhat.com>
-References: <20240604200221.377848-1-jolsa@kernel.org>
- <20240604200221.377848-2-jolsa@kernel.org>
- <CAEf4BzbzgTzvnPRJ24gdhuxN02_w8iNNFn4URh0vEp-t69oPnA@mail.gmail.com>
+	s=arc-20240116; t=1717615704; c=relaxed/simple;
+	bh=IengBx8H4auaGZa9UWMGNRUSIeADt2jwVMqn4nivRwE=;
+	h=Date:From:To:Cc:Message-ID:In-Reply-To:References:Subject:
+	 Mime-Version:Content-Type; b=eKQu83yMTRK3kEpSe8n67BScck4apq7+xih512CVEHftl4xk1cZ6cYprjPDMg/HSbQtriaSTgh6nSsrtx7rztlICMwxbqDp90RIc9dLHcxl8yJKaMlLR1sQxaUy07f9dNg4uk+MTE60tLsArSwo3OKCvVevciSbLmY6lLakNlsc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=lpHP+43d; arc=none smtp.client-ip=209.85.167.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oi1-f170.google.com with SMTP id 5614622812f47-3d205098e8cso59164b6e.3;
+        Wed, 05 Jun 2024 12:28:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1717615702; x=1718220502; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=p5XVHmy+c2QVXQfKT/RClVqS/q+BGSViVaGos8YC5wY=;
+        b=lpHP+43d2AIcMOmNwj0RX6vpXMmIGiuDB3wIFidVB2mUR4evq7VMePfSQMznx0fqw3
+         /My+NmeaPLEpidqG0MS3WG6sTsYMwmoIcVBMJMnluYfh43SDxM9jSrKiiZqutdkKmPUM
+         JRX0bN7rGhgh9urKeeiZjDGghfXtE2aQIARkHGmihS3mD/GPKIj3eHE/OVZH+SkAXd8v
+         qJGkIdKNjiiNmi1E7RF0teqBFo5EV+SdpQBcr/B9ej4ZwdaxVhh6cPcAZuLfN3het6Vt
+         7tyDPV9Q8na2IaVRZ/Grcu4ZFdtnIcY1LSBtF8EEwis6W8r5VCNAfmI732r5kmXn8Y5x
+         tujA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1717615702; x=1718220502;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=p5XVHmy+c2QVXQfKT/RClVqS/q+BGSViVaGos8YC5wY=;
+        b=gFy3924GQn7HgpVk01wwgt7gNlirMakvNRXacBCkKUgFw7XBnI94XSwCR2yMlgNerm
+         wcKPcbTyAXr5esk//H9dXDSSd/9UHUPhzSyYj7GZf4sibgnqZy5wf3/htHeJyoLeftKj
+         AY+3TJeEo6KsapacIehJsirEU1bLwF5Q2ONwwjDOJqHJvY1Ymr08ld+0736cFhiRP4u/
+         nqcOBSAXTncBvb8ne19d49uVNIWVsVp/Wi7bbFm1ht6EPSyUPuFLEODYQa8pipbl+rkm
+         yVasbqiI2QEm4G7MHk1qsQfO6pJVw/7hY10QuFu9VCeYf35RhkyQevUp3iE48KM1/E8j
+         auFA==
+X-Forwarded-Encrypted: i=1; AJvYcCUpH/v0g3p9B61Sq1qza1S0brZ7fGKPiuEipAoKpqLh3uhKr8iaNnwxUr6CrxyezyE56kiyLX2RLUVhvkbE2cEFcUX01KZx7J72DDtwXIXS1m3J+NdL5xh9ldZZ
+X-Gm-Message-State: AOJu0Yw+k06z4zfbq54BLZNb932ljx8l82UuaF+LZcjx07jaVHVPR3WF
+	dFQIH8lmdvu9JgJ4I8GpXv0pLjNCIt7+Xj8reb4Qg5Ck3TrZGslF
+X-Google-Smtp-Source: AGHT+IEyNqx6mNdumFHW7YPXbJIHMOfWcsQHcDuBSM6aHtexkIsBXbIgQu8Kfe1O9BU4ISDFO43JEA==
+X-Received: by 2002:a05:6808:60c:b0:3c8:302f:1b8 with SMTP id 5614622812f47-3d2043d120fmr3454284b6e.25.1717615701848;
+        Wed, 05 Jun 2024 12:28:21 -0700 (PDT)
+Received: from localhost (112.49.199.35.bc.googleusercontent.com. [35.199.49.112])
+        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-6afba632e2bsm32326536d6.117.2024.06.05.12.28.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 05 Jun 2024 12:28:20 -0700 (PDT)
+Date: Wed, 05 Jun 2024 15:28:20 -0400
+From: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+To: Magnus Karlsson <magnus.karlsson@gmail.com>, 
+ Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+Cc: magnus.karlsson@intel.com, 
+ bjorn@kernel.org, 
+ ast@kernel.org, 
+ daniel@iogearbox.net, 
+ netdev@vger.kernel.org, 
+ maciej.fijalkowski@intel.com, 
+ bpf@vger.kernel.org, 
+ YuvalE@radware.com
+Message-ID: <6660bc547b59b_35916d294d1@willemb.c.googlers.com.notmuch>
+In-Reply-To: <CAJ8uoz0Zfv3rsLCuza2MW7Km-eU2sH1CDB1V_WHJ2vMAft_EmQ@mail.gmail.com>
+References: <20240604122927.29080-1-magnus.karlsson@gmail.com>
+ <665f9d3ba5a1a_2c0e4d29423@willemb.c.googlers.com.notmuch>
+ <CAJ8uoz0Zfv3rsLCuza2MW7Km-eU2sH1CDB1V_WHJ2vMAft_EmQ@mail.gmail.com>
+Subject: Re: [PATCH bpf 0/2] Revert "xsk: support redirect to any socket bound
+ to the same umem"
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAEf4BzbzgTzvnPRJ24gdhuxN02_w8iNNFn4URh0vEp-t69oPnA@mail.gmail.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.2
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 7bit
 
-On 06/05, Andrii Nakryiko wrote:
->
-> so any such
-> limitations will cause problems, issue reports, investigation, etc.
+Magnus Karlsson wrote:
+> On Wed, 5 Jun 2024 at 01:03, Willem de Bruijn
+> <willemdebruijn.kernel@gmail.com> wrote:
+> >
+> > Magnus Karlsson wrote:
+> > > Revert "xsk: support redirect to any socket bound to the same umem"
+> > >
+> > > This patch introduced a potential kernel crash when multiple napi
+> > > instances redirect to the same AF_XDP socket. By removing the
+> > > queue_index check, it is possible for multiple napi instances to
+> > > access the Rx ring at the same time, which will result in a corrupted
+> > > ring state which can lead to a crash when flushing the rings in
+> > > __xsk_flush(). This can happen when the linked list of sockets to
+> > > flush gets corrupted by concurrent accesses. A quick and small fix is
+> > > unfortunately not possible, so let us revert this for now.
+> >
+> > This is a very useful feature, to be able to use AF_XDP sockets with
+> > a standard RSS nic configuration.
+> 
+> I completely agree.
+> 
+> > Not all AF_XDP use cases require the absolute highest packet rate.
+> >
+> > Can this be addressed with an optional spinlock on the RxQ, only for
+> > this case?
+> 
+> Yes, or with a MPSC ring implementation.
+> 
+> > If there is no simple enough fix in the short term, do you plan to
+> > reintroduce this in another form later?
+> 
+> Yuval and I are looking into a solution based around an optional
+> spinlock since it is easier to pull off than an MPSC ring. The
+> discussion is on-going on the xdp-newbies list [0], but as soon as we
+> have a first patch, we will post it here for review and debate.
+> 
+> [0] https://lore.kernel.org/xdp-newbies/8100DBDC-0B7C-49DB-9995-6027F6E63147@radware.com/
 
-Agreed...
-
-> As one possible solution, what if we do
->
-> struct return_instance {
->     ...
->     u64 session_cookies[];
-> };
->
-> and allocate sizeof(struct return_instance) + 8 *
-> <num-of-session-consumers> and then at runtime pass
-> &session_cookies[i] as data pointer to session-aware callbacks?
-
-I too thought about this, but I guess it is not that simple.
-
-Just for example. Suppose we have 2 session-consumers C1 and C2.
-What if uprobe_unregister(C1) comes before the probed function
-returns?
-
-We need something like map_cookie_to_consumer().
-
-> > +       /* The handler_session callback return value controls execution of
-> > +        * the return uprobe and ret_handler_session callback.
-> > +        *  0 on success
-> > +        *  1 on failure, DO NOT install/execute the return uprobe
-> > +        *    console warning for anything else
-> > +        */
-> > +       int (*handler_session)(struct uprobe_consumer *self, struct pt_regs *regs,
-> > +                              unsigned long *data);
-> > +       int (*ret_handler_session)(struct uprobe_consumer *self, unsigned long func,
-> > +                                  struct pt_regs *regs, unsigned long *data);
-> > +
->
-> We should try to avoid an alternative set of callbacks, IMO. Let's
-> extend existing ones with `unsigned long *data`,
-
-Oh yes, agreed.
-
-And the comment about the return value looks confusing too. I mean, the
-logic doesn't differ from the ret-code from ->handler().
-
-"DO NOT install/execute the return uprobe" is not true if another
-non-session-consumer returns 0.
-
-Oleg.
-
+Glad to hear that it's intended to be supported, and even being worked
+on, thanks! I'll follow the conversation there.
 
