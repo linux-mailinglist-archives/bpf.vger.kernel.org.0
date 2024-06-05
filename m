@@ -1,165 +1,101 @@
-Return-Path: <bpf+bounces-31423-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-31424-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 129C78FC82A
-	for <lists+bpf@lfdr.de>; Wed,  5 Jun 2024 11:43:40 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8B0278FC888
+	for <lists+bpf@lfdr.de>; Wed,  5 Jun 2024 12:00:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 27C251C20B55
-	for <lists+bpf@lfdr.de>; Wed,  5 Jun 2024 09:43:39 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EA40028363F
+	for <lists+bpf@lfdr.de>; Wed,  5 Jun 2024 10:00:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 424041922C8;
-	Wed,  5 Jun 2024 09:42:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 71A47190481;
+	Wed,  5 Jun 2024 10:00:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="CTLMNEcE"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="eAAcd3H6"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-176.mta0.migadu.com (out-176.mta0.migadu.com [91.218.175.176])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 914D418FC90
-	for <bpf@vger.kernel.org>; Wed,  5 Jun 2024 09:42:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E6C7618FDDF;
+	Wed,  5 Jun 2024 10:00:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717580529; cv=none; b=EyVjtaAV8KDlNtp2Rx+DBMgepJ+of3iEkbanGQpwN4WBgN/en95lH/1D9B0SNIsLNiqoiDhNj4CVO+wtqz6kpw0eh8TA+iHp/euNJab5xISrmUgDyV94tWo+FZum9+OJMxn7BuiiwDfD58o7zlIHapTTq5TYMjdCiKyY0UgL3UM=
+	t=1717581631; cv=none; b=ULHEjva4RNcqTvcuxn3eu3Liss3xQBeRrlZr0nkV9NQrr0Uq2vXrWKV/jM2QGjsd2EIWH2p0thILT9vS0T+cB5Ho8coyN0+jKc+DdzyVCsN2gCiH1yuTUNfT/t+YWX0uSVvlynGwJ4FZEaT03QezKu0O1tBHkOuUyYRQiIn6qhU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717580529; c=relaxed/simple;
-	bh=WLlMYI7y0sLcmzSbVHks3WxjwItNOv5saiN/tqdRJkw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=TG/grQiwZiIkJq74t3Ee04wZ26cnWvNgVZkNHncjI7PqVDdnBNEpYdiQIF5PsNuz3eoSR3isLvk4LXAgso2C7QTYVMTdZNW4ztU+w0nO5NM/VodoOLbVB3QsBlWsirCv5yhYsSlg7VNUKk8AfqqZcjfvJmn8SQiOnTjDCjuMPIg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=CTLMNEcE; arc=none smtp.client-ip=91.218.175.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Envelope-To: daniel@iogearbox.net
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1717580525;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=+8er04J+AYfEB7FMGIsyHTbW1JyKQ72hIQ3MCr+3vsA=;
-	b=CTLMNEcE5k6rSia4D20Qd9+w3gIj/9xw4dFP2CimH/bwd+5wxaDSpKCCP+sdI+gn8cv/il
-	tggrDMpMk1reJCMaHmM0S2BtsmqT64ahPpDbgItz4aXlA1/VcT5XwnEkTWA+9rjWQSZ94h
-	4J/lVWdGhZ9/aPoloSRNOoBau88UeKM=
-X-Envelope-To: bpf@vger.kernel.org
-X-Envelope-To: netdev@vger.kernel.org
-X-Envelope-To: kuba@kernel.org
-X-Envelope-To: mykolal@fb.com
-X-Envelope-To: andrii@kernel.org
-X-Envelope-To: martin.lau@linux.dev
-X-Envelope-To: ast@kernel.org
-Message-ID: <f7fe13a8-c379-495b-9e42-3a5ff50b50e3@linux.dev>
-Date: Wed, 5 Jun 2024 10:42:01 +0100
+	s=arc-20240116; t=1717581631; c=relaxed/simple;
+	bh=V+FMW2fJa+68pVpNJIzkd3aueJVnJyq2tJ1HMpHrUW0=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=HVTwwYbtMtIKdqITSctJ9+WTf2u0Y7bEQr12WW7O1WPWH+t6WjY4V7MKnqZNWtD6d6rtkWB1VUw1HzkoiKTVwCksMZBADS0wzCxqo5Z0NmXZE8OdFTXD7UpJbMyx+pN4osWTHkj7lsI8QX9RQXDXBuuVjcDV6VCpNIx4REwwZEo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=eAAcd3H6; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 8EBFCC4AF0A;
+	Wed,  5 Jun 2024 10:00:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1717581630;
+	bh=V+FMW2fJa+68pVpNJIzkd3aueJVnJyq2tJ1HMpHrUW0=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=eAAcd3H6m47M0Weu2LNlupm8Jg8BKkPkHN9CyIV4JZ/0+dJMFjuI6ZBvCsClAPjJB
+	 /kNm9/jtC8Vx/eLAu3fXtX3Q1g/rnDATBSpELIr45XPQcm024Gwt4nSAScxNQOKloe
+	 nstDH9hlrrx9JuzhD4gWQOU/3LyXkMHo+slX11wjTksdTXCXR8i1y+jmQ7/GMJPlX1
+	 CNPaWremPNmKgypEGe6AG8uW1TzJUNXLfGecSJAmHbHbCCgjB9SaKmvSFUaL++CGuS
+	 aoQ1W7eoEXYdS23MTTSwJmF/qIp7gX3yYTRnE03Hk/kDJThGEp5KnZ0JW8uSA0LUlK
+	 KemGf+PLYRs9w==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 76B0BC4332C;
+	Wed,  5 Jun 2024 10:00:30 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next v3 1/2] bpf: add CHECKSUM_COMPLETE to bpf test
- progs
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH v2 net] vxlan: Fix regression when dropping packets due to
+ invalid src addresses
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <171758163048.24633.17235199662445713297.git-patchwork-notify@kernel.org>
+Date: Wed, 05 Jun 2024 10:00:30 +0000
+References: <20240603085926.7918-1-daniel@iogearbox.net>
+In-Reply-To: <20240603085926.7918-1-daniel@iogearbox.net>
 To: Daniel Borkmann <daniel@iogearbox.net>
-Cc: bpf@vger.kernel.org, netdev@vger.kernel.org,
- Jakub Kicinski <kuba@kernel.org>, Mykola Lysenko <mykolal@fb.com>,
- Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau
- <martin.lau@linux.dev>, Alexei Starovoitov <ast@kernel.org>
-References: <20240527185928.1871649-1-vadfed@meta.com>
-Content-Language: en-US
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Vadim Fedorenko <vadim.fedorenko@linux.dev>
-In-Reply-To: <20240527185928.1871649-1-vadfed@meta.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+Cc: netdev@vger.kernel.org, bpf@vger.kernel.org, mail@david-bauer.net,
+ idosch@nvidia.com, razor@blackwall.org, martin.lau@kernel.org
 
-On 27/05/2024 19:59, Vadim Fedorenko wrote:
-> Add special flag to validate that TC BPF program properly updates
-> checksum information in skb.
+Hello:
+
+This patch was applied to netdev/net.git (main)
+by David S. Miller <davem@davemloft.net>:
+
+On Mon,  3 Jun 2024 10:59:26 +0200 you wrote:
+> Commit f58f45c1e5b9 ("vxlan: drop packets from invalid src-address")
+> has recently been added to vxlan mainly in the context of source
+> address snooping/learning so that when it is enabled, an entry in the
+> FDB is not being created for an invalid address for the corresponding
+> tunnel endpoint.
 > 
-> Signed-off-by: Vadim Fedorenko <vadfed@meta.com>
-> ---
->   include/uapi/linux/bpf.h       |  2 ++
->   net/bpf/test_run.c             | 18 +++++++++++++++++-
->   tools/include/uapi/linux/bpf.h |  2 ++
->   3 files changed, 21 insertions(+), 1 deletion(-)
+> Before commit f58f45c1e5b9 vxlan was similarly behaving as geneve in
+> that it passed through whichever macs were set in the L2 header. It
+> turns out that this change in behavior breaks setups, for example,
+> Cilium with netkit in L3 mode for Pods as well as tunnel mode has been
+> passing before the change in f58f45c1e5b9 for both vxlan and geneve.
+> After mentioned change it is only passing for geneve as in case of
+> vxlan packets are dropped due to vxlan_set_mac() returning false as
+> source and destination macs are zero which for E/W traffic via tunnel
+> is totally fine.
 > 
-> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> index 90706a47f6ff..f7d458d88111 100644
-> --- a/include/uapi/linux/bpf.h
-> +++ b/include/uapi/linux/bpf.h
-> @@ -1425,6 +1425,8 @@ enum {
->   #define BPF_F_TEST_RUN_ON_CPU	(1U << 0)
->   /* If set, XDP frames will be transmitted after processing */
->   #define BPF_F_TEST_XDP_LIVE_FRAMES	(1U << 1)
-> +/* If set, apply CHECKSUM_COMPLETE to skb and validate the checksum */
-> +#define BPF_F_TEST_SKB_CHECKSUM_COMPLETE	(1U << 2)
->   
->   /* type for BPF_ENABLE_STATS */
->   enum bpf_stats_type {
-> diff --git a/net/bpf/test_run.c b/net/bpf/test_run.c
-> index f6aad4ed2ab2..4c21562ad526 100644
-> --- a/net/bpf/test_run.c
-> +++ b/net/bpf/test_run.c
-> @@ -977,7 +977,8 @@ int bpf_prog_test_run_skb(struct bpf_prog *prog, const union bpf_attr *kattr,
->   	void *data;
->   	int ret;
->   
-> -	if (kattr->test.flags || kattr->test.cpu || kattr->test.batch_size)
-> +	if ((kattr->test.flags & ~BPF_F_TEST_SKB_CHECKSUM_COMPLETE) ||
-> +	    kattr->test.cpu || kattr->test.batch_size)
->   		return -EINVAL;
->   
->   	data = bpf_test_init(kattr, kattr->test.data_size_in,
-> @@ -1025,6 +1026,12 @@ int bpf_prog_test_run_skb(struct bpf_prog *prog, const union bpf_attr *kattr,
->   
->   	skb_reserve(skb, NET_SKB_PAD + NET_IP_ALIGN);
->   	__skb_put(skb, size);
-> +
-> +	if (kattr->test.flags & BPF_F_TEST_SKB_CHECKSUM_COMPLETE) {
-> +		skb->csum = skb_checksum(skb, 0, skb->len, 0);
-> +		skb->ip_summed = CHECKSUM_COMPLETE;
-> +	}
-> +
->   	if (ctx && ctx->ifindex > 1) {
->   		dev = dev_get_by_index(net, ctx->ifindex);
->   		if (!dev) {
-> @@ -1079,6 +1086,15 @@ int bpf_prog_test_run_skb(struct bpf_prog *prog, const union bpf_attr *kattr,
->   	}
->   	convert_skb_to___skb(skb, ctx);
->   
-> +	if (kattr->test.flags & BPF_F_TEST_SKB_CHECKSUM_COMPLETE) {
-> +		__wsum csum = skb_checksum(skb, 0, skb->len, 0);
-> +
-> +		if (skb->csum != csum) {
-> +			ret = -EBADMSG;
-> +			goto out;
-> +		}
-> +	}
-> +
->   	size = skb->len;
->   	/* bpf program can never convert linear skb to non-linear */
->   	if (WARN_ON_ONCE(skb_is_nonlinear(skb)))
-> diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
-> index 90706a47f6ff..f7d458d88111 100644
-> --- a/tools/include/uapi/linux/bpf.h
-> +++ b/tools/include/uapi/linux/bpf.h
-> @@ -1425,6 +1425,8 @@ enum {
->   #define BPF_F_TEST_RUN_ON_CPU	(1U << 0)
->   /* If set, XDP frames will be transmitted after processing */
->   #define BPF_F_TEST_XDP_LIVE_FRAMES	(1U << 1)
-> +/* If set, apply CHECKSUM_COMPLETE to skb and validate the checksum */
-> +#define BPF_F_TEST_SKB_CHECKSUM_COMPLETE	(1U << 2)
->   
->   /* type for BPF_ENABLE_STATS */
->   enum bpf_stats_type {
+> [...]
 
-Hi Daniel!
+Here is the summary with links:
+  - [v2,net] vxlan: Fix regression when dropping packets due to invalid src addresses
+    https://git.kernel.org/netdev/net/c/1cd4bc987abb
 
-Have you had a chance to look at v3 of this patch?
-I think I addressed all your comments form v2.
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-Thanks,
-Vadim
 
 
