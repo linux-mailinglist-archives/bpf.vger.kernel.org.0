@@ -1,191 +1,156 @@
-Return-Path: <bpf+bounces-31460-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-31461-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 695128FD74E
-	for <lists+bpf@lfdr.de>; Wed,  5 Jun 2024 22:13:25 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6B8958FD769
+	for <lists+bpf@lfdr.de>; Wed,  5 Jun 2024 22:19:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C953FB238C7
-	for <lists+bpf@lfdr.de>; Wed,  5 Jun 2024 20:13:22 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D152A1C22BE7
+	for <lists+bpf@lfdr.de>; Wed,  5 Jun 2024 20:19:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B77A15886C;
-	Wed,  5 Jun 2024 20:12:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1DEEE15ECC6;
+	Wed,  5 Jun 2024 20:19:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WkvWpj7R"
 X-Original-To: bpf@vger.kernel.org
-Received: from 66-220-155-178.mail-mxout.facebook.com (66-220-155-178.mail-mxout.facebook.com [66.220.155.178])
+Received: from mail-ej1-f54.google.com (mail-ej1-f54.google.com [209.85.218.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C95B158858
-	for <bpf@vger.kernel.org>; Wed,  5 Jun 2024 20:12:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=66.220.155.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B2C038FA6;
+	Wed,  5 Jun 2024 20:18:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717618345; cv=none; b=XnTpI953JW3rKrxjvGPCfvCrdLjqctknAZsbKEFQxzF1++ABqGedR7LBDWl70GAQQWqVAmDefWgX+D50GM4pIsd9nl2it/93sslkkjGECAYJ4mz16u3X2QxNNlvE1dBi4MGJDlGvo5f+SyCEdylF7/7C0OT3oFsP44rB/AgjQqc=
+	t=1717618741; cv=none; b=qXonMELMIRP6Sh8hU41wViTOw5T52k25T2OXTqmOi1pEYWdYQt5e8EWd+0xBsWMBB3kmBdd3XMuSQ8tnDR3zQyxsaCW9sisfsCjzYGfeWxAydOeb0Qf1j1gbTPqHbEHPn1nM2+R5pQ6sKre+fonVzOYpul2pupX7R9SdPKway5U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717618345; c=relaxed/simple;
-	bh=dLkjqnHXznRDz8o+Ogs/2dkdg/rBl45DouhaTOVqTMs=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=QKUx6OSKle23eRdFKFb/cCdusQP5AxdsLoux/VzDJH8uXoolhW8zsDAHo7uefmQvPWY2GeJC0HYc+tmzk3W6moM0xJjOE6KhXLEssBxnP+aWu2Nn94sQVo/La5r0yLLi1URxI7Gi6sBPwoiqnu8sl7euurTHWuO0oQgE/kG33mg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.dev; spf=fail smtp.mailfrom=linux.dev; arc=none smtp.client-ip=66.220.155.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=linux.dev
-Received: by devbig309.ftw3.facebook.com (Postfix, from userid 128203)
-	id A53C5523CF4C; Wed,  5 Jun 2024 13:12:03 -0700 (PDT)
-From: Yonghong Song <yonghong.song@linux.dev>
-To: bpf@vger.kernel.org
-Cc: Alexei Starovoitov <ast@kernel.org>,
-	Andrii Nakryiko <andrii@kernel.org>,
+	s=arc-20240116; t=1717618741; c=relaxed/simple;
+	bh=qPNQ2QYoVmcsBrFb8aOxCU0KjrsWi5CgCOSprGNsTUo=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=picvH3cDVdu5I+xPn2MnK0XyqoNyO9vfH+WtbYksddTOuzkXB7RWXjbvO/MkEbC33F0HqxfVhnITfRv/9HfNLFncWwZ0xFBuqGkHvz3k7p2XE+/CIxiWz2pPkfEUcdTk+J5bqxPAlGUdGT5S9OKHGZr8w9DaHo/h8nnxFsAyOHQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=WkvWpj7R; arc=none smtp.client-ip=209.85.218.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f54.google.com with SMTP id a640c23a62f3a-a68c8b90c85so30923066b.2;
+        Wed, 05 Jun 2024 13:18:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1717618738; x=1718223538; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=J5vnkugAixkdDcw84NSgFaMOrIfdvI8Mx6/AdL+ET3k=;
+        b=WkvWpj7RfotAwYaX4tPY59Iz/2Tyq4lsiF46em0LbjFVjyQNkstKwxu+58dVwjHkwl
+         b/wakWRo6ziWcWAJr0K1tdOd8fOlCOV2MMKvy9WLVwDLTCyYDXOAfzh01t2Wd2RtdvIq
+         tTHbz3bZ0U4jNEfGxnFWE8UuuZUM3tKSzoFSHEjb5cqhGgbGNE5mJLpPPJUkLmGWh810
+         BE04nmRewdW7qExkntiQblCtWxcDQYgzDeFonu9RMc7bmj5NXY/APQdYMqgn3spPtcbr
+         CSqKdIlO7CgyNiC1KAguIh81c8Il16fOHQ1HTIKX/sMrlsHFsOXFV50HU1CG+ja1zQLP
+         k5bA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1717618738; x=1718223538;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=J5vnkugAixkdDcw84NSgFaMOrIfdvI8Mx6/AdL+ET3k=;
+        b=CsC9UxLvrFw/01j1ZJMSPEt0JbjU9I5CRS6JciU70nNKSQYHEDY2mLK7VVoH+hdHkd
+         raLKSA/xp8DKq2D7tZRIgOYJ+il+46nSexWtssR0Aog3jXoI30P29cr9n9y6oNcEzBpl
+         k0sYec810JgoQWhGR1iUl2Vj6s5P50WUBKfPeGljiQLcBy7D9/AVHsNiqKnFgEJo6yLF
+         50bOK+k190q8QScmUKKOWWHfcRPUxMYPowrI1piyUqGFKApZRrJ6wX+xR2iPBQTwyKYC
+         tGaiZUZYAAwMZtGojjVU8+jPc5bmiZBGmA5BM4PDiJt10Hx/qbFIj4w09aXw2wSHyEkd
+         YqzQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXTUVG1rbDE+/7TSbFhaHwOYrFpFNR4j3MFZBLMyFCOFwSTt5SVgFWnD/sT68sfqNCdIQK0d3BNOkdvs+BXvuoPhuf8Q9laAUjeMSt/Q91/u2f1ABZLLYwNoxxNcJU4sIFrqeT3gNotdA2pjq/FJuNn62oZ41uuyoApmk7vt5R/IGmGasjg
+X-Gm-Message-State: AOJu0YxPpo7zFcTbGnDlyyJYnMqn4G6zrXKTbJVuHVzpXPRGefU3XBcL
+	rmxJp7F7Gs3E+anxi3Aphwr2LCZQH5FC1SkCeC4XV3VyQ5hXgsoF
+X-Google-Smtp-Source: AGHT+IFObt3ud6A2I+57x4wHrM7zvq8TQaQWOLzG6FvHrg9EURxEtydzdkeYu62tkSVzHa9fR9dxlQ==
+X-Received: by 2002:a17:906:591a:b0:a69:2bce:e41e with SMTP id a640c23a62f3a-a699f363807mr262253866b.9.1717618737955;
+        Wed, 05 Jun 2024 13:18:57 -0700 (PDT)
+Received: from krava ([83.240.63.158])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a6900d7f6a3sm534291066b.90.2024.06.05.13.18.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 05 Jun 2024 13:18:57 -0700 (PDT)
+From: Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date: Wed, 5 Jun 2024 22:18:55 +0200
+To: Oleg Nesterov <oleg@redhat.com>
+Cc: Peter Zijlstra <peterz@infradead.org>,
+	Alexei Starovoitov <ast@kernel.org>,
 	Daniel Borkmann <daniel@iogearbox.net>,
-	kernel-team@fb.com,
-	Martin KaFai Lau <martin.lau@kernel.org>
-Subject: [PATCH bpf-next] selftests/bpf: Fix send_signal test with nested CONFIG_PARAVIRT
-Date: Wed,  5 Jun 2024 13:12:03 -0700
-Message-ID: <20240605201203.2603846-1-yonghong.song@linux.dev>
-X-Mailer: git-send-email 2.43.0
+	Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
+	Martin KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
+	Yonghong Song <yhs@fb.com>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@chromium.org>,
+	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org
+Subject: Re: [RFC bpf-next 01/10] uprobe: Add session callbacks to
+ uprobe_consumer
+Message-ID: <ZmDIL85R_P8NhIwm@krava>
+References: <20240604200221.377848-1-jolsa@kernel.org>
+ <20240604200221.377848-2-jolsa@kernel.org>
+ <20240605152457.GD25006@redhat.com>
+ <20240605160117.GE25006@redhat.com>
+ <20240605163624.GG25006@redhat.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240605163624.GG25006@redhat.com>
 
-Alexei reported that send_signal test may fail with
-nested CONFIG_PARAVIRT configs. In this particular case,
-the base vm is AMD with 166 cpus, and I run selftests
-with regular qemu on top of that and indeed send_signal
-test failed.  I also tried with an intel box with 80 cpus
-and there is no issue.
+On Wed, Jun 05, 2024 at 06:36:25PM +0200, Oleg Nesterov wrote:
+> On 06/05, Oleg Nesterov wrote:
+> >
+> > On 06/05, Oleg Nesterov wrote:
+> > >
+> > > > +/*
+> > > > + * Make sure all the uprobe consumers have only one type of entry
+> > > > + * callback registered (either handler or handler_session) due to
+> > > > + * different return value actions.
+> > > > + */
+> > > > +static int consumer_check(struct uprobe_consumer *curr, struct uprobe_consumer *uc)
+> > > > +{
+> > > > +	if (!curr)
+> > > > +		return 0;
+> > > > +	if (curr->handler_session || uc->handler_session)
+> > > > +		return -EBUSY;
+> > > > +	return 0;
+> > > > +}
+> > >
+> > > Hmm, I don't understand this code, it doesn't match the comment...
+> > >
+> > > The comment says "all the uprobe consumers have only one type" but
+> > > consumer_check() will always fail if the the 1st or 2nd consumer has
+> > > ->handler_session != NULL ?
+> > >
+> > > Perhaps you meant
+> > >
+> > > 	if (!!curr->handler != !!uc->handler)
+> > > 		return -EBUSY;
+> > >
+> > > ?
+> >
+> > OK, the changelog says
+> >
+> > 	Which means that there can be only single user of a uprobe (inode +
+> > 	offset) when session consumer is registered to it.
+> >
+> > so the code is correct. But I still think the comment is misleading.
+> 
+> Cough... perhaps it is correct but I am still confused even we forget about
+> the comment ;)
+> 
+> OK, uprobe can have a single consumer with ->handler_session != NULL. I guess
+> this is because return_instance->data is "global".
+> 
+> So uprobe can have multiple handler_session == NULL consumers before
+> handler_session != NULL, but not after ?
 
-The main qemu command line includes
-  -enable-kvm -smp 16 -cpu host
-The failure log looks like:
-  $ ./test_progs -t send_signal
-  [   48.501588] watchdog: BUG: soft lockup - CPU#9 stuck for 26s! [test_=
-progs:2225]
-  [   48.503622] Modules linked in: bpf_testmod(O)
-  [   48.503622] CPU: 9 PID: 2225 Comm: test_progs Tainted: G           O=
-       6.9.0-08561-g2c1713a8f1c9-dirty #69
-  [   48.507629] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), B=
-IOS rel-1.15.0-0-g2dd4b9b3f840-prebuilt.qemu.org 04/01/2014
-  [   48.511635] RIP: 0010:handle_softirqs+0x71/0x290
-  [   48.511635] Code: 0f b7 25 f2 f4 fa 7e 65 81 05 cf f4 fa 7e 00 01 00=
- 00 c7 44 24 10 0a 00 00 00 31 c0 65 66 89 05 d5 f4 fa 7e fb bb ff ff ff =
-ff <49> c7 c2 cb
-  [   48.518527] RSP: 0018:ffffc90000310fa0 EFLAGS: 00000246
-  [   48.519579] RAX: 0000000000000000 RBX: 00000000ffffffff RCX: 0000000=
-0000006e0
-  [   48.522526] RDX: 0000000000000006 RSI: ffff88810791ae80 RDI: 0000000=
-000000000
-  [   48.523587] RBP: ffffc90000fabc88 R08: 00000005a0af4f7f R09: 0000000=
-000000000
-  [   48.525525] R10: 0000000561d2f29c R11: 0000000000006534 R12: 0000000=
-000000280
-  [   48.528525] R13: 0000000000000000 R14: 0000000000000000 R15: 0000000=
-000000000
-  [   48.528525] FS:  00007f2f2885cd00(0000) GS:ffff888237c40000(0000) kn=
-lGS:0000000000000000
-  [   48.531600] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-  [   48.535520] CR2: 00007f2f287059f0 CR3: 0000000106a28002 CR4: 0000000=
-0003706f0
-  [   48.537538] Call Trace:
-  [   48.537538]  <IRQ>
-  [   48.537538]  ? watchdog_timer_fn+0x1cd/0x250
-  [   48.539590]  ? lockup_detector_update_enable+0x50/0x50
-  [   48.539590]  ? __hrtimer_run_queues+0xff/0x280
-  [   48.542520]  ? hrtimer_interrupt+0x103/0x230
-  [   48.544524]  ? __sysvec_apic_timer_interrupt+0x4f/0x140
-  [   48.545522]  ? sysvec_apic_timer_interrupt+0x3a/0x90
-  [   48.547612]  ? asm_sysvec_apic_timer_interrupt+0x1a/0x20
-  [   48.547612]  ? handle_softirqs+0x71/0x290
-  [   48.547612]  irq_exit_rcu+0x63/0x80
-  [   48.551585]  sysvec_apic_timer_interrupt+0x75/0x90
-  [   48.552521]  </IRQ>
-  [   48.553529]  <TASK>
-  [   48.553529]  asm_sysvec_apic_timer_interrupt+0x1a/0x20
-  [   48.555609] RIP: 0010:finish_task_switch.isra.0+0x90/0x260
-  [   48.556526] Code: 00 0f 1f 44 00 00 41 c7 44 24 34 00 00 00 00 49 8b=
- 9f 58 0a 00 00 48 85 db 0f 85 89 01 00 00 4c 89 ff e8 53 d9 bd 00 fb 66 =
-90 <4d> 85 ed 74
-  [   48.562524] RSP: 0018:ffffc90000fabd38 EFLAGS: 00000282
-  [   48.563589] RAX: 0000000000000000 RBX: 0000000000000000 RCX: fffffff=
-f83385620
-  [   48.563589] RDX: ffff888237c73ae4 RSI: 0000000000000000 RDI: ffff888=
-237c6fd00
-  [   48.568521] RBP: ffffc90000fabd68 R08: 0000000000000000 R09: 0000000=
-000000000
-  [   48.569528] R10: 0000000000000001 R11: 0000000000000000 R12: ffff888=
-1009d0000
-  [   48.573525] R13: ffff8881024e5400 R14: ffff88810791ae80 R15: ffff888=
-237c6fd00
-  [   48.575614]  ? finish_task_switch.isra.0+0x8d/0x260
-  [   48.576523]  __schedule+0x364/0xac0
-  [   48.577535]  schedule+0x2e/0x110
-  [   48.578555]  pipe_read+0x301/0x400
-  [   48.579589]  ? destroy_sched_domains_rcu+0x30/0x30
-  [   48.579589]  vfs_read+0x2b3/0x2f0
-  [   48.579589]  ksys_read+0x8b/0xc0
-  [   48.583590]  do_syscall_64+0x3d/0xc0
-  [   48.583590]  entry_SYSCALL_64_after_hwframe+0x4b/0x53
-  [   48.586525] RIP: 0033:0x7f2f28703fa1
-  [   48.587592] Code: ff ff eb c3 67 e8 2f c9 01 00 66 2e 0f 1f 84 00 00=
- 00 00 00 0f 1f 44 00 00 f3 0f 1e fa 80 3d c5 23 14 00 00 74 13 31 c0 0f =
-05 <48> 3d 00 f0
-  [   48.593534] RSP: 002b:00007ffd90f8cf88 EFLAGS: 00000246 ORIG_RAX: 00=
-00000000000000
-  [   48.595589] RAX: ffffffffffffffda RBX: 00007ffd90f8d5e8 RCX: 00007f2=
-f28703fa1
-  [   48.595589] RDX: 0000000000000001 RSI: 00007ffd90f8cfb0 RDI: 0000000=
-000000006
-  [   48.599592] RBP: 00007ffd90f8d2f0 R08: 0000000000000064 R09: 0000000=
-000000000
-  [   48.602527] R10: 0000000000000000 R11: 0000000000000246 R12: 0000000=
-000000000
-  [   48.603589] R13: 00007ffd90f8d608 R14: 00007f2f288d8000 R15: 0000000=
-000f6bdb0
-  [   48.605527]  </TASK>
+ah yea it should have done what's in the comment, so it's missing
+the check for handler.. session handlers are meant to be exclusive
 
-In the test, two processes are communicated through pipe.
-Furhter debugging with strace found that the above splat is
-triggered as read() syscall could not receive the data
-even if the corresponding write() syscall in another process
-successfully wrote data into the pipe.
-
-The failed subtest is "send_signal_perf". The corresponding perf event
-has sample_period 1 and config PERF_COUNT_SW_CPU_CLOCK.
-sample_period 1 means every overflow event will trigger a call to
-bpf program. So I suspect this may overwhelm the system. So I increased
-the sample_period to 100000 and the test passed. The sample_period 10000
-still has the test failed.
-
-In other parts of selftest, e.g., [1], sample_freq is used instead.
-So I decided to use sample_freq =3D 1000 since the test can pass as well.
-
-  [1] https://lore.kernel.org/bpf/20240604070700.3032142-1-song@kernel.or=
-g/
-
-Reported-by: Alexei Starovoitov <ast@kernel.org>
-Signed-off-by: Yonghong Song <yonghong.song@linux.dev>
----
- tools/testing/selftests/bpf/prog_tests/send_signal.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/tools/testing/selftests/bpf/prog_tests/send_signal.c b/tools=
-/testing/selftests/bpf/prog_tests/send_signal.c
-index 920aee41bd58..6cc69900b310 100644
---- a/tools/testing/selftests/bpf/prog_tests/send_signal.c
-+++ b/tools/testing/selftests/bpf/prog_tests/send_signal.c
-@@ -156,7 +156,8 @@ static void test_send_signal_tracepoint(bool signal_t=
-hread)
- static void test_send_signal_perf(bool signal_thread)
- {
- 	struct perf_event_attr attr =3D {
--		.sample_period =3D 1,
-+		.freq =3D 1,
-+		.sample_freq =3D 1000,
- 		.type =3D PERF_TYPE_SOFTWARE,
- 		.config =3D PERF_COUNT_SW_CPU_CLOCK,
- 	};
---=20
-2.43.0
-
+thanks,
+jirka
 
