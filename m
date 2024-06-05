@@ -1,67 +1,76 @@
-Return-Path: <bpf+bounces-31465-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-31464-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 286398FD80F
-	for <lists+bpf@lfdr.de>; Wed,  5 Jun 2024 23:02:43 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DA4958FD80B
+	for <lists+bpf@lfdr.de>; Wed,  5 Jun 2024 23:02:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 261D31C242C3
-	for <lists+bpf@lfdr.de>; Wed,  5 Jun 2024 21:02:42 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 66C2A287F99
+	for <lists+bpf@lfdr.de>; Wed,  5 Jun 2024 21:02:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E10813A40B;
-	Wed,  5 Jun 2024 21:02:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 849D015F3F9;
+	Wed,  5 Jun 2024 21:01:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="GmoZjN/w"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="S+9SPlJH"
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f41.google.com (mail-wr1-f41.google.com [209.85.221.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B8AC13CFBD
-	for <bpf@vger.kernel.org>; Wed,  5 Jun 2024 21:02:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8CF8A15F30F;
+	Wed,  5 Jun 2024 21:01:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717621354; cv=none; b=VJTKjgK3UltP7MqGqktGrNsTVhsJgMEWz3hh9WFuQF1m7ZGIAzSgYpp6dv3Y1QcrQUHBAD6CNEDaM1UZSU+YSLtau5P0NZszhDFkjBTyHDtRNksD8fWdY/fucagHTM5tbIvpJg0zbhvpsy1/QiwNnmXjYM8REWI2sWqyb2udAz0=
+	t=1717621287; cv=none; b=QrZ27wKoTzgZDx4+HTrhucULPfo8msVZkC4GNu7FA4gX6s8cLkGAzfhCiOzyL2P1W1JleI3czZXpRtPm7wv3knVWLpEgc5cJOkr/YdG2TJys/12J4BS99qEV3WBFbOWZs0ikQ6hDVQauSDb7OfFgQmXwXbvxPBGeg6kSniNkOj0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717621354; c=relaxed/simple;
-	bh=CR6hmo3BYLol4OkDTrDKGhawRzyHwi1OkF6+XlGrv3w=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=sIf5gOniNcPwydAZ87DQdoEabQH/1ekPTkVP+baW8IpI6SX0+LiRR3MsepVAO0P3IOluEFm49KYBGDlgXrfFuQQsIzHukzCtGOtcqziYaIUFcutf47eFl1M+cg+j3uzJnodLLgz/iT2hA6Fh8qXWpCeExl+DrRQoCIgBYWFVkKI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=GmoZjN/w; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1717621352;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=CR6hmo3BYLol4OkDTrDKGhawRzyHwi1OkF6+XlGrv3w=;
-	b=GmoZjN/wbcHgTXUoVynoUZ5YTYXWuiP5juAa6a9eTt5NKrU4Df+NsPT1MMtuia0ZPlAq4g
-	/D1BufrU3FJ2PQ3jBSxahf5MKwzG4U810XbwfkatQTFMNiBlR0tyg9BeQ5yDjaMBZQ7Qh4
-	wbhBN8atnC3r9yiW+5O3bHruXjGOYbY=
-Received: from mx-prod-mc-03.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-682-UlRffepYNUy40V6cIxvZ3w-1; Wed,
- 05 Jun 2024 17:02:23 -0400
-X-MC-Unique: UlRffepYNUy40V6cIxvZ3w-1
-Received: from mx-prod-int-04.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-04.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.40])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mx-prod-mc-03.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id BAF671953955;
-	Wed,  5 Jun 2024 21:02:20 +0000 (UTC)
-Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.224.62])
-	by mx-prod-int-04.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with SMTP id 80A511956055;
-	Wed,  5 Jun 2024 21:02:13 +0000 (UTC)
-Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
-	oleg@redhat.com; Wed,  5 Jun 2024 23:00:52 +0200 (CEST)
-Date: Wed, 5 Jun 2024 23:00:43 +0200
-From: Oleg Nesterov <oleg@redhat.com>
-To: Jiri Olsa <olsajiri@gmail.com>
-Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-	Peter Zijlstra <peterz@infradead.org>,
+	s=arc-20240116; t=1717621287; c=relaxed/simple;
+	bh=TPSfXDJGTWIMSUF3vFBgVX55rJYpyau9urwiUFj8xvE=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Lv+yTSI+582cs3nOr5ltngu+7+iH5e6rUM2t4caRH9ATXo09bPvldt+RbSVm4SeeE0vX4CKmoNkCWrt+G0ByyVawPRnn4baIEBdC4TrhHYCbKsW1OtNNYnUxnEbHPbzI2qosBygK/P6aqenQBjFAxT82/Hs+9xLEH+JKJZfrrrc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=S+9SPlJH; arc=none smtp.client-ip=209.85.221.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f41.google.com with SMTP id ffacd0b85a97d-35e4aaa0f33so262798f8f.0;
+        Wed, 05 Jun 2024 14:01:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1717621284; x=1718226084; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=QPJbSr0brM/HxZcgIyd9JYBo30Gl5LizEvrWrWRCKGs=;
+        b=S+9SPlJHb9SP4jYfVB1Xgo+6KVUhBXrcCtso/V67ipSqn2owYwcM7tb6+oGO/I2qPa
+         9iS4KX2Z6Bo2LVBcfh+21eAbKl1Fk7WhPFgR489hHA1OBCcA0wZFKJ5wAyu3xay0phxL
+         hPTRdFcBcn0vPLfda7iW6gNGZMlZE28xnBepK9Cw0AzSLNgKv8Uc6IfsKCYASjY3/jKp
+         kl3TGGk92VzsknSLAtVidE9eZZBTYbAZI/qSUTY/3jBTQHMSNUitGw7qHd0R8CfFViAD
+         LiY4YC/qw/N3XEOVxbPlCNaavI8BFuvnJJy89ZNLdOUE3AFZOed6fsNa16NkQfvhfz9N
+         SNvQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1717621284; x=1718226084;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=QPJbSr0brM/HxZcgIyd9JYBo30Gl5LizEvrWrWRCKGs=;
+        b=CuqXxUWJX2AHRRQgQEOvNm/RHwvwQGyryed29q7DI8UAOPQl0W3iFSq8vwTzS7UpX/
+         3lmAhGvOQD1bMccraFGfYYEFvclnpWhJc4F/gFVO5KhqAdHeJYGD1PGRgGPU+SHwz70i
+         32E9+PWQpLE8UH9AF+bnu4r0VJdr9BnkZBt2XlQiZQd4YiXDALyoXMvI7x+1c3BcV2cu
+         MML9gWUACIvCL/xYxyUkptEw1eP5p4TNMaVmlou7fd8wRAoyjL6dQG8sNCnY994UNIKD
+         9ZR8KX8qtn3u2keDkIioY9r2pbZFnQzv88sI6nngjwHoRSkNtjA17BVRAkIUJI+ZX9JA
+         fx8A==
+X-Forwarded-Encrypted: i=1; AJvYcCWMi9CqAW+pjHSI2RtV41fBxjY+KIjQeJGDkhQQffaSalEcnnWzerEnBXoaiTGFbcP/LDfZzp9a/sGR7iSBj6TH04XrkjhfIOuHw6AQAxLXND5qlr6G+7tRRr3qnLYpXbGdSGQ4SmCaw8ht9V9gTavuKrZG1SYoB13nQRWYubz4JxL3jXhG
+X-Gm-Message-State: AOJu0YyjMxGKuUi8JcgoTl1wT0oJ7Gc+CIL1JPDGL84ZdW4b+YOBrRdQ
+	+3JNaIP71IOBi1gXy9sQuCDTVZootpPV/a6Oe5Rupe+C1AzLTBH3
+X-Google-Smtp-Source: AGHT+IHabqkIBd/I9/cwYKH0t5gb0Si4YN9cnDv5QFLWNg3ZF/c2YFNROHCJq5sq6KWb0suC7tloDQ==
+X-Received: by 2002:adf:e3c5:0:b0:35e:eaf:697e with SMTP id ffacd0b85a97d-35e8ef080c3mr2916169f8f.28.1717621283807;
+        Wed, 05 Jun 2024 14:01:23 -0700 (PDT)
+Received: from krava ([83.240.63.158])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-35dd04ca981sm15560711f8f.33.2024.06.05.14.01.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 05 Jun 2024 14:01:23 -0700 (PDT)
+From: Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date: Wed, 5 Jun 2024 23:01:21 +0200
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: Oleg Nesterov <oleg@redhat.com>, Peter Zijlstra <peterz@infradead.org>,
 	Alexei Starovoitov <ast@kernel.org>,
 	Daniel Borkmann <daniel@iogearbox.net>,
 	Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
@@ -75,12 +84,10 @@ Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>,
 	linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org
 Subject: Re: [RFC bpf-next 01/10] uprobe: Add session callbacks to
  uprobe_consumer
-Message-ID: <20240605210043.GB19139@redhat.com>
+Message-ID: <ZmDSIfnU4vUMCBz9@krava>
 References: <20240604200221.377848-1-jolsa@kernel.org>
  <20240604200221.377848-2-jolsa@kernel.org>
  <CAEf4BzbzgTzvnPRJ24gdhuxN02_w8iNNFn4URh0vEp-t69oPnA@mail.gmail.com>
- <20240605175619.GH25006@redhat.com>
- <ZmDPQH2uiPYTA_df@krava>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -89,29 +96,76 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZmDPQH2uiPYTA_df@krava>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Scanned-By: MIMEDefang 3.0 on 10.30.177.40
+In-Reply-To: <CAEf4BzbzgTzvnPRJ24gdhuxN02_w8iNNFn4URh0vEp-t69oPnA@mail.gmail.com>
 
-On 06/05, Jiri Olsa wrote:
->
-> > And the comment about the return value looks confusing too. I mean, the
-> > logic doesn't differ from the ret-code from ->handler().
+On Wed, Jun 05, 2024 at 10:25:56AM -0700, Andrii Nakryiko wrote:
+
+SNIP
+
+> > ---
+> >  include/linux/uprobes.h | 18 +++++++++++
+> >  kernel/events/uprobes.c | 69 +++++++++++++++++++++++++++++++++++------
+> >  2 files changed, 78 insertions(+), 9 deletions(-)
 > >
-> > "DO NOT install/execute the return uprobe" is not true if another
-> > non-session-consumer returns 0.
+> > diff --git a/include/linux/uprobes.h b/include/linux/uprobes.h
+> > index f46e0ca0169c..a2f2d5ac3cee 100644
+> > --- a/include/linux/uprobes.h
+> > +++ b/include/linux/uprobes.h
+> > @@ -34,6 +34,12 @@ enum uprobe_filter_ctx {
+> >  };
+> >
+> >  struct uprobe_consumer {
+> > +       /*
+> > +        * The handler callback return value controls removal of the uprobe.
+> > +        *  0 on success, uprobe stays
+> > +        *  1 on failure, remove the uprobe
+> > +        *    console warning for anything else
+> > +        */
+> >         int (*handler)(struct uprobe_consumer *self, struct pt_regs *regs);
+> >         int (*ret_handler)(struct uprobe_consumer *self,
+> >                                 unsigned long func,
+> > @@ -42,6 +48,17 @@ struct uprobe_consumer {
+> >                                 enum uprobe_filter_ctx ctx,
+> >                                 struct mm_struct *mm);
+> >
+> > +       /* The handler_session callback return value controls execution of
+> > +        * the return uprobe and ret_handler_session callback.
+> > +        *  0 on success
+> > +        *  1 on failure, DO NOT install/execute the return uprobe
+> > +        *    console warning for anything else
+> > +        */
+> > +       int (*handler_session)(struct uprobe_consumer *self, struct pt_regs *regs,
+> > +                              unsigned long *data);
+> > +       int (*ret_handler_session)(struct uprobe_consumer *self, unsigned long func,
+> > +                                  struct pt_regs *regs, unsigned long *data);
+> > +
+> 
+> We should try to avoid an alternative set of callbacks, IMO. Let's
+> extend existing ones with `unsigned long *data`, but specify that
+> unless consumer sets some flag on registration that it needs a session
+> cookie, we'll pass NULL here? Or just allocate cookie data for each
+> registered consumer for simplicity, don't know; given we don't expect
+> many consumers on exactly the same uprobe, it might be ok to keep it
+> simple.
 >
-> well they are meant to be exclusive, so there'd be no other non-session-consumer
 
-OK. (but may be the changelog can explain more clearly why they can't
-co-exist with the non-session-consumers).
+ah, I did not want to break existing users.. but it's not uapi,
+so we're good, ok makes sense
 
-But again, this doesn't differ from the the ret-code from the
-non-session-consumer->handler().
+jirka
+ 
+> 
+> >         struct uprobe_consumer *next;
+> >  };
+> >
+> > @@ -85,6 +102,7 @@ struct return_instance {
+> >         unsigned long           func;
+> >         unsigned long           stack;          /* stack pointer */
+> >         unsigned long           orig_ret_vaddr; /* original return address */
+> > +       unsigned long           data;
+> >         bool                    chained;        /* true, if instance is nested */
+> >
+> >         struct return_instance  *next;          /* keep as stack */
 
-If it returns 1 == UPROBE_HANDLER_REMOVE, then without other consumers
-prepare_uretprobe() won't be called.
-
-Oleg.
-
+SNIP
 
