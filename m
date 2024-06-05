@@ -1,120 +1,165 @@
-Return-Path: <bpf+bounces-31421-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-31422-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4D0048FC6FA
-	for <lists+bpf@lfdr.de>; Wed,  5 Jun 2024 10:52:53 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 038918FC770
+	for <lists+bpf@lfdr.de>; Wed,  5 Jun 2024 11:15:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 60DDC282A6A
-	for <lists+bpf@lfdr.de>; Wed,  5 Jun 2024 08:52:51 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1EA58B21E2E
+	for <lists+bpf@lfdr.de>; Wed,  5 Jun 2024 09:15:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A4CA714B07A;
-	Wed,  5 Jun 2024 08:52:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3EDDA18FC66;
+	Wed,  5 Jun 2024 09:15:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TGOV8clo"
+	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="NROz737X"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-f41.google.com (mail-ed1-f41.google.com [209.85.208.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A768E1946A9
-	for <bpf@vger.kernel.org>; Wed,  5 Jun 2024 08:52:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E073549645;
+	Wed,  5 Jun 2024 09:15:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.133.104.62
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717577569; cv=none; b=mnpAIbX1amuxgS/CUXFzDIw0NY6QFg+sOlSPhLFv6mKKRMbZ1UP22kx2tdENg2uxJn9rsYHxY030LMVyLtxMpE0Ha1GQj+IbpYEqZupxXXlXL5gutFP/n9H3HD8YkjXowbVooDg8+VmAPFpxZ3jdWgTF0P0ZsSr8LudGAI5V1Fw=
+	t=1717578937; cv=none; b=j9h1CSt6lRExRA90gTN2grbGVbS0kieepFkxkZChy80JnGGQ6KrACeYYyCwvgFS/wNtGIwKayWsmMuH7DvCVWv3BG040rtcxpMS11lWq7m9YcujAnx2hKIeR/Z66UzKfeOEJYfiVlEk8NIZ1K9n9d4USAOJGUrPrznwrKUn9BoE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717577569; c=relaxed/simple;
-	bh=gbwV/j8kvPd7OaJtGO8YIL/DlAWkFRXi9Iq+4ranC4E=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=lRKGfn+5A3Lk/Zd+3jytIp8nK4Sq4z8Zr41qwmHvvqP//z3AEL/hmhF5emJGTICI5HHEKoRwYebVhEMePpaH52sSRoA4IX0keFwP4sKUxqkLp9zPaHqh9nIJzgzvbtxsBnrCDOxAhfv1REEwG9oS8fE9Gk4YSxvdpVdL9Ksw8Ys=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=TGOV8clo; arc=none smtp.client-ip=209.85.208.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f41.google.com with SMTP id 4fb4d7f45d1cf-57a2406f951so7256325a12.1
-        for <bpf@vger.kernel.org>; Wed, 05 Jun 2024 01:52:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1717577565; x=1718182365; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=AIwHcfyNSQZTCR/tLgK0sgxjmf4pD8u0N9MXYYRWozE=;
-        b=TGOV8cloSpANVHJQaYVPmjlLdraZCoB1HFhTpvMTr7qt7hVTRxzU+J8X++kkcUbmiS
-         LGNUtz7i21uYN8nNYldXZqNMDof7SPLgKeOH4bPh9tehTM3UquSQo3a1XRAopvKmP2Sm
-         epTCVhjNwc0eTCMr2sirr0R8w3javt/mt7rJKrFXDgRcpG1WFMwJc5DjNcXcsXDHbOUp
-         FNJaqmdZzbnejydCQzj7+3IvZzMig6wHtL6UugRx4/nPw95M5rYdnAfgygG4XUyBAzd3
-         NBULpDDX6+QhMdhP8H4Dv+K2K2BRba/5vPSzZUInjNwyaisc+pTiFqb96/DRvaor1R6N
-         GIBw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1717577565; x=1718182365;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=AIwHcfyNSQZTCR/tLgK0sgxjmf4pD8u0N9MXYYRWozE=;
-        b=D7xOy1BWHD1fcFc/XpyB+/WDPp4YPXyegXxeJHsuVCVJhUaZrHNiCsakDSblJeJa4N
-         UP0J8yapmkC+LeUKJimgRUqXzN5qinagYtrZR9V2nAFA9pEZB0O1fQiKJEaBjRUGdvKW
-         rE074pow9SsxCBKK+yIZr6MjVW9YYeoN2xG7fDEPTS4Tkk/6SzSwwVdlm7Pj5sKCfMY9
-         U8e+2tFDy1qyvkRjMngBq6tXHYwW2GJLFPCF79s9DVzexNYSymrbiNvIye6sIq2Xs2EG
-         /vinKBGbI1IeMVL9GfbIBDRbm7sS+aa79TZLi/Czm9ImdZNPmQyPQ9BsDxC2tHZstGsr
-         Pgrg==
-X-Gm-Message-State: AOJu0YwsgJTYIwdPOKz9SpW9pPypuOSnj41Cn7I6Wk3CBjzHv3kf3h3h
-	nNHedoi4UQhChXpW4UXkBlbNivFwuupejdAyptoq86sua0E2IIUn
-X-Google-Smtp-Source: AGHT+IEQY2XpgGszW67jhaZeFTTtbiUcWsFMjl5/dFHpttFQ793MSbtU3DPT6otp7vXC3dETuAX/IA==
-X-Received: by 2002:a50:9f88:0:b0:57a:24a7:2756 with SMTP id 4fb4d7f45d1cf-57a8bcb31dcmr1202598a12.33.1717577564727;
-        Wed, 05 Jun 2024 01:52:44 -0700 (PDT)
-Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
-        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-57a468ebb00sm7738318a12.52.2024.06.05.01.52.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 05 Jun 2024 01:52:44 -0700 (PDT)
-From: Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Wed, 5 Jun 2024 10:52:42 +0200
-To: Andrii Nakryiko <andrii@kernel.org>
-Cc: bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-	martin.lau@kernel.org, alan.maguire@oracle.com, eddyz87@gmail.com
-Subject: Re: [PATCH v2 bpf-next 0/5] libbpf: BTF field iterator
-Message-ID: <ZmAnWoByxFnBJV4F@krava>
-References: <20240605001629.4061937-1-andrii@kernel.org>
+	s=arc-20240116; t=1717578937; c=relaxed/simple;
+	bh=EgmMbyOlJ77obyN8WUQzwN67ZchBNjDVil+6qkZwJEc=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=ZFZd5EEcUlT7RELpDMr6whJJTzxHYmDbr513Lcd1LJpHHt6+fmFRb9FZIX9ioyG/UjYbhsWx/Gyzfh4m+n/Ski54znjL3CQxHoSMc5E09C7SpsZkQVJhygWNdF3/eIyoRJsQCvBs+TS79MvENMlx4rYiqyrac54qEOvxlIGrTx4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=NROz737X; arc=none smtp.client-ip=213.133.104.62
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iogearbox.net
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
+	MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:In-Reply-To:References;
+	bh=viCEZODsD67i7SMAhYHlCEmO7JjUJsBwOLxfiqzNs0M=; b=NROz737XOH+t0l9lSUGm1Lo7m3
+	NnutKYQZ95moKWxBelXRxJw4JEETPC3yWN4rTsehTO2q6oM+hUwJsWRNU0GXeCtJPn1FwUB5l58rN
+	kvW4rC+NGuA+zKFYznAmXcfQtghwPwmvuhl9+TF9NDU7SblL4DPuOz3nJEuaN+DfeFzj81MRHQkqu
+	DE/Rlyz6nWbOaTqDQdpUHLKqealSSxv4Hr27WpRjJaac7Q3Vijctse7Vu8ypP2S+UX5bEW9b47kz/
+	+foxqH1OckR1JkDJhHhtReGm2PQuBzhXhO4tSEzSC59E54+iOe/IY6WaVaUAf5msLCeU1yn8KSubf
+	UB0rvKUw==;
+Received: from 29.248.197.178.dynamic.dsl-lte-bonding.zhbmb00p-msn.res.cust.swisscom.ch ([178.197.248.29] helo=localhost)
+	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <daniel@iogearbox.net>)
+	id 1sEmjt-0009s4-SE; Wed, 05 Jun 2024 11:15:25 +0200
+From: Daniel Borkmann <daniel@iogearbox.net>
+To: davem@davemloft.net
+Cc: kuba@kernel.org,
+	pabeni@redhat.com,
+	edumazet@google.com,
+	daniel@iogearbox.net,
+	ast@kernel.org,
+	andrii@kernel.org,
+	martin.lau@linux.dev,
+	netdev@vger.kernel.org,
+	bpf@vger.kernel.org
+Subject: pull-request: bpf 2024-06-05
+Date: Wed,  5 Jun 2024 11:15:25 +0200
+Message-Id: <20240605091525.22628-1-daniel@iogearbox.net>
+X-Mailer: git-send-email 2.21.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240605001629.4061937-1-andrii@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.10/27296/Tue Jun  4 10:29:18 2024)
 
-On Tue, Jun 04, 2024 at 05:16:24PM -0700, Andrii Nakryiko wrote:
-> Add BTF field (type and string fields, right now) iterator support instead of
-> using existing callback-based approaches, which make it harder to understand
-> and support BTF-processing code.
-> 
-> v1->v2:
->   - t_cnt -> t_off_cnt, m_cnt -> m_off_cnt (Eduard);
->   - simpified code in linker.c (Jiri);
-> rfcv1->v1:
->   - check errors when initializing iterators (Jiri);
->   - split RFC patch into separate patches.
-> 
-> Andrii Nakryiko (5):
->   libbpf: add BTF field iterator
->   libbpf: make use of BTF field iterator in BPF linker code
->   libbpf: make use of BTF field iterator in BTF handling code
->   bpftool: use BTF field iterator in btfgen
->   libbpf: remove callback-based type/string BTF field visitor helpers
+Hi David, hi Jakub, hi Paolo, hi Eric,
 
-Acked-by: Jiri Olsa <jolsa@kernel.org>
+The following pull-request contains BPF updates for your *net* tree.
 
-jirka
+We've added 8 non-merge commits during the last 6 day(s) which contain
+a total of 9 files changed, 34 insertions(+), 35 deletions(-).
 
-> 
->  tools/bpf/bpftool/gen.c         |  16 +-
->  tools/lib/bpf/btf.c             | 328 +++++++++++++++++++-------------
->  tools/lib/bpf/libbpf_internal.h |  26 ++-
->  tools/lib/bpf/linker.c          |  58 +++---
->  4 files changed, 262 insertions(+), 166 deletions(-)
-> 
-> -- 
-> 2.43.0
-> 
+The main changes are:
+
+1) Fix a potential use-after-free in bpf_link_free when the link uses
+   dealloc_deferred to free the link object but later still tests for
+   presence of link->ops->dealloc, from Cong Wang.
+
+2) Fix BPF test infra to set the run context for rawtp test_run callback
+   where syzbot reported a crash, from Jiri Olsa.
+
+3) Fix bpf_session_cookie BTF_ID in the special_kfunc_set list to exclude
+   it for the case of !CONFIG_FPROBE, also from Jiri Olsa.
+
+4) Fix a Coverity static analysis report to not close() a link_fd of -1 in
+   the multi-uprobe feature detector, from Andrii Nakryiko.
+
+5) Revert support for redirect to any xsk socket bound to the same umem
+   as it can result in corrupted ring state which can lead to a crash when
+   flushing rings. A different approach will be pursued for bpf-next to
+   address it safely, from Magnus Karlsson.
+
+6) Fix inet_csk_accept prototype in test_sk_storage_tracing.c which caused
+   BPF CI failure after the last tree fast forwarding, from Andrii Nakryiko.
+
+7) Fix a coccicheck warning in BPF devmap that iterator variable cannot
+   be NULL, from Thorsten Blum.
+
+Please consider pulling these changes from:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git tags/for-netdev
+
+Thanks a lot!
+
+Also thanks to reporters, reviewers and testers of commits in this pull-request:
+
+Jiri Olsa, Sebastian Andrzej Siewior, Toke Høiland-Jørgensen, Yuval 
+El-Hanany
+
+----------------------------------------------------------------
+
+The following changes since commit d8ec19857b095b39d114ae299713bd8ea6c1e66a:
+
+  Merge tag 'net-6.10-rc2' of git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net (2024-05-30 08:33:04 -0700)
+
+are available in the Git repository at:
+
+  https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git tags/for-netdev
+
+for you to fetch changes up to 03e38d315f3c5258270ad50f2ae784b6372e87c3:
+
+  Revert "xsk: Document ability to redirect to any socket bound to the same umem" (2024-06-05 09:43:05 +0200)
+
+----------------------------------------------------------------
+bpf-for-netdev
+
+----------------------------------------------------------------
+Andrii Nakryiko (2):
+      selftests/bpf: fix inet_csk_accept prototype in test_sk_storage_tracing.c
+      libbpf: don't close(-1) in multi-uprobe feature detector
+
+Cong Wang (1):
+      bpf: Fix a potential use-after-free in bpf_link_free()
+
+Jiri Olsa (2):
+      bpf: Fix bpf_session_cookie BTF_ID in special_kfunc_set list
+      bpf: Set run context for rawtp test_run callback
+
+Magnus Karlsson (2):
+      Revert "xsk: Support redirect to any socket bound to the same umem"
+      Revert "xsk: Document ability to redirect to any socket bound to the same umem"
+
+Thorsten Blum (1):
+      bpf, devmap: Remove unnecessary if check in for loop
+
+ Documentation/networking/af_xdp.rst                | 33 +++++++++-------------
+ kernel/bpf/devmap.c                                |  3 --
+ kernel/bpf/syscall.c                               | 11 ++++----
+ kernel/bpf/verifier.c                              |  4 +++
+ kernel/trace/bpf_trace.c                           |  2 --
+ net/bpf/test_run.c                                 |  6 ++++
+ net/xdp/xsk.c                                      |  5 +---
+ tools/lib/bpf/features.c                           |  3 +-
+ .../selftests/bpf/progs/test_sk_storage_tracing.c  |  2 +-
+ 9 files changed, 34 insertions(+), 35 deletions(-)
 
