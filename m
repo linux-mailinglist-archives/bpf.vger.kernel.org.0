@@ -1,104 +1,142 @@
-Return-Path: <bpf+bounces-31444-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-31445-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3AAA08FD150
-	for <lists+bpf@lfdr.de>; Wed,  5 Jun 2024 17:00:36 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D291C8FD198
+	for <lists+bpf@lfdr.de>; Wed,  5 Jun 2024 17:26:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D19DA1F26B54
-	for <lists+bpf@lfdr.de>; Wed,  5 Jun 2024 15:00:35 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 314FB288CF0
+	for <lists+bpf@lfdr.de>; Wed,  5 Jun 2024 15:26:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE7B43A8D2;
-	Wed,  5 Jun 2024 15:00:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 29D7547F64;
+	Wed,  5 Jun 2024 15:26:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="reULL759"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Y6GHnbDM"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 71D7C2AF16
-	for <bpf@vger.kernel.org>; Wed,  5 Jun 2024 15:00:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5527C1494BD
+	for <bpf@vger.kernel.org>; Wed,  5 Jun 2024 15:26:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717599632; cv=none; b=jvRbwY1B5VVlNOO4GU87mZ7iYrGNvhzDTbTGVBaQTmLw0TLXadnvFhEAaoyWX6dsavdGNI16omJ2DQ4+ahbf15fyelna9xsOlp04GHIBK44z3VN3tRrGlfhebFvIGCDSmF7pgiH34KENCEto4tvQ7dtsXswOopcATpi/o60r17I=
+	t=1717601203; cv=none; b=T0Em4iOGpUPvsH4rf1fnWPBVgJdRe9QBUO174kTn4n55i3uOPU3B0NuIJL7MpOsdqNkJTjX0NCJGghfJVhE46XekvhepRqaFxEk245jHZv4zOgULM2A3gkV6wgdn/G6T8FXJxG232FFITm1XmM7bYSu4iprfFaJy2UuOxwheWRA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717599632; c=relaxed/simple;
-	bh=PNw/a6cfGfKoGgICUZd5Rte+i/gwDsSsemMUFOq/MrM=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=ZOxbVDrImEpCV1F3hr6JtcrK/yEWDFHUZp+oMsjCFPFKNXxzlHcQwdcdUiMmnAfQp2gP32bbbnwEfBUVAXpx2w50QMvjaLSrReQjmioNzuOSID+HR0yQFCX86XuKXcL8Y9k4vbBi1THTWXja+I4JqlkI80GqzxIWQkZZbv1wZGU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=reULL759; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id E0DD8C3277B;
-	Wed,  5 Jun 2024 15:00:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1717599631;
-	bh=PNw/a6cfGfKoGgICUZd5Rte+i/gwDsSsemMUFOq/MrM=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=reULL759MTpuWfaj6PIk4bo0FbtIUU+HulRuO+bBKpBe6jkNF/HAiDw0fmi4keUmp
-	 +qLxm9HTFTF+3XACkDtOdDv1mmdktrA7D0P9Pv0xfHnKi9MxvzA2AjI0qkyWpL9fEQ
-	 UB6AnxaD9T+E7EY/OoHob8x1lFu/7HJn0i4M+ONowuV+iWxsaXNv8X91Joy6cPRMwe
-	 FABysxkv74I/19Y0szhdQeawFThHGw0OpaeAQtQNuuoWg7RqzHfEhMe+b0FCXpxHFz
-	 8pCxOVRknsFzwENgS/2w5TdzTmVR4jDPuE2bnBt8gokt9i148U6RTYqBnP3ZfoXJGQ
-	 ABtPbvqW87D7Q==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id C75B4D3E997;
-	Wed,  5 Jun 2024 15:00:30 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1717601203; c=relaxed/simple;
+	bh=bNuWGrfh+H7Fav06wVfQOoCuk0r6nLVCkcxz3VrlPag=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=EaVx2zf9Bbv9h2Cax7KfVWudYwoPxz3YzafXPfqjni6qTJzkZzbg4JtBNr5W6+6/pTo0kx93J4g/2ckVz58z1nx6E6TOFGuZB69pTVxQaBnBv0OGvY0GQKHQzoBuVRkPE0Dkg+iEzBQyYMwQ0gXC5UA9GdcwAhmbZXUtqXkjk8E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Y6GHnbDM; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1717601201;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=JBCoiHutLk0vWvVe2jPtxGY0YZJBt3gZWD7D6OcdQ4I=;
+	b=Y6GHnbDMW/pcifhH9pwuCpUD52p/BLEQCvMu9Ho35lR9PrncezBaQlVWtTtE0HJxKrSO9m
+	Zq4TiQFUF6IEeXC7LUHjeOdy7zBicsZ2XmatVI4WdrSzfBUK+EERNvaHObufCHtL/Sub3N
+	1TdXFWlSn8xkBhtO1UXdhZyNM5WE/p4=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-513-1Nq6HuAwPg6NLiDZHQWiFg-1; Wed, 05 Jun 2024 11:26:35 -0400
+X-MC-Unique: 1Nq6HuAwPg6NLiDZHQWiFg-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.rdu2.redhat.com [10.11.54.8])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 1A5878032F8;
+	Wed,  5 Jun 2024 15:26:31 +0000 (UTC)
+Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.224.50])
+	by smtp.corp.redhat.com (Postfix) with SMTP id 32B02C15970;
+	Wed,  5 Jun 2024 15:26:26 +0000 (UTC)
+Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
+	oleg@redhat.com; Wed,  5 Jun 2024 17:25:01 +0200 (CEST)
+Date: Wed, 5 Jun 2024 17:24:57 +0200
+From: Oleg Nesterov <oleg@redhat.com>
+To: Jiri Olsa <jolsa@kernel.org>
+Cc: Peter Zijlstra <peterz@infradead.org>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
+	Martin KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
+	Yonghong Song <yhs@fb.com>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@chromium.org>,
+	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org
+Subject: Re: [RFC bpf-next 01/10] uprobe: Add session callbacks to
+ uprobe_consumer
+Message-ID: <20240605152457.GD25006@redhat.com>
+References: <20240604200221.377848-1-jolsa@kernel.org>
+ <20240604200221.377848-2-jolsa@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH v2 bpf-next 0/5] libbpf: BTF field iterator
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <171759963081.16614.17209889293631246757.git-patchwork-notify@kernel.org>
-Date: Wed, 05 Jun 2024 15:00:30 +0000
-References: <20240605001629.4061937-1-andrii@kernel.org>
-In-Reply-To: <20240605001629.4061937-1-andrii@kernel.org>
-To: Andrii Nakryiko <andrii@kernel.org>
-Cc: bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
- martin.lau@kernel.org, alan.maguire@oracle.com, eddyz87@gmail.com,
- jolsa@kernel.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240604200221.377848-2-jolsa@kernel.org>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.8
 
-Hello:
+I'll try to read this code tomorrow, right now I don't really understand
+what does it do and why.
 
-This series was applied to bpf/bpf-next.git (master)
-by Daniel Borkmann <daniel@iogearbox.net>:
+However,
 
-On Tue,  4 Jun 2024 17:16:24 -0700 you wrote:
-> Add BTF field (type and string fields, right now) iterator support instead of
-> using existing callback-based approaches, which make it harder to understand
-> and support BTF-processing code.
-> 
-> v1->v2:
->   - t_cnt -> t_off_cnt, m_cnt -> m_off_cnt (Eduard);
->   - simpified code in linker.c (Jiri);
-> rfcv1->v1:
->   - check errors when initializing iterators (Jiri);
->   - split RFC patch into separate patches.
-> 
-> [...]
+On 06/04, Jiri Olsa wrote:
+>
+>  struct uprobe_consumer {
+> +	/*
+> +	 * The handler callback return value controls removal of the uprobe.
+> +	 *  0 on success, uprobe stays
+> +	 *  1 on failure, remove the uprobe
+> +	 *    console warning for anything else
+> +	 */
+>  	int (*handler)(struct uprobe_consumer *self, struct pt_regs *regs);
 
-Here is the summary with links:
-  - [v2,bpf-next,1/5] libbpf: add BTF field iterator
-    https://git.kernel.org/bpf/bpf-next/c/68153bb2fffb
-  - [v2,bpf-next,2/5] libbpf: make use of BTF field iterator in BPF linker code
-    https://git.kernel.org/bpf/bpf-next/c/2bce2c1cb2f0
-  - [v2,bpf-next,3/5] libbpf: make use of BTF field iterator in BTF handling code
-    https://git.kernel.org/bpf/bpf-next/c/c2641123696b
-  - [v2,bpf-next,4/5] bpftool: use BTF field iterator in btfgen
-    https://git.kernel.org/bpf/bpf-next/c/e1a8630291fd
-  - [v2,bpf-next,5/5] libbpf: remove callback-based type/string BTF field visitor helpers
-    https://git.kernel.org/bpf/bpf-next/c/072088704433
+This is misleading. It is not about success/failure, it is about filtering.
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+consumer->handler() returns UPROBE_HANDLER_REMOVE if this consumer is not
+interested in this task, so this uprobe can be removed (unless another
+consumer returns 0).
 
+> +/*
+> + * Make sure all the uprobe consumers have only one type of entry
+> + * callback registered (either handler or handler_session) due to
+> + * different return value actions.
+> + */
+> +static int consumer_check(struct uprobe_consumer *curr, struct uprobe_consumer *uc)
+> +{
+> +	if (!curr)
+> +		return 0;
+> +	if (curr->handler_session || uc->handler_session)
+> +		return -EBUSY;
+> +	return 0;
+> +}
+
+Hmm, I don't understand this code, it doesn't match the comment...
+
+The comment says "all the uprobe consumers have only one type" but
+consumer_check() will always fail if the the 1st or 2nd consumer has
+->handler_session != NULL ?
+
+Perhaps you meant
+
+	if (!!curr->handler != !!uc->handler)
+		return -EBUSY;
+
+?
+
+Oleg.
 
 
