@@ -1,148 +1,96 @@
-Return-Path: <bpf+bounces-31427-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-31428-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7771F8FC8DA
-	for <lists+bpf@lfdr.de>; Wed,  5 Jun 2024 12:21:23 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BDB118FC8DC
+	for <lists+bpf@lfdr.de>; Wed,  5 Jun 2024 12:21:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 043B2283558
-	for <lists+bpf@lfdr.de>; Wed,  5 Jun 2024 10:21:22 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E3D3B1C225DF
+	for <lists+bpf@lfdr.de>; Wed,  5 Jun 2024 10:21:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 63475191496;
-	Wed,  5 Jun 2024 10:20:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="JSKDDX/o"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 29B1D191470;
+	Wed,  5 Jun 2024 10:21:04 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-il1-f197.google.com (mail-il1-f197.google.com [209.85.166.197])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8DB00191484
-	for <bpf@vger.kernel.org>; Wed,  5 Jun 2024 10:20:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 84E59190071
+	for <bpf@vger.kernel.org>; Wed,  5 Jun 2024 10:21:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.197
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717582849; cv=none; b=mch6t6k+G5QN4O8LT6rHojCqcjDQxJZ1hbH24hbywY+OjxclMf0dmKseAzkTAfEFLsN80+xcsl4JvwqqaaKDym8YIx/MiIuSjeA4FiFKsJN4zFTuRvjlycn4g+QP7nHlixm8PcsoyaxnCrn+gFUp1GZito6YRCcBQoHAPy8kpT0=
+	t=1717582863; cv=none; b=gcMt5tCo/Gipd6cgAit/g8WY9fM8sU/HW0lWkA5wEH2gptpxsijGUCvVrLfJakhxt8aLZQot82G28XexXDZCvxFNkXOpRAnZ0U4FrkNdzvDRJXru2w0z8jefO8FTRJGJ0lD8zVfxixfz8qg5s4QAsvQsei5n0GpKXDL7tSytr10=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717582849; c=relaxed/simple;
-	bh=3+/0pw4u2JaQ4V4b0wPU5b5kRPyOdE+6zuH2exjbjLI=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=b9nXtV7zCDJSqjmGrT0rVsr1jnpXRGUxqlvZ5ctgCd/jGTdCAjvKViNftsqUmiqVxJ5WS/mqyajY7o9LAlrqh8JDyrUjAvp2y14psQh9Gg9oa3JRScNITdfCEQPjXqPD6EyoJGyHEa6Bems90jqDtK8vK+S3eRjVrbGO53VrFa4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=JSKDDX/o; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1717582846;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=3+/0pw4u2JaQ4V4b0wPU5b5kRPyOdE+6zuH2exjbjLI=;
-	b=JSKDDX/odrfcKPgR5CFpY85vEBQ6X3NDYuZNV2pANS9RjnGnGcHolq2FE4cyWk63UY37uO
-	J6VNC3BMWGJNZjG48SGXz8yqZtB3njPjoxIg7J0BBBannvrrlmCfubeTPfM8Ygf3dbYFBW
-	HAvPZySx8pheL1pdL/nImOcK0gmrbFo=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-262-bLogc0PcMNixP3e8cDAemA-1; Wed, 05 Jun 2024 06:20:45 -0400
-X-MC-Unique: bLogc0PcMNixP3e8cDAemA-1
-Received: by mail-wm1-f71.google.com with SMTP id 5b1f17b1804b1-4215a04220eso57565e9.3
-        for <bpf@vger.kernel.org>; Wed, 05 Jun 2024 03:20:44 -0700 (PDT)
+	s=arc-20240116; t=1717582863; c=relaxed/simple;
+	bh=mKZu2TsVWfel24gk5GGVXlpaHk53VCdi2sv9+kicIa0=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=pkGtn14WP/QpmC7CEK0IjrIrcKrzqsOwsayp2VCb0uVfoCGJhX/wnleWInc/CnvWXONDvcW9lZwje9yXF0WHdX5CYRmvS/tvPLZg2T4mWeV9pr8yxtuPQoqCnEBmGbqw+qctrN8kqt6GoyQskdAyQpb4FV77XO8H6gIz6EY5tzQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.197
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f197.google.com with SMTP id e9e14a558f8ab-374b5078c77so2776405ab.2
+        for <bpf@vger.kernel.org>; Wed, 05 Jun 2024 03:21:02 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1717582843; x=1718187643;
-        h=content-transfer-encoding:mime-version:message-id:date:references
-         :in-reply-to:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=3+/0pw4u2JaQ4V4b0wPU5b5kRPyOdE+6zuH2exjbjLI=;
-        b=o6FqEF1izDwegMMttjVugAkVoFD9REPjIJb1ewYK9ZSnRwtCmP70QOvBvX+NtW3FO3
-         4uSsD4k9sZCbIuRQbkE42zZEBMb2z6pLlnHSx8Av9BY/hYbSNosFx5uFmyXsLF7/OAq/
-         cbAuC38DWcmD6/zOp8L6m0gA5JxpTohkafKJ4ADIAy+d2d3J9BR/LkqaaB46wm7FXIVw
-         01cn7zIU4Lzs0qHx0DK+iHoHrSHjrC9A4VsvoLF+4Kc2rsVTXfO5kozJz5xcvkN9HdZJ
-         t97uUfY8P98LDOTR6Q+pSBAv806/KRI2X0BGrOqbWkgHwZ55mJR7uwHJ7vAWyel4JsjF
-         pavw==
-X-Forwarded-Encrypted: i=1; AJvYcCW7TEsm9LJBj7GORoi9/vtad9nwfdeeouu8uW5VByc71wVDIfDp0ebTHYfNXcNlxrbm0iMX3rHcrX5h7QIaX/shk3B7
-X-Gm-Message-State: AOJu0YybhMo259D81Cvola80TL+9bDIE1MBndS1H4TPnWL5LDe1ZuohB
-	C2R83peUCks4KGevE6MyW779u3yKp5BL6pBQXwcztCOGzMtIxeoXAOYcd7vt+Y2nx8LoljTJwN6
-	9n0JM0Y5ZAM7vkddYfNmDk5qnjACDcoP+ZXKJD3txRdaAAI10yQ==
-X-Received: by 2002:a05:600c:35c1:b0:416:8efd:1645 with SMTP id 5b1f17b1804b1-421562c354emr21673395e9.7.1717582843333;
-        Wed, 05 Jun 2024 03:20:43 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGBLwiAsKcL/M+2PwMmgmbYOgQGPx558hBVK9zwpiwuDQuK9ZU3XA/Dqu4W0NvuVGidf6++kA==
-X-Received: by 2002:a05:600c:35c1:b0:416:8efd:1645 with SMTP id 5b1f17b1804b1-421562c354emr21672985e9.7.1717582842778;
-        Wed, 05 Jun 2024 03:20:42 -0700 (PDT)
-Received: from alrua-x1.borgediget.toke.dk ([2a0c:4d80:42:443::2])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-35dd064b684sm14225962f8f.100.2024.06.05.03.20.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 05 Jun 2024 03:20:42 -0700 (PDT)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-	id 903B613854FC; Wed, 05 Jun 2024 12:20:41 +0200 (CEST)
-From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To: Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
- linux-kernel@vger.kernel.org, netdev@vger.kernel.org
-Cc: "David S. Miller" <davem@davemloft.net>, Daniel Bristot de Oliveira
- <bristot@kernel.org>, Boqun Feng <boqun.feng@gmail.com>, Daniel Borkmann
- <daniel@iogearbox.net>, Eric Dumazet <edumazet@google.com>, Frederic
- Weisbecker <frederic@kernel.org>, Ingo Molnar <mingo@redhat.com>, Jakub
- Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Peter
- Zijlstra <peterz@infradead.org>, Thomas Gleixner <tglx@linutronix.de>,
- Waiman Long <longman@redhat.com>, Will Deacon <will@kernel.org>, Sebastian
- Andrzej Siewior <bigeasy@linutronix.de>, =?utf-8?B?QmrDtnJuIFTDtnBlbA==?=
- <bjorn@kernel.org>,
- Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
- Eduard Zingerman <eddyz87@gmail.com>, Hao Luo <haoluo@google.com>, Jesper
- Dangaard Brouer <hawk@kernel.org>, Jiri Olsa <jolsa@kernel.org>, John
- Fastabend <john.fastabend@gmail.com>, Jonathan Lemon
- <jonathan.lemon@gmail.com>, KP Singh <kpsingh@kernel.org>, Maciej
- Fijalkowski <maciej.fijalkowski@intel.com>, Magnus Karlsson
- <magnus.karlsson@intel.com>, Martin KaFai Lau <martin.lau@linux.dev>, Song
- Liu <song@kernel.org>, Stanislav Fomichev <sdf@google.com>, Yonghong Song
- <yonghong.song@linux.dev>, bpf@vger.kernel.org
-Subject: Re: [PATCH v4 net-next 14/14] net: Move per-CPU flush-lists to
- bpf_net_context on PREEMPT_RT.
-In-Reply-To: <20240604154425.878636-15-bigeasy@linutronix.de>
-References: <20240604154425.878636-1-bigeasy@linutronix.de>
- <20240604154425.878636-15-bigeasy@linutronix.de>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date: Wed, 05 Jun 2024 12:20:41 +0200
-Message-ID: <87cyovadxi.fsf@toke.dk>
+        d=1e100.net; s=20230601; t=1717582862; x=1718187662;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=fH+Zetcf0TrdH6Eg/Hbnzc/0iC4RotiHhcppjlwNKMw=;
+        b=m1/A896e6ydAvsarPlG8K6iV3rVbsFEzHE8zD8dueM4lZ3p9nA6TwphtpiNRLvrMDi
+         0y4Bnw3o8Wy1A2DKBOM65nGv2aqkbibN7SMex4LhpwzMEaAhb3vXgUpgoaVeByJnLJ3l
+         bup8Ldswloa0P58Yn+8etDu6tp3D/cyu36IGIHSWa68E5uygH24fjO/OFFrwuVgGNR8t
+         fRF3dDMVCtA+YnGuAW7kgeSRCfQIYf5udc2hfJRrPwgB8OlduQ8Y7K1Ez6E5q8fEZPFN
+         GNiCLLnvL1WKqDVQ8V3hyPy1YJEx/DXunWXv0VtK1vjIHDo0Ex7ONvmqKadoykXzJ9Yu
+         eUQg==
+X-Forwarded-Encrypted: i=1; AJvYcCV4+6QnZ0YX9atMjpguICNgOsJdWEMTGwKLfItJSBm0H+k49+yn7xolIdryVh3A2YrI+BPL3e+SNNHmWhie4OcMV8j/
+X-Gm-Message-State: AOJu0Yx2tRlzHcg+TjHTeYAxLCg8NNomlKZRgtBIw+qkp1X3CoOcTKsW
+	yKoVGtGQf548yePnpMjhDAGYwr4/5icx+A/pnLfn+MOU6+1BlUgzSozkGvetyzh/0/RkhEhGiIt
+	GqCzYN0zntoA+NEzwik3WU5U4KXPmwN79Dup43Qstzce1KYKxFy5kTb4=
+X-Google-Smtp-Source: AGHT+IG3vMdJkUy72bl6FiyEjn1C/RymPUEXO6Zdu0OIGN1VuBMTk/OUf7CaCqmwocVKMjUvFAhy/WV+kU6PuPQentk8vT+NJLLq
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+X-Received: by 2002:a92:c26a:0:b0:374:a840:e5be with SMTP id
+ e9e14a558f8ab-374b1e16d27mr1108305ab.0.1717582861831; Wed, 05 Jun 2024
+ 03:21:01 -0700 (PDT)
+Date: Wed, 05 Jun 2024 03:21:01 -0700
+In-Reply-To: <00000000000091ad3106157b63e6@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000005a260c061a21ec0f@google.com>
+Subject: Re: [syzbot] [bpf?] BUG: unable to handle kernel paging request in jhash
+From: syzbot <syzbot+6592955f6080eeb2160f@syzkaller.appspotmail.com>
+To: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org, 
+	daniel@iogearbox.net, eddyz87@gmail.com, haoluo@google.com, 
+	joannekoong@fb.com, john.fastabend@gmail.com, jolsa@kernel.org, kafai@fb.com, 
+	kpsingh@kernel.org, linux-kernel@vger.kernel.org, martin.lau@linux.dev, 
+	mattbobrowski@google.com, netdev@vger.kernel.org, sdf@google.com, 
+	song@kernel.org, songliubraving@fb.com, syzkaller-bugs@googlegroups.com, 
+	yhs@fb.com, yonghong.song@linux.dev
+Content-Type: text/plain; charset="UTF-8"
 
-Sebastian Andrzej Siewior <bigeasy@linutronix.de> writes:
+syzbot suspects this issue was fixed by commit:
 
-> The per-CPU flush lists, which are accessed from within the NAPI callback
-> (xdp_do_flush() for instance), are per-CPU. There are subject to the
-> same problem as struct bpf_redirect_info.
->
-> Add the per-CPU lists cpu_map_flush_list, dev_map_flush_list and
-> xskmap_map_flush_list to struct bpf_net_context. Add wrappers for the
-> access.
->
-> Cc: "Bj=C3=B6rn T=C3=B6pel" <bjorn@kernel.org>
-> Cc: Alexei Starovoitov <ast@kernel.org>
-> Cc: Andrii Nakryiko <andrii@kernel.org>
-> Cc: Eduard Zingerman <eddyz87@gmail.com>
-> Cc: Hao Luo <haoluo@google.com>
-> Cc: Jesper Dangaard Brouer <hawk@kernel.org>
-> Cc: Jiri Olsa <jolsa@kernel.org>
-> Cc: John Fastabend <john.fastabend@gmail.com>
-> Cc: Jonathan Lemon <jonathan.lemon@gmail.com>
-> Cc: KP Singh <kpsingh@kernel.org>
-> Cc: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-> Cc: Magnus Karlsson <magnus.karlsson@intel.com>
-> Cc: Martin KaFai Lau <martin.lau@linux.dev>
-> Cc: Song Liu <song@kernel.org>
-> Cc: Stanislav Fomichev <sdf@google.com>
-> Cc: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
-> Cc: Yonghong Song <yonghong.song@linux.dev>
-> Cc: bpf@vger.kernel.org
-> Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+commit 4dd651076ef0e5f09940f763a1b4e8a209dab7ab
+Author: Matt Bobrowski <mattbobrowski@google.com>
+Date:   Tue Mar 26 19:50:19 2024 +0000
 
-Reviewed-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
+    bpf: update BPF LSM designated reviewer list
 
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=142f8d64980000
+start commit:   14bb1e8c8d4a selftests/bpf: Fix flaky test btf_map_in_map/..
+git tree:       bpf-next
+kernel config:  https://syzkaller.appspot.com/x/.config?x=6fb1be60a193d440
+dashboard link: https://syzkaller.appspot.com/bug?extid=6592955f6080eeb2160f
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=17f7a1d3180000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=17b28b3d180000
+
+If the result looks correct, please mark the issue as fixed by replying with:
+
+#syz fix: bpf: update BPF LSM designated reviewer list
+
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
 
