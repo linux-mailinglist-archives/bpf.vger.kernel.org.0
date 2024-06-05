@@ -1,124 +1,79 @@
-Return-Path: <bpf+bounces-31419-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-31420-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1391E8FC652
-	for <lists+bpf@lfdr.de>; Wed,  5 Jun 2024 10:29:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id C71328FC6D6
+	for <lists+bpf@lfdr.de>; Wed,  5 Jun 2024 10:45:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A7B361F24B18
-	for <lists+bpf@lfdr.de>; Wed,  5 Jun 2024 08:29:44 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 628B01F21C06
+	for <lists+bpf@lfdr.de>; Wed,  5 Jun 2024 08:45:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 92DED190493;
-	Wed,  5 Jun 2024 08:24:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 665444963C;
+	Wed,  5 Jun 2024 08:45:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="RNmaEXk9"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lczM9yvV"
 X-Original-To: bpf@vger.kernel.org
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C433618FC6B;
-	Wed,  5 Jun 2024 08:24:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E28B91946BE
+	for <bpf@vger.kernel.org>; Wed,  5 Jun 2024 08:45:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717575862; cv=none; b=aJ2LCvNuY0J1+tzmWgHQRdGdaxopEUZgco40C80KHaTtWQDEMDdI/FmUllDedZMMFBi5ZM1mWweVNMsjbr2NZTuaX3ds+hYc+0+wRJh0TSQS1+CazCETpcQ1e80Bb1mIOJGFM2/dCe25AtmOdQISssCfVn5iuQelc9NFpu+ACAQ=
+	t=1717577143; cv=none; b=IKnm+AqWNjnWuq/dnLoxtzWTWXp0uxH3MMkrjSq48tkQiBRS9qFCtC/MiOkzhd7MzLp2GXfJqe5b5WHJQvH/md4WJJzPl08eFTVGQZQl7vRCpAIgkQpEcdxSJxLj/uwwvV8JEL7M9fW00kRiO0J9GFIWpoUO5eeLg39gLkd3v+c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717575862; c=relaxed/simple;
-	bh=eyIvnaaddMZGikcRtKnet/wv6JaOBRLtqOlH5pPHEjw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=DEjvf1nPuh5aQ86HvuCdwFpaCFgTqkXnpSRZ4yabAzklrziLG+PxOyVicaNrXxoNP1yuRnp1acvn0bS9BZ7qyPuxfbXanrMP99FJ6f35B3/jrqM+yC0PiwDFdJX6PT6oqSu3wPewKg2KNvA0LO78xZ5u+N/F9dNNfFTvIj+UDB0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=RNmaEXk9; arc=none smtp.client-ip=198.137.202.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
-	:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=fY+PfDfeAo8UrN8IztuQuzwhWAWmlot7ayDhMpQQPbk=; b=RNmaEXk91yG+Y9FTmdGFK/GFm9
-	9SU5Q7QOtwCykRMFQYMJn/3TS8CRDzmDRr4oLmxdSHEz+qigKk5XIho7TvERxV517gnCqAXKZ9sou
-	cGFMEewwx+L75wxpo0PGGKX7H4cZLoA1QsDpl9bQm6rrXuu2DT8BD+J1rjmNSub5m0Y4eP0e08UnH
-	l8GspI8i9gOAWlKF9MosBTvla+YjFUaarBKa+4s3pniAZMv+LRtftnb78l6P3IywS6F6pVYZTnvCy
-	akJgoDwzPDhNyB5zJUAKo/Txw6VTL64nWGHeV1dAzybOqkhaqclzQ/blYm/yE+l4v94SStDeJ6n9D
-	ZdXGsqZg==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sElwR-00000005Bp2-1HYc;
-	Wed, 05 Jun 2024 08:24:19 +0000
-Date: Wed, 5 Jun 2024 01:24:19 -0700
-From: Christoph Hellwig <hch@infradead.org>
-To: Pavel Begunkov <asml.silence@gmail.com>
-Cc: Mina Almasry <almasrymina@google.com>,
-	Christoph Hellwig <hch@infradead.org>, netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-	linux-alpha@vger.kernel.org, linux-mips@vger.kernel.org,
-	linux-parisc@vger.kernel.org, sparclinux@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
-	bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
-	linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Donald Hunter <donald.hunter@gmail.com>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Richard Henderson <richard.henderson@linaro.org>,
-	Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-	Matt Turner <mattst88@gmail.com>,
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	"James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-	Helge Deller <deller@gmx.de>, Andreas Larsson <andreas@gaisler.com>,
-	Jesper Dangaard Brouer <hawk@kernel.org>,
-	Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Arnd Bergmann <arnd@arndb.de>, Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
-	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-	Steffen Klassert <steffen.klassert@secunet.com>,
-	Herbert Xu <herbert@gondor.apana.org.au>,
-	David Ahern <dsahern@kernel.org>,
-	Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-	Shuah Khan <shuah@kernel.org>,
-	Sumit Semwal <sumit.semwal@linaro.org>,
-	Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-	David Wei <dw@davidwei.uk>, Jason Gunthorpe <jgg@ziepe.ca>,
-	Yunsheng Lin <linyunsheng@huawei.com>,
-	Shailend Chand <shailend@google.com>,
-	Harshitha Ramamurthy <hramamurthy@google.com>,
-	Shakeel Butt <shakeel.butt@linux.dev>,
-	Jeroen de Borst <jeroendb@google.com>,
-	Praveen Kaligineedi <pkaligineedi@google.com>
-Subject: Re: [PATCH net-next v10 02/14] net: page_pool: create hooks for
- custom page providers
-Message-ID: <ZmAgszZpSrcdHtyl@infradead.org>
-References: <20240530201616.1316526-1-almasrymina@google.com>
- <20240530201616.1316526-3-almasrymina@google.com>
- <ZlqzER_ufrhlB28v@infradead.org>
- <CAHS8izMU_nMEr04J9kXiX6rJqK4nQKA+W-enKLhNxvK7=H2pgA@mail.gmail.com>
- <5aee4bba-ca65-443c-bd78-e5599b814a13@gmail.com>
+	s=arc-20240116; t=1717577143; c=relaxed/simple;
+	bh=4PgNF5iHlPwWGopd2561mzSZbWHKCiIlIOEtQ6+MRd8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=ZifAfPo3eMyKB9zC5f1mndnfsS2pxgi46WezTVrK0aitwUonjHrFWlg4xxpw09ejf3f5SbauiaMvfeOf8beEqogMq+xd1OhjVIVLjNyT8WDvZs7VbQIN1QlvcAfN31fSOAB2qEJYv2WCmz12LQYqszTE/mAoeXDFi+V5WomJUxk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lczM9yvV; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B4BD5C3277B;
+	Wed,  5 Jun 2024 08:45:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1717577142;
+	bh=4PgNF5iHlPwWGopd2561mzSZbWHKCiIlIOEtQ6+MRd8=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=lczM9yvVLtnjI2odDih0N7jZ4251HGpl2WRMYd9l7VRd7fRakoO7SD5MtFnsu5Vp9
+	 ktwKu3UF2SjAh1b6QHtj66bHkGroeCQhN3quu4vTe7uTLxnE7WDo9bZ86PAauj8RZF
+	 X5QpnAMft8oTSy1C1m1bjlcvH1DVJnCQYCsJ6eX8NwzvmHLGwkyhxct/o9q6hK92mk
+	 VGuJLQ6vaconmHq6kfShx9FmX0otzPTK61JLJ0RNjnJHe1ZIo/sUb5TPmnDXFeGOry
+	 y+dgFSf+QmAE1HTpRGgJZK4Ai4n+NH1SdcnFqpTpVtDy/Z5oRweYOKxtgDZZvGyfcE
+	 tCWcc2H9pEntA==
+Message-ID: <e14d2461-7336-43e4-88c3-b0a6abac4bab@kernel.org>
+Date: Wed, 5 Jun 2024 09:45:38 +0100
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <5aee4bba-ca65-443c-bd78-e5599b814a13@gmail.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 bpf-next 4/5] bpftool: use BTF field iterator in btfgen
+To: Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org, ast@kernel.org,
+ daniel@iogearbox.net, martin.lau@kernel.org
+Cc: alan.maguire@oracle.com, eddyz87@gmail.com, jolsa@kernel.org
+References: <20240605001629.4061937-1-andrii@kernel.org>
+ <20240605001629.4061937-5-andrii@kernel.org>
+From: Quentin Monnet <qmo@kernel.org>
+Content-Language: en-GB
+In-Reply-To: <20240605001629.4061937-5-andrii@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Mon, Jun 03, 2024 at 03:52:32PM +0100, Pavel Begunkov wrote:
-> The question for Christoph is what exactly is the objection here? Why we
-> would not be using well defined ops when we know there will be more
-> users?
+2024-06-05 01:16 UTC+0100 ~ Andrii Nakryiko <andrii@kernel.org>
+> Switch bpftool's code which is using libbpf-internal
+> btf_type_visit_type_ids() helper to new btf_field_iter functionality.
+> 
+> This makes bpftool code simpler, but also unblocks removing libbpf's
+> btf_type_visit_type_ids() helper completely.
+> 
+> Acked-by: Eduard Zingerman <eddyz87@gmail.com>
+> Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
 
-The point is that there should be no more users.  If you need another
-case you are doing something very wrong.
 
+Still looks good to me :)
+
+Reviewed-by: Quentin Monnet <qmo@kernel.org>
 
