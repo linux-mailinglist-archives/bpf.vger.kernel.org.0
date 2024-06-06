@@ -1,381 +1,363 @@
-Return-Path: <bpf+bounces-31523-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-31524-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B472B8FF383
-	for <lists+bpf@lfdr.de>; Thu,  6 Jun 2024 19:16:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 22DDB8FF38E
+	for <lists+bpf@lfdr.de>; Thu,  6 Jun 2024 19:19:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CAE8D1C21B6B
-	for <lists+bpf@lfdr.de>; Thu,  6 Jun 2024 17:16:20 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 06EA51C264AB
+	for <lists+bpf@lfdr.de>; Thu,  6 Jun 2024 17:19:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E21421990DA;
-	Thu,  6 Jun 2024 17:16:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A29A61990A2;
+	Thu,  6 Jun 2024 17:19:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="EwsWS1Zg";
-	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="jwu0yWPW"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="arKCHZqS"
 X-Original-To: bpf@vger.kernel.org
-Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pj1-f48.google.com (mail-pj1-f48.google.com [209.85.216.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 87DB6197A8F;
-	Thu,  6 Jun 2024 17:16:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.165.32
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717694170; cv=fail; b=tD5vBVcCSwhWuSgiWWxkdt010dDpM4VixciTyjI1mNga+mg/zciwzywGauGwjE30Nr0Lwwiu7aSbmdryXphdmaEzBaJNyk4M1cNrbS9TPSwSaRfdsb2Ne+05isINvMDbI3kUTtdgEyNWy5C4Vx/4h4GhrUaVrfMCy8g4RsJ1XZA=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717694170; c=relaxed/simple;
-	bh=p+Tj4sdCZD3ztS/1Ic21wsDG9rlW/hml8vn+iMdqW+I=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=DH9UoytX4Qd4HJJgf6hQglkGciec1NYHmh3SIzyxTH3P0JAj/DfT3JIM0Qe7IgeHfVWvXGBGz4m1tVE9VvwZgZgYro4wdoaRsLgzLNv/LbYeMmgmd1MT3ccex5NQegyk4hVQgH+MmJx1L0lSrZl29jx5AQRTvmLj1ZS158zcoPU=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=EwsWS1Zg; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=jwu0yWPW; arc=fail smtp.client-ip=205.220.165.32
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=oracle.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
-Received: from pps.filterd (m0333521.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 4568ilui021994;
-	Thu, 6 Jun 2024 17:15:50 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=cc :
- content-transfer-encoding : content-type : date : from : in-reply-to :
- message-id : mime-version : references : subject : to; s=corp-2023-11-20;
- bh=VEBVmKnHpWTTS7KU7mIicewI72j8qnZxJXALkV8pJ6E=;
- b=EwsWS1Zg1ogt+asSXL6E+23ZmG9QN/1RFmB34JAVkUWosRv6QT0X9I6mP2dYa7MIMJyx
- TnjWGkwYKDSKGUzQRBH5a42qd1bSijD3JWUHRCpjGS+HXY/wiKYC7AZVDDiJObqO0nNU
- HCkJ3QGn18lh3nrmSce+MpNNis3InoJkGTkTK3Gz0x5fYpF2x4JHitOC/lm9wsKyWlit
- Gm08CN6c8R6t88zNx/8MqNLA3zTsVxdidim8qDqlfnaesL6gGDei7IqYO/pZhsqje7ro
- CbnK+ZE8YoTtOdUPhQmJuSgIcj90NV1BoBnNNCvVJpfTJcTkNXW7s3bl8tX350kFJKpL rQ== 
-Received: from iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta02.appoci.oracle.com [147.154.18.20])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3yjbqn412p-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Thu, 06 Jun 2024 17:15:50 +0000
-Received: from pps.filterd (iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-	by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 456GYkMl025263;
-	Thu, 6 Jun 2024 17:15:49 GMT
-Received: from nam12-mw2-obe.outbound.protection.outlook.com (mail-mw2nam12lp2043.outbound.protection.outlook.com [104.47.66.43])
-	by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3ygrtbwk4m-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Thu, 06 Jun 2024 17:15:49 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=HrFsOjZtIeQnsN9H4tZgJNwAJ5oO/ALIHvLBJA2sHlckQpuOpVqUj2vSW4mtK17KhuPxVo+PY5KQ/l7vr6P+IJIee/HlbKmslLqoY7/bd+YpAUZOS14QPp08NqZ5qtiF/IY78EKEQ5F7AlYgS4CcKzB+3EjgL5dAMiLS6EULdg1iZUBGJcnwG6YeQtcZDXvxrigcdd9LDHD39wSMRxKBVGnYGHcp3skV5csbQo5HIX+yn8A5htWbFu/FRpxZ2LVHPvOXmI+vIcOx9hXqfsxWgyjJE1yoqwBLbf91qGuutdI7L91KCyf6SuIigEem6ZX8MI17eSQGIa0YfkCJAwDMFQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=VEBVmKnHpWTTS7KU7mIicewI72j8qnZxJXALkV8pJ6E=;
- b=SgGJrRE6GRWcmaRnE7lO1qwaV7jtleCAc77TtXuALI/jsK4QLqMRWiaI3rg5aee5LeCrY4L5BBv5xApu0r/G8BdOfrpQ6awmOfY+SKN1G30Mgbkte4fMPsGHjm213uxx3GndCTPJKoe/REriS2xSmTnqFaiuKq+DRhrJ3slvRuDmgYwiTgllU/nDzxDnHeF8RgreB2Ejmr4xATGcjW8+S2pIQkvTikiBPG4kHW7BzeFVSFqpZ4BHfSmImnyBfy6ooLGnMgdEV4SSoH72guRyh1xwCem7fOrq+JN5RIxExqEBxKjWWoIpxU2eqp6GApZIWBPg1pwv8AxQFjH7+Qe6nA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8EA83197A8F
+	for <bpf@vger.kernel.org>; Thu,  6 Jun 2024 17:19:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.48
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1717694364; cv=none; b=q3OzN+BqTqsNRmZE7x7nKi6J+PaDtjS/tAxuCUoeD0Halzt1thTiYnW1oe4X0RQg1uVWacveGlgvBvHYT3HojlcWSdVUL+j1vCr2PPZmSmumET1JNClptrZvJyogiwDA+RAV6MN+k1Peyzx9e7SheeIKweZdc/WuMPf6ikVTuTE=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1717694364; c=relaxed/simple;
+	bh=XbDem8jVT9bOVpvSslPJyul+I6OQFXhR3nIhksmc7qA=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=jHB6cRFmYFvUqAjmcS2o/2yz8RIrIY3YpTHF13/5QBoO8l+pplxxSTDjCFozjAICdX82URrDpU03wJg+Wht+s+WRZg4WcjlX93h3ibp0TGFwYxyeJBE6vBRGievWAAez2pek0XY0YZ2VyKHWYAQcKiVstguVvEsaE5Fjj5XcrTE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=arKCHZqS; arc=none smtp.client-ip=209.85.216.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f48.google.com with SMTP id 98e67ed59e1d1-2c19e6dc3dcso1021367a91.3
+        for <bpf@vger.kernel.org>; Thu, 06 Jun 2024 10:19:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=VEBVmKnHpWTTS7KU7mIicewI72j8qnZxJXALkV8pJ6E=;
- b=jwu0yWPWV7XcIYnnnBEIjsH66pJBACnQzxDNZRd3V1NPxb8+/pzvP+0JevcFD0xHxb/8O8vXs1Z3OyImiDf1j5FZ8Lc1KLerdUlw3EKswbKNGccN43YnmxDC1I/x5nNRxFhNRGZ9AbXjPus790cKgA3Wzqd1mV/FIIIVHhLwJ8c=
-Received: from DS0PR10MB7933.namprd10.prod.outlook.com (2603:10b6:8:1b8::15)
- by DM6PR10MB4236.namprd10.prod.outlook.com (2603:10b6:5:212::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7633.34; Thu, 6 Jun
- 2024 17:15:46 +0000
-Received: from DS0PR10MB7933.namprd10.prod.outlook.com
- ([fe80::2561:85b0:ae8f:9490]) by DS0PR10MB7933.namprd10.prod.outlook.com
- ([fe80::2561:85b0:ae8f:9490%7]) with mapi id 15.20.7633.033; Thu, 6 Jun 2024
- 17:15:46 +0000
-Date: Thu, 6 Jun 2024 13:15:43 -0400
-From: "Liam R. Howlett" <Liam.Howlett@oracle.com>
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: Suren Baghdasaryan <surenb@google.com>,
-        Andrii Nakryiko <andrii@kernel.org>, linux-fsdevel@vger.kernel.org,
-        brauner@kernel.org, viro@zeniv.linux.org.uk, akpm@linux-foundation.org,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        gregkh@linuxfoundation.org, linux-mm@kvack.org, rppt@kernel.org
-Subject: Re: [PATCH v3 4/9] fs/procfs: use per-VMA RCU-protected locking in
- PROCMAP_QUERY API
-Message-ID: <ue44yftirugr6u4ewl5cvgatpqnheuho7rgax3jyg6ox5vruyq@7k6harvobd2q>
-Mail-Followup-To: "Liam R. Howlett" <Liam.Howlett@oracle.com>, 
-	Andrii Nakryiko <andrii.nakryiko@gmail.com>, Suren Baghdasaryan <surenb@google.com>, 
-	Andrii Nakryiko <andrii@kernel.org>, linux-fsdevel@vger.kernel.org, brauner@kernel.org, 
-	viro@zeniv.linux.org.uk, akpm@linux-foundation.org, linux-kernel@vger.kernel.org, 
-	bpf@vger.kernel.org, gregkh@linuxfoundation.org, linux-mm@kvack.org, rppt@kernel.org
-References: <20240605002459.4091285-1-andrii@kernel.org>
- <20240605002459.4091285-5-andrii@kernel.org>
- <CAJuCfpFp38X-tbiRAqS36zXG_ho2wyoRas0hCFLo07pN1noSmg@mail.gmail.com>
- <CAEf4BzYv0Ys+NpMMuXBYEVwAaOow=oBgUhBwen7g=68_5qKznQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <CAEf4BzYv0Ys+NpMMuXBYEVwAaOow=oBgUhBwen7g=68_5qKznQ@mail.gmail.com>
-User-Agent: NeoMutt/20231103
-X-ClientProxiedBy: YT3PR01CA0066.CANPRD01.PROD.OUTLOOK.COM
- (2603:10b6:b01:84::17) To DS0PR10MB7933.namprd10.prod.outlook.com
- (2603:10b6:8:1b8::15)
+        d=gmail.com; s=20230601; t=1717694362; x=1718299162; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=zt0pjTztcu4n8lTF/hF2b2G0S3c9WiJ59+7WZnT1DAM=;
+        b=arKCHZqSE3a7rRDVxFMiyfeeqQK8K+j0GYYs4P1pwkPCNeVS8CQ3T+s90bbUBH+YRC
+         PH6UUMbBL3yt9fFRjVPHBCKo+vdUT4Hn/ID+k/Imf1mtiXr8bdACfeIZLpoKbxSenudt
+         jy+u5yNY2bsW01m/riHhHEbAgydjMNflWIjrIDAG4ewvOe54gQr+2RARPdFZh4uTLcjs
+         08bau5u3HGQ6SE5fB47VRY5+5vb0fjGA1g+ix37s5aB9BWuWjFonfWHWqjGaQhx7vqkB
+         dqvPBmHQymTNok2Kvf9sl66u1YAGvVmTLukZcdP1vicF4T+ZF/9OdAU6wOyZ8zU3K7fB
+         jnrA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1717694362; x=1718299162;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=zt0pjTztcu4n8lTF/hF2b2G0S3c9WiJ59+7WZnT1DAM=;
+        b=WDMi6d3AyPeBQgtmPp3gZX5JE1hV1QAAYVLA64bWa7iWdyM5E+Vg3GbCAr5m9lJVrH
+         +/F6mWMsydd6qaN1zy65bJwXQUfcnsMeaserZ1ouY8G4nEKqaKyn7s3ekRnNiDHvA5FM
+         dzpIxkbkC/0QVh+Xu7OQFp+gSFE9wgpCHO9GsErjD6LMxPff8EdNFuuHXn5ONPxN4TC/
+         gIs4ud/3FJzgDpdj8uURzIWg4//7tYtnouAgyar/FKK2a6ImA0sGfPGm4qW2XGOnKS9j
+         c98Fvcbfeyy/wPcD39MdUPN/6kuWbAc6tmwo0smZaaWZxBGYTR/NiE4lVwPkcPNM5+fF
+         KQ0Q==
+X-Gm-Message-State: AOJu0YzYYOF1/Gt48/aRpQ92vxdmKoeW088QV28wzFPpu0wUeKBCLLPT
+	u6rUwNbHVQn2O/6pQVUtm16urM1SWoksEpdaCQm5yjELq698XyS+cYqirGe3uUc/fPhhd39jkQI
+	wUCM5kplAflfcqRn5PSR5bY3+XZY=
+X-Google-Smtp-Source: AGHT+IFhultLvABPoAzW4dKSKwhxKa/4ntgpi/2Iqa9dsOBQgq/dHMlzP3XO3tr1yBDLA7Y0t3f3SLpZySjWkf//GYA=
+X-Received: by 2002:a17:90a:5a86:b0:2bf:ea42:d0c3 with SMTP id
+ 98e67ed59e1d1-2c2bcad6277mr162571a91.16.1717694361758; Thu, 06 Jun 2024
+ 10:19:21 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DS0PR10MB7933:EE_|DM6PR10MB4236:EE_
-X-MS-Office365-Filtering-Correlation-Id: 3308434f-9243-41be-bc9d-08dc864c4dce
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230031|366007|7416005|1800799015|376005;
-X-Microsoft-Antispam-Message-Info: 
-	=?utf-8?B?anlBYVlreEI2a3Q5bGZjZVVqV1BYN0hMV1lhdklqdVZQWW9TcGwrb3VXWVFB?=
- =?utf-8?B?bk9BRGc0NlFXbjdQSlBLdmhLdDZzZWNtRW5PdGR4Q3FpZUg0R3h0YXFJVHF6?=
- =?utf-8?B?YytaNGwwY2Jvb20rM2FIZTZHMkx5Q25PVmxkQXVtWExqNlJSSER1NWRSbXJD?=
- =?utf-8?B?V0VDR0dsVStTaW9vdWphSXcrakpyR055Nzdzai9BcFgyZFFHejRvN054WHFl?=
- =?utf-8?B?T29CWlM0M3dwRXY1a1FxMlV5dWE5SHRjSWE5WnMvQnJINjBkcU43S1FiYWhy?=
- =?utf-8?B?MWtQNDdCYTduNXpLV25DeVZuWW5GVkovRG1rdFpLZGpwUnZ6WWdHM0FHSUtu?=
- =?utf-8?B?MWxscExyVG5HQ0JGL1hSa3YxVHRpTmd0bkluSldRT3p1Wngvb3JWYjgvRVpM?=
- =?utf-8?B?cWRJdzFSN2hVdEorUGZFS0VTL3lndTM4blV3a2daTFNCUURhN1lLaTQrMTdu?=
- =?utf-8?B?d1ZmRS83Q2Q4UFBoLzFoUytDRDJpU2RuWkVYaHI3SHFVbmhBVzg1bDRZZ1FX?=
- =?utf-8?B?T1lvamovRjM0NmtSL3ZsWUI3eGtLdFpYdnN0bnhxaVIrRW5nVldYNmZzeGx6?=
- =?utf-8?B?NDNTM2g2MUJQZnZUQzVyOGd0TGJieTRaaXBQaDY0RjFmRG4rTXhpbndIWmd6?=
- =?utf-8?B?eEluWWtjNFRFV24ranBteHRyTEZidThSaVN3bytRZVdLYVFPNVR3bGtrRkRj?=
- =?utf-8?B?YW1kbDV0Mi8zc1JLakV5aHgrRXVRbUtDZ2dKZGd5Tmx3TjBBRFNJcVlnM3ZJ?=
- =?utf-8?B?RHBpRHVLMHRmV2NoV2lPSUoyZW40b3dIQTZUZG05c0x2VDlIN0NONHF2dGVv?=
- =?utf-8?B?YjRxVnBkMk4zWUpUK21rZ2o3Q1lhNi9iYm93SHJJRVJRR3I2UzJrRThJUGpq?=
- =?utf-8?B?aTgvbVhkSG9mQTMyU01GWlZ1dVphc00wTkdDczN0dms2RW41QWZqRHovZHpr?=
- =?utf-8?B?U2pTZlMyQ0F2NkdjVFZkck1yQ3Jpdk9uajhrUVJORmtHbzN1ZE5yZ2JsMU0w?=
- =?utf-8?B?TlA5aEhoWlBoOGZIUkNYaWxVYjlyUyt0ZXFSMjFwczg3Tkc4Q0N0Y2pzMVhI?=
- =?utf-8?B?RlRDTkdYNnpjMzVHcVlnWDNlSVp5amFhdVQxM013ck03VDZjdGNXZ1RqWWV5?=
- =?utf-8?B?NHM4YS9QcFNUNG1iSmZERlExOXlQRXREQVhRb1lIU0E0T2ZicmIrdUNWRE44?=
- =?utf-8?B?WXNsSkljaTdwb3VacHBRbXlvSTgwZ21LRjlnSHJJdVl3MDNoTVM4VlRGblI2?=
- =?utf-8?B?ZmllWENaRXV5NlZZa0ZQQUxuZEp2VG5VdG5tVlQ4K3RORXYrK3FrZ2N0Rkpu?=
- =?utf-8?B?ZDJZNWZ5b09nQk9FNE1meFhRQ1Z1MWNtZlZLVk1kUWRZWjhhYjZ5OEJUMVRu?=
- =?utf-8?B?ZXhIVzc3S2ptalREbVpLeFo5V1V6bmw3V0xSdU9rSjZVY0VFVGwwOUhwYjB6?=
- =?utf-8?B?eW1tNW5UbHdJRldYZ1NIeUFyRnJpSDhDeWp5WXZwM1l0WjM1V1B6c1VTM3JV?=
- =?utf-8?B?TkJUTjFWTUNhb0xNYU5xODNkaFFrQjRmd29JV1FydWh6L0NiVFVQTHJsdWln?=
- =?utf-8?B?emVScWljbkpaTXRLakw4NW1mT3Zjc0ZPN1k2ZXhXQ0EveUgzWVNNdHpXV1B3?=
- =?utf-8?B?alJsSm5vOU9acUJZYWc4aXBVWFplaUV4Sml4b2lDanZmTnUybHYrUTA0djZM?=
- =?utf-8?B?RXE1bkZKZGJIUnoyei9YQUxmcUQxRmk4QmZWelZwdlo1Mmc1bklwdlRRPT0=?=
-X-Forefront-Antispam-Report: 
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS0PR10MB7933.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366007)(7416005)(1800799015)(376005);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: 
-	=?utf-8?B?N0cwYUtadS9KQVdXdzdONUl6eERkQ1AyRmZyQXBaSVZ1WDV0akhqUUtWbXJ4?=
- =?utf-8?B?U0ZvbVpGSTZIOXVIYytBUVI2cnh6S1JMckxUUnJkTUVpakxHMTdqYURGN0p2?=
- =?utf-8?B?T0hSQUJqSlV4K0VVRWVKWUtibzljdHdheUhPL2pIUE55dEc4d2pxTm5IMmpX?=
- =?utf-8?B?VDBuVTlENWVlVm4xMDBvdXhWbDJxQU5NUWh0TE5MNXlETGtPcWdPQWJpMmlV?=
- =?utf-8?B?UmFrSEhOZXo3K1VyNGZ2N09LVVU3OVV5a2haWXRjUDdpUnBjMGxWd0pxRWx4?=
- =?utf-8?B?TGJHQzFTTHhJUm1OQ0V2VXVoMmpXZUd5SGhVMDdna0NBVURYaUd6VUd4SGJG?=
- =?utf-8?B?WUlKMDRpQlZZNDNkNjQyTnV2ZDJmQUIrOHZiNjhjUDhIN2JJSWZ2VmxQZVlZ?=
- =?utf-8?B?RUJmc2ZBWmM3SjFOTjBucU1uTnlqYm5saDZMT2xtT0N5dDJMSS9GQ2FHWFZX?=
- =?utf-8?B?b20rY0dxVTl4NzlBbWF2aUpUaTZWSGhXak1jdDFWOXJLb1V1d2ZxQkJPcFc4?=
- =?utf-8?B?Y0dxazdwdjk5b1FlVWgvZjFhUTFPbjVod3hWODNSbjRlQTRLa0JyNFN1eEFy?=
- =?utf-8?B?bzJOKytjOHJ1ZlBXN3NSUU0xRDEzZmZSY2wzYVA1SWxKTUZOdjNDT0Z4YndM?=
- =?utf-8?B?bURtbVk5Y3FUc0hjL3cwcU44ZDVFaHltdktaUGtSN2lBanJoenZlOVZrNTRG?=
- =?utf-8?B?dGpvbUNjMGl6WVJ5d1VVQW96WkZGTi9WUFl3L0xOYzhBcGMwRzErSUM3YmJW?=
- =?utf-8?B?T0V5c0I4TUR5SlNVUEVqWERHL0ZLK050U3Zsc0ZleXN0bzhsMWdpdXJuMUVh?=
- =?utf-8?B?Uld4a2tXQjB6aWYwd0FhVFpSWlNaMlpySnllQlAyWERjTUNTTFJxU21Vanp3?=
- =?utf-8?B?cWYzVnRaK2FOMkQrTGZwZlpXWUhQSVh0SWx2aTZsVHMra1pTbW54bjIxN3dD?=
- =?utf-8?B?U3E0dUZ5QmR4WmZLRXlNU0NQUjN4L3VmdlBnSzdabGVpbDRaYVVweWtOOU10?=
- =?utf-8?B?Rys1TW5rRG9tZFpMMVhZcFpSTnhITDhPcGZKK2ZJcWxkYmpTR05QbVVvVW53?=
- =?utf-8?B?bFE1VTJ6Unl0Y1gyeGRrWlpWb05ZY083QmNVNjV2M1FZWmJETExRcGxRQWtV?=
- =?utf-8?B?R1FYMWFRSlpKNHI1ZE11QTNHT2x4eXkwVTY0cExHNkdaWVovcDFtTTFMMkJ1?=
- =?utf-8?B?djZWbzRLVmhKVFZmQTVBOWU4ekROcG8vWTZRNmYxSHNWaVVZaEcvSnliVGpX?=
- =?utf-8?B?aGVDa2lkY25wNCtlWDA2QzR0S0NUdmpuK3RPN2JUV1dSRmhDcnR1QUFTRnhD?=
- =?utf-8?B?M3I0YkVMczZ4dFoyd1Q4WU1VeFdNbW9KNHhYWU1xLzdHcTcwcWpkTGpHRVls?=
- =?utf-8?B?QzVXRzFMckw4ZERuN2Ztdk5DRGN0b2pqQzc2U3BDNFdEL0ppRU1JQ1JjTzR4?=
- =?utf-8?B?N1JhUWRMbDBDdXQ3K3Izbk44VElPNkY5U1Y4QXF2d3Q5UDRzVFIwaXFaMU1H?=
- =?utf-8?B?Y0NudDZBMC9iZ0hHZGhCMGdadUdXWFhsY3lKYWlKTGpzS3dVQ1plTjN5YUJk?=
- =?utf-8?B?UzdKcUlYdlhqZEpXNW1JbjVHSlZUdjByek5YM3BhUUpUT0ZmUW1sZUNzMnp6?=
- =?utf-8?B?cDZXZVVFLzkvRW16cFVYbFhCWG1ybXhmSXN4aG9JYmIyRkUvaFFLRGN3c0lv?=
- =?utf-8?B?MmY3cSttOXZjMC83alFKaDdGNVN3SFRNSHg0RmtSNUNBVUdPckU3M1FPNTAw?=
- =?utf-8?B?R0UrRTZDYlo0NlhGdTRodHJlWHF6MXkwTnFncVZ6ZGtlLzdUNXNwcWJLYmhS?=
- =?utf-8?B?Z3o1U05ucllXenpVVGx4dWcwcVhyUVB3ZWU1a0xUUVlodXdMcE9GRkRheVhl?=
- =?utf-8?B?bTJjOGpGS1Azb2poUVdwNUFGcWxLbzE3TDNrV1FTOWEwN1BlKzZ0WTVkcUFj?=
- =?utf-8?B?Q0tlb1ovcnNETjZ4VWhBZVpvNmFCZDE5OTAyS0x0RTM4cnhURDRGbkNBc1lS?=
- =?utf-8?B?VVN3dkp4UFRlM1FsS2JLOVBnMms4VGJzck9MR2NPTDdnMCtOSlhKOHlnb3NO?=
- =?utf-8?B?aFl0VmV2YjExRlQyemJseTJrWVFZM3dibVF5Nmd1RFNhT0Y0dmk0YmhNUjhQ?=
- =?utf-8?Q?al/8Y2ZbLtC4ueHdM8//VlL8M?=
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: 
-	RiRC1bTeGL3TSWAQsF7mEWPhZ5Gzbvd3w/N5dpjWTym8xqal9cuZ8uBWykdYDXFcsIS8EMpIBpwiuZ33XXecUXDYSu8wMgQbATDYDuTw8ybCn7hP+RL0TvIj75sOy4izB0LNXYj4T3KtU0lsOYpQV91u9LZfFZDANH9B3FERJs93KqBq0lF71wK9GuG4rfrpIFJhtq8DMSxlnZqAr0rGEDtcHZEaa+sGcHDECbhcMWA7vz31CjhrizBni27L4v03hGfUJie1BHBGSn2iR7IKcYzj8an3AJc+tpOyqm2qnvJuFN0BjuJb4v/TLoZl9IQjY20J0Q+3+RKI3+NKimFXZiCvztKnS5hSNzMUx8sWeVToas5Mf9VVyLsLZXYBsptSJPNzZCSt7xy64DUI9dtDfTcfeQopU0wHd8x15akdyjj7xHlj2ATy33HM0qYkIvzMKCPIJFWiAxKteToo74gZVrR2BoOsi+I3e/ChO90lq1Db+Dg0qP261ee77jlgUX2ijuWVGss5XEHz9LSXFg1GRFL5UyFH4y5Ex/ECKQumEOQwRvMTchAX+wm5sq9ikgsrtLla6qEzWRHFSZGVNxSLBcc/x5Upa50rMb6wKUxDQ/Y=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3308434f-9243-41be-bc9d-08dc864c4dce
-X-MS-Exchange-CrossTenant-AuthSource: DS0PR10MB7933.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Jun 2024 17:15:46.2627
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Mi0XDLRkOguojEGruP1wsABnwW+/67LO1bDcOsXokA9VrJrp6qW5c+PY5agD1bDPLQwp8s+kMoj6F5u3iP4nLw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR10MB4236
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.680,FMLib:17.12.28.16
- definitions=2024-06-06_14,2024-06-06_02,2024-05-17_01
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 bulkscore=0 spamscore=0
- adultscore=0 suspectscore=0 malwarescore=0 mlxscore=0 phishscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2405010000
- definitions=main-2406060122
-X-Proofpoint-ORIG-GUID: 9hVc3AQJ64c88r9cu6cmbEZD1NbPdPcK
-X-Proofpoint-GUID: 9hVc3AQJ64c88r9cu6cmbEZD1NbPdPcK
+References: <20240603155308.199254-1-cupertino.miranda@oracle.com>
+ <20240603155308.199254-3-cupertino.miranda@oracle.com> <CAEf4BzbqhhLsRRTP=QFm6Sh4Ku+9dKN4Ezrere0+=nm_8SzwYA@mail.gmail.com>
+ <87ikymz6ol.fsf@oracle.com>
+In-Reply-To: <87ikymz6ol.fsf@oracle.com>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Thu, 6 Jun 2024 10:19:08 -0700
+Message-ID: <CAEf4BzaVkJghcSpLdRdwmRyGVj+SoUnF88d-9e5Xvb7fmuKt4A@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 2/2] selftests/bpf: Match tests against regular expression.
+To: Cupertino Miranda <cupertino.miranda@oracle.com>
+Cc: bpf@vger.kernel.org, jose.marchesi@oracle.com, david.faust@oracle.com, 
+	Yonghong Song <yonghong.song@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-* Andrii Nakryiko <andrii.nakryiko@gmail.com> [240606 12:52]:
-> On Wed, Jun 5, 2024 at 4:16=E2=80=AFPM Suren Baghdasaryan <surenb@google.=
-com> wrote:
+On Thu, Jun 6, 2024 at 3:50=E2=80=AFAM Cupertino Miranda
+<cupertino.miranda@oracle.com> wrote:
+>
+>
+> Andrii Nakryiko writes:
+>
+> > On Mon, Jun 3, 2024 at 8:53=E2=80=AFAM Cupertino Miranda
+> > <cupertino.miranda@oracle.com> wrote:
+> >>
+> >> This patch changes a few tests to make use of regular expressions such
+> >> that the test validation would allow to properly verify the tests when
+> >> compiled with GCC.
+> >>
+> >> signed-off-by: Cupertino Miranda <cupertino.miranda@oracle.com>
+> >> Cc: jose.marchesi@oracle.com
+> >> Cc: david.faust@oracle.com
+> >> Cc: Yonghong Song <yonghong.song@linux.dev>
+> >> Cc: Eduard Zingerman <eddyz87@gmail.com>
+> >> Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+> >> ---
+> >>  tools/testing/selftests/bpf/progs/dynptr_fail.c          | 6 +++---
+> >>  tools/testing/selftests/bpf/progs/exceptions_assert.c    | 8 ++++----
+> >>  tools/testing/selftests/bpf/progs/rbtree_fail.c          | 8 ++++----
+> >>  tools/testing/selftests/bpf/progs/refcounted_kptr_fail.c | 4 ++--
+> >>  tools/testing/selftests/bpf/progs/verifier_sock.c        | 4 ++--
+> >>  5 files changed, 15 insertions(+), 15 deletions(-)
+> >>
+> >> diff --git a/tools/testing/selftests/bpf/progs/dynptr_fail.c b/tools/t=
+esting/selftests/bpf/progs/dynptr_fail.c
+> >> index 66a60bfb5867..64cc9d936a13 100644
+> >> --- a/tools/testing/selftests/bpf/progs/dynptr_fail.c
+> >> +++ b/tools/testing/selftests/bpf/progs/dynptr_fail.c
+> >> @@ -964,7 +964,7 @@ int dynptr_invalidate_slice_reinit(void *ctx)
+> >>   * mem_or_null pointers.
+> >>   */
+> >>  SEC("?raw_tp")
+> >> -__failure __msg("R1 type=3Dscalar expected=3Dpercpu_ptr_")
+> >> +__failure __regex("R[0-9]+ type=3Dscalar expected=3Dpercpu_ptr_")
+> >>  int dynptr_invalidate_slice_or_null(void *ctx)
+> >>  {
+> >>         struct bpf_dynptr ptr;
+> >> @@ -982,7 +982,7 @@ int dynptr_invalidate_slice_or_null(void *ctx)
+> >>
+> >>  /* Destruction of dynptr should also any slices obtained from it */
+> >>  SEC("?raw_tp")
+> >> -__failure __msg("R7 invalid mem access 'scalar'")
+> >> +__failure __regex("R[0-9]+ invalid mem access 'scalar'")
+> >>  int dynptr_invalidate_slice_failure(void *ctx)
+> >>  {
+> >>         struct bpf_dynptr ptr1;
+> >> @@ -1069,7 +1069,7 @@ int dynptr_read_into_slot(void *ctx)
+> >>
+> >>  /* bpf_dynptr_slice()s are read-only and cannot be written to */
+> >>  SEC("?tc")
+> >> -__failure __msg("R0 cannot write into rdonly_mem")
+> >> +__failure __regex("R[0-9]+ cannot write into rdonly_mem")
+> >>  int skb_invalid_slice_write(struct __sk_buff *skb)
+> >>  {
+> >>         struct bpf_dynptr ptr;
+> >> diff --git a/tools/testing/selftests/bpf/progs/exceptions_assert.c b/t=
+ools/testing/selftests/bpf/progs/exceptions_assert.c
+> >> index 5e0a1ca96d4e..deb67d198caf 100644
+> >> --- a/tools/testing/selftests/bpf/progs/exceptions_assert.c
+> >> +++ b/tools/testing/selftests/bpf/progs/exceptions_assert.c
+> >> @@ -59,7 +59,7 @@ check_assert(s64, >=3D, ge_neg, INT_MIN);
+> >>
+> >>  SEC("?tc")
+> >>  __log_level(2) __failure
+> >> -__msg(": R0=3D0 R1=3Dctx() R2=3Dscalar(smin=3D0xffffffff80000002,smax=
+=3Dsmax32=3D0x7ffffffd,smin32=3D0x80000002) R10=3Dfp0")
+> >> +__regex(": R0=3D[^ ]+ R1=3Dctx() R2=3Dscalar(smin=3D0xffffffff8000000=
+2,smax=3Dsmax32=3D0x7ffffffd,smin32=3D0x80000002) R10=3Dfp0")
 > >
-> > On Tue, Jun 4, 2024 at 5:25=E2=80=AFPM Andrii Nakryiko <andrii@kernel.o=
-rg> wrote:
-> > >
-> > > Attempt to use RCU-protected per-VMA lock when looking up requested V=
-MA
-> > > as much as possible, only falling back to mmap_lock if per-VMA lock
-> > > failed. This is done so that querying of VMAs doesn't interfere with
-> > > other critical tasks, like page fault handling.
-> > >
-> > > This has been suggested by mm folks, and we make use of a newly added
-> > > internal API that works like find_vma(), but tries to use per-VMA loc=
-k.
-> > >
-> > > We have two sets of setup/query/teardown helper functions with differ=
-ent
-> > > implementations depending on availability of per-VMA lock (conditione=
-d
-> > > on CONFIG_PER_VMA_LOCK) to abstract per-VMA lock subtleties.
-> > >
-> > > When per-VMA lock is available, lookup is done under RCU, attempting =
-to
-> > > take a per-VMA lock. If that fails, we fallback to mmap_lock, but the=
-n
-> > > proceed to unconditionally grab per-VMA lock again, dropping mmap_loc=
-k
-> > > immediately. In this configuration mmap_lock is never helf for long,
-> > > minimizing disruptions while querying.
-> > >
-> > > When per-VMA lock is compiled out, we take mmap_lock once, query VMAs
-> > > using find_vma() API, and then unlock mmap_lock at the very end once =
-as
-> > > well. In this setup we avoid locking/unlocking mmap_lock on every loo=
-ked
-> > > up VMA (depending on query parameters we might need to iterate a few =
-of
-> > > them).
-> > >
-> > > Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-> > > ---
-> > >  fs/proc/task_mmu.c | 46 ++++++++++++++++++++++++++++++++++++++++++++=
-++
-> > >  1 file changed, 46 insertions(+)
-> > >
-> > > diff --git a/fs/proc/task_mmu.c b/fs/proc/task_mmu.c
-> > > index 614fbe5d0667..140032ffc551 100644
-> > > --- a/fs/proc/task_mmu.c
-> > > +++ b/fs/proc/task_mmu.c
-> > > @@ -388,6 +388,49 @@ static int pid_maps_open(struct inode *inode, st=
-ruct file *file)
-> > >                 PROCMAP_QUERY_VMA_FLAGS                         \
-> > >  )
-> > >
-> > > +#ifdef CONFIG_PER_VMA_LOCK
-> > > +static int query_vma_setup(struct mm_struct *mm)
-> > > +{
-> > > +       /* in the presence of per-VMA lock we don't need any setup/te=
-ardown */
-> > > +       return 0;
-> > > +}
-> > > +
-> > > +static void query_vma_teardown(struct mm_struct *mm, struct vm_area_=
-struct *vma)
-> > > +{
-> > > +       /* in the presence of per-VMA lock we need to unlock vma, if =
-present */
-> > > +       if (vma)
-> > > +               vma_end_read(vma);
-> > > +}
-> > > +
-> > > +static struct vm_area_struct *query_vma_find_by_addr(struct mm_struc=
-t *mm, unsigned long addr)
-> > > +{
-> > > +       struct vm_area_struct *vma;
-> > > +
-> > > +       /* try to use less disruptive per-VMA lock */
-> > > +       vma =3D find_and_lock_vma_rcu(mm, addr);
-> > > +       if (IS_ERR(vma)) {
-> > > +               /* failed to take per-VMA lock, fallback to mmap_lock=
- */
-> > > +               if (mmap_read_lock_killable(mm))
-> > > +                       return ERR_PTR(-EINTR);
-> > > +
-> > > +               vma =3D find_vma(mm, addr);
-> > > +               if (vma) {
-> > > +                       /*
-> > > +                        * We cannot use vma_start_read() as it may f=
-ail due to
-> > > +                        * false locked (see comment in vma_start_rea=
-d()). We
-> > > +                        * can avoid that by directly locking vm_lock=
- under
-> > > +                        * mmap_lock, which guarantees that nobody ca=
-n lock the
-> > > +                        * vma for write (vma_start_write()) under us=
-.
-> > > +                        */
-> > > +                       down_read(&vma->vm_lock->lock);
+> > curious, what R0 value do we end up with with GCC generated code?
+> Oups, this file should have not been committed. Those changes were just
+> for experimentation, nothing else. :(
+>
 > >
-> > Hi Andrii,
-> > The above pattern of locking VMA under mmap_lock and then dropping
-> > mmap_lock is becoming more common. Matthew had an RFC proposal for an
-> > API to do this here:
-> > https://lore.kernel.org/all/ZivhG0yrbpFqORDw@casper.infradead.org/. It
-> > might be worth reviving that discussion.
->=20
-> Sure, it would be nice to have generic and blessed primitives to use
-> here. But the good news is that once this is all figured out by you mm
-> folks, it should be easy to make use of those primitives here, right?
->=20
+> >>  int check_assert_range_s64(struct __sk_buff *ctx)
+> >>  {
+> >>         struct bpf_sock *sk =3D ctx->sk;
+> >> @@ -75,7 +75,7 @@ int check_assert_range_s64(struct __sk_buff *ctx)
+> >>
+> >>  SEC("?tc")
+> >>  __log_level(2) __failure
+> >> -__msg(": R1=3Dctx() R2=3Dscalar(smin=3Dumin=3Dsmin32=3Dumin32=3D4096,=
+smax=3Dumax=3Dsmax32=3Dumax32=3D8192,var_off=3D(0x0; 0x3fff))")
+> >> +__regex("R[0-9]=3Dscalar(smin=3Dumin=3Dsmin32=3Dumin32=3D4096,smax=3D=
+umax=3Dsmax32=3Dumax32=3D8192,var_off=3D(0x0; 0x3fff))")
+> >>  int check_assert_range_u64(struct __sk_buff *ctx)
+> >>  {
+> >>         u64 num =3D ctx->len;
+> >> @@ -86,7 +86,7 @@ int check_assert_range_u64(struct __sk_buff *ctx)
+> >>
+> >>  SEC("?tc")
+> >>  __log_level(2) __failure
+> >> -__msg(": R0=3D0 R1=3Dctx() R2=3D4096 R10=3Dfp0")
+> >> +__regex(": R0=3D[^ ]+ R1=3Dctx() R2=3D4096 R10=3Dfp0")
+> >>  int check_assert_single_range_s64(struct __sk_buff *ctx)
+> >>  {
+> >>         struct bpf_sock *sk =3D ctx->sk;
+> >> @@ -114,7 +114,7 @@ int check_assert_single_range_u64(struct __sk_buff=
+ *ctx)
+> >>
+> >>  SEC("?tc")
+> >>  __log_level(2) __failure
+> >> -__msg(": R1=3Dpkt(off=3D64,r=3D64) R2=3Dpkt_end() R6=3Dpkt(r=3D64) R1=
+0=3Dfp0")
+> >> +__msg("R1=3Dpkt(off=3D64,r=3D64)")
+> >>  int check_assert_generic(struct __sk_buff *ctx)
+> >>  {
+> >>         u8 *data_end =3D (void *)(long)ctx->data_end;
+> >> diff --git a/tools/testing/selftests/bpf/progs/rbtree_fail.c b/tools/t=
+esting/selftests/bpf/progs/rbtree_fail.c
+> >> index 3fecf1c6dfe5..8399304eca72 100644
+> >> --- a/tools/testing/selftests/bpf/progs/rbtree_fail.c
+> >> +++ b/tools/testing/selftests/bpf/progs/rbtree_fail.c
+> >> @@ -29,7 +29,7 @@ static bool less(struct bpf_rb_node *a, const struct=
+ bpf_rb_node *b)
+> >>  }
+> >>
+> >>  SEC("?tc")
+> >> -__failure __msg("bpf_spin_lock at off=3D16 must be held for bpf_rb_ro=
+ot")
+> >> +__failure __regex("bpf_spin_lock at off=3D[0-9]+ must be held for bpf=
+_rb_root")
+> >>  long rbtree_api_nolock_add(void *ctx)
+> >>  {
+> >>         struct node_data *n;
+> >> @@ -43,7 +43,7 @@ long rbtree_api_nolock_add(void *ctx)
+> >>  }
+> >>
+> >>  SEC("?tc")
+> >> -__failure __msg("bpf_spin_lock at off=3D16 must be held for bpf_rb_ro=
+ot")
+> >> +__failure __regex("bpf_spin_lock at off=3D[0-9]+ must be held for bpf=
+_rb_root")
+> >>  long rbtree_api_nolock_remove(void *ctx)
+> >>  {
+> >>         struct node_data *n;
+> >> @@ -61,7 +61,7 @@ long rbtree_api_nolock_remove(void *ctx)
+> >>  }
+> >>
+> >>  SEC("?tc")
+> >> -__failure __msg("bpf_spin_lock at off=3D16 must be held for bpf_rb_ro=
+ot")
+> >> +__failure __regex("bpf_spin_lock at off=3D[0-9]+ must be held for bpf=
+_rb_root")
+> >>  long rbtree_api_nolock_first(void *ctx)
+> >>  {
+> >>         bpf_rbtree_first(&groot);
+> >> @@ -105,7 +105,7 @@ long rbtree_api_remove_unadded_node(void *ctx)
+> >>  }
+> >>
+> >>  SEC("?tc")
+> >> -__failure __msg("Unreleased reference id=3D3 alloc_insn=3D10")
+> >> +__failure __regex("Unreleased reference id=3D3 alloc_insn=3D[0-9]+")
 > >
-> > > +               }
-> > > +
-> > > +               mmap_read_unlock(mm);
+> > this test definitely should have been written in BPF assembly if we
+> > care to check alloc_insn... Otherwise we just care that there is
+> > "Unreleased reference" message, we should match on that without
+> > hard-coding id and alloc_insn?
+> I agree. Unfortunately I see a lot of tests that fall in this category.
+> I must admit, most of the time I do not know what is the proper approach
+> to correct it.
+>
+> Also found some tests that made expectations on .bss section data
+> layout, expeting a particular variable order.
+> For example in prog_tests/core_reloc.c, when it maps .bss and assigns it
+> to data.
+
+I haven't checked every single one, but I think most (if not all) of
+these progs/test_core_reloc_*.c tests (which are what is being tested
+in prog_tests/core_reloc.c) are structured with a singular variable in
+.bss. And then the variable type is some well-defined struct type. As
+Alexei pointed out, compiler is not allowed to just arbitrarily
+reorder fields within a struct, unless randomization is enabled with
+an extra attribute (which we do not use).
+
+So if you have specific cases where something isn't correct, let's go
+over them, but I think prog_tests/core_reloc.c should be fine.
+
+> GCC will allocate variables in a different order then clang and when
+> comparing content is not where comparisson is expecting.
+>
+> Some other test, would expect that struct fields would be in some
+> particular order, while GCC decides it would benefit from reordering
+> struct fields. For passing those tests I need to disable GCC
+> optimization that would make this reordering.
+> However reordering of the struct fields is a perfectly valid
+
+Nope, it's not.
+
+As mentioned, struct layout is effectively an ABI, so the compiler
+cannot just reorder it. Lots and lots of things would be broken if
+this was true for C programs.
+
+> optimization. Maybe disabling for this tests is acceptable, but in any
+> case the test itself is prune for any future optimizations that can be
+> added to GCC or CLANG.
+> This happened in progs/test_core_autosize.c for example.
+
+We probably should rewrite such tests that have to deal with
+.bss/.data to BPF skeletons, I think they were written before BPF
+skeletons were available.
+
+>
+> Anyway, just a couple of examples of tests that were made very tight to
+> compiler.
+>
 > >
-> > Later on in your code you are calling get_vma_name() which might call
-> > anon_vma_name() to retrieve user-defined VMA name. After this patch
-> > this operation will be done without holding mmap_lock, however per
-> > https://elixir.bootlin.com/linux/latest/source/include/linux/mm_types.h=
-#L582
-> > this function has to be called with mmap_lock held for read. Indeed
-> > with debug flags enabled you should hit this assertion:
-> > https://elixir.bootlin.com/linux/latest/source/mm/madvise.c#L96.
-
-The documentation on the first link says to hold the lock or take a
-reference, but then we assert the lock.  If you take a reference to the
-anon vma name, then we will trigger the assert.  Either the
-documentation needs changing or the assert is incorrect - or I'm missing
-something?
-
->=20
-> Sigh... Ok, what's the suggestion then? Should it be some variant of
-> mmap_assert_locked() || vma_assert_locked() logic, or it's not so
-> simple?
->=20
-> Maybe I should just drop the CONFIG_PER_VMA_LOCK changes for now until
-> all these gotchas are figured out for /proc/<pid>/maps anyway, and
-> then we can adapt both text-based and ioctl-based /proc/<pid>/maps
-> APIs on top of whatever the final approach will end up being the right
-> one?
->=20
-> Liam, any objections to this? The whole point of this patch set is to
-> add a new API, not all the CONFIG_PER_VMA_LOCK gotchas. My
-> implementation is structured in a way that should be easily amenable
-> to CONFIG_PER_VMA_LOCK changes, but if there are a few more subtle
-> things that need to be figured for existing text-based
-> /proc/<pid>/maps anyways, I think it would be best to use mmap_lock
-> for now for this new API, and then adopt the same final
-> CONFIG_PER_VMA_LOCK-aware solution.
-
-The reason I was hoping to have the new interface use the per-vma
-locking from the start is to ensure the guarantees that we provide to
-the users would not change.  We'd also avoid shifting to yet another
-mmap_lock users.
-
-I also didn't think it would complicate your series too much, so I
-understand why you want to revert to the old locking semantics.  I'm
-fine with you continuing with the series on the old lock.  Thanks for
-trying to make this work.
-
-Regards,
-Liam
+> >>  long rbtree_api_remove_no_drop(void *ctx)
+> >>  {
+> >>         struct bpf_rb_node *res;
+> >> diff --git a/tools/testing/selftests/bpf/progs/refcounted_kptr_fail.c =
+b/tools/testing/selftests/bpf/progs/refcounted_kptr_fail.c
+> >> index 1553b9c16aa7..f8d4b7cfcd68 100644
+> >> --- a/tools/testing/selftests/bpf/progs/refcounted_kptr_fail.c
+> >> +++ b/tools/testing/selftests/bpf/progs/refcounted_kptr_fail.c
+> >> @@ -32,7 +32,7 @@ static bool less(struct bpf_rb_node *a, const struct=
+ bpf_rb_node *b)
+> >>  }
+> >>
+> >>  SEC("?tc")
+> >> -__failure __msg("Unreleased reference id=3D4 alloc_insn=3D21")
+> >> +__failure __regex("Unreleased reference id=3D4 alloc_insn=3D[0-9]+")
+> >
+> > same, relying on ID and alloc_insns in tests written in C is super frag=
+ile.
+> >
+> >>  long rbtree_refcounted_node_ref_escapes(void *ctx)
+> >>  {
+> >>         struct node_acquire *n, *m;
+> >> @@ -73,7 +73,7 @@ long refcount_acquire_maybe_null(void *ctx)
+> >>  }
+> >>
+> >>  SEC("?tc")
+> >> -__failure __msg("Unreleased reference id=3D3 alloc_insn=3D9")
+> >> +__failure __regex("Unreleased reference id=3D3 alloc_insn=3D[0-9]+")
+> >>  long rbtree_refcounted_node_ref_escapes_owning_input(void *ctx)
+> >
+> > ditto
+> >
+> >>  {
+> >>         struct node_acquire *n, *m;
+> >> diff --git a/tools/testing/selftests/bpf/progs/verifier_sock.c b/tools=
+/testing/selftests/bpf/progs/verifier_sock.c
+> >> index ee76b51005ab..450b57933c79 100644
+> >> --- a/tools/testing/selftests/bpf/progs/verifier_sock.c
+> >> +++ b/tools/testing/selftests/bpf/progs/verifier_sock.c
+> >> @@ -799,7 +799,7 @@ l0_%=3D:      r0 =3D *(u32*)(r0 + %[bpf_xdp_sock_q=
+ueue_id]);    \
+> >>
+> >>  SEC("sk_skb")
+> >>  __description("bpf_map_lookup_elem(sockmap, &key)")
+> >> -__failure __msg("Unreleased reference id=3D2 alloc_insn=3D6")
+> >> +__failure __regex("Unreleased reference id=3D2 alloc_insn=3D[0-9]+")
+> >
+> > same here and below
+> >
+> >
+> >>  __naked void map_lookup_elem_sockmap_key(void)
+> >>  {
+> >>         asm volatile ("                                 \
+> >> @@ -819,7 +819,7 @@ __naked void map_lookup_elem_sockmap_key(void)
+> >>
+> >>  SEC("sk_skb")
+> >>  __description("bpf_map_lookup_elem(sockhash, &key)")
+> >> -__failure __msg("Unreleased reference id=3D2 alloc_insn=3D6")
+> >> +__failure __regex("Unreleased reference id=3D2 alloc_insn=3D[0-9]+")
+> >>  __naked void map_lookup_elem_sockhash_key(void)
+> >>  {
+> >>         asm volatile ("                                 \
+> >> --
+> >> 2.39.2
+> >>
 
