@@ -1,278 +1,251 @@
-Return-Path: <bpf+bounces-31520-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-31521-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id CEA7F8FF36A
-	for <lists+bpf@lfdr.de>; Thu,  6 Jun 2024 19:12:44 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id B59CF8FF370
+	for <lists+bpf@lfdr.de>; Thu,  6 Jun 2024 19:14:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D50761C2127D
-	for <lists+bpf@lfdr.de>; Thu,  6 Jun 2024 17:12:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 26F6E1F21D48
+	for <lists+bpf@lfdr.de>; Thu,  6 Jun 2024 17:14:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5CC62198E98;
-	Thu,  6 Jun 2024 17:12:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6085F1990CC;
+	Thu,  6 Jun 2024 17:14:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="wkdUd5PI"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="ZfHKPHd8"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yb1-f180.google.com (mail-yb1-f180.google.com [209.85.219.180])
+Received: from mail-yw1-f178.google.com (mail-yw1-f178.google.com [209.85.128.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A96C1E495
-	for <bpf@vger.kernel.org>; Thu,  6 Jun 2024 17:12:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 62EEB198E7D
+	for <bpf@vger.kernel.org>; Thu,  6 Jun 2024 17:14:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717693956; cv=none; b=MA5PV1sZiO7T84pt3VFV+LNSKp7Bu6+9iEC/n6mdL9MXdFWldmaIOSt1YTJj9CcmESv2+kTeMVRLZXrbBysATzP74Xna3mJNft0W61y8TJTffxv9DO5JjX4FpxcqygoCpZtBNFD849bkf9AMxL9VaUIPM5Qt23wntg3LlAj1RhM=
+	t=1717694047; cv=none; b=OqEClCLFpbuvIwFEiLEQT6xfYJk9ZuSi3VAn5Q5l5wpztBl3XvP69gs9JhxaR16OdBaKqK4V/w1p/n9uLRqkt+LugruE9AgQMVw5juWLG3DujbVuWyx/zw7Naeyjsyqa1JfjyTn35zbTvuhhUrsouN+45I2Zbdummu3wB6ccyRM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717693956; c=relaxed/simple;
-	bh=i6UeZoIGf5MzZQ1BZ0IkgNMzgsE2gNY0H16mgMu9QUI=;
+	s=arc-20240116; t=1717694047; c=relaxed/simple;
+	bh=3PcZbTSvMIet1KvRH/3UIizXiqdHfZwbn62ekU7BeTk=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=cxeVCe3r2TXd3I282o2Oq8tQcwpRqAzTTeZ+CbQTxyiFXQ/3UJz9ypsuCIGawTwDep9KL0CvG74oCXAXAgQHW333ga0V2KdSMhi/Uv5PRBjHyuFXOEmYfvDLsQRZ51IxJ0cS/cpykTKQE2omH6i4V4yV2k/erIx3NspblKjDFxE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=wkdUd5PI; arc=none smtp.client-ip=209.85.219.180
+	 To:Cc:Content-Type; b=HKA6+rBRYeZ4R9uAtYj9669aQmX11JtcL1RgjjIwPUek38mxREU0mPb2rF/JQqw1nHHi/ncDOKj0yJ7u6YIBnmCXvP3Pj2D9LGe8SLYD9j6MsPM+4+8s4+9BIjsc/lLzsf/vWmVzkfF4P1O6fUZgQo0+1ICAs+Vs0GKRt5TQ67U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=ZfHKPHd8; arc=none smtp.client-ip=209.85.128.178
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-yb1-f180.google.com with SMTP id 3f1490d57ef6-dfa65af5367so1515741276.1
-        for <bpf@vger.kernel.org>; Thu, 06 Jun 2024 10:12:35 -0700 (PDT)
+Received: by mail-yw1-f178.google.com with SMTP id 00721157ae682-627ecda47d0so12472067b3.2
+        for <bpf@vger.kernel.org>; Thu, 06 Jun 2024 10:14:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1717693954; x=1718298754; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1717694045; x=1718298845; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=kZKE81qoxM89lbOangpx2QgEODfNB1onCrSNSnUNWZg=;
-        b=wkdUd5PItyL2KdV18tUOU6FG7JRahfnlT7Pj9u0+vc0NdMTGWV4OVRJFBiAqQMeL/R
-         I7kCUrwseWFr2GpZaJZbXtQZWPw7fOcFoaW7ubvMZ/JZqMXVW8v/yaUYnrXXYEahBNZI
-         iqa21RElU9dq5zMzmckEZzrSP/lGhYqvPqzTFX5AWdhljrfDKAHhi6KSGwpMwL2rcBnr
-         eJ+qaFL3uMjjsxRvsorHIZPoOiX3HNEeCyPe3Qpz5yVSdqn5d6yz/OLD8s1fYSSIb+DH
-         3cN/a9hSOOepZJwrDLe+7oiK30AVHUbtNbaq8hPulTOqIsDci+WsDe2F/qlHtoyh+08c
-         2VhA==
+        bh=hRK/mnhg9puUTTzwI/wwQsIKXT3wkOFAvZtn/HKANeU=;
+        b=ZfHKPHd88/pQdXDhSx7rj+OQOYhlJT8Ziy+oVtQGDenFjzFnp1lY1uDONjpIbY6C6L
+         T0SbIYjboXx1e02tAi3c3ZD3Gq+G2goZHggWjMm33l5djEuEPgfApdzrTlQsVSUKx1NT
+         STiUjeurb7q9QslwoKoU9kU6oYDOqZkkXO+LgaFSf6sv3L/fTb5ekW0oqxuv34FoqNxA
+         T5PcV+YIq8Lh/fwjRYzWA/oIS3a3kfdo+pTp/iOWhEUJXrhxNxbjCaYVw3m+oPnMl0pm
+         qbpCxk7rC7UMkgI24mawWB4sAvdATgJ0ztfcCGzylZuwZLWS+CzpSmGIURkswJap463h
+         4b2w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1717693954; x=1718298754;
+        d=1e100.net; s=20230601; t=1717694045; x=1718298845;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=kZKE81qoxM89lbOangpx2QgEODfNB1onCrSNSnUNWZg=;
-        b=g40n1JRJom0atHpMaVsL/284WAnXQV/MKHPrf1tehYvbaTl1far/P6QqIIkbPj/UOb
-         JPKUPmvI/Vh9CIy9K6y4Ja/bdAyjVMciZ4kwkpPAeSxjURV+NIxmo1ZmrABSQ+sjyVo/
-         6ySoFAgyGGpm7arQDf39tn3F9N3xriuuUypWjMRxh+wYIwY+/nP6QgYqdwxOmm3EOJJt
-         TEERdEyegPcCkscaBECFM3SltWWBQndGlpL4T/shzYsEZBiRBrVHG/MDAxFEWBgzqfjk
-         2ViMfxXyWWXWv//aVcnfidQuFrwdA1AXIAiZKq0hA8Jf7fm9229UNpXPGnoRy6Y838kN
-         pxkQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUXxJiXONilSgkhqiNCLITWZ4rwUH6tQhAY3uPGLnP9OqRM+3bLdznwsP2+pxv7nqfangJeR9jDFpylv0S7nO0UvXJc
-X-Gm-Message-State: AOJu0Yyz3b++EK5TyBDasr9e8+9NE30+U4fj1CAsrEV8B0MA04QhSyGu
-	V9hMGNgkQEdfJ6b661nqfSUsVzTsRf8tUMn6sWJAoSxcumYlUOuIJtOtmXlCJJlCPi30FcVJBtc
-	MMbHRqh6ci1OAbHLrin5xeaAMudsG62RKHc9f
-X-Google-Smtp-Source: AGHT+IH1cpi2LYBIddbBM2tFPkjXrGUnnuJw36AgrAa/4/yXidELcXd58akGUTBX9aNDWCS+xMYyUK+XSoCTEqGqMzk=
-X-Received: by 2002:a25:c744:0:b0:dfa:49f9:d334 with SMTP id
- 3f1490d57ef6-dfaf6645fd6mr6214276.48.1717693953710; Thu, 06 Jun 2024 10:12:33
- -0700 (PDT)
+        bh=hRK/mnhg9puUTTzwI/wwQsIKXT3wkOFAvZtn/HKANeU=;
+        b=udLkkC3xXrLi7UTUVAACAjQvIgTYcnhcNktcOZ0hjLG1+9U8q0g1oXx6JhciDoFT23
+         gZMg7hqbunDQIpHTQANpnCFrVrAjmid9vWDPrpcyvvuq7kBOCcWjnW8z/f0o/igzFGif
+         XiUvDw4Qayij9UM0lYcjjIN+h7bP38xBNe/Z6m4Zp6Obdr5duPe//aZyt3J9k41JNyOt
+         ra4P1j5hl9K2dDjr1+kLU0/Ct7K5ZB/IvkjyM5QpzJh+THKKk4yC+GzEFzSoV/64/8fY
+         48l+tP94Tv563o3QjbFah7FogoqNrh+xslqMksSwha7k1wHneZli+7/CZdwCW3s5gp1u
+         bOHQ==
+X-Forwarded-Encrypted: i=1; AJvYcCU3qeO2kigayIwLPm4viZdLFVnKdAWPUavfMzFeIn+kxeoONKqF+c/3VZY+oEfFAys+hQC4u+tOxEd42N28NzpGFntb
+X-Gm-Message-State: AOJu0YxmKw4YB429lP6TpVzQKcFY8HSB988DCey2fTwg6DbKs2s3Bxv/
+	yFtNfx6PWdfj+6UAUJmutls8pQVK3VpoHCWNiE/lXD9nzGiUM/7JSmSKjThoBvkiLvC+ZYOxrbe
+	EnGds4mz4Cep+PKcMmnkspY5n3cNPum3goMZE
+X-Google-Smtp-Source: AGHT+IE6g1Qt1a0uWEMeEkhuX3E8E0Aujra9U26A4am4FT81CMUGmJmJOs73aDziKCtCgxpH2azFXeJj7iJZZjlkoqQ=
+X-Received: by 2002:a0d:d709:0:b0:615:1a0:78ea with SMTP id
+ 00721157ae682-62cbff3b0eamr45661767b3.34.1717694044790; Thu, 06 Jun 2024
+ 10:14:04 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240605002459.4091285-1-andrii@kernel.org> <20240605002459.4091285-5-andrii@kernel.org>
- <CAJuCfpFp38X-tbiRAqS36zXG_ho2wyoRas0hCFLo07pN1noSmg@mail.gmail.com> <CAEf4BzYv0Ys+NpMMuXBYEVwAaOow=oBgUhBwen7g=68_5qKznQ@mail.gmail.com>
-In-Reply-To: <CAEf4BzYv0Ys+NpMMuXBYEVwAaOow=oBgUhBwen7g=68_5qKznQ@mail.gmail.com>
+References: <20240605002459.4091285-1-andrii@kernel.org> <20240605002459.4091285-2-andrii@kernel.org>
+ <Zl-38XrUw9entlFR@casper.infradead.org> <uevtozlryyqw5vj2duuzowupknfynmreruiw6m7bcxryjppqpm@7g766emooxfh>
+ <CAEf4BzZFpidjJzRMWboZYY03U8M22Yo1sqXconi36V11XA-ZfA@mail.gmail.com>
+ <CAEf4BzYDhtkYt=qn2YgrnRkZ0tpa3EPAiCUcBkdUa-9DKN22dQ@mail.gmail.com>
+ <CAEf4Bzbzj55LfgTom9KiM1Xe8pfXvpWBd6ETjXQCh7M===G5aw@mail.gmail.com>
+ <5fmylram4hhrrdl7vf6odyvuxcrvhipsx2ij5z4dsfciuzf4on@qwk7qzze6gbt>
+ <CAJuCfpER9qUSGbWBcHhT1=ssH41Xv8--XVA5BEPCM7uf=z_GLw@mail.gmail.com> <CAEf4Bzax2E1JS=MUm=sBJvcMb+CyWaPdxmr2mDuODs2cc3_mTg@mail.gmail.com>
+In-Reply-To: <CAEf4Bzax2E1JS=MUm=sBJvcMb+CyWaPdxmr2mDuODs2cc3_mTg@mail.gmail.com>
 From: Suren Baghdasaryan <surenb@google.com>
-Date: Thu, 6 Jun 2024 10:12:19 -0700
-Message-ID: <CAJuCfpG1vSHmdPFvZSryHd+5pMZayKL9AJwgw1syRSBHnW-WHQ@mail.gmail.com>
-Subject: Re: [PATCH v3 4/9] fs/procfs: use per-VMA RCU-protected locking in
- PROCMAP_QUERY API
+Date: Thu, 6 Jun 2024 10:13:52 -0700
+Message-ID: <CAJuCfpFKA9KChaunoYo-yH4GipvGjRpKqyneOhwi-E6n3Lfq3g@mail.gmail.com>
+Subject: Re: [PATCH v3 1/9] mm: add find_vma()-like API but RCU protected and
+ taking VMA lock
 To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: Andrii Nakryiko <andrii@kernel.org>, linux-fsdevel@vger.kernel.org, brauner@kernel.org, 
+Cc: "Liam R. Howlett" <Liam.Howlett@oracle.com>, Matthew Wilcox <willy@infradead.org>, 
+	Andrii Nakryiko <andrii@kernel.org>, linux-fsdevel@vger.kernel.org, brauner@kernel.org, 
 	viro@zeniv.linux.org.uk, akpm@linux-foundation.org, 
 	linux-kernel@vger.kernel.org, bpf@vger.kernel.org, gregkh@linuxfoundation.org, 
-	linux-mm@kvack.org, liam.howlett@oracle.com, rppt@kernel.org
+	linux-mm@kvack.org, rppt@kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
 On Thu, Jun 6, 2024 at 9:52=E2=80=AFAM Andrii Nakryiko
 <andrii.nakryiko@gmail.com> wrote:
 >
-> On Wed, Jun 5, 2024 at 4:16=E2=80=AFPM Suren Baghdasaryan <surenb@google.=
+> On Wed, Jun 5, 2024 at 4:22=E2=80=AFPM Suren Baghdasaryan <surenb@google.=
 com> wrote:
 > >
-> > On Tue, Jun 4, 2024 at 5:25=E2=80=AFPM Andrii Nakryiko <andrii@kernel.o=
-rg> wrote:
+> > On Wed, Jun 5, 2024 at 10:03=E2=80=AFAM Liam R. Howlett <Liam.Howlett@o=
+racle.com> wrote:
 > > >
-> > > Attempt to use RCU-protected per-VMA lock when looking up requested V=
-MA
-> > > as much as possible, only falling back to mmap_lock if per-VMA lock
-> > > failed. This is done so that querying of VMAs doesn't interfere with
-> > > other critical tasks, like page fault handling.
-> > >
-> > > This has been suggested by mm folks, and we make use of a newly added
-> > > internal API that works like find_vma(), but tries to use per-VMA loc=
-k.
-> > >
-> > > We have two sets of setup/query/teardown helper functions with differ=
-ent
-> > > implementations depending on availability of per-VMA lock (conditione=
+> > > * Andrii Nakryiko <andrii.nakryiko@gmail.com> [240605 12:27]:
+> > > > On Wed, Jun 5, 2024 at 9:24=E2=80=AFAM Andrii Nakryiko
+> > > > <andrii.nakryiko@gmail.com> wrote:
+> > > > >
+> > > > > On Wed, Jun 5, 2024 at 9:13=E2=80=AFAM Andrii Nakryiko
+> > > > > <andrii.nakryiko@gmail.com> wrote:
+> > > > > >
+> > > > > > On Wed, Jun 5, 2024 at 6:33=E2=80=AFAM Liam R. Howlett <Liam.Ho=
+wlett@oracle.com> wrote:
+> > > > > > >
+> > > > > > > * Matthew Wilcox <willy@infradead.org> [240604 20:57]:
+> > > > > > > > On Tue, Jun 04, 2024 at 05:24:46PM -0700, Andrii Nakryiko w=
+rote:
+> > > > > > > > > +/*
+> > > > > > > > > + * find_and_lock_vma_rcu() - Find and lock the VMA for a=
+ given address, or the
+> > > > > > > > > + * next VMA. Search is done under RCU protection, withou=
+t taking or assuming
+> > > > > > > > > + * mmap_lock. Returned VMA is guaranteed to be stable an=
+d not isolated.
+> > > > > > > >
+> > > > > > > > You know this is supposed to be the _short_ description, ri=
+ght?
+> > > > > > > > Three lines is way too long.  The full description goes bet=
+ween the
+> > > > > > > > arguments and the Return: line.
+> > > > > >
+> > > > > > Sure, I'll adjust.
+> > > > > >
+> > > > > > > >
+> > > > > > > > > + * @mm: The mm_struct to check
+> > > > > > > > > + * @addr: The address
+> > > > > > > > > + *
+> > > > > > > > > + * Returns: The VMA associated with addr, or the next VM=
+A.
+> > > > > > > > > + * May return %NULL in the case of no VMA at addr or abo=
+ve.
+> > > > > > > > > + * If the VMA is being modified and can't be locked, -EB=
+USY is returned.
+> > > > > > > > > + */
+> > > > > > > > > +struct vm_area_struct *find_and_lock_vma_rcu(struct mm_s=
+truct *mm,
+> > > > > > > > > +                                        unsigned long ad=
+dress)
+> > > > > > > > > +{
+> > > > > > > > > +   MA_STATE(mas, &mm->mm_mt, address, address);
+> > > > > > > > > +   struct vm_area_struct *vma;
+> > > > > > > > > +   int err;
+> > > > > > > > > +
+> > > > > > > > > +   rcu_read_lock();
+> > > > > > > > > +retry:
+> > > > > > > > > +   vma =3D mas_find(&mas, ULONG_MAX);
+> > > > > > > > > +   if (!vma) {
+> > > > > > > > > +           err =3D 0; /* no VMA, return NULL */
+> > > > > > > > > +           goto inval;
+> > > > > > > > > +   }
+> > > > > > > > > +
+> > > > > > > > > +   if (!vma_start_read(vma)) {
+> > > > > > > > > +           err =3D -EBUSY;
+> > > > > > > > > +           goto inval;
+> > > > > > > > > +   }
+> > > > > > > > > +
+> > > > > > > > > +   /*
+> > > > > > > > > +    * Check since vm_start/vm_end might change before we=
+ lock the VMA.
+> > > > > > > > > +    * Note, unlike lock_vma_under_rcu() we are searching=
+ for VMA covering
+> > > > > > > > > +    * address or the next one, so we only make sure VMA =
+wasn't updated to
+> > > > > > > > > +    * end before the address.
+> > > > > > > > > +    */
+> > > > > > > > > +   if (unlikely(vma->vm_end <=3D address)) {
+> > > > > > > > > +           err =3D -EBUSY;
+> > > > > > > > > +           goto inval_end_read;
+> > > > > > > > > +   }
+> > > > > > > > > +
+> > > > > > > > > +   /* Check if the VMA got isolated after we found it */
+> > > > > > > > > +   if (vma->detached) {
+> > > > > > > > > +           vma_end_read(vma);
+> > > > > > > > > +           count_vm_vma_lock_event(VMA_LOCK_MISS);
+> > > > > > > > > +           /* The area was replaced with another one */
+> > > > > > > >
+> > > > > > > > Surely you need to mas_reset() before you goto retry?
+> > > > > > >
+> > > > > > > Probably more than that.  We've found and may have adjusted t=
+he
+> > > > > > > index/last; we should reconfigure the maple state.  You shoul=
+d probably
+> > > > > > > use mas_set(), which will reset the maple state and set the i=
+ndex and
+> > > > > > > long to address.
+> > > > > >
+> > > > > > Yep, makes sense, thanks. As for the `unlikely(vma->vm_end <=3D
+> > > > > > address)` case, I presume we want to do the same, right? Basica=
+lly, on
+> > > > > > each retry start from the `address` unconditionally, no matter =
+what's
+> > > > > > the reason for retry.
+> > > > >
+> > > > > ah, never mind, we don't retry in that situation, I'll just put
+> > > > > `mas_set(&mas, address);` right before `goto retry;`. Unless we s=
+hould
+> > > > > actually retry in the case when VMA got moved before the requeste=
 d
-> > > on CONFIG_PER_VMA_LOCK) to abstract per-VMA lock subtleties.
+> > > > > address, not sure, let me know what you think. Presumably retryin=
+g
+> > > > > will allow us to get the correct VMA without the need to fall bac=
+k to
+> > > > > mmap_lock?
+> > > >
+> > > > sorry, one more question as I look some more around this (unfamilia=
+r
+> > > > to me) piece of code. I see that lock_vma_under_rcu counts
+> > > > VMA_LOCK_MISS on retry, but I see that there is actually a
+> > > > VMA_LOCK_RETRY stat as well. Any reason it's a MISS instead of RETR=
+Y?
+> > > > Should I use MISS as well, or actually count a RETRY?
+> > > >
 > > >
-> > > When per-VMA lock is available, lookup is done under RCU, attempting =
-to
-> > > take a per-VMA lock. If that fails, we fallback to mmap_lock, but the=
-n
-> > > proceed to unconditionally grab per-VMA lock again, dropping mmap_loc=
-k
-> > > immediately. In this configuration mmap_lock is never helf for long,
-> > > minimizing disruptions while querying.
-> > >
-> > > When per-VMA lock is compiled out, we take mmap_lock once, query VMAs
-> > > using find_vma() API, and then unlock mmap_lock at the very end once =
-as
-> > > well. In this setup we avoid locking/unlocking mmap_lock on every loo=
-ked
-> > > up VMA (depending on query parameters we might need to iterate a few =
-of
-> > > them).
-> > >
-> > > Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-> > > ---
-> > >  fs/proc/task_mmu.c | 46 ++++++++++++++++++++++++++++++++++++++++++++=
-++
-> > >  1 file changed, 46 insertions(+)
-> > >
-> > > diff --git a/fs/proc/task_mmu.c b/fs/proc/task_mmu.c
-> > > index 614fbe5d0667..140032ffc551 100644
-> > > --- a/fs/proc/task_mmu.c
-> > > +++ b/fs/proc/task_mmu.c
-> > > @@ -388,6 +388,49 @@ static int pid_maps_open(struct inode *inode, st=
-ruct file *file)
-> > >                 PROCMAP_QUERY_VMA_FLAGS                         \
-> > >  )
-> > >
-> > > +#ifdef CONFIG_PER_VMA_LOCK
-> > > +static int query_vma_setup(struct mm_struct *mm)
-> > > +{
-> > > +       /* in the presence of per-VMA lock we don't need any setup/te=
-ardown */
-> > > +       return 0;
-> > > +}
-> > > +
-> > > +static void query_vma_teardown(struct mm_struct *mm, struct vm_area_=
-struct *vma)
-> > > +{
-> > > +       /* in the presence of per-VMA lock we need to unlock vma, if =
-present */
-> > > +       if (vma)
-> > > +               vma_end_read(vma);
-> > > +}
-> > > +
-> > > +static struct vm_area_struct *query_vma_find_by_addr(struct mm_struc=
-t *mm, unsigned long addr)
-> > > +{
-> > > +       struct vm_area_struct *vma;
-> > > +
-> > > +       /* try to use less disruptive per-VMA lock */
-> > > +       vma =3D find_and_lock_vma_rcu(mm, addr);
-> > > +       if (IS_ERR(vma)) {
-> > > +               /* failed to take per-VMA lock, fallback to mmap_lock=
- */
-> > > +               if (mmap_read_lock_killable(mm))
-> > > +                       return ERR_PTR(-EINTR);
-> > > +
-> > > +               vma =3D find_vma(mm, addr);
-> > > +               if (vma) {
-> > > +                       /*
-> > > +                        * We cannot use vma_start_read() as it may f=
-ail due to
-> > > +                        * false locked (see comment in vma_start_rea=
-d()). We
-> > > +                        * can avoid that by directly locking vm_lock=
- under
-> > > +                        * mmap_lock, which guarantees that nobody ca=
-n lock the
-> > > +                        * vma for write (vma_start_write()) under us=
+> > > VMA_LOCK_MISS is used here because we missed the VMA due to a write
+> > > happening to move the vma (rather rare).  The VMA_LOCK missed the vma=
 .
-> > > +                        */
-> > > +                       down_read(&vma->vm_lock->lock);
+> > >
+> > > VMA_LOCK_RETRY is used to indicate we need to retry under the mmap lo=
+ck.
+> > > A retry is needed after the VMA_LOCK did not work under rcu locking.
 > >
-> > Hi Andrii,
-> > The above pattern of locking VMA under mmap_lock and then dropping
-> > mmap_lock is becoming more common. Matthew had an RFC proposal for an
-> > API to do this here:
-> > https://lore.kernel.org/all/ZivhG0yrbpFqORDw@casper.infradead.org/. It
-> > might be worth reviving that discussion.
+> > Originally lock_vma_under_rcu() was used only inside page fault path,
+> > so these counters helped us quantify how effective VMA locking is when
+> > handling page faults. With more users of that function these counters
+> > will be affected by other paths as well. I'm not sure but I think it
+> > makes sense to use them only inside page fault path, IOW we should
+> > probably move count_vm_vma_lock_event() calls outside of
+> > lock_vma_under_rcu() and add them only when handling page faults.
 >
-> Sure, it would be nice to have generic and blessed primitives to use
-> here. But the good news is that once this is all figured out by you mm
-> folks, it should be easy to make use of those primitives here, right?
->
-> >
-> > > +               }
-> > > +
-> > > +               mmap_read_unlock(mm);
-> >
-> > Later on in your code you are calling get_vma_name() which might call
-> > anon_vma_name() to retrieve user-defined VMA name. After this patch
-> > this operation will be done without holding mmap_lock, however per
-> > https://elixir.bootlin.com/linux/latest/source/include/linux/mm_types.h=
-#L582
-> > this function has to be called with mmap_lock held for read. Indeed
-> > with debug flags enabled you should hit this assertion:
-> > https://elixir.bootlin.com/linux/latest/source/mm/madvise.c#L96.
->
-> Sigh... Ok, what's the suggestion then? Should it be some variant of
-> mmap_assert_locked() || vma_assert_locked() logic, or it's not so
-> simple?
->
-> Maybe I should just drop the CONFIG_PER_VMA_LOCK changes for now until
-> all these gotchas are figured out for /proc/<pid>/maps anyway, and
-> then we can adapt both text-based and ioctl-based /proc/<pid>/maps
-> APIs on top of whatever the final approach will end up being the right
-> one?
->
-> Liam, any objections to this? The whole point of this patch set is to
-> add a new API, not all the CONFIG_PER_VMA_LOCK gotchas. My
-> implementation is structured in a way that should be easily amenable
-> to CONFIG_PER_VMA_LOCK changes, but if there are a few more subtle
-> things that need to be figured for existing text-based
-> /proc/<pid>/maps anyways, I think it would be best to use mmap_lock
-> for now for this new API, and then adopt the same final
-> CONFIG_PER_VMA_LOCK-aware solution.
+> Alright, seems like I should then just drop count_vm_vma_lock_event()
+> from the API I'm adding.
 
-I agree that you should start simple, using mmap_lock first and then
-work on improvements. Would the proposed solution become useless with
-coarse mmap_lock'ing?
+That would be my preference but as I said, I'm not 100% sure about
+this direction.
 
 >
 > >
-> > > +       }
-> > > +
-> > > +       return vma;
-> > > +}
-> > > +#else
-> > >  static int query_vma_setup(struct mm_struct *mm)
-> > >  {
-> > >         return mmap_read_lock_killable(mm);
-> > > @@ -402,6 +445,7 @@ static struct vm_area_struct *query_vma_find_by_a=
-ddr(struct mm_struct *mm, unsig
-> > >  {
-> > >         return find_vma(mm, addr);
-> > >  }
-> > > +#endif
 > > >
-> > >  static struct vm_area_struct *query_matching_vma(struct mm_struct *m=
-m,
-> > >                                                  unsigned long addr, =
-u32 flags)
-> > > @@ -441,8 +485,10 @@ static struct vm_area_struct *query_matching_vma=
-(struct mm_struct *mm,
-> > >  skip_vma:
-> > >         /*
-> > >          * If the user needs closest matching VMA, keep iterating.
-> > > +        * But before we proceed we might need to unlock current VMA.
-> > >          */
-> > >         addr =3D vma->vm_end;
-> > > +       vma_end_read(vma); /* no-op under !CONFIG_PER_VMA_LOCK */
-> > >         if (flags & PROCMAP_QUERY_COVERING_OR_NEXT_VMA)
-> > >                 goto next_vma;
-> > >  no_vma:
-> > > --
-> > > 2.43.0
-> > >
+> > > Thanks,
+> > > Liam
 
