@@ -1,110 +1,84 @@
-Return-Path: <bpf+bounces-31507-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-31508-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3B8868FF138
-	for <lists+bpf@lfdr.de>; Thu,  6 Jun 2024 17:51:32 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 17B0E8FF175
+	for <lists+bpf@lfdr.de>; Thu,  6 Jun 2024 17:59:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CCC7C1F24212
-	for <lists+bpf@lfdr.de>; Thu,  6 Jun 2024 15:51:31 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C01651F23DCD
+	for <lists+bpf@lfdr.de>; Thu,  6 Jun 2024 15:59:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 45302198E80;
-	Thu,  6 Jun 2024 15:50:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 26BB8197A8E;
+	Thu,  6 Jun 2024 15:58:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="nlWCND6L"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VpXT9UyT"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f48.google.com (mail-wr1-f48.google.com [209.85.221.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A7F1197A75
-	for <bpf@vger.kernel.org>; Thu,  6 Jun 2024 15:50:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A18BD197525;
+	Thu,  6 Jun 2024 15:58:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717689018; cv=none; b=MjRth4NTXtZGCFPXct73hsr26+xTmy/LdnfGNeCUz6dfvqABIQbnnYbCxktD0FYgaGN28lLk6AolDvKMyGmoLM29qthZLiLEyU6rbkMQsJoUTRU2ghmetnAyXfYTfaemLKKGTWnYHVt8IrFqEoR+kLp7IOuWpjhYeUp464hiqVU=
+	t=1717689508; cv=none; b=JMgQk+DGkRKhHxiexEgyH6gwQ2nSHu98K/N57u5ukLKgr23noQ1tWhXov4y5cesfCvZXpYI5S6A762iPjlyHka2BIO7WOEHmOdnqnuOjYk/Yk8rs1QRVVlg1l6fxoyDOJtaKHvKryInuWGAUq3b1aRP9SY0q2+YpyxxY6bVOWAQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717689018; c=relaxed/simple;
-	bh=RFSSHTKcL+s3s8Ee5z0VrJPh/fZqueCa9vVyHyxABGg=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ioWc6YoZ96HyvXrVq1RtxmryWiN2f4fVViWIOWZcFdyuMHGPOtBW+mhtCefGHDlJA3LomfW5BK/o/t6ZyXyghpNuMm3ZIUyq+NQleb/WxrfK6gbFxABJdv8J5DJ+dwJQjdM8ZDMwOEwI3t2bO1tK995KnRd2tjGHa49/8YkRRiU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=nlWCND6L; arc=none smtp.client-ip=209.85.221.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f48.google.com with SMTP id ffacd0b85a97d-35e1fcd0c0fso1246807f8f.0
-        for <bpf@vger.kernel.org>; Thu, 06 Jun 2024 08:50:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1717689016; x=1718293816; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=RFSSHTKcL+s3s8Ee5z0VrJPh/fZqueCa9vVyHyxABGg=;
-        b=nlWCND6Lm64W8snfq1hTg0E/VmSCjUCFOriXVk6geldZTj2ElYCG+qBVEaCVL26IqF
-         maETdfSS+QU9wqHugvzYVpOVJQ5rzQWmjjH7l7wEZo3dXeHrccuk4axElkTGNprrmyQt
-         CDqn5b1NnVtM0wwEWul52SQFZG4kESvk5NDbutie8xjJuHCG+qGkr7pUIUWWEM0RcI4u
-         Tp9pgSUE3438YgLFgg98VQL610W8zrsFUkEZQf+8Biiwh+sNYsJSHfkX9p/M9P19AjFT
-         pRyVivAEE9+FzRCcrN9RD2daU8onxoFkIIMwNlxmxT+OXevIg5fTSIk9DbugA8WBJxiZ
-         UOVw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1717689016; x=1718293816;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=RFSSHTKcL+s3s8Ee5z0VrJPh/fZqueCa9vVyHyxABGg=;
-        b=C3ZfQjZGnjgpEmE65yWT6SQbYzkO0bsoBd/kl7NxPzPeQgfxy2bTx0WZYEg2AIyizt
-         G5s8+rKI5dT1KBvebYSV6G7p/M0HVdD8hJXGutJs+j5dYshNseOcDPaIlzgbys1YkJoj
-         e1VPEwaMgSJVsFZmmXPX/kG+WB8e3PnxD8Zhi+TWsIYCjaC9mGlfZru0OB7dFXuYSZrA
-         DVXDoou9bupxErVxO3WzFUIHenhilMlye5V1AbqPeFbZPhsEvTCwX0fRsxmy68r9XviT
-         SKaZa9WWmA+XpT93dEKToCOFrnUsyVjBmbRdj95DxfcOp4wr7F8J6mz3CDVufSVwq+7l
-         MTsA==
-X-Forwarded-Encrypted: i=1; AJvYcCVDR0Sn+1X7ZVM7/kmkL/vAksUrbFdTOJRPGqSHce7yuCHObSL5js9S6EoyoTPKnbAtaPmRjUZ+0n9rkYJQ0f2sbN8G
-X-Gm-Message-State: AOJu0YwdmR1DkAf95JjA70QytZcbp/zvpgHcYJ0I9v63JF47jyX4Z3pf
-	mGCTjGJoBVfnN7eTgkCFXQwvZeu1zIx0fByoUnLeXL5LOfl8g4rXdUpZmRl7izdLKqE84Im5Xvc
-	VkpI0d4l43FMnhLqiwNIy/l2uBgsaC5c6
-X-Google-Smtp-Source: AGHT+IG1G952XR5Aed9lC7lGQhAoZqxIm34GoOB2gWxd0IDPF2HjloIE2Lk+Il0mMPnjA6xyokEaM86Jt7G3od5Rhf0=
-X-Received: by 2002:a05:6000:154a:b0:354:f7f3:5e60 with SMTP id
- ffacd0b85a97d-35efedcb67amr10215f8f.52.1717689015577; Thu, 06 Jun 2024
- 08:50:15 -0700 (PDT)
+	s=arc-20240116; t=1717689508; c=relaxed/simple;
+	bh=qwzd4wpBEJVdaLunxRBZ7Jd0JMtaaH6BRBPJ691w9i4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=VEfQ8ppWh+p3gifPjr0RycF5vsvjcRQr5yusUd/Tb60KcUSPX3AwBHeY0RmmJAia7XxsJTM3LbYC9UylHzoEAlPlYd0Ifi5d6eGWjvjqS/h9Xd9ezIfvGzq1XfE7DaLZ1Ze5KOt4IPPTPZ/asGIVocwtHHUfJhZQxgZY/SH/NAA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VpXT9UyT; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 45D69C32781;
+	Thu,  6 Jun 2024 15:58:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1717689508;
+	bh=qwzd4wpBEJVdaLunxRBZ7Jd0JMtaaH6BRBPJ691w9i4=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=VpXT9UyTkhAKsFvVBXFGXak386aXOYvUoED6KV5cMimr2ot4PeNI0WcC1cJ3ANlgL
+	 w+XFtrQUSY+GCQ2D2OkY8pZpVd6bBry4o9Tm3Vicg+Vlv28VT1FsIM52UQ3xY/UdVO
+	 vPdSKmZx/O+wg+cQEk/Aur6skHAuCW6wN8YTtI6DzRwL9ytlp8IpsTlh3oBDeTi4Bq
+	 zgayIik4sSgi1dSmiuECK58oACjmLOCmJVDb0376RwW8kkmhJeb/nLtNy8gTnad8LC
+	 fe42ICnpbDz+S45p5neTXtgE37+p/Hkc9XoCRjwclk6oAPEq4NW3Csq13lXKMBchDv
+	 8F5R7zbtJLcAw==
+Date: Thu, 6 Jun 2024 08:58:27 -0700
+From: Kees Cook <kees@kernel.org>
+To: KP Singh <kpsingh@kernel.org>, paul@paul-moore.com
+Cc: linux-security-module@vger.kernel.org, bpf@vger.kernel.org,
+	ast@kernel.org, casey@schaufler-ca.com, andrii@kernel.org,
+	daniel@iogearbox.net, renauld@google.com, revest@chromium.org,
+	song@kernel.org
+Subject: Re: [PATCH v12 0/5] Reduce overhead of LSMs with static calls
+Message-ID: <202406060856.95CBD48@keescook>
+References: <20240516003524.143243-1-kpsingh@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240603155308.199254-1-cupertino.miranda@oracle.com>
- <20240603155308.199254-3-cupertino.miranda@oracle.com> <CAEf4BzbqhhLsRRTP=QFm6Sh4Ku+9dKN4Ezrere0+=nm_8SzwYA@mail.gmail.com>
- <87ikymz6ol.fsf@oracle.com>
-In-Reply-To: <87ikymz6ol.fsf@oracle.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Thu, 6 Jun 2024 08:50:04 -0700
-Message-ID: <CAADnVQJ8sykfiVbRuV8BSSNCxP2p2huOjORdP-0cgXriXeZVQA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 2/2] selftests/bpf: Match tests against regular expression.
-To: Cupertino Miranda <cupertino.miranda@oracle.com>
-Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>, bpf <bpf@vger.kernel.org>, 
-	"Jose E. Marchesi" <jose.marchesi@oracle.com>, David Faust <david.faust@oracle.com>, 
-	Yonghong Song <yonghong.song@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240516003524.143243-1-kpsingh@kernel.org>
 
-On Thu, Jun 6, 2024 at 3:51=E2=80=AFAM Cupertino Miranda
-<cupertino.miranda@oracle.com> wrote:
->
-> GCC will allocate variables in a different order then clang and when
-> comparing content is not where comparisson is expecting.
->
-> Some other test, would expect that struct fields would be in some
-> particular order, while GCC decides it would benefit from reordering
-> struct fields. For passing those tests I need to disable GCC
-> optimization that would make this reordering.
-> However reordering of the struct fields is a perfectly valid
-> optimization. Maybe disabling for this tests is acceptable, but in any
-> case the test itself is prune for any future optimizations that can be
-> added to GCC or CLANG.
+On Thu, May 16, 2024 at 02:35:19AM +0200, KP Singh wrote:
+> This series is a respin of the RFC proposed by Paul Renauld (renauld@google.com)
+> and Brendan Jackman (jackmanb@google.com) [1]
+> 
+> # Performance improvement
+> 
+> With this patch-set some syscalls with lots of LSM hooks in their path
+> benefitted at an average of ~3% and I/O and Pipe based system calls benefitting
+> the most.
 
-Not really.
-Allocating vars in different order within a section is fine,
-but compilers are not allowed to reorder fields within structs.
-There is a plugin for gcc that allows opt-in via
-__attribute__((randomize_layout)).
-But never by default.
+Hi Paul,
+
+With the merge window closed now, can we please land this in -next so we
+can get any glitches found/hammered out with maximal time before the
+next merge window?
+
+-Kees
+
+-- 
+Kees Cook
 
