@@ -1,167 +1,110 @@
-Return-Path: <bpf+bounces-31506-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-31507-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EDEBD8FF104
-	for <lists+bpf@lfdr.de>; Thu,  6 Jun 2024 17:44:51 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3B8868FF138
+	for <lists+bpf@lfdr.de>; Thu,  6 Jun 2024 17:51:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B4375B2905A
-	for <lists+bpf@lfdr.de>; Thu,  6 Jun 2024 15:32:26 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CCC7C1F24212
+	for <lists+bpf@lfdr.de>; Thu,  6 Jun 2024 15:51:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F2E2197517;
-	Thu,  6 Jun 2024 15:32:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 45302198E80;
+	Thu,  6 Jun 2024 15:50:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="nlWCND6L"
 X-Original-To: bpf@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f48.google.com (mail-wr1-f48.google.com [209.85.221.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0485F1667E6;
-	Thu,  6 Jun 2024 15:32:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A7F1197A75
+	for <bpf@vger.kernel.org>; Thu,  6 Jun 2024 15:50:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717687924; cv=none; b=DSAj0ezBZF+LOCLrWQ/w9QoDoriNRIWQ9OXR+FzIieAzh934Fi0gG4QwyXl3mCtQ004P8SvFeTOnlvt3dELFil8dg9vjw/qSi3Vd9HY77Ub02YZAxdiOixY2+jhfg9GOZY9dXRzBViDgigTdR894sYeJiu5J86yl1mlPhQrWzX0=
+	t=1717689018; cv=none; b=MjRth4NTXtZGCFPXct73hsr26+xTmy/LdnfGNeCUz6dfvqABIQbnnYbCxktD0FYgaGN28lLk6AolDvKMyGmoLM29qthZLiLEyU6rbkMQsJoUTRU2ghmetnAyXfYTfaemLKKGTWnYHVt8IrFqEoR+kLp7IOuWpjhYeUp464hiqVU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717687924; c=relaxed/simple;
-	bh=zmNGyEPJd4agncjsLzbajet35+uF8WCH96WeoPGE/7g=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=m9P7R1IK7Z8dZcG82iTWuekiEwn+mw7nP+B+/aAAB8F0iJJAfQ5GYyMyGp/3ivxmG4NUB0OOMlL5bWt3LU0vDlrx1HTYWm7u6Gb+IgkW3mTt/nJZsDwuhrIEQ3fjMkf5uczlMMKsXLEZ2MqGZkiVg4J4xFCGbnC1BOjahqwYCa8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.235])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4Vw7bp3kldz4f3kkX;
-	Thu,  6 Jun 2024 23:31:50 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id D5B6F1A0BCC;
-	Thu,  6 Jun 2024 23:31:56 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.67.174.193])
-	by APP1 (Coremail) with SMTP id cCh0CgAX5g5j1mFmxZX2Og--.51957S4;
-	Thu, 06 Jun 2024 23:31:48 +0800 (CST)
-From: Luo Gengkun <luogengkun@huaweicloud.com>
-To: linux-kernel@vger.kernel.org
-Cc: mpe@ellerman.id.au,
-	npiggin@gmail.com,
-	christophe.leroy@csgroup.eu,
-	naveen.n.rao@linux.ibm.com,
-	akpm@linux-foundation.org,
-	trix@redhat.com,
-	dianders@chromium.org,
-	luogengkun@huaweicloud.com,
-	mhocko@suse.com,
-	pmladek@suse.com,
-	kernelfans@gmail.com,
-	lecopzer.chen@mediatek.com,
-	song@kernel.org,
-	yaoma@linux.alibaba.com,
-	tglx@linutronix.de,
-	linuxppc-dev@lists.ozlabs.org,
-	bpf@vger.kernel.org
-Subject: [PATCH] watchdog/core: Fix AA deadlock due to watchdog holding cpu_hotplug_lock and wait for wq
-Date: Thu,  6 Jun 2024 15:38:28 +0000
-Message-Id: <20240606153828.3261006-1-luogengkun@huaweicloud.com>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1717689018; c=relaxed/simple;
+	bh=RFSSHTKcL+s3s8Ee5z0VrJPh/fZqueCa9vVyHyxABGg=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=ioWc6YoZ96HyvXrVq1RtxmryWiN2f4fVViWIOWZcFdyuMHGPOtBW+mhtCefGHDlJA3LomfW5BK/o/t6ZyXyghpNuMm3ZIUyq+NQleb/WxrfK6gbFxABJdv8J5DJ+dwJQjdM8ZDMwOEwI3t2bO1tK995KnRd2tjGHa49/8YkRRiU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=nlWCND6L; arc=none smtp.client-ip=209.85.221.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f48.google.com with SMTP id ffacd0b85a97d-35e1fcd0c0fso1246807f8f.0
+        for <bpf@vger.kernel.org>; Thu, 06 Jun 2024 08:50:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1717689016; x=1718293816; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=RFSSHTKcL+s3s8Ee5z0VrJPh/fZqueCa9vVyHyxABGg=;
+        b=nlWCND6Lm64W8snfq1hTg0E/VmSCjUCFOriXVk6geldZTj2ElYCG+qBVEaCVL26IqF
+         maETdfSS+QU9wqHugvzYVpOVJQ5rzQWmjjH7l7wEZo3dXeHrccuk4axElkTGNprrmyQt
+         CDqn5b1NnVtM0wwEWul52SQFZG4kESvk5NDbutie8xjJuHCG+qGkr7pUIUWWEM0RcI4u
+         Tp9pgSUE3438YgLFgg98VQL610W8zrsFUkEZQf+8Biiwh+sNYsJSHfkX9p/M9P19AjFT
+         pRyVivAEE9+FzRCcrN9RD2daU8onxoFkIIMwNlxmxT+OXevIg5fTSIk9DbugA8WBJxiZ
+         UOVw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1717689016; x=1718293816;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=RFSSHTKcL+s3s8Ee5z0VrJPh/fZqueCa9vVyHyxABGg=;
+        b=C3ZfQjZGnjgpEmE65yWT6SQbYzkO0bsoBd/kl7NxPzPeQgfxy2bTx0WZYEg2AIyizt
+         G5s8+rKI5dT1KBvebYSV6G7p/M0HVdD8hJXGutJs+j5dYshNseOcDPaIlzgbys1YkJoj
+         e1VPEwaMgSJVsFZmmXPX/kG+WB8e3PnxD8Zhi+TWsIYCjaC9mGlfZru0OB7dFXuYSZrA
+         DVXDoou9bupxErVxO3WzFUIHenhilMlye5V1AbqPeFbZPhsEvTCwX0fRsxmy68r9XviT
+         SKaZa9WWmA+XpT93dEKToCOFrnUsyVjBmbRdj95DxfcOp4wr7F8J6mz3CDVufSVwq+7l
+         MTsA==
+X-Forwarded-Encrypted: i=1; AJvYcCVDR0Sn+1X7ZVM7/kmkL/vAksUrbFdTOJRPGqSHce7yuCHObSL5js9S6EoyoTPKnbAtaPmRjUZ+0n9rkYJQ0f2sbN8G
+X-Gm-Message-State: AOJu0YwdmR1DkAf95JjA70QytZcbp/zvpgHcYJ0I9v63JF47jyX4Z3pf
+	mGCTjGJoBVfnN7eTgkCFXQwvZeu1zIx0fByoUnLeXL5LOfl8g4rXdUpZmRl7izdLKqE84Im5Xvc
+	VkpI0d4l43FMnhLqiwNIy/l2uBgsaC5c6
+X-Google-Smtp-Source: AGHT+IG1G952XR5Aed9lC7lGQhAoZqxIm34GoOB2gWxd0IDPF2HjloIE2Lk+Il0mMPnjA6xyokEaM86Jt7G3od5Rhf0=
+X-Received: by 2002:a05:6000:154a:b0:354:f7f3:5e60 with SMTP id
+ ffacd0b85a97d-35efedcb67amr10215f8f.52.1717689015577; Thu, 06 Jun 2024
+ 08:50:15 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:cCh0CgAX5g5j1mFmxZX2Og--.51957S4
-X-Coremail-Antispam: 1UD129KBjvJXoW7Ww18tF4ktFyDAry8Kry8Xwb_yoW8tF1rpr
-	9rZryUtw1UuF1vvayft39xWFy8uayvgr47Ja1DGw1SkF1rCFs8Zrnakr1aqrZ8ZrZxuF1j
-	9w12vFWYqa4UtF7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUv014x267AKxVW5JVWrJwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-	1l84ACjcxK6xIIjxv20xvE14v26ryj6F1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4j
-	6r4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
-	Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
-	I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r
-	4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628v
-	n2kIc2xKxwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F4
-	0E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_GFv_Wryl
-	IxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxV
-	AFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAFwI0_
-	Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7VUb
-	QVy7UUUUU==
-X-CM-SenderInfo: 5oxrwvpqjn3046kxt4xhlfz01xgou0bp/
+References: <20240603155308.199254-1-cupertino.miranda@oracle.com>
+ <20240603155308.199254-3-cupertino.miranda@oracle.com> <CAEf4BzbqhhLsRRTP=QFm6Sh4Ku+9dKN4Ezrere0+=nm_8SzwYA@mail.gmail.com>
+ <87ikymz6ol.fsf@oracle.com>
+In-Reply-To: <87ikymz6ol.fsf@oracle.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Thu, 6 Jun 2024 08:50:04 -0700
+Message-ID: <CAADnVQJ8sykfiVbRuV8BSSNCxP2p2huOjORdP-0cgXriXeZVQA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 2/2] selftests/bpf: Match tests against regular expression.
+To: Cupertino Miranda <cupertino.miranda@oracle.com>
+Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>, bpf <bpf@vger.kernel.org>, 
+	"Jose E. Marchesi" <jose.marchesi@oracle.com>, David Faust <david.faust@oracle.com>, 
+	Yonghong Song <yonghong.song@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-We found an AA deadlock problem as shown belowed:
+On Thu, Jun 6, 2024 at 3:51=E2=80=AFAM Cupertino Miranda
+<cupertino.miranda@oracle.com> wrote:
+>
+> GCC will allocate variables in a different order then clang and when
+> comparing content is not where comparisson is expecting.
+>
+> Some other test, would expect that struct fields would be in some
+> particular order, while GCC decides it would benefit from reordering
+> struct fields. For passing those tests I need to disable GCC
+> optimization that would make this reordering.
+> However reordering of the struct fields is a perfectly valid
+> optimization. Maybe disabling for this tests is acceptable, but in any
+> case the test itself is prune for any future optimizations that can be
+> added to GCC or CLANG.
 
-TaskA				TaskB				WatchDog			system_wq
-
-...
-css_killed_work_fn:
-P(cgroup_mutex)
-...
-								...
-								__lockup_detector_reconfigure:
-								P(cpu_hotplug_lock.read)
-								...
-				...
-				cpu_up:
-				percpu_down_write:
-				P(cpu_hotplug_lock.write)
-												...
-												cgroup_bpf_release:
-												P(cgroup_mutex)
-								smp_call_on_cpu:
-								Wait system_wq
-
-cpuset_css_offline:
-P(cpu_hotplug_lock.read)
-
-WatchDog is waitting for system_wq, who is waitting for cgroup_mutex, to finish
-the jobs, but the owner of the cgroup_mutex is waitting for cpu_hotplug_lock.
-The key point is the cpu_hotplug_lock, cause the system_wq may be waitting other
-lock. It seems unhealthy to hold a lock when waitting system_wq, because we
-never know what jobs are system_wq doing. So I fix this by replace cpu_read_lock/unlock
-with cpu_hotplug_disable/enable to prevent cpu offline/online.
-
-Fixes: e31d6883f21c ("watchdog/core, powerpc: Lock cpus across reconfiguration")
-
-Signed-off-by: Luo Gengkun <luogengkun@huaweicloud.com>
----
- kernel/watchdog.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
-
-diff --git a/kernel/watchdog.c b/kernel/watchdog.c
-index 51915b44ac73..6ac6fb8d3be0 100644
---- a/kernel/watchdog.c
-+++ b/kernel/watchdog.c
-@@ -867,7 +867,7 @@ int lockup_detector_offline_cpu(unsigned int cpu)
- 
- static void __lockup_detector_reconfigure(void)
- {
--	cpus_read_lock();
-+	cpu_hotplug_disable();
- 	watchdog_hardlockup_stop();
- 
- 	softlockup_stop_all();
-@@ -877,7 +877,7 @@ static void __lockup_detector_reconfigure(void)
- 		softlockup_start_all();
- 
- 	watchdog_hardlockup_start();
--	cpus_read_unlock();
-+	cpu_hotplug_enable();
- 	/*
- 	 * Must be called outside the cpus locked section to prevent
- 	 * recursive locking in the perf code.
-@@ -916,11 +916,11 @@ static __init void lockup_detector_setup(void)
- #else /* CONFIG_SOFTLOCKUP_DETECTOR */
- static void __lockup_detector_reconfigure(void)
- {
--	cpus_read_lock();
-+	cpu_hotplug_disable();
- 	watchdog_hardlockup_stop();
- 	lockup_detector_update_enable();
- 	watchdog_hardlockup_start();
--	cpus_read_unlock();
-+	cpu_hotplug_enable();
- }
- void lockup_detector_reconfigure(void)
- {
--- 
-2.34.1
-
+Not really.
+Allocating vars in different order within a section is fine,
+but compilers are not allowed to reorder fields within structs.
+There is a plugin for gcc that allows opt-in via
+__attribute__((randomize_layout)).
+But never by default.
 
