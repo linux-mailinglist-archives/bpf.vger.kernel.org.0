@@ -1,139 +1,92 @@
-Return-Path: <bpf+bounces-31477-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-31478-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id BED6D8FDC54
-	for <lists+bpf@lfdr.de>; Thu,  6 Jun 2024 03:48:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5911D8FDCAE
+	for <lists+bpf@lfdr.de>; Thu,  6 Jun 2024 04:20:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7829B1F24147
-	for <lists+bpf@lfdr.de>; Thu,  6 Jun 2024 01:48:54 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0B9401F24E4A
+	for <lists+bpf@lfdr.de>; Thu,  6 Jun 2024 02:20:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8BF8C17C74;
-	Thu,  6 Jun 2024 01:48:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D9558199B8;
+	Thu,  6 Jun 2024 02:20:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fpB9Z4rv"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 076CE4C97;
-	Thu,  6 Jun 2024 01:48:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E184440C;
+	Thu,  6 Jun 2024 02:20:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717638522; cv=none; b=uTQk2Uhs3KcNbD52VU6kbiP2bgZFbMzngOlDp3Ed/PE3CKunWz7akb8xBK6vAHIjYBJZvc+pFBnoL+xBozXX3nza99tG9zJSU4W0iymdrnKViOeolg18CO1xYKFc/GK/FH8XbSToGcsLdGXM68gr7aMe/jkBtF+/FbC5P3k0WPY=
+	t=1717640439; cv=none; b=mndahq1ORhlYDrFo5W1cFnZJ1RZeDvBl1kkdmFksrkaFoxEMeqgAm5cgLjM6R07eF3gec7q4eTRe829Prmba0BOy7fpGCJF1erJ/HXtolBiXAWPSJCbTJW0/dlggWaW6Sbx3Ei+GYxP/a2SQf0tpiVp4dy6SHp8Nv4ExbD2dEvU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717638522; c=relaxed/simple;
-	bh=JLj70tGrmcNhj18kACZpvaoJfW48fvOe3MQyZNPDPeE=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=Cllq2OdNeW3Ym6PnXmzSH1VjqRO6l4E7G3UqFPCDh3w3DyVYEE/EYK4sDmOgjZfnxp6bLinMME5Dxth3zPo9/5sKf6egcjwqHrUuA4cuT57AlPzlWHp70cml1TLnMRB/MuIXbubRug7u+E+xKSBcgdMyFistNM+7MQlwp0JzJxo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8074FC32786;
-	Thu,  6 Jun 2024 01:48:34 +0000 (UTC)
-Date: Wed, 5 Jun 2024 21:48:37 -0400
-From: Steven Rostedt <rostedt@goodmis.org>
-To: Mina Almasry <almasrymina@google.com>
-Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-doc@vger.kernel.org, linux-alpha@vger.kernel.org,
- linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
- sparclinux@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
- linux-arch@vger.kernel.org, bpf@vger.kernel.org,
- linux-kselftest@vger.kernel.org, linux-media@vger.kernel.org,
- dri-devel@lists.freedesktop.org, "David S. Miller" <davem@davemloft.net>,
- Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo
- Abeni <pabeni@redhat.com>, Donald Hunter <donald.hunter@gmail.com>,
- Jonathan Corbet <corbet@lwn.net>, Richard Henderson
- <richard.henderson@linaro.org>, Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
- Matt Turner <mattst88@gmail.com>, Thomas Bogendoerfer
- <tsbogend@alpha.franken.de>, "James E.J. Bottomley"
- <James.Bottomley@HansenPartnership.com>, Helge Deller <deller@gmx.de>,
- Andreas Larsson <andreas@gaisler.com>, Jesper Dangaard Brouer
- <hawk@kernel.org>, Ilias Apalodimas <ilias.apalodimas@linaro.org>, Masami
- Hiramatsu <mhiramat@kernel.org>, Mathieu Desnoyers
- <mathieu.desnoyers@efficios.com>, Arnd Bergmann <arnd@arndb.de>, Alexei
- Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau
- <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu
- <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, John Fastabend
- <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, Stanislav
- Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa
- <jolsa@kernel.org>, Steffen Klassert <steffen.klassert@secunet.com>,
- Herbert Xu <herbert@gondor.apana.org.au>, David Ahern <dsahern@kernel.org>,
- Willem de Bruijn <willemdebruijn.kernel@gmail.com>, Shuah Khan
- <shuah@kernel.org>, Sumit Semwal <sumit.semwal@linaro.org>, "Christian
- =?UTF-8?B?S8O2bmln?=" <christian.koenig@amd.com>, Pavel Begunkov
- <asml.silence@gmail.com>, David Wei <dw@davidwei.uk>, Jason Gunthorpe
- <jgg@ziepe.ca>, Yunsheng Lin <linyunsheng@huawei.com>, Shailend Chand
- <shailend@google.com>, Harshitha Ramamurthy <hramamurthy@google.com>,
- Shakeel Butt <shakeel.butt@linux.dev>, Jeroen de Borst
- <jeroendb@google.com>, Praveen Kaligineedi <pkaligineedi@google.com>,
- linux-mm@kvack.org, Matthew Wilcox <willy@infradead.org>
-Subject: Re: [PATCH net-next v10 06/14] page_pool: convert to use netmem
-Message-ID: <20240605214837.44efcc6f@gandalf.local.home>
-In-Reply-To: <20240530201616.1316526-7-almasrymina@google.com>
-References: <20240530201616.1316526-1-almasrymina@google.com>
-	<20240530201616.1316526-7-almasrymina@google.com>
-X-Mailer: Claws Mail 3.20.0git84 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1717640439; c=relaxed/simple;
+	bh=yVM4UXYryD6+xTiJNedfKfni5JiHi3Zy13HliZUP5wA=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=av6Ndd9M5D1NJtKPOvIF+N7ABva5jNO/XV5Oe9TOKoYKsKI9i3lHrb6+JL/2Kcy5DGXE58pd/U/O6XFyGfECOQVTctRLwXVaeJM4jic64DxrM+7MS7AUZ9KB3/HidaY804++CrbRLyz9qpbFqkYbzf+gjlUS9tuwZQlOgGuaDg8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fpB9Z4rv; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 1C3D9C4AF11;
+	Thu,  6 Jun 2024 02:20:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1717640439;
+	bh=yVM4UXYryD6+xTiJNedfKfni5JiHi3Zy13HliZUP5wA=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=fpB9Z4rvACyJH1iAZsKR2+6IZ6+iDAzRQHrr3c3jQ5zutTmzSEAygcEqz1sbj/Edo
+	 w7+VCCEEZiLgEiJORLNNa9qjLXKCVd0pr1dnoMyRLNZ1ohrapIeSian6WzxwoJ9+UX
+	 /BkSdzK+Alx0ZCCWMcmYUQ1MFTyZKzMMT4tSGX3CjXB/hoW/UABOwXBElRAzOthIKs
+	 +zJmmdkvzjGphVarW7rFXbEVeLBKBEca2MG1dok0mGiF+d/znlZbLAwnC7Upsxnm92
+	 g4aDJTVX7wWPgQWOHC4rMz0515eydX4mE02cvhtUVapciSoFHfzaT+NwzpsEomghZ1
+	 D48pVaSKIpIRA==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id F2C1FD3E997;
+	Thu,  6 Jun 2024 02:20:38 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Subject: Re: pull-request: bpf 2024-06-05
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <171764043898.18622.17549557515869733799.git-patchwork-notify@kernel.org>
+Date: Thu, 06 Jun 2024 02:20:38 +0000
+References: <20240605091525.22628-1-daniel@iogearbox.net>
+In-Reply-To: <20240605091525.22628-1-daniel@iogearbox.net>
+To: Daniel Borkmann <daniel@iogearbox.net>
+Cc: davem@davemloft.net, kuba@kernel.org, pabeni@redhat.com,
+ edumazet@google.com, ast@kernel.org, andrii@kernel.org, martin.lau@linux.dev,
+ netdev@vger.kernel.org, bpf@vger.kernel.org
 
-On Thu, 30 May 2024 20:16:05 +0000
-Mina Almasry <almasrymina@google.com> wrote:
+Hello:
 
-> @@ -42,51 +42,52 @@ TRACE_EVENT(page_pool_release,
->  TRACE_EVENT(page_pool_state_release,
->  
->  	TP_PROTO(const struct page_pool *pool,
-> -		 const struct page *page, u32 release),
-> +		 netmem_ref netmem, u32 release),
->  
-> -	TP_ARGS(pool, page, release),
-> +	TP_ARGS(pool, netmem, release),
->  
->  	TP_STRUCT__entry(
->  		__field(const struct page_pool *,	pool)
-> -		__field(const struct page *,		page)
-> +		__field(netmem_ref,			netmem)
+This pull request was applied to netdev/net.git (main)
+by Jakub Kicinski <kuba@kernel.org>:
 
-Why make this of type "netmem_ref" and not just "unsigned long"?
+On Wed,  5 Jun 2024 11:15:25 +0200 you wrote:
+> Hi David, hi Jakub, hi Paolo, hi Eric,
+> 
+> The following pull-request contains BPF updates for your *net* tree.
+> 
+> We've added 8 non-merge commits during the last 6 day(s) which contain
+> a total of 9 files changed, 34 insertions(+), 35 deletions(-).
+> 
+> [...]
 
->  		__field(u32,				release)
->  		__field(unsigned long,			pfn)
->  	),
->  
->  	TP_fast_assign(
->  		__entry->pool		= pool;
-> -		__entry->page		= page;
-> +		__entry->netmem		= netmem;
+Here is the summary with links:
+  - pull-request: bpf 2024-06-05
+    https://git.kernel.org/netdev/net/c/886bf9172da0
 
-You could have this be:
-
-		__entry->netmem		= (__force unsigned long)netmem;
-
->  		__entry->release	= release;
-> -		__entry->pfn		= page_to_pfn(page);
-> +		__entry->pfn		= netmem_to_pfn(netmem);
->  	),
->  
-> -	TP_printk("page_pool=%p page=%p pfn=0x%lx release=%u",
-> -		  __entry->pool, __entry->page, __entry->pfn, __entry->release)
-> +	TP_printk("page_pool=%p netmem=%lu pfn=0x%lx release=%u",
-> +		  __entry->pool, (__force unsigned long)__entry->netmem,
-
-And not have to expose the above text to user space (look at the format
-file it produces).
-
-It being of type "netmem_ref" in the ring buffer is useless.
-
--- Steve
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
 
-> +		  __entry->pfn, __entry->release)
->  );
->  
 
