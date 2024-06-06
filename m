@@ -1,357 +1,215 @@
-Return-Path: <bpf+bounces-31496-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-31497-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 864DA8FE6CA
-	for <lists+bpf@lfdr.de>; Thu,  6 Jun 2024 14:47:36 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id EA4F48FE7CC
+	for <lists+bpf@lfdr.de>; Thu,  6 Jun 2024 15:31:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E48E8287957
-	for <lists+bpf@lfdr.de>; Thu,  6 Jun 2024 12:47:34 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 61BCF1F25053
+	for <lists+bpf@lfdr.de>; Thu,  6 Jun 2024 13:31:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 963FC195B2E;
-	Thu,  6 Jun 2024 12:47:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1FD52195B2D;
+	Thu,  6 Jun 2024 13:30:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UKDAigZF"
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="b1i7OFFd";
+	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="MihG8wZ6"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-lf1-f46.google.com (mail-lf1-f46.google.com [209.85.167.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C2ED4DA14;
-	Thu,  6 Jun 2024 12:47:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.46
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717678049; cv=none; b=gt1G+Ejt+2fkljo9PjWgz+7fuyCsL8FWcnGC9H806JiG6Zo5dwOECkibJx+7K4eELQmKs/UKNVHt3yEBl18ouAdMbJEfATB/QD21DuE5Sc6yYVK9gc85Np2sc4xD3S3O/oeNB5j/qnd54mYWkjIsm/bC8iyv2VZOjy2SG9/UtFU=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717678049; c=relaxed/simple;
-	bh=fSk/ljlzHn1foPsH+rrjOpGgLZG7oGfhsN6GWAdnAQk=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=rI1iX8UIBKxBc+wIP9GflI+tWlxZ75YCs++OwR49AgnqBSTuwIgjAlpzW6Gxv4h9qrIrHOxbJx+2w1WMaQMa4vhVRlH5sjHWXdQwwORFTGxW+l0jbfmQasUZ70kh/d7MTiI8iwWQBGUMl9X+9PxJzlvh4tkKBCv+p6qeX3lBzxQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=UKDAigZF; arc=none smtp.client-ip=209.85.167.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f46.google.com with SMTP id 2adb3069b0e04-52b8e0e98adso1396572e87.0;
-        Thu, 06 Jun 2024 05:47:26 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD8C715FA7D
+	for <bpf@vger.kernel.org>; Thu,  6 Jun 2024 13:30:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.165.32
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1717680648; cv=fail; b=JN4vUxoRksJvRFxWHoU1L1Wh2Aes0k63R9u0o/tcOCyfF/5/7Sror7T49vAS0HjasR6gtL/k5oY3EDtJDMmeXi7nn9T4hMZrxRCZOEbrgbmtt+ZKOY+mJCwi53Mhfm6Qgln+bTZSFlawHj3Cnio67NDKzd8epz5LrOq8ptiY5qM=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1717680648; c=relaxed/simple;
+	bh=GJRi0zC0wQR9KmaJl2lygPAy/Tos6SsOOcGD8HSUZX4=;
+	h=From:To:Cc:Subject:Date:Message-Id:Content-Type:MIME-Version; b=F7m/hdZEM+QMOOabn0cjQ78ZzwBMmgiuVz7elY2SPYwfU0U03oIlvdSg5RHaR61GsDnaDP+rpUAvoknEOUj/N99LK/vE7iOobwYptFwmASZtF6T4t/rcMntZ3GLzP8+GOwXnWQXuSxppC4955UiLv6ccXXOnHCJbufqJRaQIW48=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=b1i7OFFd; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=MihG8wZ6; arc=fail smtp.client-ip=205.220.165.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=oracle.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
+Received: from pps.filterd (m0246617.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 4568iMlW016291
+	for <bpf@vger.kernel.org>; Thu, 6 Jun 2024 13:30:46 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=cc :
+ content-transfer-encoding : content-type : date : from : message-id :
+ mime-version : subject : to; s=corp-2023-11-20;
+ bh=7iBFjfCpgcMz5+5J6ng0HkJTobx/ZYypp0X78em9nXY=;
+ b=b1i7OFFdBPVrNcK7DRfl9WW/3wuazt3mBQC+h6wRK7IBA5k8DJidoj2cNk2RzIHCUAmX
+ XqLiCfFteL0Qhh0eAIAwlY+ibEfIz9xPzknIAIqxIsOtPYXNyUDl6euZDx+HE0LgzFOu
+ ZOPkcLFyPw1SFtQhiPqKAj/EPxyFqE2uUToP8ha0VZnJPfBIwnZKQfsLULKp7bjvOAVc
+ bIHhvGwq4pZb3SvhgXuzW3skkCOAH/asUdumN3MKB4oGqmSL+vkpMiH9H7vBvQkvzrsC
+ DNx6xjpIaaqMbdOvHbSjUwl8I98sLHODMKhYYuvdxpAYtV2OTE4atajY6ELU/8WWQGWQ 1A== 
+Received: from iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta03.appoci.oracle.com [130.35.103.27])
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3yjbrhbhcu-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK)
+	for <bpf@vger.kernel.org>; Thu, 06 Jun 2024 13:30:45 +0000
+Received: from pps.filterd (iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+	by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 456CjRDD023970
+	for <bpf@vger.kernel.org>; Thu, 6 Jun 2024 13:30:44 GMT
+Received: from nam04-mw2-obe.outbound.protection.outlook.com (mail-mw2nam04lp2168.outbound.protection.outlook.com [104.47.73.168])
+	by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3ygrr0trcb-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK)
+	for <bpf@vger.kernel.org>; Thu, 06 Jun 2024 13:30:44 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=FF0hShi9yxvo7n8Nuuz/0k4QKhRG3tXbowvlz5sSJSLRI5gABviMylCbNqn69J+4Dbsh2e83KVH4N9iwDjBQkuAJ08j3Mq+/YSUGsHLIQi+wjXtcu0oHQhUdxVGn3XAPrROnNvJIoe0mDn2qYfbyAYv9m6D1mB24Yhp9O2SCHgjXwe2SQ1OK5nZ6K8vmSpVVKwxydE762B0Y0xr5ryp1zCO0l7KZSk4FZAJZsuslDes8xdYcdLOw8V9uDvlW+x7OxWHnrk9dTUsaFJUW5KLeGWDpm+CnM3Pr554ThkTpFhfF6FYn5UAFM3fGiCQL9l7dqFKfD5EcMQIZBtCFz3uUfw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=7iBFjfCpgcMz5+5J6ng0HkJTobx/ZYypp0X78em9nXY=;
+ b=IkfBfn8fkX8AceTU+WUaR0RsRT76rghLJZXa1S3ujnBge96xQOWZzN3VBWATDrD+7jUvlvmPaf5HPh2WlFQ/9SVGWd46euFWgp9Zy5qoNaUqsu302nA8vWky/Iu3EtAPAO+GgjK1s99mRvaHidx1QlMrVt8qT4v+KljX25cREB/UiqRZqhKIYp6QjUQJE0NxBmIYVGYMSQY42h/THYM6v0n9PGiqJATZVmyvcLDdfqcWBsyby1My0VD/i2qSp40CWLBWdr82Ggfb1qDPYlGbtaIYG90vb4DAHji4+HvfMvfC2o+WjMzJoZTFDfbmvyMfnG2bQ1yA3bMU1fEh5eBQZg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1717678045; x=1718282845; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=3hlmSScBkyOgE/ClUMUHzvXRvwtKju8trRrqct5BWMw=;
-        b=UKDAigZFV4rlfifefli0x75Dcl+JMy4h+pgX3PwBEouZKAlyYRMNUAlwXgg2EhNrhp
-         /eD4RYw/T+UXS0ZFvpam7Tv10Usfj9G+PsTwxEJaXp+mgt91myz4/rp6K67pHH//1GN1
-         Era50WSxn4CY3o/U/q4qCA632s8MBCQq7ad5kQS/vQoK+sHvgsjaDpsh3Fu3kEWBs+E5
-         YK6OV6x19Y79sTiO70VFh3oGtgX3xFVvPZGkkz4HoXyLqXXgCrobM4nxYYBl4kvjWBfq
-         YT30AFNV5MPxsM2hAOUl966yfNGncY/IuJHd9ju+oHwV8UdEXz8bkAEYnKM/EAIqn1KZ
-         Bw1w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1717678045; x=1718282845;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=3hlmSScBkyOgE/ClUMUHzvXRvwtKju8trRrqct5BWMw=;
-        b=Ns+5I/oBvINoCqJXJ9yVGUw9EngVb7hQSVdHijK0fQSBeyiqLfpHQwXCJcjmt45d8K
-         ow5sE4eFk35zeBHW3V5aT65hKsKevqJ1YVMfHSL+t5Wo4lc8SFdQ/9lwv7UMd/pInUs3
-         olxIbUCdvwWiVgbKcPdX/HwyQiEPF7L+WtRR1/3AYbcRcwSeV4jJ16EgBby969v84A8l
-         GbTNYhKcbF31AMT/mjD0PSeYbeAfeqeu1ZPmVFUq7klTaqstdf0e3oXWph6KqPbOyIU/
-         t8tWMwmlnuSpve3qHCooqAaz7hWNNv46FzVpB+XKuvP0Ik31xfyn1tXjSBvGvdshVeif
-         5iaw==
-X-Forwarded-Encrypted: i=1; AJvYcCW4jciRnDQq1FqH9/Mak1UuBNvMr7vEnb+9iEqcWdGkwuG/JKw+dO4M9fh/5kn0k9zXg7wza14ySH1EZ8DJi9sqIbhAIXJCKUf7UBPNuU+/XQCUWdjcW9LshMQ/
-X-Gm-Message-State: AOJu0Ywe3nhJ4cuE+e4YxHhulKSCATfuvAdi6G8JbjIsUYVO+Kwr2vOm
-	p9Hzeey3nSoMPjQWHNGTHnJzZbtO/FjJsQhxEXwCsoDPS/KBrUVSLeOeLmdHl67yPqY2CA5rOSD
-	tjvJJNsGL9ZuZSxsAlp3ivConCmk=
-X-Google-Smtp-Source: AGHT+IHLrP3iPF3jF5KbodPvanLJEtKVj3VEmCHbG8rUnFuAmmkg/bO1WBde1k3nn8TEiGStt3CiNlm0nB5trzSFyjw=
-X-Received: by 2002:a05:6512:1110:b0:51e:f7de:d8eb with SMTP id
- 2adb3069b0e04-52bab4c8e1bmr3980181e87.10.1717678044791; Thu, 06 Jun 2024
- 05:47:24 -0700 (PDT)
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=7iBFjfCpgcMz5+5J6ng0HkJTobx/ZYypp0X78em9nXY=;
+ b=MihG8wZ6atFmpJ8VkaPiejNJK9bur2KLEPStxn/Nx/uE6GCyROtbMeaN5B1KXIYUB2I/sZJS76IsJV5buMZOidhcJgjIfV8WzxPseUJeOmjg3zhNmgQr2KyASKOb8RnnkFtey4Rz0hvG+MTHuOV+Ln42vXTKIQ2O36gVv2IaHEE=
+Received: from BY5PR10MB4371.namprd10.prod.outlook.com (2603:10b6:a03:210::10)
+ by CY8PR10MB6468.namprd10.prod.outlook.com (2603:10b6:930:60::5) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7633.21; Thu, 6 Jun
+ 2024 13:30:42 +0000
+Received: from BY5PR10MB4371.namprd10.prod.outlook.com
+ ([fe80::d2e6:4de0:fdd1:fb2c]) by BY5PR10MB4371.namprd10.prod.outlook.com
+ ([fe80::d2e6:4de0:fdd1:fb2c%7]) with mapi id 15.20.7633.033; Thu, 6 Jun 2024
+ 13:30:42 +0000
+From: Cupertino Miranda <cupertino.miranda@oracle.com>
+To: bpf@vger.kernel.org
+Cc: Cupertino Miranda <cupertino.miranda@oracle.com>
+Subject: [PATCH bpf-next v2 0/2] Regular expression support for test output matching
+Date: Thu,  6 Jun 2024 14:30:30 +0100
+Message-Id: <20240606133032.265403-1-cupertino.miranda@oracle.com>
+X-Mailer: git-send-email 2.30.2
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: AM0PR02CA0223.eurprd02.prod.outlook.com
+ (2603:10a6:20b:28f::30) To BY5PR10MB4371.namprd10.prod.outlook.com
+ (2603:10b6:a03:210::10)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CALye=_-HrFUF_Eq7SfpWZQUvBOVHx0rmsT2-O6TWgyMF-GFQ8w@mail.gmail.com>
-In-Reply-To: <CALye=_-HrFUF_Eq7SfpWZQUvBOVHx0rmsT2-O6TWgyMF-GFQ8w@mail.gmail.com>
-From: Jason Xing <kerneljasonxing@gmail.com>
-Date: Thu, 6 Jun 2024 20:46:47 +0800
-Message-ID: <CAL+tcoBByAuBj-3XK2QL5Hir_xyfKt5AFzYkjb41mreVdS2=7Q@mail.gmail.com>
-Subject: Re: Recursive locking in sockmap
-To: Vincent Whitchurch <vincent.whitchurch@datadoghq.com>
-Cc: John Fastabend <john.fastabend@gmail.com>, Jakub Sitnicki <jakub@cloudflare.com>, 
-	Jason Xing <kernelxing@tencent.com>, netdev@vger.kernel.org, bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BY5PR10MB4371:EE_|CY8PR10MB6468:EE_
+X-MS-Office365-Filtering-Correlation-Id: 586f5fe7-061d-4862-bab9-08dc862cdcb1
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230031|366007|1800799015|376005;
+X-Microsoft-Antispam-Message-Info: 
+	=?us-ascii?Q?KMOSnLOUCF0etO0SfOBwSo0c+Tp7fyHFHghEea6gxkyHh+eEJcVs3tabCz8i?=
+ =?us-ascii?Q?OaswWaECQmnvioEN3LtuMcm+BGT7PnmpPsRiWEmPUon9msgDgD/Z9AqqyS4o?=
+ =?us-ascii?Q?1IHt6fA9GNl44pcJVeqw31SOV8nAtGr5FHLV7Soz6vL93o4rkCZ6b3liNdxO?=
+ =?us-ascii?Q?A2lcz6GArwn7tcr/7dqPv291fSYzTZfXq7uvJQskCc7YP29hnJyisb6P7q3Y?=
+ =?us-ascii?Q?URDBGuBVwjLnfYzvV4+MshdAwnY1jnxQiI4BLCQ+CQ5DyI+Xk/LUQ1slycSE?=
+ =?us-ascii?Q?wiwD+gtCgzfCUtMm0wg+Wk8f/nOStYoLPJgZbYpbcawzd59YXyU/loWDuJl2?=
+ =?us-ascii?Q?Sa+qCqDf3Kll2eU0OYQ+QHIT9pxWjJYGTg+KOSy8n2iVF/EPHXXmDsFksap5?=
+ =?us-ascii?Q?Q2oXwqE6nS8HvLuSltLxO30+OOeetgfUgrD5u0zTOGJI1m4CmnFLwEsFhg8t?=
+ =?us-ascii?Q?0/hHMXDVrGTte52wBWsbfNmPEhaDBDYry+N+0wj3wdBhltXw3BvbEr/rl9P6?=
+ =?us-ascii?Q?6rn1YHqBgLd+W9Zd/pPwVLnHSJKQgJPphSGF/fCtpQyXKOEXLt1LEXuxOw3K?=
+ =?us-ascii?Q?kWR/RtGbn2q0R1lnK9tkYK3icqWHe1337LonQypKoiqK2q22VhmOPA2rfGqY?=
+ =?us-ascii?Q?puueFjm90QoF4WkSULpHW9g26xIh9/7aouwxgTQKsRdWahNrKKMb7Ufj7G0o?=
+ =?us-ascii?Q?eHdMwcseF+cHI0LR5/3/Q2W0ZMcc7atpQbIApv9SnLwRg1U2TWBZmT2H4RLD?=
+ =?us-ascii?Q?bWDz2eL3EAUdSgKZnvU3b/k/ferDkc7QBk2k5n6efPeqh0N8g4vKU0MoApeP?=
+ =?us-ascii?Q?bhDL3czre/UpXDObh0F0nG88+uhZDoOPKPzYYWVXh2heckBYtB3xqrhX4IXi?=
+ =?us-ascii?Q?9ZVGjL+62g0EPAkWNpopRYSoGZyRMXP7xdIEKh/FZ74ABBriuQ7jjnv+M+Ky?=
+ =?us-ascii?Q?rleW6YN0bJmuit94YzVTLB74yM7/hd73Jo8LvuwNHYujHF5chKstqqIcMyEp?=
+ =?us-ascii?Q?Dh8FH7akaGtpV3w7keMs3Ykw1JMH+RQnXz+Q3FYAs5R7Z4PSEerQFzxCm5Yc?=
+ =?us-ascii?Q?KLi6/AQv6PIuMM2/ic/jw0qZ5jkkoSt5oyhwce6u9hcI/nJ/UBFb8AJYbNpl?=
+ =?us-ascii?Q?qKRjNX2KOdmHk1/cDHVYG8q2OgZNib4r/gKPxxVMktmochEgpd2xV3QIwhqJ?=
+ =?us-ascii?Q?aTbJqANugmEkwoEvPlwrfwkfHxpXOXUF1XVrEH9LNUMOlRSoHTx6SnfkJk72?=
+ =?us-ascii?Q?pHg0bn0S+G8jQAGYdwOAc6hr91aKmZjF3RS+gaIk6zDTVFqccm4f88O87BxZ?=
+ =?us-ascii?Q?0mW0d7LjrfSM8wTqdKu3x+pk?=
+X-Forefront-Antispam-Report: 
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR10MB4371.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366007)(1800799015)(376005);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: 
+	=?us-ascii?Q?Lad7fOIGbEML53GGomET7bp5ZdblvpMezdOPqcKR9+0uWYVN0YKYi1xBd+fE?=
+ =?us-ascii?Q?KFMDtNPLQs7wgn70H8wSaIQhmH0I3LOvYNIWBV2EJjSJW8bI2TigGX2U7+AF?=
+ =?us-ascii?Q?4wXZowdnrT7bz5k5vC+tNVNByhcU5ywsvwCZ4+Ek7kH7K4fYhTHcoHNDVqDT?=
+ =?us-ascii?Q?gighcgVh4Uk/AwIt/Rg+pzoS+PQtcp79Y3sS4iAvUXxbnz65CHc71DS8dW/4?=
+ =?us-ascii?Q?gIj/8pPh8xUO2WaYsxb1T5wopYGHmXDUF+NrwOfH0YEFE36otDH5X/72YfzL?=
+ =?us-ascii?Q?5I+QSv9EG/ZJct/3KbkoXV3s5WgPhv9A2N3FpDsnFAD9IUHZnZ/7iWXS4nC7?=
+ =?us-ascii?Q?tX1m55EmdGh3+0oYnK4fhAI5jH5IYYcUBwopuxSHSr1tGLOam61VEHUi5qjb?=
+ =?us-ascii?Q?qwwNs4c3YeFhmXHGRxAoAuHYno0HARbCcdrsZLpW3z4Pk1KFz8wia8JisnQG?=
+ =?us-ascii?Q?6Vb91UFxxc12YSmWvdGC3Boo+JwmPEDIkbWT7o0PnWYh4jWAgMPZTxfXKWxd?=
+ =?us-ascii?Q?ojJewTCH33e4ZRS40UrFGJ2ijMbc+sq76MEu8n+YijfxXM5P26d6Qmb/G9dG?=
+ =?us-ascii?Q?1bvl2eg8B6S4o9Radg3HlO2wymivAmE24MDFO8Db9Em4gt3Mx/zjBXd2wVse?=
+ =?us-ascii?Q?49yS2ywgkAD4/D8usIi1JpGkLo3LqrzWA4kza552ascYKr5K5n6gg26L9E2B?=
+ =?us-ascii?Q?dSnignzwZ6Al9qc0WcxFwT/0VIoMp9m/bBhGTWwV66VKliZvICQbiQ6nHKlk?=
+ =?us-ascii?Q?jP2shCSpNm3st0d9HnBSZ3A4Ex7bxIjX7dWiGK9DPgkdVES1LmE/87tOnhg0?=
+ =?us-ascii?Q?ol5276CPn3QNJuJhRcKNtPD4ESN2q3JgEckZ0EpKw/HqSEpb9IBx89D0QwLq?=
+ =?us-ascii?Q?gXOqFh5COIwPliow7sbSpbTUqSMFce/0gY4hOQUIlsG2I5rr6OJEaHkXE5uF?=
+ =?us-ascii?Q?5SnCvBMxqkdFUzoJ+ZiCL0+MajSlEiE/kvG+zRivmBfKc5TJ4aDIUYkmE4zs?=
+ =?us-ascii?Q?Heq6KgfCpPMbk/FLKJJQWWqfpxdoFjdvfwHYr+OKkRxIPAenfRwRyLK5gBuP?=
+ =?us-ascii?Q?1S7PSK3bbg8JrkbtmS0cTjfgyoW8TCqgQ4XaLW/RdGPwIuvfOTQ9Jdn9wlHo?=
+ =?us-ascii?Q?PAhSSMEvYCzuue7BtG8syxllVAKK95QTVymVo8C325ZCnEqTJdnzUigOXfB8?=
+ =?us-ascii?Q?nswG1uqYEnbDG69XIUTmv2yHK480NPM+BfKiwzCaQNlcbusY498waIQKTU4I?=
+ =?us-ascii?Q?cBc/sy3JFmvYwKy9W32hhLtt7j/hpCpMyDBKtX0gzXb7zE3LVbWkc9Cv8Ffi?=
+ =?us-ascii?Q?1OZ8mXwr8IbU5wSs//Qf6ntjNOOdwvPkRvzN5SkhMMi1gLd9s0qsQ4aQQmrC?=
+ =?us-ascii?Q?wI92NUZ+WbrVk52Gu/pFMyOmUGWoIYPitg5Kk8MMuG5aBc6QsAfw4citdLw0?=
+ =?us-ascii?Q?3M2e5bqpMEO22/kDNvXk5vWsMXYtreD/AQBUViojdGiJSWkDC9GMWSjarH4y?=
+ =?us-ascii?Q?XqoNpQA9E6MvVSlczZ/CiNpnI4wY5JqzmVIdURaGQ5JWw9fNKRioRVwot5ZH?=
+ =?us-ascii?Q?lz22aXAOFxPgTdWgfSxys4dU1RZkIJcroJzB+38njMPaGjVO9pI1yOB3p2li?=
+ =?us-ascii?Q?9t96G4jGbPVj4Bd20qhL/7g=3D?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: 
+	WHDTXMbKpn0Qm+Iv/owaIqLokOuqwCKfsBO3Y1+UxXzxfXwGPQa7fk0ns1LKPOTBKaqGYNhe6wOdp4GWbrtHRvfutrJH61UkOCIVnv937J/+RV82w36HDjJHswH/aXi/V3JzQ5cyrQAAx08hQgsJAX/dzqvyRaZ9syyr8ETb1W3HTG68J788nFDNOAyLzKfmLjjso6nh5eJw5Bcbc5Evbbr6DfaFECpeJLVN7166xL/cA9GtObLh7+hprsf9qnQmWl432JhddadZi7gWJxBDjc+2m7qKNZgYFmuf+S570DDfIbZr6zJR+eEIXWoG6wWJZZYqy78lJT6jHVTQYcvj/Bx03czLj5LJfViy/87xim4nnz5laRln0/1dAExj+hGRjEKyfFqQTiE6/NVdQOVFwOgVMEeNHaxvIxP+lbiIo7lT4cNkDonOi1fHX5RyDxDk3dDA4Lze8/8y85iMald4bShZo1L2i7MOqL2AOzDpehPmpnomA1RdSPg6xbgf9tzCiQtprH7NlwbyfwpdD7knZSYFAEt6vxCd0mFea9rFHZSb5Y2dAjSNOrOZjPApWM2daenfAmE0DWUxvgKcDPDTOspg9ZjUgarxaKbM1MCGMSs=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 586f5fe7-061d-4862-bab9-08dc862cdcb1
+X-MS-Exchange-CrossTenant-AuthSource: BY5PR10MB4371.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Jun 2024 13:30:42.0070
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: hIOejzn3/WIqI83Qw8m2fBiR2NAH4PONB005HZGey/c4+hYrguWadreH8+LtxopYrwbkRkgEz/aCjK2BjhqNLK/w1xd/uqZH4Td5G5gFLz0=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY8PR10MB6468
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.680,FMLib:17.12.28.16
+ definitions=2024-06-06_01,2024-06-06_02,2024-05-17_01
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 malwarescore=0 adultscore=0
+ phishscore=0 suspectscore=0 bulkscore=0 spamscore=0 mlxlogscore=999
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2405010000
+ definitions=main-2406060097
+X-Proofpoint-GUID: BrQkC-EnKLbWVXw_FYlZycRle66o5KuP
+X-Proofpoint-ORIG-GUID: BrQkC-EnKLbWVXw_FYlZycRle66o5KuP
 
-Hello Vincent,
+Hi everyone,
 
-On Thu, Jun 6, 2024 at 6:00=E2=80=AFPM Vincent Whitchurch
-<vincent.whitchurch@datadoghq.com> wrote:
->
-> With a socket in the sockmap, if there's a parser callback installed
-> and the verdict callback returns SK_PASS, the kernel deadlocks
-> immediately after the verdict callback is run. This started at commit
-> 6648e613226e18897231ab5e42ffc29e63fa3365 ("bpf, skmsg: Fix NULL
-> pointer dereference in sk_psock_skb_ingress_enqueue").
->
-> It can be reproduced by running ./test_sockmap -t ping
-> --txmsg_pass_skb.  The --txmsg_pass_skb command to test_sockmap is
-> available in this series:
-> https://lore.kernel.org/netdev/20240606-sockmap-splice-v1-0-4820a2ab14b5@=
-datadoghq.com/.
+This is v2 on the regular expression for test output matching patches.
 
-Thanks for your report.
+I believe I improved it beyond the precise requests from Andrii and
+Eduard.  Hope that this version improves on all aspects requested in the
+reviews and fixes all pending nits.
 
-I don't have time right now to look into this issue carefully until
-this weekend. BTW, did you mean the patch [2/5] in the link that can
-solve the problem?
+Tested with bpf-next selftests with no regressions.
 
-Thanks,
-Jason
+Looking forward to your reviews.
 
->
-> Lockdep splat below (also attached in case it gets damaged). This is
-> from an unmodified 6.10.0-rc2, but the problem also exists on latest
-> mainline and net-next.
->
->  =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
->  WARNING: possible recursive locking detected
->  6.10.0-rc2 #59 Not tainted
->  --------------------------------------------
->  test_sockmap/342 is trying to acquire lock:
->  ffff888007a87228 (clock-AF_INET){++--}-{2:2}, at:
-> sk_psock_skb_ingress_enqueue (./include/linux/skmsg.h:467
-> net/core/skmsg.c:555)
->
->  but task is already holding lock:
->  ffff888007a87228 (clock-AF_INET){++--}-{2:2}, at:
-> sk_psock_strp_data_ready (net/core/skmsg.c:1120)
->
->  other info that might help us debug this:
->   Possible unsafe locking scenario:
->
->         CPU0
->         ----
->    lock(clock-AF_INET);
->    lock(clock-AF_INET);
->
->   *** DEADLOCK ***
->
->   May be due to missing lock nesting notation
->
->  9 locks held by test_sockmap/342:
->  #0: ffff888007a85818 (sk_lock-AF_INET){+.+.}-{0:0}, at: tcp_sendmsg
-> (net/ipv4/tcp.c:1348)
->  #1: ffffffffb8849c00 (rcu_read_lock){....}-{1:2}, at: __ip_queue_xmit
-> (./include/linux/rcupdate.h:329 ./include/linux/rcupdate.h:781
-> net/ipv4/ip_output.c:470)
->  #2: ffffffffb8849c00 (rcu_read_lock){....}-{1:2}, at:
-> ip_finish_output2 (./include/linux/rcupdate.h:329
-> ./include/linux/rcupdate.h:781 net/ipv4/ip_output.c:228)
->  #3: ffffffffb8849c00 (rcu_read_lock){....}-{1:2}, at: process_backlog
-> (./include/linux/rcupdate.h:329 ./include/linux/rcupdate.h:781
-> net/core/dev.c:6066)
->  #4: ffffffffb8849c00 (rcu_read_lock){....}-{1:2}, at:
-> ip_local_deliver_finish (./include/linux/rcupdate.h:329
-> ./include/linux/rcupdate.h:781 net/ipv4/ip_input.c:232)
->  #5: ffff888007a87018 (slock-AF_INET/1){+.-.}-{2:2}, at: tcp_v4_rcv
-> (./include/linux/skbuff.h:1640 ./include/net/tcp.h:2510
-> net/ipv4/tcp_ipv4.c:2342)
->  #6: ffffffffb8849c00 (rcu_read_lock){....}-{1:2}, at:
-> sk_psock_strp_data_ready (./include/linux/rcupdate.h:329
-> ./include/linux/rcupdate.h:781 net/core/skmsg.c:1113)
->  #7: ffff888007a87228 (clock-AF_INET){++--}-{2:2}, at:
-> sk_psock_strp_data_ready (net/core/skmsg.c:1120)
->  #8: ffffffffb8849c00 (rcu_read_lock){....}-{1:2}, at:
-> sk_psock_strp_read (./include/linux/rcupdate.h:329
-> ./include/linux/rcupdate.h:781 net/core/skmsg.c:1062)
->
->  stack backtrace:
->  CPU: 0 PID: 342 Comm: test_sockmap Not tainted 6.10.0-rc2 #59
->  Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.15.0-1 04/=
-01/2014
->  Call Trace:
->    <IRQ>
->   dump_stack_lvl (lib/dump_stack.c:118)
->   __lock_acquire (kernel/locking/lockdep.c:3858 kernel/locking/lockdep.c:=
-5137)
->   ? __pfx___lock_acquire (kernel/locking/lockdep.c:4993)
->   ? tcp_rcv_established (./include/linux/skbuff.h:2097
-> ./include/net/tcp.h:2026 ./include/net/tcp.h:2099
-> net/ipv4/tcp_input.c:5660 net/ipv4/tcp_input.c:6179)
->   ? tcp_v4_rcv (net/ipv4/tcp_ipv4.c:2345)
->   ? ip_protocol_deliver_rcu (net/ipv4/ip_input.c:207 (discriminator 8))
->   ? ip_local_deliver_finish (./include/linux/rcupdate.h:810
-> net/ipv4/ip_input.c:234)
->   ? __pfx_mark_lock (kernel/locking/lockdep.c:4639)
->   lock_acquire (kernel/locking/lockdep.c:467
-> kernel/locking/lockdep.c:5756 kernel/locking/lockdep.c:5719)
->   ? sk_psock_skb_ingress_enqueue (./include/linux/skmsg.h:467
-> net/core/skmsg.c:555)
->   ? __pfx_lock_acquire (kernel/locking/lockdep.c:5722)
->   ? __pfx_lock_release (kernel/locking/lockdep.c:5762)
->   ? mark_held_locks (kernel/locking/lockdep.c:4274)
->   ? sk_psock_skb_ingress_enqueue (./include/linux/skmsg.h:466
-> net/core/skmsg.c:555)
->   _raw_read_lock_bh (./include/linux/rwlock_api_smp.h:177
-> kernel/locking/spinlock.c:252)
->   ? sk_psock_skb_ingress_enqueue (./include/linux/skmsg.h:467
-> net/core/skmsg.c:555)
->   sk_psock_skb_ingress_enqueue (./include/linux/skmsg.h:467
-> net/core/skmsg.c:555)
->   sk_psock_skb_ingress_self (net/core/skmsg.c:607)
->   sk_psock_verdict_apply (net/core/skmsg.c:1008)
->   sk_psock_strp_read (./include/linux/rcupdate.h:810 net/core/skmsg.c:108=
-1)
->   ? sk_psock_strp_parse (net/core/skmsg.c:1104)
->   __strp_recv (net/strparser/strparser.c:301 (discriminator 3))
->   tcp_read_sock (net/ipv4/tcp.c:1583)
->   ? __pfx_strp_recv (net/strparser/strparser.c:332)
->   ? __pfx_tcp_read_sock (net/ipv4/tcp.c:1560)
->   ? lock_acquire (kernel/locking/lockdep.c:467
-> kernel/locking/lockdep.c:5756 kernel/locking/lockdep.c:5719)
->   strp_read_sock (net/strparser/strparser.c:358)
->   ? __pfx_strp_read_sock (net/strparser/strparser.c:346)
->   ? __pfx_do_raw_write_lock (kernel/locking/spinlock_debug.c:209)
->   ? lock_is_held_type (kernel/locking/lockdep.c:467
-> kernel/locking/lockdep.c:5826)
->   strp_data_ready (net/strparser/strparser.c:388 net/strparser/strparser.=
-c:366)
->   sk_psock_strp_data_ready (net/core/skmsg.c:1121)
->   tcp_data_queue (net/ipv4/tcp_input.c:5234)
->   ? lock_release (kernel/locking/lockdep.c:467 kernel/locking/lockdep.c:5=
-776)
->   ? __pfx_tcp_data_queue (net/ipv4/tcp_input.c:5148)
->   ? __pfx_tcp_urg (net/ipv4/tcp_input.c:5820)
->   ? lockdep_hardirqs_on (kernel/locking/lockdep.c:4421)
->   ? kvm_clock_get_cycles (./arch/x86/include/asm/preempt.h:94
-> arch/x86/kernel/kvmclock.c:80 arch/x86/kernel/kvmclock.c:86)
->   ? ktime_get (kernel/time/timekeeping.c:195 (discriminator 4)
-> kernel/time/timekeeping.c:395 (discriminator 4)
-> kernel/time/timekeeping.c:403 (discriminator 4)
-> kernel/time/timekeeping.c:850 (discriminator 4))
->   tcp_rcv_established (./include/linux/skbuff.h:2097
-> ./include/net/tcp.h:2026 ./include/net/tcp.h:2099
-> net/ipv4/tcp_input.c:5660 net/ipv4/tcp_input.c:6179)
->   ? __pfx_lock_acquire (kernel/locking/lockdep.c:5722)
->   ? __pfx_tcp_inbound_hash.constprop.0 (./include/net/tcp.h:2800)
->   ? __pfx_tcp_rcv_established (net/ipv4/tcp_input.c:6006)
->   ? do_raw_spin_lock (./arch/x86/include/asm/atomic.h:107
-> ./include/linux/atomic/atomic-arch-fallback.h:2170
-> ./include/linux/atomic/atomic-instrumented.h:1302
-> ./include/asm-generic/qspinlock.h:111
-> kernel/locking/spinlock_debug.c:116)
->   tcp_v4_do_rcv (net/ipv4/tcp_ipv4.c:1956)
->   tcp_v4_rcv (net/ipv4/tcp_ipv4.c:2345)
->   ? __pfx_tcp_v4_rcv (net/ipv4/tcp_ipv4.c:2172)
->   ? __pfx_raw_local_deliver (net/ipv4/raw.c:201)
->   ? __pfx_mark_lock (kernel/locking/lockdep.c:4639)
->   ? __pfx_lock_release (kernel/locking/lockdep.c:5762)
->   ? lock_is_held_type (kernel/locking/lockdep.c:467
-> kernel/locking/lockdep.c:5826)
->   ip_protocol_deliver_rcu (net/ipv4/ip_input.c:207 (discriminator 8))
->   ip_local_deliver_finish (./include/linux/rcupdate.h:810
-> net/ipv4/ip_input.c:234)
->   ip_local_deliver (./include/linux/netfilter.h:314
-> ./include/linux/netfilter.h:308 net/ipv4/ip_input.c:254)
->   ? __pfx_ip_local_deliver (net/ipv4/ip_input.c:243)
->   ? lock_is_held_type (kernel/locking/lockdep.c:467
-> kernel/locking/lockdep.c:5826)
->   ? ip_rcv_finish_core.constprop.0 (./include/net/net_namespace.h:383
-> ./include/linux/netdevice.h:2577 net/ipv4/ip_input.c:372)
->   ip_rcv (./include/net/dst.h:460 net/ipv4/ip_input.c:449
-> ./include/linux/netfilter.h:314 ./include/linux/netfilter.h:308
-> net/ipv4/ip_input.c:569)
->   ? __pfx_ip_rcv (net/ipv4/ip_input.c:562)
->   ? lock_acquire (kernel/locking/lockdep.c:467
-> kernel/locking/lockdep.c:5756 kernel/locking/lockdep.c:5719)
->   ? lock_acquire (kernel/locking/lockdep.c:467
-> kernel/locking/lockdep.c:5756 kernel/locking/lockdep.c:5719)
->   ? __pfx_ip_rcv (net/ipv4/ip_input.c:562)
->   __netif_receive_skb_one_core (net/core/dev.c:5624 (discriminator 4))
->   ? __pfx___netif_receive_skb_one_core (net/core/dev.c:5617)
->   ? mark_held_locks (kernel/locking/lockdep.c:4274)
->   process_backlog (./include/linux/rcupdate.h:810 net/core/dev.c:6068)
->   __napi_poll.constprop.0 (net/core/dev.c:6721)
->   net_rx_action (net/core/dev.c:6792 net/core/dev.c:6906)
->   ? __pfx_net_rx_action (net/core/dev.c:6870)
->   ? __pfx_rcu_core (kernel/rcu/tree.c:2756)
->   ? mark_held_locks (kernel/locking/lockdep.c:4274)
->   ? __dev_queue_xmit (./include/linux/rcupdate.h:339
-> ./include/linux/rcupdate.h:849 net/core/dev.c:4420)
->   handle_softirqs (kernel/softirq.c:554)
->   ? __dev_queue_xmit (./include/linux/rcupdate.h:339
-> ./include/linux/rcupdate.h:849 net/core/dev.c:4420)
->   do_softirq (kernel/softirq.c:455 kernel/softirq.c:442)
->    </IRQ>
->    <TASK>
->   __local_bh_enable_ip (kernel/softirq.c:382)
->   ? __dev_queue_xmit (./include/linux/rcupdate.h:339
-> ./include/linux/rcupdate.h:849 net/core/dev.c:4420)
->   __dev_queue_xmit (net/core/dev.c:4421)
->   ? __pfx___lock_acquire (kernel/locking/lockdep.c:4993)
->   ? __pfx_mark_lock (kernel/locking/lockdep.c:4639)
->   ? __pfx___dev_queue_xmit (net/core/dev.c:4302)
->   ? find_held_lock (kernel/locking/lockdep.c:5244)
->   ? lock_release (kernel/locking/lockdep.c:467 kernel/locking/lockdep.c:5=
-776)
->   ? __pfx_lock_release (kernel/locking/lockdep.c:5762)
->   ? __pfx___lock_acquire (kernel/locking/lockdep.c:4993)
->   ? mark_held_locks (kernel/locking/lockdep.c:4274)
->   ip_finish_output2 (./include/linux/netdevice.h:3095
-> ./include/net/neighbour.h:526 ./include/net/neighbour.h:540
-> net/ipv4/ip_output.c:235)
->   ? __pfx_nf_hook (./include/linux/netfilter.h:227)
->   ? lock_acquire (kernel/locking/lockdep.c:467
-> kernel/locking/lockdep.c:5756 kernel/locking/lockdep.c:5719)
->   ? __pfx_ip_finish_output2 (net/ipv4/ip_output.c:199)
->   ? ip_skb_dst_mtu (./include/net/net_namespace.h:383
-> ./include/linux/netdevice.h:2577 ./include/net/ip.h:465
-> ./include/net/ip.h:502)
->   ? __ip_queue_xmit (net/ipv4/ip_output.c:535 (discriminator 4))
->   __ip_queue_xmit (net/ipv4/ip_output.c:535 (discriminator 4))
->   ? __skb_clone (./arch/x86/include/asm/atomic.h:53 (discriminator 4)
-> ./include/linux/atomic/atomic-arch-fallback.h:992 (discriminator 4)
-> ./include/linux/atomic/atomic-instrumented.h:436 (discriminator 4)
-> net/core/skbuff.c:1576 (discriminator 4))
->   __tcp_transmit_skb (net/ipv4/tcp_output.c:1466 (discriminator 4))
->   ? __pfx___tcp_transmit_skb (net/ipv4/tcp_output.c:1287)
->   ? lock_release (kernel/locking/lockdep.c:467 kernel/locking/lockdep.c:5=
-776)
->   ? __pfx_lock_release (kernel/locking/lockdep.c:5762)
->   ? ktime_get (./arch/x86/include/asm/irqflags.h:42
-> ./arch/x86/include/asm/irqflags.h:77
-> ./arch/x86/include/asm/irqflags.h:135 ./include/linux/seqlock.h:74
-> kernel/time/timekeeping.c:848)
->   ? lockdep_hardirqs_on (kernel/locking/lockdep.c:4421)
->   tcp_write_xmit (net/ipv4/tcp_output.c:2829)
->   ? __pfx_mem_cgroup_charge_skmem (mm/memcontrol.c:7886)
->   ? skb_page_frag_refill (net/core/sock.c:2920 net/core/sock.c:2904)
->   __tcp_push_pending_frames (net/ipv4/tcp_output.c:3014)
->   tcp_sendmsg_locked (net/ipv4/tcp.c:1316)
->   ? print_usage_bug.part.0 (kernel/locking/lockdep.c:3980)
->   ? __pfx_tcp_sendmsg_locked (net/ipv4/tcp.c:1046)
->   ? lock_release (kernel/locking/lockdep.c:467 kernel/locking/lockdep.c:5=
-776)
->   ? __local_bh_enable_ip (./arch/x86/include/asm/irqflags.h:42
-> ./arch/x86/include/asm/irqflags.h:77 kernel/softirq.c:387)
->   tcp_sendmsg (net/ipv4/tcp.c:1349)
->   __sys_sendto (net/socket.c:730 net/socket.c:745 net/socket.c:2192)
->   ? __pfx___sys_sendto (net/socket.c:2162)
->   ? lock_is_held_type (kernel/locking/lockdep.c:467
-> kernel/locking/lockdep.c:5826)
->   ? fd_install (./arch/x86/include/asm/preempt.h:103
-> ./include/linux/rcupdate.h:896 fs/file.c:631)
->   ? __sys_accept4 (./include/linux/file.h:47 net/socket.c:2002)
->   ? __pfx___sys_accept4 (net/socket.c:1994)
->   ? handle_mm_fault (./include/linux/memcontrol.h:1078
-> ./include/linux/memcontrol.h:1066 mm/memory.c:5557 mm/memory.c:5704)
->   __x64_sys_sendto (net/socket.c:2200)
->   ? do_syscall_64 (./arch/x86/include/asm/irqflags.h:42
-> ./arch/x86/include/asm/irqflags.h:77
-> ./include/linux/entry-common.h:197 arch/x86/entry/common.c:79)
->   ? lockdep_hardirqs_on (kernel/locking/lockdep.c:4421)
->   do_syscall_64 (arch/x86/entry/common.c:52 arch/x86/entry/common.c:83)
->   entry_SYSCALL_64_after_hwframe (arch/x86/entry/entry_64.S:130)
+Best regards,
+Cupertino
+
+Cupertino Miranda (2):
+  selftests/bpf: Support checks against a regular expression.
+  selftests/bpf: Match tests against regular expres
+
+ tools/testing/selftests/bpf/progs/bpf_misc.h  |  11 +-
+ .../testing/selftests/bpf/progs/dynptr_fail.c |   6 +-
+ .../testing/selftests/bpf/progs/rbtree_fail.c |   8 +-
+ .../bpf/progs/refcounted_kptr_fail.c          |   4 +-
+ .../selftests/bpf/progs/verifier_sock.c       |   4 +-
+ tools/testing/selftests/bpf/test_loader.c     | 143 ++++++++++++++----
+ 6 files changed, 132 insertions(+), 44 deletions(-)
+
+-- 
+2.39.2
+
 
