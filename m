@@ -1,73 +1,65 @@
-Return-Path: <bpf+bounces-31505-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-31506-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id ED78F8FF0B2
-	for <lists+bpf@lfdr.de>; Thu,  6 Jun 2024 17:31:59 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EDEBD8FF104
+	for <lists+bpf@lfdr.de>; Thu,  6 Jun 2024 17:44:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5DF761F26177
-	for <lists+bpf@lfdr.de>; Thu,  6 Jun 2024 15:31:59 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B4375B2905A
+	for <lists+bpf@lfdr.de>; Thu,  6 Jun 2024 15:32:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 85C31195998;
-	Thu,  6 Jun 2024 15:31:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b="ea/6DwlU"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F2E2197517;
+	Thu,  6 Jun 2024 15:32:04 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp-fw-80008.amazon.com (smtp-fw-80008.amazon.com [99.78.197.219])
+Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A52114683;
-	Thu,  6 Jun 2024 15:31:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=99.78.197.219
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0485F1667E6;
+	Thu,  6 Jun 2024 15:32:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717687911; cv=none; b=onNh5EC6BEfcgYm1/jvJpnkBBX8Dx2N1BE175dTMpxeKqGVd7bKbjl6sBXCk/l6KYc/oHzB/8Kcb973eUj3+inSBIB+GpamOQ1/7ftLgjA9+uSGegraE4SUfnarOC06grbUi6UsZ6N8AiaOammeU0iTL+iptL/v7jTm8pW/XLhY=
+	t=1717687924; cv=none; b=DSAj0ezBZF+LOCLrWQ/w9QoDoriNRIWQ9OXR+FzIieAzh934Fi0gG4QwyXl3mCtQ004P8SvFeTOnlvt3dELFil8dg9vjw/qSi3Vd9HY77Ub02YZAxdiOixY2+jhfg9GOZY9dXRzBViDgigTdR894sYeJiu5J86yl1mlPhQrWzX0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717687911; c=relaxed/simple;
-	bh=DtanzRsthCcn3+G1Cn9fimpb6JHqO6rQCVVL4tx+BEc=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=rY2eOKu6B++DBCGEHunrdwjLK6vVpyUzLg+dk2BPupvNFgipYb8mmNpTd/59mhEtOtFbfU1VLNxQT+NxvRPMmiisVsK3CZUtLvUIZrryZOjsryKnwMmo4TA0XUTDSq9J1QyF/MXxAdYYTTAHuubCfwdw6CVNr9VQJnrl3B6xTrU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com; spf=pass smtp.mailfrom=amazon.co.jp; dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b=ea/6DwlU; arc=none smtp.client-ip=99.78.197.219
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amazon.co.jp
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1717687909; x=1749223909;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=y7Y+PvGO0CQloWLoTsu6I+HdcAyeqFwEd7a0MUZvlLw=;
-  b=ea/6DwlUlpn34dmzZ5AgriF5J+eUGjr+8QT9kuYKWaKRL84WlJ73SLdJ
-   1GAOJYhBpFyGNd5IGyYKx7qj4ce3O881jp2OAMJxzUQgW4aOCq7XCZOkS
-   Op2tQBo6h+X/G69+5AOPzZYJuuKB+s0/l3NtA09PGwZEbOWZkzSeluigp
-   8=;
-X-IronPort-AV: E=Sophos;i="6.08,219,1712620800"; 
-   d="scan'208";a="94859207"
-Received: from pdx4-co-svc-p1-lb2-vlan3.amazon.com (HELO smtpout.prod.us-west-2.prod.farcaster.email.amazon.dev) ([10.25.36.214])
-  by smtp-border-fw-80008.pdx80.corp.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Jun 2024 15:31:47 +0000
-Received: from EX19MTAUWA001.ant.amazon.com [10.0.38.20:2940]
- by smtpin.naws.us-west-2.prod.farcaster.email.amazon.dev [10.0.20.12:2525] with esmtp (Farcaster)
- id 440a231d-40e0-4ddf-bfe8-fcb3c2c616ac; Thu, 6 Jun 2024 15:31:46 +0000 (UTC)
-X-Farcaster-Flow-ID: 440a231d-40e0-4ddf-bfe8-fcb3c2c616ac
-Received: from EX19D004ANA001.ant.amazon.com (10.37.240.138) by
- EX19MTAUWA001.ant.amazon.com (10.250.64.217) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1258.34; Thu, 6 Jun 2024 15:31:44 +0000
-Received: from 88665a182662.ant.amazon.com (10.106.101.18) by
- EX19D004ANA001.ant.amazon.com (10.37.240.138) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1258.34; Thu, 6 Jun 2024 15:31:42 +0000
-From: Kuniyuki Iwashima <kuniyu@amazon.com>
-To: <devnull+vincent.whitchurch.datadoghq.com@kernel.org>
-CC: <bpf@vger.kernel.org>, <jakub@cloudflare.com>, <john.fastabend@gmail.com>,
-	<netdev@vger.kernel.org>, <vincent.whitchurch@datadoghq.com>,
-	<kuniyu@amazon.com>
-Subject: Re: [PATCH bpf-next 1/5] net: Add splice_read to prot
-Date: Thu, 6 Jun 2024 08:31:33 -0700
-Message-ID: <20240606153133.68761-1-kuniyu@amazon.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20240606-sockmap-splice-v1-1-4820a2ab14b5@datadoghq.com>
-References: <20240606-sockmap-splice-v1-1-4820a2ab14b5@datadoghq.com>
+	s=arc-20240116; t=1717687924; c=relaxed/simple;
+	bh=zmNGyEPJd4agncjsLzbajet35+uF8WCH96WeoPGE/7g=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=m9P7R1IK7Z8dZcG82iTWuekiEwn+mw7nP+B+/aAAB8F0iJJAfQ5GYyMyGp/3ivxmG4NUB0OOMlL5bWt3LU0vDlrx1HTYWm7u6Gb+IgkW3mTt/nJZsDwuhrIEQ3fjMkf5uczlMMKsXLEZ2MqGZkiVg4J4xFCGbnC1BOjahqwYCa8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.235])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4Vw7bp3kldz4f3kkX;
+	Thu,  6 Jun 2024 23:31:50 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.112])
+	by mail.maildlp.com (Postfix) with ESMTP id D5B6F1A0BCC;
+	Thu,  6 Jun 2024 23:31:56 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.67.174.193])
+	by APP1 (Coremail) with SMTP id cCh0CgAX5g5j1mFmxZX2Og--.51957S4;
+	Thu, 06 Jun 2024 23:31:48 +0800 (CST)
+From: Luo Gengkun <luogengkun@huaweicloud.com>
+To: linux-kernel@vger.kernel.org
+Cc: mpe@ellerman.id.au,
+	npiggin@gmail.com,
+	christophe.leroy@csgroup.eu,
+	naveen.n.rao@linux.ibm.com,
+	akpm@linux-foundation.org,
+	trix@redhat.com,
+	dianders@chromium.org,
+	luogengkun@huaweicloud.com,
+	mhocko@suse.com,
+	pmladek@suse.com,
+	kernelfans@gmail.com,
+	lecopzer.chen@mediatek.com,
+	song@kernel.org,
+	yaoma@linux.alibaba.com,
+	tglx@linutronix.de,
+	linuxppc-dev@lists.ozlabs.org,
+	bpf@vger.kernel.org
+Subject: [PATCH] watchdog/core: Fix AA deadlock due to watchdog holding cpu_hotplug_lock and wait for wq
+Date: Thu,  6 Jun 2024 15:38:28 +0000
+Message-Id: <20240606153828.3261006-1-luogengkun@huaweicloud.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -75,99 +67,101 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: EX19D038UWB004.ant.amazon.com (10.13.139.177) To
- EX19D004ANA001.ant.amazon.com (10.37.240.138)
+X-CM-TRANSID:cCh0CgAX5g5j1mFmxZX2Og--.51957S4
+X-Coremail-Antispam: 1UD129KBjvJXoW7Ww18tF4ktFyDAry8Kry8Xwb_yoW8tF1rpr
+	9rZryUtw1UuF1vvayft39xWFy8uayvgr47Ja1DGw1SkF1rCFs8Zrnakr1aqrZ8ZrZxuF1j
+	9w12vFWYqa4UtF7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUv014x267AKxVW5JVWrJwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+	1l84ACjcxK6xIIjxv20xvE14v26ryj6F1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4j
+	6r4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
+	Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
+	I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r
+	4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628v
+	n2kIc2xKxwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F4
+	0E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_GFv_Wryl
+	IxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxV
+	AFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAFwI0_
+	Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7VUb
+	QVy7UUUUU==
+X-CM-SenderInfo: 5oxrwvpqjn3046kxt4xhlfz01xgou0bp/
 
-From: Vincent Whitchurch via B4 Relay <devnull+vincent.whitchurch.datadoghq.com@kernel.org>
-Date: Thu, 06 Jun 2024 11:27:52 +0200
-> From: Vincent Whitchurch <vincent.whitchurch@datadoghq.com>
-> 
-> The TCP BPF code will need to override splice_read(), so add it to prot.
-> 
-> Signed-off-by: Vincent Whitchurch <vincent.whitchurch@datadoghq.com>
-> ---
->  include/net/inet_common.h |  3 +++
->  include/net/sock.h        |  3 +++
->  net/ipv4/af_inet.c        | 18 +++++++++++++++++-
->  net/ipv4/tcp_ipv4.c       |  1 +
->  net/ipv6/af_inet6.c       |  2 +-
->  net/ipv6/tcp_ipv6.c       |  1 +
->  6 files changed, 26 insertions(+), 2 deletions(-)
-> 
-> diff --git a/include/net/inet_common.h b/include/net/inet_common.h
-> index c17a6585d0b0..2a6480d0d575 100644
-> --- a/include/net/inet_common.h
-> +++ b/include/net/inet_common.h
-> @@ -35,6 +35,9 @@ void __inet_accept(struct socket *sock, struct socket *newsock,
->  		   struct sock *newsk);
->  int inet_send_prepare(struct sock *sk);
->  int inet_sendmsg(struct socket *sock, struct msghdr *msg, size_t size);
-> +ssize_t inet_splice_read(struct socket *sk, loff_t *ppos,
-> +			 struct pipe_inode_info *pipe, size_t len,
-> +			 unsigned int flags);
->  void inet_splice_eof(struct socket *sock);
->  int inet_recvmsg(struct socket *sock, struct msghdr *msg, size_t size,
->  		 int flags);
-> diff --git a/include/net/sock.h b/include/net/sock.h
-> index 5f4d0629348f..a152552a64a5 100644
-> --- a/include/net/sock.h
-> +++ b/include/net/sock.h
-> @@ -1238,6 +1238,9 @@ struct proto {
->  					   size_t len);
->  	int			(*recvmsg)(struct sock *sk, struct msghdr *msg,
->  					   size_t len, int flags, int *addr_len);
-> +	ssize_t			(*splice_read)(struct socket *sock,  loff_t *ppos,
-> +					       struct pipe_inode_info *pipe, size_t len,
-> +					       unsigned int flags);
->  	void			(*splice_eof)(struct socket *sock);
->  	int			(*bind)(struct sock *sk,
->  					struct sockaddr *addr, int addr_len);
-> diff --git a/net/ipv4/af_inet.c b/net/ipv4/af_inet.c
-> index e03ba4a21c39..c9a23296ac82 100644
-> --- a/net/ipv4/af_inet.c
-> +++ b/net/ipv4/af_inet.c
-> @@ -870,6 +870,21 @@ void inet_splice_eof(struct socket *sock)
->  }
->  EXPORT_SYMBOL_GPL(inet_splice_eof);
->  
-> +ssize_t inet_splice_read(struct socket *sock, loff_t *ppos,
-> +			 struct pipe_inode_info *pipe, size_t len,
-> +			 unsigned int flags)
-> +{
-> +	const struct proto *prot;
-> +	struct sock *sk = sock->sk;
-> +
-> +	prot = READ_ONCE(sk->sk_prot);
-> +	if (prot->splice_read)
-> +		return prot->splice_read(sock, ppos, pipe, len, flags);
+We found an AA deadlock problem as shown belowed:
 
-INDIRECT_CALL_1() (or _2() in the next patch) can be used.
+TaskA				TaskB				WatchDog			system_wq
 
+...
+css_killed_work_fn:
+P(cgroup_mutex)
+...
+								...
+								__lockup_detector_reconfigure:
+								P(cpu_hotplug_lock.read)
+								...
+				...
+				cpu_up:
+				percpu_down_write:
+				P(cpu_hotplug_lock.write)
+												...
+												cgroup_bpf_release:
+												P(cgroup_mutex)
+								smp_call_on_cpu:
+								Wait system_wq
 
-> +
-> +	return -EINVAL;
-> +}
-> +EXPORT_SYMBOL_GPL(inet_splice_read);
-> +
->  INDIRECT_CALLABLE_DECLARE(int udp_recvmsg(struct sock *, struct msghdr *,
->  					  size_t, int, int *));
->  int inet_recvmsg(struct socket *sock, struct msghdr *msg, size_t size,
-> @@ -1073,7 +1088,7 @@ const struct proto_ops inet_stream_ops = {
->  	.mmap		   = tcp_mmap,
->  #endif
->  	.splice_eof	   = inet_splice_eof,
-> -	.splice_read	   = tcp_splice_read,
-> +	.splice_read	   = inet_splice_read,
->  	.set_peek_off      = sk_set_peek_off,
->  	.read_sock	   = tcp_read_sock,
->  	.read_skb	   = tcp_read_skb,
-> @@ -1107,6 +1122,7 @@ const struct proto_ops inet_dgram_ops = {
->  	.recvmsg	   = inet_recvmsg,
->  	.mmap		   = sock_no_mmap,
->  	.splice_eof	   = inet_splice_eof,
-> +	.splice_read	   = inet_splice_read,
+cpuset_css_offline:
+P(cpu_hotplug_lock.read)
 
-Does SOCK_DGRAM need this change ?  If no, inet_splice_read() can
-return splice_read() directly.
+WatchDog is waitting for system_wq, who is waitting for cgroup_mutex, to finish
+the jobs, but the owner of the cgroup_mutex is waitting for cpu_hotplug_lock.
+The key point is the cpu_hotplug_lock, cause the system_wq may be waitting other
+lock. It seems unhealthy to hold a lock when waitting system_wq, because we
+never know what jobs are system_wq doing. So I fix this by replace cpu_read_lock/unlock
+with cpu_hotplug_disable/enable to prevent cpu offline/online.
+
+Fixes: e31d6883f21c ("watchdog/core, powerpc: Lock cpus across reconfiguration")
+
+Signed-off-by: Luo Gengkun <luogengkun@huaweicloud.com>
+---
+ kernel/watchdog.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/kernel/watchdog.c b/kernel/watchdog.c
+index 51915b44ac73..6ac6fb8d3be0 100644
+--- a/kernel/watchdog.c
++++ b/kernel/watchdog.c
+@@ -867,7 +867,7 @@ int lockup_detector_offline_cpu(unsigned int cpu)
+ 
+ static void __lockup_detector_reconfigure(void)
+ {
+-	cpus_read_lock();
++	cpu_hotplug_disable();
+ 	watchdog_hardlockup_stop();
+ 
+ 	softlockup_stop_all();
+@@ -877,7 +877,7 @@ static void __lockup_detector_reconfigure(void)
+ 		softlockup_start_all();
+ 
+ 	watchdog_hardlockup_start();
+-	cpus_read_unlock();
++	cpu_hotplug_enable();
+ 	/*
+ 	 * Must be called outside the cpus locked section to prevent
+ 	 * recursive locking in the perf code.
+@@ -916,11 +916,11 @@ static __init void lockup_detector_setup(void)
+ #else /* CONFIG_SOFTLOCKUP_DETECTOR */
+ static void __lockup_detector_reconfigure(void)
+ {
+-	cpus_read_lock();
++	cpu_hotplug_disable();
+ 	watchdog_hardlockup_stop();
+ 	lockup_detector_update_enable();
+ 	watchdog_hardlockup_start();
+-	cpus_read_unlock();
++	cpu_hotplug_enable();
+ }
+ void lockup_detector_reconfigure(void)
+ {
+-- 
+2.34.1
+
 
