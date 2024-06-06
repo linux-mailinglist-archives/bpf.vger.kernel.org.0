@@ -1,180 +1,156 @@
-Return-Path: <bpf+bounces-31542-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-31543-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id A50CD8FF711
-	for <lists+bpf@lfdr.de>; Thu,  6 Jun 2024 23:53:39 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A53108FF77B
+	for <lists+bpf@lfdr.de>; Fri,  7 Jun 2024 00:03:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 005D81F22F6C
-	for <lists+bpf@lfdr.de>; Thu,  6 Jun 2024 21:53:39 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3A7B11F249C7
+	for <lists+bpf@lfdr.de>; Thu,  6 Jun 2024 22:03:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2229613B583;
-	Thu,  6 Jun 2024 21:53:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BDF4C770E0;
+	Thu,  6 Jun 2024 22:03:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b="RajqOgPB"
+	dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b="QwQyFSBc"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yw1-f179.google.com (mail-yw1-f179.google.com [209.85.128.179])
+Received: from mail-oa1-f51.google.com (mail-oa1-f51.google.com [209.85.160.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 169CE4594A
-	for <bpf@vger.kernel.org>; Thu,  6 Jun 2024 21:53:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B9D8913C676
+	for <bpf@vger.kernel.org>; Thu,  6 Jun 2024 22:03:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717710809; cv=none; b=dGIdrXYjrmuSwYIiaTJQ9SqqOB4l40DbWzWxqNgBisA+mXMA/j79q1niuUH9UUr2KBlCH5o7BO5ANFgHlC555ep7f2XEFx4UcsBeAMHixDirgnT8JzPNjSfFP0O+TY3F5Obva1NlNtNaaMRk8ihwa0VuhNi4g+xCTeyBdPIeAjY=
+	t=1717711416; cv=none; b=iqcnw6/RBsGfdkAWlautRum9ztRF2OKWihS+sTpXgittbwpwWnxNW/LYL/xplLCPGVGP8H6EwoyGIO0R2bakptzJdu9eong5yRo4UcOnyo09zSY4u8nXiECrrLUzClG2I6bXEdx8SGCwGezyVMiCgYkYWopvsRb9LawgBy+TsYw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717710809; c=relaxed/simple;
-	bh=+FpI6vYpR5bbyxTEbYr9rtFq5rhJFeJhBlUYUqcnlgY=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=nERJIV+3heB5FbZ8ky4KPSYXiGLcKdGYnfxhEBP++MwnR6AK9UAttMBayNToM+KutEHRQ0ScVpj9EWY8Foo7sB521ssCbISNZ4sfNB59Dk4l73lQLUd7k/60c8drtxetomRMwX6MzBvwnXv7OrR21tiuJrArsmRJm8qLLpdWCQk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com; spf=pass smtp.mailfrom=paul-moore.com; dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b=RajqOgPB; arc=none smtp.client-ip=209.85.128.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=paul-moore.com
-Received: by mail-yw1-f179.google.com with SMTP id 00721157ae682-62a08092c4dso14758417b3.0
-        for <bpf@vger.kernel.org>; Thu, 06 Jun 2024 14:53:27 -0700 (PDT)
+	s=arc-20240116; t=1717711416; c=relaxed/simple;
+	bh=6zHTFtyjyc8ZROYDuvlHxVG4z9aX7uUzqgUziBlScV4=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=a6DOLdJzMr/mvWl9gwkshGgavY+T62QnWHzVxNq17vLdqVWMDkfZGqwTqI8/m0Xzgl4sZT5tbHrMgQnsDK6eijOHBdgeb/xW7aT+eHng3ZUlnIdmS7T5fGC+JsLyqMFA9KSdpoteT9x43XqKLYSGzG0gjw5iItgy87k8ECKZTko=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com; spf=pass smtp.mailfrom=cloudflare.com; dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b=QwQyFSBc; arc=none smtp.client-ip=209.85.160.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cloudflare.com
+Received: by mail-oa1-f51.google.com with SMTP id 586e51a60fabf-24c9f91242dso785984fac.2
+        for <bpf@vger.kernel.org>; Thu, 06 Jun 2024 15:03:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore.com; s=google; t=1717710807; x=1718315607; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
+        d=cloudflare.com; s=google09082023; t=1717711412; x=1718316212; darn=vger.kernel.org;
+        h=content-transfer-encoding:content-disposition:mime-version
+         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=y9/LZLrVCiBmLFl657w1ASVEfglGqQmKYkFf7dxmKcI=;
-        b=RajqOgPBwv8XJAwhXWZXlVonrRF/YPPRy9ozsRER3hLSkk6xn5+2NkLmVUpYWo4z24
-         vkdDuC+8GAi+qh9w4Q8U8gJqytgI1tFDxKjmY07/kt30zRk4SsHMnidS0/j80kJsZYJZ
-         e9uYsPru6kO6APku6GR8PEw+6fLvfsvBKhdW7NkohU3AbJ9ua2xvtoDbuMaFPC00pb5y
-         4aDAvy4mPm25RQfwi7BHcBrjo2H1pAYX0OFVEOYbCs/fmyHVX4I6gpN5bfjuRB1O1Ov+
-         87VlPFsC7ESewPLRCFIkMsnBlfW3xXJB4C9PpcBVxvg+1WLVZzfVBQGLcqG+xHyCgNS7
-         2gVg==
+        bh=2wDM63n5dL+21LExRtL5y1UFCD0UbVulDhww3WIg9SE=;
+        b=QwQyFSBcfp2g41G+FHQ/VK/EUbVkTdwDeFcm6uR4oD4gA81cUfE3nek7M0ZYnhfx5N
+         Hm1OonWuH6h1DC4pkY5Lhc0VdcErJcO+6d9PXL7TJ+l/7kLw7Nk/1t5NY0cq6x8HyhW/
+         /0rT0csvsuQbpFXqEBcweWBtcxiERuflI+KjO7oYxn+84Ew/InYh2U+GdgmEvUvFC/2M
+         v+9UQsbl9are8ONe8vjiwNrL/dBdDpzX271u+LllVeQV35IqhGBoODfzqrSXy/XHtwiF
+         IYnzDUCOvl0dgfQzc9I9nL8IjezAVLfv23SbcmhEB6oJUeZ6TfGpvcxCwGJQJMSIbCmh
+         k9Yg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1717710807; x=1718315607;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1717711412; x=1718316212;
+        h=content-transfer-encoding:content-disposition:mime-version
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=y9/LZLrVCiBmLFl657w1ASVEfglGqQmKYkFf7dxmKcI=;
-        b=mOlKq3CPn6CR0n7fT/ZklvT9Pgn+3VG7BqJGJ/e2ejma4WHSqk6IW8AiprZIJ9pXce
-         Xuqo1VxQZAYH2iPJROWZzknrPvb1A6tkdBDNwdnBbCP8LMKX5Y6OmiiFawYNq4nNVcnB
-         kY+pcTiOjR658oHD45peXn6gQVt1Byk10Ki5y4xRc8XAe2fTgjiipx06cRxEdR3SSCkW
-         2Yda5Q1Ap5DX9uf9tjuV24X6U7QBa/ZLCz3L+yMgQ72QqEfWbxzp1qWajL7h4HBQ6yOX
-         oto2T3hQEZ4uJyZFjE8HgT2qXKZR9PtWdywNBKPU3aOUrmmhPxeumwrILUSMZvmFK4NP
-         xMSg==
-X-Gm-Message-State: AOJu0YwmMefgnnVdJkAbMpjvMnuxgoCc7PRXIW/totwe/5Gm8Al10Sg0
-	fEILOa4B/mUACm2a728FW11CaZ3anhxPrVpFSj7filkrdt+vIJknnYFDU4IJh2tyrRBfd66OS3t
-	75UbYvbTpUq0kc3Gk2nYTPbbFQY2xpbWDyj40
-X-Google-Smtp-Source: AGHT+IHr+vEgrNOTl351kbnQRCFUgvkUIF6Lp0SFJ0/CR+WTO6ePRrwS52Q8I6+bzc57ubSMFu7oFmRulMZYl2piscY=
-X-Received: by 2002:a81:7b57:0:b0:622:df58:2cf6 with SMTP id
- 00721157ae682-62cd568be78mr5356547b3.50.1717710807083; Thu, 06 Jun 2024
- 14:53:27 -0700 (PDT)
+        bh=2wDM63n5dL+21LExRtL5y1UFCD0UbVulDhww3WIg9SE=;
+        b=uBfxLsoFyLcrbVVLbirzDbgWOSgvifm1vf/iOx79RJ1vUGlQsQuNQxgdjAflXEj/Ot
+         UhNKJ38zktQxtwAWheDCprdYnyymaUK2UGdHkHfEI5eMOrwFaKtcRzt47cCMGhL7OiON
+         eHJjpMDe6KhkIRmoiFK0LiELhXNC4qAy0qWuCGIz4Pap/9BOEEJiePeAqsXTigUicYc9
+         IpcoM47bq+IdiqeSRWJXZks7+xovO2x9oZp/Ej90OtRB8WLBHG/kzOjBOSkAWmfn7hpR
+         6JPV4eCP18kJWN2vHxZdcUiw1vpNIibksFKPrY+F51oeNE8C3vNqvT/O2p33PWSzut+O
+         tk7Q==
+X-Gm-Message-State: AOJu0YyGke/uNn4QXBgJcud+mKTUDxqOEnLN9OU+FoDMeBqi5wZntlkO
+	N7V11YZtiXHV2MUbCWOtIc/DVSmAFjXtq9DKG8WtR1a/T9Wu8MKcYjM8IIQBYfu0nlb1SzfNJSR
+	6
+X-Google-Smtp-Source: AGHT+IG/0LJK/LYZt1TScgAkfwqyKdYiu7tpO1/B6Nqtbi/uT1FR0Axg2DTSlln1Q0y9koT0Q5Fz9g==
+X-Received: by 2002:a05:6870:8a10:b0:24f:f609:357f with SMTP id 586e51a60fabf-2546462d296mr832678fac.38.1717711412461;
+        Thu, 06 Jun 2024 15:03:32 -0700 (PDT)
+Received: from debian.debian ([2a09:bac5:7a49:f9b::18e:1c])
+        by smtp.gmail.com with ESMTPSA id af79cd13be357-79538974213sm53450685a.22.2024.06.06.15.03.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 06 Jun 2024 15:03:31 -0700 (PDT)
+Date: Thu, 6 Jun 2024 15:03:29 -0700
+From: Yan Zhai <yan@cloudflare.com>
+To: bpf@vger.kernel.org
+Cc: kernel-team@cloudflare.com
+Subject: Ideal way to read FUNC_PROTO in raw tp?
+Message-ID: <ZmIyMfRSp9DpU7dF@debian.debian>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240411122752.2873562-1-xukuohai@huaweicloud.com> <20240411122752.2873562-2-xukuohai@huaweicloud.com>
-In-Reply-To: <20240411122752.2873562-2-xukuohai@huaweicloud.com>
-From: Paul Moore <paul@paul-moore.com>
-Date: Thu, 6 Jun 2024 17:53:16 -0400
-Message-ID: <CAHC9VhRipBNd+G=RMPVeVOiYCx6FZwHSn0JNKv=+jYZtd5SdYg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 01/11] bpf, lsm: Annotate lsm hook return
- value range
-To: Xu Kuohai <xukuohai@huaweicloud.com>
-Cc: bpf@vger.kernel.org, netdev@vger.kernel.org, 
-	linux-security-module@vger.kernel.org, linux-kselftest@vger.kernel.org, 
-	Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Martin KaFai Lau <martin.lau@linux.dev>, 
-	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
-	Jiri Olsa <jolsa@kernel.org>, Matt Bobrowski <mattbobrowski@google.com>, 
-	Brendan Jackman <jackmanb@chromium.org>, James Morris <jmorris@namei.org>, 
-	"Serge E . Hallyn" <serge@hallyn.com>, Khadija Kamran <kamrankhadijadj@gmail.com>, 
-	Casey Schaufler <casey@schaufler-ca.com>, Ondrej Mosnacek <omosnace@redhat.com>, 
-	Kees Cook <keescook@chromium.org>, John Johansen <john.johansen@canonical.com>, 
-	Lukas Bulwahn <lukas.bulwahn@gmail.com>, Roberto Sassu <roberto.sassu@huawei.com>, 
-	Shung-Hsi Yu <shung-hsi.yu@suse.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 
-On Thu, Apr 11, 2024 at 8:24=E2=80=AFAM Xu Kuohai <xukuohai@huaweicloud.com=
-> wrote:
->
-> From: Xu Kuohai <xukuohai@huawei.com>
->
-> Add macro LSM_RET_INT to annotate lsm hook return integer type and the
-> default return value, and the expected return range.
->
-> The LSM_RET_INT is declared as:
->
-> LSM_RET_INT(defval, min, max)
->
-> where
->
-> - defval is the default return value
->
-> - min and max indicate the expected return range is [min, max]
->
-> The return value range for each lsm hook is taken from the description
-> in security/security.c.
->
-> The expanded result of LSM_RET_INT is not changed, and the compiled
-> product is not changed.
->
-> Signed-off-by: Xu Kuohai <xukuohai@huawei.com>
-> ---
->  include/linux/lsm_hook_defs.h | 591 +++++++++++++++++-----------------
->  include/linux/lsm_hooks.h     |   6 -
->  kernel/bpf/bpf_lsm.c          |  10 +
->  security/security.c           |   1 +
->  4 files changed, 313 insertions(+), 295 deletions(-)
+Hi,
+
+ I am building a tracing program around workqueue. But I encountered
+following problem when I try to record a function pointer value from
+trace_workqueue_execute_end on net-next kernel:
 
 ...
+libbpf: prog 'workqueue_end': BPF program load failed: Permission
+denied
+libbpf: prog 'workqueue_end': -- BEGIN PROG LOAD LOG --
+reg type unsupported for arg#0 function workqueue_end#5
+0: R1=ctx(off=0,imm=0) R10=fp0
+; int BPF_PROG(workqueue_end, struct work_struct *w, work_func_t f)
+0: (79) r3 = *(u64 *)(r1 +8)
+func 'workqueue_execute_end' arg1 type FUNC_PROTO is not a struct
+invalid bpf_context access off=8 size=8
+processed 1 insns (limit 1000000) max_states_per_insn 0 total_states 0
+peak_states 0 mark_read 0
+-- END PROG LOAD LOG --
+libbpf: prog 'workqueue_end': failed to load: -13
+libbpf: failed to load object 'configs/test.bpf.o'
+Error: failed to load object file
+Warning: bpftool is now running in libbpf strict mode and has more
+stringent requirements about BPF programs.
+If it used to work for this object file but now doesn't, see --legacy
+option for more details.
+...
 
-> diff --git a/include/linux/lsm_hook_defs.h b/include/linux/lsm_hook_defs.=
-h
-> index 334e00efbde4..708f515ffbf3 100644
-> --- a/include/linux/lsm_hook_defs.h
-> +++ b/include/linux/lsm_hook_defs.h
-> @@ -18,435 +18,448 @@
->   * The macro LSM_HOOK is used to define the data structures required by
->   * the LSM framework using the pattern:
->   *
-> - *     LSM_HOOK(<return_type>, <default_value>, <hook_name>, args...)
-> + *     LSM_HOOK(<return_type>, <return_description>, <hook_name>, args..=
-.)
->   *
->   * struct security_hook_heads {
-> - *   #define LSM_HOOK(RET, DEFAULT, NAME, ...) struct hlist_head NAME;
-> + *   #define LSM_HOOK(RET, RETVAL_DESC, NAME, ...) struct hlist_head NAM=
-E;
->   *   #include <linux/lsm_hook_defs.h>
->   *   #undef LSM_HOOK
->   * };
->   */
-> -LSM_HOOK(int, 0, binder_set_context_mgr, const struct cred *mgr)
-> -LSM_HOOK(int, 0, binder_transaction, const struct cred *from,
-> +LSM_HOOK(int, LSM_RET_INT(0, -MAX_ERRNO, 0), binder_set_context_mgr, con=
-st struct cred *mgr)
-> +LSM_HOOK(int, LSM_RET_INT(0, -MAX_ERRNO, 0), binder_transaction, const s=
-truct cred *from,
->          const struct cred *to)
-> -LSM_HOOK(int, 0, binder_transfer_binder, const struct cred *from,
-> +LSM_HOOK(int, LSM_RET_INT(0, -MAX_ERRNO, 0), binder_transfer_binder, con=
-st struct cred *from,
->          const struct cred *to)
-> -LSM_HOOK(int, 0, binder_transfer_file, const struct cred *from,
-> +LSM_HOOK(int, LSM_RET_INT(0, -MAX_ERRNO, 0), binder_transfer_file, const=
- struct cred *from,
->          const struct cred *to, const struct file *file)
+A simple reproducer for me is like:
+#include "vmlinux.h"
+#include <bpf/bpf_helpers.h>
+#include <bpf/bpf_tracing.h>
 
-I'm not overly excited about injecting these additional return value
-range annotations into the LSM hook definitions, especially since the
-vast majority of the hooks "returns 0 on success, negative values on
-error".  I'd rather see some effort put into looking at the
-feasibility of converting some (all?) of the LSM hook return value
-exceptions into the more conventional 0/-ERRNO format.  Unfortunately,
-I haven't had the time to look into that myself, but if you wanted to
-do that I think it would be a good thing.
+SEC("tp_btf/workqueue_execute_end")
+int BPF_PROG(workqueue_end, struct work_struct *w, work_func_t f)
+{
+        u64 addr = (u64) f;
+        bpf_printk("f is %lu\n", addr);
 
---=20
-paul-moore.com
+        return 0;
+}
+
+char LICENSE[] SEC("license") = "GPL";
+
+I would like to use the function address to decode the kernel symbol
+and track execution of these functions. Replacing raw tp to regular tp
+solves the problem, but I am wondering if there is any go-to approach
+to read the pointer value in a raw tp? Doesn't seem to find one in
+selftests/samples. If not, does it make sense if we allow it in
+the verifier for tracing programs like the attached patch?
+
+Yan
+
+---
+diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+index 821063660d9f..5f000ab4c8d0 100644
+--- a/kernel/bpf/btf.c
++++ b/kernel/bpf/btf.c
+@@ -6308,6 +6308,11 @@ bool btf_ctx_access(int off, int size, enum bpf_access_type type,
+                        __btf_name_by_offset(btf, t->name_off),
+                        btf_type_str(t));
+                return false;
++       } else if (prog->type == BPF_PROG_TYPE_TRACING || prog->type == BPF_PROG_TYPE_RAW_TRACEPOINT) {
++               /* allow reading function pointer value from a tracing program */
++               const struct btf_type *pointed = btf_type_by_id(btf, t->type);
++               if (btf_type_is_func_proto(pointed))
++                       return true;
+        }
+
+        /* check for PTR_TO_RDONLY_BUF_OR_NULL or PTR_TO_RDWR_BUF_OR_NULL */
 
