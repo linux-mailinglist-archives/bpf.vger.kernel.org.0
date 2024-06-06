@@ -1,363 +1,279 @@
-Return-Path: <bpf+bounces-31524-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-31525-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 22DDB8FF38E
-	for <lists+bpf@lfdr.de>; Thu,  6 Jun 2024 19:19:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0D9A68FF3D7
+	for <lists+bpf@lfdr.de>; Thu,  6 Jun 2024 19:33:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 06EA51C264AB
-	for <lists+bpf@lfdr.de>; Thu,  6 Jun 2024 17:19:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1925F1C277F9
+	for <lists+bpf@lfdr.de>; Thu,  6 Jun 2024 17:33:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A29A61990A2;
-	Thu,  6 Jun 2024 17:19:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B8A8719922B;
+	Thu,  6 Jun 2024 17:33:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="arKCHZqS"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="mDTXyTi0"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f48.google.com (mail-pj1-f48.google.com [209.85.216.48])
+Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com [209.85.128.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8EA83197A8F
-	for <bpf@vger.kernel.org>; Thu,  6 Jun 2024 17:19:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7055C1991DF
+	for <bpf@vger.kernel.org>; Thu,  6 Jun 2024 17:33:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717694364; cv=none; b=q3OzN+BqTqsNRmZE7x7nKi6J+PaDtjS/tAxuCUoeD0Halzt1thTiYnW1oe4X0RQg1uVWacveGlgvBvHYT3HojlcWSdVUL+j1vCr2PPZmSmumET1JNClptrZvJyogiwDA+RAV6MN+k1Peyzx9e7SheeIKweZdc/WuMPf6ikVTuTE=
+	t=1717695218; cv=none; b=OwEYxUBn6S5ThWUKPSgPO4NjXtiqy0HQUSVL0SDFEJCZQYNuMK1DhAxI+glO6BXE2hjl/Eo7hxZao7BNWGfoauCPIUmN8bbX9xqxFdP/gk8+jx8qwE9rkkSQRTUM+jlqXQsC/6d+DpXHkKuXT1XpK6es6HsLgxM67hISTSUAgE0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717694364; c=relaxed/simple;
-	bh=XbDem8jVT9bOVpvSslPJyul+I6OQFXhR3nIhksmc7qA=;
+	s=arc-20240116; t=1717695218; c=relaxed/simple;
+	bh=rYVMkwI8qFoB/ptB7kU79gZFDx+FsNx/WF4p8yfanOI=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=jHB6cRFmYFvUqAjmcS2o/2yz8RIrIY3YpTHF13/5QBoO8l+pplxxSTDjCFozjAICdX82URrDpU03wJg+Wht+s+WRZg4WcjlX93h3ibp0TGFwYxyeJBE6vBRGievWAAez2pek0XY0YZ2VyKHWYAQcKiVstguVvEsaE5Fjj5XcrTE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=arKCHZqS; arc=none smtp.client-ip=209.85.216.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f48.google.com with SMTP id 98e67ed59e1d1-2c19e6dc3dcso1021367a91.3
-        for <bpf@vger.kernel.org>; Thu, 06 Jun 2024 10:19:22 -0700 (PDT)
+	 To:Content-Type; b=ON7ElGIfxm7Rc7eEztKTwrKqmj064VMjAfnVBPM0DtLKuFNz8v3sXZ8e90enJkZg/6916z5A2tZCqVDw9NWYx+Oo5xzOu/y6MGdmO4WZQAX4CKCK4A4aPK/I3+zDjmmGKm82dSgTqH62MRbZ4ZNWkt3h9/wscauRAam9DBXaot4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=mDTXyTi0; arc=none smtp.client-ip=209.85.128.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-wm1-f47.google.com with SMTP id 5b1f17b1804b1-4215fc19abfso6685305e9.3
+        for <bpf@vger.kernel.org>; Thu, 06 Jun 2024 10:33:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1717694362; x=1718299162; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+        d=google.com; s=20230601; t=1717695215; x=1718300015; darn=vger.kernel.org;
+        h=content-transfer-encoding:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=zt0pjTztcu4n8lTF/hF2b2G0S3c9WiJ59+7WZnT1DAM=;
-        b=arKCHZqSE3a7rRDVxFMiyfeeqQK8K+j0GYYs4P1pwkPCNeVS8CQ3T+s90bbUBH+YRC
-         PH6UUMbBL3yt9fFRjVPHBCKo+vdUT4Hn/ID+k/Imf1mtiXr8bdACfeIZLpoKbxSenudt
-         jy+u5yNY2bsW01m/riHhHEbAgydjMNflWIjrIDAG4ewvOe54gQr+2RARPdFZh4uTLcjs
-         08bau5u3HGQ6SE5fB47VRY5+5vb0fjGA1g+ix37s5aB9BWuWjFonfWHWqjGaQhx7vqkB
-         dqvPBmHQymTNok2Kvf9sl66u1YAGvVmTLukZcdP1vicF4T+ZF/9OdAU6wOyZ8zU3K7fB
-         jnrA==
+        bh=mPjsJlKDBXzcFKJiIo/4f6GGzkeINELRnLiFwHcGpOo=;
+        b=mDTXyTi0rNw369u0JcGh6PhF8bbU1DdWb+GmNbbS/K5/j1zjdJa6PDMz2m++vK1gwa
+         M0qxjq4TcBc8R8CeRthxIZQfF5Y/RuM6f/Sme+sY6OvrFkZyWMw5QZvRDZlL3PbgoFIK
+         vZT1mxIRTSQioeBa//dcS7595/B+C46yb79cZ5cCBKkyLcLWC7VaVQhzgc1s5wq52nGJ
+         AZu3JET/rp8SQwrPDW0qXqJ7NJKJHRSIF3PB9tfKwPIlB4ZBJ8hfjzRWMNCraIIJ+26G
+         Yg1jT2s3OZfaq9250Ovcm6F5rElsrxJ3yLWk5oMcwzGt0wBMZsJB0Y6Age3GbIzX5QOL
+         m8Fg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1717694362; x=1718299162;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+        d=1e100.net; s=20230601; t=1717695215; x=1718300015;
+        h=content-transfer-encoding:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=zt0pjTztcu4n8lTF/hF2b2G0S3c9WiJ59+7WZnT1DAM=;
-        b=WDMi6d3AyPeBQgtmPp3gZX5JE1hV1QAAYVLA64bWa7iWdyM5E+Vg3GbCAr5m9lJVrH
-         +/F6mWMsydd6qaN1zy65bJwXQUfcnsMeaserZ1ouY8G4nEKqaKyn7s3ekRnNiDHvA5FM
-         dzpIxkbkC/0QVh+Xu7OQFp+gSFE9wgpCHO9GsErjD6LMxPff8EdNFuuHXn5ONPxN4TC/
-         gIs4ud/3FJzgDpdj8uURzIWg4//7tYtnouAgyar/FKK2a6ImA0sGfPGm4qW2XGOnKS9j
-         c98Fvcbfeyy/wPcD39MdUPN/6kuWbAc6tmwo0smZaaWZxBGYTR/NiE4lVwPkcPNM5+fF
-         KQ0Q==
-X-Gm-Message-State: AOJu0YzYYOF1/Gt48/aRpQ92vxdmKoeW088QV28wzFPpu0wUeKBCLLPT
-	u6rUwNbHVQn2O/6pQVUtm16urM1SWoksEpdaCQm5yjELq698XyS+cYqirGe3uUc/fPhhd39jkQI
-	wUCM5kplAflfcqRn5PSR5bY3+XZY=
-X-Google-Smtp-Source: AGHT+IFhultLvABPoAzW4dKSKwhxKa/4ntgpi/2Iqa9dsOBQgq/dHMlzP3XO3tr1yBDLA7Y0t3f3SLpZySjWkf//GYA=
-X-Received: by 2002:a17:90a:5a86:b0:2bf:ea42:d0c3 with SMTP id
- 98e67ed59e1d1-2c2bcad6277mr162571a91.16.1717694361758; Thu, 06 Jun 2024
- 10:19:21 -0700 (PDT)
+        bh=mPjsJlKDBXzcFKJiIo/4f6GGzkeINELRnLiFwHcGpOo=;
+        b=M9f7+Vjg/Gyfh3D+BmDR8vOcmtZ8EvA9R6DMEfIruKnx0+hrNR5V6P5EimaQ65Bv90
+         x4r52xWARNvhTBNh14XX+jQrGC3iiPfB3pqHJACirN7/TrML6odyEjxMW2qiF7QGKuDU
+         Gi1/IACamzox1E+pXNxrsFN9HfNVWa0eXhiubDXa5U7Q3Xh4gOCD3VL5oD4KU9X8vyJi
+         2SvX5iUOIACmz5oUpfcVOLvXpcSZXzLnQ27hqSoWA6sXpJk2cyRhqyz8TiT4bcJ887BR
+         wVydJ7MAHibBl5FpcR/FfhUgXpHshalys9At94dLxFyobO2gjyAIqcw3aNuwsrQgdGlR
+         SU3g==
+X-Forwarded-Encrypted: i=1; AJvYcCUcA5SaS3dtmrGyG9T3vH8q1r6BEzJntXMzHU0x3XbQwaEsLhH65QMHNJXVAymoUbaey9BIA/mb5BqW7FLJDzl6cqM0
+X-Gm-Message-State: AOJu0Yzj9qb2EYzwCtl6gS5uoDBz2Jp7BmMjFEQLimeVypu80M8Zc6M1
+	C0Y3uP3VVxitTOxOrO99QGg5SHTgQ8isRwVbVwNiGevt/vgHYFu+cFEY/DK3+61Spcc0Dy9Sq4/
+	C0k7kVlZaLh9Hj1fV24kbtUXp0trRS8udV+rP
+X-Google-Smtp-Source: AGHT+IE4QPvkBQBYH5qBQiqsMSACkO+0MruSkYzXUyRwuzkvF/JqqLhtKdRfSDNl8JmBwmG1H52WpeDjd6vt0pJCRZ4=
+X-Received: by 2002:a05:600c:54ca:b0:420:309a:fe63 with SMTP id
+ 5b1f17b1804b1-42164a030a5mr3279955e9.22.1717695214069; Thu, 06 Jun 2024
+ 10:33:34 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240603155308.199254-1-cupertino.miranda@oracle.com>
- <20240603155308.199254-3-cupertino.miranda@oracle.com> <CAEf4BzbqhhLsRRTP=QFm6Sh4Ku+9dKN4Ezrere0+=nm_8SzwYA@mail.gmail.com>
- <87ikymz6ol.fsf@oracle.com>
-In-Reply-To: <87ikymz6ol.fsf@oracle.com>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Thu, 6 Jun 2024 10:19:08 -0700
-Message-ID: <CAEf4BzaVkJghcSpLdRdwmRyGVj+SoUnF88d-9e5Xvb7fmuKt4A@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 2/2] selftests/bpf: Match tests against regular expression.
-To: Cupertino Miranda <cupertino.miranda@oracle.com>
-Cc: bpf@vger.kernel.org, jose.marchesi@oracle.com, david.faust@oracle.com, 
-	Yonghong Song <yonghong.song@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>
+References: <20240605002459.4091285-1-andrii@kernel.org> <20240605002459.4091285-5-andrii@kernel.org>
+ <CAJuCfpFp38X-tbiRAqS36zXG_ho2wyoRas0hCFLo07pN1noSmg@mail.gmail.com>
+ <CAEf4BzYv0Ys+NpMMuXBYEVwAaOow=oBgUhBwen7g=68_5qKznQ@mail.gmail.com> <ue44yftirugr6u4ewl5cvgatpqnheuho7rgax3jyg6ox5vruyq@7k6harvobd2q>
+In-Reply-To: <ue44yftirugr6u4ewl5cvgatpqnheuho7rgax3jyg6ox5vruyq@7k6harvobd2q>
+From: Suren Baghdasaryan <surenb@google.com>
+Date: Thu, 6 Jun 2024 10:33:19 -0700
+Message-ID: <CAJuCfpEFpd-+DDr=EyA1gMKZcDZYpZN9pBuFczhVXrFSe11U_g@mail.gmail.com>
+Subject: Re: [PATCH v3 4/9] fs/procfs: use per-VMA RCU-protected locking in
+ PROCMAP_QUERY API
+To: "Liam R. Howlett" <Liam.Howlett@oracle.com>, Andrii Nakryiko <andrii.nakryiko@gmail.com>, 
+	Suren Baghdasaryan <surenb@google.com>, Andrii Nakryiko <andrii@kernel.org>, linux-fsdevel@vger.kernel.org, 
+	brauner@kernel.org, viro@zeniv.linux.org.uk, akpm@linux-foundation.org, 
+	linux-kernel@vger.kernel.org, bpf@vger.kernel.org, gregkh@linuxfoundation.org, 
+	linux-mm@kvack.org, rppt@kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Jun 6, 2024 at 3:50=E2=80=AFAM Cupertino Miranda
-<cupertino.miranda@oracle.com> wrote:
+On Thu, Jun 6, 2024 at 10:15=E2=80=AFAM Liam R. Howlett <Liam.Howlett@oracl=
+e.com> wrote:
 >
->
-> Andrii Nakryiko writes:
->
-> > On Mon, Jun 3, 2024 at 8:53=E2=80=AFAM Cupertino Miranda
-> > <cupertino.miranda@oracle.com> wrote:
-> >>
-> >> This patch changes a few tests to make use of regular expressions such
-> >> that the test validation would allow to properly verify the tests when
-> >> compiled with GCC.
-> >>
-> >> signed-off-by: Cupertino Miranda <cupertino.miranda@oracle.com>
-> >> Cc: jose.marchesi@oracle.com
-> >> Cc: david.faust@oracle.com
-> >> Cc: Yonghong Song <yonghong.song@linux.dev>
-> >> Cc: Eduard Zingerman <eddyz87@gmail.com>
-> >> Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-> >> ---
-> >>  tools/testing/selftests/bpf/progs/dynptr_fail.c          | 6 +++---
-> >>  tools/testing/selftests/bpf/progs/exceptions_assert.c    | 8 ++++----
-> >>  tools/testing/selftests/bpf/progs/rbtree_fail.c          | 8 ++++----
-> >>  tools/testing/selftests/bpf/progs/refcounted_kptr_fail.c | 4 ++--
-> >>  tools/testing/selftests/bpf/progs/verifier_sock.c        | 4 ++--
-> >>  5 files changed, 15 insertions(+), 15 deletions(-)
-> >>
-> >> diff --git a/tools/testing/selftests/bpf/progs/dynptr_fail.c b/tools/t=
-esting/selftests/bpf/progs/dynptr_fail.c
-> >> index 66a60bfb5867..64cc9d936a13 100644
-> >> --- a/tools/testing/selftests/bpf/progs/dynptr_fail.c
-> >> +++ b/tools/testing/selftests/bpf/progs/dynptr_fail.c
-> >> @@ -964,7 +964,7 @@ int dynptr_invalidate_slice_reinit(void *ctx)
-> >>   * mem_or_null pointers.
-> >>   */
-> >>  SEC("?raw_tp")
-> >> -__failure __msg("R1 type=3Dscalar expected=3Dpercpu_ptr_")
-> >> +__failure __regex("R[0-9]+ type=3Dscalar expected=3Dpercpu_ptr_")
-> >>  int dynptr_invalidate_slice_or_null(void *ctx)
-> >>  {
-> >>         struct bpf_dynptr ptr;
-> >> @@ -982,7 +982,7 @@ int dynptr_invalidate_slice_or_null(void *ctx)
-> >>
-> >>  /* Destruction of dynptr should also any slices obtained from it */
-> >>  SEC("?raw_tp")
-> >> -__failure __msg("R7 invalid mem access 'scalar'")
-> >> +__failure __regex("R[0-9]+ invalid mem access 'scalar'")
-> >>  int dynptr_invalidate_slice_failure(void *ctx)
-> >>  {
-> >>         struct bpf_dynptr ptr1;
-> >> @@ -1069,7 +1069,7 @@ int dynptr_read_into_slot(void *ctx)
-> >>
-> >>  /* bpf_dynptr_slice()s are read-only and cannot be written to */
-> >>  SEC("?tc")
-> >> -__failure __msg("R0 cannot write into rdonly_mem")
-> >> +__failure __regex("R[0-9]+ cannot write into rdonly_mem")
-> >>  int skb_invalid_slice_write(struct __sk_buff *skb)
-> >>  {
-> >>         struct bpf_dynptr ptr;
-> >> diff --git a/tools/testing/selftests/bpf/progs/exceptions_assert.c b/t=
-ools/testing/selftests/bpf/progs/exceptions_assert.c
-> >> index 5e0a1ca96d4e..deb67d198caf 100644
-> >> --- a/tools/testing/selftests/bpf/progs/exceptions_assert.c
-> >> +++ b/tools/testing/selftests/bpf/progs/exceptions_assert.c
-> >> @@ -59,7 +59,7 @@ check_assert(s64, >=3D, ge_neg, INT_MIN);
-> >>
-> >>  SEC("?tc")
-> >>  __log_level(2) __failure
-> >> -__msg(": R0=3D0 R1=3Dctx() R2=3Dscalar(smin=3D0xffffffff80000002,smax=
-=3Dsmax32=3D0x7ffffffd,smin32=3D0x80000002) R10=3Dfp0")
-> >> +__regex(": R0=3D[^ ]+ R1=3Dctx() R2=3Dscalar(smin=3D0xffffffff8000000=
-2,smax=3Dsmax32=3D0x7ffffffd,smin32=3D0x80000002) R10=3Dfp0")
+> * Andrii Nakryiko <andrii.nakryiko@gmail.com> [240606 12:52]:
+> > On Wed, Jun 5, 2024 at 4:16=E2=80=AFPM Suren Baghdasaryan <surenb@googl=
+e.com> wrote:
+> > >
+> > > On Tue, Jun 4, 2024 at 5:25=E2=80=AFPM Andrii Nakryiko <andrii@kernel=
+.org> wrote:
+> > > >
+> > > > Attempt to use RCU-protected per-VMA lock when looking up requested=
+ VMA
+> > > > as much as possible, only falling back to mmap_lock if per-VMA lock
+> > > > failed. This is done so that querying of VMAs doesn't interfere wit=
+h
+> > > > other critical tasks, like page fault handling.
+> > > >
+> > > > This has been suggested by mm folks, and we make use of a newly add=
+ed
+> > > > internal API that works like find_vma(), but tries to use per-VMA l=
+ock.
+> > > >
+> > > > We have two sets of setup/query/teardown helper functions with diff=
+erent
+> > > > implementations depending on availability of per-VMA lock (conditio=
+ned
+> > > > on CONFIG_PER_VMA_LOCK) to abstract per-VMA lock subtleties.
+> > > >
+> > > > When per-VMA lock is available, lookup is done under RCU, attemptin=
+g to
+> > > > take a per-VMA lock. If that fails, we fallback to mmap_lock, but t=
+hen
+> > > > proceed to unconditionally grab per-VMA lock again, dropping mmap_l=
+ock
+> > > > immediately. In this configuration mmap_lock is never helf for long=
+,
+> > > > minimizing disruptions while querying.
+> > > >
+> > > > When per-VMA lock is compiled out, we take mmap_lock once, query VM=
+As
+> > > > using find_vma() API, and then unlock mmap_lock at the very end onc=
+e as
+> > > > well. In this setup we avoid locking/unlocking mmap_lock on every l=
+ooked
+> > > > up VMA (depending on query parameters we might need to iterate a fe=
+w of
+> > > > them).
+> > > >
+> > > > Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+> > > > ---
+> > > >  fs/proc/task_mmu.c | 46 ++++++++++++++++++++++++++++++++++++++++++=
+++++
+> > > >  1 file changed, 46 insertions(+)
+> > > >
+> > > > diff --git a/fs/proc/task_mmu.c b/fs/proc/task_mmu.c
+> > > > index 614fbe5d0667..140032ffc551 100644
+> > > > --- a/fs/proc/task_mmu.c
+> > > > +++ b/fs/proc/task_mmu.c
+> > > > @@ -388,6 +388,49 @@ static int pid_maps_open(struct inode *inode, =
+struct file *file)
+> > > >                 PROCMAP_QUERY_VMA_FLAGS                         \
+> > > >  )
+> > > >
+> > > > +#ifdef CONFIG_PER_VMA_LOCK
+> > > > +static int query_vma_setup(struct mm_struct *mm)
+> > > > +{
+> > > > +       /* in the presence of per-VMA lock we don't need any setup/=
+teardown */
+> > > > +       return 0;
+> > > > +}
+> > > > +
+> > > > +static void query_vma_teardown(struct mm_struct *mm, struct vm_are=
+a_struct *vma)
+> > > > +{
+> > > > +       /* in the presence of per-VMA lock we need to unlock vma, i=
+f present */
+> > > > +       if (vma)
+> > > > +               vma_end_read(vma);
+> > > > +}
+> > > > +
+> > > > +static struct vm_area_struct *query_vma_find_by_addr(struct mm_str=
+uct *mm, unsigned long addr)
+> > > > +{
+> > > > +       struct vm_area_struct *vma;
+> > > > +
+> > > > +       /* try to use less disruptive per-VMA lock */
+> > > > +       vma =3D find_and_lock_vma_rcu(mm, addr);
+> > > > +       if (IS_ERR(vma)) {
+> > > > +               /* failed to take per-VMA lock, fallback to mmap_lo=
+ck */
+> > > > +               if (mmap_read_lock_killable(mm))
+> > > > +                       return ERR_PTR(-EINTR);
+> > > > +
+> > > > +               vma =3D find_vma(mm, addr);
+> > > > +               if (vma) {
+> > > > +                       /*
+> > > > +                        * We cannot use vma_start_read() as it may=
+ fail due to
+> > > > +                        * false locked (see comment in vma_start_r=
+ead()). We
+> > > > +                        * can avoid that by directly locking vm_lo=
+ck under
+> > > > +                        * mmap_lock, which guarantees that nobody =
+can lock the
+> > > > +                        * vma for write (vma_start_write()) under =
+us.
+> > > > +                        */
+> > > > +                       down_read(&vma->vm_lock->lock);
+> > >
+> > > Hi Andrii,
+> > > The above pattern of locking VMA under mmap_lock and then dropping
+> > > mmap_lock is becoming more common. Matthew had an RFC proposal for an
+> > > API to do this here:
+> > > https://lore.kernel.org/all/ZivhG0yrbpFqORDw@casper.infradead.org/. I=
+t
+> > > might be worth reviving that discussion.
 > >
-> > curious, what R0 value do we end up with with GCC generated code?
-> Oups, this file should have not been committed. Those changes were just
-> for experimentation, nothing else. :(
->
+> > Sure, it would be nice to have generic and blessed primitives to use
+> > here. But the good news is that once this is all figured out by you mm
+> > folks, it should be easy to make use of those primitives here, right?
 > >
-> >>  int check_assert_range_s64(struct __sk_buff *ctx)
-> >>  {
-> >>         struct bpf_sock *sk =3D ctx->sk;
-> >> @@ -75,7 +75,7 @@ int check_assert_range_s64(struct __sk_buff *ctx)
-> >>
-> >>  SEC("?tc")
-> >>  __log_level(2) __failure
-> >> -__msg(": R1=3Dctx() R2=3Dscalar(smin=3Dumin=3Dsmin32=3Dumin32=3D4096,=
-smax=3Dumax=3Dsmax32=3Dumax32=3D8192,var_off=3D(0x0; 0x3fff))")
-> >> +__regex("R[0-9]=3Dscalar(smin=3Dumin=3Dsmin32=3Dumin32=3D4096,smax=3D=
-umax=3Dsmax32=3Dumax32=3D8192,var_off=3D(0x0; 0x3fff))")
-> >>  int check_assert_range_u64(struct __sk_buff *ctx)
-> >>  {
-> >>         u64 num =3D ctx->len;
-> >> @@ -86,7 +86,7 @@ int check_assert_range_u64(struct __sk_buff *ctx)
-> >>
-> >>  SEC("?tc")
-> >>  __log_level(2) __failure
-> >> -__msg(": R0=3D0 R1=3Dctx() R2=3D4096 R10=3Dfp0")
-> >> +__regex(": R0=3D[^ ]+ R1=3Dctx() R2=3D4096 R10=3Dfp0")
-> >>  int check_assert_single_range_s64(struct __sk_buff *ctx)
-> >>  {
-> >>         struct bpf_sock *sk =3D ctx->sk;
-> >> @@ -114,7 +114,7 @@ int check_assert_single_range_u64(struct __sk_buff=
- *ctx)
-> >>
-> >>  SEC("?tc")
-> >>  __log_level(2) __failure
-> >> -__msg(": R1=3Dpkt(off=3D64,r=3D64) R2=3Dpkt_end() R6=3Dpkt(r=3D64) R1=
-0=3Dfp0")
-> >> +__msg("R1=3Dpkt(off=3D64,r=3D64)")
-> >>  int check_assert_generic(struct __sk_buff *ctx)
-> >>  {
-> >>         u8 *data_end =3D (void *)(long)ctx->data_end;
-> >> diff --git a/tools/testing/selftests/bpf/progs/rbtree_fail.c b/tools/t=
-esting/selftests/bpf/progs/rbtree_fail.c
-> >> index 3fecf1c6dfe5..8399304eca72 100644
-> >> --- a/tools/testing/selftests/bpf/progs/rbtree_fail.c
-> >> +++ b/tools/testing/selftests/bpf/progs/rbtree_fail.c
-> >> @@ -29,7 +29,7 @@ static bool less(struct bpf_rb_node *a, const struct=
- bpf_rb_node *b)
-> >>  }
-> >>
-> >>  SEC("?tc")
-> >> -__failure __msg("bpf_spin_lock at off=3D16 must be held for bpf_rb_ro=
-ot")
-> >> +__failure __regex("bpf_spin_lock at off=3D[0-9]+ must be held for bpf=
-_rb_root")
-> >>  long rbtree_api_nolock_add(void *ctx)
-> >>  {
-> >>         struct node_data *n;
-> >> @@ -43,7 +43,7 @@ long rbtree_api_nolock_add(void *ctx)
-> >>  }
-> >>
-> >>  SEC("?tc")
-> >> -__failure __msg("bpf_spin_lock at off=3D16 must be held for bpf_rb_ro=
-ot")
-> >> +__failure __regex("bpf_spin_lock at off=3D[0-9]+ must be held for bpf=
-_rb_root")
-> >>  long rbtree_api_nolock_remove(void *ctx)
-> >>  {
-> >>         struct node_data *n;
-> >> @@ -61,7 +61,7 @@ long rbtree_api_nolock_remove(void *ctx)
-> >>  }
-> >>
-> >>  SEC("?tc")
-> >> -__failure __msg("bpf_spin_lock at off=3D16 must be held for bpf_rb_ro=
-ot")
-> >> +__failure __regex("bpf_spin_lock at off=3D[0-9]+ must be held for bpf=
-_rb_root")
-> >>  long rbtree_api_nolock_first(void *ctx)
-> >>  {
-> >>         bpf_rbtree_first(&groot);
-> >> @@ -105,7 +105,7 @@ long rbtree_api_remove_unadded_node(void *ctx)
-> >>  }
-> >>
-> >>  SEC("?tc")
-> >> -__failure __msg("Unreleased reference id=3D3 alloc_insn=3D10")
-> >> +__failure __regex("Unreleased reference id=3D3 alloc_insn=3D[0-9]+")
-> >
-> > this test definitely should have been written in BPF assembly if we
-> > care to check alloc_insn... Otherwise we just care that there is
-> > "Unreleased reference" message, we should match on that without
-> > hard-coding id and alloc_insn?
-> I agree. Unfortunately I see a lot of tests that fall in this category.
-> I must admit, most of the time I do not know what is the proper approach
-> to correct it.
+> > >
+> > > > +               }
+> > > > +
+> > > > +               mmap_read_unlock(mm);
+> > >
+> > > Later on in your code you are calling get_vma_name() which might call
+> > > anon_vma_name() to retrieve user-defined VMA name. After this patch
+> > > this operation will be done without holding mmap_lock, however per
+> > > https://elixir.bootlin.com/linux/latest/source/include/linux/mm_types=
+.h#L582
+> > > this function has to be called with mmap_lock held for read. Indeed
+> > > with debug flags enabled you should hit this assertion:
+> > > https://elixir.bootlin.com/linux/latest/source/mm/madvise.c#L96.
 >
-> Also found some tests that made expectations on .bss section data
-> layout, expeting a particular variable order.
-> For example in prog_tests/core_reloc.c, when it maps .bss and assigns it
-> to data.
+> The documentation on the first link says to hold the lock or take a
+> reference, but then we assert the lock.  If you take a reference to the
+> anon vma name, then we will trigger the assert.  Either the
+> documentation needs changing or the assert is incorrect - or I'm missing
+> something?
 
-I haven't checked every single one, but I think most (if not all) of
-these progs/test_core_reloc_*.c tests (which are what is being tested
-in prog_tests/core_reloc.c) are structured with a singular variable in
-.bss. And then the variable type is some well-defined struct type. As
-Alexei pointed out, compiler is not allowed to just arbitrarily
-reorder fields within a struct, unless randomization is enabled with
-an extra attribute (which we do not use).
+I think the documentation is correct. It says that at the time of
+calling anon_vma_name() the mmap_lock should be locked (hence the
+assertion). Then the user can raise anon_vma_name refcount, drop
+mmap_lock and safely continue using anon_vma_name object. IOW this is
+fine:
 
-So if you have specific cases where something isn't correct, let's go
-over them, but I think prog_tests/core_reloc.c should be fine.
+mmap_read_lock(vma->mm);
+anon_name =3D anon_vma_name(vma);
+anon_vma_name_get(anon_name);
+mmap_read_unlock(vma->mm);
+// keep using anon_name
+anon_vma_name_put(anon_name);
 
-> GCC will allocate variables in a different order then clang and when
-> comparing content is not where comparisson is expecting.
->
-> Some other test, would expect that struct fields would be in some
-> particular order, while GCC decides it would benefit from reordering
-> struct fields. For passing those tests I need to disable GCC
-> optimization that would make this reordering.
-> However reordering of the struct fields is a perfectly valid
-
-Nope, it's not.
-
-As mentioned, struct layout is effectively an ABI, so the compiler
-cannot just reorder it. Lots and lots of things would be broken if
-this was true for C programs.
-
-> optimization. Maybe disabling for this tests is acceptable, but in any
-> case the test itself is prune for any future optimizations that can be
-> added to GCC or CLANG.
-> This happened in progs/test_core_autosize.c for example.
-
-We probably should rewrite such tests that have to deal with
-.bss/.data to BPF skeletons, I think they were written before BPF
-skeletons were available.
 
 >
-> Anyway, just a couple of examples of tests that were made very tight to
-> compiler.
+> >
+> > Sigh... Ok, what's the suggestion then? Should it be some variant of
+> > mmap_assert_locked() || vma_assert_locked() logic, or it's not so
+> > simple?
+> >
+> > Maybe I should just drop the CONFIG_PER_VMA_LOCK changes for now until
+> > all these gotchas are figured out for /proc/<pid>/maps anyway, and
+> > then we can adapt both text-based and ioctl-based /proc/<pid>/maps
+> > APIs on top of whatever the final approach will end up being the right
+> > one?
+> >
+> > Liam, any objections to this? The whole point of this patch set is to
+> > add a new API, not all the CONFIG_PER_VMA_LOCK gotchas. My
+> > implementation is structured in a way that should be easily amenable
+> > to CONFIG_PER_VMA_LOCK changes, but if there are a few more subtle
+> > things that need to be figured for existing text-based
+> > /proc/<pid>/maps anyways, I think it would be best to use mmap_lock
+> > for now for this new API, and then adopt the same final
+> > CONFIG_PER_VMA_LOCK-aware solution.
 >
-> >
-> >>  long rbtree_api_remove_no_drop(void *ctx)
-> >>  {
-> >>         struct bpf_rb_node *res;
-> >> diff --git a/tools/testing/selftests/bpf/progs/refcounted_kptr_fail.c =
-b/tools/testing/selftests/bpf/progs/refcounted_kptr_fail.c
-> >> index 1553b9c16aa7..f8d4b7cfcd68 100644
-> >> --- a/tools/testing/selftests/bpf/progs/refcounted_kptr_fail.c
-> >> +++ b/tools/testing/selftests/bpf/progs/refcounted_kptr_fail.c
-> >> @@ -32,7 +32,7 @@ static bool less(struct bpf_rb_node *a, const struct=
- bpf_rb_node *b)
-> >>  }
-> >>
-> >>  SEC("?tc")
-> >> -__failure __msg("Unreleased reference id=3D4 alloc_insn=3D21")
-> >> +__failure __regex("Unreleased reference id=3D4 alloc_insn=3D[0-9]+")
-> >
-> > same, relying on ID and alloc_insns in tests written in C is super frag=
-ile.
-> >
-> >>  long rbtree_refcounted_node_ref_escapes(void *ctx)
-> >>  {
-> >>         struct node_acquire *n, *m;
-> >> @@ -73,7 +73,7 @@ long refcount_acquire_maybe_null(void *ctx)
-> >>  }
-> >>
-> >>  SEC("?tc")
-> >> -__failure __msg("Unreleased reference id=3D3 alloc_insn=3D9")
-> >> +__failure __regex("Unreleased reference id=3D3 alloc_insn=3D[0-9]+")
-> >>  long rbtree_refcounted_node_ref_escapes_owning_input(void *ctx)
-> >
-> > ditto
-> >
-> >>  {
-> >>         struct node_acquire *n, *m;
-> >> diff --git a/tools/testing/selftests/bpf/progs/verifier_sock.c b/tools=
-/testing/selftests/bpf/progs/verifier_sock.c
-> >> index ee76b51005ab..450b57933c79 100644
-> >> --- a/tools/testing/selftests/bpf/progs/verifier_sock.c
-> >> +++ b/tools/testing/selftests/bpf/progs/verifier_sock.c
-> >> @@ -799,7 +799,7 @@ l0_%=3D:      r0 =3D *(u32*)(r0 + %[bpf_xdp_sock_q=
-ueue_id]);    \
-> >>
-> >>  SEC("sk_skb")
-> >>  __description("bpf_map_lookup_elem(sockmap, &key)")
-> >> -__failure __msg("Unreleased reference id=3D2 alloc_insn=3D6")
-> >> +__failure __regex("Unreleased reference id=3D2 alloc_insn=3D[0-9]+")
-> >
-> > same here and below
-> >
-> >
-> >>  __naked void map_lookup_elem_sockmap_key(void)
-> >>  {
-> >>         asm volatile ("                                 \
-> >> @@ -819,7 +819,7 @@ __naked void map_lookup_elem_sockmap_key(void)
-> >>
-> >>  SEC("sk_skb")
-> >>  __description("bpf_map_lookup_elem(sockhash, &key)")
-> >> -__failure __msg("Unreleased reference id=3D2 alloc_insn=3D6")
-> >> +__failure __regex("Unreleased reference id=3D2 alloc_insn=3D[0-9]+")
-> >>  __naked void map_lookup_elem_sockhash_key(void)
-> >>  {
-> >>         asm volatile ("                                 \
-> >> --
-> >> 2.39.2
-> >>
+> The reason I was hoping to have the new interface use the per-vma
+> locking from the start is to ensure the guarantees that we provide to
+> the users would not change.  We'd also avoid shifting to yet another
+> mmap_lock users.
+>
+> I also didn't think it would complicate your series too much, so I
+> understand why you want to revert to the old locking semantics.  I'm
+> fine with you continuing with the series on the old lock.  Thanks for
+> trying to make this work.
+>
+> Regards,
+> Liam
 
