@@ -1,170 +1,179 @@
-Return-Path: <bpf+bounces-31511-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-31512-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2FFAA8FF2CA
-	for <lists+bpf@lfdr.de>; Thu,  6 Jun 2024 18:46:42 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8D5248FF2F3
+	for <lists+bpf@lfdr.de>; Thu,  6 Jun 2024 18:52:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A8A0F285801
-	for <lists+bpf@lfdr.de>; Thu,  6 Jun 2024 16:46:40 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AA819B29F3A
+	for <lists+bpf@lfdr.de>; Thu,  6 Jun 2024 16:50:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F2E08198A1D;
-	Thu,  6 Jun 2024 16:46:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B8FBC198E84;
+	Thu,  6 Jun 2024 16:49:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="l3gnpkh8"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="FJhdTGIx"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com [209.85.128.54])
+Received: from mail-ej1-f50.google.com (mail-ej1-f50.google.com [209.85.218.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 01CC51E87F;
-	Thu,  6 Jun 2024 16:46:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1FC131E87F
+	for <bpf@vger.kernel.org>; Thu,  6 Jun 2024 16:49:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717692393; cv=none; b=epTzFHaEIDe2Sdd2VTHDJKpf5xXaQpZzzAUTbljlElVHNLDw6X87Evpx5ci2XfDL4lnVH1RktC45Y3BWo6Ng5KvjZPyqObBH1N09Y/RcMICfGxu6+CejwwIMeeIEyQCi81/udEFBaqEHaIqVTuXvg+khJ+lEcCWxlVzQ6w1saig=
+	t=1717692594; cv=none; b=C26BnRsnnFruX3zEuuJKmCWlIhiVf4fhej6OG8ncclC24L/AU6DmM3pub6ylc8ntEqHD5ER79vrp4Hsr29gY+pW76XwQnxGoH4ZfD5X4wmKGH87EworSahQn5Gq12EPhnph9ZJotjn79HY8G+1R9syY8hlNgwtbqtc/4c8Z+7YA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717692393; c=relaxed/simple;
-	bh=YbCpow6g62s4Y/IsFXF+iWJNO0YFFPiz7b2876a3LhA=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=mPqMRxC45nP3zvjetClq6VRwfdtbKrFt3DOYIgmOz5+XWzIpy7H6z9EEWpuXj0uamYsGgb8b1QyeGC88qzOFI7oSEXhb0lcycMRzqJx4QWnDQSQU1ZC5MmO6FlmJxeWfUDvfXwNovl4KPrl+Sv3Du4jRY305eCH4utEFMytDx18=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=l3gnpkh8; arc=none smtp.client-ip=209.85.128.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f54.google.com with SMTP id 5b1f17b1804b1-42122ac2f38so7169515e9.1;
-        Thu, 06 Jun 2024 09:46:31 -0700 (PDT)
+	s=arc-20240116; t=1717692594; c=relaxed/simple;
+	bh=QlINFaI4LTvEN0VfK5cNmlEbpI0ZCm9ojcKkqo+H+CY=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=necRZ4Itlq/fWWQAWQR3s4PJI4B58aLTZyb+pUBIHvUTwSbZkrJuDIgJQ2u4eLcF/ptHoRE0mjf1fCBgXTLaC4hCV9EVUY0EkoGO41/KkhU0gGJ4tWKL5txmtBRO9xen3/x1vu/917bYAk+zRJO6wlyn8+h/kOVljn9ND5Wu+zo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=FJhdTGIx; arc=none smtp.client-ip=209.85.218.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ej1-f50.google.com with SMTP id a640c23a62f3a-a696cde86a4so131702966b.1
+        for <bpf@vger.kernel.org>; Thu, 06 Jun 2024 09:49:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1717692390; x=1718297190; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=2+sr+zYDiUtTeri95usC9+OHaSQ8DEfZldxCyLfldlE=;
-        b=l3gnpkh8pivsu9hxmWWMOQpcNfgvO/ojU6CgyVg+XTyUEqQWV5qxPtYps7ZPC84BAU
-         Z0SvImA/jJioIjjuPmSFTY40uy7RsvqRLambEGUdtwpHFg6/IY3T70CgXS032EeGrSgs
-         bxti6LDq2RWOcF0obFK9i/L1Qo/fycf41CNwjse86B4/giv7sJccCTTFLZjYKDdo5Lj7
-         Ic3+5mtOePqtamUuczFkFKHKKLPerQu6mpruX1yhYBI47vqU7YKzC+pW0+PlOJ1v1sPG
-         JVjcuYzrOUWCg9O1X5ZlNdZ/qfDlCVPpNn98rlsWWivCoWJZeKf+vJhigLKhFuykiNR+
-         Y2bQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1717692390; x=1718297190;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+        d=google.com; s=20230601; t=1717692590; x=1718297390; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=2+sr+zYDiUtTeri95usC9+OHaSQ8DEfZldxCyLfldlE=;
-        b=K6o/ClsOHWjV2smCaA8Mxc3yll5CJrkqOvyIEm+I3kbzOU3DV/6VKbCh4MXtshTjCN
-         b2SazABnf4XbMl8FZMZS3mxVpYrywRUSmipT/28m4p2vrhHH41cryjepvQHOafosKJcY
-         SwChUGQX2X+046ZoEH5UjKokr09oI7B5HtaZrIg1M91z2OLm7gK9qkpj4/cCbC2WLGlr
-         o6z9JA8XrknA6+VMjysukAOWigcWRRN6dNqLOaq9CfYGu2ECP68rHTdakVK5ET4WZZiq
-         y9zIxuNI2A7xnIQkuEBDMGkIyzNzt6hoYduNDrego8rBNofzws3xcDKaYZxk/Btdzecs
-         h01g==
-X-Forwarded-Encrypted: i=1; AJvYcCXDAkdSBAGimfP2oKL5DuLCyICrc7vLQW5KjIYvw8teW6aua2Q0uHM2GrTpfWrLbvMz+xFVCGU97xeJVJhOvX2RVbL6g1rJZLvi1PX2k9jVtcrKpxuoOEhEEAua5dAGWn0KU0OlX2P2hKvg1lG0PbdA1UtbTAld9D1s26AxGgQbjGO/NLoF
-X-Gm-Message-State: AOJu0Yw9ltCh65hT7HCruJpM9faw7UkKbv/IQ+7IXWB13/9qGO5QhD1R
-	TBeyp6LkwieAkUavNVWzQ8RDlEywpJz6qApQ/fYwZ0J0ROSTNJFw
-X-Google-Smtp-Source: AGHT+IH26w+K+rCueYkQ75KLKyYrpzWeYSPuvSZSCvTtwn2ih1yFE/aHnp8z6WQnOYEM6J5EWvVolg==
-X-Received: by 2002:a05:600c:3b84:b0:421:28e6:9934 with SMTP id 5b1f17b1804b1-4215ad1f8a4mr31762835e9.15.1717692390122;
-        Thu, 06 Jun 2024 09:46:30 -0700 (PDT)
-Received: from krava (ip4-95-82-160-96.cust.nbox.cz. [95.82.160.96])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4215811d49esm59509825e9.27.2024.06.06.09.46.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 06 Jun 2024 09:46:29 -0700 (PDT)
-From: Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Thu, 6 Jun 2024 18:46:27 +0200
-To: Oleg Nesterov <oleg@redhat.com>
-Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
-	Martin KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
-	Yonghong Song <yhs@fb.com>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@chromium.org>,
-	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org
-Subject: Re: [RFC bpf-next 01/10] uprobe: Add session callbacks to
- uprobe_consumer
-Message-ID: <ZmHn43Af4Kwlxoyc@krava>
-References: <20240604200221.377848-1-jolsa@kernel.org>
- <20240604200221.377848-2-jolsa@kernel.org>
- <CAEf4BzbzgTzvnPRJ24gdhuxN02_w8iNNFn4URh0vEp-t69oPnA@mail.gmail.com>
- <20240605175619.GH25006@redhat.com>
- <ZmDPQH2uiPYTA_df@krava>
+        bh=kXklq3VgB30R+o4fq7okdZC1G76cerOH8ymTCu7s03o=;
+        b=FJhdTGIxctQIk6xOF7Zd1CW+slog1vE6ixCwSs90XTWdHvLrBkGDpnZvoFXFyz1T1o
+         V4F8vhBb8Z9pLu4Hey3uN7SpOw98HEw5zZfZg9nMeeIq15SzcDrkfc3yFfMIQ7cGDLhS
+         uzuog7ycVldhDgR/tnY8wgKRLn4ZW48PynK4NO30CtEOjuoJprXwbn/n4AAzAzVSv1eV
+         YT0AOV+hEMO0OE5fYOn1IKcOU5GzjY3ixs74XLG4XOqY9urvq4k+mtpko+C7uMZ+/mT5
+         RJdnLuvYqSwOku/GHAfZY23nQtqTtYRUtFX7oZeCPiXA05AnDfx9g6sPjP2AepkKYJom
+         UYfg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1717692590; x=1718297390;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=kXklq3VgB30R+o4fq7okdZC1G76cerOH8ymTCu7s03o=;
+        b=LKelWGvS/6lSGZLgT0xA54rvqD5MJslcxiq8C4VU0gOdhF4g2NGwe+xpWB6hiqb5XY
+         ZS6VoYId5RnEwozWcMxvt9CVKz5QT+Dqt1uWcGzuiFo5lRMGOG1DqD6tbanluNNQ7c9H
+         GjDBkLMyXDSXEQxyiPg6BgPZpaOMRDXlX9F6rO4r7zDiZpJt4eG82+6eEeeaf+PSdPnG
+         ASE2kXER2CLIwRoYi6+JmFU8Yh63WrazOwr0RtcIQAHppl5UOH8Jiv0km5HSU5iEKmtv
+         u7SB5yT/80+O0LxHmGyEQt0uXZlhlXBwSTwzoLxT4x+kaznb450AnZzuBLkANB4Iynj1
+         lp0Q==
+X-Forwarded-Encrypted: i=1; AJvYcCXo7GzF2EXsSnGEW+VlLKvE2h+7EKM24PBhO9OS0WenW6yIlA5DSt5Lt9cKAD8844WA40e/68lqaQyD8YdjCGBiYW2C
+X-Gm-Message-State: AOJu0Yx3qaGLqzilWBLuO6vWfOed45/g85uoN5FOmU3E5p9zGA+Uv2Cg
+	vnQCllN6E1n+P1/TCp39vdyN/bdyL69CjPgJLzd7wCRT6ZNrBso1wp0VAN8mS9Pu1kyFvUwVuxP
+	ZtiLfTOh+BgTpJfkEkoVPGKGHyOljg033KJk4
+X-Google-Smtp-Source: AGHT+IH2yDy4H26F3I2+8dO9xS+2+lL/iHck43y2iBW4jw1+n0fE7mBk6YXmrPpbRP2wxNUQ12+YElL3P5ewJrljwbU=
+X-Received: by 2002:a17:907:7786:b0:a68:c9fa:f19f with SMTP id
+ a640c23a62f3a-a6cdb0f542cmr7959966b.53.1717692590194; Thu, 06 Jun 2024
+ 09:49:50 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZmDPQH2uiPYTA_df@krava>
+References: <20240530201616.1316526-1-almasrymina@google.com>
+ <20240530201616.1316526-11-almasrymina@google.com> <84162ef4c695cb764454087ca0bc81082d4fac8d.camel@redhat.com>
+In-Reply-To: <84162ef4c695cb764454087ca0bc81082d4fac8d.camel@redhat.com>
+From: Mina Almasry <almasrymina@google.com>
+Date: Thu, 6 Jun 2024 09:49:38 -0700
+Message-ID: <CAHS8izNupu9u1zx9YD9KaNxahBeZeaajOUUSFePbQk+rfUFn+Q@mail.gmail.com>
+Subject: Re: [PATCH net-next v10 10/14] net: add support for skbs with
+ unreadable frags
+To: Paolo Abeni <pabeni@redhat.com>
+Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-doc@vger.kernel.org, linux-alpha@vger.kernel.org, 
+	linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org, 
+	sparclinux@vger.kernel.org, linux-trace-kernel@vger.kernel.org, 
+	linux-arch@vger.kernel.org, bpf@vger.kernel.org, 
+	linux-kselftest@vger.kernel.org, linux-media@vger.kernel.org, 
+	dri-devel@lists.freedesktop.org, "David S. Miller" <davem@davemloft.net>, 
+	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, 
+	Donald Hunter <donald.hunter@gmail.com>, Jonathan Corbet <corbet@lwn.net>, 
+	Richard Henderson <richard.henderson@linaro.org>, Ivan Kokshaysky <ink@jurassic.park.msu.ru>, 
+	Matt Turner <mattst88@gmail.com>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
+	"James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>, Helge Deller <deller@gmx.de>, 
+	Andreas Larsson <andreas@gaisler.com>, Jesper Dangaard Brouer <hawk@kernel.org>, 
+	Ilias Apalodimas <ilias.apalodimas@linaro.org>, Steven Rostedt <rostedt@goodmis.org>, 
+	Masami Hiramatsu <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
+	Arnd Bergmann <arnd@arndb.de>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, Steffen Klassert <steffen.klassert@secunet.com>, 
+	Herbert Xu <herbert@gondor.apana.org.au>, David Ahern <dsahern@kernel.org>, 
+	Willem de Bruijn <willemdebruijn.kernel@gmail.com>, Shuah Khan <shuah@kernel.org>, 
+	Sumit Semwal <sumit.semwal@linaro.org>, =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>, 
+	Pavel Begunkov <asml.silence@gmail.com>, David Wei <dw@davidwei.uk>, Jason Gunthorpe <jgg@ziepe.ca>, 
+	Yunsheng Lin <linyunsheng@huawei.com>, Shailend Chand <shailend@google.com>, 
+	Harshitha Ramamurthy <hramamurthy@google.com>, Shakeel Butt <shakeel.butt@linux.dev>, 
+	Jeroen de Borst <jeroendb@google.com>, Praveen Kaligineedi <pkaligineedi@google.com>, 
+	Willem de Bruijn <willemb@google.com>, Kaiyuan Zhang <kaiyuanz@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Jun 05, 2024 at 10:50:11PM +0200, Jiri Olsa wrote:
-> On Wed, Jun 05, 2024 at 07:56:19PM +0200, Oleg Nesterov wrote:
-> > On 06/05, Andrii Nakryiko wrote:
-> > >
-> > > so any such
-> > > limitations will cause problems, issue reports, investigation, etc.
-> > 
-> > Agreed...
-> > 
-> > > As one possible solution, what if we do
-> > >
-> > > struct return_instance {
-> > >     ...
-> > >     u64 session_cookies[];
-> > > };
-> > >
-> > > and allocate sizeof(struct return_instance) + 8 *
-> > > <num-of-session-consumers> and then at runtime pass
-> > > &session_cookies[i] as data pointer to session-aware callbacks?
-> > 
-> > I too thought about this, but I guess it is not that simple.
-> > 
-> > Just for example. Suppose we have 2 session-consumers C1 and C2.
-> > What if uprobe_unregister(C1) comes before the probed function
-> > returns?
-> > 
-> > We need something like map_cookie_to_consumer().
-> 
-> I guess we could have hash table in return_instance that gets 'consumer -> cookie' ?
+On Tue, Jun 4, 2024 at 3:46=E2=80=AFAM Paolo Abeni <pabeni@redhat.com> wrot=
+e:
+>
+> On Thu, 2024-05-30 at 20:16 +0000, Mina Almasry wrote:
+> > diff --git a/net/core/gro.c b/net/core/gro.c
+> > index 26f09c3e830b7..7b9d018f552bd 100644
+> > --- a/net/core/gro.c
+> > +++ b/net/core/gro.c
+> > @@ -422,6 +422,9 @@ static void gro_pull_from_frag0(struct sk_buff *skb=
+, int grow)
+> >  {
+> >       struct skb_shared_info *pinfo =3D skb_shinfo(skb);
+> >
+> > +     if (WARN_ON_ONCE(!skb_frags_readable(skb)))
+> > +             return;
+> > +
+> >       BUG_ON(skb->end - skb->tail < grow);
+> >
+> >       memcpy(skb_tail_pointer(skb), NAPI_GRO_CB(skb)->frag0, grow);
+> > @@ -443,7 +446,7 @@ static void gro_try_pull_from_frag0(struct sk_buff =
+*skb)
+> >  {
+> >       int grow =3D skb_gro_offset(skb) - skb_headlen(skb);
+> >
+> > -     if (grow > 0)
+> > +     if (grow > 0 && skb_frags_readable(skb))
+> >               gro_pull_from_frag0(skb, grow);
+> >  }
+>
+> I'm unsure if this was already mentioned, so please pardon the eventual
+> duplicate...
+>
+> The above code is quite critical performance wise, and the previous
+> patch already prevent frag0 from being set to a non paged frag,
 
-ok, hash table is probably too big for this.. I guess some solution that
-would iterate consumers and cookies made sure it matches would be fine
 
-jirka
+Hi Paolo!
 
-> 
-> return instance is freed after the consumers' return handlers are executed,
-> so there's no leak if some consumer gets unregistered before that
-> 
-> > 
-> > > > +       /* The handler_session callback return value controls execution of
-> > > > +        * the return uprobe and ret_handler_session callback.
-> > > > +        *  0 on success
-> > > > +        *  1 on failure, DO NOT install/execute the return uprobe
-> > > > +        *    console warning for anything else
-> > > > +        */
-> > > > +       int (*handler_session)(struct uprobe_consumer *self, struct pt_regs *regs,
-> > > > +                              unsigned long *data);
-> > > > +       int (*ret_handler_session)(struct uprobe_consumer *self, unsigned long func,
-> > > > +                                  struct pt_regs *regs, unsigned long *data);
-> > > > +
-> > >
-> > > We should try to avoid an alternative set of callbacks, IMO. Let's
-> > > extend existing ones with `unsigned long *data`,
-> > 
-> > Oh yes, agreed.
-> > 
-> > And the comment about the return value looks confusing too. I mean, the
-> > logic doesn't differ from the ret-code from ->handler().
-> > 
-> > "DO NOT install/execute the return uprobe" is not true if another
-> > non-session-consumer returns 0.
-> 
-> well they are meant to be exclusive, so there'd be no other non-session-consumer
-> 
-> jirka
+The last patch, d4d25dd237a61 ("net: support non paged skb frags"),
+AFAICT doesn't prevent frag0 from being a non-paged frag. What we do
+is set ->frag0=3Dskb->data, then prevent it from being reset to
+skb_frag_address() for non-paged skbs. ->frag0 will likely actually be
+a bad value for non-paged frags, so we need to check in
+gro_pul_from_frag0() so that we don't accidentally pull from a bad
+->frag0 value.
+
+What I think I should do here is what you said. I should make sure
+frag0 and frag0_len is not set if it's a non-paged frag. Then, we
+don't need special checks in gro_pull_from_frag0 I think, because
+skb_gro_may_pull() should detect that frag0_len is 0 and should
+prevent a pull.
+
+I will apply this fix to the next iteration for your review. Let me
+know if I missed something.
+
+
+> so what
+> about dropping the above additional checks?
+>
+
+
+--
+Thanks,
+Mina
 
