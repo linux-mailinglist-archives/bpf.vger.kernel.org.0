@@ -1,112 +1,149 @@
-Return-Path: <bpf+bounces-31483-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-31485-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id E9A718FDE2B
-	for <lists+bpf@lfdr.de>; Thu,  6 Jun 2024 07:37:05 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3B20B8FE0ED
+	for <lists+bpf@lfdr.de>; Thu,  6 Jun 2024 10:27:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9FC0B1F25CC8
-	for <lists+bpf@lfdr.de>; Thu,  6 Jun 2024 05:37:05 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4B5EE1C24807
+	for <lists+bpf@lfdr.de>; Thu,  6 Jun 2024 08:27:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E5A9338384;
-	Thu,  6 Jun 2024 05:36:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B5AB313C67E;
+	Thu,  6 Jun 2024 08:27:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GPPmNntE"
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="sPi7NfIH"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f44.google.com (mail-wr1-f44.google.com [209.85.221.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out30-111.freemail.mail.aliyun.com (out30-111.freemail.mail.aliyun.com [115.124.30.111])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 03E8344C68
-	for <bpf@vger.kernel.org>; Thu,  6 Jun 2024 05:36:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D308F13B7A9;
+	Thu,  6 Jun 2024 08:27:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.111
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717652219; cv=none; b=CVrbYa/PmnZEO/9BFVQfibIaBm67eMw7gCEMjGkgQjHQgxCWeErOgUuqyZ33U2D7iE+YmFij8P8tvUolk/MkgV1Ffg94XhpFwn2hD9+cWJGom6IsUzu9sGAmHnQ/QYDF9dcdBlpioJOp3z+LSs2D5p9ICdJsr1Rc/qPpMt2dIi4=
+	t=1717662435; cv=none; b=QFupSz+OplH8oXWZtIPTmNMVYXJeXalYzd4y/E/rVgVfz7Dvo7HZyXDfrk2Fad22Ok6cGOhGx3cS4kKaEMV7udUf2NKXN337yAqgtyWLXmKfiwgRr8gsE/F4Lv4Zpz6VbZR/8BQ6Mv+ppzlCXrlEDPZhFMdwZf1TY1qGMP2Vw7c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717652219; c=relaxed/simple;
-	bh=ZElMrsoHp2J/iUIPHZOKnAqjVwXfoRwwboo6IEeM+RM=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=oUwEFUoazStWjyTBG0tzXlcdXfhHN2tlVsfCAO3DCTGASeEdLSD0eH8MtqSJvXi+mS3kAFUjHEl+fFP094cw8V3PEzqejaur2DgkpRhrWq7/jmTYLACvSnQphPZHTArX+xrYQWmViF9OgFVgYPgpq30jOFTUSzmD95yDQQUKdHU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=GPPmNntE; arc=none smtp.client-ip=209.85.221.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f44.google.com with SMTP id ffacd0b85a97d-35ef3a037a0so217524f8f.0
-        for <bpf@vger.kernel.org>; Wed, 05 Jun 2024 22:36:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1717652216; x=1718257016; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=KsgalRlq7qQFolT7eFF6rV07ZLhqbx2B/EvfSGbQTW4=;
-        b=GPPmNntEtdIGxfU1g/+XmS0+03rGKCPtI0hErxm6q4WiPJ48VVYUufPtEvwsMjdBFh
-         S8IvbJZdRmIqJ7HiAG6zjWo9qBHzEJdvr4ByWqL/0XfoaZQCp0bgo0B9Tljlcf0lzHL5
-         XV9wnRR8aOB66T4e9ZkntBUc/gkD+gQevr5zE802P5MnqrsUgrOapMLTLdFdfaxBHk7U
-         MpCwcqelhlo1C5zZAsx0L7LHQRQGNsDhl3hehcTE/BkJ6W/N3gzIPeFrqt5t7NOBE8Xn
-         AYAsFS2c2AKy8zxIZ84/+05D0cCOVG7uEkUyZPTHH8deNhDgap/Cb23UdiUFfPxR6VDH
-         vDHw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1717652216; x=1718257016;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=KsgalRlq7qQFolT7eFF6rV07ZLhqbx2B/EvfSGbQTW4=;
-        b=be4TlNfM9qzgqHql1W3Gy7FDvVml7ey+zdaRYQVGu7+yLOBenE1OQ+QCc5+FpLgF/5
-         MWQWe0DIiJeR7J0FnvTH3OctXFESfS3P9/9MPKVVgPwMAy9F7aUA6rNv9N/yJIqj6nUf
-         Su3iKXz+wgWKbi2dwCmpzrIKKowVVULBWiMsIhY/RD/fMb7CYEId8a4CtiSCBr2ZiQBw
-         v3PJjbwYO7hAepOg8KD2NsR+5BmmYsI8ONJfTwguzdveC7qgeHkNqAnxchdcrU1ukfl0
-         9pCqHRFrRhfoCFH+Hz7AjpF9VWQPpl3Yy6hlbgOxooab3JZnV8xyvtg0GqkGfvvGLxga
-         PWRg==
-X-Gm-Message-State: AOJu0Yz2cPsxno9CMwuz9BGRe2SMVsZ0DvvoZI1NYjp++W/ROyHA9yqd
-	1A4l/kyVcIYc82mPsrI4nHHjyJolaOVaMLu9hnFTKEu/uhptDYIdZTsG/ZXGKWaxZqH1Eg1r6GZ
-	tojpnnIa3WJY17RRlyYRhFGMIPj1DEg==
-X-Google-Smtp-Source: AGHT+IGls5GdqwIzv3lEtNYzpAbxSI18zsMCMk8YqjrTcBkgF+PI7TF7aJO0yY1c5CBBt+HB9e28zMM50aiJ+qNyheE=
-X-Received: by 2002:a5d:4e50:0:b0:354:f5f2:1997 with SMTP id
- ffacd0b85a97d-35ef0d7209cmr1322473f8f.3.1717652215909; Wed, 05 Jun 2024
- 22:36:55 -0700 (PDT)
+	s=arc-20240116; t=1717662435; c=relaxed/simple;
+	bh=0RPa2qG64d4CV8qTMSVJcHebmM0oHIdUaDhe4/gM4L4=;
+	h=Message-ID:Subject:Date:From:To:Cc:References:In-Reply-To:
+	 Content-Type; b=VfPIMBSol2XPRNzf++2at0dYTs3p5FPHuj788U8S7gNUVwPw2wjv8VS89B1vQEVDgdrCd6xVsUOFPy2E2ZkQRE1pdE861jc+YxLRV9NOtkJr1u6fXB6IwbgRTe1cn8Fw8lwuMjQTIE4dsNAvZNXIozVGdToDkVeYv9flq0LU1oQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=sPi7NfIH; arc=none smtp.client-ip=115.124.30.111
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1717662428; h=Message-ID:Subject:Date:From:To:Content-Type;
+	bh=DJ4ESPeHxb8olJByyigV2mRr385Ve3kcSAKM7qYz2MM=;
+	b=sPi7NfIHIR4TbxB8rRkNAijvsBn0jLo9Mx6keQxiOtxsraO4LGuWmj+n+D0FR8HAqvf1UdDOfqNWZsDB5VlPNm3fD0oL4LGUTGJQJ9rqDxSLubrzYsT8iJCgaA2pNNRSaGAF3BHhyT54nZ4xhIQXsatyEZqzo1qDfvAaPW/hYCc=
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R501e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=maildocker-contentspam033037067112;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=16;SR=0;TI=SMTPD_---0W7xkc8b_1717662426;
+Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0W7xkc8b_1717662426)
+          by smtp.aliyun-inc.com;
+          Thu, 06 Jun 2024 16:27:06 +0800
+Message-ID: <1717662283.8634596-1-xuanzhuo@linux.alibaba.com>
+Subject: Re: [PATCH vhost v13 04/12] virtio_ring: support add premapped buf
+Date: Thu, 6 Jun 2024 16:24:43 +0800
+From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+To: Alexander Potapenko <glider@google.com>
+Cc: Ilya Leoshkevich <iii@linux.ibm.com>,
+ "Michael S. Tsirkin" <mst@redhat.com>,
+ Jason Wang <jasowang@redhat.com>,
+ "David S. Miller" <davem@davemloft.net>,
+ Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>,
+ Paolo Abeni <pabeni@redhat.com>,
+ Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>,
+ Jesper Dangaard Brouer <hawk@kernel.org>,
+ John Fastabend <john.fastabend@gmail.com>,
+ netdev@vger.kernel.org,
+ bpf@vger.kernel.org,
+ Christoph Hellwig <hch@infradead.org>,
+ virtualization@lists.linux-foundation.org
+References: <20230810123057.43407-1-xuanzhuo@linux.alibaba.com>
+ <20230810123057.43407-5-xuanzhuo@linux.alibaba.com>
+ <0b726a75574ad98200b815f173e59a5378e9df04.camel@linux.ibm.com>
+ <1717644183.6895547-1-xuanzhuo@linux.alibaba.com>
+ <CAG_fn=UsqAhH57s08+prkj2iJshhxuLznzDNft4dPXHKX9V72Q@mail.gmail.com>
+In-Reply-To: <CAG_fn=UsqAhH57s08+prkj2iJshhxuLznzDNft4dPXHKX9V72Q@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20220917153125.2001645-1-houtao@huaweicloud.com>
- <20220917153125.2001645-7-houtao@huaweicloud.com> <CAADnVQ+0eTwL_iJo8Y79GHB-8zAgNCV7Ka9Mza1b+8ENOShBvw@mail.gmail.com>
- <3a21310f-e5ec-c9fb-86a8-6eeecb0b6975@huaweicloud.com> <CAADnVQK0U8pdW0NAno5fS7RYpZcPDWxNHXYaunw4foP9JFLZnQ@mail.gmail.com>
- <8038fc1b-1d73-c8df-9cd1-2dfcde8360fc@huaweicloud.com>
-In-Reply-To: <8038fc1b-1d73-c8df-9cd1-2dfcde8360fc@huaweicloud.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Wed, 5 Jun 2024 22:36:44 -0700
-Message-ID: <CAADnVQJV6XQgFjEx1pCVxcnXegB7Zeo5KZgZowCrvCoVef8imA@mail.gmail.com>
-Subject: Re: qp-trie? Re: [PATCH bpf-next 06/10] bpf: Add support for qp-trie map
-To: Hou Tao <houtao@huaweicloud.com>
-Cc: bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
-	Song Liu <songliubraving@fb.com>, Hao Luo <haoluo@google.com>, Yonghong Song <yhs@fb.com>, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Martin KaFai Lau <kafai@fb.com>, 
-	KP Singh <kpsingh@kernel.org>, "David S . Miller" <davem@davemloft.net>, 
-	Jakub Kicinski <kuba@kernel.org>, Stanislav Fomichev <sdf@google.com>, Jiri Olsa <jolsa@kernel.org>, 
-	John Fastabend <john.fastabend@gmail.com>, Lorenz Bauer <oss@lmb.io>, 
-	"Paul E . McKenney" <paulmck@kernel.org>, Hou Tao <houtao1@huawei.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Wed, Jun 5, 2024 at 9:32=E2=80=AFPM Hou Tao <houtao@huaweicloud.com> wro=
-te:
+On Thu, 6 Jun 2024 10:20:21 +0200, Alexander Potapenko <glider@google.com> =
+wrote:
+> > Could you try this?
 >
-> OK. I will postpone the change, but I still think posting a RFC for
-> discussion may also benefit the generalization of bpf_ma in slub,  andI
-> could do that later.
-
-Yeah. RFC is always fine.
-
-> > Please prioritize qp-trie. It's more urgent.
-> > At LPC multiple folks requested a good data structure to store
-> > variable length objects.
-> > .
+> Hi Xuan,
 >
-> OK. Will do qp-trie first. Could you elaborate one possible use case for
-> the "variable length objects" thing ?
+> What kernel revision does this patch apply to? I tried it against
+> v6.10-rc2, and only the first hunk applied.
+> However this seems to fix the problem, at least the kernel boots without
+> warnings now.
 
-I hope strings are just a subset of "variable length things" that
-qp-trie can hold.
+
+Sorry, I have some changes locally.
+
+If the hunk #1 is applied, then it is ok.
+
+Do you think we need more test? Or I post an new patch directly.
+
+Thanks.
+
+
+>
+> > Thanks.
+> >
+> > diff --git a/drivers/virtio/virtio_ring.c b/drivers/virtio/virtio_ring.c
+> > index 37c9c5b55864..cb280b66c7a2 100644
+> > --- a/drivers/virtio/virtio_ring.c
+> > +++ b/drivers/virtio/virtio_ring.c
+> > @@ -3119,8 +3119,10 @@ dma_addr_t virtqueue_dma_map_single_attrs(struct
+> virtqueue *_vq, void *ptr,
+> >  {
+> >         struct vring_virtqueue *vq =3D to_vvq(_vq);
+> >
+> > -       if (!vq->use_dma_api)
+> > +       if (!vq->use_dma_api) {
+> > +               kmsan_handle_dma(virt_to_page(ptr), offset_in_page(ptr),
+> size, dir);
+> >                 return (dma_addr_t)virt_to_phys(ptr);
+> > +       }
+> >
+> >         return dma_map_single_attrs(vring_dma_dev(vq), ptr, size, dir,
+> attrs);
+> >  }
+> > @@ -3171,8 +3173,10 @@ dma_addr_t virtqueue_dma_map_page_attrs(struct
+> virtqueue *_vq, struct page *page
+> >  {
+> >         struct vring_virtqueue *vq =3D to_vvq(_vq);
+> >
+> > -       if (!vq->use_dma_api)
+> > +       if (!vq->use_dma_api) {
+> > +               kmsan_handle_dma(page, offset, size, dir);
+> >                 return page_to_phys(page) + offset;
+> > +       }
+> >
+> >         return dma_map_page_attrs(vring_dma_dev(vq), page, offset, size,
+> dir, attrs);
+> >  }
+>
+>
+>
+> --
+> Alexander Potapenko
+> Software Engineer
+>
+> Google Germany GmbH
+> Erika-Mann-Stra=C3=9Fe, 33
+> 80636 M=C3=BCnchen
+>
+> Gesch=C3=A4ftsf=C3=BChrer: Paul Manicle, Liana Sebastian
+> Registergericht und -nummer: Hamburg, HRB 86891
+> Sitz der Gesellschaft: Hamburg
+>
 
