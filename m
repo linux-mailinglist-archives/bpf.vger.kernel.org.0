@@ -1,131 +1,111 @@
-Return-Path: <bpf+bounces-31484-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-31487-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 15AE68FE0E8
-	for <lists+bpf@lfdr.de>; Thu,  6 Jun 2024 10:26:54 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 263D28FE2D7
+	for <lists+bpf@lfdr.de>; Thu,  6 Jun 2024 11:31:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A5347283BF2
-	for <lists+bpf@lfdr.de>; Thu,  6 Jun 2024 08:26:52 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B75301F25766
+	for <lists+bpf@lfdr.de>; Thu,  6 Jun 2024 09:31:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4426513C3F6;
-	Thu,  6 Jun 2024 08:26:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D589178394;
+	Thu,  6 Jun 2024 09:28:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="4sLwLe/V"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="azz02lmp"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-qk1-f179.google.com (mail-qk1-f179.google.com [209.85.222.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 745D03EA72
-	for <bpf@vger.kernel.org>; Thu,  6 Jun 2024 08:26:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 05F6A153597;
+	Thu,  6 Jun 2024 09:28:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717662405; cv=none; b=apS9a8S+hafae/mMrVwbf0oMuo4UOEuZFHcjI2NlKK0jDk18B33fxgYDWHlb9UzuGjaIKZIaEdb6kt2o86rOxMg3/Oq5k59w5weh1nviLev7ebLt0KfpR9lQNKYMQXYsLTLKEw9ynrFZ9jOUGW0LlrDj62ItugPvvO9Rw1cFxFA=
+	t=1717666083; cv=none; b=se3NjrcTTkHPO3zwZL57bXJ+NwETGU72ARq8G0eTcx51R3AbmraVXbwhd8RSrjCuP7w4jGoLEdHw6IGc1LYB3MwR4UgNtbitxTvSpWzBe1XFGO9+s05/sPr/p598mz+8/TRRRLGA8vS/CKhzwCSqF3nldn7RRcwejQRWrdRt0l8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717662405; c=relaxed/simple;
-	bh=n0pZueRUmpdvtloIPpgcxNu/B7/nDsSTEeurRzHnHsE=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=GK9I5s85O+dEVQndNFXwzicby5i8JoAOg3sHWGitagnHAPQC2vg0iwB/Ax4KWVk8D9yhdtf2McKEhhTNyWnGTftTw88Hlyaz7ZCHSnLezB/p0ooiUjyPCKBb3Rd2kE5LFPyQQFhjVbjS6QxOxIm1EpAXbYiMIYhYXgdcXzSb7Xo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=4sLwLe/V; arc=none smtp.client-ip=209.85.222.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-qk1-f179.google.com with SMTP id af79cd13be357-7951cf70432so46865085a.3
-        for <bpf@vger.kernel.org>; Thu, 06 Jun 2024 01:26:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1717662403; x=1718267203; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=KAoWLPLPpZp/YDC/UyXezS+9/hRBrQtfl1bKW+wACuw=;
-        b=4sLwLe/VCU1z+LGkTU/t4s4Cd1FwfbmOkfVfCrOwYJcYfEqjjOHAKAHy8TKNTS4fkR
-         q8ZTin+epAoNF1aZq1Fi7VlUJyQJRPQMWIqdCbNx0u6CHHUGj6j/His/PmZWQOi+iV84
-         Cst8iVnSuBzxMPuobisSYOVjd+GMvbaU73+0zK19uKHrt35eSSkxnkapG/CTSAph0B0F
-         V7jsjbZ3MIULy4Yl+0/z54IQxl7pYzMH2qI7SwCkwTqB5UQ0hfIxUtZjewsbFfWH//GU
-         oLmhXN6O/K6fymHf7F2Jn8megNtSVGl95et4im40bONWGV+gcIOoinUjMC090iI9EI5J
-         OKwg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1717662403; x=1718267203;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=KAoWLPLPpZp/YDC/UyXezS+9/hRBrQtfl1bKW+wACuw=;
-        b=h4biNc3imSRGQXG5CavJPMzFRKc6QMsLnmWMYa7tDvEFvSp24vc2XaEvQrpY12wrgc
-         U/47p2zhO+1EqXH+aevociRxDce5QQQQN2wg7kJCenV6SEVTjVJNvEVt4eEVwjgz/QJc
-         P0O6yAX/ejEiyA/gFz0uhY/vXfHcJ+vCAmGawnkwguQzqaQTYgd186zfuq6mjFBNIHYk
-         7uSWCKJtUvrDVEEU9ZcJESgd7U0Zf563i9DgfT39Cto1uaH0kzT0WaYKgYRW9yTgUvi1
-         qjltiDR152YMIXzzRkdfTYlHi43tGRmIkyBTYxGJ2cqjF2SqyS1Hu9IQyziFncG7vIN0
-         J/VQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVqml0fCj3N7TEM696y6gjFBLalESpzhr5JaZ7R3YXNQAEyPBBC2qv2R1eft3yEIAfVDd8OO5gnqVBu68T9fkJxzvj3
-X-Gm-Message-State: AOJu0YxHQgsDDLgYV72Ins1Wj2ZzfYaGKv0SR+5j4SW66w/LzFUB0vPC
-	keV6A1PkHCWEU3pHorPbOy4khhSn7K+RqPQZde/XhqD7LYAxzvpzzZnL4v9NWgeu2scs94fjQVg
-	uqJJ/wzQM83mlgdPUSCIdiasNlSajoge77Xpq
-X-Google-Smtp-Source: AGHT+IHSPl2srWABU7TtuEx6MInqkT/TqH/zLF1tN13BVl/h67uv526s9BJchBKedf9gNhwL02Rx2Ai332/cTTjwml8=
-X-Received: by 2002:a05:6214:3911:b0:6af:c66a:d5a8 with SMTP id
- 6a1803df08f44-6b030aa0653mr52388716d6.51.1717662403007; Thu, 06 Jun 2024
- 01:26:43 -0700 (PDT)
+	s=arc-20240116; t=1717666083; c=relaxed/simple;
+	bh=3jtGlH/vJOZwEuic+3S8X/WuUsePedwqRR/gd3oODNk=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=fRXB7Iu/vJuETaxxr0oclCRbQ31XCvu29a/nz5Iq9PxoDm7poRod+PwgriwlA6xXimS9CSngPbvyhcxIQGXFaBB8zRr9dD5e/N5LOSHa45W4eX14OTP6iBGGxgfLz2uSGPWQPDO4MPWFCnCoSlHkvu5OHrPJbYqTFmk1fnPsh/E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=azz02lmp; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 99EBFC4AF14;
+	Thu,  6 Jun 2024 09:28:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1717666082;
+	bh=3jtGlH/vJOZwEuic+3S8X/WuUsePedwqRR/gd3oODNk=;
+	h=From:Subject:Date:To:Cc:Reply-To:From;
+	b=azz02lmp9OlVeAZAkKgpiBj3SjjpIG6XeMv5MFmRwo5BZWSp8LjwrBEFm5pR2aPr8
+	 rlq3VF+uUatjZT4RyiTgi7ntW/2f5MOWb+3BBEDzgobrH402umY9DpcnRVd9tLsJ6I
+	 zPqIkfbWJ1ywI1kKLBwuzE9jSWEG0ljFpdrteIoLTT9w2YU7vmcq0/ZlaAketpJCHE
+	 ncQ9RwqKDnEfPAeSXMqAvhKhGI+onx375MsdOrr+6Jh1qPaLuQI96HpjlUZKDfVXgk
+	 KrgMRkhRpwRc4XVNAwhkMGYdPXZ811HYDUJ2yGB+Xi9xbNNnCEnSKOKp3kFromW0i3
+	 zK/EBZ7lPTCzg==
+Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8E589C27C52;
+	Thu,  6 Jun 2024 09:28:02 +0000 (UTC)
+From: Vincent Whitchurch via B4 Relay <devnull+vincent.whitchurch.datadoghq.com@kernel.org>
+Subject: [PATCH bpf-next 0/5] sockmap: Fix reading with splice(2)
+Date: Thu, 06 Jun 2024 11:27:51 +0200
+Message-Id: <20240606-sockmap-splice-v1-0-4820a2ab14b5@datadoghq.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230810123057.43407-1-xuanzhuo@linux.alibaba.com>
- <20230810123057.43407-5-xuanzhuo@linux.alibaba.com> <0b726a75574ad98200b815f173e59a5378e9df04.camel@linux.ibm.com>
- <1717644183.6895547-1-xuanzhuo@linux.alibaba.com>
-In-Reply-To: <1717644183.6895547-1-xuanzhuo@linux.alibaba.com>
-From: Alexander Potapenko <glider@google.com>
-Date: Thu, 6 Jun 2024 10:26:06 +0200
-Message-ID: <CAG_fn=Uvfeg7LGQGjTy4qDSoYis39OeyA3W7=FgOAU+isk5Acg@mail.gmail.com>
-Subject: Re: [PATCH vhost v13 04/12] virtio_ring: support add premapped buf
-To: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Cc: Ilya Leoshkevich <iii@linux.ibm.com>, "Michael S. Tsirkin" <mst@redhat.com>, Jason Wang <jasowang@redhat.com>, 
-	"David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>, 
-	John Fastabend <john.fastabend@gmail.com>, netdev@vger.kernel.org, bpf@vger.kernel.org, 
-	Christoph Hellwig <hch@infradead.org>, virtualization@lists.linux-foundation.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIABeBYWYC/x3MSQqAMAxA0atI1gbqgAWvIi46RA1qLY2IIN7d4
+ vIt/n9AKDEJ9MUDiS4WPkJGVRbgFhNmQvbZUKu6VZ3qUA637iaixI0doW90ZZzSXtsWchQTTXz
+ /wwFsnDDQfcL4vh+tlFU+agAAAA==
+To: John Fastabend <john.fastabend@gmail.com>, 
+ Jakub Sitnicki <jakub@cloudflare.com>
+Cc: netdev@vger.kernel.org, bpf@vger.kernel.org, 
+ Vincent Whitchurch <vincent.whitchurch@datadoghq.com>
+X-Mailer: b4 0.13.0
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1717666080; l=1284;
+ i=vincent.whitchurch@datadoghq.com; s=20240606; h=from:subject:message-id;
+ bh=3jtGlH/vJOZwEuic+3S8X/WuUsePedwqRR/gd3oODNk=;
+ b=YP59EoxHRvNGfrOBcds1lxe8/uU8MyogOBvjqnjGQz816BDh0Vy5G2V0QVA9zfffi/YpdJhyC
+ R5DQabnxMWcCCLaTQLT1yZgeQlD1tNOtd95jNCbWj+g0bl8ku+WDC80
+X-Developer-Key: i=vincent.whitchurch@datadoghq.com; a=ed25519;
+ pk=GwUiPK96WuxbUAD4UjapyK7TOt+aX0EqABOZ/BOj+/M=
+X-Endpoint-Received: by B4 Relay for
+ vincent.whitchurch@datadoghq.com/20240606 with auth_id=170
+X-Original-From: Vincent Whitchurch <vincent.whitchurch@datadoghq.com>
+Reply-To: vincent.whitchurch@datadoghq.com
 
->
-> Could you try this?
+I noticed that if the verdict callback returns SK_PASS, using splice(2)
+to read from the socket doesn't work since it never sees the data queued
+on to it.  As far as I can see, this is not a regression but just
+something that has never worked.
 
-(resending without HTML, sorry for inconvenience).
-Hi Xuan,
+This series attempts to fix it and add a test for it.
 
-What kernel revision does this patch apply to? I tried it against
-v6.10-rc2, and only the first hunk applied.
-However this seems to fix the problem, at least the kernel boots
-without warnings now.
+---
+Vincent Whitchurch (5):
+      net: Add splice_read to prot
+      tcp_bpf: Fix reading with splice(2)
+      selftests/bpf: sockmap: Exit with error on failure
+      selftests/bpf: sockmap: Allow SK_PASS in verdict
+      selftests/bpf: sockmap: Add basic splice(2) mode
 
-> Thanks.
->
-> diff --git a/drivers/virtio/virtio_ring.c b/drivers/virtio/virtio_ring.c
-> index 37c9c5b55864..cb280b66c7a2 100644
-> --- a/drivers/virtio/virtio_ring.c
-> +++ b/drivers/virtio/virtio_ring.c
-> @@ -3119,8 +3119,10 @@ dma_addr_t virtqueue_dma_map_single_attrs(struct virtqueue *_vq, void *ptr,
->  {
->         struct vring_virtqueue *vq = to_vvq(_vq);
->
-> -       if (!vq->use_dma_api)
-> +       if (!vq->use_dma_api) {
-> +               kmsan_handle_dma(virt_to_page(ptr), offset_in_page(ptr), size, dir);
->                 return (dma_addr_t)virt_to_phys(ptr);
-> +       }
->
->         return dma_map_single_attrs(vring_dma_dev(vq), ptr, size, dir, attrs);
->  }
-> @@ -3171,8 +3173,10 @@ dma_addr_t virtqueue_dma_map_page_attrs(struct virtqueue *_vq, struct page *page
->  {
->         struct vring_virtqueue *vq = to_vvq(_vq);
->
-> -       if (!vq->use_dma_api)
-> +       if (!vq->use_dma_api) {
-> +               kmsan_handle_dma(page, offset, size, dir);
->                 return page_to_phys(page) + offset;
-> +       }
->
->         return dma_map_page_attrs(vring_dma_dev(vq), page, offset, size, dir, attrs);
->  }
+ include/net/inet_common.h                  |  3 ++
+ include/net/sock.h                         |  3 ++
+ net/ipv4/af_inet.c                         | 18 ++++++-
+ net/ipv4/tcp_bpf.c                         |  9 ++++
+ net/ipv4/tcp_ipv4.c                        |  1 +
+ net/ipv6/af_inet6.c                        |  2 +-
+ net/ipv6/tcp_ipv6.c                        |  1 +
+ tools/testing/selftests/bpf/test_sockmap.c | 78 +++++++++++++++++++++++++++++-
+ 8 files changed, 111 insertions(+), 4 deletions(-)
+---
+base-commit: 072088704433f75dacf9e33179dd7a81f0a238d4
+change-id: 20240606-sockmap-splice-d371ac07d7b4
+
+Best regards,
+-- 
+Vincent Whitchurch <vincent.whitchurch@datadoghq.com>
+
+
 
