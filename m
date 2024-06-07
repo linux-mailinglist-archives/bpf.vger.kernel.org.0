@@ -1,55 +1,88 @@
-Return-Path: <bpf+bounces-31577-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-31578-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 904C99001A5
-	for <lists+bpf@lfdr.de>; Fri,  7 Jun 2024 13:09:50 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id BF9A49001DD
+	for <lists+bpf@lfdr.de>; Fri,  7 Jun 2024 13:18:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A84D11C20CB0
-	for <lists+bpf@lfdr.de>; Fri,  7 Jun 2024 11:09:49 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 711411F21FDE
+	for <lists+bpf@lfdr.de>; Fri,  7 Jun 2024 11:18:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A91718732E;
-	Fri,  7 Jun 2024 11:09:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 55EDA193090;
+	Fri,  7 Jun 2024 11:17:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MNjiTKi0"
 X-Original-To: bpf@vger.kernel.org
-Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pg1-f176.google.com (mail-pg1-f176.google.com [209.85.215.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B1E212FB01;
-	Fri,  7 Jun 2024 11:09:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.189
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 86A8F191494
+	for <bpf@vger.kernel.org>; Fri,  7 Jun 2024 11:17:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717758579; cv=none; b=Yja0Hk107VCT53/LDSIauIeDrk546AjQ3HTnWHZ9pu0FhUEjcqpwaWdZvSPlOGrwN3TaTQCIQaOy982TnAR8Cx98DRCsIJBzpjsQQw9IcZJ4G7RdnG5r2aYPQsCT7b2VUDygTOc9LXWyqkPECeTyXTOC+lpO8ysZ249F6SQuvNI=
+	t=1717759034; cv=none; b=iHG8HMLLzm6dhB2EGkNK1j83Y8l8HZi2+v4j2+5Dibyb4X3R2wLkDVON4ujCjn9HePMRTzRtqSdZZM24iiDyNZjm1nLjacwoO30DCCZZxdSx9XlWnU/X+og5i8I44iCv9YD3DM3rcbCTRX88wcgIaNbwBmkuWAytRwKvZDuCSX0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717758579; c=relaxed/simple;
-	bh=kc8Z5wRPGLoi9gFViVuYCBwyahPZY0fAZxf1vj1H6xA=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=cR5z8ravLtwFPbFs2670FaGjjt7SyzIzpxn46ORGloQiHgXbFXs7rWrrYUNZtXgnHVzp68y75iPJKMkljavlz881Mv03Kbj5kM1oZ+7xT1PATILpexOy61Pv6Vp4FPhI1cFND4pYMAI9ZttVLBlIGlUcPW5erLrHY/r/CQXSi9k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.189
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.252])
-	by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4Vwdfs3zlzzPpbd;
-	Fri,  7 Jun 2024 19:06:13 +0800 (CST)
-Received: from kwepemd100013.china.huawei.com (unknown [7.221.188.163])
-	by mail.maildlp.com (Postfix) with ESMTPS id 273F018007E;
-	Fri,  7 Jun 2024 19:09:33 +0800 (CST)
-Received: from huawei.com (10.67.174.121) by kwepemd100013.china.huawei.com
- (7.221.188.163) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1258.34; Fri, 7 Jun
- 2024 19:09:32 +0800
-From: Chen Ridong <chenridong@huawei.com>
-To: <martin.lau@linux.dev>, <ast@kernel.org>, <daniel@iogearbox.net>,
-	<andrii@kernel.org>, <eddyz87@gmail.com>, <song@kernel.org>,
-	<yonghong.song@linux.dev>, <john.fastabend@gmail.com>, <kpsingh@kernel.org>,
-	<sdf@google.com>, <haoluo@google.com>, <jolsa@kernel.org>, <tj@kernel.org>,
-	<lizefan.x@bytedance.com>, <hannes@cmpxchg.org>, <roman.gushchin@linux.dev>
-CC: <bpf@vger.kernel.org>, <cgroups@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>
-Subject: [PATCH -next] cgroup: Fix AA deadlock caused by cgroup_bpf_release
-Date: Fri, 7 Jun 2024 11:03:13 +0000
-Message-ID: <20240607110313.2230669-1-chenridong@huawei.com>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1717759034; c=relaxed/simple;
+	bh=tWZgTlS+2D0r1P49zlESay7WeMkMOCt0U70apb4n9YM=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=k6VU2dP8DQ/NAHxGOvYtlkvlFj/dYDMBYU07KUbttNk4QVvk22iTA1Rq+Yuz/FG9Dvidr71iDglJysLtMJH3VWUAM8AdUybVgRjYyN+XEjwL/LQebekqHbK+orb4Cv2ejxbkY5p0B74ywipBR8FWt9sijAjiSAK+lAR9toqxrgA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=MNjiTKi0; arc=none smtp.client-ip=209.85.215.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f176.google.com with SMTP id 41be03b00d2f7-6bce380eb96so1345297a12.0
+        for <bpf@vger.kernel.org>; Fri, 07 Jun 2024 04:17:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1717759033; x=1718363833; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=ZgyKCnG6yRF8PW5sXrv3VlJp2Uw1qBe8A89XgNPodUc=;
+        b=MNjiTKi0cPgZ4iESHioUla3+HjyQKk2o/BR4T48xtZEO+JYuSLfef9bEfyoj7AS5p5
+         a7j4R/TlfPK7K4VjLU+C1U3mtpM/mJ2+XLGRSAnPyTQlmJ1ee0ck/i3CqxHH5gPrndp8
+         CORFDGN0TW1oMrSPwf+HOklzHxYCn4KYON70Xc5a2qwQ0MReuALfJqagh3owwQn9omzh
+         62RB8I3Ux911rcj1Dt5w73IiaqToNgu/ixr1Z6NOx8DsevtCghZOaCegK/tLO/z4Ezq7
+         wRkLTD+Pv1Hu1OLyJ7NseHqo2JLkE2iyTl/yZTL4vQYotqdMVZukhGWxZu2ydcvhzN2V
+         vG6Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1717759033; x=1718363833;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ZgyKCnG6yRF8PW5sXrv3VlJp2Uw1qBe8A89XgNPodUc=;
+        b=hSwJDYR1dh5brh73NEq+BxB05m2VFkCHXj8R6Azo49RSgkkTyba683/DSs6ygQzAzC
+         3y1e98Wc5bbgFjoTcVFL2Q0Vx4teSvAgGJnLL/ileNuYJNBJB+WvaQBZb1NlqfECbY54
+         +QKnjvsFpEYxvVR5eAFvFZ0rXXJDB/tm/3tkO8UGlZfgiESv8C8gzalWyNZj7NDx09B0
+         2NX6H5dGBeEGXFqd8UJfhji1pVz8gyf2hCdY42Pu+a41Ytt1rTTEYq34Zc/1bkOclkoz
+         kE2paQAHEgQabwePa2ObDgBCHm3BmNKK+VxuneJSa4NEN7JlbugMGH8JE1Trc8F8pgfO
+         DrCg==
+X-Gm-Message-State: AOJu0YybiLeQ9dFEJrR2AXTjSQ0QoAYQ4CMNg+XtwemGFQU/fH61SH4I
+	7qwRUdYFQ8ad0XUK/QKs2by/9nzLy1KP0gJxY80Dr34OExdLwpOW5DxgFzNYNSI=
+X-Google-Smtp-Source: AGHT+IEGVvqeTCmWaAIzx04CtStCcwp6oAccykfA76KxapvX3e2yUvemoVBf6WgTZmQEd+xq2APPhQ==
+X-Received: by 2002:a17:90a:fe92:b0:2c1:9ba9:ece5 with SMTP id 98e67ed59e1d1-2c2bcc871d6mr1881128a91.45.1717759032821;
+        Fri, 07 Jun 2024 04:17:12 -0700 (PDT)
+Received: from kta-ryzen7.. ([240d:1a:2e0:8a00:e49b:574:d394:8195])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2c28063a7fcsm5295797a91.7.2024.06.07.04.17.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 07 Jun 2024 04:17:12 -0700 (PDT)
+From: Kenta Tada <tadakentaso@gmail.com>
+To: bpf@vger.kernel.org,
+	qmo@kernel.org
+Cc: daniel@iogearbox.net,
+	andrii@kernel.org,
+	martin.lau@linux.dev,
+	eddyz87@gmail.com,
+	song@kernel.org,
+	yonghong.song@linux.dev,
+	john.fastabend@gmail.com,
+	kpsingh@kernel.org,
+	sdf@google.com,
+	haoluo@google.com,
+	jolsa@kernel.org,
+	Kenta Tada <tadakentaso@gmail.com>
+Subject: [PATCH v3] bpftool: Query only cgroup-related attach types
+Date: Fri,  7 Jun 2024 20:17:04 +0900
+Message-ID: <20240607111704.6716-1-tadakentaso@gmail.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -57,90 +90,93 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- kwepemd100013.china.huawei.com (7.221.188.163)
 
-We found an AA deadlock problem as shown belowed:
+When CONFIG_NETKIT=y,
+bpftool-cgroup shows error even if the cgroup's path is correct:
 
-cgroup_destroy_wq		TaskB				WatchDog			system_wq
+$ bpftool cgroup tree /sys/fs/cgroup
+CgroupPath
+ID       AttachType      AttachFlags     Name
+Error: can't query bpf programs attached to /sys/fs/cgroup: No such device or address
 
-...
-css_killed_work_fn:
-P(cgroup_mutex)
-...
-								...
-								__lockup_detector_reconfigure:
-								P(cpu_hotplug_lock.read)
-								...
-				...
-				percpu_down_write:
-				P(cpu_hotplug_lock.write)
-												...
-												cgroup_bpf_release:
-												P(cgroup_mutex)
-								smp_call_on_cpu:
-								Wait system_wq
+From strace and kernel tracing, I found netkit returned ENXIO and this command failed.
+I think this AttachType(BPF_NETKIT_PRIMARY) is not relevant to cgroup.
 
-cpuset_css_offline:
-P(cpu_hotplug_lock.read)
+bpftool-cgroup should query just only cgroup-related attach types.
 
-WatchDog is waiting for system_wq, who is waiting for cgroup_mutex, to
-finish the jobs, but the owner of the cgroup_mutex is waiting for
-cpu_hotplug_lock. This problem caused by commit 4bfc0bb2c60e ("bpf:
-decouple the lifetime of cgroup_bpf from cgroup itself")
-puts cgroup_bpf release work into system_wq. As cgroup_bpf is a member of
-cgroup, it is reasonable to put cgroup bpf release work into
-cgroup_destroy_wq, which is only used for cgroup's release work, and the
-preblem is solved.
+v2->v3:
+  - removed an unnecessary check
 
-Fixes: 4bfc0bb2c60e ("bpf: decouple the lifetime of cgroup_bpf from cgroup itself")
-Signed-off-by: Chen Ridong <chenridong@huawei.com>
+v1->v2:
+  - used an array of cgroup attach types
+
+Signed-off-by: Kenta Tada <tadakentaso@gmail.com>
 ---
- kernel/bpf/cgroup.c             | 2 +-
- kernel/cgroup/cgroup-internal.h | 1 +
- kernel/cgroup/cgroup.c          | 2 +-
- 3 files changed, 3 insertions(+), 2 deletions(-)
+ tools/bpf/bpftool/cgroup.c | 40 ++++++++++++++++++++++++++++++++++----
+ 1 file changed, 36 insertions(+), 4 deletions(-)
 
-diff --git a/kernel/bpf/cgroup.c b/kernel/bpf/cgroup.c
-index 8ba73042a239..a611a1274788 100644
---- a/kernel/bpf/cgroup.c
-+++ b/kernel/bpf/cgroup.c
-@@ -334,7 +334,7 @@ static void cgroup_bpf_release_fn(struct percpu_ref *ref)
- 	struct cgroup *cgrp = container_of(ref, struct cgroup, bpf.refcnt);
+diff --git a/tools/bpf/bpftool/cgroup.c b/tools/bpf/bpftool/cgroup.c
+index af6898c0f388..9af426d43299 100644
+--- a/tools/bpf/bpftool/cgroup.c
++++ b/tools/bpf/bpftool/cgroup.c
+@@ -19,6 +19,38 @@
  
- 	INIT_WORK(&cgrp->bpf.release_work, cgroup_bpf_release);
--	queue_work(system_wq, &cgrp->bpf.release_work);
-+	queue_work(cgroup_destroy_wq, &cgrp->bpf.release_work);
- }
+ #include "main.h"
  
- /* Get underlying bpf_prog of bpf_prog_list entry, regardless if it's through
-diff --git a/kernel/cgroup/cgroup-internal.h b/kernel/cgroup/cgroup-internal.h
-index 520b90dd97ec..9e57f3e9316e 100644
---- a/kernel/cgroup/cgroup-internal.h
-+++ b/kernel/cgroup/cgroup-internal.h
-@@ -13,6 +13,7 @@
- extern spinlock_t trace_cgroup_path_lock;
- extern char trace_cgroup_path[TRACE_CGROUP_PATH_LEN];
- extern void __init enable_debug_cgroup(void);
-+extern struct workqueue_struct *cgroup_destroy_wq;
++static const int cgroup_attach_types[] = {
++	BPF_CGROUP_INET_INGRESS,
++	BPF_CGROUP_INET_EGRESS,
++	BPF_CGROUP_INET_SOCK_CREATE,
++	BPF_CGROUP_INET_SOCK_RELEASE,
++	BPF_CGROUP_INET4_BIND,
++	BPF_CGROUP_INET6_BIND,
++	BPF_CGROUP_INET4_POST_BIND,
++	BPF_CGROUP_INET6_POST_BIND,
++	BPF_CGROUP_INET4_CONNECT,
++	BPF_CGROUP_INET6_CONNECT,
++	BPF_CGROUP_UNIX_CONNECT,
++	BPF_CGROUP_INET4_GETPEERNAME,
++	BPF_CGROUP_INET6_GETPEERNAME,
++	BPF_CGROUP_UNIX_GETPEERNAME,
++	BPF_CGROUP_INET4_GETSOCKNAME,
++	BPF_CGROUP_INET6_GETSOCKNAME,
++	BPF_CGROUP_UNIX_GETSOCKNAME,
++	BPF_CGROUP_UDP4_SENDMSG,
++	BPF_CGROUP_UDP6_SENDMSG,
++	BPF_CGROUP_UNIX_SENDMSG,
++	BPF_CGROUP_UDP4_RECVMSG,
++	BPF_CGROUP_UDP6_RECVMSG,
++	BPF_CGROUP_UNIX_RECVMSG,
++	BPF_CGROUP_SOCK_OPS,
++	BPF_CGROUP_DEVICE,
++	BPF_CGROUP_SYSCTL,
++	BPF_CGROUP_GETSOCKOPT,
++	BPF_CGROUP_SETSOCKOPT,
++	BPF_LSM_CGROUP
++};
++
+ #define HELP_SPEC_ATTACH_FLAGS						\
+ 	"ATTACH_FLAGS := { multi | override }"
  
- /*
-  * cgroup_path() takes a spin lock. It is good practice not to take
-diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
-index e32b6972c478..3317e03fe2fb 100644
---- a/kernel/cgroup/cgroup.c
-+++ b/kernel/cgroup/cgroup.c
-@@ -124,7 +124,7 @@ DEFINE_PERCPU_RWSEM(cgroup_threadgroup_rwsem);
-  * destruction work items don't end up filling up max_active of system_wq
-  * which may lead to deadlock.
-  */
--static struct workqueue_struct *cgroup_destroy_wq;
-+struct workqueue_struct *cgroup_destroy_wq;
+@@ -183,13 +215,13 @@ static int count_attached_bpf_progs(int cgroup_fd, enum bpf_attach_type type)
  
- /* generate an array of cgroup subsystem pointers */
- #define SUBSYS(_x) [_x ## _cgrp_id] = &_x ## _cgrp_subsys,
+ static int cgroup_has_attached_progs(int cgroup_fd)
+ {
+-	enum bpf_attach_type type;
++	unsigned int i = 0;
+ 	bool no_prog = true;
+ 
+-	for (type = 0; type < __MAX_BPF_ATTACH_TYPE; type++) {
+-		int count = count_attached_bpf_progs(cgroup_fd, type);
++	for (i = 0; i < ARRAY_SIZE(cgroup_attach_types); i++) {
++		int count = count_attached_bpf_progs(cgroup_fd, cgroup_attach_types[i]);
+ 
+-		if (count < 0 && errno != EINVAL)
++		if (count < 0)
+ 			return -1;
+ 
+ 		if (count > 0) {
 -- 
-2.34.1
+2.43.0
 
 
