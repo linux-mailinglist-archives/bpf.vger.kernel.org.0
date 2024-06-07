@@ -1,736 +1,290 @@
-Return-Path: <bpf+bounces-31564-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-31565-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0FF828FF95E
-	for <lists+bpf@lfdr.de>; Fri,  7 Jun 2024 02:56:16 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D007D8FF987
+	for <lists+bpf@lfdr.de>; Fri,  7 Jun 2024 03:17:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8EAEE1F2559B
-	for <lists+bpf@lfdr.de>; Fri,  7 Jun 2024 00:56:15 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 72F5A28254F
+	for <lists+bpf@lfdr.de>; Fri,  7 Jun 2024 01:17:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C7EC14EC56;
-	Fri,  7 Jun 2024 00:52:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="gc50udhs"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 62099A937;
+	Fri,  7 Jun 2024 01:17:29 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yb1-f202.google.com (mail-yb1-f202.google.com [209.85.219.202])
+Received: from mail-il1-f205.google.com (mail-il1-f205.google.com [209.85.166.205])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE1FB13FD7D
-	for <bpf@vger.kernel.org>; Fri,  7 Jun 2024 00:51:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 786714C83
+	for <bpf@vger.kernel.org>; Fri,  7 Jun 2024 01:17:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.205
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717721525; cv=none; b=LDPv5bsJAdw0H3CcSE1Lk0tvsqMBVa2xDDc4SRMDiBbnvJbSVJTEHIOSfCdXP4qsH8M4+8FQ9jGMSIJAOZv08F1Rlz1UoWBakVig88zFyZkSH5p29+ztlWQxJ9aogbhPNnQSzbFpSzwWqOeHcugx/UZ/4hPHiCOQjEF6vpQ2F1U=
+	t=1717723049; cv=none; b=XD31rIl9vXERkFva8vtO0RVlBOThX2v9zxn9in8w88QZpV256pI98XqfLmbvAAhfynCu3gB7E815yZ+19cFt19c9R3xaxabNnnMzm6VrifOFrvqKy6gM9Ncopf75A9iPgaT1FrYOIovfVPs/15+On5fl/oNxwWksHGJKbuda1EA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717721525; c=relaxed/simple;
-	bh=Jii1cjrg2s2PGDtEBacbPWPhxpIomAQOFkPEoNY0FSM=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=fxFfhsoOez8Rfx8EIEeZEjqz6E0+B8faHw0vxQDHxo3mQSgTpon8X3FaQ4reE5kLIWKxqroh57rLthqZAv08QksDa4agwYhG6IKF8s5L7pi0I8Z1/LkwLTc0aDvdAN4wDgYK6GdepsHoCtY0keKXuSlCLwFKLOXMCPXxq3sX8j0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--almasrymina.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=gc50udhs; arc=none smtp.client-ip=209.85.219.202
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--almasrymina.bounces.google.com
-Received: by mail-yb1-f202.google.com with SMTP id 3f1490d57ef6-dfaf7ead784so589655276.0
-        for <bpf@vger.kernel.org>; Thu, 06 Jun 2024 17:51:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1717721517; x=1718326317; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=5OTKzE87dE3YUZ2x+QDSrLZoAnDgIs5NGI9Mvcg7hI4=;
-        b=gc50udhs1dL6FRGIfCBLacS144jEJjz0WSsHief2JpW7jy3pIMlpti+zF7oxKBe7DU
-         q1NyfnZ+VLcjFHO4tViZ24SkYYuVBzwG9fH28EgVudu5etMh8D2rrV74YdTYqiG/s3Ia
-         +tjFusG691vAcJwifJDdcJhQGsCc69FCSrzlEhkzuyevQqTzHx2JSNSMbdmgCmjN3NiT
-         6Cl4epnBZX50yd/NLpt66aRcarcAYU+YsbyCv+xYZRNgf1kBAZ45crHyhxTpgnt0Oibn
-         +IEuzZV9rqBotCbkbsSrINRVrEY/vnWkwGwDSXGdhGcbt/37ES8kOc8Nx7y9RyHVNXgk
-         B9KQ==
+	s=arc-20240116; t=1717723049; c=relaxed/simple;
+	bh=6rpa6Cw/YMoF5HS9EKidjWH6F8W6/mjgbHDSCtzFLtg=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=BIXcClQbaLeo7sUPjC28oBDYXPJv9qPjvNf6V0it97LZO3CnumfF0RJFTpBkRSPobgr/viq6MbVm7OdEMRYWKMFLlMHmFnzpdqWUSZXEiF0LmcdUgYmz3v7dLF2vN50XpNTmWehC719scQHYB4AvKk5ZiSjqj+qUsBSihj+Eb2E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.205
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f205.google.com with SMTP id e9e14a558f8ab-374c07c73faso10515645ab.2
+        for <bpf@vger.kernel.org>; Thu, 06 Jun 2024 18:17:27 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1717721517; x=1718326317;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=5OTKzE87dE3YUZ2x+QDSrLZoAnDgIs5NGI9Mvcg7hI4=;
-        b=qbEH1uE8kd8R069Qh2WHgaiLGfLV03zI5Y0/QaYeSALNEk9PqAFg9nETU8KYouyNhm
-         1tb1S/uYA0Cr8rXPOvNDE27p+cVTSzN5rZtGUND3NHTTB+UDFpZOArQexIR5ur+jT98R
-         IR88XR0nMKyr1H9yk6R9ORwYcPE3jaqmCsAOeMtQKhsTjdTaus5dSk0lelG/HqLf9mkV
-         lvkNeBH8o7Z9BBkAaJbDAoLbwvUkwp6JnlQzZCUToB/VxTL9oTc2Vlr3Ita/nCeN5hKM
-         28A5LqUCvd4CKYZDIqQcWP7SU/2gfM3JLCbz4ksHjbKbTBs8aZdQzv1RJ4G9Oys5lmA2
-         zPxw==
-X-Forwarded-Encrypted: i=1; AJvYcCVXv7xeZiijfyc3uHh0ABtcc3yHskhzrCn4QvlWVteDrygOnTc7XvtmkBd5KEpH7/As4u53pMALtV2EETY8YLHRUpVO
-X-Gm-Message-State: AOJu0Yxbawu+kqnDe+wnge89e0A3+HLjuz0DHv/rX+PywkiCkKTN9qrH
-	bb5FBfzWpAluRqR6/WmTpSySsb3ugvW5nKcM8lLA6OjVPhtGzVdb14LcZDadR0AXkm2bKr2wIed
-	g//2ol/kXKe0QWuoOKOURCQ==
-X-Google-Smtp-Source: AGHT+IGkurDj1hGMUbUGzo/RvEdhZpmgZ2oLuQudkNiV3GsrNkr09TXwWJvQHJazng48KUPCcBKtYgChykr8zPhjUQ==
-X-Received: from almasrymina.c.googlers.com ([fda3:e722:ac3:cc00:20:ed76:c0a8:4bc5])
- (user=almasrymina job=sendgmr) by 2002:a25:ade7:0:b0:dfa:cd94:747f with SMTP
- id 3f1490d57ef6-dfaf64d5da5mr212119276.6.1717721516846; Thu, 06 Jun 2024
- 17:51:56 -0700 (PDT)
-Date: Fri,  7 Jun 2024 00:51:23 +0000
-In-Reply-To: <20240607005127.3078656-1-almasrymina@google.com>
+        d=1e100.net; s=20230601; t=1717723046; x=1718327846;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=4ffFPt55Pj6UElw65/fVwckjnoiLFyZpSfjMTheLVng=;
+        b=QRsEyqOuWX+iy7HW7ntWSrFM8Hfr/ZCw8fKVcYSVtq8fVpgfqoKif9bkiIdYShaY5g
+         IjLWyFqXeet3MAtTdM/JeVFwgpP83HQEIoVQGW3x1umvecT6NWE2nEQidDJjj9mSMATo
+         S/CSxOkK0L9hle4WhsqIXX3lGMFQB+Tx5cSfAsi+HBFY7ZGVrQFP4Q3qaW3l8JvcCOoG
+         8nQNT2EWP/uP87JAWyANytElJ98Fyfzns5syWL9S342iMgL7XVWQeeCaIDSEm8WjT/Qd
+         0/zCvLzlYOuEjz/1NeIqyoYNJ0A07oW+OcOvlU4iVhSf3wyjMJ1jHAu1MgesEibETtlE
+         hahw==
+X-Forwarded-Encrypted: i=1; AJvYcCWCYukSCjeGeVWAVZ64YNVr/OZu8nm+StuMlXszjbJuYHWKT8iXhh2u2q1AgMcwMAcnjCzNdUBeAAq4+sf8v+sJ+1xA
+X-Gm-Message-State: AOJu0YwEkteTZHHAmv2TYA++rmk5vQU8LLMiFRd3AcZug0imYipd8iiX
+	kKGvPpMKpKfK/ApzOP0QJYFQ9w/b0gyV+oQ4myrwG6//bQMqygYytAazUNKkTwWj/srUJPQGWfC
+	AOwJ0XWPYpNvUmOlPc35s3wLG0SmX3HfJg6wl3X81ggtsSCsmcdux3Dw=
+X-Google-Smtp-Source: AGHT+IFT7tyh/nmQu7DiCxZ8/rgombd/hpnI0UYfk5g6LZMmjXSgygTwAO3Ch9o9LGWvRxK1yi6nHe2QwCm1jDO1NzYwyDNsAu3a
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240607005127.3078656-1-almasrymina@google.com>
-X-Mailer: git-send-email 2.45.2.505.gda0bf45e8d-goog
-Message-ID: <20240607005127.3078656-14-almasrymina@google.com>
-Subject: [PATCH net-next v11 13/13] selftests: add ncdevmem, netcat for devmem TCP
-From: Mina Almasry <almasrymina@google.com>
-To: netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-doc@vger.kernel.org, linux-alpha@vger.kernel.org, 
-	linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org, 
-	sparclinux@vger.kernel.org, linux-trace-kernel@vger.kernel.org, 
-	linux-arch@vger.kernel.org, bpf@vger.kernel.org, 
-	linux-kselftest@vger.kernel.org, linux-media@vger.kernel.org, 
-	dri-devel@lists.freedesktop.org
-Cc: Mina Almasry <almasrymina@google.com>, Donald Hunter <donald.hunter@gmail.com>, 
-	Jakub Kicinski <kuba@kernel.org>, "David S. Miller" <davem@davemloft.net>, 
-	Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, 
-	Jonathan Corbet <corbet@lwn.net>, Richard Henderson <richard.henderson@linaro.org>, 
-	Ivan Kokshaysky <ink@jurassic.park.msu.ru>, Matt Turner <mattst88@gmail.com>, 
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
-	"James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>, Helge Deller <deller@gmx.de>, 
-	Andreas Larsson <andreas@gaisler.com>, Jesper Dangaard Brouer <hawk@kernel.org>, 
-	Ilias Apalodimas <ilias.apalodimas@linaro.org>, Steven Rostedt <rostedt@goodmis.org>, 
-	Masami Hiramatsu <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
-	Arnd Bergmann <arnd@arndb.de>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
-	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
-	Jiri Olsa <jolsa@kernel.org>, Steffen Klassert <steffen.klassert@secunet.com>, 
-	Herbert Xu <herbert@gondor.apana.org.au>, David Ahern <dsahern@kernel.org>, 
-	Willem de Bruijn <willemdebruijn.kernel@gmail.com>, Shuah Khan <shuah@kernel.org>, 
-	Sumit Semwal <sumit.semwal@linaro.org>, 
-	"=?UTF-8?q?Christian=20K=C3=B6nig?=" <christian.koenig@amd.com>, Bagas Sanjaya <bagasdotme@gmail.com>, 
-	Christoph Hellwig <hch@infradead.org>, Nikolay Aleksandrov <razor@blackwall.org>, 
-	Pavel Begunkov <asml.silence@gmail.com>, David Wei <dw@davidwei.uk>, Jason Gunthorpe <jgg@ziepe.ca>, 
-	Yunsheng Lin <linyunsheng@huawei.com>, Shailend Chand <shailend@google.com>, 
-	Harshitha Ramamurthy <hramamurthy@google.com>, Shakeel Butt <shakeel.butt@linux.dev>, 
-	Jeroen de Borst <jeroendb@google.com>, Praveen Kaligineedi <pkaligineedi@google.com>
+MIME-Version: 1.0
+X-Received: by 2002:a05:6e02:b42:b0:374:5eee:dc2f with SMTP id
+ e9e14a558f8ab-37580237d66mr620945ab.0.1717723046756; Thu, 06 Jun 2024
+ 18:17:26 -0700 (PDT)
+Date: Thu, 06 Jun 2024 18:17:26 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000000656bf061a429057@google.com>
+Subject: [syzbot] [bpf?] possible deadlock in deactivate_slab
+From: syzbot <syzbot+a4acbb99845d381e5e2f@syzkaller.appspotmail.com>
+To: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org, 
+	daniel@iogearbox.net, eddyz87@gmail.com, haoluo@google.com, 
+	john.fastabend@gmail.com, jolsa@kernel.org, kpsingh@kernel.org, 
+	linux-kernel@vger.kernel.org, martin.lau@linux.dev, sdf@google.com, 
+	song@kernel.org, syzkaller-bugs@googlegroups.com, yonghong.song@linux.dev
 Content-Type: text/plain; charset="UTF-8"
 
-ncdevmem is a devmem TCP netcat. It works similarly to netcat, but it
-sends and receives data using the devmem TCP APIs. It uses udmabuf as
-the dmabuf provider. It is compatible with a regular netcat running on
-a peer, or a ncdevmem running on a peer.
+Hello,
 
-In addition to normal netcat support, ncdevmem has a validation mode,
-where it sends a specific pattern and validates this pattern on the
-receiver side to ensure data integrity.
+syzbot found the following issue on:
 
-Suggested-by: Stanislav Fomichev <sdf@google.com>
-Signed-off-by: Mina Almasry <almasrymina@google.com>
+HEAD commit:    c3f38fa61af7 Linux 6.10-rc2
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=12e9d362980000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=998c63c06e77f5e7
+dashboard link: https://syzkaller.appspot.com/bug?extid=a4acbb99845d381e5e2f
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+userspace arch: i386
+
+Unfortunately, I don't have any reproducer for this issue yet.
+
+Downloadable assets:
+disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/7bc7510fe41f/non_bootable_disk-c3f38fa6.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/af6a0b581dee/vmlinux-c3f38fa6.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/47864da8bd74/bzImage-c3f38fa6.xz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+a4acbb99845d381e5e2f@syzkaller.appspotmail.com
+
+======================================================
+WARNING: possible circular locking dependency detected
+6.10.0-rc2-syzkaller #0 Not tainted
+------------------------------------------------------
+syz-executor.1/23904 is trying to acquire lock:
+ffff888040002018 (&n->list_lock){-.-.}-{2:2}, at: deactivate_slab+0x2b4/0x4a0 mm/slub.c:2948
+
+but task is already holding lock:
+ffff88802792d9f8 (&trie->lock){-.-.}-{2:2}, at: trie_update_elem+0xc7/0xdb0 kernel/bpf/lpm_trie.c:333
+
+which lock already depends on the new lock.
+
+
+the existing dependency chain (in reverse order) is:
+
+-> #1 (&trie->lock){-.-.}-{2:2}:
+       __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:110 [inline]
+       _raw_spin_lock_irqsave+0x3a/0x60 kernel/locking/spinlock.c:162
+       trie_delete_elem+0xb0/0x820 kernel/bpf/lpm_trie.c:462
+       0xffffffffa0001fd2
+       bpf_dispatcher_nop_func include/linux/bpf.h:1243 [inline]
+       __bpf_prog_run include/linux/filter.h:691 [inline]
+       bpf_prog_run include/linux/filter.h:698 [inline]
+       __bpf_trace_run kernel/trace/bpf_trace.c:2403 [inline]
+       bpf_trace_run2+0x231/0x590 kernel/trace/bpf_trace.c:2444
+       trace_contention_end.constprop.0+0xea/0x170 include/trace/events/lock.h:122
+       __pv_queued_spin_lock_slowpath+0x28e/0xcc0 kernel/locking/qspinlock.c:557
+       pv_queued_spin_lock_slowpath arch/x86/include/asm/paravirt.h:584 [inline]
+       queued_spin_lock_slowpath arch/x86/include/asm/qspinlock.h:51 [inline]
+       queued_spin_lock include/asm-generic/qspinlock.h:114 [inline]
+       do_raw_spin_lock+0x210/0x2c0 kernel/locking/spinlock_debug.c:116
+       __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:111 [inline]
+       _raw_spin_lock_irqsave+0x42/0x60 kernel/locking/spinlock.c:162
+       get_partial_node.part.0+0x20/0x350 mm/slub.c:2675
+       get_partial_node mm/slub.c:2672 [inline]
+       get_any_partial mm/slub.c:2759 [inline]
+       get_partial mm/slub.c:2793 [inline]
+       ___slab_alloc+0xd36/0x1870 mm/slub.c:3646
+       __slab_alloc.constprop.0+0x56/0xb0 mm/slub.c:3756
+       __slab_alloc_node mm/slub.c:3809 [inline]
+       slab_alloc_node mm/slub.c:3988 [inline]
+       kmem_cache_alloc_noprof+0x2ae/0x2f0 mm/slub.c:4007
+       getname_flags.part.0+0x50/0x4f0 fs/namei.c:139
+       getname_flags include/linux/audit.h:322 [inline]
+       getname+0x8f/0xe0 fs/namei.c:218
+       do_sys_openat2+0x104/0x1e0 fs/open.c:1399
+       do_sys_open fs/open.c:1420 [inline]
+       __do_sys_openat fs/open.c:1436 [inline]
+       __se_sys_openat fs/open.c:1431 [inline]
+       __x64_sys_openat+0x175/0x210 fs/open.c:1431
+       do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+       do_syscall_64+0xcd/0x250 arch/x86/entry/common.c:83
+       entry_SYSCALL_64_after_hwframe+0x77/0x7f
+
+-> #0 (&n->list_lock){-.-.}-{2:2}:
+       check_prev_add kernel/locking/lockdep.c:3134 [inline]
+       check_prevs_add kernel/locking/lockdep.c:3253 [inline]
+       validate_chain kernel/locking/lockdep.c:3869 [inline]
+       __lock_acquire+0x2478/0x3b30 kernel/locking/lockdep.c:5137
+       lock_acquire kernel/locking/lockdep.c:5754 [inline]
+       lock_acquire+0x1b1/0x560 kernel/locking/lockdep.c:5719
+       __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:110 [inline]
+       _raw_spin_lock_irqsave+0x3a/0x60 kernel/locking/spinlock.c:162
+       deactivate_slab+0x2b4/0x4a0 mm/slub.c:2948
+       ___slab_alloc+0xc0b/0x1870 mm/slub.c:3591
+       __slab_alloc.constprop.0+0x56/0xb0 mm/slub.c:3756
+       __slab_alloc_node mm/slub.c:3809 [inline]
+       slab_alloc_node mm/slub.c:3988 [inline]
+       __do_kmalloc_node mm/slub.c:4120 [inline]
+       __kmalloc_node_noprof+0x36c/0x450 mm/slub.c:4128
+       kmalloc_node_noprof include/linux/slab.h:681 [inline]
+       bpf_map_kmalloc_node+0x98/0x4a0 kernel/bpf/syscall.c:422
+       lpm_trie_node_alloc kernel/bpf/lpm_trie.c:299 [inline]
+       trie_update_elem+0x1ef/0xdb0 kernel/bpf/lpm_trie.c:342
+       bpf_map_update_value+0x2c1/0x6c0 kernel/bpf/syscall.c:203
+       generic_map_update_batch+0x454/0x5f0 kernel/bpf/syscall.c:1889
+       bpf_map_do_batch+0x615/0x6e0 kernel/bpf/syscall.c:5196
+       __sys_bpf+0x18cb/0x5830 kernel/bpf/syscall.c:5751
+       __do_sys_bpf kernel/bpf/syscall.c:5794 [inline]
+       __se_sys_bpf kernel/bpf/syscall.c:5792 [inline]
+       __ia32_sys_bpf+0x76/0xe0 kernel/bpf/syscall.c:5792
+       do_syscall_32_irqs_on arch/x86/entry/common.c:165 [inline]
+       __do_fast_syscall_32+0x73/0x120 arch/x86/entry/common.c:386
+       do_fast_syscall_32+0x32/0x80 arch/x86/entry/common.c:411
+       entry_SYSENTER_compat_after_hwframe+0x84/0x8e
+
+other info that might help us debug this:
+
+ Possible unsafe locking scenario:
+
+       CPU0                    CPU1
+       ----                    ----
+  lock(&trie->lock);
+                               lock(&n->list_lock);
+                               lock(&trie->lock);
+  lock(&n->list_lock);
+
+ *** DEADLOCK ***
+
+2 locks held by syz-executor.1/23904:
+ #0: ffffffff8dbb5160 (rcu_read_lock){....}-{1:2}, at: rcu_lock_acquire include/linux/rcupdate.h:329 [inline]
+ #0: ffffffff8dbb5160 (rcu_read_lock){....}-{1:2}, at: rcu_read_lock include/linux/rcupdate.h:781 [inline]
+ #0: ffffffff8dbb5160 (rcu_read_lock){....}-{1:2}, at: bpf_map_update_value+0x24b/0x6c0 kernel/bpf/syscall.c:202
+ #1: ffff88802792d9f8 (&trie->lock){-.-.}-{2:2}, at: trie_update_elem+0xc7/0xdb0 kernel/bpf/lpm_trie.c:333
+
+stack backtrace:
+CPU: 3 PID: 23904 Comm: syz-executor.1 Not tainted 6.10.0-rc2-syzkaller #0
+Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0x116/0x1f0 lib/dump_stack.c:114
+ check_noncircular+0x31a/0x400 kernel/locking/lockdep.c:2187
+ check_prev_add kernel/locking/lockdep.c:3134 [inline]
+ check_prevs_add kernel/locking/lockdep.c:3253 [inline]
+ validate_chain kernel/locking/lockdep.c:3869 [inline]
+ __lock_acquire+0x2478/0x3b30 kernel/locking/lockdep.c:5137
+ lock_acquire kernel/locking/lockdep.c:5754 [inline]
+ lock_acquire+0x1b1/0x560 kernel/locking/lockdep.c:5719
+ __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:110 [inline]
+ _raw_spin_lock_irqsave+0x3a/0x60 kernel/locking/spinlock.c:162
+ deactivate_slab+0x2b4/0x4a0 mm/slub.c:2948
+ ___slab_alloc+0xc0b/0x1870 mm/slub.c:3591
+ __slab_alloc.constprop.0+0x56/0xb0 mm/slub.c:3756
+ __slab_alloc_node mm/slub.c:3809 [inline]
+ slab_alloc_node mm/slub.c:3988 [inline]
+ __do_kmalloc_node mm/slub.c:4120 [inline]
+ __kmalloc_node_noprof+0x36c/0x450 mm/slub.c:4128
+ kmalloc_node_noprof include/linux/slab.h:681 [inline]
+ bpf_map_kmalloc_node+0x98/0x4a0 kernel/bpf/syscall.c:422
+ lpm_trie_node_alloc kernel/bpf/lpm_trie.c:299 [inline]
+ trie_update_elem+0x1ef/0xdb0 kernel/bpf/lpm_trie.c:342
+ bpf_map_update_value+0x2c1/0x6c0 kernel/bpf/syscall.c:203
+ generic_map_update_batch+0x454/0x5f0 kernel/bpf/syscall.c:1889
+ bpf_map_do_batch+0x615/0x6e0 kernel/bpf/syscall.c:5196
+ __sys_bpf+0x18cb/0x5830 kernel/bpf/syscall.c:5751
+ __do_sys_bpf kernel/bpf/syscall.c:5794 [inline]
+ __se_sys_bpf kernel/bpf/syscall.c:5792 [inline]
+ __ia32_sys_bpf+0x76/0xe0 kernel/bpf/syscall.c:5792
+ do_syscall_32_irqs_on arch/x86/entry/common.c:165 [inline]
+ __do_fast_syscall_32+0x73/0x120 arch/x86/entry/common.c:386
+ do_fast_syscall_32+0x32/0x80 arch/x86/entry/common.c:411
+ entry_SYSENTER_compat_after_hwframe+0x84/0x8e
+RIP: 0023:0xf731f579
+Code: b8 01 10 06 03 74 b4 01 10 07 03 74 b0 01 10 08 03 74 d8 01 00 00 00 00 00 00 00 00 00 00 00 00 00 51 52 55 89 e5 0f 34 cd 80 <5d> 5a 59 c3 90 90 90 90 8d b4 26 00 00 00 00 8d b4 26 00 00 00 00
+RSP: 002b:00000000f5f115ac EFLAGS: 00000292 ORIG_RAX: 0000000000000165
+RAX: ffffffffffffffda RBX: 000000000000001a RCX: 0000000020000100
+RDX: 0000000000000038 RSI: 0000000000000000 RDI: 0000000000000000
+RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000292 R12: 0000000000000000
+R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
+ </TASK>
+----------------
+Code disassembly (best guess), 2 bytes skipped:
+   0:	10 06                	adc    %al,(%rsi)
+   2:	03 74 b4 01          	add    0x1(%rsp,%rsi,4),%esi
+   6:	10 07                	adc    %al,(%rdi)
+   8:	03 74 b0 01          	add    0x1(%rax,%rsi,4),%esi
+   c:	10 08                	adc    %cl,(%rax)
+   e:	03 74 d8 01          	add    0x1(%rax,%rbx,8),%esi
+  1e:	00 51 52             	add    %dl,0x52(%rcx)
+  21:	55                   	push   %rbp
+  22:	89 e5                	mov    %esp,%ebp
+  24:	0f 34                	sysenter
+  26:	cd 80                	int    $0x80
+* 28:	5d                   	pop    %rbp <-- trapping instruction
+  29:	5a                   	pop    %rdx
+  2a:	59                   	pop    %rcx
+  2b:	c3                   	ret
+  2c:	90                   	nop
+  2d:	90                   	nop
+  2e:	90                   	nop
+  2f:	90                   	nop
+  30:	8d b4 26 00 00 00 00 	lea    0x0(%rsi,%riz,1),%esi
+  37:	8d b4 26 00 00 00 00 	lea    0x0(%rsi,%riz,1),%esi
+
 
 ---
-v9: https://lore.kernel.org/netdev/20240403002053.2376017-15-almasrymina@google.com/
-- Remove unused nic_pci_addr entry (Cong).
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-v6:
-- Updated to bind 8 queues.
-- Added RSS configuration.
-- Added some more tests for the netlink API.
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
 
-Changes in v1:
-- Many more general cleanups (Willem).
-- Removed driver reset (Jakub).
-- Removed hardcoded if index (Paolo).
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
 
-RFC v2:
-- General cleanups (Willem).
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
 
----
- tools/testing/selftests/net/.gitignore |   1 +
- tools/testing/selftests/net/Makefile   |   5 +
- tools/testing/selftests/net/ncdevmem.c | 542 +++++++++++++++++++++++++
- 3 files changed, 548 insertions(+)
- create mode 100644 tools/testing/selftests/net/ncdevmem.c
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
 
-diff --git a/tools/testing/selftests/net/.gitignore b/tools/testing/selftests/net/.gitignore
-index 49a56eb5d0368..9cd3c99c6e5d4 100644
---- a/tools/testing/selftests/net/.gitignore
-+++ b/tools/testing/selftests/net/.gitignore
-@@ -17,6 +17,7 @@ ipv6_flowlabel
- ipv6_flowlabel_mgr
- log.txt
- msg_zerocopy
-+ncdevmem
- nettest
- psock_fanout
- psock_snd
-diff --git a/tools/testing/selftests/net/Makefile b/tools/testing/selftests/net/Makefile
-index 6da63d1831c11..2600cce3ee382 100644
---- a/tools/testing/selftests/net/Makefile
-+++ b/tools/testing/selftests/net/Makefile
-@@ -5,6 +5,10 @@ CFLAGS =  -Wall -Wl,--no-as-needed -O2 -g
- CFLAGS += -I../../../../usr/include/ $(KHDR_INCLUDES)
- # Additional include paths needed by kselftest.h
- CFLAGS += -I../
-+CFLAGS += -I../../../net/ynl/generated/
-+CFLAGS += -I../../../net/ynl/lib/
-+
-+LDLIBS += ../../../net/ynl/lib/ynl.a ../../../net/ynl/generated/protos.a
- 
- TEST_PROGS := run_netsocktests run_afpackettests test_bpf.sh netdevice.sh \
- 	      rtnetlink.sh xfrm_policy.sh test_blackhole_dev.sh
-@@ -92,6 +96,7 @@ TEST_PROGS += fdb_flush.sh
- TEST_PROGS += fq_band_pktlimit.sh
- TEST_PROGS += vlan_hw_filter.sh
- TEST_PROGS += bpf_offload.py
-+TEST_GEN_FILES += ncdevmem
- 
- TEST_FILES := settings
- TEST_FILES += in_netns.sh lib.sh net_helper.sh setup_loopback.sh setup_veth.sh
-diff --git a/tools/testing/selftests/net/ncdevmem.c b/tools/testing/selftests/net/ncdevmem.c
-new file mode 100644
-index 0000000000000..e00255e54f77b
---- /dev/null
-+++ b/tools/testing/selftests/net/ncdevmem.c
-@@ -0,0 +1,542 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#define _GNU_SOURCE
-+#define __EXPORTED_HEADERS__
-+
-+#include <linux/uio.h>
-+#include <stdio.h>
-+#include <stdlib.h>
-+#include <unistd.h>
-+#include <stdbool.h>
-+#include <string.h>
-+#include <errno.h>
-+#define __iovec_defined
-+#include <fcntl.h>
-+#include <malloc.h>
-+#include <error.h>
-+
-+#include <arpa/inet.h>
-+#include <sys/socket.h>
-+#include <sys/mman.h>
-+#include <sys/ioctl.h>
-+#include <sys/syscall.h>
-+
-+#include <linux/memfd.h>
-+#include <linux/if.h>
-+#include <linux/dma-buf.h>
-+#include <linux/udmabuf.h>
-+#include <libmnl/libmnl.h>
-+#include <linux/types.h>
-+#include <linux/netlink.h>
-+#include <linux/genetlink.h>
-+#include <linux/netdev.h>
-+#include <time.h>
-+
-+#include "netdev-user.h"
-+#include <ynl.h>
-+
-+#define PAGE_SHIFT 12
-+#define TEST_PREFIX "ncdevmem"
-+#define NUM_PAGES 16000
-+
-+#ifndef MSG_SOCK_DEVMEM
-+#define MSG_SOCK_DEVMEM 0x2000000
-+#endif
-+
-+/*
-+ * tcpdevmem netcat. Works similarly to netcat but does device memory TCP
-+ * instead of regular TCP. Uses udmabuf to mock a dmabuf provider.
-+ *
-+ * Usage:
-+ *
-+ *	On server:
-+ *	ncdevmem -s <server IP> -c <client IP> -f eth1 -d 3 -n 0000:06:00.0 -l \
-+ *		-p 5201 -v 7
-+ *
-+ *	On client:
-+ *	yes $(echo -e \\x01\\x02\\x03\\x04\\x05\\x06) | \
-+ *		tr \\n \\0 | \
-+ *		head -c 5G | \
-+ *		nc <server IP> 5201 -p 5201
-+ *
-+ * Note this is compatible with regular netcat. i.e. the sender or receiver can
-+ * be replaced with regular netcat to test the RX or TX path in isolation.
-+ */
-+
-+static char *server_ip = "192.168.1.4";
-+static char *client_ip = "192.168.1.2";
-+static char *port = "5201";
-+static size_t do_validation;
-+static int start_queue = 8;
-+static int num_queues = 8;
-+static char *ifname = "eth1";
-+static unsigned int ifindex = 3;
-+static unsigned int iterations;
-+static unsigned int dmabuf_id;
-+
-+void print_bytes(void *ptr, size_t size)
-+{
-+	unsigned char *p = ptr;
-+	int i;
-+
-+	for (i = 0; i < size; i++)
-+		printf("%02hhX ", p[i]);
-+	printf("\n");
-+}
-+
-+void print_nonzero_bytes(void *ptr, size_t size)
-+{
-+	unsigned char *p = ptr;
-+	unsigned int i;
-+
-+	for (i = 0; i < size; i++)
-+		putchar(p[i]);
-+	printf("\n");
-+}
-+
-+void validate_buffer(void *line, size_t size)
-+{
-+	static unsigned char seed = 1;
-+	unsigned char *ptr = line;
-+	int errors = 0;
-+	size_t i;
-+
-+	for (i = 0; i < size; i++) {
-+		if (ptr[i] != seed) {
-+			fprintf(stderr,
-+				"Failed validation: expected=%u, actual=%u, index=%lu\n",
-+				seed, ptr[i], i);
-+			errors++;
-+			if (errors > 20)
-+				error(1, 0, "validation failed.");
-+		}
-+		seed++;
-+		if (seed == do_validation)
-+			seed = 0;
-+	}
-+
-+	fprintf(stdout, "Validated buffer\n");
-+}
-+
-+static void reset_flow_steering(void)
-+{
-+	char command[256];
-+
-+	memset(command, 0, sizeof(command));
-+	snprintf(command, sizeof(command), "sudo ethtool -K %s ntuple off",
-+		 "eth1");
-+	system(command);
-+
-+	memset(command, 0, sizeof(command));
-+	snprintf(command, sizeof(command), "sudo ethtool -K %s ntuple on",
-+		 "eth1");
-+	system(command);
-+}
-+
-+static void configure_rss(void)
-+{
-+	char command[256];
-+
-+	memset(command, 0, sizeof(command));
-+	snprintf(command, sizeof(command), "sudo ethtool -X %s equal %d",
-+		 ifname, start_queue);
-+	system(command);
-+}
-+
-+static void configure_flow_steering(void)
-+{
-+	char command[256];
-+
-+	memset(command, 0, sizeof(command));
-+	snprintf(command, sizeof(command),
-+		 "sudo ethtool -N %s flow-type tcp4 src-ip %s dst-ip %s src-port %s dst-port %s queue %d",
-+		 ifname, client_ip, server_ip, port, port, start_queue);
-+	system(command);
-+}
-+
-+static int bind_rx_queue(unsigned int ifindex, unsigned int dmabuf_fd,
-+			 struct netdev_queue_dmabuf *queues,
-+			 unsigned int n_queue_index, struct ynl_sock **ys)
-+{
-+	struct netdev_bind_rx_req *req = NULL;
-+	struct netdev_bind_rx_rsp *rsp = NULL;
-+	struct ynl_error yerr;
-+
-+	*ys = ynl_sock_create(&ynl_netdev_family, &yerr);
-+	if (!*ys) {
-+		fprintf(stderr, "YNL: %s\n", yerr.msg);
-+		return -1;
-+	}
-+
-+	req = netdev_bind_rx_req_alloc();
-+	netdev_bind_rx_req_set_ifindex(req, ifindex);
-+	netdev_bind_rx_req_set_dmabuf_fd(req, dmabuf_fd);
-+	__netdev_bind_rx_req_set_queues(req, queues, n_queue_index);
-+
-+	rsp = netdev_bind_rx(*ys, req);
-+	if (!rsp) {
-+		perror("netdev_bind_rx");
-+		goto err_close;
-+	}
-+
-+	if (!rsp->_present.dmabuf_id) {
-+		perror("dmabuf_id not present");
-+		goto err_close;
-+	}
-+
-+	printf("got dmabuf id=%d\n", rsp->dmabuf_id);
-+	dmabuf_id = rsp->dmabuf_id;
-+
-+	netdev_bind_rx_req_free(req);
-+	netdev_bind_rx_rsp_free(rsp);
-+
-+	return 0;
-+
-+err_close:
-+	fprintf(stderr, "YNL failed: %s\n", (*ys)->err.msg);
-+	netdev_bind_rx_req_free(req);
-+	ynl_sock_destroy(*ys);
-+	return -1;
-+}
-+
-+static void create_udmabuf(int *devfd, int *memfd, int *buf, size_t dmabuf_size)
-+{
-+	struct udmabuf_create create;
-+	int ret;
-+
-+	*devfd = open("/dev/udmabuf", O_RDWR);
-+	if (*devfd < 0) {
-+		error(70, 0,
-+		      "%s: [skip,no-udmabuf: Unable to access DMA buffer device file]\n",
-+		      TEST_PREFIX);
-+	}
-+
-+	*memfd = memfd_create("udmabuf-test", MFD_ALLOW_SEALING);
-+	if (*memfd < 0)
-+		error(70, 0, "%s: [skip,no-memfd]\n", TEST_PREFIX);
-+
-+	/* Required for udmabuf */
-+	ret = fcntl(*memfd, F_ADD_SEALS, F_SEAL_SHRINK);
-+	if (ret < 0)
-+		error(73, 0, "%s: [skip,fcntl-add-seals]\n", TEST_PREFIX);
-+
-+	ret = ftruncate(*memfd, dmabuf_size);
-+	if (ret == -1)
-+		error(74, 0, "%s: [FAIL,memfd-truncate]\n", TEST_PREFIX);
-+
-+	memset(&create, 0, sizeof(create));
-+
-+	create.memfd = *memfd;
-+	create.offset = 0;
-+	create.size = dmabuf_size;
-+	*buf = ioctl(*devfd, UDMABUF_CREATE, &create);
-+	if (*buf < 0)
-+		error(75, 0, "%s: [FAIL, create udmabuf]\n", TEST_PREFIX);
-+}
-+
-+int do_server(void)
-+{
-+	char ctrl_data[sizeof(int) * 20000];
-+	struct netdev_queue_dmabuf *queues;
-+	size_t non_page_aligned_frags = 0;
-+	struct sockaddr_in client_addr;
-+	struct sockaddr_in server_sin;
-+	size_t page_aligned_frags = 0;
-+	int devfd, memfd, buf, ret;
-+	size_t total_received = 0;
-+	socklen_t client_addr_len;
-+	bool is_devmem = false;
-+	char *buf_mem = NULL;
-+	struct ynl_sock *ys;
-+	size_t dmabuf_size;
-+	char iobuf[819200];
-+	char buffer[256];
-+	int socket_fd;
-+	int client_fd;
-+	size_t i = 0;
-+	int opt = 1;
-+
-+	dmabuf_size = getpagesize() * NUM_PAGES;
-+
-+	create_udmabuf(&devfd, &memfd, &buf, dmabuf_size);
-+
-+	reset_flow_steering();
-+
-+	/* Configure RSS to divert all traffic from our devmem queues */
-+	configure_rss();
-+
-+	/* Flow steer our devmem flows to start_queue */
-+	configure_flow_steering();
-+
-+	sleep(1);
-+
-+	queues = malloc(sizeof(*queues) * num_queues);
-+
-+	for (i = 0; i < num_queues; i++) {
-+		queues[i]._present.type = 1;
-+		queues[i]._present.idx = 1;
-+		queues[i].type = NETDEV_QUEUE_TYPE_RX;
-+		queues[i].idx = start_queue + i;
-+	}
-+
-+	if (bind_rx_queue(ifindex, buf, queues, num_queues, &ys))
-+		error(1, 0, "Failed to bind\n");
-+
-+	buf_mem = mmap(NULL, dmabuf_size, PROT_READ | PROT_WRITE, MAP_SHARED,
-+		       buf, 0);
-+	if (buf_mem == MAP_FAILED)
-+		error(1, 0, "mmap()");
-+
-+	server_sin.sin_family = AF_INET;
-+	server_sin.sin_port = htons(atoi(port));
-+
-+	ret = inet_pton(server_sin.sin_family, server_ip, &server_sin.sin_addr);
-+	if (socket < 0)
-+		error(79, 0, "%s: [FAIL, create socket]\n", TEST_PREFIX);
-+
-+	socket_fd = socket(server_sin.sin_family, SOCK_STREAM, 0);
-+	if (socket < 0)
-+		error(errno, errno, "%s: [FAIL, create socket]\n", TEST_PREFIX);
-+
-+	ret = setsockopt(socket_fd, SOL_SOCKET, SO_REUSEPORT, &opt,
-+			 sizeof(opt));
-+	if (ret)
-+		error(errno, errno, "%s: [FAIL, set sock opt]\n", TEST_PREFIX);
-+
-+	ret = setsockopt(socket_fd, SOL_SOCKET, SO_REUSEADDR, &opt,
-+			 sizeof(opt));
-+	if (ret)
-+		error(errno, errno, "%s: [FAIL, set sock opt]\n", TEST_PREFIX);
-+
-+	printf("binding to address %s:%d\n", server_ip,
-+	       ntohs(server_sin.sin_port));
-+
-+	ret = bind(socket_fd, &server_sin, sizeof(server_sin));
-+	if (ret)
-+		error(errno, errno, "%s: [FAIL, bind]\n", TEST_PREFIX);
-+
-+	ret = listen(socket_fd, 1);
-+	if (ret)
-+		error(errno, errno, "%s: [FAIL, listen]\n", TEST_PREFIX);
-+
-+	client_addr_len = sizeof(client_addr);
-+
-+	inet_ntop(server_sin.sin_family, &server_sin.sin_addr, buffer,
-+		  sizeof(buffer));
-+	printf("Waiting or connection on %s:%d\n", buffer,
-+	       ntohs(server_sin.sin_port));
-+	client_fd = accept(socket_fd, &client_addr, &client_addr_len);
-+
-+	inet_ntop(client_addr.sin_family, &client_addr.sin_addr, buffer,
-+		  sizeof(buffer));
-+	printf("Got connection from %s:%d\n", buffer,
-+	       ntohs(client_addr.sin_port));
-+
-+	while (1) {
-+		struct iovec iov = { .iov_base = iobuf,
-+				     .iov_len = sizeof(iobuf) };
-+		struct dmabuf_cmsg *dmabuf_cmsg = NULL;
-+		struct dma_buf_sync sync = { 0 };
-+		struct cmsghdr *cm = NULL;
-+		struct msghdr msg = { 0 };
-+		struct dmabuf_token token;
-+		ssize_t ret;
-+
-+		is_devmem = false;
-+		printf("\n\n");
-+
-+		msg.msg_iov = &iov;
-+		msg.msg_iovlen = 1;
-+		msg.msg_control = ctrl_data;
-+		msg.msg_controllen = sizeof(ctrl_data);
-+		ret = recvmsg(client_fd, &msg, MSG_SOCK_DEVMEM);
-+		printf("recvmsg ret=%ld\n", ret);
-+		if (ret < 0 && (errno == EAGAIN || errno == EWOULDBLOCK))
-+			continue;
-+		if (ret < 0) {
-+			perror("recvmsg");
-+			continue;
-+		}
-+		if (ret == 0) {
-+			printf("client exited\n");
-+			goto cleanup;
-+		}
-+
-+		i++;
-+		for (cm = CMSG_FIRSTHDR(&msg); cm; cm = CMSG_NXTHDR(&msg, cm)) {
-+			if (cm->cmsg_level != SOL_SOCKET ||
-+			    (cm->cmsg_type != SCM_DEVMEM_DMABUF &&
-+			     cm->cmsg_type != SCM_DEVMEM_LINEAR)) {
-+				fprintf(stdout, "skipping non-devmem cmsg\n");
-+				continue;
-+			}
-+
-+			dmabuf_cmsg = (struct dmabuf_cmsg *)CMSG_DATA(cm);
-+			is_devmem = true;
-+
-+			if (cm->cmsg_type == SCM_DEVMEM_LINEAR) {
-+				/* TODO: process data copied from skb's linear
-+				 * buffer.
-+				 */
-+				fprintf(stdout,
-+					"SCM_DEVMEM_LINEAR. dmabuf_cmsg->frag_size=%u\n",
-+					dmabuf_cmsg->frag_size);
-+
-+				continue;
-+			}
-+
-+			token.token_start = dmabuf_cmsg->frag_token;
-+			token.token_count = 1;
-+
-+			total_received += dmabuf_cmsg->frag_size;
-+			printf("received frag_page=%llu, in_page_offset=%llu, frag_offset=%llu, frag_size=%u, token=%u, total_received=%lu, dmabuf_id=%u\n",
-+			       dmabuf_cmsg->frag_offset >> PAGE_SHIFT,
-+			       dmabuf_cmsg->frag_offset % getpagesize(),
-+			       dmabuf_cmsg->frag_offset, dmabuf_cmsg->frag_size,
-+			       dmabuf_cmsg->frag_token, total_received,
-+			       dmabuf_cmsg->dmabuf_id);
-+
-+			if (dmabuf_cmsg->dmabuf_id != dmabuf_id)
-+				error(1, 0,
-+				      "received on wrong dmabuf_id: flow steering error\n");
-+
-+			if (dmabuf_cmsg->frag_size % getpagesize())
-+				non_page_aligned_frags++;
-+			else
-+				page_aligned_frags++;
-+
-+			sync.flags = DMA_BUF_SYNC_READ | DMA_BUF_SYNC_START;
-+			ioctl(buf, DMA_BUF_IOCTL_SYNC, &sync);
-+
-+			if (do_validation)
-+				validate_buffer(
-+					((unsigned char *)buf_mem) +
-+						dmabuf_cmsg->frag_offset,
-+					dmabuf_cmsg->frag_size);
-+			else
-+				print_nonzero_bytes(
-+					((unsigned char *)buf_mem) +
-+						dmabuf_cmsg->frag_offset,
-+					dmabuf_cmsg->frag_size);
-+
-+			sync.flags = DMA_BUF_SYNC_READ | DMA_BUF_SYNC_END;
-+			ioctl(buf, DMA_BUF_IOCTL_SYNC, &sync);
-+
-+			ret = setsockopt(client_fd, SOL_SOCKET,
-+					 SO_DEVMEM_DONTNEED, &token,
-+					 sizeof(token));
-+			if (ret != 1)
-+				error(1, 0,
-+				      "SO_DEVMEM_DONTNEED not enough tokens");
-+		}
-+		if (!is_devmem)
-+			error(1, 0, "flow steering error\n");
-+
-+		printf("total_received=%lu\n", total_received);
-+	}
-+
-+	fprintf(stdout, "%s: ok\n", TEST_PREFIX);
-+
-+	fprintf(stdout, "page_aligned_frags=%lu, non_page_aligned_frags=%lu\n",
-+		page_aligned_frags, non_page_aligned_frags);
-+
-+	fprintf(stdout, "page_aligned_frags=%lu, non_page_aligned_frags=%lu\n",
-+		page_aligned_frags, non_page_aligned_frags);
-+
-+cleanup:
-+
-+	munmap(buf_mem, dmabuf_size);
-+	close(client_fd);
-+	close(socket_fd);
-+	close(buf);
-+	close(memfd);
-+	close(devfd);
-+	ynl_sock_destroy(ys);
-+
-+	return 0;
-+}
-+
-+void run_devmem_tests(void)
-+{
-+	struct netdev_queue_dmabuf *queues;
-+	int devfd, memfd, buf;
-+	struct ynl_sock *ys;
-+	size_t dmabuf_size;
-+	size_t i = 0;
-+
-+	dmabuf_size = getpagesize() * NUM_PAGES;
-+
-+	create_udmabuf(&devfd, &memfd, &buf, dmabuf_size);
-+
-+	/* Configure RSS to divert all traffic from our devmem queues */
-+	configure_rss();
-+
-+	sleep(1);
-+
-+	queues = malloc(sizeof(*queues) * num_queues);
-+
-+	for (i = 0; i < num_queues; i++) {
-+		queues[i]._present.type = 1;
-+		queues[i]._present.idx = 1;
-+		queues[i].type = NETDEV_QUEUE_TYPE_RX;
-+		queues[i].idx = start_queue + i;
-+	}
-+
-+	if (bind_rx_queue(ifindex, buf, queues, num_queues, &ys))
-+		error(1, 0, "Failed to bind\n");
-+
-+	/* Closing the netlink socket does an implicit unbind */
-+	ynl_sock_destroy(ys);
-+}
-+
-+int main(int argc, char *argv[])
-+{
-+	int is_server = 0, opt;
-+
-+	while ((opt = getopt(argc, argv, "ls:c:p:v:q:f:n:i:d:")) != -1) {
-+		switch (opt) {
-+		case 'l':
-+			is_server = 1;
-+			break;
-+		case 's':
-+			server_ip = optarg;
-+			break;
-+		case 'c':
-+			client_ip = optarg;
-+			break;
-+		case 'p':
-+			port = optarg;
-+			break;
-+		case 'v':
-+			do_validation = atoll(optarg);
-+			break;
-+		case 'q':
-+			num_queues = atoi(optarg);
-+			break;
-+		case 't':
-+			start_queue = atoi(optarg);
-+			break;
-+		case 'f':
-+			ifname = optarg;
-+			break;
-+		case 'd':
-+			ifindex = atoi(optarg);
-+			break;
-+		case 'i':
-+			iterations = atoll(optarg);
-+			break;
-+		case '?':
-+			printf("unknown option: %c\n", optopt);
-+			break;
-+		}
-+	}
-+
-+	for (; optind < argc; optind++)
-+		printf("extra arguments: %s\n", argv[optind]);
-+
-+	run_devmem_tests();
-+
-+	if (is_server)
-+		return do_server();
-+
-+	return 0;
-+}
--- 
-2.45.2.505.gda0bf45e8d-goog
-
+If you want to undo deduplication, reply with:
+#syz undup
 
