@@ -1,353 +1,189 @@
-Return-Path: <bpf+bounces-31549-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-31550-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EBE378FF891
-	for <lists+bpf@lfdr.de>; Fri,  7 Jun 2024 02:15:07 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 734F08FF8A9
+	for <lists+bpf@lfdr.de>; Fri,  7 Jun 2024 02:28:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4CB7BB2146E
-	for <lists+bpf@lfdr.de>; Fri,  7 Jun 2024 00:15:05 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EC1A7286E0E
+	for <lists+bpf@lfdr.de>; Fri,  7 Jun 2024 00:28:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB5CA1847;
-	Fri,  7 Jun 2024 00:14:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F0B7D1843;
+	Fri,  7 Jun 2024 00:28:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="n37H05bj"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GUNJPI77"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yb1-f170.google.com (mail-yb1-f170.google.com [209.85.219.170])
+Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E001363
-	for <bpf@vger.kernel.org>; Fri,  7 Jun 2024 00:14:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EBCE21847
+	for <bpf@vger.kernel.org>; Fri,  7 Jun 2024 00:28:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717719296; cv=none; b=XUXyAymG26Q0dL8RAW9JJta2WX4pvWyjdVsscPXR1CKvfyx2cKIro5rGI72OxHpPujjdAOUGpwH3EdNExckwBqMFSWWSc/LDUamk3m1+2NihU5wkzmNlmKdZkOZ76z6hOXenhNLbQ98TjydY3YsDwM5KgiVWg5ZxfBQMhcy+rPE=
+	t=1717720113; cv=none; b=ZF/20KSl3XR6VLCp2Q+qNFtRrI0rPkVQpg4PL6tK/ncMnq4IFmiFalAHvUxYwg0dwJcbcWg1gVekS5UTODCGa8QQXOM31HFtHYbY3ZAEnd6nvKmzMw9Zp/gzfRE15gU2BZBlgUSp9ur4gSSjsu4i7ma3nS2RlaXHLhSw8L71aNk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717719296; c=relaxed/simple;
-	bh=ELaO09jTIhdzgXvmdO2g4ynqTY+hfPvxTzC9Nf1ua1w=;
+	s=arc-20240116; t=1717720113; c=relaxed/simple;
+	bh=zp/6Q89eGqc9i1K7r791C6yLtc+duurgianE05aYZMs=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=nUwHGVikw3MUVNwFTyxdZKE1gJOqhlUTQbuKtrjVeALgiDgjGtXjyItOO6FySwAAK/UY1lONZug1d39mZLeDmYBi1V/lcTv+NlbCjJQETn/ZrrmdqI1w/xK0qSx04PRprGDN6G2rRLJmDWxgeqrZ3Ak+hjs4YTzqXZE3t3pcePA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=n37H05bj; arc=none smtp.client-ip=209.85.219.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-yb1-f170.google.com with SMTP id 3f1490d57ef6-dfa7faffa6cso1892907276.0
-        for <bpf@vger.kernel.org>; Thu, 06 Jun 2024 17:14:54 -0700 (PDT)
+	 To:Cc:Content-Type; b=A/siZIAj99qwBKiq0pC9kfzHgUHiyV/GVtITu7iAzSnGP/s/JuO1+OhIrMG0c2Ce1AfooH/DcfcJHsf9IBfyMh2ycH4MTyZx7m6GyCVYyg0VBmWB7Z0cHil2/3w48q7n0dZ7XcRIu/rwCGIht+Mf/n7mraWSkfy7jg3YsPaR92o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=GUNJPI77; arc=none smtp.client-ip=209.85.128.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-42108856c33so15762415e9.1
+        for <bpf@vger.kernel.org>; Thu, 06 Jun 2024 17:28:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1717719293; x=1718324093; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1717720110; x=1718324910; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=+eF3WC0S/6RgLrCcIQVGlYiaYG+UbXjTsmyozrkqgz8=;
-        b=n37H05bjQsoXP+fkV2I10fesDdEmCmZXQeI04FG+th9i6KEFqrSi4OhtxmjfXfPfg/
-         +tJppMBRxPh7ppBd13F31agt9JOoTKA/TmaBjapF6WLfOkFWawYQKefY1yAUuSYP5pJP
-         8MS+h33OjdccnvvR/Mmc2LxQF4eubnDJclJoVkSbj8EHviloV5sj/0PR2r8qOK+24GqE
-         FeQrhBcxlJGD1AmT0/8iURP/pa77Kh68SRqT3GBmJcNud8TfPhU9osrykztmLTo9W7Cp
-         AYJ0bnZSuY6I041mVjqeOhP+Mpvp9M5OMBxXAKG8DHk+Fkc9ZlGuliDFms74rExJ9/r0
-         z4Hw==
+        bh=f4manwvi6fBw4NBQ5pIYjKZD881Wgw+BZ3B57qFAc64=;
+        b=GUNJPI77311YhPe+fcNDUiEqkcSYz+fuVC02zOFGhwmL2/gmtL12G7LDzm/9lQBxA0
+         2IpoeuB4wZY/D+OCkuttriQugWFBmA7Hx1YVuD7roNsByTT3KOrg8Y7yU51HblbeSB9u
+         FNOQJ4MWfox7AvGj7cv3O8x2ToPOpZKxGURg4Ms1FnGG0LkvUDNo0QCXso8UTtvDVWbE
+         7pHmyABKu5bFqao84rmte6y+E23LLipiUlcpMO1/nw4NZi0z3Ilj9Kl+8uKNnICwXNNt
+         Tg5Pao9JEpcERGktq0OB2sjjFYBeQ9Hr/tXqLn7d7TrXxYqGwELu7CXQ1GkLetcewsfb
+         hchA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1717719293; x=1718324093;
+        d=1e100.net; s=20230601; t=1717720110; x=1718324910;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=+eF3WC0S/6RgLrCcIQVGlYiaYG+UbXjTsmyozrkqgz8=;
-        b=fHsyDRMKBr1GnHH4xjovv04weOhjbKSaGNqHzT9QYkEay7M/oSXw5DZytLPGaTaqa7
-         fqIbIjiSu8zzSsbdBzg2iK1gieftRydziC/xtU+oCmK4ZLDHKgwDuX9X35WPOxXbluds
-         AIvSMHYqOncH8Z6P1zr5YQC5yEvO/q6j1KEwyPsCw5dbibjYgr+a9HxS+t1lSa8tE+lc
-         rPxOLbyqGdCqtvsb2qxm69BSOOGqBHRbSXE0uW31Um5+Cm5vSKEm7xlZS+L9FZ1NpRqP
-         uBDHCWv/L2n1c18wKJR13KyL1dtTrh6N7JrnjfpJXiK0S54SFfnyNK50LjcQH75g3nPX
-         8e0g==
-X-Forwarded-Encrypted: i=1; AJvYcCWsHE97bqDgmRHGJMsokuwqqVcx6xO9j1G+1BTnHoViFgEZ+sYWaJ6UaJz6vgImuVTzt+MIosZtJs+NvOedmaJRBFpt
-X-Gm-Message-State: AOJu0YwRky/7wMawqSN9KmoB4IAvz/gjTvTQlcbxyAaNTLrnOaMm613V
-	WfnOi7BM5CkRoi3RWe37ZXcxhgbdvuTZ/Okp49DFDj9cSw+bsrgjJSi/KUw4fZJc3PqLI4zy8wS
-	j9/Atcogx8KKpYRlFT7Bxx0nYQ/dMxhKj1E9Q
-X-Google-Smtp-Source: AGHT+IEdhMX0D8OjtW6dAblDMt6aDio5sK4QaHdcTMdMHidp0Gqnq5XSOtYVRNrhNlpXIlzh8dUCogC6KyQhG1f6eKA=
-X-Received: by 2002:a25:ef50:0:b0:df1:ce95:5490 with SMTP id
- 3f1490d57ef6-dfaf65c6857mr944656276.18.1717719293250; Thu, 06 Jun 2024
- 17:14:53 -0700 (PDT)
+        bh=f4manwvi6fBw4NBQ5pIYjKZD881Wgw+BZ3B57qFAc64=;
+        b=cG8hjHG1E+sE8nBYjltLlV/zRSTnuTymBF6DagLU9nHSw0UvJDq81fbJBf8F36wkdl
+         hMcyWGQICRVRl2Iq2qbIaEgUhBZtwfPHYC7JuMtEeYEYJwxk3x9DSqZ8yjeq4Q4hKqLa
+         rOBZy8b7wHutuDBagzLJsiK1KiVK0jiSiJjtfVsTSp5oeJmOvzRg7+xg0owdv7HEcOLx
+         TfZK+C6GeSj1DGo0jPndielFkFNfhIuW7MhRedgPpbCa5bQmzEQ9OIGkAFB1S06xpSSH
+         x6sJpQfLbE80K3BmEXGrPt33DSbJG/XZR/dp/9sZV76/kZU87hAhvNUQTVGSSn94cYGi
+         d72A==
+X-Gm-Message-State: AOJu0Yz8ig2+vs3DXGyQbs6v8hPmnFnUcwRdU1IVBlzHZPA2PDLNvlVL
+	ferFfl+KjIZB0WELpcL5uEE36+GrKNGbItERl6T71Fm5FKGBNlpbcBqecUzKD1XkM4E+FRKMhqI
+	fCb7+iJtHGQIn2QjwYjQwcKB7qCk=
+X-Google-Smtp-Source: AGHT+IGCnIkK69u9ZqownqIsAKCq84L9cWe6lJul5BFJPn1hBTycyRrg2j747culS2IIbM68O4TcA4mIWljwZapJdvk=
+X-Received: by 2002:a05:600c:1c27:b0:420:1a72:69dd with SMTP id
+ 5b1f17b1804b1-42164a0c1d4mr9820875e9.10.1717720110072; Thu, 06 Jun 2024
+ 17:28:30 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240531163217.1584450-1-Liam.Howlett@oracle.com> <20240531163217.1584450-3-Liam.Howlett@oracle.com>
-In-Reply-To: <20240531163217.1584450-3-Liam.Howlett@oracle.com>
-From: Suren Baghdasaryan <surenb@google.com>
-Date: Thu, 6 Jun 2024 17:14:40 -0700
-Message-ID: <CAJuCfpFDW-=35GyRikn3-yZPPrKx_aFbaJj-yFqGut4dJfCsdw@mail.gmail.com>
-Subject: Re: [RFC PATCH 2/5] mm/mmap: Split do_vmi_align_munmap() into a
- gather and complete operation
-To: "Liam R. Howlett" <Liam.Howlett@oracle.com>
-Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>, Vlastimil Babka <vbabka@suse.cz>, 
-	sidhartha.kumar@oracle.com, Matthew Wilcox <willy@infradead.org>, 
-	Lorenzo Stoakes <lstoakes@gmail.com>, linux-fsdevel@vger.kernel.org, bpf@vger.kernel.org, 
-	linux-mm@kvack.org, linux-kernel@vger.kernel.org
+References: <20240606005425.38285-1-alexei.starovoitov@gmail.com>
+ <20240606005425.38285-2-alexei.starovoitov@gmail.com> <6dbfd5e14ffbf9d828d63c5855f9bb783ac2506a.camel@gmail.com>
+ <CAADnVQ+KFoNW-yJCa5fFmNzXjoEN4ECvPeQ1YoCeSZpyR9uO5Q@mail.gmail.com>
+ <098d570be9bb15fc804355851b4b99837f18c664.camel@gmail.com> <0f197e908df8b33187a6c9a8da34457cb01a746e.camel@gmail.com>
+In-Reply-To: <0f197e908df8b33187a6c9a8da34457cb01a746e.camel@gmail.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Thu, 6 Jun 2024 17:28:18 -0700
+Message-ID: <CAADnVQK79WDjRrzT9MsGpkEQwWeo7VvCR2XSX0GUb94=U+5VcQ@mail.gmail.com>
+Subject: Re: [PATCH v5 bpf-next 2/3] bpf: Relax precision marking in open
+ coded iters and may_goto loop.
+To: Eduard Zingerman <eddyz87@gmail.com>
+Cc: bpf <bpf@vger.kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@kernel.org>, 
+	Kumar Kartikeya Dwivedi <memxor@gmail.com>, Kernel Team <kernel-team@fb.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, May 31, 2024 at 9:33=E2=80=AFAM Liam R. Howlett <Liam.Howlett@oracl=
-e.com> wrote:
+On Thu, Jun 6, 2024 at 4:39=E2=80=AFPM Eduard Zingerman <eddyz87@gmail.com>=
+ wrote:
 >
-> Split the munmap function into a gathering of vmas and a cleanup of the
-> gathered vmas.  This is necessary for the later patches in the series.
+> On Thu, 2024-06-06 at 15:19 -0700, Eduard Zingerman wrote:
 >
-> Signed-off-by: Liam R. Howlett <Liam.Howlett@oracle.com>
-
-The refactoring looks correct but it's quite painful to verify all the
-pieces. Not sure if it could have been refactored in more gradual
-steps...
-
-Reviewed-by: Suren Baghdasaryan <surenb@google.com>
-
-> ---
->  mm/mmap.c | 143 ++++++++++++++++++++++++++++++++++++++----------------
->  1 file changed, 101 insertions(+), 42 deletions(-)
+> [...]
 >
-> diff --git a/mm/mmap.c b/mm/mmap.c
-> index 31d464e6a656..fad40d604c64 100644
-> --- a/mm/mmap.c
-> +++ b/mm/mmap.c
-> @@ -2340,6 +2340,7 @@ static inline void remove_mt(struct mm_struct *mm, =
-struct ma_state *mas)
+> > For the following C code:
+> >
+> >     long arr1[1024];
+> >
+> >     SEC("socket")
+> >     __success
+> >     int test1(const void *ctx)
+> >     {
+> >         long i;
+> >
+> >         for (i =3D 0; i < 1024 && can_loop; i++)
+> >                 arr1[i] =3D i;
+> >         return 0;
+> >     }
+> >
+> > clang generates the following BPF code:
+> >
+> > 0000000000000340 <test1>:
+> >      104:       r1 =3D 0x0
+> >      105:       r2 =3D 0x0 ll
+> >
+> > 0000000000000358 <LBB28_1>:
+> >      107:       may_goto +0x4 <LBB28_3>
+> >      108:       *(u64 *)(r2 + 0x0) =3D r1
+> >      109:       r2 +=3D 0x8
+> >      110:       r1 +=3D 0x1
+> >      111:       if r1 !=3D 0x400 goto -0x5 <LBB28_1>
+> >
+> > 0000000000000380 <LBB28_3>:
+> >      112:       w0 =3D 0x0
+> >      113:       exit
 >
->                 if (vma->vm_flags & VM_ACCOUNT)
->                         nr_accounted +=3D nrpages;
-> +
-
-nit: here and below a couple of unnecessary empty lines.
-
->                 vm_stat_account(mm, vma->vm_flags, -nrpages);
->                 remove_vma(vma, false);
->         }
-> @@ -2545,33 +2546,45 @@ struct vm_area_struct *vma_merge_extend(struct vm=
-a_iterator *vmi,
->                          vma->vm_userfaultfd_ctx, anon_vma_name(vma));
->  }
+> [...]
 >
-> +
-> +static inline void abort_munmap_vmas(struct ma_state *mas_detach)
-> +{
-> +       struct vm_area_struct *vma;
-> +       int limit;
-> +
-> +       limit =3D mas_detach->index;
-> +       mas_set(mas_detach, 0);
-> +       /* Re-attach any detached VMAs */
-> +       mas_for_each(mas_detach, vma, limit)
-> +               vma_mark_detached(vma, false);
-> +
-> +       __mt_destroy(mas_detach->tree);
-> +}
-> +
->  /*
-> - * do_vmi_align_munmap() - munmap the aligned region from @start to @end=
-.
-> + * vmi_gather_munmap_vmas() - Put all VMAs within a range into a maple t=
-ree
-> + * for removal at a later date.  Handles splitting first and last if nec=
-essary
-> + * and marking the vmas as isolated.
-> + *
->   * @vmi: The vma iterator
->   * @vma: The starting vm_area_struct
->   * @mm: The mm_struct
->   * @start: The aligned start address to munmap.
->   * @end: The aligned end address to munmap.
->   * @uf: The userfaultfd list_head
-> - * @unlock: Set to true to drop the mmap_lock.  unlocking only happens o=
-n
-> - * success.
-> + * @mas_detach: The maple state tracking the detached tree
->   *
-> - * Return: 0 on success and drops the lock if so directed, error and lea=
-ves the
-> - * lock held otherwise.
-> + * Return: 0 on success
->   */
->  static int
-> -do_vmi_align_munmap(struct vma_iterator *vmi, struct vm_area_struct *vma=
-,
-> +vmi_gather_munmap_vmas(struct vma_iterator *vmi, struct vm_area_struct *=
-vma,
->                     struct mm_struct *mm, unsigned long start,
-> -                   unsigned long end, struct list_head *uf, bool unlock)
-> +                   unsigned long end, struct list_head *uf,
-> +                   struct ma_state *mas_detach, unsigned long *locked_vm=
+> I've also took a look why the same program could be verified w/o
+> can_loop, but fails with can_loop (with this series applied):
+>
+> 0000000000000358 <LBB28_1>:
+>      107:       may_goto +0x4 <LBB28_3>
+>      108:       *(u64 *)(r2 + 0x0) =3D r1
+>      109:       r2 +=3D 0x8
+>      110:       r1 +=3D 0x1
+>      111:       if r1 !=3D 0x400 goto -0x5 <LBB28_1>
+>                    ^^
+>     r1 is no longer marked precise,
+>     thus maybe_widen_reg() forgets the range for it
+>     when widen_imprecise_scalars() is called from
+>     may_goto processing logic.
+>
+> As a result, verifier enumerates states
+> {r2=3D0P,r1=3Dscalar()}, {r2=3D8P,r1=3Dscalar()}, {r2=3D16P,r1=3Dscalar()=
+}, ...
+> eventually hitting the value of r2 that does not fit in 'arr1' bounds.
+
+That's correct.
+As I was arguing couple emails ago the existing
+maybe_widen_reg() logic is just as damaging heuristic
+as this new widen_reg() logic.
+
+With this hack:
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index 79e356ac02ab..23892759f05e 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -7928,7 +7928,7 @@ static void maybe_widen_reg(struct bpf_verifier_env *=
+env,
+                return;
+        if (rold->precise || rcur->precise || regs_exact(rold, rcur, idmap)=
 )
->  {
-> -       struct vm_area_struct *prev, *next =3D NULL;
-> -       struct maple_tree mt_detach;
-> -       int count =3D 0;
-> +       struct vm_area_struct *next =3D NULL;
->         int error =3D -ENOMEM;
-> -       unsigned long locked_vm =3D 0;
-> -       MA_STATE(mas_detach, &mt_detach, 0, 0);
-> -       mt_init_flags(&mt_detach, vmi->mas.tree->ma_flags & MT_FLAGS_LOCK=
-_MASK);
-> -       mt_on_stack(mt_detach);
-> +       int count =3D 0;
->
->         /*
->          * If we need to split any vma, do it now to save pain later.
-> @@ -2610,15 +2623,14 @@ do_vmi_align_munmap(struct vma_iterator *vmi, str=
-uct vm_area_struct *vma,
->                                 goto end_split_failed;
->                 }
->                 vma_start_write(next);
-> -               mas_set(&mas_detach, count);
-> -               error =3D mas_store_gfp(&mas_detach, next, GFP_KERNEL);
-> +               mas_set(mas_detach, count++);
-> +               if (next->vm_flags & VM_LOCKED)
-> +                       *locked_vm +=3D vma_pages(next);
-> +
-> +               error =3D mas_store_gfp(mas_detach, next, GFP_KERNEL);
->                 if (error)
->                         goto munmap_gather_failed;
->                 vma_mark_detached(next, true);
-> -               if (next->vm_flags & VM_LOCKED)
-> -                       locked_vm +=3D vma_pages(next);
-> -
-> -               count++;
->                 if (unlikely(uf)) {
->                         /*
->                          * If userfaultfd_unmap_prep returns an error the=
- vmas
-> @@ -2643,7 +2655,7 @@ do_vmi_align_munmap(struct vma_iterator *vmi, struc=
-t vm_area_struct *vma,
->  #if defined(CONFIG_DEBUG_VM_MAPLE_TREE)
->         /* Make sure no VMAs are about to be lost. */
->         {
-> -               MA_STATE(test, &mt_detach, 0, 0);
-> +               MA_STATE(test, mas_detach->tree, 0, 0);
->                 struct vm_area_struct *vma_mas, *vma_test;
->                 int test_count =3D 0;
->
-> @@ -2663,13 +2675,29 @@ do_vmi_align_munmap(struct vma_iterator *vmi, str=
-uct vm_area_struct *vma,
->         while (vma_iter_addr(vmi) > start)
->                 vma_iter_prev_range(vmi);
->
-> -       error =3D vma_iter_clear_gfp(vmi, start, end, GFP_KERNEL);
-> -       if (error)
-> -               goto clear_tree_failed;
-> +       return 0;
->
-> -       /* Point of no return */
-> -       mm->locked_vm -=3D locked_vm;
-> +userfaultfd_error:
-> +munmap_gather_failed:
-> +end_split_failed:
-> +       abort_munmap_vmas(mas_detach);
-> +start_split_failed:
-> +map_count_exceeded:
-> +       return error;
-> +}
-> +
-> +static void
-> +vmi_complete_munmap_vmas(struct vma_iterator *vmi, struct vm_area_struct=
- *vma,
-> +               struct mm_struct *mm, unsigned long start,
-> +               unsigned long end, bool unlock, struct ma_state *mas_deta=
-ch,
-> +               unsigned long locked_vm)
-> +{
-> +       struct vm_area_struct *prev, *next;
-> +       int count;
-> +
-> +       count =3D mas_detach->index + 1;
->         mm->map_count -=3D count;
-> +       mm->locked_vm -=3D locked_vm;
->         if (unlock)
->                 mmap_write_downgrade(mm);
->
-> @@ -2682,30 +2710,61 @@ do_vmi_align_munmap(struct vma_iterator *vmi, str=
-uct vm_area_struct *vma,
->          * We can free page tables without write-locking mmap_lock becaus=
-e VMAs
->          * were isolated before we downgraded mmap_lock.
->          */
-> -       mas_set(&mas_detach, 1);
-> -       unmap_region(mm, &mas_detach, vma, prev, next, start, end, count,
-> +       mas_set(mas_detach, 1);
-> +       unmap_region(mm, mas_detach, vma, prev, next, start, end, count,
->                      !unlock);
->         /* Statistics and freeing VMAs */
-> -       mas_set(&mas_detach, 0);
-> -       remove_mt(mm, &mas_detach);
-> +       mas_set(mas_detach, 0);
-> +       remove_mt(mm, mas_detach);
->         validate_mm(mm);
->         if (unlock)
->                 mmap_read_unlock(mm);
->
-> -       __mt_destroy(&mt_detach);
-> -       return 0;
-> +       __mt_destroy(mas_detach->tree);
-> +}
->
-> -clear_tree_failed:
-> -userfaultfd_error:
-> -munmap_gather_failed:
-> -end_split_failed:
-> -       mas_set(&mas_detach, 0);
-> -       mas_for_each(&mas_detach, next, end)
-> -               vma_mark_detached(next, false);
-> +/*
-> + * do_vmi_align_munmap() - munmap the aligned region from @start to @end=
-.
-> + * @vmi: The vma iterator
-> + * @vma: The starting vm_area_struct
-> + * @mm: The mm_struct
-> + * @start: The aligned start address to munmap.
-> + * @end: The aligned end address to munmap.
-> + * @uf: The userfaultfd list_head
-> + * @unlock: Set to true to drop the mmap_lock.  unlocking only happens o=
-n
-> + * success.
-> + *
-> + * Return: 0 on success and drops the lock if so directed, error and lea=
-ves the
-> + * lock held otherwise.
-> + */
-> +static int
-> +do_vmi_align_munmap(struct vma_iterator *vmi, struct vm_area_struct *vma=
-,
-> +                   struct mm_struct *mm, unsigned long start,
-> +                   unsigned long end, struct list_head *uf, bool unlock)
-> +{
-> +       struct maple_tree mt_detach;
-> +       MA_STATE(mas_detach, &mt_detach, 0, 0);
-> +       mt_init_flags(&mt_detach, vmi->mas.tree->ma_flags & MT_FLAGS_LOCK=
-_MASK);
-> +       mt_on_stack(mt_detach);
-> +       int error;
-> +       unsigned long locked_vm =3D 0;
->
-> -       __mt_destroy(&mt_detach);
-> -start_split_failed:
-> -map_count_exceeded:
-> +       error =3D vmi_gather_munmap_vmas(vmi, vma, mm, start, end, uf,
-> +                                      &mas_detach, &locked_vm);
-> +       if (error)
-> +               goto gather_failed;
-> +
-> +       error =3D vma_iter_clear_gfp(vmi, start, end, GFP_KERNEL);
-> +       if (error)
-> +               goto clear_area_failed;
-> +
-> +       vmi_complete_munmap_vmas(vmi, vma, mm, start, end, unlock, &mas_d=
-etach,
-> +                                locked_vm);
-> +       return 0;
-> +
-> +clear_area_failed:
-> +       abort_munmap_vmas(&mas_detach);
-> +gather_failed:
->         validate_mm(mm);
->         return error;
->  }
-> --
-> 2.43.0
->
+                return;
+-       __mark_reg_unknown(env, rcur);
++//     __mark_reg_unknown(env, rcur);
+ }
+
+the above test is passing.
+Though widen_reg() widened the range the bounded loop logic still works.
+The loop now looks like
+r1=3D[1,999] r2=3D8
+r1=3D[2,999] r2=3D16
+..
+and eventually the verifier goes to check all 1k iterations of the loop
+and passes.
+
+Should I disable old maybe_widen_reg() when new widen_reg() kicks in? ;)
+
+My point is that we had good and bad heuristics. The new one
+helps arena. Is it perfect? No. But based on this particular
+test it's arguable which one is worse.
+
+Anyway, I think I'm going to tighten it a bit more.
+
+pw-bot: cr
 
