@@ -1,262 +1,274 @@
-Return-Path: <bpf+bounces-31579-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-31580-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B944A9002A3
-	for <lists+bpf@lfdr.de>; Fri,  7 Jun 2024 13:51:45 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 977849002A6
+	for <lists+bpf@lfdr.de>; Fri,  7 Jun 2024 13:52:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A533E1C23172
-	for <lists+bpf@lfdr.de>; Fri,  7 Jun 2024 11:51:44 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B13EA1C23323
+	for <lists+bpf@lfdr.de>; Fri,  7 Jun 2024 11:52:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 69A7218FDAF;
-	Fri,  7 Jun 2024 11:51:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="D+sMPRiR"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E30818FDD9;
+	Fri,  7 Jun 2024 11:51:52 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE7D5187358;
-	Fri,  7 Jun 2024 11:51:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8BFD9187358;
+	Fri,  7 Jun 2024 11:51:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.187
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717761094; cv=none; b=OfJxCnE+OvY8pgcZc1LYeFhU4K46fbSKg/Aznub2Osl1Mr/5tgLWFxrNMR3eW3/NAV7B1+ryG0QlgTV3cALK7LruAk5fL11TgfN3bWJAhW35s1TM6x7YezEchzd+FpO2H78Av4q9w+ZP3eM9MJUmPFNFfEKeJNAJGjQqkFgRf28=
+	t=1717761112; cv=none; b=IdeNJRy0j/5CHfZ26hspvUT3OOiV6HNX23AoG48PW7R98hAdzf0TFd6Cr7TYjgqC59zwOCIr+E/moliGExDXa3vF/oU//wCt4u+C/jEqV7KI0YTnI/PZYDu9ToKW9fDGTmxGEwC0C1YH5p85XFsBTVzhOrD4Zj3MHKy+kRfLdPA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717761094; c=relaxed/simple;
-	bh=dKbuqX1WzQnhzGio5Hp05zIP0ds5xQhsfvuXhuegNCI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=LcTry/nyryARmmOw6o3VJjxFrZMVaAYg/2IXD3EhK7OTiweMgbENv+T/4Hn534HtZcUgODvswpIahqPbVE7v771S6m2HPzY2UK+lXVDrMJGDTmxNFdAtOrMW2ZrQ/Iz+bAP4LU62BoqQmJZov1tp47GOwETAX6SrtT9X7pM1v9o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=D+sMPRiR; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 29ED1C32782;
-	Fri,  7 Jun 2024 11:51:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1717761092;
-	bh=dKbuqX1WzQnhzGio5Hp05zIP0ds5xQhsfvuXhuegNCI=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=D+sMPRiRZIqYQXZJhrmRX4QFozqIHizzeEglrctFy8B38cUSrJcozsue+UADh08eb
-	 yNl7yrQmdE4+TbFqVq3x9+HoFJIyN93/H8YvCEygecIbCXWTWSkDL9C6YU8HTDcqsz
-	 ow4WDID293NpLzZ8njFiObMS91MXgmQpeVvOfMDRe0Ti/ApGZA2Qd0hjp1QqH0UAdW
-	 nF3WaTEx8HJ1J7fXTKx/JOikRWtLmunw9neizQcCbepXILWrf/nTtTe3XsR6IQWjFd
-	 /JXSv5+2ON2Q5LRXqODtn116q5rl9wjNg/KXe/7Y6uYolkBQfE8Muz3cFTOvj8apSF
-	 6eSvGktwCAgmA==
-Message-ID: <045e3716-3c3a-4238-b38a-3616c8974e2c@kernel.org>
-Date: Fri, 7 Jun 2024 13:51:25 +0200
+	s=arc-20240116; t=1717761112; c=relaxed/simple;
+	bh=GnXWztmBlVx1nxLihLb597i2xbfK7pMcpc9w3/QoxVs=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=Hiwb6okXt+OqtqTuWc7lnIdxB/NAAmD6e9TQ6EZYmuvqgFrFM1vIorXYwT0u1nOD9iJdWpBcIlkWKMpWDonV9A3aBHEyIIW3gJHuwHc06xo6yPJROMCKMYwsKgu/z9WqpdlujZr8Wqt1WY30wHGLRE679Vxx8JwWURQm2Q4rHts=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.187
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.163.48])
+	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4VwfZp5jCFzsTYC;
+	Fri,  7 Jun 2024 19:47:46 +0800 (CST)
+Received: from dggpeml500012.china.huawei.com (unknown [7.185.36.15])
+	by mail.maildlp.com (Postfix) with ESMTPS id C8B3418007E;
+	Fri,  7 Jun 2024 19:51:45 +0800 (CST)
+Received: from localhost.localdomain (10.67.175.61) by
+ dggpeml500012.china.huawei.com (7.185.36.15) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.39; Fri, 7 Jun 2024 19:51:45 +0800
+From: Zheng Yejian <zhengyejian1@huawei.com>
+To: <rostedt@goodmis.org>, <mcgrof@kernel.org>, <mhiramat@kernel.org>,
+	<mark.rutland@arm.com>, <mathieu.desnoyers@efficios.com>,
+	<jpoimboe@kernel.org>, <peterz@infradead.org>
+CC: <linux-modules@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<linux-trace-kernel@vger.kernel.org>, <bpf@vger.kernel.org>,
+	<zhengyejian1@huawei.com>
+Subject: [RFC PATCH] ftrace: Skip __fentry__ location of overridden weak functions
+Date: Fri, 7 Jun 2024 19:52:11 +0800
+Message-ID: <20240607115211.734845-1-zhengyejian1@huawei.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 net-next 14/15] net: Reference bpf_redirect_info via
- task_struct on PREEMPT_RT.
-To: Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
- linux-kernel@vger.kernel.org, netdev@vger.kernel.org
-Cc: "David S. Miller" <davem@davemloft.net>,
- Daniel Bristot de Oliveira <bristot@kernel.org>,
- Boqun Feng <boqun.feng@gmail.com>, Daniel Borkmann <daniel@iogearbox.net>,
- Eric Dumazet <edumazet@google.com>, Frederic Weisbecker
- <frederic@kernel.org>, Ingo Molnar <mingo@redhat.com>,
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
- Peter Zijlstra <peterz@infradead.org>, Thomas Gleixner <tglx@linutronix.de>,
- Waiman Long <longman@redhat.com>, Will Deacon <will@kernel.org>,
- Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
- Eduard Zingerman <eddyz87@gmail.com>, Hao Luo <haoluo@google.com>,
- Jiri Olsa <jolsa@kernel.org>, John Fastabend <john.fastabend@gmail.com>,
- KP Singh <kpsingh@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>,
- Song Liu <song@kernel.org>, Stanislav Fomichev <sdf@google.com>,
- =?UTF-8?Q?Toke_H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
- Yonghong Song <yonghong.song@linux.dev>, bpf@vger.kernel.org
-References: <20240607070427.1379327-1-bigeasy@linutronix.de>
- <20240607070427.1379327-15-bigeasy@linutronix.de>
-Content-Language: en-US
-From: Jesper Dangaard Brouer <hawk@kernel.org>
-In-Reply-To: <20240607070427.1379327-15-bigeasy@linutronix.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ dggpeml500012.china.huawei.com (7.185.36.15)
 
+ftrace_location() was changed to not only return the __fentry__ location
+when called for the __fentry__ location, but also when called for the
+sym+0 location after commit aebfd12521d9 ("x86/ibt,ftrace: Search for
+__fentry__ location"). That is, if sym+0 location is not __fentry__,
+ftrace_location() would find one over the entire size of the sym.
 
-On 07/06/2024 08.53, Sebastian Andrzej Siewior wrote:
-[...]
-> 
-> Create a struct bpf_net_context which contains struct bpf_redirect_info.
-> Define the variable on stack, use bpf_net_ctx_set() to save a pointer to
-> it, bpf_net_ctx_clear() removes it again.
-> The bpf_net_ctx_set() may nest. For instance a function can be used from
-> within NET_RX_SOFTIRQ/ net_rx_action which uses bpf_net_ctx_set() and
-> NET_TX_SOFTIRQ which does not. Therefore only the first invocations
-> updates the pointer.
-> Use bpf_net_ctx_get_ri() as a wrapper to retrieve the current struct
-> bpf_redirect_info.
-> 
-> The pointer to bpf_net_context is saved task's task_struct. Using
-> always the bpf_net_context approach has the advantage that there is
-> almost zero differences between PREEMPT_RT and non-PREEMPT_RT builds.
-> 
-[...]
-> ---
->   include/linux/filter.h | 43 ++++++++++++++++++++++++++++++++++-------
->   include/linux/sched.h  |  3 +++
->   kernel/bpf/cpumap.c    |  3 +++
->   kernel/bpf/devmap.c    |  9 ++++++++-
->   kernel/fork.c          |  1 +
->   net/bpf/test_run.c     | 11 ++++++++++-
->   net/core/dev.c         | 26 ++++++++++++++++++++++++-
->   net/core/filter.c      | 44 ++++++++++++------------------------------
->   net/core/lwt_bpf.c     |  3 +++
->   9 files changed, 101 insertions(+), 42 deletions(-)
-> 
-> diff --git a/include/linux/filter.h b/include/linux/filter.h
-> index b02aea291b7e8..2ff1c394dcf0c 100644
-> --- a/include/linux/filter.h
-> +++ b/include/linux/filter.h
-> @@ -744,7 +744,38 @@ struct bpf_redirect_info {
->   	struct bpf_nh_params nh;
->   };
->   
-> -DECLARE_PER_CPU(struct bpf_redirect_info, bpf_redirect_info);
-> +struct bpf_net_context {
-> +	struct bpf_redirect_info ri;
-> +};
-> +
-> +static inline struct bpf_net_context *bpf_net_ctx_set(struct bpf_net_context *bpf_net_ctx)
-> +{
-> +	struct task_struct *tsk = current;
-> +
-> +	if (tsk->bpf_net_context != NULL)
-> +		return NULL;
-> +	memset(&bpf_net_ctx->ri, 0, sizeof(bpf_net_ctx->ri));
+However, there is case that more than one __fentry__ exist in the sym
+range (described below) and ftrace_location() would find wrong __fentry__
+location by binary searching, which would cause its users like livepatch/
+kprobe/bpf to not work properly on this sym!
 
-It annoys me that we have to clear this memory every time.
-(This is added in net_rx_action() that *all* RX packets traverse).
+The case is that, based on current compiler behavior, suppose:
+ - function A is followed by weak function B1 in same binary file;
+ - weak function B1 is overridden by function B2;
+Then in the final binary file:
+ - symbol B1 will be removed from symbol table while its instructions are
+   not removed;
+ - __fentry__ of B1 will be still in __mcount_loc table;
+ - function size of A is computed by substracting the symbol address of
+   A from its next symbol address (see kallsyms_lookup_size_offset()),
+   but because symbol info of B1 is removed, the next symbol of A is
+   originally the next symbol of B1. See following example, function
+   sizeof A will be (symbol_address_C - symbol_address_A):
 
-The feature and memory is only/primarily used for XDP and TC redirects,
-but we take the overhead of clearing even when these features are not used.
+     symbol_address_A
+     symbol_address_B1 (Not in symbol table)
+     symbol_address_C
 
-Netstack does bulking in most of the cases this is used, so in our/your
-benchmarks this overhead doesn't show.  But we need to be aware that
-this is a "paper-cut" for single network packet processing.
+The weak function issue has been discovered in commit b39181f7c690
+("ftrace: Add FTRACE_MCOUNT_MAX_OFFSET to avoid adding weak function")
+but it didn't resolve the issue in ftrace_location().
 
-Idea: We could postpone clearing until code calls bpf_net_ctx_get() ?
-See below.
+There may be following resolutions:
 
-> +	tsk->bpf_net_context = bpf_net_ctx;
-> +	return bpf_net_ctx;
-> +}
-> +
-> +static inline void bpf_net_ctx_clear(struct bpf_net_context *bpf_net_ctx)
-> +{
-> +	if (bpf_net_ctx)
-> +		current->bpf_net_context = NULL;
-> +}
-> +
-> +static inline struct bpf_net_context *bpf_net_ctx_get(void)
-> +{
+1. Shrink the search range when __fentry__ is not a sym+0 location,
+   for example use the macro FTRACE_MCOUNT_MAX_OFFSET. This need every
+   arch to define its own FTRACE_MCOUNT_MAX_OFFSET:
 
-> +	return current->bpf_net_context;
-> +}
-> +
-> +static inline struct bpf_redirect_info *bpf_net_ctx_get_ri(void)
-> +{
-> +	struct bpf_net_context *bpf_net_ctx = bpf_net_ctx_get();
-> +
+   ftrace_location() {
+     ...
+     if (!offset)
+       loc = ftrace_location_range(ip, ip + FTRACE_MCOUNT_MAX_OFFSET + 1);
+     ...
+  }
 
-if (bpf_net_ctx->ri->kern_flags & BPF_RI_F_NEEDS_INIT) {
-   memset + init_list (intro in patch 15)
-}
+2. Define arch-specific arch_ftrace_location() based on its own
+   different cases of __fentry__ position, for example:
 
-Maybe even postpone the init_list calls to the "get" helpers introduced 
-in patch 15.
+   ftrace_location() {
+     ...
+     if (!offset)
+       loc = arch_ftrace_location(ip);
+     ...
+  }
 
+3. Skip __fentry__ of non-override weak function in ftrace_process_locs()
+   then all records in ftrace_pages are valid. The reason why this scheme
+   may work is that both __mcount_loc and symbol table are sorted and it
+   can be assumed that one function has only one __fentry__ location. Then
+   commit b39181f7c690 ("ftrace: Add FTRACE_MCOUNT_MAX_OFFSET to avoid
+   adding weak function") can be reverted (not do in this patch). However,
+   looking up size and offset of every record in __mount_loc table will
+   slow down system boot and module load.
 
-> +	return &bpf_net_ctx->ri;
-> +}
->   
-[...]
+Solution 1 and 2 need every arch to handle the complex fentry location
+case, I use solution 3 as RFC.
 
-> diff --git a/net/core/dev.c b/net/core/dev.c
-> index 2c3f86c8cd176..73965dff1b30f 100644
-> --- a/net/core/dev.c
-> +++ b/net/core/dev.c
-[...]
-> @@ -6881,10 +6902,12 @@ static __latent_entropy void net_rx_action(struct softirq_action *h)
+Fixes: aebfd12521d9 ("x86/ibt,ftrace: Search for __fentry__ location")
+Signed-off-by: Zheng Yejian <zhengyejian1@huawei.com>
+---
+ include/linux/module.h   |  8 ++++++++
+ kernel/module/kallsyms.c | 23 +++++++++++++++++------
+ kernel/trace/ftrace.c    | 20 +++++++++++++-------
+ 3 files changed, 38 insertions(+), 13 deletions(-)
 
-The function net_rx_action() is core to the network stack.
-
->   	struct softnet_data *sd = this_cpu_ptr(&softnet_data);
->   	unsigned long time_limit = jiffies +
->   		usecs_to_jiffies(READ_ONCE(net_hotdata.netdev_budget_usecs));
-> +	struct bpf_net_context __bpf_net_ctx, *bpf_net_ctx;
->   	int budget = READ_ONCE(net_hotdata.netdev_budget);
->   	LIST_HEAD(list);
->   	LIST_HEAD(repoll);
->   
-> +	bpf_net_ctx = bpf_net_ctx_set(&__bpf_net_ctx);
->   start:
->   	sd->in_net_rx_action = true;
->   	local_irq_disable();
-> @@ -6937,7 +6960,8 @@ static __latent_entropy void net_rx_action(struct softirq_action *h)
->   		sd->in_net_rx_action = false;
->   
->   	net_rps_action_and_irq_enable(sd);
-> -end:;
-> +end:
-> +	bpf_net_ctx_clear(bpf_net_ctx);
->   }
-
-
-The memset can be further optimized as it currently clears 64 bytes, but
-it only need to clear 40 bytes, see pahole below.
-
-Replace memset with something like:
-  memset(&bpf_net_ctx->ri, 0, offsetof(struct bpf_net_context, ri.nh));
-
-This is an optimization, because with 64 bytes this result in a rep-stos
-(repeated string store operation) that on Intel touch CPU-flags (to be
-IRQ safe) which is slow, while clearing 40 bytes doesn't cause compiler
-to use this instruction, which is faster.  Memset benchmarked with [1]
-
-[1] 
-https://github.com/netoptimizer/prototype-kernel/blob/master/kernel/lib/time_bench_memset.c
-
---Jesper
-
-$ pahole -C bpf_redirect_info vmlinux
-struct bpf_redirect_info {
-	u64                        tgt_index;            /*     0     8 */
-	void *                     tgt_value;            /*     8     8 */
-	struct bpf_map *           map;                  /*    16     8 */
-	u32                        flags;                /*    24     4 */
-	u32                        kern_flags;           /*    28     4 */
-	u32                        map_id;               /*    32     4 */
-	enum bpf_map_type          map_type;             /*    36     4 */
-	struct bpf_nh_params       nh;                   /*    40    20 */
-
-	/* size: 64, cachelines: 1, members: 8 */
-	/* padding: 4 */
-};
-
-
-
-The full struct:
-
-$ pahole -C bpf_net_context vmlinux
-struct bpf_net_context {
-	struct bpf_redirect_info   ri;                   /*     0    64 */
-
-	/* XXX last struct has 4 bytes of padding */
-
-	/* --- cacheline 1 boundary (64 bytes) --- */
-	struct list_head           cpu_map_flush_list;   /*    64    16 */
-	struct list_head           dev_map_flush_list;   /*    80    16 */
-	struct list_head           xskmap_map_flush_list; /*    96    16 */
-
-	/* size: 112, cachelines: 2, members: 4 */
-	/* paddings: 1, sum paddings: 4 */
-	/* last cacheline: 48 bytes */
-};
-
+diff --git a/include/linux/module.h b/include/linux/module.h
+index ffa1c603163c..3d5a2165160d 100644
+--- a/include/linux/module.h
++++ b/include/linux/module.h
+@@ -954,6 +954,9 @@ unsigned long module_kallsyms_lookup_name(const char *name);
+ 
+ unsigned long find_kallsyms_symbol_value(struct module *mod, const char *name);
+ 
++int find_kallsyms_symbol(struct module *mod, unsigned long addr,
++			 unsigned long *size, unsigned long *offset);
++
+ #else	/* CONFIG_MODULES && CONFIG_KALLSYMS */
+ 
+ static inline int module_kallsyms_on_each_symbol(const char *modname,
+@@ -997,6 +1000,11 @@ static inline unsigned long find_kallsyms_symbol_value(struct module *mod,
+ 	return 0;
+ }
+ 
++static inline int find_kallsyms_symbol(struct module *mod, unsigned long addr,
++				       unsigned long *size, unsigned long *offset)
++{
++	return 0;
++}
+ #endif  /* CONFIG_MODULES && CONFIG_KALLSYMS */
+ 
+ #endif /* _LINUX_MODULE_H */
+diff --git a/kernel/module/kallsyms.c b/kernel/module/kallsyms.c
+index 62fb57bb9f16..d70fb4ead794 100644
+--- a/kernel/module/kallsyms.c
++++ b/kernel/module/kallsyms.c
+@@ -253,10 +253,10 @@ static const char *kallsyms_symbol_name(struct mod_kallsyms *kallsyms, unsigned
+  * Given a module and address, find the corresponding symbol and return its name
+  * while providing its size and offset if needed.
+  */
+-static const char *find_kallsyms_symbol(struct module *mod,
+-					unsigned long addr,
+-					unsigned long *size,
+-					unsigned long *offset)
++static const char *__find_kallsyms_symbol(struct module *mod,
++					  unsigned long addr,
++					  unsigned long *size,
++					  unsigned long *offset)
+ {
+ 	unsigned int i, best = 0;
+ 	unsigned long nextval, bestval;
+@@ -311,6 +311,17 @@ static const char *find_kallsyms_symbol(struct module *mod,
+ 	return kallsyms_symbol_name(kallsyms, best);
+ }
+ 
++int find_kallsyms_symbol(struct module *mod, unsigned long addr,
++			 unsigned long *size, unsigned long *offset)
++{
++	const char *ret;
++
++	preempt_disable();
++	ret = __find_kallsyms_symbol(mod, addr, size, offset);
++	preempt_enable();
++	return !!ret;
++}
++
+ void * __weak dereference_module_function_descriptor(struct module *mod,
+ 						     void *ptr)
+ {
+@@ -344,7 +355,7 @@ const char *module_address_lookup(unsigned long addr,
+ #endif
+ 		}
+ 
+-		ret = find_kallsyms_symbol(mod, addr, size, offset);
++		ret = __find_kallsyms_symbol(mod, addr, size, offset);
+ 	}
+ 	/* Make a copy in here where it's safe */
+ 	if (ret) {
+@@ -367,7 +378,7 @@ int lookup_module_symbol_name(unsigned long addr, char *symname)
+ 		if (within_module(addr, mod)) {
+ 			const char *sym;
+ 
+-			sym = find_kallsyms_symbol(mod, addr, NULL, NULL);
++			sym = __find_kallsyms_symbol(mod, addr, NULL, NULL);
+ 			if (!sym)
+ 				goto out;
+ 
+diff --git a/kernel/trace/ftrace.c b/kernel/trace/ftrace.c
+index 65208d3b5ed9..3c56be753ae8 100644
+--- a/kernel/trace/ftrace.c
++++ b/kernel/trace/ftrace.c
+@@ -6488,6 +6488,7 @@ static int ftrace_process_locs(struct module *mod,
+ 	unsigned long addr;
+ 	unsigned long flags = 0; /* Shut up gcc */
+ 	int ret = -ENOMEM;
++	unsigned long last_func = 0;
+ 
+ 	count = end - start;
+ 
+@@ -6538,6 +6539,8 @@ static int ftrace_process_locs(struct module *mod,
+ 	pg = start_pg;
+ 	while (p < end) {
+ 		unsigned long end_offset;
++		unsigned long cur_func, off;
++
+ 		addr = ftrace_call_adjust(*p++);
+ 		/*
+ 		 * Some architecture linkers will pad between
+@@ -6549,6 +6552,16 @@ static int ftrace_process_locs(struct module *mod,
+ 			skipped++;
+ 			continue;
+ 		}
++		if (mod)
++			WARN_ON_ONCE(!find_kallsyms_symbol(mod, addr, NULL, &off));
++		else
++			WARN_ON_ONCE(!kallsyms_lookup_size_offset(addr, NULL, &off));
++		cur_func = addr - off;
++		if (cur_func == last_func) {
++			skipped++;
++			continue;
++		}
++		last_func = cur_func;
+ 
+ 		end_offset = (pg->index+1) * sizeof(pg->records[0]);
+ 		if (end_offset > PAGE_SIZE << pg->order) {
+@@ -6860,13 +6873,6 @@ void ftrace_module_enable(struct module *mod)
+ 		if (!within_module(rec->ip, mod))
+ 			break;
+ 
+-		/* Weak functions should still be ignored */
+-		if (!test_for_valid_rec(rec)) {
+-			/* Clear all other flags. Should not be enabled anyway */
+-			rec->flags = FTRACE_FL_DISABLED;
+-			continue;
+-		}
+-
+ 		cnt = 0;
+ 
+ 		/*
+-- 
+2.25.1
 
 
