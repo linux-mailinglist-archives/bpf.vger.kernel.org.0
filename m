@@ -1,105 +1,192 @@
-Return-Path: <bpf+bounces-31623-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-31624-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id D7C0F900D87
-	for <lists+bpf@lfdr.de>; Fri,  7 Jun 2024 23:32:56 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2224E900E14
+	for <lists+bpf@lfdr.de>; Sat,  8 Jun 2024 00:31:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 685571F22E8A
-	for <lists+bpf@lfdr.de>; Fri,  7 Jun 2024 21:32:56 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B8BF5283E6D
+	for <lists+bpf@lfdr.de>; Fri,  7 Jun 2024 22:31:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D466D15531E;
-	Fri,  7 Jun 2024 21:32:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3DEBF1553B3;
+	Fri,  7 Jun 2024 22:31:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b="r6KBGmCS"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="N3uP4yAK"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp-fw-80006.amazon.com (smtp-fw-80006.amazon.com [99.78.197.217])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f180.google.com (mail-pf1-f180.google.com [209.85.210.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 057D54E1DD;
-	Fri,  7 Jun 2024 21:32:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=99.78.197.217
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5DE4BB64E;
+	Fri,  7 Jun 2024 22:31:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717795969; cv=none; b=UtPqq33jKtFaGFMQhK7z+v+oP8SEMxIxXN8JtTMYAhUlMZUT5KJwcaf0m7DBuCbRvKCaYVb70nvnQD2p0i+nSs83lrlO4LRJkoB/YMbZfHsjxn/8aNqkygbgD2PHjR6SXvdZrQ7c2yXhbhrsdImmojZdqgU1fxsYiKjgusMn4P8=
+	t=1717799480; cv=none; b=bjhXCemxdcW6VUDlgZzou0H8wR5u6+mN+BBqZHanB0N+Jovy4VdJckOpgSM1uNwsGyknVh73krM9EGeblzY/ormhs464uvuSRUS3N8+uPH/fXvRhQnuizsf5BOWN7Ircu4RtGGwfBa1T05gxXd+Fs7oNXxVrP70QuN4WxsZx9Gw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717795969; c=relaxed/simple;
-	bh=DtFPPuJl5jobRcYlhii4Hbqy6pyJVCflNa8vQeo+ODw=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=REWtmCwLqKjXxkGDK6zLfR79PaqKLnbepVuvHjDmflh+lbYnrx/MWoxOWiqDmoSfiv5SK5Vwf1xSNHMD4J0AGU6pP8hEem5Zj6/w8XwVHzb9GI2AkP6eBqOl+59u5TvQPvsQDJmZ4x73/s145ogX3s348crBbWMkGbFytou1r0A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com; spf=pass smtp.mailfrom=amazon.co.jp; dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b=r6KBGmCS; arc=none smtp.client-ip=99.78.197.217
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amazon.co.jp
+	s=arc-20240116; t=1717799480; c=relaxed/simple;
+	bh=kjMCCfEMnIyHsw2hSOp7vwwON9/MC/NR8qEp0t6lYxQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=pcg/yePT2uPJDJWtp0jEl+7Bc+3TTiDzEctC05zKPoFw1oepPxrbVpVoLD+YGeMeC3CBWNWH2X9tWAiFEpeZGxR82U1SKULN+06eyKr+CdQCfIRoZdH57c45iW4tCXWQqL0nmilemsW1OfftLl8qAK9uq9Q5CkTYep0FvLAINio=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=N3uP4yAK; arc=none smtp.client-ip=209.85.210.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f180.google.com with SMTP id d2e1a72fcca58-704090c11easo1525646b3a.2;
+        Fri, 07 Jun 2024 15:31:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1717795968; x=1749331968;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=tDYZoP3d8/zCpLPWQHHudMPrUF8rr9i3P8lcsIGhdv0=;
-  b=r6KBGmCSQitmi8h64oCnP1Smkrw5IoZtbkJVFNBeyam5Wb9QendXpen8
-   8Mi0coQOdZPAqTZDnSttgYaQ56lnuXrjqFyTlNywqDuzevv5x8A5TaBzN
-   +4lf/8/17vkxTd0VHdrdJGnf2XTSpxWg/hLHTvjdu7IVeC+0qMv35j01+
-   E=;
-X-IronPort-AV: E=Sophos;i="6.08,221,1712620800"; 
-   d="scan'208";a="300765059"
-Received: from pdx4-co-svc-p1-lb2-vlan3.amazon.com (HELO smtpout.prod.us-west-2.prod.farcaster.email.amazon.dev) ([10.25.36.214])
-  by smtp-border-fw-80006.pdx80.corp.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jun 2024 21:32:45 +0000
-Received: from EX19MTAUWB002.ant.amazon.com [10.0.7.35:15518]
- by smtpin.naws.us-west-2.prod.farcaster.email.amazon.dev [10.0.42.213:2525] with esmtp (Farcaster)
- id cb789800-7be3-4309-aa6b-c7438c91f728; Fri, 7 Jun 2024 21:32:45 +0000 (UTC)
-X-Farcaster-Flow-ID: cb789800-7be3-4309-aa6b-c7438c91f728
-Received: from EX19D004ANA001.ant.amazon.com (10.37.240.138) by
- EX19MTAUWB002.ant.amazon.com (10.250.64.231) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1258.34; Fri, 7 Jun 2024 21:32:41 +0000
-Received: from 88665a182662.ant.amazon.com (10.106.101.48) by
- EX19D004ANA001.ant.amazon.com (10.37.240.138) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1258.34; Fri, 7 Jun 2024 21:32:38 +0000
-From: Kuniyuki Iwashima <kuniyu@amazon.com>
-To: <xiyou.wangcong@gmail.com>
-CC: <bpf@vger.kernel.org>, <cong.wang@bytedance.com>, <fw@strlen.de>,
-	<netdev@vger.kernel.org>,
-	<syzbot+0c4150bff9fff3bf023c@syzkaller.appspotmail.com>, <kuniyu@amazon.com>
-Subject: Re: [Patch net] net: remove the bogus overflow debug check in pskb_may_pull()
-Date: Fri, 7 Jun 2024 14:32:29 -0700
-Message-ID: <20240607213229.97602-1-kuniyu@amazon.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <ZmMxzPoDTNu06itR@pop-os.localdomain>
-References: <ZmMxzPoDTNu06itR@pop-os.localdomain>
+        d=gmail.com; s=20230601; t=1717799478; x=1718404278; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=obfZVFisODphXwHU/3O5DPDvWPieNCLI3FYHc2yEtOk=;
+        b=N3uP4yAKwKllKFEAbxyeVPuXA+OOKHzP/5JkMw0/mEqonjlpMd2BpwZdyHNXhsTpdU
+         /Xhy0KD9WS4cIPVlAetra7aX7ywZPPRIWL10Q5YeSuH1ZW9JgLS6CTxNmJNw8ruNOXTE
+         K+riMPWq4pJ8E6JKV4szP9lxIBHXa0qTDAGNkFvInQcOdqtseBXd8/PgvYSAGC7OdxFx
+         oUI05GjlhK4jYSXY8Ds09ipdEQplrNiKLtjXV9H9GIborI/ceMTjPX3b60BuRaaifEUW
+         8jH3tRa51yHd2J/XwmryMAnvNtautUAP+OK+eoLpHJr+6UeDo9SHEXPQJKWOhKgOOXNH
+         9MtA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1717799478; x=1718404278;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=obfZVFisODphXwHU/3O5DPDvWPieNCLI3FYHc2yEtOk=;
+        b=Ld7uBwjoNMfXmFgMp+MOcQQpqGBE6809kW6+uR48AlZKCouGgkx2f9nMw669kW+bfP
+         /8cUNmHZngZdCik8TuCYn/0/Tt8Ntfvr5h5LP1gYjAIOb5GEXNEjMRgKsw8TnbdkILIn
+         tm5CDXYiZ8h4Gr1Kjx2EROBvB58/tnGxQAGd1tIx7Yc+/Sc++wIYc1MmAF+WbOYnTPVz
+         r+4AC3m4N9x9ZdTLKiaLRSlWXeUIqK6FZzsS1pRnrn/grGbi8CNKC3U8Up3E1u2eqK1M
+         x1GR153/Tt12GJRSAVzDY8Si0hZ6UktXMIsOM4VgSCtO4/pwgEZsQttk8np8CUQz9KeH
+         UoQw==
+X-Forwarded-Encrypted: i=1; AJvYcCWmFAXzKLnu5KP3q2rjTrJEOm7uxrVTtqgQvPZ0ytMzKHNDNKsotCYv5iZAndnaAjZKzNlLX03pY0LcycvGOoqifO8u82tztK76iJk++5Ji+PDTrHfMFey24zRgqPMyd1ha
+X-Gm-Message-State: AOJu0YwN4/lRADlUGE9ghibaRlfne3/u/F65mmuMYw/ZubZ/erS6UKvQ
+	3vQo22ZPF8eOUvpukQankUCaKQvdCDpZlONba0165u9WtuDjFz+l
+X-Google-Smtp-Source: AGHT+IGlQ0lxj1IEvcN59nlMqfLXuYCBh2oMVRoEcf266PGOYI1SSB4rfK1sXt2gLQisCPNFM0oxLQ==
+X-Received: by 2002:a05:6a20:12ca:b0:1a7:878f:e9a3 with SMTP id adf61e73a8af0-1b2f9a297cfmr3908259637.22.1717799478325;
+        Fri, 07 Jun 2024 15:31:18 -0700 (PDT)
+Received: from gmail.com (c-67-171-50-164.hsd1.wa.comcast.net. [67.171.50.164])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-703fd3780absm3024193b3a.21.2024.06.07.15.31.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 07 Jun 2024 15:31:17 -0700 (PDT)
+Date: Fri, 7 Jun 2024 15:31:14 -0700
+From: Andrei Vagin <avagin@gmail.com>
+To: Andrii Nakryiko <andrii@kernel.org>
+Cc: linux-fsdevel@vger.kernel.org, brauner@kernel.org,
+	viro@zeniv.linux.org.uk, akpm@linux-foundation.org,
+	linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+	gregkh@linuxfoundation.org, linux-mm@kvack.org,
+	liam.howlett@oracle.com, surenb@google.com, rppt@kernel.org
+Subject: Re: [PATCH v3 3/9] fs/procfs: implement efficient VMA querying API
+ for /proc/<pid>/maps
+Message-ID: <ZmOKMgZn_ki17UYM@gmail.com>
+References: <20240605002459.4091285-1-andrii@kernel.org>
+ <20240605002459.4091285-4-andrii@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: EX19D043UWC004.ant.amazon.com (10.13.139.206) To
- EX19D004ANA001.ant.amazon.com (10.37.240.138)
+Content-Type: text/plain; charset=koi8-r
+Content-Disposition: inline
+In-Reply-To: <20240605002459.4091285-4-andrii@kernel.org>
 
-From: Cong Wang <xiyou.wangcong@gmail.com>
-Date: Fri, 7 Jun 2024 09:14:04 -0700
-> On Fri, Jun 07, 2024 at 01:27:47AM +0200, Florian Westphal wrote:
-> > Cong Wang <xiyou.wangcong@gmail.com> wrote:
-> > > From: Cong Wang <cong.wang@bytedance.com>
-> > > 
-> > > Commit 219eee9c0d16 ("net: skbuff: add overflow debug check to pull/push
-> > > helpers") introduced an overflow debug check for pull/push helpers.
-> > > For __skb_pull() this makes sense because its callers rarely check its
-> > > return value. But for pskb_may_pull() it does not make sense, since its
-> > > return value is properly taken care of. Remove the one in
-> > > pskb_may_pull(), we can continue rely on its return value.
-> > 
-> > See 025f8ad20f2e3264d11683aa9cbbf0083eefbdcd which would not exist
-> > without this check, I would not give up yet.
+On Tue, Jun 04, 2024 at 05:24:48PM -0700, Andrii Nakryiko wrote:
+> /proc/<pid>/maps file is extremely useful in practice for various tasks
+> involving figuring out process memory layout, what files are backing any
+> given memory range, etc. One important class of applications that
+> absolutely rely on this are profilers/stack symbolizers (perf tool being one
+> of them). Patterns of use differ, but they generally would fall into two
+> categories.
 > 
-> What's the point of that commit?
+> In on-demand pattern, a profiler/symbolizer would normally capture stack
+> trace containing absolute memory addresses of some functions, and would
+> then use /proc/<pid>/maps file to find corresponding backing ELF files
+> (normally, only executable VMAs are of interest), file offsets within
+> them, and then continue from there to get yet more information (ELF
+> symbols, DWARF information) to get human-readable symbolic information.
+> This pattern is used by Meta's fleet-wide profiler, as one example.
+> 
+> In preprocessing pattern, application doesn't know the set of addresses
+> of interest, so it has to fetch all relevant VMAs (again, probably only
+> executable ones), store or cache them, then proceed with profiling and
+> stack trace capture. Once done, it would do symbolization based on
+> stored VMA information. This can happen at much later point in time.
+> This patterns is used by perf tool, as an example.
+> 
+> In either case, there are both performance and correctness requirement
+> involved. This address to VMA information translation has to be done as
+> efficiently as possible, but also not miss any VMA (especially in the
+> case of loading/unloading shared libraries). In practice, correctness
+> can't be guaranteed (due to process dying before VMA data can be
+> captured, or shared library being unloaded, etc), but any effort to
+> maximize the chance of finding the VMA is appreciated.
+> 
+> Unfortunately, for all the /proc/<pid>/maps file universality and
+> usefulness, it doesn't fit the above use cases 100%.
+> 
+> First, it's main purpose is to emit all VMAs sequentially, but in
+> practice captured addresses would fall only into a smaller subset of all
+> process' VMAs, mainly containing executable text. Yet, library would
+> need to parse most or all of the contents to find needed VMAs, as there
+> is no way to skip VMAs that are of no use. Efficient library can do the
+> linear pass and it is still relatively efficient, but it's definitely an
+> overhead that can be avoided, if there was a way to do more targeted
+> querying of the relevant VMA information.
+> 
+> Second, it's a text based interface, which makes its programmatic use from
+> applications and libraries more cumbersome and inefficient due to the
+> need to handle text parsing to get necessary pieces of information. The
+> overhead is actually payed both by kernel, formatting originally binary
+> VMA data into text, and then by user space application, parsing it back
+> into binary data for further use.
 
-4b911a9690d7 would be better example.  The warning actually found a
-bug in NSH GSO.
+I was trying to solve all these issues in a more generic way:
+https://lwn.net/Articles/683371/
 
-Here's splats triggered by syzkaller using NSH over various tunnels.
-https://lore.kernel.org/netdev/20240415222041.18537-2-kuniyu@amazon.com/
+We definitely interested in this new interface to use it in CRIU.
+
+<snip>
+
+> +
+> +	if (karg.vma_name_size) {
+> +		size_t name_buf_sz = min_t(size_t, PATH_MAX, karg.vma_name_size);
+> +		const struct path *path;
+> +		const char *name_fmt;
+> +		size_t name_sz = 0;
+> +
+> +		get_vma_name(vma, &path, &name, &name_fmt);
+> +
+> +		if (path || name_fmt || name) {
+> +			name_buf = kmalloc(name_buf_sz, GFP_KERNEL);
+> +			if (!name_buf) {
+> +				err = -ENOMEM;
+> +				goto out;
+> +			}
+> +		}
+> +		if (path) {
+> +			name = d_path(path, name_buf, name_buf_sz);
+> +			if (IS_ERR(name)) {
+> +				err = PTR_ERR(name);
+> +				goto out;
+
+It always fails if a file path name is longer than PATH_MAX.
+
+Can we add a flag to indicate whether file names are needed to be
+resolved? In criu, we use special names like "vvar", "vdso", but we dump
+files via /proc/pid/map_files.
+
+> +			}
+> +			name_sz = name_buf + name_buf_sz - name;
+> +		} else if (name || name_fmt) {
+> +			name_sz = 1 + snprintf(name_buf, name_buf_sz, name_fmt ?: "%s", name);
+> +			name = name_buf;
+> +		}
+> +		if (name_sz > name_buf_sz) {
+> +			err = -ENAMETOOLONG;
+> +			goto out;
+> +		}
+> +		karg.vma_name_size = name_sz;
+> +	}
+
+Thanks,
+Andrei
 
