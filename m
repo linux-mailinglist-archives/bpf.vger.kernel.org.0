@@ -1,164 +1,176 @@
-Return-Path: <bpf+bounces-31573-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-31574-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D8B828FFDF9
-	for <lists+bpf@lfdr.de>; Fri,  7 Jun 2024 10:26:59 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id CF3F29000AA
+	for <lists+bpf@lfdr.de>; Fri,  7 Jun 2024 12:23:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4EB55286644
-	for <lists+bpf@lfdr.de>; Fri,  7 Jun 2024 08:26:58 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7F67B1F21CCD
+	for <lists+bpf@lfdr.de>; Fri,  7 Jun 2024 10:23:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A2DA315B0F8;
-	Fri,  7 Jun 2024 08:26:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 83A7C15DBC6;
+	Fri,  7 Jun 2024 10:21:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="REFWItkG"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="L3zenTv8"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-lf1-f41.google.com (mail-lf1-f41.google.com [209.85.167.41])
+Received: from mail-pj1-f42.google.com (mail-pj1-f42.google.com [209.85.216.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 75D4315B0F0;
-	Fri,  7 Jun 2024 08:26:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE6B415B99E
+	for <bpf@vger.kernel.org>; Fri,  7 Jun 2024 10:21:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717748808; cv=none; b=Ijwb1XVcbpm8GEpS1TJBeKj3ryBHt30M/QzS+vrPQwqxeoJGVp8FOYFR9fr95Wz5T+rKZSJK37iG0KcdISQMuIkfbURmLtkUt/Grb8OClKl36ofHpvfokH9qalDCsIWa5+XIdvURvPSK/sj/7nk/A2iqGpJ1XYq6mtEEORwBmPw=
+	t=1717755717; cv=none; b=YW5d/8MwpQQ/Nnf1MrIAYBcysQGhhdk06WgNLUX3WXbgMtKHvEOPekULEwwETu8Fc7Xoayu+eIUNqXKFqsHQKxtYzyQ0WVudMxprZBsU2jB/A5KLbqmF4S/mKG4MF6MPYsXvVxUaXLoylAlTV5O4+2+4K2rcqybhX2Wnuu3qNDQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717748808; c=relaxed/simple;
-	bh=O6OzUbqAekTV4J/eVvhqJ9Tniy1uY7cuH31yR4TMCug=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=QmhJbn5pxBgccJhEj+1Lkbl6Z3W6mMMePO7iOVfnC2d4lEMFco+d+L1QdGrqisTJmt9k6zSj8UWKwEWWZtveb2/quohztZON6qhcQZ7qNFYtrQPGK4CFNQKRgJQuj8qRMzEb9z+ZoUE6ePjf364FFzZcfyHFd5WFyafGRRRti0o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=REFWItkG; arc=none smtp.client-ip=209.85.167.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.com
+	s=arc-20240116; t=1717755717; c=relaxed/simple;
+	bh=Z1ziD6PpY4vGgYPAmd3mGBF/RSeenOyRjmkYrHEFJ7k=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=rD0SIfb37dEarObCPPxvofHJEJz67EJWOGOFtevFB9YjtWt9izV7+RMAaSIkX/ou719LL1Cs0mMcXA46JcFQwfxLdzy05NknfXJeNYT6czyT+zFpyI9nSBfUChq/gyWmCeGXiSLxscv4FIU0t3SYwzrQf6Bcp5HfKJecRBT60TM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=L3zenTv8; arc=none smtp.client-ip=209.85.216.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f41.google.com with SMTP id 2adb3069b0e04-52b93370ad0so2501125e87.2;
-        Fri, 07 Jun 2024 01:26:46 -0700 (PDT)
+Received: by mail-pj1-f42.google.com with SMTP id 98e67ed59e1d1-2c2ccff8f0aso144030a91.0
+        for <bpf@vger.kernel.org>; Fri, 07 Jun 2024 03:21:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1717748804; x=1718353604; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=9OFZkGeshCcQpSdoBExD30oxf+WozrVkEn2Rgo3xnGo=;
-        b=REFWItkG5xrDK0vAN6TjkgqWPvKYOSXwX+0CGnj5wX3/wP5BRwSa1U+3pgS1A1jc0f
-         l7awQ7yOHklUCatk3voc7T1ziFhAYfTZe6O74EJ6XIjNeCzxHQRWaiOzHOCNN0FoWgPT
-         tRu9xntE8GejtnsgcXQppLrQtrXpbgCoyt5/53Vd32HzH90zZMq1PEJ0Jo6Z7JCmmCwU
-         AmC1rWd0R1LmczRt256Vqx+XPL8/cJrQEY1hDHGoQKMqIj711AF0VKN9r7MyVqw3ZYtj
-         C9j9XxcghNe8JH08/pe6T/+q4mYkv3xDBR/u9cZeQ7IX9dUK7SisUZKIck7CHcbycF82
-         0i1A==
+        d=gmail.com; s=20230601; t=1717755715; x=1718360515; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=BrC2SOYgfyFzet4zuRawz/aiQM9sAK8JPisvqvOgQP8=;
+        b=L3zenTv8bDrRadnIj1G1aZVwt59wpCESmDvz/WG3ClDiQE5bDl6MOIre5k03AaIlFK
+         WRIoCfIA5F2r+zxdMvAN3fP4vL6icPLs/UAY8mjYGVH5rGjjVKeSsXzJXPl5w0mTeg8B
+         04c1MPwFlRWy7zPqCtOuvJXK/jTmL1SpNL07VAbb/KCoL7AHOUVcee/dA1tBFcPWo/+s
+         Fu8/GIa6g9gy+9ymwpoVaGZMyXugxhtEBCLiRbOs42HPQeVboTc/sSKRmda3ny/ERcnO
+         VH3mKV70v0pDwzQkeppEoSHvfOCLSFfB7vR1lhM1xpWn20dFjV/p/lZMyStbIw+42Aop
+         tznQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1717748804; x=1718353604;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=9OFZkGeshCcQpSdoBExD30oxf+WozrVkEn2Rgo3xnGo=;
-        b=JN2xTxFtM/XEBreEkXPFlewTMDQXU9mVlESHJHJSTdMMrBChdXCC5ceyWWR7ogTqHX
-         rsXmHncTbPvki2YkaxV5YFCN5KSgeN5IWA1ms+N8v69SCYu0Wk73r+T/ISF0AX4xt8Wi
-         +EdVMjEQmR13vVw2XSPZ14hqcMOFgJ5zlN2fqXjG3HeV4u3YXlaZA95mFnHmHC9NjHfW
-         /FhdyNilISOSRcazYt8Qw8CkJDFHSaLg7fr9bB8ItBaSwM7XsNhlxy81U/JBuHKn8Duw
-         vwP3P41VLYKHpZ4bdH3B1nP4F7tzF6YRCLrQd50DVeEYfsgP7ixZDv6y+W5njA6HPt4X
-         nJMA==
-X-Forwarded-Encrypted: i=1; AJvYcCWrc1pduZnxT7TBQchM5FFZw/FnU/rHb9Ehb4fCjRIuvv7aZvHZ1A2RsgfREZsl9yukyHuHByhUMh5w4ZoHqsxdu2tuqhR7TmEtbAkrtAQTAbJ9iNdGdlMIyJQWc1JIkXMmUqgUSuBzTG+Tc8YGp5Ud+wJCXSSL99BSJA==
-X-Gm-Message-State: AOJu0Yy+nCodHV65cVJpGgN64VLAhLqRV3aAcuOPbSvJcuzXT7ERaOjN
-	aGgcMlnfgXTFGW0GykGAuBnRPiy9whp8maNMCFP9ysft/9yE9r8Y
-X-Google-Smtp-Source: AGHT+IH29g22z5u03JtOU46VR64CyxxDwQVvl4pLd67eJL4Q+W7+cHIPGnYYI5A2MlgJ18OSu+TLGg==
-X-Received: by 2002:a05:6512:4891:b0:523:9515:4b74 with SMTP id 2adb3069b0e04-52bb9f62754mr1598706e87.14.1717748804213;
-        Fri, 07 Jun 2024 01:26:44 -0700 (PDT)
-Received: from localhost (77-162-229-73.fixed.kpn.net. [77.162.229.73])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a6c8072b010sm210252866b.214.2024.06.07.01.26.43
+        d=1e100.net; s=20230601; t=1717755715; x=1718360515;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=BrC2SOYgfyFzet4zuRawz/aiQM9sAK8JPisvqvOgQP8=;
+        b=v+GdI8GO2oE/V2Q+yA7E7CllW/eqBt5s6bU8lSegyOJBaGBV2kYYqdurX9I1g0Fer1
+         6+lVB3Oulm+J6pqWCNh1JkAyIx3zOtr5wrwoFCqNvDYJx5UMJ4SW63rK6orSeIPpIBIT
+         sBmo5CXz9IrkYZEo7mjyJCdXIphe/KpVUEN5AUjXDPogb2F2T4MV/NYoiJI7tz2A5q4E
+         22yYs3Oao3Dn5fHKqz9JIPbL3nx6wvCmsHkGmnN2e+earsktpeBtiMSSkVbYz2o3WYeF
+         NN/Bx5eu+N7qDpopRVDldUXIeZNtgIXC5nX4oBbh7hCllhvj6/Mv+03+P1GzG3K9ym0E
+         PFiQ==
+X-Gm-Message-State: AOJu0Yxs4Eae547Y/QKpCh2GxfhViTwooIGbsSgEWpQtp+CIr/Y8m+m5
+	AxgxhP4Jukqnah9izEF5gVZH/4INDkLrie8uM1N6hBKgxfZSsW9GKS9qk6iF1dw=
+X-Google-Smtp-Source: AGHT+IFcJm4nPp1xfd1qTIT5CfGOaAfVFvzRnhyBoaGHjGVf8qp7OfTHB0+DKoMIUT6zXGVAMvOz9A==
+X-Received: by 2002:a17:90b:515:b0:2c2:792c:b618 with SMTP id 98e67ed59e1d1-2c2bcc6335dmr1961810a91.33.1717755714972;
+        Fri, 07 Jun 2024 03:21:54 -0700 (PDT)
+Received: from kta-ryzen7.. ([240d:1a:2e0:8a00:1e5:bb13:8ef6:1ba5])
+        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-6de2678c69bsm2474541a12.71.2024.06.07.03.21.52
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 07 Jun 2024 01:26:43 -0700 (PDT)
-Sender: Domenico Andreoli <domenico.andreoli.it@gmail.com>
-Date: Fri, 7 Jun 2024 10:26:41 +0200
-From: Domenico Andreoli <domenico.andreoli@linux.com>
-To: Matthias Schwarzott <zzam@gentoo.org>
-Cc: Arnaldo Carvalho de Melo <acme@kernel.org>, dwarves@vger.kernel.org,
-	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-	bpf@vger.kernel.org, Alan Maguire <alan.maguire@oracle.com>,
-	Andrii Nakryiko <andrii@kernel.org>, Jiri Olsa <jolsa@kernel.org>,
-	Jan Engelhardt <jengelh@inai.de>, Viktor Malik <vmalik@redhat.com>,
-	Eduard Zingerman <eddyz87@gmail.com>, J B <jb.1234abcd@gmail.com>
-Subject: Re: ANNOUNCE: pahole v1.26 (more holes, --bpf_features,
- --contains_enum)
-Message-ID: <ZmLEQRqznwSowCIi@localhost>
-References: <YbC5MC+h+PkDZten@kernel.org>
- <ZkXTmTvII2PDqVvx@localhost>
- <f3fb90a2-5822-4cb9-ba5a-023f74f2e806@gentoo.org>
+        Fri, 07 Jun 2024 03:21:54 -0700 (PDT)
+From: Kenta Tada <tadakentaso@gmail.com>
+To: bpf@vger.kernel.org,
+	qmo@kernel.org
+Cc: daniel@iogearbox.net,
+	andrii@kernel.org,
+	martin.lau@linux.dev,
+	eddyz87@gmail.com,
+	song@kernel.org,
+	yonghong.song@linux.dev,
+	john.fastabend@gmail.com,
+	kpsingh@kernel.org,
+	sdf@google.com,
+	haoluo@google.com,
+	jolsa@kernel.org,
+	Kenta Tada <tadakentaso@gmail.com>
+Subject: [PATCH v2] bpftool: Query only cgroup-related attach types
+Date: Fri,  7 Jun 2024 19:21:48 +0900
+Message-ID: <20240607102148.151272-1-tadakentaso@gmail.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="SWhq1PSUxtI1Z5PO"
-Content-Disposition: inline
-In-Reply-To: <f3fb90a2-5822-4cb9-ba5a-023f74f2e806@gentoo.org>
+Content-Transfer-Encoding: 8bit
 
+When CONFIG_NETKIT=y,
+bpftool-cgroup shows error even if the cgroup's path is correct:
 
---SWhq1PSUxtI1Z5PO
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+$ bpftool cgroup tree /sys/fs/cgroup
+CgroupPath
+ID       AttachType      AttachFlags     Name
+Error: can't query bpf programs attached to /sys/fs/cgroup: No such device or address
 
-On Fri, Jun 07, 2024 at 09:03:14AM +0200, Matthias Schwarzott wrote:
-> Am 16.05.24 um 11:36 schrieb Domenico Andreoli:
-> > On Wed, Feb 28, 2024 at 04:39:21PM -0300, Arnaldo Carvalho de Melo wrot=
-e:
-> > > Hi,
-> > > 	The v1.26 release of pahole and its friends is out, showing more
-> [...]
-> > >=20
-> > > tarball + gpg signature:
-> > >=20
-> > >     https://fedorapeople.org/~acme/dwarves/dwarves-1.26.tar.xz
-> > >     https://fedorapeople.org/~acme/dwarves/dwarves-1.26.tar.bz2
-> > >     https://fedorapeople.org/~acme/dwarves/dwarves-1.26.tar.sign
-> >=20
-> > Which key do you use to sign this?          ^^^^^^^^^^^^^^^^^^^^^
->=20
-> Hi!
+From strace and kernel tracing, I found netkit returned ENXIO and this command failed.
+I think this AttachType(BPF_NETKIT_PRIMARY) is not relevant to cgroup.
 
-Hi!
+bpftool-cgroup should query just only cgroup-related attach types.
 
->=20
-> I found the matching key in git on kernel.org:
->=20
-> https://git.kernel.org/pub/scm/docs/kernel/pgpkeys.git/plain/keys/D65016F=
-35352AA40.asc
->=20
-> The gentoo package uses this key for verification now.
+v1->v2:
+  - used an array of cgroup attach types
 
-Thanks! I wanted indeed to use it for verification also in Debian.
+Signed-off-by: Kenta Tada <tadakentaso@gmail.com>
+---
+ tools/bpf/bpftool/cgroup.c | 38 +++++++++++++++++++++++++++++++++++---
+ 1 file changed, 35 insertions(+), 3 deletions(-)
 
->=20
-> Regards
-> Matthias
+diff --git a/tools/bpf/bpftool/cgroup.c b/tools/bpf/bpftool/cgroup.c
+index af6898c0f388..afab728468bf 100644
+--- a/tools/bpf/bpftool/cgroup.c
++++ b/tools/bpf/bpftool/cgroup.c
+@@ -19,6 +19,38 @@
+ 
+ #include "main.h"
+ 
++static const int cgroup_attach_types[] = {
++	BPF_CGROUP_INET_INGRESS,
++	BPF_CGROUP_INET_EGRESS,
++	BPF_CGROUP_INET_SOCK_CREATE,
++	BPF_CGROUP_INET_SOCK_RELEASE,
++	BPF_CGROUP_INET4_BIND,
++	BPF_CGROUP_INET6_BIND,
++	BPF_CGROUP_INET4_POST_BIND,
++	BPF_CGROUP_INET6_POST_BIND,
++	BPF_CGROUP_INET4_CONNECT,
++	BPF_CGROUP_INET6_CONNECT,
++	BPF_CGROUP_UNIX_CONNECT,
++	BPF_CGROUP_INET4_GETPEERNAME,
++	BPF_CGROUP_INET6_GETPEERNAME,
++	BPF_CGROUP_UNIX_GETPEERNAME,
++	BPF_CGROUP_INET4_GETSOCKNAME,
++	BPF_CGROUP_INET6_GETSOCKNAME,
++	BPF_CGROUP_UNIX_GETSOCKNAME,
++	BPF_CGROUP_UDP4_SENDMSG,
++	BPF_CGROUP_UDP6_SENDMSG,
++	BPF_CGROUP_UNIX_SENDMSG,
++	BPF_CGROUP_UDP4_RECVMSG,
++	BPF_CGROUP_UDP6_RECVMSG,
++	BPF_CGROUP_UNIX_RECVMSG,
++	BPF_CGROUP_SOCK_OPS,
++	BPF_CGROUP_DEVICE,
++	BPF_CGROUP_SYSCTL,
++	BPF_CGROUP_GETSOCKOPT,
++	BPF_CGROUP_SETSOCKOPT,
++	BPF_LSM_CGROUP
++};
++
+ #define HELP_SPEC_ATTACH_FLAGS						\
+ 	"ATTACH_FLAGS := { multi | override }"
+ 
+@@ -183,11 +215,11 @@ static int count_attached_bpf_progs(int cgroup_fd, enum bpf_attach_type type)
+ 
+ static int cgroup_has_attached_progs(int cgroup_fd)
+ {
+-	enum bpf_attach_type type;
++	unsigned int i = 0;
+ 	bool no_prog = true;
+ 
+-	for (type = 0; type < __MAX_BPF_ATTACH_TYPE; type++) {
+-		int count = count_attached_bpf_progs(cgroup_fd, type);
++	for (i = 0; i < ARRAY_SIZE(cgroup_attach_types); i++) {
++		int count = count_attached_bpf_progs(cgroup_fd, cgroup_attach_types[i]);
+ 
+ 		if (count < 0 && errno != EINVAL)
+ 			return -1;
+-- 
+2.43.0
 
-Dom
-
---=20
-rsa4096: 3B10 0CA1 8674 ACBA B4FE  FCD2 CE5B CF17 9960 DE13
-ed25519: FFB4 0CC3 7F2E 091D F7DA  356E CC79 2832 ED38 CB05
-
---SWhq1PSUxtI1Z5PO
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEIhioiE2Z74CX+BiELwJgSGECT1EFAmZixDoACgkQLwJgSGEC
-T1EHqA//XhVFrXl5DaDxkJVBQcc+yvHusgN9HAph50jLmSwi5E3N+c/qs5sE+UZc
-QU3s7dCN74VPg7hJTd/jFT/kq0HHP3drz8YJYTc8p5sDCq7ssaOjV4XFdxvJFezR
-2kGbiceF7znotcTBowH6+UnFfKZapEbQT00fi+B9QrvLN+xFuaicXLSVcWfqk7AY
-OjNZfvMRF/bc7QOqebe3uTPWDEW69RD34kb/f71n3ByAIxJHRXH/EhBwyAnyHWLL
-cjbk+KjytkV21p0W1DUg/2Ulvhl2l30CccD6a9+cV7OT0KrHbKqt0BroqWYJQmlt
-NGyMbbZ4NhuXQoY0qAyF1iNb5PFUwhdhiptLcUIu6eFZJ2vlQHpeW7GuKKbYCC6M
-csuYKtiAb3yDsH1LRrEqbCyaX5VBKGm8ZAR1v5uNQ0aHrZQApg3Id+VjUT0aDkBk
-n3bTWkN/rV9y5SD9sg1AaW8eXg7XpYNwSGCx7ybqsGDdNDw7RQs3IIO0HHn7Yi3T
-OotzX3oez4Lh7eTWlQBu9bOlmAPZfGO01hH/VqnmdkMOJ3lZSDOJxkv+Ci2o9CA7
-5LJMEZh9zVn0Yxtgze5twoGVL4X5bcegpHwYVi0U0NaTFCmOX9VOuNlq4c5Lg9ad
-OzZyZiZufWIzOZEYhEu6V71eXawJiMu567wf4dstrHDLZjsRNtU=
-=5CzK
------END PGP SIGNATURE-----
-
---SWhq1PSUxtI1Z5PO--
 
