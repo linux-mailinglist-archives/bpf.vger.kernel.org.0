@@ -1,86 +1,93 @@
-Return-Path: <bpf+bounces-31654-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-31655-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1638F9011D0
-	for <lists+bpf@lfdr.de>; Sat,  8 Jun 2024 16:08:58 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1D0FE9012FB
+	for <lists+bpf@lfdr.de>; Sat,  8 Jun 2024 19:21:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7C5EA282AE7
-	for <lists+bpf@lfdr.de>; Sat,  8 Jun 2024 14:08:56 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1FB241C20DAF
+	for <lists+bpf@lfdr.de>; Sat,  8 Jun 2024 17:21:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1E895179647;
-	Sat,  8 Jun 2024 14:08:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8829B13AD8;
+	Sat,  8 Jun 2024 17:21:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="K6HVChLQ"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="i0sKb6Zh"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f175.google.com (mail-pl1-f175.google.com [209.85.214.175])
+Received: from mail-pj1-f49.google.com (mail-pj1-f49.google.com [209.85.216.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E4E404C65;
-	Sat,  8 Jun 2024 14:08:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4019C125D5;
+	Sat,  8 Jun 2024 17:21:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717855728; cv=none; b=au0v/vB/shnTBAN8qPFDQe2Skz9r0BQp7CPCANbFxXLvHey3O3zmwJPsOhLYZxpXrhv1AEPzNyPZu+CLvoHPR6Fflo5bDyWHBAef3pS2qbEjK+W4C3jA4XLjN65ApVBAMRm5R94qpJFNOtgwNe6+NUyyzVtSeXMjNUKq3C5Hzag=
+	t=1717867293; cv=none; b=hkNimqDVSUXtnaV9wThK/9rR9PJZ1qX0VgbAiWWFv4+2Oj7eQ3GxlOwTJMY+fm9RmqjcM+bt0bbt5gzyIGRbA9bwNWlwdZMdV/K9Enb+0+iz1w4Pj+x3PHo1pQWqi+sF8H2oAHgsu0ASyv0FZsxGrPY28bPivHn3vTQU3vFHg64=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717855728; c=relaxed/simple;
-	bh=HEGG7Jw4XHa7+t9x8HlMvbHURJ9XIkCwF5oDiANqgWI=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=APAfMQE1fB19TK+WT7fbS2hiHC0l/b6sQghExrhqwzHEkHShezhl8/0QPsP9gd4mC3UkcNMqpDMKKKnDt2zI8Xr0IPJkw6myW+dBzpPn2F5crGcxxmV1pypohpagSKMoaEUPMY2+GHL+JxOTdlHnN8ReocvTMsziqvkZO+/B/LE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=K6HVChLQ; arc=none smtp.client-ip=209.85.214.175
+	s=arc-20240116; t=1717867293; c=relaxed/simple;
+	bh=IrdI5sjPl5asL5nWXJNR+jzbTys2w3mwkdk7TJZKmmc=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=h+uBRtMifL+45O+bgK2H3/S0hyjnDC+2cLJ/rEfh1IH1kjVKdk+6iPxuDKpVio5y93V76aqdbh6JCeHhchUFttc6RzX4GkySZzCC7wg/xS6U44Z8BiFidy3GtqkFHTuZiESag/Y4FZ2FPXkJMSofQBhmVDt3Dg+afLqBvP+ox98=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=i0sKb6Zh; arc=none smtp.client-ip=209.85.216.49
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f175.google.com with SMTP id d9443c01a7336-1f480624d0dso28008055ad.1;
-        Sat, 08 Jun 2024 07:08:46 -0700 (PDT)
+Received: by mail-pj1-f49.google.com with SMTP id 98e67ed59e1d1-2c254d9bdd6so2725756a91.3;
+        Sat, 08 Jun 2024 10:21:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1717855726; x=1718460526; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1717867290; x=1718472090; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=82uFoB+tBxexAeZtfE5Hpu0dPUHwTBBC/545Tq9KKx0=;
-        b=K6HVChLQwGKOH8+84BVevKqWkAYscLsZKlFTZmmOagsMJnapjbQAc8msXETvgwbOgz
-         DdFYC+IyPua1ir5ev5Uk5pd/CHDlvk0P1iK7eGpcII1ravw1Weipj2gJP5nh4KzBW3Fl
-         CZmGOzEt36SDpHhftw1eeBAiKUBK665511Bo+CFEo76lizJt7gs8aeepgn4aCEjt13wf
-         Eu14IJfzVxCrg1Xs5aS16e5XBoGPIuoREEuWNyyP+oBMtHFbCLkXftU0mxMUx6nEwoMc
-         e+kuMvje1WYSGC9Ap9f1x6l5U44V9OcIjyDutiMrNdiAxhcG+eWlACT6CHy3VGVjRpNv
-         2jBw==
+        bh=nMy58J3QA7OYuNsqpVYU1rzQFW3lTrPyfWwmiRLgh2I=;
+        b=i0sKb6Zh4UIOIvhz2pIyGvdDzUVAzz1alb6xWhZRxkSd2Pw3cK082+Zr7fdfmHc3N5
+         suQW7hFfhcDbxf53B2ndzGVxnPjQwSuIPexL0enquQrlPlZRT9iNorG9f2/ffliiwTnA
+         auSUIBu12XrKOQWB+qBeQbn/jSzoNp8RAN8oevPAG+mEUtvbUbpJlD9bmnDeK4G7iN9G
+         R4M5hvLKH6XtfnngNiAMyCpfcX+hrCEUncYPTQt52yMZnOAzWbfR2+6kyIuv/6Pw3myA
+         wQPrmeOdwhO1pF0EOmDVrYNbGQO35geJKGQ8G8N4tEAJ75G8DM1ohAqjAiZdjdB78V3s
+         ggsA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1717855726; x=1718460526;
+        d=1e100.net; s=20230601; t=1717867290; x=1718472090;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=82uFoB+tBxexAeZtfE5Hpu0dPUHwTBBC/545Tq9KKx0=;
-        b=JXjEDWPUUdXUEi2ywblMQfTw0hpUPOi7Sn0iM0pnzogwzkP8V/Fr4ixuusHE5/hJt0
-         5D9+uXbu7FaVs9V0f4wTfV4pinQ53wuzB0smhAvnweE1wZ2flQTT1j2RwNnGvTVZYjJb
-         ArGup0P+3+Hs/XjI1vddMKh1TmUQcVT0HoPSVNagYyuIoxdHSYOZh6pMlfFNV+IkWlEP
-         ift3+ikYdpSzsBtKYV7gGBEdBqKu4IKIAFMjdOcXb2g9eXcD/CnC6jnOMxCAERojsrQ9
-         RLM5vG49d2PLRs3w1dIjIpSM0uWhB8jXF9rHjHSW5LprcXLQ1zOSS/5Uw702V7EG8pyK
-         kdMg==
-X-Forwarded-Encrypted: i=1; AJvYcCV5RwSJ212+jcpqr8epH/MmVIAAxirrhH8DVIBRfOjnrcCmFYUyjnfVVnuJg7rlS6dHYd+e20Ms5IBIXiZnPInbsUXIvFXUbkhjKMt6vn4md3OjBa8MAcyPRQKMHC9yJxH7
-X-Gm-Message-State: AOJu0YxRn0SK++bb4LiGLEq1GtU/WGSMeiGlAVJpVPu4tpXlWNyozZku
-	n+BgOtZ2hRLe5KMNi8s0rQP86jfTSUz+/zGBVOzvWOlbMrqb4t8NoeTvffVR2r0=
-X-Google-Smtp-Source: AGHT+IFOQmBxfL0iXd/IBi8keHyE3FeerLEbDBeUnyR5Ru4tPOwr+DjLV4TNdgucpbVU3GM4gKrJfQ==
-X-Received: by 2002:a17:902:d509:b0:1f6:677b:ea1b with SMTP id d9443c01a7336-1f6d02dd7c0mr73051705ad.24.1717855725951;
-        Sat, 08 Jun 2024 07:08:45 -0700 (PDT)
-Received: from ubuntu.localdomain ([240e:304:7695:3989:4506:7d59:e2a5:432a])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-1f6e4aba444sm26773205ad.156.2024.06.08.07.08.42
+        bh=nMy58J3QA7OYuNsqpVYU1rzQFW3lTrPyfWwmiRLgh2I=;
+        b=Or84dXbOTSfesmVI1MEoIYaCgmv/vHv9CC70UBS7r0caJqilXtxvHu94q6pFeZEf7Q
+         WA/vzEUw3XSKCQmQGAeYm2N+yt83sEkG9n/dAf8qoNDT+NXR3HgAncRfjwSkQrq+vYR7
+         FxHla9KrqunA0XCNFwP36VtiulknhSChkuwUMAbxGG9+kmsPunajmA5SMNEpqCx8zj5D
+         1ZBaeUDhl7BfCGs8UdYsNytmq+u9MMlUEhj4x9j0Pvmolgt/JHVVvZgnv4UTttOrAkWV
+         yXLuGfepPnSy9VcMEkLXUspaKA39ShJlFS48a/QvF2Qbs5d9S9CW4DFzsLyjGGztD9Zy
+         qdhg==
+X-Forwarded-Encrypted: i=1; AJvYcCU3HtZTFpEZ/AsCNpkm3ZQMYCIsidmQeCySlfz1VvCoGAhzeLivKdfCO2g8xM+hBIKY7uwastPMkjKqHrT+3O/5RwIAWH//q3jI7vO/mc5h/4bLkjY9MGPz5q21BzuOedxqD399Rz2QqkpgUv8H6MEn7nqMg3zq71jkZE87qtH0hB+I4kxtOR5nprwbeSH5VDbBEd9EzrGbpZA+SGUXZJz0NTOyb1cxNZ+twA==
+X-Gm-Message-State: AOJu0YzrsVZepE2e/IPLosJRsKYKUUhldVPZ2n6ot0APL7RWkBQwTtPd
+	DxKCu7+/4pGHq2DIeE/7mJS7fCwqMvcPAEEWT/3A6+o3cT8ZFF+L
+X-Google-Smtp-Source: AGHT+IGc7lLd9geb8g0L1MRS9I3j9ymtsBD2HMyCZh6CZPb1b1RadJ7IIki74P8G+mW7SLIFjj+dQQ==
+X-Received: by 2002:a17:90b:4b46:b0:2c2:d136:b0fb with SMTP id 98e67ed59e1d1-2c2d136b355mr3753386a91.34.1717867290398;
+        Sat, 08 Jun 2024 10:21:30 -0700 (PDT)
+Received: from localhost.localdomain ([2409:8955:2e84:1464:5333:31d6:6ba3:d747])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2c2f8e2fbfesm32346a91.34.2024.06.08.10.21.25
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 08 Jun 2024 07:08:45 -0700 (PDT)
-From: Donglin Peng <dolinux.peng@gmail.com>
-To: ast@kernel.org
-Cc: daniel@iogearbox.net,
-	mhiramat@kernel.org,
-	song@kernel.org,
-	andrii@kernel.org,
-	eddyz87@gmail.com,
-	haoluo@google.com,
-	yonghong.song@linux.dev,
-	bpf@vger.kernel.org,
+        Sat, 08 Jun 2024 10:21:30 -0700 (PDT)
+From: Howard Chu <howardchu95@gmail.com>
+To: peterz@infradead.org
+Cc: mingo@redhat.com,
+	acme@kernel.org,
+	namhyung@kernel.org,
+	mark.rutland@arm.com,
+	alexander.shishkin@linux.intel.com,
+	jolsa@kernel.org,
+	irogers@google.com,
+	adrian.hunter@intel.com,
+	kan.liang@linux.intel.com,
+	mic@digikod.net,
+	gnoack@google.com,
+	brauner@kernel.org,
+	howardchu95@gmail.com,
+	linux-perf-users@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
-	Donglin Peng <dolinux.peng@gmail.com>
-Subject: [RFC PATCH v3] bpf: Using binary search to improve the performance of btf_find_by_name_kind
-Date: Sat,  8 Jun 2024 07:08:35 -0700
-Message-Id: <20240608140835.965949-1-dolinux.peng@gmail.com>
-X-Mailer: git-send-email 2.25.1
+	linux-security-module@vger.kernel.org,
+	bpf@vger.kernel.org
+Subject: [PATCH] perf trace: Fix syscall untraceable bug
+Date: Sun,  9 Jun 2024 01:21:46 +0800
+Message-ID: <20240608172147.2779890-1-howardchu95@gmail.com>
+X-Mailer: git-send-email 2.45.2
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -89,484 +96,417 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Currently, we are only using the linear search method to find the type id
-by the name, which has a time complexity of O(n). This change involves
-sorting the names of btf types in ascending order and using binary search,
-which has a time complexity of O(log(n)). This idea was inspired by the
-following patch:
+This is a bug found when implementing pretty-printing for the
+landlock_add_rule system call, I decided to send this patch separately
+because this is a serious bug that should be fixed fast.
 
-60443c88f3a8 ("kallsyms: Improve the performance of kallsyms_lookup_name()").
+I wrote a test program to do landlock_add_rule syscall in a loop,
+yet perf trace -e landlock_add_rule freezes, giving no output.
 
-At present, this improvement is only for searching in vmlinux's and
-module's BTFs.
+This bug is introduced by the false understanding of the variable "key"
+below:
+```
+for (key = 0; key < trace->sctbl->syscalls.nr_entries; ++key) {
+	struct syscall *sc = trace__syscall_info(trace, NULL, key);
+	...
+}
+```
+The code above seems right at the beginning, but when looking at
+syscalltbl.c, I found these lines:
 
-Another change is the search direction, where we search the BTF first and
-then its base, the type id of the first matched btf_type will be returned.
+```
+for (i = 0; i <= syscalltbl_native_max_id; ++i)
+	if (syscalltbl_native[i])
+		++nr_entries;
 
-Here is a time-consuming result that finding 87590 type ids by their names in
-vmlinux's BTF.
+entries = tbl->syscalls.entries = malloc(sizeof(struct syscall) * nr_entries);
+...
 
-Before: 158426 ms
-After:     114 ms
+for (i = 0, j = 0; i <= syscalltbl_native_max_id; ++i) {
+	if (syscalltbl_native[i]) {
+		entries[j].name = syscalltbl_native[i];
+		entries[j].id = i;
+		++j;
+	}
+}
+```
 
-The average lookup performance has improved more than 1000x in the above scenario.
+meaning the key is merely an index to traverse the syscall table,
+instead of the actual syscall id for this particular syscall.
 
-Signed-off-by: Donglin Peng <dolinux.peng@gmail.com>
+So if one uses key to do trace__syscall_info(trace, NULL, key), because
+key only goes up to trace->sctbl->syscalls.nr_entries, for example, on
+my X86_64 machine, this number is 373, it will end up neglecting all
+the rest of the syscall, in my case, everything after `rseq`, because
+the traversal will stop at 373, and `rseq` is the last syscall whose id
+is lower than 373
+
+in tools/perf/arch/x86/include/generated/asm/syscalls_64.c:
+```
+	...
+	[334] = "rseq",
+	[424] = "pidfd_send_signal",
+	...
+```
+
+The reason why the key is scrambled but perf trace works well is that
+key is used in trace__syscall_info(trace, NULL, key) to do
+trace->syscalls.table[id], this makes sure that the struct syscall returned
+actually has an id the same value as key, making the later bpf_prog
+matching all correct.
+
+After fixing this bug, I can do perf trace on 38 more syscalls, and
+because more syscalls are visible, we get 8 more syscalls that can be
+augmented.
+
+before:
+
+perf $ perf trace -vv --max-events=1 |& grep Reusing
+Reusing "open" BPF sys_enter augmenter for "stat"
+Reusing "open" BPF sys_enter augmenter for "lstat"
+Reusing "open" BPF sys_enter augmenter for "access"
+Reusing "connect" BPF sys_enter augmenter for "accept"
+Reusing "sendto" BPF sys_enter augmenter for "recvfrom"
+Reusing "connect" BPF sys_enter augmenter for "bind"
+Reusing "connect" BPF sys_enter augmenter for "getsockname"
+Reusing "connect" BPF sys_enter augmenter for "getpeername"
+Reusing "open" BPF sys_enter augmenter for "execve"
+Reusing "open" BPF sys_enter augmenter for "truncate"
+Reusing "open" BPF sys_enter augmenter for "chdir"
+Reusing "open" BPF sys_enter augmenter for "mkdir"
+Reusing "open" BPF sys_enter augmenter for "rmdir"
+Reusing "open" BPF sys_enter augmenter for "creat"
+Reusing "open" BPF sys_enter augmenter for "link"
+Reusing "open" BPF sys_enter augmenter for "unlink"
+Reusing "open" BPF sys_enter augmenter for "symlink"
+Reusing "open" BPF sys_enter augmenter for "readlink"
+Reusing "open" BPF sys_enter augmenter for "chmod"
+Reusing "open" BPF sys_enter augmenter for "chown"
+Reusing "open" BPF sys_enter augmenter for "lchown"
+Reusing "open" BPF sys_enter augmenter for "mknod"
+Reusing "open" BPF sys_enter augmenter for "statfs"
+Reusing "open" BPF sys_enter augmenter for "pivot_root"
+Reusing "open" BPF sys_enter augmenter for "chroot"
+Reusing "open" BPF sys_enter augmenter for "acct"
+Reusing "open" BPF sys_enter augmenter for "swapon"
+Reusing "open" BPF sys_enter augmenter for "swapoff"
+Reusing "open" BPF sys_enter augmenter for "delete_module"
+Reusing "open" BPF sys_enter augmenter for "setxattr"
+Reusing "open" BPF sys_enter augmenter for "lsetxattr"
+Reusing "openat" BPF sys_enter augmenter for "fsetxattr"
+Reusing "open" BPF sys_enter augmenter for "getxattr"
+Reusing "open" BPF sys_enter augmenter for "lgetxattr"
+Reusing "openat" BPF sys_enter augmenter for "fgetxattr"
+Reusing "open" BPF sys_enter augmenter for "listxattr"
+Reusing "open" BPF sys_enter augmenter for "llistxattr"
+Reusing "open" BPF sys_enter augmenter for "removexattr"
+Reusing "open" BPF sys_enter augmenter for "lremovexattr"
+Reusing "fsetxattr" BPF sys_enter augmenter for "fremovexattr"
+Reusing "open" BPF sys_enter augmenter for "mq_open"
+Reusing "open" BPF sys_enter augmenter for "mq_unlink"
+Reusing "fsetxattr" BPF sys_enter augmenter for "add_key"
+Reusing "fremovexattr" BPF sys_enter augmenter for "request_key"
+Reusing "fremovexattr" BPF sys_enter augmenter for "inotify_add_watch"
+Reusing "fremovexattr" BPF sys_enter augmenter for "mkdirat"
+Reusing "fremovexattr" BPF sys_enter augmenter for "mknodat"
+Reusing "fremovexattr" BPF sys_enter augmenter for "fchownat"
+Reusing "fremovexattr" BPF sys_enter augmenter for "futimesat"
+Reusing "fremovexattr" BPF sys_enter augmenter for "newfstatat"
+Reusing "fremovexattr" BPF sys_enter augmenter for "unlinkat"
+Reusing "fremovexattr" BPF sys_enter augmenter for "linkat"
+Reusing "open" BPF sys_enter augmenter for "symlinkat"
+Reusing "fremovexattr" BPF sys_enter augmenter for "readlinkat"
+Reusing "fremovexattr" BPF sys_enter augmenter for "fchmodat"
+Reusing "fremovexattr" BPF sys_enter augmenter for "faccessat"
+Reusing "fremovexattr" BPF sys_enter augmenter for "utimensat"
+Reusing "connect" BPF sys_enter augmenter for "accept4"
+Reusing "fremovexattr" BPF sys_enter augmenter for "name_to_handle_at"
+Reusing "fremovexattr" BPF sys_enter augmenter for "renameat2"
+Reusing "open" BPF sys_enter augmenter for "memfd_create"
+Reusing "fremovexattr" BPF sys_enter augmenter for "execveat"
+Reusing "fremovexattr" BPF sys_enter augmenter for "statx"
+
+after
+
+perf $ perf trace -vv --max-events=1 |& grep Reusing
+Reusing "open" BPF sys_enter augmenter for "stat"
+Reusing "open" BPF sys_enter augmenter for "lstat"
+Reusing "open" BPF sys_enter augmenter for "access"
+Reusing "connect" BPF sys_enter augmenter for "accept"
+Reusing "sendto" BPF sys_enter augmenter for "recvfrom"
+Reusing "connect" BPF sys_enter augmenter for "bind"
+Reusing "connect" BPF sys_enter augmenter for "getsockname"
+Reusing "connect" BPF sys_enter augmenter for "getpeername"
+Reusing "open" BPF sys_enter augmenter for "execve"
+Reusing "open" BPF sys_enter augmenter for "truncate"
+Reusing "open" BPF sys_enter augmenter for "chdir"
+Reusing "open" BPF sys_enter augmenter for "mkdir"
+Reusing "open" BPF sys_enter augmenter for "rmdir"
+Reusing "open" BPF sys_enter augmenter for "creat"
+Reusing "open" BPF sys_enter augmenter for "link"
+Reusing "open" BPF sys_enter augmenter for "unlink"
+Reusing "open" BPF sys_enter augmenter for "symlink"
+Reusing "open" BPF sys_enter augmenter for "readlink"
+Reusing "open" BPF sys_enter augmenter for "chmod"
+Reusing "open" BPF sys_enter augmenter for "chown"
+Reusing "open" BPF sys_enter augmenter for "lchown"
+Reusing "open" BPF sys_enter augmenter for "mknod"
+Reusing "open" BPF sys_enter augmenter for "statfs"
+Reusing "open" BPF sys_enter augmenter for "pivot_root"
+Reusing "open" BPF sys_enter augmenter for "chroot"
+Reusing "open" BPF sys_enter augmenter for "acct"
+Reusing "open" BPF sys_enter augmenter for "swapon"
+Reusing "open" BPF sys_enter augmenter for "swapoff"
+Reusing "open" BPF sys_enter augmenter for "delete_module"
+Reusing "open" BPF sys_enter augmenter for "setxattr"
+Reusing "open" BPF sys_enter augmenter for "lsetxattr"
+Reusing "openat" BPF sys_enter augmenter for "fsetxattr"
+Reusing "open" BPF sys_enter augmenter for "getxattr"
+Reusing "open" BPF sys_enter augmenter for "lgetxattr"
+Reusing "openat" BPF sys_enter augmenter for "fgetxattr"
+Reusing "open" BPF sys_enter augmenter for "listxattr"
+Reusing "open" BPF sys_enter augmenter for "llistxattr"
+Reusing "open" BPF sys_enter augmenter for "removexattr"
+Reusing "open" BPF sys_enter augmenter for "lremovexattr"
+Reusing "fsetxattr" BPF sys_enter augmenter for "fremovexattr"
+Reusing "open" BPF sys_enter augmenter for "mq_open"
+Reusing "open" BPF sys_enter augmenter for "mq_unlink"
+Reusing "fsetxattr" BPF sys_enter augmenter for "add_key"
+Reusing "fremovexattr" BPF sys_enter augmenter for "request_key"
+Reusing "fremovexattr" BPF sys_enter augmenter for "inotify_add_watch"
+Reusing "fremovexattr" BPF sys_enter augmenter for "mkdirat"
+Reusing "fremovexattr" BPF sys_enter augmenter for "mknodat"
+Reusing "fremovexattr" BPF sys_enter augmenter for "fchownat"
+Reusing "fremovexattr" BPF sys_enter augmenter for "futimesat"
+Reusing "fremovexattr" BPF sys_enter augmenter for "newfstatat"
+Reusing "fremovexattr" BPF sys_enter augmenter for "unlinkat"
+Reusing "fremovexattr" BPF sys_enter augmenter for "linkat"
+Reusing "open" BPF sys_enter augmenter for "symlinkat"
+Reusing "fremovexattr" BPF sys_enter augmenter for "readlinkat"
+Reusing "fremovexattr" BPF sys_enter augmenter for "fchmodat"
+Reusing "fremovexattr" BPF sys_enter augmenter for "faccessat"
+Reusing "fremovexattr" BPF sys_enter augmenter for "utimensat"
+Reusing "connect" BPF sys_enter augmenter for "accept4"
+Reusing "fremovexattr" BPF sys_enter augmenter for "name_to_handle_at"
+Reusing "fremovexattr" BPF sys_enter augmenter for "renameat2"
+Reusing "open" BPF sys_enter augmenter for "memfd_create"
+Reusing "fremovexattr" BPF sys_enter augmenter for "execveat"
+Reusing "fremovexattr" BPF sys_enter augmenter for "statx"
+
+TL;DR:
+
+These are the new syscalls that can be augmented
+Reusing "openat" BPF sys_enter augmenter for "open_tree"
+Reusing "openat" BPF sys_enter augmenter for "openat2"
+Reusing "openat" BPF sys_enter augmenter for "mount_setattr"
+Reusing "openat" BPF sys_enter augmenter for "move_mount"
+Reusing "open" BPF sys_enter augmenter for "fsopen"
+Reusing "openat" BPF sys_enter augmenter for "fspick"
+Reusing "openat" BPF sys_enter augmenter for "faccessat2"
+Reusing "openat" BPF sys_enter augmenter for "fchmodat2"
+
+as for the perf trace output:
+
+before
+
+perf $ perf trace -e faccessat2 --max-events=1
+[no output]
+
+after
+
+perf $ ./perf trace -e faccessat2 --max-events=1
+     0.000 ( 0.037 ms): waybar/958 faccessat2(dfd: 40, filename: "uevent")                               = 0
+
+P.S. The reason why this bug was not found in the past five years is
+probably because it only happens to the newer syscalls whose id is
+greater, for instance, faccessat2 of id 439, which not a lot of people
+care about when using perf trace.
+
+Signed-off-by: Howard Chu <howardchu95@gmail.com>
 ---
-Changes in RFC v3:
- - Sort the btf types during the build process in order to reduce memory usage
-   and decrease boot time.
+ tools/perf/builtin-trace.c   | 32 +++++++++++++++++++++-----------
+ tools/perf/util/syscalltbl.c | 21 +++++++++------------
+ tools/perf/util/syscalltbl.h |  5 +++++
+ 3 files changed, 35 insertions(+), 23 deletions(-)
 
-RFC v2:
- - https://lore.kernel.org/all/20230909091646.420163-1-pengdonglin@sangfor.com.cn
----
- include/linux/btf.h |   1 +
- kernel/bpf/btf.c    | 160 +++++++++++++++++++++++++++++++++---
- tools/lib/bpf/btf.c | 195 ++++++++++++++++++++++++++++++++++++++++++++
- 3 files changed, 345 insertions(+), 11 deletions(-)
-
-diff --git a/include/linux/btf.h b/include/linux/btf.h
-index f9e56fd12a9f..1dc1000a7dc9 100644
---- a/include/linux/btf.h
-+++ b/include/linux/btf.h
-@@ -214,6 +214,7 @@ bool btf_is_kernel(const struct btf *btf);
- bool btf_is_module(const struct btf *btf);
- struct module *btf_try_get_module(const struct btf *btf);
- u32 btf_nr_types(const struct btf *btf);
-+u32 btf_type_cnt(const struct btf *btf);
- bool btf_member_is_reg_int(const struct btf *btf, const struct btf_type *s,
- 			   const struct btf_member *m,
- 			   u32 expected_offset, u32 expected_size);
-diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-index 821063660d9f..5b7b464204bf 100644
---- a/kernel/bpf/btf.c
-+++ b/kernel/bpf/btf.c
-@@ -262,6 +262,7 @@ struct btf {
- 	u32 data_size;
- 	refcount_t refcnt;
- 	u32 id;
-+	u32 nr_types_sorted;
- 	struct rcu_head rcu;
- 	struct btf_kfunc_set_tab *kfunc_set_tab;
- 	struct btf_id_dtor_kfunc_tab *dtor_kfunc_tab;
-@@ -542,23 +543,102 @@ u32 btf_nr_types(const struct btf *btf)
- 	return total;
- }
- 
--s32 btf_find_by_name_kind(const struct btf *btf, const char *name, u8 kind)
-+u32 btf_type_cnt(const struct btf *btf)
-+{
-+	return btf->start_id + btf->nr_types;
-+}
-+
-+static s32 btf_find_by_name_bsearch(const struct btf *btf, const char *name,
-+				    int *start, int *end)
+diff --git a/tools/perf/builtin-trace.c b/tools/perf/builtin-trace.c
+index c42bc608954e..5cbe1748911d 100644
+--- a/tools/perf/builtin-trace.c
++++ b/tools/perf/builtin-trace.c
+@@ -3354,7 +3354,8 @@ static int trace__bpf_prog_sys_exit_fd(struct trace *trace, int id)
+ static struct bpf_program *trace__find_usable_bpf_prog_entry(struct trace *trace, struct syscall *sc)
  {
- 	const struct btf_type *t;
--	const char *tname;
--	u32 i, total;
-+	const char *name_buf;
-+	int low, low_start, mid, high, high_end;
-+	int ret, start_id;
-+
-+	start_id = btf->base_btf ? btf->start_id : 1;
-+	low_start = low = start_id;
-+	high_end = high = start_id + btf->nr_types_sorted - 1;
-+
-+	while (low <= high) {
-+		mid = low + (high - low) / 2;
-+		t = btf_type_by_id(btf, mid);
-+		name_buf = btf_name_by_offset(btf, t->name_off);
-+		ret = strcmp(name, name_buf);
-+		if (ret > 0)
-+			low = mid + 1;
-+		else if (ret < 0)
-+			high = mid - 1;
-+		else
-+			break;
-+	}
+ 	struct tep_format_field *field, *candidate_field;
+-	int id;
++	struct __syscall *scs = trace->sctbl->syscalls.entries;
++	int id, _id;
  
--	total = btf_nr_types(btf);
--	for (i = 1; i < total; i++) {
--		t = btf_type_by_id(btf, i);
--		if (BTF_INFO_KIND(t->info) != kind)
--			continue;
-+	if (low > high)
-+		return -ESRCH;
+ 	/*
+ 	 * We're only interested in syscalls that have a pointer:
+@@ -3368,10 +3369,13 @@ static struct bpf_program *trace__find_usable_bpf_prog_entry(struct trace *trace
  
--		tname = btf_name_by_offset(btf, t->name_off);
--		if (!strcmp(tname, name))
--			return i;
-+	if (start) {
-+		low = mid;
-+		while (low > low_start) {
-+			t = btf_type_by_id(btf, low-1);
-+			name_buf = btf_name_by_offset(btf, t->name_off);
-+			if (strcmp(name, name_buf))
-+				break;
-+			low--;
-+		}
-+		*start = low;
+ try_to_find_pair:
+ 	for (id = 0; id < trace->sctbl->syscalls.nr_entries; ++id) {
+-		struct syscall *pair = trace__syscall_info(trace, NULL, id);
++		struct syscall *pair;
+ 		struct bpf_program *pair_prog;
+ 		bool is_candidate = false;
+ 
++		_id = scs[id].id;
++		pair = trace__syscall_info(trace, NULL, _id);
++
+ 		if (pair == NULL || pair == sc ||
+ 		    pair->bpf_prog.sys_enter == trace->skel->progs.syscall_unaugmented)
+ 			continue;
+@@ -3456,23 +3460,26 @@ static int trace__init_syscalls_bpf_prog_array_maps(struct trace *trace)
+ {
+ 	int map_enter_fd = bpf_map__fd(trace->skel->maps.syscalls_sys_enter);
+ 	int map_exit_fd  = bpf_map__fd(trace->skel->maps.syscalls_sys_exit);
+-	int err = 0, key;
++	int err = 0, key, id;
++	struct __syscall *scs = trace->sctbl->syscalls.entries;
+ 
+ 	for (key = 0; key < trace->sctbl->syscalls.nr_entries; ++key) {
+ 		int prog_fd;
+ 
+-		if (!trace__syscall_enabled(trace, key))
++		id = scs[key].id;
++
++		if (!trace__syscall_enabled(trace, id))
+ 			continue;
+ 
+-		trace__init_syscall_bpf_progs(trace, key);
++		trace__init_syscall_bpf_progs(trace, id);
+ 
+ 		// It'll get at least the "!raw_syscalls:unaugmented"
+-		prog_fd = trace__bpf_prog_sys_enter_fd(trace, key);
+-		err = bpf_map_update_elem(map_enter_fd, &key, &prog_fd, BPF_ANY);
++		prog_fd = trace__bpf_prog_sys_enter_fd(trace, id);
++		err = bpf_map_update_elem(map_enter_fd, &id, &prog_fd, BPF_ANY);
+ 		if (err)
+ 			break;
+-		prog_fd = trace__bpf_prog_sys_exit_fd(trace, key);
+-		err = bpf_map_update_elem(map_exit_fd, &key, &prog_fd, BPF_ANY);
++		prog_fd = trace__bpf_prog_sys_exit_fd(trace, id);
++		err = bpf_map_update_elem(map_exit_fd, &id, &prog_fd, BPF_ANY);
+ 		if (err)
+ 			break;
  	}
+@@ -3506,10 +3513,13 @@ static int trace__init_syscalls_bpf_prog_array_maps(struct trace *trace)
+ 	 * array tail call, then that one will be used.
+ 	 */
+ 	for (key = 0; key < trace->sctbl->syscalls.nr_entries; ++key) {
+-		struct syscall *sc = trace__syscall_info(trace, NULL, key);
++		struct syscall *sc;
+ 		struct bpf_program *pair_prog;
+ 		int prog_fd;
  
-+	if (end) {
-+		high = mid;
-+		while (high < high_end) {
-+			t = btf_type_by_id(btf, high+1);
-+			name_buf = btf_name_by_offset(btf, t->name_off);
-+			if (strcmp(name, name_buf))
-+				break;
-+			high++;
-+		}
-+		*end = high;
-+	}
++		id = scs[key].id;
++		sc = trace__syscall_info(trace, NULL, id);
 +
-+	return mid;
-+}
-+
-+s32 btf_find_by_name_kind(const struct btf *btf, const char *name, u8 kind)
-+{
-+	const struct btf_type *t;
-+	const char *tname;
-+	int start, end;
-+	s32 id, total;
-+
-+	do {
-+		if (btf->nr_types_sorted) {
-+			/* binary search */
-+			id = btf_find_by_name_bsearch(btf, name, &start, &end);
-+			if (id > 0) {
-+				while (start <= end) {
-+					t = btf_type_by_id(btf, start);
-+					if (BTF_INFO_KIND(t->info) == kind)
-+						return start;
-+					start++;
-+				}
-+			}
-+		} else {
-+			/* linear search */
-+			total = btf_type_cnt(btf);
-+			for (id = btf->base_btf ? btf->start_id : 1;
-+				id < total; id++) {
-+				t = btf_type_by_id(btf, id);
-+				if (BTF_INFO_KIND(t->info) != kind)
-+					continue;
-+
-+				tname = btf_name_by_offset(btf, t->name_off);
-+				if (!strcmp(tname, name))
-+					return id;
-+			}
-+		}
-+		btf = btf->base_btf;
-+	} while (btf);
-+
- 	return -ENOENT;
+ 		if (sc == NULL || sc->bpf_prog.sys_enter == NULL)
+ 			continue;
+ 
+@@ -3535,7 +3545,7 @@ static int trace__init_syscalls_bpf_prog_array_maps(struct trace *trace)
+ 		 * with the fd for the program we're reusing:
+ 		 */
+ 		prog_fd = bpf_program__fd(sc->bpf_prog.sys_enter);
+-		err = bpf_map_update_elem(map_enter_fd, &key, &prog_fd, BPF_ANY);
++		err = bpf_map_update_elem(map_enter_fd, &id, &prog_fd, BPF_ANY);
+ 		if (err)
+ 			break;
+ 	}
+diff --git a/tools/perf/util/syscalltbl.c b/tools/perf/util/syscalltbl.c
+index 63be7b58761d..16aa886c40f0 100644
+--- a/tools/perf/util/syscalltbl.c
++++ b/tools/perf/util/syscalltbl.c
+@@ -44,22 +44,17 @@ const int syscalltbl_native_max_id = SYSCALLTBL_LOONGARCH_MAX_ID;
+ static const char *const *syscalltbl_native = syscalltbl_loongarch;
+ #endif
+ 
+-struct syscall {
+-	int id;
+-	const char *name;
+-};
+-
+ static int syscallcmpname(const void *vkey, const void *ventry)
+ {
+ 	const char *key = vkey;
+-	const struct syscall *entry = ventry;
++	const struct __syscall *entry = ventry;
+ 
+ 	return strcmp(key, entry->name);
  }
  
-@@ -5979,6 +6059,56 @@ int get_kern_ctx_btf_id(struct bpf_verifier_log *log, enum bpf_prog_type prog_ty
- 	return kctx_type_id;
+ static int syscallcmp(const void *va, const void *vb)
+ {
+-	const struct syscall *a = va, *b = vb;
++	const struct __syscall *a = va, *b = vb;
+ 
+ 	return strcmp(a->name, b->name);
  }
+@@ -67,13 +62,14 @@ static int syscallcmp(const void *va, const void *vb)
+ static int syscalltbl__init_native(struct syscalltbl *tbl)
+ {
+ 	int nr_entries = 0, i, j;
+-	struct syscall *entries;
++	struct __syscall *entries;
  
-+static int btf_check_sort(struct btf *btf, int start_id)
-+{
-+	int i, n, nr_names = 0;
-+
-+	n = btf_nr_types(btf);
-+	for (i = start_id; i < n; i++) {
-+		const struct btf_type *t;
-+		const char *name;
-+
-+		t = btf_type_by_id(btf, i);
-+		if (!t)
-+			return -EINVAL;
-+
-+		name = btf_str_by_offset(btf, t->name_off);
-+		if (!str_is_empty(name))
-+			nr_names++;
-+	}
-+
-+	if (nr_names < 3)
-+		goto out;
-+
-+	for (i = 0; i < nr_names - 1; i++) {
-+		const struct btf_type *t1, *t2;
-+		const char *s1, *s2;
-+
-+		t1 = btf_type_by_id(btf, start_id + i);
-+		if (!t1)
-+			return -EINVAL;
-+
-+		s1 = btf_str_by_offset(btf, t1->name_off);
-+		if (str_is_empty(s1))
-+			goto out;
-+
-+		t2 = btf_type_by_id(btf, start_id + i + 1);
-+		if (!t2)
-+			return -EINVAL;
-+
-+		s2 = btf_str_by_offset(btf, t2->name_off);
-+		if (str_is_empty(s2))
-+			goto out;
-+
-+		if (strcmp(s1, s2) > 0)
-+			goto out;
-+	}
-+
-+	btf->nr_types_sorted = nr_names;
-+out:
-+	return 0;
-+}
-+
- BTF_ID_LIST(bpf_ctx_convert_btf_id)
- BTF_ID(struct, bpf_ctx_convert)
+ 	for (i = 0; i <= syscalltbl_native_max_id; ++i)
+ 		if (syscalltbl_native[i])
+ 			++nr_entries;
  
-@@ -6029,6 +6159,10 @@ struct btf *btf_parse_vmlinux(void)
- 	if (err)
- 		goto errout;
+-	entries = tbl->syscalls.entries = malloc(sizeof(struct syscall) * nr_entries);
++	entries = tbl->syscalls.entries = malloc(sizeof(struct __syscall) *
++						 nr_entries);
+ 	if (tbl->syscalls.entries == NULL)
+ 		return -1;
  
-+	err = btf_check_sort(btf, 1);
-+	if (err)
-+		goto errout;
-+
- 	/* btf_parse_vmlinux() runs under bpf_verifier_lock */
- 	bpf_ctx_convert.t = btf_type_by_id(btf, bpf_ctx_convert_btf_id[0]);
- 
-@@ -6111,6 +6245,10 @@ static struct btf *btf_parse_module(const char *module_name, const void *data, u
- 	if (err)
- 		goto errout;
- 
-+	err = btf_check_sort(btf, btf_nr_types(base_btf));
-+	if (err)
-+		goto errout;
-+
- 	btf_verifier_env_free(env);
- 	refcount_set(&btf->refcnt, 1);
- 	return btf;
-diff --git a/tools/lib/bpf/btf.c b/tools/lib/bpf/btf.c
-index 2d0840ef599a..93c1ab677bfa 100644
---- a/tools/lib/bpf/btf.c
-+++ b/tools/lib/bpf/btf.c
-@@ -1,6 +1,9 @@
- // SPDX-License-Identifier: (LGPL-2.1 OR BSD-2-Clause)
- /* Copyright (c) 2018 Facebook */
- 
-+#ifndef _GNU_SOURCE
-+#define _GNU_SOURCE
-+#endif
- #include <byteswap.h>
- #include <endian.h>
- #include <stdio.h>
-@@ -3072,6 +3075,7 @@ static int btf_dedup_ref_types(struct btf_dedup *d);
- static int btf_dedup_resolve_fwds(struct btf_dedup *d);
- static int btf_dedup_compact_types(struct btf_dedup *d);
- static int btf_dedup_remap_types(struct btf_dedup *d);
-+static int btf_sort_type_by_name(struct btf *btf);
- 
- /*
-  * Deduplicate BTF types and strings.
-@@ -3270,6 +3274,11 @@ int btf__dedup(struct btf *btf, const struct btf_dedup_opts *opts)
- 		pr_debug("btf_dedup_remap_types failed:%d\n", err);
- 		goto done;
+@@ -85,7 +81,8 @@ static int syscalltbl__init_native(struct syscalltbl *tbl)
+ 		}
  	}
-+	err = btf_sort_type_by_name(btf);
-+	if (err < 0) {
-+		pr_debug("btf_sort_type_by_name failed:%d\n", err);
-+		goto done;
-+	}
  
- done:
- 	btf_dedup_free(d);
-@@ -5212,3 +5221,189 @@ int btf_ext_visit_str_offs(struct btf_ext *btf_ext, str_off_visit_fn visit, void
- 
+-	qsort(tbl->syscalls.entries, nr_entries, sizeof(struct syscall), syscallcmp);
++	qsort(tbl->syscalls.entries, nr_entries, sizeof(struct __syscall),
++	      syscallcmp);
+ 	tbl->syscalls.nr_entries = nr_entries;
+ 	tbl->syscalls.max_id	 = syscalltbl_native_max_id;
  	return 0;
- }
+@@ -116,7 +113,7 @@ const char *syscalltbl__name(const struct syscalltbl *tbl __maybe_unused, int id
+ 
+ int syscalltbl__id(struct syscalltbl *tbl, const char *name)
+ {
+-	struct syscall *sc = bsearch(name, tbl->syscalls.entries,
++	struct __syscall *sc = bsearch(name, tbl->syscalls.entries,
+ 				     tbl->syscalls.nr_entries, sizeof(*sc),
+ 				     syscallcmpname);
+ 
+@@ -126,7 +123,7 @@ int syscalltbl__id(struct syscalltbl *tbl, const char *name)
+ int syscalltbl__strglobmatch_next(struct syscalltbl *tbl, const char *syscall_glob, int *idx)
+ {
+ 	int i;
+-	struct syscall *syscalls = tbl->syscalls.entries;
++	struct __syscall *syscalls = tbl->syscalls.entries;
+ 
+ 	for (i = *idx + 1; i < tbl->syscalls.nr_entries; ++i) {
+ 		if (strglobmatch(syscalls[i].name, syscall_glob)) {
+diff --git a/tools/perf/util/syscalltbl.h b/tools/perf/util/syscalltbl.h
+index a41d2ca9e4ae..6e93a0874c40 100644
+--- a/tools/perf/util/syscalltbl.h
++++ b/tools/perf/util/syscalltbl.h
+@@ -2,6 +2,11 @@
+ #ifndef __PERF_SYSCALLTBL_H
+ #define __PERF_SYSCALLTBL_H
+ 
++struct __syscall {
++	int id;
++	const char *name;
++};
 +
-+static int btf_compare_type_name(const void *a, const void *b, void *priv)
-+{
-+	struct btf *btf = (struct btf *)priv;
-+	__u32 ta = *(const __u32 *)a;
-+	__u32 tb = *(const __u32 *)b;
-+	struct btf_type *bta, *btb;
-+	const char *na, *nb;
-+
-+	bta = (struct btf_type *)(btf->types_data + ta);
-+	btb = (struct btf_type *)(btf->types_data + tb);
-+	na = btf__str_by_offset(btf, bta->name_off);
-+	nb = btf__str_by_offset(btf, btb->name_off);
-+
-+	return strcmp(na, nb);
-+}
-+
-+static int btf_compare_offs(const void *o1, const void *o2)
-+{
-+	__u32 *offs1 = (__u32 *)o1;
-+	__u32 *offs2 = (__u32 *)o2;
-+
-+	return *offs1 - *offs2;
-+}
-+
-+static inline __u32 btf_get_mapped_type(struct btf *btf, __u32 *maps, __u32 type)
-+{
-+	if (type < btf->start_id)
-+		return type;
-+	return maps[type - btf->start_id] + btf->start_id;
-+}
-+
-+/*
-+ * Collect and move the btf_types with names to the start location, and
-+ * sort them in ascending order by name, so we can use the binary search
-+ * method.
-+ */
-+static int btf_sort_type_by_name(struct btf *btf)
-+{
-+	struct btf_type *bt;
-+	__u32 *new_type_offs = NULL, *new_type_offs_noname = NULL;
-+	__u32 *maps = NULL, *found_offs;
-+	void *new_types_data = NULL, *loc_data;
-+	int i, j, k, type_cnt, ret = 0, type_size;
-+	__u32 data_size;
-+
-+	if (btf_ensure_modifiable(btf))
-+		return libbpf_err(-ENOMEM);
-+
-+	type_cnt = btf->nr_types;
-+	data_size = btf->type_offs_cap * sizeof(*new_type_offs);
-+
-+	maps = (__u32 *)malloc(type_cnt * sizeof(__u32));
-+	if (!maps) {
-+		ret = -ENOMEM;
-+		goto err_out;
-+	}
-+
-+	new_type_offs = (__u32 *)malloc(data_size);
-+	if (!new_type_offs) {
-+		ret = -ENOMEM;
-+		goto err_out;
-+	}
-+
-+	new_type_offs_noname = (__u32 *)malloc(data_size);
-+	if (!new_type_offs_noname) {
-+		ret = -ENOMEM;
-+		goto err_out;
-+	}
-+
-+	new_types_data = malloc(btf->types_data_cap);
-+	if (!new_types_data) {
-+		ret = -ENOMEM;
-+		goto err_out;
-+	}
-+
-+	memset(new_type_offs, 0, data_size);
-+
-+	for (i = 0, j = 0, k = 0; i < type_cnt; i++) {
-+		const char *name;
-+
-+		bt = (struct btf_type *)(btf->types_data + btf->type_offs[i]);
-+		name = btf__str_by_offset(btf, bt->name_off);
-+		if (!name || !name[0])
-+			new_type_offs_noname[k++] = btf->type_offs[i];
-+		else
-+			new_type_offs[j++] = btf->type_offs[i];
-+	}
-+
-+	memmove(new_type_offs + j, new_type_offs_noname, sizeof(__u32) * k);
-+
-+	qsort_r(new_type_offs, j, sizeof(*new_type_offs),
-+		btf_compare_type_name, btf);
-+
-+	for (i = 0; i < type_cnt; i++) {
-+		found_offs = bsearch(&new_type_offs[i], btf->type_offs, type_cnt,
-+					sizeof(__u32), btf_compare_offs);
-+		if (!found_offs) {
-+			ret = -EINVAL;
-+			goto err_out;
-+		}
-+		maps[found_offs - btf->type_offs] = i;
-+	}
-+
-+	loc_data = new_types_data;
-+	for (i = 0; i < type_cnt; i++, loc_data += type_size) {
-+		bt = (struct btf_type *)(btf->types_data + new_type_offs[i]);
-+		type_size = btf_type_size(bt);
-+		if (type_size < 0) {
-+			ret = type_size;
-+			goto err_out;
-+		}
-+
-+		memcpy(loc_data, bt, type_size);
-+
-+		bt = (struct btf_type *)loc_data;
-+		switch (btf_kind(bt)) {
-+		case BTF_KIND_PTR:
-+		case BTF_KIND_CONST:
-+		case BTF_KIND_VOLATILE:
-+		case BTF_KIND_RESTRICT:
-+		case BTF_KIND_TYPEDEF:
-+		case BTF_KIND_TYPE_TAG:
-+		case BTF_KIND_FUNC:
-+		case BTF_KIND_VAR:
-+		case BTF_KIND_DECL_TAG:
-+			bt->type = btf_get_mapped_type(btf, maps, bt->type);
-+			break;
-+		case BTF_KIND_ARRAY: {
-+			struct btf_array *arr = (void *)(bt + 1);
-+
-+			arr->type = btf_get_mapped_type(btf, maps, arr->type);
-+			arr->index_type = btf_get_mapped_type(btf, maps, arr->index_type);
-+			break;
-+		}
-+		case BTF_KIND_STRUCT:
-+		case BTF_KIND_UNION: {
-+			struct btf_member *m = (void *)(bt + 1);
-+			__u16 vlen = BTF_INFO_VLEN(bt->info);
-+
-+			for (j = 0; j < vlen; j++, m++)
-+				m->type = btf_get_mapped_type(btf, maps, m->type);
-+			break;
-+		}
-+		case BTF_KIND_FUNC_PROTO: {
-+			struct btf_param *p = (void *)(bt + 1);
-+			__u16 vlen = BTF_INFO_VLEN(bt->info);
-+
-+			bt->type = btf_get_mapped_type(btf, maps, bt->type);
-+			for (j = 0; j < vlen; j++, p++)
-+				p->type = btf_get_mapped_type(btf, maps, p->type);
-+
-+			break;
-+		}
-+		case BTF_KIND_DATASEC: {
-+			struct btf_var_secinfo *v = (void *)(bt + 1);
-+			__u16 vlen = BTF_INFO_VLEN(bt->info);
-+
-+			for (j = 0; j < vlen; j++, v++)
-+				v->type = btf_get_mapped_type(btf, maps, v->type);
-+			break;
-+		}
-+		default:
-+			break;
-+		}
-+	}
-+
-+	free(btf->type_offs);
-+	btf->type_offs = new_type_offs;
-+	free(btf->types_data);
-+	btf->types_data = new_types_data;
-+	free(maps);
-+	free(new_type_offs_noname);
-+	return 0;
-+
-+err_out:
-+	if (maps)
-+		free(maps);
-+	if (new_type_offs)
-+		free(new_type_offs);
-+	if (new_type_offs_noname)
-+		free(new_type_offs_noname);
-+	if (new_types_data)
-+		free(new_types_data);
-+	return libbpf_err(ret);
-+}
+ struct syscalltbl {
+ 	int audit_machine;
+ 	struct {
 -- 
-2.25.1
+2.45.2
 
 
