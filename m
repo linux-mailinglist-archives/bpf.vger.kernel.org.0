@@ -1,74 +1,45 @@
-Return-Path: <bpf+bounces-31631-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-31632-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 68ABE901011
-	for <lists+bpf@lfdr.de>; Sat,  8 Jun 2024 10:01:49 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 53640901015
+	for <lists+bpf@lfdr.de>; Sat,  8 Jun 2024 10:04:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C0412B20FE4
-	for <lists+bpf@lfdr.de>; Sat,  8 Jun 2024 08:01:46 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CFCC51F2239A
+	for <lists+bpf@lfdr.de>; Sat,  8 Jun 2024 08:04:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B81A176AA9;
-	Sat,  8 Jun 2024 08:01:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XS+liKGk"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6BA24176ABE;
+	Sat,  8 Jun 2024 08:04:35 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f51.google.com (mail-wr1-f51.google.com [209.85.221.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from dggsgout12.his.huawei.com (unknown [45.249.212.56])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 40481D52E;
-	Sat,  8 Jun 2024 08:01:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4824ACA40;
+	Sat,  8 Jun 2024 08:04:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717833698; cv=none; b=OaFT6pxAVjEVlor0v437HOS4nxL8YHAojWLQyQG/F1IyakuMlopVdvdWsWsyZjS/B3jtUPPpX89sMH1J4gaTIG2tIhYSO+XlU+4qz41IfRAxin3A9sNQ7APAJqtzdlkfPCHibGda9NKy2HjMQGqpuvtF3I657ar0YsFmFh0HlNE=
+	t=1717833875; cv=none; b=tzRRYUN6sY2/WzKvaE42C/H8LOssuOkeEWIjHEY6QyKvg0pxxuP5vfss2AztXOVgwJgpLoLn+0+0MrlniFRG9TR6NVZca8ODZqjF6Ww2jO1VxUcjmnO92vMckHdhxhsHg660Tk5Lj3McHU6adsjAnt61YHAAuNf2DD294QG5FTg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717833698; c=relaxed/simple;
-	bh=g/c4SrbQzg+FfdOpRuQubqswZqRcZAYzy85tSaRem5I=;
+	s=arc-20240116; t=1717833875; c=relaxed/simple;
+	bh=Wrgs+ZE7cmrZBquFV5k8uyVqzNDWOPnRTG9hcmXBzsE=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=I2dQ+JXpxDlkjXbC5NKZ2t5aIq2gqfTeE6/ZskptTnqCs4y2Ox7C+JKViVjogWnx0chsRgu/hAsCUXdH6+TRxlJNG4mUsNoJxMtucSs85Is6evtdTHVFsTARiqjSHtHKPWQ2kpU2+EYH0j76DgP2KNE1ZWwTae9Jrf02FHjuB+U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=XS+liKGk; arc=none smtp.client-ip=209.85.221.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f51.google.com with SMTP id ffacd0b85a97d-35f04794973so171830f8f.2;
-        Sat, 08 Jun 2024 01:01:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1717833695; x=1718438495; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=VAWRNp7GKfl35ZF8idBIG8xWUMfDU98RNdFO1Bq1Bew=;
-        b=XS+liKGkbc5GLthjlMsBrEkK6SpJuh72O7AdbAAJZeBX/LrjbiuYDjlE8mC9sfmIzT
-         aI8js7tYHiNwmalqa9pwRIe9hjANM2D/+RVPNDwcO6YmiA4EHqhV/oMMJcX4SZgb7b0r
-         HCw/JxB+B2reDU4B/up2HmIDzu3pgxZJYPKjFe+hl/3HzD1TfZqPPcaiiJbbfQcA0okM
-         CczXaCyB5r/ev6FC38q7Ba1uhgSAYK+2xTKSksJQ5c3WsZJ5JOW+xqpiX2FP52W89A5a
-         OB3gru+TFgjaSKrh6uvew7JMzbfxFxJLLgz7UqvEWuDlXVyKOxCX6253jEtlKok8obYO
-         LKqQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1717833695; x=1718438495;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=VAWRNp7GKfl35ZF8idBIG8xWUMfDU98RNdFO1Bq1Bew=;
-        b=mwolvdIKtAclnEXllm1DxWdI5K2tD2567+VoHXOi0GhM4NegzzoUKq9rY6FE8Bfjed
-         ZiK6yoU+Uo9HLzjx/p2c6qGir4ohps7Pr+KZ3XdHexvHsYY4LRSxnD9xPcQ2JpWHfUpD
-         Lk/A+DJmhTdPjP843sVjmks7QPj49a3c9c7iKntYn46o6ue7CgQIa9sTqaRMoNgue1Rq
-         W3D529W5NqTGk8YWeaGOeSMjwycjBjcyPKoLuphNynLwpsMzxhoFXDHnMSGqw1iuH31H
-         KJy6ChQzbXFJQxK8KzzxvQriS7v8DtjfdFrzPkccFDtsAc1rmKgija0iJf68wbC6Jjq5
-         UbQw==
-X-Forwarded-Encrypted: i=1; AJvYcCXHfkiDHsRVNLxz86i00SJ7bmpZeNIaSSRc3uMgRmMF1cUVDP7UlfZP21dRuzj3FgTpeB1kgBS6WbwDzPZnqY3oGqdRQwSZ
-X-Gm-Message-State: AOJu0Yx/OnPcmT+PHzW0VmeExFC93inLb7qO2IGOLHJsdUUXrrlqJO9y
-	kfoNFzKe8Y8TRU+4Gnd/pesb8J2AHrt5QB3R+wOwm76FLhzF8so8
-X-Google-Smtp-Source: AGHT+IEFkAJT5BhsNxGrQC0qHpBzy21JRBZ/1c5X0rWvucd0vtvW9koJU+RzMMrz8eeaTKXctPpM0g==
-X-Received: by 2002:a05:6000:1845:b0:35e:f234:695c with SMTP id ffacd0b85a97d-35efee132fdmr3459197f8f.5.1717833695175;
-        Sat, 08 Jun 2024 01:01:35 -0700 (PDT)
-Received: from [10.0.0.4] ([37.166.160.110])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-35ef5d2e73dsm5749638f8f.16.2024.06.08.01.01.33
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 08 Jun 2024 01:01:34 -0700 (PDT)
-Message-ID: <9f254c96-54f2-4457-b7ab-1d9f6187939c@gmail.com>
-Date: Sat, 8 Jun 2024 10:01:32 +0200
+	 In-Reply-To:Content-Type; b=IL/xbzbsuA88yT4XisyIYN95RFTd94BTBnydXfgjVlA77v4yp0gCaU8VkzK40BLG++qN27aHYGmREqAiWqHNj9Th/5k3THZrCgpxKddSI22FVQFSkmigXh1TykDMzrXrm7mNyznRBUpb2n3qj8Ut3Y7E/fnteEtc2q16gNExypQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.93.142])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4Vx9ZT5SdMz4f3jsq;
+	Sat,  8 Jun 2024 16:04:17 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.112])
+	by mail.maildlp.com (Postfix) with ESMTP id 8F4FF1A016E;
+	Sat,  8 Jun 2024 16:04:27 +0800 (CST)
+Received: from [10.67.111.192] (unknown [10.67.111.192])
+	by APP1 (Coremail) with SMTP id cCh0CgDH4AmJEGRmD5OVOw--.47038S2;
+	Sat, 08 Jun 2024 16:04:27 +0800 (CST)
+Message-ID: <b4484882-0de5-4515-8c40-41891ac4b21e@huaweicloud.com>
+Date: Sat, 8 Jun 2024 16:04:25 +0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -76,64 +47,148 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [Patch net] net: remove the bogus overflow debug check in
- pskb_may_pull()
-To: Kuniyuki Iwashima <kuniyu@amazon.com>, xiyou.wangcong@gmail.com
-Cc: bpf@vger.kernel.org, cong.wang@bytedance.com, fw@strlen.de,
- netdev@vger.kernel.org, syzbot+0c4150bff9fff3bf023c@syzkaller.appspotmail.com
-References: <ZmMxzPoDTNu06itR@pop-os.localdomain>
- <20240607213229.97602-1-kuniyu@amazon.com>
+Subject: Re: [PATCH bpf-next v3 01/11] bpf, lsm: Annotate lsm hook return
+ value range
 Content-Language: en-US
-From: Eric Dumazet <eric.dumazet@gmail.com>
-In-Reply-To: <20240607213229.97602-1-kuniyu@amazon.com>
+To: Paul Moore <paul@paul-moore.com>
+Cc: bpf@vger.kernel.org, netdev@vger.kernel.org,
+ linux-security-module@vger.kernel.org, linux-kselftest@vger.kernel.org,
+ Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>,
+ Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman
+ <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
+ Yonghong Song <yonghong.song@linux.dev>,
+ John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
+ Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
+ Jiri Olsa <jolsa@kernel.org>, Matt Bobrowski <mattbobrowski@google.com>,
+ Brendan Jackman <jackmanb@chromium.org>, James Morris <jmorris@namei.org>,
+ "Serge E . Hallyn" <serge@hallyn.com>,
+ Khadija Kamran <kamrankhadijadj@gmail.com>,
+ Casey Schaufler <casey@schaufler-ca.com>,
+ Ondrej Mosnacek <omosnace@redhat.com>, Kees Cook <keescook@chromium.org>,
+ John Johansen <john.johansen@canonical.com>,
+ Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+ Roberto Sassu <roberto.sassu@huawei.com>,
+ Shung-Hsi Yu <shung-hsi.yu@suse.com>
+References: <20240411122752.2873562-1-xukuohai@huaweicloud.com>
+ <20240411122752.2873562-2-xukuohai@huaweicloud.com>
+ <CAHC9VhRipBNd+G=RMPVeVOiYCx6FZwHSn0JNKv=+jYZtd5SdYg@mail.gmail.com>
+From: Xu Kuohai <xukuohai@huaweicloud.com>
+In-Reply-To: <CAHC9VhRipBNd+G=RMPVeVOiYCx6FZwHSn0JNKv=+jYZtd5SdYg@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:cCh0CgDH4AmJEGRmD5OVOw--.47038S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxWry8ur1xZr43Gr4rGr4Durg_yoWrAF43pF
+	sYka43KFWvyFWa9rn2yan8ZayakrWfCr47tr17KwnFy3WSqrnFva17tw4Y9FWrCry8K34j
+	9F4j93yrCw4DAa7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUk0b4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxAIw28IcxkI
+	7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxV
+	Cjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVW8ZVWrXwCIc40Y0x0EwIxGrwCI42IY
+	6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6x
+	AIw20EY4v20xvaj40_WFyUJVCq3wCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv
+	6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUFYFCUUUUU
+X-CM-SenderInfo: 50xn30hkdlqx5xdzvxpfor3voofrz/
 
+On 6/7/2024 5:53 AM, Paul Moore wrote:
+> On Thu, Apr 11, 2024 at 8:24 AM Xu Kuohai <xukuohai@huaweicloud.com> wrote:
+>>
+>> From: Xu Kuohai <xukuohai@huawei.com>
+>>
+>> Add macro LSM_RET_INT to annotate lsm hook return integer type and the
+>> default return value, and the expected return range.
+>>
+>> The LSM_RET_INT is declared as:
+>>
+>> LSM_RET_INT(defval, min, max)
+>>
+>> where
+>>
+>> - defval is the default return value
+>>
+>> - min and max indicate the expected return range is [min, max]
+>>
+>> The return value range for each lsm hook is taken from the description
+>> in security/security.c.
+>>
+>> The expanded result of LSM_RET_INT is not changed, and the compiled
+>> product is not changed.
+>>
+>> Signed-off-by: Xu Kuohai <xukuohai@huawei.com>
+>> ---
+>>   include/linux/lsm_hook_defs.h | 591 +++++++++++++++++-----------------
+>>   include/linux/lsm_hooks.h     |   6 -
+>>   kernel/bpf/bpf_lsm.c          |  10 +
+>>   security/security.c           |   1 +
+>>   4 files changed, 313 insertions(+), 295 deletions(-)
+> 
+> ...
+> 
+>> diff --git a/include/linux/lsm_hook_defs.h b/include/linux/lsm_hook_defs.h
+>> index 334e00efbde4..708f515ffbf3 100644
+>> --- a/include/linux/lsm_hook_defs.h
+>> +++ b/include/linux/lsm_hook_defs.h
+>> @@ -18,435 +18,448 @@
+>>    * The macro LSM_HOOK is used to define the data structures required by
+>>    * the LSM framework using the pattern:
+>>    *
+>> - *     LSM_HOOK(<return_type>, <default_value>, <hook_name>, args...)
+>> + *     LSM_HOOK(<return_type>, <return_description>, <hook_name>, args...)
+>>    *
+>>    * struct security_hook_heads {
+>> - *   #define LSM_HOOK(RET, DEFAULT, NAME, ...) struct hlist_head NAME;
+>> + *   #define LSM_HOOK(RET, RETVAL_DESC, NAME, ...) struct hlist_head NAME;
+>>    *   #include <linux/lsm_hook_defs.h>
+>>    *   #undef LSM_HOOK
+>>    * };
+>>    */
+>> -LSM_HOOK(int, 0, binder_set_context_mgr, const struct cred *mgr)
+>> -LSM_HOOK(int, 0, binder_transaction, const struct cred *from,
+>> +LSM_HOOK(int, LSM_RET_INT(0, -MAX_ERRNO, 0), binder_set_context_mgr, const struct cred *mgr)
+>> +LSM_HOOK(int, LSM_RET_INT(0, -MAX_ERRNO, 0), binder_transaction, const struct cred *from,
+>>           const struct cred *to)
+>> -LSM_HOOK(int, 0, binder_transfer_binder, const struct cred *from,
+>> +LSM_HOOK(int, LSM_RET_INT(0, -MAX_ERRNO, 0), binder_transfer_binder, const struct cred *from,
+>>           const struct cred *to)
+>> -LSM_HOOK(int, 0, binder_transfer_file, const struct cred *from,
+>> +LSM_HOOK(int, LSM_RET_INT(0, -MAX_ERRNO, 0), binder_transfer_file, const struct cred *from,
+>>           const struct cred *to, const struct file *file)
+> 
+> I'm not overly excited about injecting these additional return value
+> range annotations into the LSM hook definitions, especially since the
+> vast majority of the hooks "returns 0 on success, negative values on
+> error".  I'd rather see some effort put into looking at the
+> feasibility of converting some (all?) of the LSM hook return value
+> exceptions into the more conventional 0/-ERRNO format.  Unfortunately,
+> I haven't had the time to look into that myself, but if you wanted to
+> do that I think it would be a good thing.
+> 
 
-On 6/7/24 23:32, Kuniyuki Iwashima wrote:
-> From: Cong Wang <xiyou.wangcong@gmail.com>
-> Date: Fri, 7 Jun 2024 09:14:04 -0700
->> On Fri, Jun 07, 2024 at 01:27:47AM +0200, Florian Westphal wrote:
->>> Cong Wang <xiyou.wangcong@gmail.com> wrote:
->>>> From: Cong Wang <cong.wang@bytedance.com>
->>>>
->>>> Commit 219eee9c0d16 ("net: skbuff: add overflow debug check to pull/push
->>>> helpers") introduced an overflow debug check for pull/push helpers.
->>>> For __skb_pull() this makes sense because its callers rarely check its
->>>> return value. But for pskb_may_pull() it does not make sense, since its
->>>> return value is properly taken care of. Remove the one in
->>>> pskb_may_pull(), we can continue rely on its return value.
->>> See 025f8ad20f2e3264d11683aa9cbbf0083eefbdcd which would not exist
->>> without this check, I would not give up yet.
->> What's the point of that commit?
-> 4b911a9690d7 would be better example.  The warning actually found a
-> bug in NSH GSO.
->
-> Here's splats triggered by syzkaller using NSH over various tunnels.
-> https://lore.kernel.org/netdev/20240415222041.18537-2-kuniyu@amazon.com/
+I agree that keeping all hooks return a consistent range of 0/-ERRNO
+is more elegant than adding return value range annotations. However, there
+are two issues that might need to be addressed first:
 
+1. Compatibility
 
-Right. We discussed this before. I guess I forgot to send the fix.
+For instance, security_vm_enough_memory_mm() determines whether to
+set cap_sys_admin by checking if the hook vm_enough_memory returns
+a positive number. If we were to change the hook vm_enough_memory
+to return 0 to indicate the need for cap_sys_admin, then for the
+LSM BPF program currently returning 0, the interpretation of its
+return value would be reversed after the modification.
 
-Florian could you submit the suggestion I made before ?
+2. Expressing multiple non-error states using 0/-ERRNO
 
-diff --git a/net/core/filter.c b/net/core/filter.c
-index 
-358870408a51e61f3cbc552736806e4dfee1ec39..da7aae6fd8ba557c66699d1cfebd47f18f442aa2 
-100644
---- a/net/core/filter.c
-+++ b/net/core/filter.c
-@@ -1662,6 +1662,11 @@ static DEFINE_PER_CPU(struct bpf_scratchpad, bpf_sp);
-  static inline int __bpf_try_make_writable(struct sk_buff *skb,
-                        unsigned int write_len)
-  {
-+#if defined(CONFIG_DEBUG_NET)
-+    /* Avoid a splat in pskb_may_pull_reason() */
-+    if (write_len > INT_MAX)
-+        return -EINVAL;
-+#endif
-      return skb_ensure_writable(skb, write_len);
-  }
-
+IIUC, although 0/-ERRNO can be used to express different errors,
+only 0 can be used for non-error state. If there are multiple
+non-error states, they cannot be distinguished. For example,
+security_inode_need_killpriv() returns < 0 on error, 0 if
+security_inode_killpriv() doesn't need to be called, and > 0
+if security_inode_killpriv() does need to be called.
 
 
