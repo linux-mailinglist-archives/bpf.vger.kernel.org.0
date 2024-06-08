@@ -1,128 +1,106 @@
-Return-Path: <bpf+bounces-31670-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-31671-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2067A9013A9
-	for <lists+bpf@lfdr.de>; Sat,  8 Jun 2024 23:23:28 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id B30EA9013E4
+	for <lists+bpf@lfdr.de>; Sun,  9 Jun 2024 00:24:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B18A9B227DB
-	for <lists+bpf@lfdr.de>; Sat,  8 Jun 2024 21:23:25 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C35091C20C14
+	for <lists+bpf@lfdr.de>; Sat,  8 Jun 2024 22:24:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D968266D4;
-	Sat,  8 Jun 2024 21:23:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b="EZ71DIVy";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="OuI1V7Th"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B512538DC3;
+	Sat,  8 Jun 2024 22:24:28 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from wfhigh8-smtp.messagingengine.com (wfhigh8-smtp.messagingengine.com [64.147.123.159])
+Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [91.216.245.30])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8DF5F1C698;
-	Sat,  8 Jun 2024 21:23:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.159
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A8E261C698;
+	Sat,  8 Jun 2024 22:24:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.216.245.30
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717881793; cv=none; b=hVMkzkGm83Lria9u9mjWcxjuT0vq1vqQGzLDgn6TgsmaWDyurO1otaL3/6ODoM02RwdJ3jx5B0V0O1tK7rpxCsx52iCdHT+8m/yfLR168Yeh7tjI8/bP4eYrfm0035oo+ONAsKeX6hKsy7DaplDpdIYAiIjDUF558+aUlORyxcQ=
+	t=1717885468; cv=none; b=q2IZ7LnxbkMzJM15au5mecAIddp6ei/BOL36oHiiUTbuBgCwQ0+4zJ5MguIZVgygONK/E3rEf3UvTjV7s2F2VIQ+puyR80fnLohlOWbykmhCiHic0vJHKVhaUzArUvyJjlvrm1x5RZw2v9/oJGlfomHOtj0/bIS3gSARij0w5To=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717881793; c=relaxed/simple;
-	bh=nPpfHqjB8ECJoQcQxd81rwO8kyHOA7R3sHnvHxyFwHE=;
+	s=arc-20240116; t=1717885468; c=relaxed/simple;
+	bh=v8nfbbSC3BTfCfb5rVRK0g13gnFm1X2cjki+n2bljg0=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=EPi9tTBVGEVwjmIu1lmqy+Bnl+YhwQRRbCAlcvtgm8ZcBIuVzmBB0kMIIcyjBsTqLgkjUjzqthV7wanWYJiXMsme/PMbUNVQXySZg1ezSe3dGHVCfY+5KkV4F/y1NX379zFXiKbwUjOma53Sal65Wp4E6eQsIVcMmZCSzSKPDAo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz; spf=pass smtp.mailfrom=dxuuu.xyz; dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b=EZ71DIVy; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=OuI1V7Th; arc=none smtp.client-ip=64.147.123.159
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dxuuu.xyz
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
-	by mailfhigh.west.internal (Postfix) with ESMTP id 10B9C1800097;
-	Sat,  8 Jun 2024 17:23:10 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute2.internal (MEProxy); Sat, 08 Jun 2024 17:23:11 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
-	:cc:content-type:content-type:date:date:from:from:in-reply-to
-	:in-reply-to:message-id:mime-version:references:reply-to:subject
-	:subject:to:to; s=fm3; t=1717881789; x=1717968189; bh=yYg7wzIf8U
-	Ce8+qz6R6GMATvHmkISuN1P+RUeT4wo50=; b=EZ71DIVyNH9rjssYyLvsTPGhGq
-	rhgZfMsRKOmKw2eTO0ApVIJiLrVEUAhgXJk4MtCH/Aj1z7rmnV5lhlpxZtYE1bXt
-	3VoPSegW4N2PNFQSIOSes2nfil4yrJVtybtjeDMzSupUmjwuqdRgIw3FQOmhy9so
-	mhazy17eIMttZZvBw1qq+/fYU4c3jKeM1Z6RaRq4CwyQKoMZyCetDg4RLOiWg7Go
-	SgOhcBR+FebK6eHm14n4ZtVUhTfnsCYF8QK6MeBshGv+xfmIeSq8F9UlW1qPeGjc
-	xa7KloZz3aEC6Wbxuf8w4C1+QL54Gs39GMrktNinomyosGRN78AEU+qyY1yw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm1; t=1717881789; x=1717968189; bh=yYg7wzIf8UCe8+qz6R6GMATvHmkI
-	SuN1P+RUeT4wo50=; b=OuI1V7ThYhR87o9tdmTKzKGRr5LNmMRdCrzGUfnYHkKu
-	cKpGd3voCTHpqMqxfaMWG+TKlZW7EGNoXrQ3/Wo0HrfSSedk8GZ6t3yNiihFytJl
-	XZezf6r4wsDDeQB30xo3+eC04YwKXVNcLwgh3a+S37gdd+ojfXh8O9Ju561TEmUf
-	neh+EKqm+TSaawpLZ7+oQyCHqfe2rdW45gnQ+w+TSv+ZL2yWkOFyhk27kpaBQIRK
-	RQ/SslrwN76apqhhAHVzU8qfVAPkrKbLBcd6GGx9QDeA9sh9NMJGvgXOnmdAoJqr
-	b8c0yG8elDiacJjrE6kSOJddEftfeFAAEsRtZQqtBQ==
-X-ME-Sender: <xms:vctkZi_ZJou4ViJXB0GLAI2FxYEa93h83llvqELmeDRfOS4KGtOZsQ>
-    <xme:vctkZivP9GfrfT_T1Jkx6EOY4yTJamoq44eucpYgx1PK21xNKvJVeJPjS_rrcM8T7
-    lxJwiD6TPowgnsvwg>
-X-ME-Received: <xmr:vctkZoAvYXIehuvjywTIQK1HPjJEc8FdSw2nPfLobgaGJPYOJhtrX_Y1AjlPU05pM0GX7l5VMc-uSAcFw2CkcFqZuza2P3rf3w>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrfedtgedgleehucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucgfrhhlucfvnfffucdlfeehmdenucfjughrpeffhf
-    fvvefukfhfgggtuggjsehttdfstddttddvnecuhfhrohhmpeffrghnihgvlhcuighuuceo
-    ugiguhesugiguhhuuhdrgiihiieqnecuggftrfgrthhtvghrnheptdejkeduleeitedvfe
-    egvdegjeehhfdvgffgjeduuedtgeevieevtdfhheefleeknecuffhomhgrihhnpehgihht
-    hhhusgdrtghomhenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfh
-    hrohhmpegugihusegugihuuhhurdighiii
-X-ME-Proxy: <xmx:vctkZqel8RJnfssnLySoE6DfrGKmzXHihudZe2AAUNa1sg3rmBITOA>
-    <xmx:vctkZnNW7--PBrfyGjsqeNptdRUfBnjjwZcyKy-eAFiWLnU-LnusoQ>
-    <xmx:vctkZkm9fR0U_LnkVUfQDnyyIwSArCPAUB-mYHU_FpVfejhu9eGkUQ>
-    <xmx:vctkZpu_gsaXF8A8VL-_WqnLEkmkvZbFJEw0a4-_5Cd66OxVEKaoww>
-    <xmx:vctkZumlfhUgr33CAQiTNZf9iBaPdvHw09-p0crfWlLi_eAHeql01SLZ>
-Feedback-ID: i6a694271:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sat,
- 8 Jun 2024 17:23:08 -0400 (EDT)
-Date: Sat, 8 Jun 2024 15:23:07 -0600
-From: Daniel Xu <dxu@dxuuu.xyz>
-To: linux-kselftest@vger.kernel.org, netdev@vger.kernel.org, 
-	bpf@vger.kernel.org, linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-trace-kernel@vger.kernel.org, fsverity@lists.linux.dev, andrii@kernel.org, olsajiri@gmail.com, 
-	quentin@isovalent.com, alan.maguire@oracle.com, acme@kernel.org, eddyz87@gmail.com
-Cc: kernel-team@meta.com
-Subject: Re: [PATCH bpf-next v4 00/12] bpf: Support dumping kfunc prototypes
- from BTF
-Message-ID: <u42jmbratxsej74zrtzn47j7evmdksswyrp6kfvr5tze36qcwt@mbl5e7fkekrz>
-References: <cover.1717881178.git.dxu@dxuuu.xyz>
+	 Content-Type:Content-Disposition:In-Reply-To; b=ClFdDSoqt3G8lcVN6fq6wKltRGzXqVIcYyecj6QKO7eeFDaEiU7+rUun0YIKuJEdxVsddsGlKe4wDiJMeEtatETX4Ry8V+G7G+TVD/u/CtqNnzWQj4ooEncOsT5E8zejZJ/wU6l8GSwDi8ktfMCDnr6Kuq4/AUUPtylAi7nM4ck=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de; spf=pass smtp.mailfrom=strlen.de; arc=none smtp.client-ip=91.216.245.30
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=strlen.de
+Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
+	(envelope-from <fw@strlen.de>)
+	id 1sG4U1-0003k8-Md; Sun, 09 Jun 2024 00:24:21 +0200
+Date: Sun, 9 Jun 2024 00:24:21 +0200
+From: Florian Westphal <fw@strlen.de>
+To: Eric Dumazet <eric.dumazet@gmail.com>
+Cc: Kuniyuki Iwashima <kuniyu@amazon.com>, xiyou.wangcong@gmail.com,
+	bpf@vger.kernel.org, cong.wang@bytedance.com, fw@strlen.de,
+	netdev@vger.kernel.org,
+	syzbot+0c4150bff9fff3bf023c@syzkaller.appspotmail.com
+Subject: Re: [Patch net] net: remove the bogus overflow debug check in
+ pskb_may_pull()
+Message-ID: <20240608222421.GB13159@breakpoint.cc>
+References: <ZmMxzPoDTNu06itR@pop-os.localdomain>
+ <20240607213229.97602-1-kuniyu@amazon.com>
+ <9f254c96-54f2-4457-b7ab-1d9f6187939c@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-15
 Content-Disposition: inline
-In-Reply-To: <cover.1717881178.git.dxu@dxuuu.xyz>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <9f254c96-54f2-4457-b7ab-1d9f6187939c@gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 
-On Sat, Jun 08, 2024 at 03:15:56PM GMT, Daniel Xu wrote:
-> This patchset enables both detecting as well as dumping compilable
-> prototypes for kfuncs.
+Eric Dumazet <eric.dumazet@gmail.com> wrote:
+> On 6/7/24 23:32, Kuniyuki Iwashima wrote:
+> > From: Cong Wang <xiyou.wangcong@gmail.com>
+> > Date: Fri, 7 Jun 2024 09:14:04 -0700
+> > > On Fri, Jun 07, 2024 at 01:27:47AM +0200, Florian Westphal wrote:
+> > > > Cong Wang <xiyou.wangcong@gmail.com> wrote:
+> > > > > From: Cong Wang <cong.wang@bytedance.com>
+> > > > > 
+> > > > > Commit 219eee9c0d16 ("net: skbuff: add overflow debug check to pull/push
+> > > > > helpers") introduced an overflow debug check for pull/push helpers.
+> > > > > For __skb_pull() this makes sense because its callers rarely check its
+> > > > > return value. But for pskb_may_pull() it does not make sense, since its
+> > > > > return value is properly taken care of. Remove the one in
+> > > > > pskb_may_pull(), we can continue rely on its return value.
+> > > > See 025f8ad20f2e3264d11683aa9cbbf0083eefbdcd which would not exist
+> > > > without this check, I would not give up yet.
+> > > What's the point of that commit?
+> > 4b911a9690d7 would be better example.  The warning actually found a
+> > bug in NSH GSO.
+> > 
+> > Here's splats triggered by syzkaller using NSH over various tunnels.
+> > https://lore.kernel.org/netdev/20240415222041.18537-2-kuniyu@amazon.com/
 > 
-> The first commit instructs pahole to DECL_TAG kfuncs when available.
-> This requires v1.27 or newer. v1.27 is nearing release at time of
-> writing. Following this, users will be able to look at BTF inside
-> vmlinux (or modules) and check if the kfunc they want is available.
 > 
-> The final commit teaches bpftool how to dump kfunc prototypes. This
-> is done for developer convenience.
+> Right. We discussed this before. I guess I forgot to send the fix.
+> Florian could you submit the suggestion I made before ?
 > 
-> The rest of the commits are fixups to enable selftests to use the
-> newly dumped kfunc prototypes. With these, selftests will regularly
-> exercise the newly added codepaths.
+> diff --git a/net/core/filter.c b/net/core/filter.c
+> index 358870408a51e61f3cbc552736806e4dfee1ec39..da7aae6fd8ba557c66699d1cfebd47f18f442aa2
+> 100644
+> --- a/net/core/filter.c
+> +++ b/net/core/filter.c
+> @@ -1662,6 +1662,11 @@ static DEFINE_PER_CPU(struct bpf_scratchpad, bpf_sp);
+>  static inline int __bpf_try_make_writable(struct sk_buff *skb,
+>                        unsigned int write_len)
+>  {
+> +#if defined(CONFIG_DEBUG_NET)
+> +    /* Avoid a splat in pskb_may_pull_reason() */
+> +    if (write_len > INT_MAX)
+> +        return -EINVAL;
+> +#endif
+>      return skb_ensure_writable(skb, write_len);
+>  }
 
-I tested that this patchset works for both pahole:
-
-    <1.27: https://github.com/kernel-patches/bpf/pull/7168
-    >=1.27: https://github.com/kernel-patches/bpf/pull/7163
-
-I meant to include that in the cover letter but I forgot. I'll try to
-remember next time.
-
-
+Makes sense, I'll probably not get to this before Friday though, so if
+anyone else wants to do this: go right ahead.
 
