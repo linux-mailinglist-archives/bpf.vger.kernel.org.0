@@ -1,194 +1,176 @@
-Return-Path: <bpf+bounces-31632-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-31633-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 53640901015
-	for <lists+bpf@lfdr.de>; Sat,  8 Jun 2024 10:04:45 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id E9F6C9010A2
+	for <lists+bpf@lfdr.de>; Sat,  8 Jun 2024 11:01:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CFCC51F2239A
-	for <lists+bpf@lfdr.de>; Sat,  8 Jun 2024 08:04:44 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6F7992821F0
+	for <lists+bpf@lfdr.de>; Sat,  8 Jun 2024 09:01:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6BA24176ABE;
-	Sat,  8 Jun 2024 08:04:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ECEBA176ABC;
+	Sat,  8 Jun 2024 09:01:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hH1p/iri"
 X-Original-To: bpf@vger.kernel.org
-Received: from dggsgout12.his.huawei.com (unknown [45.249.212.56])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4824ACA40;
-	Sat,  8 Jun 2024 08:04:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6702B14286;
+	Sat,  8 Jun 2024 09:01:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717833875; cv=none; b=tzRRYUN6sY2/WzKvaE42C/H8LOssuOkeEWIjHEY6QyKvg0pxxuP5vfss2AztXOVgwJgpLoLn+0+0MrlniFRG9TR6NVZca8ODZqjF6Ww2jO1VxUcjmnO92vMckHdhxhsHg660Tk5Lj3McHU6adsjAnt61YHAAuNf2DD294QG5FTg=
+	t=1717837282; cv=none; b=WKD/1ZOWj78d4S2bBNgPAlIsBglqoTHJtReZrwOC7zxCbUT+Il7H3151AXYKTHeL02t30rpR1lTNBouUeuHv7tOyTTnEcgLswqqJZYfr0G1iUKlmVyxx920yRggrol5WMKCBwVc5VD57+Il4ErGj1zLzDTCfHii0Qa128rC0Zvw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717833875; c=relaxed/simple;
-	bh=Wrgs+ZE7cmrZBquFV5k8uyVqzNDWOPnRTG9hcmXBzsE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=IL/xbzbsuA88yT4XisyIYN95RFTd94BTBnydXfgjVlA77v4yp0gCaU8VkzK40BLG++qN27aHYGmREqAiWqHNj9Th/5k3THZrCgpxKddSI22FVQFSkmigXh1TykDMzrXrm7mNyznRBUpb2n3qj8Ut3Y7E/fnteEtc2q16gNExypQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.93.142])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4Vx9ZT5SdMz4f3jsq;
-	Sat,  8 Jun 2024 16:04:17 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id 8F4FF1A016E;
-	Sat,  8 Jun 2024 16:04:27 +0800 (CST)
-Received: from [10.67.111.192] (unknown [10.67.111.192])
-	by APP1 (Coremail) with SMTP id cCh0CgDH4AmJEGRmD5OVOw--.47038S2;
-	Sat, 08 Jun 2024 16:04:27 +0800 (CST)
-Message-ID: <b4484882-0de5-4515-8c40-41891ac4b21e@huaweicloud.com>
-Date: Sat, 8 Jun 2024 16:04:25 +0800
+	s=arc-20240116; t=1717837282; c=relaxed/simple;
+	bh=1/f02kDBw63jQMXEE2MyvrNXy9Fmrvsga5uyBueYldU=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=VJW6X5TPYxdr4j0bV/mTR4dRSg9WIlHI4/BZF7VCo7ua6H9yUc5ksACzw16jqFsfP6knKrnzkUQTqAFkAQznlWd6lTxSaz33z4DDx7dKFDhoEjqHOu8YOkbpBKJjC3284G7Q98W47vto40dzNVucfhKQ/x0S8palH/3JOAv7+2w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hH1p/iri; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E931CC2BD11;
+	Sat,  8 Jun 2024 09:01:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1717837282;
+	bh=1/f02kDBw63jQMXEE2MyvrNXy9Fmrvsga5uyBueYldU=;
+	h=From:Subject:Date:To:Cc:From;
+	b=hH1p/irimyi6Aj8+wOmhstheuhfSQ3HXxSHL/C82sJETZiZW77Ng+spiOtlHkKje3
+	 Yd9tgYpPUbhe+VGLSeJNF2gG8x4iAJ6Wy/yMY4I9WzHVNklgx26KpJpCk6fhZAH4rO
+	 XHrzQKQA1jSjINJ5cnMJRQ5bpMhR0FkmNarwqwcl2ZdTJ4PVUsgehGc0NIk9Yy+OI1
+	 c2dzrbfS3Cav5wBDy6XcFjIDOK3+Z4662XWEanY45HVrMFaoip2dRzsVCTx4ZmiICw
+	 8B4j1JOT56EMMbt2HNWl+UGMgz7qyvaiK+NtkFbOpM7Dew6Raq2vg8bJiqbeVuIzUn
+	 pBMMt5e8S9oGw==
+From: Benjamin Tissoires <bentiss@kernel.org>
+Subject: [PATCH HID v3 00/16] HID: convert HID-BPF into using
+ bpf_struct_ops
+Date: Sat, 08 Jun 2024 11:01:12 +0200
+Message-Id: <20240608-hid_bpf_struct_ops-v3-0-6ac6ade58329@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH bpf-next v3 01/11] bpf, lsm: Annotate lsm hook return
- value range
-Content-Language: en-US
-To: Paul Moore <paul@paul-moore.com>
-Cc: bpf@vger.kernel.org, netdev@vger.kernel.org,
- linux-security-module@vger.kernel.org, linux-kselftest@vger.kernel.org,
- Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>,
- Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman
- <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
- Yonghong Song <yonghong.song@linux.dev>,
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
- Jiri Olsa <jolsa@kernel.org>, Matt Bobrowski <mattbobrowski@google.com>,
- Brendan Jackman <jackmanb@chromium.org>, James Morris <jmorris@namei.org>,
- "Serge E . Hallyn" <serge@hallyn.com>,
- Khadija Kamran <kamrankhadijadj@gmail.com>,
- Casey Schaufler <casey@schaufler-ca.com>,
- Ondrej Mosnacek <omosnace@redhat.com>, Kees Cook <keescook@chromium.org>,
- John Johansen <john.johansen@canonical.com>,
- Lukas Bulwahn <lukas.bulwahn@gmail.com>,
- Roberto Sassu <roberto.sassu@huawei.com>,
- Shung-Hsi Yu <shung-hsi.yu@suse.com>
-References: <20240411122752.2873562-1-xukuohai@huaweicloud.com>
- <20240411122752.2873562-2-xukuohai@huaweicloud.com>
- <CAHC9VhRipBNd+G=RMPVeVOiYCx6FZwHSn0JNKv=+jYZtd5SdYg@mail.gmail.com>
-From: Xu Kuohai <xukuohai@huaweicloud.com>
-In-Reply-To: <CAHC9VhRipBNd+G=RMPVeVOiYCx6FZwHSn0JNKv=+jYZtd5SdYg@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:cCh0CgDH4AmJEGRmD5OVOw--.47038S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxWry8ur1xZr43Gr4rGr4Durg_yoWrAF43pF
-	sYka43KFWvyFWa9rn2yan8ZayakrWfCr47tr17KwnFy3WSqrnFva17tw4Y9FWrCry8K34j
-	9F4j93yrCw4DAa7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUk0b4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxAIw28IcxkI
-	7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxV
-	Cjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVW8ZVWrXwCIc40Y0x0EwIxGrwCI42IY
-	6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6x
-	AIw20EY4v20xvaj40_WFyUJVCq3wCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv
-	6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUFYFCUUUUU
-X-CM-SenderInfo: 50xn30hkdlqx5xdzvxpfor3voofrz/
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIANgdZGYC/23NQQ6CMBAF0KuQrq0pU1rQlQsXegZjCNIpNBpKW
+ mw0hLvb1IUxYfnnZ96fiUdn0JN9NhOHwXhjhxj4JiNt3wwdUqNiJsCgYCLntDeqvo269pN7tlN
+ tR0+RQw4NQCGEIPFxdKjNK6EXcjofyTUee+Mn695pKOSp+ppQrZkhp4xWrZSSKw2lqg53dAM+t
+ tZ1yQvwMyQrVw2IBtc7oQvFAHbwZyzL8gETBKvu/gAAAA==
+To: Shuah Khan <shuah@kernel.org>, Jiri Kosina <jikos@kernel.org>, 
+ Jonathan Corbet <corbet@lwn.net>, Alexei Starovoitov <ast@kernel.org>
+Cc: linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ bpf@vger.kernel.org, linux-input@vger.kernel.org, linux-doc@vger.kernel.org, 
+ Benjamin Tissoires <bentiss@kernel.org>, 
+ Peter Hutterer <peter.hutterer@who-t.net>
+X-Mailer: b4 0.13.0
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1717837279; l=4865;
+ i=bentiss@kernel.org; s=20230215; h=from:subject:message-id;
+ bh=1/f02kDBw63jQMXEE2MyvrNXy9Fmrvsga5uyBueYldU=;
+ b=WYrQH5UV88GmVipTdAZc3S7c0BkQKr494z3iEGoXNbpCnBRmEByfWsmN4fjuPtYo3Nz5PiwPz
+ +cJFmmeI30ACDzALB/OnLLVNPfntXCi43L0dAEtzNaK4RetlkO8SGoB
+X-Developer-Key: i=bentiss@kernel.org; a=ed25519;
+ pk=7D1DyAVh6ajCkuUTudt/chMuXWIJHlv2qCsRkIizvFw=
 
-On 6/7/2024 5:53 AM, Paul Moore wrote:
-> On Thu, Apr 11, 2024 at 8:24 AM Xu Kuohai <xukuohai@huaweicloud.com> wrote:
->>
->> From: Xu Kuohai <xukuohai@huawei.com>
->>
->> Add macro LSM_RET_INT to annotate lsm hook return integer type and the
->> default return value, and the expected return range.
->>
->> The LSM_RET_INT is declared as:
->>
->> LSM_RET_INT(defval, min, max)
->>
->> where
->>
->> - defval is the default return value
->>
->> - min and max indicate the expected return range is [min, max]
->>
->> The return value range for each lsm hook is taken from the description
->> in security/security.c.
->>
->> The expanded result of LSM_RET_INT is not changed, and the compiled
->> product is not changed.
->>
->> Signed-off-by: Xu Kuohai <xukuohai@huawei.com>
->> ---
->>   include/linux/lsm_hook_defs.h | 591 +++++++++++++++++-----------------
->>   include/linux/lsm_hooks.h     |   6 -
->>   kernel/bpf/bpf_lsm.c          |  10 +
->>   security/security.c           |   1 +
->>   4 files changed, 313 insertions(+), 295 deletions(-)
-> 
-> ...
-> 
->> diff --git a/include/linux/lsm_hook_defs.h b/include/linux/lsm_hook_defs.h
->> index 334e00efbde4..708f515ffbf3 100644
->> --- a/include/linux/lsm_hook_defs.h
->> +++ b/include/linux/lsm_hook_defs.h
->> @@ -18,435 +18,448 @@
->>    * The macro LSM_HOOK is used to define the data structures required by
->>    * the LSM framework using the pattern:
->>    *
->> - *     LSM_HOOK(<return_type>, <default_value>, <hook_name>, args...)
->> + *     LSM_HOOK(<return_type>, <return_description>, <hook_name>, args...)
->>    *
->>    * struct security_hook_heads {
->> - *   #define LSM_HOOK(RET, DEFAULT, NAME, ...) struct hlist_head NAME;
->> + *   #define LSM_HOOK(RET, RETVAL_DESC, NAME, ...) struct hlist_head NAME;
->>    *   #include <linux/lsm_hook_defs.h>
->>    *   #undef LSM_HOOK
->>    * };
->>    */
->> -LSM_HOOK(int, 0, binder_set_context_mgr, const struct cred *mgr)
->> -LSM_HOOK(int, 0, binder_transaction, const struct cred *from,
->> +LSM_HOOK(int, LSM_RET_INT(0, -MAX_ERRNO, 0), binder_set_context_mgr, const struct cred *mgr)
->> +LSM_HOOK(int, LSM_RET_INT(0, -MAX_ERRNO, 0), binder_transaction, const struct cred *from,
->>           const struct cred *to)
->> -LSM_HOOK(int, 0, binder_transfer_binder, const struct cred *from,
->> +LSM_HOOK(int, LSM_RET_INT(0, -MAX_ERRNO, 0), binder_transfer_binder, const struct cred *from,
->>           const struct cred *to)
->> -LSM_HOOK(int, 0, binder_transfer_file, const struct cred *from,
->> +LSM_HOOK(int, LSM_RET_INT(0, -MAX_ERRNO, 0), binder_transfer_file, const struct cred *from,
->>           const struct cred *to, const struct file *file)
-> 
-> I'm not overly excited about injecting these additional return value
-> range annotations into the LSM hook definitions, especially since the
-> vast majority of the hooks "returns 0 on success, negative values on
-> error".  I'd rather see some effort put into looking at the
-> feasibility of converting some (all?) of the LSM hook return value
-> exceptions into the more conventional 0/-ERRNO format.  Unfortunately,
-> I haven't had the time to look into that myself, but if you wanted to
-> do that I think it would be a good thing.
-> 
+The purpose of this series is to rethink how HID-BPF is invoked.
+Currently it implies a jmp table, a prog fd bpf_map, a preloaded tracing
+bpf program and a lot of manual work for handling the bpf program
+lifetime and addition/removal.
 
-I agree that keeping all hooks return a consistent range of 0/-ERRNO
-is more elegant than adding return value range annotations. However, there
-are two issues that might need to be addressed first:
+OTOH, bpf_struct_ops take care of most of the bpf handling leaving us
+with a simple list of ops pointers, and we can directly call the
+struct_ops program from the kernel as a regular function.
 
-1. Compatibility
+The net gain right now is in term of code simplicity and lines of code
+removal (though is an API breakage), but udev-hid-bpf is able to handle
+such breakages.
 
-For instance, security_vm_enough_memory_mm() determines whether to
-set cap_sys_admin by checking if the hook vm_enough_memory returns
-a positive number. If we were to change the hook vm_enough_memory
-to return 0 to indicate the need for cap_sys_admin, then for the
-LSM BPF program currently returning 0, the interpretation of its
-return value would be reversed after the modification.
+In the near future, we will be able to extend the HID-BPF struct_ops
+with entrypoints for hid_hw_raw_request() and hid_hw_output_report(),
+allowing for covering all of the initial use cases:
+- firewalling a HID device
+- fixing all of the HID device interactions (not just device events as
+  it is right now).
 
-2. Expressing multiple non-error states using 0/-ERRNO
+The matching user-space loader (udev-hid-bpf) MR is at
+https://gitlab.freedesktop.org/libevdev/udev-hid-bpf/-/merge_requests/86
 
-IIUC, although 0/-ERRNO can be used to express different errors,
-only 0 can be used for non-error state. If there are multiple
-non-error states, they cannot be distinguished. For example,
-security_inode_need_killpriv() returns < 0 on error, 0 if
-security_inode_killpriv() doesn't need to be called, and > 0
-if security_inode_killpriv() does need to be called.
+I'll put it out of draft once this is merged.
+
+Cheers,
+Benjamin
+
+Signed-off-by: Benjamin Tissoires <bentiss@kernel.org>
+---
+Changes in v3:
+- took Alexei's review into account
+- Link to v2: https://lore.kernel.org/r/20240607-hid_bpf_struct_ops-v2-0-3f95f4d02292@kernel.org
+
+Changes in v2:
+- drop HID_BPF_FLAGS enum and use BPF_F_BEFORE instead
+- fix .init_members to not open code member->offset
+- allow struct hid_device to be writeable from HID-BPF for its name,
+  uniq and phys
+- Link to v1: https://lore.kernel.org/r/20240528-hid_bpf_struct_ops-v1-0-8c6663df27d8@kernel.org
+
+---
+Benjamin Tissoires (16):
+      HID: rename struct hid_bpf_ops into hid_ops
+      HID: bpf: add hid_get/put_device() helpers
+      HID: bpf: implement HID-BPF through bpf_struct_ops
+      selftests/hid: convert the hid_bpf selftests with struct_ops
+      HID: samples: convert the 2 HID-BPF samples into struct_ops
+      HID: bpf: add defines for HID-BPF SEC in in-tree bpf fixes
+      HID: bpf: convert in-tree fixes into struct_ops
+      HID: bpf: remove tracing HID-BPF capability
+      selftests/hid: add subprog call test
+      Documentation: HID: amend HID-BPF for struct_ops
+      Documentation: HID: add a small blurb on udev-hid-bpf
+      HID: bpf: Artist24: remove unused variable
+      HID: bpf: error on warnings when compiling bpf objects
+      bpf: allow bpf helpers to be used into HID-BPF struct_ops
+      HID: bpf: rework hid_bpf_ops_btf_struct_access
+      HID: bpf: make part of struct hid_device writable
+
+ Documentation/hid/hid-bpf.rst                      | 173 ++++---
+ drivers/hid/bpf/Makefile                           |   2 +-
+ drivers/hid/bpf/entrypoints/Makefile               |  93 ----
+ drivers/hid/bpf/entrypoints/README                 |   4 -
+ drivers/hid/bpf/entrypoints/entrypoints.bpf.c      |  25 -
+ drivers/hid/bpf/entrypoints/entrypoints.lskel.h    | 248 ---------
+ drivers/hid/bpf/hid_bpf_dispatch.c                 | 266 +++-------
+ drivers/hid/bpf/hid_bpf_dispatch.h                 |  12 +-
+ drivers/hid/bpf/hid_bpf_jmp_table.c                | 565 ---------------------
+ drivers/hid/bpf/hid_bpf_struct_ops.c               | 298 +++++++++++
+ drivers/hid/bpf/progs/FR-TEC__Raptor-Mach-2.bpf.c  |   9 +-
+ drivers/hid/bpf/progs/HP__Elite-Presenter.bpf.c    |   6 +-
+ drivers/hid/bpf/progs/Huion__Kamvas-Pro-19.bpf.c   |   9 +-
+ .../hid/bpf/progs/IOGEAR__Kaliber-MMOmentum.bpf.c  |   6 +-
+ drivers/hid/bpf/progs/Makefile                     |   2 +-
+ .../hid/bpf/progs/Microsoft__XBox-Elite-2.bpf.c    |   6 +-
+ drivers/hid/bpf/progs/Wacom__ArtPen.bpf.c          |   6 +-
+ drivers/hid/bpf/progs/XPPen__Artist24.bpf.c        |  10 +-
+ drivers/hid/bpf/progs/XPPen__ArtistPro16Gen2.bpf.c |  24 +-
+ drivers/hid/bpf/progs/hid_bpf.h                    |   5 +
+ drivers/hid/hid-core.c                             |   6 +-
+ include/linux/hid_bpf.h                            | 119 +++--
+ samples/hid/Makefile                               |   5 +-
+ samples/hid/hid_bpf_attach.bpf.c                   |  18 -
+ samples/hid/hid_bpf_attach.h                       |  14 -
+ samples/hid/hid_mouse.bpf.c                        |  26 +-
+ samples/hid/hid_mouse.c                            |  39 +-
+ samples/hid/hid_surface_dial.bpf.c                 |  10 +-
+ samples/hid/hid_surface_dial.c                     |  53 +-
+ tools/testing/selftests/hid/hid_bpf.c              | 100 +++-
+ tools/testing/selftests/hid/progs/hid.c            | 100 +++-
+ .../testing/selftests/hid/progs/hid_bpf_helpers.h  |  19 +-
+ 32 files changed, 800 insertions(+), 1478 deletions(-)
+---
+base-commit: 70ec81c2e2b4005465ad0d042e90b36087c36104
+change-id: 20240513-hid_bpf_struct_ops-e3212a224555
+
+Best regards,
+-- 
+Benjamin Tissoires <bentiss@kernel.org>
 
 
