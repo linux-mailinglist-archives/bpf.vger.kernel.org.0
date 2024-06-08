@@ -1,69 +1,71 @@
-Return-Path: <bpf+bounces-31625-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-31626-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0ED38900EED
-	for <lists+bpf@lfdr.de>; Sat,  8 Jun 2024 02:45:00 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AC773900EF4
+	for <lists+bpf@lfdr.de>; Sat,  8 Jun 2024 02:45:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B674D1F21F6A
-	for <lists+bpf@lfdr.de>; Sat,  8 Jun 2024 00:44:59 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9F0BC1C21431
+	for <lists+bpf@lfdr.de>; Sat,  8 Jun 2024 00:45:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F36D6125;
-	Sat,  8 Jun 2024 00:44:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 74F1379E5;
+	Sat,  8 Jun 2024 00:44:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YwDakmbK"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RcnZVP8d"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
+Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 100DA81E
-	for <bpf@vger.kernel.org>; Sat,  8 Jun 2024 00:44:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9BA636AA1
+	for <bpf@vger.kernel.org>; Sat,  8 Jun 2024 00:44:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717807493; cv=none; b=csYlwfp6xlCsEK0DS5h2ujR6L8iySGO/nvNx0+qD83tXgI8dWzYoJe/mMGA+yGJZnIHVKwxTft6/YUGQ8MAc+jtpYfurqDmte0OcYo1sz+eHuIGdvz29YjdC46BPxIfr59uTx8lhf9peZ/BUs2G8kCcOZgzUoZBiyIXjBljti38=
+	t=1717807497; cv=none; b=JkOUpGTbTBr9CM+vhti+qro02z/FUaVZjKmMAahweMeDQ6Tqb6oMd3WVEGMAcBhEVUdqDZwQK7VlTxYyBEJznxmqa/pI5KdZJry+pB2BsX7b7fLoYF3RV3O07Tr/76W3NGtIpCc1vMegoKRVwJyY0iOlsEt3fCh7vVmh0DChJXc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717807493; c=relaxed/simple;
-	bh=9TwIyCPWpmXJjHKKg8VgmwoBbvu4mJJCJ/qlbmmChj8=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=ZRLE64D5E4n0XMOl4nL/uiIDKD1BsMF9zP4CthtBgKTNoCZCgZJocYBmq7raeKoUDPASVEIz2WSSSi7fC67/XH+dEY2Qk4xCGrtHGTQ/PMPHNmgruI4tJBzZX/3nYqi4qziunTf1gSDmVzRmIpGnGwKy58gzig5yWUAPhzRYcrM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=YwDakmbK; arc=none smtp.client-ip=209.85.214.181
+	s=arc-20240116; t=1717807497; c=relaxed/simple;
+	bh=cWQp9cpnIT6yOcrplMnFHgtQrgk7m+NU3FJ2xhMV748=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=XEWiNM9DFlLIRNii/XAV1NlmKEuNdGvveUgdpzX1rO6xhSJUIgrZngA4YVM+BHPjZnseZH16Zv42lCG7OsZxvJc9hXvXMGnJZ6EdM3VqQMZuy/NAQJXZEGB3z3iPOgRSx7J1tOa4Ru9wEDHDpP5MyRcby0bxg/yMzqapYh2vQoI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=RcnZVP8d; arc=none smtp.client-ip=209.85.214.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-1f692d6e990so26764725ad.3
-        for <bpf@vger.kernel.org>; Fri, 07 Jun 2024 17:44:51 -0700 (PDT)
+Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-1f6dfc17006so7926065ad.0
+        for <bpf@vger.kernel.org>; Fri, 07 Jun 2024 17:44:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1717807491; x=1718412291; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=fWOCVpKDv1i3dHIEFscg6t/UNTjiT+VAY/Zl1V0pMfM=;
-        b=YwDakmbKKg55EdZU+JIQds4f/r8Qgf+aMnjGrJwVe6Z7+CLC0qcDo/yamIeqMSvZXf
-         SpZPK67uk3q7NPJLK1Vn6haKHfQqX8yCpiAbIIR2KZxxp6CfMWuQVAI/GhrhDNugLf5k
-         HoM5L3OcHKPdqLtQFQhB0+FrEl84uFi6jMsB3Ao6+HXhA88kS2M5RnEkMkEUe4oSJieT
-         xJf8uaj7pFLFrku8j2kvPwfolaM49xGz/6xAqrk+gi7Kh+u991Gpu0s2fXy2wk7RwDsl
-         jknYwLwTMD/vNKyXEhKj4cx5kVekSTWMs38fKWH+nVYEakeyx6I0+ojuhVdrXdr52yzL
-         Nq5g==
+        d=gmail.com; s=20230601; t=1717807494; x=1718412294; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=wVntBV37zIxUp8fMqU7jbR4MhrS6IWwAY/8pSVV5tCI=;
+        b=RcnZVP8d96z522KeVfAOuvj8S2HsyB0N11r2JWUq9nwT5b4wWO3Aq4DxBeNmmgvtSo
+         /it2W22MkHR+heZLO0Rsnry7PkA8Zyjo+VyGF1iC7pBkY12bTdJmgW5M0ER1CbXWcb0j
+         JUdOy3dD1E74ikeG+5j/SS82w+X94Nzz6AYazl36jFBdukLQOf2HQDPC9uN2q+q4z3rm
+         BDAWwPqxa6/TsjT+PHDRiD3pbVOdyk30Wd9P84fKa8+Py4vRad7pYDwmLCAY4iSg/Q3m
+         vnPxx6csf5k0dYROvfrn+IhZNjYI0bOdmFvDkhIB+5JT5cBCjZEjzjhFVmbWkL8QPAwm
+         wPNw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1717807491; x=1718412291;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=fWOCVpKDv1i3dHIEFscg6t/UNTjiT+VAY/Zl1V0pMfM=;
-        b=YuKGYWCUONBgn4ig522Y+t1poS6DOOZonuUgrFrraVFytRPgJF6E66+Tnth5+MpLBq
-         eFHYSy1ui9Sm/ZB5ZleHS8tuH+57jhsAA+mH59B5Y89ptFkwVHbwmFB+nX3qPMV3uSdm
-         I/tMuefVN78FYwKSxiYqk6LhXPyZUMR6oL6LQ80E3tTAAOx5c9dkHwj8KW5pCPtt6Vyu
-         49gjuOo7cGqe6hkKPuNaEgV4bL+WrWUAPIcFxYnMxZwbbX1Spl/QocsQWOaXwu+Pjwqa
-         Fl/iE5T5jp2GMTC9vXedtzUqvJpQKwIVrDQlpZ26+/Na9XkJAG0bzV+ShTW8fns0zadb
-         qSrg==
-X-Gm-Message-State: AOJu0Yx9AX7d4nSdlOmbokE1tXJbGy60eKDoHx/Tqt0Mq3LhU0OQlHPQ
-	hPLkKz9w0Kpu9dIQmowOwq+kUOx3GwZ48yVEWblL0JlIqx73HALf+XecAw==
-X-Google-Smtp-Source: AGHT+IHWsJxQaqPTl/ukpM6goW6gFET4ce5UUyYF5AZuMPKOWbIQ9BdPCRTRcILiWw9cgKMNSJZsMQ==
-X-Received: by 2002:a17:902:7b89:b0:1f6:1c5f:e089 with SMTP id d9443c01a7336-1f6d039b122mr36875625ad.60.1717807490550;
-        Fri, 07 Jun 2024 17:44:50 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1717807494; x=1718412294;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=wVntBV37zIxUp8fMqU7jbR4MhrS6IWwAY/8pSVV5tCI=;
+        b=ekWLFk2A41gcOC7/WLklV7fEUexqxhK/E6WCys3h6kLcnATLn8a1pAoueO2IXdi4sQ
+         VAe9DAfXAmCA4j2h/BTgiuYhU11T1PKc5dCjNF6KRFmm/5uTj/DWxL6pI85cmztzjHQZ
+         k0gWvfcVX6V2ZfuJ9/gY5jop/cikpJXrlLTDi1aFkjixPpBPwBS5bvZ3KGdIxUjuUSHA
+         StIMg5K4Op0zLex2gN+aIyf1rSwhrb/H5iz/9+OfgdC69uonPNJSOnFNL+HOIQpUj7rv
+         wAA2810C82KdUERRXgVAmg+ARMwv70DUoox92vSAP/mlqb5rXqqyijoONYUT/S6Wnh+/
+         a2yQ==
+X-Gm-Message-State: AOJu0YwR/NZUYNlloxRr7TAus25dj2jqeyRbRDHq3xN26urvsrQkvNLV
+	CRSu5c1FyiGD65TpA01K0vEznJuXTZt21CpDyEIIbdcbAveMUFi+iJrQ4A==
+X-Google-Smtp-Source: AGHT+IF8OzFWDoMdgT/OU+rC1JkQCM9VZQpwPy9nFs3LryXgrOaRP4FDjSRAvXDvv5ftfQa9g8lSFQ==
+X-Received: by 2002:a17:903:2307:b0:1f6:a662:f5f1 with SMTP id d9443c01a7336-1f6d039d38bmr45839345ad.55.1717807494277;
+        Fri, 07 Jun 2024 17:44:54 -0700 (PDT)
 Received: from localhost.localdomain ([2620:10d:c090:400::5:81a])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-1f6bd7e03e2sm40421005ad.188.2024.06.07.17.44.49
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-1f6bd7ec539sm40583165ad.238.2024.06.07.17.44.52
         (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
-        Fri, 07 Jun 2024 17:44:49 -0700 (PDT)
+        Fri, 07 Jun 2024 17:44:53 -0700 (PDT)
 From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
 To: bpf@vger.kernel.org
 Cc: daniel@iogearbox.net,
@@ -72,10 +74,12 @@ Cc: daniel@iogearbox.net,
 	memxor@gmail.com,
 	eddyz87@gmail.com,
 	kernel-team@fb.com
-Subject: [PATCH bpf-next 0/4] bpf: Track delta between "linked" registers.
-Date: Fri,  7 Jun 2024 17:44:42 -0700
-Message-Id: <20240608004446.54199-1-alexei.starovoitov@gmail.com>
+Subject: [PATCH bpf-next 1/4] bpf: Relax tuple len requirement for sk helpers.
+Date: Fri,  7 Jun 2024 17:44:43 -0700
+Message-Id: <20240608004446.54199-2-alexei.starovoitov@gmail.com>
 X-Mailer: git-send-email 2.39.3 (Apple Git-146)
+In-Reply-To: <20240608004446.54199-1-alexei.starovoitov@gmail.com>
+References: <20240608004446.54199-1-alexei.starovoitov@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -86,42 +90,128 @@ Content-Transfer-Encoding: 8bit
 
 From: Alexei Starovoitov <ast@kernel.org>
 
-Compilers can generate the code
-  r1 = r2
-  r1 += 0x1
-  if r2 < 1000 goto ...
-  use knowledge of r2 range in subsequent r1 operations
+__bpf_skc_lookup() safely handles incorrect values of tuple len,
+hence we can allow zero to be passed as tuple len.
+This patch alone doesn't make an observable verifier difference.
+It's a trivial improvement that might simplify bpf programs.
 
-The "undo" pass was introduced in LLVM
-https://reviews.llvm.org/D121937
-to prevent this optimization, but it cannot cover all cases.
-Instead of fighting middle end optimizer in BPF backend teach the verifier
-about this pattern.
+Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+---
+ net/core/filter.c | 24 ++++++++++++------------
+ 1 file changed, 12 insertions(+), 12 deletions(-)
 
-The veristat difference:
-File                                Program             Insns (A)  Insns (B)  Insns     (DIFF)
-----------------------------------  ------------------  ---------  ---------  ----------------
-arena_htab.bpf.o                    arena_htab_llvm         18656        768  -17888 (-95.88%)
-arena_htab_asm.bpf.o                arena_htab_asm          18523        586  -17937 (-96.84%)
-iters.bpf.o                         iter_subprog_iters       1109        981    -128 (-11.54%)
-verifier_iterating_callbacks.bpf.o  cond_break1               110        121     +11 (+10.00%)
-verifier_iterating_callbacks.bpf.o  cond_break2               113         91     -22 (-19.47%)
-
-Alexei Starovoitov (4):
-  bpf: Relax tuple len requirement for sk helpers.
-  bpf: Track delta between "linked" registers.
-  bpf: Support can_loop/cond_break on big endian
-  selftests/bpf: Add tests for add_const
-
- include/linux/bpf_verifier.h                  |  12 +-
- kernel/bpf/log.c                              |   4 +-
- kernel/bpf/verifier.c                         |  90 +++++++++--
- net/core/filter.c                             |  24 +--
- .../testing/selftests/bpf/bpf_experimental.h  |  28 ++++
- .../testing/selftests/bpf/progs/arena_htab.c  |  16 +-
- .../bpf/progs/verifier_iterating_callbacks.c  | 150 ++++++++++++++++++
- 7 files changed, 298 insertions(+), 26 deletions(-)
-
+diff --git a/net/core/filter.c b/net/core/filter.c
+index 7c46ecba3b01..cb133232a887 100644
+--- a/net/core/filter.c
++++ b/net/core/filter.c
+@@ -6815,7 +6815,7 @@ static const struct bpf_func_proto bpf_skc_lookup_tcp_proto = {
+ 	.ret_type	= RET_PTR_TO_SOCK_COMMON_OR_NULL,
+ 	.arg1_type	= ARG_PTR_TO_CTX,
+ 	.arg2_type	= ARG_PTR_TO_MEM | MEM_RDONLY,
+-	.arg3_type	= ARG_CONST_SIZE,
++	.arg3_type	= ARG_CONST_SIZE_OR_ZERO,
+ 	.arg4_type	= ARG_ANYTHING,
+ 	.arg5_type	= ARG_ANYTHING,
+ };
+@@ -6834,7 +6834,7 @@ static const struct bpf_func_proto bpf_sk_lookup_tcp_proto = {
+ 	.ret_type	= RET_PTR_TO_SOCKET_OR_NULL,
+ 	.arg1_type	= ARG_PTR_TO_CTX,
+ 	.arg2_type	= ARG_PTR_TO_MEM | MEM_RDONLY,
+-	.arg3_type	= ARG_CONST_SIZE,
++	.arg3_type	= ARG_CONST_SIZE_OR_ZERO,
+ 	.arg4_type	= ARG_ANYTHING,
+ 	.arg5_type	= ARG_ANYTHING,
+ };
+@@ -6853,7 +6853,7 @@ static const struct bpf_func_proto bpf_sk_lookup_udp_proto = {
+ 	.ret_type	= RET_PTR_TO_SOCKET_OR_NULL,
+ 	.arg1_type	= ARG_PTR_TO_CTX,
+ 	.arg2_type	= ARG_PTR_TO_MEM | MEM_RDONLY,
+-	.arg3_type	= ARG_CONST_SIZE,
++	.arg3_type	= ARG_CONST_SIZE_OR_ZERO,
+ 	.arg4_type	= ARG_ANYTHING,
+ 	.arg5_type	= ARG_ANYTHING,
+ };
+@@ -6877,7 +6877,7 @@ static const struct bpf_func_proto bpf_tc_skc_lookup_tcp_proto = {
+ 	.ret_type	= RET_PTR_TO_SOCK_COMMON_OR_NULL,
+ 	.arg1_type	= ARG_PTR_TO_CTX,
+ 	.arg2_type	= ARG_PTR_TO_MEM | MEM_RDONLY,
+-	.arg3_type	= ARG_CONST_SIZE,
++	.arg3_type	= ARG_CONST_SIZE_OR_ZERO,
+ 	.arg4_type	= ARG_ANYTHING,
+ 	.arg5_type	= ARG_ANYTHING,
+ };
+@@ -6901,7 +6901,7 @@ static const struct bpf_func_proto bpf_tc_sk_lookup_tcp_proto = {
+ 	.ret_type	= RET_PTR_TO_SOCKET_OR_NULL,
+ 	.arg1_type	= ARG_PTR_TO_CTX,
+ 	.arg2_type	= ARG_PTR_TO_MEM | MEM_RDONLY,
+-	.arg3_type	= ARG_CONST_SIZE,
++	.arg3_type	= ARG_CONST_SIZE_OR_ZERO,
+ 	.arg4_type	= ARG_ANYTHING,
+ 	.arg5_type	= ARG_ANYTHING,
+ };
+@@ -6925,7 +6925,7 @@ static const struct bpf_func_proto bpf_tc_sk_lookup_udp_proto = {
+ 	.ret_type	= RET_PTR_TO_SOCKET_OR_NULL,
+ 	.arg1_type	= ARG_PTR_TO_CTX,
+ 	.arg2_type	= ARG_PTR_TO_MEM | MEM_RDONLY,
+-	.arg3_type	= ARG_CONST_SIZE,
++	.arg3_type	= ARG_CONST_SIZE_OR_ZERO,
+ 	.arg4_type	= ARG_ANYTHING,
+ 	.arg5_type	= ARG_ANYTHING,
+ };
+@@ -6963,7 +6963,7 @@ static const struct bpf_func_proto bpf_xdp_sk_lookup_udp_proto = {
+ 	.ret_type       = RET_PTR_TO_SOCKET_OR_NULL,
+ 	.arg1_type      = ARG_PTR_TO_CTX,
+ 	.arg2_type      = ARG_PTR_TO_MEM | MEM_RDONLY,
+-	.arg3_type      = ARG_CONST_SIZE,
++	.arg3_type      = ARG_CONST_SIZE_OR_ZERO,
+ 	.arg4_type      = ARG_ANYTHING,
+ 	.arg5_type      = ARG_ANYTHING,
+ };
+@@ -6987,7 +6987,7 @@ static const struct bpf_func_proto bpf_xdp_skc_lookup_tcp_proto = {
+ 	.ret_type       = RET_PTR_TO_SOCK_COMMON_OR_NULL,
+ 	.arg1_type      = ARG_PTR_TO_CTX,
+ 	.arg2_type      = ARG_PTR_TO_MEM | MEM_RDONLY,
+-	.arg3_type      = ARG_CONST_SIZE,
++	.arg3_type      = ARG_CONST_SIZE_OR_ZERO,
+ 	.arg4_type      = ARG_ANYTHING,
+ 	.arg5_type      = ARG_ANYTHING,
+ };
+@@ -7011,7 +7011,7 @@ static const struct bpf_func_proto bpf_xdp_sk_lookup_tcp_proto = {
+ 	.ret_type       = RET_PTR_TO_SOCKET_OR_NULL,
+ 	.arg1_type      = ARG_PTR_TO_CTX,
+ 	.arg2_type      = ARG_PTR_TO_MEM | MEM_RDONLY,
+-	.arg3_type      = ARG_CONST_SIZE,
++	.arg3_type      = ARG_CONST_SIZE_OR_ZERO,
+ 	.arg4_type      = ARG_ANYTHING,
+ 	.arg5_type      = ARG_ANYTHING,
+ };
+@@ -7031,7 +7031,7 @@ static const struct bpf_func_proto bpf_sock_addr_skc_lookup_tcp_proto = {
+ 	.ret_type	= RET_PTR_TO_SOCK_COMMON_OR_NULL,
+ 	.arg1_type	= ARG_PTR_TO_CTX,
+ 	.arg2_type	= ARG_PTR_TO_MEM | MEM_RDONLY,
+-	.arg3_type	= ARG_CONST_SIZE,
++	.arg3_type	= ARG_CONST_SIZE_OR_ZERO,
+ 	.arg4_type	= ARG_ANYTHING,
+ 	.arg5_type	= ARG_ANYTHING,
+ };
+@@ -7050,7 +7050,7 @@ static const struct bpf_func_proto bpf_sock_addr_sk_lookup_tcp_proto = {
+ 	.ret_type	= RET_PTR_TO_SOCKET_OR_NULL,
+ 	.arg1_type	= ARG_PTR_TO_CTX,
+ 	.arg2_type	= ARG_PTR_TO_MEM | MEM_RDONLY,
+-	.arg3_type	= ARG_CONST_SIZE,
++	.arg3_type	= ARG_CONST_SIZE_OR_ZERO,
+ 	.arg4_type	= ARG_ANYTHING,
+ 	.arg5_type	= ARG_ANYTHING,
+ };
+@@ -7069,7 +7069,7 @@ static const struct bpf_func_proto bpf_sock_addr_sk_lookup_udp_proto = {
+ 	.ret_type	= RET_PTR_TO_SOCKET_OR_NULL,
+ 	.arg1_type	= ARG_PTR_TO_CTX,
+ 	.arg2_type	= ARG_PTR_TO_MEM | MEM_RDONLY,
+-	.arg3_type	= ARG_CONST_SIZE,
++	.arg3_type	= ARG_CONST_SIZE_OR_ZERO,
+ 	.arg4_type	= ARG_ANYTHING,
+ 	.arg5_type	= ARG_ANYTHING,
+ };
 -- 
 2.43.0
 
