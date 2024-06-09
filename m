@@ -1,118 +1,223 @@
-Return-Path: <bpf+bounces-31674-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-31675-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id EF9FF9014D8
-	for <lists+bpf@lfdr.de>; Sun,  9 Jun 2024 09:31:38 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BBB20901598
+	for <lists+bpf@lfdr.de>; Sun,  9 Jun 2024 12:40:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9039D1F219B2
-	for <lists+bpf@lfdr.de>; Sun,  9 Jun 2024 07:31:38 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C47931C20B60
+	for <lists+bpf@lfdr.de>; Sun,  9 Jun 2024 10:40:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F7E418EB0;
-	Sun,  9 Jun 2024 07:31:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7190829D0B;
+	Sun,  9 Jun 2024 10:39:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ck/p3j2m"
+	dkim=pass (2048-bit key) header.d=3xx0.net header.i=@3xx0.net header.b="A6+uuzE1";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="AoEnVlYQ"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f175.google.com (mail-pg1-f175.google.com [209.85.215.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from flow3-smtp.messagingengine.com (flow3-smtp.messagingengine.com [103.168.172.138])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 936FFEAE7
-	for <bpf@vger.kernel.org>; Sun,  9 Jun 2024 07:31:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EAC7217554;
+	Sun,  9 Jun 2024 10:39:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.138
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717918286; cv=none; b=ROkTIToOic1TzQrlDPKnsHw4EOy3whSeT5+5pxphCLy8LuhwhpJvBGLOevSKRCPP5G55UKMpQ7HFd+jknMA7KeU5teHN31P57jt0axR5gaUMgZVxTdQhF5GaLTWL6HE0lgbWKpNCx9N6i3DUXmMRZkj/645gA8xSmNLs/MrR3ts=
+	t=1717929588; cv=none; b=ZlPnLeXNeaMAX1GiAh1VccFelQa8PvMFVoJHX6sh5NF0A22y3Qqy0r6SxCYYS4DeycHMdj0JdEpOiQozm8KXTKBjPbtCOGeoMv7EVaU5+/3N9IAt2IP5OXp8SIvti9mCtZhP2VewlVYzRjwL3nf2xC33RmUulN1dHMvSL7w5RN8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717918286; c=relaxed/simple;
-	bh=sjcAvPA5vp0SzUQ8vmAd4JiCvvT4hZzvJbhzHa4dgdw=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Q2M1ultJG9I1nRSvoab7jsd7f1BVfPIRLfp2JZGnkOIIgdGK4oWWv6KA+BZ2UBIt8O/Ucg3i9T5c1fUIqSUV+1D6D8AQvrNx4cXbVeixAe1QuNUJbxeXhrT6LYFLMQf10w5oqd3b6jt2Q0Bo9PDpf/uu7tEtr3RkUBzsGtnltQg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ck/p3j2m; arc=none smtp.client-ip=209.85.215.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f175.google.com with SMTP id 41be03b00d2f7-6cdf9a16229so2535921a12.3
-        for <bpf@vger.kernel.org>; Sun, 09 Jun 2024 00:31:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1717918284; x=1718523084; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=3zYPYfQ9MEMK8RVWUtQoAFbYEjaPTYgsIbBL2WDda58=;
-        b=ck/p3j2mseOhkngQ80c2ugEoI8OfNNPSHQd4JxkD8kcDUmNPiNL9YDbxS2VC3mzisL
-         x2H4JbvxDqdXXOF+zFGs75AkZzCYqYoMw86MMZikx3QoBBDfEYvjHDb2pLArnJyke2j2
-         1uZXMVAVZ1H8T17LWAIpM6OiL59X693gHP/JvyApi4AtOkjOSOS4NuLDFHaQ7+weNJyk
-         0dzSKu9G5yA7IHDc32tysknc7j0FfYHI/AdNpijWNWkU6iFSop1nJE0YWugd8cWNlP1R
-         FQ/3pugdmjEx94TuqpblNbiRCuMhY+pscjkGNCgfcIz0/7RAOi0AtvupabCT30dOl/wk
-         u9vg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1717918284; x=1718523084;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=3zYPYfQ9MEMK8RVWUtQoAFbYEjaPTYgsIbBL2WDda58=;
-        b=oyxB9T7tgM7u5GJ3hE/4gDovCkEEaxNe7FC/Hguu6dj39+E8sGb8wCdqKrMjd7GChO
-         OkUiQvtzG8I5QhYLSc3o3s1j0EZDMfz3fNo0nYchfwX1/aQF+UMCpuTC16a/IVsLpyVd
-         TQqDfGZ3qS89yV+yvk2M22SZhMnGPC4yOxG4xIn7ffMKJ++fyIg9bGYP6PdnHgawif9b
-         m9L2WTq6qnCko/EZeZE305BL6meTCCPvAWkxoqONE50aMgDPsrSPCZFCmYBcXA9ZxJt0
-         XzQfR5t2zSOEkjz3Jx3V+mh3s5OBiNs1jg6zLG3Rfsb9yGpVOvZ6x4GRZudVa7l07E/O
-         7YaQ==
-X-Gm-Message-State: AOJu0Yxu96Uu/HGt3eMPrkaDGAkkYUAa9K9yLsFTHh7gHJY/DasGtEGj
-	f0kVjzx62xHa8X/Y2jFB7jgA/Wwt0GyFD+GVieUeMllq05N7Ooh028oExg==
-X-Google-Smtp-Source: AGHT+IHhwHxP63hHUEzA4DQ43FiX58ayMmbiFCcgj83QpqEs9CpseVr0Vd723j146HNMdtZh4q3kSg==
-X-Received: by 2002:a17:902:d2ce:b0:1f7:1006:9d44 with SMTP id d9443c01a7336-1f710069ff1mr2661285ad.41.1717918283699;
-        Sun, 09 Jun 2024 00:31:23 -0700 (PDT)
-Received: from localhost.localdomain (bb116-14-181-187.singnet.com.sg. [116.14.181.187])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-1f70eb8e856sm3073175ad.103.2024.06.09.00.31.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 09 Jun 2024 00:31:23 -0700 (PDT)
-From: Leon Hwang <hffilwlqm@gmail.com>
-To: bpf@vger.kernel.org
-Cc: ast@kernel.org,
-	daniel@iogearbox.net,
-	hffilwlqm@gmail.com,
-	kernel-patches-bot@fb.com
-Subject: [PATCH bpf-next] bpf, verifier: Correct tail_call_reachable for bpf prog
-Date: Sun,  9 Jun 2024 15:31:00 +0800
-Message-ID: <20240609073100.42925-1-hffilwlqm@gmail.com>
-X-Mailer: git-send-email 2.44.0
+	s=arc-20240116; t=1717929588; c=relaxed/simple;
+	bh=dKaNr1T+2ZoKYO9xvZbhamHUunp15XF6FR3PVyK6ofs=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=YyfpeObEHeB9j2CAM8UpsCuM+iKk0I56wGlpW2MH/hAnK8jjLkZLq6FpteEbqXQdrCHM2eAhzdA2Yj2MK9F1Bi/1Bdm8Gt3601FGGQRuZ9DRVuhMhUhe/eY4Cv08fYv095zJQg37Rz4x7PJC8Dccf1Hswp6OSWn5do/B9Bvk5Ro=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=3xx0.net; spf=pass smtp.mailfrom=3xx0.net; dkim=pass (2048-bit key) header.d=3xx0.net header.i=@3xx0.net header.b=A6+uuzE1; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=AoEnVlYQ; arc=none smtp.client-ip=103.168.172.138
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=3xx0.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=3xx0.net
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
+	by mailflow.nyi.internal (Postfix) with ESMTP id E12AC200151;
+	Sun,  9 Jun 2024 06:39:45 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute6.internal (MEProxy); Sun, 09 Jun 2024 06:39:45 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=3xx0.net; h=cc
+	:cc:content-transfer-encoding:content-type:content-type:date
+	:date:from:from:in-reply-to:message-id:mime-version:reply-to
+	:subject:subject:to:to; s=fm1; t=1717929585; x=1717933185; bh=/O
+	0tfbzHKuHaojRdWTQXNBZb0w0SRZ82f5WuNVpAO8c=; b=A6+uuzE1rHNWSsZTV2
+	nh1GgNpjc352DgFM/jZmNgD1WhF905rYRmEKbvxZUpXDOMmDeBGRo63NyA943gXB
+	ljW4aI2qdH8o9+YWN9GGDLPEsJEvMaLl3TwU6HWh4C0SGTs/DDfsn0FIEBqiS6AA
+	DkZIjmnKSDloyVn9VQDpcrAu6vCm1QK24jjFQpP9/eUnEjws0WhLBrrVh4ZNvIGG
+	k3TMnL3/B9kNLkDUh/ctpKkeDQpzNdUiWe9Hz+703TzBOwdkoVuai/31wZuczjn/
+	YoUIG97TJBy2DJUMfUJgnKU6dZA8tdEX2Nf8gGGUlgq5bUpxralJlmIJH81XI5wH
+	cr6A==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:content-type:date:date:feedback-id:feedback-id
+	:from:from:in-reply-to:message-id:mime-version:reply-to:subject
+	:subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+	:x-sasl-enc; s=fm1; t=1717929585; x=1717933185; bh=/O0tfbzHKuHao
+	jRdWTQXNBZb0w0SRZ82f5WuNVpAO8c=; b=AoEnVlYQzmapn7PSxAEaGwMl5HKnC
+	Gi+eLp2B2yPpYpKhrgYJbaf1CNuuBb8Nj0EZn5xeqCj/OYQNpSn0N+Sez1NTsyvE
+	o4zzTqq98s08xqhcKsfLLAqfDAJbkr6QW2qGF56RrKkMycCf4a8NuVxGOQ00A4x4
+	I7coXhOtpc6Np3R/o6XT04/Z2yhSdT2YA1jmCw3fjv+o7vQ4+5NrJ72ELB+9FJRL
+	zUlPUqUz8Z2Mov+4pST/+REpzCp9BeZ8zp5lPOmbYZ5KSpvijRSlJTHWvVBZI804
+	dZWBSTfN7LVZodknvVRVtJNFAN9wg0VZPFxZDHl/e0Q8cgnlMx9XY5L1Q==
+X-ME-Sender: <xms:cYZlZk0NrIt22oj_PCTv7GPk8BKAdSC4CvBNBtXMlKrOds-jXCX6kg>
+    <xme:cYZlZvHzJl2uMqjDCy3roIoo-wPALzr84HqJipIzv4B8BezJaghk90YZwAoLHZaiY
+    m6JB2LvR0uL0Rgub5A>
+X-ME-Received: <xmr:cYZlZs67TIAQXuRvS4LNJsxIfRhJCMyiWqLUXp3W9CszFQYAOSHyy3BskIrFs2z4wP4f_IFOCGRfLW-6pzjocKeQK7xB5wKEeX-c2uzDAIy6Cw>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrfedtjedgfedtucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhephffvvefufffkofggtgfgsehtkeertdertdejnecuhfhrohhmpeflohhnrght
+    hhgrnhcuvegrlhhmvghlshcuoehjtggrlhhmvghlshesfeiggidtrdhnvghtqeenucggtf
+    frrghtthgvrhhnpefhieevtdektdekvdfftdetudejvdejudekffelvdegteejueeujeeu
+    fefhieegfeenucffohhmrghinhepphgrmhgptggrphdrshhopdhkvghrnhgvlhdrohhrgh
+    enucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehjtggr
+    lhhmvghlshesfeiggidtrdhnvght
+X-ME-Proxy: <xmx:cYZlZt12MpxahFlMi53JTtlMs2HyPQa9_US94TsFreIjarv_5keVTg>
+    <xmx:cYZlZnHuRk7vWBuaU_r-RtQjzMj_tt4zI_yGC5SVMw6LoOjX-kDXRA>
+    <xmx:cYZlZm-of11IqdzrJfcOfQNEqi19HaNDmVivU5F753rXVxPN1UYGtw>
+    <xmx:cYZlZskCoHs4JNkY3J6Og298J1wP6jL-wswP_utkz1mzpGJkfCz-1Q>
+    <xmx:cYZlZnGSnk2LavPUrcuXBV7haSMyAl3K3F7V8QEGPjlkJBm2S4l_yIuo>
+Feedback-ID: i76614979:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sun,
+ 9 Jun 2024 06:39:41 -0400 (EDT)
+From: Jonathan Calmels <jcalmels@3xx0.net>
+To: brauner@kernel.org,	ebiederm@xmission.com,
+	Jonathan Corbet <corbet@lwn.net>,	Paul Moore <paul@paul-moore.com>,
+	James Morris <jmorris@namei.org>,	"Serge E. Hallyn" <serge@hallyn.com>,
+	KP Singh <kpsingh@kernel.org>,	Matt Bobrowski <mattbobrowski@google.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>,	Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Stanislav Fomichev <sdf@google.com>,	Hao Luo <haoluo@google.com>,
+	Jiri Olsa <jolsa@kernel.org>,	Luis Chamberlain <mcgrof@kernel.org>,
+	Kees Cook <kees@kernel.org>,	Joel Granados <j.granados@samsung.com>,
+	John Johansen <john.johansen@canonical.com>,
+	David Howells <dhowells@redhat.com>,	Jarkko Sakkinen <jarkko@kernel.org>,
+	Stephen Smalley <stephen.smalley.work@gmail.com>,
+	Ondrej Mosnacek <omosnace@redhat.com>,	Mykola Lysenko <mykolal@fb.com>,
+	Shuah Khan <shuah@kernel.org>
+Cc: containers@lists.linux.dev,
+	Jonathan Calmels <jcalmels@3xx0.net>,
+	linux-kernel@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org,
+	linux-doc@vger.kernel.org,
+	linux-security-module@vger.kernel.org,
+	bpf@vger.kernel.org,
+	apparmor@lists.ubuntu.com,
+	keyrings@vger.kernel.org,
+	selinux@vger.kernel.org,
+	linux-kselftest@vger.kernel.org
+Subject: [PATCH v2 0/4] Introduce user namespace capabilities
+Date: Sun,  9 Jun 2024 03:43:33 -0700
+Message-ID: <20240609104355.442002-1-jcalmels@3xx0.net>
+X-Mailer: git-send-email 2.45.2
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-It's confusing to inspect 'prog->aux->tail_call_reachable' with drgn[0],
-when bpf prog has tail call but 'tail_call_reachable' is false.
+This patch series introduces a new user namespace capability set, as
+well as some plumbing around it (i.e. sysctl, secbit, lsm support).
 
-This patch corrects 'tail_call_reachable' when bpf prog has tail call.
+First patch goes over the motivations for this as well as prior art.
 
-[0] https://github.com/osandov/drgn
+In summary, while user namespaces are a great success today in that they
+avoid running a lot of code as root, they also expand the attack surface
+of the kernel substantially which is often abused by attackers. 
+Methods exist to limit the creation of such namespaces [1], however,
+application developers often need to assume that user namespaces are
+available for various tasks such as sandboxing. Thus, instead of
+restricting the creation of user namespaces, we offer ways for userspace
+to limit the capabilities granted to them.
 
-Signed-off-by: Leon Hwang <hffilwlqm@gmail.com>
+Why a new capability set and not something specific to the userns (e.g.
+ioctl_ns)?
+
+    1. We can't really expect userspace to patch every single callsite
+    and opt-in this new security mechanism. 
+
+    2. We don't necessarily want policies enforced at said callsites.
+    For example a service like systemd-machined or a PAM session need to
+    be able to place restrictions on any namespace spawned under it.
+
+    3. We would need to come up with inheritance rules, querying
+    capabilities, etc. At this point we're just reinventing capability
+    sets.
+
+    4. We can easily define interactions between capability sets, thus
+    helping with adoption (patch 2 is an example of this)
+
+Some examples of how this could be leveraged in userspace:
+
+    - Prevent user from getting CAP_NET_ADMIN in user namespaces under SSH:
+        echo "auth optional pam_cap.so" >> /etc/pam.d/sshd
+        echo "!cap_net_admin $USER"     >> /etc/security/capability.conf
+        capsh --secbits=$((1 << 8)) -- -c /usr/sbin/sshd
+
+    - Prevent containers from ever getting CAP_DAC_OVERRIDE:
+        systemd-run -p CapabilityBoundingSet=~CAP_DAC_OVERRIDE \
+                    -p SecureBits=userns-strict-caps \
+                    /usr/bin/dockerd
+        systemd-run -p UserNSCapabilities=~CAP_DAC_OVERRIDE \
+                    /usr/bin/incusd
+
+    - Kernel could be vulnerable to CAP_SYS_RAWIO exploits, prevent it:
+        sysctl -w cap_bound_userns_mask=0x1fffffdffff
+
+    - Drop CAP_SYS_ADMIN for this shell and all the user namespaces below it:
+        bwrap --unshare-user --cap-drop CAP_SYS_ADMIN /bin/sh
+
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=7cd4c5c2101cb092db00f61f69d24380cf7a0ee8
+
 ---
- kernel/bpf/verifier.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+Changes since v1:
+- Add documentation
+- Change commit wording
+- Cleanup various aspects of the code based on feedback
+- Add new CAP_SYS_CONTROL capability for sysctl check
+- Add BPF-LSM support for modifying userns capabilities
+---
+Jonathan Calmels (4):
+  capabilities: Add user namespace capabilities
+  capabilities: Add securebit to restrict userns caps
+  capabilities: Add sysctl to mask off userns caps
+  bpf,lsm: Allow editing capabilities in BPF-LSM hooks
 
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 81a3d2ced78d5..d7045676246a7 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -2982,8 +2982,10 @@ static int check_subprogs(struct bpf_verifier_env *env)
- 
- 		if (code == (BPF_JMP | BPF_CALL) &&
- 		    insn[i].src_reg == 0 &&
--		    insn[i].imm == BPF_FUNC_tail_call)
-+		    insn[i].imm == BPF_FUNC_tail_call) {
- 			subprog[cur_subprog].has_tail_call = true;
-+			subprog[cur_subprog].tail_call_reachable = true;
-+		}
- 		if (BPF_CLASS(code) == BPF_LD &&
- 		    (BPF_MODE(code) == BPF_ABS || BPF_MODE(code) == BPF_IND))
- 			subprog[cur_subprog].has_ld_abs = true;
+ Documentation/filesystems/proc.rst            |  1 +
+ Documentation/security/credentials.rst        |  6 ++
+ fs/proc/array.c                               |  9 +++
+ include/linux/cred.h                          |  3 +
+ include/linux/lsm_hook_defs.h                 |  2 +-
+ include/linux/securebits.h                    |  1 +
+ include/linux/security.h                      |  4 +-
+ include/linux/user_namespace.h                |  7 ++
+ include/uapi/linux/capability.h               |  6 +-
+ include/uapi/linux/prctl.h                    |  7 ++
+ include/uapi/linux/securebits.h               | 11 ++-
+ kernel/bpf/bpf_lsm.c                          | 55 +++++++++++++
+ kernel/cred.c                                 |  3 +
+ kernel/sysctl.c                               | 10 +++
+ kernel/umh.c                                  | 15 ++++
+ kernel/user_namespace.c                       | 80 +++++++++++++++++--
+ security/apparmor/lsm.c                       |  2 +-
+ security/commoncap.c                          | 62 +++++++++++++-
+ security/keys/process_keys.c                  |  3 +
+ security/security.c                           |  6 +-
+ security/selinux/hooks.c                      |  2 +-
+ security/selinux/include/classmap.h           |  5 +-
+ .../selftests/bpf/prog_tests/deny_namespace.c | 12 ++-
+ .../selftests/bpf/progs/test_deny_namespace.c |  7 +-
+ 24 files changed, 291 insertions(+), 28 deletions(-)
 
-base-commit: 2c6987105026a4395935a3db665c54eb1bafe782
 -- 
-2.44.0
+2.45.2
 
 
