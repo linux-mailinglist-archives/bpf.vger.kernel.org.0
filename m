@@ -1,180 +1,620 @@
-Return-Path: <bpf+bounces-31680-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-31681-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0CD579015F9
-	for <lists+bpf@lfdr.de>; Sun,  9 Jun 2024 13:34:37 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id D415D9016FB
+	for <lists+bpf@lfdr.de>; Sun,  9 Jun 2024 18:12:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 260251C20992
-	for <lists+bpf@lfdr.de>; Sun,  9 Jun 2024 11:34:36 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5E1AD1F21257
+	for <lists+bpf@lfdr.de>; Sun,  9 Jun 2024 16:12:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5BF1A3B182;
-	Sun,  9 Jun 2024 11:34:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C337E481CD;
+	Sun,  9 Jun 2024 16:12:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TYUWWaSf"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-il1-f206.google.com (mail-il1-f206.google.com [209.85.166.206])
+Received: from mail-ed1-f46.google.com (mail-ed1-f46.google.com [209.85.208.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C02F3611B
-	for <bpf@vger.kernel.org>; Sun,  9 Jun 2024 11:34:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.206
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 32B6246544;
+	Sun,  9 Jun 2024 16:12:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717932868; cv=none; b=kXOnRl9QHeyR32cJBL0JyROaQ7WjhOJn8zCrX3cAGu6+dqsNHyZP9DgNFTxHBTSxfYDWmFy0Ksf+c1BaaPg5TWOzKm0N3burdWj0Ve86RAKXUzXI88bIoFvEtVS7NgjHz01n30v+Pws5TN+xDZEyXointGNUo7yF9Ty3CLmsZ/Y=
+	t=1717949543; cv=none; b=qcEsfVYXGzY/Ydd4qNgwTHxZl8RwBce+9bGSxeB14glN46kHMZ4MgoUVggIuX5QpZUBarIwmuRWsfN0HC+N04/OSVlR85F8SINgpTsshW19a9ADpWEiiFLvrj5+CkjDkH6ROVYWhwJquS3ArGNI5CqWWC339Exb/hz+80Eks/fM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717932868; c=relaxed/simple;
-	bh=Y1+ti1mbb9MNw7nNtpV56B0Q6eW+P17Im7g7i/SEQzs=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=UB8YxAXPNXAtnricvSCeF3THF19LGzFy52q799faT9zp8GRAHfCJGBmdAdabGVZ2VDczA+iHaku9g47foBOfCOrVaq7Ap1KjRhfEC0qA7gOQqnArZEzwsOYjl6TFsw8F2YII7114syPzxO4IWrviwDftHMpaivMXv/EI6o8g5hg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.206
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f206.google.com with SMTP id e9e14a558f8ab-37593c84fedso14488405ab.3
-        for <bpf@vger.kernel.org>; Sun, 09 Jun 2024 04:34:26 -0700 (PDT)
+	s=arc-20240116; t=1717949543; c=relaxed/simple;
+	bh=kWFlcAu/JlVbwxvBpYD5IuZFqHrl3ca1ptLM3BJem4Y=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=nGlfPKa52p2zNvmwSBVFEO+YEQ0n7uFNEdIwTVKOWQ4X/BXiH3XlhMpFxf0c4qjt+e7HgEkY/INoHNg+rRsiPOKz4fWperHp6eC0Gz1E0JFmGEvMg14qa7NjHbXPxuQWOIYGSagc4jvRkIHCKPC0fzTf4LQogkcD3YwPJnIktY8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=TYUWWaSf; arc=none smtp.client-ip=209.85.208.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f46.google.com with SMTP id 4fb4d7f45d1cf-57864327f6eso5151038a12.1;
+        Sun, 09 Jun 2024 09:12:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1717949539; x=1718554339; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=b7jO8ToH6ML8/Ro+TVs1hT7bnnXDtzqgaXtS36NqMwE=;
+        b=TYUWWaSfiLvhZgGu+tAskVnA6qKn4Kwhhfkd9ilQJR0oBOjgQBR/pVAhlWZ4KFlSw6
+         wc/n3cfqSonDTNgXm1iAMzpWVq7t9SsQLagn0UtCTll5FCITDi/vTHDvKS1uO3yImQmC
+         vWP67HPlqvNH6gRTkrIc6/CZ/FIRTiCHDXw8Bg6NhTJYfd7i2Vd5gq5wB9vFC1f8R3Sb
+         jGbJvQguBUbssSk8oJrGtwG4vn0/ZWS6loydC5jfJbO9gOL00YsiZUkt9hZ7Z+v7TdAc
+         p1OjwSCAd6fknlOkP8jK3Cu3DDs/RPOXBmrcKJPe6qC2j+be79Wi/INyElWYmXIQ8l2c
+         JXKA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1717932866; x=1718537666;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=YZV4E2L8maI6s7zq2yrwNQ7hph7xAqxH7JzWM8hda4Q=;
-        b=MQvlqI+bUo55+Kcjmqf72FF0/BQO7XEBmTVmozgUdo2AAspW0z/q2rywZ7MLxVX7uV
-         X8M4zmH9UuC3RJqWFqRitz8Pygw4v2CYdEIDMLVis6gLSn4W+DcrxsLpAz3YinFabnV/
-         GlVm+ZvNl/MQc2eA3JHHUYTTToF3pZrOwgn/EkArsfOda6sKtO/QV8TxUpCIG8CV0gY4
-         pXKDqp3jJ4wi7V7Ir2466bjCuPQBDRj98SMGLa0LTjh81dsPNpqfp0KeNG2Ky7i+AbRl
-         HjEMejUCvrseJU1dKfLt+B1SFCZg7bXlayPVptH9WSvbQ5Gz9DbllXVCkf3UmPXLGpmj
-         Ysbg==
-X-Forwarded-Encrypted: i=1; AJvYcCXMRDIJSBbmRAMe+RX21EuG0BdYfmDbOgGASb6iQHpp7RzXoeLg4VvfycIh1nbwijjO8JDDZ/21y5ZVJe1ql0RuQl5f
-X-Gm-Message-State: AOJu0Yxn9jfY2EQq7rNReqfWS6axrsC8pBdoTTH04ysN0peR89nEI2NY
-	X6cZZndW5yaQOPIkmsx1OI0rOjWklek6yz6dg1XOSg2Dotp7jOdR31Dk7fDswuNCVlLWCoKlICB
-	y5tOLPJCctJDnNT40DQXidzX2FoohN32BL7HpcOjKZWyTI7LPzpJFevs=
-X-Google-Smtp-Source: AGHT+IGbhhOsz75IpMUaqd4IQp6/f84Ci5jbYbl1vq4N3CB8GmF1Ph8Ht43avaioasT7zxVpLi/qG21XDDP+AWCbfVPf8+NAGXY8
+        d=1e100.net; s=20230601; t=1717949539; x=1718554339;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=b7jO8ToH6ML8/Ro+TVs1hT7bnnXDtzqgaXtS36NqMwE=;
+        b=UboIy6GIN49hZ0oUcDu9O7babrfew5CkgYXuD88yd+bYdDhq1t9X7NVo6wQ+sYEhjF
+         S38JCVnNHj/f4r6LHr46oX+VVma2sexV53dUVR4l/7wAPzHmhBmuZnBIV9djnGCU4tLM
+         UD37L9RXFtKCDLIIMU8Vuafp3l5lDWBrDSw6CFSHy6Iyez6epKIGwo2undt5VAkAMYY2
+         EbFwfdoM/wrEJCiso0CAmTuGvP0ToJ/4/qHPVQYhAci9sGjpBlucW1KfK++R7De2Xkmw
+         DVRa+4SO347MHsOF5oEEG2ML9jWcP1SD+snQBoT3MYhvKVdHyK3lrOqOw8xEwQReKLMt
+         Eb4A==
+X-Forwarded-Encrypted: i=1; AJvYcCXfNFQJjqYy/ZjzcnUIFlxm1yAswDAwwzIuilWJiiGHeVFm2XPef/iiBx8R3E9E0u/UQlhFhVAEmkzruneSxx5QPdbHLhI597jREbNI12dnMXYrymSsuzhwPvGAZqTx1Y29
+X-Gm-Message-State: AOJu0YyJ5aqqeD4WLL9v4NGfXm6jME68uqO8Fgf13A5Iyb6ZauQjidKt
+	NDywpmdkS5vgmRONSsuyxgWl4fBc22fhdAnibrf3/O0JIR9vIZ7XJWV9QFje7EEiMDyxW2A5te8
+	lkpxHZdHd8EfaEji9gdhvZbJZaK0=
+X-Google-Smtp-Source: AGHT+IFrFTJwYcyYiLvznLF1avtEfr5FdfWmSDQDOLQODwZS4oLM3i6c1zBj4nmaAZ2zzOZXSi3LDliMcHLYFv/EJOk=
+X-Received: by 2002:a50:9b57:0:b0:57c:7f3a:6c81 with SMTP id
+ 4fb4d7f45d1cf-57c7f3ac25amr735794a12.8.1717949539152; Sun, 09 Jun 2024
+ 09:12:19 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1fc9:b0:374:a840:e5be with SMTP id
- e9e14a558f8ab-375802379b1mr3680665ab.0.1717932865811; Sun, 09 Jun 2024
- 04:34:25 -0700 (PDT)
-Date: Sun, 09 Jun 2024 04:34:25 -0700
-In-Reply-To: <00000000000099cf25061964d113@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000371fcb061a736a5b@google.com>
-Subject: Re: [syzbot] [bpf?] [net?] general protection fault in
- dev_map_enqueue (2)
-From: syzbot <syzbot+cca39e6e84a367a7e6f6@syzkaller.appspotmail.com>
-To: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org, 
-	daniel@iogearbox.net, davem@davemloft.net, eddyz87@gmail.com, 
-	haoluo@google.com, hawk@kernel.org, john.fastabend@gmail.com, 
-	jolsa@kernel.org, kpsingh@kernel.org, kuba@kernel.org, 
-	linux-kernel@vger.kernel.org, martin.lau@linux.dev, netdev@vger.kernel.org, 
-	sdf@google.com, song@kernel.org, syzkaller-bugs@googlegroups.com, 
-	yonghong.song@linux.dev
+References: <20240608140835.965949-1-dolinux.peng@gmail.com> <20240609162327.ce8bd5fdfffd6b01ad92d8c5@kernel.org>
+In-Reply-To: <20240609162327.ce8bd5fdfffd6b01ad92d8c5@kernel.org>
+From: Donglin Peng <dolinux.peng@gmail.com>
+Date: Mon, 10 Jun 2024 00:12:07 +0800
+Message-ID: <CAErzpmt69A3B4ynjZ2UEK6FJZL0TcX7=7oS3C+FaXEOezxEXGw@mail.gmail.com>
+Subject: Re: [RFC PATCH v3] bpf: Using binary search to improve the
+ performance of btf_find_by_name_kind
+To: Masami Hiramatsu <mhiramat@kernel.org>
+Cc: ast@kernel.org, daniel@iogearbox.net, song@kernel.org, andrii@kernel.org, 
+	eddyz87@gmail.com, haoluo@google.com, yonghong.song@linux.dev, 
+	bpf@vger.kernel.org, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-syzbot has found a reproducer for the following issue on:
+On Sun, Jun 9, 2024 at 3:23=E2=80=AFPM Masami Hiramatsu <mhiramat@kernel.or=
+g> wrote:
+>
+> Hi
+>
+> On Sat,  8 Jun 2024 07:08:35 -0700
+> Donglin Peng <dolinux.peng@gmail.com> wrote:
+>
+> > Currently, we are only using the linear search method to find the type =
+id
+> > by the name, which has a time complexity of O(n). This change involves
+> > sorting the names of btf types in ascending order and using binary sear=
+ch,
+> > which has a time complexity of O(log(n)). This idea was inspired by the
+> > following patch:
+> >
+> > 60443c88f3a8 ("kallsyms: Improve the performance of kallsyms_lookup_nam=
+e()").
+> >
+> > At present, this improvement is only for searching in vmlinux's and
+> > module's BTFs.
+> >
+> > Another change is the search direction, where we search the BTF first a=
+nd
+> > then its base, the type id of the first matched btf_type will be return=
+ed.
+> >
+> > Here is a time-consuming result that finding 87590 type ids by their na=
+mes in
+> > vmlinux's BTF.
+> >
+> > Before: 158426 ms
+> > After:     114 ms
+> >
+> > The average lookup performance has improved more than 1000x in the abov=
+e scenario.
+>
+> This looks great improvement! so searching function entry in ~2us?
 
-HEAD commit:    c44711b78608 liquidio: Adjust a NULL pointer handling path..
-git tree:       net
-console+strace: https://syzkaller.appspot.com/x/log.txt?x=1175e6f6980000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=333ebe38d43c42e2
-dashboard link: https://syzkaller.appspot.com/bug?extid=cca39e6e84a367a7e6f6
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=172b3126980000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=17caa30a980000
+Yes, it is the average test result on a Ubuntu VM. However, if you are
+specifically
+searching for a particular btf_type, it may take more time due to cache mis=
+ses.
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/47ff53e982e7/disk-c44711b7.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/7b10dcb52f35/vmlinux-c44711b7.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/b4a6bf6f87c5/bzImage-c44711b7.xz
+The data is obtained from the following test code:
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+cca39e6e84a367a7e6f6@syzkaller.appspotmail.com
+ /*
+  * total: the number of btf_type
+  * nr_names: the number of btf_type that has a name
+  *
+  */
 
-Oops: general protection fault, probably for non-canonical address 0xdffffc0000000000: 0000 [#1] PREEMPT SMP KASAN PTI
-KASAN: null-ptr-deref in range [0x0000000000000000-0x0000000000000007]
-CPU: 1 PID: 5098 Comm: syz-executor784 Not tainted 6.10.0-rc2-syzkaller-00228-gc44711b78608 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 04/02/2024
-RIP: 0010:dev_map_enqueue+0x31/0x3e0 kernel/bpf/devmap.c:539
-Code: 41 56 41 55 41 54 53 48 83 ec 18 49 89 d4 49 89 f5 48 89 fd 49 be 00 00 00 00 00 fc ff df e8 46 9c d7 ff 48 89 e8 48 c1 e8 03 <42> 80 3c 30 00 74 08 48 89 ef e8 a0 5e 3d 00 4c 8b 7d 00 48 83 c5
-RSP: 0018:ffffc9000343f678 EFLAGS: 00010246
-RAX: 0000000000000000 RBX: 0000000000000000 RCX: ffff88807eb31e00
-RDX: 0000000000000000 RSI: ffff88802224a070 RDI: 0000000000000000
-RBP: 0000000000000000 R08: ffffffff89625806 R09: ffffffff896257c3
-R10: 0000000000000004 R11: ffff88807eb31e00 R12: ffff8880151d8000
-R13: ffff88802224a070 R14: dffffc0000000000 R15: 0000000000000000
-FS:  00005555867d5380(0000) GS:ffff8880b9500000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007fdc79c59303 CR3: 0000000022bc8000 CR4: 00000000003506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- __xdp_do_redirect_frame net/core/filter.c:4397 [inline]
- xdp_do_redirect_frame+0x2a6/0x660 net/core/filter.c:4451
- xdp_test_run_batch net/bpf/test_run.c:336 [inline]
- bpf_test_run_xdp_live+0xe60/0x1e60 net/bpf/test_run.c:384
- bpf_prog_test_run_xdp+0x80e/0x11b0 net/bpf/test_run.c:1281
- bpf_prog_test_run+0x33a/0x3b0 kernel/bpf/syscall.c:4292
- __sys_bpf+0x48d/0x810 kernel/bpf/syscall.c:5706
- __do_sys_bpf kernel/bpf/syscall.c:5795 [inline]
- __se_sys_bpf kernel/bpf/syscall.c:5793 [inline]
- __x64_sys_bpf+0x7c/0x90 kernel/bpf/syscall.c:5793
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0xf3/0x230 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
-RIP: 0033:0x7fdc79c5b239
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 c1 17 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007fff5780f908 EFLAGS: 00000246 ORIG_RAX: 0000000000000141
-RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007fdc79c5b239
-RDX: 0000000000000050 RSI: 0000000020000240 RDI: 000000000000000a
-RBP: 0000000000000000 R08: 0000000000000006 R09: 0000000000000006
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-R13: 0000000000000000 R14: 0000000000000001 R15: 0000000000000001
- </TASK>
-Modules linked in:
----[ end trace 0000000000000000 ]---
-RIP: 0010:dev_map_enqueue+0x31/0x3e0 kernel/bpf/devmap.c:539
-Code: 41 56 41 55 41 54 53 48 83 ec 18 49 89 d4 49 89 f5 48 89 fd 49 be 00 00 00 00 00 fc ff df e8 46 9c d7 ff 48 89 e8 48 c1 e8 03 <42> 80 3c 30 00 74 08 48 89 ef e8 a0 5e 3d 00 4c 8b 7d 00 48 83 c5
-RSP: 0018:ffffc9000343f678 EFLAGS: 00010246
-RAX: 0000000000000000 RBX: 0000000000000000 RCX: ffff88807eb31e00
-RDX: 0000000000000000 RSI: ffff88802224a070 RDI: 0000000000000000
-RBP: 0000000000000000 R08: ffffffff89625806 R09: ffffffff896257c3
-R10: 0000000000000004 R11: ffff88807eb31e00 R12: ffff8880151d8000
-R13: ffff88802224a070 R14: dffffc0000000000 R15: 0000000000000000
-FS:  00005555867d5380(0000) GS:ffff8880b9500000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007fdc79c59303 CR3: 0000000022bc8000 CR4: 00000000003506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-----------------
-Code disassembly (best guess):
-   0:	41 56                	push   %r14
-   2:	41 55                	push   %r13
-   4:	41 54                	push   %r12
-   6:	53                   	push   %rbx
-   7:	48 83 ec 18          	sub    $0x18,%rsp
-   b:	49 89 d4             	mov    %rdx,%r12
-   e:	49 89 f5             	mov    %rsi,%r13
-  11:	48 89 fd             	mov    %rdi,%rbp
-  14:	49 be 00 00 00 00 00 	movabs $0xdffffc0000000000,%r14
-  1b:	fc ff df
-  1e:	e8 46 9c d7 ff       	call   0xffd79c69
-  23:	48 89 e8             	mov    %rbp,%rax
-  26:	48 c1 e8 03          	shr    $0x3,%rax
-* 2a:	42 80 3c 30 00       	cmpb   $0x0,(%rax,%r14,1) <-- trapping instruction
-  2f:	74 08                	je     0x39
-  31:	48 89 ef             	mov    %rbp,%rdi
-  34:	e8 a0 5e 3d 00       	call   0x3d5ed9
-  39:	4c 8b 7d 00          	mov    0x0(%rbp),%r15
-  3d:	48                   	rex.W
-  3e:	83                   	.byte 0x83
-  3f:	c5                   	.byte 0xc5
+ pr_info("Begin to test ... total: %d, nr_names: %d\n", total, nr_names);
+
+ t0 =3D ktime_get_ns();
+ for (i =3D 0; i < nr_names; i++) {
+         if (btf_find_by_name_kind(btf, tn[i].name, tn[i].kind) <=3D 0) {
+                 pr_err("Find failed: name: %s, kind: %d\n",
+tn[i].name, tn[i].kind);
+                 break;
+         }
+
+         if ((i & 0xfff) =3D=3D 0)
+                 touch_nmi_watchdog();
+ }
+ delta =3D ktime_get_ns() - t0;
+
+ pr_info("Consume total: %llu ms,  Per btf_type: %llu ns\n", delta /
+NSEC_PER_MSEC, delta / nr_names);
 
 
----
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
+Using binary search:
+[   40.381095] Begin to test ... total: 155010, nr_names: 87596
+[   40.493024] Consume total: 111 ms,  Per btf_type: 1275 ns
+
+Using linear search:
+[   56.464520] Begin to test ... total: 155003, nr_names: 87591
+[  213.344919] Consume total: 156880 ms,  Per btf_type: 1791054 ns
+
+> BTW, I have some comments below, but basically it looks good to me and
+> it passed my ftracetest.
+
+Thank you.
+
+>
+> Tested-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+>
+
+I will include this in v4.
+
+> >
+> > Signed-off-by: Donglin Peng <dolinux.peng@gmail.com>
+> > ---
+> > Changes in RFC v3:
+> >  - Sort the btf types during the build process in order to reduce memor=
+y usage
+> >    and decrease boot time.
+> >
+> > RFC v2:
+> >  - https://lore.kernel.org/all/20230909091646.420163-1-pengdonglin@sang=
+for.com.cn
+> > ---
+> >  include/linux/btf.h |   1 +
+> >  kernel/bpf/btf.c    | 160 +++++++++++++++++++++++++++++++++---
+> >  tools/lib/bpf/btf.c | 195 ++++++++++++++++++++++++++++++++++++++++++++
+> >  3 files changed, 345 insertions(+), 11 deletions(-)
+> >
+> > diff --git a/include/linux/btf.h b/include/linux/btf.h
+> > index f9e56fd12a9f..1dc1000a7dc9 100644
+> > --- a/include/linux/btf.h
+> > +++ b/include/linux/btf.h
+> > @@ -214,6 +214,7 @@ bool btf_is_kernel(const struct btf *btf);
+> >  bool btf_is_module(const struct btf *btf);
+> >  struct module *btf_try_get_module(const struct btf *btf);
+> >  u32 btf_nr_types(const struct btf *btf);
+> > +u32 btf_type_cnt(const struct btf *btf);
+> >  bool btf_member_is_reg_int(const struct btf *btf, const struct btf_typ=
+e *s,
+> >                          const struct btf_member *m,
+> >                          u32 expected_offset, u32 expected_size);
+> > diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+> > index 821063660d9f..5b7b464204bf 100644
+> > --- a/kernel/bpf/btf.c
+> > +++ b/kernel/bpf/btf.c
+> > @@ -262,6 +262,7 @@ struct btf {
+> >       u32 data_size;
+> >       refcount_t refcnt;
+> >       u32 id;
+> > +     u32 nr_types_sorted;
+> >       struct rcu_head rcu;
+> >       struct btf_kfunc_set_tab *kfunc_set_tab;
+> >       struct btf_id_dtor_kfunc_tab *dtor_kfunc_tab;
+> > @@ -542,23 +543,102 @@ u32 btf_nr_types(const struct btf *btf)
+> >       return total;
+> >  }
+> >
+> > -s32 btf_find_by_name_kind(const struct btf *btf, const char *name, u8 =
+kind)
+> > +u32 btf_type_cnt(const struct btf *btf)
+> > +{
+> > +     return btf->start_id + btf->nr_types;
+> > +}
+> > +
+> > +static s32 btf_find_by_name_bsearch(const struct btf *btf, const char =
+*name,
+> > +                                 int *start, int *end)
+> >  {
+> >       const struct btf_type *t;
+> > -     const char *tname;
+> > -     u32 i, total;
+> > +     const char *name_buf;
+> > +     int low, low_start, mid, high, high_end;
+> > +     int ret, start_id;
+> > +
+> > +     start_id =3D btf->base_btf ? btf->start_id : 1;
+> > +     low_start =3D low =3D start_id;
+> > +     high_end =3D high =3D start_id + btf->nr_types_sorted - 1;
+> > +
+> > +     while (low <=3D high) {
+> > +             mid =3D low + (high - low) / 2;
+> > +             t =3D btf_type_by_id(btf, mid);
+> > +             name_buf =3D btf_name_by_offset(btf, t->name_off);
+> > +             ret =3D strcmp(name, name_buf);
+> > +             if (ret > 0)
+> > +                     low =3D mid + 1;
+> > +             else if (ret < 0)
+> > +                     high =3D mid - 1;
+> > +             else
+> > +                     break;
+> > +     }
+> >
+> > -     total =3D btf_nr_types(btf);
+> > -     for (i =3D 1; i < total; i++) {
+> > -             t =3D btf_type_by_id(btf, i);
+> > -             if (BTF_INFO_KIND(t->info) !=3D kind)
+> > -                     continue;
+> > +     if (low > high)
+> > +             return -ESRCH;
+>
+> nit: -ENOENT ?
+
+Good, I will update it in the v4.
+
+>
+> >
+> > -             tname =3D btf_name_by_offset(btf, t->name_off);
+> > -             if (!strcmp(tname, name))
+> > -                     return i;
+> > +     if (start) {
+> > +             low =3D mid;
+> > +             while (low > low_start) {
+> > +                     t =3D btf_type_by_id(btf, low-1);
+> > +                     name_buf =3D btf_name_by_offset(btf, t->name_off)=
+;
+> > +                     if (strcmp(name, name_buf))
+> > +                             break;
+> > +                     low--;
+> > +             }
+> > +             *start =3D low;
+> >       }
+> >
+> > +     if (end) {
+> > +             high =3D mid;
+> > +             while (high < high_end) {
+> > +                     t =3D btf_type_by_id(btf, high+1);
+> > +                     name_buf =3D btf_name_by_offset(btf, t->name_off)=
+;
+> > +                     if (strcmp(name, name_buf))
+> > +                             break;
+> > +                     high++;
+> > +             }
+> > +             *end =3D high;
+> > +     }
+> > +
+> > +     return mid;
+> > +}
+> > +
+> > +s32 btf_find_by_name_kind(const struct btf *btf, const char *name, u8 =
+kind)
+> > +{
+> > +     const struct btf_type *t;
+> > +     const char *tname;
+> > +     int start, end;
+> > +     s32 id, total;
+> > +
+> > +     do {
+> > +             if (btf->nr_types_sorted) {
+> > +                     /* binary search */
+> > +                     id =3D btf_find_by_name_bsearch(btf, name, &start=
+, &end);
+> > +                     if (id > 0) {
+> > +                             while (start <=3D end) {
+> > +                                     t =3D btf_type_by_id(btf, start);
+> > +                                     if (BTF_INFO_KIND(t->info) =3D=3D=
+ kind)
+> > +                                             return start;
+> > +                                     start++;
+> > +                             }
+> > +                     }
+> > +             } else {
+> > +                     /* linear search */
+> > +                     total =3D btf_type_cnt(btf);
+> > +                     for (id =3D btf->base_btf ? btf->start_id : 1;
+> > +                             id < total; id++) {
+> > +                             t =3D btf_type_by_id(btf, id);
+> > +                             if (BTF_INFO_KIND(t->info) !=3D kind)
+> > +                                     continue;
+> > +
+> > +                             tname =3D btf_name_by_offset(btf, t->name=
+_off);
+> > +                             if (!strcmp(tname, name))
+> > +                                     return id;
+> > +                     }
+> > +             }
+> > +             btf =3D btf->base_btf;
+> > +     } while (btf);
+> > +
+> >       return -ENOENT;
+> >  }
+> >
+> > @@ -5979,6 +6059,56 @@ int get_kern_ctx_btf_id(struct bpf_verifier_log =
+*log, enum bpf_prog_type prog_ty
+> >       return kctx_type_id;
+> >  }
+> >
+> > +static int btf_check_sort(struct btf *btf, int start_id)
+> > +{
+> > +     int i, n, nr_names =3D 0;
+> > +
+> > +     n =3D btf_nr_types(btf);
+> > +     for (i =3D start_id; i < n; i++) {
+> > +             const struct btf_type *t;
+> > +             const char *name;
+> > +
+> > +             t =3D btf_type_by_id(btf, i);
+> > +             if (!t)
+> > +                     return -EINVAL;
+> > +
+> > +             name =3D btf_str_by_offset(btf, t->name_off);
+> > +             if (!str_is_empty(name))
+> > +                     nr_names++;
+>
+> else {
+>         goto out;
+> }
+> ? (*)
+>
+
+No need for that. The purpose of the for loop here is to count the
+number of btf_types
+with names. If the BTF file is sorted, the btf_types with names will
+be placed at the
+beginning, while the btf_types without names will be appended at the end.
+
+> > +     }
+> > +
+> > +     if (nr_names < 3)
+> > +             goto out;
+>
+> What does this `3` mean?
+
+It is just my own opinion. The binary search method does not offer any
+superiority if there
+ are only 1 or 2 btf_types with names.
+
+>
+> > +
+> > +     for (i =3D 0; i < nr_names - 1; i++) {
+> > +             const struct btf_type *t1, *t2;
+> > +             const char *s1, *s2;
+> > +
+> > +             t1 =3D btf_type_by_id(btf, start_id + i);
+> > +             if (!t1)
+> > +                     return -EINVAL;
+> > +
+> > +             s1 =3D btf_str_by_offset(btf, t1->name_off);
+> > +             if (str_is_empty(s1))
+> > +                     goto out;
+>
+> Why not continue? This case is expected, or the previous block (*)
+> must go `out` at that point.
+
+The purpose of the for loop here is to verify whether the first
+nr_name btf_types are sorted
+or not. If the BTF file is indeed sorted, btf_types with names will be
+placed at the beginning,
+and the number of btf_types with names is equal to nr_names. However,
+if a btf_type without a
+name is found within the first nr_name btf_types, it indicates that
+the BTF file is not sorted.
+
+>
+> > +
+> > +             t2 =3D btf_type_by_id(btf, start_id + i + 1);
+> > +             if (!t2)
+> > +                     return -EINVAL;
+> > +
+> > +             s2 =3D btf_str_by_offset(btf, t2->name_off);
+> > +             if (str_is_empty(s2))
+> > +                     goto out;
+>
+> Ditto.
+>
+
+Ditto.
+
+> > +
+> > +             if (strcmp(s1, s2) > 0)
+> > +                     goto out;
+> > +     }
+> > +
+> > +     btf->nr_types_sorted =3D nr_names;
+> > +out:
+> > +     return 0;
+> > +}
+> > +
+> >  BTF_ID_LIST(bpf_ctx_convert_btf_id)
+> >  BTF_ID(struct, bpf_ctx_convert)
+> >
+> > @@ -6029,6 +6159,10 @@ struct btf *btf_parse_vmlinux(void)
+> >       if (err)
+> >               goto errout;
+> >
+> > +     err =3D btf_check_sort(btf, 1);
+>
+> Why `1`?
+
+The start ID for the sorted btf_types in vmlinux's BTF is 1, as the
+btf_void is placed before
+the sorted types.
+
+>
+> > +     if (err)
+> > +             goto errout;
+> > +
+> >       /* btf_parse_vmlinux() runs under bpf_verifier_lock */
+> >       bpf_ctx_convert.t =3D btf_type_by_id(btf, bpf_ctx_convert_btf_id[=
+0]);
+> >
+> > @@ -6111,6 +6245,10 @@ static struct btf *btf_parse_module(const char *=
+module_name, const void *data, u
+> >       if (err)
+> >               goto errout;
+> >
+> > +     err =3D btf_check_sort(btf, btf_nr_types(base_btf));
+> > +     if (err)
+> > +             goto errout;
+> > +
+> >       btf_verifier_env_free(env);
+> >       refcount_set(&btf->refcnt, 1);
+> >       return btf;
+> > diff --git a/tools/lib/bpf/btf.c b/tools/lib/bpf/btf.c
+> > index 2d0840ef599a..93c1ab677bfa 100644
+> > --- a/tools/lib/bpf/btf.c
+> > +++ b/tools/lib/bpf/btf.c
+> > @@ -1,6 +1,9 @@
+> >  // SPDX-License-Identifier: (LGPL-2.1 OR BSD-2-Clause)
+> >  /* Copyright (c) 2018 Facebook */
+> >
+> > +#ifndef _GNU_SOURCE
+> > +#define _GNU_SOURCE
+> > +#endif
+> >  #include <byteswap.h>
+> >  #include <endian.h>
+> >  #include <stdio.h>
+> > @@ -3072,6 +3075,7 @@ static int btf_dedup_ref_types(struct btf_dedup *=
+d);
+> >  static int btf_dedup_resolve_fwds(struct btf_dedup *d);
+> >  static int btf_dedup_compact_types(struct btf_dedup *d);
+> >  static int btf_dedup_remap_types(struct btf_dedup *d);
+> > +static int btf_sort_type_by_name(struct btf *btf);
+> >
+> >  /*
+> >   * Deduplicate BTF types and strings.
+> > @@ -3270,6 +3274,11 @@ int btf__dedup(struct btf *btf, const struct btf=
+_dedup_opts *opts)
+> >               pr_debug("btf_dedup_remap_types failed:%d\n", err);
+> >               goto done;
+> >       }
+> > +     err =3D btf_sort_type_by_name(btf);
+> > +     if (err < 0) {
+> > +             pr_debug("btf_sort_type_by_name failed:%d\n", err);
+> > +             goto done;
+> > +     }
+> >
+> >  done:
+> >       btf_dedup_free(d);
+> > @@ -5212,3 +5221,189 @@ int btf_ext_visit_str_offs(struct btf_ext *btf_=
+ext, str_off_visit_fn visit, void
+> >
+> >       return 0;
+> >  }
+> > +
+> > +static int btf_compare_type_name(const void *a, const void *b, void *p=
+riv)
+> > +{
+> > +     struct btf *btf =3D (struct btf *)priv;
+> > +     __u32 ta =3D *(const __u32 *)a;
+> > +     __u32 tb =3D *(const __u32 *)b;
+> > +     struct btf_type *bta, *btb;
+> > +     const char *na, *nb;
+> > +
+> > +     bta =3D (struct btf_type *)(btf->types_data + ta);
+> > +     btb =3D (struct btf_type *)(btf->types_data + tb);
+> > +     na =3D btf__str_by_offset(btf, bta->name_off);
+> > +     nb =3D btf__str_by_offset(btf, btb->name_off);
+> > +
+> > +     return strcmp(na, nb);
+> > +}
+> > +
+> > +static int btf_compare_offs(const void *o1, const void *o2)
+> > +{
+> > +     __u32 *offs1 =3D (__u32 *)o1;
+> > +     __u32 *offs2 =3D (__u32 *)o2;
+> > +
+> > +     return *offs1 - *offs2;
+> > +}
+> > +
+> > +static inline __u32 btf_get_mapped_type(struct btf *btf, __u32 *maps, =
+__u32 type)
+> > +{
+> > +     if (type < btf->start_id)
+> > +             return type;
+> > +     return maps[type - btf->start_id] + btf->start_id;
+> > +}
+> > +
+> > +/*
+> > + * Collect and move the btf_types with names to the start location, an=
+d
+> > + * sort them in ascending order by name, so we can use the binary sear=
+ch
+> > + * method.
+> > + */
+> > +static int btf_sort_type_by_name(struct btf *btf)
+> > +{
+> > +     struct btf_type *bt;
+> > +     __u32 *new_type_offs =3D NULL, *new_type_offs_noname =3D NULL;
+> > +     __u32 *maps =3D NULL, *found_offs;
+> > +     void *new_types_data =3D NULL, *loc_data;
+> > +     int i, j, k, type_cnt, ret =3D 0, type_size;
+> > +     __u32 data_size;
+> > +
+> > +     if (btf_ensure_modifiable(btf))
+> > +             return libbpf_err(-ENOMEM);
+> > +
+> > +     type_cnt =3D btf->nr_types;
+> > +     data_size =3D btf->type_offs_cap * sizeof(*new_type_offs);
+> > +
+> > +     maps =3D (__u32 *)malloc(type_cnt * sizeof(__u32));
+> > +     if (!maps) {
+> > +             ret =3D -ENOMEM;
+> > +             goto err_out;
+> > +     }
+> > +
+> > +     new_type_offs =3D (__u32 *)malloc(data_size);
+>
+> nit:
+> new_type_offs =3D (__u32 *)calloc(btf->type_offs_cap, sizeof(*new_type_of=
+fs))
+
+Okay, I will update it in v4.
+
+>
+> > +     if (!new_type_offs) {
+> > +             ret =3D -ENOMEM;
+> > +             goto err_out;
+> > +     }
+> > +
+> > +     new_type_offs_noname =3D (__u32 *)malloc(data_size);
+> > +     if (!new_type_offs_noname) {
+> > +             ret =3D -ENOMEM;
+> > +             goto err_out;
+> > +     }
+> > +
+> > +     new_types_data =3D malloc(btf->types_data_cap);
+> > +     if (!new_types_data) {
+> > +             ret =3D -ENOMEM;
+> > +             goto err_out;
+> > +     }
+> > +
+> > +     memset(new_type_offs, 0, data_size);
+>
+> Then this memset is not required.
+
+Good, I will update it in v4.
+
+>
+> Thank you,
+>
+>
+> --
+> Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
