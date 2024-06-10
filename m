@@ -1,66 +1,66 @@
-Return-Path: <bpf+bounces-31725-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-31726-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 74FD39025F0
-	for <lists+bpf@lfdr.de>; Mon, 10 Jun 2024 17:46:00 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id E79F49025F2
+	for <lists+bpf@lfdr.de>; Mon, 10 Jun 2024 17:46:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 018511F224BC
-	for <lists+bpf@lfdr.de>; Mon, 10 Jun 2024 15:46:00 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D1BB31C21A02
+	for <lists+bpf@lfdr.de>; Mon, 10 Jun 2024 15:46:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 99C4714389B;
-	Mon, 10 Jun 2024 15:45:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 393571459F0;
+	Mon, 10 Jun 2024 15:45:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="VKAB8jIh"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ktG1mqw5"
 X-Original-To: bpf@vger.kernel.org
 Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 822D11422D5;
-	Mon, 10 Jun 2024 15:45:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3CFD914387E;
+	Mon, 10 Jun 2024 15:45:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718034312; cv=none; b=CAzh0576/cTK/XrqX82InxtXzuH/Pvo2XMOMx6kMAd0W83cmI5eE4YGMH8fveERZgBHb35MAqPySAdEAUV+j/BkToHW1YG8esOJ0Vw+ZlTEf6eA1oX5wwCs2h0EozyfamkT/jM5F726QOddpHntCvyOwdIeGWggqd/tifM241tg=
+	t=1718034312; cv=none; b=cqOYAtRED0db3O+1Wp0g4SA5Zh5y6mH1AlGVBAXjvxkdrhCRWqcLGQI3hNdVjRYYDn5YXnRs/W1+RJMwkpLK7asbNGO/m+SZUrhq+xrdfrA/ecQoPnJKoFsOY9RuHiImxtTNHbPq97j1+bXjb88gQZcaQ4ytxshyt3o+jdbTIfY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1718034312; c=relaxed/simple;
-	bh=1CJQhgdeQheVVIX/aqzTWo34167G3W6siXPTBXQpy9A=;
+	bh=77taguqMlOk9palmEIZHwzEPuGl4cXRwnQzwDICfdrM=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=GSz1Z8NIJJAyZtuyHRTrCmk+VI2u1gSqyUfLVEwiKbfP/qkdSQNQJJIa4oC/tZWM9kxGn+kj/xsmlJnhFd9yKEIihwg2Fdvim5zWDtBBITZxbOCzXp8iAl8hTPeQv6HXcRaVUZ6PAv3fXnB1lzNkcxXfM/tOTByMn+1F6M5hyFM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=VKAB8jIh; arc=none smtp.client-ip=198.175.65.12
+	 MIME-Version; b=CW2gOfReW99FyEn2P0H1C5F03DjpShkAxLkWcVceXsqmGfz1EOQD8CqqDCEcIvx9+W7wpdzOA9hfhFssrrsAajYmjEUVDWF9C7KbCavCZ216a4bwFFQ99h9/0mEYcpSDkyAQI5joQ4ITdOknY3c6prUcefJEBggLK8hpWWSK4Uk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=ktG1mqw5; arc=none smtp.client-ip=198.175.65.12
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1718034310; x=1749570310;
+  t=1718034311; x=1749570311;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=1CJQhgdeQheVVIX/aqzTWo34167G3W6siXPTBXQpy9A=;
-  b=VKAB8jIh8ycwOMgVFjKzHRRV7WPkLYAXdeFIlGsCd0TTi+Sb3UbKQbF3
-   tGFku7G+kVwTVjrP+jI74P3Z4ajiSzyLiHGuWEnDg507JsFF3bpAo144h
-   gy0hSStBeq30jEKfzgQYet0XCrRC55sn9uwLPshrc09plBpcPRFzCr6jQ
-   izXXsRmTEcvsI2gSEgLTerwwuPLmaODge17rzvUEH2s1D7CCdnQpK17so
-   cTQU10zvatgwklqKo2RlLuuU4rxmc65hdZy8kPr6v/wQLlq2JXU3oAAPh
-   5TEy224sTvfIFXO7TWTF5a9O6GwO1phk/SiyEC4yn1NaGXbTB86RIeNJB
-   Q==;
-X-CSE-ConnectionGUID: oRuzBhYmTBaCxQXchtgREQ==
-X-CSE-MsgGUID: fNFSYBdHS5yzjjTJ1RZH9w==
-X-IronPort-AV: E=McAfee;i="6600,9927,11099"; a="26119868"
+  bh=77taguqMlOk9palmEIZHwzEPuGl4cXRwnQzwDICfdrM=;
+  b=ktG1mqw5L1iYa4cKb9v7KEp82MHmR59PjwKhxKr1PUZ1gpR/kWNnwhJ7
+   GkMUNX5HomyEtbb4IzrfOf1gFIsJH3GOi1W4reSRj5BaTMJNgHk9g0Rs7
+   G9IyW4HplM+0O9/kamMhCmRbKr2WLXC1DK5uy9K7QpUTxHeSEkMGLZ+RZ
+   zPOXbuN54gTFv/Mst6Xx5hgCVzGf6hZFobjr7rNCBlmxPnOXl2ypBTyB1
+   Z20q4b1Fd1LDrgyMMjLGTIo0TPjZFyZQlVxARZRC9ZPD8f/rKg2aeF7DP
+   4uXyy6/grI9/qBaVLJWU3YOKt5+4sZh9tCFX2ofSC/XerBI/T1oz1EK48
+   w==;
+X-CSE-ConnectionGUID: Xg8+b+XOQJyhftiEc0YARw==
+X-CSE-MsgGUID: TgZBS62HT7mM4Ywd/ByQ3A==
+X-IronPort-AV: E=McAfee;i="6600,9927,11099"; a="26119872"
 X-IronPort-AV: E=Sophos;i="6.08,227,1712646000"; 
-   d="scan'208";a="26119868"
+   d="scan'208";a="26119872"
 Received: from fmviesa004.fm.intel.com ([10.60.135.144])
   by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Jun 2024 08:45:10 -0700
-X-CSE-ConnectionGUID: 6R3brtywTb2VXCSyRA/AmA==
-X-CSE-MsgGUID: JvFWDt5rTDmrEJjMGy02Uw==
+X-CSE-ConnectionGUID: uVaJisceRt+8/TSVPvmkGA==
+X-CSE-MsgGUID: vCchazQYRsOqkyP5o3Padg==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.08,227,1712646000"; 
-   d="scan'208";a="43679776"
+   d="scan'208";a="43679782"
 Received: from irvmail002.ir.intel.com ([10.43.11.120])
   by fmviesa004.fm.intel.com with ESMTP; 10 Jun 2024 08:45:05 -0700
 Received: from lincoln.igk.intel.com (lincoln.igk.intel.com [10.102.21.235])
-	by irvmail002.ir.intel.com (Postfix) with ESMTP id BB4B1312D7;
-	Mon, 10 Jun 2024 16:44:50 +0100 (IST)
+	by irvmail002.ir.intel.com (Postfix) with ESMTP id 0CFDD312D8;
+	Mon, 10 Jun 2024 16:44:52 +0100 (IST)
 From: Larysa Zaremba <larysa.zaremba@intel.com>
 To: intel-wired-lan@lists.osuosl.org
 Cc: Larysa Zaremba <larysa.zaremba@intel.com>,
@@ -81,9 +81,9 @@ Cc: Larysa Zaremba <larysa.zaremba@intel.com>,
 	magnus.karlsson@intel.com,
 	Michal Kubiak <michal.kubiak@intel.com>,
 	Igor Bagnucki <igor.bagnucki@intel.com>
-Subject: [PATCH iwl-net 2/3] ice: fix locking in ice_xsk_pool_setup()
-Date: Mon, 10 Jun 2024 17:37:14 +0200
-Message-ID: <20240610153716.31493-3-larysa.zaremba@intel.com>
+Subject: [PATCH iwl-net 3/3] ice: make NAPI setting code aware that rtnl-locked request is waiting
+Date: Mon, 10 Jun 2024 17:37:15 +0200
+Message-ID: <20240610153716.31493-4-larysa.zaremba@intel.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240610153716.31493-1-larysa.zaremba@intel.com>
 References: <20240610153716.31493-1-larysa.zaremba@intel.com>
@@ -95,92 +95,84 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-With ICE_CFG_BUSY PF state flag locking used in ice_xdp(), there is no need
-to lock with VSI state inside ice_xsk_pool_setup(). For robust
-synchronization the state between reset preparation and PF VSI rebuild has
-to be handled, in the same way as in ice_xdp_setup_prog().
+ice_vsi_rebuild() is a critical section in the reset path. Sometimes,
+rtnl-locked callbacks have to wait for it to finish. However, it is
+possible they will wait for an eternity, because the critical section
+contains calls to ice_queue_set_napi() that try to take rtnl_lock.
 
-Remove locking logic from ice_qp_dis() and ice_qp_ena() and skip those
-functions, if rebuild is pending.
+Make ice_queue_set_napi() aware that some rtnl-locked code is waiting and
+skip taking the lock, if this is the case.
 
-Fixes: 2d4238f55697 ("ice: Add support for AF_XDP")
+Fixes: 080b0c8d6d26 ("ice: Fix ASSERT_RTNL() warning during certain scenarios")
 Reviewed-by: Igor Bagnucki <igor.bagnucki@intel.com>
 Signed-off-by: Larysa Zaremba <larysa.zaremba@intel.com>
 ---
  drivers/net/ethernet/intel/ice/ice.h      |  1 +
- drivers/net/ethernet/intel/ice/ice_main.c |  2 +-
- drivers/net/ethernet/intel/ice/ice_xsk.c  | 12 ++----------
- 3 files changed, 4 insertions(+), 11 deletions(-)
+ drivers/net/ethernet/intel/ice/ice_lib.c  | 18 +++++++++++++++---
+ drivers/net/ethernet/intel/ice/ice_main.c |  5 ++++-
+ 3 files changed, 20 insertions(+), 4 deletions(-)
 
 diff --git a/drivers/net/ethernet/intel/ice/ice.h b/drivers/net/ethernet/intel/ice/ice.h
-index 701a61d791dd..76590cfcaf68 100644
+index 76590cfcaf68..7c1e24afa34b 100644
 --- a/drivers/net/ethernet/intel/ice/ice.h
 +++ b/drivers/net/ethernet/intel/ice/ice.h
-@@ -941,6 +941,7 @@ int ice_prepare_xdp_rings(struct ice_vsi *vsi, struct bpf_prog *prog,
- 			  enum ice_xdp_cfg cfg_type);
- int ice_destroy_xdp_rings(struct ice_vsi *vsi, enum ice_xdp_cfg cfg_type);
- void ice_map_xdp_rings(struct ice_vsi *vsi);
-+bool ice_rebuild_pending(struct ice_vsi *vsi);
- int
- ice_xdp_xmit(struct net_device *dev, int n, struct xdp_frame **frames,
- 	     u32 flags);
+@@ -307,6 +307,7 @@ enum ice_pf_state {
+ 	ICE_PHY_INIT_COMPLETE,
+ 	ICE_FD_VF_FLUSH_CTX,		/* set at FD Rx IRQ or timeout */
+ 	ICE_AUX_ERR_PENDING,
++	ICE_RTNL_WAITS_FOR_RESET,
+ 	ICE_STATE_NBITS		/* must be last */
+ };
+ 
+diff --git a/drivers/net/ethernet/intel/ice/ice_lib.c b/drivers/net/ethernet/intel/ice/ice_lib.c
+index 4774bcc4d5a8..a5dc6fc6e63d 100644
+--- a/drivers/net/ethernet/intel/ice/ice_lib.c
++++ b/drivers/net/ethernet/intel/ice/ice_lib.c
+@@ -2740,12 +2740,24 @@ ice_queue_set_napi(struct ice_vsi *vsi, unsigned int queue_index,
+ 	if (current_work() == &pf->serv_task ||
+ 	    test_bit(ICE_PREPARED_FOR_RESET, pf->state) ||
+ 	    test_bit(ICE_DOWN, pf->state) ||
+-	    test_bit(ICE_SUSPENDED, pf->state))
++	    test_bit(ICE_SUSPENDED, pf->state)) {
++		bool rtnl_held_here = true;
++
++		while (!rtnl_trylock()) {
++			if (test_bit(ICE_RTNL_WAITS_FOR_RESET, pf->state)) {
++				rtnl_held_here = false;
++				break;
++			}
++			usleep_range(1000, 2000);
++		}
+ 		__ice_queue_set_napi(vsi->netdev, queue_index, type, napi,
+-				     false);
+-	else
++				     true);
++		if (rtnl_held_here)
++			rtnl_unlock();
++	} else {
+ 		__ice_queue_set_napi(vsi->netdev, queue_index, type, napi,
+ 				     true);
++	}
+ }
+ 
+ /**
 diff --git a/drivers/net/ethernet/intel/ice/ice_main.c b/drivers/net/ethernet/intel/ice/ice_main.c
-index dc60d816a345..cd8be3c3b956 100644
+index cd8be3c3b956..37b3dd22cdc2 100644
 --- a/drivers/net/ethernet/intel/ice/ice_main.c
 +++ b/drivers/net/ethernet/intel/ice/ice_main.c
-@@ -2994,7 +2994,7 @@ static int ice_max_xdp_frame_size(struct ice_vsi *vsi)
-  * so it happens strictly before or after .ndo_bpf().
-  * In case it has happened before, we do not have anything attached to rings
-  */
--static bool ice_rebuild_pending(struct ice_vsi *vsi)
-+bool ice_rebuild_pending(struct ice_vsi *vsi)
- {
- 	return ice_is_reset_in_progress(vsi->back->state) &&
- 	       !vsi->rx_rings[0]->desc;
-diff --git a/drivers/net/ethernet/intel/ice/ice_xsk.c b/drivers/net/ethernet/intel/ice/ice_xsk.c
-index 4e2020ab0825..6c95bebd7777 100644
---- a/drivers/net/ethernet/intel/ice/ice_xsk.c
-+++ b/drivers/net/ethernet/intel/ice/ice_xsk.c
-@@ -163,7 +163,6 @@ static int ice_qp_dis(struct ice_vsi *vsi, u16 q_idx)
- 	struct ice_tx_ring *xdp_ring;
- 	struct ice_tx_ring *tx_ring;
- 	struct ice_rx_ring *rx_ring;
--	int timeout = 50;
- 	int fail = 0;
- 	int err;
- 
-@@ -175,13 +174,6 @@ static int ice_qp_dis(struct ice_vsi *vsi, u16 q_idx)
- 	xdp_ring = vsi->xdp_rings[q_idx];
- 	q_vector = rx_ring->q_vector;
- 
--	while (test_and_set_bit(ICE_CFG_BUSY, vsi->state)) {
--		timeout--;
--		if (!timeout)
--			return -EBUSY;
--		usleep_range(1000, 2000);
--	}
--
- 	synchronize_net();
- 	netif_trans_update(vsi->netdev);
- 	netif_carrier_off(vsi->netdev);
-@@ -251,7 +243,6 @@ static int ice_qp_ena(struct ice_vsi *vsi, u16 q_idx)
- 	synchronize_net();
- 	netif_tx_start_queue(netdev_get_tx_queue(vsi->netdev, q_idx));
- 	netif_carrier_on(vsi->netdev);
--	clear_bit(ICE_CFG_BUSY, vsi->state);
- 
- 	return fail;
- }
-@@ -379,7 +370,8 @@ int ice_xsk_pool_setup(struct ice_vsi *vsi, struct xsk_buff_pool *pool, u16 qid)
+@@ -3103,8 +3103,11 @@ static int ice_xdp(struct net_device *dev, struct netdev_bpf *xdp)
  		return -EINVAL;
  	}
  
--	if_running = netif_running(vsi->netdev) && ice_is_xdp_ena_vsi(vsi);
-+	if_running = !ice_rebuild_pending(vsi) &&
-+		     netif_running(vsi->netdev) && ice_is_xdp_ena_vsi(vsi);
+-	while (test_and_set_bit(ICE_CFG_BUSY, pf->state))
++	while (test_and_set_bit(ICE_CFG_BUSY, pf->state)) {
++		set_bit(ICE_RTNL_WAITS_FOR_RESET, pf->state);
+ 		usleep_range(1000, 2000);
++	}
++	clear_bit(ICE_RTNL_WAITS_FOR_RESET, pf->state);
  
- 	if (if_running) {
- 		struct ice_rx_ring *rx_ring = vsi->rx_rings[qid];
+ 	switch (xdp->command) {
+ 	case XDP_SETUP_PROG:
 -- 
 2.43.0
 
