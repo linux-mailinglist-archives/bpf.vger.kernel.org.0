@@ -1,170 +1,190 @@
-Return-Path: <bpf+bounces-31741-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-31742-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id DB93D9029C7
-	for <lists+bpf@lfdr.de>; Mon, 10 Jun 2024 22:12:48 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 80ABE9029EE
+	for <lists+bpf@lfdr.de>; Mon, 10 Jun 2024 22:27:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4F61F1F22AAC
-	for <lists+bpf@lfdr.de>; Mon, 10 Jun 2024 20:12:48 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 93D861C20CCF
+	for <lists+bpf@lfdr.de>; Mon, 10 Jun 2024 20:27:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6FFDA14F9FF;
-	Mon, 10 Jun 2024 20:12:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 785D447F60;
+	Mon, 10 Jun 2024 20:27:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b="LYwY4ug2"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="SRHo76G8"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yw1-f173.google.com (mail-yw1-f173.google.com [209.85.128.173])
+Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E27B14F131
-	for <bpf@vger.kernel.org>; Mon, 10 Jun 2024 20:12:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 52B98B65E
+	for <bpf@vger.kernel.org>; Mon, 10 Jun 2024 20:27:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718050350; cv=none; b=Eqg+2li87mMj0L9M/EANXsi9RpjX9ts+FsSJbDfnj57udddEwdflNUvoW+KRytYHDFU54v14mk1EFp4z086MACZy1HSepiFNMXtxJTaZgeHjAngW7CuKchwCvvj9ePkV8OzwcDU38B6PMDXIawLEzVkEQg5ICvzSMN0UH3dW/Rc=
+	t=1718051273; cv=none; b=mHkJTZ1YX/z57KXfGc7KtRLqm/51ekE7rxnAA7MSXJDTpMAHf/jZL4stA3KXZx9M0YlBL1NdojbcAEwyeIIteCVKvWsvODs+V08fZc2POumVBmjzSEQZuqfaqFec2HVvBMpJSLsw1PRGWJHY1wIsrU2UZ5g8LVTEC4jcbOdiHkw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718050350; c=relaxed/simple;
-	bh=b7+MwoWNMLPQ7YyhI/4+4s4P3K4STGUIbLhPZG0Mamc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=U1Ksp9aMobKGY5Nomh1ky6KiPYtSN150cpkubwM9YSQ/S0WiBGXOgi/DnELIcnwBBHtJqxZoHjJvujWFsQNDElFdhHe6QHBmqC+gi/3N28ErHv2shcjFCzAkGXG2gcRrFXC1yK+TNaQ+r7Wh4NAMG9NJ5DNsyuHlle92QUxaULY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com; spf=none smtp.mailfrom=toxicpanda.com; dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b=LYwY4ug2; arc=none smtp.client-ip=209.85.128.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=toxicpanda.com
-Received: by mail-yw1-f173.google.com with SMTP id 00721157ae682-62a2424ec39so49314717b3.1
-        for <bpf@vger.kernel.org>; Mon, 10 Jun 2024 13:12:29 -0700 (PDT)
+	s=arc-20240116; t=1718051273; c=relaxed/simple;
+	bh=cwWkUZKAuhIGDpe7REltLQeHigskgj2+wJiRW2BnWCY=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=oyp+G8CJu3P+MkFwFYPC1nD6NcbITdpherFXS5tnczVnuyJsXbESXVP3PtCAwjn+bj+oTrLLBXd4Z5ARw/xszBIbMZv/+syiHFzoKLrDwJfSu3WKl1LIL0Skf2oISqZIgreuYfsjJE1wzGW9/K6z9+YcXk9merQvZR4DSMtDMp0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=SRHo76G8; arc=none smtp.client-ip=209.85.128.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-421bb51d81aso3156045e9.3
+        for <bpf@vger.kernel.org>; Mon, 10 Jun 2024 13:27:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1718050348; x=1718655148; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=q8U88OhWZh1tCo+0WQ1tID8xLxoIwnJftDZHFtRwK3o=;
-        b=LYwY4ug2iL/vJ4DIUm0/Hp2MvpGURHFsHfCR8hKgvsmAqgzRPxBeFZzp5Tfo48EbCo
-         Euj3YFKE98R3xDK+TVi4X08MQrChZxoR0ZdwAIKYcBEyuT6J6pRA6MFIWpmGlK1QH6yk
-         ayaE24UINt0NKI07iU6nbvvP+ur4CK0DddjWE0Gtpl8JlrD2yRSechl/xjLYVx0XPb6G
-         i76retKit/NIZmraE8AuogV1B4ponmQt72v7gY3tzehh7ckEOuDJ8LHGOKzXVFo5n2E+
-         4LMkjHweMxF1v6LeN1NaZpvEMI8QBe5KxGttDTh645mywME2cc7oJs1j5M/rPYABPg7M
-         UNcA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1718050348; x=1718655148;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1718051269; x=1718656069; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=q8U88OhWZh1tCo+0WQ1tID8xLxoIwnJftDZHFtRwK3o=;
-        b=CXxdlMpM964S7dH8lEJxNLKOyyiVH3/Mk4yQnJ9jTag0Bra0iu7/o80mRDQRE/Ru2K
-         O4oYx2wnclPPzVk59n1TQn3THlNjVCUKQkazckHv3VlHLiC6JBrdVk+ZMhI1LyWtvfA1
-         BIO7JNwqPhlAw+LXvb4QTIOqT3Pi4/T1wq9DHxMxy6rwEypIAcyCmOKLMDLLlhByrrEi
-         yfT9gTKnOov2SQr26+q+6oYavw36skFLXamAxzEBqmwVAhO0M2/ZK5dMGA8D7BNwiUBd
-         ABydnGCwxe/CjtfRCxSZD5892GRgfYHOajDgRHB/7mGmcJMMqFpaVT+F74NI9BHwAru3
-         Bg0A==
-X-Forwarded-Encrypted: i=1; AJvYcCXGUj6s2ppTKDyn0B9TfeAZCoslKtjjub0cGx/oGlaHkjIXs4uIieX01xxKClF3P191A6q/+vSgBt7xLUBBuyQ4i3X7
-X-Gm-Message-State: AOJu0YzZnEvSdxxZ0X1rvrsiWyNxtF7I0mSO36o3THFXkf0g7dV7Np9B
-	z5tFIliTNZsetZ4/l8Ga+yDtIa9jzwapbeaACpiybJaBOtmWGLZEGDh6xsF2Ifx0Gr2P92AmAlU
-	dhkA=
-X-Google-Smtp-Source: AGHT+IHAq2uat/BxStlvycvWIMemf9chq6bKvr5RgwVh7JekY7oKEJ33MFsCJYBOa4s18l+17nIrDA==
-X-Received: by 2002:a81:ef0e:0:b0:61a:f206:bad6 with SMTP id 00721157ae682-62cd55f6755mr90104707b3.30.1718050348318;
-        Mon, 10 Jun 2024 13:12:28 -0700 (PDT)
-Received: from localhost (syn-076-182-020-124.res.spectrum.com. [76.182.20.124])
-        by smtp.gmail.com with ESMTPSA id 00721157ae682-62ccaef2825sm17372997b3.139.2024.06.10.13.12.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 10 Jun 2024 13:12:27 -0700 (PDT)
-Date: Mon, 10 Jun 2024 16:12:27 -0400
-From: Josef Bacik <josef@toxicpanda.com>
-To: Jonathan Calmels <jcalmels@3xx0.net>
-Cc: brauner@kernel.org, ebiederm@xmission.com,
-	Jonathan Corbet <corbet@lwn.net>, Paul Moore <paul@paul-moore.com>,
-	James Morris <jmorris@namei.org>,
-	"Serge E. Hallyn" <serge@hallyn.com>, KP Singh <kpsingh@kernel.org>,
-	Matt Bobrowski <mattbobrowski@google.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
-	Jiri Olsa <jolsa@kernel.org>, Luis Chamberlain <mcgrof@kernel.org>,
-	Kees Cook <kees@kernel.org>, Joel Granados <j.granados@samsung.com>,
-	John Johansen <john.johansen@canonical.com>,
-	David Howells <dhowells@redhat.com>,
-	Jarkko Sakkinen <jarkko@kernel.org>,
-	Stephen Smalley <stephen.smalley.work@gmail.com>,
-	Ondrej Mosnacek <omosnace@redhat.com>,
-	Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
-	containers@lists.linux.dev, linux-kernel@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org, linux-doc@vger.kernel.org,
-	linux-security-module@vger.kernel.org, bpf@vger.kernel.org,
-	apparmor@lists.ubuntu.com, keyrings@vger.kernel.org,
-	selinux@vger.kernel.org, linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH v2 0/4] Introduce user namespace capabilities
-Message-ID: <20240610201227.GD235772@perftesting>
-References: <20240609104355.442002-1-jcalmels@3xx0.net>
+        bh=KQwaRkxPFdr6YsHIO6ajnNImkxPQwBsKQj5uUc4mxdA=;
+        b=SRHo76G8um0ka2syMbZ/yddIsqLZ//xlZLa1qfcMfXKqIYAWzCPszSUR/h19hHRost
+         KT2lMWLobhSAxohBU8E9faFm6YFc/PY+VVxASecrPt7X+t2hjgoZA2wcEPNFcC+32YfQ
+         1p5626iwxjmkzXQL4NXVB6cz0/j8maM+ocWUyPbdJpwUuN3vSxTHHd/4Y0K53c9EQAJu
+         OBIhsn3OXD3zz4zDYXlaja7Hq3fNSYORmSNmAmyP+xYwUsVuxSpW8zpDqO6cs4BEAd0f
+         ZcgjDNf0iTZltww3Egnnj3V0ZMk4C2mVNf6URK0MvWNJPR+az+llwtK20fQd5gLa+miV
+         41Sg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1718051269; x=1718656069;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=KQwaRkxPFdr6YsHIO6ajnNImkxPQwBsKQj5uUc4mxdA=;
+        b=HW6YVDt6aJpqaWP3q5Xt+yZj2hJQUAGDPQkaYLgxcnyc+/U7b33z9uytN2rVbTCZEX
+         a7IjzjBmrBY2pGdE5Vcb4ObjTeTO6uh047G5KmHKDLqWXGFk/6wy9ea5DgZinSk7ufhr
+         DmwBZbXiTUcHnFbp7ohzDECJh9Pg5xParnryeJlmdubFMpENjM4jxzm1cgylMV3RWFbn
+         nRGX3U8MfJ5910TQhRO2MBia7K73AxkqaMXEDa/jNuJRxO9NrtYjw0lwA9Jhc2JGJjL5
+         YFD1e4ZdMmVNX5yAEc+YgYikHIMrP4OxXCDDd7L6lVfs+/oxipCgGRPoIbysVmHIkSh4
+         ewEQ==
+X-Gm-Message-State: AOJu0YzUPXmCxeWfUZDNquZJzFFYtu8VYJdkj6ECoYIkx5m/KQ2+DHm9
+	yK8cPikpDg7Z5StlGLollVjJ9lN6ZTyIyGc1edcexCFJ5kLil5S/DWbcE3iRNJqBN1WdoePjjoT
+	8OlVwv9T4LkNhkCJ2ktVlOGR0yCg=
+X-Google-Smtp-Source: AGHT+IHbcQ0VH7ajW9qYUD6pTcLqyIjVO6VXBnj3fK+i/2BmRVNaM1p/MKTZA5G8S2YwXnYLSg3lnnOHKolRaj6Rpf8=
+X-Received: by 2002:adf:fe51:0:b0:35f:bcc:98e4 with SMTP id
+ ffacd0b85a97d-35f0bcc9a59mr5962080f8f.9.1718051269363; Mon, 10 Jun 2024
+ 13:27:49 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240609104355.442002-1-jcalmels@3xx0.net>
+References: <20240608004446.54199-1-alexei.starovoitov@gmail.com>
+ <20240608004446.54199-3-alexei.starovoitov@gmail.com> <8ed1937f85f1f2b701ff70dd7b1429ffc9d250f6.camel@gmail.com>
+In-Reply-To: <8ed1937f85f1f2b701ff70dd7b1429ffc9d250f6.camel@gmail.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Mon, 10 Jun 2024 13:27:37 -0700
+Message-ID: <CAADnVQLHPX8X7WyrO8g-Gf-LwdbdNTyBk_gegAzofB4yyv+ERQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 2/4] bpf: Track delta between "linked" registers.
+To: Eduard Zingerman <eddyz87@gmail.com>
+Cc: bpf <bpf@vger.kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@kernel.org>, 
+	Kumar Kartikeya Dwivedi <memxor@gmail.com>, Kernel Team <kernel-team@fb.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Sun, Jun 09, 2024 at 03:43:33AM -0700, Jonathan Calmels wrote:
-> This patch series introduces a new user namespace capability set, as
-> well as some plumbing around it (i.e. sysctl, secbit, lsm support).
-> 
-> First patch goes over the motivations for this as well as prior art.
-> 
-> In summary, while user namespaces are a great success today in that they
-> avoid running a lot of code as root, they also expand the attack surface
-> of the kernel substantially which is often abused by attackers. 
-> Methods exist to limit the creation of such namespaces [1], however,
-> application developers often need to assume that user namespaces are
-> available for various tasks such as sandboxing. Thus, instead of
-> restricting the creation of user namespaces, we offer ways for userspace
-> to limit the capabilities granted to them.
-> 
-> Why a new capability set and not something specific to the userns (e.g.
-> ioctl_ns)?
-> 
->     1. We can't really expect userspace to patch every single callsite
->     and opt-in this new security mechanism. 
-> 
->     2. We don't necessarily want policies enforced at said callsites.
->     For example a service like systemd-machined or a PAM session need to
->     be able to place restrictions on any namespace spawned under it.
-> 
->     3. We would need to come up with inheritance rules, querying
->     capabilities, etc. At this point we're just reinventing capability
->     sets.
-> 
->     4. We can easily define interactions between capability sets, thus
->     helping with adoption (patch 2 is an example of this)
-> 
-> Some examples of how this could be leveraged in userspace:
-> 
->     - Prevent user from getting CAP_NET_ADMIN in user namespaces under SSH:
->         echo "auth optional pam_cap.so" >> /etc/pam.d/sshd
->         echo "!cap_net_admin $USER"     >> /etc/security/capability.conf
->         capsh --secbits=$((1 << 8)) -- -c /usr/sbin/sshd
-> 
->     - Prevent containers from ever getting CAP_DAC_OVERRIDE:
->         systemd-run -p CapabilityBoundingSet=~CAP_DAC_OVERRIDE \
->                     -p SecureBits=userns-strict-caps \
->                     /usr/bin/dockerd
->         systemd-run -p UserNSCapabilities=~CAP_DAC_OVERRIDE \
->                     /usr/bin/incusd
-> 
->     - Kernel could be vulnerable to CAP_SYS_RAWIO exploits, prevent it:
->         sysctl -w cap_bound_userns_mask=0x1fffffdffff
-> 
->     - Drop CAP_SYS_ADMIN for this shell and all the user namespaces below it:
->         bwrap --unshare-user --cap-drop CAP_SYS_ADMIN /bin/sh
-> 
+On Mon, Jun 10, 2024 at 11:32=E2=80=AFAM Eduard Zingerman <eddyz87@gmail.co=
+m> wrote:
+>
+> On Fri, 2024-06-07 at 17:44 -0700, Alexei Starovoitov wrote:
+> > From: Alexei Starovoitov <ast@kernel.org>
+> >
+> > Compilers can generate the code
+> >   r1 =3D r2
+> >   r1 +=3D 0x1
+> >   if r2 < 1000 goto ...
+> >   use knowledge of r2 range in subsequent r1 operations
+> >
+> > So remember constant delta between r2 and r1 and update r1 after 'if' c=
+ondition.
+> >
+> > Unfortunately LLVM still uses this pattern for loops with 'can_loop' co=
+nstruct:
+> > for (i =3D 0; i < 1000 && can_loop; i++)
+> >
+> > The "undo" pass was introduced in LLVM
+> > https://reviews.llvm.org/D121937
+> > to prevent this optimization, but it cannot cover all cases.
+> > Instead of fighting middle end optimizer in BPF backend teach the verif=
+ier
+> > about this pattern.
+>
+> I like this idea.
+> In theory it could be generalized to handle situations when LLVM
+> uses two counters in parallel:
+>
+> r0 =3D 0 // as an index
+> r1 =3D 0 // as a pointer
+> ...
+> r0 +=3D 1
+> r1 +=3D 8
 
-Where are the tests for this patchset?  I see you updated the bpf tests for the
-bpf lsm bits, but there's nothing to validate this new behavior or exercise the
-new ioctl you've added.  Thanks,
+I don't see how the verifier can associate r0 and r1.
+In this example r0 with be a scalar while
+r1 =3D ld_imm64 map
 
-Josef
+One reg will be counting loops.
+Another adding fixed offset to map value.
+
+> >
+> > Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+> > ---
+>
+> [...]
+>
+> > @@ -15088,13 +15130,43 @@ static bool try_match_pkt_pointers(const stru=
+ct bpf_insn *insn,
+> >  static void find_equal_scalars(struct bpf_verifier_state *vstate,
+> >                              struct bpf_reg_state *known_reg)
+> >  {
+> > +     struct bpf_reg_state fake_reg;
+> >       struct bpf_func_state *state;
+> >       struct bpf_reg_state *reg;
+> >
+> >       bpf_for_each_reg_in_vstate(vstate, state, reg, ({
+> > -             if (reg->type =3D=3D SCALAR_VALUE && reg->id =3D=3D known=
+_reg->id)
+> > +             if (reg->type !=3D SCALAR_VALUE || reg =3D=3D known_reg)
+> > +                     continue;
+> > +             if ((reg->id & ~BPF_ADD_CONST) !=3D (known_reg->id & ~BPF=
+_ADD_CONST))
+> > +                     continue;
+> > +             if ((reg->id & BPF_ADD_CONST) =3D=3D (known_reg->id & BPF=
+_ADD_CONST)) {
+> >                       copy_register_state(reg, known_reg);
+> > +             } else if ((reg->id & BPF_ADD_CONST) && reg->off) {
+> > +                     /* reg =3D known_reg; reg +=3D const */
+> > +                     copy_register_state(reg, known_reg);
+> > +
+> > +                     fake_reg.type =3D SCALAR_VALUE;
+> > +                     __mark_reg_known(&fake_reg, reg->off);
+> > +                     scalar32_min_max_add(reg, &fake_reg);
+> > +                     scalar_min_max_add(reg, &fake_reg);
+> > +                     reg->var_off =3D tnum_add(reg->var_off, fake_reg.=
+var_off);
+> > +                     reg->off =3D 0;
+> > +                     reg->id &=3D ~BPF_ADD_CONST;
+> > +             } else if ((known_reg->id & BPF_ADD_CONST) && known_reg->=
+off) {
+> > +                     /* reg =3D known_reg; reg -=3D const' */
+> > +                     copy_register_state(reg, known_reg);
+> > +
+> > +                     fake_reg.type =3D SCALAR_VALUE;
+> > +                     __mark_reg_known(&fake_reg, known_reg->off);
+> > +                     scalar32_min_max_sub(reg, &fake_reg);
+> > +                     scalar_min_max_sub(reg, &fake_reg);
+> > +                     reg->var_off =3D tnum_sub(reg->var_off, fake_reg.=
+var_off);
+> > +             }
+>
+> I think that copy_register_state logic is off here,
+> the copy overwrites reg->off before it is used to update the value.
+
+Right. Last minute refactoring got bad :(
+I had 'u32 off =3D reg->off' all along and then "refactored".
+
+> The following test is marked as safe for me, while it should not:
+
+Thanks for the test. Will incorporate.
 
