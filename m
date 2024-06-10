@@ -1,529 +1,136 @@
-Return-Path: <bpf+bounces-31704-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-31705-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4932E90201D
-	for <lists+bpf@lfdr.de>; Mon, 10 Jun 2024 13:06:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id CB97A902146
+	for <lists+bpf@lfdr.de>; Mon, 10 Jun 2024 14:09:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3A46E1C218AC
-	for <lists+bpf@lfdr.de>; Mon, 10 Jun 2024 11:06:54 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CD0401C203F7
+	for <lists+bpf@lfdr.de>; Mon, 10 Jun 2024 12:09:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B7BC79DDB;
-	Mon, 10 Jun 2024 11:06:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 13DC87E766;
+	Mon, 10 Jun 2024 12:09:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GVXFs51Y"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="laOP8BrV"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f41.google.com (mail-ej1-f41.google.com [209.85.218.41])
+Received: from mail-wm1-f52.google.com (mail-wm1-f52.google.com [209.85.128.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC0C278C9E;
-	Mon, 10 Jun 2024 11:06:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3049154650;
+	Mon, 10 Jun 2024 12:09:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718017602; cv=none; b=WaYlQMDRr0y8aevJIeXNoMgm2JcfSJ7uThad3LtnX2Elr3rIaAshHAI+yMgSi6DLouMiIlgjZ5KdbsKeqbxubUAO5PYwRv9i6bfZVNDRXZgns36Tr60utmdFyQYpiVWCPHd2Szm/FhlGmIeSrvNwCeDmhpUaJe7YPMrNnH4kCGo=
+	t=1718021346; cv=none; b=N8ItAHhP89KRx+VX4OwVHevdQUZcLjDD584QLLTq0AABXdslCMTmGeax9kq2oF00EQVvmhIsSKN4WG5VaQtXC6nZPNPhMh5n9t21DNUa77LcgM+5SXEEFwGczdm/VdA7P2QIdkbtc6Dx/N3AAE+O8RRtdJW6Ht5DIcMWjgEMJuk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718017602; c=relaxed/simple;
-	bh=eN89P4Gijgwbd1kZfDZOo9Byb5RugBJUfe2RaqfLcY0=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=BXfLAIsW5CmYDC5zlM7aUQ51tjibX+Y7NjEZrh6BJWayPDammsMHmbYM4fSTNTsCyZhhggpEyRJRcwyIF/vzMWLkjs6oEqXOYqtUptMqH7ETe6uzuiadIk7WEpl8vulX3K+dQfFmzw/Tf4rwpV6afk/xZnH/CC5OId8zwC/KFSk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=GVXFs51Y; arc=none smtp.client-ip=209.85.218.41
+	s=arc-20240116; t=1718021346; c=relaxed/simple;
+	bh=EkPqiitp/s+o/EIHQRHjGKUfe24uDcHdHqJVwdJjMIo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=XyWHKsvDFiIPDGtlA+ix+LGHbhF/xihbuWYmsnGSE1Y5CK+/yY7veO2m/OUevb4da2CPXaRPwBxUdI2d+uERBQgEgpg49XDpK6xpNQFYao0kiapdgEadu6Lq8k4UxQW9+IWWKNlp3sbUpIjcJfjB3JTNJD/cVdb4SPZXYP0vtyk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=laOP8BrV; arc=none smtp.client-ip=209.85.128.52
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f41.google.com with SMTP id a640c23a62f3a-a6ef8bf500dso222401066b.0;
-        Mon, 10 Jun 2024 04:06:40 -0700 (PDT)
+Received: by mail-wm1-f52.google.com with SMTP id 5b1f17b1804b1-42172ed3487so20280375e9.0;
+        Mon, 10 Jun 2024 05:09:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1718017599; x=1718622399; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=v/RJsnygqWaLtOBqetJ6C6fOKKEH8iBaTz+Irtp/U4Q=;
-        b=GVXFs51Yt4dUCs9Vf7mANaWZUu85lOAcLqNMUdgtbRYkJiTGYf6zzMSGxROYHYVEEM
-         zNvqJw87u5YmIiNTri8Dcw+9FGZNfQDUP95ofCIdbGFZP37LNRVq5QCC4dQE7UoswmZZ
-         U30b6foiw7X7YftJIwF8epdqgasMKmTRCePh4TsTTfBO7q50IDYQ3Aeqorje1yp0j3XW
-         4ZRBo+Ls6QCEjG6mixe9lKtAteZekOSJyq6PVyfb+hlrxos6JJzeBn/WHsS/nvnYVNWd
-         7zc4QgHR5tdL48Y1D6E/rpkEWsx/Ow1KUAEfrUnFzzc+iZYVkoE/IInpeWV65xLTD2B2
-         SkLQ==
+        d=gmail.com; s=20230601; t=1718021343; x=1718626143; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=apVqcXL9lrOzuOLGQh5x40UV8pu0NEr96vpgIcVU4iE=;
+        b=laOP8BrVOvSko+itgoI137lAEBsb76GvpqDdHXeZaMDUVCS00wBpk7PpCCUGVmUoGw
+         2OuctTVa+fQerbCzD4ivCseJcFj8O6vKGL1EeX9sMKydhf8/x9pxHJWv+NSYOqRcZ4l9
+         Z1OJygklxII/x9cTb8W17pFu1CDTCvnSuGiB9bCWmHLedtNwVUnxORW5t+m0H0NehOh1
+         Qsj0Bpwptrmv3L7o1SzLRru5rmjMUWTls4gK0zkozgaRcD5tAPxKgBvprjmvKAsE7BnM
+         hPP/68H/Nh08Ny3DNBjoNEB6sfWqsIHwpe/PW6Dm1ucayn55h1wp+UDIyNSyiqFZVIwS
+         P2Sw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1718017599; x=1718622399;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=v/RJsnygqWaLtOBqetJ6C6fOKKEH8iBaTz+Irtp/U4Q=;
-        b=Mma/Guv4BOrmPzEQK9AxYObwqBWKMOmnb/pX4VDcK86QwUakglNwLtP/EikZD2Sifm
-         3u1Ba3H/zqBuSyppftbu8LYkMuRM9NWFpUiHjQIeYAQHeQXGxoSsQeerBHqBHu1M/dsC
-         5byLehcTUdK1KTZusOFXCSsMHmW8UH2JI9AA68wB/O1kC4JQyjmAouavJuQfeXvMPAJh
-         De02QJUTySBtA6HL9qIpU7jMHhuBFtx1CxoUCcNu+qgAH8USVxQOk9kzTA1bxgKzxOpw
-         1GhFz5GZj+ooTCBTREe5/ZgcwYsd3ZiMuxalmf+crM488mp2f1s7jDGzgg1B9E9bsGT7
-         FcIg==
-X-Forwarded-Encrypted: i=1; AJvYcCXBhE1M5i7kCtSHUUAoPr2RXWI0UVNssl8zAcIHXhJm/W1dnrDwC5FCY/LaWGCGPN3PLgW09tIxdwdw/DXCfMZbOgJjGi+LDS14wiIW6CFI2Qw3kufVHAjiOQxIQtqtm4DVlzQov4fae5RNuz7OXVDz6f6qjbXO8CZCGDM3txmeK4bxsNx7
-X-Gm-Message-State: AOJu0YyzTKI875uypNr7Hw3Q3a5pK8MaYDiC4gVS6RnYFeWgmDnCCeNO
-	3pW4P1GK07ttPuR6IxPFIFDUEEU8B7PDKgQGjJCGA1KrRuug1xe4
-X-Google-Smtp-Source: AGHT+IHJB0mDHbzvs0d/HvBmKjQMT/69SEguC+92/PgSRWl+LReXxTJ6A0PHSsyRZkT8BmCzt+L8kg==
-X-Received: by 2002:a17:907:9723:b0:a6f:1f7b:6a8b with SMTP id a640c23a62f3a-a6f1f7b6be5mr163160566b.66.1718017598781;
-        Mon, 10 Jun 2024 04:06:38 -0700 (PDT)
-Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a6f20e40072sm94792566b.89.2024.06.10.04.06.37
+        d=1e100.net; s=20230601; t=1718021343; x=1718626143;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=apVqcXL9lrOzuOLGQh5x40UV8pu0NEr96vpgIcVU4iE=;
+        b=aydycfW3yDjWNBskR9vYSTJvr3hrDB8l6iBgt98cgnPW5+ppHJwZmerbe6MSkLqh7o
+         8uPEk4WQPT35JEflivrxsqSDBzyECMGCNcF37oQva/GIWQSEZII49LLAK/gWYjBLsFI1
+         gq2I96IjjH3dpZyMDgQ6SuHouHx7X/iu+05dxAGWMK7FBxAqhWDmYcW9z6LQByNuAzWT
+         +CWubVExtuJeTUFHKuqsT68i7cr/jLakvMrFb1cyuSXjVT38AKCmhtRM8lxO9dXXFoer
+         rI66JGduLwPDbVv7H9NMMzY6D+yu6p4JzRG1C6nJcpzRMlee1rWVzf7T5d0NnO5kYqLw
+         YLJA==
+X-Forwarded-Encrypted: i=1; AJvYcCXs+TPznGq20Qi9ImFGD32vX4Rju0LQ9ktLBLRFpxGpGKYfsw8v20rQq6DEA5+hJo9SQDZDXzB0n9lVszStESzGqkkPDPCnerJj14uy+bVXvK2va1vBM8Y9C6KQ0dV/NWg533gjUEzrIRf+Oq2DEOPfVoIpZPaG2MUA+Chjx4OjbA==
+X-Gm-Message-State: AOJu0Ywai3yQKYznctjb/Vrp8zRz/AEG1U4hHYadR6ItQ/e+SxMZlktF
+	0borWzHbZyVnKzyh8YmJ8rurzOA+it+2DktdNmTGsI7KhK4arvaL
+X-Google-Smtp-Source: AGHT+IFS34cqEsQzbUKkcie6x+4KgzOo9PFp7UFbb1ysTHKUIHpW5eU9L97m8xY99U5A2y3erqxQBQ==
+X-Received: by 2002:a05:600c:1d04:b0:421:7435:88d7 with SMTP id 5b1f17b1804b1-42174359fe8mr58915745e9.26.1718021343326;
+        Mon, 10 Jun 2024 05:09:03 -0700 (PDT)
+Received: from localhost ([2a00:23cc:d20f:ba01:bb66:f8b2:a0e8:6447])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-421c9d24b6csm37552125e9.30.2024.06.10.05.09.02
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 10 Jun 2024 04:06:38 -0700 (PDT)
-From: Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Mon, 10 Jun 2024 13:06:36 +0200
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-	Oleg Nesterov <oleg@redhat.com>
-Cc: Jiri Olsa <olsajiri@gmail.com>, Peter Zijlstra <peterz@infradead.org>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org,
-	Martin KaFai Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
-	Yonghong Song <yhs@fb.com>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@chromium.org>,
-	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org
-Subject: Re: [RFC bpf-next 01/10] uprobe: Add session callbacks to
- uprobe_consumer
-Message-ID: <ZmbePPIKqc6XuVjL@krava>
-References: <20240604200221.377848-1-jolsa@kernel.org>
- <20240604200221.377848-2-jolsa@kernel.org>
- <CAEf4BzbzgTzvnPRJ24gdhuxN02_w8iNNFn4URh0vEp-t69oPnA@mail.gmail.com>
- <20240605175619.GH25006@redhat.com>
- <ZmDPQH2uiPYTA_df@krava>
- <ZmHn43Af4Kwlxoyc@krava>
- <CAEf4BzaFcpqFc8w6dH5oOJNKsAXZjs-KCFAXLp8TMBtS5ooo4g@mail.gmail.com>
+        Mon, 10 Jun 2024 05:09:02 -0700 (PDT)
+Date: Mon, 10 Jun 2024 13:09:01 +0100
+From: Lorenzo Stoakes <lstoakes@gmail.com>
+To: "Liam R. Howlett" <Liam.Howlett@oracle.com>
+Cc: Suren Baghdasaryan <surenb@google.com>,
+	Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+	Vlastimil Babka <vbabka@suse.cz>, sidhartha.kumar@oracle.com,
+	Matthew Wilcox <willy@infradead.org>, linux-fsdevel@vger.kernel.org,
+	bpf@vger.kernel.org, linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH 1/5] mm/mmap: Correctly position vma_iterator in
+ __split_vma()
+Message-ID: <119b01ac-a57a-43cf-90ca-093e850c4b7e@lucifer.local>
+References: <20240531163217.1584450-1-Liam.Howlett@oracle.com>
+ <20240531163217.1584450-2-Liam.Howlett@oracle.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAEf4BzaFcpqFc8w6dH5oOJNKsAXZjs-KCFAXLp8TMBtS5ooo4g@mail.gmail.com>
+In-Reply-To: <20240531163217.1584450-2-Liam.Howlett@oracle.com>
 
-On Thu, Jun 06, 2024 at 09:52:39AM -0700, Andrii Nakryiko wrote:
-> On Thu, Jun 6, 2024 at 9:46 AM Jiri Olsa <olsajiri@gmail.com> wrote:
-> >
-> > On Wed, Jun 05, 2024 at 10:50:11PM +0200, Jiri Olsa wrote:
-> > > On Wed, Jun 05, 2024 at 07:56:19PM +0200, Oleg Nesterov wrote:
-> > > > On 06/05, Andrii Nakryiko wrote:
-> > > > >
-> > > > > so any such
-> > > > > limitations will cause problems, issue reports, investigation, etc.
-> > > >
-> > > > Agreed...
-> > > >
-> > > > > As one possible solution, what if we do
-> > > > >
-> > > > > struct return_instance {
-> > > > >     ...
-> > > > >     u64 session_cookies[];
-> > > > > };
-> > > > >
-> > > > > and allocate sizeof(struct return_instance) + 8 *
-> > > > > <num-of-session-consumers> and then at runtime pass
-> > > > > &session_cookies[i] as data pointer to session-aware callbacks?
-> > > >
-> > > > I too thought about this, but I guess it is not that simple.
-> > > >
-> > > > Just for example. Suppose we have 2 session-consumers C1 and C2.
-> > > > What if uprobe_unregister(C1) comes before the probed function
-> > > > returns?
-> > > >
-> > > > We need something like map_cookie_to_consumer().
-> > >
-> > > I guess we could have hash table in return_instance that gets 'consumer -> cookie' ?
-> >
-> > ok, hash table is probably too big for this.. I guess some solution that
-> > would iterate consumers and cookies made sure it matches would be fine
-> >
-> 
-> Yes, I was hoping to avoid hash tables for this, and in the common
-> case have no added overhead.
+On Fri, May 31, 2024 at 12:32:13PM -0400, Liam R. Howlett wrote:
+> The vma iterator may be left pointing to the newly created vma.  This
+> happens when inserting the new vma at the end of the old vma
+> (!new_below).
+>
+> The incorrect position in the vma iterator is not exposed currently
+> since the vma iterator is repositioned in the munmap path and is not
+> reused in any of the other paths.
+>
+> This has limited impact in the current code, but is required for future
+> changes.
+>
+> Fixes: b2b3b886738f ("mm: don't use __vma_adjust() in __split_vma()")
+> Signed-off-by: Liam R. Howlett <Liam.Howlett@oracle.com>
+> ---
+>  mm/mmap.c | 3 +++
+>  1 file changed, 3 insertions(+)
+>
+> diff --git a/mm/mmap.c b/mm/mmap.c
+> index 83b4682ec85c..31d464e6a656 100644
+> --- a/mm/mmap.c
+> +++ b/mm/mmap.c
+> @@ -2442,6 +2442,9 @@ static int __split_vma(struct vma_iterator *vmi, struct vm_area_struct *vma,
+>  	/* Success. */
+>  	if (new_below)
+>  		vma_next(vmi);
+> +	else
+> +		vma_prev(vmi);
+> +
+>  	return 0;
+>
+>  out_free_mpol:
+> --
+> 2.43.0
+>
 
-hi,
-here's first stab on that.. the change below:
-  - extends current handlers with extra argument rather than adding new
-    set of handlers
-  - store session consumers objects within return_instance object and
-  - iterate these objects ^^^ in handle_uretprobe_chain
+Looks good to me.
 
-I guess it could be still polished, but I wonder if this could
-be the right direction to do this.. thoughts? ;-)
+As Suren alludes to, I agree that it's important to comment to indicate
+that you want to move the iterator to point to the VMA that's been
+shrunk rather than the newly inserted VMA.
 
-thanks,
-jirka
-
-
----
-diff --git a/include/linux/uprobes.h b/include/linux/uprobes.h
-index f46e0ca0169c..4e40e8352eac 100644
---- a/include/linux/uprobes.h
-+++ b/include/linux/uprobes.h
-@@ -34,15 +34,19 @@ enum uprobe_filter_ctx {
- };
- 
- struct uprobe_consumer {
--	int (*handler)(struct uprobe_consumer *self, struct pt_regs *regs);
-+	int (*handler)(struct uprobe_consumer *self, struct pt_regs *regs,
-+			unsigned long *data);
- 	int (*ret_handler)(struct uprobe_consumer *self,
- 				unsigned long func,
--				struct pt_regs *regs);
-+				struct pt_regs *regs,
-+				unsigned long *data);
- 	bool (*filter)(struct uprobe_consumer *self,
- 				enum uprobe_filter_ctx ctx,
- 				struct mm_struct *mm);
- 
- 	struct uprobe_consumer *next;
-+	bool is_session;
-+	unsigned int id;
- };
- 
- #ifdef CONFIG_UPROBES
-@@ -80,6 +84,12 @@ struct uprobe_task {
- 	unsigned int			depth;
- };
- 
-+struct session_consumer {
-+	long cookie;
-+	unsigned int id;
-+	int rc;
-+};
-+
- struct return_instance {
- 	struct uprobe		*uprobe;
- 	unsigned long		func;
-@@ -88,6 +98,8 @@ struct return_instance {
- 	bool			chained;	/* true, if instance is nested */
- 
- 	struct return_instance	*next;		/* keep as stack */
-+	int			session_cnt;
-+	struct session_consumer	sc[1];		/* 1 for zero item marking the end */
- };
- 
- enum rp_check {
-diff --git a/kernel/events/uprobes.c b/kernel/events/uprobes.c
-index 2c83ba776fc7..cbd71dc06ef0 100644
---- a/kernel/events/uprobes.c
-+++ b/kernel/events/uprobes.c
-@@ -63,6 +63,8 @@ struct uprobe {
- 	loff_t			ref_ctr_offset;
- 	unsigned long		flags;
- 
-+	unsigned int		session_cnt;
-+
- 	/*
- 	 * The generic code assumes that it has two members of unknown type
- 	 * owned by the arch-specific code:
-@@ -750,11 +752,30 @@ static struct uprobe *alloc_uprobe(struct inode *inode, loff_t offset,
- 	return uprobe;
- }
- 
-+static void
-+uprobe_consumer_account(struct uprobe *uprobe, struct uprobe_consumer *uc)
-+{
-+	static unsigned int session_id;
-+
-+	if (uc->is_session) {
-+		uprobe->session_cnt++;
-+		uc->id = ++session_id ?: ++session_id;
-+	}
-+}
-+
-+static void
-+uprobe_consumer_unaccount(struct uprobe *uprobe, struct uprobe_consumer *uc)
-+{
-+	if (uc->is_session)
-+		uprobe->session_cnt--;
-+}
-+
- static void consumer_add(struct uprobe *uprobe, struct uprobe_consumer *uc)
- {
- 	down_write(&uprobe->consumer_rwsem);
- 	uc->next = uprobe->consumers;
- 	uprobe->consumers = uc;
-+	uprobe_consumer_account(uprobe, uc);
- 	up_write(&uprobe->consumer_rwsem);
- }
- 
-@@ -773,6 +794,7 @@ static bool consumer_del(struct uprobe *uprobe, struct uprobe_consumer *uc)
- 		if (*con == uc) {
- 			*con = uc->next;
- 			ret = true;
-+			uprobe_consumer_unaccount(uprobe, uc);
- 			break;
- 		}
- 	}
-@@ -1744,6 +1766,23 @@ static struct uprobe_task *get_utask(void)
- 	return current->utask;
- }
- 
-+static size_t ri_size(int session_cnt)
-+{
-+	struct return_instance *ri __maybe_unused;
-+
-+	return sizeof(*ri) + session_cnt * sizeof(ri->sc[0]);
-+}
-+
-+static struct return_instance *alloc_return_instance(int session_cnt)
-+{
-+	struct return_instance *ri;
-+
-+	ri = kzalloc(ri_size(session_cnt), GFP_KERNEL);
-+	if (ri)
-+		ri->session_cnt = session_cnt;
-+	return ri;
-+}
-+
- static int dup_utask(struct task_struct *t, struct uprobe_task *o_utask)
- {
- 	struct uprobe_task *n_utask;
-@@ -1756,11 +1795,11 @@ static int dup_utask(struct task_struct *t, struct uprobe_task *o_utask)
- 
- 	p = &n_utask->return_instances;
- 	for (o = o_utask->return_instances; o; o = o->next) {
--		n = kmalloc(sizeof(struct return_instance), GFP_KERNEL);
-+		n = alloc_return_instance(o->session_cnt);
- 		if (!n)
- 			return -ENOMEM;
- 
--		*n = *o;
-+		memcpy(n, o, ri_size(o->session_cnt));
- 		get_uprobe(n->uprobe);
- 		n->next = NULL;
- 
-@@ -1853,35 +1892,38 @@ static void cleanup_return_instances(struct uprobe_task *utask, bool chained,
- 	utask->return_instances = ri;
- }
- 
--static void prepare_uretprobe(struct uprobe *uprobe, struct pt_regs *regs)
-+static struct return_instance *
-+prepare_uretprobe(struct uprobe *uprobe, struct pt_regs *regs,
-+		  struct return_instance *ri, int session_cnt)
- {
--	struct return_instance *ri;
- 	struct uprobe_task *utask;
- 	unsigned long orig_ret_vaddr, trampoline_vaddr;
- 	bool chained;
- 
- 	if (!get_xol_area())
--		return;
-+		return ri;
- 
- 	utask = get_utask();
- 	if (!utask)
--		return;
-+		return ri;
- 
- 	if (utask->depth >= MAX_URETPROBE_DEPTH) {
- 		printk_ratelimited(KERN_INFO "uprobe: omit uretprobe due to"
- 				" nestedness limit pid/tgid=%d/%d\n",
- 				current->pid, current->tgid);
--		return;
-+		return ri;
- 	}
- 
--	ri = kmalloc(sizeof(struct return_instance), GFP_KERNEL);
--	if (!ri)
--		return;
-+	if (!ri) {
-+		ri = alloc_return_instance(session_cnt);
-+		if (!ri)
-+			return NULL;
-+	}
- 
- 	trampoline_vaddr = get_trampoline_vaddr();
- 	orig_ret_vaddr = arch_uretprobe_hijack_return_addr(trampoline_vaddr, regs);
- 	if (orig_ret_vaddr == -1)
--		goto fail;
-+		return ri;
- 
- 	/* drop the entries invalidated by longjmp() */
- 	chained = (orig_ret_vaddr == trampoline_vaddr);
-@@ -1899,7 +1941,7 @@ static void prepare_uretprobe(struct uprobe *uprobe, struct pt_regs *regs)
- 			 * attack from user-space.
- 			 */
- 			uprobe_warn(current, "handle tail call");
--			goto fail;
-+			return ri;
- 		}
- 		orig_ret_vaddr = utask->return_instances->orig_ret_vaddr;
- 	}
-@@ -1914,9 +1956,7 @@ static void prepare_uretprobe(struct uprobe *uprobe, struct pt_regs *regs)
- 	ri->next = utask->return_instances;
- 	utask->return_instances = ri;
- 
--	return;
-- fail:
--	kfree(ri);
-+	return NULL;
- }
- 
- /* Prepare to single-step probed instruction out of line. */
-@@ -2069,44 +2109,90 @@ static void handler_chain(struct uprobe *uprobe, struct pt_regs *regs)
- {
- 	struct uprobe_consumer *uc;
- 	int remove = UPROBE_HANDLER_REMOVE;
-+	struct session_consumer *sc = NULL;
-+	struct return_instance *ri = NULL;
- 	bool need_prep = false; /* prepare return uprobe, when needed */
- 
- 	down_read(&uprobe->register_rwsem);
--	for (uc = uprobe->consumers; uc; uc = uc->next) {
-+	if (uprobe->session_cnt) {
-+		ri = alloc_return_instance(uprobe->session_cnt);
-+		if (!ri)
-+			goto out;
-+	}
-+	for (uc = uprobe->consumers, sc = &ri->sc[0]; uc; uc = uc->next) {
- 		int rc = 0;
- 
- 		if (uc->handler) {
--			rc = uc->handler(uc, regs);
-+			rc = uc->handler(uc, regs, uc->is_session ? &sc->cookie : NULL);
- 			WARN(rc & ~UPROBE_HANDLER_MASK,
- 				"bad rc=0x%x from %ps()\n", rc, uc->handler);
- 		}
- 
--		if (uc->ret_handler)
-+		if (uc->is_session) {
-+			need_prep |= !rc;
-+			remove = 0;
-+			sc->id = uc->id;
-+			sc->rc = rc;
-+			sc++;
-+		} else if (uc->ret_handler) {
- 			need_prep = true;
-+		}
- 
- 		remove &= rc;
- 	}
- 
- 	if (need_prep && !remove)
--		prepare_uretprobe(uprobe, regs); /* put bp at return */
-+		ri = prepare_uretprobe(uprobe, regs, ri, uprobe->session_cnt); /* put bp at return */
-+	kfree(ri);
- 
- 	if (remove && uprobe->consumers) {
- 		WARN_ON(!uprobe_is_active(uprobe));
- 		unapply_uprobe(uprobe, current->mm);
- 	}
-+ out:
- 	up_read(&uprobe->register_rwsem);
- }
- 
-+static struct session_consumer *
-+consumer_find(struct session_consumer *sc, struct uprobe_consumer *uc)
-+{
-+	for (; sc && sc->id; sc++) {
-+		if (sc->id == uc->id)
-+			return sc;
-+	}
-+	return NULL;
-+}
-+
- static void
- handle_uretprobe_chain(struct return_instance *ri, struct pt_regs *regs)
- {
- 	struct uprobe *uprobe = ri->uprobe;
-+	struct session_consumer *sc, *tmp;
- 	struct uprobe_consumer *uc;
- 
- 	down_read(&uprobe->register_rwsem);
--	for (uc = uprobe->consumers; uc; uc = uc->next) {
--		if (uc->ret_handler)
--			uc->ret_handler(uc, ri->func, regs);
-+	for (uc = uprobe->consumers, sc = &ri->sc[0]; uc; uc = uc->next) {
-+		long *cookie = NULL;
-+		int rc = 0;
-+
-+		if (uc->is_session) {
-+			/*
-+			 * session_consumers are in order with uprobe_consumers,
-+			 * we just need to reflect that any uprobe_consumer could
-+			 * be removed or added
-+			 */
-+			tmp = consumer_find(sc, uc);
-+			if (tmp) {
-+				rc = tmp->rc;
-+				cookie = &tmp->cookie;
-+				sc = tmp + 1;
-+			} else {
-+				rc = 1;
-+			}
-+		}
-+
-+		if (!rc && uc->ret_handler)
-+			uc->ret_handler(uc, ri->func, regs, cookie);
- 	}
- 	up_read(&uprobe->register_rwsem);
- }
-diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-index f5154c051d2c..ae7c35379e4a 100644
---- a/kernel/trace/bpf_trace.c
-+++ b/kernel/trace/bpf_trace.c
-@@ -3329,7 +3329,8 @@ uprobe_multi_link_filter(struct uprobe_consumer *con, enum uprobe_filter_ctx ctx
- }
- 
- static int
--uprobe_multi_link_handler(struct uprobe_consumer *con, struct pt_regs *regs)
-+uprobe_multi_link_handler(struct uprobe_consumer *con, struct pt_regs *regs,
-+			  unsigned long *data)
- {
- 	struct bpf_uprobe *uprobe;
- 
-@@ -3338,7 +3339,8 @@ uprobe_multi_link_handler(struct uprobe_consumer *con, struct pt_regs *regs)
- }
- 
- static int
--uprobe_multi_link_ret_handler(struct uprobe_consumer *con, unsigned long func, struct pt_regs *regs)
-+uprobe_multi_link_ret_handler(struct uprobe_consumer *con, unsigned long func, struct pt_regs *regs,
-+			      unsigned long *data)
- {
- 	struct bpf_uprobe *uprobe;
- 
-diff --git a/kernel/trace/trace_uprobe.c b/kernel/trace/trace_uprobe.c
-index 8541fa1494ae..f7b17f08344c 100644
---- a/kernel/trace/trace_uprobe.c
-+++ b/kernel/trace/trace_uprobe.c
-@@ -88,9 +88,11 @@ static struct trace_uprobe *to_trace_uprobe(struct dyn_event *ev)
- static int register_uprobe_event(struct trace_uprobe *tu);
- static int unregister_uprobe_event(struct trace_uprobe *tu);
- 
--static int uprobe_dispatcher(struct uprobe_consumer *con, struct pt_regs *regs);
-+static int uprobe_dispatcher(struct uprobe_consumer *con, struct pt_regs *regs,
-+			     unsigned long *data);
- static int uretprobe_dispatcher(struct uprobe_consumer *con,
--				unsigned long func, struct pt_regs *regs);
-+				unsigned long func, struct pt_regs *regs,
-+				unsigned long *data);
- 
- #ifdef CONFIG_STACK_GROWSUP
- static unsigned long adjust_stack_addr(unsigned long addr, unsigned int n)
-@@ -1500,7 +1502,8 @@ trace_uprobe_register(struct trace_event_call *event, enum trace_reg type,
- 	}
- }
- 
--static int uprobe_dispatcher(struct uprobe_consumer *con, struct pt_regs *regs)
-+static int uprobe_dispatcher(struct uprobe_consumer *con, struct pt_regs *regs,
-+			     unsigned long *data)
- {
- 	struct trace_uprobe *tu;
- 	struct uprobe_dispatch_data udd;
-@@ -1530,7 +1533,8 @@ static int uprobe_dispatcher(struct uprobe_consumer *con, struct pt_regs *regs)
- }
- 
- static int uretprobe_dispatcher(struct uprobe_consumer *con,
--				unsigned long func, struct pt_regs *regs)
-+				unsigned long func, struct pt_regs *regs,
-+				unsigned long *data)
- {
- 	struct trace_uprobe *tu;
- 	struct uprobe_dispatch_data udd;
+Reviewed-by: Lorenzo Stoakes <lstoakes@gmail.com>
 
