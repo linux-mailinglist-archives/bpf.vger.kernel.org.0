@@ -1,172 +1,160 @@
-Return-Path: <bpf+bounces-31732-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-31733-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 338BE90287E
-	for <lists+bpf@lfdr.de>; Mon, 10 Jun 2024 20:19:20 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4BCB19028AC
+	for <lists+bpf@lfdr.de>; Mon, 10 Jun 2024 20:30:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C30171F2246C
-	for <lists+bpf@lfdr.de>; Mon, 10 Jun 2024 18:19:19 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4D0471C21532
+	for <lists+bpf@lfdr.de>; Mon, 10 Jun 2024 18:30:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4E13E137747;
-	Mon, 10 Jun 2024 18:19:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B89D14AD3F;
+	Mon, 10 Jun 2024 18:30:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=motorola.com header.i=@motorola.com header.b="Moz7MRho"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KnDYCI6w"
 X-Original-To: bpf@vger.kernel.org
-Received: from mx0a-00823401.pphosted.com (mx0a-00823401.pphosted.com [148.163.148.104])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f44.google.com (mail-wr1-f44.google.com [209.85.221.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5FEFB15A8;
-	Mon, 10 Jun 2024 18:19:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.148.104
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C46326AF6;
+	Mon, 10 Jun 2024 18:30:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718043551; cv=none; b=qe6hCwlZCb8+arJ/28aa8ANP/S8p3CC9jAm5Mfand8iU/wm3D0H3fYNaNUU6BbTCBjP2xBMTvFUIWrAAJVDgLg7VcAF2jSD7QMuNy8V2o8VdUGH5P+1kcWo0t3kTS/6s4vw1hLvfnWF6O/EUCWo24U0fisNR2A9AvIm+4ljlePo=
+	t=1718044246; cv=none; b=EnN21oqsWeH7VQtOglpo3hOjwkygRQ5/d76OqwAwTJLFFPV42NMQkf+SMBn4wueIvSS1NIkl5Mt5ufU1bx+A12HCbzTGmd2KyQT1PH898i6IormJrrwNuaJNlnBEGdMsg6t1Fnv7GTqoJQEwX7wW5qhrTVPNdacGqoYcrvcuEvo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718043551; c=relaxed/simple;
-	bh=iSlArSiy4r9V/ntgrh4SI4jK9M/oixVSelyA9EMIjfQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=p2cjuRyc5PqV4tSahZbBqFrxAmWDAQIFUPKZiIA5Y+LZYy4jkuApiHXbJIMQSByUAGocQkJPNZ5uhlAfzlLZDTSTMr3SXEj2qm9QkEZRxC6UsxQW3AaLpEadSEPJTf8bRTaC+Utef/86R5j8OqfO/YQbK5UBaUIwH+iJPPW27Ls=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=motorola.com; spf=pass smtp.mailfrom=motorola.com; dkim=pass (2048-bit key) header.d=motorola.com header.i=@motorola.com header.b=Moz7MRho; arc=none smtp.client-ip=148.163.148.104
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=motorola.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=motorola.com
-Received: from pps.filterd (m0355088.ppops.net [127.0.0.1])
-	by m0355088.ppops.net (8.18.1.2/8.18.1.2) with ESMTP id 45AAbPfO004869;
-	Mon, 10 Jun 2024 18:18:46 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=motorola.com; h=
-	cc:content-type:date:from:message-id:mime-version:subject:to; s=
-	DKIM202306; bh=2Gnp3PO7oU3dzU8H0CiRDGU9SqVqHXr7nHqbHwRrpoI=; b=M
-	oz7MRhosPGhg66J2FpX91d/Fd6iJDWcj9oOHohIQSaSGEFQB5hFH1O7eqTHa1rMJ
-	HYr89M1Di5KgHj8v43foF1qvcVWpqhbuexZLBJDZ4EvAiEbz73T9yClI/lcPr+VZ
-	7zwRRw+iVlhfmQL2in6kR5aR7+EDDLKFK0QYVKrHOyt5j+ZQ3DbAkTt1+TA7HTZk
-	Ky5piOrntaVrExD8EAJTgX7bmoI1ELAPr/ypx++GArwQlPf09L5YyxHqRiiPIcvf
-	mhSd3ECuulVM1VJyStjitFC1v4M5/39aks7RiUykZstBklIwzXOEe8G5jwYcXZUf
-	WKAZKSe+mBWWvidaUx5IQ==
-Received: from va32lpfpp03.lenovo.com ([104.232.228.23])
-	by m0355088.ppops.net (PPS) with ESMTPS id 3yn4ft2b9v-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 10 Jun 2024 18:18:45 +0000 (GMT)
-Received: from ilclmmrp02.lenovo.com (ilclmmrp02.mot.com [100.65.83.26])
-	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by va32lpfpp03.lenovo.com (Postfix) with ESMTPS id 4Vyg6X686lz4xlJP;
-	Mon, 10 Jun 2024 18:18:44 +0000 (UTC)
-Received: from ilclasset02 (ilclasset02.mot.com [100.64.49.13])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: mbland)
-	by ilclmmrp02.lenovo.com (Postfix) with ESMTPSA id 4Vyg6X4pfQz3p6jp;
-	Mon, 10 Jun 2024 18:18:44 +0000 (UTC)
-Date: Mon, 10 Jun 2024 13:18:43 -0500
-From: Maxwell Bland <mbland@motorola.com>
-To: "open list:BPF [GENERAL] (Safe Dynamic Programs and Tools)" <bpf@vger.kernel.org>
-Cc: Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
-        Yonghong Song <yonghong.song@linux.dev>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Zi Shen Lim <zlim.lnx@gmail.com>, Mark Rutland <mark.rutland@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Mark Brown <broonie@kernel.org>, linux-arm-kernel@lists.infradead.org,
-        open list <linux-kernel@vger.kernel.org>,
-        Josh Poimboeuf <jpoimboe@kernel.org>,
-        Puranjay Mohan <puranjay12@gmail.com>
-Subject: [PATCH bpf-next v5 0/3] Support kCFI + BPF on arm64
-Message-ID: <mafwhrai2nz3u4wn4fu72kvzjm6krs57klc3qqvd2sz2mham6d@x4ukf6xqp4f4>
+	s=arc-20240116; t=1718044246; c=relaxed/simple;
+	bh=bKZ7uXtHYV3lhrlpsqRdNO/3cBKQr8TOgCBnE+5IYDA=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=HfZS0S+yi9xNMp3DDoaGdPb32cVrA8Ra/eW9vyZ92P1UkWt/zznT2Mev2jD8kW4Xo7QGnlJIic5dUWTqTTIROGAULzQLwAEhoz7i0VEDV9AHouMmsTxu/7bhTR6/XYyxPRWCJ6TN4fj5uiOoTYaKdNTMJtvvS7Gobw9zgG5YMEs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=KnDYCI6w; arc=none smtp.client-ip=209.85.221.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f44.google.com with SMTP id ffacd0b85a97d-35f1c567ae4so1656549f8f.1;
+        Mon, 10 Jun 2024 11:30:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1718044243; x=1718649043; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=DHsuT5JGFFmWrXhZ4RDS1nh9UMmYpXpr9xPw7oqdTyA=;
+        b=KnDYCI6wpfpzlOT6XtBHCwvfTGSOE1eHUzxyxB4RChA1KDv9hc5vGpEbyGaIMJU78t
+         +646YiWT5dG29a3izcUwLQNOLStic2F9HevQk+HLGS8aukP8tFjqqfMUASsD01Z8bScQ
+         LNGaB/4rJx2lp+SeR1wBK0lAm/r7SuZRMfMZ005a8zXlElMYXGxDrn4HiFJm4QOUCrbx
+         F1SqotEgR3+nYuQ0TYtyj2w8Pe23hO1CgATvjuxFp/hIBzzTEzzdMrP7YUvG7hxTlUf8
+         IN9tZD5iQXDisqlDND6bqpkttREuwp3Ebn00sa8TLrrllpq4YKXZSyxOPxUkqIBKV3/A
+         rTXA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1718044243; x=1718649043;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=DHsuT5JGFFmWrXhZ4RDS1nh9UMmYpXpr9xPw7oqdTyA=;
+        b=Q/1xhedujZWauRSlLsiaBMLsmlVx4kanQM1uoKXZ4EnhS774UMOv7oIkfFOIDsqXm1
+         MhusTBT/1OB1xPcvFte+8LXw/Ya9hf09mmITZkD50ReQoLmdZNebcBMQkz0J9si8wZmI
+         aqR+6iI/+8Sh+5o6QJRhEeNVi4dp5Bcb3WCZRbxNeHzpmO0QBO8bNeNthHiWDBkwOXU9
+         0Q9yXZAfUTly4od1RdhXgAbTrpHeTXQ9vG03U2CLYx9dM1PLKqbdBQB6kyPE9lkvZ2lI
+         6VA6Iergxh1vZ5ACwoAdc1wyIgfVC6RIgm3zMNJ0WF44DV6hcaanfyPKufD/1wnThtVG
+         RbBw==
+X-Forwarded-Encrypted: i=1; AJvYcCUBDU0T32qiJf13MtK/LUVbfzLAgKCsYsvTsluoOsoADXIBYIoJMi8UYdisDGq2QNooXP0Gul69FRXSX4Ot8JIIamN5t4ZWAqFHV1YCKL+qKgX4lCg75MQjZ2oH5Caf0G8h
+X-Gm-Message-State: AOJu0Yx+c68yKx94fmayEKskMOsJ8mmVChfRcvcia+XKMwaF8EYbxd6g
+	k/kl+zqOSQhMgHKyYTZjdb8yZJUBpLLLAjW1FGgmgzdUjW0iSNnkTxbuChRgHAsEApEzUViRtOL
+	EOABppIHx/CRIKUyU4Dg5eGYlwXs=
+X-Google-Smtp-Source: AGHT+IHQ6RIrxcggXaRSeCcpDy6qrZYaK7XLe+3tzgpwN3xM9tNPkqttXMDvP2qT3KYHpNSkkOIyQpe1y3ZAyF5LDTA=
+X-Received: by 2002:a5d:59ae:0:b0:35f:2471:198a with SMTP id
+ ffacd0b85a97d-35f24711a69mr2707284f8f.4.1718044243149; Mon, 10 Jun 2024
+ 11:30:43 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Proofpoint-GUID: 6ZfICFZVn1vTS0dbMdV5CMaxemFOaXVN
-X-Proofpoint-ORIG-GUID: 6ZfICFZVn1vTS0dbMdV5CMaxemFOaXVN
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.680,FMLib:17.12.28.16
- definitions=2024-06-10_04,2024-06-10_01,2024-05-17_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 lowpriorityscore=0
- adultscore=0 clxscore=1015 bulkscore=0 spamscore=0 priorityscore=1501
- malwarescore=0 phishscore=0 suspectscore=0 mlxlogscore=999 impostorscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2405170001
- definitions=main-2406100138
+References: <cover.1717881178.git.dxu@dxuuu.xyz> <e172bf47f32c6e716322bc85bb84d78b1398bd7c.1717881178.git.dxu@dxuuu.xyz>
+In-Reply-To: <e172bf47f32c6e716322bc85bb84d78b1398bd7c.1717881178.git.dxu@dxuuu.xyz>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Mon, 10 Jun 2024 11:30:31 -0700
+Message-ID: <CAADnVQLE=XcpZ4SnW=NARG0D5Ya6iU1-1CayTVmArnxpSzWSFA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v4 08/12] bpf: verifier: Relax caller
+ requirements for kfunc projection type args
+To: Daniel Xu <dxu@dxuuu.xyz>
+Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, Jiri Olsa <olsajiri@gmail.com>, 
+	Quentin Monnet <quentin@isovalent.com>, Alan Maguire <alan.maguire@oracle.com>, 
+	Arnaldo Carvalho de Melo <acme@kernel.org>, Eddy Z <eddyz87@gmail.com>, 
+	John Fastabend <john.fastabend@gmail.com>, Martin KaFai Lau <martin.lau@linux.dev>, 
+	Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
+	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
+	bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
+	Kernel Team <kernel-team@meta.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Adds CFI checks to BPF dispatchers on aarch64.
+On Sat, Jun 8, 2024 at 2:16=E2=80=AFPM Daniel Xu <dxu@dxuuu.xyz> wrote:
+>
+> Currently, if a kfunc accepts a projection type as an argument (eg
+> struct __sk_buff *), the caller must exactly provide exactly the same
+> type with provable provenance.
+>
+> However in practice, kfuncs that accept projection types _must_ cast to
+> the underlying type before use b/c projection type layouts are
+> completely made up. Thus, it is ok to relax the verifier rules around
+> implicit conversions.
+>
+> We will use this functionality in the next commit when we align kfuncs
+> to user-facing types.
+>
+> Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
+> ---
+>  kernel/bpf/verifier.c | 10 +++++++++-
+>  1 file changed, 9 insertions(+), 1 deletion(-)
+>
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index 81a3d2ced78d..0808beca3837 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -11257,6 +11257,8 @@ static int process_kf_arg_ptr_to_btf_id(struct bp=
+f_verifier_env *env,
+>         bool strict_type_match =3D false;
+>         const struct btf *reg_btf;
+>         const char *reg_ref_tname;
+> +       bool taking_projection;
+> +       bool struct_same;
+>         u32 reg_ref_id;
+>
+>         if (base_type(reg->type) =3D=3D PTR_TO_BTF_ID) {
+> @@ -11300,7 +11302,13 @@ static int process_kf_arg_ptr_to_btf_id(struct b=
+pf_verifier_env *env,
+>
+>         reg_ref_t =3D btf_type_skip_modifiers(reg_btf, reg_ref_id, &reg_r=
+ef_id);
+>         reg_ref_tname =3D btf_name_by_offset(reg_btf, reg_ref_t->name_off=
+);
+> -       if (!btf_struct_ids_match(&env->log, reg_btf, reg_ref_id, reg->of=
+f, meta->btf, ref_id, strict_type_match)) {
+> +       struct_same =3D btf_struct_ids_match(&env->log, reg_btf, reg_ref_=
+id, reg->off, meta->btf, ref_id, strict_type_match);
+> +       /* If kfunc is accepting a projection type (ie. __sk_buff), it ca=
+nnot
+> +        * actually use it -- it must cast to the underlying type. So we =
+allow
+> +        * caller to pass in the underlying type.
+> +        */
+> +       taking_projection =3D !strcmp(ref_tname, "__sk_buff") && !strcmp(=
+reg_ref_tname, "sk_buff");
 
-E.g.
-	<bpf_dispatcher_*_func>:
-	paciasp
-	stp x29, x30, [sp, #-0x10]!
-	mov x29, sp
-	+ ldur w16, [x2, #-0x4]
-	+ movk w17, #0x1881
-	+ movk w17, #0xd942, lsl #16
-	+ cmp w16, w17
-	+ b.eq <bpf_dispatcher_*_func+0x24>
-	+ brk #0x8222
-	blr x2
-	ldp x29, x30, [sp], #0x10
-	autiasp
-	ret
+xdp_md/buff probably as well?
 
-Changes in v4->v5
-https://lore.kernel.org/all/wtb6czzpvtqq23t4g6hf7on257dtxzdb4fa4nuq3dtq32odmli@xoyyrtthafar/
-- Fix failing BPF selftests from misplaced variable declaration
+And with that share the code with btf_is_prog_ctx_type() ?
 
-Changes in v3->v4
-https://lore.kernel.org/all/fhdcjdzqdqnoehenxbipfaorseeamt3q7fbm7ghe6z5s2chif5@lrhtasolawud/
-- Fix authorship attribution.
-
-Changes in v2->v3:
-https://lore.kernel.org/all/20240324211518.93892-1-puranjay12@gmail.com/
-- Simplify cfi_get_func_hash to avoid needless failure case
-- Use DEFINE_CFI_TYPE as suggested by Mark Rutland
-
-Changes in v1->v2:
-https://lore.kernel.org/bpf/20240227151115.4623-1-puranjay12@gmail.com/
-- Rebased on latest bpf-next/master
-
-Mark Rutland (1):
-  cfi: add C CFI type macro
-
-Maxwell Bland (1):
-  arm64/cfi,bpf: Use DEFINE_CFI_TYPE in arm64
-
-Puranjay Mohan (1):
-  arm64/cfi,bpf: Support kCFI + BPF on arm64
-
- arch/arm64/include/asm/cfi.h    | 23 ++++++++++++++++++++++
- arch/arm64/kernel/alternative.c | 18 +++++++++++++++++
- arch/arm64/net/bpf_jit_comp.c   | 21 +++++++++++++++++---
- arch/riscv/kernel/cfi.c         | 34 ++------------------------------
- arch/x86/kernel/alternative.c   | 35 +++------------------------------
- include/linux/cfi_types.h       | 23 ++++++++++++++++++++++
- 6 files changed, 87 insertions(+), 67 deletions(-)
- create mode 100644 arch/arm64/include/asm/cfi.h
-
---
-
-Sorry for the extreme delay Puranjay and other maintainers on the
-submission for this. The past month I was on incident response rotation
-here at Moto and my hands were full with scripting build scanning steps
-and other product deployment nonsense. Better late than never, though,
-if these changes have not been merged yet. (-:
-
-Tested on a cortex-a76 qemu instance and self-tests are matching the
-baseline bpf-next success rate (Summary: 509/3700 PASSED, 77 SKIPPED, 37
-FAILED).
-
-Thanks for your review and regards,
-Maxwell
-
-2.39.2
-
+> +       if (!taking_projection && !struct_same) {
+>                 verbose(env, "kernel function %s args#%d expected pointer=
+ to %s %s but R%d has a pointer to %s %s\n",
+>                         meta->func_name, argno, btf_type_str(ref_t), ref_=
+tname, argno + 1,
+>                         btf_type_str(reg_ref_t), reg_ref_tname);
+> --
+> 2.44.0
+>
 
