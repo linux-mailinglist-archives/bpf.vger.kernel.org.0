@@ -1,212 +1,154 @@
-Return-Path: <bpf+bounces-31701-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-31702-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 04A62901CBF
-	for <lists+bpf@lfdr.de>; Mon, 10 Jun 2024 10:18:20 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9676A901D36
+	for <lists+bpf@lfdr.de>; Mon, 10 Jun 2024 10:43:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 76C7F1F216EC
-	for <lists+bpf@lfdr.de>; Mon, 10 Jun 2024 08:18:19 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8ABD41C2164C
+	for <lists+bpf@lfdr.de>; Mon, 10 Jun 2024 08:43:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 626AD6F2FA;
-	Mon, 10 Jun 2024 08:17:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9FF3C7319C;
+	Mon, 10 Jun 2024 08:42:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Qd4vuO7J"
+	dkim=pass (2048-bit key) header.d=3xx0.net header.i=@3xx0.net header.b="mnhLTPrt";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="oYdR8igH"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f44.google.com (mail-pj1-f44.google.com [209.85.216.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from flow1-smtp.messagingengine.com (flow1-smtp.messagingengine.com [103.168.172.136])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8370655885;
-	Mon, 10 Jun 2024 08:17:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E68B6F2F0;
+	Mon, 10 Jun 2024 08:42:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.136
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718007478; cv=none; b=au27ndr9o+I+rOwfzYOkavZmZ19dHgIDn6srQT5kXaQvoq85BPdmsU4wn41ppEvMEGIlXVwykep+XBnAHG2jfwTtf0n6JQ7tb1tzJtWRNku+A9lj3S42Kg/UhSIVws2tU5oi/eCuHKWKDtLZcOHwiPv/fR8EPyF/tMz7BROWix8=
+	t=1718008929; cv=none; b=o5pQs48g5zsm8nTh2s5B0+7sciSSQJmKMGNDpN5lR72vdbFlho7YIAZi6+LRMA3czgCGnY9dGBD4QjeI8y+rI8VHSY/OkPs2iFjQnXsrxQuPCX+m60SuzjNqXad1RD0YDNnLGCS4c1A4oY8hOlBsoja8zRnVIH89a0NZef9S5yA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718007478; c=relaxed/simple;
-	bh=pX55hZgAslFU347Mp/z056R6oguHdC5TccmaX2t/iog=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=J74TFdlnIBcYxsgW11rC9S5PhDia7b+ZuplXacEMvBsvwLloRU+yvTUBgfiqZH3gB5B6K9gjACErw7O8gxTUhh8HehBShgmmUCLXonHY8sNFMxriPX+jAhEXMTI3Zr499NbcLYKAppT2USE+aX+B/HZfKX4qvHljZOxNQgkKyfQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Qd4vuO7J; arc=none smtp.client-ip=209.85.216.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f44.google.com with SMTP id 98e67ed59e1d1-2c31144881eso372605a91.1;
-        Mon, 10 Jun 2024 01:17:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1718007476; x=1718612276; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=boO2l3vZN7nH3KvrAr9prlBUcFPwMQHcvTnj1oW/1V8=;
-        b=Qd4vuO7J7pOSzPSTR04IvrxjsOaAJQYOlOgb9umlg3/ECvlDW+6xQgzkGfNtck5Hbk
-         qZs3ED5sJroIpReIpJqODmixSLJ90bkH2QHXYOI0dwrO20DYYJXsyOXe2S3KtVy15UYn
-         UuxKKQGjYI031S5MmNLioFQbUzd3kmJYRrNzF+Rn9yXxHtKR5e7brna3wEWUK8JdkYtw
-         Vqin4HbPRldzYL/+HopnK23/XQQpdbYCRnOeQeFji15Y3WIOklPPHnErsi7neL1DH+Ys
-         rPDkfvL/+9yr6C3+nhx1XH91RsI8bgk8LBn30xtWluLIL9P/v1uf02IHOZdFtZfCqmLa
-         NkBA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1718007476; x=1718612276;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=boO2l3vZN7nH3KvrAr9prlBUcFPwMQHcvTnj1oW/1V8=;
-        b=EYqyJlXbIphDPvfgps06LMd5lmqmpFLD9vnnxdW/Sshd3j2DHgq0abH/uX59L7jiQV
-         BSaVI9vFrFFbmyYLal8qECY67lVjiAKAhAlFSxHtmZGp6taNdTb+Gddxwd7ysheQ1MhZ
-         bYhgqlODQ5yK3U6ba78i63Z7Dh1Ybt1Cjkr12V2bmKtz6x6JYhu48CmQUWyk0affBhMK
-         7Jy3fLuW7mmQ6GR0FqyOEXHjhsChbsKygdF9KsSiyMxxtFxJl44BaJuuw9drnnUkKciG
-         NJbQRtgbJXaQockdNAqcK4TefoH6X8evmxZ20zAy+zO+vK9FW132Q6+78ZUo0I3vma3o
-         c6sQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWfG/8ELR9vu0D4ezaUDuREOU9vtl9ou/NJMp7QaA0AKOvYQJfCRUohM9gRGB2Pomz29zpopyRG3esBMGduMFHRYCKqSrBDr1ZmEPVymus9Ci6D/jqrMqQ/v6568mTlGMQpoINJHR/3Ueu32Qj1vQ3gj9qvxqj0/O6xMD1GNtlzkQ==
-X-Gm-Message-State: AOJu0YyFQ/g/NO0HmaBaxnyr82Ff+GWBnLAH7LncE6P/HG8HiuqEA/5c
-	6tFVO37nhiv6IT/Qjl67IFOIKaB8HZleVZPlu/GPdkCVDNy7Vf7bx+OUirmUoeUKC3bPDEQPNGR
-	tCqiQcDiOo5Jr9iIW32gK5WB8eT8=
-X-Google-Smtp-Source: AGHT+IH0FNZaeJCNfSLD4WEifC4IPCYbk21g97wqXKFaiT0J77VYQN7/t7VgnP5Uc4iC2YUAA8yNQ8/3tWb10uQonKk=
-X-Received: by 2002:a17:90b:b15:b0:2c2:fe3d:3453 with SMTP id
- 98e67ed59e1d1-2c2fe3d3560mr2157855a91.18.1718007475751; Mon, 10 Jun 2024
- 01:17:55 -0700 (PDT)
+	s=arc-20240116; t=1718008929; c=relaxed/simple;
+	bh=ITgA5tjnrazsj2z8uUTCi7sXYM16+9a2OVtLAQMXods=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Relsxzy4uQyga+2a98GurNHHEQIEExo26YbVWohBMv+H7mKKVdz/Hpmv/8odHhLY4IZNe7E16gGqOobQWcB+vJBqlXanCysjfuaXuXcpF3z94peuEkDooGfRXdYSOdvJ38e8Yu+WOMR72csTV9H1Mbq3uX+Iz22IdUpp3m/hr1g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=3xx0.net; spf=pass smtp.mailfrom=3xx0.net; dkim=pass (2048-bit key) header.d=3xx0.net header.i=@3xx0.net header.b=mnhLTPrt; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=oYdR8igH; arc=none smtp.client-ip=103.168.172.136
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=3xx0.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=3xx0.net
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
+	by mailflow.nyi.internal (Postfix) with ESMTP id 5B03E200404;
+	Mon, 10 Jun 2024 04:42:06 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute2.internal (MEProxy); Mon, 10 Jun 2024 04:42:06 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=3xx0.net; h=cc
+	:cc:content-type:content-type:date:date:from:from:in-reply-to
+	:in-reply-to:message-id:mime-version:references:reply-to:subject
+	:subject:to:to; s=fm1; t=1718008926; x=1718012526; bh=qmk9dz8QY8
+	vVMsdJ1Kd+/af5+W3nNXWO20q8csDii3A=; b=mnhLTPrtZQ/DDGiawOwuJeaWat
+	64250584gAjf2J/Dh8JvewKGYb34oCQE7URqIZHKpzJUeYA1kKsjDnhkfUZX+E68
+	+8LVxRN9t/wJJjEEuCIuLof7r8VwRIZrZVHEAxubGvtTPuErvpSMPolZc6h/FBs6
+	TnUtSUmlc0OkbJmubq9zDokuTpz7ngnJl4EEexVQqOAqSn6pQo4Yp6x54OpvrcCE
+	XoIpGEw5oanL1CCEcLnD1Mbujxjb6oms1X2GanNYQEYDUDbSg8aqnlDuyXX+O/MN
+	PNOtsnmF7Ft5GaBeljHc9lHlaU2Wz+ihucK9sDes64ynJ1BHh+vrhTVwTgQQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm1; t=1718008926; x=1718012526; bh=qmk9dz8QY8vVMsdJ1Kd+/af5+W3n
+	NXWO20q8csDii3A=; b=oYdR8igHwhuxgPsbo+C1eL/H3iR7gJqPSOM/AbjIQpfK
+	67ktft+vuRVUKOaSvQRrky9qaOMVWGj9avRo7pDMQvDIUFwkzbpuOiDn6K/TcgJt
+	K0frIvAmuJWqDSWzdLA0kJ+/Mque4OK/hfemuDOAqZAWyceRSHkX5eUTbIyt8DYe
+	OhZixUDRh5ix2wgO28sZgvD7JW1Xe/+XTSGgkl9r6Q/yVMV6LyMXNCZhBqlzO2Wo
+	mWBL3VIwKNRUn2DZuAKHbw6ioQD7VWsp8Bn9Ad8sFqGX9pKA8tZ6n3tYRn9gmqbD
+	Z3JJFybCaAzTgVcMBgq/Sa50HuXv9Mh3IMoYALTfUA==
+X-ME-Sender: <xms:XrxmZvzZP7xbrkP_X1Z_DJfplTPafejtRtkJI4A43LClUzmSIHIS5w>
+    <xme:XrxmZnRUTkndK9sE_BuuYIUb3li2sZXgcdw5psio_zlMRycF1h7dtvtqc0gXr60x-
+    dYdIq0OVEdPTi7AuKY>
+X-ME-Received: <xmr:XrxmZpWFigCDMyF99Q0x1VukZuZF0pDyfj4v2qucOFZZZDNBIvxynahcR2xUygWLyodScN7TnSc7OL_2djL-qWE>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrfedutddgtdejucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvfevuffkfhggtggujgesthdtsfdttddtjeenucfhrhhomheplfhonhgr
+    thhhrghnucevrghlmhgvlhhsuceojhgtrghlmhgvlhhsseefgiigtddrnhgvtheqnecugg
+    ftrfgrthhtvghrnhepkeekteegfefgvdefgfefffeufeffjedvudeijeehjeehffekjeek
+    leffueelgffgnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrh
+    homhepjhgtrghlmhgvlhhsseefgiigtddrnhgvth
+X-ME-Proxy: <xmx:XrxmZpgqPk_6F3e5JQ18-ltyf9uNdIpk3jU47q9k4RC_A1m-HkSIAA>
+    <xmx:XrxmZhB3IOiTK8sDG3QzU35vcUkoWUzUhlt1H4t01NxV3RSUPw8VgA>
+    <xmx:XrxmZiKucST3S9pfjfKdDEsNV54urVKt3wVhxz_XrYt_KNl9GdSMGg>
+    <xmx:XrxmZgBCzxwwvZvceM4u8WKtEVlmeP_3n1PIWsMJ5HQgJ1N61m6WRg>
+    <xmx:XrxmZtzmO1peIdr1owfiir_hApCQU2o9fIR5wZQfJTTv79xrcvqQ4J7P>
+Feedback-ID: i76614979:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
+ 10 Jun 2024 04:42:02 -0400 (EDT)
+Date: Mon, 10 Jun 2024 01:47:13 -0700
+From: Jonathan Calmels <jcalmels@3xx0.net>
+To: "Serge E. Hallyn" <serge@hallyn.com>
+Cc: Andrew Morgan <morgan@kernel.org>, brauner@kernel.org,
+ 	ebiederm@xmission.com, Jonathan Corbet <corbet@lwn.net>,
+ 	Paul Moore <paul@paul-moore.com>, James Morris <jmorris@namei.org>,
+ KP Singh <kpsingh@kernel.org>,
+ 	Matt Bobrowski <mattbobrowski@google.com>,
+ Alexei Starovoitov <ast@kernel.org>,
+ 	Daniel Borkmann <daniel@iogearbox.net>,
+ Andrii Nakryiko <andrii@kernel.org>,
+ 	Martin KaFai Lau <martin.lau@linux.dev>,
+ Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
+ 	Yonghong Song <yonghong.song@linux.dev>,
+ John Fastabend <john.fastabend@gmail.com>,
+ 	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
+ Jiri Olsa <jolsa@kernel.org>, 	Luis Chamberlain <mcgrof@kernel.org>,
+ Kees Cook <kees@kernel.org>, 	Joel Granados <j.granados@samsung.com>,
+ John Johansen <john.johansen@canonical.com>,
+ 	David Howells <dhowells@redhat.com>,
+ Jarkko Sakkinen <jarkko@kernel.org>,
+ 	Stephen Smalley <stephen.smalley.work@gmail.com>,
+ Ondrej Mosnacek <omosnace@redhat.com>, 	Mykola Lysenko <mykolal@fb.com>,
+ Shuah Khan <shuah@kernel.org>, containers@lists.linux.dev,
+ 	linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+ linux-doc@vger.kernel.org, 	linux-security-module@vger.kernel.org,
+ bpf@vger.kernel.org, apparmor@lists.ubuntu.com,
+ 	keyrings@vger.kernel.org, selinux@vger.kernel.org,
+ linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH v2 1/4] capabilities: Add user namespace capabilities
+Message-ID: <6pwskrbtmxjy2ti3xabfslmupjhat7dhrnbftinzhxgxnsveum@5jq5l6ws7hls>
+References: <20240609104355.442002-1-jcalmels@3xx0.net>
+ <20240609104355.442002-2-jcalmels@3xx0.net>
+ <20240610015024.GA2182786@mail.hallyn.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240605002459.4091285-1-andrii@kernel.org> <20240605002459.4091285-4-andrii@kernel.org>
- <ZmOKMgZn_ki17UYM@gmail.com>
-In-Reply-To: <ZmOKMgZn_ki17UYM@gmail.com>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Mon, 10 Jun 2024 09:17:43 +0100
-Message-ID: <CAEf4BzYAQwX0AQ_fbcB9kVBj3vpx0-5pPPZNYKL4VjnX_eYKpg@mail.gmail.com>
-Subject: Re: [PATCH v3 3/9] fs/procfs: implement efficient VMA querying API
- for /proc/<pid>/maps
-To: Andrei Vagin <avagin@gmail.com>
-Cc: Andrii Nakryiko <andrii@kernel.org>, linux-fsdevel@vger.kernel.org, brauner@kernel.org, 
-	viro@zeniv.linux.org.uk, akpm@linux-foundation.org, 
-	linux-kernel@vger.kernel.org, bpf@vger.kernel.org, gregkh@linuxfoundation.org, 
-	linux-mm@kvack.org, liam.howlett@oracle.com, surenb@google.com, 
-	rppt@kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20240610015024.GA2182786@mail.hallyn.com>
 
-On Fri, Jun 7, 2024 at 11:31=E2=80=AFPM Andrei Vagin <avagin@gmail.com> wro=
-te:
->
-> On Tue, Jun 04, 2024 at 05:24:48PM -0700, Andrii Nakryiko wrote:
-> > /proc/<pid>/maps file is extremely useful in practice for various tasks
-> > involving figuring out process memory layout, what files are backing an=
-y
-> > given memory range, etc. One important class of applications that
-> > absolutely rely on this are profilers/stack symbolizers (perf tool bein=
-g one
-> > of them). Patterns of use differ, but they generally would fall into tw=
-o
-> > categories.
-> >
-> > In on-demand pattern, a profiler/symbolizer would normally capture stac=
-k
-> > trace containing absolute memory addresses of some functions, and would
-> > then use /proc/<pid>/maps file to find corresponding backing ELF files
-> > (normally, only executable VMAs are of interest), file offsets within
-> > them, and then continue from there to get yet more information (ELF
-> > symbols, DWARF information) to get human-readable symbolic information.
-> > This pattern is used by Meta's fleet-wide profiler, as one example.
-> >
-> > In preprocessing pattern, application doesn't know the set of addresses
-> > of interest, so it has to fetch all relevant VMAs (again, probably only
-> > executable ones), store or cache them, then proceed with profiling and
-> > stack trace capture. Once done, it would do symbolization based on
-> > stored VMA information. This can happen at much later point in time.
-> > This patterns is used by perf tool, as an example.
-> >
-> > In either case, there are both performance and correctness requirement
-> > involved. This address to VMA information translation has to be done as
-> > efficiently as possible, but also not miss any VMA (especially in the
-> > case of loading/unloading shared libraries). In practice, correctness
-> > can't be guaranteed (due to process dying before VMA data can be
-> > captured, or shared library being unloaded, etc), but any effort to
-> > maximize the chance of finding the VMA is appreciated.
-> >
-> > Unfortunately, for all the /proc/<pid>/maps file universality and
-> > usefulness, it doesn't fit the above use cases 100%.
-> >
-> > First, it's main purpose is to emit all VMAs sequentially, but in
-> > practice captured addresses would fall only into a smaller subset of al=
-l
-> > process' VMAs, mainly containing executable text. Yet, library would
-> > need to parse most or all of the contents to find needed VMAs, as there
-> > is no way to skip VMAs that are of no use. Efficient library can do the
-> > linear pass and it is still relatively efficient, but it's definitely a=
-n
-> > overhead that can be avoided, if there was a way to do more targeted
-> > querying of the relevant VMA information.
-> >
-> > Second, it's a text based interface, which makes its programmatic use f=
-rom
-> > applications and libraries more cumbersome and inefficient due to the
-> > need to handle text parsing to get necessary pieces of information. The
-> > overhead is actually payed both by kernel, formatting originally binary
-> > VMA data into text, and then by user space application, parsing it back
-> > into binary data for further use.
->
-> I was trying to solve all these issues in a more generic way:
-> https://lwn.net/Articles/683371/
->
+On Sun, Jun 09, 2024 at 08:50:24PM GMT, Serge E. Hallyn wrote:
+> On Sun, Jun 09, 2024 at 03:43:34AM -0700, Jonathan Calmels wrote:
+> > Attackers often rely on user namespaces to get elevated (yet confined)
+> > privileges in order to target specific subsystems (e.g. [1]). Distributions
+> 
+> I'd modify this to say "in order to target *bugs* in specific subsystems" :)
 
-Can you please provide a tl;dr summary of that effort?
+Ack
 
-> We definitely interested in this new interface to use it in CRIU.
->
-> <snip>
->
-> > +
-> > +     if (karg.vma_name_size) {
-> > +             size_t name_buf_sz =3D min_t(size_t, PATH_MAX, karg.vma_n=
-ame_size);
-> > +             const struct path *path;
-> > +             const char *name_fmt;
-> > +             size_t name_sz =3D 0;
-> > +
-> > +             get_vma_name(vma, &path, &name, &name_fmt);
-> > +
-> > +             if (path || name_fmt || name) {
-> > +                     name_buf =3D kmalloc(name_buf_sz, GFP_KERNEL);
-> > +                     if (!name_buf) {
-> > +                             err =3D -ENOMEM;
-> > +                             goto out;
-> > +                     }
-> > +             }
-> > +             if (path) {
-> > +                     name =3D d_path(path, name_buf, name_buf_sz);
-> > +                     if (IS_ERR(name)) {
-> > +                             err =3D PTR_ERR(name);
-> > +                             goto out;
->
-> It always fails if a file path name is longer than PATH_MAX.
->
-> Can we add a flag to indicate whether file names are needed to be
+> > This effectively mimics the inheritable set rules and means that, by
+> > default, only root in the user namespace can regain userns capabilities
+> > previously dropped:
+> 
+> Something about this last sentence feels wrong, but I'm not sure what
+> the best alternative would be.  As is, though, it makes it sound as though
+> root in the userns can always regain previously dropped capabilities, but
+> that's not true if dropped in ancestor ns, or if root also dropped the
+> bits from its bounding set (right?).
 
-It's already supported. Getting a VMA name is optional. See a big
-comment next to the vma_name_size field in the UAPI header. If
-vma_name_size is set to zero, VMA name is not retrieved at all,
-avoiding the overhead and this issue with PATH_MAX.
+Right, the wording is a little bit confusing here I admit.
+What I meant to say is that if a cap is dropped in a *given* namespace,
+then it can only be regained by root there. But yes, caps can never be
+regained from ancestors ns. I'll try to rephrase it.
 
-> resolved? In criu, we use special names like "vvar", "vdso", but we dump
-> files via /proc/pid/map_files.
->
-> > +                     }
-> > +                     name_sz =3D name_buf + name_buf_sz - name;
-> > +             } else if (name || name_fmt) {
-> > +                     name_sz =3D 1 + snprintf(name_buf, name_buf_sz, n=
-ame_fmt ?: "%s", name);
-> > +                     name =3D name_buf;
-> > +             }
-> > +             if (name_sz > name_buf_sz) {
-> > +                     err =3D -ENAMETOOLONG;
-> > +                     goto out;
-> > +             }
-> > +             karg.vma_name_size =3D name_sz;
-> > +     }
->
-> Thanks,
-> Andrei
+BTW, this is rather strict, but I think that's what we want right,
+something simple? Alternative would be to have a new cap masked off by
+default, but if granted to a userns, allows you to regain ancestors
+caps.
 
