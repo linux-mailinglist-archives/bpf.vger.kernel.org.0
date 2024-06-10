@@ -1,108 +1,189 @@
-Return-Path: <bpf+bounces-31752-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-31753-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 74AEC902AEB
-	for <lists+bpf@lfdr.de>; Mon, 10 Jun 2024 23:52:15 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 935E7902B43
+	for <lists+bpf@lfdr.de>; Tue, 11 Jun 2024 00:02:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E7A6FB21985
-	for <lists+bpf@lfdr.de>; Mon, 10 Jun 2024 21:52:12 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0E0A91F22C17
+	for <lists+bpf@lfdr.de>; Mon, 10 Jun 2024 22:02:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3228B823A3;
-	Mon, 10 Jun 2024 21:52:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 50F8E14F123;
+	Mon, 10 Jun 2024 22:02:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OZDHQQcN"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="QyE3dy4S"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f169.google.com (mail-pf1-f169.google.com [209.85.210.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 81CEA1879
-	for <bpf@vger.kernel.org>; Mon, 10 Jun 2024 21:52:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B87CC63D0;
+	Mon, 10 Jun 2024 22:02:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718056326; cv=none; b=JrDshV/Pangt04J9tMy4pXZu0LM6BNzuKaJt2E0TEPPsc3tkPcAHrjUF09CnncVW3dA1oJ0xxMY/Soj14AAkuHw7YsaH3aZJqu6OdokA1A8VLoWgQGJjVbFfTfEkacnxL0qPC8fnBYMtz4v83GqwSkb7JXUbnwRdJBs9NULsGYY=
+	t=1718056939; cv=none; b=GbKF52FXBESLPWW3aeXctyIwnbMDqccDpdNj8OjfYnXv09RPuNOw5uc46PyWslnekv2dkjRrAFW0uhH3/mdNmqiVlKx0weeKuvZ2kjdf4WAKYSlHwsj1DhaZHQBdLaFukJd6esdTTEUl2UCjkVFC4txTNLIhJvm0NzEVFcyBzRE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718056326; c=relaxed/simple;
-	bh=gNd0PvFBGnjiNlK3rFqt5Dyv6DQaEpymSyC4+Rwo4vQ=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=HHIo+XKkFY0C+2wIiBzpvht/LCZJUaxDDX3nZNNUfluqc2BWMrzB5KmxltiEDtVIWPdPLPKXKH4bP6n1/O/TzW19jMeLEZ7DQ23Tt8p6he7GDYxMh9JjDjR205LJgSzAUNK3so0KmVHe9NYf/SCBKNe37SMVB45UqGWlAGJMHoc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OZDHQQcN; arc=none smtp.client-ip=209.85.210.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f169.google.com with SMTP id d2e1a72fcca58-7042cb2abc8so1589283b3a.0
-        for <bpf@vger.kernel.org>; Mon, 10 Jun 2024 14:52:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1718056325; x=1718661125; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=gNd0PvFBGnjiNlK3rFqt5Dyv6DQaEpymSyC4+Rwo4vQ=;
-        b=OZDHQQcNh+6uDsMJMjSj3p2LDDYHjvxGsRwf4Z9MTuDTQsMaVEaEgGv9kURHJOmYFy
-         LFn5bw2/O93kTte+RqQOTai2/PUHijFgWYkEff8+s8+TMMtKOk0CwOJu2V6VkrRdlE0C
-         nPuiWRER1QkT68oZzlZ026EyxghsQ+5dCyDGgzBYnatxALpxatgkZA8WExC7dI2d8qqT
-         +ZeL6lzgqvGofq9xFmq1GIUnLiFQGLveiTbLoyrBVF/CA8pmKoxwazRWPoNs7xnpA3Qy
-         U/8B5zwCdrW6sk1r9d2hT3RdN9Q0bk6V/LCmuWf0lXBWlvBC9pg2uraYS9EzuV05fjzC
-         Ug/Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1718056325; x=1718661125;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=gNd0PvFBGnjiNlK3rFqt5Dyv6DQaEpymSyC4+Rwo4vQ=;
-        b=mAtTQDXOMGpBO+CrlJd9ZEaBt+2PLYO4s9G+AWtg8aop6uDtlExOx6esoH7CxIwrjO
-         pSTRMlBLiem7ztrqZ5Y3Mbvdh/QifHcGyVs+35xOZyYof5K92ypYaxdHEs8veExpCE+w
-         Xlc0KhUyW70VrC6oU3NJIOgDqigPO/CqbdIUol/wlAaMYrtvw4oxDCF+DN5zctiHjMNn
-         VrjvrH0Co7xW8jnqKeYHnv4cLwivmYtvCuM/ZCPoPOZuFb3K+uPgz/2Rzg9oWfLhiE8H
-         GNU3WLCHI5zCWcHfDjEkJ4x7ptQbeQkNQl2zRmuHHIOl4vxol2X0W3UWKnnt/vUjde4A
-         I3mA==
-X-Gm-Message-State: AOJu0YxQgcoXy2i1u76JZ1kgd7e8YzsXVOodrBsMqnIbkyTonEmkNf9H
-	CaZDwJi51ZW/XlO2IfbR6wJ40rxPAtaJterhCLu0dl/+N2xA1PBz
-X-Google-Smtp-Source: AGHT+IHxvTMZ+XzMCKTk9f7afAgvze9HOdH8EEkSYHT7rBxnm1//+6C2I7rXpU1AIk6fVOmsa9c/dQ==
-X-Received: by 2002:a05:6a20:7350:b0:1a7:aecd:9785 with SMTP id adf61e73a8af0-1b2f9a60732mr11614855637.25.1718056324534;
-        Mon, 10 Jun 2024 14:52:04 -0700 (PDT)
-Received: from [192.168.0.31] ([38.34.87.7])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7045993dc73sm2718326b3a.7.2024.06.10.14.52.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 10 Jun 2024 14:52:04 -0700 (PDT)
-Message-ID: <1afca090c23866f25a5b17ebb2df25171ea9c292.camel@gmail.com>
-Subject: Re: [PATCH bpf-next 2/4] bpf: Track delta between "linked"
- registers.
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: bpf <bpf@vger.kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
- Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau
- <martin.lau@kernel.org>, Kumar Kartikeya Dwivedi <memxor@gmail.com>, Kernel
- Team <kernel-team@fb.com>
-Date: Mon, 10 Jun 2024 14:51:59 -0700
-In-Reply-To: <CAADnVQLEGMvA_hNDZ4F-_ZBdbBR=ZYKmQ7cNayLOrYg2GSRJxw@mail.gmail.com>
-References: <20240608004446.54199-1-alexei.starovoitov@gmail.com>
-	 <20240608004446.54199-3-alexei.starovoitov@gmail.com>
-	 <8ed1937f85f1f2b701ff70dd7b1429ffc9d250f6.camel@gmail.com>
-	 <53a25fb040cdda5b794a5f1f5f6ddb73571df837.camel@gmail.com>
-	 <CAADnVQLEGMvA_hNDZ4F-_ZBdbBR=ZYKmQ7cNayLOrYg2GSRJxw@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.44.4-0ubuntu2 
+	s=arc-20240116; t=1718056939; c=relaxed/simple;
+	bh=MqAQpkevHGNOOFgJUiEdfPRWQVNm7nE45c3VrxEicIA=;
+	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
+	 Mime-Version:Content-Type; b=jMG1bhL1oXOCpb4kPQ/u42iFcjtr+Pg2h3+HSQcNXBVjl3H7LhfSAJlayds/w4YQqthgPGuHlJtfuf1yOaAVi1y2oavJQBDq6C5ZBdgne2z9WPwK7PjDBEoRNBjBTKyAEiDpWq7VyR/gkj10jxU0QuOqWWzE4ARSAGPFABi8Ttg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=QyE3dy4S; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3304FC2BBFC;
+	Mon, 10 Jun 2024 22:02:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1718056939;
+	bh=MqAQpkevHGNOOFgJUiEdfPRWQVNm7nE45c3VrxEicIA=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=QyE3dy4SuC3VRsPWts6pHstZn3YX31KuhAybYrIPKs9yDsBuc8E2afjL4TWoup+Vx
+	 fJ8TduCIsN4pgTs5G8dvxj/2xR6381diQc1Lrhwj6cfKuM6IOYtlX78K+4kfgpqtHy
+	 Yzcdcz7SOyWhf/Yq0MmWmYGQorvieRfXhWUqQl2RpFTfRTceDYMTPWQWQASJqgI7Na
+	 eabkoLgghbQ34Zbvh7bX7vknHTJjq8ZP/2e2eBg12DcGfnxmo77P2gxPQD0Y9XM/Gb
+	 YzmSPHOIX8Wxe0rX3EhbLpRDku2W8ydGL+zRdEuE18kIUcKsrCnlxA0izqpKtrUyoc
+	 lnVy4rK4tl4RA==
+Date: Tue, 11 Jun 2024 07:02:12 +0900
+From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To: Jiri Olsa <jolsa@kernel.org>
+Cc: Steven Rostedt <rostedt@goodmis.org>, Oleg Nesterov <oleg@redhat.com>,
+ Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann
+ <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
+ linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+ linux-api@vger.kernel.org, linux-man@vger.kernel.org, x86@kernel.org,
+ bpf@vger.kernel.org, Song Liu <songliubraving@fb.com>, Yonghong Song
+ <yhs@fb.com>, John Fastabend <john.fastabend@gmail.com>, Peter Zijlstra
+ <peterz@infradead.org>, Thomas Gleixner <tglx@linutronix.de>,
+ "Borislav Petkov (AMD)" <bp@alien8.de>, Ingo Molnar <mingo@redhat.com>,
+ Andy Lutomirski <luto@kernel.org>, "Edgecombe, Rick P"
+ <rick.p.edgecombe@intel.com>, Deepak Gupta <debug@rivosinc.com>
+Subject: Re: [PATCHv7 bpf-next 8/9] selftests/bpf: Add uretprobe shadow
+ stack test
+Message-Id: <20240611070212.79cef453d0615e3af5af1fb0@kernel.org>
+In-Reply-To: <20240523121149.575616-9-jolsa@kernel.org>
+References: <20240523121149.575616-1-jolsa@kernel.org>
+	<20240523121149.575616-9-jolsa@kernel.org>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Mon, 2024-06-10 at 13:31 -0700, Alexei Starovoitov wrote:
+On Thu, 23 May 2024 14:11:48 +0200
+Jiri Olsa <jolsa@kernel.org> wrote:
 
-[...]
+> Adding uretprobe shadow stack test that runs all existing
+> uretprobe tests with shadow stack enabled if it's available.
+> 
 
-> I missed mark_precise_scalar_ids() that needs to match
-> what find_equal_scalars() is doing.
->=20
-> What's broken in there?
+According to the document and sample code, this looks good to me.
 
-Sorry, missed this question, here is the link:
-https://lore.kernel.org/bpf/20240222005005.31784-3-eddyz87@gmail.com/
-TLDR: whole function is wrong (only handles a subset of possible situations=
-).
+Reviewed-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+
+Thanks,
+
+> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> ---
+>  .../selftests/bpf/prog_tests/uprobe_syscall.c | 60 +++++++++++++++++++
+>  1 file changed, 60 insertions(+)
+> 
+> diff --git a/tools/testing/selftests/bpf/prog_tests/uprobe_syscall.c b/tools/testing/selftests/bpf/prog_tests/uprobe_syscall.c
+> index 3ef324c2db50..fda456401284 100644
+> --- a/tools/testing/selftests/bpf/prog_tests/uprobe_syscall.c
+> +++ b/tools/testing/selftests/bpf/prog_tests/uprobe_syscall.c
+> @@ -9,6 +9,9 @@
+>  #include <linux/compiler.h>
+>  #include <linux/stringify.h>
+>  #include <sys/wait.h>
+> +#include <sys/syscall.h>
+> +#include <sys/prctl.h>
+> +#include <asm/prctl.h>
+>  #include "uprobe_syscall.skel.h"
+>  #include "uprobe_syscall_executed.skel.h"
+>  
+> @@ -297,6 +300,56 @@ static void test_uretprobe_syscall_call(void)
+>  	close(go[1]);
+>  	close(go[0]);
+>  }
+> +
+> +/*
+> + * Borrowed from tools/testing/selftests/x86/test_shadow_stack.c.
+> + *
+> + * For use in inline enablement of shadow stack.
+> + *
+> + * The program can't return from the point where shadow stack gets enabled
+> + * because there will be no address on the shadow stack. So it can't use
+> + * syscall() for enablement, since it is a function.
+> + *
+> + * Based on code from nolibc.h. Keep a copy here because this can't pull
+> + * in all of nolibc.h.
+> + */
+> +#define ARCH_PRCTL(arg1, arg2)					\
+> +({								\
+> +	long _ret;						\
+> +	register long _num  asm("eax") = __NR_arch_prctl;	\
+> +	register long _arg1 asm("rdi") = (long)(arg1);		\
+> +	register long _arg2 asm("rsi") = (long)(arg2);		\
+> +								\
+> +	asm volatile (						\
+> +		"syscall\n"					\
+> +		: "=a"(_ret)					\
+> +		: "r"(_arg1), "r"(_arg2),			\
+> +		  "0"(_num)					\
+> +		: "rcx", "r11", "memory", "cc"			\
+> +	);							\
+> +	_ret;							\
+> +})
+> +
+> +#ifndef ARCH_SHSTK_ENABLE
+> +#define ARCH_SHSTK_ENABLE	0x5001
+> +#define ARCH_SHSTK_DISABLE	0x5002
+> +#define ARCH_SHSTK_SHSTK	(1ULL <<  0)
+> +#endif
+> +
+> +static void test_uretprobe_shadow_stack(void)
+> +{
+> +	if (ARCH_PRCTL(ARCH_SHSTK_ENABLE, ARCH_SHSTK_SHSTK)) {
+> +		test__skip();
+> +		return;
+> +	}
+> +
+> +	/* Run all of the uretprobe tests. */
+> +	test_uretprobe_regs_equal();
+> +	test_uretprobe_regs_change();
+> +	test_uretprobe_syscall_call();
+> +
+> +	ARCH_PRCTL(ARCH_SHSTK_DISABLE, ARCH_SHSTK_SHSTK);
+> +}
+>  #else
+>  static void test_uretprobe_regs_equal(void)
+>  {
+> @@ -312,6 +365,11 @@ static void test_uretprobe_syscall_call(void)
+>  {
+>  	test__skip();
+>  }
+> +
+> +static void test_uretprobe_shadow_stack(void)
+> +{
+> +	test__skip();
+> +}
+>  #endif
+>  
+>  void test_uprobe_syscall(void)
+> @@ -322,4 +380,6 @@ void test_uprobe_syscall(void)
+>  		test_uretprobe_regs_change();
+>  	if (test__start_subtest("uretprobe_syscall_call"))
+>  		test_uretprobe_syscall_call();
+> +	if (test__start_subtest("uretprobe_shadow_stack"))
+> +		test_uretprobe_shadow_stack();
+>  }
+> -- 
+> 2.45.1
+> 
+
+
+-- 
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
