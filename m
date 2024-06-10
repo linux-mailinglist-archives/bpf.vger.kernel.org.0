@@ -1,136 +1,108 @@
-Return-Path: <bpf+bounces-31696-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-31697-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6BBAE901A30
-	for <lists+bpf@lfdr.de>; Mon, 10 Jun 2024 07:26:22 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 210F4901A34
+	for <lists+bpf@lfdr.de>; Mon, 10 Jun 2024 07:32:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 09B20281439
-	for <lists+bpf@lfdr.de>; Mon, 10 Jun 2024 05:26:21 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BCD941F218F9
+	for <lists+bpf@lfdr.de>; Mon, 10 Jun 2024 05:32:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 07D2ADDB8;
-	Mon, 10 Jun 2024 05:26:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 27974DDBB;
+	Mon, 10 Jun 2024 05:32:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="upNTFVPJ"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="nfJlAZtu"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-181.mta0.migadu.com (out-181.mta0.migadu.com [91.218.175.181])
+Received: from out-186.mta0.migadu.com (out-186.mta0.migadu.com [91.218.175.186])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 66416A935
-	for <bpf@vger.kernel.org>; Mon, 10 Jun 2024 05:26:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A2940AD53
+	for <bpf@vger.kernel.org>; Mon, 10 Jun 2024 05:32:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.186
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717997176; cv=none; b=OJBXg0uGJ9IrlcY4H9iBP7RSCRQXmHeptbXTrgwHdqVb9uQlo5cvctW6bvMmdHeoPlY2Wsazg8KCsZfKdG1oo/5YRdtV7WhoraNpoYlzpHP14lgmLfMFs4uYRhhlXkSZpkT2VWNAm7nRLcwme+zH7891hTAfO5vphAomzI4XfIs=
+	t=1717997535; cv=none; b=fUV79ATO9dZk1ozH5S4wet8IFQGiQVoA/DsTzf4KmKYBk1ZzQ1Q7eM1UggjrUONS43VpqM+1YeVdGuYBg0yYqvH5pCehYPuGcNGLxk0Dfy4hL5T6t9zIpWugFaGZVgAWIRY9rMw4zzTTaLS+i4xV2bYfkShd2YWq1vR3q5llIjY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717997176; c=relaxed/simple;
-	bh=6zuX/V8RLgMFnOt5VSB5bnff6Z2ic+zlgxbmWKHTFCU=;
+	s=arc-20240116; t=1717997535; c=relaxed/simple;
+	bh=8ojqdR6kozr5T/R8yd2tDtEx/begCjSEYJh2CWknw18=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ZrYHIcBAmGOGpm28l6t4dyd383bme4quh0v/vvbSDuU1+rknKi+FTYCb1CUEq9/8+wuNJboZyFhZUyizXqpPy22+QqMdasCCqtOR7r5XBM48t/WFPhNVdgQmurQ1ICAi1ZHz4mvYDKNTyjQ10ieyVteOTpgmsBw8lGSoElL/hy0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=upNTFVPJ; arc=none smtp.client-ip=91.218.175.181
+	 In-Reply-To:Content-Type; b=mGLfa2RkvLT2gyPVpt97T70+S5njGJmTAZ0cd356w0PEb6c+XjVxNx5FQGrxOG1BvsIpgYc5RyfHAc0upEdecVjU3/dNsEuzzYS8OGM+g1MfKuwT30+iCu6cVU1qR+H6zlozljgTse1wIDHHureLtXfYVwoXt2jyfdLJfeYijOM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=nfJlAZtu; arc=none smtp.client-ip=91.218.175.186
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Envelope-To: hffilwlqm@gmail.com
+X-Envelope-To: dev@der-flo.net
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1717997171;
+	t=1717997531;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=As73JymwY74P2zIpJZsw9dlM/B1K3ri5lWLEiUur7wE=;
-	b=upNTFVPJncwWAZukdHqnxELgEktHoM/CaQM9dd9QECd/ZazU+ZUEHc9vOvtwfDO5wo0Hug
-	W1D7v/h8qoZiTmLcPrshux2YMdhJuVno44cjfurgXE6ccKwHL3Vbi3JPVnvlcp/OdehcNf
-	kD/Kvm0DgAEcs/uuyyQQMVNMk09QK/E=
+	bh=tuHwydXR93Dwe8tYu2VTD3i/1sdTHguHwXbOvjF1V0Y=;
+	b=nfJlAZtuSdOXEBeOA8z51OlYThLGLPSEVuOWIg22HXGGytC6UZ9xJlnHbfbuApLIEpjmBm
+	kkY/+C5iazWeDTy8ZVGaxfaOtzLnJapiLZf5K2UXFn9ybJbbFBnqKaqIzZUxgQiV/pkcqR
+	u/9GHl+g5ZTc0S8VAG4jcpkhAlPLvXI=
 X-Envelope-To: bpf@vger.kernel.org
 X-Envelope-To: ast@kernel.org
 X-Envelope-To: daniel@iogearbox.net
-X-Envelope-To: kernel-patches-bot@fb.com
-Message-ID: <37e6a405-9a8f-4406-9238-b22c4a8b5e6c@linux.dev>
-Date: Sun, 9 Jun 2024 22:26:03 -0700
+X-Envelope-To: andrii@kernel.org
+X-Envelope-To: martin.lau@linux.dev
+X-Envelope-To: eddyz87@gmail.com
+X-Envelope-To: song@kernel.org
+X-Envelope-To: john.fastabend@gmail.com
+X-Envelope-To: kpsingh@kernel.org
+X-Envelope-To: sdf@google.com
+X-Envelope-To: haoluo@google.com
+X-Envelope-To: jolsa@kernel.org
+Message-ID: <83728982-d976-4b5b-b8cb-531ca61dba5a@linux.dev>
+Date: Sun, 9 Jun 2024 22:32:05 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next] bpf, verifier: Correct tail_call_reachable for
- bpf prog
+Subject: Re: [PATCH bpf-next] bpf: Return EINVAL instead of NULL for
+ map_lookup_elem of queue
 Content-Language: en-GB
-To: Leon Hwang <hffilwlqm@gmail.com>, bpf@vger.kernel.org
-Cc: ast@kernel.org, daniel@iogearbox.net, kernel-patches-bot@fb.com
-References: <20240609073100.42925-1-hffilwlqm@gmail.com>
+To: Florian Lehner <dev@der-flo.net>, bpf@vger.kernel.org
+Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+ martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org,
+ john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
+ haoluo@google.com, jolsa@kernel.org
+References: <20240608092912.11615-1-dev@der-flo.net>
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 From: Yonghong Song <yonghong.song@linux.dev>
-In-Reply-To: <20240609073100.42925-1-hffilwlqm@gmail.com>
+In-Reply-To: <20240608092912.11615-1-dev@der-flo.net>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 X-Migadu-Flow: FLOW_OUT
 
 
-On 6/9/24 12:31 AM, Leon Hwang wrote:
-> It's confusing to inspect 'prog->aux->tail_call_reachable' with drgn[0],
-> when bpf prog has tail call but 'tail_call_reachable' is false.
+On 6/8/24 2:29 AM, Florian Lehner wrote:
+> Programs should use map_peek_elem over map_lookup_elem for queues. NULL is
+> also not a valid queue return nor a proper error, that could be handled.
 >
-> This patch corrects 'tail_call_reachable' when bpf prog has tail call.
->
-> [0] https://github.com/osandov/drgn
->
-> Signed-off-by: Leon Hwang <hffilwlqm@gmail.com>
+> Signed-off-by: Florian Lehner <dev@der-flo.net>
+
+Acked-by: Yonghong Song <yonghong.song@linux.dev>
+
 > ---
->   kernel/bpf/verifier.c | 4 +++-
->   1 file changed, 3 insertions(+), 1 deletion(-)
+>   kernel/bpf/queue_stack_maps.c | 3 ++-
+>   1 file changed, 2 insertions(+), 1 deletion(-)
 >
-> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> index 81a3d2ced78d5..d7045676246a7 100644
-> --- a/kernel/bpf/verifier.c
-> +++ b/kernel/bpf/verifier.c
-> @@ -2982,8 +2982,10 @@ static int check_subprogs(struct bpf_verifier_env *env)
+> diff --git a/kernel/bpf/queue_stack_maps.c b/kernel/bpf/queue_stack_maps.c
+> index d869f51ea93a..85bead55024d 100644
+> --- a/kernel/bpf/queue_stack_maps.c
+> +++ b/kernel/bpf/queue_stack_maps.c
+> @@ -234,7 +234,8 @@ static long queue_stack_map_push_elem(struct bpf_map *map, void *value,
+>   /* Called from syscall or from eBPF program */
+>   static void *queue_stack_map_lookup_elem(struct bpf_map *map, void *key)
+>   {
+> -	return NULL;
+> +	/* The eBPF program should use map_peek_elem instead */
+> +	return ERR_PTR(-EINVAL);
+>   }
 >   
->   		if (code == (BPF_JMP | BPF_CALL) &&
->   		    insn[i].src_reg == 0 &&
-> -		    insn[i].imm == BPF_FUNC_tail_call)
-> +		    insn[i].imm == BPF_FUNC_tail_call) {
->   			subprog[cur_subprog].has_tail_call = true;
-> +			subprog[cur_subprog].tail_call_reachable = true;
-
-This tail_call_reachable is handled in jit. For example, in arch/x86/net/bpf_jit_comp.c:
-
-static void detect_reg_usage(struct bpf_insn *insn, int insn_cnt,
-                              bool *regs_used, bool *tail_call_seen)
-{
-         int i;
-
-         for (i = 1; i <= insn_cnt; i++, insn++) {
-                 if (insn->code == (BPF_JMP | BPF_TAIL_CALL))
-                         *tail_call_seen = true;
-                 if (insn->dst_reg == BPF_REG_6 || insn->src_reg == BPF_REG_6)
-                         regs_used[0] = true;
-                 if (insn->dst_reg == BPF_REG_7 || insn->src_reg == BPF_REG_7)
-                         regs_used[1] = true;
-                 if (insn->dst_reg == BPF_REG_8 || insn->src_reg == BPF_REG_8)
-                         regs_used[2] = true;
-                 if (insn->dst_reg == BPF_REG_9 || insn->src_reg == BPF_REG_9)
-                         regs_used[3] = true;
-         }
-}
-
-and
-
-         detect_reg_usage(insn, insn_cnt, callee_regs_used,
-                          &tail_call_seen);
-         
-         /* tail call's presence in current prog implies it is reachable */
-         tail_call_reachable |= tail_call_seen;
-
-I didn't check other architectures. If other arch is similar to x86 w.r.t.
-tail_call_reachable marking, your change looks good. But you should also
-make changes in jit to remove those redundent checking.
-
-> +		}
->   		if (BPF_CLASS(code) == BPF_LD &&
->   		    (BPF_MODE(code) == BPF_ABS || BPF_MODE(code) == BPF_IND))
->   			subprog[cur_subprog].has_ld_abs = true;
->
-> base-commit: 2c6987105026a4395935a3db665c54eb1bafe782
+>   /* Called from syscall or from eBPF program */
 
