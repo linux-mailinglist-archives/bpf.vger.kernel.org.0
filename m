@@ -1,115 +1,158 @@
-Return-Path: <bpf+bounces-31707-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-31717-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8186B9021A9
-	for <lists+bpf@lfdr.de>; Mon, 10 Jun 2024 14:30:27 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5BE4F902285
+	for <lists+bpf@lfdr.de>; Mon, 10 Jun 2024 15:16:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1E23628468C
-	for <lists+bpf@lfdr.de>; Mon, 10 Jun 2024 12:30:26 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 56F6A1C2118C
+	for <lists+bpf@lfdr.de>; Mon, 10 Jun 2024 13:16:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A8A481211;
-	Mon, 10 Jun 2024 12:30:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="Rkh5jNcX"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1CA15824AF;
+	Mon, 10 Jun 2024 13:16:46 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mout.web.de (mout.web.de [212.227.15.3])
+Received: from out03.mta.xmission.com (out03.mta.xmission.com [166.70.13.233])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 81F127FBA8;
-	Mon, 10 Jun 2024 12:30:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.3
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A73E4501B;
+	Mon, 10 Jun 2024 13:16:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=166.70.13.233
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718022607; cv=none; b=q0E9z5DX8sK3oE62OPzUpK2e0VPCFekXmAm+cx0oBdgWGgmGBc+6D2Yd6jpB1nswAGGBnOmkRzyhlMcmIRZv9iPmKj37BrY4urS0pYM0Z3/8jnZqbkwqJP+RqdgjkWi6woTM270Ub5fH0ddsCzMr8LYm4JwazJxZM1GqvbvnOGs=
+	t=1718025405; cv=none; b=AbRXtFhtAP3d4jIZ5YWz+14Kby8GPBB4BUYro2sZNj8UQavqs8qLQ6161lfPDBE/xoSmh+DVr2Oc+Gwnt/21haqLW8ff+/uewKlBYryT8Xen6XB/pK2d6svxIA7mpLT0iiuy6hxi0bvHj7mVwp3U/OiivD26OJuAev3JvyLxE6Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718022607; c=relaxed/simple;
-	bh=wuJQnRYB08ec6imUGRWGaKR53UgTGv9ukbD4T7WaEcg=;
-	h=Message-ID:Date:MIME-Version:To:Cc:References:Subject:From:
-	 In-Reply-To:Content-Type; b=f25W11wYbTzselwFyPXoHIzMfJG7zb+cTf1KF+XZ3Uj7XyMevq3DrXhL1DaTaYe17jdVDhmHjqmoPWFTN39a7s5ZAJd5Z/dVKxzMxkf/EyDO+6fHYkOYa3s7V9nkT01ef90RU21uflQFPWWsI0pwzgbhRxUfOoyOrPyRnNaOQF8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de; spf=pass smtp.mailfrom=web.de; dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b=Rkh5jNcX; arc=none smtp.client-ip=212.227.15.3
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=web.de;
-	s=s29768273; t=1718022496; x=1718627296; i=markus.elfring@web.de;
-	bh=D4Pv1t+P1y3mZ1KhtEA6vVUjt5e+QyYarpSPtOTxoLA=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:To:Cc:References:
-	 Subject:From:In-Reply-To:Content-Type:Content-Transfer-Encoding:
-	 cc:content-transfer-encoding:content-type:date:from:message-id:
-	 mime-version:reply-to:subject:to;
-	b=Rkh5jNcXIXoQTjWnF6EkIqPHSsd48v0//cmfBxu1+bDZPMtAUHbqywfNA5GmV37e
-	 Vo/YkHNlNCXLLhSwga933B8KPm3H5stqJb8jxs+XcGvgyh40zAcwD4lVsgLEYc0HY
-	 /SRvp4mbUqX8lKWX7yExtG5Pt4oRZwN5zQSppOBcAC1CZF0baXXR2YCmAULoJ7naW
-	 aovi2mfS8PE8MDER3bMTnldBjUmTNYWH6kJHgZ2WWcjm1MW4p59n7s6LLJBDaxSTi
-	 odIf7xa77dFD/AM3vIVIuWlGbloqbbO63/AMZiHhL0VqSWcnLMfOeVhx3PQBd8TWY
-	 fl7l94Qn3UO3NMmmGw==
-X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
-Received: from [192.168.178.21] ([94.31.83.95]) by smtp.web.de (mrweb006
- [213.165.67.108]) with ESMTPSA (Nemesis) id 1MTvvy-1rpb3S1aOA-00K8Ks; Mon, 10
- Jun 2024 14:28:16 +0200
-Message-ID: <f8dfa410-bce0-48fe-b3d1-19fb5f5768a8@web.de>
-Date: Mon, 10 Jun 2024 14:28:07 +0200
+	s=arc-20240116; t=1718025405; c=relaxed/simple;
+	bh=77k5rIMoIWHg6IseVGjYJC6hiieeMJ1RXLsTOo5sn9Q=;
+	h=From:To:Cc:References:Date:In-Reply-To:Message-ID:MIME-Version:
+	 Content-Type:Subject; b=lo9bYUA9nPyAd4qw/6n7qTJ7rBgTEijbFYdu7OmqgLYvob6eo0Lm1my5mCb17U8q4rJd/6k2aH6LbblQMWcxLMUGSn+2inSQINZOYGRitgnoAqC0Wutd8dVxar+NkQFenVHD8NaBUTt7/JmqrQ0xUX3P4/NeRUUv4iLOvrDtRjk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=xmission.com; spf=pass smtp.mailfrom=xmission.com; arc=none smtp.client-ip=166.70.13.233
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=xmission.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=xmission.com
+Received: from in01.mta.xmission.com ([166.70.13.51]:38392)
+	by out03.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.93)
+	(envelope-from <ebiederm@xmission.com>)
+	id 1sGeE1-007QxW-Ub; Mon, 10 Jun 2024 06:34:14 -0600
+Received: from ip68-227-168-167.om.om.cox.net ([68.227.168.167]:54200 helo=email.froward.int.ebiederm.org.xmission.com)
+	by in01.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.93)
+	(envelope-from <ebiederm@xmission.com>)
+	id 1sGeE0-00FROe-SU; Mon, 10 Jun 2024 06:34:13 -0600
+From: "Eric W. Biederman" <ebiederm@xmission.com>
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Yafang Shao <laoar.shao@gmail.com>,  Linus Torvalds
+ <torvalds@linux-foundation.org>,  linux-mm <linux-mm@kvack.org>,
+  Linux-Fsdevel <linux-fsdevel@vger.kernel.org>,  linux-trace-kernel
+ <linux-trace-kernel@vger.kernel.org>,  audit@vger.kernel.org,  LSM List
+ <linux-security-module@vger.kernel.org>,  selinux@vger.kernel.org,  bpf
+ <bpf@vger.kernel.org>,  Alexander Viro <viro@zeniv.linux.org.uk>,
+  Christian Brauner <brauner@kernel.org>,  Jan Kara <jack@suse.cz>,  Kees
+ Cook <keescook@chromium.org>
+References: <20240602023754.25443-1-laoar.shao@gmail.com>
+	<20240602023754.25443-2-laoar.shao@gmail.com>
+	<87ikysdmsi.fsf@email.froward.int.ebiederm.org>
+	<CALOAHbAASdjLjfDv5ZH7uj=oChKE6iYnwjKFMu6oabzqfs2QUw@mail.gmail.com>
+	<CAADnVQJ_RPg_xTjuO=+3G=4auZkS-t-F2WTs18rU2PbVdJVbdQ@mail.gmail.com>
+	<874jabdygo.fsf@email.froward.int.ebiederm.org>
+	<CAADnVQ+9T4n=ZhNMd57qfu2w=VqHM8Dzx-7UAAinU5MoORg63w@mail.gmail.com>
+Date: Mon, 10 Jun 2024 07:34:01 -0500
+In-Reply-To: <CAADnVQ+9T4n=ZhNMd57qfu2w=VqHM8Dzx-7UAAinU5MoORg63w@mail.gmail.com>
+	(Alexei Starovoitov's message of "Sun, 2 Jun 2024 11:23:17 -0700")
+Message-ID: <87ikyhrn7q.fsf@email.froward.int.ebiederm.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-To: Chen Ridong <chenridong@huawei.com>, bpf@vger.kernel.org,
- cgroups@vger.kernel.org, Andrii Nakryiko <andrii@kernel.org>,
- Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Eduard Zingerman <eddyz87@gmail.com>, Hao Luo <haoluo@google.com>,
- Jiri Olsa <jolsa@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>,
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
- Martin KaFai Lau <martin.lau@linux.dev>,
- Roman Gushchin <roman.gushchin@linux.dev>, Song Liu <song@kernel.org>,
- Stanislav Fomichev <sdf@google.com>, Tejun Heo <tj@kernel.org>,
- Yonghong Song <yonghong.song@linux.dev>, Zefan Li <lizefan.x@bytedance.com>
-Cc: LKML <linux-kernel@vger.kernel.org>
-References: <20240607110313.2230669-1-chenridong@huawei.com>
-Subject: Re: [PATCH -next] cgroup: Fix AA deadlock caused by
- cgroup_bpf_release
-Content-Language: en-GB
-From: Markus Elfring <Markus.Elfring@web.de>
-In-Reply-To: <20240607110313.2230669-1-chenridong@huawei.com>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:fmuK/VTR2YmSFLF2VDqjJtmVhTUzsI5l3pGMntg9UQYcsMbycmj
- +DSIdivBBL62ghxa3h9pU+c/GSmkts8QTF+2OvzfenG91FB8OSkKyy8xMktKwS/8zT6LFpw
- RT9znp2Zi6CxM09H1KMHHXuz4xWj/7+3Izuh/nT5g4JttQvRfWmi4QWB5Zk3agPzs02+7nq
- sYjc7gKvFhlTLyknF2hXA==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:jIa/TUJcvPQ=;og0TU1hehFZUopo0uOcnVoVQ2SE
- 3Hl8UUIUEF7aUsdg3iEOM8wuAg2C1lC/RcyRXdWbBdyXtT3M1oCs3W9fmEbRSvxclKMi1Xfsq
- K/pC07ZkhlfxkD7DGLn2PWUQW9XFt4DZ3vjZ34cufPmcworgk3twYQqkdw796tGHTqFoCWPT7
- dt3cy1XjqqYn8zypQQMnZvFLneZcZtFro+FUvw18rx5aFQi8oYiw4rbL70TKl3QfDaXsuKdYm
- z5kCE5EYV1lEqZR95mM3L4/39CGhRibzIagsnjmUmMswjkZI0MotoGE8lZpCezDB7mWAkKdRk
- g31NBO3YWVqWqSZ8cwC4qBT+DXOE9pUyw1V9WPUsbyrG9BQbgS3vRoItT26pXnQ2c9L5FGuuX
- sskWhPN4z8R0yM3XlNh5hiXBCVIa6peRtb2Ek/pb+dBI0ve+ma3JSdmUOwVorHNWEhY89obdu
- xPENgzF/tS6VPKyywwtZ4kYaNgP0XTYLQXiTmTqfDXFeUQ4Bb4DGBBtupWnPW7Sxvtu3Rn5yR
- IX9aVlBRSnI1P4CkBN9rL8pJw0V6IFccQLoxEhICfyNyiAY6BIN1KxI7uXEmxdpVeUYIfz+9B
- Mcr7aDy2AuyTBoR4X8x+yEypYMwJTY9ZCNrWfFiPWlDw+RZb6G7RR/h3NGjJp4As+069E9zxe
- MOkZPNdF/laInksUqqbw+m8zOOUuMsPHTCoTydJev9J4igwBB0aEB7srpAl822MPYlntY3+0d
- wkZ0D/w0DvCpjQBGO9ajL3dTczP9fSMOYpylFNLwXj1XVwsW7kPgxKTPy+0DtPRjZrG9oIwtk
- Lus04zZxyMBp/DboVtZp7cJRZW7ZE2eUtDZTitw0xA5CU=
+X-XM-SPF: eid=1sGeE0-00FROe-SU;;;mid=<87ikyhrn7q.fsf@email.froward.int.ebiederm.org>;;;hst=in01.mta.xmission.com;;;ip=68.227.168.167;;;frm=ebiederm@xmission.com;;;spf=pass
+X-XM-AID: U2FsdGVkX1+aqS3BV7g8TVW+kULFxysO2TVuiqUO+14=
+X-SA-Exim-Connect-IP: 68.227.168.167
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+X-Spam-Level: **
+X-Spam-Report: 
+	* -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+	*  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+	*      [score: 0.4982]
+	*  0.7 XMSubLong Long Subject
+	*  1.5 XMNoVowels Alpha-numberic number with no vowels
+	*  0.0 XM_B_Unicode BODY: Testing for specific types of unicode
+	*  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
+	* -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
+	*      [sa07 1397; Body=1 Fuz1=1 Fuz2=1]
+	*  0.0 T_TooManySym_01 4+ unique symbols in subject
+	*  0.0 T_TooManySym_03 6+ unique symbols in subject
+	*  0.0 T_TooManySym_02 5+ unique symbols in subject
+	*  0.0 XM_B_AI_SPAM_COMBINATION Email matches multiple AI-related
+	*      patterns
+	* -0.0 T_SCC_BODY_TEXT_LINE No description available.
+	*  0.2 XM_B_SpammyWords One or more commonly used spammy words
+X-Spam-DCC: XMission; sa07 1397; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: **;Alexei Starovoitov <alexei.starovoitov@gmail.com>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 465 ms - load_scoreonly_sql: 0.13 (0.0%),
+	signal_user_changed: 11 (2.3%), b_tie_ro: 9 (1.9%), parse: 1.04 (0.2%),
+	 extract_message_metadata: 12 (2.7%), get_uri_detail_list: 1.43 (0.3%),
+	 tests_pri_-2000: 13 (2.8%), tests_pri_-1000: 3.0 (0.6%),
+	tests_pri_-950: 1.29 (0.3%), tests_pri_-900: 1.09 (0.2%),
+	tests_pri_-90: 82 (17.7%), check_bayes: 81 (17.4%), b_tokenize: 8
+	(1.6%), b_tok_get_all: 10 (2.1%), b_comp_prob: 2.5 (0.5%),
+	b_tok_touch_all: 58 (12.5%), b_finish: 0.75 (0.2%), tests_pri_0: 320
+	(68.9%), check_dkim_signature: 0.66 (0.1%), check_dkim_adsp: 3.4
+	(0.7%), poll_dns_idle: 1.19 (0.3%), tests_pri_10: 2.7 (0.6%),
+	tests_pri_500: 14 (2.9%), rewrite_mail: 0.00 (0.0%)
+Subject: Re: [PATCH 1/6] fs/exec: Drop task_lock() inside __get_task_comm()
+X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
+X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
 
-> We found an AA deadlock problem as shown belowed:
+Alexei Starovoitov <alexei.starovoitov@gmail.com> writes:
 
-                                           below?
+> On Sun, Jun 2, 2024 at 10:53=E2=80=AFAM Eric W. Biederman <ebiederm@xmiss=
+ion.com> wrote:
+>>
+>> If you are performing lockless reads and depending upon a '\0'
+>> terminator without limiting yourself to the size of the buffer
+>> there needs to be a big fat comment as to how in the world
+>> you are guaranteed that a '\0' inside the buffer will always
+>> be found.
+>
+> I think Yafang can certainly add such a comment next to
+> __[gs]et_task_comm.
+>
+> I prefer to avoid open coding memcpy + mmemset when strscpy_pad works.
 
-* How was an =E2=80=9CAA deadlock=E2=80=9D problem detected?
+Looking through the code in set_task_comm
+strscpy_pad only works when both the source and designation are aligned.
+Otherwise it performs a byte a time copy, and is most definitely
+susceptible to the race I observed.
 
-* Were any special analysis tools involved?
+Further I looked a couple of the uses of set_task_com, in
+fs/proc/base.c, kernel/kthread.c, and kernel/sys.c.
 
+Nowhere do I see a guarantee that the source buffer is word aligned
+or even something that would reasonably cause a compiler to place the
+buffer that is being passed to set_task_comm to be word aligned.
 
-=E2=80=A6
-> preblem is solved.
+As far as I can tell it is completely up to the compiler if it will
+cause strscpy_pad to honor the word at a time guarantee needed
+to make strscpy_pad safe for reading the information.
 
-  problem?
+This is not to say we can't make it safe.
 
+The easiest would be to create an aligned temporary buffer in
+set_task_comm, and preserve the existing interface.  Alternatively
+a type that has the appropriate size and alignment could be used
+as input to set_task_comm and it could be caller's responsibility
+to use it.
 
-Regards,
-Markus
+While we can definitely make reading task->comm happen without taking
+the lock.  Doing so without updating set_task_comm to provide the
+guarantees needed to make it safe, looks like a case of play silly
+games, win silly prizes.
+
+Eric
 
