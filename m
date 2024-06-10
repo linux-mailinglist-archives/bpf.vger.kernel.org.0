@@ -1,137 +1,91 @@
-Return-Path: <bpf+bounces-31755-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-31756-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7F5C9902B70
-	for <lists+bpf@lfdr.de>; Tue, 11 Jun 2024 00:15:37 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 84B76902BFF
+	for <lists+bpf@lfdr.de>; Tue, 11 Jun 2024 00:58:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0EF1F284B63
-	for <lists+bpf@lfdr.de>; Mon, 10 Jun 2024 22:15:36 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2C9642827F5
+	for <lists+bpf@lfdr.de>; Mon, 10 Jun 2024 22:58:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CBF581514E2;
-	Mon, 10 Jun 2024 22:15:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 71E14153BE3;
+	Mon, 10 Jun 2024 22:56:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="DV1B8yAB"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gEyjp+59"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-qv1-f53.google.com (mail-qv1-f53.google.com [209.85.219.53])
+Received: from mail-pf1-f179.google.com (mail-pf1-f179.google.com [209.85.210.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D8C71509A7
-	for <bpf@vger.kernel.org>; Mon, 10 Jun 2024 22:15:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 520FF1534FB;
+	Mon, 10 Jun 2024 22:56:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718057708; cv=none; b=A8hF4d5qJdCRzGaIhIh2IOvCyoZ5u6/4wXfxAFPlwgPq7t4RvikKbR9D5xX+JSmlQ1OSYbwzb/KVElV6ZYHRaEmU7aN4rqkULcHMM1bA7iWokPfVdknXDXN2m3ha+LdWetn9s3x6j5Vf8tgkDg3V7VwHGiybFae2cHn4eZjDc1Q=
+	t=1718060216; cv=none; b=PVyNYM6B2ng/V5ogtHidJYVk4KZMmIUvnzHM3/sgYebCSCY7hJnjP8sTWu4hLUuijTKsUqiKWFRFZpkKAO8bET/VikwrnA0ZNokZPf+JImC8mg9eJ8WtSZLekfhaHKL/s0RmJlEPl5yYVJ8aapAC5G4yG/r7qfvcVk2CAgfsVGg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718057708; c=relaxed/simple;
-	bh=z+wd9sAGfEDNr43zUFts3rXiT7ShOZVNnrA/+9o7y3k=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=HK7nMcbau4K8/BqZMMv2K4vKmKIuYZncM5+yCprvrqvEDMrCvEeFF2d5q3wF+fJApYOiLrSvTkh7DfzYBZqTEvV/iHNVF17dIMhn+j702X7JDnSqFuPYbMvLdxHZz2cWelhUBzuyzPCquTc4P0ficI/v6/603hEQ7DRRCmNxDbM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=DV1B8yAB; arc=none smtp.client-ip=209.85.219.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
-Received: by mail-qv1-f53.google.com with SMTP id 6a1803df08f44-6b06bedc5d1so15891416d6.0
-        for <bpf@vger.kernel.org>; Mon, 10 Jun 2024 15:15:05 -0700 (PDT)
+	s=arc-20240116; t=1718060216; c=relaxed/simple;
+	bh=Dmx+tLODf++e4ikrdyNwKhoKb2zPsnmvNhImXTiY7ko=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=o98BAdWprKQure223p9nG3ZXhwVXYQLq/RYBEoPGwMyNbA9TxMA3J4QUQvFFZzZev6YZj2ETmWdN034Id48up8EbOTLa+Yz2x8qn3hrjcPM3NlA+nWTQvqMcOugDOnnxVmK0Jh6CMuKkjqRkrF1JTJe8seQmzfMnZDlQNDYZPhY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gEyjp+59; arc=none smtp.client-ip=209.85.210.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f179.google.com with SMTP id d2e1a72fcca58-701b0b0be38so4692351b3a.0;
+        Mon, 10 Jun 2024 15:56:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google; t=1718057705; x=1718662505; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1718060214; x=1718665014; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=fYxIeKtLL3lQwNiFRr25O1e9GIX4G5slG5d4Uc4G46M=;
-        b=DV1B8yABKh8zcLUmgBZlPAFY0iTcPLR8YOx7LLCpFjMnV7rXNkaRxAYuvwk3C7PPOH
-         jZB05ZxEeozQlYPvsSKrdHH9XRsHaWMfRgA07nc67PzNRXJVUcgHaMaIwTLkn/0NBaej
-         Y+DkdkBwr03IdCK/sG3d/54s8BvaqhWBnl/jBki+4FuzFDk5MC/R7srQTW0MtfyTEffw
-         S/cazkXqzTrhTNLq77EhsuipjQDoKG+ONrmQBCCYr/YTuVzQ2K1qnCx+gVlmf+ptUByB
-         YHBold4jl4t0CXl3DWfVhfY0nGwvEmmEftLaTtJM4KO8eLCbZeisPO65pggAcwOIB0GE
-         jnmQ==
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=rodnQkY0rmk6LgCMMegBSWUozCZBzVjSkzUr5Hd2tdI=;
+        b=gEyjp+59LecnEqnIEvkwRQsPudGobo0L7Pkt3lGCN+5iccquXoTq19juPGAGq+RlSK
+         OSd9C4IsrD/r4zvhYbpbMMVqZagIOy5l3Y9PCb8iFH2Qtr7fjXNreL6WjQ9yOOFikhfJ
+         HiFELoOcRWTWcK1uGU5F+Gv3b8PZVsRAcDYITvHpF5JlKDMwwW3RK0+lU7NluCNx5NDR
+         eJcAmQ6FCpkXgq1v4DCGefoAeP0wD/wXVT9AKAV17wpv41jj5WaxEEdZyUuRsMxJZfXL
+         k2sIEks6gJiQHReL4dqXz6jRcsn+2p2xAQvrQPNUcbH26RxldW7eu9TH0Smq00o6mb+y
+         CYww==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1718057705; x=1718662505;
+        d=1e100.net; s=20230601; t=1718060214; x=1718665014;
         h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=fYxIeKtLL3lQwNiFRr25O1e9GIX4G5slG5d4Uc4G46M=;
-        b=BzqFWM9P6B14E6cy7eXEITuUPF66/gmBmXCDaVN6K7NgTsCq4ZlZKxOyyX5Rq2Xh9v
-         AWHxFgWGHl1p++sNDFZ+uFD5i80+04nLJlL/gJcCPjn8+Ycz1W42KR6GNg5O5dGminxh
-         bf1gUc0SVuPTnGZg1r7bolLNwin3UTp7wm7Hucgu3kmW4FAT+oI+MZJAd5793ZT0E1vo
-         hkPaaTzI1swwVLFwRjq1DnGnY1265zoSSQI+nDyplnCblWpHk8nXaWIppc3zvcV/JZDa
-         /Uoa/nAVNoKUJgHaH+kvJMepjXpuGQn7rMAn6SVNvWvVpv2eDGFvTw8XdEhtoYnhgJwf
-         Y6OQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVLmU6ppppqoDIJbH4+dykKao7dGot7jRJJN3XRh/FIFVoG+qoJmDvw/I/CqDgtX5ceQVI139R66LBckK5UtMB98Nvx
-X-Gm-Message-State: AOJu0Yz4+OMjco+CCnHb2uuzhwNTh1chAYINVxBRR3df6CNdBn4tNV53
-	reptE1DZ/zRmrWCxEZVp+gN9xCiyJm717k70IQ1+eX+NdhxC9PoKelxy4GiXXqE=
-X-Google-Smtp-Source: AGHT+IGNwK7dorh82QSLW5MV/WzZAixZNPt6ZilaFo6ceP30TQ1KYPRJL2ImTAjvrOrdYOBtAU+f5Q==
-X-Received: by 2002:a05:6214:4a06:b0:6b0:72ef:2877 with SMTP id 6a1803df08f44-6b072ef2a2bmr79573716d6.40.1718057705068;
-        Mon, 10 Jun 2024 15:15:05 -0700 (PDT)
-Received: from ziepe.ca ([128.77.69.89])
-        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-6b076a42242sm20947266d6.59.2024.06.10.15.15.03
+        bh=rodnQkY0rmk6LgCMMegBSWUozCZBzVjSkzUr5Hd2tdI=;
+        b=Q0hYIBiofYtnunAIhT0ZRqRumABQ1UQasxQ1hVucsuuZGGtsBLm9aAXA7FHEIK8zJs
+         U30HQexgmmxTaSlEmPJ9S75BAtnoCXW2lmNkNlGQcdDPFo42J+WrGMp3M0tsOoh/BeNs
+         boNDSE3Fa5h3lGepYAYZifKLotLWOW3YH+V+hPPJPLj1spHWHTty6EJO2UIY5jHX8pCm
+         8DN+QDP8U+W8Kgx39HI/x0fO1JUf7/N0VxL0xQA7ssED/1wLNyNcs+iDFtkAy0aQOxrj
+         GTfeQIm52xi0wgzbsfmutt+70od8jrJ8lUSQe0bnEU4HWZjaAC5Fvjq/yxi5WWH5/cMP
+         GlUg==
+X-Forwarded-Encrypted: i=1; AJvYcCXDqOC8Og9p8mJrPeprRovbbGkkK0wRyADc2jcgz/ZkMRMGPeqJ21dmcm7KkJFCekZHm/AVHDXDCBztqfBjUUGzbPPemYSR
+X-Gm-Message-State: AOJu0Ywgv1kRyLBJh6MJgO8VbK/feiHeDemh7TL9ACtxqkoZOpyrsf5/
+	AH4NjOnkiZMhL5faAjp9jnHs/HZUR4hv3icTAjGyTILMe1mH1n2w
+X-Google-Smtp-Source: AGHT+IE/O8yeHe/8fbAoayIaWQoxFdHG/QC7rEE2KGtvSxlcfspBoRRfBtTcZQeW6FCRcu3RR9JsRw==
+X-Received: by 2002:a05:6a20:3c8c:b0:1b8:3f6d:3037 with SMTP id adf61e73a8af0-1b83f6d3494mr3033904637.18.1718060214413;
+        Mon, 10 Jun 2024 15:56:54 -0700 (PDT)
+Received: from kodidev-ubuntu (69-172-146-21.cable.teksavvy.com. [69.172.146.21])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7041ec6f9cesm4897654b3a.78.2024.06.10.15.56.53
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 10 Jun 2024 15:15:03 -0700 (PDT)
-Received: from jgg by wakko with local (Exim 4.95)
-	(envelope-from <jgg@ziepe.ca>)
-	id 1sGnI4-00FsKs-9Z;
-	Mon, 10 Jun 2024 19:15:00 -0300
-Date: Mon, 10 Jun 2024 19:15:00 -0300
-From: Jason Gunthorpe <jgg@ziepe.ca>
-To: Pavel Begunkov <asml.silence@gmail.com>
-Cc: David Ahern <dsahern@kernel.org>, David Wei <dw@davidwei.uk>,
-	Mina Almasry <almasrymina@google.com>,
-	Christoph Hellwig <hch@infradead.org>, netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-	linux-alpha@vger.kernel.org, linux-mips@vger.kernel.org,
-	linux-parisc@vger.kernel.org, sparclinux@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
-	bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
-	linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Donald Hunter <donald.hunter@gmail.com>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Richard Henderson <richard.henderson@linaro.org>,
-	Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-	Matt Turner <mattst88@gmail.com>,
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	"James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-	Helge Deller <deller@gmx.de>, Andreas Larsson <andreas@gaisler.com>,
-	Jesper Dangaard Brouer <hawk@kernel.org>,
-	Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Arnd Bergmann <arnd@arndb.de>, Alexei Starovoitov <ast@kernel.org>,
+        Mon, 10 Jun 2024 15:56:53 -0700 (PDT)
+From: Tony Ambardar <tony.ambardar@gmail.com>
+X-Google-Original-From: Tony Ambardar <Tony.Ambardar@gmail.com>
+Date: Mon, 10 Jun 2024 15:56:51 -0700
+To: Yonghong Song <yonghong.song@linux.dev>
+Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
 	Daniel Borkmann <daniel@iogearbox.net>,
 	Andrii Nakryiko <andrii@kernel.org>,
 	Martin KaFai Lau <martin.lau@linux.dev>,
 	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
 	John Fastabend <john.fastabend@gmail.com>,
 	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
 	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-	Steffen Klassert <steffen.klassert@secunet.com>,
-	Herbert Xu <herbert@gondor.apana.org.au>,
-	Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-	Shuah Khan <shuah@kernel.org>,
-	Sumit Semwal <sumit.semwal@linaro.org>,
-	Christian =?utf-8?B?S8O2bmln?= <christian.koenig@amd.com>,
-	Yunsheng Lin <linyunsheng@huawei.com>,
-	Shailend Chand <shailend@google.com>,
-	Harshitha Ramamurthy <hramamurthy@google.com>,
-	Shakeel Butt <shakeel.butt@linux.dev>,
-	Jeroen de Borst <jeroendb@google.com>,
-	Praveen Kaligineedi <pkaligineedi@google.com>
-Subject: Re: [PATCH net-next v10 02/14] net: page_pool: create hooks for
- custom page providers
-Message-ID: <20240610221500.GN791043@ziepe.ca>
-References: <5aee4bba-ca65-443c-bd78-e5599b814a13@gmail.com>
- <CAHS8izNmT_NzgCu1pY1RKgJh+kP2rCL_90Gqau2Pkd3-48Q1_w@mail.gmail.com>
- <eb237e6e-3626-4435-8af5-11ed3931b0ac@gmail.com>
- <be2d140f-db0f-4d15-967c-972ea6586b5c@kernel.org>
- <20240607145247.GG791043@ziepe.ca>
- <45803740-442c-4298-b47e-2d87ae5a6012@davidwei.uk>
- <54975459-7a5a-46ff-a9ae-dc16ceffbab4@gmail.com>
- <20240610121625.GI791043@ziepe.ca>
- <59443d14-1f1d-42bb-8be3-73e6e4a0b683@kernel.org>
- <00c67cf0-2bf3-4eaf-b200-ffe00d91593b@gmail.com>
+	Miguel Ojeda <ojeda@kernel.org>, stable@vger.kernel.org
+Subject: Re: [PATCH bpf v2 1/2] compiler_types.h: Define __retain for
+ __attribute__((__retain__))
+Message-ID: <ZmeEs2eaRe0E1Hk8@kodidev-ubuntu>
+References: <cover.1717413886.git.Tony.Ambardar@gmail.com>
+ <cover.1717477560.git.Tony.Ambardar@gmail.com>
+ <b31bca5a5e6765a0f32cc8c19b1d9cdbfaa822b5.1717477560.git.Tony.Ambardar@gmail.com>
+ <7540222d-92e0-47f7-a880-7c4440671740@linux.dev>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -140,36 +94,84 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <00c67cf0-2bf3-4eaf-b200-ffe00d91593b@gmail.com>
+In-Reply-To: <7540222d-92e0-47f7-a880-7c4440671740@linux.dev>
 
-On Mon, Jun 10, 2024 at 08:20:08PM +0100, Pavel Begunkov wrote:
-> On 6/10/24 16:16, David Ahern wrote:
-
-> > > There is no reason you shouldn't be able to use your fast io_uring
-> > > completion and lifecycle flow with DMABUF backed memory. Those are not
-> > > widly different things and there is good reason they should work
-> > > together.
+On Tue, Jun 04, 2024 at 10:55:39PM -0700, Yonghong Song wrote:
 > 
-> Let's not mix up devmem TCP and dmabuf specifically, as I see it
-> your question was concerning the latter: "... DMABUF memory registered
-> through Mina's mechanism". io_uring's zcrx can trivially get dmabuf
-> support in future, as mentioned it's mostly the setup side. ABI,
-> buffer workflow and some details is a separate issue, and I don't
-> see how further integration aside from what we're already sharing
-> is beneficial, on opposite it'll complicate things.
+> On 6/3/24 10:23 PM, Tony Ambardar wrote:
+> > Some code includes the __used macro to prevent functions and data from
+> > being optimized out. This macro implements __attribute__((__used__)), which
+> > operates at the compiler and IR-level, and so still allows a linker to
+> > remove objects intended to be kept.
+> > 
+> > Compilers supporting __attribute__((__retain__)) can address this gap by
+> > setting the flag SHF_GNU_RETAIN on the section of a function/variable,
+> > indicating to the linker the object should be retained. This attribute is
+> > available since gcc 11, clang 13, and binutils 2.36.
+> > 
+> > Provide a __retain macro implementing __attribute__((__retain__)), whose
+> > first user will be the '__bpf_kfunc' tag.
+> > 
+> > Link: https://lore.kernel.org/bpf/ZlmGoT9KiYLZd91S@krava/T/
+> > Cc: stable@vger.kernel.org # v6.6+
+> > Signed-off-by: Tony Ambardar <Tony.Ambardar@gmail.com>
+> > ---
+> >   include/linux/compiler_types.h | 23 +++++++++++++++++++++++
+> >   1 file changed, 23 insertions(+)
+> > 
+> > diff --git a/include/linux/compiler_types.h b/include/linux/compiler_types.h
+> > index 93600de3800b..f14c275950b5 100644
+> > --- a/include/linux/compiler_types.h
+> > +++ b/include/linux/compiler_types.h
+> > @@ -143,6 +143,29 @@ static inline void __chk_io_ptr(const volatile void __iomem *ptr) { }
+> >   # define __preserve_most
+> >   #endif
+> > +/*
+> > + * Annotating a function/variable with __retain tells the compiler to place
+> > + * the object in its own section and set the flag SHF_GNU_RETAIN. This flag
+> > + * instructs the linker to retain the object during garbage-cleanup or LTO
+> > + * phases.
+> > + *
+> > + * Note that the __used macro is also used to prevent functions or data
+> > + * being optimized out, but operates at the compiler/IR-level and may still
+> > + * allow unintended removal of objects during linking.
+> > + *
+> > + * Optional: only supported since gcc >= 11, clang >= 13
+> > + *
+> > + *   gcc: https://gcc.gnu.org/onlinedocs/gcc/Common-Function-Attributes.html#index-retain-function-attribute
+> > + * clang: https://clang.llvm.org/docs/AttributeReference.html#retain
+> > + */
+> > +#if __has_attribute(__retain__) && \
+> > +	(defined(CONFIG_LD_DEAD_CODE_DATA_ELIMINATION) || \
+> > +	 defined(CONFIG_LTO_CLANG))
+> 
+> Could you explain why CONFIG_LTO_CLANG is added here?
+> IIUC, the __used macro permits garbage collection at section
+> level, so CLANG_LTO_CLANG without
+> CONFIG_LD_DEAD_CODE_DATA_ELIMINATION
+> shuold not change final section dynamics, right?
 
-Again, I am talking about composability here, duplicating the DMABUF
-stuff into io_uring is not composable, it is just duplicating things.
+Hi Yonghong,
 
-It does not match the view that there should be two distinct layers
-here, one that provides the pages and one that manages the
-lifecycle. As HCH pushes for pages either come from the allocator and
-get to use the struct folio or the come from a dmabuf and they
-don't. That is it, the only two choices.
+I included the conditional guard to ensure consistent behaviour between
+__retain and other features forcing split sections. In particular, the same
+guard is used in vmlinux.lds.h to merge split sections where needed. For
+example, using __retain in llvm builds without CONFIG_LTO was failing CI
+tests on kernel-patches/bpf because the kernel didn't boot properly. And in
+further testing, the kernel had no issues loading BPF kfunc modules with
+such split sections, so I left the module (partial) linking scripts alone.
 
-The iouring stuff is trying to confuse the source of the pages with
-the lifecycle - which is surely convenient, but is why Christoph is
-opposing it.
+Maybe I misunderstand you question re: __used?
 
-Jason
+Thanks,
+Tony
+> 
+> > +# define __retain			__attribute__((__retain__))
+> > +#else
+> > +# define __retain
+> > +#endif
+> > +
+> >   /* Compiler specific macros. */
+> >   #ifdef __clang__
+> >   #include <linux/compiler-clang.h>
 
