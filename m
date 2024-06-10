@@ -1,170 +1,84 @@
-Return-Path: <bpf+bounces-31699-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-31700-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C34B6901B93
-	for <lists+bpf@lfdr.de>; Mon, 10 Jun 2024 09:12:51 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 99E48901C33
+	for <lists+bpf@lfdr.de>; Mon, 10 Jun 2024 09:57:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 71113282EF3
-	for <lists+bpf@lfdr.de>; Mon, 10 Jun 2024 07:12:50 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 99BC01C21C9D
+	for <lists+bpf@lfdr.de>; Mon, 10 Jun 2024 07:57:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BAF2C1CFBE;
-	Mon, 10 Jun 2024 07:12:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E3AF2D05D;
+	Mon, 10 Jun 2024 07:57:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Nmog98gL"
+	dkim=pass (2048-bit key) header.d=bizgrowth.pl header.i=@bizgrowth.pl header.b="oscp58HU"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f52.google.com (mail-pj1-f52.google.com [209.85.216.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mail.bizgrowth.pl (mail.bizgrowth.pl [162.19.246.197])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DFC4B28DBC
-	for <bpf@vger.kernel.org>; Mon, 10 Jun 2024 07:12:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 612F52CCB7
+	for <bpf@vger.kernel.org>; Mon, 10 Jun 2024 07:57:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=162.19.246.197
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718003565; cv=none; b=O86EPv6zhhEZphBHaPnUEeQVnVx6K4DMWA0DFpHDzb/E1VCgc4DpKpJQcXTE2cPXWrvxv/yCo7KXM++8C9KTJ+LHCd5jdBlC8yS+NV9Sv8vAGNapM8b/Mohe7TQA+cMpCDIqdjL8eV1opFLRcFhHxo4AHqvlTeLAH30rlpZsCRI=
+	t=1718006236; cv=none; b=U/FptBf7E5YSey8M4gVW1yaVmgQU2HvxpAdRhv/F1Ts3xCg7bVKVNbu7NpThoiiM+LyyYN2IgiX2n4PEA8iYrz2uOEkWIX2KJO34JXQ7pEjP7bajOxVSUb/DbEW32aI8Nvi7gYihuOnvAeQ5d9adxDvAxjkTIYdWWXBzgPNMjBw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718003565; c=relaxed/simple;
-	bh=5RFEgSxeGPheaUu0XR9OMvfPlSNHuJxyrdGVdk2P7OU=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=WGBkoGS/G+NoxGiTar9R4XsTgUtke2TfJh8fn4bvpggDDxbSzaQiSw6XzN5/23ED90e5J/h/oyt8cn6KEaOCxNsM0Q/DxfIbJ2FyJWw/bVTNCGu43TE3seqse0C+67cQS4Q2Db5uvPoMFKh56PJJ2se8MmmwIP4gqUuydUBD5xw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Nmog98gL; arc=none smtp.client-ip=209.85.216.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f52.google.com with SMTP id 98e67ed59e1d1-2c31144881eso327277a91.1
-        for <bpf@vger.kernel.org>; Mon, 10 Jun 2024 00:12:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1718003563; x=1718608363; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=0tYRK0IeE6i/o9Alix3l+cqIm5e0X/CW2FCTJi3bbqM=;
-        b=Nmog98gLn+wBpg3RdoEfuxvwBSdLWTuh/WlX63z9RZWIdKLubbsP+V2GAfy/t6vo04
-         pPzsHnzpGKHKjURD8Mcts3XekkNEQ9DR5kc2xu4e0C3kHK/dZ0JTV2R8x3boB586F7ME
-         RCRm74vl/C12sM4iQFUFnMQNTm/Q2SyMwvy7UVH9h62LeBDWSqsuPbjBYh6oUsusDehl
-         jhC9221snKsS6hNjBHNn9x5LNG5llZovYrAMUGmT/loFgw+3X21oaFh8AyKk8W+7tK64
-         E87s/tYqrks0tcvv0nzAPb+TOOv8m0svPLutFsFYbQJpbr+Mi2pWChSoXiSopfowIf1Y
-         yPuQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1718003563; x=1718608363;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=0tYRK0IeE6i/o9Alix3l+cqIm5e0X/CW2FCTJi3bbqM=;
-        b=w3dI6Mih3ryC1bghJUa/i4gC9mEn02XOvkNdYWs0OB6liHcmm2q/Mf+ftOnw8zr/6n
-         KYtpUOfBxKub/weKXbyFal43vyWqLB2KbZ/qm+N9zMnZuo/8IScFMB6q31hIdpOnhbyr
-         /nGruUslNDF+CYTybUXF0W5oyMfzCQg5PVVCTsoQ/qqX/noncC0uw5C51Q7IYxF4p2g9
-         UhelYK8MY87hEGc+WAb7ze3gendvv3USVSlFlq6RMB/qFBwB2irTTe5rrlzoUxsvHQeV
-         J0DUdhqPhQUqax83cQeVVK/4KOGKmEZ7YcKvAzDebDcmf3uAVyErOWdMI+05Moityakv
-         IKUA==
-X-Forwarded-Encrypted: i=1; AJvYcCUOse7uwjpPcfqqMIQBxxjpUNN+ALSX/Kom/EMiDrbCFRTGMs3p+KhvtQDe9Vse83LUo46fYb0Sfg8I2ACD9/0KFR7l
-X-Gm-Message-State: AOJu0Yzs6ix9MrURUHh38eGmO5+FAiI6B339jh4LXvM0REBP2TdNxpjE
-	ztAQwdGXo1NXQxaB+eAW7gi1bgIbDm8Bsflf4V35cQOnlrhtCAfC
-X-Google-Smtp-Source: AGHT+IFlLC7DjqBsig0iRVtWN6a3nDSBUmR661HRR2nFYym5wj4KaRP52/EgYs1pkI/ZpeElt26U/g==
-X-Received: by 2002:a17:90b:e86:b0:2c1:e54a:19b9 with SMTP id 98e67ed59e1d1-2c2bcc09816mr7665210a91.21.1718003563002;
-        Mon, 10 Jun 2024 00:12:43 -0700 (PDT)
-Received: from [10.22.68.7] ([122.11.166.8])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2c2a2430365sm7479454a91.54.2024.06.10.00.12.40
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 10 Jun 2024 00:12:42 -0700 (PDT)
-Message-ID: <5fd25602-5cbb-4bb7-89ab-6617f89b177c@gmail.com>
-Date: Mon, 10 Jun 2024 15:12:39 +0800
+	s=arc-20240116; t=1718006236; c=relaxed/simple;
+	bh=cVP7OlBRTQnmgUtVnXVsWTNB9E3+yUvyHaP6Jl2bQWk=;
+	h=Message-ID:Date:From:To:Subject:MIME-Version:Content-Type; b=gMa/swqDio+wosiG7xPXcZcUsK5Hu48IeYyyyfB1WtUTijzEqbNfxHE8zEgIrdlqpftNiFJ6iToPnn/Y43Dk8qrzkG/A63Hd6214Igb4WVwVNaVQ5jlilU4xwQqo4XBi+aCacwbnrYy1G9RJYqL/ANt49lTkleasBNnKIqh91U0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bizgrowth.pl; spf=pass smtp.mailfrom=bizgrowth.pl; dkim=pass (2048-bit key) header.d=bizgrowth.pl header.i=@bizgrowth.pl header.b=oscp58HU; arc=none smtp.client-ip=162.19.246.197
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bizgrowth.pl
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bizgrowth.pl
+Received: by mail.bizgrowth.pl (Postfix, from userid 1002)
+	id 1CE4E2176B; Mon, 10 Jun 2024 07:50:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=bizgrowth.pl; s=mail;
+	t=1718005868; bh=cVP7OlBRTQnmgUtVnXVsWTNB9E3+yUvyHaP6Jl2bQWk=;
+	h=Date:From:To:Subject:From;
+	b=oscp58HUTXPUUPgbhgj0x3SiV3mhiFdtskpGWUD+twb0ghtybiiBVaCiFIpdcrsQ5
+	 9ccDSxkyDVIdRZb5wTjqy9W5wuCJCWax5grNbMV0QvYLwQZ2MnkBznF3jwbqVSkwEn
+	 7x+VP3ZiiJMliFqUIADcab8Dma7o7ydqbiFy5XRyY3vgSB9rahkfkGnUrnSBWK5his
+	 JtJDIRIAINH7tm8W8wG2hkKJHpf5s3JPpmrKKsX0rd4utkIGr4jLUJ2WB1vVZoEdiA
+	 1xJsDd2/cSXgmc2B+O4UYn0lYw/8VpRbFfGh4arB3yr29P8a7n2C21dtRvAd13nlSb
+	 vi7obpHW3OI7g==
+Received: by mail.bizgrowth.pl for <bpf@vger.kernel.org>; Mon, 10 Jun 2024 07:50:45 GMT
+Message-ID: <20240610064500-0.1.d.l10.0.0331nn790l@bizgrowth.pl>
+Date: Mon, 10 Jun 2024 07:50:45 GMT
+From: =?UTF-8?Q?"Bart=C5=82omiej_Gabrych"?= <bartlomiej.gabrych@bizgrowth.pl>
+To: <bpf@vger.kernel.org>
+Subject: Meble metalowe
+X-Mailer: mail.bizgrowth.pl
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH bpf-next] bpf, verifier: Correct tail_call_reachable for
- bpf prog
-To: Yonghong Song <yonghong.song@linux.dev>, bpf@vger.kernel.org
-Cc: ast@kernel.org, daniel@iogearbox.net, kernel-patches-bot@fb.com
-References: <20240609073100.42925-1-hffilwlqm@gmail.com>
- <37e6a405-9a8f-4406-9238-b22c4a8b5e6c@linux.dev>
-Content-Language: en-US
-From: Leon Hwang <hffilwlqm@gmail.com>
-In-Reply-To: <37e6a405-9a8f-4406-9238-b22c4a8b5e6c@linux.dev>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+Szanowni Pa=C5=84stwo,
+
+je=C5=9Bli poszukuj=C4=85 Pa=C5=84stwo sprawdzonego producenta mebli, kt=C3=
+=B3ry dostarczy niezawodne i estetyczne rozwi=C4=85zania trwa=C5=82e na l=
+ata, to my=C5=9Bl=C4=99, =C5=BCe zainteresuje Pa=C5=84stwa nasza oferta.
+
+Produkujemy metalowe szafy, szafy kartotekowe, szafy BHP, szafy na akta, =
+rega=C5=82y, stoliki i krzes=C5=82a, kt=C3=B3re znajduj=C4=85 zastosowani=
+e zar=C3=B3wno w plac=C3=B3wkach edukacyjnych, jednostkach publicznych, j=
+ak i firmach.
+
+Oferujemy konkurencyjne ceny, posiadamy r=C3=B3wnie=C5=BC niezb=C4=99dne =
+certyfikaty jako=C5=9Bci, w tym Certyfikat ISO 9001:2001 oraz atesty PZH.
+
+Nasze rozwi=C4=85zania zosta=C5=82y wybrane przez wiele firm i instytucji=
+, w tym General Electric, OPEL, Ferrero Rocher, Rossmann, LG Electronics,=
+ Sejm RP, ABW i wiele innych. Wsp=C3=B3=C5=82pracujemy z firmami, kt=C3=B3=
+re potrzebuj=C4=85 min. 20 sztuk mebli.
+
+Chcieliby Pa=C5=84stwo sprawdzi=C4=87, co mo=C5=BCemy zaproponowa=C4=87?
 
 
-
-On 10/6/24 13:26, Yonghong Song wrote:
-> 
-> On 6/9/24 12:31 AM, Leon Hwang wrote:
->> It's confusing to inspect 'prog->aux->tail_call_reachable' with drgn[0],
->> when bpf prog has tail call but 'tail_call_reachable' is false.
->>
->> This patch corrects 'tail_call_reachable' when bpf prog has tail call.
->>
->> [0] https://github.com/osandov/drgn
->>
->> Signed-off-by: Leon Hwang <hffilwlqm@gmail.com>
->> ---
->>   kernel/bpf/verifier.c | 4 +++-
->>   1 file changed, 3 insertions(+), 1 deletion(-)
->>
->> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
->> index 81a3d2ced78d5..d7045676246a7 100644
->> --- a/kernel/bpf/verifier.c
->> +++ b/kernel/bpf/verifier.c
->> @@ -2982,8 +2982,10 @@ static int check_subprogs(struct
->> bpf_verifier_env *env)
->>             if (code == (BPF_JMP | BPF_CALL) &&
->>               insn[i].src_reg == 0 &&
->> -            insn[i].imm == BPF_FUNC_tail_call)
->> +            insn[i].imm == BPF_FUNC_tail_call) {
->>               subprog[cur_subprog].has_tail_call = true;
->> +            subprog[cur_subprog].tail_call_reachable = true;
-> 
-> This tail_call_reachable is handled in jit. For example, in
-> arch/x86/net/bpf_jit_comp.c:
-> 
-> static void detect_reg_usage(struct bpf_insn *insn, int insn_cnt,
->                              bool *regs_used, bool *tail_call_seen)
-> {
->         int i;
-> 
->         for (i = 1; i <= insn_cnt; i++, insn++) {
->                 if (insn->code == (BPF_JMP | BPF_TAIL_CALL))
->                         *tail_call_seen = true;
->                 if (insn->dst_reg == BPF_REG_6 || insn->src_reg ==
-> BPF_REG_6)
->                         regs_used[0] = true;
->                 if (insn->dst_reg == BPF_REG_7 || insn->src_reg ==
-> BPF_REG_7)
->                         regs_used[1] = true;
->                 if (insn->dst_reg == BPF_REG_8 || insn->src_reg ==
-> BPF_REG_8)
->                         regs_used[2] = true;
->                 if (insn->dst_reg == BPF_REG_9 || insn->src_reg ==
-> BPF_REG_9)
->                         regs_used[3] = true;
->         }
-> }
-> 
-> and
-> 
->         detect_reg_usage(insn, insn_cnt, callee_regs_used,
->                          &tail_call_seen);
->                 /* tail call's presence in current prog implies it is
-> reachable */
->         tail_call_reachable |= tail_call_seen;
-> 
-> I didn't check other architectures. If other arch is similar to x86 w.r.t.
-> tail_call_reachable marking, your change looks good. But you should also
-> make changes in jit to remove those redundent checking.
-> 
-
-By searching tail_call_reachable in arch directory, excluding x86, other
-architectures do not check 'prog->aux->tail_call_reachable'.
-
-By checking jit of arm64/loongarch/riscv/s390, they have their own way
-to handle tail call, unlike x86's way to detect tail_call_reachable.
-
-I'll send PATCH v2 to remove the redundant detecting in x86 jit.
-
-Thanks,
-Leon
+Pozdrawiam
+Bart=C5=82omiej Gabrych
 
