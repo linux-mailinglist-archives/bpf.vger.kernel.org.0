@@ -1,45 +1,46 @@
-Return-Path: <bpf+bounces-31809-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-31810-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6557E9039CF
-	for <lists+bpf@lfdr.de>; Tue, 11 Jun 2024 13:22:17 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id E46939039D4
+	for <lists+bpf@lfdr.de>; Tue, 11 Jun 2024 13:22:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 54ECC1C22525
-	for <lists+bpf@lfdr.de>; Tue, 11 Jun 2024 11:22:16 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D308EB225D7
+	for <lists+bpf@lfdr.de>; Tue, 11 Jun 2024 11:22:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E310117B40C;
-	Tue, 11 Jun 2024 11:22:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0DB5617B43E;
+	Tue, 11 Jun 2024 11:22:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="G6/uNApW"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Oy3bL/u1"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 59A8A13E8AE;
-	Tue, 11 Jun 2024 11:22:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 764F0171644;
+	Tue, 11 Jun 2024 11:22:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718104926; cv=none; b=WxxvhQRTwD078S/dDxfdODQmVsxmjujyvhA8lWplQ9+XdqHZBDYaTjdrrx5CKNzmCJpxBTJbkAWb9qQQN/2HnF1bFfvq02v3y+R5cfxijIFfR8/Iu43QAUd4tBE5s/oMhZdIVAjxcdjQGp2j26fEZp68OEg/2B0Y6lyeW9Cr7Hk=
+	t=1718104938; cv=none; b=YgMAy8kc7JBsrBZjUIoQPXTD7Dg+/3jT9b2oF0sH3VmjyvJZqr/RgVXkGN1oocnt4j8GWjyxKFRgzNGspXuSrEhQduOpM+fPvkS6PZPEiWeeavJEvYiM3pENODN12/iCT+v5GH+MQInTY6RbM3yFHRkggSDweHfFgCpcoAulYos=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718104926; c=relaxed/simple;
-	bh=YhLvdXo+bgU9zbCGfGQR0N/YY1+urUBInzEGRzY7tnE=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=M8b1G/AyZ1RAkWqtQRMKDTmgFkfsCbN8+cr95sWjBkFaULmKrtLrhMC3M6d0MKOO7kpWoNyYhSlTvM1SEmmDvr2I23FvEKwYG6qmLrVt2Avgh3wojd1I6az6H0vzXwyZDbSDe2lnZ/ogGJOONDTOPTMK4o96b0qE7IuP7nyEuMk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=G6/uNApW; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A10D6C2BD10;
-	Tue, 11 Jun 2024 11:22:00 +0000 (UTC)
+	s=arc-20240116; t=1718104938; c=relaxed/simple;
+	bh=2dJceMDRbDi+uoBltMqlHFK4LRnJUWXXCRkYVwz32Pk=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=NeR0ZmPu1UQ+dOcfv3hbz4H37mM2PaHpsyi2einCYgf0N15fosNkQt0j4yYMVBs+HPmI8i9cnX7t2GLtWI/L27c7jOAxJVzMWRwk+3pSHM40ycfZmoZl/6urXVNVh226VwgVdQCJZk0xG/fPTRg/K3cRSeu7K4dhJHtBUn7LIiw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Oy3bL/u1; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 05D1DC2BD10;
+	Tue, 11 Jun 2024 11:22:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1718104925;
-	bh=YhLvdXo+bgU9zbCGfGQR0N/YY1+urUBInzEGRzY7tnE=;
-	h=From:To:Cc:Subject:Date:From;
-	b=G6/uNApWfJG5oj1Poo3GOdINKoAZzGzL5J4O7Mrvc/2AEMccK5swiqCJyH7+3WBCU
-	 zvAADBWRBZ2pW8wfXGn4VlzzdaWEo94PpUISbg6sn/GIb0sSI6rXWs9ZY30Izz2A59
-	 /RHvdXBz0ofMl5T0GfrPA64BL6CJX2pYksfOo0krWZc7zU1cE4HmRv997sReIwcpgK
-	 XSvM5ddDBFc4EEGX1V5hAM/ZApOAnHAFCe3V5uoyZ228+vh7K7rYSneZQTHAQpWnE2
-	 aQmuWCI6O9Oi7WPNRPcjk1bG4QzptfQuOLxQTzNjqMXBgfLgrFXM8aXQpld58Pa2pG
-	 FL4O3Bws+3Mxw==
+	s=k20201202; t=1718104938;
+	bh=2dJceMDRbDi+uoBltMqlHFK4LRnJUWXXCRkYVwz32Pk=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=Oy3bL/u1jwsH+SWFqeKV+IFnY2fAmS7SAl4abqcP1VLBeMnEW5z2uENWsj64uvKLd
+	 GlQuYwRt2zznutKbnas55G+JlkIlMoCctnNehJumVEUk3KzIuPd9noj3do352Du+RO
+	 Cpu4k67D1wBIs1xqEQ+zXrCMEZ8l5a6KtsP5akWrfrt/MXNNH0zJvrFDnGkgur3/L5
+	 1Ri+xZWz9kbE59GjCjiEMD7dTR5jz+kFYnBjkRkCLQc7D+eArfb5oXmRmo5+hVfduf
+	 yx7tFCIn/NKlbhM3UmhkcAg6qa4YwFbPCcoDyIroSFmOegObyc+8EdLwG0g3V94wz/
+	 9xGAu3YvwG0cQ==
 From: Jiri Olsa <jolsa@kernel.org>
 To: Steven Rostedt <rostedt@goodmis.org>,
 	Masami Hiramatsu <mhiramat@kernel.org>,
@@ -47,7 +48,8 @@ To: Steven Rostedt <rostedt@goodmis.org>,
 	Alexei Starovoitov <ast@kernel.org>,
 	Daniel Borkmann <daniel@iogearbox.net>,
 	Andrii Nakryiko <andrii@kernel.org>
-Cc: linux-kernel@vger.kernel.org,
+Cc: Rick Edgecombe <rick.p.edgecombe@intel.com>,
+	linux-kernel@vger.kernel.org,
 	linux-trace-kernel@vger.kernel.org,
 	linux-api@vger.kernel.org,
 	linux-man@vger.kernel.org,
@@ -61,12 +63,13 @@ Cc: linux-kernel@vger.kernel.org,
 	"Borislav Petkov (AMD)" <bp@alien8.de>,
 	Ingo Molnar <mingo@redhat.com>,
 	Andy Lutomirski <luto@kernel.org>,
-	"Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
 	Deepak Gupta <debug@rivosinc.com>
-Subject: [PATCHv8 bpf-next 0/9] uprobe: uretprobe speed up
-Date: Tue, 11 Jun 2024 13:21:49 +0200
-Message-ID: <20240611112158.40795-1-jolsa@kernel.org>
+Subject: [PATCHv8 bpf-next 1/9] x86/shstk: Make return uprobe work with shadow stack
+Date: Tue, 11 Jun 2024 13:21:50 +0200
+Message-ID: <20240611112158.40795-2-jolsa@kernel.org>
 X-Mailer: git-send-email 2.45.1
+In-Reply-To: <20240611112158.40795-1-jolsa@kernel.org>
+References: <20240611112158.40795-1-jolsa@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -75,119 +78,85 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-hi,
-as part of the effort on speeding up the uprobes [0] coming with
-return uprobe optimization by using syscall instead of the trap
-on the uretprobe trampoline.
+Currently the application with enabled shadow stack will crash
+if it sets up return uprobe. The reason is the uretprobe kernel
+code changes the user space task's stack, but does not update
+shadow stack accordingly.
 
-The speed up depends on instruction type that uprobe is installed
-and depends on specific HW type, please check patch 1 for details.
+Adding new functions to update values on shadow stack and using
+them in uprobe code to keep shadow stack in sync with uretprobe
+changes to user stack.
 
-Patches 1-8 are based on bpf-next/master, but patch 2 and 3 are
-apply-able on linux-trace.git tree probes/for-next branch.
-Patch 9 is based on man-pages master.
-
-v8 changes:
-- rebased (another new syscall got merged)
-- added acks
-
-Also available at:
-  https://git.kernel.org/pub/scm/linux/kernel/git/jolsa/perf.git
-  uretprobe_syscall
-
-thanks,
-jirka
-
-
-Notes to check list items in Documentation/process/adding-syscalls.rst:
-
-- System Call Alternatives
-  New syscall seems like the best way in here, because we need
-  just to quickly enter kernel with no extra arguments processing,
-  which we'd need to do if we decided to use another syscall.
-
-- Designing the API: Planning for Extension
-  The uretprobe syscall is very specific and most likely won't be
-  extended in the future.
-
-  At the moment it does not take any arguments and even if it does
-  in future, it's allowed to be called only from trampoline prepared
-  by kernel, so there'll be no broken user.
-
-- Designing the API: Other Considerations
-  N/A because uretprobe syscall does not return reference to kernel
-  object.
-
-- Proposing the API
-  Wiring up of the uretprobe system call is in separate change,
-  selftests and man page changes are part of the patchset.
-
-- Generic System Call Implementation
-  There's no CONFIG option for the new functionality because it
-  keeps the same behaviour from the user POV.
-
-- x86 System Call Implementation
-  It's 64-bit syscall only.
-
-- Compatibility System Calls (Generic)
-  N/A uretprobe syscall has no arguments and is not supported
-  for compat processes.
-
-- Compatibility System Calls (x86)
-  N/A uretprobe syscall is not supported for compat processes.
-
-- System Calls Returning Elsewhere
-  N/A.
-
-- Other Details
-  N/A.
-
-- Testing
-  Adding new bpf selftests and ran ltp on top of this change.
-
-- Man Page
-  Attached.
-
-- Do not call System Calls in the Kernel
-  N/A.
-
-
-[0] https://lore.kernel.org/bpf/ZeCXHKJ--iYYbmLj@krava/
+Acked-by: Andrii Nakryiko <andrii@kernel.org>
+Acked-by: Rick Edgecombe <rick.p.edgecombe@intel.com>
+Reviewed-by: Oleg Nesterov <oleg@redhat.com>
+Fixes: 488af8ea7131 ("x86/shstk: Wire in shadow stack interface")
+Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 ---
-Jiri Olsa (8):
-      x86/shstk: Make return uprobe work with shadow stack
-      uprobe: Wire up uretprobe system call
-      uprobe: Add uretprobe syscall to speed up return probe
-      selftests/x86: Add return uprobe shadow stack test
-      selftests/bpf: Add uretprobe syscall test for regs integrity
-      selftests/bpf: Add uretprobe syscall test for regs changes
-      selftests/bpf: Add uretprobe syscall call from user space test
-      selftests/bpf: Add uretprobe shadow stack test
+ arch/x86/include/asm/shstk.h |  2 ++
+ arch/x86/kernel/shstk.c      | 11 +++++++++++
+ arch/x86/kernel/uprobes.c    |  7 ++++++-
+ 3 files changed, 19 insertions(+), 1 deletion(-)
 
- arch/x86/entry/syscalls/syscall_64.tbl                      |   1 +
- arch/x86/include/asm/shstk.h                                |   4 +
- arch/x86/kernel/shstk.c                                     |  16 ++++
- arch/x86/kernel/uprobes.c                                   | 124 ++++++++++++++++++++++++++++-
- include/linux/syscalls.h                                    |   2 +
- include/linux/uprobes.h                                     |   3 +
- include/uapi/asm-generic/unistd.h                           |   5 +-
- kernel/events/uprobes.c                                     |  24 ++++--
- kernel/sys_ni.c                                             |   2 +
- tools/include/linux/compiler.h                              |   4 +
- tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c       | 123 ++++++++++++++++++++++++++++-
- tools/testing/selftests/bpf/prog_tests/uprobe_syscall.c     | 385 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
- tools/testing/selftests/bpf/progs/uprobe_syscall.c          |  15 ++++
- tools/testing/selftests/bpf/progs/uprobe_syscall_executed.c |  17 ++++
- tools/testing/selftests/x86/test_shadow_stack.c             | 145 ++++++++++++++++++++++++++++++++++
- 15 files changed, 860 insertions(+), 10 deletions(-)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/uprobe_syscall.c
- create mode 100644 tools/testing/selftests/bpf/progs/uprobe_syscall.c
- create mode 100644 tools/testing/selftests/bpf/progs/uprobe_syscall_executed.c
+diff --git a/arch/x86/include/asm/shstk.h b/arch/x86/include/asm/shstk.h
+index 42fee8959df7..896909f306e3 100644
+--- a/arch/x86/include/asm/shstk.h
++++ b/arch/x86/include/asm/shstk.h
+@@ -21,6 +21,7 @@ unsigned long shstk_alloc_thread_stack(struct task_struct *p, unsigned long clon
+ void shstk_free(struct task_struct *p);
+ int setup_signal_shadow_stack(struct ksignal *ksig);
+ int restore_signal_shadow_stack(void);
++int shstk_update_last_frame(unsigned long val);
+ #else
+ static inline long shstk_prctl(struct task_struct *task, int option,
+ 			       unsigned long arg2) { return -EINVAL; }
+@@ -31,6 +32,7 @@ static inline unsigned long shstk_alloc_thread_stack(struct task_struct *p,
+ static inline void shstk_free(struct task_struct *p) {}
+ static inline int setup_signal_shadow_stack(struct ksignal *ksig) { return 0; }
+ static inline int restore_signal_shadow_stack(void) { return 0; }
++static inline int shstk_update_last_frame(unsigned long val) { return 0; }
+ #endif /* CONFIG_X86_USER_SHADOW_STACK */
+ 
+ #endif /* __ASSEMBLY__ */
+diff --git a/arch/x86/kernel/shstk.c b/arch/x86/kernel/shstk.c
+index 6f1e9883f074..9797d4cdb78a 100644
+--- a/arch/x86/kernel/shstk.c
++++ b/arch/x86/kernel/shstk.c
+@@ -577,3 +577,14 @@ long shstk_prctl(struct task_struct *task, int option, unsigned long arg2)
+ 		return wrss_control(true);
+ 	return -EINVAL;
+ }
++
++int shstk_update_last_frame(unsigned long val)
++{
++	unsigned long ssp;
++
++	if (!features_enabled(ARCH_SHSTK_SHSTK))
++		return 0;
++
++	ssp = get_user_shstk_addr();
++	return write_user_shstk_64((u64 __user *)ssp, (u64)val);
++}
+diff --git a/arch/x86/kernel/uprobes.c b/arch/x86/kernel/uprobes.c
+index 6c07f6daaa22..6402fb3089d2 100644
+--- a/arch/x86/kernel/uprobes.c
++++ b/arch/x86/kernel/uprobes.c
+@@ -1076,8 +1076,13 @@ arch_uretprobe_hijack_return_addr(unsigned long trampoline_vaddr, struct pt_regs
+ 		return orig_ret_vaddr;
+ 
+ 	nleft = copy_to_user((void __user *)regs->sp, &trampoline_vaddr, rasize);
+-	if (likely(!nleft))
++	if (likely(!nleft)) {
++		if (shstk_update_last_frame(trampoline_vaddr)) {
++			force_sig(SIGSEGV);
++			return -1;
++		}
+ 		return orig_ret_vaddr;
++	}
+ 
+ 	if (nleft != rasize) {
+ 		pr_err("return address clobbered: pid=%d, %%sp=%#lx, %%ip=%#lx\n",
+-- 
+2.45.1
 
-Jiri Olsa (1):
-      man2: Add uretprobe syscall page
-
- man/man2/uretprobe.2 | 56 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 56 insertions(+)
- create mode 100644 man/man2/uretprobe.2
 
