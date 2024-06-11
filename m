@@ -1,369 +1,225 @@
-Return-Path: <bpf+bounces-31762-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-31763-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 049C2902C3C
-	for <lists+bpf@lfdr.de>; Tue, 11 Jun 2024 01:09:17 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A255C902DDE
+	for <lists+bpf@lfdr.de>; Tue, 11 Jun 2024 03:06:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A7B6F2855CA
-	for <lists+bpf@lfdr.de>; Mon, 10 Jun 2024 23:09:15 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BCDC81C21A88
+	for <lists+bpf@lfdr.de>; Tue, 11 Jun 2024 01:06:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4755315216C;
-	Mon, 10 Jun 2024 23:09:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 670C8BA42;
+	Tue, 11 Jun 2024 01:05:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VafnmNlW"
+	dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b="AAXMqafQ"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f179.google.com (mail-pg1-f179.google.com [209.85.215.179])
+Received: from mail-oi1-f172.google.com (mail-oi1-f172.google.com [209.85.167.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4522E1514DA
-	for <bpf@vger.kernel.org>; Mon, 10 Jun 2024 23:09:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C4F5BB66F
+	for <bpf@vger.kernel.org>; Tue, 11 Jun 2024 01:05:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718060952; cv=none; b=cHbAvlOpRzDJmshWpygB6mDGgvePNQ7OJK4DfautyL5QNO3QyPHroH2OtalkXL9xcGAxzFlJoDMRS4Ld/5I+fN3OsULpx4aaAbfNKTDh8VHYl10souHZPvDCJKeFg+qkJPydAfUCC7Mo2hjlrc3PeV5EXPHuY8/7lNw9PjKm6yA=
+	t=1718067952; cv=none; b=BLk9nrf8G7H62oBS+aYZdrio03HgrZGyVksIer07MnMePJ4y2CaH+kNkjCelzEstoDV0BdvEvqQTKN3+lhAYUSn3YyAay6LWusRh+x7ea+/siJyb09Vmm5Gt6OIeUlpJ9lZG+rpzfbBR5NB/A9RbEl7BcJt1ltvba2lTD3InoT4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718060952; c=relaxed/simple;
-	bh=CR6Vcz3d7+0UOj5jXKBGi2AQMLu9XLFckpySJup0ttU=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=LJwQQURHNFIdmIBE0YsG3wIFjKa4dfVP3PDmZbAw/VqNxgBFp4ef1VogZ9pTWV6FPAgY9b54Wf+E3e5cf/z6Sdzt0PoBr+0h61gvI/dbqo7vM5UKsjYv5NTIIZjJGhWstsWicpc4Tthr6RkZABBNyjFdpUKG32ZCxM3JZUrNXiA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=VafnmNlW; arc=none smtp.client-ip=209.85.215.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f179.google.com with SMTP id 41be03b00d2f7-6e620302b01so2018677a12.0
-        for <bpf@vger.kernel.org>; Mon, 10 Jun 2024 16:09:11 -0700 (PDT)
+	s=arc-20240116; t=1718067952; c=relaxed/simple;
+	bh=1ZwDkZMh5wK7KEbCm2y7rfR5RAxqwyRhu58ZhZipeVQ=;
+	h=Date:Message-ID:MIME-Version:Content-Type:Content-Disposition:
+	 From:To:Cc:Subject:References:In-Reply-To; b=OAtvmooM1kcHeIuk4G8PsJP5u34yPoyZFR3DSCpH88znp0FzrBLzzXBJbsfADVpZdO6gvUBhQg9eyaHjBEAvaNAJQ01AQ+quVa8kK8j5PSailSzAgpVJsPPaFPgnVO2wUZ8NTRDLdrYwylLG2JogDAOwGDVYXef+lg+hWxqt6Dc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com; spf=pass smtp.mailfrom=paul-moore.com; dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b=AAXMqafQ; arc=none smtp.client-ip=209.85.167.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=paul-moore.com
+Received: by mail-oi1-f172.google.com with SMTP id 5614622812f47-3d220039bc6so1339782b6e.2
+        for <bpf@vger.kernel.org>; Mon, 10 Jun 2024 18:05:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1718060950; x=1718665750; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=kV7xLjOpWeGHh8giULo8MXA150fQenV1ODSbku6laFg=;
-        b=VafnmNlWjqrRm+zR0HqU04l7lhhgdODU80ahE9dZChbQAfh8DMNSWGIWgzLIVbWgVL
-         U7bHgu1Hy/BPGXLv86v3Vfm+3t+PeVFL1HGpVGeVAPV24ysksD34HTiwGZKZdo/t4RHQ
-         dX7o/MrVgv3NCgug0X1aV4USoaLd4bwP6gFet8ZtMGQoMrHnTvwefTnoKOMYikPLwrTw
-         MUOan3IN4GgRGbZTAqYIkOQ/qmnvJvk2Pq4Pw0+MwTKlqIxkJz0dIdqlbzwMJmn/AeIU
-         0UDAjxQpAC0B8OKGdsC1HoW6QutofFV6Rs1sHW9HTIz1/qhi9xQdhqEnu4sgGVpzRvft
-         ASMQ==
+        d=paul-moore.com; s=google; t=1718067949; x=1718672749; darn=vger.kernel.org;
+        h=in-reply-to:references:subject:cc:to:from:content-transfer-encoding
+         :content-disposition:mime-version:message-id:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=yZ4JDG+dJaoWCaYO977Z1LKOPgYLIz36cfcgnvADTfA=;
+        b=AAXMqafQhrW6XWQnz8wS9LV3Z90TqFB3oNX7o4sAEeQO+zuQEzuNnLe+kf6R8pvoLm
+         DWZ1WPvBaa8wjkyQmElmXJEIG0Ftjd6In5heppa/XlV7p6piiNiwQdaG1Kmx23wi0TxJ
+         1MFTyVsG3oZJ3ugq4ihZ+WgtLinL2ruEpulDzPdyllWeUXL1yGqLnnF95r8bHun9OYwk
+         brg08Dr5n3vzwjWoNAk/R2Dgj79HcY+UyVDr384d9r5DX/YcA3Sl5fjIQu2jDZkgjtNK
+         O5BxyKFuT4CxfBf+4rDhrqKbpTQAVWA5Nxt6i3MKWxwVPly3ZnBbur+k0HaVHWf+oIuE
+         E/uA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1718060950; x=1718665750;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=kV7xLjOpWeGHh8giULo8MXA150fQenV1ODSbku6laFg=;
-        b=BdrKze0UVQpWtomJHvIyuoNke5D3HW5vhx/Xs0sYQniwJYsuPD5qGVJ+pnACNEiGLo
-         EXdx/Qy53uDEqHnTbTQQCYe38dM0YGFgtx09mi0fOXQ7c66SQQimwy6o4x3QOEl8q5Bh
-         JN3n0YKPmI+IrfhE5Z5LDcJ8594I+hXYEP8Z7/y4kAXeXwKhV8VmsQ7gc/w0IJVI481B
-         Ltb0g9zb9L1bXEb7GSjdZ3eWQSIlSdrqRh6d1Qos4Pxe3w8BE+jR9E6LR6zJN8mqnqqi
-         FDz8tcneLmtL6bwDGQOnk3X0mMXnZ0VZoeM/JQU9+wtTLSD6vjpzk64/6kh1OyRwC8t5
-         IbEA==
-X-Gm-Message-State: AOJu0YylyGoYhm7dX1cVtm14S9NaPHFFZpkLS3y426c9aaCcfTaeoYer
-	TbOMZa06mx3nkaJlnhhpt9EasLXrdctRizMocqUmIqkLke1lmayGwa5Rig==
-X-Google-Smtp-Source: AGHT+IFNWrpnpPm74DZExxk/+SjsSMMj/XVHlnNIkGWuEzoGbMV8ys9F63yYz2uDuEl+5FCp6K3jrQ==
-X-Received: by 2002:a17:902:e802:b0:1f2:fbda:8671 with SMTP id d9443c01a7336-1f6d02d6275mr114340185ad.6.1718060949754;
-        Mon, 10 Jun 2024 16:09:09 -0700 (PDT)
-Received: from localhost.localdomain ([2620:10d:c090:400::5:cfaa])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-1f6bd75f2e8sm89748925ad.25.2024.06.10.16.09.08
-        (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
-        Mon, 10 Jun 2024 16:09:09 -0700 (PDT)
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To: bpf@vger.kernel.org
-Cc: daniel@iogearbox.net,
-	andrii@kernel.org,
-	martin.lau@kernel.org,
-	memxor@gmail.com,
-	eddyz87@gmail.com,
-	kernel-team@fb.com
-Subject: [PATCH v2 bpf-next 4/4] selftests/bpf: Add tests for add_const
-Date: Mon, 10 Jun 2024 16:08:49 -0700
-Message-Id: <20240610230849.80820-5-alexei.starovoitov@gmail.com>
-X-Mailer: git-send-email 2.39.3 (Apple Git-146)
-In-Reply-To: <20240610230849.80820-1-alexei.starovoitov@gmail.com>
-References: <20240610230849.80820-1-alexei.starovoitov@gmail.com>
+        d=1e100.net; s=20230601; t=1718067949; x=1718672749;
+        h=in-reply-to:references:subject:cc:to:from:content-transfer-encoding
+         :content-disposition:mime-version:message-id:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=yZ4JDG+dJaoWCaYO977Z1LKOPgYLIz36cfcgnvADTfA=;
+        b=wZ8Ehy8A3Ap9gWNHyoac+wU/K/w2kyq526nP0tQQKMBpiwKnG0ERDo2PjXlY4hBD5Y
+         vMO2M+9dRJLfFnLrN3yQpGnVSYP/tN+n2624dbab1O2Ouly9LXWLGeQpHSnnSK3+1cgG
+         LcCOpxknauGPLKJ+HsQ2ivnrQV4JW7dN/kS11L7P1VnKRBzenpFAhpJ8YpSE20Ww0bwM
+         boW3JfiTXr3/muIHCrAOeO/WrcVgHR+qXmzHOjrjh2Ba4oCNuY7kHl7XTeH0iE44kaFR
+         xnFnJxjkkm9bgpIQHnjQAfPLVk9lmGJtSPlrbOiLNJuMqNb0XCLb7tMpekTWQXHPBga0
+         jooA==
+X-Forwarded-Encrypted: i=1; AJvYcCWGd8x7bApCVyC/WqL0pG7iiIyLt3zB+DpTVCC8WVUnR6Xn/UMj4vYlmD/9uBw7hoIbELBP+g6Om/NXDyzQcsXrptOY
+X-Gm-Message-State: AOJu0Yw2Ni9P7poJ3ew7aT7HRNcDiABuc7vGBvVLKUPn1GA0brD9iNWV
+	kETB9WlnYx626Hb++eoSUhxLvrsZ42zs5H07w91N7xhIA3iuuImvYb6orsRvfg==
+X-Google-Smtp-Source: AGHT+IHbEqXBLO2Hne6cvXvXI7Jk/mxqNCvkIh6oXm2zZK2/y+ysC+4BLi5/GWzLIe/6agFFO8Me6g==
+X-Received: by 2002:a05:6808:bd2:b0:3d2:15a5:99ff with SMTP id 5614622812f47-3d215a59ab5mr12107086b6e.32.1718067948753;
+        Mon, 10 Jun 2024 18:05:48 -0700 (PDT)
+Received: from localhost ([70.22.175.108])
+        by smtp.gmail.com with ESMTPSA id af79cd13be357-79785665e38sm106079785a.64.2024.06.10.18.05.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 10 Jun 2024 18:05:48 -0700 (PDT)
+Date: Mon, 10 Jun 2024 21:05:47 -0400
+Message-ID: <03c6f35485d622d8121fa0d7a7e3d0b2@paul-moore.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
+MIME-Version: 1.0 
+Content-Type: text/plain; charset=utf-8 
+Content-Disposition: inline 
 Content-Transfer-Encoding: 8bit
+From: Paul Moore <paul@paul-moore.com>
+To: KP Singh <kpsingh@kernel.org>, linux-security-module@vger.kernel.org, bpf@vger.kernel.org
+Cc: ast@kernel.org, casey@schaufler-ca.com, andrii@kernel.org, keescook@chromium.org, daniel@iogearbox.net, renauld@google.com, revest@chromium.org, song@kernel.org, KP Singh <kpsingh@kernel.org>
+Subject: Re: [PATCH v12 5/5] bpf: Only enable BPF LSM hooks when an LSM program  is attached
+References: <20240516003524.143243-6-kpsingh@kernel.org>
+In-Reply-To: <20240516003524.143243-6-kpsingh@kernel.org>
 
-From: Alexei Starovoitov <ast@kernel.org>
+On May 15, 2024 KP Singh <kpsingh@kernel.org> wrote:
+> 
+> BPF LSM hooks have side-effects (even when a default value's returned)
+> as some hooks end up behaving differently due to the very presence of
+> the hook.
+> 
+> The static keys guarding the BPF LSM hooks are disabled by default and
+> enabled only when a BPF program is attached implementing the hook
+> logic. This avoids the issue of the side-effects and also the minor
+> overhead associated with the empty callback.
+> 
+> security_file_ioctl:
+>    0xff...0e30 <+0>:	endbr64
+>    0xff...0e34 <+4>:	nopl   0x0(%rax,%rax,1)
+>    0xff...0e39 <+9>:	push   %rbp
+>    0xff...0e3a <+10>:	push   %r14
+>    0xff...0e3c <+12>:	push   %rbx
+>    0xff...0e3d <+13>:	mov    %rdx,%rbx
+>    0xff...0e40 <+16>:	mov    %esi,%ebp
+>    0xff...0e42 <+18>:	mov    %rdi,%r14
+>    0xff...0e45 <+21>:	jmp    0xff...0e57 <security_file_ioctl+39>
+>    				^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+>    Static key enabled for SELinux
+> 
+>    0xff...0e47 <+23>:	xchg   %ax,%ax
+>    			^^^^^^^^^^^^^^
+> 
+>    Static key disabled for BPF. This gets patched when a BPF LSM
+>    program is attached
+> 
+>    0xff...0e49 <+25>:	xor    %eax,%eax
+>    0xff...0e4b <+27>:	xchg   %ax,%ax
+>    0xff...0e4d <+29>:	pop    %rbx
+>    0xff...0e4e <+30>:	pop    %r14
+>    0xff...0e50 <+32>:	pop    %rbp
+>    0xff...0e51 <+33>:	cs jmp 0xff...0000 <__x86_return_thunk>
+>    0xff...0e57 <+39>:	endbr64
+>    0xff...0e5b <+43>:	mov    %r14,%rdi
+>    0xff...0e5e <+46>:	mov    %ebp,%esi
+>    0xff...0e60 <+48>:	mov    %rbx,%rdx
+>    0xff...0e63 <+51>:	call   0xff...33c0 <selinux_file_ioctl>
+>    0xff...0e68 <+56>:	test   %eax,%eax
+>    0xff...0e6a <+58>:	jne    0xff...0e4d <security_file_ioctl+29>
+>    0xff...0e6c <+60>:	jmp    0xff...0e47 <security_file_ioctl+23>
+>    0xff...0e6e <+62>:	endbr64
+>    0xff...0e72 <+66>:	mov    %r14,%rdi
+>    0xff...0e75 <+69>:	mov    %ebp,%esi
+>    0xff...0e77 <+71>:	mov    %rbx,%rdx
+>    0xff...0e7a <+74>:	call   0xff...e3b0 <bpf_lsm_file_ioctl>
+>    0xff...0e7f <+79>:	test   %eax,%eax
+>    0xff...0e81 <+81>:	jne    0xff...0e4d <security_file_ioctl+29>
+>    0xff...0e83 <+83>:	jmp    0xff...0e49 <security_file_ioctl+25>
+>    0xff...0e85 <+85>:	endbr64
+>    0xff...0e89 <+89>:	mov    %r14,%rdi
+>    0xff...0e8c <+92>:	mov    %ebp,%esi
+>    0xff...0e8e <+94>:	mov    %rbx,%rdx
+>    0xff...0e91 <+97>:	pop    %rbx
+>    0xff...0e92 <+98>:	pop    %r14
+>    0xff...0e94 <+100>:	pop    %rbp
+>    0xff...0e95 <+101>:	ret
+> 
+> This patch enables this by providing a LSM_HOOK_INIT_RUNTIME variant
+> that allows the LSMs to opt-in to hooks which can be toggled at runtime
+> which with security_toogle_hook.
+> 
+> Reviewed-by: Kees Cook <keescook@chromium.org>
+> Acked-by: Casey Schaufler <casey@schaufler-ca.com>
+> Signed-off-by: KP Singh <kpsingh@kernel.org>
+> ---
+>  include/linux/lsm_hooks.h | 30 ++++++++++++++++++++++++++++-
+>  kernel/bpf/trampoline.c   | 40 +++++++++++++++++++++++++++++++++++----
+>  security/bpf/hooks.c      |  2 +-
+>  security/security.c       | 35 +++++++++++++++++++++++++++++++++-
+>  4 files changed, 100 insertions(+), 7 deletions(-)
 
-Improve arena based tests and add several C and asm tests
-with specific pattern.
-These tests would have failed without add_const verifier support.
+...
 
-Also add several loop_inside_iter*() tests that are not related to add_const,
-but nice to have.
+> diff --git a/security/security.c b/security/security.c
+> index 9654ca074aed..2f8bcacf1fb4 100644
+> --- a/security/security.c
+> +++ b/security/security.c
+> @@ -885,6 +887,37 @@ int lsm_fill_user_ctx(struct lsm_ctx __user *uctx, u32 *uctx_len,
+>  	return rc;
+>  }
+>  
+> +/**
+> + * security_toggle_hook - Toggle the state of the LSM hook.
+> + * @hook_addr: The address of the hook to be toggled.
+> + * @state: Whether to enable for disable the hook.
+> + *
+> + * Returns 0 on success, -EINVAL if the address is not found.
+> + */
+> +int security_toggle_hook(void *hook_addr, bool state)
+> +{
+> +	struct lsm_static_call *scalls = ((void *)&static_calls_table);
 
-Signed-off-by: Alexei Starovoitov <ast@kernel.org>
----
- .../testing/selftests/bpf/progs/arena_htab.c  |  16 +-
- .../bpf/progs/verifier_iterating_callbacks.c  | 208 ++++++++++++++++++
- 2 files changed, 221 insertions(+), 3 deletions(-)
+GCC (v14.1.1 if that matters) is complaining about casting randomized
+structs.  Looking quickly at the two structs, lsm_static_call and
+lsm_static_calls_table, I suspect the cast is harmless even if the
+randstruct case, but I would like to see some sort of fix for this so
+I don't get spammed by GCC every time I do a build.  On the other hand,
+if this cast really is a problem in the randstruct case we obviously
+need to fix that.
 
-diff --git a/tools/testing/selftests/bpf/progs/arena_htab.c b/tools/testing/selftests/bpf/progs/arena_htab.c
-index 1e6ac187a6a0..cd598348725e 100644
---- a/tools/testing/selftests/bpf/progs/arena_htab.c
-+++ b/tools/testing/selftests/bpf/progs/arena_htab.c
-@@ -18,25 +18,35 @@ void __arena *htab_for_user;
- bool skip = false;
- 
- int zero = 0;
-+char __arena arr1[100000];
-+char arr2[1000];
- 
- SEC("syscall")
- int arena_htab_llvm(void *ctx)
- {
- #if defined(__BPF_FEATURE_ADDR_SPACE_CAST) || defined(BPF_ARENA_FORCE_ASM)
- 	struct htab __arena *htab;
-+	char __arena *arr = arr1;
- 	__u64 i;
- 
- 	htab = bpf_alloc(sizeof(*htab));
- 	cast_kern(htab);
- 	htab_init(htab);
- 
-+	cast_kern(arr);
-+
- 	/* first run. No old elems in the table */
--	for (i = zero; i < 1000; i++)
-+	for (i = zero; i < 100000 && can_loop; i++) {
- 		htab_update_elem(htab, i, i);
-+		arr[i] = i;
-+	}
- 
--	/* should replace all elems with new ones */
--	for (i = zero; i < 1000; i++)
-+	/* should replace some elems with new ones */
-+	for (i = zero; i < 1000 && can_loop; i++) {
- 		htab_update_elem(htab, i, i);
-+		/* Access mem to make the verifier use bounded loop logic */
-+		arr2[i] = i;
-+	}
- 	cast_user(htab);
- 	htab_for_user = htab;
- #else
-diff --git a/tools/testing/selftests/bpf/progs/verifier_iterating_callbacks.c b/tools/testing/selftests/bpf/progs/verifier_iterating_callbacks.c
-index bd676d7e615f..627b7f0ca8e1 100644
---- a/tools/testing/selftests/bpf/progs/verifier_iterating_callbacks.c
-+++ b/tools/testing/selftests/bpf/progs/verifier_iterating_callbacks.c
-@@ -405,4 +405,212 @@ int cond_break5(const void *ctx)
- 	return cnt1 > 1 && cnt2 > 1 ? 1 : 0;
- }
- 
-+#define ARR2_SZ 1000
-+SEC(".data.arr2")
-+char arr2[ARR2_SZ];
-+
-+SEC("socket")
-+__success __flag(BPF_F_TEST_STATE_FREQ)
-+int loop_inside_iter(const void *ctx)
-+{
-+	struct bpf_iter_num it;
-+	int *v, sum = 0;
-+	__u64 i = 0;
-+
-+	bpf_iter_num_new(&it, 0, ARR2_SZ);
-+	while ((v = bpf_iter_num_next(&it))) {
-+		if (i < ARR2_SZ)
-+			sum += arr2[i++];
-+	}
-+	bpf_iter_num_destroy(&it);
-+	return sum;
-+}
-+
-+SEC("socket")
-+__success __flag(BPF_F_TEST_STATE_FREQ)
-+int loop_inside_iter_signed(const void *ctx)
-+{
-+	struct bpf_iter_num it;
-+	int *v, sum = 0;
-+	long i = 0;
-+
-+	bpf_iter_num_new(&it, 0, ARR2_SZ);
-+	while ((v = bpf_iter_num_next(&it))) {
-+		if (i < ARR2_SZ && i >= 0)
-+			sum += arr2[i++];
-+	}
-+	bpf_iter_num_destroy(&it);
-+	return sum;
-+}
-+
-+volatile const int limit = ARR2_SZ;
-+
-+SEC("socket")
-+__success __flag(BPF_F_TEST_STATE_FREQ)
-+int loop_inside_iter_volatile_limit(const void *ctx)
-+{
-+	struct bpf_iter_num it;
-+	int *v, sum = 0;
-+	__u64 i = 0;
-+
-+	bpf_iter_num_new(&it, 0, ARR2_SZ);
-+	while ((v = bpf_iter_num_next(&it))) {
-+		if (i < limit)
-+			sum += arr2[i++];
-+	}
-+	bpf_iter_num_destroy(&it);
-+	return sum;
-+}
-+
-+#define ARR_LONG_SZ 1000
-+
-+SEC(".data.arr_long")
-+long arr_long[ARR_LONG_SZ];
-+
-+SEC("socket")
-+__success
-+int test1(const void *ctx)
-+{
-+	long i;
-+
-+	for (i = 0; i < ARR_LONG_SZ && can_loop; i++)
-+		arr_long[i] = i;
-+	return 0;
-+}
-+
-+SEC("socket")
-+__success
-+int test2(const void *ctx)
-+{
-+	__u64 i;
-+
-+	for (i = zero; i < ARR_LONG_SZ && can_loop; i++) {
-+		barrier_var(i);
-+		arr_long[i] = i;
-+	}
-+	return 0;
-+}
-+
-+SEC(".data.arr_foo")
-+struct {
-+	int a;
-+	int b;
-+} arr_foo[ARR_LONG_SZ];
-+
-+SEC("socket")
-+__success
-+int test3(const void *ctx)
-+{
-+	__u64 i;
-+
-+	for (i = zero; i < ARR_LONG_SZ && can_loop; i++) {
-+		barrier_var(i);
-+		arr_foo[i].a = i;
-+		arr_foo[i].b = i;
-+	}
-+	return 0;
-+}
-+
-+SEC("socket")
-+__success
-+int test4(const void *ctx)
-+{
-+	long i;
-+
-+	for (i = zero + ARR_LONG_SZ - 1; i < ARR_LONG_SZ && i >= 0 && can_loop; i--) {
-+		barrier_var(i);
-+		arr_foo[i].a = i;
-+		arr_foo[i].b = i;
-+	}
-+	return 0;
-+}
-+
-+char buf[10] SEC(".data.buf");
-+
-+SEC("socket")
-+__description("check add const")
-+__success
-+__naked void check_add_const(void)
-+{
-+	/* typical LLVM generated loop with may_goto */
-+	asm volatile ("			\
-+	call %[bpf_ktime_get_ns];	\
-+	if r0 > 9 goto l1_%=;		\
-+l0_%=:	r1 = %[buf];			\
-+	r2 = r0;			\
-+	r1 += r2;			\
-+	r3 = *(u8 *)(r1 +0);		\
-+	.byte 0xe5; /* may_goto */	\
-+	.byte 0; /* regs */		\
-+	.short 4; /* off of l1_%=: */	\
-+	.long 0; /* imm */		\
-+	r0 = r2;			\
-+	r0 += 1;			\
-+	if r2 < 9 goto l0_%=;		\
-+	exit;				\
-+l1_%=:	r0 = 0;				\
-+	exit;				\
-+"	:
-+	: __imm(bpf_ktime_get_ns),
-+	  __imm_ptr(buf)
-+	: __clobber_common);
-+}
-+
-+SEC("socket")
-+__failure
-+__msg("*(u8 *)(r7 +0) = r0")
-+__msg("invalid access to map value, value_size=10 off=10 size=1")
-+__naked void check_add_const_3regs(void)
-+{
-+	asm volatile (
-+	"r6 = %[buf];"
-+	"r7 = %[buf];"
-+	"call %[bpf_ktime_get_ns];"
-+	"r1 = r0;"              /* link r0.id == r1.id == r2.id */
-+	"r2 = r0;"
-+	"r1 += 1;"              /* r1 == r0+1 */
-+	"r2 += 2;"              /* r2 == r0+2 */
-+	"if r0 > 8 goto 1f;"    /* r0 range [0, 8]  */
-+	"r6 += r1;"             /* r1 range [1, 9]  */
-+	"r7 += r2;"             /* r2 range [2, 10] */
-+	"*(u8 *)(r6 +0) = r0;"  /* safe, within bounds   */
-+	"*(u8 *)(r7 +0) = r0;"  /* unsafe, out of bounds */
-+	"1: exit;"
-+	:
-+	: __imm(bpf_ktime_get_ns),
-+	  __imm_ptr(buf)
-+	: __clobber_common);
-+}
-+
-+SEC("socket")
-+__failure
-+__msg("*(u8 *)(r8 -1) = r0")
-+__msg("invalid access to map value, value_size=10 off=10 size=1")
-+__naked void check_add_const_3regs_2if(void)
-+{
-+	asm volatile (
-+	"r6 = %[buf];"
-+	"r7 = %[buf];"
-+	"r8 = %[buf];"
-+	"call %[bpf_ktime_get_ns];"
-+	"if r0 < 2 goto 1f;"
-+	"r1 = r0;"              /* link r0.id == r1.id == r2.id */
-+	"r2 = r0;"
-+	"r1 += 1;"              /* r1 == r0+1 */
-+	"r2 += 2;"              /* r2 == r0+2 */
-+	"if r2 > 11 goto 1f;"   /* r2 range [0, 11] -> r0 range [-2, 9]; r1 range [-1, 10] */
-+	"if r0 s< 0 goto 1f;"   /* r0 range [0, 9] -> r1 range [1, 10]; r2 range [2, 11]; */
-+	"r6 += r0;"             /* r0 range [0, 9]  */
-+	"r7 += r1;"             /* r1 range [1, 10] */
-+	"r8 += r2;"             /* r2 range [2, 11] */
-+	"*(u8 *)(r6 +0) = r0;"  /* safe, within bounds   */
-+	"*(u8 *)(r7 -1) = r0;"  /* safe */
-+	"*(u8 *)(r8 -1) = r0;"  /* unsafe */
-+	"1: exit;"
-+	:
-+	: __imm(bpf_ktime_get_ns),
-+	  __imm_ptr(buf)
-+	: __clobber_common);
-+}
-+
- char _license[] SEC("license") = "GPL";
--- 
-2.43.0
+Either way, resolve this and make sure you test with GCC/randstruct
+enabled.
 
+> +	unsigned long num_entries =
+> +		(sizeof(static_calls_table) / sizeof(struct lsm_static_call));
+> +	int i;
+> +
+> +	for (i = 0; i < num_entries; i++) {
+> +
+> +		if (!scalls[i].hl || !scalls[i].hl->runtime)
+> +			continue;
+> +
+> +		if (scalls[i].hl->hook.lsm_func_addr != hook_addr)
+> +			continue;
+> +
+> +		if (state)
+> +			static_branch_enable(scalls[i].active);
+> +		else
+> +			static_branch_disable(scalls[i].active);
+> +		return 0;
+> +	}
+> +	return -EINVAL;
+> +}
+> +
+>  /*
+>   * The default value of the LSM hook is defined in linux/lsm_hook_defs.h and
+>   * can be accessed with:
+> -- 
+> 2.45.0.rc1.225.g2a3ae87e7f-goog
+
+--
+paul-moore.com
 
