@@ -1,109 +1,140 @@
-Return-Path: <bpf+bounces-31887-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-31888-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1269C90461D
-	for <lists+bpf@lfdr.de>; Tue, 11 Jun 2024 23:12:16 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 283DC904622
+	for <lists+bpf@lfdr.de>; Tue, 11 Jun 2024 23:12:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A2A3C28783D
-	for <lists+bpf@lfdr.de>; Tue, 11 Jun 2024 21:12:14 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4F0581C2343A
+	for <lists+bpf@lfdr.de>; Tue, 11 Jun 2024 21:12:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ACE00153510;
-	Tue, 11 Jun 2024 21:11:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 23C2B153501;
+	Tue, 11 Jun 2024 21:12:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VxGMHtiZ"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bBEfZAwa"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f178.google.com (mail-pl1-f178.google.com [209.85.214.178])
+Received: from mail-ot1-f42.google.com (mail-ot1-f42.google.com [209.85.210.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B454415442C;
-	Tue, 11 Jun 2024 21:11:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4427A1514C9;
+	Tue, 11 Jun 2024 21:12:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718140318; cv=none; b=uSsspC4HQu8XXnm1pW9zwlQm+6FxSiX8a3Y5kNCkVamN4oOh6fHwbcIktnU79C7AiyBdW3wab39CS1x9Z+Jqg2Fxa2UU4iqwcJyfDsO4JpXUTP2f5MdR4iA+37iYkgIDF9wm8gqWnxkRkNVWnmXVl5g+smZ1+tiy4WVJWlqo8Mk=
+	t=1718140345; cv=none; b=JeEYMgYfcjsfMuD3SKV7RUMhpIv5zKhKoXuEoFODRa72x1KhmjLohzjvHuwOZZqvid3aA9EKbX3AsloGwY30syvVqE2E7VZvDYLcczJp92cseLHR4h6oPZchmlZhWOSaK9mDwdZJeBOOmNTXokgmgnsDO1pOTRBiTYPfbuDPgqs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718140318; c=relaxed/simple;
-	bh=cEdz3pPx0zFZuyZzlN3HhDAjH5K92x6qPhdCxkwqjEA=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=XhJ73iIOZndnbxJm9TkcmmZm6+s60LmNA5slYAn2ecvwF8w40TqV7JFUY9bQPO1vDuOEvJRvJnUOhYqT/xxTqEynIDaQVPu8GzbljGHS3/hybGJV9Dyktp2U2zbfubXCCm0QJRNe5shzcsAMZzMLWFyksCRorSNNZ/UQdPv7bXM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=VxGMHtiZ; arc=none smtp.client-ip=209.85.214.178
+	s=arc-20240116; t=1718140345; c=relaxed/simple;
+	bh=gABUjaIqxTdKPvs62Zv3vC0020OcVeLRR4OmLvIB1EQ=;
+	h=Date:From:To:Cc:Message-ID:In-Reply-To:References:Subject:
+	 Mime-Version:Content-Type; b=X8IQGK5aEr1Kjipk4vVMfY9b+GOy1Ky9QaVLbW6uNkXcGw6V6mo2AvXj53HQofWM+f+ARcfVjLDNJ/VtZ1SR6EofrQR/HanyYZ4tSmZi1HW5vsFoAqxzqJ48wnIIu8lKpRSwDHuK2pCBwXDir2tafHBLEX2ivwVtlYjsMy0uQSc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=bBEfZAwa; arc=none smtp.client-ip=209.85.210.42
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f178.google.com with SMTP id d9443c01a7336-1f700e4cb92so12643915ad.2;
-        Tue, 11 Jun 2024 14:11:56 -0700 (PDT)
+Received: by mail-ot1-f42.google.com with SMTP id 46e09a7af769-6f96445cfaeso860223a34.2;
+        Tue, 11 Jun 2024 14:12:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1718140316; x=1718745116; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=cEdz3pPx0zFZuyZzlN3HhDAjH5K92x6qPhdCxkwqjEA=;
-        b=VxGMHtiZyFAi6pvKHEkKyO/fQoXTZ9x3tPAIyxyMwGx3Z1njFG/TRxHLDLrstiSakt
-         WCYjAGoU7RSkfY0hbtmQwKrdgnqsjgvF9R7qDYicNWsxKSeeHj4koolPS6TvMkwhSY/U
-         WiUuvml0c6RtMU8drna7f1JFvaEYN2OG+U5ODAa8hihSgEzghJqn9ZVUxHRxHxoiYLEo
-         FFQZZrXzk9Q5VA0ZsrPWx/WE1MF3M3/xeQ9UVY1iSREyGpa00JrQAaisNi3IAjRpZ4+d
-         t+CyYZfvG3HuQG065CQKB1ahMmCzsN60NisuGw34tlzVL8vaUPK2kRfrr5XZtmsUklQt
-         CQ/w==
+        d=gmail.com; s=20230601; t=1718140343; x=1718745143; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=4f8iA+BT0JdT+xCtVM5QIlFnTXVcaJHgvzWFas2qCZg=;
+        b=bBEfZAwayXI43Dgf4xeZS/XGBkdG4fVLTP2oj8dcQSdUJIdHGS3elwcNLqMVFKUdrL
+         5OskYjKynca2cMD/P+2K5prcgCzvIrMuA7+OxaQ1DVLN5oyMGa3ZqHv0DPxVZYtKuTDW
+         vRe50bCB3JPK2tIwBOvFSUoF+Mo5FXJalpeDIWt9soONGCjmJC1HVs5g+Q0D5o/b5EEb
+         jZwH0xJxiDOCGyVB4VZKnfNO9jcY/iqEba3T7/1Wt4tyFol0h2HSAzXdwfO7STWmsrwH
+         Bh5DR8e3HZeBbcomWMLZSwNwsRflWacKgOdN9MluSBEx95gavPbxV8X3kgi3rrhNm3WO
+         c8Tw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1718140316; x=1718745116;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=cEdz3pPx0zFZuyZzlN3HhDAjH5K92x6qPhdCxkwqjEA=;
-        b=G1j0Skff+iIlsCkor+BUcbfjWvwfk11Jc2obPAeL1Lakqia/UvnCXREBuPSybtcLLZ
-         Z0wa7/+AxS8EInyekTflN1cUB7/k0Y0NrkSHnS7TMP/wzCYAS/AQAF+mRZoP5hE7JCzZ
-         kWPwGg/7nXJ5RfI0gVFDSsu48IUHwpvub16+6QMLzFDnu0/jl5WHHctHjvhUTsOFwrAQ
-         ZovOg7FQAciiJGOgWBe6nVZG9AsP3T1chd8zV22HZJySvh3UnsUrFwg1VxTBLl6cSOKb
-         ZzAdEKHdAHemnBwblgw7lde2Oc7tAT+TEqRrXelSjyPVFSaXYmhlqj7uFxTmPKp6ZI/j
-         Jbww==
-X-Forwarded-Encrypted: i=1; AJvYcCW9i1QrPChMcQdawIlfbLwr4THQeOgxfe52bLB+Tpek4cvz6y7LsMvmzOiO8dfU0FhKwBzH4rPWud71LW4DnGVd/f5Gs1+yy/1yi+is3yy0ea9APvmUm8SPTQM3B13d/zYpiwUJ
-X-Gm-Message-State: AOJu0Yx7iXyUjuuiBxM6WT7nzK7RAtdAQnxevlkSUahegriHSz8g1CrE
-	h8giK2nXYR0ba1m/FRk25wc5P6nUDG+6G30jciMxl5YKUTpbWtoS
-X-Google-Smtp-Source: AGHT+IHGhjitXPHSLmwpEKWOxcRkB09CCleEUgBSXUtzY7wNE50A7/T0BXndwkVz2bxLmuVxMr5Xrw==
-X-Received: by 2002:a17:902:d507:b0:1f8:393e:8b9a with SMTP id d9443c01a7336-1f83b613520mr932825ad.33.1718140315949;
-        Tue, 11 Jun 2024 14:11:55 -0700 (PDT)
-Received: from [192.168.0.31] ([38.34.87.7])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-1f72561cfb4sm26307015ad.268.2024.06.11.14.11.55
+        d=1e100.net; s=20230601; t=1718140343; x=1718745143;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=4f8iA+BT0JdT+xCtVM5QIlFnTXVcaJHgvzWFas2qCZg=;
+        b=oiVwJXesg3Z8m+du4roFmoS49kCEHY6v6CkV5Q66NIQ/kOIb5BoExlbScRXFrwcuqL
+         R/L+jlzSZaZJJ1MaQqBHKU4FYtF1K5NnUs7dzoGV2mWVokSBqzDbdu+jT68/QWwqpyop
+         DmGOey09DZD5IzDVrnQrYVq4zuAmvApQ70UB55QB/NX4QxSrPNbNLxqz/zVCeck2VMtx
+         Xc4DfH7hFSNQtdCnb9hmThstEUSm3gXmLzOAv/2ilftZgCSQkMZmjJQqfysX43CLo41R
+         Ol7wWS/V4rO9Q4Uj6LOKmnsRUGH3bT6LzSu78kr2FxEACJ+o+tTdRIgwLFbVRyO4ffEp
+         Brjg==
+X-Forwarded-Encrypted: i=1; AJvYcCWyORBladBTqxhWRVg4d5UCRo4Tti+xZOJrYceW4C1F153LhZRwtaZMGpBauhEs74+/Aej+77b5rDKOGCIh4cjT8b4n+GwC0mGVMmbZyZF5OPlsyY1eB5b0uBpJ
+X-Gm-Message-State: AOJu0Yyzedx+ZOHeV1P08A1vjy0dEcEJVun+d44Pmjsrkbcfu9RVl+jg
+	t8NRzQEjQeAh+duWoBGLNJ98NZmv4l+RwiQHjkfScHJKq7s+ly8c
+X-Google-Smtp-Source: AGHT+IEPlAD1O1VAe7Ad0WITLf8o8k5Jdn+TEIdSksTF8DDGfXFYOIyOMNIzrDppvgei50u3oBnRNw==
+X-Received: by 2002:a05:6830:1541:b0:6f9:a479:d160 with SMTP id 46e09a7af769-6f9a479d405mr8766328a34.25.1718140343222;
+        Tue, 11 Jun 2024 14:12:23 -0700 (PDT)
+Received: from localhost (56.148.86.34.bc.googleusercontent.com. [34.86.148.56])
+        by smtp.gmail.com with ESMTPSA id af79cd13be357-7977e0eb111sm188859285a.89.2024.06.11.14.12.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 11 Jun 2024 14:11:55 -0700 (PDT)
-Message-ID: <1f4c4d90ec6909ae74d595c213f45f9dd49a9867.camel@gmail.com>
-Subject: Re: [PATCH bpf-next 4/5] selftests/bpf: Use start_server_str in
- mptcp
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Geliang Tang <geliang@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
- Mykola Lysenko <mykolal@fb.com>, Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>, Martin KaFai Lau
- <martin.lau@linux.dev>, Song Liu <song@kernel.org>, Yonghong Song
- <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, KP
- Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo
- <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,  Shuah Khan
- <shuah@kernel.org>
-Cc: Geliang Tang <tanggeliang@kylinos.cn>, bpf@vger.kernel.org, 
-	linux-kselftest@vger.kernel.org
-Date: Tue, 11 Jun 2024 14:11:50 -0700
-In-Reply-To: <bd2f838063195bb7e199df9d01e7f266dbb1d360.1718070940.git.tanggeliang@kylinos.cn>
-References: <cover.1718070939.git.tanggeliang@kylinos.cn>
-	 <bd2f838063195bb7e199df9d01e7f266dbb1d360.1718070940.git.tanggeliang@kylinos.cn>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.44.4-0ubuntu2 
+        Tue, 11 Jun 2024 14:12:22 -0700 (PDT)
+Date: Tue, 11 Jun 2024 17:12:22 -0400
+From: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+To: YiFei Zhu <zhuyifei@google.com>, 
+ netdev@vger.kernel.org, 
+ bpf@vger.kernel.org
+Cc: =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>, 
+ Magnus Karlsson <magnus.karlsson@intel.com>, 
+ Maciej Fijalkowski <maciej.fijalkowski@intel.com>, 
+ Jonathan Lemon <jonathan.lemon@gmail.com>, 
+ Alexei Starovoitov <ast@kernel.org>, 
+ Daniel Borkmann <daniel@iogearbox.net>, 
+ "David S . Miller" <davem@davemloft.net>, 
+ Jakub Kicinski <kuba@kernel.org>, 
+ Jesper Dangaard Brouer <hawk@kernel.org>, 
+ John Fastabend <john.fastabend@gmail.com>, 
+ Andrii Nakryiko <andrii@kernel.org>, 
+ Stanislav Fomichev <sdf@google.com>, 
+ Willem de Bruijn <willemb@google.com>
+Message-ID: <6668bdb68eaf5_f6b0e29416@willemb.c.googlers.com.notmuch>
+In-Reply-To: <a932c40e59f648d9d2771f9533cbc01cd4c0935c.1718138187.git.zhuyifei@google.com>
+References: <cover.1718138187.git.zhuyifei@google.com>
+ <a932c40e59f648d9d2771f9533cbc01cd4c0935c.1718138187.git.zhuyifei@google.com>
+Subject: Re: [RFC PATCH net-next 1/3] selftests/bpf: Move rxq_num helper from
+ xdp_hw_metadata to network_helpers
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 7bit
 
-On Tue, 2024-06-11 at 09:59 +0800, Geliang Tang wrote:
-> From: Geliang Tang <tanggeliang@kylinos.cn>
->=20
-> Since start_server_str() is added now, it can be used in mptcp.c in
-> start_mptcp_server() instead of using helpers make_sockaddr() and
-> start_server_addr() to simplify the code.
->=20
-> Signed-off-by: Geliang Tang <tanggeliang@kylinos.cn>
+YiFei Zhu wrote:
+> This helper may be useful for other AF_XDP tests, such as xsk_hw.
+> Moving it out so we don't need to copy-paste that function.
+> 
+> I also changed the function from directly calling error(1, errno, ...)
+> to returning an error because I don't think it makes sense for a
+> library function to outright kill the process if the function fails.
+> 
+> Signed-off-by: YiFei Zhu <zhuyifei@google.com>
 > ---
+>  tools/testing/selftests/bpf/network_helpers.c | 27 +++++++++++++++++++
+>  tools/testing/selftests/bpf/network_helpers.h |  2 ++
+>  tools/testing/selftests/bpf/xdp_hw_metadata.c | 27 ++-----------------
+>  3 files changed, 31 insertions(+), 25 deletions(-)
+> 
+> diff --git a/tools/testing/selftests/bpf/network_helpers.c b/tools/testing/selftests/bpf/network_helpers.c
+> index 35250e6cde7f..4c3bef07df23 100644
+> --- a/tools/testing/selftests/bpf/network_helpers.c
+> +++ b/tools/testing/selftests/bpf/network_helpers.c
+> @@ -569,6 +569,33 @@ int set_hw_ring_size(char *ifname, struct ethtool_ringparam *ring_param)
+>  	return 0;
+>  }
+>  
+> +int rxq_num(const char *ifname)
+> +{
+> +	struct ethtool_channels ch = {
+> +		.cmd = ETHTOOL_GCHANNELS,
+> +	};
+> +	struct ifreq ifr = {
+> +		.ifr_data = (void *)&ch,
+> +	};
+> +	strncpy(ifr.ifr_name, ifname, IF_NAMESIZE - 1);
+> +	int fd, ret, err;
 
-Acked-by: Eduard Zingerman <eddyz87@gmail.com>
+Since sending this as RFC, when sending for inclusion let's move the
+strncpy, to not mix declarations and code.
 
