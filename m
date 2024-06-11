@@ -1,164 +1,232 @@
-Return-Path: <bpf+bounces-31856-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-31857-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 49A11904210
-	for <lists+bpf@lfdr.de>; Tue, 11 Jun 2024 18:59:30 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id D1A90904255
+	for <lists+bpf@lfdr.de>; Tue, 11 Jun 2024 19:22:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 707A31C252B7
-	for <lists+bpf@lfdr.de>; Tue, 11 Jun 2024 16:59:29 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3EB9BB21C5F
+	for <lists+bpf@lfdr.de>; Tue, 11 Jun 2024 17:21:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5AFFD4778C;
-	Tue, 11 Jun 2024 16:58:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E37754CB55;
+	Tue, 11 Jun 2024 17:21:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b="HNtxPS6+";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="GMEzhY5L"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Z3+hILZ6"
 X-Original-To: bpf@vger.kernel.org
-Received: from flow5-smtp.messagingengine.com (flow5-smtp.messagingengine.com [103.168.172.140])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f180.google.com (mail-pf1-f180.google.com [209.85.210.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A618017578;
-	Tue, 11 Jun 2024 16:58:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.140
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1590142067;
+	Tue, 11 Jun 2024 17:21:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718125113; cv=none; b=IT6S1momMkxjGP3+GCAx0TbzdhQvbw/b5IB4LEA17VaY3AK0MgaSmqkKQfDluEZz+0FpPPzIaCnvthy2wfgoDPmnQnAByZB5R0yXJTJCFiDqjpkxnlM33eQfj3ZvP8YuoJl4L2sEA4gy2HWbMi969dcJxkFU4aI1Krz22zPmFuA=
+	t=1718126512; cv=none; b=Vsi30QYBOomy2obtLs7ptu0H0DrM0ZtSweQwhiyFbZ74WptgoK3Ga8wT3Ebzm1lV54cOTrPV95DMSz5W2gvNt05GhVj30G+HW4VEwkQh8/BQO5EdtE9KISR0frnOYM42ghodvAy0hEc8zcc9K4trSapSS/MLKZ+0qzvLtF34Ll0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718125113; c=relaxed/simple;
-	bh=8SY4dECWglq57tFvEFA6sQZdC/024FgtdpPZQqJybcc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=T+Xh7pDPfVWWgmde+8dJ42exvDzMJOMTBWzpi+NM5boymp4qGHpuwQZKYmbqrrXaaaU5xs64BT7W/d2Nd8Dpd59QNT87jIHaUt+VW3DDrxqQGOtW/Th7JlEc51czBrInpyXTligqC1H2XY9KAKEeP47PjgU/fy4DFEHbPfTlqlY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz; spf=pass smtp.mailfrom=dxuuu.xyz; dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b=HNtxPS6+; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=GMEzhY5L; arc=none smtp.client-ip=103.168.172.140
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dxuuu.xyz
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-	by mailflow.nyi.internal (Postfix) with ESMTP id 8382F2002AF;
-	Tue, 11 Jun 2024 12:58:29 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute3.internal (MEProxy); Tue, 11 Jun 2024 12:58:29 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
-	:cc:content-type:content-type:date:date:from:from:in-reply-to
-	:in-reply-to:message-id:mime-version:references:reply-to:subject
-	:subject:to:to; s=fm3; t=1718125109; x=1718132309; bh=kTsf/XjG12
-	FVk17WuA7d1tL6MKxw/YBHpNOowUqpZbY=; b=HNtxPS6+iCZ8+1cfY/sSZ9/ZXF
-	1LGHuCUvt7fcxZptXUMepaOnq6oloZQL5QQ5lYITEwc+t7OGBlscIZ6vcSDTPAjX
-	DffAB4D9d15G8SXoloFnaqYzP8S3zOBEiWtsf6tFCTDt7I0PbylnQ2zcK+AsIYUW
-	CIbLPLpJljyZKf+1SbkveJg4jT02SkZH/eDfTK39P0WpemggYhQ7nzifkZBS3Krm
-	wQptVOAvf48gu+iweeV+PIySbDrkOegngkpZW12fafUWEHqcPPdAAaYfM8N1b2BP
-	fR1ErsJZmlsCioybyE8WUR0VKn+0PsMNAwFGtg7Y/3/rqHyuV86Aphqn+F5g==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm1; t=1718125109; x=1718132309; bh=kTsf/XjG12FVk17WuA7d1tL6MKxw
-	/YBHpNOowUqpZbY=; b=GMEzhY5LVS51kXJlSwbADAeUgsXzI+lP1nAdPnU6CZtv
-	KrLVpLhAjPFLpbE29GO3hNGm4G8TJwRJGBotWW3AIMcv7y/z6R5JQhrFEv2GQFt3
-	xuwza32TGSptHqX1k3F9meZF68IBSnoXfiOa4J58GwjnNxmG3HAYIC2O2ViAH4sg
-	sn7ZZ0FiY5cJ8JZxSSAYnKdqQhSiCYARmwrPQapRZ+zRS4reRQzNcaBAOlSvNMnP
-	WiEgG/axJmyvKBUityiHIrsy3vguZed7ecK2gL7LsYTUdomDkPQ+75xqWVeL/yIE
-	e+oSB07ou/DhjgvqpoR7enNMxzo1UcNIdwTaaNZVRw==
-X-ME-Sender: <xms:NYJoZkVtsmI9UE_5Ce1q1cC6FgvLfGDaRhx602DPw50Ucofyj8-yuQ>
-    <xme:NYJoZomgti10pZ2RaBjjyeXoWs5GzSE7k1LFzfL9sah-Rx0E1PdbliGPpwxlfYSgK
-    X04DpU3sOtL7HdvJQ>
-X-ME-Received: <xmr:NYJoZobIqU5CKd6mWbjxUZN_1TY_eBPgc1YEr6pHkIdTnzjKPnAZNf3F2TW40Fb5g7-e99lyvEj9bXjbJ4st8jdmA-r00EGItw>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrfeduvddguddtiecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enfghrlhcuvffnffculdejtddmnecujfgurhepfffhvfevuffkfhggtggujgesthdtsfdt
-    tddtvdenucfhrhhomhepffgrnhhivghlucgiuhcuoegugihusegugihuuhhurdighiiiqe
-    enucggtffrrghtthgvrhhnpedvfeekteduudefieegtdehfeffkeeuudekheduffduffff
-    gfegiedttefgvdfhvdenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrih
-    hlfhhrohhmpegugihusegugihuuhhurdighiii
-X-ME-Proxy: <xmx:NYJoZjUx3lzU5hr4G3Z7pP1IIfHMRXQVYn-HGRZYnxU5ELp7av2PWQ>
-    <xmx:NYJoZulV8Lkn0Uc0c5MiS3-6oN7nd3Rsv8TTMgVs3OL17RnCYKl84A>
-    <xmx:NYJoZoeGNtrJacC1w1GDL6SXLfHe7_tqF3CpeNYYCgDktxLwGEvzAA>
-    <xmx:NYJoZgEjJm8QGAoxV94augFby2UHmxYIskbrGcWyRRy3rvwQMx6M9A>
-    <xmx:NYJoZtedwF1u9vgxn3g7M2RCV5JVvw96N8fC1cQdUBpzUhbDiQAt6eu3>
-Feedback-ID: i6a694271:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 11 Jun 2024 12:58:27 -0400 (EDT)
-Date: Tue, 11 Jun 2024 10:58:26 -0600
-From: Daniel Xu <dxu@dxuuu.xyz>
-To: Jiri Olsa <olsajiri@gmail.com>
-Cc: shuah@kernel.org, daniel@iogearbox.net, andrii@kernel.org, 
-	eddyz87@gmail.com, ast@kernel.org, quentin@isovalent.com, alan.maguire@oracle.com, 
-	acme@kernel.org, martin.lau@linux.dev, song@kernel.org, yonghong.song@linux.dev, 
-	john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com, haoluo@google.com, 
-	mykolal@fb.com, bpf@vger.kernel.org, linux-kselftest@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, kernel-team@meta.com
-Subject: Re: [PATCH bpf-next v4 03/12] bpf: selftests: Fix fentry test kfunc
- prototypes
-Message-ID: <gwrlw7wtc72vz3ky2pltvpoadtjlezv6kdrs6wf3ptsecyu2sh@aexbk4rotm3x>
-References: <cover.1717881178.git.dxu@dxuuu.xyz>
- <1f493cb7a7e5349f99e2badf0880b75dd6681898.1717881178.git.dxu@dxuuu.xyz>
- <Zmb_hJQqxi44Nj5B@krava>
+	s=arc-20240116; t=1718126512; c=relaxed/simple;
+	bh=Re33Xs/eGONOEGzf6oFi4DaY7yzw/y2jsRmTz2KK+Hc=;
+	h=Date:From:To:Cc:Message-ID:In-Reply-To:References:Subject:
+	 Mime-Version:Content-Type; b=Eoue9Kxi8f1gqVOq6Plab2mamhbiy69Y+DzPccM6jQOjbAOXSyUT3YOgQd6ro+Sh/WZLWu31jawn/V/1zwbXPMrt2LL4SFcY8Kxrjy4Y+LcGhelUyUEk8yZ108MHaoXGqSo9b3gAaT0W6ADvJsqcyp7qaeU+UJ5+GPsp1prI+bE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Z3+hILZ6; arc=none smtp.client-ip=209.85.210.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f180.google.com with SMTP id d2e1a72fcca58-701b0b0be38so5534916b3a.0;
+        Tue, 11 Jun 2024 10:21:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1718126510; x=1718731310; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Re33Xs/eGONOEGzf6oFi4DaY7yzw/y2jsRmTz2KK+Hc=;
+        b=Z3+hILZ6/v7VcNBQucAXRg3frG7fS74rfgdp9Ejb4WUth6E5tbG8pUZXwmJDgt/t4e
+         +QyroEUI8xnTkUcWs81YcNh+Klu5uxFTj+8+daSJ9PYmLxPbsc18cs3NbXQBjieScPWb
+         UngfNUcszq91LzWrxe8txM6vpLVJ+x2C9uVAscXfOKq20hVav9ZyULxKtdKt4hW7LpyG
+         j9m27JBrJyLGH+aoI4lzqHKTBnL+k7u5do4O317I9PgN/bo13fowRwnmdQz0+v/UDkEl
+         SvARmLoGXtXKS4GwVLAoz1HwP182Msc2GqTgBjFp4RJ0uM3YQO46j6MxyW6ed47KrbnC
+         VlCQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1718126510; x=1718731310;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=Re33Xs/eGONOEGzf6oFi4DaY7yzw/y2jsRmTz2KK+Hc=;
+        b=dex0EDQfNFIgjOJwJAHyPCxysaf1hINgj0C3shr0K1sVbTukA93/78SYCRcoKJbxNe
+         S9+zp8z9gxuUXEYBG1fHTMQkp/KRrsKYM6frgIepCsIvTPC7nUaz8p8YY4P2qf6IQCJl
+         4DFnMSB9X6WlwZuq6MmZQcjZP47b6/caRndjjRIiNOU+OwLcCPSFn2uaH9dhzoEVvCgg
+         2WuEWzDYEmXBwBj63H03onahYmhSYH+rL9ewkXcVQHQMRgvIqt/3E3hKXYLQKw+4QD/h
+         CWVM8fFlEHySfDbRKCqrY6H3FXPeivCu9/VaGW4yeTWF9vVkAB3Y1AIQX09rkw90u8jz
+         R85A==
+X-Forwarded-Encrypted: i=1; AJvYcCVkNeWfYLUpWhneLd4/HV+rwfPtdr7bjbmpxCgBJAXW88O9PjsBfkRsHXVetIpDPq6++W8BzXooqGqMZ0JSVAA+Oal5WJnWllgLxbgVrQ805plZCBvCqkhH9jP9
+X-Gm-Message-State: AOJu0YxTK8Qri/ca7M/EWhGmy6IpInjpncNLLjUkCR/7aRnqcycsYj/+
+	e0DcBzFFibnYpwLHX/k/A97jPQDkcqH7OTowL4VOqD53j3EWrt97
+X-Google-Smtp-Source: AGHT+IG4LG6usQD4ZAdGrE6mToPj3zpx5uhz5DOJ28iTI0S0JbVvwI3JW/h7ZYi+nK4WJfat9lhRFQ==
+X-Received: by 2002:a05:6a00:3cd6:b0:705:b922:2810 with SMTP id d2e1a72fcca58-705b92228f0mr765451b3a.28.1718126510174;
+        Tue, 11 Jun 2024 10:21:50 -0700 (PDT)
+Received: from localhost ([98.97.41.226])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7041b841247sm7042938b3a.140.2024.06.11.10.21.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 11 Jun 2024 10:21:49 -0700 (PDT)
+Date: Tue, 11 Jun 2024 10:21:48 -0700
+From: John Fastabend <john.fastabend@gmail.com>
+To: Tom Herbert <tom@sipanda.io>, 
+ Jamal Hadi Salim <jhs@mojatatu.com>
+Cc: Jakub Kicinski <kuba@kernel.org>, 
+ netdev@vger.kernel.org, 
+ deb.chatterjee@intel.com, 
+ anjali.singhai@intel.com, 
+ namrata.limaye@intel.com, 
+ mleitner@redhat.com, 
+ Mahesh.Shirshyad@amd.com, 
+ tomasz.osinski@intel.com, 
+ jiri@resnulli.us, 
+ xiyou.wangcong@gmail.com, 
+ davem@davemloft.net, 
+ edumazet@google.com, 
+ pabeni@redhat.com, 
+ vladbu@nvidia.com, 
+ horms@kernel.org, 
+ khalidm@nvidia.com, 
+ toke@redhat.com, 
+ victor@mojatatu.com, 
+ pctammela@mojatatu.com, 
+ Vipin.Jain@amd.com, 
+ dan.daly@intel.com, 
+ andy.fingerhut@gmail.com, 
+ chris.sommers@keysight.com, 
+ mattyk@nvidia.com, 
+ bpf@vger.kernel.org, 
+ Jonathan Corbet <corbet@lwn.net>, 
+ Oz Shlomo <ozsh@nvidia.com>
+Message-ID: <666887ac7b76c_10ea2081a@john.notmuch>
+In-Reply-To: <CAOuuhY8+0eMJ_vQW=WgF1dCTLRaN+RARPB9q1RMqvRwv45awzw@mail.gmail.com>
+References: <20240410140141.495384-1-jhs@mojatatu.com>
+ <20240611072107.5a4d4594@kernel.org>
+ <CAM0EoMkAQH+zNp3mJMfiszmcpwR3NHnEVr8SN_ysZhukc=vt8A@mail.gmail.com>
+ <20240611083312.3f3522dd@kernel.org>
+ <CAM0EoMkgxXX4sFJ98n_UTLLFjP3KHx00aaq76t4zJJsO9zNO4A@mail.gmail.com>
+ <CAOuuhY8+0eMJ_vQW=WgF1dCTLRaN+RARPB9q1RMqvRwv45awzw@mail.gmail.com>
+Subject: Re: [PATCH net-next v16 00/15] Introducing P4TC (series 1)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Zmb_hJQqxi44Nj5B@krava>
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Jun 10, 2024 at 03:28:36PM GMT, Jiri Olsa wrote:
-> On Sat, Jun 08, 2024 at 03:15:59PM -0600, Daniel Xu wrote:
-> > The prototypes in progs/get_func_ip_test.c were not in line with how the
-> > actual kfuncs are defined in net/bpf/test_run.c. This causes compilation
-> > errors when kfunc prototypes are generated from BTF.
-> > 
-> > Fix by aligning with actual kfunc definitions.
-> > 
-> > Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
-> > ---
-> >  .../testing/selftests/bpf/progs/get_func_ip_test.c | 14 +++++++-------
-> >  1 file changed, 7 insertions(+), 7 deletions(-)
-> > 
-> > diff --git a/tools/testing/selftests/bpf/progs/get_func_ip_test.c b/tools/testing/selftests/bpf/progs/get_func_ip_test.c
-> > index 8956eb78a226..a89596f7585d 100644
-> > --- a/tools/testing/selftests/bpf/progs/get_func_ip_test.c
-> > +++ b/tools/testing/selftests/bpf/progs/get_func_ip_test.c
-> > @@ -5,13 +5,13 @@
-> >  
-> >  char _license[] SEC("license") = "GPL";
-> >  
-> > -extern const void bpf_fentry_test1 __ksym;
-> > -extern const void bpf_fentry_test2 __ksym;
-> > -extern const void bpf_fentry_test3 __ksym;
-> > -extern const void bpf_fentry_test4 __ksym;
-> > -extern const void bpf_modify_return_test __ksym;
-> > -extern const void bpf_fentry_test6 __ksym;
-> > -extern const void bpf_fentry_test7 __ksym;
-> > +extern int bpf_fentry_test1(int a) __ksym;
-> 
-> hum, the only registered one as kfunc is bpf_fentry_test1, to allow fmodret
-> also there's bpf_fentry_test9 as kfunc, which AFAICS is not really needed
+Tom Herbert wrote:
+> On Tue, Jun 11, 2024 at 8:53=E2=80=AFAM Jamal Hadi Salim <jhs@mojatatu.=
+com> wrote:
+> >
+> > On Tue, Jun 11, 2024 at 11:33=E2=80=AFAM Jakub Kicinski <kuba@kernel.=
+org> wrote:
+> > >
+> > > On Tue, 11 Jun 2024 11:10:35 -0400 Jamal Hadi Salim wrote:
+> > > > > Before the tin foil hats gather - we have no use for any of thi=
+s at
+> > > > > Meta, I'm not trying to twist the design to fit the use cases o=
+f big
+> > > > > bad hyperscalers.
+> > > >
+> > > > The scope is much bigger than just parsers though, it is about P4=
+ in
+> > > > which the parser is but one object.
+> > >
+> > > For me it's very much not "about P4". I don't care what DSL user pr=
+efers
+> > > and whether the device the offloads targets is built by a P4 vendor=
+.
+> > >
+> >
+> > I think it is an important detail though.
+> > You wouldnt say PSP shouldnt start small by first taking care of TLS
+> > or IPSec because it is not the target.
+> >
+> > > > Limiting what we can do just to fit a narrow definition of "offlo=
+ad"
+> > > > is not the right direction.
+> =
 
-I think bpf_modify_return_test() is also registered. But otherwise yeah,
-I think I was overaggressive here. Are you thinking something like this?
+> Jamal,
+> =
 
+> I think you might be missing Jakub's point. His plan wouldn't narrow
+> the definition of "offload", but actually would increase applicability
+> and use cases of offload. The best way to do an offload is allow
+> flexibility on both sides of the equation: Let the user write their
+> data path code in whatever language they want, and allow them offload
+> to arbitrary software or programmable hardware targets.
 
-diff --git a/tools/testing/selftests/bpf/progs/get_func_ip_test.c b/tools/testing/selftests/bpf/progs/get_func_ip_test.c
-index a89596f7585d..2011cacdeb18 100644
---- a/tools/testing/selftests/bpf/progs/get_func_ip_test.c
-+++ b/tools/testing/selftests/bpf/progs/get_func_ip_test.c
-@@ -6,12 +6,11 @@
- char _license[] SEC("license") = "GPL";
++1.
+ =
 
- extern int bpf_fentry_test1(int a) __ksym;
--extern int bpf_fentry_test2(int a, __u64 b) __ksym;
--extern int bpf_fentry_test3(char a, int b, __u64 c) __ksym;
--extern int bpf_fentry_test4(void *a, char b, int c, __u64 d) __ksym;
- extern int bpf_modify_return_test(int a, int *b) __ksym;
--extern int bpf_fentry_test6(__u64 a, void *b, short c, int d, void *e, __u64 f) __ksym;
--extern int bpf_fentry_test7(struct bpf_fentry_test_t *arg) __ksym;
-+
-+extern const void bpf_fentry_test2 __ksym;
-+extern const void bpf_fentry_test3 __ksym;
-+extern const void bpf_fentry_test4 __ksym;
+> =
 
- extern bool CONFIG_X86_KERNEL_IBT __kconfig __weak;
+> For example, if a user already has P4 hardware for their high end
+> server then by all means they should write their datapath in P4. But,
+> there might also be a user that wants to offload TCP keepalive to a
+> lower powered CPU on a Smartphone; in this case a simple C program
+> maybe running in eBPF on the CPU should do the trick-- forcing them to
+> write their program in P4 or even worse force them to put P4 hardware
+> into their smartphone is not good. We should be able to define a
+> common offload infrastructure to be both language and target agnostic
+> that would handle both these use cases of offload and everything in
+> between. P4 could certainly be one option for both programming
+> language and offload target, but it shouldn't be the only option.
+
+Agree major benefit of proposal here is it doesn't dictate the
+language. My DSL preference is P4 but no need to push that here.
+
+> =
+
+> Tom
+
+My $.02 Jakub's proposal is a very pragmatic way to get support for P4
+enabled hardware I'm all for it. I can't actually think up anything
+in the P4 hardware side that couldn't go through the table notion
+in (7). We might want bulk updates and the likes at some point, but
+starting with basics should be good enough.
+
+> =
+
+> > >
+> > > This is how Linux development works. You implement small, useful sl=
+ice
+> > > which helps the overall project. Then you implement the next, and
+> > > another.
+
++1.
+
+> > >
+> > > On the technical level, putting the code into devlink rather than T=
+C
+> > > does not impose any meaningful limitations. But I really don't want=
+
+> > > you to lift and shift the entire pile of code at once.
+> > >
+
+devlink or an improved n_tuple (n_table?) mechanism would be great.
+Happy to help here.
+
+> >
+> > Yes, the binary blob is going via devlink or some other scheme.
+> >
+> > > > P4 is well understood, hardware exists for P4 and is used to spec=
+ify
+> > > > hardware specs and is deployed(See Vipin's comment).
+> > >
+> > > "Hardware exists for P4" is about as meaningful as "hardware exists=
+
+> > > for C++".
+> >
+> > We'll have to agree to disagree. Take a look at this for example.
+> > https://www.servethehome.com/pensando-distributed-services-architectu=
+re-smartnic/
+> >
+> > cheers,
+> > jamal
+> =
 
