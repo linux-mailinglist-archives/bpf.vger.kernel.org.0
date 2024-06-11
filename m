@@ -1,143 +1,134 @@
-Return-Path: <bpf+bounces-31890-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-31891-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0CB07904635
-	for <lists+bpf@lfdr.de>; Tue, 11 Jun 2024 23:21:02 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E6B6F90463F
+	for <lists+bpf@lfdr.de>; Tue, 11 Jun 2024 23:27:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B18662885AC
-	for <lists+bpf@lfdr.de>; Tue, 11 Jun 2024 21:21:00 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 192DD1C2365A
+	for <lists+bpf@lfdr.de>; Tue, 11 Jun 2024 21:27:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 25208153510;
-	Tue, 11 Jun 2024 21:20:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C5871153580;
+	Tue, 11 Jun 2024 21:26:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QSiCUo7m"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dt37lus7"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f182.google.com (mail-pg1-f182.google.com [209.85.215.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 55901101E2;
-	Tue, 11 Jun 2024 21:20:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 42CC9BA34;
+	Tue, 11 Jun 2024 21:26:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718140855; cv=none; b=kAd2E/miOvhFGDruK+gldB1w6eSIO8ESdbzUx2hljPcrEIyb+krkg50KBvz2fOesPE3Fj5/kPe6/q+zDc6Y2JZhooyqVnQ7FuZQ8XcMEZPDDMoAu2CjIK/4iNWN4SZRUpH8lwv1MgUtsujnO7kAa+i5IhJqJwCTvJaN1i3vl6uc=
+	t=1718141218; cv=none; b=HHzPaJ0mM57PqMHPgp97rmVYG0LCnllk0BlGINoiMj24Ao6Hza0rYTWJYDTMZXRlP7oqA/bxiNkxqdyaW7Qrb/HddKms6WtneFJ1RoHNu6ecTMO2PQaWkyD97wyeoZ/Hq9L0jxtK0alf9kPbifOFa2D3R/E+02FHfKqQM602QCU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718140855; c=relaxed/simple;
-	bh=8V372jQuMlopDnHaclClHN5Qs0I7y5Rvg67+Aebv5Aw=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=oCRsj6Z45jtu12qumvhNH/zF9ny+4Y7xMsDbLmrQVvZ8/UB1nvhkIFPp21ScvZefJwmGWlstfwp9peTg1cQwsVKcng3Kq3GnzsYmbZKgUqp1KXFTw0anS/eM5PvS1J8rAi+NAHR4ZknF6wB2mINwY4v2ttlJr+G33diwyWu3WZc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QSiCUo7m; arc=none smtp.client-ip=209.85.215.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f182.google.com with SMTP id 41be03b00d2f7-6c5bcb8e8edso4999670a12.2;
-        Tue, 11 Jun 2024 14:20:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1718140853; x=1718745653; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=IBoxGK85jBdmizYIhLF/Od3Ee0Iiwcb2PyDWtr73idk=;
-        b=QSiCUo7mC6IQpCsDixYo96l0BgleKBrvShP3StpDjiHHNVNCrSyPPNW0tgix+DgrTl
-         amQj4hcAcIXE5gBLfOFRk4frtIiH56RbMsfkVIvJtwMzqgBu1kYh8LB4vWNOzxbQYvfM
-         onfe7MnwkIDrcahGc3LFW/3ZHhB8BwqHfKpEpBcE9lNk1CakNfI9V66Ht9IdkcXmDR2L
-         rl8tmUmaLZTEP+726R8VjoZXLf4U8tNqJcypBVY/5IQ2degDhPdnQrOmgfZZaXWlFCP1
-         haFJCefwD0ffJpVKTwwBdFnbw1RM0xoWvmKEmdWKG+lFh7NyW0z0PKOVciPCF2ywMVVT
-         wtoQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1718140853; x=1718745653;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=IBoxGK85jBdmizYIhLF/Od3Ee0Iiwcb2PyDWtr73idk=;
-        b=XfJiOrCgZtoG9S989fGdjfqcWe03H/K8nuq0iCkB8aW2znORsRbi3qik773njRKJfX
-         2MlKY/hCyHVXihorB4wnp0YCa/5UKmYxJ+s7/WB1QOoIACrIw27u6CMcXhBolftdS8il
-         GhbTQVZG3shqdd1GT6lLaUEuBvDwX0WJ8KruDwl+eQLjgxSkWjwZw8cYwoxu2ZJGAhoD
-         qBWUM4uqLMWh7ZiclDDnriWiuEw3m3mCJdzNGLHdjXrbSY+yKOKsxDwosKoygcTUTplu
-         /5HVyb37t1QH0EDzkTSz/EflwAE3IjCsf3+ehPyTctF6nmizWFxyLLHre1Vf4WjtuVan
-         v9vA==
-X-Forwarded-Encrypted: i=1; AJvYcCVhOXz7eytGE2LHyKz/B+aT1A0zXXMuaojjJbmLBwwEyspSjLjHpawPV25TJkffZJDt8Vu0WOCj3RMpylANmwKKtZc3UfVUUMmzmyogr69OM3JjMGHOXuYXi4+Y5wn5GAV6Bb6+
-X-Gm-Message-State: AOJu0YzgTXrXLgQ01OwZ7Zk+6/BcBFiod3l0CL8GnnabbHxgCOTYWUiS
-	/rq2q7XJdt5Mh4oG+CfdEFVO/McAr+wtCefCurXkHTnRz9TRV6OV
-X-Google-Smtp-Source: AGHT+IGcBXLRZgrVWFIhNrsWv7KKTRiON0MYiXy4LNq4g77BwvfEQ31rUvvKLYOzMJySex7GipvkPA==
-X-Received: by 2002:a05:6a21:196:b0:1b6:bb61:3782 with SMTP id adf61e73a8af0-1b8a9c51034mr187405637.39.1718140853481;
-        Tue, 11 Jun 2024 14:20:53 -0700 (PDT)
-Received: from [192.168.0.31] ([38.34.87.7])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-1f6fadca2b0sm61796055ad.206.2024.06.11.14.20.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 11 Jun 2024 14:20:53 -0700 (PDT)
-Message-ID: <90648db3ed02c6f75ce2f90cf6651c8a6f0123a0.camel@gmail.com>
-Subject: Re: [PATCH bpf-next 1/5] selftests/bpf: Drop type from
- network_helper_opts
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Geliang Tang <geliang@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
- Mykola Lysenko <mykolal@fb.com>, Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>, Martin KaFai Lau
- <martin.lau@linux.dev>, Song Liu <song@kernel.org>, Yonghong Song
- <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, KP
- Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo
- <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,  Shuah Khan
- <shuah@kernel.org>
-Cc: Geliang Tang <tanggeliang@kylinos.cn>, bpf@vger.kernel.org, 
-	linux-kselftest@vger.kernel.org
-Date: Tue, 11 Jun 2024 14:20:48 -0700
-In-Reply-To: <b80ca04f4f1e65e4b796331c48283ea282fe7ee0.1718070939.git.tanggeliang@kylinos.cn>
-References: <cover.1718070939.git.tanggeliang@kylinos.cn>
-	 <b80ca04f4f1e65e4b796331c48283ea282fe7ee0.1718070939.git.tanggeliang@kylinos.cn>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.44.4-0ubuntu2 
+	s=arc-20240116; t=1718141218; c=relaxed/simple;
+	bh=l/slOwUbIQjq2IvyCrFSxlG82jUdCK9N4vGo107GLYY=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=mKwBg000o1g6LNgmBCJPMnmBaQp6BRwsCcYZeK+QSfG3osHJpxYi8ry8vczOUimElCNHTmAjBku1PAxFUHtp4qPP+Gwo/f/kV91Fpw7LmCyyv7Pvdbg23zxcyHDu3hQ3NCS9sBIagUzkskzO0v3JbGeeoAFa0C6daPXiJoFww+M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dt37lus7; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 31733C2BD10;
+	Tue, 11 Jun 2024 21:26:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1718141216;
+	bh=l/slOwUbIQjq2IvyCrFSxlG82jUdCK9N4vGo107GLYY=;
+	h=Date:From:To:Cc:Subject:From;
+	b=dt37lus7snItxzKmWYgcdGBV42ZD/gGxHjIdjOx8ffwSExMY8uRmTB4dZc0uz7vGl
+	 HO5uPbatJv06//E91ULoMem1+EJxuL4yuAwn08gY+DOG1FCaKVjirKlI1sKULcXUJO
+	 me4452LoQSXYMfrQAREX6xF4sICrP4640QzXKTN9m+DtHSneE7Iu2OqcjSc3wYNSXC
+	 ZIslyrX1bewsd8oTTPtY4JTokLz++c8BvDES3dSVLjW+1jt+5xBe+CdmljumekzVVa
+	 elkXDNisXWslp/luWgx5q7MoCZyki898hdstg3DZxzExec8sXr1T4bIOA8NW5x1wKc
+	 MyFxmGbBj9klQ==
+Date: Tue, 11 Jun 2024 18:26:53 -0300
+From: Arnaldo Carvalho de Melo <acme@kernel.org>
+To: dwarves@vger.kernel.org
+Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+	bpf@vger.kernel.org, Alan Maguire <alan.maguire@oracle.com>,
+	Jiri Olsa <jolsa@kernel.org>, Jan Engelhardt <jengelh@inai.de>,
+	Matthias Schwarzott <zzam@gentoo.org>,
+	Viktor Malik <vmalik@redhat.com>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Jan Alexander Steffens <heftig@archlinux.org>,
+	Domenico Andreoli <cavok@debian.org>,
+	Dominique Leuenberger <dimstar@opensuse.org>,
+	Daniel Xu <dxu@dxuuu.xyz>, Yonghong Song <yonghong.song@linux.dev>
+Subject: ANNOUNCE: pahole v1.27 (reproducible builds, BTF kfuncs)
+Message-ID: <ZmjBHWw-Q5hKBiwA@x1>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Url: http://acmel.wordpress.com
 
-On Tue, 2024-06-11 at 09:59 +0800, Geliang Tang wrote:
-> From: Geliang Tang <tanggeliang@kylinos.cn>
->=20
-> The opts.{type, noconnect, must_fail} is at least a bit non intuitive or
-> unnecessary. The only use case now is in test_bpf_ip_check_defrag_ok whic=
-h
-> ends up bypassing most (or at least some) of the connect_to_fd_opts()
-> logic. It's much better that test should have its own connect_to_fd_opts(=
-)
-> instead.
->=20
-> This patch adds a new helper named __connect_to_fd_opts() to do this. It
-> accepts a new "type" parameter, then opts->type can be replaced by "type"
-> parameter in this helper. In test_bpf_ip_check_defrag_ok, different types
-> are passed to it. And the strcut member "type" of network_helper_opts can
-> be dropped now.
->=20
-> Then connect_to_fd_opts can implement as a wrapper of this new helper.
->=20
-> Signed-off-by: Geliang Tang <tanggeliang@kylinos.cn>
-> ---
+Hi,
+ 
+	The v1.27 release of pahole and its friends is out, supporting
+parallel reproducible builds and encoding kernel kfuncs in BTF, allowing
+tools such as bpftrace to enumerate the available kfuncs and obtain its
+function signatures and return types.
 
-Patches #1,2,3 trade options specified as struct fields for options
-specified as function parameters. Tbh, this seems to be an opinionated
-stylistic change, what is the need for it?
+Main git repo:
 
-If anything, I think that this is less readable:
+   https://git.kernel.org/pub/scm/devel/pahole/pahole.git
 
-> +	client_rx_fd =3D __connect_to_fd_opts(srv_fd, 0, &rx_opts);
+Mirror git repo:
 
-compared to this:
+   https://github.com/acmel/dwarves.git
 
->  	struct network_helper_opts tx_ops =3D {
->  		.timeout_ms =3D 1000,
-> -		.type =3D SOCK_RAW,
->  		.proto =3D IPPROTO_RAW,
->  		.noconnect =3D true,
->  	};
-...
-> -	client_rx_fd =3D connect_to_fd_opts(srv_fd, &rx_opts);
+tarball + gpg signature:
 
-(given that by patch #3 three parameters are added to
- __connect_to_fd_opts() *and* it also accepts options).
+   https://fedorapeople.org/~acme/dwarves/dwarves-1.27.tar.xz
+   https://fedorapeople.org/~acme/dwarves/dwarves-1.27.tar.bz2
+   https://fedorapeople.org/~acme/dwarves/dwarves-1.27.tar.sign
 
-[...]
+	Thanks a lot to all the contributors and distro packagers, you're on the
+CC list, I appreciate a lot the work you put into these tools,
+
+Best Regards,
+
+- Arnaldo
+
+BTF encoder:
+
+- Inject kfunc decl tags into BTF from the BTF IDs ELF section in the Linux
+  kernel vmlinux file.
+
+  This allows tools such as bpftools and pfunct to enumerate the available kfuncs
+  and to gets its function signature, the type of its return and of its
+  arguments. See the example in the BTF loader changes description, below.
+
+- Support parallel reproducible builds, where it doesn't matter how many
+  threads are used, the end BTF encoding result is the same.
+
+- Sanitize unsupported DWARF int type with greater-than-16 byte, as BTF doesn't
+  support it.
+
+BTF loader:
+
+- Initial support for BTF_KIND_DECL_TAG:
+
+  $ pfunct --prototypes -F btf vmlinux.btf.decl_tag,decl_tag_kfuncs | grep ^bpf_kfunc | head
+  bpf_kfunc void cubictcp_init(struct sock * sk);
+  bpf_kfunc void cubictcp_cwnd_event(struct sock * sk, enum tcp_ca_event event);
+  bpf_kfunc void cubictcp_cong_avoid(struct sock * sk, u32 ack, u32 acked);
+  bpf_kfunc u32 cubictcp_recalc_ssthresh(struct sock * sk);
+  bpf_kfunc void cubictcp_state(struct sock * sk, u8 new_state);
+  bpf_kfunc void cubictcp_acked(struct sock * sk, const struct ack_sample  * sample);
+  bpf_kfunc int bpf_iter_css_new(struct bpf_iter_css * it, struct cgroup_subsys_state * start, unsigned int flags);
+  bpf_kfunc struct cgroup_subsys_state * bpf_iter_css_next(struct bpf_iter_css * it);
+  bpf_kfunc void bpf_iter_css_destroy(struct bpf_iter_css * it);
+  bpf_kfunc s64 bpf_map_sum_elem_count(const struct bpf_map  * map);
+  $ pfunct --prototypes -F btf vmlinux.btf.decl_tag,decl_tag_kfuncs | grep ^bpf_kfunc | wc -l
+  116
+  $
+
+pretty printing:
+
+- Fix hole discovery with inheritance in C++.
 
