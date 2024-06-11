@@ -1,236 +1,292 @@
-Return-Path: <bpf+bounces-31787-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-31789-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C0EAF9035E8
-	for <lists+bpf@lfdr.de>; Tue, 11 Jun 2024 10:22:35 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 57D71903682
+	for <lists+bpf@lfdr.de>; Tue, 11 Jun 2024 10:31:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5634C28986B
-	for <lists+bpf@lfdr.de>; Tue, 11 Jun 2024 08:22:34 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D53B81F21734
+	for <lists+bpf@lfdr.de>; Tue, 11 Jun 2024 08:31:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1594B17556E;
-	Tue, 11 Jun 2024 08:22:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 94D37174EF3;
+	Tue, 11 Jun 2024 08:31:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="NJ6Wa7Kd"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Jmj55ms/"
 X-Original-To: bpf@vger.kernel.org
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2059.outbound.protection.outlook.com [40.107.237.59])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pj1-f42.google.com (mail-pj1-f42.google.com [209.85.216.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D6793F8C7;
-	Tue, 11 Jun 2024 08:22:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.237.59
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718094130; cv=fail; b=jz4vwCkDYtcVx0E2JaTA42PXt+r7JVj79V1fPDlBZ0xhkMlb1XLDiDxuoME14AOHsnVX2ZCcc4OHQR9DU7eIG9Pwl7ylgrEtxS7IDcd0YvYR5tWL6zIILAgv1uHeSzqJy6PJPmy3sOUsqC7FjH0DpfI7rNSngImZ2dUWVWRaTCM=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718094130; c=relaxed/simple;
-	bh=gy60NaaVG1/0qGqt0kd/IceD54v/F6zCNeM0ZNP6wCE=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=jWODaxFfI+FDaajUeAu1zMktZzqyfSI7s8tC4g+eSDBy0XlycQmHfJkOMco+8SSYH2iXK/5KeTBIsIY2oy7Iu3TjxNV3zRUmGGOLtoVfeYsvvF9I+5AF7/Uulbs6oBN1JYAe8kc+EL8rzCSTeoC8+1bzw2dr0I4hOqp9S7SRFxU=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=NJ6Wa7Kd; arc=fail smtp.client-ip=40.107.237.59
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=LkONW8mDSCESugbLhj2+gNV2Sln4Lx/OADVDJdGVMcYptqhw24jYN0tm3zPZkU4s+5CGwUSXNbE1VxGSpna5wdSXOHpQIVlju3HdW9u0EAB3IUCkUTqoKocWRqRgoh+jC4EMbG3upSILltfr5/lBhN/fSXEeVvWGGmlXijpv0vmirhCS58rzDPGzcZ9SeMogEH8sDcLaX6mmQoDVMkX4hQ1hvTgb+tsiD82AISWuh3362q3bZpoc0H7bjwiGxIDU03S+sxMaQrWlJJfJAomTeJq2UgEeMixcVtTli80sumeti/aWWfAai/g4gRXR2rfvIr+ehyqXeIfn809KcjkalA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=TvFHmIGW1KpXlyOSazoiV2vM5iNV5SniU/nP/6yBx74=;
- b=KJykgneE3BrZvbqd/pB3OUlkTnYigLSBZSPD5IYYzOjPtULFyf1bliM+H10nA8BZc4VaINhF8XcpREET3diUSzWG09yLlmf/JQaeXpwZSgS4+NhUXic6OYBORY18nwr4gKtye/CLjS/GZcE+/MWPxelydpe1OxRnHBzbRJGDz2tNRNjVlhrr+D7vrQsCnhCcdKrT2z0C7NXqzGc/8usbWqcfqYuR5H8SVo7B3xHFg5CVAEHB8KWhwPA1jbqo49j/T9nANsA6ybPIp3HBXUH7YT4Db3jkN6MslbfqeGTdssvjGCnpRrtWaaO1svPR3LLvIc19eXf3QHGPMzzJsFlYbQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=TvFHmIGW1KpXlyOSazoiV2vM5iNV5SniU/nP/6yBx74=;
- b=NJ6Wa7KdutnYA7jo2yJYI+j6mYWg0Bocqcdq8wT4PzIqz9Ns/V67Vmq3bxR5NITw9iYDQaumC8xFcApgINc9N2V/5SN+F86WHeaFMm14qzbu0Yk0JGqZ/1tMAZhQZXr+pdtX3+/CsZr6AWhJw9s7l8Dlb3DWsxVDetWgoPECXZM=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from PH7PR12MB5685.namprd12.prod.outlook.com (2603:10b6:510:13c::22)
- by CYYPR12MB8701.namprd12.prod.outlook.com (2603:10b6:930:bf::6) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7633.36; Tue, 11 Jun
- 2024 08:22:05 +0000
-Received: from PH7PR12MB5685.namprd12.prod.outlook.com
- ([fe80::46fb:96f2:7667:7ca5]) by PH7PR12MB5685.namprd12.prod.outlook.com
- ([fe80::46fb:96f2:7667:7ca5%2]) with mapi id 15.20.7633.036; Tue, 11 Jun 2024
- 08:22:05 +0000
-Message-ID: <924d9411-ce3d-4cf3-889c-379927167d60@amd.com>
-Date: Tue, 11 Jun 2024 10:21:49 +0200
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next v10 02/14] net: page_pool: create hooks for
- custom page providers
-To: Christoph Hellwig <hch@infradead.org>
-Cc: Jason Gunthorpe <jgg@ziepe.ca>, Pavel Begunkov <asml.silence@gmail.com>,
- David Wei <dw@davidwei.uk>, David Ahern <dsahern@kernel.org>,
- Mina Almasry <almasrymina@google.com>, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
- linux-alpha@vger.kernel.org, linux-mips@vger.kernel.org,
- linux-parisc@vger.kernel.org, sparclinux@vger.kernel.org,
- linux-trace-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
- bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
- linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
- "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
- Donald Hunter <donald.hunter@gmail.com>, Jonathan Corbet <corbet@lwn.net>,
- Richard Henderson <richard.henderson@linaro.org>,
- Ivan Kokshaysky <ink@jurassic.park.msu.ru>, Matt Turner
- <mattst88@gmail.com>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
- "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
- Helge Deller <deller@gmx.de>, Andreas Larsson <andreas@gaisler.com>,
- Jesper Dangaard Brouer <hawk@kernel.org>,
- Ilias Apalodimas <ilias.apalodimas@linaro.org>,
- Steven Rostedt <rostedt@goodmis.org>, Masami Hiramatsu
- <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
- Arnd Bergmann <arnd@arndb.de>, Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
- Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman
- <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
- Yonghong Song <yonghong.song@linux.dev>,
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
- Jiri Olsa <jolsa@kernel.org>, Steffen Klassert
- <steffen.klassert@secunet.com>, Herbert Xu <herbert@gondor.apana.org.au>,
- Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
- Shuah Khan <shuah@kernel.org>, Sumit Semwal <sumit.semwal@linaro.org>,
- Yunsheng Lin <linyunsheng@huawei.com>, Shailend Chand <shailend@google.com>,
- Harshitha Ramamurthy <hramamurthy@google.com>,
- Shakeel Butt <shakeel.butt@linux.dev>, Jeroen de Borst
- <jeroendb@google.com>, Praveen Kaligineedi <pkaligineedi@google.com>
-References: <CAHS8izMU_nMEr04J9kXiX6rJqK4nQKA+W-enKLhNxvK7=H2pgA@mail.gmail.com>
- <5aee4bba-ca65-443c-bd78-e5599b814a13@gmail.com>
- <CAHS8izNmT_NzgCu1pY1RKgJh+kP2rCL_90Gqau2Pkd3-48Q1_w@mail.gmail.com>
- <eb237e6e-3626-4435-8af5-11ed3931b0ac@gmail.com>
- <be2d140f-db0f-4d15-967c-972ea6586b5c@kernel.org>
- <20240607145247.GG791043@ziepe.ca>
- <45803740-442c-4298-b47e-2d87ae5a6012@davidwei.uk>
- <54975459-7a5a-46ff-a9ae-dc16ceffbab4@gmail.com>
- <20240610121625.GI791043@ziepe.ca>
- <cdbc0d5f-bfbc-4f58-a6dd-c13b0bb5ff1c@amd.com>
- <ZmftwZDXYk53fKzm@infradead.org>
-Content-Language: en-US
-From: =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
-In-Reply-To: <ZmftwZDXYk53fKzm@infradead.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: FRYP281CA0011.DEUP281.PROD.OUTLOOK.COM (2603:10a6:d10::21)
- To PH7PR12MB5685.namprd12.prod.outlook.com (2603:10b6:510:13c::22)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 82A6014D70A;
+	Tue, 11 Jun 2024 08:31:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.42
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1718094668; cv=none; b=YNJfxlMJDiLv0HzmiszqSXE63s3w7bq61B2HPkL3wdcTzmDREovvAe8MZSqcNCQ/P4/WJ4JszrFEAFX0AquTCpXOVHeg8L1AgUC4RroEPdh9EYhKXLJJrMAa2lq642keoNUdSwKDg+xBCdAiAplr75eSCc2yLyvN0ncFCCzAYkE=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1718094668; c=relaxed/simple;
+	bh=tt71vPxmPIHlkgLbj7cMrF+1QLZVg430BiNP8a4Qypc=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=LT4tFpqlAOPwb4c3ROlnruufT6Qzpcho5ZT6ebo5q24wn/jymbGnzK57IxPDRqE8TKI3DmWbdbdqh6jD5eVfzpeUPQ7ueQcNGStkQnNd6ZacCuCwppt62PCKna8knaYMWyJLa0cXWRbBXMymPHfFOmOWLTL7huYFvuPkmVBeJDQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Jmj55ms/; arc=none smtp.client-ip=209.85.216.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f42.google.com with SMTP id 98e67ed59e1d1-2c2eb98a64fso2140757a91.2;
+        Tue, 11 Jun 2024 01:31:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1718094666; x=1718699466; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=fqXL6oQaRNaVKhta8paErN6ux3IRrcLD+yfLg4MWLtY=;
+        b=Jmj55ms/c82SgV3hHQduzr3B5Fsm1jP/BbxO5YQ8XYB4p4NMKCt6/wAhrbw+pmcsKp
+         eiVBUaSYTdRABg1z9VBveYyAijE/xEInqqLYXy3L8MEi2PPfbP4gbSeH3xkhGnIAj1FV
+         H87AwwXiPecwb8wbEQph2TVNtCPUpJT4ZRnxZwO64lkevlJqLtmh3y/zGc95BtyCbn8u
+         wpsrenFiGFlm3G4PM/hdsiEC1dyr4hM6WkDwRLN6LVzH4LMjrEjEscPJEmKXZVtMGQUy
+         j/oQjgvSfiDJuS4phbkSI4NmqfnfSUFkc+fVNFmb+hNZZtmazM5LO4zjtSLfY/ew4JOw
+         QFJQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1718094666; x=1718699466;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=fqXL6oQaRNaVKhta8paErN6ux3IRrcLD+yfLg4MWLtY=;
+        b=dxQ/IxeyTRsF5m63+e10N8O401yn9Wm+PYRy7sDwNKBNR8CI6UWSQzNjRm8tBe+zAl
+         FZs+N8QvHPxq5vM+FWxCH7hUGcTJvxwO0/ufL0fR5AhWlHebJT3Fam2UVDwJeEU68qCH
+         ffV/OekvBJjRETYlkle2umDhxm54t56yb3v6f5zwmsVCHtsAUT0A7fd0rO5NWTEIQDp2
+         7U6CNFxAngInclszYn6ZEfDz92ltCMX1BBsYqmo/09RLYMnsqek7V8El/WH0yVjraq/p
+         2pIfBB24yiNo9taghANGG+FbnSx8TOgB8yRUu0UUSLwbFgxZAEyITd4eDT1HJ9kRUOW/
+         5A/g==
+X-Forwarded-Encrypted: i=1; AJvYcCU9+OrBUMZ9/fRQxCzsexJT4GgQAw4znktDO59X/HSMMOzQdaLXBEUrmPsJsy185qaHj8hWNxAJ1BWHqS2V4sAkoc4ijbYH8FhTL5FKPkbYycnRlUo7yLwaxXDM4yTgiplEj4cwK4a75/mFIwS3itS12quqEDj2xm7CqVbG4qsWpKvYwUm/FDii63ECq41GCu7mh8Xet2cp28XaJrUUPeV6H3iYFRaASzjO0Ev46hj3098ILlnsNaBV3gET
+X-Gm-Message-State: AOJu0YzoVEnECOJqEyaLyFqGs5uo7h3FuVVVFnVBgDs1r/dvLXbD/6If
+	JhdO/NvPsjd/eaDPrEtD8d8uJUUa+3HW5TmMUaEl5gK8HZZ7pxJD+EqZ1Zatli+5S180iUqz8Gx
+	WCP8YnbwFaMSGm5DElE8FKRA/9iU=
+X-Google-Smtp-Source: AGHT+IE42+xyH4NrIpeXahdIzqcAlL5FxXFQjAZ0eZL1zfwLNaD0SsQrE0K0hILKvssQPbYd96k0zQYDshOdATSrz+s=
+X-Received: by 2002:a17:90b:1049:b0:2c2:cce9:2578 with SMTP id
+ 98e67ed59e1d1-2c2cce92bd7mr8884521a91.17.1718094665746; Tue, 11 Jun 2024
+ 01:31:05 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH7PR12MB5685:EE_|CYYPR12MB8701:EE_
-X-MS-Office365-Filtering-Correlation-Id: 5070c975-b29e-40e0-bb7a-08dc89ef93d3
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230031|1800799015|366007|7416005|376005;
-X-Microsoft-Antispam-Message-Info:
-	=?utf-8?B?Wm9oWnQ2TkZDLzZvTFh6aDRhTnZzT3VpS1lqM2szNGdCQUR3SVBocUU2NVRJ?=
- =?utf-8?B?MzBTNlBONGx1cDlESFNOeFo4SDVPYkZoYjdlZitzUW9zdy82OWk0cE1UUXor?=
- =?utf-8?B?K2VQSTdZbno0ZXk0WVdKTjlBZ2F6MVh6MW52UzNkZUdtbjJkRmdXQndUaE9n?=
- =?utf-8?B?MzlTa0hqNnVEVSt5WjgvZFBiMkl3T1l0YWM3UTM5dVJjQ2NLUFFaMEpaaXdv?=
- =?utf-8?B?b0N1TVIzMUtRZXIyMU40bjUzL2lxckY1bGNuL0NjZUplUzJHVmVUVG0xanlO?=
- =?utf-8?B?eW0vaXlPQnhFNGs0c2ZOZHNwNnpDZTRVYjZ1SXJCRUNoOUF4QkxjOVpmN05a?=
- =?utf-8?B?VjM1bkVwM2REdVRiam1DRkp3Z0dYc1JhWjhnKzFzblRpTE8zZmVtNUNkTDVm?=
- =?utf-8?B?MEYvSlRnZ0JCVk41SEN4V3NwZFpKam5ZZEFHcVVuQW92ckRhUS9BZFJ3NFhp?=
- =?utf-8?B?TWhFWithS25tRWpSb3FpQ0VubTM3YVo1TlNrUnpWYXZZZFpHQkRZcml0OEFT?=
- =?utf-8?B?MzVJV3ludWlJTEQvOHRaVVpINGhDYUx1clVTdmcrQnh3NVlGV2dYK1cybVJa?=
- =?utf-8?B?YVFITDVodVVlcU9OZWNJNHVaTjViNTUzVmJoSjVIZTBBazZqbWQ5YTcyM0dU?=
- =?utf-8?B?V0lEU2NnNENJYW5vKzRhMGNqaE9QUU5pS002aHZsTy9EOTFvUmkrRWhGUlFH?=
- =?utf-8?B?Vmlnb0d2OHplOEtHandHZDY0NHJtL2FvMHdpNFg5bHlzR1lBUUJ6b0t5K2pp?=
- =?utf-8?B?RGRSRzlnQ0hDT3JvaW9HbE05Qi9hMTNJbG80R2NVOXpaWndjc1BCMnFuM3ZX?=
- =?utf-8?B?TkNJN09XaUlqcW91QmhOS0lEZUJQTWJkTngwbFJiandNZEJyTWRHYkgydGNV?=
- =?utf-8?B?MUxjS1JSU3ZXaXdNZ3F4OGdVcTFGUGNOM2RVTnY5OTAxUFZMVGVTbjY0VENX?=
- =?utf-8?B?VkVlSXJEWGlhSXdGRGk5K0VaRGszWFNxRkdicGRZVmhNT3RzWG5PcTdYQm9X?=
- =?utf-8?B?ZXRBam05b2RlUEtWZUt0RzJPazZ3YmNHMjV2NlM5QVJkdVk2WUlDS0tiL2lP?=
- =?utf-8?B?RFZ1dzBVSXgrMjFqbllmWHJWVFJRN01ISFllKzJ4Mjlxd1BtTHFUUkNrQnlv?=
- =?utf-8?B?dlh1OStoZ2NqT2k2TjRjaU9jc3pmTThHVjZmaUo0K3FJdU82emRPUTkzRmRl?=
- =?utf-8?B?RW9vS2kyY2xvOGd5TVlnVVNINWtqUGJpU2xpcmkxanRaTjFrT0VRN1VNb00z?=
- =?utf-8?B?ZjZWTHlQb3ZldVNMUU1KdHhCN3dyTE9oUHFGL1hDMmVoYStTRHpQRUZlNGZJ?=
- =?utf-8?B?ZFJERkQrNlVNejJnWE4wWGJVamVXNkV3cSs0RzdiVDljL2xUMEcxMDNTMUJW?=
- =?utf-8?B?Y3dqS1ZWcTVsbkJyMmJZQWx0Q29yME50WnAwdUlJSFZKSmFmSW81RTRKSzYz?=
- =?utf-8?B?T3lMZDNLRnJOaHZkQWtNdmRadHl5aVJhU3RCMzV2cCszWEtrb1lFS3JvK0VY?=
- =?utf-8?B?elZtZkVISVprZGUvdE1YQlpCd3dxZTYyby80Q1p2SWhVQzdhamEyVkdZSXVJ?=
- =?utf-8?B?UUdtNUZ6TitBdVdqOHFJQ3prVWtiWldxdk0yQTZ3a1JXNGFNN1VEcXkzR213?=
- =?utf-8?B?ZGlzTVlFZ1RBeXQxVThDNmRFazFRTm42M0VLRUI5Mkw2UHNvbXNxYVNYRUN6?=
- =?utf-8?Q?D2rP6ClXFdVU9Sqx1HBj?=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH7PR12MB5685.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(1800799015)(366007)(7416005)(376005);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?MmwwcWNvanZyV0ZFQUhHYzNOMXAzYWFwcTBwN1lHclNDVjRVeVNqRDJwOVdJ?=
- =?utf-8?B?aE55MTBGckdwVk54UzQvbXlhV1lkbHdPbVJaM1NQSnVrdDlwNlN3TSt4dStX?=
- =?utf-8?B?eUlKMXhhR3c2TDMzdk16czlnZGRmRytKOHh2Yk9qa3VZS0pHRlRsdkRRWVV4?=
- =?utf-8?B?VU8yME9jcjlrYk00SURrVVNmWUV5bjJQdzloNE5tZ0hsYzFZUDRFanhxYXo5?=
- =?utf-8?B?THFRSm9VRTJzbmhzUmNmSElhTFlxUWhxaXRENE9lZUhDd3JNZnE2cU9KcFJO?=
- =?utf-8?B?dHlqVkR5bGlwKysyM1hHMnFYNUQxWmNzQlkvSlM3bHRVUkI4cEpsdUVFZHRH?=
- =?utf-8?B?VTk1T0FaUzlEd2pNR3k3VlV6SS9JZkxIZE41Ukw4TFpJaEdmNnRtV3IzRVY5?=
- =?utf-8?B?dFZNSkN5ZkRBaXNDUGJOR3NXNDNvNEYwQmxkRXlWdXhBWWNMb3F6TkJVcG1z?=
- =?utf-8?B?SmVuMVNud1FJM2x6UkpmeFJySUtDOTl1d3VRRHpQNnIyZ2x5ODc1bVYyV2ty?=
- =?utf-8?B?dWJhYTFsdzFhV0JWSU9CSWlwYWZZOWJLOWJJOUVmd09wVzc4WjRPZW15U1li?=
- =?utf-8?B?by9QbmFsNHJ1Z3lrTEdqaUYzT1dKQThNZ0p4LzdvaGVIOEpUeStqYWNibW1i?=
- =?utf-8?B?OHhoWGQzcWM3cmpjaEVvQzdmRnZnN3JTZmltZXErMFV0Z2xvUURIUW01cWg0?=
- =?utf-8?B?eW5Ka0VwclAvNlg2bDVtMVJZbjBZeDR5KzhJbVJ4K1pCKzU4WnR0NXZkNU5l?=
- =?utf-8?B?QUZVTGV0VnY4Wis3NUViSlpWUUJMUW9XWGM3S205NXNrQjNHZ25EYXJxOE9s?=
- =?utf-8?B?QVlGQVRENHJZdGp0QXVsMHRTYnJMWWJrMGJMaDBDbjNRRk5HOUMvUHI5a0xN?=
- =?utf-8?B?aUMvb3BiT0x2N0VSZk5xSFppdzFhM00zY1FOTHQ4TjdyRk82NmdHUlU4anNp?=
- =?utf-8?B?YkhkTmlaenRZWFFsQlNoeG4vSlByaTNKcXFlL05idndzMjVnRUFISWNSNDE1?=
- =?utf-8?B?YVFzMFF2ait4S0tNZkd3S3RPZWlmZWlHeDREZCtKMURkbVF0eUhyK2JQSmFj?=
- =?utf-8?B?OWZnOUQzaEVlSkpJaU40QzIwMWJTYmJwNXd4bGNjRDZ5U1JqVzV3Ym41d0FG?=
- =?utf-8?B?eXBTdk4yZkEwcUU5SmlPUExYZCt1Ry9pSjhNT29nWGMvWnZDUUcwTVY2SWJs?=
- =?utf-8?B?Z0p5MVp2QWRmQ1ZWQTRlQ3pWS010T1JxTXhieUtsdjVLQXBVZjlYUktPdVl3?=
- =?utf-8?B?MjJYRStiWi93ME9vM2toNlJ2RHFhY09xUkNMMkVCOHBRMWd0S0VKOEJTbmo1?=
- =?utf-8?B?cnhmVzZNNFlaYXEwYkdscE0wdVdzSkNkZ2tKaWhlMHpYam9zYTRXVlFoVTl1?=
- =?utf-8?B?elI4Lzg4ZjlJUmpCQUxldXhFK1NmV21zZlJCT2k0a1JqYWhKWkg4L2plb1JR?=
- =?utf-8?B?L1B3SDJHSVdtVmxHUUg3SXNoVUgydld6V1pUaHFIM2huajEzbis0Zyt3NFF1?=
- =?utf-8?B?UGdqc2ZHWmVmM2wxazllTk45d2l1RW1MWERSaU9qK05WejJWQXJvYUFuY3By?=
- =?utf-8?B?aFAyZnVrdmRBWUl4TEFTT0dVZ085dmdhakxHWVB6N2Jid3hlTFZmSytiUVhv?=
- =?utf-8?B?bWUyUDdDcjByZEtoMWNKZGNIVitIVk4zMW40emFuZlgxN0Nob0ljcm5tWjhl?=
- =?utf-8?B?QUkxck40M1JESU9Sd05mbzRwaldUSm9sREhZR2dWbWVUSUJncGU2ZEVGYUtL?=
- =?utf-8?B?WVlJeUlrL1k5WGl3dmFFUFcvSUFLWlJkL0t6YVVVSUZrcVFtZmFOQkRaenFK?=
- =?utf-8?B?WTVpSzhZd2RLazlXZ1hyL3JmQ1c0NHpsaUw1enVydVM4Q1FjaVVIeUF0NGdY?=
- =?utf-8?B?WUZOTUd0bHVyNUNnakdrMUkxcVk3QURHRHZlVUpiK04wRjdNdjY3RElXL3Vq?=
- =?utf-8?B?dk9NRTE4MXd3WjE3UkJhRlYxRStHV0U0SFhtaGl1V1RvVnU0VWtFVUtaWExX?=
- =?utf-8?B?cXczRWtodWd1amhoMFNGWG14LzFpdTRmK0dMU2MwVzlPQXY0TFk4QVRzbUR4?=
- =?utf-8?B?VHQwTGFLQ0NGWldiRmsraXJvUWR0MEJMcVB5U05IOFk0ZktMaHhtRXV1QWFs?=
- =?utf-8?Q?gpSXD7G//KHyYgOpKNKZD+Mh2?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5070c975-b29e-40e0-bb7a-08dc89ef93d3
-X-MS-Exchange-CrossTenant-AuthSource: PH7PR12MB5685.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Jun 2024 08:22:05.1595
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: iZqB4iJCWRBGUb7teav5N98KhXkwIHhZLaGCODkFbyTo//w+n8KBXDDHbXawcwXH
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CYYPR12MB8701
+References: <20240523121149.575616-1-jolsa@kernel.org> <CAEf4Bza-+=04GG7Tg4U4pCQ28Oy_2F_5872EPDsX6X3Y=jhEuw@mail.gmail.com>
+ <CAEf4Bzbc99bwGcmtCa3iekXSvSrxMQzfnTViT5Y-dn8qbvJy7A@mail.gmail.com> <20240611064641.9021829459211782902e4fb2@kernel.org>
+In-Reply-To: <20240611064641.9021829459211782902e4fb2@kernel.org>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Tue, 11 Jun 2024 09:30:52 +0100
+Message-ID: <CAEf4BzYcwUS=7KFX5fUibS9eLT8yQxYqaWF_+sVM0YZJzBD=Sg@mail.gmail.com>
+Subject: Re: [PATCHv7 bpf-next 0/9] uprobe: uretprobe speed up
+To: Masami Hiramatsu <mhiramat@kernel.org>
+Cc: Steven Rostedt <rostedt@goodmis.org>, Oleg Nesterov <oleg@redhat.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, linux-kernel@vger.kernel.org, 
+	linux-trace-kernel@vger.kernel.org, linux-api@vger.kernel.org, 
+	linux-man@vger.kernel.org, x86@kernel.org, bpf@vger.kernel.org, 
+	Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>, 
+	John Fastabend <john.fastabend@gmail.com>, Peter Zijlstra <peterz@infradead.org>, 
+	Thomas Gleixner <tglx@linutronix.de>, "Borislav Petkov (AMD)" <bp@alien8.de>, Ingo Molnar <mingo@redhat.com>, 
+	Andy Lutomirski <luto@kernel.org>, "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>, 
+	Deepak Gupta <debug@rivosinc.com>, Linus Torvalds <torvalds@linux-foundation.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Am 11.06.24 um 08:25 schrieb Christoph Hellwig:
-> On Mon, Jun 10, 2024 at 02:38:18PM +0200, Christian König wrote:
->> Well there is the fundamental problem that you can't use io_uring to
->> implement the semantics necessary for a dma_fence.
-> What is the exact problem there?
+On Mon, Jun 10, 2024 at 10:46=E2=80=AFPM Masami Hiramatsu <mhiramat@kernel.=
+org> wrote:
+>
+> On Wed, 5 Jun 2024 09:42:45 -0700
+> Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
+>
+> > On Fri, May 31, 2024 at 10:52=E2=80=AFAM Andrii Nakryiko
+> > <andrii.nakryiko@gmail.com> wrote:
+> > >
+> > > On Thu, May 23, 2024 at 5:11=E2=80=AFAM Jiri Olsa <jolsa@kernel.org> =
+wrote:
+> > > >
+> > > > hi,
+> > > > as part of the effort on speeding up the uprobes [0] coming with
+> > > > return uprobe optimization by using syscall instead of the trap
+> > > > on the uretprobe trampoline.
+> > > >
+> > > > The speed up depends on instruction type that uprobe is installed
+> > > > and depends on specific HW type, please check patch 1 for details.
+> > > >
+> > > > Patches 1-8 are based on bpf-next/master, but patch 2 and 3 are
+> > > > apply-able on linux-trace.git tree probes/for-next branch.
+> > > > Patch 9 is based on man-pages master.
+> > > >
+> > > > v7 changes:
+> > > > - fixes in man page [Alejandro Colomar]
+> > > > - fixed patch #1 fixes tag [Oleg]
+> > > >
+> > > > Also available at:
+> > > >   https://git.kernel.org/pub/scm/linux/kernel/git/jolsa/perf.git
+> > > >   uretprobe_syscall
+> > > >
+> > > > thanks,
+> > > > jirka
+> > > >
+> > > >
+> > > > Notes to check list items in Documentation/process/adding-syscalls.=
+rst:
+> > > >
+> > > > - System Call Alternatives
+> > > >   New syscall seems like the best way in here, because we need
+> > > >   just to quickly enter kernel with no extra arguments processing,
+> > > >   which we'd need to do if we decided to use another syscall.
+> > > >
+> > > > - Designing the API: Planning for Extension
+> > > >   The uretprobe syscall is very specific and most likely won't be
+> > > >   extended in the future.
+> > > >
+> > > >   At the moment it does not take any arguments and even if it does
+> > > >   in future, it's allowed to be called only from trampoline prepare=
+d
+> > > >   by kernel, so there'll be no broken user.
+> > > >
+> > > > - Designing the API: Other Considerations
+> > > >   N/A because uretprobe syscall does not return reference to kernel
+> > > >   object.
+> > > >
+> > > > - Proposing the API
+> > > >   Wiring up of the uretprobe system call is in separate change,
+> > > >   selftests and man page changes are part of the patchset.
+> > > >
+> > > > - Generic System Call Implementation
+> > > >   There's no CONFIG option for the new functionality because it
+> > > >   keeps the same behaviour from the user POV.
+> > > >
+> > > > - x86 System Call Implementation
+> > > >   It's 64-bit syscall only.
+> > > >
+> > > > - Compatibility System Calls (Generic)
+> > > >   N/A uretprobe syscall has no arguments and is not supported
+> > > >   for compat processes.
+> > > >
+> > > > - Compatibility System Calls (x86)
+> > > >   N/A uretprobe syscall is not supported for compat processes.
+> > > >
+> > > > - System Calls Returning Elsewhere
+> > > >   N/A.
+> > > >
+> > > > - Other Details
+> > > >   N/A.
+> > > >
+> > > > - Testing
+> > > >   Adding new bpf selftests and ran ltp on top of this change.
+> > > >
+> > > > - Man Page
+> > > >   Attached.
+> > > >
+> > > > - Do not call System Calls in the Kernel
+> > > >   N/A.
+> > > >
+> > > >
+> > > > [0] https://lore.kernel.org/bpf/ZeCXHKJ--iYYbmLj@krava/
+> > > > ---
+> > > > Jiri Olsa (8):
+> > > >       x86/shstk: Make return uprobe work with shadow stack
+> > > >       uprobe: Wire up uretprobe system call
+> > > >       uprobe: Add uretprobe syscall to speed up return probe
+> > > >       selftests/x86: Add return uprobe shadow stack test
+> > > >       selftests/bpf: Add uretprobe syscall test for regs integrity
+> > > >       selftests/bpf: Add uretprobe syscall test for regs changes
+> > > >       selftests/bpf: Add uretprobe syscall call from user space tes=
+t
+> > > >       selftests/bpf: Add uretprobe shadow stack test
+> > > >
+> > >
+> > > Masami, Steven,
+> > >
+> > > It seems like the series is ready to go in. Are you planning to take
+> > > the first 4 patches through your linux-trace tree?
+> >
+> > Another ping. It's been two weeks since Jiri posted the last revision
+> > that got no more feedback to be addressed and everyone seems to be
+> > happy with it.
+>
+> Sorry about late reply. I agree that this is OK to go, since no other
+> comments. Let me pick this up to probes/for-next branch.
+>
+> >
+> > This is an important speed up improvement for uprobe infrastructure in
+> > general and for BPF ecosystem in particular. "Uprobes are slow" is one
+> > of the top complaints from production BPF users, and sys_uretprobe
+> > approach is significantly improving the situation for return uprobes
+> > (aka uretprobes), potentially enabling new use cases that previously
+> > could have been too expensive to trace in practice and reducing the
+> > overhead of the existing ones.
+> >
+> > I'd appreciate the engagement from linux-trace maintainers on this
+> > patch set. Given it's important for BPF and that a big part of the
+> > patch set is BPF-based selftests, we'd also be happy to route all this
+> > through the bpf-next tree (which would actually make logistics for us
+> > much easier, but that's not the main concern). But regardless of the
+> > tree, it would be nice to make a decision and go forward with it.
+>
+> I think it would be better to include those patches together in
+> linux-tree. Can you review and ack to the last patch ? ([9/9])
 
-It's an intentional design decision that dma_fences can be waited on 
-with quite a bunch of locks held. Including the DMA-buf reservation 
-lock, mmap lock, anything page fault related, shrinker etc...
+Sure. Jiri, please add my ack for the entire series in the next revision:
 
-When you give userspace control over the signaling of a dma_fence then 
-that has the same effect as returning to userspace with those locks held 
-- you can basically trivially deadlock the system.
+Acked-by: Andrii Nakryiko <andrii@kernel.org>
 
-I think nearly a dozen implementations fell into that trap: 
-https://www.kernel.org/doc/html/v5.9/driver-api/dma-buf.html#indefinite-dma-fences
-
-It's well understood and documented by now why this approach doesn't 
-work. So not much of an issue any more, we just have to reject 
-implementations from time to time which try doing the same thing again.
-
-Regards,
-Christian.
+>
+> Thank you,
+>
+> >
+> > Thank you!
+> >
+> > >
+> > > >  arch/x86/entry/syscalls/syscall_64.tbl                      |   1 =
++
+> > > >  arch/x86/include/asm/shstk.h                                |   4 =
++
+> > > >  arch/x86/kernel/shstk.c                                     |  16 =
+++++
+> > > >  arch/x86/kernel/uprobes.c                                   | 124 =
+++++++++++++++++++++++++++++-
+> > > >  include/linux/syscalls.h                                    |   2 =
++
+> > > >  include/linux/uprobes.h                                     |   3 =
++
+> > > >  include/uapi/asm-generic/unistd.h                           |   5 =
++-
+> > > >  kernel/events/uprobes.c                                     |  24 =
+++++--
+> > > >  kernel/sys_ni.c                                             |   2 =
++
+> > > >  tools/include/linux/compiler.h                              |   4 =
++
+> > > >  tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c       | 123 =
+++++++++++++++++++++++++++++-
+> > > >  tools/testing/selftests/bpf/prog_tests/uprobe_syscall.c     | 385 =
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++=
+++++++++++++++++
+> > > >  tools/testing/selftests/bpf/progs/uprobe_syscall.c          |  15 =
+++++
+> > > >  tools/testing/selftests/bpf/progs/uprobe_syscall_executed.c |  17 =
+++++
+> > > >  tools/testing/selftests/x86/test_shadow_stack.c             | 145 =
+++++++++++++++++++++++++++++++++++
+> > > >  15 files changed, 860 insertions(+), 10 deletions(-)
+> > > >  create mode 100644 tools/testing/selftests/bpf/prog_tests/uprobe_s=
+yscall.c
+> > > >  create mode 100644 tools/testing/selftests/bpf/progs/uprobe_syscal=
+l.c
+> > > >  create mode 100644 tools/testing/selftests/bpf/progs/uprobe_syscal=
+l_executed.c
+> > > >
+> > > > Jiri Olsa (1):
+> > > >       man2: Add uretprobe syscall page
+> > > >
+> > > >  man/man2/uretprobe.2 | 56 ++++++++++++++++++++++++++++++++++++++++=
+++++++++++++++++
+> > > >  1 file changed, 56 insertions(+)
+> > > >  create mode 100644 man/man2/uretprobe.2
+>
+>
+> --
+> Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
