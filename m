@@ -1,199 +1,101 @@
-Return-Path: <bpf+bounces-31837-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-31836-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A4695903CEB
-	for <lists+bpf@lfdr.de>; Tue, 11 Jun 2024 15:17:24 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id CFD12903CE2
+	for <lists+bpf@lfdr.de>; Tue, 11 Jun 2024 15:16:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4E87B286725
-	for <lists+bpf@lfdr.de>; Tue, 11 Jun 2024 13:17:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 709CE1F226CB
+	for <lists+bpf@lfdr.de>; Tue, 11 Jun 2024 13:16:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3BF9117C7D7;
-	Tue, 11 Jun 2024 13:17:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1AA5817BB35;
+	Tue, 11 Jun 2024 13:16:20 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from gnu.wildebeest.org (gnu.wildebeest.org [45.83.234.184])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail.andestech.com (59-120-53-16.hinet-ip.hinet.net [59.120.53.16])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B45AE24211;
-	Tue, 11 Jun 2024 13:17:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.83.234.184
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C5F5024211;
+	Tue, 11 Jun 2024 13:16:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=59.120.53.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718111839; cv=none; b=Soloz5apJNClxyAK4R3MgiqEk3f/SUCnDtV/aP+Jbd9RvgG/+s8SrnX3udMQ+97IofDs4UT8XAUiMxMN+kED6ZVmbFb0wLOcyXXgManbt8lIaG17lIOJsTzA/90u3KIBkQa4PBUBcX8TDUwEdK94HFKlPhvCU9lnCJr0BAq7ReI=
+	t=1718111779; cv=none; b=K4bOxYMY6/rvsUgtri7UCWq4haNm0d4FxHiqtowo0vn/ZNuHDltHZb1lrHwoWUo0b6neYqTcj8RRmo3K2Ap3JAN7iSMOGTT1ltla0znjxGioM0s/c8SdxuP2wrZ47g229YK190fL6oCmuSOOL8f4tB1p4aS0PzVR4vnuy2Vr+rs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718111839; c=relaxed/simple;
-	bh=5+59LrSb7Ibb4x5W9jMwmIoeMLtYtBTLpbfJ3J7cwV0=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=AO89JYoZb7o74bTDsjxlklNzvxuIrV+n8MVJfWgIjugNGBWG+3aDADheA3K53HbgAp/MID/OhEOt24ZlN75iQQwBeygsuX5l2LNh+Ypkq7SVCy9VZfOp6G46LCEZGQn5HeFNtm8SpSVdA1+YNsuFJHSQEvbWmku9iHfGa+016Dg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=klomp.org; spf=pass smtp.mailfrom=klomp.org; arc=none smtp.client-ip=45.83.234.184
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=klomp.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=klomp.org
-Received: from r6.localdomain (82-217-174-174.cable.dynamic.v4.ziggo.nl [82.217.174.174])
-	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by gnu.wildebeest.org (Postfix) with ESMTPSA id F3797302764B;
-	Tue, 11 Jun 2024 15:07:29 +0200 (CEST)
-Received: by r6.localdomain (Postfix, from userid 1000)
-	id 769A63404B1; Tue, 11 Jun 2024 15:07:29 +0200 (CEST)
-Message-ID: <45651efb5698e8247e5d056aed7ac522a04b1056.camel@klomp.org>
-Subject: Re: elfutils DWARF problem was: Re: Problem with BTF generation on
- mips64el
-From: Mark Wielaard <mark@klomp.org>
-To: Tony Ambardar <tony.ambardar@gmail.com>, Arnaldo Carvalho de Melo
-	 <acme@kernel.org>, Ying Huang <ying.huang@oss.cipunited.com>
-Cc: elfutils-devel@sourceware.org, Hengqi Chen <hengqi.chen@gmail.com>, 
- bpf@vger.kernel.org, dwarves@vger.kernel.org, Alexei Starovoitov
- <ast@kernel.org>,  Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko
- <andrii@kernel.org>
-Date: Tue, 11 Jun 2024 15:07:29 +0200
-In-Reply-To: <Zmfwhn6inA2m1ftm@kodidev-ubuntu>
-References: <ZlkoM6/PSxVcGM6X@kodidev-ubuntu>
-	 <CAEyhmHT_1N3xwLO2BwVK97ebrABJv52d5dWxzvuNNcF-OF5gKw@mail.gmail.com>
-	 <ZlmrQqQSJyNH7fVF@kodidev-ubuntu> <Zln1kZnu2Xxeyngj@x1>
-	 <Zl2m4RP7BwhZ0J6l@kodidev-ubuntu> <Zl3Zp5r9m6X_i_J4@x1>
-	 <Zl4AHfG6Gg5Htdgc@x1> <20240603191833.GD4421@gnu.wildebeest.org>
-	 <Zl6OTJXw0LH6uWIN@kodidev-ubuntu> <Zmfwhn6inA2m1ftm@kodidev-ubuntu>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.52.1 (3.52.1-1.fc40) 
+	s=arc-20240116; t=1718111779; c=relaxed/simple;
+	bh=A8/SxLeo0g/QJrVx1kZZfMcvIx9lsikrYLFelitJ4Hg=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=eKncQzlagRoCh+QoJYemT4dCA81cMqf2r1Y4/yRXNOZKFrM2i/d4iu67K9Zdn9SUTbUeRR4j3LcUPjfpQLc96eD9P2eDQ/apfjLlB9HleHCc9LRvy8krLRLmUqVGq4CxDPYzyiFJzHWgm5sZurlfp2wnn6Oa2ykiiCWC1kr9jPo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=andestech.com; spf=pass smtp.mailfrom=andestech.com; arc=none smtp.client-ip=59.120.53.16
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=andestech.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=andestech.com
+Received: from swlinux02.andestech.com (10.0.15.183) by ATCPCS34.andestech.com
+ (10.0.1.134) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.7; Tue, 11 Jun
+ 2024 21:13:06 +0800
+From: Leo Yu-Chi Liang <ycliang@andestech.com>
+To: <akpm@linux-foundation.org>, <urezki@gmail.com>, <hch@infradead.org>,
+	<lstoakes@gmail.com>, <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
+	<bpf@vger.kernel.org>, <rick.p.edgecombe@intel.com>
+CC: <patrick@andestech.com>, Leo Yu-Chi Liang <ycliang@andestech.com>
+Subject: [RFC PATCH 1/1] mm/vmalloc: Modify permission reset procedure to avoid invalid access
+Date: Tue, 11 Jun 2024 21:13:01 +0800
+Message-ID: <20240611131301.2988047-1-ycliang@andestech.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Spam-Flag: NO
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: ATCPCS33.andestech.com (10.0.1.100) To
+ ATCPCS34.andestech.com (10.0.1.134)
 
-Hi,
+The previous reset procedure is
+1. Set direct map attribute to invalid
+2. Flush TLB
+3. Reset direct map attribute to default
 
-Adding elfutils-devel to CC to keep everyone up to date on the state of
-the patches.
+It is possible that kernel forks another process
+on another core that access the invalid mappings after
+sync_kernel_mappings.
 
-On Mon, 2024-06-10 at 23:36 -0700, Tony Ambardar wrote:
-> On Mon, Jun 03, 2024 at 08:47:24PM -0700, Tony Ambardar wrote:
-> > On Mon, Jun 03, 2024 at 09:18:33PM +0200, Mark Wielaard wrote:
-> > > On Mon, Jun 03, 2024 at 02:40:45PM -0300, Arnaldo Carvalho de Melo wr=
-ote:
-> > > > Couldn't find a way to ask eu-readelf for more verbose output, wher=
-e we
-> > > > could perhaps get some clue as to why it produces nothing while bin=
-utils
-> > > > readelf manages to grok it, Mark, do you know some other way to ask
-> > > > eu-readelf to produce more debug output?
-> > > >=20
-> > > > I'm unsure if the netdevsim.ko file was left in a semi encoded BTF =
-state
-> > > > that then made eu-readelf to not be able to process it while pahole=
-,
-> > > > that uses eltuils' libraries, was able to process the first two CUs=
- for
-> > > > a kernel module and all the CUs for the vmlinux file :-\
-> > > >=20
-> > > > Mark, the whole thread is available at:
-> > > >=20
-> > > > https://lore.kernel.org/all/Zl3Zp5r9m6X_i_J4@x1/T/#u
-> > >=20
-> > > I haven't looked at the vmlinux file. But for the .ko file the issue
-> > > is that the elfutils MIPS backend isn't complete. Specifically MIPS
-> > > relocations aren't recognized (and so cannot be applied). There are
-> > > some pending patches which try to fix that:
-> > >=20
-> > > https://patchwork.sourceware.org/project/elfutils/list/?series=3D3160=
-1
-> >=20
-> > Earlier in the thread, Hengqi Chen pointed out the latest elfutils back=
-end
-> > work for MIPS, and I locally rebuilt elfutils and then pahole from thei=
-r
-> > respective next/main branches. For elfutils, main (935ee131cf7c) includ=
-es
-> >=20
-> >   e259f126 Support Mips architecture
-> >   f2acb069 stack: Fix stack unwind failure on mips
-> >   db33cb0c backends: Add register_info, return_value_location, core_not=
-e mips
-> >=20
-> > which partially applies the patchwork series but leaves out the support=
- for
-> > readelf, strip, and elflint.
-> >=20
-> > I believe this means the vmlinux and .ko files I shared are OK, or is t=
-here
-> > more backend work needed for MIPS?
-> >=20
-> > The bits missing in eu-readelf would explain the blank output both Arna=
-ldo
-> > and I see from "$ eu-readelf -winfo vmlinux". I tried rebuilding with t=
-he
-> > patchwork readelf patch locally but ran into merge conflicts.
->=20
-> A short update, starting with answering my own question.
->=20
-> No, apparently the above commits *do not* complete the backend work. Ying
-> Huang submitted additional related patches since March 5: [1][2]
->=20
->     strip: Adapt src/strip -o -f on mips
->     readelf: Adapt src/readelf -h/-S/-r/-w/-l/-d/-a on mips
->     elflint: adapt src/elflint --gnu src/nm on mips
->     test: Add mips in run-allregs.sh and run-readelf-mixed-corenote.sh
->=20
-> Despite the titles, these patches do include core backend changes for MIP=
-S.
-> I resolved the various merge conflicts [3], rebuilt elfutils, and reteste=
-d
-> kernel builds to now find:
->=20
->   - pahole is able to read DWARF[45] info and create .BTF for modules
->   - resolve_btfids can successfully patch .BTF_ids in modules
->   - kernel successfully loads modules with BTF and kfuncs (tested 6.6 LTS=
-)
->=20
-> Huzzah!
->=20
->=20
-> Ying:
->=20
-> Thank you for developing these MIPS patches. In your view, are the MIPS
-> changes now complete, or do you plan further updates that might improve o=
-r
-> impact parsing DWARF debug/reloc info in apps like pahole?
->=20
->=20
-> Mark:
->=20
-> Given that BTF usage on Linux/MIPS is basically broken without these
-> patches, could I request some of your review time for them to be merged? =
-If
-> it's helpful, my branch [3] includes all patches with conflicts fixed, an=
-d
-> I also successfully ran the elfutils self-tests (including MIPS from Ying=
-).
-> Please feel free to add for these patches:
->=20
->     Tested-by: Tony Ambardar <Tony.Ambardar@gmail.com>
+We could reproduce this scenario by running LTP/bpf_prog
+multiple times on RV32 kernel on QEMU.
 
-Yes, I would very much like to integrate the rest of these patches. But
-I keep running out of time. The main issues were that, as you noticed,
-the patches mix backend and frontend tool changes a bit. I don't have
-access to a MIPS system to test them on. There are a couple of
-different MIPS abis (I believe all combinations of 32/64 bit and
-big/little endianness), but people have only tested on mips64le (maybe
-that is the only relevant one these days?) And finally the way MIPS
-represents relocations is slightly different than any other ELF
-architecture does. So we have to translate that somewhere to make the
-standards functions work. I have to convince myself that doing that in
-elf_getdata as the patches do is the right place.
+Therefore, the following procedure is proposed
+to avoid mappings being invalid.
+1. Reset direct map attribute to default
+2. Flush TLB
 
-> Many thanks everyone for your help,
-> Tony
->=20
-> [1]: https://patchwork.sourceware.org/project/elfutils/list/?series=3D316=
-01
-> [2]: https://patchwork.sourceware.org/project/elfutils/list/?series=3D343=
-10
-> [3]:
-> https://github.com/guidosarducci/elfutils/commits/main-fix-mips-support-r=
-eloc/
+Signed-off-by: Leo Yu-Chi Liang <ycliang@andestech.com>
+---
+ mm/vmalloc.c | 9 ++-------
+ 1 file changed, 2 insertions(+), 7 deletions(-)
+
+diff --git a/mm/vmalloc.c b/mm/vmalloc.c
+index 45e1506d58c3..58ef2fc51e43 100644
+--- a/mm/vmalloc.c
++++ b/mm/vmalloc.c
+@@ -3248,14 +3248,9 @@ static void vm_reset_perms(struct vm_struct *area)
+ 		}
+ 	}
+ 
+-	/*
+-	 * Set direct map to something invalid so that it won't be cached if
+-	 * there are any accesses after the TLB flush, then flush the TLB and
+-	 * reset the direct map permissions to the default.
+-	 */
+-	set_area_direct_map(area, set_direct_map_invalid_noflush);
+-	_vm_unmap_aliases(start, end, flush_dmap);
++	/* Reset direct map permissions to default, then flush the TLB */
+ 	set_area_direct_map(area, set_direct_map_default_noflush);
++	_vm_unmap_aliases(start, end, flush_dmap);
+ }
+ 
+ static void delayed_vfree_work(struct work_struct *w)
+-- 
+2.34.1
 
 
