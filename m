@@ -1,132 +1,125 @@
-Return-Path: <bpf+bounces-31876-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-31877-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4185D904447
-	for <lists+bpf@lfdr.de>; Tue, 11 Jun 2024 21:14:04 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6447590444A
+	for <lists+bpf@lfdr.de>; Tue, 11 Jun 2024 21:14:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C27A1B20A81
-	for <lists+bpf@lfdr.de>; Tue, 11 Jun 2024 19:14:01 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 12529289095
+	for <lists+bpf@lfdr.de>; Tue, 11 Jun 2024 19:14:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A18877F7E3;
-	Tue, 11 Jun 2024 19:13:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB91C7F486;
+	Tue, 11 Jun 2024 19:14:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=mojatatu-com.20230601.gappssmtp.com header.i=@mojatatu-com.20230601.gappssmtp.com header.b="RjCrbj82"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BXgab5on"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yw1-f174.google.com (mail-yw1-f174.google.com [209.85.128.174])
+Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com [209.85.218.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A3C2338FA1
-	for <bpf@vger.kernel.org>; Tue, 11 Jun 2024 19:13:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A074386
+	for <bpf@vger.kernel.org>; Tue, 11 Jun 2024 19:14:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718133234; cv=none; b=uAeIqLt7RkxXinWV1jCE3l1dwPzMk7QkDyR2xBVYM2EQRDKuIhqj3s56G/huJj4zNxsaK1Oda/V3uopya3dJtIsGBbp52T1f/bOJQq6lU3ZgKdQfEKQaPNWqiLYiNgcIOOzMFrs+oC3OtmhskToUKqrrf2Dk6NgYzxVL30zzvMQ=
+	t=1718133292; cv=none; b=Z1c4wPO6cwyGs0JLJcmwsjYSTQC5lasPh5o2WAlNJ0+EUEItlrAYIUazJ1Hr+8iFNrssz58wrxVoXIltEWunU7iLj0iR1sS9Ftb//9n+y9Y43X0jP+L0bYdSfUrxkq0DzzN5f6AEVPA4xL5kE/SXH2eNAQopY1nfhL6cjoOel38=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718133234; c=relaxed/simple;
-	bh=wAIyEg2Pvor2USCqACYPAnI2Pivre+g+Lw9GIN+SQZc=;
+	s=arc-20240116; t=1718133292; c=relaxed/simple;
+	bh=KT31bgb0v7xBS6c94xss59CBmRE8r4q5CV+cAw5d1ts=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=oAT4cygth3ix58/7Iz55SxfBZNlyV048tmHpXndM0QP5XX4TVjCjpTI55+2Q7KCr7CwDKE0AXwu6a8xrrjTWHy2epoTH7vkekPgqLrRkjjYowZ30w+5bFUJAoYDm/PgplQ7uIZCnvnIBRHZ0AQ/97bi7nvRH2kDv/Sg0bIciOp4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=mojatatu.com; spf=none smtp.mailfrom=mojatatu.com; dkim=pass (2048-bit key) header.d=mojatatu-com.20230601.gappssmtp.com header.i=@mojatatu-com.20230601.gappssmtp.com header.b=RjCrbj82; arc=none smtp.client-ip=209.85.128.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=mojatatu.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=mojatatu.com
-Received: by mail-yw1-f174.google.com with SMTP id 00721157ae682-62a08b250a2so56790157b3.3
-        for <bpf@vger.kernel.org>; Tue, 11 Jun 2024 12:13:52 -0700 (PDT)
+	 To:Cc:Content-Type; b=CeLuF5/UXaHbxXQTAxuVwVl/+y3zXkX7gGYkT0A4GjIWBEAyyt1rqxe12rUlHoSMFydVquWlw+TY8rvMOl7vuu1EeulZORy+ZUzsY79a4TfLFaNBgns4QxbN3lr8EIGMYnwQcPhsG/+IQE05XHhAHilvcnDgXx28hvKOAHLsAT4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BXgab5on; arc=none smtp.client-ip=209.85.218.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-a6f1da33826so202552666b.0
+        for <bpf@vger.kernel.org>; Tue, 11 Jun 2024 12:14:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=mojatatu-com.20230601.gappssmtp.com; s=20230601; t=1718133231; x=1718738031; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1718133289; x=1718738089; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=2msBxhPXXnBr1VfIw0JVRu445u6imiF8iI5GrfbCCDE=;
-        b=RjCrbj82bUE18/gjbjgjDiU2ooIVPG/ZeiYwsvapiNIctyGqVFVZmIox6RKW0BX2cL
-         eNMjFNfxMQ2gC8jd3c5Xf+F+/pySKJMMQN5MdCNUPil5MjHwYAlWlZOWdvFagkGDgqP0
-         oiWfOLzKCQHI6bPSnUoYeUUakAfVx0MDdym79uQFSdhL73oY2MnWheP9CaV14JROmZQr
-         f96YpbRcZEb+czGKAbHbhAApTq5BydZ31k+VhNT/flc3G4uprzAkJCu8Wy3BgYBVshLL
-         qKNfmBl4ldJ/gQtgPt5F+DApxwOisy6+TUBbCK9l0KthWbqs5JJiYTwwcbePvtPpltA4
-         cMfA==
+        bh=mo7EddzmKB1vd9veJ7RQB83qJCbVq7PGYCB9bnd/o6Q=;
+        b=BXgab5onjW7d/fTv5vbH53+3K/kyGTxs+vfpmd2N8SghrrvI4TS+UF90jNM26rnBLI
+         5sCBmf2Bsfis5jtRiTNib12T8dopAxW5B9RZqrSuGjw2EBWTs+a4dGwyegTxrbUTioq2
+         eR+FUjsif5B4asg/woSEAd7eDmhZLoQPTyt77HyDWSauowNkNDxSWK/WvtF6sZdpLohb
+         gkPojjHBUkSGWt14n7ZlRFMUsOMFCkJ4y0O5cnQG6F6PTcQN5xK5tGvCyRps1Q61lCbh
+         hMmrpO5W0C65+xqUU/FDaCPvs1OuykayWRYkt5tQIb7+G535i+qqevmCNxRPOWmlzd65
+         H2Fg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1718133231; x=1718738031;
+        d=1e100.net; s=20230601; t=1718133289; x=1718738089;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=2msBxhPXXnBr1VfIw0JVRu445u6imiF8iI5GrfbCCDE=;
-        b=wnWjiMTOLR+5q1twU8pdk6mawAtTNV4zgddtcuxpagCxkGbLExIkIN0rDedAuplRk/
-         8pK2nSMrOw9Qiiv9rJFP+qHARTMefCIh/JtN1kFPjNIX3SH3dI/UQ/bcvsI6A5PhC2Pp
-         LYF7QASVmVOmGcWXb0Zb7aUvu4keejIcGT+TcMGqglywEOZmjqaKZprkACMojx8uEHwP
-         TDdqkrsrkxyzkbWR4Xl6Xv0Ux7YyszNsQpmmaFQWL+PCGD7lMed4F4V1tTwOtszrjFJs
-         Bteds3flm/WpmP14RHH18N7AHMaK0kuHELHZycFSibSv7VSO++4IQO0gOoH/uHqnkXs/
-         HC1A==
-X-Forwarded-Encrypted: i=1; AJvYcCV/vse2xeyVzSlZa15lk5NZGa7MKcimJFQwpIyGdkgwEBdpTlRFFMiO6CV6DXP260plxMN1LUEHLrosSrrHZ4lXK1/d
-X-Gm-Message-State: AOJu0YxEaaO/4KEOJ7CMQrpzNVjCvALazRpKA2xcKn8/x2odSTD1M+UF
-	ClsFFf6DEpBrQvcoGADcWvjAkMc1eSpthFdnD/Q0fnmcyTmAXTXoqI16ajRmbc0n+YFQvKHHiN8
-	Yv0jCkuOEUtnoAyLimSwmd7nx/wZvqJz7bTMR
-X-Google-Smtp-Source: AGHT+IEumhb6kBnuB1pnAkTG8fXAX0G8rC35rzNND/HE779wkC8NsPqhWU3MUxqXwoCMVzY0M5HyfhLBtT5NjcmB7NQ=
-X-Received: by 2002:a0d:e802:0:b0:62c:f90d:3797 with SMTP id
- 00721157ae682-62cf90d3cb1mr77094597b3.37.1718133231595; Tue, 11 Jun 2024
- 12:13:51 -0700 (PDT)
+        bh=mo7EddzmKB1vd9veJ7RQB83qJCbVq7PGYCB9bnd/o6Q=;
+        b=YtlUnRaKrJ/9Nh6YoFam2r1AC9ldhw0+y0ui/x2ac9w9Q75vgRfW6FszpePeKwH5eV
+         1zOGEWJu79zGoFrGP/DUN+621V/ATeATmWohvSD1LKDFOlCLE25AZ+HKGa0UQISIItTq
+         7OpFOn0CKKo9gIEkpQq/Gz9oLIT3uiNk1v9s7LxHCu00xwoAxQHUt2iKuT9M0nDU/Kr7
+         TXM4aspKrQDtiWHwS7qV0a/IWtJXu/EgneGT0fgPqOqnvYrBY38J4aQ6GI4LNeLKpuDD
+         mUZ4YjcothZZNoZxE935sWQX05YYmHLrssRiKVgaAjWq2Qv1AphT5RAbt3YLIWgz0ar5
+         lGlA==
+X-Gm-Message-State: AOJu0YzSKlFUEhCI4YcM/YRWnan9PdD6yFN08QtoifG/a5MWmtG2Xer3
+	Tgk9HCh5L2Ze4h8KUXJ8yF90WcQxGW+puNk3gbxblesPPRihixbJKudZo7AbsE69kF0bVoRMwaP
+	DDGcEfveWKukQVw7Z8ozm9JieIbw=
+X-Google-Smtp-Source: AGHT+IHWaeq/XCPHl4MhGj1XBB3MPeuqR6hMm4eqh2g85ffYs+ER22fUO9SB40UPo4g6aCaPjPzn7fyK5CvSJig+Qc0=
+X-Received: by 2002:a17:906:1653:b0:a6f:1445:9de8 with SMTP id
+ a640c23a62f3a-a6f1445f005mr665845366b.54.1718133288553; Tue, 11 Jun 2024
+ 12:14:48 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240410140141.495384-1-jhs@mojatatu.com> <20240611072107.5a4d4594@kernel.org>
- <CAM0EoMkAQH+zNp3mJMfiszmcpwR3NHnEVr8SN_ysZhukc=vt8A@mail.gmail.com>
- <20240611083312.3f3522dd@kernel.org> <CAM0EoMkgxXX4sFJ98n_UTLLFjP3KHx00aaq76t4zJJsO9zNO4A@mail.gmail.com>
- <20240611105342.02805498@kernel.org>
-In-Reply-To: <20240611105342.02805498@kernel.org>
-From: Jamal Hadi Salim <jhs@mojatatu.com>
-Date: Tue, 11 Jun 2024 15:13:39 -0400
-Message-ID: <CAM0EoM=8gqdZXt02v0jmHTqnjru4Ocv6ddjzjBXhU6eFoN50ng@mail.gmail.com>
-Subject: Re: [PATCH net-next v16 00/15] Introducing P4TC (series 1)
-To: Jakub Kicinski <kuba@kernel.org>
-Cc: netdev@vger.kernel.org, deb.chatterjee@intel.com, anjali.singhai@intel.com, 
-	namrata.limaye@intel.com, tom@sipanda.io, mleitner@redhat.com, 
-	Mahesh.Shirshyad@amd.com, tomasz.osinski@intel.com, jiri@resnulli.us, 
-	xiyou.wangcong@gmail.com, davem@davemloft.net, edumazet@google.com, 
-	pabeni@redhat.com, vladbu@nvidia.com, horms@kernel.org, khalidm@nvidia.com, 
-	toke@redhat.com, victor@mojatatu.com, pctammela@mojatatu.com, 
-	Vipin.Jain@amd.com, dan.daly@intel.com, andy.fingerhut@gmail.com, 
-	chris.sommers@keysight.com, mattyk@nvidia.com, bpf@vger.kernel.org, 
-	Jonathan Corbet <corbet@lwn.net>, Oz Shlomo <ozsh@nvidia.com>
+References: <20240608092912.11615-1-dev@der-flo.net>
+In-Reply-To: <20240608092912.11615-1-dev@der-flo.net>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Tue, 11 Jun 2024 12:14:36 -0700
+Message-ID: <CAADnVQ+8KtnmH_pbtPg0qujVxkceddoowqiD0VV6MekmmvdKUw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] bpf: Return EINVAL instead of NULL for
+ map_lookup_elem of queue
+To: Florian Lehner <dev@der-flo.net>
+Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Eddy Z <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Jun 11, 2024 at 1:53=E2=80=AFPM Jakub Kicinski <kuba@kernel.org> wr=
-ote:
+On Sat, Jun 8, 2024 at 2:29=E2=80=AFAM Florian Lehner <dev@der-flo.net> wro=
+te:
 >
-> On Tue, 11 Jun 2024 11:53:28 -0400 Jamal Hadi Salim wrote:
-> > > For me it's very much not "about P4". I don't care what DSL user pref=
-ers
-> > > and whether the device the offloads targets is built by a P4 vendor.
-> >
-> > I think it is an important detail though.
-> > You wouldnt say PSP shouldnt start small by first taking care of TLS
-> > or IPSec because it is not the target.
+> Programs should use map_peek_elem over map_lookup_elem for queues. NULL i=
+s
+> also not a valid queue return nor a proper error, that could be handled.
 >
-> I really don't see any parallel with PSP. And it _is_ small, 4kLoC.
+> Signed-off-by: Florian Lehner <dev@der-flo.net>
+> ---
+>  kernel/bpf/queue_stack_maps.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
 >
-> First you complain that community is "political" and doesn't give you
-> technical feedback, and then when you get technical feedback you attack
-> the work of the maintainer helping you.
->
+> diff --git a/kernel/bpf/queue_stack_maps.c b/kernel/bpf/queue_stack_maps.=
+c
+> index d869f51ea93a..85bead55024d 100644
+> --- a/kernel/bpf/queue_stack_maps.c
+> +++ b/kernel/bpf/queue_stack_maps.c
+> @@ -234,7 +234,8 @@ static long queue_stack_map_push_elem(struct bpf_map =
+*map, void *value,
+>  /* Called from syscall or from eBPF program */
+>  static void *queue_stack_map_lookup_elem(struct bpf_map *map, void *key)
+>  {
+> -       return NULL;
+> +       /* The eBPF program should use map_peek_elem instead */
+> +       return ERR_PTR(-EINVAL);
 
-You made a proposal saying it was a "start small" approach. I
-responded saying that it doesnt really cover our requirements and
-pointed to a sample h/w to show why. I only used PSP to illustrate why
-"start small" doesnt work for what we are targeting. I was not in any
-way attacking your work.
+The commit log, the code change and comment are highly misleading.
+bpf prog cannot call this function due to the verifier restrictions.
+bpf syscall cannot reach this code path either.
+This is effectively a dead code.
+But if there is a verifier bug or obscure sequence of events
+and bpf prog manages to call this function then it must return NULL.
+ERR_PTR(-EINVAL) will look like a valid addr to a prog and it will crash.
 
-We are not trying to cover the whole world of offloads. It is a very
-specific niche -P4- which uses the existing tc model because that's
-how match-action tables are offloaded today. The actions and tables
-are dynamically defined by the users P4 program whereas in flower they
-are hardcoded in the kernel. I dont see any other way to achieve these
-goals with flower or other existing approaches.  Flower for example
-could be written as a single P4 program and the goal here is to
-support a wider range of programs without making kernel changes.
-
-cheers,
-jamal
+pw-bot: cr
 
