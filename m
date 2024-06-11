@@ -1,373 +1,161 @@
-Return-Path: <bpf+bounces-31844-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-31845-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2711B903F44
-	for <lists+bpf@lfdr.de>; Tue, 11 Jun 2024 16:54:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id D52D2903FC7
+	for <lists+bpf@lfdr.de>; Tue, 11 Jun 2024 17:11:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 36E2A1C216D2
-	for <lists+bpf@lfdr.de>; Tue, 11 Jun 2024 14:54:07 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BFDBF1C2182C
+	for <lists+bpf@lfdr.de>; Tue, 11 Jun 2024 15:11:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 98F6812E7F;
-	Tue, 11 Jun 2024 14:53:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6DD612BCF7;
+	Tue, 11 Jun 2024 15:10:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Ic/BOeqV"
+	dkim=pass (2048-bit key) header.d=mojatatu-com.20230601.gappssmtp.com header.i=@mojatatu-com.20230601.gappssmtp.com header.b="UJsR2+Ko"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yw1-f178.google.com (mail-yw1-f178.google.com [209.85.128.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 168EA11712;
-	Tue, 11 Jun 2024 14:53:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5EFCA1BDD0
+	for <bpf@vger.kernel.org>; Tue, 11 Jun 2024 15:10:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718117639; cv=none; b=VBB7sBrrFfsBZq9X1I9xEBLtvb617S9yV6DtOKLB/Liosrr8ARzERDctXEiOfefWxNLNi4GmLWhDQSGP2wSsCP11UnKa2NRLgjKIceXPem4Mf7qJzyYXdyokguVTN2kFasFTn7OAKQwM7mTub/KzyJErCN7FkhHtfmKMUyrccew=
+	t=1718118650; cv=none; b=qTH1uLQol6FicYmPv8XGINCHQskdzqqXrORRuOoSnLDNIVC9s+T0FX6oqMHaFcvV75baZwY3j1+FxEHNQknW4YhAu4rZks024hvj5p52+OEdGZymO+G0sVWJGyL89VyuqjBL8CvUhXcZjT/rPh4Bahy1muuCxJlV/XUFLqv9Bw8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718117639; c=relaxed/simple;
-	bh=ZzSZpf/GI/3KLyUrgN1e5daeegCfTTeMo9Fq+wptzdk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=rG66vcH/RJBa/b+H5txIJl38l4BKpWzQ97X/NDW1s/1YcoGmouP90iemOqILLzOMFMENSI34tTHLAokokcz8qlgvT//E57olaqm+lk3UNN4rad6vnEAW9y93jcipQtcogKhgpSH5Ae8finH/wSTcd/pITgfOHuj57b7oObeChFQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Ic/BOeqV; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 622F2C2BD10;
-	Tue, 11 Jun 2024 14:53:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1718117638;
-	bh=ZzSZpf/GI/3KLyUrgN1e5daeegCfTTeMo9Fq+wptzdk=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Ic/BOeqVSiWVkhSkUeWwoH2eQXR66XJ00/cm8HgjdorHAjZ7JeXFJUmixkZN49V0x
-	 oUA3tjCvfD0ygsyFAA76N8+s8TcYPvVOdaGBsgT1xdG9g1vUwH1sJyfH/t0iFgd1cR
-	 3Hszxe/bQko0+df5uMVnSrvft2MwbAbsQnqZP4wEkKYfn65f42/49OaN5Wj8qrugNf
-	 dzp9GMZku3xxii599qFSAMrJm6yu0JDpLawCjsIPw26OxDiuhrI3+rPw6lx341HTlq
-	 cE12/Fe4R/+r0s2e7aPOvhbttk1mjukZVvm9/kY7w+Yh2udjlIvH8ieM5Lrbrx/ZTK
-	 uSLDLEvrp1E1g==
-Date: Tue, 11 Jun 2024 11:53:55 -0300
-From: Arnaldo Carvalho de Melo <acme@kernel.org>
-To: Howard Chu <howardchu95@gmail.com>
-Cc: peterz@infradead.org, mingo@redhat.com, namhyung@kernel.org,
-	mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
-	jolsa@kernel.org, irogers@google.com, adrian.hunter@intel.com,
-	kan.liang@linux.intel.com, mic@digikod.net, gnoack@google.com,
-	brauner@kernel.org, linux-perf-users@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-security-module@vger.kernel.org,
-	bpf@vger.kernel.org
-Subject: Re: [PATCH] perf trace: Fix syscall untraceable bug
-Message-ID: <ZmhlAxbVcAKoPTg8@x1>
-References: <20240608172147.2779890-1-howardchu95@gmail.com>
+	s=arc-20240116; t=1718118650; c=relaxed/simple;
+	bh=vrx3h8GYc6po93l8uT/2iQmtPiUfm5JdgQouJ8pAT8c=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=AQ7Eo48O3iopEa7UWFa8lwO+ymooCbW7cIEFAY292T9A98jBCkRyGTA5rZPXmLhNyGIVnlasQqtTiIoV8S27CskSDw2vY+ZfIBL0wH+w+McN02Bub8ykPQY59yYeukVrQPBVQCU3fJvs62les63Qw274vnLsJOFXbXNwjFBY6rk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=mojatatu.com; spf=none smtp.mailfrom=mojatatu.com; dkim=pass (2048-bit key) header.d=mojatatu-com.20230601.gappssmtp.com header.i=@mojatatu-com.20230601.gappssmtp.com header.b=UJsR2+Ko; arc=none smtp.client-ip=209.85.128.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=mojatatu.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=mojatatu.com
+Received: by mail-yw1-f178.google.com with SMTP id 00721157ae682-628c1f09f5cso15239507b3.1
+        for <bpf@vger.kernel.org>; Tue, 11 Jun 2024 08:10:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=mojatatu-com.20230601.gappssmtp.com; s=20230601; t=1718118647; x=1718723447; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=KzTzC4f5HaADCEetfHfPGdcOia2V9TsSgao4VNBcd3M=;
+        b=UJsR2+Koo0JDDxl/01klw0aqodnTPaXapdJzny/9oJAN/2makwClDExcFxhIF1NvqM
+         yPoneOxCS25gG74AFX33PkweHRFOfplcrfIVqTBSn+xHNff8lC/sVA1OzlxLSSzOzYZL
+         FnVRtitmYTySITSqYqv4FswU9lgH+3NuTKSTvqqVFoRJOf2vKJNLQ0bkq/rBdR0vtATb
+         x2t2jIWjCbxY3d4iJWVlJMfmEPfNHIMuwRaYlRKtad4LQULj6OhjGo446sIUxocPjjPp
+         jAQMuCT9bH+mzAdbdC0uGNaxby8DdGYGt1FDiebFfC80oeumQBFU4e55IfD6bwH2+GJc
+         F/NA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1718118647; x=1718723447;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=KzTzC4f5HaADCEetfHfPGdcOia2V9TsSgao4VNBcd3M=;
+        b=xKWxf89dILleV225X5rYl+2dRTl1lWGeAuc69zDY1ncg6GcW53llDHn2+fr1xQ1Sw6
+         E1i6x5gbEajwy7fppJEgE6gOcL+152AQCp+8eWVe2GD2Ea2D1oBfPQviQTO88x9/geyd
+         3nlBp0vdD4luBUnEnDlgWTamRWnbcyS+3+BRJ26zlpzwhlqeNPuwZaQ4oRwcQt4XrSn/
+         BaSOKTXBniKC3L/wZfjF/mO9DtWIPsl+d7VVLP7/CMsRBtpzVIMU2reKTIAEUNtQaPmi
+         ca43JjUbnNI71Z6BOYtyPDEwCeaD6AZZ7p6+wiwc+In8eHfRRrCkpEJSd1dPKv8BLIdl
+         71XQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUiGOHmQyShCAAfCOkM6Szdv8BoYeq1cKeLPVBS4ccAjChO1qlWlV2apP89oBwC+1UAbKu3bk3GHB5hYG4i+v6RliAS
+X-Gm-Message-State: AOJu0YwL8P8pDkc/DweXqPvkR3R72qarSUz4Hx7sDNXfnnI/3lU+VTq7
+	3hr+YzGgnlXQT27Ui8qrZaFEdVDewNkFsQBC7ZRgit5bE2DcaTPAzZh2h2nDCljdpealt2Kdm3n
+	m46WX+nm30QewEXuxbdyFG5XYW92FmxlR6KrB
+X-Google-Smtp-Source: AGHT+IHIisuZw2rSU1hWsa2r0g1Y28TPjVu2YC9yVMCKgH9/0t2H9KD6ayQ5GJh7eYFaiRBQZQl7l8eDd1lk5F5z4l8=
+X-Received: by 2002:a81:f00e:0:b0:61f:fa18:ba08 with SMTP id
+ 00721157ae682-62cd56861b2mr128911927b3.47.1718118647185; Tue, 11 Jun 2024
+ 08:10:47 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240608172147.2779890-1-howardchu95@gmail.com>
+References: <20240410140141.495384-1-jhs@mojatatu.com> <20240611072107.5a4d4594@kernel.org>
+In-Reply-To: <20240611072107.5a4d4594@kernel.org>
+From: Jamal Hadi Salim <jhs@mojatatu.com>
+Date: Tue, 11 Jun 2024 11:10:35 -0400
+Message-ID: <CAM0EoMkAQH+zNp3mJMfiszmcpwR3NHnEVr8SN_ysZhukc=vt8A@mail.gmail.com>
+Subject: Re: [PATCH net-next v16 00/15] Introducing P4TC (series 1)
+To: Jakub Kicinski <kuba@kernel.org>
+Cc: netdev@vger.kernel.org, deb.chatterjee@intel.com, anjali.singhai@intel.com, 
+	namrata.limaye@intel.com, tom@sipanda.io, mleitner@redhat.com, 
+	Mahesh.Shirshyad@amd.com, tomasz.osinski@intel.com, jiri@resnulli.us, 
+	xiyou.wangcong@gmail.com, davem@davemloft.net, edumazet@google.com, 
+	pabeni@redhat.com, vladbu@nvidia.com, horms@kernel.org, khalidm@nvidia.com, 
+	toke@redhat.com, victor@mojatatu.com, pctammela@mojatatu.com, 
+	Vipin.Jain@amd.com, dan.daly@intel.com, andy.fingerhut@gmail.com, 
+	chris.sommers@keysight.com, mattyk@nvidia.com, bpf@vger.kernel.org, 
+	Jonathan Corbet <corbet@lwn.net>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Sun, Jun 09, 2024 at 01:21:46AM +0800, Howard Chu wrote:
-> This is a bug found when implementing pretty-printing for the
-> landlock_add_rule system call, I decided to send this patch separately
-> because this is a serious bug that should be fixed fast.
- 
-> I wrote a test program to do landlock_add_rule syscall in a loop,
-> yet perf trace -e landlock_add_rule freezes, giving no output.
- 
-> This bug is introduced by the false understanding of the variable "key"
-> below:
-> ```
-> for (key = 0; key < trace->sctbl->syscalls.nr_entries; ++key) {
-> 	struct syscall *sc = trace__syscall_info(trace, NULL, key);
-> 	...
-> }
-> ```
-> The code above seems right at the beginning, but when looking at
-> syscalltbl.c, I found these lines:
-> 
-> ```
-> for (i = 0; i <= syscalltbl_native_max_id; ++i)
-> 	if (syscalltbl_native[i])
-> 		++nr_entries;
-> 
-> entries = tbl->syscalls.entries = malloc(sizeof(struct syscall) * nr_entries);
-> ...
-> 
-> for (i = 0, j = 0; i <= syscalltbl_native_max_id; ++i) {
-> 	if (syscalltbl_native[i]) {
-> 		entries[j].name = syscalltbl_native[i];
-> 		entries[j].id = i;
-> 		++j;
-> 	}
-> }
-> ```
-> 
-> meaning the key is merely an index to traverse the syscall table,
-> instead of the actual syscall id for this particular syscall.
+On Tue, Jun 11, 2024 at 10:21=E2=80=AFAM Jakub Kicinski <kuba@kernel.org> w=
+rote:
+>
+> Since the inevitable LWN article has been written, let me put more
+> detail into what I already mentioned here:
+>
+> https://lore.kernel.org/all/20240301090020.7c9ebc1d@kernel.org/
+>
+> for the benefit of non-networking people.
+>
+> On Wed, 10 Apr 2024 10:01:26 -0400 Jamal Hadi Salim wrote:
+> > P4TC builds on top of many years of Linux TC experiences of a netlink
+> > control path interface coupled with a software datapath with an equival=
+ent
+> > offloadable hardware datapath.
+>
+> The point of having SW datapath is to provide a blueprint for the
+> behavior. This is completely moot for P4 which comes as a standard.
+>
+> Besides we already have 5 (or more) flow offloads, we don't need
+> a 6th, completely disconnected from the existing ones. Leaving
+> users guessing which one to use, and how they interact.
+>
+> In my opinion, reasonable way to implement programmable parser for
 
-> So if one uses key to do trace__syscall_info(trace, NULL, key), because
-> key only goes up to trace->sctbl->syscalls.nr_entries, for example, on
-> my X86_64 machine, this number is 373, it will end up neglecting all
-> the rest of the syscall, in my case, everything after `rseq`, because
-> the traversal will stop at 373, and `rseq` is the last syscall whose id
-> is lower than 373
- 
-> in tools/perf/arch/x86/include/generated/asm/syscalls_64.c:
-> ```
-> 	...
-> 	[334] = "rseq",
-> 	[424] = "pidfd_send_signal",
-> 	...
-> ```
-> 
-> The reason why the key is scrambled but perf trace works well is that
-> key is used in trace__syscall_info(trace, NULL, key) to do
-> trace->syscalls.table[id], this makes sure that the struct syscall returned
-> actually has an id the same value as key, making the later bpf_prog
-> matching all correct.
+You have mentioned "parser" before - are you referring to the DDP
+patches earlier from Intel?
+In P4 the parser is just one of the objects.
 
-Right, trace->syscalls.table holds info read from tracefs, while
-trace->sctbl holds info created from per-arch syscall tables, usually
-from:
+> Linux is:
+>
+>  1. User writes their parser in whatever DSL they want
+>  2. User compiles the parser in user space
+>    2.1 Compiler embeds a representation of the graph in the blob
+>  3. User puts the blob in /lib/firmware
+>  4. devlink dev $dev reload action parser-fetch $filename
+>  5. devlink loads the file, parses it to extract the representation
+>     from 2.1, and passes the blob to the driver
+>    5.1 driver/fw reinitializes the HW parser
+>    5.2 user can inspect the graph by dumping the common representation
+>        from 2.1 (via something like devlink dpipe, perhaps)
+>  6. The parser tables are annotated with Linux offload targets (routes,
+>     classic ntuple, nftables, flower etc.) with some tables being left
+>     as "raw"* (* better name would be great)
+>  7. ethtool ntuple is extended to support insertion of arbitrary rules
+>     into the "raw" tables
+>  8. The other tables can only be inserted into using the subsystem they
+>     are annotated for
+>
+> This builds on how some devices _already_ operate. Gives the benefits
+> of expressing parser information and ability to insert rules for
+> uncommon protocols also for devices which are not programmable.
+> And it uses ethtool ntuple, which SW people actually want to use.
+>
+> Before the tin foil hats gather - we have no use for any of this at
+> Meta, I'm not trying to twist the design to fit the use cases of big
+> bad hyperscalers.
 
-⬢[acme@toolbox perf-tools-next]$ find arch -name "*.tbl"
-arch/alpha/kernel/syscalls/syscall.tbl
-arch/arm/tools/syscall.tbl
-arch/m68k/kernel/syscalls/syscall.tbl
-arch/microblaze/kernel/syscalls/syscall.tbl
-arch/mips/kernel/syscalls/syscall_n32.tbl
-arch/mips/kernel/syscalls/syscall_n64.tbl
-arch/mips/kernel/syscalls/syscall_o32.tbl
-arch/parisc/kernel/syscalls/syscall.tbl
-arch/powerpc/kernel/syscalls/syscall.tbl
-arch/s390/kernel/syscalls/syscall.tbl
-arch/sh/kernel/syscalls/syscall.tbl
-arch/sparc/kernel/syscalls/syscall.tbl
-arch/x86/entry/syscalls/syscall_32.tbl
-arch/x86/entry/syscalls/syscall_64.tbl
-arch/xtensa/kernel/syscalls/syscall.tbl
-⬢[acme@toolbox perf-tools-next]$
+The scope is much bigger than just parsers though, it is about P4 in
+which the parser is but one object.
+Limiting what we can do just to fit a narrow definition of "offload"
+is not the right direction.
+P4 is well understood, hardware exists for P4 and is used to specify
+hardware specs and is deployed(See Vipin's comment).
 
-trace->sctbl->syscalls.entries is sorted by name and has { syscall_id,
-name } as contents.
 
-But it is loaded at the time the reuse of BPF programs is attempted,
-because initially we were using libaudit for getting id, that we get
-from the tracepoint payload:
-
-root@number:~# cat /sys/kernel/tracing/events/raw_syscalls/sys_enter/format 
-name: sys_enter
-ID: 361
-format:
-	field:unsigned short common_type;	offset:0;	size:2;	signed:0;
-	field:unsigned char common_flags;	offset:2;	size:1;	signed:0;
-	field:unsigned char common_preempt_count;	offset:3;	size:1;	signed:0;
-	field:int common_pid;	offset:4;	size:4;	signed:1;
-
-	field:long id;	offset:8;	size:8;	signed:1;
-                   ^^
-                   ^^
-                   ^^
-                   ^^
-	field:unsigned long args[6];	offset:16;	size:48;	signed:0;
-
-print fmt: "NR %ld (%lx, %lx, %lx, %lx, %lx, %lx)", REC->id, REC->args[0], REC->args[1], REC->args[2], REC->args[3], REC->args[4], REC->args[5]
-root@number:~#
-
-To syscall name.
-
-Your analysis is perfect, great! Please take a look at the attached
-patch, that I'm testing now that is a simplification of your patch, that
-avoids exposing that __syscall struct, reducing patch size by
-introducing this instead:
-
-+++ b/tools/perf/util/syscalltbl.c
-@@ -123,6 +123,13 @@ int syscalltbl__id(struct syscalltbl *tbl, const char *name)
-        return sc ? sc->id : -1;
- }
- 
-+int syscalltbl__id_at_idx(struct syscalltbl *tbl, int idx)
-+{
-+       struct syscall *syscalls = tbl->syscalls.entries;
-+
-+       return idx < tbl->syscalls.nr_entries ? syscalls[idx].id : -1;
-+}
-
-And then using it to go from the index to the syscall id in the loops
-traversing the sorted trace->sctbl->
-
-> After fixing this bug, I can do perf trace on 38 more syscalls, and
-> because more syscalls are visible, we get 8 more syscalls that can be
-> augmented.
-> 
-> before:
-> 
-> perf $ perf trace -vv --max-events=1 |& grep Reusing
-> Reusing "open" BPF sys_enter augmenter for "stat"
-> Reusing "open" BPF sys_enter augmenter for "lstat"
-> Reusing "fremovexattr" BPF sys_enter augmenter for "execveat"
-> Reusing "fremovexattr" BPF sys_enter augmenter for "statx"
-> 
-> TL;DR:
-
-I did the above and got:
-
-root@number:~# wc -l before after
-  63 before
-  71 after
- 134 total
-root@number:~#
-
-> These are the new syscalls that can be augmented
-
-Which matches the 8 more reused bpf programs.
-
-> Reusing "openat" BPF sys_enter augmenter for "open_tree"
-> Reusing "openat" BPF sys_enter augmenter for "openat2"
-> Reusing "openat" BPF sys_enter augmenter for "mount_setattr"
-> Reusing "openat" BPF sys_enter augmenter for "move_mount"
-> Reusing "open" BPF sys_enter augmenter for "fsopen"
-> Reusing "openat" BPF sys_enter augmenter for "fspick"
-> Reusing "openat" BPF sys_enter augmenter for "faccessat2"
-> Reusing "openat" BPF sys_enter augmenter for "fchmodat2"
-
-But interestingly I get this:
-
-root@number:~# grep -E 'for "(open_tree|openat2|mount_setattr|move_mount|fsopen|fspick|faccessat2|fchmodat2)' after
-Reusing "faccessat" BPF sys_enter augmenter for "faccessat2"
-Reusing "faccessat" BPF sys_enter augmenter for "fchmodat2"
-Reusing "access" BPF sys_enter augmenter for "fsopen"
-Reusing "faccessat" BPF sys_enter augmenter for "fspick"
-Reusing "faccessat" BPF sys_enter augmenter for "mount_setattr"
-Reusing "faccessat" BPF sys_enter augmenter for "move_mount"
-Reusing "faccessat" BPF sys_enter augmenter for "open_tree"
-Reusing "faccessat" BPF sys_enter augmenter for "openat2"
-root@number:~#
-
-Which matches my expectations as the array we're traversing,
-trace->sctbl->syscalls->entries is sorted by name.
- 
-> as for the perf trace output:
-
-> before
-> 
-> perf $ perf trace -e faccessat2 --max-events=1
-> [no output]
-> 
-> after
-> 
-> perf $ ./perf trace -e faccessat2 --max-events=1
->      0.000 ( 0.037 ms): waybar/958 faccessat2(dfd: 40, filename: "uevent")                               = 0
-> 
-> P.S. The reason why this bug was not found in the past five years is
-> probably because it only happens to the newer syscalls whose id is
-> greater, for instance, faccessat2 of id 439, which not a lot of people
-> care about when using perf trace.
-
-That and the fact that the BPF code was hidden before having to use -e,
-that got changed kinda recently when we switched to using BPF skels for
-augmenting syscalls in 'perf trace':
-
-⬢[acme@toolbox perf-tools-next]$ git log --oneline tools/perf/util/bpf_skel/augmented_raw_syscalls.bpf.c
-a9f4c6c999008c92 perf trace: Collect sys_nanosleep first argument
-29d16de26df17e94 perf augmented_raw_syscalls.bpf: Move 'struct timespec64' to vmlinux.h
-5069211e2f0b47e7 perf trace: Use the right bpf_probe_read(_str) variant for reading user data
-33b725ce7b988756 perf trace: Avoid compile error wrt redefining bool
-7d9642311b6d9d31 perf bpf augmented_raw_syscalls: Add an assert to make sure sizeof(augmented_arg->value) is a power of two.
-262b54b6c9396823 perf bpf augmented_raw_syscalls: Add an assert to make sure sizeof(saddr) is a power of two.
-1836480429d173c0 perf bpf_skel augmented_raw_syscalls: Cap the socklen parameter using &= sizeof(saddr)
-cd2cece61ac5f900 perf trace: Tidy comments related to BPF + syscall augmentation
-5e6da6be3082f77b perf trace: Migrate BPF augmentation to use a skeleton
-⬢[acme@toolbox perf-tools-next]$ 
-
-⬢[acme@toolbox perf-tools-next]$ git show --oneline --pretty=reference 5e6da6be3082f77b | head -1
-5e6da6be3082f77b (perf trace: Migrate BPF augmentation to use a skeleton, 2023-08-10)
-⬢[acme@toolbox perf-tools-next]$ 
-
-I.e. from August, 2023.
-
-One had as well to ask for BUILD_BPF_SKEL=1, which now is default if all
-it needs is available on the system.
-
-I'll test it together with your btf_enum work.
-
-- Arnaldo
-
-diff --git a/tools/perf/builtin-trace.c b/tools/perf/builtin-trace.c
-index c42bc608954ee08d..c4fa8191253d4880 100644
---- a/tools/perf/builtin-trace.c
-+++ b/tools/perf/builtin-trace.c
-@@ -3354,8 +3354,6 @@ static int trace__bpf_prog_sys_exit_fd(struct trace *trace, int id)
- static struct bpf_program *trace__find_usable_bpf_prog_entry(struct trace *trace, struct syscall *sc)
- {
- 	struct tep_format_field *field, *candidate_field;
--	int id;
--
- 	/*
- 	 * We're only interested in syscalls that have a pointer:
- 	 */
-@@ -3367,7 +3365,8 @@ static struct bpf_program *trace__find_usable_bpf_prog_entry(struct trace *trace
- 	return NULL;
- 
- try_to_find_pair:
--	for (id = 0; id < trace->sctbl->syscalls.nr_entries; ++id) {
-+	for (int i = 0; i < trace->sctbl->syscalls.nr_entries; ++i) {
-+		int id = syscalltbl__id_at_idx(trace->sctbl, i);
- 		struct syscall *pair = trace__syscall_info(trace, NULL, id);
- 		struct bpf_program *pair_prog;
- 		bool is_candidate = false;
-@@ -3456,10 +3455,10 @@ static int trace__init_syscalls_bpf_prog_array_maps(struct trace *trace)
- {
- 	int map_enter_fd = bpf_map__fd(trace->skel->maps.syscalls_sys_enter);
- 	int map_exit_fd  = bpf_map__fd(trace->skel->maps.syscalls_sys_exit);
--	int err = 0, key;
-+	int err = 0;
- 
--	for (key = 0; key < trace->sctbl->syscalls.nr_entries; ++key) {
--		int prog_fd;
-+	for (int i = 0; i < trace->sctbl->syscalls.nr_entries; ++i) {
-+		int prog_fd, key = syscalltbl__id_at_idx(trace->sctbl, i);
- 
- 		if (!trace__syscall_enabled(trace, key))
- 			continue;
-@@ -3505,7 +3504,8 @@ static int trace__init_syscalls_bpf_prog_array_maps(struct trace *trace)
- 	 * first and second arg (this one on the raw_syscalls:sys_exit prog
- 	 * array tail call, then that one will be used.
- 	 */
--	for (key = 0; key < trace->sctbl->syscalls.nr_entries; ++key) {
-+	for (int i = 0; i < trace->sctbl->syscalls.nr_entries; ++i) {
-+		int key = syscalltbl__id_at_idx(trace->sctbl, i);
- 		struct syscall *sc = trace__syscall_info(trace, NULL, key);
- 		struct bpf_program *pair_prog;
- 		int prog_fd;
-diff --git a/tools/perf/util/syscalltbl.c b/tools/perf/util/syscalltbl.c
-index 63be7b58761d2f33..0dd26b991b3fb513 100644
---- a/tools/perf/util/syscalltbl.c
-+++ b/tools/perf/util/syscalltbl.c
-@@ -123,6 +123,13 @@ int syscalltbl__id(struct syscalltbl *tbl, const char *name)
- 	return sc ? sc->id : -1;
- }
- 
-+int syscalltbl__id_at_idx(struct syscalltbl *tbl, int idx)
-+{
-+	struct syscall *syscalls = tbl->syscalls.entries;
-+
-+	return idx < tbl->syscalls.nr_entries ? syscalls[idx].id : -1;
-+}
-+
- int syscalltbl__strglobmatch_next(struct syscalltbl *tbl, const char *syscall_glob, int *idx)
- {
- 	int i;
-diff --git a/tools/perf/util/syscalltbl.h b/tools/perf/util/syscalltbl.h
-index a41d2ca9e4aebad5..2b53b7ed25a6affe 100644
---- a/tools/perf/util/syscalltbl.h
-+++ b/tools/perf/util/syscalltbl.h
-@@ -16,6 +16,7 @@ void syscalltbl__delete(struct syscalltbl *tbl);
- 
- const char *syscalltbl__name(const struct syscalltbl *tbl, int id);
- int syscalltbl__id(struct syscalltbl *tbl, const char *name);
-+int syscalltbl__id_at_idx(struct syscalltbl *tbl, int idx);
- 
- int syscalltbl__strglobmatch_first(struct syscalltbl *tbl, const char *syscall_glob, int *idx);
- int syscalltbl__strglobmatch_next(struct syscalltbl *tbl, const char *syscall_glob, int *idx);
- 
+cheers,
+jamal
 
