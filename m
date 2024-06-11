@@ -1,134 +1,150 @@
-Return-Path: <bpf+bounces-31891-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-31892-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E6B6F90463F
-	for <lists+bpf@lfdr.de>; Tue, 11 Jun 2024 23:27:05 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id DD99C904648
+	for <lists+bpf@lfdr.de>; Tue, 11 Jun 2024 23:35:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 192DD1C2365A
-	for <lists+bpf@lfdr.de>; Tue, 11 Jun 2024 21:27:05 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5B4931F24886
+	for <lists+bpf@lfdr.de>; Tue, 11 Jun 2024 21:35:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C5871153580;
-	Tue, 11 Jun 2024 21:26:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1CBA8153BE4;
+	Tue, 11 Jun 2024 21:35:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dt37lus7"
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="BMpd+8HG"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f48.google.com (mail-ej1-f48.google.com [209.85.218.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 42CC9BA34;
-	Tue, 11 Jun 2024 21:26:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C5C6B15382E
+	for <bpf@vger.kernel.org>; Tue, 11 Jun 2024 21:35:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718141218; cv=none; b=HHzPaJ0mM57PqMHPgp97rmVYG0LCnllk0BlGINoiMj24Ao6Hza0rYTWJYDTMZXRlP7oqA/bxiNkxqdyaW7Qrb/HddKms6WtneFJ1RoHNu6ecTMO2PQaWkyD97wyeoZ/Hq9L0jxtK0alf9kPbifOFa2D3R/E+02FHfKqQM602QCU=
+	t=1718141738; cv=none; b=mwyAOQdxQC8Z+VfMwUmsHvGjpQAeaj7199X9peXf6vPyweL1SYQxaWJI4z/WX3bl4+asPHX2e1p+G3mkVHkNfiPlomrHk+2dT3vLZqtzDlq6lJ0I4cbloDOVIplmzs3ejLYcNAaLUV5InEVWjBZJKYvClnjmpOon7ADr4HRFeDg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718141218; c=relaxed/simple;
-	bh=l/slOwUbIQjq2IvyCrFSxlG82jUdCK9N4vGo107GLYY=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=mKwBg000o1g6LNgmBCJPMnmBaQp6BRwsCcYZeK+QSfG3osHJpxYi8ry8vczOUimElCNHTmAjBku1PAxFUHtp4qPP+Gwo/f/kV91Fpw7LmCyyv7Pvdbg23zxcyHDu3hQ3NCS9sBIagUzkskzO0v3JbGeeoAFa0C6daPXiJoFww+M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dt37lus7; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 31733C2BD10;
-	Tue, 11 Jun 2024 21:26:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1718141216;
-	bh=l/slOwUbIQjq2IvyCrFSxlG82jUdCK9N4vGo107GLYY=;
-	h=Date:From:To:Cc:Subject:From;
-	b=dt37lus7snItxzKmWYgcdGBV42ZD/gGxHjIdjOx8ffwSExMY8uRmTB4dZc0uz7vGl
-	 HO5uPbatJv06//E91ULoMem1+EJxuL4yuAwn08gY+DOG1FCaKVjirKlI1sKULcXUJO
-	 me4452LoQSXYMfrQAREX6xF4sICrP4640QzXKTN9m+DtHSneE7Iu2OqcjSc3wYNSXC
-	 ZIslyrX1bewsd8oTTPtY4JTokLz++c8BvDES3dSVLjW+1jt+5xBe+CdmljumekzVVa
-	 elkXDNisXWslp/luWgx5q7MoCZyki898hdstg3DZxzExec8sXr1T4bIOA8NW5x1wKc
-	 MyFxmGbBj9klQ==
-Date: Tue, 11 Jun 2024 18:26:53 -0300
-From: Arnaldo Carvalho de Melo <acme@kernel.org>
-To: dwarves@vger.kernel.org
-Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-	bpf@vger.kernel.org, Alan Maguire <alan.maguire@oracle.com>,
-	Jiri Olsa <jolsa@kernel.org>, Jan Engelhardt <jengelh@inai.de>,
-	Matthias Schwarzott <zzam@gentoo.org>,
-	Viktor Malik <vmalik@redhat.com>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Jan Alexander Steffens <heftig@archlinux.org>,
-	Domenico Andreoli <cavok@debian.org>,
-	Dominique Leuenberger <dimstar@opensuse.org>,
-	Daniel Xu <dxu@dxuuu.xyz>, Yonghong Song <yonghong.song@linux.dev>
-Subject: ANNOUNCE: pahole v1.27 (reproducible builds, BTF kfuncs)
-Message-ID: <ZmjBHWw-Q5hKBiwA@x1>
+	s=arc-20240116; t=1718141738; c=relaxed/simple;
+	bh=1z7srA7osNJj1aYJV58/IFOWkAWvG4t7SgHfg4hwbX0=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=V/10aJBMo4MLanFph22QilSWAyHFFLGSpXhSD6ldpSKog8uiEy85yKgXLcsRi+oAIaGeAwwvbrGe8ziU0lz2CKei3LcRjPKXh9buQA9m7nVIr95K0fkvr0gIYv6ePDflMUXMVH6MPQ6H8Nlcz5yquHLAbzJF+d1bJEm/B5O3wxM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=BMpd+8HG; arc=none smtp.client-ip=209.85.218.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
+Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-a689ad8d1f6so741475066b.2
+        for <bpf@vger.kernel.org>; Tue, 11 Jun 2024 14:35:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google; t=1718141735; x=1718746535; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=kgwu43FUzPY5K/8QMmjEzl3qbHR+MSkeROUYSgbHmjU=;
+        b=BMpd+8HGSVci/bvo/TELwtJ096TtX+RREukDwpORR5yH9+WtR4P8pJXE/cWBdNxZnJ
+         1RI9QfqTXPb9ccW4FkWW0NPEI/w/O+hrLOMxTKxH4RVE9Umyv2X7JjZeIr2BM2JZUJSL
+         aSjnvVSMd/4RGOf2FFoyr6rVILPCMYXsR2xx8=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1718141735; x=1718746535;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=kgwu43FUzPY5K/8QMmjEzl3qbHR+MSkeROUYSgbHmjU=;
+        b=bpSVZdVLYmEKeRRGne0CmYPDPaMHAZ/bVeHsuaKmWGCDzo3wjg8aPe+bO4S+BXY/2s
+         aBzAhhiYxFBRSu3RVcWWVDjt20ctLlg5bu4gXNgthJrEyZV7/laWaWq8d/F4Rsu74A+c
+         PxnK5nUTHgFcxoshGDsd0XItoJMTTwbXLgJcRmIeNsSOqr9vgt8GS6YPjBdI51ucBUAp
+         8NvqlseZOF3mvXXMpHI1jB1i3W8p1aEhBuRYomg6PH8GTUMgssaOOFUTEhDlzIfxTqEx
+         8c9G1PyqkaiOK3iEDgX7W9TaWGWK5flobUekAOr8z0am8P3RqswmYjGI4ran/R7GLSxg
+         BoCQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVEF9r01jMnZxZkNqBbI+iq8+aCPVoXrYxGVNoWRO+zK57WmnGIy6NjeRdE+Da5CB4KpvoMR4P8NqUI5z4OzCR93jpO
+X-Gm-Message-State: AOJu0YycwqhLw3y891PYYXFLnzFTdZGM67H09sismIfkVsbmRVdASn9p
+	5ZsxXsLlKC0EfVc9KWD1EgdJtGlAWOjCQBIdPoYSFf2upAQuRDdu9JXIIQYuxHV5h44s9ZaM6ID
+	YZ8of1A==
+X-Google-Smtp-Source: AGHT+IF9ZUhV3cJJyfsQ6iqE4OK7uSJn16JZiR516ZFb5/EjH3cpwKNIQ0XL7hGb04qGijJKZiIO1w==
+X-Received: by 2002:a17:906:5498:b0:a6d:ee51:793b with SMTP id a640c23a62f3a-a6dee51911cmr720229966b.73.1718141734894;
+        Tue, 11 Jun 2024 14:35:34 -0700 (PDT)
+Received: from mail-wr1-f47.google.com (mail-wr1-f47.google.com. [209.85.221.47])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a6e23c9f22asm634070166b.171.2024.06.11.14.35.33
+        for <bpf@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 11 Jun 2024 14:35:34 -0700 (PDT)
+Received: by mail-wr1-f47.google.com with SMTP id ffacd0b85a97d-35dc1d8867eso4864057f8f.0
+        for <bpf@vger.kernel.org>; Tue, 11 Jun 2024 14:35:33 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCUHfAO1e1orvC4pKhFMCZL+2Kf5UvJ2OBth0CmAF89Te3oGEsHaLWTIYzCzkO3cJtrgK9B4yUSdsVp+aD++sNvor112
+X-Received: by 2002:a17:906:191b:b0:a69:2288:41da with SMTP id
+ a640c23a62f3a-a6cd6665bc9mr812670466b.30.1718141712971; Tue, 11 Jun 2024
+ 14:35:12 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Url: http://acmel.wordpress.com
+References: <20240501151312.635565-1-tj@kernel.org>
+In-Reply-To: <20240501151312.635565-1-tj@kernel.org>
+From: Linus Torvalds <torvalds@linux-foundation.org>
+Date: Tue, 11 Jun 2024 14:34:56 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wg8APE61e5Ddq5mwH55Eh0ZLDV4Tr+c6_gFS7g2AxnuHQ@mail.gmail.com>
+Message-ID: <CAHk-=wg8APE61e5Ddq5mwH55Eh0ZLDV4Tr+c6_gFS7g2AxnuHQ@mail.gmail.com>
+Subject: Re: [PATCHSET v6] sched: Implement BPF extensible scheduler class
+To: Tejun Heo <tj@kernel.org>
+Cc: mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com, 
+	vincent.guittot@linaro.org, dietmar.eggemann@arm.com, rostedt@goodmis.org, 
+	bsegall@google.com, mgorman@suse.de, bristot@redhat.com, vschneid@redhat.com, 
+	ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, 
+	martin.lau@kernel.org, joshdon@google.com, brho@google.com, pjt@google.com, 
+	derkling@google.com, haoluo@google.com, dvernet@meta.com, 
+	dschatzberg@meta.com, dskarlat@cs.cmu.edu, riel@surriel.com, 
+	changwoo@igalia.com, himadrics@inria.fr, memxor@gmail.com, 
+	andrea.righi@canonical.com, joel@joelfernandes.org, 
+	linux-kernel@vger.kernel.org, bpf@vger.kernel.org, kernel-team@meta.com
+Content-Type: text/plain; charset="UTF-8"
 
-Hi,
- 
-	The v1.27 release of pahole and its friends is out, supporting
-parallel reproducible builds and encoding kernel kfuncs in BTF, allowing
-tools such as bpftrace to enumerate the available kfuncs and obtain its
-function signatures and return types.
+[ Tejun reminded me about this, and discussion hasn't really gone
+anywhere for much too long, so now I just need to be the person who
+makes a decision and people can hate on ]
 
-Main git repo:
+On Wed, 1 May 2024 at 08:13, Tejun Heo <tj@kernel.org> wrote:
+>
+> This is v6 of sched_ext (SCX) patchset.
+>
+> During the past five months, both the development and adoption of sched_ext
+> have been progressing briskly. Here are some highlights around adoption:
+[...]
 
-   https://git.kernel.org/pub/scm/devel/pahole/pahole.git
+I honestly see no reason to delay this any more. This whole patchset
+was the major (private) discussion at last year's kernel maintainer
+summit, and I don't find any value in having the same discussion
+(whether off-list or as an actual event) at the upcoming maintainer
+summit one year later, so to make any kind of sane progress, my
+current plan is to merge this for 6.11.
 
-Mirror git repo:
+At least that way, we're making progress, and the discussion at KS
+2024 can be about my mental acuity - or lack thereof - rather than
+about rehashing the same thing that clearly made no progress last
+year.
 
-   https://github.com/acmel/dwarves.git
+I've never been a huge believer in trying to make everybody happy with
+code that is out of tree - we're better off working together on it
+in-tree.
 
-tarball + gpg signature:
+And using the "in order to accept this, some other thing has to be
+fixed first" argument doesn't really work well either (and _that_ has
+been discussed for over a decade at various maintainer summits).
 
-   https://fedorapeople.org/~acme/dwarves/dwarves-1.27.tar.xz
-   https://fedorapeople.org/~acme/dwarves/dwarves-1.27.tar.bz2
-   https://fedorapeople.org/~acme/dwarves/dwarves-1.27.tar.sign
+Maybe the people who have concerns about this can work on those
+concerns when it's in-tree.
 
-	Thanks a lot to all the contributors and distro packagers, you're on the
-CC list, I appreciate a lot the work you put into these tools,
+I'm also not a believer in the argument that has been used (multiple
+times) that the BPF scheduler would keep people from participating in
+scheduler development. I personally think the main thing that keeps
+people from participating is too high barriers to participation.
 
-Best Regards,
+Anyway, this is the heads-up to Tejun to please just send me a pull
+request for the next merge window.
 
-- Arnaldo
+And for everybody else as a "It's happening" heads-up.
 
-BTF encoder:
+[ Please just mentally insert the "IT'S HAPPENING" meme gif here -
+because if I actually were to include it here, lkml would just reject
+this email. Sometimes the anti-html rules don't work in our favor ].
 
-- Inject kfunc decl tags into BTF from the BTF IDs ELF section in the Linux
-  kernel vmlinux file.
-
-  This allows tools such as bpftools and pfunct to enumerate the available kfuncs
-  and to gets its function signature, the type of its return and of its
-  arguments. See the example in the BTF loader changes description, below.
-
-- Support parallel reproducible builds, where it doesn't matter how many
-  threads are used, the end BTF encoding result is the same.
-
-- Sanitize unsupported DWARF int type with greater-than-16 byte, as BTF doesn't
-  support it.
-
-BTF loader:
-
-- Initial support for BTF_KIND_DECL_TAG:
-
-  $ pfunct --prototypes -F btf vmlinux.btf.decl_tag,decl_tag_kfuncs | grep ^bpf_kfunc | head
-  bpf_kfunc void cubictcp_init(struct sock * sk);
-  bpf_kfunc void cubictcp_cwnd_event(struct sock * sk, enum tcp_ca_event event);
-  bpf_kfunc void cubictcp_cong_avoid(struct sock * sk, u32 ack, u32 acked);
-  bpf_kfunc u32 cubictcp_recalc_ssthresh(struct sock * sk);
-  bpf_kfunc void cubictcp_state(struct sock * sk, u8 new_state);
-  bpf_kfunc void cubictcp_acked(struct sock * sk, const struct ack_sample  * sample);
-  bpf_kfunc int bpf_iter_css_new(struct bpf_iter_css * it, struct cgroup_subsys_state * start, unsigned int flags);
-  bpf_kfunc struct cgroup_subsys_state * bpf_iter_css_next(struct bpf_iter_css * it);
-  bpf_kfunc void bpf_iter_css_destroy(struct bpf_iter_css * it);
-  bpf_kfunc s64 bpf_map_sum_elem_count(const struct bpf_map  * map);
-  $ pfunct --prototypes -F btf vmlinux.btf.decl_tag,decl_tag_kfuncs | grep ^bpf_kfunc | wc -l
-  116
-  $
-
-pretty printing:
-
-- Fix hole discovery with inheritance in C++.
+                Linus
 
