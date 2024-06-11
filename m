@@ -1,164 +1,262 @@
-Return-Path: <bpf+bounces-31864-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-31865-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8862D904307
-	for <lists+bpf@lfdr.de>; Tue, 11 Jun 2024 20:01:17 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 30CED90431D
+	for <lists+bpf@lfdr.de>; Tue, 11 Jun 2024 20:05:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id EB1831F247B3
-	for <lists+bpf@lfdr.de>; Tue, 11 Jun 2024 18:01:16 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 757B9B2430B
+	for <lists+bpf@lfdr.de>; Tue, 11 Jun 2024 18:05:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD36659162;
-	Tue, 11 Jun 2024 18:01:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F24D7B3FE;
+	Tue, 11 Jun 2024 18:03:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b="kvXB5kpZ";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="kHrnGfVd"
+	dkim=pass (1024-bit key) header.d=microsoft.com header.i=@microsoft.com header.b="LjmhXNjG"
 X-Original-To: bpf@vger.kernel.org
-Received: from fout4-smtp.messagingengine.com (fout4-smtp.messagingengine.com [103.168.172.147])
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2096.outbound.protection.outlook.com [40.107.237.96])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 481991CD06;
-	Tue, 11 Jun 2024 18:01:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.147
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718128870; cv=none; b=VRIFj20N3pGIau7RblRiEKcGQqlyH8ogqBiPZ4NmbgDZYZgUrl9jmI3db8hzlvMoY62cma0AvIAby/OPbu9UmVH30pgADTK9pjn4gbqJ7HBRO6K5I/NNQwyVpk0HJM85KzsQZuWhH8Qt8n0GPT/bdhcg+6c7VvvwkTa487Wpi1E=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718128870; c=relaxed/simple;
-	bh=8QWtb6pcKPnWcVLg2JzrAry10KmxCU8luPjLBJwvgjM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=tsWr/8hIsmZgzXUu/LI/9ZymOOl6ioGzPIGhdQHKG5AEoThOqVCFrmCOLEnGp/10I5Jike+Iz+nBR6l29mzkeP9pGbQT10JrJjF5latqOh2zJ98lV/ZxGxNfkQSHfwlu6CPNcSbiXCTVvpsMoHbLmWx2B+/1OewJU6giACxyZho=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz; spf=pass smtp.mailfrom=dxuuu.xyz; dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b=kvXB5kpZ; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=kHrnGfVd; arc=none smtp.client-ip=103.168.172.147
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dxuuu.xyz
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-	by mailfout.nyi.internal (Postfix) with ESMTP id 42EF61380087;
-	Tue, 11 Jun 2024 14:01:07 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute4.internal (MEProxy); Tue, 11 Jun 2024 14:01:07 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
-	:cc:content-transfer-encoding:content-type:content-type:date
-	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to; s=fm3; t=1718128867;
-	 x=1718215267; bh=3TsTy4miANTIONNoIvT1RtaTHJWrsau+L4RJ3v/4SRY=; b=
-	kvXB5kpZt5ftlNR+NOZR2zGB46PyiXp4NYl/4hlvTr4JkKAl7g/d9Gf/xaS09Sbd
-	2q+bUizUBO+r9l31TNHh24BNa0tsKtsdKUfp3Q6TavlOb6bADTioee7wCt6rqzYI
-	YuQ2wcErEU79wY1uNWM02UVeu7djV0XWLZBj5FzDco5kDjhdJGOzh8ZmJYhg4SSq
-	uz+TRzWlmhMMQzYKclUcxd1lPCX+Y0kexOQlQnPJLgrr3j8nhCdA5/AD2BnnFQk8
-	zYAoxIBCWHAJuaUUFP1TW8kK6RoLahxK1qw94NBXHY+cETka+0yoMoLW4mfgtGwn
-	gbM+uKOoe/JGQkAyzmJ94g==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:content-type:date:date:feedback-id:feedback-id
-	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1718128867; x=
-	1718215267; bh=3TsTy4miANTIONNoIvT1RtaTHJWrsau+L4RJ3v/4SRY=; b=k
-	HrnGfVd8lxcs207atytWSbFMwCys3wj1s8VJDOV3q3dIIR5NXVlzVCTxBAk3dChc
-	ZRYXcuhHLdAbHtTDq6zl8/vc2xQQtpBVEtezY+YWxvMXB4LG8KqWM6ycgj6tVXvq
-	aeSqRIfqhQ2lKdMGrI5Fu+npXmi5bTilQeBUgUZZiIBrv+l67Tw4PNK6TIFwKvyy
-	tCfKzGiKqkkv/+WDQoYlxP39desrRUeYIz0TTS98++pwdLf+2YafR8K/028YWVm0
-	iCAZX9FJW0N9Qga+LC6Y2ibhSSA1ZvPgnntcjDCnrvaGjLGr4GJY0T+ocSh8y5ze
-	5eoSXL5G4Ym16cYYwCMiQ==
-X-ME-Sender: <xms:4pBoZiQemXit2yGSgoxA5qfe4hfknYfWVNNlNBwIHgM8C-bCOFyqdQ>
-    <xme:4pBoZnxJbDPJXwC7E4AxTPcVaI6A8PyhC9sdd-IWw60P_iMh7_zlAXvFCNdhILjr5
-    qWwy_Di35h96jvOcg>
-X-ME-Received: <xmr:4pBoZv0J0Wz-o6WhYtx-DicycDXrufNgjihD-yiV7lWUQx7pR8a5UPhKX2rvTv4ELshDjlXaHFf28_wOwXOaUmMjumv61BSkeQ>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrfeduvddguddujecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enfghrlhcuvffnffculdejtddmnecujfgurhepfffhvfevuffkfhggtggugfgjsehtkefs
-    tddttdejnecuhfhrohhmpeffrghnihgvlhcuighuuceougiguhesugiguhhuuhdrgiihii
-    eqnecuggftrfgrthhtvghrnheptdfgueeuueekieekgfeiueekffelteekkeekgeegffev
-    tddvjeeuheeuueelfeetnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrg
-    hilhhfrhhomhepugiguhesugiguhhuuhdrgiihii
-X-ME-Proxy: <xmx:4pBoZuD6GQSymjTm-MhH1MPoFT8r6tpqgneQkK1MOP7Ye29r1P7JuA>
-    <xmx:4pBoZrjVONmYdkVuh-Hi7DIFIxuAk2qntLK1vNEL8AFASZaVnxo4GA>
-    <xmx:4pBoZqrrvKOtx_HUWdw0J2-A4QjTUbMLq2_hCJ8gqhyFvZGJT_ODCA>
-    <xmx:4pBoZuikgJI4WNQewUCATbQkt2wtYgP-zCpDNMSYLZo1z1TSiSLDWA>
-    <xmx:45BoZuik6MDwrig-XTVp9PE013217hcG7qyUastD498nG7a2GKTIGmgT>
-Feedback-ID: i6a694271:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 11 Jun 2024 14:01:05 -0400 (EDT)
-Date: Tue, 11 Jun 2024 12:01:03 -0600
-From: Daniel Xu <dxu@dxuuu.xyz>
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
-	Jiri Olsa <olsajiri@gmail.com>, Quentin Monnet <quentin@isovalent.com>, 
-	Alan Maguire <alan.maguire@oracle.com>, Arnaldo Carvalho de Melo <acme@kernel.org>, 
-	Eddy Z <eddyz87@gmail.com>, John Fastabend <john.fastabend@gmail.com>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
-	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
-	bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
-	Kernel Team <kernel-team@meta.com>
-Subject: Re: [PATCH bpf-next v4 08/12] bpf: verifier: Relax caller
- requirements for kfunc projection type args
-Message-ID: <3ys25qg63cfuxjclqjlagsasvp5bpu6oqzjeia32kg2seistbv@5t24bsw5jtij>
-References: <cover.1717881178.git.dxu@dxuuu.xyz>
- <e172bf47f32c6e716322bc85bb84d78b1398bd7c.1717881178.git.dxu@dxuuu.xyz>
- <CAADnVQLE=XcpZ4SnW=NARG0D5Ya6iU1-1CayTVmArnxpSzWSFA@mail.gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D9665482D7;
+	Tue, 11 Jun 2024 18:03:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.237.96
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1718129022; cv=fail; b=kQ3rtXw8pvSqi9aYaiwF7vkG5qrwveibtHZ9/M/Q8LTjd0OvmybSbMHAJwLcx4wkw/eWCD2ZrpbpSOc/RP3vzMvEn3e6U0jErBJK6GSrIVVwBcWDKGgDoRFyuWeore5Uf/P5Z2OI9tLD1qgpOKoT12v06Ji80+vmKtuN4rXLlik=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1718129022; c=relaxed/simple;
+	bh=pqF3GnSXz5Rq4BawoM5pKCR925JXjJ9Pk0sTNpmy2Do=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=fdSozWQ9DsVX61wm3h4ndFYJsxvsQChe5Vop25A6Kp7BqILJIbBVw1JFUpN4HkFmuy4pDdsQhODvoUDecQGvETe01TwZKmnQnDjdg//fGMJpVZJ/U4JkxrZGaIrfY2GxwVqp0jumfySjlfg//VHWaHLF3ZLG0w0W9x2TIZo87Gs=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microsoft.com; spf=pass smtp.mailfrom=microsoft.com; dkim=pass (1024-bit key) header.d=microsoft.com header.i=@microsoft.com header.b=LjmhXNjG; arc=fail smtp.client-ip=40.107.237.96
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microsoft.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microsoft.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=SDJgKdFXvsbGR+EbjlT2I36mChzBFQTkOi6jzjFdpMJmfwHNj2it9ixiDDGBOkOyBa8C+V68HedQMbV6QDT6zriwhlZ9VjRdb9o73Cxh7kGenPopM5oBxJtBThi5EBdv8FNyyYsC+jaVepll5dScHUb6XEyLAwi7hmmHe7lm/3IvEla2UL/4+9FMLakSAMBS0vj5uIVQvxQQN1zLcbGRMUj06MnFML9IfcCDhKRj4UAY7eh/df/Ij/RCqpMVAbdcLrSLX0nEuv2wlNl+lG+ct09kS+rHB5H/wUkV6olQ+spvlXJ2g5QDKRlDBhsFVNhXodb2TG8cbbb7B9OeYfTvDQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=pqF3GnSXz5Rq4BawoM5pKCR925JXjJ9Pk0sTNpmy2Do=;
+ b=ANIi6l/qDKGTvmyBr+NrJDrSbOZu+AoL1XhJ+fvCuOkOUBVcUdl2TwqKUTJZmDYSND9kns8cLmCTA9su8mDYRwyQh7mESfyODqOTEj/UDJ+Crj3F3iz4LtbMjWA3UT8RQ1jXu2yXFZJSKKm5im/W3NGKVtqN09pMg+NTlHr00/VrhjW8k3J4dE7ja4WpFF7Jnzwsln6LUn3UkBwFOaCE70Y+kW2SMeQye/o7cY9wdijYl5VDUc2Jw3bzg9En43ou9ePwmg5nuVgBVxdBZud2FDUNDEDzXvPJNt0UYw35XLGVy6Pb3EzMJqCEHxkjT6ezc9X5o8HZcUVyJuOc8rjapA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microsoft.com; dmarc=pass action=none
+ header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=pqF3GnSXz5Rq4BawoM5pKCR925JXjJ9Pk0sTNpmy2Do=;
+ b=LjmhXNjGkPyVX2skRgSR9jk1EEhj8oSZXuVlOd6nkE6T5yGzR8HkCvJ7BdMO4HPYyGo9lHS+TCVeyhwer6lL6spUcmnc1q1yxuPt/SJ1H/D0bFlDA6af7udzVkfvk9nZXuRJ7ZDZSvwUQx26mWorT4KiIC3Yc0oJKgkWTZPmjPc=
+Received: from DM6PR21MB1481.namprd21.prod.outlook.com (2603:10b6:5:22f::8) by
+ PH0PR21MB4456.namprd21.prod.outlook.com (2603:10b6:510:337::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7677.17; Tue, 11 Jun
+ 2024 18:03:32 +0000
+Received: from DM6PR21MB1481.namprd21.prod.outlook.com
+ ([fe80::e165:ee2:43ac:c1b7]) by DM6PR21MB1481.namprd21.prod.outlook.com
+ ([fe80::e165:ee2:43ac:c1b7%5]) with mapi id 15.20.7677.014; Tue, 11 Jun 2024
+ 18:03:31 +0000
+From: Haiyang Zhang <haiyangz@microsoft.com>
+To: Haiyang Zhang <haiyangz@microsoft.com>, Michael Kelley
+	<mhklinux@outlook.com>, "linux-hyperv@vger.kernel.org"
+	<linux-hyperv@vger.kernel.org>, "netdev@vger.kernel.org"
+	<netdev@vger.kernel.org>, Paul Rosswurm <paulros@microsoft.com>
+CC: Dexuan Cui <decui@microsoft.com>, "stephen@networkplumber.org"
+	<stephen@networkplumber.org>, KY Srinivasan <kys@microsoft.com>,
+	"olaf@aepfle.de" <olaf@aepfle.de>, vkuznets <vkuznets@redhat.com>,
+	"davem@davemloft.net" <davem@davemloft.net>, "wei.liu@kernel.org"
+	<wei.liu@kernel.org>, "edumazet@google.com" <edumazet@google.com>,
+	"kuba@kernel.org" <kuba@kernel.org>, "pabeni@redhat.com" <pabeni@redhat.com>,
+	"leon@kernel.org" <leon@kernel.org>, Long Li <longli@microsoft.com>,
+	"ssengar@linux.microsoft.com" <ssengar@linux.microsoft.com>,
+	"linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+	"daniel@iogearbox.net" <daniel@iogearbox.net>, "john.fastabend@gmail.com"
+	<john.fastabend@gmail.com>, "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+	"ast@kernel.org" <ast@kernel.org>, "hawk@kernel.org" <hawk@kernel.org>,
+	"tglx@linutronix.de" <tglx@linutronix.de>, "shradhagupta@linux.microsoft.com"
+	<shradhagupta@linux.microsoft.com>, "linux-kernel@vger.kernel.org"
+	<linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH net-next] net: mana: Add support for variable page sizes
+ of ARM64
+Thread-Topic: [PATCH net-next] net: mana: Add support for variable page sizes
+ of ARM64
+Thread-Index: AQHau3yCjVULPkZ+NkeRwzD4A2YQ07HCw4UAgAAC/7CAAA858IAABaXw
+Date: Tue, 11 Jun 2024 18:03:31 +0000
+Message-ID:
+ <DM6PR21MB1481935D432F5ABFF73325CACAC72@DM6PR21MB1481.namprd21.prod.outlook.com>
+References: <1718054553-6588-1-git-send-email-haiyangz@microsoft.com>
+ <SN6PR02MB41572E928DCF6B7FDF89899DD4C72@SN6PR02MB4157.namprd02.prod.outlook.com>
+ <DM6PR21MB14818F4519381967A9FEE8B8CAC72@DM6PR21MB1481.namprd21.prod.outlook.com>
+ <DM6PR21MB1481E3F4E4E26765CCF6114DCAC72@DM6PR21MB1481.namprd21.prod.outlook.com>
+In-Reply-To:
+ <DM6PR21MB1481E3F4E4E26765CCF6114DCAC72@DM6PR21MB1481.namprd21.prod.outlook.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+msip_labels:
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=3fb4882b-67e9-4568-8c78-027b60b1813e;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2024-06-11T16:45:19Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=microsoft.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: DM6PR21MB1481:EE_|PH0PR21MB4456:EE_
+x-ms-office365-filtering-correlation-id: 0a225b79-94ae-4618-2906-08dc8a40cdf8
+x-ld-processed: 72f988bf-86f1-41af-91ab-2d7cd011db47,ExtAddr
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam:
+ BCL:0;ARA:13230032|366008|376006|7416006|1800799016|38070700010;
+x-microsoft-antispam-message-info:
+ =?iso-8859-1?Q?Tcwu3SXVdCXabp7oiVnOesM7NjoQdrc4+Aq02SK7+ppL4+BYDuCh4yYc3+?=
+ =?iso-8859-1?Q?DLj4SR5JZESiF8Xu13V6WmEpT3k+dIUJ5Ta3xeZh1x0sxFA+JnrXMVnVal?=
+ =?iso-8859-1?Q?6zg+DOvLbyCdGuG8zlDWHtc2pbstN42aUS/5ia+AYEx3AYs1/Fmf1qw1Pw?=
+ =?iso-8859-1?Q?oWjm3ZiXFZFbkvp51DtBwGrgEqg4yiQcylt07TLmiTuoJLSzwI2/D9YO+4?=
+ =?iso-8859-1?Q?k8ipcaKwh8PFDRBUJFpre1ihck+0ujfuZygw1A1x5xYWT3vDakX2ZDoSKh?=
+ =?iso-8859-1?Q?zG2Qe5ZeCQIytF5y9EZtxGtm6Lfo2+v9KZmVca2D5zQog5KckIp842iyaT?=
+ =?iso-8859-1?Q?LF5w6y/T1M4fubhgp9GJvi0ihgIBOpM1o2rcowS7k37BOpdLzaCuHKrNcd?=
+ =?iso-8859-1?Q?Ockfj9zXXBnjw+4Uz+2LM+cS0dkvrcjTNvM8EuEX8J3K1QVtydgWySlX7t?=
+ =?iso-8859-1?Q?f+3w38bgKfRui5tgsWyvzccHfTfBYhS9G3r2mNW+CkQAmtpLSLqGPpUn0z?=
+ =?iso-8859-1?Q?zRPulFeHzuVi6HG91cvIlJpWkVH2drOsDXYvN8L8wN5Sq3JuAxw4g5TWFk?=
+ =?iso-8859-1?Q?nbD2WlJzBPBptIQO2dmPNnw5Fo/a9k5QdNxZggLi3D834qSF+TSo1t5Cm1?=
+ =?iso-8859-1?Q?qHu1uz9DHQb/KxS7kZO90FRPCb5c82cIaboEMVlOaqpXmx8iWkqGCYGNqt?=
+ =?iso-8859-1?Q?A+80eW4vLXdO8Mp6px+RagpKFwjKTKzFwctORUd+DjFI4BIqrP2N8JXIt9?=
+ =?iso-8859-1?Q?+r7pcS5sN7sxyJr6nDzYwwUCeMTkTBcOWCWTypvRhKaxY3kOX44lQ0w4eN?=
+ =?iso-8859-1?Q?dMHB2E9C7XIAJj8VbZ8lin8V+gbvjeeukoc6SptoHsrm3tt5yrrc431Uty?=
+ =?iso-8859-1?Q?EN4JtuX0dLnCmghqHznfTk9oscBDSWYG3rT23KTSO5jP2nQY3SRCwb9WoD?=
+ =?iso-8859-1?Q?P09jvHoJlSWekBfYHFd6LbOPTwIIxazcbowKwqaQX4It4uM26LYk5E/p4N?=
+ =?iso-8859-1?Q?+DdqCYp6xU9bBFdJdgkRzRReI17E9ivBtLwdE8DOc9uI78QJEOw13QZ1i/?=
+ =?iso-8859-1?Q?qtM6dDcAI1Sg7yi1J3xYZDbUvrPIhaJta+8Y2QgL+vQws1fcN8wVPZKMVG?=
+ =?iso-8859-1?Q?lW+vdtNdf/vO2F0YZFst9GAlG+4epvMoUKpOEpDJcWJ5FPQgzAMz8RVXIu?=
+ =?iso-8859-1?Q?KJOExC3/dyKv24pdM/BsAvmuuQsymT10fjiX9g5CGXP1MYLfcvSiopSfb9?=
+ =?iso-8859-1?Q?0oLPbll7aglCS9cN5kD0D9LPkJnFo6p5qlm3Y/SlQIZgZWU3BvzJIHzl9b?=
+ =?iso-8859-1?Q?cWbkEXIhIdUQ8U1RKSeftiFZJsQo8nPj2ADxfCrjVBoWCNNKgA9B5L560q?=
+ =?iso-8859-1?Q?qWjBZbQkRxAmvl0e0jZ+2/tfZbwRhR+629J3Rl89i4GOe+j2PIESA=3D?=
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR21MB1481.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230032)(366008)(376006)(7416006)(1800799016)(38070700010);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?iso-8859-1?Q?djE1CMAwi/whWfhMLU19wg6WECBs7fSs2t6d41+8X9+jZKrG6EDCl7wY6+?=
+ =?iso-8859-1?Q?JX+qvDYNtr01ygLPyH/2UG17W975lyzBH6gA7SX69GnDoCo3cZumG3CMXf?=
+ =?iso-8859-1?Q?MXZ4QNvKyd+QN5F9QwtUfKboMz/8+sG9roGunMuuAtmkiY6ItarM1VT9xc?=
+ =?iso-8859-1?Q?Li9Aykd9ZQB09ArLnQxp/WNSrPp2kPs2EnlnC5BgJ86PgF3soJjYRz6FVN?=
+ =?iso-8859-1?Q?2VtweawhaCx5ANgXQH8A/KmIqn9voxIAyh4hZLvvXKES0IL3/PgXRDoOoa?=
+ =?iso-8859-1?Q?5PMyPaIVDOa/EiMZP8XIq5mUN8DhlLTvelu2Ki5AyFukWSV2QY7iY33a2C?=
+ =?iso-8859-1?Q?pA8hwD+1DQalmFJLDU8lVJTjTfI+A0DDTAfU6x5Sg5jJWoR4DZhMEPvA9b?=
+ =?iso-8859-1?Q?hjoAb5CpzvN+oQg3Q9F0PeLmUuIQBDkm5wylkiITcr4zIBbpbT8ysGR+NI?=
+ =?iso-8859-1?Q?EthI7ed2Ry/clx8voMiZfd1w502kdAIdYLkVf5VXCQMbiisGOzsSRxKFVn?=
+ =?iso-8859-1?Q?IhsMomnx+cSvYePw08UIesXx71tuolZfiFc7GKIX77hwHizZv6zpUi5w3b?=
+ =?iso-8859-1?Q?7Z6lEK6CmqoGSkbdko3M2j6vmpz08lQF9IJA01nEeldiiCGacLMaF/Js1V?=
+ =?iso-8859-1?Q?C36E4rtu4SeaDFh6KyLALZngpzWriwykPFiLXjrhSIqweZ960p/JZQ0cGl?=
+ =?iso-8859-1?Q?A4NVm1zSUswREDRsXu0fOkdnsAx6Mgxu6KFhN1tc4WX3zqO3/yBgjbrcjw?=
+ =?iso-8859-1?Q?dECBKetRHaol0aBcPakrGr+sGDN4DOj0lVpie3W3ivNrEhPyPd98Toad+/?=
+ =?iso-8859-1?Q?YQ3URPlu2LqQW1X/Fb9hQxpnIPvFjsWbB7uY7JOm1ay1uwIAakQ40SFNR4?=
+ =?iso-8859-1?Q?2wB9F4Fmq40uNEkBiTgTbFLUCDm6qdFceDVY/ys1vKPCCVUbBaNgM+DdX1?=
+ =?iso-8859-1?Q?YpLPWnc1ollNT+klORxZW/6bClVULLrFkk/lZ8TkgZBU/6XV1AEims4cCx?=
+ =?iso-8859-1?Q?r52L62ZvgUi1mliGtTjewUS62TZNI49LnQ7PN5xgo1UpTZ9VAf4biMywf2?=
+ =?iso-8859-1?Q?7TpeJtI0x9JM+za1ofQDHS5Lx3zh6j1kKwn49GIjs81HhDwNW4V9YMSG3F?=
+ =?iso-8859-1?Q?6isTvbRUHfl1qstpX+dCMfspaQQ8j/Fjbw4RRhMPel7InwMrGK9rY4rQFu?=
+ =?iso-8859-1?Q?20zaljubCznaO295zboRiZe5izG1MbXMGQq6m9mSKrElPrGgt78FdM3wPr?=
+ =?iso-8859-1?Q?yOyoBseTYUeHwXt3OD3ssU5EliFDlTQt3Zdjx7l1y2mgalWwIiPngc4aD8?=
+ =?iso-8859-1?Q?02SGiTsSJWSbytXR6SaVG+c76ttZ9bOGjTbJHGoypsc1NTa1Ouk2noUn2k?=
+ =?iso-8859-1?Q?cgHpRG1oQpVOWWfbQJSjeHJunPw9KGWqsyZkdQx/0lVYCDfBYs8eF5yeYR?=
+ =?iso-8859-1?Q?5ptnZnghKgvUdd3zuc8dIa2HYCthx1K6zxkoy/qe/E0PYaRZpJsfzuPWrU?=
+ =?iso-8859-1?Q?4l+vKHr//WD/PMO5N6nfBANgxuUW3E6pR5/lrTRMxjVueRn7KBww+ly+fI?=
+ =?iso-8859-1?Q?qPtwhj5Osu2buvMqqqnF+1g6UHz3MCZa9S29S8tYrXBGn7pvvCL0VHyhPt?=
+ =?iso-8859-1?Q?yVIDEtF5hP0oAQ8RFZ8O/QCJj+vI8cntJB?=
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAADnVQLE=XcpZ4SnW=NARG0D5Ya6iU1-1CayTVmArnxpSzWSFA@mail.gmail.com>
+X-OriginatorOrg: microsoft.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR21MB1481.namprd21.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0a225b79-94ae-4618-2906-08dc8a40cdf8
+X-MS-Exchange-CrossTenant-originalarrivaltime: 11 Jun 2024 18:03:31.7414
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: B+l1W9t3R67w7qJ/WR/2gignNuKO+ZYK7vnKmJJPgD/WznAYNJwjjnomGNKLC43QkiDt1Edmjs5x4Khd5u4GEA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR21MB4456
 
-On Mon, Jun 10, 2024 at 11:30:31AM GMT, Alexei Starovoitov wrote:
-> On Sat, Jun 8, 2024 at 2:16 PM Daniel Xu <dxu@dxuuu.xyz> wrote:
-> >
-> > Currently, if a kfunc accepts a projection type as an argument (eg
-> > struct __sk_buff *), the caller must exactly provide exactly the same
-> > type with provable provenance.
-> >
-> > However in practice, kfuncs that accept projection types _must_ cast to
-> > the underlying type before use b/c projection type layouts are
-> > completely made up. Thus, it is ok to relax the verifier rules around
-> > implicit conversions.
-> >
-> > We will use this functionality in the next commit when we align kfuncs
-> > to user-facing types.
-> >
-> > Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
-> > ---
-> >  kernel/bpf/verifier.c | 10 +++++++++-
-> >  1 file changed, 9 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> > index 81a3d2ced78d..0808beca3837 100644
-> > --- a/kernel/bpf/verifier.c
-> > +++ b/kernel/bpf/verifier.c
-> > @@ -11257,6 +11257,8 @@ static int process_kf_arg_ptr_to_btf_id(struct bpf_verifier_env *env,
-> >         bool strict_type_match = false;
-> >         const struct btf *reg_btf;
-> >         const char *reg_ref_tname;
-> > +       bool taking_projection;
-> > +       bool struct_same;
-> >         u32 reg_ref_id;
-> >
-> >         if (base_type(reg->type) == PTR_TO_BTF_ID) {
-> > @@ -11300,7 +11302,13 @@ static int process_kf_arg_ptr_to_btf_id(struct bpf_verifier_env *env,
-> >
-> >         reg_ref_t = btf_type_skip_modifiers(reg_btf, reg_ref_id, &reg_ref_id);
-> >         reg_ref_tname = btf_name_by_offset(reg_btf, reg_ref_t->name_off);
-> > -       if (!btf_struct_ids_match(&env->log, reg_btf, reg_ref_id, reg->off, meta->btf, ref_id, strict_type_match)) {
-> > +       struct_same = btf_struct_ids_match(&env->log, reg_btf, reg_ref_id, reg->off, meta->btf, ref_id, strict_type_match);
-> > +       /* If kfunc is accepting a projection type (ie. __sk_buff), it cannot
-> > +        * actually use it -- it must cast to the underlying type. So we allow
-> > +        * caller to pass in the underlying type.
-> > +        */
-> > +       taking_projection = !strcmp(ref_tname, "__sk_buff") && !strcmp(reg_ref_tname, "sk_buff");
-> 
-> xdp_md/buff probably as well?
-> 
-> And with that share the code with btf_is_prog_ctx_type() ?
 
-Ack - will do.
+
+> -----Original Message-----
+> From: Haiyang Zhang <haiyangz@microsoft.com>
+> Sent: Tuesday, June 11, 2024 1:44 PM
+> To: Michael Kelley <mhklinux@outlook.com>; linux-hyperv@vger.kernel.org;
+> netdev@vger.kernel.org; Paul Rosswurm <paulros@microsoft.com>
+> Cc: Dexuan Cui <decui@microsoft.com>; stephen@networkplumber.org; KY
+> Srinivasan <kys@microsoft.com>; olaf@aepfle.de; vkuznets
+> <vkuznets@redhat.com>; davem@davemloft.net; wei.liu@kernel.org;
+> edumazet@google.com; kuba@kernel.org; pabeni@redhat.com; leon@kernel.org;
+> Long Li <longli@microsoft.com>; ssengar@linux.microsoft.com; linux-
+> rdma@vger.kernel.org; daniel@iogearbox.net; john.fastabend@gmail.com;
+> bpf@vger.kernel.org; ast@kernel.org; hawk@kernel.org; tglx@linutronix.de;
+> shradhagupta@linux.microsoft.com; linux-kernel@vger.kernel.org
+> Subject: RE: [PATCH net-next] net: mana: Add support for variable page
+> sizes of ARM64
+
+
+> > > @@ -183,7 +184,7 @@ int mana_smc_setup_hwc(struct shm_channel *sc,
+> bool
+> > > reset_vf, u64 eq_addr,
+> > >
+> > >=A0 /* EQ addr: low 48 bits of frame address */
+> > >=A0 shmem =3D (u64 *)ptr;
+> > > - frame_addr =3D PHYS_PFN(eq_addr);
+> > > + frame_addr =3D MANA_PFN(eq_addr);
+> > >=A0 *shmem =3D frame_addr & PAGE_FRAME_L48_MASK;
+> > >=A0 all_addr_h4bits |=3D (frame_addr >> PAGE_FRAME_L48_WIDTH_BITS) <<
+> > >=A0 =A0=A0=A0=A0=A0=A0 (frame_addr_seq++ * PAGE_FRAME_H4_WIDTH_BITS);
+> >
+> > In mana_smc_setup_hwc() a few lines above this change, code using
+> > PAGE_ALIGNED() is unchanged.=A0 Is it correct that the eq/cq/rq/sq
+> > addresses
+> > must be aligned to 64K if PAGE_SIZE is 64K?
+>=20
+> Since we still using PHYS_PFN on them, if not aligned to PAGE_SIZE,
+> the lower bits may be lost. (You said the same below.)
+>=20
+> >
+> > Related, I wonder about how MANA_PFN() is defined. If PAGE_SIZE is 64K,
+> > MANA_PFN() will first right-shift 16, then left shift 4. The net is
+> > right-shift 12,
+> > corresponding to the 4K chunks that MANA expects. But that approach
+> > guarantees
+> > that the rightmost 4 bits of the MANA PFN will always be zero. That's
+> > consistent
+> > with requiring the addresses to be PAGE_ALIGNED() to 64K, but I'm
+> unclear
+> > whether
+> > that is really the requirement. You might compare with the definition
+> of
+> > HVPFN_DOWN(), which has a similar goal for Linux guests communicating
+> > with
+> > Hyper-V.
+>=20
+> @Paul Rosswurm You said MANA HW has "no page concept". So the
+> "frame_addr"
+> In the mana_smc_setup_hwc() is NOT related to physical page number,
+> correct?
+> Can we just use phys_adr >> 12 like below?
+>=20
+> #define MANA_MIN_QSHIFT 12
+> #define MANA_PFN(a) ((a) >> MANA_MIN_QSHIFT)
+>=20
+> =A0=A0=A0=A0=A0 /* EQ addr: low 48 bits of frame address */
+> =A0=A0=A0=A0 shmem =3D (u64 *)ptr;
+> -=A0=A0=A0=A0 frame_addr =3D PHYS_PFN(eq_addr);
+> +=A0=A0=A0=A0 frame_addr =3D MANA_PFN(eq_addr);
+>=20
+
+I just confirmed with Paul, we can use phys_adr >> 12.
+And I will change the alignment requirements to be 4k.
+
+Thanks,
+- Haiyang
+
 
