@@ -1,187 +1,154 @@
-Return-Path: <bpf+bounces-31881-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-31882-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 64D9F9045CE
-	for <lists+bpf@lfdr.de>; Tue, 11 Jun 2024 22:33:41 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 329739045E5
+	for <lists+bpf@lfdr.de>; Tue, 11 Jun 2024 22:43:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E32EC28889E
-	for <lists+bpf@lfdr.de>; Tue, 11 Jun 2024 20:33:39 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 324911C23691
+	for <lists+bpf@lfdr.de>; Tue, 11 Jun 2024 20:43:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D79615250F;
-	Tue, 11 Jun 2024 20:33:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 978A8153565;
+	Tue, 11 Jun 2024 20:42:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="C3XQxoy0"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="0dj3vZld"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com [209.85.208.54])
+Received: from mail-pj1-f73.google.com (mail-pj1-f73.google.com [209.85.216.73])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 33C024D8A8
-	for <bpf@vger.kernel.org>; Tue, 11 Jun 2024 20:33:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C201A1527AC
+	for <bpf@vger.kernel.org>; Tue, 11 Jun 2024 20:42:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.73
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718138011; cv=none; b=OoBRloOZnxBPsK+fk1y/YanN66kUrG3oVAYw+khl3IAZ/PzZW2TDFSkdYOQbhcQclhigk+o/l4QIG5zcQlJLN7sxIaCWFhCCd0d114yVlB+//Xoe1zp9eARj6QpF2EOZ8+zbIeCAzonk4LhZr069qQwbiKNN/KpYU7ECB5BLxEw=
+	t=1718138571; cv=none; b=a6td5zF3/vFAeNeCvLGCHdmx8HRohOAgAyKFS5oLft3pPfAD0QMxRvobOnfWvSBPz0HozQY/udYt04Kz4OH2RexLuzIfTgsRzJCAgIpXy8maZZLfRB1tw2ErY43v+GN5OpXcHgKUsdVL5d2WwI29LINRxx+htginzMCN8cZYQsM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718138011; c=relaxed/simple;
-	bh=XC4w7FqUQ2wQZKdU5omXsL3G30oQ0DhgQCJ4Jv1zZ0E=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=fuQsB139FgR6w5pfPzQd4X72sb4UPmLIjhC8+otX36VXb7l9749bN/clshvYGcnIIYf3Cs3qtpeT7rW0++k/1ig64z4tdlpcOufdNcZ/0mpZysFlviTk4RMOAWCi4+BXrHxYsGASoMduhp691wXhcs1lZPbIRrNaSpiUOewH+YY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=C3XQxoy0; arc=none smtp.client-ip=209.85.208.54
+	s=arc-20240116; t=1718138571; c=relaxed/simple;
+	bh=WlznXMtSbdGKu8rLIix8aC6pcrpZ/n+hFKL5oX2CDVE=;
+	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=ouiCQES36qVHE6B/Lm0I0pNveqz5Wn2iAxEYhL9DXu7aY3omRoQqxnJ1KL5Otd98Q4ME5BBWeamCU6ZP6TbReQ3x1CTZW1284YCEk0DVQXhQSBa+u6sqKK4wrQmANPyUoebCbA+JOfDXgs7cRSgcoNHdFumn4PYHzTFjMsEVqZM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--zhuyifei.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=0dj3vZld; arc=none smtp.client-ip=209.85.216.73
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ed1-f54.google.com with SMTP id 4fb4d7f45d1cf-57c5ec83886so733a12.1
-        for <bpf@vger.kernel.org>; Tue, 11 Jun 2024 13:33:30 -0700 (PDT)
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--zhuyifei.bounces.google.com
+Received: by mail-pj1-f73.google.com with SMTP id 98e67ed59e1d1-2bf8512aa8dso6371880a91.1
+        for <bpf@vger.kernel.org>; Tue, 11 Jun 2024 13:42:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1718138008; x=1718742808; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=y1oMY5Ka+Igm5IVLZ0jHXnRZ7u2UNpiSxg2NGEZJXKY=;
-        b=C3XQxoy0X3wzvzMtLynriEWutEal5Ejs5qOIs/UNKdTUtMWAtt0qvfTF36hx+DWBVS
-         DmfMdjB3mlP8LAf35YMQm6MMhsXTSYyynwMOMmpB9JWyPsux+KG8Td+/ddehDnq9GLyP
-         +5I+Dz5z7PFQTY1EkicLZiBPBQfwya6ENmIYqJzoEa7HLeKk5qToa6SSLI6UMgrNK63v
-         oxi5HH0HcebF/8/3SzF9qRn3GcBktSBpi1aCgoL4up6loBpt6Je8bLP1i9roTxmQzRmk
-         ztboi13Zpx+qSGkR6m27/BfIiGP0JfsJMAqRpVojSR8aFbLXXnQmbR9u4uUID7z2E07p
-         b7DQ==
+        d=google.com; s=20230601; t=1718138569; x=1718743369; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=7RdAYUNPI1yDlhBKNejbzxVlP4TF3h6oLfHe0CjscKc=;
+        b=0dj3vZldNYGo19ik02IAtStgywPiInVuW11R2izQPsDenialQkMHtaAoEth1NkAWRg
+         mJhqvKL0/RFR65eEWxPWeyiYp7wj7dJcEhqKWY+gXfJV02An8ZqhcoQY4kUOvQwXd2Ch
+         ddMaV2nkbkWKfCVzDWBtB1LnCTUQrlJTG/SmNwyO0uO2PKKHhlptegQvwQ7kL/E93jPZ
+         sTC1Ei5iTxTsfXSVGE6tTpIsyozXMyVKdT/KYxRVj6LT2GIw9Ojt/Dsm4MJS/aeOPmhm
+         22q9kJgT5TxO+bzL5Gpd4gtzH3OoSZ7F6T5gWebSXujT/tiBfk+hjEqZ5+UJtNaI1h5j
+         g7iw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1718138008; x=1718742808;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=y1oMY5Ka+Igm5IVLZ0jHXnRZ7u2UNpiSxg2NGEZJXKY=;
-        b=vUcmltrlzsx5pHaRIsziDAzAPgxi3XX3X1X/7H7UjyQRjYEmpn6ay7R2Qcyu11nYMk
-         HqceYUwbl+MjlEc5oDZsuio3xdjd55GPb6SrmM4MCSpjMU7Eslp6ONcoh3/nkku0HBZN
-         zLwiU9/pgLUuDqdf8wz64LPavhs6o0VpaVWFMNQu9s6lCdIEAE+sydznbaKB7y21qHpo
-         KoQK59+3aVV0BEpBDhsx/gWBlwahl7QmR7vy/oPXZ9Wcpfk9eHtCX/Q7eN9Zt4h/zrR7
-         47yo3982sy/iR64c6482MAw3Ce6U7V2/2a02Ymx54358pIpCgSzNpEM/jA6ytIJtGuvx
-         psJA==
-X-Forwarded-Encrypted: i=1; AJvYcCUqbj+w5apARCcRg0fEUcq9Ha4RmBn8ssY8Ro2raFpPICY6kf5PrbGfB4oR3BI7YhKSerVWUt9kYEeQZw4u5t9xO+xj
-X-Gm-Message-State: AOJu0Ywml+rn9Kh4KKLlb6OfkKL4plwbTkw3utxQUq3xxkSkrVkdYz24
-	C6Dyi6LISAHb1tQH4BGlllUmeJqlr0gAOzFCUxzE8RiveCpdUlo+xbf+kPtVXHYCzsZdjxgqIJm
-	w9qlbxwZacDfU4IsAgEE0TsJEWk9+ChaVBhk=
-X-Google-Smtp-Source: AGHT+IEJZSZPp5uDEJF66yku2G52k7zoY/A/fEWKARj7DqwB4Q9rt6zOLddjPGDLpteJ63WCdIVY0NriCA360ZVJwkE=
-X-Received: by 2002:aa7:cd17:0:b0:572:988f:2f38 with SMTP id
- 4fb4d7f45d1cf-57ca7fd71e8mr38069a12.6.1718138008253; Tue, 11 Jun 2024
- 13:33:28 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1718138569; x=1718743369;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=7RdAYUNPI1yDlhBKNejbzxVlP4TF3h6oLfHe0CjscKc=;
+        b=gdtDvkaeI6mcKUpkZSrOtpRrbepnxhGlI+OlhTWCaFLNqfcQM9T6ZbHOe4taHg4WeI
+         ZGzAP3Lynlnso82ltiCWwdAjMVWzyLirOS9Q99PJRWSxTCHQ4Q4llaErOtZltmpJN9Iq
+         jGKe33hOW7zfYvdPb9RTm1ljPEHMkXfb82tWioPyE86KZFYQZzG2M/PgRMdIMkt+4qC4
+         ChU8LJEQjnyUPSxhm+jZI+Wu9gEjiLi8Q3NhkBViXAHWjdYUvW0c6thsEhteGJfpMgfq
+         EXN6ckn+l04Cfm3XMg5XyyOdxEjmQOu0casZrffZS3nGA8FAORdTac2U63FfvKKiOUMo
+         lrGg==
+X-Forwarded-Encrypted: i=1; AJvYcCWZyBUqyPYRA/GavelQ0itQtudaYTn3bxyOv4SavxpwkNnYCntYCnZCz4G8eQUF2JcR/ju7f4EGQxqKFEppmUWQwHk7
+X-Gm-Message-State: AOJu0YwXXMJfGbf1Q+Dvrm//eeZ5HufgcNAbY1ueEx7CVzuplH+Fiji1
+	u/p5C6tayVi8sF0OnEtGBqqMu6CVhDPSmJ0AhHkvXA+3tCQz1ArEi//X9mbSz9ReKOqzFC/b02k
+	Iluth9nralQ==
+X-Google-Smtp-Source: AGHT+IEVEQk6y30Cnzs9O7le2rcOssc9YOhcAKdkh7uIo/fmjXuF4j76p728y2wEGL9FdFSB3mebvMjxSzB5ow==
+X-Received: from zhuyifei-kvm.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:2edc])
+ (user=zhuyifei job=sendgmr) by 2002:a17:90a:ee92:b0:2c2:1b98:94ee with SMTP
+ id 98e67ed59e1d1-2c4a7758861mr43a91.8.1718138568861; Tue, 11 Jun 2024
+ 13:42:48 -0700 (PDT)
+Date: Tue, 11 Jun 2024 20:42:44 +0000
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20240515193610.2350456-1-yabinc@google.com> <CAM9d7cjmJHC91Q-_V7trfW-LtQVbraSHzm--iDiBi7LgNwD2DA@mail.gmail.com>
- <CALJ9ZPML-QNcsJfo6tBMfmJzb=wF1qQsMFTbNvtRwH-++J1a2g@mail.gmail.com>
-In-Reply-To: <CALJ9ZPML-QNcsJfo6tBMfmJzb=wF1qQsMFTbNvtRwH-++J1a2g@mail.gmail.com>
-From: Yabin Cui <yabinc@google.com>
-Date: Tue, 11 Jun 2024 13:33:15 -0700
-Message-ID: <CALJ9ZPNkO=_OKPDwdSY9tJw+AETaAVC2m-1UcWScZ0TaFmHRkw@mail.gmail.com>
-Subject: Re: [PATCH v5 0/3] perf/core: Check sample_type in sample data saving
- helper functions
-To: Namhyung Kim <namhyung@kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
-	Arnaldo Carvalho de Melo <acme@kernel.org>, Mark Rutland <mark.rutland@arm.com>, 
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Ian Rogers <irogers@google.com>, Adrian Hunter <adrian.hunter@intel.com>, 
-	linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	bpf@vger.kernel.org
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.45.2.505.gda0bf45e8d-goog
+Message-ID: <cover.1718138187.git.zhuyifei@google.com>
+Subject: [RFC PATCH net-next 0/3] selftests: Add AF_XDP functionality test
+From: YiFei Zhu <zhuyifei@google.com>
+To: netdev@vger.kernel.org, bpf@vger.kernel.org
+Cc: "=?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?=" <bjorn@kernel.org>, Magnus Karlsson <magnus.karlsson@intel.com>, 
+	Maciej Fijalkowski <maciej.fijalkowski@intel.com>, Jonathan Lemon <jonathan.lemon@gmail.com>, 
+	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	"David S . Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, 
+	Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, 
+	Andrii Nakryiko <andrii@kernel.org>, Stanislav Fomichev <sdf@google.com>, 
+	Willem de Bruijn <willemb@google.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Tue, May 28, 2024 at 10:59=E2=80=AFAM Yabin Cui <yabinc@google.com> wrot=
-e:
->
-> On Wed, May 22, 2024 at 9:27=E2=80=AFAM Namhyung Kim <namhyung@kernel.org=
-> wrote:
-> >
-> > Hello,
-> >
-> > On Wed, May 15, 2024 at 12:36=E2=80=AFPM Yabin Cui <yabinc@google.com> =
-wrote:
-> > >
-> > > Hello,
-> > >
-> > > We use helper functions to save raw data, callchain and branch stack =
-in
-> > > perf_sample_data. These functions update perf_sample_data->dyn_size w=
-ithout
-> > > checking event->attr.sample_type, which may result in unused space
-> > > allocated in sample records. To prevent this from happening, this pat=
-chset
-> > > enforces checking sample_type of an event in these helper functions.
-> > >
-> > > Thanks,
-> > > Yabin
-> > >
-> > >
-> > > Changes since v1:
-> > >  - Check event->attr.sample_type & PERF_SAMPLE_RAW before
-> > >    calling perf_sample_save_raw_data().
-> > >  - Subject has been changed to reflect the change of solution.
-> > >
-> > > Changes since v2:
-> > >  - Move sample_type check into perf_sample_save_raw_data().
-> > >  - (New patch) Move sample_type check into perf_sample_save_callchain=
-().
-> > >  - (New patch) Move sample_type check into perf_sample_save_brstack()=
-.
-> > >
-> > > Changes since v3:
-> > >  - Fix -Werror=3Dimplicit-function-declaration by moving has_branch_s=
-tack().
-> > >
-> > > Changes since v4:
-> > >  - Give a warning if data->sample_flags is already set when calling t=
-he
-> > >    helper functions.
-> > >
-> > > Original commit message from v1:
-> > >   perf/core: Trim dyn_size if raw data is absent
-> > >
-> > > Original commit message from v2/v3:
-> > >   perf/core: Save raw sample data conditionally based on sample type
-> > >
-> > >
-> > > Yabin Cui (3):
-> > >   perf/core: Save raw sample data conditionally based on sample type
-> > >   perf/core: Check sample_type in perf_sample_save_callchain
-> > >   perf/core: Check sample_type in perf_sample_save_brstack
-> >
-> > Acked-by: Namhyung Kim <namhyung@kernel.org>
-> >
-> > Thanks,
-> > Namhyung
-> >
->
-> Hi performance events subsystem maintainers,
->
-> The v5 patches were modified based on Peter's comments on the v4
-> patches. I'd be grateful if you could take a look when you have a
-> moment.
-> Thank you for your time and consideration.
->
-> Thanks,
-> Yabin
->
+We have observed that hardware NIC drivers may have faulty AF_XDP
+implementations, and there seem to be a lack of a test of various modes
+in which AF_XDP could run. This series adds a test to verify that NIC
+drivers implements many AF_XDP features by performing a send / receive
+of a single UDP packet.
 
-Hi, friendly ping again for review?
+I put the C code of the test under selftests/bpf because I'm not really
+sure how I'd build the BPF-related code without the selftests/bpf
+build infrastructure.
 
-> > >
-> > >  arch/s390/kernel/perf_cpum_cf.c    |  2 +-
-> > >  arch/s390/kernel/perf_pai_crypto.c |  2 +-
-> > >  arch/s390/kernel/perf_pai_ext.c    |  2 +-
-> > >  arch/x86/events/amd/core.c         |  3 +--
-> > >  arch/x86/events/amd/ibs.c          |  5 ++---
-> > >  arch/x86/events/core.c             |  3 +--
-> > >  arch/x86/events/intel/ds.c         |  9 +++-----
-> > >  include/linux/perf_event.h         | 26 +++++++++++++++++-----
-> > >  kernel/events/core.c               | 35 +++++++++++++++-------------=
---
-> > >  kernel/trace/bpf_trace.c           | 11 +++++-----
-> > >  10 files changed, 55 insertions(+), 43 deletions(-)
-> > >
-> > > --
-> > > 2.45.0.rc1.225.g2a3ae87e7f-goog
-> > >
+Tested on Google Cloud, with GVE:
+
+  $ sudo NETIF=ens4 REMOTE_TYPE=ssh \
+    REMOTE_ARGS="root@10.138.15.235" \
+    LOCAL_V4="10.138.15.234" \
+    REMOTE_V4="10.138.15.235" \
+    LOCAL_NEXTHOP_MAC="42:01:0a:8a:00:01" \
+    REMOTE_NEXTHOP_MAC="42:01:0a:8a:00:01" \
+    python3 xsk_hw.py
+
+  KTAP version 1
+  1..22
+  ok 1 xsk_hw.ipv4_basic
+  ok 2 xsk_hw.ipv4_tx_skb_copy
+  ok 3 xsk_hw.ipv4_tx_skb_copy_force_attach
+  ok 4 xsk_hw.ipv4_rx_skb_copy
+  ok 5 xsk_hw.ipv4_tx_drv_copy
+  ok 6 xsk_hw.ipv4_tx_drv_copy_force_attach
+  ok 7 xsk_hw.ipv4_rx_drv_copy
+  [...]
+  # Exception| STDERR: b'/tmp/zzfhcqkg/pbgodkgjxsk_hw: recv_pfpacket: Timeout\n'
+  not ok 8 xsk_hw.ipv4_tx_drv_zerocopy
+  ok 9 xsk_hw.ipv4_tx_drv_zerocopy_force_attach
+  ok 10 xsk_hw.ipv4_rx_drv_zerocopy
+  [...]
+  # Exception| STDERR: b'/tmp/zzfhcqkg/pbgodkgjxsk_hw: connect sync client: max_retries\n'
+  [...]
+  # Exception| STDERR: b'/linux/tools/testing/selftests/bpf/xsk_hw: open_xsk: Device or resource busy\n'
+  not ok 11 xsk_hw.ipv4_rx_drv_zerocopy_fill_after_bind
+  ok 12 xsk_hw.ipv6_basic # SKIP Test requires IPv6 connectivity
+  [...]
+  ok 22 xsk_hw.ipv6_rx_drv_zerocopy_fill_after_bind # SKIP Test requires IPv6 connectivity
+  # Totals: pass:9 fail:2 xfail:0 xpass:0 skip:11 error:0
+
+YiFei Zhu (3):
+  selftests/bpf: Move rxq_num helper from xdp_hw_metadata to
+    network_helpers
+  selftests/bpf: Add xsk_hw AF_XDP functionality test
+  selftests: drv-net: Add xsk_hw AF_XDP functionality test
+
+ tools/testing/selftests/bpf/.gitignore        |   1 +
+ tools/testing/selftests/bpf/Makefile          |   7 +-
+ tools/testing/selftests/bpf/network_helpers.c |  27 +
+ tools/testing/selftests/bpf/network_helpers.h |  16 +
+ tools/testing/selftests/bpf/progs/xsk_hw.c    |  72 ++
+ tools/testing/selftests/bpf/xdp_hw_metadata.c |  27 +-
+ tools/testing/selftests/bpf/xsk_hw.c          | 844 ++++++++++++++++++
+ .../testing/selftests/drivers/net/hw/Makefile |   1 +
+ .../selftests/drivers/net/hw/xsk_hw.py        | 133 +++
+ 9 files changed, 1102 insertions(+), 26 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/progs/xsk_hw.c
+ create mode 100644 tools/testing/selftests/bpf/xsk_hw.c
+ create mode 100755 tools/testing/selftests/drivers/net/hw/xsk_hw.py
+
+-- 
+2.45.2.505.gda0bf45e8d-goog
+
 
