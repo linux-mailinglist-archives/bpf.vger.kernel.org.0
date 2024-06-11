@@ -1,235 +1,436 @@
-Return-Path: <bpf+bounces-31874-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-31875-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6289290442E
-	for <lists+bpf@lfdr.de>; Tue, 11 Jun 2024 21:03:48 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8EBFA904432
+	for <lists+bpf@lfdr.de>; Tue, 11 Jun 2024 21:04:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EA2EC284BD8
-	for <lists+bpf@lfdr.de>; Tue, 11 Jun 2024 19:03:46 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A76511C23F88
+	for <lists+bpf@lfdr.de>; Tue, 11 Jun 2024 19:04:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F1432770FF;
-	Tue, 11 Jun 2024 19:03:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C8F17D3FA;
+	Tue, 11 Jun 2024 19:04:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="QtNVYdz/"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WtGX2L2d"
 X-Original-To: bpf@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.18])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C6EE19475;
-	Tue, 11 Jun 2024 19:03:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=192.198.163.18
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718132620; cv=fail; b=lvGgvTqbg0zCDpyNU7BaVbbOQMCxVDzA0IqyBK4v7C78oy+JwbTbNPTEItxwCJpxNcrZduK0IlXWjRgz4h6/UI/aoTAtxR2iEUcRrw75mTezrT5KL0j4WPslCZPZnFionGVQD2yNtdQdyZXo+DxQWDchQgyal4Itj1yKbMZ28gA=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718132620; c=relaxed/simple;
-	bh=DYC6DU4roBPw4Mq7GEy6J8kgM19LNZdvriUrG56k7OM=;
-	h=Message-ID:Date:Subject:To:CC:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=Fe1b9Si3Qz3MujEcggIvtgVdU1B5KGdkHJ+wTpOimCVQB+FfHUg1aicFImG6Wl2USgPAq55twubYBOlsbhQD/u4rIWZsHXbpJDCjyKMupmjA12eYBAK9+w6l3OwGhUCMPy119NkfDCRFt3WvwV7rCz3OBH6X8h22IxLm6mbxRlA=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=QtNVYdz/; arc=fail smtp.client-ip=192.198.163.18
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1718132619; x=1749668619;
-  h=message-id:date:subject:to:cc:references:from:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=DYC6DU4roBPw4Mq7GEy6J8kgM19LNZdvriUrG56k7OM=;
-  b=QtNVYdz/EhaANJipA1DHRTQxhghpj1QKIAnER4wfqze3ZhsoNWUnQBzi
-   BH5vXyxOoy2tuDnzReDy2dQRQuHMHbR4NZFE6VEr7ooTCHZv0wSgyIOgJ
-   OocKe0U+KvIt+twJXY7nPlnneKa3xIyx0WUAwivcanMf6SFmJeLdcNFfI
-   X+weaKTZlzCJOG9HdVsVAlfozwAWgtoixNYWxjULpM/XYBaSgCmcBz95G
-   cE4JL41xnpOK3jzXFkuG+n3BBLqjPcKWZF3z3zoZLHQM5nczTSPMJ/8+C
-   rOH0xi2YwY6+uO9ImFHi70uruUXrsf3hBPmPaS3Aq4eGSkapYsSk0nUTR
-   g==;
-X-CSE-ConnectionGUID: cKlgnrhzSHy/bjAFb2Qrjw==
-X-CSE-MsgGUID: INs6kpKHTEeU+wuFKKh45g==
-X-IronPort-AV: E=McAfee;i="6600,9927,11100"; a="14589923"
-X-IronPort-AV: E=Sophos;i="6.08,230,1712646000"; 
-   d="scan'208";a="14589923"
-Received: from fmviesa002.fm.intel.com ([10.60.135.142])
-  by fmvoesa112.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Jun 2024 12:03:38 -0700
-X-CSE-ConnectionGUID: tfRg6ArDRPOmsiftmoIq8Q==
-X-CSE-MsgGUID: igVDE0jyTeWPrg6Yqdcvrw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.08,230,1712646000"; 
-   d="scan'208";a="62707302"
-Received: from orsmsx601.amr.corp.intel.com ([10.22.229.14])
-  by fmviesa002.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 11 Jun 2024 12:03:38 -0700
-Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
- ORSMSX601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.39; Tue, 11 Jun 2024 12:03:37 -0700
-Received: from orsmsx602.amr.corp.intel.com (10.22.229.15) by
- ORSMSX610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.39; Tue, 11 Jun 2024 12:03:37 -0700
-Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
- orsmsx602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.39 via Frontend Transport; Tue, 11 Jun 2024 12:03:37 -0700
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (104.47.58.173)
- by edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.39; Tue, 11 Jun 2024 12:03:26 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ED857QSPQHNUGm0TKNVB3Ox3o75y66kDwUdkwdfypfYhOIFzAL2nAfpmIXG3cyeyKcNmshTv32yfqM3yJJ/DBk+IRnfDvNM9Z6D/21ip04L4seiNFTr1Ve0r+7NNIC7K11syVooFfmMGaY4CcmTBvcIl/XBPSJWGbU5p6B5R6blf3T1alpD9KwvM+nlv0gqVpXmb4Jq2F/oinshV373LUcYDKx/IirNJhao5Sak9K/hMWaWxxjvCIsprsW18LqkZ91aDyAdBPvQAmn3QI2VRZvN34CviuzClcNpgDx1C67bwDOAQcnmr5FcxC+xjDYgyJ/csophxeOvZU7tcQ2pIcA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Zt1Vuwtp/My/uzsnBO4U0DKNPqgS2stlxPJiZ4U8Ynk=;
- b=n97wEmUzeYJ7hBfzsAQidWDsZwRhJ/6hQiv4V66H9++cbVb1okC3E+ULC8UaFM7UznqJa72oqxuSGcKMOy73WxHux2PyXorylw7QmdgqA+cqgSx6/vPw5JKFSE2hAxAWE0WgbI3TXXkMlGiE7vKEfdajXtnph4bNXItWFf6GzusljwhEZ0Y5ldRmp65J/vA82EfCiGVbP9XZS98NOXY+EhCvoi2h2FmkrUnoS6Ib6fmLSE7J+2LaRlzsK+Ma9pq5wzynQz00HVy/aiW636A0t5Uxu/RCVjGDrxJHDIbkMAIH/O/AZVpKFAWHRl/6AHbgK+jgyvg6IgiOwyLQqDpXYg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from BL3PR11MB6435.namprd11.prod.outlook.com (2603:10b6:208:3bb::9)
- by PH0PR11MB5207.namprd11.prod.outlook.com (2603:10b6:510:32::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7633.37; Tue, 11 Jun
- 2024 19:03:24 +0000
-Received: from BL3PR11MB6435.namprd11.prod.outlook.com
- ([fe80::23a7:1661:19d4:c1ab]) by BL3PR11MB6435.namprd11.prod.outlook.com
- ([fe80::23a7:1661:19d4:c1ab%3]) with mapi id 15.20.7633.036; Tue, 11 Jun 2024
- 19:03:24 +0000
-Message-ID: <cacb1118-44aa-8d87-5b9a-7faa2e35326d@intel.com>
-Date: Tue, 11 Jun 2024 12:03:19 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.6.1
-Subject: Re: [PATCH net 1/4] i40e: Fix XDP program unloading while removing
- the driver
-To: Michal Kubiak <michal.kubiak@intel.com>
-CC: <davem@davemloft.net>, <kuba@kernel.org>, <pabeni@redhat.com>,
-	<edumazet@google.com>, <netdev@vger.kernel.org>,
-	<maciej.fijalkowski@intel.com>, <magnus.karlsson@intel.com>,
-	<ast@kernel.org>, <daniel@iogearbox.net>, <hawk@kernel.org>,
-	<john.fastabend@gmail.com>, <bpf@vger.kernel.org>, Wojciech Drewek
-	<wojciech.drewek@intel.com>, George Kuruvinakunnel
-	<george.kuruvinakunnel@intel.com>, Simon Horman <horms@kernel.org>
-References: <20240611184239.1518418-1-anthony.l.nguyen@intel.com>
- <20240611184239.1518418-2-anthony.l.nguyen@intel.com>
- <ZmieBWzCg1yR7R73@localhost.localdomain>
-Content-Language: en-US
-From: Tony Nguyen <anthony.l.nguyen@intel.com>
-In-Reply-To: <ZmieBWzCg1yR7R73@localhost.localdomain>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: BY5PR17CA0006.namprd17.prod.outlook.com
- (2603:10b6:a03:1b8::19) To BL3PR11MB6435.namprd11.prod.outlook.com
- (2603:10b6:208:3bb::9)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E47F84D8A1;
+	Tue, 11 Jun 2024 19:04:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1718132664; cv=none; b=MgXAMUXoq0TYmcFpAnGrrnDfg/beH7FdDkW94klrbIep0UAcTlyUqxbJXWHbhDV9WSp4siZoh7p4p3IkQPRAiQVIZE9uKZEZn91mPp7otJ/Ej9BiWtf/Vww3B+S8bwOCVpOY0a694bd9P8U3ZgzInPx9MbzEkKAE4+12Skn1s5I=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1718132664; c=relaxed/simple;
+	bh=wNucI9SiN2b1lnbZOW1JG2d4K+JH4U133O/uPob/RNY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=nP1PSB5XijA0qN+4ifiF102d6qxNW60HoTwiijLubWTCRFnF5dUI11anBhVzuokk1YHbR0ksDNgh7CDaXf7gZj5plKi33nvT5PNrko7jRIfj2wlopWsMZwiUvanKk01r/oQO94fjT2GBF/humNxODEdlv4sclpROCD+MCBPTx4w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WtGX2L2d; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 24528C2BD10;
+	Tue, 11 Jun 2024 19:04:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1718132663;
+	bh=wNucI9SiN2b1lnbZOW1JG2d4K+JH4U133O/uPob/RNY=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=WtGX2L2dYN4hCehUl0y3SxFxJu5MQ/dPP6ys1EP2hBcD6NZI2FmqtjuJa+lA5LhMC
+	 mmpiUt8fUsFg+N0+VczFK8O1e9IcXtjwMFh8JsRjNEr97OVlXSI4Yrnu7RELmM7sIr
+	 nCe+kit1/a+qH81cu6ALL+3FhAmPXSfbXQSEQRgCzwLnMkY7WpZRV79KyoQ6zl5P/U
+	 pLziINjf7oWiIAWxBIO64BB8wDgwQSo/HcluyFI/qj3h4tPj79am1/7Zz/RWZbOcvs
+	 nqVrinmL9kqxkDWEfZhb4NRqRfVXPvtCJNbJn2Ez+M0CNODWOi3ezDje9iwTttyuJ1
+	 ja3B6Iyulyxgg==
+Date: Tue, 11 Jun 2024 16:04:20 -0300
+From: Arnaldo Carvalho de Melo <acme@kernel.org>
+To: Howard Chu <howardchu95@gmail.com>
+Cc: peterz@infradead.org, mingo@redhat.com, namhyung@kernel.org,
+	mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
+	jolsa@kernel.org, irogers@google.com, adrian.hunter@intel.com,
+	kan.liang@linux.intel.com, mic@digikod.net, gnoack@google.com,
+	linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-security-module@vger.kernel.org, bpf@vger.kernel.org
+Subject: Re: [PATCH v1] perf trace: BTF-based enum pretty printing
+Message-ID: <ZmiftHw-66m3WymK@x1>
+References: <20240610131032.516323-1-howardchu95@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BL3PR11MB6435:EE_|PH0PR11MB5207:EE_
-X-MS-Office365-Filtering-Correlation-Id: f3babe47-8ef7-4daf-47b0-08dc8a492b24
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230032|1800799016|366008|376006|7416006;
-X-Microsoft-Antispam-Message-Info: =?utf-8?B?Rnl5dFpBSTZQUUU0dy9SanFFU3RnN256R1RDNi83MDZSdkFJUXJVY0VvVGlL?=
- =?utf-8?B?Z01sL2M4akFkcHhVL05PUDVrYVU2REZKVmNHcENGWnp6eGh2MXlsOU5NOFFI?=
- =?utf-8?B?QkRCQk9MaU82L2VsdXBmWTMyUWN3V05tQjZVVGltbStEdE5wK1VjNmZSc0ZV?=
- =?utf-8?B?UWl3azNodWJTcGZaTnFhTWNSVFV2TGExeXo1VG9pdjZwZkdzazdWL3l6L3N5?=
- =?utf-8?B?NXFVclI1R2hlL1ZaQ1VBMlVjMmZ6VjM1TThuRkNqOVUzOGoxTUxqU2dYdzBh?=
- =?utf-8?B?aHMvbllYT0UyTFZzYWtLeTNpcFE1R2htSUZXWXk0MGlPUHgvTDBUejJ2akNw?=
- =?utf-8?B?d0xYZGVUS1RQSE8xRkV5V1hFcFdMaHkrT015c3dTWmJ3dklXb0ZTbzlubHBh?=
- =?utf-8?B?YS9sRnRlK2NnVVpmZTN3MTdDcDhuQUV3MzZyOHBIb0hqcTc0WHBXNmQxQjVI?=
- =?utf-8?B?YmhScGJqZGdHU2NYNld5aitZM25nWFlFVUxOckVIWjQ2bHNrWkR1dU9ZTkJH?=
- =?utf-8?B?S0l1a1hGY1VHWno1Uk5nay9ycGxReFJVUkRGUllsdW02ZUFYdHRyaTVaMXll?=
- =?utf-8?B?eWx0dk4vN0dlV3Z2RjBTZ2R3V0tpNjVSZ0JLdnZURmN1aWZIVDYxV0NjZzFM?=
- =?utf-8?B?bFcrdUVDcHVnM1hCR1hjeHV0cnE1QzFCOEF2MFZFVmk0SU91VWE3US9xK1FW?=
- =?utf-8?B?K0swNVlmZjl1bUhwajVBNnZkN1dTYnFvK1p6SElodVRYNlRrQThzZUJkbjdH?=
- =?utf-8?B?UmZhd0VqY21nN0xIdk1QMXp2YndmdFltdnNPdXExUmVjZkczY1lyd1JLMmpF?=
- =?utf-8?B?WXVad3REZmFxV0xYS3NmU3JxbFpXU0xUcmlZYVAwdDkrclpjTSs5T20yYzZN?=
- =?utf-8?B?NFRqQ3p5cGFHSTU1bDJkZEdhUndYd3dodzFiVTVRNk50VnFSKytWRU5WOU0x?=
- =?utf-8?B?ck9BMTJ3SXQxdjNlWFl4NnlaV2ZxRHZ6SnhOcHFqQVpQMzExNTNWNVRmdnE1?=
- =?utf-8?B?SFV5cHFJUmg0YTVqdzFnUTF5QXpyRllESXZtcTBZYnluZjQwUHlFdG5Hdlo4?=
- =?utf-8?B?UEJPN0g2Yk1rNXgxcjBOVWJpZTY3Nm9iZFFmT0NzWkJRWEF0Y1poVkRTcnBa?=
- =?utf-8?B?N0wyb05jSlUrc2V4VzNRNHBtaGZacjlrajc1VUhUV1d1QTZ3KzNWZkI5U1Ju?=
- =?utf-8?B?OEYzOEV0Z3BtMG1VU25MczRFa3hPKzRFVitFMEdzN2ZWMDlOdFA2T1g0T1Rt?=
- =?utf-8?B?aDB6eHRYLzFYV2U2NWs2dStZdGw3SGV1M0k3ZGo3VFJnSVVaNjl6STcwZ1Q4?=
- =?utf-8?B?ejlTd0Q2ZGRHQVBsZEtVa0c3Y28zSk5UK2o5cG5Od0JFNnlVUVE2WVZWUXdp?=
- =?utf-8?B?bXdrcFk1YVNhSW5EcHQ2ME50T3l4QWM3dXVZYWdIaE56cFlITzNmU2VLUHBY?=
- =?utf-8?B?aUVXZW1xelJtTDJYcjAwVXRkYld2bHovVFVOUzN6T2Ryc3Q0RUxmWEF5b2sz?=
- =?utf-8?B?d09tdmp1ZWR1Mmt1bVltUXlGRGJseVRmWkxBSUFkTVNFazJkWE5GajgzOXU1?=
- =?utf-8?B?T3dnR2hHUGtrQ1g0V2dJbEk5VzhHLzhpSWpNbHduZUVZOXQ4dENzUWxFL3Fq?=
- =?utf-8?B?Z0pnUnRUbloyR0VOd1MyU2toSVU3dndCRjd2WEtrOE5STkNKZFBiK0o5ck0r?=
- =?utf-8?B?N2RtRlNGRzlNWVBnS3l0S3k0cHpHRE9NMmVWUDFrZW4yZERQRnp6ajdTc1Ez?=
- =?utf-8?Q?wxGJ5WxDXSErIQ07Jo=3D?=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL3PR11MB6435.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230032)(1800799016)(366008)(376006)(7416006);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?NXNTWGFtdGRlOGVmUkV3QU9HcWhJN1NRZUFSNmlGamFSUnJaa1lNa0JVS09H?=
- =?utf-8?B?a1RZSkNWLzJxMG1OcTZpeThnd1pHR0lRSDhqdm5GNUVPY3lINHhzWUV0UkpL?=
- =?utf-8?B?aitVZG94OFRwdFlSSkFZVHBVS3VmN1dUcklFYmdJQytwWm5ZOW5LVVFiK1g4?=
- =?utf-8?B?M1JrclJhQk53dTZoZzQ5cVVDTWZ3aVFWNWt5bno3OFRhOEFvR1hrS01wVXFP?=
- =?utf-8?B?UjFGYjUyQ2FEWkJLTzV6aFFIQlVlOVVJREluL0JFdjRxM0oxMmk3VE5IYm4y?=
- =?utf-8?B?Vll2YWlzMFpiR2xpcC9yN2tFSDdZYzUwKzBLdVdlQk5HditrYmlyRDBESEdi?=
- =?utf-8?B?U2E3dnZsNllQWkZkbndHbWRHNnVIZmxuRk94dmduMjJEaDRkQU1IVUh1clBv?=
- =?utf-8?B?U2pTR0lzb3Y4RDEvbnVDa3ovbE9EYy9GenNIL1RRNG9KN0JZYUVYZ2QralNk?=
- =?utf-8?B?VkwzS3pleUdYeTdIOWlUWWdyTUs1RHBhZ1E5U2U1bnBZQlR4OUp6dzNEclVK?=
- =?utf-8?B?UmtqNkVhSUVsM2F5ck1hMHVueFJ5QzdLMGJRK25FR2N2SEJNaWFBOE95MUlV?=
- =?utf-8?B?TEZYMkNmQzZoWTdOYm5USm1JZjV6dFZwWU5acDVpYjMzS2VhbHNYY3lPdTBB?=
- =?utf-8?B?ZmEwd1ViRThSN0t3U2JsZTIvblNRY0dkVHpGajFOTFZFNHFPUmlhK1hibmJP?=
- =?utf-8?B?djIyNG5WbE83TzMyREpnZTN0dC9VaHFJU21wL25lQkNkNnZwc2pBRWo3djVm?=
- =?utf-8?B?RGRES3ZSdU1LU003Zk5VQWVkK2ZRS2NkM2dTYnFYcnNDYkxNMDNQZnVpMnhP?=
- =?utf-8?B?dFhjdUpnVDhycjMzSXowOFR5ZDB6SGljZXdSVkd3LzZNbVVqaDFkZUlvZGtU?=
- =?utf-8?B?L2NodnJTS1A2L0JnR1BWU0dSRXM0ZStjK1pmSE5ZL1dvZlJVS0xucW0rTTNJ?=
- =?utf-8?B?OXNoUXVZdEpjaE1LeUpsY1dKME1PK3JNWGpsWGY4QkpQUjhnUy80TCtqZU9R?=
- =?utf-8?B?V09XSWd3dVJsMlFvbmFLRnlsQ2p1SEo4R25xelRvTXhDMVNoQkdYR0J1SEdX?=
- =?utf-8?B?cE5odzRzRS9FQUhUSzM3ZHA5UUdUa0VGL29rcG5JTC9wTVh2VHZaOWRNZlJO?=
- =?utf-8?B?dTE5dGhsL0x1SC9iVVNseDdoZFhURGZFSDN6Y3lhQ0hMaTFlVVVTQVlBTWdr?=
- =?utf-8?B?TmpYZ1N3UHAxV0NtemVpb3RNbDdKeHRSY2Y2VWJQM0JGdTdBL285WThWWnhp?=
- =?utf-8?B?TUFteHk1bStidHN1d1NqdEpMenVuVmlYQjNlSXdwcFR2a3QyelNnZXpLdlhZ?=
- =?utf-8?B?cy9TeU5BTlN0Zm1aQW1YUit1dDdqNURVS0dLcjI3R2t2eUE4amdmdUJORnNj?=
- =?utf-8?B?TGRGRXpxTFBqcEtZbUdNUno2U3YwaXh4MmF0SXZxZXBjTitiWTRibUhFSFo1?=
- =?utf-8?B?L3RDK1MxWWpHUEV5aWZJekNOS2VUaTg4MGlFRnZkcVFWUDYrSGVaSUkvTmtP?=
- =?utf-8?B?WlQ4WHEzZEVUdEN2MmNFV3I4UXdGQy9HRmNvYStUck5SaHg4ZlNwOWNjWGlq?=
- =?utf-8?B?M1FZUGlSTnJuajB5aTdwa0FXSW50dkxHOWJwZXUyVXZTaEIvdDN2TmxQTXBq?=
- =?utf-8?B?Ulh0SnFPRDVrRlpmd0pyQTB1NkJXTDlKZUdxM0Q5Q3M3YU1aaUJJS3VWZkcv?=
- =?utf-8?B?VGtCRWh2RUN2MStIMk1QWmxFN2lLQzBZblh6MCttQjNvSjVnMlpBNlQ3MkN5?=
- =?utf-8?B?S2dZVEtDek1YTGZqZEY3KzF2cGRBazJTekZVK0NLZ0RFRkcvRll5ay8yTHlv?=
- =?utf-8?B?VGdmK2J5N0tQbXhObnVZVHlGeVExOXBMaGdPdUVJRlRYdE5rampiWHFNV3ZF?=
- =?utf-8?B?Y0NhVTM4ZzRqV0kyMXN6aG95Q3ZFVkpoMEh2OTlwZE9aYTFSeXpzWG5aZlRr?=
- =?utf-8?B?YzJpTm9ZYnFnQXE4dGdLcy9CTytQdzJ0U1diZjBRMERsc0l3UUpmVHl2eDBI?=
- =?utf-8?B?ZUJZNXRBUFUyL3k0V0ZxMFZJeHpLaE10NFdnWm55TFd2NFJWK2gyeVVHc2lH?=
- =?utf-8?B?MWFLajlPWGxiQ0VmY0tUSFV4c2FlNGZQNEpQZXVKR2FvQkUwWlNlTFRla05L?=
- =?utf-8?B?dHFoVVFZb3ptT0tiNHdJRHRLMWlvVll3WU9UL2llT2h5NUgzTFFmSDhOSkp5?=
- =?utf-8?B?bGc9PQ==?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: f3babe47-8ef7-4daf-47b0-08dc8a492b24
-X-MS-Exchange-CrossTenant-AuthSource: BL3PR11MB6435.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Jun 2024 19:03:24.2519
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: bwLtdMocxtTw+yZ7TTWIEGVhKVdzehjgXLpfB948eYyGKRPnx1FVsfuAA/PbR5gC3JShevoYM1dpDVcOJzIt/BS2ex6f8vz9sXKCkB0Hi18=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR11MB5207
-X-OriginatorOrg: intel.com
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240610131032.516323-1-howardchu95@gmail.com>
 
-
-
-On 6/11/2024 11:57 AM, Michal Kubiak wrote:
-> Hi Tony,
+On Mon, Jun 10, 2024 at 09:10:32PM +0800, Howard Chu wrote:
+> This is a feature implemented on the basis of the previous bug fix
+> https://lore.kernel.org/linux-perf-users/d18a9606-ac9f-4ca7-afaf-fcf4c951cb90@web.de/T/#t
 > 
-> After my conversation with Kuba in a separate thread, I analyzed that
-> patch one more time and it seems the fix can be implemented in a simpler
-> way, so I am going to send the v2.
-> Therefore, please ignore this patch.
+> In this patch, I use BTF to turn enum value to the corresponding name.
+> There is only one system call that uses enum value as its argument,
+> that is `landlock_add_rule`.
+> 
+> The vmlinux btf is loaded lazily, when user decided to trace the
+> `landlock_add_rule` syscall. But if one decide to run `perf trace`
+> without any arguments, the behaviour is to trace `landlock_add_rule`,
+> so vmlinux btf will be loaded by default.
+> 
+> The laziest behaviour is to load vmlinux btf when a
+> `landlock_add_rule` syscall hits. But I think you could lose some
+> samples when loading vmlinux btf at run time, for it can delay the
+> handling of other samples. I might need your precious opinions on
+> this...
+> 
+> before:
+> 
+> ```
+> perf $ ./perf trace -e landlock_add_rule
+>      0.000 ( 0.008 ms): ldlck-test/438194 landlock_add_rule(rule_type: 2)                                       = -1 EBADFD (File descriptor in bad state)
+>      0.010 ( 0.001 ms): ldlck-test/438194 landlock_add_rule(rule_type: 1)                                       = -1 EBADFD (File descriptor in bad state)
+> ```
+> 
+> after:
+> 
+> ```
+> perf $ ./perf trace -e landlock_add_rule
+>      0.000 ( 0.029 ms): ldlck-test/438194 landlock_add_rule(rule_type: LANDLOCK_RULE_NET_PORT)                  = -1 EBADFD (File descriptor in bad state)
+>      0.036 ( 0.004 ms): ldlck-test/438194 landlock_add_rule(rule_type: LANDLOCK_RULE_PATH_BENEATH)              = -1 EBADFD (File descriptor in bad state)
+> ```
 
-I found that conversation :(
+On perf-tools-next, with the patch fixing the traversal of sctbl
+entries:
 
-I'll drop this and re-send tomorrow.
+⬢[acme@toolbox c]$ rm -f ./landlock_add_rule 
+⬢[acme@toolbox c]$ cat landlock_add_rule.c 
+#include <linux/landlock.h>  /* Definition of LANDLOCK_* constants */
+#include <sys/syscall.h>     /* Definition of SYS_* constants */
+#include <errno.h>
+#include <string.h>
+#include <unistd.h>
+#include <stdint.h>
+#include <stdio.h>
+
+/* Provide own perf_event_open stub because glibc doesn't */
+__attribute__((weak))
+int landlock_add_rule(int ruleset_fd, enum landlock_rule_type rule_type, const void *rule_attr, uint32_t flags)
+{
+	return syscall(SYS_landlock_add_rule, ruleset_fd, rule_type, rule_attr, flags);
+}
+
+int main(int argc, char *argv[])
+{
+	struct landlock_path_beneath_attr attr = { .allowed_access = 1, };
+	int err = landlock_add_rule(1, LANDLOCK_RULE_PATH_BENEATH, &attr, 0);
+
+	printf("landlock_add_rule(1, LANDLOCK_RULE_PATH_BENEATH, { .allowed_access = 1, }, 0) = %d (%s)\n", err, strerror(errno));
+
+	attr = (struct landlock_path_beneath_attr){ .parent_fd = 222, };
+
+	err = landlock_add_rule(2, LANDLOCK_RULE_NET_PORT, &attr, 0);
+
+	printf("landlock_add_rule(2, LANDLOCK_RULE_NET_PORT, { .parent_fd = 222, }, 0) = %d (%s)\n", err, strerror(errno));
+
+	return err;
+}
+⬢[acme@toolbox c]$ make landlock_add_rule
+cc     landlock_add_rule.c   -o landlock_add_rule
+⬢[acme@toolbox c]$ ./landlock_add_rule 
+landlock_add_rule(1, LANDLOCK_RULE_PATH_BENEATH, { .allowed_access = 1, }, 0) = -1 (File descriptor in bad state)
+landlock_add_rule(2, LANDLOCK_RULE_NET_PORT, { .parent_fd = 222, }, 0) = -1 (File descriptor in bad state)
+⬢[acme@toolbox c]$
+
+
+And then in 'perf trace', after your patch:
+
+root@number:~# perf trace --call-graph dwarf -e landlock_add_rule 
+     0.000 ( 0.025 ms): landlock_add_r/67823 landlock_add_rule(ruleset_fd: 1, rule_type: LANDLOCK_RULE_PATH_BENEATH, rule_attr: 0x7ffe96ad2fd0) = -1 EBADFD (File descriptor in bad state)
+                                       syscall (/usr/lib64/libc.so.6)
+                                       landlock_add_rule (/home/acme/c/landlock_add_rule)
+                                       main (/home/acme/c/landlock_add_rule)
+                                       __libc_start_call_main (/usr/lib64/libc.so.6)
+                                       __libc_start_main@@GLIBC_2.34 (/usr/lib64/libc.so.6)
+                                       _start (/home/acme/c/landlock_add_rule)
+     0.130 ( 0.008 ms): landlock_add_r/67823 landlock_add_rule(ruleset_fd: 2, rule_type: LANDLOCK_RULE_NET_PORT, rule_attr: 0x7ffe96ad2fd0) = -1 EBADFD (File descriptor in bad state)
+                                       syscall (/usr/lib64/libc.so.6)
+                                       landlock_add_rule (/home/acme/c/landlock_add_rule)
+                                       main (/home/acme/c/landlock_add_rule)
+                                       __libc_start_call_main (/usr/lib64/libc.so.6)
+                                       __libc_start_main@@GLIBC_2.34 (/usr/lib64/libc.so.6)
+                                       _start (/home/acme/c/landlock_add_rule)
+^Croot@number:~#
+
+Getting the enumeration from BTF using pahole:
+
+root@number:~# pahole landlock_rule_type
+enum landlock_rule_type {
+	LANDLOCK_RULE_PATH_BENEATH = 1,
+	LANDLOCK_RULE_NET_PORT     = 2,
+};
+
+root@number:~#
+
+So it all works, please take a look at some comments below.
+ 
+> P.S.
+> If you don't apply the patch "perf trace: Fix syscall untraceable
+> bug", there will be no output whatsoever when running
+> `perf trace -e landlock_add_rule`
+> 
+> Signed-off-by: Howard Chu <howardchu95@gmail.com>
+> ---
+>  tools/perf/builtin-trace.c | 69 ++++++++++++++++++++++++++++++++++++--
+>  1 file changed, 66 insertions(+), 3 deletions(-)
+> 
+> diff --git a/tools/perf/builtin-trace.c b/tools/perf/builtin-trace.c
+> index 5cbe1748911d..5acb9a910ea1 100644
+> --- a/tools/perf/builtin-trace.c
+> +++ b/tools/perf/builtin-trace.c
+> @@ -19,6 +19,7 @@
+>  #ifdef HAVE_LIBBPF_SUPPORT
+>  #include <bpf/bpf.h>
+>  #include <bpf/libbpf.h>
+> +#include <bpf/btf.h>
+>  #ifdef HAVE_BPF_SKEL
+>  #include "bpf_skel/augmented_raw_syscalls.skel.h"
+>  #endif
+> @@ -110,6 +111,7 @@ struct syscall_arg_fmt {
+>  	const char *name;
+>  	u16	   nr_entries; // for arrays
+>  	bool	   show_zero;
+> +	bool	   is_enum;
+>  };
+>  
+>  struct syscall_fmt {
+> @@ -140,6 +142,7 @@ struct trace {
+>  #ifdef HAVE_BPF_SKEL
+>  	struct augmented_raw_syscalls_bpf *skel;
+>  #endif
+> +	struct btf		*btf;
+>  	struct record_opts	opts;
+>  	struct evlist	*evlist;
+>  	struct machine		*host;
+> @@ -887,6 +890,36 @@ static size_t syscall_arg__scnprintf_getrandom_flags(char *bf, size_t size,
+>  
+>  #define SCA_GETRANDOM_FLAGS syscall_arg__scnprintf_getrandom_flags
+>  
+> +static size_t btf_enum_scnprintf(char *bf, size_t size, int val,
+> +			  struct btf *btf, const char *type)
+> +{
+> +	const struct btf_type *bt;
+> +	struct btf_enum *e;
+> +	char enum_prefix[][16] = {"enum", "const enum"}, *ep;
+
+                                 Add spaces after { and before }
+
+> +	int id;
+> +
+> +	for (size_t i = 0; i < ARRAY_SIZE(enum_prefix); i++) {
+> +		ep = enum_prefix[i];
+> +		if (strlen(type) > strlen(ep) + 1 && strstr(type, ep) == type)
+> +			type += strlen(ep) + 1;
+> +	}
+> +
+> +	id = btf__find_by_name(btf, type);
+
+	int id = ...
+
+> +	if (id < 0)
+
+Shouldn't we have some warning here? ok, I see you do it later, in
+trace__read_syscall_info().
+
+Also I looked at the btf_enum_scnprintf() caller and if this isn't found
+nothing is printed, it is better to fallback to printing the integer
+value, as done in other parts, see:
+
+size_t strarray__scnprintf(struct strarray *sa, char *bf, size_t size, const char *intfmt, bool show_prefix, int val)
+
+That intfmt is configurable to show hex or decimal and is used when the
+'val' isn't found in the strarray, so we should use the same approach
+with BTF.
+
+> +		return 0;
+> +
+> +	bt = btf__type_by_id(btf, id);
+> +	e = btf_enum(bt);
+
+Declare 'bt' and 'e' here
+
+> +
+> +	for (int i = 0; i < btf_vlen(bt); i++, e++) {
+> +		if (e->val == val)
+> +			return scnprintf(bf, size, "%s",
+> +					 btf__name_by_offset(btf, e->name_off));
+
+Multi line if block should be enclosed with {}
+
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+>  #define STRARRAY(name, array) \
+>  	  { .scnprintf	= SCA_STRARRAY, \
+>  	    .strtoul	= STUL_STRARRAY, \
+> @@ -1238,6 +1271,7 @@ struct syscall {
+>  	bool		    is_exit;
+>  	bool		    is_open;
+>  	bool		    nonexistent;
+> +	bool		    use_btf;
+>  	struct tep_format_field *args;
+>  	const char	    *name;
+>  	const struct syscall_fmt  *fmt;
+> @@ -1756,6 +1790,7 @@ syscall_arg_fmt__init_array(struct syscall_arg_fmt *arg, struct tep_format_field
+>  			continue;
+>  
+>  		len = strlen(field->name);
+> +		arg->is_enum = false;
+>  
+>  		if (strcmp(field->type, "const char *") == 0 &&
+>  		    ((len >= 4 && strcmp(field->name + len - 4, "name") == 0) ||
+> @@ -1782,6 +1817,8 @@ syscall_arg_fmt__init_array(struct syscall_arg_fmt *arg, struct tep_format_field
+>  			 * 7 unsigned long
+>  			 */
+>  			arg->scnprintf = SCA_FD;
+> +		} else if (strstr(field->type, "enum")) {
+> +			arg->is_enum = true;
+>  		} else {
+>  			const struct syscall_arg_fmt *fmt =
+>  				syscall_arg_fmt__find_by_name(field->name);
+> @@ -1798,7 +1835,13 @@ syscall_arg_fmt__init_array(struct syscall_arg_fmt *arg, struct tep_format_field
+>  
+>  static int syscall__set_arg_fmts(struct syscall *sc)
+>  {
+> -	struct tep_format_field *last_field = syscall_arg_fmt__init_array(sc->arg_fmt, sc->args);
+> +	struct tep_format_field *last_field = syscall_arg_fmt__init_array(sc->arg_fmt, sc->args),
+> +				*field = sc->args;
+> +	struct syscall_arg_fmt *arg = sc->arg_fmt;
+> +
+> +	for (; field; field = field->next, ++arg)
+> +		if (arg->is_enum)
+> +			sc->use_btf = true;
+
+Instead of retraversing the fields, pass &sc->use_btf to
+syscall_arg_fmt__init_array() and then you set it when you set
+arg->is_enum.
+
+Note that syscall_arg_fmt__init_array() is also used for other
+tracepoints in evsel__init_tp_arg_scnprintf() and we want to use
+btf_enum_scnprintf() in enum tracepoint args too.
+
+Now in you can pass NULL from evsel__init_tp_arg_scnprintf() and make
+syscall_arg_fmt__init_array() check if it is NULL before setting it to
+'true', later we lift this check when/if we add support for !syscall
+tracepoint args.
+
+And while we have just this landlock one in syscalls, for tracepoints we
+have quite a few:
+
+root@number:~# grep -w field:enum /sys/kernel/tracing/events/*/*/format | wc -l
+210
+root@number:~# grep -w field:enum /sys/kernel/tracing/events/*/*/format | head
+/sys/kernel/tracing/events/cfg80211/cfg80211_cac_event/format:	field:enum nl80211_radar_event evt;	offset:28;	size:4;	signed:0;
+/sys/kernel/tracing/events/cfg80211/cfg80211_chandef_dfs_required/format:	field:enum nl80211_band band;	offset:40;	size:4;	signed:0;
+/sys/kernel/tracing/events/cfg80211/cfg80211_ch_switch_notify/format:	field:enum nl80211_band band;	offset:28;	size:4;	signed:0;
+/sys/kernel/tracing/events/cfg80211/cfg80211_ch_switch_started_notify/format:	field:enum nl80211_band band;	offset:28;	size:4;	signed:0;
+/sys/kernel/tracing/events/cfg80211/cfg80211_cqm_rssi_notify/format:	field:enum nl80211_cqm_rssi_threshold_event rssi_event;	offset:28;	size:4;	signed:0;
+/sys/kernel/tracing/events/cfg80211/cfg80211_get_bss/format:	field:enum nl80211_band band;	offset:40;	size:4;	signed:0;
+/sys/kernel/tracing/events/cfg80211/cfg80211_get_bss/format:	field:enum ieee80211_bss_type bss_type;	offset:60;	size:4;	signed:0;
+/sys/kernel/tracing/events/cfg80211/cfg80211_get_bss/format:	field:enum ieee80211_privacy privacy;	offset:64;	size:4;	signed:0;
+/sys/kernel/tracing/events/cfg80211/cfg80211_ibss_joined/format:	field:enum nl80211_band band;	offset:36;	size:4;	signed:0;
+/sys/kernel/tracing/events/cfg80211/cfg80211_inform_bss_frame/format:	field:enum nl80211_band band;	offset:40;	size:4;	signed:0;
+root@number:~# pahole nl80211_band
+enum nl80211_band {
+	NL80211_BAND_2GHZ  = 0,
+	NL80211_BAND_5GHZ  = 1,
+	NL80211_BAND_60GHZ = 2,
+	NL80211_BAND_6GHZ  = 3,
+	NL80211_BAND_S1GHZ = 4,
+	NL80211_BAND_LC    = 5,
+	NUM_NL80211_BANDS  = 6,
+};
+
+root@number:~#
+
+This is shaping up super nicely, great!
+
+I'm pushing the simplified first patch to my tmp.perf-tools-next branch
+in my tree at:
+
+https://git.kernel.org/pub/scm/linux/kernel/git/acme/linux.git tmp.perf-tools-next
+
+https://git.kernel.org/pub/scm/linux/kernel/git/acme/linux.git/log/?h=tmp.perf-tools-next
+
+Some more comments below.
+
+>  	if (last_field)
+>  		sc->args_size = last_field->offset + last_field->size;
+> @@ -1811,6 +1854,7 @@ static int trace__read_syscall_info(struct trace *trace, int id)
+>  	char tp_name[128];
+>  	struct syscall *sc;
+>  	const char *name = syscalltbl__name(trace->sctbl, id);
+> +	int err;
+>  
+>  #ifdef HAVE_SYSCALL_TABLE_SUPPORT
+>  	if (trace->syscalls.table == NULL) {
+> @@ -1883,7 +1927,17 @@ static int trace__read_syscall_info(struct trace *trace, int id)
+>  	sc->is_exit = !strcmp(name, "exit_group") || !strcmp(name, "exit");
+>  	sc->is_open = !strcmp(name, "open") || !strcmp(name, "openat");
+>  
+> -	return syscall__set_arg_fmts(sc);
+> +	err = syscall__set_arg_fmts(sc);
+
+> +	/* after calling syscall__set_arg_fmts() we'll know whether use_btf is true */
+> +	if (sc->use_btf && trace->btf == NULL) {
+> +		trace->btf = btf__load_vmlinux_btf();
+> +		if (verbose > 0)
+> +			fprintf(trace->output, trace->btf ? "vmlinux BTF loaded\n" :
+> +							    "Failed to load vmlinux BTF\n");
+> +	}
+
+One suggestion here is to get the body of the above if and have it in a
+trace__load_vmlinux_btf(), as that call and the test under verbose will
+be used in other places, for instance, when supporting using BTF to
+pretty print non-syscall tracepoints.
+
+This function probably will grow to support detached BTF, possibly that
+idea about generating BTF from the scrape scripts, etc.
 
 Thanks,
-Tony
 
----
-pw-bot: cr
+- Arnaldo
+
+> +	return err;
+>  }
+>  
+>  static int evsel__init_tp_arg_scnprintf(struct evsel *evsel)
+> @@ -2050,7 +2104,7 @@ static size_t syscall__scnprintf_args(struct syscall *sc, char *bf, size_t size,
+>  				      unsigned char *args, void *augmented_args, int augmented_args_size,
+>  				      struct trace *trace, struct thread *thread)
+>  {
+> -	size_t printed = 0;
+> +	size_t printed = 0, p;
+>  	unsigned long val;
+>  	u8 bit = 1;
+>  	struct syscall_arg arg = {
+> @@ -2103,6 +2157,15 @@ static size_t syscall__scnprintf_args(struct syscall *sc, char *bf, size_t size,
+>  			if (trace->show_arg_names)
+>  				printed += scnprintf(bf + printed, size - printed, "%s: ", field->name);
+>  
+> +			if (sc->arg_fmt[arg.idx].is_enum == true && trace->btf) {
+> +				p = btf_enum_scnprintf(bf + printed, size - printed, val,
+> +						       trace->btf, field->type);
+> +				if (p) {
+> +					printed += p;
+> +					continue;
+> +				}
+> +			}
+> +
+>  			printed += syscall_arg_fmt__scnprintf_val(&sc->arg_fmt[arg.idx],
+>  								  bf + printed, size - printed, &arg, val);
+>  		}
+> -- 
+> 2.45.2
 
