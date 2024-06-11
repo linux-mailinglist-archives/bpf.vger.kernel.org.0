@@ -1,141 +1,83 @@
-Return-Path: <bpf+bounces-31851-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-31852-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E371D9040D6
-	for <lists+bpf@lfdr.de>; Tue, 11 Jun 2024 18:06:31 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8DA0E90415E
+	for <lists+bpf@lfdr.de>; Tue, 11 Jun 2024 18:31:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B76E31C23764
-	for <lists+bpf@lfdr.de>; Tue, 11 Jun 2024 16:06:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 41B7628A993
+	for <lists+bpf@lfdr.de>; Tue, 11 Jun 2024 16:31:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C97D744366;
-	Tue, 11 Jun 2024 16:04:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Y3FxDznW"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 27E703F9F9;
+	Tue, 11 Jun 2024 16:30:35 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f44.google.com (mail-wr1-f44.google.com [209.85.221.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B3EC743AC5;
-	Tue, 11 Jun 2024 16:04:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D0FD43839D;
+	Tue, 11 Jun 2024 16:30:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718121851; cv=none; b=HbRjfuUQeUfiJ1cvpz0+1ONX8dkCbiuZoukcypOBtCYzbQtXQE1va0E5p5Pex5uS65Ui23+s3Fwm8Vf3JM3AFM/LDFG2JRdeHQ8bxDT4vnend7a8OMTPuqBc+0QWybRwwdUq1k7NiAYkK5oB3Wp5jmfwm0Q7az02kRLcdR95Vvk=
+	t=1718123434; cv=none; b=sMIRmh+aXPVbsqigzU1Fqt3pnry5G/kr+b37cF97C6mwLRGWVX5U+uUkMYhLiykt0MeMK44Bbd8zcK6tlglB4C+zJ/18c3+VBf1m6ahhNYQWkD19LJz0gshASy7IRkeDvBy8+FoPeMvNGmuXALXRecBPzDAuRqIlPKAzEmywMsw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718121851; c=relaxed/simple;
-	bh=OnTkHejPNw3tngPD/gLNuIdXyEPXReQ7Og4rR03tJUM=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=OXjqk6xzCpXFkODmH2sDHY56pUCl/SfbBV7J4NMKGOs65zGL7cfGHL5b7XLUsiSE+iBCdz3QP+cXx1eziTFNLE1o+3O/OZHJJyGCEAPwlEEPS+WdSnb+gvYSPakdUGVYNNFlM6bEwDRTAwXQGNveQuUd1htAOWKjkDcx6GCfLBo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Y3FxDznW; arc=none smtp.client-ip=209.85.221.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f44.google.com with SMTP id ffacd0b85a97d-35f188e09a8so2589575f8f.2;
-        Tue, 11 Jun 2024 09:04:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1718121848; x=1718726648; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=A7OxeEGQvtZSHolpPtCDm/Oc1t2xdqPNsViOQEbQvYo=;
-        b=Y3FxDznWQnY/DlmkqbIvfxgWrT7ToMPIPIy79BjpQvNz4bCM587yDrZUpJWCo7OqsA
-         zSPUdZAAKEn5yPVcuVRnWe3gflnyDqia0GERna9fOVGGFQeeGx6jbwGoQ+2rvZ0D4XNt
-         SS9pIRMpBM/FVsJJ+zE3eR2crSXiRv66iICm9+0YB8jlpQr+E7NcqKvr5XL8czNcBSXQ
-         J/B0q0Xot3fhxcyI/W+roE+BJVVVK7jidPpYjYflHb8ptsU9arWK5z0lKzz5BAC2rsoO
-         2QrFB0PL74kGnzrxqZBiouk4rY8WFSy5E6MrCvAcC+aKxC60aSIqudxjHP72+CWc9eAn
-         GFpg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1718121848; x=1718726648;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=A7OxeEGQvtZSHolpPtCDm/Oc1t2xdqPNsViOQEbQvYo=;
-        b=iCM/+kmQ/z0ro2vMgxluhX5GukcuZ+wGGPevbS9xbMyx0xzrFm+zUqTs5YMPYulVjY
-         MYZcAoc1mJnG9n8y8hNJ+vuxNi8UXsaS6fA6a+7zSzaXgVH3oGMssd4I3a1Y9sfRV2uZ
-         OtVr4pv3PCunsGSECmmsDZEjKSTtGTjdJ1EE3ZEylIr00zX4pFGeqraVH2qSbzEj+hgq
-         p2GMLz+3n2sVIvpe6hhWZHJTHTnbzWkzTNy5gGd9EJwEJRpalmsC3z+UgfBUREmPsIBn
-         6wSPwxFqKMDz1Eo5tQmrFGZxlVvQ3DaKA4bTGLFiJXEMYMazBMMc8R0bz6tMA4qBPEn6
-         UvUg==
-X-Forwarded-Encrypted: i=1; AJvYcCV7P7vMTpC1fvoEhMlc0iQE6ijGjN5aTcORAM8TivAXlcKkON8uwviNnfi3LiQtUWDPZLv7sy1yqMS9eboDvjL52NbhBjoaBNgvHKxjwJEm8+NUR8HUTEPHOIxFpvCL/7b+xkqsp16Ccqederohv6V1dMg+kIC2fgnilAUkNdmN/EOq
-X-Gm-Message-State: AOJu0YwxIw7ogwH9ZUfZgOaJKVGZKlw6ji9CuQXVX1tb3fxlGDMVcYru
-	18bJlsI3iEf7SUcx1RPEq8A6oMc/RFNqjU0BlEvi1L2vUTSQWBpPva8lR39CUmG2bO/p0LdRqY4
-	0r6nPDWJW4Yy1VBCwOe/FIRkL3XE=
-X-Google-Smtp-Source: AGHT+IGgf1ls3cDJ6B8jZSckjsi3R4ehKyK6BuvWyiUq1Q0BRGfbAUe6LlHVpdwqmLIfrHbT/2TI3nOOqIIwwdeGhAY=
-X-Received: by 2002:a5d:6608:0:b0:354:f7a4:7862 with SMTP id
- ffacd0b85a97d-35efed2baacmr8566577f8f.19.1718121847806; Tue, 11 Jun 2024
- 09:04:07 -0700 (PDT)
+	s=arc-20240116; t=1718123434; c=relaxed/simple;
+	bh=5cpAqCueMiul15O4cnq2Z/clOXb3h3yGx7cGR9jOKg8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=acnjW9bJ8WDWDdd+6PFuYPehxnpgfP8dqtAoc2Q53Ksj3K1TfjtcnPIoHE0NK1/qXmMCB+hWw1O6Tl6yw6xBL7QSwfczKNhZuT5Ds2/EsDSkdGCAdZ42tu8puzKdGCXel9Go0/yEdfk8jd3LfVjVnbTEENCaLAVtC/nPk41S5UU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 74A34C2BD10;
+	Tue, 11 Jun 2024 16:30:30 +0000 (UTC)
+Date: Tue, 11 Jun 2024 17:30:28 +0100
+From: Catalin Marinas <catalin.marinas@arm.com>
+To: Maxwell Bland <mbland@motorola.com>
+Cc: "open list:BPF [GENERAL] (Safe Dynamic Programs and Tools)" <bpf@vger.kernel.org>,
+	Will Deacon <will@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
+	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+	Zi Shen Lim <zlim.lnx@gmail.com>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Suzuki K Poulose <suzuki.poulose@arm.com>,
+	Mark Brown <broonie@kernel.org>,
+	linux-arm-kernel@lists.infradead.org,
+	open list <linux-kernel@vger.kernel.org>,
+	Josh Poimboeuf <jpoimboe@kernel.org>,
+	Puranjay Mohan <puranjay12@gmail.com>
+Subject: Re: [PATCH bpf-next v5 1/3] cfi: add C CFI type macro
+Message-ID: <Zmh7pIpTlexcCyOL@arm.com>
+References: <mafwhrai2nz3u4wn4fu72kvzjm6krs57klc3qqvd2sz2mham6d@x4ukf6xqp4f4>
+ <cwhnmpn5yvg6ma7mvjviy4p7z6gdoba57daeprpc4zcokfhpv2@44gvdmcfuspt>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <cover.1717881178.git.dxu@dxuuu.xyz> <34708481d71ea72c23a78a5209e04a76b261a01d.1717881178.git.dxu@dxuuu.xyz>
- <Zmb52Qp__CBzbgDh@krava> <chydnuotqnmamlfmgzgnwurj5flaegp2bjebxldqwc2y2ngs5x@3h4blknbqhlw>
-In-Reply-To: <chydnuotqnmamlfmgzgnwurj5flaegp2bjebxldqwc2y2ngs5x@3h4blknbqhlw>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Tue, 11 Jun 2024 09:03:56 -0700
-Message-ID: <CAADnVQJdt5K3o6SrnVzzBVf+5BmJ3Wo5TTLvULE7rKJPkKqmbQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v4 06/12] bpf: selftests: Fix bpf_session_cookie()
- kfunc prototype
-To: Daniel Xu <dxu@dxuuu.xyz>
-Cc: Jiri Olsa <olsajiri@gmail.com>, Shuah Khan <shuah@kernel.org>, 
-	Alexei Starovoitov <ast@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, Eddy Z <eddyz87@gmail.com>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Quentin Monnet <quentin@isovalent.com>, 
-	Alan Maguire <alan.maguire@oracle.com>, Arnaldo Carvalho de Melo <acme@kernel.org>, 
-	Mykola Lysenko <mykolal@fb.com>, Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
-	bpf <bpf@vger.kernel.org>, 
-	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
-	Kernel Team <kernel-team@meta.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cwhnmpn5yvg6ma7mvjviy4p7z6gdoba57daeprpc4zcokfhpv2@44gvdmcfuspt>
 
-On Tue, Jun 11, 2024 at 8:54=E2=80=AFAM Daniel Xu <dxu@dxuuu.xyz> wrote:
->
-> Hi Jiri,
->
-> On Mon, Jun 10, 2024 at 03:04:25PM GMT, Jiri Olsa wrote:
-> > On Sat, Jun 08, 2024 at 03:16:02PM -0600, Daniel Xu wrote:
-> > > The prototype defined in bpf_kfuncs.h was not in line with how the
-> > > actual kfunc was defined. This causes compilation errors when kfunc
-> > > prototypes are generated from BTF.
-> > >
-> > > Fix by aligning with actual kfunc definition.
-> > >
-> > > Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
-> > > ---
-> > >  tools/testing/selftests/bpf/bpf_kfuncs.h                        | 2 =
-+-
-> > >  tools/testing/selftests/bpf/progs/kprobe_multi_session_cookie.c | 2 =
-+-
-> > >  2 files changed, 2 insertions(+), 2 deletions(-)
-> > >
-> > > diff --git a/tools/testing/selftests/bpf/bpf_kfuncs.h b/tools/testing=
-/selftests/bpf/bpf_kfuncs.h
-> > > index be91a6919315..3b6675ab4086 100644
-> > > --- a/tools/testing/selftests/bpf/bpf_kfuncs.h
-> > > +++ b/tools/testing/selftests/bpf/bpf_kfuncs.h
-> > > @@ -77,5 +77,5 @@ extern int bpf_verify_pkcs7_signature(struct bpf_dy=
-nptr *data_ptr,
-> > >                                   struct bpf_key *trusted_keyring) __=
-ksym;
-> > >
-> > >  extern bool bpf_session_is_return(void) __ksym __weak;
-> > > -extern long *bpf_session_cookie(void) __ksym __weak;
-> > > +extern __u64 *bpf_session_cookie(void) __ksym __weak;
-> >
-> > the original intent was to expose long instead of __u64 :-\
-> >
-> > could we rather change the bpf_session_cookie function to return long?
-> > should be just return value type change
->
-> Sounds reasonable to me. I don't think the kfunc has made it to a
-> release yet, so perhaps if we extract this commit out as a fix to bpf
-> tree it can still make it into 6.10. That way we won't have to worry
-> about any ABI changes.
+On Mon, Jun 10, 2024 at 01:06:33PM -0500, Maxwell Bland wrote:
+> From: Mark Rutland <mark.rutland@arm.com>
+> 
+> Currently x86 and riscv open-code 4 instances of the same logic to
+> define a u32 variable with the KCFI typeid of a given function.
+> 
+> Replace the duplicate logic with a common macro.
+> 
+> Signed-off-by: Mark Rutland <mark.rutland@arm.com>
 
-kfunc-s can be changed at any time. Keep targeting bpf-next for everything.
+This patch is missing your signed-off-by (the same with the second
+patch). Since you are submitting it, you should also add yours in
+addition to the author's s-o-b.
+
+-- 
+Catalin
 
