@@ -1,116 +1,110 @@
-Return-Path: <bpf+bounces-31794-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-31795-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id ACB6390379A
-	for <lists+bpf@lfdr.de>; Tue, 11 Jun 2024 11:14:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 1721B9037C2
+	for <lists+bpf@lfdr.de>; Tue, 11 Jun 2024 11:24:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3002C28A440
-	for <lists+bpf@lfdr.de>; Tue, 11 Jun 2024 09:14:17 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9526B288AC4
+	for <lists+bpf@lfdr.de>; Tue, 11 Jun 2024 09:24:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F17C4176ABD;
-	Tue, 11 Jun 2024 09:14:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 55E5C176ACE;
+	Tue, 11 Jun 2024 09:22:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="eZ2kLVPU"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="itxhBSKv"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 72F3317625F;
-	Tue, 11 Jun 2024 09:14:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA9E1176244;
+	Tue, 11 Jun 2024 09:22:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.92.199
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718097250; cv=none; b=KkRPb51o4hOXaKH0H3ggZjz4driduJIQces3acggbL8DcoaC3FIJ73zFermpBDEQqq30WtsRUysuuFwC+qeybPzbL5mmHuB/L3UqJWoqKcMvOPCtxVTsGMzq4845pFnGPNeuzkZPYX9CtCMLr5OGhkrCNOsUd9TIAlZ8BIkErOw=
+	t=1718097730; cv=none; b=cE7bdpOrCgzFcuDhCCJOJPz2DCtKisWHJO0vfcgGbwqfTlVVzwkq06k+4Rqt8Q9JrywacumTr4EXLCCfqyuoxYd+cp7KzMeUPknR3xO0IK2D9QXbhp81uMvOE7dLqXoz8Eh+mjZLtoM1WcOyQfiEFjpOWK5AYWUhvlDO0ye6NVU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718097250; c=relaxed/simple;
-	bh=VWF2BN3M74sWgL4r0nHVKCmPDvs57NQeQDcbDpP5OYs=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=syps506hIc52Y7MKUNXKhTJGM4/4isZCIrtDwDCLXyXHATs+763x9w1lm21upnqb6a5ezGBo3Yg38VTxmbJ0L8ug4iDeu6DNrwEjuWdoBTOaxuNO2V8zCGa22FTFcnnbMJaCRzRuYt86nV7/i3PWNnOCGT+WK8EZmieT+7BuJSY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=eZ2kLVPU; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 797AFC2BD10;
-	Tue, 11 Jun 2024 09:14:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1718097250;
-	bh=VWF2BN3M74sWgL4r0nHVKCmPDvs57NQeQDcbDpP5OYs=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=eZ2kLVPUiamJO4LB+z77wLYTVv+v3VraBW/u+gAsNhHG/ActUp1et+OsVEyDz34cR
-	 cbShcphc/reNow5ZpTBmVeKB2l4q1ZJ/ABDCsK/Q48AqhqQjfq8rwZJjw2Jmimxiah
-	 z8Pj28WGQZkz2b5w2LYVMvqV02narhxaKk6iw+AkgeOPaLCer4+kcAuux/jKhQyO/I
-	 98yR78dZCj1RKovDfPk+4HhExDVWhIRGRN7XyTSlsU6c/NjPl9Dxlo6t6yW6ruUABB
-	 1Axf5wzxawQqOPYrRaO+x+IHXkHZpSoGuc4D4uxFBvS0c7R/0P+ejV6aaCKp0ivvoc
-	 bEsLGOak71gTg==
-From: Geliang Tang <geliang@kernel.org>
-To: Andrii Nakryiko <andrii@kernel.org>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Mykola Lysenko <mykolal@fb.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>,
-	Stanislav Fomichev <sdf@google.com>,
-	Hao Luo <haoluo@google.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Shuah Khan <shuah@kernel.org>,
-	Boris Pismenny <borisp@nvidia.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Jakub Sitnicki <jakub@cloudflare.com>
-Cc: Geliang Tang <tanggeliang@kylinos.cn>,
-	bpf@vger.kernel.org,
-	linux-kselftest@vger.kernel.org,
-	netdev@vger.kernel.org
-Subject: [PATCH net-next v6 2/2] selftests/bpf: Add F_SETFL for fcntl in test_sockmap
-Date: Tue, 11 Jun 2024 17:13:35 +0800
-Message-ID: <dfbbec2d3144d8fd1022fa8326d53a3e511d63cb.1718096691.git.tanggeliang@kylinos.cn>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <cover.1718096691.git.tanggeliang@kylinos.cn>
-References: <cover.1718096691.git.tanggeliang@kylinos.cn>
+	s=arc-20240116; t=1718097730; c=relaxed/simple;
+	bh=GJfGdbvvDWDOSvMogO1Tx6TxQynGnwfRw1Ryjv4ZsEo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=BmD0tH1GMKlTlr0KCJGqe/6XajOQUokF5ZAqD6Y0OSeuqivy9MjgD1tsJ/GsJwz3F3twOep+OPyHPiENGUb9gx06QuJlW+3KDFaJQ5GNJw9G50+/Z7Bg79TqfBa8JiF2fduY2JlPjGO9gByIlWH/vuO8fBATj80K7aK2wcEnoCU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=itxhBSKv; arc=none smtp.client-ip=90.155.92.199
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=48fO26X+Km0rKUwpbNZyNPOVhd3pCMp769Y0WYI3ihM=; b=itxhBSKv0p/wc0lUGnJR/DddVO
+	9WdLWU6WuLCqw+8TiFpN+bxjI6/QGAHJDydIXBBODbEQgUvZ5J5AhG8H9TJyiNHfWxbk0luODpxKM
+	kHLYskN4r4QtodTqm1ML5jE/7RNID3n0bRZUzfLD6HbeO/HAYvGTINnICZxKUCguLlLZNQuL+CXkD
+	GrlYF+NNUyta+WeVJ96j4XrKNnmAwsf4offdjzwaRUWIz6jwC7Kazs+vcrAXxXQ1UjnpvuW8g1XoS
+	+jnFZt/GCvKn/tJrh+cg1P4ae6LLUcdQiF9ovxpnK8XLlAXJa+SIQ/ThQRZ7s4pOqLpSUYYSwhYC0
+	MQOGUddA==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+	by desiato.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1sGxhS-000000023Ga-3ooz;
+	Tue, 11 Jun 2024 09:21:59 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+	id C0122302DA2; Tue, 11 Jun 2024 11:21:57 +0200 (CEST)
+Date: Tue, 11 Jun 2024 11:21:57 +0200
+From: Peter Zijlstra <peterz@infradead.org>
+To: Zheng Yejian <zhengyejian1@huawei.com>
+Cc: rostedt@goodmis.org, mcgrof@kernel.org, mhiramat@kernel.org,
+	mark.rutland@arm.com, mathieu.desnoyers@efficios.com,
+	jpoimboe@kernel.org, linux-modules@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+	bpf@vger.kernel.org
+Subject: Re: [RFC PATCH] ftrace: Skip __fentry__ location of overridden weak
+ functions
+Message-ID: <20240611092157.GU40213@noisy.programming.kicks-ass.net>
+References: <20240607115211.734845-1-zhengyejian1@huawei.com>
+ <20240607150228.GR8774@noisy.programming.kicks-ass.net>
+ <57e499a4-e26d-148f-317d-233e873d11b4@huawei.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <57e499a4-e26d-148f-317d-233e873d11b4@huawei.com>
 
-From: Geliang Tang <tanggeliang@kylinos.cn>
+On Tue, Jun 11, 2024 at 09:56:51AM +0800, Zheng Yejian wrote:
+> On 2024/6/7 23:02, Peter Zijlstra wrote:
 
-Incorrect arguments are passed to fcntl() in test_sockmap.c when invoking
-it to set file status flags. If O_NONBLOCK is used as 2nd argument and
-passed into fcntl, -EINVAL will be returned (See do_fcntl() in fs/fcntl.c).
-The correct approach is to use F_SETFL as 2nd argument, and O_NONBLOCK as
-3rd one.
+> > Oh gawd, sodding weak functions again.
+> > 
+> > I would suggest changing scipts/kallsyms.c to emit readily identifiable
+> > symbol names for all the weak junk, eg:
+> > 
+> >    __weak_junk_NNNNN
+> > 
+> 
+> Sorry for the late reply, I just had a long noon holiday :>
+> 
+> scripts/kallsyms.c is compiled and used to handle symbols in vmlinux.o
+> or vmlinux.a, see kallsyms_step() in scripts/link-vmlinux.sh, those
+> overridden weak symbols has been removed from symbol table of vmlinux.o
+> or vmlinux.a. But we can found those symbols from original xx/xx.o file,
+> for example, the weak free_initmem() in in init/main.c is overridden,
+> its symbol is not in vmlinx but is still in init/main.o .
+> 
+> How about traversing all origin xx/xx.o and finding all weak junk symbols ?
 
-Fixes: 16962b2404ac ("bpf: sockmap, add selftests")
-Signed-off-by: Geliang Tang <tanggeliang@kylinos.cn>
-Acked-by: Yonghong Song <yonghong.song@linux.dev>
----
- tools/testing/selftests/bpf/test_sockmap.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+You don't need to. ELF symbl tables have an entry size for FUNC type
+objects, this means that you can readily find holes in the text and fill
+them with a symbol.
 
-diff --git a/tools/testing/selftests/bpf/test_sockmap.c b/tools/testing/selftests/bpf/test_sockmap.c
-index 9cba4ec844a5..99d3ca8e44bb 100644
---- a/tools/testing/selftests/bpf/test_sockmap.c
-+++ b/tools/testing/selftests/bpf/test_sockmap.c
-@@ -604,7 +604,9 @@ static int msg_loop(int fd, int iov_count, int iov_length, int cnt,
- 		struct timeval timeout;
- 		fd_set w;
- 
--		fcntl(fd, fd_flags);
-+		if (fcntl(fd, F_SETFL, fd_flags))
-+			goto out_errno;
-+
- 		/* Account for pop bytes noting each iteration of apply will
- 		 * call msg_pop_data helper so we need to account for this
- 		 * by calculating the number of apply iterations. Note user
--- 
-2.43.0
+Specifically, you can check the mcount locations against the symbol
+table and for every one that falls in a hole, generate a new junk
+symbol.
 
+Also see 4adb23686795 where objtool adds these holes to the
+ignore/unreachable code check.
+
+
+The lack of size for kallsyms is in a large part what is causing the
+problems.
 
