@@ -1,94 +1,94 @@
-Return-Path: <bpf+bounces-31781-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-31782-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 96A9F90341C
-	for <lists+bpf@lfdr.de>; Tue, 11 Jun 2024 09:45:10 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0A54690345A
+	for <lists+bpf@lfdr.de>; Tue, 11 Jun 2024 09:52:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 897A11C21A09
-	for <lists+bpf@lfdr.de>; Tue, 11 Jun 2024 07:45:09 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9F4971F2A5E8
+	for <lists+bpf@lfdr.de>; Tue, 11 Jun 2024 07:52:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4AEE8172BCC;
-	Tue, 11 Jun 2024 07:44:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A2A9173321;
+	Tue, 11 Jun 2024 07:51:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZS9uLdIn"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IlWpwhmo"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f47.google.com (mail-ej1-f47.google.com [209.85.218.47])
+Received: from mail-pf1-f181.google.com (mail-pf1-f181.google.com [209.85.210.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 13A5A1E52F;
-	Tue, 11 Jun 2024 07:44:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 599F2172BD5;
+	Tue, 11 Jun 2024 07:51:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718091889; cv=none; b=Fwws9DLq0FPEGQQM8Q3IhYDEp0bSAZmCuMuPx8NOzLx+geMsiRgagiJJiRR0POondbXOD7xlXla9U7ZZQoqvPVdStggn+eLkrJ8f+4to//iOK9ar5BTTjslb3dW09i6VqRWt6Rj3ZSgoewF8U2BeDg0jnR+hgGa6ZqKoIkfbNSQ=
+	t=1718092281; cv=none; b=na6yV0dj/VuLVAr/kyZYY34jE50uWQa+bGZfCyLgSrv6qkzQQTyT+lGvlBW8B2As+IBEPrQxwVIQUonGgzJagnw+wOPfIQvlNcC4haIk6jCNN4aeXRUfR3C1CICjHJ6h6NaQWsO2RZEA8QSDcmF5tdCED7Uuthj1hTPSfcpMo1k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718091889; c=relaxed/simple;
-	bh=SDqAx+l0Jjbh3zwtEx4gpEmG6LW9mMxqD0J4QCprdCk=;
+	s=arc-20240116; t=1718092281; c=relaxed/simple;
+	bh=mnR/TXWNSKYBo1dIPf7CZ8BaFrrRv1WSzGL6q8wujvA=;
 	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=XvXaQ+Y5VT+M6PydciBB+z3+ty+Hc20G14CmkR4KTlAn14WPF7jinxCId9FBypJtg/qTEup04Qd82PKN4eTwu0tIqan+9CdiyP3RaPOJGZJtVd+lb+x34fQs12INfDMfzIV1frbJmzvPkIuhVw7Qtz1wV6uvIMZ5mituZV9AS4U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ZS9uLdIn; arc=none smtp.client-ip=209.85.218.47
+	 Content-Type:Content-Disposition:In-Reply-To; b=tT7itlz51lwevbVa/37jzAaLxd8PdrDt4OHhNrcLF/CBDeG1i0rdcgS8CddqiNYUWwV71mcFuL6E2NDjVB9+WXVzYzlfI73xjbTrxNEijoA4Y3cgMOCmx30nyqdpz1Fnf92bQRmIgm/dwS88OBDFwL4jh05UUPedbiwO0NXQMY4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=IlWpwhmo; arc=none smtp.client-ip=209.85.210.181
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f47.google.com with SMTP id a640c23a62f3a-a6f0c3d0792so81813566b.3;
-        Tue, 11 Jun 2024 00:44:47 -0700 (PDT)
+Received: by mail-pf1-f181.google.com with SMTP id d2e1a72fcca58-704313fa830so1814842b3a.3;
+        Tue, 11 Jun 2024 00:51:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1718091886; x=1718696686; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1718092279; x=1718697079; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=hq7VlDHf7pEbFf7v8zZEUyFUewiFD+NWVkc0x5bTvZM=;
-        b=ZS9uLdInbVq4n6as0JN+a6QjMdMMV+ZUKgNDHRWblWBfLXUC9Gjab5edoicc/QqB+g
-         WmPithd7wCU+hHQK9u7sYqg1P60M8bITEgVKJXWIKO5ywemNe3GW6yNuVTUzMSZkpbdf
-         xN6VbCrwQRoC1HxPYekgtO1DkT/xIPzjHIXzME2vFQV+JmcQfkD/PSVaJDFG1dJB0BNQ
-         rKmUwbuzm2b2aVuBKaxX0w8yJMItk+Ks6FmUbaa7s4rXc8u+DbzqLC/QrFiLtDOgF3JY
-         cnFnHm60orjKp5k3ZAYf//IlXpHV3MR6QDE+Nfd7HfrdXRykUa/5vLDB7U+LuJFidj4x
-         bxUg==
+        bh=B5dpfcWBVzZkrjYUVKPs0kakADGkyRUU122R+dHdta4=;
+        b=IlWpwhmod0gj30IHYYxMt5qSI/PM6py1NhMafpZ9/vB1nUiMh/N4y/HeGD/Ohn8p80
+         D4o1O8XzGHX7BJBF2Ibp9tT0fyf8JigdtCDx2PHviBlf4GgNuH6jhmOPw4gQLWLllPG6
+         tLZWU1KLI4h1K53ah+pxrveAj62jTMbH2DMkBLplW81BynaMqbH5c+kPvhKNQy3FoxFG
+         lC84aHOJpOWi/XgZ88Oib0EA2HixCLMOipHT3UwrOzu5abcAI0ZNHODYIV6wU2fO2s8o
+         9g/cmQ77WDp8j+8KqwYOB/AjMoGeuvKE3rbDJSMdmw1K+opR8SePW2MTMFKlsQGgG2uX
+         T1eg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1718091886; x=1718696686;
+        d=1e100.net; s=20230601; t=1718092279; x=1718697079;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=hq7VlDHf7pEbFf7v8zZEUyFUewiFD+NWVkc0x5bTvZM=;
-        b=dAUKwfkDJ1lzO9eH82iVqiUQX/j951/aU53gcLN7ieCevbw9rCwgCOMCaooG1jZkIQ
-         wb9x/qwnNaOG6TON1v0rokR4S2zkMiLZ7Gx2bDCZ7bNOAykJ5YQmcDmvKFrgplSO2wWR
-         Qr4r8ZF/uno9rGWU8TD6KUjSFm98oDxLPgbb2hcaqjksrsfHD3gERhr2KGnrc+wg3mUj
-         wZVsdIOaEcYOv6RfjypEQEG4VxxmRN3ytSOHwp9gYuNd+LCsSBuQ+tcSsjkG9d0JoLXp
-         20s4JQuJPLGBWE54s09y/luO3uT6379DowLfwc86V0fm3bTeAOvdFQxX0apWHktsGYaO
-         Wh3g==
-X-Forwarded-Encrypted: i=1; AJvYcCUIOKAJV9UinP2/pv7F9KWzj5OHuXrmz4ogOSMMXvEwgMoZc+8k95qXtI2wa4KGEYXL2OKtAr7tWyGv4o/FUbEbqaGLY7OuO6R2YoRzqt089ERZoU+GJR3WFIpjxhPz2ZgVvDT+TU0x4ZbkfKG+NJVTrNro7eoXGUsTeT9PCtDD6b1M4MERj2wie9glBgFhAlM2NuXRcaLiiO6D66wbCGeZSKvXs4Wr7MycWZCoowJeizh6q7xHcvafVCOh
-X-Gm-Message-State: AOJu0YyaSeSgsqpDIjhI37eC5pjMGdBodZJ2rQDXGh74rfN43pya3TN9
-	zepOJqG+Wb6N2OzQEQ3yxQ3w8Nh4lSt6+EraifYP6fW7fNEBCgFu
-X-Google-Smtp-Source: AGHT+IHlSFuxcjLt48JBJua/3vo0MpwKdqxWfXLKbeLpZ2nG+r1CWlnSG/xlxAddGeHS3HfvKBYIUQ==
-X-Received: by 2002:a17:906:3c06:b0:a6f:1f5d:4db5 with SMTP id a640c23a62f3a-a6f1f5d4e67mr307274566b.34.1718091886042;
-        Tue, 11 Jun 2024 00:44:46 -0700 (PDT)
-Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a6f152b0bf9sm316620866b.65.2024.06.11.00.44.44
+        bh=B5dpfcWBVzZkrjYUVKPs0kakADGkyRUU122R+dHdta4=;
+        b=FpcVqCn7Qn4fGPfU0rzN7i87+AQMNUAr7+fMx4r52MBYF9KC09vJlUr+w8w1CXZ/aG
+         NpbSI8op3vjCsCBOk88WAQVH0MbB4A5V6uxF77/PEh/RPwxNzZGbYQ3sDidDpmzMP98i
+         maJefJKQp1PBoL0V2tyeuoEjVDzjMhOLit+Azg5t3mMZiSjMNIWM7T+pKcNYiKH+CDEg
+         FXTxw7SOJ/XdjgOLXYFeUJcKESpqwn9UtCKHjkBji4/AbytmuiArIm96aIBpqhBOuq66
+         AOBUvC60b9+SePyJya7X5WgIHPd+DNM5bukCFtnhG2xMhbK2v8shkB2s5oHvIJfwGRk9
+         TTKQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUz5KpuEHofqawAEW3jB01BhE5Cqmj4VvUq9vMAqLjYoXKrMGLeOkxdgjASoBzHRsw/5j/xBYfd8RvJ4q8hLuwERThs7r+hRIKJXhrdecem+VBgqJc6GSibEw42eQ==
+X-Gm-Message-State: AOJu0YySqWcmXHc9fyx5lSQcbSDYdZkQw0pFkJJIR3w46AlHBt0hcKJM
+	6fB5edRcMmNv5XpmgeqnVkrU1VujpNz5dSdolJUcAiybLJsmrKL5
+X-Google-Smtp-Source: AGHT+IFLutzyaa3H+suoM7wf8H86WUDxg3mOl4rOpoLaLlOM4GLritf1m4KGdowZsvvO2KGSBj862Q==
+X-Received: by 2002:a05:6a00:b81:b0:704:2d64:747 with SMTP id d2e1a72fcca58-7042d64088dmr8377849b3a.7.1718092279428;
+        Tue, 11 Jun 2024 00:51:19 -0700 (PDT)
+Received: from kodidev-ubuntu (69-172-146-21.cable.teksavvy.com. [69.172.146.21])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-70423f4a849sm5174072b3a.153.2024.06.11.00.51.18
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 11 Jun 2024 00:44:45 -0700 (PDT)
-From: Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Tue, 11 Jun 2024 09:44:43 +0200
-To: Masami Hiramatsu <mhiramat@kernel.org>
-Cc: Steven Rostedt <rostedt@goodmis.org>, Oleg Nesterov <oleg@redhat.com>,
-	Alexei Starovoitov <ast@kernel.org>,
+        Tue, 11 Jun 2024 00:51:18 -0700 (PDT)
+From: Tony Ambardar <tony.ambardar@gmail.com>
+X-Google-Original-From: Tony Ambardar <Tony.Ambardar@gmail.com>
+Date: Tue, 11 Jun 2024 00:51:16 -0700
+To: Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc: Mark Wielaard <mjw@redhat.com>, Hengqi Chen <hengqi.chen@gmail.com>,
+	Mark Wielaard <mark@klomp.org>,
+	Ying Huang <ying.huang@oss.cipunited.com>, bpf@vger.kernel.org,
+	dwarves@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
 	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>, linux-kernel@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org, linux-api@vger.kernel.org,
-	linux-man@vger.kernel.org, x86@kernel.org, bpf@vger.kernel.org,
-	Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-	John Fastabend <john.fastabend@gmail.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	"Borislav Petkov (AMD)" <bp@alien8.de>,
-	Ingo Molnar <mingo@redhat.com>, Andy Lutomirski <luto@kernel.org>,
-	"Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
-	Deepak Gupta <debug@rivosinc.com>
-Subject: Re: [PATCHv7 bpf-next 2/9] uprobe: Wire up uretprobe system call
-Message-ID: <ZmgAawOdLZAZynA_@krava>
-References: <20240523121149.575616-1-jolsa@kernel.org>
- <20240523121149.575616-3-jolsa@kernel.org>
- <20240611070521.82da62690e8865ff498327f7@kernel.org>
+	Andrii Nakryiko <andrii@kernel.org>
+Subject: Re: elfutils DWARF problem was: Re: Problem with BTF generation on
+ mips64el
+Message-ID: <ZmgB9FtYADbF1jn+@kodidev-ubuntu>
+References: <ZlkoM6/PSxVcGM6X@kodidev-ubuntu>
+ <CAEyhmHT_1N3xwLO2BwVK97ebrABJv52d5dWxzvuNNcF-OF5gKw@mail.gmail.com>
+ <ZlmrQqQSJyNH7fVF@kodidev-ubuntu>
+ <Zln1kZnu2Xxeyngj@x1>
+ <Zl2m4RP7BwhZ0J6l@kodidev-ubuntu>
+ <Zl3Zp5r9m6X_i_J4@x1>
+ <Zl4AHfG6Gg5Htdgc@x1>
+ <20240603191833.GD4421@gnu.wildebeest.org>
+ <Zl6OTJXw0LH6uWIN@kodidev-ubuntu>
+ <Zmfwhn6inA2m1ftm@kodidev-ubuntu>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -97,98 +97,48 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240611070521.82da62690e8865ff498327f7@kernel.org>
+In-Reply-To: <Zmfwhn6inA2m1ftm@kodidev-ubuntu>
 
-On Tue, Jun 11, 2024 at 07:05:21AM +0900, Masami Hiramatsu wrote:
-> On Thu, 23 May 2024 14:11:42 +0200
-> Jiri Olsa <jolsa@kernel.org> wrote:
+On Mon, Jun 10, 2024 at 11:36:54PM -0700, Tony Ambardar wrote:
+> On Mon, Jun 03, 2024 at 08:47:24PM -0700, Tony Ambardar wrote:
 > 
-> > Wiring up uretprobe system call, which comes in following changes.
-> > We need to do the wiring before, because the uretprobe implementation
-> > needs the syscall number.
-> > 
-> > Note at the moment uretprobe syscall is supported only for native
-> > 64-bit process.
-> > 
+> [snip]
 > 
-> BTW, this does not cleanly applied to probes/for-next, based on
-> 6.10-rc1. Which version did you use?
+> Arnaldo:
+> 
+> Your stepping through DWARF/reloc diagnostics earlier was helpful. Thanks!
+> I reran your tests with the updated elfutils and latest pahole (pre-1.27),
+> and then found:
+> 
+>   - everything that worked before, still works
+>   - your observations from "btfdiff vmlinux" and 'struct dma_chan' persist
+>   - we now see expected output from "eu-readelf -winfo netdevsim.ko"
+> 
+> Regarding pahole, DWARF parsing and BTF generation now works:
+> (with no more die__process: error messages seen)
+> 
+>     kodidev:~/linux$ pahole -F dwarf netdevsim.ko |wc -l
+>     14504
+> 
+> but strangely pahole still doesn't read its own generated BTF:
+> 
+>     kodidev:~/linux$ pahole -F btf netdevsim.ko
+>     libbpf: Invalid BTF string section
+>     pahole: file 'netdevsim.ko' has no btf type information.
 
-ah new syscall just got merged, I'll rebase and send new version
+After staring at this I realized that this is split BTF and we needed to
+issue "pahole -F btf --btf_base vmlinux netdevsim.ko", which does work.
+Unfortunately, the libbpf error message is a bit cryptic; perhaps a future
+update could mention "--btf_base"?
 
-jirka
-
+>     
+> [snip]
 > 
-> Thank you,
+> Many thanks everyone for your help,
+> Tony
 > 
-> > Reviewed-by: Oleg Nesterov <oleg@redhat.com>
-> > Reviewed-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-> > Acked-by: Andrii Nakryiko <andrii@kernel.org>
-> > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> > ---
-> >  arch/x86/entry/syscalls/syscall_64.tbl | 1 +
-> >  include/linux/syscalls.h               | 2 ++
-> >  include/uapi/asm-generic/unistd.h      | 5 ++++-
-> >  kernel/sys_ni.c                        | 2 ++
-> >  4 files changed, 9 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/arch/x86/entry/syscalls/syscall_64.tbl b/arch/x86/entry/syscalls/syscall_64.tbl
-> > index cc78226ffc35..47dfea0a827c 100644
-> > --- a/arch/x86/entry/syscalls/syscall_64.tbl
-> > +++ b/arch/x86/entry/syscalls/syscall_64.tbl
-> > @@ -383,6 +383,7 @@
-> >  459	common	lsm_get_self_attr	sys_lsm_get_self_attr
-> >  460	common	lsm_set_self_attr	sys_lsm_set_self_attr
-> >  461	common	lsm_list_modules	sys_lsm_list_modules
-> > +462	64	uretprobe		sys_uretprobe
-> >  
-> >  #
-> >  # Due to a historical design error, certain syscalls are numbered differently
-> > diff --git a/include/linux/syscalls.h b/include/linux/syscalls.h
-> > index e619ac10cd23..5318e0e76799 100644
-> > --- a/include/linux/syscalls.h
-> > +++ b/include/linux/syscalls.h
-> > @@ -972,6 +972,8 @@ asmlinkage long sys_lsm_list_modules(u64 *ids, u32 *size, u32 flags);
-> >  /* x86 */
-> >  asmlinkage long sys_ioperm(unsigned long from, unsigned long num, int on);
-> >  
-> > +asmlinkage long sys_uretprobe(void);
-> > +
-> >  /* pciconfig: alpha, arm, arm64, ia64, sparc */
-> >  asmlinkage long sys_pciconfig_read(unsigned long bus, unsigned long dfn,
-> >  				unsigned long off, unsigned long len,
-> > diff --git a/include/uapi/asm-generic/unistd.h b/include/uapi/asm-generic/unistd.h
-> > index 75f00965ab15..8a747cd1d735 100644
-> > --- a/include/uapi/asm-generic/unistd.h
-> > +++ b/include/uapi/asm-generic/unistd.h
-> > @@ -842,8 +842,11 @@ __SYSCALL(__NR_lsm_set_self_attr, sys_lsm_set_self_attr)
-> >  #define __NR_lsm_list_modules 461
-> >  __SYSCALL(__NR_lsm_list_modules, sys_lsm_list_modules)
-> >  
-> > +#define __NR_uretprobe 462
-> > +__SYSCALL(__NR_uretprobe, sys_uretprobe)
-> > +
-> >  #undef __NR_syscalls
-> > -#define __NR_syscalls 462
-> > +#define __NR_syscalls 463
-> >  
-> >  /*
-> >   * 32 bit systems traditionally used different
-> > diff --git a/kernel/sys_ni.c b/kernel/sys_ni.c
-> > index faad00cce269..be6195e0d078 100644
-> > --- a/kernel/sys_ni.c
-> > +++ b/kernel/sys_ni.c
-> > @@ -391,3 +391,5 @@ COND_SYSCALL(setuid16);
-> >  
-> >  /* restartable sequence */
-> >  COND_SYSCALL(rseq);
-> > +
-> > +COND_SYSCALL(uretprobe);
-> > -- 
-> > 2.45.1
-> > 
-> 
-> 
-> -- 
-> Masami Hiramatsu (Google) <mhiramat@kernel.org>
+> [1]: https://patchwork.sourceware.org/project/elfutils/list/?series=31601
+> [2]: https://patchwork.sourceware.org/project/elfutils/list/?series=34310
+> [3]:
+> https://github.com/guidosarducci/elfutils/commits/main-fix-mips-support-reloc/
 
