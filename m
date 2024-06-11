@@ -1,105 +1,187 @@
-Return-Path: <bpf+bounces-31880-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-31881-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id F176A9045C7
-	for <lists+bpf@lfdr.de>; Tue, 11 Jun 2024 22:31:32 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 64D9F9045CE
+	for <lists+bpf@lfdr.de>; Tue, 11 Jun 2024 22:33:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8DCE2B2560F
-	for <lists+bpf@lfdr.de>; Tue, 11 Jun 2024 20:31:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E32EC28889E
+	for <lists+bpf@lfdr.de>; Tue, 11 Jun 2024 20:33:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B5E281411ED;
-	Tue, 11 Jun 2024 20:31:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D79615250F;
+	Tue, 11 Jun 2024 20:33:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="E4+ldGZU"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="C3XQxoy0"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
+Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com [209.85.208.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0EA474D8A8
-	for <bpf@vger.kernel.org>; Tue, 11 Jun 2024 20:31:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 33C024D8A8
+	for <bpf@vger.kernel.org>; Tue, 11 Jun 2024 20:33:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718137885; cv=none; b=Lv5BbgPPMV7iGZZkQ2YYC+nNDb1nobIthdHRey0jsnFxjGiF6obQBCDXZ7vaCH4Yf0aj/oZXZpNRngUdYsYjcnSl9Mdm3vlcA9rsm5oO6QS6VLVh52hE+txrYUUPV6nFodjEqfqBchN+n2zzsVWrb6wp/Rtg6VfHDTqv38IEOcM=
+	t=1718138011; cv=none; b=OoBRloOZnxBPsK+fk1y/YanN66kUrG3oVAYw+khl3IAZ/PzZW2TDFSkdYOQbhcQclhigk+o/l4QIG5zcQlJLN7sxIaCWFhCCd0d114yVlB+//Xoe1zp9eARj6QpF2EOZ8+zbIeCAzonk4LhZr069qQwbiKNN/KpYU7ECB5BLxEw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718137885; c=relaxed/simple;
-	bh=/tFSmc3TZyr6BRdo0jDPUdgZIvh/LMt4wDS5USHSNNk=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=ZsHtnS0NpQ6IzzPRk3/kP8Et41qEmJo7rWF3QHl3Sg719CUpAKmQXXxRUoPJ/BltK3qJVbur0GynQE82FLFLxLPrfuOD0VgHoMq+J9+QS8oTOvMenujf0aiLtcswbdY9kmVinkU9b/TuDigGaMnx/tLbW5SLpzeduL/ygroHuf8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=E4+ldGZU; arc=none smtp.client-ip=209.85.214.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-1f6a837e9a3so37060775ad.1
-        for <bpf@vger.kernel.org>; Tue, 11 Jun 2024 13:31:23 -0700 (PDT)
+	s=arc-20240116; t=1718138011; c=relaxed/simple;
+	bh=XC4w7FqUQ2wQZKdU5omXsL3G30oQ0DhgQCJ4Jv1zZ0E=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=fuQsB139FgR6w5pfPzQd4X72sb4UPmLIjhC8+otX36VXb7l9749bN/clshvYGcnIIYf3Cs3qtpeT7rW0++k/1ig64z4tdlpcOufdNcZ/0mpZysFlviTk4RMOAWCi4+BXrHxYsGASoMduhp691wXhcs1lZPbIRrNaSpiUOewH+YY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=C3XQxoy0; arc=none smtp.client-ip=209.85.208.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ed1-f54.google.com with SMTP id 4fb4d7f45d1cf-57c5ec83886so733a12.1
+        for <bpf@vger.kernel.org>; Tue, 11 Jun 2024 13:33:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1718137883; x=1718742683; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=/tFSmc3TZyr6BRdo0jDPUdgZIvh/LMt4wDS5USHSNNk=;
-        b=E4+ldGZUX4MulPUpaSGCH/DnTV4q4C7skLWuplwKsR8asI/NeTnJw3Ki9mKG5ktXwu
-         08P1F67fsZZtJsLPMQ7e6Q3IX6Bu2f1DDkeiuooO/DaDo1eJlHAG0Vpg6nPWcdI3P0w6
-         TzgtCsHI+O1JRnWSWiNRSswfeI5w61szlV4bGGz3cGNpa335m7L9cBF0RFHsvcVAm8le
-         BS9kBnIvPuWDvPbt4FVsxgzgzGrx896sv+Ahwd+PCqMPv2dE6o78Pjw7u+WNXxperj89
-         9UkPAkKwhZzQXTpDE4J4vHbX5YDyLPSmugb4hmr1WH84mAYfHB4DfqAf0hYTrXDlg1/R
-         5xEw==
+        d=google.com; s=20230601; t=1718138008; x=1718742808; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=y1oMY5Ka+Igm5IVLZ0jHXnRZ7u2UNpiSxg2NGEZJXKY=;
+        b=C3XQxoy0X3wzvzMtLynriEWutEal5Ejs5qOIs/UNKdTUtMWAtt0qvfTF36hx+DWBVS
+         DmfMdjB3mlP8LAf35YMQm6MMhsXTSYyynwMOMmpB9JWyPsux+KG8Td+/ddehDnq9GLyP
+         +5I+Dz5z7PFQTY1EkicLZiBPBQfwya6ENmIYqJzoEa7HLeKk5qToa6SSLI6UMgrNK63v
+         oxi5HH0HcebF/8/3SzF9qRn3GcBktSBpi1aCgoL4up6loBpt6Je8bLP1i9roTxmQzRmk
+         ztboi13Zpx+qSGkR6m27/BfIiGP0JfsJMAqRpVojSR8aFbLXXnQmbR9u4uUID7z2E07p
+         b7DQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1718137883; x=1718742683;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=/tFSmc3TZyr6BRdo0jDPUdgZIvh/LMt4wDS5USHSNNk=;
-        b=r/BnZKMA2Hn4wmB+oUs1OBogky4WGQOHaa8NjI4DrIO447K1ejKe1XRYb41VxbosWp
-         60wqtopUrmSWlwuzj14dwKZmHVPLii/ts9OB3YR5WGCR2TObfOBTRdp2eAbNNXOrwek4
-         cDghGj3kB/ibguVnmTTpIS5YUR3zuwbsQmVr2brNAmAg0RdIn/L7IThaAEUFFzKL60Hs
-         6zDsZMbfwYtPKbeyAIKEidHBInS8wbjtedqTRGQbLAqT+dwkkjhK6qW9WEyeYbV398mr
-         XcNaYopEpeo4mKZQhK1AQHdybCsWJtq5zEe2S2833ruo4OllitHvSQ91DROW64ucOA3z
-         Vrzw==
-X-Forwarded-Encrypted: i=1; AJvYcCUdIbmg16mKbmWqr5SXbak2OC0Gz/hNDCyLu1Ct1rmjfdOfm3MIUBYiXA/qvh4vl5ZuCjiEA8zgGcHCTuvMmsHdhliI
-X-Gm-Message-State: AOJu0YyEsD51uvG+cE7qW3ybQ3icNDIA6XbL0WLVEN03oF4NlmFJx0BQ
-	n8XRBReCuGvrYQuiEB1AVZqYpl6McktE2/Q19PuZ8i/29rO8odn2
-X-Google-Smtp-Source: AGHT+IF/Bwk1X/t9b2ukkP0/a/zsQb7WBpPcVjuVxU4UYQiBXcdMwyZEJwWi55C5kI4NoO5XlzzkRg==
-X-Received: by 2002:a17:902:ea06:b0:1f6:e306:1786 with SMTP id d9443c01a7336-1f6e3061ee2mr114311545ad.54.1718137883191;
-        Tue, 11 Jun 2024 13:31:23 -0700 (PDT)
-Received: from [192.168.0.31] ([38.34.87.7])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-1f6bd7e42c0sm105895675ad.222.2024.06.11.13.31.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 11 Jun 2024 13:31:22 -0700 (PDT)
-Message-ID: <db0ca9f4dcd146d56b350c28b0d26468b8c54b00.camel@gmail.com>
-Subject: Re: [PATCH v2 bpf-next 1/4] bpf: Relax tuple len requirement for sk
- helpers.
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>, bpf@vger.kernel.org
-Cc: daniel@iogearbox.net, andrii@kernel.org, martin.lau@kernel.org, 
-	memxor@gmail.com, kernel-team@fb.com
-Date: Tue, 11 Jun 2024 13:31:17 -0700
-In-Reply-To: <20240610230849.80820-2-alexei.starovoitov@gmail.com>
-References: <20240610230849.80820-1-alexei.starovoitov@gmail.com>
-	 <20240610230849.80820-2-alexei.starovoitov@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.44.4-0ubuntu2 
+        d=1e100.net; s=20230601; t=1718138008; x=1718742808;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=y1oMY5Ka+Igm5IVLZ0jHXnRZ7u2UNpiSxg2NGEZJXKY=;
+        b=vUcmltrlzsx5pHaRIsziDAzAPgxi3XX3X1X/7H7UjyQRjYEmpn6ay7R2Qcyu11nYMk
+         HqceYUwbl+MjlEc5oDZsuio3xdjd55GPb6SrmM4MCSpjMU7Eslp6ONcoh3/nkku0HBZN
+         zLwiU9/pgLUuDqdf8wz64LPavhs6o0VpaVWFMNQu9s6lCdIEAE+sydznbaKB7y21qHpo
+         KoQK59+3aVV0BEpBDhsx/gWBlwahl7QmR7vy/oPXZ9Wcpfk9eHtCX/Q7eN9Zt4h/zrR7
+         47yo3982sy/iR64c6482MAw3Ce6U7V2/2a02Ymx54358pIpCgSzNpEM/jA6ytIJtGuvx
+         psJA==
+X-Forwarded-Encrypted: i=1; AJvYcCUqbj+w5apARCcRg0fEUcq9Ha4RmBn8ssY8Ro2raFpPICY6kf5PrbGfB4oR3BI7YhKSerVWUt9kYEeQZw4u5t9xO+xj
+X-Gm-Message-State: AOJu0Ywml+rn9Kh4KKLlb6OfkKL4plwbTkw3utxQUq3xxkSkrVkdYz24
+	C6Dyi6LISAHb1tQH4BGlllUmeJqlr0gAOzFCUxzE8RiveCpdUlo+xbf+kPtVXHYCzsZdjxgqIJm
+	w9qlbxwZacDfU4IsAgEE0TsJEWk9+ChaVBhk=
+X-Google-Smtp-Source: AGHT+IEJZSZPp5uDEJF66yku2G52k7zoY/A/fEWKARj7DqwB4Q9rt6zOLddjPGDLpteJ63WCdIVY0NriCA360ZVJwkE=
+X-Received: by 2002:aa7:cd17:0:b0:572:988f:2f38 with SMTP id
+ 4fb4d7f45d1cf-57ca7fd71e8mr38069a12.6.1718138008253; Tue, 11 Jun 2024
+ 13:33:28 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+References: <20240515193610.2350456-1-yabinc@google.com> <CAM9d7cjmJHC91Q-_V7trfW-LtQVbraSHzm--iDiBi7LgNwD2DA@mail.gmail.com>
+ <CALJ9ZPML-QNcsJfo6tBMfmJzb=wF1qQsMFTbNvtRwH-++J1a2g@mail.gmail.com>
+In-Reply-To: <CALJ9ZPML-QNcsJfo6tBMfmJzb=wF1qQsMFTbNvtRwH-++J1a2g@mail.gmail.com>
+From: Yabin Cui <yabinc@google.com>
+Date: Tue, 11 Jun 2024 13:33:15 -0700
+Message-ID: <CALJ9ZPNkO=_OKPDwdSY9tJw+AETaAVC2m-1UcWScZ0TaFmHRkw@mail.gmail.com>
+Subject: Re: [PATCH v5 0/3] perf/core: Check sample_type in sample data saving
+ helper functions
+To: Namhyung Kim <namhyung@kernel.org>
+Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
+	Arnaldo Carvalho de Melo <acme@kernel.org>, Mark Rutland <mark.rutland@arm.com>, 
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Ian Rogers <irogers@google.com>, Adrian Hunter <adrian.hunter@intel.com>, 
+	linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, 2024-06-10 at 16:08 -0700, Alexei Starovoitov wrote:
-> From: Alexei Starovoitov <ast@kernel.org>
->=20
-> __bpf_skc_lookup() safely handles incorrect values of tuple len,
-> hence we can allow zero to be passed as tuple len.
-> This patch alone doesn't make an observable verifier difference.
-> It's a trivial improvement that might simplify bpf programs.
->=20
-> Signed-off-by: Alexei Starovoitov <ast@kernel.org>
-> ---
+On Tue, May 28, 2024 at 10:59=E2=80=AFAM Yabin Cui <yabinc@google.com> wrot=
+e:
+>
+> On Wed, May 22, 2024 at 9:27=E2=80=AFAM Namhyung Kim <namhyung@kernel.org=
+> wrote:
+> >
+> > Hello,
+> >
+> > On Wed, May 15, 2024 at 12:36=E2=80=AFPM Yabin Cui <yabinc@google.com> =
+wrote:
+> > >
+> > > Hello,
+> > >
+> > > We use helper functions to save raw data, callchain and branch stack =
+in
+> > > perf_sample_data. These functions update perf_sample_data->dyn_size w=
+ithout
+> > > checking event->attr.sample_type, which may result in unused space
+> > > allocated in sample records. To prevent this from happening, this pat=
+chset
+> > > enforces checking sample_type of an event in these helper functions.
+> > >
+> > > Thanks,
+> > > Yabin
+> > >
+> > >
+> > > Changes since v1:
+> > >  - Check event->attr.sample_type & PERF_SAMPLE_RAW before
+> > >    calling perf_sample_save_raw_data().
+> > >  - Subject has been changed to reflect the change of solution.
+> > >
+> > > Changes since v2:
+> > >  - Move sample_type check into perf_sample_save_raw_data().
+> > >  - (New patch) Move sample_type check into perf_sample_save_callchain=
+().
+> > >  - (New patch) Move sample_type check into perf_sample_save_brstack()=
+.
+> > >
+> > > Changes since v3:
+> > >  - Fix -Werror=3Dimplicit-function-declaration by moving has_branch_s=
+tack().
+> > >
+> > > Changes since v4:
+> > >  - Give a warning if data->sample_flags is already set when calling t=
+he
+> > >    helper functions.
+> > >
+> > > Original commit message from v1:
+> > >   perf/core: Trim dyn_size if raw data is absent
+> > >
+> > > Original commit message from v2/v3:
+> > >   perf/core: Save raw sample data conditionally based on sample type
+> > >
+> > >
+> > > Yabin Cui (3):
+> > >   perf/core: Save raw sample data conditionally based on sample type
+> > >   perf/core: Check sample_type in perf_sample_save_callchain
+> > >   perf/core: Check sample_type in perf_sample_save_brstack
+> >
+> > Acked-by: Namhyung Kim <namhyung@kernel.org>
+> >
+> > Thanks,
+> > Namhyung
+> >
+>
+> Hi performance events subsystem maintainers,
+>
+> The v5 patches were modified based on Peter's comments on the v4
+> patches. I'd be grateful if you could take a look when you have a
+> moment.
+> Thank you for your time and consideration.
+>
+> Thanks,
+> Yabin
+>
 
-All seems correct.
+Hi, friendly ping again for review?
 
-Acked-by: Eduard Zingerman <eddyz87@gmail.com>
+> > >
+> > >  arch/s390/kernel/perf_cpum_cf.c    |  2 +-
+> > >  arch/s390/kernel/perf_pai_crypto.c |  2 +-
+> > >  arch/s390/kernel/perf_pai_ext.c    |  2 +-
+> > >  arch/x86/events/amd/core.c         |  3 +--
+> > >  arch/x86/events/amd/ibs.c          |  5 ++---
+> > >  arch/x86/events/core.c             |  3 +--
+> > >  arch/x86/events/intel/ds.c         |  9 +++-----
+> > >  include/linux/perf_event.h         | 26 +++++++++++++++++-----
+> > >  kernel/events/core.c               | 35 +++++++++++++++-------------=
+--
+> > >  kernel/trace/bpf_trace.c           | 11 +++++-----
+> > >  10 files changed, 55 insertions(+), 43 deletions(-)
+> > >
+> > > --
+> > > 2.45.0.rc1.225.g2a3ae87e7f-goog
+> > >
 
