@@ -1,99 +1,96 @@
-Return-Path: <bpf+bounces-31944-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-31945-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 929E79057D8
-	for <lists+bpf@lfdr.de>; Wed, 12 Jun 2024 18:00:29 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8FB3F9057DB
+	for <lists+bpf@lfdr.de>; Wed, 12 Jun 2024 18:00:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 938781C23D2C
-	for <lists+bpf@lfdr.de>; Wed, 12 Jun 2024 16:00:28 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 45F9C1F21919
+	for <lists+bpf@lfdr.de>; Wed, 12 Jun 2024 16:00:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C66381822DA;
-	Wed, 12 Jun 2024 15:58:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 85659183062;
+	Wed, 12 Jun 2024 15:59:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b="KGAvvo90";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="BWVZ2jIC"
+	dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b="nLo951JC";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="PglkzpGv"
 X-Original-To: bpf@vger.kernel.org
 Received: from wflow4-smtp.messagingengine.com (wflow4-smtp.messagingengine.com [64.147.123.139])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B02DD181D08;
-	Wed, 12 Jun 2024 15:58:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C5BA1822EA;
+	Wed, 12 Jun 2024 15:59:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.139
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718207939; cv=none; b=WXIo34HkA6a+3IsZqr3HvtA5JLdFU94P+1Hy2dJdpuGHPFd0uJPu2qBceYh1wLcNfG1uCVvu0gTtZ0Ho8R1Nx0zfzSuZy7uw3vMZD5VQ6pS13lO7Cfs3GIi2BQAAX1Xq7zPWMMUcdglSZCo7uTnb0KFcTK6yKoZEnzGv2wX0NII=
+	t=1718207943; cv=none; b=GDX4uSb1ZCmqlAvtmh0NbCrRD0HPPmWqbP7Ql8LBmI5MV9htZy95jBCjXZ/AjrUzmDatnm6k5LuQGGYk0t+8EFzIQCYWZ5oR9F9tmFznrVlp5wQmt9mqf4ICUDJCXyYHZWrjPAkCp/7Q3F+EPs2y72NbE7rm0CNv8OCaAoWuS34=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718207939; c=relaxed/simple;
-	bh=2Z5wN9W0inbqZ97Ehuc3CcPu8Kjqv1M74zO2fI4vjh8=;
+	s=arc-20240116; t=1718207943; c=relaxed/simple;
+	bh=DU5dy6CIqpni5W9PFs52ElMuDjzzVd6o6tdcoGpKBbM=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=iajQkvo5DEAlER9qk7xteDkcN2GTXMqfVwvJuvXdDotyWmvISFS6//FIAWWQjik9Fq2pQfGtWUO3wvxIjHuQC163VMLdaYFAPCgwKmzvm6mZ7vg/OTM7U8WweJ9ZwepoSP7JHgAlyQiDmln0P+KACxEubTl9onIdEZFh0ISk2/4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz; spf=pass smtp.mailfrom=dxuuu.xyz; dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b=KGAvvo90; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=BWVZ2jIC; arc=none smtp.client-ip=64.147.123.139
+	 MIME-Version; b=SGkviKkvP9Xs0/GE1qAgA9pUwOxek8/XCUhsmUnPIJSAdhQKBFoEZOYcDl4R6Q5MH/MZCm4vEdP6VChAQJXUk7eBl6U5aVDwdxVLdI/0xtSiyMagkwX2KZSqroHE/ZGjrLlsV/tUEBwdVvMwnbNVLalOZRrgUPzsCELnNcpBkTo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz; spf=pass smtp.mailfrom=dxuuu.xyz; dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b=nLo951JC; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=PglkzpGv; arc=none smtp.client-ip=64.147.123.139
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dxuuu.xyz
-Received: from compute7.internal (compute7.nyi.internal [10.202.2.48])
-	by mailflow.west.internal (Postfix) with ESMTP id 668062CC0175;
-	Wed, 12 Jun 2024 11:58:55 -0400 (EDT)
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+	by mailflow.west.internal (Postfix) with ESMTP id 5ADB22CC0176;
+	Wed, 12 Jun 2024 11:58:59 -0400 (EDT)
 Received: from mailfrontend1 ([10.202.2.162])
-  by compute7.internal (MEProxy); Wed, 12 Jun 2024 11:58:56 -0400
+  by compute5.internal (MEProxy); Wed, 12 Jun 2024 11:59:00 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
 	:cc:content-transfer-encoding:content-type:date:date:from:from
 	:in-reply-to:in-reply-to:message-id:mime-version:references
-	:reply-to:subject:subject:to:to; s=fm3; t=1718207935; x=
-	1718215135; bh=rH/enHmFFSCkJWQQx3AT/knRZqgeVvmROxGfjUwJ/WU=; b=K
-	GAvvo90/asxnD8xUokIdFyKGZaiyXbj7uiakWGhLcbzaY1DFImh0TCyZl25w9uGV
-	aMsM5z5jyBVXzOqYVz7TU4NvigQ7MvSdTgU6cmaNkyoFT6LS1Jhp+5baG4NNMj8I
-	Gr0mGns0qbVfFhu67uu0nlJNPzGxKb9ZVk+nKbDzxFYC9BhiyGccuqAl3Sjrtjyw
-	oOS1wxJLOw1pMC1Yz0HWznCWzO1POs2MClHDQO05/LfaFX9izlT2JKuDtQXccCNI
-	aYrjmK98Md2NDOWSuqdKNFNZ+w3vi4VySI71DT/Ze/IkvJwNsW68XpimZeIiePjj
-	sgC93C5mQ8k3VItYkwQOQ==
+	:reply-to:subject:subject:to:to; s=fm3; t=1718207938; x=
+	1718215138; bh=26A8vHe3UnZ6l6G9vH1BQWZU+wmQLBMUefgl7dTG5Ls=; b=n
+	Lo951JCsqOjYBdqjdP3LqPsEVcWFBOh0OA2tLfbm9AgbcgpRwxtdWxGVqXq03fYw
+	L+WJmGOFcmic1f3A2FGmBKU7utLlWe2JfM6hsZTXpQIbtX3fr+ttni5VJWhfz5Iu
+	XmvyftWdNfek+LiE+T65iOQOLOV009G5Kfb2sR/DM9En3ocbpjL4vhbCWvsc9l+v
+	kv66lAPqhr6JD76nsmMY9VEs/VLjxzsDYsb92broxxiXn5r5Ic2hlOZXIzjRcWi/
+	aQtzi0mmM5HJOSQukI8wbkAiVKFC77SPOWJieNh+EJhiZuabKWnxNnw0iSf6yEZt
+	sQA3F1LpBVE1LzvjoGW9Q==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
 	messagingengine.com; h=cc:cc:content-transfer-encoding
 	:content-type:date:date:feedback-id:feedback-id:from:from
 	:in-reply-to:in-reply-to:message-id:mime-version:references
 	:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1718207935; x=
-	1718215135; bh=rH/enHmFFSCkJWQQx3AT/knRZqgeVvmROxGfjUwJ/WU=; b=B
-	WVZ2jIC7fEihOXgo6b6jg7XqDr3sEIGXOzj4KVpt6BgmhJm+bdzRYlwZP9eQjanv
-	a0AW7yTkMv6KORJX/LT9AMZJT/qpj1Du6eT4zL/lNHzCtSvUlBIfY6jAnYw/IT2R
-	nhOFVcm/P2l49vvoKKnyffQpWZHu3yPedUKCToRbcCMUTHt+F2I6gjzkYUBqKggs
-	i4fZAuDWa1DA8SpVvn2cefLetbO89p31A8Anl6sTyZZ1i9G47kJbdZ1BLbkPpZS2
-	jhISQmRzMYUS8ZBHjaw2x0Pyxg0xUU9kghPPXBgdTxzDKpJXkeC+KILu7+AwRmwu
-	G26jVPACrM5q+or2GibUw==
-X-ME-Sender: <xms:vsVpZghuupll6NPqnIVYqBMAH-GYUT8EQN4HkNHchNE2UvXvBUn_dw>
-    <xme:vsVpZpAlkposkHVKlJmzYGEEAzzAgpn0Es0jHVa5HpTkm3JJTZX-d0r-iMqnfyMNh
-    __z6EIBNzrjuyPmBA>
-X-ME-Received: <xmr:vsVpZoG2GZaLYmoAEu_u0dI6JlHuhHSmpc_CPzd7dMh6iidquyxxWhCIfoblKtAl_vBI6HTu48oUSms9KPyiI3_VVsglHEO18zcRt5Qs>
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1718207938; x=
+	1718215138; bh=26A8vHe3UnZ6l6G9vH1BQWZU+wmQLBMUefgl7dTG5Ls=; b=P
+	glkzpGvBa05uXg59J7e/nEm+975auHXc+fe00AhapF/BjaskASE0TReX78vofvaU
+	Y3dFBOv2892nb5nAIEXSYeP6XXOZge8+nuwz/3RbTrKNhhuAL/soHaZA4bxuDfn9
+	Dw40zSXeIigD8toiSKgQQ0AiEfDm8OfctimfLYJa9OAFYMX8ZnlXjqsYY1Q0OEJa
+	0iiyXocYUzU6fmLXgqteSimWS1km0JLpA4+Etha9AnFDal2DJTkEhBNIdXf9lwDg
+	xQk9gcPLQ0DAvCauSuNKEg6kjB18PjqRNSroxOhJ87ufqDTJHBMxRWjjTTONvxxu
+	6bsK/XZqOpsiLKK08MY+w==
+X-ME-Sender: <xms:wsVpZpFXK9iwKAQiJGCtq0IHHGE5pxieqmKbXtIi1l-suF_mDA1zKg>
+    <xme:wsVpZuWqwrrrkc8mJ3AfCPL8DnEHbakyVjysXT-ezYl_Wl53-KwEfFzOTbotH0X1X
+    bQwZD4MHtUUM1NWrA>
+X-ME-Received: <xmr:wsVpZrLZ6ILBzHZYFOuOI5Z8rXPAQi9v3Wj8VfXRGRAyCe2PRGl-Cghp-W6zQSJNG6k8nNleulteov_8cpDSq84fng5Hy3654gJd9cQ3>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrfedugedgleefucetufdoteggodetrfdotf
     fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucgfrhhlucfvnfffucdlfeehmdenucfjughrpefhvf
+    uceurghilhhouhhtmecufedttdenucgfrhhlucfvnfffucdljedtmdenucfjughrpefhvf
     evufffkffojghfggfgsedtkeertdertddtnecuhfhrohhmpeffrghnihgvlhcuighuuceo
-    ugiguhesugiguhhuuhdrgiihiieqnecuggftrfgrthhtvghrnhepleeiudehhfetffeiud
-    dtjefguddtkeduleeuleevkeejiedtfeeuuedtleehvdefnecuffhomhgrihhnpehkvghr
-    nhgvlhdrohhrghenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfh
-    hrohhmpegugihusegugihuuhhurdighiii
-X-ME-Proxy: <xmx:vsVpZhQHumTL9BtI9ro5G7BYeMqoNyC4_zSVZdjguoNqu81KLgeFoA>
-    <xmx:vsVpZty_RCCnfieGGmNqbR-7Tq4gCEcn94bSABlZEhy7FUnVaGNHAQ>
-    <xmx:vsVpZv70W6lrUeP9oghsJFOXkUs1eQB8ND56HH3C7h0NTGyEEcba8Q>
-    <xmx:vsVpZqwVCUuk0gs_03UcXuKytmDbDsYyO28ar1t_Z-CQjtYDmrMc7A>
-    <xmx:v8VpZizDSBkmpO97HqefRkSO9luDLP5wVN2mV0s_3qIG5Y0PnxlNVKlE>
+    ugiguhesugiguhhuuhdrgiihiieqnecuggftrfgrthhtvghrnhepgfefgfegjefhudeike
+    dvueetffelieefuedvhfehjeeljeejkefgffeghfdttdetnecuvehluhhsthgvrhfuihii
+    vgeptdenucfrrghrrghmpehmrghilhhfrhhomhepugiguhesugiguhhuuhdrgiihii
+X-ME-Proxy: <xmx:wsVpZvEItkH3klk2ku7mc--QY1LU-Pe3_tGsmJJW7ET5q1jAGznagw>
+    <xmx:wsVpZvUY-v7wNQZ1H0VoZtYFVC74GapkCY2kEy8LSBTUuEhAerqPBw>
+    <xmx:wsVpZqNaqzseaa5Oc1DdbjMRw8-v8Vvbp5RNPKOB4RwrewGSmYmXKQ>
+    <xmx:wsVpZu2aRbZchvXbjKjRPnaGraC8AbDR0i76O1BxHdaDklVsvprZIg>
+    <xmx:wsVpZuZudvAl7dP1ripCjeVBNIiCtikAZzK45dhIiSx_S17JsvZctEw1>
 Feedback-ID: i6a694271:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 12 Jun 2024 11:58:52 -0400 (EDT)
+ 12 Jun 2024 11:58:57 -0400 (EDT)
 From: Daniel Xu <dxu@dxuuu.xyz>
-To: ast@kernel.org,
+To: andrii@kernel.org,
+	ast@kernel.org,
 	daniel@iogearbox.net,
-	masahiroy@kernel.org,
-	andrii@kernel.org,
+	shuah@kernel.org,
+	eddyz87@gmail.com,
 	olsajiri@gmail.com,
 	quentin@isovalent.com,
 	alan.maguire@oracle.com,
-	acme@kernel.org,
-	eddyz87@gmail.com
-Cc: nathan@kernel.org,
-	nicolas@fjasle.eu,
-	martin.lau@linux.dev,
+	acme@kernel.org
+Cc: martin.lau@linux.dev,
 	song@kernel.org,
 	yonghong.song@linux.dev,
 	john.fastabend@gmail.com,
@@ -101,13 +98,14 @@ Cc: nathan@kernel.org,
 	sdf@google.com,
 	haoluo@google.com,
 	jolsa@kernel.org,
-	linux-kbuild@vger.kernel.org,
+	mykolal@fb.com,
 	bpf@vger.kernel.org,
+	linux-kselftest@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	kernel-team@meta.com
-Subject: [PATCH bpf-next v5 01/12] kbuild: bpf: Tell pahole to DECL_TAG kfuncs
-Date: Wed, 12 Jun 2024 09:58:25 -0600
-Message-ID: <324aac5c627bddb80d9968c30df6382846994cc8.1718207789.git.dxu@dxuuu.xyz>
+Subject: [PATCH bpf-next v5 02/12] bpf: selftests: Fix bpf_iter_task_vma_new() prototype
+Date: Wed, 12 Jun 2024 09:58:26 -0600
+Message-ID: <fab4509bfee914f539166a91c3ff41e949f3df30.1718207789.git.dxu@dxuuu.xyz>
 X-Mailer: git-send-email 2.44.0
 In-Reply-To: <cover.1718207789.git.dxu@dxuuu.xyz>
 References: <cover.1718207789.git.dxu@dxuuu.xyz>
@@ -119,33 +117,29 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-With [0], pahole can now discover kfuncs and inject DECL_TAG
-into BTF. With this commit, we will start shipping said DECL_TAGs
-to downstream consumers if pahole supports it.
+bpf_iter_task_vma_new() is defined as taking a u64 as its 3rd argument.
+u64 is a unsigned long long. bpf_experimental.h was defining the
+prototype as unsigned long.
 
-This is useful for feature probing kfuncs as well as generating
-compilable prototypes. This is particularly important as kfuncs
-do not have stable ABI.
-
-[0]: https://git.kernel.org/pub/scm/devel/pahole/pahole.git/commit/?id=72e88f29c6f7e14201756e65bd66157427a61aaf
+Fix by using __u64.
 
 Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
 ---
- scripts/Makefile.btf | 2 +-
+ tools/testing/selftests/bpf/bpf_experimental.h | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/scripts/Makefile.btf b/scripts/Makefile.btf
-index bca8a8f26ea4..2597e3d4d6e0 100644
---- a/scripts/Makefile.btf
-+++ b/scripts/Makefile.btf
-@@ -19,7 +19,7 @@ pahole-flags-$(call test-ge, $(pahole-ver), 125)	+= --skip_encoding_btf_inconsis
- else
+diff --git a/tools/testing/selftests/bpf/bpf_experimental.h b/tools/testing/selftests/bpf/bpf_experimental.h
+index 3d9e4b8c6b81..8ee7a00b7c82 100644
+--- a/tools/testing/selftests/bpf/bpf_experimental.h
++++ b/tools/testing/selftests/bpf/bpf_experimental.h
+@@ -163,7 +163,7 @@ struct bpf_iter_task_vma;
  
- # Switch to using --btf_features for v1.26 and later.
--pahole-flags-$(call test-ge, $(pahole-ver), 126)  = -j --btf_features=encode_force,var,float,enum64,decl_tag,type_tag,optimized_func,consistent_func
-+pahole-flags-$(call test-ge, $(pahole-ver), 126)  = -j --btf_features=encode_force,var,float,enum64,decl_tag,type_tag,optimized_func,consistent_func,decl_tag_kfuncs
- 
- endif
+ extern int bpf_iter_task_vma_new(struct bpf_iter_task_vma *it,
+ 				 struct task_struct *task,
+-				 unsigned long addr) __ksym;
++				 __u64 addr) __ksym;
+ extern struct vm_area_struct *bpf_iter_task_vma_next(struct bpf_iter_task_vma *it) __ksym;
+ extern void bpf_iter_task_vma_destroy(struct bpf_iter_task_vma *it) __ksym;
  
 -- 
 2.44.0
