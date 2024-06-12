@@ -1,174 +1,114 @@
-Return-Path: <bpf+bounces-31980-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-31982-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4640C905EA0
-	for <lists+bpf@lfdr.de>; Thu, 13 Jun 2024 00:40:16 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 21F63905EA7
+	for <lists+bpf@lfdr.de>; Thu, 13 Jun 2024 00:41:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DEF7B1C20E01
-	for <lists+bpf@lfdr.de>; Wed, 12 Jun 2024 22:40:14 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B1FF7282A9D
+	for <lists+bpf@lfdr.de>; Wed, 12 Jun 2024 22:41:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB6F112B171;
-	Wed, 12 Jun 2024 22:40:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="Bbzc5t1B"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D4A5312C46D;
+	Wed, 12 Jun 2024 22:41:26 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-io1-f72.google.com (mail-io1-f72.google.com [209.85.166.72])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F104F21360
-	for <bpf@vger.kernel.org>; Wed, 12 Jun 2024 22:40:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.133.104.62
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3230B55C08
+	for <bpf@vger.kernel.org>; Wed, 12 Jun 2024 22:41:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.72
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718232009; cv=none; b=m1GjPn1xglyqIwCxn4tp7V3iNXGQWYVvwQb3TlebS9lodeub0Eeo0j7q1IpD3heNQoCxiltI9u8lBs6x8r7X2D+xWWGkGJ6PUSkrUy6jUvDQKCsMUJTJzd9e2Qj4Fm/f0xB3SZ9y0KUxrn8bOO2gtGa5hLuPu6+POse+yPz+ffs=
+	t=1718232086; cv=none; b=OqtmG5Mo2oIFWfKu+u8usNkGpgm41ntCJt5iaacS/DlPx3uesifc2fc0kZA/gpgJJ/iQNV/jqlyXeBZNlzhoJL4uz37yuwAjfcRa+EQjJR3ZyXW2aT7EJofGCqSTKVPgsUOjjHNB38WXO5GxXemu4TEuNI7Gw/lDRvYs24bXjnE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718232009; c=relaxed/simple;
-	bh=RoDjvHSTMs1HH6Q5BPX7XJO1Cc9JRo9su++PhdD9X+Q=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=bEDS2YFiBKCYqSrFAmmmXN85WzhygyU+bzTUIVvLbJx8wnnTQpQc+TUM4LK2MSI1PzQAm8ubxD7OBoNv3aYCQGpNrxrTKNdmSTuVLuFCwxJR4fzNYJE76TL9SfudZNQWEoKliioxsR7r8aJuSLsYUtgIogCW1wtXFc+949iRiTY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=Bbzc5t1B; arc=none smtp.client-ip=213.133.104.62
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iogearbox.net
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:MIME-Version:
-	References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
-	Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
-	bh=Fh0qE81JJRQPSiipR0NwBh6F9/M882+6JkDK/X69dLI=; b=Bbzc5t1Bm4j6S7g1kJgLyzB68R
-	7rhqTZhy7dbBPbW1AUQ9NLbwdXaB65FJMODgzBEF4rS6z+F09fUwyTJ+KnVFSsuNqiHLncLFEN2Bs
-	gyA3bPuJawY00cfrOBp8OxQq8U0el6LhZbc3mxFpIPRdweJz1XtGgcoHWM0v0q3eAFWijEjY7xUYr
-	lI1OYctmPPYj/fdxs9ElZ9EDE7VsqZqzhV5uP14+DuxRIgjGjv9xvzR49vTT/HFR30CIA3Luzn8Bu
-	q2cT1AYzx0TjV4Xz9QlPrfaHgC+Ff8yjBEdOUlJ/hGmUaQrh+iKELdNPDhIRBA7BrLdpAadBcY9wN
-	r0CBNtCg==;
-Received: from 34.249.197.178.dynamic.cust.swisscom.net ([178.197.249.34] helo=localhost)
-	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1sHWER-000GZT-MM; Thu, 13 Jun 2024 00:14:15 +0200
-From: Daniel Borkmann <daniel@iogearbox.net>
-To: bpf@vger.kernel.org
-Cc: jjlopezjaimez@google.com,
-	Daniel Borkmann <daniel@iogearbox.net>
-Subject: [PATCH bpf 2/2] selftests/bpf: Add test coverage for reg_set_min_max handling
-Date: Thu, 13 Jun 2024 00:14:05 +0200
-Message-Id: <20240612221405.3378-2-daniel@iogearbox.net>
-X-Mailer: git-send-email 2.21.0
-In-Reply-To: <20240612221405.3378-1-daniel@iogearbox.net>
-References: <20240612221405.3378-1-daniel@iogearbox.net>
+	s=arc-20240116; t=1718232086; c=relaxed/simple;
+	bh=K5YyxLA11PLGZeCHK78EvOq9cPOFvcvbwQR+YdwCToQ=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=fGFwOgBDmC+ix2O49jKZ0pYd/T3ZvPH0s0cv0u6SJlb1YLMvLDAhIEzACCItj5uR3ofPwFf8gEPg4e+EryQlsxn0La4UFG1MQRD1IIwQj4CHXBTXcubnebz7H+QiknpF5h4GVBekMmP7e2pEC1NqVW26ib99Xq5mAVu37BCwYc8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.72
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f72.google.com with SMTP id ca18e2360f4ac-7eb6fd69f7cso29958539f.2
+        for <bpf@vger.kernel.org>; Wed, 12 Jun 2024 15:41:24 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1718232084; x=1718836884;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=mufdid0kgCdbIFQobNxZ/g3ngSfNEOwaNWumRTzbMmU=;
+        b=DshLQrpfHVtDWai03KSBGeH1wH/9qOt2X5xibwxK8jRoW1z6xB1bnV5zI7hjrjMo6I
+         HT/55puZPmAnZbSjFd49Un6aeQ+ojrQliEAOVqufqyHBAv9M/P8lMgHW+mHCt4+dmV4D
+         c/WS5pJsJvpr8OSEUjAdzk28aoXwWxpN+cfl2vuWgYWkQZi+NsSDhk+S1mzUeqnhbgDn
+         24GUmXLGTT61E/aZMCDtYIfadE0dgKbVqPqM0aM1iMq0yeyAruoypc6VNnvY9ZeZ92sN
+         M+wNDr+HS1wTkzW2evI7og9DJCmx11gbvn38f67UzsQRvF98VURrxsVKRxzWY4znTDd6
+         ei7Q==
+X-Forwarded-Encrypted: i=1; AJvYcCX7rKCILCWlM7fXrTMYRW0pI+bRR2CPxks2K24/PZXl4LV79Ib6mvraT8S1tqa0bC0zELUPk+JCqrNGjaNZ0uIYonJy
+X-Gm-Message-State: AOJu0YzvkDGqJU+ito5P6q/TtyPNPmlrnwiRmASBeGeWLHuoPgp33r+F
+	DUxLq2CSXoCLDct/AD9aHyVtXPEaFRLlSt81+loiJAH6ASzjrEVXQhG/jzAtBzWai6cewkQD/cy
+	TpRwF/6EYrsI3Ba6kIfW+fJY3+wq3676PddXOWvjnuKzcT2wxHuYID40=
+X-Google-Smtp-Source: AGHT+IFgpLRRkr2wzJHWMlnK27XuzjJnL09Ay4Thz8yHDVR8sRNFRo/3Lm1ePX560qyFI0J/dEcZUeNph6CSKJoX53M041Ww+eiI
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.10/27304/Wed Jun 12 10:27:29 2024)
+X-Received: by 2002:a05:6602:641f:b0:7eb:b36f:b4de with SMTP id
+ ca18e2360f4ac-7ebcd189081mr13866939f.3.1718232084315; Wed, 12 Jun 2024
+ 15:41:24 -0700 (PDT)
+Date: Wed, 12 Jun 2024 15:41:24 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000072aaa061ab9153c@google.com>
+Subject: [syzbot] Monthly bpf report (Jun 2024)
+From: syzbot <syzbot+list6bc05ebaf8f2eae6ce86@syzkaller.appspotmail.com>
+To: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org, 
+	daniel@iogearbox.net, linux-kernel@vger.kernel.org, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-Add a test case for the jmp32/k fix to ensure selftests have coverage.
+Hello bpf maintainers/developers,
 
-Before fix:
+This is a 31-day syzbot report for the bpf subsystem.
+All related reports/information can be found at:
+https://syzkaller.appspot.com/upstream/s/bpf
 
-  # ./vmtest.sh -- ./test_progs -t verifier_or_jmp32_k
-  [...]
-  ./test_progs -t verifier_or_jmp32_k
-  tester_init:PASS:tester_log_buf 0 nsec
-  process_subtest:PASS:obj_open_mem 0 nsec
-  process_subtest:PASS:specs_alloc 0 nsec
-  run_subtest:PASS:obj_open_mem 0 nsec
-  run_subtest:FAIL:unexpected_load_success unexpected success: 0
-  #492/1   verifier_or_jmp32_k/or_jmp32_k: bit ops + branch on unknown value:FAIL
-  #492     verifier_or_jmp32_k:FAIL
-  Summary: 0/0 PASSED, 0 SKIPPED, 1 FAILED
+During the period, 11 new issues were detected and 4 were fixed.
+In total, 53 issues are still open and 252 have been fixed so far.
 
-After fix:
+Some of the still happening issues:
 
-  # ./vmtest.sh -- ./test_progs -t verifier_or_jmp32_k
-  [...]
-  ./test_progs -t verifier_or_jmp32_k
-  #492/1   verifier_or_jmp32_k/or_jmp32_k: bit ops + branch on unknown value:OK
-  #492     verifier_or_jmp32_k:OK
-  Summary: 1/1 PASSED, 0 SKIPPED, 0 FAILED
+Ref  Crashes Repro Title
+<1>  8630    Yes   possible deadlock in task_fork_fair
+                   https://syzkaller.appspot.com/bug?extid=1a93ee5d329e97cfbaff
+<2>  8113    Yes   KASAN: slab-out-of-bounds Read in btf_datasec_check_meta
+                   https://syzkaller.appspot.com/bug?extid=cc32304f6487ebff9b70
+<3>  869     Yes   possible deadlock in sock_map_delete_elem
+                   https://syzkaller.appspot.com/bug?extid=4ac2fe2b496abca8fa4b
+<4>  733     Yes   WARNING in bpf_map_lookup_percpu_elem
+                   https://syzkaller.appspot.com/bug?extid=dce5aae19ae4d6399986
+<5>  385     Yes   possible deadlock in __bpf_ringbuf_reserve
+                   https://syzkaller.appspot.com/bug?extid=850aaf14624dc0c6d366
+<6>  165     Yes   KMSAN: uninit-value in ___bpf_prog_run (4)
+                   https://syzkaller.appspot.com/bug?extid=853242d9c9917165d791
+<7>  153     Yes   general protection fault in dev_map_enqueue (2)
+                   https://syzkaller.appspot.com/bug?extid=cca39e6e84a367a7e6f6
+<8>  136     Yes   possible deadlock in __queue_map_get
+                   https://syzkaller.appspot.com/bug?extid=8bdfc2c53fb2b63e1871
+<9>  89      Yes   WARNING in __xdp_reg_mem_model
+                   https://syzkaller.appspot.com/bug?extid=f534bd500d914e34b59e
+<10> 88      Yes   BUG: unable to handle kernel NULL pointer dereference in sk_msg_recvmsg
+                   https://syzkaller.appspot.com/bug?extid=84f695756ed0c4bb3aba
 
-Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
 ---
- .../selftests/bpf/prog_tests/verifier.c       |  2 +
- .../selftests/bpf/progs/verifier_or_jmp32_k.c | 43 +++++++++++++++++++
- 2 files changed, 45 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/progs/verifier_or_jmp32_k.c
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/verifier.c b/tools/testing/selftests/bpf/prog_tests/verifier.c
-index 1c9c4ec1be11..98ef39efa77e 100644
---- a/tools/testing/selftests/bpf/prog_tests/verifier.c
-+++ b/tools/testing/selftests/bpf/prog_tests/verifier.c
-@@ -53,6 +53,7 @@
- #include "verifier_movsx.skel.h"
- #include "verifier_netfilter_ctx.skel.h"
- #include "verifier_netfilter_retcode.skel.h"
-+#include "verifier_or_jmp32_k.skel.h"
- #include "verifier_precision.skel.h"
- #include "verifier_prevent_map_lookup.skel.h"
- #include "verifier_raw_stack.skel.h"
-@@ -170,6 +171,7 @@ void test_verifier_meta_access(void)          { RUN(verifier_meta_access); }
- void test_verifier_movsx(void)                 { RUN(verifier_movsx); }
- void test_verifier_netfilter_ctx(void)        { RUN(verifier_netfilter_ctx); }
- void test_verifier_netfilter_retcode(void)    { RUN(verifier_netfilter_retcode); }
-+void test_verifier_or_jmp32_k(void)           { RUN(verifier_or_jmp32_k); }
- void test_verifier_precision(void)            { RUN(verifier_precision); }
- void test_verifier_prevent_map_lookup(void)   { RUN(verifier_prevent_map_lookup); }
- void test_verifier_raw_stack(void)            { RUN(verifier_raw_stack); }
-diff --git a/tools/testing/selftests/bpf/progs/verifier_or_jmp32_k.c b/tools/testing/selftests/bpf/progs/verifier_or_jmp32_k.c
-new file mode 100644
-index 000000000000..c02c3a647e59
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/verifier_or_jmp32_k.c
-@@ -0,0 +1,43 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#include <linux/bpf.h>
-+#include <bpf/bpf_helpers.h>
-+#include "bpf_misc.h"
-+
-+SEC("socket")
-+__description("or_jmp32_k: bit ops + branch on unknown value")
-+__failure
-+__msg("R0 invalid mem access 'scalar'")
-+__naked void or_jmp32_k(void)
-+{
-+	asm volatile ("					\
-+	r0 = 0xffffffff;				\
-+	r0 /= 1;					\
-+	r1 = 0;						\
-+	w1 = -1;					\
-+	w1 >>= 1;					\
-+	w0 &= w1;					\
-+	w0 |= 2;					\
-+	if w0 != 0x7ffffffd goto l2;			\
-+	r0 = 1;						\
-+	exit;						\
-+l4:							\
-+	r0 = 5;						\
-+	*(u64*)(r0 - 8) = r0;				\
-+	exit;						\
-+l3:							\
-+	w0 -= 0xe;					\
-+	if w0 == 1 goto l4;				\
-+	r0 = 4;						\
-+	exit;						\
-+l2:							\
-+	w0 -= 0x7ffffff0;				\
-+	if w0 s>= 0xe goto l3;				\
-+	r0 = 3;						\
-+	exit;						\
-+"	:
-+	:
-+	: __clobber_all);
-+}
-+
-+char _license[] SEC("license") = "GPL";
--- 
-2.43.0
+To disable reminders for individual bugs, reply with the following command:
+#syz set <Ref> no-reminders
 
+To change bug's subsystems, reply with:
+#syz set <Ref> subsystems: new-subsystem
+
+You may send multiple commands in a single email message.
 
