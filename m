@@ -1,385 +1,183 @@
-Return-Path: <bpf+bounces-31963-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-31964-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 26C3D90598D
-	for <lists+bpf@lfdr.de>; Wed, 12 Jun 2024 19:07:52 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id AE414905998
+	for <lists+bpf@lfdr.de>; Wed, 12 Jun 2024 19:09:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A4AA82841B5
-	for <lists+bpf@lfdr.de>; Wed, 12 Jun 2024 17:07:50 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 549DA2847EE
+	for <lists+bpf@lfdr.de>; Wed, 12 Jun 2024 17:09:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 39F1C195808;
-	Wed, 12 Jun 2024 17:03:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E99E11822F1;
+	Wed, 12 Jun 2024 17:07:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="rtNQ+hnj";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="g22PdosN"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ipCgHn1e"
 X-Original-To: bpf@vger.kernel.org
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f44.google.com (mail-wr1-f44.google.com [209.85.221.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A189185096;
-	Wed, 12 Jun 2024 17:03:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D40ED28DB3;
+	Wed, 12 Jun 2024 17:07:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718211809; cv=none; b=Bb3RO1gQq/HF1szGBFnFILsaK8LU4imYgj4RuD928yWy+UZ8jXvziRIPIh02p0zOzyQBdHPKlmEYt28JWnpxXBU9YiK4dgNLO07/T42wEMa4g6WQBfqBNffXEce+TIq8I/cSKhJ8Emm/JRyIw7qME5Lgi8n3/kF79OborC7WTVI=
+	t=1718212044; cv=none; b=YpdWuzk5VcnwclnMLCKTzkUK2f5rk0Uc2LWzrfdWoBmM9vIFvXA4B6WGi/q8BWPZI5JgoF6013iigpBZyRTSxeTDsTJ8AQoiWiGKRS5Zo5NHzwvKlT8taugAGCNjL0ymxztL1OEbCEmNFZuZFu5LxeO5BzJNIf8dL213MB1nwIY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718211809; c=relaxed/simple;
-	bh=O+k/lODCH7svZwTNDxIAPFqoX+udqz84Z2kbuhFRg8g=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=iGsWfcPxMr+Uxw2Z71y1Ushjbg9MCugQrbpqsdBrngGNcMVq4fy0ZxUwbeJIz16RaOUlUrzP4k2IC8oZ5dS3Pxk/4LtQqXWCUGQcT9xzDENzlGuuF0Tj0WqOUkOPA9zOT4xHbFFWJPcWUVAJYTT5qENNnqosKa1FPQLIAAzwTqI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=rtNQ+hnj; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=g22PdosN; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1718211801;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=95NQzYoB4Er/GsWCvEgALkY1ARP5FCX6Mw0YbhA77Yk=;
-	b=rtNQ+hnjv/5ILBGabeIna70dAOzG3w+U3DSJd9mh99//KJe6tDqHNh8cbfXY98PnCrJ6NY
-	xtEGV1RMHpnwjKbw6cA2SEzScSAPrF5IInY8UwLYKMGgHOAW35hmkzFPcU0evbOOEz3GT4
-	WmOESJ45H88OPwrX7RLfnZjPJqENKfXQlNuzWoP9W1rfQkMFP2oHdOd43thoqJVJGfpw8h
-	SO0z1ubaycWtjdpCWJjc18wt3fbee0I5isDrpW/V4LZhoVoA+Wyi5HEeTmnrjPA5Hq/hR8
-	dEJ1qKFjNFZ5kJjlJmxhn6IhtF3WYbfIRi+EiFi6WBDePhqx5r/yN9UTbj0RMw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1718211801;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=95NQzYoB4Er/GsWCvEgALkY1ARP5FCX6Mw0YbhA77Yk=;
-	b=g22PdosNsyf3CIX/N8wj1YYCUAGx+uK+d1jdGuUwprApSf0TdihPzkE1WTcMX2zE1ZcXqQ
-	uUV06GwavX3SAuAA==
-To: linux-kernel@vger.kernel.org,
-	netdev@vger.kernel.org
-Cc: "David S. Miller" <davem@davemloft.net>,
-	Daniel Bristot de Oliveira <bristot@kernel.org>,
-	Boqun Feng <boqun.feng@gmail.com>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Frederic Weisbecker <frederic@kernel.org>,
-	Ingo Molnar <mingo@redhat.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Waiman Long <longman@redhat.com>,
-	Will Deacon <will@kernel.org>,
-	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-	=?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn@kernel.org>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Hao Luo <haoluo@google.com>,
-	Jesper Dangaard Brouer <hawk@kernel.org>,
-	Jiri Olsa <jolsa@kernel.org>,
-	John Fastabend <john.fastabend@gmail.com>,
-	Jonathan Lemon <jonathan.lemon@gmail.com>,
-	KP Singh <kpsingh@kernel.org>,
-	Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-	Magnus Karlsson <magnus.karlsson@intel.com>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Song Liu <song@kernel.org>,
-	Stanislav Fomichev <sdf@google.com>,
-	=?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	bpf@vger.kernel.org
-Subject: [PATCH v6 net-next 15/15] net: Move per-CPU flush-lists to bpf_net_context on PREEMPT_RT.
-Date: Wed, 12 Jun 2024 18:44:41 +0200
-Message-ID: <20240612170303.3896084-16-bigeasy@linutronix.de>
-In-Reply-To: <20240612170303.3896084-1-bigeasy@linutronix.de>
-References: <20240612170303.3896084-1-bigeasy@linutronix.de>
+	s=arc-20240116; t=1718212044; c=relaxed/simple;
+	bh=SKfMsfpuRskP07jTZ/SF0CfZ2NDTe3YEm/3ZVgENZfc=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=EgsIRE/Lutnirdh2faWtvDJKWTdu9Gpju7vf+MyuWpUOPBOrJb3MUpu/FTuTzCq19ccn1kK49So0rcFIbigZLhaIGiMCZSqiYFcg9e8rcn5y62dJWwYa2IU+bmGQY1C5w8qq2QnEfz5hvcpSrb1d0kcl+wFKDWZgQqpxWUXiCC4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ipCgHn1e; arc=none smtp.client-ip=209.85.221.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f44.google.com with SMTP id ffacd0b85a97d-35f2c0b7701so71094f8f.0;
+        Wed, 12 Jun 2024 10:07:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1718212041; x=1718816841; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ocpRwy0sziQcbAmBE7fGUEw2nPXigRY3R3IXpRSwnH0=;
+        b=ipCgHn1eQ+rSMNmPMdbOstbi0sIP2PygQTEmimVoCtoIHGuISwS5sev7qycV8jR+NG
+         d0LX/ketYMyPpB0DruUiahzlzsSb6cAJ0JEFlAiYVipGmbcc1BuAkZgoTkTBeiV5b3jC
+         6G8Sn41CcsFdWuyQIHfkLvjfTf139F62oYJiiO4FcZ/YVt6gw0TX5cmzJSqZQu8Og9JJ
+         Ga6drkL65HhwhZpB4+2xr70/m6z6jh2979l+C68V6AjVkXrSP45+HCFN/tEX5ny9pavL
+         Kvwukjm0YXwHrwEd+PTbQBryUV5k5VwSTbpMXYuflch/yzkjxPCKkTrYMINsdjVtmEAt
+         FHMA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1718212041; x=1718816841;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ocpRwy0sziQcbAmBE7fGUEw2nPXigRY3R3IXpRSwnH0=;
+        b=ub8Mx3xmBAtMminwPjmDrkfBa3FbCK1mZiWK+R8cVFsKYd2Ql3+fYE+uKwz/3+K1Ks
+         Kbe+6mQPjkD6wk6iodagWj8owmSJms/Y8Jd6IDQgi8v26UOD3t75lXWAz4UdOMpCMb3O
+         n4QZcbDIVvtq74DeIj1q29dQq/14WfozCcg+NkWObz7g7uunxhXrFJQiQuy0VRAhENoO
+         CINsR+L+4HynFZdoHK7T9bVn9sPFI+umrqwvoRd2YbTMg9gXBo8/EIoDUcqmxF8Mkqtu
+         EK/5TUFU0QBbW3O9fuvkHBJX3PWGW1R6+EVYEoHV1Fg0MPD0lfnOweyzY4GZHVmaRuZT
+         R1MQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUw1P74wX/vtylHTgaMYVIdZ8DrKDBJFRrnOsEhHQY2IRyie2DAxst8EBNvNxXaUG3s7AHsue79/kXcef2yjlotbxV0lZuZpQrWB39g
+X-Gm-Message-State: AOJu0Yy0PHSWC7PYoYqc7CjtaAQAxHPWk/SLgXMA8K4WbKTGeJxwD4Ef
+	wC01XeFdbSXB7BqgqIG1TLVJRcdA1YukwRVqu+2VK1CrpL56TvqnLnDZYbQQzPfUCTdL9HyNhff
+	21vEUC41iL90wrs2YqX9yuCH8cl8=
+X-Google-Smtp-Source: AGHT+IERoFKlnMaUF+4foCYqq43qTtaHP4TR84rV3QZZFDG2tb5uh4VE5BV3+RDtYRHCD1c49Em/Q15dWxNBGcUASIE=
+X-Received: by 2002:adf:f748:0:b0:35f:10b2:b588 with SMTP id
+ ffacd0b85a97d-360718defc4mr314071f8f.18.1718212040907; Wed, 12 Jun 2024
+ 10:07:20 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+References: <illfkwuxwq3adca2h4shibz2xub62kku3g2wte4sqp7xj7cwkb@ckn3qg7zxjuv> <c6fsgv7bjt2d2ejz2uuin2g475fkvpyenp32wehdqlcf6ihqgx@5gicsaw4u37f>
+In-Reply-To: <c6fsgv7bjt2d2ejz2uuin2g475fkvpyenp32wehdqlcf6ihqgx@5gicsaw4u37f>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Wed, 12 Jun 2024 10:07:09 -0700
+Message-ID: <CAADnVQK6Vh-pv_ewS0RjBBfL5KUsMXpdMNFvv5F0OPWzABEsAw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v6 3/3] arm64/cfi,bpf: Use DEFINE_CFI_TYPE in arm64
+To: Maxwell Bland <mbland@motorola.com>
+Cc: "open list:BPF [GENERAL] (Safe Dynamic Programs and Tools)" <bpf@vger.kernel.org>, Catalin Marinas <catalin.marinas@arm.com>, 
+	Will Deacon <will@kernel.org>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, Zi Shen Lim <zlim.lnx@gmail.com>, 
+	Mark Rutland <mark.rutland@arm.com>, Suzuki K Poulose <suzuki.poulose@arm.com>, 
+	Mark Brown <broonie@kernel.org>, 
+	linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, 
+	open list <linux-kernel@vger.kernel.org>, Josh Poimboeuf <jpoimboe@kernel.org>, 
+	Puranjay Mohan <puranjay12@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-The per-CPU flush lists, which are accessed from within the NAPI callback
-(xdp_do_flush() for instance), are per-CPU. There are subject to the
-same problem as struct bpf_redirect_info.
+On Wed, Jun 12, 2024 at 8:32=E2=80=AFAM Maxwell Bland <mbland@motorola.com>=
+ wrote:
+>
+> Corrects Puranjay Mohan's commit to adopt Mark Rutland's
+> suggestion of using a C CFI type macro in kCFI+BPF.
+>
+> Signed-off-by: Maxwell Bland <mbland@motorola.com>
+> ---
+>  arch/arm64/kernel/alternative.c | 46 ++++-----------------------------
+>  1 file changed, 5 insertions(+), 41 deletions(-)
+>
+> diff --git a/arch/arm64/kernel/alternative.c b/arch/arm64/kernel/alternat=
+ive.c
+> index 1715da7df137..d7a58eca7665 100644
+> --- a/arch/arm64/kernel/alternative.c
+> +++ b/arch/arm64/kernel/alternative.c
+> @@ -8,6 +8,7 @@
+>
+>  #define pr_fmt(fmt) "alternatives: " fmt
+>
+> +#include <linux/cfi_types.h>
+>  #include <linux/init.h>
+>  #include <linux/cpu.h>
+>  #include <linux/elf.h>
+> @@ -302,53 +303,16 @@ EXPORT_SYMBOL(alt_cb_patch_nops);
+>
+>  #ifdef CONFIG_CFI_CLANG
+>  struct bpf_insn;
+> -
+>  /* Must match bpf_func_t / DEFINE_BPF_PROG_RUN() */
+>  extern unsigned int __bpf_prog_runX(const void *ctx,
+>                                     const struct bpf_insn *insn);
+> -
+> -/*
+> - * Force a reference to the external symbol so the compiler generates
+> - * __kcfi_typid.
+> - */
+> -__ADDRESSABLE(__bpf_prog_runX);
+> -
+> -/* u32 __ro_after_init cfi_bpf_hash =3D __kcfi_typeid___bpf_prog_runX; *=
+/
+> -asm (
+> -"      .pushsection    .data..ro_after_init,\"aw\",@progbits   \n"
+> -"      .type   cfi_bpf_hash,@object                            \n"
+> -"      .globl  cfi_bpf_hash                                    \n"
+> -"      .p2align        2, 0x0                                  \n"
+> -"cfi_bpf_hash:                                                 \n"
+> -"      .word   __kcfi_typeid___bpf_prog_runX                   \n"
+> -"      .size   cfi_bpf_hash, 4                                 \n"
+> -"      .popsection                                             \n"
+> -);
+> -
+> +DEFINE_CFI_TYPE(cfi_bpf_hash, __bpf_prog_runX);
+>  /* Must match bpf_callback_t */
+>  extern u64 __bpf_callback_fn(u64, u64, u64, u64, u64);
+> -
+> -__ADDRESSABLE(__bpf_callback_fn);
+> -
+> -/* u32 __ro_after_init cfi_bpf_subprog_hash =3D __kcfi_typeid___bpf_call=
+back_fn; */
+> -asm (
+> -"      .pushsection    .data..ro_after_init,\"aw\",@progbits   \n"
+> -"      .type   cfi_bpf_subprog_hash,@object                    \n"
+> -"      .globl  cfi_bpf_subprog_hash                            \n"
+> -"      .p2align        2, 0x0                                  \n"
+> -"cfi_bpf_subprog_hash:                                         \n"
+> -"      .word   __kcfi_typeid___bpf_callback_fn                 \n"
+> -"      .size   cfi_bpf_subprog_hash, 4                         \n"
+> -"      .popsection                                             \n"
+> -);
+> -
+> +DEFINE_CFI_TYPE(cfi_bpf_subprog_hash, __bpf_callback_fn);
+>  u32 cfi_get_func_hash(void *func)
+>  {
+> -       u32 hash;
+> -
+> -       if (get_kernel_nofault(hash, func - cfi_get_offset()))
+> -               return 0;
+> -
+> -       return hash;
+> +       u32 *hashp =3D func - cfi_get_offset();
+> +       return READ_ONCE(*hashp);
 
-Add the per-CPU lists cpu_map_flush_list, dev_map_flush_list and
-xskmap_map_flush_list to struct bpf_net_context. Add wrappers for the
-access. The lists initialized on first usage (similar to
-bpf_net_ctx_get_ri()).
+Please avoid the code churn.
+Just squash it into the previous patch.
 
-Cc: "Bj=C3=B6rn T=C3=B6pel" <bjorn@kernel.org>
-Cc: Alexei Starovoitov <ast@kernel.org>
-Cc: Andrii Nakryiko <andrii@kernel.org>
-Cc: Eduard Zingerman <eddyz87@gmail.com>
-Cc: Hao Luo <haoluo@google.com>
-Cc: Jesper Dangaard Brouer <hawk@kernel.org>
-Cc: Jiri Olsa <jolsa@kernel.org>
-Cc: John Fastabend <john.fastabend@gmail.com>
-Cc: Jonathan Lemon <jonathan.lemon@gmail.com>
-Cc: KP Singh <kpsingh@kernel.org>
-Cc: Maciej Fijalkowski <maciej.fijalkowski@intel.com>
-Cc: Magnus Karlsson <magnus.karlsson@intel.com>
-Cc: Martin KaFai Lau <martin.lau@linux.dev>
-Cc: Song Liu <song@kernel.org>
-Cc: Stanislav Fomichev <sdf@google.com>
-Cc: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
-Cc: Yonghong Song <yonghong.song@linux.dev>
-Cc: bpf@vger.kernel.org
-Reviewed-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@redhat.com>
-Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
----
- include/linux/filter.h | 42 ++++++++++++++++++++++++++++++++++++++++++
- kernel/bpf/cpumap.c    | 19 +++----------------
- kernel/bpf/devmap.c    | 11 +++--------
- net/xdp/xsk.c          | 12 ++++--------
- 4 files changed, 52 insertions(+), 32 deletions(-)
-
-diff --git a/include/linux/filter.h b/include/linux/filter.h
-index 0a7f6e4a00b60..c0349522de8fb 100644
---- a/include/linux/filter.h
-+++ b/include/linux/filter.h
-@@ -736,6 +736,9 @@ struct bpf_nh_params {
- /* flags for bpf_redirect_info kern_flags */
- #define BPF_RI_F_RF_NO_DIRECT	BIT(0)	/* no napi_direct on return_frame */
- #define BPF_RI_F_RI_INIT	BIT(1)
-+#define BPF_RI_F_CPU_MAP_INIT	BIT(2)
-+#define BPF_RI_F_DEV_MAP_INIT	BIT(3)
-+#define BPF_RI_F_XSK_MAP_INIT	BIT(4)
-=20
- struct bpf_redirect_info {
- 	u64 tgt_index;
-@@ -750,6 +753,9 @@ struct bpf_redirect_info {
-=20
- struct bpf_net_context {
- 	struct bpf_redirect_info ri;
-+	struct list_head cpu_map_flush_list;
-+	struct list_head dev_map_flush_list;
-+	struct list_head xskmap_map_flush_list;
- };
-=20
- static inline struct bpf_net_context *bpf_net_ctx_set(struct bpf_net_conte=
-xt *bpf_net_ctx)
-@@ -787,6 +793,42 @@ static inline struct bpf_redirect_info *bpf_net_ctx_ge=
-t_ri(void)
- 	return &bpf_net_ctx->ri;
- }
-=20
-+static inline struct list_head *bpf_net_ctx_get_cpu_map_flush_list(void)
-+{
-+	struct bpf_net_context *bpf_net_ctx =3D bpf_net_ctx_get();
-+
-+	if (!(bpf_net_ctx->ri.kern_flags & BPF_RI_F_CPU_MAP_INIT)) {
-+		INIT_LIST_HEAD(&bpf_net_ctx->cpu_map_flush_list);
-+		bpf_net_ctx->ri.kern_flags |=3D BPF_RI_F_CPU_MAP_INIT;
-+	}
-+
-+	return &bpf_net_ctx->cpu_map_flush_list;
-+}
-+
-+static inline struct list_head *bpf_net_ctx_get_dev_flush_list(void)
-+{
-+	struct bpf_net_context *bpf_net_ctx =3D bpf_net_ctx_get();
-+
-+	if (!(bpf_net_ctx->ri.kern_flags & BPF_RI_F_DEV_MAP_INIT)) {
-+		INIT_LIST_HEAD(&bpf_net_ctx->dev_map_flush_list);
-+		bpf_net_ctx->ri.kern_flags |=3D BPF_RI_F_DEV_MAP_INIT;
-+	}
-+
-+	return &bpf_net_ctx->dev_map_flush_list;
-+}
-+
-+static inline struct list_head *bpf_net_ctx_get_xskmap_flush_list(void)
-+{
-+	struct bpf_net_context *bpf_net_ctx =3D bpf_net_ctx_get();
-+
-+	if (!(bpf_net_ctx->ri.kern_flags & BPF_RI_F_XSK_MAP_INIT)) {
-+		INIT_LIST_HEAD(&bpf_net_ctx->xskmap_map_flush_list);
-+		bpf_net_ctx->ri.kern_flags |=3D BPF_RI_F_XSK_MAP_INIT;
-+	}
-+
-+	return &bpf_net_ctx->xskmap_map_flush_list;
-+}
-+
- /* Compute the linear packet data range [data, data_end) which
-  * will be accessed by various program types (cls_bpf, act_bpf,
-  * lwt, ...). Subsystems allowing direct data access must (!)
-diff --git a/kernel/bpf/cpumap.c b/kernel/bpf/cpumap.c
-index 66974bd027109..068e994ed781a 100644
---- a/kernel/bpf/cpumap.c
-+++ b/kernel/bpf/cpumap.c
-@@ -79,8 +79,6 @@ struct bpf_cpu_map {
- 	struct bpf_cpu_map_entry __rcu **cpu_map;
- };
-=20
--static DEFINE_PER_CPU(struct list_head, cpu_map_flush_list);
--
- static struct bpf_map *cpu_map_alloc(union bpf_attr *attr)
- {
- 	u32 value_size =3D attr->value_size;
-@@ -709,7 +707,7 @@ static void bq_flush_to_queue(struct xdp_bulk_queue *bq)
-  */
- static void bq_enqueue(struct bpf_cpu_map_entry *rcpu, struct xdp_frame *x=
-dpf)
- {
--	struct list_head *flush_list =3D this_cpu_ptr(&cpu_map_flush_list);
-+	struct list_head *flush_list =3D bpf_net_ctx_get_cpu_map_flush_list();
- 	struct xdp_bulk_queue *bq =3D this_cpu_ptr(rcpu->bulkq);
-=20
- 	if (unlikely(bq->count =3D=3D CPU_MAP_BULK_SIZE))
-@@ -761,7 +759,7 @@ int cpu_map_generic_redirect(struct bpf_cpu_map_entry *=
-rcpu,
-=20
- void __cpu_map_flush(void)
- {
--	struct list_head *flush_list =3D this_cpu_ptr(&cpu_map_flush_list);
-+	struct list_head *flush_list =3D bpf_net_ctx_get_cpu_map_flush_list();
- 	struct xdp_bulk_queue *bq, *tmp;
-=20
- 	list_for_each_entry_safe(bq, tmp, flush_list, flush_node) {
-@@ -775,20 +773,9 @@ void __cpu_map_flush(void)
- #ifdef CONFIG_DEBUG_NET
- bool cpu_map_check_flush(void)
- {
--	if (list_empty(this_cpu_ptr(&cpu_map_flush_list)))
-+	if (list_empty(bpf_net_ctx_get_cpu_map_flush_list()))
- 		return false;
- 	__cpu_map_flush();
- 	return true;
- }
- #endif
--
--static int __init cpu_map_init(void)
--{
--	int cpu;
--
--	for_each_possible_cpu(cpu)
--		INIT_LIST_HEAD(&per_cpu(cpu_map_flush_list, cpu));
--	return 0;
--}
--
--subsys_initcall(cpu_map_init);
-diff --git a/kernel/bpf/devmap.c b/kernel/bpf/devmap.c
-index fbfdfb60db8d7..317ac2d66ebd1 100644
---- a/kernel/bpf/devmap.c
-+++ b/kernel/bpf/devmap.c
-@@ -83,7 +83,6 @@ struct bpf_dtab {
- 	u32 n_buckets;
- };
-=20
--static DEFINE_PER_CPU(struct list_head, dev_flush_list);
- static DEFINE_SPINLOCK(dev_map_lock);
- static LIST_HEAD(dev_map_list);
-=20
-@@ -415,7 +414,7 @@ static void bq_xmit_all(struct xdp_dev_bulk_queue *bq, =
-u32 flags)
-  */
- void __dev_flush(void)
- {
--	struct list_head *flush_list =3D this_cpu_ptr(&dev_flush_list);
-+	struct list_head *flush_list =3D bpf_net_ctx_get_dev_flush_list();
- 	struct xdp_dev_bulk_queue *bq, *tmp;
-=20
- 	list_for_each_entry_safe(bq, tmp, flush_list, flush_node) {
-@@ -429,7 +428,7 @@ void __dev_flush(void)
- #ifdef CONFIG_DEBUG_NET
- bool dev_check_flush(void)
- {
--	if (list_empty(this_cpu_ptr(&dev_flush_list)))
-+	if (list_empty(bpf_net_ctx_get_dev_flush_list()))
- 		return false;
- 	__dev_flush();
- 	return true;
-@@ -460,7 +459,7 @@ static void *__dev_map_lookup_elem(struct bpf_map *map,=
- u32 key)
- static void bq_enqueue(struct net_device *dev, struct xdp_frame *xdpf,
- 		       struct net_device *dev_rx, struct bpf_prog *xdp_prog)
- {
--	struct list_head *flush_list =3D this_cpu_ptr(&dev_flush_list);
-+	struct list_head *flush_list =3D bpf_net_ctx_get_dev_flush_list();
- 	struct xdp_dev_bulk_queue *bq =3D this_cpu_ptr(dev->xdp_bulkq);
-=20
- 	if (unlikely(bq->count =3D=3D DEV_MAP_BULK_SIZE))
-@@ -1160,15 +1159,11 @@ static struct notifier_block dev_map_notifier =3D {
-=20
- static int __init dev_map_init(void)
- {
--	int cpu;
--
- 	/* Assure tracepoint shadow struct _bpf_dtab_netdev is in sync */
- 	BUILD_BUG_ON(offsetof(struct bpf_dtab_netdev, dev) !=3D
- 		     offsetof(struct _bpf_dtab_netdev, dev));
- 	register_netdevice_notifier(&dev_map_notifier);
-=20
--	for_each_possible_cpu(cpu)
--		INIT_LIST_HEAD(&per_cpu(dev_flush_list, cpu));
- 	return 0;
- }
-=20
-diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
-index 7d1c0986f9bb3..ed062e0383896 100644
---- a/net/xdp/xsk.c
-+++ b/net/xdp/xsk.c
-@@ -35,8 +35,6 @@
- #define TX_BATCH_SIZE 32
- #define MAX_PER_SOCKET_BUDGET (TX_BATCH_SIZE)
-=20
--static DEFINE_PER_CPU(struct list_head, xskmap_flush_list);
--
- void xsk_set_rx_need_wakeup(struct xsk_buff_pool *pool)
- {
- 	if (pool->cached_need_wakeup & XDP_WAKEUP_RX)
-@@ -372,7 +370,7 @@ static int xsk_rcv(struct xdp_sock *xs, struct xdp_buff=
- *xdp)
-=20
- int __xsk_map_redirect(struct xdp_sock *xs, struct xdp_buff *xdp)
- {
--	struct list_head *flush_list =3D this_cpu_ptr(&xskmap_flush_list);
-+	struct list_head *flush_list =3D bpf_net_ctx_get_xskmap_flush_list();
- 	int err;
-=20
- 	err =3D xsk_rcv(xs, xdp);
-@@ -387,7 +385,7 @@ int __xsk_map_redirect(struct xdp_sock *xs, struct xdp_=
-buff *xdp)
-=20
- void __xsk_map_flush(void)
- {
--	struct list_head *flush_list =3D this_cpu_ptr(&xskmap_flush_list);
-+	struct list_head *flush_list =3D bpf_net_ctx_get_xskmap_flush_list();
- 	struct xdp_sock *xs, *tmp;
-=20
- 	list_for_each_entry_safe(xs, tmp, flush_list, flush_node) {
-@@ -399,7 +397,7 @@ void __xsk_map_flush(void)
- #ifdef CONFIG_DEBUG_NET
- bool xsk_map_check_flush(void)
- {
--	if (list_empty(this_cpu_ptr(&xskmap_flush_list)))
-+	if (list_empty(bpf_net_ctx_get_xskmap_flush_list()))
- 		return false;
- 	__xsk_map_flush();
- 	return true;
-@@ -1772,7 +1770,7 @@ static struct pernet_operations xsk_net_ops =3D {
-=20
- static int __init xsk_init(void)
- {
--	int err, cpu;
-+	int err;
-=20
- 	err =3D proto_register(&xsk_proto, 0 /* no slab */);
- 	if (err)
-@@ -1790,8 +1788,6 @@ static int __init xsk_init(void)
- 	if (err)
- 		goto out_pernet;
-=20
--	for_each_possible_cpu(cpu)
--		INIT_LIST_HEAD(&per_cpu(xskmap_flush_list, cpu));
- 	return 0;
-=20
- out_pernet:
---=20
-2.45.1
-
+pw-bot: cr
 
