@@ -1,226 +1,175 @@
-Return-Path: <bpf+bounces-31919-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-31920-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 98266905098
-	for <lists+bpf@lfdr.de>; Wed, 12 Jun 2024 12:43:16 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CC587905191
+	for <lists+bpf@lfdr.de>; Wed, 12 Jun 2024 13:47:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9DBCE1C20C2C
-	for <lists+bpf@lfdr.de>; Wed, 12 Jun 2024 10:43:15 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CF5701C215EF
+	for <lists+bpf@lfdr.de>; Wed, 12 Jun 2024 11:47:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 81AF816F0CF;
-	Wed, 12 Jun 2024 10:42:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8AF0E16F0ED;
+	Wed, 12 Jun 2024 11:47:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="IDpjaBA8";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="rkHwJMlc"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Mlq5cMyg"
 X-Original-To: bpf@vger.kernel.org
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qk1-f169.google.com (mail-qk1-f169.google.com [209.85.222.169])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 549F916EC0E;
-	Wed, 12 Jun 2024 10:42:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 98AE316F0D4;
+	Wed, 12 Jun 2024 11:47:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718188978; cv=none; b=sKsOo4JXrJjJnJiRXunlqIlY3+rRrx8Hchhu4qtD6WTAfyZ5N/muCU8XTrWQvZ8766r7XJeZ38nOXlVNUEf3UDN0I6oNWM1zpBfx3kL/e4TNrfPg86qei+6FlalA03DFOfJO1xyQwhUX2lPTNXoo81I9ZR80vNFIrcjhx1ebfdo=
+	t=1718192840; cv=none; b=FIizpR61pGKr2uYHUTbbMMDUv6udiHot0hqbYhBvJHHk5wrYwuu7Qsw7td2XxCCVVtbHkbxwAQmeMDSocEimMDLKr4iGukmsthjFY6PZbHUsX8NIAulLVAUJos8cQ9lipm2PyAgFoA+TMCz+L9c/3dl9enVSHdGfru3hWFopNnk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718188978; c=relaxed/simple;
-	bh=x0irVHea9xJBnbsbAv4Kh560yicrGm3RLgdBbtzUyl0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=dX7g4PoJLYy6zgcGsSS4bz6fYm/0vyg1hTi8I7BmRgSJDrKHtjCyzCEI2UVSWaGqRx1QkS+bMe2vA/qZJtxh/kmJQE42cXl0IUk+V2j+Qkz5OiX04aBW+Aq0Hu2swLLgkPJOQgliN91DRAst2gmsIw5KI5Zp9IzEHX4v7DOchKk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=IDpjaBA8; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=rkHwJMlc; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-Date: Wed, 12 Jun 2024 12:42:51 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1718188973;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=btdOPFQFwTkICHYO1/SoS8iTZ/W/Xt2/b1M+VRqmDTM=;
-	b=IDpjaBA81cwQHdCuUa6AsYhHFMJfKS66w1BzngfRChyyzRsuf1C7gUDC1H4T64izBar7Vo
-	3qpLLECGiwGfco+3yOh7lwhloytYJvZ8YjzX26zWCTLsOD6DV4b1ktoIdy4BAPZDM6ZMNM
-	UhJTB26hppPQ3ypcHcSNhwZAwBW0Gj5H4ZNQ66ZLC4MVpG9kwGcE3WL/JgfZ4nkr6B20tj
-	M1J31nbbvSBhD1arW6+O4bAiDmKgIq7durXJ20MUONT9VIkkUWcraDAGUUri2HHn8mr4Mj
-	t27i6+WPxHho/IviSahXeBdnBdrZ2XFMihFVD/BDWbalfCgP91kmCl20RFOv4w==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1718188973;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=btdOPFQFwTkICHYO1/SoS8iTZ/W/Xt2/b1M+VRqmDTM=;
-	b=rkHwJMlcGcVjifPlUIsNT1RgwpVmOs1VR/JmIAvZ8a0kz1iIbmBjQ6EguIfz7TD28Ug6DA
-	4BXb03RjqhRAsQAA==
-From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To: Jesper Dangaard Brouer <hawk@kernel.org>
-Cc: linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-	"David S. Miller" <davem@davemloft.net>,
-	Daniel Bristot de Oliveira <bristot@kernel.org>,
-	Boqun Feng <boqun.feng@gmail.com>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Frederic Weisbecker <frederic@kernel.org>,
-	Ingo Molnar <mingo@redhat.com>, Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Waiman Long <longman@redhat.com>, Will Deacon <will@kernel.org>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Eduard Zingerman <eddyz87@gmail.com>, Hao Luo <haoluo@google.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
-	Stanislav Fomichev <sdf@google.com>,
-	Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
-	Yonghong Song <yonghong.song@linux.dev>, bpf@vger.kernel.org
-Subject: Re: [PATCH v5 net-next 14/15] net: Reference bpf_redirect_info via
- task_struct on PREEMPT_RT.
-Message-ID: <20240612104251.DDjnpfnq@linutronix.de>
-References: <20240607070427.1379327-1-bigeasy@linutronix.de>
- <20240607070427.1379327-15-bigeasy@linutronix.de>
- <045e3716-3c3a-4238-b38a-3616c8974e2c@kernel.org>
- <20240610165014.uWp_yZuW@linutronix.de>
- <18328cc2-c135-4b69-8c5f-cd45998e970f@kernel.org>
- <20240611083918.fJTJJtBu@linutronix.de>
+	s=arc-20240116; t=1718192840; c=relaxed/simple;
+	bh=9hhKdWRWeHdnep9EmCQ2ydO249LRUvb2wjqwPasDnTs=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=RfS2ds3RbRdhP9yOwXmdBYZ7Dz8QNUMAuK/xV7+EXo80QSoIYau2K6NEh3b2O1Z9FTMXV3eeZ8++eya9CpqzevcvGD/Oi/bbcjWpHT2bz6msopFfxEYF1ey3PvEOaN2XUnQG7yuP1wU4gmDMcKkuTEgCc90URbnm6rN1C3HZZfM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Mlq5cMyg; arc=none smtp.client-ip=209.85.222.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qk1-f169.google.com with SMTP id af79cd13be357-79788e61d4fso14225985a.2;
+        Wed, 12 Jun 2024 04:47:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1718192837; x=1718797637; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=0cQ8+9M9XrUdsQ2so3wZoyj9wWPi1xavCUXiIuHKB7U=;
+        b=Mlq5cMygTzCbBE58Z3axkbpw+Xo51sixg2G4FuM8PXweWGiaG71ixzMzvszxb3c7Xk
+         yQSx684CYus1/jDotcYVWm/TuRSWbgFosfcNcmu22nBU+dbdY+Qlx3Ga/FhEtj4TPN55
+         olSuMb3Ih0TceeAtmcswr364GzQDlPt7xZv5HLjR5ohwNIFZIjKfMYgh8DwVBQuhrecQ
+         r6lCpU5n/8PCsQREl869rRBto7hGBMjPbI7wLe9mMYcPghWKDT0WLJbWk5NMf1iDsuet
+         BhjFd8UNchjpixo/a64WXdcKVYA02llHJ3IYt/fSFU7oiDpxdDUVa/yuk+UZJpCSOvmM
+         e0Qw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1718192837; x=1718797637;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=0cQ8+9M9XrUdsQ2so3wZoyj9wWPi1xavCUXiIuHKB7U=;
+        b=fY0FeUd21hUJE9Gsow8EsjGsHInAc7FK5h0x11t6XtmiS6IzR4szjqJU0fx2EghSOM
+         GZZZvQ/63YIiNPbJn6Z1MQhLSyQR8mmRserZqjI7WDIulVFYT0kPJ1pAQ0TQSIxnM9lS
+         bw66Vs+hNIwi46a1YyUF+fZCmXByW3/Sq7DQ/zMIkqegE/cyFHwRrL7ELZIHtqhh+rie
+         1AWzC9PGFqFTHpDgM0S0H4xf6ILxYDvT6S2BxTm+kF37pBc1qKmcX/+uxqZ2cdMr5c2I
+         rI8WDq+4Y7XdaXYvaDeiuwjVol50ue+vKABUgQOQbkdyZpgiEY9EJ8fu06SRpnSmIDqo
+         +Gfw==
+X-Forwarded-Encrypted: i=1; AJvYcCXI38XqeFPUn6PtI3PwYc5cWp5GIdOgGElkUre6YiyY/oBng87ey0A4TbOugbhol84rK6XQjXQ1HILW3JeNn/xZV6VV
+X-Gm-Message-State: AOJu0YwEiADf2GlVXEh5mIqNs/4qraKdvFRu1VOk9tWjqe8GUTscakEH
+	tJ2hbsEjWclW6lU0iKtREJVLA76NlBaLurW7+0NOshuJm8A4qGhcV2wpf5wlMF5trR8L++Q2ZYh
+	ERickh7uNSVMAQzJKCfHDHdMKL3Q=
+X-Google-Smtp-Source: AGHT+IHlJR4VEr/Msg4XKTavKSgBBbmLsty4g00X/B3XuqGDkCPZGuXQftvmMdiKT60xdWM54Ts5Cqste5w8vAAj66w=
+X-Received: by 2002:a05:6214:483:b0:6ae:4e11:837c with SMTP id
+ 6a1803df08f44-6b19149847cmr15578886d6.1.1718192837519; Wed, 12 Jun 2024
+ 04:47:17 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20240611083918.fJTJJtBu@linutronix.de>
+References: <cover.1718138187.git.zhuyifei@google.com>
+In-Reply-To: <cover.1718138187.git.zhuyifei@google.com>
+From: Magnus Karlsson <magnus.karlsson@gmail.com>
+Date: Wed, 12 Jun 2024 13:47:06 +0200
+Message-ID: <CAJ8uoz2-Kt2o-v3CuLpf2VDv2VtUJL2T307rp04di5hY2ihYHg@mail.gmail.com>
+Subject: Re: [RFC PATCH net-next 0/3] selftests: Add AF_XDP functionality test
+To: YiFei Zhu <zhuyifei@google.com>
+Cc: netdev@vger.kernel.org, bpf@vger.kernel.org, 
+	=?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>, 
+	Magnus Karlsson <magnus.karlsson@intel.com>, 
+	Maciej Fijalkowski <maciej.fijalkowski@intel.com>, Jonathan Lemon <jonathan.lemon@gmail.com>, 
+	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	"David S . Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, 
+	Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, 
+	Andrii Nakryiko <andrii@kernel.org>, Stanislav Fomichev <sdf@google.com>, 
+	Willem de Bruijn <willemb@google.com>
+Content-Type: text/plain; charset="UTF-8"
 
-On 2024-06-11 10:39:20 [+0200], To Jesper Dangaard Brouer wrote:
-> On 2024-06-11 09:55:11 [+0200], Jesper Dangaard Brouer wrote:
-> > >   struct bpf_net_context {
-> > >   	struct bpf_redirect_info ri;
-> > >   	struct list_head cpu_map_flush_list;
-> > >   	struct list_head dev_map_flush_list;
-> > >   	struct list_head xskmap_map_flush_list;
-> > > +	unsigned int flags;
-> > 
-> > Why have yet another flags variable, when we already have two flags in
-> > bpf_redirect_info ?
-> 
-> Ah you want to fold this into ri member including the status for the
-> lists? Could try. It is splitted in order to delay the initialisation of
-> the lists, too. We would need to be careful to not overwrite the
-> flags if `ri' is initialized after the lists. That would be the case
-> with CONFIG_DEBUG_NET=y and not doing redirect (the empty list check
-> initializes that).
+On Tue, 11 Jun 2024 at 22:43, YiFei Zhu <zhuyifei@google.com> wrote:
+>
+> We have observed that hardware NIC drivers may have faulty AF_XDP
+> implementations, and there seem to be a lack of a test of various modes
+> in which AF_XDP could run. This series adds a test to verify that NIC
+> drivers implements many AF_XDP features by performing a send / receive
+> of a single UDP packet.
+>
+> I put the C code of the test under selftests/bpf because I'm not really
+> sure how I'd build the BPF-related code without the selftests/bpf
+> build infrastructure.
 
-What about this:
+Happy to see that you are contributing a number of new tests. Would it
+be possible for you to integrate this into the xskxceiver framework?
+You can find that in selftests/bpf too. By default, it will run its
+tests using veth, but if you provide an interface name after the -i
+option, it will run the tests over a real interface. I put the NIC in
+loopback mode to use this feature, but feel free to add a new mode if
+necessary. A lot of the setup and data plane code that you add already
+exists in xskxceiver, so I would prefer if you could reuse it. Your
+tests are new though and they would be valuable to have.
 
------->8----------
+You could make the default packet that is sent in xskxceiver be the
+UDP packet that you want and then add all the other logic that you
+have to a number of new tests that you introduce.
 
-diff --git a/include/linux/filter.h b/include/linux/filter.h
-index d2b4260d9d0be..c0349522de8fb 100644
---- a/include/linux/filter.h
-+++ b/include/linux/filter.h
-@@ -733,15 +733,22 @@ struct bpf_nh_params {
- 	};
- };
- 
-+/* flags for bpf_redirect_info kern_flags */
-+#define BPF_RI_F_RF_NO_DIRECT	BIT(0)	/* no napi_direct on return_frame */
-+#define BPF_RI_F_RI_INIT	BIT(1)
-+#define BPF_RI_F_CPU_MAP_INIT	BIT(2)
-+#define BPF_RI_F_DEV_MAP_INIT	BIT(3)
-+#define BPF_RI_F_XSK_MAP_INIT	BIT(4)
-+
- struct bpf_redirect_info {
- 	u64 tgt_index;
- 	void *tgt_value;
- 	struct bpf_map *map;
- 	u32 flags;
--	u32 kern_flags;
- 	u32 map_id;
- 	enum bpf_map_type map_type;
- 	struct bpf_nh_params nh;
-+	u32 kern_flags;
- };
- 
- struct bpf_net_context {
-@@ -757,14 +764,7 @@ static inline struct bpf_net_context *bpf_net_ctx_set(struct bpf_net_context *bp
- 
- 	if (tsk->bpf_net_context != NULL)
- 		return NULL;
--	memset(&bpf_net_ctx->ri, 0, sizeof(bpf_net_ctx->ri));
--
--	if (IS_ENABLED(CONFIG_BPF_SYSCALL)) {
--		INIT_LIST_HEAD(&bpf_net_ctx->cpu_map_flush_list);
--		INIT_LIST_HEAD(&bpf_net_ctx->dev_map_flush_list);
--	}
--	if (IS_ENABLED(CONFIG_XDP_SOCKETS))
--		INIT_LIST_HEAD(&bpf_net_ctx->xskmap_map_flush_list);
-+	bpf_net_ctx->ri.kern_flags = 0;
- 
- 	tsk->bpf_net_context = bpf_net_ctx;
- 	return bpf_net_ctx;
-@@ -785,6 +785,11 @@ static inline struct bpf_redirect_info *bpf_net_ctx_get_ri(void)
- {
- 	struct bpf_net_context *bpf_net_ctx = bpf_net_ctx_get();
- 
-+	if (!(bpf_net_ctx->ri.kern_flags & BPF_RI_F_RI_INIT)) {
-+		memset(&bpf_net_ctx->ri, 0, offsetof(struct bpf_net_context, ri.nh));
-+		bpf_net_ctx->ri.kern_flags |= BPF_RI_F_RI_INIT;
-+	}
-+
- 	return &bpf_net_ctx->ri;
- }
- 
-@@ -792,6 +797,11 @@ static inline struct list_head *bpf_net_ctx_get_cpu_map_flush_list(void)
- {
- 	struct bpf_net_context *bpf_net_ctx = bpf_net_ctx_get();
- 
-+	if (!(bpf_net_ctx->ri.kern_flags & BPF_RI_F_CPU_MAP_INIT)) {
-+		INIT_LIST_HEAD(&bpf_net_ctx->cpu_map_flush_list);
-+		bpf_net_ctx->ri.kern_flags |= BPF_RI_F_CPU_MAP_INIT;
-+	}
-+
- 	return &bpf_net_ctx->cpu_map_flush_list;
- }
- 
-@@ -799,6 +809,11 @@ static inline struct list_head *bpf_net_ctx_get_dev_flush_list(void)
- {
- 	struct bpf_net_context *bpf_net_ctx = bpf_net_ctx_get();
- 
-+	if (!(bpf_net_ctx->ri.kern_flags & BPF_RI_F_DEV_MAP_INIT)) {
-+		INIT_LIST_HEAD(&bpf_net_ctx->dev_map_flush_list);
-+		bpf_net_ctx->ri.kern_flags |= BPF_RI_F_DEV_MAP_INIT;
-+	}
-+
- 	return &bpf_net_ctx->dev_map_flush_list;
- }
- 
-@@ -806,12 +821,14 @@ static inline struct list_head *bpf_net_ctx_get_xskmap_flush_list(void)
- {
- 	struct bpf_net_context *bpf_net_ctx = bpf_net_ctx_get();
- 
-+	if (!(bpf_net_ctx->ri.kern_flags & BPF_RI_F_XSK_MAP_INIT)) {
-+		INIT_LIST_HEAD(&bpf_net_ctx->xskmap_map_flush_list);
-+		bpf_net_ctx->ri.kern_flags |= BPF_RI_F_XSK_MAP_INIT;
-+	}
-+
- 	return &bpf_net_ctx->xskmap_map_flush_list;
- }
- 
--/* flags for bpf_redirect_info kern_flags */
--#define BPF_RI_F_RF_NO_DIRECT	BIT(0)	/* no napi_direct on return_frame */
--
- /* Compute the linear packet data range [data, data_end) which
-  * will be accessed by various program types (cls_bpf, act_bpf,
-  * lwt, ...). Subsystems allowing direct data access must (!)
-
------->8----------
-
-Moving kern_flags to the end excludes it from the memset() and can be
-re-used for the delayed initialisation.
-
-Sebastian
+> Tested on Google Cloud, with GVE:
+>
+>   $ sudo NETIF=ens4 REMOTE_TYPE=ssh \
+>     REMOTE_ARGS="root@10.138.15.235" \
+>     LOCAL_V4="10.138.15.234" \
+>     REMOTE_V4="10.138.15.235" \
+>     LOCAL_NEXTHOP_MAC="42:01:0a:8a:00:01" \
+>     REMOTE_NEXTHOP_MAC="42:01:0a:8a:00:01" \
+>     python3 xsk_hw.py
+>
+>   KTAP version 1
+>   1..22
+>   ok 1 xsk_hw.ipv4_basic
+>   ok 2 xsk_hw.ipv4_tx_skb_copy
+>   ok 3 xsk_hw.ipv4_tx_skb_copy_force_attach
+>   ok 4 xsk_hw.ipv4_rx_skb_copy
+>   ok 5 xsk_hw.ipv4_tx_drv_copy
+>   ok 6 xsk_hw.ipv4_tx_drv_copy_force_attach
+>   ok 7 xsk_hw.ipv4_rx_drv_copy
+>   [...]
+>   # Exception| STDERR: b'/tmp/zzfhcqkg/pbgodkgjxsk_hw: recv_pfpacket: Timeout\n'
+>   not ok 8 xsk_hw.ipv4_tx_drv_zerocopy
+>   ok 9 xsk_hw.ipv4_tx_drv_zerocopy_force_attach
+>   ok 10 xsk_hw.ipv4_rx_drv_zerocopy
+>   [...]
+>   # Exception| STDERR: b'/tmp/zzfhcqkg/pbgodkgjxsk_hw: connect sync client: max_retries\n'
+>   [...]
+>   # Exception| STDERR: b'/linux/tools/testing/selftests/bpf/xsk_hw: open_xsk: Device or resource busy\n'
+>   not ok 11 xsk_hw.ipv4_rx_drv_zerocopy_fill_after_bind
+>   ok 12 xsk_hw.ipv6_basic # SKIP Test requires IPv6 connectivity
+>   [...]
+>   ok 22 xsk_hw.ipv6_rx_drv_zerocopy_fill_after_bind # SKIP Test requires IPv6 connectivity
+>   # Totals: pass:9 fail:2 xfail:0 xpass:0 skip:11 error:0
+>
+> YiFei Zhu (3):
+>   selftests/bpf: Move rxq_num helper from xdp_hw_metadata to
+>     network_helpers
+>   selftests/bpf: Add xsk_hw AF_XDP functionality test
+>   selftests: drv-net: Add xsk_hw AF_XDP functionality test
+>
+>  tools/testing/selftests/bpf/.gitignore        |   1 +
+>  tools/testing/selftests/bpf/Makefile          |   7 +-
+>  tools/testing/selftests/bpf/network_helpers.c |  27 +
+>  tools/testing/selftests/bpf/network_helpers.h |  16 +
+>  tools/testing/selftests/bpf/progs/xsk_hw.c    |  72 ++
+>  tools/testing/selftests/bpf/xdp_hw_metadata.c |  27 +-
+>  tools/testing/selftests/bpf/xsk_hw.c          | 844 ++++++++++++++++++
+>  .../testing/selftests/drivers/net/hw/Makefile |   1 +
+>  .../selftests/drivers/net/hw/xsk_hw.py        | 133 +++
+>  9 files changed, 1102 insertions(+), 26 deletions(-)
+>  create mode 100644 tools/testing/selftests/bpf/progs/xsk_hw.c
+>  create mode 100644 tools/testing/selftests/bpf/xsk_hw.c
+>  create mode 100755 tools/testing/selftests/drivers/net/hw/xsk_hw.py
+>
+> --
+> 2.45.2.505.gda0bf45e8d-goog
+>
+>
 
