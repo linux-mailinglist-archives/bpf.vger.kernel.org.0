@@ -1,119 +1,141 @@
-Return-Path: <bpf+bounces-31939-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-31940-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7058F90570C
-	for <lists+bpf@lfdr.de>; Wed, 12 Jun 2024 17:36:49 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 650BC905752
+	for <lists+bpf@lfdr.de>; Wed, 12 Jun 2024 17:47:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EF8E52822CC
-	for <lists+bpf@lfdr.de>; Wed, 12 Jun 2024 15:36:47 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4F7E51C227DB
+	for <lists+bpf@lfdr.de>; Wed, 12 Jun 2024 15:47:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5EFF7180A65;
-	Wed, 12 Jun 2024 15:36:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8371A180A8D;
+	Wed, 12 Jun 2024 15:47:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=motorola.com header.i=@motorola.com header.b="oe/euHPF"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tUUDhFkB"
 X-Original-To: bpf@vger.kernel.org
-Received: from mx0b-00823401.pphosted.com (mx0b-00823401.pphosted.com [148.163.152.46])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 713A91802D0;
-	Wed, 12 Jun 2024 15:36:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.152.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D1B2A1EB2A;
+	Wed, 12 Jun 2024 15:47:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718206601; cv=none; b=b5HnIP04RdDhpdzzgRXVLeFHcKuDWdHzW/svOhXGiIyZGhnFPHPEbetdySqwsv/iG5hKCHzXmI58aLBkGbXlbp8RP/cwDeGE48s/xyA2BuLYQrNVdYs/euauU8cEWbvBwlsKGIo9of5YcaSZLeZmRBckRHpzWAD2vuG77VajzQ8=
+	t=1718207265; cv=none; b=UNsoko0/78auhNQrD8urD4Ib7rK6/elCCmCstZaFp1PutZF6iRykHAsGVCM/kJQMtnRkL2v/3QigjQduSxdqJsNJUD9xt8W3jesyFZj7Hr78F1dcg/H8i2y1ptjm4HnY3j+W9m/waF8G2xt7TyjnNuAyqQtlrBQ/F3plqa21wH0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718206601; c=relaxed/simple;
-	bh=nz4BpgguzJhtHURNnoc0reqvT2I+OiSHY3FDluRV4k4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Wvbqh8zSR4csks6p2nyvWmM2axOjfVfcHXJaoDShfjDQ1SBfgDrtBe94jmwNptQEcTThDOB2vg+CSIynzL1bT6PqcepUztx6SOo/oAbNWOgXfMXeaALBP+nret3x8p458wIIFb6lsHTs+czd2CrB519Wf0hqKL6hJBq3VltKSa4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=motorola.com; spf=pass smtp.mailfrom=motorola.com; dkim=pass (2048-bit key) header.d=motorola.com header.i=@motorola.com header.b=oe/euHPF; arc=none smtp.client-ip=148.163.152.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=motorola.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=motorola.com
-Received: from pps.filterd (m0355091.ppops.net [127.0.0.1])
-	by mx0b-00823401.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 45CAms5j020496;
-	Wed, 12 Jun 2024 15:36:16 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=motorola.com; h=
-	cc:content-type:date:from:in-reply-to:message-id:mime-version
-	:references:subject:to; s=DKIM202306; bh=nz4BpgguzJhtHURNnoc0req
-	vT2I+OiSHY3FDluRV4k4=; b=oe/euHPFWwNhDAEh4fKrns3LLO6/u6Ero1z73Mq
-	YUyZMHyqoRQz64m2omqS/4X1pHj25rtVMC3WJmDaqd+herb6bQ4Vdd7kcI7ICGAj
-	3b6BLy+1t05UP89dsWzkdgfGj2EwE037+35/13juv5xVzlsnbOhNbBjI8wUBKc8n
-	XhJGjg5tRERJYlWSpQjxdMhGKdAItbnT1fmvo9xXgRB8bfsKIMX+f7i9wywRvT70
-	+r5WUHhOE1g6C9BOcP2YNAwucCo6XSV90iTzWNtUpv5heV9ZjJDSYwu3WlpIs+F+
-	aiyazZvAFVvBFfoUWgukSBO4RmIXEU2raUKtXgNcjwwMu7A==
-Received: from va32lpfpp01.lenovo.com ([104.232.228.21])
-	by mx0b-00823401.pphosted.com (PPS) with ESMTPS id 3yn4dffmc7-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 12 Jun 2024 15:36:16 +0000 (GMT)
-Received: from va32lmmrp01.lenovo.com (va32lmmrp01.mot.com [10.62.177.113])
-	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by va32lpfpp01.lenovo.com (Postfix) with ESMTPS id 4VzqQ73vL2zhWBC;
-	Wed, 12 Jun 2024 15:36:15 +0000 (UTC)
-Received: from ilclasset02 (ilclasset02.mot.com [100.64.49.13])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: mbland)
-	by va32lmmrp01.lenovo.com (Postfix) with ESMTPSA id 4VzqQ70KzSz2VZRt;
-	Wed, 12 Jun 2024 15:36:15 +0000 (UTC)
-Date: Wed, 12 Jun 2024 10:36:13 -0500
-From: Maxwell Bland <mbland@motorola.com>
-To: Catalin Marinas <catalin.marinas@arm.com>
-Cc: "open list:BPF [GENERAL] (Safe Dynamic Programs and Tools)" <bpf@vger.kernel.org>,
-        Will Deacon <will@kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
-        Yonghong Song <yonghong.song@linux.dev>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Zi Shen Lim <zlim.lnx@gmail.com>, Mark Rutland <mark.rutland@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Mark Brown <broonie@kernel.org>, linux-arm-kernel@lists.infradead.org,
-        open list <linux-kernel@vger.kernel.org>,
-        Josh Poimboeuf <jpoimboe@kernel.org>,
-        Puranjay Mohan <puranjay12@gmail.com>
-Subject: Re: [PATCH bpf-next v5 1/3] cfi: add C CFI type macro
-Message-ID: <7oe6pz5lktdbcr2zk4ldyxzio3qvmdokjzg3rf2iwhp7wxxhbt@l5yt7d4bj7bk>
-References: <mafwhrai2nz3u4wn4fu72kvzjm6krs57klc3qqvd2sz2mham6d@x4ukf6xqp4f4>
- <cwhnmpn5yvg6ma7mvjviy4p7z6gdoba57daeprpc4zcokfhpv2@44gvdmcfuspt>
- <Zmh7pIpTlexcCyOL@arm.com>
+	s=arc-20240116; t=1718207265; c=relaxed/simple;
+	bh=RcO8kJK1SPBxidMQCBZS6Nufe2pEKnWn1BExnfdFDhs=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=H5RBiW4jLym8vj659wwxhgGumRTWDTtjLtvKARwuNZ+bKSnrnMR62SQGWlXoPniqOLLkA0NaAqgFd+KLtl4fmjvhlaLmKmWq+ZrYM/Vu4/V/vBHpWsr54vdG6WxebUjBEVGUJUmSxw+koReJDsrSSwBTT0+7ilvhgYfSnwk1OTM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tUUDhFkB; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B8CCFC116B1;
+	Wed, 12 Jun 2024 15:47:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1718207264;
+	bh=RcO8kJK1SPBxidMQCBZS6Nufe2pEKnWn1BExnfdFDhs=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=tUUDhFkBvtiENrkhGjsuaqjXStFu2y4QmRyEz8Z44+BNeCUMT1FwXpmM/Z+ZWMWEt
+	 xzcTbt93S5t/Z2Gjbj8/IPxqyEriOfVzDPo8HuhM4xgnSUgcbkjoEHG3d2MQTSOFzv
+	 0qw54/7Zv6wsSjSdQQTHNp9M57WuCZdau/mlvGyNsjZNzhUF8fmviXzmsmm/taiwEh
+	 UVHIkfWuUcjER2VhozjXME73U59vBlXDJxWYNfGXzCU6uWRy+oqe9bZwHjAo8SrVfr
+	 B8TqlIFed1ii275iDSfF4yGkhIgvyJBVxzUfGA6GSAus8H08zqOCQJNpZ4tAB3Ft9h
+	 9EyHQ6Et14wWw==
+Message-ID: <12fd227b-5f6a-4929-baaa-7f657933cde6@kernel.org>
+Date: Wed, 12 Jun 2024 09:47:40 -0600
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Zmh7pIpTlexcCyOL@arm.com>
-X-Proofpoint-GUID: 0MjVgrLGjuDfbvWgV2mAwRymVMf5mVyA
-X-Proofpoint-ORIG-GUID: 0MjVgrLGjuDfbvWgV2mAwRymVMf5mVyA
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.680,FMLib:17.12.28.16
- definitions=2024-06-12_08,2024-06-12_02,2024-05-17_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 clxscore=1015
- priorityscore=1501 bulkscore=0 adultscore=0 spamscore=0 impostorscore=0
- phishscore=0 mlxlogscore=498 malwarescore=0 suspectscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2405170001 definitions=main-2406120112
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next v10 02/14] net: page_pool: create hooks for
+ custom page providers
+Content-Language: en-US
+To: Jason Gunthorpe <jgg@ziepe.ca>, Mina Almasry <almasrymina@google.com>
+Cc: Pavel Begunkov <asml.silence@gmail.com>, David Wei <dw@davidwei.uk>,
+ Christoph Hellwig <hch@infradead.org>, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+ linux-alpha@vger.kernel.org, linux-mips@vger.kernel.org,
+ linux-parisc@vger.kernel.org, sparclinux@vger.kernel.org,
+ linux-trace-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
+ bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
+ linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
+ "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+ Donald Hunter <donald.hunter@gmail.com>, Jonathan Corbet <corbet@lwn.net>,
+ Richard Henderson <richard.henderson@linaro.org>,
+ Ivan Kokshaysky <ink@jurassic.park.msu.ru>, Matt Turner
+ <mattst88@gmail.com>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+ "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+ Helge Deller <deller@gmx.de>, Andreas Larsson <andreas@gaisler.com>,
+ Jesper Dangaard Brouer <hawk@kernel.org>,
+ Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+ Steven Rostedt <rostedt@goodmis.org>, Masami Hiramatsu
+ <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+ Arnd Bergmann <arnd@arndb.de>, Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
+ Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman
+ <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
+ Yonghong Song <yonghong.song@linux.dev>,
+ John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
+ Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
+ Jiri Olsa <jolsa@kernel.org>, Steffen Klassert
+ <steffen.klassert@secunet.com>, Herbert Xu <herbert@gondor.apana.org.au>,
+ Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+ Shuah Khan <shuah@kernel.org>, Sumit Semwal <sumit.semwal@linaro.org>,
+ =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+ Yunsheng Lin <linyunsheng@huawei.com>, Shailend Chand <shailend@google.com>,
+ Harshitha Ramamurthy <hramamurthy@google.com>,
+ Shakeel Butt <shakeel.butt@linux.dev>, Jeroen de Borst
+ <jeroendb@google.com>, Praveen Kaligineedi <pkaligineedi@google.com>
+References: <eb237e6e-3626-4435-8af5-11ed3931b0ac@gmail.com>
+ <be2d140f-db0f-4d15-967c-972ea6586b5c@kernel.org>
+ <20240607145247.GG791043@ziepe.ca>
+ <45803740-442c-4298-b47e-2d87ae5a6012@davidwei.uk>
+ <54975459-7a5a-46ff-a9ae-dc16ceffbab4@gmail.com>
+ <20240610121625.GI791043@ziepe.ca>
+ <59443d14-1f1d-42bb-8be3-73e6e4a0b683@kernel.org>
+ <00c67cf0-2bf3-4eaf-b200-ffe00d91593b@gmail.com>
+ <20240610221500.GN791043@ziepe.ca>
+ <CAHS8izNRd=f=jHgrYKKfzgcU3JzkZA1NkZnbQM+hfYd8-0NyBQ@mail.gmail.com>
+ <20240612120602.GQ791043@ziepe.ca>
+From: David Ahern <dsahern@kernel.org>
+In-Reply-To: <20240612120602.GQ791043@ziepe.ca>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Tue, Jun 11, 2024 at 05:30:28PM GMT, Catalin Marinas wrote:
-> This patch is missing your signed-off-by (the same with the second
-> patch). Since you are submitting it, you should also add yours in
-> addition to the author's s-o-b.
+On 6/12/24 6:06 AM, Jason Gunthorpe wrote:
+> On Tue, Jun 11, 2024 at 11:09:15AM -0700, Mina Almasry wrote:
+> 
+>> Just curious: in Pavel's effort, io_uring - which is not a device - is
+>> trying to share memory with the page_pool, which is also not a device.
+>> And Pavel is being asked to wrap the memory in a dmabuf. Is dmabuf
+>> going to be the kernel's standard for any memory sharing between any 2
+>> components in the future, even when they're not devices?
+> 
+> dmabuf is how we are refcounting non-struct page memory, there is
+> nothing about it that says it has to be MMIO memory, or even that the
+> memory doesn't have struct pages.
+> 
+> All it says is that the memory is alive according to dmabuf
+> refcounting rules. And the importer obviously don't get to touch the
+> underlying folios, if any.
+> 
 
-I see, thank you Catalin. I have also fixed the compiler errors.
+In addition, the io_uring developers should be considering the use case
+of device memory. There is no reason for this design to be limited to
+host memory. io_uring should not care (it is not peeking inside the
+memory buffers); it is just memory references.
 
-Usually I would wait a week to resubmit, but since v5 took me a while to
-get out the door, I've pushed a new version here:
+One of io_uring's primary benefits is avoiding system calls. io_uring
+works with TCP sockets. Let it work with any dmabuf without concern of
+memory type. The performance benefits the Google crowd sees with system
+call based apps should be even better with io_uring.
 
-https://lore.kernel.org/all/illfkwuxwq3adca2h4shibz2xub62kku3g2wte4sqp7xj7cwkb@ckn3qg7zxjuv/
+Focus on primitives, building blocks with solid APIs for other
+subsystems to leverage and let them be wired up in ways you cannot
+imagine today.
 
-Maxwell
 
