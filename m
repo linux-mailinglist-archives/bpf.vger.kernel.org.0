@@ -1,183 +1,153 @@
-Return-Path: <bpf+bounces-31964-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-31965-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id AE414905998
-	for <lists+bpf@lfdr.de>; Wed, 12 Jun 2024 19:09:21 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 588A79059F1
+	for <lists+bpf@lfdr.de>; Wed, 12 Jun 2024 19:30:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 549DA2847EE
-	for <lists+bpf@lfdr.de>; Wed, 12 Jun 2024 17:09:20 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D5B9AB25B1C
+	for <lists+bpf@lfdr.de>; Wed, 12 Jun 2024 17:30:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E99E11822F1;
-	Wed, 12 Jun 2024 17:07:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4DA861836C3;
+	Wed, 12 Jun 2024 17:29:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ipCgHn1e"
+	dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b="cHTfEDbH"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f44.google.com (mail-wr1-f44.google.com [209.85.221.44])
+Received: from mail-yb1-f171.google.com (mail-yb1-f171.google.com [209.85.219.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D40ED28DB3;
-	Wed, 12 Jun 2024 17:07:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE46C183075
+	for <bpf@vger.kernel.org>; Wed, 12 Jun 2024 17:29:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718212044; cv=none; b=YpdWuzk5VcnwclnMLCKTzkUK2f5rk0Uc2LWzrfdWoBmM9vIFvXA4B6WGi/q8BWPZI5JgoF6013iigpBZyRTSxeTDsTJ8AQoiWiGKRS5Zo5NHzwvKlT8taugAGCNjL0ymxztL1OEbCEmNFZuZFu5LxeO5BzJNIf8dL213MB1nwIY=
+	t=1718213361; cv=none; b=Dn5NF8Im5yw9CmZ1UVdtfYZRim0Zgwvrxd3yde67RwzM7//n1zrvxnMLq/2Qfhn6uRRKl2z9eTnMdLWrvD50teje5TxzZ50vZTdCTe52i8ZYZFFazzgDN+DSYnga6HR3Vb3cz90l/xxejASQZs5AhcBSIbHStBhJytEjyFdgDXg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718212044; c=relaxed/simple;
-	bh=SKfMsfpuRskP07jTZ/SF0CfZ2NDTe3YEm/3ZVgENZfc=;
+	s=arc-20240116; t=1718213361; c=relaxed/simple;
+	bh=SqHXwxyX0hOMrGyXlbcSlWw9tiq1bd472LhKjNZO0j4=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=EgsIRE/Lutnirdh2faWtvDJKWTdu9Gpju7vf+MyuWpUOPBOrJb3MUpu/FTuTzCq19ccn1kK49So0rcFIbigZLhaIGiMCZSqiYFcg9e8rcn5y62dJWwYa2IU+bmGQY1C5w8qq2QnEfz5hvcpSrb1d0kcl+wFKDWZgQqpxWUXiCC4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ipCgHn1e; arc=none smtp.client-ip=209.85.221.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f44.google.com with SMTP id ffacd0b85a97d-35f2c0b7701so71094f8f.0;
-        Wed, 12 Jun 2024 10:07:22 -0700 (PDT)
+	 To:Cc:Content-Type; b=DT3upuRFUVuAHRJKiXIlPfYVG+XRHbWeA4VNrAJBF0oyif4BlJbMCJS3FH8CXKGkrxUPkOWBinfBz2rCHdpUpipwyzv4PqBngLNe78jgHpA+q+6oRaoOFune4mTjeYJ/ScWV1ejTOWJye5rkRYpVRmYsE1J7foA1Gs5/zbTXr9o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com; spf=pass smtp.mailfrom=paul-moore.com; dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b=cHTfEDbH; arc=none smtp.client-ip=209.85.219.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=paul-moore.com
+Received: by mail-yb1-f171.google.com with SMTP id 3f1490d57ef6-dfe398bc50dso109736276.2
+        for <bpf@vger.kernel.org>; Wed, 12 Jun 2024 10:29:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1718212041; x=1718816841; darn=vger.kernel.org;
+        d=paul-moore.com; s=google; t=1718213359; x=1718818159; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=ocpRwy0sziQcbAmBE7fGUEw2nPXigRY3R3IXpRSwnH0=;
-        b=ipCgHn1eQ+rSMNmPMdbOstbi0sIP2PygQTEmimVoCtoIHGuISwS5sev7qycV8jR+NG
-         d0LX/ketYMyPpB0DruUiahzlzsSb6cAJ0JEFlAiYVipGmbcc1BuAkZgoTkTBeiV5b3jC
-         6G8Sn41CcsFdWuyQIHfkLvjfTf139F62oYJiiO4FcZ/YVt6gw0TX5cmzJSqZQu8Og9JJ
-         Ga6drkL65HhwhZpB4+2xr70/m6z6jh2979l+C68V6AjVkXrSP45+HCFN/tEX5ny9pavL
-         Kvwukjm0YXwHrwEd+PTbQBryUV5k5VwSTbpMXYuflch/yzkjxPCKkTrYMINsdjVtmEAt
-         FHMA==
+        bh=60lvPuusqxavVhRXfVcmrSoiIVupdLi0rpCh21972os=;
+        b=cHTfEDbHk6HIEEn0Ouvd1wUDoXpMYFN/HZO3ahKHW+K15xPGFiMJcf8MVBZfy7Lndu
+         9B0gJUKFP12+r7Xc0M3Fq2RqW+bZgItpodmOakdof6kuTbSmAdWWeM2ubU1BlyQiebMb
+         MvuxAQamRDwQeIW9ZFBIcvc59CZMvSKdRtNzitNXU8JHVrEMDHNC/i5Yf9gBEwfkTVAI
+         KAIunmbnZvUDIKtLlMs0yrTuey7ImwDoH+0hvUxrPZx76Hy4yG9yQD5DOFiP9PpUxuj6
+         EIcmmCaIDNDCFGvrURI3v936AvRLS4oTV3eYPx2TdJldxRqJalPrHlTJbKC7D+B/tmAO
+         4PzQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1718212041; x=1718816841;
+        d=1e100.net; s=20230601; t=1718213359; x=1718818159;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=ocpRwy0sziQcbAmBE7fGUEw2nPXigRY3R3IXpRSwnH0=;
-        b=ub8Mx3xmBAtMminwPjmDrkfBa3FbCK1mZiWK+R8cVFsKYd2Ql3+fYE+uKwz/3+K1Ks
-         Kbe+6mQPjkD6wk6iodagWj8owmSJms/Y8Jd6IDQgi8v26UOD3t75lXWAz4UdOMpCMb3O
-         n4QZcbDIVvtq74DeIj1q29dQq/14WfozCcg+NkWObz7g7uunxhXrFJQiQuy0VRAhENoO
-         CINsR+L+4HynFZdoHK7T9bVn9sPFI+umrqwvoRd2YbTMg9gXBo8/EIoDUcqmxF8Mkqtu
-         EK/5TUFU0QBbW3O9fuvkHBJX3PWGW1R6+EVYEoHV1Fg0MPD0lfnOweyzY4GZHVmaRuZT
-         R1MQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUw1P74wX/vtylHTgaMYVIdZ8DrKDBJFRrnOsEhHQY2IRyie2DAxst8EBNvNxXaUG3s7AHsue79/kXcef2yjlotbxV0lZuZpQrWB39g
-X-Gm-Message-State: AOJu0Yy0PHSWC7PYoYqc7CjtaAQAxHPWk/SLgXMA8K4WbKTGeJxwD4Ef
-	wC01XeFdbSXB7BqgqIG1TLVJRcdA1YukwRVqu+2VK1CrpL56TvqnLnDZYbQQzPfUCTdL9HyNhff
-	21vEUC41iL90wrs2YqX9yuCH8cl8=
-X-Google-Smtp-Source: AGHT+IERoFKlnMaUF+4foCYqq43qTtaHP4TR84rV3QZZFDG2tb5uh4VE5BV3+RDtYRHCD1c49Em/Q15dWxNBGcUASIE=
-X-Received: by 2002:adf:f748:0:b0:35f:10b2:b588 with SMTP id
- ffacd0b85a97d-360718defc4mr314071f8f.18.1718212040907; Wed, 12 Jun 2024
- 10:07:20 -0700 (PDT)
+        bh=60lvPuusqxavVhRXfVcmrSoiIVupdLi0rpCh21972os=;
+        b=t7rjrUKIAq3Tj7kTzm3vsKcaGALomWiYFnFHCoIKys/zgj6rh56JQCkH6rvdUBfnIc
+         VjpoP09lgGF8zR40QMVicgWJsL7C8LB15oZuu30nDoiQuBFPRMhd6JJVj4yOMHxh44dv
+         OE9ETZuBlj8dlVyE1VYatvuB/79UAxFtkQLIz3QpqApAz1QW3KGiW9oAD6r0SwBuldFc
+         I03qobGbFAoc0uzjUiWFFU9MV4vc1O4N1ePN0TQXXqlse10Z07mDsjfAkQny3LMfh2DN
+         AmDyEX1/nmWP5OLdKGVi1EkfwWx7mY5TfoOWJ3wYXLlM7TIhk4KEoV5lJM4eM6DRIvMg
+         3Fqg==
+X-Forwarded-Encrypted: i=1; AJvYcCVGwyGPP5DmCsmeI8YPJrlZRxG4csmmCNEz42K+ObxdDRF97rtFSWoMyORGhx+G9q9Y4xfavahliXNFyByKeTxstluc
+X-Gm-Message-State: AOJu0YwOMPA0msiwGzmmWl6LftD9Pp9TgAikDCPArFdRaRLF01qd5p/m
+	9YsDOWufjQdMCpCvFWERoDsPd0tz4b6Iqm/Xz8eJpoViJZS3HnHk8AaVuRhGSn9qGO33aodXKyU
+	K7pNZza6glNBirH+I6cWzhRNkSI0zWsifT6O6
+X-Google-Smtp-Source: AGHT+IEhGQzLLgCG9zMe0EWuDP1y2oVPtsHywKe/9At+CIXkctODudh6oHfrQfYIPwmYuFhbkIgUb9iq6CY+5R6qw6E=
+X-Received: by 2002:a25:7:0:b0:de6:1695:13a3 with SMTP id 3f1490d57ef6-dfe62f1a60dmr2505543276.0.1718213358736;
+ Wed, 12 Jun 2024 10:29:18 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <illfkwuxwq3adca2h4shibz2xub62kku3g2wte4sqp7xj7cwkb@ckn3qg7zxjuv> <c6fsgv7bjt2d2ejz2uuin2g475fkvpyenp32wehdqlcf6ihqgx@5gicsaw4u37f>
-In-Reply-To: <c6fsgv7bjt2d2ejz2uuin2g475fkvpyenp32wehdqlcf6ihqgx@5gicsaw4u37f>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Wed, 12 Jun 2024 10:07:09 -0700
-Message-ID: <CAADnVQK6Vh-pv_ewS0RjBBfL5KUsMXpdMNFvv5F0OPWzABEsAw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v6 3/3] arm64/cfi,bpf: Use DEFINE_CFI_TYPE in arm64
-To: Maxwell Bland <mbland@motorola.com>
-Cc: "open list:BPF [GENERAL] (Safe Dynamic Programs and Tools)" <bpf@vger.kernel.org>, Catalin Marinas <catalin.marinas@arm.com>, 
-	Will Deacon <will@kernel.org>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+References: <20240609104355.442002-1-jcalmels@3xx0.net> <20240609104355.442002-5-jcalmels@3xx0.net>
+ <CAHC9VhT5XWbhoY2Nw5jQz4GxpDriUdHw=1YsQ4xLVUtSnFxciA@mail.gmail.com>
+ <z2bgjrzeq7crqx24chdbxnaanuhczbjnq6da3xw6al6omjj5xz@mqbzzzfva5sw>
+ <887a3658-2d8d-4f9e-98f2-27124bb6f8e6@canonical.com> <CAHC9VhQFNPJTOct5rUv3HT6Z2S20mYdW75seiG8no5=fZd7JjA@mail.gmail.com>
+ <uuvwcdsy7o4ulmrdzwffr6uywfacmlkjrontmjdj44luantpok@dtatxaa6tzyv>
+ <CAHC9VhRnthf8+KgfuzFHXWEAc9RShDO0G_g0kc1OJ-UTih1ywg@mail.gmail.com> <rgzhcsblub7wedm734n56cw2qf6czjb4jgck6l5miur6odhovo@n5tgrco74zce>
+In-Reply-To: <rgzhcsblub7wedm734n56cw2qf6czjb4jgck6l5miur6odhovo@n5tgrco74zce>
+From: Paul Moore <paul@paul-moore.com>
+Date: Wed, 12 Jun 2024 13:29:06 -0400
+Message-ID: <CAHC9VhRGJTND25MFk4gR-FGxoLhMmgUrMpz_YoMFOwL6kr28zQ@mail.gmail.com>
+Subject: Re: [PATCH v2 4/4] bpf,lsm: Allow editing capabilities in BPF-LSM hooks
+To: Jonathan Calmels <jcalmels@3xx0.net>
+Cc: John Johansen <john.johansen@canonical.com>, brauner@kernel.org, ebiederm@xmission.com, 
+	Jonathan Corbet <corbet@lwn.net>, James Morris <jmorris@namei.org>, "Serge E. Hallyn" <serge@hallyn.com>, 
+	KP Singh <kpsingh@kernel.org>, Matt Bobrowski <mattbobrowski@google.com>, 
+	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
 	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
 	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
 	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
-	Jiri Olsa <jolsa@kernel.org>, Zi Shen Lim <zlim.lnx@gmail.com>, 
-	Mark Rutland <mark.rutland@arm.com>, Suzuki K Poulose <suzuki.poulose@arm.com>, 
-	Mark Brown <broonie@kernel.org>, 
-	linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, 
-	open list <linux-kernel@vger.kernel.org>, Josh Poimboeuf <jpoimboe@kernel.org>, 
-	Puranjay Mohan <puranjay12@gmail.com>
+	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Luis Chamberlain <mcgrof@kernel.org>, Kees Cook <kees@kernel.org>, 
+	Joel Granados <j.granados@samsung.com>, David Howells <dhowells@redhat.com>, 
+	Jarkko Sakkinen <jarkko@kernel.org>, Stephen Smalley <stephen.smalley.work@gmail.com>, 
+	Ondrej Mosnacek <omosnace@redhat.com>, Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>, 
+	containers@lists.linux.dev, linux-kernel@vger.kernel.org, 
+	linux-fsdevel@vger.kernel.org, linux-doc@vger.kernel.org, 
+	linux-security-module@vger.kernel.org, bpf@vger.kernel.org, 
+	apparmor@lists.ubuntu.com, keyrings@vger.kernel.org, selinux@vger.kernel.org, 
+	linux-kselftest@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Jun 12, 2024 at 8:32=E2=80=AFAM Maxwell Bland <mbland@motorola.com>=
- wrote:
->
-> Corrects Puranjay Mohan's commit to adopt Mark Rutland's
-> suggestion of using a C CFI type macro in kCFI+BPF.
->
-> Signed-off-by: Maxwell Bland <mbland@motorola.com>
-> ---
->  arch/arm64/kernel/alternative.c | 46 ++++-----------------------------
->  1 file changed, 5 insertions(+), 41 deletions(-)
->
-> diff --git a/arch/arm64/kernel/alternative.c b/arch/arm64/kernel/alternat=
-ive.c
-> index 1715da7df137..d7a58eca7665 100644
-> --- a/arch/arm64/kernel/alternative.c
-> +++ b/arch/arm64/kernel/alternative.c
-> @@ -8,6 +8,7 @@
->
->  #define pr_fmt(fmt) "alternatives: " fmt
->
-> +#include <linux/cfi_types.h>
->  #include <linux/init.h>
->  #include <linux/cpu.h>
->  #include <linux/elf.h>
-> @@ -302,53 +303,16 @@ EXPORT_SYMBOL(alt_cb_patch_nops);
->
->  #ifdef CONFIG_CFI_CLANG
->  struct bpf_insn;
-> -
->  /* Must match bpf_func_t / DEFINE_BPF_PROG_RUN() */
->  extern unsigned int __bpf_prog_runX(const void *ctx,
->                                     const struct bpf_insn *insn);
-> -
-> -/*
-> - * Force a reference to the external symbol so the compiler generates
-> - * __kcfi_typid.
-> - */
-> -__ADDRESSABLE(__bpf_prog_runX);
-> -
-> -/* u32 __ro_after_init cfi_bpf_hash =3D __kcfi_typeid___bpf_prog_runX; *=
-/
-> -asm (
-> -"      .pushsection    .data..ro_after_init,\"aw\",@progbits   \n"
-> -"      .type   cfi_bpf_hash,@object                            \n"
-> -"      .globl  cfi_bpf_hash                                    \n"
-> -"      .p2align        2, 0x0                                  \n"
-> -"cfi_bpf_hash:                                                 \n"
-> -"      .word   __kcfi_typeid___bpf_prog_runX                   \n"
-> -"      .size   cfi_bpf_hash, 4                                 \n"
-> -"      .popsection                                             \n"
-> -);
-> -
-> +DEFINE_CFI_TYPE(cfi_bpf_hash, __bpf_prog_runX);
->  /* Must match bpf_callback_t */
->  extern u64 __bpf_callback_fn(u64, u64, u64, u64, u64);
-> -
-> -__ADDRESSABLE(__bpf_callback_fn);
-> -
-> -/* u32 __ro_after_init cfi_bpf_subprog_hash =3D __kcfi_typeid___bpf_call=
-back_fn; */
-> -asm (
-> -"      .pushsection    .data..ro_after_init,\"aw\",@progbits   \n"
-> -"      .type   cfi_bpf_subprog_hash,@object                    \n"
-> -"      .globl  cfi_bpf_subprog_hash                            \n"
-> -"      .p2align        2, 0x0                                  \n"
-> -"cfi_bpf_subprog_hash:                                         \n"
-> -"      .word   __kcfi_typeid___bpf_callback_fn                 \n"
-> -"      .size   cfi_bpf_subprog_hash, 4                         \n"
-> -"      .popsection                                             \n"
-> -);
-> -
-> +DEFINE_CFI_TYPE(cfi_bpf_subprog_hash, __bpf_callback_fn);
->  u32 cfi_get_func_hash(void *func)
->  {
-> -       u32 hash;
-> -
-> -       if (get_kernel_nofault(hash, func - cfi_get_offset()))
-> -               return 0;
-> -
-> -       return hash;
-> +       u32 *hashp =3D func - cfi_get_offset();
-> +       return READ_ONCE(*hashp);
+On Wed, Jun 12, 2024 at 4:15=E2=80=AFAM Jonathan Calmels <jcalmels@3xx0.net=
+> wrote:
+> On Tue, Jun 11, 2024 at 06:38:31PM GMT, Paul Moore wrote:
+> > On Tue, Jun 11, 2024 at 6:15=E2=80=AFPM Jonathan Calmels <jcalmels@3xx0=
+.net> wrote:
 
-Please avoid the code churn.
-Just squash it into the previous patch.
+...
 
-pw-bot: cr
+> > > Arguably, if we do want fine-grained userns policies, we need LSMs to
+> > > influence the userns capset at some point.
+> >
+> > One could always use, or develop, a LSM that offers additional
+> > controls around exercising capabilities.  There are currently four
+> > in-tree LSMs, including the capabilities LSM, which supply a
+> > security_capable() hook that is used by the capability-based access
+> > controls in the kernel; all of these hook implementations work
+> > together within the LSM framework and provide an additional level of
+> > control/granularity beyond the existing capabilities.
+>
+> Right, but the idea was to have a simple and easy way to reuse/trigger
+> as much of the commoncap one as possible from BPF. If we're saying we
+> need to reimplement and/or use a whole new framework, then there is
+> little value.
+
+I can appreciate how allowing direct manipulation of capability bits
+from a BPF LSM looks attractive, but my hope is that our discussion
+here revealed that as you look deeper into making it work there are a
+number of pitfalls which prevent this from being a safe option for
+generalized systems.
+
+> TBH, I don't feel strongly about this, which is why it is absent from
+> v1. However, as John pointed out, we should at least be able to modify
+> the blob if we want flexible userns caps policies down the road.
+
+As discussed in this thread, there are existing ways to provide fine
+grained control over exercising capabilities that can be safely used
+within the LSM framework.  I don't want to speak to what John is
+envisioning, but he should be aware of these mechanisms, and if I
+recall he did voice a level of concern about the same worries I
+mentioned.
+
+I'm happy to discuss ways in which we can adjust the LSM hooks/layer
+to support different approaches to capability controls, but one LSM
+directly manipulating the state of another is going to be a no vote
+from me.
+
+--=20
+paul-moore.com
 
