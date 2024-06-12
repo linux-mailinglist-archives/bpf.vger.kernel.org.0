@@ -1,120 +1,119 @@
-Return-Path: <bpf+bounces-31967-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-31968-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 244E6905A58
-	for <lists+bpf@lfdr.de>; Wed, 12 Jun 2024 20:08:12 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9B0D0905A6F
+	for <lists+bpf@lfdr.de>; Wed, 12 Jun 2024 20:10:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 82C65284702
-	for <lists+bpf@lfdr.de>; Wed, 12 Jun 2024 18:08:10 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 44F451F22947
+	for <lists+bpf@lfdr.de>; Wed, 12 Jun 2024 18:10:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D62C1822FE;
-	Wed, 12 Jun 2024 18:08:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 906CC183079;
+	Wed, 12 Jun 2024 18:10:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OOcF6+Ys"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TWUF0D7I"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f53.google.com (mail-wr1-f53.google.com [209.85.221.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1CFC9181312;
-	Wed, 12 Jun 2024 18:07:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0155316E895;
+	Wed, 12 Jun 2024 18:10:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718215681; cv=none; b=H0p1twHCsX02vc7otRFook1JXJsvkyq/SfWv0VMbNGeR2JNsDE59iD9Vngp9nVmjbpSOiT+SiLyXPSIM8wo3Y0mIhabGaBbcdm4AzFjGozF1kK1fT/eOb7vG5Rm1Ihybx7p0BvRspvYvX1nqbjuTsq1yTNkNPhcQINSomTSI8sE=
+	t=1718215833; cv=none; b=WPrZ7wkWwzbKnTc0ORFVCElEiBwQcs54bK2pK3HYezLHQqhdxSz8LjvBFYHhJ79XRmA8gj3AWiWNgDuC+n6XV57rUyHShKxJ17Xnc7W/LerwbXFmkMFs2iCvkf9Ywm/khxW/tYHWrqOgviEJhDRtLpQsPFIOLcGGHoGIo1P7c4Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718215681; c=relaxed/simple;
-	bh=UvHxczzQg4EGAxqN7YDDFJiegaC39sY8/1yzi4kLlVY=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=d8gIlH5sjxxwkxeGCHhzezaMGUEz3p5wEC2wH43TXSAsQFI+Fq5hUaPiLHDZo+XYJhyAO1EPvzpUOyVgHBgLCPj8+5VTY971telrbDtyM7MM0fgcliL8NiKzV5GxsM9PGIGGFP4sf7gt/TnFI5WpqqhDPfSQdRvUBA3SFp9xGfs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OOcF6+Ys; arc=none smtp.client-ip=209.85.221.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f53.google.com with SMTP id ffacd0b85a97d-35f225ac23bso184764f8f.0;
-        Wed, 12 Jun 2024 11:07:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1718215678; x=1718820478; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=j2KvIJWno4Stgu8w7sh9JsxW4Akq08TY0yFh2XkaJLI=;
-        b=OOcF6+YsiTr/1sFCIQFd6D4FgwMkZxOCpBSyT5HdiiROAOavGUsxlr1UNW7j4vHQf2
-         QN9ZHQ81fR4tBqYjDVK84wC619MHXL29O94LHQPLrH20L2Jbfma144pQqP50N78qeAyA
-         hJ6aTjdjsT83bM2rbDA6XrqHXk+TdzLmOqR72cTBr+Bj2TtmOGm0XLAokrvAeg7SKt4n
-         yU0CdLDPanBXmxeSgm660thoK7WESKxmnHV48ynXYa7RbabYC/KAfoZGQCaylr8/l4df
-         4srOaLadqrGyz5t5TO7RMxVWOJ9NuXmRGqRSGDsXjuwkaLxeY9KYlH4LSvvy23pRnu4R
-         m/VQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1718215678; x=1718820478;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=j2KvIJWno4Stgu8w7sh9JsxW4Akq08TY0yFh2XkaJLI=;
-        b=rKs/iozrhoW1R6eRcamFp784sNA76k6eTIdVD8tjazCulUTkrWOfNYPfPdlU6HfmyK
-         SK/eiHEcfbIbYP65IPWmGUkmqIUJQfpIdrv9dbUrmcYsmiTEt0tkSPV1NvqFJA+j0VYh
-         3vhkEK9m4lyMLXZjZlYRS6MPpeYp2WFENoZEzNhcQLiy87qlieCp90akmPfXklBVqw/i
-         lk7ks6DhFA3t+HDFameLWtTzoces2/FYltmlCd5EhD1sUhS+uIA9qC2p1TvHnrllKs89
-         ANpzdrN9btSTl5crbESGTEGC7Be+jgZihOcrjnkTfLe7Sh8jlzyuTcoTP6/5HduzPocf
-         w6hQ==
-X-Forwarded-Encrypted: i=1; AJvYcCX7UVJiMZpyi93Q8kWRPn9mB7jDcHOHsUNgcmLjBmEdMuBOVrNeZGV6zKsaY+/ktUzg8/YOzpdO3LeQbQB3T7Bq8G9YLY0wBpagvT2qwP1lehdVk/v1PQw9aAi2a2DvnOIopK0N3+dVTlb1NGs/jgNVXn90lWn4f05D
-X-Gm-Message-State: AOJu0YxoOfuUWQKk3y0VHMYPoT1pBdTADoUzuVbDx/4JwT6DPVMC0oWp
-	pDz1E0QmJL1N5MojVShDi8p32mtecwcB1RDdw90nNNB9IpoNxXFGuBidL5jzwL2jmQjVIK0XUpW
-	eU8kbeA3R1vrAqC2pRJg1SPX5A/Y=
-X-Google-Smtp-Source: AGHT+IFagaa3094jY436YOqfT/9pajpP6WHk7dIsYvtAxQJkEJx4qhjJqT33Ynz5duEVjwU+cavBJQtRxGSDQ4sDvkU=
-X-Received: by 2002:adf:ecd1:0:b0:360:7280:9cbd with SMTP id
- ffacd0b85a97d-36072809e11mr54163f8f.34.1718215678437; Wed, 12 Jun 2024
- 11:07:58 -0700 (PDT)
+	s=arc-20240116; t=1718215833; c=relaxed/simple;
+	bh=zxGx4UHWoFeslODIvuI4YPtEigCLjSm31dy2cb55Oz4=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=k4WKtG1kg0Gc9Q2LcQ0Z1xIzyHOihsI5lZtYZnjfOgHQQW04/HcdG/bE3IAA3UoxBZ5/P2ruELUGdffvubs9WehZOHIgsM9eczE3SoMza1Ny+eIdGGMSF4VFjLHU57wWCAo0fotAdtMJacxwAKtH+k0uHDmZjFpXp4dU0RByN6M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TWUF0D7I; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 72475C32786;
+	Wed, 12 Jun 2024 18:10:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1718215831;
+	bh=zxGx4UHWoFeslODIvuI4YPtEigCLjSm31dy2cb55Oz4=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=TWUF0D7IRN5Vo2R7IFWkPtDTNF++1BL+Rgac5joXi+V6G+etTmFy8BLu+h6L7ExVi
+	 So01cJN5cilVjQ+l2BOZRbCDzBz4l0jx/528FVGADA91iX16nEcQqhk7C+I3XC2HK7
+	 h8YY+rz3VaV27PABMQPe+XFO0A3f09JiU6xuOpIhAcnYGpceK3myDMpXIhk8UsbUdW
+	 44QYK4zDYozKR6bdgJ0AuhU4boMkic+TRxvaa7l46+NcC0mz6N2MBj6oFYUg2r+kni
+	 oNTBDRvYmIZCWXND1t6CZDNcgogj3r8+3POtzOg865W7XV0bEc8neCi90WXcaEyIdz
+	 QYprE511ev6Tw==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 58136C43618;
+	Wed, 12 Jun 2024 18:10:31 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240612085823.28133-1-kunyu@nfschina.com>
-In-Reply-To: <20240612085823.28133-1-kunyu@nfschina.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Wed, 12 Jun 2024 11:07:46 -0700
-Message-ID: <CAADnVQLcT3dqtapsYYFAtY9rU8A7RB4aoUvbOweobOGZkbj9+A@mail.gmail.com>
-Subject: Re: [PATCH] x86: net: bpf_jit_comp32: Remove unused 'cnt' variables
- from most functions
-To: kunyu <kunyu@nfschina.com>
-Cc: "David S. Miller" <davem@davemloft.net>, David Ahern <dsahern@kernel.org>, 
-	Wang YanQing <udknight@gmail.com>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Eddy Z <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
-	Jiri Olsa <jolsa@kernel.org>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, 
-	Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>, X86 ML <x86@kernel.org>, 
-	"H. Peter Anvin" <hpa@zytor.com>, Network Development <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>, 
-	LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf-next v5 00/12] bpf: Support dumping kfunc prototypes from
+ BTF
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <171821583135.29771.8486292481897939634.git-patchwork-notify@kernel.org>
+Date: Wed, 12 Jun 2024 18:10:31 +0000
+References: <cover.1718207789.git.dxu@dxuuu.xyz>
+In-Reply-To: <cover.1718207789.git.dxu@dxuuu.xyz>
+To: Daniel Xu <dxu@dxuuu.xyz>
+Cc: bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
+ linux-kernel@vger.kernel.org, fsverity@lists.linux.dev, andrii@kernel.org,
+ jolsa@kernel.org, linux-kbuild@vger.kernel.org,
+ linux-trace-kernel@vger.kernel.org, netdev@vger.kernel.org,
+ olsajiri@gmail.com, quentin@isovalent.com, alan.maguire@oracle.com,
+ acme@kernel.org, eddyz87@gmail.com, kernel-team@meta.com
 
-On Wed, Jun 12, 2024 at 1:59=E2=80=AFAM kunyu <kunyu@nfschina.com> wrote:
->
-> In these functions, the 'cnt' variable is not used or does not require
-> value checking, so these 'cnt' variables can be removed.
->
-> Signed-off-by: kunyu <kunyu@nfschina.com>
-> ---
->  arch/x86/net/bpf_jit_comp32.c | 27 ++-------------------------
->  1 file changed, 2 insertions(+), 25 deletions(-)
->
-> diff --git a/arch/x86/net/bpf_jit_comp32.c b/arch/x86/net/bpf_jit_comp32.=
-c
-> index de0f9e5f9f73..30f9b8a3faed 100644
-> --- a/arch/x86/net/bpf_jit_comp32.c
-> +++ b/arch/x86/net/bpf_jit_comp32.c
-> @@ -207,7 +207,6 @@ static inline void emit_ia32_mov_i(const u8 dst, cons=
-t u32 val, bool dstk,
->                                    u8 **pprog)
->  {
->         u8 *prog =3D *pprog;
-> -       int cnt =3D 0;
+Hello:
 
-I don't think you bothered to compile it.
+This series was applied to bpf/bpf-next.git (master)
+by Alexei Starovoitov <ast@kernel.org>:
 
-pw-bot: cr
+On Wed, 12 Jun 2024 09:58:24 -0600 you wrote:
+> This patchset enables both detecting as well as dumping compilable
+> prototypes for kfuncs.
+> 
+> The first commit instructs pahole to DECL_TAG kfuncs when available.
+> This requires v1.27 which was released on 6/11/24. With it, users will
+> be able to look at BTF inside vmlinux (or modules) and check if the
+> kfunc they want is available.
+> 
+> [...]
+
+Here is the summary with links:
+  - [bpf-next,v5,01/12] kbuild: bpf: Tell pahole to DECL_TAG kfuncs
+    https://git.kernel.org/bpf/bpf-next/c/ebb79e96f1ea
+  - [bpf-next,v5,02/12] bpf: selftests: Fix bpf_iter_task_vma_new() prototype
+    https://git.kernel.org/bpf/bpf-next/c/718135f5bd24
+  - [bpf-next,v5,03/12] bpf: selftests: Fix fentry test kfunc prototypes
+    https://git.kernel.org/bpf/bpf-next/c/dff96e4f5078
+  - [bpf-next,v5,04/12] bpf: selftests: Fix bpf_cpumask_first_zero() kfunc prototype
+    https://git.kernel.org/bpf/bpf-next/c/89f0b1abac49
+  - [bpf-next,v5,05/12] bpf: selftests: Fix bpf_map_sum_elem_count() kfunc prototype
+    https://git.kernel.org/bpf/bpf-next/c/ac42f636dc11
+  - [bpf-next,v5,06/12] bpf: Make bpf_session_cookie() kfunc return long *
+    https://git.kernel.org/bpf/bpf-next/c/2b8dd87332cd
+  - [bpf-next,v5,07/12] bpf: selftests: Namespace struct_opt callbacks in bpf_dctcp
+    https://git.kernel.org/bpf/bpf-next/c/0ce089cbdc6a
+  - [bpf-next,v5,08/12] bpf: verifier: Relax caller requirements for kfunc projection type args
+    https://git.kernel.org/bpf/bpf-next/c/ec209ad86324
+  - [bpf-next,v5,09/12] bpf: treewide: Align kfunc signatures to prog point-of-view
+    https://git.kernel.org/bpf/bpf-next/c/cce4c40b9606
+  - [bpf-next,v5,10/12] bpf: selftests: nf: Opt out of using generated kfunc prototypes
+    https://git.kernel.org/bpf/bpf-next/c/f709124dd72f
+  - [bpf-next,v5,11/12] bpf: selftests: xfrm: Opt out of using generated kfunc prototypes
+    https://git.kernel.org/bpf/bpf-next/c/c567cba34585
+  - [bpf-next,v5,12/12] bpftool: Support dumping kfunc prototypes from BTF
+    https://git.kernel.org/bpf/bpf-next/c/770abbb5a25a
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
 
