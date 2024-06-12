@@ -1,111 +1,112 @@
-Return-Path: <bpf+bounces-31948-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-31949-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E4CE89057E6
-	for <lists+bpf@lfdr.de>; Wed, 12 Jun 2024 18:01:30 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 30AEA9057F0
+	for <lists+bpf@lfdr.de>; Wed, 12 Jun 2024 18:02:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 67CC8288E05
-	for <lists+bpf@lfdr.de>; Wed, 12 Jun 2024 16:01:29 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5821BB260B1
+	for <lists+bpf@lfdr.de>; Wed, 12 Jun 2024 16:01:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 81EB41836F0;
-	Wed, 12 Jun 2024 15:59:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AADEB16D4F6;
+	Wed, 12 Jun 2024 15:59:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b="PIaB6Z74";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="G0wZQ+Wx"
+	dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b="Mei5pO4S";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="lsTkyBaE"
 X-Original-To: bpf@vger.kernel.org
-Received: from wflow4-smtp.messagingengine.com (wflow4-smtp.messagingengine.com [64.147.123.139])
+Received: from wfout6-smtp.messagingengine.com (wfout6-smtp.messagingengine.com [64.147.123.149])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 982FE1836C8;
-	Wed, 12 Jun 2024 15:59:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.139
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F81F184100;
+	Wed, 12 Jun 2024 15:59:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.149
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718207954; cv=none; b=ShMLjqLbUv/+Dr14NIR33kvUs51dYyW2kZ7mHM7QqxrHj3L0aUMinwE601ys4/fK+UGgczKf5ZijXGOmkhRWbT4NDbi3EhfSocOIZuYdVYG/I9CyO0lPlUE/ET5U85ucGgUiLwxNFH7JX63AVjI9lHPl7c+yjqBpTFKrM0xww3Y=
+	t=1718207958; cv=none; b=EbfH2lVTfLq0lLBKEJeMW+LX62rvtHdASZ/Hhey8vlj5ESdIt7PqXaeqv7963mNqvzzGShTNK+kXLqvss1813ojUMq/HShCx+i9QLwNX0RJm+WydoY4/PljZR4ut54czgOJ1ovZjnV/Q9V82kyNbQWjv5dVSrbvB5A+xt9V+aNg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718207954; c=relaxed/simple;
-	bh=ijnUl0Hs27kSZo5nKTCwOlVMiTcVZASzt7fhb1OM00o=;
+	s=arc-20240116; t=1718207958; c=relaxed/simple;
+	bh=IfFlcVkbzIPvggXb24hyNdkZRJ2Jg5qhR39WWU95QM0=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=YqTdo2ByYzZtH2zbOkLBcf7nrM25nNavkDym6GiDnLHspXjVNGioNuhKctdpQIGvj8RzmeSLMNAnQg/IXUHGpy5saJVXqyW2dIYV5VsA4vcpHbRvbndsWMxPfOTdC/FfNpdKNu/c4JEx6UqCgN7NiH4Lm54HfXXqXJKzkx3lYBQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz; spf=pass smtp.mailfrom=dxuuu.xyz; dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b=PIaB6Z74; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=G0wZQ+Wx; arc=none smtp.client-ip=64.147.123.139
+	 MIME-Version; b=Uy4LvgcYKDkklCrtK0G0NmiVsC+L7rImTj8VxUqOditIFKa4oP9/sxNwR86o27shxqlMEW8UpXHKL4WYr0X5oWdMVyAXZG+0Udavf3HS463e8mfG7tKj//DcOPE1SCXNy47lYfCcVQbvCiU+l4WIBqXlOsuV51kvw8tBXAT1gsc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz; spf=pass smtp.mailfrom=dxuuu.xyz; dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b=Mei5pO4S; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=lsTkyBaE; arc=none smtp.client-ip=64.147.123.149
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dxuuu.xyz
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-	by mailflow.west.internal (Postfix) with ESMTP id 7DFF42CC0175;
-	Wed, 12 Jun 2024 11:59:10 -0400 (EDT)
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+	by mailfout.west.internal (Postfix) with ESMTP id 6C30E1C0017B;
+	Wed, 12 Jun 2024 11:59:14 -0400 (EDT)
 Received: from mailfrontend1 ([10.202.2.162])
-  by compute5.internal (MEProxy); Wed, 12 Jun 2024 11:59:12 -0400
+  by compute1.internal (MEProxy); Wed, 12 Jun 2024 11:59:16 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
 	:cc:content-transfer-encoding:content-type:date:date:from:from
 	:in-reply-to:in-reply-to:message-id:mime-version:references
-	:reply-to:subject:subject:to:to; s=fm3; t=1718207950; x=
-	1718215150; bh=P8U/vSNSp1TElUyC4OwmdinUUv2kbxRZJWBSbm83Cm8=; b=P
-	IaB6Z74zv9lxJ2WggbNRvaciu/0NhqbWv8y2/2JRSQ8Zeh1XoAQSqLOmPjWCsnLo
-	g07Tk8yQOQluFzRHnsOTT3KNcsi8NbuKoVNPKolHTjxL5sTN+iX1sCbGlh9IZTHC
-	8hPhVioy/hgN1ek2+9zqiJa5Ot5hGa8/BiUsNlGH2PILO5TQW5PCDe0kDQybt72w
-	fSu6dN2y+qbiyyNHsRkGx4K8kb33Vu71t7EaV9tSm2TkbfISJeQBvBR0JAI10CxA
-	guqiELKZhMVM31vQ6hIGdU3ynRGW6JX1aZghSLxEPOqSOF5+YgIJWWVgthmn8R6Z
-	rN9yyz1uGAsgvRiu0jPHQ==
+	:reply-to:subject:subject:to:to; s=fm3; t=1718207954; x=
+	1718294354; bh=C3eATvZn8DMrz6feHue+B4ljsm6ZCJgGAZ3zJ6p4BTU=; b=M
+	ei5pO4SA/Fa04V1ZBXmPuIkc+6wQHy3B1QRrT/frA+/dRxxskUrxjZgA/8fouqBB
+	Xz4g14WX4EBMZu6goUN6+5eIo4gfmHs0MPjNgAaiLkavsi34dJcqCNXBk+5kfcrZ
+	k3tqqycqsfDIXJa/Bw0vqrDXtzHN1mdqivxC63g8+il5Jfk4goObpItEv/cLOzlM
+	MUFIEnPQbkvb+W/QKnMQQ805oZSU4RrGaFG2AKDzzKgjNoX5EdVAnQLvvCRpaPPa
+	jlYLs/7b1wusJJ+N8gdHdqfHX73ymco267HthP6srjE35yEjOtvobhgJEsZYkbkA
+	u+t/6h0hGTjCe+Qz9Ea7Q==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
 	messagingengine.com; h=cc:cc:content-transfer-encoding
 	:content-type:date:date:feedback-id:feedback-id:from:from
 	:in-reply-to:in-reply-to:message-id:mime-version:references
 	:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1718207950; x=
-	1718215150; bh=P8U/vSNSp1TElUyC4OwmdinUUv2kbxRZJWBSbm83Cm8=; b=G
-	0wZQ+WxxEgS4VkxCwlSGr/Dkyyni9eb1YYkfQj+k36/4QuxO0Xs1e9PiS9gBYcwZ
-	JjkP2E72qNJA+L6pvR3JZHDB/b+JoZGGqv7Y9FbcVRaKBVKeLoZJWLT0zMfscJqu
-	WEZxjsuI5Fqptj5UnN56IsjIOePbEOnzzMJf0bVWXlCkkrTKlSXQbbmHHFcjAymf
-	WIW41Su6OqzIbP6X2tVXyBAb6ddzKxY0O1cATYQW/6U90eehS01nhJ7peL8TO+zR
-	vlVWT2EbjKYlGTb96PFnoMHu4Cipn/huV8ZteavgZhDyqMSd3X5ENEzZP8qPzmZV
-	7+pOauaNEnvYZWRlgN4EQ==
-X-ME-Sender: <xms:zcVpZnQcp5OMB6HKrCK8Dza2VBDF2EHfEJW6eD-VkAfnQwWHAzB3-g>
-    <xme:zcVpZoxxnRwRmLXuol9z40HGRPTB7MRw_jDNENiQCToUaxrNt_X29n7M8cdJargb9
-    wgvelSnDCI1TZPAdA>
-X-ME-Received: <xmr:zcVpZs14fa9jUKPfDre77vLTiZ_TKia7En-427cliyNaXLQrcHVMTt8V6Aku74MLdUv0QqrTwxUuMROi317xsmafQBbUxTsFgwMRbxBq>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrfedugedgleegucetufdoteggodetrfdotf
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1718207954; x=
+	1718294354; bh=C3eATvZn8DMrz6feHue+B4ljsm6ZCJgGAZ3zJ6p4BTU=; b=l
+	sTkyBaEHGMI5yqCbXYNXcWrtE70HR2LuI7o9X8QAbtXugD6Q2IEs0HxZk16Rl1D/
+	f7SOrxaaZeXGEgk1AOjLYRlX4MkM7jBnxByMyMcSROFj4Q0DSThiIwDptbZwIyBj
+	g8L/TZ1gRTFYu9Gdh8OTalAMtzvwwlxlGQlNhRCKFW9icgiFDD0cNsdHhSPGSpN+
+	fVQWLbZFotdBZ2ddayVJESNo8MP7UH4uShak1msrhrym0R0dLHTen2PqdF6jJsx5
+	E//lJp4p2qmNnVWgHb96K4VCEjDc3yzpxW3efiToacxVHUcA5wP9ocDHWVmjhqtV
+	3fde5Vi1oD7F+tRNa3O6A==
+X-ME-Sender: <xms:0cVpZnJQEw1RYFZyf7_NY0j_FqwGMpti6uFbhROWxJU5hQRTrMuTbw>
+    <xme:0cVpZrLIjTh5m3yiAbVLDznUUt7ZRabIwZS8natAHrNY11DUbdcRxzuVrmrusCBn4
+    xKzO8rOtUdNUpASNw>
+X-ME-Received: <xmr:0cVpZvu3Js6tvpssg3zT1yZzdyDXspZGXxTf1FSxwcq2fLuARHAYS65PxmFkJ4yNQ8LyFwvFTkBeysao0J5_8FVI0CoTguNCTU366gMb>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrfedugedgleefucetufdoteggodetrfdotf
     fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
     uceurghilhhouhhtmecufedttdenucgfrhhlucfvnfffucdljedtmdenucfjughrpefhvf
     evufffkffojghfggfgsedtkeertdertddtnecuhfhrohhmpeffrghnihgvlhcuighuuceo
     ugiguhesugiguhhuuhdrgiihiieqnecuggftrfgrthhtvghrnhepgfefgfegjefhudeike
     dvueetffelieefuedvhfehjeeljeejkefgffeghfdttdetnecuvehluhhsthgvrhfuihii
-    vgeptdenucfrrghrrghmpehmrghilhhfrhhomhepugiguhesugiguhhuuhdrgiihii
-X-ME-Proxy: <xmx:zcVpZnAJ1NpMaDw_pDpTswQDNmjzEIlABPc8msLIAbzwdjNMMmyhnw>
-    <xmx:zcVpZghpRryzZdR7xeKLfxNB4s5IZ53wTZIpXCJzoBlonF17IP66Hw>
-    <xmx:zcVpZrqEnrBvJLauyGGWqAfxbdZ7wR308hN51ZMtO5uGfnr67ecR-g>
-    <xmx:zcVpZrgw07ipeeh6M9cYRij8KPNuextXBobXy9YRH5TlbgHfXgw-rg>
-    <xmx:zsVpZp2Qi1DRSMhQdQxvE-mlGelNXcssGQ-WMv3iXZS8KHiuYpTILUDd>
+    vgepudenucfrrghrrghmpehmrghilhhfrhhomhepugiguhesugiguhhuuhdrgiihii
+X-ME-Proxy: <xmx:0cVpZgZEDxp1d-z6FWL_npnm85AB2EixzOr2NV9AP2vCCTDZ29YiFQ>
+    <xmx:0cVpZuYeafVs-IJyM7CA-VJDDVFzK0t4tBjkXuzDofTOWjvaFgvj9w>
+    <xmx:0cVpZkBoc2CuliF8Du76OO9LDbPdOJzblUOLsm78p_NsczuruY5HzQ>
+    <xmx:0cVpZsZ0as4GMH_AV7CwEPNfevHNxdIaPH5o6-WqYq5hI3WWuyoP0Q>
+    <xmx:0sVpZqr5rtjsSatkLVnSJPE6I55ivCGcUacpTa-uu3DTqlS_qOCGw73x>
 Feedback-ID: i6a694271:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 12 Jun 2024 11:59:08 -0400 (EDT)
+ 12 Jun 2024 11:59:12 -0400 (EDT)
 From: Daniel Xu <dxu@dxuuu.xyz>
 To: andrii@kernel.org,
+	jolsa@kernel.org,
 	ast@kernel.org,
 	daniel@iogearbox.net,
-	shuah@kernel.org,
-	eddyz87@gmail.com,
+	mhiramat@kernel.org,
+	song@kernel.org,
+	rostedt@goodmis.org,
 	olsajiri@gmail.com,
 	quentin@isovalent.com,
 	alan.maguire@oracle.com,
-	acme@kernel.org
+	acme@kernel.org,
+	eddyz87@gmail.com
 Cc: martin.lau@linux.dev,
-	song@kernel.org,
 	yonghong.song@linux.dev,
 	john.fastabend@gmail.com,
 	kpsingh@kernel.org,
 	sdf@google.com,
 	haoluo@google.com,
-	jolsa@kernel.org,
-	mykolal@fb.com,
+	mathieu.desnoyers@efficios.com,
 	bpf@vger.kernel.org,
-	linux-kselftest@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
+	linux-trace-kernel@vger.kernel.org,
 	kernel-team@meta.com
-Subject: [PATCH bpf-next v5 05/12] bpf: selftests: Fix bpf_map_sum_elem_count() kfunc prototype
-Date: Wed, 12 Jun 2024 09:58:29 -0600
-Message-ID: <0497e11a71472dcb71ada7c90ad691523ae87c3b.1718207789.git.dxu@dxuuu.xyz>
+Subject: [PATCH bpf-next v5 06/12] bpf: Make bpf_session_cookie() kfunc return long *
+Date: Wed, 12 Jun 2024 09:58:30 -0600
+Message-ID: <7043e1c251ab33151d6e3830f8ea1902ed2604ac.1718207789.git.dxu@dxuuu.xyz>
 X-Mailer: git-send-email 2.44.0
 In-Reply-To: <cover.1718207789.git.dxu@dxuuu.xyz>
 References: <cover.1718207789.git.dxu@dxuuu.xyz>
@@ -117,30 +118,36 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-The prototype in progs/map_percpu_stats.c is not in line with how the
-actual kfuncs are defined in kernel/bpf/map_iter.c. This causes
-compilation errors when kfunc prototypes are generated from BTF.
+We will soon be generating kfunc prototypes from BTF. As part of that,
+we need to align the manual signatures in bpf_kfuncs.h with the actual
+kfunc definitions. There is currently a conflicting signature for
+bpf_session_cookie() w.r.t. return type.
 
-Fix by aligning with actual kfunc definitions.
+The original intent was to return long * and not __u64 *. You can see
+evidence of that intent in a3a5113393cc ("selftests/bpf: Add kprobe
+session cookie test").
 
+Fix conflict by changing kfunc definition.
+
+Fixes: 5c919acef851 ("bpf: Add support for kprobe session cookie")
 Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
 ---
- tools/testing/selftests/bpf/progs/map_percpu_stats.c | 2 +-
+ kernel/trace/bpf_trace.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/tools/testing/selftests/bpf/progs/map_percpu_stats.c b/tools/testing/selftests/bpf/progs/map_percpu_stats.c
-index 10b2325c1720..63245785eb69 100644
---- a/tools/testing/selftests/bpf/progs/map_percpu_stats.c
-+++ b/tools/testing/selftests/bpf/progs/map_percpu_stats.c
-@@ -7,7 +7,7 @@
+diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+index d1daeab1bbc1..bc16e21a2a44 100644
+--- a/kernel/trace/bpf_trace.c
++++ b/kernel/trace/bpf_trace.c
+@@ -3527,7 +3527,7 @@ __bpf_kfunc bool bpf_session_is_return(void)
+ 	return session_ctx->is_return;
+ }
  
- __u32 target_id;
+-__bpf_kfunc __u64 *bpf_session_cookie(void)
++__bpf_kfunc long *bpf_session_cookie(void)
+ {
+ 	struct bpf_session_run_ctx *session_ctx;
  
--__s64 bpf_map_sum_elem_count(struct bpf_map *map) __ksym;
-+__s64 bpf_map_sum_elem_count(const struct bpf_map *map) __ksym;
- 
- SEC("iter/bpf_map")
- int dump_bpf_map(struct bpf_iter__bpf_map *ctx)
 -- 
 2.44.0
 
