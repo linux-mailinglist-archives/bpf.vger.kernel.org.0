@@ -1,95 +1,102 @@
-Return-Path: <bpf+bounces-31928-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-31929-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A0E09905532
-	for <lists+bpf@lfdr.de>; Wed, 12 Jun 2024 16:32:36 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C9DF5905566
+	for <lists+bpf@lfdr.de>; Wed, 12 Jun 2024 16:41:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9D7711C216F0
-	for <lists+bpf@lfdr.de>; Wed, 12 Jun 2024 14:32:35 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 55932B22C08
+	for <lists+bpf@lfdr.de>; Wed, 12 Jun 2024 14:41:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4CAFA17DE2E;
-	Wed, 12 Jun 2024 14:32:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C33DC17E8F6;
+	Wed, 12 Jun 2024 14:41:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="T+1EDUhD";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="P9P+tl//"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rALHJXwU"
 X-Original-To: bpf@vger.kernel.org
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F5857E8;
-	Wed, 12 Jun 2024 14:32:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 426F917DE39;
+	Wed, 12 Jun 2024 14:41:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718202748; cv=none; b=TUtqzBstgjNC0pHYv32EFf8CXezdp0R5x3VsLeYlI085ffVFnFWmbViKK/mnEQVCefYMU9RUcXAFNU7kEv9sZKuDqxtT6B152KzRRfyBY6hVZaEdQstv1NJOp9TBijIUFpOZpbc7+TBq5amJDTXF21JeLfBw5Jb0YFQCBRekFPQ=
+	t=1718203276; cv=none; b=OpH+XBJVBF6qqgRJr4GUt8d2kDwHDgQDJqHuO9PZGfUXhrqqqbuQ4ZW6dnZScIGYbQcBNvPBIAIyh/16cQ5eL9rIrIX+hrWtpX9xZTMdY50fijdMgGPZPjxOInDggiddXur0oQDfsatCRkMPu6+lMzZ1SjAYZiIJbDfS4XFCgqY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718202748; c=relaxed/simple;
-	bh=IGFPyiNwGq3mhr4vqQwRuRvHq1bQnoFrBvx+tebpgqs=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=CLPKn5ttxDVgZPuUXXewZYaMg6R6M02WUU7GJ0Uchc/7WBuCjIzY+gAnrvbOrK79586ZSexyBGkBwB/7KTnM39x/69+SLpxQsk9c1+mcqdlGdOzdYso41Mp6gdUSURRyBgbrtlI/rdMEYYwFaXlHuyB0IxQGFYjSZcBRn526B8A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=T+1EDUhD; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=P9P+tl//; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-Date: Wed, 12 Jun 2024 16:32:23 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1718202745;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=IGFPyiNwGq3mhr4vqQwRuRvHq1bQnoFrBvx+tebpgqs=;
-	b=T+1EDUhDquGg0/BJGmX0zYImw5+vc4h3D5N0dKVbekaJiQwX68w6pIO7WfsXx0prqKqw0N
-	YoR6O5Jy40gzvkCBTvISyQCHNFZ9MdeGd2NkVw925EwT3u0T0+H/5cXIwVFz2ZTacC8ckK
-	U3hv+RBAX1i6Lm/vz/pPXksJdh6i/+/EEHrV7GyN/sUvAvQDUTEUmEispBVZ1KEQULc1VC
-	wSgcT5+uCeZBLk8mlYfM8oEYUtiv1Ag9s3AEMJMvFJaSAzoAsNoNHIwsRppx8gHLngrfhr
-	5ff0D1PhyrfZGQD+JXaZfjjl4d5h6+I5kFiPP0R2p2zKfl1yk7jB3wM9jF/Feg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1718202745;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=IGFPyiNwGq3mhr4vqQwRuRvHq1bQnoFrBvx+tebpgqs=;
-	b=P9P+tl//YHYJB1idyKOCW2ZOGoIMfh6LPhm18Tketlfsy9xoPLhlsm9MG2w3KbFJAo1o9E
-	xloo/+u0KJoC7bBw==
-From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To: Dmitry Dolgov <9erthalion6@gmail.com>
-Cc: bpf@vger.kernel.org, linux-rt-users@vger.kernel.org, ast@kernel.org,
-	daniel@iogearbox.net, andrii@kernel.org
-Subject: Re: bpf_ringbuf_reserve deadlock on rt kernels
-Message-ID: <20240612143223.BO0LMFEZ@linutronix.de>
-References: <jxkyec5jd54r3cmel4e3pep4ebo3pd4xgedwtb7gj65fntf4s7@om5r3mowjknb>
+	s=arc-20240116; t=1718203276; c=relaxed/simple;
+	bh=NUaYbNltb6RDzO1opIZ+dAvvrh92tjYiV8X2KV18uKk=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=kGMVElnZ1WNSHtLqmT4+MDWhVnSDCK/2mRWvcfRHw/7XBwFNzk6IMVAlTsB6DjH++VEXz6Sw4TaJfXwjPGq4efzFjMVkaNiH6QBKkDps1pNCIpWNQTTab3SaLJ+9+bxNhIbFlMroqod0GNxzfc185y7Uj+B/RHKJjY2hpYEpCbE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rALHJXwU; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 39787C116B1;
+	Wed, 12 Jun 2024 14:41:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1718203275;
+	bh=NUaYbNltb6RDzO1opIZ+dAvvrh92tjYiV8X2KV18uKk=;
+	h=From:To:Cc:Subject:Date:From;
+	b=rALHJXwUxkHV0OxeZsvl+IG22aGM+/vYcvoMw9hx5XV+Z524XNZQgFR10OhAnxnuk
+	 AyGH+ihGgC0Bsfn3Ic+uHXqGr+p0fxy7CeBOrHZ5loohNEeedAvOxvMGdw83mYB91g
+	 NF3w2luEVJYLDQEwh67N2hsblBjDu2VKL5x7ikS8UqaqawNgMid3+ZkpzHGJdTpwzb
+	 GhTbvEKBqwS0dQp+tvgYDRqzePQFtNWQMMUfuL3ctebpfxOui+GSmwDkck6R1j7vd/
+	 QaQcVLrfsQie55LrtSsFgJ7PT7iwtMf7pAf65y1l/fILlj13UuHRBgf0RHQDmBbZ1h
+	 H0ZA98hnxE7Ag==
+From: Geliang Tang <geliang@kernel.org>
+To: Andrii Nakryiko <andrii@kernel.org>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Mykola Lysenko <mykolal@fb.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>,
+	Stanislav Fomichev <sdf@google.com>,
+	Hao Luo <haoluo@google.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Shuah Khan <shuah@kernel.org>
+Cc: Geliang Tang <tanggeliang@kylinos.cn>,
+	bpf@vger.kernel.org,
+	linux-kselftest@vger.kernel.org
+Subject: [PATCH bpf-next v2 0/4] use network helpers, part 7
+Date: Wed, 12 Jun 2024 22:41:02 +0800
+Message-ID: <cover.1718202986.git.tanggeliang@kylinos.cn>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <jxkyec5jd54r3cmel4e3pep4ebo3pd4xgedwtb7gj65fntf4s7@om5r3mowjknb>
+Content-Transfer-Encoding: 8bit
 
-On 2024-06-10 17:17:35 [+0200], Dmitry Dolgov wrote:
-> Hi,
-Hi,
+From: Geliang Tang <tanggeliang@kylinos.cn>
 
-=E2=80=A6
-> The BPF program in question is attached to sched_switch. The issue seems
-> to be similar to a couple of syzkaller reports [1], [2], although the
-> latter one is about nested progs, which seems to be not the case here.
-> Talking about nested progs, applying a similar approach as in [3]
-> reworked for bpf_ringbuf, elliminates the issue.
->=20
-> Do I miss anything, is it a known issue? Any ideas how to address that?
+v2:
+ - update patch 2, extract a new helper start_client.
+ - drop patch 3, keep must_fail in network_helper_opts.
 
-I haven't attached bpf program to trace-events so this new to me. But if
-you BPF attach programs to trace-events then there might be more things
-that can go wrong=E2=80=A6
-Let me add this to the bpf-list-to-look-at.
-Do you get more splats with CONFIG_DEBUG_ATOMIC_SLEEP=3Dy?
+Drop type and noconnect from network_helper_opts. And use start_server_str
+in mptcp and test_tcp_check_syncookie_user.
 
-Sebastian
+Patches 1-2 address Martin's comments in the previous series.
+
+Geliang Tang (4):
+  selftests/bpf: Drop type from network_helper_opts
+  selftests/bpf: Drop noconnect from network_helper_opts
+  selftests/bpf: Use start_server_str in mptcp
+  selftests/bpf: Use start_server_str in test_tcp_check_syncookie_user
+
+ tools/testing/selftests/bpf/network_helpers.c | 45 +++++++++++++++----
+ tools/testing/selftests/bpf/network_helpers.h |  7 +--
+ .../selftests/bpf/prog_tests/bpf_tcp_ca.c     |  2 +-
+ .../selftests/bpf/prog_tests/cgroup_v1v2.c    |  4 +-
+ .../bpf/prog_tests/ip_check_defrag.c          |  7 +--
+ .../testing/selftests/bpf/prog_tests/mptcp.c  |  7 +--
+ .../bpf/test_tcp_check_syncookie_user.c       | 29 ++----------
+ 7 files changed, 49 insertions(+), 52 deletions(-)
+
+-- 
+2.43.0
+
 
