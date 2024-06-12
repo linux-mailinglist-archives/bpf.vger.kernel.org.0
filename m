@@ -1,165 +1,369 @@
-Return-Path: <bpf+bounces-31922-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-31923-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9644B9052C2
-	for <lists+bpf@lfdr.de>; Wed, 12 Jun 2024 14:43:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3D1249052CA
+	for <lists+bpf@lfdr.de>; Wed, 12 Jun 2024 14:44:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AFA061C210E8
-	for <lists+bpf@lfdr.de>; Wed, 12 Jun 2024 12:43:18 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 45E3A1C20DD6
+	for <lists+bpf@lfdr.de>; Wed, 12 Jun 2024 12:44:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D7CA17334E;
-	Wed, 12 Jun 2024 12:42:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7AE3B172BDC;
+	Wed, 12 Jun 2024 12:43:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GQz9aj/a"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DJ0nYaWB"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-f45.google.com (mail-ed1-f45.google.com [209.85.208.45])
+Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 30DC517083D;
-	Wed, 12 Jun 2024 12:42:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 666B417082A;
+	Wed, 12 Jun 2024 12:43:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718196125; cv=none; b=Xh8NHHj24nkcILBoQZmbd7qNHtU2a0c4VpZASCU4ivw1qnCeL1wNRz1VKo8XM5k0jNz1QF/yYRbuet2bJaMC66A/2o6MfckWwbukOq8KgVqXae56rBznnEHOX8p5CEHcMKpwAhNuvxt6F90zx/KrKhVs4F89HU9BWEXALNw6edU=
+	t=1718196196; cv=none; b=Aw+Q01yiQHIVJxs6BaWCe+n+SIJqvMMfUqtPR/TQ6MdWwmVIuyTG7TptTlvKQY7HmmWKBuSUOXo9esAWkrOVdBJWn1XHW+jNHwIFfgwJuDupxUdi3+RI+wFitci7u1vJrkvHphz59jSNvVwr99rX1zcRN9lp4cMHPsz/lrwD17I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718196125; c=relaxed/simple;
-	bh=2eS5AS9BXmEOhaWNRS+1JFWwcMxQFs94YTD2RJKbNJI=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=hHHum1i3SlbTU4t3VucCRaRuacmjBcIACAaf5toDq9SxNga3CUSoTXIgZUHS1tr6bugS8vXbdkRSQN913t2NTzUOtb8D9e6q7OPwAPqwFA5DHkXa8QBjPFLdK/MIA+w1tzc6FR7rav6wc3TcxXvWu6TR+tjnjP6wZKG1Y5RcksM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=GQz9aj/a; arc=none smtp.client-ip=209.85.208.45
+	s=arc-20240116; t=1718196196; c=relaxed/simple;
+	bh=R6d2Wsj4QxH0RDApbKmwweFfHUlf/fdhBjmP+MaQRG8=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Kq0F0zHDgB5L387qb9f8iw78TblwS4gIAvNng3xjlPgoi6/H7xjbpLnAzldcN295scwsrRkiSb0nDsJx/rWhItWIBjsC5CH58z9JNInJwOehh37VNBomINg56fsvubS5H7nsrIKh77BoQXy683CdcfjcjnofQqvf7BYYwGqshUA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=DJ0nYaWB; arc=none smtp.client-ip=209.85.214.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f45.google.com with SMTP id 4fb4d7f45d1cf-579fa270e53so3590988a12.3;
-        Wed, 12 Jun 2024 05:42:03 -0700 (PDT)
+Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-1f8395a530dso7738705ad.0;
+        Wed, 12 Jun 2024 05:43:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1718196122; x=1718800922; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=yaWg4m5Bnwvqv8YcEFmBCH4VJg0dR5I+06fePYSf13o=;
-        b=GQz9aj/afkHFwSE+qfS7yErjJNwZ3dqH/CVpt/uScG6PPvAgz3psfh5X2tfM5UkD5G
-         pMpPWb4kcN1dDIw255l8CNNR1iNb20Ou/aTXjxFlKJjea4rt4sRPTd48tVpb2pIQdVsk
-         egSJgonwMBzBSe+RAj8ktDDMAnZUX6wgTCDgUk9l5JImsmrZfoGJPvRalcv+DIRDMyG1
-         jHoGWc2jx+JMtMxwGYqkFjd7Ujxobl6Qm6TL4y4DdRtun8eeLFRsY4ShelDgqCSSi4TR
-         tXTHmgqHQaMZualXvuY3Ti8aYXSEiyxWOQsVRKMpKB2M/CxcQRtN8rviXz50ltPBGYXY
-         M+AQ==
+        d=gmail.com; s=20230601; t=1718196194; x=1718800994; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=9SNFY3n97DVU3ATjWx5G0DI5PrBypnYbaH0Od/W/SAg=;
+        b=DJ0nYaWBYG5Q1xZ6fFcMngBngYdRfxu+Hp06VHe08M5n4n8I8EDQDbHvLUHF80SiTc
+         FowSVOM7CRqIUwwN3FdifA+ADmjwb72p9RVZJ2BBnC0SpyX0kNgANuRL2zDhGTdWQh81
+         ZgakBt/b6zuD+8m1Q8u4NWtL4dRnbyBScmkAKyRkzowwC9VmhCJS4zRCtxEH5ebH/cvp
+         UO+KRgRKUfPJ7lV9krXJwRUTV4p/I/QMLwvlotQNQuwVcoYOpVe9h6V8Q7DYwIv4QoCQ
+         srOtZBzlvOFOFTsWPnASly4Cgz6NzfPbCpCe7n3/jd+9EbqfysCComAxvUYXzzZl6Mng
+         zTcg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1718196122; x=1718800922;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=yaWg4m5Bnwvqv8YcEFmBCH4VJg0dR5I+06fePYSf13o=;
-        b=uxLgpnww9Z6SjezGbjaT+yZatl0H1B3lCSUR8B/aKoadM8Jg1Z0rIFlPulyVTqDljC
-         P1u/DzT/mC5uYObHJ/Ye6JSkoZbbcidIASIaIuS2AdyA7h7J3TxJAmvxF9XqsyzKgeBq
-         /VV60FJz4seiMdx6AFqnuN7EeN1ac9VUeXy20Ac1FQSuLXzior+pcFRkYYAwphfWNOV9
-         fnhXa9XrQERqjJ19nRaufGX54i3x4uHafi0xDv+9kMcFSNqsBTL4Z6vzC4PT3l5UGqPU
-         6VGlVk3gQe2fuFJHpMfrhCCHsLhICC6P+QWTkcNBD9kTU9ZlgDc88V5m4GGvJUKQ3icw
-         XWmw==
-X-Forwarded-Encrypted: i=1; AJvYcCVRw4D6jDupSDBmHBnjwU4OgVhTPFbbkBR/1gihrSjAWwNju7cu0GnMcvlqo2uIfSs8vIJeIliReb8QQXpc7j6mt/n60uqxDwl6oQSles3n2pv8Ww7fB9iRB7ed7lgTUNq48yvineZTG7zfknyp9eufNnXzfWV6lx6ggHYfkoi0folk
-X-Gm-Message-State: AOJu0Yw5N1xIXqrbq2WsvZRTRz7okxE2NWYjWA7+Qd+azetaf2XmQLn0
-	QwKZEwv1UQmf/UdCBcspOWRKccL/cMgd9S5BNS4/XTO+OyGzkCIS
-X-Google-Smtp-Source: AGHT+IEurYY9mBvYQqhqXDFmp4P8HwN0BoTp0cQDJ0TSoIEs17WlcQeFx3uNCZL+rbnmP83DTCb74A==
-X-Received: by 2002:a50:d7dd:0:b0:57c:74b1:bf51 with SMTP id 4fb4d7f45d1cf-57ca97626b3mr1524272a12.20.1718196122177;
-        Wed, 12 Jun 2024 05:42:02 -0700 (PDT)
-Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
-        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-57c9f32f079sm1869654a12.88.2024.06.12.05.42.01
+        d=1e100.net; s=20230601; t=1718196194; x=1718800994;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=9SNFY3n97DVU3ATjWx5G0DI5PrBypnYbaH0Od/W/SAg=;
+        b=Li2Ua3dGumF+OqGZUpUEFbgycSjtv+TIDICw4SoSJ3lrWp9o7+uKnBjyRuXrhXrEnk
+         qfB0Zoo0THXxHlOsB2H1mAKYTUpRV2eCEjkXS8/+zLdqYTpRtd4c3S7OcEqUs/9n4Rv0
+         BrR/21SFsCchVaOt9xKyMLkXf/GOAEVpFg+2CATiPLRe1zDmF1leWXnTXd9mhNGUuBZ9
+         jV9AJkaToXmTO6DI9TkjHFPD2W68A59P6Jl8Xv++gcmFK/51PtsZhq+0ObzPmwPP4LKF
+         nhhft2dxjoCWM3TxfQa2z3EYfg6vrHll+LgXJysm3TSKvge2ptE7hK0Aj1J+LG9wNgIx
+         0aVA==
+X-Forwarded-Encrypted: i=1; AJvYcCXveuSShtJBwtnOumRQpwmklNwQzxmyoE+vzkLHJqHIz8TNeN/d2MiIxNo29rewnO2iqE2TUtoVxcQtijTCxXg5cTnXvka2+dnHN9StUIvdwddNZKYYEAL+WzbfjQ8/Z3R6aecCAbqUX0QC50oNcQSlqzmbOut0xpewP4ZWX6IgPhQe1trRjzs/PjiACjtG3DdrfbGnKFQFZZ5mSTqZMPm3mRnUeHLg8GWfMA==
+X-Gm-Message-State: AOJu0Yxp1HW6tU1CGq0Kd5BOUoQAYjy+I0FPjzmFlSGqy0egEsl37ckg
+	3Z5cGZQC6XZMQ/73ezcb/HiSkNKVFrDsu1vd7OJGA6JpUMH9Y78i4/l+IljxgjtkQA==
+X-Google-Smtp-Source: AGHT+IHfxnxJFtybWOETRz8nFAUjRPtRPTMFfDOIh2cJHNF2VOy38bMQPBp+nS02/q9Bo62rS6aaoA==
+X-Received: by 2002:a17:903:228e:b0:1f6:f1ca:2e18 with SMTP id d9443c01a7336-1f83b5df353mr21766865ad.17.1718196193525;
+        Wed, 12 Jun 2024 05:43:13 -0700 (PDT)
+Received: from localhost.localdomain ([120.229.49.105])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-1f71b9dec2bsm51310775ad.186.2024.06.12.05.43.06
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 12 Jun 2024 05:42:01 -0700 (PDT)
-From: Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Wed, 12 Jun 2024 14:41:59 +0200
-To: Daniel Xu <dxu@dxuuu.xyz>
-Cc: Jiri Olsa <olsajiri@gmail.com>, shuah@kernel.org, daniel@iogearbox.net,
-	andrii@kernel.org, eddyz87@gmail.com, ast@kernel.org,
-	quentin@isovalent.com, alan.maguire@oracle.com, acme@kernel.org,
-	martin.lau@linux.dev, song@kernel.org, yonghong.song@linux.dev,
-	john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
-	haoluo@google.com, mykolal@fb.com, bpf@vger.kernel.org,
-	linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-	kernel-team@meta.com
-Subject: Re: [PATCH bpf-next v4 03/12] bpf: selftests: Fix fentry test kfunc
- prototypes
-Message-ID: <ZmmXl1NHgwOEXy4F@krava>
-References: <cover.1717881178.git.dxu@dxuuu.xyz>
- <1f493cb7a7e5349f99e2badf0880b75dd6681898.1717881178.git.dxu@dxuuu.xyz>
- <Zmb_hJQqxi44Nj5B@krava>
- <gwrlw7wtc72vz3ky2pltvpoadtjlezv6kdrs6wf3ptsecyu2sh@aexbk4rotm3x>
+        Wed, 12 Jun 2024 05:43:13 -0700 (PDT)
+From: Howard Chu <howardchu95@gmail.com>
+To: peterz@infradead.org
+Cc: mingo@redhat.com,
+	acme@kernel.org,
+	namhyung@kernel.org,
+	mark.rutland@arm.com,
+	alexander.shishkin@linux.intel.com,
+	jolsa@kernel.org,
+	irogers@google.com,
+	adrian.hunter@intel.com,
+	kan.liang@linux.intel.com,
+	mic@digikod.net,
+	gnoack@google.com,
+	linux-perf-users@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-security-module@vger.kernel.org,
+	bpf@vger.kernel.org
+Subject: [PATCH v2] perf trace: BTF-based enum pretty printing
+Date: Wed, 12 Jun 2024 20:43:25 +0800
+Message-ID: <20240612124325.3149243-1-howardchu95@gmail.com>
+X-Mailer: git-send-email 2.45.2
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <gwrlw7wtc72vz3ky2pltvpoadtjlezv6kdrs6wf3ptsecyu2sh@aexbk4rotm3x>
+Content-Transfer-Encoding: 8bit
 
-On Tue, Jun 11, 2024 at 10:58:26AM -0600, Daniel Xu wrote:
-> On Mon, Jun 10, 2024 at 03:28:36PM GMT, Jiri Olsa wrote:
-> > On Sat, Jun 08, 2024 at 03:15:59PM -0600, Daniel Xu wrote:
-> > > The prototypes in progs/get_func_ip_test.c were not in line with how the
-> > > actual kfuncs are defined in net/bpf/test_run.c. This causes compilation
-> > > errors when kfunc prototypes are generated from BTF.
-> > > 
-> > > Fix by aligning with actual kfunc definitions.
-> > > 
-> > > Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
-> > > ---
-> > >  .../testing/selftests/bpf/progs/get_func_ip_test.c | 14 +++++++-------
-> > >  1 file changed, 7 insertions(+), 7 deletions(-)
-> > > 
-> > > diff --git a/tools/testing/selftests/bpf/progs/get_func_ip_test.c b/tools/testing/selftests/bpf/progs/get_func_ip_test.c
-> > > index 8956eb78a226..a89596f7585d 100644
-> > > --- a/tools/testing/selftests/bpf/progs/get_func_ip_test.c
-> > > +++ b/tools/testing/selftests/bpf/progs/get_func_ip_test.c
-> > > @@ -5,13 +5,13 @@
-> > >  
-> > >  char _license[] SEC("license") = "GPL";
-> > >  
-> > > -extern const void bpf_fentry_test1 __ksym;
-> > > -extern const void bpf_fentry_test2 __ksym;
-> > > -extern const void bpf_fentry_test3 __ksym;
-> > > -extern const void bpf_fentry_test4 __ksym;
-> > > -extern const void bpf_modify_return_test __ksym;
-> > > -extern const void bpf_fentry_test6 __ksym;
-> > > -extern const void bpf_fentry_test7 __ksym;
-> > > +extern int bpf_fentry_test1(int a) __ksym;
-> > 
-> > hum, the only registered one as kfunc is bpf_fentry_test1, to allow fmodret
-> > also there's bpf_fentry_test9 as kfunc, which AFAICS is not really needed
-> 
-> I think bpf_modify_return_test() is also registered. But otherwise yeah,
-> I think I was overaggressive here. Are you thinking something like this?
+changes in v2
 
-yes, looks good
+- Fix formatting issues
 
-> 
-> 
-> diff --git a/tools/testing/selftests/bpf/progs/get_func_ip_test.c b/tools/testing/selftests/bpf/progs/get_func_ip_test.c
-> index a89596f7585d..2011cacdeb18 100644
-> --- a/tools/testing/selftests/bpf/progs/get_func_ip_test.c
-> +++ b/tools/testing/selftests/bpf/progs/get_func_ip_test.c
-> @@ -6,12 +6,11 @@
->  char _license[] SEC("license") = "GPL";
-> 
->  extern int bpf_fentry_test1(int a) __ksym;
-> -extern int bpf_fentry_test2(int a, __u64 b) __ksym;
-> -extern int bpf_fentry_test3(char a, int b, __u64 c) __ksym;
-> -extern int bpf_fentry_test4(void *a, char b, int c, __u64 d) __ksym;
->  extern int bpf_modify_return_test(int a, int *b) __ksym;
-> -extern int bpf_fentry_test6(__u64 a, void *b, short c, int d, void *e, __u64 f) __ksym;
-> -extern int bpf_fentry_test7(struct bpf_fentry_test_t *arg) __ksym;
+- Pass a &use_btf to syscall_arg_fmt__init_array(), instead of
+traversing all the arguments again.
 
-I did not realize bpf_fentry_test6/7 are not used.. ok
+- Add a trace__load_vmlinux_btf() function to load vmlinux BTF
 
-thanks,
-jirka
+- Add member 'btf_entry' in 'struct syscall_arg_fmt' to save the entry to
+the corresponding 'struct btf_member' object, without having to do
+btf__find_by_name(), btf__type_by_id(), btf_enum(), and btf_vlen()
+everytime a syscall enters.
 
-> +
-> +extern const void bpf_fentry_test2 __ksym;
-> +extern const void bpf_fentry_test3 __ksym;
-> +extern const void bpf_fentry_test4 __ksym;
-> 
->  extern bool CONFIG_X86_KERNEL_IBT __kconfig __weak;
+In 'struct syscall_arg_fmt':
+```
+	struct {
+		void	*entry;
+		u16	nr_entries;
+	}	   btf_entry;
+```
+
+This is the new member btf_entry, it saves the 'struct btf_member' pointer
+, so that we don't have to do btf__find_by_name(), btf__type_by_id(),
+btf_enum(), and btf_vlen() everytime a landlock_add_rule() syscall entered.
+
+Note that entry is of type 'void *', because this btf_entry can also be
+applied to 'struct btf_member *' for 'BTF_KIND_STRUCT', hopefully in the
+future.
+
+===
+
+This is a feature implemented on the basis of the previous bug fix
+https://lore.kernel.org/linux-perf-users/d18a9606-ac9f-4ca7-afaf-fcf4c951cb90@web.de/T/#t
+
+In this patch, BTF is used to turn enum value to the corresponding
+name. There is only one system call that uses enum value as its
+argument, that is `landlock_add_rule()`.
+
+The vmlinux btf is loaded lazily, when user decided to trace the
+`landlock_add_rule` syscall. But if one decide to run `perf trace`
+without any arguments, the behaviour is to trace `landlock_add_rule`,
+so vmlinux btf will be loaded by default.
+
+The laziest behaviour is to load vmlinux btf when a
+`landlock_add_rule` syscall hits. But I think you could lose some
+samples when loading vmlinux btf at run time, for it can delay the
+handling of other samples. I might need your precious opinions on
+this...
+
+before:
+
+```
+perf $ ./perf trace -e landlock_add_rule
+     0.000 ( 0.008 ms): ldlck-test/438194 landlock_add_rule(rule_type: 2)                                       = -1 EBADFD (File descriptor in bad state)
+     0.010 ( 0.001 ms): ldlck-test/438194 landlock_add_rule(rule_type: 1)                                       = -1 EBADFD (File descriptor in bad state)
+```
+
+after:
+
+```
+perf $ ./perf trace -e landlock_add_rule
+     0.000 ( 0.029 ms): ldlck-test/438194 landlock_add_rule(rule_type: LANDLOCK_RULE_NET_PORT)                  = -1 EBADFD (File descriptor in bad state)
+     0.036 ( 0.004 ms): ldlck-test/438194 landlock_add_rule(rule_type: LANDLOCK_RULE_PATH_BENEATH)              = -1 EBADFD (File descriptor in bad state)
+```
+
+Signed-off-by: Howard Chu <howardchu95@gmail.com>
+---
+ tools/perf/builtin-trace.c | 96 ++++++++++++++++++++++++++++++++++++--
+ 1 file changed, 92 insertions(+), 4 deletions(-)
+
+diff --git a/tools/perf/builtin-trace.c b/tools/perf/builtin-trace.c
+index 5cbe1748911d..a89379ccac39 100644
+--- a/tools/perf/builtin-trace.c
++++ b/tools/perf/builtin-trace.c
+@@ -19,6 +19,7 @@
+ #ifdef HAVE_LIBBPF_SUPPORT
+ #include <bpf/bpf.h>
+ #include <bpf/libbpf.h>
++#include <bpf/btf.h>
+ #ifdef HAVE_BPF_SKEL
+ #include "bpf_skel/augmented_raw_syscalls.skel.h"
+ #endif
+@@ -110,6 +111,11 @@ struct syscall_arg_fmt {
+ 	const char *name;
+ 	u16	   nr_entries; // for arrays
+ 	bool	   show_zero;
++	bool	   is_enum;
++	struct {
++		void	*entry;
++		u16	nr_entries;
++	}	   btf_entry;
+ };
+ 
+ struct syscall_fmt {
+@@ -140,6 +146,7 @@ struct trace {
+ #ifdef HAVE_BPF_SKEL
+ 	struct augmented_raw_syscalls_bpf *skel;
+ #endif
++	struct btf		*btf;
+ 	struct record_opts	opts;
+ 	struct evlist	*evlist;
+ 	struct machine		*host;
+@@ -887,6 +894,56 @@ static size_t syscall_arg__scnprintf_getrandom_flags(char *bf, size_t size,
+ 
+ #define SCA_GETRANDOM_FLAGS syscall_arg__scnprintf_getrandom_flags
+ 
++static int btf_enum_find_entry(struct btf *btf, char *type, struct syscall_arg_fmt *arg_fmt)
++{
++	const struct btf_type *bt;
++	char enum_prefix[][16] = { "enum", "const enum" }, *ep;
++	int id;
++	size_t i;
++
++	for (i = 0; i < ARRAY_SIZE(enum_prefix); i++) {
++		ep = enum_prefix[i];
++		if (strlen(type) > strlen(ep) + 1 && strstarts(type, ep))
++			type += strlen(ep) + 1;
++	}
++
++	id = btf__find_by_name(btf, type);
++	if (id < 0)
++		return -1;
++
++	bt = btf__type_by_id(btf, id);
++	if (bt == NULL)
++		return -1;
++
++	arg_fmt->btf_entry.entry      = btf_enum(bt);
++	arg_fmt->btf_entry.nr_entries = btf_vlen(bt);
++
++	return 0;
++}
++
++static size_t btf_enum_scnprintf(char *bf, size_t size, int val, struct btf *btf, char *type,
++				 struct syscall_arg_fmt *arg_fmt)
++{
++	struct btf_enum *be;
++	int i;
++
++	/* if btf_entry is NULL, find and save it to arg_fmt */
++	if (arg_fmt->btf_entry.entry == NULL)
++		if (btf_enum_find_entry(btf, type, arg_fmt))
++			return 0;
++
++	be = (struct btf_enum *)arg_fmt->btf_entry.entry;
++
++	for (i = 0; i < arg_fmt->btf_entry.nr_entries; ++i, ++be) {
++		if (be->val == val) {
++			return scnprintf(bf, size, "%s",
++					 btf__name_by_offset(btf, be->name_off));
++		}
++	}
++
++	return 0;
++}
++
+ #define STRARRAY(name, array) \
+ 	  { .scnprintf	= SCA_STRARRAY, \
+ 	    .strtoul	= STUL_STRARRAY, \
+@@ -1238,6 +1295,7 @@ struct syscall {
+ 	bool		    is_exit;
+ 	bool		    is_open;
+ 	bool		    nonexistent;
++	bool		    use_btf;
+ 	struct tep_format_field *args;
+ 	const char	    *name;
+ 	const struct syscall_fmt  *fmt;
+@@ -1699,6 +1757,14 @@ static void trace__symbols__exit(struct trace *trace)
+ 	symbol__exit();
+ }
+ 
++static void trace__load_vmlinux_btf(struct trace *trace)
++{
++	trace->btf = btf__load_vmlinux_btf();
++	if (verbose > 0)
++		fprintf(trace->output, trace->btf ? "vmlinux BTF loaded\n" :
++						    "Failed to load vmlinux BTF\n");
++}
++
+ static int syscall__alloc_arg_fmts(struct syscall *sc, int nr_args)
+ {
+ 	int idx;
+@@ -1744,7 +1810,8 @@ static const struct syscall_arg_fmt *syscall_arg_fmt__find_by_name(const char *n
+ }
+ 
+ static struct tep_format_field *
+-syscall_arg_fmt__init_array(struct syscall_arg_fmt *arg, struct tep_format_field *field)
++syscall_arg_fmt__init_array(struct syscall_arg_fmt *arg, struct tep_format_field *field,
++			    bool *use_btf)
+ {
+ 	struct tep_format_field *last_field = NULL;
+ 	int len;
+@@ -1756,6 +1823,7 @@ syscall_arg_fmt__init_array(struct syscall_arg_fmt *arg, struct tep_format_field
+ 			continue;
+ 
+ 		len = strlen(field->name);
++		arg->is_enum = false;
+ 
+ 		if (strcmp(field->type, "const char *") == 0 &&
+ 		    ((len >= 4 && strcmp(field->name + len - 4, "name") == 0) ||
+@@ -1782,6 +1850,8 @@ syscall_arg_fmt__init_array(struct syscall_arg_fmt *arg, struct tep_format_field
+ 			 * 7 unsigned long
+ 			 */
+ 			arg->scnprintf = SCA_FD;
++		} else if (strstr(field->type, "enum") && use_btf != NULL) {
++			*use_btf = arg->is_enum = true;
+ 		} else {
+ 			const struct syscall_arg_fmt *fmt =
+ 				syscall_arg_fmt__find_by_name(field->name);
+@@ -1798,7 +1868,8 @@ syscall_arg_fmt__init_array(struct syscall_arg_fmt *arg, struct tep_format_field
+ 
+ static int syscall__set_arg_fmts(struct syscall *sc)
+ {
+-	struct tep_format_field *last_field = syscall_arg_fmt__init_array(sc->arg_fmt, sc->args);
++	struct tep_format_field *last_field = syscall_arg_fmt__init_array(sc->arg_fmt, sc->args,
++									  &sc->use_btf);
+ 
+ 	if (last_field)
+ 		sc->args_size = last_field->offset + last_field->size;
+@@ -1811,6 +1882,7 @@ static int trace__read_syscall_info(struct trace *trace, int id)
+ 	char tp_name[128];
+ 	struct syscall *sc;
+ 	const char *name = syscalltbl__name(trace->sctbl, id);
++	int err;
+ 
+ #ifdef HAVE_SYSCALL_TABLE_SUPPORT
+ 	if (trace->syscalls.table == NULL) {
+@@ -1883,7 +1955,13 @@ static int trace__read_syscall_info(struct trace *trace, int id)
+ 	sc->is_exit = !strcmp(name, "exit_group") || !strcmp(name, "exit");
+ 	sc->is_open = !strcmp(name, "open") || !strcmp(name, "openat");
+ 
+-	return syscall__set_arg_fmts(sc);
++	err = syscall__set_arg_fmts(sc);
++
++	/* after calling syscall__set_arg_fmts() we'll know whether use_btf is true */
++	if (sc->use_btf && trace->btf == NULL)
++		trace__load_vmlinux_btf(trace);
++
++	return err;
+ }
+ 
+ static int evsel__init_tp_arg_scnprintf(struct evsel *evsel)
+@@ -1891,7 +1969,7 @@ static int evsel__init_tp_arg_scnprintf(struct evsel *evsel)
+ 	struct syscall_arg_fmt *fmt = evsel__syscall_arg_fmt(evsel);
+ 
+ 	if (fmt != NULL) {
+-		syscall_arg_fmt__init_array(fmt, evsel->tp_format->format.fields);
++		syscall_arg_fmt__init_array(fmt, evsel->tp_format->format.fields, NULL);
+ 		return 0;
+ 	}
+ 
+@@ -2103,6 +2181,16 @@ static size_t syscall__scnprintf_args(struct syscall *sc, char *bf, size_t size,
+ 			if (trace->show_arg_names)
+ 				printed += scnprintf(bf + printed, size - printed, "%s: ", field->name);
+ 
++			if (sc->arg_fmt[arg.idx].is_enum && trace->btf) {
++				size_t p = btf_enum_scnprintf(bf + printed, size - printed, val,
++							      trace->btf, field->type,
++							      &sc->arg_fmt[arg.idx]);
++				if (p) {
++					printed += p;
++					continue;
++				}
++			}
++
+ 			printed += syscall_arg_fmt__scnprintf_val(&sc->arg_fmt[arg.idx],
+ 								  bf + printed, size - printed, &arg, val);
+ 		}
+-- 
+2.45.2
+
 
