@@ -1,162 +1,154 @@
-Return-Path: <bpf+bounces-31925-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-31926-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8D9269053C5
-	for <lists+bpf@lfdr.de>; Wed, 12 Jun 2024 15:26:49 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2E25E90549A
+	for <lists+bpf@lfdr.de>; Wed, 12 Jun 2024 16:00:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7E4221C20828
-	for <lists+bpf@lfdr.de>; Wed, 12 Jun 2024 13:26:48 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A93A9B2656A
+	for <lists+bpf@lfdr.de>; Wed, 12 Jun 2024 14:00:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F211117D8B5;
-	Wed, 12 Jun 2024 13:25:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9FF0F181BB7;
+	Wed, 12 Jun 2024 13:57:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZXi0ZaeX"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-io1-f78.google.com (mail-io1-f78.google.com [209.85.166.78])
+Received: from mail-qv1-f48.google.com (mail-qv1-f48.google.com [209.85.219.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 354AD17A930
-	for <bpf@vger.kernel.org>; Wed, 12 Jun 2024 13:25:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.78
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C298317CA1D;
+	Wed, 12 Jun 2024 13:57:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718198722; cv=none; b=Ss0jhM/2iziCqE2INaTPlt8GD9T33jrZa048uk8oJLAcgGLMu+DAeBV51JLWtu7MsaylIw8sfMMR0d1VbseYkbA5Cnpi4qgW11IsPzPL8k6Slgln5ncS2lcHCj7HpCcv6qPhDDcnOeTua1TdEdKxjwuKr3hADTj+iW5LNfhhxZY=
+	t=1718200628; cv=none; b=VKYU5FZA6oBv26n0ouy9eMJFK1wCkyDIF16fqxDB80xd2TCH1rsW+H0cYrB8Vo+/anICUj0EEE42hzPKtHGnt7lnhfHakWehvB56SkIzDtuZ+05X+H7kWuTkzt/3CyCLMST1qYJjhXqvBI5QHdjVVKmUTfzikzOSfeiKJJzYWXA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718198722; c=relaxed/simple;
-	bh=VPOqqS4+wOGLU7jmDE0seMq1mz8cDLv49DDOYT883l4=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=ZMWt3dZvIuA6CHGzQyJ2L5NrzhHohoCSiJeUAnPMAbuF0V8zPKE19wbSdWj9tFMJJN5kyGoFh+bvilnf9VdB4cfxnIRwWy/tAqugsUaP3mSgCbz+hJgaqeiviZpm4WVjggKNOF5hpxHEfosJRXz0mJC+KdIkCfNFw0HbMZ6Rooo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.78
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f78.google.com with SMTP id ca18e2360f4ac-7eb5f83ae57so70520139f.0
-        for <bpf@vger.kernel.org>; Wed, 12 Jun 2024 06:25:20 -0700 (PDT)
+	s=arc-20240116; t=1718200628; c=relaxed/simple;
+	bh=VgkpApAv0XWVhyeZqIVjDLA8e2kkKodnF461ysuPxNc=;
+	h=Date:From:To:Cc:Message-ID:In-Reply-To:References:Subject:
+	 Mime-Version:Content-Type; b=UVe5I659XzF+CBqR8BnBTWXKblrtw20NS+L1/GLEQBeE+yQscSou9EAcMYMuFfWzi0j6uhdph6qaOfQzW2O+ez1mNyVUBFZ7+t3YlkwPF8NRfSoyXHM1l0+4BFmSZkDMRjAdhWoyqhcUA+daaXGRa5lMONn8p3SeBUSMY50Rvxk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ZXi0ZaeX; arc=none smtp.client-ip=209.85.219.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qv1-f48.google.com with SMTP id 6a1803df08f44-6b08d661dbaso9017456d6.0;
+        Wed, 12 Jun 2024 06:57:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1718200625; x=1718805425; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=myClNR6MZBQfRJrEDDf6nVsnfHCgfV4V7+aJY3JBsiw=;
+        b=ZXi0ZaeXhOWBFxufE3ziJORJC7umKYi4jJo7CtD2EZz8nmENsa03qPwuwBNzYzaqrS
+         KQj1Mf78isahy/g6xqWoXS0CIRpdh0YQSfoZzdPJrfdj/58vS7nxiAOMzT+10kJiXY4i
+         XMIOYf4b0LN6aFiUcN3Ifq+XlUO49VGaY0/+8Vg6+zEjKKqzpprbgv8hKKD8/IrdRUmw
+         Wau2JSSqevalmOo+5q8aLa7r3qow5MYk4FhHWaQqrFou6QzvW7JyNC64Hr2pclHZhBHV
+         Csq13RtZ4d9a2RBRf7WQt3PFYxCfNtjBqaJqr/kfX41GAPNms4C2N5IY8iAsfYnaeYAI
+         QOkg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1718198720; x=1718803520;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=sD04lBoOJxudqkvWH8fxwqiduFEx1F0N9CMuesTzvDc=;
-        b=rPf139xOacZGeFcGPDAj8z53zetd3F9jDheOHLvras9WlGTGfPawvx6oPrJH8wWB5O
-         90YRvTtmzRqBp9Wa8mkf6GNZBeauq2wjH+L6ZOPZvdDYmNrpaUBBocKMFK3KxaUfU7qP
-         YR5vhZ/dC4vkWelNBYNYLsNPNqY7Eyg+i7KXgUKW6SrAv7qKsmhYxs2TO6/Qr02SkLWT
-         EYLGKhuA13l63MA9auwBwNOFvHUooZhRgpeEunN956rZ+Rizz3Spr9ZSqRuR0tSSNyZe
-         0H/TR3ZXn8SYJOQxCQVDYM5KcXLjDECPo1eCIs+gZphnLa0LoRNOvOfPsLSGCo+7F2G2
-         dZeA==
-X-Forwarded-Encrypted: i=1; AJvYcCWK889FFmzNWXJs3SWBmksqdew2LtI0Bx8fG8vgrB87DjrSNt+eB30eKIj+ipgMYfyT72QOyE+C10cjXPhHYWDGeT7W
-X-Gm-Message-State: AOJu0YzT3PRv+AvSe3W6bPap0MwWhdpBLSB7qHrx+z/xrWe6XnHAKmvh
-	cvOI/iIE8VmVPDFRXDMIh+lL0Fd3iqjZ6T98KD/tMXylS8/q34A0EobdZG/m9rYZO18414PKCm8
-	rcTfalmMBsq2YgCSMDBmdKPJ9XJPmDzL9KJXEmsrmyqOaND3CMWkj1VY=
-X-Google-Smtp-Source: AGHT+IFSNQkKWkFJTX+qDqCce0fRek0A/f7BNr00ipCNjedh+2PQ1ooLHxPILATPgL6zPGXMXwoF2KQFd4FOsYejKqj03Uu2dUY/
+        d=1e100.net; s=20230601; t=1718200625; x=1718805425;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=myClNR6MZBQfRJrEDDf6nVsnfHCgfV4V7+aJY3JBsiw=;
+        b=BP4RWRAJbcaB3bsw4dcJ9AiJKK9KJ6HPlAqOgEv4Ul/p0r6bSQUNncS9V3EAVOXlxp
+         X9omAnA2z3qcpns52UzhYgHfiiz3mmP9caESXpjDXJ+x32S3GKNeMsMbzPGZdrAQBdaw
+         8f3fT0kMiUT4iR6mAvUdBsFBtPPt7HiZiH6zHrOCXpRR/xlzWwvEM4hP1vRFvauR98Iu
+         phDkJQWIMLq/yZiyzfbiMzb0k7gT/cQVh6E9LBnt79TmwnA7eRUAGfoNG1RwoUG1i70c
+         ZaadV+PkxgmYCMkyHrBTpXonwT74u5HBm6Bq3VKH6EtmkvYCCnQabFpWqniFeGdTp52F
+         ETEg==
+X-Forwarded-Encrypted: i=1; AJvYcCWZzFUbLTf7dlrY+Wut2NstSzNNct6G0wKWqcNXnVPan1hFlrL9PEH/f5Vxd05XlNKGjXeOHDtLpSOKpdcWI/603pcq
+X-Gm-Message-State: AOJu0Ywin3a2ozwpTr+ZbrjL2mFWE3CcJUZeqtyoiwlrex5bxnWat014
+	Ko2YCSDTk4s3QCX6jfGzJrNoyHFV+ebfWctSKsI46rTbY9uH8Mqf
+X-Google-Smtp-Source: AGHT+IHwfI47771c2CPntVeqBP3o3z5zPcr2t9lE8x3olznY0RBzzw3FHmqGLsuEir0oUYFPGHs40w==
+X-Received: by 2002:a05:6214:4a04:b0:6b0:7b24:56f0 with SMTP id 6a1803df08f44-6b0c9f256b2mr36066256d6.6.1718200625616;
+        Wed, 12 Jun 2024 06:57:05 -0700 (PDT)
+Received: from localhost (56.148.86.34.bc.googleusercontent.com. [34.86.148.56])
+        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-6b082f55fd2sm26678886d6.71.2024.06.12.06.57.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 12 Jun 2024 06:57:05 -0700 (PDT)
+Date: Wed, 12 Jun 2024 09:57:04 -0400
+From: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+To: Magnus Karlsson <magnus.karlsson@gmail.com>, 
+ YiFei Zhu <zhuyifei@google.com>
+Cc: netdev@vger.kernel.org, 
+ bpf@vger.kernel.org, 
+ =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>, 
+ Magnus Karlsson <magnus.karlsson@intel.com>, 
+ Maciej Fijalkowski <maciej.fijalkowski@intel.com>, 
+ Jonathan Lemon <jonathan.lemon@gmail.com>, 
+ Alexei Starovoitov <ast@kernel.org>, 
+ Daniel Borkmann <daniel@iogearbox.net>, 
+ "David S . Miller" <davem@davemloft.net>, 
+ Jakub Kicinski <kuba@kernel.org>, 
+ Jesper Dangaard Brouer <hawk@kernel.org>, 
+ John Fastabend <john.fastabend@gmail.com>, 
+ Andrii Nakryiko <andrii@kernel.org>, 
+ Stanislav Fomichev <sdf@google.com>, 
+ Willem de Bruijn <willemb@google.com>
+Message-ID: <6669a930e1bce_125bdf294cf@willemb.c.googlers.com.notmuch>
+In-Reply-To: <CAJ8uoz2-Kt2o-v3CuLpf2VDv2VtUJL2T307rp04di5hY2ihYHg@mail.gmail.com>
+References: <cover.1718138187.git.zhuyifei@google.com>
+ <CAJ8uoz2-Kt2o-v3CuLpf2VDv2VtUJL2T307rp04di5hY2ihYHg@mail.gmail.com>
+Subject: Re: [RFC PATCH net-next 0/3] selftests: Add AF_XDP functionality test
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-X-Received: by 2002:a92:c54a:0:b0:36c:4c63:9c93 with SMTP id
- e9e14a558f8ab-375cc9adebemr2049465ab.3.1718198720347; Wed, 12 Jun 2024
- 06:25:20 -0700 (PDT)
-Date: Wed, 12 Jun 2024 06:25:20 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000614f9d061ab1504e@google.com>
-Subject: [syzbot] [bpf?] KMSAN: uninit-value in trie_delete_elem (2)
-From: syzbot <syzbot+57c04b477de48032b4d4@syzkaller.appspotmail.com>
-To: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org, 
-	daniel@iogearbox.net, eddyz87@gmail.com, haoluo@google.com, 
-	john.fastabend@gmail.com, jolsa@kernel.org, kpsingh@kernel.org, 
-	linux-kernel@vger.kernel.org, martin.lau@linux.dev, sdf@google.com, 
-	song@kernel.org, syzkaller-bugs@googlegroups.com, yonghong.song@linux.dev
-Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 7bit
 
-Hello,
+Magnus Karlsson wrote:
+> On Tue, 11 Jun 2024 at 22:43, YiFei Zhu <zhuyifei@google.com> wrote:
+> >
+> > We have observed that hardware NIC drivers may have faulty AF_XDP
+> > implementations, and there seem to be a lack of a test of various modes
+> > in which AF_XDP could run. This series adds a test to verify that NIC
+> > drivers implements many AF_XDP features by performing a send / receive
+> > of a single UDP packet.
+> >
+> > I put the C code of the test under selftests/bpf because I'm not really
+> > sure how I'd build the BPF-related code without the selftests/bpf
+> > build infrastructure.
+> 
+> Happy to see that you are contributing a number of new tests. Would it
+> be possible for you to integrate this into the xskxceiver framework?
 
-syzbot found the following issue on:
+Makes sense, we'll need to take a look.
 
-HEAD commit:    614da38e2f7a Merge tag 'hid-for-linus-2024051401' of git:/..
-git tree:       upstream
-console+strace: https://syzkaller.appspot.com/x/log.txt?x=104e0b1c980000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=f5d2cbf33633f507
-dashboard link: https://syzkaller.appspot.com/bug?extid=57c04b477de48032b4d4
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=13a6eb32980000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=11f3a364980000
+This is an internal test that we have been using for a long time in
+our test framework.
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/89eafb874b71/disk-614da38e.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/356000512ad9/vmlinux-614da38e.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/839c73939115/bzImage-614da38e.xz
+My mistake for not keeping up at all with the changes to xskxceiver.c
+in the meantime.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+57c04b477de48032b4d4@syzkaller.appspotmail.com
+We want to test each case independently. Including a few non obvious
+cases that we discovered from real use, notably
 
-=====================================================
-BUG: KMSAN: uninit-value in trie_delete_elem+0xc0/0xbe0 kernel/bpf/lpm_trie.c:448
- trie_delete_elem+0xc0/0xbe0 kernel/bpf/lpm_trie.c:448
- ____bpf_map_delete_elem kernel/bpf/helpers.c:77 [inline]
- bpf_map_delete_elem+0x5c/0x80 kernel/bpf/helpers.c:73
- ___bpf_prog_run+0x13fe/0xe0f0 kernel/bpf/core.c:1997
- __bpf_prog_run32+0xb2/0xe0 kernel/bpf/core.c:2236
- bpf_dispatcher_nop_func include/linux/bpf.h:1234 [inline]
- __bpf_prog_run include/linux/filter.h:657 [inline]
- bpf_prog_run include/linux/filter.h:664 [inline]
- __bpf_trace_run kernel/trace/bpf_trace.c:2381 [inline]
- bpf_trace_run2+0x116/0x300 kernel/trace/bpf_trace.c:2420
- __bpf_trace_ext4_sync_file_exit+0x2c/0x40 include/trace/events/ext4.h:958
- trace_ext4_sync_file_exit include/trace/events/ext4.h:958 [inline]
- ext4_sync_file+0x121c/0x13a0 fs/ext4/fsync.c:179
- vfs_fsync_range+0x20d/0x270 fs/sync.c:188
- generic_write_sync include/linux/fs.h:2811 [inline]
- iomap_dio_complete+0xb58/0xf00 fs/iomap/direct-io.c:126
- iomap_dio_rw+0x134/0x170 fs/iomap/direct-io.c:753
- ext4_dio_write_iter fs/ext4/file.c:577 [inline]
- ext4_file_write_iter+0x26ee/0x3450 fs/ext4/file.c:696
- call_write_iter include/linux/fs.h:2120 [inline]
- new_sync_write fs/read_write.c:497 [inline]
- vfs_write+0xb31/0x14d0 fs/read_write.c:590
- ksys_write+0x20f/0x4c0 fs/read_write.c:643
- __do_sys_write fs/read_write.c:655 [inline]
- __se_sys_write fs/read_write.c:652 [inline]
- __x64_sys_write+0x93/0xe0 fs/read_write.c:652
- x64_sys_call+0x3062/0x3b50 arch/x86/include/generated/asm/syscalls_64.h:2
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0xcf/0x1e0 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
+- Using XSK only for Tx, without installing an Rx program
+- Using XSK with an empty fill queue, filling it after bind
 
-Local variable stack created at:
- __bpf_prog_run32+0x43/0xe0 kernel/bpf/core.c:2236
- bpf_dispatcher_nop_func include/linux/bpf.h:1234 [inline]
- __bpf_prog_run include/linux/filter.h:657 [inline]
- bpf_prog_run include/linux/filter.h:664 [inline]
- __bpf_trace_run kernel/trace/bpf_trace.c:2381 [inline]
- bpf_trace_run2+0x116/0x300 kernel/trace/bpf_trace.c:2420
+> You can find that in selftests/bpf too. By default, it will run its
+> tests using veth, but if you provide an interface name after the -i
+> option, it will run the tests over a real interface. I put the NIC in
+> loopback mode to use this feature, but feel free to add a new mode if
+> necessary.
 
-CPU: 1 PID: 5048 Comm: syz-executor240 Not tainted 6.9.0-syzkaller-02707-g614da38e2f7a #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 04/02/2024
-=====================================================
+We do really want two machine tests, not loopback mode. Also to
+integrate into the drv-net infrastructure.
 
+Another non-obvious feature is to test one side AF_XDP and use
+PF_PACKET on the other side, to be able to isolate and exercise only
+the Tx or Rx path in a test.
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
+> A lot of the setup and data plane code that you add already
+> exists in xskxceiver, so I would prefer if you could reuse it. Your
+> tests are new though and they would be valuable to have.
+> 
+> You could make the default packet that is sent in xskxceiver be the
+> UDP packet that you want and then add all the other logic that you
+> have to a number of new tests that you introduce.
 
