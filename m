@@ -1,145 +1,169 @@
-Return-Path: <bpf+bounces-31935-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-31936-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EE8889055CA
-	for <lists+bpf@lfdr.de>; Wed, 12 Jun 2024 16:53:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id BB1869056CC
+	for <lists+bpf@lfdr.de>; Wed, 12 Jun 2024 17:25:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 19FBE1C22937
-	for <lists+bpf@lfdr.de>; Wed, 12 Jun 2024 14:53:19 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B93CA1C21565
+	for <lists+bpf@lfdr.de>; Wed, 12 Jun 2024 15:25:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9CD2317F374;
-	Wed, 12 Jun 2024 14:53:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 25F3B17F4FE;
+	Wed, 12 Jun 2024 15:25:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HPGeWD3s"
+	dkim=pass (2048-bit key) header.d=motorola.com header.i=@motorola.com header.b="xC/AhsGg"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f51.google.com (mail-wr1-f51.google.com [209.85.221.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0a-00823401.pphosted.com (mx0a-00823401.pphosted.com [148.163.148.104])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 98F3A17DE21;
-	Wed, 12 Jun 2024 14:53:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C78617E90D;
+	Wed, 12 Jun 2024 15:25:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.148.104
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718203995; cv=none; b=VScqdtZTT2NgwHaNByKaP4i9ICHZ0S9uspzzKjh+lFH7kHoa6vnwliU1/1zuJDWhOEwhWpjs8BBnaMEhJ+jZpI3H/jd2yUVqMyH7XPGnNa39OWBmhKiI6t44qXTnChP/UYq2dgnLQPqH7VXOVrcPImGjnU/InNKaim7VI0qCdNI=
+	t=1718205945; cv=none; b=qeFLX3Rmh5N/9SZ7y1kPAlL+Fb/EhP9JRo2ILRyQYS2L6gQkyE5k6hBQTpBvhgQKXPNvt3rMRU71hjJbzsTtHSXgwPFjxnVG9ipIqFI2db/LCbeNOMnXPTT/lgr/RLX7mHSKcI53Uk0LQiRl96bxKkreMeXZVvt2yX0sA+k4a8U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718203995; c=relaxed/simple;
-	bh=CV7A6h7Ej/JI3EvTIGvVnDsWenKFFHJmc2Q7IgFEoqM=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=DfiFfk6p5eGzmcUg1Q+ezKvDAdGNIrx8mXKadcor67BwhXYxHHL8kYV/2FJPok7iDZLGz0A7UGCrAzD/a94hsnpzk3sMDOlgEo31WpzjNXXImWSrIUOXX6+d20lXv218Li8F8NMeWfOprq5ks8M/8M+VC2FMRMmQWzMLylYhmWI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=HPGeWD3s; arc=none smtp.client-ip=209.85.221.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f51.google.com with SMTP id ffacd0b85a97d-356c4e926a3so2554714f8f.1;
-        Wed, 12 Jun 2024 07:53:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1718203992; x=1718808792; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=DjlN83lPIOr4ltIrDkbCr9NcIIfgwrCEwftXlf1Dyvg=;
-        b=HPGeWD3srlC3q5EGEza2ITcOJR2EFJiYeXGRDCQy3GYrKAy2UzJmFD430sJgYDHHx4
-         Quj4aNfvMZNq6c/crItGBYyzWKwIrguKNR1U/8AJExdGmqULCOWAdDEuoEvih1kGHj9F
-         0CntlLe3e26NPP6QklOZXPBTsej8pn4SN3B8Mh8G5qFLSNCT+mzdIrf9yIzbHj87FWsC
-         c8ZPK2VkDg5MzPCg47dcU4W9MGBhuLYP4QeKgXMLgw68bVAmN+E8KQLXKfSa7YHTxzOK
-         yGfJHH10on+HnvOKQ0gjq4hAmAnMmSAA8snzesghzsc+AosTgA0HHn9rVlmKfhCwIxv0
-         PPUA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1718203992; x=1718808792;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=DjlN83lPIOr4ltIrDkbCr9NcIIfgwrCEwftXlf1Dyvg=;
-        b=sIiZ/XFgso09qXBxkfAHBY8S/JiXmRhk9GOHoAzoC2D44Grlz2oc+yaYnxxrd7yhbi
-         vwTOzhfXF+oGN2XQgNsxoUMHdKWWnSon/M4Ff5arjxJqxM7pEriD5L21gFE1jhju8gCR
-         fCELDmDecbl3zdgPbeNGLhjEWeU7nCDEX9VxYqC1i/fPJRRF9WFo3QUahRGENBr2k7DR
-         9Mr7mfJvXINnf43A3IUmltSutYwPbxh+FjLabtFDGVt0hqHS9ILaL+PLsbWK3G9ugS+7
-         2sCJcklR8SZUkcVQXPphuwJMzwpi4y2MKc4k278io7fmxDfnLW5dXITUjZLTntBgIH0O
-         yoTA==
-X-Forwarded-Encrypted: i=1; AJvYcCVMvrlunpAFFC1uVqrohtYjRYYw4uJRzuniJ94+b8jfGHSz5BYpZg7hzWJ6m2WG8gI9NqOHMoR4vqLE+YvYiT/co4bWCDudBe3EKZP7brr58nXh0lpahZ8Sl2z+AotjEwbJ
-X-Gm-Message-State: AOJu0YyUxvAyLZyHtZ6BGIGTsNELIdkGJ1iAQFVDkKxGVYBTG6wm3lwQ
-	1vV4NGmnPkWlaQijoAy1QXMis7KKT9RQgoQCrtFPSO1LdG0M9K8NGLSisMPWZTaOXKviJjvVArx
-	TgYgAHNoPow1Ou76VGAYMsUaO8q8=
-X-Google-Smtp-Source: AGHT+IEd4n+XPIwBn+v+LL+Ojvsu3xO9fas8ggtkreZ08f3keaLg6Vzs5Zl9RbMU/yMnOZm0nXtQbZqww/eUVIyV3x4=
-X-Received: by 2002:adf:e5d2:0:b0:35f:1d67:cdb4 with SMTP id
- ffacd0b85a97d-35fdf7adde2mr1394282f8f.37.1718203991639; Wed, 12 Jun 2024
- 07:53:11 -0700 (PDT)
+	s=arc-20240116; t=1718205945; c=relaxed/simple;
+	bh=1e8r/pvg4fjFrlQ0hRQpudGRd6zFpIJjeF5GWMXYND4=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=YIRQHKX5l4Z90d3QRqYXTTr2FYBUP8D8jniht/e1tYLAFRbtbfkEqvR0tFIaflIlphLiM3f8iDAzt8y92vhOyQcA6lfkYTB5WGivf3j+Zd5MZfTZ4ydyzWgo1A3OzeyeAWMTHFtqmy7Ieth+dIMUX5CntGbBbewR6Vus2ysIg58=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=motorola.com; spf=pass smtp.mailfrom=motorola.com; dkim=pass (2048-bit key) header.d=motorola.com header.i=@motorola.com header.b=xC/AhsGg; arc=none smtp.client-ip=148.163.148.104
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=motorola.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=motorola.com
+Received: from pps.filterd (m0355085.ppops.net [127.0.0.1])
+	by mx0a-00823401.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 45CD7orp007922;
+	Wed, 12 Jun 2024 15:24:58 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=motorola.com; h=
+	cc:content-type:date:from:message-id:mime-version:subject:to; s=
+	DKIM202306; bh=Nif5h10AV3M6Q2YnmVp8PmeGHT2QNIT0qX59Shur4c4=; b=x
+	C/AhsGgjbGdZOGKcS60dYzydPWImOrXmF15UJRfi1f8rquwSRjOzYdq/n7rorDjG
+	gz4+fXDt3GciYodoj+hyedxsYUyqksynfNJpgXGKoUKKQ1q8iwEe4ObaL4PHfIuA
+	bTJn+CvKWLGrJ22QZ7sfToigLLnyHyuB+bowbFrGPUqtDvpL+dX6tRYb1XMRTsk9
+	xWO+RcNvGC8jgIbalrY+iaFdDnFNdNjfwU42gn0WoVimisury/vvZ+YDgA9ZW8yg
+	iIUOojN7EctYOiVN+7FFgARDPEBZfnFKOH6B7Cep6JIJ/yy8TPtqvCv2YSa5803e
+	4BzAM0IwPB86hdMlXIUDA==
+Received: from va32lpfpp03.lenovo.com ([104.232.228.23])
+	by mx0a-00823401.pphosted.com (PPS) with ESMTPS id 3yn5tffjty-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 12 Jun 2024 15:24:58 +0000 (GMT)
+Received: from ilclmmrp02.lenovo.com (ilclmmrp02.mot.com [100.65.83.26])
+	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by va32lpfpp03.lenovo.com (Postfix) with ESMTPS id 4Vzq952VhBz4ygs5;
+	Wed, 12 Jun 2024 15:24:57 +0000 (UTC)
+Received: from ilclasset02 (ilclasset02.mot.com [100.64.49.13])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: mbland)
+	by ilclmmrp02.lenovo.com (Postfix) with ESMTPSA id 4Vzq950sT2z3p6jp;
+	Wed, 12 Jun 2024 15:24:57 +0000 (UTC)
+Date: Wed, 12 Jun 2024 10:24:56 -0500
+From: Maxwell Bland <mbland@motorola.com>
+To: "open list:BPF [GENERAL] (Safe Dynamic Programs and Tools)" <bpf@vger.kernel.org>
+Cc: Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
+        Yonghong Song <yonghong.song@linux.dev>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Zi Shen Lim <zlim.lnx@gmail.com>, Mark Rutland <mark.rutland@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Mark Brown <broonie@kernel.org>, linux-arm-kernel@lists.infradead.org,
+        open list <linux-kernel@vger.kernel.org>,
+        Josh Poimboeuf <jpoimboe@kernel.org>,
+        Puranjay Mohan <puranjay12@gmail.com>
+Subject: [PATCH bpf-next v6 0/3] Support kCFI + BPF on arm64
+Message-ID: <illfkwuxwq3adca2h4shibz2xub62kku3g2wte4sqp7xj7cwkb@ckn3qg7zxjuv>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240612-master-v1-1-a95f24339dab@gmail.com>
-In-Reply-To: <20240612-master-v1-1-a95f24339dab@gmail.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Wed, 12 Jun 2024 07:53:00 -0700
-Message-ID: <CAADnVQJLgo4zF5SVf-P5U_nOaiFW--mCe-zY6_Dec98z_QE24A@mail.gmail.com>
-Subject: Re: [PATCH RESEND] bpf: fix order of args in call to bpf_map_kvcalloc
-To: Mohammad Shehar Yaar Tausif <sheharyaar48@gmail.com>
-Cc: Martin KaFai Lau <martin.lau@linux.dev>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
-	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
-	Jiri Olsa <jolsa@kernel.org>, bpf <bpf@vger.kernel.org>, 
-	LKML <linux-kernel@vger.kernel.org>, 
-	Javier Carrasco <javier.carrasco.cruz@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Proofpoint-ORIG-GUID: lc9IdRiRRKi7tGObDRgEm7AaeqVO78U7
+X-Proofpoint-GUID: lc9IdRiRRKi7tGObDRgEm7AaeqVO78U7
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.680,FMLib:17.12.28.16
+ definitions=2024-06-12_08,2024-06-12_02,2024-05-17_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 phishscore=0
+ malwarescore=0 impostorscore=0 priorityscore=1501 lowpriorityscore=0
+ spamscore=0 bulkscore=0 clxscore=1015 mlxlogscore=756 mlxscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2405170001 definitions=main-2406120110
 
-On Wed, Jun 12, 2024 at 2:51=E2=80=AFAM Mohammad Shehar Yaar Tausif
-<sheharyaar48@gmail.com> wrote:
->
-> The original function call passed size of smap->bucket before the number =
-of
-> buckets which raises the error 'calloc-transposed-args' on compilation.
->
-> Fixes: 62827d612ae5 ("bpf: Remove __bpf_local_storage_map_alloc")
-> Reviewed-by: Andrii Nakryiko <andrii@kernel.org>
-> Signed-off-by: Mohammad Shehar Yaar Tausif <sheharyaar48@gmail.com>
-> ---
-> - already merged in linux-next
-> - [1] suggested sending as a fix for 6.10 cycle
+Adds CFI checks to BPF dispatchers on aarch64.
 
-No. It's not a fix.
+E.g.
+	<bpf_dispatcher_*_func>:
+	paciasp
+	stp x29, x30, [sp, #-0x10]!
+	mov x29, sp
+	+ ldur w16, [x2, #-0x4]
+	+ movk w17, #0x1881
+	+ movk w17, #0xd942, lsl #16
+	+ cmp w16, w17
+	+ b.eq <bpf_dispatcher_*_func+0x24>
+	+ brk #0x8222
+	blr x2
+	ldp x29, x30, [sp], #0x10
+	autiasp
+	ret
 
-pw-bot: cr
+Changes in v5->v6
+https://lore.kernel.org/all/mafwhrai2nz3u4wn4fu72kvzjm6krs57klc3qqvd2sz2mham6d@x4ukf6xqp4f4/
+- Add include for cfi_types, fixing riscv compile error
+- Fix authorship sign-off information
 
->
-> [1] https://lore.kernel.org/all/363ad8d1-a2d2-4fca-b66a-3d838eb5def9@inte=
-l.com/
-> ---
->  kernel/bpf/bpf_local_storage.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/kernel/bpf/bpf_local_storage.c b/kernel/bpf/bpf_local_storag=
-e.c
-> index 976cb258a0ed..c938dea5ddbf 100644
-> --- a/kernel/bpf/bpf_local_storage.c
-> +++ b/kernel/bpf/bpf_local_storage.c
-> @@ -782,8 +782,8 @@ bpf_local_storage_map_alloc(union bpf_attr *attr,
->         nbuckets =3D max_t(u32, 2, nbuckets);
->         smap->bucket_log =3D ilog2(nbuckets);
->
-> -       smap->buckets =3D bpf_map_kvcalloc(&smap->map, sizeof(*smap->buck=
-ets),
-> -                                        nbuckets, GFP_USER | __GFP_NOWAR=
-N);
-> +       smap->buckets =3D bpf_map_kvcalloc(&smap->map, nbuckets,
-> +                                        sizeof(*smap->buckets), GFP_USER=
- | __GFP_NOWARN);
->         if (!smap->buckets) {
->                 err =3D -ENOMEM;
->                 goto free_smap;
->
-> ---
-> base-commit: 2ef5971ff345d3c000873725db555085e0131961
-> change-id: 20240612-master-fe9e63ab5c95
->
-> Best regards,
-> --
-> Mohammad Shehar Yaar Tausif <sheharyaar48@gmail.com>
->
+Changes in v4->v5
+https://lore.kernel.org/all/wtb6czzpvtqq23t4g6hf7on257dtxzdb4fa4nuq3dtq32odmli@xoyyrtthafar/
+- Fix failing BPF selftests from misplaced variable declaration
+
+Changes in v3->v4
+https://lore.kernel.org/all/fhdcjdzqdqnoehenxbipfaorseeamt3q7fbm7ghe6z5s2chif5@lrhtasolawud/
+- Fix authorship attribution.
+
+Changes in v2->v3:
+https://lore.kernel.org/all/20240324211518.93892-1-puranjay12@gmail.com/
+- Simplify cfi_get_func_hash to avoid needless failure case
+- Use DEFINE_CFI_TYPE as suggested by Mark Rutland
+
+Changes in v1->v2:
+https://lore.kernel.org/bpf/20240227151115.4623-1-puranjay12@gmail.com/
+- Rebased on latest bpf-next/master
+
+Mark Rutland (1):
+  cfi: add C CFI type macro
+
+Maxwell Bland (1):
+  arm64/cfi,bpf: Use DEFINE_CFI_TYPE in arm64
+
+Puranjay Mohan (1):
+  arm64/cfi,bpf: Support kCFI + BPF on arm64
+
+ arch/arm64/include/asm/cfi.h    | 23 ++++++++++++++++++++++
+ arch/arm64/kernel/alternative.c | 18 +++++++++++++++++
+ arch/arm64/net/bpf_jit_comp.c   | 21 +++++++++++++++++---
+ arch/riscv/kernel/cfi.c         | 35 +++------------------------------
+ arch/x86/kernel/alternative.c   | 35 +++------------------------------
+ include/linux/cfi_types.h       | 23 ++++++++++++++++++++++
+ 6 files changed, 88 insertions(+), 67 deletions(-)
+ create mode 100644 arch/arm64/include/asm/cfi.h
+
+-- 
+
+I had one job, make it compile for riscv. Fixed. Thank you again to the
+maintainers for their review.
+
+Normally I would wait a week before submitting a new version, but with
+the delays on v5, I am submitting sooner to bolster confidence.
+
+2.43.0
 
