@@ -1,213 +1,235 @@
-Return-Path: <bpf+bounces-32046-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-32047-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 362F8906756
-	for <lists+bpf@lfdr.de>; Thu, 13 Jun 2024 10:46:24 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 656F39067D7
+	for <lists+bpf@lfdr.de>; Thu, 13 Jun 2024 10:55:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CC2F4284623
-	for <lists+bpf@lfdr.de>; Thu, 13 Jun 2024 08:46:22 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E5CBA1F24154
+	for <lists+bpf@lfdr.de>; Thu, 13 Jun 2024 08:55:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0749113D8B2;
-	Thu, 13 Jun 2024 08:45:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7EC9C13D53E;
+	Thu, 13 Jun 2024 08:54:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=3xx0.net header.i=@3xx0.net header.b="lp2qj7O8";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="MUzGjO82"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="jMJTS3ZL"
 X-Original-To: bpf@vger.kernel.org
-Received: from wflow7-smtp.messagingengine.com (wflow7-smtp.messagingengine.com [64.147.123.142])
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.15])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A6EF22AF1D;
-	Thu, 13 Jun 2024 08:45:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.142
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718268329; cv=none; b=o2gp9C5stBnfAuJMDGann63iR2+w2M4e88Kd3awclKApYaVGejMtt9JYab7D5u998QGrckOavwSgBTojNZjAO1coty9q9+ZDVt9nZdW4HC4Mr0YMsVcCD33d3JxXSLezca/t2P9Bk4gQ78uIEfG9ezqg/G70eFpXi2WFNvv9nxs=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718268329; c=relaxed/simple;
-	bh=LMdhkZ0nNad0++Iw4xjgrDk4jTiMrTUkzNpl4vhiYNE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=dKtqZ8NYVe1wLpfczxiRBEzrbnTUKCdJRcKW05GnCNQt+XkEUI88KS97VzRvZMC4BZPn/NYnYv7BOrfkoCRKtQlZxFwWnDIPT3VvfPUfn+c3/UWbKyjfM0/hztVgxDvM5cTHGhnq+ecKgPS9Shs6Z+4l82Wtkw0UgeCfGAQVIXM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=3xx0.net; spf=pass smtp.mailfrom=3xx0.net; dkim=pass (2048-bit key) header.d=3xx0.net header.i=@3xx0.net header.b=lp2qj7O8; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=MUzGjO82; arc=none smtp.client-ip=64.147.123.142
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=3xx0.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=3xx0.net
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
-	by mailflow.west.internal (Postfix) with ESMTP id 4DC642CC01C6;
-	Thu, 13 Jun 2024 04:45:24 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute2.internal (MEProxy); Thu, 13 Jun 2024 04:45:26 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=3xx0.net; h=cc
-	:cc:content-transfer-encoding:content-type:content-type:date
-	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to; s=fm2; t=1718268323;
-	 x=1718271923; bh=Duc4P1DZW9aX+Ejfjk47XQeC4s374o0lUU3oX+TajRo=; b=
-	lp2qj7O84zuWkhldM1NCcWcsJ6g+awm7EbTvAOuAcPCn0mdcp7MeiZrcbuO/LAct
-	roCd/EKE04jdiOM5G9klXQOMLz6018a/RszpXoEy2a8MnMBBp/smMcqPrvuAXi0S
-	maGz6Il3BLvmqfgte5/uWnPOs2ps4XTPEdcXhgrAniqgFVr5npukQWoS86+TRLuj
-	phWfxgBFuk5XJmqmDuFCsgmQgXF9mj8ArpNGXHaSxMbQdxmIzq016DpgdQOtGcyl
-	84HyOo2yN6l+znGkdZgm5hh5PQ0hsnDq+1ADstCalDcZbmthlPzwaRCMAnHioAsG
-	iH6S6n4xs4obPy18lqlCjg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:content-type:date:date:feedback-id:feedback-id
-	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1718268323; x=
-	1718271923; bh=Duc4P1DZW9aX+Ejfjk47XQeC4s374o0lUU3oX+TajRo=; b=M
-	UzGjO82mh/NsB26L3vRAl2u49KSI3m9vthRi9a+Et6gRkFztGnIu11FkgYADv/EH
-	lJuGoxQnvov0HenSuF5QcBq5dO16TgCsWSBXtqyiEYQm8t+oGWxuAUIfe4YOSykL
-	5D5oWPIdrawZwf0VJ6EF5fMVl5p3pdfXIfPXqvwNd5Gq0EYgJH5cj7WVXsYog+Ng
-	0rPr8fIevJqb6TLcpV2dsncN3eEdzPq81/BDxdbOAm+Ts3xyYEJvT09nSCRdyU5a
-	QWatMogGwEm6OXSGCVihQRZUjOlapB8EqNnq8Gui/PlDxCud0b4wCFKxmOLmeWdJ
-	Yj5e00O7+RejRbbMY1Umw==
-X-ME-Sender: <xms:o7FqZuRM-I41FTbF3TWfU59QEGZVuHk-VBMczvSDOM8gPVxdidGPRw>
-    <xme:o7FqZjyx89YeqkezBaxx9kYGA6ae98Xqy5IH3NW_oGHSgrSR5nAkYqoWQ8L0a0_ML
-    w24cPA4AuZMvvj8Ggg>
-X-ME-Received: <xmr:o7FqZr22rtn7SAPOi4siw_iR2qQOXq9H-b0mEy17n42R-f9DmtRwRGJxF13N2MjcsNaVKHxW8J2BI4mQoHWFD6M>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrfedujedgtdeiucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvfevuffkfhggtggugfgjsehtkefstddttdejnecuhfhrohhmpeflohhn
-    rghthhgrnhcuvegrlhhmvghlshcuoehjtggrlhhmvghlshesfeiggidtrdhnvghtqeenuc
-    ggtffrrghtthgvrhhnpeetgedutdfggeetleefhfeuhedtheduteekieduvdeigeegvdev
-    vddtieekiedvheenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfh
-    hrohhmpehjtggrlhhmvghlshesfeiggidtrdhnvght
-X-ME-Proxy: <xmx:o7FqZqAIsUiuR-j183p4TJiST7IjY1t1Ce9mUm8DQcTCKRnHenf_OA>
-    <xmx:o7FqZngw5PDa584U3Wh1jwTvQl2qeKL7_2dB0J2zsBM9sM_TByA_4A>
-    <xmx:o7FqZmoPO9Qep-lobaoGhd20w8bSfXQ9DTRKleW3GdYNkJhI4Hqo_w>
-    <xmx:o7FqZqhdVAG5teRZanIWKQVC8C5sAJf45nKlmpoUmtLFT-WNQdPFUQ>
-    <xmx:o7FqZmSdoWwB05Nk0KdtXpg1T3Zo6usTcrge4t5X0g2XO13hsvlrej2W>
-Feedback-ID: i76614979:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 13 Jun 2024 04:45:19 -0400 (EDT)
-Date: Thu, 13 Jun 2024 01:50:29 -0700
-From: Jonathan Calmels <jcalmels@3xx0.net>
-To: John Johansen <john.johansen@canonical.com>
-Cc: Paul Moore <paul@paul-moore.com>, brauner@kernel.org,
- 	ebiederm@xmission.com, Jonathan Corbet <corbet@lwn.net>,
- 	James Morris <jmorris@namei.org>, "Serge E. Hallyn" <serge@hallyn.com>,
- 	KP Singh <kpsingh@kernel.org>,
- Matt Bobrowski <mattbobrowski@google.com>,
- 	Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>,
- 	Andrii Nakryiko <andrii@kernel.org>,
- Martin KaFai Lau <martin.lau@linux.dev>,
- 	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
- 	Yonghong Song <yonghong.song@linux.dev>,
- John Fastabend <john.fastabend@gmail.com>,
- 	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
- Jiri Olsa <jolsa@kernel.org>, 	Luis Chamberlain <mcgrof@kernel.org>,
- Kees Cook <kees@kernel.org>, 	Joel Granados <j.granados@samsung.com>,
- David Howells <dhowells@redhat.com>,
- 	Jarkko Sakkinen <jarkko@kernel.org>,
- Stephen Smalley <stephen.smalley.work@gmail.com>,
- 	Ondrej Mosnacek <omosnace@redhat.com>, Mykola Lysenko <mykolal@fb.com>,
- Shuah Khan <shuah@kernel.org>, 	containers@lists.linux.dev,
- linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
- 	linux-doc@vger.kernel.org, linux-security-module@vger.kernel.org,
- bpf@vger.kernel.org, 	apparmor@lists.ubuntu.com,
- keyrings@vger.kernel.org, selinux@vger.kernel.org,
- 	linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH v2 4/4] bpf,lsm: Allow editing capabilities in BPF-LSM
- hooks
-Message-ID: <zwh766li4dwx5be6uxnxl2lhtxb4jsiua4atilpqvoeuksgz2h@v3pna3o3ewkp>
-References: <20240609104355.442002-5-jcalmels@3xx0.net>
- <CAHC9VhT5XWbhoY2Nw5jQz4GxpDriUdHw=1YsQ4xLVUtSnFxciA@mail.gmail.com>
- <z2bgjrzeq7crqx24chdbxnaanuhczbjnq6da3xw6al6omjj5xz@mqbzzzfva5sw>
- <887a3658-2d8d-4f9e-98f2-27124bb6f8e6@canonical.com>
- <CAHC9VhQFNPJTOct5rUv3HT6Z2S20mYdW75seiG8no5=fZd7JjA@mail.gmail.com>
- <uuvwcdsy7o4ulmrdzwffr6uywfacmlkjrontmjdj44luantpok@dtatxaa6tzyv>
- <CAHC9VhRnthf8+KgfuzFHXWEAc9RShDO0G_g0kc1OJ-UTih1ywg@mail.gmail.com>
- <rgzhcsblub7wedm734n56cw2qf6czjb4jgck6l5miur6odhovo@n5tgrco74zce>
- <CAHC9VhRGJTND25MFk4gR-FGxoLhMmgUrMpz_YoMFOwL6kr28zQ@mail.gmail.com>
- <ba8d88c8-a251-4c1f-8653-1082b0a101dd@canonical.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1510356458;
+	Thu, 13 Jun 2024 08:54:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.15
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1718268869; cv=fail; b=G2Ng1HCC2X29Nt6KQSImRNRj9eVAVHzQwGU/llWXYaOzC6CKJWBUZaTCiVuRfdB1EGxU8Eq9mGAGaqsernwW12bQoPYYOOls45XF8Xfp3NF259DaUW75kRHGE6rYQP9W02FbR7tRsCG8SPwC34RMvUWlQStzV2nuDn+J31R8DHU=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1718268869; c=relaxed/simple;
+	bh=I8968A61gDMHMmXm2Q0Osq4u89QYK50mO3hVoHXlTac=;
+	h=Date:From:To:CC:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=MhwDYx4Gx+f54saPKrLf4kppoYWC89rQrftWJzzUIuPWXuG8VwrNSzg8E+cdXjaF+CIjnqIT1XDCkhYViXnpgekeUGMZvmJ7N+qA//0jd0O5uFalEc7HCQdo/RkVZrMvEJlFr3dAwaFrMIpZzE85G7EIEq0cJRnhEmsX3lvNU18=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=jMJTS3ZL; arc=fail smtp.client-ip=198.175.65.15
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1718268867; x=1749804867;
+  h=date:from:to:cc:subject:message-id:references:
+   in-reply-to:mime-version;
+  bh=I8968A61gDMHMmXm2Q0Osq4u89QYK50mO3hVoHXlTac=;
+  b=jMJTS3ZLArx/i5sNtkIkLrQVEgBN8SE3S9pnEDgjU3x769ejEOPQyPhQ
+   wLKIYHj2nZVRZEGLnBoYouGxs7ZTKaRNvFf8/dNpvAyTk3YFTE7gP9S5/
+   hoRNSq9LQ3UecouK5zsFL8qUAJqGx4T+IbD1dV7D3EVl5PSHhzpAbMnrA
+   vrAYcRKojENuujvIE16si3OFEZSrEbXE5rQt/g65JoJZA7H+499R9K/sW
+   uGm3leQWJzwE5bX7es13xcgfAeaMfj7jutHVqp2cQsO5BxHMH/dpsJq2W
+   4U01lW7HGqLxm+CzaoXg5VU8dlYpwxupGGpg6OPGCTmullUoKBQuKEh0l
+   g==;
+X-CSE-ConnectionGUID: ZCTpgmL4RoC+KhSUl3Qhtg==
+X-CSE-MsgGUID: M03AHQ4XRlipRtlP5Fz6ig==
+X-IronPort-AV: E=McAfee;i="6700,10204,11101"; a="18856133"
+X-IronPort-AV: E=Sophos;i="6.08,234,1712646000"; 
+   d="scan'208";a="18856133"
+Received: from orviesa006.jf.intel.com ([10.64.159.146])
+  by orvoesa107.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Jun 2024 01:54:26 -0700
+X-CSE-ConnectionGUID: qRhJ2h9cSRCTo6OmUJK9XQ==
+X-CSE-MsgGUID: Cw/BTPaQQeuMDAD+Tw1yAg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.08,234,1712646000"; 
+   d="scan'208";a="40555978"
+Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
+  by orviesa006.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 13 Jun 2024 01:54:27 -0700
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.39; Thu, 13 Jun 2024 01:54:25 -0700
+Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
+ fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.39 via Frontend Transport; Thu, 13 Jun 2024 01:54:25 -0700
+Received: from NAM02-BN1-obe.outbound.protection.outlook.com (104.47.51.40) by
+ edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.39; Thu, 13 Jun 2024 01:54:25 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=MCnZLnrBq4l1D6hpmBu8DzScGxEusXDtbrHm7p9ydwmRTjypvXJysSDLuifi03zZYnSJuzWGqGBSe6PMwmZzhr/eQKeV5EnqYIHFIbtCyU4hk+J1y2Q3p/TLF27KgAANcEXzPvdZsmGA8kPGPnJleJjo3VpM4O5Hen6Rh+0GAq0P7WIKCHv6lBjCl9Yq2uZqns/i0egXhWBPqpUg5x4TdoASj5m/4bMjAL384Khy+/QDoS+Fedm964Jvn6UW2qquUSzWxxRZo9cRtoZRRBzIDXqhyK6ueBfMm6CvDl7fp2mW4BWjDlrO09/BlQen5veSiRtsZWiMKfKspKbWXzEiVw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=Z2R7sPhhWr9YECztVNsbADrUxyIaWngggSjs7bT9nN4=;
+ b=H02sv8ietpH9ZOzxRdYhmO0oCURXobmVfq+iiGDSu+fFDJjrHiRT2xBvWM5NXzGJbpwUkzJDlT7P8K08cet3C+CdSTWh+89z427t5Ri1OReScninX7hXS9+LLDaREQELhqOzEpyxgBCx/iWoEb4K524u5JxgwuwwEJD34ebl/NSyhwPXOoE8o/vCIJB76zgiUpvdroj9xcky2z8x3xtE0d0U+XaXPtS3e0vBi1Qg6WZq16vuJUstv5F7FEVge+k28eaWVNeF0Ye3X3lbFLmhqmNHUhfnhDUnvL93ZEf9Hq3Qqak4V3JXuR6BeZnv0mT7BLu2MksPzG9YnFbpzFqHxw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from SN7PR11MB7540.namprd11.prod.outlook.com (2603:10b6:806:340::7)
+ by DM3PR11MB8713.namprd11.prod.outlook.com (2603:10b6:0:45::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7677.20; Thu, 13 Jun
+ 2024 08:54:23 +0000
+Received: from SN7PR11MB7540.namprd11.prod.outlook.com
+ ([fe80::399f:ff7c:adb2:8d29]) by SN7PR11MB7540.namprd11.prod.outlook.com
+ ([fe80::399f:ff7c:adb2:8d29%3]) with mapi id 15.20.7677.019; Thu, 13 Jun 2024
+ 08:54:23 +0000
+Date: Thu, 13 Jun 2024 10:54:12 +0200
+From: Larysa Zaremba <larysa.zaremba@intel.com>
+To: Jakub Kicinski <kuba@kernel.org>
+CC: <intel-wired-lan@lists.osuosl.org>, Jesse Brandeburg
+	<jesse.brandeburg@intel.com>, Tony Nguyen <anthony.l.nguyen@intel.com>,
+	"David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+	Paolo Abeni <pabeni@redhat.com>, Alexei Starovoitov <ast@kernel.org>, "Daniel
+ Borkmann" <daniel@iogearbox.net>, Jesper Dangaard Brouer <hawk@kernel.org>,
+	John Fastabend <john.fastabend@gmail.com>, Maciej Fijalkowski
+	<maciej.fijalkowski@intel.com>, <netdev@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, <bpf@vger.kernel.org>,
+	<magnus.karlsson@intel.com>, Michal Kubiak <michal.kubiak@intel.com>
+Subject: Re: [PATCH iwl-net 0/3] ice: fix synchronization between .ndo_bpf()
+ and reset
+Message-ID: <ZmqztPo6UDIC6gKx@lzaremba-mobl.ger.corp.intel.com>
+References: <20240610153716.31493-1-larysa.zaremba@intel.com>
+ <20240611193837.4ffb2401@kernel.org>
+ <ZmlGppe04yuGHvPx@lzaremba-mobl.ger.corp.intel.com>
+ <20240612140935.54981c49@kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20240612140935.54981c49@kernel.org>
+X-ClientProxiedBy: VI1PR09CA0174.eurprd09.prod.outlook.com
+ (2603:10a6:800:120::28) To SN7PR11MB7540.namprd11.prod.outlook.com
+ (2603:10b6:806:340::7)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <ba8d88c8-a251-4c1f-8653-1082b0a101dd@canonical.com>
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SN7PR11MB7540:EE_|DM3PR11MB8713:EE_
+X-MS-Office365-Filtering-Correlation-Id: 62ed419b-3f71-45b5-caee-08dc8b866bcb
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230034|376008|1800799018|366010|7416008;
+X-Microsoft-Antispam-Message-Info: =?us-ascii?Q?V0CKHSr3lHeoYehjYWV8/YG8QiIeKKQ0qNKx1WUKYbbLURhOgM6oZ2Pm3HIu?=
+ =?us-ascii?Q?2hO/ZCaciyNrxkhWjgAbgmJI6zQf6fQo5bK0BR5BGQujpv/OjIAYotY+FJMj?=
+ =?us-ascii?Q?KUYtOJIkZwP/Lvwa0QrnF5i6XYb9qMzCQoNLwcHEJTs75/yN9kXZhoHdoXiT?=
+ =?us-ascii?Q?sflAapBD5YN330Te/jB9fcSVppuOirMYwvnxriNUOUrDuiz1kE6k/11vtJzG?=
+ =?us-ascii?Q?hfxNvpoKSOyybQzfzdJW9zaL0Yj4f1jz8pImA6U3JWvE+RR+6UOGS3Zrh9H2?=
+ =?us-ascii?Q?vLybuycNzJQIf4MQrqpPH+70kh5cqVAF95N6VVdhi4GwmOrMOHOheRb33Ri+?=
+ =?us-ascii?Q?UYrXWX9GNMoeQ+NkwZzsF0qQibq+rCbuyLiU+DiZ9+uTihghvzwmy7vOFrbj?=
+ =?us-ascii?Q?fwfUWEq8U9hJnom/XCSRXtdfebFrtd9gYy94mT3/x2V5nMchZXmdm7fXx8YH?=
+ =?us-ascii?Q?e/lzkBWqCZFj+4FYUHF0b0lFdvncuRXXN05aRB80HNZWGMfq/HkyTY6dh70g?=
+ =?us-ascii?Q?L55QEhO0yMVpgqKzm0nadgzZBpRCFdQSDpwrODGkC9cRuNj5JyftqodM8Ovo?=
+ =?us-ascii?Q?UFTN4wjmOKuC4amdSP67d4hdgCMREDHF0XVPdIbvAp62fOh8S1tPoMBXN1cU?=
+ =?us-ascii?Q?f5Ot0YCCmaglxTXsGuwpAKcgdwFv3xSgTEUo/4bCEMglLs2oqPEiZ8bJY1VH?=
+ =?us-ascii?Q?tix1WYXyDB3hwcAr7UqeVG+ZYXuexY5FND63xEySCWZisIKKykSdJRBSgK36?=
+ =?us-ascii?Q?Dh2gSq8JKSO1UbDZ7QkWa+enaAjwPf+sBJXSme5LahBlx+Za7OTNKuZ/3OQ3?=
+ =?us-ascii?Q?/Quc6csPw3twb0YfjitY985CiCxbmukf9pGJJBocgdOkxX1Mn3yzJTXcrpqk?=
+ =?us-ascii?Q?Ozg8+qtLjl0YF9wkBr5gI+RY1x3EcuJfpVC/gsYxxZj9BoFwc27S6Y14TzFp?=
+ =?us-ascii?Q?QWwp9JWSonGURMafWSkg3E4qO65z2HDSqHeQhYD4/69ZQgaKLObyGpDThW0y?=
+ =?us-ascii?Q?JXlW46EIWQ4NcIS4vL8XqSzPVXu/l2VoIQRN2gTNqYUrYSq7Rdpz8JRa1/1y?=
+ =?us-ascii?Q?enS89m7NEphHKH7JvdzFVK+9BiJCi+FiPQJ+xIISF+ZudFqBmfYKsG4HfsNa?=
+ =?us-ascii?Q?tde1r109CIA3+LBTeTPWWN8W8ocFsO7mC8Uja/tmEXdBYhj1dvaK+GDXZUEa?=
+ =?us-ascii?Q?k+RRHyOSJxtHaxt09GrOghn3h+/THQ4LV871i8VM9TlGavtOX20OXIeMCTdo?=
+ =?us-ascii?Q?eWuRdg2NNNOFZOID3xpX80k/9hBfx+QZrwTT+qDhIUCAN14LnbbQh2F9jH3v?=
+ =?us-ascii?Q?hdMBSGRKOHOWFJpJFW88zfns?=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN7PR11MB7540.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230034)(376008)(1800799018)(366010)(7416008);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?Isx9mLC6rLOF28uj7YN25DI1Oty1tVKWEPCh2wLMspfNMdZmeSA78ezM+UqN?=
+ =?us-ascii?Q?9b3/2Gzo9xsWAINza4UIl2iSL4QKXgfezmNHns9+cMmDVIbsk3EYuBG7f4QQ?=
+ =?us-ascii?Q?VjiOF8K6zZjVN6sTmo8ndIMpvn1rjCnV9gETDEyOCe8BR4WAp00Dg8j4lZ0a?=
+ =?us-ascii?Q?GmMlYH1sMfRv1Mq77y8xt3lzQUs6QDgrJIdBF7l27vfpF3Rh7wrUS9Hz3u9M?=
+ =?us-ascii?Q?rdqiLEOperTgm4s1Gfle589polXxlczAqQFEuEAE5PG5OLkU+zN7aZZG1Nf9?=
+ =?us-ascii?Q?ezSGBSh6/RaeEIUg46zqQNsFPqOX7HwY7zll4DzuRYw3nzQG6q4/fMi0XeIZ?=
+ =?us-ascii?Q?3F+ASwT4WNpPdUTBW+c25Kk4z3pWH1PdLmZUynBJE8p5Ng7DyoBH6AeYsK8y?=
+ =?us-ascii?Q?WxTHGQuBZouYmFSlPUpzoRjth81q/0EIE4li6az90Siws8OGQGUXzaDATFce?=
+ =?us-ascii?Q?Wk9axk4wLPAW9yRALQCAGVvSzh6mdD0Y+HDjdLeZFVeXNNCrscC7vafeb9/7?=
+ =?us-ascii?Q?nPr0Rwg2N64CMOLuViPQgO/mpycsXkvAqn/XmwQKSNhp7NNRKupv2poWybIe?=
+ =?us-ascii?Q?8QYiSTMvQUo2L/xRTZVuOcPAUQLv7TJVzVCIaE8eYocmZQa5WeywHR30vgrK?=
+ =?us-ascii?Q?erSzELOinULXJetmPwYQHadC+MBSsk+zIIW1JzVOj/6RPSkhH1lnXMhLJeRk?=
+ =?us-ascii?Q?0OHph5JNcO0mOtDOmOHWw8sGOaJdVovWTv8DDMicfjDbSjXEM7Nwk7TEx5EJ?=
+ =?us-ascii?Q?1rloq5gOGV9wQ28+Rys7Mttgn70FlBEImmHM9T35AkDdJ4KlRabML4lbqSTh?=
+ =?us-ascii?Q?Qm1Vsgt5C2rcHTcBQFx5t9691nWeIIMUfUh2+tewk5+y/Txg8GPR4/2W0SCS?=
+ =?us-ascii?Q?d8vBjPVTUOm/xSCEtLSm/U+H1xE3t97ba1QTWDqDPvkyQRV/GT3oOJpx2P0p?=
+ =?us-ascii?Q?jsWx2x/fvMlnF39VxHwValy61/mAqfDMSm5fPnp9pM9cn/2ibuIBzWlUbYOz?=
+ =?us-ascii?Q?7h+3VhUvGNQiCgJwl+uITQgGVh9Xj200KNS45VTQi8BiSLj1MB2q28+lPJ7L?=
+ =?us-ascii?Q?TgZxnm1m50s22hqT6J7tG8DgRFehOvDwuR9rb5EVTNM8c/fVdqH2CPyRR18w?=
+ =?us-ascii?Q?OOHZ8vGj+3Y0gedRBm+jYQ6FMgJAowCPCb6pIzKy16qo6nQLBSyZBgJIz24T?=
+ =?us-ascii?Q?SRrWZSa9djzyoIhe3knR9ePqNOSrJoMDqFiRJhyKrhfyZVxLyYCUkrS1oW2D?=
+ =?us-ascii?Q?okgMzm86OKszr2tlmKLWcZ20Xm+t3RnQcwTuiZv0ECbcgfi0+kbGHaBYSBMo?=
+ =?us-ascii?Q?/ajcSZUfoZGoaYe5U+4zt20agWwh2aQBikTX0hZszRhoSfqzk45Uqr8j0EQl?=
+ =?us-ascii?Q?KY4UekWUtC284vOTf/AEQljnyf0QJDzVzr88iWMrym2ZphobsJjiMzRtbloH?=
+ =?us-ascii?Q?M+43mtDol5OVZFmOXtHEEGe/sUTkUc45DCkIC1ludqHC/g4sr2aqwNClyGWR?=
+ =?us-ascii?Q?vrf8vrURGMu6+h7xyEWS4kRbiRh00KLfVvJNxyW+PODa4ikhkBptyA+uGZV2?=
+ =?us-ascii?Q?sPxztskhs5sKZA3yVJi2cuVvc1rRkLlXJ0p05v6sAiU0aSdfBUCLzMzaqBMm?=
+ =?us-ascii?Q?0A=3D=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 62ed419b-3f71-45b5-caee-08dc8b866bcb
+X-MS-Exchange-CrossTenant-AuthSource: SN7PR11MB7540.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Jun 2024 08:54:23.1322
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: sB3HYzWK70UI1UD0A70HhsAE8vgFreUozjzn/e0/aa4lIgMCsLFhrA+QvX5NwBt6U3Dmdyw0JJI1y/E5UoLhImBqLS44LArmmSJoLD12nWw=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM3PR11MB8713
+X-OriginatorOrg: intel.com
 
-On Wed, Jun 12, 2024 at 08:54:28PM GMT, John Johansen wrote:
-> On 6/12/24 10:29, Paul Moore wrote:
-> > On Wed, Jun 12, 2024 at 4:15 AM Jonathan Calmels <jcalmels@3xx0.net> wrote:
-> > > On Tue, Jun 11, 2024 at 06:38:31PM GMT, Paul Moore wrote:
-> > > > On Tue, Jun 11, 2024 at 6:15 PM Jonathan Calmels <jcalmels@3xx0.net> wrote:
-> > 
-> > ...
-> > 
-> > > > > Arguably, if we do want fine-grained userns policies, we need LSMs to
-> > > > > influence the userns capset at some point.
-> > > > 
-> > > > One could always use, or develop, a LSM that offers additional
-> > > > controls around exercising capabilities.  There are currently four
-> > > > in-tree LSMs, including the capabilities LSM, which supply a
-> > > > security_capable() hook that is used by the capability-based access
-> > > > controls in the kernel; all of these hook implementations work
-> > > > together within the LSM framework and provide an additional level of
-> > > > control/granularity beyond the existing capabilities.
+On Wed, Jun 12, 2024 at 02:09:35PM -0700, Jakub Kicinski wrote:
+> On Wed, 12 Jun 2024 08:56:38 +0200 Larysa Zaremba wrote:
+> > On Tue, Jun 11, 2024 at 07:38:37PM -0700, Jakub Kicinski wrote:
+> > > On Mon, 10 Jun 2024 17:37:12 +0200 Larysa Zaremba wrote:  
+> > > > Fix the problems that are triggered by tx_timeout and ice_xdp() calls,
+> > > > including both pool and program operations.  
 > > > 
-> > > Right, but the idea was to have a simple and easy way to reuse/trigger
-> > > as much of the commoncap one as possible from BPF. If we're saying we
-> > > need to reimplement and/or use a whole new framework, then there is
-> > > little value.
+> > > Is there really no way for ice to fix the locking? :(
+> > > The busy loops and trylocks() are not great, and seem like duct tape.
 > > 
-> > I can appreciate how allowing direct manipulation of capability bits
-> > from a BPF LSM looks attractive, but my hope is that our discussion
-> > here revealed that as you look deeper into making it work there are a
-> > number of pitfalls which prevent this from being a safe option for
-> > generalized systems.
-> > 
-> > > TBH, I don't feel strongly about this, which is why it is absent from
-> > > v1. However, as John pointed out, we should at least be able to modify
-> > > the blob if we want flexible userns caps policies down the road.
-> > 
-> > As discussed in this thread, there are existing ways to provide fine
-> > grained control over exercising capabilities that can be safely used
-> > within the LSM framework.  I don't want to speak to what John is
-> > envisioning, but he should be aware of these mechanisms, and if I
-> > recall he did voice a level of concern about the same worries I
-> > mentioned.
-> > 
+> > The locking mechanisms I use here do not look pretty, but if I am not missing 
+> > anything, the synchronization they provide must be robust.
 > 
-> sorry, I should have been more clear. I envision LSMs being able to
-> update their own state in the userns hook.
+> Robust as in they may be correct here, but you lose lockdep and all
+> other infra normal mutex would give you.
 > 
-> Basically the portion of the patch that removes const from the
-> userns hook.
 
-Yes, pretty sure we'll need this regardless.
+I know, but __netif_queue_set_napi() requires rtnl_lock() inside the potential 
+critical section and creates a deadlock this way. However, after reading 
+patches that introduce this function, I think it is called too early in the
+configuration. Seems like it should be called somewhere right after 
+netif_set_real_num_rx/_tx_queues(), much later in the configuration where we 
+already hold the rtnl_lock(). In such way, ice_vsi_rebuild() could be protected 
+with an internal mutex. WDYT?
 
-> An LSM updating the capset is worrysome for all the reasons you
-> pointed out, and I think a few more. I haven't had a chance to really
-> look at v2 yet, so I didn't want to speak directly on the bpf part of
-> the patch without first giving a good once over.
-> 
-> > I'm happy to discuss ways in which we can adjust the LSM hooks/layer
-> > to support different approaches to capability controls, but one LSM
-> > directly manipulating the state of another is going to be a no vote
-> > from me.
+> > A prettier way of protecting the same critical sections would be replacing 
+> > ICE_CFG_BUSY around ice_vsi_rebuild() with rtnl_lock(), this would eliminate 
+> > locking code from .ndo_bpf() altogether, ice_rebuild_pending() logic will have 
+> > to stay.
 > > 
-> I might not be as hard no as Paul here, I am always willing to listen
-> to arguments, but it would have to be a really good argument to
-> modify the capset, when there are multiple LSMs in play on a system.
+> > At some point I have decided to avoid using rtnl_lock(), if I do not have to. I 
+> > think this is a goal worth pursuing?
+> 
+> Is the reset for failure recovery, rather than reconfiguration? 
+> If so netif_device_detach() is generally the best way of avoiding
+> getting called (I think I mentioned it to someone @intal recently).
 
-The way I see it, it's more about enhancing the capability LSM with BPF
-hooks and have it modify its own state dynamically, not so much
-crosstalk between two distinct LSM frameworks (say one where the BPF
-LSM implements a lot of things like capable()).
-
-In this context and with enough safeguards (say we only allow dropping
-caps) this could be a net positive. Sure, ordering could come into play
-in very specific scenarios, but at this point I would expect the
-admin/LSM author to be conscious about it.
-
-If we think there is no way we can come up with something that's safe
-enough, and that the risks outweigh the benefits, fine by me, we can
-drop this patch from the series.
+AFAIK, netif_device_detach() does not affect .ndo_bpf() calls. We were trying 
+such approach with idpf and it does work for ethtool, but not for XDP.
 
