@@ -1,43 +1,43 @@
-Return-Path: <bpf+bounces-32076-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-32074-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 06C65907194
-	for <lists+bpf@lfdr.de>; Thu, 13 Jun 2024 14:39:07 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 05E26906FBE
+	for <lists+bpf@lfdr.de>; Thu, 13 Jun 2024 14:23:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 882511F270D9
-	for <lists+bpf@lfdr.de>; Thu, 13 Jun 2024 12:39:06 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0D3341C22C37
+	for <lists+bpf@lfdr.de>; Thu, 13 Jun 2024 12:23:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 12E11143C40;
-	Thu, 13 Jun 2024 12:38:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 65E49145A1A;
+	Thu, 13 Jun 2024 12:20:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="WZrur3HK"
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="AX9JByt6"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7EAC91DDDB;
-	Thu, 13 Jun 2024 12:38:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D13D51459FA;
+	Thu, 13 Jun 2024 12:20:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718282283; cv=none; b=U+JjFSIRMFFg1H/by1jFevpWTzHvrPeqZOFA/dkfYdlZhnsVgz+YvQzni0rqUWpfWEdfZdg/CyFZD9ujab8+jbKp6DMGENGwF8CFsdLI38CGwCWa072HizL82FF1OkMeuhKbsTcMRTbppazsss+hDyc2i9z84Jf1gc4oi1FLpD0=
+	t=1718281211; cv=none; b=aaEs4mnjUYcSk8Ld+lxV4tYWijdUVbXYXxIIMAkXIOeDkU353N3UdPuveDv2X3JvxahC+ki2DHGL1uITujjbqv2jnmshfIuefzUO/RanSRxVyzi95GyHGlKvA1D9l2IQ4bF8Btb3ZeKZWe6fjD8a+9LtDb0iIHFV0YXSIBwEylg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718282283; c=relaxed/simple;
-	bh=T/rzh9aSn4RcO7ZA+0rbrb8aaIEhNgPoIlj2vbzNxm0=;
+	s=arc-20240116; t=1718281211; c=relaxed/simple;
+	bh=Ka7E07mprJfErvaR4aceftEs2HqwNQvsPNdq/xbKPp0=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=J4Bk2V90bo2R4+CjrCI+zLk2BEfdKJF3l6m97wFJ62ilshN+R1imj37X+FqjNsyBrVPV8HwmixErCkZ7WSI79LfcLPcKnksihEUUgoj3wVKO37+x+UsOj3Su315flC0BEEtlJr9dD6qFQ9ohtR2jeS6XwNYG3mvLF3WLzPWaeu8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=WZrur3HK; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2C52FC4AF1A;
-	Thu, 13 Jun 2024 12:38:02 +0000 (UTC)
+	 MIME-Version:Content-Type; b=lAHQTQMyiO9XI2RXjPb97ziOAWCiosvuzCZlnxcCkW3xYNhEN9uQJgla7ZFUr2AXtsJyPZYwz2wn6imdE8cpMdWvmtX066JGS9czR3eusZUUUOcxQWINIxiJI6POeIcjDdDzVfRoApSYBXVlGsZGDk6wvTdhhA+39KH0wHS+MMg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=AX9JByt6; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7F2DAC32786;
+	Thu, 13 Jun 2024 12:20:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1718282283;
-	bh=T/rzh9aSn4RcO7ZA+0rbrb8aaIEhNgPoIlj2vbzNxm0=;
+	s=korg; t=1718281210;
+	bh=Ka7E07mprJfErvaR4aceftEs2HqwNQvsPNdq/xbKPp0=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=WZrur3HKomS3Z8q9b37+VNBS56vD3kKPnPANx4lA3Px/MKE6TbFGb7LiPweo+RUIy
-	 O599ufXfYrGfzeT4Ql9SSW8fhgYxG/QVwsyEsFiakUGpwLM56K5wXWt1cT4q/oUpqH
-	 2RRO6fcKjhamq9Rem8niUtdhEu0nIdWTiw+rGCBI=
+	b=AX9JByt64L+kwy6DiYu5MEArXW39NQ8+GXzo/j6dhf/dtosNosOTFqUT1eXSBOTPZ
+	 FFO1Ubrmf0/ZxPg2yg7OVT33NbIJp2GYs9HplxtPAqOfb8gRtRioQSkzs9ImVD0UHh
+	 VN9q1Gt2PsNqZ4X6s4xWo4vJlh+yTIbJJdGwVswQ=
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To: stable@vger.kernel.org
 Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -92,12 +92,12 @@ Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
 	yaowenbin <yaowenbin1@huawei.com>,
 	Arnaldo Carvalho de Melo <acme@redhat.com>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 225/402] perf ui: Update use of pthread mutex
-Date: Thu, 13 Jun 2024 13:33:02 +0200
-Message-ID: <20240613113310.919420194@linuxfoundation.org>
+Subject: [PATCH 5.10 178/317] perf ui: Update use of pthread mutex
+Date: Thu, 13 Jun 2024 13:33:16 +0200
+Message-ID: <20240613113254.444133917@linuxfoundation.org>
 X-Mailer: git-send-email 2.45.2
-In-Reply-To: <20240613113302.116811394@linuxfoundation.org>
-References: <20240613113302.116811394@linuxfoundation.org>
+In-Reply-To: <20240613113247.525431100@linuxfoundation.org>
+References: <20240613113247.525431100@linuxfoundation.org>
 User-Agent: quilt/0.67
 X-stable: review
 X-Patchwork-Hint: ignore
@@ -110,7 +110,7 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-5.15-stable review patch.  If anyone has any objections, please let me know.
+5.10-stable review patch.  If anyone has any objections, please let me know.
 
 ------------------
 
@@ -184,7 +184,7 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  8 files changed, 35 insertions(+), 35 deletions(-)
 
 diff --git a/tools/perf/ui/browser.c b/tools/perf/ui/browser.c
-index fa5bd5c20e96b..78fb01d6ad63f 100644
+index 781afe42e90e0..9dc808020e824 100644
 --- a/tools/perf/ui/browser.c
 +++ b/tools/perf/ui/browser.c
 @@ -268,9 +268,9 @@ void __ui_browser__show_title(struct ui_browser *browser, const char *title)
@@ -254,7 +254,7 @@ index fa5bd5c20e96b..78fb01d6ad63f 100644
  			break;
  
 diff --git a/tools/perf/ui/browsers/annotate.c b/tools/perf/ui/browsers/annotate.c
-index 44ba900828f6c..b8747e8dd9ea4 100644
+index bd77825fd5a15..7083dbb9a0af9 100644
 --- a/tools/perf/ui/browsers/annotate.c
 +++ b/tools/perf/ui/browsers/annotate.c
 @@ -8,11 +8,11 @@
