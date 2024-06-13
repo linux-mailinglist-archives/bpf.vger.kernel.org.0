@@ -1,227 +1,193 @@
-Return-Path: <bpf+bounces-32138-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-32139-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 17762907F14
-	for <lists+bpf@lfdr.de>; Fri, 14 Jun 2024 00:41:46 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2BB5E907F61
+	for <lists+bpf@lfdr.de>; Fri, 14 Jun 2024 01:31:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7069CB219FD
-	for <lists+bpf@lfdr.de>; Thu, 13 Jun 2024 22:41:43 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4C6A01C22126
+	for <lists+bpf@lfdr.de>; Thu, 13 Jun 2024 23:31:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 81CA614E2C1;
-	Thu, 13 Jun 2024 22:41:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A585714EC54;
+	Thu, 13 Jun 2024 23:31:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="sfkfPoff"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="jAeHHMty"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yb1-f201.google.com (mail-yb1-f201.google.com [209.85.219.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E646614A4D0;
-	Thu, 13 Jun 2024 22:41:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A344714B09F
+	for <bpf@vger.kernel.org>; Thu, 13 Jun 2024 23:31:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718318488; cv=none; b=rcHL8hR88vWkxBfT9dyGnjA2KeALP8qQw5PrZ4+GQ7792baMETHkU6zq5BKZDowsrRT/YCJP4AnE45m12grlPQP366LDqz0L+1MHgcm5bgciuT9EyVvunL8Ufj5yoL692QFeENrVXIzZEDHfOFtjGzu5Hn1frrOwSFixHwMBc/U=
+	t=1718321501; cv=none; b=hXanWfdBFJ7o9EQqPmgM4l84LPuiTgiyI9SM+Yx7DkVWyJlyE5kS43U6O7pA6QVCigvQgOfNRkFPVTY8/1zysvB6kgO/yjPOT7fLhGGCl12SSQKda53sFSuz1LibGsrsWtB+Z2jyeh1JKMQwRTUIPpepnC/bJwd5Ic4qpPVxDdw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718318488; c=relaxed/simple;
-	bh=I9Ug++9hFjoSfnXDvmv1adlwtek43vk/5jLycz5Z9s4=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To; b=OhMzlzc6q3p400dtFvv3sExCtTpQjsCC7THJEYivY18XnWgfMDj9NFjXPBUTIKrlty2qNBMsj7lv1bk2VyVhgDlukDe9nA7qymObMXEuz2CvpDzwF0j0u0k3oCc4a+w+q6nlhom+UYPdcmkkWm2yq6jLXyObTNsitFqtkUwtL5Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=sfkfPoff; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3075EC32786;
-	Thu, 13 Jun 2024 22:41:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1718318487;
-	bh=I9Ug++9hFjoSfnXDvmv1adlwtek43vk/5jLycz5Z9s4=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:From;
-	b=sfkfPoffiVHqdWcnrOgfR3Fp1oRr2Ge3fQT3kAvUdcirOKe1QiILb7dCjYWtbMMOg
-	 odrPT8DYYPb/W2K2aSqoiheqNNc7d8kMUWFHxcVrbIspWF2aWzG/Eh7hbQEvEYrXUU
-	 w2Onpm3oDuR//mLnErFbRwecYmvnsP/shc53Tok0v4/wDBlY2humHotEujw+DRIfh6
-	 boFRKx0ntz0uXir8MqUuaUoSCtTdJn7oFjZ+zI01MrUwhi5g3zSFaGfU7zs8UA5ySi
-	 j/cRBn9WR+Yd5Va6kSWeSIEaOQDmjfXy4iXdz5ROlMjI/sVETcRKMi85rUGvrcRA3f
-	 Wg5zW3T7p7DfA==
-Date: Thu, 13 Jun 2024 17:41:25 -0500
-From: Bjorn Helgaas <helgaas@kernel.org>
-To: Frank Li <Frank.li@nxp.com>
-Cc: Robin Murphy <robin.murphy@arm.com>, Richard Zhu <hongxing.zhu@nxp.com>,
-	Lucas Stach <l.stach@pengutronix.de>,
-	Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
-	Shawn Guo <shawnguo@kernel.org>,
-	Sascha Hauer <s.hauer@pengutronix.de>,
-	Pengutronix Kernel Team <kernel@pengutronix.de>,
-	Fabio Estevam <festevam@gmail.com>,
-	NXP Linux Team <linux-imx@nxp.com>,
-	Philipp Zabel <p.zabel@pengutronix.de>,
-	Liam Girdwood <lgirdwood@gmail.com>,
-	Mark Brown <broonie@kernel.org>,
-	Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>, linux-pci@vger.kernel.org,
-	imx@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-	devicetree@vger.kernel.org, Will Deacon <will@kernel.org>,
-	Joerg Roedel <joro@8bytes.org>, Jason Gunthorpe <jgg@ziepe.ca>,
-	Alyssa Rosenzweig <alyssa@rosenzweig.io>,
-	Marc Zyngier <maz@kernel.org>
-Subject: Re: [PATCH v5 08/12] PCI: imx6: Config look up table(LUT) to support
- MSI ITS and IOMMU for i.MX95
-Message-ID: <20240613224125.GA1087289@bhelgaas>
+	s=arc-20240116; t=1718321501; c=relaxed/simple;
+	bh=ABOAU2K5glRCpGOq5xujWwNgIlUPYqmruIjqw8FdZs0=;
+	h=Date:Message-Id:Mime-Version:Subject:From:To:Content-Type; b=gjcBvVKEiv9hA70ngWd8U8HjgPufRnszcDLoxbdjTaVOTA38H/yXUHCS9MGp47F+5JoLqUa8z0dTdziMKcaR93sqzGJCIq8R/8bY3MqPZ8txeXiu3szZv6mTUsuAZdi/8PORl127YRI9WTmPuggtE9kuYNHlUV/tCNKgOvboyDo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=jAeHHMty; arc=none smtp.client-ip=209.85.219.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com
+Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-dfeff1ae480so2714562276.2
+        for <bpf@vger.kernel.org>; Thu, 13 Jun 2024 16:31:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1718321498; x=1718926298; darn=vger.kernel.org;
+        h=to:from:subject:mime-version:message-id:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=bv/Fm1C1sIcT67jHqqKPUxG1mSp4iG3kEZiVQMnNilI=;
+        b=jAeHHMtyuAyFgB/ygZ6TqeTHnxMJfcJiuIizWet7iiyUy+k3/SW7bBBzZqz7DtP3mq
+         tKMkrFdM9dCnMFz8awAGXylw0eXA2Zo1DI3kigyKzUNu8o9OUUv47Yy0laR4wr9Rdfe+
+         A5pCrJhAQa1PnvF1rXy5TB+EYRbG0eKZAp4/5H6+cF8K1qtLolxYMD9HtRXIKYWpOc+L
+         gLXeFoDohvL++ODw2mIQUxd5U7IXWeg0bjHIf/y4Ck52iXllmOqGGB7shhXtaGn6hGyD
+         s11Zuda+RP+ETK2Gc6eyJ+SiS9XPze22RpBRHmNs+mJ+hil+0BqpFu+g6IkRI0jAsTbY
+         DrbA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1718321498; x=1718926298;
+        h=to:from:subject:mime-version:message-id:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=bv/Fm1C1sIcT67jHqqKPUxG1mSp4iG3kEZiVQMnNilI=;
+        b=OgBbxoj0vSJJjcqcympQ7AnhiC09qZZ//43w+mjd0cwh4kYcgmoKaO88k2oHj8Xkhv
+         leJYSAwYlyixFHHK65c9QxFqNsW7O1HyYNsxPB4+fjFjddJDMXYtCZ+/B7+o3jjUvxZe
+         yZU087nUzuz00p5Xcz6hIY4yDCdnLBclQcVRJp2/Y/eb5310CG+M/arQpjywZtxW7Q0h
+         cZNc97MDBM8dlhjtYlu7mOOX6jSjkMT7A4qBOyA8wgfgN/2QBk9XY7U7UNrdTy11spYt
+         CKk5H91V9LrtNlLZ3Sj/fCC/BaO1XeQwmsL4a4kbk02/WzYpdrRVy/3gmUnfnjPSDlbD
+         WN6Q==
+X-Forwarded-Encrypted: i=1; AJvYcCWE+Dqr0M5ZmqvW5KA8qo4BKUqdQgRjC2I7zJ3VviqQJJAxEh9/GJqaZox+sbxqkUApPIUnHVUeX6KIs608KvGjceAI
+X-Gm-Message-State: AOJu0YwmTgo2FMfSRzw/LTtVnnlZsK91RcIHCKaBwgwItHfbxZegC4zY
+	e/BKD4Yiw8K+o8GCqUR8cPNRwaY6HOCNqbLP5x4BaHLnKQZuc8nDibXcMqWaEp4528MeTD1Mu88
+	HeHQfig==
+X-Google-Smtp-Source: AGHT+IEeElc3Y5HxcuYVce8c3qaAQhtxoPOeS2i+52eehdbxjLd+idIerVIBEsPYYq9g+NtXzt+B6SE6V2RK
+X-Received: from irogers.svl.corp.google.com ([2620:15c:2a3:200:96dd:26a6:1493:53c8])
+ (user=irogers job=sendgmr) by 2002:a05:6902:2988:b0:dfa:4b20:bdaf with SMTP
+ id 3f1490d57ef6-dff15470dfdmr79758276.13.1718321498506; Thu, 13 Jun 2024
+ 16:31:38 -0700 (PDT)
+Date: Thu, 13 Jun 2024 16:31:14 -0700
+Message-Id: <20240613233122.3564730-1-irogers@google.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZmIa8dIahUdstpLo@lizhi-Precision-Tower-5810>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.45.2.627.g7a2c4fd464-goog
+Subject: [PATCH v3 0/8] Refactor perf python module build
+From: Ian Rogers <irogers@google.com>
+To: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
+	Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, 
+	Mark Rutland <mark.rutland@arm.com>, 
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Ian Rogers <irogers@google.com>, Adrian Hunter <adrian.hunter@intel.com>, 
+	Kan Liang <kan.liang@linux.intel.com>, John Garry <john.g.garry@oracle.com>, 
+	Will Deacon <will@kernel.org>, James Clark <james.clark@arm.com>, 
+	Mike Leach <mike.leach@linaro.org>, Leo Yan <leo.yan@linux.dev>, Guo Ren <guoren@kernel.org>, 
+	Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, 
+	Albert Ou <aou@eecs.berkeley.edu>, Suzuki K Poulose <suzuki.poulose@arm.com>, 
+	Yicong Yang <yangyicong@hisilicon.com>, Jonathan Cameron <jonathan.cameron@huawei.com>, 
+	Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>, 
+	Wedson Almeida Filho <wedsonaf@gmail.com>, Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, 
+	"=?UTF-8?q?Bj=C3=B6rn=20Roy=20Baron?=" <bjorn3_gh@protonmail.com>, Benno Lossin <benno.lossin@proton.me>, 
+	Andreas Hindborg <a.hindborg@samsung.com>, Alice Ryhl <aliceryhl@google.com>, 
+	Nick Terrell <terrelln@fb.com>, Ravi Bangoria <ravi.bangoria@amd.com>, 
+	Kees Cook <keescook@chromium.org>, Andrei Vagin <avagin@google.com>, 
+	Athira Jajeev <atrajeev@linux.vnet.ibm.com>, Oliver Upton <oliver.upton@linux.dev>, 
+	Ze Gao <zegao2021@gmail.com>, linux-kernel@vger.kernel.org, 
+	linux-perf-users@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+	linux-csky@vger.kernel.org, linux-riscv@lists.infradead.org, 
+	coresight@lists.linaro.org, rust-for-linux@vger.kernel.org, 
+	bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-On Thu, Jun 06, 2024 at 04:24:17PM -0400, Frank Li wrote:
-> On Mon, Jun 03, 2024 at 04:07:55PM -0400, Frank Li wrote:
-> > On Mon, Jun 03, 2024 at 01:56:27PM -0500, Bjorn Helgaas wrote:
-> > > On Mon, Jun 03, 2024 at 02:42:45PM -0400, Frank Li wrote:
-> > > > On Mon, Jun 03, 2024 at 12:19:21PM -0500, Bjorn Helgaas wrote:
-> > > > > On Fri, May 31, 2024 at 03:58:49PM +0100, Robin Murphy wrote:
-> > > > > > On 2024-05-31 12:08 am, Bjorn Helgaas wrote:
-> > > > > > > [+cc IOMMU and pcie-apple.c folks for comment]
-> > > > > > > 
-> > > > > > > On Tue, May 28, 2024 at 03:39:21PM -0400, Frank Li wrote:
-> > > > > > > > For the i.MX95, configuration of a LUT is necessary to convert Bus Device
-> > > > > > > > Function (BDF) to stream IDs, which are utilized by both IOMMU and ITS.
-> > > > > > > > This involves examining the msi-map and smmu-map to ensure consistent
-> > > > > > > > mapping of PCI BDF to the same stream IDs. Subsequently, LUT-related
-> > > > > > > > registers are configured. In the absence of an msi-map, the built-in MSI
-> > > > > > > > controller is utilized as a fallback.
-> > > > > > > > 
-> > > > > > > > Additionally, register a PCI bus notifier to trigger imx_pcie_add_device()
-> > > > > > > > upon the appearance of a new PCI device and when the bus is an iMX6 PCI
-> > > > > > > > controller. This function configures the correct LUT based on Device Tree
-> > > > > > > > Settings (DTS).
-> > > > > > > 
-> > > > > > > This scheme is pretty similar to apple_pcie_bus_notifier().  If we
-> > > > > > > have to do this, I wish it were *more* similar, i.e., copy the
-> > > > > > > function names, bitmap tracking, code structure, etc.
-> > > > > > > 
-> > > > > > > I don't really know how stream IDs work, but I assume they are used on
-> > > > > > > most or all arm64 platforms, so I'm a little surprised that of all the
-> > > > > > > PCI host drivers used on arm64, only pcie-apple.c and pci-imx6.c need
-> > > > > > > this notifier.
-> > > > > > 
-> > > > > > This is one of those things that's mostly at the mercy of the PCIe root
-> > > > > > complex implementation. Typically the SMMU StreamID and/or GIC ITS DeviceID
-> > > > > > is derived directly from the PCI RID, sometimes with additional high-order
-> > > > > > bits hard-wired to disambiguate PCI segments. I believe this RID-translation
-> > > > > > LUT is a particular feature of the the Synopsys IP - I know there's also one
-> > > > > > on the NXP Layerscape platforms, but on those it's programmed by the
-> > > > > > bootloader, which also generates the appropriate "msi-map" and "iommu-map"
-> > > > > > properties to match. Ideally that's what i.MX should do as well, but hey.
-> > > > > 
-> > > > > Maybe this RID-translation is a feature of i.MX, not of Synopsys?  I
-> > > > > see that the LUT CSR accesses use IMX95_* definitions.
-> > > > 
-> > > > Yes, it convert 16bit RID to 6bit stream id.
-> > > 
-> > > IIUC, you're saying this is not a Synopsys feature, it's an i.MX
-> > > feature.
-> > 
-> > Yes, it is i.MX feature. But I think other vendor should have similar
-> > situation if use old arm smmu.
-> > 
-> > > 
-> > > > > > If it's really necessary to do this programming from Linux, then there's
-> > > > > > still no point in it being dynamic - the mappings cannot ever change, since
-> > > > > > the rest of the kernel believes that what the DT said at boot time was
-> > > > > > already a property of the hardware. It would be a lot more logical, and
-> > > > > > likely simpler, for the driver to just read the relevant map property and
-> > > > > > program the entire LUT to match, all in one go at controller probe time.
-> > > > > > Rather like what's already commonly done with the parsing of "dma-ranges" to
-> > > > > > program address-translation LUTs for inbound windows.
-> > > > > > 
-> > > > > > Plus that would also give a chance of safely dealing with bad DTs specifying
-> > > > > > invalid ID mappings (by refusing to probe at all). As it is, returning an
-> > > > > > error from a child's BUS_NOTIFY_ADD_DEVICE does nothing except prevent any
-> > > > > > further notifiers from running at that point - the device will still be
-> > > > > > added, allowed to bind a driver, and able to start sending DMA/MSI traffic
-> > > > > > without the controller being correctly programmed, which at best won't work
-> > > > > > and at worst may break the whole system.
-> > > > > 
-> > > > > Frank, could the imx LUT be programmed once at boot-time instead of at
-> > > > > device-add time?  I'm guessing maybe not because apparently there is a
-> > > > > risk of running out of LUT entries?
-> > > > 
-> > > > It is not good idea to depend on boot loader so much.
-> > > 
-> > > I meant "could this be programmed once when the Linux imx host
-> > > controller driver is probed?"  But from the below, it sounds like
-> > > that's not possible in general because you don't have enough stream
-> > > IDs to do that.
-> > 
-> > Oh! sorry miss understand what your means. It is possible like what I did
-> > at v3 version. But I think it is not good enough. 
-> > 
-> > > 
-> > > > Some hot plug devics
-> > > > (SD7.0) may plug after system boot. Two PCIe instances shared one set
-> > > > of 6bits stream id (total 64). Assume total 16 assign to two PCIe
-> > > > controllers. each have 8 stream id. If use uboot assign it static, each
-> > > > PCIe controller have below 8 devices.  It will be failrue one controller
-> > > > connect 7, another connect 9. but if dynamtic alloc when devices add, both
-> > > > controller can work.
-> > > > 
-> > > > Although we have not so much devices now,  this way give us possility to
-> > > > improve it in future.
-> > > > 
-> > > > > It sounds like the consequences of running out of LUT entries are
-> > > > > catastrophic, e.g., memory corruption from mis-directed DMA?  If
-> > > > > that's possible, I think we need to figure out how to prevent the
-> > > > > device from being used, not just dev_warn() about it.
-> > > > 
-> > > > Yes, but so far, we have not met such problem now. We can improve it when
-> > > > we really face such problem.
-> > > 
-> > > If this controller can only support DMA from a limited number of
-> > > endpoints below it, I think we should figure out how to enforce that
-> > > directly.  Maybe we can prevent drivers from enabling bus mastering or
-> > > something.  I'm not happy with the idea of waiting for and debugging a
-> > > report of data corruption.
-> > 
-> > It may add a pre-add hook function to pci bridge. let me do more research.
-> 
-> Hi Bjorn:
-> 
-> int pci_setup_device(struct pci_dev *dev)
-> {
-> 	dev->error_state = pci_channel_io_normal;
-> 	...
-> 	pci_fixup_device(pci_fixup_early, dev);
-> 
-> 	^^^ I can add fixup hook for pci_fixup_early. If not resource, 
-> I can set dev->error_state to pci_channel_io_frozen or
-> pci_channel_io_perm_failure
-> 	
-> 	And add below check here after call hook function.
-> 
-> 	if (dev->error_state != pci_channel_io_normal)
-> 		return -EIO;
-> 		
-> }
-> 
-> How do you think this method? If you agree, I can continue search device
-> remove hook up.
+Refactor the perf python module build to instead of building C files
+it links libraries. To support this make static libraries for tests,
+ui, util and pmu-events. Doing this allows fewer functions to be
+stubbed out, importantly parse_events is no longer stubbed out which
+will improve the ability to work with heterogeneous cores.
 
-I think this would mean the device would not appear to be enumerated
-at all, right?  I.e., it wouldn't show up in lspci?  And we couldn't
-use even a pure programmed IO driver with no DMA or MSI?
+By not building .c files for the python module and for the build of
+perf, this should also help build times.
 
-I wonder if we should have a function pointer in struct
-pci_host_bridge, kind of like the existing ->map_irq(), where we could
-do host bridge-specific setup when enumerating a PCI device.
+Patch 1 adds '*.a' cleanup to the clean target.
 
-We'd still have to solve the issue of preventing DMA, but a hook like
-that might avoid the need for a quirk or the bus notifier approach.
+Patches 2 to 6 add static libraries for existing parts of the perf
+build.
 
-Bjorn
+Patch 7 adds the python build using libraries rather than C source
+files.
+
+Patch 8 cleans up the python dependencies and removes the no longer
+needed python-ext-sources.
+
+v3: Add missed xtensa directory for the util build. Remove adding the
+    arch directory to perf-y as it creates an empty object file that
+    breaks with GCC and LTO.
+v2: Add '*.a' cleanup to clean target. Add reviewed-by James Clark.
+
+Ian Rogers (8):
+  perf build: Add '*.a' to clean targets
+  perf ui: Make ui its own library
+  perf pmu-events: Make pmu-events a library
+  perf test: Make tests its own library
+  perf bench: Make bench its own library
+  perf util: Make util its own library
+  perf python: Switch module to linking libraries from building source
+  perf python: Clean up build dependencies
+
+ tools/perf/Build                              |  14 +-
+ tools/perf/Makefile.config                    |   5 +
+ tools/perf/Makefile.perf                      |  83 +++-
+ tools/perf/arch/Build                         |   5 +-
+ tools/perf/arch/arm/Build                     |   4 +-
+ tools/perf/arch/arm/tests/Build               |   8 +-
+ tools/perf/arch/arm/util/Build                |  10 +-
+ tools/perf/arch/arm64/Build                   |   4 +-
+ tools/perf/arch/arm64/tests/Build             |   8 +-
+ tools/perf/arch/arm64/util/Build              |  20 +-
+ tools/perf/arch/csky/Build                    |   2 +-
+ tools/perf/arch/csky/util/Build               |   6 +-
+ tools/perf/arch/loongarch/Build               |   2 +-
+ tools/perf/arch/loongarch/util/Build          |   8 +-
+ tools/perf/arch/mips/Build                    |   2 +-
+ tools/perf/arch/mips/util/Build               |   6 +-
+ tools/perf/arch/powerpc/Build                 |   4 +-
+ tools/perf/arch/powerpc/tests/Build           |   6 +-
+ tools/perf/arch/powerpc/util/Build            |  24 +-
+ tools/perf/arch/riscv/Build                   |   2 +-
+ tools/perf/arch/riscv/util/Build              |   8 +-
+ tools/perf/arch/s390/Build                    |   2 +-
+ tools/perf/arch/s390/util/Build               |  16 +-
+ tools/perf/arch/sh/Build                      |   2 +-
+ tools/perf/arch/sh/util/Build                 |   2 +-
+ tools/perf/arch/sparc/Build                   |   2 +-
+ tools/perf/arch/sparc/util/Build              |   2 +-
+ tools/perf/arch/x86/Build                     |   6 +-
+ tools/perf/arch/x86/tests/Build               |  20 +-
+ tools/perf/arch/x86/util/Build                |  42 +-
+ tools/perf/arch/xtensa/Build                  |   2 +-
+ tools/perf/bench/Build                        |  46 +-
+ tools/perf/scripts/Build                      |   4 +-
+ tools/perf/scripts/perl/Perf-Trace-Util/Build |   2 +-
+ .../perf/scripts/python/Perf-Trace-Util/Build |   2 +-
+ tools/perf/tests/Build                        | 140 +++----
+ tools/perf/tests/workloads/Build              |  12 +-
+ tools/perf/ui/Build                           |  18 +-
+ tools/perf/ui/browsers/Build                  |  14 +-
+ tools/perf/ui/tui/Build                       |   8 +-
+ tools/perf/util/Build                         | 394 +++++++++---------
+ tools/perf/util/arm-spe-decoder/Build         |   2 +-
+ tools/perf/util/cs-etm-decoder/Build          |   2 +-
+ tools/perf/util/hisi-ptt-decoder/Build        |   2 +-
+ tools/perf/util/intel-pt-decoder/Build        |   2 +-
+ tools/perf/util/perf-regs-arch/Build          |  18 +-
+ tools/perf/util/python-ext-sources            |  53 ---
+ tools/perf/util/python.c                      | 271 +++++-------
+ tools/perf/util/scripting-engines/Build       |   4 +-
+ tools/perf/util/setup.py                      |  33 +-
+ 50 files changed, 625 insertions(+), 729 deletions(-)
+ delete mode 100644 tools/perf/util/python-ext-sources
+
+-- 
+2.45.2.627.g7a2c4fd464-goog
+
 
