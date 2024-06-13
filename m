@@ -1,127 +1,204 @@
-Return-Path: <bpf+bounces-32039-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-32040-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id ACD5D906239
-	for <lists+bpf@lfdr.de>; Thu, 13 Jun 2024 05:02:30 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id E87659062E1
+	for <lists+bpf@lfdr.de>; Thu, 13 Jun 2024 05:55:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 478BE1F224E4
-	for <lists+bpf@lfdr.de>; Thu, 13 Jun 2024 03:02:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8641A28463B
+	for <lists+bpf@lfdr.de>; Thu, 13 Jun 2024 03:55:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2AEFA12CD8C;
-	Thu, 13 Jun 2024 03:02:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C06613211A;
+	Thu, 13 Jun 2024 03:54:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MtMoEi34"
+	dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com header.b="An6aC73w"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f53.google.com (mail-wm1-f53.google.com [209.85.128.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp-relay-canonical-0.canonical.com (smtp-relay-canonical-0.canonical.com [185.125.188.120])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 25B6018028
-	for <bpf@vger.kernel.org>; Thu, 13 Jun 2024 03:02:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C3D3F130ACF;
+	Thu, 13 Jun 2024 03:54:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.125.188.120
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718247744; cv=none; b=TYwDZp3yTZGcx1MX9HhBClFm2uuWI37mgUzYaGU7NQq4zWjOlzY9Ih2bK59m0ZTkGjXcCbUcUZ/c0NrcH8OCGviSK2SM4/91ZjGaA7uZ6O6WBqPMpqMEYkWg410lwGbTHFLwjzcCQ0GaKTeGjSYVx0AZf6Kh5v6cvWyUls+/UK4=
+	t=1718250892; cv=none; b=OX7nPdXEVOf8cetP099JitcjBA0m9uHOzXjQYG1hQB06D8N4tXj+kJwb4woWC+Ck5uTwnNhCx2YEoSci9K8KXtcUPfwz/yjvhV8J3ZngjvUC0HvAf9P99ABdRIju0xg+V6a1LFHPYdCx0yNBk/+HhxbE1lsSLEFnk7wnSf98qPQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718247744; c=relaxed/simple;
-	bh=8CmEJ3ob565scTgnCo1rtvV2Tyc7S6GOcQeN8V55eGE=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=rc0z020eLGo/UdCU/4nMax0TH4U05CwtJ+yNQI6Tr37VGaXQJk4Tq2KmogknyUHh7zqr777N8sFZoqaJu7Oo02p/ym+cfOGpQ+a47EAD2jdE/+yhYlR4l/B43D2qDz7R58H7aQNrV1b89x7dbxZXrDII54+jrL46ZG+/caaqxJI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=MtMoEi34; arc=none smtp.client-ip=209.85.128.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f53.google.com with SMTP id 5b1f17b1804b1-42108856c33so10064415e9.1
-        for <bpf@vger.kernel.org>; Wed, 12 Jun 2024 20:02:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1718247741; x=1718852541; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=W2IX17eR92SWdGI/QkTlnGG8BYIbW6LlPdWiLMErERY=;
-        b=MtMoEi348Dv0oPMoAm4HQXo7EsfSszxfTxKDqNIUThmkPxkJID5ZIo0o+R1n5yLAlx
-         0KJOm4EE72Dz/1aLRmLdlKg3L84UXX0QvXDPrlszuuYxNRl7nbLwfW3ZVLV4M92PNeis
-         11e1ktUxNOX0LyqZoXzriTaE0HMCTXQnW1Gu4V6wFHNggTUY1V3S4nM5JT3fkNfqDByF
-         UR8nWnQKAp/qL6gntAnqCFnOrS/cxDBpmlURbXCirslcFGnshDpA3JFJ+3UFhmWJFoof
-         i25b16JSpHinxRAuEPnEzoyiQKeMlTL9Y7PVBT8Ucl4uXk2NtMYJ8siIaaTU0+RCVGP9
-         aMQw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1718247741; x=1718852541;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=W2IX17eR92SWdGI/QkTlnGG8BYIbW6LlPdWiLMErERY=;
-        b=txr2cpNE8qCUcPue/JW1NaSfW2td39Bl/zqP7eKKoZNiD8ZVpeGD8xsUShxwUl49de
-         +4WiYZAY1casMMoLROTp7fHZkNWgLh1tnH91hpmfTJojzrPf0Urv5+Am70+13LdayGci
-         MJ2spyNtDw3++esnzALEvBQXHi864eahrNQvPfcLAytCwPAXy93sCTf/Lp5JgWjWSByf
-         CT4lfXS/DzbfKS/5DnDWxg+slDXRdGKrx9R6JdbK3s+BayGaJlrOgWdwUsf+22WYRgyi
-         J9uWLDlvzOXcNi8R8cX9n/+QbUIy5Yj8wWKi280AvtR1ksXgndN7h6Py1Rxu3lOyj6qp
-         NeGA==
-X-Forwarded-Encrypted: i=1; AJvYcCVnhaaeTTGBFGBMZKbXkOl8bP8/Mdw17GaJOcDQEbehoiEGTjIxSZJ1ehvG+i7NjLa9VRv9jYZq/flckaU0a9S8wjwc
-X-Gm-Message-State: AOJu0YzCdrMryPLAlwAFR27cnpgP6hM7yHjwi7eV3AxSS6h/AWpNYxLf
-	ktIyvTVHqx9aSWYmr+GMvCpwxkM7z6bnWJyeS0CxDI+KACet3CKE2+qdLFMCligdVc08+o6t40F
-	CM4QFjF1Am9oFtr/K1PvOWvhlRAd8xA==
-X-Google-Smtp-Source: AGHT+IHKjE4fb2sYKWhMd/Oe4Bfmv6XGfntS6quvwY6Tv6zlxvYR6WDXqstq/eC4OtVtr4wpVOKGafv+jvpfvK5iI6I=
-X-Received: by 2002:a5d:6488:0:b0:35f:314a:229c with SMTP id
- ffacd0b85a97d-360718e51e2mr1312643f8f.28.1718247741220; Wed, 12 Jun 2024
- 20:02:21 -0700 (PDT)
+	s=arc-20240116; t=1718250892; c=relaxed/simple;
+	bh=4IRlCB/4nUSbZwsJUsWYdboTwZ+C4w4yUEx925ojR84=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=sHuCGAHKnmZvQ+1iH1Rq70d4vnhArf9XB0M8t/TfbDMMNrd6nuy+mjHRq45y62hdkq5u2+O79LdgRiAZLqJjHe+Bc4XYuL1ZTrsE41/1jv0AaaQVSwd+miGYidCFPCS6FBg9WSPkqgGIclbTod7GUX6d3b4ELBMYlohC2cFTI8s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canonical.com; spf=pass smtp.mailfrom=canonical.com; dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com header.b=An6aC73w; arc=none smtp.client-ip=185.125.188.120
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canonical.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canonical.com
+Received: from [192.168.192.83] (unknown [50.39.103.33])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-relay-canonical-0.canonical.com (Postfix) with ESMTPSA id CF5353F2CF;
+	Thu, 13 Jun 2024 03:54:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+	s=20210705; t=1718250879;
+	bh=xYQFrwIswvtW1GDA70qHgG50RX/kaBNY/JfSUQQLhR4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type;
+	b=An6aC73w/ZU7OmxOvSuz+41Bk29n1RzGYRS+uRav0+cXNZDYiw0ei2+4KT0DLIQmR
+	 9MPSEbJLAQuXnRU2l1p5K7g/ngtisXCiqJY7+DpIcX5gf4NxXTNZ2gQBcyTwkHaWl2
+	 an0g3lTyh8FUBr/bb/bwBKK+Xtp76qqkp6BMD6e2lqrSMqPfvZYNBGaxIdZEzNL8GV
+	 tBGXvU3Wtn4rdYuAH+yDwsroZEcMpfJlu5/xnvb9ExOtXOW8NG1DzWyKKjscsSy82e
+	 fJk1rQRpk9QlhZcG88cuwit7OGlxxr/aGxauV5NxUS3y54lAajmfI41kRTr0kmKwzQ
+	 Vl+U1To6ETOYA==
+Message-ID: <ba8d88c8-a251-4c1f-8653-1082b0a101dd@canonical.com>
+Date: Wed, 12 Jun 2024 20:54:28 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240613021942.46743-1-flyingpeng@tencent.com>
-In-Reply-To: <20240613021942.46743-1-flyingpeng@tencent.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Wed, 12 Jun 2024 20:02:09 -0700
-Message-ID: <CAADnVQ++WUh6H8ZkE3GT561X=ZbPDzWv+w3ivHo5zdnU5_cHUA@mail.gmail.com>
-Subject: Re: [PATCH] bpf: increase frame warning limit in verifier when using
- KASAN or KCSAN
-To: flyingpenghao@gmail.com
-Cc: Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>, 
-	Peng Hao <flyingpeng@tencent.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 4/4] bpf,lsm: Allow editing capabilities in BPF-LSM
+ hooks
+To: Paul Moore <paul@paul-moore.com>, Jonathan Calmels <jcalmels@3xx0.net>
+Cc: brauner@kernel.org, ebiederm@xmission.com,
+ Jonathan Corbet <corbet@lwn.net>, James Morris <jmorris@namei.org>,
+ "Serge E. Hallyn" <serge@hallyn.com>, KP Singh <kpsingh@kernel.org>,
+ Matt Bobrowski <mattbobrowski@google.com>,
+ Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau
+ <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>,
+ Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>,
+ John Fastabend <john.fastabend@gmail.com>,
+ Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
+ Jiri Olsa <jolsa@kernel.org>, Luis Chamberlain <mcgrof@kernel.org>,
+ Kees Cook <kees@kernel.org>, Joel Granados <j.granados@samsung.com>,
+ David Howells <dhowells@redhat.com>, Jarkko Sakkinen <jarkko@kernel.org>,
+ Stephen Smalley <stephen.smalley.work@gmail.com>,
+ Ondrej Mosnacek <omosnace@redhat.com>, Mykola Lysenko <mykolal@fb.com>,
+ Shuah Khan <shuah@kernel.org>, containers@lists.linux.dev,
+ linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+ linux-doc@vger.kernel.org, linux-security-module@vger.kernel.org,
+ bpf@vger.kernel.org, apparmor@lists.ubuntu.com, keyrings@vger.kernel.org,
+ selinux@vger.kernel.org, linux-kselftest@vger.kernel.org
+References: <20240609104355.442002-1-jcalmels@3xx0.net>
+ <20240609104355.442002-5-jcalmels@3xx0.net>
+ <CAHC9VhT5XWbhoY2Nw5jQz4GxpDriUdHw=1YsQ4xLVUtSnFxciA@mail.gmail.com>
+ <z2bgjrzeq7crqx24chdbxnaanuhczbjnq6da3xw6al6omjj5xz@mqbzzzfva5sw>
+ <887a3658-2d8d-4f9e-98f2-27124bb6f8e6@canonical.com>
+ <CAHC9VhQFNPJTOct5rUv3HT6Z2S20mYdW75seiG8no5=fZd7JjA@mail.gmail.com>
+ <uuvwcdsy7o4ulmrdzwffr6uywfacmlkjrontmjdj44luantpok@dtatxaa6tzyv>
+ <CAHC9VhRnthf8+KgfuzFHXWEAc9RShDO0G_g0kc1OJ-UTih1ywg@mail.gmail.com>
+ <rgzhcsblub7wedm734n56cw2qf6czjb4jgck6l5miur6odhovo@n5tgrco74zce>
+ <CAHC9VhRGJTND25MFk4gR-FGxoLhMmgUrMpz_YoMFOwL6kr28zQ@mail.gmail.com>
+Content-Language: en-US
+From: John Johansen <john.johansen@canonical.com>
+Autocrypt: addr=john.johansen@canonical.com; keydata=
+ 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 lT9Q
+Organization: Canonical
+In-Reply-To: <CAHC9VhRGJTND25MFk4gR-FGxoLhMmgUrMpz_YoMFOwL6kr28zQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Wed, Jun 12, 2024 at 7:19=E2=80=AFPM <flyingpenghao@gmail.com> wrote:
->
-> From: Peng Hao <flyingpeng@tencent.com>
->
-> When building kernel with clang, which will typically
-> have sanitizers enabled, there is a warning about a large stack frame.
->
-> kernel/bpf/verifier.c:21163:5: error: stack frame size (2392) exceeds
-> limit (2048) in 'bpf_check' [-Werror,-Wframe-larger-than]
-> int bpf_check(struct bpf_prog **prog, union bpf_attr *attr, bpfptr_t uatt=
-r,
-> __u32 uattr_size)
->     ^
-> 632/2392 (26.42%) spills, 1760/2392 (73.58%) variables
-> so increase the limit for configurations that have KASAN or KCSAN enabled=
- for not
-> breaking the majority of builds.
->
-> Signed-off-by: Peng Hao <flyingpeng@tencent.com>
-> ---
->  kernel/bpf/Makefile | 6 ++++++
->  1 file changed, 6 insertions(+)
->
-> diff --git a/kernel/bpf/Makefile b/kernel/bpf/Makefile
-> index e497011261b8..07ed1e81aa62 100644
-> --- a/kernel/bpf/Makefile
-> +++ b/kernel/bpf/Makefile
-> @@ -6,6 +6,12 @@ cflags-nogcse-$(CONFIG_X86)$(CONFIG_CC_IS_GCC) :=3D -fno=
--gcse
->  endif
->  CFLAGS_core.o +=3D -Wno-override-init $(cflags-nogcse-yy)
->
-> +ifneq ($(CONFIG_FRAME_WARN),0)
-> +ifeq ($(filter y,$(CONFIG_KASAN)$(CONFIG_KCSAN)),y)
-> +CFLAGS_verifier.o =3D -Wframe-larger-than=3D2392
+On 6/12/24 10:29, Paul Moore wrote:
+> On Wed, Jun 12, 2024 at 4:15 AM Jonathan Calmels <jcalmels@3xx0.net> wrote:
+>> On Tue, Jun 11, 2024 at 06:38:31PM GMT, Paul Moore wrote:
+>>> On Tue, Jun 11, 2024 at 6:15 PM Jonathan Calmels <jcalmels@3xx0.net> wrote:
+> 
+> ...
+> 
+>>>> Arguably, if we do want fine-grained userns policies, we need LSMs to
+>>>> influence the userns capset at some point.
+>>>
+>>> One could always use, or develop, a LSM that offers additional
+>>> controls around exercising capabilities.  There are currently four
+>>> in-tree LSMs, including the capabilities LSM, which supply a
+>>> security_capable() hook that is used by the capability-based access
+>>> controls in the kernel; all of these hook implementations work
+>>> together within the LSM framework and provide an additional level of
+>>> control/granularity beyond the existing capabilities.
+>>
+>> Right, but the idea was to have a simple and easy way to reuse/trigger
+>> as much of the commoncap one as possible from BPF. If we're saying we
+>> need to reimplement and/or use a whole new framework, then there is
+>> little value.
+> 
+> I can appreciate how allowing direct manipulation of capability bits
+> from a BPF LSM looks attractive, but my hope is that our discussion
+> here revealed that as you look deeper into making it work there are a
+> number of pitfalls which prevent this from being a safe option for
+> generalized systems.
+> 
+>> TBH, I don't feel strongly about this, which is why it is absent from
+>> v1. However, as John pointed out, we should at least be able to modify
+>> the blob if we want flexible userns caps policies down the road.
+> 
+> As discussed in this thread, there are existing ways to provide fine
+> grained control over exercising capabilities that can be safely used
+> within the LSM framework.  I don't want to speak to what John is
+> envisioning, but he should be aware of these mechanisms, and if I
+> recall he did voice a level of concern about the same worries I
+> mentioned.
+> 
 
-that's very compiler specific.
-version +-1 will have different results.
-Please investigate what is causing the large stack size instead.
-pw-bot: cr
+sorry, I should have been more clear. I envision LSMs being able to
+update their own state in the userns hook.
+
+Basically the portion of the patch that removes const from the
+userns hook.
+
+An LSM updating the capset is worrysome for all the reasons you
+pointed out, and I think a few more. I haven't had a chance to really
+look at v2 yet, so I didn't want to speak directly on the bpf part of
+the patch without first giving a good once over.
+
+> I'm happy to discuss ways in which we can adjust the LSM hooks/layer
+> to support different approaches to capability controls, but one LSM
+> directly manipulating the state of another is going to be a no vote
+> from me.
+> 
+I might not be as hard no as Paul here, I am always willing to listen
+to arguments, but it would have to be a really good argument to
+modify the capset, when there are multiple LSMs in play on a system.
+
+
 
