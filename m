@@ -1,254 +1,179 @@
-Return-Path: <bpf+bounces-32122-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-32123-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id E93EA907C0D
-	for <lists+bpf@lfdr.de>; Thu, 13 Jun 2024 21:08:37 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 60327907C8F
+	for <lists+bpf@lfdr.de>; Thu, 13 Jun 2024 21:25:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6D7B01F23042
-	for <lists+bpf@lfdr.de>; Thu, 13 Jun 2024 19:08:37 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 63A161C222B3
+	for <lists+bpf@lfdr.de>; Thu, 13 Jun 2024 19:25:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8797314AD22;
-	Thu, 13 Jun 2024 19:08:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0DE9814B976;
+	Thu, 13 Jun 2024 19:25:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="S/OgW1TN"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="oCZ8wsIC"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-io1-f41.google.com (mail-io1-f41.google.com [209.85.166.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.18])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 993E12F34;
-	Thu, 13 Jun 2024 19:08:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C2E46130487
+	for <bpf@vger.kernel.org>; Thu, 13 Jun 2024 19:25:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718305710; cv=none; b=MLJpfM1pLMfkMvWCC0NhIVtw1d9kOaQTnvqe0HBKdB+hQi/kiJzLvuI8A4E+LNlEvJ/okt0smHYCbJP5TXNG0T84CfhNT4rc293Z82eaqS0+ieVKAv4f+q4pSqesZar7xxP3W+aARrJWb+k81Lo4MlrQK+FkwgRXf3ahKmmnPcY=
+	t=1718306745; cv=none; b=lQrXnN6g/Jlv+mqroXmGRDKGtASK1HHsylVIIRRG+PWL2xnCsFY4oSO3JgpqwNzI2DUbWYDcWrmUEs0tDzMerfqWFOJn7CjXcCIUThacT0P3A76e3MkJOLSJ9qqzIVQp8l8zqyVfXV6V3A9YmezHeaDwRvEZ80nhbu0YyX6GU8M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718305710; c=relaxed/simple;
-	bh=cYseNcA3M4djViEMjxFYSrTh62bXTcMO7SKq9yDjoh4=;
-	h=Date:From:To:Cc:Message-ID:In-Reply-To:References:Subject:
-	 Mime-Version:Content-Type; b=AwUoZT0BUH0oWgzQ4XDzvfQ0bfqZGL5NLejV4D1Ii/9gN7a/oOmqP6wfRX2gg0tZVAx6L3YRa/WiI7KJqDbp0iO0RhInksoWY5fAO803kxrTWwz6kEX2at9COFCNbC1DiyUZX9axraH+fNLPKQkgNDfb4fk444ADyqYbQvxuL/I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=S/OgW1TN; arc=none smtp.client-ip=209.85.166.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-io1-f41.google.com with SMTP id ca18e2360f4ac-7ebe508fa34so34220139f.2;
-        Thu, 13 Jun 2024 12:08:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1718305708; x=1718910508; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Rnk9iBqEEAIbCVvLBkqGKk6jeLA+BOD35Txz9Eq0i4s=;
-        b=S/OgW1TN+qw0Q68hX70GkUKTd0wdUpH9AkvUrb709vHuMUABMbtRmMucFVGrHO/QUY
-         JlA7H7RR0AMA0pqvBCKP00l+dpnSLlSLidyoC8M/345sxLJ4c7AGz6j2WZ5sMpu18kbv
-         HdT3r+2DgmbymhMA/HNuDb7nFQTTgb1NEk592CVZJGgrWKp6hl0bykG62d6Gr0+VDsnC
-         j55lIPjeKgVEdBnWqzWtYRiAZBuZf7ppgyoLOZ43Q3ZwHpzW0ZkTQjO6AEVTYgZ0Aw84
-         F4kqwtcC62ZANVSUtnGJ/BtgJGYx/Z0KaVMG2DMb4zGSQXkqiN/i+Y+6/iCd+icWijBm
-         HJag==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1718305708; x=1718910508;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=Rnk9iBqEEAIbCVvLBkqGKk6jeLA+BOD35Txz9Eq0i4s=;
-        b=YO5LbmDcyT1mh2Gkp+09nS8sX7W3MKqWG5B/FhcrSQMsr1IXgNrOSK23W8H/L/rZ9A
-         QXbprbhjMLF8h5Oxd7wEdqiE72DXpoPylqI54w2ARjULXPpsjZbm7DTapNN236d0n//B
-         eQBwzf3QwR88Dqhccm67RvU/B2Nr/znwbw6f2ggCLHgl6bujYlahzzKrjd4VPDz0FwXV
-         tz2M2CtSMdxFlYIq8VH3DjrPPUoKLB5wvC4aLEln22uOAKt6f7gKcfqvlbYhExG8+4me
-         bCmW7/PRLmihsxECYcbDXVnl+2Cm75+9mKLN5siKFWdqNK8XjZEPLBgodmVQBds/WdOe
-         /ObQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVQLinYeKuR26gxlqcTRzrjTvxnYpm7RDgDq4CqCUj4i3GhDC60+l2P7vOZOvtnnpROovtnDIeYktnolP3sRqV3m1Ww4KVkYSlnuhtQuu0POSXLERdUR/7u2bsg
-X-Gm-Message-State: AOJu0YzR81F7xjF1ZQCwf/sXnOEuae8MBoaLcWWnRRz9uL4hl5ke29W2
-	G+6shVcgSSXf3/AkTvV7kCHyTxuuHE8+ihHe6Lg4joL1JuTCFb7i
-X-Google-Smtp-Source: AGHT+IH8047mAA1ms5CmYJsxslwpykadtp45vg4juKMxWmmeek1TIE1eYrM7KMWE57d1AzT7cy6zKg==
-X-Received: by 2002:a5d:85d7:0:b0:7eb:8d08:e9de with SMTP id ca18e2360f4ac-7ebeb631d68mr41522239f.14.1718305707553;
-        Thu, 13 Jun 2024 12:08:27 -0700 (PDT)
-Received: from localhost ([2603:300b:50c:2000::13a5])
-        by smtp.gmail.com with ESMTPSA id 8926c6da1cb9f-4b956a21890sm513504173.129.2024.06.13.12.08.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 13 Jun 2024 12:08:27 -0700 (PDT)
-Date: Thu, 13 Jun 2024 12:08:25 -0700
-From: John Fastabend <john.fastabend@gmail.com>
-To: Cong Wang <xiyou.wangcong@gmail.com>, 
- Vincent Whitchurch <vincent.whitchurch@datadoghq.com>
-Cc: Jason Xing <kerneljasonxing@gmail.com>, 
- John Fastabend <john.fastabend@gmail.com>, 
- Jakub Sitnicki <jakub@cloudflare.com>, 
- Jason Xing <kernelxing@tencent.com>, 
- netdev@vger.kernel.org, 
- bpf@vger.kernel.org
-Message-ID: <666b43a9b2b4a_1995c208f@john.notmuch>
-In-Reply-To: <ZmMuh5mkK7w7s/3L@pop-os.localdomain>
-References: <CALye=_-HrFUF_Eq7SfpWZQUvBOVHx0rmsT2-O6TWgyMF-GFQ8w@mail.gmail.com>
- <CAL+tcoBByAuBj-3XK2QL5Hir_xyfKt5AFzYkjb41mreVdS2=7Q@mail.gmail.com>
- <CALye=_-oqMO-LRWd7pvMUnOxDCNVg0v=Wgmg8Qggg1Q3yL-jmQ@mail.gmail.com>
- <ZmMuh5mkK7w7s/3L@pop-os.localdomain>
-Subject: Re: Recursive locking in sockmap
+	s=arc-20240116; t=1718306745; c=relaxed/simple;
+	bh=VC0WTxQ8xaHvRuADJJ8NAKDpVXa/w+q7KdgTGGsjC6g=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=t/LsVUVZK2NpHK2GzQbvH8cvkxeBeu1+8IivGJmEaz5gFZ8pG6jwItwQSoRSwY6Uy0Fdhfu7hHpySmhkzwF3f+bkHhQzIf3Fj9B1rYmTTJ7DOL++1yWIIGK9/cMDiI7qHpig1zABPAuJ/0D/nB6nc2XVdNauBPlETB8p29J0RX8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=oCZ8wsIC; arc=none smtp.client-ip=192.198.163.18
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1718306744; x=1749842744;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=VC0WTxQ8xaHvRuADJJ8NAKDpVXa/w+q7KdgTGGsjC6g=;
+  b=oCZ8wsICgizSPqDmsW3KH0uKBdmq+rJpqsA0wv/p8LOf9DpisIrD+IEf
+   2JjN1tee12/Q8reBgSAOLwvr3PN+ZOd139dm71idris6kN10OpZvEZlkp
+   ytRO6yAhq0nJuyRoGMGnPAOMqWnkBGwCa2BNMr3QHavP5sfifav5TPV4O
+   gRp2Wn0I947KraVwSrg5lE/AWomCOVXfqQb3wAibq2rBIFfPEP/5ZXSWk
+   /15YhAtmiz5qUrKaY0aPTcSbL9eOtong8t3Fg6zsBA2/KDPgiRHP0kerN
+   d2TPLKo5MImDdwE4/zrkC7p+wCsa1h+JeIW4X4W42SiwMTjx64PcbW9gH
+   Q==;
+X-CSE-ConnectionGUID: rdRQr8DiT2SQSiir3U+qhg==
+X-CSE-MsgGUID: uWBCkUFjQQSMkMkf+UO2lw==
+X-IronPort-AV: E=McAfee;i="6700,10204,11102"; a="14894777"
+X-IronPort-AV: E=Sophos;i="6.08,236,1712646000"; 
+   d="scan'208";a="14894777"
+Received: from orviesa004.jf.intel.com ([10.64.159.144])
+  by fmvoesa112.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Jun 2024 12:25:14 -0700
+X-CSE-ConnectionGUID: NlDkBrA0Rlq0BQ28IFIQsQ==
+X-CSE-MsgGUID: PXFJewhRQcybd0z83ZvCoQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.08,236,1712646000"; 
+   d="scan'208";a="45369318"
+Received: from lkp-server01.sh.intel.com (HELO 9e3ee4e9e062) ([10.239.97.150])
+  by orviesa004.jf.intel.com with ESMTP; 13 Jun 2024 12:25:12 -0700
+Received: from kbuild by 9e3ee4e9e062 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1sHq4L-0000KK-0A;
+	Thu, 13 Jun 2024 19:25:09 +0000
+Date: Fri, 14 Jun 2024 03:24:45 +0800
+From: kernel test robot <lkp@intel.com>
+To: Rafael Passos <rafael@rcpassos.me>, davem@davemloft.net,
+	dsahern@kernel.org, ast@kernel.org, daniel@iogearbox.net,
+	andrii@kernel.org, tglx@linutronix.de, mingo@redhat.com,
+	bp@alien8.de
+Cc: oe-kbuild-all@lists.linux.dev, Rafael Passos <rafael@rcpassos.me>,
+	bpf@vger.kernel.org
+Subject: Re: [PATCH bpf-next 1/3] bpf: remove unused parameter in
+ bpf_jit_binary_pack_finalize
+Message-ID: <202406140304.4Rf0F9mg-lkp@intel.com>
+References: <7eaed3dc-28e5-409f-8f73-a1bf8acc2937@smtp-relay.sendinblue.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <7eaed3dc-28e5-409f-8f73-a1bf8acc2937@smtp-relay.sendinblue.com>
 
-Cong Wang wrote:
-> On Fri, Jun 07, 2024 at 02:09:59PM +0200, Vincent Whitchurch wrote:
-> > On Thu, Jun 6, 2024 at 2:47=E2=80=AFPM Jason Xing <kerneljasonxing@gm=
-ail.com> wrote:
-> > > On Thu, Jun 6, 2024 at 6:00=E2=80=AFPM Vincent Whitchurch
-> > > <vincent.whitchurch@datadoghq.com> wrote:
-> > > > With a socket in the sockmap, if there's a parser callback instal=
-led
-> > > > and the verdict callback returns SK_PASS, the kernel deadlocks
-> > > > immediately after the verdict callback is run. This started at co=
-mmit
-> > > > 6648e613226e18897231ab5e42ffc29e63fa3365 ("bpf, skmsg: Fix NULL
-> > > > pointer dereference in sk_psock_skb_ingress_enqueue").
-> > > >
-> > > > It can be reproduced by running ./test_sockmap -t ping
-> > > > --txmsg_pass_skb.  The --txmsg_pass_skb command to test_sockmap i=
-s
-> > > > available in this series:
-> > > > https://lore.kernel.org/netdev/20240606-sockmap-splice-v1-0-4820a=
-2ab14b5@datadoghq.com/.
-> > >
-> > > I don't have time right now to look into this issue carefully until=
+Hi Rafael,
 
-> > > this weekend. BTW, did you mean the patch [2/5] in the link that ca=
-n
-> > > solve the problem?
-> > =
+kernel test robot noticed the following build errors:
 
-> > No.  That patch set addresses a different problem which occurs even i=
-f
-> > only a verdict callback is used. But patch 4/5 in that patch set adds=
+[auto build test ERROR on bpf-next/master]
 
-> > the --txmsg_pass_skb option to the test_sockmap test program, and tha=
-t
-> > option can be used to reproduce this deadlock too.
-> =
+url:    https://github.com/intel-lab-lkp/linux/commits/Rafael-Passos/bpf-remove-unused-parameter-in-__bpf_free_used_btfs/20240613-110048
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
+patch link:    https://lore.kernel.org/r/7eaed3dc-28e5-409f-8f73-a1bf8acc2937%40smtp-relay.sendinblue.com
+patch subject: [PATCH bpf-next 1/3] bpf: remove unused parameter in bpf_jit_binary_pack_finalize
+config: powerpc-mpc885_ads_defconfig (https://download.01.org/0day-ci/archive/20240614/202406140304.4Rf0F9mg-lkp@intel.com/config)
+compiler: powerpc-linux-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240614/202406140304.4Rf0F9mg-lkp@intel.com/reproduce)
 
-> I think we can remove that write_lock_bh(&sk->sk_callback_lock). Can yo=
-u
-> test the following patch?
-> =
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202406140304.4Rf0F9mg-lkp@intel.com/
 
-> ------------>
-> =
+All errors (new ones prefixed by >>):
 
-> diff --git a/net/core/skmsg.c b/net/core/skmsg.c
-> index fd20aae30be2..da64ded97f3a 100644
-> --- a/net/core/skmsg.c
-> +++ b/net/core/skmsg.c
-> @@ -1116,9 +1116,7 @@ static void sk_psock_strp_data_ready(struct sock =
-*sk)
->  		if (tls_sw_has_ctx_rx(sk)) {
->  			psock->saved_data_ready(sk);
->  		} else {
-> -			write_lock_bh(&sk->sk_callback_lock);
->  			strp_data_ready(&psock->strp);
-> -			write_unlock_bh(&sk->sk_callback_lock);
->  		}
->  	}
->  	rcu_read_unlock();
-
-Its not obvious to me that we can run the strp parser without the
-sk_callback lock here. I believe below is the correct fix. It
-fixes the splat above with test.
-
-bpf: sockmap, fix introduced strparser recursive lock
-
-Originally there was a race where removing a psock from the sock map whil=
-e
-it was also receiving an skb and calling sk_psock_data_ready(). It was
-possible the removal code would NULL/set the data_ready callback while
-concurrently calling the hook from receive path. The fix was to wrap the
-access in sk_callback_lock to ensure the saved_data_ready pointer didn't
-change under us. There was some discussion around doing a larger change
-to ensure we could use READ_ONCE/WRITE_ONCE over the callback, but that
-was for *next kernels not stable fixes.
-
-But, we unfortunately introduced a regression with the fix because there
-is another path into this code (that didn't have a test case) through
-the stream parser. The stream parser runs with the lower lock which means=
-
-we get the following splat and lock up.
+   arch/powerpc/net/bpf_jit_comp.c: In function 'bpf_int_jit_compile':
+>> arch/powerpc/net/bpf_jit_comp.c:228:50: error: passing argument 1 of 'bpf_jit_binary_pack_finalize' from incompatible pointer type [-Werror=incompatible-pointer-types]
+     228 |                 if (bpf_jit_binary_pack_finalize(fp, fhdr, hdr)) {
+         |                                                  ^~
+         |                                                  |
+         |                                                  struct bpf_prog *
+   In file included from arch/powerpc/net/bpf_jit_comp.c:14:
+   include/linux/filter.h:1132:60: note: expected 'struct bpf_binary_header *' but argument is of type 'struct bpf_prog *'
+    1132 | int bpf_jit_binary_pack_finalize(struct bpf_binary_header *ro_header,
+         |                                  ~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~
+>> arch/powerpc/net/bpf_jit_comp.c:228:21: error: too many arguments to function 'bpf_jit_binary_pack_finalize'
+     228 |                 if (bpf_jit_binary_pack_finalize(fp, fhdr, hdr)) {
+         |                     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   include/linux/filter.h:1132:5: note: declared here
+    1132 | int bpf_jit_binary_pack_finalize(struct bpf_binary_header *ro_header,
+         |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   arch/powerpc/net/bpf_jit_comp.c: In function 'bpf_jit_free':
+   arch/powerpc/net/bpf_jit_comp.c:351:54: error: passing argument 1 of 'bpf_jit_binary_pack_finalize' from incompatible pointer type [-Werror=incompatible-pointer-types]
+     351 |                         bpf_jit_binary_pack_finalize(fp, jit_data->fhdr, jit_data->hdr);
+         |                                                      ^~
+         |                                                      |
+         |                                                      struct bpf_prog *
+   include/linux/filter.h:1132:60: note: expected 'struct bpf_binary_header *' but argument is of type 'struct bpf_prog *'
+    1132 | int bpf_jit_binary_pack_finalize(struct bpf_binary_header *ro_header,
+         |                                  ~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~
+   arch/powerpc/net/bpf_jit_comp.c:351:25: error: too many arguments to function 'bpf_jit_binary_pack_finalize'
+     351 |                         bpf_jit_binary_pack_finalize(fp, jit_data->fhdr, jit_data->hdr);
+         |                         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   include/linux/filter.h:1132:5: note: declared here
+    1132 | int bpf_jit_binary_pack_finalize(struct bpf_binary_header *ro_header,
+         |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   cc1: some warnings being treated as errors
 
 
- =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
- WARNING: possible recursive locking detected
- 6.10.0-rc2 #59 Not tainted
- --------------------------------------------
- test_sockmap/342 is trying to acquire lock:
- ffff888007a87228 (clock-AF_INET){++--}-{2:2}, at:
- sk_psock_skb_ingress_enqueue (./include/linux/skmsg.h:467
- net/core/skmsg.c:555)
+vim +/bpf_jit_binary_pack_finalize +228 arch/powerpc/net/bpf_jit_comp.c
 
- but task is already holding lock:
- ffff888007a87228 (clock-AF_INET){++--}-{2:2}, at:
- sk_psock_strp_data_ready (net/core/skmsg.c:1120)
+4ea76e90a97d22 Christophe Leroy 2021-03-22  222  
+90d862f370b6e9 Hari Bathini     2023-10-20  223  	fp->bpf_func = (void *)fimage;
+4ea76e90a97d22 Christophe Leroy 2021-03-22  224  	fp->jited = 1;
+983bdc0245a29c Ravi Bangoria    2021-10-12  225  	fp->jited_len = proglen + FUNCTION_DESCR_SIZE;
+4ea76e90a97d22 Christophe Leroy 2021-03-22  226  
+4ea76e90a97d22 Christophe Leroy 2021-03-22  227  	if (!fp->is_func || extra_pass) {
+90d862f370b6e9 Hari Bathini     2023-10-20 @228  		if (bpf_jit_binary_pack_finalize(fp, fhdr, hdr)) {
+90d862f370b6e9 Hari Bathini     2023-10-20  229  			fp = org_fp;
+90d862f370b6e9 Hari Bathini     2023-10-20  230  			goto out_addrs;
+90d862f370b6e9 Hari Bathini     2023-10-20  231  		}
+4ea76e90a97d22 Christophe Leroy 2021-03-22  232  		bpf_prog_fill_jited_linfo(fp, addrs);
+4ea76e90a97d22 Christophe Leroy 2021-03-22  233  out_addrs:
+4ea76e90a97d22 Christophe Leroy 2021-03-22  234  		kfree(addrs);
+4ea76e90a97d22 Christophe Leroy 2021-03-22  235  		kfree(jit_data);
+4ea76e90a97d22 Christophe Leroy 2021-03-22  236  		fp->aux->jit_data = NULL;
+4ea76e90a97d22 Christophe Leroy 2021-03-22  237  	} else {
+4ea76e90a97d22 Christophe Leroy 2021-03-22  238  		jit_data->addrs = addrs;
+4ea76e90a97d22 Christophe Leroy 2021-03-22  239  		jit_data->ctx = cgctx;
+4ea76e90a97d22 Christophe Leroy 2021-03-22  240  		jit_data->proglen = proglen;
+90d862f370b6e9 Hari Bathini     2023-10-20  241  		jit_data->fimage = fimage;
+90d862f370b6e9 Hari Bathini     2023-10-20  242  		jit_data->fhdr = fhdr;
+90d862f370b6e9 Hari Bathini     2023-10-20  243  		jit_data->hdr = hdr;
+4ea76e90a97d22 Christophe Leroy 2021-03-22  244  	}
+4ea76e90a97d22 Christophe Leroy 2021-03-22  245  
+4ea76e90a97d22 Christophe Leroy 2021-03-22  246  out:
+4ea76e90a97d22 Christophe Leroy 2021-03-22  247  	if (bpf_blinded)
+4ea76e90a97d22 Christophe Leroy 2021-03-22  248  		bpf_jit_prog_release_other(fp, fp == org_fp ? tmp_fp : org_fp);
+4ea76e90a97d22 Christophe Leroy 2021-03-22  249  
+4ea76e90a97d22 Christophe Leroy 2021-03-22  250  	return fp;
+4ea76e90a97d22 Christophe Leroy 2021-03-22  251  }
+983bdc0245a29c Ravi Bangoria    2021-10-12  252  
 
-To fix ensure we do not grap lock when we reach this code through the
-strparser.
-
-Fixes: 6648e613226e1 ("bpf, skmsg: Fix NULL pointer dereference in sk_pso=
-ck_skb_ingress_enqueue")
-Signed-off-by: John Fastabend <john.fastabend@gmail.com>
----
- include/linux/skmsg.h |    9 +++++++--
- net/core/skmsg.c      |    5 ++++-
- 2 files changed, 11 insertions(+), 3 deletions(-)
-
-diff --git a/include/linux/skmsg.h b/include/linux/skmsg.h
-index c9efda9df285..3659e9b514d0 100644
---- a/include/linux/skmsg.h
-+++ b/include/linux/skmsg.h
-@@ -461,13 +461,18 @@ static inline void sk_psock_put(struct sock *sk, st=
-ruct sk_psock *psock)
- 		sk_psock_drop(sk, psock);
- }
- =
-
--static inline void sk_psock_data_ready(struct sock *sk, struct sk_psock =
-*psock)
-+static inline void __sk_psock_data_ready(struct sock *sk, struct sk_psoc=
-k *psock)
- {
--	read_lock_bh(&sk->sk_callback_lock);
- 	if (psock->saved_data_ready)
- 		psock->saved_data_ready(sk);
- 	else
- 		sk->sk_data_ready(sk);
-+}
-+
-+static inline void sk_psock_data_ready(struct sock *sk, struct sk_psock =
-*psock)
-+{
-+	read_lock_bh(&sk->sk_callback_lock);
-+	__sk_psock_data_ready(sk, psock);
- 	read_unlock_bh(&sk->sk_callback_lock);
- }
- =
-
-diff --git a/net/core/skmsg.c b/net/core/skmsg.c
-index fd20aae30be2..8429daecbbb6 100644
---- a/net/core/skmsg.c
-+++ b/net/core/skmsg.c
-@@ -552,7 +552,10 @@ static int sk_psock_skb_ingress_enqueue(struct sk_bu=
-ff *skb,
- 	msg->skb =3D skb;
- =
-
- 	sk_psock_queue_msg(psock, msg);
--	sk_psock_data_ready(sk, psock);
-+	if (skb_bpf_strparser(skb))
-+		__sk_psock_data_ready(sk, psock);
-+	else
-+		sk_psock_data_ready(sk, psock);
- 	return copied;
- }=
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
