@@ -1,149 +1,137 @@
-Return-Path: <bpf+bounces-32107-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-32108-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id EFE069078CE
-	for <lists+bpf@lfdr.de>; Thu, 13 Jun 2024 18:54:25 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1DC289078DA
+	for <lists+bpf@lfdr.de>; Thu, 13 Jun 2024 18:55:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5CF6FB22C0F
-	for <lists+bpf@lfdr.de>; Thu, 13 Jun 2024 16:54:23 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1804D1C226AD
+	for <lists+bpf@lfdr.de>; Thu, 13 Jun 2024 16:55:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F6F01494AB;
-	Thu, 13 Jun 2024 16:54:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E8BD6149C4B;
+	Thu, 13 Jun 2024 16:55:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b="lTsxvmiz";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="IpY+OqHQ"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="a+7sFHAQ"
 X-Original-To: bpf@vger.kernel.org
-Received: from flow2-smtp.messagingengine.com (flow2-smtp.messagingengine.com [103.168.172.137])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-il1-f176.google.com (mail-il1-f176.google.com [209.85.166.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1DBC612F386;
-	Thu, 13 Jun 2024 16:54:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.137
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 05160146A7B
+	for <bpf@vger.kernel.org>; Thu, 13 Jun 2024 16:55:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718297653; cv=none; b=mjuj+Oljs9w43mZij5/DYvltGT09RzLgqvgMhgLKezCUKik1bz4ElMAqFyWTYCldlxOz33+Bgr+HOEB84TgRm4BcN2V7ivKtFfY3eaHPh4oE4kKRAXtOFa4IujnTV5L+k1RBdOcfEaKIxVQr0/mvF2Xtm5kW6jEXjczcNllkIe8=
+	t=1718297731; cv=none; b=mbnnV/f5DpWpGSwonxRYR1QRS+o0ElC2ff5JP0RSHaPXib1HpL/KK805IMK0diHcw/1cbEOU3Lyd5ZH66iCCc4Yd7f4c6m4x43BzN6D1Zu9gjAGz2tqE4D6El1bao5v85XovEvJTpDuHUi/mvgjD5WavOkRr0k3VSpzi6cjQUXc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718297653; c=relaxed/simple;
-	bh=feHgD4FXC0XFfMqq5BOhmdqi9oHY+Zs0DNRW46P786A=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=I0VZf4AMuwWPKxdUktAYYQ8+IKRbSTN7X5ukuK93z6+WvV0Wd6vUNXMEqIoMPzz9x++YdDsIsgPzLkIEpx7qmJbobyAypMnCqQUSPZ8rotqiZAoZsE2TuaFJT1bSX3tbXtGiVTVrmvZsRBMdAh2c4M1QRVmUpXNetUwuawKC7xc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz; spf=pass smtp.mailfrom=dxuuu.xyz; dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b=lTsxvmiz; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=IpY+OqHQ; arc=none smtp.client-ip=103.168.172.137
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dxuuu.xyz
-Received: from compute7.internal (compute7.nyi.internal [10.202.2.48])
-	by mailflow.nyi.internal (Postfix) with ESMTP id 05EBC2001AF;
-	Thu, 13 Jun 2024 12:54:11 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute7.internal (MEProxy); Thu, 13 Jun 2024 12:54:11 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
-	:cc:content-type:content-type:date:date:from:from:in-reply-to
-	:in-reply-to:message-id:mime-version:references:reply-to:subject
-	:subject:to:to; s=fm3; t=1718297650; x=1718304850; bh=fGEXUP5WR/
-	qD1NGLHUvT64tThGjebLT8VP2XMiyvIUc=; b=lTsxvmizx4PE/wTa2kUa9KiE9H
-	k21pHfPE26N4HnW6RD/mtZqLxqi1OciquLYmotYXy2sjhvrmiFurv/55fYVe0Okf
-	ugjukoUUjydPb3TK2SLgH/IzfSJFF99l1kMJDKmZwsFvjnXvAovtALJi71Hk9iby
-	lWMWt+xvwwqH8zJhI34I3u5o67DFJOejhqcJLkD8Q995Bg/P+vr1wwsmg+BSTkDI
-	bErtTkndoiYnWjVHHjVj9BtjfeSK+RF28HlqO+WkBIB8EUlk7SzdSqJqIlAfMl1i
-	uVTGane4n5w+MY8Cu0sTAvdFg+MfnwUhE7dIUzf7Ftg5uMUxZsSGUpyv5sXw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm1; t=1718297650; x=1718304850; bh=fGEXUP5WR/qD1NGLHUvT64tThGje
-	bLT8VP2XMiyvIUc=; b=IpY+OqHQJvkNevwh/hoAdHQmHvQo/j65mLMjxNU6dK3F
-	rLG0R6KKUdnQT8I6tw+lArnTH6QDJlhnhTeJ7NuFPPlu3bh/0bWiTXcxod1y/FCm
-	0E5j9EjUIdpxz5Qp2MKN5didpGjeHS4QthqCDwBDsQRHFR7thC9WUggWdtafz5g7
-	3s155qU5vW9yxL6AGFG77uVUDqnpo9WekMyhdV5DkLq1Q1KvP616tSnaS2WlJFXr
-	454vGqOocOMmxkKgvW3x/v0hH9CpXEW/X1TX88mHNH5dDJ0hdfjrnPNLYVkeXZR2
-	GhF4uJVbmPKDeBfDbOej8sTHOBSxsDeCv+pX59dCow==
-X-ME-Sender: <xms:MiRrZgIfTRkRzYeJ-vpaIOZRoy0HRjE1Z9JTnlNVCRyA3MySIy7tcg>
-    <xme:MiRrZgIcgKkcWvMv9BWu7NLShucJt7Vr9ejIMpGdmDI8uhfvbQUBf9eY9eadbSH5R
-    HCg7yL5AEBEoMol0A>
-X-ME-Received: <xmr:MiRrZgsR7sl3mzwuzxaHSZcWi6LghoQVHXl7lTUKeCTdqHNhThhbDG07pNLzTMtRaySTYvaQXsHv-FWRTJfei3o2YbqIaMOOyA>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrfedujedguddtfecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enfghrlhcuvffnffculddvfedmnecujfgurhepfffhvfevuffkfhggtggujgesthdtsfdt
-    tddtvdenucfhrhhomhepffgrnhhivghlucgiuhcuoegugihusegugihuuhhurdighiiiqe
-    enucggtffrrghtthgvrhhnpedtjeekudelieetvdefgedvgeejhefhvdfggfejudeutdeg
-    veeivedthfehfeelkeenucffohhmrghinhepghhithhhuhgsrdgtohhmnecuvehluhhsth
-    gvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepugiguhesugiguhhuuhdr
-    giihii
-X-ME-Proxy: <xmx:MiRrZtaPtGLn3jqO_OclomnP4auuTGGUw8wyGKAjpiUEAUZR8oCzxg>
-    <xmx:MiRrZnZGp6lLALmdMc0-yhs_BED91frK7K0aSuKXyuxJpV-Ykb6TLQ>
-    <xmx:MiRrZpCgNU8NiSYmms4KbawpQznYsm9eG9LxXKaZmbB5DYseRHuiog>
-    <xmx:MiRrZtZOdD8YqeIL5566qA3aAYD92oCh0Y6IYI4sEFh2wFY8EAkA9Q>
-    <xmx:MiRrZrNi12GFpf7t29CQuwFG4mpEPtBhauaQ07lWuc9RsJBtBtjP60-9>
-Feedback-ID: i6a694271:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 13 Jun 2024 12:54:08 -0400 (EDT)
-Date: Thu, 13 Jun 2024 10:54:07 -0600
-From: Daniel Xu <dxu@dxuuu.xyz>
-To: Daniel Borkmann <daniel@iogearbox.net>
-Cc: Lorenzo Bianconi <lorenzo@kernel.org>, bpf@vger.kernel.org, 
-	pablo@netfilter.org, kadlec@netfilter.org, davem@davemloft.net, edumazet@google.com, 
-	kuba@kernel.org, pabeni@redhat.com, netfilter-devel@vger.kernel.org, 
-	netdev@vger.kernel.org, ast@kernel.org, andrii@kernel.org, martin.lau@linux.dev, 
-	eddyz87@gmail.com, lorenzo.bianconi@redhat.com, toke@redhat.com, fw@strlen.de, 
-	hawk@kernel.org, horms@kernel.org, donhunte@redhat.com, memxor@gmail.com
-Subject: Re: [PATCH v4 bpf-next 3/3] selftests/bpf: Add selftest for
- bpf_xdp_flow_lookup kfunc
-Message-ID: <hwdaubyz7kjei5pmp72c4opxz3pk3syso22kafm2j7m3t3ffgl@g6ncqcqfe6bi>
-References: <cover.1716987534.git.lorenzo@kernel.org>
- <21f41edcad0897e3a849b17392796b32215ae8ca.1716987535.git.lorenzo@kernel.org>
- <95f8897c-a20b-fa5f-84ab-8204e2654a9e@iogearbox.net>
+	s=arc-20240116; t=1718297731; c=relaxed/simple;
+	bh=gWJSlhXJZjDMSCMnTQA00bSbjWncOwR7ylrZc7+pEaA=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=onMNqx6FeAMjpYjfK6CP6AooNnfugmpGoXlHk8wzP3BNtjL3ap/SE7PjMcrNscTLbphYjx3pStaT0Ff4k4CsOwG3qGYeCklKkFIh4thAXdrU/6GMUDAiihr0cs38gqVQF4O3B50xCIRht841nn+AUWHcktkd8E4oZ+kFM0kCNBk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=a+7sFHAQ; arc=none smtp.client-ip=209.85.166.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-il1-f176.google.com with SMTP id e9e14a558f8ab-375bb80e5b8so159115ab.1
+        for <bpf@vger.kernel.org>; Thu, 13 Jun 2024 09:55:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1718297729; x=1718902529; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=gWJSlhXJZjDMSCMnTQA00bSbjWncOwR7ylrZc7+pEaA=;
+        b=a+7sFHAQC6BxlkC/FLvXzSfHGQWV9f3dO45WncwWzrqJ8Wt82v+YWXTAaTou56zTey
+         NAf4jxOWxKvEDuWZUtEdUusU8iut/VTxTgtnc5rLZXfjt2fFs7+kxyVumjfmgi2PzVKq
+         +lWcpZI0elX8sWgH16QEUv6x0MZFQJ4G5NOIDmQj5EbkSgCnFXA4RBKB8NaxeDxNnzMG
+         OTaYompsV+5MeXQIH58S1PUSdlhHYuPUoqtYgOBLztN2NFydHaaf0XddiAiy21tg27DG
+         YFq0xQSfdjAMGzmZTlMByVssT/+HLjTqzz4aEYv+ZJxlxJZCOv66Gc/+I4Yh7CZIYytg
+         PsNw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1718297729; x=1718902529;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=gWJSlhXJZjDMSCMnTQA00bSbjWncOwR7ylrZc7+pEaA=;
+        b=d/jOxPn6FeBwhwQcrzfo0rLiH1qlE/iWJiHHTquygrK7st9Mwkqd/Ml8dkf56OXRNg
+         oaTI6WDW27E6cLmNTJooXYYTcQrf73PumgSYExGGGO8CBWZ4ftdu0Hr2OgTHqCRMXk1q
+         yGhu25rN/kEKTGLpvmH1sdcZNmI/ycsOz/zDOQnW28p6HB/a8cJfeR+ExMTm878TvF2J
+         H/RMGHBLnp8eJw03dYkfhcNowNjDklmXLsyDnabY3T3lLuOT1YfAtJmLpxMuibWtxzEF
+         CNIFC8ozsCyKC1iYRNUfRLJCLnCC1K8CsvVNWxyhoKy780P0qPSYiM1CMonM6zRah/Kd
+         LHFA==
+X-Forwarded-Encrypted: i=1; AJvYcCXcEBKvRkMdu+MqQF+zvMkwu7LKICAQZfBj7cOhxqehVuHMiSgFNK2sjRze4C1BEsChBDgMMhr+OukaAfzIuxxEBKWx
+X-Gm-Message-State: AOJu0Yz+4XaSAA2m0AMbyGyYFgAL8n6bCil/nFFEa6u37YZDb4kcz9/V
+	H9aHHJT/mqrfDYiQB8yY1qrt6plWdRZm1+WNiOCVtATOtKvmWocxPppmZ0SYVZ9rrcG0AmFk7Lu
+	mPgljlKuz0ygZ38zadXEfbN3s8h5Nzf2L1KXr
+X-Google-Smtp-Source: AGHT+IEbV5W9YTxiRK3k2IN1ZbR6jqHOarV+ilqCrXqD33J5SW1vK2cChNhC77IN9rseAhu6xuSDZG9NUZAelZRNrZU=
+X-Received: by 2002:a05:6e02:2689:b0:375:bb49:930d with SMTP id
+ e9e14a558f8ab-375d73f700fmr2575015ab.23.1718297729092; Thu, 13 Jun 2024
+ 09:55:29 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <95f8897c-a20b-fa5f-84ab-8204e2654a9e@iogearbox.net>
+References: <20240612183205.3120248-1-irogers@google.com> <bdf1ab6e-b887-4182-a0ae-7653bd835907@arm.com>
+ <Zmr_CfhYsvKePZFt@x1> <9814866a-8f9d-4d82-ad2d-4b36203aa196@arm.com>
+In-Reply-To: <9814866a-8f9d-4d82-ad2d-4b36203aa196@arm.com>
+From: Ian Rogers <irogers@google.com>
+Date: Thu, 13 Jun 2024 09:55:17 -0700
+Message-ID: <CAP-5=fV9DW0X+BD0qZEkHJg4-JrLD+yttqQm1mw2NKAY19rPZA@mail.gmail.com>
+Subject: Re: [PATCH v1 0/7] Refactor perf python module build
+To: James Clark <james.clark@arm.com>
+Cc: Arnaldo Carvalho de Melo <acme@kernel.org>, Peter Zijlstra <peterz@infradead.org>, 
+	Ingo Molnar <mingo@redhat.com>, Namhyung Kim <namhyung@kernel.org>, 
+	Mark Rutland <mark.rutland@arm.com>, 
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Adrian Hunter <adrian.hunter@intel.com>, Kan Liang <kan.liang@linux.intel.com>, 
+	John Garry <john.g.garry@oracle.com>, Will Deacon <will@kernel.org>, 
+	Mike Leach <mike.leach@linaro.org>, Leo Yan <leo.yan@linux.dev>, Guo Ren <guoren@kernel.org>, 
+	Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, 
+	Albert Ou <aou@eecs.berkeley.edu>, Suzuki K Poulose <suzuki.poulose@arm.com>, 
+	Yicong Yang <yangyicong@hisilicon.com>, Jonathan Cameron <jonathan.cameron@huawei.com>, 
+	Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>, 
+	Wedson Almeida Filho <wedsonaf@gmail.com>, Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, 
+	=?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, 
+	Benno Lossin <benno.lossin@proton.me>, Andreas Hindborg <a.hindborg@samsung.com>, 
+	Alice Ryhl <aliceryhl@google.com>, Nick Terrell <terrelln@fb.com>, 
+	Ravi Bangoria <ravi.bangoria@amd.com>, Kees Cook <keescook@chromium.org>, 
+	Andrei Vagin <avagin@google.com>, Athira Jajeev <atrajeev@linux.vnet.ibm.com>, 
+	Oliver Upton <oliver.upton@linux.dev>, Ze Gao <zegao2021@gmail.com>, 
+	linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org, 
+	linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org, 
+	linux-riscv@lists.infradead.org, coresight@lists.linaro.org, 
+	rust-for-linux@vger.kernel.org, bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Jun 13, 2024 at 06:06:29PM GMT, Daniel Borkmann wrote:
-> On 5/29/24 3:04 PM, Lorenzo Bianconi wrote:
-> > Introduce e2e selftest for bpf_xdp_flow_lookup kfunc through
-> > xdp_flowtable utility.
-> > 
-> > Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
-> [...]
-> > +struct flow_offload_tuple_rhash *
-> > +bpf_xdp_flow_lookup(struct xdp_md *, struct bpf_fib_lookup *,
-> > +		    struct bpf_flowtable_opts___local *, u32) __ksym;
-> 
-> Btw, this fails CI build :
-> 
-> https://github.com/kernel-patches/bpf/actions/runs/9499749947/job/26190382116
-> 
->   [...]
->   progs/xdp_flowtable.c:20:1: error: conflicting types for 'bpf_xdp_flow_lookup'
->      20 | bpf_xdp_flow_lookup(struct xdp_md *, struct bpf_fib_lookup *,
->         | ^
->   /tmp/work/bpf/bpf/tools/testing/selftests/bpf/tools/include/vmlinux.h:106755:41: note: previous declaration is here
->    106755 | extern struct flow_offload_tuple_rhash *bpf_xdp_flow_lookup(struct xdp_md *ctx, struct bpf_fib_lookup *fib_tuple, struct bpf_flowtable_opts *opts, u32 opts_len) __weak __ksym;
->           |                                         ^
->   progs/xdp_flowtable.c:134:47: error: incompatible pointer types passing 'struct bpf_flowtable_opts___local *' to parameter of type 'struct bpf_flowtable_opts *' [-Werror,-Wincompatible-pointer-types]
->     134 |         tuplehash = bpf_xdp_flow_lookup(ctx, &tuple, &opts, sizeof(opts));
->         |                                                      ^~~~~
->   /tmp/work/bpf/bpf/tools/testing/selftests/bpf/tools/include/vmlinux.h:106755:142: note: passing argument to parameter 'opts' here
->    106755 | extern struct flow_offload_tuple_rhash *bpf_xdp_flow_lookup(struct xdp_md *ctx, struct bpf_fib_lookup *fib_tuple, struct bpf_flowtable_opts *opts, u32 opts_len) __weak __ksym;
->           |                                                                                                                                              ^
->   2 errors generated.
->     CLNG-BPF [test_maps] kprobe_multi_override.bpf.o
->     CLNG-BPF [test_maps] tailcall_bpf2bpf1.bpf.o
->   make: *** [Makefile:654: /tmp/work/bpf/bpf/tools/testing/selftests/bpf/xdp_flowtable.bpf.o] Error 1
->   make: *** Waiting for unfinished jobs....
->   make: Leaving directory '/tmp/work/bpf/bpf/tools/testing/selftests/bpf'
->   Error: Process completed with exit code 2.
-> 
+On Thu, Jun 13, 2024 at 8:10=E2=80=AFAM James Clark <james.clark@arm.com> w=
+rote:
+[...]
+> >> Reviewed-by: James Clark <james.clark@arm.com>
+> >>
+> >> It does require a clean build to avoid some -fPIC errors presumably
+> >> because not everything that requires it gets rebuilt, for anyone who
+> >> gets stuck on that.
+> >
+> > We need to find a way to avoid requiring the 'make clean' :-/
+> >
+> > - Arnaldo
+> >
+>
+> Do we need to make it so that if any of the Makefiles are touched it
+> does a clean? I'm assuming that was the cause of the issue I experienced
+> here and that the Makefile and/or Build files aren't mentioned as
+> dependencies of any target.
 
-We'll probably want to do the same thing as in f709124dd72f ("bpf:
-selftests: nf: Opt out of using generated kfunc prototypes").
+Perhaps we can do something with the FEATURE_DUMP. It'd be nice to
+detect build argument changes and rebuild when that occurs. I'm used
+to doing lots of `make clean` due to sanitizer builds, something we
+should probably capture through features and/or `perf version
+--build-options`. Anyway, out-of-scope for these patches.
 
-Daniel
+I need to cut a v2 due to failing to add the new `.a` files to the clean ta=
+rget.
+
+Thanks for the review,
+Ian
 
