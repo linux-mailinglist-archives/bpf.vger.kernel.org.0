@@ -1,151 +1,151 @@
-Return-Path: <bpf+bounces-32079-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-32083-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id EF5FB907307
-	for <lists+bpf@lfdr.de>; Thu, 13 Jun 2024 14:59:22 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 656799073D7
+	for <lists+bpf@lfdr.de>; Thu, 13 Jun 2024 15:37:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1481A1C21C5A
-	for <lists+bpf@lfdr.de>; Thu, 13 Jun 2024 12:59:22 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EE1B0284395
+	for <lists+bpf@lfdr.de>; Thu, 13 Jun 2024 13:37:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E140C142E9C;
-	Thu, 13 Jun 2024 12:59:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="k1NWlxKM"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8817A1459ED;
+	Thu, 13 Jun 2024 13:36:46 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5CCB8137914;
-	Thu, 13 Jun 2024 12:59:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D3B4A94D;
+	Thu, 13 Jun 2024 13:36:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.187
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718283550; cv=none; b=Mo1QMqWchiWwJBgw1jI81A6wxFW6X5ZaA2xT+4y82qY9f3R1jVDRXwrgNjKj2UjtrcitO9wpc4DIPfEQ+nRmRqXKzy/a67u1p+PQYrNZCprnQh8QjmGdKm9PvxgM1eWS/xFB44M18TMPz2bpe1dpj9lhC0iQsNefU7R6fF9d87k=
+	t=1718285806; cv=none; b=qWca11L3i0hc5iDQgJWA843OgQJtFTSG8l1OrJR/BXGYocIECiWA8nG1UykL4KU3mYKbrzWSv9HFuco/aaWhtGHVnMFfW+qtPynJvSZR+TW9yOhyj/4b82LuhyzzG1b785nDADBSnkYZzatzlU+ESKg/rQJMEdfWKp6XKGU6W3A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718283550; c=relaxed/simple;
-	bh=etrALkXwRl8zDxAotSVCh3RhyEbTiNBpltd+VXvzvNk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=n+GbObZKTtjcK/mrWipLzdURNpy7LW+c4V9TL+kuH4HEr0CZzjSldi6Ehk/CKElcsxYkQ8OQXwUTr8VjWp5pnlfaUF4PwzbuXMaedQlqSAa9ZemeXHRVklsjS3LRwxqwPaQbkkh2IzlKu968aexzwTlYHw0D3pWUSEif2aWTcf8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=k1NWlxKM; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 96739C2BBFC;
-	Thu, 13 Jun 2024 12:59:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1718283550;
-	bh=etrALkXwRl8zDxAotSVCh3RhyEbTiNBpltd+VXvzvNk=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=k1NWlxKMENC+Q3DhMuln06VopaAL/VXRxy5sDVDqSt4L6aFwMy1L2JXzTdhs3Kkg2
-	 C2Wv66R/o66EYxKbWHPKQNP9Q2Ewp9mXJhKwnm8y0/7r8+ONjxD0Mc46y7MkLZG6wf
-	 kEiebLSKL8Ww98b2EuFV/tlH+9KkPGi1KPVzEjygpRzr962oNqBv0z38jAl07JXinL
-	 yhHp/n3MH0fJovw7iyVKz/zm3iMHLCJUeh6iGepW0l/wiUsss7oVA0a3FDTowfypfa
-	 BehIamiT6sp6zDy1g1TnJIh7pDfTr1xTYC6+5bohSeBS2NlwxCwZ/xc74Epj+O3+6s
-	 kqwl8Y8Ta1nkg==
-Date: Thu, 13 Jun 2024 09:59:06 -0300
-From: Arnaldo Carvalho de Melo <acme@kernel.org>
-To: Howard Chu <howardchu95@gmail.com>
-Cc: peterz@infradead.org, mingo@redhat.com, namhyung@kernel.org,
-	mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
-	jolsa@kernel.org, irogers@google.com, adrian.hunter@intel.com,
-	kan.liang@linux.intel.com, mic@digikod.net, gnoack@google.com,
-	linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-security-module@vger.kernel.org, bpf@vger.kernel.org
-Subject: Re: [PATCH v4] perf trace: BTF-based enum pretty printing
-Message-ID: <ZmrtGuhdMlbssODG@x1>
-References: <20240613042747.3770204-1-howardchu95@gmail.com>
- <ZmrqQs64TvAt8XjK@x1>
+	s=arc-20240116; t=1718285806; c=relaxed/simple;
+	bh=crdyNwsLpflDPQo0G+t76e/7LQbMlKLEt8GfxsQJhn0=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=abE3eOByPbZnbAL6OmE3SeGCSusIanC0Vx/zsOMyihMCMc0J+Byj+tJFf2yjmQ5LBa3JnrmPDli/bHpKuLA0s/yguGn2xMDZpR4+j7BhNnglypCKA4WQEP/2PldfYgEn+UU0Phes7Gi2FdX5J1KRfkYXBUT+aseSZc1Sex5oSgw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.187
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.163.252])
+	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4W0Ncw5QKGzwTS8;
+	Thu, 13 Jun 2024 21:32:32 +0800 (CST)
+Received: from dggpeml500012.china.huawei.com (unknown [7.185.36.15])
+	by mail.maildlp.com (Postfix) with ESMTPS id 0E8DA180069;
+	Thu, 13 Jun 2024 21:36:40 +0800 (CST)
+Received: from localhost.localdomain (10.67.175.61) by
+ dggpeml500012.china.huawei.com (7.185.36.15) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.39; Thu, 13 Jun 2024 21:36:39 +0800
+From: Zheng Yejian <zhengyejian1@huawei.com>
+To: <rostedt@goodmis.org>, <mhiramat@kernel.org>, <mark.rutland@arm.com>,
+	<mpe@ellerman.id.au>, <npiggin@gmail.com>, <christophe.leroy@csgroup.eu>,
+	<naveen.n.rao@linux.ibm.com>, <tglx@linutronix.de>, <mingo@redhat.com>,
+	<bp@alien8.de>, <dave.hansen@linux.intel.com>, <x86@kernel.org>,
+	<hpa@zytor.com>, <mcgrof@kernel.org>, <mathieu.desnoyers@efficios.com>,
+	<masahiroy@kernel.org>, <nathan@kernel.org>, <nicolas@fjasle.eu>,
+	<kees@kernel.org>, <james.clark@arm.com>, <kent.overstreet@linux.dev>,
+	<yhs@fb.com>, <jpoimboe@kernel.org>, <peterz@infradead.org>
+CC: <zhengyejian1@huawei.com>, <linux-kernel@vger.kernel.org>,
+	<linux-trace-kernel@vger.kernel.org>, <linuxppc-dev@lists.ozlabs.org>,
+	<linux-modules@vger.kernel.org>, <linux-kbuild@vger.kernel.org>,
+	<bpf@vger.kernel.org>
+Subject: [PATCH 0/6] kallsyms: Emit symbol for holes in text and fix weak function issue
+Date: Thu, 13 Jun 2024 21:37:05 +0800
+Message-ID: <20240613133711.2867745-1-zhengyejian1@huawei.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZmrqQs64TvAt8XjK@x1>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ dggpeml500012.china.huawei.com (7.185.36.15)
 
-On Thu, Jun 13, 2024 at 09:47:02AM -0300, Arnaldo Carvalho de Melo wrote:
-> On Thu, Jun 13, 2024 at 12:27:47PM +0800, Howard Chu wrote:
-> > changes in v4:
+ftrace_location() was changed to not only return the __fentry__ location
+when called for the __fentry__ location, but also when called for the
+sym+0 location after commit aebfd12521d9 ("x86/ibt,ftrace: Search for
+__fentry__ location"). That is, if sym+0 location is not __fentry__,
+ftrace_location() would find one over the entire size of the sym.
 
-> > - Add enum support to tracepoint arguments
- 
-> That is cool, but see below the comment as having this as a separate
-> patch.
-> 
-> Also please, on the patch that introduces ! syscall tracepoint enum args
-> BTF augmentation include examples of tracepoints being augmented. I'll
+However, there is case that more than one __fentry__ exist in the sym
+range (described below) and ftrace_location() would find wrong __fentry__
+location by binary searching, which would cause its users like livepatch/
+kprobe/bpf to not work properly on this sym!
 
-You did it as a notes for v4, great, I missed that.
+The case is that, based on current compiler behavior, suppose:
+ - function A is followed by weak function B1 in same binary file;
+ - weak function B1 is overridden by function B2;
+Then in the final binary file:
+ - symbol B1 will be removed from symbol table while its instructions are
+   not removed;
+ - __fentry__ of B1 will be still in __mcount_loc table;
+ - function size of A is computed by substracting the symbol address of
+   A from its next symbol address (see kallsyms_lookup_size_offset()),
+   but because symbol info of B1 is removed, the next symbol of A is
+   originally the next symbol of B1. See following example, function
+   sizeof A will be (symbol_address_C - symbol_address_A):
 
-> try here while testing the patch as-is.
+     symbol_address_A
+     symbol_address_B1 (Not in symbol table)
+     symbol_address_C
 
-The landlock_add_rule continues to work, using the same test program I 
-posted when testing your v1 patch: 
+The weak function issue has been discovered in commit b39181f7c690
+("ftrace: Add FTRACE_MCOUNT_MAX_OFFSET to avoid adding weak function")
+but it didn't resolve the issue in ftrace_location().
 
-root@x1:~# perf trace -e landlock_add_rule
-     0.000 ( 0.016 ms): landlock_add_r/475518 landlock_add_rule(ruleset_fd: 1, rule_type: LANDLOCK_RULE_PATH_BENEATH, rule_attr: 0x7ffd790ff690) = -1 EBADFD (File descriptor in bad state)
-     0.115 ( 0.003 ms): landlock_add_r/475518 landlock_add_rule(ruleset_fd: 2, rule_type: LANDLOCK_RULE_NET_PORT, rule_attr: 0x7ffd790ff690) = -1 EBADFD (File descriptor in bad state)
+Peter suggested to use entry size for FUNC type objects to find holes in
+the text and fill them with a symbol, then check the mcount locations
+against the symbol table and for every one that falls in a hole [1] [2].
 
-Now lets try with some of the !syscalls tracepoints with enum args:
+What the patch set does is described as follows:
 
-root@x1:~# perf trace -e timer:hrtimer_start --max-events=5
-     0.000 :0/0 timer:hrtimer_start(hrtimer: 0xffff8d4eff225050, function: 0xffffffff9e22ddd0, expires: 210588861000000, softexpires: 210588861000000, mode: HRTIMER_MODE_ABS)
-18446744073709.551 :0/0 timer:hrtimer_start(hrtimer: 0xffff8d4eff2a5050, function: 0xffffffff9e22ddd0, expires: 210588861000000, softexpires: 210588861000000, mode: HRTIMER_MODE_ABS)
-     0.007 :0/0 timer:hrtimer_start(hrtimer: 0xffff8d4eff325050, function: 0xffffffff9e22ddd0, expires: 210588861000000, softexpires: 210588861000000, mode: HRTIMER_MODE_ABS)
-     0.007 :0/0 timer:hrtimer_start(hrtimer: 0xffff8d4eff3a5050, function: 0xffffffff9e22ddd0, expires: 210588861000000, softexpires: 210588861000000, mode: HRTIMER_MODE_ABS)
-18446744073709.543 :0/0 timer:hrtimer_start(hrtimer: 0xffff8d4eff425050, function: 0xffffffff9e22ddd0, expires: 210588861000000, softexpires: 210588861000000, mode: HRTIMER_MODE_ABS)
-root@x1:~# 
+- Patch 1: Do an optimization for scripts/kallsym.c about memory allocation
+  when read symbols from file. This patch has little to do with the above
+  issue, but since I changed this script, so it also can be reviewed here;
 
-Cool, it works!
+- Patch 2: Change scripts/kallsyms.c to emit a symbol where there is a hole
+  in the text, the symbol name is temporarily named "__hole_symbol_XXXXX";
 
-Now lets try and use it with filters, to get something other than HRTIMER_MODE_ABS:
+- Patch 3: When lookup symbols in module, use entry size info to determine
+  the exact boundaries of a function symbol;
 
-root@x1:~# perf trace -e timer:hrtimer_start --filter='mode!=HRTIMER_MODE_ABS' --max-events=5
-No resolver (strtoul) for "mode" in "timer:hrtimer_start", can't set filter "(mode!=HRTIMER_MODE_ABS) && (common_pid != 475859 && common_pid != 4041)"
-root@x1:~#
+- Patch 4: Holes in text have been found in previous patches, now check
+  __fentry__ in mcount table and skip those locate in the holes;
 
+- Patch 5: Accidentally found a out-of-bound issue when all __fentry__
+  are skipped, so fix it;
 
-oops, that is the next step then :-)
+- Patch 6: Revert Steve's patch about the FTRACE_MCOUNT_MAX_OFFSET
+  solution, also two related definition for powerpc.
 
-If I do:
+[1] https://lore.kernel.org/all/20240607150228.GR8774@noisy.programming.kicks-ass.net/
+[2] https://lore.kernel.org/all/20240611092157.GU40213@noisy.programming.kicks-ass.net/
 
-root@x1:~# pahole --contains_enumerator=HRTIMER_MODE_ABS
-enum hrtimer_mode {
-	HRTIMER_MODE_ABS             = 0,
-	HRTIMER_MODE_REL             = 1,
-	HRTIMER_MODE_PINNED          = 2,
-	HRTIMER_MODE_SOFT            = 4,
-	HRTIMER_MODE_HARD            = 8,
-	HRTIMER_MODE_ABS_PINNED      = 2,
-	HRTIMER_MODE_REL_PINNED      = 3,
-	HRTIMER_MODE_ABS_SOFT        = 4,
-	HRTIMER_MODE_REL_SOFT        = 5,
-	HRTIMER_MODE_ABS_PINNED_SOFT = 6,
-	HRTIMER_MODE_REL_PINNED_SOFT = 7,
-	HRTIMER_MODE_ABS_HARD        = 8,
-	HRTIMER_MODE_REL_HARD        = 9,
-	HRTIMER_MODE_ABS_PINNED_HARD = 10,
-	HRTIMER_MODE_REL_PINNED_HARD = 11,
-}
-root@x1:~#
+Zheng Yejian (6):
+  kallsyms: Optimize multiple times of realloc() to one time of malloc()
+  kallsyms: Emit symbol at the holes in the text
+  module: kallsyms: Determine exact function size
+  ftrace: Skip invalid __fentry__ in ftrace_process_locs()
+  ftrace: Fix possible out-of-bound issue in ftrace_process_locs()
+  ftrace: Revert the FTRACE_MCOUNT_MAX_OFFSET workaround
 
-And then use the value for HRTIMER_MODE_ABS instead:
+ arch/powerpc/include/asm/ftrace.h |   7 --
+ arch/x86/include/asm/ftrace.h     |   7 --
+ include/linux/kallsyms.h          |  13 +++
+ include/linux/module.h            |  14 +++
+ kernel/module/kallsyms.c          |  42 ++++++--
+ kernel/trace/ftrace.c             | 174 ++++++------------------------
+ scripts/kallsyms.c                | 134 ++++++++++++++++++++---
+ scripts/link-vmlinux.sh           |   4 +-
+ scripts/mksysmap                  |   2 +-
+ 9 files changed, 216 insertions(+), 181 deletions(-)
 
-root@x1:~# perf trace -e timer:hrtimer_start --filter='mode!=0' --max-events=1
-     0.000 :0/0 timer:hrtimer_start(hrtimer: 0xffff8d4eff225050, function: 0xffffffff9e22ddd0, expires: 210759990000000, softexpires: 210759990000000, mode: HRTIMER_MODE_ABS_PINNED_HARD)
-root@x1:~#
+-- 
+2.25.1
 
-Now also filtering HRTIMER_MODE_ABS_PINNED_HARD:
-
-root@x1:~# perf trace -e timer:hrtimer_start --filter='mode!=0 && mode != 10' --max-events=2
-     0.000 podman/178137 timer:hrtimer_start(hrtimer: 0xffffa2024468fda8, function: 0xffffffff9e2170c0, expires: 210886679225214, softexpires: 210886679175214, mode: HRTIMER_MODE_REL)
-    32.935 podman/5046 timer:hrtimer_start(hrtimer: 0xffffa20244fabc40, function: 0xffffffff9e2170c0, expires: 210886712159707, softexpires: 210886712109707, mode: HRTIMER_MODE_REL)
-root@x1:~#
-
-But this then should be a _third_ patch :-)
-
-We're making progress!
-
-- Arnaldo
 
