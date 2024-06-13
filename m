@@ -1,55 +1,55 @@
-Return-Path: <bpf+bounces-32133-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-32129-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 26829907DF8
-	for <lists+bpf@lfdr.de>; Thu, 13 Jun 2024 23:19:05 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 89864907DF4
+	for <lists+bpf@lfdr.de>; Thu, 13 Jun 2024 23:18:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1A1FD1C20777
-	for <lists+bpf@lfdr.de>; Thu, 13 Jun 2024 21:19:04 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 841B41F23C8D
+	for <lists+bpf@lfdr.de>; Thu, 13 Jun 2024 21:18:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EFA9914374A;
-	Thu, 13 Jun 2024 21:18:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A19F682496;
+	Thu, 13 Jun 2024 21:18:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=meta.com header.i=@meta.com header.b="C8y9bqEg"
+	dkim=pass (2048-bit key) header.d=meta.com header.i=@meta.com header.b="ET4uTwcw"
 X-Original-To: bpf@vger.kernel.org
-Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
+Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0219A13D635
-	for <bpf@vger.kernel.org>; Thu, 13 Jun 2024 21:18:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.153.30
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA73C7604D
+	for <bpf@vger.kernel.org>; Thu, 13 Jun 2024 21:18:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.145.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718313535; cv=none; b=Nbow/krCCTBBj5BJbgIg1cMw+s0V8qsyl0sTD7dX7lbRIbycvUOEzbXqPzB7c78gsA3gDRQC+wqqLcJBfXjKJU5SBHKnQp9wVjS4vugfYzM8ujbAYX7Iq2qdGpuY2/2xRjf+oeCA+/jVlDDCEzcQreMySA7Hj9U96X54P6ONWa4=
+	t=1718313531; cv=none; b=H0Uy8aQBJljKajEu4Q227YgJPYVUX7IyvPiKmbzWS3ppckveWvweZ5cii00RQGH614JB1BuOM+3emm6huCSe31N5tjBqySp5dupC2JnY3ntndONorYtCZgtuzAOsHf5jQByu8BxJOXblhP51YSzB/A4MTNLbZqBVcWyx39ce/TQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718313535; c=relaxed/simple;
-	bh=wi4URgQNfa+usbkN7/rYQSLToWZZM0qyVlabCop+/4g=;
+	s=arc-20240116; t=1718313531; c=relaxed/simple;
+	bh=8e94HX+yNfqYS9sJyHJNUIpdxnoOAXbGo/pLaYRpEj4=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=KRHZpGkWDRyTDUAEbpLJjHdNbZAFe18LrNtZTzn2PDNu3B7FiQzWa/KXtNl/pXV9E2gzXZu79iuVx98KPp1hBJtlIlpNUd8HmEmeiJDoRtnMv25SHcrh4cBzuma1Xc4WTLTRZU4qjcbCVaBWhY12/SWipteQ2+uomc80RhUro5w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=meta.com; spf=pass smtp.mailfrom=meta.com; dkim=pass (2048-bit key) header.d=meta.com header.i=@meta.com header.b=C8y9bqEg; arc=none smtp.client-ip=67.231.153.30
+	 MIME-Version:Content-Type; b=Qj99gAsLtdNTGf3sq2KYaaX9cQbH5rfkpUnwAjX6LUuk0OeXwE5eQewqKAtQfnmDG3QocVf9XCFIYCDrhS1vNurXDbIyZPdSmc/avZ+Np8ImPZvDGpKOnt5k2ENs5ALT/2nHvgg9IIb32SsnX+kaOgFLgou4y9nTzvAo08bNgfs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=meta.com; spf=pass smtp.mailfrom=meta.com; dkim=pass (2048-bit key) header.d=meta.com header.i=@meta.com header.b=ET4uTwcw; arc=none smtp.client-ip=67.231.145.42
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=meta.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=meta.com
-Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
-	by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 45DJYD21003272;
-	Thu, 13 Jun 2024 14:18:33 -0700
+Received: from pps.filterd (m0109334.ppops.net [127.0.0.1])
+	by mx0a-00082601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 45DJXJip001192;
+	Thu, 13 Jun 2024 14:18:34 -0700
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=meta.com; h=cc :
  content-transfer-encoding : content-type : date : from : in-reply-to :
  message-id : mime-version : references : subject : to; s=s2048-2021-q4;
- bh=pAQ41KDf72FEWbOSt8+ttKfR1q0F6kHf+1YmZSl0quk=;
- b=C8y9bqEgVyQZA6FoMdb8WxlUIJ5+XnHozEv99bOlMCPFM9UDbLQ2TM5fniE1PsLdFZIm
- RD75NxuXwIASezpY52xshn6Cb4+i8hJrq4+Fqqvhq995cPaB9z3S358awm8txtjcSAXI
- g6KGxieIXCENKvNwZj25BBXWnTwBKMOLx4G67eLxKv9lTUBaMR7gc5ORF1zsWAvNtMy8
- MJh7O/ixAji+VYgJEo1O12UXc0kRy1fqpP2iIq9iQ2PbQ+Zm/crOY4JsOgdFWHabYj/R
- R+Ygl+hzSOSc7baeieNpF3MhYo7vf+8PfXtVqZAcblAvvcxJpeNc0KG12u0ZKx4mqy4f rQ== 
+ bh=38LDd7vZKELIhFnGuh59fbaP4qYMe3CDh8dOgSEQyhk=;
+ b=ET4uTwcw763CPSbuKlS5cD5lNIZNA/SH9AHlwvVy7PtMI+OHNnpFijO4Kl4OwvYFRGIU
+ fQ8Q0aMT9o27wJuVSzFC5RRGPUZDWHDv3DVKPFNZW3KT9fjYZIxBYTd7w4L7fthIFtYB
+ 4j5GU3/Nsx7kLGqfRvM+5qn7g/KRglZCZ30ibfzQ44qdg7e/gvBAjrtajtMwKgpFwYun
+ 1XhFAYLGTkAzzVB0NlmUAoSC0z0UIxVMXG1PA1SkoVFBzBxhX/nG0Iquy671Bw3tU0c5
+ +ugJPuhayGxlvHoUxbs3fyG8dXAzyjV8A5eC95ckE7vglsQlJ54Bom7DzIQSOBcsaZ7L uA== 
 Received: from mail.thefacebook.com ([163.114.134.16])
-	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3yqd9gtyxj-4
+	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 3yr347av6g-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-	Thu, 13 Jun 2024 14:18:33 -0700
+	Thu, 13 Jun 2024 14:18:34 -0700
 Received: from devvm4158.cln0.facebook.com (2620:10d:c085:208::7cb7) by
  mail.thefacebook.com (2620:10d:c08b:78::c78f) with Microsoft SMTP Server id
- 15.2.1544.11; Thu, 13 Jun 2024 21:18:29 +0000
+ 15.2.1544.11; Thu, 13 Jun 2024 21:18:31 +0000
 From: Vadim Fedorenko <vadfed@meta.com>
 To: Vadim Fedorenko <vadim.fedorenko@linux.dev>,
         Martin KaFai Lau
@@ -63,9 +63,9 @@ CC: <bpf@vger.kernel.org>, Vadim Fedorenko <vadfed@meta.com>,
         Mykola Lysenko <mykolal@fb.com>,
         "Daniel
  Borkmann" <daniel@iogearbox.net>
-Subject: [PATCH RESEND bpf-next v3 2/5] bpf: crypto: make state and IV dynptr nullable
-Date: Thu, 13 Jun 2024 14:18:14 -0700
-Message-ID: <20240613211817.1551967-3-vadfed@meta.com>
+Subject: [PATCH RESEND bpf-next v3 3/5] selftests: bpf: crypto: use NULL instead of 0-sized dynptr
+Date: Thu, 13 Jun 2024 14:18:15 -0700
+Message-ID: <20240613211817.1551967-4-vadfed@meta.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240613211817.1551967-1-vadfed@meta.com>
 References: <20240613211817.1551967-1-vadfed@meta.com>
@@ -77,90 +77,69 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Proofpoint-GUID: 38GVRoO4KG9ZAAyqFzmOGEwCZrx3DJdS
-X-Proofpoint-ORIG-GUID: 38GVRoO4KG9ZAAyqFzmOGEwCZrx3DJdS
+X-Proofpoint-ORIG-GUID: KY3C9KJX9uHIaa_nCvYwEdx_7wKufEC9
+X-Proofpoint-GUID: KY3C9KJX9uHIaa_nCvYwEdx_7wKufEC9
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.680,FMLib:17.12.28.16
  definitions=2024-06-13_13,2024-06-13_02,2024-05-17_01
 
-Some ciphers do not require state and IV buffer, but with current
-implementation 0-sized dynptr is always needed. With adjustment to
-verifier we can provide NULL instead of 0-sized dynptr. Make crypto
-kfuncs ready for this.
+Adjust selftests to use nullable option for state and IV arg.
 
 Reviewed-by: Eduard Zingerman <eddyz87@gmail.com>
 Signed-off-by: Vadim Fedorenko <vadfed@meta.com>
 ---
- kernel/bpf/crypto.c | 26 +++++++++++++-------------
- 1 file changed, 13 insertions(+), 13 deletions(-)
+ .../testing/selftests/bpf/progs/crypto_sanity.c  | 16 ++++------------
+ 1 file changed, 4 insertions(+), 12 deletions(-)
 
-diff --git a/kernel/bpf/crypto.c b/kernel/bpf/crypto.c
-index 3c1de0e5c0bd..94854cd9c4cc 100644
---- a/kernel/bpf/crypto.c
-+++ b/kernel/bpf/crypto.c
-@@ -275,7 +275,7 @@ static int bpf_crypto_crypt(const struct bpf_crypto_ctx *ctx,
- 	if (__bpf_dynptr_is_rdonly(dst))
- 		return -EINVAL;
- 
--	siv_len = __bpf_dynptr_size(siv);
-+	siv_len = siv ? __bpf_dynptr_size(siv) : 0;
- 	src_len = __bpf_dynptr_size(src);
- 	dst_len = __bpf_dynptr_size(dst);
- 	if (!src_len || !dst_len)
-@@ -303,42 +303,42 @@ static int bpf_crypto_crypt(const struct bpf_crypto_ctx *ctx,
- 
- /**
-  * bpf_crypto_decrypt() - Decrypt buffer using configured context and IV provided.
-- * @ctx:	The crypto context being used. The ctx must be a trusted pointer.
-- * @src:	bpf_dynptr to the encrypted data. Must be a trusted pointer.
-- * @dst:	bpf_dynptr to the buffer where to store the result. Must be a trusted pointer.
-- * @siv:	bpf_dynptr to IV data and state data to be used by decryptor.
-+ * @ctx:		The crypto context being used. The ctx must be a trusted pointer.
-+ * @src:		bpf_dynptr to the encrypted data. Must be a trusted pointer.
-+ * @dst:		bpf_dynptr to the buffer where to store the result. Must be a trusted pointer.
-+ * @siv__nullable:	bpf_dynptr to IV data and state data to be used by decryptor. May be NULL.
-  *
-  * Decrypts provided buffer using IV data and the crypto context. Crypto context must be configured.
-  */
- __bpf_kfunc int bpf_crypto_decrypt(struct bpf_crypto_ctx *ctx,
- 				   const struct bpf_dynptr *src,
- 				   const struct bpf_dynptr *dst,
--				   const struct bpf_dynptr *siv)
-+				   const struct bpf_dynptr *siv__nullable)
+diff --git a/tools/testing/selftests/bpf/progs/crypto_sanity.c b/tools/testing/selftests/bpf/progs/crypto_sanity.c
+index 1be0a3fa5efd..645be6cddf36 100644
+--- a/tools/testing/selftests/bpf/progs/crypto_sanity.c
++++ b/tools/testing/selftests/bpf/progs/crypto_sanity.c
+@@ -89,7 +89,7 @@ int decrypt_sanity(struct __sk_buff *skb)
  {
- 	const struct bpf_dynptr_kern *src_kern = (struct bpf_dynptr_kern *)src;
- 	const struct bpf_dynptr_kern *dst_kern = (struct bpf_dynptr_kern *)dst;
--	const struct bpf_dynptr_kern *siv_kern = (struct bpf_dynptr_kern *)siv;
-+	const struct bpf_dynptr_kern *siv_kern = (struct bpf_dynptr_kern *)siv__nullable;
+ 	struct __crypto_ctx_value *v;
+ 	struct bpf_crypto_ctx *ctx;
+-	struct bpf_dynptr psrc, pdst, iv;
++	struct bpf_dynptr psrc, pdst;
+ 	int err;
  
- 	return bpf_crypto_crypt(ctx, src_kern, dst_kern, siv_kern, true);
+ 	err = skb_dynptr_validate(skb, &psrc);
+@@ -114,12 +114,8 @@ int decrypt_sanity(struct __sk_buff *skb)
+ 	 * production code, a percpu map should be used to store the result.
+ 	 */
+ 	bpf_dynptr_from_mem(dst, sizeof(dst), 0, &pdst);
+-	/* iv dynptr has to be initialized with 0 size, but proper memory region
+-	 * has to be provided anyway
+-	 */
+-	bpf_dynptr_from_mem(dst, 0, 0, &iv);
+ 
+-	status = bpf_crypto_decrypt(ctx, &psrc, &pdst, &iv);
++	status = bpf_crypto_decrypt(ctx, &psrc, &pdst, NULL);
+ 
+ 	return TC_ACT_SHOT;
  }
- 
- /**
-  * bpf_crypto_encrypt() - Encrypt buffer using configured context and IV provided.
-- * @ctx:	The crypto context being used. The ctx must be a trusted pointer.
-- * @src:	bpf_dynptr to the plain data. Must be a trusted pointer.
-- * @dst:	bpf_dynptr to buffer where to store the result. Must be a trusted pointer.
-- * @siv:	bpf_dynptr to IV data and state data to be used by decryptor.
-+ * @ctx:		The crypto context being used. The ctx must be a trusted pointer.
-+ * @src:		bpf_dynptr to the plain data. Must be a trusted pointer.
-+ * @dst:		bpf_dynptr to the buffer where to store the result. Must be a trusted pointer.
-+ * @siv__nullable:	bpf_dynptr to IV data and state data to be used by decryptor. May be NULL.
-  *
-  * Encrypts provided buffer using IV data and the crypto context. Crypto context must be configured.
-  */
- __bpf_kfunc int bpf_crypto_encrypt(struct bpf_crypto_ctx *ctx,
- 				   const struct bpf_dynptr *src,
- 				   const struct bpf_dynptr *dst,
--				   const struct bpf_dynptr *siv)
-+				   const struct bpf_dynptr *siv__nullable)
+@@ -129,7 +125,7 @@ int encrypt_sanity(struct __sk_buff *skb)
  {
- 	const struct bpf_dynptr_kern *src_kern = (struct bpf_dynptr_kern *)src;
- 	const struct bpf_dynptr_kern *dst_kern = (struct bpf_dynptr_kern *)dst;
--	const struct bpf_dynptr_kern *siv_kern = (struct bpf_dynptr_kern *)siv;
-+	const struct bpf_dynptr_kern *siv_kern = (struct bpf_dynptr_kern *)siv__nullable;
+ 	struct __crypto_ctx_value *v;
+ 	struct bpf_crypto_ctx *ctx;
+-	struct bpf_dynptr psrc, pdst, iv;
++	struct bpf_dynptr psrc, pdst;
+ 	int err;
  
- 	return bpf_crypto_crypt(ctx, src_kern, dst_kern, siv_kern, false);
+ 	status = 0;
+@@ -156,12 +152,8 @@ int encrypt_sanity(struct __sk_buff *skb)
+ 	 * production code, a percpu map should be used to store the result.
+ 	 */
+ 	bpf_dynptr_from_mem(dst, sizeof(dst), 0, &pdst);
+-	/* iv dynptr has to be initialized with 0 size, but proper memory region
+-	 * has to be provided anyway
+-	 */
+-	bpf_dynptr_from_mem(dst, 0, 0, &iv);
+ 
+-	status = bpf_crypto_encrypt(ctx, &psrc, &pdst, &iv);
++	status = bpf_crypto_encrypt(ctx, &psrc, &pdst, NULL);
+ 
+ 	return TC_ACT_SHOT;
  }
 -- 
 2.43.0
