@@ -1,47 +1,48 @@
-Return-Path: <bpf+bounces-32035-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-32036-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 41DF390620F
-	for <lists+bpf@lfdr.de>; Thu, 13 Jun 2024 04:40:09 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2242D906213
+	for <lists+bpf@lfdr.de>; Thu, 13 Jun 2024 04:44:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3F22B1C20D97
-	for <lists+bpf@lfdr.de>; Thu, 13 Jun 2024 02:40:08 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C81CF1F2241D
+	for <lists+bpf@lfdr.de>; Thu, 13 Jun 2024 02:44:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7566C12BF18;
-	Thu, 13 Jun 2024 02:40:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C251512BF3D;
+	Thu, 13 Jun 2024 02:43:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="xqkh5nw0"
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="QjPistp0"
 X-Original-To: bpf@vger.kernel.org
-Received: from out30-111.freemail.mail.aliyun.com (out30-111.freemail.mail.aliyun.com [115.124.30.111])
+Received: from out30-133.freemail.mail.aliyun.com (out30-133.freemail.mail.aliyun.com [115.124.30.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DCFCA84055;
-	Thu, 13 Jun 2024 02:39:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.111
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 807D5823BC;
+	Thu, 13 Jun 2024 02:43:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718246400; cv=none; b=dpLA2WEv+fGzLKdKfMMiiNijAUc4KhGoHd93ZMWjOGwmRKKy9X6tEI7jNCZEGzxb+tuntsWz8hM2ai5PXb1BhKwPWvmTYvoPuBLLb/6mQsNv226Ohjg4BZTZC++1XbbSlAlSSqo17/Dj2znu1xxdVd4zDNazVCBGDL0RZzTJDzk=
+	t=1718246633; cv=none; b=SjSdfA891PthxYro7aFFHtGhNR8PerQ+/oga/rM2L4OmQu0IvZOjYi9e2kOpIZnWlWpXJGNkUzIGqlmqamrqa9klbrq+vUIgvi5aLi9K/F3a9a086nFIN1a0vL8v3jQopc9FgmC1TgB6AKCgac8YaLRP1ZcAosLM6oRi2gr3hvM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718246400; c=relaxed/simple;
-	bh=1MQ1Fp6HjbgootLBn8zZmwvHuRc7XlhiqbCjKSbPafA=;
-	h=Message-ID:Subject:Date:From:To:Cc:References:In-Reply-To; b=bjGjIiDGD7jIH1nuJmuBJoplKtwOui//KoN9B+CPw9YCoSKQtO04QcWd30OtfMUzzZIbnJlt/Sk0N/FIB93gN7/DPBQiGYsrmg49Q4hGf6f8QXKmH5XXPQFtT9W85zOIhGr9wVxsJusv6k14LZA+bmeXU5BQylZ0phKnmNhb/1g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=xqkh5nw0; arc=none smtp.client-ip=115.124.30.111
+	s=arc-20240116; t=1718246633; c=relaxed/simple;
+	bh=BDOXNzHXw+WuokEZ6kz3twY7cl1UDbpPEkiQevs+WeM=;
+	h=Message-ID:Subject:Date:From:To:Cc:References:In-Reply-To:
+	 Content-Type; b=avICxbpJVm0MtKQ8S06A6s6ko2M2yoQJcuBcEzCGCWtAovuIBx55sLAGN6KVV4vnDreMSMcIut2+LWsVC+pcJwggoi0s5JMGPjJwKNPvFkUCJKuKxEpd1h8slAfyRMznDtZ4+tQHjyuK2DRpQlk9lgfMI/ohd2w8yUxZHpjcbY8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=QjPistp0; arc=none smtp.client-ip=115.124.30.133
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
 DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
 	d=linux.alibaba.com; s=default;
-	t=1718246395; h=Message-ID:Subject:Date:From:To;
-	bh=tEcZiFuzzMApnaL1rj8g8wA1o3mOqOt7+2FRZmiJQpA=;
-	b=xqkh5nw0W3Ai3Yb9cOXMTdzbvABN++TKN1bUJ0/PCXJc7kUeksBWZfWAQLGr4lv7yMl2inpmlSfwOR+wYryJCe713lgSNEznZhSPabMQGaglbBs6TZ2S6QCUOLxF9KMQsgQrCQJBYIJU8+Dq74LhiXU2ZmIGHgajURvq7aws1pk=
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R201e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=maildocker-contentspam033037067113;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=14;SR=0;TI=SMTPD_---0W8MQWMo_1718246394;
-Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0W8MQWMo_1718246394)
+	t=1718246628; h=Message-ID:Subject:Date:From:To:Content-Type;
+	bh=A6kTS9MeNeE2aZqwYJxigHp7EW8wWCd16SY6nb69V+Y=;
+	b=QjPistp07K4f6A23Qlio9p5NPQNgC9INpSLh+G0JmQpGyODiHNdmbHt8DHHCmMHYUiWnmwovFH4TgtZw9DJQPcxiAwd5WZQpmdeJn3A4bVuDXl6eCs9fXvuJukltCNh/w5VJmKsgKFGyg0QhLA46GrzHmb0LBudCN9QxU1j5nnA=
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R121e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=maildocker-contentspam033045075189;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=14;SR=0;TI=SMTPD_---0W8MIj2n_1718246627;
+Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0W8MIj2n_1718246627)
           by smtp.aliyun-inc.com;
-          Thu, 13 Jun 2024 10:39:54 +0800
-Message-ID: <1718246386.8347378-2-xuanzhuo@linux.alibaba.com>
-Subject: Re: [PATCH net-next v4 08/15] virtio_net: sq support premapped mode
-Date: Thu, 13 Jun 2024 10:39:46 +0800
+          Thu, 13 Jun 2024 10:43:47 +0800
+Message-ID: <1718246617.4811053-3-xuanzhuo@linux.alibaba.com>
+Subject: Re: [PATCH net-next v4 11/15] virtio_net: xsk: tx: support xmit xsk buffer
+Date: Thu, 13 Jun 2024 10:43:37 +0800
 From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
 To: Jakub Kicinski <kuba@kernel.org>
 Cc: netdev@vger.kernel.org,
@@ -58,25 +59,33 @@ Cc: netdev@vger.kernel.org,
  virtualization@lists.linux.dev,
  bpf@vger.kernel.org
 References: <20240611114147.31320-1-xuanzhuo@linux.alibaba.com>
- <20240611114147.31320-9-xuanzhuo@linux.alibaba.com>
- <20240612162337.137994bb@kernel.org>
-In-Reply-To: <20240612162337.137994bb@kernel.org>
+ <20240611114147.31320-12-xuanzhuo@linux.alibaba.com>
+ <20240612162505.2fa3e645@kernel.org>
+In-Reply-To: <20240612162505.2fa3e645@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 
-On Wed, 12 Jun 2024 16:23:37 -0700, Jakub Kicinski <kuba@kernel.org> wrote:
-> On Tue, 11 Jun 2024 19:41:40 +0800 Xuan Zhuo wrote:
-> > +static int virtnet_sq_set_premapped(struct send_queue *sq, bool premapped)
+On Wed, 12 Jun 2024 16:25:05 -0700, Jakub Kicinski <kuba@kernel.org> wrote:
+> On Tue, 11 Jun 2024 19:41:43 +0800 Xuan Zhuo wrote:
+> > @@ -534,10 +534,13 @@ enum virtnet_xmit_type {
+> >  	VIRTNET_XMIT_TYPE_SKB,
+> >  	VIRTNET_XMIT_TYPE_XDP,
+> >  	VIRTNET_XMIT_TYPE_DMA,
+> > +	VIRTNET_XMIT_TYPE_XSK,
 >
-> Could you try to add __maybe_unused or some such and then remove it
-> in the patch which calls this function?  Having warnings during
-> bisection is not great.
+> Again, would be great to avoid the transient warning (if it can be done
+> cleanly):
+>
+> drivers/net/virtio_net.c:5806:9: warning: enumeration value =E2=80=98VIRT=
+NET_XMIT_TYPE_XSK=E2=80=99 not handled in switch [-Wswitch]
+>  5806 |         switch (virtnet_xmit_ptr_strip(&buf)) {
+>       |         ^~~~~~
 
 
-Will do.
-
-Thanks.
+Will fix.
 
