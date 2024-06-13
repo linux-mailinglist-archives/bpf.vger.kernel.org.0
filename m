@@ -1,179 +1,127 @@
-Return-Path: <bpf+bounces-32123-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-32124-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 60327907C8F
-	for <lists+bpf@lfdr.de>; Thu, 13 Jun 2024 21:25:52 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6A012907D2F
+	for <lists+bpf@lfdr.de>; Thu, 13 Jun 2024 22:10:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 63A161C222B3
-	for <lists+bpf@lfdr.de>; Thu, 13 Jun 2024 19:25:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2040A2828B2
+	for <lists+bpf@lfdr.de>; Thu, 13 Jun 2024 20:10:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0DE9814B976;
-	Thu, 13 Jun 2024 19:25:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D286137921;
+	Thu, 13 Jun 2024 20:10:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="oCZ8wsIC"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CykakbA/"
 X-Original-To: bpf@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.18])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C2E46130487
-	for <bpf@vger.kernel.org>; Thu, 13 Jun 2024 19:25:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 775DA136E1D
+	for <bpf@vger.kernel.org>; Thu, 13 Jun 2024 20:10:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718306745; cv=none; b=lQrXnN6g/Jlv+mqroXmGRDKGtASK1HHsylVIIRRG+PWL2xnCsFY4oSO3JgpqwNzI2DUbWYDcWrmUEs0tDzMerfqWFOJn7CjXcCIUThacT0P3A76e3MkJOLSJ9qqzIVQp8l8zqyVfXV6V3A9YmezHeaDwRvEZ80nhbu0YyX6GU8M=
+	t=1718309406; cv=none; b=ZA9XXUM++vEdd0oz0hcr+CTR2G/gzd/xrnHmqaxGs0caxlJTNpTwvpG3ppzRkEQBHhvibb0SWkNitAQcmrrDumqIuv20zc+JARQHjp8zhO66DHv1cHGqPmRamfK9+NttzwQiUkIS7dXnwC82efnfZj4UyEzsAgZfUqqMo5TFY/c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718306745; c=relaxed/simple;
-	bh=VC0WTxQ8xaHvRuADJJ8NAKDpVXa/w+q7KdgTGGsjC6g=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=t/LsVUVZK2NpHK2GzQbvH8cvkxeBeu1+8IivGJmEaz5gFZ8pG6jwItwQSoRSwY6Uy0Fdhfu7hHpySmhkzwF3f+bkHhQzIf3Fj9B1rYmTTJ7DOL++1yWIIGK9/cMDiI7qHpig1zABPAuJ/0D/nB6nc2XVdNauBPlETB8p29J0RX8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=oCZ8wsIC; arc=none smtp.client-ip=192.198.163.18
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1718306744; x=1749842744;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=VC0WTxQ8xaHvRuADJJ8NAKDpVXa/w+q7KdgTGGsjC6g=;
-  b=oCZ8wsICgizSPqDmsW3KH0uKBdmq+rJpqsA0wv/p8LOf9DpisIrD+IEf
-   2JjN1tee12/Q8reBgSAOLwvr3PN+ZOd139dm71idris6kN10OpZvEZlkp
-   ytRO6yAhq0nJuyRoGMGnPAOMqWnkBGwCa2BNMr3QHavP5sfifav5TPV4O
-   gRp2Wn0I947KraVwSrg5lE/AWomCOVXfqQb3wAibq2rBIFfPEP/5ZXSWk
-   /15YhAtmiz5qUrKaY0aPTcSbL9eOtong8t3Fg6zsBA2/KDPgiRHP0kerN
-   d2TPLKo5MImDdwE4/zrkC7p+wCsa1h+JeIW4X4W42SiwMTjx64PcbW9gH
-   Q==;
-X-CSE-ConnectionGUID: rdRQr8DiT2SQSiir3U+qhg==
-X-CSE-MsgGUID: uWBCkUFjQQSMkMkf+UO2lw==
-X-IronPort-AV: E=McAfee;i="6700,10204,11102"; a="14894777"
-X-IronPort-AV: E=Sophos;i="6.08,236,1712646000"; 
-   d="scan'208";a="14894777"
-Received: from orviesa004.jf.intel.com ([10.64.159.144])
-  by fmvoesa112.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Jun 2024 12:25:14 -0700
-X-CSE-ConnectionGUID: NlDkBrA0Rlq0BQ28IFIQsQ==
-X-CSE-MsgGUID: PXFJewhRQcybd0z83ZvCoQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.08,236,1712646000"; 
-   d="scan'208";a="45369318"
-Received: from lkp-server01.sh.intel.com (HELO 9e3ee4e9e062) ([10.239.97.150])
-  by orviesa004.jf.intel.com with ESMTP; 13 Jun 2024 12:25:12 -0700
-Received: from kbuild by 9e3ee4e9e062 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1sHq4L-0000KK-0A;
-	Thu, 13 Jun 2024 19:25:09 +0000
-Date: Fri, 14 Jun 2024 03:24:45 +0800
-From: kernel test robot <lkp@intel.com>
-To: Rafael Passos <rafael@rcpassos.me>, davem@davemloft.net,
-	dsahern@kernel.org, ast@kernel.org, daniel@iogearbox.net,
-	andrii@kernel.org, tglx@linutronix.de, mingo@redhat.com,
-	bp@alien8.de
-Cc: oe-kbuild-all@lists.linux.dev, Rafael Passos <rafael@rcpassos.me>,
-	bpf@vger.kernel.org
-Subject: Re: [PATCH bpf-next 1/3] bpf: remove unused parameter in
- bpf_jit_binary_pack_finalize
-Message-ID: <202406140304.4Rf0F9mg-lkp@intel.com>
-References: <7eaed3dc-28e5-409f-8f73-a1bf8acc2937@smtp-relay.sendinblue.com>
+	s=arc-20240116; t=1718309406; c=relaxed/simple;
+	bh=0HJVhZW/lX+6fNJHl/MCkIekg2DzZsSd5bCmyazimvY=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=euv4amqkhuyGBaoP3kG/3ZdLPmsm7GtPKsztCRRCCZC74NxIF5FToiX0PditZTMalWTyCfO1BrJbAM7rXt4LV5An1CCYDtmw2m9Gmv7U5xE9U6FrybfzNvG3sFxA7HIUHkGlkijf4OMk4AOsFa8ctOwfEs2nF4FKulEXc9wUHGA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CykakbA/; arc=none smtp.client-ip=209.85.214.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-1f6da06ba24so13536215ad.2
+        for <bpf@vger.kernel.org>; Thu, 13 Jun 2024 13:10:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1718309405; x=1718914205; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=QYtr27yEpf8qu1sM+piGOkZN86Gu4jSL0ADFFJM4eZU=;
+        b=CykakbA/cEWdJkew9Ec2yeWOd7Q8701M0vOAo4Aa4WLht8pE0q+BVS74LfM/LTkwpI
+         UlZ5y7n6Ft+gPRWvxmxo5ZTixnfS5ZuIWpn14qsmi/lnafLETiapcMXZeAG7qACmHvEM
+         0Fwn5XMib1R42B0/Orua5Vcz2HnkUJeU9Etwop3WTGOB2yha1KY7gGxsrZJclhv6EIxJ
+         ZOKBIwMuq0HLirYA2hl2ddDgBJE4tmwV3BGdJa+YBRdPm+OR0PNLC9by78mDbC8dnTIM
+         pUxoBYr8IWdSry5hPz0c622C9KlnM856PoW7gLZIatSIg901s3jEs7TQgDNWSCTHJ9t9
+         f2gw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1718309405; x=1718914205;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=QYtr27yEpf8qu1sM+piGOkZN86Gu4jSL0ADFFJM4eZU=;
+        b=O/eNFtocr14EE6sr4tPPRT1t2xbaMmHG8YtHik5F/9+ooM5HIs9iZ84ifR5/sgYShI
+         Gr62XD2QQJwxKPY2vQBAGMvpn5lnwpynr8QIiaIA3cyqPZJR2SNvkjQ5IMpQfIIrsnRV
+         EuvbbWL40RN1+W9cDfpjcgvG8MlkPVyP5akmp7QUkMxljF1vg8iOQ5kd/sO1h/F0s1tQ
+         M2RaWWmZ+HoT9YBMqkMjm1DNSXFqfz6szF2kBXE37xw4CSWt9QDKRSZ9rjEZxpB8iCS+
+         mpF9MkcdXjsFIgv5yyZDrxbC/P2zGtJAD49/bVjGTO3CO8qhlEoThCvDy/pntnIoLCXk
+         nlZg==
+X-Forwarded-Encrypted: i=1; AJvYcCXOtyyUY9LQSqTkJqb51WwMFsM/x/jOcbacTxyVomYU8z+zkhS0WSJ5Vbln+x+eNjFxnm2aLBZa0fM9k9szZBm6J7Sl
+X-Gm-Message-State: AOJu0YzJJF7U4qv5TUp+8xOr7+OXsU/JgTkcNs4iAFpRx5ydbCW79r4F
+	81ETw1w3Yz7ca8eL5hCtY6SJuA+kIETGYnLEqaSFjKqaeAK2RwDh
+X-Google-Smtp-Source: AGHT+IGqBEQtnKNk6fm4ktEADphwjmbteIvoCUYUjdub9iqrqgLKwsFwlLd3+Tf6S79ZuIOpXHnRuQ==
+X-Received: by 2002:a17:902:ecc3:b0:1f7:12c9:943f with SMTP id d9443c01a7336-1f862a03db3mr9142155ad.61.1718309404534;
+        Thu, 13 Jun 2024 13:10:04 -0700 (PDT)
+Received: from [192.168.0.31] ([38.34.87.7])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-1f855e70efdsm18130345ad.89.2024.06.13.13.10.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 13 Jun 2024 13:10:03 -0700 (PDT)
+Message-ID: <6786876cd4b7eaf6c249bf5ed1e4ebf02f26aad7.camel@gmail.com>
+Subject: Re: [PATCH bpf-next v4 2/2] selftests/bpf: Match tests against
+ regular expression
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Cupertino Miranda <cupertino.miranda@oracle.com>, bpf@vger.kernel.org
+Cc: jose.marchesi@oracle.com, david.faust@oracle.com, Yonghong Song
+	 <yonghong.song@linux.dev>, Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Thu, 13 Jun 2024 13:09:58 -0700
+In-Reply-To: <20240613152037.395298-3-cupertino.miranda@oracle.com>
+References: <20240613152037.395298-1-cupertino.miranda@oracle.com>
+	 <20240613152037.395298-3-cupertino.miranda@oracle.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.44.4-0ubuntu2 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <7eaed3dc-28e5-409f-8f73-a1bf8acc2937@smtp-relay.sendinblue.com>
 
-Hi Rafael,
+On Thu, 2024-06-13 at 16:20 +0100, Cupertino Miranda wrote:
+> This patch changes a few tests to make use of regular expressions.
+> Fixed tests otherwise fail when compiled with GCC.
+>=20
+> Signed-off-by: Cupertino Miranda <cupertino.miranda@oracle.com>
+> Cc: jose.marchesi@oracle.com
+> Cc: david.faust@oracle.com
+> Cc: Yonghong Song <yonghong.song@linux.dev>
+> Cc: Eduard Zingerman <eddyz87@gmail.com>
+> Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+> ---
 
-kernel test robot noticed the following build errors:
+Acked-by: Eduard Zingerman <eddyz87@gmail.com>
 
-[auto build test ERROR on bpf-next/master]
+[...]
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Rafael-Passos/bpf-remove-unused-parameter-in-__bpf_free_used_btfs/20240613-110048
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
-patch link:    https://lore.kernel.org/r/7eaed3dc-28e5-409f-8f73-a1bf8acc2937%40smtp-relay.sendinblue.com
-patch subject: [PATCH bpf-next 1/3] bpf: remove unused parameter in bpf_jit_binary_pack_finalize
-config: powerpc-mpc885_ads_defconfig (https://download.01.org/0day-ci/archive/20240614/202406140304.4Rf0F9mg-lkp@intel.com/config)
-compiler: powerpc-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240614/202406140304.4Rf0F9mg-lkp@intel.com/reproduce)
+The two tests below are __naked inline assembly,
+so there is no need to change alloc_insn for them.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202406140304.4Rf0F9mg-lkp@intel.com/
+>  SEC("sk_skb")
+>  __description("bpf_map_lookup_elem(sockmap, &key)")
+> -__failure __msg("Unreleased reference id=3D2 alloc_insn=3D6")
+> +__failure __regex("Unreleased reference id=3D2 alloc_insn=3D[0-9]+")
+>  __naked void map_lookup_elem_sockmap_key(void)
+>  {
+>  	asm volatile ("					\
+> @@ -819,7 +819,7 @@ __naked void map_lookup_elem_sockmap_key(void)
+> =20
+>  SEC("sk_skb")
+>  __description("bpf_map_lookup_elem(sockhash, &key)")
+> -__failure __msg("Unreleased reference id=3D2 alloc_insn=3D6")
+> +__failure __regex("Unreleased reference id=3D2 alloc_insn=3D[0-9]+")
+>  __naked void map_lookup_elem_sockhash_key(void)
+>  {
+>  	asm volatile ("					\
 
-All errors (new ones prefixed by >>):
-
-   arch/powerpc/net/bpf_jit_comp.c: In function 'bpf_int_jit_compile':
->> arch/powerpc/net/bpf_jit_comp.c:228:50: error: passing argument 1 of 'bpf_jit_binary_pack_finalize' from incompatible pointer type [-Werror=incompatible-pointer-types]
-     228 |                 if (bpf_jit_binary_pack_finalize(fp, fhdr, hdr)) {
-         |                                                  ^~
-         |                                                  |
-         |                                                  struct bpf_prog *
-   In file included from arch/powerpc/net/bpf_jit_comp.c:14:
-   include/linux/filter.h:1132:60: note: expected 'struct bpf_binary_header *' but argument is of type 'struct bpf_prog *'
-    1132 | int bpf_jit_binary_pack_finalize(struct bpf_binary_header *ro_header,
-         |                                  ~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~
->> arch/powerpc/net/bpf_jit_comp.c:228:21: error: too many arguments to function 'bpf_jit_binary_pack_finalize'
-     228 |                 if (bpf_jit_binary_pack_finalize(fp, fhdr, hdr)) {
-         |                     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   include/linux/filter.h:1132:5: note: declared here
-    1132 | int bpf_jit_binary_pack_finalize(struct bpf_binary_header *ro_header,
-         |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   arch/powerpc/net/bpf_jit_comp.c: In function 'bpf_jit_free':
-   arch/powerpc/net/bpf_jit_comp.c:351:54: error: passing argument 1 of 'bpf_jit_binary_pack_finalize' from incompatible pointer type [-Werror=incompatible-pointer-types]
-     351 |                         bpf_jit_binary_pack_finalize(fp, jit_data->fhdr, jit_data->hdr);
-         |                                                      ^~
-         |                                                      |
-         |                                                      struct bpf_prog *
-   include/linux/filter.h:1132:60: note: expected 'struct bpf_binary_header *' but argument is of type 'struct bpf_prog *'
-    1132 | int bpf_jit_binary_pack_finalize(struct bpf_binary_header *ro_header,
-         |                                  ~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~
-   arch/powerpc/net/bpf_jit_comp.c:351:25: error: too many arguments to function 'bpf_jit_binary_pack_finalize'
-     351 |                         bpf_jit_binary_pack_finalize(fp, jit_data->fhdr, jit_data->hdr);
-         |                         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   include/linux/filter.h:1132:5: note: declared here
-    1132 | int bpf_jit_binary_pack_finalize(struct bpf_binary_header *ro_header,
-         |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   cc1: some warnings being treated as errors
-
-
-vim +/bpf_jit_binary_pack_finalize +228 arch/powerpc/net/bpf_jit_comp.c
-
-4ea76e90a97d22 Christophe Leroy 2021-03-22  222  
-90d862f370b6e9 Hari Bathini     2023-10-20  223  	fp->bpf_func = (void *)fimage;
-4ea76e90a97d22 Christophe Leroy 2021-03-22  224  	fp->jited = 1;
-983bdc0245a29c Ravi Bangoria    2021-10-12  225  	fp->jited_len = proglen + FUNCTION_DESCR_SIZE;
-4ea76e90a97d22 Christophe Leroy 2021-03-22  226  
-4ea76e90a97d22 Christophe Leroy 2021-03-22  227  	if (!fp->is_func || extra_pass) {
-90d862f370b6e9 Hari Bathini     2023-10-20 @228  		if (bpf_jit_binary_pack_finalize(fp, fhdr, hdr)) {
-90d862f370b6e9 Hari Bathini     2023-10-20  229  			fp = org_fp;
-90d862f370b6e9 Hari Bathini     2023-10-20  230  			goto out_addrs;
-90d862f370b6e9 Hari Bathini     2023-10-20  231  		}
-4ea76e90a97d22 Christophe Leroy 2021-03-22  232  		bpf_prog_fill_jited_linfo(fp, addrs);
-4ea76e90a97d22 Christophe Leroy 2021-03-22  233  out_addrs:
-4ea76e90a97d22 Christophe Leroy 2021-03-22  234  		kfree(addrs);
-4ea76e90a97d22 Christophe Leroy 2021-03-22  235  		kfree(jit_data);
-4ea76e90a97d22 Christophe Leroy 2021-03-22  236  		fp->aux->jit_data = NULL;
-4ea76e90a97d22 Christophe Leroy 2021-03-22  237  	} else {
-4ea76e90a97d22 Christophe Leroy 2021-03-22  238  		jit_data->addrs = addrs;
-4ea76e90a97d22 Christophe Leroy 2021-03-22  239  		jit_data->ctx = cgctx;
-4ea76e90a97d22 Christophe Leroy 2021-03-22  240  		jit_data->proglen = proglen;
-90d862f370b6e9 Hari Bathini     2023-10-20  241  		jit_data->fimage = fimage;
-90d862f370b6e9 Hari Bathini     2023-10-20  242  		jit_data->fhdr = fhdr;
-90d862f370b6e9 Hari Bathini     2023-10-20  243  		jit_data->hdr = hdr;
-4ea76e90a97d22 Christophe Leroy 2021-03-22  244  	}
-4ea76e90a97d22 Christophe Leroy 2021-03-22  245  
-4ea76e90a97d22 Christophe Leroy 2021-03-22  246  out:
-4ea76e90a97d22 Christophe Leroy 2021-03-22  247  	if (bpf_blinded)
-4ea76e90a97d22 Christophe Leroy 2021-03-22  248  		bpf_jit_prog_release_other(fp, fp == org_fp ? tmp_fp : org_fp);
-4ea76e90a97d22 Christophe Leroy 2021-03-22  249  
-4ea76e90a97d22 Christophe Leroy 2021-03-22  250  	return fp;
-4ea76e90a97d22 Christophe Leroy 2021-03-22  251  }
-983bdc0245a29c Ravi Bangoria    2021-10-12  252  
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
 
