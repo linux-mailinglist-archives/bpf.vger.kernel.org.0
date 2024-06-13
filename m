@@ -1,127 +1,162 @@
-Return-Path: <bpf+bounces-32124-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-32125-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6A012907D2F
-	for <lists+bpf@lfdr.de>; Thu, 13 Jun 2024 22:10:12 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3EA6C907D90
+	for <lists+bpf@lfdr.de>; Thu, 13 Jun 2024 22:43:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2040A2828B2
-	for <lists+bpf@lfdr.de>; Thu, 13 Jun 2024 20:10:11 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E622D284E0F
+	for <lists+bpf@lfdr.de>; Thu, 13 Jun 2024 20:43:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D286137921;
-	Thu, 13 Jun 2024 20:10:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7398313B5BB;
+	Thu, 13 Jun 2024 20:43:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CykakbA/"
+	dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b="fuMZHDa4"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
+Received: from mail-yb1-f178.google.com (mail-yb1-f178.google.com [209.85.219.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 775DA136E1D
-	for <bpf@vger.kernel.org>; Thu, 13 Jun 2024 20:10:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6633A13A3F7
+	for <bpf@vger.kernel.org>; Thu, 13 Jun 2024 20:43:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718309406; cv=none; b=ZA9XXUM++vEdd0oz0hcr+CTR2G/gzd/xrnHmqaxGs0caxlJTNpTwvpG3ppzRkEQBHhvibb0SWkNitAQcmrrDumqIuv20zc+JARQHjp8zhO66DHv1cHGqPmRamfK9+NttzwQiUkIS7dXnwC82efnfZj4UyEzsAgZfUqqMo5TFY/c=
+	t=1718311397; cv=none; b=B9uWpQCY4eddDcAbXT2gxoa7WboYNNIP+u65ZbFQTovOZg6KhpuopbbdxXiV3r6DROK5aNjrwq5mToTcr/zQwrokbmnzCZ0w1hFUYXEIALjXADM51JxwstQhZOrgJmvzJh7vvAT1QKnPp71xfjXYdI+PXoPFA2MnQzSQaMyFT6E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718309406; c=relaxed/simple;
-	bh=0HJVhZW/lX+6fNJHl/MCkIekg2DzZsSd5bCmyazimvY=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=euv4amqkhuyGBaoP3kG/3ZdLPmsm7GtPKsztCRRCCZC74NxIF5FToiX0PditZTMalWTyCfO1BrJbAM7rXt4LV5An1CCYDtmw2m9Gmv7U5xE9U6FrybfzNvG3sFxA7HIUHkGlkijf4OMk4AOsFa8ctOwfEs2nF4FKulEXc9wUHGA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CykakbA/; arc=none smtp.client-ip=209.85.214.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-1f6da06ba24so13536215ad.2
-        for <bpf@vger.kernel.org>; Thu, 13 Jun 2024 13:10:05 -0700 (PDT)
+	s=arc-20240116; t=1718311397; c=relaxed/simple;
+	bh=Te1wWeTYuhWG0UJJRZ0nQ9Ccy7EzdVqqwIlRrujyH3k=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Axjb7DJ0yPlzHbpiwh+RWyLBcsAg0BVQXkjspHwHxCRF6fvmYXdRq5Tx11kWzW9DCR+cJDefiueTITcmUixMXlOv1T3C4qWuS700ueQYWAB0UR517zqXWKLGO3HjDMr6XoK6jSoRRFqZKNezQgNefpWpb0SxwPhIfBCOGsr678Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com; spf=pass smtp.mailfrom=paul-moore.com; dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b=fuMZHDa4; arc=none smtp.client-ip=209.85.219.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=paul-moore.com
+Received: by mail-yb1-f178.google.com with SMTP id 3f1490d57ef6-dff02b8a956so1352714276.1
+        for <bpf@vger.kernel.org>; Thu, 13 Jun 2024 13:43:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1718309405; x=1718914205; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=QYtr27yEpf8qu1sM+piGOkZN86Gu4jSL0ADFFJM4eZU=;
-        b=CykakbA/cEWdJkew9Ec2yeWOd7Q8701M0vOAo4Aa4WLht8pE0q+BVS74LfM/LTkwpI
-         UlZ5y7n6Ft+gPRWvxmxo5ZTixnfS5ZuIWpn14qsmi/lnafLETiapcMXZeAG7qACmHvEM
-         0Fwn5XMib1R42B0/Orua5Vcz2HnkUJeU9Etwop3WTGOB2yha1KY7gGxsrZJclhv6EIxJ
-         ZOKBIwMuq0HLirYA2hl2ddDgBJE4tmwV3BGdJa+YBRdPm+OR0PNLC9by78mDbC8dnTIM
-         pUxoBYr8IWdSry5hPz0c622C9KlnM856PoW7gLZIatSIg901s3jEs7TQgDNWSCTHJ9t9
-         f2gw==
+        d=paul-moore.com; s=google; t=1718311394; x=1718916194; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Mbp06UNvP6AGs/AzZYfCY2RlFHeTWL3VjFq/M7RiWuQ=;
+        b=fuMZHDa4bjNFsZajlFm6gAnBMvg/BwfoJNgcncVCRis1Xp1EqIcaCMTgNtrGkb+lev
+         Td1yWR1Rkd2rkCeBDcQJUchRHw/8NkPLAFMjtHsDDx4h3uwj27b8hpy81y9LyFa2yyfM
+         9ipuVzXbIEcs/BrpeRd3fBf6ccrZSzLeL8ssvU9nrI5TxLLoREyYQ7oBFjKdY47fYmNX
+         brSHYzQODPhrEttIHfMF8nrIT17YW5MH2w3MuvykUxNS6eeSH7aWNVoHMwlDZOaX/+Nv
+         qu3T40pgZ0PL8LiZWv6i/IS/Cc+IYcgv1Cs9LlVkewvKLmdhIAUqNzgMG4diumVCwnjX
+         H+XA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1718309405; x=1718914205;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=QYtr27yEpf8qu1sM+piGOkZN86Gu4jSL0ADFFJM4eZU=;
-        b=O/eNFtocr14EE6sr4tPPRT1t2xbaMmHG8YtHik5F/9+ooM5HIs9iZ84ifR5/sgYShI
-         Gr62XD2QQJwxKPY2vQBAGMvpn5lnwpynr8QIiaIA3cyqPZJR2SNvkjQ5IMpQfIIrsnRV
-         EuvbbWL40RN1+W9cDfpjcgvG8MlkPVyP5akmp7QUkMxljF1vg8iOQ5kd/sO1h/F0s1tQ
-         M2RaWWmZ+HoT9YBMqkMjm1DNSXFqfz6szF2kBXE37xw4CSWt9QDKRSZ9rjEZxpB8iCS+
-         mpF9MkcdXjsFIgv5yyZDrxbC/P2zGtJAD49/bVjGTO3CO8qhlEoThCvDy/pntnIoLCXk
-         nlZg==
-X-Forwarded-Encrypted: i=1; AJvYcCXOtyyUY9LQSqTkJqb51WwMFsM/x/jOcbacTxyVomYU8z+zkhS0WSJ5Vbln+x+eNjFxnm2aLBZa0fM9k9szZBm6J7Sl
-X-Gm-Message-State: AOJu0YzJJF7U4qv5TUp+8xOr7+OXsU/JgTkcNs4iAFpRx5ydbCW79r4F
-	81ETw1w3Yz7ca8eL5hCtY6SJuA+kIETGYnLEqaSFjKqaeAK2RwDh
-X-Google-Smtp-Source: AGHT+IGqBEQtnKNk6fm4ktEADphwjmbteIvoCUYUjdub9iqrqgLKwsFwlLd3+Tf6S79ZuIOpXHnRuQ==
-X-Received: by 2002:a17:902:ecc3:b0:1f7:12c9:943f with SMTP id d9443c01a7336-1f862a03db3mr9142155ad.61.1718309404534;
-        Thu, 13 Jun 2024 13:10:04 -0700 (PDT)
-Received: from [192.168.0.31] ([38.34.87.7])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-1f855e70efdsm18130345ad.89.2024.06.13.13.10.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 13 Jun 2024 13:10:03 -0700 (PDT)
-Message-ID: <6786876cd4b7eaf6c249bf5ed1e4ebf02f26aad7.camel@gmail.com>
-Subject: Re: [PATCH bpf-next v4 2/2] selftests/bpf: Match tests against
- regular expression
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Cupertino Miranda <cupertino.miranda@oracle.com>, bpf@vger.kernel.org
-Cc: jose.marchesi@oracle.com, david.faust@oracle.com, Yonghong Song
-	 <yonghong.song@linux.dev>, Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Thu, 13 Jun 2024 13:09:58 -0700
-In-Reply-To: <20240613152037.395298-3-cupertino.miranda@oracle.com>
-References: <20240613152037.395298-1-cupertino.miranda@oracle.com>
-	 <20240613152037.395298-3-cupertino.miranda@oracle.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.44.4-0ubuntu2 
+        d=1e100.net; s=20230601; t=1718311394; x=1718916194;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Mbp06UNvP6AGs/AzZYfCY2RlFHeTWL3VjFq/M7RiWuQ=;
+        b=FMnR7+UyytEAN5IayyHezMynKJIuVtz8MGbJnSrvGJPz1uHUaZ7utDEU/g1HHKCwqO
+         tDWNO39mV+rxkfKSLT1WtJ21K0V35AqfPZk0DyVcJ007TDOn9tLTCCQPTDt4E4MPiNlW
+         m34Ze1iCh7pXtLlQHtNxkNCwEfMyIcYBgQNShKZJDxz4D0Otn6VlTDNX83x3Hv1VkWSq
+         X1h7ZdHMaNtsx4vUDp//tO1q39IcTAajFXgyGLUCC0Sm/SBCnOe559dgo2nwG5vhtUDU
+         6TXODTQHVRV+fohGhUwImMuMmbrMYG9zP0AE0xKefrbmIQb6d+HKDGg0GZ86uecu4zpb
+         gPVQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUoqyNlmR2j44aAcYtiUUNXSm0ZZZkGQcNPC8ZT+Auc7jw/PpTwb0GFirBFGKRkKd1PFqfqImOQgb2wzhsMokq3utYP
+X-Gm-Message-State: AOJu0YzSA6gwWn39c2umUQvtgb3jRNMzwnJFJnMEBfWkrCxb6bmh0Q/z
+	THXA1bI698PRdejIVrJUf6LwLNwMVugye36dMzPVk3+91TOlk2klndTiop6anE4/7A07/+MykfW
+	NIXuESHO6RytxXv+lMVSJacnrRO6dsIjv98TI
+X-Google-Smtp-Source: AGHT+IG0WhxM6z6YdDtEWCi+I5IKFVVK+KMGdEQEjK8s3DDuXT3JscqlC3UvTHCxO6S8YW/rHWD2Pox3VJGxEor1JBc=
+X-Received: by 2002:a25:b327:0:b0:dfe:653:3de0 with SMTP id
+ 3f1490d57ef6-dff154f9c91mr601718276.63.1718311394391; Thu, 13 Jun 2024
+ 13:43:14 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+References: <20240609104355.442002-1-jcalmels@3xx0.net> <20240609104355.442002-5-jcalmels@3xx0.net>
+ <CAHC9VhT5XWbhoY2Nw5jQz4GxpDriUdHw=1YsQ4xLVUtSnFxciA@mail.gmail.com>
+ <z2bgjrzeq7crqx24chdbxnaanuhczbjnq6da3xw6al6omjj5xz@mqbzzzfva5sw>
+ <887a3658-2d8d-4f9e-98f2-27124bb6f8e6@canonical.com> <CAHC9VhQFNPJTOct5rUv3HT6Z2S20mYdW75seiG8no5=fZd7JjA@mail.gmail.com>
+ <uuvwcdsy7o4ulmrdzwffr6uywfacmlkjrontmjdj44luantpok@dtatxaa6tzyv>
+ <CAHC9VhRnthf8+KgfuzFHXWEAc9RShDO0G_g0kc1OJ-UTih1ywg@mail.gmail.com>
+ <rgzhcsblub7wedm734n56cw2qf6czjb4jgck6l5miur6odhovo@n5tgrco74zce>
+ <CAHC9VhRGJTND25MFk4gR-FGxoLhMmgUrMpz_YoMFOwL6kr28zQ@mail.gmail.com> <ba8d88c8-a251-4c1f-8653-1082b0a101dd@canonical.com>
+In-Reply-To: <ba8d88c8-a251-4c1f-8653-1082b0a101dd@canonical.com>
+From: Paul Moore <paul@paul-moore.com>
+Date: Thu, 13 Jun 2024 16:43:03 -0400
+Message-ID: <CAHC9VhTfXGeSkDxCaHRWRJjc+4DBorHOrqhrw8BzWhKD9SG39Q@mail.gmail.com>
+Subject: Re: [PATCH v2 4/4] bpf,lsm: Allow editing capabilities in BPF-LSM hooks
+To: John Johansen <john.johansen@canonical.com>
+Cc: Jonathan Calmels <jcalmels@3xx0.net>, brauner@kernel.org, ebiederm@xmission.com, 
+	Jonathan Corbet <corbet@lwn.net>, James Morris <jmorris@namei.org>, "Serge E. Hallyn" <serge@hallyn.com>, 
+	KP Singh <kpsingh@kernel.org>, Matt Bobrowski <mattbobrowski@google.com>, 
+	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Luis Chamberlain <mcgrof@kernel.org>, Kees Cook <kees@kernel.org>, 
+	Joel Granados <j.granados@samsung.com>, David Howells <dhowells@redhat.com>, 
+	Jarkko Sakkinen <jarkko@kernel.org>, Stephen Smalley <stephen.smalley.work@gmail.com>, 
+	Ondrej Mosnacek <omosnace@redhat.com>, Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>, 
+	containers@lists.linux.dev, linux-kernel@vger.kernel.org, 
+	linux-fsdevel@vger.kernel.org, linux-doc@vger.kernel.org, 
+	linux-security-module@vger.kernel.org, bpf@vger.kernel.org, 
+	apparmor@lists.ubuntu.com, keyrings@vger.kernel.org, selinux@vger.kernel.org, 
+	linux-kselftest@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, 2024-06-13 at 16:20 +0100, Cupertino Miranda wrote:
-> This patch changes a few tests to make use of regular expressions.
-> Fixed tests otherwise fail when compiled with GCC.
->=20
-> Signed-off-by: Cupertino Miranda <cupertino.miranda@oracle.com>
-> Cc: jose.marchesi@oracle.com
-> Cc: david.faust@oracle.com
-> Cc: Yonghong Song <yonghong.song@linux.dev>
-> Cc: Eduard Zingerman <eddyz87@gmail.com>
-> Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-> ---
+On Wed, Jun 12, 2024 at 11:54=E2=80=AFPM John Johansen
+<john.johansen@canonical.com> wrote:
+> On 6/12/24 10:29, Paul Moore wrote:
+> > On Wed, Jun 12, 2024 at 4:15=E2=80=AFAM Jonathan Calmels <jcalmels@3xx0=
+.net> wrote:
+> >> On Tue, Jun 11, 2024 at 06:38:31PM GMT, Paul Moore wrote:
+> >>> On Tue, Jun 11, 2024 at 6:15=E2=80=AFPM Jonathan Calmels <jcalmels@3x=
+x0.net> wrote:
+> >
+> > ...
+> >
+> >>>> Arguably, if we do want fine-grained userns policies, we need LSMs t=
+o
+> >>>> influence the userns capset at some point.
+> >>>
+> >>> One could always use, or develop, a LSM that offers additional
+> >>> controls around exercising capabilities.  There are currently four
+> >>> in-tree LSMs, including the capabilities LSM, which supply a
+> >>> security_capable() hook that is used by the capability-based access
+> >>> controls in the kernel; all of these hook implementations work
+> >>> together within the LSM framework and provide an additional level of
+> >>> control/granularity beyond the existing capabilities.
+> >>
+> >> Right, but the idea was to have a simple and easy way to reuse/trigger
+> >> as much of the commoncap one as possible from BPF. If we're saying we
+> >> need to reimplement and/or use a whole new framework, then there is
+> >> little value.
+> >
+> > I can appreciate how allowing direct manipulation of capability bits
+> > from a BPF LSM looks attractive, but my hope is that our discussion
+> > here revealed that as you look deeper into making it work there are a
+> > number of pitfalls which prevent this from being a safe option for
+> > generalized systems.
+> >
+> >> TBH, I don't feel strongly about this, which is why it is absent from
+> >> v1. However, as John pointed out, we should at least be able to modify
+> >> the blob if we want flexible userns caps policies down the road.
+> >
+> > As discussed in this thread, there are existing ways to provide fine
+> > grained control over exercising capabilities that can be safely used
+> > within the LSM framework.  I don't want to speak to what John is
+> > envisioning, but he should be aware of these mechanisms, and if I
+> > recall he did voice a level of concern about the same worries I
+> > mentioned.
+> >
+>
+> sorry, I should have been more clear. I envision LSMs being able to
+> update their own state in the userns hook.
 
-Acked-by: Eduard Zingerman <eddyz87@gmail.com>
+Ah, okay, yes, that seems reasonable; although like any other change,
+until we have an in-tree user we should just leave it as-is.
 
-[...]
-
-The two tests below are __naked inline assembly,
-so there is no need to change alloc_insn for them.
-
->  SEC("sk_skb")
->  __description("bpf_map_lookup_elem(sockmap, &key)")
-> -__failure __msg("Unreleased reference id=3D2 alloc_insn=3D6")
-> +__failure __regex("Unreleased reference id=3D2 alloc_insn=3D[0-9]+")
->  __naked void map_lookup_elem_sockmap_key(void)
->  {
->  	asm volatile ("					\
-> @@ -819,7 +819,7 @@ __naked void map_lookup_elem_sockmap_key(void)
-> =20
->  SEC("sk_skb")
->  __description("bpf_map_lookup_elem(sockhash, &key)")
-> -__failure __msg("Unreleased reference id=3D2 alloc_insn=3D6")
-> +__failure __regex("Unreleased reference id=3D2 alloc_insn=3D[0-9]+")
->  __naked void map_lookup_elem_sockhash_key(void)
->  {
->  	asm volatile ("					\
-
+--=20
+paul-moore.com
 
