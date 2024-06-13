@@ -1,213 +1,121 @@
-Return-Path: <bpf+bounces-32126-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-32127-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id D2E7F907DB4
-	for <lists+bpf@lfdr.de>; Thu, 13 Jun 2024 22:55:30 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 91821907DED
+	for <lists+bpf@lfdr.de>; Thu, 13 Jun 2024 23:14:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 365C6B250AE
-	for <lists+bpf@lfdr.de>; Thu, 13 Jun 2024 20:55:28 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3AF421F24638
+	for <lists+bpf@lfdr.de>; Thu, 13 Jun 2024 21:14:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 010E71877;
-	Thu, 13 Jun 2024 20:55:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3669713D250;
+	Thu, 13 Jun 2024 21:14:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b="LY4ASSj5"
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="EMg5zEp0"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yw1-f169.google.com (mail-yw1-f169.google.com [209.85.128.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C66C313B5BD
-	for <bpf@vger.kernel.org>; Thu, 13 Jun 2024 20:55:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E20A13541B;
+	Thu, 13 Jun 2024 21:14:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718312114; cv=none; b=gaIadcXiH8TnipKr7VwHPI4vQhx1cDzfUI4F9VXQsusgrZ+vqIMitmF4vczutziJOAupd0Ft5RWMJ5vWMxgRH2NLE563ZSghvwthUNK3SMdrMrLrrK/LW+XRNYMciWVkM0evR7627m4Q0RYuP4Hy3ZD6s+YZ3awR2Ve6s4yDxNw=
+	t=1718313277; cv=none; b=nAWDc/JpKo3O0iQpmo3f/JVeyQno3RUUPtoMYEDxuJ752qQCa+hRnZ2P/kW132a2KCrEnJ/Jt/DbN8/NzQMsmZWFYhQlmMhlKoGoucQFps/04TmyFCjwNbLvpNNOzD6+xbhz0gspQTrGALkIspPP2RUMZpJlzXJBScphlNnAVLY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718312114; c=relaxed/simple;
-	bh=l5BZRVe4EjUxYN3yXF5F7zfYiMw/7+iKLgPHpiV/pbM=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=VZFqASrTGggz982qhp2IEM6cnEuXYtR3JFmm8RYrMjmoO/cvc0Kkr8qrJfM2fS6i+3Vg3iJvNloOAdxugxxfeDIr+KPIyOZFQpX2Fp1wnk8OTAuke3NbA6GDGvipvjyZEpXIIoOlNZzvh6mUyuyIi1iHjwTXDKFCkmOv68ZINRI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com; spf=pass smtp.mailfrom=paul-moore.com; dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b=LY4ASSj5; arc=none smtp.client-ip=209.85.128.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=paul-moore.com
-Received: by mail-yw1-f169.google.com with SMTP id 00721157ae682-62a087c3a92so15590117b3.2
-        for <bpf@vger.kernel.org>; Thu, 13 Jun 2024 13:55:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore.com; s=google; t=1718312112; x=1718916912; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=mcXAwgD8G/DtMBTj2XjZiXsT2OTNX1kHEG3gcoNV7As=;
-        b=LY4ASSj5sD1R9fmYZn5gSBdQcVKzA/Abv6SD3GZehE/Wn/sDSFoAp1R/vhdCDnwbf+
-         b83ZV/RHzrYz32yqmtZQVOwlbNCk5jFSSY8Ik3l/S3j10VNT7tVhSg7az9C8eBWBFjdy
-         j2PuEv2yLn903jg6kZp4KtNTlc5UaM4pK+W38Sx7a9auud2uZ5LoWNHqLqacnv8dYGrW
-         xRALKPOwEPfpDwZ5tuXLIxYXsGseEFUbyVIVyPZpZ90SbdwdV6aaDp/xx0S+06fJ6bbx
-         WBaG+a7x50apV2PFHdkYt6I9t/ZZGrkI6JfBLa14L/dhPQ/Y7UR4OpHbRhwRJkSnhMEb
-         p5MA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1718312112; x=1718916912;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=mcXAwgD8G/DtMBTj2XjZiXsT2OTNX1kHEG3gcoNV7As=;
-        b=M8XFLVOo268qhSNv0PL1bDLWxkvRHWPWYh+Uo3UGR7UrvWpaXBSWxr8UtZS0RTZXwH
-         giSKx1DhaHhpBsxR0SanVFQGx/SCXKvN1jPSjeGf0I2IqrOsUSaG76ZhO0/kWf+7gz3A
-         r2Oztlf2hDC5PRs1sfBgaQg9+IPppbuOx93laZTjrZsUUsNy+rHdjz+fJw7ElnhQbme/
-         DMf/HcJrEdzWrFYkBnkrM98GVeGajoqgYjLwUPHC/VEFzWwSSfGjgvzDdhvxLwzyztrW
-         19P/QKxM82FJ+T32IgoM1ctEWVZgBQcx4Ct7rRCqsocFza1qvCEWXEQx5EGRZivkUS2Z
-         nPCg==
-X-Forwarded-Encrypted: i=1; AJvYcCW0jtpTV41KCVRHaeejQDwkCUYup8dNoXXBTaiPY/u9XkaE2iyW/vYhOqVZ4UZvr2wguLdH5/JHuUjlVOgwjKo+a/dv
-X-Gm-Message-State: AOJu0YwaCL4Blj4iHVClyBLvnrPj3OiYnOeMzHkldvZ22GhzCoW2s6N2
-	oIHfJpwMnfQovNy8lpCnAOt8cmeXczrpL4dLkFtU4UnMjpGSHyBtknR3g0PwneD5i16gCCOQyUp
-	qWVKXlhD/lDTYHmp9Hln+Zp3zCQvrpVY9REIi
-X-Google-Smtp-Source: AGHT+IGDrzqvYL8x8To8WRZC5EK4ZE7eYh19cN6eIrPp+Dp9L8DQSAkqnp5RVfEyty6oWnZormmtfNXBsvqkuSccnaA=
-X-Received: by 2002:a81:910f:0:b0:62f:ad9c:cd4 with SMTP id
- 00721157ae682-6322470facfmr6187707b3.41.1718312111715; Thu, 13 Jun 2024
- 13:55:11 -0700 (PDT)
+	s=arc-20240116; t=1718313277; c=relaxed/simple;
+	bh=4a2+5zIfwargPvYAlTmLGH6pFw0rZamk0P9b4EVRVsM=;
+	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
+	 Mime-Version:Content-Type; b=J5qK+BHpvk/gEtqryvsEniQeH2DMXzjDGqdVN3KRwcRNo+449/wjJrKHs7bSXbV8AlwCfNkHdu0XY0+pXSrsO0Cfizrv5Ibd2OkYjaHmfara94UAz+BYb7WE4fncOem3BmVTsmiDMXKUmF2Rb8GFoMbjd+FLDypwH0yMjmzWB6Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=EMg5zEp0; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 83E20C2BBFC;
+	Thu, 13 Jun 2024 21:14:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+	s=korg; t=1718313277;
+	bh=4a2+5zIfwargPvYAlTmLGH6pFw0rZamk0P9b4EVRVsM=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=EMg5zEp0mO+NhF6jvPGvPYkQn8Gd0u2aw4kR2cAYBNOQj5bRnNWwQM9CehUe95cZs
+	 6Ig1y6VAXMhH/JYy3dPHM1EG0vGdCUoJaJs1tYAbb6NeSB3p4cP0PLop0SsGaGcGr6
+	 fg74mWAVBAHGreHe41TJIWG8GiGZhlI1Nb5wr4hM=
+Date: Thu, 13 Jun 2024 14:14:35 -0700
+From: Andrew Morton <akpm@linux-foundation.org>
+To: Yafang Shao <laoar.shao@gmail.com>
+Cc: torvalds@linux-foundation.org, ebiederm@xmission.com,
+ alexei.starovoitov@gmail.com, rostedt@goodmis.org, linux-mm@kvack.org,
+ linux-fsdevel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+ audit@vger.kernel.org, linux-security-module@vger.kernel.org,
+ selinux@vger.kernel.org, bpf@vger.kernel.org, netdev@vger.kernel.org,
+ dri-devel@lists.freedesktop.org
+Subject: Re: [PATCH v2 05/10] mm/util: Fix possible race condition in
+ kstrdup()
+Message-Id: <20240613141435.fad09579c934dbb79a3086cc@linux-foundation.org>
+In-Reply-To: <20240613023044.45873-6-laoar.shao@gmail.com>
+References: <20240613023044.45873-1-laoar.shao@gmail.com>
+	<20240613023044.45873-6-laoar.shao@gmail.com>
+X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20240609104355.442002-5-jcalmels@3xx0.net> <CAHC9VhT5XWbhoY2Nw5jQz4GxpDriUdHw=1YsQ4xLVUtSnFxciA@mail.gmail.com>
- <z2bgjrzeq7crqx24chdbxnaanuhczbjnq6da3xw6al6omjj5xz@mqbzzzfva5sw>
- <887a3658-2d8d-4f9e-98f2-27124bb6f8e6@canonical.com> <CAHC9VhQFNPJTOct5rUv3HT6Z2S20mYdW75seiG8no5=fZd7JjA@mail.gmail.com>
- <uuvwcdsy7o4ulmrdzwffr6uywfacmlkjrontmjdj44luantpok@dtatxaa6tzyv>
- <CAHC9VhRnthf8+KgfuzFHXWEAc9RShDO0G_g0kc1OJ-UTih1ywg@mail.gmail.com>
- <rgzhcsblub7wedm734n56cw2qf6czjb4jgck6l5miur6odhovo@n5tgrco74zce>
- <CAHC9VhRGJTND25MFk4gR-FGxoLhMmgUrMpz_YoMFOwL6kr28zQ@mail.gmail.com>
- <ba8d88c8-a251-4c1f-8653-1082b0a101dd@canonical.com> <zwh766li4dwx5be6uxnxl2lhtxb4jsiua4atilpqvoeuksgz2h@v3pna3o3ewkp>
-In-Reply-To: <zwh766li4dwx5be6uxnxl2lhtxb4jsiua4atilpqvoeuksgz2h@v3pna3o3ewkp>
-From: Paul Moore <paul@paul-moore.com>
-Date: Thu, 13 Jun 2024 16:55:00 -0400
-Message-ID: <CAHC9VhTaD+LxEL8hMdbvFFJgU1xbEtmN7gSwSdKRS=hX_uVnVQ@mail.gmail.com>
-Subject: Re: [PATCH v2 4/4] bpf,lsm: Allow editing capabilities in BPF-LSM hooks
-To: Jonathan Calmels <jcalmels@3xx0.net>
-Cc: John Johansen <john.johansen@canonical.com>, brauner@kernel.org, ebiederm@xmission.com, 
-	Jonathan Corbet <corbet@lwn.net>, James Morris <jmorris@namei.org>, "Serge E. Hallyn" <serge@hallyn.com>, 
-	KP Singh <kpsingh@kernel.org>, Matt Bobrowski <mattbobrowski@google.com>, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
-	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
-	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Luis Chamberlain <mcgrof@kernel.org>, Kees Cook <kees@kernel.org>, 
-	Joel Granados <j.granados@samsung.com>, David Howells <dhowells@redhat.com>, 
-	Jarkko Sakkinen <jarkko@kernel.org>, Stephen Smalley <stephen.smalley.work@gmail.com>, 
-	Ondrej Mosnacek <omosnace@redhat.com>, Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>, 
-	containers@lists.linux.dev, linux-kernel@vger.kernel.org, 
-	linux-fsdevel@vger.kernel.org, linux-doc@vger.kernel.org, 
-	linux-security-module@vger.kernel.org, bpf@vger.kernel.org, 
-	apparmor@lists.ubuntu.com, keyrings@vger.kernel.org, selinux@vger.kernel.org, 
-	linux-kselftest@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Thu, Jun 13, 2024 at 4:45=E2=80=AFAM Jonathan Calmels <jcalmels@3xx0.net=
-> wrote:
-> On Wed, Jun 12, 2024 at 08:54:28PM GMT, John Johansen wrote:
-> > On 6/12/24 10:29, Paul Moore wrote:
-> > > On Wed, Jun 12, 2024 at 4:15=E2=80=AFAM Jonathan Calmels <jcalmels@3x=
-x0.net> wrote:
-> > > > On Tue, Jun 11, 2024 at 06:38:31PM GMT, Paul Moore wrote:
-> > > > > On Tue, Jun 11, 2024 at 6:15=E2=80=AFPM Jonathan Calmels <jcalmel=
-s@3xx0.net> wrote:
-> > >
-> > > ...
-> > >
-> > > > > > Arguably, if we do want fine-grained userns policies, we need L=
-SMs to
-> > > > > > influence the userns capset at some point.
-> > > > >
-> > > > > One could always use, or develop, a LSM that offers additional
-> > > > > controls around exercising capabilities.  There are currently fou=
-r
-> > > > > in-tree LSMs, including the capabilities LSM, which supply a
-> > > > > security_capable() hook that is used by the capability-based acce=
-ss
-> > > > > controls in the kernel; all of these hook implementations work
-> > > > > together within the LSM framework and provide an additional level=
- of
-> > > > > control/granularity beyond the existing capabilities.
-> > > >
-> > > > Right, but the idea was to have a simple and easy way to reuse/trig=
-ger
-> > > > as much of the commoncap one as possible from BPF. If we're saying =
-we
-> > > > need to reimplement and/or use a whole new framework, then there is
-> > > > little value.
-> > >
-> > > I can appreciate how allowing direct manipulation of capability bits
-> > > from a BPF LSM looks attractive, but my hope is that our discussion
-> > > here revealed that as you look deeper into making it work there are a
-> > > number of pitfalls which prevent this from being a safe option for
-> > > generalized systems.
-> > >
-> > > > TBH, I don't feel strongly about this, which is why it is absent fr=
-om
-> > > > v1. However, as John pointed out, we should at least be able to mod=
-ify
-> > > > the blob if we want flexible userns caps policies down the road.
-> > >
-> > > As discussed in this thread, there are existing ways to provide fine
-> > > grained control over exercising capabilities that can be safely used
-> > > within the LSM framework.  I don't want to speak to what John is
-> > > envisioning, but he should be aware of these mechanisms, and if I
-> > > recall he did voice a level of concern about the same worries I
-> > > mentioned.
-> > >
-> >
-> > sorry, I should have been more clear. I envision LSMs being able to
-> > update their own state in the userns hook.
-> >
-> > Basically the portion of the patch that removes const from the
-> > userns hook.
+On Thu, 13 Jun 2024 10:30:39 +0800 Yafang Shao <laoar.shao@gmail.com> wrote:
+
+> In kstrdup(), it is critical to ensure that the dest string is always
+> NUL-terminated. However, potential race condidtion can occur between a
+> writer and a reader.
+> 
+> Consider the following scenario involving task->comm:
+> 
+>     reader                    writer
+> 
+>   len = strlen(s) + 1;
+>                              strlcpy(tsk->comm, buf, sizeof(tsk->comm));
+>   memcpy(buf, s, len);
+> 
+> In this case, there is a race condition between the reader and the
+> writer. The reader calculate the length of the string `s` based on the
+> old value of task->comm. However, during the memcpy(), the string `s`
+> might be updated by the writer to a new value of task->comm.
+> 
+> If the new task->comm is larger than the old one, the `buf` might not be
+> NUL-terminated. This can lead to undefined behavior and potential
+> security vulnerabilities.
+> 
+> Let's fix it by explicitly adding a NUL-terminator.
+
+The concept sounds a little strange.  If some code takes a copy of a
+string while some other code is altering it, yes, the result will be a
+mess.  This is why get_task_comm() exists, and why it uses locking.
+
+I get that "your copy is a mess" is less serious than "your string
+isn't null-terminated" but still.  Whichever outcome we get, the
+calling code is buggy and should be fixed.
+
+Are there any other problematic scenarios we're defending against here?
+
 >
-> Yes, pretty sure we'll need this regardless.
->
-> > An LSM updating the capset is worrysome for all the reasons you
-> > pointed out, and I think a few more. I haven't had a chance to really
-> > look at v2 yet, so I didn't want to speak directly on the bpf part of
-> > the patch without first giving a good once over.
+> --- a/mm/util.c
+> +++ b/mm/util.c
+> @@ -60,8 +60,10 @@ char *kstrdup(const char *s, gfp_t gfp)
+>  
+>  	len = strlen(s) + 1;
+>  	buf = kmalloc_track_caller(len, gfp);
+> -	if (buf)
+> +	if (buf) {
+>  		memcpy(buf, s, len);
+> +		buf[len - 1] = '\0';
+> +	}
+>  	return buf;
+>  }
 
+Now I'll start receiving patches to remove this again.  Let's have a
+code comment please.
 
-> > > I'm happy to discuss ways in which we can adjust the LSM hooks/layer
-> > > to support different approaches to capability controls, but one LSM
-> > > directly manipulating the state of another is going to be a no vote
-> > > from me.
-> >
-> > I might not be as hard no as Paul here, I am always willing to listen
-> > to arguments, but it would have to be a really good argument to
-> > modify the capset, when there are multiple LSMs in play on a system.
->
-> The way I see it, it's more about enhancing the capability LSM with BPF
-> hooks and have it modify its own state dynamically, not so much
-> crosstalk between two distinct LSM frameworks (say one where the BPF
-> LSM implements a lot of things like capable()).
-
-As I mentioned previously, if you want to do something with the
-capability sets you simply need to do it within the confines of
-security/commoncap.c.  If you're really set on the "MUST BE BPF!" way
-of life, and you can convince Serge (capabilities maintainer) that it
-would be a good idea, you could propose a dedicated BPF hook within
-the capabilities LSM.  I'm not sure how wise that would be, but it
-would resolve a lot of the LSM ordering/stacking issues that we've
-discussed.
-
-> If we think there is no way we can come up with something that's safe
-> enough, and that the risks outweigh the benefits, fine by me, we can
-> drop this patch from the series.
-
-To be clear, this patch is not acceptable at this point in time.  With
-the understanding that I haven't looked that closely at the rest of
-the patchset, it looks fairly well contained to the capabilities code
-which means it is largely up to Serge, not me.
-
-I will mention that you should update the audit code to recognize the
-new capability set, look at kernel/auditsc.c for more information.
-
---=20
-paul-moore.com
+And kstrdup() is now looking awfully similar to kstrndup().  Perhaps
+there's a way to reduce duplication?
 
