@@ -1,94 +1,101 @@
-Return-Path: <bpf+bounces-32103-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-32104-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 63A4890781F
-	for <lists+bpf@lfdr.de>; Thu, 13 Jun 2024 18:20:04 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id AC024907820
+	for <lists+bpf@lfdr.de>; Thu, 13 Jun 2024 18:20:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 549DF1C23ED4
-	for <lists+bpf@lfdr.de>; Thu, 13 Jun 2024 16:20:03 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4E5241F22900
+	for <lists+bpf@lfdr.de>; Thu, 13 Jun 2024 16:20:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 431D9146D6F;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 71CA51482F0;
 	Thu, 13 Jun 2024 16:19:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b="ku1Qua7F";
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="Ex5hiPog"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b="DIIV2bJi";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="gPzk3gg7"
 X-Original-To: bpf@vger.kernel.org
 Received: from fout8-smtp.messagingengine.com (fout8-smtp.messagingengine.com [103.168.172.151])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EBDB612FB1B;
-	Thu, 13 Jun 2024 16:19:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 47C281448E6;
+	Thu, 13 Jun 2024 16:19:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.151
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718295593; cv=none; b=OEVUk8XST9BWZgfH/+gyitVjYYh40+hqeFjk4fRC/Lu68GNEoMRHBdRE9JNBisBQe6M3anJFNuS744J58Rsi0CL644cJkLuPUFlo1JQl+5Pq2puFxtIr8qqPV2RdfsZdDHYMRn1292ZEyrACqUd2rQgb3ujY8hinsbFyThBGZXg=
+	t=1718295593; cv=none; b=cFq3QRyjL9aaW9ftLW8qmgg0+VeyJuJSAPPCPMHzEkNwhojCX7Uhj6USDW5NS7qqEk7JotOJC+xP/6RncPc+JpqXDQ/qxfD7Gy4sPpJEFHrwu6lAGWrfV6gI+wtCxyK9VGnRpaDXrGeEds6LVT0x9JmL4qk+Kst3uSmWu8e/PO8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1718295593; c=relaxed/simple;
-	bh=il9CR8RWy5mrfp/6orJ5atyRWhBkbb+ud6If3Ho1ruk=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=SrGI6/ZXhh1jF66x1RMHpzlWxI7eNwY6hbFfhjWXa45qSjerkg5Lj8lXOCbaESE2ZMguzBdID9Y3bMGVfbINFeust0MbYwjBsZUQORfyxZNPNoOGKO5EK1Z6eEzNl7/eqKI1pJcWzLG1gMpQxSnTl6iyw1TvRyvvSCuXpX3AESA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz; spf=pass smtp.mailfrom=dxuuu.xyz; dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b=ku1Qua7F; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=Ex5hiPog; arc=none smtp.client-ip=103.168.172.151
+	bh=upXHV4oSRlEoQNOh73uNw2LAWv/ZoKJCVki8oZkxnq4=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=YZXxnsWs3XaPPE3XkZHCFgIP1YlnFzMuWR46HwcXmHltCcll/PJDXJJjDIDYGG/Qdqm0+Eq8gAeV4eU2lnVr/UK7sNin1Prb16zdEb/7TPtYCoIv2J0HboT3J0ZcqCPoSG/jETAi5kCFTsH7+MjPVL/DnrrCZXL/9eZPyh+Iya8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz; spf=pass smtp.mailfrom=dxuuu.xyz; dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b=DIIV2bJi; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=gPzk3gg7; arc=none smtp.client-ip=103.168.172.151
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dxuuu.xyz
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
-	by mailfout.nyi.internal (Postfix) with ESMTP id F3A8C1380085;
-	Thu, 13 Jun 2024 12:19:48 -0400 (EDT)
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
+	by mailfout.nyi.internal (Postfix) with ESMTP id 6E47113800D9;
+	Thu, 13 Jun 2024 12:19:50 -0400 (EDT)
 Received: from mailfrontend1 ([10.202.2.162])
-  by compute6.internal (MEProxy); Thu, 13 Jun 2024 12:19:49 -0400
+  by compute2.internal (MEProxy); Thu, 13 Jun 2024 12:19:50 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
 	:cc:content-transfer-encoding:content-type:date:date:from:from
-	:in-reply-to:message-id:mime-version:reply-to:subject:subject:to
-	:to; s=fm3; t=1718295588; x=1718381988; bh=5rMtixePuS3RXG9fhXTba
-	9T3LKerJ1M2yNaJfMQKX+E=; b=ku1Qua7F6q+gf+Wl4mMA4EPg+XIn4k56jQtnO
-	ir7MRm73iOJpTE5jB3/FVc4jHtRGvq8nRs02y9VFRub7NTqhSA8qhuezgZPRy589
-	FZ+4EmxDBoEjws92rvd89FyyDY/ezBhiFEDsmLwC/YjBCapjbe0FFz4RkhxHdwyJ
-	SydlTvrxayKo1z1/QXewJ2oaJ3TlkhnXJdeS8wiepxDYajIFdZhB8EmfBz06H5ze
-	XPjiHFHz16zZusXNDL/fMfdqNrncZF/U8dvCDjYk2vTqFtJ7wkXLjV0XFnQQEWEB
-	HWdzmosgl3407OR3Po84H1mWuVw7ISkFMNg1RJjvV5eLyGpGg==
+	:in-reply-to:in-reply-to:message-id:mime-version:references
+	:reply-to:subject:subject:to:to; s=fm3; t=1718295590; x=
+	1718381990; bh=dev3LyBB1QLwwxaaVCINRbSVtifMTpHyZ9F3Ei0utb0=; b=D
+	IIV2bJitxaqPwH6xuUz4N5LcPUvuj8NqCKNs4ADz78kGkdeNEAYy2Nq3AsP3yGI0
+	LaVjPT1ayctsWf+Vmpo9tb3ysG8TrcXIcl4GfJC2vJ0BCAdgqDC1jnpjkmZ6x+cv
+	mHTWEqczgoQ9gldT6z+HUkYbsnqEpNXk8DG1RHs5AHOQywxIuYHcwb6qw3Zp00FJ
+	9jdZR7vy4e0OVPsibY8upUcmB8TKYyHZCBUlxgmkvcmnwhJgFlX+CSglTmhlm/LK
+	vfRY74q05/+hqYZg4FIpu1uf43NYFZMO7UdhDTXlY5PQKBYRROkG9ytUBa/0Z4Vr
+	fKAUD1zUeqjeA7GsBMBIw==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
 	messagingengine.com; h=cc:cc:content-transfer-encoding
 	:content-type:date:date:feedback-id:feedback-id:from:from
-	:in-reply-to:message-id:mime-version:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm1; t=1718295588; x=1718381988; bh=5rMtixePuS3RXG9fhXTba9T3LKer
-	J1M2yNaJfMQKX+E=; b=Ex5hiPogIdUbiPplzt0oMW+QTVHyGEpTYrqLLSaj1/Rs
-	P5sNJ2Mv7X1SYi8Xx9THVSDtgObRvAnOeTRjaPIEe2vc0wcDlhK1CMr7QF56hB8M
-	adDQzUhG5M2NCKKhogwLF35la7ZBmbKOEFhX9Fl/zv+UVtUW5JeLdHJiFkBG6NzY
-	FveTzhYAFmVsg7f+2YlB7L2V6Teu8Zlw02MkRfK7qn3f8nXzQ7wk3UKWftql+YsD
-	ng2KLJFAd1IaonajUBUEVlIcNw9VWKI9+/oDmo2V9q2DpNkYPkrZ9b/7N1EKyA+u
-	gUNCnlmKqDU/+ZNMTQTCdOteuN4hoYk5A3UySgNqpw==
-X-ME-Sender: <xms:JBxrZhNioB2l0mVkRuFWjpf_ukegMefGgena3BedRK3NYRPQuSg4kw>
-    <xme:JBxrZj_w4OAJXx7W1Ug_0BJtrd-ibkvNfeant_ANKy46Ct1-2ihotMTl8TMUweVnM
-    k8ZL_MY_LR3WLbhZg>
-X-ME-Received: <xmr:JBxrZgQ9E-uW_OYbgwmDtK599HHllIFcU7hD984pjzPFF44g6mYgwAkfSfLD8IdJksrtxyhaTRlDWRyi_OX2Wq9pls5R4v99WGdHvTXp>
+	:in-reply-to:in-reply-to:message-id:mime-version:references
+	:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1718295590; x=
+	1718381990; bh=dev3LyBB1QLwwxaaVCINRbSVtifMTpHyZ9F3Ei0utb0=; b=g
+	Pzk3gg7SHlNUkiookjqzQ/FhT3wETd5+tBjhnITvSWJOTRg7slZQ/0vXYQpd9jry
+	Ut2+l3amJruEGC96GeJXRIwzt8owdUwkOMWtMIznxtmKOQQvl0HncnYu9eTsy2e0
+	pJkXFjt10POk4hrb+7DYJIHnFM19BbSxUPLi/w5phQhaI6drNa0YE6DITPLaWd1C
+	3Ig00yPPaaRHiSUUBqxCOyeyqF/jFYA0Jgk9xgn9Z34tDGNHOY8iz6Hz5NRryZu1
+	gAnWV/rXqrrmPEybTlTQLCisPdsWhbJ0T/dXE+iXcLQBkhorSLSMp6ykmZrWbRVs
+	gIAGRzT2Sd00wxVOqqdxw==
+X-ME-Sender: <xms:JhxrZrUM62_QJn68t9jRFPQwch8LQ5FeR1fAm1Tl_WS6Z2bgIJ-P6g>
+    <xme:JhxrZjkjUcnziHkAy1Dj42da9W-PUVBsrVbiFsXPpJNdxjNvjPuZDnx0tiBCvaw9R
+    Lrz2YaKlBnVolAcNw>
+X-ME-Received: <xmr:JhxrZnaNHXspDBTiTXS6YtY6ZWw7hEyqIGNSs0u7a5-xmyDcSA-8-71VzJabeUIwQrwIh6BYhhmdBXsZnn2qJW8iT1jazA2nCjzFEZfx>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrfedujedgleeiucetufdoteggodetrfdotf
     fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
     uceurghilhhouhhtmecufedttdenucgfrhhlucfvnfffucdljedtmdenucfjughrpefhvf
-    evufffkffoggfgsedtkeertdertddtnecuhfhrohhmpeffrghnihgvlhcuighuuceougig
-    uhesugiguhhuuhdrgiihiieqnecuggftrfgrthhtvghrnhepvdeggfetgfelhefhueefke
-    duvdfguedvhfegleejudduffffgfetueduieeikeejnecuvehluhhsthgvrhfuihiivgep
-    tdenucfrrghrrghmpehmrghilhhfrhhomhepugiguhesugiguhhuuhdrgiihii
-X-ME-Proxy: <xmx:JBxrZtv-lVzhGlwS21tc_kIJ1zYsR98YF8cHM_IrArIcs24Vlx5RgA>
-    <xmx:JBxrZpcJ_kb6ewjILe1OMzJkKryxsFffx4MGeJrVI1ocdrDfxSfZwg>
-    <xmx:JBxrZp1b4sBVXhXQryQfYJF20t7VLJOZ8PDrA7_ertyYHQ_HY-oCWA>
-    <xmx:JBxrZl-hCYwHb6cbojmmM1nMc7KhO196Jeuw4jvztq_AN_Ji88IhbA>
-    <xmx:JBxrZjsI80lZ3g8RNCysLBdXZdzRbUGWs_T7bvdiezGFrqGrSAm-xifm>
+    evufffkffojghfggfgsedtkeertdertddtnecuhfhrohhmpeffrghnihgvlhcuighuuceo
+    ugiguhesugiguhhuuhdrgiihiieqnecuggftrfgrthhtvghrnhepgfefgfegjefhudeike
+    dvueetffelieefuedvhfehjeeljeejkefgffeghfdttdetnecuvehluhhsthgvrhfuihii
+    vgeptdenucfrrghrrghmpehmrghilhhfrhhomhepugiguhesugiguhhuuhdrgiihii
+X-ME-Proxy: <xmx:JhxrZmWrWPrxbIXkP2Kl-g_kVOvSXfqcHIy8GGtDlp8fqUuwYTVfcQ>
+    <xmx:JhxrZll8HRURNYRM9Aiu2If8VfMBFpoHHi97g72uN440sLpI4QtXaw>
+    <xmx:JhxrZjeEOMyUaoBR49n9OWbDqR_63nv2kagAGXw3dHGppV4U6zp5vA>
+    <xmx:JhxrZvFGK8IIm-WMsZhFrL4r3hWNQoRFVtQcvKnapAIiv2X_PDWudw>
+    <xmx:JhxrZn1b5iyitpWCRKfjXkOeY9IS02WmTDbiaFUZrlCO2Dsib9GjZPkR>
 Feedback-ID: i6a694271:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 13 Jun 2024 12:19:47 -0400 (EDT)
+ 13 Jun 2024 12:19:49 -0400 (EDT)
 From: Daniel Xu <dxu@dxuuu.xyz>
-To: ast@kernel.org,
-	bpf@vger.kernel.org,
-	linux-kselftest@vger.kernel.org,
+To: daniel@iogearbox.net,
+	andrii@kernel.org,
 	dxu@dxuuu.xyz,
-	llvm@lists.linux.dev,
-	linux-kernel@vger.kernel.org
-Cc: "sfr@canb.auug.org.aukernel-team"@meta.com
-Subject: [PATCH bpf-next 0/2] Fixes for kfunc prototype generation
-Date: Thu, 13 Jun 2024 10:19:24 -0600
-Message-ID: <cover.1718295425.git.dxu@dxuuu.xyz>
+	ast@kernel.org
+Cc: martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org,
+	yonghong.song@linux.dev, john.fastabend@gmail.com,
+	kpsingh@kernel.org, sdf@google.com, haoluo@google.com,
+	jolsa@kernel.org, bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+	"sfr@canb.auug.org.aukernel-team"@meta.com
+Subject: [PATCH bpf-next 1/2] bpf: Fix bpf_dynptr documentation comments
+Date: Thu, 13 Jun 2024 10:19:25 -0600
+Message-ID: <d0b0eb05f91e12e5795966153b11998d3fc1d433.1718295425.git.dxu@dxuuu.xyz>
 X-Mailer: git-send-email 2.44.0
+In-Reply-To: <cover.1718295425.git.dxu@dxuuu.xyz>
+References: <cover.1718295425.git.dxu@dxuuu.xyz>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -97,20 +104,37 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-This patchset fixes new warnings and errors that kfunc prototype
-generation caused.
+The function argument names were changed but the doc comment was not.
+Fix htmldocs build warning by updating doc comments.
 
-Daniel Xu (2):
-  bpf: Fix bpf_dynptr documentation comments
-  bpf: selftests: Do not use generated kfunc prototypes for arena progs
+Fixes: cce4c40b9606 ("bpf: treewide: Align kfunc signatures to prog point-of-view")
+Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
+---
+ kernel/bpf/helpers.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
- kernel/bpf/helpers.c                                     | 4 ++--
- tools/testing/selftests/bpf/progs/arena_htab.c           | 1 +
- tools/testing/selftests/bpf/progs/arena_list.c           | 1 +
- tools/testing/selftests/bpf/progs/verifier_arena.c       | 1 +
- tools/testing/selftests/bpf/progs/verifier_arena_large.c | 1 +
- 5 files changed, 6 insertions(+), 2 deletions(-)
-
+diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
+index 3ac521c48bba..229396172026 100644
+--- a/kernel/bpf/helpers.c
++++ b/kernel/bpf/helpers.c
+@@ -2433,7 +2433,7 @@ __bpf_kfunc struct task_struct *bpf_task_from_pid(s32 pid)
+ 
+ /**
+  * bpf_dynptr_slice() - Obtain a read-only pointer to the dynptr data.
+- * @ptr: The dynptr whose data slice to retrieve
++ * @p: The dynptr whose data slice to retrieve
+  * @offset: Offset into the dynptr
+  * @buffer__opt: User-provided buffer to copy contents into.  May be NULL
+  * @buffer__szk: Size (in bytes) of the buffer if present. This is the
+@@ -2504,7 +2504,7 @@ __bpf_kfunc void *bpf_dynptr_slice(const struct bpf_dynptr *p, u32 offset,
+ 
+ /**
+  * bpf_dynptr_slice_rdwr() - Obtain a writable pointer to the dynptr data.
+- * @ptr: The dynptr whose data slice to retrieve
++ * @p: The dynptr whose data slice to retrieve
+  * @offset: Offset into the dynptr
+  * @buffer__opt: User-provided buffer to copy contents into. May be NULL
+  * @buffer__szk: Size (in bytes) of the buffer if present. This is the
 -- 
 2.44.0
 
