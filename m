@@ -1,66 +1,66 @@
-Return-Path: <bpf+bounces-32055-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-32056-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 337B490694E
-	for <lists+bpf@lfdr.de>; Thu, 13 Jun 2024 11:51:14 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AD20590694F
+	for <lists+bpf@lfdr.de>; Thu, 13 Jun 2024 11:51:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 60EF5B24D43
-	for <lists+bpf@lfdr.de>; Thu, 13 Jun 2024 09:51:11 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 31D1F2860BC
+	for <lists+bpf@lfdr.de>; Thu, 13 Jun 2024 09:51:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF08C1411CE;
-	Thu, 13 Jun 2024 09:51:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 61B93140E22;
+	Thu, 13 Jun 2024 09:51:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="gTlbayLe"
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="BZNMFLf+"
 X-Original-To: bpf@vger.kernel.org
-Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
+Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C39E613F449
-	for <bpf@vger.kernel.org>; Thu, 13 Jun 2024 09:50:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.165.32
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4552C1411F4
+	for <bpf@vger.kernel.org>; Thu, 13 Jun 2024 09:51:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.177.32
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718272261; cv=none; b=K0SwsKBHPW3zB+t6FP6YOftah9wNRII7+/P73iWi+1OKhltqKa9ei+blwgzYV8woFpsAnctecy+6aI77wkUsFH9m2kouR2+LlPdWBhEWa8PWITbkQKB1O7nhD4w7Hr1YmqmwuW0aAlAJNFPlseLtBg1VwingZnxhAJBKVNTvqg4=
+	t=1718272265; cv=none; b=iPjsETQVzlGCdXqRo5IynrP4mbXoGMX33sIDREvlphkbTDAJjjjlh2XRDS051s0ZP29ucbucQoQvYDEabWR5zBNJHHey7TaNoY3XtCn4ya6hXwi99z4B+WCcBqk3zznSPMhNaxJpFP7P6gRMb/QHWbfBmChyUcTM2WqBBHzGCns=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718272261; c=relaxed/simple;
-	bh=xKH++J+rB9qYgQnhsujo9LpI+bxa3xjt1QbVlg6clEY=;
+	s=arc-20240116; t=1718272265; c=relaxed/simple;
+	bh=3nINqMlL16ibXtXjq9+ZFFANZ16uTi6zKV3f2OMKSgI=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=iAGgHn/wlq7V1mvFxvIlY0UKQWuzyYgbgRDWCHtJMkKCVRwiNKhR9sM29M35dt+CigxFPLy81+MOdiZgX9SM1+blvuHs8Iw4dULJm5MOIMGsjJgQ/7PDo4OT+/fUwKdSo0uTRr+ohCJNH787VzGGI5x2iWyT+yUKjUF1F/QJrO0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=gTlbayLe; arc=none smtp.client-ip=205.220.165.32
+	 MIME-Version; b=Gf9HtWQS4cAcJw0SSl/k2L6iQ0aupWO53pu6oPJQn+EwxekSi7KrrZo7mTrbjySuZpdNUPPZrUz4rFx4s/0Ou5ndpG6LE5q/+ggUhdIDKT3IhsIhxsOD0nv6puG/aIjMGpe6GzzpDSDp4csF//Tz0hita0tpdLTRpkOsOX+GNFU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=BZNMFLf+; arc=none smtp.client-ip=205.220.177.32
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
-Received: from pps.filterd (m0246617.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 45D7tUeb017810;
-	Thu, 13 Jun 2024 09:50:39 GMT
+Received: from pps.filterd (m0333520.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 45D7tQPZ028039;
+	Thu, 13 Jun 2024 09:50:44 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=
 	from:to:cc:subject:date:message-id:in-reply-to:references
-	:mime-version:content-transfer-encoding; s=corp-2023-11-20; bh=J
-	LMbu+g2Is+MJheHTIspnxwjvso/T0cseKlnbsM69Ik=; b=gTlbayLeea3bSMH3M
-	ShayTSJiY2Ef0Ao1Hyql94Gca6nGHH+crBO+RLohMkzYUqXa4Ia1Ci7gvMrBVn4s
-	XWjWfL3oHf27yeYmKnJ77eM+AtEA05MpGu5AUJm2S9fZh/giQwxFlOxtU1ojrJGu
-	bsYn59uWtb9F1pxyygEWPfFFkpXzVsJ7b9LIsqlLrh/q3LU59xeW5mXbb44HTWRL
-	ReEjcaHbkbAiUFy9mt2LC0C/4ghMKaBNKP5EBlKh+NWxlUJUOe2x98tekl7PbVVQ
-	+p9aknw9viRAojuuCSZxmjfFT2Tvn2/rq/8URQlodgENSYJq5fHRKYNoo+wxSRjJ
-	3zd/g==
+	:mime-version:content-transfer-encoding; s=corp-2023-11-20; bh=y
+	U77YsQ7JkPV/dK2pEcCCh1jpbSWKJUimeSk15jZTOQ=; b=BZNMFLf+izIHq/sg7
+	m5uIENAaB9p7JuBA40yA9HbGu9KBXlXggk5DaMQn+1v4eVEgRBnUYhd/gjL3Wl0S
+	C3fO2aDiFkH5M00KUoXLDjGMDJCcyW9UcW8zCCJbd1GMn2nUa8ne3C3npWHz9I28
+	JxA8d/k/CRfku4MYNMvdFudk03bOmjbRXYb1usWlZfG1No0xg+vrdSEChelwf6ET
+	uZ28SUBPiTCGumOK1dGf75XTLg3roUXHaZJGaLoyeSy8RsI7LVUwHc6SybCKhypv
+	QihGvA6lzpuOZOTtGQNLaP6Mr5eFoUD5uqL7eqL43AobKmEXO71ztJSazQJxwcKo
+	W3EDQ==
 Received: from phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta02.appoci.oracle.com [147.154.114.232])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3ymhaj96f5-1
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3ymh1ghab8-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Thu, 13 Jun 2024 09:50:39 +0000 (GMT)
+	Thu, 13 Jun 2024 09:50:44 +0000 (GMT)
 Received: from pps.filterd (phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-	by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 45D8N8p6014326;
-	Thu, 13 Jun 2024 09:50:38 GMT
+	by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 45D9ZkBR014232;
+	Thu, 13 Jun 2024 09:50:43 GMT
 Received: from pps.reinject (localhost [127.0.0.1])
-	by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3yncewnm6a-1
+	by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3yncewnm8j-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Thu, 13 Jun 2024 09:50:38 +0000
+	Thu, 13 Jun 2024 09:50:43 +0000
 Received: from phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 45D9oJpw005489;
-	Thu, 13 Jun 2024 09:50:37 GMT
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 45D9oJq0005489;
+	Thu, 13 Jun 2024 09:50:42 GMT
 Received: from bpf.uk.oracle.com (dhcp-10-175-212-187.vpn.oracle.com [10.175.212.187])
-	by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTP id 3yncewnkqw-5;
-	Thu, 13 Jun 2024 09:50:37 +0000
+	by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTP id 3yncewnkqw-6;
+	Thu, 13 Jun 2024 09:50:41 +0000
 From: Alan Maguire <alan.maguire@oracle.com>
 To: andrii@kernel.org, eddyz87@gmail.com, ast@kernel.org
 Cc: daniel@iogearbox.net, martin.lau@linux.dev, song@kernel.org,
@@ -68,9 +68,9 @@ Cc: daniel@iogearbox.net, martin.lau@linux.dev, song@kernel.org,
         sdf@google.com, haoluo@google.com, jolsa@kernel.org, mcgrof@kernel.org,
         masahiroy@kernel.org, nathan@kernel.org, mykolal@fb.com, dxu@dxuuu.xyz,
         bpf@vger.kernel.org, Alan Maguire <alan.maguire@oracle.com>
-Subject: [PATCH v6 bpf-next 4/9] selftests/bpf: extend distilled BTF tests to cover BTF relocation
-Date: Thu, 13 Jun 2024 10:50:09 +0100
-Message-Id: <20240613095014.357981-5-alan.maguire@oracle.com>
+Subject: [PATCH v6 bpf-next 5/9] libbpf: make btf_parse_elf process .BTF.base transparently
+Date: Thu, 13 Jun 2024 10:50:10 +0100
+Message-Id: <20240613095014.357981-6-alan.maguire@oracle.com>
 X-Mailer: git-send-email 2.39.3
 In-Reply-To: <20240613095014.357981-1-alan.maguire@oracle.com>
 References: <20240613095014.357981-1-alan.maguire@oracle.com>
@@ -88,318 +88,299 @@ X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 susp
  phishscore=0 bulkscore=0 malwarescore=0 spamscore=0 mlxscore=0
  mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
  engine=8.12.0-2405010000 definitions=main-2406130070
-X-Proofpoint-GUID: VO4rD7mG1J5E_Z49mlabqycd89yoSI07
-X-Proofpoint-ORIG-GUID: VO4rD7mG1J5E_Z49mlabqycd89yoSI07
+X-Proofpoint-ORIG-GUID: kZViNotenyVCtE1AG66aTegXK2budKPU
+X-Proofpoint-GUID: kZViNotenyVCtE1AG66aTegXK2budKPU
 
-Ensure relocated BTF looks as expected; in this case identical to
-original split BTF, with a few duplicate anonymous types added to
-split BTF by the relocation process.  Also add relocation tests
-for edge cases like missing type in base BTF and multiple types
-of the same name.
+From: Eduard Zingerman <eddyz87@gmail.com>
 
+Update btf_parse_elf() to check if .BTF.base section is present.
+The logic is as follows:
+
+  if .BTF.base section exists:
+     distilled_base := btf_new(.BTF.base)
+  if distilled_base:
+     btf := btf_new(.BTF, .base_btf=distilled_base)
+     if base_btf:
+        btf_relocate(btf, base_btf)
+  else:
+     btf := btf_new(.BTF)
+  return btf
+
+In other words:
+- if .BTF.base section exists, load BTF from it and use it as a base
+  for .BTF load;
+- if base_btf is specified and .BTF.base section exist, relocate newly
+  loaded .BTF against base_btf.
+
+Signed-off-by: Eduard Zingerman <eddyz87@gmail.com>
 Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
-Acked-by: Eduard Zingerman <eddyz87@gmail.com>
 ---
- .../selftests/bpf/prog_tests/btf_distill.c    | 278 ++++++++++++++++++
- 1 file changed, 278 insertions(+)
+ tools/lib/bpf/btf.c | 164 +++++++++++++++++++++++++++++---------------
+ tools/lib/bpf/btf.h |   1 +
+ 2 files changed, 111 insertions(+), 54 deletions(-)
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/btf_distill.c b/tools/testing/selftests/bpf/prog_tests/btf_distill.c
-index 5c3a38747962..bfbe795823a2 100644
---- a/tools/testing/selftests/bpf/prog_tests/btf_distill.c
-+++ b/tools/testing/selftests/bpf/prog_tests/btf_distill.c
-@@ -217,7 +217,277 @@ static void test_distilled_base(void)
- 		"\t'p1' type_id=1",
- 		"[25] ARRAY '(anon)' type_id=1 index_type_id=1 nr_elems=3");
+diff --git a/tools/lib/bpf/btf.c b/tools/lib/bpf/btf.c
+index 5e20354fbcfa..ef1b2f573c1b 100644
+--- a/tools/lib/bpf/btf.c
++++ b/tools/lib/bpf/btf.c
+@@ -116,6 +116,9 @@ struct btf {
+ 	/* whether strings are already deduplicated */
+ 	bool strs_deduped;
  
-+	if (!ASSERT_EQ(btf__relocate(btf4, btf1), 0, "relocate_split"))
-+		goto cleanup;
++	/* whether base_btf should be freed in btf_free for this instance */
++	bool owns_base;
 +
-+	VALIDATE_RAW_BTF(
-+		btf4,
-+		"[1] INT 'int' size=4 bits_offset=0 nr_bits=32 encoding=SIGNED",
-+		"[2] PTR '(anon)' type_id=1",
-+		"[3] STRUCT 's1' size=8 vlen=1\n"
-+		"\t'f1' type_id=2 bits_offset=0",
-+		"[4] STRUCT '(anon)' size=12 vlen=2\n"
-+		"\t'f1' type_id=1 bits_offset=0\n"
-+		"\t'f2' type_id=3 bits_offset=32",
-+		"[5] INT 'unsigned int' size=4 bits_offset=0 nr_bits=32 encoding=(none)",
-+		"[6] UNION 'u1' size=12 vlen=2\n"
-+		"\t'f1' type_id=1 bits_offset=0\n"
-+		"\t'f2' type_id=2 bits_offset=0",
-+		"[7] UNION '(anon)' size=4 vlen=1\n"
-+		"\t'f1' type_id=1 bits_offset=0",
-+		"[8] ENUM 'e1' encoding=UNSIGNED size=4 vlen=1\n"
-+		"\t'v1' val=1",
-+		"[9] ENUM '(anon)' encoding=UNSIGNED size=4 vlen=1\n"
-+		"\t'av1' val=2",
-+		"[10] ENUM64 'e641' encoding=SIGNED size=8 vlen=1\n"
-+		"\t'v1' val=1024",
-+		"[11] ENUM64 '(anon)' encoding=SIGNED size=8 vlen=1\n"
-+		"\t'v1' val=1025",
-+		"[12] STRUCT 'unneeded' size=4 vlen=1\n"
-+		"\t'f1' type_id=1 bits_offset=0",
-+		"[13] STRUCT 'embedded' size=4 vlen=1\n"
-+		"\t'f1' type_id=1 bits_offset=0",
-+		"[14] FUNC_PROTO '(anon)' ret_type_id=1 vlen=1\n"
-+		"\t'p1' type_id=1",
-+		"[15] ARRAY '(anon)' type_id=1 index_type_id=1 nr_elems=3",
-+		"[16] STRUCT 'from_proto' size=4 vlen=1\n"
-+		"\t'f1' type_id=1 bits_offset=0",
-+		"[17] UNION 'u1' size=4 vlen=1\n"
-+		"\t'f1' type_id=1 bits_offset=0",
-+		"[18] PTR '(anon)' type_id=3",
-+		"[19] PTR '(anon)' type_id=30",
-+		"[20] CONST '(anon)' type_id=6",
-+		"[21] RESTRICT '(anon)' type_id=31",
-+		"[22] VOLATILE '(anon)' type_id=8",
-+		"[23] TYPEDEF 'et' type_id=32",
-+		"[24] CONST '(anon)' type_id=10",
-+		"[25] PTR '(anon)' type_id=33",
-+		"[26] STRUCT 'with_embedded' size=4 vlen=1\n"
-+		"\t'f1' type_id=13 bits_offset=0",
-+		"[27] FUNC 'fn' type_id=34 linkage=static",
-+		"[28] TYPEDEF 'arraytype' type_id=35",
-+		"[29] FUNC_PROTO '(anon)' ret_type_id=1 vlen=1\n"
-+		"\t'p1' type_id=16",
-+		/* below here are (duplicate) anon base types added by distill
-+		 * process to split BTF.
-+		 */
-+		"[30] STRUCT '(anon)' size=12 vlen=2\n"
-+		"\t'f1' type_id=1 bits_offset=0\n"
-+		"\t'f2' type_id=3 bits_offset=32",
-+		"[31] UNION '(anon)' size=4 vlen=1\n"
-+		"\t'f1' type_id=1 bits_offset=0",
-+		"[32] ENUM '(anon)' encoding=UNSIGNED size=4 vlen=1\n"
-+		"\t'av1' val=2",
-+		"[33] ENUM64 '(anon)' encoding=SIGNED size=8 vlen=1\n"
-+		"\t'v1' val=1025",
-+		"[34] FUNC_PROTO '(anon)' ret_type_id=1 vlen=1\n"
-+		"\t'p1' type_id=1",
-+		"[35] ARRAY '(anon)' type_id=1 index_type_id=1 nr_elems=3");
-+
-+cleanup:
-+	btf__free(btf4);
-+	btf__free(btf3);
-+	btf__free(btf2);
-+	btf__free(btf1);
-+}
-+
-+/* ensure we can cope with multiple types with the same name in
-+ * distilled base BTF.  In this case because sizes are different,
-+ * we can still disambiguate them.
-+ */
-+static void test_distilled_base_multi(void)
-+{
-+	struct btf *btf1 = NULL, *btf2 = NULL, *btf3 = NULL, *btf4 = NULL;
-+
-+	btf1 = btf__new_empty();
-+	if (!ASSERT_OK_PTR(btf1, "empty_main_btf"))
-+		return;
-+	btf__add_int(btf1, "int", 4, BTF_INT_SIGNED);   /* [1] int */
-+	btf__add_int(btf1, "int", 8, BTF_INT_SIGNED);	/* [2] int */
-+	VALIDATE_RAW_BTF(
-+		btf1,
-+		"[1] INT 'int' size=4 bits_offset=0 nr_bits=32 encoding=SIGNED",
-+		"[2] INT 'int' size=8 bits_offset=0 nr_bits=64 encoding=SIGNED");
-+	btf2 = btf__new_empty_split(btf1);
-+	if (!ASSERT_OK_PTR(btf2, "empty_split_btf"))
-+		goto cleanup;
-+	btf__add_ptr(btf2, 1);
-+	btf__add_const(btf2, 2);
-+	VALIDATE_RAW_BTF(
-+		btf2,
-+		"[1] INT 'int' size=4 bits_offset=0 nr_bits=32 encoding=SIGNED",
-+		"[2] INT 'int' size=8 bits_offset=0 nr_bits=64 encoding=SIGNED",
-+		"[3] PTR '(anon)' type_id=1",
-+		"[4] CONST '(anon)' type_id=2");
-+	if (!ASSERT_EQ(0, btf__distill_base(btf2, &btf3, &btf4),
-+		       "distilled_base") ||
-+	    !ASSERT_OK_PTR(btf3, "distilled_base") ||
-+	    !ASSERT_OK_PTR(btf4, "distilled_split") ||
-+	    !ASSERT_EQ(3, btf__type_cnt(btf3), "distilled_base_type_cnt"))
-+		goto cleanup;
-+	VALIDATE_RAW_BTF(
-+		btf3,
-+		"[1] INT 'int' size=4 bits_offset=0 nr_bits=32 encoding=SIGNED",
-+		"[2] INT 'int' size=8 bits_offset=0 nr_bits=64 encoding=SIGNED");
-+	if (!ASSERT_EQ(btf__relocate(btf4, btf1), 0, "relocate_split"))
-+		goto cleanup;
-+
-+	VALIDATE_RAW_BTF(
-+		btf4,
-+		"[1] INT 'int' size=4 bits_offset=0 nr_bits=32 encoding=SIGNED",
-+		"[2] INT 'int' size=8 bits_offset=0 nr_bits=64 encoding=SIGNED",
-+		"[3] PTR '(anon)' type_id=1",
-+		"[4] CONST '(anon)' type_id=2");
-+
-+cleanup:
-+	btf__free(btf4);
-+	btf__free(btf3);
-+	btf__free(btf2);
-+	btf__free(btf1);
-+}
-+
-+/* If a needed type is not present in the base BTF we wish to relocate
-+ * with, btf__relocate() should error our.
-+ */
-+static void test_distilled_base_missing_err(void)
-+{
-+	struct btf *btf1 = NULL, *btf2 = NULL, *btf3 = NULL, *btf4 = NULL, *btf5 = NULL;
-+
-+	btf1 = btf__new_empty();
-+	if (!ASSERT_OK_PTR(btf1, "empty_main_btf"))
-+		return;
-+	btf__add_int(btf1, "int", 4, BTF_INT_SIGNED);   /* [1] int */
-+	btf__add_int(btf1, "int", 8, BTF_INT_SIGNED);   /* [2] int */
-+	VALIDATE_RAW_BTF(
-+		btf1,
-+		"[1] INT 'int' size=4 bits_offset=0 nr_bits=32 encoding=SIGNED",
-+		"[2] INT 'int' size=8 bits_offset=0 nr_bits=64 encoding=SIGNED");
-+	btf2 = btf__new_empty_split(btf1);
-+	if (!ASSERT_OK_PTR(btf2, "empty_split_btf"))
-+		goto cleanup;
-+	btf__add_ptr(btf2, 1);
-+	btf__add_const(btf2, 2);
-+	VALIDATE_RAW_BTF(
-+		btf2,
-+		"[1] INT 'int' size=4 bits_offset=0 nr_bits=32 encoding=SIGNED",
-+		"[2] INT 'int' size=8 bits_offset=0 nr_bits=64 encoding=SIGNED",
-+		"[3] PTR '(anon)' type_id=1",
-+		"[4] CONST '(anon)' type_id=2");
-+	if (!ASSERT_EQ(0, btf__distill_base(btf2, &btf3, &btf4),
-+		       "distilled_base") ||
-+	    !ASSERT_OK_PTR(btf3, "distilled_base") ||
-+	    !ASSERT_OK_PTR(btf4, "distilled_split") ||
-+	    !ASSERT_EQ(3, btf__type_cnt(btf3), "distilled_base_type_cnt"))
-+		goto cleanup;
-+	VALIDATE_RAW_BTF(
-+		btf3,
-+		"[1] INT 'int' size=4 bits_offset=0 nr_bits=32 encoding=SIGNED",
-+		"[2] INT 'int' size=8 bits_offset=0 nr_bits=64 encoding=SIGNED");
-+	btf5 = btf__new_empty();
-+	if (!ASSERT_OK_PTR(btf5, "empty_reloc_btf"))
-+		return;
-+	btf__add_int(btf5, "int", 4, BTF_INT_SIGNED);   /* [1] int */
-+	VALIDATE_RAW_BTF(
-+		btf5,
-+		"[1] INT 'int' size=4 bits_offset=0 nr_bits=32 encoding=SIGNED");
-+	ASSERT_EQ(btf__relocate(btf4, btf5), -EINVAL, "relocate_split");
-+
-+cleanup:
-+	btf__free(btf5);
-+	btf__free(btf4);
-+	btf__free(btf3);
-+	btf__free(btf2);
-+	btf__free(btf1);
-+}
-+
-+/* With 2 types of same size in distilled base BTF, relocation should
-+ * fail as we have no means to choose between them.
-+ */
-+static void test_distilled_base_multi_err(void)
-+{
-+	struct btf *btf1 = NULL, *btf2 = NULL, *btf3 = NULL, *btf4 = NULL;
-+
-+	btf1 = btf__new_empty();
-+	if (!ASSERT_OK_PTR(btf1, "empty_main_btf"))
-+		return;
-+	btf__add_int(btf1, "int", 4, BTF_INT_SIGNED);   /* [1] int */
-+	btf__add_int(btf1, "int", 4, BTF_INT_SIGNED);   /* [2] int */
-+	VALIDATE_RAW_BTF(
-+		btf1,
-+		"[1] INT 'int' size=4 bits_offset=0 nr_bits=32 encoding=SIGNED",
-+		"[2] INT 'int' size=4 bits_offset=0 nr_bits=32 encoding=SIGNED");
-+	btf2 = btf__new_empty_split(btf1);
-+	if (!ASSERT_OK_PTR(btf2, "empty_split_btf"))
-+		goto cleanup;
-+	btf__add_ptr(btf2, 1);
-+	btf__add_const(btf2, 2);
-+	VALIDATE_RAW_BTF(
-+		btf2,
-+		"[1] INT 'int' size=4 bits_offset=0 nr_bits=32 encoding=SIGNED",
-+		"[2] INT 'int' size=4 bits_offset=0 nr_bits=32 encoding=SIGNED",
-+		"[3] PTR '(anon)' type_id=1",
-+		"[4] CONST '(anon)' type_id=2");
-+	if (!ASSERT_EQ(0, btf__distill_base(btf2, &btf3, &btf4),
-+		       "distilled_base") ||
-+	    !ASSERT_OK_PTR(btf3, "distilled_base") ||
-+	    !ASSERT_OK_PTR(btf4, "distilled_split") ||
-+	    !ASSERT_EQ(3, btf__type_cnt(btf3), "distilled_base_type_cnt"))
-+		goto cleanup;
-+	VALIDATE_RAW_BTF(
-+		btf3,
-+		"[1] INT 'int' size=4 bits_offset=0 nr_bits=32 encoding=SIGNED",
-+		"[2] INT 'int' size=4 bits_offset=0 nr_bits=32 encoding=SIGNED");
-+	ASSERT_EQ(btf__relocate(btf4, btf1), -EINVAL, "relocate_split");
-+cleanup:
-+	btf__free(btf4);
-+	btf__free(btf3);
-+	btf__free(btf2);
-+	btf__free(btf1);
-+}
-+
-+/* With 2 types of same size in base BTF, relocation should
-+ * fail as we have no means to choose between them.
-+ */
-+static void test_distilled_base_multi_err2(void)
-+{
-+	struct btf *btf1 = NULL, *btf2 = NULL, *btf3 = NULL, *btf4 = NULL, *btf5 = NULL;
-+
-+	btf1 = btf__new_empty();
-+	if (!ASSERT_OK_PTR(btf1, "empty_main_btf"))
-+		return;
-+	btf__add_int(btf1, "int", 4, BTF_INT_SIGNED);   /* [1] int */
-+	VALIDATE_RAW_BTF(
-+		btf1,
-+		"[1] INT 'int' size=4 bits_offset=0 nr_bits=32 encoding=SIGNED");
-+	btf2 = btf__new_empty_split(btf1);
-+	if (!ASSERT_OK_PTR(btf2, "empty_split_btf"))
-+		goto cleanup;
-+	btf__add_ptr(btf2, 1);
-+	VALIDATE_RAW_BTF(
-+		btf2,
-+		"[1] INT 'int' size=4 bits_offset=0 nr_bits=32 encoding=SIGNED",
-+		"[2] PTR '(anon)' type_id=1");
-+	if (!ASSERT_EQ(0, btf__distill_base(btf2, &btf3, &btf4),
-+		       "distilled_base") ||
-+	    !ASSERT_OK_PTR(btf3, "distilled_base") ||
-+	    !ASSERT_OK_PTR(btf4, "distilled_split") ||
-+	    !ASSERT_EQ(2, btf__type_cnt(btf3), "distilled_base_type_cnt"))
-+		goto cleanup;
-+	VALIDATE_RAW_BTF(
-+		btf3,
-+		"[1] INT 'int' size=4 bits_offset=0 nr_bits=32 encoding=SIGNED");
-+	btf5 = btf__new_empty();
-+	if (!ASSERT_OK_PTR(btf5, "empty_reloc_btf"))
-+		return;
-+	btf__add_int(btf5, "int", 4, BTF_INT_SIGNED);   /* [1] int */
-+	btf__add_int(btf5, "int", 4, BTF_INT_SIGNED);   /* [2] int */
-+	VALIDATE_RAW_BTF(
-+		btf5,
-+		"[1] INT 'int' size=4 bits_offset=0 nr_bits=32 encoding=SIGNED",
-+		"[2] INT 'int' size=4 bits_offset=0 nr_bits=32 encoding=SIGNED");
-+	ASSERT_EQ(btf__relocate(btf4, btf5), -EINVAL, "relocate_split");
- cleanup:
-+	btf__free(btf5);
- 	btf__free(btf4);
- 	btf__free(btf3);
- 	btf__free(btf2);
-@@ -269,6 +539,14 @@ void test_btf_distill(void)
- {
- 	if (test__start_subtest("distilled_base"))
- 		test_distilled_base();
-+	if (test__start_subtest("distilled_base_multi"))
-+		test_distilled_base_multi();
-+	if (test__start_subtest("distilled_base_missing_err"))
-+		test_distilled_base_missing_err();
-+	if (test__start_subtest("distilled_base_multi_err"))
-+		test_distilled_base_multi_err();
-+	if (test__start_subtest("distilled_base_multi_err2"))
-+		test_distilled_base_multi_err2();
- 	if (test__start_subtest("distilled_base_vmlinux"))
- 		test_distilled_base_vmlinux();
+ 	/* BTF object FD, if loaded into kernel */
+ 	int fd;
+ 
+@@ -969,6 +972,8 @@ void btf__free(struct btf *btf)
+ 	free(btf->raw_data);
+ 	free(btf->raw_data_swapped);
+ 	free(btf->type_offs);
++	if (btf->owns_base)
++		btf__free(btf->base_btf);
+ 	free(btf);
  }
+ 
+@@ -1084,53 +1089,38 @@ struct btf *btf__new_split(const void *data, __u32 size, struct btf *base_btf)
+ 	return libbpf_ptr(btf_new(data, size, base_btf));
+ }
+ 
+-static struct btf *btf_parse_elf(const char *path, struct btf *base_btf,
+-				 struct btf_ext **btf_ext)
++struct btf_elf_secs {
++	Elf_Data *btf_data;
++	Elf_Data *btf_ext_data;
++	Elf_Data *btf_base_data;
++};
++
++static int btf_find_elf_sections(Elf *elf, const char *path, struct btf_elf_secs *secs)
+ {
+-	Elf_Data *btf_data = NULL, *btf_ext_data = NULL;
+-	int err = 0, fd = -1, idx = 0;
+-	struct btf *btf = NULL;
+ 	Elf_Scn *scn = NULL;
+-	Elf *elf = NULL;
++	Elf_Data *data;
+ 	GElf_Ehdr ehdr;
+ 	size_t shstrndx;
++	int idx = 0;
+ 
+-	if (elf_version(EV_CURRENT) == EV_NONE) {
+-		pr_warn("failed to init libelf for %s\n", path);
+-		return ERR_PTR(-LIBBPF_ERRNO__LIBELF);
+-	}
+-
+-	fd = open(path, O_RDONLY | O_CLOEXEC);
+-	if (fd < 0) {
+-		err = -errno;
+-		pr_warn("failed to open %s: %s\n", path, strerror(errno));
+-		return ERR_PTR(err);
+-	}
+-
+-	err = -LIBBPF_ERRNO__FORMAT;
+-
+-	elf = elf_begin(fd, ELF_C_READ, NULL);
+-	if (!elf) {
+-		pr_warn("failed to open %s as ELF file\n", path);
+-		goto done;
+-	}
+ 	if (!gelf_getehdr(elf, &ehdr)) {
+ 		pr_warn("failed to get EHDR from %s\n", path);
+-		goto done;
++		goto err;
+ 	}
+ 
+ 	if (elf_getshdrstrndx(elf, &shstrndx)) {
+ 		pr_warn("failed to get section names section index for %s\n",
+ 			path);
+-		goto done;
++		goto err;
+ 	}
+ 
+ 	if (!elf_rawdata(elf_getscn(elf, shstrndx), NULL)) {
+ 		pr_warn("failed to get e_shstrndx from %s\n", path);
+-		goto done;
++		goto err;
+ 	}
+ 
+ 	while ((scn = elf_nextscn(elf, scn)) != NULL) {
++		Elf_Data **field;
+ 		GElf_Shdr sh;
+ 		char *name;
+ 
+@@ -1138,42 +1128,102 @@ static struct btf *btf_parse_elf(const char *path, struct btf *base_btf,
+ 		if (gelf_getshdr(scn, &sh) != &sh) {
+ 			pr_warn("failed to get section(%d) header from %s\n",
+ 				idx, path);
+-			goto done;
++			goto err;
+ 		}
+ 		name = elf_strptr(elf, shstrndx, sh.sh_name);
+ 		if (!name) {
+ 			pr_warn("failed to get section(%d) name from %s\n",
+ 				idx, path);
+-			goto done;
++			goto err;
+ 		}
+-		if (strcmp(name, BTF_ELF_SEC) == 0) {
+-			btf_data = elf_getdata(scn, 0);
+-			if (!btf_data) {
+-				pr_warn("failed to get section(%d, %s) data from %s\n",
+-					idx, name, path);
+-				goto done;
+-			}
+-			continue;
+-		} else if (btf_ext && strcmp(name, BTF_EXT_ELF_SEC) == 0) {
+-			btf_ext_data = elf_getdata(scn, 0);
+-			if (!btf_ext_data) {
+-				pr_warn("failed to get section(%d, %s) data from %s\n",
+-					idx, name, path);
+-				goto done;
+-			}
++
++		if (strcmp(name, BTF_ELF_SEC) == 0)
++			field = &secs->btf_data;
++		else if (strcmp(name, BTF_EXT_ELF_SEC) == 0)
++			field = &secs->btf_ext_data;
++		else if (strcmp(name, BTF_BASE_ELF_SEC) == 0)
++			field = &secs->btf_base_data;
++		else
+ 			continue;
++
++		data = elf_getdata(scn, 0);
++		if (!data) {
++			pr_warn("failed to get section(%d, %s) data from %s\n",
++				idx, name, path);
++			goto err;
+ 		}
++		*field = data;
++	}
++
++	return 0;
++
++err:
++	return -LIBBPF_ERRNO__FORMAT;
++}
++
++static struct btf *btf_parse_elf(const char *path, struct btf *base_btf,
++				 struct btf_ext **btf_ext)
++{
++	struct btf_elf_secs secs = {};
++	struct btf *dist_base_btf = NULL;
++	struct btf *btf = NULL;
++	int err = 0, fd = -1;
++	Elf *elf = NULL;
++
++	if (elf_version(EV_CURRENT) == EV_NONE) {
++		pr_warn("failed to init libelf for %s\n", path);
++		return ERR_PTR(-LIBBPF_ERRNO__LIBELF);
++	}
++
++	fd = open(path, O_RDONLY | O_CLOEXEC);
++	if (fd < 0) {
++		err = -errno;
++		pr_warn("failed to open %s: %s\n", path, strerror(errno));
++		return ERR_PTR(err);
+ 	}
+ 
+-	if (!btf_data) {
++	elf = elf_begin(fd, ELF_C_READ, NULL);
++	if (!elf) {
++		pr_warn("failed to open %s as ELF file\n", path);
++		goto done;
++	}
++
++	err = btf_find_elf_sections(elf, path, &secs);
++	if (err)
++		goto done;
++
++	if (!secs.btf_data) {
+ 		pr_warn("failed to find '%s' ELF section in %s\n", BTF_ELF_SEC, path);
+ 		err = -ENODATA;
+ 		goto done;
+ 	}
+-	btf = btf_new(btf_data->d_buf, btf_data->d_size, base_btf);
+-	err = libbpf_get_error(btf);
+-	if (err)
++
++	if (secs.btf_base_data) {
++		dist_base_btf = btf_new(secs.btf_base_data->d_buf, secs.btf_base_data->d_size,
++					NULL);
++		if (IS_ERR(dist_base_btf)) {
++			err = PTR_ERR(dist_base_btf);
++			dist_base_btf = NULL;
++			goto done;
++		}
++	}
++
++	btf = btf_new(secs.btf_data->d_buf, secs.btf_data->d_size,
++		      dist_base_btf ?: base_btf);
++	if (IS_ERR(btf)) {
++		err = PTR_ERR(btf);
+ 		goto done;
++	}
++	if (dist_base_btf && base_btf) {
++		err = btf__relocate(btf, base_btf);
++		if (err)
++			goto done;
++		btf__free(dist_base_btf);
++		dist_base_btf = NULL;
++	}
++
++	if (dist_base_btf)
++		btf->owns_base = true;
+ 
+ 	switch (gelf_getclass(elf)) {
+ 	case ELFCLASS32:
+@@ -1187,11 +1237,12 @@ static struct btf *btf_parse_elf(const char *path, struct btf *base_btf,
+ 		break;
+ 	}
+ 
+-	if (btf_ext && btf_ext_data) {
+-		*btf_ext = btf_ext__new(btf_ext_data->d_buf, btf_ext_data->d_size);
+-		err = libbpf_get_error(*btf_ext);
+-		if (err)
++	if (btf_ext && secs.btf_ext_data) {
++		*btf_ext = btf_ext__new(secs.btf_ext_data->d_buf, secs.btf_ext_data->d_size);
++		if (IS_ERR(*btf_ext)) {
++			err = PTR_ERR(*btf_ext);
+ 			goto done;
++		}
+ 	} else if (btf_ext) {
+ 		*btf_ext = NULL;
+ 	}
+@@ -1205,6 +1256,7 @@ static struct btf *btf_parse_elf(const char *path, struct btf *base_btf,
+ 
+ 	if (btf_ext)
+ 		btf_ext__free(*btf_ext);
++	btf__free(dist_base_btf);
+ 	btf__free(btf);
+ 
+ 	return ERR_PTR(err);
+@@ -5598,5 +5650,9 @@ void btf_set_base_btf(struct btf *btf, const struct btf *base_btf)
+ 
+ int btf__relocate(struct btf *btf, const struct btf *base_btf)
+ {
+-	return libbpf_err(btf_relocate(btf, base_btf, NULL));
++	int err = btf_relocate(btf, base_btf, NULL);
++
++	if (!err)
++		btf->owns_base = false;
++	return libbpf_err(err);
+ }
+diff --git a/tools/lib/bpf/btf.h b/tools/lib/bpf/btf.h
+index 8a93120b7385..b68d216837a9 100644
+--- a/tools/lib/bpf/btf.h
++++ b/tools/lib/bpf/btf.h
+@@ -18,6 +18,7 @@ extern "C" {
+ 
+ #define BTF_ELF_SEC ".BTF"
+ #define BTF_EXT_ELF_SEC ".BTF.ext"
++#define BTF_BASE_ELF_SEC ".BTF.base"
+ #define MAPS_ELF_SEC ".maps"
+ 
+ struct btf;
 -- 
 2.31.1
 
