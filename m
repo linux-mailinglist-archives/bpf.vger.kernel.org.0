@@ -1,248 +1,416 @@
-Return-Path: <bpf+bounces-32043-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-32044-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 57076906447
-	for <lists+bpf@lfdr.de>; Thu, 13 Jun 2024 08:43:23 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 30C3C90670C
+	for <lists+bpf@lfdr.de>; Thu, 13 Jun 2024 10:38:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C1551284F6E
-	for <lists+bpf@lfdr.de>; Thu, 13 Jun 2024 06:43:21 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9D79E1F24875
+	for <lists+bpf@lfdr.de>; Thu, 13 Jun 2024 08:38:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC45913791B;
-	Thu, 13 Jun 2024 06:43:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WwueXspO"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5330414039D;
+	Thu, 13 Jun 2024 08:36:37 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yw1-f176.google.com (mail-yw1-f176.google.com [209.85.128.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 98FE81369B0;
-	Thu, 13 Jun 2024 06:43:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.176
+Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com [210.160.252.171])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6CD3413D523;
+	Thu, 13 Jun 2024 08:36:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=210.160.252.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718260992; cv=none; b=K1LYE6f/hBAbcsCKXVnzOqnpys9vdeUVB9GaK8/DlXUptzIK7ekgl8w1vNatVVPNNV0S3Hauvhlmr8jq1gA1fGfiBTPl0wTyqATxG9XwU8rMBmsywz0W76hDxJtM8RStuM0ruv/4pJ/7WTV9nbGxJvFkXQwLsisAxeneWXZZOUs=
+	t=1718267796; cv=none; b=XgqrWfWk/XX93h5daw2VrEPSJg9MTLgABEoNm/OxxpyWtcP0QqLFAafGCkJf+Tzl680GUPaGQBWcFF659gTIhJH3xTUrI/xQ8gWD828Ag0ZLuAJJTPOLc5bp5BA5S/zyfWU8uupR5VJ9Fn8VmkdWOSRvybRjoHRRBzziMhZhpiY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718260992; c=relaxed/simple;
-	bh=aVw2orsoCJBRLL7ubOJpxqa7rJllpYCo+Yila4F04Pw=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=rar/J3YkfAO8JWRnXt0eCo5OOq6HIf+lI9ZbpusNl0Ir7jhedJkMaE+M4A1hqL4XUoDCrHSfZB/mPLdordZPBcLMiWRisEkQ6jFGJlvWAOk9EWmMOWpVrCSTkVky2IOxAK291J4CruGJsUGSzkSf0kCDCVA4TFBmD/N7NpeGbWY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=WwueXspO; arc=none smtp.client-ip=209.85.128.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f176.google.com with SMTP id 00721157ae682-62f79de5f49so896607b3.2;
-        Wed, 12 Jun 2024 23:43:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1718260989; x=1718865789; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=DIkEXiCbdHBjfOGWnmQQ77fch7SYE211jsaY4bM0/Dk=;
-        b=WwueXspOfS9e4Rw4lbKYuh+b5p8BFh9wTvjVvx1kBI74wxAFCv3/7ZvXKi7KPFaQtW
-         V8sVq80KPy5IvUpQSQSbKSTyOwHnlVyjlcv/eoDV7jXAOyzjWC7JreEfyYCz10eAD4vK
-         ZaRWcH8X/IAHx7c5fX6lNmIjthM/OnjLL+HF9fp6G1Yhyhl1LGnFGany0lZ3JzveWrTS
-         cburQL3GjUnNpjZyZpigqLqCXC9FtQ/uCmgVSiWTxEbuSySALh5RKyKHErQ+AfSP4jpC
-         Bs/91eIFM5MeffbiTSOTsMoyF+e5FdkGjw9gAgKGv9InmmpTYJtwJqbeVuoucitMTJJv
-         btJg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1718260989; x=1718865789;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=DIkEXiCbdHBjfOGWnmQQ77fch7SYE211jsaY4bM0/Dk=;
-        b=KgwWKCb9TOF0feiUcjyS9JRPT4nbdHAtlN/1jH0WVswZi7YczN+606iiplXqHxP1Ii
-         RQpBOJV1JiqGsF6/oRZpjIPE3Klm2JXHvDWxYS7J+3bZjEibYDPIcqTCB/S0BKwUBZGh
-         hZAztkoMDvvuPtIyoPm+6LGQJZb2dRQOVLc3QSFK0c54P+n0G5SKFxcJDkqihnQi4514
-         beqItRwd44rPFm2igGlHGiMmnc8OZBB4ZxfdvIjlBdjkImc2OhAOlaGUGH68lAwQuQO6
-         uB/qyOzmwyNuLdHKsCD0rnmz0KyoHyIZpkG0ivytn2pBkaYtClVpeV7monUUqsipwbZs
-         LPmg==
-X-Forwarded-Encrypted: i=1; AJvYcCUMQZpmRsFhOLhlXn63ppT2WFjPDEWi5ZW00tD3nZEp4wI+/+JADc1Ach2jlfgNWRhUJmczjH5wEAL4EmggLaalQrlZtae9sZiUa7CvwM0w2+8TfTxhKgxMh/oF
-X-Gm-Message-State: AOJu0Yye6uNXUggGE+yERnjx9DxAamunUhn0rV8eQ/0PqzCxQHTvhTXL
-	QHuHfemqudfNsAbBn4P3JNUDKzcL6NYm4+zl7hxSVPEVZj20/bu56W+t4adwZO+unMFDY/d6OyV
-	bNc2wVSEOcCc3ZWb2xKCdxWruN2X/p5hwuWk=
-X-Google-Smtp-Source: AGHT+IFeEaeognYjH08s2wzNCFZbv7yrug2rEv8hmtakpLvchqy0GdjckggcG+d+4SDUn6jR3cFihW8GmPUWPeKc1dw=
-X-Received: by 2002:a25:1c4:0:b0:dfd:b41d:4a98 with SMTP id
- 3f1490d57ef6-dfe69fca31bmr3184478276.3.1718260989517; Wed, 12 Jun 2024
- 23:43:09 -0700 (PDT)
+	s=arc-20240116; t=1718267796; c=relaxed/simple;
+	bh=a09l5h73FaDd7vlH/86BhnM3rl737CKNI/vH4xhurWc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=O3xYxf9gK6xC3N5Mpz4HeWQCx4Mq7mSpbPgx0IrKmY3bKrG+NpG9iEnvEgBHZaleLt1rz0AsoXeeJ1tb0awTiwCvkyPZb6dmfjPefIWBSIUmRgG2WjtjIZvK0SEiXPxvPDvV4a17DRKwn5MuWtS0Xu2ksJ4J4TigY0A4Ir2bycQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=bp.renesas.com; spf=pass smtp.mailfrom=bp.renesas.com; arc=none smtp.client-ip=210.160.252.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=bp.renesas.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bp.renesas.com
+X-IronPort-AV: E=Sophos;i="6.08,234,1712588400"; 
+   d="asc'?scan'208";a="207767857"
+Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
+  by relmlie5.idc.renesas.com with ESMTP; 13 Jun 2024 17:36:22 +0900
+Received: from [10.226.93.204] (unknown [10.226.93.204])
+	by relmlir6.idc.renesas.com (Postfix) with ESMTP id 422B94203313;
+	Thu, 13 Jun 2024 17:36:00 +0900 (JST)
+Message-ID: <322e7317-61dc-4f1e-8706-7db6f5f7a030@bp.renesas.com>
+Date: Thu, 13 Jun 2024 09:36:00 +0100
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <cover.1718138187.git.zhuyifei@google.com> <CAJ8uoz2-Kt2o-v3CuLpf2VDv2VtUJL2T307rp04di5hY2ihYHg@mail.gmail.com>
- <ZmmZY3zim4wG7pHR@boxer> <CAA-VZP=zpMeDamaKD60A3761N0CRUynWr54W3bzN5AK2CV4fOg@mail.gmail.com>
-In-Reply-To: <CAA-VZP=zpMeDamaKD60A3761N0CRUynWr54W3bzN5AK2CV4fOg@mail.gmail.com>
-From: Magnus Karlsson <magnus.karlsson@gmail.com>
-Date: Thu, 13 Jun 2024 08:42:58 +0200
-Message-ID: <CAJ8uoz0ieQ0pX06A+-_idQFOO5Q+0R_jQZLk6wK7tq=7dHvJUg@mail.gmail.com>
-Subject: Re: [RFC PATCH net-next 0/3] selftests: Add AF_XDP functionality test
-To: YiFei Zhu <zhuyifei@google.com>
-Cc: Maciej Fijalkowski <maciej.fijalkowski@intel.com>, netdev@vger.kernel.org, 
-	bpf@vger.kernel.org, =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>, 
-	Magnus Karlsson <magnus.karlsson@intel.com>, Jonathan Lemon <jonathan.lemon@gmail.com>, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	"David S . Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, 
-	Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, 
-	Andrii Nakryiko <andrii@kernel.org>, Stanislav Fomichev <sdf@google.com>, 
-	Willem de Bruijn <willemb@google.com>
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next v12 05/13] page_pool: convert to use netmem
+Content-Language: en-GB
+To: Mina Almasry <almasrymina@google.com>, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+ linux-alpha@vger.kernel.org, linux-mips@vger.kernel.org,
+ linux-parisc@vger.kernel.org, sparclinux@vger.kernel.org,
+ linux-renesas-soc@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+ linux-arch@vger.kernel.org, bpf@vger.kernel.org,
+ linux-kselftest@vger.kernel.org, linux-media@vger.kernel.org,
+ dri-devel@lists.freedesktop.org
+Cc: "David S. Miller" <davem@davemloft.net>,
+ Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+ Paolo Abeni <pabeni@redhat.com>, Donald Hunter <donald.hunter@gmail.com>,
+ Jonathan Corbet <corbet@lwn.net>,
+ Richard Henderson <richard.henderson@linaro.org>,
+ Ivan Kokshaysky <ink@jurassic.park.msu.ru>, Matt Turner
+ <mattst88@gmail.com>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+ "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+ Helge Deller <deller@gmx.de>, Andreas Larsson <andreas@gaisler.com>,
+ Sergey Shtylyov <s.shtylyov@omp.ru>, Jesper Dangaard Brouer
+ <hawk@kernel.org>, Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+ Steven Rostedt <rostedt@goodmis.org>, Masami Hiramatsu
+ <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+ Arnd Bergmann <arnd@arndb.de>, Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
+ Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman
+ <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
+ Yonghong Song <yonghong.song@linux.dev>,
+ John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
+ Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
+ Jiri Olsa <jolsa@kernel.org>, Steffen Klassert
+ <steffen.klassert@secunet.com>, Herbert Xu <herbert@gondor.apana.org.au>,
+ David Ahern <dsahern@kernel.org>,
+ Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+ Shuah Khan <shuah@kernel.org>, Sumit Semwal <sumit.semwal@linaro.org>,
+ =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+ Bagas Sanjaya <bagasdotme@gmail.com>, Christoph Hellwig <hch@infradead.org>,
+ Nikolay Aleksandrov <razor@blackwall.org>,
+ Pavel Begunkov <asml.silence@gmail.com>, David Wei <dw@davidwei.uk>,
+ Jason Gunthorpe <jgg@ziepe.ca>, Yunsheng Lin <linyunsheng@huawei.com>,
+ Shailend Chand <shailend@google.com>,
+ Harshitha Ramamurthy <hramamurthy@google.com>,
+ Shakeel Butt <shakeel.butt@linux.dev>, Jeroen de Borst
+ <jeroendb@google.com>, Praveen Kaligineedi <pkaligineedi@google.com>,
+ linux-mm@kvack.org, Matthew Wilcox <willy@infradead.org>
+References: <20240613013557.1169171-1-almasrymina@google.com>
+ <20240613013557.1169171-6-almasrymina@google.com>
+From: Paul Barker <paul.barker.ct@bp.renesas.com>
+Organization: Renesas Electronics Corporation
+In-Reply-To: <20240613013557.1169171-6-almasrymina@google.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="------------2BCbfj48rMDr1Ni41u40ZNJI"
+
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--------------2BCbfj48rMDr1Ni41u40ZNJI
+Content-Type: multipart/mixed; boundary="------------GGmF9Y2iOanb3ZPuNcD0T337";
+ protected-headers="v1"
+From: Paul Barker <paul.barker.ct@bp.renesas.com>
+To: Mina Almasry <almasrymina@google.com>, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+ linux-alpha@vger.kernel.org, linux-mips@vger.kernel.org,
+ linux-parisc@vger.kernel.org, sparclinux@vger.kernel.org,
+ linux-renesas-soc@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+ linux-arch@vger.kernel.org, bpf@vger.kernel.org,
+ linux-kselftest@vger.kernel.org, linux-media@vger.kernel.org,
+ dri-devel@lists.freedesktop.org
+Cc: "David S. Miller" <davem@davemloft.net>,
+ Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+ Paolo Abeni <pabeni@redhat.com>, Donald Hunter <donald.hunter@gmail.com>,
+ Jonathan Corbet <corbet@lwn.net>,
+ Richard Henderson <richard.henderson@linaro.org>,
+ Ivan Kokshaysky <ink@jurassic.park.msu.ru>, Matt Turner
+ <mattst88@gmail.com>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+ "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+ Helge Deller <deller@gmx.de>, Andreas Larsson <andreas@gaisler.com>,
+ Sergey Shtylyov <s.shtylyov@omp.ru>, Jesper Dangaard Brouer
+ <hawk@kernel.org>, Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+ Steven Rostedt <rostedt@goodmis.org>, Masami Hiramatsu
+ <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+ Arnd Bergmann <arnd@arndb.de>, Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
+ Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman
+ <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
+ Yonghong Song <yonghong.song@linux.dev>,
+ John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
+ Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
+ Jiri Olsa <jolsa@kernel.org>, Steffen Klassert
+ <steffen.klassert@secunet.com>, Herbert Xu <herbert@gondor.apana.org.au>,
+ David Ahern <dsahern@kernel.org>,
+ Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+ Shuah Khan <shuah@kernel.org>, Sumit Semwal <sumit.semwal@linaro.org>,
+ =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+ Bagas Sanjaya <bagasdotme@gmail.com>, Christoph Hellwig <hch@infradead.org>,
+ Nikolay Aleksandrov <razor@blackwall.org>,
+ Pavel Begunkov <asml.silence@gmail.com>, David Wei <dw@davidwei.uk>,
+ Jason Gunthorpe <jgg@ziepe.ca>, Yunsheng Lin <linyunsheng@huawei.com>,
+ Shailend Chand <shailend@google.com>,
+ Harshitha Ramamurthy <hramamurthy@google.com>,
+ Shakeel Butt <shakeel.butt@linux.dev>, Jeroen de Borst
+ <jeroendb@google.com>, Praveen Kaligineedi <pkaligineedi@google.com>,
+ linux-mm@kvack.org, Matthew Wilcox <willy@infradead.org>
+Message-ID: <322e7317-61dc-4f1e-8706-7db6f5f7a030@bp.renesas.com>
+Subject: Re: [PATCH net-next v12 05/13] page_pool: convert to use netmem
+References: <20240613013557.1169171-1-almasrymina@google.com>
+ <20240613013557.1169171-6-almasrymina@google.com>
+In-Reply-To: <20240613013557.1169171-6-almasrymina@google.com>
+
+--------------GGmF9Y2iOanb3ZPuNcD0T337
+Content-Type: multipart/mixed; boundary="------------VLyD3IZiBv1Y2W5pY0JQYGkf"
+
+--------------VLyD3IZiBv1Y2W5pY0JQYGkf
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, 12 Jun 2024 at 18:44, YiFei Zhu <zhuyifei@google.com> wrote:
->
-> On Wed, Jun 12, 2024 at 5:50=E2=80=AFAM Maciej Fijalkowski
-> <maciej.fijalkowski@intel.com> wrote:
-> >
-> > On Wed, Jun 12, 2024 at 01:47:06PM +0200, Magnus Karlsson wrote:
-> > > On Tue, 11 Jun 2024 at 22:43, YiFei Zhu <zhuyifei@google.com> wrote:
-> > > >
-> > > > We have observed that hardware NIC drivers may have faulty AF_XDP
-> > > > implementations, and there seem to be a lack of a test of various m=
-odes
-> > > > in which AF_XDP could run. This series adds a test to verify that N=
-IC
-> > > > drivers implements many AF_XDP features by performing a send / rece=
-ive
-> > > > of a single UDP packet.
-> > > >
-> > > > I put the C code of the test under selftests/bpf because I'm not re=
-ally
-> > > > sure how I'd build the BPF-related code without the selftests/bpf
-> > > > build infrastructure.
-> > >
-> > > Happy to see that you are contributing a number of new tests. Would i=
-t
-> > > be possible for you to integrate this into the xskxceiver framework?
-> > > You can find that in selftests/bpf too. By default, it will run its
-> > > tests using veth, but if you provide an interface name after the -i
-> > > option, it will run the tests over a real interface. I put the NIC in
-> > > loopback mode to use this feature, but feel free to add a new mode if
-> > > necessary. A lot of the setup and data plane code that you add alread=
-y
-> > > exists in xskxceiver, so I would prefer if you could reuse it. Your
-> > > tests are new though and they would be valuable to have.
-> >
-> > +1
-> >
-> > I just don't believe that you guys were not aware that xskxceiver exist=
-.
-> > Please provide us a proper explanation/justification why this was not
-> > fulfilling your needs and you decided to go with another test suite.
->
-> To answer this question, I can't speak for others, but I personally
-> was not fully aware.
->
-> Over a year ago when we were testing AF_XDP latency on internal NIC
-> drivers, we extended our internal latency test tool to support AF_XDP.
-> And that was when we observed the NICs we were testing had faulty
-> implementations - panics, packet corruptions, random drops; and we
-> decided to simplify the latency suite to add a simple pass/fail test
-> to our testing infrastructure, and we named it xsk_hw. The test was
-> specifically designed to test hardware NICs (rather than veth), and
-> there was a bunch of code around the test, to reserve & setup
-> machines, and to obtain information such as the IP addresses and the
-> host and next hop MACs addresses. At the time, the code was deemed too
-> dependent on our internal multi-machine-testing infrastructure to
-> upstream, but it has been running as part of our test suite since.
->
-> This brings us to recently. I was informed that upstream now have
-> drv-net, and now that upstream also has multi-machine testing, it's
-> time to upstream it. Hence this patch series, which I made after
-> adapting the code to use drv-net and network_helpers.
+On 13/06/2024 02:35, Mina Almasry wrote:
+> Abstrace the memory type from the page_pool so we can later add support=
 
-I was not aware of drv-net. I think it would be a really good idea to
-just hook up xskxceiver to this even without adding any new tests. If
-this is something that is run automatically for drivers, perfect, we
-should make use of it. Any idea what it would take to make xskxceiver
-use drv-net?
 
-> As for xskxceiver, for me personally, I discarded the idea after
-> reading the initial block comment of xskxceiver saying it spawns two
-> threads in a veth pair to test AF_XDP, which in my mind was like "okay
-> this doesn't test hardware NICs, and to extend that test to hardware
-> is probably a major rewrite that is probably not worth", so I did not
-> look too deeply into its code. I personally was unaware that it can
-> test a real interface, and that's partially my fault.
+s/Abstrace/Abstract/
 
-Or mine for not updating the initial block comment. In any case, no worries=
-!
+> for new memory types. Convert the page_pool to use the new netmem type
+> abstraction, rather than use struct page directly.
+>=20
+> As of this patch the netmem type is a no-op abstraction: it's always a
+> struct page underneath. All the page pool internals are converted to
+> use struct netmem instead of struct page, and the page pool now exports=
 
-> I'll take a look at xskxceiver and see how feasible it is to integrate
-> this into xskxceiver.
+> 2 APIs:
+>=20
+> 1. The existing struct page API.
+> 2. The new struct netmem API.
+>=20
+> Keeping the existing API is transitional; we do not want to refactor al=
+l
+> the current drivers using the page pool at once.
+>=20
+> The netmem abstraction is currently a no-op. The page_pool uses
+> page_to_netmem() to convert allocated pages to netmem, and uses
+> netmem_to_page() to convert the netmem back to pages to pass to mm APIs=
+,
+>=20
+> Follow up patches to this series add non-paged netmem support to the
+> page_pool. This change is factored out on its own to limit the code
+> churn to this 1 patch, for ease of code review.
+>=20
+> Signed-off-by: Mina Almasry <almasrymina@google.com>
+>=20
+> ---
+>=20
+> v12:
+> - Fix allmodconfig build error. Very recently renesas/ravb_main.c added=
 
-Thanks! Please keep the drv-net integration in mind. Hopefully it is
-not that much work to tweak xskxceiver to fit into that.
+>   a dependency on page_pool that I missed in my rebase. The dependency
+>   calls page_pool_alloc() directly as it wants to set a custom gfp_mask=
+,
+>   which is unique as all other drivers call a wrapper to that function.=
 
-> > >
-> > > You could make the default packet that is sent in xskxceiver be the
-> > > UDP packet that you want and then add all the other logic that you
-> > > have to a number of new tests that you introduce.
-> > >
-> > > > Tested on Google Cloud, with GVE:
-> > > >
-> > > >   $ sudo NETIF=3Dens4 REMOTE_TYPE=3Dssh \
-> > > >     REMOTE_ARGS=3D"root@10.138.15.235" \
-> > > >     LOCAL_V4=3D"10.138.15.234" \
-> > > >     REMOTE_V4=3D"10.138.15.235" \
-> > > >     LOCAL_NEXTHOP_MAC=3D"42:01:0a:8a:00:01" \
-> > > >     REMOTE_NEXTHOP_MAC=3D"42:01:0a:8a:00:01" \
-> > > >     python3 xsk_hw.py
-> > > >
-> > > >   KTAP version 1
-> > > >   1..22
-> > > >   ok 1 xsk_hw.ipv4_basic
-> > > >   ok 2 xsk_hw.ipv4_tx_skb_copy
-> > > >   ok 3 xsk_hw.ipv4_tx_skb_copy_force_attach
-> > > >   ok 4 xsk_hw.ipv4_rx_skb_copy
-> > > >   ok 5 xsk_hw.ipv4_tx_drv_copy
-> > > >   ok 6 xsk_hw.ipv4_tx_drv_copy_force_attach
-> > > >   ok 7 xsk_hw.ipv4_rx_drv_copy
-> > > >   [...]
-> > > >   # Exception| STDERR: b'/tmp/zzfhcqkg/pbgodkgjxsk_hw: recv_pfpacke=
-t: Timeout\n'
-> > > >   not ok 8 xsk_hw.ipv4_tx_drv_zerocopy
-> > > >   ok 9 xsk_hw.ipv4_tx_drv_zerocopy_force_attach
-> > > >   ok 10 xsk_hw.ipv4_rx_drv_zerocopy
-> > > >   [...]
-> > > >   # Exception| STDERR: b'/tmp/zzfhcqkg/pbgodkgjxsk_hw: connect sync=
- client: max_retries\n'
-> > > >   [...]
-> > > >   # Exception| STDERR: b'/linux/tools/testing/selftests/bpf/xsk_hw:=
- open_xsk: Device or resource busy\n'
-> > > >   not ok 11 xsk_hw.ipv4_rx_drv_zerocopy_fill_after_bind
-> > > >   ok 12 xsk_hw.ipv6_basic # SKIP Test requires IPv6 connectivity
-> > > >   [...]
-> > > >   ok 22 xsk_hw.ipv6_rx_drv_zerocopy_fill_after_bind # SKIP Test req=
-uires IPv6 connectivity
-> > > >   # Totals: pass:9 fail:2 xfail:0 xpass:0 skip:11 error:0
-> > > >
-> > > > YiFei Zhu (3):
-> > > >   selftests/bpf: Move rxq_num helper from xdp_hw_metadata to
-> > > >     network_helpers
-> > > >   selftests/bpf: Add xsk_hw AF_XDP functionality test
-> > > >   selftests: drv-net: Add xsk_hw AF_XDP functionality test
-> > > >
-> > > >  tools/testing/selftests/bpf/.gitignore        |   1 +
-> > > >  tools/testing/selftests/bpf/Makefile          |   7 +-
-> > > >  tools/testing/selftests/bpf/network_helpers.c |  27 +
-> > > >  tools/testing/selftests/bpf/network_helpers.h |  16 +
-> > > >  tools/testing/selftests/bpf/progs/xsk_hw.c    |  72 ++
-> > > >  tools/testing/selftests/bpf/xdp_hw_metadata.c |  27 +-
-> > > >  tools/testing/selftests/bpf/xsk_hw.c          | 844 ++++++++++++++=
-++++
-> > > >  .../testing/selftests/drivers/net/hw/Makefile |   1 +
-> > > >  .../selftests/drivers/net/hw/xsk_hw.py        | 133 +++
-> > > >  9 files changed, 1102 insertions(+), 26 deletions(-)
-> > > >  create mode 100644 tools/testing/selftests/bpf/progs/xsk_hw.c
-> > > >  create mode 100644 tools/testing/selftests/bpf/xsk_hw.c
-> > > >  create mode 100755 tools/testing/selftests/drivers/net/hw/xsk_hw.p=
-y
-> > > >
-> > > > --
-> > > > 2.45.2.505.gda0bf45e8d-goog
-> > > >
-> > > >
-> > >
+>   Fix it by adding netmem_to_page() in the driver.> - Fix printing netm=
+em trace printing (Pavel).
+>=20
+> v11:
+> - Fix typing to remove sparse warning. (Paolo/Steven)
+>=20
+> v9:
+> - Fix sparse error (Simon).
+>=20
+> v8:
+> - Fix napi_pp_put_page() taking netmem instead of page to fix
+>   patch-by-patch build error.
+> - Add net/netmem.h include in this patch to fix patch-by-patch build
+>   error.
+>=20
+> v6:
+>=20
+> - Rebased on top of the merged netmem_ref type.
+>=20
+> Cc: linux-mm@kvack.org
+> Cc: Matthew Wilcox <willy@infradead.org>
+>=20
+> ---
+>  drivers/net/ethernet/renesas/ravb_main.c |   5 +-
+>  include/linux/skbuff_ref.h               |   4 +-
+>  include/net/netmem.h                     |  15 ++
+>  include/net/page_pool/helpers.h          | 120 ++++++---
+>  include/net/page_pool/types.h            |  14 +-
+>  include/trace/events/page_pool.h         |  30 +--
+>  net/bpf/test_run.c                       |   5 +-
+>  net/core/page_pool.c                     | 304 ++++++++++++-----------=
+
+>  net/core/skbuff.c                        |   8 +-
+>  9 files changed, 305 insertions(+), 200 deletions(-)
+>=20
+> diff --git a/drivers/net/ethernet/renesas/ravb_main.c b/drivers/net/eth=
+ernet/renesas/ravb_main.c
+> index c1546b916e4ef..093236ebfeecb 100644
+> --- a/drivers/net/ethernet/renesas/ravb_main.c
+> +++ b/drivers/net/ethernet/renesas/ravb_main.c
+> @@ -303,8 +303,9 @@ ravb_alloc_rx_buffer(struct net_device *ndev, int q=
+, u32 entry, gfp_t gfp_mask,
+> =20
+>  	rx_buff =3D &priv->rx_buffers[q][entry];
+>  	size =3D info->rx_buffer_size;
+> -	rx_buff->page =3D page_pool_alloc(priv->rx_pool[q], &rx_buff->offset,=
+
+> -					&size, gfp_mask);
+> +	rx_buff->page =3D netmem_to_page(page_pool_alloc(priv->rx_pool[q],
+> +						       &rx_buff->offset,
+> +						       &size, gfp_mask));
+>  	if (unlikely(!rx_buff->page)) {
+>  		/* We just set the data size to 0 for a failed mapping which
+>  		 * should prevent DMA from happening...
+
+[snip]
+
+> =20
+> -static inline struct page *page_pool_alloc(struct page_pool *pool,
+> -					   unsigned int *offset,
+> -					   unsigned int *size, gfp_t gfp)
+> +static inline netmem_ref page_pool_alloc(struct page_pool *pool,
+> +					 unsigned int *offset,
+> +					 unsigned int *size, gfp_t gfp)
+>  {
+>  	unsigned int max_size =3D PAGE_SIZE << pool->p.order;
+> -	struct page *page;
+> +	netmem_ref netmem;
+> =20
+>  	if ((*size << 1) > max_size) {
+>  		*size =3D max_size;
+>  		*offset =3D 0;
+> -		return page_pool_alloc_pages(pool, gfp);
+> +		return page_pool_alloc_netmem(pool, gfp);
+>  	}
+> =20
+> -	page =3D page_pool_alloc_frag(pool, offset, *size, gfp);
+> -	if (unlikely(!page))
+> -		return NULL;
+> +	netmem =3D page_pool_alloc_frag_netmem(pool, offset, *size, gfp);
+> +	if (unlikely(!netmem))
+> +		return 0;
+> =20
+>  	/* There is very likely not enough space for another fragment, so app=
+end
+>  	 * the remaining size to the current fragment to avoid truesize
+> @@ -140,7 +142,7 @@ static inline struct page *page_pool_alloc(struct p=
+age_pool *pool,
+>  		pool->frag_offset =3D max_size;
+>  	}
+> =20
+> -	return page;
+> +	return netmem;
+>  }
+> =20
+>  /**
+> @@ -154,7 +156,7 @@ static inline struct page *page_pool_alloc(struct p=
+age_pool *pool,
+>   * utilization and performance penalty.
+>   *
+>   * Return:
+> - * Return allocated page or page fragment, otherwise return NULL.
+> + * Return allocated page or page fragment, otherwise return 0.
+>   */
+>  static inline struct page *page_pool_dev_alloc(struct page_pool *pool,=
+
+>  					       unsigned int *offset,
+> @@ -162,7 +164,7 @@ static inline struct page *page_pool_dev_alloc(stru=
+ct page_pool *pool,
+>  {
+>  	gfp_t gfp =3D (GFP_ATOMIC | __GFP_NOWARN);
+> =20
+> -	return page_pool_alloc(pool, offset, size, gfp);
+> +	return netmem_to_page(page_pool_alloc(pool, offset, size, gfp));
+>  }
+
+I find this API change confusing - why should page_pool_alloc() return a
+netmem_ref but page_pool_dev_alloc() return a struct page *?
+
+Is there any reason to change page_pool_alloc() anyway? It calls
+page_pool_alloc_pages() or page_pool_alloc_frag() as appropriate, both
+of which your patch already converts to wrappers around the appropriate
+_netmem() functions. In all instances where page_pool_alloc() is called
+in this patch, you wrap it with netmem_to_page() anyway, there are no
+calls to page_pool_alloc() added which actually want a netmem_ref.
+
+Thanks,
+
+--=20
+Paul Barker
+--------------VLyD3IZiBv1Y2W5pY0JQYGkf
+Content-Type: application/pgp-keys; name="OpenPGP_0x27F4B3459F002257.asc"
+Content-Disposition: attachment; filename="OpenPGP_0x27F4B3459F002257.asc"
+Content-Description: OpenPGP public key
+Content-Transfer-Encoding: quoted-printable
+
+-----BEGIN PGP PUBLIC KEY BLOCK-----
+
+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3D
+=3DsIIN
+-----END PGP PUBLIC KEY BLOCK-----
+
+--------------VLyD3IZiBv1Y2W5pY0JQYGkf--
+
+--------------GGmF9Y2iOanb3ZPuNcD0T337--
+
+--------------2BCbfj48rMDr1Ni41u40ZNJI
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+wnsEABYIACMWIQSiu8gv1Xr0fIw/aoLbaV4Vf/JGvQUCZmqvcAUDAAAAAAAKCRDbaV4Vf/JGvUxW
+AP4uKbMQBWqrwm4N0a12WI8fJo+BUUCc25C9JJxwln5cIQEAkBtvIuJdTLFRhcetWpSP/iJbKgG5
+snTgszJnAOLlDAE=
+=U1fu
+-----END PGP SIGNATURE-----
+
+--------------2BCbfj48rMDr1Ni41u40ZNJI--
 
