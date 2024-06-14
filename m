@@ -1,120 +1,98 @@
-Return-Path: <bpf+bounces-32203-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-32204-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 470B990931E
-	for <lists+bpf@lfdr.de>; Fri, 14 Jun 2024 22:00:22 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 344E090931F
+	for <lists+bpf@lfdr.de>; Fri, 14 Jun 2024 22:00:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 42AC2283AD8
-	for <lists+bpf@lfdr.de>; Fri, 14 Jun 2024 20:00:20 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7C91BB23B5E
+	for <lists+bpf@lfdr.de>; Fri, 14 Jun 2024 20:00:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE5E319D07B;
-	Fri, 14 Jun 2024 20:00:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED72B16D339;
+	Fri, 14 Jun 2024 20:00:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YdyIP5eP"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XyPRxwp0"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f47.google.com (mail-wr1-f47.google.com [209.85.221.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA44B13213E
-	for <bpf@vger.kernel.org>; Fri, 14 Jun 2024 20:00:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E8BD1487C1
+	for <bpf@vger.kernel.org>; Fri, 14 Jun 2024 20:00:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718395210; cv=none; b=k86UXQANND0glVaNSG9KRve88gEDAxqd+indiE3EHpKmdjO6AXu7L+PCVisKLdH4IZm7CnQlhyD/z7aIJT3vLWbmp5K6Kv3PubD/x5PvFY2vtHkKe+Q5MWn01R2KDGD/cTAkub0pcVZ+jC9n/m3yVdIhiMsDpyZfpNOQD4Ztp9E=
+	t=1718395232; cv=none; b=boYy05NaJj+06nDeZfXKKrz58gnJpjwRdUDdG23Z0LI58l1djPtjeJK0oholWVfSrGQMKntnjxcX3PfRzjsVh8GO+hGqOi/F+/ZbNTzak5mA5eagjFkxTvFCc4vRA1lupUEuwqyEZ/t6D2Wo4zmjx/0cAwqbsrYddMLf5JDK7CM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718395210; c=relaxed/simple;
-	bh=EIqy6ek9+yjzmGl4rrtjb8mcxCqDrRrtsijrfhtIqMg=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=gKKZop7nt/j4R/kp+xQWPTrdcKrLYwMt0n43sbQSXb2OMLRi0KhrL/QTu07CBNeR9a5e6derA0EcwBQyjcOz8SFGrN2Am7BunjcxNkW1Lspc34mjsy/WhlghUnt3osHgGktmkEbzt3K+5OeCTLUKS4iSLclEvdTwO0hLW9xhvLI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=YdyIP5eP; arc=none smtp.client-ip=209.85.221.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f47.google.com with SMTP id ffacd0b85a97d-35f1c490c13so2854340f8f.3
-        for <bpf@vger.kernel.org>; Fri, 14 Jun 2024 13:00:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1718395207; x=1719000007; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=EIqy6ek9+yjzmGl4rrtjb8mcxCqDrRrtsijrfhtIqMg=;
-        b=YdyIP5eP3+xyyi5oZsu0OXqqjhDWEVwI/uD18X7hOeVDML6dPjinJzCH46NoSZhczG
-         maAFRqKdasduF1V79mZPWjRVPfCnQoLxIz7HbRZgXD7jfA/RyVDhy5231pCeIZ4571kK
-         PtTKeclL+yKEdnIs9LhfCE9GWm2NxTDA+2ct6dmJqu87/s4hQFe4Mi5VlFdgfNSQ6Isv
-         e8fj09M9TzKwusrIrM0iOa3aYyQUMLFoS8Oh76peK8eC3IW7T2DAqoMpWkqe4OEuNln4
-         elniwN71GEWbQ74szHstBd9punECCtrF5CoeLSkhn/FtN953g3m+L3fFNz5pv/hzodEx
-         Ui5g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1718395207; x=1719000007;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=EIqy6ek9+yjzmGl4rrtjb8mcxCqDrRrtsijrfhtIqMg=;
-        b=bIiFV+nAo7Wp8xqIvc7DCGCkTfKsDVnjQYzk1rJ2G3oxO9RnuTDCQh8TLp/xyrcUjq
-         lZ9DrwxI1IWbOwZSl5JhiluRSYCtUnPbeobJyNu7Lwct23MnDFhAWGbxEK5Eqk26aZH0
-         I6AULdioaviRXosuWyude9g24bvCYSqEZIR1v8dQzV3H+6NDtJr+UjpQb2Le7g+t7ysr
-         r5b3s0tSHQp5nQEbfUuJIBIgCGcPIZBzBKliQ5GtCdP7AsvPT5gwxPXfJT3chLdBSSeX
-         xNF2ui+mLC0a+7iC+QQVGLMtilwLgRbFFiZSqoWwn1qrKyAaPZ5qlZP84pxMk/j8EOx4
-         UZMQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUFH7jLJ0y6K0cwxU8dUbbBXbaFI3i0ZXOvrAdUQWRnvu8MkIMEAz1wlVJ6lTRkjIHKihAcZ7z/dzbwc7pDSxb8Zs20
-X-Gm-Message-State: AOJu0YzDIZdwq+4reRSgVkR0uZ589icesIXNc7VZIewBjsxlikD++WZ5
-	NOHjGzSYUlwR3A+ZbKVlUTyOjKh2L7r62mU+E5aksHWOM7UPjE5yh2FPucqvn2Q+g6Pi11qrWn/
-	HblmSIcdduvlo/MccX83SM3Zm07g=
-X-Google-Smtp-Source: AGHT+IEb3eA0TZGhW4O6V/P2PxaGigki2vZnJYe9tRRt47ttrW0/+6y43JXZ87BJfOaKapTMxAztrrjWM3rqqh6A3sY=
-X-Received: by 2002:a05:6000:1a86:b0:35f:3189:ddd2 with SMTP id
- ffacd0b85a97d-3607a7687f8mr4384171f8f.35.1718395206525; Fri, 14 Jun 2024
- 13:00:06 -0700 (PDT)
+	s=arc-20240116; t=1718395232; c=relaxed/simple;
+	bh=dPNWDAu4iEle51dQR96YxGkjVSzHXB72w2eJQbDOrZo=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=EpVvXsbF/h3GaEBsBJeuJ9iTRu8UqSqVuE/UMmy0WiR0SIOJEWXijjFKiS+ZMBKKZ80rM4sKJTZjKoZJ1gvK7qX0fyM8dQzKdJh8/TfEIJhmcisE55NO+5vUgPXIVoSx6nCITK0Z0Qv1xJt2ayidJmHR6rKH8EncsjBZhbDeICc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XyPRxwp0; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 05453C4AF1C;
+	Fri, 14 Jun 2024 20:00:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1718395232;
+	bh=dPNWDAu4iEle51dQR96YxGkjVSzHXB72w2eJQbDOrZo=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=XyPRxwp0W7awtnCZaEPkBr9uiSngUBFgrfdxj0qrd9PzbAflubPNG7YrN3Pfcesbi
+	 52mapKuojSlp4ukbEsduWNRWtl2YvDk75BJe2EzPdGs8GPrBqpQR+5nCk8m8VKVLmv
+	 kSBkawWUrhBmTnIAtZgqKabntzgdso1LHtoulQV2Pv98F/G2+9u4XI2CHoMPa2XTYa
+	 PlyNQNpa1qwDsAGuPJ2OjQlHItsG3iiGfFFmzMYh5/u8kcpHTbTPS0YPT+qdAuiPqP
+	 mo1H6Qv21FLkbNJZn9bfhvXOnu6tNKI3ZbRyGRTOMPegBRq5qNB8Ky6qWirVlUI31b
+	 vj2k0qW7vMkAw==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id E6A71C43616;
+	Fri, 14 Jun 2024 20:00:31 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CAOzX8ix3TVUOgNAWkXbK6RAqBCmazgeL=PE-fCV+KZ_HyfLW3Q@mail.gmail.com>
-In-Reply-To: <CAOzX8ix3TVUOgNAWkXbK6RAqBCmazgeL=PE-fCV+KZ_HyfLW3Q@mail.gmail.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Fri, 14 Jun 2024 12:59:55 -0700
-Message-ID: <CAADnVQJ31p+LCYrHYZd0RisUC_MvU1a8-F+QRiKAJkPw52Edtg@mail.gmail.com>
-Subject: Re: Why is recursion protection needed in bpf syscalls?
-To: Usama Saqib <usama.saqib@datadoghq.com>
-Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, Jiri Olsa <jolsa@kernel.org>, Song Liu <song@kernel.org>, 
-	bpf <bpf@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH v3 bpf-next 0/4] bpf: Track delta between "linked" registers.
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <171839523194.31909.17904163898198363320.git-patchwork-notify@kernel.org>
+Date: Fri, 14 Jun 2024 20:00:31 +0000
+References: <20240613013815.953-1-alexei.starovoitov@gmail.com>
+In-Reply-To: <20240613013815.953-1-alexei.starovoitov@gmail.com>
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: bpf@vger.kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+ martin.lau@kernel.org, memxor@gmail.com, eddyz87@gmail.com,
+ kernel-team@fb.com
 
-On Wed, Jun 12, 2024 at 3:38=E2=80=AFAM Usama Saqib <usama.saqib@datadoghq.=
-com> wrote:
->
-> Hello,
->
-> Some map operations via syscalls on hash maps (and some others)
-> disable bpf programs from running on the same CPU with
-> bpf_disable_instrumentation. The provided reason for this is to
-> prevent deadlocks when a nested bpf program tries to access an already
-> held bucket lock. From my understanding, this can happen due to a
-> kprobe on a function called after the lock is acquired. However,
-> htab_lock_bucket already handles this case by returning EBUSY if such
-> a scenario were to happen. Is there any other reason for disabling bpf
-> programs on the CPU?
+Hello:
 
-Correct. bpf_disable_instrumentation() is a mechanism to prevent
-bpf-kprobe progs being invoked from the inner places of bpf maps.
-htab has a separate protection via htab_lock_bucket.
-array map doesn't need such thing, but there are other map types.
-disable_instrumentation() is mainly for those.
+This series was applied to bpf/bpf-next.git (master)
+by Daniel Borkmann <daniel@iogearbox.net>:
 
-> The effect of this is that 1) bpf programs attached to a kprobe or
-> tracepoint in an irq context get skipped while inside
-> bpf_[enable,disable]_instrumentation block but before the
-> preempt_disable via htab_lock_bucket, 2) when CONFIG_PREEMPTION=3Dy and
-> preempt=3Dfull then a bpf program running from user context may also get
-> skipped while inside the bpf_[enable,disable]_instrumentation block.
+On Wed, 12 Jun 2024 18:38:11 -0700 you wrote:
+> From: Alexei Starovoitov <ast@kernel.org>
+> 
+> v2->v3:
+> - Fixed test_verifier due to output change
+> - Fixed regsafe()
+> - Add another test
+> 
+> [...]
 
-Yes. It is unfortunate. Folks are working on adding htab-like
-protection to other map types and there is an orthogonal effort
-to introduce bpf specific spinlock with run-time deadlock protection
-that bpf maps and progs will use.
-Once it's available this disable_instrumention logic can be lifted.
+Here is the summary with links:
+  - [v3,bpf-next,1/4] bpf: Relax tuple len requirement for sk helpers.
+    https://git.kernel.org/bpf/bpf-next/c/124e8c2b1b5d
+  - [v3,bpf-next,2/4] bpf: Track delta between "linked" registers.
+    https://git.kernel.org/bpf/bpf-next/c/98d7ca374ba4
+  - [v3,bpf-next,3/4] bpf: Support can_loop/cond_break on big endian
+    https://git.kernel.org/bpf/bpf-next/c/6870bdb3f4f2
+  - [v3,bpf-next,4/4] selftests/bpf: Add tests for add_const
+    https://git.kernel.org/bpf/bpf-next/c/dedf56d775c0
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
 
