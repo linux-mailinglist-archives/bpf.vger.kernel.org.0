@@ -1,50 +1,71 @@
-Return-Path: <bpf+bounces-32189-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-32190-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B572E908EC5
-	for <lists+bpf@lfdr.de>; Fri, 14 Jun 2024 17:30:39 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 22112908F2A
+	for <lists+bpf@lfdr.de>; Fri, 14 Jun 2024 17:43:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B382C1C2104B
-	for <lists+bpf@lfdr.de>; Fri, 14 Jun 2024 15:30:38 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 093761C24918
+	for <lists+bpf@lfdr.de>; Fri, 14 Jun 2024 15:43:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 93AC315FA95;
-	Fri, 14 Jun 2024 15:30:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E88311802DF;
+	Fri, 14 Jun 2024 15:41:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dYzqraBA"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jx8cunPj"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 19F5AF9D9;
-	Fri, 14 Jun 2024 15:30:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 66CD6249FF;
+	Fri, 14 Jun 2024 15:41:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718379031; cv=none; b=Hu2zzPQAq0w3iohzJiwXNthk31TLRHNlV7qBvdZsrm5lmwOszNjgWg0XwAU8fSgcrAhti1IdCpO0jfvX12jpiqVDbo4w4t5JffxaHzZOVxoc/86uINqxj6tw9sT9t2SnCXhz5tJqkVIAObwDvF7Og7O/9VqZ3m8yvWC3R+wXWQU=
+	t=1718379674; cv=none; b=WGZDj7O4UUtp3DVs0E8t55QFUiaD3IFCtX7iOHvgSEgu3rwAuKhQmQXSBmogJYAMq0+Dnu5CYJ3QsWP7emP7XxYV0K5hyUS+NyOq19j3MG3p78DwPZERn0L+d5lSacug/PRj/qfkiMSXgYq+utk8Vv1v/sbqJHcOCiP9H9iK190=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718379031; c=relaxed/simple;
-	bh=pCfMTOS37syFgYU+24EBPb0CfjmBN9EKatbKg1iniSY=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=dYpk1iuuDWDMURedS6vhz7FXfDpUe01Ovi5pvDjrMTYiKHLPiHrtNH6CbQjbVooeFYp43Y4PyN0AUjvYOMg9NgLBrQ8wfFKY9n6JuNNRQRY0UAeLWfioo8Jyow1LHKEfxrMEgMKZ3tqdzE4tAHJFpybdcx0dzNxTiZ8alx87EWQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dYzqraBA; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id A1C83C32786;
-	Fri, 14 Jun 2024 15:30:30 +0000 (UTC)
+	s=arc-20240116; t=1718379674; c=relaxed/simple;
+	bh=0CiBUMk8s5ZrLTt2yCw7D43qYi8xrUQcqESSbq/4pRk=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=sYLlqUL6TUXXyuNwntE8dBJ8fDw8LhTOvNzm9o81gcZWlEkiwdrGLtbGIGA14QEGJea/7aEB+BgSXKvdVLy1yL2x3KJoP8Nl5iBDqvyG6a4oRCYJOXXHT48X9DguiAyTllUxJ5otf8shOj5AlLiCS6TRsr16w5lTAgyfy+SAl/I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jx8cunPj; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 69A50C2BD10;
+	Fri, 14 Jun 2024 15:41:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1718379030;
-	bh=pCfMTOS37syFgYU+24EBPb0CfjmBN9EKatbKg1iniSY=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=dYzqraBAlNGIC79y5D0HmeMW1gnqnUvDuQsgdVpQ2hL3mHl10yegCEMb8LBKa0R8o
-	 3QYw95Q5BM1O1q70n+lt5LXb7JlgUAAvYPwrtoAmw7NTNyFtux6apevYt2TG06LIVZ
-	 oukyPxe/hPW37UCu4JgQ4u4g+h4kvbyRRjNplZIzuveIwDH3DYGR30aSAdTpjxfkAJ
-	 ldeaABb3UOfUMHTRBxgzxqBx4DzxtrSKa5aW0ZWjg1VJNmHOohhL0g4rotz1cWYByY
-	 ULRw38JTAC6NHZwYrIRPXyrZQvey4ufMm3DlKErc4muWyiW99e1i2XJxYwKGVqYAhh
-	 V0DZQ3HhfJdCQ==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 93B12C43612;
-	Fri, 14 Jun 2024 15:30:30 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=k20201202; t=1718379673;
+	bh=0CiBUMk8s5ZrLTt2yCw7D43qYi8xrUQcqESSbq/4pRk=;
+	h=From:To:Cc:Subject:Date:From;
+	b=jx8cunPjwFvBGWtAroRhkjWKxFJlS7OtFiNGiD8Bx1CXtjnLdH4NcN8tvTilRNs69
+	 OcdpXCvquS3naD0ryOqJCWUdOXdUESBu2c0HlAby7Xlsab7OAmvoUxIFRBp2NkgVx4
+	 3asS8s5eYPP6nQ2bNlNKAs6TXX8WFDwNsoawPPfLFJPTjvyIWab71vPuidPEr01Kla
+	 svK19AEo6KAdmOX09fLMtobSl4c7QdEfjokg+u03aC+oUz3jQKZdYP/dj9sXzDxvZb
+	 B1VHLrdcVx5NaZB2dPfHzyDkT7/1d4ZI0gAl2AtRhz90D2i0dfikbYhLGnwLoYBcP9
+	 auZU02gHlcbpw==
+From: Lorenzo Bianconi <lorenzo@kernel.org>
+To: bpf@vger.kernel.org
+Cc: pablo@netfilter.org,
+	kadlec@netfilter.org,
+	davem@davemloft.net,
+	edumazet@google.com,
+	kuba@kernel.org,
+	pabeni@redhat.com,
+	netfilter-devel@vger.kernel.org,
+	netdev@vger.kernel.org,
+	ast@kernel.org,
+	daniel@iogearbox.net,
+	andrii@kernel.org,
+	martin.lau@linux.dev,
+	eddyz87@gmail.com,
+	lorenzo.bianconi@redhat.com,
+	toke@redhat.com,
+	fw@strlen.de,
+	hawk@kernel.org,
+	horms@kernel.org,
+	donhunte@redhat.com,
+	memxor@gmail.com
+Subject: [PATCH v5 bpf-next 0/3] netfilter: Add the capability to offload flowtable in XDP layer
+Date: Fri, 14 Jun 2024 17:40:45 +0200
+Message-ID: <cover.1718379122.git.lorenzo@kernel.org>
+X-Mailer: git-send-email 2.45.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -52,41 +73,76 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf] bpf: avoid splat in pskb_pull_reason
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <171837903059.8969.17261138323063584002.git-patchwork-notify@kernel.org>
-Date: Fri, 14 Jun 2024 15:30:30 +0000
-References: <20240614101801.9496-1-fw@strlen.de>
-In-Reply-To: <20240614101801.9496-1-fw@strlen.de>
-To: Florian Westphal <fw@strlen.de>
-Cc: bpf@vger.kernel.org, martin.lau@linux.dev, daniel@iogearbox.net,
- netdev@vger.kernel.org,
- syzbot+0c4150bff9fff3bf023c@syzkaller.appspotmail.com, edumazet@google.com
 
-Hello:
+Introduce bpf_xdp_flow_lookup kfunc in order to perform the lookup of
+a given flowtable entry based on the fib tuple of incoming traffic.
+bpf_xdp_flow_lookup can be used as building block to offload in XDP
+the sw flowtable processing when the hw support is not available.
 
-This patch was applied to bpf/bpf.git (master)
-by Daniel Borkmann <daniel@iogearbox.net>:
+This series has been tested running the xdp_flowtable_offload eBPF program
+on an ixgbe 10Gbps NIC (eno2) in order to XDP_REDIRECT the TCP traffic to
+a veth pair (veth0-veth1) based on the content of the nf_flowtable as soon
+as the TCP connection is in the established state:
 
-On Fri, 14 Jun 2024 12:17:33 +0200 you wrote:
-> syzkaller builds (CONFIG_DEBUG_NET=y) frequently trigger a debug
-> hint in pskb_may_pull.
-> 
-> We'd like to retain this debug check because it might hint at integer
-> overflows and other issues (kernel code should pull headers, not huge
-> value).
-> 
-> [...]
+[tcp client] (eno1) == LAN == (eno2) xdp_flowtable_offload [XDP_REDIRECT] --> veth0 == veth1 [tcp server]
 
-Here is the summary with links:
-  - [bpf] bpf: avoid splat in pskb_pull_reason
-    https://git.kernel.org/bpf/bpf/c/2bbe3e5a2f4e
+table inet filter {
+	flowtable ft {
+		hook ingress priority filter
+		devices = { eno2, veth0 }
+	}
+	chain forward {
+		type filter hook forward priority filter
+		meta l4proto { tcp, udp } flow add @ft
+	}
+}
 
-You are awesome, thank you!
+-  sw flowtable [1 TCP stream, T = 300s]: ~ 6.2 Gbps
+- xdp flowtable [1 TCP stream, T = 300s]: ~ 7.6 Gbps
+
+-  sw flowtable [3 TCP stream, T = 300s]: ~ 7.7 Gbps
+- xdp flowtable [3 TCP stream, T = 300s]: ~ 8.8 Gbps
+
+Changes since v4:
+- add missing BPF_NO_KFUNC_PROTOTYPES macro to selftest
+Changes since v3:
+- move flowtable map utilities in nf_flow_table_xdp.c
+Changes since v2:
+- introduce bpf_flowtable_opts struct in bpf_xdp_flow_lookup signature
+- get rid of xdp_flowtable_offload bpf sample
+- get rid of test_xdp_flowtable.sh for selftest and rely on prog_tests instead
+- rename bpf_xdp_flow_offload_lookup in bpf_xdp_flow_lookup
+Changes since v1:
+- return NULL in bpf_xdp_flow_offload_lookup kfunc in case of error
+- take into account kfunc registration possible failures
+Changes since RFC:
+- fix compilation error if BTF is not enabled
+
+Akced-by: Pablo Neira Ayuso <pablo@netfilter.org>
+
+Florian Westphal (1):
+  netfilter: nf_tables: add flowtable map for xdp offload
+
+Lorenzo Bianconi (2):
+  netfilter: add bpf_xdp_flow_lookup kfunc
+  selftests/bpf: Add selftest for bpf_xdp_flow_lookup kfunc
+
+ include/net/netfilter/nf_flow_table.h         |  18 ++
+ net/netfilter/Makefile                        |   7 +-
+ net/netfilter/nf_flow_table_bpf.c             | 117 ++++++++++++
+ net/netfilter/nf_flow_table_inet.c            |   2 +-
+ net/netfilter/nf_flow_table_offload.c         |   6 +-
+ net/netfilter/nf_flow_table_xdp.c             | 163 +++++++++++++++++
+ tools/testing/selftests/bpf/config            |  13 ++
+ .../selftests/bpf/prog_tests/xdp_flowtable.c  | 168 ++++++++++++++++++
+ .../selftests/bpf/progs/xdp_flowtable.c       | 146 +++++++++++++++
+ 9 files changed, 636 insertions(+), 4 deletions(-)
+ create mode 100644 net/netfilter/nf_flow_table_bpf.c
+ create mode 100644 net/netfilter/nf_flow_table_xdp.c
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/xdp_flowtable.c
+ create mode 100644 tools/testing/selftests/bpf/progs/xdp_flowtable.c
+
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+2.45.1
 
 
