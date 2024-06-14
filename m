@@ -1,107 +1,117 @@
-Return-Path: <bpf+bounces-32153-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-32154-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id BD172908096
-	for <lists+bpf@lfdr.de>; Fri, 14 Jun 2024 03:19:35 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 29CE69080B4
+	for <lists+bpf@lfdr.de>; Fri, 14 Jun 2024 03:35:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D088B1C21462
-	for <lists+bpf@lfdr.de>; Fri, 14 Jun 2024 01:19:34 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B7A81B220D6
+	for <lists+bpf@lfdr.de>; Fri, 14 Jun 2024 01:35:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9C5171822F3;
-	Fri, 14 Jun 2024 01:19:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D5A318306F;
+	Fri, 14 Jun 2024 01:34:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JHXt0VEX"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="sg9ZtS8y"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f182.google.com (mail-pf1-f182.google.com [209.85.210.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ECFD2181D0C
-	for <bpf@vger.kernel.org>; Fri, 14 Jun 2024 01:19:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 872431773D;
+	Fri, 14 Jun 2024 01:34:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718327964; cv=none; b=eq56KHF3Fe/bHzdY82E1LHScmfrLxredGO/d9C7KDnbjsLyGZlJKIjeSHr/h8TVuk13EfFFBBedNjFHVt7k3yThvTIgtE5WlzgzSM+UNqDffnt9jCPYcqoAkIFIyqbtTv2m76kXPmvd3RKMR/40X7G/nR2qTLYnvtpPS6dDcUIk=
+	t=1718328897; cv=none; b=VsHrwmH5eYxeiKZFTbnBcWzlULoydE+R7s6cx1jJa8c0Ccth2DsEIxMIH9nHk4a9IH9RD01S/Pk4IPQ+WD/KR570Xa5XYQGDp6oxp9G/KjvqL9QdJdHM3Vszn1XrX8cMTaGXhxOAstp5A/rWavqEs63mJk4VS1VevaXQNjp4rSA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718327964; c=relaxed/simple;
-	bh=+Slnv33S13gjSVJDgIv2v74rRCrvcbewihT0jRbRpN0=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=KoHY0uskZ3zi/9o8mEleVHQNT1TPad36w+veax0sGx1xgmTyGshfCWJBVmeDo4j5P3z7c2cAqP5y3qsi0aunSYt6Rh741CdttcM6WeJvdocqY+xsrZtA9S+DQrTy1KpYzDX0zl8C8/8aJ8Q6u+LYIEQ1Y93NtnGTBcqLOONilsY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=JHXt0VEX; arc=none smtp.client-ip=209.85.210.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f182.google.com with SMTP id d2e1a72fcca58-705b9a89e08so1626783b3a.1
-        for <bpf@vger.kernel.org>; Thu, 13 Jun 2024 18:19:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1718327962; x=1718932762; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=+Slnv33S13gjSVJDgIv2v74rRCrvcbewihT0jRbRpN0=;
-        b=JHXt0VEXHrwbBh8ARdQzauu69L7atPeT+fUHF44UY9JsCYpzWu2lry/zae4fPjWGgF
-         Ay+XBBtvVdmZW7XjsvDoRwgTVBQANNZbnl9rhhVqjrCnBI46q2yaFZRXHhTuivTNviZq
-         e4AVSCL2kpdpNiVtgUX2ViQW+UXuAWZ+LRvj6eWZiDo48EwU8AzbqHl+x4bL/WynGje+
-         eXWAIn3j1Bvj4FJLJOBnlUaADL+ISunOdDjJnQRMQBtas2be0lBeiVvS6AAZ9t/q0b2u
-         7bwwW4dGh2kVteW6G3uKT7mFPtJ7zWpt++lWX/sqs64f/XU5aRSv2fFrJkfN8QauBt7h
-         cT6A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1718327962; x=1718932762;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=+Slnv33S13gjSVJDgIv2v74rRCrvcbewihT0jRbRpN0=;
-        b=td46sLV6tShm1f/SV/rF43HIuB15bez9W7zYT5r6sdEldlitlnV2lnmv37TOVxPiyM
-         B/fGRgnrTAr9tbkqYpSykR9ZLeMlSEXG3dozxDBqNwcKjmlo/88OBTwr6fczQTsp99SU
-         fe8ZKY0ZPOq8MBBlNzYqnfHT9j69N3mcI+OGIRgs9dBCGrkHju5kzPemQf1106NLnfZE
-         /toe9xe2P8+5syGb93TneKifubavgelmZooUF45ryT3u0jcglcEtDXyJUnyuQRHCh+1C
-         BkdERJWUhgW83v5gL5CD92uU3QaYb5RRgLlGGSHq2FZdHbW/gjCKodHKreJr8u3iDZDn
-         43Bw==
-X-Forwarded-Encrypted: i=1; AJvYcCX08sNaq0yva1bten9v2W/ZbaI9zvrD4/vZyJ5NRvgHzWqLcQrSG3wjnD07wEzU1iZEuAlgFGIf1W3DBqRv4/2TOk2K
-X-Gm-Message-State: AOJu0YyMd5Z62F6o9ZMYWfFDIUovXaIIRld7gZt1Z9SeZCL+AAv8krSp
-	ZiI2d1nZeILXI8SJwjVpK8+sb1eYZ9pKmzkU4ehvqOwaL3Thw4pk
-X-Google-Smtp-Source: AGHT+IGg1VejvwBiX8SIl/G70UbHmjQm/Tc2T25k9nhAYD9GUgwWAX7hbLI0nCt/FdgDRPCU3S52Jg==
-X-Received: by 2002:a62:e918:0:b0:704:173b:2cd0 with SMTP id d2e1a72fcca58-705d7191091mr1180459b3a.27.1718327962099;
-        Thu, 13 Jun 2024 18:19:22 -0700 (PDT)
-Received: from [192.168.0.31] ([38.34.87.7])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-705ccb6b288sm2040584b3a.149.2024.06.13.18.19.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 13 Jun 2024 18:19:21 -0700 (PDT)
-Message-ID: <b28586c5c9cc622b0d8cce942355cfab1aaa9602.camel@gmail.com>
-Subject: Re: [PATCH v6 bpf-next 6/9] resolve_btfids: handle presence of
- .BTF.base section
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Alan Maguire <alan.maguire@oracle.com>, andrii@kernel.org, ast@kernel.org
-Cc: daniel@iogearbox.net, martin.lau@linux.dev, song@kernel.org, 
-	yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org, 
-	sdf@google.com, haoluo@google.com, jolsa@kernel.org, mcgrof@kernel.org, 
-	masahiroy@kernel.org, nathan@kernel.org, mykolal@fb.com, dxu@dxuuu.xyz, 
-	bpf@vger.kernel.org
-Date: Thu, 13 Jun 2024 18:19:16 -0700
-In-Reply-To: <20240613095014.357981-7-alan.maguire@oracle.com>
-References: <20240613095014.357981-1-alan.maguire@oracle.com>
-	 <20240613095014.357981-7-alan.maguire@oracle.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.44.4-0ubuntu2 
+	s=arc-20240116; t=1718328897; c=relaxed/simple;
+	bh=CYOxmE4ntQW4bNMvxq9UIlsEBzTRL4qLB1FV48Xatv4=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=USAUY/NF7f9lomUFU0/3qPvQFhIc5mrecPjwbnTHMK6Ruj5KN6zhnD0kQWa7XUT8H7DTvXi24TGeT5fFQ/5ScIs7yqdZcsE0rumG+c9rCTUfme+LP9Q6HJ0SIHzXqIqsEIOosy1u+qd6OimLeN+3c5iD+j7F/h9+2UI6gYg0ovU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=sg9ZtS8y; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 61242C2BBFC;
+	Fri, 14 Jun 2024 01:34:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1718328897;
+	bh=CYOxmE4ntQW4bNMvxq9UIlsEBzTRL4qLB1FV48Xatv4=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=sg9ZtS8yEezxbjTVPI568a2KvEHqvKq8ud8+uPe6dGMbTueQSEMPMAgj2PCgXuIB9
+	 Il047nqeXnP6P/oSYmAKQCAxosjwrgYOaHdSYN8DpizcnGRlWkldLzTTe90OSa9FGv
+	 MBAW9iL444FGaNr9FcdswWY3pHc51pXPD6UDrHaFRQu/JWFwS+m0CctYfvcTP+Y/us
+	 3tPXqBkvjF/1WlqhH8l2wOQHXRcCWEIeW4JHfm3b/MLKWXXuS8tFi+ZMZi3LlOasMl
+	 Pv1svqR65L1eeiVLZrRKEQMiPGyOnYtk2TTlgDn5OVb4lEV9805bZIfH/6hgbdu1Gs
+	 S7zj/D1FRPg8w==
+Date: Thu, 13 Jun 2024 18:34:53 -0700
+From: Jakub Kicinski <kuba@kernel.org>
+To: Mina Almasry <almasrymina@google.com>
+Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-doc@vger.kernel.org, linux-alpha@vger.kernel.org,
+ linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
+ sparclinux@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+ linux-trace-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
+ bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
+ linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org, "David S.
+ Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, Paolo
+ Abeni <pabeni@redhat.com>, Donald Hunter <donald.hunter@gmail.com>,
+ Jonathan Corbet <corbet@lwn.net>, Richard Henderson
+ <richard.henderson@linaro.org>, Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+ Matt Turner <mattst88@gmail.com>, Thomas Bogendoerfer
+ <tsbogend@alpha.franken.de>, "James E.J. Bottomley"
+ <James.Bottomley@HansenPartnership.com>, Helge Deller <deller@gmx.de>,
+ Andreas Larsson <andreas@gaisler.com>, Sergey Shtylyov <s.shtylyov@omp.ru>,
+ Jesper Dangaard Brouer <hawk@kernel.org>, Ilias Apalodimas
+ <ilias.apalodimas@linaro.org>, Steven Rostedt <rostedt@goodmis.org>, Masami
+ Hiramatsu <mhiramat@kernel.org>, Mathieu Desnoyers
+ <mathieu.desnoyers@efficios.com>, Arnd Bergmann <arnd@arndb.de>, Alexei
+ Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau
+ <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu
+ <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, John Fastabend
+ <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, Stanislav
+ Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa
+ <jolsa@kernel.org>, Steffen Klassert <steffen.klassert@secunet.com>,
+ Herbert Xu <herbert@gondor.apana.org.au>, David Ahern <dsahern@kernel.org>,
+ Willem de Bruijn <willemdebruijn.kernel@gmail.com>, Shuah Khan
+ <shuah@kernel.org>, Sumit Semwal <sumit.semwal@linaro.org>, "Christian
+ =?UTF-8?B?S8O2bmln?=" <christian.koenig@amd.com>, Bagas Sanjaya
+ <bagasdotme@gmail.com>, Christoph Hellwig <hch@infradead.org>, Nikolay
+ Aleksandrov <razor@blackwall.org>, Pavel Begunkov <asml.silence@gmail.com>,
+ David Wei <dw@davidwei.uk>, Jason Gunthorpe <jgg@ziepe.ca>, Yunsheng Lin
+ <linyunsheng@huawei.com>, Shailend Chand <shailend@google.com>, Harshitha
+ Ramamurthy <hramamurthy@google.com>, Shakeel Butt <shakeel.butt@linux.dev>,
+ Jeroen de Borst <jeroendb@google.com>, Praveen Kaligineedi
+ <pkaligineedi@google.com>
+Subject: Re: [PATCH net-next v12 00/13] Device Memory TCP
+Message-ID: <20240613183453.2423e23b@kernel.org>
+In-Reply-To: <20240613013557.1169171-1-almasrymina@google.com>
+References: <20240613013557.1169171-1-almasrymina@google.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Thu, 2024-06-13 at 10:50 +0100, Alan Maguire wrote:
-> Now that btf_parse_elf() handles .BTF.base section presence,
-> we need to ensure that resolve_btfids uses .BTF.base when present
-> rather than the vmlinux base BTF passed in via the -B option.
-> Detect .BTF.base section presence and unset the base BTF path
-> to ensure that BTF ELF parsing will do the right thing.
->=20
-> Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
-> ---
+On Thu, 13 Jun 2024 01:35:37 +0000 Mina Almasry wrote:
+> v12: https://patchwork.kernel.org/project/netdevbpf/list/?series=859747&state=*
 
-Reviewed-by: Eduard Zingerman <eddyz87@gmail.com>
+patches 5 and 6 transiently break the build
 
-[...]
+../include/trace/events/page_pool.h:65:23: error: use of undeclared identifier 'NET_IOV'
+   65 |                   __entry->netmem & NET_IOV, __entry->pfn, __entry->release)
+      |                                     ^
+../include/trace/events/page_pool.h:91:23: error: use of undeclared identifier 'NET_IOV'
+   91 |                   __entry->netmem & NET_IOV, __entry->pfn, __entry->hold)
+      |                                     ^
+
+Looking at NIPA status the builders are 12h behind, so please don't
+repost immediately. This series takes a lot of compute cycles to build.
+
+FWIW there is a docker version of NIPA checks in the nipa repo.
+
+https://github.com/linux-netdev/nipa/tree/main/docker
+
+IDK if it still works, but could help avoid mistakes..
 
