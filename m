@@ -1,56 +1,51 @@
-Return-Path: <bpf+bounces-32182-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-32183-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C4528908972
-	for <lists+bpf@lfdr.de>; Fri, 14 Jun 2024 12:15:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 915AB908A56
+	for <lists+bpf@lfdr.de>; Fri, 14 Jun 2024 12:42:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 806101F28BE9
-	for <lists+bpf@lfdr.de>; Fri, 14 Jun 2024 10:15:21 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 439E51F2BF87
+	for <lists+bpf@lfdr.de>; Fri, 14 Jun 2024 10:42:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C7112193091;
-	Fri, 14 Jun 2024 10:15:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="g4BM4jLm"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B721A194AC2;
+	Fri, 14 Jun 2024 10:41:57 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [91.216.245.30])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 44D10149C4A;
-	Fri, 14 Jun 2024 10:15:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 362B113BAC8;
+	Fri, 14 Jun 2024 10:41:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.216.245.30
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718360114; cv=none; b=hOVm+pmfG1F99O11nwhtTJmi2zTMBS6cHgtPJgyYjHiv7Oo+8h+1NTQzJToudWOHF7a4ukbWdoIlqQvCKaO0F++G8NkzfC9AzxSDOdcCZriHAEkdnqwWittY1OG95w7ylRKpSCXY7B543ZViog3NUy+aVJb65yJyZi7+QAaC4qA=
+	t=1718361717; cv=none; b=dEe3YeQ+RGeN0KtiAeaMumctKcXFoeKpEeh3homhBBV8CiCGWAvrDbKFKMQyYEe1iKajmmLDlMx7MsWwtD+t17uWT2POB0VyTe2w1YAlYFWppXdNFWZpWEQgPS4DvkRJN01xuZkNJu2Km7V37GjF6YT+Qvzlyl7BllyCK8l0Px4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718360114; c=relaxed/simple;
-	bh=tWBe86ddbolKGJQq2Ve9/vxZLYSFRHvwl7gFK1J81y4=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=tCS29PMC4FMtpTw4TR729oH12w1VNyaDz7wdLBtRdtVfgUdMe7FFgSQNf7uGNwpjU3y2AVK8w0PFxQy3Q7EUYRhhmQd9OkhCCl/7LNZNJj6QyycBTb621BKga9vtSz1oxpKr+4a2Z6lqn+v2hWGIQHVzn9otN6LEoFoBtfKKmH4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=g4BM4jLm; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B254AC2BD10;
-	Fri, 14 Jun 2024 10:15:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1718360113;
-	bh=tWBe86ddbolKGJQq2Ve9/vxZLYSFRHvwl7gFK1J81y4=;
-	h=From:To:Cc:Subject:Date:From;
-	b=g4BM4jLmM+sdFob9fg5jZeUdKmPlD0X3KC6gFjDRpXsJV8UYQVGDeBKkbkLK75Yz6
-	 I0g0nhapSddehyXg4YTi8/b7QQmFvE8xqYYhKApbsnRrxI6zWgbryrr+5s7pTWxSu4
-	 K1/k5cVwbo6yTZkr878ZiTLwTwipwsgSyhJfVYow4fYXw2lY1PBGhh92BCDo5GQ3WA
-	 DagGnaW+g0sKpsGslv4Y7F8LaamFobjTitmo76/jthOHpq0iAOirYEBSDLs2mSWHdl
-	 v/WVxwW8zwN823jPaeL1eFuQq1BAPbWtvfito/UE4PaVPS4wlCl/lTn8C7umIIjT/v
-	 CDqiLarI4EjNA==
-From: Jiri Olsa <jolsa@kernel.org>
-To: Steven Rostedt <rostedt@goodmis.org>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Andrii Nakryiko <andrii@kernel.org>
-Cc: linux-kernel@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org,
-	bpf@vger.kernel.org
-Subject: [PATCH] bpf/selftests: Fix __NR_uretprobe in uprobe_syscall test
-Date: Fri, 14 Jun 2024 12:15:09 +0200
-Message-ID: <20240614101509.764664-1-jolsa@kernel.org>
-X-Mailer: git-send-email 2.45.1
+	s=arc-20240116; t=1718361717; c=relaxed/simple;
+	bh=ObrLnWLylDgIi0cwLW/8c/nXDOdv5xtSmYQL4VlAcEs=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=n5hXF2TllpWl3Y+azL6OD+YYuNDvLZwaBCb6UmAw4XkkEsj3p41M2+8de13wNhGtJOr46cfPVJ3/UFvMFyOSpK7m8op80PzGC7cfhFIYxsMOEZYVBLja1RBhTJR/2nWU78E/BfKT2zuDS4R6osslt53xUGb6CtQkVhGGG1QMjH8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de; spf=pass smtp.mailfrom=breakpoint.cc; arc=none smtp.client-ip=91.216.245.30
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=breakpoint.cc
+Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
+	(envelope-from <fw@breakpoint.cc>)
+	id 1sI4NQ-0006Nk-RT; Fri, 14 Jun 2024 12:41:48 +0200
+From: Florian Westphal <fw@strlen.de>
+To: bpf@vger.kernel.org
+Cc: martin.lau@linux.dev,
+	daniel@iogearbox.net,
+	netdev@vger.kernel.org,
+	Florian Westphal <fw@strlen.de>,
+	syzbot+0c4150bff9fff3bf023c@syzkaller.appspotmail.com,
+	Eric Dumazet <edumazet@google.com>
+Subject: [PATCH bpf] bpf: avoid splat in pskb_pull_reason
+Date: Fri, 14 Jun 2024 12:17:33 +0200
+Message-ID: <20240614101801.9496-1-fw@strlen.de>
+X-Mailer: git-send-email 2.44.2
+In-Reply-To: <9f254c96-54f2-4457-b7ab-1d9f6187939c@gmail.com>
+References: <9f254c96-54f2-4457-b7ab-1d9f6187939c@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -59,28 +54,49 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Fixing the __NR_uretprobe number in uprobe_syscall test,
-because it changed due to merge conflict.
+syzkaller builds (CONFIG_DEBUG_NET=y) frequently trigger a debug
+hint in pskb_may_pull.
 
-Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+We'd like to retain this debug check because it might hint at integer
+overflows and other issues (kernel code should pull headers, not huge
+value).
+
+In bpf case, this splat isn't interesting at all: such (nonsensical) bpf
+programs are typically generated by a fuzzer anyway.
+
+Do what Eric suggested and suppress such warning.
+
+For CONFIG_DEBUG_NET=n we don't need the extra check because
+pskb_may_pull will do the right thing: return an error without the
+WARN() backtrace.
+
+Reported-by: syzbot+0c4150bff9fff3bf023c@syzkaller.appspotmail.com
+Closes: https://syzkaller.appspot.com/bug?extid=0c4150bff9fff3bf023c
+Fixes: 219eee9c0d16 ("net: skbuff: add overflow debug check to pull/push helpers")
+Link: https://lore.kernel.org/netdev/9f254c96-54f2-4457-b7ab-1d9f6187939c@gmail.com/
+Suggested-by: Eric Dumazet <edumazet@google.com>
+Signed-off-by: Florian Westphal <fw@strlen.de>
 ---
- tools/testing/selftests/bpf/prog_tests/uprobe_syscall.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ net/core/filter.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/uprobe_syscall.c b/tools/testing/selftests/bpf/prog_tests/uprobe_syscall.c
-index c8517c8f5313..bd8c75b620c2 100644
---- a/tools/testing/selftests/bpf/prog_tests/uprobe_syscall.c
-+++ b/tools/testing/selftests/bpf/prog_tests/uprobe_syscall.c
-@@ -216,7 +216,7 @@ static void test_uretprobe_regs_change(void)
+diff --git a/net/core/filter.c b/net/core/filter.c
+index 2510464692af..9933851c685e 100644
+--- a/net/core/filter.c
++++ b/net/core/filter.c
+@@ -1665,6 +1665,11 @@ static DEFINE_PER_CPU(struct bpf_scratchpad, bpf_sp);
+ static inline int __bpf_try_make_writable(struct sk_buff *skb,
+ 					  unsigned int write_len)
+ {
++#ifdef CONFIG_DEBUG_NET
++	/* Avoid a splat in pskb_may_pull_reason() */
++	if (write_len > INT_MAX)
++		return -EINVAL;
++#endif
+ 	return skb_ensure_writable(skb, write_len);
  }
  
- #ifndef __NR_uretprobe
--#define __NR_uretprobe 463
-+#define __NR_uretprobe 467
- #endif
- 
- __naked unsigned long uretprobe_syscall_call_1(void)
 -- 
-2.45.1
+2.44.2
 
 
