@@ -1,201 +1,125 @@
-Return-Path: <bpf+bounces-32200-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-32201-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5720B909283
-	for <lists+bpf@lfdr.de>; Fri, 14 Jun 2024 20:47:42 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 691549092D0
+	for <lists+bpf@lfdr.de>; Fri, 14 Jun 2024 21:10:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4A7E7B2616B
-	for <lists+bpf@lfdr.de>; Fri, 14 Jun 2024 18:47:39 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7D5091C25B69
+	for <lists+bpf@lfdr.de>; Fri, 14 Jun 2024 19:10:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 36FC219FA96;
-	Fri, 14 Jun 2024 18:47:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1886F1A3BDF;
+	Fri, 14 Jun 2024 19:09:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="ZJjjEm4P"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bwkDrTTr"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-184.mta0.migadu.com (out-184.mta0.migadu.com [91.218.175.184])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 024CF19EED1
-	for <bpf@vger.kernel.org>; Fri, 14 Jun 2024 18:47:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.184
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 89B07188CCD;
+	Fri, 14 Jun 2024 19:09:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718390854; cv=none; b=NRtLDpNhgWbEvIRNTUY4M7AxXZxbZumnFxNd7frr92+tLGuZUeLApDl+H3DPDcJ/FyLGbUugjTNqXH3TlHjaym4TaZ04zsPtdMAcIHa68Mj5H2yoPO5zs5kXO9y+1cWHsbeWZtq4+yk105BGvdziEueDtUgr1uiIyqyzkH2oO+o=
+	t=1718392190; cv=none; b=YHTg2nBMv1Bstue3FiAC3kox7HJsoQKc79iqD9Ozwy40y54s+tdEr+WiBSogihLK1Pr1A8ZCxIS08zm9lWM1548j/aKCreIVOCpjVYp4Oc7kLxHmqD2jLSlP0eSeJAosbIOvOjlpJPfGYawBCsK9ZAzLg04ftmmIw+JpYve6jio=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718390854; c=relaxed/simple;
-	bh=UhMvojSAsVzgdczFuMToeNtcmzG5EXtM+jICfXnbchc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Wn4iClfdGzmfJB7+HMJbC6/Tkr0gKCoiKVAnAeZQ8zld/XeC7VpF8KMxkII4LLnC4huLmJlj83lOdOedVOcb+vzg8Squa6IK2pXvf+G7XHLSIU9iURL/JXp/+047PWcFqu48eZMl6vhjXw4+nzc9QgRbhvxIQ8x724oZ8KaY0DA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=ZJjjEm4P; arc=none smtp.client-ip=91.218.175.184
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Envelope-To: tony.ambardar@gmail.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1718390849;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=J1j5LuE41r0Wm0nd7SJIAvSnDEO04V6QUnARr9e2yXo=;
-	b=ZJjjEm4PMOGrHVXdJnnhVcC572bWDnzNJN8v7GIOXLwEQ7QZ7dL+CvDeIS5iPzky1dAbkE
-	pNWZOVAB56YGC6X8YTo1d82hZA+8ZvK6OqnY/yc57qENdqxBUhSatTFB357/ATaOgIE01X
-	Ds+R1fwhdLCCCzbkBt/yO1qWW1FKnIk=
-X-Envelope-To: bpf@vger.kernel.org
-X-Envelope-To: ast@kernel.org
-X-Envelope-To: daniel@iogearbox.net
-X-Envelope-To: andrii@kernel.org
-X-Envelope-To: martin.lau@linux.dev
-X-Envelope-To: eddyz87@gmail.com
-X-Envelope-To: song@kernel.org
-X-Envelope-To: john.fastabend@gmail.com
-X-Envelope-To: kpsingh@kernel.org
-X-Envelope-To: sdf@google.com
-X-Envelope-To: haoluo@google.com
-X-Envelope-To: jolsa@kernel.org
-X-Envelope-To: ojeda@kernel.org
-X-Envelope-To: stable@vger.kernel.org
-Message-ID: <f1459b36-fd78-4ac3-8c37-e34222c546bf@linux.dev>
-Date: Fri, 14 Jun 2024 11:47:19 -0700
+	s=arc-20240116; t=1718392190; c=relaxed/simple;
+	bh=DGSt7WrCiXZzupZdO8+/84/UT48LDigcSB3517jwWow=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=CcvBGe/wLOzQxuYuJjTgkgvThAaKw3aeWsnUdmbMBl6kFtE4gwOyMoAoAwEpAE8ZUIJw4M1EY0iDu8WjNHa6KvRqrO6h1rxmwQowDV11eqFkJpuIKzW98+f+nx9BAM9YdpmxZvEbSaJM2xqPIoeclAVE+CONMEimCjX5iauclXY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bwkDrTTr; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B779FC2BD10;
+	Fri, 14 Jun 2024 19:09:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1718392190;
+	bh=DGSt7WrCiXZzupZdO8+/84/UT48LDigcSB3517jwWow=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=bwkDrTTrCTKyyRuM7HbMFPFTca/9jnPoVf3EYfp7wCXnsc8ouQ2DbVU62wxZgH1BS
+	 1XQp3574l8FXcfOQ0EdIB9GHzgb0er1UsKgemtePUwq0j0ikoljp3o8wYcCJalU21m
+	 sn7I+Qg7OxxJ42/BbwT87To3fi32R+UkBKBMNf9rska+VTFCsekukADexHnw7+1muh
+	 mzFj4FHk0OUHCclHQCbsSosX8Wo60ijzg5berlQ3WeQN3IrW9GQXy848TzflE+SZSA
+	 knCotht8kuAdKx0bgy4cyaaSCLFWC6uZylZfpZgECSjgvpB8IiehNPOTlQzF8zkkd2
+	 Xh9ChYtwtJLLw==
+Date: Fri, 14 Jun 2024 16:09:46 -0300
+From: Arnaldo Carvalho de Melo <acme@kernel.org>
+To: Matthias Schwarzott <zzam@gentoo.org>
+Cc: dwarves@vger.kernel.org,
+	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+	bpf@vger.kernel.org, Alan Maguire <alan.maguire@oracle.com>,
+	Jiri Olsa <jolsa@kernel.org>, Jan Engelhardt <jengelh@inai.de>,
+	Viktor Malik <vmalik@redhat.com>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Jan Alexander Steffens <heftig@archlinux.org>,
+	Domenico Andreoli <cavok@debian.org>,
+	Dominique Leuenberger <dimstar@opensuse.org>,
+	Daniel Xu <dxu@dxuuu.xyz>, Yonghong Song <yonghong.song@linux.dev>
+Subject: Re: ANNOUNCE: pahole v1.27 (reproducible builds, BTF kfuncs)
+Message-ID: <ZmyVehvNnhrMerlv@x1>
+References: <ZmjBHWw-Q5hKBiwA@x1>
+ <4154d202-5c72-493e-bf3f-bce882a296c6@gentoo.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf v2 1/2] compiler_types.h: Define __retain for
- __attribute__((__retain__))
-To: Tony Ambardar <tony.ambardar@gmail.com>
-Cc: bpf@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
- Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman
- <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
- Jiri Olsa <jolsa@kernel.org>, Miguel Ojeda <ojeda@kernel.org>,
- stable@vger.kernel.org
-References: <cover.1717413886.git.Tony.Ambardar@gmail.com>
- <cover.1717477560.git.Tony.Ambardar@gmail.com>
- <b31bca5a5e6765a0f32cc8c19b1d9cdbfaa822b5.1717477560.git.Tony.Ambardar@gmail.com>
- <7540222d-92e0-47f7-a880-7c4440671740@linux.dev>
- <ZmeEs2eaRe0E1Hk8@kodidev-ubuntu>
-Content-Language: en-GB
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Yonghong Song <yonghong.song@linux.dev>
-In-Reply-To: <ZmeEs2eaRe0E1Hk8@kodidev-ubuntu>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <4154d202-5c72-493e-bf3f-bce882a296c6@gentoo.org>
 
+On Wed, Jun 12, 2024 at 12:07:09PM +0200, Matthias Schwarzott wrote:
+> Am 11.06.24 um 23:26 schrieb Arnaldo Carvalho de Melo:
+> > Hi,
+> > 	The v1.27 release of pahole and its friends is out, supporting
+> > parallel reproducible builds and encoding kernel kfuncs in BTF, allowing
+> > tools such as bpftrace to enumerate the available kfuncs and obtain its
+> > function signatures and return types.
+> > 
+> 
+> Regarding packaging of pahole:
+> What is the state of the contained ostra-cg?
 
-On 6/10/24 3:56 PM, Tony Ambardar wrote:
-> On Tue, Jun 04, 2024 at 10:55:39PM -0700, Yonghong Song wrote:
->> On 6/3/24 10:23 PM, Tony Ambardar wrote:
->>> Some code includes the __used macro to prevent functions and data from
->>> being optimized out. This macro implements __attribute__((__used__)), which
->>> operates at the compiler and IR-level, and so still allows a linker to
->>> remove objects intended to be kept.
->>>
->>> Compilers supporting __attribute__((__retain__)) can address this gap by
->>> setting the flag SHF_GNU_RETAIN on the section of a function/variable,
->>> indicating to the linker the object should be retained. This attribute is
->>> available since gcc 11, clang 13, and binutils 2.36.
->>>
->>> Provide a __retain macro implementing __attribute__((__retain__)), whose
->>> first user will be the '__bpf_kfunc' tag.
->>>
->>> Link: https://lore.kernel.org/bpf/ZlmGoT9KiYLZd91S@krava/T/
->>> Cc: stable@vger.kernel.org # v6.6+
->>> Signed-off-by: Tony Ambardar <Tony.Ambardar@gmail.com>
->>> ---
->>>    include/linux/compiler_types.h | 23 +++++++++++++++++++++++
->>>    1 file changed, 23 insertions(+)
->>>
->>> diff --git a/include/linux/compiler_types.h b/include/linux/compiler_types.h
->>> index 93600de3800b..f14c275950b5 100644
->>> --- a/include/linux/compiler_types.h
->>> +++ b/include/linux/compiler_types.h
->>> @@ -143,6 +143,29 @@ static inline void __chk_io_ptr(const volatile void __iomem *ptr) { }
->>>    # define __preserve_most
->>>    #endif
->>> +/*
->>> + * Annotating a function/variable with __retain tells the compiler to place
->>> + * the object in its own section and set the flag SHF_GNU_RETAIN. This flag
->>> + * instructs the linker to retain the object during garbage-cleanup or LTO
->>> + * phases.
->>> + *
->>> + * Note that the __used macro is also used to prevent functions or data
->>> + * being optimized out, but operates at the compiler/IR-level and may still
->>> + * allow unintended removal of objects during linking.
->>> + *
->>> + * Optional: only supported since gcc >= 11, clang >= 13
->>> + *
->>> + *   gcc: https://gcc.gnu.org/onlinedocs/gcc/Common-Function-Attributes.html#index-retain-function-attribute
->>> + * clang: https://clang.llvm.org/docs/AttributeReference.html#retain
->>> + */
->>> +#if __has_attribute(__retain__) && \
->>> +	(defined(CONFIG_LD_DEAD_CODE_DATA_ELIMINATION) || \
->>> +	 defined(CONFIG_LTO_CLANG))
->> Could you explain why CONFIG_LTO_CLANG is added here?
->> IIUC, the __used macro permits garbage collection at section
->> level, so CLANG_LTO_CLANG without
->> CONFIG_LD_DEAD_CODE_DATA_ELIMINATION
->> shuold not change final section dynamics, right?
-> Hi Yonghong,
->
-> I included the conditional guard to ensure consistent behaviour between
-> __retain and other features forcing split sections. In particular, the same
-> guard is used in vmlinux.lds.h to merge split sections where needed. For
-> example, using __retain in llvm builds without CONFIG_LTO was failing CI
-> tests on kernel-patches/bpf because the kernel didn't boot properly. And in
-> further testing, the kernel had no issues loading BPF kfunc modules with
-> such split sections, so I left the module (partial) linking scripts alone.
+I need to make a decision on that, it is used to produce things like:
 
-I tried with both bpf and bpf-next tree and I cannot make CONFIG_HAVE_LD_DEAD_CODE_DATA_ELIMINATION=y
-in .config file. The following are all occurances in Kconfig:
+http://vger.kernel.org/~acme/ostra/callgraphs/sock/0xf61bf500/
 
-$ egrep -r HAVE_LD_DEAD_CODE_DATA_ELIMINATION
-arch/mips/Kconfig:      select HAVE_LD_DEAD_CODE_DATA_ELIMINATION
-arch/powerpc/Kconfig:   select HAVE_LD_DEAD_CODE_DATA_ELIMINATION if HAVE_OBJTOOL_MCOUNT && (!ARCH_USING_PATCHABLE_FUNCTION_ENTRY || (!CC_IS_GCC || GCC_VERSION >= 110100))
-arch/riscv/Kconfig:     select HAVE_LD_DEAD_CODE_DATA_ELIMINATION if !LD_IS_LLD
-init/Kconfig:config HAVE_LD_DEAD_CODE_DATA_ELIMINATION
-init/Kconfig:   depends on HAVE_LD_DEAD_CODE_DATA_ELIMINATION
+As documented in:
 
-Are there some pending patches to enable HAVE_LD_DEAD_CODE_DATA_ELIMINATION
-for x86?
+https://git.kernel.org/pub/scm/devel/pahole/pahole.git/tree/README.ctracer
 
-I could foce CONFIG_HAVE_LD_DEAD_CODE_DATA_ELIMINATION=y with the following hack:
-diff --git a/init/Kconfig b/init/Kconfig
-index 72404c1f2157..adf8718e2f5b 100644
---- a/init/Kconfig
-+++ b/init/Kconfig
-@@ -1402,7 +1402,7 @@ config CC_OPTIMIZE_FOR_SIZE
-  endchoice
-  
-  config HAVE_LD_DEAD_CODE_DATA_ELIMINATION
--       bool
-+       def_bool y
-         help
-           This requires that the arch annotates or otherwise protects
-           its external entry points from being discarded. Linker scripts
+But yes, it needs to get retested after all these years to see how
+difficult it would be to try and get it back working.
 
-But with the above, I cannot boot the kernel.
+- Arnaldo
 
-
-Did I miss anything?
-
->
-> Maybe I misunderstand you question re: __used?
->
-> Thanks,
-> Tony
->>> +# define __retain			__attribute__((__retain__))
->>> +#else
->>> +# define __retain
->>> +#endif
->>> +
->>>    /* Compiler specific macros. */
->>>    #ifdef __clang__
->>>    #include <linux/compiler-clang.h>
+> I have no clue what it is and how to use it. Is there still a use-case for
+> it?
+> 
+> Starting it without arguments only shows the usage string.
+> Running it with two dummy arguments:
+> $ ostra-cg x y
+> Traceback (most recent call last):
+>   File "/usr/bin/ostra-cg", line 404, in <module>
+>     class_def = ostra.class_definition(class_def_file = "%s.fields" %
+> traced_class,
+> 
+> ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>   File "/usr/share/dwarves/runtime/python/ostra.py", line 154, in __init__
+>     f = file(class_def_file)
+>         ^^^^
+> NameError: name 'file' is not defined. Did you mean: 'field'?
+> 
+> According to
+> https://stackoverflow.com/questions/32131230/python-file-function the
+> function file() does not exist in python3.
+> 
+> This part could be fixed by replacing it with open() but I wonder if this is
+> worth it.
+> 
+> As nobody has complained about it being broken:
+> Should ostra just be removed?
+> 
+> Regards
+> Matthias
 
