@@ -1,118 +1,247 @@
-Return-Path: <bpf+bounces-32150-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-32151-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8A1E790802A
-	for <lists+bpf@lfdr.de>; Fri, 14 Jun 2024 02:26:18 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 73A8090802E
+	for <lists+bpf@lfdr.de>; Fri, 14 Jun 2024 02:30:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8A5911C212BA
-	for <lists+bpf@lfdr.de>; Fri, 14 Jun 2024 00:26:17 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E2DA0283B20
+	for <lists+bpf@lfdr.de>; Fri, 14 Jun 2024 00:30:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E017A138C;
-	Fri, 14 Jun 2024 00:26:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A0A851854;
+	Fri, 14 Jun 2024 00:30:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WHPc2rqs"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PwjMlSMB"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f174.google.com (mail-pg1-f174.google.com [209.85.215.174])
+Received: from mail-wr1-f44.google.com (mail-wr1-f44.google.com [209.85.221.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 32F24383
-	for <bpf@vger.kernel.org>; Fri, 14 Jun 2024 00:26:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 85611372
+	for <bpf@vger.kernel.org>; Fri, 14 Jun 2024 00:30:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718324771; cv=none; b=kW7Y4JN0Bqbf/iDSFJFYYr0xiy1LMlCKiIOWqP41JIdqEMvsIidYAxVZltwUcGni7Kc6E2BtCLw/rq+R6tm6LuqT9TSYsYdHxJ1jKnMrkNtz6mxzzmdvsMNmbxqv33fa6poWS9RAvbzcC+d6iYKOXBP1BBB1mN8+lqqUJ5U9lqU=
+	t=1718325025; cv=none; b=mmHUwuAllSipvG36shNIAjgtm3WzHYBlGtiL36cLkPjCi35WXafCErABsxQQzeb1DxyLQpXCo3ksSw55+YtSvJPlnxIrZavucV3ucfqhuGT6E8iyek+ZIZ6eUC83uYhVCPGImxAaYH65vXOi2CBF+1WznUAInI7WU0iF8rZGStw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718324771; c=relaxed/simple;
-	bh=otIxQWhU545pEGQsscl6JDj+UL4/Va46xqVVeAegnQk=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=BHn+KJwnMuLbN7eC/xFv2y6GGcwHYHqCQefvkXhH9vxZeC725QIoOfF/KiN96dzoIjFKrnR7fIhna9kfZ3EVgBPm/6LRH9zjKHk5Art+udlMpqoowMuQPzfvO7Ve8YBz0LoxPzUUjR2SKIxS+ET81iaBA4DV6PEMg3s7WeZ7jEo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=WHPc2rqs; arc=none smtp.client-ip=209.85.215.174
+	s=arc-20240116; t=1718325025; c=relaxed/simple;
+	bh=NboYpeFrS9/+N22bN3So3cGJhWvmUQv00N6/gLpJjXI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=qJAAKe5Qkn464Pr1yDPo0WRtam/RZ9EMBOi6FLNHYlVWz3StKyNFJTpjTFXgbYnYH7MKYRKZ94z+5zj2W0MogvYJT8aO90pm+uy3yiUh0RPtMlR0Nfi1eeggPGJZpNs1EEgBxz81rPIjL2Rnt8XdJ60JdA8AI3U/kLEVhdEDdhE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=PwjMlSMB; arc=none smtp.client-ip=209.85.221.44
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f174.google.com with SMTP id 41be03b00d2f7-6fb2f398423so1091681a12.0
-        for <bpf@vger.kernel.org>; Thu, 13 Jun 2024 17:26:09 -0700 (PDT)
+Received: by mail-wr1-f44.google.com with SMTP id ffacd0b85a97d-35f123bf735so1152756f8f.1
+        for <bpf@vger.kernel.org>; Thu, 13 Jun 2024 17:30:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1718324769; x=1718929569; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=u7glo9uA5+NIkIVm3+uPMg4GyScf7lUKCX9Qhf8CqiU=;
-        b=WHPc2rqspDwiSxTN5NV6dm9gBRvjxnpA5pyXDT8UiSU4PEtbr2saLzQG3E4Gbh/4HS
-         QSFRk2MNtLJYureApbUougXr+Hb6xf1hKa93wL5nNfuDnbkPhcRUOUYI+NCClbvCTGOt
-         aFtLAbx2VKPtO4lScbPHcTwZjT5eWzZw8Oyrvh+XTapDK1EfUj16jByLzarblVMBU3IL
-         0z9wioZezUFwsTtoZ6MXSfXwSsRKXC8ab4FvnKYCKYrrUOLbvC8DRUXsUfP80SjE1gZj
-         V7/EfRA6TqFCHTDEHFCEF2cTCeuCyzX8EluKkNaHXhq4WgOPWpV5hC60N2v5q8D+56Kh
-         1iMg==
+        d=gmail.com; s=20230601; t=1718325022; x=1718929822; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=MNFAzLdZdP6mTBtuOfiQ9XSMBhRos9nDLDzd0vu6t1A=;
+        b=PwjMlSMBQpOuw8gsbSXh4SqkIM145xo3i72a8nnpscVR0xIH+CaKiIsKles11EYdKD
+         QynnhRL2nv6BXTrT0uq9Tuj9XM9EcFjO7S6jSuAVSFvecR81Lds0TjXAz7DlIHjYRbW2
+         yN6qVujsFcXQXofHzI96hLhDi2yTS650wqFW1DotcPxh/JnNeL4XlNsuEM1E6BIq4QOU
+         AiQx7q0L69x7axalTtscy9GEHF0Yy4p2NAa45A/5+BdCRk5ojSE4xAqTyHJ86SkQyM4I
+         Ng9tlHonmu59c9wDheRr8uE4Csn7u8ox5EtXcOi8YO5Xh4Mafi0cwr24V3ow+rAbrSDF
+         FyQw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1718324769; x=1718929569;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=u7glo9uA5+NIkIVm3+uPMg4GyScf7lUKCX9Qhf8CqiU=;
-        b=sN55ThtkTKB4LpyiPqf7eTT73us/qL3vFt+MWy5x7ckN0VA/dhhBJ++mgM66SUDJac
-         Gmss/3Gnk1QkSc99xc3pQ6r8G5wua+wNrvFhLDxqXKAcGAxA6RiId2Hl/EcYNmXcCTpp
-         ReY3g63Uau+4JLz73Ot0VxsAzYLDa+5kCe3Gww/qZK3hm8dHX7SH6ivb1YXfeKMZBKgh
-         Kamx/uPVFRwn8kgxO/tSo7ZdW2GDH/9HUvB7EifhtvC4kFzid0xIPG3ux7xPx9SRSZYF
-         prFdcG8ArYII/b8nq97xVkh+fjPq3Epr+VmPFIIAZB7qoPbb6iZ9TgE6cneJ/8KMMTMx
-         Je8Q==
-X-Forwarded-Encrypted: i=1; AJvYcCXccgpeafQOD1lAQ3UALWgRVYjC/rfAqA2MCtUs1hZcqcv6mFkTYZ27rHgngQTfHbcY7qihTMHycBe4wxcduLqRXJfy
-X-Gm-Message-State: AOJu0YzDo3+VoIkuoipd3R913wJftygddmX4iJMDnH4yXwfJS/YM0BOA
-	qk2vclBaHqz6a5cWh20FBwr7kOJWJtRFKAL/XHSYNn/55yZrPSSv
-X-Google-Smtp-Source: AGHT+IFH7tLI0qadhUwHWWc+EnIbs3B8kIaFa81EBMIcvqA/RrM6SM8ZlptGtogkjMdv8p269q4URA==
-X-Received: by 2002:a17:902:eccc:b0:1f7:5a6c:ae3e with SMTP id d9443c01a7336-1f8627e337dmr17944145ad.33.1718324769280;
-        Thu, 13 Jun 2024 17:26:09 -0700 (PDT)
-Received: from [192.168.0.31] ([38.34.87.7])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-1f855f01774sm20338805ad.183.2024.06.13.17.26.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 13 Jun 2024 17:26:08 -0700 (PDT)
-Message-ID: <ae960343c20b56253c321160215496515e7f44dd.camel@gmail.com>
-Subject: Re: [PATCH v6 bpf-next 3/9] libbpf: split BTF relocation
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Alan Maguire <alan.maguire@oracle.com>, andrii@kernel.org, ast@kernel.org
-Cc: daniel@iogearbox.net, martin.lau@linux.dev, song@kernel.org, 
-	yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org, 
-	sdf@google.com, haoluo@google.com, jolsa@kernel.org, mcgrof@kernel.org, 
-	masahiroy@kernel.org, nathan@kernel.org, mykolal@fb.com, dxu@dxuuu.xyz, 
-	bpf@vger.kernel.org
-Date: Thu, 13 Jun 2024 17:26:02 -0700
-In-Reply-To: <20240613095014.357981-4-alan.maguire@oracle.com>
-References: <20240613095014.357981-1-alan.maguire@oracle.com>
-	 <20240613095014.357981-4-alan.maguire@oracle.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.44.4-0ubuntu2 
+        d=1e100.net; s=20230601; t=1718325022; x=1718929822;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=MNFAzLdZdP6mTBtuOfiQ9XSMBhRos9nDLDzd0vu6t1A=;
+        b=Yo1eW4XqwJbe55yAeQ8yluXs2RdNTVxyQTYh7HGQmKZXvirFbDJODiDBaQwI9gKrrF
+         RgQVN40ZJ3qT3kBJ6aJiH3G0+SGT5HfwoLPDCVU4bHYLXNT55ro36sAd3gSs6haDQyyG
+         aIrhkg+i2E69ZKpY1NUh8Cob24SNYfmlerq00Kn7o/qWUEgq1uv8XAyDZfLdics8zchR
+         40H+UIgzDbB7JIuuFKIUvDXRunqgIlrQi2qPgvr+0x6WbWQZDFxei75na6v9vrOXprY3
+         alou/2Pg3yQ36pSCMXnl3V0mVapeSxBxRC4WquDbuMhXF6exI42iyJxZ59XFqwg3dbqe
+         hs8g==
+X-Gm-Message-State: AOJu0YxhyrXxsEn3UFKnSUpmbQ6EuJDc6LxRZU/R/RfhqRqwV1Diy6NM
+	YQ+wYg7o7jkRrt/kpL7AGNIf2Wnpj1J2P6wYT2YidGHkOnh8byV5Aza+UDEXQlBjYHzWhIQv72b
+	//tu8212ARe/ScyctxG1s7FtVjxs=
+X-Google-Smtp-Source: AGHT+IFKO/rAXOwXF76SzlPYQAmrsO4hSDaPTRptQjeamvD9sV0JB2uPtHzWI016EhRZ2xBc7tygK2UlpaY1OJYp/oA=
+X-Received: by 2002:a5d:4bc8:0:b0:360:6f56:ae10 with SMTP id
+ ffacd0b85a97d-3607a7b9e90mr845195f8f.23.1718325021478; Thu, 13 Jun 2024
+ 17:30:21 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+References: <20240610051839.1296086-1-yonghong.song@linux.dev>
+In-Reply-To: <20240610051839.1296086-1-yonghong.song@linux.dev>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Thu, 13 Jun 2024 17:30:09 -0700
+Message-ID: <CAADnVQ+FwPAbeiiD78xnkRLZAiSDC4ObkKWV+x9bpSK9aM_GsA@mail.gmail.com>
+Subject: Re: [RFC PATCH bpf-next] bpf: Support shadow stack for bpf progs
+To: Yonghong Song <yonghong.song@linux.dev>
+Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
+	Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Kernel Team <kernel-team@fb.com>, Martin KaFai Lau <martin.lau@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, 2024-06-13 at 10:50 +0100, Alan Maguire wrote:
-> Map distilled base BTF type ids referenced in split BTF and their
-> references to the base BTF passed in, and if the mapping succeeds,
-> reparent the split BTF to the base BTF.
->=20
-> Relocation is done by first verifying that distilled base BTF
-> only consists of named INT, FLOAT, ENUM, FWD, STRUCT and
-> UNION kinds; then we sort these to speed lookups.  Once sorted,
-> the base BTF is iterated, and for each relevant kind we check
-> for an equivalent in distilled base BTF.  When found, the
-> mapping from distilled -> base BTF id and string offset is recorded.
-> In establishing mappings, we need to ensure we check STRUCT/UNION
-> size when the STRUCT/UNION is embedded in a split BTF STRUCT/UNION,
-> and when duplicate names exist for the same STRUCT/UNION.  Otherwise
-> size is ignored in matching STRUCT/UNIONs.
->=20
-> Once all mappings are established, we can update type ids
-> and string offsets in split BTF and reparent it to the new base.
->=20
-> Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
-> ---
+On Sun, Jun 9, 2024 at 10:18=E2=80=AFPM Yonghong Song <yonghong.song@linux.=
+dev> wrote:
+>
 
-Acked-by: Eduard Zingerman <eddyz87@gmail.com>
+I think "shadow stack" already has at least two different meanings
+in the kernel.
+Let's avoid adding 3rd.
+How about "divided stack" ?
 
-[...]
+> +static void emit_percpu_shadow_frame_ptr(u8 **pprog, void *shadow_frame_=
+ptr)
+> +{
+> +       u8 *prog =3D *pprog;
+> +
+> +       /* movabs r9, shadow_frame_ptr */
+> +       emit_mov_imm32(&prog, false, X86_REG_R9, (u32) (long) shadow_fram=
+e_ptr);
+> +
+> +       /* add <r9>, gs:[<off>] */
+> +       EMIT2(0x65, 0x4c);
+> +       EMIT3(0x03, 0x0c, 0x25);
+> +       EMIT((u32)(unsigned long)&this_cpu_off, 4);
+
+I think this can be one insn:
+lea r9, gs:[(u32)shadow_frame_ptr]
+
+> +       if (stack_depth && enable_shadow_stack) {
+
+I think enabling it for progs with small stack usage
+is unnecessary.
+The definition of "small" is complicated.
+I feel stack_depth <=3D 64 can stay as-is and
+all networking progs don't have to use it either,
+since they're called from known places.
+While tracing progs can be anywhere, so I'd enable
+divided stack for
+stack_depth > 64 && prog_type =3D=3D kprobe, tp, raw_tp, tracing, perf_even=
+t.
+
+> +               if (bpf_prog->percpu_shadow_stack_ptr) {
+> +                       percpu_shadow_stack_ptr =3D bpf_prog->percpu_shad=
+ow_stack_ptr;
+> +               } else {
+> +                       percpu_shadow_stack_ptr =3D __alloc_percpu_gfp(st=
+ack_depth, 8, GFP_KERNEL);
+> +                       if (!percpu_shadow_stack_ptr)
+> +                               return -ENOMEM;
+> +                       bpf_prog->percpu_shadow_stack_ptr =3D percpu_shad=
+ow_stack_ptr;
+> +               }
+> +               shadow_frame_ptr =3D percpu_shadow_stack_ptr + round_up(s=
+tack_depth, 8);
+> +               stack_depth =3D 0;
+> +       } else {
+> +               enable_shadow_stack =3D 0;
+> +       }
+> +
+>         arena_vm_start =3D bpf_arena_get_kern_vm_start(bpf_prog->aux->are=
+na);
+>         user_vm_start =3D bpf_arena_get_user_vm_start(bpf_prog->aux->aren=
+a);
+>
+> @@ -1342,7 +1377,7 @@ static int do_jit(struct bpf_prog *bpf_prog, int *a=
+ddrs, u8 *image, u8 *rw_image
+>         /* tail call's presence in current prog implies it is reachable *=
+/
+>         tail_call_reachable |=3D tail_call_seen;
+>
+> -       emit_prologue(&prog, bpf_prog->aux->stack_depth,
+> +       emit_prologue(&prog, stack_depth,
+>                       bpf_prog_was_classic(bpf_prog), tail_call_reachable=
+,
+>                       bpf_is_subprog(bpf_prog), bpf_prog->aux->exception_=
+cb);
+>         /* Exception callback will clobber callee regs for its own use, a=
+nd
+> @@ -1364,6 +1399,9 @@ static int do_jit(struct bpf_prog *bpf_prog, int *a=
+ddrs, u8 *image, u8 *rw_image
+>                 emit_mov_imm64(&prog, X86_REG_R12,
+>                                arena_vm_start >> 32, (u32) arena_vm_start=
+);
+>
+> +       if (enable_shadow_stack)
+> +               emit_percpu_shadow_frame_ptr(&prog, shadow_frame_ptr);
+> +
+>         ilen =3D prog - temp;
+>         if (rw_image)
+>                 memcpy(rw_image + proglen, temp, ilen);
+> @@ -1383,6 +1421,14 @@ static int do_jit(struct bpf_prog *bpf_prog, int *=
+addrs, u8 *image, u8 *rw_image
+>                 u8 *func;
+>                 int nops;
+>
+> +               if (enable_shadow_stack) {
+> +                       if (src_reg =3D=3D BPF_REG_FP)
+> +                               src_reg =3D X86_REG_R9;
+> +
+> +                       if (dst_reg =3D=3D BPF_REG_FP)
+> +                               dst_reg =3D X86_REG_R9;
+
+the verifier will reject a prog that attempts to write into R10.
+So the above shouldn't be necessary.
+
+> +               }
+> +
+>                 switch (insn->code) {
+>                         /* ALU */
+>                 case BPF_ALU | BPF_ADD | BPF_X:
+> @@ -2014,6 +2060,7 @@ st:                       if (is_imm8(insn->off))
+>                                 emit_mov_reg(&prog, is64, real_src_reg, B=
+PF_REG_0);
+>                                 /* Restore R0 after clobbering RAX */
+>                                 emit_mov_reg(&prog, true, BPF_REG_0, BPF_=
+REG_AX);
+> +
+>                                 break;
+>                         }
+>
+> @@ -2038,14 +2085,20 @@ st:                     if (is_imm8(insn->off))
+>
+>                         func =3D (u8 *) __bpf_call_base + imm32;
+>                         if (tail_call_reachable) {
+> -                               RESTORE_TAIL_CALL_CNT(bpf_prog->aux->stac=
+k_depth);
+> +                               RESTORE_TAIL_CALL_CNT(stack_depth);
+>                                 ip +=3D 7;
+>                         }
+>                         if (!imm32)
+>                                 return -EINVAL;
+> +                       if (enable_shadow_stack) {
+> +                               EMIT2(0x41, 0x51);
+> +                               ip +=3D 2;
+> +                       }
+>                         ip +=3D x86_call_depth_emit_accounting(&prog, fun=
+c, ip);
+>                         if (emit_call(&prog, func, ip))
+>                                 return -EINVAL;
+> +                       if (enable_shadow_stack)
+> +                               EMIT2(0x41, 0x59);
+
+push/pop around calls are load/store plus math on %rsp.
+I think it's cheaper to reload r9 after the call with
+a single insn.
+The reload of r9 is effectively gs+const.
+There is no memory access. So it should be faster.
+
+Technically we can replace all uses of R10=3D=3Drbp with
+'gs:' based instructions.
+Like:
+r1 =3D r10
+can be jitted into
+lea rdi, gs + (u32)shadow_frame_ptr
+
+and r0 =3D *(u32 *)(r10 - 64)
+can be jitted into:
+mov rax, dword ptr gs:[(u32)shadow_frame_ptr - 64]
+
+but that is probably a bunch of jit changes.
+So I'd start with a simple reload of r9 after each call.
+
+We need to micro-benchmark it to make sure there is no perf overhead.
 
