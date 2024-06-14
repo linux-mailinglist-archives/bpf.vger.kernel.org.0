@@ -1,98 +1,185 @@
-Return-Path: <bpf+bounces-32195-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-32196-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 37476909153
-	for <lists+bpf@lfdr.de>; Fri, 14 Jun 2024 19:20:37 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CC843909200
+	for <lists+bpf@lfdr.de>; Fri, 14 Jun 2024 19:49:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C214728417A
-	for <lists+bpf@lfdr.de>; Fri, 14 Jun 2024 17:20:35 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4E4F3B23EA0
+	for <lists+bpf@lfdr.de>; Fri, 14 Jun 2024 17:48:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B8E015FD13;
-	Fri, 14 Jun 2024 17:20:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B84CB19DF55;
+	Fri, 14 Jun 2024 17:48:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SbhzyMpl"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nRzKMURf"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 05FBE9441
-	for <bpf@vger.kernel.org>; Fri, 14 Jun 2024 17:20:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A08719D8B7;
+	Fri, 14 Jun 2024 17:48:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718385632; cv=none; b=Qjto0WbmgWWdnoqlIFVs9SvN0P1opbBIbrybM1JYSp0+u7zWj9PuSvvodVUfkVPjytORBv0P31K0uHHMs+xCx6x/IEI48Sc7jAbL5QAlT2p/snWzk6bKrWGbNpmEENPyo61I4XXsA+hBbrk7yBTrSYuQ5Ppy5HHYSVYRPbHs2Ho=
+	t=1718387306; cv=none; b=HwUh4M0pMmjOKJrEZwmUMqE4axqvk1r9ray8eT7UXgHDdTW/niPi9AYteOZKDZtIRh4kF0pt+2YiNZ0OpRDYpHuYgFezDlLjJ/7tECbfriWG0ZHFdzTZk5Na2UkdDNyfN2xMz5UJWbSBxA2Sj/gN133MxPd4AjreT3qcNLjGHqA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718385632; c=relaxed/simple;
-	bh=xzqWcKm8mrVppEi/3ovK/d5OyYvcS3SAP5bLpieGgEg=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=HyPCpz5okF4YfAVDaNT/NP6TU3kg25M/yazxdBG4MOZa/40SPPIQTOUL2NL8DBcQg2Oic5tuLpTSBkKp/ujP3Fz//b7cA6Mugpu6OMT18VSWNXMN/0EBnH1amxa2/yyf9VZ1pbPzJakRD/IjBsCOG4iL2N6Qs1+ZR+J73ukaJd0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=SbhzyMpl; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 79ACAC4AF1A;
-	Fri, 14 Jun 2024 17:20:31 +0000 (UTC)
+	s=arc-20240116; t=1718387306; c=relaxed/simple;
+	bh=kdioDkX1AS0ZacOm577/Bq/Mk3c/jw5avXaWrRVP09I=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Gkfeyz7tLsZ3AIQT+UdmN91B/PwZxiQirpioFnezjvwKyvZVNBrC73v+OVRtz0A+mL9KjzAR4ZIqmLwlrPHDWCwXo2+E7u93ieKMRKDgVcI48YOfrahYEh66lJsxcvC19682m65+eTnypX7m6w6Cm22LanPTMXM8s9gCG38Qfsg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nRzKMURf; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9C01FC2BD10;
+	Fri, 14 Jun 2024 17:48:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1718385631;
-	bh=xzqWcKm8mrVppEi/3ovK/d5OyYvcS3SAP5bLpieGgEg=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=SbhzyMpleE12hBN0pDI76ulz/FrFnZDbhbb18ET99SQZBx9+wpSl8bfIQ5nswjNkq
-	 3jxNLTOvqyLYkV62rY9dA5A+zKxUfKMxLVuBwSIwCdnS7TXhgsQcUsfMqb3tkJWKpx
-	 JHxaUVNPHIcCjZO/r9afXtjFh0rpYL1Bup5XPCel6GJffc7gri+bDhD16KZNjLmQvW
-	 h6BWSaY1q5ai1UFXTfIZI8gPkhkI4nFKQ7AO0HvaFdUt8QxrqeNMkZoS1pZtEH2pMR
-	 Lj8Ba7wu1fTY0fmvouIluCJkaTnDzcQGA9iqA/Fd3fp4JXPMW6mYyRUZX1g99ha5Y6
-	 Ui10KmuuHGAzw==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 63A05C43612;
-	Fri, 14 Jun 2024 17:20:31 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=k20201202; t=1718387306;
+	bh=kdioDkX1AS0ZacOm577/Bq/Mk3c/jw5avXaWrRVP09I=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=nRzKMURfx3699Ers/mBC17k9lC7l2PTU25jHIqx/w3EIokujRe01eXxCYnOeDJnsB
+	 yN2QslLeldA8xblLL50UetOwnLisGXVgtBrE54guc/Cj6SYqUafcez4HgHjxmfOCUn
+	 YkNqGwT8H4dd61l1NxGmPDnM73l6AdB1QCas/5D0VtqRESu0MY9kA7fLmrFm52ZPLb
+	 F6lFoUmQfhGtgV4x/xlU9zUz3ZOBcPW9LLGG74qkXF0ddzpbZ6BTcBxF4DHx84fGAp
+	 csYpCcMKe9J8q1DB+7EzjNBUrDgGKLS6eUhZxMwSUVzOYwIpALfl4CV8ca4NlyfexP
+	 qvcVV5z0kGXhQ==
+Date: Fri, 14 Jun 2024 10:48:22 -0700
+From: Nathan Chancellor <nathan@kernel.org>
+To: Jiri Olsa <jolsa@kernel.org>
+Cc: Steven Rostedt <rostedt@goodmis.org>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Oleg Nesterov <oleg@redhat.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>, linux-kernel@vger.kernel.org,
+	linux-trace-kernel@vger.kernel.org, linux-api@vger.kernel.org,
+	linux-man@vger.kernel.org, x86@kernel.org, bpf@vger.kernel.org,
+	Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	"Borislav Petkov (AMD)" <bp@alien8.de>,
+	Ingo Molnar <mingo@redhat.com>, Andy Lutomirski <luto@kernel.org>,
+	"Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
+	Deepak Gupta <debug@rivosinc.com>,
+	Huacai Chen <chenhuacai@kernel.org>, loongarch@lists.linux.dev
+Subject: Re: [PATCHv8 bpf-next 3/9] uprobe: Add uretprobe syscall to speed up
+ return probe
+Message-ID: <20240614174822.GA1185149@thelio-3990X>
+References: <20240611112158.40795-1-jolsa@kernel.org>
+ <20240611112158.40795-4-jolsa@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf v2 0/2] bpf: Fix linker optimization removing kfuncs
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <171838563140.12119.1794667369752421264.git-patchwork-notify@kernel.org>
-Date: Fri, 14 Jun 2024 17:20:31 +0000
-References: <cover.1717477560.git.Tony.Ambardar@gmail.com>
-In-Reply-To: <cover.1717477560.git.Tony.Ambardar@gmail.com>
-To: Tony Ambardar <tony.ambardar@gmail.com>
-Cc: bpf@vger.kernel.org, Tony.Ambardar@gmail.com, ast@kernel.org,
- daniel@iogearbox.net, andrii@kernel.org, martin.lau@linux.dev,
- eddyz87@gmail.com, song@kernel.org, yonghong.song@linux.dev,
- john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
- haoluo@google.com, jolsa@kernel.org, ojeda@kernel.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240611112158.40795-4-jolsa@kernel.org>
 
-Hello:
+Hi Jiri,
 
-This series was applied to bpf/bpf.git (master)
-by Daniel Borkmann <daniel@iogearbox.net>:
+On Tue, Jun 11, 2024 at 01:21:52PM +0200, Jiri Olsa wrote:
+> Adding uretprobe syscall instead of trap to speed up return probe.
+...
+> diff --git a/kernel/events/uprobes.c b/kernel/events/uprobes.c
+> index 2c83ba776fc7..2816e65729ac 100644
+> --- a/kernel/events/uprobes.c
+> +++ b/kernel/events/uprobes.c
+> @@ -1474,11 +1474,20 @@ static int xol_add_vma(struct mm_struct *mm, struct xol_area *area)
+>  	return ret;
+>  }
+>  
+> +void * __weak arch_uprobe_trampoline(unsigned long *psize)
+> +{
+> +	static uprobe_opcode_t insn = UPROBE_SWBP_INSN;
 
-On Mon,  3 Jun 2024 22:23:14 -0700 you wrote:
-> This patch series fixes unwanted stripping of kernel kfuncs during linker
-> optimization, as indicated by build warnings from resolve_btfids e.g.
-> "WARN: resolve_btfids: unresolved symbol ...". This can happen because the
-> __bpf_kfunc macro annotating kfunc declarations is ignored during linking.
+This change as commit ff474a78cef5 ("uprobe: Add uretprobe syscall to
+speed up return probe") in -next causes the following build error for
+ARCH=loongarch allmodconfig:
+
+  In file included from include/linux/uprobes.h:49,
+                   from include/linux/mm_types.h:16,
+                   from include/linux/mmzone.h:22,
+                   from include/linux/gfp.h:7,
+                   from include/linux/xarray.h:16,
+                   from include/linux/list_lru.h:14,
+                   from include/linux/fs.h:13,
+                   from include/linux/highmem.h:5,
+                   from kernel/events/uprobes.c:13:
+  kernel/events/uprobes.c: In function 'arch_uprobe_trampoline':
+  arch/loongarch/include/asm/uprobes.h:12:33: error: initializer element is not constant
+     12 | #define UPROBE_SWBP_INSN        larch_insn_gen_break(BRK_UPROBE_BP)
+        |                                 ^~~~~~~~~~~~~~~~~~~~
+  kernel/events/uprobes.c:1479:39: note: in expansion of macro 'UPROBE_SWBP_INSN'
+   1479 |         static uprobe_opcode_t insn = UPROBE_SWBP_INSN;
+        |                                       ^~~~~~~~~~~~~~~~
+
+> +	*psize = UPROBE_SWBP_INSN_SIZE;
+> +	return &insn;
+> +}
+> +
+>  static struct xol_area *__create_xol_area(unsigned long vaddr)
+>  {
+>  	struct mm_struct *mm = current->mm;
+> -	uprobe_opcode_t insn = UPROBE_SWBP_INSN;
+> +	unsigned long insns_size;
+>  	struct xol_area *area;
+> +	void *insns;
+>  
+>  	area = kmalloc(sizeof(*area), GFP_KERNEL);
+>  	if (unlikely(!area))
+> @@ -1502,7 +1511,8 @@ static struct xol_area *__create_xol_area(unsigned long vaddr)
+>  	/* Reserve the 1st slot for get_trampoline_vaddr() */
+>  	set_bit(0, area->bitmap);
+>  	atomic_set(&area->slot_count, 1);
+> -	arch_uprobe_copy_ixol(area->pages[0], 0, &insn, UPROBE_SWBP_INSN_SIZE);
+> +	insns = arch_uprobe_trampoline(&insns_size);
+> +	arch_uprobe_copy_ixol(area->pages[0], 0, insns, insns_size);
+>  
+>  	if (!xol_add_vma(mm, area))
+>  		return area;
+> @@ -1827,7 +1837,7 @@ void uprobe_copy_process(struct task_struct *t, unsigned long flags)
+>   *
+>   * Returns -1 in case the xol_area is not allocated.
+>   */
+> -static unsigned long get_trampoline_vaddr(void)
+> +unsigned long uprobe_get_trampoline_vaddr(void)
+>  {
+>  	struct xol_area *area;
+>  	unsigned long trampoline_vaddr = -1;
+> @@ -1878,7 +1888,7 @@ static void prepare_uretprobe(struct uprobe *uprobe, struct pt_regs *regs)
+>  	if (!ri)
+>  		return;
+>  
+> -	trampoline_vaddr = get_trampoline_vaddr();
+> +	trampoline_vaddr = uprobe_get_trampoline_vaddr();
+>  	orig_ret_vaddr = arch_uretprobe_hijack_return_addr(trampoline_vaddr, regs);
+>  	if (orig_ret_vaddr == -1)
+>  		goto fail;
+> @@ -2123,7 +2133,7 @@ static struct return_instance *find_next_ret_chain(struct return_instance *ri)
+>  	return ri;
+>  }
+>  
+> -static void handle_trampoline(struct pt_regs *regs)
+> +void uprobe_handle_trampoline(struct pt_regs *regs)
+>  {
+>  	struct uprobe_task *utask;
+>  	struct return_instance *ri, *next;
+> @@ -2187,8 +2197,8 @@ static void handle_swbp(struct pt_regs *regs)
+>  	int is_swbp;
+>  
+>  	bp_vaddr = uprobe_get_swbp_addr(regs);
+> -	if (bp_vaddr == get_trampoline_vaddr())
+> -		return handle_trampoline(regs);
+> +	if (bp_vaddr == uprobe_get_trampoline_vaddr())
+> +		return uprobe_handle_trampoline(regs);
+>  
+>  	uprobe = find_active_uprobe(bp_vaddr, &is_swbp);
+>  	if (!uprobe) {
+> -- 
+> 2.45.1
 > 
-> Patch 1 adds support for the compiler attribute "__retain__", used to
-> avoid linker garbage cleanup. Patch 2 then updates __bpf_kfunc to use this
-> attribute when LTO builds are enabled.
-> 
-> [...]
 
-Here is the summary with links:
-  - [bpf,v2,1/2] compiler_types.h: Define __retain for __attribute__((__retain__))
-    https://git.kernel.org/bpf/bpf/c/0a5d3258d7c9
-  - [bpf,v2,2/2] bpf: Harden __bpf_kfunc tag against linker kfunc removal
-    https://git.kernel.org/bpf/bpf/c/7bdcedd5c8fb
-
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+Cheers,
+Nathan
 
