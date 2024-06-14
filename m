@@ -1,118 +1,126 @@
-Return-Path: <bpf+bounces-32180-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-32181-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 335AC908760
-	for <lists+bpf@lfdr.de>; Fri, 14 Jun 2024 11:26:33 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7D824908782
+	for <lists+bpf@lfdr.de>; Fri, 14 Jun 2024 11:33:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C4D24286117
-	for <lists+bpf@lfdr.de>; Fri, 14 Jun 2024 09:26:31 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2AF68285D6E
+	for <lists+bpf@lfdr.de>; Fri, 14 Jun 2024 09:33:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E9158192B67;
-	Fri, 14 Jun 2024 09:26:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GfraxG/q"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 643521922FF;
+	Fri, 14 Jun 2024 09:33:24 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F1D813CF9E;
-	Fri, 14 Jun 2024 09:26:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC3C613BAC8;
+	Fri, 14 Jun 2024 09:33:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718357176; cv=none; b=I+Wv40XxKnrP8bNS+HXs5WEhwIwEIm86ETVv7SyckQC9hvm9lVh6SQCLe7gkKb08kyCcmQLJn0QKm4nMXcidcOmxLeCaQuKw9J7zGU8yE5qvQ/C0+XUxfg/zYdzjJCL/0V/HJ5iYE27Hl0SOKLs8nH57KHGPURZbF4Tgq/MwqW8=
+	t=1718357604; cv=none; b=gakURmPBh/FCM2pNBkZb7CivF23gQfvMw7QsPyoLrNXRorUnrfJ3Jinov39WXGLfL+zs0+EDpzjrxLslGtE8YqWbBEZielt/9v/J1Fv3kraX+lcnSE9J7zPtS7nDYLlqHkEEYvpsymq4n+G+R+7SKelKK+yFqn4qlo6rbat8N7U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718357176; c=relaxed/simple;
-	bh=RjYVsVZeskO22hC0XBoe6PRuahJdiNbuYlh8UW4q9Ec=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=T3zZwS0t/jo/w4uv2W2dtEaDpwuQEWGqEkJJocGXpogLMACkqYGHaZwm6ciegGHteCtQizm/75e0VPkLf3MqUeTT8Np+iGdvNozXdjmz0zbO7AW32eg80CpuQOHVhKqKqJPMoUe85cS8xn+fo8FD4ehmcvuq2oSqmIl5jSI5zWg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GfraxG/q; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CC6FFC2BD10;
-	Fri, 14 Jun 2024 09:26:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1718357175;
-	bh=RjYVsVZeskO22hC0XBoe6PRuahJdiNbuYlh8UW4q9Ec=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=GfraxG/qnai6WqVA80nwF7muZOesCiDzZ+eUnImSYE5OGqTAUyilOspk8wO/qTtnL
-	 xX2pdKAOy1LTLgnMMuOclxWhZZGgYZGmmWokMWZ72uDXAKnLJQ7lHQmZzx0vdTK8yo
-	 xMn1i8Ks4VfHCal5SZ6mH+S/UGCIpPxFGP9P2uhlKO2TQIYQc/dI0Z8dKo4fJaavvB
-	 NLmDGEDPPuXbSQ8lFbFT92yqiQBU0yGiVpTsDpcp1FUbR+rnM1Sad96/P0kLbRsLIH
-	 t+bBTlPtqWMrkzcxzS/WLyAF48b//KdIBxFiYaFravb5cWH83jNbJT2vWClqtWdssC
-	 c6ne2G/9BLbsg==
-From: Benjamin Tissoires <bentiss@kernel.org>
-To: Shuah Khan <shuah@kernel.org>, Jiri Kosina <jikos@kernel.org>, 
- Jonathan Corbet <corbet@lwn.net>, Alexei Starovoitov <ast@kernel.org>, 
- Benjamin Tissoires <bentiss@kernel.org>
-Cc: linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org, 
- bpf@vger.kernel.org, linux-input@vger.kernel.org, linux-doc@vger.kernel.org, 
- Peter Hutterer <peter.hutterer@who-t.net>
-In-Reply-To: <20240608-hid_bpf_struct_ops-v3-0-6ac6ade58329@kernel.org>
-References: <20240608-hid_bpf_struct_ops-v3-0-6ac6ade58329@kernel.org>
-Subject: Re: [PATCH HID v3 00/16] HID: convert HID-BPF into using
- bpf_struct_ops
-Message-Id: <171835717356.456783.6239687806060827051.b4-ty@kernel.org>
-Date: Fri, 14 Jun 2024 11:26:13 +0200
+	s=arc-20240116; t=1718357604; c=relaxed/simple;
+	bh=alNjwI+btsiWPla7LU9S2BAYfdjopRvQwWLaXrO6asA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:Cc:From:
+	 In-Reply-To:Content-Type; b=U+H1TcGsxT0eCEKzgNQwHYjHxhQjRQvN2FviXWmqPDsntEPqRpssoou3/sWnA1J3NptbCPJr7dhR4QeiMyjD44gtBzzdf3Rkg758NHzd3qUMVPLyCmc4vNWMdf4TSddumYUoPY6rwlUje2k5oxnZudbnYtnP0oG+hVwHgi6T8f8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E0C3AFEC;
+	Fri, 14 Jun 2024 02:33:44 -0700 (PDT)
+Received: from [192.168.1.100] (usa-sjc-mx-foss1.foss.arm.com [172.31.20.19])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5CD0E3F5A1;
+	Fri, 14 Jun 2024 02:33:14 -0700 (PDT)
+Message-ID: <fedf6b3f-0338-4666-a7b6-4856ab626681@arm.com>
+Date: Fri, 14 Jun 2024 10:33:13 +0100
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 1/8] perf build: Add '*.a' to clean targets
+To: Ian Rogers <irogers@google.com>
+References: <20240613233122.3564730-1-irogers@google.com>
+ <20240613233122.3564730-2-irogers@google.com>
+Content-Language: en-US
+Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
+ Arnaldo Carvalho de Melo <acme@kernel.org>,
+ Namhyung Kim <namhyung@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
+ Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+ Jiri Olsa <jolsa@kernel.org>, Adrian Hunter <adrian.hunter@intel.com>,
+ Kan Liang <kan.liang@linux.intel.com>, John Garry <john.g.garry@oracle.com>,
+ Will Deacon <will@kernel.org>, Mike Leach <mike.leach@linaro.org>,
+ Leo Yan <leo.yan@linux.dev>, Guo Ren <guoren@kernel.org>,
+ Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt
+ <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>,
+ Suzuki K Poulose <suzuki.poulose@arm.com>,
+ Yicong Yang <yangyicong@hisilicon.com>,
+ Jonathan Cameron <jonathan.cameron@huawei.com>,
+ Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>,
+ Wedson Almeida Filho <wedsonaf@gmail.com>, Boqun Feng
+ <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
+ =?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
+ Benno Lossin <benno.lossin@proton.me>,
+ Andreas Hindborg <a.hindborg@samsung.com>, Alice Ryhl
+ <aliceryhl@google.com>, Nick Terrell <terrelln@fb.com>,
+ Ravi Bangoria <ravi.bangoria@amd.com>, Kees Cook <keescook@chromium.org>,
+ Andrei Vagin <avagin@google.com>, Athira Jajeev
+ <atrajeev@linux.vnet.ibm.com>, Oliver Upton <oliver.upton@linux.dev>,
+ Ze Gao <zegao2021@gmail.com>, linux-kernel@vger.kernel.org,
+ linux-perf-users@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-csky@vger.kernel.org, linux-riscv@lists.infradead.org,
+ coresight@lists.linaro.org, rust-for-linux@vger.kernel.org,
+ bpf@vger.kernel.org
+From: James Clark <james.clark@arm.com>
+In-Reply-To: <20240613233122.3564730-2-irogers@google.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.12.4
 
-On Sat, 08 Jun 2024 11:01:12 +0200, Benjamin Tissoires wrote:
-> The purpose of this series is to rethink how HID-BPF is invoked.
-> Currently it implies a jmp table, a prog fd bpf_map, a preloaded tracing
-> bpf program and a lot of manual work for handling the bpf program
-> lifetime and addition/removal.
+
+
+On 14/06/2024 00:31, Ian Rogers wrote:
+> Fix some excessively long lines by deploying '\'.
 > 
-> OTOH, bpf_struct_ops take care of most of the bpf handling leaving us
-> with a simple list of ops pointers, and we can directly call the
-> struct_ops program from the kernel as a regular function.
+> Signed-off-by: Ian Rogers <irogers@google.com>
+> ---
+>  tools/perf/Makefile.perf | 17 ++++++++++++-----
+>  1 file changed, 12 insertions(+), 5 deletions(-)
 > 
-> [...]
 
-Applied to hid/hid.git (for-6.11/bpf), thanks!
+Reviewed-by: James Clark <james.clark@arm.com>
 
-[01/16] HID: rename struct hid_bpf_ops into hid_ops
-        https://git.kernel.org/hid/hid/c/146a06a0d225
-[02/16] HID: bpf: add hid_get/put_device() helpers
-        https://git.kernel.org/hid/hid/c/99b40bf8053f
-[03/16] HID: bpf: implement HID-BPF through bpf_struct_ops
-        https://git.kernel.org/hid/hid/c/ebc0d8093e8c
-[04/16] selftests/hid: convert the hid_bpf selftests with struct_ops
-        https://git.kernel.org/hid/hid/c/d7696738d66b
-[05/16] HID: samples: convert the 2 HID-BPF samples into struct_ops
-        https://git.kernel.org/hid/hid/c/e342d6f6f7d8
-[06/16] HID: bpf: add defines for HID-BPF SEC in in-tree bpf fixes
-        https://git.kernel.org/hid/hid/c/df67602fb8d5
-[07/16] HID: bpf: convert in-tree fixes into struct_ops
-        https://git.kernel.org/hid/hid/c/50fe0fc6e206
-[08/16] HID: bpf: remove tracing HID-BPF capability
-        https://git.kernel.org/hid/hid/c/4a86220e046d
-[09/16] selftests/hid: add subprog call test
-        https://git.kernel.org/hid/hid/c/05b3b8f19441
-[10/16] Documentation: HID: amend HID-BPF for struct_ops
-        https://git.kernel.org/hid/hid/c/c5958697a5fa
-[11/16] Documentation: HID: add a small blurb on udev-hid-bpf
-        https://git.kernel.org/hid/hid/c/5f42e19de53f
-[12/16] HID: bpf: Artist24: remove unused variable
-        https://git.kernel.org/hid/hid/c/26ba1e0a982b
-[13/16] HID: bpf: error on warnings when compiling bpf objects
-        https://git.kernel.org/hid/hid/c/c94ae2189aca
-[14/16] bpf: allow bpf helpers to be used into HID-BPF struct_ops
-        https://git.kernel.org/hid/hid/c/bd0747543b3d
-[15/16] HID: bpf: rework hid_bpf_ops_btf_struct_access
-        https://git.kernel.org/hid/hid/c/f1a5fb6c7cf6
-[16/16] HID: bpf: make part of struct hid_device writable
-        https://git.kernel.org/hid/hid/c/33c0fb85b571
-
-Cheers,
--- 
-Benjamin Tissoires <bentiss@kernel.org>
+> diff --git a/tools/perf/Makefile.perf b/tools/perf/Makefile.perf
+> index 5c35c0d89306..acc41a6717db 100644
+> --- a/tools/perf/Makefile.perf
+> +++ b/tools/perf/Makefile.perf
+> @@ -1201,12 +1201,19 @@ endif # CONFIG_PERF_BPF_SKEL
+>  bpf-skel-clean:
+>  	$(call QUIET_CLEAN, bpf-skel) $(RM) -r $(SKEL_TMP_OUT) $(SKELETONS) $(SKEL_OUT)/vmlinux.h
+>  
+> -clean:: $(LIBAPI)-clean $(LIBBPF)-clean $(LIBSUBCMD)-clean $(LIBSYMBOL)-clean $(LIBPERF)-clean arm64-sysreg-defs-clean fixdep-clean python-clean bpf-skel-clean tests-coresight-targets-clean
+> -	$(call QUIET_CLEAN, core-objs)  $(RM) $(LIBPERF_A) $(OUTPUT)perf-archive $(OUTPUT)perf-iostat $(LANG_BINDINGS)
+> -	$(Q)find $(or $(OUTPUT),.) -name '*.o' -delete -o -name '\.*.cmd' -delete -o -name '\.*.d' -delete -o -name '*.shellcheck_log' -delete
+> +clean:: $(LIBAPI)-clean $(LIBBPF)-clean $(LIBSUBCMD)-clean $(LIBSYMBOL)-clean $(LIBPERF)-clean \
+> +		arm64-sysreg-defs-clean fixdep-clean python-clean bpf-skel-clean \
+> +		tests-coresight-targets-clean
+> +	$(call QUIET_CLEAN, core-objs)  $(RM) $(LIBPERF_A) $(OUTPUT)perf-archive \
+> +		$(OUTPUT)perf-iostat $(LANG_BINDINGS)
+> +	$(Q)find $(or $(OUTPUT),.) -name '*.o' -delete -o -name '*.a' -delete -o \
+> +		-name '\.*.cmd' -delete -o -name '\.*.d' -delete -o -name '*.shellcheck_log' -delete
+>  	$(Q)$(RM) $(OUTPUT).config-detected
+> -	$(call QUIET_CLEAN, core-progs) $(RM) $(ALL_PROGRAMS) perf perf-read-vdso32 perf-read-vdsox32 $(OUTPUT)$(LIBJVMTI).so
+> -	$(call QUIET_CLEAN, core-gen)   $(RM)  *.spec *.pyc *.pyo */*.pyc */*.pyo $(OUTPUT)common-cmds.h TAGS tags cscope* $(OUTPUT)PERF-VERSION-FILE $(OUTPUT)FEATURE-DUMP $(OUTPUT)util/*-bison* $(OUTPUT)util/*-flex* \
+> +	$(call QUIET_CLEAN, core-progs) $(RM) $(ALL_PROGRAMS) perf perf-read-vdso32 \
+> +		perf-read-vdsox32 $(OUTPUT)$(LIBJVMTI).so
+> +	$(call QUIET_CLEAN, core-gen)   $(RM)  *.spec *.pyc *.pyo */*.pyc */*.pyo \
+> +		$(OUTPUT)common-cmds.h TAGS tags cscope* $(OUTPUT)PERF-VERSION-FILE \
+> +		$(OUTPUT)FEATURE-DUMP $(OUTPUT)util/*-bison* $(OUTPUT)util/*-flex* \
+>  		$(OUTPUT)util/intel-pt-decoder/inat-tables.c \
+>  		$(OUTPUT)tests/llvm-src-{base,kbuild,prologue,relocation}.c \
+>  		$(OUTPUT)pmu-events/pmu-events.c \
 
 
