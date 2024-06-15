@@ -1,49 +1,49 @@
-Return-Path: <bpf+bounces-32213-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-32212-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5064C9095BB
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 159D09095BA
 	for <lists+bpf@lfdr.de>; Sat, 15 Jun 2024 04:49:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9F66F2835ED
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 36C3C28357E
 	for <lists+bpf@lfdr.de>; Sat, 15 Jun 2024 02:49:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A8A0DD26D;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 94815CA6F;
 	Sat, 15 Jun 2024 02:49:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=rcpassos.me header.i=@rcpassos.me header.b="aU0w9KNP"
+	dkim=pass (1024-bit key) header.d=rcpassos.me header.i=@rcpassos.me header.b="dlHYQq2e"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail116.out.titan.email (mail116.out.titan.email [54.173.78.241])
+Received: from mail52.out.titan.email (mail52.out.titan.email [209.209.25.115])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B1AAC3C17
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B41592907
 	for <bpf@vger.kernel.org>; Sat, 15 Jun 2024 02:49:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=54.173.78.241
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.209.25.115
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718419756; cv=none; b=LgN9NtFzbu8q7DbDFZT2UasC6W+Nfrer6rip7/UhQx/9TYT5Ow6YCulhblTgrUMVH+iUOtaANTA/CX4Aizb0zWzkJDaCtivwV6NLnjStcalCKNukvTf5/8a8hZDUJO33OFzJACu99Y6Hl6wemWhptZh5vUl5eEXIVSCPMYLUanY=
+	t=1718419756; cv=none; b=DU5pM56vEm9f5ztnO/0+Y7cSX2i9p4TL6pJc1AO6JWUj941PQHE3JYWzfm9m5aBVhB+brBA5l12c1MnB7lCcAeLOgmoL+BGcSYcCPhDib3drsbc4Mh6dEszNvLoWPgu5Uu9chkgcIHFHCtDNcljvbGtCbaVLdQEn8EoZPioMDtE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1718419756; c=relaxed/simple;
-	bh=07rFAS8WwGZWiaPyO800g9sGe85Ge0zho1a5Q+zggSo=;
+	bh=Nowwrm7YYGZQB/wslBwAOshDqT2fPt36KDckIMemIKA=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=trEvCSeCRfYTmf2AG8ZgtQh0FkKYbdcROtZVub9my3whnnYNM4B3jpVAUKhpfjMkQSOwzkBlzjGeN19l4uwW6/noRu0cCiZ1mX0XbwVNepskeUFqVDpLf50Y3aMEx9TMjkXngnWsAzijebW95DZ4559d5G6W8W99/upJi7jIelE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=rcpassos.me; spf=fail smtp.mailfrom=rcpassos.me; dkim=pass (1024-bit key) header.d=rcpassos.me header.i=@rcpassos.me header.b=aU0w9KNP; arc=none smtp.client-ip=54.173.78.241
+	 MIME-Version; b=e4ahequi+UU4eER31/C53auN5NJBfhBqSSUEANSg+qVNNTvlIAuPxQNcW0oHKhR5dKMUPUPWRs1CbLEQi9JIdbbka/61p2vv0hWUU12h24sOx0jSUNJ+g3sBl4bx7ym8ArQQTxblSLIadw8BOEMZdJDeMTI6+O2K0PXCahMFbKQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=rcpassos.me; spf=fail smtp.mailfrom=rcpassos.me; dkim=pass (1024-bit key) header.d=rcpassos.me header.i=@rcpassos.me header.b=dlHYQq2e; arc=none smtp.client-ip=209.209.25.115
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=rcpassos.me
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=rcpassos.me
 Received: from smtp-out.flockmail.com (localhost [127.0.0.1])
-	by smtp-out.flockmail.com (Postfix) with ESMTP id 07E7DE0004;
-	Sat, 15 Jun 2024 02:30:05 +0000 (UTC)
-DKIM-Signature: a=rsa-sha256; bh=cGsEWPmFAOpeOF34QVN3RL42zid/Nqkv3FBPOLsZFr4=;
+	by smtp-out.flockmail.com (Postfix) with ESMTP id 3D2E0E008E;
+	Sat, 15 Jun 2024 02:31:30 +0000 (UTC)
+DKIM-Signature: a=rsa-sha256; bh=bvoD1xXUVp/wUtcoK6nxcw08qYW6ORI2TW5d4HCm9+A=;
 	c=relaxed/relaxed; d=rcpassos.me;
-	h=in-reply-to:from:cc:subject:message-id:mime-version:to:date:references:from:to:cc:subject:date:message-id:in-reply-to:references:reply-to;
-	q=dns/txt; s=titan1; t=1718418604; v=1;
-	b=aU0w9KNPh/E7qbUm/8QafWcv/g3f+RR+aN/O72+V2DdVZagebvZED+ijh8Sj8YdHuWUOVy+l
-	3/lYgM13wa6/7H6VMcMrvZ9zYB2cb3HA+aYe+b7gh2vrAAyuLra3MtMISQt1a1xGY0cK2Lc33W+
-	6vcS0cEqizbz0EOgmpNxzEzA=
+	h=to:cc:subject:date:mime-version:from:message-id:in-reply-to:references:from:to:cc:subject:date:message-id:in-reply-to:references:reply-to;
+	q=dns/txt; s=titan1; t=1718418690; v=1;
+	b=dlHYQq2eA60KFCWcGwEWTdiBqXvlg4MQ3xh8ogIpAviCXWje1HO4SgBp+AMt1H/o2mixfI+o
+	8qJHfrIMChmg62q2X9OlpGNRKS4o308wvZWMjGPa/WziEEc2ufvPkwI1O2ubBroRBwC5KP1iIYR
+	Lp6MhM2PBNRKOU8s5VmIl1ig=
 Received: from darkforce.pihole.rcpassos.me (unknown [104.28.243.51])
-	by smtp-out.flockmail.com (Postfix) with ESMTPA id 030A2E0081;
-	Sat, 15 Jun 2024 02:30:03 +0000 (UTC)
+	by smtp-out.flockmail.com (Postfix) with ESMTPA id 36B47E0047;
+	Sat, 15 Jun 2024 02:31:29 +0000 (UTC)
 Feedback-ID: :rafael@rcpassos.me:rcpassos.me:flockmailId
 From: Rafael Passos <rafael@rcpassos.me>
 To: ast@kernel.org,
@@ -51,9 +51,9 @@ To: ast@kernel.org,
 	andrii@kernel.org
 Cc: Rafael Passos <rafael@rcpassos.me>,
 	bpf@vger.kernel.org
-Subject: [PATCH bpf-next V2 2/3] bpf: remove unused parameter in __bpf_free_used_btfs
-Date: Fri, 14 Jun 2024 23:24:09 -0300
-Message-ID: <20240615022641.210320-3-rafael@rcpassos.me>
+Subject: [PATCH bpf-next V2 3/3] bpf: remove redeclaration of new_n in bpf_verifier_vlog
+Date: Fri, 14 Jun 2024 23:24:10 -0300
+Message-ID: <20240615022641.210320-4-rafael@rcpassos.me>
 X-Mailer: git-send-email 2.45.2
 In-Reply-To: <20240615022641.210320-1-rafael@rcpassos.me>
 References: <20240615022641.210320-1-rafael@rcpassos.me>
@@ -65,75 +65,37 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-F-Verdict: SPFVALID
-X-Titan-Src-Out: 1718418604915340736.31293.5894362100255476690@prod-use1-smtp-out1004.
+X-Titan-Src-Out: 1718418690115887987.31293.5266191172157278976@prod-use1-smtp-out1004.
 X-CMAE-Score: 0
-X-CMAE-Analysis: v=2.4 cv=W6Y+VwWk c=1 sm=1 tr=0 ts=666cfcac
+X-CMAE-Analysis: v=2.4 cv=W6Y+VwWk c=1 sm=1 tr=0 ts=666cfd02
 	a=rO3HKV82O4ipXYUjDYeURw==:117 a=rO3HKV82O4ipXYUjDYeURw==:17
 	a=MKtGQD3n3ToA:10 a=1oJP67jkp3AA:10 a=CEWIc4RMnpUA:10
-	a=c6FAzJyZY7ECWPs6LbIA:9 a=---8k2CCGq07aBBJLGWX:22
+	a=yI5TgzhYSYgGwSC-jVgA:9 a=---8k2CCGq07aBBJLGWX:22
 X-Virus-Scanned: ClamAV using ClamSMTP
 
-Fixes a compiler warning. The __bpf_free_used_btfs function
-was taking an extra unused struct bpf_prog_aux *aux param
+This new_n is defined in the start of this function.
+Its value is overwritten by `new_n = min(n, log->len_total);`
+a couple lines before my change,
+rendering the shadow declaration unnecessary.
 
 Signed-off-by: Rafael Passos <rafael@rcpassos.me>
 ---
- include/linux/bpf.h   | 3 +--
- kernel/bpf/core.c     | 5 ++---
- kernel/bpf/verifier.c | 3 +--
- 3 files changed, 4 insertions(+), 7 deletions(-)
+ kernel/bpf/log.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-index f636b4998bf7..960780ef04e1 100644
---- a/include/linux/bpf.h
-+++ b/include/linux/bpf.h
-@@ -2933,8 +2933,7 @@ bpf_probe_read_kernel_common(void *dst, u32 size, const void *unsafe_ptr)
- 	return ret;
- }
+diff --git a/kernel/bpf/log.c b/kernel/bpf/log.c
+index 4bd8f17a9f24..10b2ed6995eb 100644
+--- a/kernel/bpf/log.c
++++ b/kernel/bpf/log.c
+@@ -91,7 +91,7 @@ void bpf_verifier_vlog(struct bpf_verifier_log *log, const char *fmt,
+ 			goto fail;
+ 	} else {
+ 		u64 new_end, new_start;
+-		u32 buf_start, buf_end, new_n;
++		u32 buf_start, buf_end;
  
--void __bpf_free_used_btfs(struct bpf_prog_aux *aux,
--			  struct btf_mod_pair *used_btfs, u32 len);
-+void __bpf_free_used_btfs(struct btf_mod_pair *used_btfs, u32 len);
- 
- static inline struct bpf_prog *bpf_prog_get_type(u32 ufd,
- 						 enum bpf_prog_type type)
-diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
-index f6951c33790d..ae2e1eeda0d4 100644
---- a/kernel/bpf/core.c
-+++ b/kernel/bpf/core.c
-@@ -2742,8 +2742,7 @@ static void bpf_free_used_maps(struct bpf_prog_aux *aux)
- 	kfree(aux->used_maps);
- }
- 
--void __bpf_free_used_btfs(struct bpf_prog_aux *aux,
--			  struct btf_mod_pair *used_btfs, u32 len)
-+void __bpf_free_used_btfs(struct btf_mod_pair *used_btfs, u32 len)
- {
- #ifdef CONFIG_BPF_SYSCALL
- 	struct btf_mod_pair *btf_mod;
-@@ -2760,7 +2759,7 @@ void __bpf_free_used_btfs(struct bpf_prog_aux *aux,
- 
- static void bpf_free_used_btfs(struct bpf_prog_aux *aux)
- {
--	__bpf_free_used_btfs(aux, aux->used_btfs, aux->used_btf_cnt);
-+	__bpf_free_used_btfs(aux->used_btfs, aux->used_btf_cnt);
- 	kfree(aux->used_btfs);
- }
- 
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index acc9dd830807..c703612e04f7 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -18619,8 +18619,7 @@ static void release_maps(struct bpf_verifier_env *env)
- /* drop refcnt of maps used by the rejected program */
- static void release_btfs(struct bpf_verifier_env *env)
- {
--	__bpf_free_used_btfs(env->prog->aux, env->used_btfs,
--			     env->used_btf_cnt);
-+	__bpf_free_used_btfs(env->used_btfs, env->used_btf_cnt);
- }
- 
- /* convert pseudo BPF_LD_IMM64 into generic BPF_LD_IMM64 */
+ 		new_end = log->end_pos + n;
+ 		if (new_end - log->start_pos >= log->len_total)
 -- 
 2.45.2
 
