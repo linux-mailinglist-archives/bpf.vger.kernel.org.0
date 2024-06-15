@@ -1,313 +1,325 @@
-Return-Path: <bpf+bounces-32221-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-32222-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2154990989B
-	for <lists+bpf@lfdr.de>; Sat, 15 Jun 2024 16:26:25 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 584559098BB
+	for <lists+bpf@lfdr.de>; Sat, 15 Jun 2024 17:00:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E368BB21A13
-	for <lists+bpf@lfdr.de>; Sat, 15 Jun 2024 14:26:20 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8FA1AB2155C
+	for <lists+bpf@lfdr.de>; Sat, 15 Jun 2024 15:00:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4951C45030;
-	Sat, 15 Jun 2024 14:26:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 78E3249634;
+	Sat, 15 Jun 2024 15:00:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZVtV0BqD"
 X-Original-To: bpf@vger.kernel.org
-Received: from www262.sakura.ne.jp (www262.sakura.ne.jp [202.181.97.72])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f49.google.com (mail-ej1-f49.google.com [209.85.218.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 12B5B8F48
-	for <bpf@vger.kernel.org>; Sat, 15 Jun 2024 14:26:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.181.97.72
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B863383B1;
+	Sat, 15 Jun 2024 15:00:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718461574; cv=none; b=IYnyJe327YBrf3IlrKikdOvdu32wbrnV//am8/HFK3njlCnx/QfSe2j6qr5db3WS47uik8/qGjHZCGT/+3ZyAbCpuHYfoxPaVntErT6OsL3+jqJckSaPmdPQUzBtO3mrEYkzyynLB6A0ozok5IxxsV3n2TnELr8+AYPrI/k1UG8=
+	t=1718463634; cv=none; b=dQrtVR8o5WIJ6JRpwk8kKEJ0l37grPKzqQJ3luW1sxOQ6pfucfTHLV5fFyrsSOOcGxMk/2OUhJev6uWZo50n0auB7lh/Kyu/ifya1zJaJC3U6e5eaMBsIUe5Kht9X9fbcV77XqvX/KbbNlqH/kOEPAUJAF5FaZr0N/Lcyfyqn6s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718461574; c=relaxed/simple;
-	bh=Rcrnakfib0Qi1avJ7DfrVBumMnzH1XPfRwL+7M/T0+w=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
-	 In-Reply-To:Content-Type; b=GrCjk/ZBQIHqD18w6HiUqx0c9V2foKw7XIdJjNpYpmbK/H9Yl9NYiguyj4sU7BSPs8PEkCQIjKeq6d/0Fe62BVFf73ZlAFMiYuFoJFT8ZHS6S3sCZpB4CN5VgjcIEBl8rh2coDRk8t2tG3gqa05aHkG1FoMBj9++14+XoJ3OHOE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=I-love.SAKURA.ne.jp; spf=pass smtp.mailfrom=I-love.SAKURA.ne.jp; arc=none smtp.client-ip=202.181.97.72
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=I-love.SAKURA.ne.jp
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=I-love.SAKURA.ne.jp
-Received: from fsav411.sakura.ne.jp (fsav411.sakura.ne.jp [133.242.250.110])
-	by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 45FEQ8Jx006284;
-	Sat, 15 Jun 2024 23:26:08 +0900 (JST)
-	(envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
-Received: from www262.sakura.ne.jp (202.181.97.72)
- by fsav411.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav411.sakura.ne.jp);
- Sat, 15 Jun 2024 23:26:08 +0900 (JST)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav411.sakura.ne.jp)
-Received: from [192.168.1.6] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
-	(authenticated bits=0)
-	by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 45FEQ7Tg006280
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
-	Sat, 15 Jun 2024 23:26:08 +0900 (JST)
-	(envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
-Message-ID: <394049f8-49cc-4d82-8ff1-c19a38a61fe6@I-love.SAKURA.ne.jp>
-Date: Sat, 15 Jun 2024 23:26:08 +0900
+	s=arc-20240116; t=1718463634; c=relaxed/simple;
+	bh=O3iuGl3+px74waJXsghtQUNjK/fdJTb8plYFzY1DvF4=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Y0505v05vSNwoqB2TnoU3U1aK9Wlyxeujtj0iyDVa0TiZUqPTyuyLFnBQd33ETM61gEt4impPEph9DvjW96xZL62f2cuHLTF6jJhaOke3YBqKVOQ6Ac2MfWv54ew5N1jzsS2rHUTP1PZ2tSCYipvruatlcbnS5yLW+Vs3iHNvoI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ZVtV0BqD; arc=none smtp.client-ip=209.85.218.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f49.google.com with SMTP id a640c23a62f3a-a6efe62f583so308729366b.3;
+        Sat, 15 Jun 2024 08:00:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1718463629; x=1719068429; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=bhQP1QnteGRcdexKLdGEI+TBHaXqjwDdr6iuda4pIlo=;
+        b=ZVtV0BqDtqgr6JNCakt14yOLqr+3vNq3DNy2+p5WMTtjaOH7tqwjbS2ioiiq/HgWO8
+         MORJM53vN0oBoAhnp7Ss25kdzbQzlB4/kPNKkUx7QIquMFMEvxn6Fs3bXGINzB7Qidqk
+         Rtm+KpmvuYctq1kz3H9DRfwxXXHQpN0wv3Qrd05HtDtHPr/8VRN73DO0B0hesG41w5uS
+         mtTUZNO6uZPEi1l08eSukWro+wk+f+sWtCE+ob0h9Wt2SNLJ9oHEITbH6oL5TNfNvuBs
+         /kiSAlyAMD7tUsvqT1JXixjb7bPLv9J2uOBgLEExyu76O8T149WMYpRaAUTESoLPnDRM
+         fVmg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1718463629; x=1719068429;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=bhQP1QnteGRcdexKLdGEI+TBHaXqjwDdr6iuda4pIlo=;
+        b=EeQztljVgBh+f79SeTWEKhj0rUmSKMj5zVoRmbeK0cBWVI70G84zplxuPRQU16MTUF
+         MaP4T1x8WNV2gReu/BaP5SafLiZ6ljDVnOym+vdONBX2aa4alAcfYmLmZEh8040DjtJw
+         fOPJ6i8+8uuompSCgLvHQH0hzfXh/km1uD5S8NX/b3rvXr9OcwEhcMaoeb/9eQlybT+G
+         mzHo/0/6afk7cYmkKxEbS//Y+LKbzDDaVaMviTwU4kmTP+/5wGbXueXNZIPQKycF2C1j
+         RT6vthqVSPGvzTIWqRZlNmbwu175NFvzrbh3xRvtdWhlOkCCCYL9CKCFGUOjgI2JiCap
+         DrFg==
+X-Forwarded-Encrypted: i=1; AJvYcCUcn8XNpWCN63/TEPYWI+ytJpYt9o/jhTSH7M81wRTlGllEqqCkolzWp484O+KBKZ7zbkUthWs8AoYPQfa7tCG0ZpC7b/uC6XYkpDVQxC5pc/74isw490ZeqdaM0Gq4oCcq
+X-Gm-Message-State: AOJu0YwxoAQJ7pjYGHtjeXYaJ5dFncoGFAMO54E24hkuFq9IITkio6yz
+	oWtlbTIxect0V/3j0yYZiODqu00AD/fNI0j6EO9iU3fXklfMcAuVzEIrFlRVCEJpV0Xxoy1xcua
+	Qmvr5+pfZunjfTMmfskFKWx3yXj0=
+X-Google-Smtp-Source: AGHT+IHvSqLJxwTe+hhiLgHac3QRZ0NOy2f4er6eiOwqnZ37S5XRC4oS9r1O8aJnGbqFMYmvefYgZRpKc0BkrN/y4O8=
+X-Received: by 2002:a17:906:40d7:b0:a6e:fe01:18cf with SMTP id
+ a640c23a62f3a-a6f60d298d1mr308337466b.25.1718463629055; Sat, 15 Jun 2024
+ 08:00:29 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] bpf: don't call mmap_read_trylock() from IRQ context
-From: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Nicolas Saenz Julienne <nsaenz@amazon.com>,
-        Axel Rasmussen <axelrasmussen@google.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        "Steven Rostedt (Google)" <rostedt@goodmis.org>
-Cc: Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Eduard Zingerman
- <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
-        Yonghong Song <yonghong.song@linux.dev>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>
-References: <4b875158-1aa7-402e-8861-860a493c49cd@I-love.SAKURA.ne.jp>
- <3e9b2a54-73d4-48cb-a510-d17984c97a45@I-love.SAKURA.ne.jp>
- <52d3d784-47ad-4190-920b-e5fe4673b11f@I-love.SAKURA.ne.jp>
- <CAADnVQLB6Zt1QjW+BeUmQJnWzGeCr7b2r0KKfygsJPzo0Rq+4A@mail.gmail.com>
- <79d32963-de38-49cf-a03f-f6f5f4fbb462@I-love.SAKURA.ne.jp>
-Content-Language: en-US
-In-Reply-To: <79d32963-de38-49cf-a03f-f6f5f4fbb462@I-love.SAKURA.ne.jp>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20240608140835.965949-1-dolinux.peng@gmail.com>
+ <4f551dc5fc792936ca364ce8324c0adea38162f1.camel@gmail.com> <CAErzpmsvvi_dhiJs+Fmyy7R-gKqh3TkiuJCj4U5K6XXJyV6pJA@mail.gmail.com>
+In-Reply-To: <CAErzpmsvvi_dhiJs+Fmyy7R-gKqh3TkiuJCj4U5K6XXJyV6pJA@mail.gmail.com>
+From: Donglin Peng <dolinux.peng@gmail.com>
+Date: Sat, 15 Jun 2024 22:59:56 +0800
+Message-ID: <CAErzpmsBBnGNEgBzUfZyRcSeV1KLuNKvFfhuCap6NFbxG=qoKw@mail.gmail.com>
+Subject: Re: [RFC PATCH v3] bpf: Using binary search to improve the
+ performance of btf_find_by_name_kind
+To: Eduard Zingerman <eddyz87@gmail.com>
+Cc: ast@kernel.org, andrii <andrii@kernel.org>, alan.maguire@oracle.com, 
+	acme@kernel.org, daniel@iogearbox.net, mhiramat@kernel.org, song@kernel.org, 
+	haoluo@google.com, yonghong.song@linux.dev, bpf@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 2024/06/15 19:59, Tetsuo Handa wrote:
-> Is the reason because &buf[idx] in get_memcg_path_buf() might become out of
-> bounds due to preemption in normal context if PREEMPT_RT=y ? If so, can't we
-> add "idx >=0 && idx < CONTEXT_COUNT" check into get_memcg_path_buf() and
-> return NULL if preemption (or interrupt or recursion if any) exhausted the per
-> cpu buffer?
+On Sat, Jun 15, 2024 at 7:49=E2=80=AFPM Donglin Peng <dolinux.peng@gmail.co=
+m> wrote:
+>
+> On Tue, Jun 11, 2024 at 6:13=E2=80=AFPM Eduard Zingerman <eddyz87@gmail.c=
+om> wrote:
+> >
+> > On Sat, 2024-06-08 at 07:08 -0700, Donglin Peng wrote:
+> >
+> > [...]
+> >
+> > > Changes in RFC v3:
+> > >  - Sort the btf types during the build process in order to reduce mem=
+ory usage
+> > >    and decrease boot time.
+> > >
+> > > RFC v2:
+> > >  - https://lore.kernel.org/all/20230909091646.420163-1-pengdonglin@sa=
+ngfor.com.cn
+> > > ---
+> > >  include/linux/btf.h |   1 +
+> > >  kernel/bpf/btf.c    | 160 +++++++++++++++++++++++++++++++++---
+> >
+> > I think that kernel part is in a good shape,
+> > please split it as a separate commit.
+>
+> Okay, thanks.
+>
+> >
+> > >  tools/lib/bpf/btf.c | 195 ++++++++++++++++++++++++++++++++++++++++++=
+++
+> > >  3 files changed, 345 insertions(+), 11 deletions(-)
+> >
+> > [...]
+> >
+> > > diff --git a/tools/lib/bpf/btf.c b/tools/lib/bpf/btf.c
+> > > index 2d0840ef599a..93c1ab677bfa 100644
+> >
+> > I'm not sure that libbpf is the best place to put this functionality,
+> > as there might be different kinds of orderings
+> > (e.g. see a fresh commit to bpftool to output stable vmlinux.h:
+> >  94133cf24bb3 "bpftool: Introduce btf c dump sorting").
+>
+> Thanks, I think it would be better to put it into the libbpf. However, I =
+would
+> also like to hear the opinions of others.
+>
+> >
+> > I'm curious what Andrii, Alan and Arnaldo think on libbpf vs pahole
+> > for this feature.
+> >
+> > Also, I have a selftests build failure with this patch-set
+> > (and I suspect that a bunch of dedup test cases would need an update):
 
-More simply, why not use on-stack buffer, for MEMCG_PATH_BUF_SIZE is only 256?
+Yes=EF=BC=8Cmany test cases need to be updated as the BTF layout is modifie=
+d
+unconditionally.
 
- mm/mmap_lock.c | 175 ++++++-------------------------------------------
- 1 file changed, 20 insertions(+), 155 deletions(-)
+>
+> I appologize for the bug in my patch that caused the issue. I will fix it=
+.
+>
+> >
+> > $ pwd
+> > /home/eddy/work/bpf-next/tools/testing/selftests/bpf
+> > $ make -j14 test_progs
+> > ...
+> >
+> >   GEN-SKEL [test_progs] access_map_in_map.skel.h
+> > Binary files /home/eddy/work/bpf-next/tools/testing/selftests/bpf/acces=
+s_map_in_map.bpf.linked2.o and /home/eddy/work/bpf-next/tools/testing/selft=
+ests/bpf/access_map_in_map.bpf.linked3.o differ
+> > make: *** [Makefile:658: /home/eddy/work/bpf-next/tools/testing/selftes=
+ts/bpf/access_map_in_map.skel.h] Error 1
+> > make: *** Waiting for unfinished jobs....
+>
+> Sorry, I neglected to perform an ID remap for the btf_types in the BTF.ex=
+t
+> section. I will fix it.
+>
+> >
+> > If this change remains in libbpf, I think it would be great to update
+> > btf_find_by_name_kind() to work the same way as kernel one.
+>
+> Sounds good, we might do it later.
+>
+> >
+> > > --- a/tools/lib/bpf/btf.c
+> > > +++ b/tools/lib/bpf/btf.c
+> >
+> > [...]
+> >
+> > > +static int btf_sort_type_by_name(struct btf *btf)
+> > > +{
+> > > +     struct btf_type *bt;
+> > > +     __u32 *new_type_offs =3D NULL, *new_type_offs_noname =3D NULL;
+> > > +     __u32 *maps =3D NULL, *found_offs;
+> > > +     void *new_types_data =3D NULL, *loc_data;
+> > > +     int i, j, k, type_cnt, ret =3D 0, type_size;
+> > > +     __u32 data_size;
+> > > +
+> > > +     if (btf_ensure_modifiable(btf))
+> > > +             return libbpf_err(-ENOMEM);
+> > > +
+> > > +     type_cnt =3D btf->nr_types;
+> > > +     data_size =3D btf->type_offs_cap * sizeof(*new_type_offs);
+> > > +
+> > > +     maps =3D (__u32 *)malloc(type_cnt * sizeof(__u32));
+> > > +     if (!maps) {
+> > > +             ret =3D -ENOMEM;
+> > > +             goto err_out;
+> > > +     }
+> > > +
+> > > +     new_type_offs =3D (__u32 *)malloc(data_size);
+> > > +     if (!new_type_offs) {
+> > > +             ret =3D -ENOMEM;
+> > > +             goto err_out;
+> > > +     }
+> > > +
+> > > +     new_type_offs_noname =3D (__u32 *)malloc(data_size);
+> > > +     if (!new_type_offs_noname) {
+> > > +             ret =3D -ENOMEM;
+> > > +             goto err_out;
+> > > +     }
+> >
+> > What is the point of separating offsets in new_type_offs vs
+> > new_type_offs_noname? It should be possible to use a single offsets
+> > array and have a comparison function that puts all named types before
+> > unnamed.
+>
+> Great, you are right.
+>
+> >
+> > > +
+> > > +     new_types_data =3D malloc(btf->types_data_cap);
+> > > +     if (!new_types_data) {
+> > > +             ret =3D -ENOMEM;
+> > > +             goto err_out;
+> > > +     }
+> > > +
+> > > +     memset(new_type_offs, 0, data_size);
+> > > +
+> > > +     for (i =3D 0, j =3D 0, k =3D 0; i < type_cnt; i++) {
+> > > +             const char *name;
+> > > +
+> > > +             bt =3D (struct btf_type *)(btf->types_data + btf->type_=
+offs[i]);
+> > > +             name =3D btf__str_by_offset(btf, bt->name_off);
+> > > +             if (!name || !name[0])
+> > > +                     new_type_offs_noname[k++] =3D btf->type_offs[i]=
+;
+> > > +             else
+> > > +                     new_type_offs[j++] =3D btf->type_offs[i];
+> > > +     }
+> > > +
+> > > +     memmove(new_type_offs + j, new_type_offs_noname, sizeof(__u32) =
+* k);
+> > > +
+> > > +     qsort_r(new_type_offs, j, sizeof(*new_type_offs),
+> > > +             btf_compare_type_name, btf);
+> > > +
+> > > +     for (i =3D 0; i < type_cnt; i++) {
+> > > +             found_offs =3D bsearch(&new_type_offs[i], btf->type_off=
+s, type_cnt,
+> > > +                                     sizeof(__u32), btf_compare_offs=
+);
+> > > +             if (!found_offs) {
+> > > +                     ret =3D -EINVAL;
+> > > +                     goto err_out;
+> > > +             }
+> > > +             maps[found_offs - btf->type_offs] =3D i;
+> > > +     }
+> > > +
+> > > +     loc_data =3D new_types_data;
+> > > +     for (i =3D 0; i < type_cnt; i++, loc_data +=3D type_size) {
+> > > +             bt =3D (struct btf_type *)(btf->types_data + new_type_o=
+ffs[i]);
+> > > +             type_size =3D btf_type_size(bt);
+> > > +             if (type_size < 0) {
+> > > +                     ret =3D type_size;
+> > > +                     goto err_out;
+> > > +             }
+> > > +
+> > > +             memcpy(loc_data, bt, type_size);
+> > > +
+> > > +             bt =3D (struct btf_type *)loc_data;
+> > > +             switch (btf_kind(bt)) {
+> >
+> > Please take a look at btf_dedup_remap_types(): it uses newly added
+> > iterator interface to enumerate all ID references in the type.
+> > It could be used here to avoid enumerating every BTF kind.
+> > Also, the d->hypot_map could be used instead of `maps`.
+> > And if so, I think that it should be possible to put this pass before
+> > btf_dedup_remap_types() in order for it to do the remapping.
+>
+> Thank you. I will revise the code.
+>
+> >
+> > Alternatively, it might make sense to merge this pass with
+> > btf_dedup_compact_types() in order to minimize number of operations,
+> > e.g. as in my crude attempt:
+> > https://github.com/eddyz87/bpf/tree/binsort-btf-dedup
 
-diff --git a/mm/mmap_lock.c b/mm/mmap_lock.c
-index 1854850b4b89..59165c01c960 100644
---- a/mm/mmap_lock.c
-+++ b/mm/mmap_lock.c
-@@ -19,14 +19,7 @@ EXPORT_TRACEPOINT_SYMBOL(mmap_lock_released);
- 
- #ifdef CONFIG_MEMCG
- 
--/*
-- * Our various events all share the same buffer (because we don't want or need
-- * to allocate a set of buffers *per event type*), so we need to protect against
-- * concurrent _reg() and _unreg() calls, and count how many _reg() calls have
-- * been made.
-- */
--static DEFINE_MUTEX(reg_lock);
--static int reg_refcount; /* Protected by reg_lock. */
-+static atomic_t reg_refcount;
- 
- /*
-  * Size of the buffer for memcg path names. Ignoring stack trace support,
-@@ -34,136 +27,22 @@ static int reg_refcount; /* Protected by reg_lock. */
-  */
- #define MEMCG_PATH_BUF_SIZE MAX_FILTER_STR_VAL
- 
--/*
-- * How many contexts our trace events might be called in: normal, softirq, irq,
-- * and NMI.
-- */
--#define CONTEXT_COUNT 4
--
--struct memcg_path {
--	local_lock_t lock;
--	char __rcu *buf;
--	local_t buf_idx;
--};
--static DEFINE_PER_CPU(struct memcg_path, memcg_paths) = {
--	.lock = INIT_LOCAL_LOCK(lock),
--	.buf_idx = LOCAL_INIT(0),
--};
--
--static char **tmp_bufs;
--
--/* Called with reg_lock held. */
--static void free_memcg_path_bufs(void)
--{
--	struct memcg_path *memcg_path;
--	int cpu;
--	char **old = tmp_bufs;
--
--	for_each_possible_cpu(cpu) {
--		memcg_path = per_cpu_ptr(&memcg_paths, cpu);
--		*(old++) = rcu_dereference_protected(memcg_path->buf,
--			lockdep_is_held(&reg_lock));
--		rcu_assign_pointer(memcg_path->buf, NULL);
--	}
--
--	/* Wait for inflight memcg_path_buf users to finish. */
--	synchronize_rcu();
--
--	old = tmp_bufs;
--	for_each_possible_cpu(cpu) {
--		kfree(*(old++));
--	}
--
--	kfree(tmp_bufs);
--	tmp_bufs = NULL;
--}
--
- int trace_mmap_lock_reg(void)
- {
--	int cpu;
--	char *new;
--
--	mutex_lock(&reg_lock);
--
--	/* If the refcount is going 0->1, proceed with allocating buffers. */
--	if (reg_refcount++)
--		goto out;
--
--	tmp_bufs = kmalloc_array(num_possible_cpus(), sizeof(*tmp_bufs),
--				 GFP_KERNEL);
--	if (tmp_bufs == NULL)
--		goto out_fail;
--
--	for_each_possible_cpu(cpu) {
--		new = kmalloc(MEMCG_PATH_BUF_SIZE * CONTEXT_COUNT, GFP_KERNEL);
--		if (new == NULL)
--			goto out_fail_free;
--		rcu_assign_pointer(per_cpu_ptr(&memcg_paths, cpu)->buf, new);
--		/* Don't need to wait for inflights, they'd have gotten NULL. */
--	}
--
--out:
--	mutex_unlock(&reg_lock);
-+	atomic_inc(&reg_refcount);
- 	return 0;
--
--out_fail_free:
--	free_memcg_path_bufs();
--out_fail:
--	/* Since we failed, undo the earlier ref increment. */
--	--reg_refcount;
--
--	mutex_unlock(&reg_lock);
--	return -ENOMEM;
- }
- 
- void trace_mmap_lock_unreg(void)
- {
--	mutex_lock(&reg_lock);
--
--	/* If the refcount is going 1->0, proceed with freeing buffers. */
--	if (--reg_refcount)
--		goto out;
--
--	free_memcg_path_bufs();
--
--out:
--	mutex_unlock(&reg_lock);
--}
--
--static inline char *get_memcg_path_buf(void)
--{
--	struct memcg_path *memcg_path = this_cpu_ptr(&memcg_paths);
--	char *buf;
--	int idx;
--
--	rcu_read_lock();
--	buf = rcu_dereference(memcg_path->buf);
--	if (buf == NULL) {
--		rcu_read_unlock();
--		return NULL;
--	}
--	idx = local_add_return(MEMCG_PATH_BUF_SIZE, &memcg_path->buf_idx) -
--	      MEMCG_PATH_BUF_SIZE;
--	return &buf[idx];
-+	atomic_dec(&reg_refcount);
- }
- 
--static inline void put_memcg_path_buf(void)
--{
--	local_sub(MEMCG_PATH_BUF_SIZE, &this_cpu_ptr(&memcg_paths)->buf_idx);
--	rcu_read_unlock();
--}
--
--#define TRACE_MMAP_LOCK_EVENT(type, mm, ...)                                   \
--	do {                                                                   \
--		const char *memcg_path;                                        \
--		local_lock(&memcg_paths.lock);                                 \
--		memcg_path = get_mm_memcg_path(mm);                            \
--		trace_mmap_lock_##type(mm,                                     \
--				       memcg_path != NULL ? memcg_path : "",   \
--				       ##__VA_ARGS__);                         \
--		if (likely(memcg_path != NULL))                                \
--			put_memcg_path_buf();                                  \
--		local_unlock(&memcg_paths.lock);                               \
-+#define TRACE_MMAP_LOCK_EVENT(type, mm, ...)                    \
-+	do {                                                    \
-+		char buf[MEMCG_PATH_BUF_SIZE];                  \
-+		get_mm_memcg_path(mm, buf, sizeof(buf));        \
-+		trace_mmap_lock_##type(mm, buf, ##__VA_ARGS__); \
- 	} while (0)
- 
- #else /* !CONFIG_MEMCG */
-@@ -185,37 +64,23 @@ void trace_mmap_lock_unreg(void)
- #ifdef CONFIG_TRACING
- #ifdef CONFIG_MEMCG
- /*
-- * Write the given mm_struct's memcg path to a percpu buffer, and return a
-- * pointer to it. If the path cannot be determined, or no buffer was available
-- * (because the trace event is being unregistered), NULL is returned.
-- *
-- * Note: buffers are allocated per-cpu to avoid locking, so preemption must be
-- * disabled by the caller before calling us, and re-enabled only after the
-- * caller is done with the pointer.
-- *
-- * The caller must call put_memcg_path_buf() once the buffer is no longer
-- * needed. This must be done while preemption is still disabled.
-+ * Write the given mm_struct's memcg path to on-stack buffer. If the path cannot be
-+ * determined or the trace event is being unregistered, empty string is written.
-  */
--static const char *get_mm_memcg_path(struct mm_struct *mm)
-+static void get_mm_memcg_path(struct mm_struct *mm, char *buf, size_t buflen)
- {
--	char *buf = NULL;
--	struct mem_cgroup *memcg = get_mem_cgroup_from_mm(mm);
-+	struct mem_cgroup *memcg;
- 
-+	buf[0] = '\0';
-+	/* No need to get path if no trace event is registered. */
-+	if (!atomic_read(&reg_refcount))
-+		return;
-+	memcg = get_mem_cgroup_from_mm(mm);
- 	if (memcg == NULL)
--		goto out;
--	if (unlikely(memcg->css.cgroup == NULL))
--		goto out_put;
--
--	buf = get_memcg_path_buf();
--	if (buf == NULL)
--		goto out_put;
--
--	cgroup_path(memcg->css.cgroup, buf, MEMCG_PATH_BUF_SIZE);
--
--out_put:
-+		return;
-+	if (memcg->css.cgroup)
-+		cgroup_path(memcg->css.cgroup, buf, buflen);
- 	css_put(&memcg->css);
--out:
--	return buf;
- }
- 
- #endif /* CONFIG_MEMCG */
--- 
-2.18.4
+Could you please provide me with the patch?
 
+>
+> Thank you. I would refer to your patch.
+>
+> > (fails with similar selftests issue).
+>
+> In addition to the bug in my patch, I have also identified a bug in
+> linker_fixup_btf
+> in the libbpf. After resolving the issue, the selftests successfully
+> passed, and I will
+> create a new patch to address the bug.
+
+After fixing the bug, the "make test_progs" command passes
+successfully. However,
+the dedup test cases are still failing.
+
+>
+> >
+> > > +             case BTF_KIND_PTR:
+> > > +             case BTF_KIND_CONST:
+> > > +             case BTF_KIND_VOLATILE:
+> > > +             case BTF_KIND_RESTRICT:
+> > > +             case BTF_KIND_TYPEDEF:
+> > > +             case BTF_KIND_TYPE_TAG:
+> > > +             case BTF_KIND_FUNC:
+> > > +             case BTF_KIND_VAR:
+> > > +             case BTF_KIND_DECL_TAG:
+> > > +                     bt->type =3D btf_get_mapped_type(btf, maps, bt-=
+>type);
+> > > +                     break;
+> >
+> > [...]
 
