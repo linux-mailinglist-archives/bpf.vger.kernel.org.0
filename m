@@ -1,251 +1,123 @@
-Return-Path: <bpf+bounces-32240-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-32241-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1856C909BB2
-	for <lists+bpf@lfdr.de>; Sun, 16 Jun 2024 07:52:34 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 651EB909BF3
+	for <lists+bpf@lfdr.de>; Sun, 16 Jun 2024 08:50:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8B4381F21FE3
-	for <lists+bpf@lfdr.de>; Sun, 16 Jun 2024 05:52:33 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 10B951F21F9C
+	for <lists+bpf@lfdr.de>; Sun, 16 Jun 2024 06:50:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CC79D16D4DF;
-	Sun, 16 Jun 2024 05:52:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A48A316D4C1;
+	Sun, 16 Jun 2024 06:49:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="dGLPK+oG"
+	dkim=pass (2048-bit key) header.d=protonmail.com header.i=@protonmail.com header.b="GASTylZg"
 X-Original-To: bpf@vger.kernel.org
-Received: from out-175.mta1.migadu.com (out-175.mta1.migadu.com [95.215.58.175])
+Received: from mail-40134.protonmail.ch (mail-40134.protonmail.ch [185.70.40.134])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF79E16D320
-	for <bpf@vger.kernel.org>; Sun, 16 Jun 2024 05:52:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A8811849
+	for <bpf@vger.kernel.org>; Sun, 16 Jun 2024 06:49:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.70.40.134
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718517148; cv=none; b=OfnnzoppH1Lds/wkog5HdzGsme8WdAiV+dx0TGxUdBloYNhAX0ok3QmYtN32PJL4czCA7FAhtCscqtON983fbJwDaicw+xTl2mZBsU6CEfl03DOp8uX0xyj97pOkZo2r3FyrYVLo3zOnhWhAPcOfmblUnY2u3dOfn761cJhll18=
+	t=1718520593; cv=none; b=NiJ0YMPEBzXPuaIIOAln9m37kjpShkP64zPy7pFOnUqqm4QHE0cqMRkMxQZ7Pd37H8B4bysPplLbW2HaZoihujBTi0z54ZuK0jZcbenvKnYGzmRcSJObLAUZKRhHZ3/pwOXmTWzyJzGRLfQFpJMWRZ0EBrOgJMoe4t03jzbTTyU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718517148; c=relaxed/simple;
-	bh=nvm1E3lM/qUg+5jZ9k2vL6bEX1chVe9vS6BUXixGauw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ZXxerCJg+uXUMgDbc9WUxKM1ccyF++hax2EHYZ6jNubUNNrSd0fkvZfybV+5dBDTsOUf+t5uMdlcoo14x7ohnaGwR7QS/pcrgY0mLfcH3aheuy7GaleM1AskFxXN0icGmeh/Vr5punNlrstPjpdVluwNtIF5hXBDYiqKvOZj6WQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=dGLPK+oG; arc=none smtp.client-ip=95.215.58.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Envelope-To: alexei.starovoitov@gmail.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1718517143;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=JDogVRAm8gWbhwUlmrZXDrc9QRSv7pvpe8sqeqUtcQs=;
-	b=dGLPK+oGnaeMlZyj+gFiJL+GN1j6VepywQajA9HUjPib9y5ZV+Rmsn/SD/Wg3kHy1lZn8V
-	QTy29MXvzEiZy4x2/QIJHzIro/hHKcTtjsmP8LTQHVziAnoQwFbdY0WzAzwYWoV92jlgUH
-	chxRSTHVXdx6dNaRjpRETGjGQ3Dc7iw=
-X-Envelope-To: bpf@vger.kernel.org
-X-Envelope-To: ast@kernel.org
-X-Envelope-To: andrii@kernel.org
-X-Envelope-To: daniel@iogearbox.net
-X-Envelope-To: kernel-team@fb.com
-X-Envelope-To: martin.lau@kernel.org
-Message-ID: <707970c5-6bba-450a-be08-adf24d8b9276@linux.dev>
-Date: Sat, 15 Jun 2024 22:52:15 -0700
+	s=arc-20240116; t=1718520593; c=relaxed/simple;
+	bh=7EzzcZMeFH5QdTYyN6U+QQ5H47I5MXJ4xcIS8TuuEhg=;
+	h=Date:To:From:Subject:Message-ID:MIME-Version:Content-Type; b=fyJPr0mlQpZ/rzQnIXqNuQulmuo2kD3THw9qgmc3jKIISgBEuNRcnm1NtgutKoX/C4rT6iujOydQXsqCPD5GL3LxHEaZwgkRtJRvbfdasWEIgcqRbCMrTL8aXbbmyfnAzD6lncuGXUlmviV7mxcVO7kNxaBhZTu0BIYSlTKOPIM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=protonmail.com; spf=pass smtp.mailfrom=protonmail.com; dkim=pass (2048-bit key) header.d=protonmail.com header.i=@protonmail.com header.b=GASTylZg; arc=none smtp.client-ip=185.70.40.134
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=protonmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=protonmail.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
+	s=protonmail3; t=1718520575; x=1718779775;
+	bh=7EzzcZMeFH5QdTYyN6U+QQ5H47I5MXJ4xcIS8TuuEhg=;
+	h=Date:To:From:Subject:Message-ID:Feedback-ID:From:To:Cc:Date:
+	 Subject:Reply-To:Feedback-ID:Message-ID:BIMI-Selector;
+	b=GASTylZgjyldfNwV3sFWzRhlCgTqesn+itnZzb9hdRUj3lsuWtm73Ylf3gRsj+i7l
+	 xL8fPYcF8dOozhqp4MVmxPwx8yz0GnsiRlw54rMbDu7yCwgl1Y0rVkOw/1EPn3zgTO
+	 bSuVbLV6kYzUlsV9bq3tDxVlsAux20V2g8j47g3ibfT08sRlKIJ5emslEtRFPhqpa9
+	 fYjrbp5SbJdWd34z8VglOf49cmFkzPCoILb2OpH70ePab0Y/YkxAU7fOJ8TJNeTvhl
+	 QnhgNjMRfva3q36AwFZt/UYqZMEADJJfnmrDnNPWATToMMlXF2EjSYu1OuJHeBnNWT
+	 ScNuI7hurftGA==
+Date: Sun, 16 Jun 2024 06:48:50 +0000
+To: "bpf@vger.kernel.org" <bpf@vger.kernel.org>
+From: Zac Ecob <zacecob@protonmail.com>
+Subject: Infinite loop with JA + JCOND
+Message-ID: <_rb6UwcCpRnlQuDuzb7fmzMbzQTHnFLDJfgjijmgNIDQeBxbNnmNHWrtlExYTEwiXVSfgv920x8zl-EDM0eb-oVvFgwWDizbNu0omo6UsnA=@protonmail.com>
+Feedback-ID: 29112261:user:proton
+X-Pm-Message-ID: 2df0b026d9c50737c86635cd7f35da606dde5346
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [RFC PATCH bpf-next] bpf: Support shadow stack for bpf progs
-Content-Language: en-GB
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
- Andrii Nakryiko <andrii@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Kernel Team <kernel-team@fb.com>, Martin KaFai Lau <martin.lau@kernel.org>
-References: <20240610051839.1296086-1-yonghong.song@linux.dev>
- <CAADnVQ+FwPAbeiiD78xnkRLZAiSDC4ObkKWV+x9bpSK9aM_GsA@mail.gmail.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Yonghong Song <yonghong.song@linux.dev>
-In-Reply-To: <CAADnVQ+FwPAbeiiD78xnkRLZAiSDC4ObkKWV+x9bpSK9aM_GsA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: multipart/mixed;
+ boundary="b1_7p7pYnuOkfdFnCCcuDVIlENr6stGrs9cJzrJJMDk"
 
+This is a multi-part message in MIME format.
 
-On 6/13/24 5:30 PM, Alexei Starovoitov wrote:
-> On Sun, Jun 9, 2024 at 10:18 PM Yonghong Song <yonghong.song@linux.dev> wrote:
-> I think "shadow stack" already has at least two different meanings
-> in the kernel.
-> Let's avoid adding 3rd.
-> How about "divided stack" ?
+--b1_7p7pYnuOkfdFnCCcuDVIlENr6stGrs9cJzrJJMDk
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-Naming is hard. Maybe "private stack" which suggests the stack is private
-to that program?
+Hi,
 
->
->> +static void emit_percpu_shadow_frame_ptr(u8 **pprog, void *shadow_frame_ptr)
->> +{
->> +       u8 *prog = *pprog;
->> +
->> +       /* movabs r9, shadow_frame_ptr */
->> +       emit_mov_imm32(&prog, false, X86_REG_R9, (u32) (long) shadow_frame_ptr);
->> +
->> +       /* add <r9>, gs:[<off>] */
->> +       EMIT2(0x65, 0x4c);
->> +       EMIT3(0x03, 0x0c, 0x25);
->> +       EMIT((u32)(unsigned long)&this_cpu_off, 4);
-> I think this can be one insn:
-> lea r9, gs:[(u32)shadow_frame_ptr]
+Found a program that the verifier accepts but causes an infinite loop. Work=
+s on 6.9.4 (which I ran in qemu-system-x86_64).
 
-Apparently, __alloc_percpu_gfp() may return a pointer which is beyond 32bit. That is why my
-RFC patch failed CI. I later tried to use
+The JA always jumps back to the start of the program, where the JCOND will =
+never successfully jump to exit.
 
-+       /* movabs r9, shadow_frame_ptr */
-+       emit_mov_imm64(&prog, X86_REG_R9, (long) shadow_frame_ptr >> 32,
-+                      (u32) (long) shadow_frame_ptr);
+Attached is the repro files.
 
-and CI is successful. I did some on-demand test (https://github.com/kernel-patches/bpf/pull/7179)
-and it succeeded with CI.
+Thanks!
+--b1_7p7pYnuOkfdFnCCcuDVIlENr6stGrs9cJzrJJMDk
+Content-Type: application/x-xz; name=repro.tar.xz
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename=repro.tar.xz
 
-If __alloc_percpu_gfp() returns a pointer beyond 32bit, I am not sure
-whether we could get r9 with a single insn.
+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
 
->
->> +       if (stack_depth && enable_shadow_stack) {
-> I think enabling it for progs with small stack usage
-> is unnecessary.
-> The definition of "small" is complicated.
-> I feel stack_depth <= 64 can stay as-is and
-> all networking progs don't have to use it either,
-> since they're called from known places.
-> While tracing progs can be anywhere, so I'd enable
-> divided stack for
-> stack_depth > 64 && prog_type == kprobe, tp, raw_tp, tracing, perf_event.
-
-This does make sense. It partially aligns what I think for prog type
-side. We only need to enable 'divided stack' for certain prog types.
-
->
->> +               if (bpf_prog->percpu_shadow_stack_ptr) {
->> +                       percpu_shadow_stack_ptr = bpf_prog->percpu_shadow_stack_ptr;
->> +               } else {
->> +                       percpu_shadow_stack_ptr = __alloc_percpu_gfp(stack_depth, 8, GFP_KERNEL);
->> +                       if (!percpu_shadow_stack_ptr)
->> +                               return -ENOMEM;
->> +                       bpf_prog->percpu_shadow_stack_ptr = percpu_shadow_stack_ptr;
->> +               }
->> +               shadow_frame_ptr = percpu_shadow_stack_ptr + round_up(stack_depth, 8);
->> +               stack_depth = 0;
->> +       } else {
->> +               enable_shadow_stack = 0;
->> +       }
->> +
->>          arena_vm_start = bpf_arena_get_kern_vm_start(bpf_prog->aux->arena);
->>          user_vm_start = bpf_arena_get_user_vm_start(bpf_prog->aux->arena);
->>
->> @@ -1342,7 +1377,7 @@ static int do_jit(struct bpf_prog *bpf_prog, int *addrs, u8 *image, u8 *rw_image
->>          /* tail call's presence in current prog implies it is reachable */
->>          tail_call_reachable |= tail_call_seen;
->>
->> -       emit_prologue(&prog, bpf_prog->aux->stack_depth,
->> +       emit_prologue(&prog, stack_depth,
->>                        bpf_prog_was_classic(bpf_prog), tail_call_reachable,
->>                        bpf_is_subprog(bpf_prog), bpf_prog->aux->exception_cb);
->>          /* Exception callback will clobber callee regs for its own use, and
->> @@ -1364,6 +1399,9 @@ static int do_jit(struct bpf_prog *bpf_prog, int *addrs, u8 *image, u8 *rw_image
->>                  emit_mov_imm64(&prog, X86_REG_R12,
->>                                 arena_vm_start >> 32, (u32) arena_vm_start);
->>
->> +       if (enable_shadow_stack)
->> +               emit_percpu_shadow_frame_ptr(&prog, shadow_frame_ptr);
->> +
->>          ilen = prog - temp;
->>          if (rw_image)
->>                  memcpy(rw_image + proglen, temp, ilen);
->> @@ -1383,6 +1421,14 @@ static int do_jit(struct bpf_prog *bpf_prog, int *addrs, u8 *image, u8 *rw_image
->>                  u8 *func;
->>                  int nops;
->>
->> +               if (enable_shadow_stack) {
->> +                       if (src_reg == BPF_REG_FP)
->> +                               src_reg = X86_REG_R9;
->> +
->> +                       if (dst_reg == BPF_REG_FP)
->> +                               dst_reg = X86_REG_R9;
-> the verifier will reject a prog that attempts to write into R10.
-> So the above shouldn't be necessary.
-
-Actually there is at least one exception, e.g.,
-   if r10 > r5 goto +5
-where dst is r10 and src r5.
-
-For some insn where dst is intended to write with r10
-like r10 = 10, and verifier will reject the program before
-jit, as you mentioned in the above.
-
->
->> +               }
->> +
->>                  switch (insn->code) {
->>                          /* ALU */
->>                  case BPF_ALU | BPF_ADD | BPF_X:
->> @@ -2014,6 +2060,7 @@ st:                       if (is_imm8(insn->off))
->>                                  emit_mov_reg(&prog, is64, real_src_reg, BPF_REG_0);
->>                                  /* Restore R0 after clobbering RAX */
->>                                  emit_mov_reg(&prog, true, BPF_REG_0, BPF_REG_AX);
->> +
->>                                  break;
->>                          }
->>
->> @@ -2038,14 +2085,20 @@ st:                     if (is_imm8(insn->off))
->>
->>                          func = (u8 *) __bpf_call_base + imm32;
->>                          if (tail_call_reachable) {
->> -                               RESTORE_TAIL_CALL_CNT(bpf_prog->aux->stack_depth);
->> +                               RESTORE_TAIL_CALL_CNT(stack_depth);
->>                                  ip += 7;
->>                          }
->>                          if (!imm32)
->>                                  return -EINVAL;
->> +                       if (enable_shadow_stack) {
->> +                               EMIT2(0x41, 0x51);
->> +                               ip += 2;
->> +                       }
->>                          ip += x86_call_depth_emit_accounting(&prog, func, ip);
->>                          if (emit_call(&prog, func, ip))
->>                                  return -EINVAL;
->> +                       if (enable_shadow_stack)
->> +                               EMIT2(0x41, 0x59);
-> push/pop around calls are load/store plus math on %rsp.
-> I think it's cheaper to reload r9 after the call with
-> a single insn.
-> The reload of r9 is effectively gs+const.
-> There is no memory access. So it should be faster.
-
-Two insn may be necessary since __alloc_percpu_gfp()
-may return a pointer beyond 32 bits.
-
->
-> Technically we can replace all uses of R10==rbp with
-> 'gs:' based instructions.
-> Like:
-> r1 = r10
-> can be jitted into
-> lea rdi, gs + (u32)shadow_frame_ptr
->
-> and r0 = *(u32 *)(r10 - 64)
-> can be jitted into:
-> mov rax, dword ptr gs:[(u32)shadow_frame_ptr - 64]
->
-> but that is probably a bunch of jit changes.
-> So I'd start with a simple reload of r9 after each call.
-
-This is a good idea. We might need this so we only have
-one extra insn per call.
-
->
-> We need to micro-benchmark it to make sure there is no perf overhead.
-
-Sure. Will do!
+--b1_7p7pYnuOkfdFnCCcuDVIlENr6stGrs9cJzrJJMDk--
 
 
