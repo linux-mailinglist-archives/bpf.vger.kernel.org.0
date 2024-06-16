@@ -1,102 +1,168 @@
-Return-Path: <bpf+bounces-32234-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-32235-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id DFCB390998D
-	for <lists+bpf@lfdr.de>; Sat, 15 Jun 2024 20:21:27 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id DF182909AB1
+	for <lists+bpf@lfdr.de>; Sun, 16 Jun 2024 02:30:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 896B01F214FE
-	for <lists+bpf@lfdr.de>; Sat, 15 Jun 2024 18:21:27 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CD3061C21030
+	for <lists+bpf@lfdr.de>; Sun, 16 Jun 2024 00:30:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D98BA5427E;
-	Sat, 15 Jun 2024 18:21:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE89A468E;
+	Sun, 16 Jun 2024 00:30:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZifoUHgn"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mm6K2Mwd"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f52.google.com (mail-wr1-f52.google.com [209.85.221.52])
+Received: from mail-pg1-f178.google.com (mail-pg1-f178.google.com [209.85.215.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E9C4C26ACD;
-	Sat, 15 Jun 2024 18:21:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EAC0223BF;
+	Sun, 16 Jun 2024 00:30:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718475680; cv=none; b=YDrRPNaIENauplJ9h/jmZRZjIxHLM9VHRlBSF2Q6wL5OzD4PuVccOwlQr6ofbPRr5++DAAP+VUsM10CQo5xTohYVhsaxM11R8BPOyngLVmzi4iHr38yVqh0NIDqppWAvWU1axCnxWcCCfR7jPXViRsYaY4KNIdnuqHpr3itov4A=
+	t=1718497809; cv=none; b=c1oiSYZREK4gcd28txug6nz2CcTTV4/8M4LQtfL2JfedQhAdexdbSZSoTEmG86CbbwNCfQM7b6xlbon6ObfNyXrwUhmoujD/yElJNowWZWGZ35/2QMM6bKE6LdUzDRAIOA6+MfKUfE6LhjXN3s+LwVEoR5elss26Pn/p2d+xJbo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718475680; c=relaxed/simple;
-	bh=HKWuDfKil28zRuVMFVAefYdXoOj25os20co3lhFIjbA=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Gdi2Oqa+kVO/QeA94bYnu6/SvH452l/wuwkBZDYgvP4qu1ZUzbCfbIryK8reEcEXyuPk18RVmu5NzLaUiR8mCv6TbyNB+L70I052OZl6PQO6URoibZvTu89r478Ee1lFHQ9zDY4ecfVuiNg2ZoptAYv3wUprD62KkLxP4AAHXGk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ZifoUHgn; arc=none smtp.client-ip=209.85.221.52
+	s=arc-20240116; t=1718497809; c=relaxed/simple;
+	bh=WY60PRAGN65hKOjuRFFy2T6DnCrZjrVj79ITXNKWAAo=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=DQKyLuqy1QJ5MONexwRBTeoZh/+7nPfI5QyBksw0pB4N3cuVvg1jVXm3R/2r+IPMl9KTZEgdxPO6USp1rAZwDqxtdTNSm6/TiN/vRx/7VXjHK31FzYqPPK2OtklqlDaWRYx8VFZFgv6F5zCuDmjxFQHqD+C4gDCIe5Zs6g9Q854=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mm6K2Mwd; arc=none smtp.client-ip=209.85.215.178
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f52.google.com with SMTP id ffacd0b85a97d-35f1e35156cso2858452f8f.1;
-        Sat, 15 Jun 2024 11:21:18 -0700 (PDT)
+Received: by mail-pg1-f178.google.com with SMTP id 41be03b00d2f7-6e9f52e99c2so2551397a12.1;
+        Sat, 15 Jun 2024 17:30:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1718475677; x=1719080477; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=HKWuDfKil28zRuVMFVAefYdXoOj25os20co3lhFIjbA=;
-        b=ZifoUHgnPd0gwhU16Wb+DDQos6SfJDWQh/SzSvRPz/oXFLDPt+IXnhmX5H2vWOgjf9
-         mK1vEw8sUUU6kPDX6BGq030tTEMrQ6FeyahFRKUh6oc8J5Wk/kUNAlPGV585vEc/muaG
-         nVR9W7Rho7D4Kb7AIxefL7AORI8EqpjeN1Sdfi0Osi51atS5gETabh6hLLuMxbR9WVHs
-         ZLnykedaDzY8LiiGSiVuUsNG1u8x6hm8JLuIAyT9+XiSLm4Hbw38BbHT8dyDvWkbNVW6
-         Vb588/CxRqOLcIp8SDY4lFqIZfUY8ANtiY4mxk9m384g1RES/vUY9MltMU6/5O2mbX7d
-         RbjA==
+        d=gmail.com; s=20230601; t=1718497807; x=1719102607; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=BTBbcROF1kvXaM6dZlPyFTcs4OHmLeqwYC/d1IExwvY=;
+        b=mm6K2MwdvYNRnRvjTUqHJ8WJtIu7yYwmSp4a2vAHYLlTnmclyL9VVodFGtlXfu1aVa
+         481yWHZEtw7KN6UnY2YQn+tH8MCYOp0/rSmZRcnoJ9fnofU3Vkf+ISD7diHd7abkUVwk
+         1ZudS38Ww8WyIUuWCNMaII/q+EF++8rGQ8RILJot44A7ghuyWEWR4L0ccUS3elwEJRG2
+         vxVnpRgx9qVTTavLQZgQ8NRoMLYzleiZAcBu2YceTT+1hxcl1PLonBuBdjtJ0NpHmWFp
+         nCJC8x6mNdhoyogP4+JkQuZrQomSSFibbKTka62e0gP0uXzNaH4cVa1cJg0a9r40ah02
+         wS8g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1718475677; x=1719080477;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=HKWuDfKil28zRuVMFVAefYdXoOj25os20co3lhFIjbA=;
-        b=jY98cvK2lblerdPorSIPCBJsJmKIk7x8fjvwuqFsnv+s7KuAkMjgxKu+GZnzvdjDGO
-         1NjV3EHPqajg/urFIvr30C/R/VWutSDHMnHmv0pID4cv1Isoi+NlBjswrCg+IVahVbZG
-         c1BRMZzKbHsoRiO0MBJcXubuvSF4Tj2GTgUDQa42uEJbnrtORqzTSM3G92Rb/U3MrbOO
-         kOJ4p8eZqOTPUBrIFrUA/e5u8s40ux5dy5bW+jbhboVYTA9OJhBwnBmVwsz0y3f2L6/b
-         H7eBRgjj1OyBo2kZkyba1F39k8vWuyV5hC5xYhbJhpAszgmMAo6H1ZPYs6xJRpb9KNIj
-         qxzA==
-X-Forwarded-Encrypted: i=1; AJvYcCVaHYLoR27AB77Ac5cf1ySCPdahajrLrQfNZyLPaM5GkQYTE9F2BEeTRHB4K12K8Zu9C2D9ugKPt7yJP9r5RTLRrxSOikorm28LPIJ15OIzNeGksHooJ0KlhN5onPc5IF9I
-X-Gm-Message-State: AOJu0YwxwSmioR4T3AWtHRhYk6O2GUtaaYJTfkA68bBGy9ttSKQf5K8x
-	oXpxpuX5ohPpn41A9YAGP5tavTbPYTDJ9lB9+9WA/rvL+wGotuOYDj436mP70LNMR8etHkFzpwM
-	ZdFS6PRdGi2VssKmCBuJYyyZ/HTI=
-X-Google-Smtp-Source: AGHT+IGDxTtwvZgv3TLBgzcprVxFpiBVz03jsMf+kjeibE6FlpeOlQrysgE1gBLzNcHRZNGYauuMYUz2Ra1agTa/k0I=
-X-Received: by 2002:adf:e84b:0:b0:35f:1ed8:37ee with SMTP id
- ffacd0b85a97d-3607a7b0fd6mr4034396f8f.9.1718475677022; Sat, 15 Jun 2024
- 11:21:17 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1718497807; x=1719102607;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=BTBbcROF1kvXaM6dZlPyFTcs4OHmLeqwYC/d1IExwvY=;
+        b=ipByYQ+KL1YYUrCkYUzdVqVb2KggBqsVWDFp+8mJP/uEbxrUwdwr7LLZqAxw+FNWNe
+         GugtQ1xno/JkOXZrYt0uKdXovLtQ4adPSzyp2ApSF4qrzMJ6QgVcMQPouJJVMxFYSc9H
+         OeESXET52p9/Z5+ojPA6IPRpfpUN9/X/10SjJ8lZnANAMwbXVKghsEV7637654h9q7fs
+         y/lMB475zgw9qH5weMBHyBkzazkq1tZy+WnI8yCOfzCE0tWfNLVCd8nNYptBnw6QrufH
+         r4KGtchu9T92yXeALdnwO0l1pW0dtL74BOxu+aEg525o+nUdNMWDWhBkrr6AfG8gbHiS
+         i0OA==
+X-Forwarded-Encrypted: i=1; AJvYcCWUprphPjXJybtezr3yvEaM8usm8yDGP+l8j8wzKeIs36mR/XEGWZ2B/QDledduQiAUE9t8yjeK1jBDPsH4PlWF3QgUgUnoxOu22Vf7jdGZNIqSIFj5tPbUXd/wL4bhnuYG
+X-Gm-Message-State: AOJu0YykNSKDJ0Fx1GxLTgi6+sOUgozxD6wmwTuBomB352AKf5POGYNY
+	GYa9HLs/jcEx+TVJm8kKe55kABBko3LKPcQKF4QcJeTAJ7nyddv+
+X-Google-Smtp-Source: AGHT+IFjUoU4UWG+6jxvlrzjuNUmhH/5KBsT7DcS/d3T5ZFMnJwu7/MjDSKvyIVJmpcROP/wQ8RuRg==
+X-Received: by 2002:a05:6a20:8427:b0:1b5:d00e:98e3 with SMTP id adf61e73a8af0-1bae7d97c20mr6501499637.11.1718497806983;
+        Sat, 15 Jun 2024 17:30:06 -0700 (PDT)
+Received: from ubuntu.localdomain ([240e:304:7697:ee96:7cea:342b:603a:c6])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2c4a769be25sm8612448a91.35.2024.06.15.17.30.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 15 Jun 2024 17:30:06 -0700 (PDT)
+From: Donglin Peng <dolinux.peng@gmail.com>
+To: ast@kernel.org
+Cc: daniel@iogearbox.net,
+	song@kernel.org,
+	andrii@kernel.org,
+	eddyz87@gmail.com,
+	haoluo@google.com,
+	yonghong.song@linux.dev,
+	bpf@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Donglin Peng <dolinux.peng@gmail.com>
+Subject: [PATCH] libbpf: checking the btf_type kind when fixing variable offsets
+Date: Sat, 15 Jun 2024 17:29:58 -0700
+Message-Id: <20240616002958.2095829-1-dolinux.peng@gmail.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <Zmuw29IhgyPNKnIM@xpf.sh.intel.com>
-In-Reply-To: <Zmuw29IhgyPNKnIM@xpf.sh.intel.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Sat, 15 Jun 2024 11:21:05 -0700
-Message-ID: <CAADnVQLf1P=qfA7CBxwB_0ecm9edBg=QrN1PS2QnfP7xJhDWNQ@mail.gmail.com>
-Subject: Re: [Syzkaller & bisect] There is KASAN: slab-use-after-free Read in
- arena_vm_close in v6.10-rc3 kernel
-To: Pengfei Xu <pengfei.xu@intel.com>
-Cc: Alexei Starovoitov <ast@kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
-	bpf <bpf@vger.kernel.org>, Andrii Nakryiko <andrii@kernel.org>, Barret Rhoden <brho@google.com>, 
-	kbuild test robot <lkp@intel.com>, syzkaller-bugs <syzkaller-bugs@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Thu, Jun 13, 2024 at 7:54=E2=80=AFPM Pengfei Xu <pengfei.xu@intel.com> w=
-rote:
->
-> Hi Alexei Starovoitov and bpf expert,
->
-> Greeting!
->
-> There is KASAN: slab-use-after-free Read in arena_vm_close in v6.10-rc3 k=
-ernel.
+I encountered an issue when building the test_progs using the repository[1]:
 
-Thanks for the report.
-Please test the fix:
-https://lore.kernel.org/bpf/20240615181935.76049-1-alexei.starovoitov@gmail=
-.com/
+$ clang --version
+Ubuntu clang version 17.0.6 (++20231208085846+6009708b4367-1~exp1~20231208085949.74)
+Target: x86_64-pc-linux-gnu
+Thread model: posix
+InstalledDir: /usr/bin
+
+$ pwd
+/work/Qemu/x86_64/linux-6.10-rc2/tools/testing/selftests/bpf/
+
+$ make test_progs V=1
+...
+/work/Qemu/x86_64/linux-6.10-rc2/tools/testing/selftests/bpf/tools/sbin/bpftool
+gen object
+/work/Qemu/x86_64/linux-6.10-rc2/tools/testing/selftests/bpf/ip_check_defrag.bpf.linked2.o
+/work/Qemu/x86_64/linux-6.10-rc2/tools/testing/selftests/bpf/ip_check_defrag.bpf.linked1.o
+libbpf: failed to find symbol for variable 'bpf_dynptr_slice' in section
+'.ksyms'
+Error: failed to link
+'/work/Qemu/x86_64/linux-6.10-rc2/tools/testing/selftests/bpf/ip_check_defrag.bpf.linked1.o':
+No such file or directory (2)
+make: *** [Makefile:656:
+/work/Qemu/x86_64/linux-6.10-rc2/tools/testing/selftests/bpf/ip_check_defrag.skel.h]
+Error 254
+
+After investigation, I found that the btf_types in the '.ksyms' section have a kind of
+BTF_KIND_FUNC instead of BTF_KIND_VAR:
+
+$ bpftool btf dump file ./ip_check_defrag.bpf.linked1.o
+...
+[2] DATASEC '.ksyms' size=0 vlen=2
+        type_id=16 offset=0 size=0 (FUNC 'bpf_dynptr_from_skb')
+        type_id=17 offset=0 size=0 (FUNC 'bpf_dynptr_slice')
+...
+[16] FUNC 'bpf_dynptr_from_skb' type_id=82 linkage=extern
+[17] FUNC 'bpf_dynptr_slice' type_id=85 linkage=extern
+...
+
+To fix this, we can a add check for the kind.
+
+[1] https://github.com/eddyz87/bpf/tree/binsort-btf-dedup
+Link: https://lore.kernel.org/all/4f551dc5fc792936ca364ce8324c0adea38162f1.camel@gmail.com/
+
+Fixes: 8fd27bf69b86 ("libbpf: Add BPF static linker BTF and BTF.ext support")
+Signed-off-by: Donglin Peng <dolinux.peng@gmail.com>
+---
+ tools/lib/bpf/linker.c | 11 +++++++++--
+ 1 file changed, 9 insertions(+), 2 deletions(-)
+
+diff --git a/tools/lib/bpf/linker.c b/tools/lib/bpf/linker.c
+index 0d4be829551b..7f5fc9ac4ad6 100644
+--- a/tools/lib/bpf/linker.c
++++ b/tools/lib/bpf/linker.c
+@@ -2213,10 +2213,17 @@ static int linker_fixup_btf(struct src_obj *obj)
+ 		vi = btf_var_secinfos(t);
+ 		for (j = 0, m = btf_vlen(t); j < m; j++, vi++) {
+ 			const struct btf_type *vt = btf__type_by_id(obj->btf, vi->type);
+-			const char *var_name = btf__str_by_offset(obj->btf, vt->name_off);
+-			int var_linkage = btf_var(vt)->linkage;
++			const char *var_name;
++			int var_linkage;
+ 			Elf64_Sym *sym;
+ 
++			/* should be a variable */
++			if (btf_kind(vt) != BTF_KIND_VAR)
++				continue;
++
++			var_name = btf__str_by_offset(obj->btf, vt->name_off);
++			var_linkage = btf_var(vt)->linkage;
++
+ 			/* no need to patch up static or extern vars */
+ 			if (var_linkage != BTF_VAR_GLOBAL_ALLOCATED)
+ 				continue;
+-- 
+2.25.1
+
 
