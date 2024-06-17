@@ -1,113 +1,161 @@
-Return-Path: <bpf+bounces-32351-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-32352-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 188EE90BD35
-	for <lists+bpf@lfdr.de>; Tue, 18 Jun 2024 00:00:38 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id A08E190BD7F
+	for <lists+bpf@lfdr.de>; Tue, 18 Jun 2024 00:26:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B612D1F222DD
-	for <lists+bpf@lfdr.de>; Mon, 17 Jun 2024 22:00:37 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 17682282491
+	for <lists+bpf@lfdr.de>; Mon, 17 Jun 2024 22:26:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 81DE318FC80;
-	Mon, 17 Jun 2024 22:00:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A8BE199259;
+	Mon, 17 Jun 2024 22:26:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FdHoumG5"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="e8GS1nrN"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pg1-f180.google.com (mail-pg1-f180.google.com [209.85.215.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A82C7492
-	for <bpf@vger.kernel.org>; Mon, 17 Jun 2024 22:00:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A2A76198E9E;
+	Mon, 17 Jun 2024 22:26:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718661632; cv=none; b=gyxq8gJ0Il8AGMopEy2QptWCOSFFKfUmKGdBqSZqGg/bRRR79KJ7HMvzCuPw9m/NH74INDUUz3uhSlSZSzXEOPlISCwbNk53SP6JLBjJe4JeYD2HHPHovba22Rg1M+ecvggA3yr+6MdFjWe4BV+R6y4KE6hG4POsrKhsy8h+8QY=
+	t=1718663168; cv=none; b=K+gMfpNmjL0P1m6cixRUvT7y/YDEH8fWxTBO2feSLbI8T0PUYtq5hKIlKWDpO26AQ+cA0GreqoRXK2Y+Oxexi91AjndXXsHrGcvOlFdOpNEZKXa3Vnr8sjWIQ+xGK5XyHm2IGFrEAAYjApuYe9x9N1woSYAB3n4VL8R89WRXdh0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718661632; c=relaxed/simple;
-	bh=nS+kOL2lF4Njo2C3uqTZ36Xyrpf9ebX3cfPMHGdqJU4=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=H2ETXzyZ3YewRaLNVdbZXxRm+b8mwbAVmowA8X69Xw1zRzr6EzNeCPek2n0mlXAozOo8LmVjmrW5oeboGWBXEC2+OggIi6MIlIQ0IFIpzwTL6wJCuACv//oNtuXS3PSTwYbQl8gxtc9voETM6EQhZ6eAW2pvHwAHcUHNE1y8oVE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FdHoumG5; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 8AE8DC4AF1A;
-	Mon, 17 Jun 2024 22:00:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1718661631;
-	bh=nS+kOL2lF4Njo2C3uqTZ36Xyrpf9ebX3cfPMHGdqJU4=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=FdHoumG5uesWaVLOAq0RaUdlM93rShkmslaXc6XjXr2I7HJEw+6nS6PHFQm4PvMbn
-	 rmPv4MM/qKI+WN5EyKcRm8BrrN0paP6SVTQkm9dp9mmJtBxkbyOa3myYKyzLdlwInT
-	 vxCdmRNp98yI8LarA+x66xE8z/VuGM+w0yFUWORYJWRFnH+jTeQq7R3XqM52Fod6ZS
-	 km8mbppK7H4xeHl2rX0+QTxjk5gps/5QCvB0ii5E9yEINfyZ81xcv9GJJ3a1qgaX9r
-	 sZVOtD4Y9veIfupkr8mMi5Tk6B/n1BU+xLbELOYTPEauiGrrAw/86AJp77h9hQQi0i
-	 byESEjj05ErTg==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 6DCA9D2D0F8;
-	Mon, 17 Jun 2024 22:00:31 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1718663168; c=relaxed/simple;
+	bh=WnKdnf8toMJeFBnLdKSlbykGNXt8GLauAnpYj6hAGlc=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=UcfVD5Xvd/gzSwUllXsLxmC96+Qbuiv+jbhj9Q0l57mk7nk7kh9JlQ8xha42ytmAi7hlT5YnsvytGO6+WzB0QeYHC61W1CvG8QBVlVDQT8evEeCSpU2B60aKAQmw86SeNEby0AnQo7bG3unLB7mz/VjVOt14WV7O//H2G2FlKjg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=e8GS1nrN; arc=none smtp.client-ip=209.85.215.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f180.google.com with SMTP id 41be03b00d2f7-6e5fd488d9fso3616199a12.3;
+        Mon, 17 Jun 2024 15:26:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1718663166; x=1719267966; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=CWZR9+o4MQmZdZglbiV2Ru8G5/u2Xf1KFlJWCQsbllM=;
+        b=e8GS1nrNcbKykP1pKwZJ8A0NcnQyMNfJfRjXxKVn/W0jT3K46diNpHFigdCnhAUbOU
+         C4cUQupYEmPSzDhijEs4/IxtbT86jClBpzGq7i9W1QXK5Ys4jTDnH7xEN6ETsm/xf30s
+         Upj5VThi78dKJZj+Kc2knwUOpHrP2qYKuutqEl5Islq8hjoTzCwbyCAyHod8uM4NL9fJ
+         ysRS1xF7kfTk7CvNOZvCfBKxMsNCJoHr6ISbwLPdt5XQApI+8vpmpEnGJWIcFASZlgy7
+         iVuZ7scq+pAYO44fAo7wWzpP53AQSUDLCFplvdUqaBVrQ4TscXDuuB7BHDefd4vjz66U
+         KnAg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1718663166; x=1719267966;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=CWZR9+o4MQmZdZglbiV2Ru8G5/u2Xf1KFlJWCQsbllM=;
+        b=iJuHrAteBzYFcWdI9BiUMvU1iKhUzM2XwlsAHTjedeuKwXlsfrYRlDRwhxMkGy3hS0
+         CfP0tLKtsJZWgLnjpa4VWBO3d+Mts5ZGEPvD+R/tu4dTfT/4w3S1OIfvOoK9EUrEoHhE
+         pUxupSJCOxcPUKlsgqLZ1q47lg+EtjzRU0iUshmbAiybsvPNsOhb6bfQ9X2qS3Ue0wdQ
+         WNx/GsZ94bpvwLuQzffvS84CDJGszu816tiFDgZat7gsxRYZmg/eC3syMdnQ3djPT5C4
+         zstVEoCdrRBoT1GM9amKMe5e1Tr6mvf5ZAq3qR3JzIItpLyvDJ1ZCoezwwxM4cZlFWpZ
+         QD5g==
+X-Forwarded-Encrypted: i=1; AJvYcCVnXz/Mtg/G7vkmPk38GBJ+H8JdG0iuQdmI95gMQNnp/2vG1/Fd1aS5JNp4yjDfx26A3KhHDb1zgdkDhvqjvsSF8Pz0xHr2CUnL7KZjvc1oHLVDEf4e6AEPESEC+NcRSvu/5q6YeE9V2+QEBfaJEpce8nyzv0Nz71e+gP54dew85peN
+X-Gm-Message-State: AOJu0YxgTjah58NIMGRQklaIdF84UFqxNPyHBEw0ntkm/DQY5RreHuSP
+	CaDT2c2IAUV7Pkd78hywD+fSBbiZO43evBlRYrjFy4dPbL/LNbMpNbbGT7iK7sEMcujembmAxWb
+	MD3Bd8ZZhIKzUpAaleTzc+LKKzu0=
+X-Google-Smtp-Source: AGHT+IEMTnYx4VeeS5H3uXM8OvL59xMSDb5iEb4PnFyF6+3PrFuMDUUfJAzp0SGo+Ah4wYrfPfTkzKbZocSI9aB7mqs=
+X-Received: by 2002:a17:90b:8d5:b0:2c2:cefc:abe2 with SMTP id
+ 98e67ed59e1d1-2c4dbb41b40mr13043877a91.31.1718663165850; Mon, 17 Jun 2024
+ 15:26:05 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH v6 bpf-next 0/9] bpf: support resilient split BTF
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <171866163144.18503.8187989801903069674.git-patchwork-notify@kernel.org>
-Date: Mon, 17 Jun 2024 22:00:31 +0000
-References: <20240613095014.357981-1-alan.maguire@oracle.com>
-In-Reply-To: <20240613095014.357981-1-alan.maguire@oracle.com>
-To: Alan Maguire <alan.maguire@oracle.com>
-Cc: andrii@kernel.org, eddyz87@gmail.com, ast@kernel.org,
- daniel@iogearbox.net, martin.lau@linux.dev, song@kernel.org,
- yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org,
- sdf@google.com, haoluo@google.com, jolsa@kernel.org, mcgrof@kernel.org,
- masahiroy@kernel.org, nathan@kernel.org, mykolal@fb.com, dxu@dxuuu.xyz,
- bpf@vger.kernel.org
+References: <cover.1717881178.git.dxu@dxuuu.xyz> <34708481d71ea72c23a78a5209e04a76b261a01d.1717881178.git.dxu@dxuuu.xyz>
+ <Zmb52Qp__CBzbgDh@krava>
+In-Reply-To: <Zmb52Qp__CBzbgDh@krava>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Mon, 17 Jun 2024 15:25:53 -0700
+Message-ID: <CAEf4BzaT7XNnGFUqAr=+pi106bT0o4=TJ7JLOPNjZEBHw4+M7Q@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v4 06/12] bpf: selftests: Fix bpf_session_cookie()
+ kfunc prototype
+To: Jiri Olsa <olsajiri@gmail.com>
+Cc: Daniel Xu <dxu@dxuuu.xyz>, shuah@kernel.org, ast@kernel.org, andrii@kernel.org, 
+	eddyz87@gmail.com, daniel@iogearbox.net, quentin@isovalent.com, 
+	alan.maguire@oracle.com, acme@kernel.org, mykolal@fb.com, 
+	martin.lau@linux.dev, song@kernel.org, yonghong.song@linux.dev, 
+	john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com, 
+	haoluo@google.com, bpf@vger.kernel.org, linux-kselftest@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, kernel-team@meta.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hello:
+On Mon, Jun 10, 2024 at 6:04=E2=80=AFAM Jiri Olsa <olsajiri@gmail.com> wrot=
+e:
+>
+> On Sat, Jun 08, 2024 at 03:16:02PM -0600, Daniel Xu wrote:
+> > The prototype defined in bpf_kfuncs.h was not in line with how the
+> > actual kfunc was defined. This causes compilation errors when kfunc
+> > prototypes are generated from BTF.
+> >
+> > Fix by aligning with actual kfunc definition.
+> >
+> > Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
+> > ---
+> >  tools/testing/selftests/bpf/bpf_kfuncs.h                        | 2 +-
+> >  tools/testing/selftests/bpf/progs/kprobe_multi_session_cookie.c | 2 +-
+> >  2 files changed, 2 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/tools/testing/selftests/bpf/bpf_kfuncs.h b/tools/testing/s=
+elftests/bpf/bpf_kfuncs.h
+> > index be91a6919315..3b6675ab4086 100644
+> > --- a/tools/testing/selftests/bpf/bpf_kfuncs.h
+> > +++ b/tools/testing/selftests/bpf/bpf_kfuncs.h
+> > @@ -77,5 +77,5 @@ extern int bpf_verify_pkcs7_signature(struct bpf_dynp=
+tr *data_ptr,
+> >                                     struct bpf_key *trusted_keyring) __=
+ksym;
+> >
+> >  extern bool bpf_session_is_return(void) __ksym __weak;
+> > -extern long *bpf_session_cookie(void) __ksym __weak;
+> > +extern __u64 *bpf_session_cookie(void) __ksym __weak;
+>
+> the original intent was to expose long instead of __u64 :-\
+>
 
-This series was applied to bpf/bpf-next.git (master)
-by Andrii Nakryiko <andrii@kernel.org>:
+Cookies internally are always u64 (8 byte values). Marking them
+internally in the kernel as long could lead to problems on 32-bit
+architectures, potentially (it still needs to be 64-bit value
+according to BPF contract, but we'll allocate only 4 bytes for them).
 
-On Thu, 13 Jun 2024 10:50:05 +0100 you wrote:
-> Split BPF Type Format (BTF) provides huge advantages in that kernel
-> modules only have to provide type information for types that they do not
-> share with the core kernel; for core kernel types, split BTF refers to
-> core kernel BTF type ids.  So for a STRUCT sk_buff, a module that
-> uses that structure (or a pointer to it) simply needs to refer to the
-> core kernel type id, saving the need to define the structure and its many
-> dependents.  This cuts down on duplication and makes BTF as compact
-> as possible.
-> 
-> [...]
+It seems better and safer to be explicit with __u64/u64 for cookies everywh=
+ere.
 
-Here is the summary with links:
-  - [v6,bpf-next,1/9] libbpf: add btf__distill_base() creating split BTF with distilled base BTF
-    https://git.kernel.org/bpf/bpf-next/c/58e185a0dc35
-  - [v6,bpf-next,2/9] selftests/bpf: test distilled base, split BTF generation
-    https://git.kernel.org/bpf/bpf-next/c/eb20e727c434
-  - [v6,bpf-next,3/9] libbpf: split BTF relocation
-    https://git.kernel.org/bpf/bpf-next/c/19e00c897d50
-  - [v6,bpf-next,4/9] selftests/bpf: extend distilled BTF tests to cover BTF relocation
-    https://git.kernel.org/bpf/bpf-next/c/affdeb50616b
-  - [v6,bpf-next,5/9] libbpf: make btf_parse_elf process .BTF.base transparently
-    https://git.kernel.org/bpf/bpf-next/c/c86f180ffc99
-  - [v6,bpf-next,6/9] resolve_btfids: handle presence of .BTF.base section
-    https://git.kernel.org/bpf/bpf-next/c/6ba77385f386
-  - [v6,bpf-next,7/9] module, bpf: store BTF base pointer in struct module
-    (no matching commit)
-  - [v6,bpf-next,8/9] libbpf,bpf: share BTF relocate-related code with kernel
-    (no matching commit)
-  - [v6,bpf-next,9/9] kbuild,bpf: add module-specific pahole flags for distilled base BTF
-    (no matching commit)
+What am I missing?
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+> could we rather change the bpf_session_cookie function to return long?
+> should be just return value type change
+>
+> thanks,
+> jirka
+>
+>
+> >  #endif
+> > diff --git a/tools/testing/selftests/bpf/progs/kprobe_multi_session_coo=
+kie.c b/tools/testing/selftests/bpf/progs/kprobe_multi_session_cookie.c
+> > index d49070803e22..0835b5edf685 100644
+> > --- a/tools/testing/selftests/bpf/progs/kprobe_multi_session_cookie.c
+> > +++ b/tools/testing/selftests/bpf/progs/kprobe_multi_session_cookie.c
+> > @@ -25,7 +25,7 @@ int BPF_PROG(trigger)
+> >
+> >  static int check_cookie(__u64 val, __u64 *result)
+> >  {
+> > -     long *cookie;
+> > +     __u64 *cookie;
+> >
+> >       if (bpf_get_current_pid_tgid() >> 32 !=3D pid)
+> >               return 1;
+> > --
+> > 2.44.0
+> >
 
