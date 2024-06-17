@@ -1,139 +1,164 @@
-Return-Path: <bpf+bounces-32287-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-32288-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id F2F9490A8B1
-	for <lists+bpf@lfdr.de>; Mon, 17 Jun 2024 10:45:41 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A965390A965
+	for <lists+bpf@lfdr.de>; Mon, 17 Jun 2024 11:20:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7B629B25F57
-	for <lists+bpf@lfdr.de>; Mon, 17 Jun 2024 08:45:39 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5893728B7C9
+	for <lists+bpf@lfdr.de>; Mon, 17 Jun 2024 09:20:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 66C32190684;
-	Mon, 17 Jun 2024 08:45:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B43C31922F8;
+	Mon, 17 Jun 2024 09:17:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Ibba1TV0"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TySteEnA"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-f51.google.com (mail-ed1-f51.google.com [209.85.208.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7CF8B190670
-	for <bpf@vger.kernel.org>; Mon, 17 Jun 2024 08:45:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 39046191481;
+	Mon, 17 Jun 2024 09:17:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718613922; cv=none; b=d3B30cy9bEKRaRLXJyPSjt+/WXYn9uSSPbSrFagEm0i9CyItzx9SEQAOjNmw2Zkpzws14MgqdTqUy/fku+GGMigubcv/4bR0hXSqcX8/Q6/GhIk4GMDEz7faPmET4jly41ikijL8UKOOIWls6bgbHC54QSRYvhRzzoLbayV112c=
+	t=1718615849; cv=none; b=f0dTO7iV7IIEs+cDDEOqjMmAiDqB25UyCTgAE9E+igtdfm2UbEIfTYE0QuIToBqYvqRnrCXfqTBaMowiiMGXcqYDumyXMUJBbS37Par7a7PhFF3DK9W/Yw6hqz6AEqqdWKg68KLh59dRCKJXrkMF3OZzFMV47q8xQ+K0y08RoEU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718613922; c=relaxed/simple;
-	bh=keAa9rgPRLtNrC8+bublnzimvGcxi7xf6fqMnW/UKMw=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=J463ZNWfTFLwhk78mKEeF9XfBhUQc7+oO8AHiyNB6Me5dKwutZiy1i/8Wa0QnZ5WQIksiYbahCkvfSQ94LoA+NTewC11qUwLWMueLVGVnRC8M8uhXIk4Kj69vU+Nbo6OhFoJXjYdY+sg9HSQIZjKvxZt5LEolgpzRfXL/FX+7a8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Ibba1TV0; arc=none smtp.client-ip=209.85.208.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f51.google.com with SMTP id 4fb4d7f45d1cf-57cc30eaf0aso1553101a12.2
-        for <bpf@vger.kernel.org>; Mon, 17 Jun 2024 01:45:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1718613919; x=1719218719; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=YeX6qFWjVthmg26DJomDdpV376vR+BuheDRBRzQ7lOQ=;
-        b=Ibba1TV0SvV/ProlWxEJDB6LJOT91QVgsPtz3vcOh699oGwWvzWS8xQyzcARy0oLce
-         F+MMy5/4upCwu/ntc8mIsWt+hRKmK79soUKDoo31Y0MWR+/fNw8lrXfbqcuc03KVG8P+
-         YEH0v6rht/Q4DPInfgULOTRFfNFcAqK7yjZKEWA9KWhNfYc2f4glUuQhFX1kW/sqrH6S
-         4ETJplf6bJ4jxac/MIkURSe3IQyi9pgo3AlBlHMMGqwnenl77MlhO4QzsC9OpchuM7UI
-         /dGit6Q6MSrfncbyRVLH3xq/MFw14YSfUPtcXtXhdEN8AdTvQz7jSWe+Nt6KAikrIXuo
-         zdyA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1718613919; x=1719218719;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=YeX6qFWjVthmg26DJomDdpV376vR+BuheDRBRzQ7lOQ=;
-        b=RBHyob48gqdb/oFOtCtnoSWXYyu4hq6RE1vqRrX0u6azvYPU2MmFgIWc8jRRyTnzJ+
-         Ugybz/wdKrGz5ahEDW7Oj80CVdU6mTWt87ezXdEYx5Fy+crQhCBzRfScisOLiH6PWtEZ
-         Kz50beZf0z5lykCCc3Ih8pUkPFjyMbOfv58s9UWz4AbcOpEymf6gboDzFfhbzDQSrXmc
-         zfVp6qMI8vPfkxgYJaqaS2utm1eJY6d44l7uBu0OT63ZpLm03UKLOaaNAJD5Uq3jScQQ
-         LGt+6VCK/Rv3yu+fvBWM6EfjvWR8++T4DxOtQOxB45W4H2rHrzxwZ9i1yfOhk1iLmSf1
-         kTRA==
-X-Forwarded-Encrypted: i=1; AJvYcCXBbqnXKzm1cbNAEIIINytFG0VxXZIwm49dK63HarP7nGTclndIBLc69UeX2znkQ1BUrX9pWTum6gXBhWs1svUQwxjP
-X-Gm-Message-State: AOJu0Yw67MTgV6DxKdoMnNKmDcpMSlqBYlEPkB7MHRWe35U+Wj1G6vKn
-	qd7ibaGeO1rdk/XMRT1qLlJBuVz36ZN3um/aYA0wqIcpNOwicSTy
-X-Google-Smtp-Source: AGHT+IFViX7h53cusCOmdovrr0L3HoVQ0MJ71vus7uWcTSoYM+LyrASNgr+fNTRpl9HIYKshFZYzjQ==
-X-Received: by 2002:a50:9e2e:0:b0:57c:ad96:14c8 with SMTP id 4fb4d7f45d1cf-57cbd69022amr6936121a12.23.1718613918659;
-        Mon, 17 Jun 2024 01:45:18 -0700 (PDT)
-Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
-        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-57cba492acfsm5653371a12.15.2024.06.17.01.45.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 17 Jun 2024 01:45:18 -0700 (PDT)
-From: Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Mon, 17 Jun 2024 10:45:16 +0200
-To: Rafael Passos <rafael@rcpassos.me>
-Cc: andrii@kernel.org, ast@kernel.org, bjorn@kernel.org, bp@alien8.de,
-	daniel@iogearbox.net, davem@davemloft.net, dsahern@kernel.org,
-	mingo@redhat.com, puranjay@kernel.org, tglx@linutronix.de,
-	will@kernel.org, xi.wang@gmail.com, bpf@vger.kernel.org
-Subject: Re: [PATCH bpf-next V2 0/3] Fix compiler warnings, looking for
- suggestions
-Message-ID: <Zm_3nE-ho-MDZbyp@krava>
-References: <20240615022641.210320-1-rafael@rcpassos.me>
+	s=arc-20240116; t=1718615849; c=relaxed/simple;
+	bh=LHVbipfLrY85jDixqu/erFFUG3QdqWCHYShbScuh0sI=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=ldhWjGevq+IgusH8Zg8cbr9g4qzsBPd/U05EJ5TImsMqKV4HSmf4Dt55qUqwePb6TuaQ8sGr6FxckImxafJ/ZgbbUeoHO9SD1PZOXFRaiIDmlR4e7oy7fYIFCIS0CItxe9ORI7dm9RwrbC/Hm+B7xrlvOz7Dfo4FqZjLx76K8sg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TySteEnA; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 38964C2BD10;
+	Mon, 17 Jun 2024 09:17:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1718615848;
+	bh=LHVbipfLrY85jDixqu/erFFUG3QdqWCHYShbScuh0sI=;
+	h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+	b=TySteEnAyJiiKNiDnLjB75Ve6lwB5fW6Q5cBd7DmHP21mw5RylOZaKpYUxTb4ZXGJ
+	 fGTZXVtG6ajqqy4syDnvCYPyBMGBBYW5n5rhWDgM9aO1y3qtFovD/T+yEpKhSXs/kE
+	 iCw+8lj4GbMLUAkgmizFRJbpuZeqjYuHV12Et1T9wpC1zlLK2B/+ko/A5OWWYSSuV4
+	 O5zqpPijxGhnL9da+3A4HKqYjZob46KgN5uYEAL1il/0y8V4CC8pE7cEKYZ72xobNr
+	 lLWSbANHcCcvE+VYK04HaosTFwHgo5DoOuzPi199q0q3Tazs0d4mNYcGKTzoLw0NT6
+	 JUrCdDFbmXyhw==
+Message-ID: <47a472d1ff1e9ec37b71d371cbc00395811f56c0.camel@kernel.org>
+Subject: Re: [PATCH mptcp-next v3 0/6] use network helpers, part 7
+From: Geliang Tang <geliang@kernel.org>
+To: Andrii Nakryiko <andrii@kernel.org>, Eduard Zingerman
+ <eddyz87@gmail.com>,  Mykola Lysenko <mykolal@fb.com>, Alexei Starovoitov
+ <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Martin KaFai Lau
+ <martin.lau@linux.dev>, Song Liu <song@kernel.org>, Yonghong Song
+ <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, KP
+ Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo
+ <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,  Shuah Khan
+ <shuah@kernel.org>
+Cc: Geliang Tang <tanggeliang@kylinos.cn>, bpf@vger.kernel.org, 
+	linux-kselftest@vger.kernel.org
+Date: Mon, 17 Jun 2024 17:17:20 +0800
+In-Reply-To: <cover.1718612857.git.tanggeliang@kylinos.cn>
+References: <cover.1718612857.git.tanggeliang@kylinos.cn>
+Autocrypt: addr=geliang@kernel.org; prefer-encrypt=mutual;
+ keydata=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
+ TO0tfEdfAX7IENcV87h2yAFBZkaA==
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.52.0-1build2 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240615022641.210320-1-rafael@rcpassos.me>
+Content-Transfer-Encoding: 8bit
 
-On Fri, Jun 14, 2024 at 11:24:07PM -0300, Rafael Passos wrote:
-> Hi,
-> This patchset has a few fixes to compiler warnings.
+Sorry, v3 breaks the CI.
+Changes Requested.
 
-curious, which compiler/setup displayed the warnings?
+-Geliang
 
-> I am studying the BPF subsystem and wish to bring more tangible contributions.
-> I would appreciate receiving suggestions on things to investigate.
-> I also documented a bit in my blog. I could help with docs here, too.
-> https://rcpassos.me/post/linux-ebpf-understanding-kernel-level-mechanics
-> Thanks!
+On Mon, 2024-06-17 at 16:33 +0800, Geliang Tang wrote:
+> From: Geliang Tang <tanggeliang@kylinos.cn>
 > 
-> Changelog V1 -> V2:
-> - rebased all commits to updated for-next base
-> - removes new cases of the extra parameter for bpf_jit_binary_pack_finalize
-> - built and tested for ARM64
-> - sent the series for the test workflow:
->   https://github.com/kernel-patches/bpf/pull/7198
+> v3:
+>  - rename start_client to client_socket
+>  - Use connect_to_addr in connect_to_fd_opt
 > 
+> v2:
+>  - update patch 2, extract a new helper start_client.
+>  - drop patch 3, keep must_fail in network_helper_opts.
 > 
-> Rafael Passos (3):
->   bpf: remove unused parameter in bpf_jit_binary_pack_finalize
->   bpf: remove unused parameter in __bpf_free_used_btfs
->   bpf: remove redeclaration of new_n in bpf_verifier_vlog
+> Drop type and noconnect from network_helper_opts. And use
+> start_server_str
+> in mptcp and test_tcp_check_syncookie_user.
+> 
+> Patches 1-4 address Martin's comments in the previous series.
+> 
+> Geliang Tang (6):
+>   selftests/bpf: Drop type from network_helper_opts
+>   selftests/bpf: Use connect_to_addr in connect_to_fd_opt
+>   selftests/bpf: Add client_socket helper
+>   selftests/bpf: Drop noconnect from network_helper_opts
+>   selftests/bpf: Use start_server_str in mptcp
+>   selftests/bpf: Use start_server_str in
+> test_tcp_check_syncookie_user
+> 
+>  tools/testing/selftests/bpf/network_helpers.c | 100 ++++++++--------
+> --
+>  tools/testing/selftests/bpf/network_helpers.h |   6 +-
+>  .../selftests/bpf/prog_tests/bpf_tcp_ca.c     |   2 +-
+>  .../selftests/bpf/prog_tests/cgroup_v1v2.c    |   4 +-
+>  .../bpf/prog_tests/ip_check_defrag.c          |  10 +-
+>  .../testing/selftests/bpf/prog_tests/mptcp.c  |   7 +-
+>  .../bpf/test_tcp_check_syncookie_user.c       |  29 +----
+>  7 files changed, 56 insertions(+), 102 deletions(-)
+> 
 
-lgtm, nice cleanup
-
-Acked-by: Jiri Olsa <jolsa@kernel.org>
-
-jirka
-
-
-> 
->  arch/arm64/net/bpf_jit_comp.c   | 3 +--
->  arch/powerpc/net/bpf_jit_comp.c | 4 ++--
->  arch/riscv/net/bpf_jit_core.c   | 5 ++---
->  arch/x86/net/bpf_jit_comp.c     | 4 ++--
->  include/linux/bpf.h             | 3 +--
->  include/linux/filter.h          | 3 +--
->  kernel/bpf/core.c               | 8 +++-----
->  kernel/bpf/log.c                | 2 +-
->  kernel/bpf/verifier.c           | 3 +--
->  9 files changed, 14 insertions(+), 21 deletions(-)
-> 
-> -- 
-> 2.45.2
-> 
-> 
 
