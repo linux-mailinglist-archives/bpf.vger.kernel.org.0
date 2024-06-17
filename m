@@ -1,210 +1,179 @@
-Return-Path: <bpf+bounces-32310-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-32312-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 68E1D90B670
-	for <lists+bpf@lfdr.de>; Mon, 17 Jun 2024 18:33:20 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 40A6B90B613
+	for <lists+bpf@lfdr.de>; Mon, 17 Jun 2024 18:18:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0C3A5B3939F
-	for <lists+bpf@lfdr.de>; Mon, 17 Jun 2024 15:23:41 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1C32F1C2320F
+	for <lists+bpf@lfdr.de>; Mon, 17 Jun 2024 16:18:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 010E515FCE8;
-	Mon, 17 Jun 2024 14:45:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0AC801798F;
+	Mon, 17 Jun 2024 16:17:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jJEj4efi"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BDktvP4c"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f50.google.com (mail-ej1-f50.google.com [209.85.218.50])
+Received: from mail-wm1-f48.google.com (mail-wm1-f48.google.com [209.85.128.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B981415FA77;
-	Mon, 17 Jun 2024 14:45:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 15DE917BA4
+	for <bpf@vger.kernel.org>; Mon, 17 Jun 2024 16:17:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718635545; cv=none; b=jkJOWrPrBzepku6NixjfW69+c5bMUXchY7knpRZDAPJCiyOEWnjtUmE/eDn/afq6lEhIULtdyS1HFBCLGvDgjsDSnDMmop/iI7cxUudRVQeTEIGWseCUAY3NAPDJSeDjM66zWAgalgZW7zhemEwxTe5MN3nwK2FkU6avvIlai1I=
+	t=1718641077; cv=none; b=fH8EdAKl3xh+LGbLeZdOKreKu8lniLInibodn/hYH22WkFlM+iD/Qv5z/TKqcixGK1+gUAtV1+DiWX0sobHWh2/ppK0BlBpQ0NkeFp3ac10GOxS6h3zwuGo1leE3+bSc7APeDoND5/XXTfV1EBKnpu+9kFceElGNIrW2N9QbDTs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718635545; c=relaxed/simple;
-	bh=rFVsoK865UN32ZC+/dEHN/mQE5ZBn9kkvYV25JTrEHM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=oLuQUsJM0TXVxgkoXehzcFpvK+Q7I6Oi93o1Lmivxz5+6yb+YkvJuQGXjlQ4v3XCHQyPt34yj7w4fAClKWjdzEt5xeMe15RKivI1Z9GRpDW3scbsdADU3zvrAff0XPk54QKlZ3NEHv+KyU8aOxpm+fdy8FEcJhnOLsG0EqQW+Mo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jJEj4efi; arc=none smtp.client-ip=209.85.218.50
+	s=arc-20240116; t=1718641077; c=relaxed/simple;
+	bh=qMCfS0G7fZ75Wfzv8pPsxiiFoiN1YgacotFvokOcqDY=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=K49ZjQZrQttXFuVto9fOk5VAQzCvAqGH+RDBvjtut/2C6GeY4vgz0dS+0uz7kd1HnQdFlXA4PeNaCqh7+BHyGSy8u8ude0sOBJJpDexf0WqbmmvwH76R9GKvAZZD+jWrT4/hq7mW9Z7ZeponXeqRUiV3d0KXAQby/SnxjuRXk70=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BDktvP4c; arc=none smtp.client-ip=209.85.128.48
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f50.google.com with SMTP id a640c23a62f3a-a6f09eaf420so519264266b.3;
-        Mon, 17 Jun 2024 07:45:43 -0700 (PDT)
+Received: by mail-wm1-f48.google.com with SMTP id 5b1f17b1804b1-421d32fda86so47233955e9.0
+        for <bpf@vger.kernel.org>; Mon, 17 Jun 2024 09:17:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1718635542; x=1719240342; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=ah3rcgKtsiLLs9s7Ep0iHOREj7mRgLBYmdEE8sYGz64=;
-        b=jJEj4efijRqlYzaiwfpV62eIpDfDx9+5ZsV9vDy7gteF6E2KsKun5uGC5Rbaqb4iOo
-         nnRzGttnsVzlwJv7UeAgPaqFaFreqMV5+Rx2VZ9gQmHS2nR5/7jVfcjDQx0REz82YrPd
-         W9JmaY3hM2TVjwduqN+PTnXWQVXnv766EQpAYyU1vkhES1iVZauDFUvL2ftMDGd9ip5k
-         MMP6NTad1SEYIebq9+hBMt2I+4eaD+YqV3iaNagwCsKnWP4AUAKI9rEgywii1oS1SxQQ
-         2bTknUjBsGJtXlq0W8ye/1Kl6DV4s4nUa7Dbfla8hy36NB8uuQiVnezjjgKRdwckdMUi
-         qV1g==
+        d=gmail.com; s=20230601; t=1718641074; x=1719245874; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ijHqb4PwTbbvt9UJwNzjX0AorXhcentPV68tHk7o8Is=;
+        b=BDktvP4cw+u9GEHXdSHAZ0Rt75LsmemOoU8sGIzgj7XhjyYL8O0aSJJpgt7pOb0oWz
+         I2WBry9UxZyMlUTNzZkVIv7I+Rhw7nWNSw8bhDQ+OjOCXoMcibzkMAmWZ6QYE+0sxTf6
+         9+dW7NEB098KZqelCQeAiMnjiZGfSTpjor3vVgLNPcAscL0yH4y+pMLoo3iiW9bV2h0N
+         FmYcJhHMzkWEJUDdUECfZD/wu31ZG7zQumBSQkFlYxr2U8ygEZRfDRq5jkRt/NHEvV3w
+         q2u5+RnxC754i1JHe7WlxwnsOARxvZGR7NVCgkoX/Zce1CnbiwvviA8GBG2RxfbdH3Xa
+         T4Jg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1718635542; x=1719240342;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ah3rcgKtsiLLs9s7Ep0iHOREj7mRgLBYmdEE8sYGz64=;
-        b=PEfqkyX+UAA2ipiTczPNSmADI4cHJYUO+8MMeDfHFX9EfqXk5CFrRvYMPd5q5LBPvk
-         b/zLmfB4Re1dQuKm1hpL+2bvdM2PiAP/j6g2fFnhM2u3ZIplTANuVziBW7GImLFcEBhB
-         ZdbPfQUN5UJ2md2yXKJMYTAmYwoBu2nglQxqSjabKyqDQcA0PcEyDZRe93PnpGiOIW0s
-         FjO2c+lt/Jgip+0nFdVLzOgm0dniIWgaTdOQGhP8iYgTS6WNDyF/Vps5dMe691gPEW+R
-         5aYiXACZQbCwvmuecD7csMpZJD5/wEzwTvKSnyobI9h+ZzX2yx+Sg82+8md3PNMlJMgJ
-         vaxw==
-X-Forwarded-Encrypted: i=1; AJvYcCV6Qu1hNTIXDGWBjaLOdKPabPsn5blNBf22rLfwGHedUQNV7elp4hSubn5+B97gR6ie9QIR5mWSiOL3y7LayFVllJNJArOY9mdldK4rPndYOvN+P/SKzXSuHcJWlxh6teRoymxCGTrrjGaVRqDC57Fn/Iv0YuXWNc8SubWJ5K6sd6k8UjtfLaQXPKy2GnoDKzQ9W89FS4aI2REdIclq9Eli9xDywKt2g6UN1ZBhmN9geXUvek9lm4JTya41rMoA6X01p7Tg8xFJEnIB+6uOWpNpJEseHwENoejH/EgS2HSl8hGoAE/vt/3SBMGhNSMjDfcstn76Cu2RcMf5ZCktByTW9yLbeNGUi7xoSeqJrWtAiLF7nwMwz4e0vqCzHSCcZt0c4iJZEHJQU1125DwkZQhICVYIfRso3eZ6+/NdJJSNn049GlXzRC9H/GY6ypTsZhmO6QByuWh7fVCL7TQ5b+Re5Hfmx/IdvZls9bWf9LUxn5PR1yv72J1JfvEk9qhxfRNQCMsDlfCwjze4sNKZQNqY2RQcLet+X/+6Jk8KvwMCuQqOy7V81doa
-X-Gm-Message-State: AOJu0YwL+fsaQIYP3BYBAKUsYYbEpvj8VW+jZpvFqPf8kjyzZkuVOwnU
-	31ck+TZz+IeM0Z4DMHEs67LUmByaAQBQkQgotvglOIwNqRZ1Xcxq
-X-Google-Smtp-Source: AGHT+IGy29Bog/6x0frVCqVR0gtIWSVZ7NmfaBwvNVXbu4bGaKBQqObsvBBOakN7w58CXi9kwdrLlg==
-X-Received: by 2002:a17:906:aacb:b0:a5a:6bde:c3fb with SMTP id a640c23a62f3a-a6f60d29568mr573906666b.28.1718635541341;
-        Mon, 17 Jun 2024 07:45:41 -0700 (PDT)
-Received: from [192.168.42.82] ([163.114.131.193])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a6f56fa41cbsm522762466b.225.2024.06.17.07.45.39
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 17 Jun 2024 07:45:40 -0700 (PDT)
-Message-ID: <14b7af66-04fe-4b49-94d6-bea5d554252e@gmail.com>
-Date: Mon, 17 Jun 2024 15:45:42 +0100
+        d=1e100.net; s=20230601; t=1718641074; x=1719245874;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ijHqb4PwTbbvt9UJwNzjX0AorXhcentPV68tHk7o8Is=;
+        b=Jmu/AvR9wvGHCUDt37wHwaUenPEoyR+XuqifOTa58PcLfq5MLkxzjv+G7Ae2ckVIuP
+         PV7qCdHTsMuhK/sTLCALRMZ9gFzvvVuA6gZ2mUikGrrfCWIYlY9o/Q6uTtm8qWPmJRtC
+         lxrc29mG8PXKDVV/i8AVY6wpDabCRTLtncRCIFfIqQNzJqFG+Dzj51M0TxaqlMpVS0Xt
+         O7xWP7oS0sUKiEGH+8iRJKXeu1KvDV5c67CNgpdeQ1TxoXO8nUaL9oyZKx69Pf8e7ubT
+         QlGD+otI7DNBtbzEDLAa6eBTJ/vE19Eetz7eg0q2BIClKBHmm19su0A7fw1fbX17xfA3
+         /EaA==
+X-Gm-Message-State: AOJu0YwgnoMz7aE5fnEqsOSlTPGhA1JJflXvqGn70KA/1r+RcA+iC7Me
+	9hRkVuoteR2IClnvFxZ6fPAjWNECKCuQkw3jmmCFn12kxEThnQyzs5Z7Bmekcqu6KzncRx2F74o
+	XiZ0+Muj7xzKSBlNA+iRsQkGsu5M=
+X-Google-Smtp-Source: AGHT+IHoPcoASXBuS4VfzdgyWTlQZ9XHBYYWbhaQ+/ijJCPQYCuLf7L+g3oxL0Ypqjc/j2kNTwIOuWmiEkTEGNOBQwg=
+X-Received: by 2002:a05:600c:17d0:b0:423:b5f9:203f with SMTP id
+ 5b1f17b1804b1-423b5f92170mr52756045e9.5.1718641074325; Mon, 17 Jun 2024
+ 09:17:54 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next v12 07/13] memory-provider: dmabuf devmem memory
- provider
-To: Mina Almasry <almasrymina@google.com>, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
- linux-alpha@vger.kernel.org, linux-mips@vger.kernel.org,
- linux-parisc@vger.kernel.org, sparclinux@vger.kernel.org,
- linux-renesas-soc@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
- linux-arch@vger.kernel.org, bpf@vger.kernel.org,
- linux-kselftest@vger.kernel.org, linux-media@vger.kernel.org,
- dri-devel@lists.freedesktop.org
-Cc: "David S. Miller" <davem@davemloft.net>,
- Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
- Paolo Abeni <pabeni@redhat.com>, Donald Hunter <donald.hunter@gmail.com>,
- Jonathan Corbet <corbet@lwn.net>,
- Richard Henderson <richard.henderson@linaro.org>,
- Ivan Kokshaysky <ink@jurassic.park.msu.ru>, Matt Turner
- <mattst88@gmail.com>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
- "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
- Helge Deller <deller@gmx.de>, Andreas Larsson <andreas@gaisler.com>,
- Sergey Shtylyov <s.shtylyov@omp.ru>, Jesper Dangaard Brouer
- <hawk@kernel.org>, Ilias Apalodimas <ilias.apalodimas@linaro.org>,
- Steven Rostedt <rostedt@goodmis.org>, Masami Hiramatsu
- <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
- Arnd Bergmann <arnd@arndb.de>, Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
- Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman
- <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
- Yonghong Song <yonghong.song@linux.dev>,
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
- Jiri Olsa <jolsa@kernel.org>, Steffen Klassert
- <steffen.klassert@secunet.com>, Herbert Xu <herbert@gondor.apana.org.au>,
- David Ahern <dsahern@kernel.org>,
- Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
- Shuah Khan <shuah@kernel.org>, Sumit Semwal <sumit.semwal@linaro.org>,
- =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
- Bagas Sanjaya <bagasdotme@gmail.com>, Christoph Hellwig <hch@infradead.org>,
- Nikolay Aleksandrov <razor@blackwall.org>, David Wei <dw@davidwei.uk>,
- Jason Gunthorpe <jgg@ziepe.ca>, Yunsheng Lin <linyunsheng@huawei.com>,
- Shailend Chand <shailend@google.com>,
- Harshitha Ramamurthy <hramamurthy@google.com>,
- Shakeel Butt <shakeel.butt@linux.dev>, Jeroen de Borst
- <jeroendb@google.com>, Praveen Kaligineedi <pkaligineedi@google.com>,
- Willem de Bruijn <willemb@google.com>, Kaiyuan Zhang <kaiyuanz@google.com>
-References: <20240613013557.1169171-1-almasrymina@google.com>
- <20240613013557.1169171-8-almasrymina@google.com>
-Content-Language: en-US
-From: Pavel Begunkov <asml.silence@gmail.com>
-In-Reply-To: <20240613013557.1169171-8-almasrymina@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <20240615181935.76049-1-alexei.starovoitov@gmail.com> <90d6740a-6b7e-474d-a218-50f4e0de343c@google.com>
+In-Reply-To: <90d6740a-6b7e-474d-a218-50f4e0de343c@google.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Mon, 17 Jun 2024 09:17:42 -0700
+Message-ID: <CAADnVQJJdO+UCYqWZ7pvccAwFNZxxF=KZHTv5SLGq_2Z2Q1hNA@mail.gmail.com>
+Subject: Re: [PATCH bpf] bpf: Fix remap of arena.
+To: Barret Rhoden <brho@google.com>
+Cc: bpf <bpf@vger.kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@kernel.org>, 
+	Kumar Kartikeya Dwivedi <memxor@gmail.com>, Eddy Z <eddyz87@gmail.com>, Pengfei Xu <pengfei.xu@intel.com>, 
+	Kernel Team <kernel-team@fb.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 6/13/24 02:35, Mina Almasry wrote:
-> Implement a memory provider that allocates dmabuf devmem in the form of
-> net_iov.
-> 
-> The provider receives a reference to the struct netdev_dmabuf_binding
-> via the pool->mp_priv pointer. The driver needs to set this pointer for
-> the provider in the net_iov.
-> 
-> The provider obtains a reference on the netdev_dmabuf_binding which
-> guarantees the binding and the underlying mapping remains alive until
-> the provider is destroyed.
-> 
-> Usage of PP_FLAG_DMA_MAP is required for this memory provide such that
-> the page_pool can provide the driver with the dma-addrs of the devmem.
-> 
-> Support for PP_FLAG_DMA_SYNC_DEV is omitted for simplicity & p.order !=
-> 0.
-> 
-> Signed-off-by: Willem de Bruijn <willemb@google.com>
-> Signed-off-by: Kaiyuan Zhang <kaiyuanz@google.com>
-> Signed-off-by: Mina Almasry <almasrymina@google.com>
+On Mon, Jun 17, 2024 at 8:34=E2=80=AFAM Barret Rhoden <brho@google.com> wro=
+te:
+>
+> On 6/15/24 14:19, Alexei Starovoitov wrote:
+> > From: Alexei Starovoitov <ast@kernel.org>
+> >
+> > The bpf arena logic didn't account for mremap operation. Add a refcnt f=
+or
+> > multiple mmap events to prevent use-after-free in arena_vm_close.
+> >
+> > Reported-by: Pengfei Xu <pengfei.xu@intel.com>
+> > Closes: https://lore.kernel.org/bpf/Zmuw29IhgyPNKnIM@xpf.sh.intel.com/
+> > Fixes: 317460317a02 ("bpf: Introduce bpf_arena.")
+> > Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+> > ---
+> >   kernel/bpf/arena.c | 13 +++++++++++++
+> >   1 file changed, 13 insertions(+)
+> >
+> > diff --git a/kernel/bpf/arena.c b/kernel/bpf/arena.c
+> > index 583ee4fe48ef..f31fcaf7ee8e 100644
+> > --- a/kernel/bpf/arena.c
+> > +++ b/kernel/bpf/arena.c
+> > @@ -48,6 +48,7 @@ struct bpf_arena {
+> >       struct maple_tree mt;
+> >       struct list_head vma_list;
+> >       struct mutex lock;
+> > +     atomic_t mmap_count;
+> >   };
+> >
+> >   u64 bpf_arena_get_kern_vm_start(struct bpf_arena *arena)
+> > @@ -227,12 +228,22 @@ static int remember_vma(struct bpf_arena *arena, =
+struct vm_area_struct *vma)
+> >       return 0;
+> >   }
+> >
+> > +static void arena_vm_open(struct vm_area_struct *vma)
+> > +{
+> > +     struct bpf_map *map =3D vma->vm_file->private_data;
+> > +     struct bpf_arena *arena =3D container_of(map, struct bpf_arena, m=
+ap);
+> > +
+> > +     atomic_inc(&arena->mmap_count);
+> > +}
+> > +
+> >   static void arena_vm_close(struct vm_area_struct *vma)
+> >   {
+> >       struct bpf_map *map =3D vma->vm_file->private_data;
+> >       struct bpf_arena *arena =3D container_of(map, struct bpf_arena, m=
+ap);
+> >       struct vma_list *vml;
+> >
+> > +     if (!atomic_dec_and_test(&arena->mmap_count))
+> > +             return;
+> >       guard(mutex)(&arena->lock);
+> >       vml =3D vma->vm_private_data;
+> >       list_del(&vml->head);
+> > @@ -287,6 +298,7 @@ static vm_fault_t arena_vm_fault(struct vm_fault *v=
+mf)
+> >   }
+> >
+> >   static const struct vm_operations_struct arena_vm_ops =3D {
+> > +     .open           =3D arena_vm_open,
+> >       .close          =3D arena_vm_close,
+> >       .fault          =3D arena_vm_fault,
+> >   };
+> > @@ -361,6 +373,7 @@ static int arena_map_mmap(struct bpf_map *map, stru=
+ct vm_area_struct *vma)
+> >        */
+> >       vm_flags_set(vma, VM_DONTEXPAND);
+> >       vma->vm_ops =3D &arena_vm_ops;
+> > +     atomic_set(&arena->mmap_count, 1);
+>
+> i'm not sure, but i have the feeling that this refcnt should be on the
+> struct vma_list or something.
+>
+> what happens if two different processes mmap the same arena?  will the
+> second one come in and set the mmap_count =3D 1, clobbering whatever the
+> first process had already done?
+>
+> what are the rules for a vma's vm_ops?  something like: "there will be a
+> close() for the initial mmap and for every open()"?
 
-Comments below, apart from them
+yep.
 
-Reviewed-by: Pavel Begunkov <asml.silence@gmail.com>
+>
+> if that's what it's doing, then this initial refcnt =3D 1 corresponds to
+> the remember_vma() call.  in which case, vm_ops->open ought to lookup
+> the remembered vma (struct vma_list) and do the incref there.
 
+good point. will change.
 
-> diff --git a/net/core/devmem.c b/net/core/devmem.c
-> index f4fd9b9dbb675..d3843eade5fc2 100644
-> --- a/net/core/devmem.c
-> +++ b/net/core/devmem.c
-> @@ -17,6 +17,7 @@
-...
-> +
-> +bool mp_dmabuf_devmem_release_page(struct page_pool *pool, netmem_ref netmem)
-> +{
-> +	WARN_ON_ONCE(!netmem_is_net_iov(netmem));
-> +	WARN_ON_ONCE(atomic_long_read(netmem_get_pp_ref_count_ref(netmem)) !=
-> +		     1);
-
-If you're adding it anyway, maybe
-"if (warn) return" ?
-
-> +
-> +	page_pool_clear_pp_info(netmem);
-> +
-> +	net_devmem_free_dmabuf(netmem_to_net_iov(netmem));
-> +
-> +	/* We don't want the page pool put_page()ing our net_iovs. */
-> +	return false;
-> +}
-> +
->   #endif
-> diff --git a/net/core/page_pool.c b/net/core/page_pool.c
-> index 1152e3547795a..22e3c58648d42 100644
-> --- a/net/core/page_pool.c
-> +++ b/net/core/page_pool.c
-> @@ -13,6 +13,7 @@
-...
-> @@ -269,7 +275,25 @@ static int page_pool_init(struct page_pool *pool,
->   	if (pool->dma_map)
->   		get_device(pool->p.dev);
->   
-> +	if (pool->p.queue)
-> +		pool->mp_priv = READ_ONCE(pool->p.queue->mp_params.mp_priv);
-> +
-> +	if (pool->mp_priv) {
-> +		err = mp_dmabuf_devmem_init(pool);
-> +		if (err) {
-> +			pr_warn("%s() mem-provider init failed %d\n", __func__,
-> +				err);
-> +			goto free_ptr_ring;
-
-Should also free stats, look up
-
-free_percpu(pool->recycle_stats);
-
--- 
-Pavel Begunkov
+pw-bot: cr
 
