@@ -1,112 +1,164 @@
-Return-Path: <bpf+bounces-32317-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-32313-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A931A90B6C2
-	for <lists+bpf@lfdr.de>; Mon, 17 Jun 2024 18:43:19 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 883AF90B654
+	for <lists+bpf@lfdr.de>; Mon, 17 Jun 2024 18:28:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8F4FF1C23648
-	for <lists+bpf@lfdr.de>; Mon, 17 Jun 2024 16:43:18 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A10AA1C22F21
+	for <lists+bpf@lfdr.de>; Mon, 17 Jun 2024 16:28:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 25E4B1662E3;
-	Mon, 17 Jun 2024 16:43:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 791F014EC61;
+	Mon, 17 Jun 2024 16:28:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=motorola.com header.i=@motorola.com header.b="SOrWozwy"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-out.aladdin-rd.ru (mail-out.aladdin-rd.ru [91.199.251.16])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0b-00823401.pphosted.com (mx0b-00823401.pphosted.com [148.163.152.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9CA6820B3E;
-	Mon, 17 Jun 2024 16:42:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.199.251.16
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E6851C6B5;
+	Mon, 17 Jun 2024 16:27:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.152.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718642589; cv=none; b=G/14lKUwR/4BC5wdUjUwpXI6tAJ73VYGbmGRF4qaTP0+ovdv2hl0KLLBElSZQ00n0NuhC3nxPMM31BBGFVlgC/BHSGA1tRHsYaA5nRHXGBuo8QQtv0aJPDAyNmhMH62oFefTkXF0UTy3wyJk20cAOwCUm/YX9lJCjXlyl+A019c=
+	t=1718641681; cv=none; b=KUd/Z5AZFaOIi/cNoYGpw9+ZsU6xUGa8c2tyZfEKCi89kr0Dpuk7iKccgIvqn/nq6JdbRZVBYxwGScsAgBQ31BRCRIhYmwhBzKc04Yn5izCcbT7kwVfRWcSuf+qQz/B5TbVYYkIwlNdf1vfTkj0/YOLgdEEidBTvlwdu8nVDqC4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718642589; c=relaxed/simple;
-	bh=T66CKAQdjo08E7zecAEgrpzt9lx/5uvhDB/wmiDkH54=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=UIIm8uxAaR7lzgICaBy0T7DbgES9j89+c+4xJ0Y8MP3XHggYe2dHKaanrFRlO7fyqjKIX1vjC2NXWEgwEuBgqGfH/sfJ7fDGw9raKpX32cxlSw4S5BzwAaTKYiqDALHOE5cYma/UXaRGDGcUiOAiB/KmsRn8WXCP2lyh/jMB/r8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=aladdin.ru; spf=pass smtp.mailfrom=aladdin.ru; arc=none smtp.client-ip=91.199.251.16
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=aladdin.ru
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=aladdin.ru
-From: Daniil Dulov <d.dulov@aladdin.ru>
-To: Alexei Starovoitov <ast@kernel.org>
-CC: Daniil Dulov <d.dulov@aladdin.ru>, Daniel Borkmann <daniel@iogearbox.net>,
-	"David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>,
-	Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend
-	<john.fastabend@gmail.com>, Eric Dumazet <edumazet@google.com>, Paolo Abeni
-	<pabeni@redhat.com>, <netdev@vger.kernel.org>, <bpf@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, <lvc-project@linuxtesting.org>
-Subject: [PATCH] xdp: remove WARN() from __xdp_reg_mem_model()
-Date: Mon, 17 Jun 2024 19:27:08 +0300
-Message-ID: <20240617162708.492159-1-d.dulov@aladdin.ru>
-X-Mailer: git-send-email 2.25.1
+	s=arc-20240116; t=1718641681; c=relaxed/simple;
+	bh=MHbKouY4wdIM9d99e7Kv3wboV638BbknoChmKsnFmLM=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=Zgptm8uXqWzUc8RtXr1CEQ6Z/CJaOWYNCp1HGO2TNhm1zv2VW8vgdhbp369lmsQgqYxj7E+STNFZe86HPqlq8Fj3eMo94T7mz7kqYYsk15GEr6MqplUSJMmT0T/Os00s0dKIF0T3VwsdTYXGy/qXZNUN0zi7+0WGSWRGIFL+Ek0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=motorola.com; spf=pass smtp.mailfrom=motorola.com; dkim=pass (2048-bit key) header.d=motorola.com header.i=@motorola.com header.b=SOrWozwy; arc=none smtp.client-ip=148.163.152.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=motorola.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=motorola.com
+Received: from pps.filterd (m0355091.ppops.net [127.0.0.1])
+	by mx0b-00823401.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 45HBbXS8023300;
+	Mon, 17 Jun 2024 16:27:19 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=motorola.com; h=
+	cc:content-type:date:from:message-id:mime-version:subject:to; s=
+	DKIM202306; bh=YluCWb0ojQ+sLHWHo/Wdxu6CuCEISS/qXFHRcH7Ut98=; b=S
+	OrWozwyW640x7ssxlxdrTsV0yJLlmqlrfPf2TkSqlSxcZbPA097fUWgWJ5meSRP5
+	1BJz+lIjnCtF3wROzfQXM1nmqEn6I5jxr2BkIK0FtiemPgjbB1OGggoTXahR2Kon
+	7ryzkoQDQ0cu9U6Td+yuvgiyfZ75aL2jbrEE0Xu9XIzu1iqBQKuMLltSeUkAUbrq
+	m9cRLuCcm84al5g4Z+v3xA9OV+JFmSpyAkWQBw8RvzwMuXIgeE5XSsHygoxUf+83
+	d4ooCCfbAvtbp/nidLF0wx6/7kADHUfK9znJ911h7tHaLxVQmAPDlFexws2JwNCi
+	Jw7YFMOTb8ZYx7cTD/wRw==
+Received: from va32lpfpp02.lenovo.com ([104.232.228.22])
+	by mx0b-00823401.pphosted.com (PPS) with ESMTPS id 3ysr2gjvh2-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 17 Jun 2024 16:27:19 +0000 (GMT)
+Received: from ilclmmrp02.lenovo.com (ilclmmrp02.mot.com [100.65.83.26])
+	(using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by va32lpfpp02.lenovo.com (Postfix) with ESMTPS id 4W2wJk6ffZz50DhP;
+	Mon, 17 Jun 2024 16:27:18 +0000 (UTC)
+Received: from ilclasset02 (ilclasset02.mot.com [100.64.49.13])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: mbland)
+	by ilclmmrp02.lenovo.com (Postfix) with ESMTPSA id 4W2wJk5Bvkz3p6jp;
+	Mon, 17 Jun 2024 16:27:18 +0000 (UTC)
+Date: Mon, 17 Jun 2024 11:27:17 -0500
+From: Maxwell Bland <mbland@motorola.com>
+To: "open list:BPF [GENERAL] (Safe Dynamic Programs and Tools)" <bpf@vger.kernel.org>
+Cc: Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
+        Yonghong Song <yonghong.song@linux.dev>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Zi Shen Lim <zlim.lnx@gmail.com>, Mark Rutland <mark.rutland@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Mark Brown <broonie@kernel.org>, linux-arm-kernel@lists.infradead.org,
+        open list <linux-kernel@vger.kernel.org>,
+        Josh Poimboeuf <jpoimboe@kernel.org>,
+        Puranjay Mohan <puranjay12@gmail.com>
+Subject: [PATCH bpf-next v7 0/2] Support kCFI + BPF on arm64
+Message-ID: <ptrugmna4xb5o5lo4xislf4rlz7avdmd4pfho5fjwtjj7v422u@iqrwfrbwuxrq>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: EXCH-2016-02.aladdin.ru (192.168.1.102) To
- EXCH-2016-01.aladdin.ru (192.168.1.101)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Proofpoint-GUID: DCrRkzBGYObmSj7eeOhAY7az4W0sahWh
+X-Proofpoint-ORIG-GUID: DCrRkzBGYObmSj7eeOhAY7az4W0sahWh
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.680,FMLib:17.12.28.16
+ definitions=2024-06-17_14,2024-06-17_01,2024-05-17_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 suspectscore=0
+ bulkscore=0 phishscore=0 mlxlogscore=814 adultscore=0 clxscore=1015
+ priorityscore=1501 malwarescore=0 lowpriorityscore=0 spamscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2405170001 definitions=main-2406170127
 
-Syzkaller reports a warning in __xdp_reg_mem_model().
+Adds CFI checks to BPF dispatchers on aarch64.
 
-The warning occurs only if __mem_id_init_hash_table() returns
-an error. It returns the error in two cases:
+E.g.
+	<bpf_dispatcher_*_func>:
+	paciasp
+	stp x29, x30, [sp, #-0x10]!
+	mov x29, sp
+	+ ldur w16, [x2, #-0x4]
+	+ movk w17, #0x1881
+	+ movk w17, #0xd942, lsl #16
+	+ cmp w16, w17
+	+ b.eq <bpf_dispatcher_*_func+0x24>
+	+ brk #0x8222
+	blr x2
+	ldp x29, x30, [sp], #0x10
+	autiasp
+	ret
 
-    1. memory allocation fails;
-    2. rhashtable_init() fails when some fields of rhashtable_params
-       struct are not initialized properly.
+Changes in v6->v7
+https://lore.kernel.org/all/illfkwuxwq3adca2h4shibz2xub62kku3g2wte4sqp7xj7cwkb@ckn3qg7zxjuv/
+- Squash one of the commits to avoid code churn
 
-The second case cannot happen since there is a static const
-rhashtable_params struct with valid fields. So, warning is only triggered
-when there is a problem with memory allocation.
+Changes in v5->v6
+https://lore.kernel.org/all/mafwhrai2nz3u4wn4fu72kvzjm6krs57klc3qqvd2sz2mham6d@x4ukf6xqp4f4/
+- Add include for cfi_types, fixing riscv compile error
+- Fix authorship sign-off information
 
-Thus, there is no sense in using WARN() to handle this error and it can be
-safely removed.
+Changes in v4->v5
+https://lore.kernel.org/all/wtb6czzpvtqq23t4g6hf7on257dtxzdb4fa4nuq3dtq32odmli@xoyyrtthafar/
+- Fix failing BPF selftests from misplaced variable declaration
 
-WARNING: CPU: 0 PID: 5065 at net/core/xdp.c:299 __xdp_reg_mem_model+0x2d9/0x650 net/core/xdp.c:299
+Changes in v3->v4
+https://lore.kernel.org/all/fhdcjdzqdqnoehenxbipfaorseeamt3q7fbm7ghe6z5s2chif5@lrhtasolawud/
+- Fix authorship attribution.
 
-CPU: 0 PID: 5065 Comm: syz-executor883 Not tainted 6.8.0-syzkaller-05271-gf99c5f563c17 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/27/2024
-RIP: 0010:__xdp_reg_mem_model+0x2d9/0x650 net/core/xdp.c:299
+Changes in v2->v3:
+https://lore.kernel.org/all/20240324211518.93892-1-puranjay12@gmail.com/
+- Simplify cfi_get_func_hash to avoid needless failure case
+- Use DEFINE_CFI_TYPE as suggested by Mark Rutland
 
-Call Trace:
- xdp_reg_mem_model+0x22/0x40 net/core/xdp.c:344
- xdp_test_run_setup net/bpf/test_run.c:188 [inline]
- bpf_test_run_xdp_live+0x365/0x1e90 net/bpf/test_run.c:377
- bpf_prog_test_run_xdp+0x813/0x11b0 net/bpf/test_run.c:1267
- bpf_prog_test_run+0x33a/0x3b0 kernel/bpf/syscall.c:4240
- __sys_bpf+0x48d/0x810 kernel/bpf/syscall.c:5649
- __do_sys_bpf kernel/bpf/syscall.c:5738 [inline]
- __se_sys_bpf kernel/bpf/syscall.c:5736 [inline]
- __x64_sys_bpf+0x7c/0x90 kernel/bpf/syscall.c:5736
- do_syscall_64+0xfb/0x240
- entry_SYSCALL_64_after_hwframe+0x6d/0x75
+Changes in v1->v2:
+https://lore.kernel.org/bpf/20240227151115.4623-1-puranjay12@gmail.com/
+- Rebased on latest bpf-next/master
 
-Found by Linux Verification Center (linuxtesting.org) with Syzkaller.
+Mark Rutland (1):
+  cfi: add C CFI type macro
 
-Fixes: 8d5d88527587 ("xdp: rhashtable with allocator ID to pointer mapping")
-Signed-off-by: Daniil Dulov <d.dulov@aladdin.ru>
----
- net/core/xdp.c | 1 -
- 1 file changed, 1 deletion(-)
+Puranjay Mohan (1):
+  arm64/cfi,bpf: Support kCFI + BPF on arm64
 
-diff --git a/net/core/xdp.c b/net/core/xdp.c
-index 41693154e426..fb2f00e3f701 100644
---- a/net/core/xdp.c
-+++ b/net/core/xdp.c
-@@ -296,7 +296,6 @@ static struct xdp_mem_allocator *__xdp_reg_mem_model(struct xdp_mem_info *mem,
- 		ret = __mem_id_init_hash_table();
- 		mutex_unlock(&mem_id_lock);
- 		if (ret < 0) {
--			WARN_ON(1);
- 			return ERR_PTR(ret);
- 		}
- 	}
+ arch/arm64/include/asm/cfi.h    | 23 ++++++++++++++++++++++
+ arch/arm64/kernel/alternative.c | 18 +++++++++++++++++
+ arch/arm64/net/bpf_jit_comp.c   | 21 +++++++++++++++++---
+ arch/riscv/kernel/cfi.c         | 35 +++------------------------------
+ arch/x86/kernel/alternative.c   | 35 +++------------------------------
+ include/linux/cfi_types.h       | 23 ++++++++++++++++++++++
+ 6 files changed, 88 insertions(+), 67 deletions(-)
+ create mode 100644 arch/arm64/include/asm/cfi.h
+
 -- 
-2.25.1
+2.43.0
 
 
