@@ -1,179 +1,112 @@
-Return-Path: <bpf+bounces-32312-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-32317-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 40A6B90B613
-	for <lists+bpf@lfdr.de>; Mon, 17 Jun 2024 18:18:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id A931A90B6C2
+	for <lists+bpf@lfdr.de>; Mon, 17 Jun 2024 18:43:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1C32F1C2320F
-	for <lists+bpf@lfdr.de>; Mon, 17 Jun 2024 16:18:02 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8F4FF1C23648
+	for <lists+bpf@lfdr.de>; Mon, 17 Jun 2024 16:43:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0AC801798F;
-	Mon, 17 Jun 2024 16:17:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BDktvP4c"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 25E4B1662E3;
+	Mon, 17 Jun 2024 16:43:10 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f48.google.com (mail-wm1-f48.google.com [209.85.128.48])
+Received: from mail-out.aladdin-rd.ru (mail-out.aladdin-rd.ru [91.199.251.16])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 15DE917BA4
-	for <bpf@vger.kernel.org>; Mon, 17 Jun 2024 16:17:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9CA6820B3E;
+	Mon, 17 Jun 2024 16:42:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.199.251.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718641077; cv=none; b=fH8EdAKl3xh+LGbLeZdOKreKu8lniLInibodn/hYH22WkFlM+iD/Qv5z/TKqcixGK1+gUAtV1+DiWX0sobHWh2/ppK0BlBpQ0NkeFp3ac10GOxS6h3zwuGo1leE3+bSc7APeDoND5/XXTfV1EBKnpu+9kFceElGNIrW2N9QbDTs=
+	t=1718642589; cv=none; b=G/14lKUwR/4BC5wdUjUwpXI6tAJ73VYGbmGRF4qaTP0+ovdv2hl0KLLBElSZQ00n0NuhC3nxPMM31BBGFVlgC/BHSGA1tRHsYaA5nRHXGBuo8QQtv0aJPDAyNmhMH62oFefTkXF0UTy3wyJk20cAOwCUm/YX9lJCjXlyl+A019c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718641077; c=relaxed/simple;
-	bh=qMCfS0G7fZ75Wfzv8pPsxiiFoiN1YgacotFvokOcqDY=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=K49ZjQZrQttXFuVto9fOk5VAQzCvAqGH+RDBvjtut/2C6GeY4vgz0dS+0uz7kd1HnQdFlXA4PeNaCqh7+BHyGSy8u8ude0sOBJJpDexf0WqbmmvwH76R9GKvAZZD+jWrT4/hq7mW9Z7ZeponXeqRUiV3d0KXAQby/SnxjuRXk70=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BDktvP4c; arc=none smtp.client-ip=209.85.128.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f48.google.com with SMTP id 5b1f17b1804b1-421d32fda86so47233955e9.0
-        for <bpf@vger.kernel.org>; Mon, 17 Jun 2024 09:17:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1718641074; x=1719245874; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ijHqb4PwTbbvt9UJwNzjX0AorXhcentPV68tHk7o8Is=;
-        b=BDktvP4cw+u9GEHXdSHAZ0Rt75LsmemOoU8sGIzgj7XhjyYL8O0aSJJpgt7pOb0oWz
-         I2WBry9UxZyMlUTNzZkVIv7I+Rhw7nWNSw8bhDQ+OjOCXoMcibzkMAmWZ6QYE+0sxTf6
-         9+dW7NEB098KZqelCQeAiMnjiZGfSTpjor3vVgLNPcAscL0yH4y+pMLoo3iiW9bV2h0N
-         FmYcJhHMzkWEJUDdUECfZD/wu31ZG7zQumBSQkFlYxr2U8ygEZRfDRq5jkRt/NHEvV3w
-         q2u5+RnxC754i1JHe7WlxwnsOARxvZGR7NVCgkoX/Zce1CnbiwvviA8GBG2RxfbdH3Xa
-         T4Jg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1718641074; x=1719245874;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ijHqb4PwTbbvt9UJwNzjX0AorXhcentPV68tHk7o8Is=;
-        b=Jmu/AvR9wvGHCUDt37wHwaUenPEoyR+XuqifOTa58PcLfq5MLkxzjv+G7Ae2ckVIuP
-         PV7qCdHTsMuhK/sTLCALRMZ9gFzvvVuA6gZ2mUikGrrfCWIYlY9o/Q6uTtm8qWPmJRtC
-         lxrc29mG8PXKDVV/i8AVY6wpDabCRTLtncRCIFfIqQNzJqFG+Dzj51M0TxaqlMpVS0Xt
-         O7xWP7oS0sUKiEGH+8iRJKXeu1KvDV5c67CNgpdeQ1TxoXO8nUaL9oyZKx69Pf8e7ubT
-         QlGD+otI7DNBtbzEDLAa6eBTJ/vE19Eetz7eg0q2BIClKBHmm19su0A7fw1fbX17xfA3
-         /EaA==
-X-Gm-Message-State: AOJu0YwgnoMz7aE5fnEqsOSlTPGhA1JJflXvqGn70KA/1r+RcA+iC7Me
-	9hRkVuoteR2IClnvFxZ6fPAjWNECKCuQkw3jmmCFn12kxEThnQyzs5Z7Bmekcqu6KzncRx2F74o
-	XiZ0+Muj7xzKSBlNA+iRsQkGsu5M=
-X-Google-Smtp-Source: AGHT+IHoPcoASXBuS4VfzdgyWTlQZ9XHBYYWbhaQ+/ijJCPQYCuLf7L+g3oxL0Ypqjc/j2kNTwIOuWmiEkTEGNOBQwg=
-X-Received: by 2002:a05:600c:17d0:b0:423:b5f9:203f with SMTP id
- 5b1f17b1804b1-423b5f92170mr52756045e9.5.1718641074325; Mon, 17 Jun 2024
- 09:17:54 -0700 (PDT)
+	s=arc-20240116; t=1718642589; c=relaxed/simple;
+	bh=T66CKAQdjo08E7zecAEgrpzt9lx/5uvhDB/wmiDkH54=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=UIIm8uxAaR7lzgICaBy0T7DbgES9j89+c+4xJ0Y8MP3XHggYe2dHKaanrFRlO7fyqjKIX1vjC2NXWEgwEuBgqGfH/sfJ7fDGw9raKpX32cxlSw4S5BzwAaTKYiqDALHOE5cYma/UXaRGDGcUiOAiB/KmsRn8WXCP2lyh/jMB/r8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=aladdin.ru; spf=pass smtp.mailfrom=aladdin.ru; arc=none smtp.client-ip=91.199.251.16
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=aladdin.ru
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=aladdin.ru
+From: Daniil Dulov <d.dulov@aladdin.ru>
+To: Alexei Starovoitov <ast@kernel.org>
+CC: Daniil Dulov <d.dulov@aladdin.ru>, Daniel Borkmann <daniel@iogearbox.net>,
+	"David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>,
+	Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend
+	<john.fastabend@gmail.com>, Eric Dumazet <edumazet@google.com>, Paolo Abeni
+	<pabeni@redhat.com>, <netdev@vger.kernel.org>, <bpf@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, <lvc-project@linuxtesting.org>
+Subject: [PATCH] xdp: remove WARN() from __xdp_reg_mem_model()
+Date: Mon, 17 Jun 2024 19:27:08 +0300
+Message-ID: <20240617162708.492159-1-d.dulov@aladdin.ru>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240615181935.76049-1-alexei.starovoitov@gmail.com> <90d6740a-6b7e-474d-a218-50f4e0de343c@google.com>
-In-Reply-To: <90d6740a-6b7e-474d-a218-50f4e0de343c@google.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Mon, 17 Jun 2024 09:17:42 -0700
-Message-ID: <CAADnVQJJdO+UCYqWZ7pvccAwFNZxxF=KZHTv5SLGq_2Z2Q1hNA@mail.gmail.com>
-Subject: Re: [PATCH bpf] bpf: Fix remap of arena.
-To: Barret Rhoden <brho@google.com>
-Cc: bpf <bpf@vger.kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@kernel.org>, 
-	Kumar Kartikeya Dwivedi <memxor@gmail.com>, Eddy Z <eddyz87@gmail.com>, Pengfei Xu <pengfei.xu@intel.com>, 
-	Kernel Team <kernel-team@fb.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: EXCH-2016-02.aladdin.ru (192.168.1.102) To
+ EXCH-2016-01.aladdin.ru (192.168.1.101)
 
-On Mon, Jun 17, 2024 at 8:34=E2=80=AFAM Barret Rhoden <brho@google.com> wro=
-te:
->
-> On 6/15/24 14:19, Alexei Starovoitov wrote:
-> > From: Alexei Starovoitov <ast@kernel.org>
-> >
-> > The bpf arena logic didn't account for mremap operation. Add a refcnt f=
-or
-> > multiple mmap events to prevent use-after-free in arena_vm_close.
-> >
-> > Reported-by: Pengfei Xu <pengfei.xu@intel.com>
-> > Closes: https://lore.kernel.org/bpf/Zmuw29IhgyPNKnIM@xpf.sh.intel.com/
-> > Fixes: 317460317a02 ("bpf: Introduce bpf_arena.")
-> > Signed-off-by: Alexei Starovoitov <ast@kernel.org>
-> > ---
-> >   kernel/bpf/arena.c | 13 +++++++++++++
-> >   1 file changed, 13 insertions(+)
-> >
-> > diff --git a/kernel/bpf/arena.c b/kernel/bpf/arena.c
-> > index 583ee4fe48ef..f31fcaf7ee8e 100644
-> > --- a/kernel/bpf/arena.c
-> > +++ b/kernel/bpf/arena.c
-> > @@ -48,6 +48,7 @@ struct bpf_arena {
-> >       struct maple_tree mt;
-> >       struct list_head vma_list;
-> >       struct mutex lock;
-> > +     atomic_t mmap_count;
-> >   };
-> >
-> >   u64 bpf_arena_get_kern_vm_start(struct bpf_arena *arena)
-> > @@ -227,12 +228,22 @@ static int remember_vma(struct bpf_arena *arena, =
-struct vm_area_struct *vma)
-> >       return 0;
-> >   }
-> >
-> > +static void arena_vm_open(struct vm_area_struct *vma)
-> > +{
-> > +     struct bpf_map *map =3D vma->vm_file->private_data;
-> > +     struct bpf_arena *arena =3D container_of(map, struct bpf_arena, m=
-ap);
-> > +
-> > +     atomic_inc(&arena->mmap_count);
-> > +}
-> > +
-> >   static void arena_vm_close(struct vm_area_struct *vma)
-> >   {
-> >       struct bpf_map *map =3D vma->vm_file->private_data;
-> >       struct bpf_arena *arena =3D container_of(map, struct bpf_arena, m=
-ap);
-> >       struct vma_list *vml;
-> >
-> > +     if (!atomic_dec_and_test(&arena->mmap_count))
-> > +             return;
-> >       guard(mutex)(&arena->lock);
-> >       vml =3D vma->vm_private_data;
-> >       list_del(&vml->head);
-> > @@ -287,6 +298,7 @@ static vm_fault_t arena_vm_fault(struct vm_fault *v=
-mf)
-> >   }
-> >
-> >   static const struct vm_operations_struct arena_vm_ops =3D {
-> > +     .open           =3D arena_vm_open,
-> >       .close          =3D arena_vm_close,
-> >       .fault          =3D arena_vm_fault,
-> >   };
-> > @@ -361,6 +373,7 @@ static int arena_map_mmap(struct bpf_map *map, stru=
-ct vm_area_struct *vma)
-> >        */
-> >       vm_flags_set(vma, VM_DONTEXPAND);
-> >       vma->vm_ops =3D &arena_vm_ops;
-> > +     atomic_set(&arena->mmap_count, 1);
->
-> i'm not sure, but i have the feeling that this refcnt should be on the
-> struct vma_list or something.
->
-> what happens if two different processes mmap the same arena?  will the
-> second one come in and set the mmap_count =3D 1, clobbering whatever the
-> first process had already done?
->
-> what are the rules for a vma's vm_ops?  something like: "there will be a
-> close() for the initial mmap and for every open()"?
+Syzkaller reports a warning in __xdp_reg_mem_model().
 
-yep.
+The warning occurs only if __mem_id_init_hash_table() returns
+an error. It returns the error in two cases:
 
->
-> if that's what it's doing, then this initial refcnt =3D 1 corresponds to
-> the remember_vma() call.  in which case, vm_ops->open ought to lookup
-> the remembered vma (struct vma_list) and do the incref there.
+    1. memory allocation fails;
+    2. rhashtable_init() fails when some fields of rhashtable_params
+       struct are not initialized properly.
 
-good point. will change.
+The second case cannot happen since there is a static const
+rhashtable_params struct with valid fields. So, warning is only triggered
+when there is a problem with memory allocation.
 
-pw-bot: cr
+Thus, there is no sense in using WARN() to handle this error and it can be
+safely removed.
+
+WARNING: CPU: 0 PID: 5065 at net/core/xdp.c:299 __xdp_reg_mem_model+0x2d9/0x650 net/core/xdp.c:299
+
+CPU: 0 PID: 5065 Comm: syz-executor883 Not tainted 6.8.0-syzkaller-05271-gf99c5f563c17 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/27/2024
+RIP: 0010:__xdp_reg_mem_model+0x2d9/0x650 net/core/xdp.c:299
+
+Call Trace:
+ xdp_reg_mem_model+0x22/0x40 net/core/xdp.c:344
+ xdp_test_run_setup net/bpf/test_run.c:188 [inline]
+ bpf_test_run_xdp_live+0x365/0x1e90 net/bpf/test_run.c:377
+ bpf_prog_test_run_xdp+0x813/0x11b0 net/bpf/test_run.c:1267
+ bpf_prog_test_run+0x33a/0x3b0 kernel/bpf/syscall.c:4240
+ __sys_bpf+0x48d/0x810 kernel/bpf/syscall.c:5649
+ __do_sys_bpf kernel/bpf/syscall.c:5738 [inline]
+ __se_sys_bpf kernel/bpf/syscall.c:5736 [inline]
+ __x64_sys_bpf+0x7c/0x90 kernel/bpf/syscall.c:5736
+ do_syscall_64+0xfb/0x240
+ entry_SYSCALL_64_after_hwframe+0x6d/0x75
+
+Found by Linux Verification Center (linuxtesting.org) with Syzkaller.
+
+Fixes: 8d5d88527587 ("xdp: rhashtable with allocator ID to pointer mapping")
+Signed-off-by: Daniil Dulov <d.dulov@aladdin.ru>
+---
+ net/core/xdp.c | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/net/core/xdp.c b/net/core/xdp.c
+index 41693154e426..fb2f00e3f701 100644
+--- a/net/core/xdp.c
++++ b/net/core/xdp.c
+@@ -296,7 +296,6 @@ static struct xdp_mem_allocator *__xdp_reg_mem_model(struct xdp_mem_info *mem,
+ 		ret = __mem_id_init_hash_table();
+ 		mutex_unlock(&mem_id_lock);
+ 		if (ret < 0) {
+-			WARN_ON(1);
+ 			return ERR_PTR(ret);
+ 		}
+ 	}
+-- 
+2.25.1
+
 
