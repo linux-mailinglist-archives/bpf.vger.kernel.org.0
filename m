@@ -1,94 +1,101 @@
-Return-Path: <bpf+bounces-32303-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-32304-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1F99490B343
-	for <lists+bpf@lfdr.de>; Mon, 17 Jun 2024 17:03:29 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 04BF090B394
+	for <lists+bpf@lfdr.de>; Mon, 17 Jun 2024 17:12:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 231451C2074B
-	for <lists+bpf@lfdr.de>; Mon, 17 Jun 2024 15:03:28 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D0629287200
+	for <lists+bpf@lfdr.de>; Mon, 17 Jun 2024 15:03:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 29E0213E404;
-	Mon, 17 Jun 2024 14:15:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F76013E41C;
+	Mon, 17 Jun 2024 14:15:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="Na9JLn3D";
-	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="P0JL8zXr"
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="JrKHRcLQ";
+	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="tD+qYmmn"
 X-Original-To: bpf@vger.kernel.org
 Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D6D3013E04F
-	for <bpf@vger.kernel.org>; Mon, 17 Jun 2024 14:15:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B1292B9A0
+	for <bpf@vger.kernel.org>; Mon, 17 Jun 2024 14:15:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.177.32
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718633711; cv=fail; b=JfjtgbK2CkOMlG38J76+3390YFLQpYJ9KTO2pF4OVnnaZ7+v8bSPmqC3MdGS+m5KoRLjgLcWdXjUfornBT0c+sBMFVgmwx3U+IVv5zjwtx49c24DTEDgtWce22TZ1TeHl5TwfkJiDUsBuu5Rus5IaDhLLL647smDZJD2Mqu5FUw=
+	t=1718633723; cv=fail; b=IF1alHmWIcX6DJXL1RRARm3kNz9ps5Dnmw8viMqD8fpGZq6ZPk2zKV168oFZdX1sQ6iGyLGFBoznz0wUMOjbF/hM6pLaXQLcKoWPD0DGwHQMuzEiYTiw6ADgQO1yZolh71haw7ZOK84h/1/wX5WExoAAoI1phxPdhma096G0WcM=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718633711; c=relaxed/simple;
-	bh=0ylpYnRwoUS3WvNazOOJxvQftjsOnL115TvCaWDTuOU=;
-	h=From:To:Cc:Subject:Date:Message-Id:Content-Type:MIME-Version; b=PBcMDZcgMc+ovm5GUUbX5+D0ARrcFOllpGG+qCOvF/3yEox1jkIST9ZpgsGxnZgA1ctowHr86TymNte1EAEU0K7f89FqNVcd/a8WtCzwG3KuI6pQBExmmC6gscNa39b5ubvycv6WGyg+gpjvG7Ql1sd4Icyk1/kdG2Nf2dpxFms=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=Na9JLn3D; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=P0JL8zXr; arc=fail smtp.client-ip=205.220.177.32
+	s=arc-20240116; t=1718633723; c=relaxed/simple;
+	bh=1vMQJbwJaIjEHvHApAXj1eZ862z8P8n8ev6P9N2WSb4=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=owvO0xDhr0mSZlaxd4+d9fTOZj9rr9OKpuWzmos02OWR/IgEkExwupODbi5ySY44kuCQcQHfIoWLwg4LEL5iDDhZEAPuJcskJCMctJ8WaIESFjKRV+3GCDiLR64isPgXOp8uaU+xUtVdRSjoYKnx8lYKm6POkY1cWe10IZ1qf94=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=JrKHRcLQ; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=tD+qYmmn; arc=fail smtp.client-ip=205.220.177.32
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
-Received: from pps.filterd (m0246631.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 45HEBOm5023419
-	for <bpf@vger.kernel.org>; Mon, 17 Jun 2024 14:15:08 GMT
+Received: from pps.filterd (m0333520.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 45HEBO9U026465;
+	Mon, 17 Jun 2024 14:15:17 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=
-	from:to:cc:subject:date:message-id:content-transfer-encoding
-	:content-type:mime-version; s=corp-2023-11-20; bh=wL43VqTbOjF95P
-	MZE92d668DEaesmGWW4hKzZlX2Yfg=; b=Na9JLn3DCV7HxpDQiHjL2hOTcWG4k1
-	UUq6B3al0siyhBQVw4nqKeZqsvwVQIRqHmMt7qjAmrHTPQacyXz2MUXASjOx2dg3
-	ZeccoTt5Sn/TL2hgGla3wm3kTmDMVRAKZI3Ye1m3BcjqpqaMVirsgR2TKphdbD7Y
-	Fe1JqJHdFlLHaYF2QT+Fq+XRSv8iTFydgSNxwKrr0gNFdJJsLNfrn87DPrbJ+jE7
-	vJ/GCbeFT4+NqUzgSxWdeTA+AX0sOmZlZ9ENZsD07LVoyJRC44Y7DLwi+NiEwWiU
-	iK7/k2qA2IaHiAghUCOBuImYdzh+vE1OXJDqDYH05okYEZf8Q6HlXHig==
-Received: from phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta02.appoci.oracle.com [147.154.114.232])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3ys1r1tsr9-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK)
-	for <bpf@vger.kernel.org>; Mon, 17 Jun 2024 14:15:08 +0000 (GMT)
-Received: from pps.filterd (phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-	by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 45HE70Wx034789
-	for <bpf@vger.kernel.org>; Mon, 17 Jun 2024 14:15:07 GMT
-Received: from nam12-mw2-obe.outbound.protection.outlook.com (mail-mw2nam12lp2042.outbound.protection.outlook.com [104.47.66.42])
-	by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3ys1d6rskx-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK)
-	for <bpf@vger.kernel.org>; Mon, 17 Jun 2024 14:15:07 +0000
+	from:to:cc:subject:date:message-id:in-reply-to:references
+	:content-transfer-encoding:content-type:mime-version; s=
+	corp-2023-11-20; bh=9Ge+hM4bkgBBTGvH504d3kzmk6mQaOafMAAYZliCmGU=; b=
+	JrKHRcLQoJg4nhTwTjc9uP69fxWoaGwXPiiulFW3EBaRxQCiZqRXTbqmkIhr4w3S
+	gJNqOnyWm75dBXsMwxXnW6rbx7H1kCBdQPqtCiVTXGgByeFRfDlUXlXTX3R3GeeN
+	GupCqgaaVdvC2wSl+t/GcVQi8358U3X6E3qlkfkma44bneZe/Ohw4mK5V8PHLLtP
+	mCrbmPSA7/q4flsb53QcOZ78rZnKNkYYpiJn7ce8scBK7d31tMWjvI+qjKfcWiH/
+	97RQgPkoucgFehpJUKbfpkZwxvrOKTyNC3uu0vyvam/b2kog9DpFl0qC0GMS87y1
+	L1Qxelr+5I0pI9kJPdzgAg==
+Received: from phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta01.appoci.oracle.com [138.1.114.2])
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3ys30bjs01-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Mon, 17 Jun 2024 14:15:16 +0000 (GMT)
+Received: from pps.filterd (phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+	by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 45HE2Lbe032379;
+	Mon, 17 Jun 2024 14:15:15 GMT
+Received: from nam12-mw2-obe.outbound.protection.outlook.com (mail-mw2nam12lp2040.outbound.protection.outlook.com [104.47.66.40])
+	by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3ys1d6gt27-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Mon, 17 Jun 2024 14:15:15 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=bT3L1sOCbv9H6D20Pw3RQdsYu7lMCY0gKwJND0AR+QY0A1cklKYRMW3RdmP/1crWf9lAlLkQWGUNVya5bximcI7TAaumfbkmPytftXmywUZJ6Lqkjrq1GLKwbOGYv2WRZ+weyC0oHvtmf/BTzYubZV+S9apcoWBl4+p0mJ8ektYWLTxXvPqsXrRGvzNjWZbGvl2ja9MMTFPIsLBoZ718QCZq2miEybI7wvG4qsiMYO0app6tzVIeX7iOUSONc6jcU7REg1i5QLUTrld6iNxf+WQujSmtvVfJznKtJeYg/w7O7Ju1TNuJKJkXd1y1QO0YeFEgdu7Hmm8YvkU7GkWs/g==
+ b=LZU3EfpMC48XIKQgzmBjdjyZ0RMv9JsVqmq+RXuCJjsxpMG5320XR0oEOxEWtfdiyL6yFZRqQL13aqGEBpyJuxpDe1zjjmwC4/j3+IlCZid12Xayow2qiLyWVJyWxqV0FJeSAIHRncM2eHs7CFo+iMEUnICsJk+s2xmXSF1U4wtpGW4wDXj7C4yKTqxH8uAdUT52DrqYg9zGR63+AExh55aTcrR48x88QNztV9cfSedhV8O387bedXz3tuXooOyDUk5po5Ky3InRnOjBKzrCRG/z+EQmobD562rHHoZWOyEwSpp0HkpoMPY2Yy4dyiwpU6aGBgphmFCgyfEBpGomMQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=wL43VqTbOjF95PMZE92d668DEaesmGWW4hKzZlX2Yfg=;
- b=MnSeyyceyhAHcIAJp82UWMYrC4jySskbtn+dI2ORQXzcrNfPHyebnMukxeSAPFbJb8bqR31gc+OCAv9LD6gxXF3VnP6ZOSGcBzFBVozxqUiUmTFMm7nSLrGoWp0TnGgEShAzAESrCaT326v0q9yj5Ug8SVaaVMCI0dyXsziW7zAftfMPQLrmvMvcuENT+Ior+c6XNLqz5elzbqXmNS5JbIvXSRp1T4vH1zlK1sqeFBvWxuFjZ+oaqTBgobTd3N9PWCbJ7eE3Jyx0N8EpmpRpLDWo/wFcCeM1MyEISZh8rfQHBPDg+ZYQFsN49ATqgVctCccgdiVhYgshUwK5vtYI5w==
+ bh=9Ge+hM4bkgBBTGvH504d3kzmk6mQaOafMAAYZliCmGU=;
+ b=QtV3PWMrAppPUcFQomlkFvV78D1+XqLsOojPB6CNRIGPQgtqCEBROCH8cNd3on61kQfcme3atMvjCF/VD1UZRxFhdwdgLzjfe5jZWIpBvoQeQ7P7xURpVk24/0W6DI9LDW8rGR5ijAL44axvbnE5Z97ky18FN//ZmO71H2LitFajaQIDb/3W8pm3+ZjzF33+9Hprl0Y4EIo/i/5RKuAoalgMaAACxH6D8HlOSkHKmEI4Ix8jiJfXevHLpkNmtmlDTQnToKIkN48eFUugMcUqNJh0wQXZO952rCqGaC7Brn1AZh7wKHM4at0ML4/BOKiFgDYnJ7PIFt2fBAzBvbtDRw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
  dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=wL43VqTbOjF95PMZE92d668DEaesmGWW4hKzZlX2Yfg=;
- b=P0JL8zXrqMvOzUzW3XZTI8h9cfK+c+YxX+z9yAE32jDeKFbsIe2ombdRiGeh00hWViXI5JMmMLSbXEzIdo7FmQlgsi6Od/Z+Y16JoD9L56SETxeGg9mqGEiS0TDuqBbsiHKBW6j/wABlFrnNmtT7JoDupp08EPfXXaAH2dYu6w4=
+ bh=9Ge+hM4bkgBBTGvH504d3kzmk6mQaOafMAAYZliCmGU=;
+ b=tD+qYmmnZhbFQAWrMbmKWb7Uzmscb801H4SKhTYzC4UUVcRNB7RXknj2KUlMxjKImxisjBoSI4Re2AwlY2VFqBFo2sS8AhcyXRDFTXR388cVKjipc0g+Vjt4xys25uzJj75sETu2rvtpR3EOBsntDYANQtJdAqfHQm4tzOjmEoM=
 Received: from MN2PR10MB4382.namprd10.prod.outlook.com (2603:10b6:208:1d7::13)
  by PH7PR10MB7087.namprd10.prod.outlook.com (2603:10b6:510:27f::12) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7677.30; Mon, 17 Jun
- 2024 14:15:05 +0000
+ 2024 14:15:09 +0000
 Received: from MN2PR10MB4382.namprd10.prod.outlook.com
  ([fe80::5033:84a3:f348:fefb]) by MN2PR10MB4382.namprd10.prod.outlook.com
  ([fe80::5033:84a3:f348:fefb%7]) with mapi id 15.20.7677.030; Mon, 17 Jun 2024
- 14:15:05 +0000
+ 14:15:09 +0000
 From: Cupertino Miranda <cupertino.miranda@oracle.com>
 To: bpf@vger.kernel.org
-Cc: Cupertino Miranda <cupertino.miranda@oracle.com>
-Subject: [PATCH bpf-next v5 0/2] Regular expression support for test output matching
-Date: Mon, 17 Jun 2024 15:14:56 +0100
-Message-Id: <20240617141458.471620-1-cupertino.miranda@oracle.com>
+Cc: Cupertino Miranda <cupertino.miranda@oracle.com>,
+        Eduard Zingerman <eddyz87@gmail.com>, jose.marchesi@oracle.com,
+        david.faust@oracle.com, Yonghong Song <yonghong.song@linux.dev>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Subject: [PATCH bpf-next v5 1/2] selftests/bpf: Support checks against a regular expression
+Date: Mon, 17 Jun 2024 15:14:57 +0100
+Message-Id: <20240617141458.471620-2-cupertino.miranda@oracle.com>
 X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20240617141458.471620-1-cupertino.miranda@oracle.com>
+References: <20240617141458.471620-1-cupertino.miranda@oracle.com>
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-ClientProxiedBy: LO4P123CA0363.GBRP123.PROD.OUTLOOK.COM
- (2603:10a6:600:18e::8) To MN2PR10MB4382.namprd10.prod.outlook.com
+X-ClientProxiedBy: LO6P123CA0051.GBRP123.PROD.OUTLOOK.COM
+ (2603:10a6:600:310::7) To MN2PR10MB4382.namprd10.prod.outlook.com
  (2603:10b6:208:1d7::13)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -98,109 +105,351 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
 X-MS-TrafficTypeDiagnostic: MN2PR10MB4382:EE_|PH7PR10MB7087:EE_
-X-MS-Office365-Filtering-Correlation-Id: 98c4836b-a4f6-4c19-128b-08dc8ed7e27d
+X-MS-Office365-Filtering-Correlation-Id: bbd626e7-8b0d-4511-c72a-08dc8ed7e528
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;ARA:13230037|366013|376011|1800799021;
 X-Microsoft-Antispam-Message-Info: 
-	=?us-ascii?Q?gG0yVlddfp5755YNMq4t8K7RytIcJvPjSnGqWHcm0nBtmmEwPjy8Je+6bOKj?=
- =?us-ascii?Q?jF9heliXwK8Y+AAIC91639Iclr+VqP6bIJJ3PLpvgcVSLjOOTzm9Iqkp0iKY?=
- =?us-ascii?Q?Jx14m9bzHq/Je0MLg8xf5PsiMoTNu/3MEklEPkuZDFFKOXxGQCQfWgW+sOER?=
- =?us-ascii?Q?iniaRzOMbDhd6vDi1utjD7Owww2hTKdfgrnO9J96r35vebQlxkvwYzN7+O0M?=
- =?us-ascii?Q?N9PYTI5L/mWZTAnSCKl1zg47ZITRdrOh1ecMArEqJTY94x9IOMhSs75aX9op?=
- =?us-ascii?Q?92B3RNGZ0B/BzN1F1qb0k2P8n1r3fYyYVo7SCJV6blZiG6iQrECQPx0XgpTC?=
- =?us-ascii?Q?ffB0kr8jsuoVVHB1OeLpyeRyty5a/MNbvSlYDkbTSc6doaHdx9nDJ5EQV/Zp?=
- =?us-ascii?Q?+Aqe//GPnWFdCMbJ2Ii2EfeZUXhbam1wxGbzbynrPmPOz9VQzVPghRKZOlSu?=
- =?us-ascii?Q?erSQAI+wMEDmQLIcZJDtv52xZmCRJfm32+MpGp4pmPFZ2Do1myl8S0dWk//S?=
- =?us-ascii?Q?GCTqKJseveuCmtFHJ0A6Vt+wbNvGUiZE09CIGhy95wO6voFFnREoB8WkDX7m?=
- =?us-ascii?Q?GLT1hr95zBcz5DPsxfptDM+QT1N4JbxZHFesajQ1mAbn0X2CElNzmQJdchhQ?=
- =?us-ascii?Q?XDZ44aeVEPWlfQIUuCdU7QOby5mjPge+RcFoN79Uqf+8931Bk+JEptUc6fyu?=
- =?us-ascii?Q?eYKpwdT57MA9BDI7hn80wCPgpPcIf67nD0f8upQCU81YqZ+IUfvoNGZMDGgw?=
- =?us-ascii?Q?cdH9ue2kpB5M9XhxMb6qfXcXXJKvpBl4jZrWvlrQGRiz9FTWRJErqjxNHWas?=
- =?us-ascii?Q?GVbpvW+nQydKzk6LMzzuKKYwGLayUk5z39xgLOgxYbD1vJWknVkWg1TmYupN?=
- =?us-ascii?Q?PVpLdxkdd7dSJgKjV0WCOAF7Kj5T0RhaZqjRd4T9XSyicAdyQFR8xtU8s11a?=
- =?us-ascii?Q?LhtFfyYyQV0LVKuCSdOb61EBiBPxzXNRBBzcwtYFY4r2vyHev6b+5IGpaTB7?=
- =?us-ascii?Q?G5RE4tv7fbpY6b+t/TxUTt8xqvJnL6+Trf5uUNrcR46nNn3Zdnz0WJr4N2Oo?=
- =?us-ascii?Q?iCSNlVVYySh+PS8Reec+R+7gbb+oUN4s6rCVqxSH1dDClwFi9qwTvrN8YdOH?=
- =?us-ascii?Q?Q6EJJ0vg87i09YQ11E+K1iYgoNzZuXSntetGJdPhCy4YM2qKr485S0FypHkG?=
- =?us-ascii?Q?72d0ShhcUglI0U5E2oVYJJoIH2/GXaTiTppY3Ga2Fbktx7iFT7hb1WYWSH84?=
- =?us-ascii?Q?+S0NA74MIOxc/L3OVOaCm+3mDClBw33tfhwrYz9a7Ley5qdxCHHPMuLPXeva?=
- =?us-ascii?Q?K+s=3D?=
+	=?us-ascii?Q?jJKEF5kPbhpftyuCpFq5Q7AFBzMgVmzOocyQCXFEF3DbNcdN23O01PhO1hjp?=
+ =?us-ascii?Q?1+BF71P31Y2eWUBKSxkPkmNt8c45lqYyDZCOL7VzpElBeigEI6+q8OaPtdPD?=
+ =?us-ascii?Q?JtFXoCK6LOEKsvhVpmh2UjnQqucDqalA+RcZVawoVLY+QZoTdGcwhYWpzUpF?=
+ =?us-ascii?Q?CKRPUHpLhJKuU/SnGmJfxr0kmwlWjLze7GcjLImuKhbZsx4I92n5al/rfczk?=
+ =?us-ascii?Q?cZhztRmZ2nz4tN8CqPIgT7LPKQjkmNcL9I2Tfc8zANJPmyZokbR9+a1vf1eA?=
+ =?us-ascii?Q?8pQ7FPQ0OmUfpsRuNoPvaMQn+JqDUBL9IqDUdC2b45Pf9qMdpJL5qXrs2SKD?=
+ =?us-ascii?Q?zZyutBYRIzxbXvHSvc7ey45A4s41IJ48uGWpWqOboe1ecpH6/DdZL88FFtem?=
+ =?us-ascii?Q?6l7HOGkuchYpwETzwZqTt91ZprC42O+RoKowUg9reXvdtDFgpCmaPJs9J4nT?=
+ =?us-ascii?Q?NmbSprxBYN/DTGGSiFMZxTQtsN1XZUtVafMRzYoH3w88ZIdGYTcp2fNv3vf0?=
+ =?us-ascii?Q?43t2bOm1cnBZYnqcaOowLCbb+Iy0da6oR1faJ8UxZT3rjCZ5LbmsqbCF+mT1?=
+ =?us-ascii?Q?d6inIte1jR9RQNVSqdqGjhvK99Rz3/d3lswuI5Q+LhXUPtocDAqGUkeL9/dJ?=
+ =?us-ascii?Q?i5cXFzKM82ga2ekEouTzYqNlLkQTj9Gm4/XE03DsfK3fB4BQGbI1PMECs1k+?=
+ =?us-ascii?Q?RZ4Ln5S4Sa9x7kLyvCA1p7M8DyqX1gB+MhcndBsM/FabmpxFfKxgJCiO+DC8?=
+ =?us-ascii?Q?DMb4sqzL/I6nr+uce+lEJx0GoIhVt0kl9tGjxJSuHxamz7g2/TOV4zbMnn5G?=
+ =?us-ascii?Q?whU3iepDpNZeAtHiNgC25g1w+cUTegYTxYaILJnLT7++L4vOSsvmb8zT+1+H?=
+ =?us-ascii?Q?vlaBXm1q3hAkmQS1gRbu88d7tqQxRbh55HkuTFJxAEznfpVe2RItu4Ezd9L8?=
+ =?us-ascii?Q?gd0GAvuh5sNOuSDiD8Ruh/MKdH6zReCjjuu0l8eU/+fWWVL7JYVD+DVCdQ7E?=
+ =?us-ascii?Q?TkHVKEdAdUrWtN7ysxwc9O8P+3LT8SQx6ekNfWrFPEfHGk2JEd4GSd9AZT58?=
+ =?us-ascii?Q?/G7X3Xh99xnSirp4kIV1bZFGLjmQo7GIq8ELpTtbm3l4Nh+0bkNN5rfIyce6?=
+ =?us-ascii?Q?c1+KmtdYKOeHrAEPsgyi4iRGaUIBgoBzb1SaH9YXCnUEcvU/PScpVBSiyZuY?=
+ =?us-ascii?Q?EPWxrDsH9+oJDa4uh4uYt1fSgSHZZnIRRFX8NNGPymSu9ZfyhN6opUI0l/77?=
+ =?us-ascii?Q?tsd/FKHEbY0vjmOBOpOSprEIt5x4f9+ILoGiv26PcotCEN9ey0thtmqAYoat?=
+ =?us-ascii?Q?ZmfRiqQAhf1gZtw7D7iPTKf1?=
 X-Forefront-Antispam-Report: 
 	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR10MB4382.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230037)(366013)(376011)(1800799021);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0: 
-	=?us-ascii?Q?Xj9zl23QpQhS9TYcCx7/vJqGi1KKmGe/OkAumLC3u8hOloMcAaE1KP71sXqJ?=
- =?us-ascii?Q?KVhGQAb3mLe/sKiyx4tdFeh1eOWoxefMvf9zTCfc8k9An10tw28LGS/OGwYr?=
- =?us-ascii?Q?QkMt6Sfotb4wNbw5+3D7m5YsJnZXH/fycg/hCTVsdh/BRA9s+abkJ0YytoKV?=
- =?us-ascii?Q?e6rkq+bkFJXuiTZgBYwHDdWWJj9xLiqjlWe41ss7lD7Q3luxv5bm0ELTVxOs?=
- =?us-ascii?Q?5Jv1kNX0Ak4CToiLJUZyqQi2ovTn0n/M+1KQPHrZR6HrtmHlV0m70Uv9O7lJ?=
- =?us-ascii?Q?9HJqgep3wBoOg9BcuzqnmcNcU5gNucOJWDPZ5B/E0I3VAuaSw4wjiXfIcVB0?=
- =?us-ascii?Q?xCk0UcEjP7QrT/26+MJTvKLeMTYSwKsbCZfGRcOJMluOMOXAWeaoirCL6ZbI?=
- =?us-ascii?Q?6ex5KXogu6GCsQU51Pe/zIb4On2jJ3w42LiWB4EGY+dg/Hx12YDPz+bZQS6P?=
- =?us-ascii?Q?eHilyB7kI1bN/nq9JnpzRitg0gHZPrumjQ7fDdcL+HUI0kZqoSR4rEg8nH+6?=
- =?us-ascii?Q?72JeSf9K6A0qnDaYBLHfphh+u2gjOYalHLw2UJ1FRQ9ZpjcX8k+oaHWo+0U1?=
- =?us-ascii?Q?sO98BE7TnjBs8lpVjZ6fWXVqgThDVqeGuF1ES6eMnftSzjZVa4vHShrn30x1?=
- =?us-ascii?Q?2H0LO4W629J98P49km6H2m04HJv4mcBtXHvPoJ3I/eXzVpifYbFBWya+ZVpk?=
- =?us-ascii?Q?Qvk0sxxQe6Bl8gJzMZbH8ilqv0qIfKdxIW1H6HLb0bu/Nqol6ajEtiHbaz3f?=
- =?us-ascii?Q?1mhN57OFAAS2iWH2nnB9GLlny2v4hZagA38iinghZ/dJVHksAfrx745gMON0?=
- =?us-ascii?Q?Y5wFLX9l357z2PbQ5ukrNsT04mDsmaLsN3tG276zS2xPxnC/nWeUHD8nFs7T?=
- =?us-ascii?Q?6ZHojshH6oYdJoBZvSkl9vq3/W8Gpv/xzjDMz3jEjcm793M57kCsQApzX8Wd?=
- =?us-ascii?Q?8mOj/N9K204pkr7K+ip+sv2H2wVnYTXIe/BzT0YpHOm2LSNlPclTqRL4xlic?=
- =?us-ascii?Q?QZL2WTbE2y+7iLLg6ju6LRw/tLX91wkidaR3u9a1TWPkdQpuFpbbG+i13YHf?=
- =?us-ascii?Q?g07K7/AhHKWTlJH5RcHlg5zdPgREzoKg7JjvLICuJJjtoEL/yx+niqV2OyqM?=
- =?us-ascii?Q?NqpjcmACq3g8fItm2zqZhgNW0dX3ayQGSufCpgWhu6iYE1NaaSlG/A8wD1bl?=
- =?us-ascii?Q?T6KLxcO4ZXhZKuQ9KpZZ+Xda14uY2KV0sjN8Zcl4BiOIyp5OFF4Mytlw7Wv8?=
- =?us-ascii?Q?jtHbstY7Dm7j55kcOOkCFXxsyr4Ua1UR6lmbTvbQt37nIBVHeDiR1xIOa495?=
- =?us-ascii?Q?Y0XoS/YrZoTspjeWTMBg026MTFwOCkgVUWPPAi/qXOXxkIUwEnRBfCez5QLo?=
- =?us-ascii?Q?lkaFAEXshgFFOBj3/ukOhD1Rt2KNAJHabauxJclvS+hSe8wMv2j82riXJCCi?=
- =?us-ascii?Q?mgnJ2Mye5Ga3vHOrVh9tgUWiKBH63SfLUTcFmpIOp8x/WPmfa2sQs7Ay/iKZ?=
- =?us-ascii?Q?cDk/aJAiCPafn1DymOzUVbheHr/EOF6LgWMkTdKhk0askhZGCx6/9+OSy9uI?=
- =?us-ascii?Q?hMvGV3HfY4wiOiG7rbQJy5TPXfPYnxjIn1USvROBJZ4FjT4WF2kU2HfsWU8Q?=
- =?us-ascii?Q?wGNLynsEUdzycNUCWAmkCJI=3D?=
+	=?us-ascii?Q?fY6LV7asWnsIsFjobb7Q3bO+KIncJw5EOs+QTqsPzDU5fmlc7yE6qDBD8Yl9?=
+ =?us-ascii?Q?XHf5srL509P0mnInoUVbII92CBqok1pR+eq5AyhkVPBgOFeA3N1NxG9o0DIf?=
+ =?us-ascii?Q?pFOuQYPX7jJn5ceCnVo9ZmSaNB4+Y//XhiHLbpSp1i9u+GErg9iyib0t0JrP?=
+ =?us-ascii?Q?cyyCR7H8W0Luy2PvuSef41/3+3gjv1tEUolpSTJ9Z5zTImMWBimgszpbsGuI?=
+ =?us-ascii?Q?b5mGrNwC/7gxbxBu4JSE0ia3YMF3RUm5soz8YbPzNaxQmd7dG/KuAMTneWor?=
+ =?us-ascii?Q?nqN4NM1MxOxDvmkfXWdLfD4n6p41Sgo4Fo26WRFoxVhAXv89AXc5FKF5v81/?=
+ =?us-ascii?Q?A13D8N4nqDYlOid4BidiReB/U8F1ZJ53H1dUlhfdUUJTI/wt5yWxoEVY7o3a?=
+ =?us-ascii?Q?mMniI59uNOQnN95ickrt4cGUd4F332sHR4SF8+ze2PnUMhottEf+P1guLF6+?=
+ =?us-ascii?Q?Asd0fHdBrMM0ZDRKpHWHtLSPnzzzZx+Fl1TEgpnQuye2UnWeBQ5Vvv9h3tGN?=
+ =?us-ascii?Q?/aBcehLanGVPN2qfGSPrN4D5aMW7p6BstC0Wv6xifKkme/drrn3FbUtOapMr?=
+ =?us-ascii?Q?18RlBSyJAx/LZM9NLHctdvxgVcix4RHQlKGwFi706kJdguY114aVANLePeau?=
+ =?us-ascii?Q?6iySXXlsMm2G03v2wjkESAseYP3JMlqNB2pfFhw/dGaQ44VVnV6Uy81QZldS?=
+ =?us-ascii?Q?nuCgSkHfQU+d+kTIIGvVmaTcc8LGI+k1heXUjr4FIa1/R2eHCRMZgtEyZMrr?=
+ =?us-ascii?Q?7eEW/nYr5QEf+qXjCicwNpQ/UMnnmOxMzsBVnzwH9VAxSDDPSUEJAmuObm0y?=
+ =?us-ascii?Q?11SA0Ve5TSmsFbYsqwXuq2wQ0+qOQFAwQb4GlzjXejo8Ag3NeTDmPCXJZEFL?=
+ =?us-ascii?Q?DyG40Jhc9ijtY6Ff8xlYsqij70/Sd8/h+mZkQNbEaftPgWbCX+wSq96Zt+ZE?=
+ =?us-ascii?Q?nCCR3lrvWHHiuPvFbiwYJhdyDhj2CjeMB1sZRGyPVASHCY7MiVkJP+uzbfm1?=
+ =?us-ascii?Q?T7YkMHaNerVCluFLF22ERygACI2F2GLHj2ZK//+MlB1pNXFDD/lOR2k9/Xis?=
+ =?us-ascii?Q?yvB7yDSUlhLPrjxlFUoF1aklHvD+D8BUfZVItEbLkj4RFvpqakGSWabEqTtM?=
+ =?us-ascii?Q?PVSyKAoI1zuuFi41l4A7fMvl57t2jzfjrTdSng9PuGM0wyBJ0APIdQkkfg7D?=
+ =?us-ascii?Q?dnMoGJ5CVz2HC892qU6uAqI+tzOVzacFKE+Y1Fo8SGAWhlU5to990M9daDvD?=
+ =?us-ascii?Q?jRoOk64AZBNgh1nBM8KivdwHIKiARVvoZhrfBIqmfRljVlkIMWmz1zA6bLnF?=
+ =?us-ascii?Q?SmNNxb1Gg2sKk8oHr/tpm0QXBIkIfJtjBPlIdDd9WaiSOdEtbvZi4Ie9Dn7q?=
+ =?us-ascii?Q?OW1Y+CPfTBax+5lE6AReeUlDbIDgM1H+7vZTJDmi6z1qs6fkHgVGMyfwVDNv?=
+ =?us-ascii?Q?09nR/oHbLWv7OK5ba7w71aGiK/mVZ/mGyhFM0TIZFbpGZ1v/mFvBeBe01/la?=
+ =?us-ascii?Q?e5Cd/qyeHv6vJlmZUiU0ukDcdIV2IctHm6hKLpqB0TCAmSRRg0nR+uLtV6wA?=
+ =?us-ascii?Q?Ijf/x4gBEcP8SgyPbnJUWlDE4G0otREoZf1mpe+zi9NSQbbSmnbFGDbws27T?=
+ =?us-ascii?Q?qqS/bNtdE0Fln/0Gziz+idg=3D?=
 X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: 
-	yEcs9/igQDDqiGRafao4H/7Gzg3o8sh+aTIjeiKIUGHatZ1oL+oyVS0rAHr28dy5mLaumx+bsbiDu40y0dCyblFZV8HTQBYO18CzO5mk2cDSOpC14FMAZfCBpwyO16bUs3ig+E58rYKS2g/G22adv3tRe47DTFQS1YCMIJYX9QGkC/kt5Omax2HDfqeWO0qj5SG1IPhHINJWNFWZ9qTDUbrNCSUrBrPeAf5U1yTSKmMI+BEbWMTcFBfb2Hx98uGWqtQvFJl1GhDyT/AFRkKBwaC/oFoY/Z25evw1SBKJk6pDHFPCeA78NAu37yKIOeRboCub6hdu3Cmx6kxRkZ3koHh0QYFuHhMWUCF7xf7PSp6SRvvoFTyaIgfrcg3WL1svmtWNZSUh4fdU0vFQDIhRCQTjX2PUkNzX8dSgQJgIzrZCqbSBVPjXqPJb95oC2Dhjob/xoxkijqqYC01CyF94wPV4yKx9fJV/aSEWT/Msa7x5qKpCCZyS5ZZRw2t7/8936q18D1qylDgOocVNeHPgIfoJxF23f/Y2RLwSd/zP/4IrDMBOEaQUmbBo+Git+JmY0S+k7pPyOolI+vILAWW2F3vUnmNePCHc6/zJKd7gpXI=
+	yHAQgK38/EUmC9XEK0p1xJ9bKHlm4V4Zp25oDUvXLiQtRxkHmLO4JkesLPODtDxBqv4ADEo+JdreMBXi4Fha/tbO9ML96rk/Y1/dmX/j7Pk44vHAnivIbKn48c+05AdWSeILNC0UEYATFSKf9yVdJztspXvL/oE2KK17hX26ljS7CGnkzy00H8SPJfA6jim6ADPy40/JU6INF9s6PWhrpfEMiDDu9OKDQrlWyCxtxsylTFYTpZL28Bkl/Oc8V3NE7hxNMe2WtBztjl/1uvQZiiUg5bsdA00XXfpVyRQbGaJWfp4Esttla1gEGxXqvh9yCj4MP+9e3B0AhxePTN02d+YJMnS1u3fGAJBPe34bIKOsJpKv5myJzrJ9dpYrW2GvKGMFBe7EWjOHHev2dwHlcg1YJEt0K8qMjPjp527wOcgiBiTxsiHLN9BgraKos5a45op81zMvaOYTTgEUCDAUgFYol3iFLRG+4Tp0HbK7cUJXnUzTzsADJjqX37v/IUy9cIzSbJ/is5x3ODzAV0pJHYYK9RyrCIlfgZ6WegR1VdQq0n9HFHEZChPzRZq+KgaOwhjvABY5wSyaS6yEHLCOncBRY9GQsw89VYCi8xi5TLk=
 X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 98c4836b-a4f6-4c19-128b-08dc8ed7e27d
+X-MS-Exchange-CrossTenant-Network-Message-Id: bbd626e7-8b0d-4511-c72a-08dc8ed7e528
 X-MS-Exchange-CrossTenant-AuthSource: MN2PR10MB4382.namprd10.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Jun 2024 14:15:04.9944
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Jun 2024 14:15:09.5486
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 1QS/rqBXpYolXiL86+IGOGkQ40wxwyL8HjuXH82aewH59izAmbLuNEhMlsWmDwgTeSP8X/nBkMXk4QkxjpMOqJpMfUF2HPrpthJzjtdqa0Y=
+X-MS-Exchange-CrossTenant-UserPrincipalName: KteB0jwA04yLyGlqZ0StzXoBNkUlaMO+VjT8UD6DntghhrrMVqvO3/oXlHEu1ZV3v1yL3BqqkQGbWYhattHhInQcd12+iZTZis8r4SMsOq0=
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR10MB7087
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.680,FMLib:17.12.28.16
  definitions=2024-06-17_12,2024-06-17_01,2024-05-17_01
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 suspectscore=0
- malwarescore=0 phishscore=0 spamscore=0 mlxscore=0 adultscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2405010000 definitions=main-2406170110
-X-Proofpoint-ORIG-GUID: -gvSL_9WFOzlY2DyOEcquCy_6ppe-GMB
-X-Proofpoint-GUID: -gvSL_9WFOzlY2DyOEcquCy_6ppe-GMB
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 malwarescore=0 spamscore=0
+ mlxlogscore=999 mlxscore=0 phishscore=0 suspectscore=0 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2405010000
+ definitions=main-2406170110
+X-Proofpoint-GUID: ZlmXHn6d5m00GwZq_ton3yPcFmeyH8l_
+X-Proofpoint-ORIG-GUID: ZlmXHn6d5m00GwZq_ton3yPcFmeyH8l_
 
-Hi everyone,
+Add support for __regex and __regex_unpriv macros to check the test
+execution output against a regular expression. This is similar to __msg
+and __msg_unpriv, however those expect do substring matching.
 
-This version removes regexp from inline assembly examples that did not
-require the regular expressions to match.
+Signed-off-by: Cupertino Miranda <cupertino.miranda@oracle.com>
+Acked-by: Eduard Zingerman <eddyz87@gmail.com>
+Cc: jose.marchesi@oracle.com
+Cc: david.faust@oracle.com
+Cc: Yonghong Song <yonghong.song@linux.dev>
+Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+---
+ tools/testing/selftests/bpf/progs/bpf_misc.h |  11 +-
+ tools/testing/selftests/bpf/test_loader.c    | 117 ++++++++++++++-----
+ 2 files changed, 98 insertions(+), 30 deletions(-)
 
-Thanks,
-Cupertino
-
-Cupertino Miranda (2):
-  selftests/bpf: Support checks against a regular expression
-  selftests/bpf: Match tests against regular expression
-
- tools/testing/selftests/bpf/progs/bpf_misc.h  |  11 +-
- .../testing/selftests/bpf/progs/dynptr_fail.c |   6 +-
- .../testing/selftests/bpf/progs/rbtree_fail.c |   2 +-
- .../bpf/progs/refcounted_kptr_fail.c          |   4 +-
- tools/testing/selftests/bpf/test_loader.c     | 117 ++++++++++++++----
- 5 files changed, 104 insertions(+), 36 deletions(-)
-
+diff --git a/tools/testing/selftests/bpf/progs/bpf_misc.h b/tools/testing/selftests/bpf/progs/bpf_misc.h
+index fb2f5513e29e..c0280bd2f340 100644
+--- a/tools/testing/selftests/bpf/progs/bpf_misc.h
++++ b/tools/testing/selftests/bpf/progs/bpf_misc.h
+@@ -7,9 +7,9 @@
+  *
+  * The test_loader sequentially loads each program in a skeleton.
+  * Programs could be loaded in privileged and unprivileged modes.
+- * - __success, __failure, __msg imply privileged mode;
+- * - __success_unpriv, __failure_unpriv, __msg_unpriv imply
+- *   unprivileged mode.
++ * - __success, __failure, __msg, __regex imply privileged mode;
++ * - __success_unpriv, __failure_unpriv, __msg_unpriv, __regex_unpriv
++ *   imply unprivileged mode.
+  * If combination of privileged and unprivileged attributes is present
+  * both modes are used. If none are present privileged mode is implied.
+  *
+@@ -24,6 +24,9 @@
+  *                   Multiple __msg attributes could be specified.
+  * __msg_unpriv      Same as __msg but for unprivileged mode.
+  *
++ * __regex           Same as __msg, but using a regular expression.
++ * __regex_unpriv    Same as __msg_unpriv but using a regular expression.
++ *
+  * __success         Expect program load success in privileged mode.
+  * __success_unpriv  Expect program load success in unprivileged mode.
+  *
+@@ -59,10 +62,12 @@
+  * __auxiliary_unpriv  Same, but load program in unprivileged mode.
+  */
+ #define __msg(msg)		__attribute__((btf_decl_tag("comment:test_expect_msg=" msg)))
++#define __regex(regex)		__attribute__((btf_decl_tag("comment:test_expect_regex=" regex)))
+ #define __failure		__attribute__((btf_decl_tag("comment:test_expect_failure")))
+ #define __success		__attribute__((btf_decl_tag("comment:test_expect_success")))
+ #define __description(desc)	__attribute__((btf_decl_tag("comment:test_description=" desc)))
+ #define __msg_unpriv(msg)	__attribute__((btf_decl_tag("comment:test_expect_msg_unpriv=" msg)))
++#define __regex_unpriv(regex)	__attribute__((btf_decl_tag("comment:test_expect_regex_unpriv=" regex)))
+ #define __failure_unpriv	__attribute__((btf_decl_tag("comment:test_expect_failure_unpriv")))
+ #define __success_unpriv	__attribute__((btf_decl_tag("comment:test_expect_success_unpriv")))
+ #define __log_level(lvl)	__attribute__((btf_decl_tag("comment:test_log_level="#lvl)))
+diff --git a/tools/testing/selftests/bpf/test_loader.c b/tools/testing/selftests/bpf/test_loader.c
+index 524c38e9cde4..0670540b36b8 100644
+--- a/tools/testing/selftests/bpf/test_loader.c
++++ b/tools/testing/selftests/bpf/test_loader.c
+@@ -2,6 +2,7 @@
+ /* Copyright (c) 2022 Meta Platforms, Inc. and affiliates. */
+ #include <linux/capability.h>
+ #include <stdlib.h>
++#include <regex.h>
+ #include <test_progs.h>
+ #include <bpf/btf.h>
+ 
+@@ -17,9 +18,11 @@
+ #define TEST_TAG_EXPECT_FAILURE "comment:test_expect_failure"
+ #define TEST_TAG_EXPECT_SUCCESS "comment:test_expect_success"
+ #define TEST_TAG_EXPECT_MSG_PFX "comment:test_expect_msg="
++#define TEST_TAG_EXPECT_REGEX_PFX "comment:test_expect_regex="
+ #define TEST_TAG_EXPECT_FAILURE_UNPRIV "comment:test_expect_failure_unpriv"
+ #define TEST_TAG_EXPECT_SUCCESS_UNPRIV "comment:test_expect_success_unpriv"
+ #define TEST_TAG_EXPECT_MSG_PFX_UNPRIV "comment:test_expect_msg_unpriv="
++#define TEST_TAG_EXPECT_REGEX_PFX_UNPRIV "comment:test_expect_regex_unpriv="
+ #define TEST_TAG_LOG_LEVEL_PFX "comment:test_log_level="
+ #define TEST_TAG_PROG_FLAGS_PFX "comment:test_prog_flags="
+ #define TEST_TAG_DESCRIPTION_PFX "comment:test_description="
+@@ -46,10 +49,16 @@ enum mode {
+ 	UNPRIV = 2
+ };
+ 
++struct expect_msg {
++	const char *substr; /* substring match */
++	const char *regex_str; /* regex-based match */
++	regex_t regex;
++};
++
+ struct test_subspec {
+ 	char *name;
+ 	bool expect_failure;
+-	const char **expect_msgs;
++	struct expect_msg *expect_msgs;
+ 	size_t expect_msg_cnt;
+ 	int retval;
+ 	bool execute;
+@@ -89,6 +98,16 @@ void test_loader_fini(struct test_loader *tester)
+ 
+ static void free_test_spec(struct test_spec *spec)
+ {
++	int i;
++
++	/* Deallocate expect_msgs arrays. */
++	for (i = 0; i < spec->priv.expect_msg_cnt; i++)
++		if (spec->priv.expect_msgs[i].regex_str)
++			regfree(&spec->priv.expect_msgs[i].regex);
++	for (i = 0; i < spec->unpriv.expect_msg_cnt; i++)
++		if (spec->unpriv.expect_msgs[i].regex_str)
++			regfree(&spec->unpriv.expect_msgs[i].regex);
++
+ 	free(spec->priv.name);
+ 	free(spec->unpriv.name);
+ 	free(spec->priv.expect_msgs);
+@@ -100,17 +119,37 @@ static void free_test_spec(struct test_spec *spec)
+ 	spec->unpriv.expect_msgs = NULL;
+ }
+ 
+-static int push_msg(const char *msg, struct test_subspec *subspec)
++static int push_msg(const char *substr, const char *regex_str, struct test_subspec *subspec)
+ {
+ 	void *tmp;
++	int regcomp_res;
++	char error_msg[100];
++	struct expect_msg *msg;
+ 
+-	tmp = realloc(subspec->expect_msgs, (1 + subspec->expect_msg_cnt) * sizeof(void *));
++	tmp = realloc(subspec->expect_msgs,
++		      (1 + subspec->expect_msg_cnt) * sizeof(struct expect_msg));
+ 	if (!tmp) {
+ 		ASSERT_FAIL("failed to realloc memory for messages\n");
+ 		return -ENOMEM;
+ 	}
+ 	subspec->expect_msgs = tmp;
+-	subspec->expect_msgs[subspec->expect_msg_cnt++] = msg;
++	msg = &subspec->expect_msgs[subspec->expect_msg_cnt];
++	subspec->expect_msg_cnt += 1;
++
++	if (substr) {
++		msg->substr = substr;
++		msg->regex_str = NULL;
++	} else {
++		msg->regex_str = regex_str;
++		msg->substr = NULL;
++		regcomp_res = regcomp(&msg->regex, regex_str, REG_EXTENDED|REG_NEWLINE);
++		if (regcomp_res != 0) {
++			regerror(regcomp_res, &msg->regex, error_msg, sizeof(error_msg));
++			PRINT_FAIL("Regexp compilation error in '%s': '%s'\n",
++				   regex_str, error_msg);
++			return -EINVAL;
++		}
++	}
+ 
+ 	return 0;
+ }
+@@ -233,13 +272,25 @@ static int parse_test_spec(struct test_loader *tester,
+ 			spec->mode_mask |= UNPRIV;
+ 		} else if (str_has_pfx(s, TEST_TAG_EXPECT_MSG_PFX)) {
+ 			msg = s + sizeof(TEST_TAG_EXPECT_MSG_PFX) - 1;
+-			err = push_msg(msg, &spec->priv);
++			err = push_msg(msg, NULL, &spec->priv);
+ 			if (err)
+ 				goto cleanup;
+ 			spec->mode_mask |= PRIV;
+ 		} else if (str_has_pfx(s, TEST_TAG_EXPECT_MSG_PFX_UNPRIV)) {
+ 			msg = s + sizeof(TEST_TAG_EXPECT_MSG_PFX_UNPRIV) - 1;
+-			err = push_msg(msg, &spec->unpriv);
++			err = push_msg(msg, NULL, &spec->unpriv);
++			if (err)
++				goto cleanup;
++			spec->mode_mask |= UNPRIV;
++		} else if (str_has_pfx(s, TEST_TAG_EXPECT_REGEX_PFX)) {
++			msg = s + sizeof(TEST_TAG_EXPECT_REGEX_PFX) - 1;
++			err = push_msg(NULL, msg, &spec->priv);
++			if (err)
++				goto cleanup;
++			spec->mode_mask |= PRIV;
++		} else if (str_has_pfx(s, TEST_TAG_EXPECT_REGEX_PFX_UNPRIV)) {
++			msg = s + sizeof(TEST_TAG_EXPECT_REGEX_PFX_UNPRIV) - 1;
++			err = push_msg(NULL, msg, &spec->unpriv);
+ 			if (err)
+ 				goto cleanup;
+ 			spec->mode_mask |= UNPRIV;
+@@ -337,16 +388,13 @@ static int parse_test_spec(struct test_loader *tester,
+ 		}
+ 
+ 		if (!spec->unpriv.expect_msgs) {
+-			size_t sz = spec->priv.expect_msg_cnt * sizeof(void *);
++			for (i = 0; i < spec->priv.expect_msg_cnt; i++) {
++				struct expect_msg *msg = &spec->priv.expect_msgs[i];
+ 
+-			spec->unpriv.expect_msgs = malloc(sz);
+-			if (!spec->unpriv.expect_msgs) {
+-				PRINT_FAIL("failed to allocate memory for unpriv.expect_msgs\n");
+-				err = -ENOMEM;
+-				goto cleanup;
++				err = push_msg(msg->substr, msg->regex_str, &spec->unpriv);
++				if (err)
++					goto cleanup;
+ 			}
+-			memcpy(spec->unpriv.expect_msgs, spec->priv.expect_msgs, sz);
+-			spec->unpriv.expect_msg_cnt = spec->priv.expect_msg_cnt;
+ 		}
+ 	}
+ 
+@@ -402,27 +450,42 @@ static void validate_case(struct test_loader *tester,
+ 			  struct bpf_program *prog,
+ 			  int load_err)
+ {
+-	int i, j;
++	int i, j, err;
++	char *match;
++	regmatch_t reg_match[1];
+ 
+ 	for (i = 0; i < subspec->expect_msg_cnt; i++) {
+-		char *match;
+-		const char *expect_msg;
+-
+-		expect_msg = subspec->expect_msgs[i];
++		struct expect_msg *msg = &subspec->expect_msgs[i];
++
++		if (msg->substr) {
++			match = strstr(tester->log_buf + tester->next_match_pos, msg->substr);
++			if (match)
++				tester->next_match_pos = match - tester->log_buf
++							 + strlen(msg->substr);
++		} else {
++			err = regexec(&msg->regex,
++					    tester->log_buf + tester->next_match_pos,
++					    1, reg_match, 0);
++			if (err == 0) {
++				match = tester->log_buf + tester->next_match_pos
++					+ reg_match[0].rm_so;
++				tester->next_match_pos += reg_match[0].rm_eo;
++			} else
++				match = NULL;
++		}
+ 
+-		match = strstr(tester->log_buf + tester->next_match_pos, expect_msg);
+ 		if (!ASSERT_OK_PTR(match, "expect_msg")) {
+-			/* if we are in verbose mode, we've already emitted log */
+ 			if (env.verbosity == VERBOSE_NONE)
+ 				emit_verifier_log(tester->log_buf, true /*force*/);
+-			for (j = 0; j < i; j++)
+-				fprintf(stderr,
+-					"MATCHED  MSG: '%s'\n", subspec->expect_msgs[j]);
+-			fprintf(stderr, "EXPECTED MSG: '%s'\n", expect_msg);
++			for (j = 0; j <= i; j++) {
++				msg = &subspec->expect_msgs[j];
++				fprintf(stderr, "%s %s: '%s'\n",
++					j < i ? "MATCHED " : "EXPECTED",
++					msg->substr ? "SUBSTR" : " REGEX",
++					msg->substr ?: msg->regex_str);
++			}
+ 			return;
+ 		}
+-
+-		tester->next_match_pos = match - tester->log_buf + strlen(expect_msg);
+ 	}
+ }
+ 
 -- 
 2.39.2
 
