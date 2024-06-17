@@ -1,156 +1,151 @@
-Return-Path: <bpf+bounces-32318-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-32319-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1F7B090B6EF
-	for <lists+bpf@lfdr.de>; Mon, 17 Jun 2024 18:47:38 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 599E490B773
+	for <lists+bpf@lfdr.de>; Mon, 17 Jun 2024 19:07:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 45A681C237F6
-	for <lists+bpf@lfdr.de>; Mon, 17 Jun 2024 16:47:37 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D1E98283D65
+	for <lists+bpf@lfdr.de>; Mon, 17 Jun 2024 17:07:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 774BB1684AC;
-	Mon, 17 Jun 2024 16:46:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 68F03168490;
+	Mon, 17 Jun 2024 17:07:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ai3N53Mx"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ah11DE4j"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f174.google.com (mail-pf1-f174.google.com [209.85.210.174])
+Received: from mail-pf1-f172.google.com (mail-pf1-f172.google.com [209.85.210.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A080F17C8
-	for <bpf@vger.kernel.org>; Mon, 17 Jun 2024 16:46:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC3E713AD1E
+	for <bpf@vger.kernel.org>; Mon, 17 Jun 2024 17:07:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718642806; cv=none; b=PjC4XhbsgScSQ5qveGwnjaPNIfru5IKFE3jMzMUHCgl47oGLDDkPqNWD1d+5PngCArlYkdeEPhbQEFna7H+EDHhFPfiAp7Y6ZNDO4Vt1k4a6gtwLarZx6i6pwdgF/Pdx2eWePod5rHgnrGXJmD2N3EM2kjYSKi311Gs+0dUrAaI=
+	t=1718644044; cv=none; b=ufULE90NYWKEYJEb2pQvunhS4Mx6jjTBjy8TFzDraiCOFoti0xj97+//iSBeGi4csT6zCXwNo4uO69sX1B8rVnXXheIBRoKauN0f2I1dikIexRIfB9y6BFomuwkDfxQaCHHVYyH/J9Rc1hjId1KmNpwbdyWCPHcOdEEpLOaTkEA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718642806; c=relaxed/simple;
-	bh=5G2SfPsrcC+3f58CwZ/WmO6YMelDQjnO2aGEcBHq5gI=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=CRXbQ9pPStyeJPoXyK6wOWSWCUuZz40ZEU/spwcjnobwQjQ8X8tH72GTDTXAgJx1OUhyCyGQjX7yXkSeLvRqTo3zfh2G+EislW+YDZ9ppWXJtEFQ/VtjOfGtnU2TqoURrX5EMnOHaXZxrLtlSiRhht/BhEODYSja7DuyrMyLHhI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ai3N53Mx; arc=none smtp.client-ip=209.85.210.174
+	s=arc-20240116; t=1718644044; c=relaxed/simple;
+	bh=M0+nFscGw1hK6KqKAJZPQl88WWw4YSgOp13DMoFXjwo=;
+	h=Date:From:To:Message-ID:In-Reply-To:References:Subject:
+	 Mime-Version:Content-Type; b=hwsF7IYSHGubHr8ocLAQkmn6YEnPJJPj+SHRFilQgKBHE8yN2jGAkew2JF5PBm7ZnBNqLhp4vzwMcKsKRYhbZW2GDDwzRydcgAD22SXNn8+m9Rf0Rjpa64tU6bw9yc9vmRDjVEab8RS0ALLZWI4pLLE28jYHTFgZr0AP2BP+KmQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ah11DE4j; arc=none smtp.client-ip=209.85.210.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f174.google.com with SMTP id d2e1a72fcca58-706192a30d4so189458b3a.3
-        for <bpf@vger.kernel.org>; Mon, 17 Jun 2024 09:46:44 -0700 (PDT)
+Received: by mail-pf1-f172.google.com with SMTP id d2e1a72fcca58-705d9f4cd7bso2436209b3a.1
+        for <bpf@vger.kernel.org>; Mon, 17 Jun 2024 10:07:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1718642804; x=1719247604; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=lVdPSEIaDf7Hqen7Olv8xZ/N+HJd1lr3IHNT51P6ZxY=;
-        b=ai3N53MxdfR/1hrVAM7Xob8cte9h1vNP/nya1HeXB6cIHjXlSBAFpuUA7IWssaBWmi
-         CFQmJr40ilAcoAvHRZcRwHcsJ6mWTAi/0zFuYKaXO9pv3kTnOQ2IQqrvMjaBXnLNpSbM
-         1ctc8KSPleGnmw1MbjiAtPllDL9xuuNjcOYkXCIFEaW4uJAmg0Uc+gANpxEVoDVmGt8L
-         EqKpcXe/XGLiHkZqAPsZlJv8kltDf4Bi7CEGK18lPdwdKXKb+76eQ4hdaIaxhLivxzjU
-         EDODKhZMppIbXVrDJY5kdQXQQlh3SIkC+BBKUFda+57zc/X8DzdLdabp2UqDrGnbYN3o
-         F0+w==
+        d=gmail.com; s=20230601; t=1718644042; x=1719248842; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=sTQYtG5ZwPfwx+bmL7wQCD5n0z6XjPk2nYGnJYrR+cQ=;
+        b=ah11DE4jV9SvGMi/s46V9Z5dYyCvZfaOpMrOcfBl+/XC0XC3gzwSwWbX/bxdtb9W+B
+         F+SqcGRE50u0MZnu5k2FQ33snWy6aDn8MEa/dm4aWK/cDX3gk9A6i4I9+YT7tRXFtWDN
+         0M5B3Da5VY9m6Q2vRfFsG6uPKeFTIIf6AVADZ8DdbO/yoYBYRwsotSYMA73ldZAL4sxc
+         iX7wh+6UAETb1NjMU3HbQLYUZWK7+V53nAW0Iy2qrkKG3meKM9ty+3JEOaETKjwqtaHO
+         YJBc7KMpwAdu0YkL6izxpBR1DNScfwNNlMcEfSQ7PFbQnoRyiSLqtaloWQu7TktISwaG
+         7liw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1718642804; x=1719247604;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=lVdPSEIaDf7Hqen7Olv8xZ/N+HJd1lr3IHNT51P6ZxY=;
-        b=HgE2mEKYF5oLWpNNcBTV6GMNleUgW74zKONzKw7IX0pfl6NUVHcKeXKv06CrJzfY5L
-         lNnf1YEPNIPWw9AhVYe+Nn4grIV18suE/i3QeKMJeY7JucO3Q30SWu5tSwKERc1ZXV8m
-         tF+MRWwb/PjqkRG4oU2t0EGmHDTKE1U5MlxK+IPO459unBVA2qCBlHKQGPHLN9PXLaSZ
-         Rxn1yLLaL00JkV7jghXDBe70P5UWzTxrf15jKhcTIUnBH9vZ4pmXgF+8/nmJ52wdwg5V
-         qieBdpcsD6WKsIKCvdZViNNIoO2VrwfvihIXzRGTe8Uud1OVj6XaHAC4uvFYBtzo7ppB
-         Kr8Q==
-X-Forwarded-Encrypted: i=1; AJvYcCUaol3Ez3I/nCWPqFc7c4jyqkBtv8cXs9PzGrawaVx4mY5D/iIh7FIBMV6H/+Qaz5agwe6Qcpi8ReeO/t9/LET01VSY
-X-Gm-Message-State: AOJu0YzL6CQzbsbkyGhEWk8BMq5dNWl4rpgY/t7yMPsq6fpsVmxnlONG
-	YLyu43GA2H+/JXy21kzKOBbHleFJAqDdpVrsSfWFWgI9YRKLO6KK
-X-Google-Smtp-Source: AGHT+IEPIl/8yfvYbWIrYalJIKEq70ibK8zFVOR3ft//kTamIS8vhqvO8AJqVRvrVnTtGs/2pM6afw==
-X-Received: by 2002:a05:6a20:8404:b0:1b8:b517:9bf9 with SMTP id adf61e73a8af0-1bae7ebacc5mr9733328637.25.1718642803733;
-        Mon, 17 Jun 2024 09:46:43 -0700 (PDT)
-Received: from [192.168.0.31] ([38.34.87.7])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-705ccb90a52sm7518577b3a.210.2024.06.17.09.46.42
+        d=1e100.net; s=20230601; t=1718644042; x=1719248842;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=sTQYtG5ZwPfwx+bmL7wQCD5n0z6XjPk2nYGnJYrR+cQ=;
+        b=FpU8i6EE1zsqRO0WZYsBDQWEUlifmLK48BXW33Op/clHrZJQMn5qtAd+qD/svog9K1
+         1JsaMv8MRB9y0vqdq87TuNcUbE6NmGanFezp9E9kfiCzg9ghCrU6rFUyHAjHQ1vxafsi
+         n/8u8O1PPCq8OSG56x7aMgz96NJXy1yirM3bKElVdyZyCvYmaC/+gO7PpQMNJVJs24YB
+         vbRnjeqkB6h61lbn/qO650QjaAg3/5AJeqVDWudJTUOyBiecSu7cV6+Kgh/eSr4jOiPe
+         OGoz891bbf6fh5zeD+3i6cm/4ah2L8WCtFpwN3MQSgJLuR988sC/tBsMKQo5N5/whd2P
+         Oj2w==
+X-Forwarded-Encrypted: i=1; AJvYcCWxKtpJFVHo4eEz/Sdcd0yA6p8SCfEQ4LUfFyEgomDtuJBWRZmsa3umTfxjf4vSOBjmlA5w23F6ggk7ryX6tr99FUgW
+X-Gm-Message-State: AOJu0YzoBp4nEEOtdtT+xSPThv6j0lgtwPCZEX3fkUs+9HniniLbcqyW
+	OmNWQ0/MHZQBS2xcby4bna6qMzASOnQzMzpOUXjQKaY6LzkMv91d
+X-Google-Smtp-Source: AGHT+IHlsoOKmf5QACZ8M8qzr2ANtg7zY0704f4c7ZKv2WnPsRzEK7cMrMyzrb4IgCQuBaq3CpE+DA==
+X-Received: by 2002:a05:6a00:2d81:b0:6ec:da6c:fc2d with SMTP id d2e1a72fcca58-705d71d35f3mr12049909b3a.23.1718644041837;
+        Mon, 17 Jun 2024 10:07:21 -0700 (PDT)
+Received: from localhost ([98.97.37.227])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-705cc91db4csm7835544b3a.18.2024.06.17.10.07.21
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 17 Jun 2024 09:46:43 -0700 (PDT)
-Message-ID: <e022b0e53c1dd04daf3f29d07af1870bb80acf9c.camel@gmail.com>
-Subject: Re: [PATCH v6 bpf-next 8/9] libbpf,bpf: share BTF relocate-related
- code with kernel
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Alan Maguire <alan.maguire@oracle.com>, andrii@kernel.org, ast@kernel.org
-Cc: daniel@iogearbox.net, martin.lau@linux.dev, song@kernel.org, 
-	yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org, 
-	sdf@google.com, haoluo@google.com, jolsa@kernel.org, mcgrof@kernel.org, 
-	masahiroy@kernel.org, nathan@kernel.org, mykolal@fb.com, dxu@dxuuu.xyz, 
-	bpf@vger.kernel.org
-Date: Mon, 17 Jun 2024 09:46:38 -0700
-In-Reply-To: <78d4775c-2b26-4eec-a032-a0d61052395b@oracle.com>
-References: <20240613095014.357981-1-alan.maguire@oracle.com>
-	 <20240613095014.357981-9-alan.maguire@oracle.com>
-	 <3a1dd525bee2875f370e73a0416d115018ed7e52.camel@gmail.com>
-	 <78d4775c-2b26-4eec-a032-a0d61052395b@oracle.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.44.4-0ubuntu2 
+        Mon, 17 Jun 2024 10:07:21 -0700 (PDT)
+Date: Mon, 17 Jun 2024 10:07:20 -0700
+From: John Fastabend <john.fastabend@gmail.com>
+To: =?UTF-8?B?6YOR5Zu95YuH?= <zhenggy@chinatelecom.cn>, 
+ john.fastabend@gmail.com, 
+ jakub@cloudflare.com, 
+ bpf@vger.kernel.org
+Message-ID: <66706d48967f3_1c38c208e5@john.notmuch>
+In-Reply-To: <42dd5ee4-fb01-4b84-9418-65adb7480138@chinatelecom.cn>
+References: <42dd5ee4-fb01-4b84-9418-65adb7480138@chinatelecom.cn>
+Subject: RE: [issue]: sockmap restrain send if receiver block
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, 2024-06-17 at 14:31 +0100, Alan Maguire wrote:
+=E9=83=91=E5=9B=BD=E5=8B=87 wrote:
+> hi,=C2=A0In=C2=A0sockmap=C2=A0case,=C2=A0when=C2=A0sender=C2=A0send=C2=A0=
+msg,=C2=A0In=C2=A0function=C2=A0sk_psock_queue_msg(),=C2=A0it=C2=A0will=C2=
+=A0put=C2=A0the=C2=A0msg=C2=A0into=C2=A0the=C2=A0receiver=C2=A0psock=C2=A0=
+ingress_msg=C2=A0queue,=C2=A0and=C2=A0wakeup=C2=A0receiver=C2=A0to=C2=A0r=
+eceive.
+> =
 
-[...]
 
-Hi Alan,
+Whats the protocol? The TCP case tcp_bpf_sendmsg() is checking
+sk_stream_memory_free() and will do sk_stream_wait_memory() if under
+memory pressure. This should handle sending case with lots of data
+queued up on the sk.
 
-> great catch! I think we need
->=20
-> diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-> index da70914264fa..ef793731d40f 100644
-> --- a/kernel/bpf/btf.c
-> +++ b/kernel/bpf/btf.c
-> @@ -1676,14 +1676,8 @@ static void btf_free_kfunc_set_tab(struct btf *btf=
-)
->=20
->         if (!tab)
->                 return;
-> -       /* For module BTF, we directly assign the sets being registered, =
-so
-> -        * there is nothing to free except kfunc_set_tab.
-> -        */
-> -       if (btf_is_module(btf))
-> -               goto free_tab;
->         for (hook =3D 0; hook < ARRAY_SIZE(tab->sets); hook++)
->                 kfree(tab->sets[hook]);
-> -free_tab:
->         kfree(tab);
->         btf->kfunc_set_tab =3D NULL;
->  }
+On the redirect ingress case we do this,
 
-Agree
+  sk_psock_handle_skb()
+    sk_psock_skb_ingress()
+      sk_psock_create_ingress_msg()
 
-[...]
+There sk_psock_create_ingress_msg() should check the rcvbuf of the
+receiving socket and shouldn't create a msg if its under memory pressure.=
 
-> > > @@ -8451,6 +8522,13 @@ int register_btf_id_dtor_kfuncs(const struct b=
-tf_id_dtor_kfunc *dtors, u32 add_c
-> > >  	btf->dtor_kfunc_tab =3D tab;
-> > > =20
-> > >  	memcpy(tab->dtors + tab->cnt, dtors, add_cnt * sizeof(tab->dtors[0]=
-));
-> > > +
-> > > +	/* remap BTF ids based on BTF relocation (if any) */
-> > > +	for (i =3D tab_cnt; i < tab_cnt + add_cnt; i++) {
-> > > +		tab->dtors[i].btf_id =3D btf_relocate_id(btf, tab->dtors[i].btf_id=
-);
-> > > +		tab->dtors[i].kfunc_btf_id =3D btf_relocate_id(btf, tab->dtors[i].=
-kfunc_btf_id);
-> >=20
-> > The register_btf_id_dtor_kfuncs() is exported and thus could to be
-> > called from the modules, that's why you update it, right?
-> > Do we want to add such call to bpf_testmod? Currently, with kernel
-> > config used for selftests, I see only identity mappings.
-> >=20
->=20
-> Yep, we don't currently have coverage for dtors in bpf_testmod. I'll
-> look at adding that. Thanks!
+If its an ingress_self case we do a skb_set_owner_r which should (?) push=
 
-Great, thank you!
+back on the memory side through sk_mem_charge().
 
-Eduard
+Seems like I'm missing some case then if we are hitting this. What protoc=
+ol
+and what is the BPF program? Is it a sender redirect? I guess more detail=
+s
+might make it obvious to me.
+
+
+> sender=C2=A0can=C2=A0always=C2=A0send=C2=A0msg=C2=A0but=C2=A0not=C2=A0a=
+ware=C2=A0the=C2=A0receiver=C2=A0psock=C2=A0ingress_msg=C2=A0queue=C2=A0s=
+ize.=C2=A0 In=C2=A0mortally=C2=A0case,=C2=A0when=C2=A0receiver=C2=A0not=C2=
+=A0receive=C2=A0again=C2=A0due=C2=A0to=C2=A0the=C2=A0application=C2=A0bug=
+,=C2=A0
+> =
+
+> sender=C2=A0can=C2=A0contiunous=C2=A0send=C2=A0msg=C2=A0unti=C2=A0syste=
+m=C2=A0memory=C2=A0not=C2=A0enough. If this happen, it will influence the=
+ whole system.
+> =
+
+> my=C2=A0question=C2=A0is:=C2=A0=C2=A0is=C2=A0there=C2=A0a=C2=A0better=C2=
+=A0solution=C2=A0for=C2=A0this=C2=A0case?=C2=A0just=C2=A0like=C2=A0tcp=C2=
+=A0use=C2=A0sk_sendbuf=C2=A0to=C2=A0limit=C2=A0the=C2=A0sender=C2=A0to=C2=
+=A0send=C2=A0agagin=C2=A0if=C2=A0receiver=C2=A0is=C2=A0block.
+
+The sender shouldn't be able to have more outstanding data than the
+socket memory allows. After the redirect the skb/msg should be
+charged to the receiving socket though. Agree sk_sendbuf should
+limit sender. Maybe the test is not TCP protocol and we missed
+adding the limits to UDP/AF_UNIX/etc?
+
+> =
+
+> thanks=C2=A0very=C2=A0much.
+> =
 
