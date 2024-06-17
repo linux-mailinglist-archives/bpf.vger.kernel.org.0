@@ -1,69 +1,101 @@
-Return-Path: <bpf+bounces-32264-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-32265-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 128D990A25A
-	for <lists+bpf@lfdr.de>; Mon, 17 Jun 2024 04:13:13 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id DC7DE90A260
+	for <lists+bpf@lfdr.de>; Mon, 17 Jun 2024 04:14:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A1A2B1F21619
-	for <lists+bpf@lfdr.de>; Mon, 17 Jun 2024 02:13:12 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 56C72282C00
+	for <lists+bpf@lfdr.de>; Mon, 17 Jun 2024 02:14:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5DAF217836E;
-	Mon, 17 Jun 2024 02:12:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7183B176AAA;
+	Mon, 17 Jun 2024 02:14:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="lLErqF/0"
 X-Original-To: bpf@vger.kernel.org
-Received: from chinatelecom.cn (smtpnm6-02.21cn.com [182.42.154.78])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B3C33176AAB
-	for <bpf@vger.kernel.org>; Mon, 17 Jun 2024 02:12:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=182.42.154.78
+Received: from out-183.mta0.migadu.com (out-183.mta0.migadu.com [91.218.175.183])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE38229D19
+	for <bpf@vger.kernel.org>; Mon, 17 Jun 2024 02:14:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.183
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718590367; cv=none; b=Y1W5qTxEcthOK4fddyI7iy+/6gup2Bq1+PKPomKN08P/buylXTn9OKf4BL/gFA85V7By1POnoHvSSx/iXIMCR61oxFf/UattXtmjl81WXqAYT2hO70pEkivF1Yqw3OTqc/1+jcHp9axCGgCYPSwt7IREwats6sMG9Uk3cVRY05Q=
+	t=1718590485; cv=none; b=cxA8zfHV+zacyVzkzk06QyUlGfqn/KVEwxalFQwCW7bMV7vh+YBS6EkPXx9sZkLscbkY3ab3lISsqIfq47iXURN17DEPIfIGO2LeI8hxBnR6vy19MjqHoms8bmuWOPGXOjqGTgJbyzoR/qCq7MpdeDF4TDpNbNks2becuCOFnw4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718590367; c=relaxed/simple;
-	bh=PluLJvMYFbuzRMeyjfYCVbWE2ne1qhu44mhWN4LcCJw=;
-	h=Message-ID:Date:MIME-Version:From:To:Subject:Content-Type; b=fmQsfFeIOJq1axYmJaNy2kEaHJppeBnDSWkD2kUtX6ekDa4VMYJfa+ryS2ctS17h8dTampqOCdlXwhqSHc4HRWHheEYMsAcTYcBD21nViTa7mPGYkrcjE2P5dvr2hD6nJoGY8JqxixQTFM7PIGMx5ALZz2jcVo/YJ76Nomf8cps=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=chinatelecom.cn; spf=pass smtp.mailfrom=chinatelecom.cn; arc=none smtp.client-ip=182.42.154.78
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=chinatelecom.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chinatelecom.cn
-HMM_SOURCE_IP:192.168.139.44:0.1526860973
-HMM_ATTACHE_NUM:0000
-HMM_SOURCE_TYPE:SMTP
-Received: from clientip-27.148.194.70 (unknown [192.168.139.44])
-	by chinatelecom.cn (HERMES) with SMTP id 72D3712000087;
-	Mon, 17 Jun 2024 10:01:03 +0800 (CST)
-X-189-SAVE-TO-SEND: zhenggy@chinatelecom.cn
-Received: from  ([27.148.194.70])
-	by gateway-ssl-dep-67bdc54df-cz88j with ESMTP id f0b6e193ec5640d5ab51bb43a3cc68f4 for john.fastabend@gmail.com;
-	Mon, 17 Jun 2024 10:01:06 CST
-X-Transaction-ID: f0b6e193ec5640d5ab51bb43a3cc68f4
-X-Real-From: zhenggy@chinatelecom.cn
-X-Receive-IP: 27.148.194.70
-X-MEDUSA-Status: 0
-Sender: zhenggy@chinatelecom.cn
-Message-ID: <42dd5ee4-fb01-4b84-9418-65adb7480138@chinatelecom.cn>
-Date: Mon, 17 Jun 2024 10:01:27 +0800
+	s=arc-20240116; t=1718590485; c=relaxed/simple;
+	bh=J5mRnvJiNtBlliSkOWrPR8JFC+hIqU/sZM18fpHQ9iQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=CXA6nL9evJwsUdzYaQMyz1BWU50DdopdWj2KfE/ORafOjOD3Ndj1zeEg6nhRSrh3xPvQCYEsvDMhLKcRKsQrz6ScebPaZ5oFlGy9Yi0lcbEY91z9vGMexdXYo4AwqEy0pX9FnXydOscnuGt9D7KRx6W0a9+Rxc8tWWItwuk1PTo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=lLErqF/0; arc=none smtp.client-ip=91.218.175.183
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Envelope-To: alice@ayaya.dev
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1718590480;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=z+U7MMs/Grp4fxnA09iO+Fj8dmaszRqGKTqsSM9PL5Y=;
+	b=lLErqF/02G6P8FMJ7y7Mo87A+ngP6KTjR4hJjTxQvQkBc1p/MmN9FyGU1j4P5cUsh4tXXG
+	YFzjv9BUYbiQiQpmtdlzMiQGSxv7ajavcQipc8198Z2+n/UkYVCsgc9W2U81Xcm9ui1trS
+	AUS14aq7I2YzX+G9Pojft1l2o7wcXnA=
+X-Envelope-To: bpf@vger.kernel.org
+Message-ID: <363d0b06-1249-4e8d-8ed0-8debac0eacaa@linux.dev>
+Date: Sun, 16 Jun 2024 19:14:33 -0700
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Ctyun AOneMail
-From: =?UTF-8?B?6YOR5Zu95YuH?= <zhenggy@chinatelecom.cn>
-To: john.fastabend@gmail.com, jakub@cloudflare.com, bpf@vger.kernel.org
-Subject: [issue]: sockmap restrain send if receiver block
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH] libbpf: fix signed multiplication overflow in
+ hash_combine
+Content-Language: en-GB
+To: psykose <alice@ayaya.dev>, bpf@vger.kernel.org
+References: <D21SEVE6F615.2LMUOCTGW8AI7@ayaya.dev>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Yonghong Song <yonghong.song@linux.dev>
+In-Reply-To: <D21SEVE6F615.2LMUOCTGW8AI7@ayaya.dev>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-hi, In sockmap case, when sender send msg, In function sk_psock_queue_msg(), it will put the msg into the receiver psock ingress_msg queue, and wakeup receiver to receive.
 
-sender can always send msg but not aware the receiver psock ingress_msg queue size.  In mortally case, when receiver not receive again due to the application bug, 
+On 6/16/24 3:11 PM, psykose wrote:
+> when using -fsanitize=undefined (which flags signed overflow which is
+> UB), a crash can be reproduced when building the linux kernel with BTF
+> info.
+>
+> cast to unsigned first to make the overflow not invoke UB semantics- the
+> result is the same.
+>
+> Signed-off-by: psykose <alice@ayaya.dev>
 
-sender can contiunous send msg unti system memory not enough. If this happen, it will influence the whole system.
+This seems against upstream libbpf repo. Could you do a proper patch
+against bpf-next tree. Please have details how to reproduce the failure.
 
-my question is:  is there a better solution for this case? just like tcp use sk_sendbuf to limit the sender to send agagin if receiver is block.
+Please use proper name in your Signed-off-by.
 
-thanks very much.
-
+> ---
+>   src/btf.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/src/btf.c b/src/btf.c
+> index 2d0840e..60cd412 100644
+> --- a/src/btf.c
+> +++ b/src/btf.c
+> @@ -3317,7 +3317,7 @@ struct btf_dedup {
+>   
+>   static long hash_combine(long h, long value)
+>   {
+> -	return h * 31 + value;
+> +	return (long)((unsigned long)h * 31 + (unsigned long)value);
+>   }
+>   
+>   #define for_each_dedup_cand(d, node, hash) \
+>
+> base-commit: 42065ea6627ff6e1ab4c65e51042a70fbf30ff7c
 
