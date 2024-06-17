@@ -1,132 +1,148 @@
-Return-Path: <bpf+bounces-32329-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-32330-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3A70990BB49
-	for <lists+bpf@lfdr.de>; Mon, 17 Jun 2024 21:39:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5D5E590BBA1
+	for <lists+bpf@lfdr.de>; Mon, 17 Jun 2024 22:01:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BA51D1F22749
-	for <lists+bpf@lfdr.de>; Mon, 17 Jun 2024 19:39:50 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1DB4A1F22E85
+	for <lists+bpf@lfdr.de>; Mon, 17 Jun 2024 20:01:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0254B187575;
-	Mon, 17 Jun 2024 19:39:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 98FD018FC93;
+	Mon, 17 Jun 2024 20:00:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="edYDSTcR"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Z6xh/Gtn"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pg1-f180.google.com (mail-pg1-f180.google.com [209.85.215.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F8F511CAB;
-	Mon, 17 Jun 2024 19:39:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D7B2C18A944;
+	Mon, 17 Jun 2024 20:00:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718653180; cv=none; b=BYv4XG9mI+Gwi1PluslOApsOYiRxFFrU+q1fLTdA/dWcA2jTZeFdaUgfBxJwrn73tAmhOdllAU0sfW56BXJ04uPAby80eh1Bs4/0JoT8Pv65BIjkxGidv0VFNIOp7VBwy8MjimV9yWUdIL/YbsGZh5X7V7UF9D+DXLYh8w75dfA=
+	t=1718654456; cv=none; b=b4HSh9le3BDXt3eigKtnzteafMbsU5qsMreHUz/Rqah7A+rOW3iE7gDWc/hIsEYOEaj9+CkscWvIKsUcxTtv0rggBzuim7bBr5wib3IS9DTGRNAqSL3tFn0ZgkS05tKi98f2dApHsX4NePAAmY9/wgr1XJigArvOXIFlufsqC9s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718653180; c=relaxed/simple;
-	bh=sZeX0jdyzcEU32N2339kQ4SjZz3qMfD5FduuPaOf1Ls=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=kv1VwJpxED5lmgr35dkXURdpMf9kIYTwaomf6Y0lVIKHcqXpsCR4vnS9KiBnur+vRHMveUJj4k5ZKP+52EnXK26zUMF80JLimJm3dMnOvZdLHbGFd1OmInr3oNkjybPTOdKVN7hs6JA42syM5vIceary4VwG3DTmj+ppNxeRde8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=edYDSTcR; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 627F7C2BD10;
-	Mon, 17 Jun 2024 19:39:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1718653180;
-	bh=sZeX0jdyzcEU32N2339kQ4SjZz3qMfD5FduuPaOf1Ls=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=edYDSTcRTUpPUVFYaGYGmXm/s/NRaBpsDKA2QOlyfSWCRPQ9iwNxITLi81r4kr1oH
-	 CCF1Fk41YvvJpiN3i2VjBSXZ9rwL6DG6rAr6CZLysWNzpDoDbo88ch9ZQTiYUV9cbG
-	 xU8bIMS1iM7JGd3HJF6yI2HDgcAu+UxypHTtZwNT70Cw9c7WFlnBAVug1V0ivqT55O
-	 tkFeY1vxsuxp9SW76cfOtdv8GeV924MUtDUIf3PgCH9w1k3f8IM2HH8CexZqKH1w0G
-	 i2V34m46Zq1o8HpXETEsu8FYBHglLpCrBOzHUfw1qr3F67ZrfSwpsrKhcVn+LT1VTA
-	 4gPH5mQUMRrUA==
-Date: Mon, 17 Jun 2024 16:39:36 -0300
-From: Arnaldo Carvalho de Melo <acme@kernel.org>
-To: Nathan Chancellor <nathan@kernel.org>
-Cc: dwarves@vger.kernel.org,
-	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-	bpf@vger.kernel.org, Alan Maguire <alan.maguire@oracle.com>,
-	Jiri Olsa <jolsa@kernel.org>, Jan Engelhardt <jengelh@inai.de>,
-	Matthias Schwarzott <zzam@gentoo.org>,
-	Viktor Malik <vmalik@redhat.com>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Jan Alexander Steffens <heftig@archlinux.org>,
-	Domenico Andreoli <cavok@debian.org>,
-	Dominique Leuenberger <dimstar@opensuse.org>,
-	Daniel Xu <dxu@dxuuu.xyz>, Yonghong Song <yonghong.song@linux.dev>,
-	llvm@lists.linux.dev
-Subject: Re: ANNOUNCE: pahole v1.27 (reproducible builds, BTF kfuncs)
-Message-ID: <ZnCQ-Psf_WswMk1W@x1>
-References: <ZmjBHWw-Q5hKBiwA@x1>
- <20240613214019.GA1423015@thelio-3990X>
+	s=arc-20240116; t=1718654456; c=relaxed/simple;
+	bh=nm0hoih9n+xUQkDXcZ/Jfed4/QJngX7ttcOsQUBzysY=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=nEjPpDxSeUZCOWYmc5YbKRjR/J3kJRcREKPXaPNTk9GGR4AsrOuH4L2ZsdBKvdGKDfZHlFOd6nj6Nk2iMkrMfCVeXezB2Xe8c5xWIRjcvAIdQfm7fTXCZLVQ/dhtVnHN/UDSREqYhoZODCrtTDpWNEGqzUSRKUDv4e0rbTXHHH8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Z6xh/Gtn; arc=none smtp.client-ip=209.85.215.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f180.google.com with SMTP id 41be03b00d2f7-70a365a4532so1131585a12.1;
+        Mon, 17 Jun 2024 13:00:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1718654454; x=1719259254; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=fMmfxXFfGSBMXQnhmvB2uJwfgVwWQzxCVvTB+E3HX1k=;
+        b=Z6xh/Gtn059zqRN/9uykHKJzEtj4BR9kzL1CmHWkyzACWk584YDTZgWc7xM3XYyHYD
+         SDvWHRemmweFuff2a+DOyHR+laMK884qiKakTzg3dOLRoXwU3UU6DUVyKLDSkrUbuByW
+         WhmBvXbcjf9hOnowgjM5DfFSqRs3NmKkPLk8J349EXYeQqYsNLYLDaBNAqIn/uRaY4zn
+         DFmRU6K6Gk/WTzExIe9M7G8hMoqT/zUf2ebM7yMvwHni3dKX6k5Rwl4pF7Tze2Gd9PMr
+         6gKuNr7r1sUMp2A/w4W6jALhUlyImTJ6+LeeazR9EkWyu7hQetkbGjFXuHN0vslgNUuy
+         gpEA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1718654454; x=1719259254;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=fMmfxXFfGSBMXQnhmvB2uJwfgVwWQzxCVvTB+E3HX1k=;
+        b=pRe6iiUIOioBuLE/ErVPvoIyHT82+9f54w89gG5GqOGmJV3HXEsk+Z7X/ssc3VmTK1
+         BMmNLTOpLKbOLV1pRfqAoxNfmA1gO6AkoqxLotWCZLheaKM3zIw7vKPyFW9Vj35UNxl0
+         sfa2JO1S+rjecMz9rc51RIqNCVqGFoS3eXZSxvUZM+zRkpe3XkSwVH1nWleaGlF51DTT
+         bJchSyJkYd/01oC2dRJe/Cx6HPz8PVHnvrPdoYPItVlLX8y7dHKoHDzobG36uGZr+3AR
+         jCKV3yJMvsx9qPjEe+KstglqLnNfu9w/q6G5ml8jCrLechm6A/ulvlbtIojNLF1IaPRF
+         Qc1g==
+X-Forwarded-Encrypted: i=1; AJvYcCW+ckiEkm0cOJbmVpIijEZ8k5pbfOwd4LPhT+H4Gix9JltXUh3tGiEVscT0/LkjuZ7x1Ji8FLDpequzmSYZQWdN72VgOxzjpobu8lFm5qLX0fFQGcKjsT3ri83YZXQKCSD/
+X-Gm-Message-State: AOJu0YyUG8UlxFs9blv9IRtcJ6tjFegrgy8fOYMKSw4X/O0b7SBgr8qA
+	Ek6O7Eciq6C2yQA4FPn1mekaNv+X/Vo6SuVOfCxRIK4So4uSb6vf
+X-Google-Smtp-Source: AGHT+IGh95ZSHmL4d73AhycVrIm4QGVmOMKBpUZZggY8itguN5SlqXgbh3hD4eFmwY/oMea+w3Rf2Q==
+X-Received: by 2002:a17:902:c401:b0:1f7:3e19:6da4 with SMTP id d9443c01a7336-1f862a0ba11mr122793325ad.69.1718654453980;
+        Mon, 17 Jun 2024 13:00:53 -0700 (PDT)
+Received: from [192.168.0.31] ([38.34.87.7])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-1f855e726a8sm82754275ad.99.2024.06.17.13.00.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 17 Jun 2024 13:00:53 -0700 (PDT)
+Message-ID: <2404b12b71fb361df262c2838d94f1ee6f35e5c4.camel@gmail.com>
+Subject: Re: [PATCH] libbpf: checking the btf_type kind when fixing variable
+ offsets
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Alan Maguire <alan.maguire@oracle.com>, Donglin Peng
+	 <dolinux.peng@gmail.com>, ast@kernel.org
+Cc: daniel@iogearbox.net, song@kernel.org, andrii@kernel.org,
+ haoluo@google.com,  yonghong.song@linux.dev, bpf@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+Date: Mon, 17 Jun 2024 13:00:48 -0700
+In-Reply-To: <0c0ef20c-c05e-4db9-bad7-2cbc0d6dfae7@oracle.com>
+References: <20240616002958.2095829-1-dolinux.peng@gmail.com>
+	 <0c0ef20c-c05e-4db9-bad7-2cbc0d6dfae7@oracle.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.44.4-0ubuntu2 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240613214019.GA1423015@thelio-3990X>
 
-On Thu, Jun 13, 2024 at 02:40:19PM -0700, Nathan Chancellor wrote:
-> Hi Arnaldo,
-> 
-> On Tue, Jun 11, 2024 at 06:26:53PM -0300, Arnaldo Carvalho de Melo wrote:
-> > 	The v1.27 release of pahole and its friends is out, supporting
-> > parallel reproducible builds and encoding kernel kfuncs in BTF, allowing
-> > tools such as bpftrace to enumerate the available kfuncs and obtain its
-> > function signatures and return types.
-> 
-> After commit f632e75 ("dwarf_loader: Add the cu to the cus list early,
-> remove on LSK_DELETE"), I (and others[1]) notice a crash when running
-> pahole on modules built with Clang when CONFIG_LTO_CLANG is enabled:
-> 
->   $ curl -LSso .config https://gitlab.archlinux.org/archlinux/packaging/packages/linux/-/raw/main/config
-> 
->   $ scripts/config -d LTO_NONE -e LTO_CLANG_THIN
-> 
->   $ make -skj"$(nproc)" ARCH=x86_64 LLVM=1 olddefconfig vmlinux crypto/cast_common.ko
->   make[3]: *** [scripts/Makefile.modfinal:59: crypto/cast_common.ko] Error 139
-> 
-> I've isolated this to the following commands using the files available
-> at [2] (these were built with LLVM 18 but I could reproduce it with LLVM
-> 17 and LLVM 19, so it appears to impact a number of versions):
-> 
->   $ tar -tf clang-lto-pahole-1.27-crash.tar.zst
->   clang-lto-pahole-1.27-crash/
->   clang-lto-pahole-1.27-crash/cast_common.mod.o
->   clang-lto-pahole-1.27-crash/module.lds
->   clang-lto-pahole-1.27-crash/cast_common.o
->   clang-lto-pahole-1.27-crash/cast_common.ko.bak
->   clang-lto-pahole-1.27-crash/vmlinux
->   clang-lto-pahole-1.27-crash/cast_common.ko
-> 
->   $ tar -axf clang-lto-pahole-1.27-crash.tar.zst
-> 
->   $ cd clang-lto-pahole-1.27-crash
-> 
->   $ LLVM_OBJCOPY="llvm-objcopy" pahole-1.26 -J -j --btf_features=encode_force,var,float,enum64,decl_tag,type_tag,optimized_func,consistent_func --lang_exclude=rust --btf_base vmlinux cast_common.ko
-> 
->   $ cp cast_common.ko{.bak,}
-> 
->   $ LLVM_OBJCOPY="llvm-objcopy" pahole-1.27 -J -j --btf_features=encode_force,var,float,enum64,decl_tag,type_tag,optimized_func,consistent_func --lang_exclude=rust --btf_base vmlinux cast_common.ko
->   fish: Job 1, '...' terminated by signal SIGSEGV (Address boundary error)
-> 
-> If there is any more information I can provide or patches I can test, I
-> am more than happy to do so.
+On Mon, 2024-06-17 at 12:29 +0100, Alan Maguire wrote:
 
-I reproduced the problem by just running 'pahole cast_common.ko", so
-this isn't even related to the BTF parts, its about the DWARF loader,
-I'm on it, thanks for the detailed report and for providing the files.
+[...]
 
-- Arnaldo
- 
-> [1]: https://gitlab.archlinux.org/archlinux/packaging/packages/pahole/-/issues/1
-> [2]: https://1drv.ms/u/s!AsQNYeB-IEbqqC2F28JuLy__Q7Vd?e=KsraMU
-> 
-> Cheers,
-> Nathan
-> 
+> The only thing I could come up with is we were usually lucky; when we
+> misinterpreted the func as a var and looked its type up, we got
+>=20
+> 		int var_linkage =3D btf_var(vt)->linkage;
+>=20
+> ...and were lucky it never equalled 1 (BTF_VAR_GLOBAL_ALLOCATED):
+> =09
+> 		/* no need to patch up static or extern vars */
+>                 if (var_linkage !=3D BTF_VAR_GLOBAL_ALLOCATED)
+> 			continue;
+>=20
+> In the case of a function, the above btf_var(vt) would really be
+> pointing at the struct btf_type immediately after the relevant
+> function's struct btf_type (since unlike variables, functions don't have
+> metadata following them). So the only way we'd trip this bug would be if
+> the struct btf_type following the func was had a name_off value that
+> happened to equal 1 (BTF_VAR_GLOBAL_ALLOCATED).
+>=20
+> So maybe the sorting changes to BTF order resulted in us tripping on
+> this bug, but regardless the fix seems right to me.
+
+I've added the following debug logging:
+=20
+                        sym =3D find_sym_by_name(obj, sec->sec_idx, STT_OBJ=
+ECT, var_name);
+                        if (!sym) {
++                               const struct btf_type *nt;
+                                pr_warn("failed to find symbol for variable=
+ '%s' in section '%s'\n", var_name, sec_name);
++                               nt =3D btf__type_by_id(obj->btf, vi->type +=
+ 1);
++                               pr_warn("  vi->type =3D=3D %d\n", vi->type)=
+;
++                               pr_warn("  next id %d kind '%s', name '%s' =
+off %d\n",
++                                       vi->type + 1,
++                                       btf_kind_str(nt),
++                                       btf__str_by_offset(obj->btf, nt->na=
+me_off), nt->name_off);
+                                return -ENOENT;
+                        }
+
+The output is as follows:
+
+  libbpf: failed to find symbol for variable 'bpf_dynptr_slice' in section =
+'.ksyms'
+  libbpf:   vi->type =3D=3D 17
+  libbpf:   next id 18 kind 'struct', name 'bpf_nf_ctx' off 1
+
+This matches your analysis and hits the unlikely situation when
+name_off of the next type is 1.
 
