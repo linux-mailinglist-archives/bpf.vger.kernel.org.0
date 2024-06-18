@@ -1,182 +1,185 @@
-Return-Path: <bpf+bounces-32405-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-32406-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3430790D2E3
-	for <lists+bpf@lfdr.de>; Tue, 18 Jun 2024 15:55:35 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3994A90D5A2
+	for <lists+bpf@lfdr.de>; Tue, 18 Jun 2024 16:42:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3E4D41C22E0B
-	for <lists+bpf@lfdr.de>; Tue, 18 Jun 2024 13:55:34 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 19F67B2F69F
+	for <lists+bpf@lfdr.de>; Tue, 18 Jun 2024 14:09:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7AE1815CD6D;
-	Tue, 18 Jun 2024 13:30:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A658313D242;
+	Tue, 18 Jun 2024 13:51:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="eP1XnMWg"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jWyawfa6"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f41.google.com (mail-wr1-f41.google.com [209.85.221.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 67B2E15CD65;
-	Tue, 18 Jun 2024 13:30:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C23615A869;
+	Tue, 18 Jun 2024 13:51:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718717455; cv=none; b=REWPkuyXJoFyejWN+4SAmkIc0NszVkKqzdCsLEZEs4Feoevv45gmKFo5/7KMl4EfkVhvMm4/DGjJmvdAd9f7s6kHX3YglgSj1teXvxIjIxjoo00dNkVxo+uwV04jkVdixdW6rAOzrB8bnRrQoW4dRju2FZ1cL2O5z/w7kCkBb8U=
+	t=1718718710; cv=none; b=R8fWqDX5BL3rimibW1MSIeoNhJEMqc0yjZLrUrQ/gcANjtOXdvdl8Hp1Jqra6OHBYsj+Qy/JtyId8cjkLRxEh5WNheBNEf+sWa67qxU+euGB9xaeCwPw0w7BhjahB2756njg5FzFfO2mCgX0rvDat01qucEmGoVJWDnNsp/zFG8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718717455; c=relaxed/simple;
-	bh=hyu0Am/KzFedokVqpQHC0MeCjFCn8cgrf2UfhAKYzvA=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=s0NPhEUd5osAUMqQLQcVpym67w4hO04JPGIdLxX5JHVvAAJ46QNpUMfvtAd1uGMH/kHPgOOxx7EzoUJPNP6CBD34dOSSfqDv/pjPlYjfIbRS6Gs+yaY89qVKcO9mkFhpmpmEsXqay0PT+3qYjAMFRLEBZ7Ah14Oaat4+Oy7VDYM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=eP1XnMWg; arc=none smtp.client-ip=209.85.221.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f41.google.com with SMTP id ffacd0b85a97d-3608e6d14b6so2002628f8f.0;
-        Tue, 18 Jun 2024 06:30:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1718717452; x=1719322252; darn=vger.kernel.org;
-        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
-         :from:from:to:cc:subject:date:message-id:reply-to;
-        bh=FcnMHtNdVwEgRHhVzwaKzsGpucVSC1MxgjxGj0kWT+Q=;
-        b=eP1XnMWgodQhPGGnp1+MI0JsASpGQvffx77OQg27WJ1hJjTlEtx0jvKDEifrKuxqlF
-         qhvMFeRa15gudNV/kwbPjfSvQclPrwBlU8SwvAR5Dd4IwTb7Gh/UkBWAkyplaZFJSufg
-         xUZnwi6A76ub/ItBSBzd8QEiHlFhGLLl0DkykSxw/muf903RPBzUOcQcvr8vEQVm8hUE
-         +rK3gJsL9JsWj2TSRJhcTT+wIJoJRA0g8ZZED2hb2MZtWp02twQemHlQBmNlQaPoQvJ+
-         J+lZskPm3AA+7fVtmGur3p9qdN26X4GYKnuTZpI7AT0aaV6yySkDuRYJtmF4dkaHtSct
-         1OVg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1718717452; x=1719322252;
-        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=FcnMHtNdVwEgRHhVzwaKzsGpucVSC1MxgjxGj0kWT+Q=;
-        b=MDwJS3p0b22gpI/l4OZt4tz140L7gRro4EP4/fYx2WBib2y+GiKzCgKm+UV7t4tx8w
-         v4U++DUQzihYpDPr8kTbHPKqoTgWHo02IPwRxgGWrvvHEoldem0DjRSLqqR1ePhQGxJE
-         x6ZmekYIjL5tTLCBp//SGIexYpmc8GXJpKv/NluZX3CSz0zl/A+48PwU/zwbCEDrjiID
-         mtlaxGsTDdnqCyMCTqflWrp6mu/NAjW2736DEvCLpSMXpgc6VzmxEPtuZ+Xl9e09TjME
-         kzYvgK9TtTntQSKC8j+uCIvHfWfu3z/4y+T2A/v4ViDqTcSTquY+0u6dk6+up7N41LA6
-         7mIA==
-X-Forwarded-Encrypted: i=1; AJvYcCVlNmCuXc8MtVN3aBtSlXC+j2xfnSlWZDFGiyKgORjoE1T7zuWpYZfEh2/VfunA14xLsNNBZl0z6vruYM3S7ZFc7ukdT/7MqoFiiBvB/tKbr6oAqmVAoEcVbF7qhDF9M62Y
-X-Gm-Message-State: AOJu0Yy/HUY7EgHR5YrGuh8ZzjIRXss+ghoiFQWZKbYT3ohhMrxgcWYa
-	vQiytXftAxRdOvJt6yhuA5UOnvnLxea0MTvWD7PgmZt0jPBe39oa
-X-Google-Smtp-Source: AGHT+IF6+iO/0W0LMpOnPmATaN6+Ni/p2mp4ptbLlokGCHrnllKR92jiA0qM4MrXh098DtwZbBN29g==
-X-Received: by 2002:adf:f584:0:b0:35f:2b1d:433 with SMTP id ffacd0b85a97d-3607a746a11mr9688051f8f.26.1718717451370;
-        Tue, 18 Jun 2024 06:30:51 -0700 (PDT)
-Received: from localhost (54-240-197-231.amazon.com. [54.240.197.231])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-362907048b0sm671272f8f.24.2024.06.18.06.30.50
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 18 Jun 2024 06:30:50 -0700 (PDT)
-From: Puranjay Mohan <puranjay12@gmail.com>
-To: Maxwell Bland <mbland@motorola.com>, "open list:BPF [GENERAL] (Safe
- Dynamic Programs and Tools)" <bpf@vger.kernel.org>
-Cc: Catalin Marinas <catalin.marinas@arm.com>, Will Deacon
- <will@kernel.org>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann
- <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, Martin KaFai
- Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu
- <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, John Fastabend
- <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, Stanislav
- Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa
- <jolsa@kernel.org>, Zi Shen Lim <zlim.lnx@gmail.com>, Mark Rutland
- <mark.rutland@arm.com>, Suzuki K Poulose <suzuki.poulose@arm.com>, Mark
- Brown <broonie@kernel.org>, linux-arm-kernel@lists.infradead.org, open
- list <linux-kernel@vger.kernel.org>, Josh Poimboeuf <jpoimboe@kernel.org>
-Subject: Re: [PATCH bpf-next v7 2/2] arm64/cfi,bpf: Support kCFI + BPF on arm64
-In-Reply-To: <puj3euv5eafwcx5usqostpohmxgdeq3iout4hqnyk7yt5hcsux@gpiamodhfr54>
-References: <ptrugmna4xb5o5lo4xislf4rlz7avdmd4pfho5fjwtjj7v422u@iqrwfrbwuxrq>
- <puj3euv5eafwcx5usqostpohmxgdeq3iout4hqnyk7yt5hcsux@gpiamodhfr54>
-Date: Tue, 18 Jun 2024 13:30:36 +0000
-Message-ID: <mb61p5xu6z8cj.fsf@gmail.com>
+	s=arc-20240116; t=1718718710; c=relaxed/simple;
+	bh=jZTXzxlFYVfRFo7ptSoHB/sfDeGp2NsucUm1L+1pbAM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ffqqRToS0XMNYLvjmPPO++50r+G9Q+uBvBo39z0rFjQTh4lxSMAF9nAyO2TigTcmk3wfKPzBkBSwECakd3AewC6En4mujMdUu5Vnt+PJWagzruh3Y/OzQX3OQcM59S2oUBM5lbb1HE4iYDZS6FVL6sNcg9DXK86uhWvMoyZsDNc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jWyawfa6; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2F178C4AF1D;
+	Tue, 18 Jun 2024 13:51:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1718718709;
+	bh=jZTXzxlFYVfRFo7ptSoHB/sfDeGp2NsucUm1L+1pbAM=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=jWyawfa6btzKXEdvhC+UgMCuUE7OfMHTqIc3wsT7ajozNZVzUq5AZ4uVnERVajBSb
+	 AkYqGy6iKPoC6hIuFT33xTfmMh2d9OAFR1z2ohFFhMVi3XADJgUZqQ9rFFRD0HpURq
+	 hB5T4FbOPUkEulizkqo6OomC7SbwaXThQRWC6ZVIFgjfCAyXZDEhB02N6t9Joc6Ofc
+	 AFbQBTGUvlSzps6DjOmuWHLdfDp6UIy/u6B6STVTAIK0YVNoyS2x6ofoLQWzsBk/gb
+	 OHmUqCem7/YsWsq9HT2p8sqZNaSzfmLR4R39shMxgiiFdiwFPuDLh8cIDTGkX0845G
+	 P25Wnzz7v1Y8g==
+Date: Tue, 18 Jun 2024 10:51:44 -0300
+From: Arnaldo Carvalho de Melo <acme@kernel.org>
+To: Nathan Chancellor <nathan@kernel.org>
+Cc: dwarves@vger.kernel.org,
+	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+	bpf@vger.kernel.org, Alan Maguire <alan.maguire@oracle.com>,
+	Jiri Olsa <jolsa@kernel.org>, Jan Engelhardt <jengelh@inai.de>,
+	Matthias Schwarzott <zzam@gentoo.org>,
+	Viktor Malik <vmalik@redhat.com>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Jan Alexander Steffens <heftig@archlinux.org>,
+	Domenico Andreoli <cavok@debian.org>,
+	Dominique Leuenberger <dimstar@opensuse.org>,
+	Daniel Xu <dxu@dxuuu.xyz>, Yonghong Song <yonghong.song@linux.dev>,
+	llvm@lists.linux.dev
+Subject: Re: [PATCH/RFT] Re: ANNOUNCE: pahole v1.27 (reproducible builds, BTF
+ kfuncs)
+Message-ID: <ZnGQ8CDRaMBIj5R5@x1>
+References: <ZmjBHWw-Q5hKBiwA@x1>
+ <20240613214019.GA1423015@thelio-3990X>
+ <ZnCQ-Psf_WswMk1W@x1>
+ <ZnCWRMfRDMHqSxBb@x1>
+ <20240617210810.GA1877676@thelio-3990X>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="=-=-=";
-	micalg=pgp-sha512; protocol="application/pgp-signature"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240617210810.GA1877676@thelio-3990X>
 
---=-=-=
-Content-Type: text/plain
+On Mon, Jun 17, 2024 at 02:08:10PM -0700, Nathan Chancellor wrote:
+> On Mon, Jun 17, 2024 at 05:02:12PM -0300, Arnaldo Carvalho de Melo wrote:
+> > Can you try with the one liner below? We remove it from the cus list
+> > unconditionally, and since we alloc space with zalloc/calloc in
+> > cu__new() and missed initializing that list_head (cu->node) we ended up
+> > hitting list_del with a zeroed 'struct list_head' :-\
+> > 
+> > I'll try and get this cast_common.ko checked into a test repo for pahole
+> > so that this gets regression tested.
+> > 
+> > Please test this patch so that we see if this is the only problem and
+> > your kernel build with clang completes successfully.
+> 
+> Thanks, I rebuilt pahole with the following diff and both my build and
+> the other configuration I tested for this regression successfully
+> complete.
+> 
+> Tested-by: Nathan Chancellor <nathan@kernel.org>
 
-Hi Maxwell,
+Great, I just added this:
 
-I am happy to test your code everytime but it would be great if you test
-the code before posting it on the list. Otherwise it would take multiple
-revisions for the patches to be accepted. I understand that testing this
-is non-trivial because you need clang and everything and you also need
-ARM64 hardware or Qemu setup. But if you enjoy kernel development you
-will find all this is worth it.
+From 6a2b27c0f512619b0e7a769a18a0fb05bb3789a5 Mon Sep 17 00:00:00 2001
+From: Arnaldo Carvalho de Melo <acme@redhat.com>
+Date: Tue, 18 Jun 2024 10:37:30 -0300
+Subject: [PATCH 1/1] core: Initialize cu->node with INIT_LIST_HEAD()
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-> +u32 cfi_get_func_hash(void *func)
-> +{
-> +	u32 *hashp = func - cfi_get_offset();
-> +	return READ_ONCE(*hashp);
+In cu__new() zalloc() is used defensively, and that helped catch this
+problem where we assume that a cu us in the cus list of cu instances,
+but that is not the case when we use cus__merge_and_process_cu(), for
+instance when loading files created by clang with LTO, as reported by
+Peter Jung and narrowed down by Nathan Chancellor.
 
-The above assumes that hashp is always a valid address, and when it is
-not, it crashes the kernel:
+If we use INIT_LIST_HEAD() in cu__new() to initialize cu->node, which is
+what we do with other lists and nodes there, then the unconditional
+removal using list_del_init() will be a no-op and removing something not
+on the cus list of cu instances will not cause problems, just keep an
+unconsistent cus->nr_entries field.
 
-Building these patches with clang and with CONFIG_CFI_CLANG=y and then
-running `sudo ./test_progs -a dummy_st_ops` crashes the kernel like:
+So lets just have this fix in first, keeping Nathan's Tested-by and then
+do the a bit more involved fix of either adding that cu to the cus list
+or checking at removal time if it is there.
 
-Internal error: Oops: 0000000096000006 [#1] SMP
-Modules linked in: bpf_testmod(OE) nls_ascii nls_cp437 aes_ce_blk aes_ce_cipher ghash_ce sha1_ce button sunrpc sch_fq_codel dm_mod dax configfs dmi_sysfs sha2_ce sha256_arm64
-CPU: 47 PID: 5746 Comm: test_progs Tainted: G        W  OE      6.10.0-rc2+ #41
-Hardware name: Amazon EC2 c6g.16xlarge/, BIOS 1.0 11/1/2018
-pstate: 00400005 (nzcv daif +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
-pc : cfi_get_func_hash+0xc/0x1c
-lr : prepare_trampoline+0xcc/0xf44
-sp : ffff80008b1637e0
-x29: ffff80008b163810 x28: ffff0003c9e4b0c0 x27: 0000000000000000
-x26: 0000000000000010 x25: ffff0003d4ab7000 x24: 0000000000000040
-x23: 0000000000000018 x22: 0000000000000037 x21: 0000000000000001
-x20: 0000000000000020 x19: ffff80008b163870 x18: 0000000000000000
-x17: 00000000ad6b63b6 x16: 00000000ad6b63b6 x15: ffff80008002eed4
-x14: ffff80008002eff4 x13: ffff80008b160000 x12: ffff80008b164000
-x11: 0000000000000082 x10: 0000000000000010 x9 : ffff80008004b724
-x8 : 0000000000000110 x7 : 0000000000000000 x6 : 0000000000000001
-x5 : 0000000000000110 x4 : 0000000000000001 x3 : 0000000000000000
-x2 : ffff0003d4ab7000 x1 : 000000000000003f x0 : 0000000000000000
-Call trace:
- cfi_get_func_hash+0xc/0x1c
- arch_bpf_trampoline_size+0xe8/0x158
- bpf_struct_ops_prepare_trampoline+0x8
-[...]
+  Program received signal SIGSEGV, Segmentation fault.
+  0x00007ffff7f1e13e in __list_del (prev=0x0, next=0x0) at /home/acme/git/pahole/list.h:106
+  106		next->prev = prev;
+  (gdb) bt
+  #0  0x00007ffff7f1e13e in __list_del (prev=0x0, next=0x0) at /home/acme/git/pahole/list.h:106
+  #1  0x00007ffff7f1e176 in list_del_init (entry=0x417980) at /home/acme/git/pahole/list.h:165
+  #2  0x00007ffff7f1f8f9 in __cus__remove (cus=0x4142a0, cu=0x417980) at /home/acme/git/pahole/dwarves.c:527
+  #3  0x00007ffff7f1f92b in cus__remove (cus=0x4142a0, cu=0x417980) at /home/acme/git/pahole/dwarves.c:533
+  #4  0x00007ffff7f3d01c in cus__finalize (cus=0x4142a0, cu=0x417980, conf=0x4133c0 <conf_load>, thr_data=0x0)
+      at /home/acme/git/pahole/dwarf_loader.c:3040
+  #5  0x00007ffff7f3e05c in cus__merge_and_process_cu (cus=0x4142a0, conf=0x4133c0 <conf_load>, mod=0x415cf0, dw=0x416110, elf=0x414380,
+      filename=0x7fffffffe3f7 "cast_common.ko", build_id=0x416680 "\265D\371U\213\373u|\037\250\242\032\271\365⒜]y\023", build_id_len=20,
+      type_dcu=0x0) at /home/acme/git/pahole/dwarf_loader.c:3482
+  #6  0x00007ffff7f3e218 in cus__load_module (cus=0x4142a0, conf=0x4133c0 <conf_load>, mod=0x415cf0, dw=0x416110, elf=0x414380,
+      filename=0x7fffffffe3f7 "cast_common.ko") at /home/acme/git/pahole/dwarf_loader.c:3521
+  #7  0x00007ffff7f3e396 in cus__process_dwflmod (dwflmod=0x415cf0, userdata=0x415d00, name=0x415ea0 "cast_common.ko", base=65536,
+      arg=0x7fffffffde40) at /home/acme/git/pahole/dwarf_loader.c:3581
+  #8  0x00007ffff7eb4609 in dwfl_getmodules (dwfl=0x414300, callback=0x7ffff7f3e2ec <cus__process_dwflmod>, arg=0x7fffffffde40, offset=0)
+      at ../libdwfl/dwfl_getmodules.c:86
+  #9  0x00007ffff7f3e4c5 in cus__process_file (cus=0x4142a0, conf=0x4133c0 <conf_load>, fd=3, filename=0x7fffffffe3f7 "cast_common.ko")
+      at /home/acme/git/pahole/dwarf_loader.c:3647
+  #10 0x00007ffff7f3e5cd in dwarf__load_file (cus=0x4142a0, conf=0x4133c0 <conf_load>, filename=0x7fffffffe3f7 "cast_common.ko")
+      at /home/acme/git/pahole/dwarf_loader.c:3684
+  #11 0x00007ffff7f232df in cus__load_file (cus=0x4142a0, conf=0x4133c0 <conf_load>, filename=0x7fffffffe3f7 "cast_common.ko")
+      at /home/acme/git/pahole/dwarves.c:2134
+  #12 0x00007ffff7f23e8b in cus__load_files (cus=0x4142a0, conf=0x4133c0 <conf_load>, filenames=0x7fffffffe0f0)
+      at /home/acme/git/pahole/dwarves.c:2637
+  #13 0x000000000040aec0 in main (argc=2, argv=0x7fffffffe0e8) at /home/acme/git/pahole/pahole.c:3805
+  (gdb) fr 1
+  #1  0x00007ffff7f1e176 in list_del_init (entry=0x417980) at /home/acme/git/pahole/list.h:165
+  165		__list_del(entry->prev, entry->next);
+  (gdb) p entry
+  $1 = (struct list_head *) 0x417980
+  (gdb) p entry->next
+  $2 = (struct list_head *) 0x0
+  (gdb) p entry->prev
+  $3 = (struct list_head *) 0x0
 
-Here is my understanding of the above:
+Closes: https://github.com/acmel/dwarves/issues/53
+Closes: https://gitlab.archlinux.org/archlinux/packaging/packages/pahole/-/issues/1
+Tested-by: Nathan Chancellor <nathan@kernel.org>
+Link: https://lore.kernel.org/all/20240617210810.GA1877676@thelio-3990X
+Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+---
+ dwarves.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-We are trying to get the cfi hash from <func_addr> - 4, but clang
-doesn't emit the cfi hash for all functions, and in case the cfi hash is
-not emitted, <func_addr> - 4 could be an invalid address or point to
-something that is not a cfi hash.
+diff --git a/dwarves.c b/dwarves.c
+index 1ec259f50dbd3778..823a01524a12bb37 100644
+--- a/dwarves.c
++++ b/dwarves.c
+@@ -739,6 +739,7 @@ struct cu *cu__new(const char *name, uint8_t addr_size,
+ 		cu->dfops	= NULL;
+ 		INIT_LIST_HEAD(&cu->tags);
+ 		INIT_LIST_HEAD(&cu->tool_list);
++		INIT_LIST_HEAD(&cu->node);
+ 
+ 		cu->addr_size = addr_size;
+ 		cu->extra_dbg_info = 0;
+-- 
+2.45.0
 
-In my original patch I had:
-
-u32 cfi_get_func_hash(void *func)
-{
-	u32 hash;
-
-	if (get_kernel_nofault(hash, func - cfi_get_offset()))
-		return 0;
-
-	return hash;
-}
-
-I think we need to keep the get_kernel_nofault() to fix this issue.
-
-cfi_get_func_hash() in arch/x86/kernel/alternative.c also uses
-get_kernel_nofault() and I think it is there for the same reason.
-
-Thanks,
-Puranjay
-
---=-=-=
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iIsEARYKADMWIQQ3wHGvVs/5bdl78BKwwPkjG3B2nQUCZnGL/RUccHVyYW5qYXkx
-MkBnbWFpbC5jb20ACgkQsMD5Ixtwdp3AbwD+I2Q0OiLq8foDoUj0DISDhNMGiCcn
-ZBr+3BwPV151j4YBAPkWjUG3guQHThHmZJjwPVLbhMDHizKBlmgn6sb3qRML
-=OXLV
------END PGP SIGNATURE-----
---=-=-=--
 
