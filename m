@@ -1,146 +1,127 @@
-Return-Path: <bpf+bounces-32373-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-32374-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id CD4C690C2B4
-	for <lists+bpf@lfdr.de>; Tue, 18 Jun 2024 06:08:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 03DDA90C2EA
+	for <lists+bpf@lfdr.de>; Tue, 18 Jun 2024 06:43:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 746901F2416E
-	for <lists+bpf@lfdr.de>; Tue, 18 Jun 2024 04:08:24 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 97BC71F2391B
+	for <lists+bpf@lfdr.de>; Tue, 18 Jun 2024 04:43:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D5A419B3C0;
-	Tue, 18 Jun 2024 04:08:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 498EC1586C9;
+	Tue, 18 Jun 2024 04:43:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="N4Z/UG/T"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="MnYKoPac"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.13])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E2AF115532B;
-	Tue, 18 Jun 2024 04:08:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B4E3179BD
+	for <bpf@vger.kernel.org>; Tue, 18 Jun 2024 04:43:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.13
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718683697; cv=none; b=HXzuy0x64RGnb2+SmdsEComJxru+mqZB3/11pm2P8QxK561IyjnNCQ6sqvs3Cknb0d+h1qSy8E5eWAC9SFXm+Iuudny9w5tNSOBvmhgCGHyFmX6TLMp36n3EyYWt3VWq+VGbkdAazrAaL2fwxfZGMfM/faoyYZSzMMAinAzc9KM=
+	t=1718685817; cv=none; b=EYgpqX8E96oRUoQYAMKmFRsEOGZuCzjWpH/d1aym29Rv/90Kd14ez0M3ZKnwZHkYyvCPFRMVEOHI1d+P2WO8mbVjzAptHtLP5yz8Tx0+8w7c/3L51I/pcj3udr8cD/z8ApDuHpUisnLlQchsCEIf4/HTE7qyw6rj/Gbc6FGWFSw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718683697; c=relaxed/simple;
-	bh=ek0iCBSuhwxmBUkXZ25YiD2CARKWMEhFftoQUiEh56g=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=NNk8I8Jpm2wpS0AlOan8n/qR2J4EBdVLB74n0M3uaThuTUSfmNoZwEcNFhF9e2YfkiHR2tl30jPPmmYTiwlB8Z5JTlUcgmMMHQowJ0nY/0y1HVFiBvholcqJjtaqOIKAimWHc6uj3vbJAOWQ7L5eH2FvkFF+uIe2bPBDhnzY7Es=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=N4Z/UG/T; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A859CC4AF51;
-	Tue, 18 Jun 2024 04:08:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1718683696;
-	bh=ek0iCBSuhwxmBUkXZ25YiD2CARKWMEhFftoQUiEh56g=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=N4Z/UG/T7SUK8hVg9+Z5E4EY/NLjAMgD5PbeatzY0Kk48bEjsEviq40KyMPSyi0jU
-	 NrP9BCnMDIQ4AagiGefw8+sa0DTssBuEn6yo7Ag5H6ZYrJlQFqRLK4fCzKg/1sO4su
-	 JnAS2ZNCFy1e/cMmu0ZQ5xQR0RLaL63yHNZ7/Rxu+3vHQWYbvkQJZGv/EDCZUaPEb2
-	 0PIAVM7kU32EfE65rsBVIOxKkbjHxzWwJ621knVJ06UyhdO9MFsq2dwy4cn+5d5O8x
-	 Cx3HchCng0+p0cpyWRnb+5AgDvHVwYMtW/sP4/0cxfDfZVtLiaXAmWYKUd6IzM/sMo
-	 Zrn5g/XoCvb8A==
-From: Geliang Tang <geliang@kernel.org>
-To: Andrii Nakryiko <andrii@kernel.org>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Mykola Lysenko <mykolal@fb.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>,
-	Stanislav Fomichev <sdf@google.com>,
-	Hao Luo <haoluo@google.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Shuah Khan <shuah@kernel.org>
-Cc: Geliang Tang <tanggeliang@kylinos.cn>,
-	bpf@vger.kernel.org,
-	linux-kselftest@vger.kernel.org
-Subject: [PATCH bpf-next v4 6/6] selftests/bpf: Use start_server_str in test_tcp_check_syncookie_user
-Date: Tue, 18 Jun 2024 12:06:56 +0800
-Message-ID: <8cb3e3d02ff076666492e30a5e75098c8124519e.1718683292.git.tanggeliang@kylinos.cn>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <cover.1718683292.git.tanggeliang@kylinos.cn>
-References: <cover.1718683292.git.tanggeliang@kylinos.cn>
+	s=arc-20240116; t=1718685817; c=relaxed/simple;
+	bh=tDedQ8X7Y1WH8Xb2QlbfdiiYLqWjo3JuOKrohHYQSg0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ZYH2Kcid0FEliKyRKNZjPBTkWFyAfrHDuucZDP8Fx1eZm9g31BOCJU9zo+AyovmRjgnR5vdr+jFgxci/IHr4q6A70ENsZRfNvEy1jmB0htHWfv8HszYtseF5hSE53jrHOAdvDoV77EaJ1uPeb4Cda/4l0efw5VI3jnjfnPhIdmg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=MnYKoPac; arc=none smtp.client-ip=192.198.163.13
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1718685816; x=1750221816;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=tDedQ8X7Y1WH8Xb2QlbfdiiYLqWjo3JuOKrohHYQSg0=;
+  b=MnYKoPacz1O+yQ9Q6IB8XeEwNszKaNscdYV9C9Ti5fSH7GeNUwGtQmTj
+   P6iKUKXg0GZHe9yOz3noMZPBlS4E2Y+Q8mPpy1LDjnzTbHqHpI7zP+m4c
+   ivw1hNd0y754Cnd8j2jN2KUwGu1ib7SS8oDA6aUwvydC1nEn+yAl47+2I
+   ynAFROS0Y5FntVJ8Pb8VOTl42oBv+JqXZeTmF3+a8LciEHZMviYCRZxyq
+   3YHDT//lArgzEFHC31Hv1j5vcoYgpbnJ+bStGbyQo4z2dGSBV01FtsIee
+   SQWLkxW8V3wZjLdzId+I+plRYbyzzCOAHPvJYNDfUVc4E5ezwQd9yZvIa
+   w==;
+X-CSE-ConnectionGUID: eoIlkJIGQwK7smnH2ehDXw==
+X-CSE-MsgGUID: kBSurmnmTfGbmfocX5jy3g==
+X-IronPort-AV: E=McAfee;i="6700,10204,11106"; a="18453516"
+X-IronPort-AV: E=Sophos;i="6.08,246,1712646000"; 
+   d="scan'208";a="18453516"
+Received: from fmviesa001.fm.intel.com ([10.60.135.141])
+  by fmvoesa107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jun 2024 21:43:36 -0700
+X-CSE-ConnectionGUID: HM08R2CVSPKLj5p8uUAc3A==
+X-CSE-MsgGUID: /RBofxslQgOvH0rhb9YgvA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.08,246,1712646000"; 
+   d="scan'208";a="72624381"
+Received: from lkp-server01.sh.intel.com (HELO 68891e0c336b) ([10.239.97.150])
+  by fmviesa001.fm.intel.com with ESMTP; 17 Jun 2024 21:43:33 -0700
+Received: from kbuild by 68891e0c336b with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1sJQgs-0005DR-2i;
+	Tue, 18 Jun 2024 04:43:30 +0000
+Date: Tue, 18 Jun 2024 12:43:11 +0800
+From: kernel test robot <lkp@intel.com>
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>, bpf@vger.kernel.org
+Cc: oe-kbuild-all@lists.linux.dev, daniel@iogearbox.net, andrii@kernel.org,
+	martin.lau@kernel.org, memxor@gmail.com, eddyz87@gmail.com,
+	pengfei.xu@intel.com, brho@google.com, kernel-team@fb.com
+Subject: Re: [PATCH v2 bpf] bpf: Fix remap of arena.
+Message-ID: <202406181248.u80sRLXy-lkp@intel.com>
+References: <20240617171812.76634-1-alexei.starovoitov@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240617171812.76634-1-alexei.starovoitov@gmail.com>
 
-From: Geliang Tang <tanggeliang@kylinos.cn>
+Hi Alexei,
 
-Since start_server_str() is added now, it can be used in script
-test_tcp_check_syncookie_user.c instead of start_server_addr() to
-simplify the code.
+kernel test robot noticed the following build warnings:
 
-Signed-off-by: Geliang Tang <tanggeliang@kylinos.cn>
-Acked-by: Eduard Zingerman <eddyz87@gmail.com>
----
- .../bpf/test_tcp_check_syncookie_user.c       | 29 ++-----------------
- 1 file changed, 3 insertions(+), 26 deletions(-)
+[auto build test WARNING on bpf/master]
 
-diff --git a/tools/testing/selftests/bpf/test_tcp_check_syncookie_user.c b/tools/testing/selftests/bpf/test_tcp_check_syncookie_user.c
-index aebc58c24dc5..3844f9b8232a 100644
---- a/tools/testing/selftests/bpf/test_tcp_check_syncookie_user.c
-+++ b/tools/testing/selftests/bpf/test_tcp_check_syncookie_user.c
-@@ -156,10 +156,6 @@ static int v6only_false(int fd, void *opts)
- int main(int argc, char **argv)
- {
- 	struct network_helper_opts opts = { 0 };
--	struct sockaddr_in addr4;
--	struct sockaddr_in6 addr6;
--	struct sockaddr_in addr4dual;
--	struct sockaddr_in6 addr6dual;
- 	int server = -1;
- 	int server_v6 = -1;
- 	int server_dual = -1;
-@@ -181,36 +177,17 @@ int main(int argc, char **argv)
- 		goto err;
- 	}
- 
--	memset(&addr4, 0, sizeof(addr4));
--	addr4.sin_family = AF_INET;
--	addr4.sin_addr.s_addr = htonl(INADDR_LOOPBACK);
--	addr4.sin_port = 0;
--	memcpy(&addr4dual, &addr4, sizeof(addr4dual));
--
--	memset(&addr6, 0, sizeof(addr6));
--	addr6.sin6_family = AF_INET6;
--	addr6.sin6_addr = in6addr_loopback;
--	addr6.sin6_port = 0;
--
--	memset(&addr6dual, 0, sizeof(addr6dual));
--	addr6dual.sin6_family = AF_INET6;
--	addr6dual.sin6_addr = in6addr_any;
--	addr6dual.sin6_port = 0;
--
--	server = start_server_addr(SOCK_STREAM, (struct sockaddr_storage *)&addr4,
--				   sizeof(addr4), NULL);
-+	server = start_server_str(AF_INET, SOCK_STREAM, "127.0.0.1", 0, NULL);
- 	if (server == -1)
- 		goto err;
- 
- 	opts.post_socket_cb = v6only_true;
--	server_v6 = start_server_addr(SOCK_STREAM, (struct sockaddr_storage *)&addr6,
--				      sizeof(addr6), &opts);
-+	server_v6 = start_server_str(AF_INET6, SOCK_STREAM, "::1", 0, &opts);
- 	if (server_v6 == -1)
- 		goto err;
- 
- 	opts.post_socket_cb = v6only_false;
--	server_dual = start_server_addr(SOCK_STREAM, (struct sockaddr_storage *)&addr6dual,
--					sizeof(addr6dual), &opts);
-+	server_dual = start_server_str(AF_INET6, SOCK_STREAM, "::0", 0, &opts);
- 	if (server_dual == -1)
- 		goto err;
- 
+url:    https://github.com/intel-lab-lkp/linux/commits/Alexei-Starovoitov/bpf-Fix-remap-of-arena/20240618-012054
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git master
+patch link:    https://lore.kernel.org/r/20240617171812.76634-1-alexei.starovoitov%40gmail.com
+patch subject: [PATCH v2 bpf] bpf: Fix remap of arena.
+config: x86_64-rhel-8.3 (https://download.01.org/0day-ci/archive/20240618/202406181248.u80sRLXy-lkp@intel.com/config)
+compiler: gcc-13 (Ubuntu 13.2.0-4ubuntu3) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240618/202406181248.u80sRLXy-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202406181248.u80sRLXy-lkp@intel.com/
+
+All warnings (new ones prefixed by >>):
+
+   kernel/bpf/arena.c: In function 'arena_vm_open':
+>> kernel/bpf/arena.c:235:27: warning: unused variable 'arena' [-Wunused-variable]
+     235 |         struct bpf_arena *arena = container_of(map, struct bpf_arena, map);
+         |                           ^~~~~
+
+
+vim +/arena +235 kernel/bpf/arena.c
+
+   231	
+   232	static void arena_vm_open(struct vm_area_struct *vma)
+   233	{
+   234		struct bpf_map *map = vma->vm_file->private_data;
+ > 235		struct bpf_arena *arena = container_of(map, struct bpf_arena, map);
+   236		struct vma_list *vml = vma->vm_private_data;
+   237	
+   238		atomic_inc(&vml->mmap_count);
+   239	}
+   240	
+
 -- 
-2.43.0
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
