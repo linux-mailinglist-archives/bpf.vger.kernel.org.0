@@ -1,45 +1,45 @@
-Return-Path: <bpf+bounces-32395-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-32390-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0DA9F90C6BE
-	for <lists+bpf@lfdr.de>; Tue, 18 Jun 2024 12:25:39 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8305490C6B2
+	for <lists+bpf@lfdr.de>; Tue, 18 Jun 2024 12:24:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 81D751F22930
-	for <lists+bpf@lfdr.de>; Tue, 18 Jun 2024 10:25:38 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D686CB21EE5
+	for <lists+bpf@lfdr.de>; Tue, 18 Jun 2024 10:24:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D816819F463;
-	Tue, 18 Jun 2024 07:57:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC4B619E7E0;
+	Tue, 18 Jun 2024 07:56:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="aH8tQgyq"
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="WkCPGnJC"
 X-Original-To: bpf@vger.kernel.org
-Received: from out30-110.freemail.mail.aliyun.com (out30-110.freemail.mail.aliyun.com [115.124.30.110])
+Received: from out30-100.freemail.mail.aliyun.com (out30-100.freemail.mail.aliyun.com [115.124.30.100])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8436D19E823;
-	Tue, 18 Jun 2024 07:56:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.110
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 42C2C19DFB8;
+	Tue, 18 Jun 2024 07:56:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.100
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718697421; cv=none; b=E1yur0yl7xvo8R9mRWAHMLDaJ+w8TYIiBvkxKxykv1mNZSyIyj8pZpRh5XDDYPOUjJpn4PYb32Jldcqyjsh5gz4J/ULGQxMiKXLyo8TxVERuCUiInjA5dWlGPGEL/qwA08pYr8/jpDJJcc7lGOGUyFcddrmuI5Rn/TbhO9rFNlQ=
+	t=1718697417; cv=none; b=Da9/hjvBT5hY82u4j2cVFgi+qtKRg4jDmSKk+lN2GmPhGfGrOvBye3qTqB3lVlLAyhU7Z9CV+PGTw7i7wCBCJpEKWRrZacHZ7clWhEv1fERo7Dr48gFwhZi0peeNuXmkHLXhoAjrmwbi9Fu4UdO0IkVa7QoB0N7RmJAzGINRwCI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718697421; c=relaxed/simple;
-	bh=TyA8CHQDmtVG5eRysWpeVW7NsJCu/g0ZIP0C750o9eA=;
+	s=arc-20240116; t=1718697417; c=relaxed/simple;
+	bh=waVC2FU3K27ZkBhNh6ZRk5Wta1rOKgPYqdgV623Vo8U=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=mZmiZwRiH4cTqFLnxiSTP2+txSz5kF6GOLZxP6HdNDqsluY9qhWqMVeWmwyOUThdyp8IcjlSkgk8BzcV08QJGe0E5TIXgOVrJfx/PbfBuT/230MyBi5UQj7UBlyL26uMazCg4+xMWTxDbpDPxXDURCTstTdUB+uI2x1I8+8y+sY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=aH8tQgyq; arc=none smtp.client-ip=115.124.30.110
+	 MIME-Version; b=FzQAePvTZUZemp+wdbsbSShBJBNqFm3gOi3zWiYGDviHVF/NxWh+o6dMXlXzWSEvLY9AX7/Eb2buaBYpLzVkIH1AOWJTdKhb4XolhGC5fapoT0vz9SuoTgXZ14x4tdyP5zFfmy6FNSxAaXNB21flhPsO8EQ6z/Hj8CQZt54rHV0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=WkCPGnJC; arc=none smtp.client-ip=115.124.30.100
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
 DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
 	d=linux.alibaba.com; s=default;
-	t=1718697412; h=From:To:Subject:Date:Message-Id:MIME-Version;
-	bh=94KgcG7GKlEUjoYMTVEV4xVqh45PoOx57ZKvwpWl2EQ=;
-	b=aH8tQgyqB6DXhVnlaqBvosAdMglWIeS/zvqildaerwV9O6k0m5dC6MI0ThtqmB3ZxbTztkA0TquiS68tOJhzOsDH4Rw0T+K12HsRs9e9ftlI1VUg4rSFuYGANk5fdD7+zoa46uCyArGgH82DYXbljW5CjPDslKFh2GoBKMLUYHw=
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R211e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=maildocker-contentspam033045075189;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=15;SR=0;TI=SMTPD_---0W8jR7pa_1718697410;
-Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0W8jR7pa_1718697410)
+	t=1718697413; h=From:To:Subject:Date:Message-Id:MIME-Version;
+	bh=j+HK2Pga9FC+0Ld0lAckCoZyJD7Mum6zyveF3e2PrLs=;
+	b=WkCPGnJCI61FLvz7qpiw6i7kJuQBYYqc1NtuYfG8G9aVxquN0gkh5IrNTr8sJ7pc2+/HH5bF5rwxCafWF25aOizNPmOQ8nqHMuRiTwKduHRYKLLGWkd9woaNZcAnsDpFqLPN8u7NQYvoJU17NVp6KRVqrgeeM0vPScTyzNuEYUY=
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R411e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=maildocker-contentspam033037067110;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=15;SR=0;TI=SMTPD_---0W8jSGCc_1718697411;
+Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0W8jSGCc_1718697411)
           by smtp.aliyun-inc.com;
-          Tue, 18 Jun 2024 15:56:51 +0800
+          Tue, 18 Jun 2024 15:56:52 +0800
 From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
 To: netdev@vger.kernel.org
 Cc: "Michael S. Tsirkin" <mst@redhat.com>,
@@ -56,9 +56,9 @@ Cc: "Michael S. Tsirkin" <mst@redhat.com>,
 	John Fastabend <john.fastabend@gmail.com>,
 	virtualization@lists.linux.dev,
 	bpf@vger.kernel.org
-Subject: [PATCH net-next v6 07/10] virtio_net: xsk: rx: support fill with xsk buffer
-Date: Tue, 18 Jun 2024 15:56:40 +0800
-Message-Id: <20240618075643.24867-8-xuanzhuo@linux.alibaba.com>
+Subject: [PATCH net-next v6 08/10] virtio_net: xsk: rx: support recv small mode
+Date: Tue, 18 Jun 2024 15:56:41 +0800
+Message-Id: <20240618075643.24867-9-xuanzhuo@linux.alibaba.com>
 X-Mailer: git-send-email 2.32.0.3.g01195cf9f
 In-Reply-To: <20240618075643.24867-1-xuanzhuo@linux.alibaba.com>
 References: <20240618075643.24867-1-xuanzhuo@linux.alibaba.com>
@@ -71,144 +71,182 @@ MIME-Version: 1.0
 X-Git-Hash: 8baa0af3684b
 Content-Transfer-Encoding: 8bit
 
-Implement the logic of filling rq with XSK buffers.
+In the process:
+1. We may need to copy data to create skb for XDP_PASS.
+2. We may need to call xsk_buff_free() to release the buffer.
+3. The handle for xdp_buff is difference from the buffer.
+
+If we pushed this logic into existing receive handle(merge and small),
+we would have to maintain code scattered inside merge and small (and big).
+So I think it is a good choice for us to put the xsk code into an
+independent function.
 
 Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
 ---
- drivers/net/virtio_net.c | 68 ++++++++++++++++++++++++++++++++++++++--
- 1 file changed, 66 insertions(+), 2 deletions(-)
+ drivers/net/virtio_net.c | 135 ++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 133 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
-index 2bbc715f22c6..2ac5668a94ce 100644
+index 2ac5668a94ce..06608d696e2e 100644
 --- a/drivers/net/virtio_net.c
 +++ b/drivers/net/virtio_net.c
-@@ -355,6 +355,8 @@ struct receive_queue {
- 
- 		/* xdp rxq used by xsk */
- 		struct xdp_rxq_info xdp_rxq;
-+
-+		struct xdp_buff **xsk_buffs;
- 	} xsk;
+@@ -500,6 +500,10 @@ struct virtio_net_common_hdr {
  };
  
-@@ -1032,6 +1034,53 @@ static void check_sq_full_and_disable(struct virtnet_info *vi,
- 	}
- }
+ static void virtnet_sq_free_unused_buf(struct virtqueue *vq, void *buf);
++static int virtnet_xdp_handler(struct bpf_prog *xdp_prog, struct xdp_buff *xdp,
++			       struct net_device *dev,
++			       unsigned int *xdp_xmit,
++			       struct virtnet_rq_stats *stats);
  
-+static void sg_fill_dma(struct scatterlist *sg, dma_addr_t addr, u32 len)
-+{
-+	sg->dma_address = addr;
-+	sg->length = len;
-+}
-+
-+static int virtnet_add_recvbuf_xsk(struct virtnet_info *vi, struct receive_queue *rq,
-+				   struct xsk_buff_pool *pool, gfp_t gfp)
-+{
-+	struct xdp_buff **xsk_buffs;
-+	dma_addr_t addr;
-+	u32 len, i;
-+	int err = 0;
-+	int num;
-+
-+	xsk_buffs = rq->xsk.xsk_buffs;
-+
-+	num = xsk_buff_alloc_batch(pool, xsk_buffs, rq->vq->num_free);
-+	if (!num)
-+		return -ENOMEM;
-+
-+	len = xsk_pool_get_rx_frame_size(pool) + vi->hdr_len;
-+
-+	for (i = 0; i < num; ++i) {
-+		/* use the part of XDP_PACKET_HEADROOM as the virtnet hdr space */
-+		addr = xsk_buff_xdp_get_dma(xsk_buffs[i]) - vi->hdr_len;
-+
-+		sg_init_table(rq->sg, 1);
-+		sg_fill_dma(rq->sg, addr, len);
-+
-+		err = virtqueue_add_inbuf(rq->vq, rq->sg, 1, xsk_buffs[i], gfp);
-+		if (err)
-+			goto err;
-+	}
-+
-+	return num;
-+
-+err:
-+	if (i)
-+		err = i;
-+
-+	for (; i < num; ++i)
-+		xsk_buff_free(xsk_buffs[i]);
-+
-+	return err;
-+}
-+
- static int virtnet_xsk_wakeup(struct net_device *dev, u32 qid, u32 flag)
+ static bool is_xdp_frame(void *ptr)
  {
- 	struct virtnet_info *vi = netdev_priv(dev);
-@@ -2206,6 +2255,11 @@ static bool try_fill_recv(struct virtnet_info *vi, struct receive_queue *rq,
- 	int err;
- 	bool oom;
+@@ -1040,6 +1044,120 @@ static void sg_fill_dma(struct scatterlist *sg, dma_addr_t addr, u32 len)
+ 	sg->length = len;
+ }
  
-+	if (rq->xsk.pool) {
-+		err = virtnet_add_recvbuf_xsk(vi, rq, rq->xsk.pool, gfp);
-+		goto kick;
++static struct xdp_buff *buf_to_xdp(struct virtnet_info *vi,
++				   struct receive_queue *rq, void *buf, u32 len)
++{
++	struct xdp_buff *xdp;
++	u32 bufsize;
++
++	xdp = (struct xdp_buff *)buf;
++
++	bufsize = xsk_pool_get_rx_frame_size(rq->xsk.pool) + vi->hdr_len;
++
++	if (unlikely(len > bufsize)) {
++		pr_debug("%s: rx error: len %u exceeds truesize %u\n",
++			 vi->dev->name, len, bufsize);
++		DEV_STATS_INC(vi->dev, rx_length_errors);
++		xsk_buff_free(xdp);
++		return NULL;
 +	}
 +
- 	do {
- 		if (vi->mergeable_rx_bufs)
- 			err = add_recvbuf_mergeable(vi, rq, gfp);
-@@ -2214,10 +2268,11 @@ static bool try_fill_recv(struct virtnet_info *vi, struct receive_queue *rq,
- 		else
- 			err = add_recvbuf_small(vi, rq, gfp);
- 
--		oom = err == -ENOMEM;
- 		if (err)
- 			break;
- 	} while (rq->vq->num_free);
++	xsk_buff_set_size(xdp, len);
++	xsk_buff_dma_sync_for_cpu(xdp);
 +
-+kick:
- 	if (virtqueue_kick_prepare(rq->vq) && virtqueue_notify(rq->vq)) {
- 		unsigned long flags;
- 
-@@ -2226,6 +2281,7 @@ static bool try_fill_recv(struct virtnet_info *vi, struct receive_queue *rq,
- 		u64_stats_update_end_irqrestore(&rq->stats.syncp, flags);
- 	}
- 
-+	oom = err == -ENOMEM;
- 	return !oom;
- }
- 
-@@ -5050,7 +5106,7 @@ static int virtnet_xsk_pool_enable(struct net_device *dev,
- 	struct receive_queue *rq;
- 	struct device *dma_dev;
- 	struct send_queue *sq;
--	int err;
-+	int err, size;
- 
- 	/* In big_packets mode, xdp cannot work, so there is no need to
- 	 * initialize xsk of rq.
-@@ -5078,6 +5134,12 @@ static int virtnet_xsk_pool_enable(struct net_device *dev,
- 	if (!dma_dev)
- 		return -EPERM;
- 
-+	size = virtqueue_get_vring_size(rq->vq);
++	return xdp;
++}
 +
-+	rq->xsk.xsk_buffs = kvcalloc(size, sizeof(*rq->xsk.xsk_buffs), GFP_KERNEL);
-+	if (!rq->xsk.xsk_buffs)
-+		return -ENOMEM;
++static struct sk_buff *xdp_construct_skb(struct receive_queue *rq,
++					 struct xdp_buff *xdp)
++{
++	unsigned int metasize = xdp->data - xdp->data_meta;
++	struct sk_buff *skb;
++	unsigned int size;
 +
- 	err = xsk_pool_dma_map(pool, dma_dev, 0);
- 	if (err)
- 		goto err_xsk_map;
-@@ -5112,6 +5174,8 @@ static int virtnet_xsk_pool_disable(struct net_device *dev, u16 qid)
- 
- 	xsk_pool_dma_unmap(pool, 0);
- 
-+	kvfree(rq->xsk.xsk_buffs);
++	size = xdp->data_end - xdp->data_hard_start;
++	skb = napi_alloc_skb(&rq->napi, size);
++	if (unlikely(!skb)) {
++		xsk_buff_free(xdp);
++		return NULL;
++	}
 +
- 	return err;
- }
++	skb_reserve(skb, xdp->data_meta - xdp->data_hard_start);
++
++	size = xdp->data_end - xdp->data_meta;
++	memcpy(__skb_put(skb, size), xdp->data_meta, size);
++
++	if (metasize) {
++		__skb_pull(skb, metasize);
++		skb_metadata_set(skb, metasize);
++	}
++
++	xsk_buff_free(xdp);
++
++	return skb;
++}
++
++static struct sk_buff *virtnet_receive_xsk_small(struct net_device *dev, struct virtnet_info *vi,
++						 struct receive_queue *rq, struct xdp_buff *xdp,
++						 unsigned int *xdp_xmit,
++						 struct virtnet_rq_stats *stats)
++{
++	struct bpf_prog *prog;
++	u32 ret;
++
++	ret = XDP_PASS;
++	rcu_read_lock();
++	prog = rcu_dereference(rq->xdp_prog);
++	if (prog)
++		ret = virtnet_xdp_handler(prog, xdp, dev, xdp_xmit, stats);
++	rcu_read_unlock();
++
++	switch (ret) {
++	case XDP_PASS:
++		return xdp_construct_skb(rq, xdp);
++
++	case XDP_TX:
++	case XDP_REDIRECT:
++		return NULL;
++
++	default:
++		/* drop packet */
++		xsk_buff_free(xdp);
++		u64_stats_inc(&stats->drops);
++		return NULL;
++	}
++}
++
++static struct sk_buff *virtnet_receive_xsk_buf(struct virtnet_info *vi, struct receive_queue *rq,
++					       void *buf, u32 len,
++					       unsigned int *xdp_xmit,
++					       struct virtnet_rq_stats *stats)
++{
++	struct net_device *dev = vi->dev;
++	struct sk_buff *skb = NULL;
++	struct xdp_buff *xdp;
++
++	len -= vi->hdr_len;
++
++	u64_stats_add(&stats->bytes, len);
++
++	xdp = buf_to_xdp(vi, rq, buf, len);
++	if (!xdp)
++		return NULL;
++
++	if (unlikely(len < ETH_HLEN)) {
++		pr_debug("%s: short packet %i\n", dev->name, len);
++		DEV_STATS_INC(dev, rx_length_errors);
++		xsk_buff_free(xdp);
++		return NULL;
++	}
++
++	if (!vi->mergeable_rx_bufs)
++		skb = virtnet_receive_xsk_small(dev, vi, rq, xdp, xdp_xmit, stats);
++
++	return skb;
++}
++
+ static int virtnet_add_recvbuf_xsk(struct virtnet_info *vi, struct receive_queue *rq,
+ 				   struct xsk_buff_pool *pool, gfp_t gfp)
+ {
+@@ -2363,9 +2481,22 @@ static int virtnet_receive(struct receive_queue *rq, int budget,
+ 	void *buf;
+ 	int i;
  
+-	if (!vi->big_packets || vi->mergeable_rx_bufs) {
+-		void *ctx;
++	if (rq->xsk.pool) {
++		struct sk_buff *skb;
++
++		while (packets < budget) {
++			buf = virtqueue_get_buf(rq->vq, &len);
++			if (!buf)
++				break;
+ 
++			skb = virtnet_receive_xsk_buf(vi, rq, buf, len, xdp_xmit, &stats);
++			if (skb)
++				virtnet_receive_done(vi, rq, skb);
++
++			packets++;
++		}
++	} else if (!vi->big_packets || vi->mergeable_rx_bufs) {
++		void *ctx;
+ 		while (packets < budget &&
+ 		       (buf = virtnet_rq_get_buf(rq, &len, &ctx))) {
+ 			receive_buf(vi, rq, buf, len, ctx, xdp_xmit, &stats);
 -- 
 2.32.0.3.g01195cf9f
 
