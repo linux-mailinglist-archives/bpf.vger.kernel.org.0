@@ -1,72 +1,72 @@
-Return-Path: <bpf+bounces-32438-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-32439-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5AD0790DE21
-	for <lists+bpf@lfdr.de>; Tue, 18 Jun 2024 23:22:05 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id BC71990DE23
+	for <lists+bpf@lfdr.de>; Tue, 18 Jun 2024 23:22:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DAB2B1F249E2
-	for <lists+bpf@lfdr.de>; Tue, 18 Jun 2024 21:22:04 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 58443284930
+	for <lists+bpf@lfdr.de>; Tue, 18 Jun 2024 21:22:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A11AB1849EA;
-	Tue, 18 Jun 2024 21:21:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B062B185E68;
+	Tue, 18 Jun 2024 21:21:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KiHvZT4z"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Px2Yft+M"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f170.google.com (mail-pf1-f170.google.com [209.85.210.170])
+Received: from mail-il1-f170.google.com (mail-il1-f170.google.com [209.85.166.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F82D17E46A;
-	Tue, 18 Jun 2024 21:21:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F7641849E8;
+	Tue, 18 Jun 2024 21:21:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718745674; cv=none; b=D0eDg57ynZ2dbyDvHacxZSFffh+Mv6Z4qRnDmvhFTi9HVXtCFP+7BSadfuy230GQXW6s6W4DctDlFUelgI++4rf7tA8DzwvYclXxec27Uf4el9L7M5anv0chcs4bz20quanUqHFV2ssPr3Nhk5jzNRlHvVhiheJMLF29nLbZ6DY=
+	t=1718745676; cv=none; b=rlqe+wiep/lGkYqQvmiFsvX28+cimRqSQB6hgo9YewYASalOsBCJcILNZqyP3PelMToAwDTpih4B6FxGLWP/TAgOXlblXHtCGY9ktqnC1WCdQnhplPyDt33Yq0SVVnKTL/BIQRPkMA44plmMmabN8B1+4KksATR6FnFWEFTrMMA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718745674; c=relaxed/simple;
-	bh=/q05x3PQIw09HAyXrpqER+B290zZsLmFxaHB0REXLys=;
+	s=arc-20240116; t=1718745676; c=relaxed/simple;
+	bh=SXYPkoZDfmM5Ix3tP92WtcgMdtbRQHskPQERvHqGRSA=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=fBw22w+zSslZedmVbKJb6MWvL/GC+Cs+wSHX4eHX5prLGMSk0GpgqY/zyg1joH9NBkG8LCJQ7PeI0RTaKu1pY1dDfjME2e5SlzN1KyTNXwtdyfFd3Ik6mCoTyV+H0Fuozx+zjsfkPIHAh54X6XE18K/9bBnh/H5FIsjsMVjFgzo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=KiHvZT4z; arc=none smtp.client-ip=209.85.210.170
+	 MIME-Version; b=SjtC4VHfcwa7btMUvotYdR4CPUY/gylsIcsTI0OwDCwOQUZSaCLxbgdOx126IMxQVHcbZnxsV+fxIndWOWb/9YsPxRpc3Jrcw0Ua7SKRFOsOVJhkemQVwEOCKSuox5fosX2hZo8+8vaeCfxMvc0sFVquLyuRmOadKCgL/+turHw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Px2Yft+M; arc=none smtp.client-ip=209.85.166.170
 Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f170.google.com with SMTP id d2e1a72fcca58-70625e8860cso677215b3a.2;
-        Tue, 18 Jun 2024 14:21:12 -0700 (PDT)
+Received: by mail-il1-f170.google.com with SMTP id e9e14a558f8ab-3758fdbd2daso22004115ab.3;
+        Tue, 18 Jun 2024 14:21:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1718745672; x=1719350472; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1718745674; x=1719350474; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:sender:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=d/TyX3rBp+hROYkurulQRQnmDmJPUUwoUGDxz6l1d/s=;
-        b=KiHvZT4zMaxM5mX73GmTr1C5EwomU0pn7vsV76XdrfeA8OGD1/boZdYPD7GW2VnTtz
-         O4975rTy39s2/jD2tuM2F6UXLVri0rPGc3NY2K5xEMQRIsEG6lGwTse7HZP6/GwpHvIX
-         sh+0cx39XchNAKEC4KrllXmQasnrIbu5dhtSgfv06LDKEMTmWDoFz3hf7CjETEt4U0Z6
-         Z/tJ4SiQDgndic/ny27IegVx1hRkem3tW0U5VC8tvTN4zYmmN9Yr5uiKSttYi8Njl8Nt
-         J71QPq8hJYs/9KjcLD7Kj1p5DBWBzIlpaZ32jn+pKbFSjfUfQAh/SZJG3Y/Zj5j8QAqU
-         msug==
+        bh=GNpQW1+Fa5yVpJMM/vdbkqN/XoXZvLH3jAAduQFqjnE=;
+        b=Px2Yft+MqJ+U2zvy/+Ktaxf3gzTZnNEeiTk6CePgSKaXMSWlnFFT+BoElLXdYnuvvm
+         ybOM7xIG4+eS1f60+HwU3bBwj+jRRmysX9mTnFi4bxJMYP3ADsb3coe3F6Vd9rX+ysNi
+         lcjQE/rdmWU6TCXuu0Lq8UY+pX9RMRTgmfHljbbS1u5316Br2ohHvT2mITIz6tdP87ww
+         ASZax04KcAD0RH5iaw1gkr7ukNUP+Xd6imQ1NVMtaL0GFuV611cn5Q8F96fxGndH/ol3
+         HuX+VqGso7fxMjcr9bK+AtJoMWUo9nAIEdVxD6dPBsMSrApk2RheOFAEJ1ai7NnN2VfH
+         L4pQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1718745672; x=1719350472;
+        d=1e100.net; s=20230601; t=1718745674; x=1719350474;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:sender:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=d/TyX3rBp+hROYkurulQRQnmDmJPUUwoUGDxz6l1d/s=;
-        b=n3fwbHOy7MJTpl00JX6HT+6MukHSjV0fIG6rtFCssvJ630KXNiPcBYL8l+nTq1GwhF
-         Zh2DQx9+35nnuoY5rnDAE380LuuRMqgosiJfq/7AwFKX20lFSnN3ZTo7mLrrj/sPBv0s
-         qMPiNccVmAEYMWnlUfAt1s5nGWrpZaqTnIGO9ET/3D8GKa7Mg47zCvQP5ZAlDhC0ZSBJ
-         WfAV6EXzWwk2I49ilE/JW+CYik1q6rVJcY1UYypc0GSQduddR9mKITB+HhvUyyPXdsar
-         fmE80YSKnI7xJlOn8kopKDclMmRXaEutrtp/+4CtPi1HH0b+IgUXzwyfZzoKKsqJt1p9
-         TJzg==
-X-Forwarded-Encrypted: i=1; AJvYcCVpF6fAlXbDl0L3Nh5FyNIew0pDuHxTwz38OEi3zuS8zyHXMjQgionnuch/W/dUePN6dgg6C+zaqlsJBRoRWcBqGe53
-X-Gm-Message-State: AOJu0YwOrJ+bpgJd8OF4ysqWbI92fV8hgpOranW3wcz8Ind69H61ivw7
-	PCXJbGPDUQNrqi/MAmTM2xpv/D7tIVreTsnqAKN0ZBTmlQauLupn
-X-Google-Smtp-Source: AGHT+IG3hHCSyP6nqHjoLjz6GNtEK5vWJosV7hYpXHX5itAHIlGbB+eJgz+eIN9qAun3SQ/ggm75zA==
-X-Received: by 2002:a05:6a00:982:b0:705:b0aa:a6bf with SMTP id d2e1a72fcca58-70629c1f982mr1032460b3a.2.1718745671834;
-        Tue, 18 Jun 2024 14:21:11 -0700 (PDT)
+        bh=GNpQW1+Fa5yVpJMM/vdbkqN/XoXZvLH3jAAduQFqjnE=;
+        b=nCraz7OlkkMo3NmCOEDck6y9Vflp+4z20iOLffkOb9DyjZpi9qjtXDsoLNlHaDIoNy
+         gtnc+/6dTdcJnLBrV8bob29b4h1pgLqDdn0Toq1rnXcWprMmJI+sin2PeALoBebeoGiU
+         mkcGGjGgba3X+CKEYktwlg9ofjTyuAErRKWK2UlV/rkfASiBdfMWl9+UZ+N9z+IbysIn
+         kyceO5cW7YqVQQAYcCSDm8R9XIcsxZ8XubHIfk9eni8hh/OkpOfW0neyXFksn2VPBSaN
+         5n8eZZrhtW5sFgOmUeQqJjUM943KWwjAmYLAtaVsPPb3VC84X+Vy6GZvkJSIypDf3Epl
+         U48g==
+X-Forwarded-Encrypted: i=1; AJvYcCWsrP5uypIk/iV7vi6ebYwhIODKl6vEh7nNmSJYpYg5JME1Nv/Vx8zxsjM0uWnMnKQGSLURp2BBJ7FXoldhwSFdHck5
+X-Gm-Message-State: AOJu0Yx7UR8aC4bkTM/lOmJwiV7qO3T2bROgCTcKMUvIE9hirJZhtyLQ
+	+my9GaNEizh3OelfkGcQAPziu3+I2HE/kHqAdfcGbZqloay5EjOW
+X-Google-Smtp-Source: AGHT+IH9nQdfGZz3iGe8BNEgJ+HYJS7xz3dXYDidIgMnMBRkzAElMEdvMBIY2g0DT9ytb6GBt2ov0g==
+X-Received: by 2002:a05:6e02:1b0a:b0:375:a994:6de0 with SMTP id e9e14a558f8ab-3761d66ed1fmr8978345ab.13.1718745673625;
+        Tue, 18 Jun 2024 14:21:13 -0700 (PDT)
 Received: from localhost (dhcp-141-239-159-203.hawaiiantel.net. [141.239.159.203])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-705ccb3d268sm9371355b3a.101.2024.06.18.14.21.11
+        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-6fee3baa63dsm8473020a12.88.2024.06.18.14.21.13
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 18 Jun 2024 14:21:11 -0700 (PDT)
+        Tue, 18 Jun 2024 14:21:13 -0700 (PDT)
 Sender: Tejun Heo <htejun@gmail.com>
 From: Tejun Heo <tj@kernel.org>
 To: torvalds@linux-foundation.org,
@@ -102,9 +102,9 @@ Cc: linux-kernel@vger.kernel.org,
 	bpf@vger.kernel.org,
 	kernel-team@meta.com,
 	Tejun Heo <tj@kernel.org>
-Subject: [PATCH 04/30] sched: Add sched_class->switching_to() and expose check_class_changing/changed()
-Date: Tue, 18 Jun 2024 11:17:19 -1000
-Message-ID: <20240618212056.2833381-5-tj@kernel.org>
+Subject: [PATCH 05/30] sched: Factor out cgroup weight conversion functions
+Date: Tue, 18 Jun 2024 11:17:20 -1000
+Message-ID: <20240618212056.2833381-6-tj@kernel.org>
 X-Mailer: git-send-email 2.45.2
 In-Reply-To: <20240618212056.2833381-1-tj@kernel.org>
 References: <20240618212056.2833381-1-tj@kernel.org>
@@ -116,30 +116,18 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-When a task switches to a new sched_class, the prev and new classes are
-notified through ->switched_from() and ->switched_to(), respectively, after
-the switching is done.
+Factor out sched_weight_from/to_cgroup() which convert between scheduler
+shares and cgroup weight. No functional change. The factored out functions
+will be used by a new BPF extensible sched_class so that the weights can be
+exposed to the BPF programs in a way which is consistent cgroup weights and
+easier to interpret.
 
-A new BPF extensible sched_class will have callbacks that allow the BPF
-scheduler to keep track of relevant task states (like priority and cpumask).
-Those callbacks aren't called while a task is on a different sched_class.
-When a task comes back, we wanna tell the BPF progs the up-to-date state
-before the task gets enqueued, so we need a hook which is called before the
-switching is committed.
+The weight conversions will be used regardless of cgroup usage. It's just
+borrowing the cgroup weight range as it's more intuitive.
+CGROUP_WEIGHT_MIN/DFL/MAX constants are moved outside CONFIG_CGROUPS so that
+the conversion helpers can always be defined.
 
-This patch adds ->switching_to() which is called during sched_class switch
-through check_class_changing() before the task is restored. Also, this patch
-exposes check_class_changing/changed() in kernel/sched/sched.h. They will be
-used by the new BPF extensible sched_class to implement implicit sched_class
-switching which is used e.g. when falling back to CFS when the BPF scheduler
-fails or unloads.
-
-This is a prep patch and doesn't cause any behavior changes. The new
-operation and exposed functions aren't used yet.
-
-v3: Refreshed on top of tip:sched/core.
-
-v2: Improve patch description w/ details on planned use.
+v2: The helpers are now defined regardless of COFNIG_CGROUPS.
 
 Signed-off-by: Tejun Heo <tj@kernel.org>
 Reviewed-by: David Vernet <dvernet@meta.com>
@@ -147,74 +135,117 @@ Acked-by: Josh Don <joshdon@google.com>
 Acked-by: Hao Luo <haoluo@google.com>
 Acked-by: Barret Rhoden <brho@google.com>
 ---
- kernel/sched/core.c     | 12 ++++++++++++
- kernel/sched/sched.h    |  3 +++
- kernel/sched/syscalls.c |  1 +
- 3 files changed, 16 insertions(+)
+ include/linux/cgroup.h |  4 ++--
+ kernel/sched/core.c    | 28 +++++++++++++---------------
+ kernel/sched/sched.h   | 18 ++++++++++++++++++
+ 3 files changed, 33 insertions(+), 17 deletions(-)
 
+diff --git a/include/linux/cgroup.h b/include/linux/cgroup.h
+index 2150ca60394b..3cdaec701600 100644
+--- a/include/linux/cgroup.h
++++ b/include/linux/cgroup.h
+@@ -29,8 +29,6 @@
+ 
+ struct kernel_clone_args;
+ 
+-#ifdef CONFIG_CGROUPS
+-
+ /*
+  * All weight knobs on the default hierarchy should use the following min,
+  * default and max values.  The default value is the logarithmic center of
+@@ -40,6 +38,8 @@ struct kernel_clone_args;
+ #define CGROUP_WEIGHT_DFL		100
+ #define CGROUP_WEIGHT_MAX		10000
+ 
++#ifdef CONFIG_CGROUPS
++
+ enum {
+ 	CSS_TASK_ITER_PROCS    = (1U << 0),  /* walk only threadgroup leaders */
+ 	CSS_TASK_ITER_THREADED = (1U << 1),  /* walk all threaded css_sets in the domain */
 diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index 48f9d00d0666..b088fbeaf26d 100644
+index b088fbeaf26d..0bfbceebc4e9 100644
 --- a/kernel/sched/core.c
 +++ b/kernel/sched/core.c
-@@ -2035,6 +2035,17 @@ inline int task_curr(const struct task_struct *p)
- 	return cpu_curr(task_cpu(p)) == p;
+@@ -9552,29 +9552,27 @@ static int cpu_local_stat_show(struct seq_file *sf,
  }
  
-+/*
-+ * ->switching_to() is called with the pi_lock and rq_lock held and must not
-+ * mess with locking.
-+ */
-+void check_class_changing(struct rq *rq, struct task_struct *p,
-+			  const struct sched_class *prev_class)
+ #ifdef CONFIG_FAIR_GROUP_SCHED
++
++static unsigned long tg_weight(struct task_group *tg)
 +{
-+	if (prev_class != p->sched_class && p->sched_class->switching_to)
-+		p->sched_class->switching_to(rq, p);
++	return scale_load_down(tg->shares);
++}
++
+ static u64 cpu_weight_read_u64(struct cgroup_subsys_state *css,
+ 			       struct cftype *cft)
+ {
+-	struct task_group *tg = css_tg(css);
+-	u64 weight = scale_load_down(tg->shares);
+-
+-	return DIV_ROUND_CLOSEST_ULL(weight * CGROUP_WEIGHT_DFL, 1024);
++	return sched_weight_to_cgroup(tg_weight(css_tg(css)));
+ }
+ 
+ static int cpu_weight_write_u64(struct cgroup_subsys_state *css,
+-				struct cftype *cft, u64 weight)
++				struct cftype *cft, u64 cgrp_weight)
+ {
+-	/*
+-	 * cgroup weight knobs should use the common MIN, DFL and MAX
+-	 * values which are 1, 100 and 10000 respectively.  While it loses
+-	 * a bit of range on both ends, it maps pretty well onto the shares
+-	 * value used by scheduler and the round-trip conversions preserve
+-	 * the original value over the entire range.
+-	 */
+-	if (weight < CGROUP_WEIGHT_MIN || weight > CGROUP_WEIGHT_MAX)
++	unsigned long weight;
++
++	if (cgrp_weight < CGROUP_WEIGHT_MIN || cgrp_weight > CGROUP_WEIGHT_MAX)
+ 		return -ERANGE;
+ 
+-	weight = DIV_ROUND_CLOSEST_ULL(weight * 1024, CGROUP_WEIGHT_DFL);
++	weight = sched_weight_from_cgroup(cgrp_weight);
+ 
+ 	return sched_group_set_shares(css_tg(css), scale_load(weight));
+ }
+@@ -9582,7 +9580,7 @@ static int cpu_weight_write_u64(struct cgroup_subsys_state *css,
+ static s64 cpu_weight_nice_read_s64(struct cgroup_subsys_state *css,
+ 				    struct cftype *cft)
+ {
+-	unsigned long weight = scale_load_down(css_tg(css)->shares);
++	unsigned long weight = tg_weight(css_tg(css));
+ 	int last_delta = INT_MAX;
+ 	int prio, delta;
+ 
+diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
+index 0ed4271cedf5..656a63c0d393 100644
+--- a/kernel/sched/sched.h
++++ b/kernel/sched/sched.h
+@@ -244,6 +244,24 @@ static inline void update_avg(u64 *avg, u64 sample)
+ #define shr_bound(val, shift)							\
+ 	(val >> min_t(typeof(shift), shift, BITS_PER_TYPE(typeof(val)) - 1))
+ 
++/*
++ * cgroup weight knobs should use the common MIN, DFL and MAX values which are
++ * 1, 100 and 10000 respectively. While it loses a bit of range on both ends, it
++ * maps pretty well onto the shares value used by scheduler and the round-trip
++ * conversions preserve the original value over the entire range.
++ */
++static inline unsigned long sched_weight_from_cgroup(unsigned long cgrp_weight)
++{
++	return DIV_ROUND_CLOSEST_ULL(cgrp_weight * 1024, CGROUP_WEIGHT_DFL);
++}
++
++static inline unsigned long sched_weight_to_cgroup(unsigned long weight)
++{
++	return clamp_t(unsigned long,
++		       DIV_ROUND_CLOSEST_ULL(weight * CGROUP_WEIGHT_DFL, 1024),
++		       CGROUP_WEIGHT_MIN, CGROUP_WEIGHT_MAX);
 +}
 +
  /*
-  * switched_from, switched_to and prio_changed must _NOT_ drop rq->lock,
-  * use the balance_callback list if you want balancing.
-@@ -7021,6 +7032,7 @@ void rt_mutex_setprio(struct task_struct *p, struct task_struct *pi_task)
- 	}
- 
- 	__setscheduler_prio(p, prio);
-+	check_class_changing(rq, p, prev_class);
- 
- 	if (queued)
- 		enqueue_task(rq, p, queue_flag);
-diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-index a2399ccf259a..0ed4271cedf5 100644
---- a/kernel/sched/sched.h
-+++ b/kernel/sched/sched.h
-@@ -2322,6 +2322,7 @@ struct sched_class {
- 	 * cannot assume the switched_from/switched_to pair is serialized by
- 	 * rq->lock. They are however serialized by p->pi_lock.
- 	 */
-+	void (*switching_to) (struct rq *this_rq, struct task_struct *task);
- 	void (*switched_from)(struct rq *this_rq, struct task_struct *task);
- 	void (*switched_to)  (struct rq *this_rq, struct task_struct *task);
- 	void (*reweight_task)(struct rq *this_rq, struct task_struct *task,
-@@ -3608,6 +3609,8 @@ extern void set_load_weight(struct task_struct *p, bool update_load);
- extern void enqueue_task(struct rq *rq, struct task_struct *p, int flags);
- extern void dequeue_task(struct rq *rq, struct task_struct *p, int flags);
- 
-+extern void check_class_changing(struct rq *rq, struct task_struct *p,
-+				 const struct sched_class *prev_class);
- extern void check_class_changed(struct rq *rq, struct task_struct *p,
- 				const struct sched_class *prev_class,
- 				int oldprio);
-diff --git a/kernel/sched/syscalls.c b/kernel/sched/syscalls.c
-index ae1b42775ef9..cf189bc3dd18 100644
---- a/kernel/sched/syscalls.c
-+++ b/kernel/sched/syscalls.c
-@@ -797,6 +797,7 @@ int __sched_setscheduler(struct task_struct *p,
- 		__setscheduler_prio(p, newprio);
- 	}
- 	__setscheduler_uclamp(p, attr);
-+	check_class_changing(rq, p, prev_class);
- 
- 	if (queued) {
- 		/*
+  * !! For sched_setattr_nocheck() (kernel) only !!
+  *
 -- 
 2.45.2
 
