@@ -1,45 +1,45 @@
-Return-Path: <bpf+bounces-32386-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-32387-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id E27B790C69F
-	for <lists+bpf@lfdr.de>; Tue, 18 Jun 2024 12:24:07 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5803190C6A2
+	for <lists+bpf@lfdr.de>; Tue, 18 Jun 2024 12:24:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8ED621F21AED
-	for <lists+bpf@lfdr.de>; Tue, 18 Jun 2024 10:24:07 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 260832828FD
+	for <lists+bpf@lfdr.de>; Tue, 18 Jun 2024 10:24:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AFFBD19CD1E;
-	Tue, 18 Jun 2024 07:56:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E42CA19DF68;
+	Tue, 18 Jun 2024 07:56:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="iiiF6OeQ"
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="UDrGUMpv"
 X-Original-To: bpf@vger.kernel.org
-Received: from out30-119.freemail.mail.aliyun.com (out30-119.freemail.mail.aliyun.com [115.124.30.119])
+Received: from out30-100.freemail.mail.aliyun.com (out30-100.freemail.mail.aliyun.com [115.124.30.100])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E9FC719D060;
-	Tue, 18 Jun 2024 07:56:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.119
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 377D219D063;
+	Tue, 18 Jun 2024 07:56:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.100
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718697410; cv=none; b=H9bvomclcYYGnGWWc6E45W6Jp9Km43grk64QAJeZzkg/tgIwvemY2H2REjB9YIJ66IARQyRk/rvoVkndTuvqu3zReFI7IgyKHLwusvrhKcVP74I9Y02aFCKOeX5a6zotdiK7nMWHc244xybySR/x98NBN09ClkZdPS/qdJBjpEM=
+	t=1718697411; cv=none; b=OeKa8KHECh+oiYq7nLL6DKbmwH0kQGjh6I+Bb/gg5/wrTjmgrKQ1kVYHz7oPA1MmtNH/P8Vgag6ZZ2DUeZb7DJRLM1jjjZC79KPmcnlq9TOd8acL4o/7CaDe9gCFOrlzs9J8jMRNZNfat8HAGoTbPR0WJQSDaoMVjVj1t2R21VA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718697410; c=relaxed/simple;
-	bh=jl6UJTABbEdU+rA4QZQp0/vIyzSqNdFSOq+02rXhgL8=;
+	s=arc-20240116; t=1718697411; c=relaxed/simple;
+	bh=IbrWDD/M6UuraqnIRgfvTJ/ldPjzXo4zDvUASkwkvi0=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=EjBJGWdB9re5zRLM0CSbat4x+1OReKdK/mMCf/UoLvYULPcVd4kkF7Lboo4zN7dxIVc/DB4xCSwpLTDHq4kNfu+ne0OCS4559vzAl5W59KaRucq51iH4I/QvDm7vOhoBENRTmqnuaupAtUhQF5/blqKXPHdAH89wCmLZmRGRLbo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=iiiF6OeQ; arc=none smtp.client-ip=115.124.30.119
+	 MIME-Version; b=dpmS4yLhRiLBSlWi4xO+LbjzcC8JgBbiVw9ny+KusGKEWL1QywjKVpr16peTr22Ek1gKXoT/9Ub/bL9oFt+2RZE16F29OK8KFLNma0WuIO8v5QqS8RgCt4w4nSf8vo3R8TZ81xKzIykJmRPTqzNYth/A1mACEqSgiWJdqIwxAJQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=UDrGUMpv; arc=none smtp.client-ip=115.124.30.100
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
 DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
 	d=linux.alibaba.com; s=default;
-	t=1718697405; h=From:To:Subject:Date:Message-Id:MIME-Version;
-	bh=QKx8SD5y5bxYJMN+tvUXEDSoDlk2xgxFxidchf2RPwc=;
-	b=iiiF6OeQ/VavwqihtLwsqjy576Fql69cLD337grweIl0lpodUezY8w6butAWcA5zXRxyGLekzXz5RRGx3WpuHMM8IdvrVpu5JVR87SCVemaQFRIL3v9T/NRKLue8mdNgzO4F7kXsR67EV6/mhxJyFhEske9m/Ek0NzMUQFE4Rfo=
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R141e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=maildocker-contentspam033045046011;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=15;SR=0;TI=SMTPD_---0W8jRu8U_1718697404;
-Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0W8jRu8U_1718697404)
+	t=1718697406; h=From:To:Subject:Date:Message-Id:MIME-Version;
+	bh=0+975V3JDgAw2XntSD3QdhSCqZPFbCdxtW+HMDHVqrc=;
+	b=UDrGUMpv5Z2M2UrzT5wSlX2zW8pPE22mDFXI1f/iTXhx27rHpkNeVsfgCMBIP5QV2qym8WhjoOLMzNJ72nTkUZVMuvpKgiLP5cE2jiRiTJoVIAWHTJoeRLb8Z9olb944gn8QyiwmPgi58gy8i1/n0AKfLyIAeF0kF/OP6/b4awU=
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R191e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=maildocker-contentspam033068173054;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=15;SR=0;TI=SMTPD_---0W8jSGAN_1718697405;
+Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0W8jSGAN_1718697405)
           by smtp.aliyun-inc.com;
-          Tue, 18 Jun 2024 15:56:44 +0800
+          Tue, 18 Jun 2024 15:56:46 +0800
 From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
 To: netdev@vger.kernel.org
 Cc: "Michael S. Tsirkin" <mst@redhat.com>,
@@ -56,9 +56,9 @@ Cc: "Michael S. Tsirkin" <mst@redhat.com>,
 	John Fastabend <john.fastabend@gmail.com>,
 	virtualization@lists.linux.dev,
 	bpf@vger.kernel.org
-Subject: [PATCH net-next v6 01/10] virtio_net: separate virtnet_rx_resize()
-Date: Tue, 18 Jun 2024 15:56:34 +0800
-Message-Id: <20240618075643.24867-2-xuanzhuo@linux.alibaba.com>
+Subject: [PATCH net-next v6 02/10] virtio_net: separate virtnet_tx_resize()
+Date: Tue, 18 Jun 2024 15:56:35 +0800
+Message-Id: <20240618075643.24867-3-xuanzhuo@linux.alibaba.com>
 X-Mailer: git-send-email 2.32.0.3.g01195cf9f
 In-Reply-To: <20240618075643.24867-1-xuanzhuo@linux.alibaba.com>
 References: <20240618075643.24867-1-xuanzhuo@linux.alibaba.com>
@@ -71,70 +71,80 @@ MIME-Version: 1.0
 X-Git-Hash: 8baa0af3684b
 Content-Transfer-Encoding: 8bit
 
-This patch separates two sub-functions from virtnet_rx_resize():
+This patch separates two sub-functions from virtnet_tx_resize():
 
-* virtnet_rx_pause
-* virtnet_rx_resume
+* virtnet_tx_pause
+* virtnet_tx_resume
 
-Then the subsequent reset rx for xsk can share these two functions.
+Then the subsequent virtnet_tx_reset() can share these two functions.
 
 Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
 Acked-by: Jason Wang <jasowang@redhat.com>
 ---
- drivers/net/virtio_net.c | 29 +++++++++++++++++++++--------
- 1 file changed, 21 insertions(+), 8 deletions(-)
+ drivers/net/virtio_net.c | 35 +++++++++++++++++++++++++++++------
+ 1 file changed, 29 insertions(+), 6 deletions(-)
 
 diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
-index 61a57d134544..8ad158bbf188 100644
+index 8ad158bbf188..1ac5f472d4ef 100644
 --- a/drivers/net/virtio_net.c
 +++ b/drivers/net/virtio_net.c
-@@ -2609,28 +2609,41 @@ static netdev_tx_t start_xmit(struct sk_buff *skb, struct net_device *dev)
- 	return NETDEV_TX_OK;
+@@ -2647,12 +2647,11 @@ static int virtnet_rx_resize(struct virtnet_info *vi,
+ 	return err;
  }
  
--static int virtnet_rx_resize(struct virtnet_info *vi,
--			     struct receive_queue *rq, u32 ring_num)
-+static void virtnet_rx_pause(struct virtnet_info *vi, struct receive_queue *rq)
+-static int virtnet_tx_resize(struct virtnet_info *vi,
+-			     struct send_queue *sq, u32 ring_num)
++static void virtnet_tx_pause(struct virtnet_info *vi, struct send_queue *sq)
  {
  	bool running = netif_running(vi->dev);
+ 	struct netdev_queue *txq;
 -	int err, qindex;
--
--	qindex = rq - vi->rq;
++	int qindex;
  
- 	if (running) {
- 		napi_disable(&rq->napi);
- 		cancel_work_sync(&rq->dim.work);
- 	}
+ 	qindex = sq - vi->sq;
+ 
+@@ -2673,10 +2672,17 @@ static int virtnet_tx_resize(struct virtnet_info *vi,
+ 	netif_stop_subqueue(vi->dev, qindex);
+ 
+ 	__netif_tx_unlock_bh(txq);
 +}
  
--	err = virtqueue_resize(rq->vq, ring_num, virtnet_rq_unmap_free_buf);
+-	err = virtqueue_resize(sq->vq, ring_num, virtnet_sq_free_unused_buf);
 -	if (err)
--		netdev_err(vi->dev, "resize rx fail: rx queue index: %d err: %d\n", qindex, err);
-+static void virtnet_rx_resume(struct virtnet_info *vi, struct receive_queue *rq)
+-		netdev_err(vi->dev, "resize tx fail: tx queue index: %d err: %d\n", qindex, err);
++static void virtnet_tx_resume(struct virtnet_info *vi, struct send_queue *sq)
 +{
 +	bool running = netif_running(vi->dev);
++	struct netdev_queue *txq;
++	int qindex;
++
++	qindex = sq - vi->sq;
++
++	txq = netdev_get_tx_queue(vi->dev, qindex);
  
- 	if (!try_fill_recv(vi, rq, GFP_KERNEL))
- 		schedule_delayed_work(&vi->refill, 0);
+ 	__netif_tx_lock_bh(txq);
+ 	sq->reset = false;
+@@ -2685,6 +2691,23 @@ static int virtnet_tx_resize(struct virtnet_info *vi,
  
  	if (running)
- 		virtnet_napi_enable(rq->vq, &rq->napi);
+ 		virtnet_napi_tx_enable(vi, sq->vq, &sq->napi);
 +}
 +
-+static int virtnet_rx_resize(struct virtnet_info *vi,
-+			     struct receive_queue *rq, u32 ring_num)
++static int virtnet_tx_resize(struct virtnet_info *vi, struct send_queue *sq,
++			     u32 ring_num)
 +{
-+	int err, qindex;
++	int qindex, err;
 +
-+	qindex = rq - vi->rq;
++	qindex = sq - vi->sq;
 +
-+	virtnet_rx_pause(vi, rq);
++	virtnet_tx_pause(vi, sq);
 +
-+	err = virtqueue_resize(rq->vq, ring_num, virtnet_rq_unmap_free_buf);
++	err = virtqueue_resize(sq->vq, ring_num, virtnet_sq_free_unused_buf);
 +	if (err)
-+		netdev_err(vi->dev, "resize rx fail: rx queue index: %d err: %d\n", qindex, err);
++		netdev_err(vi->dev, "resize tx fail: tx queue index: %d err: %d\n", qindex, err);
 +
-+	virtnet_rx_resume(vi, rq);
++	virtnet_tx_resume(vi, sq);
++
  	return err;
  }
  
