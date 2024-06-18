@@ -1,127 +1,130 @@
-Return-Path: <bpf+bounces-32374-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-32376-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 03DDA90C2EA
-	for <lists+bpf@lfdr.de>; Tue, 18 Jun 2024 06:43:44 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9AC8690C32B
+	for <lists+bpf@lfdr.de>; Tue, 18 Jun 2024 07:39:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 97BC71F2391B
-	for <lists+bpf@lfdr.de>; Tue, 18 Jun 2024 04:43:43 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1BC77282E0A
+	for <lists+bpf@lfdr.de>; Tue, 18 Jun 2024 05:39:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 498EC1586C9;
-	Tue, 18 Jun 2024 04:43:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 592CA10A16;
+	Tue, 18 Jun 2024 05:39:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="MnYKoPac"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Ao7eWz3q"
 X-Original-To: bpf@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.13])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f180.google.com (mail-pf1-f180.google.com [209.85.210.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B4E3179BD
-	for <bpf@vger.kernel.org>; Tue, 18 Jun 2024 04:43:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.13
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 97FE4433C2
+	for <bpf@vger.kernel.org>; Tue, 18 Jun 2024 05:39:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718685817; cv=none; b=EYgpqX8E96oRUoQYAMKmFRsEOGZuCzjWpH/d1aym29Rv/90Kd14ez0M3ZKnwZHkYyvCPFRMVEOHI1d+P2WO8mbVjzAptHtLP5yz8Tx0+8w7c/3L51I/pcj3udr8cD/z8ApDuHpUisnLlQchsCEIf4/HTE7qyw6rj/Gbc6FGWFSw=
+	t=1718689143; cv=none; b=Z+TwZ9sCbpHdDXPwVCaomJXDylquzOctwbvLTcdxyVcjqAmC3mkevtwalRFspfjKxSjpYssZDLuJgiFN4Ws3EOmXCQrqWOKa6ueVOv41sjBF2wczBp0+wSRhdENPWwYTtahMXSNKOKe700zYdPn5KQjbbGk+VlvTUDh29aHD9JI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718685817; c=relaxed/simple;
-	bh=tDedQ8X7Y1WH8Xb2QlbfdiiYLqWjo3JuOKrohHYQSg0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ZYH2Kcid0FEliKyRKNZjPBTkWFyAfrHDuucZDP8Fx1eZm9g31BOCJU9zo+AyovmRjgnR5vdr+jFgxci/IHr4q6A70ENsZRfNvEy1jmB0htHWfv8HszYtseF5hSE53jrHOAdvDoV77EaJ1uPeb4Cda/4l0efw5VI3jnjfnPhIdmg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=MnYKoPac; arc=none smtp.client-ip=192.198.163.13
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1718685816; x=1750221816;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=tDedQ8X7Y1WH8Xb2QlbfdiiYLqWjo3JuOKrohHYQSg0=;
-  b=MnYKoPacz1O+yQ9Q6IB8XeEwNszKaNscdYV9C9Ti5fSH7GeNUwGtQmTj
-   P6iKUKXg0GZHe9yOz3noMZPBlS4E2Y+Q8mPpy1LDjnzTbHqHpI7zP+m4c
-   ivw1hNd0y754Cnd8j2jN2KUwGu1ib7SS8oDA6aUwvydC1nEn+yAl47+2I
-   ynAFROS0Y5FntVJ8Pb8VOTl42oBv+JqXZeTmF3+a8LciEHZMviYCRZxyq
-   3YHDT//lArgzEFHC31Hv1j5vcoYgpbnJ+bStGbyQo4z2dGSBV01FtsIee
-   SQWLkxW8V3wZjLdzId+I+plRYbyzzCOAHPvJYNDfUVc4E5ezwQd9yZvIa
-   w==;
-X-CSE-ConnectionGUID: eoIlkJIGQwK7smnH2ehDXw==
-X-CSE-MsgGUID: kBSurmnmTfGbmfocX5jy3g==
-X-IronPort-AV: E=McAfee;i="6700,10204,11106"; a="18453516"
-X-IronPort-AV: E=Sophos;i="6.08,246,1712646000"; 
-   d="scan'208";a="18453516"
-Received: from fmviesa001.fm.intel.com ([10.60.135.141])
-  by fmvoesa107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jun 2024 21:43:36 -0700
-X-CSE-ConnectionGUID: HM08R2CVSPKLj5p8uUAc3A==
-X-CSE-MsgGUID: /RBofxslQgOvH0rhb9YgvA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.08,246,1712646000"; 
-   d="scan'208";a="72624381"
-Received: from lkp-server01.sh.intel.com (HELO 68891e0c336b) ([10.239.97.150])
-  by fmviesa001.fm.intel.com with ESMTP; 17 Jun 2024 21:43:33 -0700
-Received: from kbuild by 68891e0c336b with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1sJQgs-0005DR-2i;
-	Tue, 18 Jun 2024 04:43:30 +0000
-Date: Tue, 18 Jun 2024 12:43:11 +0800
-From: kernel test robot <lkp@intel.com>
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>, bpf@vger.kernel.org
-Cc: oe-kbuild-all@lists.linux.dev, daniel@iogearbox.net, andrii@kernel.org,
-	martin.lau@kernel.org, memxor@gmail.com, eddyz87@gmail.com,
-	pengfei.xu@intel.com, brho@google.com, kernel-team@fb.com
-Subject: Re: [PATCH v2 bpf] bpf: Fix remap of arena.
-Message-ID: <202406181248.u80sRLXy-lkp@intel.com>
-References: <20240617171812.76634-1-alexei.starovoitov@gmail.com>
+	s=arc-20240116; t=1718689143; c=relaxed/simple;
+	bh=C/+HMthg4CF6B4TYUiqtD+GFjyGnDCvKWIhOP6cfwIY=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=dXwcp4PNqYuo0Imu8JgI7fT2mNhYG+iEPuwNCb5o6BQaK06EDF+VyksZb7yhgbsgcacttDjtw5KRDpmAr2RgQkUowakc8sq6GiCp4owptLcC4A4Jf2H/lGhQTLKJ3ZEXa2QBs/brFEt8CX4VXRDXAwiQafT1iVpnmJe906Qnlx0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Ao7eWz3q; arc=none smtp.client-ip=209.85.210.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f180.google.com with SMTP id d2e1a72fcca58-70417a6c328so3876212b3a.1
+        for <bpf@vger.kernel.org>; Mon, 17 Jun 2024 22:39:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1718689142; x=1719293942; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=SCmlCRI+L3cN9UNyVLLerhIovV+AquvpZtvJh7Qa5ng=;
+        b=Ao7eWz3qhdTPdft92fy0H2XqsOp8HVQlouce6YLledtHRAVIAjYafbIaZWFG5Gyo8K
+         LEvPfwS/kDflzCCmp+xZxp4Bh34m/fZPRg0upLPWjN+WBWyOhLi6P894AOHJf8K4TnD0
+         8WUoF7L+WQSxpT3Hp4PRVcNw/QpkldrOQ9wrni0uTU4IkYlD2CcZjb9eyVrkmA0y/foP
+         bnI3bCJROeKYDAQrz7ADx1K+H7DJ6QXpuUKrxdMZhXTnk+G7Q79+EnVjqffiDMAE5oAr
+         2OFo+28lIb+p/4wzyc3d7CPrN50YpZ7Jtj68SIP+YQQUus6MzUgJzcWb35OejN3SzD3M
+         NAVA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1718689142; x=1719293942;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=SCmlCRI+L3cN9UNyVLLerhIovV+AquvpZtvJh7Qa5ng=;
+        b=bf/oyONsJuub3X7rpNhEwCnvrInTqFjIw6qii58CkiIBkRaSMwb3/vZOEdbciIBLaQ
+         dJHWlSoor1zPNrPOE3PPkzRokOBl1x5C8DPUvRZanwjzCkwgudq3+3arSE342XVptSEo
+         3oL3xFFDeaJcCdwu9rm4e9wYZe9N46h5cLZC/xPAo4s+l2gM8Fmh2ReARX8QOtGlgmt/
+         4o2tr3Lz22ny/0Na3GZz5W/USNTtgiaOVudBgj+11UwHjMv1vX/K0gnvDd7DHrp8tbdS
+         6uAAkS7SZAvRY7GXKp9bZTeLewin2RljnLHFc1ROHyn6Nf1Z1hM7IwWVpkHscwt+a0XQ
+         GTOA==
+X-Forwarded-Encrypted: i=1; AJvYcCUXlRyo6BIhlhF3RkuAuGoimcG3DHAv2HTX6vW9ADGNG3M038Siz5ttU+cvSsNiF9awGAlC0WIbqmSP2x8DevbuuSdI
+X-Gm-Message-State: AOJu0Ywpk1/bvo6MGN1C3JXMXDI9ENjpTSjdwYMUYavTwRDq/3FoTQYv
+	zygmoJNMkwBKNoWH1vxQA0E31TA2Ojh8u8j6rv8o1Ec+rPoivJEL
+X-Google-Smtp-Source: AGHT+IEeB6eHZlZirYpIlYWXSZlxW4pHeZdaaimXUAXZOfXo2rDkE0kaUIlSe8XJiGvFmGkE6Obx6w==
+X-Received: by 2002:a05:6a00:458f:b0:705:c0a1:61c9 with SMTP id d2e1a72fcca58-705d70f4fbfmr9715656b3a.9.1718689141776;
+        Mon, 17 Jun 2024 22:39:01 -0700 (PDT)
+Received: from [192.168.0.31] ([38.34.87.7])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-705ccb3d1d7sm8230644b3a.134.2024.06.17.22.39.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 17 Jun 2024 22:39:01 -0700 (PDT)
+Message-ID: <28250a9a52c8a10dc7c37e15df9a9d446976e4eb.camel@gmail.com>
+Subject: Re: [PATCH 1/2] bpf: relax zero fixed offset constraint on trusted
+ pointer arguments
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Matt Bobrowski <mattbobrowski@google.com>, bpf@vger.kernel.org
+Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+ song@kernel.org,  kpsingh@kernel.org, sdf@google.com, haoluo@google.com,
+ memxor@gmail.com,  void@manifault.com, jolsa@kernel.org
+Date: Mon, 17 Jun 2024 22:38:56 -0700
+In-Reply-To: <ZnA9ndnXKtHOuYMe@google.com>
+References: <ZnA9ndnXKtHOuYMe@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.44.4-0ubuntu2 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240617171812.76634-1-alexei.starovoitov@gmail.com>
 
-Hi Alexei,
+On Mon, 2024-06-17 at 13:43 +0000, Matt Bobrowski wrote:
 
-kernel test robot noticed the following build warnings:
+[...]
 
-[auto build test WARNING on bpf/master]
+> * For OBJ_RELEASE and KF_RELEASE BPF helpers and kfuncs:
+>=20
+>  * If the expected argument type is of an untyped pointer i.e. void *,
+>    then we continue to enforce a zero fixed offset as we need to
+>    ensure that the correct referenced pointer is handed off correctly
+>    to the relevant deallocation routine
+>=20
+>  * If the expected argument is backed by BTF, then we relax the strict
+>    zero fixed offset and allow it only if we successfully type matched
+>    between the register and argument. A failed type match between
+>    register and argument will result in the legacy strict zero offset
+>    semantics
+>=20
+> * For KF_TRUSTED_ARGS BPF kfuncs:
+>=20
+>  * The fixed zero offset constraint has been lifted, such that
+>    KF_TRUSTED_ARGS BPF kfuncs can now accept a trusted pointer
+>    argument with a non-zero fixed offset providing that register and
+>    argument BTF has type matched successfully
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Alexei-Starovoitov/bpf-Fix-remap-of-arena/20240618-012054
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git master
-patch link:    https://lore.kernel.org/r/20240617171812.76634-1-alexei.starovoitov%40gmail.com
-patch subject: [PATCH v2 bpf] bpf: Fix remap of arena.
-config: x86_64-rhel-8.3 (https://download.01.org/0day-ci/archive/20240618/202406181248.u80sRLXy-lkp@intel.com/config)
-compiler: gcc-13 (Ubuntu 13.2.0-4ubuntu3) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240618/202406181248.u80sRLXy-lkp@intel.com/reproduce)
+[...]
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202406181248.u80sRLXy-lkp@intel.com/
+Hi Matt,
 
-All warnings (new ones prefixed by >>):
-
-   kernel/bpf/arena.c: In function 'arena_vm_open':
->> kernel/bpf/arena.c:235:27: warning: unused variable 'arena' [-Wunused-variable]
-     235 |         struct bpf_arena *arena = container_of(map, struct bpf_arena, map);
-         |                           ^~~~~
-
-
-vim +/arena +235 kernel/bpf/arena.c
-
-   231	
-   232	static void arena_vm_open(struct vm_area_struct *vma)
-   233	{
-   234		struct bpf_map *map = vma->vm_file->private_data;
- > 235		struct bpf_arena *arena = container_of(map, struct bpf_arena, map);
-   236		struct vma_list *vml = vma->vm_private_data;
-   237	
-   238		atomic_inc(&vml->mmap_count);
-   239	}
-   240	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+I've read this and the next patch once, but need more time to provide
+feedback. Two quick notes:
+- It seems something is wrong with the way this patch set was sent:
+  for some reason it is not organized as a single thread (e.g. on vger).
+- I see how OBJ_RELEASE arguments trigger btf_struct_ids_match() in
+  check_release_arg_reg_off(), but I don't see how KF_TRUSTED_ARGS
+  trigger similar logic.
+  Do you have some positive tests that verify newly added functionality?
+ =20
+Thanks,
+Eduard
 
