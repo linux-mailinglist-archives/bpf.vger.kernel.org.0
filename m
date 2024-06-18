@@ -1,49 +1,49 @@
-Return-Path: <bpf+bounces-32413-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-32414-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 67A3490D758
-	for <lists+bpf@lfdr.de>; Tue, 18 Jun 2024 17:31:07 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2870490D787
+	for <lists+bpf@lfdr.de>; Tue, 18 Jun 2024 17:40:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 14DBF1F23BC8
-	for <lists+bpf@lfdr.de>; Tue, 18 Jun 2024 15:31:07 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8B63E285280
+	for <lists+bpf@lfdr.de>; Tue, 18 Jun 2024 15:40:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B30954AEEF;
-	Tue, 18 Jun 2024 15:30:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 15594446DE;
+	Tue, 18 Jun 2024 15:40:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Evu1Ln3A"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="onLjr7VS"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3DEE549658
-	for <bpf@vger.kernel.org>; Tue, 18 Jun 2024 15:30:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9244140851
+	for <bpf@vger.kernel.org>; Tue, 18 Jun 2024 15:40:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718724631; cv=none; b=H+0eM58C6ooJNVX6qvlBrAL9nl2nFQwbrgkOOLgRJqhpTcVLra53EzTKpAWLHVeg7TrtNN0gkyXGLRrY6okdJ6uKFy8anbBz248X1dxHG74x2q0HVkmtBrYXsdMxKTttedseWpJGOV7rfyaC6Q925ZL4nVznzix7V6gJ+cK+PYo=
+	t=1718725228; cv=none; b=j8cA+ra7NN0PNbk+BO4GEfUnb793/yYOKTUq9ytAz9JlwOFXBsiEOoB9Rg+Drz05j61xysKCGvpKx0zfYCI5sr1r9kUwTuJK3m3IqvlLxMtbOLqfNYqw86RMYD0rRVmwF40MjmSESP8SmHkDydaoSdSp0MME7puuzaBVYNH+eg4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718724631; c=relaxed/simple;
-	bh=tSBWau1xhha8Xw+q/NXwxzxbDBOa8B3Nb/OVTgILNqs=;
+	s=arc-20240116; t=1718725228; c=relaxed/simple;
+	bh=6ntc1Ac1T69SHihqlN7GHfVbGQ8YFfNBdyYq+yaFsl4=;
 	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=BWX6NtCl0V2YQC/CNOfBarW/bkq51ksHYsftA50DnlE7mxlL75MGP4hqWMeoT4kYvdlmKsblihowfYByqLXVAGSW9JeZ0ncOcpae3o88521jUQlcHazX3B+LHVMW6vnWtibfCMXheCmqUjOu2/xSOTnnADM7RkESYVW1X3ZwUOo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Evu1Ln3A; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id BC4CBC4AF4D;
-	Tue, 18 Jun 2024 15:30:30 +0000 (UTC)
+	 In-Reply-To:To:Cc; b=RQQFvGiSbD7QBS0hh3ZhA/Bh217r5MGrJlxDjSDb42h3udz14Sk2DmdxJ798odtv4qANPbUUpUI8d8jwJWIPsNwibVOxBIthClAZh/+2/zHDyWD3cHveUIgXHtt3FL5FzT6GsjDjdKCUAe43QAabLUu7Mybpdxs1EtAVkxZh0LE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=onLjr7VS; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 0ABF8C4AF1D;
+	Tue, 18 Jun 2024 15:40:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1718724630;
-	bh=tSBWau1xhha8Xw+q/NXwxzxbDBOa8B3Nb/OVTgILNqs=;
+	s=k20201202; t=1718725228;
+	bh=6ntc1Ac1T69SHihqlN7GHfVbGQ8YFfNBdyYq+yaFsl4=;
 	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=Evu1Ln3A4RmfigMDfzd/ZWu3HwKCuWdRPaVjHVjtfQljMUPCleLKXZb6kYmu5w3Iy
-	 gDPlU57rNWfVFmDQnudfhi68SaETe9GoXU5b1pOnA7wEqhEfltEmyFbPS+N7BMgFrr
-	 /eXfAkaJt3swfQsHeelPItaDR/oSLtD2w+MogXV5sh0WoExi3iLGTlDTdERxrq5B8q
-	 odZQypEY8uXiwfALzIUoinICMWSnCrxHW8BsBlAcBuVpzxt8HwH1Dprf6L5rlMutaY
-	 hqMYRhrKgL4aJpPq8jUVbgNVr3uUOAfmL46r/0f0/BMpKMVdBsqVTIgHvdNcy6RJpv
-	 OlT+kQaaMnzgw==
+	b=onLjr7VSiHRZot3lD4v3ZyZua9Uu/ErREFIGkWSyPfzbKDcy0XvAP+IerihHfJVJU
+	 U92Wxf5CrwTwdO91RY6EImfdfGCZtub4EtVcxJtIbyel/zb4SZ8gYkZCRB6IqKUy90
+	 Hmxg48Yd8UNEpVWuxG4q6h5G80FyTCJjRkr6xHhKFI/Cd61UjMd7efOJstUV0jLKbt
+	 1iWWUYetEVASxCCv/5Dd4NbKImJR+sFdeUa75padJioXfnLz4Cw7TKZX8oqdLN2APV
+	 h7V0zYIa7AnYF8tY54ATjq9ys8YVM1MklGqCIUgF3SNQ74cuiIn3wNDbt3GgAd3qq5
+	 vJRgdtH/DYdsw==
 Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id A3790CF3BA4;
-	Tue, 18 Jun 2024 15:30:30 +0000 (UTC)
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id E23E7C39563;
+	Tue, 18 Jun 2024 15:40:27 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -52,39 +52,36 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH v2 bpf] bpf: Fix remap of arena.
+Subject: Re: [PATCH bpf] bpf: update BPF LSM maintainer list
 From: patchwork-bot+netdevbpf@kernel.org
 Message-Id: 
- <171872463066.11632.12661604683114368092.git-patchwork-notify@kernel.org>
-Date: Tue, 18 Jun 2024 15:30:30 +0000
-References: <20240617171812.76634-1-alexei.starovoitov@gmail.com>
-In-Reply-To: <20240617171812.76634-1-alexei.starovoitov@gmail.com>
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: bpf@vger.kernel.org, daniel@iogearbox.net, andrii@kernel.org,
- martin.lau@kernel.org, memxor@gmail.com, eddyz87@gmail.com,
- pengfei.xu@intel.com, brho@google.com, kernel-team@fb.com
+ <171872522792.16785.4327257486683413795.git-patchwork-notify@kernel.org>
+Date: Tue, 18 Jun 2024 15:40:27 +0000
+References: <ZnA-1qdtXS1TayD7@google.com>
+In-Reply-To: <ZnA-1qdtXS1TayD7@google.com>
+To: Matt Bobrowski <mattbobrowski@google.com>
+Cc: bpf@vger.kernel.org, ast@kernel.org, kpsingh@kernel.org,
+ andrii@kernel.org, daniel@iogearbox.net
 
 Hello:
 
 This patch was applied to bpf/bpf.git (master)
 by Daniel Borkmann <daniel@iogearbox.net>:
 
-On Mon, 17 Jun 2024 10:18:12 -0700 you wrote:
-> From: Alexei Starovoitov <ast@kernel.org>
-> 
-> The bpf arena logic didn't account for mremap operation. Add a refcnt for
-> multiple mmap events to prevent use-after-free in arena_vm_close.
-> 
-> Reported-by: Pengfei Xu <pengfei.xu@intel.com>
-> Closes: https://lore.kernel.org/bpf/Zmuw29IhgyPNKnIM@xpf.sh.intel.com/
-> Fixes: 317460317a02 ("bpf: Introduce bpf_arena.")
-> Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+On Mon, 17 Jun 2024 13:49:10 +0000 you wrote:
+> After catching up with KP recently, we discussed that I will be now be
+> responsible for co-maintaining the BPF LSM. Adding myself as
+> designated maintainer of the BPF LSM, and specifying more files in
+> which the BPF LSM maintenance responsibilities should now extend out
+> to. This is at the back of all the BPF kfuncs that have been added
+> recently, which are fundamentally restricted to being used only from
+> BPF LSM program types.
 > 
 > [...]
 
 Here is the summary with links:
-  - [v2,bpf] bpf: Fix remap of arena.
-    https://git.kernel.org/bpf/bpf/c/b90d77e5fd78
+  - [bpf] bpf: update BPF LSM maintainer list
+    https://git.kernel.org/bpf/bpf/c/66b586715063
 
 You are awesome, thank you!
 -- 
