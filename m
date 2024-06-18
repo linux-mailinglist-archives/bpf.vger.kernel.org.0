@@ -1,248 +1,182 @@
-Return-Path: <bpf+bounces-32404-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-32405-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CA6B790D1B1
-	for <lists+bpf@lfdr.de>; Tue, 18 Jun 2024 15:44:42 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3430790D2E3
+	for <lists+bpf@lfdr.de>; Tue, 18 Jun 2024 15:55:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 33F36B29DA9
-	for <lists+bpf@lfdr.de>; Tue, 18 Jun 2024 13:38:55 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3E4D41C22E0B
+	for <lists+bpf@lfdr.de>; Tue, 18 Jun 2024 13:55:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 67E7C19DF45;
-	Tue, 18 Jun 2024 13:05:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7AE1815CD6D;
+	Tue, 18 Jun 2024 13:30:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infogain-com.20230601.gappssmtp.com header.i=@infogain-com.20230601.gappssmtp.com header.b="FBHsZcud"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="eP1XnMWg"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-lf1-f51.google.com (mail-lf1-f51.google.com [209.85.167.51])
+Received: from mail-wr1-f41.google.com (mail-wr1-f41.google.com [209.85.221.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A8465157E88
-	for <bpf@vger.kernel.org>; Tue, 18 Jun 2024 13:05:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 67B2E15CD65;
+	Tue, 18 Jun 2024 13:30:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718715948; cv=none; b=Hgv2+rb+45uPDvWuFW9LUVH6qEhoPEIdQ2zNjjc0OpOnMsVrXExhxVTq/7CFbySO3ZmJnmf0uQeNWVaXypOXbCEttUcPw+xuZgK6ofXNx7H/5jqALg7RV+/Yt9v6sTNyEWn/9KarR5slWsY1EoCZax8iMapurfOz5c55s4oDQo8=
+	t=1718717455; cv=none; b=REWPkuyXJoFyejWN+4SAmkIc0NszVkKqzdCsLEZEs4Feoevv45gmKFo5/7KMl4EfkVhvMm4/DGjJmvdAd9f7s6kHX3YglgSj1teXvxIjIxjoo00dNkVxo+uwV04jkVdixdW6rAOzrB8bnRrQoW4dRju2FZ1cL2O5z/w7kCkBb8U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718715948; c=relaxed/simple;
-	bh=zdb+ho3pPIoPn8AAK/HbH3ZVdLbA+baUi0Wi9/xKYQU=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=M0ybC7B0iWc52rvzmn3W4ymyWVZm/R9aAnTQCbovP/w28gYAT/woW2XJOjLLxSQgX0hNInZSulP1woYyBrEvZ9cp9/oJTRXSBrkhr5M6VOmEQZAO40q1W1pjaHiicYHfUyp2ccUGj3jfutxIJrTPOxjELqeJCIY36o2QEvbeqgY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=infogain.com; spf=fail smtp.mailfrom=infogain.com; dkim=pass (2048-bit key) header.d=infogain-com.20230601.gappssmtp.com header.i=@infogain-com.20230601.gappssmtp.com header.b=FBHsZcud; arc=none smtp.client-ip=209.85.167.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=infogain.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=infogain.com
-Received: by mail-lf1-f51.google.com with SMTP id 2adb3069b0e04-52bc29c79fdso7352426e87.1
-        for <bpf@vger.kernel.org>; Tue, 18 Jun 2024 06:05:46 -0700 (PDT)
+	s=arc-20240116; t=1718717455; c=relaxed/simple;
+	bh=hyu0Am/KzFedokVqpQHC0MeCjFCn8cgrf2UfhAKYzvA=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=s0NPhEUd5osAUMqQLQcVpym67w4hO04JPGIdLxX5JHVvAAJ46QNpUMfvtAd1uGMH/kHPgOOxx7EzoUJPNP6CBD34dOSSfqDv/pjPlYjfIbRS6Gs+yaY89qVKcO9mkFhpmpmEsXqay0PT+3qYjAMFRLEBZ7Ah14Oaat4+Oy7VDYM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=eP1XnMWg; arc=none smtp.client-ip=209.85.221.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f41.google.com with SMTP id ffacd0b85a97d-3608e6d14b6so2002628f8f.0;
+        Tue, 18 Jun 2024 06:30:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=infogain-com.20230601.gappssmtp.com; s=20230601; t=1718715945; x=1719320745; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=gurMlKoJebwFTS6t9Eq29wcOin62YgJXyKoM0uBnE4M=;
-        b=FBHsZcudXm+nSnKPumiMM5ufZK5o8kVTjByMI6GtF5zCbqDv1A6qMwlgLc1ecLD37g
-         eMblfg3QvrmpwzcPgESZv15bWiGslz+93SMkTmbfZw2Rx0G8Bla/qFrHIfRwwUOe42SZ
-         4PcXUn/Qg5tEuPkVB50vnS1abQISHQ6JTea1vvTSystg4t2AeaTX1lFRJy6E5Z/RezuY
-         N1ZAPke2rA8udXGWuDgaVtfFLxL1hLAzhyaN/oXQ9+37zd05FvmgIS0s103spZLroDj1
-         ytNhM3xRo3j2+jT3PAbilH6wIbIucoUkFfNVa9cqm+57KzoAKU76llsMV/kaTV902/4r
-         6kYw==
+        d=gmail.com; s=20230601; t=1718717452; x=1719322252; darn=vger.kernel.org;
+        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
+         :from:from:to:cc:subject:date:message-id:reply-to;
+        bh=FcnMHtNdVwEgRHhVzwaKzsGpucVSC1MxgjxGj0kWT+Q=;
+        b=eP1XnMWgodQhPGGnp1+MI0JsASpGQvffx77OQg27WJ1hJjTlEtx0jvKDEifrKuxqlF
+         qhvMFeRa15gudNV/kwbPjfSvQclPrwBlU8SwvAR5Dd4IwTb7Gh/UkBWAkyplaZFJSufg
+         xUZnwi6A76ub/ItBSBzd8QEiHlFhGLLl0DkykSxw/muf903RPBzUOcQcvr8vEQVm8hUE
+         +rK3gJsL9JsWj2TSRJhcTT+wIJoJRA0g8ZZED2hb2MZtWp02twQemHlQBmNlQaPoQvJ+
+         J+lZskPm3AA+7fVtmGur3p9qdN26X4GYKnuTZpI7AT0aaV6yySkDuRYJtmF4dkaHtSct
+         1OVg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1718715945; x=1719320745;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=gurMlKoJebwFTS6t9Eq29wcOin62YgJXyKoM0uBnE4M=;
-        b=Wfpq72u1AhfRFQHE7bKiYlQf5xxZLw1YbOg8AlnnGnEMNpZVBEqDjA7TjuV365fLpZ
-         sup9nHW0kfwZWkoFCQkAYpnnJKIZk5juXr4oHnI1RtgES6oUuvyleStJpMd1U10c1ily
-         wS4WMzUmmK96RCYK1UklY8SNZL8HznD8WpLKoofyGBVGiATSmcUtqdDkqL2pcy2NP1/2
-         ImX360stESIQliO9iICSHBlAGAkhK7HAshQ0+xYtD5O4otRLjpjyOmDEjYqVzqUCja11
-         PGmfrj0ParizvhQeNfIcmvqWBgxAM6d5MXT8wlwL9kQ8U3uZ6pqmxVITzX65UmErw+6p
-         Sycw==
-X-Forwarded-Encrypted: i=1; AJvYcCUqUhaCbo4OjvZwKQPPjU7x2XEEP+T6fMvatEqbOk5s8/vQhDjLLZmTUnSfUZyF22y7snPfOlhxBPjwMixBGa3rrDZ+
-X-Gm-Message-State: AOJu0YzGKMBx0N60TN2YHjkROnmGOHuh+OP/qqSBJQ95xveEjhno0Gho
-	ZK/ns46ruCiMQbU7IBovSpLGPCzuKTF7EXbmCLyw2+nQ5G75Q3wdamNkjY3SrcI=
-X-Google-Smtp-Source: AGHT+IH2yRatTfb0TtRcllAOOmTA1l+AXig7QD/iZo0/9sIm6a+Pi1e29hHWMkwuOFUVUSnJjG+G4w==
-X-Received: by 2002:a05:6512:3f27:b0:52c:9ae0:beed with SMTP id 2adb3069b0e04-52ca6e92a3cmr12018362e87.52.1718715943664;
-        Tue, 18 Jun 2024 06:05:43 -0700 (PDT)
-Received: from localhost.localdomain ([37.109.150.105])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a6f56f427casm623020166b.176.2024.06.18.06.05.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 18 Jun 2024 06:05:43 -0700 (PDT)
-From: =?UTF-8?q?Wojciech=20G=C5=82adysz?= <wojciech.gladysz@infogain.com>
-To: syzbot+1971e47e5210c718db3c@syzkaller.appspotmail.com
-Cc: andrii@kernel.org,
-	ast@kernel.org,
-	bpf@vger.kernel.org,
-	daniel@iogearbox.net,
-	eddyz87@gmail.com,
-	haoluo@google.com,
-	john.fastabend@gmail.com,
-	jolsa@kernel.org,
-	kpsingh@kernel.org,
-	linux-kernel@vger.kernel.org,
-	martin.lau@linux.dev,
-	sdf@google.com,
-	song@kernel.org,
-	syzkaller-bugs@googlegroups.com,
-	yonghong.song@linux.dev,
-	=?UTF-8?q?Wojciech=20G=C5=82adysz?= <wojciech.gladysz@infogain.com>
-Subject: [PATCH] kernel/bpf: enable BPF bytecode call parsing for uninit value
-Date: Tue, 18 Jun 2024 15:05:18 +0200
-Message-Id: <20240618130518.25884-1-wojciech.gladysz@infogain.com>
-X-Mailer: git-send-email 2.35.3
-In-Reply-To: <0000000000008312ad06163b7225@google.com>
-References: <0000000000008312ad06163b7225@google.com>
+        d=1e100.net; s=20230601; t=1718717452; x=1719322252;
+        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=FcnMHtNdVwEgRHhVzwaKzsGpucVSC1MxgjxGj0kWT+Q=;
+        b=MDwJS3p0b22gpI/l4OZt4tz140L7gRro4EP4/fYx2WBib2y+GiKzCgKm+UV7t4tx8w
+         v4U++DUQzihYpDPr8kTbHPKqoTgWHo02IPwRxgGWrvvHEoldem0DjRSLqqR1ePhQGxJE
+         x6ZmekYIjL5tTLCBp//SGIexYpmc8GXJpKv/NluZX3CSz0zl/A+48PwU/zwbCEDrjiID
+         mtlaxGsTDdnqCyMCTqflWrp6mu/NAjW2736DEvCLpSMXpgc6VzmxEPtuZ+Xl9e09TjME
+         kzYvgK9TtTntQSKC8j+uCIvHfWfu3z/4y+T2A/v4ViDqTcSTquY+0u6dk6+up7N41LA6
+         7mIA==
+X-Forwarded-Encrypted: i=1; AJvYcCVlNmCuXc8MtVN3aBtSlXC+j2xfnSlWZDFGiyKgORjoE1T7zuWpYZfEh2/VfunA14xLsNNBZl0z6vruYM3S7ZFc7ukdT/7MqoFiiBvB/tKbr6oAqmVAoEcVbF7qhDF9M62Y
+X-Gm-Message-State: AOJu0Yy/HUY7EgHR5YrGuh8ZzjIRXss+ghoiFQWZKbYT3ohhMrxgcWYa
+	vQiytXftAxRdOvJt6yhuA5UOnvnLxea0MTvWD7PgmZt0jPBe39oa
+X-Google-Smtp-Source: AGHT+IF6+iO/0W0LMpOnPmATaN6+Ni/p2mp4ptbLlokGCHrnllKR92jiA0qM4MrXh098DtwZbBN29g==
+X-Received: by 2002:adf:f584:0:b0:35f:2b1d:433 with SMTP id ffacd0b85a97d-3607a746a11mr9688051f8f.26.1718717451370;
+        Tue, 18 Jun 2024 06:30:51 -0700 (PDT)
+Received: from localhost (54-240-197-231.amazon.com. [54.240.197.231])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-362907048b0sm671272f8f.24.2024.06.18.06.30.50
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 18 Jun 2024 06:30:50 -0700 (PDT)
+From: Puranjay Mohan <puranjay12@gmail.com>
+To: Maxwell Bland <mbland@motorola.com>, "open list:BPF [GENERAL] (Safe
+ Dynamic Programs and Tools)" <bpf@vger.kernel.org>
+Cc: Catalin Marinas <catalin.marinas@arm.com>, Will Deacon
+ <will@kernel.org>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann
+ <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, Martin KaFai
+ Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu
+ <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, John Fastabend
+ <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, Stanislav
+ Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa
+ <jolsa@kernel.org>, Zi Shen Lim <zlim.lnx@gmail.com>, Mark Rutland
+ <mark.rutland@arm.com>, Suzuki K Poulose <suzuki.poulose@arm.com>, Mark
+ Brown <broonie@kernel.org>, linux-arm-kernel@lists.infradead.org, open
+ list <linux-kernel@vger.kernel.org>, Josh Poimboeuf <jpoimboe@kernel.org>
+Subject: Re: [PATCH bpf-next v7 2/2] arm64/cfi,bpf: Support kCFI + BPF on arm64
+In-Reply-To: <puj3euv5eafwcx5usqostpohmxgdeq3iout4hqnyk7yt5hcsux@gpiamodhfr54>
+References: <ptrugmna4xb5o5lo4xislf4rlz7avdmd4pfho5fjwtjj7v422u@iqrwfrbwuxrq>
+ <puj3euv5eafwcx5usqostpohmxgdeq3iout4hqnyk7yt5hcsux@gpiamodhfr54>
+Date: Tue, 18 Jun 2024 13:30:36 +0000
+Message-ID: <mb61p5xu6z8cj.fsf@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; boundary="=-=-=";
+	micalg=pgp-sha512; protocol="application/pgp-signature"
 
-Some syzkaller repros create BPF code that passes as an argument to map
-functions a pointer to uninitialized map key on bpf program stack. So far
-handling calls to map functions did not check for not/initialized
-pointed to values with some comments that it was not possible to tell the
-pointer use be read or write op. This led to KMSAN report in a case of
-reading not initialized map key.
-The fix assumes ARG_PTR_TO_MAP_KEY arguments to map function calls from
-BPF byte code are always of read type. For read access the value pointed
-to by map key pointer is expected to be initialized. Otherwise the BPF
-bytecode will not load.
+--=-=-=
+Content-Type: text/plain
 
-You may want to add an STX line to your repro.c to init stack value
-pointed to by R2 BPF register and adjust memcpy length:
+Hi Maxwell,
 
-  memcpy((void*)0x20000458,
-         "\x00\x00\x00\x00\x00\x00\x00\x00"	// ...
-	 "\xb7\x08\x00\x00\x00\x00\x00\x00"	// ALU64_MOV_K
-	 "\x1f\x00\x00\x00\x00\x00\x00\x00"	// SUB_X?
-	 "\xbf\xa2\x00\x00\x00\x00\x00\x00"	// ALU64_MOV_X
-	 "\x07\x02\x00\x00\xf8\xff\xff\xff"	// ALU(64)_ADD_{K,X}
-         "\x7a\x02\x00\x00\xef\xbe\xad\xde"	// *** STX ***
-	 "\xb7\x03\x00\x00\x00\x00\x00\x00"	// ALU64_MOV_K
-	 "\xb7\x04\x00\x00\x00\x00\x00\x00"	// ALU64_MOV_K
-	 "\x85\x00\x00\x00\xc3\x00\x00\x00"	// CALL
-	 "\x95", 73);				// EXIT
+I am happy to test your code everytime but it would be great if you test
+the code before posting it on the list. Otherwise it would take multiple
+revisions for the patches to be accepted. I understand that testing this
+is non-trivial because you need clang and everything and you also need
+ARM64 hardware or Qemu setup. But if you enjoy kernel development you
+will find all this is worth it.
 
-Syzbot report
+> +u32 cfi_get_func_hash(void *func)
+> +{
+> +	u32 *hashp = func - cfi_get_offset();
+> +	return READ_ONCE(*hashp);
 
-=====================================================
-BUG: KMSAN: uninit-value in __htab_map_lookup_elem kernel/bpf/hashtab.c:691 [inline]
-BUG: KMSAN: uninit-value in htab_lru_percpu_map_lookup_percpu_elem+0x3f8/0x630 kernel/bpf/hashtab.c:2343
- __htab_map_lookup_elem kernel/bpf/hashtab.c:691 [inline]
- htab_lru_percpu_map_lookup_percpu_elem+0x3f8/0x630 kernel/bpf/hashtab.c:2343
- ____bpf_map_lookup_percpu_elem kernel/bpf/helpers.c:133 [inline]
- bpf_map_lookup_percpu_elem+0x67/0x90 kernel/bpf/helpers.c:130
- ___bpf_prog_run+0x13fe/0xe0f0 kernel/bpf/core.c:1997
- __bpf_prog_run32+0xb2/0xe0 kernel/bpf/core.c:2236
- bpf_dispatcher_nop_func include/linux/bpf.h:1234 [inline]
- __bpf_prog_run include/linux/filter.h:657 [inline]
- bpf_prog_run include/linux/filter.h:664 [inline]
- __bpf_trace_run kernel/trace/bpf_trace.c:2381 [inline]
- bpf_trace_run2+0x116/0x300 kernel/trace/bpf_trace.c:2420
- __bpf_trace_kfree+0x29/0x40 include/trace/events/kmem.h:94
- trace_kfree include/trace/events/kmem.h:94 [inline]
- kfree+0x6a5/0xa30 mm/slub.c:4377
- security_task_free+0x115/0x150 security/security.c:3032
- __put_task_struct+0x17f/0x730 kernel/fork.c:976
- put_task_struct include/linux/sched/task.h:138 [inline]
- delayed_put_task_struct+0x8a/0x280 kernel/exit.c:229
- rcu_do_batch kernel/rcu/tree.c:2196 [inline]
- rcu_core+0xa59/0x1e70 kernel/rcu/tree.c:2471
- rcu_core_si+0x12/0x20 kernel/rcu/tree.c:2488
- __do_softirq+0x1c0/0x7d7 kernel/softirq.c:554
- invoke_softirq kernel/softirq.c:428 [inline]
- __irq_exit_rcu kernel/softirq.c:633 [inline]
- irq_exit_rcu+0x6a/0x130 kernel/softirq.c:645
- instr_sysvec_apic_timer_interrupt arch/x86/kernel/apic/apic.c:1043 [inline]
- sysvec_apic_timer_interrupt+0x83/0x90 arch/x86/kernel/apic/apic.c:1043
- asm_sysvec_apic_timer_interrupt+0x1f/0x30 arch/x86/include/asm/idtentry.h:702
- __msan_metadata_ptr_for_load_8+0x31/0x40 mm/kmsan/instrumentation.c:92
- filter_irq_stacks+0x60/0x1a0 kernel/stacktrace.c:397
- stack_depot_save_flags+0x2c/0x6e0 lib/stackdepot.c:609
- stack_depot_save+0x12/0x20 lib/stackdepot.c:685
- __msan_poison_alloca+0x106/0x1b0 mm/kmsan/instrumentation.c:285
- arch_local_save_flags arch/x86/include/asm/irqflags.h:67 [inline]
- arch_local_irq_save arch/x86/include/asm/irqflags.h:103 [inline]
- __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:108 [inline]
- _raw_spin_lock_irqsave+0x35/0xc0 kernel/locking/spinlock.c:162
- remove_wait_queue+0x36/0x270 kernel/sched/wait.c:54
- do_wait+0x34a/0x530 kernel/exit.c:1640
- kernel_wait4+0x2ab/0x480 kernel/exit.c:1790
- __do_sys_wait4 kernel/exit.c:1818 [inline]
- __se_sys_wait4 kernel/exit.c:1814 [inline]
- __x64_sys_wait4+0x14e/0x310 kernel/exit.c:1814
- x64_sys_call+0x6e6/0x3b50 arch/x86/include/generated/asm/syscalls_64.h:62
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0xcf/0x1e0 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
+The above assumes that hashp is always a valid address, and when it is
+not, it crashes the kernel:
 
-Local variable stack created at:
- __bpf_prog_run32+0x43/0xe0 kernel/bpf/core.c:2236
- bpf_dispatcher_nop_func include/linux/bpf.h:1234 [inline]
- __bpf_prog_run include/linux/filter.h:657 [inline]
- bpf_prog_run include/linux/filter.h:664 [inline]
- __bpf_trace_run kernel/trace/bpf_trace.c:2381 [inline]
- bpf_trace_run2+0x116/0x300 kernel/trace/bpf_trace.c:2420
+Building these patches with clang and with CONFIG_CFI_CLANG=y and then
+running `sudo ./test_progs -a dummy_st_ops` crashes the kernel like:
 
-CPU: 0 PID: 5018 Comm: strace-static-x Not tainted 6.9.0-rc3-syzkaller-00355-g7efd0a74039f #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/27/2024
-=====================================================
+Internal error: Oops: 0000000096000006 [#1] SMP
+Modules linked in: bpf_testmod(OE) nls_ascii nls_cp437 aes_ce_blk aes_ce_cipher ghash_ce sha1_ce button sunrpc sch_fq_codel dm_mod dax configfs dmi_sysfs sha2_ce sha256_arm64
+CPU: 47 PID: 5746 Comm: test_progs Tainted: G        W  OE      6.10.0-rc2+ #41
+Hardware name: Amazon EC2 c6g.16xlarge/, BIOS 1.0 11/1/2018
+pstate: 00400005 (nzcv daif +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
+pc : cfi_get_func_hash+0xc/0x1c
+lr : prepare_trampoline+0xcc/0xf44
+sp : ffff80008b1637e0
+x29: ffff80008b163810 x28: ffff0003c9e4b0c0 x27: 0000000000000000
+x26: 0000000000000010 x25: ffff0003d4ab7000 x24: 0000000000000040
+x23: 0000000000000018 x22: 0000000000000037 x21: 0000000000000001
+x20: 0000000000000020 x19: ffff80008b163870 x18: 0000000000000000
+x17: 00000000ad6b63b6 x16: 00000000ad6b63b6 x15: ffff80008002eed4
+x14: ffff80008002eff4 x13: ffff80008b160000 x12: ffff80008b164000
+x11: 0000000000000082 x10: 0000000000000010 x9 : ffff80008004b724
+x8 : 0000000000000110 x7 : 0000000000000000 x6 : 0000000000000001
+x5 : 0000000000000110 x4 : 0000000000000001 x3 : 0000000000000000
+x2 : ffff0003d4ab7000 x1 : 000000000000003f x0 : 0000000000000000
+Call trace:
+ cfi_get_func_hash+0xc/0x1c
+ arch_bpf_trampoline_size+0xe8/0x158
+ bpf_struct_ops_prepare_trampoline+0x8
+[...]
 
-Reported-by: syzbot+1971e47e5210c718db3c@syzkaller.appspotmail.com
-Closes: https://syzkaller.appspot.com/bug?extid=1971e47e5210c718db3c
-Link: https://lore.kernel.org/all/0000000000008312ad06163b7225@google.com/T/
-Signed-off-by: Wojciech Gładysz <wojciech.gladysz@infogain.com>
----
- kernel/bpf/verifier.c | 11 ++++++-----
- 1 file changed, 6 insertions(+), 5 deletions(-)
+Here is my understanding of the above:
 
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 36ef8e96787e..13a9c2e2908a 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -7146,8 +7146,8 @@ static int check_stack_range_initialized(
- 		 * reads. However, if raw_mode is not set, we'll do extra
- 		 * checks below.
- 		 */
--		bounds_check_type = BPF_WRITE;
--		clobber = true;
-+		clobber = !meta || meta->raw_mode;
-+		bounds_check_type = clobber ? BPF_WRITE : BPF_READ;
- 	} else {
- 		bounds_check_type = BPF_READ;
- 	}
-@@ -7230,8 +7230,7 @@ static int check_stack_range_initialized(
- 		stype = &state->stack[spi].slot_type[slot % BPF_REG_SIZE];
- 		if (*stype == STACK_MISC)
- 			goto mark;
--		if ((*stype == STACK_ZERO) ||
--		    (*stype == STACK_INVALID && env->allow_uninit_stack)) {
-+		if (*stype == STACK_ZERO) {
- 			if (clobber) {
- 				/* helper can write anything into the stack */
- 				*stype = STACK_MISC;
-@@ -8748,6 +8747,8 @@ static int check_func_arg(struct bpf_verifier_env *env, u32 arg,
- 		meta->map_uid = reg->map_uid;
- 		break;
- 	case ARG_PTR_TO_MAP_KEY:
-+		/* always mark read access */
-+		meta->raw_mode = false;
- 		/* bpf_map_xxx(..., map_ptr, ..., key) call:
- 		 * check that [key, key + map->key_size) are within
- 		 * stack limits and initialized
-@@ -8763,7 +8764,7 @@ static int check_func_arg(struct bpf_verifier_env *env, u32 arg,
- 		}
- 		err = check_helper_mem_access(env, regno,
- 					      meta->map_ptr->key_size, false,
--					      NULL);
-+					      meta);
- 		break;
- 	case ARG_PTR_TO_MAP_VALUE:
- 		if (type_may_be_null(arg_type) && register_is_null(reg))
--- 
-2.35.3
+We are trying to get the cfi hash from <func_addr> - 4, but clang
+doesn't emit the cfi hash for all functions, and in case the cfi hash is
+not emitted, <func_addr> - 4 could be an invalid address or point to
+something that is not a cfi hash.
 
+In my original patch I had:
+
+u32 cfi_get_func_hash(void *func)
+{
+	u32 hash;
+
+	if (get_kernel_nofault(hash, func - cfi_get_offset()))
+		return 0;
+
+	return hash;
+}
+
+I think we need to keep the get_kernel_nofault() to fix this issue.
+
+cfi_get_func_hash() in arch/x86/kernel/alternative.c also uses
+get_kernel_nofault() and I think it is there for the same reason.
+
+Thanks,
+Puranjay
+
+--=-=-=
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iIsEARYKADMWIQQ3wHGvVs/5bdl78BKwwPkjG3B2nQUCZnGL/RUccHVyYW5qYXkx
+MkBnbWFpbC5jb20ACgkQsMD5Ixtwdp3AbwD+I2Q0OiLq8foDoUj0DISDhNMGiCcn
+ZBr+3BwPV151j4YBAPkWjUG3guQHThHmZJjwPVLbhMDHizKBlmgn6sb3qRML
+=OXLV
+-----END PGP SIGNATURE-----
+--=-=-=--
 
