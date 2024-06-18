@@ -1,45 +1,45 @@
-Return-Path: <bpf+bounces-32394-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-32395-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1088290C6BB
-	for <lists+bpf@lfdr.de>; Tue, 18 Jun 2024 12:25:28 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0DA9F90C6BE
+	for <lists+bpf@lfdr.de>; Tue, 18 Jun 2024 12:25:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BC9F928230B
-	for <lists+bpf@lfdr.de>; Tue, 18 Jun 2024 10:25:26 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 81D751F22930
+	for <lists+bpf@lfdr.de>; Tue, 18 Jun 2024 10:25:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 74B6519EEAF;
-	Tue, 18 Jun 2024 07:57:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D816819F463;
+	Tue, 18 Jun 2024 07:57:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="h5Eqxrda"
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="aH8tQgyq"
 X-Original-To: bpf@vger.kernel.org
 Received: from out30-110.freemail.mail.aliyun.com (out30-110.freemail.mail.aliyun.com [115.124.30.110])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C994619E7DD;
-	Tue, 18 Jun 2024 07:56:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8436D19E823;
+	Tue, 18 Jun 2024 07:56:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.110
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718697420; cv=none; b=U0T0T3IA8Dak7M/z5mzmjxLU+7Ak5Bldrzdw1jJwbBT/vtWuwiClyNPYGYxYlSfaZHcIDC6+eGNzDP6oUtTj3O2IkkVqbpnEFlp75SqayQR1djNfVwXhesSyJuqPqIfa2R+o7mcE+Z4i8j7VNcGdHcBsEzKkueayY45YDUt1+hY=
+	t=1718697421; cv=none; b=E1yur0yl7xvo8R9mRWAHMLDaJ+w8TYIiBvkxKxykv1mNZSyIyj8pZpRh5XDDYPOUjJpn4PYb32Jldcqyjsh5gz4J/ULGQxMiKXLyo8TxVERuCUiInjA5dWlGPGEL/qwA08pYr8/jpDJJcc7lGOGUyFcddrmuI5Rn/TbhO9rFNlQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718697420; c=relaxed/simple;
-	bh=ujRQgVR1me4J6+GwMqJ69HKjg8vldD6L9KIr0nVFAQg=;
+	s=arc-20240116; t=1718697421; c=relaxed/simple;
+	bh=TyA8CHQDmtVG5eRysWpeVW7NsJCu/g0ZIP0C750o9eA=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=kWwiCSjuXV8ft0QauCs71WASn15mIE5et8MPNl7AYdGOUW8aERSlBuPrkNKEj9tP5FYZdLw9jK5tRjJhng35vlrDZgFJk7Cob3rrXe1un+ooN4Md9AZAMU7yXxV3wwtUE+gkKmhMvwX9mxoXRaNVzz5TjEhu/uZUrHU+8kXjcKk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=h5Eqxrda; arc=none smtp.client-ip=115.124.30.110
+	 MIME-Version; b=mZmiZwRiH4cTqFLnxiSTP2+txSz5kF6GOLZxP6HdNDqsluY9qhWqMVeWmwyOUThdyp8IcjlSkgk8BzcV08QJGe0E5TIXgOVrJfx/PbfBuT/230MyBi5UQj7UBlyL26uMazCg4+xMWTxDbpDPxXDURCTstTdUB+uI2x1I8+8y+sY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=aH8tQgyq; arc=none smtp.client-ip=115.124.30.110
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
 DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
 	d=linux.alibaba.com; s=default;
-	t=1718697410; h=From:To:Subject:Date:Message-Id:MIME-Version;
-	bh=FXlDnaoklNLjA51vt2sGGi+2+tst7TAGL7vCCvlAcsY=;
-	b=h5EqxrdaYocR0iuc04UeNU6Frh7AYl2z39/5WakoluMik5RsbocmoCeJS9B0LDjlgj7iyOeK2K1XwxmSXL7khatMBs/NACTx64f35uiYWD7zILwZFZKSCQBPtDQWc28VkP8pLrf8fXPw0INv+YuHPG8rX1c9zJ9/kccwwHqI2fM=
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R111e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=maildocker-contentspam033037067110;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=15;SR=0;TI=SMTPD_---0W8jSGBr_1718697409;
-Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0W8jSGBr_1718697409)
+	t=1718697412; h=From:To:Subject:Date:Message-Id:MIME-Version;
+	bh=94KgcG7GKlEUjoYMTVEV4xVqh45PoOx57ZKvwpWl2EQ=;
+	b=aH8tQgyqB6DXhVnlaqBvosAdMglWIeS/zvqildaerwV9O6k0m5dC6MI0ThtqmB3ZxbTztkA0TquiS68tOJhzOsDH4Rw0T+K12HsRs9e9ftlI1VUg4rSFuYGANk5fdD7+zoa46uCyArGgH82DYXbljW5CjPDslKFh2GoBKMLUYHw=
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R211e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=maildocker-contentspam033045075189;MF=xuanzhuo@linux.alibaba.com;NM=1;PH=DS;RN=15;SR=0;TI=SMTPD_---0W8jR7pa_1718697410;
+Received: from localhost(mailfrom:xuanzhuo@linux.alibaba.com fp:SMTPD_---0W8jR7pa_1718697410)
           by smtp.aliyun-inc.com;
-          Tue, 18 Jun 2024 15:56:49 +0800
+          Tue, 18 Jun 2024 15:56:51 +0800
 From: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
 To: netdev@vger.kernel.org
 Cc: "Michael S. Tsirkin" <mst@redhat.com>,
@@ -56,9 +56,9 @@ Cc: "Michael S. Tsirkin" <mst@redhat.com>,
 	John Fastabend <john.fastabend@gmail.com>,
 	virtualization@lists.linux.dev,
 	bpf@vger.kernel.org
-Subject: [PATCH net-next v6 06/10] virtio_net: xsk: support wakeup
-Date: Tue, 18 Jun 2024 15:56:39 +0800
-Message-Id: <20240618075643.24867-7-xuanzhuo@linux.alibaba.com>
+Subject: [PATCH net-next v6 07/10] virtio_net: xsk: rx: support fill with xsk buffer
+Date: Tue, 18 Jun 2024 15:56:40 +0800
+Message-Id: <20240618075643.24867-8-xuanzhuo@linux.alibaba.com>
 X-Mailer: git-send-email 2.32.0.3.g01195cf9f
 In-Reply-To: <20240618075643.24867-1-xuanzhuo@linux.alibaba.com>
 References: <20240618075643.24867-1-xuanzhuo@linux.alibaba.com>
@@ -71,60 +71,144 @@ MIME-Version: 1.0
 X-Git-Hash: 8baa0af3684b
 Content-Transfer-Encoding: 8bit
 
-xsk wakeup is used to trigger the logic for xsk xmit by xsk framework or
-user.
-
-Virtio-net does not support to actively generate an interruption, so it
-tries to trigger tx NAPI on the local cpu.
+Implement the logic of filling rq with XSK buffers.
 
 Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Acked-by: Jason Wang <jasowang@redhat.com>
 ---
- drivers/net/virtio_net.c | 24 ++++++++++++++++++++++++
- 1 file changed, 24 insertions(+)
+ drivers/net/virtio_net.c | 68 ++++++++++++++++++++++++++++++++++++++--
+ 1 file changed, 66 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
-index d8cce143be26..2bbc715f22c6 100644
+index 2bbc715f22c6..2ac5668a94ce 100644
 --- a/drivers/net/virtio_net.c
 +++ b/drivers/net/virtio_net.c
-@@ -1032,6 +1032,29 @@ static void check_sq_full_and_disable(struct virtnet_info *vi,
+@@ -355,6 +355,8 @@ struct receive_queue {
+ 
+ 		/* xdp rxq used by xsk */
+ 		struct xdp_rxq_info xdp_rxq;
++
++		struct xdp_buff **xsk_buffs;
+ 	} xsk;
+ };
+ 
+@@ -1032,6 +1034,53 @@ static void check_sq_full_and_disable(struct virtnet_info *vi,
  	}
  }
  
-+static int virtnet_xsk_wakeup(struct net_device *dev, u32 qid, u32 flag)
++static void sg_fill_dma(struct scatterlist *sg, dma_addr_t addr, u32 len)
 +{
-+	struct virtnet_info *vi = netdev_priv(dev);
-+	struct send_queue *sq;
-+
-+	if (!netif_running(dev))
-+		return -ENETDOWN;
-+
-+	if (qid >= vi->curr_queue_pairs)
-+		return -EINVAL;
-+
-+	sq = &vi->sq[qid];
-+
-+	if (napi_if_scheduled_mark_missed(&sq->napi))
-+		return 0;
-+
-+	local_bh_disable();
-+	virtqueue_napi_schedule(&sq->napi, sq->vq);
-+	local_bh_enable();
-+
-+	return 0;
++	sg->dma_address = addr;
++	sg->length = len;
 +}
 +
- static int __virtnet_xdp_xmit_one(struct virtnet_info *vi,
- 				   struct send_queue *sq,
- 				   struct xdp_frame *xdpf)
-@@ -5312,6 +5335,7 @@ static const struct net_device_ops virtnet_netdev = {
- 	.ndo_vlan_rx_kill_vid = virtnet_vlan_rx_kill_vid,
- 	.ndo_bpf		= virtnet_xdp,
- 	.ndo_xdp_xmit		= virtnet_xdp_xmit,
-+	.ndo_xsk_wakeup         = virtnet_xsk_wakeup,
- 	.ndo_features_check	= passthru_features_check,
- 	.ndo_get_phys_port_name	= virtnet_get_phys_port_name,
- 	.ndo_set_features	= virtnet_set_features,
++static int virtnet_add_recvbuf_xsk(struct virtnet_info *vi, struct receive_queue *rq,
++				   struct xsk_buff_pool *pool, gfp_t gfp)
++{
++	struct xdp_buff **xsk_buffs;
++	dma_addr_t addr;
++	u32 len, i;
++	int err = 0;
++	int num;
++
++	xsk_buffs = rq->xsk.xsk_buffs;
++
++	num = xsk_buff_alloc_batch(pool, xsk_buffs, rq->vq->num_free);
++	if (!num)
++		return -ENOMEM;
++
++	len = xsk_pool_get_rx_frame_size(pool) + vi->hdr_len;
++
++	for (i = 0; i < num; ++i) {
++		/* use the part of XDP_PACKET_HEADROOM as the virtnet hdr space */
++		addr = xsk_buff_xdp_get_dma(xsk_buffs[i]) - vi->hdr_len;
++
++		sg_init_table(rq->sg, 1);
++		sg_fill_dma(rq->sg, addr, len);
++
++		err = virtqueue_add_inbuf(rq->vq, rq->sg, 1, xsk_buffs[i], gfp);
++		if (err)
++			goto err;
++	}
++
++	return num;
++
++err:
++	if (i)
++		err = i;
++
++	for (; i < num; ++i)
++		xsk_buff_free(xsk_buffs[i]);
++
++	return err;
++}
++
+ static int virtnet_xsk_wakeup(struct net_device *dev, u32 qid, u32 flag)
+ {
+ 	struct virtnet_info *vi = netdev_priv(dev);
+@@ -2206,6 +2255,11 @@ static bool try_fill_recv(struct virtnet_info *vi, struct receive_queue *rq,
+ 	int err;
+ 	bool oom;
+ 
++	if (rq->xsk.pool) {
++		err = virtnet_add_recvbuf_xsk(vi, rq, rq->xsk.pool, gfp);
++		goto kick;
++	}
++
+ 	do {
+ 		if (vi->mergeable_rx_bufs)
+ 			err = add_recvbuf_mergeable(vi, rq, gfp);
+@@ -2214,10 +2268,11 @@ static bool try_fill_recv(struct virtnet_info *vi, struct receive_queue *rq,
+ 		else
+ 			err = add_recvbuf_small(vi, rq, gfp);
+ 
+-		oom = err == -ENOMEM;
+ 		if (err)
+ 			break;
+ 	} while (rq->vq->num_free);
++
++kick:
+ 	if (virtqueue_kick_prepare(rq->vq) && virtqueue_notify(rq->vq)) {
+ 		unsigned long flags;
+ 
+@@ -2226,6 +2281,7 @@ static bool try_fill_recv(struct virtnet_info *vi, struct receive_queue *rq,
+ 		u64_stats_update_end_irqrestore(&rq->stats.syncp, flags);
+ 	}
+ 
++	oom = err == -ENOMEM;
+ 	return !oom;
+ }
+ 
+@@ -5050,7 +5106,7 @@ static int virtnet_xsk_pool_enable(struct net_device *dev,
+ 	struct receive_queue *rq;
+ 	struct device *dma_dev;
+ 	struct send_queue *sq;
+-	int err;
++	int err, size;
+ 
+ 	/* In big_packets mode, xdp cannot work, so there is no need to
+ 	 * initialize xsk of rq.
+@@ -5078,6 +5134,12 @@ static int virtnet_xsk_pool_enable(struct net_device *dev,
+ 	if (!dma_dev)
+ 		return -EPERM;
+ 
++	size = virtqueue_get_vring_size(rq->vq);
++
++	rq->xsk.xsk_buffs = kvcalloc(size, sizeof(*rq->xsk.xsk_buffs), GFP_KERNEL);
++	if (!rq->xsk.xsk_buffs)
++		return -ENOMEM;
++
+ 	err = xsk_pool_dma_map(pool, dma_dev, 0);
+ 	if (err)
+ 		goto err_xsk_map;
+@@ -5112,6 +5174,8 @@ static int virtnet_xsk_pool_disable(struct net_device *dev, u16 qid)
+ 
+ 	xsk_pool_dma_unmap(pool, 0);
+ 
++	kvfree(rq->xsk.xsk_buffs);
++
+ 	return err;
+ }
+ 
 -- 
 2.32.0.3.g01195cf9f
 
