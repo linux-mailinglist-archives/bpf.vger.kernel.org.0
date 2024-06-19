@@ -1,50 +1,54 @@
-Return-Path: <bpf+bounces-32484-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-32485-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E7C9D90E152
-	for <lists+bpf@lfdr.de>; Wed, 19 Jun 2024 03:30:42 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 06BAC90E15D
+	for <lists+bpf@lfdr.de>; Wed, 19 Jun 2024 03:42:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 08EBC1C21120
-	for <lists+bpf@lfdr.de>; Wed, 19 Jun 2024 01:30:42 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8D315283510
+	for <lists+bpf@lfdr.de>; Wed, 19 Jun 2024 01:42:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 74838D27E;
-	Wed, 19 Jun 2024 01:30:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="P/qp1vNm"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 59F82CA40;
+	Wed, 19 Jun 2024 01:42:13 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB48C4A1C;
-	Wed, 19 Jun 2024 01:30:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B0C31878;
+	Wed, 19 Jun 2024 01:42:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.189
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718760631; cv=none; b=kPJ57Gx1iZGXo4NrUCrCd34C6pwtHO2fmMcMNvfe4VdVq5G4XJRh2nyRA6CBoYeHFwiXN6eia1bZ+mjFfRq5luyRzCueLnFjDXotvZ4xztrJYCJI5N3Ew1gU31IyTrhPCXuhLEayVpXHrnkoQFlhlJsg8nGKvnhFpkc8wFfbUMA=
+	t=1718761333; cv=none; b=SSHQj4NHHzoP4nn2OAQTcas51ZXtdWMmpvmqY0IanvDDNMts2ueEd0Cn+MsMUZNYHPrS4F2MLFRfjHKD2nP4kttc9ObVQDqw7ndBKEiyYVUvO12bS5RSzHUFniwobECxdMyKWhw0GfYO47wiOQcHXNdKJMkXXpPSFdaoW473dQk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718760631; c=relaxed/simple;
-	bh=wQ3Cz/uQIcGqihIGy+5skYzSVYyJDZw1/SIUXnbJ4U0=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=b3syxXeKO0jEAy1lp9eIcL+nPj5QlDxppjRyrCYlFhZUwTaSC3tVL7toROiUlhc9zf8PcOFfQAnKlxNte5kNYTBFF25Fh/Src1UwCuVhjUlQHNmhxs+lBoY8rSe4SaZf4jpjCDMz+Rv4itevYFCABw+7QWpIgrdwIVN/P3Z+2tE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=P/qp1vNm; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 9AB24C4AF49;
-	Wed, 19 Jun 2024 01:30:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1718760630;
-	bh=wQ3Cz/uQIcGqihIGy+5skYzSVYyJDZw1/SIUXnbJ4U0=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=P/qp1vNmfj4Cz30qvlOzpOipaTwpAAQocBBKgTYbnuuWCWA3MiHvuwLtLHv5GPg8u
-	 wsUsyqZ9yocbgno/nCacZDgdaQEQ9iasK2AWDGwFZDLHbrmAHM6ndNVD8778SBrsZa
-	 jMRyNSQl58hRRsCCemOcWLP9TuyoPZAzYk69apIUPmInXSalbmAnBiJELkT8Qx2SBu
-	 8yD7OojtsTFBpCLBgq7lP4cxu45vOCW0L4JWHjklrNRs7UrYRgSvvh1V3b/FaAtbFS
-	 kjG+8N8+WiaTvojfE57BP6FDXiqtza36ZlkgQn1oRDLLPhw23c2Ql59ZjIBP3BoXP/
-	 +w5KwqG4FMQxA==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 757CFC43638;
-	Wed, 19 Jun 2024 01:30:30 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1718761333; c=relaxed/simple;
+	bh=cQHrcDumL6vgjlnTK8i0kB5JaMupkPaj19PCYsvzV3Y=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=dvsz6HbbgomolMKSOA8ex8RSf0Ok497NKDTTrL49KJYS9Qi4sBHUDTsttOYd71FwaOaJ7UXmJR/FYmJO1T8yuCZPruq/0WYX43Ed2LrmsKA0gJVHf9ThlVcApodeH2w3Xvil/qOQKQAFXg7kPSbnGp11q9iKpkMMWIydO9/4Jfk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.189
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.163.174])
+	by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4W3mVK48MZzPrdZ;
+	Wed, 19 Jun 2024 09:38:33 +0800 (CST)
+Received: from kwepemd200013.china.huawei.com (unknown [7.221.188.133])
+	by mail.maildlp.com (Postfix) with ESMTPS id E03C6140257;
+	Wed, 19 Jun 2024 09:42:05 +0800 (CST)
+Received: from huawei.com (10.67.174.28) by kwepemd200013.china.huawei.com
+ (7.221.188.133) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1258.34; Wed, 19 Jun
+ 2024 09:42:05 +0800
+From: Liao Chang <liaochang1@huawei.com>
+To: <jolsa@kernel.org>, <rostedt@goodmis.org>, <mhiramat@kernel.org>,
+	<oleg@redhat.com>, <ast@kernel.org>, <daniel@iogearbox.net>,
+	<andrii@kernel.org>, <nathan@kernel.org>, <peterz@infradead.org>,
+	<mingo@redhat.com>, <mark.rutland@arm.com>
+CC: <linux-perf-users@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<bpf@vger.kernel.org>
+Subject: [PATCH bpf-next] uprobes: Fix the xol slots reserved for uretprobe trampoline
+Date: Wed, 19 Jun 2024 01:34:11 +0000
+Message-ID: <20240619013411.756995-1-liaochang1@huawei.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -52,48 +56,54 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH v3,net-next] net: mana: Add support for page sizes other than
- 4KB on ARM64
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <171876063046.16543.5866630072477597373.git-patchwork-notify@kernel.org>
-Date: Wed, 19 Jun 2024 01:30:30 +0000
-References: <1718655446-6576-1-git-send-email-haiyangz@microsoft.com>
-In-Reply-To: <1718655446-6576-1-git-send-email-haiyangz@microsoft.com>
-To: Haiyang Zhang <haiyangz@microsoft.com>
-Cc: linux-hyperv@vger.kernel.org, netdev@vger.kernel.org, decui@microsoft.com,
- stephen@networkplumber.org, kys@microsoft.com, paulros@microsoft.com,
- olaf@aepfle.de, vkuznets@redhat.com, davem@davemloft.net, wei.liu@kernel.org,
- edumazet@google.com, kuba@kernel.org, pabeni@redhat.com, leon@kernel.org,
- longli@microsoft.com, ssengar@linux.microsoft.com,
- linux-rdma@vger.kernel.org, daniel@iogearbox.net, john.fastabend@gmail.com,
- bpf@vger.kernel.org, ast@kernel.org, hawk@kernel.org, tglx@linutronix.de,
- shradhagupta@linux.microsoft.com, linux-kernel@vger.kernel.org
+Content-Type: text/plain
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ kwepemd200013.china.huawei.com (7.221.188.133)
 
-Hello:
+When the new uretprobe system call was added [1], the xol slots reserved
+for the uretprobe trampoline might be insufficient on some architecture.
+For example, on arm64, the trampoline is consist of three instructions
+at least. So it should mark enough bits in area->bitmaps and
+and area->slot_count for the reserved slots.
 
-This patch was applied to netdev/net-next.git (main)
-by Jakub Kicinski <kuba@kernel.org>:
+[1] https://lore.kernel.org/all/20240611112158.40795-4-jolsa@kernel.org/
 
-On Mon, 17 Jun 2024 13:17:26 -0700 you wrote:
-> As defined by the MANA Hardware spec, the queue size for DMA is 4KB
-> minimal, and power of 2. And, the HWC queue size has to be exactly
-> 4KB.
-> 
-> To support page sizes other than 4KB on ARM64, define the minimal
-> queue size as a macro separately from the PAGE_SIZE, which we always
-> assumed it to be 4KB before supporting ARM64.
-> 
-> [...]
+Signed-off-by: Liao Chang <liaochang1@huawei.com>
+---
+ kernel/events/uprobes.c | 11 +++++++----
+ 1 file changed, 7 insertions(+), 4 deletions(-)
 
-Here is the summary with links:
-  - [v3,net-next] net: mana: Add support for page sizes other than 4KB on ARM64
-    https://git.kernel.org/netdev/net-next/c/382d1741b5b2
-
-You are awesome, thank you!
+diff --git a/kernel/events/uprobes.c b/kernel/events/uprobes.c
+index 2816e65729ac..efd2d7f56622 100644
+--- a/kernel/events/uprobes.c
++++ b/kernel/events/uprobes.c
+@@ -1485,7 +1485,7 @@ void * __weak arch_uprobe_trampoline(unsigned long *psize)
+ static struct xol_area *__create_xol_area(unsigned long vaddr)
+ {
+ 	struct mm_struct *mm = current->mm;
+-	unsigned long insns_size;
++	unsigned long insns_size, slot_nr;
+ 	struct xol_area *area;
+ 	void *insns;
+ 
+@@ -1508,10 +1508,13 @@ static struct xol_area *__create_xol_area(unsigned long vaddr)
+ 
+ 	area->vaddr = vaddr;
+ 	init_waitqueue_head(&area->wq);
+-	/* Reserve the 1st slot for get_trampoline_vaddr() */
+-	set_bit(0, area->bitmap);
+-	atomic_set(&area->slot_count, 1);
+ 	insns = arch_uprobe_trampoline(&insns_size);
++	/* Reserve enough slots for the uretprobe trampoline */
++	for (slot_nr = 0;
++	     slot_nr < max((insns_size / UPROBE_XOL_SLOT_BYTES), 1);
++	     slot_nr++)
++		set_bit(slot_nr, area->bitmap);
++	atomic_set(&area->slot_count, slot_nr);
+ 	arch_uprobe_copy_ixol(area->pages[0], 0, insns, insns_size);
+ 
+ 	if (!xol_add_vma(mm, area))
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+2.34.1
 
 
