@@ -1,172 +1,132 @@
-Return-Path: <bpf+bounces-32510-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-32511-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id ED12B90E6D7
-	for <lists+bpf@lfdr.de>; Wed, 19 Jun 2024 11:22:35 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id EB70A90E812
+	for <lists+bpf@lfdr.de>; Wed, 19 Jun 2024 12:14:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D76371C217A8
-	for <lists+bpf@lfdr.de>; Wed, 19 Jun 2024 09:22:34 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 761D41F22D2A
+	for <lists+bpf@lfdr.de>; Wed, 19 Jun 2024 10:14:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D0B9C80626;
-	Wed, 19 Jun 2024 09:22:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F332B82C60;
+	Wed, 19 Jun 2024 10:14:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WiwbKVSc"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="i0abrkew"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f67.google.com (mail-wr1-f67.google.com [209.85.221.67])
+Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com [209.85.128.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B85867F7C6
-	for <bpf@vger.kernel.org>; Wed, 19 Jun 2024 09:22:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.67
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA09282495;
+	Wed, 19 Jun 2024 10:14:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718788945; cv=none; b=j7c7FzEwVKvs5etY62mg5H8B4sLkT5AjxGBcwF5NtGceizoI8Lx7nhkaonDuEa/+ldOsUycAcyCAldAqOAoE17tVpFuswsDEonDQwCQix+e8LfbOIni3Ebh2Cy0G4Kt9X3e2OQiJ8DEFqae8rccFBB3qyAJkgX8oAgJutiM8wws=
+	t=1718792080; cv=none; b=G+RKz9jD8HxIJCNsiy//4KH+PvoJ7VC1+smMQ55URutp2oDCWNEjgWkAo7T5AACwa+0yuyNBqeX4RznCArYOKdzy0ZkVfsczdW1XtGYaJFVA4BgNbGLDf0Ow+PN6/bUPmuReWlzzYOiD5TtfGJ8nBK6IDc0nOFO0NwhcfPBCIao=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718788945; c=relaxed/simple;
-	bh=c5oTgP9QkkqMhl0mhuFCPOTyp5qmTdwIBTcPx9gqqZM=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=M2zheKs+rdeQF9sXMyWFad+5WDTmOZ+RIPv5xNNFCnUUhpfe7tYKwCj0LdR15Zz+JWM+cQGSrS4OjUMOJztfGPs4imDQQQC4vnBiP27LO1mGjpt2VQJ/paPRx6lRg5RqKmP1MXlJeeynhtEpDVaN+uyCtnln0GetFHy+IuL/nAg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=WiwbKVSc; arc=none smtp.client-ip=209.85.221.67
+	s=arc-20240116; t=1718792080; c=relaxed/simple;
+	bh=/5lsOClEjTTiqIX0EKnwOr/nLlBBkUQDOTvZJquLTe4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=YbHoeZT/QBSWXUtiJReU3B/R4Oa0VU9SsJB5avP2XYqF3G0D/4LKaZaCgKOqZ/3Yr5dEyTUgvRqAVl1QOb9Y6Q7qYxL9gsAQxtdigwbShaBeGXocHtTnnrAfoBilF8KbenlWX/fYns17r0TmyvdMT42TH4RnAjz+QBZwY1oZRYA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=i0abrkew; arc=none smtp.client-ip=209.85.128.47
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f67.google.com with SMTP id ffacd0b85a97d-35f090093d8so4964543f8f.0
-        for <bpf@vger.kernel.org>; Wed, 19 Jun 2024 02:22:23 -0700 (PDT)
+Received: by mail-wm1-f47.google.com with SMTP id 5b1f17b1804b1-4217a96de38so46407505e9.1;
+        Wed, 19 Jun 2024 03:14:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1718788941; x=1719393741; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=CuFNtRiPUxiY2ssVsIPz8qk6a5jINgTHJnFo8uiNf6E=;
-        b=WiwbKVScTYDjXfoJa0nRuUtcRiy0RcLl95oJhVipq1J7kLUlZJdPry13GvNnXR/8Ij
-         NSZZ+iwoB5ao5VN4aIUpNTjMziwsO6MjTWidqmUBcwdb8Rqm74scrjqORiG0f/kbTxSO
-         s168OJXU7RyZ0bxxGHsQgB0PCb/bazk4Ibw43nQvyngddF+vF5e5QLzELo4tpBH2lqPy
-         aENBKEHj7mfXQZL6q2miAY6gQySY84enJb8HFtMIo9OQw2TDhO3QRT1eT9X28swZVBs3
-         0dwRUWrdBLdEbOVANEf7Sca8/RY19LjpmwMvSb/nq9eLQL4KsPP1Tqla9sCo/kK9nDzJ
-         bOwQ==
+        d=gmail.com; s=20230601; t=1718792077; x=1719396877; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=OWj4qqqcVIxCNyRZ2DfdgkNb1wGK6bSkCctArSODDZg=;
+        b=i0abrkew2IHTI9Qk06UxvswNafj0EDe0n2oAP+tqiADtS4wd5/UEGh6ttH1oaLstsb
+         Uj/feb08gfVDbnJ+5jjhOuPwDMWx5vGgEBCPDVlACEQsw/q4fRQ+OPD4eIrfxQfi6qbF
+         xWMLDcxrTJzp0D/m4bixlj7HFGZjKJ06SIWbwKmt1Of/YpCF2vhSsDIttd5yEqX9FzXc
+         mMPdJDReAdtJdCVaM1M03lz32q064RJM2v9/vbev+MdLPRf2VRVYSubsejy70CAkoDTu
+         /sHu1O1evKVn/0Xc8sqZyouHwGkd05Y7IPiWZfvFVsZpGc+iESeXZkpkr6tL1yY8SgzZ
+         dZmQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1718788941; x=1719393741;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=CuFNtRiPUxiY2ssVsIPz8qk6a5jINgTHJnFo8uiNf6E=;
-        b=oX6BIEHnG4q0CrdJX3cVfH1hc6kapV68NGM0VyoPynUt0DvA8PD6AG5XJB+YbcvH7h
-         7XvZNca+2aRJyLA1bhymJ7epu2UVrU+o/CggoNsYt+8RRqpeuYZ19wj7U7HlurCV/rF0
-         d5YoAlDajg4tVye89u6j5vF31TBAcm9wadUZWDqx3o3tVG7SkksGtQsNfEmi1NRkIdpo
-         vZpuOottXkLp37zUblMWKUEjH3e5V0Si0KfH8KSyEIPOc99ILDseKeJEscwXFz14CopB
-         UfGIs2O42y6JEZT1M0orCE6nnlK5YOxqkYPRv3XDnIBMUeiUST8wElbHv5dmmuzsi5ns
-         2pDA==
-X-Gm-Message-State: AOJu0YycQHq4CQZ1URf1orRryf22E+BMwENbuNxKH3lw2FmOZJemRIXU
-	q0RaEiHPha0tYeUArOYLyT7lqaDDJO2vX3Ew2KnTYUpXhHWBj8es0kUq8/wK
-X-Google-Smtp-Source: AGHT+IEi+t6LCzQjl+9fEB5xZGJaMXkkQhn5DC8PrgPixXxp61yBKXreDrlHZ4R5kfn92Q8VNc6qfw==
-X-Received: by 2002:a5d:49c7:0:b0:35f:488:6d3d with SMTP id ffacd0b85a97d-3631998ee26mr1491524f8f.58.1718788941234;
-        Wed, 19 Jun 2024 02:22:21 -0700 (PDT)
-Received: from localhost (nat-icclus-192-26-29-3.epfl.ch. [192.26.29.3])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-360750935ecsm16669902f8f.3.2024.06.19.02.22.20
+        d=1e100.net; s=20230601; t=1718792077; x=1719396877;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=OWj4qqqcVIxCNyRZ2DfdgkNb1wGK6bSkCctArSODDZg=;
+        b=IXO1x2nxUXy/drjWWuOzpNz7cXfHot16L55OjqxL3S5PlD/05z7KM6Rm3iL9qSTdZZ
+         6Xle67Hzf49yYVCREcSWqbKYB1BTV8gI+LG6Ehk1JXjdLTEbgu3b+LoPlTDFBTr88Nse
+         8LVoj9MMEyKxGm7OCgNlmbSKXrkgK/Z9UVPexW6rf1LOhm8Y4RPZg0Q0CKad/WkOp7Sg
+         0obexOWlgAbS2BDtxnUZXUoV/yExfLqLoeQBLU6B69w/M/UOVHxXPgclW01xrRhqTdax
+         kB1Yepwfr9DlRaXpFCJ0YkIHLKMqyTO7NlkWeYi89GRb1Qz1ZoWiCFGr++8W/eag2XGt
+         9OUQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVPxcReMoYo+uSEYLi+TqeakamMzGMuCXRSwn1ilMCgTbe1VW7v4mnv5kUv2/OKQuLNXc1rXLxA1z1bSkhIHI7wmQhrEnJEA0Crftm9KKnINqJxEh9Q534HIfmVeOymXPGJ
+X-Gm-Message-State: AOJu0YyUExtK2wj1Ui/aVESWFAg2vK3SuEUStfRZI8AzAIAGk5l2B6M9
+	u3vPQVkbzLG/eZggR4uFICwfrp3yp9EkKDKdyxkhJ/P+ak+C1MY=
+X-Google-Smtp-Source: AGHT+IGUS7OckNuAZosynBKA8uInq63efrk9sBC2i2lWzzzmjRF94hBF+hTm9Du2LZrcQOQBPKM6Vw==
+X-Received: by 2002:a05:600c:4213:b0:421:aace:7a94 with SMTP id 5b1f17b1804b1-4247529c841mr11626615e9.40.1718792076991;
+        Wed, 19 Jun 2024 03:14:36 -0700 (PDT)
+Received: from p183 ([46.53.254.81])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3641788cf4fsm235849f8f.90.2024.06.19.03.14.36
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 19 Jun 2024 02:22:20 -0700 (PDT)
-From: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-To: bpf@vger.kernel.org
-Cc: Alexei Starovoitov <ast@kernel.org>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Martin KaFai Lau <martin.lau@kernel.org>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	Puranjay Mohan <puranjay@kernel.org>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	Andy Lutomirski <luto@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Ingo Molnar <mingo@redhat.com>,
-	Borislav Petkov <bp@alien8.de>,
-	x86@kernel.org,
-	"H. Peter Anvin" <hpa@zytor.com>,
-	Rishabh Iyer <rishabh.iyer@berkeley.edu>,
-	Sanidhya Kashyap <sanidhya.kashyap@epfl.ch>
-Subject: [PATCH bpf-next v2 2/2] bpf, x86: Skip bounds checking for PROBE_MEM with SMAP
-Date: Wed, 19 Jun 2024 09:22:16 +0000
-Message-ID: <20240619092216.1780946-3-memxor@gmail.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240619092216.1780946-1-memxor@gmail.com>
-References: <20240619092216.1780946-1-memxor@gmail.com>
+        Wed, 19 Jun 2024 03:14:36 -0700 (PDT)
+Date: Wed, 19 Jun 2024 13:14:34 +0300
+From: Alexey Dobriyan <adobriyan@gmail.com>
+To: Andrii Nakryiko <andrii@kernel.org>
+Cc: linux-fsdevel@vger.kernel.org, brauner@kernel.org,
+	viro@zeniv.linux.org.uk, akpm@linux-foundation.org,
+	linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+	gregkh@linuxfoundation.org, linux-mm@kvack.org,
+	liam.howlett@oracle.com, surenb@google.com, rppt@kernel.org
+Subject: Re: [PATCH v5 3/6] fs/procfs: add build ID fetching to PROCMAP_QUERY
+ API
+Message-ID: <984d7898-d86a-4cea-9cdf-262b9ec4bc84@p183>
+References: <20240618224527.3685213-1-andrii@kernel.org>
+ <20240618224527.3685213-4-andrii@kernel.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2699; i=memxor@gmail.com; h=from:subject; bh=c5oTgP9QkkqMhl0mhuFCPOTyp5qmTdwIBTcPx9gqqZM=; b=owEBbQKS/ZANAwAKAUzgyIZIvxHKAcsmYgBmcqMXHVXLEcjnMz1ZjXdYJR6KEUpM7hl4PD0Iv CImrToA1vSJAjMEAAEKAB0WIQRLvip+Buz51YI8YRFM4MiGSL8RygUCZnKjFwAKCRBM4MiGSL8R ym2eEADC44zzO+zr1+TWeQwuGhXhsBTsAHFm7riuiIMzqmQb+uEXzOKdYoH1jRz4ktnspPO7Jt7 /JFbwihLTtMdTAjaIbbje7fbXjfZzfvnT2Kk0jdFHWSPJtvtgx4o+N0UWIH1YDz5yi4xwx3wUsr AvyEU7+KYASDCkq3wN7FYKnyTJz4aL5TRkcAVyAQrQPU+yO9fHrF7G0as30iJEEO+EboJwuqP3Z 9I2cTmZifbJ1b3YXsG5U2rimxub9X8HnF4pBPxcdqvm7Nab6ecfgUI12sOWe3GSzj7OCk7xUDbh zIsOF0UhfbQKzUYgYaCrqv00LnAeZGJVU7P7CaOPjdQnN555NVFqtt+jfZNcy5RJ4TU99Vq8jO/ K+N/nsZRTG9JZFPEsViCyPzpjMCrQSuhSyzw/LfrsqC0NwSulxDMljnuhDWT2Mpkknmp8GaE5WW 3c+rDsecaxzJX/S1wRQQ5CeyktaS8RuWf1fJGE/kCfg9NdG+H0luBFibbBYNmYepBTVU6XBabTP lzPNoe6Fwfb9PYs3v7Zq6yRg6GZc3eHRhgFqmLmybPWzJ/FYDo9drW+AypvIA1kNLypQ7zoV/U4 mMLj6Aky9Ns+h7rs8AJunzQeJ2KMxGz/2Jtv6EDEemBr+Nq2QWHEH0m/u+8PF/WIj5JY05Kmq7O jDdnfv67kL6NwKg==
-X-Developer-Key: i=memxor@gmail.com; a=openpgp; fpr=4BBE2A7E06ECF9D5823C61114CE0C88648BF11CA
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20240618224527.3685213-4-andrii@kernel.org>
 
-The previous patch changed the do_user_addr_fault page fault handler to
-invoke BPF's fixup routines (by searching exception tables and calling
-ex_handler_bpf). This would only occur when SMAP is enabled, such that
-any user address access from BPF programs running in kernel mode would
-reach this path and invoke the fixup routines.
+On Tue, Jun 18, 2024 at 03:45:22PM -0700, Andrii Nakryiko wrote:
+> The need to get ELF build ID reliably is an important aspect when
+> dealing with profiling and stack trace symbolization, and
+> /proc/<pid>/maps textual representation doesn't help with this.
 
-Relying on this behavior, disable any bounds checking instrumentation in
-the BPF JIT for x86 when X86_FEATURE_SMAP is available. All BPF
-programs execute with SMAP enabled, therefore when this feature is
-available, we can assume that SMAP will be enabled during program
-execution at runtime.
+> @@ -539,6 +543,21 @@ static int do_procmap_query(struct proc_maps_private *priv, void __user *uarg)
+>  		}
+>  	}
+>  
+> +	if (karg.build_id_size) {
+> +		__u32 build_id_sz;
+> +
+> +		err = build_id_parse(vma, build_id_buf, &build_id_sz);
 
-This optimizes PROBE_MEM loads down to a normal unchecked load
-instruction. Any page faults for user or kernel addresses will be
-handled using the fixup routines, and the generation exception table
-entries for such load instructions.
+This is not your bug but build_id_parse() assumes program headers
+immediately follow ELF header which is not guaranteed.
 
-All in all, this ensures that PROBE_MEM loads will now incur no runtime
-overhead, and become practically free.
+> +	 * If this field is set to non-zero value, build_id_addr should point
+> +	 * to valid user space memory buffer of at least build_id_size bytes.
+> +	 * If set to zero, build_id_addr should be set to zero as well
+> +	 */
+> +	__u32 build_id_size;		/* in/out */
+>  	/*
+>  	 * User-supplied address of a buffer of at least vma_name_size bytes
+>  	 * for kernel to fill with matched VMA's name (see vma_name_size field
+> @@ -519,6 +539,14 @@ struct procmap_query {
+>  	 * Should be set to zero if VMA name should not be returned.
+>  	 */
+>  	__u64 vma_name_addr;		/* in */
+> +	/*
+> +	 * User-supplied address of a buffer of at least build_id_size bytes
+> +	 * for kernel to fill with matched VMA's ELF build ID, if available
+> +	 * (see build_id_size field description above for details).
+> +	 *
+> +	 * Should be set to zero if build ID should not be returned.
+> +	 */
+> +	__u64 build_id_addr;		/* in */
 
-Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
----
- arch/x86/net/bpf_jit_comp.c | 11 +++++++++--
- 1 file changed, 9 insertions(+), 2 deletions(-)
-
-diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
-index 5159c7a22922..f8a39189cddc 100644
---- a/arch/x86/net/bpf_jit_comp.c
-+++ b/arch/x86/net/bpf_jit_comp.c
-@@ -1864,8 +1864,8 @@ st:			if (is_imm8(insn->off))
- 		case BPF_LDX | BPF_PROBE_MEMSX | BPF_W:
- 			insn_off = insn->off;
- 
--			if (BPF_MODE(insn->code) == BPF_PROBE_MEM ||
--			    BPF_MODE(insn->code) == BPF_PROBE_MEMSX) {
-+			if ((BPF_MODE(insn->code) == BPF_PROBE_MEM ||
-+			     BPF_MODE(insn->code) == BPF_PROBE_MEMSX) && !cpu_feature_enabled(X86_FEATURE_SMAP)) {
- 				/* Conservatively check that src_reg + insn->off is a kernel address:
- 				 *   src_reg + insn->off > TASK_SIZE_MAX + PAGE_SIZE
- 				 *   and
-@@ -1912,6 +1912,9 @@ st:			if (is_imm8(insn->off))
- 				/* populate jmp_offset for JAE above to jump to start_of_ldx */
- 				start_of_ldx = prog;
- 				end_of_jmp[-1] = start_of_ldx - end_of_jmp;
-+			} else if ((BPF_MODE(insn->code) == BPF_PROBE_MEM ||
-+				    BPF_MODE(insn->code) == BPF_PROBE_MEMSX)) {
-+				start_of_ldx = prog;
- 			}
- 			if (BPF_MODE(insn->code) == BPF_PROBE_MEMSX ||
- 			    BPF_MODE(insn->code) == BPF_MEMSX)
-@@ -1924,9 +1927,13 @@ st:			if (is_imm8(insn->off))
- 				u8 *_insn = image + proglen + (start_of_ldx - temp);
- 				s64 delta;
- 
-+				if (cpu_feature_enabled(X86_FEATURE_SMAP))
-+					goto extable_fixup;
-+
- 				/* populate jmp_offset for JMP above */
- 				start_of_ldx[-1] = prog - start_of_ldx;
- 
-+			extable_fixup:
- 				if (!bpf_prog->aux->extable)
- 					break;
- 
--- 
-2.43.0
-
+Can this be simplified to 512-bit buffer in ioctl structure?
+BUILD_ID_SIZE_MAX is 20 which is sha1.
 
