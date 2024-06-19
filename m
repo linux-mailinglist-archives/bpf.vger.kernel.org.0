@@ -1,54 +1,67 @@
-Return-Path: <bpf+bounces-32485-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-32486-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 06BAC90E15D
-	for <lists+bpf@lfdr.de>; Wed, 19 Jun 2024 03:42:22 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3344790E1B8
+	for <lists+bpf@lfdr.de>; Wed, 19 Jun 2024 04:51:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8D315283510
-	for <lists+bpf@lfdr.de>; Wed, 19 Jun 2024 01:42:20 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 597F31C21488
+	for <lists+bpf@lfdr.de>; Wed, 19 Jun 2024 02:51:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 59F82CA40;
-	Wed, 19 Jun 2024 01:42:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F128481A4;
+	Wed, 19 Jun 2024 02:51:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="EiR2E+ck"
 X-Original-To: bpf@vger.kernel.org
-Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B0C31878;
-	Wed, 19 Jun 2024 01:42:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.189
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B164A38;
+	Wed, 19 Jun 2024 02:51:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718761333; cv=none; b=SSHQj4NHHzoP4nn2OAQTcas51ZXtdWMmpvmqY0IanvDDNMts2ueEd0Cn+MsMUZNYHPrS4F2MLFRfjHKD2nP4kttc9ObVQDqw7ndBKEiyYVUvO12bS5RSzHUFniwobECxdMyKWhw0GfYO47wiOQcHXNdKJMkXXpPSFdaoW473dQk=
+	t=1718765483; cv=none; b=XQFAP6+urJ6wJyr6wK6dopYeUpTOpp5L/yDLoA2y5wGweIn64P7LW9mHwLTY1xRc/5xUZTIMATpbh10xd3GbhOvDCOGDd9A5EVLSTaB73mvFLka/aM6SVY5C/zL9teHP4MrVKSdFAvs5cEEaiOSKn2PThTjv6xs81VDfyvPkfu8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718761333; c=relaxed/simple;
-	bh=cQHrcDumL6vgjlnTK8i0kB5JaMupkPaj19PCYsvzV3Y=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=dvsz6HbbgomolMKSOA8ex8RSf0Ok497NKDTTrL49KJYS9Qi4sBHUDTsttOYd71FwaOaJ7UXmJR/FYmJO1T8yuCZPruq/0WYX43Ed2LrmsKA0gJVHf9ThlVcApodeH2w3Xvil/qOQKQAFXg7kPSbnGp11q9iKpkMMWIydO9/4Jfk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.189
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.174])
-	by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4W3mVK48MZzPrdZ;
-	Wed, 19 Jun 2024 09:38:33 +0800 (CST)
-Received: from kwepemd200013.china.huawei.com (unknown [7.221.188.133])
-	by mail.maildlp.com (Postfix) with ESMTPS id E03C6140257;
-	Wed, 19 Jun 2024 09:42:05 +0800 (CST)
-Received: from huawei.com (10.67.174.28) by kwepemd200013.china.huawei.com
- (7.221.188.133) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1258.34; Wed, 19 Jun
- 2024 09:42:05 +0800
-From: Liao Chang <liaochang1@huawei.com>
-To: <jolsa@kernel.org>, <rostedt@goodmis.org>, <mhiramat@kernel.org>,
-	<oleg@redhat.com>, <ast@kernel.org>, <daniel@iogearbox.net>,
-	<andrii@kernel.org>, <nathan@kernel.org>, <peterz@infradead.org>,
-	<mingo@redhat.com>, <mark.rutland@arm.com>
-CC: <linux-perf-users@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<bpf@vger.kernel.org>
-Subject: [PATCH bpf-next] uprobes: Fix the xol slots reserved for uretprobe trampoline
-Date: Wed, 19 Jun 2024 01:34:11 +0000
-Message-ID: <20240619013411.756995-1-liaochang1@huawei.com>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1718765483; c=relaxed/simple;
+	bh=8Di7/Brd71D0pPvNoS9ZbRqDWVJlhCU4sgA4hsE++Ek=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=mP7foMhgvGCpoKXrbkZPLUf1zOw3fEaDjVkEU5MNtpYVcX6xJ74aOV6Y9JFgCnxXQbgbQTYeZYD20BmmnaYoSXaNygWYuZEn6lqwd3hfUaAsfmlmwzFNh0h3vHhrOCi3N+M4M4szmX5dHUyeWNQdzccjWONoLmD5w7YB/ckK+yY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=EiR2E+ck; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2A659C3277B;
+	Wed, 19 Jun 2024 02:51:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1718765483;
+	bh=8Di7/Brd71D0pPvNoS9ZbRqDWVJlhCU4sgA4hsE++Ek=;
+	h=From:To:Cc:Subject:Date:From;
+	b=EiR2E+ckGVMzboSplLN+GCbRZTw8ziJ3g4u3ewzjD1OiB5O6kn0owisjCC0xa/ux2
+	 qQ4uVUNhFfaTbSX8ZV3ckU1L9qpFlz7holZAujPlQNlh0OBzJe8P91KLl2X+HD2b0g
+	 g+jgr1JO9hZcb4LIyOYmTrIDcZlciL6zsAkKWckGtS+AQ+ZMxoMF5uPq+wJCKXSQdh
+	 G7o4cZFEsRyP3GEplqsyujvnDffAoIhzYisRfGdDuCCkzrFLVbJjcGCVzOtkx8b3re
+	 DRjVncltKyyacd6DfqaUgFu7BmKL2yipqfIb0Kg8vcQVroapjGOXsTM0qoQJZ0JmmC
+	 6nszIxJruc3Tw==
+From: Geliang Tang <geliang@kernel.org>
+To: Andrii Nakryiko <andrii@kernel.org>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Mykola Lysenko <mykolal@fb.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>,
+	Stanislav Fomichev <sdf@google.com>,
+	Hao Luo <haoluo@google.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Shuah Khan <shuah@kernel.org>
+Cc: Geliang Tang <tanggeliang@kylinos.cn>,
+	bpf@vger.kernel.org,
+	linux-kselftest@vger.kernel.org
+Subject: [PATCH bpf-next v5 0/6] use network helpers, part 7
+Date: Wed, 19 Jun 2024 10:51:05 +0800
+Message-ID: <cover.1718765123.git.tanggeliang@kylinos.cn>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -56,54 +69,47 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- kwepemd200013.china.huawei.com (7.221.188.133)
 
-When the new uretprobe system call was added [1], the xol slots reserved
-for the uretprobe trampoline might be insufficient on some architecture.
-For example, on arm64, the trampoline is consist of three instructions
-at least. So it should mark enough bits in area->bitmaps and
-and area->slot_count for the reserved slots.
+From: Geliang Tang <tanggeliang@kylinos.cn>
 
-[1] https://lore.kernel.org/all/20240611112158.40795-4-jolsa@kernel.org/
+v5:
+ - update patch 1, add getsockopt(SO_PROTOCOL) in connect_to_fd() to
+fix errors reported by CI.
 
-Signed-off-by: Liao Chang <liaochang1@huawei.com>
----
- kernel/events/uprobes.c | 11 +++++++----
- 1 file changed, 7 insertions(+), 4 deletions(-)
+v4:
+ - fix errors reported by CI.
 
-diff --git a/kernel/events/uprobes.c b/kernel/events/uprobes.c
-index 2816e65729ac..efd2d7f56622 100644
---- a/kernel/events/uprobes.c
-+++ b/kernel/events/uprobes.c
-@@ -1485,7 +1485,7 @@ void * __weak arch_uprobe_trampoline(unsigned long *psize)
- static struct xol_area *__create_xol_area(unsigned long vaddr)
- {
- 	struct mm_struct *mm = current->mm;
--	unsigned long insns_size;
-+	unsigned long insns_size, slot_nr;
- 	struct xol_area *area;
- 	void *insns;
- 
-@@ -1508,10 +1508,13 @@ static struct xol_area *__create_xol_area(unsigned long vaddr)
- 
- 	area->vaddr = vaddr;
- 	init_waitqueue_head(&area->wq);
--	/* Reserve the 1st slot for get_trampoline_vaddr() */
--	set_bit(0, area->bitmap);
--	atomic_set(&area->slot_count, 1);
- 	insns = arch_uprobe_trampoline(&insns_size);
-+	/* Reserve enough slots for the uretprobe trampoline */
-+	for (slot_nr = 0;
-+	     slot_nr < max((insns_size / UPROBE_XOL_SLOT_BYTES), 1);
-+	     slot_nr++)
-+		set_bit(slot_nr, area->bitmap);
-+	atomic_set(&area->slot_count, slot_nr);
- 	arch_uprobe_copy_ixol(area->pages[0], 0, insns, insns_size);
- 
- 	if (!xol_add_vma(mm, area))
+v3:
+ - rename start_client to client_socket
+ - Use connect_to_addr in connect_to_fd_opt
+
+v2:
+ - update patch 2, extract a new helper start_client.
+ - drop patch 3, keep must_fail in network_helper_opts.
+
+Drop type and noconnect from network_helper_opts. And use start_server_str
+in mptcp and test_tcp_check_syncookie_user.
+
+Patches 1-4 address Martin's comments in the previous series.
+
+Geliang Tang (6):
+  selftests/bpf: Drop type from network_helper_opts
+  selftests/bpf: Use connect_to_addr in connect_to_fd_opt
+  selftests/bpf: Add client_socket helper
+  selftests/bpf: Drop noconnect from network_helper_opts
+  selftests/bpf: Use start_server_str in mptcp
+  selftests/bpf: Use start_server_str in test_tcp_check_syncookie_user
+
+ tools/testing/selftests/bpf/network_helpers.c | 100 +++++++++---------
+ tools/testing/selftests/bpf/network_helpers.h |   6 +-
+ .../selftests/bpf/prog_tests/bpf_tcp_ca.c     |   2 +-
+ .../selftests/bpf/prog_tests/cgroup_v1v2.c    |   4 +-
+ .../bpf/prog_tests/ip_check_defrag.c          |  10 +-
+ .../testing/selftests/bpf/prog_tests/mptcp.c  |   7 +-
+ .../bpf/test_tcp_check_syncookie_user.c       |  29 +----
+ 7 files changed, 62 insertions(+), 96 deletions(-)
+
 -- 
-2.34.1
+2.43.0
 
 
