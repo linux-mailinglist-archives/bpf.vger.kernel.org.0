@@ -1,62 +1,63 @@
-Return-Path: <bpf+bounces-32516-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-32517-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9045690EF28
-	for <lists+bpf@lfdr.de>; Wed, 19 Jun 2024 15:40:06 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id C73F890EF2B
+	for <lists+bpf@lfdr.de>; Wed, 19 Jun 2024 15:40:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 641BA1C23473
-	for <lists+bpf@lfdr.de>; Wed, 19 Jun 2024 13:40:05 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 722FE1F2268E
+	for <lists+bpf@lfdr.de>; Wed, 19 Jun 2024 13:40:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8883614E2F4;
-	Wed, 19 Jun 2024 13:39:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CAE5114F9F9;
+	Wed, 19 Jun 2024 13:40:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Zdy2Q4X6"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="moPkI3db"
 X-Original-To: bpf@vger.kernel.org
 Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 993D314D2A2;
-	Wed, 19 Jun 2024 13:39:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D234D14F111;
+	Wed, 19 Jun 2024 13:40:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718804399; cv=none; b=eSnQIxBHZbpDN3Q08NCGVpmArSFmr4scZsIHqfugXvUwKtq7Xdk1XOjK11JrLbmdjzlD1ThDCgR/gtqB1oLhfPs6tkAjtaIle4wPNpF/7hgNonP6zN7bOd7l8iTrZmA3RzBFj7vY+1iahC3LjR0Mam4HbsqUm7SEEKd8+5pIPhQ=
+	t=1718804402; cv=none; b=NsFtmu76+N6v+DSHByqUGdStAP5TStr0duKuc0QWNeQS5uEDz1rilLvX7kDuNtx2T5QP/gMTqHxUrjieUkAZTpEek3Ei3othoegFs/shtl/Dz5pelOaDLYYEOz6Ls+sLMh2K94vgwnNvJp0ik1PQCHdJvIUs92vye9gOcDPbiRc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718804399; c=relaxed/simple;
-	bh=doXXRhywWjznxwG9wfbUn8fcrCAhqBrCWMwvMVA3O6Q=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=IfU+MWMacKQXe8mPwl7UYBUZnWhA4zjCFsjzbMm4CQUYdjNol+ukGeauMXw8GQ5i6iEw3NL7wziM9S/wtluKZkD15BLPDPCzVBXXbHfQ6E0wkk13D2uUS8cw+U7Zaz0dB+Cd4n2PWALCia7q4P5mBuyMIAdiQ6w+lf+8gYRe/YI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Zdy2Q4X6; arc=none smtp.client-ip=192.198.163.7
+	s=arc-20240116; t=1718804402; c=relaxed/simple;
+	bh=smapOZaqNHWpq6GDLRmnPCHw4AzIsTQjqetoNtIsPFM=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=D19dbikhXVMai5LOtWDqHAKQOuJEXcka9vvL4g+DoeM3F8XhbDtrBW6q6Nqxjm7DqMT5XUIcCmwu3Tg2rB3N4E2maGLcTzP1u7I18lo5gabxsBeuBxjcu8aEYcdcNi+dTVrvzagnecEzggpNIRalprkY9yD4l4jRQ4MghFTNiBM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=moPkI3db; arc=none smtp.client-ip=192.198.163.7
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1718804398; x=1750340398;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=doXXRhywWjznxwG9wfbUn8fcrCAhqBrCWMwvMVA3O6Q=;
-  b=Zdy2Q4X6nkgiYhaSg3WkP5B9lVwSXQPUZ2qpWNZA220kqr3yvBmby4Wk
-   7JON4x2eGwEqPmGPimdsFnRcQBWOWBbaHRcCgt9C/rqeZb8avzyfR+sxb
-   mPrPwGUJCfNGx7vivpNs3+qR29in6cGASTt9pgPr+Wk8gWn2bw8M1FlsP
-   FG1OLAlEfurgDQLs5QSDo+VHuNoooa+7g43zuvMC6AVbRgUFQiQ5dVI7c
-   QFUTElGvYR7/9YVRJALQOPNknok154EpgDHwcSGMQJ5Sk9fEJLba1HXjS
-   /1JfcSPayLo0jn/sLfCsZWo/tRApEAbUu4ynlPl1fDH35IIa95JsgNeAm
+  t=1718804401; x=1750340401;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=smapOZaqNHWpq6GDLRmnPCHw4AzIsTQjqetoNtIsPFM=;
+  b=moPkI3dbY+QMtXe3+dzVQn0oGAjoO/kLkNKiq+UtFsa8cNI0y9tpddy6
+   pM8VSs+7ld3bphqm3RVHiltzFWsKnPBVx5wyPDnY2q/K7X9jtqCfb1Vro
+   rVrFuwpDun2rag2ZaNRC9CRkYYpOpbHMD1mz73jRLheiW2/2IdSTm1cfo
+   9GNYk1sr047BE3RZY5Y1mrlq15UT054T70hN+AFs1KcfPqfcFjiBOzawM
+   74aoORot/aF+uISYmZB5EOCkGxU0IN0zN5+xx7eBVuy2WuD53oQW6chwW
+   DJ9IEULMqIxc9LTUK1/8doOw5I1PgeTR1/y4j3LyVCz55/dYBw4yGcjyN
    Q==;
-X-CSE-ConnectionGUID: eheQ/b9uRz6x7Z4xqaJ0MA==
-X-CSE-MsgGUID: pDyg0mAWRv+waflUUlLaiQ==
-X-IronPort-AV: E=McAfee;i="6700,10204,11108"; a="41146129"
+X-CSE-ConnectionGUID: otlTWvbBSmKhJCb+75Ehfw==
+X-CSE-MsgGUID: 6P9gO2qsSiuEMX+Mgxyp3g==
+X-IronPort-AV: E=McAfee;i="6700,10204,11108"; a="41146149"
 X-IronPort-AV: E=Sophos;i="6.08,250,1712646000"; 
-   d="scan'208";a="41146129"
+   d="scan'208";a="41146149"
 Received: from fmviesa002.fm.intel.com ([10.60.135.142])
-  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jun 2024 06:39:56 -0700
-X-CSE-ConnectionGUID: ZB3buApRQ7u/W+PlphXvWA==
-X-CSE-MsgGUID: NN/y/3DtT/+eqVwk+hP0Xw==
+  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jun 2024 06:40:01 -0700
+X-CSE-ConnectionGUID: oDPIF4EbTcWo/zmtwr4OEQ==
+X-CSE-MsgGUID: MtTJ/m5vQNWMfs3aiqRr5A==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.08,250,1712646000"; 
-   d="scan'208";a="65167401"
+   d="scan'208";a="65167443"
 Received: from intel.iind.intel.com (HELO brc5..) ([10.190.162.156])
-  by fmviesa002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jun 2024 06:39:52 -0700
+  by fmviesa002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jun 2024 06:39:57 -0700
 From: Tushar Vyavahare <tushar.vyavahare@intel.com>
 To: bpf@vger.kernel.org
 Cc: netdev@vger.kernel.org,
@@ -71,10 +72,12 @@ Cc: netdev@vger.kernel.org,
 	daniel@iogearbox.net,
 	tirthendu.sarkar@intel.com,
 	tushar.vyavahare@intel.com
-Subject: [PATCH bpf-next 0/2] selftests/xsk: Enhance traffic validation and batch size support
-Date: Wed, 19 Jun 2024 13:20:46 +0000
-Message-Id: <20240619132048.152830-1-tushar.vyavahare@intel.com>
+Subject: [PATCH bpf-next 1/2] selftests/xsk: Ensure traffic validation proceeds after ring size adjustment in xskxceiver
+Date: Wed, 19 Jun 2024 13:20:47 +0000
+Message-Id: <20240619132048.152830-2-tushar.vyavahare@intel.com>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20240619132048.152830-1-tushar.vyavahare@intel.com>
+References: <20240619132048.152830-1-tushar.vyavahare@intel.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -83,35 +86,43 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-This patch series introduces enhancements to xsk selftests, focusing on
-dynamic batch size configurations and robust traffic validation.
+Previously, HW_SW_MIN_RING_SIZE and HW_SW_MAX_RING_SIZE test cases were
+not validating Tx/Rx traffic at all due to early return after changing HW
+ring size in testapp_validate_traffic().
 
-Patch 1/2: Robust traffic validation post-ring size adjustment
+Fix the flow by checking return value of set_ring_size() and act upon it
+rather than terminating the test case there.
 
-- Fixed the flow in HW_SW_MIN_RING_SIZE and HW_SW_MAX_RING_SIZE test cases
-  to validate Tx/Rx traffic by checking the return value of
-  set_ring_size(), preventing premature test termination.
+Signed-off-by: Tushar Vyavahare <tushar.vyavahare@intel.com>
+---
+ tools/testing/selftests/bpf/xskxceiver.c | 14 +++++++++-----
+ 1 file changed, 9 insertions(+), 5 deletions(-)
 
-Patch 2/2: Dynamic batch size configuration
-
-- Overcomes the 2K batch size limit by introducing dynamic adjustments for
-  fill_size, comp_size, tx_size, and rx_size.
-- Update HW_SW_MAX_RING_SIZE test case that evaluates the maximum ring
-  sizes for AF_XDP, ensuring its reliability under maximum ring utilization.
-
-Ensure the xsk selftests patches improve overall reliability and
-efficiency, allowing the system to handle larger batch sizes and
-effectively validate traffic after configuration changes.
-
-Tushar Vyavahare (2):
-  selftests/xsk: Ensure traffic validation proceeds after ring size
-    adjustment in xskxceiver
-  selftests/xsk: Enhance batch size support with dynamic configurations
-
- tools/testing/selftests/bpf/xskxceiver.c | 40 +++++++++++++++++-------
- tools/testing/selftests/bpf/xskxceiver.h |  2 ++
- 2 files changed, 31 insertions(+), 11 deletions(-)
-
+diff --git a/tools/testing/selftests/bpf/xskxceiver.c b/tools/testing/selftests/bpf/xskxceiver.c
+index 2eac0895b0a1..088df53869e8 100644
+--- a/tools/testing/selftests/bpf/xskxceiver.c
++++ b/tools/testing/selftests/bpf/xskxceiver.c
+@@ -1899,11 +1899,15 @@ static int testapp_validate_traffic(struct test_spec *test)
+ 	}
+ 
+ 	if (test->set_ring) {
+-		if (ifobj_tx->hw_ring_size_supp)
+-			return set_ring_size(ifobj_tx);
+-
+-	ksft_test_result_skip("Changing HW ring size not supported.\n");
+-	return TEST_SKIP;
++		if (ifobj_tx->hw_ring_size_supp) {
++			if (set_ring_size(ifobj_tx)) {
++				ksft_test_result_skip("Failed to change HW ring size.\n");
++				return TEST_FAILURE;
++			}
++		} else {
++			ksft_test_result_skip("Changing HW ring size not supported.\n");
++			return TEST_SKIP;
++		}
+ 	}
+ 
+ 	xsk_attach_xdp_progs(test, ifobj_rx, ifobj_tx);
 -- 
 2.34.1
 
