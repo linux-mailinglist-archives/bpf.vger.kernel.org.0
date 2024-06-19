@@ -1,86 +1,69 @@
-Return-Path: <bpf+bounces-32514-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-32515-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2D46A90EB17
-	for <lists+bpf@lfdr.de>; Wed, 19 Jun 2024 14:26:36 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D4A8290EE17
+	for <lists+bpf@lfdr.de>; Wed, 19 Jun 2024 15:25:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B6FCD28230C
-	for <lists+bpf@lfdr.de>; Wed, 19 Jun 2024 12:26:34 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 80AD81F210E7
+	for <lists+bpf@lfdr.de>; Wed, 19 Jun 2024 13:25:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C253143752;
-	Wed, 19 Jun 2024 12:25:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1DF31147C7B;
+	Wed, 19 Jun 2024 13:25:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="M3B1OpPj"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KBxOc3rk"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f182.google.com (mail-pf1-f182.google.com [209.85.210.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A5F8142E96;
-	Wed, 19 Jun 2024 12:25:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 91E64143757;
+	Wed, 19 Jun 2024 13:25:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718799931; cv=none; b=EEL55amw4xZZNmjSzjTZWiqE7qxrGNv6BEvki/JfZqmcGXcrxd2cJMAURo+s9jGgFuCDpu3u+ywUsieBs/OSE71TZcMXFQjx6kKQ89rwLDDbsBSKZJ7Dy7Hx08NmPYNR2XU+Ae4V5YRq8ff30rNOTPUJN8rm8bxluWef0xXRBY0=
+	t=1718803529; cv=none; b=XghMO7CKivUSK/DHleEqb1i4TfSKeVMDBW0vsIwMhWc4k0lvatJFvsCTVMSWjZIeGSB+BQF2/iBHf4WeSDX6Hv/panJuh4i0oyjs7BK6+e706VNrEWzG/8CYymn2NQ3wq7xELvcCKaZovvKYE21HwVgyWbtMuiL8Mc8zNO5VMss=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718799931; c=relaxed/simple;
-	bh=hQNDan+UFqR9ttiAhh9GsVYNs82AvEXxBGvx1OpaPW0=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=RIFn6C2Q8tWS0XsefiDh7sHrl+G0nzxJfjSLGJ3DKhgsLyttyeeLxHjIJkTAq5decdbCaMwT0dLzzalVfSqSwNV0p9HOWZDg5omCOOggGx0X0M064sa9KCn+WoB4tQlkzRwYKkqozUhmw/ITF2NMqiwPieJ0SPZs3BgMDO8Zirg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=M3B1OpPj; arc=none smtp.client-ip=209.85.210.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f182.google.com with SMTP id d2e1a72fcca58-705fff50de2so563137b3a.1;
-        Wed, 19 Jun 2024 05:25:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1718799929; x=1719404729; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=Z0Ug2g/wIn4Acp6+WRdmoDjC1CjnDCEohkjBAJAA0nk=;
-        b=M3B1OpPjMfyYSchdw3dZLip852jfJboKKIbsxreIO2DtQRZ2u6dt8WG4o1vRd9g2l9
-         xeyFTp+uYWIIqQ7bcJVdnwb1sVQISlkujXOqw0pPKc6gSRX6WPMlg6S2RLk+Zgw8CqOt
-         SitnlohNSZ8xu7bQL7tpc9zoxoMWC42GT+rnIKLV62RMwUhXbs5GnuVbBWxc2THOqMHz
-         Regf3R+eiY16Uq/N4DhIOU19EytysOTqZJQi5tXCu9wxm7+oPQqxuxOmqH8JNTITaOqR
-         MXwvcz4ioUVLHZLtx4YQMTubjSftv348sLBi6i9bmgxuO399NjFSlJCuhf9I4SEeEz5o
-         EMwA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1718799929; x=1719404729;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Z0Ug2g/wIn4Acp6+WRdmoDjC1CjnDCEohkjBAJAA0nk=;
-        b=Kcy4x/EYTHm9zUkcwfKg2wei6vcb92N094YU0pHRSatCv14TVBBi9I4qWcn7GMgL+q
-         sPHMT9PCfZmhPlt2L/VUYuFHLPmigNrzsvwkRjVTxPX+Xbirqe8DR/OKJ4eLZhlqW09I
-         wxYumFeOgsa+ymiKceXONi1sP/6LwIBQpzg7+pXULm+4yZ+D7Mz6YfgiZpPy+ZMV8gKn
-         aqcrL9a2Ui4DHl8zVStT6ywCJVIo46fxQhUpTgolbMvtxjNfvBjbfifS+Ik/bUNe5gCg
-         kYUdSAdj6OnQh6MCCwtlWICiw0SaK1JPU9VHEgXiemmD5J9YGnGbCIDlFkbU3Ig61vvO
-         nXyA==
-X-Forwarded-Encrypted: i=1; AJvYcCXATus8DDEG9j7fitje79dL5LuN5lUke+fnqkWomkiiVfSNnzoqczdTarKr7KdvdMkTYU9zRksgnwdrwrt6P/9M3Sx59hiVPWNBn9y3dZHpGxpI1z6273w1FkqAaiIYSrHu
-X-Gm-Message-State: AOJu0Yzu4HSHtJ3kofbRkq/r2Van0HpveySwB2g2zKcW5xIEkriNfR9Q
-	0QnLcfDWh/gb/yrvvfEEMznoVjhnd2eCN+6lp19agFm+m/kXw8mM
-X-Google-Smtp-Source: AGHT+IE1n3e6J5vtH+XvnHz0Hcn1RKaFgUkqBTz8l9pQyCzGnMO9k0LxvqsUebPcdoSuJ03qhAwsaQ==
-X-Received: by 2002:a62:ee11:0:b0:704:3580:8e16 with SMTP id d2e1a72fcca58-7061ac34763mr7365753b3a.17.1718799929303;
-        Wed, 19 Jun 2024 05:25:29 -0700 (PDT)
-Received: from ubuntu.localdomain ([124.126.129.60])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-705ccb3d19esm10500824b3a.122.2024.06.19.05.25.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 19 Jun 2024 05:25:28 -0700 (PDT)
-From: Donglin Peng <dolinux.peng@gmail.com>
-To: alan.maguire@oracle.com,
-	eddyz87@gmail.com
-Cc: ast@kernel.org,
-	daniel@iogearbox.net,
-	song@kernel.org,
-	andrii@kernel.org,
-	haoluo@google.com,
-	yonghong.song@linux.dev,
+	s=arc-20240116; t=1718803529; c=relaxed/simple;
+	bh=CBl//lO4qFOL4+qF/5/XncehXiBwSbzhWClESpKygHg=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=p4ZesNmUfUUhc1h5bKgeQt8Z6eHUw8U1XM8URpnEcah99rbu+XEvTpWfxV/w2P3WFeyW1WFBQSbpoM0xBilkkYw0TSL6C0kCa4TAtVPLzGgummWdOpRW33jU+uHLFDLNNHu75H9C6VyUDoD/2tnd1Er0Z1MfDrDjLWtd3l4OsBc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KBxOc3rk; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0CD87C2BBFC;
+	Wed, 19 Jun 2024 13:25:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1718803529;
+	bh=CBl//lO4qFOL4+qF/5/XncehXiBwSbzhWClESpKygHg=;
+	h=From:To:Cc:Subject:Date:From;
+	b=KBxOc3rkLulVYUS/yi38GbU5HIewXsHaByRSrRPHh4yD1hEQfbs73Lyywsrqisjul
+	 W2K6j6Uuw6e23/aU60P5Wc7HUy5tYMxtfhKAL3mqj+NNOy3ilzxZXDKYa/c2yPQRvv
+	 mEaBUxPHk0hFbICXafyWFywDcHayO/W8QyDdIpjUVPJtyo8Qr397ZxjzRQIP0XN5Y9
+	 rtd6y2odW8P79RMndQ2WOeLLnhADrgXTkj5pgvtiahSENj044Psi88bgy7qomroEuX
+	 kQNlJIjY8ir0Q11Vq0b19w8G6xjEdctxL0qYBuVoxeHm33Tt3G7+h2WZjZnOkL8+id
+	 o6Fkfd9adLmRg==
+From: Puranjay Mohan <puranjay@kernel.org>
+To: Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>,
+	Stanislav Fomichev <sdf@google.com>,
+	Hao Luo <haoluo@google.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Xu Kuohai <xukuohai@huaweicloud.com>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>,
 	bpf@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Donglin Peng <dolinux.peng@gmail.com>
-Subject: [PATCH v2] libbpf: checking the btf_type kind when fixing variable offsets
-Date: Wed, 19 Jun 2024 05:23:55 -0700
-Message-Id: <20240619122355.426405-1-dolinux.peng@gmail.com>
-X-Mailer: git-send-email 2.25.1
+	linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org
+Cc: puranjay12@gmail.com
+Subject: [PATCH] bpf, arm64: inline bpf_get_current_task/_btf() helpers
+Date: Wed, 19 Jun 2024 13:13:34 +0000
+Message-Id: <20240619131334.4297-1-puranjay@kernel.org>
+X-Mailer: git-send-email 2.40.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -89,74 +72,61 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-I encountered an issue when building the test_progs from the repository[1]:
+On ARM64, the pointer to task_struct is always available in the sp_el0
+register and therefore the calls to bpf_get_current_task() and
+bpf_get_current_task_btf() can be inlined into a single MRS instruction.
 
-$ pwd
-/work/Qemu/x86_64/linux-6.10-rc2/tools/testing/selftests/bpf/
+Here is the difference before and after this change:
 
-$ make test_progs V=1
-...
-./tools/sbin/bpftool gen object ./ip_check_defrag.bpf.linked2.o ./ip_check_defrag.bpf.linked1.o
-libbpf: failed to find symbol for variable 'bpf_dynptr_slice' in section '.ksyms'
-Error: failed to link './ip_check_defrag.bpf.linked1.o': No such file or directory (2)
-...
+Before:
 
-Upon investigation, I discovered that the btf_types referenced in the '.ksyms'
-section had a kind of BTF_KIND_FUNC instead of BTF_KIND_VAR:
+; struct task_struct *task = bpf_get_current_task_btf();
+  54:   mov     x10, #0xffffffffffff7978        // #-34440
+  58:   movk    x10, #0x802b, lsl #16
+  5c:   movk    x10, #0x8000, lsl #32
+  60:   blr     x10          -------------->    0xffff8000802b7978 <+0>:     mrs     x0, sp_el0
+  64:   add     x7, x0, #0x0 <--------------    0xffff8000802b797c <+4>:     ret
 
-$ bpftool btf dump file ./ip_check_defrag.bpf.linked1.o
-...
-[2] DATASEC '.ksyms' size=0 vlen=2
-        type_id=16 offset=0 size=0 (FUNC 'bpf_dynptr_from_skb')
-        type_id=17 offset=0 size=0 (FUNC 'bpf_dynptr_slice')
-...
-[16] FUNC 'bpf_dynptr_from_skb' type_id=82 linkage=extern
-[17] FUNC 'bpf_dynptr_slice' type_id=85 linkage=extern
-...
+After:
 
-For a detailed analysis, please refer to [2]. We can add a kind checking to
-fix the issue.
+; struct task_struct *task = bpf_get_current_task_btf();
+  54:   mrs     x7, sp_el0
 
-[1] https://github.com/eddyz87/bpf/tree/binsort-btf-dedup
-[2] https://lore.kernel.org/all/0c0ef20c-c05e-4db9-bad7-2cbc0d6dfae7@oracle.com/
+This shows around 1% performance improvement in artificial microbenchmark.
 
-Fixes: 8fd27bf69b86 ("libbpf: Add BPF static linker BTF and BTF.ext support")
-Acked-by: Eduard Zingerman <eddyz87@gmail.com>
-Reviewed-by: Alan Maguire <alan.maguire@oracle.com>
-Signed-off-by: Donglin Peng <dolinux.peng@gmail.com>
+Signed-off-by: Puranjay Mohan <puranjay@kernel.org>
 ---
-v2:
- - Refactored the code using btf_is_var
- - Improved the comment to be more reasonable
----
- tools/lib/bpf/linker.c | 11 +++++++++--
- 1 file changed, 9 insertions(+), 2 deletions(-)
+ arch/arm64/net/bpf_jit_comp.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-diff --git a/tools/lib/bpf/linker.c b/tools/lib/bpf/linker.c
-index 0d4be829551b..5a583053e311 100644
---- a/tools/lib/bpf/linker.c
-+++ b/tools/lib/bpf/linker.c
-@@ -2213,10 +2213,17 @@ static int linker_fixup_btf(struct src_obj *obj)
- 		vi = btf_var_secinfos(t);
- 		for (j = 0, m = btf_vlen(t); j < m; j++, vi++) {
- 			const struct btf_type *vt = btf__type_by_id(obj->btf, vi->type);
--			const char *var_name = btf__str_by_offset(obj->btf, vt->name_off);
--			int var_linkage = btf_var(vt)->linkage;
-+			const char *var_name;
-+			int var_linkage;
- 			Elf64_Sym *sym;
+diff --git a/arch/arm64/net/bpf_jit_comp.c b/arch/arm64/net/bpf_jit_comp.c
+index 720336d28856..b838dab3bd26 100644
+--- a/arch/arm64/net/bpf_jit_comp.c
++++ b/arch/arm64/net/bpf_jit_comp.c
+@@ -1244,6 +1244,13 @@ static int build_insn(const struct bpf_insn *insn, struct jit_ctx *ctx,
+ 			break;
+ 		}
  
-+			/* could be a variable or function */
-+			if (!btf_is_var(vt))
-+				continue;
++		/* Implement helper call to bpf_get_current_task/_btf() inline */
++		if (insn->src_reg == 0 && (insn->imm == BPF_FUNC_get_current_task ||
++					   insn->imm == BPF_FUNC_get_current_task_btf)) {
++			emit(A64_MRS_SP_EL0(r0), ctx);
++			break;
++		}
 +
-+			var_name = btf__str_by_offset(obj->btf, vt->name_off);
-+			var_linkage = btf_var(vt)->linkage;
-+
- 			/* no need to patch up static or extern vars */
- 			if (var_linkage != BTF_VAR_GLOBAL_ALLOCATED)
- 				continue;
+ 		ret = bpf_jit_get_func_addr(ctx->prog, insn, extra_pass,
+ 					    &func_addr, &func_addr_fixed);
+ 		if (ret < 0)
+@@ -2581,6 +2588,8 @@ bool bpf_jit_inlines_helper_call(s32 imm)
+ {
+ 	switch (imm) {
+ 	case BPF_FUNC_get_smp_processor_id:
++	case BPF_FUNC_get_current_task:
++	case BPF_FUNC_get_current_task_btf:
+ 		return true;
+ 	default:
+ 		return false;
 -- 
-2.25.1
+2.40.1
 
 
