@@ -1,140 +1,155 @@
-Return-Path: <bpf+bounces-32547-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-32548-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0E19190F993
-	for <lists+bpf@lfdr.de>; Thu, 20 Jun 2024 00:53:28 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 565FB90F995
+	for <lists+bpf@lfdr.de>; Thu, 20 Jun 2024 00:56:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 206341C21F2A
-	for <lists+bpf@lfdr.de>; Wed, 19 Jun 2024 22:53:27 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3C5AA1C2150C
+	for <lists+bpf@lfdr.de>; Wed, 19 Jun 2024 22:56:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C6B0882C60;
-	Wed, 19 Jun 2024 22:53:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0AD3B15A84D;
+	Wed, 19 Jun 2024 22:56:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VvI8uZYj"
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="Eq4sBvQh"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
+Received: from mail-wr1-f43.google.com (mail-wr1-f43.google.com [209.85.221.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 02C0E763EE
-	for <bpf@vger.kernel.org>; Wed, 19 Jun 2024 22:53:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF481763EE
+	for <bpf@vger.kernel.org>; Wed, 19 Jun 2024 22:56:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718837601; cv=none; b=c5uhvTosTyHueQHIqN1h20c5Urm2GRIGD0PVhLgleZWyQ7CGdGwc1DnWaB75uOPG5bKQ/el+lzvNssOPdSokPdh1jjziuDuxAjNvGgw8cHr2AnMbVIf/BZSGmQe7MwvsHC5m98ECYUe1CkIdJ7hyOKi3GAA5ZBTt95JZpH3pVMI=
+	t=1718837789; cv=none; b=VBY92B9NES2CtRz8YlSUXLfvyQbAFGu8bAZhzxQc2Ff1cP1DI0YtopMI/j+wDJQTibEX4pP5n+oUkgMda/Axc4cxTqvNYqXA/H8cSSUt1C8x/Jlt03wDQAnVZERR0RHEqgqnXwHLfMj4MDwsogadoI1cjuOnaRkkMHbsKJTleWc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718837601; c=relaxed/simple;
-	bh=9VlmOWBsE0EaPzUnOkDtefbL+S2GN92At/aAbtgwUk4=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=icS0EJcsuEhcLkvY2k933nGEmDj8/75XX1kiDoU8s+aIJqdmXypSS2JJ9NazhRU7r4fwlZCBazDrRiDPmoe+plYvpUHKQBza9VN5TIkeJ/EfBJVWsAgWgiGztTtBkuH3IFNOUKJUQrQcgEeSzyJtg5at1/GUfzRJachLZPC7tlo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=VvI8uZYj; arc=none smtp.client-ip=209.85.214.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f173.google.com with SMTP id d9443c01a7336-1f47f07acd3so2205305ad.0
-        for <bpf@vger.kernel.org>; Wed, 19 Jun 2024 15:53:19 -0700 (PDT)
+	s=arc-20240116; t=1718837789; c=relaxed/simple;
+	bh=oA+sj7Djqxbrarm7I2zjgfnb3L6txQDz+HbmFlGzGUA=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=GKNGtInzTpTg1Jivb9lU+5282mMjJ/8BIpXvrZd9qKu+C1bZeIDRxY/vRUWkXhUO9h+TFobc1MR82ptDONGiF4ZuEBJ8TirD0mm3bvLXkqZqcG31F3D2vYgpzBO21nJIVJc5w2PNsFKIcoEJFX7T97UoCNY2OHW/DyEcnjdFHBo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=Eq4sBvQh; arc=none smtp.client-ip=209.85.221.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
+Received: by mail-wr1-f43.google.com with SMTP id ffacd0b85a97d-363826fbcdeso236275f8f.0
+        for <bpf@vger.kernel.org>; Wed, 19 Jun 2024 15:56:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1718837599; x=1719442399; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=7tBjX4+1mPy/yE0AtNn3E7NR3S9qq47OXPUHX/nYVyo=;
-        b=VvI8uZYj3nYzfAYe62d2ESWIoDPKUIjv3/gK0BUXB3NeWN720OQYNJAsGfcOUbcXb5
-         yTNzRWCCWPpcmTliB+Y2LuO3xDE3Od4FhzULsSNZD6QFDwwmyH2JlikviD4NO7uRTw+O
-         iwzhTGVoS6nNMfAU6vjphnc4yvBYmeTx9xMJBl8XLhqvh5zj71S5sZPk64rbwPFeI27/
-         eja/ZuIxsP8tj66wHErSAMlGOuF5P5awKgpNebm9IwIbEP2CfFXAS21uXXkZoteCOtyr
-         a6vPLDp0DzjOZ1JHG1KgAzJ9EO/c2Xs3H60sn6NzcsMxOgLYQX1lh9Jzz+am+8L06tgB
-         1WsA==
+        d=linux-foundation.org; s=google; t=1718837786; x=1719442586; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=i4ArltmimkgOuzhs9/gakjvhfS3EBeG4nlT8epF65b4=;
+        b=Eq4sBvQhkKxdGuVqN58QiMUHPrwF9M5TQ87OMUPXahvrdLOSEP3iYk2jJmRykyhckH
+         dNL+tb621+XZGw9MbB7gqoKm7VLNnuo/yuzWY4MsN8lFVV2IG+76dWecdbEDltuHQZcO
+         klYVDPRDaGic1rDlBLOS8BP7yk3V21P3vh0vQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1718837599; x=1719442399;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=7tBjX4+1mPy/yE0AtNn3E7NR3S9qq47OXPUHX/nYVyo=;
-        b=C41qzGHpuJaBOLPnOdQ+LLYx+foADtjFAlIXfU71rWdA1pejHzgxbbQKgwgNr1JpDv
-         N+QG/cnZ2FIkEqGhGnRfxih8rsbrsZkYFXBMh0stPn5cqpGtmNF/9xHPkrtfonp7MGDH
-         hvCPbESws+RmilxpHXgKcTbIqDpSCsyUkoICfx9Uj6k8dXbSSkxjnWa0kF+KQATOw+pO
-         0A6oO9mbsbdGaSUl9K1mPA+X31A+1BFpJOtKbirws39jZ7N0yuJZ0CWt3p9RNl3Dte9T
-         jNnlkDhjaRKqIEE7QdQ5m/puI8dzqS2E1QiZm1Nmw5YxeRcaa9WANLWh16Qjj7Fjra1e
-         BH7Q==
-X-Forwarded-Encrypted: i=1; AJvYcCX7/MHAFtZBGbqPB6x+uztvN1eY+apBMb96KuA+MbDxM6Ul8TCMbQ0ztXIaKw4SX9Q3w4rWuf7B3P9aPs5dlQkMaZr3
-X-Gm-Message-State: AOJu0YzdFqDD+r3ncyp98qaP1HMoMmL9uWAnCR71cl1Tv56uZ/GLxQ3F
-	fcnVIpXGgSxheajoDN+KuwxIr9TegI4+kHV0pXm2IUw8kF6VMUBA
-X-Google-Smtp-Source: AGHT+IHU/SlUOI48fDOkvxWvR7cthX8bG+wHQYM1QVtM7Qh0uKRZQKCWdocBVmAvbexWpFa5XYCPRw==
-X-Received: by 2002:a17:902:d382:b0:1f6:fe0d:ad47 with SMTP id d9443c01a7336-1f9aa46e784mr34086505ad.62.1718837599274;
-        Wed, 19 Jun 2024 15:53:19 -0700 (PDT)
-Received: from [192.168.0.31] ([38.34.87.7])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-1f855e55e5fsm123240285ad.59.2024.06.19.15.53.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 19 Jun 2024 15:53:18 -0700 (PDT)
-Message-ID: <98105e974668a12d72cb3bdf490a70a4b1e227ad.camel@gmail.com>
-Subject: Re: [PATCH bpf] bpf: add missing check_func_arg_reg_off() to
- prevent out-of-bounds memory accesses
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Matt Bobrowski <mattbobrowski@google.com>, bpf@vger.kernel.org
-Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
- kpsingh@kernel.org,  sdf@fomichev.me, jolsa@kernel.org, Kumar Kartikeya
- Dwivedi <memxor@gmail.com>
-Date: Wed, 19 Jun 2024 15:53:13 -0700
-In-Reply-To: <20240619082946.2389067-1-mattbobrowski@google.com>
-References: <20240619082946.2389067-1-mattbobrowski@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.44.4-0ubuntu2 
+        d=1e100.net; s=20230601; t=1718837786; x=1719442586;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=i4ArltmimkgOuzhs9/gakjvhfS3EBeG4nlT8epF65b4=;
+        b=WU35AZF08LG4Ft5ja+uItr2BwkZE+dY1OvXq3e6iPUT1Ps2cbD8ZZCwiC4Rz8SQa7h
+         2a/IlsVex0oI3pM5ulcJLwSiHauQ8OtK3k8mxDTFF5UU4q31dgjE197Cj6iUXpW0UH2G
+         fCQ2FTfBdeWsSa/QNXsNeD1YRS5oEB60VhOAgSdFORIi2pRkAzlWZbIbyzumJKRQJEu1
+         UUAT/W46rSPcSmh2YDLb67NnF7NeSb2XXkATltPyERA+S3Bk69JgOw2KKZl9ONQD38tH
+         txXPYggwbCLQ00s8YM0YJNVx4DWWvB9NwhX2VpBaMhE8cWsxIsIiTUjImzI1X9NBLmcT
+         ClgA==
+X-Forwarded-Encrypted: i=1; AJvYcCVrFb8CHxarOKE8fYg6/hMbrCAvsNMJKn8UcmiIRjYcRVFLgI24l7TWJkatvvAdammtFHh4CKjhwSjUMnz0hDYW6c3e
+X-Gm-Message-State: AOJu0Yz9TViBTeXZcVaJiBvZMONwtly3yHg2ldfa9uEfAmLAle3JraPD
+	S/VXdcEJPIXpF4swWmfP18OSnFx9Bc3B6J6uwsvhbmlPP+SLQn/Ug5Y5KYrr7HcENlN5EBLCtFA
+	A3bS9Dg==
+X-Google-Smtp-Source: AGHT+IFmkEdJVBTa74R8REbEIq8xBc9q0MZUed9YLUK0Ec/jPAHzYpmqw8mK5Tv3SUpwDynUOeDRrA==
+X-Received: by 2002:a05:6000:1e81:b0:364:aafb:6019 with SMTP id ffacd0b85a97d-364aafb6085mr289706f8f.4.1718837785942;
+        Wed, 19 Jun 2024 15:56:25 -0700 (PDT)
+Received: from mail-wm1-f52.google.com (mail-wm1-f52.google.com. [209.85.128.52])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a6f56ecdd79sm711486866b.132.2024.06.19.15.56.25
+        for <bpf@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 19 Jun 2024 15:56:25 -0700 (PDT)
+Received: by mail-wm1-f52.google.com with SMTP id 5b1f17b1804b1-424720e73e0so3528325e9.0
+        for <bpf@vger.kernel.org>; Wed, 19 Jun 2024 15:56:25 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCVfKCXHPwCjuXILRXLiPwueSUHDiIy6iNy15aNfoQBHJmJOxgy6LIWa3+pNPvlZy1uUHm0Uh2O+wJnyCg0ASEXMG2b3
+X-Received: by 2002:a17:906:2519:b0:a6f:5a48:7b90 with SMTP id
+ a640c23a62f3a-a6fab641667mr177288966b.38.1718837763732; Wed, 19 Jun 2024
+ 15:56:03 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+References: <CAHk-=wg8APE61e5Ddq5mwH55Eh0ZLDV4Tr+c6_gFS7g2AxnuHQ@mail.gmail.com>
+ <87ed8sps71.ffs@tglx> <CAHk-=wg3RDXp2sY9EXA0JD26kdNHHBP4suXyeqJhnL_3yjG2gg@mail.gmail.com>
+ <87bk3wpnzv.ffs@tglx>
+In-Reply-To: <87bk3wpnzv.ffs@tglx>
+From: Linus Torvalds <torvalds@linux-foundation.org>
+Date: Wed, 19 Jun 2024 15:55:46 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wiKgKpNA6Dv7zoLHATweM-nEYWeXeFdS03wUQ8-V4wFxg@mail.gmail.com>
+Message-ID: <CAHk-=wiKgKpNA6Dv7zoLHATweM-nEYWeXeFdS03wUQ8-V4wFxg@mail.gmail.com>
+Subject: Re: [PATCHSET v6] sched: Implement BPF extensible scheduler class
+To: Thomas Gleixner <tglx@linutronix.de>
+Cc: Tejun Heo <tj@kernel.org>, mingo@redhat.com, peterz@infradead.org, 
+	juri.lelli@redhat.com, vincent.guittot@linaro.org, dietmar.eggemann@arm.com, 
+	rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de, bristot@redhat.com, 
+	vschneid@redhat.com, ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, 
+	martin.lau@kernel.org, joshdon@google.com, brho@google.com, pjt@google.com, 
+	derkling@google.com, haoluo@google.com, dvernet@meta.com, 
+	dschatzberg@meta.com, dskarlat@cs.cmu.edu, riel@surriel.com, 
+	changwoo@igalia.com, himadrics@inria.fr, memxor@gmail.com, 
+	andrea.righi@canonical.com, joel@joelfernandes.org, 
+	linux-kernel@vger.kernel.org, bpf@vger.kernel.org, kernel-team@meta.com
+Content-Type: text/plain; charset="UTF-8"
 
-On Wed, 2024-06-19 at 08:29 +0000, Matt Bobrowski wrote:
-> Currently, it's possible to pass in a modified CONST_PTR_TO_DYNPTR to
-> a global function as an argument. The adverse effects of this is that
-> BPF helpers can continue to make use of this modified
-> CONST_PTR_TO_DYNPTR from within the context of the global function,
-> which can unintentionally result in out-of-bounds memory accesses and
-> therefore compromise overall system stability i.e.
+On Wed, 19 Jun 2024 at 15:27, Thomas Gleixner <tglx@linutronix.de> wrote:
+>
+> On Wed, Jun 19 2024 at 15:10, Linus Torvalds wrote:
+> >
+> > The thing is, I have seen absolutely _nothing_ in the last 9 months or
+> > so.
+>
+> Right, but that applies to both sides, no?
 
-[...]
+But Thomas, this isn't a "both sides" issue.
 
-> Reported-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-> Signed-off-by: Matt Bobrowski <mattbobrowski@google.com>
-> ---
+This is a "people want to do new code and features, and the scheduler
+people ARE ACTIVELY HOLDING IT UP" issue.
 
-Hi Matt,
+Yes, part of that "actively holding it up" is trying to make rules for
+"you need to do this other XYZ thing to make us happy".
 
-Thank you for fixing this bug. Overall looks good,
-I second the requests from Kumar + one nit from me.
-Also, note that kfunc_param_nullable/kfunc_dynptr_nullable_test3
-needs an update.
+But no, then "not doing XYZ" does *NOT* make it some "but but other side" issue.
 
-Acked-by: Eduard Zingerman <eddyz87@gmail.com>
+This, btw, is not some new thing. It's something that has been
+discussed multiple times over the years at the maintainer summit for
+different maintainers. When people come in and propose feature X, it's
+not kosher to then say "you have to do Y first".
 
-[...]
+And yes, maybe everybody even agrees that Y would be a good thing, and
+yes, wouldn't it be lovely if somebody did it. But the people who
+wanted X didn't care about Y, and trying to get Y done by then gating
+X is simply not ok.
 
-> @@ -9464,7 +9471,13 @@ static int btf_check_func_arg_match(struct bpf_ver=
-ifier_env *env, int subprog,
->  				return -EINVAL;
->  			}
->  		} else if (arg->arg_type =3D=3D (ARG_PTR_TO_DYNPTR | MEM_RDONLY)) {
-> -			ret =3D process_dynptr_func(env, regno, -1, arg->arg_type, 0);
-> +			ret =3D check_func_arg_reg_off(env, reg, regno,
-> +						     ARG_PTR_TO_DYNPTR);
+Now, if there was some technical argument against X itself, that would
+be one thing. But the arguments I've heard have basically fallen into
+two camps: the political one ("We don't want to do X because we simply
+don't want an extensible scheduler, because we want people to work on
+_our_ scheduler") and the tying one ("X is ok but we want Y solved
+first").
 
-Nit: Please avoid splitting lines too often, this line should be:
-			ret =3D check_func_arg_reg_off(env, reg, regno, ARG_PTR_TO_DYNPTR);
-     the limit for line length is 100 characters.
-     There are a few more such places.
+I was hoping the tying argument would get solved. I saw a couple of
+half-hearted emails to that effect, and Rik at some point saying
+"maybe the problems are solvable", referring to his work from a couple
+of years ago, but again, nothing actually happened.
 
-> +			if (ret)
-> +				return ret;
-> +
-> +			ret =3D process_dynptr_func(env, regno, -1, arg->arg_type,
-> +						  0);
->  			if (ret)
->  				return ret;
->  		} else if (base_type(arg->arg_type) =3D=3D ARG_PTR_TO_BTF_ID) {
+And I don't see the argument that the way to make something happen is
+to continue to do nothing.
 
-[...]
+    https://www.youtube.com/watch?v=lOTyUfOHgas
+
+Because if you are serious about making forward progress *with* the
+BPF extensions, why not merge them and actually work with that as the
+base?
+
+IOW, what is the argument for _not_ merging it?
+
+                        Linus
 
