@@ -1,97 +1,56 @@
-Return-Path: <bpf+bounces-32543-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-32541-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C142490F961
-	for <lists+bpf@lfdr.de>; Thu, 20 Jun 2024 00:50:15 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7DBE290F95D
+	for <lists+bpf@lfdr.de>; Thu, 20 Jun 2024 00:50:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 54721283B4A
-	for <lists+bpf@lfdr.de>; Wed, 19 Jun 2024 22:50:14 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EEA851F236A2
+	for <lists+bpf@lfdr.de>; Wed, 19 Jun 2024 22:50:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B5D2E15B978;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C81715B157;
 	Wed, 19 Jun 2024 22:49:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="smRbBT/c";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="g3E3XRzi";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="smRbBT/c";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="g3E3XRzi"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3BE9C80C15;
-	Wed, 19 Jun 2024 22:49:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F26077F10;
+	Wed, 19 Jun 2024 22:49:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718837387; cv=none; b=arnBbHzdkOa6E3iTraKNCzH3zl5LctpUbHVSpv2gqfQAUg2loF8RXAUaz7QB4cO0LUPvTRt+1NiJUiZZPL+t7niNrXi8BwnGyRwWskQUF+pEeB1BUXIUSs54rkJAj8i3yja7WajnlzcqwzsEH05Ap0bCXce3mnEd/sSI1keTHoo=
+	t=1718837386; cv=none; b=bnQO/3hGfs1t7NJr4gGMVPm7vsm9uqaucs2DQxlYhI5YQjkAizsDiY5FazTSHJWomJwXSFZHSX6UtLf9bKdB9u/WE+sZbrr/6ftrNtqQBfP1pu1vN7dHstjTAUV2h3+iWymB9IfIhO3hlFqYseJw1at2t2/dkYrC03qO2XxwkdI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718837387; c=relaxed/simple;
-	bh=/cKM1m+IMVDzuJzFS+1fl48bPoWvR2tEgzVaVUXVT8A=;
+	s=arc-20240116; t=1718837386; c=relaxed/simple;
+	bh=nCcr0F2SycRd4ZmkZlDmyM/fEKeGlbV/Lf6N6wPJuRc=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=MUzScgJFsBHOY4IOyTTKkV3zuNI1ZIIOY/8FyxDM9/ZuOZ+mcrHFKMsQ8y6Evp3bRmmAIqnYLX76euApKKrCLqtT9rMnfiVSTdNGRjTDLPkIaBlWlac+DCY3TkF5bseUJlXTCnAi33TSwHCN4KWlyADOqZO756rAvH3S5trC/u8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=smRbBT/c; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=g3E3XRzi; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=smRbBT/c; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=g3E3XRzi; arc=none smtp.client-ip=195.135.223.131
+	 In-Reply-To:To:Cc; b=fBB6QS6icyvN5LHJcPMurMQZqCwGFLZt7yrQi58ossh3gDo9SVPDQEkvus/3SYOAcqyxClrppVTMIlMtfd9iDOdMTgObpnmfiP2t676Ir1cbsiAiQizuD77jR5ucwC/DnOHvjPNPcqQEVbpOMFTF5Ne+cL5/Ds8XKwfynoVuZ4U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; arc=none smtp.client-ip=195.135.223.130
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 25D261F7F5;
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 41DA621A2E;
 	Wed, 19 Jun 2024 22:49:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1718837383; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=r7eLs3qWVHkCYzNUctfASvMgvFekhPcbd8a5b9Uty8M=;
-	b=smRbBT/csZSGJtlsJ4JN3oklSIC7vbquyuWyYFQK4X7uOph5tB+4a752AntXvJy1S6SyqH
-	IS3Q3mHFdaV3Nuk7YxxoaL7OyDll3aJ5H4tMiqF2zEByxywgSPn6DUWnsDAtqd2l0oVEwI
-	Ih3Y7GYugjJN390WQpBeTcoBGFUj6Z4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1718837383;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=r7eLs3qWVHkCYzNUctfASvMgvFekhPcbd8a5b9Uty8M=;
-	b=g3E3XRziF6HgkAAPS88wKQ5lNo4texbHFNeFeEwV0v4mYHhP+i771BZm1quZ/kUsnkbfs9
-	f1WTtAqzsMR7PdDw==
-Authentication-Results: smtp-out2.suse.de;
+Authentication-Results: smtp-out1.suse.de;
 	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1718837383; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=r7eLs3qWVHkCYzNUctfASvMgvFekhPcbd8a5b9Uty8M=;
-	b=smRbBT/csZSGJtlsJ4JN3oklSIC7vbquyuWyYFQK4X7uOph5tB+4a752AntXvJy1S6SyqH
-	IS3Q3mHFdaV3Nuk7YxxoaL7OyDll3aJ5H4tMiqF2zEByxywgSPn6DUWnsDAtqd2l0oVEwI
-	Ih3Y7GYugjJN390WQpBeTcoBGFUj6Z4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1718837383;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=r7eLs3qWVHkCYzNUctfASvMgvFekhPcbd8a5b9Uty8M=;
-	b=g3E3XRziF6HgkAAPS88wKQ5lNo4texbHFNeFeEwV0v4mYHhP+i771BZm1quZ/kUsnkbfs9
-	f1WTtAqzsMR7PdDw==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 0152E13ABD;
-	Wed, 19 Jun 2024 22:49:42 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 1F2C313AC3;
+	Wed, 19 Jun 2024 22:49:43 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id 0PuTO4Zgc2aFIAAAD6G6ig
-	(envelope-from <vbabka@suse.cz>); Wed, 19 Jun 2024 22:49:42 +0000
+	id EHVGB4dgc2aFIAAAD6G6ig
+	(envelope-from <vbabka@suse.cz>); Wed, 19 Jun 2024 22:49:43 +0000
 From: Vlastimil Babka <vbabka@suse.cz>
-Date: Thu, 20 Jun 2024 00:48:55 +0200
-Subject: [PATCH v2 1/7] fault-inject: add support for static keys around
- fault injection sites
+Date: Thu, 20 Jun 2024 00:48:56 +0200
+Subject: [PATCH v2 2/7] error-injection: support static keys around
+ injectable functions
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -100,7 +59,7 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240620-fault-injection-statickeys-v2-1-e23947d3d84b@suse.cz>
+Message-Id: <20240620-fault-injection-statickeys-v2-2-e23947d3d84b@suse.cz>
 References: <20240620-fault-injection-statickeys-v2-0-e23947d3d84b@suse.cz>
 In-Reply-To: <20240620-fault-injection-statickeys-v2-0-e23947d3d84b@suse.cz>
 To: Akinobu Mita <akinobu.mita@gmail.com>, Christoph Lameter <cl@linux.com>, 
@@ -116,188 +75,235 @@ Cc: Jiri Olsa <jolsa@kernel.org>, Roman Gushchin <roman.gushchin@linux.dev>,
  linux-mm@kvack.org, bpf@vger.kernel.org, linux-trace-kernel@vger.kernel.org, 
  Vlastimil Babka <vbabka@suse.cz>
 X-Mailer: b4 0.14.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=4698; i=vbabka@suse.cz;
- h=from:subject:message-id; bh=/cKM1m+IMVDzuJzFS+1fl48bPoWvR2tEgzVaVUXVT8A=;
- b=owEBbQGS/pANAwAIAbvgsHXSRYiaAcsmYgBmc2Byf1V3Bpp5LNGsY/c7Mzv3/GsPZ55FjBkLd
- LX7xvgBpSWJATMEAAEIAB0WIQR7u8hBFZkjSJZITfG74LB10kWImgUCZnNgcgAKCRC74LB10kWI
- mrooB/987gBj0pha0dvAhFXZiGUJdrVCDtQ6t2BV/SIlkveQM37wjVIcJKlT46POmu0EAVLbGts
- rfVWVX5e4aCI80nZ5KpkSs0COyqzR+4Eym09R0s0Mm29ctQ8BJYXISybtjvacF6lT2sDF1PvZG8
- i3JzV58YERvX5BU+hxW2HjtgpEHgCzBBjFK/t/heKLFCeork00ZpNgQXER2fUDtpVCd4m62wTb9
- aJr4p+K+XdUOvo164UnmBjTbqVN9BjUYA1laDaYyZ5+8942w7HBeyumYAqx3oJBarTi3ujoosjc
- 1Yyw2OhX6svXSoURISrllNMod+BTK/2jVgFrBLmcWyLPRwOW
+X-Developer-Signature: v=1; a=openpgp-sha256; l=6789; i=vbabka@suse.cz;
+ h=from:subject:message-id; bh=nCcr0F2SycRd4ZmkZlDmyM/fEKeGlbV/Lf6N6wPJuRc=;
+ b=owEBbQGS/pANAwAIAbvgsHXSRYiaAcsmYgBmc2B1Frl4h+MJPB9HCCgG1OKOEt9S1LyDBVAEU
+ 7M0ia0/FuiJATMEAAEIAB0WIQR7u8hBFZkjSJZITfG74LB10kWImgUCZnNgdQAKCRC74LB10kWI
+ mp78B/0Vz6PDUOi8A2kc1lduJ93rou5JOVEFkLMCT4JoJKKbCqgoG658Fnnx3HlaQKP7S28r1fP
+ 3vgXATaULFd5SCEjA0oxzDNE6YzK5EL7BA3K1xGx2ofu2hYba8jUh2vCZNZdX5+CZfVZ0ia4k1F
+ HeqTxFmhEPAcJdAKjraSQVpcrsT7x5vV2wQojWCTDZ6JdWc8oL0+KJgVJG2ZQa3s8WdwYCP3nLu
+ 7jplQLjhYrn1Z/XT2KfZoM2MkKZtaAbOHvn26QSrMM7DkuEfK4dHHHDCMXkU9NPJ7I3zN5sUNll
+ X6uoyBbRQtQVe7e4xWwoXZNVn1VN3YvXt5fClIg6WZkAwvHt
 X-Developer-Key: i=vbabka@suse.cz; a=openpgp;
  fpr=A940D434992C2E8E99103D50224FA7E7CC82A664
-X-Spamd-Result: default: False [-6.80 / 50.00];
-	REPLY(-4.00)[];
-	BAYES_HAM(-3.00)[100.00%];
-	SUSPICIOUS_RECIPS(1.50)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	RCVD_TLS_ALL(0.00)[];
-	ARC_NA(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	TAGGED_RCPT(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	TO_DN_SOME(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[20];
-	FREEMAIL_TO(0.00)[gmail.com,linux.com,google.com,kernel.org,iogearbox.net,linux.ibm.com,intel.com,davemloft.net,goodmis.org,arm.com];
-	FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	MID_RHS_MATCH_FROM(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	FREEMAIL_CC(0.00)[kernel.org,linux.dev,gmail.com,vger.kernel.org,kvack.org,suse.cz];
-	R_RATELIMIT(0.00)[to_ip_from(RL5nkphuxq5kxo98ppmuqoc8wo)];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	RCVD_COUNT_TWO(0.00)[2];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email]
+X-Rspamd-Pre-Result: action=no action;
+	module=replies;
+	Message is reply to one we originated
 X-Spam-Flag: NO
-X-Spam-Score: -6.80
+X-Spam-Score: -4.00
 X-Spam-Level: 
+X-Rspamd-Pre-Result: action=no action;
+	module=replies;
+	Message is reply to one we originated
+X-Rspamd-Queue-Id: 41DA621A2E
+X-Rspamd-Action: no action
+X-Spamd-Result: default: False [-4.00 / 50.00];
+	REPLY(-4.00)[];
+	TAGGED_RCPT(0.00)[]
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
 
-Some fault injection sites are placed in hotpaths and incur overhead
-even if not enabled, due to one or more function calls leading up to
-should_fail_ex() that returns false due to attr->probability == 0.
+Error injectable functions cannot be inlined and since some are called
+from hot paths, this incurs overhead even if no error injection is
+enabled for them.
 
-This overhead can be eliminated if the outermost call into the checks is
-guarded with a static key, so add support for that. The framework should
-be told that such static key exist for a fault_attr, by initializing
-fault_attr->active with the static key address. When it's not NULL,
-enable the static key from setup_fault_attr() when the fault probability
-is non-zero.
+To avoid this overhead when disabled, allow the callsites of error
+injectable functions to put the calls behind a static key, which the
+framework can control when error injection is enabled or disabled for
+the function.
 
-Also wire up writing into debugfs "probability" file to enable or
-disable the static key when transitioning between zero and non-zero
-probability.
+Introduce a new ALLOW_ERROR_INJECTION_KEY() macro that adds a parameter
+with the static key's address, and store it in struct
+error_injection_entry. This new field has caused a mismatch when
+populating the injection list from the _error_injection_whitelist
+section using the current STRUCT_ALIGN(), so change the alignment to 8.
 
-For now, do not add configfs interface support as the immediate plan is
-to leverage this for should_failslab() and should_fail_alloc_page()
-after other necessary preparatory changes, and not for any of the
-configfs based fault injection users.
+During the population, copy the key's address also to struct ei_entry,
+and make it possible to retrieve it by get_injection_key().
+
+Finally, make the processing of writes to the debugfs inject file enable
+the static key when the function is added to the injection list, and
+disable when removed.
 
 Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
 ---
- include/linux/fault-inject.h |  7 ++++++-
- lib/fault-inject.c           | 43 ++++++++++++++++++++++++++++++++++++++++++-
- 2 files changed, 48 insertions(+), 2 deletions(-)
+ include/asm-generic/error-injection.h | 13 ++++++++++++-
+ include/asm-generic/vmlinux.lds.h     |  2 +-
+ include/linux/error-injection.h       | 12 ++++++++++--
+ kernel/fail_function.c                | 10 ++++++++++
+ lib/error-inject.c                    | 19 +++++++++++++++++++
+ 5 files changed, 52 insertions(+), 4 deletions(-)
 
-diff --git a/include/linux/fault-inject.h b/include/linux/fault-inject.h
-index 6d5edef09d45..cfe75cc1bac4 100644
---- a/include/linux/fault-inject.h
-+++ b/include/linux/fault-inject.h
-@@ -9,6 +9,7 @@
- #include <linux/configfs.h>
- #include <linux/ratelimit.h>
- #include <linux/atomic.h>
-+#include <linux/jump_label.h>
+diff --git a/include/asm-generic/error-injection.h b/include/asm-generic/error-injection.h
+index b05253f68eaa..eed2731f3820 100644
+--- a/include/asm-generic/error-injection.h
++++ b/include/asm-generic/error-injection.h
+@@ -12,6 +12,7 @@ enum {
  
- /*
-  * For explanation of the elements of this struct, see
-@@ -30,13 +31,14 @@ struct fault_attr {
- 	unsigned long count;
- 	struct ratelimit_state ratelimit_state;
- 	struct dentry *dname;
-+	struct static_key *active;
+ struct error_injection_entry {
+ 	unsigned long	addr;
++	unsigned long	static_key_addr;
+ 	int		etype;
  };
  
- enum fault_flags {
- 	FAULT_NOWARN =	1 << 0,
- };
- 
--#define FAULT_ATTR_INITIALIZER {					\
-+#define FAULT_ATTR_INITIALIZER_KEY(_key) {				\
- 		.interval = 1,						\
- 		.times = ATOMIC_INIT(1),				\
- 		.require_end = ULONG_MAX,				\
-@@ -44,8 +46,11 @@ enum fault_flags {
- 		.ratelimit_state = RATELIMIT_STATE_INIT_DISABLED,	\
- 		.verbose = 2,						\
- 		.dname = NULL,						\
-+		.active = (_key),					\
+@@ -25,16 +26,26 @@ struct pt_regs;
+  * 'Error Injectable Functions' section.
+  */
+ #define ALLOW_ERROR_INJECTION(fname, _etype)				\
+-static struct error_injection_entry __used				\
++static struct error_injection_entry __used __aligned(8)			\
+ 	__section("_error_injection_whitelist")				\
+ 	_eil_addr_##fname = {						\
+ 		.addr = (unsigned long)fname,				\
+ 		.etype = EI_ETYPE_##_etype,				\
  	}
  
-+#define FAULT_ATTR_INITIALIZER		FAULT_ATTR_INITIALIZER_KEY(NULL)
-+
- #define DECLARE_FAULT_ATTR(name) struct fault_attr name = FAULT_ATTR_INITIALIZER
- int setup_fault_attr(struct fault_attr *attr, char *str);
- bool should_fail_ex(struct fault_attr *attr, ssize_t size, int flags);
-diff --git a/lib/fault-inject.c b/lib/fault-inject.c
-index d608f9b48c10..de9552cb22d0 100644
---- a/lib/fault-inject.c
-+++ b/lib/fault-inject.c
-@@ -35,6 +35,9 @@ int setup_fault_attr(struct fault_attr *attr, char *str)
- 	atomic_set(&attr->times, times);
- 	atomic_set(&attr->space, space);
- 
-+	if (probability != 0 && attr->active)
-+		static_key_slow_inc(attr->active);
-+
- 	return 1;
- }
- EXPORT_SYMBOL_GPL(setup_fault_attr);
-@@ -166,6 +169,12 @@ EXPORT_SYMBOL_GPL(should_fail);
- 
- #ifdef CONFIG_FAULT_INJECTION_DEBUG_FS
- 
-+/*
-+ * Protect updating probability from debugfs as that may trigger static key
-+ * changes when changing between zero and non-zero.
-+ */
-+static DEFINE_MUTEX(probability_mutex);
-+
- static int debugfs_ul_set(void *data, u64 val)
- {
- 	*(unsigned long *)data = val;
-@@ -186,6 +195,38 @@ static void debugfs_create_ul(const char *name, umode_t mode,
- 	debugfs_create_file(name, mode, parent, value, &fops_ul);
- }
- 
-+static int debugfs_prob_set(void *data, u64 val)
-+{
-+	struct fault_attr *attr = data;
-+
-+	mutex_lock(&probability_mutex);
-+
-+	if (attr->active) {
-+		if (attr->probability != 0 && val == 0) {
-+			static_key_slow_dec(attr->active);
-+		} else if (attr->probability == 0 && val != 0) {
-+			static_key_slow_inc(attr->active);
-+		}
++#define ALLOW_ERROR_INJECTION_KEY(fname, _etype, key)			\
++static struct error_injection_entry __used __aligned(8)			\
++	__section("_error_injection_whitelist")				\
++	_eil_addr_##fname = {						\
++		.addr = (unsigned long)fname,				\
++		.static_key_addr = (unsigned long)key,			\
++		.etype = EI_ETYPE_##_etype,				\
 +	}
 +
-+	attr->probability = val;
+ void override_function_with_return(struct pt_regs *regs);
+ #else
+ #define ALLOW_ERROR_INJECTION(fname, _etype)
++#define ALLOW_ERROR_INJECTION_KEY(fname, _etype, key)
+ 
+ static inline void override_function_with_return(struct pt_regs *regs) { }
+ #endif
+diff --git a/include/asm-generic/vmlinux.lds.h b/include/asm-generic/vmlinux.lds.h
+index 5703526d6ebf..1b15a0af2a00 100644
+--- a/include/asm-generic/vmlinux.lds.h
++++ b/include/asm-generic/vmlinux.lds.h
+@@ -248,7 +248,7 @@
+ 
+ #ifdef CONFIG_FUNCTION_ERROR_INJECTION
+ #define ERROR_INJECT_WHITELIST()			\
+-	STRUCT_ALIGN();					\
++	. = ALIGN(8);					\
+ 	BOUNDED_SECTION(_error_injection_whitelist)
+ #else
+ #define ERROR_INJECT_WHITELIST()
+diff --git a/include/linux/error-injection.h b/include/linux/error-injection.h
+index 20e738f4eae8..48da027c0302 100644
+--- a/include/linux/error-injection.h
++++ b/include/linux/error-injection.h
+@@ -6,10 +6,13 @@
+ #include <linux/errno.h>
+ #include <asm-generic/error-injection.h>
+ 
++struct static_key;
 +
-+	mutex_unlock(&probability_mutex);
-+
-+	return 0;
-+}
-+
-+static int debugfs_prob_get(void *data, u64 *val)
+ #ifdef CONFIG_FUNCTION_ERROR_INJECTION
+ 
+-extern bool within_error_injection_list(unsigned long addr);
+-extern int get_injectable_error_type(unsigned long addr);
++bool within_error_injection_list(unsigned long addr);
++int get_injectable_error_type(unsigned long addr);
++struct static_key *get_injection_key(unsigned long addr);
+ 
+ #else /* !CONFIG_FUNCTION_ERROR_INJECTION */
+ 
+@@ -23,6 +26,11 @@ static inline int get_injectable_error_type(unsigned long addr)
+ 	return -EOPNOTSUPP;
+ }
+ 
++static inline struct static_key *get_injection_key(unsigned long addr)
 +{
-+	struct fault_attr *attr = data;
-+
-+	*val = attr->probability;
-+
-+	return 0;
++	return NULL;
 +}
 +
-+DEFINE_SIMPLE_ATTRIBUTE(fops_prob, debugfs_prob_get, debugfs_prob_set, "%llu\n");
+ #endif
+ 
+ #endif /* _LINUX_ERROR_INJECTION_H */
+diff --git a/kernel/fail_function.c b/kernel/fail_function.c
+index d971a0189319..d39a9606a448 100644
+--- a/kernel/fail_function.c
++++ b/kernel/fail_function.c
+@@ -27,6 +27,7 @@ struct fei_attr {
+ 	struct list_head list;
+ 	struct kprobe kp;
+ 	unsigned long retval;
++	struct static_key *key;
+ };
+ static DEFINE_MUTEX(fei_lock);
+ static LIST_HEAD(fei_attr_list);
+@@ -67,6 +68,11 @@ static struct fei_attr *fei_attr_new(const char *sym, unsigned long addr)
+ 		attr->kp.pre_handler = fei_kprobe_handler;
+ 		attr->kp.post_handler = fei_post_handler;
+ 		attr->retval = adjust_error_retval(addr, 0);
 +
- #ifdef CONFIG_FAULT_INJECTION_STACKTRACE_FILTER
++		attr->key = get_injection_key(addr);
++		if (IS_ERR(attr->key))
++			attr->key = NULL;
++
+ 		INIT_LIST_HEAD(&attr->list);
+ 	}
+ 	return attr;
+@@ -218,6 +224,8 @@ static int fei_open(struct inode *inode, struct file *file)
  
- static int debugfs_stacktrace_depth_set(void *data, u64 val)
-@@ -218,7 +259,7 @@ struct dentry *fault_create_debugfs_attr(const char *name,
- 	if (IS_ERR(dir))
- 		return dir;
+ static void fei_attr_remove(struct fei_attr *attr)
+ {
++	if (attr->key)
++		static_key_slow_dec(attr->key);
+ 	fei_debugfs_remove_attr(attr);
+ 	unregister_kprobe(&attr->kp);
+ 	list_del(&attr->list);
+@@ -295,6 +303,8 @@ static ssize_t fei_write(struct file *file, const char __user *buffer,
+ 		fei_attr_free(attr);
+ 		goto out;
+ 	}
++	if (attr->key)
++		static_key_slow_inc(attr->key);
+ 	fei_debugfs_add_attr(attr);
+ 	list_add_tail(&attr->list, &fei_attr_list);
+ 	ret = count;
+diff --git a/lib/error-inject.c b/lib/error-inject.c
+index 887acd9a6ea6..982fbedd9ad5 100644
+--- a/lib/error-inject.c
++++ b/lib/error-inject.c
+@@ -17,6 +17,7 @@ struct ei_entry {
+ 	struct list_head list;
+ 	unsigned long start_addr;
+ 	unsigned long end_addr;
++	struct static_key *key;
+ 	int etype;
+ 	void *priv;
+ };
+@@ -54,6 +55,23 @@ int get_injectable_error_type(unsigned long addr)
+ 	return ei_type;
+ }
  
--	debugfs_create_ul("probability", mode, dir, &attr->probability);
-+	debugfs_create_file("probability", mode, dir, attr, &fops_prob);
- 	debugfs_create_ul("interval", mode, dir, &attr->interval);
- 	debugfs_create_atomic_t("times", mode, dir, &attr->times);
- 	debugfs_create_atomic_t("space", mode, dir, &attr->space);
++struct static_key *get_injection_key(unsigned long addr)
++{
++	struct ei_entry *ent;
++	struct static_key *ei_key = ERR_PTR(-EINVAL);
++
++	mutex_lock(&ei_mutex);
++	list_for_each_entry(ent, &error_injection_list, list) {
++		if (addr >= ent->start_addr && addr < ent->end_addr) {
++			ei_key = ent->key;
++			break;
++		}
++	}
++	mutex_unlock(&ei_mutex);
++
++	return ei_key;
++}
++
+ /*
+  * Lookup and populate the error_injection_list.
+  *
+@@ -86,6 +104,7 @@ static void populate_error_injection_list(struct error_injection_entry *start,
+ 		ent->start_addr = entry;
+ 		ent->end_addr = entry + size;
+ 		ent->etype = iter->etype;
++		ent->key = (struct static_key *) iter->static_key_addr;
+ 		ent->priv = priv;
+ 		INIT_LIST_HEAD(&ent->list);
+ 		list_add_tail(&ent->list, &error_injection_list);
 
 -- 
 2.45.2
