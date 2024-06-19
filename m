@@ -1,73 +1,99 @@
-Return-Path: <bpf+bounces-32483-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-32484-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 15EDD90E136
-	for <lists+bpf@lfdr.de>; Wed, 19 Jun 2024 03:23:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id E7C9D90E152
+	for <lists+bpf@lfdr.de>; Wed, 19 Jun 2024 03:30:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2EE5B1C22118
-	for <lists+bpf@lfdr.de>; Wed, 19 Jun 2024 01:23:30 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 08EBC1C21120
+	for <lists+bpf@lfdr.de>; Wed, 19 Jun 2024 01:30:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE646AD32;
-	Wed, 19 Jun 2024 01:23:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 74838D27E;
+	Wed, 19 Jun 2024 01:30:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UUyFSoZo"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="P/qp1vNm"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2F0F763D0;
-	Wed, 19 Jun 2024 01:23:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB48C4A1C;
+	Wed, 19 Jun 2024 01:30:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718760202; cv=none; b=jEP12vt778nqjioENPr1pkzObqNw7YQe8TnvSIVySoBR2t3mog5PLiBgALeFCNxWDhMoslunhInswdRS128lmPlKY1QQR8RUP832si7hC1CwIS15JgS/JiDQRotqTmLsG/vq/bLi5Hofd/9mbwx0wepewPy2WRPae6nIiDuki3E=
+	t=1718760631; cv=none; b=kPJ57Gx1iZGXo4NrUCrCd34C6pwtHO2fmMcMNvfe4VdVq5G4XJRh2nyRA6CBoYeHFwiXN6eia1bZ+mjFfRq5luyRzCueLnFjDXotvZ4xztrJYCJI5N3Ew1gU31IyTrhPCXuhLEayVpXHrnkoQFlhlJsg8nGKvnhFpkc8wFfbUMA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718760202; c=relaxed/simple;
-	bh=cImVFBApoWwLCfZUf3w5ykyQczqaH4KE43FkF55OJDo=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=q6w6LP1IjzFG4E9sBm1/jJ5D+4adaj7+DQ3j3+crCbU4H0GuNbptE3RlfrvUqyuZIDv+nszoP2/yr5mXrKUAKG5IjC6c+HxMXi7RuM8phkkhN52SXNDQVNx1xujhqQyFXHx+q4BBIMPZq7n12xsADJaM+afDmhyyKmlIDGqxOso=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UUyFSoZo; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 21EA3C3277B;
-	Wed, 19 Jun 2024 01:23:21 +0000 (UTC)
+	s=arc-20240116; t=1718760631; c=relaxed/simple;
+	bh=wQ3Cz/uQIcGqihIGy+5skYzSVYyJDZw1/SIUXnbJ4U0=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=b3syxXeKO0jEAy1lp9eIcL+nPj5QlDxppjRyrCYlFhZUwTaSC3tVL7toROiUlhc9zf8PcOFfQAnKlxNte5kNYTBFF25Fh/Src1UwCuVhjUlQHNmhxs+lBoY8rSe4SaZf4jpjCDMz+Rv4itevYFCABw+7QWpIgrdwIVN/P3Z+2tE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=P/qp1vNm; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 9AB24C4AF49;
+	Wed, 19 Jun 2024 01:30:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1718760201;
-	bh=cImVFBApoWwLCfZUf3w5ykyQczqaH4KE43FkF55OJDo=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=UUyFSoZoknG6zP6PfXNDTsPbWkaQatkItjeObaAnSBeS5tSftmlCyrU3mrUyclGey
-	 IzQnj6dqYFYmNMZBmbHau1klJXqmxpsAXwdWjx7naiTi/HNNgtXtYpDM8WzuT0wgfe
-	 t0HtSJNbhQHPA9nJvjFj555XP20Mb9uDMxOBlUi0aGX5uYsyTG79T7UrAI46R56qbG
-	 udcOa5bRvahHyM9ks6AxG41rOhRdvkc3jz4l537ZstrRPnTzfLCpWzzXJSFog71+AJ
-	 W8dr9ID44QzVuYDbck1LUvq7K732D9MiS1UJdOB9lLddb2Jd/eOvvNgr5YXih9932E
-	 nomRNrK89wA1g==
-Date: Tue, 18 Jun 2024 18:23:20 -0700
-From: Jakub Kicinski <kuba@kernel.org>
-To: Daniil Dulov <d.dulov@aladdin.ru>
-Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann
- <daniel@iogearbox.net>, "David S. Miller" <davem@davemloft.net>, Jesper
- Dangaard Brouer <hawk@kernel.org>, John Fastabend
- <john.fastabend@gmail.com>, Eric Dumazet <edumazet@google.com>, Paolo Abeni
- <pabeni@redhat.com>, <netdev@vger.kernel.org>, <bpf@vger.kernel.org>,
- <linux-kernel@vger.kernel.org>, <lvc-project@linuxtesting.org>
-Subject: Re: [PATCH] xdp: remove WARN() from __xdp_reg_mem_model()
-Message-ID: <20240618182320.3352f030@kernel.org>
-In-Reply-To: <20240617162708.492159-1-d.dulov@aladdin.ru>
-References: <20240617162708.492159-1-d.dulov@aladdin.ru>
+	s=k20201202; t=1718760630;
+	bh=wQ3Cz/uQIcGqihIGy+5skYzSVYyJDZw1/SIUXnbJ4U0=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=P/qp1vNmfj4Cz30qvlOzpOipaTwpAAQocBBKgTYbnuuWCWA3MiHvuwLtLHv5GPg8u
+	 wsUsyqZ9yocbgno/nCacZDgdaQEQ9iasK2AWDGwFZDLHbrmAHM6ndNVD8778SBrsZa
+	 jMRyNSQl58hRRsCCemOcWLP9TuyoPZAzYk69apIUPmInXSalbmAnBiJELkT8Qx2SBu
+	 8yD7OojtsTFBpCLBgq7lP4cxu45vOCW0L4JWHjklrNRs7UrYRgSvvh1V3b/FaAtbFS
+	 kjG+8N8+WiaTvojfE57BP6FDXiqtza36ZlkgQn1oRDLLPhw23c2Ql59ZjIBP3BoXP/
+	 +w5KwqG4FMQxA==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 757CFC43638;
+	Wed, 19 Jun 2024 01:30:30 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH v3,net-next] net: mana: Add support for page sizes other than
+ 4KB on ARM64
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <171876063046.16543.5866630072477597373.git-patchwork-notify@kernel.org>
+Date: Wed, 19 Jun 2024 01:30:30 +0000
+References: <1718655446-6576-1-git-send-email-haiyangz@microsoft.com>
+In-Reply-To: <1718655446-6576-1-git-send-email-haiyangz@microsoft.com>
+To: Haiyang Zhang <haiyangz@microsoft.com>
+Cc: linux-hyperv@vger.kernel.org, netdev@vger.kernel.org, decui@microsoft.com,
+ stephen@networkplumber.org, kys@microsoft.com, paulros@microsoft.com,
+ olaf@aepfle.de, vkuznets@redhat.com, davem@davemloft.net, wei.liu@kernel.org,
+ edumazet@google.com, kuba@kernel.org, pabeni@redhat.com, leon@kernel.org,
+ longli@microsoft.com, ssengar@linux.microsoft.com,
+ linux-rdma@vger.kernel.org, daniel@iogearbox.net, john.fastabend@gmail.com,
+ bpf@vger.kernel.org, ast@kernel.org, hawk@kernel.org, tglx@linutronix.de,
+ shradhagupta@linux.microsoft.com, linux-kernel@vger.kernel.org
 
-On Mon, 17 Jun 2024 19:27:08 +0300 Daniil Dulov wrote:
->  		if (ret < 0) {
-> -			WARN_ON(1);
->  			return ERR_PTR(ret);
->  		}
+Hello:
 
-nit: the brackets are no longer necessary, then
+This patch was applied to netdev/net-next.git (main)
+by Jakub Kicinski <kuba@kernel.org>:
+
+On Mon, 17 Jun 2024 13:17:26 -0700 you wrote:
+> As defined by the MANA Hardware spec, the queue size for DMA is 4KB
+> minimal, and power of 2. And, the HWC queue size has to be exactly
+> 4KB.
+> 
+> To support page sizes other than 4KB on ARM64, define the minimal
+> queue size as a macro separately from the PAGE_SIZE, which we always
+> assumed it to be 4KB before supporting ARM64.
+> 
+> [...]
+
+Here is the summary with links:
+  - [v3,net-next] net: mana: Add support for page sizes other than 4KB on ARM64
+    https://git.kernel.org/netdev/net-next/c/382d1741b5b2
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
 
