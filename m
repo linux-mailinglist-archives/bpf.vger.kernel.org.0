@@ -1,56 +1,97 @@
-Return-Path: <bpf+bounces-32544-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-32542-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 16F4590F967
-	for <lists+bpf@lfdr.de>; Thu, 20 Jun 2024 00:50:33 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 55C4690F960
+	for <lists+bpf@lfdr.de>; Thu, 20 Jun 2024 00:50:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4ED6BB21A5B
-	for <lists+bpf@lfdr.de>; Wed, 19 Jun 2024 22:50:30 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CFA841F23760
+	for <lists+bpf@lfdr.de>; Wed, 19 Jun 2024 22:50:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 921F715D5C9;
-	Wed, 19 Jun 2024 22:49:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 90D4115B961;
+	Wed, 19 Jun 2024 22:49:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="LNWxnnz1";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="roVh2sJJ";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="LNWxnnz1";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="roVh2sJJ"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A9958175E;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7EE3082866;
 	Wed, 19 Jun 2024 22:49:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718837388; cv=none; b=Ko7Mc7FqThmJoiuA6gjmS1WvWL4sWVshCIiV9JCngTIcH7zE3pp1AyQYEZL3OmvpD36vk9bH1oxyW2mMD1Nlk3OZvJAxSQOhP3sgQS0TSeZmZxnLrUNlsxMCZUIrTWpW74vbBWR900h+r7mxAR5eza9JBkIJM8LdxZDwbhdynfk=
+	t=1718837387; cv=none; b=ooCWMl1uMPbhEg+xCNtqBoyCULLM5NBSg4ficUlCp9Hqc4c43dB8CY2zIT6N9ccf+C5DaJ378PcsTTZKHi0HwIeK6qTVTr3xsabzUXTUgrWDM2ohNb4I2B0acANC9fHKUpqTT1MH5r4IAF31LMfKPG2Fy+e3xg+eBgv0PGeUL9Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718837388; c=relaxed/simple;
-	bh=3qciDcxlabL8RPKApoikpRFG6GtFoTLNySS+QbqQz9Q=;
+	s=arc-20240116; t=1718837387; c=relaxed/simple;
+	bh=+HcqYdgaWT9BrUacvRJSWp4CDbAKfRkRibADsrgT2bU=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=nrB8K+jY71UZV5aY6s6MAPBJe7E35lJ8+iddmjwplUJRJtqN/1bub97u4tYgQ9+B4Sar/moOcWBY27kYlGBZ5IGE+vvJ+FwC+gdARAYTaWVsXGjp2Or7YdLVXX+KsoMhaQfUNxO0b+BgdmQ2EQYHKDaRTabrW93HellzTt30doc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; arc=none smtp.client-ip=195.135.223.130
+	 In-Reply-To:To:Cc; b=Xr2du9jHi1mCaLJ7lThD6wAHe6VX+q0VapdsLXZ6f3R/40o4DAhvHZRMuDK/JIVjFtc/q+5ZA0wUj85tfabZP4VYzk9gRG2e4thzuvFbtPXMptyU6ALHs1ijZvQBCZ+A7YPQHvMaGasl4SN4jj9sMGCSWax1I3nkkYe9rab+X2E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=LNWxnnz1; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=roVh2sJJ; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=LNWxnnz1; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=roVh2sJJ; arc=none smtp.client-ip=195.135.223.131
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 78F4B21A5F;
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 994E01F7F7;
 	Wed, 19 Jun 2024 22:49:43 +0000 (UTC)
-Authentication-Results: smtp-out1.suse.de;
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1718837383; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=X7+XAotVIvWS2vTh75oVQOPFwsOci6tWQZhDoSRQGx4=;
+	b=LNWxnnz1OKuGoWGrMXrwTd2enyzJN73ypy1Cuy1qZtBotKAAqp2aq65A1gK7qZ8U54E2Lz
+	FILu5L+orwbhDShXDMWDHPD659eTlwmmC78MWsxkCr/n6HetuhQ8GeFlOmDbT43Vpg8zeO
+	i6yA9AvNuoYhNrFm1SRXWVMJ9lI5Fo0=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1718837383;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=X7+XAotVIvWS2vTh75oVQOPFwsOci6tWQZhDoSRQGx4=;
+	b=roVh2sJJLOmM0oiL35sPyLjBSwOuoRsf/nGyJvEjjBe2kt/FPev0yfzWJK/1XF1/iK2GOP
+	56CsF5e9QNpjsaBg==
+Authentication-Results: smtp-out2.suse.de;
 	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1718837383; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=X7+XAotVIvWS2vTh75oVQOPFwsOci6tWQZhDoSRQGx4=;
+	b=LNWxnnz1OKuGoWGrMXrwTd2enyzJN73ypy1Cuy1qZtBotKAAqp2aq65A1gK7qZ8U54E2Lz
+	FILu5L+orwbhDShXDMWDHPD659eTlwmmC78MWsxkCr/n6HetuhQ8GeFlOmDbT43Vpg8zeO
+	i6yA9AvNuoYhNrFm1SRXWVMJ9lI5Fo0=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1718837383;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=X7+XAotVIvWS2vTh75oVQOPFwsOci6tWQZhDoSRQGx4=;
+	b=roVh2sJJLOmM0oiL35sPyLjBSwOuoRsf/nGyJvEjjBe2kt/FPev0yfzWJK/1XF1/iK2GOP
+	56CsF5e9QNpjsaBg==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 593BA13ABD;
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 76B2913AC3;
 	Wed, 19 Jun 2024 22:49:43 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id QO+DFYdgc2aFIAAAD6G6ig
+	id gBasHIdgc2aFIAAAD6G6ig
 	(envelope-from <vbabka@suse.cz>); Wed, 19 Jun 2024 22:49:43 +0000
 From: Vlastimil Babka <vbabka@suse.cz>
-Date: Thu, 20 Jun 2024 00:48:58 +0200
-Subject: [PATCH v2 4/7] bpf: support error injection static keys for
- multi_link attached progs
+Date: Thu, 20 Jun 2024 00:48:59 +0200
+Subject: [PATCH v2 5/7] bpf: do not create bpf_non_sleepable_error_inject
+ list when unnecessary
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -59,7 +100,7 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240620-fault-injection-statickeys-v2-4-e23947d3d84b@suse.cz>
+Message-Id: <20240620-fault-injection-statickeys-v2-5-e23947d3d84b@suse.cz>
 References: <20240620-fault-injection-statickeys-v2-0-e23947d3d84b@suse.cz>
 In-Reply-To: <20240620-fault-injection-statickeys-v2-0-e23947d3d84b@suse.cz>
 To: Akinobu Mita <akinobu.mita@gmail.com>, Christoph Lameter <cl@linux.com>, 
@@ -75,179 +116,95 @@ Cc: Jiri Olsa <jolsa@kernel.org>, Roman Gushchin <roman.gushchin@linux.dev>,
  linux-mm@kvack.org, bpf@vger.kernel.org, linux-trace-kernel@vger.kernel.org, 
  Vlastimil Babka <vbabka@suse.cz>
 X-Mailer: b4 0.14.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=4495; i=vbabka@suse.cz;
- h=from:subject:message-id; bh=3qciDcxlabL8RPKApoikpRFG6GtFoTLNySS+QbqQz9Q=;
- b=owEBbQGS/pANAwAIAbvgsHXSRYiaAcsmYgBmc2B7A+FYtqvio9GTWv3xme47MHxydtFu6JcXT
- U9aKA8HdJyJATMEAAEIAB0WIQR7u8hBFZkjSJZITfG74LB10kWImgUCZnNgewAKCRC74LB10kWI
- mtXfB/9Wf8ufmNZ+KgSqZhasEn0ZqY1pTjQK/1k4ql5arsN4WjQN5LONf7zFbsRueo1MccTXI8j
- /fH+X3PTcoSG6fRMjz3+vuHCOkrsWH3yUtKIWVCjSGbCnoTDSPalLr/doZP8HAWLrmhpFni/wZC
- 6VZHYbuRigc7AohRXcOu7R4Px5zhFhdbb+6z1EZkeKJzmzriFXhSIczEoPYa6g6RmKDL/HsZiEY
- Iwcv1O2H9gYU+430HbPN6am111EVHOeM6rY2MCwZaJjWJjd3at7bfhl/tIQWnAM0gal51sJCbR6
- 2uksKs0VJHgNrhMdsLGxDLtpwTXG5HrhbVle/JopZQNha/Sy
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1591; i=vbabka@suse.cz;
+ h=from:subject:message-id; bh=+HcqYdgaWT9BrUacvRJSWp4CDbAKfRkRibADsrgT2bU=;
+ b=owEBbQGS/pANAwAIAbvgsHXSRYiaAcsmYgBmc2B9IzDEAVKG5FXS38RcYZUyeL9j5X2CdCydU
+ Xm/auj9IMKJATMEAAEIAB0WIQR7u8hBFZkjSJZITfG74LB10kWImgUCZnNgfQAKCRC74LB10kWI
+ mieMB/0Z2oYYCWNAmVEuHX7NW7yYno6Akg2QEWBe10L/+QsV4Wfjt61ibXRZyOYv5dL16q+TyVM
+ Gofehb9TgIuIG9fzbiv/IkDt0D9UULaagQwhJUpdnLAOYxw7FRr1nYbjmJt/cNOUtR8cMo6x1PG
+ 33Gevml4l4phxiCJEnvCSO9Xum+ZBP/F3GOvVXDBDIF/vXVBhmF0iRyvefoi9o66f+guBziQc0j
+ DDNd0wet/qYXslsYfyo9XtYY9+dP/5/d9pwYbcsvP8BN9uQkE3IeYQHe/Thldx8B/855/bItiKc
+ AkAI9cbY8cY4/mKYag0vVzO6xNXmffLfuOg01lsVKyX58qWE
 X-Developer-Key: i=vbabka@suse.cz; a=openpgp;
  fpr=A940D434992C2E8E99103D50224FA7E7CC82A664
-X-Rspamd-Pre-Result: action=no action;
-	module=replies;
-	Message is reply to one we originated
-X-Spam-Flag: NO
-X-Spam-Score: -4.00
-X-Spam-Level: 
-X-Rspamd-Pre-Result: action=no action;
-	module=replies;
-	Message is reply to one we originated
-X-Rspamd-Queue-Id: 78F4B21A5F
-X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-4.00 / 50.00];
+X-Spamd-Result: default: False [-3.85 / 50.00];
 	REPLY(-4.00)[];
-	TAGGED_RCPT(0.00)[]
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+	SUSPICIOUS_RECIPS(1.50)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	BAYES_HAM(-0.05)[59.54%];
+	RCVD_TLS_ALL(0.00)[];
+	ARC_NA(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	TAGGED_RCPT(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TO_DN_SOME(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[20];
+	FREEMAIL_TO(0.00)[gmail.com,linux.com,google.com,kernel.org,iogearbox.net,linux.ibm.com,intel.com,davemloft.net,goodmis.org,arm.com];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	MID_RHS_MATCH_FROM(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	FREEMAIL_CC(0.00)[kernel.org,linux.dev,gmail.com,vger.kernel.org,kvack.org,suse.cz];
+	R_RATELIMIT(0.00)[to_ip_from(RL5nkphuxq5kxo98ppmuqoc8wo)];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	RCVD_COUNT_TWO(0.00)[2];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email]
+X-Spam-Flag: NO
+X-Spam-Score: -3.85
+X-Spam-Level: 
 
-Functions marked for error injection can have an associated static key
-that guards the callsite(s) to avoid overhead of calling an empty
-function when no error injection is in progress.
+When CONFIG_FUNCTION_ERROR_INJECTION is disabled,
+within_error_injection_list() will return false for any address and the
+result of check_non_sleepable_error_inject() denylist is thus redundant.
+The bpf_non_sleepable_error_inject list thus does not need to be
+constructed at all, so #ifdef it out.
 
-Outside of the error injection framework itself, bpf programs can be
-atteched to kprobes and override results of error-injectable functions.
-To make sure these functions are actually called, attaching such bpf
-programs should control the static key accordingly.
-
-Therefore, add an array of static keys to struct bpf_kprobe_multi_link
-and fill it in addrs_check_error_injection_list() for programs with
-kprobe_override enabled, using get_injection_key() instead of
-within_error_injection_list(). Introduce bpf_kprobe_ei_keys_control() to
-control the static keys and call the control function when doing
-multi_link_attach and release.
+This will allow to inline functions on the list when
+CONFIG_FUNCTION_ERROR_INJECTION is disabled as there will be no BTF_ID()
+reference for them.
 
 Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
 ---
- kernel/trace/bpf_trace.c | 59 +++++++++++++++++++++++++++++++++++++++++++-----
- 1 file changed, 53 insertions(+), 6 deletions(-)
+ kernel/bpf/verifier.c | 15 +++++++++++++++
+ 1 file changed, 15 insertions(+)
 
-diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-index 944de1c41209..ef0fadb76bfa 100644
---- a/kernel/trace/bpf_trace.c
-+++ b/kernel/trace/bpf_trace.c
-@@ -2613,6 +2613,7 @@ struct bpf_kprobe_multi_link {
- 	struct bpf_link link;
- 	struct fprobe fp;
- 	unsigned long *addrs;
-+	struct static_key **ei_keys;
- 	u64 *cookies;
- 	u32 cnt;
- 	u32 mods_cnt;
-@@ -2687,11 +2688,30 @@ static void free_user_syms(struct user_syms *us)
- 	kvfree(us->buf);
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index 77da1f438bec..5cd93de37d68 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -21044,6 +21044,8 @@ static int check_attach_modify_return(unsigned long addr, const char *func_name)
+ 	return -EINVAL;
  }
  
-+static void bpf_kprobe_ei_keys_control(struct bpf_kprobe_multi_link *link, bool enable)
++#ifdef CONFIG_FUNCTION_ERROR_INJECTION
++
+ /* list of non-sleepable functions that are otherwise on
+  * ALLOW_ERROR_INJECTION list
+  */
+@@ -21061,6 +21063,19 @@ static int check_non_sleepable_error_inject(u32 btf_id)
+ 	return btf_id_set_contains(&btf_non_sleepable_error_inject, btf_id);
+ }
+ 
++#else /* CONFIG_FUNCTION_ERROR_INJECTION */
++
++/*
++ * Pretend the denylist is empty, within_error_injection_list() will return
++ * false anyway.
++ */
++static int check_non_sleepable_error_inject(u32 btf_id)
 +{
-+	u32 i;
-+
-+	for (i = 0; i < link->cnt; i++) {
-+		if (!link->ei_keys[i])
-+			break;
-+
-+		if (enable)
-+			static_key_slow_inc(link->ei_keys[i]);
-+		else
-+			static_key_slow_dec(link->ei_keys[i]);
-+	}
++	return 0;
 +}
 +
- static void bpf_kprobe_multi_link_release(struct bpf_link *link)
- {
- 	struct bpf_kprobe_multi_link *kmulti_link;
- 
- 	kmulti_link = container_of(link, struct bpf_kprobe_multi_link, link);
++#endif
 +
-+	if (kmulti_link->ei_keys)
-+		bpf_kprobe_ei_keys_control(kmulti_link, false);
-+
- 	unregister_fprobe(&kmulti_link->fp);
- 	kprobe_multi_put_modules(kmulti_link->mods, kmulti_link->mods_cnt);
- }
-@@ -2703,6 +2723,7 @@ static void bpf_kprobe_multi_link_dealloc(struct bpf_link *link)
- 	kmulti_link = container_of(link, struct bpf_kprobe_multi_link, link);
- 	kvfree(kmulti_link->addrs);
- 	kvfree(kmulti_link->cookies);
-+	kvfree(kmulti_link->ei_keys);
- 	kfree(kmulti_link->mods);
- 	kfree(kmulti_link);
- }
-@@ -2985,13 +3006,19 @@ static int get_modules_for_addrs(struct module ***mods, unsigned long *addrs, u3
- 	return arr.mods_cnt;
- }
- 
--static int addrs_check_error_injection_list(unsigned long *addrs, u32 cnt)
-+static int addrs_check_error_injection_list(unsigned long *addrs, struct static_key **ei_keys,
-+					    u32 cnt)
- {
--	u32 i;
-+	struct static_key *ei_key;
-+	u32 i, j = 0;
- 
- 	for (i = 0; i < cnt; i++) {
--		if (!within_error_injection_list(addrs[i]))
-+		ei_key = get_injection_key(addrs[i]);
-+		if (IS_ERR(ei_key))
- 			return -EINVAL;
-+
-+		if (ei_key)
-+			ei_keys[j++] = ei_key;
- 	}
- 	return 0;
- }
-@@ -3000,6 +3027,7 @@ int bpf_kprobe_multi_link_attach(const union bpf_attr *attr, struct bpf_prog *pr
- {
- 	struct bpf_kprobe_multi_link *link = NULL;
- 	struct bpf_link_primer link_primer;
-+	struct static_key **ei_keys = NULL;
- 	void __user *ucookies;
- 	unsigned long *addrs;
- 	u32 flags, cnt, size;
-@@ -3075,9 +3103,24 @@ int bpf_kprobe_multi_link_attach(const union bpf_attr *attr, struct bpf_prog *pr
- 			goto error;
- 	}
- 
--	if (prog->kprobe_override && addrs_check_error_injection_list(addrs, cnt)) {
--		err = -EINVAL;
--		goto error;
-+	if (prog->kprobe_override) {
-+		ei_keys = kvcalloc(cnt, sizeof(*ei_keys), GFP_KERNEL);
-+		if (!ei_keys) {
-+			err = -ENOMEM;
-+			goto error;
-+		}
-+
-+		if (addrs_check_error_injection_list(addrs, ei_keys, cnt)) {
-+			err = -EINVAL;
-+			goto error;
-+		}
-+
-+		if (ei_keys[0]) {
-+			link->ei_keys = ei_keys;
-+		} else {
-+			kvfree(ei_keys);
-+			ei_keys = NULL;
-+		}
- 	}
- 
- 	link = kzalloc(sizeof(*link), GFP_KERNEL);
-@@ -3132,10 +3175,14 @@ int bpf_kprobe_multi_link_attach(const union bpf_attr *attr, struct bpf_prog *pr
- 		return err;
- 	}
- 
-+	if (link->ei_keys)
-+		bpf_kprobe_ei_keys_control(link, true);
-+
- 	return bpf_link_settle(&link_primer);
- 
- error:
- 	kfree(link);
-+	kvfree(ei_keys);
- 	kvfree(addrs);
- 	kvfree(cookies);
- 	return err;
+ int bpf_check_attach_target(struct bpf_verifier_log *log,
+ 			    const struct bpf_prog *prog,
+ 			    const struct bpf_prog *tgt_prog,
 
 -- 
 2.45.2
