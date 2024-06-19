@@ -1,132 +1,162 @@
-Return-Path: <bpf+bounces-32513-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-32514-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EE52F90EA91
-	for <lists+bpf@lfdr.de>; Wed, 19 Jun 2024 14:12:22 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2D46A90EB17
+	for <lists+bpf@lfdr.de>; Wed, 19 Jun 2024 14:26:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DF36D1C23DDC
-	for <lists+bpf@lfdr.de>; Wed, 19 Jun 2024 12:12:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B6FCD28230C
+	for <lists+bpf@lfdr.de>; Wed, 19 Jun 2024 12:26:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 956521428FE;
-	Wed, 19 Jun 2024 12:11:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C253143752;
+	Wed, 19 Jun 2024 12:25:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QT3HCbpq"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="M3B1OpPj"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f171.google.com (mail-pf1-f171.google.com [209.85.210.171])
+Received: from mail-pf1-f182.google.com (mail-pf1-f182.google.com [209.85.210.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA0AF1422C8;
-	Wed, 19 Jun 2024 12:11:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A5F8142E96;
+	Wed, 19 Jun 2024 12:25:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718799113; cv=none; b=l2ZHE1Khws2XhEXzh7NPQMXazhR3XgG0D5Z8XncuvdXcn0o7jvewhKpqsaCS/tZ77J9jB7SC9H+k9RHr2F5/bouXbeIqYVvkQt0x816PWAPKyOJufqltjT1bbZrg5UN1debRmj5Y0zYdrrcaxzxeNK1uj/TI+Zycbl4hNNOIrfE=
+	t=1718799931; cv=none; b=EEL55amw4xZZNmjSzjTZWiqE7qxrGNv6BEvki/JfZqmcGXcrxd2cJMAURo+s9jGgFuCDpu3u+ywUsieBs/OSE71TZcMXFQjx6kKQ89rwLDDbsBSKZJ7Dy7Hx08NmPYNR2XU+Ae4V5YRq8ff30rNOTPUJN8rm8bxluWef0xXRBY0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718799113; c=relaxed/simple;
-	bh=+3gqV7Iuv2ZRkcfvFpsH8CF696dpD1A7msCstk55Y0E=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=of0EqUjyL6tuiqu3qcKRDC4O0ix82JvqfihlQjWydiVE8lyM/3TQqadpUZZ+ltZ0OG92L6h+vnPzM6Bf2zObswtUs43xhLQ4VskmmXJxy7nrte3oH0cksY6qN2SVqPxTGYdlQw7/Y+wtnDHpJCxh74U2TZZn+FEbrjI/ZU8c2Ow=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QT3HCbpq; arc=none smtp.client-ip=209.85.210.171
+	s=arc-20240116; t=1718799931; c=relaxed/simple;
+	bh=hQNDan+UFqR9ttiAhh9GsVYNs82AvEXxBGvx1OpaPW0=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=RIFn6C2Q8tWS0XsefiDh7sHrl+G0nzxJfjSLGJ3DKhgsLyttyeeLxHjIJkTAq5decdbCaMwT0dLzzalVfSqSwNV0p9HOWZDg5omCOOggGx0X0M064sa9KCn+WoB4tQlkzRwYKkqozUhmw/ITF2NMqiwPieJ0SPZs3BgMDO8Zirg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=M3B1OpPj; arc=none smtp.client-ip=209.85.210.182
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f171.google.com with SMTP id d2e1a72fcca58-70623ec42c2so659100b3a.0;
-        Wed, 19 Jun 2024 05:11:51 -0700 (PDT)
+Received: by mail-pf1-f182.google.com with SMTP id d2e1a72fcca58-705fff50de2so563137b3a.1;
+        Wed, 19 Jun 2024 05:25:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1718799111; x=1719403911; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=+3gqV7Iuv2ZRkcfvFpsH8CF696dpD1A7msCstk55Y0E=;
-        b=QT3HCbpqfUoN0gWY4A9JozXztilzNHxWNBXgKIXObtoVydFTdr8CBbveJVfGZLamk4
-         g+n+mOYlwz0jVSFnRg2s+G+kEjXZkdWjpYAfWpW8q+fcXG8H44qNqgiO2/HiMVUDswvI
-         Zc64mBG+iekAmM61a/x1x+4CcNYnLF3OAoHDJHuGL7u6F25O+nlixks8vozkY1231eir
-         tKLr9C40Do9KRgyyO5xRS2Tgl7ZhUEGLvBlhQ2i9TVFasMn3WPdTG1hwAKMrNC5sAWaH
-         EhWK3LhurWSkVapOO9W0Je9ybnupvR/cQG7sx2SXwpMn07E85b5haCXsOl8qyC/i3Bku
-         PlmQ==
+        d=gmail.com; s=20230601; t=1718799929; x=1719404729; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Z0Ug2g/wIn4Acp6+WRdmoDjC1CjnDCEohkjBAJAA0nk=;
+        b=M3B1OpPjMfyYSchdw3dZLip852jfJboKKIbsxreIO2DtQRZ2u6dt8WG4o1vRd9g2l9
+         xeyFTp+uYWIIqQ7bcJVdnwb1sVQISlkujXOqw0pPKc6gSRX6WPMlg6S2RLk+Zgw8CqOt
+         SitnlohNSZ8xu7bQL7tpc9zoxoMWC42GT+rnIKLV62RMwUhXbs5GnuVbBWxc2THOqMHz
+         Regf3R+eiY16Uq/N4DhIOU19EytysOTqZJQi5tXCu9wxm7+oPQqxuxOmqH8JNTITaOqR
+         MXwvcz4ioUVLHZLtx4YQMTubjSftv348sLBi6i9bmgxuO399NjFSlJCuhf9I4SEeEz5o
+         EMwA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1718799111; x=1719403911;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=+3gqV7Iuv2ZRkcfvFpsH8CF696dpD1A7msCstk55Y0E=;
-        b=uO6qwCyNWag7tX+MT/oCt/9NIpIGOVI8khO1KtXPd4weJf91t62oEAxE2n7deTNzi5
-         Cov4/kBT4Qphf/rOR/AX2fxIi0R39l1jmnSj8rUITEEm1m3LNcZdC6Pb8+7jBi1qFHxb
-         AoVtOXS54qxpiEhpGH7qe32QZeZrLXphXBbEsZ7HX9f+/tZXM97wm+wW4sEK3gA+mLIE
-         CO7+HDRH1daID6EXmsQyBZDIofHuAGubcS5h1pL5Io2BlYmInDY/Kumb7HFrJVH2ooNs
-         X/tdt8TRuVHBzqX+xYrkRAmXbgs0r5uP0dK5h2KhXRRl9mRHYrc2TWq0jezmb6CkdH6g
-         Br7w==
-X-Forwarded-Encrypted: i=1; AJvYcCVEiuU2M4kKt8KlbAirm4lv5/ttYQjnAuriZolxlE23GFAgUo0eXhlAjdOLmvdMSCziWm03GLbKHZIDW0OoIYLmwpG9
-X-Gm-Message-State: AOJu0YyzgiiIXtygoRm9vgCVWbKdoZSwjnyL1040MEU9618Shd17CAp+
-	tuXhrCIqbGXdamF+/KWsOYoc05z0Sn+4pnTYB1L8Pa8FYOmfLui/
-X-Google-Smtp-Source: AGHT+IEpGpAXuLgQJ4z6VgIagioZhQFvB+Vm0B+Ee3ak9Q/Tc3qYqVNqsoJ1sW3vvYl+tiioUor6Kg==
-X-Received: by 2002:a05:6a20:3c9e:b0:1b6:a7c5:4fad with SMTP id adf61e73a8af0-1bcba22f29fmr3966572637.26.1718799110818;
-        Wed, 19 Jun 2024 05:11:50 -0700 (PDT)
-Received: from archie.me ([103.124.138.155])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-705ccb8dd68sm10477120b3a.206.2024.06.19.05.11.49
+        d=1e100.net; s=20230601; t=1718799929; x=1719404729;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Z0Ug2g/wIn4Acp6+WRdmoDjC1CjnDCEohkjBAJAA0nk=;
+        b=Kcy4x/EYTHm9zUkcwfKg2wei6vcb92N094YU0pHRSatCv14TVBBi9I4qWcn7GMgL+q
+         sPHMT9PCfZmhPlt2L/VUYuFHLPmigNrzsvwkRjVTxPX+Xbirqe8DR/OKJ4eLZhlqW09I
+         wxYumFeOgsa+ymiKceXONi1sP/6LwIBQpzg7+pXULm+4yZ+D7Mz6YfgiZpPy+ZMV8gKn
+         aqcrL9a2Ui4DHl8zVStT6ywCJVIo46fxQhUpTgolbMvtxjNfvBjbfifS+Ik/bUNe5gCg
+         kYUdSAdj6OnQh6MCCwtlWICiw0SaK1JPU9VHEgXiemmD5J9YGnGbCIDlFkbU3Ig61vvO
+         nXyA==
+X-Forwarded-Encrypted: i=1; AJvYcCXATus8DDEG9j7fitje79dL5LuN5lUke+fnqkWomkiiVfSNnzoqczdTarKr7KdvdMkTYU9zRksgnwdrwrt6P/9M3Sx59hiVPWNBn9y3dZHpGxpI1z6273w1FkqAaiIYSrHu
+X-Gm-Message-State: AOJu0Yzu4HSHtJ3kofbRkq/r2Van0HpveySwB2g2zKcW5xIEkriNfR9Q
+	0QnLcfDWh/gb/yrvvfEEMznoVjhnd2eCN+6lp19agFm+m/kXw8mM
+X-Google-Smtp-Source: AGHT+IE1n3e6J5vtH+XvnHz0Hcn1RKaFgUkqBTz8l9pQyCzGnMO9k0LxvqsUebPcdoSuJ03qhAwsaQ==
+X-Received: by 2002:a62:ee11:0:b0:704:3580:8e16 with SMTP id d2e1a72fcca58-7061ac34763mr7365753b3a.17.1718799929303;
+        Wed, 19 Jun 2024 05:25:29 -0700 (PDT)
+Received: from ubuntu.localdomain ([124.126.129.60])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-705ccb3d19esm10500824b3a.122.2024.06.19.05.25.23
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 19 Jun 2024 05:11:49 -0700 (PDT)
-Received: by archie.me (Postfix, from userid 1000)
-	id 91252183A81FA; Wed, 19 Jun 2024 19:11:45 +0700 (WIB)
-Date: Wed, 19 Jun 2024 19:11:45 +0700
-From: Bagas Sanjaya <bagasdotme@gmail.com>
-To: Tejun Heo <tj@kernel.org>, torvalds@linux-foundation.org,
-	mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
-	vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-	rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-	bristot@redhat.com, vschneid@redhat.com, ast@kernel.org,
-	daniel@iogearbox.net, andrii@kernel.org, martin.lau@kernel.org,
-	joshdon@google.com, brho@google.com, pjt@google.com,
-	derkling@google.com, haoluo@google.com, dvernet@meta.com,
-	dschatzberg@meta.com, dskarlat@cs.cmu.edu, riel@surriel.com,
-	changwoo@igalia.com, himadrics@inria.fr, memxor@gmail.com,
-	andrea.righi@canonical.com, joel@joelfernandes.org
-Cc: linux-kernel@vger.kernel.org, bpf@vger.kernel.org, kernel-team@meta.com
-Subject: Re: [PATCH 29/30] sched_ext: Documentation: scheduler: Document
- extensible scheduler class
-Message-ID: <ZnLLAWbryU0-aqX1@archie.me>
-References: <20240618212056.2833381-1-tj@kernel.org>
- <20240618212056.2833381-30-tj@kernel.org>
+        Wed, 19 Jun 2024 05:25:28 -0700 (PDT)
+From: Donglin Peng <dolinux.peng@gmail.com>
+To: alan.maguire@oracle.com,
+	eddyz87@gmail.com
+Cc: ast@kernel.org,
+	daniel@iogearbox.net,
+	song@kernel.org,
+	andrii@kernel.org,
+	haoluo@google.com,
+	yonghong.song@linux.dev,
+	bpf@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Donglin Peng <dolinux.peng@gmail.com>
+Subject: [PATCH v2] libbpf: checking the btf_type kind when fixing variable offsets
+Date: Wed, 19 Jun 2024 05:23:55 -0700
+Message-Id: <20240619122355.426405-1-dolinux.peng@gmail.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="QTBRT25tDLXH91dy"
-Content-Disposition: inline
-In-Reply-To: <20240618212056.2833381-30-tj@kernel.org>
+Content-Transfer-Encoding: 8bit
 
+I encountered an issue when building the test_progs from the repository[1]:
 
---QTBRT25tDLXH91dy
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+$ pwd
+/work/Qemu/x86_64/linux-6.10-rc2/tools/testing/selftests/bpf/
 
-On Tue, Jun 18, 2024 at 11:17:44AM -1000, Tejun Heo wrote:
-> Add Documentation/scheduler/sched-ext.rst which gives a high-level overvi=
-ew
-> and pointers to the examples.
->=20
+$ make test_progs V=1
+...
+./tools/sbin/bpftool gen object ./ip_check_defrag.bpf.linked2.o ./ip_check_defrag.bpf.linked1.o
+libbpf: failed to find symbol for variable 'bpf_dynptr_slice' in section '.ksyms'
+Error: failed to link './ip_check_defrag.bpf.linked1.o': No such file or directory (2)
+...
 
-LGTM, thanks!
+Upon investigation, I discovered that the btf_types referenced in the '.ksyms'
+section had a kind of BTF_KIND_FUNC instead of BTF_KIND_VAR:
 
-Reviewed-by: Bagas Sanjaya <bagasdotme@gmail.com>
+$ bpftool btf dump file ./ip_check_defrag.bpf.linked1.o
+...
+[2] DATASEC '.ksyms' size=0 vlen=2
+        type_id=16 offset=0 size=0 (FUNC 'bpf_dynptr_from_skb')
+        type_id=17 offset=0 size=0 (FUNC 'bpf_dynptr_slice')
+...
+[16] FUNC 'bpf_dynptr_from_skb' type_id=82 linkage=extern
+[17] FUNC 'bpf_dynptr_slice' type_id=85 linkage=extern
+...
 
---=20
-An old man doll... just what I always wanted! - Clara
+For a detailed analysis, please refer to [2]. We can add a kind checking to
+fix the issue.
 
---QTBRT25tDLXH91dy
-Content-Type: application/pgp-signature; name="signature.asc"
+[1] https://github.com/eddyz87/bpf/tree/binsort-btf-dedup
+[2] https://lore.kernel.org/all/0c0ef20c-c05e-4db9-bad7-2cbc0d6dfae7@oracle.com/
 
------BEGIN PGP SIGNATURE-----
+Fixes: 8fd27bf69b86 ("libbpf: Add BPF static linker BTF and BTF.ext support")
+Acked-by: Eduard Zingerman <eddyz87@gmail.com>
+Reviewed-by: Alan Maguire <alan.maguire@oracle.com>
+Signed-off-by: Donglin Peng <dolinux.peng@gmail.com>
+---
+v2:
+ - Refactored the code using btf_is_var
+ - Improved the comment to be more reasonable
+---
+ tools/lib/bpf/linker.c | 11 +++++++++--
+ 1 file changed, 9 insertions(+), 2 deletions(-)
 
-iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZnLK/AAKCRD2uYlJVVFO
-o/m3AQDvlkShSHUwxaqKX5DV/HcD2PbL5R+9f+zPNpLRV5IVSwEAqHcCISspS8dU
-UWAGJ9pJNmfVZ9sLaGeXH4uN2TvS0wU=
-=ciJC
------END PGP SIGNATURE-----
+diff --git a/tools/lib/bpf/linker.c b/tools/lib/bpf/linker.c
+index 0d4be829551b..5a583053e311 100644
+--- a/tools/lib/bpf/linker.c
++++ b/tools/lib/bpf/linker.c
+@@ -2213,10 +2213,17 @@ static int linker_fixup_btf(struct src_obj *obj)
+ 		vi = btf_var_secinfos(t);
+ 		for (j = 0, m = btf_vlen(t); j < m; j++, vi++) {
+ 			const struct btf_type *vt = btf__type_by_id(obj->btf, vi->type);
+-			const char *var_name = btf__str_by_offset(obj->btf, vt->name_off);
+-			int var_linkage = btf_var(vt)->linkage;
++			const char *var_name;
++			int var_linkage;
+ 			Elf64_Sym *sym;
+ 
++			/* could be a variable or function */
++			if (!btf_is_var(vt))
++				continue;
++
++			var_name = btf__str_by_offset(obj->btf, vt->name_off);
++			var_linkage = btf_var(vt)->linkage;
++
+ 			/* no need to patch up static or extern vars */
+ 			if (var_linkage != BTF_VAR_GLOBAL_ALLOCATED)
+ 				continue;
+-- 
+2.25.1
 
---QTBRT25tDLXH91dy--
 
