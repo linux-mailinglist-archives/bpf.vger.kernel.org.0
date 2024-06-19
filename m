@@ -1,140 +1,125 @@
-Return-Path: <bpf+bounces-32533-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-32534-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 79A6C90F6DA
-	for <lists+bpf@lfdr.de>; Wed, 19 Jun 2024 21:18:06 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1874F90F76C
+	for <lists+bpf@lfdr.de>; Wed, 19 Jun 2024 22:12:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F3741285469
-	for <lists+bpf@lfdr.de>; Wed, 19 Jun 2024 19:18:04 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2998C1C21365
+	for <lists+bpf@lfdr.de>; Wed, 19 Jun 2024 20:12:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 060AC158D7D;
-	Wed, 19 Jun 2024 19:17:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 24285158DCF;
+	Wed, 19 Jun 2024 20:12:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="VLp+kxuy"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JfEcsEyy"
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pg1-f180.google.com (mail-pg1-f180.google.com [209.85.215.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 09D8B8475
-	for <bpf@vger.kernel.org>; Wed, 19 Jun 2024 19:17:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6AF43A55
+	for <bpf@vger.kernel.org>; Wed, 19 Jun 2024 20:12:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718824676; cv=none; b=pVenprZ3nIk/1GFFI/IUzCgjLPzQqPqu7z6X7nN8LqDcCLoMTztsqrzXPPj4oIIqEPXSeaeWD7+0kr3ndGzlwanGAx+UuNRHvpwWgz3THcN9W6E87MFLwNywKeOpbpNZq6i5Qu5c0hCOcwDuW2SsaW6hk75Iw/elu1UOCJm7yYI=
+	t=1718827944; cv=none; b=CsgaHLZrig9Y1Da9w0ACE903RIyAlNyE2qmj3le3MsQ0CUGxtWJhDph2yiNSCf/LkGIAwwjy4KpxTbbUQ9XCOPNDWNQneinco49okduujmb//WOrj5qileCqoUD7BYaenblGjIPSWHZ7/iDSY3tehC/GROJlwmuYzpJ6kqYhFMs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718824676; c=relaxed/simple;
-	bh=Uj49eKs4/aH/vQGPqOYhUBo+DBjEjfaEUa8IPmvAz3M=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=dx6vLuOPW3qxpgEeSliXsJ8OS169Q3skz2fD+tQ887eXY6gpLMXofZa+wfd0H5MVCC9/ZBfVyqDh7xu+rAC7v7XZa6slbzmDxAdAEhRpjcg6FLb+Pf+XLFQgTrhwq3f4iF8g8E+g3PmTvdu+lEZhJCOI8nyoReQRP6PvMHULkwQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=VLp+kxuy; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1718824674;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=l9dreDaHw4LwDZpQses9LLZsOKK/RpMulbBO3lTSR94=;
-	b=VLp+kxuyIYwK33dBdalAq0eBkFvQVGdlcdxrDwhGiijVwlP5BTLCQ6UQu1+CQOxmLMlCSU
-	HJjvp3MFEFJecsF4jIk4BYBclpGl4UIERTtYDvhpxFvJ5DZ/IDmxFQpbqtBLnTBDxYt+5y
-	TncyZKoLuWiob5iD5uMyvr7ftryzD5M=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-658-tdwzKLCGNUyEsZoWhjmw5Q-1; Wed, 19 Jun 2024 15:17:52 -0400
-X-MC-Unique: tdwzKLCGNUyEsZoWhjmw5Q-1
-Received: by mail-wr1-f70.google.com with SMTP id ffacd0b85a97d-3648793ae51so58676f8f.2
-        for <bpf@vger.kernel.org>; Wed, 19 Jun 2024 12:17:52 -0700 (PDT)
+	s=arc-20240116; t=1718827944; c=relaxed/simple;
+	bh=ePNpb0Zruhpgy4cyPMqr1FgEBqTs7imidwX3E9/AG+E=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=M8XVjWYhRnMnx/mwJ3KEzQ0ApIVL9PEGFR544GmeOyYMSi/Ld48zD8J4D8rrCpWLuQSrH8yF1YsrqP/2oS9akKqF/YzAo+1mT58eIA3jd1e0aBvGoWi+8I/QpvOONkZaXjhyQMvS7IgjqztU8nf01PwfkDsQR0dzkGssLwBMVLU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=JfEcsEyy; arc=none smtp.client-ip=209.85.215.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f180.google.com with SMTP id 41be03b00d2f7-70df213542bso133329a12.3
+        for <bpf@vger.kernel.org>; Wed, 19 Jun 2024 13:12:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1718827943; x=1719432743; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=ePNpb0Zruhpgy4cyPMqr1FgEBqTs7imidwX3E9/AG+E=;
+        b=JfEcsEyygpyj6Oji3BzvPQ5v9eOiegyWWgXR4/6QFD0qkHo9c9HjOa152z5JqM2k/w
+         2DeiaKhMDwkUtKIi3y5ZGOf7XL61l6Id/8D0ySN+204hw4khhpYWGYpoPH+dmeSAvPiQ
+         sjkb/1rk1ARIUlyXigiM1dIE/05KB+6KVfn3q4vmtkL5nRW4Locxc/nmB/RSJ45aFney
+         9URlKiNmU/fIqPXPOd/K9wiT7ijDr0RBM2YicLoZ8Sbrkn0VPPQTndz6RKMkhx+kSaaa
+         amPJXwyvnW7stC6DmZsQn4WeRjdasyVTBPj51YZVyp0VTXHd+BKxs/1rM1vlSS+2gDFG
+         ILVw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1718824671; x=1719429471;
-        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=l9dreDaHw4LwDZpQses9LLZsOKK/RpMulbBO3lTSR94=;
-        b=Pz/Hagjj2KPDsDCtM85t9FxB7rssG2mxbnajtKgGdhEFBcaasgBtQLane46bmozp1L
-         iqCD/y8zdHnjCP4SC9WNmJyIkBTLg5mxgOixMR0A3nMM47tXp0rl5+9vJf1Skxaz/TZl
-         wVU4V+sFi1A7KpDcyqBUvFNAhIrmGABqsGllU7L88JxYIItkCLxlcTpSG7YPr2iFsKx4
-         usvYv/yCMAm+vnDhJOkDEk/RSSVUjNtDKUDGmBxyFWk9lJDkCMweVkK8n0c1sqswZRhi
-         /aF8nRQusSf3duClG6oJWRKWitLkX2/CrW4/KBH15z4M5YFq+DihEB14+QZReOg21qTJ
-         aJgg==
-X-Forwarded-Encrypted: i=1; AJvYcCUteMF5PJkXnXV8D/k+n4oGUDRLTDr8ksCA6hXvCkbIAjJc/3zhSYreOKpC1jetwsQoXM7gQwxh+NYbYugDFu2b/IP/
-X-Gm-Message-State: AOJu0Yz+rp1IoX4iTbTWOvxfTEAWaJIgcgaVDY+FHa/oyOBjXHQM/Jo6
-	LafLReQ3YOBNUNPsdzb/WlsObeEXqguLVX7MTrIQT4K2dK+NJBK0kn5pD0BWMI0Ucy17c7WruYL
-	HGyZ7odzAwsb7kkSrBPXxnpI3d7IypAEQR6o8JgBaqB+0vm9sSA==
-X-Received: by 2002:adf:cc8f:0:b0:35f:d57:a698 with SMTP id ffacd0b85a97d-36317c79b07mr2511326f8f.31.1718824671391;
-        Wed, 19 Jun 2024 12:17:51 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFryhNHxXPqBrlUMjzD7Unl9K0r0EjIW5NugD/ywGyBorAkR0U593R+b5+gKho57fKeTx5fEw==
-X-Received: by 2002:adf:cc8f:0:b0:35f:d57:a698 with SMTP id ffacd0b85a97d-36317c79b07mr2511310f8f.31.1718824670912;
-        Wed, 19 Jun 2024 12:17:50 -0700 (PDT)
-Received: from alrua-x1.borgediget.toke.dk ([45.145.92.2])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-42286eef9c1sm277768855e9.7.2024.06.19.12.17.50
+        d=1e100.net; s=20230601; t=1718827943; x=1719432743;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=ePNpb0Zruhpgy4cyPMqr1FgEBqTs7imidwX3E9/AG+E=;
+        b=QJpn3okUO5+eBIsXrNlYsU7+o7uvy9jwdSeq2wG+NjhO36h7nF8xyFD4zXdbCPW4eT
+         kEVWQQQNiT9wQbh6PQ2pXNCSdFk0yht9FYCX15jvEFfC/zFYoxGItj1w9oPtiwY/LF+E
+         XVjZGB+J9mn0jzxtdIAmvFEWWzPdgcTAVy0jAMyVKsOlQTQDYPW+EN1dO8nwy9+b0TtU
+         QTkHld8KBDtE4kvfnU0Nf6Ky6velNaHfXxIWGubGgo8VGlfleEdEJlCTaZ3bDMH+KJYl
+         HvoXkfttvth40JAz9rGeKyfB5Ic4bRWnvlWBDyHnUD3P40sbcX+zX/orqv/cMMNiM90a
+         CvBQ==
+X-Forwarded-Encrypted: i=1; AJvYcCU7fKkkm7DghFQfeh5wJ6vkO6mxkpubcqky2fgQKeQXyc+qcoqHLJrUgICI9jb5f6M/W083LDrSBMar7eVY8ajWZ85g
+X-Gm-Message-State: AOJu0YwmYrXQEpPYcwrgreRLM4pcWpM9nNkCTg6Os6U773Pq4w06AhGz
+	ZgSJ1XKuwBKR1/Rb2oz982unKjMJP1eSPAcwcBiJZIUSLtVtrgl7
+X-Google-Smtp-Source: AGHT+IEA3BQNgbIFtcE1uLmC6Z9UKULIYlVXg6K4cA/XXregW1B2hIwrZ0oMkxGd3k/vhJTPfoC9Og==
+X-Received: by 2002:a17:902:e84d:b0:1f9:c1f0:7150 with SMTP id d9443c01a7336-1f9c1f076e7mr11247235ad.8.1718827942653;
+        Wed, 19 Jun 2024 13:12:22 -0700 (PDT)
+Received: from [192.168.0.31] ([38.34.87.7])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-1f855e55eb0sm122361945ad.18.2024.06.19.13.12.21
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 19 Jun 2024 12:17:50 -0700 (PDT)
-Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
-	id 6CA841386124; Wed, 19 Jun 2024 21:17:49 +0200 (CEST)
-From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>
-To: Jesper Dangaard Brouer <hawk@kernel.org>, Sebastiano Miano
- <mianosebastiano@gmail.com>, bpf@vger.kernel.org, netdev@vger.kernel.org
-Cc: saeedm@nvidia.com, tariqt@nvidia.com, edumazet@google.com,
- kuba@kernel.org, pabeni@redhat.com, Samuel Dobron <sdobron@redhat.com>
-Subject: Re: XDP Performance Regression in recent kernel versions
-In-Reply-To: <5b64c89f-4127-4e8f-b795-3cec8e7350b4@kernel.org>
-References: <CAMENy5pb8ea+piKLg5q5yRTMZacQqYWAoVLE1FE9WhQPq92E0g@mail.gmail.com>
- <5b64c89f-4127-4e8f-b795-3cec8e7350b4@kernel.org>
-X-Clacks-Overhead: GNU Terry Pratchett
-Date: Wed, 19 Jun 2024 21:17:49 +0200
-Message-ID: <87wmmkn3mq.fsf@toke.dk>
+        Wed, 19 Jun 2024 13:12:22 -0700 (PDT)
+Message-ID: <e17f8c4d644a6f4aa80de092ee29e6c1e5e77c52.camel@gmail.com>
+Subject: Re: [PATCH bpf-next 5/5] selftests/bpf: add kfunc_call test for
+ simple dtor in bpf_testmod
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Alan Maguire <alan.maguire@oracle.com>, andrii@kernel.org
+Cc: acme@redhat.com, ast@kernel.org, daniel@iogearbox.net, jolsa@kernel.org,
+  martin.lau@linux.dev, song@kernel.org, yonghong.song@linux.dev, 
+ john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
+ haoluo@google.com,  mcgrof@kernel.org, masahiroy@kernel.org,
+ nathan@kernel.org, mykolal@fb.com,  thinker.li@gmail.com,
+ bentiss@kernel.org, tanggeliang@kylinos.cn, bpf <bpf@vger.kernel.org>
+Date: Wed, 19 Jun 2024 13:12:17 -0700
+In-Reply-To: <9359e765-c341-4164-90fd-78feafed89d5@oracle.com>
+References: <20240618160454.801527-1-alan.maguire@oracle.com>
+	 <20240618160454.801527-6-alan.maguire@oracle.com>
+	 <4321b99db5b362e278b1f37d6bd9b9a43d859d63.camel@gmail.com>
+	 <76509fc5411e35a4820c333abca155b3fa4e5b84.camel@gmail.com>
+	 <44779d5f-6d54-43cb-b556-d62201765c9d@oracle.com>
+	 <3396181b67ff82ba8d25a620a72353989d733fc2.camel@gmail.com>
+	 <9359e765-c341-4164-90fd-78feafed89d5@oracle.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.44.4-0ubuntu2 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
 
-Jesper Dangaard Brouer <hawk@kernel.org> writes:
+On Wed, 2024-06-19 at 18:42 +0100, Alan Maguire wrote:
 
-> On 18/06/2024 17.28, Sebastiano Miano wrote:
->> Hi folks,
->> 
->> I have been conducting some basic experiments with XDP and have
->> observed a significant performance regression in recent kernel
->> versions compared to v5.15.
->> 
->> My setup is the following:
->> - Hardware: Two machines connected back-to-back with 100G Mellanox
->> ConnectX-6 Dx.
->> - DUT: 2x16 core Intel(R) Xeon(R) Silver 4314 CPU @ 2.40GHz.
->> - Software: xdp-bench program from [1] running on the DUT in both DROP
->> and TX modes.
->> - Traffic generator: Pktgen-DPDK sending traffic with a single 64B UDP
->> flow at ~130Mpps.
->> - Tests: Single core, HT disabled
->> 
->> Results:
->> 
->> Kernel version |-------| XDP_DROP |--------|   XDP_TX  |
->> 5.15                      30Mpps               16.1Mpps
->> 6.2                       21.3Mpps             14.1Mpps
->> 6.5                       19.9Mpps              8.6Mpps
->> bpf-next (6.10-rc2)       22.1Mpps              9.2Mpps
->> 
->
-> Around when I left Red Hat there were a project with [LNST] that used
-> xdp-bench for tracking and finding regressions like this.
->
-> Perhaps Toke can enlighten us, if that project have caught similar 
-> regressions?
->
-> [LNST] https://github.com/LNST-project/lnst
+[...]
 
-Yes, actually, we have! Here's the bugzilla for it:
-https://bugzilla.redhat.com/show_bug.cgi?id=2270408
+> Sorry, I'm not following here. So I think what you'd like is a way to
+> verify that the dtor actually runs, is that right? The problem there is
+> that the map cleanup gets run when the skeleton gets destroyed, but then
+> it's too late then to collect a count value via that BPF object.
+>=20
+> The only thing I can think of is to create an additional tracing object
+> that we separately load/attach to bpf_testmod_ctx_release() prior to
+> running kfunc call tests to verify that the destructor fires on cleanup
+> of the kfunc test skeletons. Is that what you have in mind? Thanks!
 
-I'm on PTO for the rest of this week, but adding Samuel who ran the
-tests to Cc, he should be able to provide more information if needed.
+Tracing program could be an option, yes.
+I was thinking about some map created by the driver program (the one
+from prog_tests) that could be updated by destructor.
+There is a question of how to pass the map FD to the kfunc,
+probably it could be passed in a constructor for the kfunc and stored
+in the context. But tracing program sounds good as well.
 
--Toke
+Again, it might be the case that checking that registration logic
+works is sufficient. In such a case bodies of both kfunc and BPF
+program could be empty.
 
 
