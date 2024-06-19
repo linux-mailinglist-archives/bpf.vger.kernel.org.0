@@ -1,183 +1,120 @@
-Return-Path: <bpf+bounces-32502-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-32503-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 903EA90E509
-	for <lists+bpf@lfdr.de>; Wed, 19 Jun 2024 09:59:58 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6560690E557
+	for <lists+bpf@lfdr.de>; Wed, 19 Jun 2024 10:16:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A4FBE1C21DE5
-	for <lists+bpf@lfdr.de>; Wed, 19 Jun 2024 07:59:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 11A521F2187B
+	for <lists+bpf@lfdr.de>; Wed, 19 Jun 2024 08:16:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 344D578289;
-	Wed, 19 Jun 2024 07:59:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 29FF278C66;
+	Wed, 19 Jun 2024 08:16:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XNxCCP/I"
 X-Original-To: bpf@vger.kernel.org
-Received: from frasgout13.his.huawei.com (frasgout13.his.huawei.com [14.137.139.46])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C6EA3770FC;
-	Wed, 19 Jun 2024 07:59:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=14.137.139.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A658C6F308
+	for <bpf@vger.kernel.org>; Wed, 19 Jun 2024 08:16:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718783986; cv=none; b=uV34e3M1w8ZzdjWhglVoRGW76qWiGZqv0LTuAkra5iNWE9G/ZpqJjSTNPLCdfYXlsedB7E/+rbbNt4W27rmCTOjPe472V+otY5l7HRopOMEvDOpwOQeEmV2p21GJwFshx09ljvKyEEtDMH0zFQew2n+mnSi6JpubOTpnnNSm+Z4=
+	t=1718784991; cv=none; b=RrknmwFsA4CkcmaOXoxCqm/WJEyTVcJS3cnprCgnwhUlfn8pM2+F79NIYUS9G+XjYk5yzVyC++haaPM4QBC2q/1eFQkQXEjpHvQ+2MsjxR5IsaE4raAjffmdgm5boSNkQqyj4vL7vszto2sh5cmu2pZHpr1rOjI3MUsQPweBE1I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718783986; c=relaxed/simple;
-	bh=1682kPZ0rCkDXK9rlE7DjUnagikwOiSEMJpPmPx4ENo=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=j8A3zRp6ZgX6Wo+HbCcwba4mf+Zi/kv4kbLsg2WUGcrj7Hw/DpdwDwrLbQDU2QFFPDHOPifCVoFPp+bISaz/rdKUpWxpy67v/VdDOzrn2GV9oestFcxpotG2A02bTmdqbiR7Ikf+8UciEskfZTnswRslBbMB+2YVRPaq5YlDd1M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=14.137.139.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.18.186.51])
-	by frasgout13.his.huawei.com (SkyGuard) with ESMTP id 4W3wYT5SYjz9v7Hk;
-	Wed, 19 Jun 2024 15:41:49 +0800 (CST)
-Received: from mail02.huawei.com (unknown [7.182.16.27])
-	by mail.maildlp.com (Postfix) with ESMTP id 6107E1409C9;
-	Wed, 19 Jun 2024 15:59:24 +0800 (CST)
-Received: from [127.0.0.1] (unknown [10.204.63.22])
-	by APP2 (Coremail) with SMTP id GxC2BwBXLDfJj3JmG1u3AA--.19750S2;
-	Wed, 19 Jun 2024 08:59:23 +0100 (CET)
-Message-ID: <7cf03a6ba8dbf212623aab2dea3dac39482e8695.camel@huaweicloud.com>
-Subject: Re: [PATCH v4 00/14] security: digest_cache LSM
-From: Roberto Sassu <roberto.sassu@huaweicloud.com>
-To: Paul Moore <paul@paul-moore.com>
-Cc: corbet@lwn.net, jmorris@namei.org, serge@hallyn.com, 
- akpm@linux-foundation.org, shuah@kernel.org, mcoquelin.stm32@gmail.com, 
- alexandre.torgue@foss.st.com, mic@digikod.net, 
- linux-security-module@vger.kernel.org, linux-doc@vger.kernel.org, 
- linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org, 
- bpf@vger.kernel.org, zohar@linux.ibm.com, dmitry.kasatkin@gmail.com, 
- linux-integrity@vger.kernel.org, wufan@linux.microsoft.com,
- pbrobinson@gmail.com,  zbyszek@in.waw.pl, hch@lst.de, mjg59@srcf.ucam.org,
- pmatilai@redhat.com,  jannh@google.com, dhowells@redhat.com,
- jikos@kernel.org, mkoutny@suse.com,  ppavlu@suse.com, petr.vorel@gmail.com,
- mzerqung@0pointer.de, kgold@linux.ibm.com,  Roberto Sassu
- <roberto.sassu@huawei.com>
-Date: Wed, 19 Jun 2024 09:59:02 +0200
-In-Reply-To: <CAHC9VhTs8p1nTUXXea2JmF0FCEU6w39gwQRMtwACqM=+EBj1jw@mail.gmail.com>
-References: <20240415142436.2545003-1-roberto.sassu@huaweicloud.com>
-	 <CAHC9VhTs8p1nTUXXea2JmF0FCEU6w39gwQRMtwACqM=+EBj1jw@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.44.4-0ubuntu2 
+	s=arc-20240116; t=1718784991; c=relaxed/simple;
+	bh=Uppl2HflRcEXUHLaWKzt215pH1svJLpET6RHp/Tm5Lw=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=EVS0fwhOchyIAoiF71TITpPqpHSmPPQ/nbnpLRV2Bs+G1dnljh66P3XkIQRf/U1KFFX9EGFGaXh4Y9tKra1ZTP7iqHLX6SaPE0XFu/gQJ18c+oxU4vef4e0QH3rcbhCAqBgbjMGhLurWCWiufZ0qMUjQFAN7TTXAR44zy/o9yts=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XNxCCP/I; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1CFF6C2BBFC;
+	Wed, 19 Jun 2024 08:16:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1718784990;
+	bh=Uppl2HflRcEXUHLaWKzt215pH1svJLpET6RHp/Tm5Lw=;
+	h=From:To:Cc:Subject:Date:From;
+	b=XNxCCP/I6qzAxTD78K2o/nBtmTkwfv8nUqS662ZoGl3RiM4HfaIaDjjhhv0zX2gAq
+	 m10WF2GL4qrKtAlyRF9lBXgRyHp3md4VKBSTTumwXa8wGiYQem5EoBYvEKU9QNLPYv
+	 UunTN5SFQPOtWwjuS2C6Ku3OgSnJE5jBpzYtBGxxa6eBU4z6JCA7YcbprWx4YG/Z4k
+	 y81On9jxC6B1Jzhf/cv6d57q26CYPEMEtPZqOrUBlluMOKan59fhSOfXBAkaUcR7P/
+	 i0jcwjEcE1vO6jcsQQO3bjeF923iJczh67HSPdxhSkWYKHhRRIAnU8DD6M6o2O9YOR
+	 KUxelHuJdBM/A==
+From: Jiri Olsa <jolsa@kernel.org>
+To: Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>
+Cc: bpf@vger.kernel.org,
+	Martin KaFai Lau <kafai@fb.com>,
+	Song Liu <songliubraving@fb.com>,
+	Yonghong Song <yhs@fb.com>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@chromium.org>,
+	Stanislav Fomichev <sdf@google.com>,
+	Hao Luo <haoluo@google.com>
+Subject: [PATCH bpf-next] bpf: Change bpf_session_cookie return value to __u64 *
+Date: Wed, 19 Jun 2024 10:16:24 +0200
+Message-ID: <20240619081624.1620152-1-jolsa@kernel.org>
+X-Mailer: git-send-email 2.45.2
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-CM-TRANSID:GxC2BwBXLDfJj3JmG1u3AA--.19750S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxAF18WF1kCryUury8Cw15Jwb_yoWrWF47pa
-	9xK3W7tr4kAFy7Cw1Iya1xua4FvasYgF43GwsYqryfAan8Aryjva10kw15ZFyUJrs0qay2
-	vF4jkr1UZ3WDZaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUk0b4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVWUJVW8JwA2z4x0Y4vEx4A2jsIEc7CjxV
-	AFwI0_Gr0_Gr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
-	x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
-	0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l42xK82IYc2Ij
-	64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x
-	8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26rWY6r4UJwCIc40Y0x0EwIxGrwCI42IY
-	6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6x
-	AIw20EY4v20xvaj40_WFyUJVCq3wCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv
-	6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUFYFCUUUUU
-X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAgATBF1jj5tewQACsi
+Content-Transfer-Encoding: 8bit
 
-On Tue, 2024-06-18 at 19:20 -0400, Paul Moore wrote:
-> On Mon, Apr 15, 2024 at 10:25=E2=80=AFAM Roberto Sassu
-> <roberto.sassu@huaweicloud.com> wrote:
-> >=20
-> > From: Roberto Sassu <roberto.sassu@huawei.com>
-> >=20
-> > Integrity detection and protection has long been a desirable feature, t=
-o
-> > reach a large user base and mitigate the risk of flaws in the software
-> > and attacks.
-> >=20
-> > However, while solutions exist, they struggle to reach the large user
-> > base, due to requiring higher than desired constraints on performance,
-> > flexibility and configurability, that only security conscious people ar=
-e
-> > willing to accept.
-> >=20
-> > This is where the new digest_cache LSM comes into play, it offers
-> > additional support for new and existing integrity solutions, to make
-> > them faster and easier to deploy.
-> >=20
-> > The full documentation with the motivation and the solution details can=
- be
-> > found in patch 14.
-> >=20
-> > The IMA integration patch set will be introduced separately. Also a PoC
-> > based on the current version of IPE can be provided.
->=20
-> I'm not sure we want to implement a cache as a LSM.  I'm sure it would
-> work, but historically LSMs have provided some form of access control,
-> measurement, or other traditional security service.  A digest cache,
-> while potentially useful for a variety of security related
-> applications, is not a security service by itself, it is simply a file
-> digest storage mechanism.
+This reverts [1] and changes return value for bpf_session_cookie
+in bpf selftests. Having long * might lead to problems on 32-bit
+architectures.
 
-Uhm, currently the digest_cache LSM is heavily based on the LSM
-infrastructure:
+Fixes: 2b8dd87332cd ("bpf: Make bpf_session_cookie() kfunc return long *")
+Suggested-by: Andrii Nakryiko <andrii@kernel.org>
+Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+---
+ kernel/trace/bpf_trace.c                                        | 2 +-
+ tools/testing/selftests/bpf/bpf_kfuncs.h                        | 2 +-
+ tools/testing/selftests/bpf/progs/kprobe_multi_session_cookie.c | 2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
 
-static struct security_hook_list digest_cache_hooks[] __ro_after_init =3D {
-	LSM_HOOK_INIT(inode_alloc_security, digest_cache_inode_alloc_security),
-	LSM_HOOK_INIT(inode_free_security, digest_cache_inode_free_security),
-	LSM_HOOK_INIT(path_truncate, digest_cache_path_truncate),
-	LSM_HOOK_INIT(file_release, digest_cache_file_release),
-	LSM_HOOK_INIT(inode_unlink, digest_cache_inode_unlink),
-	LSM_HOOK_INIT(inode_rename, digest_cache_inode_rename),
-	LSM_HOOK_INIT(inode_post_setxattr, digest_cache_inode_post_setxattr),
-	LSM_HOOK_INIT(inode_post_removexattr,
-		      digest_cache_inode_post_removexattr),
-};
-
-struct lsm_blob_sizes digest_cache_blob_sizes __ro_after_init =3D {
-	.lbs_inode =3D sizeof(struct digest_cache_security),
-	.lbs_file =3D sizeof(struct digest_cache *),
-};
-
-Sure, there could be a different indexing mechanism, although using the
-inode security blob seems quite efficient, since resolving the path is
-sufficient to find a digest cache.
-
-Also, registering to inode_alloc/free_security allows the digest_cache
-LSM to dynamically deallocate data when it is not necessary. In
-addition to that, there are a number of hooks to determine whether a
-digest cache should be refreshed or not.
-
-In the past, it was part of IMA and known as IMA Digest Lists, and as a
-separate module, called DIGLIM.
-
-Both required explicit loading of the file digests are extract from to
-the kernel through securityfs. Loading was done by an rpm plugin,
-invoked when software is installd/removed.
-
-That didn't look a good idea. DIGLIM does not know when the system is
-under memory pressure and when digests can be evicted from memory. All
-digests needed to be loaded, leading to having a big database.
-
-I think this shortcoming has now been effectively solved by attaching
-the digests to the filesystem. Digests are always there, loadable on
-demand, unloadable by the system under memory pressure.
-
-> I think it's fine if an individual LSM wants to implement a file
-> digest cache as part of its own functionality, but a generalized file
-> digest cache seems like something that should be part of the general
-> kernel, and not implemented as a LSM.
-
-If we keep the same design as now, it would be anyway connected to the
-filesystem, but reusing the LSM infrastructure makes it very easy as I
-don't require any change anywhere else.
-
-Sure, it is not doing access control, but I haven't find another good
-way to achieve the same. Do you have anything more specific in mind?
-
-Thanks
-
-Roberto
+diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+index 4b3fda456299..cd098846e251 100644
+--- a/kernel/trace/bpf_trace.c
++++ b/kernel/trace/bpf_trace.c
+@@ -3530,7 +3530,7 @@ __bpf_kfunc bool bpf_session_is_return(void)
+ 	return session_ctx->is_return;
+ }
+ 
+-__bpf_kfunc long *bpf_session_cookie(void)
++__bpf_kfunc __u64 *bpf_session_cookie(void)
+ {
+ 	struct bpf_session_run_ctx *session_ctx;
+ 
+diff --git a/tools/testing/selftests/bpf/bpf_kfuncs.h b/tools/testing/selftests/bpf/bpf_kfuncs.h
+index be91a6919315..3b6675ab4086 100644
+--- a/tools/testing/selftests/bpf/bpf_kfuncs.h
++++ b/tools/testing/selftests/bpf/bpf_kfuncs.h
+@@ -77,5 +77,5 @@ extern int bpf_verify_pkcs7_signature(struct bpf_dynptr *data_ptr,
+ 				      struct bpf_key *trusted_keyring) __ksym;
+ 
+ extern bool bpf_session_is_return(void) __ksym __weak;
+-extern long *bpf_session_cookie(void) __ksym __weak;
++extern __u64 *bpf_session_cookie(void) __ksym __weak;
+ #endif
+diff --git a/tools/testing/selftests/bpf/progs/kprobe_multi_session_cookie.c b/tools/testing/selftests/bpf/progs/kprobe_multi_session_cookie.c
+index d49070803e22..0835b5edf685 100644
+--- a/tools/testing/selftests/bpf/progs/kprobe_multi_session_cookie.c
++++ b/tools/testing/selftests/bpf/progs/kprobe_multi_session_cookie.c
+@@ -25,7 +25,7 @@ int BPF_PROG(trigger)
+ 
+ static int check_cookie(__u64 val, __u64 *result)
+ {
+-	long *cookie;
++	__u64 *cookie;
+ 
+ 	if (bpf_get_current_pid_tgid() >> 32 != pid)
+ 		return 1;
+-- 
+2.45.2
 
 
