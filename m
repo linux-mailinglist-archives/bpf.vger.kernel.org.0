@@ -1,131 +1,148 @@
-Return-Path: <bpf+bounces-32567-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-32568-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5C1CF91001C
-	for <lists+bpf@lfdr.de>; Thu, 20 Jun 2024 11:17:08 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D806291001E
+	for <lists+bpf@lfdr.de>; Thu, 20 Jun 2024 11:18:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D7EB5281736
-	for <lists+bpf@lfdr.de>; Thu, 20 Jun 2024 09:17:06 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E4B6C1C22583
+	for <lists+bpf@lfdr.de>; Thu, 20 Jun 2024 09:18:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C43BA19E836;
-	Thu, 20 Jun 2024 09:16:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4AC8419B3D7;
+	Thu, 20 Jun 2024 09:18:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="SyIEEIkH"
 X-Original-To: bpf@vger.kernel.org
-Received: from frasgout13.his.huawei.com (frasgout13.his.huawei.com [14.137.139.46])
+Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 54B2E3D0AD;
-	Thu, 20 Jun 2024 09:16:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=14.137.139.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3EB2B3D0AD
+	for <bpf@vger.kernel.org>; Thu, 20 Jun 2024 09:18:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.177.32
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718875017; cv=none; b=Pz75GGu0UThZTtLNewSjA/H3XrrahcimMmRZTTJykCW7hkkHE2HQ0/EZhKTJtamk2J1v6cNvJCFzzZATNrgSSZgH5eBivzHDSr0kAnkVH4p1EJ5d2zUKBh4cxhykEptc/fqTL/kzkEk7gADRYe3JwsQ0H6XRnaRLYKRgPeAdXRc=
+	t=1718875094; cv=none; b=XOv+N/+e/DsP3ye8bZ2Zd6QcDeMEwZuwIClXLWC1dIzR7ugr8mVnruwxSpyTdCAGb3q+8ECB63vjPBkVvl+7UeJLRaxnDAvXf5hg56TVm337RpgdDGOFOqcEpXx+K6mF/IPC5MyKTaqdVtzjmKz1AYogZRe695B9r47lmlbFlgA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718875017; c=relaxed/simple;
-	bh=AJRwvb8hn86sxxpYN7AUVgFY2BqQgJAL1r3UrOFkUIE=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=WjbrYbR1uuCZwkyiV50zUqqCY6otGGiK6+pPoXuofy+2bEh+M4zMOqVtlUgT7dhUg3wRYrJEBicrQbkFko2t5dmZeFqF0nEgxqHCO8Da2xnbRv1BxUBcyaaSGs6ilvncVH4+1e9FUSc+s5YKaNEVuWuiKZYucO7BJEOOzZqWzN8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=14.137.139.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.18.186.51])
-	by frasgout13.his.huawei.com (SkyGuard) with ESMTP id 4W4ZD31vjlz9v7Hp;
-	Thu, 20 Jun 2024 16:58:59 +0800 (CST)
-Received: from mail02.huawei.com (unknown [7.182.16.47])
-	by mail.maildlp.com (Postfix) with ESMTP id 34273140B1B;
-	Thu, 20 Jun 2024 17:16:35 +0800 (CST)
-Received: from [127.0.0.1] (unknown [10.204.63.22])
-	by APP1 (Coremail) with SMTP id LxC2BwAnglFh83NmvaLHAA--.56972S2;
-	Thu, 20 Jun 2024 10:16:34 +0100 (CET)
-Message-ID: <c876a80bc4a5630aa0ddaaaf580b43b1460371fc.camel@huaweicloud.com>
-Subject: Re: [PATCH v4 00/14] security: digest_cache LSM
-From: Roberto Sassu <roberto.sassu@huaweicloud.com>
-To: Paul Moore <paul@paul-moore.com>
-Cc: corbet@lwn.net, jmorris@namei.org, serge@hallyn.com, 
- akpm@linux-foundation.org, shuah@kernel.org, mcoquelin.stm32@gmail.com, 
- alexandre.torgue@foss.st.com, mic@digikod.net, 
- linux-security-module@vger.kernel.org, linux-doc@vger.kernel.org, 
- linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org, 
- bpf@vger.kernel.org, zohar@linux.ibm.com, dmitry.kasatkin@gmail.com, 
- linux-integrity@vger.kernel.org, wufan@linux.microsoft.com,
- pbrobinson@gmail.com,  zbyszek@in.waw.pl, hch@lst.de, mjg59@srcf.ucam.org,
- pmatilai@redhat.com,  jannh@google.com, dhowells@redhat.com,
- jikos@kernel.org, mkoutny@suse.com,  ppavlu@suse.com, petr.vorel@gmail.com,
- mzerqung@0pointer.de, kgold@linux.ibm.com,  Roberto Sassu
- <roberto.sassu@huawei.com>
-Date: Thu, 20 Jun 2024 11:16:15 +0200
-In-Reply-To: <e9114733eedff99233b1711b2b05ab85b7c19ca9.camel@huaweicloud.com>
-References: <20240415142436.2545003-1-roberto.sassu@huaweicloud.com>
-	 <CAHC9VhTs8p1nTUXXea2JmF0FCEU6w39gwQRMtwACqM=+EBj1jw@mail.gmail.com>
-	 <7cf03a6ba8dbf212623aab2dea3dac39482e8695.camel@huaweicloud.com>
-	 <CAHC9VhSCw6RweTs6whAu4v6t4n7gxUWJtjmzY-UXrdzW0H+YJA@mail.gmail.com>
-	 <520d2dc2ff0091335a280a877fa9eb004af14309.camel@huaweicloud.com>
-	 <CAHC9VhRD1kBwqtkF+_cxCUCeNPp+0PAiNP-rG06me6gRQyYcyg@mail.gmail.com>
-	 <2b335bdd5c20878e0366dcf6b62d14f73c2251de.camel@huaweicloud.com>
-	 <CAHC9VhSOMLH69+q_wt2W+N9SK92KGp5n4YgzpsXMcO2u7YyaTg@mail.gmail.com>
-	 <e9114733eedff99233b1711b2b05ab85b7c19ca9.camel@huaweicloud.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.44.4-0ubuntu2 
+	s=arc-20240116; t=1718875094; c=relaxed/simple;
+	bh=BVVrDhTPsO95f7LFsYK9YHY3LYzOkuZ0cmkF1cekH7s=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=h1JcYahCBjWSm7UfR5exmt8nDidyCbVmsGXF1lABnQWyYiOO/fi+bHfcsLyh+tUr/PqGfd6NzuN9qbW/wgEapPXqH45JNHRN10dWpsMfXK0HIEjgJeP0LvAZUPoaTXd7eejHYkA1fPCeYg++tZOq64uJXbwk76Tf5l3j/0uZNqY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=SyIEEIkH; arc=none smtp.client-ip=205.220.177.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
+Received: from pps.filterd (m0246632.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 45K5FQl4004153;
+	Thu, 20 Jun 2024 09:17:41 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=
+	from:to:cc:subject:date:message-id:mime-version
+	:content-transfer-encoding; s=corp-2023-11-20; bh=3ENVKEZ/sQneRO
+	ifyTgUPAXs2/RJntA9ozRh7vpMJZg=; b=SyIEEIkHECHP4WvWGfZ5L/a4tWjPAr
+	dPNEjseSunJmUbtqS4DCJUbd85aQ7BQLoqEXwAjmqRpaLj6+e1TvhwP2PnDzbtBu
+	MXAotBT0hdOnMXnVXp7JC+LyzI3IBm9U765f0d1Ypj5o9qAyHPDjR6hJTkbYwbMU
+	A7qIUims5Rh/E9rHgE2yvGMtGNf6/iqNL7mrDSG9t+/yGyPrkf2CgS+dNGgJ3NW6
+	JNTCuIJ06zBWak6/yJ2jPTAxnEgV1qoxEAaYQvFQR/jy0LJSX5KAwcVYyZFQXcrL
+	w3W9VqBf25eWgBnXPGF9+WYn86h7bw3KpyegM2nTz72GDR4XOJSsqv/Q==
+Received: from phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta01.appoci.oracle.com [138.1.114.2])
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3yuj9nar44-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Thu, 20 Jun 2024 09:17:41 +0000 (GMT)
+Received: from pps.filterd (phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+	by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 45K7Yc2F031332;
+	Thu, 20 Jun 2024 09:17:40 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+	by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3ys1da767g-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Thu, 20 Jun 2024 09:17:40 +0000
+Received: from phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 45K9HdGD028275;
+	Thu, 20 Jun 2024 09:17:39 GMT
+Received: from bpf.uk.oracle.com (dhcp-10-175-186-70.vpn.oracle.com [10.175.186.70])
+	by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTP id 3ys1da764t-1;
+	Thu, 20 Jun 2024 09:17:39 +0000
+From: Alan Maguire <alan.maguire@oracle.com>
+To: andrii@kernel.org, eddyz87@gmail.com
+Cc: acme@redhat.com, ast@kernel.org, daniel@iogearbox.net, jolsa@kernel.org,
+        martin.lau@linux.dev, song@kernel.org, yonghong.song@linux.dev,
+        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
+        haoluo@google.com, mcgrof@kernel.org, masahiroy@kernel.org,
+        nathan@kernel.org, mykolal@fb.com, thinker.li@gmail.com,
+        bentiss@kernel.org, tanggeliang@kylinos.cn, bpf@vger.kernel.org,
+        Alan Maguire <alan.maguire@oracle.com>
+Subject: [PATCH v2 bpf-next 0/6] bpf: resilient split BTF followups
+Date: Thu, 20 Jun 2024 10:17:27 +0100
+Message-ID: <20240620091733.1967885-1-alan.maguire@oracle.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-CM-TRANSID:LxC2BwAnglFh83NmvaLHAA--.56972S2
-X-Coremail-Antispam: 1UD129KBjvdXoWruFyUJrWrCw4kXrW7ZFW5ZFb_yoWkCrb_ur
-	1qyw1kGw4DZryxtFZayF1IqFZ2grWxKF90q3yFqr13Z34fJFs7JFZ8GF1Svrs5tw4xZr9I
-	k3ZYg3y3Kw1SvjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-	9fnUUIcSsGvfJTRUUUb7kYFVCjjxCrM7AC8VAFwI0_Wr0E3s1l1xkIjI8I6I8E6xAIw20E
-	Y4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwV
-	A0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVWUJVWUCwA2z4x0Y4vE2Ix0cI8IcVCY1x02
-	67AKxVWxJVW8Jr1l84ACjcxK6I8E87Iv67AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIEc7CjxV
-	AFwI0_Gr0_Gr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
-	x7xfMcIj6xIIjxv20xvE14v26r106r15McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
-	0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l42xK82IYc2Ij
-	64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x
-	8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26rWY6r4UJwCIc40Y0x0EwIxGrwCI42IY
-	6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWxJVW8Jr1lIxAIcV
-	CF04k26cxKx2IYs7xG6Fyj6rWUJwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv
-	6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUOlksDUUUU
-X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAQAABF1jj59x7QAAs3
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.680,FMLib:17.12.28.16
+ definitions=2024-06-20_06,2024-06-19_01,2024-05-17_01
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 malwarescore=0 spamscore=0
+ mlxlogscore=796 mlxscore=0 phishscore=0 suspectscore=0 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2405010000
+ definitions=main-2406200065
+X-Proofpoint-GUID: tkjfsmDltygYuR4baUpraNZAMsABxxZk
+X-Proofpoint-ORIG-GUID: tkjfsmDltygYuR4baUpraNZAMsABxxZk
 
-On Thu, 2024-06-20 at 11:12 +0200, Roberto Sassu wrote:
-> On Wed, 2024-06-19 at 14:43 -0400, Paul Moore wrote:
-> > On Wed, Jun 19, 2024 at 12:38=E2=80=AFPM Roberto Sassu
-> > <roberto.sassu@huaweicloud.com> wrote:
-> > >=20
-> > > Making it a kernel subsystem would likely mean replicating what the L=
-SM
-> > > infrastructure is doing, inode (security) blob and being notified abo=
-ut
-> > > file/directory changes.
-> >=20
-> > Just because the LSM framework can be used for something, perhaps it
-> > even makes the implementation easier, it doesn't mean the framework
-> > should be used for everything.
->=20
-> It is supporting 3 LSMs: IMA, IPE and BPF LSM.
->=20
-> That makes it a clear target for the security subsystem, and as you
-> suggested to start for IMA, if other kernel subsystems require them, we
+Follow-up to resilient split BTF series [1],
 
-If other kernel subsystems require the same functionality,
+- cleaning up libbpf relocation code (patch 1);
+- adding 'struct module' support for base BTF data (patch 2);
+- splitting out field iteration code into separate file (patch 3);
+- sharing libbpf relocation code with the kernel (patch 4);
+- adding a kbuild --btf_features flag to generate distilled base
+  BTF in the module-specific case where KBUILD_EXTMOD is true
+  (patch 5); and
+- adding test coverage for module-based kfunc dtor (patch 6)
 
-Roberto
+Generation of distilled base BTF for modules requires the pahole patch
+at [2], but without it we just won't get distilled base BTF (and thus BTF
+relocation on module load) for bpf_testmod.ko.
 
-> can make it as an independent subsystem.
->=20
-> Starting from IMA means that we are mixing two different things in the
-> inode security blob, and I'm not sure that it is more straightforward
-> than making the digest_cache LSM require the space it needs and be
-> notified about security events.
->=20
-> Thanks
->=20
-> Roberto
->=20
+Changes since v1 [3]:
+
+- fixed line lengths and made comparison an explicit == 0 (Andrii, patch 1)
+- moved btf_iter.c changes to separate patch (Andrii, patch 3)
+- grouped common targets in kernel/bpf/Makefile (Andrii, patch 4)
+- updated bpf_testmod ctx alloc to use GFP_ATOMIC, and updated dtor
+  selftest to use map-based dtor cleanup (Eduard, patch 6)
+
+[1] https://lore.kernel.org/bpf/20240613095014.357981-1-alan.maguire@oracle.com/
+[2] https://lore.kernel.org/bpf/20240517102714.4072080-1-alan.maguire@oracle.com/
+[3] https://lore.kernel.org/bpf/20240618162449.809994-1-alan.maguire@oracle.com/
+
+Alan Maguire (6):
+  libbpf: BTF relocation followup fixing naming, loop logic
+  module, bpf: store BTF base pointer in struct module
+  libbpf: split field iter code into its own file kernel
+  libbpf,bpf: share BTF relocate-related code with kernel
+  kbuild,bpf: add module-specific pahole flags for distilled base BTF
+  selftests/bpf: add kfunc_call test for simple dtor in bpf_testmod
+
+ include/linux/btf.h                           |  64 +++++++
+ include/linux/module.h                        |   2 +
+ kernel/bpf/Makefile                           |   8 +-
+ kernel/bpf/btf.c                              | 176 ++++++++++++-----
+ kernel/module/main.c                          |   5 +-
+ scripts/Makefile.btf                          |   5 +
+ scripts/Makefile.modfinal                     |   2 +-
+ tools/lib/bpf/Build                           |   2 +-
+ tools/lib/bpf/btf.c                           | 162 ----------------
+ tools/lib/bpf/btf_iter.c                      | 177 ++++++++++++++++++
+ tools/lib/bpf/btf_relocate.c                  |  95 ++++++----
+ .../selftests/bpf/bpf_testmod/bpf_testmod.c   |  46 +++++
+ .../bpf/bpf_testmod/bpf_testmod_kfunc.h       |   9 +
+ .../selftests/bpf/prog_tests/kfunc_call.c     |   1 +
+ .../selftests/bpf/progs/kfunc_call_test.c     |  37 ++++
+ 15 files changed, 532 insertions(+), 259 deletions(-)
+ create mode 100644 tools/lib/bpf/btf_iter.c
+
+-- 
+2.31.1
 
 
