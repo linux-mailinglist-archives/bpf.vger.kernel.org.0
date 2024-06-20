@@ -1,300 +1,194 @@
-Return-Path: <bpf+bounces-32553-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-32555-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DF62790FB57
-	for <lists+bpf@lfdr.de>; Thu, 20 Jun 2024 04:35:21 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5F36790FB6D
+	for <lists+bpf@lfdr.de>; Thu, 20 Jun 2024 04:56:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D750F1C210AB
-	for <lists+bpf@lfdr.de>; Thu, 20 Jun 2024 02:35:20 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 598351C21147
+	for <lists+bpf@lfdr.de>; Thu, 20 Jun 2024 02:56:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 005171C680;
-	Thu, 20 Jun 2024 02:35:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="0rckpCxY";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="HoNGtmvp"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5627A1CFA9;
+	Thu, 20 Jun 2024 02:56:31 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B40481BF2A;
-	Thu, 20 Jun 2024 02:35:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA3CC171A1;
+	Thu, 20 Jun 2024 02:56:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.190
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718850913; cv=none; b=sq6eSfMs5FBIT4SF4QsJzYhvnQduENsXq/CE8zTnYrTAlQsBFMCP6JB+1f8s2YxQCVKzBFUHElujBoxS9mhAcZC1rkd4quPA0cmH/eerayfGYMmUtuMZqf5lJvc4GPTlhpreYeh3Q6Df57R9UQb7M9CzTBNAWlqZkgeI4IW9Vw0=
+	t=1718852191; cv=none; b=fb7bSi18O5dDJ/Vx68WgnZyLru/my6PwEej6KV6NbJR/ca7XgDJh+3rU62xG78H3DM7Y3xuRAtDZ2tswTXdC1j2KKc1IVBYDa0g0NTXSF2Idvu1o3yjFM2swEBaadwkSyB/RSNvTTcc+4oJq1S30Is8gBafpRovqur3D54h6LZc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718850913; c=relaxed/simple;
-	bh=ka1mwYAvq0PwS/sKID5VbbxjlX+VdxxBbwPJ5FbVoDM=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=N9OUS9A0tA/abjBnwaehfFWcZnLUw9I/3fFvG/7tJtQFLHK3wzy80V30qpv6KHxTseeh2eYBoud0jQ2B9E5Pp8LFLe8mK986LQmDFRVkJhPqd2OHPVTVfPCjLovBwpTtpDjXLPUc83I3PuMe8hPEia9xW1avbBlEV6F24Dl2xjY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=0rckpCxY; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=HoNGtmvp; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-From: Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1718850909;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=axeyVbmO6dC32aFs8QawmlttuapwPRGG6pRetfHXgJ0=;
-	b=0rckpCxYLDM22VfvDhzZ8eqNv6HJjdfvB4WsQezJ/kvzSPgh6qRNlvYolQOLSTzKtbpqlK
-	hZHvt2v5GWTFMrehUGWu75Ga3leYJBwMlnYZ4OgJ3eBILE4bqpr9jZJhuvsD+RywUMil5m
-	acJ0HbwNP7QA1L1DltaB47fEmS21yxaMc1CXcXdZU9eDVzG4ATliwebnV9/hgueY6/bEPV
-	44p2BCbZ8C0RihE1sgqQo5e+7vOv2C2ovqWRDgrdAzJAAUHyZevHqO/Wcfuknzwjv1Uk9i
-	L6FkNZmwlsjzojM+SlFinh68mrw1yRkOA2moEH+9vkrvOTKijHVfEFTNnRvt9A==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1718850909;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=axeyVbmO6dC32aFs8QawmlttuapwPRGG6pRetfHXgJ0=;
-	b=HoNGtmvpRa5rfJJ17WRmKWXeiMGESxwDgS9O0Mj5xDDQJKwIQm45S+djwyG8WWBbWSW+KS
-	0N97p1NwXuhwP/Bw==
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Tejun Heo <tj@kernel.org>, mingo@redhat.com, peterz@infradead.org,
- juri.lelli@redhat.com, vincent.guittot@linaro.org,
- dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
- mgorman@suse.de, bristot@redhat.com, vschneid@redhat.com, ast@kernel.org,
- daniel@iogearbox.net, andrii@kernel.org, martin.lau@kernel.org,
- joshdon@google.com, brho@google.com, pjt@google.com, derkling@google.com,
- haoluo@google.com, dvernet@meta.com, dschatzberg@meta.com,
- dskarlat@cs.cmu.edu, riel@surriel.com, changwoo@igalia.com,
- himadrics@inria.fr, memxor@gmail.com, andrea.righi@canonical.com,
- joel@joelfernandes.org, linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
- kernel-team@meta.com
-Subject: Re: [PATCHSET v6] sched: Implement BPF extensible scheduler class
-In-Reply-To: <CAHk-=wiKgKpNA6Dv7zoLHATweM-nEYWeXeFdS03wUQ8-V4wFxg@mail.gmail.com>
-References: <CAHk-=wg8APE61e5Ddq5mwH55Eh0ZLDV4Tr+c6_gFS7g2AxnuHQ@mail.gmail.com>
- <87ed8sps71.ffs@tglx>
- <CAHk-=wg3RDXp2sY9EXA0JD26kdNHHBP4suXyeqJhnL_3yjG2gg@mail.gmail.com>
- <87bk3wpnzv.ffs@tglx>
- <CAHk-=wiKgKpNA6Dv7zoLHATweM-nEYWeXeFdS03wUQ8-V4wFxg@mail.gmail.com>
-Date: Thu, 20 Jun 2024 04:35:08 +0200
-Message-ID: <878qz0pcir.ffs@tglx>
+	s=arc-20240116; t=1718852191; c=relaxed/simple;
+	bh=1Xmnfgp1ItF0jRXSWd8jcVkwr7/r+9fxi3baqS1IOtM=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=qI3x4NDVS65XdQ3gwLwv4sST4JBPaxr3iUKZ52eJNOv6iz32btqk4qHRunEaiPRFZ7IFWSgcVlXGcX2yd7gw7jZ0GtG3ItrP8EkEMUwCYSGbtULDGWwKJXaDWnN92cgHMTpggJOrLrq9BzSbDJ5DDxX6hVeCztAyQkG0T+J2s8k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.190
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.88.214])
+	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4W4Pj972xmz2Ck5J;
+	Thu, 20 Jun 2024 10:35:09 +0800 (CST)
+Received: from kwepemd200013.china.huawei.com (unknown [7.221.188.133])
+	by mail.maildlp.com (Postfix) with ESMTPS id 5AEC91A016C;
+	Thu, 20 Jun 2024 10:39:04 +0800 (CST)
+Received: from [10.67.110.108] (10.67.110.108) by
+ kwepemd200013.china.huawei.com (7.221.188.133) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1258.34; Thu, 20 Jun 2024 10:39:03 +0800
+Message-ID: <7cfa9f1f-d9ce-b6bb-3fe0-687fae9c77c4@huawei.com>
+Date: Thu, 20 Jun 2024 10:39:03 +0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.2
+Subject: Re: [PATCH bpf-next] uprobes: Fix the xol slots reserved for
+ uretprobe trampoline
+To: Oleg Nesterov <oleg@redhat.com>
+CC: <jolsa@kernel.org>, <rostedt@goodmis.org>, <mhiramat@kernel.org>,
+	<ast@kernel.org>, <daniel@iogearbox.net>, <andrii@kernel.org>,
+	<nathan@kernel.org>, <peterz@infradead.org>, <mingo@redhat.com>,
+	<mark.rutland@arm.com>, <linux-perf-users@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, <bpf@vger.kernel.org>
+References: <20240619013411.756995-1-liaochang1@huawei.com>
+ <20240619143852.GA24240@redhat.com>
+From: "Liao, Chang" <liaochang1@huawei.com>
+In-Reply-To: <20240619143852.GA24240@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ kwepemd200013.china.huawei.com (7.221.188.133)
 
-Linus!
+Hi, Oleg
 
-On Wed, Jun 19 2024 at 15:55, Linus Torvalds wrote:
-> On Wed, 19 Jun 2024 at 15:27, Thomas Gleixner <tglx@linutronix.de> wrote:
->> Right, but that applies to both sides, no?
->
-> But Thomas, this isn't a "both sides" issue.
+在 2024/6/19 22:38, Oleg Nesterov 写道:
+> On 06/19, Liao Chang wrote:
+>>
+>> When the new uretprobe system call was added [1], the xol slots reserved
+>> for the uretprobe trampoline might be insufficient on some architecture.
+> 
+> Confused... this doesn't depend on the change above?
 
-It is whether you like it or not.
+You are right, the uretprobe syscall is specifc to x86_64. This patch wouldn't
+address that issue. However, when i asm porting uretprobe trampoline to arm64
+to explore its benefits on that architecture, i discovered the problem that
+single slot is not large enought for trampoline code.
 
-I clearly gave the sched_ext people deep technical feedback on the way
-how they integrated this seven months ago in Richmond.
+> 
+>> For example, on arm64, the trampoline is consist of three instructions
+>> at least. So it should mark enough bits in area->bitmaps and
+>> and area->slot_count for the reserved slots.
+> 
+> Do you mean that on arm64 UPROBE_SWBP_INSN_SIZE > UPROBE_XOL_SLOT_BYTES ?
+> 
+>>From arch/arm64/include/asm/uprobes.h
+> 
+> 	#define MAX_UINSN_BYTES		AARCH64_INSN_SIZE
+> 
+> 	#define UPROBE_SWBP_INSN	cpu_to_le32(BRK64_OPCODE_UPROBES)
+> 	#define UPROBE_SWBP_INSN_SIZE	AARCH64_INSN_SIZE
+> 	#define UPROBE_XOL_SLOT_BYTES	MAX_UINSN_BYTES
+> 
+> 	typedef __le32 uprobe_opcode_t;
+> 
+> 	struct arch_uprobe_task {
+> 	};
+> 
+> 	struct arch_uprobe {
+> 		union {
+> 			u8 insn[MAX_UINSN_BYTES];
+> 			u8 ixol[MAX_UINSN_BYTES];
+> 
+> So it seems that UPROBE_SWBP_INSN_SIZE == MAX_UINSN_BYTES and it must
+> be less than UPROBE_XOL_SLOT_BYTES, otherwise
+> 
+> arch_uprobe_copy_ixol(..., uprobe->arch.ixol, sizeof(uprobe->arch.ixol))
+> in xol_get_insn_slot() won't fit the slot as well?
+This real reason is that the current implmentation seems to assume the
+ixol slot has enough space for the uretprobe trampoline. This assumption
+is true for x86_64, since the ixol slot is size of 128 bytes.
 
-I sat down with them because _you_ asked me explicitely for it as _you_
-did not want to deal with it.
+From arch/x86/include/asm/uprobes.h
+	#define UPROBE_XOL_SLOT_BYTES	128
 
-That feedback got ignored completely. Thank you very much for wasting
-_my_ time.
+However, it is not large enough for arm64, the size of which is MAX_UINSN_BYTES
+(4bytes).
 
-> This is a "people want to do new code and features, and the scheduler
-> people ARE ACTIVELY HOLDING IT UP" issue.
->
-> Yes, part of that "actively holding it up" is trying to make rules for
-> "you need to do this other XYZ thing to make us happy".
->
-> But no, then "not doing XYZ" does *NOT* make it some "but but other side" issue.
->
-> This, btw, is not some new thing. It's something that has been
-> discussed multiple times over the years at the maintainer summit for
-> different maintainers. When people come in and propose feature X, it's
-> not kosher to then say "you have to do Y first".
+From arch/arm64/include/asm/uprobes.h
 
-Seriously? You yourself requested this from me more than once in the
-past 20 years. But let's not go there.
+ 	#define MAX_UINSN_BYTES		AARCH64_INSN_SIZE // 4bytes
+ 	...
+ 	#define UPROBE_XOL_SLOT_BYTES	MAX_UINSN_BYTES
 
-> And yes, maybe everybody even agrees that Y would be a good thing, and
-> yes, wouldn't it be lovely if somebody did it. But the people who
-> wanted X didn't care about Y, and trying to get Y done by then gating
-> X is simply not ok.
+Here is an exmample of the uretprobe trampoline code used for arm64:
 
-I very well remember the discussions about fix X first before Y.
+uretprobe_trampoline_for_arm64:
+	str x8, [sp, #-8]!
+	mov x8, __NR_uretprobe
+	svc #0
 
-But you are completely ignoring the fact that in this case
+Above code is 12 bytes in size, exceeding the capacity of single ixol slot
+on arm64, so three slots are necessary to be reserved for the entire trampoline.
 
-    - problem X got introduced by the very same people who are now
-      pushing for Y
+Thanks.
 
-    - the resolution to problem X was not rejected by the scheduler
-      people at all
+> 
+> OTOH, it look as if UPROBE_SWBP_INSN_SIZE == UPROBE_XOL_SLOT_BYTES, so
+> I don't understand the problem...
+> 
+> Oleg.
+> 
+>> [1] https://lore.kernel.org/all/20240611112158.40795-4-jolsa@kernel.org/
+>>
+>> Signed-off-by: Liao Chang <liaochang1@huawei.com>
+>> ---
+>>  kernel/events/uprobes.c | 11 +++++++----
+>>  1 file changed, 7 insertions(+), 4 deletions(-)
+>>
+>> diff --git a/kernel/events/uprobes.c b/kernel/events/uprobes.c
+>> index 2816e65729ac..efd2d7f56622 100644
+>> --- a/kernel/events/uprobes.c
+>> +++ b/kernel/events/uprobes.c
+>> @@ -1485,7 +1485,7 @@ void * __weak arch_uprobe_trampoline(unsigned long *psize)
+>>  static struct xol_area *__create_xol_area(unsigned long vaddr)
+>>  {
+>>  	struct mm_struct *mm = current->mm;
+>> -	unsigned long insns_size;
+>> +	unsigned long insns_size, slot_nr;
+>>  	struct xol_area *area;
+>>  	void *insns;
+>>  
+>> @@ -1508,10 +1508,13 @@ static struct xol_area *__create_xol_area(unsigned long vaddr)
+>>  
+>>  	area->vaddr = vaddr;
+>>  	init_waitqueue_head(&area->wq);
+>> -	/* Reserve the 1st slot for get_trampoline_vaddr() */
+>> -	set_bit(0, area->bitmap);
+>> -	atomic_set(&area->slot_count, 1);
+>>  	insns = arch_uprobe_trampoline(&insns_size);
+>> +	/* Reserve enough slots for the uretprobe trampoline */
+>> +	for (slot_nr = 0;
+>> +	     slot_nr < max((insns_size / UPROBE_XOL_SLOT_BYTES), 1);
+>> +	     slot_nr++)
+>> +		set_bit(slot_nr, area->bitmap);
+>> +	atomic_set(&area->slot_count, slot_nr);
+>>  	arch_uprobe_copy_ixol(area->pages[0], 0, insns, insns_size);
+>>  
+>>  	if (!xol_add_vma(mm, area))
+>> -- 
+>> 2.34.1
+>>
+> 
+> 
 
-      It stayed unresolved because the very same parties which are now
-      so cosily working together on Y (aka sched_ext0 could not agree on
-      anything
-
-      So the mess they created in the first place stays as is and both
-      parties "solved" their problem with Y (aka sched_ext) and have
-      their own implementations to work around it how they see fit.
-
-IOW, what you are saying is:
-
-    #1 Push for your solution X and get it merged
-
-    #2 Ignore the resulting problems related to X for at least a decade
-
-    #3 Come up with a half baken workaround Y to be able to deal with #2
-       and leave everyone else behind to deal with the results of #1 and
-       #2
-
-    #4 Make Linus decide that Y is the right thing to do because other
-       people suck
-
-The past discussions about fix "X" before "Y" were distinctly different.
-
-> Now, if there was some technical argument against X itself, that would
-> be one thing. But the arguments I've heard have basically fallen into
-> two camps: the political one ("We don't want to do X because we simply
-> don't want an extensible scheduler, because we want people to work on
-> _our_ scheduler") and the tying one ("X is ok but we want Y solved
-> first").
-
-There have been voiced a lot of technical arguments, which never got
-addressed and at some point people gave up due to being ignored.
-
-When I sat there in Richmond with the sched_ext people I gave them very
-deep technical feedback especially on the way how they integrate it:
-
-  Sprinkle hooks and callbacks all over the place until it works by some
-  definition of works.
-
-That's perfectly fine for a PoC, but not for something which gets merged
-into the core of an OS. I clearly asked them to refactor the existing
-code so that these warts go away and everything is contained into the
-scheduler classes and at the very end sched_ext falls into place. That's
-a basic engineering principle as far as I know.
-
-They nodded, ignored my feedback and just continued to persue their way.
-
-Are you still claiming with a straight face that this is a problem
-rooted in one party?
-
-It's a problem of one interest group to get this into the tree no matter
-what.
-
-I sat in the room at OSPM 2023 when the introduction of the sched ext
-advertisement started with "This saves us (FB) millions and Google is
-collaborating with us [unspoken - to save millions too by eliminating
-their unmaintainable scheduler hacks]', which is clearly a technical
-argument, right?
-
-> I was hoping the tying argument would get solved. I saw a couple of
-> half-hearted emails to that effect, and Rik at some point saying
-> "maybe the problems are solvable", referring to his work from a couple
-> of years ago, but again, nothing actually happened.
-
-See above. It's not a problem of the scheduler people.
-
-It's a problem created by the very same people who refuse to solve it
-and at the same time push for their new magic cure.
-
-> And I don't see the argument that the way to make something happen is
-> to continue to do nothing.
-
-I clearly offered you to try to resolve this amicably within a
-reasonable time frame.
-
-How exaclty is that equivalent to "continue to do nothing" ?
-
-> Because if you are serious about making forward progress *with* the
-> BPF extensions, why not merge them and actually work with that as the
-> base?
-
-There is a very simple argument to this:
-
-   - The way how it is integrated sucks in a big way on purely technical
-     grounds. If you want details, I'm happy to reiterate them again in
-     a separate mail just in case you can't find them in your inbox or
-     can't remember what I told you seven month ago.
-
-   - This got pointed out by myself seven months ago to the sched_ext
-     people
-
-   - They sat with me at the table and nodded
-
-   - Then they went off and ignored it for seven months and just added
-     more warts.
-
-Now you are asking me seriously why I don't want to see this merged in
-the technical state which it is in right now?
-
-Are you seriously expecting that this is resolved amicably just by
-forcing this into the tree on the obvious expense of the people who were
-working on the existing code for decades?
-
-That aside, your whole argument about the so "very high" participation
-barrier on the scheduler is just based on hearsay and not on facts,
-which you could easily have gathered yourself. Let me do your homework.
-
-In the past five years there have been:
-
-   ~4000 mail (patch) threads related to scheduler issues
-   ~1600 commits (i.e. 1.6 commits per work day on average)
-    ~300 different authors
-
-300 different authors is clearly not a sign of a problematic community
-neither is the ratio of commits to mail threads is 1:2.5.
-
-The fact tell clearly that this is a healthy community and not a sign of
-a participation barrier problem.
-
-The fact, that the contributions and contribution attempts from the
-proponents of sched_ext are close to zero cannot be abused to claim that
-there is a high bar to get patches into the scheduler subsystem.
-
-If you don't try in the first place then you can't complain about it,
-no?
-
-Just for the record, the scheduler people and myself spent a lot of time
-to help to get intrusive features like UMCG into mainline, but the
-efforts were dropped by the submitters for no reason. Short time after
-that sched_ext came around.
-
-Can we please agree that the root of this has left the technical grounds
-long ago?
-
-If you think that the correct non-technical solution is to resolve this
-brute force without giving those who are willing to work this out in the
-proper way a completely irrelevant delay of three month, then I really
-have to ask you what you are trying to achive.
-
-If you pull that stuff as is then you create a patently bad precedent
-and on top of that you slap everyone who worked and works
-collaboratively and constructively with maintainers and the wider
-community to get their features merged straight into their face.
-
-You are obviously free to do so, but then please clearly state that this
-is the new world order by merging an unreviewed patch against
-Documentation/process/* which makes this as a general rule applicable
-for everyone.
-
-We've been there and done that during the 2.5 period and it took us
-years to recover from it, but maybe you have forgotten about that
-because you merely had to merge the fixes which were created by people
-who cared and lost their sleep over the mess.
-
-Whatever the outcome is, we definitely have to have a major discussion
-about the underlying problem at the maintainer summit whether you like
-it or not.
-
-That said, my offer stands to work on an amicable and collaborative
-solution for this nuisance, but that's obviously all I can do.
-
-Up to you.
-
-Thanks,
-
-        Thomas
+-- 
+BR
+Liao, Chang
 
