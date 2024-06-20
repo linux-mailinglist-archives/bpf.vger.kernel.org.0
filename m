@@ -1,85 +1,85 @@
-Return-Path: <bpf+bounces-32648-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-32649-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 94E5D911589
-	for <lists+bpf@lfdr.de>; Fri, 21 Jun 2024 00:20:26 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id D7FAF91158B
+	for <lists+bpf@lfdr.de>; Fri, 21 Jun 2024 00:20:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8251BB21822
-	for <lists+bpf@lfdr.de>; Thu, 20 Jun 2024 22:20:23 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 92CA7283556
+	for <lists+bpf@lfdr.de>; Thu, 20 Jun 2024 22:20:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4FEEA150994;
-	Thu, 20 Jun 2024 22:19:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F13DA15216E;
+	Thu, 20 Jun 2024 22:19:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b="fzKJTPJa"
+	dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b="FXV5Q4jd"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-vs1-f45.google.com (mail-vs1-f45.google.com [209.85.217.45])
+Received: from mail-qk1-f171.google.com (mail-qk1-f171.google.com [209.85.222.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 75B6714F13F
-	for <bpf@vger.kernel.org>; Thu, 20 Jun 2024 22:19:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.217.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 202C1139CE5
+	for <bpf@vger.kernel.org>; Thu, 20 Jun 2024 22:19:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718921962; cv=none; b=sW6ciBgrxBkAUqlYHkvHEtGCWUfK2+U60kMxVartJ3N3EmpFa3EZCKw4eN593Mi4crl3pMma6iuFIwbU8KiXERTgqyGokIgrXdXCalg0EXc6xSRk4IzOsQ2CQZMEIYGeWcy9C12M3iTD60OgIM6FgpNuup9C/Udfb7uFd0nDBQs=
+	t=1718921964; cv=none; b=MvJMZVcI/lENVy8Tc7Ookrig0jW/nTjrswkiFYElOAO9skMKgU4LT4MtxYv6wpRVX1Wg9KMDDgrpohVUY+n5kCOgPs4tvdyc/HxYOvJ30u6pSkxylVhiIzkQNeAbrpvsJ4Xa8ERH5Dbo2VNkQ+ED/Obc3d2JsvaN2GjXGPKu4X0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718921962; c=relaxed/simple;
-	bh=32x+O/uigML8NJ7XRYMJBXLGcM/DNjaft/fQ6ZGj9FA=;
+	s=arc-20240116; t=1718921964; c=relaxed/simple;
+	bh=67A6Ac6YQftcvhwDMNA4TWQLwqsK0VkfsMZwmQEXDgY=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=N1e0zyRqOXxTFdEfl/pdsd+dmrWtJzijvGTqbeyUxwDO/Fo0ULUXhfueQLkkLadz1BT1nt7WkV4fMw96SQFJCt7sgOWtrUIzTJUQEFsT5wsd+7afIYchnW+xz5JkgzfJDcPTITXjHgbIdXGNNvFnyYZuvtLSvQY+Kp/aP3v3yYA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com; spf=pass smtp.mailfrom=cloudflare.com; dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b=fzKJTPJa; arc=none smtp.client-ip=209.85.217.45
+	 Content-Type:Content-Disposition:In-Reply-To; b=iX7iRTK4jd3O9J58AO5QAepqTwiU/H0CT7UBCCCp/eQp9bUQHWJc6DJAgbOYat3Gah+X18KlOL+/0P3L3MclqQCV5cilCZbI/pMi1qZ1eZiwGgtUHCoGVIlebGyoLiE9QzztXM4REHpTeZ2nA6yu9laq11NC8WiiWTNiEd7R+xc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com; spf=pass smtp.mailfrom=cloudflare.com; dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b=FXV5Q4jd; arc=none smtp.client-ip=209.85.222.171
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cloudflare.com
-Received: by mail-vs1-f45.google.com with SMTP id ada2fe7eead31-48c478b0fd9so418571137.2
-        for <bpf@vger.kernel.org>; Thu, 20 Jun 2024 15:19:20 -0700 (PDT)
+Received: by mail-qk1-f171.google.com with SMTP id af79cd13be357-7955841fddaso125021985a.1
+        for <bpf@vger.kernel.org>; Thu, 20 Jun 2024 15:19:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google09082023; t=1718921959; x=1719526759; darn=vger.kernel.org;
+        d=cloudflare.com; s=google09082023; t=1718921962; x=1719526762; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=Wl7TiTwQUumMiW4m4cKincFWubuOSv6Mg3YKWODD3jc=;
-        b=fzKJTPJaicBERd8CWyHAtXq4F6oyMmqjLDw3hac60JWvELF32YXdSTFodn2jYvrkwC
-         MnJVGDhyShORGOvcZGkY0+NfsafZ9eh0tdWDS28lJ+JW5kRzPNfezlG0m9zk9+C7C1M/
-         tyU6s+i6BUSlL9JNr12BVt5GrXMaBsGWEsK5eKdvw8KlBPAObgiEh9QBCEvrimnojV3D
-         zS2euioS7ZrlsVpv7zhFujo7C0a4n+GeMZ51BIqG44/GksMw0wF0ozJtYzihen66au6P
-         kS7p3TMgW17CJsvs9ZgkxnHepfcohTivEGFQ+YzruZZKG4+KPfttHI4K+WMPJQCwXNr2
-         uB7Q==
+        bh=OK8tYlg8joxvSAleL9jkPigjYKgVARJbZCH4f6lw/EE=;
+        b=FXV5Q4jdOkNB1z6uft14vTWz7CyW1eFRmOqMlxd6/tKVLcic5MM92UAvJae65oLwuz
+         3ljaedH018WXEzXjdXGH6QRGJ8Lm/GbvUPcaigyEXxxqpO3LVG3/6otkntzpp+vhlbbR
+         j11sH4KX9maxjyf7DZQJZnQsvlXu3va6YZMRVU5FRu2wLFEM68FWe4L2rn3pSx6X4+rn
+         kafmT5pMRV/IxdwuClcd14EFnj09FUU0Ca6UQdg/ouhTRPL0PgXJmC5wkY6m3Zh8QlVB
+         Gf3f4+uckR6eCYQlvJbx5UMUVoUxi04exgWpfqwADDepHSUCnqBcutmGwhNuP1t7T2XL
+         vm1g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1718921959; x=1719526759;
+        d=1e100.net; s=20230601; t=1718921962; x=1719526762;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Wl7TiTwQUumMiW4m4cKincFWubuOSv6Mg3YKWODD3jc=;
-        b=MLpiUOwheGeKSSEL4wsZJO58Tl+YGOX7hI2XZe0BnLFkx/Gxo9YT11/kcYM99AN+Ks
-         GSGk9Zsr/wrpe/SRyqrbNgUy6cagHhGo38suL1v/PM5NNVGe/9bN4S4PmvW7RzJyMTgr
-         /tWcN53PHccoCbclP6fhgcNd8p2+Ba6/sc8NJeEb6sYwsr1BtHBhuwCE2MWw3dSEYPfE
-         z3xZ1w66Bspjvc5wbqWccmKS0tDmbYY7XPt8MJwhNXlYLEbZBaAbohG4uW3SYnKyx8oE
-         l24XLXiRgiYufc2ecbxlzfjGu6z4ixoeqYh0ar+29sN87ekonWDbwkxs0/7J5YBM7Cuf
-         u/jw==
-X-Forwarded-Encrypted: i=1; AJvYcCW+9L9M6oZ+L9KiNyI/wo5w3FaG/pbvUvvTxtsJHuhcDfWATBm3duE7JG4QbTKdDYSW60tfvCs7i8oFEOdHQfoP1pDL
-X-Gm-Message-State: AOJu0Yy3KQ7NKOTD5gjFPgCY+koInJVP+PtggZn25YXE6A4JVZ++XxQ7
-	fpIFnavs4ITZb0WbZ+w3NaR9xo5hfty1LKrXPQrSKBr3STrlTXY+vjCJcQuH3wY=
-X-Google-Smtp-Source: AGHT+IHjgSMTq2xDbJSSKDE+rkyZk34gRQgY7afYxp/41reT7sQo1zzV37XQCPuh2Rgngca8xB4+iQ==
-X-Received: by 2002:a05:6102:366a:b0:48f:135f:55ef with SMTP id ada2fe7eead31-48f135f5696mr6983814137.15.1718921959364;
-        Thu, 20 Jun 2024 15:19:19 -0700 (PDT)
+        bh=OK8tYlg8joxvSAleL9jkPigjYKgVARJbZCH4f6lw/EE=;
+        b=dmTn9cHzuPVF7rB0k6NohoQF+m0hlIKGIgVkOzU4Y5XTVrH3U5/sFJCxQRaDe3yJz2
+         NBedS1etfVIfd1uwMLRqN3/0N6XUTq66dVTiI0bkH89Puzr8vjTpvzP+XZusA3+cZAha
+         GeYGa2DNqRpJm8NZ/m0WTY1wQSxsxvYC6TkxsUzlIjS2Nex6RGdgZB3CvoLTCMYHQ0Zq
+         Trv9H20WpO4pQ2vgznhvA9HBj1zUVNZR3i/GzDTrTL5V9kS8jOj8BrD48zdqpRLEN62J
+         KjhuTg7ZIcbr05UxYdzmverQCzqjAf8QGonZ7mNFTGjhO3U2zN+sl81t3n87770S/R+V
+         ojWw==
+X-Forwarded-Encrypted: i=1; AJvYcCX0CGlI4Jw8o388zVmQ2mmVdiwE/95ez1qVR2L1Pa1OnI5DE8PzeF94VLgKQBGywgsCRhyV5Fy+aw0RuD1V+aTkROlD
+X-Gm-Message-State: AOJu0YwuIoH+/04PhDgtQrnAVKQF75y6ZgTnwG3Y0agD7FlD8GCiHScV
+	8ZW5EKvMbYjmKsIII67KYRnpZ0cB5MxSSloheabEcpcHbAM8xZw2KmV7qmqU3FI=
+X-Google-Smtp-Source: AGHT+IFQ0EzdKYHmQwg+zZ/JUI4tnTmadz5hANlPNEhcpyyd7GKGUXhNuPpeaqnT9c/ZhEIbyMJApQ==
+X-Received: by 2002:a05:620a:2942:b0:795:890c:3f57 with SMTP id af79cd13be357-79bb365483amr1078233385a.37.1718921962113;
+        Thu, 20 Jun 2024 15:19:22 -0700 (PDT)
 Received: from debian.debian ([2a09:bac5:7a49:19cd::292:40])
-        by smtp.gmail.com with ESMTPSA id af79cd13be357-79bce92033bsm17250685a.87.2024.06.20.15.19.17
+        by smtp.gmail.com with ESMTPSA id af79cd13be357-79bce91dc4esm17234085a.90.2024.06.20.15.19.20
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 Jun 2024 15:19:18 -0700 (PDT)
-Date: Thu, 20 Jun 2024 15:19:16 -0700
+        Thu, 20 Jun 2024 15:19:21 -0700 (PDT)
+Date: Thu, 20 Jun 2024 15:19:19 -0700
 From: Yan Zhai <yan@cloudflare.com>
 To: netdev@vger.kernel.org
-Cc: Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
+Cc: Michael Chan <michael.chan@broadcom.com>,
 	"David S. Miller" <davem@davemloft.net>,
-	Jakub Kicinski <kuba@kernel.org>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
 	Jesper Dangaard Brouer <hawk@kernel.org>,
-	John Fastabend <john.fastabend@gmail.com>,
-	Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>,
-	netdev@vger.kernel.org, bpf@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [RFC net-next 3/9] xdp: implement bpf_xdp_disable_gro kfunc
-Message-ID: <e31ce8f27a672e3c0def5a586a9a10f1d71e9948.1718919473.git.yan@cloudflare.com>
+	John Fastabend <john.fastabend@gmail.com>, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org, bpf@vger.kernel.org
+Subject: [RFC net-next 4/9] bnxt: apply XDP offloading fixup when building skb
+Message-ID: <f804c22ca168ec3aedb0ee754bfbee71764eb894.1718919473.git.yan@cloudflare.com>
 References: <cover.1718919473.git.yan@cloudflare.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -91,60 +91,28 @@ Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 In-Reply-To: <cover.1718919473.git.yan@cloudflare.com>
 
-Add a kfunc bpf_xdp_disable_gro to toggle XDP_FLAGS_GRO_DISABLED
-flag.
+Add a common point to transfer offloading info from XDP context to skb.
 
 Signed-off-by: Yan Zhai <yan@cloudflare.com>
+Signed-off-by: Jesper Dangaard Brouer <hawk@kernel.org>
 ---
- net/core/xdp.c | 27 ++++++++++++++++++++++++++-
- 1 file changed, 26 insertions(+), 1 deletion(-)
+ drivers/net/ethernet/broadcom/bnxt/bnxt.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/net/core/xdp.c b/net/core/xdp.c
-index 41693154e426..d6e5f98a0081 100644
---- a/net/core/xdp.c
-+++ b/net/core/xdp.c
-@@ -770,6 +770,20 @@ __bpf_kfunc int bpf_xdp_metadata_rx_vlan_tag(const struct xdp_md *ctx,
- 	return -EOPNOTSUPP;
- }
- 
-+/**
-+ * bpf_xdp_disable_gro - Set a flag on underlying XDP buffer, indicating
-+ * the stack to skip this packet for GRO processing. This flag which be
-+ * passed on when the driver builds the skb.
-+ *
-+ * Return:
-+ * * always returns 0
-+ */
-+__bpf_kfunc int bpf_xdp_disable_gro(struct xdp_md *ctx)
-+{
-+	xdp_buff_disable_gro((struct xdp_buff *)ctx);
-+	return 0;
-+}
+diff --git a/drivers/net/ethernet/broadcom/bnxt/bnxt.c b/drivers/net/ethernet/broadcom/bnxt/bnxt.c
+index 7dc00c0d8992..0036c4752f0d 100644
+--- a/drivers/net/ethernet/broadcom/bnxt/bnxt.c
++++ b/drivers/net/ethernet/broadcom/bnxt/bnxt.c
+@@ -2252,6 +2252,10 @@ static int bnxt_rx_pkt(struct bnxt *bp, struct bnxt_cp_ring_info *cpr,
+ 			}
+ 		}
+ 	}
 +
- __bpf_kfunc_end_defs();
- 
- BTF_KFUNCS_START(xdp_metadata_kfunc_ids)
-@@ -799,9 +813,20 @@ bool bpf_dev_bound_kfunc_id(u32 btf_id)
- 	return btf_id_set8_contains(&xdp_metadata_kfunc_ids, btf_id);
- }
- 
-+BTF_KFUNCS_START(xdp_common_kfunc_ids)
-+BTF_ID_FLAGS(func, bpf_xdp_disable_gro, KF_TRUSTED_ARGS)
-+BTF_KFUNCS_END(xdp_common_kfunc_ids)
++	if (xdp_active)
++		xdp_buff_fixup_skb_offloading(&xdp, skb);
 +
-+static const struct btf_kfunc_id_set xdp_common_kfunc_set = {
-+	.owner = THIS_MODULE,
-+	.set = &xdp_common_kfunc_ids,
-+};
-+
- static int __init xdp_metadata_init(void)
- {
--	return register_btf_kfunc_id_set(BPF_PROG_TYPE_XDP, &xdp_metadata_kfunc_set);
-+	int ret = register_btf_kfunc_id_set(BPF_PROG_TYPE_XDP, &xdp_metadata_kfunc_set);
-+
-+	return ret ?: register_btf_kfunc_id_set(BPF_PROG_TYPE_XDP, &xdp_common_kfunc_set);
- }
- late_initcall(xdp_metadata_init);
+ 	bnxt_deliver_skb(bp, bnapi, skb);
+ 	rc = 1;
  
 -- 
 2.30.2
