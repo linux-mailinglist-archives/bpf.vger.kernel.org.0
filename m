@@ -1,193 +1,150 @@
-Return-Path: <bpf+bounces-32635-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-32636-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 210669112A2
-	for <lists+bpf@lfdr.de>; Thu, 20 Jun 2024 21:58:35 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E0B5A9112A3
+	for <lists+bpf@lfdr.de>; Thu, 20 Jun 2024 21:58:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5BF60B21762
-	for <lists+bpf@lfdr.de>; Thu, 20 Jun 2024 19:58:28 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9D6572825E2
+	for <lists+bpf@lfdr.de>; Thu, 20 Jun 2024 19:58:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5BD5E1B5814;
-	Thu, 20 Jun 2024 19:58:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 287651B9AAA;
+	Thu, 20 Jun 2024 19:58:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=googlemail.com header.i=@googlemail.com header.b="aiNOXI64"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dMkcJcQW"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-yw1-f170.google.com (mail-yw1-f170.google.com [209.85.128.170])
+Received: from mail-pf1-f175.google.com (mail-pf1-f175.google.com [209.85.210.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D77D3D575
-	for <bpf@vger.kernel.org>; Thu, 20 Jun 2024 19:58:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A7C81B3F2D;
+	Thu, 20 Jun 2024 19:58:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718913504; cv=none; b=SOZjJJus0R/6JIu8QCihg4cJCrG/r+ustvVVBRy0rQoD1Gycr48L7wrzf8cK8P+ACpPgR6T5Dv6yBo+pSWhz8cxo0dlmFxwL5e+eXrrGveLCXJXmPDdTt0YNgrZqwgWUNMBW5snWx/JVGMCb8sOUkEHcDLmfCSbH8SuRwDjmWgg=
+	t=1718913519; cv=none; b=Ee6jeRvuq0pxZKLoWRS5o6neEkGE9dcjq4ZVZqbZkfQ3lM56oJloMhSpzmLD/f0k/UgvKoe/SidIWR1X+Nkg4ZccIC19vLBEHGVlhqCsCpdG/MbGgHfCraoj7tTRkwJbREY/xP0uY2IrmZOqjdqqrsqqzTC6o7U8nxRodXhHqbw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718913504; c=relaxed/simple;
-	bh=Potmkm6voPBPNzxgXsmvsfZc4MiOJ8b/TbfuwlrA33c=;
-	h=From:To:Cc:References:In-Reply-To:Subject:Date:Message-ID:
-	 MIME-Version:Content-Type; b=FhhKXXOIUZIzrGe4Eajz6BS06N+F/TH5ffeQnltArmN5b4J9XhxJkUmk0CRPSmmKDNsWFuf+CtDVgGW++2RxvWCvJLITisXs/USrPY6mywMk4X4vQSd28okeU44r0egJaBXIgF7B7vBw/4gyRwLxxfzYxEeGkLtU/LiYvc95+84=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=googlemail.com; spf=pass smtp.mailfrom=googlemail.com; dkim=pass (2048-bit key) header.d=googlemail.com header.i=@googlemail.com header.b=aiNOXI64; arc=none smtp.client-ip=209.85.128.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=googlemail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=googlemail.com
-Received: by mail-yw1-f170.google.com with SMTP id 00721157ae682-633629c3471so13096567b3.1
-        for <bpf@vger.kernel.org>; Thu, 20 Jun 2024 12:58:23 -0700 (PDT)
+	s=arc-20240116; t=1718913519; c=relaxed/simple;
+	bh=dVxfHwtenKBSjV9OfjRyhDKFNSv2wMV5nHOruqsGr5Y=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=C5TpoBwB6Lbo3mESeU2Wd000Ul+mIUuKdwFqKfAi8WdGKsZQ8x2JopebbH0CovZIoYnsJOxyC0MOFAVia0FsbQFBl3sWkNVairDND+roGGbR07Cwe99D3YjPtVNe2katAqzx8d1lZPGEPybwbFRMx+THb5PlyXY4XXIy8t0d3iY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=dMkcJcQW; arc=none smtp.client-ip=209.85.210.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f175.google.com with SMTP id d2e1a72fcca58-70436ac8882so1121452b3a.2;
+        Thu, 20 Jun 2024 12:58:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=20230601; t=1718913502; x=1719518302; darn=vger.kernel.org;
-        h=content-language:thread-index:content-transfer-encoding
-         :mime-version:message-id:date:subject:in-reply-to:references:cc:to
-         :from:from:to:cc:subject:date:message-id:reply-to;
-        bh=zcvZYLOScb+/oW3/WVg/h2Scd9FY9aOUmiQFOB/rav8=;
-        b=aiNOXI64MsbY5LQoDRRrvEG+W2cLto56YO1JqbGTeYgLXvfizaUCSZNCD4V0DrpEtu
-         AF24mvXVzN9q2IG+ZSsswegw3uK6e0MewuW7xcyFeDxIQnkZSLslMqJgboTZ/bU0uKOB
-         EkqKTUucchongP249/UnImoa0MZHeF5Lu8EoY9nZdsCJMEnuUQO/uidAvIBfrPkwUvNU
-         eFmdWRQgAEzbv4Ds3h9v64C7vijaULkmSGOI6t1MdjOai7vujlzYIGwv4eSr4pHQEBn4
-         1cuf+O0E5UQrD3d8b+oc3VHbggN5Uq1+P/AExJac0J7X2XLaRKfocEEOQenYmj157RiJ
-         uSrQ==
+        d=gmail.com; s=20230601; t=1718913517; x=1719518317; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=OvYBhmIJQ6oNWDLzYCe4j2TV++2BkNYnycvPCo+ymfc=;
+        b=dMkcJcQWEPyAGJNF+g4mM9heUYlx3I9nRuXj9eYYmsLvf75VA7Jd+8t2U1MkPtHQBi
+         LC98Vrjd61R/tEA6jb3SwR/1xiQOH2ys5hgvXtObxWa1R3MPcPnvQY8uUSDqqG6nOovW
+         RDx4C+Y/wlz9r4/cvNyPlEWht8YDGr0jVvuqPVYfeurshdlYp23Qty4vCxvmAN8fEKmK
+         5cTlDkQac3Mypq7A4rBfJdBEafbg2WhoBbJZoZIcgOGJAVJ+YfnhEH6yOAUGz3qlQ/7p
+         8LZeUbmAST+rzuSZP1W5t990Hylc0KKN5Lomv/4lbNUwBYfzjjWyrUU5xecLKrMx85bR
+         fyBQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1718913502; x=1719518302;
-        h=content-language:thread-index:content-transfer-encoding
-         :mime-version:message-id:date:subject:in-reply-to:references:cc:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=zcvZYLOScb+/oW3/WVg/h2Scd9FY9aOUmiQFOB/rav8=;
-        b=v7Gy2d7tvjMTZOKOfs3awhjDwwnB3npuv3zFpWK3gvlw+ZAA5ggos8witphMN6BZSs
-         aDwRtLD1VtZQNfBFkDhQDde00iGHZeKc5mRq8zVtDIYZfV3MMUYe4ZLHD0Mu2qhlffDL
-         sAm6goKQrroLeZFbSXLxXIQBmn/g++atRDHSLIIgAoHh/N9b3et1TVThZEnaOrtoKF6c
-         IjFUil4iTAQEcKUOF2vc9FtZA/vMop06IMgzA2xZuPTNIVJGccYaTIvurWDVTbSN91dN
-         9JZiwlTIdH69qaicJ8aiASCJkcj9/H4DHGmvwCfH/WTQpBQWHt+A+FJHcsy2Pe5MC2P2
-         N3pg==
-X-Forwarded-Encrypted: i=1; AJvYcCWqD2Jugoz7BNFdWV5IuYfCP6nVdGzcEQTSlgiTepk+mvs1VCXApArx32lJmvGGo34ZWpRidsNvW/0omk/uM1u8TV+0
-X-Gm-Message-State: AOJu0YydnNytuIwJdD3x9DfhOuDp5vXDlbw1k1Ip9i98e8xoHIb7XY71
-	c2VTYq3myVJ0OI499Q3l9mXUvp2BjpqueLcH/ZkR85Nfvb0yPvsX
-X-Google-Smtp-Source: AGHT+IGJq4cY0j8YwGaRz0X6OJ5+wPEuke1d7oG1DHMJqKedr89nqQFYGg8juiMCl0/7/gGkyylGUg==
-X-Received: by 2002:a0d:c1c2:0:b0:627:778f:b0a8 with SMTP id 00721157ae682-63a8fddc0a0mr66997317b3.42.1718913501931;
-        Thu, 20 Jun 2024 12:58:21 -0700 (PDT)
-Received: from ArmidaleLaptop ([2600:381:bf1c:7784:eca4:cc56:8003:c9fb])
-        by smtp.gmail.com with ESMTPSA id 00721157ae682-63f154d5df7sm303737b3.107.2024.06.20.12.58.19
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 20 Jun 2024 12:58:21 -0700 (PDT)
-From: Dave Thaler <dthaler1968@googlemail.com>
-X-Google-Original-From: "Dave Thaler" <dthaler1968@gmail.com>
-To: =?utf-8?Q?'=C3=89ric_Vyncke'?= <evyncke@cisco.com>,
-	<gunter.van_de_velde@nokia.com>
-Cc: <draft-ietf-bpf-isa@ietf.org>,
-	<bpf-chairs@ietf.org>,
-	<bpf@ietf.org>,
-	<void@manifault.com>,
-	<bpf@vger.kernel.org>
-References: <171811793126.62184.9537540105321678706@ietfa.amsl.com>
-In-Reply-To: <171811793126.62184.9537540105321678706@ietfa.amsl.com>
-Subject: =?utf-8?Q?BPF/eBPF_non-acronym_feedback_fr?=
-	=?utf-8?Q?om_Gunter_Van_de_Velde_and_=C3=89ric_?=
-	=?utf-8?Q?Vyncke?=
-Date: Thu, 20 Jun 2024 12:58:16 -0700
-Message-ID: <1b3301dac34c$3347df50$99d79df0$@gmail.com>
+        d=1e100.net; s=20230601; t=1718913517; x=1719518317;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=OvYBhmIJQ6oNWDLzYCe4j2TV++2BkNYnycvPCo+ymfc=;
+        b=AsPNPESM8EGNCQjeOYnWn81VVVODpkZdMKcCY7QEhdtfI7ifVRPQ/PHYQkE37N8Nhe
+         LEaupgHeiaW2pHVSXXgWS/VTg0eb+Ja8VpRyY7oNlZmsAxjUScujJayCha+4wOcu43WD
+         iOoVDpCUm4iiBHaLgq8/KHjCca/CNsAfcYuIVA9lsutHaIjgMvL8HaNBOkxDaN+m876W
+         eTeol6m1YAIiRJuEP/X594zHuiWQD0AH3VFv7Ky0KGVo6P5CtP4ail/q/PK5wKI6JP5+
+         XHvp7sasEXumz/RLHKdZ9q3GgsH1IbgUZoNI9W8R6w0WLsqtGT1/6N9m3touG/8lc1ta
+         dnUA==
+X-Forwarded-Encrypted: i=1; AJvYcCW6j2g9p9zl6Y/kQi7Ulqc9G1niT/KOucUhDboBK21cIrsx23//J1Ejm78uTHVmpYTFF9DUEfauhCYEREM83BN7YRnqYZtKgpgymN/TUX4y01OQBKjk7kWruwbUvpoixmoy
+X-Gm-Message-State: AOJu0Yxe8HWi7FuTCfT9pQnjZqZy9fCIq2K4YkVhZOMFPtizxiANmpZf
+	bTSk1qeUppDK+tJVLenH8Gwi4jd/iwIcY+iQLWy+FzDDrfdWyR9T
+X-Google-Smtp-Source: AGHT+IFMNYnp7v0mbDJ7mdFJWPxgcQ4HGv6x3IKaKW9ueMkmsnmWYImVH9+vuJQEIGrjlsc652DPog==
+X-Received: by 2002:a05:6a20:6a82:b0:1b6:1ed4:e91b with SMTP id adf61e73a8af0-1bcbb5cb106mr6416293637.39.1718913517391;
+        Thu, 20 Jun 2024 12:58:37 -0700 (PDT)
+Received: from localhost (dhcp-141-239-159-203.hawaiiantel.net. [141.239.159.203])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-706511aa322sm35763b3a.84.2024.06.20.12.58.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 20 Jun 2024 12:58:37 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date: Thu, 20 Jun 2024 09:58:35 -1000
+From: Tejun Heo <tj@kernel.org>
+To: Thomas Gleixner <tglx@linutronix.de>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>, mingo@redhat.com,
+	peterz@infradead.org, juri.lelli@redhat.com,
+	vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+	rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+	bristot@redhat.com, vschneid@redhat.com, ast@kernel.org,
+	daniel@iogearbox.net, andrii@kernel.org, martin.lau@kernel.org,
+	joshdon@google.com, brho@google.com, pjt@google.com,
+	derkling@google.com, haoluo@google.com, dvernet@meta.com,
+	dschatzberg@meta.com, dskarlat@cs.cmu.edu, riel@surriel.com,
+	changwoo@igalia.com, himadrics@inria.fr, memxor@gmail.com,
+	andrea.righi@canonical.com, joel@joelfernandes.org,
+	linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+	kernel-team@meta.com
+Subject: Re: [PATCHSET v6] sched: Implement BPF extensible scheduler class
+Message-ID: <ZnSJ67xyroVUwIna@slm.duckdns.org>
+References: <CAHk-=wg88k=EsHyGrX9dKt10KxSygzcEGdKRYRTx9xtA_y=rqQ@mail.gmail.com>
+ <871q4rpi2s.ffs@tglx>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
-X-Mailer: Microsoft Outlook 16.0
-Thread-Index: AdrDTCZXKUDNVTXeTPW8fVu0QvWxug==
-Content-Language: en-us
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <871q4rpi2s.ffs@tglx>
 
-Gunter Van de Velde, RTG AD, wrote:
-> > 12 eBPF (which is no longer an acronym for anything), also commonly
->
-> I assumed that 'e' was for 'extended' and that BPF stands for 'BSD =
-Packet
-> Filter' originally described and specified in a paper titled "The BSD
-> Packet Filter: A New Architecture for User-level Packet Capture" by
-> Steven McCanne and Van Jacobson, presented at the 1993 Winter
-> USENIX Conference. This paper introduced the BPF architecture, which
-> was designed for efficient packet filtering and capture.
->
-> Hence a bit surprised why the first words of the first line in
-> the first paragraph of the draft abstract suggest that its
-> not an acronym?
+Hello,
 
-=C3=89ric Vyncke wrote:=20
-> =C3=89ric Vyncke has entered the following ballot position for
-> draft-ietf-bpf-isa-03: Yes
->=20
-> When responding, please keep the subject line intact and reply to all =
-email addresses
-> included in the To and CC lines. (Feel free to cut this introductory =
-paragraph,
-> however.)
->=20
->=20
-> Please refer to =
-https://www.ietf.org/about/groups/iesg/statements/handling-ballot-
-> positions/
-> for more information about how to handle DISCUSS and COMMENT =
-positions.
->=20
->=20
-> The document, along with other ballot positions, can be found here:
-> https://datatracker.ietf.org/doc/draft-ietf-bpf-isa/
->=20
->=20
->=20
-> ----------------------------------------------------------------------
-> COMMENT:
-> ----------------------------------------------------------------------
->=20
-> Nice document, easy to read and understand and the shepherd's write-up
-> companion is also clear.
->=20
-> Just two COMMENTs (no need to reply, but replies will be appreciated):
->=20
-> 1) like Gunter, having an expansion to "eBPF is related or is the =
-successor of
-> extended Berkeley Packet Filter" would comfort the readers about what =
-they are
-> reading.
+On Thu, Jun 20, 2024 at 08:47:23PM +0200, Thomas Gleixner wrote:
+> One example I very explicitely mentioned back then is the dance around
+> fork().  It took me at least an hour last year to grok the convoluted
+> logic and it did not get any faster when I stared at it today again.
+> 
+> fork()
+>   sched_fork()
+>     scx_pre_fork()
+>       percpu_down_rwsem(&scx_fork_rwsem);
+> 
+>     if (dl_prio(p)) {
+>     	ret = -EINVAL;
+>         goto cancel; // required to release the semaphore
+>     }
+> 
+>   sched_cgroup_fork()
+>     return scx_fork();
+> 
+>   sched_post_fork()
+>     scx_post_fork()
+>       percpu_up_rwsem(&scx_fork_rwsem);
+> 
+> Plus the extra scx_cancel_fork() which releases the scx_fork_rwsem in
+> case that any call after sched_fork() fails.
 
-The existing text is derived from what is at =
-https://ebpf.io/what-is-ebpf/
-and a much longer exposition would be more appropriate for a different =
-document on the WG charter ("[I] an architecture and framework =
-document").
+This part is actually tricky. sched_cgroup_fork() part is mostly just me
+trying to find the right place among existing hooks. We can either just
+rename sched_cgroup_fork() to a more generic name or separate out the SCX
+hook in the fork path.
 
-However, https://ebpf.io/what-is-ebpf/#what-do-ebpf-and-bpf-stand-for =
-does have the FAQ answer for "What do eBPF and BPF stand for?":
+When a BPF scheduler attaches, it needs to establish its base operating
+condition - ie. allocate per-task data structures, change sched class, and
+so on. There is trade-off between how fine-grained the synchronization can
+be and how easy it is for the BPF schedulers and we really do wanna make it
+easy for the BPF schedulers.
 
-> BPF originally stood for Berkeley Packet Filter, but now that eBPF
-> (extended BPF) can do so much more than packet filtering, the acronym
-> no longer makes sense. eBPF is now considered a standalone term that
-> doesn=E2=80=99t stand for anything. In the Linux source code, the term =
-BPF
-> persists, and in tooling and in documentation, the terms BPF and eBPF
-> are generally used interchangeably. The original BPF is sometimes
-> referred to as cBPF (classic BPF) to distinguish it from eBPF.
+So, the current approach is just locking things down while attaching which
+makes things a lot easier for the BPF schedulers. The locking is through a
+percpu_rwsem, so it's super heavy on the writer side but really light on the
+reader (fork) side. Maybe the overhead can be further reduced by guarding it
+with static_key but the difference won't be much and I doubt it'd make any
+noticeable difference in the fork path.
 
-That paragraph, or some variation of it, would in my opinion be =
-appropriate
-in the architecture/ framework document, but do we really want it in =
-*every*
-other document from the WG?  That would seem needlessly redundant to me.
+Thanks.
 
-There are plenty of examples in the world of things that started as =
-acronyms
-and no longer stand for anything and so are not expanded (AT&T,
-NPR, CBS, 3M, SOS, etc.)   See
-http://blog.writeathome.com/index.php/2013/10/12-initials-that-stand-for-=
-nothing/
-for one of many articles with a list of such terms, but web searches =
-will turn
-up plenty of other references.
-
-Trying to explain in every news article that uses
-one of those terms what it originally stood for but doesn't any more, =
-doesn't
-seem particularly helpful to me and certainly isn't commonly done.
-
-Dave
-
+-- 
+tejun
 
