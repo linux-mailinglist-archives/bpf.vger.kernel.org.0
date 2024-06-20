@@ -1,66 +1,66 @@
-Return-Path: <bpf+bounces-32572-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-32575-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 84E47910022
-	for <lists+bpf@lfdr.de>; Thu, 20 Jun 2024 11:18:39 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 75130910025
+	for <lists+bpf@lfdr.de>; Thu, 20 Jun 2024 11:18:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1FAF92818CB
-	for <lists+bpf@lfdr.de>; Thu, 20 Jun 2024 09:18:38 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4F9111C210FF
+	for <lists+bpf@lfdr.de>; Thu, 20 Jun 2024 09:18:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B8E219DF93;
-	Thu, 20 Jun 2024 09:18:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E185219FA7E;
+	Thu, 20 Jun 2024 09:18:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="V5HFhmAt"
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="eDEIrtVR"
 X-Original-To: bpf@vger.kernel.org
 Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D8D119B3D6
-	for <bpf@vger.kernel.org>; Thu, 20 Jun 2024 09:18:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3240819DF6C
+	for <bpf@vger.kernel.org>; Thu, 20 Jun 2024 09:18:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.177.32
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718875113; cv=none; b=eiKIifwzNJcXEW1c/pX6KZw11UFqok8dT3eNOsuahumk+28c3WvkmwVe76L6BCNtA1RlA1h6GH/EY/+7NHcf+32E2hVH7Rq0ZWiiouK8g0XOvbCg6RoW7wqhX7Iq5oUS8J3ePhFMi8zPvNEeE9BWO3hTR9DTXLsacfO8731uyzM=
+	t=1718875119; cv=none; b=C3TzvXcp0DscI7u6ZbIbIOmu0qUjQgYNsxYSMtGrYSBIY8uhb6c5Fai17aHabfcL+8evUAqImAjySplYQwV3SQVRJJKfSeSkItw20H/FnTECR8KXO1WBgfpnh4N1KONu/6kl2//ij0OrlhAuPCvIt8bFdPfflBOmBLM9QXdNME8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718875113; c=relaxed/simple;
-	bh=ybDTfN5N3zj/steF5klcIOaef6miZPXdQaO/7eXY1IM=;
+	s=arc-20240116; t=1718875119; c=relaxed/simple;
+	bh=b1w21aakMwRs8OtM/G6XdPkWDuxww4+brXiATTqwknU=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=bsQgO1XlrVzYeaZa/r46bTUT94n0hNlWa3HalnIPvURnZBdL9++aBpH9SY7fC28ihCNbmvPYg7OkZhXfTAEc4j+WhkPe2mJD7lu+KtOAcqIUT3pdFuLuoA5aRN2hhJ/XGkSqOCXUgtmlfNwYdL/nXhEMHnwAMfYC3dPzMqfl8nY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=V5HFhmAt; arc=none smtp.client-ip=205.220.177.32
+	 MIME-Version; b=BwdeXfHuB7bzE6O/JNzqgLrZd18a28e0YEZHcdL+3Zbk3tDXAT47b4znDaYaT83c0Ma/V1Nf/3rk84+Zn7nSr/OlndgLurxgBQgZ4FsZsg/grGrVQ5nsnkiIuiga88/ZyU/AxMVKyZOyATtoecBIcz/WxcgplWVhN1yagcZo8kQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=eDEIrtVR; arc=none smtp.client-ip=205.220.177.32
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
-Received: from pps.filterd (m0246631.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 45K5FP5s005940;
-	Thu, 20 Jun 2024 09:18:08 GMT
+Received: from pps.filterd (m0246630.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 45K5FP1b005039;
+	Thu, 20 Jun 2024 09:18:13 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=
 	from:to:cc:subject:date:message-id:in-reply-to:references
-	:mime-version:content-transfer-encoding; s=corp-2023-11-20; bh=+
-	KtaInblVt/M6r1fsmNyNP3GLRrx8AQ0YqMDrwtTs+M=; b=V5HFhmAtxnzO5Q5W5
-	53PDvCz8ESywrkZrVvg9i70MlCYGUMbgrA6d5ihdvFsbb1yt+TbfeaD0rCWbOTvb
-	b9yj8s+wzSAot0JWcLYla32LeNG5ciIqNqgORv4Uhbxvqf3rJ4xN3qYiOGn31RJQ
-	iPUvi7dhCeTAcR9ltpMLH/GaX9BLhO8dJjUKJUMguLASLvfLlzU9KuD+WD71Zn1D
-	vCpcdLEVeptpgnlW2K0v5EALDmUqnOEwLB/OXjYFMesLcGOj/7W2vkelH3hwGqa9
-	nAhFd9WdmLTJ/ExdIvz4vo00b4AQbt4LPIbxiHtbTIv7llpIaCd026Ek6Q4q5n/l
-	lt36g==
+	:mime-version:content-transfer-encoding; s=corp-2023-11-20; bh=M
+	js5cDwMJGOx/WvbFkr/FmkMuIlMqZneSjbAPTGAtmQ=; b=eDEIrtVRToCsX/bal
+	2wSbJLRqC/tuejrgX8V436GuUU3g1koTuaAzFjOy2ThLGAzmXEKW4+rBNzSboJWX
+	pCw32iMfXJ9bruWb/qzkqpQQdgo8v89/T4OIsDhixNOhaRoQ+61fH4ckwCLkpHIY
+	4rIfvky3aixdJ1i4p6d7GbZADoC42+643EFdKV7vQ3M5J7A6wgrTmHaH8fUiMs34
+	PldzZ+8ASy0NdVRLvoSJ+c1/dtMbwPO47+vPw3sa051Ak06/ydpJqpzuOY2HxaPb
+	JCaQBZ8fM42xINs8EnaWJFwexTbjTew5oDhdjj/aeQAXlhjByK2CyCXOqTejOVNL
+	6zhYw==
 Received: from phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta01.appoci.oracle.com [138.1.114.2])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3yuj9jarhj-1
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3yuj9jtqkq-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Thu, 20 Jun 2024 09:18:08 +0000 (GMT)
+	Thu, 20 Jun 2024 09:18:13 +0000 (GMT)
 Received: from pps.filterd (phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-	by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 45K7MeJX031869;
-	Thu, 20 Jun 2024 09:18:07 GMT
+	by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 45K7v5KW033150;
+	Thu, 20 Jun 2024 09:18:12 GMT
 Received: from pps.reinject (localhost [127.0.0.1])
-	by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3ys1da76ht-1
+	by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3ys1da76ka-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Thu, 20 Jun 2024 09:18:07 +0000
+	Thu, 20 Jun 2024 09:18:12 +0000
 Received: from phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 45K9HdGN028275;
-	Thu, 20 Jun 2024 09:18:06 GMT
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 45K9HdGP028275;
+	Thu, 20 Jun 2024 09:18:11 GMT
 Received: from bpf.uk.oracle.com (dhcp-10-175-186-70.vpn.oracle.com [10.175.186.70])
-	by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTP id 3ys1da764t-6;
-	Thu, 20 Jun 2024 09:18:06 +0000
+	by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTP id 3ys1da764t-7;
+	Thu, 20 Jun 2024 09:18:11 +0000
 From: Alan Maguire <alan.maguire@oracle.com>
 To: andrii@kernel.org, eddyz87@gmail.com
 Cc: acme@redhat.com, ast@kernel.org, daniel@iogearbox.net, jolsa@kernel.org,
@@ -70,9 +70,9 @@ Cc: acme@redhat.com, ast@kernel.org, daniel@iogearbox.net, jolsa@kernel.org,
         nathan@kernel.org, mykolal@fb.com, thinker.li@gmail.com,
         bentiss@kernel.org, tanggeliang@kylinos.cn, bpf@vger.kernel.org,
         Alan Maguire <alan.maguire@oracle.com>
-Subject: [PATCH v2 bpf-next 5/6] kbuild,bpf: add module-specific pahole flags for distilled base BTF
-Date: Thu, 20 Jun 2024 10:17:32 +0100
-Message-ID: <20240620091733.1967885-6-alan.maguire@oracle.com>
+Subject: [PATCH v2 bpf-next 6/6] selftests/bpf: add kfunc_call test for simple dtor in bpf_testmod
+Date: Thu, 20 Jun 2024 10:17:33 +0100
+Message-ID: <20240620091733.1967885-7-alan.maguire@oracle.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240620091733.1967885-1-alan.maguire@oracle.com>
 References: <20240620091733.1967885-1-alan.maguire@oracle.com>
@@ -90,65 +90,189 @@ X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 malw
  mlxlogscore=999 mlxscore=0 phishscore=0 suspectscore=0 bulkscore=0
  classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2405010000
  definitions=main-2406200065
-X-Proofpoint-GUID: zq-64aRq3BNUkDKpyt25pziDu3zVTGA5
-X-Proofpoint-ORIG-GUID: zq-64aRq3BNUkDKpyt25pziDu3zVTGA5
+X-Proofpoint-ORIG-GUID: xcQQ3EwFYad00fs6zDGKeTffxKg-C6ba
+X-Proofpoint-GUID: xcQQ3EwFYad00fs6zDGKeTffxKg-C6ba
 
-Support creation of module BTF along with distilled base BTF;
-the latter is stored in a .BTF.base ELF section and supplements
-split BTF references to base BTF with information about base types,
-allowing for later relocation of split BTF with a (possibly
-changed) base.  resolve_btfids detects the presence of a .BTF.base
-section and will use it instead of the base BTF it is passed in
-BTF id resolution.
+add simple kfuncs to create/destroy a context type to bpf_testmod,
+register them and add a kfunc_call test to use them.  This provides
+test coverage for registration of dtor kfuncs from modules.
 
-Modules will be built with a distilled .BTF.base section for external
-module build, i.e.
+By transferring the context pointer to a map value as a __kptr
+we also trigger the map-based dtor cleanup logic, improving test
+coverage.
 
-make -C. -M=path2/module
-
-...while in-tree module build as part of a normal kernel build will
-not generate distilled base BTF; this is because in-tree modules
-change with the kernel and do not require BTF relocation for the
-running vmlinux.
-
+Suggested-by: Eduard Zingerman <eddyz87@gmail.com>
 Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
-Reviewed-by: Eduard Zingerman <eddyz87@gmail.com>
 ---
- scripts/Makefile.btf      | 5 +++++
- scripts/Makefile.modfinal | 2 +-
- 2 files changed, 6 insertions(+), 1 deletion(-)
+ .../selftests/bpf/bpf_testmod/bpf_testmod.c   | 46 +++++++++++++++++++
+ .../bpf/bpf_testmod/bpf_testmod_kfunc.h       |  9 ++++
+ .../selftests/bpf/prog_tests/kfunc_call.c     |  1 +
+ .../selftests/bpf/progs/kfunc_call_test.c     | 37 +++++++++++++++
+ 4 files changed, 93 insertions(+)
 
-diff --git a/scripts/Makefile.btf b/scripts/Makefile.btf
-index 2597e3d4d6e0..b75f09f3f424 100644
---- a/scripts/Makefile.btf
-+++ b/scripts/Makefile.btf
-@@ -21,8 +21,13 @@ else
- # Switch to using --btf_features for v1.26 and later.
- pahole-flags-$(call test-ge, $(pahole-ver), 126)  = -j --btf_features=encode_force,var,float,enum64,decl_tag,type_tag,optimized_func,consistent_func,decl_tag_kfuncs
+diff --git a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
+index 49f9a311e49b..fa7f803ea9b5 100644
+--- a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
++++ b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
+@@ -159,6 +159,37 @@ __bpf_kfunc void bpf_kfunc_dynptr_test(struct bpf_dynptr *ptr,
+ {
+ }
  
-+ifneq ($(KBUILD_EXTMOD),)
-+module-pahole-flags-$(call test-ge, $(pahole-ver), 126) += --btf_features=distilled_base
-+endif
++__bpf_kfunc struct bpf_testmod_ctx *
++bpf_testmod_ctx_create(int *err)
++{
++	struct bpf_testmod_ctx *ctx;
 +
- endif
++	ctx = kzalloc(sizeof(*ctx), GFP_KERNEL | GFP_ATOMIC);
++	if (!ctx) {
++		*err = -ENOMEM;
++		return NULL;
++	}
++	refcount_set(&ctx->usage, 1);
++
++	return ctx;
++}
++
++static void testmod_free_cb(struct rcu_head *head)
++{
++	struct bpf_testmod_ctx *ctx;
++
++	ctx = container_of(head, struct bpf_testmod_ctx, rcu);
++	kfree(ctx);
++}
++
++__bpf_kfunc void bpf_testmod_ctx_release(struct bpf_testmod_ctx *ctx)
++{
++	if (!ctx)
++		return;
++	if (refcount_dec_and_test(&ctx->usage))
++		call_rcu(&ctx->rcu, testmod_free_cb);
++}
++
+ struct bpf_testmod_btf_type_tag_1 {
+ 	int a;
+ };
+@@ -369,8 +400,14 @@ BTF_ID_FLAGS(func, bpf_iter_testmod_seq_next, KF_ITER_NEXT | KF_RET_NULL)
+ BTF_ID_FLAGS(func, bpf_iter_testmod_seq_destroy, KF_ITER_DESTROY)
+ BTF_ID_FLAGS(func, bpf_kfunc_common_test)
+ BTF_ID_FLAGS(func, bpf_kfunc_dynptr_test)
++BTF_ID_FLAGS(func, bpf_testmod_ctx_create, KF_ACQUIRE | KF_RET_NULL)
++BTF_ID_FLAGS(func, bpf_testmod_ctx_release, KF_RELEASE)
+ BTF_KFUNCS_END(bpf_testmod_common_kfunc_ids)
  
- pahole-flags-$(CONFIG_PAHOLE_HAS_LANG_EXCLUDE)		+= --lang_exclude=rust
++BTF_ID_LIST(bpf_testmod_dtor_ids)
++BTF_ID(struct, bpf_testmod_ctx)
++BTF_ID(func, bpf_testmod_ctx_release)
++
+ static const struct btf_kfunc_id_set bpf_testmod_common_kfunc_set = {
+ 	.owner = THIS_MODULE,
+ 	.set   = &bpf_testmod_common_kfunc_ids,
+@@ -904,6 +941,12 @@ extern int bpf_fentry_test1(int a);
  
- export PAHOLE_FLAGS := $(pahole-flags-y)
-+export MODULE_PAHOLE_FLAGS := $(module-pahole-flags-y)
-diff --git a/scripts/Makefile.modfinal b/scripts/Makefile.modfinal
-index 3bec9043e4f3..1fa98b5e952b 100644
---- a/scripts/Makefile.modfinal
-+++ b/scripts/Makefile.modfinal
-@@ -41,7 +41,7 @@ quiet_cmd_btf_ko = BTF [M] $@
- 	if [ ! -f vmlinux ]; then					\
- 		printf "Skipping BTF generation for %s due to unavailability of vmlinux\n" $@ 1>&2; \
- 	else								\
--		LLVM_OBJCOPY="$(OBJCOPY)" $(PAHOLE) -J $(PAHOLE_FLAGS) --btf_base vmlinux $@; \
-+		LLVM_OBJCOPY="$(OBJCOPY)" $(PAHOLE) -J $(PAHOLE_FLAGS) $(MODULE_PAHOLE_FLAGS) --btf_base vmlinux $@; \
- 		$(RESOLVE_BTFIDS) -b vmlinux $@; 			\
- 	fi;
+ static int bpf_testmod_init(void)
+ {
++	const struct btf_id_dtor_kfunc bpf_testmod_dtors[] = {
++		{
++			.btf_id		= bpf_testmod_dtor_ids[0],
++			.kfunc_btf_id	= bpf_testmod_dtor_ids[1]
++		},
++	};
+ 	int ret;
  
+ 	ret = register_btf_kfunc_id_set(BPF_PROG_TYPE_UNSPEC, &bpf_testmod_common_kfunc_set);
+@@ -912,6 +955,9 @@ static int bpf_testmod_init(void)
+ 	ret = ret ?: register_btf_kfunc_id_set(BPF_PROG_TYPE_SYSCALL, &bpf_testmod_kfunc_set);
+ 	ret = ret ?: register_bpf_struct_ops(&bpf_bpf_testmod_ops, bpf_testmod_ops);
+ 	ret = ret ?: register_bpf_struct_ops(&bpf_testmod_ops2, bpf_testmod_ops2);
++	ret = ret ?: register_btf_id_dtor_kfuncs(bpf_testmod_dtors,
++						 ARRAY_SIZE(bpf_testmod_dtors),
++						 THIS_MODULE);
+ 	if (ret < 0)
+ 		return ret;
+ 	if (bpf_fentry_test1(0) < 0)
+diff --git a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod_kfunc.h b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod_kfunc.h
+index f9809517e7fa..e587a79f2239 100644
+--- a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod_kfunc.h
++++ b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod_kfunc.h
+@@ -80,6 +80,11 @@ struct sendmsg_args {
+ 	int msglen;
+ };
+ 
++struct bpf_testmod_ctx {
++	struct callback_head	rcu;
++	refcount_t		usage;
++};
++
+ struct prog_test_ref_kfunc *
+ bpf_kfunc_call_test_acquire(unsigned long *scalar_ptr) __ksym;
+ void bpf_kfunc_call_test_release(struct prog_test_ref_kfunc *p) __ksym;
+@@ -135,4 +140,8 @@ int bpf_kfunc_call_kernel_getsockname(struct addr_args *args) __ksym;
+ int bpf_kfunc_call_kernel_getpeername(struct addr_args *args) __ksym;
+ 
+ void bpf_kfunc_dynptr_test(struct bpf_dynptr *ptr, struct bpf_dynptr *ptr__nullable) __ksym;
++
++struct bpf_testmod_ctx *bpf_testmod_ctx_create(int *err) __ksym;
++void bpf_testmod_ctx_release(struct bpf_testmod_ctx *ctx) __ksym;
++
+ #endif /* _BPF_TESTMOD_KFUNC_H */
+diff --git a/tools/testing/selftests/bpf/prog_tests/kfunc_call.c b/tools/testing/selftests/bpf/prog_tests/kfunc_call.c
+index 2eb71559713c..5b743212292f 100644
+--- a/tools/testing/selftests/bpf/prog_tests/kfunc_call.c
++++ b/tools/testing/selftests/bpf/prog_tests/kfunc_call.c
+@@ -78,6 +78,7 @@ static struct kfunc_test_params kfunc_tests[] = {
+ 	SYSCALL_TEST(kfunc_syscall_test, 0),
+ 	SYSCALL_NULL_CTX_TEST(kfunc_syscall_test_null, 0),
+ 	TC_TEST(kfunc_call_test_static_unused_arg, 0),
++	TC_TEST(kfunc_call_ctx, 0),
+ };
+ 
+ struct syscall_test_args {
+diff --git a/tools/testing/selftests/bpf/progs/kfunc_call_test.c b/tools/testing/selftests/bpf/progs/kfunc_call_test.c
+index cf68d1e48a0f..f502f755f567 100644
+--- a/tools/testing/selftests/bpf/progs/kfunc_call_test.c
++++ b/tools/testing/selftests/bpf/progs/kfunc_call_test.c
+@@ -177,4 +177,41 @@ int kfunc_call_test_static_unused_arg(struct __sk_buff *skb)
+ 	return actual != expected ? -1 : 0;
+ }
+ 
++struct ctx_val {
++	struct bpf_testmod_ctx __kptr *ctx;
++};
++
++struct {
++	__uint(type, BPF_MAP_TYPE_ARRAY);
++	__uint(max_entries, 1);
++	__type(key, int);
++	__type(value, struct ctx_val);
++} ctx_map SEC(".maps");
++
++SEC("tc")
++int kfunc_call_ctx(struct __sk_buff *skb)
++{
++	struct bpf_testmod_ctx *ctx;
++	int err = 0;
++
++	ctx = bpf_testmod_ctx_create(&err);
++	if (!ctx && !err)
++		err = -1;
++	if (ctx) {
++		int key = 0;
++		struct ctx_val *ctx_val = bpf_map_lookup_elem(&ctx_map, &key);
++
++		/* Transfer ctx to map to be freed via implicit dtor call
++		 * on cleanup.
++		 */
++		if (ctx_val)
++			ctx = bpf_kptr_xchg(&ctx_val->ctx, ctx);
++		if (ctx) {
++			bpf_testmod_ctx_release(ctx);
++			err = -1;
++		}
++	}
++	return err;
++}
++
+ char _license[] SEC("license") = "GPL";
 -- 
 2.31.1
 
