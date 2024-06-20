@@ -1,210 +1,189 @@
-Return-Path: <bpf+bounces-32606-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-32607-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C941E910D35
-	for <lists+bpf@lfdr.de>; Thu, 20 Jun 2024 18:38:16 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8A1E3910D95
+	for <lists+bpf@lfdr.de>; Thu, 20 Jun 2024 18:52:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 833EC283809
-	for <lists+bpf@lfdr.de>; Thu, 20 Jun 2024 16:38:15 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9347B1C23282
+	for <lists+bpf@lfdr.de>; Thu, 20 Jun 2024 16:52:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C527C1B47BF;
-	Thu, 20 Jun 2024 16:36:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5AA311B3724;
+	Thu, 20 Jun 2024 16:52:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b="aMsv3ETR"
 X-Original-To: bpf@vger.kernel.org
-Received: from wind.enjellic.com (wind.enjellic.com [76.10.64.91])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD1071AF6B5;
-	Thu, 20 Jun 2024 16:36:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=76.10.64.91
+Received: from mail-yw1-f171.google.com (mail-yw1-f171.google.com [209.85.128.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D12F1B29BB
+	for <bpf@vger.kernel.org>; Thu, 20 Jun 2024 16:52:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718901408; cv=none; b=UfCyrUk8sLKthRizpaK4Yp++95c1tMZYyzq/G28qqaeDKbQFsv2SI0OXcOFnqWlSqe89VQrRjjU/Q9p1+sZHmk7bHLIP8ChbBfhZoxNJjhsWguV25YxYbYosiXKyisBljOnipLEQM1MU3jxX3Qn0uAQC6R1r4Jy85ODDzO80yFg=
+	t=1718902321; cv=none; b=awDXSd8hnST9lEs84X+QgAQzR51Es4RnMph1SOV/4qaF+oXzlnP5e972VootUNRvb32IkvL3K0RhdlRyVO+SdPitZbqmHeDbBS1y6RklIyx/Bc+dnrN7wCSNRLH979o3FY32tm3OpCpCbkyBkvDTgscWiJjicyhkvYEfQA/Ktq8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718901408; c=relaxed/simple;
-	bh=/FB2RUdre/ZjOda/nl0rOq4y08iAj3AOWo2+O5PRaVQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:Mime-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=LRLKFzGoyAIvBpHn1fZjkHEIJEAkYvfJ8K//ioDp6qhn/4NWrd1tkF3iQIWDeww/h7md7hmkLkzCn1qYnmonXwQYH+NZc2mrUycG/VaQgmWX6qrlNwKnfhZvTdVBhZcjAHIpyF7+2Ho6j6mdbA5GnHor0KpJP5sykLCNXKuzXkA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=enjellic.com; spf=pass smtp.mailfrom=wind.enjellic.com; arc=none smtp.client-ip=76.10.64.91
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=enjellic.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wind.enjellic.com
-Received: from wind.enjellic.com (localhost [127.0.0.1])
-	by wind.enjellic.com (8.15.2/8.15.2) with ESMTP id 45KGWaQr029678;
-	Thu, 20 Jun 2024 11:32:36 -0500
-Received: (from greg@localhost)
-	by wind.enjellic.com (8.15.2/8.15.2/Submit) id 45KGWYJi029676;
-	Thu, 20 Jun 2024 11:32:34 -0500
-Date: Thu, 20 Jun 2024 11:32:34 -0500
-From: "Dr. Greg" <greg@enjellic.com>
-To: Roberto Sassu <roberto.sassu@huaweicloud.com>
-Cc: Paul Moore <paul@paul-moore.com>, corbet@lwn.net, jmorris@namei.org,
-        serge@hallyn.com, akpm@linux-foundation.org, shuah@kernel.org,
-        mcoquelin.stm32@gmail.com, alexandre.torgue@foss.st.com,
-        mic@digikod.net, linux-security-module@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, bpf@vger.kernel.org,
-        zohar@linux.ibm.com, dmitry.kasatkin@gmail.com,
-        linux-integrity@vger.kernel.org, wufan@linux.microsoft.com,
-        pbrobinson@gmail.com, zbyszek@in.waw.pl, hch@lst.de,
-        mjg59@srcf.ucam.org, pmatilai@redhat.com, jannh@google.com,
-        dhowells@redhat.com, jikos@kernel.org, mkoutny@suse.com,
-        ppavlu@suse.com, petr.vorel@gmail.com, mzerqung@0pointer.de,
-        kgold@linux.ibm.com, Roberto Sassu <roberto.sassu@huawei.com>
-Subject: Re: [PATCH v4 00/14] security: digest_cache LSM
-Message-ID: <20240620163234.GA27816@wind.enjellic.com>
-Reply-To: "Dr. Greg" <greg@enjellic.com>
-References: <20240415142436.2545003-1-roberto.sassu@huaweicloud.com> <CAHC9VhTs8p1nTUXXea2JmF0FCEU6w39gwQRMtwACqM=+EBj1jw@mail.gmail.com> <7cf03a6ba8dbf212623aab2dea3dac39482e8695.camel@huaweicloud.com> <CAHC9VhSCw6RweTs6whAu4v6t4n7gxUWJtjmzY-UXrdzW0H+YJA@mail.gmail.com> <520d2dc2ff0091335a280a877fa9eb004af14309.camel@huaweicloud.com> <CAHC9VhRD1kBwqtkF+_cxCUCeNPp+0PAiNP-rG06me6gRQyYcyg@mail.gmail.com> <2b335bdd5c20878e0366dcf6b62d14f73c2251de.camel@huaweicloud.com>
+	s=arc-20240116; t=1718902321; c=relaxed/simple;
+	bh=uRBaIvxaZu1rEHI9TVUfJHuyw1MtoY1RVuSrPf6GqDY=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=mvj5s8va1iUMRG9s9fXcv7LFt21MVwTydePeesiDhnfntDz8zA3nXEyHqOqRrVRsrajkBQfmo9fM2KidFSmezkglNZFAf9VhpjKufdsTIV6Njbua46kz9dIv0wwDk/Y7HyzrP3EIr1RzRx2+ULavI72unLqAqZhggorZeOdAgbQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com; spf=pass smtp.mailfrom=paul-moore.com; dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b=aMsv3ETR; arc=none smtp.client-ip=209.85.128.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=paul-moore.com
+Received: by mail-yw1-f171.google.com with SMTP id 00721157ae682-6312f1f83d9so8323147b3.2
+        for <bpf@vger.kernel.org>; Thu, 20 Jun 2024 09:52:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paul-moore.com; s=google; t=1718902319; x=1719507119; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=MlzckC1yv4AXj6i9qMAIkJ4utMa7nHRmmuxXuBZ0/Gg=;
+        b=aMsv3ETRaaBmS80pad8BwHFt/YFw7ILfXeEn1cGMu438tByxcJU8bIEn8hOz2uGVcs
+         6tpyRne0HgaXRPU5OnXKofAaeLlKB/GqfHi7sV1IYdtY3B9WIMlI5/+2VMc2eleq4uc+
+         IrIJAdVRQXaoB4KjV7JkieVk1pH7dIipKGI4Sqs2j4QigaZFEznYHSOR9FpZz5uBqX8L
+         FSGwQZHwZvpr2BNCwrhbwdNxklecSFMi+OXTaUdj7LsvgH/Gcr8FIsSY8iNpPS+I0P6J
+         L6oTby43o2VtGb2VS60ev2mf3zlNQxbQ9FaKkDsSFA3Vns/Ho9jJTadITuhYK3GpTsrf
+         kNJQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1718902319; x=1719507119;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=MlzckC1yv4AXj6i9qMAIkJ4utMa7nHRmmuxXuBZ0/Gg=;
+        b=PBFWKd7fLGKiunsymK8hoyPf2/skmMSObkmtiRLXeaMpc/RlkisQ/cvDwo+cFMcwEK
+         yc36Og98c6ZnaErMVQ7Db8rV0tABnvoCEbV1hyQ0chg3ys498l7scdMdw7MkbFlxnD4N
+         XPCxe2+ONNd/IKGg33hVibTwQlXltb6PLPmsilKQXbfxWN45xi+zrHHHm/QxT2C0edVL
+         NPBheC6i6h0lodzSWRFQV1fYCqGDj4+bWp0ATEFk/DrXh++n3Tb/wGvrg1HIwQdOm4u8
+         DciQgNeN56tBbajVOo78uqvqt0BtQtFRWUVMy0waZrEaRBTbqz0m8ACOzrOwzJWINpt1
+         oxuA==
+X-Forwarded-Encrypted: i=1; AJvYcCUZjZcNatQk4DCPf5yXIKIsYM861vu+aUqvilZOqBpU02eJ18eBXhfYVT8F58D6C7ECEFcp58sfDZTBDrgev7b3NLHc
+X-Gm-Message-State: AOJu0YwoIerqGFT8VQqoiaI3NhcUhgqSnb4NWM1H4nOn96li6YjoWwQH
+	FK5I/NvoPeGG1gwjf2yru3e76x5s8I3OHtsJMlf8bRS1DlnIY9kezHfngew8GZZcH6ZOYU9RqJ6
+	gPAk0nivbrvsqVvzG2nmfMkXxC4it1JGvTdmx
+X-Google-Smtp-Source: AGHT+IENAd7r6k0hcoKPurAjxge/3tlio5u013vzrxAxRlV6VnO6fxsl9wW301WYnJG4BzmkDZu20x81guAy7n54YLA=
+X-Received: by 2002:a81:84c5:0:b0:62c:e6c0:e887 with SMTP id
+ 00721157ae682-63a8d72f60bmr64327437b3.9.1718902318965; Thu, 20 Jun 2024
+ 09:51:58 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2b335bdd5c20878e0366dcf6b62d14f73c2251de.camel@huaweicloud.com>
-User-Agent: Mutt/1.4i
-X-Greylist: Sender passed SPF test, not delayed by milter-greylist-4.2.3 (wind.enjellic.com [127.0.0.1]); Thu, 20 Jun 2024 11:32:36 -0500 (CDT)
+MIME-Version: 1.0
+References: <20240415142436.2545003-1-roberto.sassu@huaweicloud.com>
+ <CAHC9VhTs8p1nTUXXea2JmF0FCEU6w39gwQRMtwACqM=+EBj1jw@mail.gmail.com>
+ <7cf03a6ba8dbf212623aab2dea3dac39482e8695.camel@huaweicloud.com>
+ <CAHC9VhSCw6RweTs6whAu4v6t4n7gxUWJtjmzY-UXrdzW0H+YJA@mail.gmail.com>
+ <520d2dc2ff0091335a280a877fa9eb004af14309.camel@huaweicloud.com>
+ <CAHC9VhRD1kBwqtkF+_cxCUCeNPp+0PAiNP-rG06me6gRQyYcyg@mail.gmail.com>
+ <2b335bdd5c20878e0366dcf6b62d14f73c2251de.camel@huaweicloud.com>
+ <CAHC9VhSOMLH69+q_wt2W+N9SK92KGp5n4YgzpsXMcO2u7YyaTg@mail.gmail.com>
+ <e9114733eedff99233b1711b2b05ab85b7c19ca9.camel@huaweicloud.com>
+ <CAHC9VhQp1wsm+2d6Dhj1gQNSD0z_Hgj0cFrVf1=Zs94LmgfK0A@mail.gmail.com>
+ <c96db3ab0aec6586b6d55c3055e7eb9fea6bf4e3.camel@huaweicloud.com>
+ <CAHC9VhSQOiC9t0qk10Lg3o6eAFdrR2QFLvCn1h2EP+P+AgdSbw@mail.gmail.com> <c732b1eb15141f909e99247192539b7f76e9952c.camel@huaweicloud.com>
+In-Reply-To: <c732b1eb15141f909e99247192539b7f76e9952c.camel@huaweicloud.com>
+From: Paul Moore <paul@paul-moore.com>
+Date: Thu, 20 Jun 2024 12:51:48 -0400
+Message-ID: <CAHC9VhSA0dSQ1jaRO_J1S5xEc14XoCnYaVG3AWF=uYaDb-AjoQ@mail.gmail.com>
+Subject: Re: [PATCH v4 00/14] security: digest_cache LSM
+To: Roberto Sassu <roberto.sassu@huaweicloud.com>
+Cc: corbet@lwn.net, jmorris@namei.org, serge@hallyn.com, 
+	akpm@linux-foundation.org, shuah@kernel.org, mcoquelin.stm32@gmail.com, 
+	alexandre.torgue@foss.st.com, mic@digikod.net, 
+	linux-security-module@vger.kernel.org, linux-doc@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org, 
+	bpf@vger.kernel.org, zohar@linux.ibm.com, dmitry.kasatkin@gmail.com, 
+	linux-integrity@vger.kernel.org, wufan@linux.microsoft.com, 
+	pbrobinson@gmail.com, zbyszek@in.waw.pl, hch@lst.de, mjg59@srcf.ucam.org, 
+	pmatilai@redhat.com, jannh@google.com, dhowells@redhat.com, jikos@kernel.org, 
+	mkoutny@suse.com, ppavlu@suse.com, petr.vorel@gmail.com, mzerqung@0pointer.de, 
+	kgold@linux.ibm.com, Roberto Sassu <roberto.sassu@huawei.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Jun 19, 2024 at 06:37:49PM +0200, Roberto Sassu wrote:
-
-Good morning Roberto, I hope your week is going well, greetings to
-everyone copied else as well.
-
-> On Wed, 2024-06-19 at 12:34 -0400, Paul Moore wrote:
-> > On Wed, Jun 19, 2024 at 11:55???AM Roberto Sassu
+On Thu, Jun 20, 2024 at 12:31=E2=80=AFPM Roberto Sassu
+<roberto.sassu@huaweicloud.com> wrote:
+> On Thu, 2024-06-20 at 12:08 -0400, Paul Moore wrote:
+> > On Thu, Jun 20, 2024 at 11:14=E2=80=AFAM Roberto Sassu
 > > <roberto.sassu@huaweicloud.com> wrote:
-> > > On Wed, 2024-06-19 at 11:49 -0400, Paul Moore wrote:
-> > > > On Wed, Jun 19, 2024 at 3:59???AM Roberto Sassu
+> > > On Thu, 2024-06-20 at 10:48 -0400, Paul Moore wrote:
+> > > > On Thu, Jun 20, 2024 at 5:12=E2=80=AFAM Roberto Sassu
 > > > > <roberto.sassu@huaweicloud.com> wrote:
-> > > > > On Tue, 2024-06-18 at 19:20 -0400, Paul Moore wrote:
-> > > > > > On Mon, Apr 15, 2024 at 10:25???AM Roberto Sassu
+> > > > > On Wed, 2024-06-19 at 14:43 -0400, Paul Moore wrote:
+> > > > > > On Wed, Jun 19, 2024 at 12:38=E2=80=AFPM Roberto Sassu
 > > > > > > <roberto.sassu@huaweicloud.com> wrote:
-> > > > > > > 
-> > > > > > > From: Roberto Sassu <roberto.sassu@huawei.com>
-> > > > > > > 
-> > > > > > > Integrity detection and protection has long been a desirable feature, to
-> > > > > > > reach a large user base and mitigate the risk of flaws in the software
-> > > > > > > and attacks.
-> > > > > > > 
-> > > > > > > However, while solutions exist, they struggle to reach the large user
-> > > > > > > base, due to requiring higher than desired constraints on performance,
-> > > > > > > flexibility and configurability, that only security conscious people are
-> > > > > > > willing to accept.
-> > > > > > > 
-> > > > > > > This is where the new digest_cache LSM comes into play, it offers
-> > > > > > > additional support for new and existing integrity solutions, to make
-> > > > > > > them faster and easier to deploy.
-> > > > > > > 
-> > > > > > > The full documentation with the motivation and the solution details can be
-> > > > > > > found in patch 14.
-> > > > > > > 
-> > > > > > > The IMA integration patch set will be introduced separately. Also a PoC
-> > > > > > > based on the current version of IPE can be provided.
-> > > > > > 
-> > > > > > I'm not sure we want to implement a cache as a LSM.  I'm sure it would
-> > > > > > work, but historically LSMs have provided some form of access control,
-> > > > > > measurement, or other traditional security service.  A digest cache,
-> > > > > > while potentially useful for a variety of security related
-> > > > > > applications, is not a security service by itself, it is simply a file
-> > > > > > digest storage mechanism.
-> > > > > 
-> > > > > Uhm, currently the digest_cache LSM is heavily based on the LSM
-> > > > > infrastructure:
-> > > > 
-> > > > I understand that, but as I said previously, I don't believe that we
-> > > > want to support a LSM which exists solely to provide a file digest
-> > > > cache.  LSMs should be based around the idea of some type of access
-> > > > control, security monitoring, etc.
-> > > > 
-> > > > Including a file digest cache in IMA, or implementing it as a
-> > > > standalone piece of kernel functionality, are still options.  If you
-> > > > want to pursue this, I would suggest that including the digest cache
-> > > > as part of IMA would be the easier of the two options; if it proves to
-> > > > be generally useful outside of IMA, it can always be abstracted out to
-> > > > a general kernel module/subsystem.
-> > > 
-> > > Ok. I thought about IPE and eBPF as potential users. But if you think
-> > > that adding as part of IMA would be easier, I could try to pursue that.
-> > 
-> > It isn't clear to me how this would interact with IPE and/or eBPF, but
-> > if you believe there is value there I would encourage you to work with
-> > those subsystem maintainers.  If the consensus is that a general file
-> > digest cache is useful then you should pursue the digest cache as a
-> > kernel subsystem, just not a LSM.
+> > > > > > >
+> > > > > > > Making it a kernel subsystem would likely mean replicating wh=
+at the LSM
+> > > > > > > infrastructure is doing, inode (security) blob and being noti=
+fied about
+> > > > > > > file/directory changes.
+> > > > > >
+> > > > > > Just because the LSM framework can be used for something, perha=
+ps it
+> > > > > > even makes the implementation easier, it doesn't mean the frame=
+work
+> > > > > > should be used for everything.
+> > > > >
+> > > > > It is supporting 3 LSMs: IMA, IPE and BPF LSM.
+> > > > >
+> > > > > That makes it a clear target for the security subsystem, and as y=
+ou
+> > > > > suggested to start for IMA, if other kernel subsystems require th=
+em, we
+> > > > > can make it as an independent subsystem.
+> > > >
+> > > > Have you discussed the file digest cache functionality with either =
+the
+> > > > IPE or BPF LSM maintainers?  While digest_cache may support these
+> > >
+> > > Well, yes. I was in a discussion since long time ago with Deven and
+> > > Fan. The digest_cache LSM is listed in the Use Case section of the IP=
+E
+> > > cover letter:
+> > >
+> > > https://lore.kernel.org/linux-integrity/1716583609-21790-1-git-send-e=
+mail-wufan@linux.microsoft.com/
+> >
+> > I would hope to see more than one sentence casually mentioning that
+> > there might be some integration in the future.
+>
+> Sure, I can work more with Fan to do a proper integration.
 
-> Making it a kernel subsystem would likely mean replicating what the LSM
-> infrastructure is doing, inode (security) blob and being notified about
-> file/directory changes.
-> 
-> I guess I will go for the IMA route...
+That seems like a good pre-requisite for turning digest_cache into a
+general purpose subsystem.
 
-This thread brings up an issue that we have been thinking about but
-has been on the back burner.
+> > > I also developed an IPE module back in the DIGLIM days:
+> > >
+> > > https://lore.kernel.org/linux-integrity/a16a628b9e21433198c490500a987=
+121@huawei.com/
+> >
+> > That looks like more of an fs-verity integration to me.  Yes, of
+> > course there would be IPE changes to accept a signature/digest from a
+> > digest cache, but that should be minor.
+>
+> True, but IPE will also benefit from not needing to specify every
+> digest in the policy.
 
-Roberto, I'm assuming you have seen our TSEM submissions go by.  Our
-V4 release will be immediately after the Fourth of July holiday week
-here in the states.
+Sure, but that isn't really that important from a code integration
+perspective, that's an admin policy issue.  I expect there would be
+much more integration work with fs-verity than with IPE, and I think
+the fs-verity related work might be a challenge.
 
-Since TSEM implements a generic security modeling framework for the
-kernel, it ends up implementing a superset of IMA functionality.  That
-required us to implement our own file digest generation and cacheing
-infrastructure.
+> Also, the design choice of attaching the digest cache to the inode
+> helps LSMs like IPE that don't have a per inode cache on their own.
+> Sure, IPE would have to do a digest lookup every time, but at least on
+> an already populated hash table.
 
-Given the trajectory that things are on with respect to security,
-there is only going to be more demand for file digests and their
-associated cacheing.  Doesn't seem like it makes a lot of sense to
-have multiple teams replicating what is largely the same
-functionality.
+Just because you need to attach some state to an inode does not mean a
+file digest cache must be a LSM.  It could be integrated into the VFS
+or it could be a separate subsystem; either way it could provide an
+API (either through well defined data structures or functions) that
+could be used by various LSMs and filesystems that provide integrity
+protection.
 
-If your group would have interest, we would certainly be willing to
-entertain conversations on how we could collaborate to brew up
-something that would be of mutual benefit to everyone who has a need
-for this type of infrastructure.
-
-As you noted, consumers of the BPF LSM would also be a clear candidate
-for generic infrastructure.  One of the issues blocking a BPF based
-integrity implementation is that BPF itself is not going to be able
-generate digests on its own.  So it would seem to make sense to have
-whatever gets built have a kfunc accessible API.  Plenty of other
-additional warts on that front as well but getting access to digests
-is the necessary starting point.
-
-Given what we have seen with IMA's challenge with respect to overlayfs
-issues and file versioning issues in general, it would seem to be of
-profit to have all these issues addressed uniformally and in one
-place.
-
-Since virtually everything that is accessing this infrastructure is
-going to be an LSM, we would envision API's out of a common
-infrastructure, invoked by the event handlers of the various LSM's
-interested in integrity information, driving the cache generation and
-maintenance.  That would seem to have all of the benefits of being
-implemented by the LSM infrastructure without necessarily being an
-'LSM' in and of itself.
-
-We assume that everyone would want to maintain the O(1) lookup
-characteristics of what the LSM inode blob mechanism provides.  We
-would presume that a common cacheing architecture would return a
-pointer to the structure that the digest cache maintains describing
-the various digests associated with the contents of a file, as there
-will be a need for multiple digest support, when an LSM hands the
-cache an inode referencing a file.  An LSM could then place that
-pointer in its own inode blob for future reference.
-
-Either that, probably better, stick a pointer into the inode structure
-itself that references it's digest cache object and it would get
-populated by the first event that opens the associated file.
-
-> Roberto
-
-So an open invitation to anyone that would want to discuss
-requirements around a common implementation.
-
-Have a good weekend.
-
-As always,
-Dr. Greg
-
-The Quixote Project - Flailing at the Travails of Cybersecurity
-              https://github.com/Quixote-Project
+--=20
+paul-moore.com
 
