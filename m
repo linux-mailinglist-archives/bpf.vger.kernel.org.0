@@ -1,150 +1,144 @@
-Return-Path: <bpf+bounces-32636-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-32638-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E0B5A9112A3
-	for <lists+bpf@lfdr.de>; Thu, 20 Jun 2024 21:58:47 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 094129112A9
+	for <lists+bpf@lfdr.de>; Thu, 20 Jun 2024 21:59:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9D6572825E2
-	for <lists+bpf@lfdr.de>; Thu, 20 Jun 2024 19:58:46 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3BD011C20BA8
+	for <lists+bpf@lfdr.de>; Thu, 20 Jun 2024 19:59:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 287651B9AAA;
-	Thu, 20 Jun 2024 19:58:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 67CE11B9AAD;
+	Thu, 20 Jun 2024 19:59:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dMkcJcQW"
+	dkim=pass (2048-bit key) header.d=googlemail.com header.i=@googlemail.com header.b="QJoRRFeE"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f175.google.com (mail-pf1-f175.google.com [209.85.210.175])
+Received: from mail-yw1-f173.google.com (mail-yw1-f173.google.com [209.85.128.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A7C81B3F2D;
-	Thu, 20 Jun 2024 19:58:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 961994778C
+	for <bpf@vger.kernel.org>; Thu, 20 Jun 2024 19:59:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718913519; cv=none; b=Ee6jeRvuq0pxZKLoWRS5o6neEkGE9dcjq4ZVZqbZkfQ3lM56oJloMhSpzmLD/f0k/UgvKoe/SidIWR1X+Nkg4ZccIC19vLBEHGVlhqCsCpdG/MbGgHfCraoj7tTRkwJbREY/xP0uY2IrmZOqjdqqrsqqzTC6o7U8nxRodXhHqbw=
+	t=1718913585; cv=none; b=amQ3SDIq/go8ileMe1+/7Bv7L8bivN0KyO7FMRkrommibVwYWprCfpEdNRU80dHIBRdElaJckYHjKOis5x7ASEXy6nhS+OgK6ur6HHnSjcERS1/JQbCJkPpEfFwhy+i5gc3fKai2tvHyCPeDrAzixW8bKlpdrpj5lASH4uugHz4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718913519; c=relaxed/simple;
-	bh=dVxfHwtenKBSjV9OfjRyhDKFNSv2wMV5nHOruqsGr5Y=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=C5TpoBwB6Lbo3mESeU2Wd000Ul+mIUuKdwFqKfAi8WdGKsZQ8x2JopebbH0CovZIoYnsJOxyC0MOFAVia0FsbQFBl3sWkNVairDND+roGGbR07Cwe99D3YjPtVNe2katAqzx8d1lZPGEPybwbFRMx+THb5PlyXY4XXIy8t0d3iY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=dMkcJcQW; arc=none smtp.client-ip=209.85.210.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f175.google.com with SMTP id d2e1a72fcca58-70436ac8882so1121452b3a.2;
-        Thu, 20 Jun 2024 12:58:38 -0700 (PDT)
+	s=arc-20240116; t=1718913585; c=relaxed/simple;
+	bh=jS4KlPhX2mr+k621kXhV25BKIYGPIwXBb1WaeYkl9NE=;
+	h=From:To:Cc:References:In-Reply-To:Subject:Date:Message-ID:
+	 MIME-Version:Content-Type; b=e2cmQj80awnXglxhserb49AQtQSfnTlrhQ/rsQ9P5EyU2z04Ik73IgCSKU+3KbeJVualjsQLQh0h5FUO4XYad/O4RZxOumhOISF+1WvyZxpXu9YdS4F7+ILjgQkrZid0EegzkBwJ6uuRaWZK5iAvVxoLqN6kUeM5nqDKDbSr4kw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=googlemail.com; spf=pass smtp.mailfrom=googlemail.com; dkim=pass (2048-bit key) header.d=googlemail.com header.i=@googlemail.com header.b=QJoRRFeE; arc=none smtp.client-ip=209.85.128.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=googlemail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=googlemail.com
+Received: by mail-yw1-f173.google.com with SMTP id 00721157ae682-63127fc434aso11180257b3.0
+        for <bpf@vger.kernel.org>; Thu, 20 Jun 2024 12:59:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1718913517; x=1719518317; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=OvYBhmIJQ6oNWDLzYCe4j2TV++2BkNYnycvPCo+ymfc=;
-        b=dMkcJcQWEPyAGJNF+g4mM9heUYlx3I9nRuXj9eYYmsLvf75VA7Jd+8t2U1MkPtHQBi
-         LC98Vrjd61R/tEA6jb3SwR/1xiQOH2ys5hgvXtObxWa1R3MPcPnvQY8uUSDqqG6nOovW
-         RDx4C+Y/wlz9r4/cvNyPlEWht8YDGr0jVvuqPVYfeurshdlYp23Qty4vCxvmAN8fEKmK
-         5cTlDkQac3Mypq7A4rBfJdBEafbg2WhoBbJZoZIcgOGJAVJ+YfnhEH6yOAUGz3qlQ/7p
-         8LZeUbmAST+rzuSZP1W5t990Hylc0KKN5Lomv/4lbNUwBYfzjjWyrUU5xecLKrMx85bR
-         fyBQ==
+        d=googlemail.com; s=20230601; t=1718913582; x=1719518382; darn=vger.kernel.org;
+        h=content-language:thread-index:content-transfer-encoding
+         :mime-version:message-id:date:subject:in-reply-to:references:cc:to
+         :from:from:to:cc:subject:date:message-id:reply-to;
+        bh=s1gm4mrkLYYNsR1aNVEW8CLMsBv5dgCHIpVEZYhiuGs=;
+        b=QJoRRFeEvUR+Jso92eXfK3Y8DYnZPjcau0gsxdHsTdDOxSqJCT4bBlcb+LZ8pVCbLb
+         wZx3e1eqlM54Do8D41P9yPvP/wv4oIKgrGCBdt47kXBJmUex1frBpuEsi5jj+6z28//c
+         GfURnm+SzQl76vFEFWsC7mKra0p32ojun4PQhDqZFjXqOxZTcTwz+q3hAsEVoyaCTv5X
+         hVVG4xvuBP2ZHAkUIJxiUlsfqgroLePEkFemKVRWK4K1/rDKjWGR6AAucJ3XmcWdj0v6
+         pJ5lvJVDqKME+tXfP1X3T+Bt9kWTs7P+RGz+8Sbyk2d+w/PnGXIIva48LsKnL4Jbw9DM
+         HwTw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1718913517; x=1719518317;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=OvYBhmIJQ6oNWDLzYCe4j2TV++2BkNYnycvPCo+ymfc=;
-        b=AsPNPESM8EGNCQjeOYnWn81VVVODpkZdMKcCY7QEhdtfI7ifVRPQ/PHYQkE37N8Nhe
-         LEaupgHeiaW2pHVSXXgWS/VTg0eb+Ja8VpRyY7oNlZmsAxjUScujJayCha+4wOcu43WD
-         iOoVDpCUm4iiBHaLgq8/KHjCca/CNsAfcYuIVA9lsutHaIjgMvL8HaNBOkxDaN+m876W
-         eTeol6m1YAIiRJuEP/X594zHuiWQD0AH3VFv7Ky0KGVo6P5CtP4ail/q/PK5wKI6JP5+
-         XHvp7sasEXumz/RLHKdZ9q3GgsH1IbgUZoNI9W8R6w0WLsqtGT1/6N9m3touG/8lc1ta
-         dnUA==
-X-Forwarded-Encrypted: i=1; AJvYcCW6j2g9p9zl6Y/kQi7Ulqc9G1niT/KOucUhDboBK21cIrsx23//J1Ejm78uTHVmpYTFF9DUEfauhCYEREM83BN7YRnqYZtKgpgymN/TUX4y01OQBKjk7kWruwbUvpoixmoy
-X-Gm-Message-State: AOJu0Yxe8HWi7FuTCfT9pQnjZqZy9fCIq2K4YkVhZOMFPtizxiANmpZf
-	bTSk1qeUppDK+tJVLenH8Gwi4jd/iwIcY+iQLWy+FzDDrfdWyR9T
-X-Google-Smtp-Source: AGHT+IFMNYnp7v0mbDJ7mdFJWPxgcQ4HGv6x3IKaKW9ueMkmsnmWYImVH9+vuJQEIGrjlsc652DPog==
-X-Received: by 2002:a05:6a20:6a82:b0:1b6:1ed4:e91b with SMTP id adf61e73a8af0-1bcbb5cb106mr6416293637.39.1718913517391;
-        Thu, 20 Jun 2024 12:58:37 -0700 (PDT)
-Received: from localhost (dhcp-141-239-159-203.hawaiiantel.net. [141.239.159.203])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-706511aa322sm35763b3a.84.2024.06.20.12.58.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 Jun 2024 12:58:37 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date: Thu, 20 Jun 2024 09:58:35 -1000
-From: Tejun Heo <tj@kernel.org>
-To: Thomas Gleixner <tglx@linutronix.de>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>, mingo@redhat.com,
-	peterz@infradead.org, juri.lelli@redhat.com,
-	vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-	rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-	bristot@redhat.com, vschneid@redhat.com, ast@kernel.org,
-	daniel@iogearbox.net, andrii@kernel.org, martin.lau@kernel.org,
-	joshdon@google.com, brho@google.com, pjt@google.com,
-	derkling@google.com, haoluo@google.com, dvernet@meta.com,
-	dschatzberg@meta.com, dskarlat@cs.cmu.edu, riel@surriel.com,
-	changwoo@igalia.com, himadrics@inria.fr, memxor@gmail.com,
-	andrea.righi@canonical.com, joel@joelfernandes.org,
-	linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-	kernel-team@meta.com
-Subject: Re: [PATCHSET v6] sched: Implement BPF extensible scheduler class
-Message-ID: <ZnSJ67xyroVUwIna@slm.duckdns.org>
-References: <CAHk-=wg88k=EsHyGrX9dKt10KxSygzcEGdKRYRTx9xtA_y=rqQ@mail.gmail.com>
- <871q4rpi2s.ffs@tglx>
+        d=1e100.net; s=20230601; t=1718913582; x=1719518382;
+        h=content-language:thread-index:content-transfer-encoding
+         :mime-version:message-id:date:subject:in-reply-to:references:cc:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=s1gm4mrkLYYNsR1aNVEW8CLMsBv5dgCHIpVEZYhiuGs=;
+        b=hXX0CEz71TvA+ixpnnljqOcu7nVmzIvco09dr5fBlE3+F+QDB1qjgFb/SAEt4wKPNi
+         lpwS/P02j8fKRqzgnf7T9ehRc1C90UW9B0evzfgSPHBDdjW2FiOktAKfIf7f2q+s7Ovn
+         D93hOXQaZ4Sw7OdoKdRzbGIjxGwQ0A98c2mAq187ULy62UcNUCWhZ4nihQ8juqCXH4vJ
+         iSJX+jCTBez5uqIr5d4qYy9Sqo0JGxWRLeqPtjNivpqsu7WyCg/2758h+jO6HG44udSX
+         kLLugaeMgZ8ww/LvuzbCqDKFwwrd3PX05k9FyRme944CKtjxP2gNdVB+Oak8btlFBhJw
+         IZFw==
+X-Forwarded-Encrypted: i=1; AJvYcCVHyfp+XLxoyGW7qUN6j73z0H8ekN11pPIBt4YkDlPFMuxLWSPCo3dDPoGMhzga5cHNB59RVIvSq9tR02Yq8ySjOXx9
+X-Gm-Message-State: AOJu0YxTT6zffZewnM4syjZfyvLVfbW1vALxTUg+EYuPjpJvm68QK/mI
+	rFlezztDwVEZ4vYblFx3HcYV4PJkIAU0+gIsWeVSeS/cLcFfux1W
+X-Google-Smtp-Source: AGHT+IEnCM7sTEOQc+HgbTvVTkTKj6uv4J1Fa4tZj8SS4EfpHnkwa29SXrCl0TJ/Ps4Ui+I7GnXDUw==
+X-Received: by 2002:a0d:eb08:0:b0:62c:c660:72af with SMTP id 00721157ae682-63a8e0e3110mr65740137b3.24.1718913582421;
+        Thu, 20 Jun 2024 12:59:42 -0700 (PDT)
+Received: from ArmidaleLaptop ([2600:381:bf1c:7784:eca4:cc56:8003:c9fb])
+        by smtp.gmail.com with ESMTPSA id 00721157ae682-63f14a3cabfsm313327b3.88.2024.06.20.12.59.39
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 20 Jun 2024 12:59:42 -0700 (PDT)
+From: Dave Thaler <dthaler1968@googlemail.com>
+X-Google-Original-From: "Dave Thaler" <dthaler1968@gmail.com>
+To: =?utf-8?Q?'=C3=89ric_Vyncke'?= <evyncke@cisco.com>
+Cc: <draft-ietf-bpf-isa@ietf.org>,
+	<bpf-chairs@ietf.org>,
+	<bpf@ietf.org>,
+	<void@manifault.com>,
+	<bpf@vger.kernel.org>
+References: <171811793126.62184.9537540105321678706@ietfa.amsl.com>
+In-Reply-To: <171811793126.62184.9537540105321678706@ietfa.amsl.com>
+Subject: =?utf-8?Q?=C3=89ric_Vyncke's_feedback_on_bytesw?=
+	=?utf-8?Q?ap_functions?=
+Date: Thu, 20 Jun 2024 12:59:37 -0700
+Message-ID: <1b3701dac34c$6337e7f0$29a7b7d0$@gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <871q4rpi2s.ffs@tglx>
+Content-Type: text/plain;
+	charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+X-Mailer: Microsoft Outlook 16.0
+Thread-Index: AdrDTFRuaKtttYUtSxCgO66OsWwKwQ==
+Content-Language: en-us
 
-Hello,
+=C3=89ric Vyncke wrote:=20
+> 2) I find puzzling the absence of betoh16() in the presence of =
+htobe16()
+> functions.
 
-On Thu, Jun 20, 2024 at 08:47:23PM +0200, Thomas Gleixner wrote:
-> One example I very explicitely mentioned back then is the dance around
-> fork().  It took me at least an hour last year to grok the convoluted
-> logic and it did not get any faster when I stared at it today again.
-> 
-> fork()
->   sched_fork()
->     scx_pre_fork()
->       percpu_down_rwsem(&scx_fork_rwsem);
-> 
->     if (dl_prio(p)) {
->     	ret = -EINVAL;
->         goto cancel; // required to release the semaphore
->     }
-> 
->   sched_cgroup_fork()
->     return scx_fork();
-> 
->   sched_post_fork()
->     scx_post_fork()
->       percpu_up_rwsem(&scx_fork_rwsem);
-> 
-> Plus the extra scx_cancel_fork() which releases the scx_fork_rwsem in
-> case that any call after sched_fork() fails.
+Since the implementation is identical, I believe it wouldn't make sense =
+to
+use up another instruction with the same implementation. =20
 
-This part is actually tricky. sched_cgroup_fork() part is mostly just me
-trying to find the right place among existing hooks. We can either just
-rename sched_cgroup_fork() to a more generic name or separate out the SCX
-hook in the fork path.
+Table 6 in section 4.2 uses the direction-agnostic description for TO_BE =
+of
+"convert between host byte order and big endian" which I think is good.
+But then it says:
 
-When a BPF scheduler attaches, it needs to establish its base operating
-condition - ie. allocate per-task data structures, change sched class, and
-so on. There is trade-off between how fine-grained the synchronization can
-be and how easy it is for the BPF schedulers and we really do wanna make it
-easy for the BPF schedulers.
+> {END, TO_BE, ALU} with 'imm' =3D 16/32/64 means:
+>
+> dst =3D htobe16(dst)
+> dst =3D htobe32(dst)
+> dst =3D htobe64(dst)
 
-So, the current approach is just locking things down while attaching which
-makes things a lot easier for the BPF schedulers. The locking is through a
-percpu_rwsem, so it's super heavy on the writer side but really light on the
-reader (fork) side. Maybe the overhead can be further reduced by guarding it
-with static_key but the difference won't be much and I doubt it'd make any
-noticeable difference in the fork path.
+Where section 2.2 confusingly defines it as direction-specific as you =
+noted:
 
-Thanks.
+> htobe16: Takes an unsigned 16-bit number in host-endian format and
+> returns the equivalent number as an unsigned 16-bit number in =
+big-endian format.
 
--- 
-tejun
+Whereas bswap16 is direction agnostic:
+> bswap16: Takes an unsigned 16-bit number in either big- or =
+little-endian format
+> and returns the equivalent number with the same bit width but opposite =
+endianness.
+
+I think the right way to address your comment is to change 2.2 and =
+perhaps
+the function name to be direction agnostic and match the description in =
+table 6.
+For example:
+
+* bebswap16: Takes an unsigned 16-bit number and converts it between =
+host byte
+order and big endian.  That is, on a big-endian platform the value is =
+left unchanged
+and on a little-endian platform the behavior is the same as bswap16.
+
+Dave
+
 
