@@ -1,165 +1,167 @@
-Return-Path: <bpf+bounces-32556-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-32557-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C69F190FB70
-	for <lists+bpf@lfdr.de>; Thu, 20 Jun 2024 04:59:20 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1DA7A90FC1B
+	for <lists+bpf@lfdr.de>; Thu, 20 Jun 2024 07:08:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 47281282A5A
-	for <lists+bpf@lfdr.de>; Thu, 20 Jun 2024 02:59:19 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 03F1B1C218B5
+	for <lists+bpf@lfdr.de>; Thu, 20 Jun 2024 05:08:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1AD881D540;
-	Thu, 20 Jun 2024 02:59:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B35C2BAE2;
+	Thu, 20 Jun 2024 05:08:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="b5nEx0pe"
 X-Original-To: bpf@vger.kernel.org
-Received: from szxga07-in.huawei.com (szxga07-in.huawei.com [45.249.212.35])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-lf1-f49.google.com (mail-lf1-f49.google.com [209.85.167.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9AB2617721;
-	Thu, 20 Jun 2024 02:59:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.35
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C1D2F22625
+	for <bpf@vger.kernel.org>; Thu, 20 Jun 2024 05:08:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718852351; cv=none; b=mKnJsdacpKyHjOeCRVIaI5D4MkZGhqAVX6t7ejEVpdIJmn3ow2fw1p8aLxkZVPkfsOPz96SZOS8ACGMYR2wLL+qtaLu2HcMGeCthDauaKTOMmdHiWB3oW/ZyBeSVfu8tP8XHRikuwIYO2ExffshEqs0pCQa83nsW78Xy5s+FWd4=
+	t=1718860117; cv=none; b=nrFgHkDneQK6Unxuj+9pQNSfIcUW1HExKLLv8g3AZdk7F2l8Z5aBNj9ssn0NY5U6wt7gGeiu/Ww7yPvQcSHz/RsoZ0UENpgHgl/zNGAcnm/HzU7duZbsAH1NcRxIEdoavsKKYLZCIZT7lYWOPPvSuPqKCI1UeUI4WzOb6kiWlss=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718852351; c=relaxed/simple;
-	bh=vuTW9cPwOPrJ7ddPWRGrsEOT4sKaReYqjycgd8vf8ro=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=rrW24zCCxdcOcb9nmDAyFK4tlEc0THPsAURfXcZvjZ+6mJHoM7NRPWQTPXhxfNs3zfSIyYZQe7UxhO/1i5mjH703yaCUbIg7CS4C8d4yBgSo37C5IXrEohhSxcJGP7vpXVAZ03yQdktyp1/v1cQPfZb5aHdA9laBGTO1egle0Cg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.35
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.162.112])
-	by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4W4Q8851z6z1X3tr;
-	Thu, 20 Jun 2024 10:55:04 +0800 (CST)
-Received: from kwepemd200013.china.huawei.com (unknown [7.221.188.133])
-	by mail.maildlp.com (Postfix) with ESMTPS id 690F2140153;
-	Thu, 20 Jun 2024 10:58:59 +0800 (CST)
-Received: from [10.67.110.108] (10.67.110.108) by
- kwepemd200013.china.huawei.com (7.221.188.133) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1258.34; Thu, 20 Jun 2024 10:58:58 +0800
-Message-ID: <5cb622c9-46f4-c1e4-9932-774be4ed0735@huawei.com>
-Date: Thu, 20 Jun 2024 10:58:58 +0800
+	s=arc-20240116; t=1718860117; c=relaxed/simple;
+	bh=PGEcj8aZ0X8uBbNFw1pg4Ohn4geSnMhLB5GTcNk6DQ4=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=XzvxU8gjITVjmuPEwaBtU1B+QtzOJYZJEvoz6QP/XPs31EwkW27s90s3tz700DqyEk2CV9rcqWaaacHsYJNcDKo6SeP0d8+wNl5Sd2Tq1qybVcEuEkxcLivDS7Lv+BfLxejuYS94eO8ZarjXSBkBcOW3UqK4Tho7TktCGD5n+P0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=b5nEx0pe; arc=none smtp.client-ip=209.85.167.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
+Received: by mail-lf1-f49.google.com with SMTP id 2adb3069b0e04-52c32d934c2so460077e87.2
+        for <bpf@vger.kernel.org>; Wed, 19 Jun 2024 22:08:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google; t=1718860114; x=1719464914; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=mKJ7tA0uxmt7GivwOPU2qhqe93NAGJzAby4kZnJZbdI=;
+        b=b5nEx0pe/gYDTazkR0ULDSkSFzo2OCtd+RwRt6i8ho9DXOc9KFIztYM0M5+sTPaQBZ
+         B87ozhePoCzBF3YLmq7sYAVwv+JHfYw8ltYq0H6UNyNdF9J/+9AXKwH6j8N8tstOnViZ
+         z/yY0Np0abBy9p3aXMAfKA/9RlPbpRXArNGI0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1718860114; x=1719464914;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=mKJ7tA0uxmt7GivwOPU2qhqe93NAGJzAby4kZnJZbdI=;
+        b=Fb2YdmDVNHgT51qY5FAx+5sAWg+aQg0jsWZ3vEV7+q6rMUcNznnJ1Mm8cAD4OTvq4M
+         sW5eXujqSM38DuKcaVhLsa0GeC6yOedpfLjNPDdKApHy/J1C6yy4V22kK0ZrI2ASP6Op
+         0f7f550aDTKOqy06KrqXUkpqh9DLnBhrN6GzP06SQyGx6TzoTVOMTHQygb4v37OMagtT
+         H+qDO59BFCeLF+9SbVHDr3WgTYQDz3cdZeibe/fBHTexYSl3ch6/btyRc5H4cGEZAPYU
+         9BGm5zyowTzTD5t32m9B2odnS9aiGqVMhleQl6X4Tld1NRRx16FLn3oVecfHgbZhcu+x
+         4hHA==
+X-Forwarded-Encrypted: i=1; AJvYcCU1/A0mqfA27tquUJns19E5HAjjhEvi8rIuW8WhlGSc+8mtKKcXWzvq8ZqObYocOIJDr499RC83yK2TI7TK2/htIHCN
+X-Gm-Message-State: AOJu0YzwFAGJLbgACrOZEt6q2EOJFB/WeX35tesHlKimYIKSd2KWF2Xl
+	+EZKjWSJNFXRrqQa+BP2QOw0M157vWS5OlT9tWai6cw/E18QHXbb2MfqrcVXJoXqH0QQCceOG4t
+	LRLjS9g==
+X-Google-Smtp-Source: AGHT+IH7bB3BAINDA+QvpI0mkRXTM3epiSDvDPcSFC4cR+BDCVcLS8Gy5YEAEM9yCEHwVRAIkHQiRA==
+X-Received: by 2002:ac2:4650:0:b0:52c:4cfa:c5a6 with SMTP id 2adb3069b0e04-52ccaa3775emr2137076e87.34.1718860113881;
+        Wed, 19 Jun 2024 22:08:33 -0700 (PDT)
+Received: from mail-lf1-f53.google.com (mail-lf1-f53.google.com. [209.85.167.53])
+        by smtp.gmail.com with ESMTPSA id 2adb3069b0e04-52ca282f55bsm1924749e87.102.2024.06.19.22.08.32
+        for <bpf@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 19 Jun 2024 22:08:32 -0700 (PDT)
+Received: by mail-lf1-f53.google.com with SMTP id 2adb3069b0e04-52bc3130ae6so431135e87.3
+        for <bpf@vger.kernel.org>; Wed, 19 Jun 2024 22:08:32 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCX7bFSu6iY0CugYJZMEn8Cn6Lvu7egxkWdTwmR5gr8zKxozuNorA9YZjv0QQ9khI63M75BRhmCIc8uAawwlwitFkc1M
+X-Received: by 2002:a17:907:a0d5:b0:a6f:bd27:3f13 with SMTP id
+ a640c23a62f3a-a6fbd273fccmr98231066b.34.1718860091359; Wed, 19 Jun 2024
+ 22:08:11 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.2
-Subject: Re: [PATCH bpf-next] uprobes: Fix the xol slots reserved for
- uretprobe trampoline
-To: Jiri Olsa <olsajiri@gmail.com>
-CC: <rostedt@goodmis.org>, <mhiramat@kernel.org>, <oleg@redhat.com>,
-	<ast@kernel.org>, <daniel@iogearbox.net>, <andrii@kernel.org>,
-	<nathan@kernel.org>, <peterz@infradead.org>, <mingo@redhat.com>,
-	<mark.rutland@arm.com>, <linux-perf-users@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, <bpf@vger.kernel.org>
-References: <20240619013411.756995-1-liaochang1@huawei.com>
- <ZnMFtCsRCVZ6pkp8@krava>
-From: "Liao, Chang" <liaochang1@huawei.com>
-In-Reply-To: <ZnMFtCsRCVZ6pkp8@krava>
+References: <CAHk-=wg8APE61e5Ddq5mwH55Eh0ZLDV4Tr+c6_gFS7g2AxnuHQ@mail.gmail.com>
+ <87ed8sps71.ffs@tglx> <CAHk-=wg3RDXp2sY9EXA0JD26kdNHHBP4suXyeqJhnL_3yjG2gg@mail.gmail.com>
+ <87bk3wpnzv.ffs@tglx> <CAHk-=wiKgKpNA6Dv7zoLHATweM-nEYWeXeFdS03wUQ8-V4wFxg@mail.gmail.com>
+ <878qz0pcir.ffs@tglx>
+In-Reply-To: <878qz0pcir.ffs@tglx>
+From: Linus Torvalds <torvalds@linux-foundation.org>
+Date: Wed, 19 Jun 2024 22:07:54 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wg88k=EsHyGrX9dKt10KxSygzcEGdKRYRTx9xtA_y=rqQ@mail.gmail.com>
+Message-ID: <CAHk-=wg88k=EsHyGrX9dKt10KxSygzcEGdKRYRTx9xtA_y=rqQ@mail.gmail.com>
+Subject: Re: [PATCHSET v6] sched: Implement BPF extensible scheduler class
+To: Thomas Gleixner <tglx@linutronix.de>
+Cc: Tejun Heo <tj@kernel.org>, mingo@redhat.com, peterz@infradead.org, 
+	juri.lelli@redhat.com, vincent.guittot@linaro.org, dietmar.eggemann@arm.com, 
+	rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de, bristot@redhat.com, 
+	vschneid@redhat.com, ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, 
+	martin.lau@kernel.org, joshdon@google.com, brho@google.com, pjt@google.com, 
+	derkling@google.com, haoluo@google.com, dvernet@meta.com, 
+	dschatzberg@meta.com, dskarlat@cs.cmu.edu, riel@surriel.com, 
+	changwoo@igalia.com, himadrics@inria.fr, memxor@gmail.com, 
+	andrea.righi@canonical.com, joel@joelfernandes.org, 
+	linux-kernel@vger.kernel.org, bpf@vger.kernel.org, kernel-team@meta.com
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- kwepemd200013.china.huawei.com (7.221.188.133)
 
-Hi, Jiri
+[ I'll try to look more at this tomorrow, but I'll send this part early ]
 
-在 2024/6/20 0:22, Jiri Olsa 写道:
-> On Wed, Jun 19, 2024 at 01:34:11AM +0000, Liao Chang wrote:
->> When the new uretprobe system call was added [1], the xol slots reserved
->> for the uretprobe trampoline might be insufficient on some architecture.
-> 
-> hum, uretprobe syscall is x86_64 specific, nothing was changed wrt slots
-> or other architectures.. could you be more specific in what's changed?
+On Wed, 19 Jun 2024 at 19:35, Thomas Gleixner <tglx@linutronix.de> wrote:
+>
+> When I sat there in Richmond with the sched_ext people I gave them very
+> deep technical feedback especially on the way how they integrate it:
+>
+>   Sprinkle hooks and callbacks all over the place until it works by some
+>   definition of works.
 
-I observed a significant performance degradation when using uprobe to trace Redis
-on arm64 machine. redis-benchmark showed a decrease of around 7% with uprobes
-attached to two hot functions, and a much worse result with uprobes on more hot
-functions. Here is a samll snapshot of benchmark result.
+Are we even talking about the same thing?
 
-No uprobe
----------
-SET: 73686.54 rps
-GET: 73702.83 rps
+There are basically two new hooks, for reweight_task (which is
+something the fair scheduler wanted and was the only user of) and for
+switching_to(), which is the class changing (again, mainly because
+there's now not a hardcoded "normal" class).
 
-Uprobes on two hot functions
-----------------------------
-SET: 68441.59 rps, -7.1%
-GET: 68951.25 rps, -6.4%
+And yes, there are a couple of other things where the CFS rules were
+just encoded in the core scheduler code, and they got an extra check
+or whatever (eg the SCHED_NORMAL changes and things like stop-tick -
+things that changed simply because now there isn't a single normal
+scheduler any more).
 
-Uprobes at three hot functions
-------------------------------
-SET: 40953.39 rps，-44.4%
-GET: 41609.45 rps，-43.5%
+The rest are mostly all the existing scheduler call-ins, afaik. Or
+_exactly_ the same thing that other schedulers already do, like the
+task_prio() stuff.
 
-To investigate the potential improvements, i ported the uretprobe syscall and
-trampoline feature for arm64. The trampoline code used on arm64 looks like this:
+Yes, there's scx_rq_activate/deactivate at CPU up/down time. Doesn't
+look unreasonable to me. Same goes for the idle cpu management.
 
-uretprobe_trampoline_for_arm64:
-	str x8, [sp, #-8]!
-	mov x8, __NR_uretprobe
-	svc #0
+In other cases, it takes a few code sequences, turns them into helper
+functions, just to be able to re-use them.
 
-Due to arm64 uses fixed-lenghth instruction of 4 bytes, the total size of the trampoline
-code is 12 bytes, since the ixol slot size is typical 4 bytes, the misfit bewteen the
-slot size of trampoline size requires more than one slot to reserve.
+The ugliest parts are from what I can see the whole "ok, stop using
+user space input over PM events" and that "bypass" stuff is sure not
+pretty.
 
-Thanks.
+But that's pretty much all internal to sched_ext, and seems mostly
+like a sane approach to "what if we do policy in user space"?
 
-> 
-> thanks,
-> jirka
-> 
->> For example, on arm64, the trampoline is consist of three instructions
->> at least. So it should mark enough bits in area->bitmaps and
->> and area->slot_count for the reserved slots.
->>
->> [1] https://lore.kernel.org/all/20240611112158.40795-4-jolsa@kernel.org/
->>
->> Signed-off-by: Liao Chang <liaochang1@huawei.com>
->> ---
->>  kernel/events/uprobes.c | 11 +++++++----
->>  1 file changed, 7 insertions(+), 4 deletions(-)
->>
->> diff --git a/kernel/events/uprobes.c b/kernel/events/uprobes.c
->> index 2816e65729ac..efd2d7f56622 100644
->> --- a/kernel/events/uprobes.c
->> +++ b/kernel/events/uprobes.c
->> @@ -1485,7 +1485,7 @@ void * __weak arch_uprobe_trampoline(unsigned long *psize)
->>  static struct xol_area *__create_xol_area(unsigned long vaddr)
->>  {
->>  	struct mm_struct *mm = current->mm;
->> -	unsigned long insns_size;
->> +	unsigned long insns_size, slot_nr;
->>  	struct xol_area *area;
->>  	void *insns;
->>  
->> @@ -1508,10 +1508,13 @@ static struct xol_area *__create_xol_area(unsigned long vaddr)
->>  
->>  	area->vaddr = vaddr;
->>  	init_waitqueue_head(&area->wq);
->> -	/* Reserve the 1st slot for get_trampoline_vaddr() */
->> -	set_bit(0, area->bitmap);
->> -	atomic_set(&area->slot_count, 1);
->>  	insns = arch_uprobe_trampoline(&insns_size);
->> +	/* Reserve enough slots for the uretprobe trampoline */
->> +	for (slot_nr = 0;
->> +	     slot_nr < max((insns_size / UPROBE_XOL_SLOT_BYTES), 1);
->> +	     slot_nr++)
->> +		set_bit(slot_nr, area->bitmap);
->> +	atomic_set(&area->slot_count, slot_nr);
->>  	arch_uprobe_copy_ixol(area->pages[0], 0, insns, insns_size);
->>  
->>  	if (!xol_add_vma(mm, area))
->> -- 
->> 2.34.1
->>
+And scx_next_task_picked() isn't pretty - as far as I understand, it's
+because there's only a "class X picked" callback ("pick_next_task()"),
+and no way to tell other classes they weren't picked.
 
--- 
-BR
-Liao, Chang
+But "sprinkle hooks and callbacks all over the place"?
+
+Could things like that next_active_class() perhaps be done more
+prettily? I'm sure.
+
+But I get the very strong feeling that people wanted to limit the
+amount of changes they made to the core scheduler code.
+
+> I clearly offered you to try to resolve this amicably within a
+> reasonable time frame.
+>
+> How exaclty is that equivalent to "continue to do nothing" ?
+
+So if we actually *can* resolve this amicably in three months, then
+that sounds worth it.
+
+But my reaction is "what changed"? Nothing has become more amicable in
+the last nine months. What makes the next three months special?
+
+                        Linus
 
