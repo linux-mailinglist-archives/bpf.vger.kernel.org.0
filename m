@@ -1,128 +1,121 @@
-Return-Path: <bpf+bounces-32565-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-32566-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E96D190FFE3
-	for <lists+bpf@lfdr.de>; Thu, 20 Jun 2024 11:06:48 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 13AA791000D
+	for <lists+bpf@lfdr.de>; Thu, 20 Jun 2024 11:13:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5AE5DB224CC
-	for <lists+bpf@lfdr.de>; Thu, 20 Jun 2024 09:06:46 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A98B62832D5
+	for <lists+bpf@lfdr.de>; Thu, 20 Jun 2024 09:13:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 21CEC19AD7E;
-	Thu, 20 Jun 2024 09:06:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Jir7Gk5k"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C27D219DF7B;
+	Thu, 20 Jun 2024 09:12:50 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-f51.google.com (mail-ed1-f51.google.com [209.85.208.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from frasgout11.his.huawei.com (frasgout11.his.huawei.com [14.137.139.23])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 158E450288;
-	Thu, 20 Jun 2024 09:06:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 24ACF44C81;
+	Thu, 20 Jun 2024 09:12:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=14.137.139.23
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718874395; cv=none; b=jUEgoiRSjonQzs1nPwfmB9LMc4crgZ/QIm6tQC3vDwT/noM7SmxOwbHDCGPhpwTPvcF67rfxcGADu3/xwUAOVAaarJ0OFglqCvLHlnY3erv/QjhxEnMpeBi3xKnCvcifpcE4Iek9NwYj8RZGFDUDSdmh7ejhLfErOO6taJ9IjVA=
+	t=1718874770; cv=none; b=km5aoFXcHGvePWPOQidHZrZDiWUpLwwgPmrZcz6LCW2JaF9R++TTJKEr25IYruMNWU2YYeYhOJVjsThSbPMbaLGCLI4qWZ3Pflhd9x5zsI6OmlmGWaMWMzmn0SjNJn6wjgYRW1Ni7F2gR1d0syqu0NxgSsN813hHLIJu2Wk9WwE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718874395; c=relaxed/simple;
-	bh=a/KjCti6R+6JZx72P0n0Q+rTyMBKjYD4Fta1C7UK/Dg=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=YfF2ou/LL0XBII4bdrs/uibszvqhJIWMzqZ1KOpQwSkQjAcu6dp73JznNdaU3mNVgQBu0LUtwn7N7iguV94XenedJ9emdBCAgUNRev4WCRNlGxq7++bpfLUyGA5Pzq9EiPiplF10N9XBep9m5cE2u9DAg2WUqhxF6xigHe3QDjM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Jir7Gk5k; arc=none smtp.client-ip=209.85.208.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f51.google.com with SMTP id 4fb4d7f45d1cf-57d07f07a27so593974a12.3;
-        Thu, 20 Jun 2024 02:06:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1718874392; x=1719479192; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=78uUzESMOdQTWvfYAcQTyK+lGm1Zw7Sc2BeqHShFKEI=;
-        b=Jir7Gk5kNfhCYEt0NirnD6d/ESSK/L9UOjKDGvprzRHr9T91XncFkO6OjOP0KpuduG
-         PZ7I1ejlB88Q/5XktVtR2GD6pF4VOdPxWNam6Ej71r1uyhHh44Wnn5Z6qLHZRQN5oZfA
-         4Sax6s/8geTXeVmvqebpLMaxB1bvkMvqGyqynReWJUNb6q03rJ+AHAsPmmUEm8wMqaih
-         nhg0yrSvzy+WCHDht6Xy9WUAB1v3heD38D85dm3RJxNTnGq8+FQxjcfm0pdpbZ5TG2ZT
-         EDhO028UdCPprBOQczSMfDZZsRblPxm4mawTyLBM0kXTI6GR17tbEu2UCWg4NqTyc4/b
-         Zygw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1718874392; x=1719479192;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=78uUzESMOdQTWvfYAcQTyK+lGm1Zw7Sc2BeqHShFKEI=;
-        b=ppKLu+6yTJZ5/Jd1580MZIGgtd1VPE7yRUUGSsPFS+Uo1J/hPTgKC4fT9+uSVCgzlP
-         wZ65qpd52fAaC92gwLNc3e7w4p/WmZcW91U9usH9defGsG1u7OT2MDzBEiwxb6b01Loh
-         Jqr3ny7uWkudnmB5TIFUhyH9jfpuUFhyGUTZasFN6yraSXNitptAv29obfBr9E3Tmiii
-         iC5F6FbwQpv6RUudC+/hg0FaYB9ZtucIOyPz07Pvb2Jr3xBBlwvLFY0P41sQBVgGG4nw
-         eMqun5JeD6HmqyOZ5QTH9QRDXhN+PozIAKcR0gixQTNIHYOLHOcPADqrUF9UsBe8fY63
-         HkAA==
-X-Forwarded-Encrypted: i=1; AJvYcCUVlHWnd18XYhPg8FiX+JEjdzSpYPj3gjyPnAovSxPtirG68ASGJnQAC2znAsjSsJrKuM8vuknw1HJpgtAFCFnfhP/F+qnobW1OfEUmA0g/Z3IfaVZ5kNQ3R+gj7UmjHz0Yi64x67R2j5uY5VMTqt2+FcSH+qzVkUhkWGRuh8e1SuemWg==
-X-Gm-Message-State: AOJu0Yz0boHNerDZ3NFnW1b27tD7/0WvkMSDy4UlmGvD2kV6jxlO6Nmi
-	aiJBoqqzft6tGYkSSVj3QUJV+mAgkFVSKnnmYl7Lgtd6DrSwAipG
-X-Google-Smtp-Source: AGHT+IGYHPCmAg0EcgWW8sBLz05Oi1dwLaRAw/0OftwpRGxvbdEiRWcysCyM3L2qUl1b/QeM9haRcA==
-X-Received: by 2002:a50:d613:0:b0:579:e7c5:1001 with SMTP id 4fb4d7f45d1cf-57d07e6f4ecmr2570839a12.23.1718874392134;
-        Thu, 20 Jun 2024 02:06:32 -0700 (PDT)
-Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
-        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-57d27198948sm45831a12.54.2024.06.20.02.06.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 Jun 2024 02:06:31 -0700 (PDT)
-From: Jiri Olsa <olsajiri@gmail.com>
-X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
-Date: Thu, 20 Jun 2024 11:06:29 +0200
-To: Oleg Nesterov <oleg@redhat.com>
-Cc: "Liao, Chang" <liaochang1@huawei.com>, rostedt@goodmis.org,
-	mhiramat@kernel.org, ast@kernel.org, daniel@iogearbox.net,
-	andrii@kernel.org, nathan@kernel.org, peterz@infradead.org,
-	mingo@redhat.com, mark.rutland@arm.com,
-	linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-	bpf@vger.kernel.org
-Subject: Re: [PATCH bpf-next] uprobes: Fix the xol slots reserved for
- uretprobe trampoline
-Message-ID: <ZnPxFbUJVUQd80hs@krava>
-References: <20240619013411.756995-1-liaochang1@huawei.com>
- <20240619143852.GA24240@redhat.com>
- <7cfa9f1f-d9ce-b6bb-3fe0-687fae9c77c4@huawei.com>
- <20240620083602.GB30070@redhat.com>
+	s=arc-20240116; t=1718874770; c=relaxed/simple;
+	bh=ChY8gl0UQ9gw90dwFyrkevV7MUzuk6dTQKw1LvhGJ8Y=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=njjNK/u12aQynTcUi5VJfciSA4fFxpi61VW8JwwMwqbitsJQYfCBNMHlrc/vPahbPbtPZfGDV0qWiK9kzkBqi6Fe25lnXuO8snS5GEDfl4ETPdpwGgk/SFkPWv1ZVVsvzY9YzzgwBzR8x0Dm2gDftcD7u4+uOy3yjzoFh2jdAYE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=14.137.139.23
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.18.186.51])
+	by frasgout11.his.huawei.com (SkyGuard) with ESMTP id 4W4Z7M51D2z9v7Hm;
+	Thu, 20 Jun 2024 16:54:55 +0800 (CST)
+Received: from mail02.huawei.com (unknown [7.182.16.27])
+	by mail.maildlp.com (Postfix) with ESMTP id E6669140AA0;
+	Thu, 20 Jun 2024 17:12:33 +0800 (CST)
+Received: from [127.0.0.1] (unknown [10.204.63.22])
+	by APP2 (Coremail) with SMTP id GxC2BwBHHDdu8nNmgPLIAA--.31992S2;
+	Thu, 20 Jun 2024 10:12:33 +0100 (CET)
+Message-ID: <e9114733eedff99233b1711b2b05ab85b7c19ca9.camel@huaweicloud.com>
+Subject: Re: [PATCH v4 00/14] security: digest_cache LSM
+From: Roberto Sassu <roberto.sassu@huaweicloud.com>
+To: Paul Moore <paul@paul-moore.com>
+Cc: corbet@lwn.net, jmorris@namei.org, serge@hallyn.com, 
+ akpm@linux-foundation.org, shuah@kernel.org, mcoquelin.stm32@gmail.com, 
+ alexandre.torgue@foss.st.com, mic@digikod.net, 
+ linux-security-module@vger.kernel.org, linux-doc@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org, 
+ bpf@vger.kernel.org, zohar@linux.ibm.com, dmitry.kasatkin@gmail.com, 
+ linux-integrity@vger.kernel.org, wufan@linux.microsoft.com,
+ pbrobinson@gmail.com,  zbyszek@in.waw.pl, hch@lst.de, mjg59@srcf.ucam.org,
+ pmatilai@redhat.com,  jannh@google.com, dhowells@redhat.com,
+ jikos@kernel.org, mkoutny@suse.com,  ppavlu@suse.com, petr.vorel@gmail.com,
+ mzerqung@0pointer.de, kgold@linux.ibm.com,  Roberto Sassu
+ <roberto.sassu@huawei.com>
+Date: Thu, 20 Jun 2024 11:12:11 +0200
+In-Reply-To: <CAHC9VhSOMLH69+q_wt2W+N9SK92KGp5n4YgzpsXMcO2u7YyaTg@mail.gmail.com>
+References: <20240415142436.2545003-1-roberto.sassu@huaweicloud.com>
+	 <CAHC9VhTs8p1nTUXXea2JmF0FCEU6w39gwQRMtwACqM=+EBj1jw@mail.gmail.com>
+	 <7cf03a6ba8dbf212623aab2dea3dac39482e8695.camel@huaweicloud.com>
+	 <CAHC9VhSCw6RweTs6whAu4v6t4n7gxUWJtjmzY-UXrdzW0H+YJA@mail.gmail.com>
+	 <520d2dc2ff0091335a280a877fa9eb004af14309.camel@huaweicloud.com>
+	 <CAHC9VhRD1kBwqtkF+_cxCUCeNPp+0PAiNP-rG06me6gRQyYcyg@mail.gmail.com>
+	 <2b335bdd5c20878e0366dcf6b62d14f73c2251de.camel@huaweicloud.com>
+	 <CAHC9VhSOMLH69+q_wt2W+N9SK92KGp5n4YgzpsXMcO2u7YyaTg@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.44.4-0ubuntu2 
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240620083602.GB30070@redhat.com>
+X-CM-TRANSID:GxC2BwBHHDdu8nNmgPLIAA--.31992S2
+X-Coremail-Antispam: 1UD129KBjvdXoWruF4UAr4UGFW3ZFy7tF4fZrb_yoWDGwb_Wr
+	1qyw1kGw4Durn7tFWayF1IqFZ2grWxKFyDW34Fqr1UZ34xAFs3JFZ8GF1Svrs8tw1xXr9I
+	k3Z5W3y3G34SqjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+	9fnUUIcSsGvfJTRUUUb7xYFVCjjxCrM7AC8VAFwI0_Wr0E3s1l1xkIjI8I6I8E6xAIw20E
+	Y4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwV
+	A0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVWUJVWUCwA2z4x0Y4vE2Ix0cI8IcVCY1x02
+	67AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIE14v26r4j6F4UM28EF7xvwVC2z280aVCY1x0267
+	AKxVW8JVW8Jr1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2
+	j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7x
+	kEbVWUJVW8JwACjcxG0xvEwIxGrwACI402YVCY1x02628vn2kIc2xKxwCF04k20xvY0x0E
+	wIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E74
+	80Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Wrv_Gr1UMIIYrxkI7VAKI48JMIIF0xvE
+	2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42
+	xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIE
+	c7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07UAkuxUUUUU=
+X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAgAABF1jj5txJwAAs6
 
-On Thu, Jun 20, 2024 at 10:36:02AM +0200, Oleg Nesterov wrote:
-> On 06/20, Liao, Chang wrote:
-> >
-> > However, when i asm porting uretprobe trampoline to arm64
-> > to explore its benefits on that architecture, i discovered the problem that
-> > single slot is not large enought for trampoline code.
+On Wed, 2024-06-19 at 14:43 -0400, Paul Moore wrote:
+> On Wed, Jun 19, 2024 at 12:38=E2=80=AFPM Roberto Sassu
+> <roberto.sassu@huaweicloud.com> wrote:
+> >=20
+> > Making it a kernel subsystem would likely mean replicating what the LSM
+> > infrastructure is doing, inode (security) blob and being notified about
+> > file/directory changes.
+>=20
+> Just because the LSM framework can be used for something, perhaps it
+> even makes the implementation easier, it doesn't mean the framework
+> should be used for everything.
 
-ah ok, makes sense now.. x86_64 has the slot big enough for the trampoline,
-but arm64 does not
+It is supporting 3 LSMs: IMA, IPE and BPF LSM.
 
-> 
-> Ah, but then I'd suggest to make the changelog more clear. It looks as
-> if the problem was introduced by the patch from Jiri. Note that we was
-> confused as well ;)
-> 
-> And,
-> 
-> 	+	/* Reserve enough slots for the uretprobe trampoline */
-> 	+	for (slot_nr = 0;
-> 	+	     slot_nr < max((insns_size / UPROBE_XOL_SLOT_BYTES), 1);
-> 	+	     slot_nr++)
-> 
-> this doesn't look right. Just suppose that insns_size = UPROBE_XOL_SLOT_BYTES + 1.
-> I'd suggest DIV_ROUND_UP(insns_size, UPROBE_XOL_SLOT_BYTES).
-> 
-> And perhaps it would be better to send this change along with
-> uretprobe_trampoline_for_arm64 ?
+That makes it a clear target for the security subsystem, and as you
+suggested to start for IMA, if other kernel subsystems require them, we
+can make it as an independent subsystem.
 
-+1, also I'm curious what's the gain on arm64?
+Starting from IMA means that we are mixing two different things in the
+inode security blob, and I'm not sure that it is more straightforward
+than making the digest_cache LSM require the space it needs and be
+notified about security events.
 
-thanks,
-jirka
+Thanks
+
+Roberto
+
 
