@@ -1,155 +1,140 @@
-Return-Path: <bpf+bounces-32627-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-32628-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4A1389111A5
-	for <lists+bpf@lfdr.de>; Thu, 20 Jun 2024 20:58:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 28D089111B3
+	for <lists+bpf@lfdr.de>; Thu, 20 Jun 2024 21:01:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D4F181F219D6
-	for <lists+bpf@lfdr.de>; Thu, 20 Jun 2024 18:58:35 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D1D8B1F219D6
+	for <lists+bpf@lfdr.de>; Thu, 20 Jun 2024 19:01:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9CF011B3F36;
-	Thu, 20 Jun 2024 18:58:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 55DE1381B8;
+	Thu, 20 Jun 2024 19:01:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fuO+Y37e"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MTq21/IV"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f53.google.com (mail-pj1-f53.google.com [209.85.216.53])
+Received: from mail-pg1-f171.google.com (mail-pg1-f171.google.com [209.85.215.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE6F539855
-	for <bpf@vger.kernel.org>; Thu, 20 Jun 2024 18:58:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 925CDB657;
+	Thu, 20 Jun 2024 19:01:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718909910; cv=none; b=NFU1dxVpm9yoVoUSUjbzZZhx/Z6+6hFbjnIIuqc7D7AXYCn+vAObVgIpvua3TRRe1P78iX6/xZO8D7Ay+bJEXTn7YXcpTKnBsKgNZwkhgD9tKr+oylLIsCjBC3oDOzOE5rcTD6UhYzfaqGScY6zRX7f5i7w2GCW8f746su79ZOE=
+	t=1718910069; cv=none; b=G5TpHCT1e7QYzR0hfCYoSGAfl0Jh54rWOFmsuLG+kTHSIBeP1s4wRfPl8olAexk29v2wvrQCT1QfzEUogw1bipcRoIudpRkyCzu9uUktWM6mMmT7mzjcbkyy5q7U3kJE2TGCIEY6yKLL7ZAiU1QhCJ0huh4g3ZaYPwpu7Gxv27Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718909910; c=relaxed/simple;
-	bh=/5y/H211b/TZ2DW8GEmphW8iX2CWfUdn79JzwWchr54=;
+	s=arc-20240116; t=1718910069; c=relaxed/simple;
+	bh=DhHUliTDv9obS+xUqwdC0en0lhuGpMpydP7QX14WBNw=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=uPe7XWI4rZyIIOmgFJsmK8bdj0GumifXY7yDuxebNqfVJBijD4suqk8xcTn0j8f2dQZleqGeclPbYHY7VoS1h8haOWaDD4c/7iHWqXeySADwqycVuFvD7v71LTpAqS5MB/v4p5z18AscXnVBGjHpeZ3pTvGprvLGxyXpGA4OXUo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=fuO+Y37e; arc=none smtp.client-ip=209.85.216.53
+	 To:Cc:Content-Type; b=QEia1LDketutSalTZLY49eWFjEUA3AvaBE608m/ynC2tLRQDqZN6oQAlNRtrpb0EJWq8Y3+dkDv5gmScU8wPg75gVVwzTeSTCpbMue7r/dCjaueBF2reH0LVC5hhPhYy3ldsBsSdFF9F1BRaQ3QqMMyO6ukBdX0bU8fhJCKNz54=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=MTq21/IV; arc=none smtp.client-ip=209.85.215.171
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f53.google.com with SMTP id 98e67ed59e1d1-2c7b3c513f9so1089813a91.3
-        for <bpf@vger.kernel.org>; Thu, 20 Jun 2024 11:58:28 -0700 (PDT)
+Received: by mail-pg1-f171.google.com with SMTP id 41be03b00d2f7-6e9f52e99c2so912145a12.1;
+        Thu, 20 Jun 2024 12:01:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1718909908; x=1719514708; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1718910068; x=1719514868; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=0SmVgE7ikSzPJtCfEYvlOaWFLDNX/NyKAgRvjJ2xaME=;
-        b=fuO+Y37etdu/wZymVNSG+bF/xjL1WvXBpjX1+m4jstA8XNEtXgYg0mtpRiatE465eC
-         jOGsf0xHs1ENUi3Q5a1q0h4qpKUxK0iRcLAUzjmy2W3LKq5829EG2Zg1U7ZR6AFu3tYT
-         ZdSQ/iTPb6kKKYduSKNzfeGdmTPJf+ezsswQHxu1FBEnF8rg4Bo2yRzuZNBAFbyO3fSE
-         Uy3nLu95O30h/042Jshz6RwyudK4Nttv/1DPKRxImJNEmWTn8EcAxXMcIw8gUGbMgTD5
-         P+qfiOwSPnuRslvTbygffKpMJ4r5GVAPDq5gcNT+x2FRH3sWsPM/fHnZCeeaGOm3wYD4
-         iS+w==
+        bh=edgL49LMRv7Ws8FTfMR2qUOp30oBPUnUg1BlrmXNj0k=;
+        b=MTq21/IVEatBY1E1Yx2PfGGPbVGt8wQTrKBFx2BFHEUN065p36JnRzwvQfjwB4bfpv
+         f2OoW04xRwH+udRcBqOw9rz0qPru+vVq3p0lzt95E2ocHIubhJdh+A1XEKrm1ciWfoEo
+         4ODl4kosg6jMlpYT2VMI/NxtTN778Ha5bT7t8wn0jl9HOlJr4q/2VIk8uWVXBDsDipca
+         tQN6QXPOYeqFrZMw94RHq0zM+sERLO7whEPX5ieqOexdYyDFAT4TFJi28ZolTlxKY6HJ
+         LhUyL0kO+sP6bu7Ti/F6Ew11Zbfb36oSD3BIhJD+1fowK8JpJGz6Dvdycq6RrgLZET/u
+         rUDQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1718909908; x=1719514708;
+        d=1e100.net; s=20230601; t=1718910068; x=1719514868;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=0SmVgE7ikSzPJtCfEYvlOaWFLDNX/NyKAgRvjJ2xaME=;
-        b=eAzvpuQ1a+SNaFWDGx+n+KUY8HWqNIgce6lSVq5X20XuzgEOchX8gn2woSE6foYHS4
-         UK5WkfsIYYOMsEFoOI8mRCxJSi7MTxteftwozQAspJJLOUkQSRWJJEzFKXSsxI97T1Bj
-         hJgZlduJBbyHsB55EOn3mOtZViIfyActCpwxbaQzLvXbDCCTOiHclacSHGWuAFrpIauP
-         SasCzW2J8m9n3znP4sFd/eWug3fHNay7i52obaxSxnUoRNDqE3boiy6oyKNHG5PvyINO
-         d2aum6xdoXm4H5+bD7cMfxAo0Jt1ze//YF87Ww8g8XXLnUEUbLp0nJGNxjt41X+QkmfG
-         9wsQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWi1MK97ncOIcmbZofWAeWuMF7krE9l0kBoIyaKaWzXzOmZun6lGPj8ycAlmnOZ5p9qw9ejaueR1KNAPsKh4558t53q
-X-Gm-Message-State: AOJu0YwOiQJuwTwCIs99pdkNsRRb/aJ1IMY99cCFNe3gJeaD9RYsuAWw
-	J7oRKEy+BErKbSqaG5/UZdX1jT81VCYhd/aS62vMOBxonMjbj86DLT7y+I1/HHar2c5XproFOik
-	/I+GGaNSgBTQUuat4HlMxpmOjeao=
-X-Google-Smtp-Source: AGHT+IEAlmLiMBc0SfOhK+gKnxwV4xY3L3EI5FR6KC1oxNB0hi6TTYhMUKZ3x++e5FFWNhbJfcXuIoox9Z1n8d5fBKU=
-X-Received: by 2002:a17:90b:3104:b0:2c2:dd1d:ce6a with SMTP id
- 98e67ed59e1d1-2c7b5dca8ccmr5525609a91.45.1718909908206; Thu, 20 Jun 2024
- 11:58:28 -0700 (PDT)
+        bh=edgL49LMRv7Ws8FTfMR2qUOp30oBPUnUg1BlrmXNj0k=;
+        b=OazL4yOYd/avTnXGWy3hmxsd/bHQrkmsn6+5N+JjSJKH4ss0pZD7TR73CzKIIVwizB
+         qzipL16ReGzOkCNAfuk8W6jD4de9kJdMHB9Uj3kR+0qeHtTX5qqTYjewyuKp6/vIlCom
+         go456XR9yXlzWlidO+1nOUEYavXnWUCdZbTaC9NGNFU1ldo3dfbr4uZqaskteB5AkiQv
+         SYxVDfXfp7SGbtL6+PdAy5dwk6EMP0epasQuQIctiB2OR5mH7qI27c2FZr0jKUBSUrUc
+         LeEALxnORsozuWC0+IF5v4gwRz5oxIRqt/0Pi7PMBsKzAUUkCMvwAJiH46MvgkqH1UpN
+         QQ2Q==
+X-Forwarded-Encrypted: i=1; AJvYcCUzWJw2F/nfkDBEUtNA1iqKUvhEr+n7+BComBoCh3u/A2vlF4IIXM3G+s1rUOcvuvuxGglv+OHGUEBeDYapZvZaFL+TVmzt67XV+0VZTTYfl8Ows6UrXat1jfFFoYaIdFlR/bQP5EPfcCx1yrqu08isxa0+1TDTeTPRujdY1XZtgpo7IRIC
+X-Gm-Message-State: AOJu0YwBDKN8Q6pAUmt5HssuIIYmxuYaZxx50rjROXgMNXGYgvvHjse5
+	k8TjNTJjPWj2XKjrdoDO0XQdRFS57Wzi/meIBgol7Uw1jz6GyBrOwkmxQq0dCIiDHfgoP2uB95O
+	ad+AdfvNHKSPKwLuXsERr/VjjqdFOHg==
+X-Google-Smtp-Source: AGHT+IFwISJyQPW1kEQVodY5n7ZimQCwzXCRznBCj3vo6t+DlpcwO+ayOJjl5QFOV+y2yc6+XFD75IBGnnNRgJR3+q0=
+X-Received: by 2002:a17:90a:8a02:b0:2c2:f704:5278 with SMTP id
+ 98e67ed59e1d1-2c7b5dc7f9emr6158069a91.42.1718910067663; Thu, 20 Jun 2024
+ 12:01:07 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240619081624.1620152-1-jolsa@kernel.org>
-In-Reply-To: <20240619081624.1620152-1-jolsa@kernel.org>
+References: <20240618194306.1577022-1-jolsa@kernel.org>
+In-Reply-To: <20240618194306.1577022-1-jolsa@kernel.org>
 From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Thu, 20 Jun 2024 11:58:16 -0700
-Message-ID: <CAEf4BzYJU8y7LtL=QBLSFOC3vP_W=vqAk+qpkCWfgMJ4y3fqhQ@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] bpf: Change bpf_session_cookie return value to
- __u64 *
+Date: Thu, 20 Jun 2024 12:00:55 -0700
+Message-ID: <CAEf4BzbN4Li2iesQm28ZYEV2nXsLre8_qknmvkSy510EV7h=SA@mail.gmail.com>
+Subject: Re: [PATCH] uprobe: Do not use UPROBE_SWBP_INSN as static initializer
 To: Jiri Olsa <jolsa@kernel.org>
-Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, bpf@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>, 
-	Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>, 
-	John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@chromium.org>, 
-	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>
+Cc: Steven Rostedt <rostedt@goodmis.org>, Masami Hiramatsu <mhiramat@kernel.org>, 
+	Andrii Nakryiko <andrii@kernel.org>, Oleg Nesterov <oleg@redhat.com>, 
+	Nathan Chancellor <nathan@kernel.org>, linux-kernel@vger.kernel.org, 
+	linux-trace-kernel@vger.kernel.org, bpf@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Jun 19, 2024 at 1:16=E2=80=AFAM Jiri Olsa <jolsa@kernel.org> wrote:
+On Tue, Jun 18, 2024 at 12:43=E2=80=AFPM Jiri Olsa <jolsa@kernel.org> wrote=
+:
 >
-> This reverts [1] and changes return value for bpf_session_cookie
-> in bpf selftests. Having long * might lead to problems on 32-bit
-> architectures.
+> Nathan reported compilation fail for loongarch arch:
 >
-> Fixes: 2b8dd87332cd ("bpf: Make bpf_session_cookie() kfunc return long *"=
-)
-> Suggested-by: Andrii Nakryiko <andrii@kernel.org>
+>   kernel/events/uprobes.c: In function 'arch_uprobe_trampoline':
+>   arch/loongarch/include/asm/uprobes.h:12:33: error: initializer element =
+is not constant
+>      12 | #define UPROBE_SWBP_INSN        larch_insn_gen_break(BRK_UPROBE=
+_BP)
+>         |                                 ^~~~~~~~~~~~~~~~~~~~
+>   kernel/events/uprobes.c:1479:39: note: in expansion of macro 'UPROBE_SW=
+BP_INSN'
+>    1479 |         static uprobe_opcode_t insn =3D UPROBE_SWBP_INSN;
+>
+> Loongarch defines UPROBE_SWBP_INSN as function call, so we can't
+> use it to initialize static variable.
+>
+> Cc: Oleg Nesterov <oleg@redhat.com>
+> Fixes: ff474a78cef5 ("uprobe: Add uretprobe syscall to speed up return pr=
+obe")
+> Reported-by: Nathan Chancellor <nathan@kernel.org>
 > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 > ---
->  kernel/trace/bpf_trace.c                                        | 2 +-
->  tools/testing/selftests/bpf/bpf_kfuncs.h                        | 2 +-
->  tools/testing/selftests/bpf/progs/kprobe_multi_session_cookie.c | 2 +-
->  3 files changed, 3 insertions(+), 3 deletions(-)
+>  kernel/events/uprobes.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
 >
 
-LGTM, thanks for the follow up!
+Can we instead ask loongarch folks to rewrite it to be a constant?
+Having this as a function call is both an inconvenience and potential
+performance problem (a minor one, but still). I would imagine it's not
+hard to hard-code an instruction as a constant here.
 
-Acked-by: Andrii Nakryiko <andrii@kernel.org>
-
-> diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-> index 4b3fda456299..cd098846e251 100644
-> --- a/kernel/trace/bpf_trace.c
-> +++ b/kernel/trace/bpf_trace.c
-> @@ -3530,7 +3530,7 @@ __bpf_kfunc bool bpf_session_is_return(void)
->         return session_ctx->is_return;
+> diff --git a/kernel/events/uprobes.c b/kernel/events/uprobes.c
+> index 2816e65729ac..6986bd993702 100644
+> --- a/kernel/events/uprobes.c
+> +++ b/kernel/events/uprobes.c
+> @@ -1476,8 +1476,9 @@ static int xol_add_vma(struct mm_struct *mm, struct=
+ xol_area *area)
+>
+>  void * __weak arch_uprobe_trampoline(unsigned long *psize)
+>  {
+> -       static uprobe_opcode_t insn =3D UPROBE_SWBP_INSN;
+> +       static uprobe_opcode_t insn;
+>
+> +       insn =3D insn ?: UPROBE_SWBP_INSN;
+>         *psize =3D UPROBE_SWBP_INSN_SIZE;
+>         return &insn;
 >  }
->
-> -__bpf_kfunc long *bpf_session_cookie(void)
-> +__bpf_kfunc __u64 *bpf_session_cookie(void)
->  {
->         struct bpf_session_run_ctx *session_ctx;
->
-> diff --git a/tools/testing/selftests/bpf/bpf_kfuncs.h b/tools/testing/sel=
-ftests/bpf/bpf_kfuncs.h
-> index be91a6919315..3b6675ab4086 100644
-> --- a/tools/testing/selftests/bpf/bpf_kfuncs.h
-> +++ b/tools/testing/selftests/bpf/bpf_kfuncs.h
-> @@ -77,5 +77,5 @@ extern int bpf_verify_pkcs7_signature(struct bpf_dynptr=
- *data_ptr,
->                                       struct bpf_key *trusted_keyring) __=
-ksym;
->
->  extern bool bpf_session_is_return(void) __ksym __weak;
-> -extern long *bpf_session_cookie(void) __ksym __weak;
-> +extern __u64 *bpf_session_cookie(void) __ksym __weak;
->  #endif
-> diff --git a/tools/testing/selftests/bpf/progs/kprobe_multi_session_cooki=
-e.c b/tools/testing/selftests/bpf/progs/kprobe_multi_session_cookie.c
-> index d49070803e22..0835b5edf685 100644
-> --- a/tools/testing/selftests/bpf/progs/kprobe_multi_session_cookie.c
-> +++ b/tools/testing/selftests/bpf/progs/kprobe_multi_session_cookie.c
-> @@ -25,7 +25,7 @@ int BPF_PROG(trigger)
->
->  static int check_cookie(__u64 val, __u64 *result)
->  {
-> -       long *cookie;
-> +       __u64 *cookie;
->
->         if (bpf_get_current_pid_tgid() >> 32 !=3D pid)
->                 return 1;
 > --
-> 2.45.2
+> 2.45.1
 >
 
