@@ -1,176 +1,439 @@
-Return-Path: <bpf+bounces-32602-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-32603-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 684E6910983
-	for <lists+bpf@lfdr.de>; Thu, 20 Jun 2024 17:15:24 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 73AC4910A0D
+	for <lists+bpf@lfdr.de>; Thu, 20 Jun 2024 17:38:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1F923281672
-	for <lists+bpf@lfdr.de>; Thu, 20 Jun 2024 15:15:23 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 971691C22908
+	for <lists+bpf@lfdr.de>; Thu, 20 Jun 2024 15:38:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ACEFF1B0126;
-	Thu, 20 Jun 2024 15:15:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 688621B013F;
+	Thu, 20 Jun 2024 15:37:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b="Som9HEIv"
 X-Original-To: bpf@vger.kernel.org
-Received: from frasgout12.his.huawei.com (frasgout12.his.huawei.com [14.137.139.154])
+Received: from smtpout.efficios.com (smtpout.efficios.com [167.114.26.122])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0FE481AF6AA;
-	Thu, 20 Jun 2024 15:15:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=14.137.139.154
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A35991B0100;
+	Thu, 20 Jun 2024 15:37:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=167.114.26.122
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718896505; cv=none; b=dv+OjOInUdc2s1dznZPkkZn9BrQmjF4cKULMSxIdAz47EbwsGSb0Z5EDPvJift1GlsV7pFjbfHNXIX8bw2rNzjXxm7x6FFyRPoVEyTDD+OtB96NuC/V6103L4wLrrO87mpLn26++Q4DWXQhI+1SC5JfKeZsgnN7CcK+UutpJemA=
+	t=1718897861; cv=none; b=a/PC/rEJG+vwZMrX5UN2F4JOao6m0s4MRsWiVboqXsMdegrWqH1i6GT+mBSZOxPiw7WO3VOXcaAlKd9slbULl3V8k84GVxIYMqFmS/ZAUp5gJ4coRFUY9FG2q8Ngp/bsVCIFzwVesXERAZYJ+JuI82KthBC+12QtWzFr40Pq9Es=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718896505; c=relaxed/simple;
-	bh=B+ANxAr5I5iCOeavRB0jI50wfQL2dL1ZXhcF7hJaeXA=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=npfehlmsGrSKtXBVAyspnxjuKnUYLuiqsFwjgyFPu7GiR+ijnG8/8A1yGAeb1J2OpFEiBoukgyYurSstsygVHxwhjv6MCpq9MORamzZzmqZD9Z7gqGxUs1JgyHdEcFBdoPWyNO0bZtxasMNDjrj1sCHc48W28mDuYRSvMKTcBkw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=14.137.139.154
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.18.186.51])
-	by frasgout12.his.huawei.com (SkyGuard) with ESMTP id 4W4k3T5t3mz9v7Jj;
-	Thu, 20 Jun 2024 22:52:05 +0800 (CST)
-Received: from mail02.huawei.com (unknown [7.182.16.27])
-	by mail.maildlp.com (Postfix) with ESMTP id 50AA214010C;
-	Thu, 20 Jun 2024 23:14:53 +0800 (CST)
-Received: from [127.0.0.1] (unknown [10.204.63.22])
-	by APP2 (Coremail) with SMTP id GxC2BwB3_zlXR3RmAzTNAA--.2719S2;
-	Thu, 20 Jun 2024 16:14:52 +0100 (CET)
-Message-ID: <c96db3ab0aec6586b6d55c3055e7eb9fea6bf4e3.camel@huaweicloud.com>
-Subject: Re: [PATCH v4 00/14] security: digest_cache LSM
-From: Roberto Sassu <roberto.sassu@huaweicloud.com>
-To: Paul Moore <paul@paul-moore.com>
-Cc: corbet@lwn.net, jmorris@namei.org, serge@hallyn.com, 
- akpm@linux-foundation.org, shuah@kernel.org, mcoquelin.stm32@gmail.com, 
- alexandre.torgue@foss.st.com, mic@digikod.net, 
- linux-security-module@vger.kernel.org, linux-doc@vger.kernel.org, 
- linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org, 
- bpf@vger.kernel.org, zohar@linux.ibm.com, dmitry.kasatkin@gmail.com, 
- linux-integrity@vger.kernel.org, wufan@linux.microsoft.com,
- pbrobinson@gmail.com,  zbyszek@in.waw.pl, hch@lst.de, mjg59@srcf.ucam.org,
- pmatilai@redhat.com,  jannh@google.com, dhowells@redhat.com,
- jikos@kernel.org, mkoutny@suse.com,  ppavlu@suse.com, petr.vorel@gmail.com,
- mzerqung@0pointer.de, kgold@linux.ibm.com,  Roberto Sassu
- <roberto.sassu@huawei.com>
-Date: Thu, 20 Jun 2024 17:14:28 +0200
-In-Reply-To: <CAHC9VhQp1wsm+2d6Dhj1gQNSD0z_Hgj0cFrVf1=Zs94LmgfK0A@mail.gmail.com>
-References: <20240415142436.2545003-1-roberto.sassu@huaweicloud.com>
-	 <CAHC9VhTs8p1nTUXXea2JmF0FCEU6w39gwQRMtwACqM=+EBj1jw@mail.gmail.com>
-	 <7cf03a6ba8dbf212623aab2dea3dac39482e8695.camel@huaweicloud.com>
-	 <CAHC9VhSCw6RweTs6whAu4v6t4n7gxUWJtjmzY-UXrdzW0H+YJA@mail.gmail.com>
-	 <520d2dc2ff0091335a280a877fa9eb004af14309.camel@huaweicloud.com>
-	 <CAHC9VhRD1kBwqtkF+_cxCUCeNPp+0PAiNP-rG06me6gRQyYcyg@mail.gmail.com>
-	 <2b335bdd5c20878e0366dcf6b62d14f73c2251de.camel@huaweicloud.com>
-	 <CAHC9VhSOMLH69+q_wt2W+N9SK92KGp5n4YgzpsXMcO2u7YyaTg@mail.gmail.com>
-	 <e9114733eedff99233b1711b2b05ab85b7c19ca9.camel@huaweicloud.com>
-	 <CAHC9VhQp1wsm+2d6Dhj1gQNSD0z_Hgj0cFrVf1=Zs94LmgfK0A@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.44.4-0ubuntu2 
+	s=arc-20240116; t=1718897861; c=relaxed/simple;
+	bh=IEhC0p9x2snVKydX5aS28QYN4rJYQuxad4mrw0XQSss=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=JN9zR91O+JtLJIilnX4gKTcNrdV4ZKgGicCIAQY7Q/Owt5SgW+dls9aTS/M0pxLVDY1sb++tnEsuNxb1Qy1y/QOjpebWu2pNsVFBAUDOap4uwrccA9fd2OdMaVbvkKOWFPft+FXR9y+9cKkCsJeB9oJgUlHaQCpvDuUAP278z20=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com; spf=pass smtp.mailfrom=efficios.com; dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b=Som9HEIv; arc=none smtp.client-ip=167.114.26.122
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=efficios.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=efficios.com;
+	s=smtpout1; t=1718897857;
+	bh=IEhC0p9x2snVKydX5aS28QYN4rJYQuxad4mrw0XQSss=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=Som9HEIvEH22Z164vOZrX16wXxl1HAP1NeWg7fM+BxLGd59M8XezlXkbBu3R4f6zB
+	 Of1eecIYG55CdEMT6FPb+pWOMQprxc8DtN0nXmjx0QW4Vq6KBRLqmO/5TDoX/gH7nm
+	 PMdu+ecNIK6TSmIKxmsK4uQemA7RORKFB4alDxlfrVhZKvAeK4o2t9H6wcUUjxAad3
+	 9nYzmGpVDbVvgvxRAEIk6DJopUyo4XArnoROTdM1NOiIWRmyrgPTgkC39xpHDM1iIz
+	 8kL6z78M5q2k19i4wt5KM94HSQTmLxM7Bs/1Yod+3lVUVtUGAUQs0F3VtvMOUpa4rx
+	 TV7HSSukfHm7Q==
+Received: from [172.16.0.134] (192-222-143-198.qc.cable.ebox.net [192.222.143.198])
+	by smtpout.efficios.com (Postfix) with ESMTPSA id 4W4l413Jd8z16yl;
+	Thu, 20 Jun 2024 11:37:37 -0400 (EDT)
+Message-ID: <e4e9a2bc-1776-4b51-aba4-a147795a5de1@efficios.com>
+Date: Thu, 20 Jun 2024 11:38:38 -0400
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-CM-TRANSID:GxC2BwB3_zlXR3RmAzTNAA--.2719S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxAF18uFyDJF15AF1xZw1UZFb_yoW5Xw17pa
-	9rCF1Ykr4vqryfCwn2v3W7Z3WFvrZ8tF17Wwn8Xry5Cryq9r1Ikw1I9F4UuFWDXrn5u3Wa
-	yF42vFya9rn8uaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUkYb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIEc7CjxV
-	AFwI0_Gr1j6F4UJwAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxAIw28IcxkI
-	7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxV
-	Cjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWrXVW8Jr1lIxkGc2Ij64vIr41lIxAI
-	cVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcV
-	CF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280
-	aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU1c4S7UUUUU==
-X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAQAABF1jj595mQACsJ
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 1/5] tracing: Introduce faultable tracepoints
+To: Steven Rostedt <rostedt@goodmis.org>
+Cc: Masami Hiramatsu <mhiramat@kernel.org>, linux-kernel@vger.kernel.org,
+ Michael Jeanson <mjeanson@efficios.com>,
+ Peter Zijlstra <peterz@infradead.org>, Alexei Starovoitov <ast@kernel.org>,
+ Yonghong Song <yhs@fb.com>, "Paul E . McKenney" <paulmck@kernel.org>,
+ Ingo Molnar <mingo@redhat.com>, Arnaldo Carvalho de Melo <acme@kernel.org>,
+ Mark Rutland <mark.rutland@arm.com>,
+ Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+ Jiri Olsa <jolsa@redhat.com>, Namhyung Kim <namhyung@kernel.org>,
+ bpf@vger.kernel.org, Joel Fernandes <joel@joelfernandes.org>
+References: <20231120205418.334172-1-mathieu.desnoyers@efficios.com>
+ <20231120205418.334172-2-mathieu.desnoyers@efficios.com>
+ <20231120172004.7a1c3acc@gandalf.local.home>
+From: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Content-Language: en-US
+In-Reply-To: <20231120172004.7a1c3acc@gandalf.local.home>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Thu, 2024-06-20 at 10:48 -0400, Paul Moore wrote:
-> On Thu, Jun 20, 2024 at 5:12=E2=80=AFAM Roberto Sassu
-> <roberto.sassu@huaweicloud.com> wrote:
-> > On Wed, 2024-06-19 at 14:43 -0400, Paul Moore wrote:
-> > > On Wed, Jun 19, 2024 at 12:38=E2=80=AFPM Roberto Sassu
-> > > <roberto.sassu@huaweicloud.com> wrote:
-> > > >=20
-> > > > Making it a kernel subsystem would likely mean replicating what the=
- LSM
-> > > > infrastructure is doing, inode (security) blob and being notified a=
-bout
-> > > > file/directory changes.
-> > >=20
-> > > Just because the LSM framework can be used for something, perhaps it
-> > > even makes the implementation easier, it doesn't mean the framework
-> > > should be used for everything.
-> >=20
-> > It is supporting 3 LSMs: IMA, IPE and BPF LSM.
-> >=20
-> > That makes it a clear target for the security subsystem, and as you
-> > suggested to start for IMA, if other kernel subsystems require them, we
-> > can make it as an independent subsystem.
->=20
-> Have you discussed the file digest cache functionality with either the
-> IPE or BPF LSM maintainers?  While digest_cache may support these
+On 2023-11-20 17:20, Steven Rostedt wrote:
+> On Mon, 20 Nov 2023 15:54:14 -0500
+> Mathieu Desnoyers <mathieu.desnoyers@efficios.com> wrote:
+> 
+>> diff --git a/include/linux/tracepoint-defs.h b/include/linux/tracepoint-defs.h
+>> index 4dc4955f0fbf..67bacfaa8fd0 100644
+>> --- a/include/linux/tracepoint-defs.h
+>> +++ b/include/linux/tracepoint-defs.h
+>> @@ -29,6 +29,19 @@ struct tracepoint_func {
+>>   	int prio;
+>>   };
+>>   
+>> +/**
+>> + * enum tracepoint_flags - Tracepoint flags
+>> + * @TRACEPOINT_MAY_EXIST: Don't return an error if the tracepoint does not
+>> + *                        exist upon registration.
+>> + * @TRACEPOINT_MAY_FAULT: The tracepoint probe callback will be called with
+>> + *                        preemption enabled, and is allowed to take page
+>> + *                        faults.
+>> + */
+>> +enum tracepoint_flags {
+>> +	TRACEPOINT_MAY_EXIST = (1 << 0),
+>> +	TRACEPOINT_MAY_FAULT = (1 << 1),
+>> +};
+>> +
+>>   struct tracepoint {
+>>   	const char *name;		/* Tracepoint name */
+>>   	struct static_key key;
+>> @@ -39,6 +52,7 @@ struct tracepoint {
+>>   	int (*regfunc)(void);
+>>   	void (*unregfunc)(void);
+>>   	struct tracepoint_func __rcu *funcs;
+>> +	unsigned int flags;
+> 
+> Since faultable and non-faultable events are mutually exclusive, why not
+> just allocated them separately? Then you could have the __DO_TRACE() macro
+> get passed in whether the event can be faulted or not, by the created trace.
 
-Well, yes. I was in a discussion since long time ago with Deven and
-Fan. The digest_cache LSM is listed in the Use Case section of the IPE
-cover letter:
+Hi Steven,
 
-https://lore.kernel.org/linux-integrity/1716583609-21790-1-git-send-email-w=
-ufan@linux.microsoft.com/
+Sorry for the delayed reply. We're now resuming work on this series.
 
-I also developed an IPE module back in the DIGLIM days:
+We already have may_exit and want to introduce may_fault. I want to
+avoid:
 
-https://lore.kernel.org/linux-integrity/a16a628b9e21433198c490500a987121@hu=
-awei.com/
+- combinatory explosion of the number of tracepoint API functions,
+- allocating tracepoints into different sections based on their
+   characteristics, which will make it unclear how additional axes
+   will later fit into the scheme.
+- passing a set of booleans to functions as an API, which I find more
+   error prone than explicit flags. I prefer:
 
-As for eBPF, I just need to make the digest_cache LSM API callable by
-eBPF programs, very likely not requiring any change on the eBPF
-infrastructure itself. As an example of the modification needed, you
-could have a look at:
+   func(..., TRACEPOINT_MAY_FAULT | TRACEPOINT_MAY_EXIST);
 
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/ker=
-nel/trace/bpf_trace.c?h=3Dv6.10-rc4#n1381
+   over:
+
+   func(..., true, true);
+
+So technically we could split faultable and non-faultable tracepoints
+into different sections, but how would it be an improvement over the
+proposed approach ? Note that the registration function checks that
+the faultable flag of the probe matches the faultable flag of the
+tracepoint, which prevents mixups already.
+
+> 
+> 
+>>   };
+>>   
+>>   #ifdef CONFIG_HAVE_ARCH_PREL32_RELOCATIONS
+>> diff --git a/include/linux/tracepoint.h b/include/linux/tracepoint.h
+>> index 88c0ba623ee6..8a6b58a2bf3b 100644
+>> --- a/include/linux/tracepoint.h
+>> +++ b/include/linux/tracepoint.h
+>> @@ -18,6 +18,7 @@
+>>   #include <linux/types.h>
+>>   #include <linux/cpumask.h>
+>>   #include <linux/rcupdate.h>
+>> +#include <linux/rcupdate_trace.h>
+>>   #include <linux/tracepoint-defs.h>
+>>   #include <linux/static_call.h>
+>>   
+>> @@ -41,17 +42,10 @@ extern int
+>>   tracepoint_probe_register_prio(struct tracepoint *tp, void *probe, void *data,
+>>   			       int prio);
+>>   extern int
+>> -tracepoint_probe_register_prio_may_exist(struct tracepoint *tp, void *probe, void *data,
+>> -					 int prio);
+>> +tracepoint_probe_register_prio_flags(struct tracepoint *tp, void *probe, void *data,
+>> +			       int prio, unsigned int flags);
+>>   extern int
+>>   tracepoint_probe_unregister(struct tracepoint *tp, void *probe, void *data);
+>> -static inline int
+>> -tracepoint_probe_register_may_exist(struct tracepoint *tp, void *probe,
+>> -				    void *data)
+>> -{
+>> -	return tracepoint_probe_register_prio_may_exist(tp, probe, data,
+>> -							TRACEPOINT_DEFAULT_PRIO);
+>> -}
+>>   extern void
+>>   for_each_kernel_tracepoint(void (*fct)(struct tracepoint *tp, void *priv),
+>>   		void *priv);
+>> @@ -90,6 +84,7 @@ int unregister_tracepoint_module_notifier(struct notifier_block *nb)
+>>   #ifdef CONFIG_TRACEPOINTS
+>>   static inline void tracepoint_synchronize_unregister(void)
+>>   {
+>> +	synchronize_rcu_tasks_trace();
+> 
+> As Peter mentioned, why not use the srcu below?
+
+This was discussed thoroughly in a separate thread. See
+
+https://lore.kernel.org/lkml/e3721b80-4dfb-4914-acfb-b315b8cc45b8@paulmck-laptop/
+
+> 
+>>   	synchronize_srcu(&tracepoint_srcu);
+>>   	synchronize_rcu();
+>>   }
+>> @@ -192,9 +187,10 @@ static inline struct tracepoint *tracepoint_ptr_deref(tracepoint_ptr_t *p)
+>>    * it_func[0] is never NULL because there is at least one element in the array
+>>    * when the array itself is non NULL.
+>>    */
+>> -#define __DO_TRACE(name, args, cond, rcuidle)				\
+>> +#define __DO_TRACE(name, args, cond, rcuidle, tp_flags)			\
+>>   	do {								\
+>>   		int __maybe_unused __idx = 0;				\
+>> +		bool mayfault = (tp_flags) & TRACEPOINT_MAY_FAULT;	\
+>>   									\
+>>   		if (!(cond))						\
+>>   			return;						\
+>> @@ -202,8 +198,12 @@ static inline struct tracepoint *tracepoint_ptr_deref(tracepoint_ptr_t *p)
+>>   		if (WARN_ON_ONCE(RCUIDLE_COND(rcuidle)))		\
+>>   			return;						\
+>>   									\
+>> -		/* keep srcu and sched-rcu usage consistent */		\
+>> -		preempt_disable_notrace();				\
+>> +		if (mayfault) {						\
+>> +			rcu_read_lock_trace();				\
+>> +		} else {						\
+>> +			/* keep srcu and sched-rcu usage consistent */	\
+>> +			preempt_disable_notrace();			\
+>> +		}							\
+> 
+> Change the above comment and have:
+> 
+> 		if (!mayfault)
+> 			preempt_disable_notrace();
+> 
+> And we can have:
+> 
+> 		if (rcuidle || mayfault) {
+> 			__idx = srcu_read_lock_notrace(&tracepoint_srcu);
+> 			if (!mayfault)
+> 				ct_irq_enter_irqson();
+> 		}
+
+Not needed if we keep rcu_read_lock_trace() which exists for this purpose.
+
+> 
+>>   									\
+>>   		/*							\
+>>   		 * For rcuidle callers, use srcu since sched-rcu	\
+>> @@ -221,20 +221,23 @@ static inline struct tracepoint *tracepoint_ptr_deref(tracepoint_ptr_t *p)
+>>   			srcu_read_unlock_notrace(&tracepoint_srcu, __idx);\
+>>   		}							\
+>>   									\
+>> -		preempt_enable_notrace();				\
+>> +		if (mayfault)						\
+>> +			rcu_read_unlock_trace();			\
+>> +		else							\
+>> +			preempt_enable_notrace();			\
+>>   	} while (0)
+>>   
+>>   #ifndef MODULE
+>> -#define __DECLARE_TRACE_RCU(name, proto, args, cond)			\
+>> +#define __DECLARE_TRACE_RCU(name, proto, args, cond, tp_flags)		\
+>>   	static inline void trace_##name##_rcuidle(proto)		\
+>>   	{								\
+>>   		if (static_key_false(&__tracepoint_##name.key))		\
+>>   			__DO_TRACE(name,				\
+>>   				TP_ARGS(args),				\
+>> -				TP_CONDITION(cond), 1);			\
+>> +				TP_CONDITION(cond), 1, tp_flags);	\
+>>   	}
+>>   #else
+>> -#define __DECLARE_TRACE_RCU(name, proto, args, cond)
+>> +#define __DECLARE_TRACE_RCU(name, proto, args, cond, tp_flags)
+>>   #endif
+>>   
+>>   /*
+>> @@ -248,7 +251,7 @@ static inline struct tracepoint *tracepoint_ptr_deref(tracepoint_ptr_t *p)
+>>    * site if it is not watching, as it will need to be active when the
+>>    * tracepoint is enabled.
+>>    */
+>> -#define __DECLARE_TRACE(name, proto, args, cond, data_proto)		\
+>> +#define __DECLARE_TRACE(name, proto, args, cond, data_proto, tp_flags)	\
+> 
+> Instead of adding "tp_flags" just pass the "mayfault" boolean in.
+
+As explained above, I want to avoid combinatory explosion of the number
+of API functions with ..._may_exist_may_fault_may_xxx_may_yyy(). I also
+want to avoid the pattern where we need as many booleans, e.g.:
+
+   ...(..., bool may_exist, bool may_fault, bool may_xxx, bool may_yyy)
+
+which then looks like a maze of (... true, false, true, false) in the
+caller macros. This is error prone and tricky to review.
+
+The solution I propose to this problem is introducing the tp_flags.
+In the case of __DECLARE_TRACE, the tp_flags are only used for their
+TRACEPOINT_MAY_FAULT bit, but it keeps things consistent everywhere:
+at tracepoint declaration, registration and use.
+
+Note that ((tp_flags) & TRACEPOINT_MAY_FAULT) evaluates to a constant,
+so there is no performance overhead involved.
+
+I would favor keeping the tp_flags to keep everything consistent.
+
+> 
+>>   	extern int __traceiter_##name(data_proto);			\
+>>   	DECLARE_STATIC_CALL(tp_func_##name, __traceiter_##name);	\
+>>   	extern struct tracepoint __tracepoint_##name;			\
+>> @@ -257,13 +260,15 @@ static inline struct tracepoint *tracepoint_ptr_deref(tracepoint_ptr_t *p)
+>>   		if (static_key_false(&__tracepoint_##name.key))		\
+>>   			__DO_TRACE(name,				\
+>>   				TP_ARGS(args),				\
+>> -				TP_CONDITION(cond), 0);			\
+>> +				TP_CONDITION(cond), 0, tp_flags);	\
+>>   		if (IS_ENABLED(CONFIG_LOCKDEP) && (cond)) {		\
+>>   			WARN_ON_ONCE(!rcu_is_watching());		\
+>>   		}							\
+>> +		if ((tp_flags) & TRACEPOINT_MAY_FAULT)			\
+>> +			might_fault();					\
+>>   	}								\
+>>   	__DECLARE_TRACE_RCU(name, PARAMS(proto), PARAMS(args),		\
+>> -			    PARAMS(cond))				\
+>> +			    PARAMS(cond), tp_flags)			\
+>>   	static inline int						\
+>>   	register_trace_##name(void (*probe)(data_proto), void *data)	\
+>>   	{								\
+>> @@ -278,6 +283,13 @@ static inline struct tracepoint *tracepoint_ptr_deref(tracepoint_ptr_t *p)
+>>   					      (void *)probe, data, prio); \
+>>   	}								\
+>>   	static inline int						\
+>> +	register_trace_prio_flags_##name(void (*probe)(data_proto), void *data, \
+>> +				   int prio, unsigned int flags)	\
+>> +	{								\
+>> +		return tracepoint_probe_register_prio_flags(&__tracepoint_##name, \
+>> +					      (void *)probe, data, prio, flags); \
+>> +	}								\
+>> +	static inline int						\
+>>   	unregister_trace_##name(void (*probe)(data_proto), void *data)	\
+>>   	{								\
+>>   		return tracepoint_probe_unregister(&__tracepoint_##name,\
+>> @@ -298,7 +310,7 @@ static inline struct tracepoint *tracepoint_ptr_deref(tracepoint_ptr_t *p)
+>>    * structures, so we create an array of pointers that will be used for iteration
+>>    * on the tracepoints.
+>>    */
+>> -#define DEFINE_TRACE_FN(_name, _reg, _unreg, proto, args)		\
+>> +#define DEFINE_TRACE_FN_FLAGS(_name, _reg, _unreg, proto, args, tp_flags) \
+> 
+> Instead of passing in flags, I'm thinking that the faultable tracepoints
+> need to go into its own section, and possibly have a
+> register_trace_mayfault_##event() to make it highly distinguishable from
+> events that don't expect to fault.
+
+Registering a probe over a tracepoint with may_fault bit mismatch is
+already rejected.
+
+I'm concerned about multiplying the number of API functions. It may look fine
+just now to add "just one more" axis and have ...may_fault_may_exist_prio(),
+but I already find it has reached its limits. This is why I favor the flags.
+
+As for placing the faultable tracepoints into their own section, what is
+the benefit in doing that ?
+
+> 
+> Since everything is made by macros, it's not hard to keep all the above
+> code, and wrap it in other macros so that the faultable and non-faultable
+> tracepoints share most of the code.
+> 
+> But as tracepoints live in __section("__tracepoints"), I'm thinking we may
+> want __section("__tracepoints_mayfault") to keep them separate.
+
+We could do that, but I'm not sure what we'd gain, and it would certainly
+make things awkward when other mutually exclusive "may_..." axes need to
+be added in the future.
+
+Thanks,
+
+Mathieu
 
 
-Once the digest_cache LSM API is exposed in eBPF, you could write a
-simple file integrity check (taken from my DIGLIM eBPF), not tested:
+> 
+> Thoughts?
+> 
+> -- Steve
+> 
+> 
+>>   	static const char __tpstrtab_##_name[]				\
+>>   	__section("__tracepoints_strings") = #_name;			\
+>>   	extern struct static_call_key STATIC_CALL_KEY(tp_func_##_name);	\
+>> @@ -314,7 +326,9 @@ static inline struct tracepoint *tracepoint_ptr_deref(tracepoint_ptr_t *p)
+>>   		.probestub = &__probestub_##_name,			\
+>>   		.regfunc = _reg,					\
+>>   		.unregfunc = _unreg,					\
+>> -		.funcs = NULL };					\
+>> +		.funcs = NULL,						\
+>> +		.flags = (tp_flags),					\
+>> +	};								\
+>>   	__TRACEPOINT_ENTRY(_name);					\
+>>   	int __traceiter_##_name(void *__data, proto)			\
+>>   	{								\
+>> @@ -337,8 +351,11 @@ static inline struct tracepoint *tracepoint_ptr_deref(tracepoint_ptr_t *p)
+>>   	}								\
+>>   	DEFINE_STATIC_CALL(tp_func_##_name, __traceiter_##_name);
+>>   
+>> +#define DEFINE_TRACE_FN(_name, _reg, _unreg, proto, args)		\
+>> +	DEFINE_TRACE_FN_FLAGS(_name, _reg, _unreg, PARAMS(proto), PARAMS(args), 0)
+>> +
+>>   #define DEFINE_TRACE(name, proto, args)		\
+>> -	DEFINE_TRACE_FN(name, NULL, NULL, PARAMS(proto), PARAMS(args));
+>> +	DEFINE_TRACE_FN(name, NULL, NULL, PARAMS(proto), PARAMS(args))
+>>   
+>>   #define EXPORT_TRACEPOINT_SYMBOL_GPL(name)				\
+>>   	EXPORT_SYMBOL_GPL(__tracepoint_##name);				\
+>> @@ -351,7 +368,7 @@ static inline struct tracepoint *tracepoint_ptr_deref(tracepoint_ptr_t *p)
+>>   
+>>   
+>>   #else /* !TRACEPOINTS_ENABLED */
+>> -#define __DECLARE_TRACE(name, proto, args, cond, data_proto)		\
+>> +#define __DECLARE_TRACE(name, proto, args, cond, data_proto, tp_flags)	\
+>>   	static inline void trace_##name(proto)				\
+>>   	{ }								\
+>>   	static inline void trace_##name##_rcuidle(proto)		\
+>> @@ -363,6 +380,18 @@ static inline struct tracepoint *tracepoint_ptr_deref(tracepoint_ptr_t *p)
+>>   		return -ENOSYS;						\
+>>   	}								\
+>>   	static inline int						\
+>> +	register_trace_prio_##name(void (*probe)(data_proto),		\
+>> +			      void *data, int prio)			\
+>> +	{								\
+>> +		return -ENOSYS;						\
+>> +	}								\
+>> +	static inline int						\
+>> +	register_trace_prio_flags_##name(void (*probe)(data_proto),	\
+>> +			      void *data, int prio, unsigned int flags)	\
+>> +	{								\
+>> +		return -ENOSYS;						\
+>> +	}								\
+>> +	static inline int						\
+>>   	unregister_trace_##name(void (*probe)(data_proto),		\
+>>   				void *data)				\
+>>   	{								\
+>> @@ -377,6 +406,7 @@ static inline struct tracepoint *tracepoint_ptr_deref(tracepoint_ptr_t *p)
+>>   		return false;						\
+>>   	}
+>>   
 
-SEC("lsm.s/bprm_creds_for_exec")
-int BPF_PROG(exec, struct linux_binprm *bprm)
-{
-	u8 digest[MAX_DIGEST_SIZE] =3D { 0 };
-	digest_cache_found_t found;
-	struct digest_cache;
-	int algo;
-
-	algo =3D bpf_ima_file_hash(bprm->file, digest, sizeof(digest));
-	if (algo < 0)
-		return -EPERM;
-
-	digest_cache =3D bpf_digest_cache_get(bprm->file->f_path.dentry);
-	if (!digest_cache)
-		return -EPERM;
-
-	found =3D bpf_digest_cache_lookup(bprm->file->f_path.dentry,
-					digest_cache, digest, algo);
-
-	bpf_digest_cache_put(digest_cache);
-	return found ? 0 : -EPERM;
-}
-
-Roberto
-
-> LSMs, I don't recall seeing any comments from the other LSM
-> developers; if you are going to advocate for this as something outside
-> of IMA, it would be good to see a show of support for the other LSMs.
->=20
+-- 
+Mathieu Desnoyers
+EfficiOS Inc.
+https://www.efficios.com
 
 
