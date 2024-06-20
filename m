@@ -1,194 +1,147 @@
-Return-Path: <bpf+bounces-32555-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-32554-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5F36790FB6D
-	for <lists+bpf@lfdr.de>; Thu, 20 Jun 2024 04:56:39 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7D38D90FB61
+	for <lists+bpf@lfdr.de>; Thu, 20 Jun 2024 04:41:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 598351C21147
-	for <lists+bpf@lfdr.de>; Thu, 20 Jun 2024 02:56:38 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 80F191C21298
+	for <lists+bpf@lfdr.de>; Thu, 20 Jun 2024 02:41:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5627A1CFA9;
-	Thu, 20 Jun 2024 02:56:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 75DF31CD2B;
+	Thu, 20 Jun 2024 02:41:43 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA3CC171A1;
-	Thu, 20 Jun 2024 02:56:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.190
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 94C4E1C680;
+	Thu, 20 Jun 2024 02:41:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718852191; cv=none; b=fb7bSi18O5dDJ/Vx68WgnZyLru/my6PwEej6KV6NbJR/ca7XgDJh+3rU62xG78H3DM7Y3xuRAtDZ2tswTXdC1j2KKc1IVBYDa0g0NTXSF2Idvu1o3yjFM2swEBaadwkSyB/RSNvTTcc+4oJq1S30Is8gBafpRovqur3D54h6LZc=
+	t=1718851303; cv=none; b=jp/1Whibdn4sv9bvDpRflEDhhq6JMLL1/pMTaag7QeOHrc3rD926dPUHHUS5Qn2LQPGMQzWIR34XonHfWz4tOJez/hG4RQdqQckMGEN37sspNdNpfF7ookp7KMyO+BuFDAL99EYEkyRupv35S/RY6xc9xxZ+tk7mWZAP/qKxUwY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718852191; c=relaxed/simple;
-	bh=1Xmnfgp1ItF0jRXSWd8jcVkwr7/r+9fxi3baqS1IOtM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=qI3x4NDVS65XdQ3gwLwv4sST4JBPaxr3iUKZ52eJNOv6iz32btqk4qHRunEaiPRFZ7IFWSgcVlXGcX2yd7gw7jZ0GtG3ItrP8EkEMUwCYSGbtULDGWwKJXaDWnN92cgHMTpggJOrLrq9BzSbDJ5DDxX6hVeCztAyQkG0T+J2s8k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.190
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.88.214])
-	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4W4Pj972xmz2Ck5J;
-	Thu, 20 Jun 2024 10:35:09 +0800 (CST)
-Received: from kwepemd200013.china.huawei.com (unknown [7.221.188.133])
-	by mail.maildlp.com (Postfix) with ESMTPS id 5AEC91A016C;
-	Thu, 20 Jun 2024 10:39:04 +0800 (CST)
-Received: from [10.67.110.108] (10.67.110.108) by
- kwepemd200013.china.huawei.com (7.221.188.133) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1258.34; Thu, 20 Jun 2024 10:39:03 +0800
-Message-ID: <7cfa9f1f-d9ce-b6bb-3fe0-687fae9c77c4@huawei.com>
-Date: Thu, 20 Jun 2024 10:39:03 +0800
+	s=arc-20240116; t=1718851303; c=relaxed/simple;
+	bh=zlT+RN2y05WjaAuWzKTrbl1RWoP7avKxWPuu6j9IFY8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=QrZKG/QFVpsvvFMphNon0D1EqSoSRFzlSgd1G88wjqLitzHfYEYonqj/UV/3OhpEzIhwi88YOKHIjtGAeWDHS4+MK6P5ok6RjOM97dPcLEHnnlwOWPKKbhHKKaM6Wh221ALIwlOjc7/Ql1cJ3o4fg43XTvVuA16IZddQhxROk/Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.235])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4W4PrJ0cwyz4f3jMH;
+	Thu, 20 Jun 2024 10:41:20 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.128])
+	by mail.maildlp.com (Postfix) with ESMTP id 826911A0568;
+	Thu, 20 Jun 2024 10:41:30 +0800 (CST)
+Received: from [10.67.111.192] (unknown [10.67.111.192])
+	by APP4 (Coremail) with SMTP id gCh0CgBXCgjZlnNmZ5a6AQ--.63178S2;
+	Thu, 20 Jun 2024 10:41:30 +0800 (CST)
+Message-ID: <e329fdce-8c2f-4bc2-88e1-b079ec382eef@huaweicloud.com>
+Date: Thu, 20 Jun 2024 10:41:29 +0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.2
-Subject: Re: [PATCH bpf-next] uprobes: Fix the xol slots reserved for
- uretprobe trampoline
-To: Oleg Nesterov <oleg@redhat.com>
-CC: <jolsa@kernel.org>, <rostedt@goodmis.org>, <mhiramat@kernel.org>,
-	<ast@kernel.org>, <daniel@iogearbox.net>, <andrii@kernel.org>,
-	<nathan@kernel.org>, <peterz@infradead.org>, <mingo@redhat.com>,
-	<mark.rutland@arm.com>, <linux-perf-users@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, <bpf@vger.kernel.org>
-References: <20240619013411.756995-1-liaochang1@huawei.com>
- <20240619143852.GA24240@redhat.com>
-From: "Liao, Chang" <liaochang1@huawei.com>
-In-Reply-To: <20240619143852.GA24240@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- kwepemd200013.china.huawei.com (7.221.188.133)
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] bpf, arm64: inline bpf_get_current_task/_btf() helpers
+Content-Language: en-US
+To: Puranjay Mohan <puranjay@kernel.org>, Alexei Starovoitov
+ <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau
+ <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>,
+ Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>,
+ John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
+ Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
+ Jiri Olsa <jolsa@kernel.org>, Catalin Marinas <catalin.marinas@arm.com>,
+ Will Deacon <will@kernel.org>, bpf@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc: puranjay12@gmail.com
+References: <20240619131334.4297-1-puranjay@kernel.org>
+From: Xu Kuohai <xukuohai@huaweicloud.com>
+In-Reply-To: <20240619131334.4297-1-puranjay@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID:gCh0CgBXCgjZlnNmZ5a6AQ--.63178S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7uF1fZw1fZr4rKF1rCryDKFg_yoW8Zw17pw
+	s3CrsIk3yqq34jgay7Jw4DZr1Ykw4kJ3y3KFy5K3y0kayFvry5Gw15Kw4fCFZ5Ary0qa13
+	Z39F9FsYkw1DJaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUk0b4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxAIw28IcxkI
+	7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxV
+	Cjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVW8ZVWrXwCIc40Y0x0EwIxGrwCI42IY
+	6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6x
+	AIw20EY4v20xvaj40_WFyUJVCq3wCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv
+	6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUFDGOUUUUU
+X-CM-SenderInfo: 50xn30hkdlqx5xdzvxpfor3voofrz/
 
-Hi, Oleg
+On 6/19/2024 9:13 PM, Puranjay Mohan wrote:
+> On ARM64, the pointer to task_struct is always available in the sp_el0
+> register and therefore the calls to bpf_get_current_task() and
+> bpf_get_current_task_btf() can be inlined into a single MRS instruction.
+> 
+> Here is the difference before and after this change:
+> 
+> Before:
+> 
+> ; struct task_struct *task = bpf_get_current_task_btf();
+>    54:   mov     x10, #0xffffffffffff7978        // #-34440
+>    58:   movk    x10, #0x802b, lsl #16
+>    5c:   movk    x10, #0x8000, lsl #32
+>    60:   blr     x10          -------------->    0xffff8000802b7978 <+0>:     mrs     x0, sp_el0
+>    64:   add     x7, x0, #0x0 <--------------    0xffff8000802b797c <+4>:     ret
+> 
+> After:
+> 
+> ; struct task_struct *task = bpf_get_current_task_btf();
+>    54:   mrs     x7, sp_el0
+> 
+> This shows around 1% performance improvement in artificial microbenchmark.
+>
 
-在 2024/6/19 22:38, Oleg Nesterov 写道:
-> On 06/19, Liao Chang wrote:
->>
->> When the new uretprobe system call was added [1], the xol slots reserved
->> for the uretprobe trampoline might be insufficient on some architecture.
-> 
-> Confused... this doesn't depend on the change above?
+I think it would be better if more detailed data could be provided.
 
-You are right, the uretprobe syscall is specifc to x86_64. This patch wouldn't
-address that issue. However, when i asm porting uretprobe trampoline to arm64
-to explore its benefits on that architecture, i discovered the problem that
-single slot is not large enought for trampoline code.
+> Signed-off-by: Puranjay Mohan <puranjay@kernel.org>
+> ---
+>   arch/arm64/net/bpf_jit_comp.c | 9 +++++++++
+>   1 file changed, 9 insertions(+)
+> 
+> diff --git a/arch/arm64/net/bpf_jit_comp.c b/arch/arm64/net/bpf_jit_comp.c
+> index 720336d28856..b838dab3bd26 100644
+> --- a/arch/arm64/net/bpf_jit_comp.c
+> +++ b/arch/arm64/net/bpf_jit_comp.c
+> @@ -1244,6 +1244,13 @@ static int build_insn(const struct bpf_insn *insn, struct jit_ctx *ctx,
+>   			break;
+>   		}
+>   
+> +		/* Implement helper call to bpf_get_current_task/_btf() inline */
+> +		if (insn->src_reg == 0 && (insn->imm == BPF_FUNC_get_current_task ||
+> +					   insn->imm == BPF_FUNC_get_current_task_btf)) {
+> +			emit(A64_MRS_SP_EL0(r0), ctx);
+> +			break;
+> +		}
+> +
+>   		ret = bpf_jit_get_func_addr(ctx->prog, insn, extra_pass,
+>   					    &func_addr, &func_addr_fixed);
+>   		if (ret < 0)
+> @@ -2581,6 +2588,8 @@ bool bpf_jit_inlines_helper_call(s32 imm)
+>   {
+>   	switch (imm) {
+>   	case BPF_FUNC_get_smp_processor_id:
+> +	case BPF_FUNC_get_current_task:
+> +	case BPF_FUNC_get_current_task_btf:
+>   		return true;
+>   	default:
+>   		return false;
 
-> 
->> For example, on arm64, the trampoline is consist of three instructions
->> at least. So it should mark enough bits in area->bitmaps and
->> and area->slot_count for the reserved slots.
-> 
-> Do you mean that on arm64 UPROBE_SWBP_INSN_SIZE > UPROBE_XOL_SLOT_BYTES ?
-> 
->>From arch/arm64/include/asm/uprobes.h
-> 
-> 	#define MAX_UINSN_BYTES		AARCH64_INSN_SIZE
-> 
-> 	#define UPROBE_SWBP_INSN	cpu_to_le32(BRK64_OPCODE_UPROBES)
-> 	#define UPROBE_SWBP_INSN_SIZE	AARCH64_INSN_SIZE
-> 	#define UPROBE_XOL_SLOT_BYTES	MAX_UINSN_BYTES
-> 
-> 	typedef __le32 uprobe_opcode_t;
-> 
-> 	struct arch_uprobe_task {
-> 	};
-> 
-> 	struct arch_uprobe {
-> 		union {
-> 			u8 insn[MAX_UINSN_BYTES];
-> 			u8 ixol[MAX_UINSN_BYTES];
-> 
-> So it seems that UPROBE_SWBP_INSN_SIZE == MAX_UINSN_BYTES and it must
-> be less than UPROBE_XOL_SLOT_BYTES, otherwise
-> 
-> arch_uprobe_copy_ixol(..., uprobe->arch.ixol, sizeof(uprobe->arch.ixol))
-> in xol_get_insn_slot() won't fit the slot as well?
-This real reason is that the current implmentation seems to assume the
-ixol slot has enough space for the uretprobe trampoline. This assumption
-is true for x86_64, since the ixol slot is size of 128 bytes.
+Acked-by: Xu Kuohai <xukuohai@huawei.com>
 
-From arch/x86/include/asm/uprobes.h
-	#define UPROBE_XOL_SLOT_BYTES	128
-
-However, it is not large enough for arm64, the size of which is MAX_UINSN_BYTES
-(4bytes).
-
-From arch/arm64/include/asm/uprobes.h
-
- 	#define MAX_UINSN_BYTES		AARCH64_INSN_SIZE // 4bytes
- 	...
- 	#define UPROBE_XOL_SLOT_BYTES	MAX_UINSN_BYTES
-
-Here is an exmample of the uretprobe trampoline code used for arm64:
-
-uretprobe_trampoline_for_arm64:
-	str x8, [sp, #-8]!
-	mov x8, __NR_uretprobe
-	svc #0
-
-Above code is 12 bytes in size, exceeding the capacity of single ixol slot
-on arm64, so three slots are necessary to be reserved for the entire trampoline.
-
-Thanks.
-
-> 
-> OTOH, it look as if UPROBE_SWBP_INSN_SIZE == UPROBE_XOL_SLOT_BYTES, so
-> I don't understand the problem...
-> 
-> Oleg.
-> 
->> [1] https://lore.kernel.org/all/20240611112158.40795-4-jolsa@kernel.org/
->>
->> Signed-off-by: Liao Chang <liaochang1@huawei.com>
->> ---
->>  kernel/events/uprobes.c | 11 +++++++----
->>  1 file changed, 7 insertions(+), 4 deletions(-)
->>
->> diff --git a/kernel/events/uprobes.c b/kernel/events/uprobes.c
->> index 2816e65729ac..efd2d7f56622 100644
->> --- a/kernel/events/uprobes.c
->> +++ b/kernel/events/uprobes.c
->> @@ -1485,7 +1485,7 @@ void * __weak arch_uprobe_trampoline(unsigned long *psize)
->>  static struct xol_area *__create_xol_area(unsigned long vaddr)
->>  {
->>  	struct mm_struct *mm = current->mm;
->> -	unsigned long insns_size;
->> +	unsigned long insns_size, slot_nr;
->>  	struct xol_area *area;
->>  	void *insns;
->>  
->> @@ -1508,10 +1508,13 @@ static struct xol_area *__create_xol_area(unsigned long vaddr)
->>  
->>  	area->vaddr = vaddr;
->>  	init_waitqueue_head(&area->wq);
->> -	/* Reserve the 1st slot for get_trampoline_vaddr() */
->> -	set_bit(0, area->bitmap);
->> -	atomic_set(&area->slot_count, 1);
->>  	insns = arch_uprobe_trampoline(&insns_size);
->> +	/* Reserve enough slots for the uretprobe trampoline */
->> +	for (slot_nr = 0;
->> +	     slot_nr < max((insns_size / UPROBE_XOL_SLOT_BYTES), 1);
->> +	     slot_nr++)
->> +		set_bit(slot_nr, area->bitmap);
->> +	atomic_set(&area->slot_count, slot_nr);
->>  	arch_uprobe_copy_ixol(area->pages[0], 0, insns, insns_size);
->>  
->>  	if (!xol_add_vma(mm, area))
->> -- 
->> 2.34.1
->>
-> 
-> 
-
--- 
-BR
-Liao, Chang
 
