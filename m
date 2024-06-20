@@ -1,166 +1,261 @@
-Return-Path: <bpf+bounces-32613-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-32614-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 96B9C9110B2
-	for <lists+bpf@lfdr.de>; Thu, 20 Jun 2024 20:20:39 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 80C7F911158
+	for <lists+bpf@lfdr.de>; Thu, 20 Jun 2024 20:52:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B8A801C224C2
-	for <lists+bpf@lfdr.de>; Thu, 20 Jun 2024 18:20:38 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3719C281B36
+	for <lists+bpf@lfdr.de>; Thu, 20 Jun 2024 18:52:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6734E1B4C2A;
-	Thu, 20 Jun 2024 18:19:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8580B1BB68C;
+	Thu, 20 Jun 2024 18:47:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Dc+WVvaX"
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="HRUVosr3";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="S2qeLCpe"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f42.google.com (mail-pj1-f42.google.com [209.85.216.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4102B1B5823;
-	Thu, 20 Jun 2024 18:19:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0C0DA1B3739;
+	Thu, 20 Jun 2024 18:47:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718907596; cv=none; b=k/7j/x/TTHYl4ESLQXRXwSkNZySRQ2FiwXyo1HgUMrOpfEfzmpcwmCwj0QPJjyUm3hoKyNYC1ly1Kv5fJtF0sMCvRUWCN+XD9QqSs12G6svLvQu+qP+VtxhaBUali2fK0UNicHEbWeoSXfw5HEjlHKHfxhy+FmQfyZXs6FGnRz4=
+	t=1718909249; cv=none; b=arGT1zV406K7ql1ZZHEsutOFCNeB0sy5Xu+JvWgmxoTcEv2x505d1MmhvdpAzV2y19FgzxMjwhnNATiX0iYDrxOCSTQif9SGm+qIUI83hr1Q8GIGmY5G8Sizlk+Y12nr31otZcmRdRI1K4UHPUkKDoTCZbDuYkCYeoaotaxXZJI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718907596; c=relaxed/simple;
-	bh=9X7Yb+t8+3Mxvy5CM7jGXJM3QybL8bd6is6JbRcpKdU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=kDNHoSQ6dlFy1Zl6v6tlsv7DQgZvnWSjo65Rn+52DyUapPtWa1KVxNxVU2TyQnRexRT0hv1FQp+c0EyvCvXSDlwidoRGS1i3W8sczZo/2DHw8ozyamJQ7efSJTmc6wSXfZcP43L9FGszjaf35QN9XSldKDgVPlfhIhnznmwbebU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Dc+WVvaX; arc=none smtp.client-ip=209.85.216.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f42.google.com with SMTP id 98e67ed59e1d1-2c7dff0f4e4so1019649a91.2;
-        Thu, 20 Jun 2024 11:19:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1718907591; x=1719512391; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=OH6hJQ+sn/kbO3KU2buAh/pcNEoBmSwZPAIzDWFB4/k=;
-        b=Dc+WVvaXygX4iqcPNpXaTi6iQwx8XSdKrLlViYqP49QjVFjrGapuUmWrr45hLCJ340
-         LaXY+2oVHLlvZall0CNF9hwxp6vg1YzaHQTKSxfVAiLaXGLHHSfyF8q4dnkfF6sDuzax
-         Ccd8n+QQT7rCWpLpxzwq6ssyOLnSRKrJMk1FKzexfHKwT6ibnfLdL5MK8dNkAqnDV9a1
-         TjzpywqW8k71ai7+qwG515Nej1YfXXkmJ3+q1ozCpuHG0Lx52JurM6S67gG9Eg3GNGHK
-         qz7PKHIUnmtbCbpF6ac9VrmlEA1PDffbn5qYtcQmC0ehdQxIJRUmyYesmyWNTmlgQTLo
-         WFwQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1718907591; x=1719512391;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=OH6hJQ+sn/kbO3KU2buAh/pcNEoBmSwZPAIzDWFB4/k=;
-        b=oujRkBQZptEbsAJ7nYtjjufQUvzPd+p8nJHRfuyFRxIOHcEeXwtYKsAK1LDWNdahKO
-         IzYRHPT6jRwwzl42tt0Q1gMdeTWQPSAWyNTPoTnv8iwoISFp3XdC1KAAfZ0495wZnjrV
-         Pdun+7PBPy2EkoyoJvHrOP42wEwZnAqwmIRdRg5xALZhHPdFiPjZoF9nniRvlhQ9ecIg
-         tRTqO8JAPLxxqO7vujOOoxvC8jHfmoA3fwyjS5dnTOaogg0RKzhHIbge3kpE5CUcZpPq
-         cjs1tg7aqba+hQr0jBLh3AgVPbbmtXEBP9QxQKXPy/6gYkJ1vPnSqORNyuR4K49hJxIB
-         AUKA==
-X-Forwarded-Encrypted: i=1; AJvYcCXP0ANpEWXXYNR1pRf43CnfSn+1sD0aIZeAsOpRMvT0b/SSUnDsQ4KLqTBbldPkPjxOf5wGaATohwSlCWn9yukLRvhCEY4nEwSwbnpklyfnRqLEKaVb9Pkdxq41/MiYpwIxa1L77san+rFrXgE8+R50N+/9acuWFTDuNJdUeJtWBQAbo9E1fK0QuX5N8GC9w5JFWZZzdmcDdousat1+umay5uc4r8FO0TT9iBW5xvLl16VUDHPmOEKQK39g
-X-Gm-Message-State: AOJu0YzhRwG1Wi9EPpoSx3M7kS9GWZE/4iUgOvkcfh5+uvnakFvNpHAE
-	tGzWqFTohc647ikQxj3kTL2IPM2JzfkG0yg1XKq7QuCaYIfgn+QF
-X-Google-Smtp-Source: AGHT+IEJA3R6HpM40sY7717r+oNnncawN97nPgYOxcxhaZ0yAJaeMHYl5mxvLf9tAEuiPTyq9VzBTg==
-X-Received: by 2002:a17:90a:43a6:b0:2c4:e048:4bec with SMTP id 98e67ed59e1d1-2c7b5da4f97mr5623920a91.47.1718907591152;
-        Thu, 20 Jun 2024 11:19:51 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2c7e53e911asm2035714a91.13.2024.06.20.11.19.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 Jun 2024 11:19:50 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date: Thu, 20 Jun 2024 11:19:48 -0700
-From: Guenter Roeck <linux@roeck-us.net>
-To: Jiri Olsa <jolsa@kernel.org>
-Cc: Steven Rostedt <rostedt@goodmis.org>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Oleg Nesterov <oleg@redhat.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>, linux-kernel@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org, linux-api@vger.kernel.org,
-	linux-man@vger.kernel.org, x86@kernel.org, bpf@vger.kernel.org,
-	Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-	John Fastabend <john.fastabend@gmail.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	"Borislav Petkov (AMD)" <bp@alien8.de>,
-	Ingo Molnar <mingo@redhat.com>, Andy Lutomirski <luto@kernel.org>,
-	"Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
-	Deepak Gupta <debug@rivosinc.com>
-Subject: Re: [PATCHv8 bpf-next 3/9] uprobe: Add uretprobe syscall to speed up
- return probe
-Message-ID: <054064c5-704a-4ea7-8a89-1e136e475437@roeck-us.net>
-References: <20240611112158.40795-1-jolsa@kernel.org>
- <20240611112158.40795-4-jolsa@kernel.org>
+	s=arc-20240116; t=1718909249; c=relaxed/simple;
+	bh=xv72pM/CLkmNfQLX33OtZUmQooEWiIOgcs6NfeK07O8=;
+	h=From:To:Cc:Subject:In-Reply-To:Date:Message-ID:MIME-Version:
+	 Content-Type; b=e6Ydp85vW/wy7Wa1mCLUMnTLTR7QZccy8260+Y8SLK9U1oMrj7ObixUbDfchW+eY91MZAXByal2f7R0TRxV2ujKqnBVBif9XPZ3i2MwEzu4Mrq33D/t/PuXEjxWrQxQoMvfa0ChQ8C2v1r9uULveCtBf/7eLs+qiYY4rc47R/+0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=HRUVosr3; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=S2qeLCpe; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+From: Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1718909244;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:  in-reply-to:in-reply-to;
+	bh=Vp38aipfo/voTVFIhOXTlwctks0QJYqmECO6qKad7xc=;
+	b=HRUVosr3oDIhzz9qGE4X9+Qo7B2gAYw9ypoHpaaCDqkEaoMQH1EUF79GU/vBEhylglBOHP
+	oQ/G4rtYAyiBUs4+dNfLra5BAoKnOD9BsJmYGAIwi9e1gvCh0S7o7zaOC+E/wra/1y9t7I
+	t8vvEawzbw3PMJXDMHosmBllEG9KOcqwYIpeRaC45amNgQdNgoHGclaElAJuV015anuJ1r
+	SCFvgHrlcNWEAyxdj1lmlnIK90xF+69ibSff+eIHZe3GTI49Wfsh0TA+z5NNHjz0tuGkH6
+	Djz98u/zANJket7RPERR3Cit5PhS6g5IvGugFfjjns9cIreLpQlkOjZjw3kceA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1718909244;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:  in-reply-to:in-reply-to;
+	bh=Vp38aipfo/voTVFIhOXTlwctks0QJYqmECO6qKad7xc=;
+	b=S2qeLCpeq/AFjoVlVrdx8PkJimUSFdQ+hTgKu6edyq87/TVfxb4lZNjOzMX9Cu74+2vlj8
+	/uM8V+55XFUflADw==
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Tejun Heo <tj@kernel.org>, mingo@redhat.com, peterz@infradead.org,
+ juri.lelli@redhat.com, vincent.guittot@linaro.org,
+ dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
+ mgorman@suse.de, bristot@redhat.com, vschneid@redhat.com, ast@kernel.org,
+ daniel@iogearbox.net, andrii@kernel.org, martin.lau@kernel.org,
+ joshdon@google.com, brho@google.com, pjt@google.com, derkling@google.com,
+ haoluo@google.com, dvernet@meta.com, dschatzberg@meta.com,
+ dskarlat@cs.cmu.edu, riel@surriel.com, changwoo@igalia.com,
+ himadrics@inria.fr, memxor@gmail.com, andrea.righi@canonical.com,
+ joel@joelfernandes.org, linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+ kernel-team@meta.com
+Subject: Re: [PATCHSET v6] sched: Implement BPF extensible scheduler class
+In-Reply-To: <CAHk-=wg88k=EsHyGrX9dKt10KxSygzcEGdKRYRTx9xtA_y=rqQ@mail.gmail.com>
+Date: Thu, 20 Jun 2024 20:47:23 +0200
+Message-ID: <871q4rpi2s.ffs@tglx>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240611112158.40795-4-jolsa@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Jun 11, 2024 at 01:21:52PM +0200, Jiri Olsa wrote:
-> Adding uretprobe syscall instead of trap to speed up return probe.
-> 
+Linus!
 
-This patch results in:
+On Wed, Jun 19 2024 at 22:07, Linus Torvalds wrote:
+> On Wed, 19 Jun 2024 at 19:35, Thomas Gleixner <tglx@linutronix.de> wrote:
+>>
+>> When I sat there in Richmond with the sched_ext people I gave them very
+>> deep technical feedback especially on the way how they integrate it:
+>>
+>>   Sprinkle hooks and callbacks all over the place until it works by some
+>>   definition of works.
+>
+> Are we even talking about the same thing?
 
-Building loongarch:allmodconfig ... failed
---------------
-Error log:
-In file included from include/linux/uprobes.h:49,
-                 from include/linux/mm_types.h:16,
-                 from include/linux/mmzone.h:22,
-                 from include/linux/gfp.h:7,
-                 from include/linux/xarray.h:16,
-                 from include/linux/list_lru.h:14,
-                 from include/linux/fs.h:13,
-                 from include/linux/highmem.h:5,
-                 from kernel/events/uprobes.c:13:
-kernel/events/uprobes.c: In function 'arch_uprobe_trampoline':
-arch/loongarch/include/asm/uprobes.h:12:33: error: initializer element is not constant
-   12 | #define UPROBE_SWBP_INSN        larch_insn_gen_break(BRK_UPROBE_BP)
-      |                                 ^~~~~~~~~~~~~~~~~~~~
-kernel/events/uprobes.c:1479:39: note: in expansion of macro 'UPROBE_SWBP_INSN'
- 1479 |         static uprobe_opcode_t insn = UPROBE_SWBP_INSN;
-      |                                       ^~~~~~~~~~~~~~~~
+Yes we do.
 
-Bisect log attached.
+> But "sprinkle hooks and callbacks all over the place"?
 
-Guenter
+There are too many places which add scx_***() invocations. That's what I
+asked to be cleaned up and to be generalized so it becomes uniform over
+the scheduler classes.
 
----
-# bad: [2102cb0d050d34d50b9642a3a50861787527e922] Add linux-next specific files for 20240619
-# good: [6ba59ff4227927d3a8530fc2973b80e94b54d58f] Linux 6.10-rc4
-git bisect start 'HEAD' 'v6.10-rc4'
-# good: [a8fa5261ec87d5aafd3211548d93008d5739457d] Merge branch 'master' of git://git.kernel.org/pub/scm/linux/kernel/git/herbert/cryptodev-2.6.git
-git bisect good a8fa5261ec87d5aafd3211548d93008d5739457d
-# good: [ee551f4db89753511a399b808db75654facec7c8] Merge branch 'for-linux-next' of https://gitlab.freedesktop.org/drm/i915/kernel
-git bisect good ee551f4db89753511a399b808db75654facec7c8
-# bad: [ec3557f4b791d72d93bfb69702d441d2c9f8cd0d] Merge branch 'next' of git://git.kernel.org/pub/scm/virt/kvm/kvm.git
-git bisect bad ec3557f4b791d72d93bfb69702d441d2c9f8cd0d
-# good: [29e7873afb5768f7af65802d021ee0c9bf2167be] Merge branch 'next' of git://git.kernel.org/pub/scm/linux/kernel/git/pcmoore/lsm.git
-git bisect good 29e7873afb5768f7af65802d021ee0c9bf2167be
-# good: [ffe376e4a4ec29bb29d97664b72ff607e86f5b02] Merge branch 'master' of git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git
-git bisect good ffe376e4a4ec29bb29d97664b72ff607e86f5b02
-# bad: [39264a48da368f5394289133802f7d105dd3a33c] Merge branch 'for-next' of git://git.kernel.org/pub/scm/linux/kernel/git/trace/linux-trace.git
-git bisect bad 39264a48da368f5394289133802f7d105dd3a33c
-# good: [8af40c77dfe215cb8ad60c221d8eb740b056460b] Merge ftrace/for-next
-git bisect good 8af40c77dfe215cb8ad60c221d8eb740b056460b
-# bad: [5dfebf3c26dc5fe0fe08a5b4f334922b650e43b9] Merge ring-buffer/for-next
-git bisect bad 5dfebf3c26dc5fe0fe08a5b4f334922b650e43b9
-# bad: [9172a2da3b4162b5af0d2b57a30e844c451e74b7] Merge probes/for-next
-git bisect bad 9172a2da3b4162b5af0d2b57a30e844c451e74b7
-# bad: [29edd8b003db897d81d82d950785327f164650d3] selftests/x86: Add return uprobe shadow stack test
-git bisect bad 29edd8b003db897d81d82d950785327f164650d3
-# good: [1b3c86eeea7594eeeb49b8d1c1db0a40f0ce7920] samples: kprobes: add missing MODULE_DESCRIPTION() macros
-git bisect good 1b3c86eeea7594eeeb49b8d1c1db0a40f0ce7920
-# good: [190fec72df4a5d4d98b1e783c333f471e5e5f344] uprobe: Wire up uretprobe system call
-git bisect good 190fec72df4a5d4d98b1e783c333f471e5e5f344
-# bad: [ff474a78cef5cb5f32be52fe25b78441327a2e7c] uprobe: Add uretprobe syscall to speed up return probe
-git bisect bad ff474a78cef5cb5f32be52fe25b78441327a2e7c
-# first bad commit: [ff474a78cef5cb5f32be52fe25b78441327a2e7c] uprobe: Add uretprobe syscall to speed up return probe
+Sure one could argue that some of these calls are at places where some
+other scheduling class dropped already one, but that's wrong because
+accumulating bad code just creates more technical debt.
+
+If cleaned up then the already existing hacks vanish into proper class
+callbacks, which improves the existing code and allows to drop in sched
+ext more naturally at the end.
+
+One example I very explicitely mentioned back then is the dance around
+fork().  It took me at least an hour last year to grok the convoluted
+logic and it did not get any faster when I stared at it today again.
+
+fork()
+  sched_fork()
+    scx_pre_fork()
+      percpu_down_rwsem(&scx_fork_rwsem);
+
+    if (dl_prio(p)) {
+    	ret =3D -EINVAL;
+        goto cancel; // required to release the semaphore
+    }
+
+  sched_cgroup_fork()
+    return scx_fork();
+
+  sched_post_fork()
+    scx_post_fork()
+      percpu_up_rwsem(&scx_fork_rwsem);
+
+Plus the extra scx_cancel_fork() which releases the scx_fork_rwsem in
+case that any call after sched_fork() fails.
+
+My head still spins from deciphering this once more.
+
+What has scx_fork() to do with sched_cgroup_fork()? It's completely
+non-obvious and the lack of comments does not help either. The changelog is
+handwaving at best.
+
+scx_pre_fork() takes the semaphore unconditionally independent of the
+scheduler class of the forking task and even in the case that no BPF
+scheduler is loaded or active. Why? Neither the changelog nor the lack
+of comments give any hint, which is also not a new complaint from me.
+
+A proper cleanup would just eliminate the unconditional down(), the
+dl_prio() cancel logic plus the whole if/elseif dance including the
+#ifdef SCHED_EXT. It's not rocket science to come up with the obvious:
+
+       ret =3D p->sched_class->pre_fork();
+       if (ret)
+       		return ret;
+
+That's just proper engineering which is what some famous programmer
+tells people to do for a very long time:
+
+ "I=E2=80=99m a huge proponent of designing your code around the data, rath=
+er
+  than the other way around, ... I will, in fact, claim that the
+  difference between a bad programmer and a good one is whether he
+  considers his code or his data structures more important. Bad
+  programmers worry about the code. Good programmers worry about data
+  structures and their relationships."
+
+And that's not only proper engineering it's also the other approach the
+same famous programmer tells people to do:
+
+ "I want them to lull me into a safe and cozy world where the stuff they
+  are pushing is actually useful to mainline people _first_."
+
+IOW, give me something which is useful to me _first_ so that you can add
+your particular flavor of crazy on top without bothering me.
+
+You obviously can complain now about the crazy people who actually listen
+to what that famous programmer is saying. :)
+
+But the above is not only true for that famous programmer personally,
+that's equally true for any maintainer who has to deal with the result of a
+submission for a long time.
+
+I'm still not seeing the general mainline people benefit of all this, so I
+have to trust you that there is one which is beyond my comprehension
+skills.
+
+That said, I'm more than wary about the hidden locking scheme of that
+percpu semaphore in the fork path, but that's a different design
+question to be debated on the way.
+
+There are some other technical details which need to be sorted including
+the interaction with other pending code, but that's something which can
+be solved as we move forward.
+
+Ideally this can be shaped in a way so that the scheduler becomes closer to
+being modular, which would be the real useful thing for research and not
+just the advertisment version of it.
+
+But wait a moment, that can't happen as pluggable schedulers have been
+rejected in the past:
+
+  "I absolutely *detest* pluggable schedulers."
+
+Guess which famous programmer said that.
+
+> And scx_next_task_picked() isn't pretty - as far as I understand, it's
+> because there's only a "class X picked" callback ("pick_next_task()"),
+> and no way to tell other classes they weren't picked.
+> Could things like that next_active_class() perhaps be done more
+> prettily? I'm sure.
+
+Well spotted.
+
+> But I get the very strong feeling that people wanted to limit the
+> amount of changes they made to the core scheduler code.
+
+Which is exactly the point. If the existing code does not let your new
+feature fall into place, then refactor it so it does. Working around the
+short comings at some other place is patently wrong and that's not
+something new either.
+
+Requesting such refactoring is not an undue burden because the people who
+maintain the code will have to deal with the result.
+
+Unwrapping this stuff after the fact is the worst thing to do and I
+definitely have an expert opinion on this.
+
+None of this is rocket science and could have been done long ago even
+without me holding hands.
+
+>> I clearly offered you to try to resolve this amicably within a
+>> reasonable time frame.
+>>
+>> How exaclty is that equivalent to "continue to do nothing" ?
+>
+> So if we actually *can* resolve this amicably in three months, then
+> that sounds worth it.
+>
+> But my reaction is "what changed"? Nothing has become more amicable in
+> the last nine months. What makes the next three months special?
+
+The difference is:
+
+  1) Peter is back and the capacity problem is less bad than it was
+
+  2) As I explained before I unfortunately did not have cycles in the
+     past _seven_ months, but I can make the cycles available now and
+     drive this forward. That's possible when both sides are willing to
+     cooperate. I'm sure there is enough incentive to do so.
+
+  3) I'm going to focus on the integration and interaction aspect and
+     grudgingly leave the cgroup trainwreck out of it.
+
+     If someone from the crowd who caused it actually had the courtesy
+     to mop this up, that would be a great signal for everyone and it
+     can be done in parallel.
+
+     Not that I'm holding my breath, but I'm still a hopeless optimist.
+
+If you don't trust me on that, then we have a very different problem.
+
+Thanks,
+
+        Thomas
 
