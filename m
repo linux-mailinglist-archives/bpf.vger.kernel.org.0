@@ -1,74 +1,96 @@
-Return-Path: <bpf+bounces-32561-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-32562-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DDDC090FCF5
-	for <lists+bpf@lfdr.de>; Thu, 20 Jun 2024 08:46:17 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 644E390FE71
+	for <lists+bpf@lfdr.de>; Thu, 20 Jun 2024 10:15:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E2D5C1C21108
-	for <lists+bpf@lfdr.de>; Thu, 20 Jun 2024 06:46:16 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D9B171F240D5
+	for <lists+bpf@lfdr.de>; Thu, 20 Jun 2024 08:15:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D5582E631;
-	Thu, 20 Jun 2024 06:46:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0CA4A17C7C6;
+	Thu, 20 Jun 2024 08:15:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iHQfwAtX"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="eQhJKfA0";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="qzwhm4Ss";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="eQhJKfA0";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="qzwhm4Ss"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f175.google.com (mail-pl1-f175.google.com [209.85.214.175])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 927EC12E78
-	for <bpf@vger.kernel.org>; Thu, 20 Jun 2024 06:46:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 77BE817C20E;
+	Thu, 20 Jun 2024 08:15:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718865971; cv=none; b=F11Ebz61ahIeaDWgVdUcXXskO2WjKFw39Rh/Buml7EBt0DCES3C0+DolP0ytYKkhwB9ODdQhAIK/AZXDeSq0JMqqTeVLUlLFKaclVWJMexLEAeVU6isYpPwjjAchQTA26yKrx4wt24n8BCxNUNl17jlaW0KInoIZZnOYyrFB07g=
+	t=1718871327; cv=none; b=UcXZUvNH2xyya9Q3jxbK2oDcaV5Twsoyvy/QENuodHdK+RhzDCSODz+U/gPiM0d5YSnE05APYi/jT67m8OEnH3LGRoxuO+tQc7wz3iwpVpn4rrFube4oL+MQ+zAB9QqyuRga8yiZJVHoigNgqJIi7ngQU+9yyblo4Ey0KVjKLuk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718865971; c=relaxed/simple;
-	bh=J837tzLcJ1unXMVTuB2/uUPhf0lcd9vlSW9MaX8/xmA=;
+	s=arc-20240116; t=1718871327; c=relaxed/simple;
+	bh=QoBdvFlgD+GxqQfKbtckHEldF3KPTKZGhO7MM8rrU2w=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=uS2PirZxxBfr8SWEQBSY63XRgJYY4aJtxTA1N2kyYqubNPd3dDDY2mZX1ZgS6j9MoLOXf2WRrb2Zx8mKPGvPmpY73f6aIzJuun7mL4UZWOftf6L1m78aKfSoDAF2qGXmAgrkCzdx2G8meg9MHq4hYQNDK77GLzX/xJynYH3Sdzs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=iHQfwAtX; arc=none smtp.client-ip=209.85.214.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f175.google.com with SMTP id d9443c01a7336-1f99fe4dc5aso4573745ad.0
-        for <bpf@vger.kernel.org>; Wed, 19 Jun 2024 23:46:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1718865969; x=1719470769; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=zxKJcl2fG81OTHm6RuefVx/DQDrIocy5zsAucNjnW/Y=;
-        b=iHQfwAtX7IsiMxRx9uGJLFl9WYN/TVPukZgTUv2hUuRpyz2Ehgi/PVtBt9CnKJKT4O
-         7tbgHW6gB/o2mOMdxNPJBlS4vNC4kV3Juf1CpxJqDMHITBJQrXGARKOkKysYF8uwH4Bd
-         ySBYhKPBr5RcOcGHYljNIpaGT7IW+DTbTjc7Gp988WbQaeC234kSt3+hd7R8VNsW2PX6
-         GcxzdKjc5ngA+tnJgsGaNRk6dqJ1UUJ5JFaO3ufF5XgfFg/XFsswChopLnBROb3jOntm
-         KLhXJKpOF5fO8W8haZNO0epo85wXIyRxEg/TumCx0Gcifrstoq9awcM7dxr5yzLWerLt
-         Ug7g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1718865969; x=1719470769;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=zxKJcl2fG81OTHm6RuefVx/DQDrIocy5zsAucNjnW/Y=;
-        b=F+Hk5xB0I7YecAN/psiLhDDj0w6rDxLDZNhhAYn6gn7CRxBBb0ErANmUav7WPqvjn/
-         TxE2P1GPwMMX0tCO3bU30QA7lA2bYO40qTsDvAuxHjUgYGlyWpqn/Bsor8CA+DFy9p9S
-         y6pBxpdHpelp6Cyc3Y4cAqxRs7v2Brqkc6DrSWgTmoCopMm5IkBykYETFCmLz3kANb8i
-         OT+N6q3mSwIAEGe3mlF2jMnhVNbsfVJ4D6uIdtXlpJ5I9qsqL30lfc5OpveBTYdYqOwm
-         02Jk1Pb1PREkk6n9DUpg8zXoN7LHdhbGCnx9t4O+Q437ruAEr7t36beUHgr/ZXBphcSy
-         wrIg==
-X-Forwarded-Encrypted: i=1; AJvYcCV7F52v9JIBy9lR57gfezbv407LByMPDRcKB+O2x6VfznNsSlNOa6EhapaHtYTPl4spFbbhbZU22DOxu2e4P8s9jiCH
-X-Gm-Message-State: AOJu0Yz9zF5yH/kiThqfsBqu1VHtulfZCj9KXC7Ig897FUousyuUhQXY
-	el3nbKpniyTwyeXH3JJwd5dewkySFRFQ13ohlGbDQIBSW3UyDw2t
-X-Google-Smtp-Source: AGHT+IFySxCgwbmAFY/aMaC6bQLe/bNKfeCgLXmo0oszCZcFTyDxkgeCmsIXP7hY3gwIhtqc5i0Tww==
-X-Received: by 2002:a17:902:d50e:b0:1f6:7f05:8c0e with SMTP id d9443c01a7336-1f9aa3b3954mr51863385ad.2.1718865968781;
-        Wed, 19 Jun 2024 23:46:08 -0700 (PDT)
-Received: from [10.22.68.7] ([122.11.166.8])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-1f855f40f38sm128827585ad.277.2024.06.19.23.46.04
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 19 Jun 2024 23:46:08 -0700 (PDT)
-Message-ID: <cfab6597-2c2c-4b76-853d-1b0dc13b8e9a@gmail.com>
-Date: Thu, 20 Jun 2024 14:46:02 +0800
+	 In-Reply-To:Content-Type; b=AzeSi4BFY/DkMEQTjU8vrTTEDd6oB644fHtrLVVHfxoROB5YlL+2ss1I/tOa+Xtm7eKmddYh0NtBSXZggENszO2hq4ASrUx9H+SFdoZPksJ7hHKXe44+FPY645IQkEMszu+Ks8zS+sLWOl564oDDBcDngooSiSdTUdQmr8BsQ9s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=eQhJKfA0; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=qzwhm4Ss; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=eQhJKfA0; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=qzwhm4Ss; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 7473421A82;
+	Thu, 20 Jun 2024 08:15:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1718871323; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=Fvlm3C5vCJy0iEYaOW+YAnAFu3fK55puTAJQWNbdkm8=;
+	b=eQhJKfA07fvgSF2znsRBUXYjn6epcJCX/c1rMfIPmrVVEmCNk/8ysqfzX3alyoirCZciLd
+	1XbUodF49yiurilr6AAci7zKf0vseDpg63ioux95o59Gb0Gy/IYTgwekG23XaCmcnqxiAy
+	sXvZQHWYmlPK/dcnq5dzlLRerauiDIU=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1718871323;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=Fvlm3C5vCJy0iEYaOW+YAnAFu3fK55puTAJQWNbdkm8=;
+	b=qzwhm4SsbhIOIRVqjyQtt07xqic8p3Z6buw21YU+1BxhxQSwiW+8SBdbyRqFhMy75Km5r+
+	KmZ1rFxhzQ2j8QDg==
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=eQhJKfA0;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=qzwhm4Ss
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1718871323; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=Fvlm3C5vCJy0iEYaOW+YAnAFu3fK55puTAJQWNbdkm8=;
+	b=eQhJKfA07fvgSF2znsRBUXYjn6epcJCX/c1rMfIPmrVVEmCNk/8ysqfzX3alyoirCZciLd
+	1XbUodF49yiurilr6AAci7zKf0vseDpg63ioux95o59Gb0Gy/IYTgwekG23XaCmcnqxiAy
+	sXvZQHWYmlPK/dcnq5dzlLRerauiDIU=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1718871323;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=Fvlm3C5vCJy0iEYaOW+YAnAFu3fK55puTAJQWNbdkm8=;
+	b=qzwhm4SsbhIOIRVqjyQtt07xqic8p3Z6buw21YU+1BxhxQSwiW+8SBdbyRqFhMy75Km5r+
+	KmZ1rFxhzQ2j8QDg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 51A4213AC1;
+	Thu, 20 Jun 2024 08:15:23 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id f06QExvlc2aMXQAAD6G6ig
+	(envelope-from <vbabka@suse.cz>); Thu, 20 Jun 2024 08:15:23 +0000
+Message-ID: <08b38709-16f1-44d5-9808-b135e290d2b7@suse.cz>
+Date: Thu, 20 Jun 2024 10:15:23 +0200
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -76,116 +98,157 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH bpf] bpf: Fix null pointer dereference in
- resolve_prog_type() for BPF_PROG_TYPE_EXT
-To: Tengda Wu <wutengda@huaweicloud.com>, bpf@vger.kernel.org
-Cc: Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>,
- John Fastabend <john.fastabend@gmail.com>,
- Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau
- <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>,
- Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>,
- KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
- Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>
-References: <20240620060701.1465291-1-wutengda@huaweicloud.com>
+Subject: Re: [PATCH v2 5/7] bpf: do not create bpf_non_sleepable_error_inject
+ list when unnecessary
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Akinobu Mita <akinobu.mita@gmail.com>, Christoph Lameter <cl@linux.com>,
+ David Rientjes <rientjes@google.com>, Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
+ "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
+ Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
+ "David S. Miller" <davem@davemloft.net>,
+ Masami Hiramatsu <mhiramat@kernel.org>, Steven Rostedt
+ <rostedt@goodmis.org>, Mark Rutland <mark.rutland@arm.com>,
+ Jiri Olsa <jolsa@kernel.org>, Roman Gushchin <roman.gushchin@linux.dev>,
+ Hyeonggon Yoo <42.hyeyoo@gmail.com>, LKML <linux-kernel@vger.kernel.org>,
+ linux-mm <linux-mm@kvack.org>, bpf <bpf@vger.kernel.org>,
+ linux-trace-kernel <linux-trace-kernel@vger.kernel.org>
+References: <20240620-fault-injection-statickeys-v2-0-e23947d3d84b@suse.cz>
+ <20240620-fault-injection-statickeys-v2-5-e23947d3d84b@suse.cz>
+ <CAADnVQLKRAa5_-JUEZwwbrbySDekVdSgEp0UqgqbVfqsgfYjQg@mail.gmail.com>
 Content-Language: en-US
-From: Leon Hwang <hffilwlqm@gmail.com>
-In-Reply-To: <20240620060701.1465291-1-wutengda@huaweicloud.com>
+From: Vlastimil Babka <vbabka@suse.cz>
+Autocrypt: addr=vbabka@suse.cz; keydata=
+ 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
+ EP+ylKVEKb0Q2A==
+In-Reply-To: <CAADnVQLKRAa5_-JUEZwwbrbySDekVdSgEp0UqgqbVfqsgfYjQg@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-Spamd-Result: default: False [-3.00 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	SUSPICIOUS_RECIPS(1.50)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	XM_UA_NO_VERSION(0.01)[];
+	MX_GOOD(-0.01)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	TO_DN_ALL(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	FREEMAIL_TO(0.00)[gmail.com];
+	MIME_TRACE(0.00)[0:+];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	ARC_NA(0.00)[];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	FREEMAIL_CC(0.00)[gmail.com,linux.com,google.com,kernel.org,iogearbox.net,linux.ibm.com,intel.com,davemloft.net,goodmis.org,arm.com,linux.dev,vger.kernel.org,kvack.org];
+	RCVD_TLS_ALL(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[20];
+	DNSWL_BLOCKED(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	TAGGED_RCPT(0.00)[];
+	MID_RHS_MATCH_FROM(0.00)[];
+	DKIM_TRACE(0.00)[suse.cz:+];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns]
+X-Rspamd-Action: no action
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Rspamd-Queue-Id: 7473421A82
+X-Spam-Flag: NO
+X-Spam-Score: -3.00
+X-Spam-Level: 
 
-
-
-On 20/6/24 14:07, Tengda Wu wrote:
-> When loading a EXT program without specifying `attr->attach_prog_fd`,
-> the `prog->aux->dst_prog` will be null. At this time, calling
-> resolve_prog_type() anywhere will result in a null pointer dereference.
-
-Interesting, same NULL pointer dereference causes another issue[0].
-
-As for my case, when resolve_prog_type(), it has to use
-prog->aux->saved_dst_prog_type instead of prog->aux->dst_prog->type for
-EXT program, in order to avoid NULL pointer dereference.
-
-[0] https://lore.kernel.org/bpf/20240602122421.50892-2-hffilwlqm@gmail.com/
-
-Thanks,
-Leon
-
+On 6/20/24 3:18 AM, Alexei Starovoitov wrote:
+> On Wed, Jun 19, 2024 at 3:49 PM Vlastimil Babka <vbabka@suse.cz> wrote:
+>>
+>> When CONFIG_FUNCTION_ERROR_INJECTION is disabled,
+>> within_error_injection_list() will return false for any address and the
+>> result of check_non_sleepable_error_inject() denylist is thus redundant.
+>> The bpf_non_sleepable_error_inject list thus does not need to be
+>> constructed at all, so #ifdef it out.
+>>
+>> This will allow to inline functions on the list when
+>> CONFIG_FUNCTION_ERROR_INJECTION is disabled as there will be no BTF_ID()
+>> reference for them.
+>>
+>> Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
+>> ---
+>>  kernel/bpf/verifier.c | 15 +++++++++++++++
+>>  1 file changed, 15 insertions(+)
+>>
+>> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+>> index 77da1f438bec..5cd93de37d68 100644
+>> --- a/kernel/bpf/verifier.c
+>> +++ b/kernel/bpf/verifier.c
+>> @@ -21044,6 +21044,8 @@ static int check_attach_modify_return(unsigned long addr, const char *func_name)
+>>         return -EINVAL;
+>>  }
+>>
+>> +#ifdef CONFIG_FUNCTION_ERROR_INJECTION
+>> +
+>>  /* list of non-sleepable functions that are otherwise on
+>>   * ALLOW_ERROR_INJECTION list
+>>   */
+>> @@ -21061,6 +21063,19 @@ static int check_non_sleepable_error_inject(u32 btf_id)
+>>         return btf_id_set_contains(&btf_non_sleepable_error_inject, btf_id);
+>>  }
+>>
+>> +#else /* CONFIG_FUNCTION_ERROR_INJECTION */
+>> +
+>> +/*
+>> + * Pretend the denylist is empty, within_error_injection_list() will return
+>> + * false anyway.
+>> + */
+>> +static int check_non_sleepable_error_inject(u32 btf_id)
+>> +{
+>> +       return 0;
+>> +}
+>> +
+>> +#endif
 > 
-> Example stack trace:
-> 
-> [    8.107863] Unable to handle kernel NULL pointer dereference at virtual address 0000000000000004
-> [    8.108262] Mem abort info:
-> [    8.108384]   ESR = 0x0000000096000004
-> [    8.108547]   EC = 0x25: DABT (current EL), IL = 32 bits
-> [    8.108722]   SET = 0, FnV = 0
-> [    8.108827]   EA = 0, S1PTW = 0
-> [    8.108939]   FSC = 0x04: level 0 translation fault
-> [    8.109102] Data abort info:
-> [    8.109203]   ISV = 0, ISS = 0x00000004, ISS2 = 0x00000000
-> [    8.109399]   CM = 0, WnR = 0, TnD = 0, TagAccess = 0
-> [    8.109614]   GCS = 0, Overlay = 0, DirtyBit = 0, Xs = 0
-> [    8.109836] user pgtable: 4k pages, 48-bit VAs, pgdp=0000000101354000
-> [    8.110011] [0000000000000004] pgd=0000000000000000, p4d=0000000000000000
-> [    8.112624] Internal error: Oops: 0000000096000004 [#1] PREEMPT SMP
-> [    8.112783] Modules linked in:
-> [    8.113120] CPU: 0 PID: 99 Comm: may_access_dire Not tainted 6.10.0-rc3-next-20240613-dirty #1
-> [    8.113230] Hardware name: linux,dummy-virt (DT)
-> [    8.113390] pstate: 60000005 (nZCv daif -PAN -UAO -TCO -DIT -SSBS BTYPE=--)
-> [    8.113429] pc : may_access_direct_pkt_data+0x24/0xa0
-> [    8.113746] lr : add_subprog_and_kfunc+0x634/0x8e8
-> [    8.113798] sp : ffff80008283b9f0
-> [    8.113813] x29: ffff80008283b9f0 x28: ffff800082795048 x27: 0000000000000001
-> [    8.113881] x26: ffff0000c0bb2600 x25: 0000000000000000 x24: 0000000000000000
-> [    8.113897] x23: ffff0000c1134000 x22: 000000000001864f x21: ffff0000c1138000
-> [    8.113912] x20: 0000000000000001 x19: ffff0000c12b8000 x18: ffffffffffffffff
-> [    8.113929] x17: 0000000000000000 x16: 0000000000000000 x15: 0720072007200720
-> [    8.113944] x14: 0720072007200720 x13: 0720072007200720 x12: 0720072007200720
-> [    8.113958] x11: 0720072007200720 x10: 0000000000f9fca4 x9 : ffff80008021f4e4
-> [    8.113991] x8 : 0101010101010101 x7 : 746f72705f6d656d x6 : 000000001e0e0f5f
-> [    8.114006] x5 : 000000000001864f x4 : ffff0000c12b8000 x3 : 000000000000001c
-> [    8.114020] x2 : 0000000000000002 x1 : 0000000000000000 x0 : 0000000000000000
-> [    8.114126] Call trace:
-> [    8.114159]  may_access_direct_pkt_data+0x24/0xa0
-> [    8.114202]  bpf_check+0x3bc/0x28c0
-> [    8.114214]  bpf_prog_load+0x658/0xa58
-> [    8.114227]  __sys_bpf+0xc50/0x2250
-> [    8.114240]  __arm64_sys_bpf+0x28/0x40
-> [    8.114254]  invoke_syscall.constprop.0+0x54/0xf0
-> [    8.114273]  do_el0_svc+0x4c/0xd8
-> [    8.114289]  el0_svc+0x3c/0x140
-> [    8.114305]  el0t_64_sync_handler+0x134/0x150
-> [    8.114331]  el0t_64_sync+0x168/0x170
-> [    8.114477] Code: 7100707f 54000081 f9401c00 f9403800 (b9400403)
-> [    8.118672] ---[ end trace 0000000000000000 ]---
-> 
-> Fix this by adding dst_prog non-empty check in BPF_PROG_TYPE_EXT case
-> when calling bpf_prog_load().
-> 
-> Fixes: 4a9c7bbe2ed4 ("bpf: Resolve to prog->aux->dst_prog->type only for BPF_PROG_TYPE_EXT")
-> Signed-off-by: Tengda Wu <wutengda@huaweicloud.com>
-> Cc: stable@vger.kernel.org # v5.18+
-> ---
->  kernel/bpf/syscall.c | 5 ++++-
->  1 file changed, 4 insertions(+), 1 deletion(-)
-> 
-> diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-> index f45ed6adc092..4490f8ccf006 100644
-> --- a/kernel/bpf/syscall.c
-> +++ b/kernel/bpf/syscall.c
-> @@ -2632,9 +2632,12 @@ bpf_prog_load_check_attach(enum bpf_prog_type prog_type,
->  			return 0;
->  		return -EINVAL;
->  	case BPF_PROG_TYPE_SYSCALL:
-> -	case BPF_PROG_TYPE_EXT:
->  		if (expected_attach_type)
->  			return -EINVAL;
-> +		return 0;
-> +	case BPF_PROG_TYPE_EXT:
-> +		if (expected_attach_type || !dst_prog)
-> +			return -EINVAL;
->  		fallthrough;
->  	default:
->  		return 0;
+> The comment reads like this is an optimization, but it's a mandatory
+> ifdef since should_failslab() might not be found by resolve_btfid
+> during the build.
+> Please make it clear in the comment.
+
+The comment just tried to explain why the return value is 0 and not 1 (which
+would be also somewhat logical) but ok, will make it more clear.
 
