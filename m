@@ -1,70 +1,69 @@
-Return-Path: <bpf+bounces-32732-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-32733-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id DBB7F912941
-	for <lists+bpf@lfdr.de>; Fri, 21 Jun 2024 17:17:37 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 61B98912A47
+	for <lists+bpf@lfdr.de>; Fri, 21 Jun 2024 17:34:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5D4F51F22EE3
-	for <lists+bpf@lfdr.de>; Fri, 21 Jun 2024 15:17:37 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1D3EE28659F
+	for <lists+bpf@lfdr.de>; Fri, 21 Jun 2024 15:34:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B5C2D7CF39;
-	Fri, 21 Jun 2024 15:17:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E29181AD1;
+	Fri, 21 Jun 2024 15:34:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b="XUzZP5xl"
+	dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b="dMR8juBi"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f52.google.com (mail-ej1-f52.google.com [209.85.218.52])
+Received: from mail-ed1-f45.google.com (mail-ed1-f45.google.com [209.85.208.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 952696EB73
-	for <bpf@vger.kernel.org>; Fri, 21 Jun 2024 15:17:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 16DB678C84
+	for <bpf@vger.kernel.org>; Fri, 21 Jun 2024 15:34:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718983037; cv=none; b=k17gBdjLGF/ELSCDcTqICo//2im/XCvZTQWNzgxw8Vrj2Mkn7Ha5al4ZoYVlG5LGLoYXQWOd+TENeGtPUEN77pFDKq9kWzmnnfewQFuEn2lwvwRvwan+mhYX5zXK3oo5R3oCdMkDkgsWgjwz+xt76/BKfFIZAFWzWbqPxEGJWfg=
+	t=1718984062; cv=none; b=P/z6JPcmJ52sYDmocGMBfrRPuDFdAaD+uDqqVf4IzfweJsLBkTW0n17+Z+wMZeJSKQTo8G0cDKfZvBGPkiEjdMa+GDCupDB2BXIgc+AWnrN6P4GSCgsEYbVOToNVD7511xxWS+032DAKGLs52+p4o1QY405dNuAddHki4OGUaZQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718983037; c=relaxed/simple;
-	bh=Q0K8wveLDtQ5rqIrCYq9H6yuQqmRsmPrm11leJJmngg=;
+	s=arc-20240116; t=1718984062; c=relaxed/simple;
+	bh=7BVrpORkcBqP2dT5WJ8y/6uqH33UciLP1pUJUesNWxM=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Mo5AXpUT3e47C3CblUAPkVUIApDgP35ER3dnktx6mgGTQ+7Nix6oCs+JcnlkS57NlrT0JG0iUpNgoYuVQleZZJd/WPiVM9o4VuIZ6QH1Qek8pAOqpa6auaFxqSjB7LBvGXIqerLkW3d6pbeZCzNekSmrypk8tTzCVQLptA6aU/4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com; spf=pass smtp.mailfrom=cloudflare.com; dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b=XUzZP5xl; arc=none smtp.client-ip=209.85.218.52
+	 To:Cc:Content-Type; b=N1x1m4dLw3K18gzUEgZhcPvLK/HGflTnY20x01zvHRW/X9LtFo6+svokiL/vtP5EtV27BQlZC/HAc+NbhlRzhUOPggtj64D4ZBJSIzfEimZxE44iFqOzF7Lp51puOyjdo8N8dJpRuEOpVwxFM7X3xh6YxmDTSgUCz8SC7aZxq+8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com; spf=pass smtp.mailfrom=cloudflare.com; dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b=dMR8juBi; arc=none smtp.client-ip=209.85.208.45
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cloudflare.com
-Received: by mail-ej1-f52.google.com with SMTP id a640c23a62f3a-a63359aaacaso315925566b.1
-        for <bpf@vger.kernel.org>; Fri, 21 Jun 2024 08:17:15 -0700 (PDT)
+Received: by mail-ed1-f45.google.com with SMTP id 4fb4d7f45d1cf-57d26a4ee65so1913067a12.2
+        for <bpf@vger.kernel.org>; Fri, 21 Jun 2024 08:34:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google09082023; t=1718983034; x=1719587834; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=eVdWsH/CebZrv81hSvkbbEEBVG7k1A0KP1jmRZJ7hOw=;
-        b=XUzZP5xl+VveWv9uFbsZWkuJOR+KtaLgLdZNjTofo+jiS6TlH1OStVc+1ANAAK2Fmx
-         JrQCv9HD74WWCgwAXjYPLurXCJgihEPpuIdffHWFME9QiYYCIeSvMPAr4TgppgIvTnvi
-         TmwVF+5tLTyyvkNoDHPb8vnCoVXE0G0he1qjlS3xyqcbuFJyfTldmcrcgLJlU51h0TQi
-         Ihl2MNgcNawhHf4JfcDeXT3qyrEK+/HsJJdjKo55pKBqWNV3AZhRh1gUXMRuaSs6DuP8
-         Wtdt2BvKpB9wjrGGRh3wuOb0kudSQPNepWNNIyOOJZ8a61p3K7m84S4OdN17If896J6J
-         5cQg==
+        d=cloudflare.com; s=google09082023; t=1718984059; x=1719588859; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=DA7SWPRLXcST+Xc+dDz/AkjKFIf/1VqV1Qjkx7u2MTI=;
+        b=dMR8juBiATC8rDlAot0OgQYlyKpeh49SeOG+cmeKaYxmMICVgq9IkfjcLousij5J0q
+         2Ub4KuRrQB5SU80050jn36uR6SOaJ+N67g88PDcFKodTcEIIW7RR/tbSO9sbhdrfqDK+
+         NS+XPRPeofoY2cSkuYdujogIcVN+IsuuAlqOPe3dTLXo7qp9mI0OgcO1uClvRc/7M5vq
+         o6GBrLXDivZtuUQncavf2Zqc4seASGaj+uogv7OCnIPfVr/wt3szpqkcGbTg1sFBlZVO
+         KfoZQGA0VvmNZzywtfbbN2+y9ihhM2MrMSpPy3pB/nqLVeehOzoHp6oAN2+uEFqE1Jwf
+         OCbA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1718983034; x=1719587834;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=eVdWsH/CebZrv81hSvkbbEEBVG7k1A0KP1jmRZJ7hOw=;
-        b=th7cJxnQ3t2rZaM5kJ1/WQyCenrnsWHvQZZhBaqT4TOG0donyL2FZVtIv8oFQLgnzF
-         rnWPDMaezn2mXwS8sxDNxqFhOD4mi4sMg3ZZOscHZcxgWAMno7hOGPYh17qPXKUQL7Le
-         ZYgeSWnRpiocDfRUtrr0RTPaYMOWP7ksya/b42ztAGJpVFuwyfPuPdnNKlua2NhAxzzy
-         /R0+aHRXQK4lswOR7OWTSUOqhKbbX1w6CW5BsxCjVxOAYRjucpiTn3vr25FVEKEcv9at
-         yxqGrw6CMAdmsEPCtUafjdfE3mpvVz8cqYszv8uZ3z6cQkffe2nEZ5GxH8LzaLgOjBAh
-         46CQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUvqexjDQizdXao5XOtAdqikbIbfo3LYW20RW+eFyKIfXzKfJEE/l/xPWikOhqSkm4tIl8/NlO/ULKKYWCCHpNvcZpO
-X-Gm-Message-State: AOJu0YxWDdYRsPS8t7jWRTGxzTjynp2SxdrSvcdWnPQum2AOIjHEYxPa
-	KCQOImsVQ8h0XFfc6ODJYOxEOz88PGQdKI50R4Oinsolf/ayw0uZW3+kqmIzTJ5INwq6PSEGJjS
-	8JkzHXCDCYQne3n83ruooBHY0CWx5SodicEugog==
-X-Google-Smtp-Source: AGHT+IHtoStFABY+6/Ct10yo+DluObSiNmm2iazrXX4v4aPFp4/k1VH8xzcmISmR1LM13gr6PkVkt+hHTcQEdX7ujLg=
-X-Received: by 2002:a17:906:af0c:b0:a6f:1025:8dd6 with SMTP id
- a640c23a62f3a-a6fab7d0484mr549596266b.71.1718983033870; Fri, 21 Jun 2024
- 08:17:13 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1718984059; x=1719588859;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=DA7SWPRLXcST+Xc+dDz/AkjKFIf/1VqV1Qjkx7u2MTI=;
+        b=DAsem1+WyCEg04apWhqcsEVOfDUNI+ZvjE9hszTb/YX++RjbBMjSWkPtHTHOFvl1OM
+         E+ws/nzj/XlIahLZl3cPEkLvHSC4FXnaKnUxRleexkYquHQ1kvgy6d6VAOe0m1cGeZb5
+         PQN26UknfiQa76lNdyHBHrzNb3qe2ovnIJeMUk6W3SHpAji24M+D2q6hwI2QMUdGgXKS
+         54yRPpqIMYtJrotrQoBUJFFGmCBIagSi1/JIRrjMMLcxjFea1pSsyoLdggTDsXZ+gDFE
+         XwaY3R7PKBWYas1laalSRT8PfWVq+xXhovj4yy/q5KTuuFwshcaljCHJZF7xxZYyWBUL
+         0ySQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXiyp11Fwmhz/U/VHKL8/DbR/thEJT8epMl2GoI/jT22/Cn7Hwo3q8A7AIUAMp+XlefOhcG2Zutt12wXp/Klx2Xv1b4
+X-Gm-Message-State: AOJu0Yz4SaodEDlZONtANPvkKR2XeHeXx1NwHp77pOjJ7XG3cAfXf+hw
+	Rn0UYNWlSHVn8V2IsJeWgDbBNTOV+HOmc5W4oEnbLJPEUY8GDuLr2Xp9ZuxtlKqRdVD88nI4YhS
+	vPOqY1BiKPYMVVwmPEC2gna8+fZFNh+S5+/3+Cw==
+X-Google-Smtp-Source: AGHT+IFelAbcXvIcTJONWEgNkYFPnbf9VtHPK2SF57Y6Pp8Jls6KOYI5Jfb52Fhrp461oy2MjvD2G93eYtYsdGMJHNY=
+X-Received: by 2002:a17:907:d043:b0:a6f:96ac:3436 with SMTP id
+ a640c23a62f3a-a6fab602e81mr540464366b.11.1718984059371; Fri, 21 Jun 2024
+ 08:34:19 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -72,15 +71,15 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 References: <cover.1718919473.git.yan@cloudflare.com> <b8c183a24285c2ab30c51622f4f9eff8f7a4752f.1718919473.git.yan@cloudflare.com>
- <2081388d3e05e1e6324d81524c6496006058bbb9.camel@redhat.com>
-In-Reply-To: <2081388d3e05e1e6324d81524c6496006058bbb9.camel@redhat.com>
+ <66756ed3f2192_2e64f929491@willemb.c.googlers.com.notmuch>
+In-Reply-To: <66756ed3f2192_2e64f929491@willemb.c.googlers.com.notmuch>
 From: Yan Zhai <yan@cloudflare.com>
-Date: Fri, 21 Jun 2024 10:17:02 -0500
-Message-ID: <CAO3-Pbo_gNVP4qcEGNJe-RmPBy7CgFZab+dwwv2MyFiJRg9_fA@mail.gmail.com>
+Date: Fri, 21 Jun 2024 10:34:08 -0500
+Message-ID: <CAO3-Pbp8frVM-i6NKkmyNOFrqqW=g58rK8m4vfdWbiSHHdQBsg@mail.gmail.com>
 Subject: Re: [RFC net-next 1/9] skb: introduce gro_disabled bit
-To: Paolo Abeni <pabeni@redhat.com>
+To: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
 Cc: netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>, 
-	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, 
+	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
 	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
 	Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, 
 	Willem de Bruijn <willemb@google.com>, Simon Horman <horms@kernel.org>, Florian Westphal <fw@strlen.de>, 
@@ -92,77 +91,40 @@ Cc: netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
 	Lorenzo Bianconi <lorenzo@kernel.org>, =?UTF-8?Q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>, 
 	linux-kernel@vger.kernel.org, bpf@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Fri, Jun 21, 2024 at 4:57=E2=80=AFAM Paolo Abeni <pabeni@redhat.com> wro=
-te:
+> > -static inline bool netif_elide_gro(const struct net_device *dev)
+> > +static inline bool netif_elide_gro(const struct sk_buff *skb)
+> >  {
+> > -     if (!(dev->features & NETIF_F_GRO) || dev->xdp_prog)
+> > +     if (!(skb->dev->features & NETIF_F_GRO) || skb->dev->xdp_prog)
+> >               return true;
+> > +
+> > +#ifdef CONFIG_SKB_GRO_CONTROL
+> > +     return skb->gro_disabled;
+> > +#else
+> >       return false;
+> > +#endif
 >
-> On Thu, 2024-06-20 at 15:19 -0700, Yan Zhai wrote:
-> > Software GRO is currently controlled by a single switch, i.e.
-> >
-> >   ethtool -K dev gro on|off
-> >
-> > However, this is not always desired. When GRO is enabled, even if the
-> > kernel cannot GRO certain traffic, it has to run through the GRO receiv=
-e
-> > handlers with no benefit.
-> >
-> > There are also scenarios that turning off GRO is a requirement. For
-> > example, our production environment has a scenario that a TC egress hoo=
-k
-> > may add multiple encapsulation headers to forwarded skbs for load
-> > balancing and isolation purpose. The encapsulation is implemented via
-> > BPF. But the problem arises then: there is no way to properly offload a
-> > double-encapsulated packet, since skb only has network_header and
-> > inner_network_header to track one layer of encapsulation, but not two.
-> > On the other hand, not all the traffic through this device needs double
-> > encapsulation. But we have to turn off GRO completely for any ingress
-> > device as a result.
+> Yet more branches in the hot path.
 >
-> Could you please add more details WRT this last statement? I'm unsure
-> if I understand your problem. My guess is as follow:
+> Compile time configurability does not help, as that will be
+> enabled by distros.
 >
-> Your device receive some traffic, GRO and forward it, and the multiple
-> encapsulation can happen on such forwarded traffic (since I can't find
-> almost none of the above your message is mainly a wild guess).
+> For a fairly niche use case. Where functionality of GRO already
+> works. So just a performance for a very rare case at the cost of a
+> regression in the common case. A small regression perhaps, but death
+> by a thousand cuts.
 >
-> Assuming I guessed correctly, I think you could solve the problem with
-> no kernel changes: redirect the to-be-tunneled traffic to some virtual
-> device and all TX offload on top of it and let the encap happen there.
->
-Let's say we have a netns to implement network functions like
-DoS/IDS/Load balancing for IP traffic. The netns has a single veth
-entrance/exit, and a bunch of ip tunnels, GRE/XFRM, to receive and
-tunnel traffic from customer's private sites. Some of such traffic
-could be encapsulated to reach services outside of the netns (but on
-the same server), for example, customers may also want to use our
-CDN/Caching functionality. The complication here is that we might have
-to further tunnel traffic to another data center, because the routing
-is asymmetric so we can receive client traffic from US but the
-response may come back to our EU data center, and in order to do
-layer4/layer7 service, we have to make sure those land on the same
-server.
 
-It is true that a device like a veth pair or even netkit could allow
-the kernel segment GRO packets for us. But this does not sound
-actually right in terms of design: if we know already some packet path
-should not be GRO-ed, can we enforce this rather than having to
-aggregate it then chop it down soon after? For our specific case
-though, it also becomes a headache for analytics and customer rules
-that rely on ingress device name, we probably need to pair each tunnel
-with such a virtual device. There could be hundreds of ipsec tunnels,
-and that seems to be a substantial overhead for both data path and
-control plane management.
+I share your concern on operating on this hotpath. Will a
+static_branch + sysctl make it less aggressive? Speaking of
+performance, I'd hope this can give us more control so we can achieve
+the best of two worlds: for TCP and some UDP traffic, we can enable
+GRO, while for some other classes that we know GRO does no good or
+even harm, let's disable GRO to save more cycles. The key observation
+is that developers may already know which traffic is blessed by GRO,
+but lack a way to realize it.
 
-To make this a bit more general, what I'd like to introduce here is:
-when we know GRO is either problematic or simply not useful (like to
-some UDP traffic), can we have more control toggle to skip it?
-
-thanks
+best
 Yan
-
-> Cheers,
->
-> Paolo
->
 
