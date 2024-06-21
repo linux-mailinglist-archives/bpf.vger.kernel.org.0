@@ -1,267 +1,139 @@
-Return-Path: <bpf+bounces-32756-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-32757-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4E9F2912D7F
-	for <lists+bpf@lfdr.de>; Fri, 21 Jun 2024 20:48:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 120AD912DC5
+	for <lists+bpf@lfdr.de>; Fri, 21 Jun 2024 21:18:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0596928474A
-	for <lists+bpf@lfdr.de>; Fri, 21 Jun 2024 18:48:57 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BF2942842C3
+	for <lists+bpf@lfdr.de>; Fri, 21 Jun 2024 19:18:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 89FB917B50A;
-	Fri, 21 Jun 2024 18:48:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 02B2317A93E;
+	Fri, 21 Jun 2024 19:18:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="ep4qjsFk"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JnEVlfBE"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f52.google.com (mail-ej1-f52.google.com [209.85.218.52])
+Received: from mail-pl1-f175.google.com (mail-pl1-f175.google.com [209.85.214.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E28D117B43C
-	for <bpf@vger.kernel.org>; Fri, 21 Jun 2024 18:48:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 34F6A4644C;
+	Fri, 21 Jun 2024 19:18:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718995728; cv=none; b=QhLk2R2OLDOZIqrZntWp7kuRwcCMr6LXCVUOJ7Vv2afF+DEhhsjDYwEGmCT4O57uRGyHzhgpjpt4/+b7tV5UWAvBaXuSZuTYON3OihS6bsydy4WgdOqY0X0OFhZXU+tRQAmulE6+K2ONubdAEf1braHD+0Ih0xl2mTN6WU+qc9Y=
+	t=1718997530; cv=none; b=XywncdpovO2gK/zNZKhMc299tQ7SdsT1Z7wlT80cnyEC6GYJfOgXsbgHWTDqrY3VEwEy41fhHoGvTUfR/vDpzaRiqXtWv3df1DuH/wQoz+WXbjoKLVOHK7NBQ4p8Cpi6UKJcnf24aqpM3PpotI+ldUzCyLmGRvS6Vcx5qFC1iVw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718995728; c=relaxed/simple;
-	bh=OSlxMUbH1cjP63rf/i9A5OnYZ1MoT2re527p17lrMmg=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=FQfH7VHhIU8Xf9B4ssysKv1cWA7DWJog65eDYXt9Irr7uxjc4NT1/q8VaRMkiEFBqU+hIqXNjhaOydY4HwLA9yCFY8qTz2imXArDmEnyXnX66Tzbo8JErT3JxqJUDZt+sNU/HkKoiBv1ALTR3+GhLiB+51c52FO8tFxmbUIa6bU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=ep4qjsFk; arc=none smtp.client-ip=209.85.218.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ej1-f52.google.com with SMTP id a640c23a62f3a-a6f0e153eddso300908966b.0
-        for <bpf@vger.kernel.org>; Fri, 21 Jun 2024 11:48:45 -0700 (PDT)
+	s=arc-20240116; t=1718997530; c=relaxed/simple;
+	bh=4b15RRFLHYTXI8/mWM0eb9a4yFji9qdd7+lhe3DcUqU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Ibakt+z/WWqU3RY/lhfISKk0pLayz2XiGB/0ixQI9ZCX2R04vWl12WaoQIkrOZtjXPvVuZW32KUU4tYwYSePZe9+oELFg3AwqZoRbc2NzBAVrR+nhDZAYOzjzbb8k/E0PV7S+SO+jnCEHuIQpXQmHXBc7x7LqRyNpq6MpR/2vW4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=JnEVlfBE; arc=none smtp.client-ip=209.85.214.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f175.google.com with SMTP id d9443c01a7336-1f6fabe9da3so19666435ad.0;
+        Fri, 21 Jun 2024 12:18:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1718995724; x=1719600524; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=zlvzkk98R2AMG0Z6R+7nntNyc9a9ODPBi8r4EwCvbRQ=;
-        b=ep4qjsFklEFqpVJUKWocum5m/Io13lGRq4EdyZT2oV2jz2VRFNLFt8t0MBi0IBPJnr
-         jTAkMIfj2nMJb/FnGlSYVFbFSKkwzFxEsH401JxThJZJ4Q1OqDVTYTun8UGcgBg4BXLD
-         pDtpH/J7194OprEHFUy1tgWVSqfPoP9Qcw2wzPPgoS6znpxnWW2RYg3Ik481uFXByHur
-         8t1R8AucQu05yVQZxgfYqKr31+T+yw8tdIwe74GztkEsz3utwTPtu9muIve8NgwRtL9l
-         Wd4wCdN9Kn3pLEt0YBYb1lBp5zl9qLpVPm1rqI4Zhjhc4VMoBaxUKeleB9XZx9PLURO9
-         2QOA==
+        d=gmail.com; s=20230601; t=1718997528; x=1719602328; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=f3JLZK9KhSNbfEjLOhjGsas4rAhTsCvacjMIXcw3CjM=;
+        b=JnEVlfBElQoPjnLLgElcs2HyS8p/gTrEAEjKJCh+K+p0NFRwoQxY/Ntndxs+eLOqbe
+         x3eMyfDvRfIjODx8mpHmajQ/frUZCv2PbpG/EkRDMKbvp4cH2IwpMS60jRqqCgeXrYD0
+         7sXhMqT0N/3gYxmcembOUwKXhDKeyko/elhRdFn+8FVUGRO5UAUzdBigSt2askDSDvGX
+         BW/QMm2yx1V2OCpqQYL9xvGBNhswNYkLsv48eJtA7oYvxTn50pNaMpdyeYF4O9jw+zlV
+         aVDip+G7bMTwQE+Vu+8z1tWfORZQbYTO0o+2l3t+6ApcOp6BqeDU6Zzxa6JaR/fyaw7s
+         vxHg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1718995724; x=1719600524;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1718997528; x=1719602328;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=zlvzkk98R2AMG0Z6R+7nntNyc9a9ODPBi8r4EwCvbRQ=;
-        b=JpYZzKxjoa7rtpWH0iBygLU/1UqDiiaeyuBl0NdStC64uDgICmQGsQs37AlpP1cMnB
-         ce3YecccWuSm2pf28E2bhFK7FWyqhtQOS4cFW4gqBRONXpA9bx6w1E/u+v/9eAS6Yf1P
-         t7VumnqS6Zy87132wPqeFZfAK9rm/kdvwHSNJYcVWsZAU7OzpgUahPF5oMDqacpTQJT2
-         6fju6KX8wcissXHpp+NvCRCAvafzLBxVVJJroatVXLcQOz/KyktWHbQDglwzOplaQXWW
-         dxxLIb2mG9XmVPJFBKGm7Gn70oYh3vIMDtXVyuKNkO05mQGyBwSmZkjR1V8GxSExRN3I
-         lUVw==
-X-Forwarded-Encrypted: i=1; AJvYcCVit3LAjyID1CojQCfu/JNmQXMAe0+zGJWFU9zH2nbAo6a99ZoK3J9HgxvBEe6bvbn12mPtp+3+8osmFLTJXrtUYh36
-X-Gm-Message-State: AOJu0YyX+prSt5KxuYw10OYyZNCsrYZUTBl8eYPJ84QXFpBu59lQ75Pq
-	J2WOaP6/l8V+N+q28YYMy6mcXsMF8rAE6FX4t6lrKKAhm43iiFsE5gxCT454ZcxxvwZrKVLNG4c
-	KzAzu3xYI5Ab84ZLpRPoGmxGKe4UPeA4rVD25
-X-Google-Smtp-Source: AGHT+IFB0A55nMGApv5jFWmOQotPDfRzqqPIQ74RIyN5NL9KIVshccHHA4pJlBegEvYv4fDuzVclwWQ3R4BpwgBCJ4w=
-X-Received: by 2002:a17:907:a644:b0:a6f:b60c:2c08 with SMTP id
- a640c23a62f3a-a6fb60c2f79mr565339266b.24.1718995723769; Fri, 21 Jun 2024
- 11:48:43 -0700 (PDT)
+        bh=f3JLZK9KhSNbfEjLOhjGsas4rAhTsCvacjMIXcw3CjM=;
+        b=f9L6rWNwzL2skwuqLo1oAYIiq3BWAyKNGeZhTIRQ8vgAMpC+CvfcFkwD6NTF4bMtWV
+         e807RieGFCq4hvhWHsCa7TPTgTvGiRTwtIwLjm8m5oqSVPihr0eu51J6Il3hHUC/IBYC
+         snrwCiNm3KCRWs6z+oD21Ah5VocvYjh12Kl5GyJUT+yGcG2H3xcsAikxXLDnhlsIxs4l
+         OLI5yuF8hb0QUdVnEudkiKLL9DDq3TYfd1ttmwH+xd03vpobvnPKimNu6q5WLkX9G8mW
+         2cZY/egkjPb1M+W+Rc8IJjq2nYRG1sWyeUegDAohb8sGJZIBvADRtjkBfJO1GpuI4B7D
+         gNDg==
+X-Forwarded-Encrypted: i=1; AJvYcCVL9nHkUyPYdeLCvOs9ppwkrQNI/rrzcByZZG1XQ/KUi94S7Q38khZrdFws0cwDVjhrdnSjiHBgwt+iIDTE5sQx7duISKleRgu1zTxnbVQ+RiPXOHCO1Uw/hWh/d5Rc4e9b
+X-Gm-Message-State: AOJu0YwOBXiG1qPH2E+zS1wcdUYobr/25iG+ZvUOqfls+vJWwM333SjR
+	bvgzY7543qnAdwvUNb62AQoeUUWxzhLm0tuUSTRWqMSCzhLLFcYV
+X-Google-Smtp-Source: AGHT+IFl/43vk2lPhapGOwGIq/mwHjsv73H3Xw8dv/Xkx2RGTWSRVCMFLRZu45n81+D9RkNu5EejNQ==
+X-Received: by 2002:a17:903:248:b0:1f4:b2ce:8dbe with SMTP id d9443c01a7336-1f9aa3eceeamr102143225ad.9.1718997528346;
+        Fri, 21 Jun 2024 12:18:48 -0700 (PDT)
+Received: from localhost (dhcp-141-239-159-203.hawaiiantel.net. [141.239.159.203])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-1f9eb2f042dsm17546935ad.39.2024.06.21.12.18.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 21 Jun 2024 12:18:48 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date: Fri, 21 Jun 2024 09:18:46 -1000
+From: Tejun Heo <tj@kernel.org>
+To: Phil Auld <pauld@redhat.com>
+Cc: torvalds@linux-foundation.org, mingo@redhat.com, peterz@infradead.org,
+	juri.lelli@redhat.com, vincent.guittot@linaro.org,
+	dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
+	mgorman@suse.de, bristot@redhat.com, vschneid@redhat.com,
+	ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+	martin.lau@kernel.org, joshdon@google.com, brho@google.com,
+	pjt@google.com, derkling@google.com, haoluo@google.com,
+	dvernet@meta.com, dschatzberg@meta.com, dskarlat@cs.cmu.edu,
+	riel@surriel.com, changwoo@igalia.com, himadrics@inria.fr,
+	memxor@gmail.com, andrea.righi@canonical.com,
+	joel@joelfernandes.org, linux-kernel@vger.kernel.org,
+	bpf@vger.kernel.org, kernel-team@meta.com
+Subject: Re: [PATCH 04/30] sched: Add sched_class->switching_to() and expose
+ check_class_changing/changed()
+Message-ID: <ZnXSFrn6wNqk21GS@slm.duckdns.org>
+References: <20240618212056.2833381-1-tj@kernel.org>
+ <20240618212056.2833381-5-tj@kernel.org>
+ <20240621165327.GA51310@lorien.usersys.redhat.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240613013557.1169171-1-almasrymina@google.com>
- <20240613013557.1169171-7-almasrymina@google.com> <439590d4-0f05-4f5e-80ec-e7fdf214e307@gmail.com>
-In-Reply-To: <439590d4-0f05-4f5e-80ec-e7fdf214e307@gmail.com>
-From: Mina Almasry <almasrymina@google.com>
-Date: Fri, 21 Jun 2024 11:48:30 -0700
-Message-ID: <CAHS8izNr4x6SW0oY_VJDPZOsrBQEAyJO1qVJQbu8VNJQMtX9Sg@mail.gmail.com>
-Subject: Re: [PATCH net-next v12 06/13] page_pool: devmem support
-To: Pavel Begunkov <asml.silence@gmail.com>
-Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-doc@vger.kernel.org, linux-alpha@vger.kernel.org, 
-	linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org, 
-	sparclinux@vger.kernel.org, linux-renesas-soc@vger.kernel.org, 
-	linux-trace-kernel@vger.kernel.org, linux-arch@vger.kernel.org, 
-	bpf@vger.kernel.org, linux-kselftest@vger.kernel.org, 
-	linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org, 
-	"David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
-	Donald Hunter <donald.hunter@gmail.com>, Jonathan Corbet <corbet@lwn.net>, 
-	Richard Henderson <richard.henderson@linaro.org>, Ivan Kokshaysky <ink@jurassic.park.msu.ru>, 
-	Matt Turner <mattst88@gmail.com>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
-	"James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>, Helge Deller <deller@gmx.de>, 
-	Andreas Larsson <andreas@gaisler.com>, Sergey Shtylyov <s.shtylyov@omp.ru>, 
-	Jesper Dangaard Brouer <hawk@kernel.org>, Ilias Apalodimas <ilias.apalodimas@linaro.org>, 
-	Steven Rostedt <rostedt@goodmis.org>, Masami Hiramatsu <mhiramat@kernel.org>, 
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Arnd Bergmann <arnd@arndb.de>, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
-	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
-	Jiri Olsa <jolsa@kernel.org>, Steffen Klassert <steffen.klassert@secunet.com>, 
-	Herbert Xu <herbert@gondor.apana.org.au>, David Ahern <dsahern@kernel.org>, 
-	Willem de Bruijn <willemdebruijn.kernel@gmail.com>, Shuah Khan <shuah@kernel.org>, 
-	Sumit Semwal <sumit.semwal@linaro.org>, =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>, 
-	Bagas Sanjaya <bagasdotme@gmail.com>, Christoph Hellwig <hch@infradead.org>, 
-	Nikolay Aleksandrov <razor@blackwall.org>, David Wei <dw@davidwei.uk>, Jason Gunthorpe <jgg@ziepe.ca>, 
-	Yunsheng Lin <linyunsheng@huawei.com>, Shailend Chand <shailend@google.com>, 
-	Harshitha Ramamurthy <hramamurthy@google.com>, Shakeel Butt <shakeel.butt@linux.dev>, 
-	Jeroen de Borst <jeroendb@google.com>, Praveen Kaligineedi <pkaligineedi@google.com>, linux-mm@kvack.org, 
-	Matthew Wilcox <willy@infradead.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240621165327.GA51310@lorien.usersys.redhat.com>
 
-On Mon, Jun 17, 2024 at 7:17=E2=80=AFAM Pavel Begunkov <asml.silence@gmail.=
-com> wrote:
->
-> On 6/13/24 02:35, Mina Almasry wrote:
-> > Convert netmem to be a union of struct page and struct netmem. Overload
-> > the LSB of struct netmem* to indicate that it's a net_iov, otherwise
-> > it's a page.
-> >
-> > Currently these entries in struct page are rented by the page_pool and
-> > used exclusively by the net stack:
-> >
-> > struct {
-> >       unsigned long pp_magic;
-> >       struct page_pool *pp;
-> >       unsigned long _pp_mapping_pad;
-> >       unsigned long dma_addr;
-> >       atomic_long_t pp_ref_count;
-> > };
-> >
-> > Mirror these (and only these) entries into struct net_iov and implement
-> > netmem helpers that can access these common fields regardless of
-> > whether the underlying type is page or net_iov.
-> >
-> > Implement checks for net_iov in netmem helpers which delegate to mm
-> > APIs, to ensure net_iov are never passed to the mm stack.
-> >
-> > Signed-off-by: Mina Almasry <almasrymina@google.com>
->
-> Apart from small comments below
->
-> Reviewed-by: Pavel Begunkov <asml.silence@gmail.com>
->
->
-> > ---
-> >   include/net/netmem.h            | 137 ++++++++++++++++++++++++++++++-=
--
-> >   include/net/page_pool/helpers.h |  25 +++---
-> >   net/core/devmem.c               |   3 +
-> >   net/core/page_pool.c            |  26 +++---
-> >   net/core/skbuff.c               |  22 +++--
-> >   5 files changed, 168 insertions(+), 45 deletions(-)
-> >
-> > diff --git a/include/net/netmem.h b/include/net/netmem.h
-> > index 664df8325ece5..35ad237fdf29e 100644
-> > --- a/include/net/netmem.h
-> > +++ b/include/net/netmem.h
-> ...
-> > -/* Converting from page to netmem is always safe, because a page can a=
-lways be
-> > - * a netmem.
-> > - */
-> >   static inline netmem_ref page_to_netmem(struct page *page)
-> >   {
-> >       return (__force netmem_ref)page;
-> > @@ -68,17 +107,103 @@ static inline netmem_ref page_to_netmem(struct pa=
-ge *page)
-> >
-> >   static inline int netmem_ref_count(netmem_ref netmem)
-> >   {
-> > +     /* The non-pp refcount of net_iov is always 1. On net_iov, we onl=
-y
-> > +      * support pp refcounting which uses the pp_ref_count field.
-> > +      */
-> > +     if (netmem_is_net_iov(netmem))
-> > +             return 1;
-> > +
-> >       return page_ref_count(netmem_to_page(netmem));
-> >   }
-> >
-> >   static inline unsigned long netmem_to_pfn(netmem_ref netmem)
-> >   {
-> > +     if (netmem_is_net_iov(netmem))
-> > +             return 0;
->
-> IIRC 0 is a valid pfn. Not much of a concern since it's
-> used only for tracing, but might make sense to pass some
-> invalid pfn if there is one
->
+Hello, Phil.
 
-AFAIU all non-negative pfns are technically valid pfns if the machine
-is big enough.
+On Fri, Jun 21, 2024 at 12:53:27PM -0400, Phil Auld wrote:
+> > A new BPF extensible sched_class will have callbacks that allow the BPF
+> > scheduler to keep track of relevant task states (like priority and cpumask).
+> > Those callbacks aren't called while a task is on a different sched_class.
+> > When a task comes back, we wanna tell the BPF progs the up-to-date state
+> 
+> "wanna" ?   How about "want to"?
+> 
+> That makes me wanna stop reading right there... :)
 
-I could have this function return long long instead of unsigned long
-so I can return a negative number for errors, and then cast to
-unsigned long when I figure out it's actually a pfn. Seemed like such
-a hassle especially since the call site is just tracing that I figured
-it's not that worth it.
+Sorry about that. Have been watching for it recently but this log was
+written a while ago, so...
 
-> > +
-> >       return page_to_pfn(netmem_to_page(netmem));
-> >   }
-> >
-> ...
-> >   static inline netmem_ref netmem_compound_head(netmem_ref netmem)
-> >   {
-> > +     /* niov are never compounded */
-> > +     if (netmem_is_net_iov(netmem))
-> > +             return netmem;
-> > +
-> >       return page_to_netmem(compound_head(netmem_to_page(netmem)));
-> >   }
-> >
-> > +static inline void *netmem_address(netmem_ref netmem)
->
-> I don't think it's used anywhere, do I miss it?
->
-
-Ah, It's used by the GVE devmem implementation:
-https://github.com/mina/linux/commit/da89baa81873d457cbf7b49ee6b4f0d66855b2=
-05
-
-I could leave it out of this patch, then add it with the follow up GVE
-devmem implementation, but I figured almost for sure drivers are going
-to need this eventually, and it's small, so just put it here.
-
+> > +/*
+> > + * ->switching_to() is called with the pi_lock and rq_lock held and must not
+> > + * mess with locking.
+> > + */
+> > +void check_class_changing(struct rq *rq, struct task_struct *p,
+> > +			  const struct sched_class *prev_class)
 > > +{
-> > +     if (netmem_is_net_iov(netmem))
-> > +             return NULL;
-> > +
-> > +     return page_address(netmem_to_page(netmem));
+> > +	if (prev_class != p->sched_class && p->sched_class->switching_to)
+> > +		p->sched_class->switching_to(rq, p);
 > > +}
-> > +
-> ...
-> > diff --git a/net/core/page_pool.c b/net/core/page_pool.c
-> > index a5957d3359762..1152e3547795a 100644
-> > --- a/net/core/page_pool.c
-> > +++ b/net/core/page_pool.c
-> > @@ -26,6 +26,8 @@
-> ...
-> >
-> >   /* If the page refcnt =3D=3D 1, this will try to recycle the page.
-> > @@ -714,7 +713,7 @@ __page_pool_put_page(struct page_pool *pool, netmem=
-_ref netmem,
-> >        * refcnt =3D=3D 1 means page_pool owns page, and can recycle it.
-> >        *
-> >        * page is NOT reusable when allocated when system is under
-> > -      * some pressure. (page_is_pfmemalloc)
-> > +      * some pressure. (page_pool_page_is_pfmemalloc)
->
-> There is no page_pool_page_is_pfmemalloc()
->
+> 
+> Does this really need wrapper? The compiler may help but it doesn't seem to
+> but you're doing a function call and passing in prev_class just to do a
+> simple check.  I guess it's not really a fast path. Just seemed like overkill.
 
-Thanks done. I implemented most of your other comments on all the
-patches btw. I'm only responding to the ones I didn't apply for
-various reasons. Thanks for the review!
+This doesn't really matter either way but wouldn't it look weird if it's not
+symmetric with check_class_changed()?
 
+Thanks.
 
---=20
-Thanks,
-Mina
+-- 
+tejun
 
