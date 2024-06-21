@@ -1,160 +1,170 @@
-Return-Path: <bpf+bounces-32775-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-32776-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 20CF9912FEE
-	for <lists+bpf@lfdr.de>; Sat, 22 Jun 2024 00:00:28 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id F05F691300C
+	for <lists+bpf@lfdr.de>; Sat, 22 Jun 2024 00:06:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 512971C2295D
-	for <lists+bpf@lfdr.de>; Fri, 21 Jun 2024 22:00:27 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8EC5B1F25AA9
+	for <lists+bpf@lfdr.de>; Fri, 21 Jun 2024 22:06:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E91A9155A30;
-	Fri, 21 Jun 2024 22:00:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B97717C7CB;
+	Fri, 21 Jun 2024 22:04:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gpl+hE1O"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DAQ89KgE"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f175.google.com (mail-pg1-f175.google.com [209.85.215.175])
+Received: from mail-pg1-f177.google.com (mail-pg1-f177.google.com [209.85.215.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2058138FB9
-	for <bpf@vger.kernel.org>; Fri, 21 Jun 2024 22:00:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C262315FA65
+	for <bpf@vger.kernel.org>; Fri, 21 Jun 2024 22:04:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719007222; cv=none; b=NYesVrVc9vgnO9UsgQ5THf5A0GwDmY/LFGFuBzSACRtum4klsuNxWydNGhYB+KCFzZHoVwC/69x3bY2sCoNAXQeFWwKczVxMaQ9fFk2slRQ8K1Snm5lyMI569G7ZS7V0MMPDAJNLig842VkcUykA96ucbQ7k5IxMz1LqozXsawM=
+	t=1719007468; cv=none; b=i2K6hhp1dRTJYTZUb0+3zduD2VFPy0gFBcX088fpnDxaUjc6ilwFwngk4Jcv4TxZRT5cIKnK6SK4y+/C6W8l/zBHpDVu9D2UT0oU6mOJHu2fWj1tsB+x99bkNc4zkPQcsHbsnV8YQ4kL94m5q8o9ZXQWU6zvbgIRhb9AJYTZivI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719007222; c=relaxed/simple;
-	bh=nuVY9RkTGef870+z5rG5nUa6tpSfULTo36XrRB35ffo=;
+	s=arc-20240116; t=1719007468; c=relaxed/simple;
+	bh=O+Zl7lK5N8nDm2q3mZbmphQ25z/bJ+1z/S9ycp+dUyo=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=OjcOjXupWQWNTPdskdSdIwB9zuIbSoSPgfyW9bF403G3vXGGPWvV9WdTqhr87uDv24yJjeVtFq9H79oJERUpsiVVxwQ97e3Ftr/dEDKNzbXvX8lUsFQgpgR00M4yZ/wDrf1Pk1Dp6H7k3Quyq87cweYqF7ieIoGOOqgdgXzbC6k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gpl+hE1O; arc=none smtp.client-ip=209.85.215.175
+	 To:Cc:Content-Type; b=s/PSL8SF9xyOnqhU+TOSB7Uvo8ggLpj0NLl830n0OFSzz11fX5B6YIfA4qwtSxsUCWcRYPJCF+BJkIOfd2GaNulKoKS/KSyLWQEpo4miIMP8fhcfzEn8H4sikifJur3tnsgXCyJEF6Fd3wV90la70p8rp7ZsWYrofCJxkteT6f8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=DAQ89KgE; arc=none smtp.client-ip=209.85.215.177
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f175.google.com with SMTP id 41be03b00d2f7-707040e3018so1747270a12.1
-        for <bpf@vger.kernel.org>; Fri, 21 Jun 2024 15:00:20 -0700 (PDT)
+Received: by mail-pg1-f177.google.com with SMTP id 41be03b00d2f7-707040e3018so1749540a12.1
+        for <bpf@vger.kernel.org>; Fri, 21 Jun 2024 15:04:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1719007220; x=1719612020; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1719007466; x=1719612266; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=RYRmrZk/aEL6RfaLpWp/mJW1FmKM8PDTW9pFtzpph7w=;
-        b=gpl+hE1ORJ6piL9ARcILtu3yodAsnPh2oe6bO73sQIaDSDm/r5xrQIlzqAXdHUfjTK
-         TQMqa1LK88dXwAZYZ4oylocUuB2rqeKUAQvUXC06tCpyJw8crwWpZJLtvpHvlpZL4GIn
-         TbFnOwb+oApPgTo7hGKs6mrbdUFBdt/XacRSmEjFgT7Ms3Iqw7sVb0s65YugK5dVAHEK
-         4/xqCD5xdz4FHpx1Q1sd8bho1od0Ugrt7o7Y8k7ghpEfa0P0mTBSzXJVwIFFqCa+Qifx
-         lOvfFRVMjGd1PKBUApbid/olV+0O5CI863XDsB8MR5G5iotZqXSssMCxoNtjviwiar2R
-         +wjQ==
+        bh=WrTDFeY/i3TSDWjEJPvEQeAweVn7WOKNwOUd2ZRTfa4=;
+        b=DAQ89KgE1OEdXsRdjnv6zEEVm6VmS+YeLRtCKNmiqiXZQfwHQIl9fY/NIls50Gi1VZ
+         XanYD9kXBQYWeCMzsqoU2BiOIfMRFO9Gv1q5OLr2VUEOGWwDD0YWGcT+McSEYFNLPbBp
+         hJ3e/wL+n7nSuBavqeRQjBmcDA/D8AKz7sGQLnICW2nHaHOd5JtmqM9BujBDuSRdQ+qP
+         aXX9vfPE41grsfDBiR0Yi9JhiJQzjWof7p1VIoiTTKscseOpU5PdNo5xEuQPdJLPSd+R
+         1gFhV91wafm/jTVuuZPNhqKXmhw65BCeBVEHX7Rs3tZFQH9ljWj/EEIhQwrsk2uI05vu
+         nZGA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1719007220; x=1719612020;
+        d=1e100.net; s=20230601; t=1719007466; x=1719612266;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=RYRmrZk/aEL6RfaLpWp/mJW1FmKM8PDTW9pFtzpph7w=;
-        b=m8hRSIDOtyg4dza0adOdNkGfWnUJkay2gMjPVyxMFxqXZzrzia+3D4B0BNfks6seFG
-         axhzKwBtxqWgLK6sogR2UUaErTc6Xt2J08X4l002NzdaQlWEkXknAuKf2oFM9feYFh6R
-         EWeRfXiEWPZBJxQJerW8QRL/uDXK7BMXdc497HV1rs5cjCqbU4HofuVW5FtIRWBffTha
-         MQfmmTym2fisSesoZ2M01ZhJjo+BcEpG0mtyZF1BtwLZnaIKVbMmD7KIfOCBkUGyRVmi
-         kKBms84MObjPGjinNScaCcBpi8xRUxkMc1+sq9mlzmgj0zdpHmTqDxoYQ1MoTPIHjfLE
-         LhIQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVOyBcPbtmgZizcKGHQFZJkYKzmOTBWy+aLqolJ/F0H6GlgJ6NH2lhrKKQLoCJSczkwcf3PRJufx1khzWyVsB50xS1+
-X-Gm-Message-State: AOJu0YyY0QJqE5pP1lHnGieGSKyTDxy8Bw+iDnt6p+8I3gf5GBkW83Z0
-	lTOCDwankjt5deutWygxTVZU1LsxgMNjeJAO/HhY4IEvSTppc3yqKqLwnN8YyU7ZVjGJPcLhJTs
-	jl3vwqpeqKa8hS0sLcsmAfN48U+U=
-X-Google-Smtp-Source: AGHT+IE9mOSICaejvIMOwD57Jcf1mkLpCv8XLQvcIbleWPXyBFLAbdfchgcC+yGVN7wS5QIT/kxtYdCBfFZHImCdOWI=
-X-Received: by 2002:a17:90b:4d8a:b0:2c8:84b:7d70 with SMTP id
- 98e67ed59e1d1-2c8084b816amr4758166a91.42.1719007220342; Fri, 21 Jun 2024
- 15:00:20 -0700 (PDT)
+        bh=WrTDFeY/i3TSDWjEJPvEQeAweVn7WOKNwOUd2ZRTfa4=;
+        b=PnbnxZvV2ASh1iLJWfAd0D4vXuUJYOhqtIeFbPRtDDC17teRYf6FIXQlk0I7+mNA3O
+         FG2Q+x7LYTr5RFe2zGmQN6TBXA4bZByrFmgedAVB/3z1ll3EGQe4FhJUTUS9x5tvPpzT
+         RWmbpiTCdMykQMrlv2RC7goBY+Gqlc/sp6NGiTVItVdyUqrB+T/al/g1ptJ7nLjmUK90
+         FyWzchBDIyHk37BbYynxfSImjm91ZB74ivLaXxq8ucVm4zlgQ6D+bXC97Zhfb7HBYBXh
+         oUBNNv5TEnzZ5zjt4IKRjLiFtik7mjd1KvUCAa7rV7uSmcxUi9PvlJC2pY8ssgGCGW0M
+         vSDw==
+X-Gm-Message-State: AOJu0YwQVA3B6I7FcjTfqWALNq+ovtG3ONJE/ByTYha25IqxM6nK1zwi
+	ML1jQ8E649RSqjsyN6YWFiG6EFGeHAd3fYJ7vGzJKpCzjBJducVz7wnZUG6eF6CeXNgp/QDJ4/E
+	eGnuY9ghrPq9eFRvzLsH1T9hL+dw=
+X-Google-Smtp-Source: AGHT+IGB+YSTCb/BMgKjRASLjft2RCfFlSyci5fBUUlT5DpNeSnqCI97qLUb/tOjt6diCmO97dyCi2wBcstpltJO9Bg=
+X-Received: by 2002:a17:90b:3542:b0:2c4:a9b2:d4da with SMTP id
+ 98e67ed59e1d1-2c7b5d5ab34mr9675989a91.30.1719007465956; Fri, 21 Jun 2024
+ 15:04:25 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240620091733.1967885-1-alan.maguire@oracle.com>
- <20240620091733.1967885-7-alan.maguire@oracle.com> <b9d80fb01651771108df802afd49748c8976da70.camel@gmail.com>
-In-Reply-To: <b9d80fb01651771108df802afd49748c8976da70.camel@gmail.com>
+References: <ZmIyMfRSp9DpU7dF@debian.debian>
+In-Reply-To: <ZmIyMfRSp9DpU7dF@debian.debian>
 From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Fri, 21 Jun 2024 15:00:08 -0700
-Message-ID: <CAEf4BzbKMZdh-NZPFSDtpKHSYdAhrsc5rabBrm_xes=vQpL-gw@mail.gmail.com>
-Subject: Re: [PATCH v2 bpf-next 6/6] selftests/bpf: add kfunc_call test for
- simple dtor in bpf_testmod
-To: Eduard Zingerman <eddyz87@gmail.com>
-Cc: Alan Maguire <alan.maguire@oracle.com>, andrii@kernel.org, acme@redhat.com, 
-	ast@kernel.org, daniel@iogearbox.net, jolsa@kernel.org, martin.lau@linux.dev, 
-	song@kernel.org, yonghong.song@linux.dev, john.fastabend@gmail.com, 
-	kpsingh@kernel.org, sdf@google.com, haoluo@google.com, mcgrof@kernel.org, 
-	masahiroy@kernel.org, nathan@kernel.org, mykolal@fb.com, thinker.li@gmail.com, 
-	bentiss@kernel.org, tanggeliang@kylinos.cn, bpf@vger.kernel.org
+Date: Fri, 21 Jun 2024 15:04:14 -0700
+Message-ID: <CAEf4BzbpSYmsTYSgMws7p8B2i1ihFZum0zge5W7DCo0FR8pSyA@mail.gmail.com>
+Subject: Re: Ideal way to read FUNC_PROTO in raw tp?
+To: Yan Zhai <yan@cloudflare.com>
+Cc: bpf@vger.kernel.org, kernel-team@cloudflare.com
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Jun 20, 2024 at 4:41=E2=80=AFAM Eduard Zingerman <eddyz87@gmail.com=
-> wrote:
+On Thu, Jun 6, 2024 at 3:03=E2=80=AFPM Yan Zhai <yan@cloudflare.com> wrote:
 >
-> On Thu, 2024-06-20 at 10:17 +0100, Alan Maguire wrote:
+> Hi,
 >
-> [...]
+>  I am building a tracing program around workqueue. But I encountered
+> following problem when I try to record a function pointer value from
+> trace_workqueue_execute_end on net-next kernel:
 >
-> Hi Alan,
+> ...
+> libbpf: prog 'workqueue_end': BPF program load failed: Permission
+> denied
+> libbpf: prog 'workqueue_end': -- BEGIN PROG LOAD LOG --
+> reg type unsupported for arg#0 function workqueue_end#5
+> 0: R1=3Dctx(off=3D0,imm=3D0) R10=3Dfp0
+> ; int BPF_PROG(workqueue_end, struct work_struct *w, work_func_t f)
+> 0: (79) r3 =3D *(u64 *)(r1 +8)
+> func 'workqueue_execute_end' arg1 type FUNC_PROTO is not a struct
+> invalid bpf_context access off=3D8 size=3D8
+> processed 1 insns (limit 1000000) max_states_per_insn 0 total_states 0
+> peak_states 0 mark_read 0
+> -- END PROG LOAD LOG --
+> libbpf: prog 'workqueue_end': failed to load: -13
+> libbpf: failed to load object 'configs/test.bpf.o'
+> Error: failed to load object file
+> Warning: bpftool is now running in libbpf strict mode and has more
+> stringent requirements about BPF programs.
+> If it used to work for this object file but now doesn't, see --legacy
+> option for more details.
+> ...
 >
-> I still get the error message in the dmesg:
+> A simple reproducer for me is like:
+> #include "vmlinux.h"
+> #include <bpf/bpf_helpers.h>
+> #include <bpf/bpf_tracing.h>
 >
-> [   10.489223] BUG: sleeping function called from invalid context at incl=
-ude/linux/sched/mm.h:337
-> [   10.489454] in_atomic(): 1, irqs_disabled(): 0, non_block: 0, pid: 184=
-, name: test_progs
-> [   10.489589] preempt_count: 200, expected: 0
-> [   10.489659] RCU nest depth: 1, expected: 0
-> [   10.489733] 1 lock held by test_progs/184:
-> [   10.489811]  #0: ffffffff83198a60 (rcu_read_lock){....}-{1:2}, at: bpf=
-_test_timer_enter+0x1d/0xb0
-> [   10.490040] Preemption disabled at:
-> [   10.490060] [<ffffffff81a0ee6a>] bpf_test_run+0x16a/0x300
-> [   10.490197] CPU: 1 PID: 184 Comm: test_progs Tainted: G           OE  =
-    6.10.0-rc2-00766-gb812ab0e1306-dirty #39
-> [   10.490356] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1=
-.15.0-1 04/01/2014
-> [   10.490475] Call Trace:
-> [   10.490515]  <TASK>
-> [   10.490557]  dump_stack_lvl+0x83/0xa0
-> [   10.490618]  __might_resched+0x199/0x2b0
-> [   10.490695]  kmalloc_trace_noprof+0x273/0x320
-> [   10.490756]  ? srso_alias_return_thunk+0x5/0xfbef5
-> [   10.490836]  ? bpf_test_run+0xc0/0x300
-> [   10.490836]  ? bpf_testmod_ctx_create+0x23/0x50 [bpf_testmod]
-> [   10.490836]  bpf_testmod_ctx_create+0x23/0x50 [bpf_testmod]
-> [   10.490836]  bpf_prog_d1347efc07047347_kfunc_call_ctx+0x2c/0xae
-> [   10.490836]  bpf_test_run+0x198/0x300
-> [   10.490836]  ? srso_alias_return_thunk+0x5/0xfbef5
-> [   10.490836]  ? lockdep_init_map_type+0x4b/0x250
-> [   10.490836]  bpf_prog_test_run_skb+0x381/0x7f0
-> [   10.490836]  __sys_bpf+0xc4f/0x2e00
-> [   10.490836]  ? srso_alias_return_thunk+0x5/0xfbef5
-> [   10.490836]  ? reacquire_held_locks+0xcf/0x1f0
-> [   10.490836]  __x64_sys_bpf+0x1e/0x30
-> [   10.490836]  do_syscall_64+0x68/0x140
-> [   10.490836]  entry_SYSCALL_64_after_hwframe+0x76/0x7e
->
-> The following fix helps:
->
-> --- a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
-> +++ b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
-> @@ -164,7 +164,7 @@ bpf_testmod_ctx_create(int *err)
->  {
->         struct bpf_testmod_ctx *ctx;
->
-> -       ctx =3D kzalloc(sizeof(*ctx), GFP_KERNEL | GFP_ATOMIC);
-> +       ctx =3D kzalloc(sizeof(*ctx), GFP_ATOMIC);
+> SEC("tp_btf/workqueue_execute_end")
+> int BPF_PROG(workqueue_end, struct work_struct *w, work_func_t f)
+> {
+>         u64 addr =3D (u64) f;
 
-fixed while applying, thanks
+you can work around with:
 
->         if (!ctx) {
->                 *err =3D -ENOMEM;
->                 return NULL;
+bpf_probe_read_kernel(&addr, sizeof(addr), &ctx[1]); /* ctx[1] is the
+second argument */
+
+Not great, but will get you past this easily.
+
+>         bpf_printk("f is %lu\n", addr);
 >
-> Thanks,
-> Eduard
+>         return 0;
+> }
 >
-> [...]
+> char LICENSE[] SEC("license") =3D "GPL";
+>
+> I would like to use the function address to decode the kernel symbol
+> and track execution of these functions. Replacing raw tp to regular tp
+> solves the problem, but I am wondering if there is any go-to approach
+> to read the pointer value in a raw tp? Doesn't seem to find one in
+> selftests/samples. If not, does it make sense if we allow it in
+> the verifier for tracing programs like the attached patch?
+>
+> Yan
+>
+> ---
+> diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+> index 821063660d9f..5f000ab4c8d0 100644
+> --- a/kernel/bpf/btf.c
+> +++ b/kernel/bpf/btf.c
+> @@ -6308,6 +6308,11 @@ bool btf_ctx_access(int off, int size, enum bpf_ac=
+cess_type type,
+>                         __btf_name_by_offset(btf, t->name_off),
+>                         btf_type_str(t));
+>                 return false;
+> +       } else if (prog->type =3D=3D BPF_PROG_TYPE_TRACING || prog->type =
+=3D=3D BPF_PROG_TYPE_RAW_TRACEPOINT) {
+> +               /* allow reading function pointer value from a tracing pr=
+ogram */
+> +               const struct btf_type *pointed =3D btf_type_by_id(btf, t-=
+>type);
+> +               if (btf_type_is_func_proto(pointed))
+> +                       return true;
+>         }
+>
+>         /* check for PTR_TO_RDONLY_BUF_OR_NULL or PTR_TO_RDWR_BUF_OR_NULL=
+ */
+>
 
