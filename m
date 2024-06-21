@@ -1,176 +1,153 @@
-Return-Path: <bpf+bounces-32717-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-32718-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5D77A912291
-	for <lists+bpf@lfdr.de>; Fri, 21 Jun 2024 12:36:35 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id F30669122C4
+	for <lists+bpf@lfdr.de>; Fri, 21 Jun 2024 12:46:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 18BD728CDE0
-	for <lists+bpf@lfdr.de>; Fri, 21 Jun 2024 10:36:34 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ADA82289E28
+	for <lists+bpf@lfdr.de>; Fri, 21 Jun 2024 10:46:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7AE80172BA6;
-	Fri, 21 Jun 2024 10:36:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 99F40171E6A;
+	Fri, 21 Jun 2024 10:46:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SHP1sJ6A"
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="zeriEZJ7";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="Ar1Xz6jS"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F26F316D33A;
-	Fri, 21 Jun 2024 10:36:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 00A1E7FBBD;
+	Fri, 21 Jun 2024 10:46:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718966173; cv=none; b=Elf0h3P1kjTJckHXh0fkLLHL9QmbRq7Kk2veLQ001OJEo0inA2Mxg9ahsTS7ekTdpJuDmvvlylGiDsyj3pAlG1md19zEGoqaMIN8oAS/lK6nuH/Pv82yRSSfd5r5dVL0y8aDrr43px/4tKljjOLtMFW0sev78uFYgzCDXFp1+0g=
+	t=1718966768; cv=none; b=o9DjXWUsIJCpErXdhhwCQRv5i8uPIUMk6opjyuwDqVko3vN3JACLkySWwAzDUg3phyI3sv9VIkW2Jl22V/LiuVoqivyc8NAjtJSOmRsPuXkiAWbOdbMKUXcD+hsbaQSTnLji1C/xMbozLvw4T4Kyxfj4r2h3qZL2J1FaiFXalfw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718966173; c=relaxed/simple;
-	bh=1y7UwnSWe3/0q0L9cNLNBb4Omt7+3nhYnY3r1wJsGOw=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=vEunLFzweynNs85+RYN+I1MjzPW50/9+r9FKmdMZ8JW50Zwvp/RbPFoW9JE/Znq+bf819EIwNoRinibNs6M0WeMQLCk1tyPaMYe8X89BNNODgjc1RDfoB4MFztYRxhhx394a9IyrKKB0hZ6qW6+qoubcuA6PNuIL3Mqdt5Okm5o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=SHP1sJ6A; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 65E06C2BBFC;
-	Fri, 21 Jun 2024 10:36:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1718966172;
-	bh=1y7UwnSWe3/0q0L9cNLNBb4Omt7+3nhYnY3r1wJsGOw=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=SHP1sJ6ATXFnwqLlo3Kjho02rcHp0QdtDqaAoMM7IUexYP7hjUOfE3+qNKAwStq/m
-	 v5mRgt5Aq27CwU1cDuVFFRzuEiqaq/1mUQk4VFwMOcHPFcVx8eDglXSBHkxUaYK+0b
-	 2GwKuw6K5UKjxz/uDhzzKfmJaGMTkjrbz4hh15ed4mAjbD+XsmC4i9X6gCm4skcfNv
-	 PMR3znjbM6YImYBBq72Vhoci1jstBZoH5evxXgEzQg1VPicRCXiZqu/nNDMtxOSICA
-	 cciTP8ydlecjUpwDd+ZjRcXR9ynqPnjtutX5lu/PredUljZZtLBDfUWmBeQAly+KM7
-	 al1tSjsD5bulA==
-From: Geliang Tang <geliang@kernel.org>
-To: Andrii Nakryiko <andrii@kernel.org>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Mykola Lysenko <mykolal@fb.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>,
-	Stanislav Fomichev <sdf@google.com>,
-	Hao Luo <haoluo@google.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Shuah Khan <shuah@kernel.org>
-Cc: Geliang Tang <tanggeliang@kylinos.cn>,
-	bpf@vger.kernel.org,
-	linux-kselftest@vger.kernel.org
-Subject: [PATCH bpf-next 6/6] selftests/bpf: Drop make_socket in sk_lookup
-Date: Fri, 21 Jun 2024 18:35:29 +0800
-Message-ID: <489e1543f8c4ac8feb9e90d1384af66ecb59ba82.1718965270.git.tanggeliang@kylinos.cn>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <cover.1718965270.git.tanggeliang@kylinos.cn>
-References: <cover.1718965270.git.tanggeliang@kylinos.cn>
+	s=arc-20240116; t=1718966768; c=relaxed/simple;
+	bh=VrIIoHGeotm8tbt7s5A8/A4khw9feLi4pSGfWNF6d7g=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=dYgdEqY9/L0SppK1Rrt4TwMbkHmaD9/UVXY1jZHQ9JAy36AgZhaxr3P+5Euhz35J3MCYXwnPfJkLzBO4DBCSDkOJNxVM6xbshOCOayMjWh2lBNAc6wpjIiKXmqLLOCO4vVvi5XtNPI8q1/LpmEmf6CbqEeweZ9Yx1a9E2bkNjf8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=zeriEZJ7; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=Ar1Xz6jS; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+From: Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1718966763;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=z6uzgA3OuvNjAKIJ1N0WUV8pAvtRghi5pTO6jCkNH5U=;
+	b=zeriEZJ7L1UK/GlEtsiC3fs7tuAVTkfjEc6VkvBHIxusX4kyGOAtDMsIhU89oj4CZ+6pg8
+	in9aBAFxv8A969MdpenBZfobQkXfJBbar982zcqWIGVBCbUZSz6uZwWrz0xlwTjVUdUVpJ
+	2mAvJnNrHWE3Yq2+fqh/eBUnp2mx7CdHnRiPwkEKqTrA1XIGloB6YryVwnN9ihaIen4EHT
+	v9sKOpPIXVhwDJiJZP5rlUlv6J1BzsDiwLDFt/53yDpvsKKhsplplIq+Z+q91xu5hOOknm
+	GQG6skoGjy+LicxDznXuMCnIIXyW6XWLhl2D78ma8MlFi+Zok6vHJt9XM+3bFg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1718966763;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=z6uzgA3OuvNjAKIJ1N0WUV8pAvtRghi5pTO6jCkNH5U=;
+	b=Ar1Xz6jSrHUvkUGhcAZDKDWtOxkObXL0L6pA6oHpfZZ9K2PImIerWkaERoGYgRPBozDvHS
+	XTN1rOjLplwR1YBg==
+To: Tejun Heo <tj@kernel.org>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>, mingo@redhat.com,
+ peterz@infradead.org, juri.lelli@redhat.com, vincent.guittot@linaro.org,
+ dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
+ mgorman@suse.de, bristot@redhat.com, vschneid@redhat.com, ast@kernel.org,
+ daniel@iogearbox.net, andrii@kernel.org, martin.lau@kernel.org,
+ joshdon@google.com, brho@google.com, pjt@google.com, derkling@google.com,
+ haoluo@google.com, dvernet@meta.com, dschatzberg@meta.com,
+ dskarlat@cs.cmu.edu, riel@surriel.com, changwoo@igalia.com,
+ himadrics@inria.fr, memxor@gmail.com, andrea.righi@canonical.com,
+ joel@joelfernandes.org, linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+ kernel-team@meta.com
+Subject: Re: [PATCHSET v6] sched: Implement BPF extensible scheduler class
+In-Reply-To: <ZnSEeO8MHIQRJyt1@slm.duckdns.org>
+References: <CAHk-=wg8APE61e5Ddq5mwH55Eh0ZLDV4Tr+c6_gFS7g2AxnuHQ@mail.gmail.com>
+ <87ed8sps71.ffs@tglx>
+ <CAHk-=wg3RDXp2sY9EXA0JD26kdNHHBP4suXyeqJhnL_3yjG2gg@mail.gmail.com>
+ <87bk3wpnzv.ffs@tglx>
+ <CAHk-=wiKgKpNA6Dv7zoLHATweM-nEYWeXeFdS03wUQ8-V4wFxg@mail.gmail.com>
+ <878qz0pcir.ffs@tglx> <ZnSEeO8MHIQRJyt1@slm.duckdns.org>
+Date: Fri, 21 Jun 2024 12:46:03 +0200
+Message-ID: <87r0cqo9p0.ffs@tglx>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 
-From: Geliang Tang <tanggeliang@kylinos.cn>
+Tejun!
 
-Use public network helpers make_sockaddr() and connect_to_addr() instead of
-using the local defined function make_socket() and connect().
+On Thu, Jun 20 2024 at 09:35, Tejun Heo wrote:
+> On Thu, Jun 20, 2024 at 04:35:08AM +0200, Thomas Gleixner wrote:
+>> When I sat there in Richmond with the sched_ext people I gave them very
+>> deep technical feedback especially on the way how they integrate it:
+>> 
+>>   Sprinkle hooks and callbacks all over the place until it works by some
+>>   definition of works.
+>
+> I would characterize that part of the discussion more nebulous than deep.
+> You cited a really high number for where SCX is hooking into the scheduler
+> core and then made wide-ranging suggestions including refactoring all the
+> schedulers, which seemed vague and out of scope. I tried to probe and we
+> didn't get anywhere concrete, which is fine. It's difficult to hash out
+> details in such settings.
 
-Then make_socket() can be dropped.
+It's not that nebulous. And fine if you tried and got nowhere, but did
+you give feedback to those failed attempts or started a discussion with
+anyone on the scheduler side? No.
 
-Signed-off-by: Geliang Tang <tanggeliang@kylinos.cn>
----
- .../selftests/bpf/prog_tests/sk_lookup.c      | 50 +++----------------
- 1 file changed, 6 insertions(+), 44 deletions(-)
+>> That's perfectly fine for a PoC, but not for something which gets merged
+>> into the core of an OS. I clearly asked them to refactor the existing
+>> code so that these warts go away and everything is contained into the
+>> scheduler classes and at the very end sched_ext falls into place. That's
+>> a basic engineering principle as far as I know.
+>> 
+>> They nodded, ignored my feedback and just continued to pursue their way.
+>
+> However, this is not true. During the discussion, I asked you multiple times
+> to review the patches and point out the parts that are problematic so that
+> they can be addressed and the discussion can become more concrete. You
+> promised you would but didn't.
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/sk_lookup.c b/tools/testing/selftests/bpf/prog_tests/sk_lookup.c
-index 0f2e8a4c1524..e4c983a00511 100644
---- a/tools/testing/selftests/bpf/prog_tests/sk_lookup.c
-+++ b/tools/testing/selftests/bpf/prog_tests/sk_lookup.c
-@@ -47,8 +47,6 @@
- #define INT_IP6		"fd00::2"
- #define INT_PORT	8008
- 
--#define IO_TIMEOUT_SEC	3
--
- enum server {
- 	SERVER_A = 0,
- 	SERVER_B = 1,
-@@ -108,40 +106,6 @@ static int attach_reuseport(int sock_fd, struct bpf_program *reuseport_prog)
- 	return 0;
- }
- 
--static int make_socket(int sotype, const char *ip, int port,
--		       struct sockaddr_storage *addr, socklen_t *len)
--{
--	struct timeval timeo = { .tv_sec = IO_TIMEOUT_SEC };
--	int err, family, fd;
--
--	family = is_ipv6(ip) ? AF_INET6 : AF_INET;
--	err = make_sockaddr(family, ip, port, addr, len);
--	if (CHECK(err, "make_address", "failed\n"))
--		return -1;
--
--	fd = socket(addr->ss_family, sotype, 0);
--	if (CHECK(fd < 0, "socket", "failed\n")) {
--		log_err("failed to make socket");
--		return -1;
--	}
--
--	err = setsockopt(fd, SOL_SOCKET, SO_SNDTIMEO, &timeo, sizeof(timeo));
--	if (CHECK(err, "setsockopt(SO_SNDTIMEO)", "failed\n")) {
--		log_err("failed to set SNDTIMEO");
--		close(fd);
--		return -1;
--	}
--
--	err = setsockopt(fd, SOL_SOCKET, SO_RCVTIMEO, &timeo, sizeof(timeo));
--	if (CHECK(err, "setsockopt(SO_RCVTIMEO)", "failed\n")) {
--		log_err("failed to set RCVTIMEO");
--		close(fd);
--		return -1;
--	}
--
--	return fd;
--}
--
- static int setsockopts(int fd, void *opts)
- {
- 	struct cb_opts *co = (struct cb_opts *)opts;
-@@ -224,24 +188,22 @@ static int make_server(int sotype, const char *ip, int port,
- 
- static int make_client(int sotype, const char *ip, int port)
- {
-+	int family = is_ipv6(ip) ? AF_INET6 : AF_INET;
- 	struct sockaddr_storage addr = {0};
- 	socklen_t len;
- 	int err, fd;
- 
--	fd = make_socket(sotype, ip, port, &addr, &len);
--	if (fd < 0)
-+	err = make_sockaddr(family, ip, port, &addr, &len);
-+	if (err)
- 		return -1;
- 
--	err = connect(fd, (void *)&addr, len);
--	if (CHECK(err, "make_client", "connect")) {
-+	fd = connect_to_addr(sotype, &addr, len, NULL);
-+	if (CHECK(fd < 0, "connect_to_addr", "connect")) {
- 		log_err("failed to connect client socket");
--		goto fail;
-+		return -1;
- 	}
- 
- 	return fd;
--fail:
--	close(fd);
--	return -1;
- }
- 
- static __u64 socket_cookie(int fd)
--- 
-2.43.0
+Yes, I said I will do two things:
+
+     - Talk to Peter
+     - Review the stuff again
+
+I talked to Peter to come up with a proper plan in order to give
+feedback. It was unfortunate that Peter vanished from the planet at that
+time due to his shoulder incident.
+
+As I said to Linus, I'm sorry that I afterwards dropped the ball
+because I got dragged into other things and ran out of cycles.
+
+I also asked you to reach out to the scheduler folks and work with them
+to get things moving again. Are you really claiming that you couldn't do
+that without me holding your hands?
+
+> When we attempted to follow up with you afterwards, we got no responses.
+
+I just checked and found three private mails from you which ended up in
+the wrong filter dated Feb 1, Feb 9, Feb 16. My bad that I dropped
+them, but definitely not because of desinterest or malice.
+
+You can of course say you tried and I ignored you, but seriously?
+
+If you really wanted to get my attention then you exactly know how to
+get it like everyone else who is working with me for decades.
+
+Thanks,
+
+        tglx
+
+
+
 
 
