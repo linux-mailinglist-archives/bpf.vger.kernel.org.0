@@ -1,173 +1,229 @@
-Return-Path: <bpf+bounces-32735-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-32736-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D7DE8912A63
-	for <lists+bpf@lfdr.de>; Fri, 21 Jun 2024 17:37:59 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1533F912A82
+	for <lists+bpf@lfdr.de>; Fri, 21 Jun 2024 17:42:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6E854288BE5
-	for <lists+bpf@lfdr.de>; Fri, 21 Jun 2024 15:37:58 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 436C5B2A974
+	for <lists+bpf@lfdr.de>; Fri, 21 Jun 2024 15:41:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA2218662E;
-	Fri, 21 Jun 2024 15:37:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7AE73155C86;
+	Fri, 21 Jun 2024 15:41:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JqKpB09a"
+	dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b="dlXuFeO1"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wm1-f52.google.com (mail-wm1-f52.google.com [209.85.128.52])
+Received: from mail-lj1-f175.google.com (mail-lj1-f175.google.com [209.85.208.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E536FBED;
-	Fri, 21 Jun 2024 15:37:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3907712D1EB
+	for <bpf@vger.kernel.org>; Fri, 21 Jun 2024 15:40:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718984250; cv=none; b=oG5PrY56bWrFmlKfWyhKrZ+c3k3AcaUFQLgDvWOJncvvy5sxPnZRMULsF/BIVov4yauVW0nhvCrEYEUFT8NWCHz3ONHmgZMuAsGv4CmoSJ6GvmzsEDllRwaCe36UrAtI/KjzKYPCk2D5X/LAW6sxI+3clENcXqYceMOm18xedMA=
+	t=1718984460; cv=none; b=l/iaMhHhh//9lfKPyRubku+uaHvmBkGHUbrhSwg3YDwLTC0I9nBNfH/AYGaZd7tUhO3eaqD29IDSEzNF2E5FvlvRGQlRh4rYDDzjg3GDw06brbSkQUlIWMJi1ZWwFQAQVQ6MdHeBsjRRHfibMLv3bxAcJdbETaLVZceMpz4/Jb8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718984250; c=relaxed/simple;
-	bh=Y2saANydyVcnYI9e5RxEPCFuU2P+k+wVTvRnss0jXX0=;
+	s=arc-20240116; t=1718984460; c=relaxed/simple;
+	bh=M5hQFADkyAXAzxKb0j5OaON7Ocd4rbvfXil7V15NScY=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=oGJt9qKkGgOSJHI52WW9gk907XNseOYx2WgXHSalMtepzx4mPblAhOLY9Jxo15Ocbhmqk0y7M12n/KyEwAcYwZN+jG2ldNtcQzp7JeOYgUbgf3nDgK83lLC06i0O4U3OychTXtIY+vXwui6Lg2Tp8ZcqM83rimCPeqvYNZ1kYzk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=JqKpB09a; arc=none smtp.client-ip=209.85.128.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f52.google.com with SMTP id 5b1f17b1804b1-4217990f8baso20237525e9.2;
-        Fri, 21 Jun 2024 08:37:28 -0700 (PDT)
+	 To:Cc:Content-Type; b=B87HNnEc+eNZWRNtsQaJhwXjmN9XTJWusNhChBeGOu2VVz0B/iscq5r6jPuDMoFW53tfeV0pttJRTHuayQpxZlLx32JRONumSkbv57o20AK6QWJJAB/C1k/v1+NUFFPyJjig9muyDj0+AQAMU96IeiAOW1++GU3K6hWkLYDArow=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com; spf=pass smtp.mailfrom=cloudflare.com; dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b=dlXuFeO1; arc=none smtp.client-ip=209.85.208.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cloudflare.com
+Received: by mail-lj1-f175.google.com with SMTP id 38308e7fff4ca-2ebe3bac6c6so25927081fa.1
+        for <bpf@vger.kernel.org>; Fri, 21 Jun 2024 08:40:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1718984247; x=1719589047; darn=vger.kernel.org;
+        d=cloudflare.com; s=google09082023; t=1718984455; x=1719589255; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=ZEzPUxJosE4Dv4tMtApiYXkD+OE7D7/mwDL1O48YzwQ=;
-        b=JqKpB09amApmCgb/sxRsuehauoQBW90e7pwoXl9SArnlUGoErNvIydBfiEcHfXppt2
-         h7Tlqcxn+ShP6I2v73ZZCnFAJubAWyahmVfwdIQ5uBeTL+LnMfyyJb7G95PDVe6OUwce
-         B4omms4ndTHluTfSl/+zAlMbOeQitrYVwVlCU7mTDnp7ZZunbQmD0rniVsXmCuvnmRNg
-         8+CBoPLE+Bd6AL+pUbhBMGR1xSor2cqfONoEboim1OfC/3U13oj1osshryR/LzcBrpqf
-         wko1Iv/fIIJAYhQoguhAjtK6HX5YyClz3OIbVVKfEZwe5IE3sReHTCyb26Xo7gKCHHUW
-         CHIQ==
+        bh=ITQplhMiV0b/XVFET6r9dSYiL51VVA3294UIGshKU6M=;
+        b=dlXuFeO1EusRyFDKRGOZWRUlyeLu2Z6omlZYQBKk7/Bf8QJy9V1VIqiuJqs23DNHJa
+         4ZvsMdPMEdfY/5fm6IRRFhauAttjL6awCBJYpfH05cF7vCnSTdFEYHZYi4JN3HgMx+Bz
+         /douloCTAr6tdPHlfhxzHy0q+xbWFpwGRNdbIzVcv9W8zoMBVDCTpPFIiBABuHBrt5oC
+         uThbjKiH+bStNO1AbcQu+pMdtu3ZNZFXJqhwkgHFRLaAVVckECj6Y6AAwuqifbm9/CkI
+         HTVUszkoIKw0XZtoY4AOydxy4+B/GCRjw6INPaWW7eWy6SEBUzU3BKHZ4vXT2CWqN1oE
+         1d+Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1718984247; x=1719589047;
+        d=1e100.net; s=20230601; t=1718984455; x=1719589255;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=ZEzPUxJosE4Dv4tMtApiYXkD+OE7D7/mwDL1O48YzwQ=;
-        b=IuptSIQPAtp6FcVK64eHI84rzpkuqWEYL4CJEWqpEf0dmDESD0BBOiZIwetnqoGKSL
-         3831MWnAxgJJNvjNwCPKujKCYnceixYbvEeJuwO80VS0mI86inzmnp37xENKVRiYpUJf
-         h050pXt/h21FlevPgflTtN3WDsRnJThT/Fhitzb9Ni6ct9/Bek5ENU3y6ivxgF6HfcGH
-         hZwgAzet61TBF+iwgqJfz9sjruGGctJiLKnags3HKudQKH8neidFNiwaHSTxP/x/zpSy
-         J0ELPFhk4QRswUpoJhdSy3Y7Z2qt0Qjg8cmtnMuRzPcl8LO17VV/9961c8zdYiJRlhUK
-         UeyA==
-X-Forwarded-Encrypted: i=1; AJvYcCVf0pl1JzC1PsMmaiEwx3p2UsZ6P2Gi/5L5IzBr1HhsQcCfFCRXeZKSJMHAayo6ZOLSHQI2YlWHVcBP51YjrK5sZper1cVFDjo5irjj0O8MPldz26ryiOJbt+zek3yRbVjoKJu2oqY1IVtn2TaJXdJOf23ywpRIfqDHIlwd3My4/utouYoiEEvKBAmsujFQvu8/kL9V19L8tx8udTqm73ZWsj5bKoD87ZkN4uR4IaS/Wep7vb6PuJPKzHE=
-X-Gm-Message-State: AOJu0YwY491NX1vAqCodTjabYJlnrMKyTFIE4UYzj26AIvvwZXm7ZWSN
-	9IWhlHF0EGoLbC5WliTUvTqszlu2z9pID4C9azfQTTbpYR1knHw3wCwGVsGBSxlMoWGVGn24v7Q
-	Iz5KBvhJPspn55+cqg1PambHxKX8=
-X-Google-Smtp-Source: AGHT+IFKLBM5mFnVwBQaLpG8mi4nu03QYb8IeKwotTRo4us7hJs+0DIW7+segniYBbyuCbW83a3oehpQCy2SXGOBBI4=
-X-Received: by 2002:a05:600c:41c9:b0:422:7391:1be1 with SMTP id
- 5b1f17b1804b1-4247529e1a3mr66980315e9.35.1718984246497; Fri, 21 Jun 2024
- 08:37:26 -0700 (PDT)
+        bh=ITQplhMiV0b/XVFET6r9dSYiL51VVA3294UIGshKU6M=;
+        b=GmVUlPN+5mymAWPs3QffAp4QsRMdMANGpPPgFVoYtATPzl689qN7UC+y2HhktfVlo5
+         UYkK6vQT6en4LlHobqY1FR9KF7L2AogpcUVOTTLX+TmHoHLmj4DwtYR6zuJSkrIyja1K
+         Q8WAJK74vGJ7tHXJMy6LCEWlhwnLLUzj4uoHvLcz7IVygfTGWJ7oI7jV3Y9xi6zmQrgH
+         xcPhOwYKwwhe1/JgnYoeNJPc5NSwBdLNfuGYiDjAuPtirSYFeuiZnJjE6zR/USXSNLfd
+         c806hMGX39pIxI/ZN80Qy9qC4b9G+KuuJ3ujrPKbeTAD0eSjF8vJfwLysdDx1GCiwRQI
+         B2QA==
+X-Forwarded-Encrypted: i=1; AJvYcCXHWCSmslzuYn2Ce/r/y2GZ7Pcl1R88p3w83njT0bklkvuhX+ey3NkIAj7BtYDXWmUr6uSbgS161EoXZVLGkquJ3Tag
+X-Gm-Message-State: AOJu0YwO30lzk7klqHuiloEHi7savmWZnovciaDPPpDs6LUbOSSA1nHF
+	jgu3MHEVmWHH5hI1gnNFaqZGDLOcauNSK7JtAN0I1iPIYxvdO66jFePmv79CW1jagqtfUIWRHtW
+	gbw8kWWbpq44jxKDNSBxfUf9U6ozwRW2Q0/h60g==
+X-Google-Smtp-Source: AGHT+IH2IostdubtS6pKCWbrAkESd03OxM2FOyVGOL1lqEbwnPW82ccU4bdIloRvLJ0wnlGCr1La92Iy2sC6XmDoY50=
+X-Received: by 2002:a05:651c:20f:b0:2eb:f6bd:e4ec with SMTP id
+ 38308e7fff4ca-2ec3cea1b44mr65343691fa.24.1718984455332; Fri, 21 Jun 2024
+ 08:40:55 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240621-hid_hw_req_bpf-v1-0-d7ab8b885a0b@kernel.org> <20240621-hid_hw_req_bpf-v1-6-d7ab8b885a0b@kernel.org>
-In-Reply-To: <20240621-hid_hw_req_bpf-v1-6-d7ab8b885a0b@kernel.org>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Fri, 21 Jun 2024 08:37:15 -0700
-Message-ID: <CAADnVQ+us6cQepSGWbOB4K1bb_0Wh43Cpo4zXJxB2d+SVpYinQ@mail.gmail.com>
-Subject: Re: [PATCH HID 06/12] HID: bpf: add HID-BPF hooks for hid_hw_output_report
-To: Benjamin Tissoires <bentiss@kernel.org>
-Cc: Jiri Kosina <jikos@kernel.org>, Alexei Starovoitov <ast@kernel.org>, Shuah Khan <shuah@kernel.org>, 
-	Jonathan Corbet <corbet@lwn.net>, "open list:HID CORE LAYER" <linux-input@vger.kernel.org>, 
-	LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>, 
-	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>, 
-	"open list:DOCUMENTATION" <linux-doc@vger.kernel.org>
+References: <cover.1718919473.git.yan@cloudflare.com> <b8c183a24285c2ab30c51622f4f9eff8f7a4752f.1718919473.git.yan@cloudflare.com>
+ <17c0b83b-b3f4-43c0-be3f-d72a56e4087e@intel.com>
+In-Reply-To: <17c0b83b-b3f4-43c0-be3f-d72a56e4087e@intel.com>
+From: Yan Zhai <yan@cloudflare.com>
+Date: Fri, 21 Jun 2024 10:40:44 -0500
+Message-ID: <CAO3-PbpB-Wqji-9vFifCTExah-ctRkPSpz60EQvsA=oYdPpQZQ@mail.gmail.com>
+Subject: Re: [RFC net-next 1/9] skb: introduce gro_disabled bit
+To: Alexander Lobakin <aleksander.lobakin@intel.com>
+Cc: netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>, 
+	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, 
+	Willem de Bruijn <willemb@google.com>, Simon Horman <horms@kernel.org>, Florian Westphal <fw@strlen.de>, 
+	Mina Almasry <almasrymina@google.com>, Abhishek Chauhan <quic_abchauha@quicinc.com>, 
+	David Howells <dhowells@redhat.com>, David Ahern <dsahern@kernel.org>, 
+	Richard Gobert <richardbgobert@gmail.com>, Antoine Tenart <atenart@kernel.org>, 
+	Felix Fietkau <nbd@nbd.name>, Soheil Hassas Yeganeh <soheil@google.com>, 
+	Pavel Begunkov <asml.silence@gmail.com>, Lorenzo Bianconi <lorenzo@kernel.org>, 
+	=?UTF-8?Q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>, 
+	linux-kernel@vger.kernel.org, bpf@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Jun 21, 2024 at 1:56=E2=80=AFAM Benjamin Tissoires <bentiss@kernel.=
-org> wrote:
+On Fri, Jun 21, 2024 at 4:13=E2=80=AFAM Alexander Lobakin
+<aleksander.lobakin@intel.com> wrote:
 >
-> Same story than hid_hw_raw_requests:
+> From: Yan Zhai <yan@cloudflare.com>
+> Date: Thu, 20 Jun 2024 15:19:10 -0700
 >
-> This allows to intercept and prevent or change the behavior of
-> hid_hw_output_report() from a bpf program.
+> > Software GRO is currently controlled by a single switch, i.e.
+> >
+> >   ethtool -K dev gro on|off
+> >
+> > However, this is not always desired. When GRO is enabled, even if the
+> > kernel cannot GRO certain traffic, it has to run through the GRO receiv=
+e
+> > handlers with no benefit.
+> >
+> > There are also scenarios that turning off GRO is a requirement. For
+> > example, our production environment has a scenario that a TC egress hoo=
+k
+> > may add multiple encapsulation headers to forwarded skbs for load
+> > balancing and isolation purpose. The encapsulation is implemented via
+> > BPF. But the problem arises then: there is no way to properly offload a
+> > double-encapsulated packet, since skb only has network_header and
+> > inner_network_header to track one layer of encapsulation, but not two.
 >
-> The intent is to solve a couple of use case:
->   - firewalling a HID device: a firewall can monitor who opens the hidraw
->     nodes and then prevent or allow access to write operations on that
->     hidraw node.
->   - change the behavior of a device and emulate a new HID feature request
+> Implement it in the kernel then? :D
 >
-> The hook is allowed to be run as sleepable so it can itself call
-> hid_hw_output_report(), which allows to "convert" one feature request int=
-o
-> another or even call the feature request on a different HID device on the
-> same physical device.
->
-> Signed-off-by: Benjamin Tissoires <bentiss@kernel.org>
->
-> ---
->
-> Here checkpatch complains about:
-> WARNING: use of RCU tasks trace is incorrect outside BPF or core RCU code
->
-> However, we are jumping in BPF code, so I think this is correct, but I'd
-> like to have the opinion on the BPF folks.
-> ---
->  drivers/hid/bpf/hid_bpf_dispatch.c   | 37 ++++++++++++++++++++++++++++++=
-++----
->  drivers/hid/bpf/hid_bpf_struct_ops.c |  1 +
->  drivers/hid/hid-core.c               | 10 ++++++++--
->  drivers/hid/hidraw.c                 |  2 +-
->  include/linux/hid.h                  |  3 ++-
->  include/linux/hid_bpf.h              | 24 ++++++++++++++++++++++-
->  6 files changed, 68 insertions(+), 9 deletions(-)
->
-> diff --git a/drivers/hid/bpf/hid_bpf_dispatch.c b/drivers/hid/bpf/hid_bpf=
-_dispatch.c
-> index 8d6e08b7c42f..2a29a0625a3b 100644
-> --- a/drivers/hid/bpf/hid_bpf_dispatch.c
-> +++ b/drivers/hid/bpf/hid_bpf_dispatch.c
-> @@ -111,6 +111,38 @@ int dispatch_hid_bpf_raw_requests(struct hid_device =
-*hdev,
->  }
->  EXPORT_SYMBOL_GPL(dispatch_hid_bpf_raw_requests);
->
-> +int dispatch_hid_bpf_output_report(struct hid_device *hdev,
-> +                                  __u8 *buf, u32 size, __u64 source,
-> +                                  bool from_bpf)
-> +{
-> +       struct hid_bpf_ctx_kern ctx_kern =3D {
-> +               .ctx =3D {
-> +                       .hid =3D hdev,
-> +                       .allocated_size =3D size,
-> +                       .size =3D size,
-> +               },
-> +               .data =3D buf,
-> +               .from_bpf =3D from_bpf,
-> +       };
-> +       struct hid_bpf_ops *e;
-> +       int ret;
-> +
-> +       rcu_read_lock_trace();
-> +       list_for_each_entry_rcu(e, &hdev->bpf.prog_list, list) {
-> +               if (e->hid_hw_output_report) {
-> +                       ret =3D e->hid_hw_output_report(&ctx_kern.ctx, so=
-urce);
-> +                       if (ret)
-> +                               goto out;
-> +               }
-> +       }
-> +       ret =3D 0;
-> +
-> +out:
-> +       rcu_read_unlock_trace();
+It would be a big commitment that I dare not make :) Out of curiosity,
+is it something that devices can handle today?
 
-same question.
-What protects prog_list ?
-list_for_each_entry_rcu() should be used within RCU CS
-if elements of that list are freed via call_rcu().
-rcu_read_lock_trace() looks wrong here.
+> > On the other hand, not all the traffic through this device needs double
+> > encapsulation. But we have to turn off GRO completely for any ingress
+> > device as a result.
+> >
+> > Introduce a bit on skb so that GRO engine can be notified to skip GRO o=
+n
+> > this skb, rather than having to be 0-or-1 for all traffic.
+> >
+> > Signed-off-by: Yan Zhai <yan@cloudflare.com>
+> > ---
+> >  include/linux/netdevice.h |  9 +++++++--
+> >  include/linux/skbuff.h    | 10 ++++++++++
+> >  net/Kconfig               | 10 ++++++++++
+> >  net/core/gro.c            |  2 +-
+> >  net/core/gro_cells.c      |  2 +-
+> >  net/core/skbuff.c         |  4 ++++
+> >  6 files changed, 33 insertions(+), 4 deletions(-)
+> >
+> > diff --git a/include/linux/netdevice.h b/include/linux/netdevice.h
+> > index c83b390191d4..2ca0870b1221 100644
+> > --- a/include/linux/netdevice.h
+> > +++ b/include/linux/netdevice.h
+> > @@ -2415,11 +2415,16 @@ struct net_device {
+> >       ((dev)->devlink_port =3D (port));                         \
+> >  })
+> >
+> > -static inline bool netif_elide_gro(const struct net_device *dev)
+> > +static inline bool netif_elide_gro(const struct sk_buff *skb)
+> >  {
+> > -     if (!(dev->features & NETIF_F_GRO) || dev->xdp_prog)
+> > +     if (!(skb->dev->features & NETIF_F_GRO) || skb->dev->xdp_prog)
+> >               return true;
+> > +
+> > +#ifdef CONFIG_SKB_GRO_CONTROL
+> > +     return skb->gro_disabled;
+> > +#else
+> >       return false;
+> > +#endif
+> >  }
+> >
+> >  #define      NETDEV_ALIGN            32
+> > diff --git a/include/linux/skbuff.h b/include/linux/skbuff.h
+> > index f4cda3fbdb75..48b10ece95b5 100644
+> > --- a/include/linux/skbuff.h
+> > +++ b/include/linux/skbuff.h
+> > @@ -1008,6 +1008,9 @@ struct sk_buff {
+> >  #if IS_ENABLED(CONFIG_IP_SCTP)
+> >       __u8                    csum_not_inet:1;
+> >  #endif
+> > +#ifdef CONFIG_SKB_GRO_CONTROL
+> > +     __u8                    gro_disabled:1;
+> > +#endif
+> >
+> >  #if defined(CONFIG_NET_SCHED) || defined(CONFIG_NET_XGRESS)
+> >       __u16                   tc_index;       /* traffic control index =
+*/
+> > @@ -1215,6 +1218,13 @@ static inline bool skb_wifi_acked_valid(const st=
+ruct sk_buff *skb)
+> >  #endif
+> >  }
+> >
+> > +static inline void skb_disable_gro(struct sk_buff *skb)
+> > +{
+> > +#ifdef CONFIG_SKB_GRO_CONTROL
+> > +     skb->gro_disabled =3D 1;
+> > +#endif
+> > +}
+> > +
+> >  /**
+> >   * skb_unref - decrement the skb's reference count
+> >   * @skb: buffer
+> > diff --git a/net/Kconfig b/net/Kconfig
+> > index 9fe65fa26e48..47d1ee92df15 100644
+> > --- a/net/Kconfig
+> > +++ b/net/Kconfig
+> > @@ -289,6 +289,16 @@ config MAX_SKB_FRAGS
+> >         and in drivers using build_skb().
+> >         If unsure, say 17.
+> >
+> > +config SKB_GRO_CONTROL
+> > +     bool "allow disable GRO on per-packet basis"
+> > +     default y
+> > +     help
+> > +       By default GRO can only be enabled or disabled per network devi=
+ce.
+> > +       This can be cumbersome for certain scenarios.
+> > +       Toggling this option will allow disabling GRO for selected pack=
+ets,
+> > +       e.g. by XDP programs, so that it is more flexibile.
+> > +       Extra overhead should be minimal.
+>
+> I don't think we need a Kconfig option for that. Can't it be
+> unconditional? Is there any real eye-visible overhead?
+
+Normally if it is a single branch I would not worry about it. But I
+know I am touching a hot potato here so I just want to be cautious :)
+
+best
+Yan
+
+>
+> Thanks,
+> Olek
 
