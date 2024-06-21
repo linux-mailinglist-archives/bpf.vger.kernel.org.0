@@ -1,201 +1,216 @@
-Return-Path: <bpf+bounces-32737-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-32738-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 98170912AC5
-	for <lists+bpf@lfdr.de>; Fri, 21 Jun 2024 18:01:30 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D484F912AD5
+	for <lists+bpf@lfdr.de>; Fri, 21 Jun 2024 18:05:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B923E1C232F6
-	for <lists+bpf@lfdr.de>; Fri, 21 Jun 2024 16:01:29 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BC4EDB23410
+	for <lists+bpf@lfdr.de>; Fri, 21 Jun 2024 16:05:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C40F15FA8C;
-	Fri, 21 Jun 2024 16:01:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C2C715F40C;
+	Fri, 21 Jun 2024 16:05:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b="KDE+h/v5"
+	dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b="V/RM0Zau"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f43.google.com (mail-ej1-f43.google.com [209.85.218.43])
+Received: from mail-ed1-f41.google.com (mail-ed1-f41.google.com [209.85.208.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E043C208D4
-	for <bpf@vger.kernel.org>; Fri, 21 Jun 2024 16:01:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E7132839F4
+	for <bpf@vger.kernel.org>; Fri, 21 Jun 2024 16:05:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718985673; cv=none; b=GmkbWkcPV5fochuUWfxa0OlnpqjFrdTUnCRBeFWh3wHjs1SOiJ3nkzrdWT4b8erEXWHu8z0gN+Epn80yYUbGQvMpb5ZtVIcg2tOMrGc1tz/QbOjTBa6LQrGKB3hEZC3LaF86q51GHiApwVuN46RlrPUim9mrNv9/FgZII+V3bTM=
+	t=1718985930; cv=none; b=CjFR2QfBmabajBFpDak2Njkc6OIYXTTntIwibfjE+WuT68P9kmRHuew6TV4JgIHwb44DQEnHtucBnoV7SITbxFtSDmzDDVeSu4SwfnUqLifJfgU+FBfAR4oD867kYpDAMQSu20oQcBU9/o1A4X+6B4u1Yq1b/hOZA6K+CQ9tO6c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718985673; c=relaxed/simple;
-	bh=bLByArEYUpYI3dt6YWX3IyUutLDU3bI2yI1nVC3d2yE=;
+	s=arc-20240116; t=1718985930; c=relaxed/simple;
+	bh=fkwPZLyQNQ4ZNXfxazc5Zwbqv5MiORFU7s6HGX0pBXo=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=m9XlkkyBraytuwtA7BkihPZns0wucax1GrJooWRuQuNlkEApuP/Mdvm1f2EVYeLpcKZ3p9iErSuMsmt+JlJrj9e+muHEJygoYXIOxy4LB6nE5t9lhWyRKFWDN5Vx7MPPW5NetMaAJBgHI4v+vm/a6dhOTto8UEV5cS+2Z6IN9wo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com; spf=pass smtp.mailfrom=cloudflare.com; dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b=KDE+h/v5; arc=none smtp.client-ip=209.85.218.43
+	 To:Cc:Content-Type; b=p/MplrobUu6NiPN+ZeIffXK8W5TEvBFzDDi5B2DveTYHcaWjDVvNjiFNfKy7P3hQza7xUoiT/naOVlUcFTcn4/8xPbHhp2k7Absv4kc1xxsUEBzmqTqW20QA4RVaERvb58mBZZfxKuSOdQFK7qeOwbMhsrjKwUM4qdCKa452xYo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com; spf=pass smtp.mailfrom=cloudflare.com; dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b=V/RM0Zau; arc=none smtp.client-ip=209.85.208.41
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cloudflare.com
-Received: by mail-ej1-f43.google.com with SMTP id a640c23a62f3a-a6ef46d25efso256063666b.0
-        for <bpf@vger.kernel.org>; Fri, 21 Jun 2024 09:01:10 -0700 (PDT)
+Received: by mail-ed1-f41.google.com with SMTP id 4fb4d7f45d1cf-57d2fc03740so871068a12.0
+        for <bpf@vger.kernel.org>; Fri, 21 Jun 2024 09:05:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google09082023; t=1718985669; x=1719590469; darn=vger.kernel.org;
+        d=cloudflare.com; s=google09082023; t=1718985927; x=1719590727; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=JhjJ4nn864WCrKOSZLKnhxFounuXABQFkqKHcC/VvnA=;
-        b=KDE+h/v5J8x7DRunQcoXAJfoP2CKXk0Z8wvGO770AS4BXFxyepJ2wTgOgonIn5W840
-         tjyIuDk0maX3loDmUXEUC0Z36IGO/dCzY8dLhaK/YzyDmSmNEecfwjYX5hFEa1O+cxF1
-         A5+WGChqPVo2FiU6z2RYPBBwECo6GR8Eg9h/ap2NiYNXYZapadn6hV9GD4G001khw6nb
-         LlqiqF0VmpeHdCJkwa6f/jRjEYLtn8U6OLIzHUeZENws2l24dKcfECk5+lEqFln9eLZQ
-         BF+YsLooyv7676xppob+ZHlUrv8oIsxE9u3Ek67RxaMvuSNRL/tRY15cGQ4p6Pd58KyA
-         7oug==
+        bh=D2aLeA46ZAcGtDVAAuPO+bTYmu9QSz8VmaNmucxcUMo=;
+        b=V/RM0ZauFfBwHiyGmK69tMrTEtIlck9+4z5c+chqweQK7pscIT5gmLbxwJsMw0kXij
+         aZtfvoPX47z8UnwHZ6TYdv3IYaM9uMeJp/obQMgR0S67uAgul4jVrAFDExWYY7e3Cdxn
+         zv01dX7S76E3o8nPKHsdv4aByMscP3clQ6gV+jAyfTvlYG+69yRb9I+44x5ISly0fyES
+         LivPrYzfMn276anaK5ua7FSqgR1/B0u2H3Qr7gxFiaGysxQkFFXdEDqzt+AEYiCKIMDl
+         k/MGflMmsKJWDhxHVRyB2pld3NK7LMN644LDvAM0Bi67zLeLwai22JfuYLnxAXnsX2x8
+         LRkg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1718985669; x=1719590469;
+        d=1e100.net; s=20230601; t=1718985927; x=1719590727;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=JhjJ4nn864WCrKOSZLKnhxFounuXABQFkqKHcC/VvnA=;
-        b=sUQTC+KK3SevnyTU8ccT/wgifWSP3qNjdeCFlXQIeFhfgvGy8CXNu13CKp4Thv72tG
-         PI/x23ZlTqH7xaC8jK/wNT3YzXR7c9+sUYksZJSst+U5i1Vx1zYItK1JagcBDAS7KatF
-         9/qfnrElpXPRuH2lDIjTCYmlZe7+EkrIZj8raxVQwucm29iwolH+/xRNKKA6Cfmlm/q1
-         9Dz7wiWV+dLJrAlTT91w2ESl3QOVzRS76weJfzIY3lnu8e6QrIdFq0obydefGwG9HVKC
-         a4dX9DC37UHtO1XLsyKh/N+zAn2xv1rl1MYsTCjPqcxRgBM8ABb/2DBtAohSOMXui5sk
-         VfWA==
-X-Forwarded-Encrypted: i=1; AJvYcCXDktGrw9coHFFST7wHaTDJ+lGB4UlMmGOte/2RmiR7mhEnTAeVLP3pqgGlkVRC1Dy0hL0euOtjxfUYi13StCTeKKj7
-X-Gm-Message-State: AOJu0YwkLbMmAZJ+l8zYvQv04szj3Bf3jLtfS/1QxQ7st+LEqR5Zbt0L
-	m2RRFmdIDM0LzSAl0BJOxRZWu9okA2W9sdNxNyhkU2O3ILKoG5Jn3K974Yozd4lLUjtFsbFwg2I
-	s5pd9jPOiORydjCCHm4gGaZEeOMGsYnWc0BMwiHqWnVdGHno0LEQ=
-X-Google-Smtp-Source: AGHT+IEpRqcMDdiBbz0GyX6dt5W0JqEq7phpDvzBhFKJwWKJcStSGa/ky12EWpk6XnkInTLfmN+VUVAJ+a5pmOhSTCM=
-X-Received: by 2002:a17:907:a0d2:b0:a6f:af8e:a385 with SMTP id
- a640c23a62f3a-a6faf8ea560mr403540366b.77.1718985669235; Fri, 21 Jun 2024
- 09:01:09 -0700 (PDT)
+        bh=D2aLeA46ZAcGtDVAAuPO+bTYmu9QSz8VmaNmucxcUMo=;
+        b=s6iP9rKfFRXJYsLKSHvKo9u5+2L2YuhUUuy+eJCeG6TwxnXxgFD8JDqsJjLiBMHZMB
+         vxkGKnlIvu1brm/PdDI6ntWrs4n2FNytKaskPS8xvy9HCh2Vq+A/Jz7CyJO1wuCuZGYn
+         MXP2TNAU5ZVaurdvbDFgH5lCkNtrIN0zZO0NArsgpax8dj/eyuMuT5uHYP8zGhxm/0hY
+         +L8gz69e74AQbQ7DreFoveyogfl7dlWbeFRVgHb/hWxISB6TNlD/eHybo166/L5hHm2W
+         vI4K0h7vg+z7uTqCgBaI+S/cSlN7XmIMKRZV3VQ553PoMvpSeyRgDuVgrTTEuUWit2bm
+         cKcQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVS7f9XjYM53rt7AkNBEIgCIdWGch+E+/mcXx9SlXar2gcwehEkeWdy7+wv/8VDXqbf0/yaEEewWwudxDVnBOTVq5kt
+X-Gm-Message-State: AOJu0YzrS2cTkLSMRYBQvnBMqY0g/p4KP8APPJczOw7TqbFUmZHJWrd4
+	Q8v/gjIQS6JFebEWQuAPwWn4v3BfycL6K4F17giOFAzeEYp0ZM+drYAeSr6/SGzfpEKi2fMwiGc
+	3q9IXVlSeyR9VSJBZLFcd016IOSAjUZYsmpsEDQ==
+X-Google-Smtp-Source: AGHT+IGD3zOZ+DlFfttlvVbViNyesT1FVgv0TCou1a6PzL45XRc693Rl+UIwHlsumxzTa5uTopBV2v3bgejeyto8xfA=
+X-Received: by 2002:a50:9e67:0:b0:57d:57c:ce99 with SMTP id
+ 4fb4d7f45d1cf-57d07e68e29mr4776325a12.2.1718985927129; Fri, 21 Jun 2024
+ 09:05:27 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <cover.1718919473.git.yan@cloudflare.com> <b8c183a24285c2ab30c51622f4f9eff8f7a4752f.1718919473.git.yan@cloudflare.com>
- <66756ed3f2192_2e64f929491@willemb.c.googlers.com.notmuch> <44ac34f6-c78e-16dd-14da-15d729fecb5b@iogearbox.net>
-In-Reply-To: <44ac34f6-c78e-16dd-14da-15d729fecb5b@iogearbox.net>
+References: <cover.1718919473.git.yan@cloudflare.com> <a9eba425bfd3bfac7e7be38fe86ad5dbff3ae01f.1718919473.git.yan@cloudflare.com>
+ <6414deb0-165c-4a98-8467-ba6949166f96@intel.com>
+In-Reply-To: <6414deb0-165c-4a98-8467-ba6949166f96@intel.com>
 From: Yan Zhai <yan@cloudflare.com>
-Date: Fri, 21 Jun 2024 11:00:55 -0500
-Message-ID: <CAO3-PbrhnvmdYmQubNsTX3gX917o=Q+MBWTBkxUd=YWt4dNGuA@mail.gmail.com>
-Subject: Re: [RFC net-next 1/9] skb: introduce gro_disabled bit
-To: Daniel Borkmann <daniel@iogearbox.net>
-Cc: Willem de Bruijn <willemdebruijn.kernel@gmail.com>, netdev@vger.kernel.org, 
-	"David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, Alexei Starovoitov <ast@kernel.org>, 
+Date: Fri, 21 Jun 2024 11:05:16 -0500
+Message-ID: <CAO3-PbrVbOo9ydrtc7kfWitXrnftgT3QGpub3y2K209L0jis1Q@mail.gmail.com>
+Subject: Re: [RFC net-next 5/9] ice: apply XDP offloading fixup when building skb
+To: Alexander Lobakin <aleksander.lobakin@intel.com>
+Cc: netdev@vger.kernel.org, Jesse Brandeburg <jesse.brandeburg@intel.com>, 
+	Tony Nguyen <anthony.l.nguyen@intel.com>, "David S. Miller" <davem@davemloft.net>, 
+	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+	=?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>, 
+	Magnus Karlsson <magnus.karlsson@intel.com>, 
+	Maciej Fijalkowski <maciej.fijalkowski@intel.com>, Jonathan Lemon <jonathan.lemon@gmail.com>, 
+	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
 	Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, 
-	Willem de Bruijn <willemb@google.com>, Simon Horman <horms@kernel.org>, Florian Westphal <fw@strlen.de>, 
-	Mina Almasry <almasrymina@google.com>, Abhishek Chauhan <quic_abchauha@quicinc.com>, 
-	David Howells <dhowells@redhat.com>, Alexander Lobakin <aleksander.lobakin@intel.com>, 
-	David Ahern <dsahern@kernel.org>, Richard Gobert <richardbgobert@gmail.com>, 
-	Antoine Tenart <atenart@kernel.org>, Felix Fietkau <nbd@nbd.name>, 
-	Soheil Hassas Yeganeh <soheil@google.com>, Pavel Begunkov <asml.silence@gmail.com>, 
-	Lorenzo Bianconi <lorenzo@kernel.org>, =?UTF-8?Q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>, 
-	linux-kernel@vger.kernel.org, bpf@vger.kernel.org
+	intel-wired-lan@lists.osuosl.org, linux-kernel@vger.kernel.org, 
+	bpf@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Jun 21, 2024 at 8:13=E2=80=AFAM Daniel Borkmann <daniel@iogearbox.n=
-et> wrote:
+On Fri, Jun 21, 2024 at 4:22=E2=80=AFAM Alexander Lobakin
+<aleksander.lobakin@intel.com> wrote:
 >
-> On 6/21/24 2:15 PM, Willem de Bruijn wrote:
-> > Yan Zhai wrote:
-> >> Software GRO is currently controlled by a single switch, i.e.
-> >>
-> >>    ethtool -K dev gro on|off
-> >>
-> >> However, this is not always desired. When GRO is enabled, even if the
-> >> kernel cannot GRO certain traffic, it has to run through the GRO recei=
-ve
-> >> handlers with no benefit.
-> >>
-> >> There are also scenarios that turning off GRO is a requirement. For
-> >> example, our production environment has a scenario that a TC egress ho=
-ok
-> >> may add multiple encapsulation headers to forwarded skbs for load
-> >> balancing and isolation purpose. The encapsulation is implemented via
-> >> BPF. But the problem arises then: there is no way to properly offload =
-a
-> >> double-encapsulated packet, since skb only has network_header and
-> >> inner_network_header to track one layer of encapsulation, but not two.
-> >> On the other hand, not all the traffic through this device needs doubl=
-e
-> >> encapsulation. But we have to turn off GRO completely for any ingress
-> >> device as a result.
-> >>
-> >> Introduce a bit on skb so that GRO engine can be notified to skip GRO =
-on
-> >> this skb, rather than having to be 0-or-1 for all traffic.
-> >>
-> >> Signed-off-by: Yan Zhai <yan@cloudflare.com>
-> >> ---
-> >>   include/linux/netdevice.h |  9 +++++++--
-> >>   include/linux/skbuff.h    | 10 ++++++++++
-> >>   net/Kconfig               | 10 ++++++++++
-> >>   net/core/gro.c            |  2 +-
-> >>   net/core/gro_cells.c      |  2 +-
-> >>   net/core/skbuff.c         |  4 ++++
-> >>   6 files changed, 33 insertions(+), 4 deletions(-)
-> >>
-> >> diff --git a/include/linux/netdevice.h b/include/linux/netdevice.h
-> >> index c83b390191d4..2ca0870b1221 100644
-> >> --- a/include/linux/netdevice.h
-> >> +++ b/include/linux/netdevice.h
-> >> @@ -2415,11 +2415,16 @@ struct net_device {
-> >>      ((dev)->devlink_port =3D (port));                         \
-> >>   })
-> >>
-> >> -static inline bool netif_elide_gro(const struct net_device *dev)
-> >> +static inline bool netif_elide_gro(const struct sk_buff *skb)
-> >>   {
-> >> -    if (!(dev->features & NETIF_F_GRO) || dev->xdp_prog)
-> >> +    if (!(skb->dev->features & NETIF_F_GRO) || skb->dev->xdp_prog)
-> >>              return true;
-> >> +
-> >> +#ifdef CONFIG_SKB_GRO_CONTROL
-> >> +    return skb->gro_disabled;
-> >> +#else
-> >>      return false;
-> >> +#endif
-> >
-> > Yet more branches in the hot path.
-> >
-> > Compile time configurability does not help, as that will be
-> > enabled by distros.
-> >
-> > For a fairly niche use case. Where functionality of GRO already
-> > works. So just a performance for a very rare case at the cost of a
-> > regression in the common case. A small regression perhaps, but death
-> > by a thousand cuts.
+> From: Yan Zhai <yan@cloudflare.com>
+> Date: Thu, 20 Jun 2024 15:19:22 -0700
 >
-> Mentioning it here b/c it perhaps fits in this context, longer time ago
-> there was the idea mentioned to have BPF operating as GRO engine which
-> might also help to reduce attack surface by only having to handle packets
-> of interest for the concrete production use case. Perhaps here meta data
-> buffer could be used to pass a notification from XDP to exit early w/o
-> aggregation.
+> > Add a common point to transfer offloading info from XDP context to skb.
+> >
+> > Signed-off-by: Yan Zhai <yan@cloudflare.com>
+> > Signed-off-by: Jesper Dangaard Brouer <hawk@kernel.org>
+> > ---
+> >  drivers/net/ethernet/intel/ice/ice_txrx.c | 2 ++
+> >  drivers/net/ethernet/intel/ice/ice_xsk.c  | 6 +++++-
+> >  include/net/xdp_sock_drv.h                | 2 +-
+> >  3 files changed, 8 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/drivers/net/ethernet/intel/ice/ice_txrx.c b/drivers/net/et=
+hernet/intel/ice/ice_txrx.c
+> > index 8bb743f78fcb..a247306837ed 100644
+> > --- a/drivers/net/ethernet/intel/ice/ice_txrx.c
+> > +++ b/drivers/net/ethernet/intel/ice/ice_txrx.c
+> > @@ -1222,6 +1222,7 @@ int ice_clean_rx_irq(struct ice_rx_ring *rx_ring,=
+ int budget)
+> >
+> >                       hard_start =3D page_address(rx_buf->page) + rx_bu=
+f->page_offset -
+> >                                    offset;
+> > +                     xdp_init_buff_minimal(xdp);
+>
+> Two lines below, you have this:
+>
+>         xdp_buff_clear_frags_flag(xdp);
+>
+> Which clears frags bit in xdp->flags. I.e. since you always clear flags
+> here, this call becomes redundant.
+> But I'd say that `xdp->flags =3D 0` really wants to be moved from
+> xdp_init_buff() to xdp_prepare_buff().
+>
+You are right, there is some redundancy here. I will fix it if people
+feel good about the use case in general :)
 
-Metadata is in fact one of our interests as well. We discussed using
-metadata instead of a skb bit to carry this information internally.
-Since metadata is opaque atm so it seems the only option is to have a
-GRO control hook before napi_gro_receive, and let BPF decide
-netif_receive_skb or napi_gro_receive (echo what Paolo said). With BPF
-it could indeed be more flexible, but the cons is that it could be
-even more slower than taking a bit on skb. I am actually open to
-either approach, as long as it gives us more control on when to enable
-GRO :)
 
-To extend the discussion a bit, putting GRO aside, I think some common
-hook before GRO would be still valuable moving forward: it is a
-limited window where the driver code has both access to XDP context
-and skb. Today we do not have a good way to transfer HW offloading
-info to skbs if XDP redirect-to-cpu or if XDP encap-and-tx for load
-balancing purposes. The XDP metadata infrastructure already allows XDP
-to read this information with driver supports, so to complete that, a
-place to use it (which I introduced as
-xdp_buff/frame_fixup_skb_offloading in a later patch) would be
-beneficial to pass on things like the flow hash, vlan information,
-etc.
+> >                       xdp_prepare_buff(xdp, hard_start, offset, size, !=
+!offset);
+> >  #if (PAGE_SIZE > 4096)
+> >                       /* At larger PAGE_SIZE, frame_sz depend on len si=
+ze */
+> > @@ -1287,6 +1288,7 @@ int ice_clean_rx_irq(struct ice_rx_ring *rx_ring,=
+ int budget)
+> >
+> >               /* populate checksum, VLAN, and protocol */
+> >               ice_process_skb_fields(rx_ring, rx_desc, skb);
+> > +             xdp_buff_fixup_skb_offloading(xdp, skb);
+> >
+> >               ice_trace(clean_rx_irq_indicate, rx_ring, rx_desc, skb);
+> >               /* send completed skb up the stack */
+> > diff --git a/drivers/net/ethernet/intel/ice/ice_xsk.c b/drivers/net/eth=
+ernet/intel/ice/ice_xsk.c
+> > index a65955eb23c0..367658acaab8 100644
+> > --- a/drivers/net/ethernet/intel/ice/ice_xsk.c
+> > +++ b/drivers/net/ethernet/intel/ice/ice_xsk.c
+> > @@ -845,8 +845,10 @@ int ice_clean_rx_irq_zc(struct ice_rx_ring *rx_rin=
+g, int budget)
+> >       xdp_prog =3D READ_ONCE(rx_ring->xdp_prog);
+> >       xdp_ring =3D rx_ring->xdp_ring;
+> >
+> > -     if (ntc !=3D rx_ring->first_desc)
+> > +     if (ntc !=3D rx_ring->first_desc) {
+> >               first =3D *ice_xdp_buf(rx_ring, rx_ring->first_desc);
+> > +             xdp_init_buff_minimal(first);
+>
+> xdp_buff_set_size() always clears flags, this is redundant.
+>
+> > +     }
+> >
+> >       while (likely(total_rx_packets < (unsigned int)budget)) {
+> >               union ice_32b_rx_flex_desc *rx_desc;
+> > @@ -920,6 +922,7 @@ int ice_clean_rx_irq_zc(struct ice_rx_ring *rx_ring=
+, int budget)
+> >                       break;
+> >               }
+> >
+> > +             xdp =3D first;
+> >               first =3D NULL;
+> >               rx_ring->first_desc =3D ntc;
+> >
+> > @@ -934,6 +937,7 @@ int ice_clean_rx_irq_zc(struct ice_rx_ring *rx_ring=
+, int budget)
+> >               vlan_tci =3D ice_get_vlan_tci(rx_desc);
+> >
+> >               ice_process_skb_fields(rx_ring, rx_desc, skb);
+> > +             xdp_buff_fixup_skb_offloading(xdp, skb);
+> >               ice_receive_skb(rx_ring, skb, vlan_tci);
+> >       }
+> >
+> > diff --git a/include/net/xdp_sock_drv.h b/include/net/xdp_sock_drv.h
+> > index 0a5dca2b2b3f..02243dc064c2 100644
+> > --- a/include/net/xdp_sock_drv.h
+> > +++ b/include/net/xdp_sock_drv.h
+> > @@ -181,7 +181,7 @@ static inline void xsk_buff_set_size(struct xdp_buf=
+f *xdp, u32 size)
+> >       xdp->data =3D xdp->data_hard_start + XDP_PACKET_HEADROOM;
+> >       xdp->data_meta =3D xdp->data;
+> >       xdp->data_end =3D xdp->data + size;
+> > -     xdp->flags =3D 0;
+> > +     xdp_init_buff_minimal(xdp);
+>
+> Why is this done in the patch prefixed with "ice:"?
+>
+Good catch, this should be moved to the previous patch.
 
-best
+thanks
 Yan
+
+> >  }
+> >
+> >  static inline dma_addr_t xsk_buff_raw_get_dma(struct xsk_buff_pool *po=
+ol,
+>
+> Thanks,
+> Olek
 
