@@ -1,49 +1,49 @@
-Return-Path: <bpf+bounces-32753-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-32754-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8DCFF912D07
-	for <lists+bpf@lfdr.de>; Fri, 21 Jun 2024 20:10:51 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 58CB7912D21
+	for <lists+bpf@lfdr.de>; Fri, 21 Jun 2024 20:20:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 373071F25B06
-	for <lists+bpf@lfdr.de>; Fri, 21 Jun 2024 18:10:51 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DA316B25CAD
+	for <lists+bpf@lfdr.de>; Fri, 21 Jun 2024 18:20:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 51FE317966E;
-	Fri, 21 Jun 2024 18:10:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EBE5D168482;
+	Fri, 21 Jun 2024 18:20:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dtmnPw8d"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="blEh02Gl"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C7D671791EF;
-	Fri, 21 Jun 2024 18:10:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 75F7E13D521
+	for <bpf@vger.kernel.org>; Fri, 21 Jun 2024 18:20:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718993433; cv=none; b=Sr1luGikhxF6psQRTKQxwpIA1vlxlHljrqB76ZzHDnZ+nRYajlLPkp4e+o7z1TRl1dnK/L0fuyxIFOgXpCRZwGPqwZRPIj5GcXTfci+40acLzchSgumODH7O1+YTIBkvWUTv41wdcIloalgmo5mOLGW+JgCJy6bHtM28TMMMwnA=
+	t=1718994034; cv=none; b=cREW/qWbJI7J/jkiKjaKNrJg8dvQVkLxReSyUNXKjxv5ZwMjCS7hUISqE2zhkF3HhFfLNlnNxIhA4PABvKaQKBKQLiGYLSc9Evhgz9EgLnYv928FG7/5ScU9FLd9HP0gO3TrDwg+ZTt3FgXtjrsIAa1X2qfDjRB+b6EybgsE9WE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718993433; c=relaxed/simple;
-	bh=5b+UNieFQPKmUWt4+MmvkWhy62llP2muoBoOWy1lCEM=;
+	s=arc-20240116; t=1718994034; c=relaxed/simple;
+	bh=HYdkD5+6emd1Dcyddvs4QCVofbPU/TTWJM21EzxQwuQ=;
 	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=YctsmixE6P7czGKd4Zk5gGWBGkppmXaIFW6PnkACKMpVIDqNQSaBA5/5ZgtiSJ6QUuDcMQrTJ2NUGTytmrqWWusdkrLRI9lTwuI7NjmoJb+/fVz/avOBBqJzU8ZPRA4NDq12KFxyuLJL2iADBHdzQAOACF2j6EPziDIvra3RZ3c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dtmnPw8d; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 9FE2CC2BBFC;
-	Fri, 21 Jun 2024 18:10:33 +0000 (UTC)
+	 In-Reply-To:To:Cc; b=u/zreo6e66wc3xIeyl3UZArPaUWW0KsGdVLMzZRWXUr2EImz0oQGiWtPtGF0rGvWS0wAq5XDg+pqRniHWwWIL0uT5fQNtbqBEbueoLyyisz3vHMyLk4A+LtlW7xNcERdJHYb3BS8ZtO6x5BEVxqFYtbmARO3pPsdqaFclcmHqxA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=blEh02Gl; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 38143C32781;
+	Fri, 21 Jun 2024 18:20:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1718993433;
-	bh=5b+UNieFQPKmUWt4+MmvkWhy62llP2muoBoOWy1lCEM=;
+	s=k20201202; t=1718994034;
+	bh=HYdkD5+6emd1Dcyddvs4QCVofbPU/TTWJM21EzxQwuQ=;
 	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=dtmnPw8dIlW0MUBsbPNUr/iJabgfw0AGZqJa/HQ1WMGxvAVELZeWvYEeTL7tNu2V/
-	 k7UdsYaUafc8NlqJzs9qXXKkMQw7jdAUR611E7eeZMV9hKUHwO74F5dSQqMmdFxR44
-	 pZCzXg0GwBgTYRsWAdmX4XFf9JgiCovoofRV+6V7fW88C4nf0O2dI0j/dEOkx0hwwc
-	 4ulyaMf82V+NY9QChBwawikgwS/wry3coQT3hVZM2GVLKDHp96n+peUhscKqs0Ui9r
-	 ZgC664L/fOZjXKQIoS4opE/PTwRz7qiz0MVwDhe619go8iCfuwLuS4EXx9tVHg5/dz
-	 iOzygpM0gC8UQ==
+	b=blEh02GlTFLDBvZYSsyVqEyhefNaKIQy+4XoNUhEjQoW2604zD2y36jVqoY0wYQso
+	 hwzQiunBjtdMuDvEqih/6zfkv3FXy/VQhp1PwqL6c/yAU1NUeSXdFRA7HOv0I29VuT
+	 uuEPFAgGHvE/UNOLVEHaHngz6ZDEKCeb9gdOGsMld/59BTkFnJtfTW8aGjQeSYmABa
+	 tXYnrG0LIbq18xnhspsl6y2TO2zZfeCNaQLW004t+yjTwcOpc6HdqhMaUaVlV5XVfQ
+	 UA+cAaT9OJMwV8IJ5KiWp7jTHxZpQC7EVzmBWb5AoZFy8/XjS/1WP1IFaeJe3Ed1/p
+	 bSffpUwfNleFg==
 Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 88588E7C4C5;
-	Fri, 21 Jun 2024 18:10:33 +0000 (UTC)
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 2557FE7C4C5;
+	Fri, 21 Jun 2024 18:20:34 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -52,42 +52,40 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH v2] libbpf: checking the btf_type kind when fixing variable
- offsets
+Subject: Re: [PATCH v2 bpf 1/2] bpf: Fix the corner case with may_goto and jump to
+ the 1st insn.
 From: patchwork-bot+netdevbpf@kernel.org
 Message-Id: 
- <171899343355.16505.13108622504134914457.git-patchwork-notify@kernel.org>
-Date: Fri, 21 Jun 2024 18:10:33 +0000
-References: <20240619122355.426405-1-dolinux.peng@gmail.com>
-In-Reply-To: <20240619122355.426405-1-dolinux.peng@gmail.com>
-To: Donglin Peng <dolinux.peng@gmail.com>
-Cc: alan.maguire@oracle.com, eddyz87@gmail.com, ast@kernel.org,
- daniel@iogearbox.net, song@kernel.org, andrii@kernel.org, haoluo@google.com,
- yonghong.song@linux.dev, bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+ <171899403414.24191.3222078179875130837.git-patchwork-notify@kernel.org>
+Date: Fri, 21 Jun 2024 18:20:34 +0000
+References: <20240619011859.79334-1-alexei.starovoitov@gmail.com>
+In-Reply-To: <20240619011859.79334-1-alexei.starovoitov@gmail.com>
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: bpf@vger.kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+ martin.lau@kernel.org, memxor@gmail.com, eddyz87@gmail.com,
+ zacecob@protonmail.com, kernel-team@fb.com
 
 Hello:
 
-This patch was applied to bpf/bpf-next.git (master)
+This series was applied to bpf/bpf.git (master)
 by Daniel Borkmann <daniel@iogearbox.net>:
 
-On Wed, 19 Jun 2024 05:23:55 -0700 you wrote:
-> I encountered an issue when building the test_progs from the repository[1]:
+On Tue, 18 Jun 2024 18:18:58 -0700 you wrote:
+> From: Alexei Starovoitov <ast@kernel.org>
 > 
-> $ pwd
-> /work/Qemu/x86_64/linux-6.10-rc2/tools/testing/selftests/bpf/
-> 
-> $ make test_progs V=1
-> ...
-> ./tools/sbin/bpftool gen object ./ip_check_defrag.bpf.linked2.o ./ip_check_defrag.bpf.linked1.o
-> libbpf: failed to find symbol for variable 'bpf_dynptr_slice' in section '.ksyms'
-> Error: failed to link './ip_check_defrag.bpf.linked1.o': No such file or directory (2)
-> ...
+> When the following program is processed by the verifier:
+> L1: may_goto L2
+>     goto L1
+> L2: w0 = 0
+>     exit
 > 
 > [...]
 
 Here is the summary with links:
-  - [v2] libbpf: checking the btf_type kind when fixing variable offsets
-    https://git.kernel.org/bpf/bpf-next/c/cc5083d1f388
+  - [v2,bpf,1/2] bpf: Fix the corner case with may_goto and jump to the 1st insn.
+    https://git.kernel.org/bpf/bpf/c/5337ac4c9b80
+  - [v2,bpf,2/2] selftests/bpf: Tests with may_goto and jumps to the 1st insn
+    https://git.kernel.org/bpf/bpf/c/2673315947c9
 
 You are awesome, thank you!
 -- 
