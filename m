@@ -1,76 +1,63 @@
-Return-Path: <bpf+bounces-32757-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-32758-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 120AD912DC5
-	for <lists+bpf@lfdr.de>; Fri, 21 Jun 2024 21:18:58 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3DB4F912DDC
+	for <lists+bpf@lfdr.de>; Fri, 21 Jun 2024 21:32:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BF2942842C3
-	for <lists+bpf@lfdr.de>; Fri, 21 Jun 2024 19:18:56 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 815C61F24401
+	for <lists+bpf@lfdr.de>; Fri, 21 Jun 2024 19:32:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 02B2317A93E;
-	Fri, 21 Jun 2024 19:18:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E63E717B4F5;
+	Fri, 21 Jun 2024 19:32:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JnEVlfBE"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="fTMnABQu"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f175.google.com (mail-pl1-f175.google.com [209.85.214.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 34F6A4644C;
-	Fri, 21 Jun 2024 19:18:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 047BF15FCF6
+	for <bpf@vger.kernel.org>; Fri, 21 Jun 2024 19:32:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718997530; cv=none; b=XywncdpovO2gK/zNZKhMc299tQ7SdsT1Z7wlT80cnyEC6GYJfOgXsbgHWTDqrY3VEwEy41fhHoGvTUfR/vDpzaRiqXtWv3df1DuH/wQoz+WXbjoKLVOHK7NBQ4p8Cpi6UKJcnf24aqpM3PpotI+ldUzCyLmGRvS6Vcx5qFC1iVw=
+	t=1718998366; cv=none; b=r2EFnh/yC3Yb3aCjq4plj7eozUfPhYL/Ty3kJmKLZf6NsjrRcVp3siOqqN9lGw8WiZCu1o6Zi6pVWOuEyA9klc8WUlMJb4mYZaJtLbLwokjRUOZrARjZnIelCdakF+AKqndjHRo+OV3z2PA8C+kLexbUb1XH0Ynal+PK4k78ggM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718997530; c=relaxed/simple;
-	bh=4b15RRFLHYTXI8/mWM0eb9a4yFji9qdd7+lhe3DcUqU=;
+	s=arc-20240116; t=1718998366; c=relaxed/simple;
+	bh=z78AqR6z7mIfpnhE4/lGwoqgAT6n8pYryOkKdmY91ps=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Ibakt+z/WWqU3RY/lhfISKk0pLayz2XiGB/0ixQI9ZCX2R04vWl12WaoQIkrOZtjXPvVuZW32KUU4tYwYSePZe9+oELFg3AwqZoRbc2NzBAVrR+nhDZAYOzjzbb8k/E0PV7S+SO+jnCEHuIQpXQmHXBc7x7LqRyNpq6MpR/2vW4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=JnEVlfBE; arc=none smtp.client-ip=209.85.214.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f175.google.com with SMTP id d9443c01a7336-1f6fabe9da3so19666435ad.0;
-        Fri, 21 Jun 2024 12:18:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1718997528; x=1719602328; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=f3JLZK9KhSNbfEjLOhjGsas4rAhTsCvacjMIXcw3CjM=;
-        b=JnEVlfBElQoPjnLLgElcs2HyS8p/gTrEAEjKJCh+K+p0NFRwoQxY/Ntndxs+eLOqbe
-         x3eMyfDvRfIjODx8mpHmajQ/frUZCv2PbpG/EkRDMKbvp4cH2IwpMS60jRqqCgeXrYD0
-         7sXhMqT0N/3gYxmcembOUwKXhDKeyko/elhRdFn+8FVUGRO5UAUzdBigSt2askDSDvGX
-         BW/QMm2yx1V2OCpqQYL9xvGBNhswNYkLsv48eJtA7oYvxTn50pNaMpdyeYF4O9jw+zlV
-         aVDip+G7bMTwQE+Vu+8z1tWfORZQbYTO0o+2l3t+6ApcOp6BqeDU6Zzxa6JaR/fyaw7s
-         vxHg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1718997528; x=1719602328;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=f3JLZK9KhSNbfEjLOhjGsas4rAhTsCvacjMIXcw3CjM=;
-        b=f9L6rWNwzL2skwuqLo1oAYIiq3BWAyKNGeZhTIRQ8vgAMpC+CvfcFkwD6NTF4bMtWV
-         e807RieGFCq4hvhWHsCa7TPTgTvGiRTwtIwLjm8m5oqSVPihr0eu51J6Il3hHUC/IBYC
-         snrwCiNm3KCRWs6z+oD21Ah5VocvYjh12Kl5GyJUT+yGcG2H3xcsAikxXLDnhlsIxs4l
-         OLI5yuF8hb0QUdVnEudkiKLL9DDq3TYfd1ttmwH+xd03vpobvnPKimNu6q5WLkX9G8mW
-         2cZY/egkjPb1M+W+Rc8IJjq2nYRG1sWyeUegDAohb8sGJZIBvADRtjkBfJO1GpuI4B7D
-         gNDg==
-X-Forwarded-Encrypted: i=1; AJvYcCVL9nHkUyPYdeLCvOs9ppwkrQNI/rrzcByZZG1XQ/KUi94S7Q38khZrdFws0cwDVjhrdnSjiHBgwt+iIDTE5sQx7duISKleRgu1zTxnbVQ+RiPXOHCO1Uw/hWh/d5Rc4e9b
-X-Gm-Message-State: AOJu0YwOBXiG1qPH2E+zS1wcdUYobr/25iG+ZvUOqfls+vJWwM333SjR
-	bvgzY7543qnAdwvUNb62AQoeUUWxzhLm0tuUSTRWqMSCzhLLFcYV
-X-Google-Smtp-Source: AGHT+IFl/43vk2lPhapGOwGIq/mwHjsv73H3Xw8dv/Xkx2RGTWSRVCMFLRZu45n81+D9RkNu5EejNQ==
-X-Received: by 2002:a17:903:248:b0:1f4:b2ce:8dbe with SMTP id d9443c01a7336-1f9aa3eceeamr102143225ad.9.1718997528346;
-        Fri, 21 Jun 2024 12:18:48 -0700 (PDT)
-Received: from localhost (dhcp-141-239-159-203.hawaiiantel.net. [141.239.159.203])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-1f9eb2f042dsm17546935ad.39.2024.06.21.12.18.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 21 Jun 2024 12:18:48 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date: Fri, 21 Jun 2024 09:18:46 -1000
-From: Tejun Heo <tj@kernel.org>
-To: Phil Auld <pauld@redhat.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=IFnnqK78nooyLp8LKJ+50KcJ77b986Y7BhmyWx/Y6ekTUvNLnHdGci4oSZvdEJeVABjgz3lBn/RbSdGRnqyW+olbv1LrqwYPD9PNLrK4Kd/iG8jWtHo+vhuFCm44sFW6uXCsyubHTgq5CJXb/9FZddAQbdLiiCxNnPbUgjL4cfc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=fTMnABQu; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1718998363;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=6EhGfcYIBQtq+J45Jgju4cRB0R3NaQDqFXGN3qp7tW4=;
+	b=fTMnABQuJAejx12tbJ36bp4W4ThQVXJqO7yDVynVT2qBK1sGrXbUKqbmfPPIRIOI4a/Cqp
+	mYq8xf+O6fntey4jxH3chVY5QglJZrSxqlZsw0w8OxJBgRviQxyiqu7nH2bnXPTezkR3Ee
+	/gE02DDkjpIg1Io5wW0D0wTuK3jpdZg=
+Received: from mx-prod-mc-03.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-532-n_NVXbiIMESewHMpXoYfnw-1; Fri,
+ 21 Jun 2024 15:32:41 -0400
+X-MC-Unique: n_NVXbiIMESewHMpXoYfnw-1
+Received: from mx-prod-int-02.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-02.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.15])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx-prod-mc-03.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 39AEE195604F;
+	Fri, 21 Jun 2024 19:32:36 +0000 (UTC)
+Received: from lorien.usersys.redhat.com (unknown [10.22.9.79])
+	by mx-prod-int-02.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 09A131955E80;
+	Fri, 21 Jun 2024 19:32:27 +0000 (UTC)
+Date: Fri, 21 Jun 2024 15:32:23 -0400
+From: Phil Auld <pauld@redhat.com>
+To: Tejun Heo <tj@kernel.org>
 Cc: torvalds@linux-foundation.org, mingo@redhat.com, peterz@infradead.org,
 	juri.lelli@redhat.com, vincent.guittot@linaro.org,
 	dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
@@ -85,10 +72,11 @@ Cc: torvalds@linux-foundation.org, mingo@redhat.com, peterz@infradead.org,
 	bpf@vger.kernel.org, kernel-team@meta.com
 Subject: Re: [PATCH 04/30] sched: Add sched_class->switching_to() and expose
  check_class_changing/changed()
-Message-ID: <ZnXSFrn6wNqk21GS@slm.duckdns.org>
+Message-ID: <20240621193223.GB51310@lorien.usersys.redhat.com>
 References: <20240618212056.2833381-1-tj@kernel.org>
  <20240618212056.2833381-5-tj@kernel.org>
  <20240621165327.GA51310@lorien.usersys.redhat.com>
+ <ZnXSFrn6wNqk21GS@slm.duckdns.org>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -97,43 +85,57 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240621165327.GA51310@lorien.usersys.redhat.com>
+In-Reply-To: <ZnXSFrn6wNqk21GS@slm.duckdns.org>
+X-Scanned-By: MIMEDefang 3.0 on 10.30.177.15
 
-Hello, Phil.
-
-On Fri, Jun 21, 2024 at 12:53:27PM -0400, Phil Auld wrote:
-> > A new BPF extensible sched_class will have callbacks that allow the BPF
-> > scheduler to keep track of relevant task states (like priority and cpumask).
-> > Those callbacks aren't called while a task is on a different sched_class.
-> > When a task comes back, we wanna tell the BPF progs the up-to-date state
+On Fri, Jun 21, 2024 at 09:18:46AM -1000 Tejun Heo wrote:
+> Hello, Phil.
 > 
-> "wanna" ?   How about "want to"?
+> On Fri, Jun 21, 2024 at 12:53:27PM -0400, Phil Auld wrote:
+> > > A new BPF extensible sched_class will have callbacks that allow the BPF
+> > > scheduler to keep track of relevant task states (like priority and cpumask).
+> > > Those callbacks aren't called while a task is on a different sched_class.
+> > > When a task comes back, we wanna tell the BPF progs the up-to-date state
+> > 
+> > "wanna" ?   How about "want to"?
+> > 
+> > That makes me wanna stop reading right there... :)
 > 
-> That makes me wanna stop reading right there... :)
-
-Sorry about that. Have been watching for it recently but this log was
-written a while ago, so...
-
-> > +/*
-> > + * ->switching_to() is called with the pi_lock and rq_lock held and must not
-> > + * mess with locking.
-> > + */
-> > +void check_class_changing(struct rq *rq, struct task_struct *p,
-> > +			  const struct sched_class *prev_class)
-> > +{
-> > +	if (prev_class != p->sched_class && p->sched_class->switching_to)
-> > +		p->sched_class->switching_to(rq, p);
-> > +}
+> Sorry about that. Have been watching for it recently but this log was
+> written a while ago, so...
+>
+> > > +/*
+> > > + * ->switching_to() is called with the pi_lock and rq_lock held and must not
+> > > + * mess with locking.
+> > > + */
+> > > +void check_class_changing(struct rq *rq, struct task_struct *p,
+> > > +			  const struct sched_class *prev_class)
+> > > +{
+> > > +	if (prev_class != p->sched_class && p->sched_class->switching_to)
+> > > +		p->sched_class->switching_to(rq, p);
+> > > +}
+> > 
+> > Does this really need wrapper? The compiler may help but it doesn't seem to
+> > but you're doing a function call and passing in prev_class just to do a
+> > simple check.  I guess it's not really a fast path. Just seemed like overkill.
 > 
-> Does this really need wrapper? The compiler may help but it doesn't seem to
-> but you're doing a function call and passing in prev_class just to do a
-> simple check.  I guess it's not really a fast path. Just seemed like overkill.
+> This doesn't really matter either way but wouldn't it look weird if it's not
+> symmetric with check_class_changed()?
 
-This doesn't really matter either way but wouldn't it look weird if it's not
-symmetric with check_class_changed()?
+Fair enough.  It was just a thought.
 
-Thanks.
+
+Cheers,
+Phil
+
+
+> 
+> Thanks.
+> 
+> -- 
+> tejun
+> 
 
 -- 
-tejun
+
 
