@@ -1,225 +1,230 @@
-Return-Path: <bpf+bounces-32689-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-32690-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 58167911C7D
-	for <lists+bpf@lfdr.de>; Fri, 21 Jun 2024 09:10:59 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1C933911CF0
+	for <lists+bpf@lfdr.de>; Fri, 21 Jun 2024 09:35:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7C5D61C21086
-	for <lists+bpf@lfdr.de>; Fri, 21 Jun 2024 07:10:58 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 387E81C21D07
+	for <lists+bpf@lfdr.de>; Fri, 21 Jun 2024 07:35:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E2F316B39C;
-	Fri, 21 Jun 2024 07:10:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5285215665D;
+	Fri, 21 Jun 2024 07:35:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="AUjJ67bC"
 X-Original-To: bpf@vger.kernel.org
-Received: from frasgout12.his.huawei.com (frasgout12.his.huawei.com [14.137.139.154])
+Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4649812D742;
-	Fri, 21 Jun 2024 07:10:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=14.137.139.154
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 53EB43AC1F
+	for <bpf@vger.kernel.org>; Fri, 21 Jun 2024 07:35:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.133.104.62
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718953847; cv=none; b=fIkL68iOGM7rMPVtZP+qQqYG05/qBnSiGQxVftYXyMPC1wSISSLCvNTwcpE6KXIQHwfxh2+FinLBhNtHRI5AN45CiAJRuUlZ+jMFm+7mA5hJe2DiRDejXrN+5eHunhjP/1W9T/IujEojXHcFoa0DMNnVEjHZoCgZ8NuOdR5LW7s=
+	t=1718955347; cv=none; b=G1Syvq+isUdrtyfKLQJ1AyuFYqCybBOJSHZO0PRzpRDBrYZX/ZpK22ohFlYzltOzJtwXZQNJpRaERkXR7Tm7vb7JQn5c1xBeFyhtFMtboFJiIshZxvVm4Lzhp5jUosOHdCcLijvQU4bC7/hDFNVjfK+dEVQWQ/S6ODGX9tzVIxs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718953847; c=relaxed/simple;
-	bh=tTzUneXN/ZTgqfDOl9eH/BR2ek8SLVcP4nl2X6fxqTg=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=NH9j5cQVas4zh+jZTx1WZQqzEuVHKbxGVJSERUaLyZkY40TZynheOy+CFIocsyffkZNN1Z4ucmudxT+Lgohdu9nNA+WMjhFvwoJLIr3TDQpiA7H4fMQFoCeics62WlOTDhhR7aXBv6pecHFv6rMlCY2OehUJB7njpQdHyfv7LpI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=14.137.139.154
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.18.186.51])
-	by frasgout12.his.huawei.com (SkyGuard) with ESMTP id 4W57GJ3ZLdz9v7JT;
-	Fri, 21 Jun 2024 14:47:52 +0800 (CST)
-Received: from mail02.huawei.com (unknown [7.182.16.27])
-	by mail.maildlp.com (Postfix) with ESMTP id 19C85140B34;
-	Fri, 21 Jun 2024 15:10:35 +0800 (CST)
-Received: from [127.0.0.1] (unknown [10.204.63.22])
-	by APP2 (Coremail) with SMTP id GxC2BwBXLDdVJ3Vm6UXYAA--.42974S2;
-	Fri, 21 Jun 2024 08:10:33 +0100 (CET)
-Message-ID: <63a3fc7e2ffa79fdddd3ab8ec920412d6357d07f.camel@huaweicloud.com>
-Subject: Re: [PATCH v4 00/14] security: digest_cache LSM
-From: Roberto Sassu <roberto.sassu@huaweicloud.com>
-To: Paul Moore <paul@paul-moore.com>
-Cc: corbet@lwn.net, jmorris@namei.org, serge@hallyn.com, 
- akpm@linux-foundation.org, shuah@kernel.org, mcoquelin.stm32@gmail.com, 
- alexandre.torgue@foss.st.com, mic@digikod.net, 
- linux-security-module@vger.kernel.org, linux-doc@vger.kernel.org, 
- linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org, 
- bpf@vger.kernel.org, zohar@linux.ibm.com, dmitry.kasatkin@gmail.com, 
- linux-integrity@vger.kernel.org, wufan@linux.microsoft.com,
- pbrobinson@gmail.com,  zbyszek@in.waw.pl, hch@lst.de, mjg59@srcf.ucam.org,
- pmatilai@redhat.com,  jannh@google.com, dhowells@redhat.com,
- jikos@kernel.org, mkoutny@suse.com,  ppavlu@suse.com, petr.vorel@gmail.com,
- mzerqung@0pointer.de, kgold@linux.ibm.com,  Roberto Sassu
- <roberto.sassu@huawei.com>
-Date: Fri, 21 Jun 2024 09:10:09 +0200
-In-Reply-To: <CAHC9VhSqtdwO_C1r_uduPLdZp3o+75ojSY+B7JG6H2noEmv7VA@mail.gmail.com>
-References: <20240415142436.2545003-1-roberto.sassu@huaweicloud.com>
-	 <CAHC9VhTs8p1nTUXXea2JmF0FCEU6w39gwQRMtwACqM=+EBj1jw@mail.gmail.com>
-	 <7cf03a6ba8dbf212623aab2dea3dac39482e8695.camel@huaweicloud.com>
-	 <CAHC9VhSCw6RweTs6whAu4v6t4n7gxUWJtjmzY-UXrdzW0H+YJA@mail.gmail.com>
-	 <520d2dc2ff0091335a280a877fa9eb004af14309.camel@huaweicloud.com>
-	 <CAHC9VhRD1kBwqtkF+_cxCUCeNPp+0PAiNP-rG06me6gRQyYcyg@mail.gmail.com>
-	 <2b335bdd5c20878e0366dcf6b62d14f73c2251de.camel@huaweicloud.com>
-	 <CAHC9VhSOMLH69+q_wt2W+N9SK92KGp5n4YgzpsXMcO2u7YyaTg@mail.gmail.com>
-	 <e9114733eedff99233b1711b2b05ab85b7c19ca9.camel@huaweicloud.com>
-	 <CAHC9VhQp1wsm+2d6Dhj1gQNSD0z_Hgj0cFrVf1=Zs94LmgfK0A@mail.gmail.com>
-	 <c96db3ab0aec6586b6d55c3055e7eb9fea6bf4e3.camel@huaweicloud.com>
-	 <CAHC9VhSQOiC9t0qk10Lg3o6eAFdrR2QFLvCn1h2EP+P+AgdSbw@mail.gmail.com>
-	 <c732b1eb15141f909e99247192539b7f76e9952c.camel@huaweicloud.com>
-	 <CAHC9VhSA0dSQ1jaRO_J1S5xEc14XoCnYaVG3AWF=uYaDb-AjoQ@mail.gmail.com>
-	 <7ad255dce0b85e018b693d302689e0e970b8cc00.camel@huaweicloud.com>
-	 <CAHC9VhSqtdwO_C1r_uduPLdZp3o+75ojSY+B7JG6H2noEmv7VA@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.44.4-0ubuntu2 
+	s=arc-20240116; t=1718955347; c=relaxed/simple;
+	bh=593DZ7Pu+LeBIKeT9HXlElk9eHP3G6E/Jt61uLk/YDY=;
+	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=gV5Ze6oXMIUn7vgsH6dqReeanCe63u7exyGDl/V4obt0UDw+F75uYWEFPBY0C0esz6kW+rNPi01mq/eFCOKfcQV5FpC9RZOQn3SSUYwonB9KHMryNK/Dv6UFtg8y094pc4wskmqe4Q62aDI0fA37s5O/4V5hkXSgk2aTvJQ8s6c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=AUjJ67bC; arc=none smtp.client-ip=213.133.104.62
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iogearbox.net
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
+	In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
+	bh=w9vWGB3I7JKU4t8N71LA7V0SWYGAtMo3tTTUwlcn6a8=; b=AUjJ67bCGiZM6b5PJBCcsqY/b1
+	kgy4yqwKDoYLrJQM0/YRVvjqoOTMVFYjw8yx3VmUoDJLzwf3Oz7Ya+S+9uMokPPLV7k3AD5HCsyCc
+	2Xek7CtbjLWFsZfeZIqRKYZ0JY2dGGBW7lPyrGpLmqDdq33pE/Xo/Tp8I+uasiXvQdCfcViir6Q0i
+	ip4zj1lXVAbuprxktMpND8mQvqjJtgFnxicnjtYscM4RCmKTCJQRwmFxNI66fBR1n/LwFlwxguzPD
+	ocbcv+3EwCYIbXqDSHptgwvPFmmSW6ig/wD0neN4olMe0Z65bwDeL8XOR+6YR1RekjdUc0tg98Nw0
+	bgwTQFOw==;
+Received: from sslproxy04.your-server.de ([78.46.152.42])
+	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <daniel@iogearbox.net>)
+	id 1sKYo9-000K24-BB; Fri, 21 Jun 2024 09:35:41 +0200
+Received: from [178.197.248.18] (helo=linux.home)
+	by sslproxy04.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <daniel@iogearbox.net>)
+	id 1sKYo8-000EW1-26;
+	Fri, 21 Jun 2024 09:35:40 +0200
+Subject: Re: [PATCH bpf 1/2] bpf: Fix overrunning reservations in ringbuf
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: ast@kernel.org, bpf@vger.kernel.org,
+ Bing-Jhong Billy Jheng <billy@starlabs.sg>,
+ Muhammad Ramdhan <ramdhan@starlabs.sg>, Andrii Nakryiko <andrii@kernel.org>
+References: <20240620213435.16336-1-daniel@iogearbox.net>
+ <CAEf4BzY34QFfnao7PJh2HRFRgWN9u0vUZX3-M5E7N99Q6qf4sg@mail.gmail.com>
+From: Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <de04370c-c91b-ce61-c77b-951e658efe0f@iogearbox.net>
+Date: Fri, 21 Jun 2024 09:35:40 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-CM-TRANSID:GxC2BwBXLDdVJ3Vm6UXYAA--.42974S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxuw4rKF48Xw1DXrW5GryDJrb_yoW7GFyUpa
-	y7K3WUKr4kJF17Cr1Iy3W3Za4Fyry3tF47X3s8Jw1rAFyq9r1Ikr1Ikr45uFyDWr4kCr1j
-	ya12gry7Z3s8Aa7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUk0b4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVWUJVW8JwA2z4x0Y4vEx4A2jsIEc7CjxV
-	AFwI0_Gr0_Gr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
-	x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
-	0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l42xK82IYc2Ij
-	64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x
-	8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26rWY6r4UJwCIc40Y0x0EwIxGrwCI42IY
-	6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6x
-	AIw20EY4v20xvaj40_WFyUJVCq3wCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv
-	6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUFYFCUUUUU
-X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAgABBF1jj5uBegAAsW
+In-Reply-To: <CAEf4BzY34QFfnao7PJh2HRFRgWN9u0vUZX3-M5E7N99Q6qf4sg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.10/27312/Thu Jun 20 10:34:55 2024)
 
-On Thu, 2024-06-20 at 13:13 -0400, Paul Moore wrote:
-> On Thu, Jun 20, 2024 at 1:06=E2=80=AFPM Roberto Sassu
-> <roberto.sassu@huaweicloud.com> wrote:
-> > On Thu, 2024-06-20 at 12:51 -0400, Paul Moore wrote:
-> > > On Thu, Jun 20, 2024 at 12:31=E2=80=AFPM Roberto Sassu
-> > > <roberto.sassu@huaweicloud.com> wrote:
-> > > > On Thu, 2024-06-20 at 12:08 -0400, Paul Moore wrote:
-> > > > > On Thu, Jun 20, 2024 at 11:14=E2=80=AFAM Roberto Sassu
-> > > > > <roberto.sassu@huaweicloud.com> wrote:
-> > > > > > On Thu, 2024-06-20 at 10:48 -0400, Paul Moore wrote:
-> > > > > > > On Thu, Jun 20, 2024 at 5:12=E2=80=AFAM Roberto Sassu
-> > > > > > > <roberto.sassu@huaweicloud.com> wrote:
-> > > > > > > > On Wed, 2024-06-19 at 14:43 -0400, Paul Moore wrote:
-> > > > > > > > > On Wed, Jun 19, 2024 at 12:38=E2=80=AFPM Roberto Sassu
-> > > > > > > > > <roberto.sassu@huaweicloud.com> wrote:
-> > > > > > > > > >=20
-> > > > > > > > > > Making it a kernel subsystem would likely mean replicat=
-ing what the LSM
-> > > > > > > > > > infrastructure is doing, inode (security) blob and bein=
-g notified about
-> > > > > > > > > > file/directory changes.
-> > > > > > > > >=20
-> > > > > > > > > Just because the LSM framework can be used for something,=
- perhaps it
-> > > > > > > > > even makes the implementation easier, it doesn't mean the=
- framework
-> > > > > > > > > should be used for everything.
-> > > > > > > >=20
-> > > > > > > > It is supporting 3 LSMs: IMA, IPE and BPF LSM.
-> > > > > > > >=20
-> > > > > > > > That makes it a clear target for the security subsystem, an=
-d as you
-> > > > > > > > suggested to start for IMA, if other kernel subsystems requ=
-ire them, we
-> > > > > > > > can make it as an independent subsystem.
-> > > > > > >=20
-> > > > > > > Have you discussed the file digest cache functionality with e=
-ither the
-> > > > > > > IPE or BPF LSM maintainers?  While digest_cache may support t=
-hese
-> > > > > >=20
-> > > > > > Well, yes. I was in a discussion since long time ago with Deven=
- and
-> > > > > > Fan. The digest_cache LSM is listed in the Use Case section of =
-the IPE
-> > > > > > cover letter:
-> > > > > >=20
-> > > > > > https://lore.kernel.org/linux-integrity/1716583609-21790-1-git-=
-send-email-wufan@linux.microsoft.com/
-> > > > >=20
-> > > > > I would hope to see more than one sentence casually mentioning th=
-at
-> > > > > there might be some integration in the future.
-> > > >=20
-> > > > Sure, I can work more with Fan to do a proper integration.
-> > >=20
-> > > That seems like a good pre-requisite for turning digest_cache into a
-> > > general purpose subsystem.
-> > >=20
-> > > > > > I also developed an IPE module back in the DIGLIM days:
-> > > > > >=20
-> > > > > > https://lore.kernel.org/linux-integrity/a16a628b9e21433198c4905=
-00a987121@huawei.com/
-> > > > >=20
-> > > > > That looks like more of an fs-verity integration to me.  Yes, of
-> > > > > course there would be IPE changes to accept a signature/digest fr=
-om a
-> > > > > digest cache, but that should be minor.
-> > > >=20
-> > > > True, but IPE will also benefit from not needing to specify every
-> > > > digest in the policy.
-> > >=20
-> > > Sure, but that isn't really that important from a code integration
-> > > perspective, that's an admin policy issue.  I expect there would be
-> > > much more integration work with fs-verity than with IPE, and I think
-> > > the fs-verity related work might be a challenge.
-> >=20
-> > Uhm, not sure what you mean, but I don't plan to touch fsverity. There
-> > was already work to get the fsverity digest. All I would need to do
-> > from my side is to request a digest cache for the inode being verified
-> > by IPE and to query the fsverity digest.
->=20
-> So your proposed file digest cache wouldn't be used as a replacement
-> for the fs-verity digest?  Hmm.  I'll leave this up to you and Fan
-> (current IPE maintainer), but I'm not sure how much value this would
-> have for IPE, especially since I believe IPE's fs-verity support is
-> mostly around fs-verity signatures.
+On 6/21/24 2:25 AM, Andrii Nakryiko wrote:
+> On Thu, Jun 20, 2024 at 2:34 PM Daniel Borkmann <daniel@iogearbox.net> wrote:
+>>
+>> The BPF ring buffer internally is implemented as a power-of-2 sized circular
+>> buffer, with two logical and ever-increasing counters: consumer_pos is the
+>> consumer counter to show which logical position the consumer consumed the
+>> data, and producer_pos which is the producer counter denoting the amount of
+>> data reserved by all producers.
+>>
+>> Each time a record is reserved, the producer that "owns" the record will
+>> successfully advance producer counter. In user space each time a record is
+>> read, the consumer of the data advanced the consumer counter once it finished
+>> processing. Both counters are stored in separate pages so that from user
+>> space, the producer counter is read-only and the consumer counter is read-write.
+>>
+>> One aspect that simplifies and thus speeds up the implementation of both
+>> producers and consumers is how the data area is mapped twice contiguously
+>> back-to-back in the virtual memory, allowing to not take any special measures
+>> for samples that have to wrap around at the end of the circular buffer data
+>> area, because the next page after the last data page would be first data page
+>> again, and thus the sample will still appear completely contiguous in virtual
+>> memory.
+>>
+>> Each record has a struct bpf_ringbuf_hdr { u32 len; u32 pg_off; } header for
+>> book-keeping the length and offset, and is inaccessible to the BPF program.
+>> Helpers like bpf_ringbuf_reserve() return `(void *)hdr + BPF_RINGBUF_HDR_SZ`
+>> for the BPF program to use. Bing-Jhong and Muhammad reported that it is however
+>> possible to make a second allocated memory chunk overlapping with the first
+>> chunk and as a result, the BPF program is now able to edit first chunk's
+>> header.
+>>
+>> For example, consider the creation of a BPF_MAP_TYPE_RINGBUF map with size
+>> of 0x4000. Next, the consumer_pos is modified to 0x3000 /before/ a call to
+>> bpf_ringbuf_reserve() is made. This will allocate a chunk A, which is in
+>> [0x0,0x3008], and the BPF program is able to edit [0x8,0x3008]. Now, lets
+>> allocate a chunk B with size 0x3000. This will succeed because consumer_pos
+>> was edited ahead of time to pass the `new_prod_pos - cons_pos > rb->mask`
+>> check. Chunk B will be in range [0x3008,0x6010], and the BPF program is able
+>> to edit [0x3010,0x6010]. Due to the ring buffer memory layout mentioned
+>> earlier, the ranges [0x0,0x4000] and [0x4000,0x8000] point to the same data
+>> pages. This means that chunk B at [0x4000,0x4008] is chunk A's header.
+>> bpf_ringbuf_submit() / bpf_ringbuf_discard() use the header's pg_off to then
+>> locate the bpf_ringbuf itself via bpf_ringbuf_restore_from_rec(). Once chunk
+>> B modified chunk A's header, then bpf_ringbuf_commit() refers to the wrong
+>> page and could cause a crash.
+>>
+>> Fix it by calculating the oldest pending_pos and check whether the range
+>> from the oldest outstanding record to the newest would span beyond the ring
+>> buffer size. If that is the case, then reject the request. We've tested with
+>> the ring buffer benchmark in BPF selftests (./benchs/run_bench_ringbufs.sh)
+>> before/after the fix and while it seems a bit slower on some benchmarks, it
+>> is still not significantly enough to matter.
+>>
+>> Fixes: 457f44363a88 ("bpf: Implement BPF ring buffer and verifier support for it")
+>> Reported-by: Bing-Jhong Billy Jheng <billy@starlabs.sg>
+>> Reported-by: Muhammad Ramdhan <ramdhan@starlabs.sg>
+>> Co-developed-by: Bing-Jhong Billy Jheng <billy@starlabs.sg>
+>> Signed-off-by: Bing-Jhong Billy Jheng <billy@starlabs.sg>
+>> Co-developed-by: Andrii Nakryiko <andrii@kernel.org>
+>> Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+>> Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+>> ---
+>>   kernel/bpf/ringbuf.c | 28 +++++++++++++++++++++++-----
+>>   1 file changed, 23 insertions(+), 5 deletions(-)
+>>
+>> diff --git a/kernel/bpf/ringbuf.c b/kernel/bpf/ringbuf.c
+>> index 0ee653a936ea..7f82116b46ec 100644
+>> --- a/kernel/bpf/ringbuf.c
+>> +++ b/kernel/bpf/ringbuf.c
+>> @@ -29,6 +29,7 @@ struct bpf_ringbuf {
+>>          u64 mask;
+>>          struct page **pages;
+>>          int nr_pages;
+>> +       unsigned long pending_pos;
+> 
+> let's put it right after producer_pos, as that one is also updated in
+> the same reserve step, so cache line will be exclusive. By putting it
+> into read-mostly parts of bpf_ringbuf struct we'll induce unnecessary
+> cache line bouncing
 
-The digest_cache (LSM) would store fsverity digests in the hash table.
-At the moment, there is no available source for those, but they could
-be included in RPM headers like regular digests.
+Agree, there should be no issue exposing it and sharing same cacheline
+will make it more efficient. Will update also with your other suggestions
+all make sense. Thx!
 
-IPE will compare the digest from fsverity with the digest queried on
-the digest cache.
-
-Roberto
-
-> > Of course IPE should also capture kernel reads and verify the file
-> > containing the reference digests, used to build the digest cache.
-> >=20
-> > > > Also, the design choice of attaching the digest cache to the inode
-> > > > helps LSMs like IPE that don't have a per inode cache on their own.
-> > > > Sure, IPE would have to do a digest lookup every time, but at least=
- on
-> > > > an already populated hash table.
-> > >=20
-> > > Just because you need to attach some state to an inode does not mean =
-a
-> > > file digest cache must be a LSM.  It could be integrated into the VFS
-> > > or it could be a separate subsystem; either way it could provide an
-> > > API (either through well defined data structures or functions) that
-> > > could be used by various LSMs and filesystems that provide integrity
-> > > protection.
-> >=20
-> > Given that IMA solved the same problem after 15 years, when it became
-> > an LSM, I'm not super optimistic on that. But if VFS people or other
-> > subsystem maintainers would be open for such alternative, I can give it
-> > a try.
->=20
-> I think you should, because I'm not currently supportive of
-> digest_cache as a standalone LSM.
->=20
+>>          spinlock_t spinlock ____cacheline_aligned_in_smp;
+>>          /* For user-space producer ring buffers, an atomic_t busy bit is used
+>>           * to synchronize access to the ring buffers in the kernel, rather than
+>> @@ -179,6 +180,7 @@ static struct bpf_ringbuf *bpf_ringbuf_alloc(size_t data_sz, int numa_node)
+>>          rb->mask = data_sz - 1;
+>>          rb->consumer_pos = 0;
+>>          rb->producer_pos = 0;
+>> +       rb->pending_pos = 0;
+>>
+>>          return rb;
+>>   }
+>> @@ -404,9 +406,10 @@ bpf_ringbuf_restore_from_rec(struct bpf_ringbuf_hdr *hdr)
+>>
+>>   static void *__bpf_ringbuf_reserve(struct bpf_ringbuf *rb, u64 size)
+>>   {
+>> -       unsigned long cons_pos, prod_pos, new_prod_pos, flags;
+>> -       u32 len, pg_off;
+>> +       unsigned long cons_pos, prod_pos, new_prod_pos, pend_pos, flags;
+>>          struct bpf_ringbuf_hdr *hdr;
+>> +       u32 len, pg_off;
+>> +       u64 tmp_size;
+>>
+>>          if (unlikely(size > RINGBUF_MAX_RECORD_SZ))
+>>                  return NULL;
+>> @@ -424,13 +427,28 @@ static void *__bpf_ringbuf_reserve(struct bpf_ringbuf *rb, u64 size)
+>>                  spin_lock_irqsave(&rb->spinlock, flags);
+>>          }
+>>
+>> +       pend_pos = rb->pending_pos;
+>>          prod_pos = rb->producer_pos;
+>>          new_prod_pos = prod_pos + len;
+>>
+>> -       /* check for out of ringbuf space by ensuring producer position
+>> -        * doesn't advance more than (ringbuf_size - 1) ahead
+>> +       while (pend_pos < prod_pos) {
+>> +               hdr = (void *)rb->data + (pend_pos & rb->mask);
+>> +               if (hdr->len & BPF_RINGBUF_BUSY_BIT)
+>> +                       break;
+>> +               tmp_size = hdr->len & ~BPF_RINGBUF_DISCARD_BIT;
+> 
+> it feels right to have hdr_len = READ_ONCE(hdr->len) and then using
+> that for bit checks and manipulations, WDYT?
+> 
+>> +               tmp_size = round_up(tmp_size + BPF_RINGBUF_HDR_SZ, 8);
+>> +               pend_pos += tmp_size;
+>> +       }
+>> +       rb->pending_pos = pend_pos;
+>> +
+>> +       /* check for out of ringbuf space:
+>> +        * - by ensuring producer position doesn't advance more than
+>> +        *   (ringbuf_size - 1) ahead
+>> +        * - by ensuring oldest not yet committed record until newest
+>> +        *   record does not span more than (ringbuf_size - 1)
+>>           */
+>> -       if (new_prod_pos - cons_pos > rb->mask) {
+>> +       if ((new_prod_pos - cons_pos > rb->mask) ||
+>> +           (new_prod_pos - pend_pos > rb->mask)) {
+>>                  spin_unlock_irqrestore(&rb->spinlock, flags);
+>>                  return NULL;
+>>          }
+>> --
+>> 2.43.0
+>>
+> 
 
 
