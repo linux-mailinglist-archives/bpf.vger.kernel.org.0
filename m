@@ -1,170 +1,110 @@
-Return-Path: <bpf+bounces-32776-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-32777-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id F05F691300C
-	for <lists+bpf@lfdr.de>; Sat, 22 Jun 2024 00:06:22 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0EFA0913013
+	for <lists+bpf@lfdr.de>; Sat, 22 Jun 2024 00:10:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8EC5B1F25AA9
-	for <lists+bpf@lfdr.de>; Fri, 21 Jun 2024 22:06:22 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7494A286F8A
+	for <lists+bpf@lfdr.de>; Fri, 21 Jun 2024 22:10:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B97717C7CB;
-	Fri, 21 Jun 2024 22:04:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 99E2417A93C;
+	Fri, 21 Jun 2024 22:10:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DAQ89KgE"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rwAOzWHz"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pg1-f177.google.com (mail-pg1-f177.google.com [209.85.215.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C262315FA65
-	for <bpf@vger.kernel.org>; Fri, 21 Jun 2024 22:04:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 22A9F38FB9
+	for <bpf@vger.kernel.org>; Fri, 21 Jun 2024 22:10:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719007468; cv=none; b=i2K6hhp1dRTJYTZUb0+3zduD2VFPy0gFBcX088fpnDxaUjc6ilwFwngk4Jcv4TxZRT5cIKnK6SK4y+/C6W8l/zBHpDVu9D2UT0oU6mOJHu2fWj1tsB+x99bkNc4zkPQcsHbsnV8YQ4kL94m5q8o9ZXQWU6zvbgIRhb9AJYTZivI=
+	t=1719007832; cv=none; b=hCrj8fMi+ObLPVyBP3Idy3vgaqXvQf+LVPmNgIFHAex7rJWL5iRFyr56mz/XCFZ8JMQg97pelItTzlhYFkWwC1kepHkOldDGyLYK34S0DHjnmeqK3riRtaI0rfH8HZi+Yy7ztngVj/dz7OidA7JhJxeVYLjrOtV2dU3Bh+7VNkM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719007468; c=relaxed/simple;
-	bh=O+Zl7lK5N8nDm2q3mZbmphQ25z/bJ+1z/S9ycp+dUyo=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=s/PSL8SF9xyOnqhU+TOSB7Uvo8ggLpj0NLl830n0OFSzz11fX5B6YIfA4qwtSxsUCWcRYPJCF+BJkIOfd2GaNulKoKS/KSyLWQEpo4miIMP8fhcfzEn8H4sikifJur3tnsgXCyJEF6Fd3wV90la70p8rp7ZsWYrofCJxkteT6f8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=DAQ89KgE; arc=none smtp.client-ip=209.85.215.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f177.google.com with SMTP id 41be03b00d2f7-707040e3018so1749540a12.1
-        for <bpf@vger.kernel.org>; Fri, 21 Jun 2024 15:04:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1719007466; x=1719612266; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=WrTDFeY/i3TSDWjEJPvEQeAweVn7WOKNwOUd2ZRTfa4=;
-        b=DAQ89KgE1OEdXsRdjnv6zEEVm6VmS+YeLRtCKNmiqiXZQfwHQIl9fY/NIls50Gi1VZ
-         XanYD9kXBQYWeCMzsqoU2BiOIfMRFO9Gv1q5OLr2VUEOGWwDD0YWGcT+McSEYFNLPbBp
-         hJ3e/wL+n7nSuBavqeRQjBmcDA/D8AKz7sGQLnICW2nHaHOd5JtmqM9BujBDuSRdQ+qP
-         aXX9vfPE41grsfDBiR0Yi9JhiJQzjWof7p1VIoiTTKscseOpU5PdNo5xEuQPdJLPSd+R
-         1gFhV91wafm/jTVuuZPNhqKXmhw65BCeBVEHX7Rs3tZFQH9ljWj/EEIhQwrsk2uI05vu
-         nZGA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1719007466; x=1719612266;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=WrTDFeY/i3TSDWjEJPvEQeAweVn7WOKNwOUd2ZRTfa4=;
-        b=PnbnxZvV2ASh1iLJWfAd0D4vXuUJYOhqtIeFbPRtDDC17teRYf6FIXQlk0I7+mNA3O
-         FG2Q+x7LYTr5RFe2zGmQN6TBXA4bZByrFmgedAVB/3z1ll3EGQe4FhJUTUS9x5tvPpzT
-         RWmbpiTCdMykQMrlv2RC7goBY+Gqlc/sp6NGiTVItVdyUqrB+T/al/g1ptJ7nLjmUK90
-         FyWzchBDIyHk37BbYynxfSImjm91ZB74ivLaXxq8ucVm4zlgQ6D+bXC97Zhfb7HBYBXh
-         oUBNNv5TEnzZ5zjt4IKRjLiFtik7mjd1KvUCAa7rV7uSmcxUi9PvlJC2pY8ssgGCGW0M
-         vSDw==
-X-Gm-Message-State: AOJu0YwQVA3B6I7FcjTfqWALNq+ovtG3ONJE/ByTYha25IqxM6nK1zwi
-	ML1jQ8E649RSqjsyN6YWFiG6EFGeHAd3fYJ7vGzJKpCzjBJducVz7wnZUG6eF6CeXNgp/QDJ4/E
-	eGnuY9ghrPq9eFRvzLsH1T9hL+dw=
-X-Google-Smtp-Source: AGHT+IGB+YSTCb/BMgKjRASLjft2RCfFlSyci5fBUUlT5DpNeSnqCI97qLUb/tOjt6diCmO97dyCi2wBcstpltJO9Bg=
-X-Received: by 2002:a17:90b:3542:b0:2c4:a9b2:d4da with SMTP id
- 98e67ed59e1d1-2c7b5d5ab34mr9675989a91.30.1719007465956; Fri, 21 Jun 2024
- 15:04:25 -0700 (PDT)
+	s=arc-20240116; t=1719007832; c=relaxed/simple;
+	bh=gXy1wKqfHgjMmpv0mM0NZsuLvzwrNUUDJv5VirMu6kA=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=YZHrwPYmZ9XCe7uDINDEhkVgO0r5i64K5tv/5okYUEJbGb9whA/0e4GzGx5G2QJaXTzdh7y9+23agTYNFGRD6YZVfxKZDLB2A5VCdkxp9dWXu1KKDu8dqmaX4Yhf52pIYE3LcbUka/BP9Y/QgvvzScnJBskJrJ7+cl5h2kewZwc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rwAOzWHz; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 87E83C4AF07;
+	Fri, 21 Jun 2024 22:10:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1719007831;
+	bh=gXy1wKqfHgjMmpv0mM0NZsuLvzwrNUUDJv5VirMu6kA=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=rwAOzWHz45hlFnli1SvVa+YxxtuBbJ5s4FyEFuAKyQrsgCJfoSWSwNs1dpp8Xt3v1
+	 B6V8mtkH3g7LugYBQblvDkBh2ZIaawPuSElcJZSWVJCkEKP+OEjY+XvwlvotdhPxre
+	 iwMt98ybe4oUi7I+R9oTQjSyRXwJYccjBWYJJXgBD5lICu8b9qgjXhnqasvnvm8h/L
+	 3pspzyEqmiwIerkx/bCwp3KY5c8NVJJ4rDRNkXKVQVZT/LdzvjrxVY6zkgbuzeN6Wm
+	 DbLNS27ASJYYkRXcrykwQTVnj6y7XDJ0gXJsh+dXUfoTWq4Ga8Fd4xz/5X2eFwQktb
+	 pcaV7prAwTs4Q==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 72D6FCF3B95;
+	Fri, 21 Jun 2024 22:10:31 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <ZmIyMfRSp9DpU7dF@debian.debian>
-In-Reply-To: <ZmIyMfRSp9DpU7dF@debian.debian>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Fri, 21 Jun 2024 15:04:14 -0700
-Message-ID: <CAEf4BzbpSYmsTYSgMws7p8B2i1ihFZum0zge5W7DCo0FR8pSyA@mail.gmail.com>
-Subject: Re: Ideal way to read FUNC_PROTO in raw tp?
-To: Yan Zhai <yan@cloudflare.com>
-Cc: bpf@vger.kernel.org, kernel-team@cloudflare.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH v2 bpf-next 0/6] bpf: resilient split BTF followups
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <171900783146.8103.14964230406713262563.git-patchwork-notify@kernel.org>
+Date: Fri, 21 Jun 2024 22:10:31 +0000
+References: <20240620091733.1967885-1-alan.maguire@oracle.com>
+In-Reply-To: <20240620091733.1967885-1-alan.maguire@oracle.com>
+To: Alan Maguire <alan.maguire@oracle.com>
+Cc: andrii@kernel.org, eddyz87@gmail.com, acme@redhat.com, ast@kernel.org,
+ daniel@iogearbox.net, jolsa@kernel.org, martin.lau@linux.dev,
+ song@kernel.org, yonghong.song@linux.dev, john.fastabend@gmail.com,
+ kpsingh@kernel.org, sdf@google.com, haoluo@google.com, mcgrof@kernel.org,
+ masahiroy@kernel.org, nathan@kernel.org, mykolal@fb.com,
+ thinker.li@gmail.com, bentiss@kernel.org, tanggeliang@kylinos.cn,
+ bpf@vger.kernel.org
 
-On Thu, Jun 6, 2024 at 3:03=E2=80=AFPM Yan Zhai <yan@cloudflare.com> wrote:
->
-> Hi,
->
->  I am building a tracing program around workqueue. But I encountered
-> following problem when I try to record a function pointer value from
-> trace_workqueue_execute_end on net-next kernel:
->
-> ...
-> libbpf: prog 'workqueue_end': BPF program load failed: Permission
-> denied
-> libbpf: prog 'workqueue_end': -- BEGIN PROG LOAD LOG --
-> reg type unsupported for arg#0 function workqueue_end#5
-> 0: R1=3Dctx(off=3D0,imm=3D0) R10=3Dfp0
-> ; int BPF_PROG(workqueue_end, struct work_struct *w, work_func_t f)
-> 0: (79) r3 =3D *(u64 *)(r1 +8)
-> func 'workqueue_execute_end' arg1 type FUNC_PROTO is not a struct
-> invalid bpf_context access off=3D8 size=3D8
-> processed 1 insns (limit 1000000) max_states_per_insn 0 total_states 0
-> peak_states 0 mark_read 0
-> -- END PROG LOAD LOG --
-> libbpf: prog 'workqueue_end': failed to load: -13
-> libbpf: failed to load object 'configs/test.bpf.o'
-> Error: failed to load object file
-> Warning: bpftool is now running in libbpf strict mode and has more
-> stringent requirements about BPF programs.
-> If it used to work for this object file but now doesn't, see --legacy
-> option for more details.
-> ...
->
-> A simple reproducer for me is like:
-> #include "vmlinux.h"
-> #include <bpf/bpf_helpers.h>
-> #include <bpf/bpf_tracing.h>
->
-> SEC("tp_btf/workqueue_execute_end")
-> int BPF_PROG(workqueue_end, struct work_struct *w, work_func_t f)
-> {
->         u64 addr =3D (u64) f;
+Hello:
 
-you can work around with:
+This series was applied to bpf/bpf-next.git (master)
+by Andrii Nakryiko <andrii@kernel.org>:
 
-bpf_probe_read_kernel(&addr, sizeof(addr), &ctx[1]); /* ctx[1] is the
-second argument */
+On Thu, 20 Jun 2024 10:17:27 +0100 you wrote:
+> Follow-up to resilient split BTF series [1],
+> 
+> - cleaning up libbpf relocation code (patch 1);
+> - adding 'struct module' support for base BTF data (patch 2);
+> - splitting out field iteration code into separate file (patch 3);
+> - sharing libbpf relocation code with the kernel (patch 4);
+> - adding a kbuild --btf_features flag to generate distilled base
+>   BTF in the module-specific case where KBUILD_EXTMOD is true
+>   (patch 5); and
+> - adding test coverage for module-based kfunc dtor (patch 6)
+> 
+> [...]
 
-Not great, but will get you past this easily.
+Here is the summary with links:
+  - [v2,bpf-next,1/6] libbpf: BTF relocation followup fixing naming, loop logic
+    https://git.kernel.org/bpf/bpf-next/c/d1cf840854bb
+  - [v2,bpf-next,2/6] module, bpf: store BTF base pointer in struct module
+    https://git.kernel.org/bpf/bpf-next/c/d4e48e3dd450
+  - [v2,bpf-next,3/6] libbpf: split field iter code into its own file kernel
+    https://git.kernel.org/bpf/bpf-next/c/e7ac331b3055
+  - [v2,bpf-next,4/6] libbpf,bpf: share BTF relocate-related code with kernel
+    https://git.kernel.org/bpf/bpf-next/c/8646db238997
+  - [v2,bpf-next,5/6] kbuild,bpf: add module-specific pahole flags for distilled base BTF
+    https://git.kernel.org/bpf/bpf-next/c/46fb0b62ea29
+  - [v2,bpf-next,6/6] selftests/bpf: add kfunc_call test for simple dtor in bpf_testmod
+    https://git.kernel.org/bpf/bpf-next/c/47a8cf0c5b3f
 
->         bpf_printk("f is %lu\n", addr);
->
->         return 0;
-> }
->
-> char LICENSE[] SEC("license") =3D "GPL";
->
-> I would like to use the function address to decode the kernel symbol
-> and track execution of these functions. Replacing raw tp to regular tp
-> solves the problem, but I am wondering if there is any go-to approach
-> to read the pointer value in a raw tp? Doesn't seem to find one in
-> selftests/samples. If not, does it make sense if we allow it in
-> the verifier for tracing programs like the attached patch?
->
-> Yan
->
-> ---
-> diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
-> index 821063660d9f..5f000ab4c8d0 100644
-> --- a/kernel/bpf/btf.c
-> +++ b/kernel/bpf/btf.c
-> @@ -6308,6 +6308,11 @@ bool btf_ctx_access(int off, int size, enum bpf_ac=
-cess_type type,
->                         __btf_name_by_offset(btf, t->name_off),
->                         btf_type_str(t));
->                 return false;
-> +       } else if (prog->type =3D=3D BPF_PROG_TYPE_TRACING || prog->type =
-=3D=3D BPF_PROG_TYPE_RAW_TRACEPOINT) {
-> +               /* allow reading function pointer value from a tracing pr=
-ogram */
-> +               const struct btf_type *pointed =3D btf_type_by_id(btf, t-=
->type);
-> +               if (btf_type_is_func_proto(pointed))
-> +                       return true;
->         }
->
->         /* check for PTR_TO_RDONLY_BUF_OR_NULL or PTR_TO_RDWR_BUF_OR_NULL=
- */
->
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
 
