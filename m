@@ -1,239 +1,191 @@
-Return-Path: <bpf+bounces-32728-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-32729-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E4E94912746
-	for <lists+bpf@lfdr.de>; Fri, 21 Jun 2024 16:08:40 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id C222C9127C4
+	for <lists+bpf@lfdr.de>; Fri, 21 Jun 2024 16:30:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 98A48286F51
-	for <lists+bpf@lfdr.de>; Fri, 21 Jun 2024 14:08:39 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4CCBE1F21E75
+	for <lists+bpf@lfdr.de>; Fri, 21 Jun 2024 14:30:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0CB7712E5E;
-	Fri, 21 Jun 2024 14:08:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 382E92BB1B;
+	Fri, 21 Jun 2024 14:30:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="X4yjkdh5"
+	dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b="G2riJ6mm"
 X-Original-To: bpf@vger.kernel.org
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed1-f41.google.com (mail-ed1-f41.google.com [209.85.208.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C8AFCA7A
-	for <bpf@vger.kernel.org>; Fri, 21 Jun 2024 14:08:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.133.104.62
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 85FA6C148
+	for <bpf@vger.kernel.org>; Fri, 21 Jun 2024 14:30:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718978915; cv=none; b=d4JB3AD9zH4N8Evud2DFM3t/pknaXaEBMJAy0iNvXZWpVipErxuWIK93joqJxjVx834swsDqQGT35VZmRkKSITaHq9NjJOOMDkAIARbXt5wGEjwx1t3MWS9SNQi5pKVRAlIDw5mpHoKlfLQ8WQgivhAJ3bXvPkCKJW2UzttzWV8=
+	t=1718980204; cv=none; b=jrlZ1hJsE27xvZOH/FtOIBfA7lz5jRkxOWk1nZzq9tA7fsCucdhR2PvK2URYWXHtQDo8cPc9Yx+fgp9L7UApCP/GnWvHM0e1bMyVkwZSczOAksr7TMq/XAeZZ5Q+LYtWEOGBUl58SHR+SheNyaJKCgphgCswUUcXoUccZ4dRHoI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718978915; c=relaxed/simple;
-	bh=L7LYq+RCHqHAajibZP85M83zg24Zh7yb4lJEdUPL5Jk=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=SQAIVwy6yqDr/kd8414PeAeFNBp7XO1QgW3g1sc4j4/PYd4V5F8rDOy264mGOboyxGL+KdSqlpABaqNGoQtRa8LCfLxMWUxEkukOZrtg547n0Bd+QTbwsH802efzfP86lQ9MtYeoqmIKWwTZf5eigK+NtoHQoG99oUYo9pagFxE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=X4yjkdh5; arc=none smtp.client-ip=213.133.104.62
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iogearbox.net
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:MIME-Version:
-	References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
-	Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
-	bh=DQYTXVA8LP+pzPoqHq13D2fjuADOxAw5sfLs2pkWYJ8=; b=X4yjkdh5cQn54hfkcbo1Qc9Rzj
-	UA9f9LCJ7C1nNXXujHqx3Fv9amO5e6MaNu40H08BU0aUp5QAVHekY0DYQ/XDt58Om+Ne/uYMkbTOo
-	AjY3K4r6kRysHgDuJgZolTTTKJLT68QXZ3RS6jmQPnQdztKoosuwLaeI4GUNZgYHxFxAg8EjwkUZM
-	A+arKSBcMGviAK52zJKYu/m1RUJjjWhlCx41UhU/d/1Ea0edos6vNKKxSxP0cDwPhh1IU2EZmpqCz
-	UbPBJdS+8TNuYOzH89gQR4M4ZfRh9CU8+5cw9ljEFfIzWf3CyZ/TMeEspaE1y+WVXDJBDzgnWDmuJ
-	4+1RGexg==;
-Received: from 18.248.197.178.dynamic.cust.swisscom.net ([178.197.248.18] helo=localhost)
-	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1sKewI-000CiX-E8; Fri, 21 Jun 2024 16:08:30 +0200
-From: Daniel Borkmann <daniel@iogearbox.net>
-To: ast@kernel.org
-Cc: bpf@vger.kernel.org,
-	Daniel Borkmann <daniel@iogearbox.net>
-Subject: [PATCH bpf v3 2/2] selftests/bpf: Add more ring buffer test coverage
-Date: Fri, 21 Jun 2024 16:08:28 +0200
-Message-Id: <20240621140828.18238-2-daniel@iogearbox.net>
-X-Mailer: git-send-email 2.21.0
-In-Reply-To: <20240621140828.18238-1-daniel@iogearbox.net>
-References: <20240621140828.18238-1-daniel@iogearbox.net>
+	s=arc-20240116; t=1718980204; c=relaxed/simple;
+	bh=74XNNsrGcyt42W0i4MGFAN1ASfBc1WU+Wx8RPbhBId0=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=RPKHIQpdEE25sKEi9huJ4D/SFAGllBpJdcOXRYJENgfmKNwsrnA798WwHUyXh+eQwRBtgM3srvTIBWOLr6u8edrx8KcVJ57pzQtWPxOvBgjpshAUd+OUcehAqZJyrbEjN4ggpWkfc2y4jLAaNC9fXg8PrptzPq/GhER2jk2hrGs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com; spf=pass smtp.mailfrom=cloudflare.com; dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b=G2riJ6mm; arc=none smtp.client-ip=209.85.208.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cloudflare.com
+Received: by mail-ed1-f41.google.com with SMTP id 4fb4d7f45d1cf-57cc1c00b97so2005658a12.0
+        for <bpf@vger.kernel.org>; Fri, 21 Jun 2024 07:30:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google09082023; t=1718980201; x=1719585001; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Ne9VJpx8ATDhafgirOBTQVVX5apXj+MyTTRFOBCHPQI=;
+        b=G2riJ6mm83GI9hpvQ1ed6E3z1bAbY4V7dQde1ZnuiOP8gVTFLnV4hUSbkOCeKUGGzw
+         nKXNQDpabIsBHnUU9w8HTmxwh4ZBI5uNl7kPoptYXgm6Qb2d+/0Z3zTecIO9PGezlyvP
+         bNsMjYi58JVupyl/5NvNzfNcldHBLGGegAAXeaLWBvuSwLK8+VKzaMm6Y5bTFHGWTA6+
+         MpELz/t/tRJrah/6KM95zNpK9xeQtZ9m7dhrktL1nxIs68eZc2MuRwdfgzQoUq9JnqCq
+         oip+9sYRa252b5j2WlrC/LqVi+CcXh6V3iBLoiJXGzScQh6Pachbjv6Bq/go4O344F4Q
+         jCMg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1718980201; x=1719585001;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Ne9VJpx8ATDhafgirOBTQVVX5apXj+MyTTRFOBCHPQI=;
+        b=p/r4eq77NF0p0xETujBy4WgzcIkkBhqGpn8ihr+5VmAwDOmeRkTj7emF6l3kaTAtsg
+         QemRSgmB4J/OiIdkYf9t/D+SBoCTCZC9r6xWKQBIjPWE+6L+4PfNM2FN/T8celh/2hjO
+         Ok0AgSSgztGZRWnosYh/ASMnj+JrvnGDtkFHyqOA4T3JZIbR+AIa6QdxJyq2PkeI7KS4
+         pdZVS+eDFBt6TV2yH+rIlwf2FvMotP3bdKp+hWEJgczYlkrt206RHILObI9JwEbMjl8Z
+         OlU80iSWDxFZEsOoTYGgAR7GTCUZO2LZaW1D3o8Ci2mzpF0yZAUzTpuMp3J8pY2tvjCb
+         VDkQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVUBk4RhbbiyxIrNueTLbqvSktNs7/UyKfW8WGW1WvkfYdfL31UvLF64K747OizuSbnch0h8ba/MtybNfy3i1fw+UCL
+X-Gm-Message-State: AOJu0YxWnUboWOOCFmSPL3lCv7ySpceNYSVBoRTcJS2uB1DecF9CCe7f
+	2Jj2Vs41uOlMe5/+L+EGWnRohTC8XVtBFQ5SB+zZeuZ7HtB7cjOqilaz36U529HKtQv/xprSSMz
+	m1IfqXbTy9s/agdqg8SG+VWNjbQkqH9IQs4mFxw==
+X-Google-Smtp-Source: AGHT+IHSOppKzSm+kjtySl83Xy2s0lY1tdgWQ/xnbihr5ZcC5awX/1jregyRR8ecqABG8aV7I3my61NvkLz1w0cvTgQ=
+X-Received: by 2002:a50:d699:0:b0:579:ca97:da1b with SMTP id
+ 4fb4d7f45d1cf-57d07e0d427mr5079082a12.6.1718980200824; Fri, 21 Jun 2024
+ 07:30:00 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.10/27313/Fri Jun 21 10:28:08 2024)
+References: <cover.1718919473.git.yan@cloudflare.com> <b8c183a24285c2ab30c51622f4f9eff8f7a4752f.1718919473.git.yan@cloudflare.com>
+ <a1c983cdb95bdd44385dae29ca7451da16a70c98.camel@redhat.com>
+In-Reply-To: <a1c983cdb95bdd44385dae29ca7451da16a70c98.camel@redhat.com>
+From: Yan Zhai <yan@cloudflare.com>
+Date: Fri, 21 Jun 2024 09:29:49 -0500
+Message-ID: <CAO3-Pboc_r-owOxkZcD9Tyo4MD0ey9bBJj827R+o_NnMMkF2Ow@mail.gmail.com>
+Subject: Re: [RFC net-next 1/9] skb: introduce gro_disabled bit
+To: Paolo Abeni <pabeni@redhat.com>
+Cc: netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>, 
+	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, 
+	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend <john.fastabend@gmail.com>, 
+	Willem de Bruijn <willemb@google.com>, Simon Horman <horms@kernel.org>, Florian Westphal <fw@strlen.de>, 
+	Mina Almasry <almasrymina@google.com>, Abhishek Chauhan <quic_abchauha@quicinc.com>, 
+	David Howells <dhowells@redhat.com>, Alexander Lobakin <aleksander.lobakin@intel.com>, 
+	David Ahern <dsahern@kernel.org>, Richard Gobert <richardbgobert@gmail.com>, 
+	Antoine Tenart <atenart@kernel.org>, Felix Fietkau <nbd@nbd.name>, 
+	Soheil Hassas Yeganeh <soheil@google.com>, Pavel Begunkov <asml.silence@gmail.com>, 
+	Lorenzo Bianconi <lorenzo@kernel.org>, =?UTF-8?Q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>, 
+	linux-kernel@vger.kernel.org, bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Add test coverage for reservations beyond the ring buffer size in order
-to validate that bpf_ringbuf_reserve() rejects the request with NULL, all
-other ring buffer tests keep passing as well:
+On Fri, Jun 21, 2024 at 4:49=E2=80=AFAM Paolo Abeni <pabeni@redhat.com> wro=
+te:
+>
+> On Thu, 2024-06-20 at 15:19 -0700, Yan Zhai wrote:
+> > Software GRO is currently controlled by a single switch, i.e.
+> >
+> >   ethtool -K dev gro on|off
+> >
+> > However, this is not always desired. When GRO is enabled, even if the
+> > kernel cannot GRO certain traffic, it has to run through the GRO receiv=
+e
+> > handlers with no benefit.
+> >
+> > There are also scenarios that turning off GRO is a requirement. For
+> > example, our production environment has a scenario that a TC egress hoo=
+k
+> > may add multiple encapsulation headers to forwarded skbs for load
+> > balancing and isolation purpose. The encapsulation is implemented via
+> > BPF. But the problem arises then: there is no way to properly offload a
+> > double-encapsulated packet, since skb only has network_header and
+> > inner_network_header to track one layer of encapsulation, but not two.
+> > On the other hand, not all the traffic through this device needs double
+> > encapsulation. But we have to turn off GRO completely for any ingress
+> > device as a result.
+> >
+> > Introduce a bit on skb so that GRO engine can be notified to skip GRO o=
+n
+> > this skb, rather than having to be 0-or-1 for all traffic.
+> >
+> > Signed-off-by: Yan Zhai <yan@cloudflare.com>
+> > ---
+> >  include/linux/netdevice.h |  9 +++++++--
+> >  include/linux/skbuff.h    | 10 ++++++++++
+> >  net/Kconfig               | 10 ++++++++++
+> >  net/core/gro.c            |  2 +-
+> >  net/core/gro_cells.c      |  2 +-
+> >  net/core/skbuff.c         |  4 ++++
+> >  6 files changed, 33 insertions(+), 4 deletions(-)
+> >
+> > diff --git a/include/linux/netdevice.h b/include/linux/netdevice.h
+> > index c83b390191d4..2ca0870b1221 100644
+> > --- a/include/linux/netdevice.h
+> > +++ b/include/linux/netdevice.h
+> > @@ -2415,11 +2415,16 @@ struct net_device {
+> >       ((dev)->devlink_port =3D (port));                         \
+> >  })
+> >
+> > -static inline bool netif_elide_gro(const struct net_device *dev)
+> > +static inline bool netif_elide_gro(const struct sk_buff *skb)
+> >  {
+> > -     if (!(dev->features & NETIF_F_GRO) || dev->xdp_prog)
+> > +     if (!(skb->dev->features & NETIF_F_GRO) || skb->dev->xdp_prog)
+> >               return true;
+> > +
+> > +#ifdef CONFIG_SKB_GRO_CONTROL
+> > +     return skb->gro_disabled;
+> > +#else
+> >       return false;
+> > +#endif
+>
+> This will generate OoO if the gro_disabled is flipped in the middle of
+> a stream.
+>
+> Assuming the above is fine for your use case (I think it's _not_ in
+> general), you could get the same result without an additional costly
+> bit in sk_buff.
 
-  # ./vmtest.sh -- ./test_progs -t ringbuf
-  [...]
-  ./test_progs -t ringbuf
-  [    1.165434] bpf_testmod: loading out-of-tree module taints kernel.
-  [    1.165825] bpf_testmod: module verification failed: signature and/or required key missing - tainting kernel
-  [    1.284001] tsc: Refined TSC clocksource calibration: 3407.982 MHz
-  [    1.286871] clocksource: tsc: mask: 0xffffffffffffffff max_cycles: 0x311fc34e357, max_idle_ns: 440795379773 ns
-  [    1.289555] clocksource: Switched to clocksource tsc
-  #274/1   ringbuf/ringbuf:OK
-  #274/2   ringbuf/ringbuf_n:OK
-  #274/3   ringbuf/ringbuf_map_key:OK
-  #274/4   ringbuf/ringbuf_write:OK
-  #274     ringbuf:OK
-  #275     ringbuf_multi:OK
-  [...]
+Calling it per-packet control seems inaccurate here, the motivation is
+to give users the ability to control per-flow behaviors. OoO is indeed
+a consequence if users don't do it correctly.
 
-Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
----
- v1 -> v2:
-   - Remove old-style CHECK asserts
- v2 -> v3:
-   - Add missing munmap
+>
+> Let xdp_frame_fixup_skb_offloading() return a bool - e.g. 'true' when
+> gro should be avoided - and let the NIC driver call netif_receive_skb()
+> instead of the gro rx hook for such packet.
+>
+For rx on a single device, directly calling netif_receive_skb is
+reasonable. For tunnel receivers it is kinda inconsistent IMHO. For
+example, we terminate GRE tunnels in a netns, and it is necessary to
+disable GRO on both the entering veth device and also the GRE tunnel
+to shutdown GRO. That's why I'd hope to use a bit of skb, to be
+consistent within the same netns. Let me add a bit more context to
+clarify why we think this is necessary in another thread.
 
- tools/testing/selftests/bpf/Makefile          |  2 +-
- .../selftests/bpf/prog_tests/ringbuf.c        | 46 +++++++++++++++++++
- .../selftests/bpf/progs/test_ringbuf_write.c  | 42 +++++++++++++++++
- 3 files changed, 89 insertions(+), 1 deletion(-)
- create mode 100644 tools/testing/selftests/bpf/progs/test_ringbuf_write.c
+best,
+Yan
 
-diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
-index 96c0af323341..037d2e0502ef 100644
---- a/tools/testing/selftests/bpf/Makefile
-+++ b/tools/testing/selftests/bpf/Makefile
-@@ -457,7 +457,7 @@ LINKED_SKELS := test_static_linked.skel.h linked_funcs.skel.h		\
- LSKELS := fentry_test.c fexit_test.c fexit_sleep.c atomics.c 		\
- 	trace_printk.c trace_vprintk.c map_ptr_kern.c 			\
- 	core_kern.c core_kern_overflow.c test_ringbuf.c			\
--	test_ringbuf_n.c test_ringbuf_map_key.c
-+	test_ringbuf_n.c test_ringbuf_map_key.c test_ringbuf_write.c
- 
- # Generate both light skeleton and libbpf skeleton for these
- LSKELS_EXTRA := test_ksyms_module.c test_ksyms_weak.c kfunc_call_test.c \
-diff --git a/tools/testing/selftests/bpf/prog_tests/ringbuf.c b/tools/testing/selftests/bpf/prog_tests/ringbuf.c
-index 4c6f42dae409..40fd60215353 100644
---- a/tools/testing/selftests/bpf/prog_tests/ringbuf.c
-+++ b/tools/testing/selftests/bpf/prog_tests/ringbuf.c
-@@ -12,9 +12,11 @@
- #include <sys/sysinfo.h>
- #include <linux/perf_event.h>
- #include <linux/ring_buffer.h>
-+
- #include "test_ringbuf.lskel.h"
- #include "test_ringbuf_n.lskel.h"
- #include "test_ringbuf_map_key.lskel.h"
-+#include "test_ringbuf_write.lskel.h"
- 
- #define EDONE 7777
- 
-@@ -84,6 +86,48 @@ static void *poll_thread(void *input)
- 	return (void *)(long)ring_buffer__poll(ringbuf, timeout);
- }
- 
-+static void ringbuf_write_subtest(void)
-+{
-+	struct test_ringbuf_write_lskel *skel;
-+	int page_size = getpagesize();
-+	size_t *mmap_ptr;
-+	int err, rb_fd;
-+
-+	skel = test_ringbuf_write_lskel__open();
-+	if (!ASSERT_OK_PTR(skel, "skel_load"))
-+		return;
-+
-+	skel->maps.ringbuf.max_entries = 0x4000;
-+
-+	err = test_ringbuf_write_lskel__load(skel);
-+	if (!ASSERT_OK(err, "ringbuf_write"))
-+		goto cleanup;
-+
-+	rb_fd = skel->maps.ringbuf.map_fd;
-+
-+	mmap_ptr = mmap(NULL, page_size, PROT_READ | PROT_WRITE, MAP_SHARED, rb_fd, 0);
-+	ASSERT_OK_PTR(mmap_ptr, "rw_cons_pos");
-+	*mmap_ptr = 0x3000;
-+	ASSERT_OK(munmap(mmap_ptr, page_size), "unmap_rw");
-+
-+	skel->bss->pid = getpid();
-+
-+	ringbuf = ring_buffer__new(rb_fd, process_sample, NULL, NULL);
-+	if (!ASSERT_OK_PTR(ringbuf, "ringbuf_create"))
-+		goto cleanup;
-+
-+	err = test_ringbuf_write_lskel__attach(skel);
-+	if (!ASSERT_OK(err, "ringbuf_write"))
-+		goto cleanup;
-+
-+	trigger_samples();
-+	ASSERT_GE(skel->bss->discarded, 1, "discarded");
-+	ASSERT_EQ(skel->bss->passed, 0, "passed");
-+cleanup:
-+	ring_buffer__free(ringbuf);
-+	test_ringbuf_write_lskel__destroy(skel);
-+}
-+
- static void ringbuf_subtest(void)
- {
- 	const size_t rec_sz = BPF_RINGBUF_HDR_SZ + sizeof(struct sample);
-@@ -451,4 +495,6 @@ void test_ringbuf(void)
- 		ringbuf_n_subtest();
- 	if (test__start_subtest("ringbuf_map_key"))
- 		ringbuf_map_key_subtest();
-+	if (test__start_subtest("ringbuf_write"))
-+		ringbuf_write_subtest();
- }
-diff --git a/tools/testing/selftests/bpf/progs/test_ringbuf_write.c b/tools/testing/selftests/bpf/progs/test_ringbuf_write.c
-new file mode 100644
-index 000000000000..c6c67238a7c8
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/test_ringbuf_write.c
-@@ -0,0 +1,42 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#include <linux/bpf.h>
-+#include <bpf/bpf_helpers.h>
-+#include "bpf_misc.h"
-+
-+char _license[] SEC("license") = "GPL";
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_RINGBUF);
-+} ringbuf SEC(".maps");
-+
-+long discarded, passed;
-+int pid;
-+
-+SEC("fentry/" SYS_PREFIX "sys_getpgid")
-+int test_ringbuf_write(void *ctx)
-+{
-+	int *foo, cur_pid = bpf_get_current_pid_tgid() >> 32;
-+	void *sample1, *sample2;
-+
-+	if (cur_pid != pid)
-+		return 0;
-+
-+	sample1 = bpf_ringbuf_reserve(&ringbuf, 0x3000, 0);
-+	if (!sample1)
-+		return 0;
-+	/* first one can pass */
-+	sample2 = bpf_ringbuf_reserve(&ringbuf, 0x3000, 0);
-+	if (!sample2) {
-+		bpf_ringbuf_discard(sample1, 0);
-+		__sync_fetch_and_add(&discarded, 1);
-+		return 0;
-+	}
-+	/* second one must not */
-+	__sync_fetch_and_add(&passed, 1);
-+	foo = sample2 + 4084;
-+	*foo = 256;
-+	bpf_ringbuf_discard(sample1, 0);
-+	bpf_ringbuf_discard(sample2, 0);
-+	return 0;
-+}
--- 
-2.43.0
-
+> All in all the approach implemented in this series does not look worthy
+> to me.
+>
+> Thanks,
+>
+> Paolo
+>
 
