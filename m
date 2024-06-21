@@ -1,138 +1,263 @@
-Return-Path: <bpf+bounces-32660-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-32661-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id DB8579115E6
-	for <lists+bpf@lfdr.de>; Fri, 21 Jun 2024 00:51:24 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7B8B291173F
+	for <lists+bpf@lfdr.de>; Fri, 21 Jun 2024 02:25:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 75B23B22A2C
-	for <lists+bpf@lfdr.de>; Thu, 20 Jun 2024 22:51:22 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2CC7E281D93
+	for <lists+bpf@lfdr.de>; Fri, 21 Jun 2024 00:25:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D2BD1422B6;
-	Thu, 20 Jun 2024 22:51:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F933A47;
+	Fri, 21 Jun 2024 00:25:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TLONapIM"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kl/ox4rh"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f181.google.com (mail-pf1-f181.google.com [209.85.210.181])
+Received: from mail-pj1-f53.google.com (mail-pj1-f53.google.com [209.85.216.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A9C0E6F2F1;
-	Thu, 20 Jun 2024 22:51:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5FBD3394
+	for <bpf@vger.kernel.org>; Fri, 21 Jun 2024 00:25:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718923877; cv=none; b=UWkxZimubgxHbkzKoG1VRnvF1e8SH/vd+fGFF7oGwo1hLERr6KMHWOY7TVSI0vlIM8XRcJBqlhhfV8Nfmuy9zWNKs23qjsApT8UIzsSSssKPQqh8CW9YAEG2EyS0HxEP/5JYeiMfY5s0a1F/5bwj7NUnIOAul5UG0QLklXaB/Zw=
+	t=1718929525; cv=none; b=Dihdj21h4swED2JWR7td/ix7yVVguOk9+J9WfbNjjPA9txuPGLx8GQTF1Mie2xRp0uwRaLKUlCbwZCo7/EN4BGaQHYkbW5TtYjDSyy4MVUjuX04gS8bvkpA/Vptzip9u+ICAmUqF4kpvZ6IqnkGinoeWeQqK5F9TPdMFF44c4LU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718923877; c=relaxed/simple;
-	bh=QgQAxzHkv87x1mpTyfw1sKMVCNuCrZT5JKvpo9c0vFg=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=jh5viqzuOO0k+ke2hcbIXyLJzXFqJi9ghUSTAOdcRKDtiQSGWMia5VOHcgcZex9gtVXiCHjg5RGC2hosMLv8YE0fvqAnFsPIVSZNYDJpQNGq8pvf++ly6UiONRZow7uTxd3TdMMWah31orYS7hzlvsdeLYnSgVj/sVrh4FTUgEA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=TLONapIM; arc=none smtp.client-ip=209.85.210.181
+	s=arc-20240116; t=1718929525; c=relaxed/simple;
+	bh=IyGjx6yxG2OvcLJJKxcTD3fX0YnCZ+3TW20rah3bQxo=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=WLU86xYxiGT82OaebHbkiqEVnlI7kBRg/g7zqTXRKL/bS6qO+Htb22yM/wTNy7XtT6ZhxOurCiBT+aDU67R/MXjUd7szncuUByohLxBDGBjfeGanFIUWUkvZn9UOPQefZ/GBjolUNTl+ZukXVPFLfW1UyxFYhLGcbsS3RPY6PXo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kl/ox4rh; arc=none smtp.client-ip=209.85.216.53
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f181.google.com with SMTP id d2e1a72fcca58-705fff50de2so1007483b3a.1;
-        Thu, 20 Jun 2024 15:51:15 -0700 (PDT)
+Received: by mail-pj1-f53.google.com with SMTP id 98e67ed59e1d1-2c5362c7c0bso1169615a91.1
+        for <bpf@vger.kernel.org>; Thu, 20 Jun 2024 17:25:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1718923875; x=1719528675; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=gAYtcibVc3S444giuoO5CXI1eTRiknh22eCufx7b1XI=;
-        b=TLONapIMiqZiHAcoQYZn2MYfG2nR2/H/liLrHeYkpgOgqWkoV6/NmVYXk4QkXVU3tk
-         KYR0E3b6AFqMKs0hN32IffsgOk/KKP2OlUqHgJkfxe3myl7ECGdowQQhJC20goGIMkOs
-         tP5HIvqW82v2Roz/Pd6qVjn5Po9xR2vmbFYJu6eY0fbOcsznht2ilDVoZlbBDon05Laj
-         /qiJZj23prhfkLthg3kMljl5rzhH8RaDYsJrW/E2336UxwSxlGndj+Ri1jJd4xn5oBJQ
-         EO+hF3Gj5naKJsPFvzhihScCsP7Cam2bhY3+AFY/gAgTxWNWkp25pJDIMDQLZdVIEffD
-         ygWw==
+        d=gmail.com; s=20230601; t=1718929523; x=1719534323; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=/vHR8NFGNjxGkKKiluux0k0pp4DJPi5hmAmNRcyCbkU=;
+        b=kl/ox4rh6VStZgH9XcEBpMYGqSamjir8Nc3Id65p4WiWUWpybfxN6aGJeEpXJpRgWO
+         FC3GjJPMDIwyi4+hnhuTzxmneVdq2XtQQ8bxxwiFEBRKoZGCbAyTPDoz8LHkIlGoruC0
+         8DHEH7wvtb0O/dYNdLBMpMJ3oRAPnMyeMnwZWRRxVE8xfo7cymtWcQxjPwtD3CmynGAh
+         SYZBBod7C0QpCeNAqocCRpDvIVHfxMTg8LfOLTtqWlmo792GYPqIHmcB17pA1AXnmwJn
+         0g7lDXRxq4eFjcM//tAp2acTPmnuBuP56AYPoCOTK/DNC/S7LwlwTSet5IVLkkmFzcQ0
+         OxuQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1718923875; x=1719528675;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=gAYtcibVc3S444giuoO5CXI1eTRiknh22eCufx7b1XI=;
-        b=qKWxMDM85CX39nzw7E8cQ4fRxvp8Nk9qJuPl3RglUT3aY/BjB+mcVzqlWXx66xb2SI
-         lpiWY6EgK63xNhNPqYMU/Kf4QsUrHVpmJk9K7wpBTFmNcK2f0Fwl2s3YYnmMv11YNKsR
-         JuESjp6W7T1lSSLee/hWAVC/9n1zJp550xm6tpUCmOsohbFWmGd5HsEx/ihQPRoitr/9
-         NL4UeKYHfpD61p5ns56PbevwMD0aJghMLkXXP5+2ukmSfVFzutLzFJXDY6fL2Zl+8w5H
-         zJUFB1B33LXbIbGmxzoDIRCKPtebtRoI7McGDo57yWewYykoSfPkeEuJ6MPD8Z9DPXLo
-         OBMQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXyduff+VWED47qAOpPx4Sd1wcOh52pYKf93OK54jpvQJt7MVTPmnQz3GPSRkpeYL13dE2pljaU6CL2OSJFyIA2R+YOQZvfkctw9ic0rHzL1/Yrvhe6oupEAQpTuc4rF7NCERbd
-X-Gm-Message-State: AOJu0Yz/E14uMXqCThTsb90uHp12hmX+BlvFjT2RMmFNaEsYP3aMjKH1
-	s7gx5mlep5gqKSLIS4WX6f2236ScTdCfXc8zwW6U5+MKrKCn2Jsj
-X-Google-Smtp-Source: AGHT+IE0lB74PfjFovEEX+6xs19WhHHouN8o8uHffuo58LfaxAkoO4gENajrhZQ6flrLlcXczRp27w==
-X-Received: by 2002:a05:6a00:2e87:b0:705:d6ad:2495 with SMTP id d2e1a72fcca58-7061ac0ea0dmr15945154b3a.12.1718923874920;
-        Thu, 20 Jun 2024 15:51:14 -0700 (PDT)
-Received: from [192.168.0.31] ([38.34.87.7])
-        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-716ba5b5f93sm67291a12.57.2024.06.20.15.51.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 Jun 2024 15:51:14 -0700 (PDT)
-Message-ID: <472e112c540a671f1661b28eb80832114c6da24e.camel@gmail.com>
-Subject: Re: [PATCH bpf-next v5 4/6] selftests/bpf: Drop noconnect from
- network_helper_opts
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Geliang Tang <geliang@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
- Mykola Lysenko <mykolal@fb.com>, Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>, Martin KaFai Lau
- <martin.lau@linux.dev>, Song Liu <song@kernel.org>, Yonghong Song
- <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, KP
- Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo
- <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,  Shuah Khan
- <shuah@kernel.org>
-Cc: Geliang Tang <tanggeliang@kylinos.cn>, bpf@vger.kernel.org, 
-	linux-kselftest@vger.kernel.org
-Date: Thu, 20 Jun 2024 15:51:03 -0700
-In-Reply-To: <03185ae444b4fc91a3729df1f6f274ae5273aa67.1718765123.git.tanggeliang@kylinos.cn>
-References: <cover.1718765123.git.tanggeliang@kylinos.cn>
-	 <03185ae444b4fc91a3729df1f6f274ae5273aa67.1718765123.git.tanggeliang@kylinos.cn>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.44.4-0ubuntu2 
+        d=1e100.net; s=20230601; t=1718929523; x=1719534323;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=/vHR8NFGNjxGkKKiluux0k0pp4DJPi5hmAmNRcyCbkU=;
+        b=YRwQgrPm7ixqg8J/xXXz8yS9VTkS3C98kBOaXnc1PVWIQ2BSajKWf4bbpNBM6dqR7W
+         /FU3kknSATiqS9ekQAKkHUPa6MrULbqVpmStKM026tgpAPEu9Yh7PfGe8kMWIeD+38J/
+         PhwMiwTFIYECfWz5gZi885dkkWTRt7+m0e5VEdOyN3rs+gypBSRzZ8wruhSMElloIW/p
+         prjbRzAITIc7Eut8MKmsHlVcJfgwSW6gYXCyfYZOrX6VH5TfX4bMctqaEMNWYJxQj720
+         6AkpOG4mMHcuHIwFUc7dyFPXludFWu0HCtZ/L00mBQgBvn5Q0023DsX3/VK2nu9ySQst
+         rKoQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXI9NFkYErV1Cwz5lK+mBTazTcw4fLUhxK5YR2DVCJ/XmPKmPjQdtS5HYUtXt/sS1BO5YPlrjHpzG7UXiE0MLKiqRKH
+X-Gm-Message-State: AOJu0YxP/3ZP8on7F8RGmbcgrCa6+5eYkt3DCQvL84bEGo0jeb7G0pJK
+	wihsxRAhNid7xs4xQQNSuaeGIP5XYbLdLIvjv53GliwggK2llAGVhsIrQDRO6iZyVzYErVTthIg
+	vGwzd64xHKbQMStFy0iV6IB+O4Vkwvw==
+X-Google-Smtp-Source: AGHT+IEz5Cq2p+BWXek4EBJNi2iCGrw8t4PPvLW9P/xKlnvoUBnX3+dVZmnGH6L+LP8uTdqLo8LWOu3CHyeBOvbQbVI=
+X-Received: by 2002:a17:90a:e00e:b0:2c0:17b4:85aa with SMTP id
+ 98e67ed59e1d1-2c7b5c9f60amr6582456a91.22.1718929523445; Thu, 20 Jun 2024
+ 17:25:23 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+References: <20240620213435.16336-1-daniel@iogearbox.net>
+In-Reply-To: <20240620213435.16336-1-daniel@iogearbox.net>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Thu, 20 Jun 2024 17:25:11 -0700
+Message-ID: <CAEf4BzY34QFfnao7PJh2HRFRgWN9u0vUZX3-M5E7N99Q6qf4sg@mail.gmail.com>
+Subject: Re: [PATCH bpf 1/2] bpf: Fix overrunning reservations in ringbuf
+To: Daniel Borkmann <daniel@iogearbox.net>
+Cc: ast@kernel.org, bpf@vger.kernel.org, 
+	Bing-Jhong Billy Jheng <billy@starlabs.sg>, Muhammad Ramdhan <ramdhan@starlabs.sg>, 
+	Andrii Nakryiko <andrii@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, 2024-06-19 at 10:51 +0800, Geliang Tang wrote:
+On Thu, Jun 20, 2024 at 2:34=E2=80=AFPM Daniel Borkmann <daniel@iogearbox.n=
+et> wrote:
+>
+> The BPF ring buffer internally is implemented as a power-of-2 sized circu=
+lar
+> buffer, with two logical and ever-increasing counters: consumer_pos is th=
+e
+> consumer counter to show which logical position the consumer consumed the
+> data, and producer_pos which is the producer counter denoting the amount =
+of
+> data reserved by all producers.
+>
+> Each time a record is reserved, the producer that "owns" the record will
+> successfully advance producer counter. In user space each time a record i=
+s
+> read, the consumer of the data advanced the consumer counter once it fini=
+shed
+> processing. Both counters are stored in separate pages so that from user
+> space, the producer counter is read-only and the consumer counter is read=
+-write.
+>
+> One aspect that simplifies and thus speeds up the implementation of both
+> producers and consumers is how the data area is mapped twice contiguously
+> back-to-back in the virtual memory, allowing to not take any special meas=
+ures
+> for samples that have to wrap around at the end of the circular buffer da=
+ta
+> area, because the next page after the last data page would be first data =
+page
+> again, and thus the sample will still appear completely contiguous in vir=
+tual
+> memory.
+>
+> Each record has a struct bpf_ringbuf_hdr { u32 len; u32 pg_off; } header =
+for
+> book-keeping the length and offset, and is inaccessible to the BPF progra=
+m.
+> Helpers like bpf_ringbuf_reserve() return `(void *)hdr + BPF_RINGBUF_HDR_=
+SZ`
+> for the BPF program to use. Bing-Jhong and Muhammad reported that it is h=
+owever
+> possible to make a second allocated memory chunk overlapping with the fir=
+st
+> chunk and as a result, the BPF program is now able to edit first chunk's
+> header.
+>
+> For example, consider the creation of a BPF_MAP_TYPE_RINGBUF map with siz=
+e
+> of 0x4000. Next, the consumer_pos is modified to 0x3000 /before/ a call t=
+o
+> bpf_ringbuf_reserve() is made. This will allocate a chunk A, which is in
+> [0x0,0x3008], and the BPF program is able to edit [0x8,0x3008]. Now, lets
+> allocate a chunk B with size 0x3000. This will succeed because consumer_p=
+os
+> was edited ahead of time to pass the `new_prod_pos - cons_pos > rb->mask`
+> check. Chunk B will be in range [0x3008,0x6010], and the BPF program is a=
+ble
+> to edit [0x3010,0x6010]. Due to the ring buffer memory layout mentioned
+> earlier, the ranges [0x0,0x4000] and [0x4000,0x8000] point to the same da=
+ta
+> pages. This means that chunk B at [0x4000,0x4008] is chunk A's header.
+> bpf_ringbuf_submit() / bpf_ringbuf_discard() use the header's pg_off to t=
+hen
+> locate the bpf_ringbuf itself via bpf_ringbuf_restore_from_rec(). Once ch=
+unk
+> B modified chunk A's header, then bpf_ringbuf_commit() refers to the wron=
+g
+> page and could cause a crash.
+>
+> Fix it by calculating the oldest pending_pos and check whether the range
+> from the oldest outstanding record to the newest would span beyond the ri=
+ng
+> buffer size. If that is the case, then reject the request. We've tested w=
+ith
+> the ring buffer benchmark in BPF selftests (./benchs/run_bench_ringbufs.s=
+h)
+> before/after the fix and while it seems a bit slower on some benchmarks, =
+it
+> is still not significantly enough to matter.
+>
+> Fixes: 457f44363a88 ("bpf: Implement BPF ring buffer and verifier support=
+ for it")
+> Reported-by: Bing-Jhong Billy Jheng <billy@starlabs.sg>
+> Reported-by: Muhammad Ramdhan <ramdhan@starlabs.sg>
+> Co-developed-by: Bing-Jhong Billy Jheng <billy@starlabs.sg>
+> Signed-off-by: Bing-Jhong Billy Jheng <billy@starlabs.sg>
+> Co-developed-by: Andrii Nakryiko <andrii@kernel.org>
+> Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+> Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+> ---
+>  kernel/bpf/ringbuf.c | 28 +++++++++++++++++++++++-----
+>  1 file changed, 23 insertions(+), 5 deletions(-)
+>
+> diff --git a/kernel/bpf/ringbuf.c b/kernel/bpf/ringbuf.c
+> index 0ee653a936ea..7f82116b46ec 100644
+> --- a/kernel/bpf/ringbuf.c
+> +++ b/kernel/bpf/ringbuf.c
+> @@ -29,6 +29,7 @@ struct bpf_ringbuf {
+>         u64 mask;
+>         struct page **pages;
+>         int nr_pages;
+> +       unsigned long pending_pos;
 
-Oops, sorry, missed two places that should be changed.
-Please keep my ack if you respin.
+let's put it right after producer_pos, as that one is also updated in
+the same reserve step, so cache line will be exclusive. By putting it
+into read-mostly parts of bpf_ringbuf struct we'll induce unnecessary
+cache line bouncing
 
-[...]
+>         spinlock_t spinlock ____cacheline_aligned_in_smp;
+>         /* For user-space producer ring buffers, an atomic_t busy bit is =
+used
+>          * to synchronize access to the ring buffers in the kernel, rathe=
+r than
+> @@ -179,6 +180,7 @@ static struct bpf_ringbuf *bpf_ringbuf_alloc(size_t d=
+ata_sz, int numa_node)
+>         rb->mask =3D data_sz - 1;
+>         rb->consumer_pos =3D 0;
+>         rb->producer_pos =3D 0;
+> +       rb->pending_pos =3D 0;
+>
+>         return rb;
+>  }
+> @@ -404,9 +406,10 @@ bpf_ringbuf_restore_from_rec(struct bpf_ringbuf_hdr =
+*hdr)
+>
+>  static void *__bpf_ringbuf_reserve(struct bpf_ringbuf *rb, u64 size)
+>  {
+> -       unsigned long cons_pos, prod_pos, new_prod_pos, flags;
+> -       u32 len, pg_off;
+> +       unsigned long cons_pos, prod_pos, new_prod_pos, pend_pos, flags;
+>         struct bpf_ringbuf_hdr *hdr;
+> +       u32 len, pg_off;
+> +       u64 tmp_size;
+>
+>         if (unlikely(size > RINGBUF_MAX_RECORD_SZ))
+>                 return NULL;
+> @@ -424,13 +427,28 @@ static void *__bpf_ringbuf_reserve(struct bpf_ringb=
+uf *rb, u64 size)
+>                 spin_lock_irqsave(&rb->spinlock, flags);
+>         }
+>
+> +       pend_pos =3D rb->pending_pos;
+>         prod_pos =3D rb->producer_pos;
+>         new_prod_pos =3D prod_pos + len;
+>
+> -       /* check for out of ringbuf space by ensuring producer position
+> -        * doesn't advance more than (ringbuf_size - 1) ahead
+> +       while (pend_pos < prod_pos) {
+> +               hdr =3D (void *)rb->data + (pend_pos & rb->mask);
+> +               if (hdr->len & BPF_RINGBUF_BUSY_BIT)
+> +                       break;
+> +               tmp_size =3D hdr->len & ~BPF_RINGBUF_DISCARD_BIT;
 
-> diff --git a/tools/testing/selftests/bpf/prog_tests/ip_check_defrag.c b/t=
-ools/testing/selftests/bpf/prog_tests/ip_check_defrag.c
-> index 1607a05bf2c2..e73da3de5bf6 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/ip_check_defrag.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/ip_check_defrag.c
+it feels right to have hdr_len =3D READ_ONCE(hdr->len) and then using
+that for bit checks and manipulations, WDYT?
 
-[...]
-
-> @@ -200,7 +199,7 @@ void test_bpf_ip_check_defrag_ok(bool ipv6)
->  	nstoken =3D open_netns(NS0);
->  	if (!ASSERT_OK_PTR(nstoken, "setns ns0"))
->  		goto out;
-> -	client_tx_fd =3D connect_to_fd_opts(srv_fd, SOCK_RAW, &tx_ops);
-> +	client_tx_fd =3D client_socket(family, SOCK_RAW, &tx_ops);
->  	close_netns(nstoken);
->  	if (!ASSERT_GE(client_tx_fd, 0, "connect_to_fd_opts"))
-
-The ASSERT string should be changed.
-
->  		goto out;
-> @@ -209,7 +208,7 @@ void test_bpf_ip_check_defrag_ok(bool ipv6)
->  	nstoken =3D open_netns(NS0);
->  	if (!ASSERT_OK_PTR(nstoken, "setns ns0"))
->  		goto out;
-> -	client_rx_fd =3D connect_to_fd_opts(srv_fd, SOCK_DGRAM, &rx_opts);
-> +	client_rx_fd =3D client_socket(family, SOCK_DGRAM, &rx_opts);
->  	close_netns(nstoken);
->  	if (!ASSERT_GE(client_rx_fd, 0, "connect_to_fd_opts"))
-
-The ASSERT string should be changed.
-
->  		goto out;
-
+> +               tmp_size =3D round_up(tmp_size + BPF_RINGBUF_HDR_SZ, 8);
+> +               pend_pos +=3D tmp_size;
+> +       }
+> +       rb->pending_pos =3D pend_pos;
+> +
+> +       /* check for out of ringbuf space:
+> +        * - by ensuring producer position doesn't advance more than
+> +        *   (ringbuf_size - 1) ahead
+> +        * - by ensuring oldest not yet committed record until newest
+> +        *   record does not span more than (ringbuf_size - 1)
+>          */
+> -       if (new_prod_pos - cons_pos > rb->mask) {
+> +       if ((new_prod_pos - cons_pos > rb->mask) ||
+> +           (new_prod_pos - pend_pos > rb->mask)) {
+>                 spin_unlock_irqrestore(&rb->spinlock, flags);
+>                 return NULL;
+>         }
+> --
+> 2.43.0
+>
 
