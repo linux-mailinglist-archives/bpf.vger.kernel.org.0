@@ -1,49 +1,49 @@
-Return-Path: <bpf+bounces-32749-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-32751-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id A3BC5912C84
-	for <lists+bpf@lfdr.de>; Fri, 21 Jun 2024 19:40:40 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id BDA54912CDC
+	for <lists+bpf@lfdr.de>; Fri, 21 Jun 2024 20:00:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8CD361C23D42
-	for <lists+bpf@lfdr.de>; Fri, 21 Jun 2024 17:40:39 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5A95AB2520B
+	for <lists+bpf@lfdr.de>; Fri, 21 Jun 2024 18:00:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9AD2C168483;
-	Fri, 21 Jun 2024 17:40:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BEFA816A95E;
+	Fri, 21 Jun 2024 18:00:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="iHbxrbZx"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TE1Cj7j6"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 20FBA1C14
-	for <bpf@vger.kernel.org>; Fri, 21 Jun 2024 17:40:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E25316A935
+	for <bpf@vger.kernel.org>; Fri, 21 Jun 2024 18:00:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718991630; cv=none; b=s/KWRWz3eVcf4Ji/WPPNRsluL/NSoq6+9qcnlt0uEOFpShDq8bBYs/5/9/NYMtb/4CuV2WVwLWh5tJcRqd0+x6pibPZVk63Wv+2dvO2wLxsGEDjGDS1/kOHal/0uJs7IYI2t74wsmbQpddKBHoHYvS52Ny9BrbLMEw648m2M3Gs=
+	t=1718992834; cv=none; b=p+cNaF5s/au4rHB5U+90313V8M0l1BCOmfijZk4FEtjKbHQv1moj1GczpDlSU8UKZWGDydPrCG/XKx/RnPMq9LE00CveIXQfvBcjhXFIDJryjhrD7lFrx/oRSLjMx51AT4MOPFef6BKQI58XPQPLfL68COI4og6CzkcIdewwEFk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718991630; c=relaxed/simple;
-	bh=xWCe/eRJH5n+f7D56mrTAoag6g/10QoFHrmDz8kGPqs=;
+	s=arc-20240116; t=1718992834; c=relaxed/simple;
+	bh=ZkY+D+2YhESr5g19XNXpIgL5JY61jIiIFeauSPFu++8=;
 	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=gauND0rPShvCvKeAv8GinzrMTnkbvWwFHW4zjpOKjTy1lRmu2JBh5WTTjADspwS/gPPuM5r5hVuctEgBw+NQViAyS5WaPyjavieZuUA2UBB/16evrrDZM/IJVRs4UkbquobjgQIgBjFepTbxjrYPvZBJ9YVOmupfPUufXCh7S/k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=iHbxrbZx; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 94875C32781;
-	Fri, 21 Jun 2024 17:40:29 +0000 (UTC)
+	 In-Reply-To:To:Cc; b=swrUFk7yn4tEEfcCPKNtADYE/ix9A3jIYfjrTpa2LQC9UHxYC4L5/sIK+BiP6dfsucyfamAkVFlrikEhRsr4n8ZBOTId8qH5gyzcKaf55O5AKwvSVCHYZZlzK/7Zy7KA2pBi3HuAeCxb/6F9WgqczliFjc5CUazxlg4ejJEEJEE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TE1Cj7j6; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id BCFD3C2BBFC;
+	Fri, 21 Jun 2024 18:00:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1718991629;
-	bh=xWCe/eRJH5n+f7D56mrTAoag6g/10QoFHrmDz8kGPqs=;
+	s=k20201202; t=1718992833;
+	bh=ZkY+D+2YhESr5g19XNXpIgL5JY61jIiIFeauSPFu++8=;
 	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=iHbxrbZxaYVenvBL3NKIODek7pxgwDiMPOLTHTBG718hTJ3YdqD2LenTMgKK/5SJX
-	 xq+FDvWI6O+J4PVt5mmUa3n/O9vWTRD/0UJu60Zps2PkUHWoWo3j+UvoJUYKzp14nT
-	 WarqnJFGibdgcLTgew8gI3VuTb+IPnW19Skk0QLIPQfT5c8+4TCbrzkgT2eetwSn+u
-	 sbN97rudHbegdTi2RfzLPTYtQCb58sbAhzLg4LxNm56ihO0+nmLZW844ox4lNBjxnI
-	 qt68cCwM1p7Z6s4PrOgHRLA7MSOcsEBN824dt19rhMJsM8Lfy+59infnOt/Wp+O+id
-	 qdTWgLkDDh0Cw==
+	b=TE1Cj7j6jwwzpUSxWtO3N81k6g6LENykbnzopoAU8hYQI6OJlof3esNTT/Pd1c0HH
+	 Dbbc2rehwnZogrQTVKX1Cw/smc53Ut+CRfqGpEjErZf3JMc98RiayF1IsQECs2HrNU
+	 SFizNdNNk+AQ45EuREZrjYpRyfNv0S9o+536h1GtZ8iEKIW6uvFr28MoS9Jq5lMVVG
+	 ZKit4YNVS5qs9sYetIGm3po2hhGN/mN1zpKhfEQTq2dYapM9rnDfntoR2U0YxXZq1+
+	 sYdOj5UaqBwrP2fwLgAZzUcePJewBGMRSPR2cnc9AY7T3ArtM1tpqKdgHQmqqvI6yy
+	 Tdxd0IR1jCjPA==
 Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 7DC00C4332D;
-	Fri, 21 Jun 2024 17:40:29 +0000 (UTC)
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id A372ECF3B97;
+	Fri, 21 Jun 2024 18:00:33 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
@@ -52,39 +52,37 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH bpf-next] bpf: Change bpf_session_cookie return value to __u64
- *
+Subject: Re: [PATCH bpf-next] bpftool: allow compile-time checks of BPF map
+ auto-attach support in skeleton
 From: patchwork-bot+netdevbpf@kernel.org
 Message-Id: 
- <171899162951.31009.9951440790233334654.git-patchwork-notify@kernel.org>
-Date: Fri, 21 Jun 2024 17:40:29 +0000
-References: <20240619081624.1620152-1-jolsa@kernel.org>
-In-Reply-To: <20240619081624.1620152-1-jolsa@kernel.org>
-To: Jiri Olsa <jolsa@kernel.org>
-Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
- bpf@vger.kernel.org, kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
- john.fastabend@gmail.com, kpsingh@chromium.org, sdf@google.com,
- haoluo@google.com
+ <171899283366.11208.4246933303972594627.git-patchwork-notify@kernel.org>
+Date: Fri, 21 Jun 2024 18:00:33 +0000
+References: <20240618183832.2535876-1-andrii@kernel.org>
+In-Reply-To: <20240618183832.2535876-1-andrii@kernel.org>
+To: Andrii Nakryiko <andrii@kernel.org>
+Cc: bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
+ martin.lau@kernel.org, tj@kernel.org, void@manifault.com
 
 Hello:
 
 This patch was applied to bpf/bpf-next.git (master)
 by Daniel Borkmann <daniel@iogearbox.net>:
 
-On Wed, 19 Jun 2024 10:16:24 +0200 you wrote:
-> This reverts [1] and changes return value for bpf_session_cookie
-> in bpf selftests. Having long * might lead to problems on 32-bit
-> architectures.
-> 
-> Fixes: 2b8dd87332cd ("bpf: Make bpf_session_cookie() kfunc return long *")
-> Suggested-by: Andrii Nakryiko <andrii@kernel.org>
-> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+On Tue, 18 Jun 2024 11:38:32 -0700 you wrote:
+> New versions of bpftool now emit additional link placeholders for BPF
+> maps (struct_ops maps are the only maps right now that support
+> attachment), and set up BPF skeleton in such a way that libbpf will
+> auto-attach BPF maps automatically, assumming libbpf is recent enough
+> (v1.5+). Old libbpf will do nothing with those links and won't attempt
+> to auto-attach maps. This allows user code to handle both pre-v1.5 and
+> v1.5+ versions of libbpf at runtime, if necessary.
 > 
 > [...]
 
 Here is the summary with links:
-  - [bpf-next] bpf: Change bpf_session_cookie return value to __u64 *
-    https://git.kernel.org/bpf/bpf-next/c/717d6313bba1
+  - [bpf-next] bpftool: allow compile-time checks of BPF map auto-attach support in skeleton
+    https://git.kernel.org/bpf/bpf-next/c/651337c7ca82
 
 You are awesome, thank you!
 -- 
