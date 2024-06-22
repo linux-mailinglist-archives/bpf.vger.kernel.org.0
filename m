@@ -1,183 +1,135 @@
-Return-Path: <bpf+bounces-32804-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-32805-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AC78A913375
-	for <lists+bpf@lfdr.de>; Sat, 22 Jun 2024 13:45:18 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 06B6C9133D3
+	for <lists+bpf@lfdr.de>; Sat, 22 Jun 2024 14:15:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 427F5B20ABC
-	for <lists+bpf@lfdr.de>; Sat, 22 Jun 2024 11:45:16 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B8C29283851
+	for <lists+bpf@lfdr.de>; Sat, 22 Jun 2024 12:15:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 018DB155C8F;
-	Sat, 22 Jun 2024 11:44:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8100E156674;
+	Sat, 22 Jun 2024 12:15:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=protonmail.com header.i=@protonmail.com header.b="SI9kfSbG"
 X-Original-To: bpf@vger.kernel.org
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+Received: from mail-40131.protonmail.ch (mail-40131.protonmail.ch [185.70.40.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 73E9615382E;
-	Sat, 22 Jun 2024 11:44:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.187
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 521AC14B959;
+	Sat, 22 Jun 2024 12:15:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.70.40.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719056697; cv=none; b=pkVkjN6u9B3uqU6CIsgcju1T4xowVROj4+vSOKOKM1Zf80kE64e6EwHNoZLAXZkH+HiceAjUsC30zY3PUp/fa/YemA1rVE7ZVT8zLdX/GOCQwwQqSZQCLc/isFPZULPFzP+YYRwpo/jyQBxWXt8UIe/yfYqQ6VVn0qvUAEjiA7w=
+	t=1719058532; cv=none; b=t28MOtGe1ONoYZwZccZDTulIdOrPMrpsaUZ5C/vv5wj4hihuzhAzP2sEh1guOFp4hhJbUehf2DqI5KM3FKTR1LF4Vf61p00ngUuLaNSGTFS41mVj0XFb5LXwlzHfmW6U5tebFXYKobYfr27GYjzt9rWAPaWMYboV8s14VDEuqr8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719056697; c=relaxed/simple;
-	bh=Y7ZpAfhDTUE6U93lIBNlr/+c6AoW+cOzf76hzYC8mwI=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=HL9OPbQRQJtI7Is4wa5it8BvF2oDk1kYTYeMt3DVXgN5z4S6H+wONxGVP6rnM0DQUEQ2VsltoXorWFXXp/O7ietQeBfgT/y8h7Gzo6CSCla+JCCDVv1WAd1qCjVbqjswZHGlBs8msnYb0mHYImyDeNQg62IKxIOOK7W0qsjSbH0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.187
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.252])
-	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4W5sjV4QPNzxSXn;
-	Sat, 22 Jun 2024 19:40:30 +0800 (CST)
-Received: from kwepemd100013.china.huawei.com (unknown [7.221.188.163])
-	by mail.maildlp.com (Postfix) with ESMTPS id 11ED818007E;
-	Sat, 22 Jun 2024 19:44:46 +0800 (CST)
-Received: from huawei.com (10.67.174.121) by kwepemd100013.china.huawei.com
- (7.221.188.163) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1258.34; Sat, 22 Jun
- 2024 19:44:45 +0800
-From: Chen Ridong <chenridong@huawei.com>
-To: <tj@kernel.org>, <lizefan.x@bytedance.com>, <hannes@cmpxchg.org>,
-	<longman@redhat.com>
-CC: <bpf@vger.kernel.org>, <cgroups@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>
-Subject: [PATCH -next] cgroup: fix uaf when proc_cpuset_show
-Date: Sat, 22 Jun 2024 11:38:14 +0000
-Message-ID: <20240622113814.120907-1-chenridong@huawei.com>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1719058532; c=relaxed/simple;
+	bh=105PK1tGVfazcpZ6AmPTMtk9i3q7vtDIida3kLzD3co=;
+	h=Date:To:From:Subject:Message-ID:MIME-Version:Content-Type; b=UnzHyYFiganFP+vX25Tl3yQnlScG0iLu3m7REDLs9pkA3fziVhWRPq+658aMuPVAI7Jsl6kSeEJMt1r+x8r8fzH5xMEmg4EbwitB9UvWxe3IkLyKXjxr6axVKL/yVzcmmsE/EokWnsehIoVgQJODg+YhOYHE1fXEudvlg0c2tpw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=protonmail.com; spf=pass smtp.mailfrom=protonmail.com; dkim=pass (2048-bit key) header.d=protonmail.com header.i=@protonmail.com header.b=SI9kfSbG; arc=none smtp.client-ip=185.70.40.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=protonmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=protonmail.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
+	s=protonmail3; t=1719058522; x=1719317722;
+	bh=105PK1tGVfazcpZ6AmPTMtk9i3q7vtDIida3kLzD3co=;
+	h=Date:To:From:Subject:Message-ID:Feedback-ID:From:To:Cc:Date:
+	 Subject:Reply-To:Feedback-ID:Message-ID:BIMI-Selector;
+	b=SI9kfSbGledeq5d5py/2Gt0+2COegXhSSqqfimQVL/cofR27x2bctJeOSM+MVeQZb
+	 V/pHXv2/Gm+tykWDJ0b33PStsM6aAsm2fkgBjmh5xyBf2eLVzLPE8uv970PFK6Qzlm
+	 Ok1OK9hLcH87e54iK1vsE3cvUI6kyxMpEnOePbeYN0/fgXaWi+asPmySQFgQrZIfV9
+	 1KXKTx2VXKx8cNAWatrW40iy1Cm6NoLvwfNayb74U10w1eRyInYqeaCInjgFMltx4r
+	 d+fBjoGmzISo9zHoPF88Ie/3EgxuHyCPIC9nGl0vx85h8iiHbtWs/vmTzszVRDkIE+
+	 YxLTYONhxaHVg==
+Date: Sat, 22 Jun 2024 12:15:17 +0000
+To: "bpf@vger.kernel.org" <bpf@vger.kernel.org>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>
+From: Zac Ecob <zacecob@protonmail.com>
+Subject: Returning negative values repeatedly from a SOCK_FILTER ebpf prog stalls kernel thread
+Message-ID: <4RZ8dWmGaDHrnGI9qP6fnpa2uTfn8K2AWmMOkikYrT8c-L_1Rym92dEjoFhoXop6lwC4C69CNVTteY6SuGg-ymq3WsJ5b64SL0r9r0jIVwk=@protonmail.com>
+Feedback-ID: 29112261:user:proton
+X-Pm-Message-ID: b626ad89ab8a24275546d394ea2f21040ec1fa42
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- kwepemd100013.china.huawei.com (7.221.188.163)
+Content-Type: multipart/mixed;
+ boundary="b1_WwqneafIztgPWBETUkntUPCEflQQD6yiajOybaYFo"
 
-We found a refcount UAF bug as follows:
+This is a multi-part message in MIME format.
 
-BUG: KASAN: use-after-free in cgroup_path_ns+0x112/0x150
-Read of size 8 at addr ffff8882a4b242b8 by task atop/19903
+--b1_WwqneafIztgPWBETUkntUPCEflQQD6yiajOybaYFo
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-CPU: 27 PID: 19903 Comm: atop Kdump: loaded Tainted: GF
-Call Trace:
- dump_stack+0x7d/0xa7
- print_address_description.constprop.0+0x19/0x170
- ? cgroup_path_ns+0x112/0x150
- __kasan_report.cold+0x6c/0x84
- ? print_unreferenced+0x390/0x3b0
- ? cgroup_path_ns+0x112/0x150
- kasan_report+0x3a/0x50
- cgroup_path_ns+0x112/0x150
- proc_cpuset_show+0x164/0x530
- proc_single_show+0x10f/0x1c0
- seq_read_iter+0x405/0x1020
- ? aa_path_link+0x2e0/0x2e0
- seq_read+0x324/0x500
- ? seq_read_iter+0x1020/0x1020
- ? common_file_perm+0x2a1/0x4a0
- ? fsnotify_unmount_inodes+0x380/0x380
- ? bpf_lsm_file_permission_wrapper+0xa/0x30
- ? security_file_permission+0x53/0x460
- vfs_read+0x122/0x420
- ksys_read+0xed/0x1c0
- ? __ia32_sys_pwrite64+0x1e0/0x1e0
- ? __audit_syscall_exit+0x741/0xa70
- do_syscall_64+0x33/0x40
- entry_SYSCALL_64_after_hwframe+0x67/0xcc
+Problem is title. Attached is files for repro. Working on v6.10-rc4.=20
 
-This is also reported by: https://syzkaller.appspot.com/bug?extid=9b1ff7be974a403aa4cd
+After doing some investigation, the `sk_wmem_alloc` member of `struct sk` s=
+eems to only be increasing, presumably missing some refcnt_dec somewhere.
 
-This can be reproduced by the following methods:
-1.add an mdelay(1000) before acquiring the cgroup_lock In the
- cgroup_path_ns function.
-2.$cat /proc/<pid>/cpuset   repeatly.
-3.$mount -t cgroup -o cpuset cpuset /sys/fs/cgroup/cpuset/
-$umount /sys/fs/cgroup/cpuset/   repeatly.
+At a certain point, in `sock_alloc_send_pskb`, we fail the check:
 
-The race that cause this bug can be shown as below:
+`
+if (sk_wmem_alloc_get(sk) < READ_ONCE(sk->sk_sndbuf))
+`
 
-(umount)		|	(cat /proc/<pid>/cpuset)
-css_release		|	proc_cpuset_show
-css_release_work_fn	|	css = task_get_css(tsk, cpuset_cgrp_id);
-css_free_rwork_fn	|	cgroup_path_ns(css->cgroup, ...);
-cgroup_destroy_root	|	mutex_lock(&cgroup_mutex);
-rebind_subsystems	|
-cgroup_free_root 	|
-			|	// cgrp was freed, UAF
-			|	cgroup_path_ns_locked(cgrp,..);
+Upon which we enter `sock_wait_for_wmem` and schedule a massive timeout (at=
+ least that's what happened in my tests)
 
-When the cpuset is initialized, the root node top_cpuset.css.cgrp
-will point to &cgrp_dfl_root.cgrp. In cgroup v1, the mount operation will
-allocate cgroup_root, and top_cpuset.css.cgrp will point to the allocated
-&cgroup_root.cgrp. When the umount operation is executed,
-top_cpuset.css.cgrp will be rebound to &cgrp_dfl_root.cgrp.
 
-The problem is that when rebinding to cgrp_dfl_root, there are cases
-where the cgroup_root allocated by setting up the root for cgroup v1
-is cached. This could lead to a Use-After-Free (UAF) if it is
-subsequently freed. The descendant cgroups of cgroup v1 can only be
-freed after the css is released. However, the css of the root will never
-be released, yet the cgroup_root should be freed when it is unmounted.
-This means that obtaining a reference to the css of the root does
-not guarantee that css.cgrp->root will not be freed.
+Please let me know if I need to add anything.
 
-To solve this issue, we have added a cgroup reference count in
-the proc_cpuset_show function to ensure that css.cgrp->root will not
-be freed prematurely. This is a temporary solution. Let's see if anyone
-has a better solution.
+Thanks
+Not sure where the missing refcnt subs are, must admit unfamiliarity with t=
+he network code.
 
-Signed-off-by: Chen Ridong <chenridong@huawei.com>
----
- kernel/cgroup/cpuset.c | 20 ++++++++++++++++++++
- 1 file changed, 20 insertions(+)
 
-diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
-index c12b9fdb22a4..782eaf807173 100644
---- a/kernel/cgroup/cpuset.c
-+++ b/kernel/cgroup/cpuset.c
-@@ -5045,6 +5045,7 @@ int proc_cpuset_show(struct seq_file *m, struct pid_namespace *ns,
- 	char *buf;
- 	struct cgroup_subsys_state *css;
- 	int retval;
-+	struct cgroup *root_cgroup = NULL;
- 
- 	retval = -ENOMEM;
- 	buf = kmalloc(PATH_MAX, GFP_KERNEL);
-@@ -5052,9 +5053,28 @@ int proc_cpuset_show(struct seq_file *m, struct pid_namespace *ns,
- 		goto out;
- 
- 	css = task_get_css(tsk, cpuset_cgrp_id);
-+	rcu_read_lock();
-+	/*
-+	 * When the cpuset subsystem is mounted on the legacy hierarchy,
-+	 * the top_cpuset.css->cgroup does not hold a reference count of
-+	 * cgroup_root.cgroup. This makes accessing css->cgroup very
-+	 * dangerous because when the cpuset subsystem is remounted to the
-+	 * default hierarchy, the cgroup_root.cgroup that css->cgroup points
-+	 * to will be released, leading to a UAF issue. To avoid this problem,
-+	 * get the reference count of top_cpuset.css->cgroup first.
-+	 *
-+	 * This is ugly!!
-+	 */
-+	if (css == &top_cpuset.css) {
-+		cgroup_get(css->cgroup);
-+		root_cgroup = css->cgroup;
-+	}
-+	rcu_read_unlock();
- 	retval = cgroup_path_ns(css->cgroup, buf, PATH_MAX,
- 				current->nsproxy->cgroup_ns);
- 	css_put(css);
-+	if (root_cgroup)
-+		cgroup_put(root_cgroup);
- 	if (retval == -E2BIG)
- 		retval = -ENAMETOOLONG;
- 	if (retval < 0)
--- 
-2.34.1
+--b1_WwqneafIztgPWBETUkntUPCEflQQD6yiajOybaYFo
+Content-Type: application/x-xz; name=repro.tar.xz
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename=repro.tar.xz
+
+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
+AAAABFla
+
+--b1_WwqneafIztgPWBETUkntUPCEflQQD6yiajOybaYFo--
 
 
