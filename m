@@ -1,146 +1,183 @@
-Return-Path: <bpf+bounces-32803-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-32804-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1E18E9132C3
-	for <lists+bpf@lfdr.de>; Sat, 22 Jun 2024 10:28:56 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AC78A913375
+	for <lists+bpf@lfdr.de>; Sat, 22 Jun 2024 13:45:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C6C34284846
-	for <lists+bpf@lfdr.de>; Sat, 22 Jun 2024 08:28:54 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 427F5B20ABC
+	for <lists+bpf@lfdr.de>; Sat, 22 Jun 2024 11:45:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ADB6B14D290;
-	Sat, 22 Jun 2024 08:28:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="YosAV3lB"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 018DB155C8F;
+	Sat, 22 Jun 2024 11:44:58 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.13])
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C35D335B5;
-	Sat, 22 Jun 2024 08:28:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.13
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 73E9615382E;
+	Sat, 22 Jun 2024 11:44:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.187
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719044925; cv=none; b=AJ9Gz7FmyqEU8XCf6R+Q0oHPPgpkxNvFz7hsbmFOMgshaxoNzIBSykPeEbjg/NlAGpwJPwABmZTNwzelQYVn8PbFc9VqKA+a1oWjId+Ly5FvPQG48hbNv9cbYxPs26+nWIHI0Mr2ZimEP0xKD4zKFaGoc/sa7EEgWoFkDQmb62A=
+	t=1719056697; cv=none; b=pkVkjN6u9B3uqU6CIsgcju1T4xowVROj4+vSOKOKM1Zf80kE64e6EwHNoZLAXZkH+HiceAjUsC30zY3PUp/fa/YemA1rVE7ZVT8zLdX/GOCQwwQqSZQCLc/isFPZULPFzP+YYRwpo/jyQBxWXt8UIe/yfYqQ6VVn0qvUAEjiA7w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719044925; c=relaxed/simple;
-	bh=I36hrDGCl16z50N/hx++eF1frdHWfm/lr4cjAYqIPJw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=XqLp2/xbCKiFOVXUX/aTDyskK3l7wWkAH/OGph0Yq3Pw/+4rLANrRBeozR5zICmOaz3ITBileA1MO1wkkMMtVfMMO07YYNlD7fyfty7DCDANX6GEXe9QosB9G3bQyPTQFyatuLdWEDeLi4EGZftYrg5F1K4UEUF9Kb3bvvjqqMc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=YosAV3lB; arc=none smtp.client-ip=192.198.163.13
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1719044924; x=1750580924;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=I36hrDGCl16z50N/hx++eF1frdHWfm/lr4cjAYqIPJw=;
-  b=YosAV3lB1rwWvzoC8QJs4jo62U2xGinlzx3Nj642LBMZBGLiHadgjWVD
-   8yr7z6JCzhtpuTNwTnEgqKWQrZyzE7AsCPO/CXFKiPe+grIeytW2jQdlY
-   BetZyyMjzJ4zQXbIS+XYBrLUowrphX9KGb4WhwBQiOorUDWOX0fQw336g
-   PD+cWCqeAC2J3VbVJyvYPfxjm0AiMEpiPcGbsgTb1lUiRUTMWsx8gtDrN
-   SrRKEJyYm3OYqyeOKvkXEdz4D/iYzcGVAdgZyqZWhny9zcMEVaJnTmRmi
-   SnFyU9BeHfD2C4eCy1xqIWrBaTz52DHSLA7H7Y3TKrmyFv7V148ywZSyN
-   A==;
-X-CSE-ConnectionGUID: 1ForCOQjTIazyQOjqEuY9A==
-X-CSE-MsgGUID: ex+r3gOKRJ+ZJ9OlZrJwyA==
-X-IronPort-AV: E=McAfee;i="6700,10204,11110"; a="18988373"
-X-IronPort-AV: E=Sophos;i="6.08,257,1712646000"; 
-   d="scan'208";a="18988373"
-Received: from orviesa005.jf.intel.com ([10.64.159.145])
-  by fmvoesa107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jun 2024 01:28:43 -0700
-X-CSE-ConnectionGUID: cmQVtE8pSWe4ihT/bVxuiQ==
-X-CSE-MsgGUID: juhYmWpiTe6FYYwhG2UfUA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.08,257,1712646000"; 
-   d="scan'208";a="47751938"
-Received: from lkp-server01.sh.intel.com (HELO 68891e0c336b) ([10.239.97.150])
-  by orviesa005.jf.intel.com with ESMTP; 22 Jun 2024 01:28:39 -0700
-Received: from kbuild by 68891e0c336b with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1sKw6v-0009SY-0R;
-	Sat, 22 Jun 2024 08:28:37 +0000
-Date: Sat, 22 Jun 2024 16:28:23 +0800
-From: kernel test robot <lkp@intel.com>
-To: Mark Brown <broonie@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>,
-	Networking <netdev@vger.kernel.org>,
-	Benjamin Tissoires <bentiss@kernel.org>,
-	Jiri Kosina <jikos@kernel.org>
-Cc: oe-kbuild-all@lists.linux.dev, Kui-Feng Lee <thinker.li@gmail.com>,
-	Martin KaFai Lau <martin.lau@kernel.org>,
-	linux-input@vger.kernel.org,
-	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-	Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build failure after merge of the bpf-next tree
-Message-ID: <202406221626.JK0Nnkxy-lkp@intel.com>
-References: <ZnB9X1Jj6c04ufC0@sirena.org.uk>
+	s=arc-20240116; t=1719056697; c=relaxed/simple;
+	bh=Y7ZpAfhDTUE6U93lIBNlr/+c6AoW+cOzf76hzYC8mwI=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=HL9OPbQRQJtI7Is4wa5it8BvF2oDk1kYTYeMt3DVXgN5z4S6H+wONxGVP6rnM0DQUEQ2VsltoXorWFXXp/O7ietQeBfgT/y8h7Gzo6CSCla+JCCDVv1WAd1qCjVbqjswZHGlBs8msnYb0mHYImyDeNQg62IKxIOOK7W0qsjSbH0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.187
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.163.252])
+	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4W5sjV4QPNzxSXn;
+	Sat, 22 Jun 2024 19:40:30 +0800 (CST)
+Received: from kwepemd100013.china.huawei.com (unknown [7.221.188.163])
+	by mail.maildlp.com (Postfix) with ESMTPS id 11ED818007E;
+	Sat, 22 Jun 2024 19:44:46 +0800 (CST)
+Received: from huawei.com (10.67.174.121) by kwepemd100013.china.huawei.com
+ (7.221.188.163) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1258.34; Sat, 22 Jun
+ 2024 19:44:45 +0800
+From: Chen Ridong <chenridong@huawei.com>
+To: <tj@kernel.org>, <lizefan.x@bytedance.com>, <hannes@cmpxchg.org>,
+	<longman@redhat.com>
+CC: <bpf@vger.kernel.org>, <cgroups@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>
+Subject: [PATCH -next] cgroup: fix uaf when proc_cpuset_show
+Date: Sat, 22 Jun 2024 11:38:14 +0000
+Message-ID: <20240622113814.120907-1-chenridong@huawei.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZnB9X1Jj6c04ufC0@sirena.org.uk>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ kwepemd100013.china.huawei.com (7.221.188.163)
 
-Hi Mark,
+We found a refcount UAF bug as follows:
 
-kernel test robot noticed the following build errors:
+BUG: KASAN: use-after-free in cgroup_path_ns+0x112/0x150
+Read of size 8 at addr ffff8882a4b242b8 by task atop/19903
 
-[auto build test ERROR on hid/for-next]
-[cannot apply to linus/master v6.10-rc4 next-20240621]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+CPU: 27 PID: 19903 Comm: atop Kdump: loaded Tainted: GF
+Call Trace:
+ dump_stack+0x7d/0xa7
+ print_address_description.constprop.0+0x19/0x170
+ ? cgroup_path_ns+0x112/0x150
+ __kasan_report.cold+0x6c/0x84
+ ? print_unreferenced+0x390/0x3b0
+ ? cgroup_path_ns+0x112/0x150
+ kasan_report+0x3a/0x50
+ cgroup_path_ns+0x112/0x150
+ proc_cpuset_show+0x164/0x530
+ proc_single_show+0x10f/0x1c0
+ seq_read_iter+0x405/0x1020
+ ? aa_path_link+0x2e0/0x2e0
+ seq_read+0x324/0x500
+ ? seq_read_iter+0x1020/0x1020
+ ? common_file_perm+0x2a1/0x4a0
+ ? fsnotify_unmount_inodes+0x380/0x380
+ ? bpf_lsm_file_permission_wrapper+0xa/0x30
+ ? security_file_permission+0x53/0x460
+ vfs_read+0x122/0x420
+ ksys_read+0xed/0x1c0
+ ? __ia32_sys_pwrite64+0x1e0/0x1e0
+ ? __audit_syscall_exit+0x741/0xa70
+ do_syscall_64+0x33/0x40
+ entry_SYSCALL_64_after_hwframe+0x67/0xcc
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Mark-Brown/linux-next-build-failure-after-merge-of-the-bpf-next-tree/20240618-022240
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/hid/hid.git for-next
-patch link:    https://lore.kernel.org/r/ZnB9X1Jj6c04ufC0%40sirena.org.uk
-patch subject: linux-next: build failure after merge of the bpf-next tree
-config: i386-allmodconfig (https://download.01.org/0day-ci/archive/20240622/202406221626.JK0Nnkxy-lkp@intel.com/config)
-compiler: gcc-13 (Ubuntu 13.2.0-4ubuntu3) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240622/202406221626.JK0Nnkxy-lkp@intel.com/reproduce)
+This is also reported by: https://syzkaller.appspot.com/bug?extid=9b1ff7be974a403aa4cd
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202406221626.JK0Nnkxy-lkp@intel.com/
+This can be reproduced by the following methods:
+1.add an mdelay(1000) before acquiring the cgroup_lock In the
+ cgroup_path_ns function.
+2.$cat /proc/<pid>/cpuset   repeatly.
+3.$mount -t cgroup -o cpuset cpuset /sys/fs/cgroup/cpuset/
+$umount /sys/fs/cgroup/cpuset/   repeatly.
 
-All errors (new ones prefixed by >>):
+The race that cause this bug can be shown as below:
 
->> drivers/hid/bpf/hid_bpf_struct_ops.c:280:16: error: initialization of 'int (*)(void *)' from incompatible pointer type 'int (*)(void *, struct bpf_link *)' [-Werror=incompatible-pointer-types]
-     280 |         .reg = hid_bpf_reg,
-         |                ^~~~~~~~~~~
-   drivers/hid/bpf/hid_bpf_struct_ops.c:280:16: note: (near initialization for 'bpf_hid_bpf_ops.reg')
->> drivers/hid/bpf/hid_bpf_struct_ops.c:281:18: error: initialization of 'void (*)(void *)' from incompatible pointer type 'void (*)(void *, struct bpf_link *)' [-Werror=incompatible-pointer-types]
-     281 |         .unreg = hid_bpf_unreg,
-         |                  ^~~~~~~~~~~~~
-   drivers/hid/bpf/hid_bpf_struct_ops.c:281:18: note: (near initialization for 'bpf_hid_bpf_ops.unreg')
-   cc1: some warnings being treated as errors
+(umount)		|	(cat /proc/<pid>/cpuset)
+css_release		|	proc_cpuset_show
+css_release_work_fn	|	css = task_get_css(tsk, cpuset_cgrp_id);
+css_free_rwork_fn	|	cgroup_path_ns(css->cgroup, ...);
+cgroup_destroy_root	|	mutex_lock(&cgroup_mutex);
+rebind_subsystems	|
+cgroup_free_root 	|
+			|	// cgrp was freed, UAF
+			|	cgroup_path_ns_locked(cgrp,..);
 
+When the cpuset is initialized, the root node top_cpuset.css.cgrp
+will point to &cgrp_dfl_root.cgrp. In cgroup v1, the mount operation will
+allocate cgroup_root, and top_cpuset.css.cgrp will point to the allocated
+&cgroup_root.cgrp. When the umount operation is executed,
+top_cpuset.css.cgrp will be rebound to &cgrp_dfl_root.cgrp.
 
-vim +280 drivers/hid/bpf/hid_bpf_struct_ops.c
+The problem is that when rebinding to cgrp_dfl_root, there are cases
+where the cgroup_root allocated by setting up the root for cgroup v1
+is cached. This could lead to a Use-After-Free (UAF) if it is
+subsequently freed. The descendant cgroups of cgroup v1 can only be
+freed after the css is released. However, the css of the root will never
+be released, yet the cgroup_root should be freed when it is unmounted.
+This means that obtaining a reference to the css of the root does
+not guarantee that css.cgrp->root will not be freed.
 
-ebc0d8093e8c97 Benjamin Tissoires 2024-06-08  274  
-ebc0d8093e8c97 Benjamin Tissoires 2024-06-08  275  static struct bpf_struct_ops bpf_hid_bpf_ops = {
-ebc0d8093e8c97 Benjamin Tissoires 2024-06-08  276  	.verifier_ops = &hid_bpf_verifier_ops,
-ebc0d8093e8c97 Benjamin Tissoires 2024-06-08  277  	.init = hid_bpf_ops_init,
-ebc0d8093e8c97 Benjamin Tissoires 2024-06-08  278  	.check_member = hid_bpf_ops_check_member,
-ebc0d8093e8c97 Benjamin Tissoires 2024-06-08  279  	.init_member = hid_bpf_ops_init_member,
-ebc0d8093e8c97 Benjamin Tissoires 2024-06-08 @280  	.reg = hid_bpf_reg,
-ebc0d8093e8c97 Benjamin Tissoires 2024-06-08 @281  	.unreg = hid_bpf_unreg,
-ebc0d8093e8c97 Benjamin Tissoires 2024-06-08  282  	.name = "hid_bpf_ops",
-ebc0d8093e8c97 Benjamin Tissoires 2024-06-08  283  	.cfi_stubs = &__bpf_hid_bpf_ops,
-ebc0d8093e8c97 Benjamin Tissoires 2024-06-08  284  	.owner = THIS_MODULE,
-ebc0d8093e8c97 Benjamin Tissoires 2024-06-08  285  };
-ebc0d8093e8c97 Benjamin Tissoires 2024-06-08  286  
+To solve this issue, we have added a cgroup reference count in
+the proc_cpuset_show function to ensure that css.cgrp->root will not
+be freed prematurely. This is a temporary solution. Let's see if anyone
+has a better solution.
 
+Signed-off-by: Chen Ridong <chenridong@huawei.com>
+---
+ kernel/cgroup/cpuset.c | 20 ++++++++++++++++++++
+ 1 file changed, 20 insertions(+)
+
+diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
+index c12b9fdb22a4..782eaf807173 100644
+--- a/kernel/cgroup/cpuset.c
++++ b/kernel/cgroup/cpuset.c
+@@ -5045,6 +5045,7 @@ int proc_cpuset_show(struct seq_file *m, struct pid_namespace *ns,
+ 	char *buf;
+ 	struct cgroup_subsys_state *css;
+ 	int retval;
++	struct cgroup *root_cgroup = NULL;
+ 
+ 	retval = -ENOMEM;
+ 	buf = kmalloc(PATH_MAX, GFP_KERNEL);
+@@ -5052,9 +5053,28 @@ int proc_cpuset_show(struct seq_file *m, struct pid_namespace *ns,
+ 		goto out;
+ 
+ 	css = task_get_css(tsk, cpuset_cgrp_id);
++	rcu_read_lock();
++	/*
++	 * When the cpuset subsystem is mounted on the legacy hierarchy,
++	 * the top_cpuset.css->cgroup does not hold a reference count of
++	 * cgroup_root.cgroup. This makes accessing css->cgroup very
++	 * dangerous because when the cpuset subsystem is remounted to the
++	 * default hierarchy, the cgroup_root.cgroup that css->cgroup points
++	 * to will be released, leading to a UAF issue. To avoid this problem,
++	 * get the reference count of top_cpuset.css->cgroup first.
++	 *
++	 * This is ugly!!
++	 */
++	if (css == &top_cpuset.css) {
++		cgroup_get(css->cgroup);
++		root_cgroup = css->cgroup;
++	}
++	rcu_read_unlock();
+ 	retval = cgroup_path_ns(css->cgroup, buf, PATH_MAX,
+ 				current->nsproxy->cgroup_ns);
+ 	css_put(css);
++	if (root_cgroup)
++		cgroup_put(root_cgroup);
+ 	if (retval == -E2BIG)
+ 		retval = -ENAMETOOLONG;
+ 	if (retval < 0)
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.34.1
+
 
