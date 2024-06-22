@@ -1,110 +1,174 @@
-Return-Path: <bpf+bounces-32811-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-32812-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5A13E9135FB
-	for <lists+bpf@lfdr.de>; Sat, 22 Jun 2024 22:13:21 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5F80D9136A4
+	for <lists+bpf@lfdr.de>; Sun, 23 Jun 2024 00:34:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 11DBEB249D5
-	for <lists+bpf@lfdr.de>; Sat, 22 Jun 2024 20:13:18 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 151911F224BD
+	for <lists+bpf@lfdr.de>; Sat, 22 Jun 2024 22:34:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8068F5B1FB;
-	Sat, 22 Jun 2024 20:13:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 19D3C757E0;
+	Sat, 22 Jun 2024 22:34:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="bD6wpwlO"
+	dkim=pass (2048-bit key) header.d=rbox.co header.i=@rbox.co header.b="oR6lf0t0"
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+Received: from mailtransmit05.runbox.com (mailtransmit05.runbox.com [185.226.149.38])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3CF1957CBA
-	for <bpf@vger.kernel.org>; Sat, 22 Jun 2024 20:13:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 50AEEDDCD;
+	Sat, 22 Jun 2024 22:34:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.226.149.38
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719087191; cv=none; b=e17Em7w780HSCROhPeaEsWQRRb+Aq1aQhCrgP2FEANCPdvMrqlLTuZk+9fsYMONKyNTT/Hvt8CoQh98p8AXuhtl0Nv/7i3aeKe7c13AKDRksnX6FZUmSxomU3oQmDW8OPz7ZzNz4QcsZUH/UKXnT+02HwqBXdxB9PbGExo6s0iY=
+	t=1719095685; cv=none; b=RPX/y0sU+LGGAP/2Zz7J0IT+LrUmMtwvcLOmFSKw0Va3+uKWK7/ajlokqpvKTTx6gcvqYrJOzRaAkXW+uFJsFP3rmWuY3Y9Hi4ObkmA1ZVQr6P9sSO2rYSlw8iM5m2dLM9J/vzos7g0/ByQ5QFWkg+d0at2EoxO5GyfyNCLstfE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719087191; c=relaxed/simple;
-	bh=9QTVTTAr/bLgfzwDbYy9kX0trwJMsoi07Zv5cyxqpSo=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=GpIZYKfvETtu+pv7KIgWK18u9k/ku3DCYMhvNA2ub6WBGVH71Kst6B9O/VvsLTmDNf37HWugzrUpwskf7MfBU7/GKL20IOMHp0FIWc6hrJvo45qDSo95y4Rql7u+cLCTgaoFaq3yXuvoowMMDremr7PNCSKa5wy7HpavU1hXekI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=bD6wpwlO; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1719087188;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=NVloH0O0knxKGVZtXf1+vpovAON8LePlPVCgLz6irFQ=;
-	b=bD6wpwlOcLOeFcGmT6rQfLD11+/gvu0hG3nGrgd38TV7zsZxoPLX/PEdryqpkkvrRQeEqT
-	0t2DcYzszGZy4t7noCSroXRgy8cd+X2XYrgbM9789kTAWxKpZ3q9r+EsGf85EoYta/XFri
-	TIF+PLd6ToYGQYVqI/+uxfFGpftmhFs=
-Received: from mx-prod-mc-04.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-132-Z4Gct5fHPVa8Np_ctXthlg-1; Sat,
- 22 Jun 2024 16:13:02 -0400
-X-MC-Unique: Z4Gct5fHPVa8Np_ctXthlg-1
-Received: from mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.12])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mx-prod-mc-04.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id BEA5819560AD;
-	Sat, 22 Jun 2024 20:13:00 +0000 (UTC)
-Received: from [10.22.32.34] (unknown [10.22.32.34])
-	by mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id 84F6719560BF;
-	Sat, 22 Jun 2024 20:12:58 +0000 (UTC)
-Message-ID: <2c70eff8-c79a-4c99-b8db-491ce25745a0@redhat.com>
-Date: Sat, 22 Jun 2024 16:12:57 -0400
+	s=arc-20240116; t=1719095685; c=relaxed/simple;
+	bh=2ZKzeRYWp4J6nTt0VwlwNYCBGkcHoAYLMQGkKXZZqxA=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=c5DvjrHToFElTeUOS1hUsELCC2xBP/KlGz9el0LgfhE1113+0CwFgjRnUpLgl1foEu5mWBcb00gdhl0G/RaFgrt5GbcFIti0XSSvd9U8FtD2f4wIdg4ZOv3QAZ0koiHrV1ARab7zAdWGnjfCQcXvW8AH8IubAjnpvEK1svpVrF4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=rbox.co; spf=pass smtp.mailfrom=rbox.co; dkim=pass (2048-bit key) header.d=rbox.co header.i=@rbox.co header.b=oR6lf0t0; arc=none smtp.client-ip=185.226.149.38
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=rbox.co
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rbox.co
+Received: from mailtransmit02.runbox ([10.9.9.162] helo=aibo.runbox.com)
+	by mailtransmit05.runbox.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+	(Exim 4.93)
+	(envelope-from <mhal@rbox.co>)
+	id 1sL9JR-008ha0-W0; Sun, 23 Jun 2024 00:34:26 +0200
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=rbox.co;
+	s=selector2; h=Content-Transfer-Encoding:MIME-Version:Message-ID:Date:Subject
+	:Cc:To:From; bh=EcVM4biueuVyljjFa33ofGrK0b45C09o4BeBDnLdYJ0=; b=oR6lf0t0D4X2w
+	TBP+4RXAbDqjgAhikey6ikQPa3rkqnS4VyTtCSwXIZim3oXLS5QgWBc60KHFzJJW6MkcqSuvMAYCI
+	+eBVXp66vriTueec0JbYq90B9wgL5avnl+lM79vcmoe10V+T3f/kPXE9YLrNfkRIdXvHYowF5YzwL
+	JdIGedy41+CxvxzsUkV/ghtDn7HF9QSB5k7eVPGoHQfBCSOnqiTH5sa2G3/K7UyzHgTs1hDTSkiMy
+	qK45nRraXogeEIiRuiTPVgDG7CDMdbgNlXnCk2wFEf0KADW+CVAYE3BGMpEWfM8bflj/9m8UrN7Hg
+	PIA5x4adZxK/E1a/F62VQ==;
+Received: from [10.9.9.72] (helo=submission01.runbox)
+	by mailtransmit02.runbox with esmtp (Exim 4.86_2)
+	(envelope-from <mhal@rbox.co>)
+	id 1sL9JL-0001i5-K0; Sun, 23 Jun 2024 00:34:19 +0200
+Received: by submission01.runbox with esmtpsa  [Authenticated ID (604044)]  (TLS1.2:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
+	(Exim 4.93)
+	id 1sL9J1-00791R-NI; Sun, 23 Jun 2024 00:33:59 +0200
+From: Michal Luczaj <mhal@rbox.co>
+To: netdev@vger.kernel.org
+Cc: bpf@vger.kernel.org,
+	davem@davemloft.net,
+	edumazet@google.com,
+	kuba@kernel.org,
+	pabeni@redhat.com,
+	john.fastabend@gmail.com,
+	jakub@cloudflare.com,
+	kuniyu@amazon.com,
+	Rao.Shoaib@oracle.com,
+	Michal Luczaj <mhal@rbox.co>
+Subject: [PATCH bpf v2] af_unix: Disable MSG_OOB handling for sockets in sockmap/sockhash
+Date: Sun, 23 Jun 2024 00:25:12 +0200
+Message-ID: <20240622223324.3337956-1-mhal@rbox.co>
+X-Mailer: git-send-email 2.45.1
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] cgroup/cpuset: Prevent UAF in proc_cpuset_show()
-To: Markus Elfring <Markus.Elfring@web.de>,
- Chen Ridong <chenridong@huawei.com>, cgroups@vger.kernel.org,
- bpf@vger.kernel.org, Johannes Weiner <hannes@cmpxchg.org>,
- Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>
-Cc: LKML <linux-kernel@vger.kernel.org>
-References: <19648b9c-6df7-45cd-a5ae-624a3e4d860f@redhat.com>
- <b8792fb5-9efe-4dfc-ab61-6fa55a4b0d51@web.de>
-Content-Language: en-US
-From: Waiman Long <longman@redhat.com>
-In-Reply-To: <b8792fb5-9efe-4dfc-ab61-6fa55a4b0d51@web.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.0 on 10.30.177.12
 
-On 6/22/24 16:04, Markus Elfring wrote:
-> …
->> +++ b/kernel/cgroup/cpuset.c
-> …
->> @@ -5051,10 +5066,12 @@ int proc_cpuset_show(struct seq_file *m, struct pid_namespace *ns,
->>   	if (!buf)
->>   		goto out;
->>
->> +	mutex_lock(&cpuset_mutex);
->>   	css = task_get_css(tsk, cpuset_cgrp_id);
->>   	retval = cgroup_path_ns(css->cgroup, buf, PATH_MAX,
->>   				current->nsproxy->cgroup_ns);
->>   	css_put(css);
->> +	mutex_unlock(&cpuset_mutex);
-> …
->
-> Under which circumstances would you become interested to apply a statement
-> like “guard(mutex)(&cpuset_mutex);”?
-> https://elixir.bootlin.com/linux/v6.10-rc4/source/include/linux/mutex.h#L196
+AF_UNIX socket tracks the most recent OOB packet (in its receive queue)
+with an `oob_skb` pointer. BPF redirecting does not account for that: when
+an OOB packet is moved between sockets, `oob_skb` is left outdated. This
+results in a single skb that may be accessed from two different sockets.
 
-A mutex guard will be more appropriate if there is an error exit case 
-that needs to be handled. Otherwise, it is more straight forward and 
-easier to understand with the simple lock/unlock.
+Take the easy way out: silently drop MSG_OOB data targeting any socket that
+is in a sockmap or a sockhash. Note that such silent drop is akin to the
+fate of redirected skb's scm_fp_list (SCM_RIGHTS, SCM_CREDENTIALS).
 
-Cheers,
-Longman
+For symmetry, forbid MSG_OOB in unix_bpf_recvmsg().
+
+Suggested-by: Kuniyuki Iwashima <kuniyu@amazon.com>
+Fixes: 314001f0bf92 ("af_unix: Add OOB support")
+Signed-off-by: Michal Luczaj <mhal@rbox.co>
+---
+v2:
+  - Reduce time under mutex, restructure (Kuniyuki)
+  - Handle unix_release_sock() race
+
+v1: https://lore.kernel.org/netdev/20240620203009.2610301-1-mhal@rbox.co/
+
+ net/unix/af_unix.c  | 41 ++++++++++++++++++++++++++++++++++++++++-
+ net/unix/unix_bpf.c |  3 +++
+ 2 files changed, 43 insertions(+), 1 deletion(-)
+
+diff --git a/net/unix/af_unix.c b/net/unix/af_unix.c
+index 5e695a9a609c..b7b7ee84bec0 100644
+--- a/net/unix/af_unix.c
++++ b/net/unix/af_unix.c
+@@ -2653,10 +2653,49 @@ static struct sk_buff *manage_oob(struct sk_buff *skb, struct sock *sk,
+ 
+ static int unix_stream_read_skb(struct sock *sk, skb_read_actor_t recv_actor)
+ {
++	struct unix_sock *u = unix_sk(sk);
++	struct sk_buff *skb;
++	int err;
++
+ 	if (unlikely(READ_ONCE(sk->sk_state) != TCP_ESTABLISHED))
+ 		return -ENOTCONN;
+ 
+-	return unix_read_skb(sk, recv_actor);
++	mutex_lock(&u->iolock);
++	skb = skb_recv_datagram(sk, MSG_DONTWAIT, &err);
++	mutex_unlock(&u->iolock);
++	if (!skb)
++		return err;
++
++#if IS_ENABLED(CONFIG_AF_UNIX_OOB)
++	if (unlikely(skb == READ_ONCE(u->oob_skb))) {
++		bool drop = false;
++
++		unix_state_lock(sk);
++
++		if (sock_flag(sk, SOCK_DEAD)) {
++			unix_state_unlock(sk);
++			kfree_skb(skb);
++			return -ECONNRESET;
++		}
++
++		spin_lock(&sk->sk_receive_queue.lock);
++		if (likely(skb == u->oob_skb)) {
++			WRITE_ONCE(u->oob_skb, NULL);
++			drop = true;
++		}
++		spin_unlock(&sk->sk_receive_queue.lock);
++
++		unix_state_unlock(sk);
++
++		if (drop) {
++			WARN_ON_ONCE(skb_unref(skb));
++			kfree_skb(skb);
++			return -EAGAIN;
++		}
++	}
++#endif
++
++	return recv_actor(sk, skb);
+ }
+ 
+ static int unix_stream_read_generic(struct unix_stream_read_state *state,
+diff --git a/net/unix/unix_bpf.c b/net/unix/unix_bpf.c
+index bd84785bf8d6..bca2d86ba97d 100644
+--- a/net/unix/unix_bpf.c
++++ b/net/unix/unix_bpf.c
+@@ -54,6 +54,9 @@ static int unix_bpf_recvmsg(struct sock *sk, struct msghdr *msg,
+ 	struct sk_psock *psock;
+ 	int copied;
+ 
++	if (flags & MSG_OOB)
++		return -EOPNOTSUPP;
++
+ 	if (!len)
+ 		return 0;
+ 
+-- 
+2.45.1
 
 
