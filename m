@@ -1,170 +1,105 @@
-Return-Path: <bpf+bounces-32813-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-32814-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id A94FD9136A9
-	for <lists+bpf@lfdr.de>; Sun, 23 Jun 2024 00:39:00 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E66E5913725
+	for <lists+bpf@lfdr.de>; Sun, 23 Jun 2024 03:20:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DA9F41C21295
-	for <lists+bpf@lfdr.de>; Sat, 22 Jun 2024 22:38:59 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 63D6B283104
+	for <lists+bpf@lfdr.de>; Sun, 23 Jun 2024 01:20:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CCD1A77118;
-	Sat, 22 Jun 2024 22:38:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 160A62F46;
+	Sun, 23 Jun 2024 01:20:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=rbox.co header.i=@rbox.co header.b="Ic6fG/jW"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GZ2ALq0I"
 X-Original-To: bpf@vger.kernel.org
-Received: from mailtransmit04.runbox.com (mailtransmit04.runbox.com [185.226.149.37])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1903D4084E;
-	Sat, 22 Jun 2024 22:38:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.226.149.37
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E34263B;
+	Sun, 23 Jun 2024 01:20:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719095933; cv=none; b=FNpUWzc3JEwUMCVI+vSuxhujeN/Q8UYI38FGc8kHWMJXOnMoPwKjHrLb0m6GDVBIcsskJG1U3Sr1PDT+09pYsdvyVurdRYzf+7+QxQD9FqtHUKDIyByZSRwwlS3M+zXcJfna/sCQQcjHOWmKjRv2SWjtui11NVJmuYc0UDUfeK0=
+	t=1719105638; cv=none; b=h4KzOs9tF5kCwmnDsawcSOQI0UMylaIIJcjODdUqsMWEUbyjiIF/VyGlH5aG+99Ymrpxc9M97bJl/5dMM/Yqc0fl56n16Vh1lgVDbwpuwQnX/jiKh0FJl9u9MsACtUjlg232lYE1/OcA96ilrgL2zgO72uKbUhpYN8a8viZwIkQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719095933; c=relaxed/simple;
-	bh=utn2ppJ9txOpHHSpjmfdAGRZovA0rUkWTLSy2Eqzuek=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=hr3pT7kfokQADtd4WT42Lb8Fw9VTJTIrzzXMD0zwTcTXCEqODlEJpEFAhDiUiEHgG5WvYs8SmMkt+/EvE8WIuXGbRetVmst5vNxrh2GXNkY5eVZIJj0lw2xnUiWJEl/BpHKDxH58BH05TdBblU+yMqKnLfW+vNEQ9EIwqk5BQ5Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=rbox.co; spf=pass smtp.mailfrom=rbox.co; dkim=pass (2048-bit key) header.d=rbox.co header.i=@rbox.co header.b=Ic6fG/jW; arc=none smtp.client-ip=185.226.149.37
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=rbox.co
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rbox.co
-Received: from mailtransmit03.runbox ([10.9.9.163] helo=aibo.runbox.com)
-	by mailtransmit04.runbox.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-	(Exim 4.93)
-	(envelope-from <mhal@rbox.co>)
-	id 1sL9NY-00Akdl-5O; Sun, 23 Jun 2024 00:38:40 +0200
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=rbox.co;
-	s=selector2; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:From:
-	References:Cc:To:Subject:MIME-Version:Date:Message-ID;
-	bh=wD4i8ug9zL8PvMy94qhpbD+VPJZ/Z40xDdYrlAll9Ro=; b=Ic6fG/jWgrmNZ+4+IiBkEbZgWz
-	H+5x0yTuNHuUDfBhgb8jFHh2ttZovkc0lGz83BWp8ChLgeKFWoy+UUIvGEI84Jqv+xKTIpf1W6vfb
-	JZX+DpAJDOq5ckK36RAAaRwDgKNSr3laDT2nvxAfHdvlKh7eKyzGoMIh7rjxrm8N+dbri9yF3QTN9
-	Aty41LSwYdeff2dFqwOWdAVz4PwUuURWgp8/xMobFjrgqmH8AicjWRMqpOBNXvjI+8dn0iSiRwkPM
-	WdRDV46qm9rzS8MdQ6o/UTCfRBSEYziWps/c95FX94NeSU7c8uv5t/tWvekxfnHBGsdcBCLe8nyGR
-	e7qOAd8Q==;
-Received: from [10.9.9.72] (helo=submission01.runbox)
-	by mailtransmit03.runbox with esmtp (Exim 4.86_2)
-	(envelope-from <mhal@rbox.co>)
-	id 1sL9NX-0003zK-7f; Sun, 23 Jun 2024 00:38:39 +0200
-Received: by submission01.runbox with esmtpsa  [Authenticated ID (604044)]  (TLS1.2:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
-	(Exim 4.93)
-	id 1sL9NH-0079be-Qe; Sun, 23 Jun 2024 00:38:23 +0200
-Message-ID: <fda335cd-3fb1-4024-bff7-aedeb1d8710a@rbox.co>
-Date: Sun, 23 Jun 2024 00:38:22 +0200
+	s=arc-20240116; t=1719105638; c=relaxed/simple;
+	bh=bE0Qba7Qylsq1p7b9ME9fMuPEnZj03DQE7Fnal4t9v8=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=RR3iKT9/4/hb1QuMop71FzMdf6XJhzVfEJJkpZLLWfEWuNkiCoo8vsGHd8VTkjGxr6x7ZL0cJUQSnqOF2uzyXJWnduRLk5KQk6+KVjHfNBuT/WhRWDKdLWvIVX8yrLU6k2KSFf06WQXqU0Zf4XRvfkYNG5oQYyS3gcHbA/dp964=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GZ2ALq0I; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2A668C3277B;
+	Sun, 23 Jun 2024 01:20:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1719105638;
+	bh=bE0Qba7Qylsq1p7b9ME9fMuPEnZj03DQE7Fnal4t9v8=;
+	h=From:To:Cc:Subject:Date:From;
+	b=GZ2ALq0ILbclpqKPE2ADFVcRwZLBpgsYemNSplsvSHv5jfU/vVHYOeVoSwE0zuciB
+	 RFlMDumZ9B+g21kuqFo56EihC4XNvgpW2G13hPP5OQm/2mtKSWrCPdgvErHI1omxeG
+	 /JyxVg/piHbuNTiO08ly+ruUboWsJvs4d8jP9UDcIqzQRixfv0ky2eSrSbTbyALT6m
+	 TnwEltU5Zrqs7OQDj/0ZGLYIxVR5TeX/54VVUBIZaneH79FuHb/YsnGYpzw6jErqb4
+	 4dXp5QypoyD4l/7g/kJS61btTm3H4/4UaoysmLVZkaJh1zuU12mqxjMfm3lBoZGKEE
+	 +ZmsIpoJ65JPQ==
+From: Geliang Tang <geliang@kernel.org>
+To: Andrii Nakryiko <andrii@kernel.org>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Mykola Lysenko <mykolal@fb.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>,
+	Stanislav Fomichev <sdf@google.com>,
+	Hao Luo <haoluo@google.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Shuah Khan <shuah@kernel.org>
+Cc: Geliang Tang <tanggeliang@kylinos.cn>,
+	bpf@vger.kernel.org,
+	linux-kselftest@vger.kernel.org
+Subject: [PATCH bpf-next v3 0/8] use network helpers, part 8
+Date: Sun, 23 Jun 2024 09:19:54 +0800
+Message-ID: <cover.1719105178.git.tanggeliang@kylinos.cn>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net] af_unix: Disable MSG_OOB handling for sockets in
- sockmap/sockhash
-To: Kuniyuki Iwashima <kuniyu@amazon.com>
-Cc: bpf@vger.kernel.org, davem@davemloft.net, edumazet@google.com,
- jakub@cloudflare.com, john.fastabend@gmail.com, kuba@kernel.org,
- netdev@vger.kernel.org, pabeni@redhat.com
-References: <20240620203009.2610301-1-mhal@rbox.co>
- <20240620221223.66096-1-kuniyu@amazon.com>
-Content-Language: pl-PL, en-GB
-From: Michal Luczaj <mhal@rbox.co>
-In-Reply-To: <20240620221223.66096-1-kuniyu@amazon.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-On 6/21/24 00:12, Kuniyuki Iwashima wrote:
-> Sorry for not mentioning this before, but could you replace "net" with
-> "bpf" in Subject and rebase the patch on bpf.git so that we can trigger
-> the patchwork's CI ?
+From: Geliang Tang <tanggeliang@kylinos.cn>
 
-No problem, will do.
+v3:
+ - a new patch to add backlog for network_helper_opts.
+ - use start_server_str in sockmap_ktls now, not start_server.
 
->> ...
->>  static int unix_stream_read_skb(struct sock *sk, skb_read_actor_t recv_actor)
->>  {
->> +	struct unix_sock *u = unix_sk(sk);
->> +	struct sk_buff *skb;
->> +	int err;
->> +
->>  	if (unlikely(READ_ONCE(sk->sk_state) != TCP_ESTABLISHED))
->>  		return -ENOTCONN;
->>  
->> -	return unix_read_skb(sk, recv_actor);
->> +	mutex_lock(&u->iolock);
->> +	skb = skb_recv_datagram(sk, MSG_DONTWAIT, &err);
-> 
-> 	mutex_unlock(&u->iolock);
-> 
-> I think we can drop mutex here as the skb is already unlinked
-> and no receiver can touch it.
+v2:
+ - address Eduard's comments in v1. (thanks)
+ - fix errors reported by CI.
 
-I guess you're right about the mutex. That said, double mea culpa, lack of
-state lock makes things racy:
+This patch set uses network helpers in sockmap_ktls and sk_lookup, and drop
+three local helpers tcp_server(), inetaddr_len() and make_socket() in them.
 
-unix_stream_read_skb
-  mutex_lock
-  skb = skb_recv_datagram
-  mutex_unlock
-  spin_lock
-  if (oob_skb == skb) {
-				unix_release_sock
-				  if (u->oob_skb) {
-				    kfree_skb(u->oob_skb)
-				    u->oob_skb = NULL
-				  }
-    oob_skb = NULL
-    drop = true
-  }
-  spin_unlock
-  if (drop) {
-    skb_unref(skb)
-    kfree_skb(skb)
-  }
+Geliang Tang (8):
+  selftests/bpf: Add backlog for network_helper_opts
+  selftests/bpf: Use start_server_str in sockmap_ktls
+  selftests/bpf: Use connect_to_fd in sockmap_ktls
+  selftests/bpf: Use start_server_str in sk_lookup
+  selftests/bpf: Use connect_to_fd in sk_lookup
+  selftests/bpf: Use connect_to_addr in sk_lookup
+  selftests/bpf: Drop inetaddr_len in sk_lookup
+  selftests/bpf: Drop make_socket in sk_lookup
 
-In v2 I'll do what unix_stream_read_generic() does: take state lock and
-check for SOCK_DEAD.
+ tools/testing/selftests/bpf/network_helpers.c |   2 +-
+ tools/testing/selftests/bpf/network_helpers.h |   1 +
+ .../selftests/bpf/prog_tests/sk_lookup.c      | 138 ++++++------------
+ .../selftests/bpf/prog_tests/sockmap_ktls.c   |  35 +----
+ 4 files changed, 57 insertions(+), 119 deletions(-)
 
-> and the below part can be like the following not to slow down
-> the common case:
-> 
-> 	if (!skb)
-> 		return err;
-> 
->> +
->> +#if IS_ENABLED(CONFIG_AF_UNIX_OOB)
->> +	if (skb) {
-> 
-> 	if (unlikely(skb == READ_ONCE(u->oob_skb))) {
-> 
-> 
->> +		bool drop = false;
->> +
->> +		spin_lock(&sk->sk_receive_queue.lock);
->> +		if (skb == u->oob_skb) {
-> 
-> 		if (likely(skb == u->oob_skb)) {
-> 
->> +			WRITE_ONCE(u->oob_skb, NULL);
->> +			drop = true;
->> +		}
->> +		spin_unlock(&sk->sk_receive_queue.lock);
->> +
->> +		if (drop) {
->> +			WARN_ON_ONCE(skb_unref(skb));
->> +			kfree_skb(skb);
->> +			skb = NULL;
->> +			err = -EAGAIN;
-> 			return -EAGAIN;
-> 
->> +		}
->> +	}
->> +#endif
-> 
-> 	return recv_actor(sk, skb);
+-- 
+2.43.0
 
-All right, thanks. So here's v2:
-https://lore.kernel.org/netdev/20240622223324.3337956-1-mhal@rbox.co/
 
