@@ -1,171 +1,227 @@
-Return-Path: <bpf+bounces-32839-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-32840-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 74EB7913906
-	for <lists+bpf@lfdr.de>; Sun, 23 Jun 2024 10:27:22 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7C74591398B
+	for <lists+bpf@lfdr.de>; Sun, 23 Jun 2024 12:31:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3A3A92820C7
-	for <lists+bpf@lfdr.de>; Sun, 23 Jun 2024 08:27:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3E8A7280D28
+	for <lists+bpf@lfdr.de>; Sun, 23 Jun 2024 10:31:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 728816E5ED;
-	Sun, 23 Jun 2024 08:27:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 14F5E8614D;
+	Sun, 23 Jun 2024 10:31:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="M8Gd6oN1"
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="Ca6LqhZp";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="0ioXLibE"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ot1-f53.google.com (mail-ot1-f53.google.com [209.85.210.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A89915E83;
-	Sun, 23 Jun 2024 08:27:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 325A323CE;
+	Sun, 23 Jun 2024 10:31:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719131232; cv=none; b=o4WlH/JlsoSGxqmdsoOW3ZyufT/4lti5rbkBAYXFuRoYXy1NDVanLE/VOOJuyY6u6SR19oSetTmT4CQtnmUcByUhK5hgG81ytf4WtvIek7lkq2jW8hyDbWppSaUDAxd5i0lMlO4FPATDYMfXxtDI6h6HaftWX2Fc5JKmWddR2bI=
+	t=1719138668; cv=none; b=gzr4s+pnnsPIZPOS4Afra0W3BVWiI5xWQlLdac1EEkLdzSBKgpAw6tkPqQGovUw3Kzf0+/rqja+WRPhNrPpP9bWs77m37gkhTDQQu6YsAIGG5YOpfaVtWbnQVpvsgOLksQyqLOAABOgQdfnQ+6TprRqUJO4yFgKooBeLx4Lz3QE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719131232; c=relaxed/simple;
-	bh=wXzpF52hVLUV+mMEdLc6cpCfXOaETnrKNX3HhFMc35U=;
-	h=Date:From:To:Cc:Message-ID:In-Reply-To:References:Subject:
-	 Mime-Version:Content-Type; b=BYxO5DG8N0ScBNtWrK2GCK8Vb7MsQnXFE226L7Vn/k8jVfyDj+pcImip7SW2yrm0U5RulLuvq2so3Fci3I+I+Rb3DP6xvX2yNviy43wozKdK13i1raSflRPFhlsRdO5Ve5KUHfeQueFDg3dsahPAgvQZJ1ita9z1lKzT+++E+lQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=M8Gd6oN1; arc=none smtp.client-ip=209.85.210.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ot1-f53.google.com with SMTP id 46e09a7af769-6f8d0a1e500so2723650a34.3;
-        Sun, 23 Jun 2024 01:27:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1719131229; x=1719736029; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=rVlxddzmWsceHIvjH6A3lb+w9ZlDbtGGCb1DyEkJCpk=;
-        b=M8Gd6oN1UK5tBzoGfqALdnwvLNG460s5JhpQiylasvIduIlOSj3RVjoy/9i+WgsiHH
-         Ool0DGTco7FitXROffjKXGpFnNX3lJYmxUeheKaRc8dlMF3QaaPwvVn7IAdIlueF8BUz
-         iZit8Qydp/lEi236tZla2k4qKIlQrhrjwDYzdQLrGNKrfe0LMuUqu1XfySmi+G4nw6kR
-         yB8zQMdOxaABLpPqCs3jzWogF051BeJcAuD23hggMFd9zemtV50lbnKvWavw6BgC2gbK
-         s+8lgpwG+CoLojCc227UNJCTJEX5q07CmtbG0xPuTJpi/noF705kd3TfWDD33sYFO8tf
-         iIFg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1719131229; x=1719736029;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=rVlxddzmWsceHIvjH6A3lb+w9ZlDbtGGCb1DyEkJCpk=;
-        b=D0Lniob84RFky81SK5fFpIiACcJH6XT7kZAQsWr4W069B5lrYEQiM5q0RNSXVib60u
-         ga9ZzvrKJ7PiyaoQHC9gszJnZapT6bzeoxQYYFND+UfpA/a+/KBe3oEpbblYFhzK2hEH
-         P34zODuP7lF+6yyk989wZ9olU8l0fLnQ6JZoFnK1GqKCpBWaG24OGKBvldmnkV58hOgR
-         29leiH0j9KocSKeEaXNDQOx63yMMxwDK74BwaPJGjHNzWVOsaaB6lDHnRQtVeOv5K660
-         3IUhSsdMgX8IvffHqRoE5yzsG4zc0RA686Xi2iWTIGubBRo6YCfqsutwRFmVQ6Fsofo/
-         TYsw==
-X-Forwarded-Encrypted: i=1; AJvYcCX7cIWzsI80zZzqidNG/jc7VF3xqtjRXi7xMTNU7nxsgmtfhP7pVw93KqpyxZZaQnmi9dzluejZ9W85As846hGzVATmTfoR6KeWyjtfUVhOQQw/C8N9Hc9uTXIaAKB/BJH9
-X-Gm-Message-State: AOJu0Yy+olIYqMPuUMYNN3CEdmmwpO0cJW4pMvIbuvq2UAXPrKKRtx2q
-	4WdjPVsdY7R9BYq5i2cxdHkYDWhUyzLjIuX8tY/GwxpAM4ASSm+q
-X-Google-Smtp-Source: AGHT+IHpnh6RRlhqyBweCkLdGRplsGRhYi3dnF+hgw7fZIcOsYXsE3quUOoHyU/QgLsrOKiHA2S/mg==
-X-Received: by 2002:a9d:6c13:0:b0:6f9:62ae:10fa with SMTP id 46e09a7af769-700b11a842emr2023616a34.5.1719131229480;
-        Sun, 23 Jun 2024 01:27:09 -0700 (PDT)
-Received: from localhost (56.148.86.34.bc.googleusercontent.com. [34.86.148.56])
-        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-6b51ecfe7a9sm23596306d6.27.2024.06.23.01.27.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 23 Jun 2024 01:27:08 -0700 (PDT)
-Date: Sun, 23 Jun 2024 04:27:08 -0400
-From: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-To: Yan Zhai <yan@cloudflare.com>, 
- Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Cc: netdev@vger.kernel.org, 
- "David S. Miller" <davem@davemloft.net>, 
- Eric Dumazet <edumazet@google.com>, 
- Jakub Kicinski <kuba@kernel.org>, 
- Paolo Abeni <pabeni@redhat.com>, 
- Alexei Starovoitov <ast@kernel.org>, 
- Daniel Borkmann <daniel@iogearbox.net>, 
- Jesper Dangaard Brouer <hawk@kernel.org>, 
- John Fastabend <john.fastabend@gmail.com>, 
- Willem de Bruijn <willemb@google.com>, 
- Simon Horman <horms@kernel.org>, 
- Florian Westphal <fw@strlen.de>, 
- Mina Almasry <almasrymina@google.com>, 
- Abhishek Chauhan <quic_abchauha@quicinc.com>, 
- David Howells <dhowells@redhat.com>, 
- Alexander Lobakin <aleksander.lobakin@intel.com>, 
- David Ahern <dsahern@kernel.org>, 
- Richard Gobert <richardbgobert@gmail.com>, 
- Antoine Tenart <atenart@kernel.org>, 
- Felix Fietkau <nbd@nbd.name>, 
- Soheil Hassas Yeganeh <soheil@google.com>, 
- Pavel Begunkov <asml.silence@gmail.com>, 
- Lorenzo Bianconi <lorenzo@kernel.org>, 
- =?UTF-8?B?VGhvbWFzIFdlacOfc2NodWg=?= <linux@weissschuh.net>, 
- linux-kernel@vger.kernel.org, 
- bpf@vger.kernel.org
-Message-ID: <6677dc5cb5cca_33522729474@willemb.c.googlers.com.notmuch>
-In-Reply-To: <CAO3-Pbp8frVM-i6NKkmyNOFrqqW=g58rK8m4vfdWbiSHHdQBsg@mail.gmail.com>
-References: <cover.1718919473.git.yan@cloudflare.com>
- <b8c183a24285c2ab30c51622f4f9eff8f7a4752f.1718919473.git.yan@cloudflare.com>
- <66756ed3f2192_2e64f929491@willemb.c.googlers.com.notmuch>
- <CAO3-Pbp8frVM-i6NKkmyNOFrqqW=g58rK8m4vfdWbiSHHdQBsg@mail.gmail.com>
-Subject: Re: [RFC net-next 1/9] skb: introduce gro_disabled bit
+	s=arc-20240116; t=1719138668; c=relaxed/simple;
+	bh=wViZSvXZ2xH06udrWPcq/3gYLrAALiDEpJ3Hk6oseJo=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=a6Ouhe2GXZY5Hjcy+YttRq3F9W8G0X0J2ZpPKEhmhu7aqw7cnCOi53ebAFkIQVXQwgxcE/7Tcq4qKOvceO7Byqn2XvAJc5Y+Jv9/gFhI4Uh/Q+Ux2/5hcQkAp3GWWNFveprAN+mRao4f8NQDbpfmp6X5gHR5FT+9ivAzVW159sM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=Ca6LqhZp; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=0ioXLibE; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+From: Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1719138660;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=gm1PT2B5gcmym7DNOK5dtDaWL67j08PCA1ocDIx73Po=;
+	b=Ca6LqhZpmOewYXkcxc+rnoGA2zK0mnFhXt7VwK+M5dLngmVkRzt73Lr5d+WGfAIpNXW+Yk
+	RyFp3qn+h88wHgw2TriWzbhwwAHC2NdIlnwkhONOSfd6A35yVFyhyVjiBitzxI2OCIjZux
+	UKW0vEdYeJBvFaPh+LTXsg0SC8wiz/7Wv5IZu7rGVozRk8gYra+sWnD+X1frEEl6qe70MK
+	up+ehfylvCueBURD/70vzhAE/kfdP7i18zgqcXFMainJIXossYDozOCE/XqdADRwVTfZlL
+	MHQ8Bz24rL85FeVK9pcGzVk7NcB81wraGK4Vx03nyubuoeqHpMwcArKCf3YxMA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1719138660;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=gm1PT2B5gcmym7DNOK5dtDaWL67j08PCA1ocDIx73Po=;
+	b=0ioXLibEpOU+GARTz+GI1P6wvxq5YuPE2Yd2lCqcAFu6DgZljjkUB9haRe5vrLRqe0qrBI
+	LSlD2Bkxrn3av6Aw==
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Tejun Heo <tj@kernel.org>, mingo@redhat.com, peterz@infradead.org,
+ juri.lelli@redhat.com, vincent.guittot@linaro.org,
+ dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
+ mgorman@suse.de, bristot@redhat.com, vschneid@redhat.com, ast@kernel.org,
+ daniel@iogearbox.net, andrii@kernel.org, martin.lau@kernel.org,
+ joshdon@google.com, brho@google.com, pjt@google.com, derkling@google.com,
+ haoluo@google.com, dvernet@meta.com, dschatzberg@meta.com,
+ dskarlat@cs.cmu.edu, riel@surriel.com, changwoo@igalia.com,
+ himadrics@inria.fr, memxor@gmail.com, andrea.righi@canonical.com,
+ joel@joelfernandes.org, linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+ kernel-team@meta.com
+Subject: Re: [PATCHSET v6] sched: Implement BPF extensible scheduler class
+In-Reply-To: <CAHk-=wiRgsFsrnTR8XShrS_-aYS--4DSrRPmaWtYJ55-fmjznA@mail.gmail.com>
+References: <CAHk-=wg88k=EsHyGrX9dKt10KxSygzcEGdKRYRTx9xtA_y=rqQ@mail.gmail.com>
+ <871q4rpi2s.ffs@tglx>
+ <CAHk-=wgN6DRks55fsqiJYE3uV=_QTgzdxOvh1ZZNgm_YooKdYA@mail.gmail.com>
+ <87v822ocy2.ffs@tglx>
+ <CAHk-=wiRgsFsrnTR8XShrS_-aYS--4DSrRPmaWtYJ55-fmjznA@mail.gmail.com>
+Date: Sun, 23 Jun 2024 12:31:00 +0200
+Message-ID: <8734p4ymqj.ffs@tglx>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+Content-Type: text/plain
 
-Yan Zhai wrote:
-> > > -static inline bool netif_elide_gro(const struct net_device *dev)
-> > > +static inline bool netif_elide_gro(const struct sk_buff *skb)
-> > >  {
-> > > -     if (!(dev->features & NETIF_F_GRO) || dev->xdp_prog)
-> > > +     if (!(skb->dev->features & NETIF_F_GRO) || skb->dev->xdp_prog)
-> > >               return true;
-> > > +
-> > > +#ifdef CONFIG_SKB_GRO_CONTROL
-> > > +     return skb->gro_disabled;
-> > > +#else
-> > >       return false;
-> > > +#endif
-> >
-> > Yet more branches in the hot path.
-> >
-> > Compile time configurability does not help, as that will be
-> > enabled by distros.
-> >
-> > For a fairly niche use case. Where functionality of GRO already
-> > works. So just a performance for a very rare case at the cost of a
-> > regression in the common case. A small regression perhaps, but death
-> > by a thousand cuts.
-> >
-> 
-> I share your concern on operating on this hotpath. Will a
-> static_branch + sysctl make it less aggressive?
+Linus!
 
-That is always a possibility. But we have to use it judiciously,
-cannot add a sysctl for every branch.
+On Fri, Jun 21 2024 at 09:34, Linus Torvalds wrote:
+> So if I don't see it, please point it out very very explicitly, and
+> using small words to make me understand.
 
-I'm still of the opinion that Paolo shared that this seems a lot of
-complexity for a fairly minor performance optimization for a rare
-case.
+I really let the scheduler people bring up their pain points now. There
+is no value in me being the mouthpiece when I want to achieve that folks
+talk to each other (again). It's not a me against you thing. If they
+fail to explain, so be it.
 
-> Speaking of
-> performance, I'd hope this can give us more control so we can achieve
-> the best of two worlds: for TCP and some UDP traffic, we can enable
-> GRO, while for some other classes that we know GRO does no good or
-> even harm, let's disable GRO to save more cycles. The key observation
-> is that developers may already know which traffic is blessed by GRO,
-> but lack a way to realize it.
+So I just use one trivial example to illustrate the approach and the
+message it emits, i.e. the technical and the social problem which makes
+all of this so unpleasant.
 
-Following up also on Daniel's point on using BPF as GRO engine. Even
-earlier I tried to add an option to selectively enable GRO protocols
-without BPF. Definitely worthwhile to be able to disable GRO handlers
-to reduce attack surface to bad input.
+It struck my eyes a few days ago when I deciphered the fork maze:
 
+struct sched_ext_entity {
+       .....
+	/* must be the last field, see init_scx_entity() */
+	struct list_head	tasks_node;
+};
 
-> 
-> best
-> Yan
+void init_scx_entity(struct sched_ext_entity *scx)
+{
+	/*
+	 * init_idle() calls this function again after fork sequence is
+	 * complete. Don't touch ->tasks_node as it's already linked.
+	 */
+	memset(scx, 0, offsetof(struct sched_ext_entity, tasks_node));
+...
+
+I immediately asked myself the obvious question: Why?
+
+It took me less than 10 minutes to figure out that the double invocation of
+__sched_fork() is bogus.
+
+fork_idle()
+   copy_process()
+      sched_fork()
+	__sched_fork()
+   init_idle()
+     __sched_fork()
+
+There is only one other call site of init_idle():
+
+     sched_init()
+       init_idle()
+
+to initialize the idle task of the boot CPU.
+
+Another 10 minutes later I had the obvious patch for this booted and
+validated. So overall that took me just 20 minutes and that's not because
+I'm the deep scheduler expert, it's because I care. 
+
+It's really not the job of the maintainer to point at that or figure it
+out especially not with the knowledge that our maintainer resources are
+anything else than abundant. Even if I can't figure it out on my own,
+then pointing it out and asking would have been the right thing to do.
+
+Instead of working around it and conveying the message "shrug, it's not in
+the scope of my project, why should I care?", it would have:
+
+   1) removed technical debt
+
+   2) not added more technical debt
+
+   3) followed what documentation asks people to do
+
+   4) told the scheduler people "hey, we care about working with you"
+
+It's a trivial detail, but it illustrates the tiny bits which contributed
+to the overall rift.
+
+Here I really pick RT, not for comparison, but for reference. RT was
+certainly exposed to resistance, ignorance and outright denial. We sorted
+it out by working with the people, by going the extra mile of mopping up
+technical debt. Setting this as expectation is not asked too much.
+
+As I said before: This is both a technical and a social problem.
+
+As the social problem became prevalent over time the technical problem
+solving got nowhere.
+
+As a matter of fact both sides contributed to that, and that cannot be
+resolved par ordre du mufti.
+
+The result of that would be a even deeper rift which turns 'work it out in
+tree' to 'work around each other in tree' or worse.
+
+There is interest from both sides to get this sorted. At least that's what
+was conveyed to me. I'll make sure to hear it from the source.
+
+Thanks,
+
+	tglx
+
+---
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -4344,7 +4344,8 @@ int wake_up_state(struct task_struct *p,
+  * Perform scheduler related setup for a newly forked process p.
+  * p is forked by current.
+  *
+- * __sched_fork() is basic setup used by init_idle() too:
++ * __sched_fork() is basic setup which is also used by sched_init() to
++ * initialize the boot CPU's idle task.
+  */
+ static void __sched_fork(unsigned long clone_flags, struct task_struct *p)
+ {
+@@ -7579,8 +7580,6 @@ void __init init_idle(struct task_struct
+ 	struct rq *rq = cpu_rq(cpu);
+ 	unsigned long flags;
+ 
+-	__sched_fork(0, idle);
+-
+ 	raw_spin_lock_irqsave(&idle->pi_lock, flags);
+ 	raw_spin_rq_lock(rq);
+ 
+@@ -7594,12 +7593,7 @@ void __init init_idle(struct task_struct
+ 	kthread_set_per_cpu(idle, cpu);
+ 
+ #ifdef CONFIG_SMP
+-	/*
+-	 * It's possible that init_idle() gets called multiple times on a task,
+-	 * in that case do_set_cpus_allowed() will not do the right thing.
+-	 *
+-	 * And since this is boot we can forgo the serialization.
+-	 */
++	/* No validation and serialization required at boot time. */
+ 	set_cpus_allowed_common(idle, &ac);
+ #endif
+ 	/*
+@@ -8407,6 +8401,7 @@ void __init sched_init(void)
+ 	 * but because we are the idle thread, we just pick up running again
+ 	 * when this runqueue becomes "idle".
+ 	 */
++	__sched_fork(0, current);
+ 	init_idle(current, smp_processor_id());
+ 
+ 	calc_load_update = jiffies + LOAD_FREQ;
 
 
 
