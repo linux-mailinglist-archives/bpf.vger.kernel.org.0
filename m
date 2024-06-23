@@ -1,72 +1,72 @@
-Return-Path: <bpf+bounces-32835-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-32836-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id ECA6691386F
-	for <lists+bpf@lfdr.de>; Sun, 23 Jun 2024 09:03:46 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3DA41913870
+	for <lists+bpf@lfdr.de>; Sun, 23 Jun 2024 09:03:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B5DBE283BE2
-	for <lists+bpf@lfdr.de>; Sun, 23 Jun 2024 07:03:45 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 594B2B22FEC
+	for <lists+bpf@lfdr.de>; Sun, 23 Jun 2024 07:03:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0CFC13A8D0;
-	Sun, 23 Jun 2024 07:03:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 58D6939847;
+	Sun, 23 Jun 2024 07:03:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="D2SngYSz"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="QNt0Z568"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-lj1-f174.google.com (mail-lj1-f174.google.com [209.85.208.174])
+Received: from mail-lj1-f170.google.com (mail-lj1-f170.google.com [209.85.208.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 44410374DD
-	for <bpf@vger.kernel.org>; Sun, 23 Jun 2024 07:03:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A60372836A
+	for <bpf@vger.kernel.org>; Sun, 23 Jun 2024 07:03:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719126221; cv=none; b=uf9Ki8htVm3B46PW7s3YwfjwKgh/vYN8S24YJqbZh3cSrFn4XOXPHRp4dEcU2XsUEaSnayBOnNyVUyoymVHTGcoE4iN6A5rLw67KNodjSHFiSUrOZi0yJeS5XtNvUceuX2psmnrFmMtTdVHrQmE8WzZ/A1pGkB2xXZRZ8x4zqHs=
+	t=1719126225; cv=none; b=KvR4URV4cqgyGNnChB61/XjtiIJqrQbnEwhfJnjb5WVBNBX1M6GiETsvQT2E+0/LxkFYBb1qpx9MEmn1vz/05dmoXG1ttthQdJ5r5WhFkwmVKxvJR9WVU9WZvAWGlhUjYr3lbo0RoqR7nEV1MihPYMqqcoDHHygzdLS/SZCyxSM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719126221; c=relaxed/simple;
-	bh=o/bhDzG96N2ZECyKO48b1vbI8H9rBVKwFI/mmblVWDY=;
+	s=arc-20240116; t=1719126225; c=relaxed/simple;
+	bh=FltYF78F9/MqhM5jam26l4dQVN9Cgl/mT9HnO8YjLOk=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=oytMBTMyvkhoBuVPSSOLGhMPh2Zp6ho/ijl2CMy6ppM4pmBd2ZoMJ2EPO5h/BEOq2ZJLdJ5uKCh7ShVUjDbetE2dI6fV6IGLfQtuD+Q2dKvSWH1jOYZ5vMxNj/6OVT04DjG+u5PpAmoSyLCRTdyGDYdp6e3brKHtUcvFs/va06w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=D2SngYSz; arc=none smtp.client-ip=209.85.208.174
+	 MIME-Version; b=c95kAbtJSIWh2H/1TWsPV5GuAR6OJ7pzh1aCivIq9+yG5EGaHKwUfP5Vdiq0NXYMQqbNuHX1FdUBIegIXhYNQIT/4GcxJjlvw2oBVSWAO3vSS1zcACIpAFZuc7OiLS0lQBCa4+KAS/Sj6bkoV5vt0s44hu8LJsqP9+JU436DUmU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=QNt0Z568; arc=none smtp.client-ip=209.85.208.170
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-lj1-f174.google.com with SMTP id 38308e7fff4ca-2eaa89464a3so38894001fa.3
-        for <bpf@vger.kernel.org>; Sun, 23 Jun 2024 00:03:39 -0700 (PDT)
+Received: by mail-lj1-f170.google.com with SMTP id 38308e7fff4ca-2ec17eb4493so45277531fa.2
+        for <bpf@vger.kernel.org>; Sun, 23 Jun 2024 00:03:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1719126217; x=1719731017; darn=vger.kernel.org;
+        d=suse.com; s=google; t=1719126221; x=1719731021; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=0Q0XDSkO6IPlbi2Ob1YwvqKlWsg4IDHusnEwu3XmzjY=;
-        b=D2SngYSzZldxK6eguwUaLybZe2+gYLQrxnPBWlSs+LWzAzcJnxHmK8mtYi8LDvFbJx
-         Qx0MaOpTU0d4V2bIkMRTTJFUB57+z9kaDurizOB3i+f4pNVuHixG961H8hSv28clGhs0
-         jW74ffXAnJSgvd4oJWeRnBL21iXLEELvVGheXqZ7yEyxVTifuzY7aoTysu/+grsXKpUq
-         3RlnTkrjRB7WhCvn0UaRQ5FFPVGEOPNUz9jUbq82h5oxEp9SBmlDx7rhOr4awnGj2Jru
-         keHjdJihir3ttsAy1R110T7HQ868c4q5YlMMzTkJ/aTpXF/WFsQcfArhj87FW1jsL/Pj
-         bgqQ==
+        bh=CWaF5C+XrGxbFWUh1Nu3tH1BQNMNQ6zxjDoDiAz9oz4=;
+        b=QNt0Z568UxtxQMqPVqQRtemxXwCd69gWG9R/vKlt8qUmk8bdWRpcbuMfW+XqCgoLl2
+         tv7qaSTnpotk29DACJ3fYSwZbJUPo1fnt4PoPgFEAIca6yLONtfq2v/KKHVjCJUQxZTz
+         j1V/T3RTr9obaazkQCvi1F/QqaDwx6Pb1Flcm0UW3IFuRtLfkFJAO1llFt1xkweUNWuI
+         g9af3GVHyFrdAq6NfKSbgjGoV5XX+/JhjJ8/uSFCrPX5smbP0z7WASBgiSLV4hUKbBc8
+         LazUC7BdnlXnfAVjTdtAZCD2TS+ZqJELERE/6Xr10mmidXd9fn9OIOiA6oozIpn/soBi
+         gWoA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1719126217; x=1719731017;
+        d=1e100.net; s=20230601; t=1719126221; x=1719731021;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=0Q0XDSkO6IPlbi2Ob1YwvqKlWsg4IDHusnEwu3XmzjY=;
-        b=qvQrFnvyMa/Ys5859XAvpxy5EPeKR9VojLlyHYdR3TTwGY/qgbhKMhEUn3a/Bw2OjO
-         JdYXSjtNa90Dun4exKJfu2H47b5DJS84FcknMgGdGOTK4p8vt/+6JzJhtRHX5sJgyrLd
-         HD/dLCwP+lFWxarGtMXMKVRgIvSQsLQcQfP8w1UQxT42AhUTl13fgTYLkzZo/0JU7TKZ
-         8/swiYCFLfYtFt15kRXVqTzPZ1/3fF7cbFEGvPIJ7rvtyPOotOl+8mn3emSj8DpPWMTA
-         nP9YX67wBZll+wQcS4fRwNYiE2iR1Xi5Z0ix2GlxT743eJMgaW3fHYn90hvDDvFmc8+W
-         Wh0Q==
-X-Gm-Message-State: AOJu0Yyu2XxThN6zaPi4cAC7/wjAKKKtU4bM702cq1G8IH/k/T/W2qdo
-	box2w+u2H1RDhdoKVFKIdfduSpgnhQfvjMXoYEMbi64pxf+htKMxtNzEZ2ZU3mrqjkA+o/0YZHQ
-	f
-X-Google-Smtp-Source: AGHT+IFAoXwkgYPqS5wSlB9bCBXIEuR17/KsWQzurFfTAL1QqUiEVDbdqaJEBtJlAUmqYSryay5AaQ==
-X-Received: by 2002:a2e:9b12:0:b0:2ec:559d:991 with SMTP id 38308e7fff4ca-2ec579ffb28mr14902571fa.50.1719126217179;
-        Sun, 23 Jun 2024 00:03:37 -0700 (PDT)
+        bh=CWaF5C+XrGxbFWUh1Nu3tH1BQNMNQ6zxjDoDiAz9oz4=;
+        b=hLmC/U0EkfnKIOswlmRAFt6Qo+MeW+bNBrjlliVXSZcIzjbuSzoT65kfSH/FAbBN9T
+         NAg5/Xrt2QtET1lnsoLif4NQGcswCYiUBtu3TFkZivTaWPeElmI/by3garRaUFdM7xwH
+         iIWNs/dT6b5mFiQgY85cehqJ4j73SR88WxDei7TErAuBXxXMQjujPicQXK2Kfi1HaxjE
+         5ElOenDkDl6dWzjIB4a6B3PWWoYqRcjKLEGZ29CE3dJKw4DnaGURgMtPHAXIIU5v0dme
+         VozerOKK8Mf7sTZDSXhfK0JXwE1GMOAjv+bWOSJ9pQMiB3yMx8bjtYy3I9mCOPltjWq4
+         HMaw==
+X-Gm-Message-State: AOJu0YwU3CIQLdgHDVjHXCiR9R2GDMSKz/61vE45nC3Q5Ff+qVQpJdnq
+	pkH0j50QVdE7rSWU8egEvdQQ1TuZiYhCAxQw/qCom+O/wcf5oTqRIMFqY5FWfmcwsioaAj9cUdm
+	r
+X-Google-Smtp-Source: AGHT+IHekYT9VVXJsGQKNVB0w833IojZ5GTCRCcjZclZk14I6/3NpEqAM+2yuAUwGkJeEbcu4iIWcA==
+X-Received: by 2002:a2e:3518:0:b0:2ec:57b4:1c6f with SMTP id 38308e7fff4ca-2ec5b31d1a2mr9942921fa.34.1719126221030;
+        Sun, 23 Jun 2024 00:03:41 -0700 (PDT)
 Received: from localhost ([2401:e180:8842:4fc6:d5d2:edb0:d14c:4782])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-706764d5e25sm715907b3a.220.2024.06.23.00.03.35
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-1f9eb3d51easm40610625ad.202.2024.06.23.00.03.40
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 23 Jun 2024 00:03:36 -0700 (PDT)
+        Sun, 23 Jun 2024 00:03:40 -0700 (PDT)
 From: Shung-Hsi Yu <shung-hsi.yu@suse.com>
 To: bpf@vger.kernel.org
 Cc: Alexei Starovoitov <ast@kernel.org>,
@@ -75,9 +75,9 @@ Cc: Alexei Starovoitov <ast@kernel.org>,
 	Andrii Nakryiko <andrii@kernel.org>,
 	Yonghong Song <yonghong.song@linux.dev>,
 	Shung-Hsi Yu <shung-hsi.yu@suse.com>
-Subject: [PATCH bpf-next 1/2] bpf: verifier: use check_add_overflow() to check for addition overflows
-Date: Sun, 23 Jun 2024 15:03:19 +0800
-Message-ID: <20240623070324.12634-2-shung-hsi.yu@suse.com>
+Subject: [PATCH bpf-next 2/2] bpf: verifier: use check_sub_overflow() to check for subtraction overflows
+Date: Sun, 23 Jun 2024 15:03:20 +0800
+Message-ID: <20240623070324.12634-3-shung-hsi.yu@suse.com>
 X-Mailer: git-send-email 2.45.2
 In-Reply-To: <20240623070324.12634-1-shung-hsi.yu@suse.com>
 References: <20240623070324.12634-1-shung-hsi.yu@suse.com>
@@ -89,160 +89,111 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-signed_add*_overflows() was added back when there was no overflow-check
-helper. With the introduction of such helpers in commit f0907827a8a91
-("compiler.h: enable builtin overflow checkers and add fallback code"), we
-can drop signed_add*_overflows() in kernel/bpf/verifier.c and use the
-generic check_add_overflow() instead.
+Similar to previous patch that drops signed_add*_overflows() and uses
+(compiler) builtin-based check_add_overflow(), do the same for
+signed_sub*_overflows() and replace them with the generic
+check_sub_overflow() to make future refactoring easier.
 
-This will make future refactoring easier, and possibly taking advantage of
-compiler-emitted hardware instructions that efficiently implement these
-checks.
+Unsigned overflow check for subtraction does not use helpers and are
+simple enough already, so they're left untouched.
 
 Signed-off-by: Shung-Hsi Yu <shung-hsi.yu@suse.com>
 ---
-shung-hsi.yu: maybe there's a better name instead of {min,max}_cur, but
-I coudln't come up with one.
----
- kernel/bpf/verifier.c | 74 ++++++++++++++++++-------------------------
- 1 file changed, 30 insertions(+), 44 deletions(-)
+ kernel/bpf/verifier.c | 46 +++++++++++++------------------------------
+ 1 file changed, 14 insertions(+), 32 deletions(-)
 
 diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 3f6be4923655..b1ad76c514f5 100644
+index b1ad76c514f5..2c1657a26fdb 100644
 --- a/kernel/bpf/verifier.c
 +++ b/kernel/bpf/verifier.c
 @@ -12720,26 +12720,6 @@ static int check_kfunc_call(struct bpf_verifier_env *env, struct bpf_insn *insn,
  	return 0;
  }
  
--static bool signed_add_overflows(s64 a, s64 b)
+-static bool signed_sub_overflows(s64 a, s64 b)
 -{
--	/* Do the add in u64, where overflow is well-defined */
--	s64 res = (s64)((u64)a + (u64)b);
+-	/* Do the sub in u64, where overflow is well-defined */
+-	s64 res = (s64)((u64)a - (u64)b);
 -
 -	if (b < 0)
--		return res > a;
--	return res < a;
+-		return res < a;
+-	return res > a;
 -}
 -
--static bool signed_add32_overflows(s32 a, s32 b)
+-static bool signed_sub32_overflows(s32 a, s32 b)
 -{
--	/* Do the add in u32, where overflow is well-defined */
--	s32 res = (s32)((u32)a + (u32)b);
+-	/* Do the sub in u32, where overflow is well-defined */
+-	s32 res = (s32)((u32)a - (u32)b);
 -
 -	if (b < 0)
--		return res > a;
--	return res < a;
+-		return res < a;
+-	return res > a;
 -}
 -
- static bool signed_sub_overflows(s64 a, s64 b)
- {
- 	/* Do the sub in u64, where overflow is well-defined */
-@@ -13134,6 +13114,8 @@ static int adjust_ptr_min_max_vals(struct bpf_verifier_env *env,
- 	struct bpf_sanitize_info info = {};
- 	u8 opcode = BPF_OP(insn->code);
- 	u32 dst = insn->dst_reg;
-+	s64 smin_cur, smax_cur;
-+	u64 umin_cur, umax_cur;
- 	int ret;
- 
- 	dst_reg = &regs[dst];
-@@ -13241,21 +13223,21 @@ static int adjust_ptr_min_max_vals(struct bpf_verifier_env *env,
- 		 * added into the variable offset, and we copy the fixed offset
- 		 * from ptr_reg.
+ static bool check_reg_sane_offset(struct bpf_verifier_env *env,
+ 				  const struct bpf_reg_state *reg,
+ 				  enum bpf_reg_type type)
+@@ -13280,14 +13260,14 @@ static int adjust_ptr_min_max_vals(struct bpf_verifier_env *env,
+ 		/* A new variable offset is created.  If the subtrahend is known
+ 		 * nonnegative, then any reg->range we had before is still good.
  		 */
--		if (signed_add_overflows(smin_ptr, smin_val) ||
--		    signed_add_overflows(smax_ptr, smax_val)) {
-+		if (check_add_overflow(smin_ptr, smin_val, &smin_cur) ||
-+		    check_add_overflow(smax_ptr, smax_val, &smax_cur)) {
+-		if (signed_sub_overflows(smin_ptr, smax_val) ||
+-		    signed_sub_overflows(smax_ptr, smin_val)) {
++		if (check_sub_overflow(smin_ptr, smax_val, &smin_cur) ||
++		    check_sub_overflow(smax_ptr, smin_val, &smax_cur)) {
+ 			/* Overflow possible, we know nothing */
  			dst_reg->smin_value = S64_MIN;
  			dst_reg->smax_value = S64_MAX;
  		} else {
--			dst_reg->smin_value = smin_ptr + smin_val;
--			dst_reg->smax_value = smax_ptr + smax_val;
+-			dst_reg->smin_value = smin_ptr - smax_val;
+-			dst_reg->smax_value = smax_ptr - smin_val;
 +			dst_reg->smin_value = smin_cur;
 +			dst_reg->smax_value = smax_cur;
  		}
--		if (umin_ptr + umin_val < umin_ptr ||
--		    umax_ptr + umax_val < umax_ptr) {
-+		if (check_add_overflow(umin_ptr, umin_val, &umin_cur) ||
-+		    check_add_overflow(umax_ptr, umax_val, &umax_cur)) {
- 			dst_reg->umin_value = 0;
- 			dst_reg->umax_value = U64_MAX;
- 		} else {
--			dst_reg->umin_value = umin_ptr + umin_val;
--			dst_reg->umax_value = umax_ptr + umax_val;
-+			dst_reg->umin_value = umin_cur;
-+			dst_reg->umax_value = umax_cur;
- 		}
- 		dst_reg->var_off = tnum_add(ptr_reg->var_off, off_reg->var_off);
- 		dst_reg->off = ptr_reg->off;
-@@ -13362,22 +13344,24 @@ static void scalar32_min_max_add(struct bpf_reg_state *dst_reg,
+ 		if (umin_ptr < umax_val) {
+ 			/* Overflow possible, we know nothing */
+@@ -13400,15 +13380,16 @@ static void scalar32_min_max_sub(struct bpf_reg_state *dst_reg,
  	s32 smax_val = src_reg->s32_max_value;
  	u32 umin_val = src_reg->u32_min_value;
  	u32 umax_val = src_reg->u32_max_value;
 +	s32 smin_cur, smax_cur;
-+	u32 umin_cur, umax_cur;
  
--	if (signed_add32_overflows(dst_reg->s32_min_value, smin_val) ||
--	    signed_add32_overflows(dst_reg->s32_max_value, smax_val)) {
-+	if (check_add_overflow(dst_reg->s32_min_value, smin_val, &smin_cur) ||
-+	    check_add_overflow(dst_reg->s32_max_value, smax_val, &smax_cur)) {
+-	if (signed_sub32_overflows(dst_reg->s32_min_value, smax_val) ||
+-	    signed_sub32_overflows(dst_reg->s32_max_value, smin_val)) {
++	if (check_sub_overflow(dst_reg->s32_min_value, smax_val, &smin_cur) ||
++	    check_sub_overflow(dst_reg->s32_max_value, smin_val, &smax_cur)) {
+ 		/* Overflow possible, we know nothing */
  		dst_reg->s32_min_value = S32_MIN;
  		dst_reg->s32_max_value = S32_MAX;
  	} else {
--		dst_reg->s32_min_value += smin_val;
--		dst_reg->s32_max_value += smax_val;
+-		dst_reg->s32_min_value -= smax_val;
+-		dst_reg->s32_max_value -= smin_val;
 +		dst_reg->s32_min_value = smin_cur;
 +		dst_reg->s32_max_value = smax_cur;
  	}
--	if (dst_reg->u32_min_value + umin_val < umin_val ||
--	    dst_reg->u32_max_value + umax_val < umax_val) {
-+	if (check_add_overflow(dst_reg->u32_min_value, umin_val, &umin_cur) ||
-+	    check_add_overflow(dst_reg->u32_max_value, umax_val, &umax_cur)) {
- 		dst_reg->u32_min_value = 0;
- 		dst_reg->u32_max_value = U32_MAX;
- 	} else {
--		dst_reg->u32_min_value += umin_val;
--		dst_reg->u32_max_value += umax_val;
-+		dst_reg->u32_min_value = umin_cur;
-+		dst_reg->u32_max_value = umax_cur;
- 	}
- }
- 
-@@ -13388,22 +13372,24 @@ static void scalar_min_max_add(struct bpf_reg_state *dst_reg,
+ 	if (dst_reg->u32_min_value < umax_val) {
+ 		/* Overflow possible, we know nothing */
+@@ -13428,15 +13409,16 @@ static void scalar_min_max_sub(struct bpf_reg_state *dst_reg,
  	s64 smax_val = src_reg->smax_value;
  	u64 umin_val = src_reg->umin_value;
  	u64 umax_val = src_reg->umax_value;
 +	s64 smin_cur, smax_cur;
-+	u64 umin_cur, umax_cur;
  
--	if (signed_add_overflows(dst_reg->smin_value, smin_val) ||
--	    signed_add_overflows(dst_reg->smax_value, smax_val)) {
-+	if (check_add_overflow(dst_reg->smin_value, smin_val, &smin_cur) ||
-+	    check_add_overflow(dst_reg->smax_value, smax_val, &smax_cur)) {
+-	if (signed_sub_overflows(dst_reg->smin_value, smax_val) ||
+-	    signed_sub_overflows(dst_reg->smax_value, smin_val)) {
++	if (check_sub_overflow(dst_reg->smin_value, smax_val, &smin_cur) ||
++	    check_sub_overflow(dst_reg->smax_value, smin_val, &smax_cur)) {
+ 		/* Overflow possible, we know nothing */
  		dst_reg->smin_value = S64_MIN;
  		dst_reg->smax_value = S64_MAX;
  	} else {
--		dst_reg->smin_value += smin_val;
--		dst_reg->smax_value += smax_val;
+-		dst_reg->smin_value -= smax_val;
+-		dst_reg->smax_value -= smin_val;
 +		dst_reg->smin_value = smin_cur;
 +		dst_reg->smax_value = smax_cur;
  	}
--	if (dst_reg->umin_value + umin_val < umin_val ||
--	    dst_reg->umax_value + umax_val < umax_val) {
-+	if (check_add_overflow(dst_reg->umin_value, umin_val, &umin_cur) ||
-+	    check_add_overflow(dst_reg->umax_value, umax_val, &umax_cur)) {
- 		dst_reg->umin_value = 0;
- 		dst_reg->umax_value = U64_MAX;
- 	} else {
--		dst_reg->umin_value += umin_val;
--		dst_reg->umax_value += umax_val;
-+		dst_reg->umin_value = umin_cur;
-+		dst_reg->umax_value = umax_cur;
- 	}
- }
- 
+ 	if (dst_reg->umin_value < umax_val) {
+ 		/* Overflow possible, we know nothing */
 -- 
 2.45.2
 
