@@ -1,200 +1,182 @@
-Return-Path: <bpf+bounces-32836-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-32837-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3DA41913870
-	for <lists+bpf@lfdr.de>; Sun, 23 Jun 2024 09:03:52 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id DB4B29138F7
+	for <lists+bpf@lfdr.de>; Sun, 23 Jun 2024 10:15:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 594B2B22FEC
-	for <lists+bpf@lfdr.de>; Sun, 23 Jun 2024 07:03:49 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9880728244E
+	for <lists+bpf@lfdr.de>; Sun, 23 Jun 2024 08:15:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 58D6939847;
-	Sun, 23 Jun 2024 07:03:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BBAB36F2F2;
+	Sun, 23 Jun 2024 08:15:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="QNt0Z568"
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="x2GEyvIU";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="rB/AELsI"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-lj1-f170.google.com (mail-lj1-f170.google.com [209.85.208.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A60372836A
-	for <bpf@vger.kernel.org>; Sun, 23 Jun 2024 07:03:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 25BED10A0C;
+	Sun, 23 Jun 2024 08:14:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719126225; cv=none; b=KvR4URV4cqgyGNnChB61/XjtiIJqrQbnEwhfJnjb5WVBNBX1M6GiETsvQT2E+0/LxkFYBb1qpx9MEmn1vz/05dmoXG1ttthQdJ5r5WhFkwmVKxvJR9WVU9WZvAWGlhUjYr3lbo0RoqR7nEV1MihPYMqqcoDHHygzdLS/SZCyxSM=
+	t=1719130501; cv=none; b=T2eXzu3Uuap1MAVpPH1Jkyi8RXgLw+JAKi4AC3G447QMaut+fGWLVFqTOq6lENeeATWM8kqQoEd7f6c7MfXef6kdzsJdT1gAuE+D4OJTN5YHcTCnyxmsdoN/xJpH0M2xw5qUbtpwgIK9U63mMPIRgrJulMMuzI3PB7X8g+LLOvo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719126225; c=relaxed/simple;
-	bh=FltYF78F9/MqhM5jam26l4dQVN9Cgl/mT9HnO8YjLOk=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=c95kAbtJSIWh2H/1TWsPV5GuAR6OJ7pzh1aCivIq9+yG5EGaHKwUfP5Vdiq0NXYMQqbNuHX1FdUBIegIXhYNQIT/4GcxJjlvw2oBVSWAO3vSS1zcACIpAFZuc7OiLS0lQBCa4+KAS/Sj6bkoV5vt0s44hu8LJsqP9+JU436DUmU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=QNt0Z568; arc=none smtp.client-ip=209.85.208.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-lj1-f170.google.com with SMTP id 38308e7fff4ca-2ec17eb4493so45277531fa.2
-        for <bpf@vger.kernel.org>; Sun, 23 Jun 2024 00:03:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1719126221; x=1719731021; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=CWaF5C+XrGxbFWUh1Nu3tH1BQNMNQ6zxjDoDiAz9oz4=;
-        b=QNt0Z568UxtxQMqPVqQRtemxXwCd69gWG9R/vKlt8qUmk8bdWRpcbuMfW+XqCgoLl2
-         tv7qaSTnpotk29DACJ3fYSwZbJUPo1fnt4PoPgFEAIca6yLONtfq2v/KKHVjCJUQxZTz
-         j1V/T3RTr9obaazkQCvi1F/QqaDwx6Pb1Flcm0UW3IFuRtLfkFJAO1llFt1xkweUNWuI
-         g9af3GVHyFrdAq6NfKSbgjGoV5XX+/JhjJ8/uSFCrPX5smbP0z7WASBgiSLV4hUKbBc8
-         LazUC7BdnlXnfAVjTdtAZCD2TS+ZqJELERE/6Xr10mmidXd9fn9OIOiA6oozIpn/soBi
-         gWoA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1719126221; x=1719731021;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=CWaF5C+XrGxbFWUh1Nu3tH1BQNMNQ6zxjDoDiAz9oz4=;
-        b=hLmC/U0EkfnKIOswlmRAFt6Qo+MeW+bNBrjlliVXSZcIzjbuSzoT65kfSH/FAbBN9T
-         NAg5/Xrt2QtET1lnsoLif4NQGcswCYiUBtu3TFkZivTaWPeElmI/by3garRaUFdM7xwH
-         iIWNs/dT6b5mFiQgY85cehqJ4j73SR88WxDei7TErAuBXxXMQjujPicQXK2Kfi1HaxjE
-         5ElOenDkDl6dWzjIB4a6B3PWWoYqRcjKLEGZ29CE3dJKw4DnaGURgMtPHAXIIU5v0dme
-         VozerOKK8Mf7sTZDSXhfK0JXwE1GMOAjv+bWOSJ9pQMiB3yMx8bjtYy3I9mCOPltjWq4
-         HMaw==
-X-Gm-Message-State: AOJu0YwU3CIQLdgHDVjHXCiR9R2GDMSKz/61vE45nC3Q5Ff+qVQpJdnq
-	pkH0j50QVdE7rSWU8egEvdQQ1TuZiYhCAxQw/qCom+O/wcf5oTqRIMFqY5FWfmcwsioaAj9cUdm
-	r
-X-Google-Smtp-Source: AGHT+IHekYT9VVXJsGQKNVB0w833IojZ5GTCRCcjZclZk14I6/3NpEqAM+2yuAUwGkJeEbcu4iIWcA==
-X-Received: by 2002:a2e:3518:0:b0:2ec:57b4:1c6f with SMTP id 38308e7fff4ca-2ec5b31d1a2mr9942921fa.34.1719126221030;
-        Sun, 23 Jun 2024 00:03:41 -0700 (PDT)
-Received: from localhost ([2401:e180:8842:4fc6:d5d2:edb0:d14c:4782])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-1f9eb3d51easm40610625ad.202.2024.06.23.00.03.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 23 Jun 2024 00:03:40 -0700 (PDT)
-From: Shung-Hsi Yu <shung-hsi.yu@suse.com>
-To: bpf@vger.kernel.org
-Cc: Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	John Fastabend <john.fastabend@gmail.com>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	Shung-Hsi Yu <shung-hsi.yu@suse.com>
-Subject: [PATCH bpf-next 2/2] bpf: verifier: use check_sub_overflow() to check for subtraction overflows
-Date: Sun, 23 Jun 2024 15:03:20 +0800
-Message-ID: <20240623070324.12634-3-shung-hsi.yu@suse.com>
-X-Mailer: git-send-email 2.45.2
-In-Reply-To: <20240623070324.12634-1-shung-hsi.yu@suse.com>
-References: <20240623070324.12634-1-shung-hsi.yu@suse.com>
+	s=arc-20240116; t=1719130501; c=relaxed/simple;
+	bh=UiiF/SQvjM3wSxNwq6sidqKXgAho7/A4yBOnz0Slotk=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=ESKvuXEMyLdbG5O2NPEYuAu5ME40BdUmOkhEl5uIkQTStyrl7fcpgsVgj65quTdzxHajlhVOCgs2NobY0QyGL1Q5ScXOx5oBhIROIajaClEDSoe7PY1bLZZtR6i2khALmDXwfBzlltR4OXptc1Z9Hhx8dxmA1pX3Uya6QLIyJNA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=x2GEyvIU; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=rB/AELsI; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+From: Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1719130496;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Oo8NTmvHXHfIffMG5bHyk+c4Z7Aq7L+9Znqy4meJ6j0=;
+	b=x2GEyvIUAr47gJ+8zeyKkCcQgPXBU9mM5Z/Pq+r++HvKShhdntcYWcqfdQ95ijKgevt+6Z
+	0c0CTZZipLxKrabHR0ALX4GOP1ciwz5FrqtK3+3UBce+EfLgVx2iYTyf7Spk2TdJ+t8a9t
+	+7qklXNp9BGCGNgMoA9A1Nqa+iihjJxmWu6tWe8ZIEA48C6IZYNg11lf0wibQYKDYMsB8y
+	yWtFXbThYQfOJAThszQA93s4SGDrN7+zOgizKkQvWD+GJr8Bxb0+548Zjsx948PuYEfgTO
+	zDbv5xnoSZNq9lyA50XI/5ldLZZugIeyC5u64mgmzY+kAzdUFybyoPjh2qlBfA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1719130496;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Oo8NTmvHXHfIffMG5bHyk+c4Z7Aq7L+9Znqy4meJ6j0=;
+	b=rB/AELsIY7hQ5jGNyS4kpDhT+9rmnyfexN3C6g7Kt62fGmmiRA9SqkP0SmriaVflyuCJdU
+	AaO7dwMm5GWAFsCw==
+To: Chris Mason <clm@meta.com>, Tejun Heo <tj@kernel.org>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>, mingo@redhat.com,
+ peterz@infradead.org, juri.lelli@redhat.com, vincent.guittot@linaro.org,
+ dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
+ mgorman@suse.de, bristot@redhat.com, vschneid@redhat.com, ast@kernel.org,
+ daniel@iogearbox.net, andrii@kernel.org, martin.lau@kernel.org,
+ joshdon@google.com, brho@google.com, pjt@google.com, derkling@google.com,
+ haoluo@google.com, dvernet@meta.com, dschatzberg@meta.com,
+ dskarlat@cs.cmu.edu, riel@surriel.com, changwoo@igalia.com,
+ himadrics@inria.fr, memxor@gmail.com, andrea.righi@canonical.com,
+ joel@joelfernandes.org, linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+ kernel-team@meta.com
+Subject: Re: [PATCHSET v6] sched: Implement BPF extensible scheduler class
+In-Reply-To: <364ed9fa-e614-4994-8dd3-48b1d8887712@meta.com>
+References: <CAHk-=wg8APE61e5Ddq5mwH55Eh0ZLDV4Tr+c6_gFS7g2AxnuHQ@mail.gmail.com>
+ <87ed8sps71.ffs@tglx>
+ <CAHk-=wg3RDXp2sY9EXA0JD26kdNHHBP4suXyeqJhnL_3yjG2gg@mail.gmail.com>
+ <87bk3wpnzv.ffs@tglx>
+ <CAHk-=wiKgKpNA6Dv7zoLHATweM-nEYWeXeFdS03wUQ8-V4wFxg@mail.gmail.com>
+ <878qz0pcir.ffs@tglx> <ZnSEeO8MHIQRJyt1@slm.duckdns.org>
+ <87r0cqo9p0.ffs@tglx> <364ed9fa-e614-4994-8dd3-48b1d8887712@meta.com>
+Date: Sun, 23 Jun 2024 10:14:55 +0200
+Message-ID: <878qywyt1c.ffs@tglx>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 
-Similar to previous patch that drops signed_add*_overflows() and uses
-(compiler) builtin-based check_add_overflow(), do the same for
-signed_sub*_overflows() and replace them with the generic
-check_sub_overflow() to make future refactoring easier.
+Chris!
 
-Unsigned overflow check for subtraction does not use helpers and are
-simple enough already, so they're left untouched.
+On Fri, Jun 21 2024 at 17:14, Chris Mason wrote:
+> On 6/21/24 6:46 AM, Thomas Gleixner wrote:
+> I'll be honest, the only clear and consistent communication we've gotten
+> about sched_ext was "no, please go away".  You certainly did engage with
+> face to face discussions, but at the end of the day/week/month the
+> overall message didn't change.
 
-Signed-off-by: Shung-Hsi Yu <shung-hsi.yu@suse.com>
----
- kernel/bpf/verifier.c | 46 +++++++++++++------------------------------
- 1 file changed, 14 insertions(+), 32 deletions(-)
+The only time _I_ really told you "go away" was at OSPM 2023 when you
+approached everyone in the worst possible way. I surely did not even say
+"please" back then.
 
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index b1ad76c514f5..2c1657a26fdb 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -12720,26 +12720,6 @@ static int check_kfunc_call(struct bpf_verifier_env *env, struct bpf_insn *insn,
- 	return 0;
- }
- 
--static bool signed_sub_overflows(s64 a, s64 b)
--{
--	/* Do the sub in u64, where overflow is well-defined */
--	s64 res = (s64)((u64)a - (u64)b);
--
--	if (b < 0)
--		return res < a;
--	return res > a;
--}
--
--static bool signed_sub32_overflows(s32 a, s32 b)
--{
--	/* Do the sub in u32, where overflow is well-defined */
--	s32 res = (s32)((u32)a - (u32)b);
--
--	if (b < 0)
--		return res < a;
--	return res > a;
--}
--
- static bool check_reg_sane_offset(struct bpf_verifier_env *env,
- 				  const struct bpf_reg_state *reg,
- 				  enum bpf_reg_type type)
-@@ -13280,14 +13260,14 @@ static int adjust_ptr_min_max_vals(struct bpf_verifier_env *env,
- 		/* A new variable offset is created.  If the subtrahend is known
- 		 * nonnegative, then any reg->range we had before is still good.
- 		 */
--		if (signed_sub_overflows(smin_ptr, smax_val) ||
--		    signed_sub_overflows(smax_ptr, smin_val)) {
-+		if (check_sub_overflow(smin_ptr, smax_val, &smin_cur) ||
-+		    check_sub_overflow(smax_ptr, smin_val, &smax_cur)) {
- 			/* Overflow possible, we know nothing */
- 			dst_reg->smin_value = S64_MIN;
- 			dst_reg->smax_value = S64_MAX;
- 		} else {
--			dst_reg->smin_value = smin_ptr - smax_val;
--			dst_reg->smax_value = smax_ptr - smin_val;
-+			dst_reg->smin_value = smin_cur;
-+			dst_reg->smax_value = smax_cur;
- 		}
- 		if (umin_ptr < umax_val) {
- 			/* Overflow possible, we know nothing */
-@@ -13400,15 +13380,16 @@ static void scalar32_min_max_sub(struct bpf_reg_state *dst_reg,
- 	s32 smax_val = src_reg->s32_max_value;
- 	u32 umin_val = src_reg->u32_min_value;
- 	u32 umax_val = src_reg->u32_max_value;
-+	s32 smin_cur, smax_cur;
- 
--	if (signed_sub32_overflows(dst_reg->s32_min_value, smax_val) ||
--	    signed_sub32_overflows(dst_reg->s32_max_value, smin_val)) {
-+	if (check_sub_overflow(dst_reg->s32_min_value, smax_val, &smin_cur) ||
-+	    check_sub_overflow(dst_reg->s32_max_value, smin_val, &smax_cur)) {
- 		/* Overflow possible, we know nothing */
- 		dst_reg->s32_min_value = S32_MIN;
- 		dst_reg->s32_max_value = S32_MAX;
- 	} else {
--		dst_reg->s32_min_value -= smax_val;
--		dst_reg->s32_max_value -= smin_val;
-+		dst_reg->s32_min_value = smin_cur;
-+		dst_reg->s32_max_value = smax_cur;
- 	}
- 	if (dst_reg->u32_min_value < umax_val) {
- 		/* Overflow possible, we know nothing */
-@@ -13428,15 +13409,16 @@ static void scalar_min_max_sub(struct bpf_reg_state *dst_reg,
- 	s64 smax_val = src_reg->smax_value;
- 	u64 umin_val = src_reg->umin_value;
- 	u64 umax_val = src_reg->umax_value;
-+	s64 smin_cur, smax_cur;
- 
--	if (signed_sub_overflows(dst_reg->smin_value, smax_val) ||
--	    signed_sub_overflows(dst_reg->smax_value, smin_val)) {
-+	if (check_sub_overflow(dst_reg->smin_value, smax_val, &smin_cur) ||
-+	    check_sub_overflow(dst_reg->smax_value, smin_val, &smax_cur)) {
- 		/* Overflow possible, we know nothing */
- 		dst_reg->smin_value = S64_MIN;
- 		dst_reg->smax_value = S64_MAX;
- 	} else {
--		dst_reg->smin_value -= smax_val;
--		dst_reg->smax_value -= smin_val;
-+		dst_reg->smin_value = smin_cur;
-+		dst_reg->smax_value = smax_cur;
- 	}
- 	if (dst_reg->umin_value < umax_val) {
- 		/* Overflow possible, we know nothing */
--- 
-2.45.2
+The message people (not only me) perceived was:
 
+  "The scheduler sucks, sched_ext solves the problems, saves us millions
+   and Google is happy to work with us [after dropping upstream scheduler
+   development a decade ago and leaving the opens for others to mop up]."
+
+followed by:
+
+  "You should take it, as it will bring in fresh people to work on the
+   scheduler due to the lower entry barrier [because kernel hacking sucks].
+   This will result in great new ideas which will be contributed back to
+   the scheduler proper."
+
+That was a really brilliant marketing stunt and I told you so very bluntly.
+
+It was presumably not your intention, but that's the problem of
+communication between people. Though I haven't seen an useful attempt to
+cure that.
+
+After that clash, the room got into a lively technical discussion about the
+real underlying problem, i.e. that a big part of scheduling issues comes
+from the fact, that there is not enough information about the requirements
+and properties of an application available. Even you agreed with that, if I
+remember correctly.
+
+sched_ext does not solve that problem. It just works around it by putting
+the requirements and properties of an application into the BPF scheduler
+and the user space portion of it. That works well in a controlled
+environment like yours, but it does not even remotely help to solve the
+underlying general problems. You acknowlegded that and told: But we don't
+have it today, though sched_ext is ready and will help with that.
+
+The concern that sched_ext will reduce the incentive to work on the
+scheduler proper is not completely unfounded and I've yet to see the
+slightest evidence which proves the contrary.
+
+Don't tell me that this is impossible because sched_ext is not yet
+upstream. It's used in production successfully as you said, so there
+clearly must be something to learn from which could be shared at least in
+form of data. OSPM24 would have been a great place for that especially as
+the requirements and properties discussion was continued there with a plan.
+
+At all other occasions, I sat down with people and discussed at a technical
+level, but also clearly asked to resolve the social rift which all of this
+created.
+
+I thereby surely said several times: "I wish it would just go away and stay
+out of tree", but that's a very different message, no?
+
+Quite some of the questions and concerns I voiced, which got also voiced by
+others on the list, have not been sorted out until today. Just to name a
+few from the top of my head:
+
+    - How is this supposed to work with different applications requiring
+      different sched_ext schedulers?
+
+    - How are distros/users supposed to handle this especially when
+      applications start to come with their own optimized schedulers?
+
+    - What's the documented rule for dealing with bugs and regressions on a
+      system where sched_ext is active?
+
+"We'll work it out in tree" is not an answer to that. Ignoring it and let
+the rest of the world deal with the fallout is not a really good answer
+either.
+
+I'm not saying that this is all your and the sched_ext peoples fault, the
+other side was not always constructive either. Neither did it help that I
+had to drop the ball.
+
+For me, Linus telling that he will merge it no matter what, was a wakeup
+call to all involved parties. One side reached out with a clear message to
+sort this out amicably and not making the situation worse.
+
+> At any rate, I think sched_ext has a good path forward, and I know we'll
+> keep working together however we can.
+
+Carefully avoiding the perception trap, may I politely ask what this is
+supposed to tell me?
+
+Thanks,
+
+	tglx
 
