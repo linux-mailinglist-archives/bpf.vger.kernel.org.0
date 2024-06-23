@@ -1,76 +1,119 @@
-Return-Path: <bpf+bounces-32823-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-32824-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 264DC913743
-	for <lists+bpf@lfdr.de>; Sun, 23 Jun 2024 03:55:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5E7F3913744
+	for <lists+bpf@lfdr.de>; Sun, 23 Jun 2024 03:55:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7D2702830F3
-	for <lists+bpf@lfdr.de>; Sun, 23 Jun 2024 01:55:43 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1712328317C
+	for <lists+bpf@lfdr.de>; Sun, 23 Jun 2024 01:55:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B4ACD747F;
-	Sun, 23 Jun 2024 01:55:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A8B879DF;
+	Sun, 23 Jun 2024 01:55:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=googlemail.com header.i=@googlemail.com header.b="hQheoriq"
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ietf.org header.i=@ietf.org header.b="Dgb1oLYp";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ietf.org header.i=@ietf.org header.b="XyCBneaE";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=googlemail.com header.i=@googlemail.com header.b="VZycY49K"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f174.google.com (mail-pf1-f174.google.com [209.85.210.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mail.ietf.org (mail.ietf.org [50.223.129.194])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A913A5CB8
-	for <bpf@vger.kernel.org>; Sun, 23 Jun 2024 01:55:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E078A7462
+	for <bpf@vger.kernel.org>; Sun, 23 Jun 2024 01:55:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=50.223.129.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719107738; cv=none; b=OuwZxb7Kj+gNbD0fRqly791D+Yl21AXuw1ZjIZSEzrFjbIW3Uc2PBhWTk8qBsbop/yt8hGnPi1RPzYCWJQCyZjOneu4+pLGE/ckwksgdH/8W+aZ6RlKFN+tnr04glIHiaCeeIHHpkpt2IVPmqvP81cxj1FrC7ZEhaxqK1e047eo=
+	t=1719107752; cv=none; b=ffVrro7/s3/d+jP6f4hln2m2Wtx583wXBgVQXted7LNyYyXOf/eHWJ1ZQTXL5nH3NSLlw2wKdRpTuYxakz3rUhExM7qo6RcGVBGPNQaEDOo/Qr7jk2pF0hQvEx8p3UpaIOwzSds+WZYgvAMqEvVD/OZLG2PSUqyEzbXMahhDjeY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719107738; c=relaxed/simple;
-	bh=qVdZynof7qdYZWU1dYsCnqtmXJzK31VTd6bIz1e83n0=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=JixuUHBi8wSpr+w3XoFQW89gcb0YQW3CxK898Q9FO1Tk3U4lznAGMe4vK3o7faI+9CXG7ymNIpuwh4B3jQ6faRpJivt2Y5PXqj3nTKysp/79rK2JaSC+b+o3LCeMmwofFptIWDjD9Sjz0oik/DOmAqcHCIvdLJV9KwQOCBG7tVI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=googlemail.com; spf=pass smtp.mailfrom=googlemail.com; dkim=pass (2048-bit key) header.d=googlemail.com header.i=@googlemail.com header.b=hQheoriq; arc=none smtp.client-ip=209.85.210.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=googlemail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=googlemail.com
-Received: by mail-pf1-f174.google.com with SMTP id d2e1a72fcca58-7067108f2cdso368327b3a.1
-        for <bpf@vger.kernel.org>; Sat, 22 Jun 2024 18:55:36 -0700 (PDT)
+	s=arc-20240116; t=1719107752; c=relaxed/simple;
+	bh=h7LitMAYhT0EzrJa8nQ0bxWHvXdfCiNKr6wd6Sb2s/I=;
+	h=To:Date:Message-Id:MIME-Version:CC:Subject:Content-Type:From; b=FceFlYmhl7/wF/kIo3hoSWi+9uEUU0YcIDEQ+lz3hSR5RDXcaJfhhYrSLxt/DJ0f7LL4fmob7iaIY9iYNdj4u6nH8RrUTrsM2AB1vLGOasMlsX84unsABo/Fu1OZig+rOyO5+1BvMGlGQtHoxvxaYXAjKiHN0hSLStGcmTpzOAM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=dmarc.ietf.org; spf=pass smtp.mailfrom=ietf.org; dkim=pass (1024-bit key) header.d=ietf.org header.i=@ietf.org header.b=Dgb1oLYp; dkim=fail (1024-bit key) header.d=ietf.org header.i=@ietf.org header.b=XyCBneaE reason="signature verification failed"; dkim=fail (2048-bit key) header.d=googlemail.com header.i=@googlemail.com header.b=VZycY49K reason="signature verification failed"; arc=none smtp.client-ip=50.223.129.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=dmarc.ietf.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ietf.org
+Received: from ietfa.amsl.com (localhost [IPv6:::1])
+	by ietfa.amsl.com (Postfix) with ESMTP id 885AAC14F615
+	for <bpf@vger.kernel.org>; Sat, 22 Jun 2024 18:55:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ietf.org; s=ietf1;
+	t=1719107744; bh=h7LitMAYhT0EzrJa8nQ0bxWHvXdfCiNKr6wd6Sb2s/I=;
+	h=To:Date:CC:Subject:List-Id:List-Archive:List-Help:List-Owner:
+	 List-Post:List-Subscribe:List-Unsubscribe:From;
+	b=Dgb1oLYpVLBegVnauAKv//Z+dmwNIotCTJSN8zFVOilvOiljAhj4+36ZVZOTHsmN5
+	 ji1p9WXya1VY12XSHvZd+xTJVpyIZIQaGwHf2PGLaJwek2D0FEk0KsUx9XU30gg+3b
+	 JeSKlzfTZsDITj8AYXhOSFzGifBwe4oAfVFPA/yY=
+Received: from ietfa.amsl.com (localhost [IPv6:::1])
+ by ietfa.amsl.com (Postfix) with ESMTP id 78D39C14F5E7
+ for <bpf@vger.kernel.org>; Sat, 22 Jun 2024 18:55:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ietf.org; s=ietf1;
+ t=1719107744; bh=h7LitMAYhT0EzrJa8nQ0bxWHvXdfCiNKr6wd6Sb2s/I=;
+ h=From:To:Date:CC:Subject:List-Id:List-Archive:List-Help:List-Owner:
+ List-Post:List-Subscribe:List-Unsubscribe;
+ b=XyCBneaEhAgR+b7N4BAmUdJmusrqAMjLma4QTiqJt2gWagc53d0vYsWwmZD2s7cJW
+ s+UAXBw15kk+3xIX/osGXZ7TrQdBMUembf9frGHTKQ7zz3T8P8qWMTXL3dGy7Db2uU
+ 4qmLSGk6x3bemVegOgLK+3O0J+M58Yvqqw/XzXfc=
+X-Original-To: bpf@ietfa.amsl.com
+Delivered-To: bpf@ietfa.amsl.com
+Received: from localhost (localhost [127.0.0.1])
+ by ietfa.amsl.com (Postfix) with ESMTP id E9DABC14F603
+ for <bpf@ietfa.amsl.com>; Sat, 22 Jun 2024 18:55:40 -0700 (PDT)
+X-Virus-Scanned: amavisd-new at amsl.com
+X-Spam-Flag: NO
+X-Spam-Score: -1.857
+X-Spam-Level: 
+Authentication-Results: ietfa.amsl.com (amavisd-new); dkim=pass (2048-bit key)
+ header.d=googlemail.com
+Received: from mail.ietf.org ([50.223.129.194])
+ by localhost (ietfa.amsl.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id O-WUcAq_hAFP for <bpf@ietfa.amsl.com>;
+ Sat, 22 Jun 2024 18:55:36 -0700 (PDT)
+Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com
+ [IPv6:2607:f8b0:4864:20::429])
+ (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+ key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest
+ SHA256) (No client certificate requested)
+ by ietfa.amsl.com (Postfix) with ESMTPS id 777F4C14F5E7
+ for <bpf@ietf.org>; Sat, 22 Jun 2024 18:55:36 -0700 (PDT)
+Received: by mail-pf1-x429.google.com with SMTP id
+ d2e1a72fcca58-7067a2e9607so67185b3a.3
+ for <bpf@ietf.org>; Sat, 22 Jun 2024 18:55:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=20230601; t=1719107735; x=1719712535; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=qbF8PtTy7Xfc8Y63Ge1vK+fN2uAE3hJ07nBHqRKLDB8=;
-        b=hQheoriqbu5TuTbab5um/H0SUnGm0/rKgjXWr3MgzRDRPxnTl4pJArL6eBMkDnGFj9
-         VFk35D/m2uOe6CgM0tyTXgvKF0aYDCdyTVkNSeudkH5w5r0/k5KhkYNj6+1DUU0Bg7ID
-         Md5W3W4NNINgbft2Lyeoakqo1P+ETJYNLOBMPQPKGXK10qybSLgZn1+VWcnfG833w1X0
-         NzKTXNuCYAEPLro944Ww6jTIPOxUYRfy5HLaWu5XJPAMzhdUlvhM1gJFp4tqFr+8I0p8
-         R9XRGJmhOG7yeD+I3gl5UUM6D2TKVQqEg+XblXK5oGeVNiTd90d+hgA3UThAT8q5jBXG
-         h0HQ==
+ d=googlemail.com; s=20230601; t=1719107735; x=1719712535;
+ darn=ietf.org;
+ h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+ :to:from:from:to:cc:subject:date:message-id:reply-to;
+ bh=qbF8PtTy7Xfc8Y63Ge1vK+fN2uAE3hJ07nBHqRKLDB8=;
+ b=VZycY49Kl2oTXOUvRfhW2BZ4KrtaDrm69GZZO8N1MpGeQUmEGqBp5fP8NMZSk4WBxx
+ dYy8QuHhHzL7lbpoyP37TXay5+0rJJNU82KIGlQ3V+stZeRciVjPyG+JoNQZ01ihUOxV
+ MgvNA4iuwxEjSS3tm2DV5ifhzkZo09I5+DPGy35SXNjdXG6Hj/7xRqAD/8oLkkyUVjN4
+ TyTxhH7xYBarS470joJa7rndVyzd0zte3SH1jhRUBpzXmVArCxvGKJqJWEin6vcVFgzl
+ 2VgVJKMWyZQy6RT4GvwebXrdqWPVUyiAVBQvicJWU6XSOIeXRoZBEfdG4QOA2McV2BO1
+ hU2g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1719107735; x=1719712535;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=qbF8PtTy7Xfc8Y63Ge1vK+fN2uAE3hJ07nBHqRKLDB8=;
-        b=XY3sYJ+UIrR7TXlz7UVVYmlKlY82SB73Bs4UMx+y/bW54gspKebO5NFAkir3PzFIWT
-         O5CYA1/cF3veWjzTZl9d6PjSW/TrmZGE7e2Tq/EijZO9zUGWg0Ldkz4U17+qrJeIelpc
-         6nu5jsHLYX8bRkvVFdHL3EK2llH7Uav/QQ+9ylR9PnJuUACh7bYtzE/ncAFvR4ZQq7r5
-         X1BgoyehQAzJA68iJQRM+rrtNLNImIhm98FRRXH4TlGdPT5fQRNFG9ISCAhuP3tlDeUg
-         9Zb5Hcw+fkW3oS3qUCrnlZkzcJI77+PSaAXEc2i+K1GsHe973q9MxExIMTmi4Xcrg2pS
-         LsBw==
-X-Gm-Message-State: AOJu0YyiHngNv2YQZqHAYAkOusbctSv2JhlTwigFpRav0aJdaDX8HUgR
-	qmDR/IM/gP5H9FmFeojHs+22YeOFhjmCj4wLbPGpMEPqTPXU/1o9CEIspiNr
+ d=1e100.net; s=20230601; t=1719107735; x=1719712535;
+ h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+ :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+ :reply-to;
+ bh=qbF8PtTy7Xfc8Y63Ge1vK+fN2uAE3hJ07nBHqRKLDB8=;
+ b=pOFjpzPtrgo7efkTeaQyvPMpHNNX6hlPWxbMe8VwBxrk0Q4cRZd0nsTe7gf7RiINFh
+ Zln5u5YsgRV46b/xEMPUtiLON04guEAZgbV0sM0GOim8xL/S/w0ItY3AYiruwTSl7aEd
+ TrcqyYDrhfmbCHrk9B6wblMbG6T/Z8zjkE4VlEpJ/xGfI1E4bbhJ81G8X+/cMS7Po/Iw
+ WUoX7GxPrSVQOFw1MzlGQhUlxAmvrMQbFqLMwgFiie4HnVAkLay8YCaGn3B3Y5k72yLp
+ w2GgVsYvFGWl/xxAz4l2PQUFT6hs/1Cadcjik8E2Mb9pNobQOFAdwpA7IX2YxBOT7b8H
+ zJwg==
+X-Gm-Message-State: AOJu0YxwLzEVHb2BPvwsmukDZAw+/nH0DLqXWWLCu2cLGo75JYphnphz
+ +KHbi0BRqFxvoxB/5f7c9taA1S01D2mSFHi51HDGjkWNFOt4vIHbP97N4V4/
 X-Google-Smtp-Source: AGHT+IHJPBrI42xZdKt+PS5aMfU1GbhmjqaDZWaRL1/2TN6QtDyfMIv1m8ilk+LHoXG6XwQU5xX0Ng==
-X-Received: by 2002:aa7:8116:0:b0:705:c273:d19 with SMTP id d2e1a72fcca58-70670eaf285mr1683865b3a.12.1719107735346;
-        Sat, 22 Jun 2024 18:55:35 -0700 (PDT)
+X-Received: by 2002:aa7:8116:0:b0:705:c273:d19 with SMTP id
+ d2e1a72fcca58-70670eaf285mr1683865b3a.12.1719107735346;
+ Sat, 22 Jun 2024 18:55:35 -0700 (PDT)
 Received: from ubuntu2310.. (64-119-15-123.fiber.ric.network. [64.119.15.123])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7065129bd03sm3711333b3a.163.2024.06.22.18.55.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 22 Jun 2024 18:55:34 -0700 (PDT)
-From: Dave Thaler <dthaler1968@googlemail.com>
+ by smtp.gmail.com with ESMTPSA id
+ d2e1a72fcca58-7065129bd03sm3711333b3a.163.2024.06.22.18.55.34
+ (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+ Sat, 22 Jun 2024 18:55:34 -0700 (PDT)
 X-Google-Original-From: Dave Thaler <dthaler1968@gmail.com>
 To: bpf@vger.kernel.org
-Cc: bpf@ietf.org,
-	Dave Thaler <dthaler1968@gmail.com>,
-	Dave Thaler <dthaler1968@googlemail.com>
-Subject: [PATCH bpf-next] bpf, docs: Address comments from IETF Area Directors
 Date: Sat, 22 Jun 2024 18:55:31 -0700
 Message-Id: <20240623015531.9433-1-dthaler1968@gmail.com>
 X-Mailer: git-send-email 2.40.1
@@ -80,195 +123,174 @@ List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Message-ID-Hash: KF65MIB6SFXUTYQF2HA6QMMHUNPWS2X4
+X-Message-ID-Hash: KF65MIB6SFXUTYQF2HA6QMMHUNPWS2X4
+X-MailFrom: dthaler1968@googlemail.com
+X-Mailman-Rule-Misses: dmarc-mitigation; no-senders; approved; emergency;
+ loop; banned-address; member-moderation; nonmember-moderation; administrivia; 
+ implicit-dest; max-recipients; max-size; news-moderation; no-subject;
+ digests; suspicious-header
+CC: bpf@ietf.org, Dave Thaler <dthaler1968@gmail.com>,
+ Dave Thaler <dthaler1968@googlemail.com>
+X-Mailman-Version: 3.3.9rc4
+Precedence: list
+Subject: =?utf-8?q?=5BBpf=5D_=5BPATCH_bpf-next=5D_bpf=2C_docs=3A_Address_comments_fro?=
+ =?utf-8?q?m_IETF_Area_Directors?=
+Archived-At: <https://mailarchive.ietf.org/arch/msg/bpf/G0yjlzZ4GazyQC2gN0jW8YjqGkk>
+List-Archive: <https://mailarchive.ietf.org/arch/browse/bpf>
+List-Help: <mailto:bpf-request@ietf.org?subject=help>
+List-Owner: <mailto:bpf-owner@ietf.org>
+List-Post: <mailto:bpf@ietf.org>
+X-Mailman-Copy: yes
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+X-Original-From: Dave Thaler <dthaler1968@googlemail.com>
+From: Dave Thaler <dthaler1968=40googlemail.com@dmarc.ietf.org>
 
-This patch does the following to address IETF feedback:
-
-* Remove mention of "program type" and reference future
-  docs (and mention platform-specific docs exist) for
-  helper functions and BTF. Addresses Roman Danyliw's
-  comments based on GENART review from Ines Robles [0].
-
-* Add reference for endianness as requested by John
-  Scudder [1].
-
-* Added bit numbers to top of 32-bit wide format diagrams
-  as requested by Paul Wouters [2].
-
-* Added more text about why BPF doesn't stand for anything, based
-  on text from ebpf.io [3], as requested by Eric Vyncke and
-  Gunter Van de Velde [4].
-
-* Replaced "htobe16" (and similar) and the direction-specific
-  description with just "be16" (and similar) and a direction-agnostic
-  description, to match the direction-agnostic description in
-  the Byteswap Instructions section. Based on feedback from Eric
-  Vyncke [5].
-
-[0] https://mailarchive.ietf.org/arch/msg/bpf/DvDgDWOiwk05OyNlWlAmELZFPlM/
-
-[1] https://mailarchive.ietf.org/arch/msg/bpf/eKNXpU4jCLjsbZDSw8LjI29M3tM/
-
-[2] https://mailarchive.ietf.org/arch/msg/bpf/hGk8HkYxeZTpdu9qW_MvbGKj7WU/
-
-[3] https://ebpf.io/what-is-ebpf/#what-do-ebpf-and-bpf-stand-for
-
-[4] https://mailarchive.ietf.org/arch/msg/bpf/i93lzdN3ewnzzS_JMbinCIYxAIU/
-
-[5] https://mailarchive.ietf.org/arch/msg/bpf/KBWXbMeDcSrq4vsKR_KkBbV6hI4/
-
-Signed-off-by: Dave Thaler <dthaler1968@googlemail.com>
----
- .../bpf/standardization/instruction-set.rst   | 80 +++++++++++--------
- 1 file changed, 45 insertions(+), 35 deletions(-)
-
-diff --git a/Documentation/bpf/standardization/instruction-set.rst b/Documentation/bpf/standardization/instruction-set.rst
-index 398f27bab..84f581dd2 100644
---- a/Documentation/bpf/standardization/instruction-set.rst
-+++ b/Documentation/bpf/standardization/instruction-set.rst
-@@ -5,12 +5,19 @@
- BPF Instruction Set Architecture (ISA)
- ======================================
- 
--eBPF (which is no longer an acronym for anything), also commonly
-+eBPF, also commonly
- referred to as BPF, is a technology with origins in the Linux kernel
- that can run untrusted programs in a privileged context such as an
- operating system kernel. This document specifies the BPF instruction
- set architecture (ISA).
- 
-+As a historical note, BPF originally stood for Berkeley Packet Filter,
-+but now that it can do so much more than packet filtering, the acronym
-+no longer makes sense. BPF is now considered a standalone term that
-+doesn't stand for anything.  The original BPF is sometimes referred to
-+as cBPF (classic BPF) to distinguish it from the now widely deployed
-+eBPF (extended BPF).
-+
- Documentation conventions
- =========================
- 
-@@ -18,7 +25,7 @@ The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
- "SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED", "MAY", and
- "OPTIONAL" in this document are to be interpreted as described in
- BCP 14 `<https://www.rfc-editor.org/info/rfc2119>`_
--`RFC8174 <https://www.rfc-editor.org/info/rfc8174>`_
-+`<https://www.rfc-editor.org/info/rfc8174>`_
- when, and only when, they appear in all capitals, as shown here.
- 
- For brevity and consistency, this document refers to families
-@@ -59,24 +66,18 @@ numbers.
- 
- Functions
- ---------
--* htobe16: Takes an unsigned 16-bit number in host-endian format and
--  returns the equivalent number as an unsigned 16-bit number in big-endian
--  format.
--* htobe32: Takes an unsigned 32-bit number in host-endian format and
--  returns the equivalent number as an unsigned 32-bit number in big-endian
--  format.
--* htobe64: Takes an unsigned 64-bit number in host-endian format and
--  returns the equivalent number as an unsigned 64-bit number in big-endian
--  format.
--* htole16: Takes an unsigned 16-bit number in host-endian format and
--  returns the equivalent number as an unsigned 16-bit number in little-endian
--  format.
--* htole32: Takes an unsigned 32-bit number in host-endian format and
--  returns the equivalent number as an unsigned 32-bit number in little-endian
--  format.
--* htole64: Takes an unsigned 64-bit number in host-endian format and
--  returns the equivalent number as an unsigned 64-bit number in little-endian
--  format.
-+
-+The following byteswap functions are direction-agnostic.  That is,
-+the same function is used for conversion in either direction discussed
-+below.
-+
-+* be16: Takes an unsigned 16-bit number and converts it between
-+  host byte order and big-endian
-+  (`IEN137 <https://www.rfc-editor.org/ien/ien137.txt>`_) byte order.
-+* be32: Takes an unsigned 32-bit number and converts it between
-+  host byte order and big-endian byte order.
-+* be64: Takes an unsigned 64-bit number and converts it between
-+  host byte order and big-endian byte order.
- * bswap16: Takes an unsigned 16-bit number in either big- or little-endian
-   format and returns the equivalent number with the same bit width but
-   opposite endianness.
-@@ -86,7 +87,12 @@ Functions
- * bswap64: Takes an unsigned 64-bit number in either big- or little-endian
-   format and returns the equivalent number with the same bit width but
-   opposite endianness.
--
-+* le16: Takes an unsigned 16-bit number and converts it between
-+  host byte order and little-endian byte order.
-+* le32: Takes an unsigned 32-bit number and converts it between
-+  host byte order and little-endian byte order.
-+* le64: Takes an unsigned 64-bit number and converts it between
-+  host byte order and little-endian byte order.
- 
- Definitions
- -----------
-@@ -441,8 +447,8 @@ and MUST be set to 0.
-   =====  ========  =====  =================================================
-   class  source    value  description
-   =====  ========  =====  =================================================
--  ALU    TO_LE     0      convert between host byte order and little endian
--  ALU    TO_BE     1      convert between host byte order and big endian
-+  ALU    LE        0      convert between host byte order and little endian
-+  ALU    BE        1      convert between host byte order and big endian
-   ALU64  Reserved  0      do byte swap unconditionally
-   =====  ========  =====  =================================================
- 
-@@ -453,19 +459,19 @@ conformance group.
- 
- Examples:
- 
--``{END, TO_LE, ALU}`` with 'imm' = 16/32/64 means::
-+``{END, LE, ALU}`` with 'imm' = 16/32/64 means::
- 
--  dst = htole16(dst)
--  dst = htole32(dst)
--  dst = htole64(dst)
-+  dst = le16(dst)
-+  dst = le32(dst)
-+  dst = le64(dst)
- 
--``{END, TO_BE, ALU}`` with 'imm' = 16/32/64 means::
-+``{END, BE, ALU}`` with 'imm' = 16/32/64 means::
- 
--  dst = htobe16(dst)
--  dst = htobe32(dst)
--  dst = htobe64(dst)
-+  dst = be16(dst)
-+  dst = be32(dst)
-+  dst = be64(dst)
- 
--``{END, TO_LE, ALU64}`` with 'imm' = 16/32/64 means::
-+``{END, TO, ALU64}`` with 'imm' = 16/32/64 means::
- 
-   dst = bswap16(dst)
-   dst = bswap32(dst)
-@@ -545,13 +551,17 @@ Helper functions are a concept whereby BPF programs can call into a
- set of function calls exposed by the underlying platform.
- 
- Historically, each helper function was identified by a static ID
--encoded in the 'imm' field.  The available helper functions may differ
--for each program type, but static IDs are unique across all program types.
-+encoded in the 'imm' field.  Further documentation of helper functions
-+is outside the scope of this document and standardization is left for
-+future work, but use is widely deployed and more information can be
-+found in platform-specific documentation (e.g., Linux kernel documentations).
- 
- Platforms that support the BPF Type Format (BTF) support identifying
- a helper function by a BTF ID encoded in the 'imm' field, where the BTF ID
- identifies the helper name and type.  Further documentation of BTF
--is outside the scope of this document and is left for future work.
-+is outside the scope of this document and standardization is left for
-+future work, but use is widely deployed and more information can be
-+found in platform-specific documentation (e.g., Linux kernel documentations).
- 
- Program-local functions
- ~~~~~~~~~~~~~~~~~~~~~~~
--- 
-2.40.1
-
+VGhpcyBwYXRjaCBkb2VzIHRoZSBmb2xsb3dpbmcgdG8gYWRkcmVzcyBJRVRGIGZlZWRiYWNrOg0K
+DQoqIFJlbW92ZSBtZW50aW9uIG9mICJwcm9ncmFtIHR5cGUiIGFuZCByZWZlcmVuY2UgZnV0dXJl
+DQogIGRvY3MgKGFuZCBtZW50aW9uIHBsYXRmb3JtLXNwZWNpZmljIGRvY3MgZXhpc3QpIGZvcg0K
+ICBoZWxwZXIgZnVuY3Rpb25zIGFuZCBCVEYuIEFkZHJlc3NlcyBSb21hbiBEYW55bGl3J3MNCiAg
+Y29tbWVudHMgYmFzZWQgb24gR0VOQVJUIHJldmlldyBmcm9tIEluZXMgUm9ibGVzIFswXS4NCg0K
+KiBBZGQgcmVmZXJlbmNlIGZvciBlbmRpYW5uZXNzIGFzIHJlcXVlc3RlZCBieSBKb2huDQogIFNj
+dWRkZXIgWzFdLg0KDQoqIEFkZGVkIGJpdCBudW1iZXJzIHRvIHRvcCBvZiAzMi1iaXQgd2lkZSBm
+b3JtYXQgZGlhZ3JhbXMNCiAgYXMgcmVxdWVzdGVkIGJ5IFBhdWwgV291dGVycyBbMl0uDQoNCiog
+QWRkZWQgbW9yZSB0ZXh0IGFib3V0IHdoeSBCUEYgZG9lc24ndCBzdGFuZCBmb3IgYW55dGhpbmcs
+IGJhc2VkDQogIG9uIHRleHQgZnJvbSBlYnBmLmlvIFszXSwgYXMgcmVxdWVzdGVkIGJ5IEVyaWMg
+VnluY2tlIGFuZA0KICBHdW50ZXIgVmFuIGRlIFZlbGRlIFs0XS4NCg0KKiBSZXBsYWNlZCAiaHRv
+YmUxNiIgKGFuZCBzaW1pbGFyKSBhbmQgdGhlIGRpcmVjdGlvbi1zcGVjaWZpYw0KICBkZXNjcmlw
+dGlvbiB3aXRoIGp1c3QgImJlMTYiIChhbmQgc2ltaWxhcikgYW5kIGEgZGlyZWN0aW9uLWFnbm9z
+dGljDQogIGRlc2NyaXB0aW9uLCB0byBtYXRjaCB0aGUgZGlyZWN0aW9uLWFnbm9zdGljIGRlc2Ny
+aXB0aW9uIGluDQogIHRoZSBCeXRlc3dhcCBJbnN0cnVjdGlvbnMgc2VjdGlvbi4gQmFzZWQgb24g
+ZmVlZGJhY2sgZnJvbSBFcmljDQogIFZ5bmNrZSBbNV0uDQoNClswXSBodHRwczovL21haWxhcmNo
+aXZlLmlldGYub3JnL2FyY2gvbXNnL2JwZi9EdkRnRFdPaXdrMDVPeU5sV2xBbUVMWkZQbE0vDQoN
+ClsxXSBodHRwczovL21haWxhcmNoaXZlLmlldGYub3JnL2FyY2gvbXNnL2JwZi9lS05YcFU0akNM
+anNiWkRTdzhMakkyOU0zdE0vDQoNClsyXSBodHRwczovL21haWxhcmNoaXZlLmlldGYub3JnL2Fy
+Y2gvbXNnL2JwZi9oR2s4SGtZeGVaVHBkdTlxV19NdmJHS2o3V1UvDQoNClszXSBodHRwczovL2Vi
+cGYuaW8vd2hhdC1pcy1lYnBmLyN3aGF0LWRvLWVicGYtYW5kLWJwZi1zdGFuZC1mb3INCg0KWzRd
+IGh0dHBzOi8vbWFpbGFyY2hpdmUuaWV0Zi5vcmcvYXJjaC9tc2cvYnBmL2k5M2x6ZE4zZXduenpT
+X0pNYmluQ0lZeEFJVS8NCg0KWzVdIGh0dHBzOi8vbWFpbGFyY2hpdmUuaWV0Zi5vcmcvYXJjaC9t
+c2cvYnBmL0tCV1hiTWVEY1NycTR2c0tSX0trQmJWNmhJNC8NCg0KU2lnbmVkLW9mZi1ieTogRGF2
+ZSBUaGFsZXIgPGR0aGFsZXIxOTY4QGdvb2dsZW1haWwuY29tPg0KLS0tDQogLi4uL2JwZi9zdGFu
+ZGFyZGl6YXRpb24vaW5zdHJ1Y3Rpb24tc2V0LnJzdCAgIHwgODAgKysrKysrKysrKystLS0tLS0t
+LQ0KIDEgZmlsZSBjaGFuZ2VkLCA0NSBpbnNlcnRpb25zKCspLCAzNSBkZWxldGlvbnMoLSkNCg0K
+ZGlmZiAtLWdpdCBhL0RvY3VtZW50YXRpb24vYnBmL3N0YW5kYXJkaXphdGlvbi9pbnN0cnVjdGlv
+bi1zZXQucnN0IGIvRG9jdW1lbnRhdGlvbi9icGYvc3RhbmRhcmRpemF0aW9uL2luc3RydWN0aW9u
+LXNldC5yc3QNCmluZGV4IDM5OGYyN2JhYi4uODRmNTgxZGQyIDEwMDY0NA0KLS0tIGEvRG9jdW1l
+bnRhdGlvbi9icGYvc3RhbmRhcmRpemF0aW9uL2luc3RydWN0aW9uLXNldC5yc3QNCisrKyBiL0Rv
+Y3VtZW50YXRpb24vYnBmL3N0YW5kYXJkaXphdGlvbi9pbnN0cnVjdGlvbi1zZXQucnN0DQpAQCAt
+NSwxMiArNSwxOSBAQA0KIEJQRiBJbnN0cnVjdGlvbiBTZXQgQXJjaGl0ZWN0dXJlIChJU0EpDQog
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0NCiANCi1lQlBGICh3aGljaCBp
+cyBubyBsb25nZXIgYW4gYWNyb255bSBmb3IgYW55dGhpbmcpLCBhbHNvIGNvbW1vbmx5DQorZUJQ
+RiwgYWxzbyBjb21tb25seQ0KIHJlZmVycmVkIHRvIGFzIEJQRiwgaXMgYSB0ZWNobm9sb2d5IHdp
+dGggb3JpZ2lucyBpbiB0aGUgTGludXgga2VybmVsDQogdGhhdCBjYW4gcnVuIHVudHJ1c3RlZCBw
+cm9ncmFtcyBpbiBhIHByaXZpbGVnZWQgY29udGV4dCBzdWNoIGFzIGFuDQogb3BlcmF0aW5nIHN5
+c3RlbSBrZXJuZWwuIFRoaXMgZG9jdW1lbnQgc3BlY2lmaWVzIHRoZSBCUEYgaW5zdHJ1Y3Rpb24N
+CiBzZXQgYXJjaGl0ZWN0dXJlIChJU0EpLg0KIA0KK0FzIGEgaGlzdG9yaWNhbCBub3RlLCBCUEYg
+b3JpZ2luYWxseSBzdG9vZCBmb3IgQmVya2VsZXkgUGFja2V0IEZpbHRlciwNCitidXQgbm93IHRo
+YXQgaXQgY2FuIGRvIHNvIG11Y2ggbW9yZSB0aGFuIHBhY2tldCBmaWx0ZXJpbmcsIHRoZSBhY3Jv
+bnltDQorbm8gbG9uZ2VyIG1ha2VzIHNlbnNlLiBCUEYgaXMgbm93IGNvbnNpZGVyZWQgYSBzdGFu
+ZGFsb25lIHRlcm0gdGhhdA0KK2RvZXNuJ3Qgc3RhbmQgZm9yIGFueXRoaW5nLiAgVGhlIG9yaWdp
+bmFsIEJQRiBpcyBzb21ldGltZXMgcmVmZXJyZWQgdG8NCithcyBjQlBGIChjbGFzc2ljIEJQRikg
+dG8gZGlzdGluZ3Vpc2ggaXQgZnJvbSB0aGUgbm93IHdpZGVseSBkZXBsb3llZA0KK2VCUEYgKGV4
+dGVuZGVkIEJQRikuDQorDQogRG9jdW1lbnRhdGlvbiBjb252ZW50aW9ucw0KID09PT09PT09PT09
+PT09PT09PT09PT09PT0NCiANCkBAIC0xOCw3ICsyNSw3IEBAIFRoZSBrZXkgd29yZHMgIk1VU1Qi
+LCAiTVVTVCBOT1QiLCAiUkVRVUlSRUQiLCAiU0hBTEwiLCAiU0hBTEwgTk9UIiwNCiAiU0hPVUxE
+IiwgIlNIT1VMRCBOT1QiLCAiUkVDT01NRU5ERUQiLCAiTk9UIFJFQ09NTUVOREVEIiwgIk1BWSIs
+IGFuZA0KICJPUFRJT05BTCIgaW4gdGhpcyBkb2N1bWVudCBhcmUgdG8gYmUgaW50ZXJwcmV0ZWQg
+YXMgZGVzY3JpYmVkIGluDQogQkNQIDE0IGA8aHR0cHM6Ly93d3cucmZjLWVkaXRvci5vcmcvaW5m
+by9yZmMyMTE5PmBfDQotYFJGQzgxNzQgPGh0dHBzOi8vd3d3LnJmYy1lZGl0b3Iub3JnL2luZm8v
+cmZjODE3ND5gXw0KK2A8aHR0cHM6Ly93d3cucmZjLWVkaXRvci5vcmcvaW5mby9yZmM4MTc0PmBf
+DQogd2hlbiwgYW5kIG9ubHkgd2hlbiwgdGhleSBhcHBlYXIgaW4gYWxsIGNhcGl0YWxzLCBhcyBz
+aG93biBoZXJlLg0KIA0KIEZvciBicmV2aXR5IGFuZCBjb25zaXN0ZW5jeSwgdGhpcyBkb2N1bWVu
+dCByZWZlcnMgdG8gZmFtaWxpZXMNCkBAIC01OSwyNCArNjYsMTggQEAgbnVtYmVycy4NCiANCiBG
+dW5jdGlvbnMNCiAtLS0tLS0tLS0NCi0qIGh0b2JlMTY6IFRha2VzIGFuIHVuc2lnbmVkIDE2LWJp
+dCBudW1iZXIgaW4gaG9zdC1lbmRpYW4gZm9ybWF0IGFuZA0KLSAgcmV0dXJucyB0aGUgZXF1aXZh
+bGVudCBudW1iZXIgYXMgYW4gdW5zaWduZWQgMTYtYml0IG51bWJlciBpbiBiaWctZW5kaWFuDQot
+ICBmb3JtYXQuDQotKiBodG9iZTMyOiBUYWtlcyBhbiB1bnNpZ25lZCAzMi1iaXQgbnVtYmVyIGlu
+IGhvc3QtZW5kaWFuIGZvcm1hdCBhbmQNCi0gIHJldHVybnMgdGhlIGVxdWl2YWxlbnQgbnVtYmVy
+IGFzIGFuIHVuc2lnbmVkIDMyLWJpdCBudW1iZXIgaW4gYmlnLWVuZGlhbg0KLSAgZm9ybWF0Lg0K
+LSogaHRvYmU2NDogVGFrZXMgYW4gdW5zaWduZWQgNjQtYml0IG51bWJlciBpbiBob3N0LWVuZGlh
+biBmb3JtYXQgYW5kDQotICByZXR1cm5zIHRoZSBlcXVpdmFsZW50IG51bWJlciBhcyBhbiB1bnNp
+Z25lZCA2NC1iaXQgbnVtYmVyIGluIGJpZy1lbmRpYW4NCi0gIGZvcm1hdC4NCi0qIGh0b2xlMTY6
+IFRha2VzIGFuIHVuc2lnbmVkIDE2LWJpdCBudW1iZXIgaW4gaG9zdC1lbmRpYW4gZm9ybWF0IGFu
+ZA0KLSAgcmV0dXJucyB0aGUgZXF1aXZhbGVudCBudW1iZXIgYXMgYW4gdW5zaWduZWQgMTYtYml0
+IG51bWJlciBpbiBsaXR0bGUtZW5kaWFuDQotICBmb3JtYXQuDQotKiBodG9sZTMyOiBUYWtlcyBh
+biB1bnNpZ25lZCAzMi1iaXQgbnVtYmVyIGluIGhvc3QtZW5kaWFuIGZvcm1hdCBhbmQNCi0gIHJl
+dHVybnMgdGhlIGVxdWl2YWxlbnQgbnVtYmVyIGFzIGFuIHVuc2lnbmVkIDMyLWJpdCBudW1iZXIg
+aW4gbGl0dGxlLWVuZGlhbg0KLSAgZm9ybWF0Lg0KLSogaHRvbGU2NDogVGFrZXMgYW4gdW5zaWdu
+ZWQgNjQtYml0IG51bWJlciBpbiBob3N0LWVuZGlhbiBmb3JtYXQgYW5kDQotICByZXR1cm5zIHRo
+ZSBlcXVpdmFsZW50IG51bWJlciBhcyBhbiB1bnNpZ25lZCA2NC1iaXQgbnVtYmVyIGluIGxpdHRs
+ZS1lbmRpYW4NCi0gIGZvcm1hdC4NCisNCitUaGUgZm9sbG93aW5nIGJ5dGVzd2FwIGZ1bmN0aW9u
+cyBhcmUgZGlyZWN0aW9uLWFnbm9zdGljLiAgVGhhdCBpcywNCit0aGUgc2FtZSBmdW5jdGlvbiBp
+cyB1c2VkIGZvciBjb252ZXJzaW9uIGluIGVpdGhlciBkaXJlY3Rpb24gZGlzY3Vzc2VkDQorYmVs
+b3cuDQorDQorKiBiZTE2OiBUYWtlcyBhbiB1bnNpZ25lZCAxNi1iaXQgbnVtYmVyIGFuZCBjb252
+ZXJ0cyBpdCBiZXR3ZWVuDQorICBob3N0IGJ5dGUgb3JkZXIgYW5kIGJpZy1lbmRpYW4NCisgIChg
+SUVOMTM3IDxodHRwczovL3d3dy5yZmMtZWRpdG9yLm9yZy9pZW4vaWVuMTM3LnR4dD5gXykgYnl0
+ZSBvcmRlci4NCisqIGJlMzI6IFRha2VzIGFuIHVuc2lnbmVkIDMyLWJpdCBudW1iZXIgYW5kIGNv
+bnZlcnRzIGl0IGJldHdlZW4NCisgIGhvc3QgYnl0ZSBvcmRlciBhbmQgYmlnLWVuZGlhbiBieXRl
+IG9yZGVyLg0KKyogYmU2NDogVGFrZXMgYW4gdW5zaWduZWQgNjQtYml0IG51bWJlciBhbmQgY29u
+dmVydHMgaXQgYmV0d2Vlbg0KKyAgaG9zdCBieXRlIG9yZGVyIGFuZCBiaWctZW5kaWFuIGJ5dGUg
+b3JkZXIuDQogKiBic3dhcDE2OiBUYWtlcyBhbiB1bnNpZ25lZCAxNi1iaXQgbnVtYmVyIGluIGVp
+dGhlciBiaWctIG9yIGxpdHRsZS1lbmRpYW4NCiAgIGZvcm1hdCBhbmQgcmV0dXJucyB0aGUgZXF1
+aXZhbGVudCBudW1iZXIgd2l0aCB0aGUgc2FtZSBiaXQgd2lkdGggYnV0DQogICBvcHBvc2l0ZSBl
+bmRpYW5uZXNzLg0KQEAgLTg2LDcgKzg3LDEyIEBAIEZ1bmN0aW9ucw0KICogYnN3YXA2NDogVGFr
+ZXMgYW4gdW5zaWduZWQgNjQtYml0IG51bWJlciBpbiBlaXRoZXIgYmlnLSBvciBsaXR0bGUtZW5k
+aWFuDQogICBmb3JtYXQgYW5kIHJldHVybnMgdGhlIGVxdWl2YWxlbnQgbnVtYmVyIHdpdGggdGhl
+IHNhbWUgYml0IHdpZHRoIGJ1dA0KICAgb3Bwb3NpdGUgZW5kaWFubmVzcy4NCi0NCisqIGxlMTY6
+IFRha2VzIGFuIHVuc2lnbmVkIDE2LWJpdCBudW1iZXIgYW5kIGNvbnZlcnRzIGl0IGJldHdlZW4N
+CisgIGhvc3QgYnl0ZSBvcmRlciBhbmQgbGl0dGxlLWVuZGlhbiBieXRlIG9yZGVyLg0KKyogbGUz
+MjogVGFrZXMgYW4gdW5zaWduZWQgMzItYml0IG51bWJlciBhbmQgY29udmVydHMgaXQgYmV0d2Vl
+bg0KKyAgaG9zdCBieXRlIG9yZGVyIGFuZCBsaXR0bGUtZW5kaWFuIGJ5dGUgb3JkZXIuDQorKiBs
+ZTY0OiBUYWtlcyBhbiB1bnNpZ25lZCA2NC1iaXQgbnVtYmVyIGFuZCBjb252ZXJ0cyBpdCBiZXR3
+ZWVuDQorICBob3N0IGJ5dGUgb3JkZXIgYW5kIGxpdHRsZS1lbmRpYW4gYnl0ZSBvcmRlci4NCiAN
+CiBEZWZpbml0aW9ucw0KIC0tLS0tLS0tLS0tDQpAQCAtNDQxLDggKzQ0Nyw4IEBAIGFuZCBNVVNU
+IGJlIHNldCB0byAwLg0KICAgPT09PT0gID09PT09PT09ICA9PT09PSAgPT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PQ0KICAgY2xhc3MgIHNvdXJjZSAgICB2
+YWx1ZSAgZGVzY3JpcHRpb24NCiAgID09PT09ICA9PT09PT09PSAgPT09PT0gID09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0NCi0gIEFMVSAgICBUT19MRSAg
+ICAgMCAgICAgIGNvbnZlcnQgYmV0d2VlbiBob3N0IGJ5dGUgb3JkZXIgYW5kIGxpdHRsZSBlbmRp
+YW4NCi0gIEFMVSAgICBUT19CRSAgICAgMSAgICAgIGNvbnZlcnQgYmV0d2VlbiBob3N0IGJ5dGUg
+b3JkZXIgYW5kIGJpZyBlbmRpYW4NCisgIEFMVSAgICBMRSAgICAgICAgMCAgICAgIGNvbnZlcnQg
+YmV0d2VlbiBob3N0IGJ5dGUgb3JkZXIgYW5kIGxpdHRsZSBlbmRpYW4NCisgIEFMVSAgICBCRSAg
+ICAgICAgMSAgICAgIGNvbnZlcnQgYmV0d2VlbiBob3N0IGJ5dGUgb3JkZXIgYW5kIGJpZyBlbmRp
+YW4NCiAgIEFMVTY0ICBSZXNlcnZlZCAgMCAgICAgIGRvIGJ5dGUgc3dhcCB1bmNvbmRpdGlvbmFs
+bHkNCiAgID09PT09ICA9PT09PT09PSAgPT09PT0gID09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT0NCiANCkBAIC00NTMsMTkgKzQ1OSwxOSBAQCBjb25mb3Jt
+YW5jZSBncm91cC4NCiANCiBFeGFtcGxlczoNCiANCi1gYHtFTkQsIFRPX0xFLCBBTFV9YGAgd2l0
+aCAnaW1tJyA9IDE2LzMyLzY0IG1lYW5zOjoNCitgYHtFTkQsIExFLCBBTFV9YGAgd2l0aCAnaW1t
+JyA9IDE2LzMyLzY0IG1lYW5zOjoNCiANCi0gIGRzdCA9IGh0b2xlMTYoZHN0KQ0KLSAgZHN0ID0g
+aHRvbGUzMihkc3QpDQotICBkc3QgPSBodG9sZTY0KGRzdCkNCisgIGRzdCA9IGxlMTYoZHN0KQ0K
+KyAgZHN0ID0gbGUzMihkc3QpDQorICBkc3QgPSBsZTY0KGRzdCkNCiANCi1gYHtFTkQsIFRPX0JF
+LCBBTFV9YGAgd2l0aCAnaW1tJyA9IDE2LzMyLzY0IG1lYW5zOjoNCitgYHtFTkQsIEJFLCBBTFV9
+YGAgd2l0aCAnaW1tJyA9IDE2LzMyLzY0IG1lYW5zOjoNCiANCi0gIGRzdCA9IGh0b2JlMTYoZHN0
+KQ0KLSAgZHN0ID0gaHRvYmUzMihkc3QpDQotICBkc3QgPSBodG9iZTY0KGRzdCkNCisgIGRzdCA9
+IGJlMTYoZHN0KQ0KKyAgZHN0ID0gYmUzMihkc3QpDQorICBkc3QgPSBiZTY0KGRzdCkNCiANCi1g
+YHtFTkQsIFRPX0xFLCBBTFU2NH1gYCB3aXRoICdpbW0nID0gMTYvMzIvNjQgbWVhbnM6Og0KK2Bg
+e0VORCwgVE8sIEFMVTY0fWBgIHdpdGggJ2ltbScgPSAxNi8zMi82NCBtZWFuczo6DQogDQogICBk
+c3QgPSBic3dhcDE2KGRzdCkNCiAgIGRzdCA9IGJzd2FwMzIoZHN0KQ0KQEAgLTU0NSwxMyArNTUx
+LDE3IEBAIEhlbHBlciBmdW5jdGlvbnMgYXJlIGEgY29uY2VwdCB3aGVyZWJ5IEJQRiBwcm9ncmFt
+cyBjYW4gY2FsbCBpbnRvIGENCiBzZXQgb2YgZnVuY3Rpb24gY2FsbHMgZXhwb3NlZCBieSB0aGUg
+dW5kZXJseWluZyBwbGF0Zm9ybS4NCiANCiBIaXN0b3JpY2FsbHksIGVhY2ggaGVscGVyIGZ1bmN0
+aW9uIHdhcyBpZGVudGlmaWVkIGJ5IGEgc3RhdGljIElEDQotZW5jb2RlZCBpbiB0aGUgJ2ltbScg
+ZmllbGQuICBUaGUgYXZhaWxhYmxlIGhlbHBlciBmdW5jdGlvbnMgbWF5IGRpZmZlcg0KLWZvciBl
+YWNoIHByb2dyYW0gdHlwZSwgYnV0IHN0YXRpYyBJRHMgYXJlIHVuaXF1ZSBhY3Jvc3MgYWxsIHBy
+b2dyYW0gdHlwZXMuDQorZW5jb2RlZCBpbiB0aGUgJ2ltbScgZmllbGQuICBGdXJ0aGVyIGRvY3Vt
+ZW50YXRpb24gb2YgaGVscGVyIGZ1bmN0aW9ucw0KK2lzIG91dHNpZGUgdGhlIHNjb3BlIG9mIHRo
+aXMgZG9jdW1lbnQgYW5kIHN0YW5kYXJkaXphdGlvbiBpcyBsZWZ0IGZvcg0KK2Z1dHVyZSB3b3Jr
+LCBidXQgdXNlIGlzIHdpZGVseSBkZXBsb3llZCBhbmQgbW9yZSBpbmZvcm1hdGlvbiBjYW4gYmUN
+Citmb3VuZCBpbiBwbGF0Zm9ybS1zcGVjaWZpYyBkb2N1bWVudGF0aW9uIChlLmcuLCBMaW51eCBr
+ZXJuZWwgZG9jdW1lbnRhdGlvbnMpLg0KIA0KIFBsYXRmb3JtcyB0aGF0IHN1cHBvcnQgdGhlIEJQ
+RiBUeXBlIEZvcm1hdCAoQlRGKSBzdXBwb3J0IGlkZW50aWZ5aW5nDQogYSBoZWxwZXIgZnVuY3Rp
+b24gYnkgYSBCVEYgSUQgZW5jb2RlZCBpbiB0aGUgJ2ltbScgZmllbGQsIHdoZXJlIHRoZSBCVEYg
+SUQNCiBpZGVudGlmaWVzIHRoZSBoZWxwZXIgbmFtZSBhbmQgdHlwZS4gIEZ1cnRoZXIgZG9jdW1l
+bnRhdGlvbiBvZiBCVEYNCi1pcyBvdXRzaWRlIHRoZSBzY29wZSBvZiB0aGlzIGRvY3VtZW50IGFu
+ZCBpcyBsZWZ0IGZvciBmdXR1cmUgd29yay4NCitpcyBvdXRzaWRlIHRoZSBzY29wZSBvZiB0aGlz
+IGRvY3VtZW50IGFuZCBzdGFuZGFyZGl6YXRpb24gaXMgbGVmdCBmb3INCitmdXR1cmUgd29yaywg
+YnV0IHVzZSBpcyB3aWRlbHkgZGVwbG95ZWQgYW5kIG1vcmUgaW5mb3JtYXRpb24gY2FuIGJlDQor
+Zm91bmQgaW4gcGxhdGZvcm0tc3BlY2lmaWMgZG9jdW1lbnRhdGlvbiAoZS5nLiwgTGludXgga2Vy
+bmVsIGRvY3VtZW50YXRpb25zKS4NCiANCiBQcm9ncmFtLWxvY2FsIGZ1bmN0aW9ucw0KIH5+fn5+
+fn5+fn5+fn5+fn5+fn5+fn5+DQotLSANCjIuNDAuMQ0KDQotLSAKQnBmIG1haWxpbmcgbGlzdCAt
+LSBicGZAaWV0Zi5vcmcKVG8gdW5zdWJzY3JpYmUgc2VuZCBhbiBlbWFpbCB0byBicGYtbGVhdmVA
+aWV0Zi5vcmcK
 
