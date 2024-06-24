@@ -1,77 +1,97 @@
-Return-Path: <bpf+bounces-32899-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-32904-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 29ECA914DE5
-	for <lists+bpf@lfdr.de>; Mon, 24 Jun 2024 15:06:08 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9A88D914E7B
+	for <lists+bpf@lfdr.de>; Mon, 24 Jun 2024 15:28:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AB55FB23D83
-	for <lists+bpf@lfdr.de>; Mon, 24 Jun 2024 13:06:05 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5225D282D43
+	for <lists+bpf@lfdr.de>; Mon, 24 Jun 2024 13:28:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3BED313D628;
-	Mon, 24 Jun 2024 13:05:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BDACA13E3F4;
+	Mon, 24 Jun 2024 13:28:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="fdfIRyVU"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZBqvaOJa"
 X-Original-To: bpf@vger.kernel.org
-Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-lf1-f50.google.com (mail-lf1-f50.google.com [209.85.167.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D1C3513D60D
-	for <bpf@vger.kernel.org>; Mon, 24 Jun 2024 13:05:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.177.32
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA56C13DBB1;
+	Mon, 24 Jun 2024 13:28:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719234351; cv=none; b=jFVaGB+7mCZEGV63tsn6tMeFs9oR98r4ULKgK5XGFXGWyg0AVFuQQ1tD2anM64yTQV6esXJYbYteeyAcCEptAbAJcdUNToJcNUNq91c9WJmL4wBZ9Aoyo5nv4GiiEW09sACLdZLo1GMfUb1k8nGlyofopIf5FPZcTv9x+IX9Bvk=
+	t=1719235714; cv=none; b=SWewAe9wq9OPaIradj9n2X4KBQwFnZk/Knw/IjmmeZdAcujjZIdUSsvdsVYAV9Y25fEFhsHDabgts8Frj/3X53Ti+XssU0LmRTnhSfGEHRfnB9xd9sop36CeJb37Y2GKDQbLr9bOqO1IjBRtdI5GGScDdjW7BUqyMeX1M/OFc3w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719234351; c=relaxed/simple;
-	bh=xuc2Ia3IS/WoFjAUEj7w7wUfqYnZlS/SxWB1LOgZqYg=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Lg3vKshSGHqpOr6W6alFB53Hdwir2BGXjShqYn0YNyyxmoPpxgve2/1IsrXwCEYHxbzCpdsjTSqZ1Xijr3mquXr/ZCUV53XPStjncAUs6jb4WR+OajH9li6f7jDy6w4vBO0PDkw1ceftRWsXG9s6QucK3pg66nLaGiUwMkQgj1Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=fdfIRyVU; arc=none smtp.client-ip=205.220.177.32
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
-Received: from pps.filterd (m0246631.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 45O7g1rg029713;
-	Mon, 24 Jun 2024 13:05:11 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=
-	from:to:cc:subject:date:message-id:mime-version
-	:content-transfer-encoding; s=corp-2023-11-20; bh=GTG63pN2JDiSFw
-	5jcpgEXZyFIFKPXTHS24lp5fhOSz8=; b=fdfIRyVUbzgqJumsZRCU0fY8Wkg8Ks
-	T4y1xVS6q1/yOO/zqzpkKXeuE/TpgbtiwnXBcYrGo2FbLQjHLb80J3p/AFFlzOgC
-	aG6dkRljlKNq6TeVAbH4C2BPcVJ+wYlYcneKoJXY8yZ0HMGrehcYA4Iq3uwVt7Zi
-	dUx2+lLegMfI5PXSIxcvgAWxW1fgl+NtkBbG6C90Z2vu3NT3PNKzkHMFXXM7lhkA
-	myGdmfcVUOfEoFQrDDD+4g/P61xFBIN8/GNW81F8Rhsha2arBaKFexyv/m4H8ztX
-	CCYoaqb73FavNymVslkr+S+3DdJrUIV/i1blEauU2mOmtjJNnCTzpqBA==
-Received: from iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta01.appoci.oracle.com [130.35.100.223])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3ywnd2ahvx-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Mon, 24 Jun 2024 13:05:11 +0000 (GMT)
-Received: from pps.filterd (iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-	by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 45OBIwhI023395;
-	Mon, 24 Jun 2024 13:05:10 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-	by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3ywn2cdu0a-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Mon, 24 Jun 2024 13:05:10 +0000
-Received: from iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 45OD5AZ9035548;
-	Mon, 24 Jun 2024 13:05:10 GMT
-Received: from bpf.uk.oracle.com (dhcp-10-175-162-165.vpn.oracle.com [10.175.162.165])
-	by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTP id 3ywn2cdtv4-1;
-	Mon, 24 Jun 2024 13:05:09 +0000
-From: Alan Maguire <alan.maguire@oracle.com>
-To: andrii@kernel.org, eddyz87@gmail.com
-Cc: acme@redhat.com, ast@kernel.org, daniel@iogearbox.net, jolsa@kernel.org,
-        martin.lau@linux.dev, song@kernel.org, yonghong.song@linux.dev,
-        john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
-        haoluo@google.com, mcgrof@kernel.org, masahiroy@kernel.org,
-        nathan@kernel.org, mykolal@fb.com, thinker.li@gmail.com,
-        bentiss@kernel.org, tanggeliang@kylinos.cn, bpf@vger.kernel.org,
-        Alan Maguire <alan.maguire@oracle.com>
-Subject: [PATCH bpf-next] libbpf: fix clang compilation error in
-Date: Mon, 24 Jun 2024 14:05:05 +0100
-Message-ID: <20240624130505.694567-1-alan.maguire@oracle.com>
+	s=arc-20240116; t=1719235714; c=relaxed/simple;
+	bh=Knw25hLKGn36AJuU2/rDQCCe9C1d6rjfmd8w0Kwrf9M=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=Ij8DXfiKXToFuDTVY01tS2zaDXOgFK/145lGw/7AK1/YTvys5gv0yLNOrAjkhpr2ddB9DLUUWe/TI54fe4hJz+OSo7d9R3ntMbHkOrzAGfMsW4XO4QTsxNsemsLzL2VFSyZnR+DhZs7o/gxS4HD/gJkVySpIiYUFGm5T5mxa3qI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ZBqvaOJa; arc=none smtp.client-ip=209.85.167.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lf1-f50.google.com with SMTP id 2adb3069b0e04-52ce6a9fd5cso873385e87.3;
+        Mon, 24 Jun 2024 06:28:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1719235711; x=1719840511; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=weoB2927OHeQLkItSsl1+92aESa5A0VbbSHXdYNaCxU=;
+        b=ZBqvaOJaLpBvLvoDx4+DB36f8kUyelHn7dA4o5VH2fu5akGL1L2M/v7Re1FvqGErkF
+         mL1F5jvl4QWMYgYQZr3xx0ZRORv058uKBOq6DLNq72BmAEgtnLh3mam/TQH4MYdrn+X3
+         nulmPUr2Q5XfiZxrdEZf0ECMlwE3xQXJ0gHo7SChh+oc+TPkMBrZaqdMrVabH05uaE5B
+         Nh0lcQ6pveVRIbGhyWMvnpQH6mpvqSUapGMgx+t4AHgwJFq/wlDj2WpJBhnyM/iqlWXp
+         hR8Fd9WdK6ubpox/SmGHNNOsyTvxLLPFJxz3RaMsZKQqGjeC2DwiX9AG9VeGsRYer1tc
+         JMCQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1719235711; x=1719840511;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=weoB2927OHeQLkItSsl1+92aESa5A0VbbSHXdYNaCxU=;
+        b=fyvs2AGvpIUvOqgmcHFIFZhnu7kIV8W8EmYEZH/eCyDk25EKSqBq91i5L19Tq/bbPj
+         zWss7SJLYKo7PvUhOM0Cgtj2jtwFrJ4wBdIPXof94xmMGKPkRjR9aqV9ZuOCDghoIvmt
+         Hze1vnJlf84I53RfTDp9QlKhnVxeY8FXGvscPpxzuHfyZm0dxXAVtc+IGKpcK+b8v7OG
+         R5ZXB9jLvB9pi5YMZAcEh4rBcnkbLx6POZSaVdhkT9IQNkyCVyAFiGkD68oYF5t6mk+z
+         jd67Pi0xg4bbQav2mEvecgx5A831sZRK+/2ZG/d2+Ckx5juVdgzbOyX0KoQOClEDdRUs
+         OZqQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUt8CSfWT4qrkq+0q/n3qmvCqQnGgicP+g4OCNefaeSFP3D/8xqjy1FPUhwKUWdiPIBuiIsrdO7FAmFxx9hIwSrHbWW/XMy86jKPNXsByQvewpenDSVsNr0d4hir4JG5syLkVvZCbUZHWtFYYAwhfljYH3OTXZX7+Pg
+X-Gm-Message-State: AOJu0Yz1/FD+xM4RPyEWifSDkAfday+9RUKDTLkuGQGIPank5SvnS0Ov
+	K4EyCiijSgJsKG2PnuRMGAfVZbimGVWf911QrvHFkMx0nMldC20E
+X-Google-Smtp-Source: AGHT+IFq8C6kBEtbmGEGitX4D9FUoJzf8LPqBHNhfBy21YGAueF442o3wAvxepev68ZGGljisU8J+g==
+X-Received: by 2002:a05:6512:ba1:b0:52c:dd38:f3a3 with SMTP id 2adb3069b0e04-52ce185cf4amr3356821e87.46.1719235710522;
+        Mon, 24 Jun 2024 06:28:30 -0700 (PDT)
+Received: from localhost ([213.79.110.82])
+        by smtp.gmail.com with ESMTPSA id 2adb3069b0e04-52cd6454a96sm968129e87.303.2024.06.24.06.28.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 24 Jun 2024 06:28:30 -0700 (PDT)
+From: Serge Semin <fancer.lancer@gmail.com>
+To: Russell King <linux@armlinux.org.uk>,
+	Andrew Halaney <ahalaney@redhat.com>,
+	Alexandre Torgue <alexandre.torgue@foss.st.com>,
+	Jose Abreu <joabreu@synopsys.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Maxime Coquelin <mcoquelin.stm32@gmail.com>
+Cc: Alexei Starovoitov <ast@kernel.org>,
+	Jesper Dangaard Brouer <hawk@kernel.org>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	linux-arm-kernel@lists.infradead.org,
+	linux-stm32@st-md-mailman.stormreply.com,
+	bpf@vger.kernel.org,
+	netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH RFC net-next v2 09/17] net: stmmac: Introduce mac_device_info::priv pointer
+Date: Mon, 24 Jun 2024 16:26:26 +0300
+Message-ID: <20240624132802.14238-1-fancer.lancer@gmail.com>
 X-Mailer: git-send-email 2.43.0
+In-Reply-To: <Zlmzu7/ANyZxOOQL@shell.armlinux.org.uk>
+References: <Zlmzu7/ANyZxOOQL@shell.armlinux.org.uk>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -79,71 +99,55 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.680,FMLib:17.12.28.16
- definitions=2024-06-24_09,2024-06-24_01,2024-05-17_01
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 bulkscore=0 suspectscore=0
- phishscore=0 adultscore=0 malwarescore=0 mlxscore=0 mlxlogscore=999
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2406180000
- definitions=main-2406240105
-X-Proofpoint-ORIG-GUID: kaiapNm0tANycEtJ7F5WBxlC1xmJilQw
-X-Proofpoint-GUID: kaiapNm0tANycEtJ7F5WBxlC1xmJilQw
 
-When building with clang for ARCH=i386, the following errors are
-observed:
+There is going to be introduced an PCS-specific CSR space pointer defined
+in the stmmac_priv structure nearby the mmcaddr, estaddr and ptpaddr
+fields. In order to have that pointer accessible from the PCS-specific
+callback, let's introduce pointer to stmmac_priv defined in the
+mac_device_info structure.
 
-  CC      kernel/bpf/btf_relocate.o
-./tools/lib/bpf/btf_relocate.c:206:23: error: implicit truncation from 'int' to a one-bit wide bit-field changes value from 1 to -1 [-Werror,-Wsingle-bit-bitfield-constant-conversion]
-  206 |                 info[id].needs_size = true;
-      |                                     ^ ~
-./tools/lib/bpf/btf_relocate.c:256:25: error: implicit truncation from 'int' to a one-bit wide bit-field changes value from 1 to -1 [-Werror,-Wsingle-bit-bitfield-constant-conversion]
-  256 |                         base_info.needs_size = true;
-      |                                              ^ ~
-2 errors generated.
+Signed-off-by: Serge Semin <fancer.lancer@gmail.com>
 
-The problem is we use 1-bit and 31-bit bitfields in a signed int;
-changing to unsigned int resolves the error.  Change associated
-assignments from 'true' to 1 also for clarity.
-
-Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
 ---
- tools/lib/bpf/btf_relocate.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/tools/lib/bpf/btf_relocate.c b/tools/lib/bpf/btf_relocate.c
-index 2281dbbafa11..1fa11aa4e827 100644
---- a/tools/lib/bpf/btf_relocate.c
-+++ b/tools/lib/bpf/btf_relocate.c
-@@ -58,8 +58,8 @@ struct btf_relocate {
- struct btf_name_info {
- 	const char *name;
- 	/* set when search requires a size match */
--	int needs_size:1,
--	    size:31;
-+	unsigned int needs_size:1,
-+		     size:31;
- 	__u32 id;
+Note the better approach would be to convert the mac_device_info instance
+to being embedded into the stmmac_priv structure. It would have solved
+many driver problems like non-unified HW abstraction interface, duplicated
+fields (ioaddr and pcsr, etc) or too many non-runtime parameters passed to
+the callbacks, etc. But the change also would have been much-much more
+invasive than this one is. If despite of that you find the mac_device_info
+embedding into stmmac_priv more appropriate (as I do), then I'll provide
+the respective patch in place of this one.
+---
+ drivers/net/ethernet/stmicro/stmmac/common.h | 1 +
+ drivers/net/ethernet/stmicro/stmmac/hwif.c   | 1 +
+ 2 files changed, 2 insertions(+)
+
+diff --git a/drivers/net/ethernet/stmicro/stmmac/common.h b/drivers/net/ethernet/stmicro/stmmac/common.h
+index a66b836996d6..f7661268518f 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/common.h
++++ b/drivers/net/ethernet/stmicro/stmmac/common.h
+@@ -580,6 +580,7 @@ struct mii_regs {
  };
  
-@@ -203,7 +203,7 @@ static int btf_relocate_map_distilled_base(struct btf_relocate *r)
- 		info[id].name = btf__name_by_offset(r->dist_base_btf, dist_t->name_off);
- 		info[id].id = id;
- 		info[id].size = dist_t->size;
--		info[id].needs_size = true;
-+		info[id].needs_size = 1;
- 	}
- 	qsort(info, r->nr_dist_base_types, sizeof(*info), cmp_btf_name_size);
+ struct mac_device_info {
++	struct stmmac_priv *priv;
+ 	const struct stmmac_ops *mac;
+ 	const struct stmmac_desc_ops *desc;
+ 	const struct stmmac_dma_ops *dma;
+diff --git a/drivers/net/ethernet/stmicro/stmmac/hwif.c b/drivers/net/ethernet/stmicro/stmmac/hwif.c
+index 29367105df54..84fd57b76fad 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/hwif.c
++++ b/drivers/net/ethernet/stmicro/stmmac/hwif.c
+@@ -351,6 +351,7 @@ int stmmac_hwif_init(struct stmmac_priv *priv)
+ 		mac->tc = mac->tc ? : entry->tc;
+ 		mac->mmc = mac->mmc ? : entry->mmc;
+ 		mac->est = mac->est ? : entry->est;
++		mac->priv = priv;
  
-@@ -253,7 +253,7 @@ static int btf_relocate_map_distilled_base(struct btf_relocate *r)
- 		case BTF_KIND_ENUM:
- 		case BTF_KIND_ENUM64:
- 			/* These types should match both name and size */
--			base_info.needs_size = true;
-+			base_info.needs_size = 1;
- 			base_info.size = base_t->size;
- 			break;
- 		case BTF_KIND_FWD:
+ 		priv->hw = mac;
+ 		priv->ptpaddr = priv->ioaddr + entry->regs.ptp_off;
 -- 
-2.31.1
+2.43.0
 
 
