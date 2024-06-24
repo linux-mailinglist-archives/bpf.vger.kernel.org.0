@@ -1,110 +1,113 @@
-Return-Path: <bpf+bounces-32862-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-32863-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0A0E59140DA
-	for <lists+bpf@lfdr.de>; Mon, 24 Jun 2024 05:39:05 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E0B15914111
+	for <lists+bpf@lfdr.de>; Mon, 24 Jun 2024 06:34:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9C2E3283D30
-	for <lists+bpf@lfdr.de>; Mon, 24 Jun 2024 03:39:03 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9B743283874
+	for <lists+bpf@lfdr.de>; Mon, 24 Jun 2024 04:34:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A416E79CF;
-	Mon, 24 Jun 2024 03:38:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7537ACA6F;
+	Mon, 24 Jun 2024 04:34:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ew4nI3Tt"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BkgdQeRB"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f41.google.com (mail-wr1-f41.google.com [209.85.221.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E0D0623
-	for <bpf@vger.kernel.org>; Mon, 24 Jun 2024 03:38:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EAE102563;
+	Mon, 24 Jun 2024 04:34:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719200339; cv=none; b=VFi5X3EqYqH9D8UDx87TR4wV5agnDQ9iGSVipJBW546a+UcOQxBY66oJigxMDy92CTQTMXMNllbtW+czVaT4V6K5ppz5hucfmVsb6+0y13XBHGqrLmbQdHldpbxkh+M+ZQFqhPFzdVveQeiYfSXbtpT/Dfc0Oxd67ioe29gNO4g=
+	t=1719203673; cv=none; b=d1Otq1wtAjYkmSvRRKBIkWDz1qipks8L/iTC6wX8ECLsF70ouJo7gh2c0WhiLIjaDt9MyxwfD/1ke4hcEzwa1fqDkDDc6a9+u4PpcxerPgL9IsRhwvwudNQB9UJGJCk6v12n24++WD44USZpMvhRhkZa5Kkj2BLPgYhunG6kCew=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719200339; c=relaxed/simple;
-	bh=5mXea3MGyy4VC12TDy+Jn0U6ZDjYhSR9JZ8y7Ub4NVQ=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=D4eBYdYCdflXSn1BWR5bnmRkFnMhuoAz5ioVx89qQY/BDrOp6R7+R59Xc/DLoFF9yBeP/GqrUrtg75K5j2QuOcNb5fExQm4uDVhobbVZhLUvgLReFEG5pphv0JPRb90osyl5yBy0d8BvTAlXNWdc0lRApVG576l1mbtFbLqFPXE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ew4nI3Tt; arc=none smtp.client-ip=209.85.221.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f41.google.com with SMTP id ffacd0b85a97d-3632a6437d7so2180639f8f.0
-        for <bpf@vger.kernel.org>; Sun, 23 Jun 2024 20:38:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1719200336; x=1719805136; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=5mXea3MGyy4VC12TDy+Jn0U6ZDjYhSR9JZ8y7Ub4NVQ=;
-        b=ew4nI3TtEww8rTB8OO6C3YIYB0OBg2xZ4qkEEVyIYhjZ1Bb0lFiFL/X77fR83S9Z9u
-         oeKy473yOtLwgf7Xfr0RoQa11wIWhFlcze9I4dAK0lkbsYn5KItbrR0J1JjwGv9C8q78
-         zp0SIJPAbpvHmPeehMbOV1JjRs9P/6idUjLjmJJMU/2deYkdMWeJW5vdhRcLrDgTJTF4
-         e2cjnV4W1+9AzMR+vql9xwHqhzx9QnGtxdKcl+dGttPTVTmxlS6OQX8oi0KFxxQNUT1c
-         ybN80CJeTe60ESObtKE0eW8h/myNkjumzV5bxPZq8IAfDfEyN0jVymwjXLYLmpfpNvgd
-         2p4A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1719200336; x=1719805136;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=5mXea3MGyy4VC12TDy+Jn0U6ZDjYhSR9JZ8y7Ub4NVQ=;
-        b=ux+P0dS1xK7PF7ZZNxovo/wFL57U7sZ+5QcUb6125AkFfhkr4FEubiszNMVpsQUh+/
-         A0ofGnia2Zu7/xQuD2cXE1BLHz1s9pF/5aVtsMw6u7lOt/NTO4ds1lLH/Kiy/eHiNuB3
-         EcttYJDnqD/Vo2/OPYUJFU4E5K+C99qkJHmcy5pe60X3LrejwP3Hwda/0S4E2sV02AAu
-         DwEhP1CDCooNXpMfvbj5rV1yAl8c6gQL7tST83NmrhHHx7ZfMZhKHYgpDoBiZqYtswur
-         9vksDPn0D4baUfYADATRqgk6uuBrR/YGb0fJmQPq+bAWwu5l5q/g8CqY/f4M0z3tIuie
-         /YHQ==
-X-Gm-Message-State: AOJu0YzVMvwdV8ZdbgnkJh1ChvMmEfCdwp5wTGGFPbqbYdf70WDz+N7f
-	jAYo9DwEfAuFaUz2wRBaBgrdeKTjTzU6pAgvmI/OsOsTgNWuAOwF+4ak6IlwYqjE8Nk+LQop0Wf
-	vNXLopAmP5gSvpkOC5D8FhI1aeKs=
-X-Google-Smtp-Source: AGHT+IHT6M3e4YKxSdP6EK9IpXKQ8QnKPK+5LYSGM56u23Geoh45KEheraXbf7k9zriIam3HpnDJIDow36Cx0H0SfE0=
-X-Received: by 2002:a05:6000:4026:b0:366:595c:ca0c with SMTP id
- ffacd0b85a97d-366e36af80fmr4371420f8f.24.1719200335602; Sun, 23 Jun 2024
- 20:38:55 -0700 (PDT)
+	s=arc-20240116; t=1719203673; c=relaxed/simple;
+	bh=jEowzjqp3iA4h7760o3ABQ/ao1BvbmgY4PW+UyUD/VQ=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=IskpamN3YUIBVYKe8TzJCyik9/gBoEmyhX5ixk58s6D+DMmf8nPAWT7Nqoe0+22KcTswZ2zQ554etVlFk1WFJ8QW1Y5hfZkUvALKy7BZPuuHSXPxiwrKnkMP5O+kmww+HrBszwoZjiJRH3ldMsiYeSkSwX/22LBmeWy8mHXEQ7Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BkgdQeRB; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 417E3C2BBFC;
+	Mon, 24 Jun 2024 04:34:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1719203672;
+	bh=jEowzjqp3iA4h7760o3ABQ/ao1BvbmgY4PW+UyUD/VQ=;
+	h=From:To:Cc:Subject:Date:From;
+	b=BkgdQeRB0vF6933hJ9Wip3oEtO0bBtxFqtDNFMt3ewjcQMYj1wInpu1urK3FRemAP
+	 aikgnKGKdx9PqUS+QNvGVTr+7EAw6ivmUHnUU6Et46huvb4FxhwDBSOrUsCjb5J2rL
+	 TFTqD4tQpSqz2ema31cIu2E5GC5FFJQzX6N1HyDsAPu8idNGZWB3F3gAP/0b/S0cWL
+	 WwhumthroYDaFfRn0sX1aV4HbAPdJZ9IGaSOrhCTmFP6og+U4Tc2lf2VlglcA6VYso
+	 0TvtsqXG/p4BKi0Dt/Rd/YbT5biYnECOW8gvRksHpSyZ/xoQkTqlJof+XZmKNiXs+V
+	 ApKbzO3qZ6f8A==
+From: Geliang Tang <geliang@kernel.org>
+To: Andrii Nakryiko <andrii@kernel.org>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Mykola Lysenko <mykolal@fb.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>,
+	Stanislav Fomichev <sdf@google.com>,
+	Hao Luo <haoluo@google.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Shuah Khan <shuah@kernel.org>
+Cc: Geliang Tang <tanggeliang@kylinos.cn>,
+	bpf@vger.kernel.org,
+	linux-kselftest@vger.kernel.org
+Subject: [PATCH bpf-next v4 0/9] use network helpers, part 8
+Date: Mon, 24 Jun 2024 12:33:47 +0800
+Message-ID: <cover.1719203293.git.tanggeliang@kylinos.cn>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240623070324.12634-1-shung-hsi.yu@suse.com> <20240623070324.12634-2-shung-hsi.yu@suse.com>
-In-Reply-To: <20240623070324.12634-2-shung-hsi.yu@suse.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Sun, 23 Jun 2024 20:38:44 -0700
-Message-ID: <CAADnVQJar6vM-3U_e49yxz=keZs7=xn7O+k_EOAWjnA7kH1VLg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 1/2] bpf: verifier: use check_add_overflow() to
- check for addition overflows
-To: Shung-Hsi Yu <shung-hsi.yu@suse.com>
-Cc: bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, John Fastabend <john.fastabend@gmail.com>, 
-	Andrii Nakryiko <andrii@kernel.org>, Yonghong Song <yonghong.song@linux.dev>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Sun, Jun 23, 2024 at 12:03=E2=80=AFAM Shung-Hsi Yu <shung-hsi.yu@suse.co=
-m> wrote:
->
-> signed_add*_overflows() was added back when there was no overflow-check
-> helper. With the introduction of such helpers in commit f0907827a8a91
-> ("compiler.h: enable builtin overflow checkers and add fallback code"), w=
-e
-> can drop signed_add*_overflows() in kernel/bpf/verifier.c and use the
-> generic check_add_overflow() instead.
->
-> This will make future refactoring easier, and possibly taking advantage o=
-f
-> compiler-emitted hardware instructions that efficiently implement these
-> checks.
->
-> Signed-off-by: Shung-Hsi Yu <shung-hsi.yu@suse.com>
-> ---
-> shung-hsi.yu: maybe there's a better name instead of {min,max}_cur, but
-> I coudln't come up with one.
+From: Geliang Tang <tanggeliang@kylinos.cn>
 
-Just smin/smax without _cur suffix ?
+v4:
+ - a new patch to use make_sockaddr in sockmap_ktls.
+ - a new patch to close fd in error path in drop_on_reuseport.
+ - drop make_server() in patch 7.
+ - drop make_client() too in patch 9.
 
-What is the asm before/after ?
+v3:
+ - a new patch to add backlog for network_helper_opts.
+ - use start_server_str in sockmap_ktls now, not start_server.
+
+v2:
+ - address Eduard's comments in v1. (thanks)
+ - fix errors reported by CI.
+
+This patch set uses network helpers in sockmap_ktls and sk_lookup, and
+drop three local helpers tcp_server(), inetaddr_len(), make_socket(),
+make_server() and make_client() in them.
+
+Geliang Tang (9):
+  selftests/bpf: Add backlog for network_helper_opts
+  selftests/bpf: Use start_server_str in sockmap_ktls
+  selftests/bpf: Use connect_to_fd in sockmap_ktls
+  selftests/bpf: Use make_sockaddr in sockmap_ktls
+  selftests/bpf: Close fd in error path in drop_on_reuseport
+  selftests/bpf: Invoke attach_reuseport out of make_server
+  selftests/bpf: Use start_server_str in sk_lookup
+  selftests/bpf: Use connect_to_fd in sk_lookup
+  selftests/bpf: Use connect_to_addr in sk_lookup
+
+ tools/testing/selftests/bpf/network_helpers.c |   2 +-
+ tools/testing/selftests/bpf/network_helpers.h |   1 +
+ .../selftests/bpf/prog_tests/sk_lookup.c      | 263 +++++++++---------
+ .../selftests/bpf/prog_tests/sockmap_ktls.c   |  51 +---
+ 4 files changed, 140 insertions(+), 177 deletions(-)
+
+-- 
+2.43.0
+
 
