@@ -1,215 +1,217 @@
-Return-Path: <bpf+bounces-32916-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-32917-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D6CC4914F3E
-	for <lists+bpf@lfdr.de>; Mon, 24 Jun 2024 15:54:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 26C48914FA2
+	for <lists+bpf@lfdr.de>; Mon, 24 Jun 2024 16:12:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 04A441C22424
-	for <lists+bpf@lfdr.de>; Mon, 24 Jun 2024 13:54:50 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4577C1C221D9
+	for <lists+bpf@lfdr.de>; Mon, 24 Jun 2024 14:12:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC3811422CC;
-	Mon, 24 Jun 2024 13:54:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="s7Xg/xEK"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5CEDF142648;
+	Mon, 24 Jun 2024 14:12:43 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-f45.google.com (mail-ed1-f45.google.com [209.85.208.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D2D27141987
-	for <bpf@vger.kernel.org>; Mon, 24 Jun 2024 13:54:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 68FF513D62B
+	for <bpf@vger.kernel.org>; Mon, 24 Jun 2024 14:12:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719237285; cv=none; b=NalW9i8zHTfUxUw1rt4Mzeezf72q3Tgoc9LIIPDZiq7f3lLWDwroNEC+nUbYXnk0L6uqLFdxn5/lJaA6BF0N7o0xMxWcWcHAHdU7dOw9PIoTagXBouaJfErtzeoqMA8Q0JFTCvuKohqkjIrx4hhlrlzOGxXeF7i6dcZHb1+LMoQ=
+	t=1719238363; cv=none; b=aFWqNCEXdkBRVRRaESrrAn7WKvM4dUL7+gUFQZcwwoNDhv0aQct7nVv5lkf+BDz2rOnG6x0RwT84gmfqE7IsZvVowSqy/w1Pqjl7yRx2Itnrx0t4AS/W2ixP04+L8CFmTUY3BL6I2Tc/b2ug0KJ4ehmyIDz8YoOnPT/rcmY6CNk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719237285; c=relaxed/simple;
-	bh=VKXnSDdfvX3k5yhwZ2xBJjyN8qp+i8IZVG9d+dl/O2c=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=nP9s4Aaizlg3VdZJGALyYeqs6zp1TnQZJa8YiOgjx4T9bSmlyn7i+L2etxFIT0PhqHZG2p55n77ipp/Yy0UntxgrBdb+8vttG3d/n+JnQ9gI1m4ahDz2HObyIUONlHQJv2I7tRL/jqSklSyBWpQUQXSL4cWuusGU0RNkpQHZxDY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=s7Xg/xEK; arc=none smtp.client-ip=209.85.208.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ed1-f45.google.com with SMTP id 4fb4d7f45d1cf-57d16251a07so40324a12.1
-        for <bpf@vger.kernel.org>; Mon, 24 Jun 2024 06:54:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1719237282; x=1719842082; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=+sdgf5PNs5g/gEMlXztaP+xUAM2ccHxdMbGVMq60x7E=;
-        b=s7Xg/xEKc2DpyQgbc1X5GevbXDL29j3eb1JasAoBD+mf1+8wM9FJMgBeMs2g1qNsvV
-         U1zKOudlyoP72LrzW+coMO5mDMafG/m6IS4xjADm5TQx3fmPncdnc1njz7QdBX/MVjyL
-         fhSDHfkvdGiOj8ayuP1P3Nm9C9H0EvxfBV018+O/mPE4d1ryxtnBKSn1SuqF/94VOqOY
-         oDc21M3fkKQmq0EtUOiziICFnjAHCWMGDrV9qmDsmy2Dq0pq8LXKnXSCQkp4rskQwXK2
-         /Pin3WfkQKexOJhNXVJ8M3FPNtkxTUh3kBCwRFy4eFamQvBHceCTqi0N8BjhYWakYrD0
-         WFxA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1719237282; x=1719842082;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=+sdgf5PNs5g/gEMlXztaP+xUAM2ccHxdMbGVMq60x7E=;
-        b=LfirYzkHlibhRE4YJ3dy46/T/otj5/YzCG69CdOB45FwEAq4b32ECgNTiKqcyhmdpq
-         BvIOaa6waRdtT416ov8aJJszeM18ZTxY9AFOmFUWBEeI8CIcYAzV9/8LnZcrwTlHXV7S
-         7qDiNfOnXZT5qEEtK4py7oUklHqwiYdwTdnfHGKFQ7vjGXdNdgk/YAQRSRh/sFGFnX9j
-         HcvGw7PLsP9SejIQBS9CeYO1yKPWCK4PBh1D1GQOPwMzKv1iN7KSQDDiMVPPligRrICM
-         tNatDBzGggL5FeC6AHkEUrXtxlU/vfAl2Td9v23P4RQriI0xIitScUVo/8wJBmkjR4PQ
-         rB5Q==
-X-Forwarded-Encrypted: i=1; AJvYcCVJ8ndbCx9hr2IE9Y5WWVLRizFhpVAwKD+HfnY0Yg6rXv3A0Ln85dd7W5IRyWuem9PtRcj1JL0yhwtL0E/JgISealF8
-X-Gm-Message-State: AOJu0YxLF58xoaaBuJfJftfw2aXKoMg520XPi+r/USLztnhpC18V71ck
-	uSgNrvdae9jXVuscdKx8lvk3EHmvTCtlAnJyNSjErOgUfDwcu6QY2gAImaJMBx5X7oR+kJAItrk
-	sA6A7Aed0OLa6TX/k7L0fuUVCID4uUX3l5IOt
-X-Google-Smtp-Source: AGHT+IGwK65MNDlHHqOoICs5Q2AZ0NNrv74rO8TUJcxtn7Er5aJcpRvxJODc9r1ZJl8q/G9KIMwR2Dpnl5qjkeCzLEM=
-X-Received: by 2002:a05:6402:50cb:b0:57c:d45d:7571 with SMTP id
- 4fb4d7f45d1cf-57d41ce9bd4mr371523a12.6.1719237281770; Mon, 24 Jun 2024
- 06:54:41 -0700 (PDT)
+	s=arc-20240116; t=1719238363; c=relaxed/simple;
+	bh=DTopYDAtvtPPdUO93zMN7KvysCwj1UoShWxSEXJK2OQ=;
+	h=From:Subject:To:Cc:References:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=GM7YPyhF7DRMirdTml9sCYw7YrlWpvW4yjjCCtJ9J0nyYao9EbjJUw4JCzij5FhJUa70prKCosR6J/+mG7sIVpkZB//PGmeDo4NWY773qzRZJjsT2StFKECO80eiphqU7eRJSLLDPRHuqvQnqLOsjl6zUNIQP6T/X0ONCDJsvss=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.216])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4W78zt2XD4z4f3jHb
+	for <bpf@vger.kernel.org>; Mon, 24 Jun 2024 22:12:26 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.252])
+	by mail.maildlp.com (Postfix) with ESMTP id 13CA61A0170
+	for <bpf@vger.kernel.org>; Mon, 24 Jun 2024 22:12:37 +0800 (CST)
+Received: from [10.174.176.117] (unknown [10.174.176.117])
+	by APP3 (Coremail) with SMTP id _Ch0CgDn9mDRfnlm60_UAA--.61615S2;
+	Mon, 24 Jun 2024 22:12:37 +0800 (CST)
+From: Hou Tao <houtao@huaweicloud.com>
+Subject: APIs for qp-trie //Re: Question: Is it OK to assume the address of
+ bpf_dynptr_kern will be 8-bytes aligned and reuse the lowest bits to save
+ extra info ?
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+ Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: bpf <bpf@vger.kernel.org>, Kumar Kartikeya Dwivedi <memxor@gmail.com>
+References: <db144689-79c8-6cfb-6a11-983958b28955@huaweicloud.com>
+ <e51d4765-25ae-28d6-e141-e7272faa439e@huaweicloud.com>
+ <63cb33d1-6930-0555-dd43-7dd73a786f75@huaweicloud.com>
+ <CAADnVQLAQMV21M99xif1OZnyS+vyHpLJDb31c1b+s3fhrCLEvQ@mail.gmail.com>
+ <b3fab6ae-1425-48a5-1faa-bb88d44a08f1@huaweicloud.com>
+ <CAADnVQKoriZJn7B2+7O6h+Ebg_0VgViU-XXGMQ0ky6ysEJLFkw@mail.gmail.com>
+ <3ec5eed2-fe42-5eef-f8b6-7d6289e37ed8@huaweicloud.com>
+ <CAADnVQKJOc-qxFQmc8An6gp6Bq07LSGLTezQeQRX82TS-H4zvg@mail.gmail.com>
+ <57e3df33-f49b-5c8b-82b3-3a8c63a9b37e@huaweicloud.com>
+ <CAADnVQ+2JoqJJvinPvKA+4Nm8F9rTrpXBdq4SmbTeq_9bw=mwg@mail.gmail.com>
+ <a3eb33c4-b84f-5386-291c-c43d77b39c48@huaweicloud.com>
+ <CAEf4BzZPno3m+G0v8ybxb=SMNbmqofCa5aa_Ukhh2OnZO9NxXw@mail.gmail.com>
+Message-ID: <00605f3d-7cf9-cf83-b611-a742f44a80aa@huaweicloud.com>
+Date: Mon, 24 Jun 2024 22:12:33 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <cover.1719234744.git.tanggeliang@kylinos.cn> <3853b0e4846656a31799dbd4ffb7f57c302980de.1719234744.git.tanggeliang@kylinos.cn>
-In-Reply-To: <3853b0e4846656a31799dbd4ffb7f57c302980de.1719234744.git.tanggeliang@kylinos.cn>
-From: Eric Dumazet <edumazet@google.com>
-Date: Mon, 24 Jun 2024 15:54:30 +0200
-Message-ID: <CANn89iLhF6XX-j6S1F3VhWFcHwzh=opNuZembdi96zbxocot+Q@mail.gmail.com>
-Subject: Re: [PATCH net 1/3] skmsg: null check for page in sk_msg_recvmsg
-To: Geliang Tang <geliang@kernel.org>
-Cc: John Fastabend <john.fastabend@gmail.com>, Jakub Sitnicki <jakub@cloudflare.com>, 
-	"David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
-	David Ahern <dsahern@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
-	Eduard Zingerman <eddyz87@gmail.com>, Mykola Lysenko <mykolal@fb.com>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
-	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Shuah Khan <shuah@kernel.org>, Mykyta Yatsenko <yatsenko@meta.com>, Miao Xu <miaxu@meta.com>, 
-	Yuran Pereira <yuran.pereira@hotmail.com>, Geliang Tang <tanggeliang@kylinos.cn>, 
-	netdev@vger.kernel.org, bpf@vger.kernel.org, linux-kselftest@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <CAEf4BzZPno3m+G0v8ybxb=SMNbmqofCa5aa_Ukhh2OnZO9NxXw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-CM-TRANSID:_Ch0CgDn9mDRfnlm60_UAA--.61615S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxKF15trWUKFWkGr15WrWUtwb_yoW7Cw1fpF
+	18Jr1UJryUJr48Jr1UJr4UJryUJr1UJw1UJryDJFyUJr1DXr1jqr1UXF1jgr15Ar4kJr1U
+	tr1Utr1UZr1UArUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUyEb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxk0xIA0c2IEe2xFo4CEbIxvr21l42xK82IYc2Ij
+	64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x
+	8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE
+	2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42
+	xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIE
+	c7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7IU1CPfJUUUUU==
+X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
 
-On Mon, Jun 24, 2024 at 3:28=E2=80=AFPM Geliang Tang <geliang@kernel.org> w=
-rote:
->
-> From: Geliang Tang <tanggeliang@kylinos.cn>
->
-> Run the following BPF selftests on loongarch:
->
-> # ./test_progs -t sockmap_basic
->
-> A Kernel panic occurs:
->
-> '''
->  Oops[#1]:
->  CPU: 22 PID: 2824 Comm: test_progs Tainted: G           OE      6.10.0-r=
-c2+ #18
->  Hardware name: LOONGSON Dabieshan/Loongson-TC542F0, BIOS Loongson-UDK201=
-8-V4.0.11
->  pc 9000000004162774 ra 90000000048bf6c0 tp 90001000aa16c000 sp 90001000a=
-a16fb90
->  a0 0000000000000000 a1 0000000000000000 a2 0000000000000000 a3 90001000a=
-a16fd70
->  a4 0000000000000800 a5 0000000000000000 a6 000055557b63aae8 a7 000000000=
-00000cf
->  t0 0000000000000000 t1 0000000000004000 t2 0000000000000048 t3 000000000=
-0000000
->  t4 0000000000000001 t5 0000000000000002 t6 0000000000000001 t7 000000000=
-0000002
->  t8 0000000000000018 u0 9000000004856150 s9 0000000000000000 s0 000000000=
-0000000
->  s1 0000000000000000 s2 90001000aa16fd70 s3 0000000000000000 s4 000000000=
-0000000
->  s5 0000000000004000 s6 900010009284dc00 s7 0000000000000001 s8 900010009=
-284dc00
->     ra: 90000000048bf6c0 sk_msg_recvmsg+0x120/0x560
->    ERA: 9000000004162774 copy_page_to_iter+0x74/0x1c0
->   CRMD: 000000b0 (PLV0 -IE -DA +PG DACF=3DCC DACM=3DCC -WE)
->   PRMD: 0000000c (PPLV0 +PIE +PWE)
->   EUEN: 00000007 (+FPE +SXE +ASXE -BTE)
->   ECFG: 00071c1d (LIE=3D0,2-4,10-12 VS=3D7)
->  ESTAT: 00010000 [PIL] (IS=3D ECode=3D1 EsubCode=3D0)
->   BADV: 0000000000000040
->   PRID: 0014c011 (Loongson-64bit, Loongson-3C5000)
->  Modules linked in: bpf_testmod(OE) xt_CHECKSUM xt_MASQUERADE xt_conntrac=
-k
->  Process test_progs (pid: 2824, threadinfo=3D0000000000863a31, task=3D000=
-000001cba0874)
->  Stack : 0000000000000001 fffffffffffffffc 0000000000000000 0000000000000=
-000
->          0000000000000018 0000000000000000 0000000000000000 90000000048bf=
-6c0
->          90000000052cd638 90001000aa16fd70 900010008bf51580 900010009284f=
-000
->          90000000049f2b90 900010009284f188 900010009284f178 90001000861d4=
-780
->          9000100084dccd00 0000000000000800 0000000000000007 fffffffffffff=
-ff2
->          000000000453e92f 90000000049aae34 90001000aa16fd60 900010009284f=
-000
->          0000000000000000 0000000000000000 900010008bf51580 90000000049f2=
-b90
->          0000000000000001 0000000000000000 9000100084dc3a10 900010009284f=
-1ac
->          90001000aa16fd40 0000555559953278 0000000000000001 0000000000000=
-000
->          90001000aa16fdc8 9000000005a5a000 90001000861d4780 0000000000000=
-800
->          ...
->  Call Trace:
->  [<9000000004162774>] copy_page_to_iter+0x74/0x1c0
->  [<90000000048bf6c0>] sk_msg_recvmsg+0x120/0x560
->  [<90000000049f2b90>] tcp_bpf_recvmsg_parser+0x170/0x4e0
->  [<90000000049aae34>] inet_recvmsg+0x54/0x100
->  [<900000000481ad5c>] sock_recvmsg+0x7c/0xe0
->  [<900000000481e1a8>] __sys_recvfrom+0x108/0x1c0
->  [<900000000481e27c>] sys_recvfrom+0x1c/0x40
->  [<9000000004c076ec>] do_syscall+0x8c/0xc0
->  [<9000000003731da4>] handle_syscall+0xc4/0x160
->
->  Code: 0010b09b  440125a0  0011df8d <28c10364> 0012b70c  00133305  0013b1=
-ac  0010dc84  00151585
->
->  ---[ end trace 0000000000000000 ]---
->  Kernel panic - not syncing: Fatal exception
->  Kernel relocated by 0x3510000
->   .text @ 0x9000000003710000
->   .data @ 0x9000000004d70000
->   .bss  @ 0x9000000006469400
->  ---[ end Kernel panic - not syncing: Fatal exception ]---
-> '''
->
-> This is because "page" is NULL in that case. This patch adds null
-> check for it in sk_msg_recvmsg() to fix this error.
->
+Hi,
 
-Why would @page be NULL only for this architecture ?
+Sorry to resurrect the old thread to continue the discussion of APIs for
+qp-trie.
 
-Please elaborate, and add a Fixes: tag
+On 8/26/2023 2:33 AM, Andrii Nakryiko wrote:
+> On Tue, Aug 22, 2023 at 6:12 AM Hou Tao <houtao@huaweicloud.com> wrote:
+>> Hi,
+>>
 
-> Signed-off-by: Geliang Tang <tanggeliang@kylinos.cn>
-> ---
->  net/core/skmsg.c | 2 ++
->  1 file changed, 2 insertions(+)
+SNIP
+
+>> updated to allow using dynptr as map key for qp-trie.
+>>> And that's the problem I just mentioned.
+>>> PTR_TO_MAP_KEY is special. I don't think we should hack it to also
+>>> mean ARG_PTR_TO_DYNPTR depending on the first argument (map type).
+>> Sorry for misunderstanding your reply. But before switch to the kfuncl
+>> way, could you please point me to some code or function which shows the
+>> specialty of PTR_MAP_KEY ?
+>>
+>>
+> Search in kernel/bpf/verifier.c how PTR_TO_MAP_KEY is handled. The
+> logic assumes that there is associated struct bpf_map * pointer from
+> which we know fixed-sized key length.
 >
-> diff --git a/net/core/skmsg.c b/net/core/skmsg.c
-> index fd20aae30be2..bafcc1e2eadf 100644
-> --- a/net/core/skmsg.c
-> +++ b/net/core/skmsg.c
-> @@ -432,6 +432,8 @@ int sk_msg_recvmsg(struct sock *sk, struct sk_psock *=
-psock, struct msghdr *msg,
->                         sge =3D sk_msg_elem(msg_rx, i);
->                         copy =3D sge->length;
->                         page =3D sg_page(sge);
-> +                       if (!page)
-> +                               goto out;
->                         if (copied + copy > len)
->                                 copy =3D len - copied;
->                         copy =3D copy_page_to_iter(page, sge->offset, cop=
-y, iter);
-> --
-> 2.43.0
+> But getting back to the topic at hand. I vaguely remember discussion
+> we had, but it would be good if you could summarize it again here to
+> avoid talking past each other. What is the bpf_map_ops changes you
+> were thinking to do? How bpf_attr will look like? How BPF-side API for
+> lookup/delete/update will look like? And then let's go from there?
+> Thanks!
 >
+> .
+
+The APIs for qp-trie are composed of the followings 5 parts:
+
+(1) map definition for qp-trie
+
+The key is bpf_dynptr and map_extra specifies the max length of key.
+
+struct {
+    __uint(type, BPF_MAP_TYPE_QP_TRIE);
+    __type(key, struct bpf_dynptr);
+    __type(value, unsigned int);
+    __uint(map_flags, BPF_F_NO_PREALLOC);
+    __uint(map_extra, 1024);
+} qp_trie SEC(".maps");
+
+(2) bpf_attr
+
+Add key_sz & next_key_sz into anonymous struct to support map with
+variable-size key. We could add value_sz if the map with variable-size
+value is supported in the future.
+
+        struct { /* anonymous struct used by BPF_MAP_*_ELEM commands */
+                __u32           map_fd;
+                __aligned_u64   key;
+                union {
+                        __aligned_u64 value;
+                        __aligned_u64 next_key;
+                };
+                __u64           flags;
+                __u32           key_sz;
+                __u32           next_key_sz;
+        };
+
+(3) libbpf API
+
+Add bpf_map__get_next_sized_key() to high level APIs.
+
+LIBBPF_API int bpf_map__get_next_sized_key(const struct bpf_map *map,
+                                           const void *cur_key,
+                                           size_t cur_key_sz,
+                                           void *next_key, size_t
+*next_key_sz);
+
+Add
+bpf_map_update_sized_elem()/bpf_map_lookup_sized_elem()/bpf_map_delete_sized_elem()/bpf_map_get_next_sized_key()
+to low level APIs.
+These APIs have already considered the case in which map has
+variable-size value, so there will be no need to add other new APIs to
+support such case.
+
+LIBBPF_API int bpf_map_update_sized_elem(int fd, const void *key, size_t
+key_sz,
+                                         const void *value, size_t value_sz,
+                                         __u64 flags);
+LIBBPF_API int bpf_map_lookup_sized_elem(int fd, const void *key, size_t
+key_sz,
+                                         void *value, size_t *value_sz,
+                                         __u64 flags);
+LIBBPF_API int bpf_map_delete_sized_elem(int fd, const void *key, size_t
+key_sz,
+                                         __u64 flags);
+LIBBPF_API int bpf_map_get_next_sized_key(int fd,
+                                          const void *key, size_t key_sz,
+                                          void *next_key, size_t
+*next_key_sz);
+
+(4) bpf_map_ops
+
+Update the arguments for map_get_next_key()/map_lookup_elem_sys_only().
+Add map_update_elem_sys_only()/map_delete_elem_sys_only() into bpf_map_ops.
+
+Updating map_update_elem()/map_delete_elem() is also fine, but it may
+introduce too much churn and need to pass map->key_size to these APIs
+for existing callers.
+
+struct bpf_map_ops {
+        int (*map_get_next_key)(struct bpf_map *map, void *key, u32
+key_size, void *next_key, u32 *next_key_size);
+        void *(*map_lookup_elem_sys_only)(struct bpf_map *map, void
+*key, u32 key_size);
+
+        int (*map_update_elem_sys_only)(struct bpf_map *map, void *key,
+u32 key_size, void *value, u64 flags);
+        int (*map_delete_elem_sys_only)(struct bpf_map *map, void *key,
+u32 key_size);
+};
+
+(5) API for bpf program
+
+Instead of supporting bpf_dynptr as ARG_PTR_TO_MAP_KEY, will add three
+new kfuncs to support lookup/update/deletion operation on qp-trie.
+
 
