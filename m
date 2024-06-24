@@ -1,109 +1,205 @@
-Return-Path: <bpf+bounces-32950-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-32951-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 21FEE915913
-	for <lists+bpf@lfdr.de>; Mon, 24 Jun 2024 23:32:22 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9F211915938
+	for <lists+bpf@lfdr.de>; Mon, 24 Jun 2024 23:47:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C76C61F2449C
-	for <lists+bpf@lfdr.de>; Mon, 24 Jun 2024 21:32:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 555E0284C99
+	for <lists+bpf@lfdr.de>; Mon, 24 Jun 2024 21:47:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA1D51A08CF;
-	Mon, 24 Jun 2024 21:32:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC7F01A2545;
+	Mon, 24 Jun 2024 21:47:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Sc319C1o"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="p6MrxJ+j"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pl1-f179.google.com (mail-pl1-f179.google.com [209.85.214.179])
+Received: from mail-pl1-f169.google.com (mail-pl1-f169.google.com [209.85.214.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0CDEB3219F;
-	Mon, 24 Jun 2024 21:32:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C0A011A0B13
+	for <bpf@vger.kernel.org>; Mon, 24 Jun 2024 21:47:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719264736; cv=none; b=WfjVX1AChSz+jCVz+f/5ycRPnKm6gtIUeFe6PSOJg/5SP6CITaYZ5NjV/PmA3f4Wli1NAqxY32twwsyzjrhREaGsC4qZI42/PoAW8yc1wSw4lXh6GDQygeQ6pkEh6KyVTbZag/liJJcy1m9QjxdB0z9kG1PlkPkSvQQfaW4kt8Q=
+	t=1719265629; cv=none; b=fLdWz95mIEIB2M07LXAogiLs/13f03EIN+nCjyEqPx/cyskPDECGt5WxiTnQbrxwPUwXz9G7EE2jAp/IZ8J48IAGv9AmTnKx0ZJC7xakMJdfDfLmJDnQ6VROEZYBS8VK8Gi0q7ysMssk3HN4UCMQPOPPLnAU675weNashFFr4es=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719264736; c=relaxed/simple;
-	bh=7YkI3p0+97YEEMVo9b4yAPsaNw82EOsoaFWOHWmtzXg=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=h2DVyIo7Bn+x6il7GwQwooPCBBZq2U0WXOxXESIUu2xLaNIpRLLG7/5Rw5ADtUeUrZHZn2uyxCh7qjcf6nfnQJs32eqARUFdOTcziL+cFPgkt/J7PH8edCbqsGpzU4sV++L6QjTyinDniCI0cUx4XyVIacRUiIAmBgSuF8bbSMY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Sc319C1o; arc=none smtp.client-ip=209.85.214.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f179.google.com with SMTP id d9443c01a7336-1fa2782a8ccso12688735ad.2;
-        Mon, 24 Jun 2024 14:32:14 -0700 (PDT)
+	s=arc-20240116; t=1719265629; c=relaxed/simple;
+	bh=1uVEUqdRcUo/rJ5R+c++NPkM94ZB+DuQFRakCKBJoYE=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Content-Type; b=TxgwxnA0WlBQX6u3W9HbKCPg7Ob2yxv8wn9K0YKht6IIEOO3gy6celmgI263rq486XbHH62QMlo62KdXIPX7kiGtQAXWUmmKd1cLyor0YS1az2soPuBrpH6E2QjhkvU646Uei0J7QdWPjekVeWT7cSle/kTMsInc6uWEaXeAYTU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=p6MrxJ+j; arc=none smtp.client-ip=209.85.214.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-pl1-f169.google.com with SMTP id d9443c01a7336-1f70ec6ff8bso26995ad.0
+        for <bpf@vger.kernel.org>; Mon, 24 Jun 2024 14:47:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1719264734; x=1719869534; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=7YkI3p0+97YEEMVo9b4yAPsaNw82EOsoaFWOHWmtzXg=;
-        b=Sc319C1on3HdtNYRquwmWeki+O/tRzM2FFeOtAivEidM0j/bod/6XPBvOEUsa+JBt7
-         C2i5jfFSpSOKrvjdG9+hjoHr62aKA8IGLdnHiLfDFP53Uesc7EOCAW0iwod0X17ls+Ol
-         jcINimlkGPlRShQ8FiQfwN7+TR/3nEHdO1oNBBaBR0K4KiiFHRqyQEyXzreX364d1/yy
-         7wbBbis+v//fhpN8RxkFhv/d8jEUDOMSeQcR73Soz33q7cmN7paqwAnzqP8RvP3j1rvc
-         1ew94FSeCMnhAB1dFrvshh43BsjzxhB6QqDbMXMA6mxA3V/yrYgdreNTIJUxK3GBkG6A
-         K+jA==
+        d=google.com; s=20230601; t=1719265627; x=1719870427; darn=vger.kernel.org;
+        h=content-transfer-encoding:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ryU5o2yVn1i6Iaousq7WSn7w6bux8oEB7sHmGtnV9uI=;
+        b=p6MrxJ+jFadwPQYB2bHJdf5etvquPE/wVv4H4PFnScMPuSlB/CVYR2Ud654BOpa0Xn
+         2dWTZ6vAIagU9M+Zs7ET+mXeOXs9Bwb24fZgEkIM7IS6hnqGvuLpmxoy96S6gQOPkG7v
+         Q2GtoHE3/KQ7ReSiMrIyysU64VRv7V93DpwMnL09085nDIbe+jNu93pyTry0RJiDWztD
+         aaMXEAWPODT4HfQSga2PE6Tp76pHDBiy1rZHDgk8IH+x2iVh6Pg3HNI4YJyvhSVa8MOM
+         nUXBzleVL1gYSPi2hxDU6r7dh7OQ65FJvubVyMeGTulzvYngqMNPyuKL7CPwI7QuqGok
+         KohA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1719264734; x=1719869534;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=7YkI3p0+97YEEMVo9b4yAPsaNw82EOsoaFWOHWmtzXg=;
-        b=qphus8O6+8MnnF3ivwzNUXaHvi+UJaDrHc6xdIJDU3X5H1Y+e8j46TvLxxXknq27zc
-         ImHlFY0Uw4M8YBER7Rd/2tqWAfoJH4jqjj7MpNzi/bSU1pA/W/fdW8y9cg0rrmWq2GVB
-         OLExGU0GvU37Cdu7QgFwXARcvhevm8ktIlS13a30SwZaDeGuLkJYtLoi14V9tZXJrTnb
-         QI1cIHmoZ10oy2dUqfdJmahj7TOXrshOGTpNhFiNvII0lHLZtV8yV9f+s0/53jLjYplT
-         KH3LbAw7TuyCGXo6Gr5nF0PDBjD0Q/Q0r0zVIvQzVST1OR7iZEPE5A/Mvg+yIfuLo/pG
-         5jXw==
-X-Forwarded-Encrypted: i=1; AJvYcCXeZSMlV71eGovikiXY1rFKzabpBiLbYzR9OyNbYcUT7PzunQ8yVcraHsbhGkDIGjMy0Gus+hcPJDrPr6VeBlZEtUbz6eq8oB2YkvuT8Y075cPNn54xbd7SxOchKb0VR6RA2sdJ
-X-Gm-Message-State: AOJu0YxIWSpLrvfjKAceFm93f3K5aANRkkH/xZ58Cwt37ULZLM63qzsl
-	j7nDMFKGKDV+cgpQdmFq3NNgaYJF64bbZB/XVVNjNMKoIV4reevA
-X-Google-Smtp-Source: AGHT+IErw7zyQsHRjOWMJgtz+BZbB5qcnVfot+hhI5SXrzsuhrbDUewaqvbHRzdxW8M8er+JxYoYcg==
-X-Received: by 2002:a17:902:c406:b0:1f9:fe4c:9d9b with SMTP id d9443c01a7336-1fa23f1f2f4mr69116155ad.56.1719264734261;
-        Mon, 24 Jun 2024 14:32:14 -0700 (PDT)
-Received: from [192.168.0.31] ([38.34.87.7])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-1f9eb320bc1sm67832345ad.89.2024.06.24.14.32.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 24 Jun 2024 14:32:13 -0700 (PDT)
-Message-ID: <431f77525a059d57106b1f2b06ac7af3d14519b7.camel@gmail.com>
-Subject: Re: [PATCH bpf-next v4 5/9] selftests/bpf: Close fd in error path
- in drop_on_reuseport
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Geliang Tang <geliang@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
- Mykola Lysenko <mykolal@fb.com>, Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>, Martin KaFai Lau
- <martin.lau@linux.dev>, Song Liu <song@kernel.org>, Yonghong Song
- <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, KP
- Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo
- <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,  Shuah Khan
- <shuah@kernel.org>
-Cc: Geliang Tang <tanggeliang@kylinos.cn>, bpf@vger.kernel.org, 
-	linux-kselftest@vger.kernel.org
-Date: Mon, 24 Jun 2024 14:32:08 -0700
-In-Reply-To: <956fc734ac44a0b458b8819960cce2ee5a03dea1.1719203293.git.tanggeliang@kylinos.cn>
-References: <cover.1719203293.git.tanggeliang@kylinos.cn>
-	 <956fc734ac44a0b458b8819960cce2ee5a03dea1.1719203293.git.tanggeliang@kylinos.cn>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.44.4-0ubuntu2 
+        d=1e100.net; s=20230601; t=1719265627; x=1719870427;
+        h=content-transfer-encoding:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ryU5o2yVn1i6Iaousq7WSn7w6bux8oEB7sHmGtnV9uI=;
+        b=rUhq8tnL5k59zVzZ3J7A3Tp1JwqNW/HsKLwKIdOZg2Iy195xU3k8vWvGIWsE0Hrsw7
+         FlauWQOjWkhZmu/ftTUMF6ATbNKWfyJXEui+PKtbTuLAWihNGYsQWaxYx4kXPmaSRUif
+         dpKXWhdr6KFGsOUUFd02UKKR/3FqXmfXZTDNe+cQeGuAamncBLCjEdkOJjzcQ87/z86g
+         za2gCMSe3rZqs6PEZAWVgs0YSWbS9EwHpwREHaG2qGkN5AmK3eKvoRNeUIx5XvqyqvKy
+         FiEbIC6I/VzEhWsyFw9tbWq+QzLDGdJnuDtztRFbTvOZGlKUuETfEJhx0j2vpZn3MNSx
+         aFvA==
+X-Forwarded-Encrypted: i=1; AJvYcCXIKBKXmRlwgF3tcxl5s2B/8seb9aYPNAWvfazzZSeuMOA6ZDDFkEb5s9qLvGlcAanRYrno1f5Lk3CBmZ/vVNbJbyK3
+X-Gm-Message-State: AOJu0YyrBwlq7tMo95A0uwsBdQw7EhNRkxaGvzXhvua/bbKSqH+KiAv7
+	gZzYaH4TGFuwp/Fq0i6+/WhcKfBGr+uJ2KSNnyrWFabI9N7V+OCzyUh8MLfqY16B5Ml8zuLXpls
+	XjzF7S0mYM1wew46AUe1DolW0MgvRt/hDwIR+
+X-Google-Smtp-Source: AGHT+IEJrMsRDVKc4wpx0FBdMJnJosYDDYfqfwciz733n6udVWvghsvDjxQCFEC37EnR/1LLitbb/jf7rxP7dJ9fEkQ=
+X-Received: by 2002:a17:902:bd47:b0:1f7:1c96:d2e8 with SMTP id
+ d9443c01a7336-1fa68fb23efmr1044215ad.10.1719265626724; Mon, 24 Jun 2024
+ 14:47:06 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+References: <20240613233122.3564730-1-irogers@google.com>
+In-Reply-To: <20240613233122.3564730-1-irogers@google.com>
+From: Ian Rogers <irogers@google.com>
+Date: Mon, 24 Jun 2024 14:46:54 -0700
+Message-ID: <CAP-5=fWZDZWvrysEzL7H2kAXNBhFd3=kcmz1N=W+HgwGPsBPDg@mail.gmail.com>
+Subject: Re: [PATCH v3 0/8] Refactor perf python module build
+To: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
+	Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, 
+	Mark Rutland <mark.rutland@arm.com>, 
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Ian Rogers <irogers@google.com>, Adrian Hunter <adrian.hunter@intel.com>, 
+	Kan Liang <kan.liang@linux.intel.com>, John Garry <john.g.garry@oracle.com>, 
+	Will Deacon <will@kernel.org>, James Clark <james.clark@arm.com>, 
+	Mike Leach <mike.leach@linaro.org>, Leo Yan <leo.yan@linux.dev>, Guo Ren <guoren@kernel.org>, 
+	Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, 
+	Albert Ou <aou@eecs.berkeley.edu>, Suzuki K Poulose <suzuki.poulose@arm.com>, 
+	Yicong Yang <yangyicong@hisilicon.com>, Jonathan Cameron <jonathan.cameron@huawei.com>, 
+	Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>, 
+	Wedson Almeida Filho <wedsonaf@gmail.com>, Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, 
+	=?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, 
+	Benno Lossin <benno.lossin@proton.me>, Andreas Hindborg <a.hindborg@samsung.com>, 
+	Alice Ryhl <aliceryhl@google.com>, Nick Terrell <terrelln@fb.com>, 
+	Ravi Bangoria <ravi.bangoria@amd.com>, Kees Cook <keescook@chromium.org>, 
+	Andrei Vagin <avagin@google.com>, Athira Jajeev <atrajeev@linux.vnet.ibm.com>, 
+	Oliver Upton <oliver.upton@linux.dev>, Ze Gao <zegao2021@gmail.com>, 
+	linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org, 
+	linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org, 
+	linux-riscv@lists.infradead.org, coresight@lists.linaro.org, 
+	rust-for-linux@vger.kernel.org, bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, 2024-06-24 at 12:33 +0800, Geliang Tang wrote:
-> From: Geliang Tang <tanggeliang@kylinos.cn>
->=20
-> Server 1 fd should be closed in the error path when update_lookup_map()
-> fails. This patch fixes it by goto "close_srv1" instead of "detach"
-> lable in that case.
->=20
-> Signed-off-by: Geliang Tang <tanggeliang@kylinos.cn>
-> ---
+On Thu, Jun 13, 2024 at 4:31=E2=80=AFPM Ian Rogers <irogers@google.com> wro=
+te:
+>
+> Refactor the perf python module build to instead of building C files
+> it links libraries. To support this make static libraries for tests,
+> ui, util and pmu-events. Doing this allows fewer functions to be
+> stubbed out, importantly parse_events is no longer stubbed out which
+> will improve the ability to work with heterogeneous cores.
+>
+> By not building .c files for the python module and for the build of
+> perf, this should also help build times.
+>
+> Patch 1 adds '*.a' cleanup to the clean target.
+>
+> Patches 2 to 6 add static libraries for existing parts of the perf
+> build.
+>
+> Patch 7 adds the python build using libraries rather than C source
+> files.
+>
+> Patch 8 cleans up the python dependencies and removes the no longer
+> needed python-ext-sources.
+>
+> v3: Add missed xtensa directory for the util build. Remove adding the
+>     arch directory to perf-y as it creates an empty object file that
+>     breaks with GCC and LTO.
+> v2: Add '*.a' cleanup to clean target. Add reviewed-by James Clark.
 
-Acked-by: Eduard Zingerman <eddyz87@gmail.com>
+Ping.
+
+Thanks,
+Ian
+
+> Ian Rogers (8):
+>   perf build: Add '*.a' to clean targets
+>   perf ui: Make ui its own library
+>   perf pmu-events: Make pmu-events a library
+>   perf test: Make tests its own library
+>   perf bench: Make bench its own library
+>   perf util: Make util its own library
+>   perf python: Switch module to linking libraries from building source
+>   perf python: Clean up build dependencies
+>
+>  tools/perf/Build                              |  14 +-
+>  tools/perf/Makefile.config                    |   5 +
+>  tools/perf/Makefile.perf                      |  83 +++-
+>  tools/perf/arch/Build                         |   5 +-
+>  tools/perf/arch/arm/Build                     |   4 +-
+>  tools/perf/arch/arm/tests/Build               |   8 +-
+>  tools/perf/arch/arm/util/Build                |  10 +-
+>  tools/perf/arch/arm64/Build                   |   4 +-
+>  tools/perf/arch/arm64/tests/Build             |   8 +-
+>  tools/perf/arch/arm64/util/Build              |  20 +-
+>  tools/perf/arch/csky/Build                    |   2 +-
+>  tools/perf/arch/csky/util/Build               |   6 +-
+>  tools/perf/arch/loongarch/Build               |   2 +-
+>  tools/perf/arch/loongarch/util/Build          |   8 +-
+>  tools/perf/arch/mips/Build                    |   2 +-
+>  tools/perf/arch/mips/util/Build               |   6 +-
+>  tools/perf/arch/powerpc/Build                 |   4 +-
+>  tools/perf/arch/powerpc/tests/Build           |   6 +-
+>  tools/perf/arch/powerpc/util/Build            |  24 +-
+>  tools/perf/arch/riscv/Build                   |   2 +-
+>  tools/perf/arch/riscv/util/Build              |   8 +-
+>  tools/perf/arch/s390/Build                    |   2 +-
+>  tools/perf/arch/s390/util/Build               |  16 +-
+>  tools/perf/arch/sh/Build                      |   2 +-
+>  tools/perf/arch/sh/util/Build                 |   2 +-
+>  tools/perf/arch/sparc/Build                   |   2 +-
+>  tools/perf/arch/sparc/util/Build              |   2 +-
+>  tools/perf/arch/x86/Build                     |   6 +-
+>  tools/perf/arch/x86/tests/Build               |  20 +-
+>  tools/perf/arch/x86/util/Build                |  42 +-
+>  tools/perf/arch/xtensa/Build                  |   2 +-
+>  tools/perf/bench/Build                        |  46 +-
+>  tools/perf/scripts/Build                      |   4 +-
+>  tools/perf/scripts/perl/Perf-Trace-Util/Build |   2 +-
+>  .../perf/scripts/python/Perf-Trace-Util/Build |   2 +-
+>  tools/perf/tests/Build                        | 140 +++----
+>  tools/perf/tests/workloads/Build              |  12 +-
+>  tools/perf/ui/Build                           |  18 +-
+>  tools/perf/ui/browsers/Build                  |  14 +-
+>  tools/perf/ui/tui/Build                       |   8 +-
+>  tools/perf/util/Build                         | 394 +++++++++---------
+>  tools/perf/util/arm-spe-decoder/Build         |   2 +-
+>  tools/perf/util/cs-etm-decoder/Build          |   2 +-
+>  tools/perf/util/hisi-ptt-decoder/Build        |   2 +-
+>  tools/perf/util/intel-pt-decoder/Build        |   2 +-
+>  tools/perf/util/perf-regs-arch/Build          |  18 +-
+>  tools/perf/util/python-ext-sources            |  53 ---
+>  tools/perf/util/python.c                      | 271 +++++-------
+>  tools/perf/util/scripting-engines/Build       |   4 +-
+>  tools/perf/util/setup.py                      |  33 +-
+>  50 files changed, 625 insertions(+), 729 deletions(-)
+>  delete mode 100644 tools/perf/util/python-ext-sources
+>
+> --
+> 2.45.2.627.g7a2c4fd464-goog
+>
 
