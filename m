@@ -1,74 +1,46 @@
-Return-Path: <bpf+bounces-32859-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-32860-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id A46E4913F76
-	for <lists+bpf@lfdr.de>; Mon, 24 Jun 2024 02:14:00 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id F0FBB9140B6
+	for <lists+bpf@lfdr.de>; Mon, 24 Jun 2024 04:59:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C77971C21245
-	for <lists+bpf@lfdr.de>; Mon, 24 Jun 2024 00:13:59 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A7C31283C13
+	for <lists+bpf@lfdr.de>; Mon, 24 Jun 2024 02:59:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D4BD323C9;
-	Mon, 24 Jun 2024 00:13:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="a06ab9WT"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B2DDC79CF;
+	Mon, 24 Jun 2024 02:59:23 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-lf1-f45.google.com (mail-lf1-f45.google.com [209.85.167.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 85F7233D5;
-	Mon, 24 Jun 2024 00:13:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 60E116FB0;
+	Mon, 24 Jun 2024 02:59:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.188
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719188024; cv=none; b=UqDu1PfL4zXyoOQtIKl2cBoWdhyQHhQdyfghctZvqC0oFvW+yeYp8yAhvSiwVwUxOKUCAHCtos0K6I10EVLk7aYsapOvFxEGldRGLFquV50tO3QLgcbVsdWAFJkVQCCZmSCSyetA8zny20HGjmNbWwj7oaYnnRbQXXvGOX4I4n4=
+	t=1719197963; cv=none; b=Drs0jX+QIad94CvrBiU4vBifY2VkMnXQYMZQEXGfvfMuDMOuxDtDyOClfHH8txafmJRstIJqaX7FcZOchAOmH+yeceniS49qDq6IsB9y+WY+BekbxepJBXblO33EHggLEM0s6MQWBYOSdREe0navdP3zjtqk7RfrXyRJBx5uMzw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719188024; c=relaxed/simple;
-	bh=gLzfNh2sD0Snt/c/PSgDu7vQo2JbZYPugwHufL1hitI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=EO4vew/UpHWKs8tGTGm/CxYFDVoQeH0XH/AP9AwTe4fna410Jb7Xp9N/iQmwoxByGKlyOzxa4aOYpp0sMnbNuQfTgY91i56mRIhEdNsGXtew8kW86XUHTKIGMXTcjErKoPRzdkLSMaSAlm4htuAgcPNbWAedrwrufg02XDGQBDc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=a06ab9WT; arc=none smtp.client-ip=209.85.167.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f45.google.com with SMTP id 2adb3069b0e04-52cd628f21cso2671764e87.3;
-        Sun, 23 Jun 2024 17:13:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1719188020; x=1719792820; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=GK3XqR+PJ1d4Fz6hBIhYUON//yKPUubXeIxccDTP36Q=;
-        b=a06ab9WTRhJynHAl+mLZ8WF34RB89lS00xXi4hrLX/5qd/V8YmgRbAnGsX/ncPfmAY
-         NQRamRqOoX3H9w+AxYeGOqt6g7Hfkxp7NCRbm4/qTRf9XzTbjBOvnFcu5Ab5seBQE/wh
-         CqvqiD+1lynMtw9KBureXZ/urzYIZKbAM5EUuebXEtLa8KEND4MblPLyCmM3TgdlmZP7
-         D1zrNIlm+5BXtf3LHCVeMlf0Vdv+7gDXzxg2u+jIOJ31oGU6+grOHOzpS2gDkxGxcPH4
-         TCMyhCWBJCTwJzR0r3TBtqhLnjWvlPVAc3g7ig8VJZoaiQ+qq30jaQjUBi1MGJ48AtOv
-         1bmg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1719188020; x=1719792820;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=GK3XqR+PJ1d4Fz6hBIhYUON//yKPUubXeIxccDTP36Q=;
-        b=hsxIj8qMkI75NvBZrrMtP9vFmJzapokL6PoaSIn5xygboh855xsu1wtWwCJHg+gMRp
-         JNmJIFDPdrXRCIcsaWh9DLtbrMhmkCWx9AnF0SDynRKwAqMHQoH9DcV6yCXrhKGmfWLK
-         D0PNr7LgfL4TEyPHEhStwoaZD9T866VF6LPVPrg21D/BZeCNsKCpHfBF5iC/oVdL+rG2
-         8x+vAo9b7bUepxWS4dJWbtY5lrx0EGeuoYjOsqJirw2UFImn/5djCEOrWBBr+SZnAEqT
-         pxreI2h5jCoXRzZk980WEDcfNqqaXGG0BMuVw2EP7BJnJM+tASmK8eVhLLhPDrW4ZfhN
-         jUNA==
-X-Forwarded-Encrypted: i=1; AJvYcCW/7jgwsP6mqpXZ9d6TBc8J3sHaJBnZuGNerUk40yh0m0xMQ1LIsPY94IRF0nRak58HxRpeFEzrma8XYD/jGbBXcBnnDhNqJGWp9OXYc5s33EBoYdM2WZXwZoXvEL4AHwtObjLZYlp2BIfW+LQtwjaRpFpIh4R3xiB3T08o5RqdIbCKGsTSRASNkZLiF82J+OnNAgBLL/fLxRmENR3e8Hu/BHnQOm+J1IebCYctjO3H6ui3OPRhmlxjMZ8ktbJMafWcZyAz0yGu48F94kn9U02hRJEF0HjM3WodKgQkVzX8tUsibXKZ4vzT06TdRKROaSJitCimM2SPiY3+cQsNdumxxxOTAbPCVzC9r8FE68LMGeuNQaWUxZL16i7KuHSCt0Q910ev6xtX4VcNrWDlw0K+fPm14PXHsfuPglMUeXBkAf45Lvzls3nisPE8aXIcTvMMcKzWdpnyeMm7frAoSuhKKyQwYTAY4Nk+a0t0QYH12KJGhJ+0beQMGnFjP9zuUj/7GPsptYJ90MvWr8y5rnPz
-X-Gm-Message-State: AOJu0YzsteuoHvEdseYFzizqjHjFOU22IaQrm0BUF9rBLmKpmHyXaI0H
-	O6KV46Dk0ZjBrzSjtA0ZWYBE/8HDTsXid7YrkQlDQOSsTeXH+qZ+
-X-Google-Smtp-Source: AGHT+IF2Bfeow77JRmsfl+qYe07q4SCYIXRmBXwU95g0HYBerXLLikzR2pgaDVKgp0/53mQUmpDsKw==
-X-Received: by 2002:ac2:4437:0:b0:52c:c9d1:ad32 with SMTP id 2adb3069b0e04-52ce1835a80mr1726400e87.22.1719188020234;
-        Sun, 23 Jun 2024 17:13:40 -0700 (PDT)
-Received: from [192.168.8.113] ([148.252.133.212])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a725060340csm88197066b.22.2024.06.23.17.13.35
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 23 Jun 2024 17:13:39 -0700 (PDT)
-Message-ID: <ae0d02f0-b304-4847-a88a-cd5bd4b9bc76@gmail.com>
-Date: Mon, 24 Jun 2024 01:13:41 +0100
+	s=arc-20240116; t=1719197963; c=relaxed/simple;
+	bh=IRibUyIrLzpKWBF15o5JRcoeIovf2xlYNBijzj3HH7I=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=J4SlkFU7AxT9qnD522PI3Bd2cecYeNNypHyrIcTG0A7REJ8aYkRntb9N7Ua9rG0vQa1rI/6X7tilpDcB5UcG4n70i8zoC1Oo+oACMm7ZOJ0T79QOtL0UeB3IbYt6WiSw7cjNWTXNkgqRvBPM7k/WUrJOyufSvF6ivaLls4GwNzc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.188
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.88.194])
+	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4W6t1N5M5lzddQ2;
+	Mon, 24 Jun 2024 10:57:44 +0800 (CST)
+Received: from kwepemd100013.china.huawei.com (unknown [7.221.188.163])
+	by mail.maildlp.com (Postfix) with ESMTPS id 8B887141112;
+	Mon, 24 Jun 2024 10:59:17 +0800 (CST)
+Received: from [10.67.109.79] (10.67.109.79) by kwepemd100013.china.huawei.com
+ (7.221.188.163) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1258.34; Mon, 24 Jun
+ 2024 10:59:17 +0800
+Message-ID: <52f72d1d-602e-4dca-85a3-adade925b056@huawei.com>
+Date: Mon, 24 Jun 2024 10:59:16 +0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -76,214 +48,193 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next v12 10/13] tcp: RX path for devmem TCP
-To: Mina Almasry <almasrymina@google.com>
-Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-doc@vger.kernel.org, linux-alpha@vger.kernel.org,
- linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
- sparclinux@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
- linux-trace-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
- bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
- linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
- "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
- Donald Hunter <donald.hunter@gmail.com>, Jonathan Corbet <corbet@lwn.net>,
- Richard Henderson <richard.henderson@linaro.org>,
- Ivan Kokshaysky <ink@jurassic.park.msu.ru>, Matt Turner
- <mattst88@gmail.com>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
- "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
- Helge Deller <deller@gmx.de>, Andreas Larsson <andreas@gaisler.com>,
- Sergey Shtylyov <s.shtylyov@omp.ru>, Jesper Dangaard Brouer
- <hawk@kernel.org>, Ilias Apalodimas <ilias.apalodimas@linaro.org>,
- Steven Rostedt <rostedt@goodmis.org>, Masami Hiramatsu
- <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
- Arnd Bergmann <arnd@arndb.de>, Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
- Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman
- <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
- Yonghong Song <yonghong.song@linux.dev>,
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
- Jiri Olsa <jolsa@kernel.org>, Steffen Klassert
- <steffen.klassert@secunet.com>, Herbert Xu <herbert@gondor.apana.org.au>,
- David Ahern <dsahern@kernel.org>,
- Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
- Shuah Khan <shuah@kernel.org>, Sumit Semwal <sumit.semwal@linaro.org>,
- =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
- Bagas Sanjaya <bagasdotme@gmail.com>, Christoph Hellwig <hch@infradead.org>,
- Nikolay Aleksandrov <razor@blackwall.org>, David Wei <dw@davidwei.uk>,
- Jason Gunthorpe <jgg@ziepe.ca>, Yunsheng Lin <linyunsheng@huawei.com>,
- Shailend Chand <shailend@google.com>,
- Harshitha Ramamurthy <hramamurthy@google.com>,
- Shakeel Butt <shakeel.butt@linux.dev>, Jeroen de Borst
- <jeroendb@google.com>, Praveen Kaligineedi <pkaligineedi@google.com>,
- Willem de Bruijn <willemb@google.com>, Kaiyuan Zhang <kaiyuanz@google.com>
-References: <20240613013557.1169171-1-almasrymina@google.com>
- <20240613013557.1169171-11-almasrymina@google.com>
- <20a6a727-d9f2-495c-bf75-72c27740dd82@gmail.com>
- <CAHS8izMce36FwLhFB0znHQYmxpe5hmTSXtZA7+b5VsmSJUfhRw@mail.gmail.com>
+Subject: Re: [PATCH -next] cgroup: fix uaf when proc_cpuset_show
+To: Waiman Long <longman@redhat.com>, <tj@kernel.org>,
+	<lizefan.x@bytedance.com>, <hannes@cmpxchg.org>
+CC: <bpf@vger.kernel.org>, <cgroups@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>
+References: <20240622113814.120907-1-chenridong@huawei.com>
+ <19648b9c-6df7-45cd-a5ae-624a3e4d860f@redhat.com>
 Content-Language: en-US
-From: Pavel Begunkov <asml.silence@gmail.com>
-In-Reply-To: <CAHS8izMce36FwLhFB0znHQYmxpe5hmTSXtZA7+b5VsmSJUfhRw@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+From: chenridong <chenridong@huawei.com>
+In-Reply-To: <19648b9c-6df7-45cd-a5ae-624a3e4d860f@redhat.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ kwepemd100013.china.huawei.com (7.221.188.163)
 
-On 6/21/24 21:31, Mina Almasry wrote:
-> On Mon, Jun 17, 2024 at 9:36 AM Pavel Begunkov <asml.silence@gmail.com> wrote:
->>
->> On 6/13/24 02:35, Mina Almasry wrote:
->>>
->>> The pages awaiting freeing are stored in the newly added
->>> sk->sk_user_frags, and each page passed to userspace is get_page()'d.
->>> This reference is dropped once the userspace indicates that it is
->>> done reading this page.  All pages are released when the socket is
->>> destroyed.
->>
->> One small concern is that if the pool gets destroyed (i.e.
->> page_pool_destroy) before sockets holding netiov, page pool will
->> semi-busily poll until the sockets die or such and will spam with
->> pr_warn(). E.g. when a user drops the nl but leaks data sockets
->> and continues with its userspace business. You can probably do
->> it in a loop and create dozens of such pending
->> page_pool_release_retry().
->>
-> 
-> Yes, true, but this is not really an issue with netiovs per se, it's a
-> quirk with the page_pool in general. If a non-devmem page_pool is
 
-True, devmem is just a new convenient way of doing that ...
-
-> destroyed while there are pages waiting in the receive queues to be
-> recvmsg'd, the behavior you described happens anyway AFAIU.
-> 
-> Jakub did some work to improve this. IIRC he disabled the regular
-> warning and he reparents the orphan page_pools so they appear in the
-> stats of his netlink API.
-> 
-> Since this is behavior already applying to pages, I did not seek to
-> improve it as I add devmem support, I just retain it. We could improve
-> it in a separate patchset, but I do not see this behavior as a
-> critical issue really, especially since the alarming pr_warn has been
-> removed.
-
-... fair enough. I haven't noticed it being removed, but was
-thinking to suggest to conver to ratelimited.
-
->>> +static int tcp_xa_pool_refill(struct sock *sk, struct tcp_xa_pool *p,
->>> +                           unsigned int max_frags)
->>> +{
->>> +     int err, k;
->>> +
->>> +     if (p->idx < p->max)
->>> +             return 0;
->>> +
->>> +     xa_lock_bh(&sk->sk_user_frags);
->>> +
->>> +     tcp_xa_pool_commit_locked(sk, p);
->>> +
->>> +     for (k = 0; k < max_frags; k++) {
->>> +             err = __xa_alloc(&sk->sk_user_frags, &p->tokens[k],
->>> +                              XA_ZERO_ENTRY, xa_limit_31b, GFP_KERNEL);
->>> +             if (err)
->>> +                     break;
->>> +     }
->>> +
->>> +     xa_unlock_bh(&sk->sk_user_frags);
->>> +
->>> +     p->max = k;
->>> +     p->idx = 0;
->>> +     return k ? 0 : err;
->>> +}
+On 2024/6/22 23:05, Waiman Long wrote:
+>
+> On 6/22/24 07:38, Chen Ridong wrote:
+>> We found a refcount UAF bug as follows:
 >>
->> Personally, I'd prefer this optimisation to be in a separate patch,
->> especially since there is some degree of hackiness to it.
+>> BUG: KASAN: use-after-free in cgroup_path_ns+0x112/0x150
+>> Read of size 8 at addr ffff8882a4b242b8 by task atop/19903
 >>
+>> CPU: 27 PID: 19903 Comm: atop Kdump: loaded Tainted: GF
+>> Call Trace:
+>>   dump_stack+0x7d/0xa7
+>>   print_address_description.constprop.0+0x19/0x170
+>>   ? cgroup_path_ns+0x112/0x150
+>>   __kasan_report.cold+0x6c/0x84
+>>   ? print_unreferenced+0x390/0x3b0
+>>   ? cgroup_path_ns+0x112/0x150
+>>   kasan_report+0x3a/0x50
+>>   cgroup_path_ns+0x112/0x150
+>>   proc_cpuset_show+0x164/0x530
+>>   proc_single_show+0x10f/0x1c0
+>>   seq_read_iter+0x405/0x1020
+>>   ? aa_path_link+0x2e0/0x2e0
+>>   seq_read+0x324/0x500
+>>   ? seq_read_iter+0x1020/0x1020
+>>   ? common_file_perm+0x2a1/0x4a0
+>>   ? fsnotify_unmount_inodes+0x380/0x380
+>>   ? bpf_lsm_file_permission_wrapper+0xa/0x30
+>>   ? security_file_permission+0x53/0x460
+>>   vfs_read+0x122/0x420
+>>   ksys_read+0xed/0x1c0
+>>   ? __ia32_sys_pwrite64+0x1e0/0x1e0
+>>   ? __audit_syscall_exit+0x741/0xa70
+>>   do_syscall_64+0x33/0x40
+>>   entry_SYSCALL_64_after_hwframe+0x67/0xcc
 >>
-> 
-> To be honest this optimization is very necessary from my POV. We ran
-> into real production problems due to the excessive locking when we use
-> regular xa_alloc(), and Eric implemented this optimization to resolve
-> that. I simply squashed the optimization for this upstream series.
-> 
-> If absolutely necessary I can refactor it into a separate patch or
-> carry the optimization locally, but this seems like a problem everyone
-> looking to use devmem TCP will re-discover, so probably worth just
-> having here?
+>> This is also reported by: 
+>> https://syzkaller.appspot.com/bug?extid=9b1ff7be974a403aa4cd
+>>
+>> This can be reproduced by the following methods:
+>> 1.add an mdelay(1000) before acquiring the cgroup_lock In the
+>>   cgroup_path_ns function.
+>> 2.$cat /proc/<pid>/cpuset   repeatly.
+>> 3.$mount -t cgroup -o cpuset cpuset /sys/fs/cgroup/cpuset/
+>> $umount /sys/fs/cgroup/cpuset/   repeatly.
+>>
+>> The race that cause this bug can be shown as below:
+>>
+>> (umount)        |    (cat /proc/<pid>/cpuset)
+>> css_release        |    proc_cpuset_show
+>> css_release_work_fn    |    css = task_get_css(tsk, cpuset_cgrp_id);
+>> css_free_rwork_fn    |    cgroup_path_ns(css->cgroup, ...);
+>> cgroup_destroy_root    |    mutex_lock(&cgroup_mutex);
+>> rebind_subsystems    |
+>> cgroup_free_root     |
+>>             |    // cgrp was freed, UAF
+>>             |    cgroup_path_ns_locked(cgrp,..);
+>>
+>> When the cpuset is initialized, the root node top_cpuset.css.cgrp
+>> will point to &cgrp_dfl_root.cgrp. In cgroup v1, the mount operation 
+>> will
+>> allocate cgroup_root, and top_cpuset.css.cgrp will point to the 
+>> allocated
+>> &cgroup_root.cgrp. When the umount operation is executed,
+>> top_cpuset.css.cgrp will be rebound to &cgrp_dfl_root.cgrp.
+>>
+>> The problem is that when rebinding to cgrp_dfl_root, there are cases
+>> where the cgroup_root allocated by setting up the root for cgroup v1
+>> is cached. This could lead to a Use-After-Free (UAF) if it is
+>> subsequently freed. The descendant cgroups of cgroup v1 can only be
+>> freed after the css is released. However, the css of the root will never
+>> be released, yet the cgroup_root should be freed when it is unmounted.
+>> This means that obtaining a reference to the css of the root does
+>> not guarantee that css.cgrp->root will not be freed.
+>>
+>> To solve this issue, we have added a cgroup reference count in
+>> the proc_cpuset_show function to ensure that css.cgrp->root will not
+>> be freed prematurely. This is a temporary solution. Let's see if anyone
+>> has a better solution.
+>>
+>> Signed-off-by: Chen Ridong <chenridong@huawei.com>
+>> ---
+>>   kernel/cgroup/cpuset.c | 20 ++++++++++++++++++++
+>>   1 file changed, 20 insertions(+)
+>>
+>> diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
+>> index c12b9fdb22a4..782eaf807173 100644
+>> --- a/kernel/cgroup/cpuset.c
+>> +++ b/kernel/cgroup/cpuset.c
+>> @@ -5045,6 +5045,7 @@ int proc_cpuset_show(struct seq_file *m, struct 
+>> pid_namespace *ns,
+>>       char *buf;
+>>       struct cgroup_subsys_state *css;
+>>       int retval;
+>> +    struct cgroup *root_cgroup = NULL;
+>>         retval = -ENOMEM;
+>>       buf = kmalloc(PATH_MAX, GFP_KERNEL);
+>> @@ -5052,9 +5053,28 @@ int proc_cpuset_show(struct seq_file *m, 
+>> struct pid_namespace *ns,
+>>           goto out;
+>>         css = task_get_css(tsk, cpuset_cgrp_id);
+>> +    rcu_read_lock();
+>> +    /*
+>> +     * When the cpuset subsystem is mounted on the legacy hierarchy,
+>> +     * the top_cpuset.css->cgroup does not hold a reference count of
+>> +     * cgroup_root.cgroup. This makes accessing css->cgroup very
+>> +     * dangerous because when the cpuset subsystem is remounted to the
+>> +     * default hierarchy, the cgroup_root.cgroup that css->cgroup 
+>> points
+>> +     * to will be released, leading to a UAF issue. To avoid this 
+>> problem,
+>> +     * get the reference count of top_cpuset.css->cgroup first.
+>> +     *
+>> +     * This is ugly!!
+>> +     */
+>> +    if (css == &top_cpuset.css) {
+>> +        cgroup_get(css->cgroup);
+>> +        root_cgroup = css->cgroup;
+>> +    }
+>> +    rcu_read_unlock();
+>>       retval = cgroup_path_ns(css->cgroup, buf, PATH_MAX,
+>>                   current->nsproxy->cgroup_ns);
+>>       css_put(css);
+>> +    if (root_cgroup)
+>> +        cgroup_put(root_cgroup);
+>>       if (retval == -E2BIG)
+>>           retval = -ENAMETOOLONG;
+>>       if (retval < 0)
+>
+> Thanks for reporting this UAF bug. Could you try the attached patch to 
+> see if it can fix the issue?
+>
 
-I specifically mean how it's split into patches within the set. It'd
-have been easier to review, understand for people looking it up in
-history and so on. However, not insisting on changing it now, might
-be safer to leave it alone
++/*
++ * With a cgroup v1 mount, root_css.cgroup can be freed. We need to take a
++ * reference to it to avoid UAF as proc_cpuset_show() may access the 
+content
++ * of this cgroup.
++ */
+  static void cpuset_bind(struct cgroup_subsys_state *root_css)
+  {
++    static struct cgroup *v1_cgroup_root;
++
+      mutex_lock(&cpuset_mutex);
++    if (v1_cgroup_root) {
++        cgroup_put(v1_cgroup_root);
++        v1_cgroup_root = NULL;
++    }
+      spin_lock_irq(&callback_lock);
 
->>> +             /* if remaining_len is not satisfied yet, we need to go to the
->>> +              * next frag in the frag_list to satisfy remaining_len.
->>> +              */
->>> +             skb = skb_shinfo(skb)->frag_list ?: skb->next;
->>> +
->>> +             offset = offset - start;
->>
->> It's an offset into the current skb, isn't it? Wouldn't
->> offset = 0; be less confusing?
->>
-> 
-> Seems so, AFAICT. Let me try to apply this and see if it trips up any tests.
-> 
->>> +     } while (skb);
->>> +
->>> +     if (remaining_len) {
->>> +             err = -EFAULT;
->>> +             goto out;
->>> +     }
->>
->> Having data left is not a fault,
-> 
-> I think it is. The caller of tcp_recvmsg_dmabuf() expects all of
-> remaining_len to be used up, otherwise it messes up with the math in
-> the caller. __skb_datagram_iter(), which is the equivalent to this one
-> for pages, regards having left over data as a fault and also returns
-> -EFAULT, AFAICT.
+      if (is_in_v2_mode()) {
+@@ -4159,6 +4170,10 @@ static void cpuset_bind(struct 
+cgroup_subsys_state *root_css)
+      }
 
-I mean "Having data left is not a fault, not receiving
-anything is", and you correctly return a partial result
-if that was the case.
+      spin_unlock_irq(&callback_lock);
++    if (!cgroup_subsys_on_dfl(cpuset_cgrp_subsys)) {
++        v1_cgroup_root = root_css->cgroup;
++        cgroup_get(v1_cgroup_root);
++    }
+      mutex_unlock(&cpuset_mutex);
+  }
 
->> and to get here you
->> need to get an skb with no data left, which shouldn't
->> happen. Seems like everything you need is covered by
->> the "!sent" check below.
->>
-> 
-> I think we can get here if we run out of skbs with data, no?
+Thanks for your suggestion. If we take a reference at rebind(call 
+->bind()) function, cgroup_root allocated when setting up root for 
+cgroup v1 can never be released, because the reference count will never 
+be reduced to zero.
 
-IIRC the caller clamps it so that it's within the skb with
-its frags. Well, safer to have the check, I agree. It's just
-looked a bit odd since the value is complementary to @sent,
-but I guess it's just a way to propagate -EFAULT.
+We have already tried similar methods to fix this issue, however doing 
+so causes another issue as mentioned previously.
 
->>> @@ -2503,6 +2504,15 @@ static void tcp_md5sig_info_free_rcu(struct rcu_head *head)
->>>    void tcp_v4_destroy_sock(struct sock *sk)
->>>    {
->>>        struct tcp_sock *tp = tcp_sk(sk);
->>> +     __maybe_unused unsigned long index;
->>> +     __maybe_unused void *netmem;
->>
->> How about adding a function to get rid of __maybe_unused?.
->>
->> static void sock_release_devmem_frags() {
->> #ifdef PP
->>          unsigned index;
->>          ...
->> #endif PP
->> }
->>
-> 
-> Will do.
-> 
->> Also, even though you wire it up for TCP, since ->sk_user_frags
->> is in struct sock I'd expect the release to be somewhere in the
->> generic sock path like __sk_destruct(), and same for init.
->> Perhpas, it's better to leave it for later.
 
--- 
-Pavel Begunkov
+Ridong
+
 
