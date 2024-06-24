@@ -1,217 +1,119 @@
-Return-Path: <bpf+bounces-32917-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-32918-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 26C48914FA2
-	for <lists+bpf@lfdr.de>; Mon, 24 Jun 2024 16:12:49 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 69541914FB4
+	for <lists+bpf@lfdr.de>; Mon, 24 Jun 2024 16:16:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4577C1C221D9
-	for <lists+bpf@lfdr.de>; Mon, 24 Jun 2024 14:12:48 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 22CFC2820E5
+	for <lists+bpf@lfdr.de>; Mon, 24 Jun 2024 14:16:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5CEDF142648;
-	Mon, 24 Jun 2024 14:12:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 68EFF143733;
+	Mon, 24 Jun 2024 14:15:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b="MWpGz8h/"
 X-Original-To: bpf@vger.kernel.org
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f48.google.com (mail-ej1-f48.google.com [209.85.218.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 68FF513D62B
-	for <bpf@vger.kernel.org>; Mon, 24 Jun 2024 14:12:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AECEB12FF84
+	for <bpf@vger.kernel.org>; Mon, 24 Jun 2024 14:15:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719238363; cv=none; b=aFWqNCEXdkBRVRRaESrrAn7WKvM4dUL7+gUFQZcwwoNDhv0aQct7nVv5lkf+BDz2rOnG6x0RwT84gmfqE7IsZvVowSqy/w1Pqjl7yRx2Itnrx0t4AS/W2ixP04+L8CFmTUY3BL6I2Tc/b2ug0KJ4ehmyIDz8YoOnPT/rcmY6CNk=
+	t=1719238557; cv=none; b=N2iI2RAqrEQjG4zPpPfPXwyAYW+6AJy3m2jXPvi0YvaxMRvkb03A9SeNRaoBETmqN6J8kkRBcCYOZd1SDnMqQpReBF9x7li+QO39RNFVqRq2QzLTkXkjZosWOyumneLH7f79GhYz+uKnjlOfAyR4h+/xZirxqhptcuUNkI2489I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719238363; c=relaxed/simple;
-	bh=DTopYDAtvtPPdUO93zMN7KvysCwj1UoShWxSEXJK2OQ=;
-	h=From:Subject:To:Cc:References:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=GM7YPyhF7DRMirdTml9sCYw7YrlWpvW4yjjCCtJ9J0nyYao9EbjJUw4JCzij5FhJUa70prKCosR6J/+mG7sIVpkZB//PGmeDo4NWY773qzRZJjsT2StFKECO80eiphqU7eRJSLLDPRHuqvQnqLOsjl6zUNIQP6T/X0ONCDJsvss=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.216])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4W78zt2XD4z4f3jHb
-	for <bpf@vger.kernel.org>; Mon, 24 Jun 2024 22:12:26 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.252])
-	by mail.maildlp.com (Postfix) with ESMTP id 13CA61A0170
-	for <bpf@vger.kernel.org>; Mon, 24 Jun 2024 22:12:37 +0800 (CST)
-Received: from [10.174.176.117] (unknown [10.174.176.117])
-	by APP3 (Coremail) with SMTP id _Ch0CgDn9mDRfnlm60_UAA--.61615S2;
-	Mon, 24 Jun 2024 22:12:37 +0800 (CST)
-From: Hou Tao <houtao@huaweicloud.com>
-Subject: APIs for qp-trie //Re: Question: Is it OK to assume the address of
- bpf_dynptr_kern will be 8-bytes aligned and reuse the lowest bits to save
- extra info ?
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>,
- Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: bpf <bpf@vger.kernel.org>, Kumar Kartikeya Dwivedi <memxor@gmail.com>
-References: <db144689-79c8-6cfb-6a11-983958b28955@huaweicloud.com>
- <e51d4765-25ae-28d6-e141-e7272faa439e@huaweicloud.com>
- <63cb33d1-6930-0555-dd43-7dd73a786f75@huaweicloud.com>
- <CAADnVQLAQMV21M99xif1OZnyS+vyHpLJDb31c1b+s3fhrCLEvQ@mail.gmail.com>
- <b3fab6ae-1425-48a5-1faa-bb88d44a08f1@huaweicloud.com>
- <CAADnVQKoriZJn7B2+7O6h+Ebg_0VgViU-XXGMQ0ky6ysEJLFkw@mail.gmail.com>
- <3ec5eed2-fe42-5eef-f8b6-7d6289e37ed8@huaweicloud.com>
- <CAADnVQKJOc-qxFQmc8An6gp6Bq07LSGLTezQeQRX82TS-H4zvg@mail.gmail.com>
- <57e3df33-f49b-5c8b-82b3-3a8c63a9b37e@huaweicloud.com>
- <CAADnVQ+2JoqJJvinPvKA+4Nm8F9rTrpXBdq4SmbTeq_9bw=mwg@mail.gmail.com>
- <a3eb33c4-b84f-5386-291c-c43d77b39c48@huaweicloud.com>
- <CAEf4BzZPno3m+G0v8ybxb=SMNbmqofCa5aa_Ukhh2OnZO9NxXw@mail.gmail.com>
-Message-ID: <00605f3d-7cf9-cf83-b611-a742f44a80aa@huaweicloud.com>
-Date: Mon, 24 Jun 2024 22:12:33 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+	s=arc-20240116; t=1719238557; c=relaxed/simple;
+	bh=WVHqXy9ZInCaWH01/8bWggSAo5eLlmc2jeeEEydVT3Y=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=nowY6Jxpv+9geZ5vtn9g3HeBVZ6IGDHCZRiZTjp8+DwPpP0zxgWYdJSDxTbC2kTIDkhutVEL2bqsaifXm1Ty3tgmKCGLbSgyZJRXQ+Py1xxAYQQn3g+GUaLwU+hfMuai7el6rKTv1aDs+RzYIoF0mY9h64lfiBPst1J7bNy5l20=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com; spf=pass smtp.mailfrom=cloudflare.com; dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b=MWpGz8h/; arc=none smtp.client-ip=209.85.218.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cloudflare.com
+Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-a72420e84feso232737166b.0
+        for <bpf@vger.kernel.org>; Mon, 24 Jun 2024 07:15:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google09082023; t=1719238552; x=1719843352; darn=vger.kernel.org;
+        h=mime-version:message-id:date:user-agent:references:in-reply-to
+         :subject:cc:to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=WVHqXy9ZInCaWH01/8bWggSAo5eLlmc2jeeEEydVT3Y=;
+        b=MWpGz8h/K50vTi4PBRNp3Bbnr+A+Jt8r/PWvLao49oIyhLfzSIG+b3ZC9oz2L1xeSi
+         kvQJZo5wQYFb54ihY3Spwxf3vpbpwFSMeewfs1iC6pDId2cGgO3v3ZZ9vl8xxeO6FbuI
+         cYZO4Z1zi3sVsmVF/Fvj7ZlYOh6ZfBOu0QEE/jx6ZjjUQB+ALex+cCmiNQt52cE4ITMy
+         USxy9qTJZRyYLxhb2MzH2o+7JUqVT5NTN0qhgstg7Sy+dbVUmxW98wkn51Mr0WBgI06G
+         1EIBl+FjfTsm+o2RfgXlpH53Waxk3/Co0LwNADtNtQyFTVdwRIHFzyAncVNvB3g0irQl
+         h0hQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1719238552; x=1719843352;
+        h=mime-version:message-id:date:user-agent:references:in-reply-to
+         :subject:cc:to:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=WVHqXy9ZInCaWH01/8bWggSAo5eLlmc2jeeEEydVT3Y=;
+        b=Nt3eKa5tZ9Y+c5oQgFCdKQWIiluscH97FPvuoMBAtY6NxEWzu7SRsnC0UkYZDZ7mSc
+         eFN/5MJ/4NTIql5a3SKAFIwAGW5fDn1ss+r7PKJNu8pMgq3J4YQMN/bQh63aTtH9TKYd
+         9PKlA0f5dDpDF3H4V9/4IRV3lazT8cxBEl3BlUEpse5fwx24iI8vQKBsrEiS/kBQ4mEp
+         iK2GdNfamCoMeW66l1z6XtoevTKmLmKNnT9FbjPrdI+l0eaxYbqbsSX3Buw8hANrvmHo
+         A6L1GyfU7/6y87RT65u+6rFoFuDdmj7w03IclLDQ+R5Ha92LkwBz+ATYF07D71l/dUiG
+         pVZw==
+X-Forwarded-Encrypted: i=1; AJvYcCU+UFV2sCwyQx1f/Qc0+khMPN6OG/7gAC+3eTlDliZX0zlk1Q1/RJ0bJlNJIl61XCyZzd3FLZSnerZPJagaXocRVvd8
+X-Gm-Message-State: AOJu0Yyi4B+pxmXA8n+g+0a0wB/S+wH1o6/hwueARgElUIAKF1BejQuA
+	84a4YMHimca0l/HSwJZvVphk4DT7+zLr1qBkCg7SG20EqRE3Lqq0AiuGNwi1p/EUeE+mZYTfz0Z
+	r
+X-Google-Smtp-Source: AGHT+IGOFPUZG0DHZAYy6V/GZR1AuVwIqcOt9IZJ+hY+ERpVLG4G+3pJU5NB/1fgzXE8F1KYVann4g==
+X-Received: by 2002:a17:907:104c:b0:a72:455f:e8b with SMTP id a640c23a62f3a-a724599a00cmr356126066b.0.1719238552027;
+        Mon, 24 Jun 2024 07:15:52 -0700 (PDT)
+Received: from cloudflare.com ([2a09:bac5:5063:2387::38a:27])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a7263a345f6sm20137766b.46.2024.06.24.07.15.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 24 Jun 2024 07:15:51 -0700 (PDT)
+From: Jakub Sitnicki <jakub@cloudflare.com>
+To: Michal Luczaj <mhal@rbox.co>
+Cc: netdev@vger.kernel.org,  bpf@vger.kernel.org,  davem@davemloft.net,
+  edumazet@google.com,  kuba@kernel.org,  pabeni@redhat.com,
+  john.fastabend@gmail.com,  kuniyu@amazon.com,  Rao.Shoaib@oracle.com,
+ Cong Wang <cong.wang@bytedance.com>
+Subject: Re: [PATCH bpf v2] af_unix: Disable MSG_OOB handling for sockets in
+ sockmap/sockhash
+In-Reply-To: <20240622223324.3337956-1-mhal@rbox.co> (Michal Luczaj's message
+	of "Sun, 23 Jun 2024 00:25:12 +0200")
+References: <20240622223324.3337956-1-mhal@rbox.co>
+User-Agent: mu4e 1.12.4; emacs 29.1
+Date: Mon, 24 Jun 2024 16:15:49 +0200
+Message-ID: <874j9ijuju.fsf@cloudflare.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <CAEf4BzZPno3m+G0v8ybxb=SMNbmqofCa5aa_Ukhh2OnZO9NxXw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-CM-TRANSID:_Ch0CgDn9mDRfnlm60_UAA--.61615S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxKF15trWUKFWkGr15WrWUtwb_yoW7Cw1fpF
-	18Jr1UJryUJr48Jr1UJr4UJryUJr1UJw1UJryDJFyUJr1DXr1jqr1UXF1jgr15Ar4kJr1U
-	tr1Utr1UZr1UArUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUyEb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxk0xIA0c2IEe2xFo4CEbIxvr21l42xK82IYc2Ij
-	64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x
-	8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE
-	2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42
-	xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIE
-	c7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7IU1CPfJUUUUU==
-X-CM-SenderInfo: xkrx3t3r6k3tpzhluzxrxghudrp/
+Content-Type: text/plain
 
-Hi,
-
-Sorry to resurrect the old thread to continue the discussion of APIs for
-qp-trie.
-
-On 8/26/2023 2:33 AM, Andrii Nakryiko wrote:
-> On Tue, Aug 22, 2023 at 6:12 AM Hou Tao <houtao@huaweicloud.com> wrote:
->> Hi,
->>
-
-SNIP
-
->> updated to allow using dynptr as map key for qp-trie.
->>> And that's the problem I just mentioned.
->>> PTR_TO_MAP_KEY is special. I don't think we should hack it to also
->>> mean ARG_PTR_TO_DYNPTR depending on the first argument (map type).
->> Sorry for misunderstanding your reply. But before switch to the kfuncl
->> way, could you please point me to some code or function which shows the
->> specialty of PTR_MAP_KEY ?
->>
->>
-> Search in kernel/bpf/verifier.c how PTR_TO_MAP_KEY is handled. The
-> logic assumes that there is associated struct bpf_map * pointer from
-> which we know fixed-sized key length.
+On Sun, Jun 23, 2024 at 12:25 AM +02, Michal Luczaj wrote:
+> AF_UNIX socket tracks the most recent OOB packet (in its receive queue)
+> with an `oob_skb` pointer. BPF redirecting does not account for that: when
+> an OOB packet is moved between sockets, `oob_skb` is left outdated. This
+> results in a single skb that may be accessed from two different sockets.
 >
-> But getting back to the topic at hand. I vaguely remember discussion
-> we had, but it would be good if you could summarize it again here to
-> avoid talking past each other. What is the bpf_map_ops changes you
-> were thinking to do? How bpf_attr will look like? How BPF-side API for
-> lookup/delete/update will look like? And then let's go from there?
-> Thanks!
+> Take the easy way out: silently drop MSG_OOB data targeting any socket that
+> is in a sockmap or a sockhash. Note that such silent drop is akin to the
+> fate of redirected skb's scm_fp_list (SCM_RIGHTS, SCM_CREDENTIALS).
 >
-> .
+> For symmetry, forbid MSG_OOB in unix_bpf_recvmsg().
+>
+> Suggested-by: Kuniyuki Iwashima <kuniyu@amazon.com>
+> Fixes: 314001f0bf92 ("af_unix: Add OOB support")
+> Signed-off-by: Michal Luczaj <mhal@rbox.co>
+> ---
 
-The APIs for qp-trie are composed of the followings 5 parts:
+[+CC Cong who authored ->read_skb]
 
-(1) map definition for qp-trie
+I'm guessing you have a test program that you're developing the fix
+against. Would you like to extend the test case for sockmap redirect
+from unix stream [1] to incorporate it?
 
-The key is bpf_dynptr and map_extra specifies the max length of key.
+Sadly unix_inet_redir_to_connected needs a fix first because it
+hardcodes sotype to SOCK_DGRAM.
 
-struct {
-    __uint(type, BPF_MAP_TYPE_QP_TRIE);
-    __type(key, struct bpf_dynptr);
-    __type(value, unsigned int);
-    __uint(map_flags, BPF_F_NO_PREALLOC);
-    __uint(map_extra, 1024);
-} qp_trie SEC(".maps");
-
-(2) bpf_attr
-
-Add key_sz & next_key_sz into anonymous struct to support map with
-variable-size key. We could add value_sz if the map with variable-size
-value is supported in the future.
-
-        struct { /* anonymous struct used by BPF_MAP_*_ELEM commands */
-                __u32           map_fd;
-                __aligned_u64   key;
-                union {
-                        __aligned_u64 value;
-                        __aligned_u64 next_key;
-                };
-                __u64           flags;
-                __u32           key_sz;
-                __u32           next_key_sz;
-        };
-
-(3) libbpf API
-
-Add bpf_map__get_next_sized_key() to high level APIs.
-
-LIBBPF_API int bpf_map__get_next_sized_key(const struct bpf_map *map,
-                                           const void *cur_key,
-                                           size_t cur_key_sz,
-                                           void *next_key, size_t
-*next_key_sz);
-
-Add
-bpf_map_update_sized_elem()/bpf_map_lookup_sized_elem()/bpf_map_delete_sized_elem()/bpf_map_get_next_sized_key()
-to low level APIs.
-These APIs have already considered the case in which map has
-variable-size value, so there will be no need to add other new APIs to
-support such case.
-
-LIBBPF_API int bpf_map_update_sized_elem(int fd, const void *key, size_t
-key_sz,
-                                         const void *value, size_t value_sz,
-                                         __u64 flags);
-LIBBPF_API int bpf_map_lookup_sized_elem(int fd, const void *key, size_t
-key_sz,
-                                         void *value, size_t *value_sz,
-                                         __u64 flags);
-LIBBPF_API int bpf_map_delete_sized_elem(int fd, const void *key, size_t
-key_sz,
-                                         __u64 flags);
-LIBBPF_API int bpf_map_get_next_sized_key(int fd,
-                                          const void *key, size_t key_sz,
-                                          void *next_key, size_t
-*next_key_sz);
-
-(4) bpf_map_ops
-
-Update the arguments for map_get_next_key()/map_lookup_elem_sys_only().
-Add map_update_elem_sys_only()/map_delete_elem_sys_only() into bpf_map_ops.
-
-Updating map_update_elem()/map_delete_elem() is also fine, but it may
-introduce too much churn and need to pass map->key_size to these APIs
-for existing callers.
-
-struct bpf_map_ops {
-        int (*map_get_next_key)(struct bpf_map *map, void *key, u32
-key_size, void *next_key, u32 *next_key_size);
-        void *(*map_lookup_elem_sys_only)(struct bpf_map *map, void
-*key, u32 key_size);
-
-        int (*map_update_elem_sys_only)(struct bpf_map *map, void *key,
-u32 key_size, void *value, u64 flags);
-        int (*map_delete_elem_sys_only)(struct bpf_map *map, void *key,
-u32 key_size);
-};
-
-(5) API for bpf program
-
-Instead of supporting bpf_dynptr as ARG_PTR_TO_MAP_KEY, will add three
-new kfuncs to support lookup/update/deletion operation on qp-trie.
-
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git/tree/tools/testing/selftests/bpf/prog_tests/sockmap_listen.c#n1884
 
