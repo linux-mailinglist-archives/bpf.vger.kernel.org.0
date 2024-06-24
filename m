@@ -1,75 +1,76 @@
-Return-Path: <bpf+bounces-32907-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-32908-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5CBDC914E88
-	for <lists+bpf@lfdr.de>; Mon, 24 Jun 2024 15:29:55 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9270D914E8D
+	for <lists+bpf@lfdr.de>; Mon, 24 Jun 2024 15:30:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DE6C71F23158
-	for <lists+bpf@lfdr.de>; Mon, 24 Jun 2024 13:29:54 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4A228283951
+	for <lists+bpf@lfdr.de>; Mon, 24 Jun 2024 13:30:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 19B961411CF;
-	Mon, 24 Jun 2024 13:28:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8FDC81422D4;
+	Mon, 24 Jun 2024 13:28:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FAdybOxs"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="N4JyiDVk"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-lf1-f48.google.com (mail-lf1-f48.google.com [209.85.167.48])
+Received: from mail-lf1-f51.google.com (mail-lf1-f51.google.com [209.85.167.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B81E914037D;
-	Mon, 24 Jun 2024 13:28:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 459721411D3;
+	Mon, 24 Jun 2024 13:28:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719235721; cv=none; b=otmRCx6RCDx8Bfld2e5CB25ebppZI8DCenQiqA86N/dwR2dRRbPgud2P0b8XzcIn2Q8Scq7+VkweTZSbBFQshmp0qDlw2eD0eR/Fuw5ZHjcv6tA2QjsWT2yfs/cA0hOKXsjkMXe98bkXCz8JYPGIZyzMP7+3Mc5vGKFhbNNOeFw=
+	t=1719235724; cv=none; b=fRFIFuBjfI30f0fz69XCqYjwNjfk69jQH6De42aXCAgzf+F0WPMlSgKuDFY4QflGi2ypJePoTXtF47UnM5Ue/OD+veaL8Wr0FZ0OJO56rHHdzd2H+4sNfdXODrfZU9plnoEHN5JDWdHdcp9YgXrgQrOrINReJkK64vB+X5Qe05E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719235721; c=relaxed/simple;
-	bh=vI3cfKqKf1N8tTHvEKRxUuZwgu8WSPzXmooGPm1f6zc=;
+	s=arc-20240116; t=1719235724; c=relaxed/simple;
+	bh=6POb5W1RI+/9TNlT1foE0fWiDxIDRIQiUlN44x1xRXw=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=k/m6Dcjnu3htyk61u4EHlYaSMtsKnw+dAK9Nr1FFOr8evJq4WSZYK3Z5bjxOWL8aJoUDek5sjkFT/6odqDR4S5kQlNV7ibjD//zOMsAAHoifOu9AH5mXTDuy1InGpy7uyp1H6p7G39FM6d1paw3Q9oG72vL276RFDFvLcfDtmS8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FAdybOxs; arc=none smtp.client-ip=209.85.167.48
+	 MIME-Version; b=c/Qlu16qZ+120vSYMuSFh3WM03EVy67ovIz2K5jInWn1p9AimhcoJT6yRUsCGQegUNOKERV9Y2bWtAx5LNl74vFo86cE4riH8MK+sUgzNDJJuXgNsA75bKN4ivZpYrHTqptGNumcx1odTs5gSuEWHI6CtY5cT974ot3FQ1Lfj/g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=N4JyiDVk; arc=none smtp.client-ip=209.85.167.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f48.google.com with SMTP id 2adb3069b0e04-52ce0140416so1846993e87.0;
-        Mon, 24 Jun 2024 06:28:39 -0700 (PDT)
+Received: by mail-lf1-f51.google.com with SMTP id 2adb3069b0e04-52ce0140416so1847068e87.0;
+        Mon, 24 Jun 2024 06:28:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1719235718; x=1719840518; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1719235720; x=1719840520; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=w7Ol19BJCD3Qqon4hRuLkjL5PVBIRDIZpTfM6qDSNSQ=;
-        b=FAdybOxsZ7H+svXGAGu0707p40gUA3vjtvEqgjhXirp0DhgBSl4UXL01dA2CMdrIFu
-         NU1UXkgSM/Od6qOXu327pMfJq69xQ5eI24rmmHmzZLaxWv8Q1yzqtQ5Gqu/dH32+2Rw2
-         t2bVNAhi2guK1EbaitGGjEdb8tLGfaNR5s47ZEBHTV87ygRbiDgfLmN3vx9Z5UnOtEpN
-         HcO37RCvOnbdZqHJo/UUeXkhgTYXT/Zdc87uhmAsD8yEM/FHqUwPK1xFaTLXFf75mL0J
-         p0HA5+CM/p+N6rNZT0DZ8JvYOzgSWkyhihapWySrybREMs8hjN2ZqMz7Kr5DNVzmVMUs
-         rCpw==
+        bh=YtZp0AbrnXQs3O13v2d6+EuVN6MSe7p8ad/hbNOPJWI=;
+        b=N4JyiDVkjXYrbR2nSbwdVqIUqzWhHUa1PKJWAL6FhAXWZSv5sJmpH5hADUmc/QEzeA
+         m9JKhWRKKI09u3SInEsTTtKgMclEvyuqD1SZkcQWB+NBc2S0xLuh6p8VQameDnvHLJJd
+         OZhKm/3KcbZWeBwYrwbSohPLCIPH3Ujqc44vFz6r0CTpB2hWwhM3paunxURy/eVWxBES
+         nLGy8kvxtOtmv+dfdfk9OzUjzp5774Yil+vr0zjJ4HrPZnPCHz4LVRMZmyNpxXSx2xkB
+         ENaG6txh88Z9hUxp3T9uqByrL+w1L1H2vDqrfMWtm5iYYPJstmOQyXIF7p2qXhx4tqd5
+         paqQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1719235718; x=1719840518;
+        d=1e100.net; s=20230601; t=1719235720; x=1719840520;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=w7Ol19BJCD3Qqon4hRuLkjL5PVBIRDIZpTfM6qDSNSQ=;
-        b=CprZSNdmD4StfBfmBIJhbMq19JbrrHGWqLtnxW1L3v7aGMt/LVem2XMIUQ88XFs7eN
-         IbR3NG+UF8zkpTRMhWznslyHw731FF5Lb3YXM20zzuQRLhHbCqBQ8BklbmyyVlz/aLK+
-         OwsQYAzGt1iM05tlXXNbo+0qDQbttrQPBY++h7KogtVOhl/zYBij9NZgBQ3vsgSBsYjm
-         j6bSU4i3+F2DWQSDwTinC8DXWPto/amXjfiOfkbVTGeq5XQw3z8INENny4MGBMAqB5Il
-         nwjOGTPZ0te4tzL01RzL870yPEt/zgSsVNf2bJy71rnfiQSyGYu/iphhTXkJ7a9HuFxY
-         TTjg==
-X-Forwarded-Encrypted: i=1; AJvYcCXnbIvdrFbtltrWYWpySSVWgz6WnKBmbOXPVae83VNCSBQhu3SLYvgG6odmqs4hGghDoQjCfJGbuGTgqMRESArvQBgSbDfE/da6Vim3xDZQzuhqM8mQn9E2AAdG40q9DJSAExS1vAHpGj25hLw4X6veLaif9Guylyoo
-X-Gm-Message-State: AOJu0Yzpaf4179J/sKVhYJpO+m9OphSkfazYDS1csVVbhd8lJRgwwXvo
-	9BeGcqrM6Y0/j7eVNlSLwf5QbiBybcPlbRXI/2Q0+yJK8Po7oPOh
-X-Google-Smtp-Source: AGHT+IFCP0Abnl0ON1YlKTZpmLSz+wWOfdf3+G3qM0oG3CK0Ou7QI39akcE1gEBgfNlx61R5C1552w==
-X-Received: by 2002:a05:6512:3d10:b0:52c:e326:f4cf with SMTP id 2adb3069b0e04-52ce326f5e4mr3905981e87.3.1719235717804;
-        Mon, 24 Jun 2024 06:28:37 -0700 (PDT)
+        bh=YtZp0AbrnXQs3O13v2d6+EuVN6MSe7p8ad/hbNOPJWI=;
+        b=ehlF2r8AkfOLexl1I5RBKdYwXZvL54pdyu1dGQxh1Y5AFvpIiif8U0J+IgfLr0WZVW
+         37M7UcQwA8Wog7t3FDTqL5p9LY26Q4Pw5h0UWBtTlrnyhXUEuUZcblgQcR4UX5X6DdwU
+         zCKTy45sOq3jGZMe0Nl5x1KJPz5iQo7zdiB2zh8mv/EL3BppoVgw4Ws8BWiFQERXKgn/
+         agi4JvFKrLWE+wwhHrcj6itQ3HVvYpQ/C/KJlmFoNtlj1zLaJBFcu1y+cauqowQK1Ebb
+         yChbUGJetjtbHvvOhIgqXqyfL5FMzsl5OgHNjPofFfNfF18eKD8mrs2Qb8kbUYsaRg1m
+         gINQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVUMqv6msihSTjUtTR8h3I1IdG3d0bTJtTpAuYaJujWQiI5eUKrmkQLDgZi+p6bxh6574QWIc+zVKu55wcjCQuya+kpgUYJtHYiPt8BjNaD1esGjkiul0XkYmTWo+f3hlfw3QjFDO9/jjUAMx5Z/1sNZ2psOPK2J42aUCItGTYjcJNIU8IMG4PWyCPpsGBQYhFnDyW/htkyqQ==
+X-Gm-Message-State: AOJu0YyuvnqO3Ew+pkuiPdZmsHseY4vNTngMZOu/Ttm7NNy91GGWPYFE
+	UgtXtcEPS0Zt2EEPZv+xQUckbKyrIEnG5H4g1MT+WI2EXl5QXNEt
+X-Google-Smtp-Source: AGHT+IGnD5pCpdtBAgEV0LPviNccHChm0nS52nkrjh8YxukL2E9OFJq+KfJaFse+52g2ituyaoatpQ==
+X-Received: by 2002:a19:4310:0:b0:52c:b479:902d with SMTP id 2adb3069b0e04-52ce06105efmr3684613e87.4.1719235720181;
+        Mon, 24 Jun 2024 06:28:40 -0700 (PDT)
 Received: from localhost ([213.79.110.82])
-        by smtp.gmail.com with ESMTPSA id 2adb3069b0e04-52cebd0985fsm48965e87.258.2024.06.24.06.28.37
+        by smtp.gmail.com with ESMTPSA id 2adb3069b0e04-52cd643342dsm982999e87.231.2024.06.24.06.28.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 24 Jun 2024 06:28:37 -0700 (PDT)
+        Mon, 24 Jun 2024 06:28:39 -0700 (PDT)
 From: Serge Semin <fancer.lancer@gmail.com>
 To: Russell King <linux@armlinux.org.uk>,
 	Andrew Halaney <ahalaney@redhat.com>,
+	Vinod Koul <vkoul@kernel.org>,
 	Alexandre Torgue <alexandre.torgue@foss.st.com>,
 	Jose Abreu <joabreu@synopsys.com>,
 	"David S. Miller" <davem@davemloft.net>,
@@ -85,10 +86,11 @@ Cc: Alexei Starovoitov <ast@kernel.org>,
 	linux-stm32@st-md-mailman.stormreply.com,
 	bpf@vger.kernel.org,
 	netdev@vger.kernel.org,
+	linux-arm-msm@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH RFC net-next v2 12/17] net: stmmac: Introduce internal PCS IRQ enable/disable methods
-Date: Mon, 24 Jun 2024 16:26:29 +0300
-Message-ID: <20240624132802.14238-4-fancer.lancer@gmail.com>
+Subject: [PATCH RFC net-next v2 13/17] net: stmmac: Move internal PCS ANE-control method to dwmac-qcom-ethqos.c
+Date: Mon, 24 Jun 2024 16:26:30 +0300
+Message-ID: <20240624132802.14238-5-fancer.lancer@gmail.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <Zlmzu7/ANyZxOOQL@shell.armlinux.org.uk>
 References: <Zlmzu7/ANyZxOOQL@shell.armlinux.org.uk>
@@ -100,198 +102,218 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-The PCS IRQ enable/disable procedures have been utilized in the framework
-of the PHYLINK PCS enable/disable callbacks. Since a generic STMMAC
-PHYLINK PCS implementation is about to be introduced let's move the
-procedures into the dedicated DW GMAC and DW QoS Eth HW-abstraction
-methods. These methods will be called from the PCS enable/disable
-functions defined in the stmmac_pcs.c in the DW MAC-independent manner.
+The dwmac_ctrl_ane() method is not going to be utilized in the internal
+PCS implementation. Simplify the DW *MAC HW-abstraction interface by
+moving the method definition to the only user of it - dwmac-qcom-ethqos.c.
 
 Signed-off-by: Serge Semin <fancer.lancer@gmail.com>
 ---
- .../ethernet/stmicro/stmmac/dwmac1000_core.c  | 34 ++++++++++++-----
- .../net/ethernet/stmicro/stmmac/dwmac4_core.c | 38 ++++++++++++++-----
- drivers/net/ethernet/stmicro/stmmac/hwif.h    |  6 +++
- 3 files changed, 58 insertions(+), 20 deletions(-)
+ .../stmicro/stmmac/dwmac-qcom-ethqos.c        | 31 ++++++++++++++---
+ .../ethernet/stmicro/stmmac/dwmac1000_core.c  |  7 ----
+ .../net/ethernet/stmicro/stmmac/dwmac4_core.c |  9 -----
+ drivers/net/ethernet/stmicro/stmmac/hwif.h    |  4 ---
+ .../net/ethernet/stmicro/stmmac/stmmac_pcs.h  | 33 -------------------
+ 5 files changed, 27 insertions(+), 57 deletions(-)
 
+diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-qcom-ethqos.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-qcom-ethqos.c
+index d0bcebe87ee8..fcd13a9afd59 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/dwmac-qcom-ethqos.c
++++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-qcom-ethqos.c
+@@ -615,6 +615,29 @@ static void ethqos_set_serdes_speed(struct qcom_ethqos *ethqos, int speed)
+ 	}
+ }
+ 
++static inline void ethqos_ctrl_ane(void __iomem *pcsaddr, bool ane,
++				   bool srgmi_ral, bool loopback)
++{
++	u32 value = readl(pcsaddr + PCS_AN_CTRL);
++
++	/* Enable and restart the Auto-Negotiation */
++	if (ane)
++		value |= PCS_AN_CTRL_ANE | PCS_AN_CTRL_RAN;
++	else
++		value &= ~PCS_AN_CTRL_ANE;
++
++	/* In case of MAC-2-MAC connection, block is configured to operate
++	 * according to MAC conf register.
++	 */
++	if (srgmi_ral)
++		value |= PCS_AN_CTRL_SGMRAL;
++
++	if (loopback)
++		value |= PCS_AN_CTRL_ELE;
++
++	writel(value, pcsaddr + PCS_AN_CTRL);
++}
++
+ /* On interface toggle MAC registers gets reset.
+  * Configure MAC block for SGMII on ethernet phy link up
+  */
+@@ -633,7 +656,7 @@ static int ethqos_configure_sgmii(struct qcom_ethqos *ethqos)
+ 			      RGMII_CONFIG2_RGMII_CLK_SEL_CFG,
+ 			      RGMII_IO_MACRO_CONFIG2);
+ 		ethqos_set_serdes_speed(ethqos, SPEED_2500);
+-		stmmac_pcs_ctrl_ane(priv, priv->pcsaddr, 0, 0, 0);
++		ethqos_ctrl_ane(priv->pcsaddr, 0, 0, 0);
+ 		break;
+ 	case SPEED_1000:
+ 		val &= ~ETHQOS_MAC_CTRL_PORT_SEL;
+@@ -641,12 +664,12 @@ static int ethqos_configure_sgmii(struct qcom_ethqos *ethqos)
+ 			      RGMII_CONFIG2_RGMII_CLK_SEL_CFG,
+ 			      RGMII_IO_MACRO_CONFIG2);
+ 		ethqos_set_serdes_speed(ethqos, SPEED_1000);
+-		stmmac_pcs_ctrl_ane(priv, priv->pcsaddr, 1, 0, 0);
++		ethqos_ctrl_ane(priv->pcsaddr, 1, 0, 0);
+ 		break;
+ 	case SPEED_100:
+ 		val |= ETHQOS_MAC_CTRL_PORT_SEL | ETHQOS_MAC_CTRL_SPEED_MODE;
+ 		ethqos_set_serdes_speed(ethqos, SPEED_1000);
+-		stmmac_pcs_ctrl_ane(priv, priv->pcsaddr, 1, 0, 0);
++		ethqos_ctrl_ane(priv->pcsaddr, 1, 0, 0);
+ 		break;
+ 	case SPEED_10:
+ 		val |= ETHQOS_MAC_CTRL_PORT_SEL;
+@@ -656,7 +679,7 @@ static int ethqos_configure_sgmii(struct qcom_ethqos *ethqos)
+ 					 SGMII_10M_RX_CLK_DVDR),
+ 			      RGMII_IO_MACRO_CONFIG);
+ 		ethqos_set_serdes_speed(ethqos, SPEED_1000);
+-		stmmac_pcs_ctrl_ane(priv, priv->pcsaddr, 1, 0, 0);
++		ethqos_ctrl_ane(priv->pcsaddr, 1, 0, 0);
+ 		break;
+ 	}
+ 
 diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac1000_core.c b/drivers/net/ethernet/stmicro/stmmac/dwmac1000_core.c
-index 1e50cc573407..99f0bbb318ec 100644
+index 99f0bbb318ec..9511ea753da7 100644
 --- a/drivers/net/ethernet/stmicro/stmmac/dwmac1000_core.c
 +++ b/drivers/net/ethernet/stmicro/stmmac/dwmac1000_core.c
-@@ -365,6 +365,26 @@ static void dwmac1000_set_eee_timer(struct mac_device_info *hw, int ls, int tw)
- 	writel(value, ioaddr + LPI_TIMER_CTRL);
+@@ -395,12 +395,6 @@ static u16 dwmac1000_pcs_get_config_reg(struct mac_device_info *hw)
+ 	return FIELD_GET(GMAC_RGSMIIIS_CONFIG_REG, val);
  }
  
-+static void dwmac1000_pcs_enable_irq(struct mac_device_info *hw)
-+{
-+	void __iomem *ioaddr = hw->pcsr;
-+	u32 intr_mask;
-+
-+	intr_mask = readl(ioaddr + GMAC_INT_MASK);
-+	intr_mask &= ~GMAC_INT_DISABLE_PCS;
-+	writel(intr_mask, ioaddr + GMAC_INT_MASK);
-+}
-+
-+static void dwmac1000_pcs_disable_irq(struct mac_device_info *hw)
-+{
-+	void __iomem *ioaddr = hw->pcsr;
-+	u32 intr_mask;
-+
-+	intr_mask = readl(ioaddr + GMAC_INT_MASK);
-+	intr_mask |= GMAC_INT_DISABLE_PCS;
-+	writel(intr_mask, ioaddr + GMAC_INT_MASK);
-+}
-+
- static u16 dwmac1000_pcs_get_config_reg(struct mac_device_info *hw)
- {
- 	void __iomem *ioaddr = hw->pcsr;
-@@ -395,12 +415,8 @@ static int dwmac1000_mii_pcs_validate(struct phylink_pcs *pcs,
- static int dwmac1000_mii_pcs_enable(struct phylink_pcs *pcs)
- {
- 	struct mac_device_info *hw = phylink_pcs_to_mac_dev_info(pcs);
--	void __iomem *ioaddr = hw->pcsr;
--	u32 intr_mask;
- 
--	intr_mask = readl(ioaddr + GMAC_INT_MASK);
--	intr_mask &= ~GMAC_INT_DISABLE_PCS;
--	writel(intr_mask, ioaddr + GMAC_INT_MASK);
-+	dwmac1000_pcs_enable_irq(hw);
- 
- 	return 0;
- }
-@@ -408,12 +424,8 @@ static int dwmac1000_mii_pcs_enable(struct phylink_pcs *pcs)
- static void dwmac1000_mii_pcs_disable(struct phylink_pcs *pcs)
- {
- 	struct mac_device_info *hw = phylink_pcs_to_mac_dev_info(pcs);
--	void __iomem *ioaddr = hw->pcsr;
--	u32 intr_mask;
- 
--	intr_mask = readl(ioaddr + GMAC_INT_MASK);
--	intr_mask |= GMAC_INT_DISABLE_PCS;
--	writel(intr_mask, ioaddr + GMAC_INT_MASK);
-+	dwmac1000_pcs_disable_irq(hw);
- }
- 
- static int dwmac1000_mii_pcs_config(struct phylink_pcs *pcs,
-@@ -578,6 +590,8 @@ const struct stmmac_ops dwmac1000_ops = {
- 	.set_eee_timer = dwmac1000_set_eee_timer,
- 	.set_eee_pls = dwmac1000_set_eee_pls,
- 	.debug = dwmac1000_debug,
-+	.pcs_enable_irq = dwmac1000_pcs_enable_irq,
-+	.pcs_disable_irq = dwmac1000_pcs_disable_irq,
+-static void dwmac1000_ctrl_ane(void __iomem *pcsaddr, bool ane, bool srgmi_ral,
+-			       bool loopback)
+-{
+-	dwmac_ctrl_ane(pcsaddr, ane, srgmi_ral, loopback);
+-}
+-
+ static int dwmac1000_mii_pcs_validate(struct phylink_pcs *pcs,
+ 				      unsigned long *supported,
+ 				      const struct phylink_link_state *state)
+@@ -593,7 +587,6 @@ const struct stmmac_ops dwmac1000_ops = {
+ 	.pcs_enable_irq = dwmac1000_pcs_enable_irq,
+ 	.pcs_disable_irq = dwmac1000_pcs_disable_irq,
  	.pcs_get_config_reg = dwmac1000_pcs_get_config_reg,
- 	.pcs_ctrl_ane = dwmac1000_ctrl_ane,
+-	.pcs_ctrl_ane = dwmac1000_ctrl_ane,
  	.set_mac_loopback = dwmac1000_set_mac_loopback,
+ };
+ 
 diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac4_core.c b/drivers/net/ethernet/stmicro/stmmac/dwmac4_core.c
-index b7db076b4214..5dc8d59d3a8f 100644
+index 5dc8d59d3a8f..1e73c14f36ce 100644
 --- a/drivers/net/ethernet/stmicro/stmmac/dwmac4_core.c
 +++ b/drivers/net/ethernet/stmicro/stmmac/dwmac4_core.c
-@@ -456,6 +456,26 @@ static void dwmac4_set_eee_timer(struct mac_device_info *hw, int ls, int tw)
- 	writel(value, ioaddr + GMAC4_LPI_TIMER_CTRL);
+@@ -780,12 +780,6 @@ static void dwmac4_flow_ctrl(struct mac_device_info *hw, unsigned int duplex,
+ 	}
  }
  
-+static void dwmac4_pcs_enable_irq(struct mac_device_info *hw)
-+{
-+	void __iomem *ioaddr = hw->pcsr;
-+	u32 intr_enable;
-+
-+	intr_enable = readl(ioaddr + GMAC_INT_EN);
-+	intr_enable |= GMAC_PCS_IRQ_DEFAULT;
-+	writel(intr_enable, ioaddr + GMAC_INT_EN);
-+}
-+
-+static void dwmac4_pcs_disable_irq(struct mac_device_info *hw)
-+{
-+	void __iomem *ioaddr = hw->pcsr;
-+	u32 intr_enable;
-+
-+	intr_enable = readl(ioaddr + GMAC_INT_EN);
-+	intr_enable &= ~GMAC_PCS_IRQ_DEFAULT;
-+	writel(intr_enable, ioaddr + GMAC_INT_EN);
-+}
-+
- static u16 dwmac4_pcs_get_config_reg(struct mac_device_info *hw)
- {
- 	void __iomem *ioaddr = hw->pcsr;
-@@ -780,12 +800,8 @@ static int dwmac4_mii_pcs_validate(struct phylink_pcs *pcs,
- static int dwmac4_mii_pcs_enable(struct phylink_pcs *pcs)
- {
- 	struct mac_device_info *hw = phylink_pcs_to_mac_dev_info(pcs);
--	void __iomem *ioaddr = hw->pcsr;
--	u32 intr_enable;
- 
--	intr_enable = readl(ioaddr + GMAC_INT_EN);
--	intr_enable |= GMAC_PCS_IRQ_DEFAULT;
--	writel(intr_enable, ioaddr + GMAC_INT_EN);
-+	dwmac4_pcs_enable_irq(hw);
- 
- 	return 0;
- }
-@@ -793,12 +809,8 @@ static int dwmac4_mii_pcs_enable(struct phylink_pcs *pcs)
- static void dwmac4_mii_pcs_disable(struct phylink_pcs *pcs)
- {
- 	struct mac_device_info *hw = phylink_pcs_to_mac_dev_info(pcs);
--	void __iomem *ioaddr = hw->pcsr;
--	u32 intr_enable;
- 
--	intr_enable = readl(ioaddr + GMAC_INT_EN);
--	intr_enable &= ~GMAC_PCS_IRQ_DEFAULT;
--	writel(intr_enable, ioaddr + GMAC_INT_EN);
-+	dwmac4_pcs_disable_irq(hw);
- }
- 
- static int dwmac4_mii_pcs_config(struct phylink_pcs *pcs, unsigned int neg_mode,
-@@ -1284,6 +1296,8 @@ const struct stmmac_ops dwmac4_ops = {
+-static void dwmac4_ctrl_ane(void __iomem *pcsaddr, bool ane, bool srgmi_ral,
+-			    bool loopback)
+-{
+-	dwmac_ctrl_ane(pcsaddr, ane, srgmi_ral, loopback);
+-}
+-
+ static int dwmac4_mii_pcs_validate(struct phylink_pcs *pcs,
+ 				   unsigned long *supported,
+ 				   const struct phylink_link_state *state)
+@@ -1294,7 +1288,6 @@ const struct stmmac_ops dwmac4_ops = {
+ 	.set_eee_lpi_entry_timer = dwmac4_set_eee_lpi_entry_timer,
+ 	.set_eee_timer = dwmac4_set_eee_timer,
  	.set_eee_pls = dwmac4_set_eee_pls,
- 	.pcs_ctrl_ane = dwmac4_ctrl_ane,
+-	.pcs_ctrl_ane = dwmac4_ctrl_ane,
  	.debug = dwmac4_debug,
-+	.pcs_enable_irq = dwmac4_pcs_enable_irq,
-+	.pcs_disable_irq = dwmac4_pcs_disable_irq,
- 	.pcs_get_config_reg = dwmac4_pcs_get_config_reg,
- 	.set_filter = dwmac4_set_filter,
- 	.set_mac_loopback = dwmac4_set_mac_loopback,
-@@ -1329,6 +1343,8 @@ const struct stmmac_ops dwmac410_ops = {
+ 	.pcs_enable_irq = dwmac4_pcs_enable_irq,
+ 	.pcs_disable_irq = dwmac4_pcs_disable_irq,
+@@ -1341,7 +1334,6 @@ const struct stmmac_ops dwmac410_ops = {
+ 	.set_eee_lpi_entry_timer = dwmac4_set_eee_lpi_entry_timer,
+ 	.set_eee_timer = dwmac4_set_eee_timer,
  	.set_eee_pls = dwmac4_set_eee_pls,
- 	.pcs_ctrl_ane = dwmac4_ctrl_ane,
+-	.pcs_ctrl_ane = dwmac4_ctrl_ane,
  	.debug = dwmac4_debug,
-+	.pcs_enable_irq = dwmac4_pcs_enable_irq,
-+	.pcs_disable_irq = dwmac4_pcs_disable_irq,
- 	.pcs_get_config_reg = dwmac4_pcs_get_config_reg,
- 	.set_filter = dwmac4_set_filter,
- 	.flex_pps_config = dwmac5_flex_pps_config,
-@@ -1378,6 +1394,8 @@ const struct stmmac_ops dwmac510_ops = {
+ 	.pcs_enable_irq = dwmac4_pcs_enable_irq,
+ 	.pcs_disable_irq = dwmac4_pcs_disable_irq,
+@@ -1392,7 +1384,6 @@ const struct stmmac_ops dwmac510_ops = {
+ 	.set_eee_lpi_entry_timer = dwmac4_set_eee_lpi_entry_timer,
+ 	.set_eee_timer = dwmac4_set_eee_timer,
  	.set_eee_pls = dwmac4_set_eee_pls,
- 	.pcs_ctrl_ane = dwmac4_ctrl_ane,
+-	.pcs_ctrl_ane = dwmac4_ctrl_ane,
  	.debug = dwmac4_debug,
-+	.pcs_enable_irq = dwmac4_pcs_enable_irq,
-+	.pcs_disable_irq = dwmac4_pcs_disable_irq,
- 	.pcs_get_config_reg = dwmac4_pcs_get_config_reg,
- 	.set_filter = dwmac4_set_filter,
- 	.safety_feat_config = dwmac5_safety_feat_config,
+ 	.pcs_enable_irq = dwmac4_pcs_enable_irq,
+ 	.pcs_disable_irq = dwmac4_pcs_disable_irq,
 diff --git a/drivers/net/ethernet/stmicro/stmmac/hwif.h b/drivers/net/ethernet/stmicro/stmmac/hwif.h
-index 00995a0c9813..2caa946a92f9 100644
+index 2caa946a92f9..3d39417e906d 100644
 --- a/drivers/net/ethernet/stmicro/stmmac/hwif.h
 +++ b/drivers/net/ethernet/stmicro/stmmac/hwif.h
-@@ -376,6 +376,8 @@ struct stmmac_ops {
- 		      struct stmmac_extra_stats *x, u32 rx_queues,
- 		      u32 tx_queues);
- 	/* PCS calls */
-+	void (*pcs_enable_irq)(struct mac_device_info *hw);
-+	void (*pcs_disable_irq)(struct mac_device_info *hw);
+@@ -379,8 +379,6 @@ struct stmmac_ops {
+ 	void (*pcs_enable_irq)(struct mac_device_info *hw);
+ 	void (*pcs_disable_irq)(struct mac_device_info *hw);
  	u16 (*pcs_get_config_reg)(struct mac_device_info *hw);
- 	void (*pcs_ctrl_ane)(void __iomem *pcsaddr, bool ane, bool srgmi_ral,
- 			     bool loopback);
-@@ -493,6 +495,10 @@ struct stmmac_ops {
- 	stmmac_do_void_callback(__priv, mac, set_eee_pls, __args)
- #define stmmac_mac_debug(__priv, __args...) \
- 	stmmac_do_void_callback(__priv, mac, debug, __priv, __args)
-+#define stmmac_pcs_enable_irq(__priv, __args...) \
-+	stmmac_do_void_callback(__priv, mac, pcs_enable_irq, __args)
-+#define stmmac_pcs_disable_irq(__priv, __args...) \
-+	stmmac_do_void_callback(__priv, mac, pcs_disable_irq, __args)
+-	void (*pcs_ctrl_ane)(void __iomem *pcsaddr, bool ane, bool srgmi_ral,
+-			     bool loopback);
+ 	/* Safety Features */
+ 	int (*safety_feat_config)(void __iomem *ioaddr, unsigned int asp,
+ 				  struct stmmac_safety_feature_cfg *safety_cfg);
+@@ -501,8 +499,6 @@ struct stmmac_ops {
+ 	stmmac_do_void_callback(__priv, mac, pcs_disable_irq, __args)
  #define stmmac_pcs_get_config_reg(__priv, __args...) \
  	stmmac_do_callback(__priv, mac, pcs_get_config_reg, __args)
- #define stmmac_pcs_ctrl_ane(__priv, __args...) \
+-#define stmmac_pcs_ctrl_ane(__priv, __args...) \
+-	stmmac_do_void_callback(__priv, mac, pcs_ctrl_ane, __args)
+ #define stmmac_safety_feat_config(__priv, __args...) \
+ 	stmmac_do_callback(__priv, mac, safety_feat_config, __args)
+ #define stmmac_safety_feat_irq_status(__priv, __args...) \
+diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_pcs.h b/drivers/net/ethernet/stmicro/stmmac/stmmac_pcs.h
+index 62be3921ac91..76badfd208b6 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/stmmac_pcs.h
++++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_pcs.h
+@@ -76,39 +76,6 @@ static inline void dwmac_pcs_isr(void __iomem *pcsaddr,
+ 	}
+ }
+ 
+-/**
+- * dwmac_ctrl_ane - To program the AN Control Register.
+- * @ioaddr: IO registers pointer
+- * @ane: to enable the auto-negotiation
+- * @srgmi_ral: to manage MAC-2-MAC SGMII connections.
+- * @loopback: to cause the PHY to loopback tx data into rx path.
+- * Description: this is the main function to configure the AN control register
+- * and init the ANE, select loopback (usually for debugging purpose) and
+- * configure SGMII RAL.
+- */
+-static inline void dwmac_ctrl_ane(void __iomem *pcsaddr, bool ane,
+-				  bool srgmi_ral, bool loopback)
+-{
+-	u32 value = readl(pcsaddr + PCS_AN_CTRL);
+-
+-	/* Enable and restart the Auto-Negotiation */
+-	if (ane)
+-		value |= PCS_AN_CTRL_ANE | PCS_AN_CTRL_RAN;
+-	else
+-		value &= ~PCS_AN_CTRL_ANE;
+-
+-	/* In case of MAC-2-MAC connection, block is configured to operate
+-	 * according to MAC conf register.
+-	 */
+-	if (srgmi_ral)
+-		value |= PCS_AN_CTRL_SGMRAL;
+-
+-	if (loopback)
+-		value |= PCS_AN_CTRL_ELE;
+-
+-	writel(value, pcsaddr + PCS_AN_CTRL);
+-}
+-
+ int dwmac_pcs_config(struct mac_device_info *hw, unsigned int neg_mode,
+ 		     phy_interface_t interface,
+ 		     const unsigned long *advertising);
 -- 
 2.43.0
 
