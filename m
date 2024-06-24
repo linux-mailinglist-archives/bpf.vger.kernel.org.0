@@ -1,200 +1,247 @@
-Return-Path: <bpf+bounces-32913-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-32914-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8AE4A914EAB
-	for <lists+bpf@lfdr.de>; Mon, 24 Jun 2024 15:34:04 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5FED5914EB2
+	for <lists+bpf@lfdr.de>; Mon, 24 Jun 2024 15:34:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4106828393A
-	for <lists+bpf@lfdr.de>; Mon, 24 Jun 2024 13:34:03 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A6AB9B239C6
+	for <lists+bpf@lfdr.de>; Mon, 24 Jun 2024 13:34:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A32BF144D15;
-	Mon, 24 Jun 2024 13:30:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D1E341428F3;
+	Mon, 24 Jun 2024 13:31:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="Fl17fSLT"
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="YaIfDgNy";
+	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="kjesu64x"
 X-Original-To: bpf@vger.kernel.org
-Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D038BFC08;
-	Mon, 24 Jun 2024 13:30:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.133.104.62
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719235818; cv=none; b=hTzx75bGAnoOYLRNSdhnWTnr16Nq0ChbaPnVh59LRiS9aFXNPPaFb5//yBuQur8ge4WImJgRCkQuQ9vHhhu21lyQlnG6/fSdGZvT9dDQ47vPUdCG1+Ci4uo4CFA4mpSQtTqrdzZSZH2iHuRY09rHa0T5pAFHDl/pCa/n1MR902k=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719235818; c=relaxed/simple;
-	bh=HccfLGLs+2vAsVTdnhMXqed4ZyzI1sE4rwYvGiswFz0=;
-	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=G9FJX2ZePEjSzHbI6/rPoAhGFITSCIoBjA2qFTyhxhOV2FHJgmjASkkzkSUhd0b9WTa1zOIj+WLzMA93/w6TdNRyC3O/6SsW43usneXapTMekSYwMbb5ACrns6evbtj4T7VVu+qCz7a3sGR29rUDAnQiAmXPAGMRjedHmLmXryI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=Fl17fSLT; arc=none smtp.client-ip=213.133.104.62
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iogearbox.net
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
-	In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
-	bh=ZMMmxbunf9noBGfoICHMb7iWweKWqqDXgeAEpAAQEoc=; b=Fl17fSLTHbjN96GEtB+/joCKBa
-	tDhZfM6AAJlbovMNDQhaBLH5QKmja+3kOINAmRUWn2ShLXtptr7gJhY0ogLKLrZN8Dx38iOsupt7H
-	ew3tgsvhmDUbXbJqqek4kENIlHLLiaDvhw5XSYdwX6qpNfZpf/yP5JgkFEjTT4Ehv81lKJKtbLUL6
-	01bMLZrteKKfqTmzSiBcZE/ZS82rKH+yn0uDV0JAeYgerqAoLfmMzjrti7ZfBFSNym2/sQTarrQBU
-	P3tz/Bb2zVTlCA7+1RyVMo7sf91ef0aaoF+DdEF72+6kMXJUCuuWuxs09q72ME6BnnPIstSAe1i1b
-	Cb7OEh2g==;
-Received: from sslproxy02.your-server.de ([78.47.166.47])
-	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1sLjlt-000Nfq-3P; Mon, 24 Jun 2024 15:30:13 +0200
-Received: from [178.197.249.38] (helo=linux.home)
-	by sslproxy02.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <daniel@iogearbox.net>)
-	id 1sLjlt-0000YL-0v;
-	Mon, 24 Jun 2024 15:30:12 +0200
-Subject: Re: [RFC net-next 1/9] skb: introduce gro_disabled bit
-To: Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
- Yan Zhai <yan@cloudflare.com>
-Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
- bpf@vger.kernel.org, kernel-team <kernel-team@cloudflare.com>
-References: <cover.1718919473.git.yan@cloudflare.com>
- <b8c183a24285c2ab30c51622f4f9eff8f7a4752f.1718919473.git.yan@cloudflare.com>
- <66756ed3f2192_2e64f929491@willemb.c.googlers.com.notmuch>
- <44ac34f6-c78e-16dd-14da-15d729fecb5b@iogearbox.net>
- <CAO3-PbrhnvmdYmQubNsTX3gX917o=Q+MBWTBkxUd=YWt4dNGuA@mail.gmail.com>
- <e6553be1-4eaa-e90a-17f8-dece2bb95e7b@iogearbox.net>
- <CAO3-PboYruuLrF7D_rMiuG-AnWdR4BhsgP+MhVmOm-f3MzJFyQ@mail.gmail.com>
- <6677db8b2ef78_33522729492@willemb.c.googlers.com.notmuch>
-From: Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <caecbff8-ffc4-976b-4516-dba41848ef30@iogearbox.net>
-Date: Mon, 24 Jun 2024 15:30:12 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D5CB142E6F
+	for <bpf@vger.kernel.org>; Mon, 24 Jun 2024 13:30:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.165.32
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1719235860; cv=fail; b=L3r6c1q+AOZmvRDPJgK+HeqfqjNsHWQKollpNP3/f+00mt8ID6MeqcBkUZTN5VKGDhGrVt3jphkdxYUI/PwpeWG/wlvhpSiTEHADHT9ZUrR8Fzl7Mu6iHsDJmlJDFomIfAM+KTlcDoEimmTcAITDN6wSF91b51eS/Q9H4zJfH/A=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1719235860; c=relaxed/simple;
+	bh=qlbw5xhRHqyoHv5M7yj6wM1KDQAKJfCE70gCUNe2rJc=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=OSNYFggeKoXzmJYRqdcyum0giY5sbFPVHZV8iDI2QGEmdQ+UbGHqPU1/bxQ6YCfmfVgW9JXpi8PReQb2MYM9UEBYfO2QyywpOyFxgLztT3W5PnWKTm0dWZ/hEvpgAlETIRNGAKBXtYJUFjypdAr3TGzcs74ktuBing0z60fFjdk=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=YaIfDgNy; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=kjesu64x; arc=fail smtp.client-ip=205.220.165.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
+Received: from pps.filterd (m0246627.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 45O7fR8A024148;
+	Mon, 24 Jun 2024 13:30:55 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=
+	message-id:date:subject:to:cc:references:from:in-reply-to
+	:content-type:content-transfer-encoding:mime-version; s=
+	corp-2023-11-20; bh=g/qn3ELRABFhXNcWbrYgmuJWmI1VIR/vUUd/kdr2f8I=; b=
+	YaIfDgNy5R9cmdcqZcw294kjDYobDI20n87M6QGKSaqdPnkJy/pi9A/XSjwcKUov
+	LV53hb2a2OM86iuBhXihmLT3CoWDPyJwyHjclRMc1UV0cEIFyf9UrulFilWCwTHr
+	ahRG9ZSSjfaSHN+4FeURo5C9YCrWKJykDpx0TSCzeva4EWFHw73N040/yaB/A0jc
+	7htSmbGrKFxU5Z3apNwxxqHNiYpc8nW79czNeJdlkomLwIRLbL2iDqXfAIviV4Hz
+	T/MNlkDcJSF0raWq8s4ufBxX7TYG5/+SunwSrJGq4tCbVK7/s7GDNfcu8ExQEbne
+	cMOwyec9DV1DTnIAgqYOrw==
+Received: from phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta01.appoci.oracle.com [138.1.114.2])
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3ywn702nrj-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Mon, 24 Jun 2024 13:30:53 +0000 (GMT)
+Received: from pps.filterd (phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+	by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 45OBsS5E001507;
+	Mon, 24 Jun 2024 13:30:53 GMT
+Received: from nam12-mw2-obe.outbound.protection.outlook.com (mail-mw2nam12lp2048.outbound.protection.outlook.com [104.47.66.48])
+	by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3ywn26pu7m-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Mon, 24 Jun 2024 13:30:52 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Fj6KQxKylzhpjGxz+3T0JHuJOkQS68S1eilh1Krw1seLM/oS1ZUqif/L907xcFYLyIbZ+NzYSTnJc6wc1uLvEd8fxiqSegshpdZJOzmlmrqLJIvV33R1LU/Dxyc887Qtb8sri/UIn2e0Pid2BhaJNRwfFqkKWzIEONaxR3XX9OhtoFAYmKEzwexNvbGONv5U1aZ8yISXvg5rcOMK/y6GcOHkAtVWAJDTHlktbA9uRXU1qPvqXwz39j0fUYHts41E4qEx8JG2nPClXKupRqd7EfXiq68aWpwYNyJ6/scEmAMauoX+mQvvRHjNT/2nYzUHo9A5SshqWrxkZ8X1A/sW9w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=g/qn3ELRABFhXNcWbrYgmuJWmI1VIR/vUUd/kdr2f8I=;
+ b=PhydDNtFfmWX/I/m8J/wGvj8yaEhSnoxZSe2FGgieMEqngfJPjWdNM0u2PBKOpG9KfL9UnRgUdfNz37e74k0P8K8RVpHlRHrFyGYHZJ6RZBy1Nqo6rN/tM0BamcZD4gkr03FguJI+mqZpzH212uxPDKYNsuD0oXUTo6I7YXm4eQbu7gZyg8eT8S9gIfGEpX1+ebyqPEseWxSu/XfrqvNPkwutD15jxVVD18FxX3/YG48LBTxq70VruRpcvKpEjQ4SYxrAvJcbdFe8JqUwRRXjzvY/gPQRCKKul/TWZ6+RmZw456RrKAzD29NYOz3WWtN7sBP0FQUYpEEGHn/odczMQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=g/qn3ELRABFhXNcWbrYgmuJWmI1VIR/vUUd/kdr2f8I=;
+ b=kjesu64xvirHWxPxpv1tfcll7I8IZr7VYHen7K428e1OKMTpPPexJRSVvNTI1gaMvWwOQmbgmJRPF2+H+Ojsa0h7m0ROJA8g84kBsUHx8xv+nq3KdIvsDKCL8cBU2/saOnAYi3bTvWtrnUEl7k+rMzNdgedcxtsLE34YVFur1OM=
+Received: from BLAPR10MB5267.namprd10.prod.outlook.com (2603:10b6:208:30e::22)
+ by CH3PR10MB7806.namprd10.prod.outlook.com (2603:10b6:610:1ae::6) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7698.28; Mon, 24 Jun
+ 2024 13:30:50 +0000
+Received: from BLAPR10MB5267.namprd10.prod.outlook.com
+ ([fe80::682b:c879:9f97:a34f]) by BLAPR10MB5267.namprd10.prod.outlook.com
+ ([fe80::682b:c879:9f97:a34f%7]) with mapi id 15.20.7698.025; Mon, 24 Jun 2024
+ 13:30:50 +0000
+Message-ID: <e4ff46d8-c4d4-4c0b-bea1-c0ab9aa6517d@oracle.com>
+Date: Mon, 24 Jun 2024 14:30:42 +0100
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH bpf] libbpf: skip base btf sanity checks
+To: Antoine Tenart <atenart@kernel.org>, andrii@kernel.org, eddyz87@gmail.com
+Cc: bpf@vger.kernel.org
+References: <20240624090908.171231-1-atenart@kernel.org>
+Content-Language: en-GB
+From: Alan Maguire <alan.maguire@oracle.com>
+In-Reply-To: <20240624090908.171231-1-atenart@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: AM9P195CA0002.EURP195.PROD.OUTLOOK.COM
+ (2603:10a6:20b:21f::7) To BLAPR10MB5267.namprd10.prod.outlook.com
+ (2603:10b6:208:30e::22)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <6677db8b2ef78_33522729492@willemb.c.googlers.com.notmuch>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.10/27316/Mon Jun 24 10:26:29 2024)
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BLAPR10MB5267:EE_|CH3PR10MB7806:EE_
+X-MS-Office365-Filtering-Correlation-Id: 765aec34-aba9-4173-ef48-08dc9451dd39
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230037|376011|1800799021|366013;
+X-Microsoft-Antispam-Message-Info: 
+	=?utf-8?B?SzYzeHd4cFVCVGtBWFVWZFR3aVEzcEl1SzJ6b1ZTaitpVVFaTml0TW5OWGdy?=
+ =?utf-8?B?L1pDUkhEYWN2aE0yLzNHWWZQa1ZiZ0FUYlJITGdTZndwSkpUbHNzM3MxcXRu?=
+ =?utf-8?B?MzFBcWMwYXVqZm9JTS9iRzFIL3hITlA1b2pLWlZqWjNLUEU4UE9kY1VwVVhI?=
+ =?utf-8?B?NEp6R1hnMEsyRFlDZDdVVHg4aHRFUWE4QUtkWEJyZ2tERlUyZEloKzhQWk9m?=
+ =?utf-8?B?TDVGbWhuV3FhTGgxMDlmanlERjhubmkxb0tRQTNGUkZlNHpzYmpsL0hFVVFB?=
+ =?utf-8?B?QnBiRTREZUJQMEIzcS80bVh3dk92c0Z4TDZJSndvR1NhK2NHaTNla2tPdkE4?=
+ =?utf-8?B?eC9uWHdmZG9ub0FHbEl2aFIreld6T2NQak9pZ3JFY21JUEUrcXJCUUlaeDgw?=
+ =?utf-8?B?YVlpT0FBQmlxejI3UjhRNjdLTVIwUERBUFVTRm9XYTJyR1EzS2pVQ2dFOHZ3?=
+ =?utf-8?B?K2JnZmJCSTB4MGVzakhBL0FUUlBHRG0wUVROSGh6bXI4WW9zNk1oSU05VHV4?=
+ =?utf-8?B?YVVDSGRUbzRyWUN0Y3FFczJoU2d1V013dld5Z2ZOeE5CZjlKSXc3OHkrV0Ny?=
+ =?utf-8?B?YXlFbGtZWldWRHJtRHRpVCsxams5WEc3eUIyLy9ONGxJWHRJdm9hcDJYYnBr?=
+ =?utf-8?B?SDZFSnBwcDRlT0NTNkdrN0xjNmdFdlZpb2ZvYUxaR2lGa3Vod1ZPaFRDNmlE?=
+ =?utf-8?B?STVHS3NYcWRWcVIxMW56YnZaU2VUSXpNT2xDV2NwVjBUYVh4NHUzaWxtTUs2?=
+ =?utf-8?B?bllRMWFmTGJpbm9oUUtLVFhWRzl0N2piTTZCaDMxbDhYdFFvaGlOaEo0bVlt?=
+ =?utf-8?B?c2dRb0o4T3RmQ2NJWkRwcTg1RDRTdGd4Sm5nZUZQWlBEVTR2dEtFdHpseHN3?=
+ =?utf-8?B?NjMvZ0QzQkRQc2tJQUFlQys1SHlabWg2Rms4RDNYb0dVNU1iQ3huc2tMSWlI?=
+ =?utf-8?B?RlZhbzl1QkdsK1pPRjNUaXlkSkszQ1NnZzdtbHE0TXRUOTB6ekhvTG9POEdx?=
+ =?utf-8?B?TnVERVlxL09FTitOU3BGNWl2eVZmMkVBSzcxek1QSmFmWnkzbVBBTENXMWdv?=
+ =?utf-8?B?NWVRbXUyVlN6aDB6MFUzT1RNUi9PUUxUb0ErQTFGM3ROU2xUa3Z1dXlvRTk5?=
+ =?utf-8?B?R2k0T01NODA5L2xoWVNNT1RhVEhRY1lqTGxCUHZZYlU2T3ZiUi9wSGpmQUJX?=
+ =?utf-8?B?TEd2SGJLM2lkVWtIMk92K2tRZVJYWThZM3RmSG9rUEJHa3lBWStJTmNRUUNr?=
+ =?utf-8?B?ME0xdkZNMjBZbmJxemVYNU5lRVhjeGZyejQxSUduSEVmMW1mR3l6dEFENTdY?=
+ =?utf-8?B?bjhXYWk2MmdmRVk2YVV1djJ1S0g2MEJlTWkyTllOTW8zSlU0V2FLRkpMODlv?=
+ =?utf-8?B?Z3VvSExaR3E3VlB5c1MzR3RSeGJrYTBQdkNGWmJwUEo3eWIyZVBjZXNSTEcv?=
+ =?utf-8?B?Wmo0cGhuRjI3QTNOcXZKRHVwT1NuRE0razl1ZmdmOUVuRmZLc2NSQ2RVbU5X?=
+ =?utf-8?B?dVRiMzJkSEF1bWxHQ3d5TEZ0QVZON29BUzJDOXc2eDZEVGI5WXZ5ZFdPOGxQ?=
+ =?utf-8?B?T24yUFI4ODc3MjlyQVcrVTdha3NCWGEzMXFKKzk5ek5KTUxsRENoOWZvRVpy?=
+ =?utf-8?B?WEJxalVDc0NCRjVFVWVOZHVtaVJUTXMrZm9YR24zdXBNVEN6S2xqWFRzd0R2?=
+ =?utf-8?B?V1lNL243WloyaHN0cWRReE1mQWJpTllOc0ptNHloMDcyUGtmMWk5aThPRlAx?=
+ =?utf-8?Q?R0zUYoM5t0vWexjlVQhYGUzz4kI/f7IliGBWWtF?=
+X-Forefront-Antispam-Report: 
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BLAPR10MB5267.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230037)(376011)(1800799021)(366013);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: 
+	=?utf-8?B?b1BZQzF6dmpNNHNtRzlVRTIzbUtwMTNpM2ZNZXQxd212ZVR0N0FndWQ4SG5w?=
+ =?utf-8?B?clJwR0Jac0tIUS85UEppSUg4UDV4SCsyWmJOdHpVY3N0bXpVb1V6Z1NrYkZh?=
+ =?utf-8?B?U2FCaTArTXhXYlJlMnIwSk40THFOSEZTR1ovajJEbGRPZXdsSHBPd01pWG5I?=
+ =?utf-8?B?R2JDam9CUXNDWi9PWndCOVNCOERCZGMwTDRyZnRXVElzODQxUTU3WEw0SDZr?=
+ =?utf-8?B?UlhOOEZPcHRNak1CNGhJWGpSbzY5UXJaQnkrREdFWHo0dytIUkgxSEx6MHEv?=
+ =?utf-8?B?d09zb0JrbDdFeHFLSDlJYmUxV0xwT2lSTGdXbjEza3NoaGNTVXZXUGFNNW9N?=
+ =?utf-8?B?b05RNmxYQmlhekNVM0NONWx2ek9QcTJ0Yk9zR1E1eGpzRlJzUWlVNyszOW1X?=
+ =?utf-8?B?SEZDbG9nOVVZT3JqTzNQT25hLzB3QWlyNjExTExjYlM4TXlieVBxQWF0bGZi?=
+ =?utf-8?B?UE1vUnZCVlVvNmN3SVBYUm5qYUs5SVZFaEtlNE5FdGFPUkkyeWRrcGFpWkEv?=
+ =?utf-8?B?Lzgwc1lGcHFITVpTZmNxU1RkNXZTTVFJNmxwclFBNmlQcDFuTCtzcytvcGJi?=
+ =?utf-8?B?RjlTcXZuUXZVamFQY0xQS0xrR3RlYXF5UjBuRldRQWFVSkNZR0R5cEphckhJ?=
+ =?utf-8?B?UFJ3elFJU2xGNFRqMWs0dmZNTHVib2pkVGlDUjZOQ2N6Z2RyS2FqRFhBb3lx?=
+ =?utf-8?B?eGJwbDBYbm9OL3hzdFQvdnRsVi9lNUoyQnQrUnphYzlsRU5HOW9LZ2FCMVRL?=
+ =?utf-8?B?ck5oaVB4blFlTmRxaG4xU0RkUHllRGErN1dYaXpJbTBpd2EvNkZuYXdnNnN5?=
+ =?utf-8?B?WURZdGFMenEwaGQ1N2pNNkl4Ym52RFk5N1oxVmhlMTBES3hhVjFZejhpOXAy?=
+ =?utf-8?B?aXZlTldsVC82TWFHMjFSMUVLZUNJdTZOYjJxbm9BK0ROVDlSVDNNRGFVNHRx?=
+ =?utf-8?B?WnJScjFjcjdySy9vUks1V1RPQ0p5SkR6cU1BS1JwSzN4TkdCSzdCMG9VRzRj?=
+ =?utf-8?B?ZkowQjcwSjh1LzdtQjQyTXpKU2NGM2ZOL01EL3JHSTd0eWc0cFFURmhGekln?=
+ =?utf-8?B?amhVb0VzUTlnYVdrbnZSTGlrME9uWGlLcEx2WFEzdWd3cC8xYkROV215VENn?=
+ =?utf-8?B?QmhUWmo3QTdZZjh5ejBNdWlPVmd2OWZGU1NEWFpRNURsVmxNRk5iV25NdjBi?=
+ =?utf-8?B?bVVESk12b1RZZytWL2NZdmdHaUlsUzRVd1NQek15RlFxNEVMZ2F3VnlzV25l?=
+ =?utf-8?B?eHVyRlBWNTNUcU16K2Z5dnhzTlgreVQxd2cxK2MvUTBhdUp3VWRZZG5TT0tF?=
+ =?utf-8?B?YVZOZkF6UGptcVpYWXlsNnZJRHdINWFwKzJ1MzJRc2VPbDM1NnJrblFqOEti?=
+ =?utf-8?B?Y3Y3S1RFbFpZUDM4YkRSTFZqdDJOWG90VDk5ZTN3R1dIY3JqOGh1eVh5WFl3?=
+ =?utf-8?B?NDYxdFBNdVRFeWhFQnIyMloyY0ttaHAyMHRzMDRnYmx1TEIrSS8xUENac3hv?=
+ =?utf-8?B?YmZPUGVuWlYvVU9GdHpGWmRLbVBCZHh5WVVkY204TlNIZzg0TVVabDVzMG1E?=
+ =?utf-8?B?SEthTjExY1AvVy9raXhrS0oxVzlGNUxKVnhRd3UydFZQQUY3QjN2VVFwUVk3?=
+ =?utf-8?B?bEt3QTZYVStnN0lCdHYvSzh6TzU4TnQ2dGMvS2FOcTloNUtJck85QzUwdnVO?=
+ =?utf-8?B?bm1janhLL2tqeHJEaDBEeXB3SXFpdXRTeGVvWFVWQytERHpQTUtKeE5OMGhO?=
+ =?utf-8?B?eXlzbzlyWVpBaXhQRUltck1LblVudFJHdVRMWkc5aFNvWkl6TjI5UWNDa29y?=
+ =?utf-8?B?eWdSSlQ2K1NFRjNhdWpyeEpRVHJIU3ZTRi9xVFFkZEM2OFMxR1RncjE2U2tk?=
+ =?utf-8?B?WmNBY2JTcXB2UnF6d2pOT0s0N0ZmaGM5eHVmbkV2bDFIdm51aEtIc2QzeTZh?=
+ =?utf-8?B?YnhoUVEyZGlXZmxQUHNnUTdkYmJvUTRpUWxvMnozNVU0dUEyU0dZb0RxeXFn?=
+ =?utf-8?B?dUhVU3B3Zm9wRjMzVlpaSDhodG5uMzJwTVB1dUFGWnJqLzEvelgwVEVMWUVP?=
+ =?utf-8?B?QzVQNmc5NW5iU3hvVWJhVmorUzdXUllTTWk2S1J5OUhSaW5YTzQ0UmFwRVVw?=
+ =?utf-8?B?RzNLNjdhdGVNYkQvUXhKRVp5akRlS3YvWFpJcGovd095dG5aNGhMVzFMS2dY?=
+ =?utf-8?Q?TfutNA5Td0X/H735tYep6xc=3D?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: 
+	aUysarj97w5OQ4arEP8U6qQznVlLSi/eCUcW80FncbVA3FYIGAdoBuBtaCL8xu4XbOKaoCN30+JzpdO42ayojWT+8znLEmKG+rqAHQl1hvHeTrDyUwesArO6p1P48BP8Y3Y1MZsPkVp95waJP70sLucRM2DZvOsoX71DFPoez/FAp/9AkA2qdWT7xim5iUAXemjcpWdk1v7S1K1BXpCfePRf/bZnCrQgsUeWQQ7DnAvCiIcqepQjD8VpKJjGU5ieJaD3pyNnWz4EKGStwvA3fpZXc1ujWzoSt0ajG2VT5qM3RFqqxcoi97IRCbnnQMqrjRCz5C+krpweQgIO1t6gv8CwjNT96wafVCHfD196qHMlzjw+o/o0MwXonl8gyUE3pvAdo26tWs8FTb7VE1uAE1YfII4Nfn7QKr+6Tl8cXf4X691ZmrM33BbjRdyxOiPznbRiH9tVkLx3oIONqKAai/U/GMkkRl5vSZEnKAIxeAmUkXKS/U25f7/KF7d0burdfnj2uhg4NEAPVBA2psy3tFX74MCmVFcFNMTJGulr/K4vAkOXFeW567BkGdeb9r6kFnn7XzkXwtv0AUsXw8GpFsNN8OhQnr8G+n/wjSeEyJY=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 765aec34-aba9-4173-ef48-08dc9451dd39
+X-MS-Exchange-CrossTenant-AuthSource: BLAPR10MB5267.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Jun 2024 13:30:50.7237
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: fqN6j5jQG8YrTsYAr3Kpz8/e67mGi8MGZSLdXWKicsoRJzgHIH6CH+je1/BvdoxbsrSLIUYUdmEljRBOqAi+1Q==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH3PR10MB7806
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.680,FMLib:17.12.28.16
+ definitions=2024-06-24_10,2024-06-24_01,2024-05-17_01
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 mlxlogscore=999
+ phishscore=0 suspectscore=0 malwarescore=0 mlxscore=0 bulkscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2406180000 definitions=main-2406240108
+X-Proofpoint-ORIG-GUID: 7tLPjathAIDbR7H2lvtDkcl_ieH0nl83
+X-Proofpoint-GUID: 7tLPjathAIDbR7H2lvtDkcl_ieH0nl83
 
-On 6/23/24 10:23 AM, Willem de Bruijn wrote:
-> Yan Zhai wrote:
->> On Fri, Jun 21, 2024 at 11:41 AM Daniel Borkmann <daniel@iogearbox.net> wrote:
->>> On 6/21/24 6:00 PM, Yan Zhai wrote:
->>>> On Fri, Jun 21, 2024 at 8:13 AM Daniel Borkmann <daniel@iogearbox.net> wrote:
->>>>> On 6/21/24 2:15 PM, Willem de Bruijn wrote:
->>>>>> Yan Zhai wrote:
->>>>>>> Software GRO is currently controlled by a single switch, i.e.
->>>>>>>
->>>>>>>      ethtool -K dev gro on|off
->>>>>>>
->>>>>>> However, this is not always desired. When GRO is enabled, even if the
->>>>>>> kernel cannot GRO certain traffic, it has to run through the GRO receive
->>>>>>> handlers with no benefit.
->>>>>>>
->>>>>>> There are also scenarios that turning off GRO is a requirement. For
->>>>>>> example, our production environment has a scenario that a TC egress hook
->>>>>>> may add multiple encapsulation headers to forwarded skbs for load
->>>>>>> balancing and isolation purpose. The encapsulation is implemented via
->>>>>>> BPF. But the problem arises then: there is no way to properly offload a
->>>>>>> double-encapsulated packet, since skb only has network_header and
->>>>>>> inner_network_header to track one layer of encapsulation, but not two.
->>>>>>> On the other hand, not all the traffic through this device needs double
->>>>>>> encapsulation. But we have to turn off GRO completely for any ingress
->>>>>>> device as a result.
->>>>>>>
->>>>>>> Introduce a bit on skb so that GRO engine can be notified to skip GRO on
->>>>>>> this skb, rather than having to be 0-or-1 for all traffic.
->>>>>>>
->>>>>>> Signed-off-by: Yan Zhai <yan@cloudflare.com>
->>>>>>> ---
->>>>>>>     include/linux/netdevice.h |  9 +++++++--
->>>>>>>     include/linux/skbuff.h    | 10 ++++++++++
->>>>>>>     net/Kconfig               | 10 ++++++++++
->>>>>>>     net/core/gro.c            |  2 +-
->>>>>>>     net/core/gro_cells.c      |  2 +-
->>>>>>>     net/core/skbuff.c         |  4 ++++
->>>>>>>     6 files changed, 33 insertions(+), 4 deletions(-)
->>>>>>>
->>>>>>> diff --git a/include/linux/netdevice.h b/include/linux/netdevice.h
->>>>>>> index c83b390191d4..2ca0870b1221 100644
->>>>>>> --- a/include/linux/netdevice.h
->>>>>>> +++ b/include/linux/netdevice.h
->>>>>>> @@ -2415,11 +2415,16 @@ struct net_device {
->>>>>>>        ((dev)->devlink_port = (port));                         \
->>>>>>>     })
->>>>>>>
->>>>>>> -static inline bool netif_elide_gro(const struct net_device *dev)
->>>>>>> +static inline bool netif_elide_gro(const struct sk_buff *skb)
->>>>>>>     {
->>>>>>> -    if (!(dev->features & NETIF_F_GRO) || dev->xdp_prog)
->>>>>>> +    if (!(skb->dev->features & NETIF_F_GRO) || skb->dev->xdp_prog)
->>>>>>>                return true;
->>>>>>> +
->>>>>>> +#ifdef CONFIG_SKB_GRO_CONTROL
->>>>>>> +    return skb->gro_disabled;
->>>>>>> +#else
->>>>>>>        return false;
->>>>>>> +#endif
->>>>>>
->>>>>> Yet more branches in the hot path.
->>>>>>
->>>>>> Compile time configurability does not help, as that will be
->>>>>> enabled by distros.
->>>>>>
->>>>>> For a fairly niche use case. Where functionality of GRO already
->>>>>> works. So just a performance for a very rare case at the cost of a
->>>>>> regression in the common case. A small regression perhaps, but death
->>>>>> by a thousand cuts.
->>>>>
->>>>> Mentioning it here b/c it perhaps fits in this context, longer time ago
->>>>> there was the idea mentioned to have BPF operating as GRO engine which
->>>>> might also help to reduce attack surface by only having to handle packets
->>>>> of interest for the concrete production use case. Perhaps here meta data
->>>>> buffer could be used to pass a notification from XDP to exit early w/o
->>>>> aggregation.
->>>>
->>>> Metadata is in fact one of our interests as well. We discussed using
->>>> metadata instead of a skb bit to carry this information internally.
->>>> Since metadata is opaque atm so it seems the only option is to have a
->>>> GRO control hook before napi_gro_receive, and let BPF decide
->>>> netif_receive_skb or napi_gro_receive (echo what Paolo said). With BPF
->>>> it could indeed be more flexible, but the cons is that it could be
->>>> even more slower than taking a bit on skb. I am actually open to
->>>> either approach, as long as it gives us more control on when to enable
->>>> GRO :)
->>>
->>> Oh wait, one thing that just came to mind.. have you tried u64 per-CPU
->>> counter map in XDP? For packets which should not be GRO-aggregated you
->>> add count++ into the meta data area, and this forces GRO to not aggregate
->>> since meta data that needs to be transported to tc BPF layer mismatches
->>> (and therefore the contract/intent is that tc BPF needs to see the different
->>> meta data passed to it).
->>
->> We did this before accidentally (we put a timestamp for debugging
->> purposes in metadata) and this actually caused about 20% of OoO for
->> TCP in production: all PSH packets are reordered. GRO does not fire
->> the packet to the upper layer when a diff in metadata is found for a
->> non-PSH packet, instead it is queued as a “new flow” on the GRO list
->> and waits for flushing. When a PSH packet arrives, its semantic is to
->> flush this packet immediately and thus precedes earlier packets of the
->> same flow.
+On 24/06/2024 10:09, Antoine Tenart wrote:
+> When upgrading to libbpf 1.3 we noticed a big performance hit while
+> loading programs using CORE on non base-BTF symbols. This was tracked
+> down to the new BTF sanity check logic. The issue is the base BTF
+> definitions are checked first for the base BTF and then again for every
+> module BTF.
 > 
-> Is that a bug in XDP metadata handling for GRO?
+> Loading 5 dummy programs (using libbpf-rs) that are using CORE on a
+> non-base BTF symbol on my system:
+> - Before this fix: 3s.
+> - With this fix: 0.1s.
 > 
-> Mismatching metadata should not be taken as separate flows, but as a
-> flush condition.
+> Fix this by only checking the types starting at the BTF start id. This
+> should ensure the base BTF is still checked as expected but only once
+> (btf->start_id == 1 when creating the base BTF), and then only
+> additional types are checked for each module BTF.
+> 
+> Fixes: 3903802bb99a ("libbpf: Add basic BTF sanity validation")
+> Signed-off-by: Antoine Tenart <atenart@kernel.org>
 
-Definitely a bug as it should flush. If noone is faster I can add it to my
-backlog todo to fix it, but might probably take a week before I get to it.
+This looks good to me.
 
-Thanks,
-Daniel
+Reviewed-by: Alan Maguire <alan.maguire@oracle.com>
+
+> ---
+>  tools/lib/bpf/btf.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/tools/lib/bpf/btf.c b/tools/lib/bpf/btf.c
+> index 2d0840ef599a..142060bbce0a 100644
+> --- a/tools/lib/bpf/btf.c
+> +++ b/tools/lib/bpf/btf.c
+> @@ -598,7 +598,7 @@ static int btf_sanity_check(const struct btf *btf)
+>  	__u32 i, n = btf__type_cnt(btf);
+>  	int err;
+>  
+> -	for (i = 1; i < n; i++) {
+> +	for (i = btf->start_id; i < n; i++) {
+>  		t = btf_type_by_id(btf, i);
+>  		err = btf_validate_type(btf, t, i);
+>  		if (err)
 
