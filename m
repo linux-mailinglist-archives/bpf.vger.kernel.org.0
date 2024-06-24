@@ -1,82 +1,82 @@
-Return-Path: <bpf+bounces-32915-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-32916-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 23122914EEE
-	for <lists+bpf@lfdr.de>; Mon, 24 Jun 2024 15:42:38 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id D6CC4914F3E
+	for <lists+bpf@lfdr.de>; Mon, 24 Jun 2024 15:54:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A46151F2137B
-	for <lists+bpf@lfdr.de>; Mon, 24 Jun 2024 13:42:37 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 04A441C22424
+	for <lists+bpf@lfdr.de>; Mon, 24 Jun 2024 13:54:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F7C713DBAD;
-	Mon, 24 Jun 2024 13:42:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC3811422CC;
+	Mon, 24 Jun 2024 13:54:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="My9viQX+"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="s7Xg/xEK"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-f46.google.com (mail-ed1-f46.google.com [209.85.208.46])
+Received: from mail-ed1-f45.google.com (mail-ed1-f45.google.com [209.85.208.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D16E13A86A
-	for <bpf@vger.kernel.org>; Mon, 24 Jun 2024 13:42:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D2D27141987
+	for <bpf@vger.kernel.org>; Mon, 24 Jun 2024 13:54:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719236553; cv=none; b=JTJfZ/ayEJ/gMoEpQoS9H5PHNqorHYLoRouu8mWNrRaNHFRhFx/IZxEjj851xF35mZm/5muJvtMA8saGGDsLDVZNOsLyBXax4N130/lnjjSXfTwfUPxuYBrGH2sp3tPB0UjydGpWaeZ1FUldiHXlb/8SyghH++CuILUKPtFI51M=
+	t=1719237285; cv=none; b=NalW9i8zHTfUxUw1rt4Mzeezf72q3Tgoc9LIIPDZiq7f3lLWDwroNEC+nUbYXnk0L6uqLFdxn5/lJaA6BF0N7o0xMxWcWcHAHdU7dOw9PIoTagXBouaJfErtzeoqMA8Q0JFTCvuKohqkjIrx4hhlrlzOGxXeF7i6dcZHb1+LMoQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719236553; c=relaxed/simple;
-	bh=r6zTi3ntQnckhbaoCILig8THR0eF7H4OsBZ/tFJV2LY=;
+	s=arc-20240116; t=1719237285; c=relaxed/simple;
+	bh=VKXnSDdfvX3k5yhwZ2xBJjyN8qp+i8IZVG9d+dl/O2c=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=FVMcMEdEW3zdYCVjEzygRUNOxB0fEJb5qGjee5qcyiCzQc4nxYYuPhsooyuzLahKsCeHFqhAOzpZkJvZNEBdb20hl6k2cGNXcXJFVv8mLMs1UV32K3n+RUifqMwzATWOL7FHMwni418pfnde9HkD8rfEG81OFbSuJ4jST4W0FCo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=My9viQX+; arc=none smtp.client-ip=209.85.208.46
+	 To:Cc:Content-Type; b=nP9s4Aaizlg3VdZJGALyYeqs6zp1TnQZJa8YiOgjx4T9bSmlyn7i+L2etxFIT0PhqHZG2p55n77ipp/Yy0UntxgrBdb+8vttG3d/n+JnQ9gI1m4ahDz2HObyIUONlHQJv2I7tRL/jqSklSyBWpQUQXSL4cWuusGU0RNkpQHZxDY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=s7Xg/xEK; arc=none smtp.client-ip=209.85.208.45
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ed1-f46.google.com with SMTP id 4fb4d7f45d1cf-57d00a51b71so23945a12.0
-        for <bpf@vger.kernel.org>; Mon, 24 Jun 2024 06:42:31 -0700 (PDT)
+Received: by mail-ed1-f45.google.com with SMTP id 4fb4d7f45d1cf-57d16251a07so40324a12.1
+        for <bpf@vger.kernel.org>; Mon, 24 Jun 2024 06:54:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1719236550; x=1719841350; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1719237282; x=1719842082; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=VSokJ3EUSU5UEr3KWUTcjNsYeeU4+Z4afSCdW2hJwP4=;
-        b=My9viQX+zFf314mq1hnw82mkjI5N12zcqD0smqmzQueC1I0pbR888u45SIXaHHPF/U
-         I6nrJlm9HG7cOhc35fnNb4Ki//l9P+X9dhm78Z9fXB2p+TwyItQX0JPCNLFEMgxLuVv4
-         3//JeWq4mdl6MBiqbfRQa6hXTSY4OUWOETtPkMsGtAArJimUN12U/bMSt0+3EeV5pWve
-         lkrvT9AGqmb+4DljY0ZGo/kHblJyIHYXKP4ZOmusn6NEpOm02sCv1CWB/9+zc1oIlnzZ
-         WeutX89jWDdlB61Hb7IeE9sMJL0RsJLTqLGmlkbNsHo4GUfaytH4JhL5qsQeFxMrJ5j7
-         2ggQ==
+        bh=+sdgf5PNs5g/gEMlXztaP+xUAM2ccHxdMbGVMq60x7E=;
+        b=s7Xg/xEKc2DpyQgbc1X5GevbXDL29j3eb1JasAoBD+mf1+8wM9FJMgBeMs2g1qNsvV
+         U1zKOudlyoP72LrzW+coMO5mDMafG/m6IS4xjADm5TQx3fmPncdnc1njz7QdBX/MVjyL
+         fhSDHfkvdGiOj8ayuP1P3Nm9C9H0EvxfBV018+O/mPE4d1ryxtnBKSn1SuqF/94VOqOY
+         oDc21M3fkKQmq0EtUOiziICFnjAHCWMGDrV9qmDsmy2Dq0pq8LXKnXSCQkp4rskQwXK2
+         /Pin3WfkQKexOJhNXVJ8M3FPNtkxTUh3kBCwRFy4eFamQvBHceCTqi0N8BjhYWakYrD0
+         WFxA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1719236550; x=1719841350;
+        d=1e100.net; s=20230601; t=1719237282; x=1719842082;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=VSokJ3EUSU5UEr3KWUTcjNsYeeU4+Z4afSCdW2hJwP4=;
-        b=OMEpxDdQ7uruvWK8/VqcZGu529jDQ2n460nriop9I8aABltIaWPRIr3GpFNT+ins0n
-         eHn5ucFee4MEtCXr2K40SkbE9l3lYQ32+6OsD16DXRn8knmV3jd3iz3vRJ9m0un+FyYL
-         /rNKLM5hx5+Z6XS8g/zexsiXxIul5/o7VfxNVdRPn/M9rlNpkqJB7QIbs4tVkrF6HEZB
-         pp5024Lnh5twIb6uRpYRcST4sw9Uehlp+cM12pou2XLzs7GKdfCGAAgiGcjcLIKWDsnu
-         +dd8X2wdJYqmnKRD0Lc0pMVcPp3fz4Wwm/Zcptv8/BYtfm76GcezuXeYzFdgmuTRKiwp
-         tq3A==
-X-Forwarded-Encrypted: i=1; AJvYcCX+04kCM+I60ePysK3L+rr7+DLY7z0/rbfoNOy/+csnuNYUefVHNjJAwUAOs9JAbBfPgddrhMmavdwoRc4sg5N5W11m
-X-Gm-Message-State: AOJu0Yxzl0xDx8kLH0YUINQleDJeb89ERvWtEyj4GLfx1jIuT2QLM5tg
-	ZvthF+PBC2MYQDTJmmqUt8UpxqujaqBdas+qNao8tIhVTlXvLIDFHIrsKqFdnt5KYEpC1CAFa/b
-	+iD9QIl2gp0AZ6J9noHLiZSnHBS7b+hyQcq6hCUSmUfQWf1YE5A==
-X-Google-Smtp-Source: AGHT+IExMCduWBbykElPzIUGTue1yZGzK/o9rKdjuJtfSk9r8JrxqxGwDpUAl9nBslWuYssYO2GIZrZdfiaPnqfaNtg=
-X-Received: by 2002:a05:6402:524f:b0:57c:d1dd:e645 with SMTP id
- 4fb4d7f45d1cf-57d41af61aemr299210a12.5.1719236547427; Mon, 24 Jun 2024
- 06:42:27 -0700 (PDT)
+        bh=+sdgf5PNs5g/gEMlXztaP+xUAM2ccHxdMbGVMq60x7E=;
+        b=LfirYzkHlibhRE4YJ3dy46/T/otj5/YzCG69CdOB45FwEAq4b32ECgNTiKqcyhmdpq
+         BvIOaa6waRdtT416ov8aJJszeM18ZTxY9AFOmFUWBEeI8CIcYAzV9/8LnZcrwTlHXV7S
+         7qDiNfOnXZT5qEEtK4py7oUklHqwiYdwTdnfHGKFQ7vjGXdNdgk/YAQRSRh/sFGFnX9j
+         HcvGw7PLsP9SejIQBS9CeYO1yKPWCK4PBh1D1GQOPwMzKv1iN7KSQDDiMVPPligRrICM
+         tNatDBzGggL5FeC6AHkEUrXtxlU/vfAl2Td9v23P4RQriI0xIitScUVo/8wJBmkjR4PQ
+         rB5Q==
+X-Forwarded-Encrypted: i=1; AJvYcCVJ8ndbCx9hr2IE9Y5WWVLRizFhpVAwKD+HfnY0Yg6rXv3A0Ln85dd7W5IRyWuem9PtRcj1JL0yhwtL0E/JgISealF8
+X-Gm-Message-State: AOJu0YxLF58xoaaBuJfJftfw2aXKoMg520XPi+r/USLztnhpC18V71ck
+	uSgNrvdae9jXVuscdKx8lvk3EHmvTCtlAnJyNSjErOgUfDwcu6QY2gAImaJMBx5X7oR+kJAItrk
+	sA6A7Aed0OLa6TX/k7L0fuUVCID4uUX3l5IOt
+X-Google-Smtp-Source: AGHT+IGwK65MNDlHHqOoICs5Q2AZ0NNrv74rO8TUJcxtn7Er5aJcpRvxJODc9r1ZJl8q/G9KIMwR2Dpnl5qjkeCzLEM=
+X-Received: by 2002:a05:6402:50cb:b0:57c:d45d:7571 with SMTP id
+ 4fb4d7f45d1cf-57d41ce9bd4mr371523a12.6.1719237281770; Mon, 24 Jun 2024
+ 06:54:41 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <cover.1719234744.git.tanggeliang@kylinos.cn> <7b0b49dff962845b26918fce56cbe4444175db4f.1719234744.git.tanggeliang@kylinos.cn>
-In-Reply-To: <7b0b49dff962845b26918fce56cbe4444175db4f.1719234744.git.tanggeliang@kylinos.cn>
+References: <cover.1719234744.git.tanggeliang@kylinos.cn> <3853b0e4846656a31799dbd4ffb7f57c302980de.1719234744.git.tanggeliang@kylinos.cn>
+In-Reply-To: <3853b0e4846656a31799dbd4ffb7f57c302980de.1719234744.git.tanggeliang@kylinos.cn>
 From: Eric Dumazet <edumazet@google.com>
-Date: Mon, 24 Jun 2024 15:42:12 +0200
-Message-ID: <CANn89iKvKAq=tN029infHi2MtQ7GzdedHKB0arfYe3cBawqZLg@mail.gmail.com>
-Subject: Re: [PATCH net 2/3] inet: null check for close in inet_release
+Date: Mon, 24 Jun 2024 15:54:30 +0200
+Message-ID: <CANn89iLhF6XX-j6S1F3VhWFcHwzh=opNuZembdi96zbxocot+Q@mail.gmail.com>
+Subject: Re: [PATCH net 1/3] skmsg: null check for page in sk_msg_recvmsg
 To: Geliang Tang <geliang@kernel.org>
 Cc: John Fastabend <john.fastabend@gmail.com>, Jakub Sitnicki <jakub@cloudflare.com>, 
 	"David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
@@ -98,115 +98,117 @@ rote:
 >
 > Run the following BPF selftests on loongarch:
 >
-> # ./test_progs -t sockmap_listen
+> # ./test_progs -t sockmap_basic
 >
 > A Kernel panic occurs:
 >
 > '''
 >  Oops[#1]:
->  CPU: 49 PID: 233429 Comm: new_name Tainted: G           OE      6.10.0-r=
-c2+ #20
+>  CPU: 22 PID: 2824 Comm: test_progs Tainted: G           OE      6.10.0-r=
+c2+ #18
 >  Hardware name: LOONGSON Dabieshan/Loongson-TC542F0, BIOS Loongson-UDK201=
 8-V4.0.11
->  pc 0000000000000000 ra 90000000051ea4a0 tp 900030008549c000 sp 900030008=
-549fe00
->  a0 9000300152524a00 a1 0000000000000000 a2 900030008549fe38 a3 900030008=
-549fe30
->  a4 900030008549fe30 a5 90003000c58c8d80 a6 0000000000000000 a7 000000000=
-0000039
->  t0 0000000000000000 t1 90003000c58c8d80 t2 0000000000000001 t3 000000000=
+>  pc 9000000004162774 ra 90000000048bf6c0 tp 90001000aa16c000 sp 90001000a=
+a16fb90
+>  a0 0000000000000000 a1 0000000000000000 a2 0000000000000000 a3 90001000a=
+a16fd70
+>  a4 0000000000000800 a5 0000000000000000 a6 000055557b63aae8 a7 000000000=
+00000cf
+>  t0 0000000000000000 t1 0000000000004000 t2 0000000000000048 t3 000000000=
 0000000
->  t4 0000000000000001 t5 900000011a1bf580 t6 900000011a3aff60 t7 000000000=
-000006b
->  t8 00000fffffffffff u0 0000000000000000 s9 00007fffbbe9e930 s0 900030015=
-2524a00
->  s1 90003000c58c8d00 s2 9000000006c81568 s3 0000000000000000 s4 90003000c=
-58c8d80
->  s5 00007ffff236a000 s6 00007ffffbc292b0 s7 00007ffffbc29998 s8 00007fffb=
-be9f180
->     ra: 90000000051ea4a0 inet_release+0x60/0xc0
->    ERA: 0000000000000000 0x0
+>  t4 0000000000000001 t5 0000000000000002 t6 0000000000000001 t7 000000000=
+0000002
+>  t8 0000000000000018 u0 9000000004856150 s9 0000000000000000 s0 000000000=
+0000000
+>  s1 0000000000000000 s2 90001000aa16fd70 s3 0000000000000000 s4 000000000=
+0000000
+>  s5 0000000000004000 s6 900010009284dc00 s7 0000000000000001 s8 900010009=
+284dc00
+>     ra: 90000000048bf6c0 sk_msg_recvmsg+0x120/0x560
+>    ERA: 9000000004162774 copy_page_to_iter+0x74/0x1c0
 >   CRMD: 000000b0 (PLV0 -IE -DA +PG DACF=3DCC DACM=3DCC -WE)
 >   PRMD: 0000000c (PPLV0 +PIE +PWE)
->   EUEN: 00000000 (-FPE -SXE -ASXE -BTE)
+>   EUEN: 00000007 (+FPE +SXE +ASXE -BTE)
 >   ECFG: 00071c1d (LIE=3D0,2-4,10-12 VS=3D7)
->  ESTAT: 00030000 [PIF] (IS=3D ECode=3D3 EsubCode=3D0)
->   BADV: 0000000000000000
+>  ESTAT: 00010000 [PIL] (IS=3D ECode=3D1 EsubCode=3D0)
+>   BADV: 0000000000000040
 >   PRID: 0014c011 (Loongson-64bit, Loongson-3C5000)
->  Modules linked in: xt_CHECKSUM xt_MASQUERADE xt_conntrack ipt_REJECT nf_=
-nat_tftp
->  Process new_name (pid: 233429, threadinfo=3D00000000b9196405, task=3D000=
-00000c01df45b)
->  Stack : 0000000000000000 90003000c58c8e20 90003000c58c8d00 9000000005059=
-60c
->          0000000000000000 9000000101c6ad20 9000300086524540 00000000082e0=
-003
->          900030008bf57400 90000000050596bc 900030008bf57400 900000000434a=
-cac
->          0000000000000016 00007ffff224e060 00007fffbbe9f180 900030008bf57=
-400
->          0000000000000000 9000000004341ce0 00007fffbbe9f180 00007ffff2369=
+>  Modules linked in: bpf_testmod(OE) xt_CHECKSUM xt_MASQUERADE xt_conntrac=
+k
+>  Process test_progs (pid: 2824, threadinfo=3D0000000000863a31, task=3D000=
+000001cba0874)
+>  Stack : 0000000000000001 fffffffffffffffc 0000000000000000 0000000000000=
 000
->          900030008549fec0 90000000054476ec 000000000000006b 9000000003f71=
-da4
->          000000000000003a 00007ffff22b8a44 00007fffbbe9f8e0 00007fffbbe9e=
-680
->          ffffffffffffffda 0000000000000000 0000000000000000 0000000000000=
+>          0000000000000018 0000000000000000 0000000000000000 90000000048bf=
+6c0
+>          90000000052cd638 90001000aa16fd70 900010008bf51580 900010009284f=
 000
->          00007fffbbe9f288 0000000000000000 0000000000000000 0000000000000=
-039
->          84c2431493ceab6e 84c23ceb2827425e 0000000000000007 00007ffff2271=
-600
+>          90000000049f2b90 900010009284f188 900010009284f178 90001000861d4=
+780
+>          9000100084dccd00 0000000000000800 0000000000000007 fffffffffffff=
+ff2
+>          000000000453e92f 90000000049aae34 90001000aa16fd60 900010009284f=
+000
+>          0000000000000000 0000000000000000 900010008bf51580 90000000049f2=
+b90
+>          0000000000000001 0000000000000000 9000100084dc3a10 900010009284f=
+1ac
+>          90001000aa16fd40 0000555559953278 0000000000000001 0000000000000=
+000
+>          90001000aa16fdc8 9000000005a5a000 90001000861d4780 0000000000000=
+800
 >          ...
 >  Call Trace:
->  [<900000000505960c>] __sock_release+0x4c/0xe0
->  [<90000000050596bc>] sock_close+0x1c/0x40
->  [<900000000434acac>] __fput+0xec/0x2e0
->  [<9000000004341ce0>] sys_close+0x40/0xa0
->  [<90000000054476ec>] do_syscall+0x8c/0xc0
->  [<9000000003f71da4>] handle_syscall+0xc4/0x160
+>  [<9000000004162774>] copy_page_to_iter+0x74/0x1c0
+>  [<90000000048bf6c0>] sk_msg_recvmsg+0x120/0x560
+>  [<90000000049f2b90>] tcp_bpf_recvmsg_parser+0x170/0x4e0
+>  [<90000000049aae34>] inet_recvmsg+0x54/0x100
+>  [<900000000481ad5c>] sock_recvmsg+0x7c/0xe0
+>  [<900000000481e1a8>] __sys_recvfrom+0x108/0x1c0
+>  [<900000000481e27c>] sys_recvfrom+0x1c/0x40
+>  [<9000000004c076ec>] do_syscall+0x8c/0xc0
+>  [<9000000003731da4>] handle_syscall+0xc4/0x160
 >
->  Code: (Bad address in era)
+>  Code: 0010b09b  440125a0  0011df8d <28c10364> 0012b70c  00133305  0013b1=
+ac  0010dc84  00151585
 >
 >  ---[ end trace 0000000000000000 ]---
 >  Kernel panic - not syncing: Fatal exception
->  Kernel relocated by 0x3d50000
->   .text @ 0x9000000003f50000
->   .data @ 0x90000000055b0000
->   .bss  @ 0x9000000006ca9400
+>  Kernel relocated by 0x3510000
+>   .text @ 0x9000000003710000
+>   .data @ 0x9000000004d70000
+>   .bss  @ 0x9000000006469400
 >  ---[ end Kernel panic - not syncing: Fatal exception ]---
 > '''
 >
-> This is because "close" is NULL in that case. This patch adds null
-> check for it in inet_release() to fix this error.
+> This is because "page" is NULL in that case. This patch adds null
+> check for it in sk_msg_recvmsg() to fix this error.
 >
 
-Please add a Fixes: tag, so that we can fully understand what is going on.
+Why would @page be NULL only for this architecture ?
+
+Please elaborate, and add a Fixes: tag
 
 > Signed-off-by: Geliang Tang <tanggeliang@kylinos.cn>
 > ---
->  net/ipv4/af_inet.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
+>  net/core/skmsg.c | 2 ++
+>  1 file changed, 2 insertions(+)
 >
-> diff --git a/net/ipv4/af_inet.c b/net/ipv4/af_inet.c
-> index b24d74616637..8e926018d011 100644
-> --- a/net/ipv4/af_inet.c
-> +++ b/net/ipv4/af_inet.c
-> @@ -434,7 +434,8 @@ int inet_release(struct socket *sock)
->                 if (sock_flag(sk, SOCK_LINGER) &&
->                     !(current->flags & PF_EXITING))
->                         timeout =3D sk->sk_lingertime;
-> -               sk->sk_prot->close(sk, timeout);
-> +               if (sk->sk_prot && sk->sk_prot->close)
-
-Which one is NULL exactly ?  sk->sk_prot or the ->close pointer ?
-
-Why add all these checks if only one is requested ?
-
-> +                       sk->sk_prot->close(sk, timeout);
->                 sock->sk =3D NULL;
->         }
->         return 0;
+> diff --git a/net/core/skmsg.c b/net/core/skmsg.c
+> index fd20aae30be2..bafcc1e2eadf 100644
+> --- a/net/core/skmsg.c
+> +++ b/net/core/skmsg.c
+> @@ -432,6 +432,8 @@ int sk_msg_recvmsg(struct sock *sk, struct sk_psock *=
+psock, struct msghdr *msg,
+>                         sge =3D sk_msg_elem(msg_rx, i);
+>                         copy =3D sge->length;
+>                         page =3D sg_page(sge);
+> +                       if (!page)
+> +                               goto out;
+>                         if (copied + copy > len)
+>                                 copy =3D len - copied;
+>                         copy =3D copy_page_to_iter(page, sge->offset, cop=
+y, iter);
 > --
 > 2.43.0
 >
