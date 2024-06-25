@@ -1,87 +1,101 @@
-Return-Path: <bpf+bounces-33026-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-33027-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6297B916007
-	for <lists+bpf@lfdr.de>; Tue, 25 Jun 2024 09:30:36 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8439091604A
+	for <lists+bpf@lfdr.de>; Tue, 25 Jun 2024 09:47:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CE8D5B22224
-	for <lists+bpf@lfdr.de>; Tue, 25 Jun 2024 07:30:33 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B43C01C22084
+	for <lists+bpf@lfdr.de>; Tue, 25 Jun 2024 07:47:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 65B70146A7D;
-	Tue, 25 Jun 2024 07:30:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5DE21147C7F;
+	Tue, 25 Jun 2024 07:46:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="BXgsGVKv"
+	dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b="Kj/GokB3"
 X-Original-To: bpf@vger.kernel.org
-Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
+Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BABD061FD5;
-	Tue, 25 Jun 2024 07:30:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.92.199
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 04C0F1459F1;
+	Tue, 25 Jun 2024 07:46:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.133.104.62
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719300623; cv=none; b=C98uLVx5q2M7L9WCceqvDruim+lbjMftUkBBUtkTqM2yIMtzSsHnAPWuPA0k9zTyl2WTBEOws5rJIGv2f8G0aUs0R2e6DzZmJZqrOtmvue168uuflG/z5durcwJdy4iRM/YF/15kmc3xa6x81s/j9twV0cD5vkuls6XujWa9Rl8=
+	t=1719301616; cv=none; b=umWP1L2ElbhaRnylNH/mkFS9mC6PRAtAbmk87C16PyTgOqsFmTGb4RvADqazSKzmcYaNHbUb66r6a+RWOE1ZEpqfPTApyVDhuO0IhNKAbY+vH4w681B2x+Zi9AMhXjbuemav/mt0hS96kRLZTFh9mz0x/cNhcLalbQtIdhvsx/U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719300623; c=relaxed/simple;
-	bh=yB5Svsp9mNzKIuZnzXqjiK08dhoftGN+4t+vx+2N1vU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=G7zrue2G6fNW5fnMOoc42wQe1owAOIqlAEssqLHtJ8NThMAUt3tVBP2MFYiKVuKQVgUycuQ9bA7KcSUPDq0q+XI0QuN/5MXwn5Rdv34SH7HrihMQc1jtMcSkV7PxUK9tcuNhuj9wuj/5zhToJoy/lkEF6UyaGS1InnmsKK6i71U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=BXgsGVKv; arc=none smtp.client-ip=90.155.92.199
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+	s=arc-20240116; t=1719301616; c=relaxed/simple;
+	bh=BD8/Ei64+i+bfhdQKuz6XDa7OaSkSlG/6wY6L3GttBM=;
+	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=Aii5wOfgdljEhCW+754BQeMGuGDExgsuhVGEvfVTS0cmxwGNzffp3L4IyEoc6ZfYw4xLn5OYvpSF7jZuxkPnRhQD1OMXWRuAY92LBlhtgHPiafbD9U5MSA7VUUYALI9p+IBPWk+9TH29KgAy2bcWNxnZAFuCk2l2A9eL2oXq8xs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net; spf=pass smtp.mailfrom=iogearbox.net; dkim=pass (2048-bit key) header.d=iogearbox.net header.i=@iogearbox.net header.b=Kj/GokB3; arc=none smtp.client-ip=213.133.104.62
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=iogearbox.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iogearbox.net
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=yB5Svsp9mNzKIuZnzXqjiK08dhoftGN+4t+vx+2N1vU=; b=BXgsGVKv1z6yJk6YgNCi2gSK8k
-	RHBxRV1FJbPzL3TgsWI85R2+Cwh5zy+tZWXlstECVPG6+aBkqTsIzZv1ixJ3DUKtoElLKDODDe/Ag
-	rs4JL43j78IG9vxVDMMJEdzuISeBfIJCuAwHzFqhgG5DiVGTF9RLo2i4j9HpAgJFwl66os2sGt3vf
-	0h4iqYU6IgAnqvQM6XEwkgLXpvM7CqrJZiK843AkkaO5UzSrlh+fAh6I8SAsAkjEaHkDTU33mpk+m
-	+S8etuRncziA6iEzbprfr5zn3KD1KWPSd2owROhf3QUJGn2ZIeRU3busQcqaWlPs/PnAspAOLLDsC
-	7YKnYROg==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-	by desiato.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sM0cl-00000008Mlp-1BYZ;
-	Tue, 25 Jun 2024 07:29:56 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-	id 65D53300754; Tue, 25 Jun 2024 09:29:54 +0200 (CEST)
-Date: Tue, 25 Jun 2024 09:29:54 +0200
-From: Peter Zijlstra <peterz@infradead.org>
-To: Tejun Heo <tj@kernel.org>
-Cc: torvalds@linux-foundation.org, mingo@redhat.com, juri.lelli@redhat.com,
-	vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-	rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-	bristot@redhat.com, vschneid@redhat.com, ast@kernel.org,
-	daniel@iogearbox.net, andrii@kernel.org, martin.lau@kernel.org,
-	joshdon@google.com, brho@google.com, pjt@google.com,
-	derkling@google.com, haoluo@google.com, dvernet@meta.com,
-	dschatzberg@meta.com, dskarlat@cs.cmu.edu, riel@surriel.com,
-	changwoo@igalia.com, himadrics@inria.fr, memxor@gmail.com,
-	andrea.righi@canonical.com, joel@joelfernandes.org,
-	linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-	kernel-team@meta.com
-Subject: Re: [PATCH 04/39] sched: Add sched_class->reweight_task()
-Message-ID: <20240625072954.GQ31592@noisy.programming.kicks-ass.net>
-References: <20240501151312.635565-1-tj@kernel.org>
- <20240501151312.635565-5-tj@kernel.org>
- <20240624102331.GI31592@noisy.programming.kicks-ass.net>
- <ZnoIRnCZaN_oHQ6N@slm.duckdns.org>
+	d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
+	In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
+	bh=Kqt2HW3DF4THvQrzoJ54QdPTPzFW/ucTd0Pmt1RUFE4=; b=Kj/GokB33PoK0iEPvjrBTzyCGh
+	ZhNu1yBWvyMpy/Jh3+4MnNZf7k8F7RiN8gR6ZgpLCG1vYWNNV8hl67OVTZDY3VKGR5QTuY2uz69do
+	6aL0HNC2GhMs4DvAQPyjmXwiklM5863HmVk/yygbHgs7w2Qu5/NHeJ2macCHFOfJ7QTEawpMMbrAm
+	s1UuZl3qJ46jbbIwJbHfJOoTz3zbK21EbKsvztWx0HNwp3nPk9plP/7f1yLVn3hu6odBTTX2vubfG
+	TbybTHyb9wNAVjXm2rYPM57cl7iZJCUyqInftcdKMeWTlg/IobkxUZ70QL9rz0r5xr85Me7XoHN2Z
+	KIjiKJig==;
+Received: from sslproxy04.your-server.de ([78.46.152.42])
+	by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <daniel@iogearbox.net>)
+	id 1sM0sy-000GZj-AL; Tue, 25 Jun 2024 09:46:40 +0200
+Received: from [178.197.249.38] (helo=linux.home)
+	by sslproxy04.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <daniel@iogearbox.net>)
+	id 1sM0sx-0009sP-1c;
+	Tue, 25 Jun 2024 09:46:39 +0200
+Subject: Re: pull-request: bpf 2024-06-24
+To: Jakub Kicinski <kuba@kernel.org>
+Cc: davem@davemloft.net, pabeni@redhat.com, edumazet@google.com,
+ ast@kernel.org, andrii@kernel.org, martin.lau@linux.dev,
+ netdev@vger.kernel.org, bpf@vger.kernel.org
+References: <20240624124330.8401-1-daniel@iogearbox.net>
+ <20240624184126.33322abe@kernel.org>
+From: Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <c2119e37-4ce4-bf9b-61c2-1728c7c2b0ce@iogearbox.net>
+Date: Tue, 25 Jun 2024 09:46:39 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZnoIRnCZaN_oHQ6N@slm.duckdns.org>
+In-Reply-To: <20240624184126.33322abe@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.10/27316/Mon Jun 24 10:26:29 2024)
 
-On Mon, Jun 24, 2024 at 01:59:02PM -1000, Tejun Heo wrote:
+On 6/25/24 3:41 AM, Jakub Kicinski wrote:
+> On Mon, 24 Jun 2024 14:43:30 +0200 Daniel Borkmann wrote:
+>> The following changes since commit 143492fce36161402fa2f45a0756de7ff69c366a:
+>>
+>>    Merge branch '40GbE' of git://git.kernel.org/pub/scm/linux/kernel/git/tnguy/net-queue (2024-06-14 19:05:38 -0700)
+>>
+>> are available in the Git repository at:
+>>
+>>    ssh://git@gitolite.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git tags/for-netdev
+> 
+> Bot seems to not be responding, so: pulled, thanks!
+> 
+> BTW was the ssh link intentional? 
 
-> Were you trying to say that if the idle policy were to implement
-> ->reweight_task(), it wouldn't be called?
+Yes at least from what I read at users@k.o the recommendation / preference is
+to use the gitolite link so that you as kernel.org user do not get artificially
+throttled when pulling.
 
-This. IDLE really is FAIR but with a really small weight.
+Thanks,
+Daniel
 
