@@ -1,185 +1,79 @@
-Return-Path: <bpf+bounces-33059-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-33060-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 26F42916A68
-	for <lists+bpf@lfdr.de>; Tue, 25 Jun 2024 16:31:47 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7CE22916ACC
+	for <lists+bpf@lfdr.de>; Tue, 25 Jun 2024 16:42:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C55691F2471C
-	for <lists+bpf@lfdr.de>; Tue, 25 Jun 2024 14:31:46 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2E2371F27FC6
+	for <lists+bpf@lfdr.de>; Tue, 25 Jun 2024 14:42:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 897BF16D9A4;
-	Tue, 25 Jun 2024 14:29:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6667216E888;
+	Tue, 25 Jun 2024 14:41:41 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5126416C68B;
-	Tue, 25 Jun 2024 14:29:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.188
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 145D63A8CB;
+	Tue, 25 Jun 2024 14:41:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719325794; cv=none; b=sl2OJ76IhOzR26h2+aBu2ZHvTab2Y5Bd9PPfO1akSf57/ePnxlu85HQCLyKXICaSmDoWJnaoe7syCxx0PqNnMyDRFf8RE+NXXWdamflF4FwhkrYFe+XfZBvaPombmHqzq8s+dAbyGRKTzU56p/LtDa7OyhfHuoGnMRHIh5yKnBI=
+	t=1719326501; cv=none; b=kIt7HEyys7eLqFXLjurzso2HyVBCwYdhsWx9ebddnj4K8pkhhxkv5LafS1i2Xw97P7jAFPuk6HMSBtk7sqZU1eSNw8HZp9LnEn1qbaidzGYHfTJacn+1vpI1cI/AhKmZmRwqwc/c99NL9l+ss15w6a//TIdB8PYLsBAOUYI6FwM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719325794; c=relaxed/simple;
-	bh=3RVvHeyAWipkeVyMwWIsWzeZ9VvPaM9h3uVyhNJkd/U=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=XGHmzUyYdwwJn4J+1zeNLU5hF8egu9wjqtIczR2kvHGQZ5j/ZYZw8siFbHcy30a+x2Wss6GIGfjQZtafpe1iSefI5NzI87SEfGx5tJYm009QHnnfe/a5HqaV3v08ugyBwVdfDxXNnj6ELb11o0ZGkpnl5u+1Bhng+1RGb+Sh9bY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.188
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.252])
-	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4W7nHg0Vvxzddj8;
-	Tue, 25 Jun 2024 22:28:15 +0800 (CST)
-Received: from kwepemd100013.china.huawei.com (unknown [7.221.188.163])
-	by mail.maildlp.com (Postfix) with ESMTPS id 8F05F180085;
-	Tue, 25 Jun 2024 22:29:48 +0800 (CST)
-Received: from [10.67.109.79] (10.67.109.79) by kwepemd100013.china.huawei.com
- (7.221.188.163) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1258.34; Tue, 25 Jun
- 2024 22:29:47 +0800
-Message-ID: <b5f49ae4-a905-4c64-8918-83aa53d3dbcd@huawei.com>
-Date: Tue, 25 Jun 2024 22:29:47 +0800
+	s=arc-20240116; t=1719326501; c=relaxed/simple;
+	bh=VosDvf0qt3pU/Covzt7D0pO5vvASRfaUya6aWxUxI8k=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=pOTk62BSlcO7/hGXB8Fbw254TOXayt0jbF+CWAcC80jXfy9jklFmBU97Xg3aZfI8e+uaCAaQNGYHhogdPU+T61hRgNV+HkTaptVIwHXU4FS7Pmtzo+lJK+Fk8TjC06xGMWYkz0ivgiki415n7ZXpLaZIrbma0lxBJ47zaD7aMm4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8EDA7C4AF07;
+	Tue, 25 Jun 2024 14:41:38 +0000 (UTC)
+Date: Tue, 25 Jun 2024 10:41:37 -0400
+From: Steven Rostedt <rostedt@goodmis.org>
+To: Vlastimil Babka <vbabka@suse.cz>
+Cc: Akinobu Mita <akinobu.mita@gmail.com>, Christoph Lameter <cl@linux.com>,
+ David Rientjes <rientjes@google.com>, Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko
+ <andrii@kernel.org>, "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>, Anil S
+ Keshavamurthy <anil.s.keshavamurthy@intel.com>, "David S. Miller"
+ <davem@davemloft.net>, Masami Hiramatsu <mhiramat@kernel.org>, Mark Rutland
+ <mark.rutland@arm.com>, Jiri Olsa <jolsa@kernel.org>, Roman Gushchin
+ <roman.gushchin@linux.dev>, Hyeonggon Yoo <42.hyeyoo@gmail.com>,
+ linux-kernel@vger.kernel.org, linux-mm@kvack.org, bpf@vger.kernel.org,
+ linux-trace-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 2/7] error-injection: support static keys around
+ injectable functions
+Message-ID: <20240625104137.7fbe294d@rorschach.local.home>
+In-Reply-To: <20240620-fault-injection-statickeys-v2-2-e23947d3d84b@suse.cz>
+References: <20240620-fault-injection-statickeys-v2-0-e23947d3d84b@suse.cz>
+	<20240620-fault-injection-statickeys-v2-2-e23947d3d84b@suse.cz>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH -next] cgroup: fix uaf when proc_cpuset_show
-To: Waiman Long <longman@redhat.com>, =?UTF-8?Q?Michal_Koutn=C3=BD?=
-	<mkoutny@suse.com>
-CC: <tj@kernel.org>, <lizefan.x@bytedance.com>, <hannes@cmpxchg.org>,
-	<bpf@vger.kernel.org>, <cgroups@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>
-References: <20240622113814.120907-1-chenridong@huawei.com>
- <19648b9c-6df7-45cd-a5ae-624a3e4d860f@redhat.com>
- <52f72d1d-602e-4dca-85a3-adade925b056@huawei.com>
- <71a9cc3a-1b58-4051-984b-dd4f18dabf84@redhat.com>
- <8f83ecb3-4afa-4e0b-be37-35b168eb3c7c@huawei.com>
- <ee30843f-2579-4dcf-9688-6541fd892678@redhat.com>
- <3322ce46-78a1-45c5-ad07-a982dec21c8e@huawei.com>
- <gke4hn67e2js2wcia4gopr6u26uy5epwpu7r6sepjwvp5eetql@nuwvwzg2k4dy>
- <920bbfaa-bb76-4aa1-bd07-9a552e3bfdf2@huawei.com>
- <80e87513-aa48-4548-893e-ed339690c941@redhat.com>
-Content-Language: en-US
-From: chenridong <chenridong@huawei.com>
-In-Reply-To: <80e87513-aa48-4548-893e-ed339690c941@redhat.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- kwepemd100013.china.huawei.com (7.221.188.163)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
+On Thu, 20 Jun 2024 00:48:56 +0200
+Vlastimil Babka <vbabka@suse.cz> wrote:
 
-On 2024/6/25 22:16, Waiman Long wrote:
-> On 6/25/24 10:11, chenridong wrote:
->>
->>
->> On 2024/6/25 18:10, Michal Koutný wrote:
->>> Hello.
->>>
->>> On Tue, Jun 25, 2024 at 11:12:20AM GMT, 
->>> chenridong<chenridong@huawei.com>  wrote:
->>>> I am considering whether the cgroup framework has a method to fix this
->>>> issue, as other subsystems may also have the same underlying problem.
->>>> Since the root css will not be released, but the css->cgrp will be
->>>> released.
->>> <del>First part is already done in
->>>     d23b5c5777158 ("cgroup: Make operations on the cgroup root_list 
->>> RCU safe")
->>> second part is that</del>
->>> you need to take RCU read lock and check for NULL, similar to
->>>     9067d90006df0 ("cgroup: Eliminate the need for cgroup_mutex in 
->>> proc_cgroup_show()")
->>>
->>> Does that make sense to you?
->>>
->>> A Fixes: tag would be nice, it seems at least
->>>     a79a908fd2b08 ("cgroup: introduce cgroup namespaces")
->>> played some role. (Here the RCU lock is not for cgroup_roots list 
->>> but to
->>> preserve the root cgrp itself css_free_rwork_fn/cgroup_destroy_root.
->>>
->>> HTH,
->>> Michal
->>
->> Thank you, Michal, that is a good idea. Do you mean as below?
->>
->> diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
->>
->> index c12b9fdb22a4..2ce0542067f1 100644
->> --- a/kernel/cgroup/cpuset.c
->> +++ b/kernel/cgroup/cpuset.c
->> @@ -5051,10 +5051,17 @@ int proc_cpuset_show(struct seq_file *m, 
->> struct pid_namespace *ns,
->>         if (!buf)
->>                 goto out;
->>
->> +       rcu_read_lock();
->> +       spin_lock_irq(&css_set_lock);
->>         css = task_get_css(tsk, cpuset_cgrp_id);
->> -       retval = cgroup_path_ns(css->cgroup, buf, PATH_MAX,
->> - current->nsproxy->cgroup_ns);
->> +
->> +       retval = cgroup_path_ns_locked(css->cgroup, buf, PATH_MAX,
->> +               current->nsproxy->cgroup_ns);
->>         css_put(css);
->> +
->> +       spin_unlock_irq(&css_set_lock);
->> +       cgroup_unlock();
->> +
->>         if (retval == -E2BIG)
->>                 retval = -ENAMETOOLONG;
->>
->>         if (retval < 0)
->>
-> That should work. However, I would suggest that you take 
-> task_get_css() and css_put() outside of the critical section. The 
-> task_get_css() is a while loop that may take a while to execute and 
-> you don't want run it with interrupt disabled.
->
-> Cheers,
-> Longman
->
->
->
---- a/kernel/cgroup/cpuset.c
-+++ b/kernel/cgroup/cpuset.c
-@@ -5050,11 +5050,18 @@ int proc_cpuset_show(struct seq_file *m, struct 
-pid_namespace *ns,
-         buf = kmalloc(PATH_MAX, GFP_KERNEL);
-         if (!buf)
-                 goto out;
--
-         css = task_get_css(tsk, cpuset_cgrp_id);
--       retval = cgroup_path_ns(css->cgroup, buf, PATH_MAX,
--                               current->nsproxy->cgroup_ns);
-+
-+       rcu_read_lock();
-+       spin_lock_irq(&css_set_lock);
-+
-+       retval = cgroup_path_ns_locked(css->cgroup, buf, PATH_MAX,
-+               current->nsproxy->cgroup_ns);
-+
-+       spin_unlock_irq(&css_set_lock);
-+       rcu_read_unlock();
-         css_put(css);
-+
-         if (retval == -E2BIG)
-                 retval = -ENAMETOOLONG;
+> @@ -86,6 +104,7 @@ static void populate_error_injection_list(struct error_injection_entry *start,
+>  		ent->start_addr = entry;
+>  		ent->end_addr = entry + size;
+>  		ent->etype = iter->etype;
+> +		ent->key = (struct static_key *) iter->static_key_addr;
 
-         if (retval < 0)
+Nit, should there be a space between the typecast and the "iter"?
 
+>  		ent->priv = priv;
+>  		INIT_LIST_HEAD(&ent->list);
+>  		list_add_tail(&ent->list, &error_injection_list);
 
-Yeah, that looks good, i will test for a while. I will send a new patch 
-if no other problem occurs.
+Reviewed-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 
-Thank you.
-
-Regards,
-Ridong
-
-
+-- Steve
 
