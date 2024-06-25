@@ -1,153 +1,154 @@
-Return-Path: <bpf+bounces-33055-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-33057-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 25CCB916A07
-	for <lists+bpf@lfdr.de>; Tue, 25 Jun 2024 16:16:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id A3FBB916A19
+	for <lists+bpf@lfdr.de>; Tue, 25 Jun 2024 16:18:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A27531F22CA3
-	for <lists+bpf@lfdr.de>; Tue, 25 Jun 2024 14:16:42 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 574DF1F21276
+	for <lists+bpf@lfdr.de>; Tue, 25 Jun 2024 14:18:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 62EF516C44C;
-	Tue, 25 Jun 2024 14:16:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F03A616C69F;
+	Tue, 25 Jun 2024 14:18:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="cBDgz0Ir"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="SQXqTN4S"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com [209.85.208.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 59EE316C684
-	for <bpf@vger.kernel.org>; Tue, 25 Jun 2024 14:16:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E2FC7169AD0
+	for <bpf@vger.kernel.org>; Tue, 25 Jun 2024 14:18:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719324980; cv=none; b=uldS2WWwPiRUU1nbFPoGhlIa0LrNIpavCoFpwibmUm0+r+CusqJLdGwWypDZUfJPg5J+SmV/akbq4CIG8e4Kx5OEYwRnrnptQ0LCaBbfND6dEtYO1a6xXeYWdrI75nJhOWzaw2as1uS+JalisXLJ6loQpUU3ODl/HD7vHEoB2MI=
+	t=1719325091; cv=none; b=knR0i+iTzT/RWUtevk8jO6xRGAAExKRs7YtLOVXUSZqTnOAWvLPqPQIYLn1eb5lV4AzO5nNbe6mCWnncfCgjxLkFWDLXu6J19e9D2H3NONvL989mCZswVGYVDTmpDybxCpsQwTAxvYbmYevWrRbJ4k8Evto55fyJht5oIOGUGFg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719324980; c=relaxed/simple;
-	bh=v5/BN7Hm8eXOX6GvRiGj1yPcrrgAcTj4SdgdQ8HMC7I=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Iip3ducaz0lnRoEyLKzi6YyeGy0UxoK/rVVD+m06qXDXBm1u6O39e+hlPXZ2kZJ+1DvdS7Qq3udsOzoNqFCyRJSmDiAWlfYrcvBZDCEHry484WO3owSHpOM6W4yfSlHgUJkciDi94USHM2bqGtgrL0mxI8vol52Ny95qxU8ldgQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=cBDgz0Ir; arc=none smtp.client-ip=209.85.208.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ed1-f54.google.com with SMTP id 4fb4d7f45d1cf-57d07464aa9so5516060a12.2
-        for <bpf@vger.kernel.org>; Tue, 25 Jun 2024 07:16:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1719324976; x=1719929776; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=txMg1yBI3C5zZj9b3iG0sb1mrfRfqVzlgNpFi+lwATA=;
-        b=cBDgz0IrhdcnC5u6hsKi2f2IN5dG2AwSD8TmyZDMAREquSUz+kriac2F6yiZ568ao6
-         G1RPef5TOaushP9LQddVaVmc2e51YWdpgTPYaepx5xgt11/yLRwtQ+nA8LeAJvvhNeOQ
-         qcCjZid3nVf1/6jBj8KbcZJ+4JdLMjIedK3FOx8OnuBuLoZsdIF23HNrotNzf7427nwe
-         IeqkgaZF8WjM1Ze0DMoo1SMvfXjKIoCS/0mrA4EcUtW4GVx6vornhhrkfbE8sfic6hnV
-         jxDi1IkPm7UIhldLjcUJKUrEz77aSOjVn+zJ/T3G9SAMH3THXPYlh/mTCNbjuKU49h0S
-         cB8w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1719324976; x=1719929776;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=txMg1yBI3C5zZj9b3iG0sb1mrfRfqVzlgNpFi+lwATA=;
-        b=pVVp9s7GWNd8AMgrqrifncF+oe8LRSmg+9P29dUeoiNA5dROGUCQ4703ZzXYNgDEIV
-         cZ8qRBDEszSa5PxkguBk17bTYLq07HK1VCBxXTrPmB4Md5cHjVbTglnWs6wTsWu1sfVq
-         KKwKJTBhDd9wcUAusZ8VD2AksMbYxeNpKejXUMK/cb2HIus2czkMc1X71QuKReF0rRTF
-         exWOt9hc/k4zBmnHoywdph3StuY+X0EJRJNXd6PYaRSVmFt6y4ZdT4/t1brkrnlAukKl
-         MaL3GVMH8JKctCf3dDO1lnUIkvOrTj5JP7alXQB0/ZhVWKr4DwshcoSJyL+6CAS2/+Yc
-         ld1g==
-X-Forwarded-Encrypted: i=1; AJvYcCXc6p2M1ySxPcrlEqC4Jvtefl1ZAeH7yCE1/MPaKH0dJHg0qYbCwNkre0TVgqGYOmwdtoTVOEP+rA3k7nI57yi8hrhL
-X-Gm-Message-State: AOJu0Yxs+k+3BqyNNeix1cfo3JWf/Ei9u2iKiu9amiwY8H/c49vpx6to
-	azx7LqEOZm5GP5pPYznzivIbubfAorfNqRxlNc05KTvGklH7jspupSFDxQqTYqQ/5VSjAUyBRYA
-	jboi4W+A2aaHvd3Zkq+Vlx1hD0NrzDm11jS71
-X-Google-Smtp-Source: AGHT+IFscpUDigK3sjiafRtyPgDq4I1SxTB/v4k5zCynhP82Entzul2Gkuvq6bg+VXWqgIpi6/XH2Nq4EJopbPxoaxU=
-X-Received: by 2002:a17:907:c301:b0:a6f:5f5d:e924 with SMTP id
- a640c23a62f3a-a7245b4c9bcmr662856066b.6.1719324975303; Tue, 25 Jun 2024
- 07:16:15 -0700 (PDT)
+	s=arc-20240116; t=1719325091; c=relaxed/simple;
+	bh=258aHTwJ8PHNVShdBmlRwFk5MhWBCxeonA2f0yI3uGw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=VYe7VIdl64DcA7IZDVla39MoyDT3uBhUkQjQ06dBkNeurlKnhdvExKro1tbI29oxN7CeXkP+mIF7r+OJIU1hLqxkQ1j40N81+Tv3Fum+LAU3yG3gvumR+yMw69cIDIFFPCn47MDHG7BOAgKfDwC0b/YlFBHkYn9KiOfwl5J7cQo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=SQXqTN4S; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1719325088;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=JDJanHJKnbiJNPYotPkVO2c6RbIzDk3MVlTTgVCykxk=;
+	b=SQXqTN4St4YLwrqePXiDxgLc7iRQLuDYk81viqRKYPCaj4/RoAQ93F48e1JcoxbmUDJLG8
+	rJpBGIgslYXSCTBDB+ToJnaTPC4zoO8yjDB8YXJy3DfXPYf8Mr9dShfQdAzBtCcyzuWWYR
+	8dQxSGmgMiJyOtv4Z2Ydl6ItWTkLKeQ=
+Received: from mx-prod-mc-03.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-458-KsnVk9qGMTCAI2eoQhCkRg-1; Tue,
+ 25 Jun 2024 10:18:04 -0400
+X-MC-Unique: KsnVk9qGMTCAI2eoQhCkRg-1
+Received: from mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.4])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx-prod-mc-03.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id F28E318DB6FA;
+	Tue, 25 Jun 2024 14:17:14 +0000 (UTC)
+Received: from [10.22.10.23] (unknown [10.22.10.23])
+	by mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id 9BD18301BD32;
+	Tue, 25 Jun 2024 14:16:16 +0000 (UTC)
+Message-ID: <80e87513-aa48-4548-893e-ed339690c941@redhat.com>
+Date: Tue, 25 Jun 2024 10:16:15 -0400
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240625024721.2140656-1-almasrymina@google.com>
-In-Reply-To: <20240625024721.2140656-1-almasrymina@google.com>
-From: Mina Almasry <almasrymina@google.com>
-Date: Tue, 25 Jun 2024 07:16:00 -0700
-Message-ID: <CAHS8izO1g5vZodyvKBNyE-Fx7A4EoD70RuDLwXtzE3yvfRw_2g@mail.gmail.com>
-Subject: Re: [PATCH net-next v13 00/13] Device Memory TCP
-To: netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-doc@vger.kernel.org, linux-alpha@vger.kernel.org, 
-	linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org, 
-	sparclinux@vger.kernel.org, linux-trace-kernel@vger.kernel.org, 
-	linux-arch@vger.kernel.org, bpf@vger.kernel.org, 
-	linux-kselftest@vger.kernel.org, linux-media@vger.kernel.org, 
-	dri-devel@lists.freedesktop.org
-Cc: "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
-	Donald Hunter <donald.hunter@gmail.com>, Jonathan Corbet <corbet@lwn.net>, 
-	Richard Henderson <richard.henderson@linaro.org>, Ivan Kokshaysky <ink@jurassic.park.msu.ru>, 
-	Matt Turner <mattst88@gmail.com>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
-	"James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>, Helge Deller <deller@gmx.de>, 
-	Andreas Larsson <andreas@gaisler.com>, Jesper Dangaard Brouer <hawk@kernel.org>, 
-	Ilias Apalodimas <ilias.apalodimas@linaro.org>, Steven Rostedt <rostedt@goodmis.org>, 
-	Masami Hiramatsu <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
-	Arnd Bergmann <arnd@arndb.de>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
-	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, 
-	Jiri Olsa <jolsa@kernel.org>, Steffen Klassert <steffen.klassert@secunet.com>, 
-	Herbert Xu <herbert@gondor.apana.org.au>, David Ahern <dsahern@kernel.org>, 
-	Willem de Bruijn <willemdebruijn.kernel@gmail.com>, Shuah Khan <shuah@kernel.org>, 
-	Sumit Semwal <sumit.semwal@linaro.org>, =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>, 
-	Bagas Sanjaya <bagasdotme@gmail.com>, Christoph Hellwig <hch@infradead.org>, 
-	Nikolay Aleksandrov <razor@blackwall.org>, Pavel Begunkov <asml.silence@gmail.com>, David Wei <dw@davidwei.uk>, 
-	Jason Gunthorpe <jgg@ziepe.ca>, Yunsheng Lin <linyunsheng@huawei.com>, 
-	Shailend Chand <shailend@google.com>, Harshitha Ramamurthy <hramamurthy@google.com>, 
-	Shakeel Butt <shakeel.butt@linux.dev>, Jeroen de Borst <jeroendb@google.com>, 
-	Praveen Kaligineedi <pkaligineedi@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH -next] cgroup: fix uaf when proc_cpuset_show
+To: chenridong <chenridong@huawei.com>, =?UTF-8?Q?Michal_Koutn=C3=BD?=
+ <mkoutny@suse.com>
+Cc: tj@kernel.org, lizefan.x@bytedance.com, hannes@cmpxchg.org,
+ bpf@vger.kernel.org, cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20240622113814.120907-1-chenridong@huawei.com>
+ <19648b9c-6df7-45cd-a5ae-624a3e4d860f@redhat.com>
+ <52f72d1d-602e-4dca-85a3-adade925b056@huawei.com>
+ <71a9cc3a-1b58-4051-984b-dd4f18dabf84@redhat.com>
+ <8f83ecb3-4afa-4e0b-be37-35b168eb3c7c@huawei.com>
+ <ee30843f-2579-4dcf-9688-6541fd892678@redhat.com>
+ <3322ce46-78a1-45c5-ad07-a982dec21c8e@huawei.com>
+ <gke4hn67e2js2wcia4gopr6u26uy5epwpu7r6sepjwvp5eetql@nuwvwzg2k4dy>
+ <920bbfaa-bb76-4aa1-bd07-9a552e3bfdf2@huawei.com>
+Content-Language: en-US
+From: Waiman Long <longman@redhat.com>
+In-Reply-To: <920bbfaa-bb76-4aa1-bd07-9a552e3bfdf2@huawei.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.4
 
-On Mon, Jun 24, 2024 at 7:47=E2=80=AFPM Mina Almasry <almasrymina@google.co=
-m> wrote:
+On 6/25/24 10:11, chenridong wrote:
 >
-> v13: https://patchwork.kernel.org/project/netdevbpf/list/?series=3D861406=
-&archive=3Dboth&state=3D*
-> =3D=3D=3D=3D
 >
-> Major changes:
-> --------------
+> On 2024/6/25 18:10, Michal Koutný wrote:
+>> Hello.
+>>
+>> On Tue, Jun 25, 2024 at 11:12:20AM GMT, chenridong<chenridong@huawei.com>  wrote:
+>>> I am considering whether the cgroup framework has a method to fix this
+>>> issue, as other subsystems may also have the same underlying problem.
+>>> Since the root css will not be released, but the css->cgrp will be
+>>> released.
+>> <del>First part is already done in
+>> 	d23b5c5777158 ("cgroup: Make operations on the cgroup root_list RCU safe")
+>> second part is that</del>
+>> you need to take RCU read lock and check for NULL, similar to
+>> 	9067d90006df0 ("cgroup: Eliminate the need for cgroup_mutex in proc_cgroup_show()")
+>>
+>> Does that make sense to you?
+>>
+>> A Fixes: tag would be nice, it seems at least
+>> 	a79a908fd2b08 ("cgroup: introduce cgroup namespaces")
+>> played some role. (Here the RCU lock is not for cgroup_roots list but to
+>> preserve the root cgrp itself css_free_rwork_fn/cgroup_destroy_root.
+>>
+>> HTH,
+>> Michal
 >
-> This iteration addresses Pavel's review comments, applies his
-> reviewed-by's, and seeks to fix the patchwork build error (sorry!).
+> Thank you, Michal, that is a good idea. Do you mean as below?
 >
+> diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
+>
+> index c12b9fdb22a4..2ce0542067f1 100644
+> --- a/kernel/cgroup/cpuset.c
+> +++ b/kernel/cgroup/cpuset.c
+> @@ -5051,10 +5051,17 @@ int proc_cpuset_show(struct seq_file *m, 
+> struct pid_namespace *ns,
+>         if (!buf)
+>                 goto out;
+>
+> +       rcu_read_lock();
+> +       spin_lock_irq(&css_set_lock);
+>         css = task_get_css(tsk, cpuset_cgrp_id);
+> -       retval = cgroup_path_ns(css->cgroup, buf, PATH_MAX,
+> - current->nsproxy->cgroup_ns);
+> +
+> +       retval = cgroup_path_ns_locked(css->cgroup, buf, PATH_MAX,
+> +               current->nsproxy->cgroup_ns);
+>         css_put(css);
+> +
+> +       spin_unlock_irq(&css_set_lock);
+> +       cgroup_unlock();
+> +
+>         if (retval == -E2BIG)
+>                 retval = -ENAMETOOLONG;
+>
+>         if (retval < 0)
+>
+That should work. However, I would suggest that you take task_get_css() 
+and css_put() outside of the critical section. The task_get_css() is a 
+while loop that may take a while to execute and you don't want run it 
+with interrupt disabled.
 
-This series is showing a inapplicable to net-next error on patchwork:
+Cheers,
+Longman
 
-https://patchwork.kernel.org/project/netdevbpf/list/?series=3D865135
-
-What happened here is that I sync'd to net-next, ran all the tests
-including the allmodconfig build which took a few hours, then posted
-the series. In the meantime 34 patches got merged to net-next, and one
-of those patches seems to generate a git am failure when I try to use
-b4 to apply:
-
-b4 am 20240625024721.2140656-2-almasrymina@google.com
-...
-git am ./v13_20240625_almasrymina_device_memory_tcp.mbx
-...
-Applying: tcp: RX path for devmem TCP
-Using index info to reconstruct a base tree...
-M       include/net/sock.h
-M       net/ipv4/tcp_ipv4.c
-Falling back to patching base and 3-way merge...
-Auto-merging net/ipv4/tcp_ipv4.c
-Auto-merging include/net/sock.h
-
-Not sure if I'm getting very unlucky or if this was something I can do
-to avoid this. I think I didn't tax NIPA too much since it's an apply
-error. I'll repost after the 24hr cooldown, sorry again.
 
