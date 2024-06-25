@@ -1,111 +1,84 @@
-Return-Path: <bpf+bounces-33087-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-33088-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 27F6891712C
-	for <lists+bpf@lfdr.de>; Tue, 25 Jun 2024 21:37:49 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4D0C1917145
+	for <lists+bpf@lfdr.de>; Tue, 25 Jun 2024 21:51:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D02F0287DBC
-	for <lists+bpf@lfdr.de>; Tue, 25 Jun 2024 19:37:47 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 21367B21510
+	for <lists+bpf@lfdr.de>; Tue, 25 Jun 2024 19:51:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8AD4A17CA0C;
-	Tue, 25 Jun 2024 19:37:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E03317C228;
+	Tue, 25 Jun 2024 19:51:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HiUUEpbu"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EIP7+67l"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f172.google.com (mail-pf1-f172.google.com [209.85.210.172])
+Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8373417C7CA;
-	Tue, 25 Jun 2024 19:37:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B9BB17C7D4
+	for <bpf@vger.kernel.org>; Tue, 25 Jun 2024 19:51:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719344263; cv=none; b=ockiCg2Kq/xKgnH92l6eSg00YaR2zttvNBwt7vdcWa46xSUtOPDFpHV21zSa/XEzYX5uAYwM0ofJawBliOO0+1BFar1GZbQYJYjLjeKva0H8IkkBmNPCj7FtDGuDCVyf7Oa+aULvd41c6OJQCpFm012X+fyJUtCawG61f/4fP48=
+	t=1719345070; cv=none; b=ByCbHyYSKp6Zs2XyhvYo2FHupea8TTQdiJZhjmHjM0XHXQFBtd+x13Jwcb0UZBN1VsV0q8AdUQ+J7V13nNjjGoxm1D48VoEeY1DpJ5ZVTgPpJu7L6LVPCuVNKhS1TJEzq0fh1ZyLtOriU75tztbfsMG2s8qJEhoRquEIQB9PCo4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719344263; c=relaxed/simple;
-	bh=Qd0vNLXHaY8M9RUSjAE8SM2AvwHfmAMJLOPNB2nH9y4=;
-	h=Date:From:To:Cc:Message-ID:In-Reply-To:References:Subject:
-	 Mime-Version:Content-Type; b=btpQ/uIdnfjQ4Y6ldr9BOjCuuvBAz2dPxFjWenjPQGM8cyoTd2/4tI9hg7qlEWCBs8IqL9bhz1WUmXYtfGSJQ/YmE4V39NHyzSdJ6D6ueXfFvh7jHm3NQ7/UyiITioB2k8ZDCEqT2pxQ3F1UOXtDcVogty5UNjdtr+Sq7M+gnic=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=HiUUEpbu; arc=none smtp.client-ip=209.85.210.172
+	s=arc-20240116; t=1719345070; c=relaxed/simple;
+	bh=x8/IU9en4kAKcbxDAQ1wW0b1kwJxByOCW2IRgOib+dY=;
+	h=Date:From:To:Message-ID:In-Reply-To:References:Subject:
+	 Mime-Version:Content-Type; b=O7I+tNcD/lsZ9ogDIpNnGNyqh5myCZPjERPaMcBZl0xovcCZQbdCZ9zi/KaxZlAd9Xbi/76a7RDTIkQYw9cS6ORhtamSOs2D6StVbMTRBNfqs7M1ZKPntkZovyUNRA1hZeoglya+/74F3ZzMQbE0V2vVkzvNT8yEs9TL0I2Pjd4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=EIP7+67l; arc=none smtp.client-ip=209.85.214.181
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f172.google.com with SMTP id d2e1a72fcca58-706683e5249so2746820b3a.2;
-        Tue, 25 Jun 2024 12:37:41 -0700 (PDT)
+Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-1f4c7b022f8so50850425ad.1
+        for <bpf@vger.kernel.org>; Tue, 25 Jun 2024 12:51:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1719344261; x=1719949061; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1719345069; x=1719949869; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
+         :in-reply-to:message-id:to:from:date:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=OCnr3FewRta5Yf5iM2Qg025VUaSqFbbQ41pNNx8ZWwI=;
-        b=HiUUEpbuZUeDMqdCn0pNK25ONvkbgwa6pMEEcML68nE8XOI0SrzZ+CA2vJIIz99J7e
-         8S0vHiO6YfQCz72I1lcd0qy0E+HITl2ObXfue0yOc9VSs9PHn5mEZEQAc+19PvbexyqX
-         9L7wJIVXssIHDhW9jo6NBM8F+2th4BDdmMmPHq++PQPp7hdtXviK7QEV6oNyUs3uERLz
-         dBfhztiiyiuwtm9r0Cygx7HCm/NzjXihNWW6cywYQ0WjWZRZeq336shTh44EYfGJMUeu
-         iOZmXnOjoCMlm++d4A301rw9LOrQWQlr2Bh0eyl02Z3Lj4YOXw6Boy+sn37ZE0Wjmuco
-         +yHg==
+        bh=x8/IU9en4kAKcbxDAQ1wW0b1kwJxByOCW2IRgOib+dY=;
+        b=EIP7+67lHkkc1LVI47oo8NKebOFj707/HqNvfAYWenIUTM2mnyF74HiFQMenJxXsW9
+         ckI2mJwWH+HaPhw9JoIuqVytnl8+4Y/5stOiVvxGWp5Q5vBGdvSXtNWq8uf95B1vSvML
+         G6i0Lkn+t4EExGU4zILw8DlWT3V0F+n2WjCqRw9Z4PBctofQTxA4Hr+vuBUJoeIs9Kas
+         HLyzXD7d0of8W+l2huKN2IK4ncdxLb2WzhR0AuzTul3yKNwZB0j2mSt9Q1GEtlqIMs8b
+         0/erwDYrBXOK2N6Xf8Qt6cy4DswgDWvqWCKMtgPTpXvwBQhmHCyqAedsn+0GRpRq3pn8
+         vOtA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1719344261; x=1719949061;
+        d=1e100.net; s=20230601; t=1719345069; x=1719949869;
         h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=OCnr3FewRta5Yf5iM2Qg025VUaSqFbbQ41pNNx8ZWwI=;
-        b=mcf+SpmY8vsWf9dI+z3UfWv+zWOCAbe1+cK9fD4c9wUsVVlpy1Ir7biT0nxKZ8ziaq
-         q/gBI9U20Km1kj2CiSmQs4bc9fc+gS7jvg6xaUSZIqSWQEXM0noQJ+xAac6/3RB6n/io
-         UG3ImgT5eaH6s/vIdWXsEsVJhIgEMQaNaUnz5XFnRWrq/sykEHKQHq8u/1LTpI0CkJFd
-         ILhELKNdITYqKvbHJKuy+wHaZ3zXzKTwDwT3aHO9JA6AiIHl87ND7esrlPtKx11UouWd
-         97EUzOZwrWT+14GTujsetGkTdpbgoi39TwnAIAr7jI14YM5cU6LeuEvFcPRnaeS2hmwh
-         /m5Q==
-X-Forwarded-Encrypted: i=1; AJvYcCVPAW+GXlf1lK9S4tR4s92b3KcNLRCnJp/vcJ357MXqllAvbMlq2Y/vvKMrKtkhwttUyc2ZmIogVTI51onABayb49iy7bwAbkcPDss6wU3XlXg8MV6vDjEF7jb3Tv8F61HEYdG0tIMjYZjxxRJDNoaBa08SzoczVGtnVd/7
-X-Gm-Message-State: AOJu0YzqOBEHJ2UB32GjRIsQGxyYahDsHIrJp599ronKC6+qv0Gq1/SS
-	A5VA9fnBnVOclUOhtOLHt9E7JMyNYaOGt8Xfu3CJ3cM+b9Sdg0JN
-X-Google-Smtp-Source: AGHT+IG2zR1Tmm0AmkmJX2i38kKfmcO0ouIa2qMOuIAOByTtcpca9rRt/jIwPcBwjk7EBhkKXSdJQw==
-X-Received: by 2002:a05:6a21:99a2:b0:1b5:d10b:d1ac with SMTP id adf61e73a8af0-1bcf7eae249mr9409054637.19.1719344260723;
-        Tue, 25 Jun 2024 12:37:40 -0700 (PDT)
+         :in-reply-to:message-id:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=x8/IU9en4kAKcbxDAQ1wW0b1kwJxByOCW2IRgOib+dY=;
+        b=QA/scw6BRWtgTDLx4t84N6c6vtHdRnv/+1R2gMw2xVW/9OSoWpesS9PI0/UXJEGu9u
+         t46h8nUUIDRmxuZPO0VGuqSxfuysp2IlfAW7cE6FPzRcoO+ClhG0RmlZZ79SQ7qDcwOV
+         gw8nL6oJ+EEKCJibjjc9XE6ccG56Mwq29GRGCm01qC4OmAo4szxsIUhlI/0m6xPGT914
+         aw50yUJLQxlM5v6PWb7anJ3+0GxQJQ27bfe6WNOuG4HJnIWOfgdN5iuv+c6aBNWk6KBV
+         coxsmHaFT5RBowKF42kkbLvYVPPsoZkKpu7hw+mum6WMSVBWGGDeo9zDJnX8/rSe2kou
+         SysA==
+X-Forwarded-Encrypted: i=1; AJvYcCVB8dEuhP62Osvo29YNENJXbvHOiJzLCvcN35tlj5bHTPwAGEAhmsrTGc8ktTmuxV3evbdVcEJ753Dd5RRv3An0Qa6Y
+X-Gm-Message-State: AOJu0YzQyVVuY0k6EwrWSUmVeHkopbj2Yo3EznfJK7NFC6qHJ0kT8A5N
+	aUaeqcnUMFMaAzOPmnWloe8tgUv2tYgXpsMBFTxDgHTTPFwSF+VCIiOJCw==
+X-Google-Smtp-Source: AGHT+IH7p1cDQkk1dcuWyLCbfYgbS30xu7C3Y9HCKrsF3hKPoJNFsb9vvwxyYyXDpefVU8dC5MWmQA==
+X-Received: by 2002:a17:903:244a:b0:1f9:a602:5e39 with SMTP id d9443c01a7336-1fa238e4665mr110292035ad.11.1719345068615;
+        Tue, 25 Jun 2024 12:51:08 -0700 (PDT)
 Received: from localhost ([98.97.39.193])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2c7e53e0b9asm11233978a91.23.2024.06.25.12.37.39
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-1f9ebbbddffsm84880795ad.285.2024.06.25.12.51.08
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 25 Jun 2024 12:37:39 -0700 (PDT)
-Date: Tue, 25 Jun 2024 12:37:39 -0700
+        Tue, 25 Jun 2024 12:51:08 -0700 (PDT)
+Date: Tue, 25 Jun 2024 12:51:07 -0700
 From: John Fastabend <john.fastabend@gmail.com>
-To: Eric Dumazet <edumazet@google.com>, 
- Geliang Tang <geliang@kernel.org>
-Cc: John Fastabend <john.fastabend@gmail.com>, 
- Jakub Sitnicki <jakub@cloudflare.com>, 
- "David S. Miller" <davem@davemloft.net>, 
- Jakub Kicinski <kuba@kernel.org>, 
- Paolo Abeni <pabeni@redhat.com>, 
- David Ahern <dsahern@kernel.org>, 
- Andrii Nakryiko <andrii@kernel.org>, 
- Eduard Zingerman <eddyz87@gmail.com>, 
- Mykola Lysenko <mykolal@fb.com>, 
- Alexei Starovoitov <ast@kernel.org>, 
- Daniel Borkmann <daniel@iogearbox.net>, 
- Martin KaFai Lau <martin.lau@linux.dev>, 
- Song Liu <song@kernel.org>, 
- Yonghong Song <yonghong.song@linux.dev>, 
- KP Singh <kpsingh@kernel.org>, 
- Stanislav Fomichev <sdf@google.com>, 
- Hao Luo <haoluo@google.com>, 
- Jiri Olsa <jolsa@kernel.org>, 
- Shuah Khan <shuah@kernel.org>, 
- Mykyta Yatsenko <yatsenko@meta.com>, 
- Miao Xu <miaxu@meta.com>, 
- Yuran Pereira <yuran.pereira@hotmail.com>, 
- Huacai Chen <chenhuacai@kernel.org>, 
- Tiezhu Yang <yangtiezhu@loongson.cn>, 
- Geliang Tang <tanggeliang@kylinos.cn>, 
- netdev@vger.kernel.org, 
- bpf@vger.kernel.org, 
- linux-kselftest@vger.kernel.org
-Message-ID: <667b1c8325bf1_54242089e@john.notmuch>
-In-Reply-To: <CANn89i+ET4U+4viDPq2vZhxeUT90kZz5mdh3XVqQhaAXnbs=rw@mail.gmail.com>
-References: <cover.1719302367.git.tanggeliang@kylinos.cn>
- <072709ce77b04dc77523d4e8763c1fb47bf0913d.1719302367.git.tanggeliang@kylinos.cn>
- <CANn89i+ET4U+4viDPq2vZhxeUT90kZz5mdh3XVqQhaAXnbs=rw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 1/4] skmsg: null check for sg_page in
- sk_msg_recvmsg
+To: zhengguoyong <zhenggy@chinatelecom.cn>, 
+ =?UTF-8?B?44CQ5aSW6YOo6LSm5Y+344CRIEpvaG4gRmFzdGFiZW5k?= <john.fastabend@gmail.com>, 
+ jakub@cloudflare.com, 
+ bpf@vger.kernel.org
+Message-ID: <667b1fab10204_5424208f@john.notmuch>
+In-Reply-To: <4cf6d911-9dc4-4588-be1f-cfee675e174e@chinatelecom.cn>
+References: <42dd5ee4-fb01-4b84-9418-65adb7480138@chinatelecom.cn>
+ <66706d48967f3_1c38c208e5@john.notmuch>
+ <4cf6d911-9dc4-4588-be1f-cfee675e174e@chinatelecom.cn>
+Subject: Re: [issue]: sockmap restrain send if receiver block
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -116,144 +89,63 @@ Content-Type: text/plain;
  charset=utf-8
 Content-Transfer-Encoding: quoted-printable
 
-Eric Dumazet wrote:
-> On Tue, Jun 25, 2024 at 10:25=E2=80=AFAM Geliang Tang <geliang@kernel.o=
-rg> wrote:
-> >
-> > From: Geliang Tang <tanggeliang@kylinos.cn>
-> >
-> > Run the following BPF selftests on Loongarch:
-> >
-> > ./test_progs -t sockmap_basic
-> >
-> > A Kernel panic occurs:
-> >
-> > '''
-> >  Oops[#1]:
-> >  CPU: 22 PID: 2824 Comm: test_progs Tainted: G           OE      6.10=
-.0-rc2+ #18
-> >  Hardware name: LOONGSON Dabieshan/Loongson-TC542F0, BIOS Loongson-UD=
-K2018-V4.0.11
-> >  pc 9000000004162774 ra 90000000048bf6c0 tp 90001000aa16c000 sp 90001=
-000aa16fb90
-> >  a0 0000000000000000 a1 0000000000000000 a2 0000000000000000 a3 90001=
-000aa16fd70
-> >  a4 0000000000000800 a5 0000000000000000 a6 000055557b63aae8 a7 00000=
-000000000cf
-> >  t0 0000000000000000 t1 0000000000004000 t2 0000000000000048 t3 00000=
-00000000000
-> >  t4 0000000000000001 t5 0000000000000002 t6 0000000000000001 t7 00000=
-00000000002
-> >  t8 0000000000000018 u0 9000000004856150 s9 0000000000000000 s0 00000=
-00000000000
-> >  s1 0000000000000000 s2 90001000aa16fd70 s3 0000000000000000 s4 00000=
-00000000000
-> >  s5 0000000000004000 s6 900010009284dc00 s7 0000000000000001 s8 90001=
-0009284dc00
-> >     ra: 90000000048bf6c0 sk_msg_recvmsg+0x120/0x560
-> >    ERA: 9000000004162774 copy_page_to_iter+0x74/0x1c0
-> >   CRMD: 000000b0 (PLV0 -IE -DA +PG DACF=3DCC DACM=3DCC -WE)
-> >   PRMD: 0000000c (PPLV0 +PIE +PWE)
-> >   EUEN: 00000007 (+FPE +SXE +ASXE -BTE)
-> >   ECFG: 00071c1d (LIE=3D0,2-4,10-12 VS=3D7)
-> >  ESTAT: 00010000 [PIL] (IS=3D ECode=3D1 EsubCode=3D0)
-> >   BADV: 0000000000000040
-> >   PRID: 0014c011 (Loongson-64bit, Loongson-3C5000)
-> >  Modules linked in: bpf_testmod(OE) xt_CHECKSUM xt_MASQUERADE xt_conn=
-track
-> >  Process test_progs (pid: 2824, threadinfo=3D0000000000863a31, task=3D=
-000000001cba0874)
-> >  Stack : 0000000000000001 fffffffffffffffc 0000000000000000 000000000=
-0000000
-> >          0000000000000018 0000000000000000 0000000000000000 900000000=
-48bf6c0
-> >          90000000052cd638 90001000aa16fd70 900010008bf51580 900010009=
-284f000
-> >          90000000049f2b90 900010009284f188 900010009284f178 900010008=
-61d4780
-> >          9000100084dccd00 0000000000000800 0000000000000007 fffffffff=
-ffffff2
-> >          000000000453e92f 90000000049aae34 90001000aa16fd60 900010009=
-284f000
-> >          0000000000000000 0000000000000000 900010008bf51580 900000000=
-49f2b90
-> >          0000000000000001 0000000000000000 9000100084dc3a10 900010009=
-284f1ac
-> >          90001000aa16fd40 0000555559953278 0000000000000001 000000000=
-0000000
-> >          90001000aa16fdc8 9000000005a5a000 90001000861d4780 000000000=
-0000800
-> >          ...
-> >  Call Trace:
-> >  [<9000000004162774>] copy_page_to_iter+0x74/0x1c0
-> >  [<90000000048bf6c0>] sk_msg_recvmsg+0x120/0x560
-> >  [<90000000049f2b90>] tcp_bpf_recvmsg_parser+0x170/0x4e0
-> >  [<90000000049aae34>] inet_recvmsg+0x54/0x100
-> >  [<900000000481ad5c>] sock_recvmsg+0x7c/0xe0
-> >  [<900000000481e1a8>] __sys_recvfrom+0x108/0x1c0
-> >  [<900000000481e27c>] sys_recvfrom+0x1c/0x40
-> >  [<9000000004c076ec>] do_syscall+0x8c/0xc0
-> >  [<9000000003731da4>] handle_syscall+0xc4/0x160
-> >
-> >  Code: 0010b09b  440125a0  0011df8d <28c10364> 0012b70c  00133305  00=
-13b1ac  0010dc84  00151585
-> >
-> >  ---[ end trace 0000000000000000 ]---
-> >  Kernel panic - not syncing: Fatal exception
-> >  Kernel relocated by 0x3510000
-> >   .text @ 0x9000000003710000
-> >   .data @ 0x9000000004d70000
-> >   .bss  @ 0x9000000006469400
-> >  ---[ end Kernel panic - not syncing: Fatal exception ]---
-> > '''
-> >
-> > This is because "sg_page(sge)" is NULL in that case. This patch adds =
-null
-> > check for it in sk_msg_recvmsg() to fix this error.
-> >
-> > Fixes: 604326b41a6f ("bpf, sockmap: convert to generic sk_msg interfa=
-ce")
-> > Signed-off-by: Geliang Tang <tanggeliang@kylinos.cn>
-> > ---
-> >  net/core/skmsg.c | 2 ++
-> >  1 file changed, 2 insertions(+)
-> >
-> > diff --git a/net/core/skmsg.c b/net/core/skmsg.c
-> > index fd20aae30be2..bafcc1e2eadf 100644
-> > --- a/net/core/skmsg.c
-> > +++ b/net/core/skmsg.c
-> > @@ -432,6 +432,8 @@ int sk_msg_recvmsg(struct sock *sk, struct sk_pso=
-ck *psock, struct msghdr *msg,
-> >                         sge =3D sk_msg_elem(msg_rx, i);
-> >                         copy =3D sge->length;
-> >                         page =3D sg_page(sge);
-> > +                       if (!page)
-> > +                               goto out;
-> >                         if (copied + copy > len)
-> >                                 copy =3D len - copied;
-> >                         copy =3D copy_page_to_iter(page, sge->offset,=
- copy, iter);
-> > --
-> > 2.43.0
-> >
+zhengguoyong wrote:
+> thanks for reply.
 > =
 
-> This looks pretty much random to me.
+> i mean the sk_msg with TCP protocol. in this case, sender use sk_stream=
+_memory_free()
+> to check if memory is free. and in __sk_stream_memory_free(), if
+> sk->sk_wmem_queued is bigger then sk->sk_sndbuf or sk
+> notsent_bytes(tp->write_seq - tp->snd_nxt) is too bigger then
+> __sk_stream_memory_free() will return false and do sk_stream_wait_memor=
+y().
 > =
 
-> Please find the root cause, instead of desperately trying to fix 'tests=
-'.
+> but in sk_msg mode, tcp_bpf_sendmsg() will not create skb structure and=
+ not use seq to
+> recording sending info=EF=BC=8Cso sk->sk_wmem_queued is not changed in =
+tcp_bpf_sendmsg() path,
+> and __sk_stream_memory_free() will always return true.
+> =
 
-If this happens then either we put a bad msg_rx on the queue see a few li=
-nes
-up and we need to sort out why that msg_rx was built. Or we walked off th=
-e
-end of a scatter gather list and need to see why this test isn't sufficie=
-nt?
+> in bpf_tcp_ingress() will copy the sender msg and charge it, and in
+> tcp_bpf_recvmsg(), it will uncharge the msg after sk_msg_recvmsg()
+> receive it from psock ingress_msg queue, and if receiver is not to read=
+ again
+> due to application bug, and sender continuous send, then the receiver
+> psock ingress_msg queue will continuous increase and cannot be uncharge=
+d
+> until tcp socket memory is not enough in the fllowing path.
+> =
 
-  } while ((i !=3D msg_rx->sg.end) && !sg_is_last(sge))
+> =C2=A0=C2=A0=C2=A0 tcp_bpf_sendmsg
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 tcp_bpf_send_verdict
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 tcp_=
+bpf_sendmsg_redir
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0 bpf_tcp_ingress
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 sk_wmem_schedule
 
-is this happening every time you run the command or did you run this for
-a long iteration and eventually hit this? I don't see why this would be
-specific to your arch though.=
+Shouldn't the sk_wmem_schedule push back through __sk_mem_schedule() and
+cause us to return a ENOMEM here? The ENOMEM then will free the msg and
+return ENOMEM all the way back through tcp_bpf_sendmsg and to the user
+eventually. =
+
+
+That sk_wmem_schedule() for ingress should be sk_rmem_schedule()?
+
+I think the fix is to ensure that if we try to bpf_tcp_ingress onto a
+receive socket that it pushes back if its memory limits are reached.
+
+> =
+
+> so if a sk_msg type sockmap receiver is block, then it may consume all =
+the
+> tcp socket memory and influence other tcp stream,
+> can we limit per sockmap tcp stream link sk->sk_sndbuf ?
+> =
+
+> thanks.=
 
