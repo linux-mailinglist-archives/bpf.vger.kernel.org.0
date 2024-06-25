@@ -1,265 +1,315 @@
-Return-Path: <bpf+bounces-33011-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-33012-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id CFD6B915D85
-	for <lists+bpf@lfdr.de>; Tue, 25 Jun 2024 05:56:28 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 87567915E21
+	for <lists+bpf@lfdr.de>; Tue, 25 Jun 2024 07:27:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5019E1F22492
-	for <lists+bpf@lfdr.de>; Tue, 25 Jun 2024 03:56:28 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DA7FFB2118B
+	for <lists+bpf@lfdr.de>; Tue, 25 Jun 2024 05:27:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 60F5613C918;
-	Tue, 25 Jun 2024 03:55:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7CECB145A0A;
+	Tue, 25 Jun 2024 05:27:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Xg5o8ziu"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WscYiCEy"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f174.google.com (mail-pf1-f174.google.com [209.85.210.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7112574BF5
-	for <bpf@vger.kernel.org>; Tue, 25 Jun 2024 03:55:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F358F1459F9
+	for <bpf@vger.kernel.org>; Tue, 25 Jun 2024 05:27:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719287758; cv=none; b=jNR/EwS3sx8dD0HAsHa6LNCxkkoz01mKcOJpuUeRXkAGDpYKY9MFdBUG4LXty07bCvjOq6fe6eESm9e12rU8nXUmp9a6pTc9b4KzStl1mM/kCdrpr2Z1XWDF9WgFVadjc0158KUlCNIHV2I0cozPKJO1554zdDHrkQofqwBUZ+o=
+	t=1719293268; cv=none; b=To/XC/8XlfAexi0iFfTdeimCr0vKBRFD7Olw1trh2RykLFLHsS8GGJ1nXCKzjv+4tqG08w9wO4ZoLO7LPh6CKfIO5ImmBP7Aa91whc6812VNdB6F+YPt4ULMyuAWIDlGDWHxLm9Hi7KtiojigQQn0gnTXdTISjksqjiqOp0or8M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719287758; c=relaxed/simple;
-	bh=zG4bKZUDeGvvF6xYLrWdbLTNx6HjQBPcsn8e/tb/zMs=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=eInckxD4eLAaRZlyskVShJkaqIcLJCncqyn1Kf7MdaLXnUdrAllwgguExnQpqbD15IVM1g+LWcMlxL2lWLCPCFod56+/MznsNAHgWG0/Jq1Vb7zx8Wh/nVDL0g8hv4+mAao8zdSL1WWbx50v/ttvIvnidTUVMRvDZURDwWad7Jk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Xg5o8ziu; arc=none smtp.client-ip=209.85.210.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f174.google.com with SMTP id d2e1a72fcca58-706680d3a25so1846031b3a.0
-        for <bpf@vger.kernel.org>; Mon, 24 Jun 2024 20:55:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1719287756; x=1719892556; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=UbirYgwod+538q6M4lgBm9PAcfLerWpLMOOiCD+vVU0=;
-        b=Xg5o8ziuOOwmGNGOxaNoBcRcavYoRhxoabUdDeR1/pYAggYBQglJ/xgEwGoRkRmq0T
-         vLWPvVSE3F/jWpMgPhi3xGstKQ9ppjtqKHy4+BdnsT42h59MoixxHB7OLMEJhJ185T8a
-         9A7lek6Tis493fcbYeWKOb6Lh9LFibKUD83xve0c1AhnU+AcVDcz8QvssbxMqk1ieYRm
-         QIo9xXv3ai9RHVeluSn1IfkF7lXpJJba0Ya6zFwhtZtEHduPp4LMz5KExlvq89IisW+B
-         NPaD4KrOokjfzj2jlSqskvlbkRFsiDUwtlfXw0+CTINv+/Vak/1nNoZGbkDkWjUj4jbc
-         zshg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1719287756; x=1719892556;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=UbirYgwod+538q6M4lgBm9PAcfLerWpLMOOiCD+vVU0=;
-        b=wz8Vjy4VoYrjDr09U/FiInUJTc8J2mE+gOCMKdSFTUkRKySwMYwfrWMObZ8Aa0zj5K
-         RlfSQRYBDnupbl7Kt/9N6uD1RpHKcwIaGDIJ+WGfL9rasooy6T5rY7zTkOQXTwhxaJUr
-         VMm6VvXX8fwPT8ay4Q1KwmV2CNUrSW7wzZ0kR10zPqK+aJA5ChKI8z0V/u3V8RRQqOrq
-         SaHce/rzweupQB5Qm2YGKnke+qRU2rtQc3Ip3MCFWXg/t8pkCKZlVd9z0d5p6qUOrK6S
-         jOciGZd7crDpFZJWnx53xLq9uDmjCxNMHEHx9LEeu02+Fv6Uk+Itkm/3qtGsDZ8Dyodl
-         mENA==
-X-Forwarded-Encrypted: i=1; AJvYcCW1Mat7wA4VcHxH5N+RQnRrq13q8bPp7bUvPMKf+ynYURzYzANX9troKrtzAYKXG0/AB4MWGlpVdPk/8458wB9KTJSO
-X-Gm-Message-State: AOJu0Yyy7AOsodxlKae3lw1In10410yspig1M8927c3Ch7QolxM5wm0W
-	1MyiWYzRUsAe0nTrgbOKlH3+w3djIf4semJ7g419vaDBxgB1XZ3GIll3XLQPn1jgdD+xj+h6mgA
-	DwwpGMiUULnGPZYYCoic6QTNGmJM=
-X-Google-Smtp-Source: AGHT+IFX2Null8PzgEBu/TSlKmyEyCjnn1mTumZLMqjaHn+EGSQPKkOXdyypVkk7cwvv5V+Tl9w8EO7dtgy6RlSaq9c=
-X-Received: by 2002:a05:6a20:b91e:b0:1bc:f2f7:cf73 with SMTP id
- adf61e73a8af0-1bcf464560amr5214377637.55.1719287755576; Mon, 24 Jun 2024
- 20:55:55 -0700 (PDT)
+	s=arc-20240116; t=1719293268; c=relaxed/simple;
+	bh=5EJh8etRIQNnAAIADoqfuA1TBLItK4lUldVuGM+WzUw=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=HGc83ayKYvIutSbD0OE3KGwV9lGPmYpeRT6v3+SFs6pIb1R0phpEcbs22Psw2MWQnnxSLMtMY7yguttoWuO8cFlXgLhjwGzcOO/C0itEP9eB30MzJw1t99RYA2uiIbfub+7BpMq2Kst5Ro1k+pFdOUmKepbUF+Yj3H4fVFvWEvQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WscYiCEy; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 381AEC32782;
+	Tue, 25 Jun 2024 05:27:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1719293267;
+	bh=5EJh8etRIQNnAAIADoqfuA1TBLItK4lUldVuGM+WzUw=;
+	h=From:To:Cc:Subject:Date:From;
+	b=WscYiCEyNyekbMx53kRs8kxbTY9Etehe2YjjJ349aI4sVgDOcgNMvCzio2BtxrTkn
+	 sZ+qvtP9/8yG4R0A5vCU0E9eUl3HL7g6wlL3HFg2vJ4IUkK82XrQtnfBVPUn0UcN5x
+	 X1gF1FuPMNsB0h6AA8bk7JOj7uNLhqyQbKO0jCXRWpSe6h+PxFULyhFaFWzO1vvc+3
+	 DJoCyo4m7BEcirZsSnWLX9t1ZO15KEVHyuzwH2fj7MzomG+Uib9agI6Ag6cAH1/oCK
+	 CEWIUMYylaykx0Jp19UYbzt1T3dCemttAgjt+c0uILuUdlZv0RoqrgBpbPLo0ZJdBA
+	 H9FVM0menchqQ==
+From: Jiri Olsa <jolsa@kernel.org>
+To: Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>
+Cc: bpf@vger.kernel.org,
+	Martin KaFai Lau <kafai@fb.com>,
+	Song Liu <songliubraving@fb.com>,
+	Yonghong Song <yhs@fb.com>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@chromium.org>,
+	Stanislav Fomichev <sdf@google.com>,
+	Hao Luo <haoluo@google.com>
+Subject: [PATCH bpf-next] selftests/bpf: Move ARRAY_SIZE to bpf_misc.h
+Date: Tue, 25 Jun 2024 07:27:41 +0200
+Message-ID: <20240625052741.3640731-1-jolsa@kernel.org>
+X-Mailer: git-send-email 2.45.2
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <db144689-79c8-6cfb-6a11-983958b28955@huaweicloud.com>
- <e51d4765-25ae-28d6-e141-e7272faa439e@huaweicloud.com> <63cb33d1-6930-0555-dd43-7dd73a786f75@huaweicloud.com>
- <CAADnVQLAQMV21M99xif1OZnyS+vyHpLJDb31c1b+s3fhrCLEvQ@mail.gmail.com>
- <b3fab6ae-1425-48a5-1faa-bb88d44a08f1@huaweicloud.com> <CAADnVQKoriZJn7B2+7O6h+Ebg_0VgViU-XXGMQ0ky6ysEJLFkw@mail.gmail.com>
- <3ec5eed2-fe42-5eef-f8b6-7d6289e37ed8@huaweicloud.com> <CAADnVQKJOc-qxFQmc8An6gp6Bq07LSGLTezQeQRX82TS-H4zvg@mail.gmail.com>
- <57e3df33-f49b-5c8b-82b3-3a8c63a9b37e@huaweicloud.com> <CAADnVQ+2JoqJJvinPvKA+4Nm8F9rTrpXBdq4SmbTeq_9bw=mwg@mail.gmail.com>
- <a3eb33c4-b84f-5386-291c-c43d77b39c48@huaweicloud.com> <CAEf4BzZPno3m+G0v8ybxb=SMNbmqofCa5aa_Ukhh2OnZO9NxXw@mail.gmail.com>
- <00605f3d-7cf9-cf83-b611-a742f44a80aa@huaweicloud.com>
-In-Reply-To: <00605f3d-7cf9-cf83-b611-a742f44a80aa@huaweicloud.com>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Mon, 24 Jun 2024 20:55:43 -0700
-Message-ID: <CAEf4BzYWWrrEGcHjVSOMeBvsO0ymk56S4iMG_WSwQJc6rxwmzw@mail.gmail.com>
-Subject: Re: APIs for qp-trie //Re: Question: Is it OK to assume the address
- of bpf_dynptr_kern will be 8-bytes aligned and reuse the lowest bits to save
- extra info ?
-To: Hou Tao <houtao@huaweicloud.com>
-Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, bpf <bpf@vger.kernel.org>, 
-	Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Mon, Jun 24, 2024 at 7:12=E2=80=AFAM Hou Tao <houtao@huaweicloud.com> wr=
-ote:
->
-> Hi,
->
-> Sorry to resurrect the old thread to continue the discussion of APIs for
-> qp-trie.
->
-> On 8/26/2023 2:33 AM, Andrii Nakryiko wrote:
-> > On Tue, Aug 22, 2023 at 6:12=E2=80=AFAM Hou Tao <houtao@huaweicloud.com=
-> wrote:
-> >> Hi,
-> >>
->
-> SNIP
->
-> >> updated to allow using dynptr as map key for qp-trie.
-> >>> And that's the problem I just mentioned.
-> >>> PTR_TO_MAP_KEY is special. I don't think we should hack it to also
-> >>> mean ARG_PTR_TO_DYNPTR depending on the first argument (map type).
-> >> Sorry for misunderstanding your reply. But before switch to the kfuncl
-> >> way, could you please point me to some code or function which shows th=
-e
-> >> specialty of PTR_MAP_KEY ?
-> >>
-> >>
-> > Search in kernel/bpf/verifier.c how PTR_TO_MAP_KEY is handled. The
-> > logic assumes that there is associated struct bpf_map * pointer from
-> > which we know fixed-sized key length.
-> >
-> > But getting back to the topic at hand. I vaguely remember discussion
-> > we had, but it would be good if you could summarize it again here to
-> > avoid talking past each other. What is the bpf_map_ops changes you
-> > were thinking to do? How bpf_attr will look like? How BPF-side API for
-> > lookup/delete/update will look like? And then let's go from there?
-> > Thanks!
-> >
-> > .
->
-> The APIs for qp-trie are composed of the followings 5 parts:
->
-> (1) map definition for qp-trie
->
-> The key is bpf_dynptr and map_extra specifies the max length of key.
->
-> struct {
->     __uint(type, BPF_MAP_TYPE_QP_TRIE);
->     __type(key, struct bpf_dynptr);
+ARRAY_SIZE is used on multiple places, move its definition in
+bpf_misc.h header.
 
-I'm not sure we need `struct bpf_dynptr` as the key type. We can just
-say that key_size has to be zero, and actual keys are variable-sized.
+Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+---
+ tools/testing/selftests/bpf/progs/bpf_misc.h                 | 2 ++
+ tools/testing/selftests/bpf/progs/iters.c                    | 2 --
+ tools/testing/selftests/bpf/progs/kprobe_multi_session.c     | 3 +--
+ tools/testing/selftests/bpf/progs/linked_list.c              | 5 +----
+ tools/testing/selftests/bpf/progs/netif_receive_skb.c        | 5 +----
+ tools/testing/selftests/bpf/progs/profiler.inc.h             | 5 +----
+ tools/testing/selftests/bpf/progs/setget_sockopt.c           | 5 +----
+ tools/testing/selftests/bpf/progs/test_bpf_ma.c              | 4 ----
+ tools/testing/selftests/bpf/progs/test_sysctl_loop1.c        | 5 +----
+ tools/testing/selftests/bpf/progs/test_sysctl_loop2.c        | 5 +----
+ tools/testing/selftests/bpf/progs/test_sysctl_prog.c         | 5 +----
+ .../testing/selftests/bpf/progs/test_tcp_custom_syncookie.c  | 1 +
+ .../testing/selftests/bpf/progs/test_tcp_custom_syncookie.h  | 2 --
+ .../testing/selftests/bpf/progs/verifier_subprog_precision.c | 2 --
+ 14 files changed, 11 insertions(+), 40 deletions(-)
 
-Alternatively, we can treat key_size as "maximum key size", any
-attempt to use longer keys will be rejected.
+diff --git a/tools/testing/selftests/bpf/progs/bpf_misc.h b/tools/testing/selftests/bpf/progs/bpf_misc.h
+index c0280bd2f340..ac6ab1b977a1 100644
+--- a/tools/testing/selftests/bpf/progs/bpf_misc.h
++++ b/tools/testing/selftests/bpf/progs/bpf_misc.h
+@@ -140,4 +140,6 @@
+ /* make it look to compiler like value is read and written */
+ #define __sink(expr) asm volatile("" : "+g"(expr))
+ 
++#define ARRAY_SIZE(x) (sizeof(x) / sizeof((x)[0]))
++
+ #endif
+diff --git a/tools/testing/selftests/bpf/progs/iters.c b/tools/testing/selftests/bpf/progs/iters.c
+index fe65e0952a1e..16bdc3e25591 100644
+--- a/tools/testing/selftests/bpf/progs/iters.c
++++ b/tools/testing/selftests/bpf/progs/iters.c
+@@ -7,8 +7,6 @@
+ #include "bpf_misc.h"
+ #include "bpf_compiler.h"
+ 
+-#define ARRAY_SIZE(x) (int)(sizeof(x) / sizeof((x)[0]))
+-
+ static volatile int zero = 0;
+ 
+ int my_pid;
+diff --git a/tools/testing/selftests/bpf/progs/kprobe_multi_session.c b/tools/testing/selftests/bpf/progs/kprobe_multi_session.c
+index bbba9eb46551..bd8b7fb7061e 100644
+--- a/tools/testing/selftests/bpf/progs/kprobe_multi_session.c
++++ b/tools/testing/selftests/bpf/progs/kprobe_multi_session.c
+@@ -4,8 +4,7 @@
+ #include <bpf/bpf_tracing.h>
+ #include <stdbool.h>
+ #include "bpf_kfuncs.h"
+-
+-#define ARRAY_SIZE(x) (int)(sizeof(x) / sizeof((x)[0]))
++#include "bpf_misc.h"
+ 
+ char _license[] SEC("license") = "GPL";
+ 
+diff --git a/tools/testing/selftests/bpf/progs/linked_list.c b/tools/testing/selftests/bpf/progs/linked_list.c
+index f69bf3e30321..421f40835acd 100644
+--- a/tools/testing/selftests/bpf/progs/linked_list.c
++++ b/tools/testing/selftests/bpf/progs/linked_list.c
+@@ -4,10 +4,7 @@
+ #include <bpf/bpf_helpers.h>
+ #include <bpf/bpf_core_read.h>
+ #include "bpf_experimental.h"
+-
+-#ifndef ARRAY_SIZE
+-#define ARRAY_SIZE(x) (int)(sizeof(x) / sizeof((x)[0]))
+-#endif
++#include "bpf_misc.h"
+ 
+ #include "linked_list.h"
+ 
+diff --git a/tools/testing/selftests/bpf/progs/netif_receive_skb.c b/tools/testing/selftests/bpf/progs/netif_receive_skb.c
+index c0062645fc68..9e067dcbf607 100644
+--- a/tools/testing/selftests/bpf/progs/netif_receive_skb.c
++++ b/tools/testing/selftests/bpf/progs/netif_receive_skb.c
+@@ -5,6 +5,7 @@
+ #include <bpf/bpf_helpers.h>
+ #include <bpf/bpf_tracing.h>
+ #include <bpf/bpf_core_read.h>
++#include "bpf_misc.h"
+ 
+ #include <errno.h>
+ 
+@@ -23,10 +24,6 @@ bool skip = false;
+ #define BADPTR			0
+ #endif
+ 
+-#ifndef ARRAY_SIZE
+-#define ARRAY_SIZE(x)	(sizeof(x) / sizeof((x)[0]))
+-#endif
+-
+ struct {
+ 	__uint(type, BPF_MAP_TYPE_PERCPU_ARRAY);
+ 	__uint(max_entries, 1);
+diff --git a/tools/testing/selftests/bpf/progs/profiler.inc.h b/tools/testing/selftests/bpf/progs/profiler.inc.h
+index 6957d9f2805e..8bd1ebd7d6af 100644
+--- a/tools/testing/selftests/bpf/progs/profiler.inc.h
++++ b/tools/testing/selftests/bpf/progs/profiler.inc.h
+@@ -9,6 +9,7 @@
+ #include "err.h"
+ #include "bpf_experimental.h"
+ #include "bpf_compiler.h"
++#include "bpf_misc.h"
+ 
+ #ifndef NULL
+ #define NULL 0
+@@ -133,10 +134,6 @@ struct {
+ 	__uint(max_entries, 16);
+ } disallowed_exec_inodes SEC(".maps");
+ 
+-#ifndef ARRAY_SIZE
+-#define ARRAY_SIZE(arr) (int)(sizeof(arr) / sizeof(arr[0]))
+-#endif
+-
+ static INLINE bool IS_ERR(const void* ptr)
+ {
+ 	return IS_ERR_VALUE((unsigned long)ptr);
+diff --git a/tools/testing/selftests/bpf/progs/setget_sockopt.c b/tools/testing/selftests/bpf/progs/setget_sockopt.c
+index 7a438600ae98..60518aed1ffc 100644
+--- a/tools/testing/selftests/bpf/progs/setget_sockopt.c
++++ b/tools/testing/selftests/bpf/progs/setget_sockopt.c
+@@ -6,10 +6,7 @@
+ #include <bpf/bpf_core_read.h>
+ #include <bpf/bpf_helpers.h>
+ #include <bpf/bpf_tracing.h>
+-
+-#ifndef ARRAY_SIZE
+-#define ARRAY_SIZE(x) (sizeof(x) / sizeof((x)[0]))
+-#endif
++#include "bpf_misc.h"
+ 
+ extern unsigned long CONFIG_HZ __kconfig;
+ 
+diff --git a/tools/testing/selftests/bpf/progs/test_bpf_ma.c b/tools/testing/selftests/bpf/progs/test_bpf_ma.c
+index 3494ca30fa7f..4a4e0b8d9b72 100644
+--- a/tools/testing/selftests/bpf/progs/test_bpf_ma.c
++++ b/tools/testing/selftests/bpf/progs/test_bpf_ma.c
+@@ -7,10 +7,6 @@
+ #include "bpf_experimental.h"
+ #include "bpf_misc.h"
+ 
+-#ifndef ARRAY_SIZE
+-#define ARRAY_SIZE(x) (sizeof(x) / sizeof((x)[0]))
+-#endif
+-
+ struct generic_map_value {
+ 	void *data;
+ };
+diff --git a/tools/testing/selftests/bpf/progs/test_sysctl_loop1.c b/tools/testing/selftests/bpf/progs/test_sysctl_loop1.c
+index 7f74077d6622..548660e299a5 100644
+--- a/tools/testing/selftests/bpf/progs/test_sysctl_loop1.c
++++ b/tools/testing/selftests/bpf/progs/test_sysctl_loop1.c
+@@ -10,10 +10,7 @@
+ #include <bpf/bpf_helpers.h>
+ 
+ #include "bpf_compiler.h"
+-
+-#ifndef ARRAY_SIZE
+-#define ARRAY_SIZE(x) (sizeof(x) / sizeof((x)[0]))
+-#endif
++#include "bpf_misc.h"
+ 
+ /* tcp_mem sysctl has only 3 ints, but this test is doing TCP_MEM_LOOPS */
+ #define TCP_MEM_LOOPS 28  /* because 30 doesn't fit into 512 bytes of stack */
+diff --git a/tools/testing/selftests/bpf/progs/test_sysctl_loop2.c b/tools/testing/selftests/bpf/progs/test_sysctl_loop2.c
+index 68a75436e8af..81249d119a8b 100644
+--- a/tools/testing/selftests/bpf/progs/test_sysctl_loop2.c
++++ b/tools/testing/selftests/bpf/progs/test_sysctl_loop2.c
+@@ -10,10 +10,7 @@
+ #include <bpf/bpf_helpers.h>
+ 
+ #include "bpf_compiler.h"
+-
+-#ifndef ARRAY_SIZE
+-#define ARRAY_SIZE(x) (sizeof(x) / sizeof((x)[0]))
+-#endif
++#include "bpf_misc.h"
+ 
+ /* tcp_mem sysctl has only 3 ints, but this test is doing TCP_MEM_LOOPS */
+ #define TCP_MEM_LOOPS 20  /* because 30 doesn't fit into 512 bytes of stack */
+diff --git a/tools/testing/selftests/bpf/progs/test_sysctl_prog.c b/tools/testing/selftests/bpf/progs/test_sysctl_prog.c
+index efc3c61f7852..bbdd08764789 100644
+--- a/tools/testing/selftests/bpf/progs/test_sysctl_prog.c
++++ b/tools/testing/selftests/bpf/progs/test_sysctl_prog.c
+@@ -10,6 +10,7 @@
+ #include <bpf/bpf_helpers.h>
+ 
+ #include "bpf_compiler.h"
++#include "bpf_misc.h"
+ 
+ /* Max supported length of a string with unsigned long in base 10 (pow2 - 1). */
+ #define MAX_ULONG_STR_LEN 0xF
+@@ -17,10 +18,6 @@
+ /* Max supported length of sysctl value string (pow2). */
+ #define MAX_VALUE_STR_LEN 0x40
+ 
+-#ifndef ARRAY_SIZE
+-#define ARRAY_SIZE(x) (sizeof(x) / sizeof((x)[0]))
+-#endif
+-
+ const char tcp_mem_name[] = "net/ipv4/tcp_mem";
+ static __always_inline int is_tcp_mem(struct bpf_sysctl *ctx)
+ {
+diff --git a/tools/testing/selftests/bpf/progs/test_tcp_custom_syncookie.c b/tools/testing/selftests/bpf/progs/test_tcp_custom_syncookie.c
+index c8e4553648bf..44ee0d037f95 100644
+--- a/tools/testing/selftests/bpf/progs/test_tcp_custom_syncookie.c
++++ b/tools/testing/selftests/bpf/progs/test_tcp_custom_syncookie.c
+@@ -9,6 +9,7 @@
+ #include "bpf_kfuncs.h"
+ #include "test_siphash.h"
+ #include "test_tcp_custom_syncookie.h"
++#include "bpf_misc.h"
+ 
+ #define MAX_PACKET_OFF 0xffff
+ 
+diff --git a/tools/testing/selftests/bpf/progs/test_tcp_custom_syncookie.h b/tools/testing/selftests/bpf/progs/test_tcp_custom_syncookie.h
+index 29a6a53cf229..f8b1b7e68d2e 100644
+--- a/tools/testing/selftests/bpf/progs/test_tcp_custom_syncookie.h
++++ b/tools/testing/selftests/bpf/progs/test_tcp_custom_syncookie.h
+@@ -7,8 +7,6 @@
+ #define __packed __attribute__((__packed__))
+ #define __force
+ 
+-#define ARRAY_SIZE(arr)	(sizeof(arr) / sizeof((arr)[0]))
+-
+ #define swap(a, b)				\
+ 	do {					\
+ 		typeof(a) __tmp = (a);		\
+diff --git a/tools/testing/selftests/bpf/progs/verifier_subprog_precision.c b/tools/testing/selftests/bpf/progs/verifier_subprog_precision.c
+index 4a58e0398e72..6a6fad625f7e 100644
+--- a/tools/testing/selftests/bpf/progs/verifier_subprog_precision.c
++++ b/tools/testing/selftests/bpf/progs/verifier_subprog_precision.c
+@@ -8,8 +8,6 @@
+ #include "bpf_misc.h"
+ #include <../../../tools/include/linux/filter.h>
+ 
+-#define ARRAY_SIZE(x) (sizeof(x) / sizeof(x[0]))
+-
+ int vals[] SEC(".data.vals") = {1, 2, 3, 4};
+ 
+ __naked __noinline __used
+-- 
+2.45.2
 
-But in either case "struct bpf_dynptr" as key type seems wrong to me.
-
-
->     __type(value, unsigned int);
->     __uint(map_flags, BPF_F_NO_PREALLOC);
->     __uint(map_extra, 1024);
-> } qp_trie SEC(".maps");
->
-> (2) bpf_attr
->
-> Add key_sz & next_key_sz into anonymous struct to support map with
-> variable-size key. We could add value_sz if the map with variable-size
-> value is supported in the future.
->
->         struct { /* anonymous struct used by BPF_MAP_*_ELEM commands */
->                 __u32           map_fd;
->                 __aligned_u64   key;
->                 union {
->                         __aligned_u64 value;
->                         __aligned_u64 next_key;
->                 };
->                 __u64           flags;
->                 __u32           key_sz;
->                 __u32           next_key_sz;
->         };
->
-
-Yep, this seems inevitable. And yes, value_sz seems like a reasonable
-thing to have. It might be an option/flag whether QP-trie has
-fixed-sized or variable-sized value, I guess. But we can get there
-after all the other things are figured out.
-
-> (3) libbpf API
->
-> Add bpf_map__get_next_sized_key() to high level APIs.
-
-All the *_sized_* names are... unfortunate, tbh. I'm not sure what's
-the right naming, but "sized" in the middle doesn't seem that. I think
-it should be a uniform suffix. Maybe something like "_varsz",
-"_varlen", or at least "_sized" (but as a suffix)?...
-
->
-> LIBBPF_API int bpf_map__get_next_sized_key(const struct bpf_map *map,
->                                            const void *cur_key,
->                                            size_t cur_key_sz,
->                                            void *next_key, size_t
-> *next_key_sz);
->
-> Add
-> bpf_map_update_sized_elem()/bpf_map_lookup_sized_elem()/bpf_map_delete_si=
-zed_elem()/bpf_map_get_next_sized_key()
-> to low level APIs.
-> These APIs have already considered the case in which map has
-> variable-size value, so there will be no need to add other new APIs to
-> support such case.
->
-> LIBBPF_API int bpf_map_update_sized_elem(int fd, const void *key, size_t
-> key_sz,
->                                          const void *value, size_t value_=
-sz,
->                                          __u64 flags);
-> LIBBPF_API int bpf_map_lookup_sized_elem(int fd, const void *key, size_t
-> key_sz,
->                                          void *value, size_t *value_sz,
->                                          __u64 flags);
-> LIBBPF_API int bpf_map_delete_sized_elem(int fd, const void *key, size_t
-> key_sz,
->                                          __u64 flags);
-> LIBBPF_API int bpf_map_get_next_sized_key(int fd,
->                                           const void *key, size_t key_sz,
->                                           void *next_key, size_t
-> *next_key_sz);
->
-> (4) bpf_map_ops
->
-> Update the arguments for map_get_next_key()/map_lookup_elem_sys_only().
-> Add map_update_elem_sys_only()/map_delete_elem_sys_only() into bpf_map_op=
-s.
->
-> Updating map_update_elem()/map_delete_elem() is also fine, but it may
-> introduce too much churn and need to pass map->key_size to these APIs
-> for existing callers.
->
-
-We can have a protocol that key_size and value_size might be zero for
-fixed-sized maps, in which case key/value size is not
-checked/enforced, right?
-
-I think it's much better to keep one universal interface that works
-for both fixed- and variable-sized map (especially that we can
-technically have maps where fixed-sized or variable-sized is a matter
-of choice and some map_flag value).
-
-> struct bpf_map_ops {
->         int (*map_get_next_key)(struct bpf_map *map, void *key, u32
-> key_size, void *next_key, u32 *next_key_size);
->         void *(*map_lookup_elem_sys_only)(struct bpf_map *map, void
-> *key, u32 key_size);
->
->         int (*map_update_elem_sys_only)(struct bpf_map *map, void *key,
-> u32 key_size, void *value, u64 flags);
->         int (*map_delete_elem_sys_only)(struct bpf_map *map, void *key,
-> u32 key_size);
-> };
->
-> (5) API for bpf program
->
-> Instead of supporting bpf_dynptr as ARG_PTR_TO_MAP_KEY, will add three
-> new kfuncs to support lookup/update/deletion operation on qp-trie.
->
-
-hopefully those won't be qp-trie specific? Also, are you planning to
-have only key variable-sized or value as well?
-
->
 
