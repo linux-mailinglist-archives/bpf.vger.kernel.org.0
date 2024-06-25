@@ -1,95 +1,46 @@
-Return-Path: <bpf+bounces-33058-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-33059-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5F8CD916A2D
-	for <lists+bpf@lfdr.de>; Tue, 25 Jun 2024 16:25:00 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 26F42916A68
+	for <lists+bpf@lfdr.de>; Tue, 25 Jun 2024 16:31:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D9C481F21160
-	for <lists+bpf@lfdr.de>; Tue, 25 Jun 2024 14:24:59 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C55691F2471C
+	for <lists+bpf@lfdr.de>; Tue, 25 Jun 2024 14:31:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A77BE16C445;
-	Tue, 25 Jun 2024 14:24:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="s29fdSkT";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="Wr7OZJAl";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="s29fdSkT";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="Wr7OZJAl"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 897BF16D9A4;
+	Tue, 25 Jun 2024 14:29:54 +0000 (UTC)
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9212247A64;
-	Tue, 25 Jun 2024 14:24:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5126416C68B;
+	Tue, 25 Jun 2024 14:29:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.188
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719325492; cv=none; b=DD5/YHyfYFbRpIKIWRTE8cG0LmGVGiKIfCUZs2WItj2/anuRG1jfDB+4f6qRmr19Ci0Ndp2ZzKX64u1rUPn+UJa2jcN0YmUS9VloHNhz71VENc/pP37G1uLBrWTPHWUg02PVZ4t94A6KGIdl9uBkPELJQpa0bgyTBco+meEcykc=
+	t=1719325794; cv=none; b=sl2OJ76IhOzR26h2+aBu2ZHvTab2Y5Bd9PPfO1akSf57/ePnxlu85HQCLyKXICaSmDoWJnaoe7syCxx0PqNnMyDRFf8RE+NXXWdamflF4FwhkrYFe+XfZBvaPombmHqzq8s+dAbyGRKTzU56p/LtDa7OyhfHuoGnMRHIh5yKnBI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719325492; c=relaxed/simple;
-	bh=Ut9on25SCqJI9MCJT7n6rkIK9q2DZMKn0vIatI+tcYc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=nZUjGSBJAh/bcC6Ww+whGdc6Qg4UyIRYAhGSOLmJihC2X7U6O0VHLmPGurk9JgUvMXbhHPbO1fZ4HZOcTLaeDI9dZH8jXtVMVLCOfEMR7w/HJgp+Yic8V+cf+zFfdpw2R9lI862SXNnQ9LGhk0NNK0lumTMMQ1T2HwhvMhLusOg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=s29fdSkT; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=Wr7OZJAl; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=s29fdSkT; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=Wr7OZJAl; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id C75211F889;
-	Tue, 25 Jun 2024 14:24:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1719325488; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=yuEJ34JVFFiDDuu65qHBfAWBmRhDid8UKlEwTuuVx8A=;
-	b=s29fdSkTlsRdgf37UqsEcd8ui21AXmEBqS5RSDlmuZ6rbUu+/50o4fbmtHe19UAkEcuPSG
-	n1ALlXdgXFWHp2YSo3BajTcGwPsn3hH/aFJQGhpah7W0W5TaWvzgTgOJuV92NgmNAzYHV0
-	0kbMgPcYedfDkEIBIPjcuVY3I4dhBak=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1719325488;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=yuEJ34JVFFiDDuu65qHBfAWBmRhDid8UKlEwTuuVx8A=;
-	b=Wr7OZJAlcY/mTO9S5s+V9PPtP9a53neExu8myhnt1ms5bC+kXdbEOWwqQda3hSRaF4kiY9
-	1TzvqBjqTBbzvkDg==
-Authentication-Results: smtp-out2.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1719325488; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=yuEJ34JVFFiDDuu65qHBfAWBmRhDid8UKlEwTuuVx8A=;
-	b=s29fdSkTlsRdgf37UqsEcd8ui21AXmEBqS5RSDlmuZ6rbUu+/50o4fbmtHe19UAkEcuPSG
-	n1ALlXdgXFWHp2YSo3BajTcGwPsn3hH/aFJQGhpah7W0W5TaWvzgTgOJuV92NgmNAzYHV0
-	0kbMgPcYedfDkEIBIPjcuVY3I4dhBak=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1719325488;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=yuEJ34JVFFiDDuu65qHBfAWBmRhDid8UKlEwTuuVx8A=;
-	b=Wr7OZJAlcY/mTO9S5s+V9PPtP9a53neExu8myhnt1ms5bC+kXdbEOWwqQda3hSRaF4kiY9
-	1TzvqBjqTBbzvkDg==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 9E85013A9A;
-	Tue, 25 Jun 2024 14:24:48 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id QJVZJjDTemaMKwAAD6G6ig
-	(envelope-from <vbabka@suse.cz>); Tue, 25 Jun 2024 14:24:48 +0000
-Message-ID: <78177ff2-e140-4e81-9b2a-be5bece34cfc@suse.cz>
-Date: Tue, 25 Jun 2024 16:24:48 +0200
+	s=arc-20240116; t=1719325794; c=relaxed/simple;
+	bh=3RVvHeyAWipkeVyMwWIsWzeZ9VvPaM9h3uVyhNJkd/U=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=XGHmzUyYdwwJn4J+1zeNLU5hF8egu9wjqtIczR2kvHGQZ5j/ZYZw8siFbHcy30a+x2Wss6GIGfjQZtafpe1iSefI5NzI87SEfGx5tJYm009QHnnfe/a5HqaV3v08ugyBwVdfDxXNnj6ELb11o0ZGkpnl5u+1Bhng+1RGb+Sh9bY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.188
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.163.252])
+	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4W7nHg0Vvxzddj8;
+	Tue, 25 Jun 2024 22:28:15 +0800 (CST)
+Received: from kwepemd100013.china.huawei.com (unknown [7.221.188.163])
+	by mail.maildlp.com (Postfix) with ESMTPS id 8F05F180085;
+	Tue, 25 Jun 2024 22:29:48 +0800 (CST)
+Received: from [10.67.109.79] (10.67.109.79) by kwepemd100013.china.huawei.com
+ (7.221.188.163) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1258.34; Tue, 25 Jun
+ 2024 22:29:47 +0800
+Message-ID: <b5f49ae4-a905-4c64-8918-83aa53d3dbcd@huawei.com>
+Date: Tue, 25 Jun 2024 22:29:47 +0800
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
@@ -97,170 +48,138 @@ List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 6/7] mm, slab: add static key for should_failslab()
+Subject: Re: [PATCH -next] cgroup: fix uaf when proc_cpuset_show
+To: Waiman Long <longman@redhat.com>, =?UTF-8?Q?Michal_Koutn=C3=BD?=
+	<mkoutny@suse.com>
+CC: <tj@kernel.org>, <lizefan.x@bytedance.com>, <hannes@cmpxchg.org>,
+	<bpf@vger.kernel.org>, <cgroups@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>
+References: <20240622113814.120907-1-chenridong@huawei.com>
+ <19648b9c-6df7-45cd-a5ae-624a3e4d860f@redhat.com>
+ <52f72d1d-602e-4dca-85a3-adade925b056@huawei.com>
+ <71a9cc3a-1b58-4051-984b-dd4f18dabf84@redhat.com>
+ <8f83ecb3-4afa-4e0b-be37-35b168eb3c7c@huawei.com>
+ <ee30843f-2579-4dcf-9688-6541fd892678@redhat.com>
+ <3322ce46-78a1-45c5-ad07-a982dec21c8e@huawei.com>
+ <gke4hn67e2js2wcia4gopr6u26uy5epwpu7r6sepjwvp5eetql@nuwvwzg2k4dy>
+ <920bbfaa-bb76-4aa1-bd07-9a552e3bfdf2@huawei.com>
+ <80e87513-aa48-4548-893e-ed339690c941@redhat.com>
 Content-Language: en-US
-To: Akinobu Mita <akinobu.mita@gmail.com>, Christoph Lameter <cl@linux.com>,
- David Rientjes <rientjes@google.com>, Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
- "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
- Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
- "David S. Miller" <davem@davemloft.net>,
- Masami Hiramatsu <mhiramat@kernel.org>, Steven Rostedt
- <rostedt@goodmis.org>, Mark Rutland <mark.rutland@arm.com>
-Cc: Jiri Olsa <jolsa@kernel.org>, Roman Gushchin <roman.gushchin@linux.dev>,
- Hyeonggon Yoo <42.hyeyoo@gmail.com>, linux-kernel@vger.kernel.org,
- linux-mm@kvack.org, bpf@vger.kernel.org, linux-trace-kernel@vger.kernel.org
-References: <20240620-fault-injection-statickeys-v2-0-e23947d3d84b@suse.cz>
- <20240620-fault-injection-statickeys-v2-6-e23947d3d84b@suse.cz>
-From: Vlastimil Babka <vbabka@suse.cz>
-Autocrypt: addr=vbabka@suse.cz; keydata=
- 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
- EP+ylKVEKb0Q2A==
-In-Reply-To: <20240620-fault-injection-statickeys-v2-6-e23947d3d84b@suse.cz>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Score: -2.79
-X-Spam-Level: 
-X-Spam-Flag: NO
-X-Spamd-Result: default: False [-2.79 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	SUSPICIOUS_RECIPS(1.50)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	XM_UA_NO_VERSION(0.01)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	FREEMAIL_TO(0.00)[gmail.com,linux.com,google.com,kernel.org,iogearbox.net,linux.ibm.com,intel.com,davemloft.net,goodmis.org,arm.com];
-	ARC_NA(0.00)[];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	RCPT_COUNT_TWELVE(0.00)[19];
-	MIME_TRACE(0.00)[0:+];
-	FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	FREEMAIL_CC(0.00)[kernel.org,linux.dev,gmail.com,vger.kernel.org,kvack.org];
-	RCVD_TLS_ALL(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	TO_DN_SOME(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	TAGGED_RCPT(0.00)[];
-	MID_RHS_MATCH_FROM(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo]
+From: chenridong <chenridong@huawei.com>
+In-Reply-To: <80e87513-aa48-4548-893e-ed339690c941@redhat.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ kwepemd100013.china.huawei.com (7.221.188.163)
 
-On 6/20/24 12:49 AM, Vlastimil Babka wrote:
-> --- a/mm/slub.c
-> +++ b/mm/slub.c
-> @@ -3874,13 +3874,37 @@ static __always_inline void maybe_wipe_obj_freeptr(struct kmem_cache *s,
->  			0, sizeof(void *));
->  }
->  
-> -noinline int should_failslab(struct kmem_cache *s, gfp_t gfpflags)
-> +#if defined(CONFIG_FUNCTION_ERROR_INJECTION) || defined(CONFIG_FAILSLAB)
-> +DEFINE_STATIC_KEY_FALSE(should_failslab_active);
-> +
-> +#ifdef CONFIG_FUNCTION_ERROR_INJECTION
-> +noinline
-> +#else
-> +static inline
-> +#endif
-> +int should_failslab(struct kmem_cache *s, gfp_t gfpflags)
 
-Note that it has been found that (regardless of this series) gcc may clone
-this to a should_failslab.constprop.0 in case the function is empty because
-__should_failslab is compiled out (CONFIG_FAILSLAB=n). The "noinline"
-doesn't help - the original function stays but only the clone is actually
-being called, thus overriding the original function achieves nothing, see:
-https://github.com/bpftrace/bpftrace/issues/3258
+On 2024/6/25 22:16, Waiman Long wrote:
+> On 6/25/24 10:11, chenridong wrote:
+>>
+>>
+>> On 2024/6/25 18:10, Michal Koutný wrote:
+>>> Hello.
+>>>
+>>> On Tue, Jun 25, 2024 at 11:12:20AM GMT, 
+>>> chenridong<chenridong@huawei.com>  wrote:
+>>>> I am considering whether the cgroup framework has a method to fix this
+>>>> issue, as other subsystems may also have the same underlying problem.
+>>>> Since the root css will not be released, but the css->cgrp will be
+>>>> released.
+>>> <del>First part is already done in
+>>>     d23b5c5777158 ("cgroup: Make operations on the cgroup root_list 
+>>> RCU safe")
+>>> second part is that</del>
+>>> you need to take RCU read lock and check for NULL, similar to
+>>>     9067d90006df0 ("cgroup: Eliminate the need for cgroup_mutex in 
+>>> proc_cgroup_show()")
+>>>
+>>> Does that make sense to you?
+>>>
+>>> A Fixes: tag would be nice, it seems at least
+>>>     a79a908fd2b08 ("cgroup: introduce cgroup namespaces")
+>>> played some role. (Here the RCU lock is not for cgroup_roots list 
+>>> but to
+>>> preserve the root cgrp itself css_free_rwork_fn/cgroup_destroy_root.
+>>>
+>>> HTH,
+>>> Michal
+>>
+>> Thank you, Michal, that is a good idea. Do you mean as below?
+>>
+>> diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
+>>
+>> index c12b9fdb22a4..2ce0542067f1 100644
+>> --- a/kernel/cgroup/cpuset.c
+>> +++ b/kernel/cgroup/cpuset.c
+>> @@ -5051,10 +5051,17 @@ int proc_cpuset_show(struct seq_file *m, 
+>> struct pid_namespace *ns,
+>>         if (!buf)
+>>                 goto out;
+>>
+>> +       rcu_read_lock();
+>> +       spin_lock_irq(&css_set_lock);
+>>         css = task_get_css(tsk, cpuset_cgrp_id);
+>> -       retval = cgroup_path_ns(css->cgroup, buf, PATH_MAX,
+>> - current->nsproxy->cgroup_ns);
+>> +
+>> +       retval = cgroup_path_ns_locked(css->cgroup, buf, PATH_MAX,
+>> +               current->nsproxy->cgroup_ns);
+>>         css_put(css);
+>> +
+>> +       spin_unlock_irq(&css_set_lock);
+>> +       cgroup_unlock();
+>> +
+>>         if (retval == -E2BIG)
+>>                 retval = -ENAMETOOLONG;
+>>
+>>         if (retval < 0)
+>>
+> That should work. However, I would suggest that you take 
+> task_get_css() and css_put() outside of the critical section. The 
+> task_get_css() is a while loop that may take a while to execute and 
+> you don't want run it with interrupt disabled.
+>
+> Cheers,
+> Longman
+>
+>
+>
+--- a/kernel/cgroup/cpuset.c
++++ b/kernel/cgroup/cpuset.c
+@@ -5050,11 +5050,18 @@ int proc_cpuset_show(struct seq_file *m, struct 
+pid_namespace *ns,
+         buf = kmalloc(PATH_MAX, GFP_KERNEL);
+         if (!buf)
+                 goto out;
+-
+         css = task_get_css(tsk, cpuset_cgrp_id);
+-       retval = cgroup_path_ns(css->cgroup, buf, PATH_MAX,
+-                               current->nsproxy->cgroup_ns);
++
++       rcu_read_lock();
++       spin_lock_irq(&css_set_lock);
++
++       retval = cgroup_path_ns_locked(css->cgroup, buf, PATH_MAX,
++               current->nsproxy->cgroup_ns);
++
++       spin_unlock_irq(&css_set_lock);
++       rcu_read_unlock();
+         css_put(css);
++
+         if (retval == -E2BIG)
+                 retval = -ENAMETOOLONG;
 
-So we could use __noclone to prevent that, and I was thinking by adding
-something this to error-injection.h:
+         if (retval < 0)
 
-#ifdef CONFIG_FUNCTION_ERROR_INJECTION
-#define __error_injectable(alternative)		noinline __noclone
-#else
-#define __error_injectable(alternative)		alternative
-#endif
 
-and the usage here would be:
+Yeah, that looks good, i will test for a while. I will send a new patch 
+if no other problem occurs.
 
-__error_injectable(static inline) int should_failslab(...)
+Thank you.
 
-Does that look acceptable, or is it too confusing that "static inline" is
-specified there as the storage class to use when error injection is actually
-disabled?
+Regards,
+Ridong
 
->  {
->  	if (__should_failslab(s, gfpflags))
->  		return -ENOMEM;
->  	return 0;
->  }
-> -ALLOW_ERROR_INJECTION(should_failslab, ERRNO);
-> +ALLOW_ERROR_INJECTION_KEY(should_failslab, ERRNO, &should_failslab_active);
-> +
-> +static __always_inline int should_failslab_wrapped(struct kmem_cache *s,
-> +						   gfp_t gfp)
-> +{
-> +	if (static_branch_unlikely(&should_failslab_active))
-> +		return should_failslab(s, gfp);
-> +	else
-> +		return 0;
-> +}
-> +#else
-> +static __always_inline int should_failslab_wrapped(struct kmem_cache *s,
-> +						   gfp_t gfp)
-> +{
-> +	return false;
-> +}
-> +#endif
->  
->  static __fastpath_inline
->  struct kmem_cache *slab_pre_alloc_hook(struct kmem_cache *s, gfp_t flags)
-> @@ -3889,7 +3913,7 @@ struct kmem_cache *slab_pre_alloc_hook(struct kmem_cache *s, gfp_t flags)
->  
->  	might_alloc(flags);
->  
-> -	if (unlikely(should_failslab(s, flags)))
-> +	if (should_failslab_wrapped(s, flags))
->  		return NULL;
->  
->  	return s;
-> 
 
 
