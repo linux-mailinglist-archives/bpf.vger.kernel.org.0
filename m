@@ -1,140 +1,115 @@
-Return-Path: <bpf+bounces-33075-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-33076-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1155A916EEA
-	for <lists+bpf@lfdr.de>; Tue, 25 Jun 2024 19:13:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id AD6B8916EF5
+	for <lists+bpf@lfdr.de>; Tue, 25 Jun 2024 19:15:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4C50B1C22329
-	for <lists+bpf@lfdr.de>; Tue, 25 Jun 2024 17:13:08 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DEC731C2264B
+	for <lists+bpf@lfdr.de>; Tue, 25 Jun 2024 17:15:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B6410176AC3;
-	Tue, 25 Jun 2024 17:13:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D2D00178385;
+	Tue, 25 Jun 2024 17:15:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="R/79w8su"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GYCqYqdn"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-wr1-f41.google.com (mail-wr1-f41.google.com [209.85.221.41])
+Received: from mail-wr1-f42.google.com (mail-wr1-f42.google.com [209.85.221.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA9D9172786;
-	Tue, 25 Jun 2024 17:12:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C97E41779BA;
+	Tue, 25 Jun 2024 17:15:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719335581; cv=none; b=ZaHRK0vXXb7MFrxVsd4Y+r+athqATinKFehfQSdrh3NpaE9PxabSegqbPgWDsPj7dB2ecLgcOj6lXPaONn4gankyEm3ZG+PgAbKhRaOSBmqd4q8GYnKBnC+NJCcokW67jwj0wU2mKp42+Yrkmrb3hqUGLuOKR5S5r6mTU7NnKU4=
+	t=1719335714; cv=none; b=gqrUdB0PkP/y7iDqrJ7tvfxaaj9CcsTFai7mxBZVbTvv6UTqdmoSLGRbO0xKyAoFyXVv0R48zbD9h94cuBd/E0YYmMfEGDCZHl/QRUEnTuLg2BlplZ2iANAS7XD6dzmx3yiDrokq/yXAibPS6lgfq7ABJYwHvfKsO/Kam5eOfC8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719335581; c=relaxed/simple;
-	bh=Wwa4HGkLETbKqeTTU6fvEcD/qSObTjEYyqi/1NukKz4=;
+	s=arc-20240116; t=1719335714; c=relaxed/simple;
+	bh=jjtcuEA9sKtqwrfShdvUlPqsNArkCuWKWDP61e+bF2w=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=o0do4xvrnEPlNxWdkkgQIB4zlMiVhgd1B2Xx8hPH1SmkufUPbOB+Th3L9OgErd2GKm7EBJeYZQ81UjIyPrxn6qp9vSsOrlKIC+pSLKvUv1jKUF19k3RPFjst/gJnt97RS+E08iO8sX6kO6tre7+dQRdj4b+B0fR9pI9QaQI1YEo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=R/79w8su; arc=none smtp.client-ip=209.85.221.41
+	 To:Cc:Content-Type; b=CBzrTHCptDEdypX6Taq7H8CButKC5rXhxAqP8OGbUllE8FeGKIRVw/OVnXirhgz0kEoH5JKp4EFUhKmDz9c5zLUlkUCFv06kGmWJ3KIi+CPiJ3hjK3L5ZxAsZG8k3lxkioAIPBEVSZRvl8aCB9s/x77j1ikA6yhdFEfpMASpRqE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=GYCqYqdn; arc=none smtp.client-ip=209.85.221.42
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f41.google.com with SMTP id ffacd0b85a97d-36703b0f914so575245f8f.0;
-        Tue, 25 Jun 2024 10:12:59 -0700 (PDT)
+Received: by mail-wr1-f42.google.com with SMTP id ffacd0b85a97d-3645e9839b3so4431627f8f.3;
+        Tue, 25 Jun 2024 10:15:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1719335578; x=1719940378; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1719335711; x=1719940511; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=BI5OFEaVYhrUkuh/u4LxK0p6IDDHPXl4NuFtwgsoCq4=;
-        b=R/79w8su5OYlKu588PZ/L+Ac39IOQMnyTSJ6jiEcZXGnjdnJHHihyaWIzcSrDU309q
-         /ehpuklLrmwPDHBRN77ZoYMc+ngp5IrpJO/QIrU7bihMKqVtykI/ilaqsHrySnew2+07
-         y3XkeBlHriGL0wA5+I9HsM33TrqOd+P4D/f0YkazajKxnIgvwVsQv7ybm1Oz7MM1zuii
-         atX+um2HLZHQbLBJnyIcEvsR4zny5gxS4Ka/qQlHat9wutU99XDDUMK5Pz0S0C6ST7n/
-         tKmKi/iWPXv+qhABAOTRyUIrqVtZSd2S5Ru4NLrNJACKLZ0NWlYowtk4bTIyE4oJEfL0
-         4Jpg==
+        bh=jjtcuEA9sKtqwrfShdvUlPqsNArkCuWKWDP61e+bF2w=;
+        b=GYCqYqdntBMnluW6qiqNvbQTF4M3Wf/7jQUcNvFQh0/c7MnymLqfB30MaVFF4J5LP7
+         0xPoA7PCN/11FaTSUsZRvxEp217dBwCCRW/Rxz+CxuSquk03z6OZcU9Xy7C9YoYwqd4j
+         U+fTKsgx4ounyvkyMqhUPEA4aIbVF1g/9seCMCC5zmX/3kfKSLYDpWmj1sc7RdxmkZ4W
+         VLTRg7cY8zppH7Jdna3N/KkoyYSU4MG18kGOgg8+xMBRpz9kekvfhgGe5KLpu39/gdgC
+         Y21f0cmoIZfNl+8XjhBV7RB2YuYfh0FLAdnEhsqFdNNJn7DePQNk5W4A90tYr0spsIsn
+         p0kw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1719335578; x=1719940378;
+        d=1e100.net; s=20230601; t=1719335711; x=1719940511;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=BI5OFEaVYhrUkuh/u4LxK0p6IDDHPXl4NuFtwgsoCq4=;
-        b=YkSYEuiQl5vJnXmr1Kv5UxlXfxp99IwxyUamjJxfH2gHunEeBtufkbOLNqhs2ghv5z
-         Vhy00vqUEg91Yzc+1YWl1SMJVupdX9/uNXAHmTF1YRO4G4VlXBrwxFewRSM7LgsDqoPm
-         gF0gL2dZgXSVYbAbZ5BgBwF7GH9Q7S43UZ+quYFKm6q6CIKOIM8Vqn08zVeEIu02Gdwg
-         Axj5z0hM4UguSzBq3Q5za7FyNKSo3+K2cuXuLrBEXlfITRKtB09soT4zlh1eCusf6Pi8
-         G/nuoMS9aTnRWqLCg7/6ZASGcQ7YTS7D3KSVJqcmM+/DYNSSxXCtmORD1uOe3nsO96oE
-         a2iw==
-X-Forwarded-Encrypted: i=1; AJvYcCV1ROdD7Z2AMIKhcIdQlCgirf+aMBh0yOJnV7cou52N/LPx2vkBfJJRRgDRxp1BD0LuyIV7Dwts/q7uFACj6aGwhK3gpAclBCRW32zzDyk6Hilqdw5N0tQ06ZEARVdl8g8P+RxDfiw0JFbLl8TNfSCy7naxkEASxdSyul0fhIIj5EsvP26q
-X-Gm-Message-State: AOJu0Yzo1++47F56ZlbyP5CP+UiFgAAqDfM9d6vBnJO1ghiBqZ7zFxWO
-	JR4VHj91vQucNc9nrJGr6MEbvho0pPNNAccTpqKV4ICTY6sm9kO3L+gX435EZZIqLtAPTwhWVk7
-	jrP4Nlr2+HwEuVnpaDOxt1fDHr3M=
-X-Google-Smtp-Source: AGHT+IE06FOCAbgOD9xJVbw3JngT0HOsO4esODsbSBdUue19gmiKBnUmKzc7qwytynqNUagCApCOkM09kU86aKoNtak=
-X-Received: by 2002:a05:6000:1a8c:b0:360:728d:8439 with SMTP id
- ffacd0b85a97d-366e36491b7mr11108459f8f.2.1719335577845; Tue, 25 Jun 2024
- 10:12:57 -0700 (PDT)
+        bh=jjtcuEA9sKtqwrfShdvUlPqsNArkCuWKWDP61e+bF2w=;
+        b=cRiw76e7KbwZIAyNjraNoRFp0L7dVhonnHu4fK+DSfUeqHr5Yf+XU3dNzhoqIwv3ob
+         vV+2IvVAfYbY9epwKKuFziIxHtmeA7XzocqvtJNqaMtVU5V9Fq6RO0+tBoB2Wv5BGAf9
+         D2sbxDEijIvBxGZ2s391DfAQWAKokWGH00vPZBMrMxr/Od8O8sbiSb1mtXRCg7DNTzO1
+         FJhmZ9FEg3G3+7Ny3e71gH4st1dUX9ApQEFsTVPGpITckCkxn1EkfXBqQ3lyuamTIKjV
+         yIXgW56NUi0fsun1OL3GnkoHa+rzViXRIcpm2unKyDkPQNt+LQ1hz9yhpmVHxxWl5gan
+         9cUA==
+X-Forwarded-Encrypted: i=1; AJvYcCUaH4SQgKPIXtQXeG8S3AqNEjSqV5khV6tmi4DxVl3h1pfKwnT7fiU6iC4eSs3fJYkoFFp+ZIBZgCST4bSOVftpiOf1txuEVzimphvqmNnftfN3lSuBkKUAyGOdc6uBBeHG464ocJykbmvDORfi5k0HJX8J6PFak/z+gLK/PxgOq7NBtgtKcODJvBEpwl7QJMEkJ9p6KbH6xRjrel7H2kcWp91sj7yI42HHy+IcNnA0P57s
+X-Gm-Message-State: AOJu0YxI2Cj3arAukmN9e07VJ8JBHL60dxa14GbHE/rp9SapJ40UVcPJ
+	MpkwM9I5fb2BB2pF9wieVkZ9THOlE2mDGyDK/J109WAhGFgAJfMhLwDKWzNZpZYPCA0aIHuy+WS
+	LGuXKJI43izBwNpK3y9jvxMEY66U=
+X-Google-Smtp-Source: AGHT+IGqtcwJLjr+3MHilvLPVtfKoipe5kx4LBLA5mXRe+9hOE9htiLokRjYzn24SuFzozxc4yBuhK03IeWG4UE0GVg=
+X-Received: by 2002:a5d:598a:0:b0:366:ed80:d056 with SMTP id
+ ffacd0b85a97d-366eef90065mr5423589f8f.14.1719335710842; Tue, 25 Jun 2024
+ 10:15:10 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240620-fault-injection-statickeys-v2-0-e23947d3d84b@suse.cz>
- <20240620-fault-injection-statickeys-v2-6-e23947d3d84b@suse.cz> <78177ff2-e140-4e81-9b2a-be5bece34cfc@suse.cz>
-In-Reply-To: <78177ff2-e140-4e81-9b2a-be5bece34cfc@suse.cz>
+References: <ZnB9X1Jj6c04ufC0@sirena.org.uk> <CAFVMQ6R8ZZE+9jWM1vhEuz2PsLyCgKhpaVD377TKEu4AfGO_iA@mail.gmail.com>
+ <ud5j6hbozgg6em43volidpffykdtd2lpf32etmdiyksorl2cb4@whtseaibw2xw>
+In-Reply-To: <ud5j6hbozgg6em43volidpffykdtd2lpf32etmdiyksorl2cb4@whtseaibw2xw>
 From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Tue, 25 Jun 2024 10:12:46 -0700
-Message-ID: <CAADnVQJrirvzu8fqwRChM1aUvHUNoszNpLhXHB9EHVesuD_YJA@mail.gmail.com>
-Subject: Re: [PATCH v2 6/7] mm, slab: add static key for should_failslab()
-To: Vlastimil Babka <vbabka@suse.cz>
-Cc: Akinobu Mita <akinobu.mita@gmail.com>, Christoph Lameter <cl@linux.com>, 
-	David Rientjes <rientjes@google.com>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
-	"Naveen N. Rao" <naveen.n.rao@linux.ibm.com>, 
-	Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>, "David S. Miller" <davem@davemloft.net>, 
-	Masami Hiramatsu <mhiramat@kernel.org>, Steven Rostedt <rostedt@goodmis.org>, 
-	Mark Rutland <mark.rutland@arm.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Roman Gushchin <roman.gushchin@linux.dev>, Hyeonggon Yoo <42.hyeyoo@gmail.com>, 
-	LKML <linux-kernel@vger.kernel.org>, linux-mm <linux-mm@kvack.org>, 
-	bpf <bpf@vger.kernel.org>, 
-	linux-trace-kernel <linux-trace-kernel@vger.kernel.org>
+Date: Tue, 25 Jun 2024 10:14:59 -0700
+Message-ID: <CAADnVQ+cJ5bga7tX9BSTC150CgXM8KQT+Z21zYE-VY-8fts6kg@mail.gmail.com>
+Subject: Re: linux-next: build failure after merge of the bpf-next tree
+To: Benjamin Tissoires <bentiss@kernel.org>
+Cc: Thinker Li <thinker.li@gmail.com>, Mark Brown <broonie@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Alexei Starovoitov <ast@kernel.org>, 
+	Andrii Nakryiko <andrii@kernel.org>, bpf <bpf@vger.kernel.org>, 
+	Networking <netdev@vger.kernel.org>, Jiri Kosina <jikos@kernel.org>, 
+	Martin KaFai Lau <martin.lau@kernel.org>, 
+	"open list:HID CORE LAYER" <linux-input@vger.kernel.org>, 
+	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, 
+	Linux Next Mailing List <linux-next@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Jun 25, 2024 at 7:24=E2=80=AFAM Vlastimil Babka <vbabka@suse.cz> wr=
-ote:
+On Tue, Jun 25, 2024 at 8:54=E2=80=AFAM Benjamin Tissoires <bentiss@kernel.=
+org> wrote:
 >
-> On 6/20/24 12:49 AM, Vlastimil Babka wrote:
-> > --- a/mm/slub.c
-> > +++ b/mm/slub.c
-> > @@ -3874,13 +3874,37 @@ static __always_inline void maybe_wipe_obj_free=
-ptr(struct kmem_cache *s,
-> >                       0, sizeof(void *));
-> >  }
+> On Jun 24 2024, Thinker Li wrote:
+> > Hi Mark,
 > >
-> > -noinline int should_failslab(struct kmem_cache *s, gfp_t gfpflags)
-> > +#if defined(CONFIG_FUNCTION_ERROR_INJECTION) || defined(CONFIG_FAILSLA=
-B)
-> > +DEFINE_STATIC_KEY_FALSE(should_failslab_active);
-> > +
-> > +#ifdef CONFIG_FUNCTION_ERROR_INJECTION
-> > +noinline
-> > +#else
-> > +static inline
-> > +#endif
-> > +int should_failslab(struct kmem_cache *s, gfp_t gfpflags)
+> > I'm sorry for not getting back to you sooner. I have been traveling
+> > since my last message.
+> > I guess this patch is for the HID tree. The changes in this patch are g=
+reat.
 >
-> Note that it has been found that (regardless of this series) gcc may clon=
-e
-> this to a should_failslab.constprop.0 in case the function is empty becau=
-se
-> __should_failslab is compiled out (CONFIG_FAILSLAB=3Dn). The "noinline"
-> doesn't help - the original function stays but only the clone is actually
-> being called, thus overriding the original function achieves nothing, see=
-:
-> https://github.com/bpftrace/bpftrace/issues/3258
+> Ok, thanks for the review. However, the need appears because there is a
+> conflicting update in the bpf tree.
 >
-> So we could use __noclone to prevent that, and I was thinking by adding
-> something this to error-injection.h:
->
-> #ifdef CONFIG_FUNCTION_ERROR_INJECTION
-> #define __error_injectable(alternative)         noinline __noclone
+> May I ask the bpf maintainers (Daniel/Alexei/Andrii) for an immutable
+> tag I could merge to so I can take this patch from Mark?
 
-To prevent such compiler transformations we typically use
-__used noinline
-
-We didn't have a need for __noclone yet. If __used is enough I'd stick to t=
-hat.
+I'm not sure how that would look like.
+imo conflict is minor enough.
+When net-next/bpf-next lands in the upcoming merge window
+just provide Mark's patch as a conflict resolution suggestion
+in the cover letter of hid PR ?
 
