@@ -1,203 +1,105 @@
-Return-Path: <bpf+bounces-33064-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-33065-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 75464916B20
-	for <lists+bpf@lfdr.de>; Tue, 25 Jun 2024 16:54:39 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 83982916B58
+	for <lists+bpf@lfdr.de>; Tue, 25 Jun 2024 16:59:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2CCE1287D93
-	for <lists+bpf@lfdr.de>; Tue, 25 Jun 2024 14:54:38 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3A4E61F29A0A
+	for <lists+bpf@lfdr.de>; Tue, 25 Jun 2024 14:59:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A4CB816F0CD;
-	Tue, 25 Jun 2024 14:54:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 83D2D16F917;
+	Tue, 25 Jun 2024 14:59:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="T493i61k"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="h7NAS6q/"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-io1-f41.google.com (mail-io1-f41.google.com [209.85.166.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C37BD16EC10
-	for <bpf@vger.kernel.org>; Tue, 25 Jun 2024 14:54:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF8D61BC57;
+	Tue, 25 Jun 2024 14:59:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719327246; cv=none; b=QKMK2MkEHNeA28Mg2WoH2onE3HeElPrWX6aIQ2m/iQqfNpPp3iMu9Kl3lmKIWsHijgklEf3ZnSHyKNgGs/I6U8TfbFuH43PfLsQyqeLC4HXN6OF1jlFgZNPz5HvLpb5a2gJUoKFs0/Gr85i6hrK3zIMy87M+m5gaoZQgrtph2xs=
+	t=1719327572; cv=none; b=f5XEEPdgcvQn4JMomJkS6dgZY6PiiumwDUoP41stimO2bN0BCxQWLGVmsb7fuKpRjp04ugoIkwehALYWzsJsZnieSMIvaAegdcYfXYjtkyiFpG6esN65jKrI/Xyex6hD7gkkjajRyOyEtuQGusW+ESH5h22a2lexGc4iF6N/hMc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719327246; c=relaxed/simple;
-	bh=BkM4i+Y7W+eaQOSMUQVUA6XGklgk2Sgyuvntv82ttMg=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=ik9La8a+ktLITMnQD29RWnnwvWRd4YRz6WntYVr9VBsCfhLeQe6Sa48wEflLkZqMd3+uF5QkRd+hWnvqQzdBQLMV49aTCxPxdECVT46RJbTu2WsllsKgM93JfVsKCqoe8Mze1UBmPmO1dd1AzcAqTzx89RConm3PwaEq8tro/MY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=T493i61k; arc=none smtp.client-ip=209.85.166.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-io1-f41.google.com with SMTP id ca18e2360f4ac-7eee734a668so250063239f.3
-        for <bpf@vger.kernel.org>; Tue, 25 Jun 2024 07:54:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1719327243; x=1719932043; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=0qUKottmCyM1Qr97p5RCYJEo7ueqGiuDKy+ZD1dWtdU=;
-        b=T493i61k9v0OPvM0QbuZhhEeebo5ECw7cnySZsOIUzE4PAwoo4ydwOYc/HSeJD/Tpk
-         XA8wSwBO/t6N6VRyJChj99HyMlPZUqNxYTnh2Ub0ZajenbAH6zuDWZ3QSqOn8TfqZ728
-         kxj6UUzOwyakzUSv2qo3Eel0hcQmGgFvtyM7ICA0QfgMGWl4gEYVvqH+9CqyJoLvbOJb
-         T3Qv2WnJWXqpZ4n9ZQvdeKQpaDc70U2ym8Mept3IB6nu8rnIR51Qc9iMH4yB9vGa2zSl
-         au+v15BzYJYWsO1lwARbaNFyqiLAAnCtmkMVS/gkuURNu+MIiQh8TEt3g5PcW2xvNzuq
-         DmwA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1719327243; x=1719932043;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=0qUKottmCyM1Qr97p5RCYJEo7ueqGiuDKy+ZD1dWtdU=;
-        b=muBZ4FyEtDqPuDfzlsUlYBJdhQLVacrjqrnPlGLiFMiOeZ6I4gKihqTeoe/5mPlPXd
-         Q49Rchzjkbkgl+rAkxzSOomzVgsFexg0GVjTRQlWJ3UyE7jJSIavXewbCxqserQFG815
-         uNglEYK+s5hZAGtEffv4nKJCP0DH7jch+yQUzJ81ZgKZAPkW3fcBdadERGLtA8bGzFh+
-         9mDERS3HwojlxBa4bdefRXFGeiP2/rIz6P6S2MTHYd8ewtzhm171+LiiyOrLDQc9yjUY
-         cFPcZ3MVvLXf+CrjJ/w6h5xn4YfYntlXs2LUc/1GAOuD9NYWwb+MH2lZ32n2e/OawecV
-         /Z7w==
-X-Gm-Message-State: AOJu0YxY0zFqwiorEl+d6kEX1aQD82uK9tkUWg0OZIqTo0sPKMVKRyNp
-	WINUCriiSm10+W0l50GaDrp4TXIHFzc4nZU69w1nV+HwEpTDJrnQxFnVVg==
-X-Google-Smtp-Source: AGHT+IGq1MGyRhBpUrxZlzSPO+TWR49Zs17qpX362xKkW7Q+Mhv5A1hzpfyfaQpos9ZdZaA7gSLc3Q==
-X-Received: by 2002:a05:6602:168a:b0:7eb:9864:410b with SMTP id ca18e2360f4ac-7f3a13db092mr899614039f.5.1719327243469;
-        Tue, 25 Jun 2024 07:54:03 -0700 (PDT)
-Received: from localhost.localdomain (bb219-74-23-111.singnet.com.sg. [219.74.23.111])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7065124dbacsm8177665b3a.124.2024.06.25.07.54.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 25 Jun 2024 07:54:02 -0700 (PDT)
-From: Leon Hwang <hffilwlqm@gmail.com>
-To: bpf@vger.kernel.org
-Cc: ast@kernel.org,
-	daniel@iogearbox.net,
-	andrii@kernel.org,
-	hffilwlqm@gmail.com,
-	oliver.sang@intel.com,
-	kernel-patches-bot@fb.com
-Subject: [PATCH bpf-next] bpf: Fix tailcall cases in test_bpf
-Date: Tue, 25 Jun 2024 22:53:51 +0800
-Message-ID: <20240625145351.40072-1-hffilwlqm@gmail.com>
-X-Mailer: git-send-email 2.44.0
+	s=arc-20240116; t=1719327572; c=relaxed/simple;
+	bh=4wYjB3JY0AnTw9nAvS+x7fjoQVoS9QzpjpY/mNtLggw=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=O1C4q1C9iNAOUTWx9/emcEHSap2TPW/SFp/PQ4mgGEJgfw1k4yZL56uP29swrDjkPg+82F5QIoQuMhL0nIUhMYRQg0nPTi0Fv41PLr4yR9CDviJEzUOqGIeKBPOE+NwzAOaYWxdK/G1HSNldeIkcVHBWEUuHzcjp8onPHXPftJE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=h7NAS6q/; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B7AA9C4AF0B;
+	Tue, 25 Jun 2024 14:59:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1719327570;
+	bh=4wYjB3JY0AnTw9nAvS+x7fjoQVoS9QzpjpY/mNtLggw=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=h7NAS6q/C2ZzBIAYKai5whZiBum489XS/J7zffMQOVU0xDBrGbji0HlKyZbV0brVY
+	 jwHILNhtgojEmdiUQ3GnAfMPUSaUya0+D0cFcjQ9dhbvTuMsGJh4W2x+J7X/9HXZ9V
+	 srBl3VFTN1Ly99vlBTFzJFJzSgq138zPAzzOL2os8e1W4DzrZI1H0QEVZ5ZJR09krK
+	 /Bmyi4o96W3ViZ6cus20bYwYlLEzMNrqNFN4DiYRoFZwN6N3pBDHKz/uOmL4YFYFQX
+	 m3FOmbQnP7K8OC0mOv3dwo1NOo8qb7etGTDcG2HlC0EOZ1X1ih7qXwRSXhT5bSXbyY
+	 CFeH6MEdGgYfg==
+Date: Tue, 25 Jun 2024 07:59:26 -0700
+From: Jakub Kicinski <kuba@kernel.org>
+To: Mina Almasry <almasrymina@google.com>
+Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-doc@vger.kernel.org, linux-alpha@vger.kernel.org,
+ linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
+ sparclinux@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+ linux-arch@vger.kernel.org, bpf@vger.kernel.org,
+ linux-kselftest@vger.kernel.org, linux-media@vger.kernel.org,
+ dri-devel@lists.freedesktop.org, "David S. Miller" <davem@davemloft.net>,
+ Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, Donald
+ Hunter <donald.hunter@gmail.com>, Jonathan Corbet <corbet@lwn.net>, Richard
+ Henderson <richard.henderson@linaro.org>, Ivan Kokshaysky
+ <ink@jurassic.park.msu.ru>, Matt Turner <mattst88@gmail.com>, Thomas
+ Bogendoerfer <tsbogend@alpha.franken.de>, "James E.J. Bottomley"
+ <James.Bottomley@hansenpartnership.com>, Helge Deller <deller@gmx.de>,
+ Andreas Larsson <andreas@gaisler.com>, Jesper Dangaard Brouer
+ <hawk@kernel.org>, Ilias Apalodimas <ilias.apalodimas@linaro.org>, Steven
+ Rostedt <rostedt@goodmis.org>, Masami Hiramatsu <mhiramat@kernel.org>,
+ Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Arnd Bergmann
+ <arnd@arndb.de>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann
+ <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, Martin KaFai
+ Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu
+ <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, John Fastabend
+ <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, Stanislav
+ Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, Jiri Olsa
+ <jolsa@kernel.org>, Steffen Klassert <steffen.klassert@secunet.com>,
+ Herbert Xu <herbert@gondor.apana.org.au>, David Ahern <dsahern@kernel.org>,
+ Willem de Bruijn <willemdebruijn.kernel@gmail.com>, Shuah Khan
+ <shuah@kernel.org>, Sumit Semwal <sumit.semwal@linaro.org>, Christian
+ =?UTF-8?B?S8O2bmln?= <christian.koenig@amd.com>, Bagas Sanjaya
+ <bagasdotme@gmail.com>, Christoph Hellwig <hch@infradead.org>, Nikolay
+ Aleksandrov <razor@blackwall.org>, Pavel Begunkov <asml.silence@gmail.com>,
+ David Wei <dw@davidwei.uk>, Jason Gunthorpe <jgg@ziepe.ca>, Yunsheng Lin
+ <linyunsheng@huawei.com>, Shailend Chand <shailend@google.com>, Harshitha
+ Ramamurthy <hramamurthy@google.com>, Shakeel Butt <shakeel.butt@linux.dev>,
+ Jeroen de Borst <jeroendb@google.com>, Praveen Kaligineedi
+ <pkaligineedi@google.com>
+Subject: Re: [PATCH net-next v13 00/13] Device Memory TCP
+Message-ID: <20240625075926.146d769d@kernel.org>
+In-Reply-To: <CAHS8izO1g5vZodyvKBNyE-Fx7A4EoD70RuDLwXtzE3yvfRw_2g@mail.gmail.com>
+References: <20240625024721.2140656-1-almasrymina@google.com>
+	<CAHS8izO1g5vZodyvKBNyE-Fx7A4EoD70RuDLwXtzE3yvfRw_2g@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-Since f663a03c8e35 ("bpf, x64: Remove tail call detection"),
-tail_call_reachable won't be detected in x86 JIT. And, tail_call_reachable
-is provided by verifier.
+On Tue, 25 Jun 2024 07:16:00 -0700 Mina Almasry wrote:
+> What happened here is that I sync'd to net-next, ran all the tests
+> including the allmodconfig build which took a few hours, then posted
+> the series. In the meantime 34 patches got merged to net-next, and one
+> of those patches seems to generate a git am failure when I try to use
+> b4 to apply:
 
-Therefore, in test_bpf, the tail_call_reachable must be provided in test
-cases before running.
-
-Fix and test:
-
-[  174.828662] test_bpf: #0 Tail call leaf jited:1 170 PASS
-[  174.829574] test_bpf: #1 Tail call 2 jited:1 244 PASS
-[  174.830363] test_bpf: #2 Tail call 3 jited:1 296 PASS
-[  174.830924] test_bpf: #3 Tail call 4 jited:1 719 PASS
-[  174.831863] test_bpf: #4 Tail call load/store leaf jited:1 197 PASS
-[  174.832240] test_bpf: #5 Tail call load/store jited:1 326 PASS
-[  174.832240] test_bpf: #6 Tail call error path, max count reached jited:1 2214 PASS
-[  174.835713] test_bpf: #7 Tail call count preserved across function calls jited:1 609751 PASS
-[  175.446098] test_bpf: #8 Tail call error path, NULL target jited:1 472 PASS
-[  175.447597] test_bpf: #9 Tail call error path, index out of range jited:1 206 PASS
-[  175.448833] test_bpf: test_tail_calls: Summary: 10 PASSED, 0 FAILED, [10/10 JIT'ed]
-
-Reported-by: kernel test robot <oliver.sang@intel.com>
-Closes: https://lore.kernel.org/oe-lkp/202406251415.c51865bc-oliver.sang@intel.com
-Fixes: f663a03c8e35 ("bpf, x64: Remove tail call detection")
-Signed-off-by: Leon Hwang <hffilwlqm@gmail.com>
----
- lib/test_bpf.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
-
-diff --git a/lib/test_bpf.c b/lib/test_bpf.c
-index ce5716c3999a4..b7acc29bcc3be 100644
---- a/lib/test_bpf.c
-+++ b/lib/test_bpf.c
-@@ -15198,6 +15198,7 @@ struct tail_call_test {
- 	int flags;
- 	int result;
- 	int stack_depth;
-+	bool has_tail_call;
- };
- 
- /* Flags that can be passed to tail call test cases */
-@@ -15273,6 +15274,7 @@ static struct tail_call_test tail_call_tests[] = {
- 			BPF_EXIT_INSN(),
- 		},
- 		.result = 3,
-+		.has_tail_call = true,
- 	},
- 	{
- 		"Tail call 3",
-@@ -15283,6 +15285,7 @@ static struct tail_call_test tail_call_tests[] = {
- 			BPF_EXIT_INSN(),
- 		},
- 		.result = 6,
-+		.has_tail_call = true,
- 	},
- 	{
- 		"Tail call 4",
-@@ -15293,6 +15296,7 @@ static struct tail_call_test tail_call_tests[] = {
- 			BPF_EXIT_INSN(),
- 		},
- 		.result = 10,
-+		.has_tail_call = true,
- 	},
- 	{
- 		"Tail call load/store leaf",
-@@ -15323,6 +15327,7 @@ static struct tail_call_test tail_call_tests[] = {
- 		},
- 		.result = 0,
- 		.stack_depth = 16,
-+		.has_tail_call = true,
- 	},
- 	{
- 		"Tail call error path, max count reached",
-@@ -15335,6 +15340,7 @@ static struct tail_call_test tail_call_tests[] = {
- 		},
- 		.flags = FLAG_NEED_STATE | FLAG_RESULT_IN_STATE,
- 		.result = (MAX_TAIL_CALL_CNT + 1) * MAX_TESTRUNS,
-+		.has_tail_call = true,
- 	},
- 	{
- 		"Tail call count preserved across function calls",
-@@ -15357,6 +15363,7 @@ static struct tail_call_test tail_call_tests[] = {
- 		.stack_depth = 8,
- 		.flags = FLAG_NEED_STATE | FLAG_RESULT_IN_STATE,
- 		.result = (MAX_TAIL_CALL_CNT + 1) * MAX_TESTRUNS,
-+		.has_tail_call = true,
- 	},
- 	{
- 		"Tail call error path, NULL target",
-@@ -15369,6 +15376,7 @@ static struct tail_call_test tail_call_tests[] = {
- 		},
- 		.flags = FLAG_NEED_STATE | FLAG_RESULT_IN_STATE,
- 		.result = MAX_TESTRUNS,
-+		.has_tail_call = true,
- 	},
- 	{
- 		"Tail call error path, index out of range",
-@@ -15381,6 +15389,7 @@ static struct tail_call_test tail_call_tests[] = {
- 		},
- 		.flags = FLAG_NEED_STATE | FLAG_RESULT_IN_STATE,
- 		.result = MAX_TESTRUNS,
-+		.has_tail_call = true,
- 	},
- };
- 
-@@ -15430,6 +15439,7 @@ static __init int prepare_tail_call_tests(struct bpf_array **pprogs)
- 		fp->len = len;
- 		fp->type = BPF_PROG_TYPE_SOCKET_FILTER;
- 		fp->aux->stack_depth = test->stack_depth;
-+		fp->aux->tail_call_reachable = test->has_tail_call;
- 		memcpy(fp->insnsi, test->insns, len * sizeof(struct bpf_insn));
- 
- 		/* Relocate runtime tail call offsets and addresses */
--- 
-2.44.0
-
+Got it, feel free to repost as soon as you can build test the rebased
+version.
 
