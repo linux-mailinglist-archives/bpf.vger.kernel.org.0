@@ -1,156 +1,160 @@
-Return-Path: <bpf+bounces-33043-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-33044-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 23F9491621F
-	for <lists+bpf@lfdr.de>; Tue, 25 Jun 2024 11:15:08 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CDE59916503
+	for <lists+bpf@lfdr.de>; Tue, 25 Jun 2024 12:11:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D3EC9281EBF
-	for <lists+bpf@lfdr.de>; Tue, 25 Jun 2024 09:15:06 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 878D6282455
+	for <lists+bpf@lfdr.de>; Tue, 25 Jun 2024 10:11:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C89331494D9;
-	Tue, 25 Jun 2024 09:14:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7152F14A4CC;
+	Tue, 25 Jun 2024 10:11:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="vFogaGaW"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="j/WwbyUp";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="hB6sBP7d"
 X-Original-To: bpf@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4795F1487EF;
-	Tue, 25 Jun 2024 09:14:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 14127149C4F;
+	Tue, 25 Jun 2024 10:11:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719306895; cv=none; b=B9DSyfDrQtccH2J5YBl9SmJxAW/rcH53zyJ45CO4tcQH+lZPy/7Kf5SEEenkjZ4NyntGkgKMS3r7YX/ZP0Dfqmg4WmCrvguR4rEyJr6VIPCYUEOmJYyP7LZAr4L9gH08/nUukCxhTpO8Jl8qEP4ooI6iHVWsPkTsQG+wLgZBMDs=
+	t=1719310264; cv=none; b=NwK65jgReGMn24Oe8EAfdMqVZu+MCHrhoDKKHJiX025A9OQZY9Y+9FrCYYnFdmEhIci/rXWqSjjrAkMz3eJo9s8/jhQVHGGwgbuvRctbetHBwzzbgpCZa4inMYKazKoHvDD/uOBb55wnDh/MEoCf06aUQJlI1mXMr+pzn9U+qvw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719306895; c=relaxed/simple;
-	bh=K+nlXl7dTQZO6kYcB7cvvUNPw1K7ggy0UaaAYt1aAVk=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Mddn/0UUzQfLgTQqOS48khE2k2x7ehr7Xt9HnLE7ZCZ6WHIDycxSp3l75LamfN4B3eL+lhgJK+L0Bg483j2B34OgDzwXxwZxjwwd7JJvlbN9yFliYV8qkfJ8a5UgyU+h9Tg3IP9R/reAG+dxVhWPdC+1Vu9NrhNI4ZZa9pvrvkU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=vFogaGaW; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BC9CCC4AF0A;
-	Tue, 25 Jun 2024 09:14:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1719306894;
-	bh=K+nlXl7dTQZO6kYcB7cvvUNPw1K7ggy0UaaAYt1aAVk=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=vFogaGaWm2Mcuxf9jkaEPhc8mt3wnZNPTykrQk9aJRmLgW5BXEU9TJlCdOeNq/V8T
-	 H0fxseI8H40zrU9So/3SZoyGuAcC0OfqsaQJv2u18SjuN5UEPrwTw9ZOuV867uMgz2
-	 NEo+fJzUn/16e3ZOR1I3LMY2ob6iT8knUF2oukml+PS2/d3xlCLmej5KuabWCVmZUg
-	 3lnRU/qmx18/x7bIVlbK/fvWgG4EWpVJz6WF2Gv9Vax51C0uJyDaGx5kiVgXmTMmt8
-	 Mr7GNfG9NvqfRCi4YMeCfbD0Sy1lfnjecJOpj6W++8HWQiLIjfwGex6v+8UzzG74EG
-	 S5LH2v5z7HjHw==
-Received: by mail-ej1-f50.google.com with SMTP id a640c23a62f3a-a689ad8d1f6so671937766b.2;
-        Tue, 25 Jun 2024 02:14:54 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCUlA1rxXFo0kEnMlNLUK8MP3WnHPiA80rpGN8X7i81GIQLA5whQhjRqQTdIcCdX+iB1N1kFrQ8e0XuTEXQl7E5G7F9B8iiDXvRLce2m2NZ87njPpvGraBwq2eTnVzJmGDmx+wvQXF3jnDk2CStQf/3tPXUB52zNwU7s9wRS
-X-Gm-Message-State: AOJu0YwFN2q+N931b9E2lMfwk+QWiTf1GcOqkJOVgpj2Z6vOrBePMdG5
-	Lq9exZlsa2GHiFQM21ylBYSOnpHvnMUhMG5nULtVcUICPhai2R3VRpBHSJGFQeDhL0bTlXymZDJ
-	0zZAxUKAaUmybEPtbxVb9vwPC73A=
-X-Google-Smtp-Source: AGHT+IHNqCtF5BzUsAKtHwK5+zo/ZybbxNHxbJjrvFe5SxKrdBham53XzGi/IpCBAJ2Qzpk6BV66r1+KQSKS+EtqlrU=
-X-Received: by 2002:a17:907:8e93:b0:a6e:f62d:bd02 with SMTP id
- a640c23a62f3a-a7245c84f2emr444738166b.7.1719306893342; Tue, 25 Jun 2024
- 02:14:53 -0700 (PDT)
+	s=arc-20240116; t=1719310264; c=relaxed/simple;
+	bh=O5k6HiCgGzdumVyAm2y+a4Xb1B54fWyGUfCrc2+Wtpg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=OhgqvW32DJ69/znFp8SZero9TTzKNXANbtyO5WrVgSPHN0XWS84wbf1LWJMipJBw6/iKRpW1auak2CgKaLWUNZUa9VghuJiz4TyN3Kz8rL+0xGpBLY8UCNra54uodFSxl/wrZkVtbB147lVvFBiIQ8L01VEqqa6HFZYmX/68/2s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=j/WwbyUp; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=hB6sBP7d; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 08B5421A65;
+	Tue, 25 Jun 2024 10:10:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1719310260; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Nrj3iYY7vg8oGyDA8rTIg8nVgzOuP92Uvoq0xxIIzzk=;
+	b=j/WwbyUpZcc6pbf65F3+sa3Ny2gNkzXTdQnjASCE9nlGTfrnFwZTOZ1MgOSpxb78hlXZj8
+	EhIMGcsqufURQ8DuC+CO/4GpBmZ9fXK0vxurfQTIINqbqvzf1AReNC7mc6nr1bevIhIvz1
+	cEbeeiga9QADjEInTlut3pyL/JGdlsU=
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1719310259; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Nrj3iYY7vg8oGyDA8rTIg8nVgzOuP92Uvoq0xxIIzzk=;
+	b=hB6sBP7dbna49SyFSh72Z2R4YXZJ7jCPGFZGz0r3bnBdn3PH0KeVKW9/zb2qaWjcc4G8Tb
+	Vhx+6yypcuSRGiDc1rDxOqFLGdk6BFA9oWu9eJXGa9t72R6RboclBHaCf/enopCFhZ4vvV
+	Kh6yDqYefzEV8bEKWCFcp93rWffkhHc=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id EDD5013A9A;
+	Tue, 25 Jun 2024 10:10:58 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id PBWdObKXemalVgAAD6G6ig
+	(envelope-from <mkoutny@suse.com>); Tue, 25 Jun 2024 10:10:58 +0000
+Date: Tue, 25 Jun 2024 12:10:49 +0200
+From: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
+To: chenridong <chenridong@huawei.com>
+Cc: Waiman Long <longman@redhat.com>, tj@kernel.org, 
+	lizefan.x@bytedance.com, hannes@cmpxchg.org, bpf@vger.kernel.org, cgroups@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH -next] cgroup: fix uaf when proc_cpuset_show
+Message-ID: <gke4hn67e2js2wcia4gopr6u26uy5epwpu7r6sepjwvp5eetql@nuwvwzg2k4dy>
+References: <20240622113814.120907-1-chenridong@huawei.com>
+ <19648b9c-6df7-45cd-a5ae-624a3e4d860f@redhat.com>
+ <52f72d1d-602e-4dca-85a3-adade925b056@huawei.com>
+ <71a9cc3a-1b58-4051-984b-dd4f18dabf84@redhat.com>
+ <8f83ecb3-4afa-4e0b-be37-35b168eb3c7c@huawei.com>
+ <ee30843f-2579-4dcf-9688-6541fd892678@redhat.com>
+ <3322ce46-78a1-45c5-ad07-a982dec21c8e@huawei.com>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <cover.1719302367.git.tanggeliang@kylinos.cn> <CAAhV-H6=xEKDFS4f5hiOqw-gx1nKiXkQq8Kmr8ZsgQe9A3gbtw@mail.gmail.com>
- <2319d0d58ccd879ebbc47f368475240bf06870ff.camel@kernel.org>
-In-Reply-To: <2319d0d58ccd879ebbc47f368475240bf06870ff.camel@kernel.org>
-From: Huacai Chen <chenhuacai@kernel.org>
-Date: Tue, 25 Jun 2024 17:14:41 +0800
-X-Gmail-Original-Message-ID: <CAAhV-H4Ceo9EYAXw=acPX-cfqTQnRb1ht46WWWeSwEsz7M5x9Q@mail.gmail.com>
-Message-ID: <CAAhV-H4Ceo9EYAXw=acPX-cfqTQnRb1ht46WWWeSwEsz7M5x9Q@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 0/4] Fixes for BPF selftests on Loongarch
-To: Geliang Tang <geliang@kernel.org>
-Cc: John Fastabend <john.fastabend@gmail.com>, Jakub Sitnicki <jakub@cloudflare.com>, 
-	"David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, David Ahern <dsahern@kernel.org>, 
-	Andrii Nakryiko <andrii@kernel.org>, Eduard Zingerman <eddyz87@gmail.com>, Mykola Lysenko <mykolal@fb.com>, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
-	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Shuah Khan <shuah@kernel.org>, Mykyta Yatsenko <yatsenko@meta.com>, Miao Xu <miaxu@meta.com>, 
-	Yuran Pereira <yuran.pereira@hotmail.com>, Tiezhu Yang <yangtiezhu@loongson.cn>, 
-	Geliang Tang <tanggeliang@kylinos.cn>, netdev@vger.kernel.org, bpf@vger.kernel.org, 
-	linux-kselftest@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="3fin4heviwo2qame"
+Content-Disposition: inline
+In-Reply-To: <3322ce46-78a1-45c5-ad07-a982dec21c8e@huawei.com>
+X-Spam-Score: -5.90
+X-Spam-Level: 
+X-Spam-Flag: NO
+X-Spamd-Result: default: False [-5.90 / 50.00];
+	BAYES_HAM(-3.00)[99.99%];
+	SIGNED_PGP(-2.00)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_RHS_NOT_FQDN(0.50)[];
+	MIME_GOOD(-0.20)[multipart/signed,text/plain];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_TRACE(0.00)[0:+,1:+,2:~];
+	ARC_NA(0.00)[];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	TO_DN_SOME(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	FROM_EQ_ENVFROM(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
+	RCPT_COUNT_SEVEN(0.00)[8];
+	MISSING_XM_UA(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,huawei.com:email]
 
-On Tue, Jun 25, 2024 at 5:08=E2=80=AFPM Geliang Tang <geliang@kernel.org> w=
-rote:
->
-> On Tue, 2024-06-25 at 16:29 +0800, Huacai Chen wrote:
-> > On Tue, Jun 25, 2024 at 4:25=E2=80=AFPM Geliang Tang <geliang@kernel.or=
-g>
-> > wrote:
-> > >
-> > > From: Geliang Tang <tanggeliang@kylinos.cn>
-> > >
-> > > v2:
-> > >  - add patch 2, a new fix for sk_msg_memcopy_from_iter.
-> > >  - update patch 3, only test "sk->sk_prot->close" as Eric
-> > > suggested.
-> > >  - update patch 4, use "goto err" instead of "return" as Eduard
-> > >    suggested.
-> > >  - add "fixes" tag for patch 1-3.
-> > >  - change subject prefixes as "bpf-next" to trigger BPF CI.
-> > >  - cc Loongarch maintainers too.
-> > >
-> > > BPF selftests seem to have not been fully tested on Loongarch. When
-> > > I
-> > > ran these tests on Loongarch recently, some errors occur. This
-> > > patch set
-> > > contains some null-check related fixes for these errors.
-> > Is the root cause that LoongArch lacks bpf trampoline?
->
-> No. These errors don't seem to be directly related to the lack of BPF
-> trampoline. I have indeed got some errors since lacking BPF trampoline,
-> which is probably like this:
-If so, these errors seem not specific to LoongArch.
 
-Huacai
+--3fin4heviwo2qame
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
->
->  test_dctcp:PASS:bpf_dctcp__open_and_load 0 nsec
->  test_dctcp:FAIL:bpf_map__attach_struct_ops unexpected error: -524
->  #29/1    bpf_tcp_ca/dctcp:FAIL
->  test_cubic:PASS:bpf_cubic__open_and_load 0 nsec
->  test_cubic:FAIL:bpf_map__attach_struct_ops unexpected error: -524
->  #29/2    bpf_tcp_ca/cubic:FAIL
->  test_dctcp_fallback:PASS:dctcp_skel 0 nsec
->  test_dctcp_fallback:PASS:bpf_dctcp__load 0 nsec
->  test_dctcp_fallback:FAIL:dctcp link unexpected error: -524
->  #29/4    bpf_tcp_ca/dctcp_fallback:FAIL
->  test_write_sk_pacing:PASS:open_and_load 0 nsec
->  test_write_sk_pacing:FAIL:attach_struct_ops unexpected error: -524
->  #29/6    bpf_tcp_ca/write_sk_pacing:FAIL
->
-> Thanks,
-> -Geliang
->
-> >
-> > Huacai
-> >
-> > >
-> > > Geliang Tang (4):
-> > >   skmsg: null check for sg_page in sk_msg_recvmsg
-> > >   skmsg: null check for sg_page in sk_msg_memcopy_from_iter
-> > >   inet: null check for close in inet_release
-> > >   selftests/bpf: Null checks for link in bpf_tcp_ca
-> > >
-> > >  net/core/skmsg.c                                 |  4 ++++
-> > >  net/ipv4/af_inet.c                               |  3 ++-
-> > >  .../selftests/bpf/prog_tests/bpf_tcp_ca.c        | 16
-> > > ++++++++++++----
-> > >  3 files changed, 18 insertions(+), 5 deletions(-)
-> > >
-> > > --
-> > > 2.43.0
-> > >
->
+Hello.
+
+On Tue, Jun 25, 2024 at 11:12:20AM GMT, chenridong <chenridong@huawei.com> wrote:
+> I am considering whether the cgroup framework has a method to fix this
+> issue, as other subsystems may also have the same underlying problem.
+> Since the root css will not be released, but the css->cgrp will be
+> released.
+
+<del>First part is already done in
+	d23b5c5777158 ("cgroup: Make operations on the cgroup root_list RCU safe")
+second part is that</del>
+you need to take RCU read lock and check for NULL, similar to
+	9067d90006df0 ("cgroup: Eliminate the need for cgroup_mutex in proc_cgroup_show()")
+
+Does that make sense to you?
+
+A Fixes: tag would be nice, it seems at least
+	a79a908fd2b08 ("cgroup: introduce cgroup namespaces")
+played some role. (Here the RCU lock is not for cgroup_roots list but to
+preserve the root cgrp itself css_free_rwork_fn/cgroup_destroy_root.
+
+HTH,
+Michal
+
+--3fin4heviwo2qame
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQTd6mfF2PbEZnpdoAkt3Wney77BSQUCZnqXpwAKCRAt3Wney77B
+SRfRAQCp3qpPjMr/V93EnQBn55wrHhON4TlrezYJc+buOblYxAEAuJyDRQUA9Jxr
+sAuWz53C0zuFeXpcKwPfaEbF5fhTrAU=
+=O2Ze
+-----END PGP SIGNATURE-----
+
+--3fin4heviwo2qame--
 
