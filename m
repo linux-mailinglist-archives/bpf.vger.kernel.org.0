@@ -1,182 +1,239 @@
-Return-Path: <bpf+bounces-33024-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-33025-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4FF3C915EE9
-	for <lists+bpf@lfdr.de>; Tue, 25 Jun 2024 08:29:26 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7401D915F1E
+	for <lists+bpf@lfdr.de>; Tue, 25 Jun 2024 08:55:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CBB591F2238E
-	for <lists+bpf@lfdr.de>; Tue, 25 Jun 2024 06:29:25 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E948A1F23688
+	for <lists+bpf@lfdr.de>; Tue, 25 Jun 2024 06:55:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D8919145FF8;
-	Tue, 25 Jun 2024 06:29:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0919B146597;
+	Tue, 25 Jun 2024 06:55:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="eYRMVV3F"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="PZbYBftu"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-ej1-f73.google.com (mail-ej1-f73.google.com [209.85.218.73])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.15])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD2192BCF6
-	for <bpf@vger.kernel.org>; Tue, 25 Jun 2024 06:29:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.73
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719296961; cv=none; b=F97HJrwc0AEgNZhgRzoWIDlDgBojloJCaBTEZdsQb4Gxm1BLb7mD/WtdC5NNGPicEu86JHkegjk1OucYNiWxrM4PzcX2I6Jqu2quYpQRIesmHgm89aVvjVWT18DD0cV+VBWjw8+jPDf84yzrXnUn/Ox7nBetfTEVOvaW6+WpjKo=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719296961; c=relaxed/simple;
-	bh=Jfs2JRcJ6j/9WsK5ubGRkxDpeWQ+rygdKYQ8igFte9g=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=TPnhVT9jx10Ph2IHN6bwmowu8FHHUCR+ywZImRfF3oNLV7gnGTCvzK6Xf3xy0yqnvVdxszq/twG4T5jyfda1HIOU+hgBqqhLFt/8ConhV0QR2VaJvEy4oV6wEye2JxD0R35Q1ZoIM6idHYWf+8T75cuM36okpK1kHJvPK6XCf+0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--mattbobrowski.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=eYRMVV3F; arc=none smtp.client-ip=209.85.218.73
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--mattbobrowski.bounces.google.com
-Received: by mail-ej1-f73.google.com with SMTP id a640c23a62f3a-a7253454b3fso86029266b.1
-        for <bpf@vger.kernel.org>; Mon, 24 Jun 2024 23:29:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1719296958; x=1719901758; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=IhzvtxnwxPw4271b1gCpWFIWj+aKqebJIr/9+MigdzA=;
-        b=eYRMVV3FuJQ/oXal5pQDVvHn2ZvvB9EN3bWHOFfxOlsegFT5AB17wOWwQmimR+4ig7
-         +4NsbPx8xzZRCo4HbZIRGrsiW8/BWjfQjGhCdXGxvRJ3v5Kq6L3PiDksUNr0rI0AHITE
-         JzU1Kb9kB2ou3nO6i5bHC7II3CcQMTlSyd+abk8r4Mlk6JgsKLUv5amGDxNl/y1dVevu
-         v58JZMkRks9V6iseywSH4zSjp0xBA1Hc0kFx/sDAVB/gyHEgnlqcz7U7Ayu5v0KT/TeK
-         muHy5I8Ai3z2QYkNxIr2gOC2CMEhl8oXiGrm6mFwM1HssJpWoDqOPpboLZCyX2zb1OW4
-         xkaQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1719296958; x=1719901758;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=IhzvtxnwxPw4271b1gCpWFIWj+aKqebJIr/9+MigdzA=;
-        b=TG4VI5q5niptXERUjJMdqAfX4KMenAHCGJagzY6XWDP0kDUSSb+S9K+nxPzNFAqls9
-         pjRstNbAsJkznXHKqan2DjsccvtQulubbiroaye/SxKzbAL7IydgsrbYESmFiC5Wvzdo
-         YQTKLZ3DKCAsX1QPc33WsCqbWadzvLeAPfXWmd0NcA6ZmYsLjm97YGGUa8d1amhVcBpH
-         Xes7icxD8wn1p12TFBFbcI4x3gfk7FAoQCsKhlV9IZ7ntj8n5yJQVs9YXxnHTNmEZvhn
-         1K2BHWD2c7pyRYrjgl6rnsJJQW4OblL/GlAgwyNsijSo6wYoQ28wFrWJJOH+be+/KSXE
-         4TTA==
-X-Gm-Message-State: AOJu0YxQAK8OQ6bH9Mv5J2aMh1eKw85nrZPKiiP9PwYR/yEJ9qDYBF6f
-	2OMdU3PI5RFM9GYeTWI35vkRyVgogj181wCZvUyfYRO3zigTMjH1le38kH6EnMjfIpERKhv4nvC
-	oyIaD+yx0IIorLwZkWEcxvNtn1tZfJkYJm2KuVAR0UdESppZ8KdAXeWKnJYepQxMPTue0Cx+uPG
-	KfcKoqGm4TjRfPmWtW7IJzZscUC4WofP5O7E+EFWPTosR/3Z25XFpIe5fTNSYOqE+kVw==
-X-Google-Smtp-Source: AGHT+IGxuF3gFRGSlozkGQ1lvMP8mXk+U8avwao/n00ZnS8zaAuaHROYwAinlMHYwForemr3tI9tH8ESRV/sMtHipD8O
-X-Received: from mattbobrowski.c.googlers.com ([fda3:e722:ac3:cc00:31:98fb:c0a8:c5c])
- (user=mattbobrowski job=sendgmr) by 2002:a17:906:5849:b0:a6f:bae8:f84d with
- SMTP id a640c23a62f3a-a7245c7217cmr620566b.8.1719296957811; Mon, 24 Jun 2024
- 23:29:17 -0700 (PDT)
-Date: Tue, 25 Jun 2024 06:28:57 +0000
-In-Reply-To: <20240625062857.92760-1-mattbobrowski@google.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D3BA614658B
+	for <bpf@vger.kernel.org>; Tue, 25 Jun 2024 06:55:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.15
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1719298528; cv=fail; b=laSXXPZUbduhcf1ZxR7bC9Qm8TPS7/z9lhfXilwfk9c3aBJvrA1NBE8IiU0YKy/x/8nUlUAkVN3LYsmvH/pWxDY927SuS1JZctFHLfaMOsG2lkL2OuIhpYopJRL1Vyvd/ztjt+mNrx6hes+saWhLIwQHfyttWAcePn60ii8mduU=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1719298528; c=relaxed/simple;
+	bh=yCGfE3KM2gkh9gVGEuMaagT9P8W9D8rZc0wmtwIZqR0=;
+	h=Date:From:To:CC:Subject:Message-ID:Content-Type:
+	 Content-Disposition:MIME-Version; b=MZ7UD732gZ2+wTH4/F2OAaQVaMPMlQvGBCNOlBDqbyoVf4eow5T44WSTRlm534qDjyPq7S0fzoWbpKg9UPsbXU9c3Vcu2jYFkWNb58GgFn2op5ds+hCqO5Ssqc+uhNTAfX1gTOo1MSDnq0xMpYOBfx05Q/7hn7pFTKeZYVdpdjc=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=PZbYBftu; arc=fail smtp.client-ip=198.175.65.15
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1719298527; x=1750834527;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=yCGfE3KM2gkh9gVGEuMaagT9P8W9D8rZc0wmtwIZqR0=;
+  b=PZbYBftuulw1ZUnjqslgOg1xurecR6msjHXi+f2Pgjb8ge/GKA5HJCFq
+   K1WqrxcvRyINmmTk6QdJL9jCMBM1aXzK8V9tAb8Fx4s8kCDCBxsdkEJwl
+   EfQfOqX8JPBKZHXjOz1cf6BkJ76NhpT1IBOrqJ4+VoII7FvdODo1ObvDd
+   HiwF9GbZUa6T56fMLUFj+c2iCQqsP5forp1Pp/iUrA/Vz3yiAfdJCiNed
+   puowbl63SZYxWtjzwUIhmlHvmMruoalfGZVQVlq3jqb8JncrVfcIzuAAX
+   vh5RrX9rXqAqs+aiseMIqwMHfe97Z7+dznSPIn/MXhPIgsAfqjMXmtZSh
+   g==;
+X-CSE-ConnectionGUID: u9GoIFKATs6zSLmWw25xaw==
+X-CSE-MsgGUID: wSssiD1wQJ6SS9lhImoRvQ==
+X-IronPort-AV: E=McAfee;i="6700,10204,11113"; a="20070251"
+X-IronPort-AV: E=Sophos;i="6.08,263,1712646000"; 
+   d="scan'208";a="20070251"
+Received: from orviesa007.jf.intel.com ([10.64.159.147])
+  by orvoesa107.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jun 2024 23:55:26 -0700
+X-CSE-ConnectionGUID: VxF/amnxS9OpeNSzedFxzA==
+X-CSE-MsgGUID: zlccMD6dRW+MR7yzmBIKaw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.08,263,1712646000"; 
+   d="scan'208";a="44195358"
+Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
+  by orviesa007.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 24 Jun 2024 23:55:25 -0700
+Received: from fmsmsx601.amr.corp.intel.com (10.18.126.81) by
+ fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.39; Mon, 24 Jun 2024 23:55:24 -0700
+Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
+ fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.39 via Frontend Transport; Mon, 24 Jun 2024 23:55:24 -0700
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (104.47.70.43) by
+ edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.39; Mon, 24 Jun 2024 23:55:24 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=VYJo61cfXQfzdzJ2hy7lbXE6JaPsPgPptzbV7djyTZCH5W8163etq3WhBT7DdzF/Waur2NdvPnwW6REd86LpSsKllWzAK+LIQEAPcpy9dYiqaMXJafZdZuHNc7hNgETuA33U/MDysc5xlP5FOKO+OwVQhl2TyhfsTweSQ9IJN0RwD8L1Oc7A9ZR+bFdTMlruxcviZpzdQRvJM6NOUtkN0moYu9XLIry891XNkhNBg0B/1GOhX3qSg717PsK2vTP3EYvpK96N011TKSp5CuVQiOyw228SM6cFhOTYnYIEYIinNP5SClK6ibRl29dL2hgpnAPEmYsuv0omysUmOS6uhQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=VxIRFGZFPmVyeUimZbz80HepbiDNjyUSzVznK8rGRno=;
+ b=iTrivMDooljCpQkoJl76Jq4oxjtWHKObDZY3e899ZPNVhCL8FRErWzjVhfW2mxxdpit/gzyeLnpTvnx4kBNleUx9C8F8lEUFglPnd6JyB/yHMkV0UGqeFNTufHmG5lRN1NgBvvulupW6ouuhuIdmawE/Oag5DrCdiShz7gf1LiHiNcAVwLrNbOhAEE7T34V3Mp6o5wsT9fulciqpISYP2I+N19FtB0tkI6rnc9j8Eso6i39ZhHR0xvrRdGfeydqwuNW6v9kG/EkjNwuC+KfuYjqaqXgeJk4QT4Q3IR1jAoBJVzrwU0jXW3qvOyyrJ06ZzH7wFD4XTo9WoBe0oBtjFQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from LV3PR11MB8603.namprd11.prod.outlook.com (2603:10b6:408:1b6::9)
+ by MW3PR11MB4652.namprd11.prod.outlook.com (2603:10b6:303:5a::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7698.30; Tue, 25 Jun
+ 2024 06:55:21 +0000
+Received: from LV3PR11MB8603.namprd11.prod.outlook.com
+ ([fe80::4622:29cf:32b:7e5c]) by LV3PR11MB8603.namprd11.prod.outlook.com
+ ([fe80::4622:29cf:32b:7e5c%2]) with mapi id 15.20.7698.025; Tue, 25 Jun 2024
+ 06:55:21 +0000
+Date: Tue, 25 Jun 2024 14:55:12 +0800
+From: kernel test robot <oliver.sang@intel.com>
+To: Leon Hwang <hffilwlqm@gmail.com>
+CC: <oe-lkp@lists.linux.dev>, <lkp@intel.com>, Linux Memory Management List
+	<linux-mm@kvack.org>, Alexei Starovoitov <ast@kernel.org>,
+	<bpf@vger.kernel.org>, <oliver.sang@intel.com>
+Subject: [linux-next:master] [bpf, x64]  f663a03c8e:
+ test-bpf.Tail_call_count_preserved_across_function_calls.fail
+Message-ID: <202406251415.c51865bc-oliver.sang@intel.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+X-ClientProxiedBy: SG2P153CA0037.APCP153.PROD.OUTLOOK.COM (2603:1096:4:c6::6)
+ To LV3PR11MB8603.namprd11.prod.outlook.com (2603:10b6:408:1b6::9)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240625062857.92760-1-mattbobrowski@google.com>
-X-Mailer: git-send-email 2.45.2.741.gdbec12cfda-goog
-Message-ID: <20240625062857.92760-2-mattbobrowski@google.com>
-Subject: [PATCH v2 bpf 2/2] bpf: add new negative selftests to cover missing
- check_func_arg_reg_off() and reg->type check
-From: Matt Bobrowski <mattbobrowski@google.com>
-To: bpf@vger.kernel.org
-Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org, memxor@gmail.com, 
-	eddyz87@gmail.com, kpsingh@kernel.org, sdf@fomichev.me, jolsa@kernel.org, 
-	Matt Bobrowski <mattbobrowski@google.com>
-Content-Type: text/plain; charset="UTF-8"
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: LV3PR11MB8603:EE_|MW3PR11MB4652:EE_
+X-MS-Office365-Filtering-Correlation-Id: 9c1493dd-fd87-4b8f-a162-08dc94e3c833
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230037|366013|376011|1800799021;
+X-Microsoft-Antispam-Message-Info: =?us-ascii?Q?vlA2kVT1cgyajBOqXT+q7e0c3C7/F9SA51zho6u0OvdFzQ0wNuMuIyguwCs7?=
+ =?us-ascii?Q?/ddj9xACBT6DGDB0Ue3MvoXRXd1KdjdRbnPZKtyHOHefRdXUZRwAaZ2P+vRK?=
+ =?us-ascii?Q?mq10TkqO7vp1RsFyWbFbaJmsy37CBxhaMjjJzdqugrRv2ctVXhrrKU5Mah55?=
+ =?us-ascii?Q?4I6yiGRsPl8TMXLr3URMsCQQFSTiT7m+nTQCV8pvn0AFW/T/vRILvOR4u1Fs?=
+ =?us-ascii?Q?lq2HZmS55aQKFL7UqlHbDCrQX2vs+EQifki1DsxVUpGnofbtvoU92AcHkFf0?=
+ =?us-ascii?Q?pWhYuFnBebjjzeZrDQCjZEc37YBMUhLv+H1wXZRKidOVsA7mvew08UgQ+4sP?=
+ =?us-ascii?Q?rBzHZuLGMedqd23mBvxunR7eIJqxxOiuMobaLZfFF3vKLplLS38Knpa/9ZpQ?=
+ =?us-ascii?Q?dfhL46pLrmHtHD5KD8xnj14vT0HssMBH2u8NmkpZ9vBaUmSL2VppOEcPvCKl?=
+ =?us-ascii?Q?dxREuPbQyHERHdxZQA3Hd1JZE8Dtae3mgpgEW/DziOOycU4JaZn6bz+sP/Mn?=
+ =?us-ascii?Q?GNVO3qRfQsZTCaVMUjdWl1Gk3HQxBJDI1kT2HeoQCdaPk/Jrikqj+ZE6alde?=
+ =?us-ascii?Q?mZdLAoj+35Rgkpt8y1JRIOBAVpDaV5yaqfn2+rTm4OdKxueR5JAbYQLQ1XQt?=
+ =?us-ascii?Q?DTQkXwObrHBqsPGAH+YAvXidDmLgUNQWNUGlIjIko24THHfaDoWKcA6bTC4a?=
+ =?us-ascii?Q?y9W6NgbnhJLqOPAvxBbBPReusLHG7O8cQyN0feCwCSO8rpcTbkfuxbwri/Vn?=
+ =?us-ascii?Q?lLUSTgGL87r8u2lxMMBSOnNn7BNlSZmseHCPa3tu2MaZPm1I8bbaoceUpgNr?=
+ =?us-ascii?Q?WKFWu0ulZpUK/y9UBf3MgVbbFcHACYsuD9Jk5hvFwn9WEERGE6CfnwfMszsP?=
+ =?us-ascii?Q?lSWjzNywAMsEBeLU3q5sqv/I5Ul5MoI+r0a5onQ3zVmWel5cKpN18YDBwMHQ?=
+ =?us-ascii?Q?im5CoQzYdKU6AC6qJAxcX4A+2xA5J+L1fewy9avr/tOBoLHYroeUy2DpRgyv?=
+ =?us-ascii?Q?Gjhx3aGy29sx/VSkvcwm+NDw3Mk4rUATttwwWUyBXc39ZIPsQB34lIJvcYGd?=
+ =?us-ascii?Q?VvMU1wa4pNYmQhUhrcKQ8RKPtJcZ3x7IIfF7Pw9ytOu0NXooxduTaSziOh9c?=
+ =?us-ascii?Q?Wj3E2ioCQnKtBr32g5EMdvSpJzgZUndgZN6AQx5bHj1YpeCS7/zOlT7q+64Z?=
+ =?us-ascii?Q?+Ye0R0VR0qvpzUY6C53A24Lb7sC364IgkiZPC89zBNzFmCEoQHAIqNu/XYE4?=
+ =?us-ascii?Q?K3SuaD1omubeaS5uEVjUhJe4/SktZhhgKEmj0/D37g=3D=3D?=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV3PR11MB8603.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230037)(366013)(376011)(1800799021);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?bBDdJvK6BH2QLOQmmXvuGuVGLe7iAap+0Rm+phepIqcvFuBD+QSRFSZ97M2u?=
+ =?us-ascii?Q?6su5s4wvBTvKzpnUJOZYlu9z0679D/BGAT1b+0yMhBLu2HEYg6f8TE+1aFjb?=
+ =?us-ascii?Q?BiHzSjtIX4Q6cwXoPeJTSCb0iK4c69ZDpnzPpamTxxpI15MzRsiJ176IDEhe?=
+ =?us-ascii?Q?O+rohNgq0dRoOG2JSq/E5sNRo3XSzJ7KtBiD7RLcM4Bnkbcxf6W+uoAWdGMV?=
+ =?us-ascii?Q?ysSo4nHNX5DYF03hGcUJ3hZ0JyYHf/LgmnXYssrOR0tMEmtkOWbwsVz43gB3?=
+ =?us-ascii?Q?sdwS/jpdWpPiS4tRwOGgQkne+Cq5+FooezfqD/Wiwrgdp1fprxuwTCsWgBVU?=
+ =?us-ascii?Q?Uye0jhQdzJvdEiBMSkN5jmUqL7Tt3HSGEr5lj/cH1ul3S6q1LL2BkgxStzVl?=
+ =?us-ascii?Q?j3a1yWlGZzJSsUF5KDxrLBpbIoC5kLUpHH424rDhmxhgjEKCe1FjxdsIRHUg?=
+ =?us-ascii?Q?0KDriY94pGrDBE2qy0LqHwZ9quw1LuXXYT1/apifaKc4vXX1MOtRZ9GR9NIV?=
+ =?us-ascii?Q?soGHcZkOl4QXpSiM+wRzxppXAYM1NdzIY0R/HWgjWbVQiAd31eDB2AQSfChp?=
+ =?us-ascii?Q?Zwesho1EQbyCQBKys570OSIqJvR6M89Xg3Gc9PdEoMb6x1o6U0FJDZmtlPQS?=
+ =?us-ascii?Q?b2r3vZVPEDFLkokJOpnWAWatQ3QTNWo9TPMDp4jLuKf2mM+G6IoT5vTcfFhv?=
+ =?us-ascii?Q?NWJ7IffdYQZgw2QY5hgRGndp1b88OIfDHaX6olKUzK+h87Cq8hHgWIO2hl0u?=
+ =?us-ascii?Q?NiP8YPHCnX1rBMpStgLKSvDr5sV8XZXEYQv6FDclLSpOWAgY0tzpU4mvqTip?=
+ =?us-ascii?Q?lEROsSXNEiGZ3WHe0Zkxvr+poOXdcd9k91NQbsfUfurx5e/hYMLvIhJz1Deo?=
+ =?us-ascii?Q?Vs1xvskUEQ/UVakwMrqU27BPJyoOdy6N7l6knjaAsx+PBcv85i/edmmnpBbx?=
+ =?us-ascii?Q?FcfAN7KsQOaPMIB5qkFoOcB87OsdZ4XnKVefb8DUikHHzM4qcatNf3F/BGVM?=
+ =?us-ascii?Q?OkJc/uRca/IuAEvEbEQaWfRRiXbcOuLbVIHEcJLhO4rhh1TlWenAC3wdw/qf?=
+ =?us-ascii?Q?A/eJDLLm7q0sIyBrhc6yru8ZzpJy3g9kt/FY/WIKr/dZhVVhR0bnCvE/qJ47?=
+ =?us-ascii?Q?CJlS+z2/oEj3DqHIuBi3Q/3Sj6t9BsyOXqhofg4mZeiBqiTI8MnGwImFxI9t?=
+ =?us-ascii?Q?eXXPga738LJAF5C2QMyJgibzBixlDnJ8W+Ekur2gXODmB1ixeqBnq4OA04Fi?=
+ =?us-ascii?Q?mk0zeahxo5/rPezYOK+LGe0+/NQ8ETw6hDWMKMImDBB1aPVMxRv5pkz7SgPn?=
+ =?us-ascii?Q?nud3xyYU9JwKpMh/K4VhGXPeOgvZO0k2giXc/v4oXI3Fi5DkuxXWwL1WdfX1?=
+ =?us-ascii?Q?229rYxZMIK3fsfPsQAgI4gyA66T1el1wvLB7fKTFa0TxKKv7XwhwjWNxTGZL?=
+ =?us-ascii?Q?wRe4AEcj53Ihi61hDWwylepnT7C87IlVzDr74Sr8dyjZchbXWmp4+17jO4rc?=
+ =?us-ascii?Q?mBkovRqEPSxxwv2GL5rcZCGQWK7rDsIPswzYJNQ7vze77qrLMffXuqGboiw4?=
+ =?us-ascii?Q?lyWVbz0gKUtIq1a/yr7MEkbIqf6f1DJemNJksq7nRLDhintC5+MXUEaHFtia?=
+ =?us-ascii?Q?QA=3D=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9c1493dd-fd87-4b8f-a162-08dc94e3c833
+X-MS-Exchange-CrossTenant-AuthSource: LV3PR11MB8603.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Jun 2024 06:55:21.7762
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: srMPBBweey9KMzzr7m258olQpRIUrgWd/l7pQ52/AhNVJVdtsQ5rKVNT+SrvJgt3rrDXRBUakP6biGw4BTsvig==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW3PR11MB4652
+X-OriginatorOrg: intel.com
 
-Add new negative selftests which are intended to cover the
-out-of-bounds memory access that could be performed on a
-CONST_PTR_TO_DYNPTR within functions taking a ARG_PTR_TO_DYNPTR |
-MEM_RDONLY as an argument, and acceptance of invalid register types
-i.e. PTR_TO_BTF_ID within functions taking a ARG_PTR_TO_DYNPTR |
-MEM_RDONLY.
 
-Reported-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Acked-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Acked-by: Eduard Zingerman <eddyz87@gmail.com>
-Signed-off-by: Matt Bobrowski <mattbobrowski@google.com>
----
- .../testing/selftests/bpf/progs/dynptr_fail.c | 24 +++++++++++++++++++
- .../bpf/progs/test_kfunc_dynptr_param.c       |  2 +-
- .../selftests/bpf/progs/user_ringbuf_fail.c   | 22 +++++++++++++++++
- 3 files changed, 47 insertions(+), 1 deletion(-)
 
-diff --git a/tools/testing/selftests/bpf/progs/dynptr_fail.c b/tools/testing/selftests/bpf/progs/dynptr_fail.c
-index 66a60bfb5867..ed4bba02c861 100644
---- a/tools/testing/selftests/bpf/progs/dynptr_fail.c
-+++ b/tools/testing/selftests/bpf/progs/dynptr_fail.c
-@@ -1686,3 +1686,27 @@ int test_dynptr_skb_small_buff(struct __sk_buff *skb)
- 
- 	return !!data;
- }
-+
-+__noinline long global_call_bpf_dynptr(const struct bpf_dynptr *dynptr)
-+{
-+	long ret = 0;
-+	/* Avoid leaving this global function empty to avoid having the compiler
-+	 * optimize away the call to this global function.
-+	 */
-+	__sink(ret);
-+	return ret;
-+}
-+
-+SEC("?raw_tp")
-+__failure __msg("arg#1 expected pointer to stack or const struct bpf_dynptr")
-+int test_dynptr_reg_type(void *ctx)
-+{
-+	struct task_struct *current = NULL;
-+	/* R1 should be holding a PTR_TO_BTF_ID, so this shouldn't be a
-+	 * reg->type that can be passed to a function accepting a
-+	 * ARG_PTR_TO_DYNPTR | MEM_RDONLY. process_dynptr_func() should catch
-+	 * this.
-+	 */
-+	global_call_bpf_dynptr((const struct bpf_dynptr *)current);
-+	return 0;
-+}
-diff --git a/tools/testing/selftests/bpf/progs/test_kfunc_dynptr_param.c b/tools/testing/selftests/bpf/progs/test_kfunc_dynptr_param.c
-index 2dde8e3fe4c9..e68667aec6a6 100644
---- a/tools/testing/selftests/bpf/progs/test_kfunc_dynptr_param.c
-+++ b/tools/testing/selftests/bpf/progs/test_kfunc_dynptr_param.c
-@@ -45,7 +45,7 @@ int BPF_PROG(not_valid_dynptr, int cmd, union bpf_attr *attr, unsigned int size)
- }
- 
- SEC("?lsm.s/bpf")
--__failure __msg("arg#0 expected pointer to stack or dynptr_ptr")
-+__failure __msg("arg#1 expected pointer to stack or const struct bpf_dynptr")
- int BPF_PROG(not_ptr_to_stack, int cmd, union bpf_attr *attr, unsigned int size)
- {
- 	unsigned long val = 0;
-diff --git a/tools/testing/selftests/bpf/progs/user_ringbuf_fail.c b/tools/testing/selftests/bpf/progs/user_ringbuf_fail.c
-index 11ab25c42c36..54de0389f878 100644
---- a/tools/testing/selftests/bpf/progs/user_ringbuf_fail.c
-+++ b/tools/testing/selftests/bpf/progs/user_ringbuf_fail.c
-@@ -221,3 +221,25 @@ int user_ringbuf_callback_reinit_dynptr_ringbuf(void *ctx)
- 	bpf_user_ringbuf_drain(&user_ringbuf, try_reinit_dynptr_ringbuf, NULL, 0);
- 	return 0;
- }
-+
-+__noinline long global_call_bpf_dynptr_data(struct bpf_dynptr *dynptr)
-+{
-+	bpf_dynptr_data(dynptr, 0xA, 0xA);
-+	return 0;
-+}
-+
-+static long callback_adjust_bpf_dynptr_reg_off(struct bpf_dynptr *dynptr,
-+					       void *ctx)
-+{
-+	global_call_bpf_dynptr_data(dynptr += 1024);
-+	return 0;
-+}
-+
-+SEC("?raw_tp")
-+__failure __msg("dereference of modified dynptr_ptr ptr R1 off=16384 disallowed")
-+int user_ringbuf_callback_const_ptr_to_dynptr_reg_off(void *ctx)
-+{
-+	bpf_user_ringbuf_drain(&user_ringbuf,
-+			       callback_adjust_bpf_dynptr_reg_off, NULL, 0);
-+	return 0;
-+}
+Hello,
+
+kernel test robot noticed "test-bpf.Tail_call_count_preserved_across_function_calls.fail" on:
+
+commit: f663a03c8e35c5156bad073a4a8f5e673d656e3f ("bpf, x64: Remove tail call detection")
+https://git.kernel.org/cgit/linux/kernel/git/next/linux-next.git master
+
+[test failed on linux-next/master 62c97045b8f720c2eac807a5f38e26c9ed512371]
+
+in testcase: test-bpf
+version: 
+with following parameters:
+
+	test: non-jit
+
+
+
+compiler: gcc-13
+test machine: 36 threads 1 sockets Intel(R) Core(TM) i9-10980XE CPU @ 3.00GHz (Cascade Lake) with 32G memory
+
+(please refer to attached dmesg/kmsg for entire log/backtrace)
+
+
+
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <oliver.sang@intel.com>
+| Closes: https://lore.kernel.org/oe-lkp/202406251415.c51865bc-oliver.sang@intel.com
+
+
+
+[   43.913560] test_bpf: #0 Tail call leaf jited:1 5 PASS
+[   43.913572] test_bpf: #1 Tail call 2 jited:1 ret -1 != 3 FAIL
+[   43.914138] test_bpf: #2 Tail call 3 jited:1 ret -1 != 6 FAIL
+[   43.914756] test_bpf: #3 Tail call 4 jited:1 ret -1 != 10 FAIL
+[   43.915374] test_bpf: #4 Tail call load/store leaf jited:1 5 PASS
+[   43.915993] test_bpf: #5 Tail call load/store jited:1 ret -1 != 0 FAIL
+[   43.916636] test_bpf: #6 Tail call error path, max count reached jited:1 ret 1000 != 34000 FAIL
+[   43.917319] test_bpf: #7 Tail call count preserved across function calls jited:1 ret 1000 != 34000 FAIL
+[   43.918799] test_bpf: #8 Tail call error path, NULL target jited:1 5 PASS
+[   43.919720] test_bpf: #9 Tail call error path, index out of range jited:1 5 PASS
+[   43.920474] test_bpf: test_tail_calls: Summary: 4 PASSED, 6 FAILED, [10/10 JIT'ed]
+
+
+
+The kernel config and materials to reproduce are available at:
+https://download.01.org/0day-ci/archive/20240625/202406251415.c51865bc-oliver.sang@intel.com
+
+
+
 -- 
-2.45.2.741.gdbec12cfda-goog
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
 
