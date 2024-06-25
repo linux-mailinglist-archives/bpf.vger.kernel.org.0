@@ -1,120 +1,140 @@
-Return-Path: <bpf+bounces-33074-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-33075-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id BFAB1916ED5
-	for <lists+bpf@lfdr.de>; Tue, 25 Jun 2024 19:06:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 1155A916EEA
+	for <lists+bpf@lfdr.de>; Tue, 25 Jun 2024 19:13:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F1AE11C22CBE
-	for <lists+bpf@lfdr.de>; Tue, 25 Jun 2024 17:06:19 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4C50B1C22329
+	for <lists+bpf@lfdr.de>; Tue, 25 Jun 2024 17:13:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C95F176ABC;
-	Tue, 25 Jun 2024 17:06:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B6410176AC3;
+	Tue, 25 Jun 2024 17:13:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="Uo7+oQM2";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="F1sjTFCO"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="R/79w8su"
 X-Original-To: bpf@vger.kernel.org
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f41.google.com (mail-wr1-f41.google.com [209.85.221.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 65F282F56;
-	Tue, 25 Jun 2024 17:06:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA9D9172786;
+	Tue, 25 Jun 2024 17:12:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719335172; cv=none; b=MVN8rE3U7xHW4LjgiLnpY5tdoJTxNWiOv9uUjPv3AwUFmFYZOiBjBMLMBMIsxYYIDfGz0vi0wUGpV8/axse/BaqmPG80TrUOmEN+Y5yRW6C9bOXQWc2FzIKcOPCZ2vMeh/GDUM1qCxLzLGJd0yA65vlp441cOST61HAkf9sVf14=
+	t=1719335581; cv=none; b=ZaHRK0vXXb7MFrxVsd4Y+r+athqATinKFehfQSdrh3NpaE9PxabSegqbPgWDsPj7dB2ecLgcOj6lXPaONn4gankyEm3ZG+PgAbKhRaOSBmqd4q8GYnKBnC+NJCcokW67jwj0wU2mKp42+Yrkmrb3hqUGLuOKR5S5r6mTU7NnKU4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719335172; c=relaxed/simple;
-	bh=UTmZystc/lUIF2dv8V5MVxh724Lvos5ltuhrFv04XU8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=pO6HI3f5v3ywHf+9pR7QzY+UYuLubHW/B95O5dsi5vPKSqDw8xxBp9auRwsS79IgX4cfneR8f6b2/N4dHw633hR8EG0zSkdG6rf98QF24k/gGUOuFyFYEer4SvI0P51YJyw9MXJDoV/6swNulBQT8g+Xkk5o0ApfosVzjUAm28Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=Uo7+oQM2; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=F1sjTFCO; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-Date: Tue, 25 Jun 2024 19:06:06 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1719335168;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=RDKcb91P2bymxECJFmNCk0GOaYMAG2KZIckrdZE6cQM=;
-	b=Uo7+oQM2NAbTRCNa0S5m5WVy0/w/jVy2j2L/fdgHY8xjfj1sS41vZp8X1PaPbSw7A+ijEq
-	Ckty3m8DHhCwIkxm7S/7qhN8ziGG9NZGhhKfjpGdZzbH7V/wRVMxXxthjG4St4L7ORNKu7
-	oxZv0fZLq16YJZYLfx6nCmEGp3mJSH55+eyeP2W/tKsnW+tODa+bY1l+4K6IrrIJLSZuAd
-	k3aZrb/Oy6gPb4R2AqigEuyrmQv4hH1Xn+SlAITVRjTBIZ62FI0DtP4yvOIo67QyoowePr
-	XF9Le7rorxru/XBJPEAmkKKXIbOvasdGUeomjLu0OEAXbJlKxql0ph9UqU1+zw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1719335168;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=RDKcb91P2bymxECJFmNCk0GOaYMAG2KZIckrdZE6cQM=;
-	b=F1sjTFCOFfnKOnRTvpYlZsggX3FRB9ypKtLh86a1ZH7+1vVOe0/MDMDZf7dKSfMT2kVNp0
-	91LJAstjVbti3xDA==
-From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To: syzbot <syzbot+608a2acde8c5a101d07d@syzkaller.appspotmail.com>
-Cc: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
-	daniel@iogearbox.net, davem@davemloft.net, dsahern@kernel.org,
-	eddyz87@gmail.com, edumazet@google.com, haoluo@google.com,
-	john.fastabend@gmail.com, jolsa@kernel.org, kpsingh@kernel.org,
-	kuba@kernel.org, linux-kernel@vger.kernel.org, martin.lau@linux.dev,
-	netdev@vger.kernel.org, pabeni@redhat.com, sdf@fomichev.me,
-	sdf@google.com, song@kernel.org, syzkaller-bugs@googlegroups.com,
-	yonghong.song@linux.dev
-Subject: Re: [syzbot] [bpf?] [net?] WARNING in bpf_lwt_seg6_adjust_srh
-Message-ID: <20240625170606.Ed9u123U@linutronix.de>
-References: <000000000000571681061bb9b5ad@google.com>
+	s=arc-20240116; t=1719335581; c=relaxed/simple;
+	bh=Wwa4HGkLETbKqeTTU6fvEcD/qSObTjEYyqi/1NukKz4=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=o0do4xvrnEPlNxWdkkgQIB4zlMiVhgd1B2Xx8hPH1SmkufUPbOB+Th3L9OgErd2GKm7EBJeYZQ81UjIyPrxn6qp9vSsOrlKIC+pSLKvUv1jKUF19k3RPFjst/gJnt97RS+E08iO8sX6kO6tre7+dQRdj4b+B0fR9pI9QaQI1YEo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=R/79w8su; arc=none smtp.client-ip=209.85.221.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f41.google.com with SMTP id ffacd0b85a97d-36703b0f914so575245f8f.0;
+        Tue, 25 Jun 2024 10:12:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1719335578; x=1719940378; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=BI5OFEaVYhrUkuh/u4LxK0p6IDDHPXl4NuFtwgsoCq4=;
+        b=R/79w8su5OYlKu588PZ/L+Ac39IOQMnyTSJ6jiEcZXGnjdnJHHihyaWIzcSrDU309q
+         /ehpuklLrmwPDHBRN77ZoYMc+ngp5IrpJO/QIrU7bihMKqVtykI/ilaqsHrySnew2+07
+         y3XkeBlHriGL0wA5+I9HsM33TrqOd+P4D/f0YkazajKxnIgvwVsQv7ybm1Oz7MM1zuii
+         atX+um2HLZHQbLBJnyIcEvsR4zny5gxS4Ka/qQlHat9wutU99XDDUMK5Pz0S0C6ST7n/
+         tKmKi/iWPXv+qhABAOTRyUIrqVtZSd2S5Ru4NLrNJACKLZ0NWlYowtk4bTIyE4oJEfL0
+         4Jpg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1719335578; x=1719940378;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=BI5OFEaVYhrUkuh/u4LxK0p6IDDHPXl4NuFtwgsoCq4=;
+        b=YkSYEuiQl5vJnXmr1Kv5UxlXfxp99IwxyUamjJxfH2gHunEeBtufkbOLNqhs2ghv5z
+         Vhy00vqUEg91Yzc+1YWl1SMJVupdX9/uNXAHmTF1YRO4G4VlXBrwxFewRSM7LgsDqoPm
+         gF0gL2dZgXSVYbAbZ5BgBwF7GH9Q7S43UZ+quYFKm6q6CIKOIM8Vqn08zVeEIu02Gdwg
+         Axj5z0hM4UguSzBq3Q5za7FyNKSo3+K2cuXuLrBEXlfITRKtB09soT4zlh1eCusf6Pi8
+         G/nuoMS9aTnRWqLCg7/6ZASGcQ7YTS7D3KSVJqcmM+/DYNSSxXCtmORD1uOe3nsO96oE
+         a2iw==
+X-Forwarded-Encrypted: i=1; AJvYcCV1ROdD7Z2AMIKhcIdQlCgirf+aMBh0yOJnV7cou52N/LPx2vkBfJJRRgDRxp1BD0LuyIV7Dwts/q7uFACj6aGwhK3gpAclBCRW32zzDyk6Hilqdw5N0tQ06ZEARVdl8g8P+RxDfiw0JFbLl8TNfSCy7naxkEASxdSyul0fhIIj5EsvP26q
+X-Gm-Message-State: AOJu0Yzo1++47F56ZlbyP5CP+UiFgAAqDfM9d6vBnJO1ghiBqZ7zFxWO
+	JR4VHj91vQucNc9nrJGr6MEbvho0pPNNAccTpqKV4ICTY6sm9kO3L+gX435EZZIqLtAPTwhWVk7
+	jrP4Nlr2+HwEuVnpaDOxt1fDHr3M=
+X-Google-Smtp-Source: AGHT+IE06FOCAbgOD9xJVbw3JngT0HOsO4esODsbSBdUue19gmiKBnUmKzc7qwytynqNUagCApCOkM09kU86aKoNtak=
+X-Received: by 2002:a05:6000:1a8c:b0:360:728d:8439 with SMTP id
+ ffacd0b85a97d-366e36491b7mr11108459f8f.2.1719335577845; Tue, 25 Jun 2024
+ 10:12:57 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+References: <20240620-fault-injection-statickeys-v2-0-e23947d3d84b@suse.cz>
+ <20240620-fault-injection-statickeys-v2-6-e23947d3d84b@suse.cz> <78177ff2-e140-4e81-9b2a-be5bece34cfc@suse.cz>
+In-Reply-To: <78177ff2-e140-4e81-9b2a-be5bece34cfc@suse.cz>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Tue, 25 Jun 2024 10:12:46 -0700
+Message-ID: <CAADnVQJrirvzu8fqwRChM1aUvHUNoszNpLhXHB9EHVesuD_YJA@mail.gmail.com>
+Subject: Re: [PATCH v2 6/7] mm, slab: add static key for should_failslab()
+To: Vlastimil Babka <vbabka@suse.cz>
+Cc: Akinobu Mita <akinobu.mita@gmail.com>, Christoph Lameter <cl@linux.com>, 
+	David Rientjes <rientjes@google.com>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
+	"Naveen N. Rao" <naveen.n.rao@linux.ibm.com>, 
+	Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>, "David S. Miller" <davem@davemloft.net>, 
+	Masami Hiramatsu <mhiramat@kernel.org>, Steven Rostedt <rostedt@goodmis.org>, 
+	Mark Rutland <mark.rutland@arm.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Roman Gushchin <roman.gushchin@linux.dev>, Hyeonggon Yoo <42.hyeyoo@gmail.com>, 
+	LKML <linux-kernel@vger.kernel.org>, linux-mm <linux-mm@kvack.org>, 
+	bpf <bpf@vger.kernel.org>, 
+	linux-trace-kernel <linux-trace-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <000000000000571681061bb9b5ad@google.com>
 
-On 2024-06-25 09:51:25 [-0700], syzbot wrote:
-> Hello,
-Hi,
+On Tue, Jun 25, 2024 at 7:24=E2=80=AFAM Vlastimil Babka <vbabka@suse.cz> wr=
+ote:
+>
+> On 6/20/24 12:49 AM, Vlastimil Babka wrote:
+> > --- a/mm/slub.c
+> > +++ b/mm/slub.c
+> > @@ -3874,13 +3874,37 @@ static __always_inline void maybe_wipe_obj_free=
+ptr(struct kmem_cache *s,
+> >                       0, sizeof(void *));
+> >  }
+> >
+> > -noinline int should_failslab(struct kmem_cache *s, gfp_t gfpflags)
+> > +#if defined(CONFIG_FUNCTION_ERROR_INJECTION) || defined(CONFIG_FAILSLA=
+B)
+> > +DEFINE_STATIC_KEY_FALSE(should_failslab_active);
+> > +
+> > +#ifdef CONFIG_FUNCTION_ERROR_INJECTION
+> > +noinline
+> > +#else
+> > +static inline
+> > +#endif
+> > +int should_failslab(struct kmem_cache *s, gfp_t gfpflags)
+>
+> Note that it has been found that (regardless of this series) gcc may clon=
+e
+> this to a should_failslab.constprop.0 in case the function is empty becau=
+se
+> __should_failslab is compiled out (CONFIG_FAILSLAB=3Dn). The "noinline"
+> doesn't help - the original function stays but only the clone is actually
+> being called, thus overriding the original function achieves nothing, see=
+:
+> https://github.com/bpftrace/bpftrace/issues/3258
+>
+> So we could use __noclone to prevent that, and I was thinking by adding
+> something this to error-injection.h:
+>
+> #ifdef CONFIG_FUNCTION_ERROR_INJECTION
+> #define __error_injectable(alternative)         noinline __noclone
 
-=E2=80=A6
-> commit d1542d4ae4dfdc47c9b3205ebe849ed23af213dd
-> Author: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-> Date:   Thu Jun 20 13:22:02 2024 +0000
->=20
->     seg6: Use nested-BH locking for seg6_bpf_srh_states.
-=E2=80=A6
-> WARNING: CPU: 0 PID: 5091 at net/core/filter.c:6579 ____bpf_lwt_seg6_adju=
-st_srh net/core/filter.c:6579 [inline]
-> WARNING: CPU: 0 PID: 5091 at net/core/filter.c:6579 bpf_lwt_seg6_adjust_s=
-rh+0x877/0xb30 net/core/filter.c:6568
-=E2=80=A6
-> Call Trace:
->  <TASK>
->  bpf_prog_2088341bddeddc1d+0x40/0x42
->  bpf_dispatcher_nop_func include/linux/bpf.h:1243 [inline]
->  __bpf_prog_run include/linux/filter.h:691 [inline]
->  bpf_prog_run include/linux/filter.h:698 [inline]
->  bpf_test_run+0x4f0/0xa90 net/bpf/test_run.c:432
->  bpf_prog_test_run_skb+0xafa/0x13b0 net/bpf/test_run.c:1081
->  bpf_prog_test_run+0x33a/0x3b0 kernel/bpf/syscall.c:4313
->  __sys_bpf+0x48d/0x810 kernel/bpf/syscall.c:5728
->  __do_sys_bpf kernel/bpf/syscall.c:5817 [inline]
->  __se_sys_bpf kernel/bpf/syscall.c:5815 [inline]
->  __x64_sys_bpf+0x7c/0x90 kernel/bpf/syscall.c:5815
->  do_syscall_x64 arch/x86/entry/common.c:52 [inline]
->  do_syscall_64+0xf3/0x230 arch/x86/entry/common.c:83
->  entry_SYSCALL_64_after_hwframe+0x77/0x7f
+To prevent such compiler transformations we typically use
+__used noinline
 
-I assumed this can only originate from input_action_end_bpf() but
-clearly this not a hard requirement based on the report.
-So this a valid invocation and it should not have been killer earlier in
-the stack?
-
-Sebastian
+We didn't have a need for __noclone yet. If __used is enough I'd stick to t=
+hat.
 
