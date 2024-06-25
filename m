@@ -1,46 +1,46 @@
-Return-Path: <bpf+bounces-32963-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-32964-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CEB43915AEF
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6D661915AEE
 	for <lists+bpf@lfdr.de>; Tue, 25 Jun 2024 02:22:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 364D0B2141F
-	for <lists+bpf@lfdr.de>; Tue, 25 Jun 2024 00:22:01 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6E9361C21160
+	for <lists+bpf@lfdr.de>; Tue, 25 Jun 2024 00:22:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3CD028BE0;
-	Tue, 25 Jun 2024 00:21:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7BD50748D;
+	Tue, 25 Jun 2024 00:21:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rOQRaJgw"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HTLdIV9K"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B4767748D;
-	Tue, 25 Jun 2024 00:21:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E91028F54;
+	Tue, 25 Jun 2024 00:21:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719274915; cv=none; b=GTH3UpDBDcL67j1+55i8q2sVmUdrRXvxDb2ysVbxjo86UApRiNYfyVVLABhkomEDFwIszUGXxI1nBuu2FO/GAJy3Q1xi7YaWWb1pfIpnVeSZuTxEgtucWSlUvH+2JCmH3KDbZok4Qt5VgKS4+qi4q91IbWUfMqy6Ln2XVm+peaQ=
+	t=1719274919; cv=none; b=D2MXMKL946XnuBZj46ePHtR8qOfzZvcvaDDsHiBw0RuThsEY5slipr8Q8xIs4ajL8KoY8R1+EIKff9iT2c0FSeEwFKphl7nJCt9lHbv67ssGSWXYlxYOkBnUcoXRBScKCGz6AADzJf/rK1VRXJ8o+vYZrhlWoX+wVzCESgxJG1g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719274915; c=relaxed/simple;
-	bh=tkfMZEIfCD2t2X9zAlRKVT3aTkroscbKpUlij2Wh0pw=;
+	s=arc-20240116; t=1719274919; c=relaxed/simple;
+	bh=YNyvbgNFOWIesFZQZKPldGFE+T/lYtL4YunmLoVLoC0=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=fAX9/F3aBwzgUnQwscH+dn816xugn7c/x5op85Mu42XeQS8nE6Zlw5AmRCQMR1/1jkEvq/qgvNU0ushGX5vv3O0bA4qx9feGDLqGO+QdMGuSKuzprqPtj9LaStm04yr/6FiCEH32ytf2bvGdjbk9/5zukBzOk1RzjCPJumJ9Lks=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rOQRaJgw; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 383FAC2BBFC;
-	Tue, 25 Jun 2024 00:21:55 +0000 (UTC)
+	 MIME-Version; b=fckCVp1dno9t5gWcgYUku0k7P8wZ2Hp+HyHdoXlxjgcWuZlOp1yITsTAkqlE2HKBIXy/StxOML4tPFU6etzWYJp41fM1qeV2+zSfSr2HoL2xlnubMyujaoh25G0S2TDNSFJbc4nu4DMpfz+BuJyJf4GNAyRcNfwdlEMAgGjiG5Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HTLdIV9K; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6A589C2BBFC;
+	Tue, 25 Jun 2024 00:21:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1719274915;
-	bh=tkfMZEIfCD2t2X9zAlRKVT3aTkroscbKpUlij2Wh0pw=;
+	s=k20201202; t=1719274918;
+	bh=YNyvbgNFOWIesFZQZKPldGFE+T/lYtL4YunmLoVLoC0=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=rOQRaJgwV/HmcGme2hL19+ik7Tr8OgaQfKkxNOObGOwKzUk/kQ56dSIj/5pPINVrC
-	 Oroj2Juqj2UX8Pc6rEXO4iKXWBqB5ORWIR/cKzDiLy+TPeWilBcCXJZIrbHVWaRtsp
-	 8WmCFZsWNcAt8KqDCj3klC3SaVLxAspv0ySuseSvtgsJ3m1d1fjVboTRQd9b8sxpE5
-	 3PKvma7D2L+xqjDfPsHBoFx4malveX3q4dGgVEfQwek1IiEiJ+ouNPfmqZUS2ZDFON
-	 J2aS3xhP5CakpaplYPsU9qjcCxWKTlrdCME1is6XXUUxVDb58jKWi5i7dVVLyZfxKF
-	 2MR7F4zVtWehQ==
+	b=HTLdIV9KeyGPtBnGNRcLnvCJ/1e2+cnmc+7JdIVey4eKy6Ny8yEsjAzoP0vBMHlgh
+	 o4quxtDEUWt/boEz/NBVkjdRjdXf41GfWux+yOCHzRAZHVRcCIFXB2xHF8UKqkSCSJ
+	 R9QKmvlvQnXPNNY3n7mZ9CKWwwIGzSbEyVoGwThooI88vxSMeUyw2MypevpEXq8nz1
+	 eC/DmFL5Cfv2GPVJ7LXZOx73ZEmIWEu1n5NNW4cxuyYJ0OIglvyipSqrNWEM7lo5+L
+	 kxKntBnEkvf+kxShFQ72JLO6B0Bp9V1dn4S+JROr21iMHfNBgs4XihI92uXKNX1lVC
+	 AyeByFfH5F3wg==
 From: Andrii Nakryiko <andrii@kernel.org>
 To: linux-trace-kernel@vger.kernel.org,
 	rostedt@goodmis.org,
@@ -53,9 +53,9 @@ Cc: peterz@infradead.org,
 	paulmck@kernel.org,
 	clm@meta.com,
 	Andrii Nakryiko <andrii@kernel.org>
-Subject: [PATCH 01/12] uprobes: update outdated comment
-Date: Mon, 24 Jun 2024 17:21:33 -0700
-Message-ID: <20240625002144.3485799-2-andrii@kernel.org>
+Subject: [PATCH 02/12] uprobes: grab write mmap lock in unapply_uprobe()
+Date: Mon, 24 Jun 2024 17:21:34 -0700
+Message-ID: <20240625002144.3485799-3-andrii@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240625002144.3485799-1-andrii@kernel.org>
 References: <20240625002144.3485799-1-andrii@kernel.org>
@@ -67,32 +67,40 @@ List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-There is no task_struct passed into get_user_pages_remote() anymore,
-drop the parts of comment mentioning NULL tsk, it's just confusing at
-this point.
+Given unapply_uprobe() can call remove_breakpoint() which eventually
+calls uprobe_write_opcode(), which can modify a set of memory pages and
+expects mm->mmap_lock held for write, it needs to have writer lock.
 
+Fix this by switching to mmap_write_lock()/mmap_write_unlock().
+
+Fixes: da1816b1caec ("uprobes: Teach handler_chain() to filter out the probed task")
 Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
 ---
- kernel/events/uprobes.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+ kernel/events/uprobes.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/kernel/events/uprobes.c b/kernel/events/uprobes.c
-index 2816e65729ac..197fbe4663b5 100644
+index 197fbe4663b5..e896eeecb091 100644
 --- a/kernel/events/uprobes.c
 +++ b/kernel/events/uprobes.c
-@@ -2030,10 +2030,8 @@ static int is_trap_at_addr(struct mm_struct *mm, unsigned long vaddr)
- 		goto out;
+@@ -1235,7 +1235,7 @@ static int unapply_uprobe(struct uprobe *uprobe, struct mm_struct *mm)
+ 	struct vm_area_struct *vma;
+ 	int err = 0;
  
- 	/*
--	 * The NULL 'tsk' here ensures that any faults that occur here
--	 * will not be accounted to the task.  'mm' *is* current->mm,
--	 * but we treat this as a 'remote' access since it is
--	 * essentially a kernel access to the memory.
-+	 * 'mm' *is* current->mm, but we treat this as a 'remote' access since
-+	 * it is essentially a kernel access to the memory.
- 	 */
- 	result = get_user_pages_remote(mm, vaddr, 1, FOLL_FORCE, &page, NULL);
- 	if (result < 0)
+-	mmap_read_lock(mm);
++	mmap_write_lock(mm);
+ 	for_each_vma(vmi, vma) {
+ 		unsigned long vaddr;
+ 		loff_t offset;
+@@ -1252,7 +1252,7 @@ static int unapply_uprobe(struct uprobe *uprobe, struct mm_struct *mm)
+ 		vaddr = offset_to_vaddr(vma, uprobe->offset);
+ 		err |= remove_breakpoint(uprobe, mm, vaddr);
+ 	}
+-	mmap_read_unlock(mm);
++	mmap_write_unlock(mm);
+ 
+ 	return err;
+ }
 -- 
 2.43.0
 
