@@ -1,166 +1,144 @@
-Return-Path: <bpf+bounces-33004-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-33005-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 70569915D12
-	for <lists+bpf@lfdr.de>; Tue, 25 Jun 2024 04:55:26 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4D125915D1D
+	for <lists+bpf@lfdr.de>; Tue, 25 Jun 2024 05:01:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2C4F02828F8
-	for <lists+bpf@lfdr.de>; Tue, 25 Jun 2024 02:55:25 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id ED2471F26933
+	for <lists+bpf@lfdr.de>; Tue, 25 Jun 2024 03:01:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0121D770F8;
-	Tue, 25 Jun 2024 02:53:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 86D73481DD;
+	Tue, 25 Jun 2024 03:01:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OW85Wt2y"
+	dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b="MKOuIs7v"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pj1-f47.google.com (mail-pj1-f47.google.com [209.85.216.47])
+Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com [209.85.208.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 12F336CDBA;
-	Tue, 25 Jun 2024 02:53:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5622E1BC4E
+	for <bpf@vger.kernel.org>; Tue, 25 Jun 2024 03:00:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719284008; cv=none; b=pxm4+LSnyqJ6ASjCdFvXs4OJPjGUVyXUgcoAvQSTwI0JasHSfpISqODSWqnFRzwuIe+t06uK1Oo/D7A3YPBMYj94aVEU3iNPyBwGOqLKZ9UkRYh6Zkq0r1fBT49FQC8rnxeFLzmk6E/c6BFkZaKAkH9rzgxPygxVUwHuOaEFb0Q=
+	t=1719284461; cv=none; b=pkaevGF0vBxq5J8HtHCaj+wZeP9Sa3htgcX1FGqVOjC+MHVkzukctu1SBclNxW5UwqzMJ+nzWLh1VE7MgA9UEe/aSsXRx10LVDPtylu+F//zqU/ocH8Rmf9pziOYnsJ3s5BZC3yH5NKcs+/1yowDIox3BUmD0wch14TOUsjfpuE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719284008; c=relaxed/simple;
-	bh=4ctsB64TjeAHYT6A5ga0eengrAz6yVkTwMZJwIrPvys=;
+	s=arc-20240116; t=1719284461; c=relaxed/simple;
+	bh=zCywv/26MnAcDELnhXlz4QfhMlYk3Hwo/ASChN+uSFw=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=tXXDEvVi0khxZ1TWiYNJTPti3gFuXW61HVbOG2L63UpP+7BbMttykiPmbDhK8YWjWwhP1dg2o/F28MG7UvdRYDs3VQtbS/vMwW0VM5b0e80pSTT+//mvzzcfpjsBQe3EYaNrNw+r3jiqKsJ2cLVSYWO5XUkjBaAxs4VYbdCRQtY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OW85Wt2y; arc=none smtp.client-ip=209.85.216.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f47.google.com with SMTP id 98e67ed59e1d1-2c722e54db8so3897370a91.2;
-        Mon, 24 Jun 2024 19:53:26 -0700 (PDT)
+	 To:Cc:Content-Type; b=rSNXoPgyqpWYuBs1YdvRzbGt/1gcc5TTJ6tvKsMjD0cJxSytAe7u3EY3ftkdF/EW7Wq+0CZn4d6JeLXIdT2bc4weidVBbNDgM6YxWMmPPCQIBvKrdsUW/ITVqSH8l2f3kGemqnqDPN3bSEwD/c6RxX59Fi42EhkiCKBW/6tL0r0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com; spf=pass smtp.mailfrom=cloudflare.com; dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b=MKOuIs7v; arc=none smtp.client-ip=209.85.208.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cloudflare.com
+Received: by mail-ed1-f54.google.com with SMTP id 4fb4d7f45d1cf-57d1d45ba34so5296226a12.3
+        for <bpf@vger.kernel.org>; Mon, 24 Jun 2024 20:00:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1719284006; x=1719888806; darn=vger.kernel.org;
+        d=cloudflare.com; s=google09082023; t=1719284458; x=1719889258; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=9uV4t+w32GLoyq5UQG9yphsh92JGonRXBYrmNqhwTfo=;
-        b=OW85Wt2yGMVCcrbsn/hl9c7YSEBE88IAsu3gi0lN9+xUntZKgni2hdV4QsVjukWMjv
-         J/H1PVZGTOFVb2oAW9e0pttcK5/xnFZHGXymXQp1Q4CuH7lG0rTxkbzRMk/Rmwl+6QbS
-         HZBhJxRTLfOcBubeVUIhUBQObicAunm1FofrcKjg1ERRkV8mQNwjIGBeehiD21qEit5r
-         3CqQhRVy9yWWFkQCctZ4tbOHBHl/bfpWGx0p04VuCG/A29zzpS+qWJJSzUFxhuN2sf9G
-         Gs9GzkWlM4spXv1dIM8+kKGAKZmKShJUMtsNMjxeytqISeVAolguAOD9amgqe9euv9V2
-         Wy9A==
+        bh=sDEbQTg5rjrKHPmeslGhj0qLn8Bi1wMk8fBJxe+Fhhw=;
+        b=MKOuIs7vBFHxkZuywxVlkhHwEkENqnAseHWGznieFyC6Z2iSghr1DXQZthXNTTzj8A
+         JcSovlvN7VXQSyS1AmK5B2Qp3nDAgN4PDmPaAEHMprS5MM1AXerEPICC4zkCxtn0JCos
+         B9h1dikaI5PfewQ+6j+O4mE5ZKF6NE9C5NA8784Nj1XRlkQBKtoffqEI6ScsjlZugMY+
+         uNBFk1WfgUkXsIiCmyQBAH9Xb7XY8TjcbJyXKxnB5EQcIaQPXjw3KuYpod26GFgV+pdI
+         cSO4LLhFSkicuxuK424wP8hh1re0mWuTZJdqT+cwcL7ksPVdu7ABoreK5ogq1CpIj4uv
+         hFmw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1719284006; x=1719888806;
+        d=1e100.net; s=20230601; t=1719284458; x=1719889258;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=9uV4t+w32GLoyq5UQG9yphsh92JGonRXBYrmNqhwTfo=;
-        b=jUkTZA946ckhyIQ9/UjTa9Uf8UpN587+fbsoajY7DelH2wd2rETkJNZguSEaWEeOpj
-         GD6TQV3wy0rqCzunwLlUMa5H5/Yu3iCvq73sHoxk08doJrXsxtTQHeY2xsqnY3wZ/7gJ
-         lvPtXsaBCg70/bS9/IRY9CBsRNiM7PCFxzDQS+3FrPynTcrLY+R7Xz8/jNDZrmhBz4II
-         wkpLuM0F8EC8ProPJgid6QQ7Wqn/LsoCpQqFlHgpaLGqnHpwZWtWuTxT6n+eAMMyehX6
-         y5LQpx29Gwr3HNguK3tze6HcI5nfQ9m8Vju7SI16HkWn+kow9PYuptyR+hLW0wIeG+Lj
-         1h+Q==
-X-Forwarded-Encrypted: i=1; AJvYcCVqb4J8UxhPhJmvHXx77QDw7nhQMDrbbip4MD79ndMVG/1vDruef0duapU8e+h8hpe2whDP3vc4n+/E8oP7EPi9c+5rK1gQJVghr0eqrGrwliubW4U4GK/EFP4lQBw0zfJXLiRwnFoCO/MdH07mnoznVV88DR+zdTExBpyTjZCVJF0KkK+YVx8t4A==
-X-Gm-Message-State: AOJu0YwbWZKbLatP2S1DaE6bHeMELgCSlBdA2D86OL/UZwXoFnysH5ZY
-	fVad6ijTMNbacUKYaw2YdagphAzCt3HGSHyB0THQs5xe5b/jInwXogT3lHxtn5LMwilKHqtXTru
-	BmW2vAsl8hclCHWi+bti24rSge4c=
-X-Google-Smtp-Source: AGHT+IG5eCNdsYEwOrns65apGYwDqCAOPSmA8xBZ+2KbBP+jS3lsN0qs8xVaHdVZhhOUX0BPQdxplR4ioJ2npO+TVxs=
-X-Received: by 2002:a17:90b:218e:b0:2c8:647:35c with SMTP id
- 98e67ed59e1d1-2c861409a36mr5549258a91.29.1719284006202; Mon, 24 Jun 2024
- 19:53:26 -0700 (PDT)
+        bh=sDEbQTg5rjrKHPmeslGhj0qLn8Bi1wMk8fBJxe+Fhhw=;
+        b=sVPpQfPlBLvK9uaNPTTaB9rO9lDWyqYVcKv2MMJ3pajgyN0pY5RjC1TN3G3qatjOU1
+         aRuiL6DDOnu6bAAMdVauOChGyORp0wvT6QfbjI0lqSC1jFkkv4IBOfTG/eLLdwyDL0bs
+         mKtRDx0uo14eKbVFfFm62mqqWa2DNqZr5cqRTWc0IsUXzgpIoVenzZ7M+H0/vJyKpjed
+         TCacNJlaWZkln4qAosPzdnUg73Ade9I6iP2SwUi2BGRXi5NJPGvT7Fo/Jlns28IZiyj5
+         SB2E6/1PD8VPXo9Dy2drPDG0jdf/YvWvAugXSr6T85cPZX+sPQzy3Vof8SMyfCw/4kPy
+         UBJQ==
+X-Gm-Message-State: AOJu0Yy7up3Q2GIG9SttHmZ+vn0mRe3NDt3+n7/LPrx0zY8D8cka/3Ih
+	xP76PSb65UnJDucTyk6RQH8DjRvHo1gRL8VNUHQSvrwGvpSJ8k+fNUHdDhPxufVESVhQZ59JL69
+	VaxzUWV6D4qdyXPB0xilqtGgj9H3QljyV+ROIuQ==
+X-Google-Smtp-Source: AGHT+IEitG0JQleQ/vZFXAUvv2wiKqGD1UejnV57HaC0FguQLodsAUL9ZgwklDMKrmIdxfcq3oWEnsRnE7R0D3aeSto=
+X-Received: by 2002:a50:d719:0:b0:57d:444:c457 with SMTP id
+ 4fb4d7f45d1cf-57d4bdc9f4emr3775989a12.28.1719284457641; Mon, 24 Jun 2024
+ 20:00:57 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240522013845.1631305-1-andrii@kernel.org> <20240522013845.1631305-5-andrii@kernel.org>
- <20240625101446.9dd0f4767392462e9923f0ba@kernel.org>
-In-Reply-To: <20240625101446.9dd0f4767392462e9923f0ba@kernel.org>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Mon, 24 Jun 2024 19:53:14 -0700
-Message-ID: <CAEf4BzbTuZZUKGDbONQHH9PhvJi0TQD=piKUYTzpnOz9gewtMw@mail.gmail.com>
-Subject: Re: [PATCH v2 4/4] selftests/bpf: add test validating
- uprobe/uretprobe stack traces
-To: Masami Hiramatsu <mhiramat@kernel.org>
-Cc: Andrii Nakryiko <andrii@kernel.org>, linux-trace-kernel@vger.kernel.org, 
-	rostedt@goodmis.org, x86@kernel.org, peterz@infradead.org, mingo@redhat.com, 
-	tglx@linutronix.de, bpf@vger.kernel.org, rihams@fb.com, 
-	linux-perf-users@vger.kernel.org
+References: <ZmIyMfRSp9DpU7dF@debian.debian> <CAEf4BzbpSYmsTYSgMws7p8B2i1ihFZum0zge5W7DCo0FR8pSyA@mail.gmail.com>
+In-Reply-To: <CAEf4BzbpSYmsTYSgMws7p8B2i1ihFZum0zge5W7DCo0FR8pSyA@mail.gmail.com>
+From: Yan Zhai <yan@cloudflare.com>
+Date: Mon, 24 Jun 2024 22:00:46 -0500
+Message-ID: <CAO3-PbqJudq8EjJUN0ax8OqVy6vRd+VLozCzyLsG+wST8taX9A@mail.gmail.com>
+Subject: Re: Ideal way to read FUNC_PROTO in raw tp?
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: bpf@vger.kernel.org, kernel-team@cloudflare.com, 
+	Alexei Starovoitov <alexei.starovoitov@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Jun 24, 2024 at 6:14=E2=80=AFPM Masami Hiramatsu <mhiramat@kernel.o=
-rg> wrote:
+On Fri, Jun 21, 2024 at 5:04=E2=80=AFPM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
 >
-> On Tue, 21 May 2024 18:38:45 -0700
-> Andrii Nakryiko <andrii@kernel.org> wrote:
+> On Thu, Jun 6, 2024 at 3:03=E2=80=AFPM Yan Zhai <yan@cloudflare.com> wrot=
+e:
+> >
+> > Hi,
+> >
+> >  I am building a tracing program around workqueue. But I encountered
+> > following problem when I try to record a function pointer value from
+> > trace_workqueue_execute_end on net-next kernel:
+> >
+> > ...
+> > libbpf: prog 'workqueue_end': BPF program load failed: Permission
+> > denied
+> > libbpf: prog 'workqueue_end': -- BEGIN PROG LOAD LOG --
+> > reg type unsupported for arg#0 function workqueue_end#5
+> > 0: R1=3Dctx(off=3D0,imm=3D0) R10=3Dfp0
+> > ; int BPF_PROG(workqueue_end, struct work_struct *w, work_func_t f)
+> > 0: (79) r3 =3D *(u64 *)(r1 +8)
+> > func 'workqueue_execute_end' arg1 type FUNC_PROTO is not a struct
+> > invalid bpf_context access off=3D8 size=3D8
+> > processed 1 insns (limit 1000000) max_states_per_insn 0 total_states 0
+> > peak_states 0 mark_read 0
+> > -- END PROG LOAD LOG --
+> > libbpf: prog 'workqueue_end': failed to load: -13
+> > libbpf: failed to load object 'configs/test.bpf.o'
+> > Error: failed to load object file
+> > Warning: bpftool is now running in libbpf strict mode and has more
+> > stringent requirements about BPF programs.
+> > If it used to work for this object file but now doesn't, see --legacy
+> > option for more details.
+> > ...
+> >
+> > A simple reproducer for me is like:
+> > #include "vmlinux.h"
+> > #include <bpf/bpf_helpers.h>
+> > #include <bpf/bpf_tracing.h>
+> >
+> > SEC("tp_btf/workqueue_execute_end")
+> > int BPF_PROG(workqueue_end, struct work_struct *w, work_func_t f)
+> > {
+> >         u64 addr =3D (u64) f;
 >
-> > Add a set of tests to validate that stack traces captured from or in th=
-e
-> > presence of active uprobes and uretprobes are valid and complete.
-> >
-> > For this we use BPF program that are installed either on entry or exit
-> > of user function, plus deep-nested USDT. One of target funtions
-> > (target_1) is recursive to generate two different entries in the stack
-> > trace for the same uprobe/uretprobe, testing potential edge conditions.
-> >
-> > Without fixes in this patch set, we get something like this for one of
-> > the scenarios:
-> >
-> >  caller: 0x758fff - 0x7595ab
-> >  target_1: 0x758fd5 - 0x758fff
-> >  target_2: 0x758fca - 0x758fd5
-> >  target_3: 0x758fbf - 0x758fca
-> >  target_4: 0x758fb3 - 0x758fbf
-> >  ENTRY #0: 0x758fb3 (in target_4)
-> >  ENTRY #1: 0x758fd3 (in target_2)
-> >  ENTRY #2: 0x758ffd (in target_1)
-> >  ENTRY #3: 0x7fffffffe000
-> >  ENTRY #4: 0x7fffffffe000
-> >  ENTRY #5: 0x6f8f39
-> >  ENTRY #6: 0x6fa6f0
-> >  ENTRY #7: 0x7f403f229590
-> >
-> > Entry #3 and #4 (0x7fffffffe000) are uretprobe trampoline addresses
-> > which obscure actual target_1 and another target_1 invocations. Also
-> > note that between entry #0 and entry #1 we are missing an entry for
-> > target_3, which is fixed in patch #2.
+> you can work around with:
 >
-> Please avoid using `patch #2` because after commit, this means nothing.
+> bpf_probe_read_kernel(&addr, sizeof(addr), &ctx[1]); /* ctx[1] is the
+> second argument */
+>
+> Not great, but will get you past this easily.
+>
+Yes that works, too. Currently I am using the regular tp to
+workaround. That said, I am more interested in the verifier side of
+this. I am happy to add it to my queue if no one has signed up to
+support func_proto type in ctx. Would maintainers welcome RFC patches
+for this or is it something that you prefer to leave for now?
 
-Yep, makes sense, sorry about that, will keep descriptions a bit more
-general going forward.
-
->
-> Thank you,
->
-> >
-> > With all the fixes, we get desired full stack traces:
-> >
-> >  caller: 0x758fff - 0x7595ab
-> >  target_1: 0x758fd5 - 0x758fff
-> >  target_2: 0x758fca - 0x758fd5
-> >  target_3: 0x758fbf - 0x758fca
-> >  target_4: 0x758fb3 - 0x758fbf
-> >  ENTRY #0: 0x758fb7 (in target_4)
-> >  ENTRY #1: 0x758fc8 (in target_3)
-> >  ENTRY #2: 0x758fd3 (in target_2)
-> >  ENTRY #3: 0x758ffd (in target_1)
-> >  ENTRY #4: 0x758ff3 (in target_1)
-> >  ENTRY #5: 0x75922c (in caller)
-> >  ENTRY #6: 0x6f8f39
-> >  ENTRY #7: 0x6fa6f0
-> >  ENTRY #8: 0x7f986adc4cd0
-> >
-> > Now there is a logical and complete sequence of function calls.
-> >
-> > Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-> > ---
-> >  .../bpf/prog_tests/uretprobe_stack.c          | 186 ++++++++++++++++++
-> >  .../selftests/bpf/progs/uretprobe_stack.c     |  96 +++++++++
-> >  2 files changed, 282 insertions(+)
-> >  create mode 100644 tools/testing/selftests/bpf/prog_tests/uretprobe_st=
-ack.c
-> >  create mode 100644 tools/testing/selftests/bpf/progs/uretprobe_stack.c
-> >
-
-[...]
+best
+Yan
 
