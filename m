@@ -1,122 +1,119 @@
-Return-Path: <bpf+bounces-33037-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-33036-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2115691613C
-	for <lists+bpf@lfdr.de>; Tue, 25 Jun 2024 10:31:13 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0FED091613A
+	for <lists+bpf@lfdr.de>; Tue, 25 Jun 2024 10:30:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C7D6B284B99
-	for <lists+bpf@lfdr.de>; Tue, 25 Jun 2024 08:31:11 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 411C71C22F1E
+	for <lists+bpf@lfdr.de>; Tue, 25 Jun 2024 08:30:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7565D149003;
-	Tue, 25 Jun 2024 08:29:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B00D1494DE;
+	Tue, 25 Jun 2024 08:29:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="fzYIozMs"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pxgOmLuj"
 X-Original-To: bpf@vger.kernel.org
-Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 372731487C8;
-	Tue, 25 Jun 2024 08:29:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F165A1494B4;
+	Tue, 25 Jun 2024 08:29:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719304194; cv=none; b=rueYt/dtEVEr74JNAHFgu+5Nh2j0rqOQZ7kuNAjH7Z2ivx9ju/g9cm7L4Eh4v2xjs2Z6uvFEsyWfTxCseUseEoY6Wys3Q708GtY5JRRPhN1XOWIvcUleW3ir+wK7wD56KY6LaW6pmlZbCLQUPW6l3KDxDh34zu7uIxDGtk0PL7o=
+	t=1719304184; cv=none; b=KPXeU/QwPEXPDk8czlDt7bwt7vt2CRckevqroCiZLd9oQquuRN0Op1nBixucwprJncOKYQsefjChpIGzJ/D/WqwQJm220zW7pbgUuOxztKph+5ieorxsFIAX1sOcXCOPu484mRuDiwMLIGKi0KbO1Osrj4HTJWrowGQMH/VEf84=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719304194; c=relaxed/simple;
-	bh=mL0WhTS8OZdvcWmjwK8Bfc0yHsEXfVl9MUwSk+1gXJw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=TdrLXqagR0/O48ql14BlWmWG1il5wF9qfuCqOp16u17aEptlEIAYX+v3pZ9wRPtHBH0mXyRv515vH6qDGuL9Bl7WzRmMR1Nqyn0maKFlbBRpSLqhI4da5jN1F138j02wKdtT65giJ3dC6do9+uJAtJbc1stjpBHnEO53zlXhxS4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=fzYIozMs; arc=none smtp.client-ip=90.155.50.34
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=IjR5Ku64W/7IJWeMefbbUADBt1oTV5alXkKLamJEDC8=; b=fzYIozMsvbn/PaoeP3WPrj18Mb
-	vLBT3cD9gUjIzgD6jnbWXVBFrG+4NL0w0PN8XX/Tjt/McgrSrI6UEeyQVg2MtY06ItDaLBWp8jubc
-	B0QWxH6y0iKxcPjujGpay+fVK/ueO08ELjDxCMhDiyvw/c8QriJSwKb5J9hUSZ5Mhd7QaDotP9w7o
-	UsKoQLfdiAiPGdlIjyTmCfJXHymixn+dkcfnYSbhhnKhiDVFOrnW8XCip+kqHgciArEewvpfTZMbc
-	H5H3ppnETu7F0TTDGJAJUFb7xRFjry5ao5byaD93vGlrloRlf6fSSIpn9CZGNBVHgvMmHDG6zxIBZ
-	uER4YbWw==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-	by casper.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sM1YM-0000000Ax23-2kE6;
-	Tue, 25 Jun 2024 08:29:26 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-	id 0D10D300754; Tue, 25 Jun 2024 10:29:26 +0200 (CEST)
-Date: Tue, 25 Jun 2024 10:29:26 +0200
-From: Peter Zijlstra <peterz@infradead.org>
-To: Tejun Heo <tj@kernel.org>
-Cc: torvalds@linux-foundation.org, mingo@redhat.com, juri.lelli@redhat.com,
-	vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-	rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-	bristot@redhat.com, vschneid@redhat.com, ast@kernel.org,
-	daniel@iogearbox.net, andrii@kernel.org, martin.lau@kernel.org,
-	joshdon@google.com, brho@google.com, pjt@google.com,
-	derkling@google.com, haoluo@google.com, dvernet@meta.com,
-	dschatzberg@meta.com, dskarlat@cs.cmu.edu, riel@surriel.com,
-	changwoo@igalia.com, himadrics@inria.fr, memxor@gmail.com,
-	andrea.righi@canonical.com, joel@joelfernandes.org,
-	linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-	kernel-team@meta.com
-Subject: Re: [PATCH 09/39] sched: Add @reason to
- sched_class->rq_{on|off}line()
-Message-ID: <20240625082926.GT31592@noisy.programming.kicks-ass.net>
-References: <20240501151312.635565-1-tj@kernel.org>
- <20240501151312.635565-10-tj@kernel.org>
- <20240624113212.GL31592@noisy.programming.kicks-ass.net>
- <ZnnijsMAQYgCnrZF@slm.duckdns.org>
+	s=arc-20240116; t=1719304184; c=relaxed/simple;
+	bh=mKmmNq3ZO/ijyhP26QuFk8tmiEVK1nmmiemJh7SmQec=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=AVx2ZL67LrJloU7utkbkOxHc4WgJT9hzrAu2ifC8524jVxt2K2WvC1qkRnfnV/LwvCKAoeL2yJarj4Sqq7ncggoaE8p3e5EOHZSL4LJMPoA69wMRQZWQbuB4QcFAJLXBVe2QLDPrmCsCVC9gELxvWhptZ9awveOgpDVS+XWocak=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pxgOmLuj; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 85C7DC32786;
+	Tue, 25 Jun 2024 08:29:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1719304183;
+	bh=mKmmNq3ZO/ijyhP26QuFk8tmiEVK1nmmiemJh7SmQec=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=pxgOmLujg1MmHoMkhATXUQRXtTZS84miHJsvZl+OItaDxGAafU4qyVO/2XMjuFdX/
+	 ZLvf583wZZQvnakoqq6feC6HZvV0PJzyGCYS5g2Ox8vfYHW9sGuT2RYvCOoC9XEewy
+	 TsaVObjZ1phg3UiuLBQZfPew0H1iUA/M3gf5lnG3VtFr2bTjBnhnMrG3f6dSSIduAH
+	 jZr7IwCdW3tVHhBQrCYZAHtcm675ih5vDXzTafoopl3gV5GGDr2DeFVpJx7W88Br7+
+	 M1v+xHWrmgqcQCu3UO6HOa1mijW3QjFKDwGE7i6MqI4n2yBlZdq0qETIT07WR4e40H
+	 RDg831mu7QgWg==
+Received: by mail-ej1-f53.google.com with SMTP id a640c23a62f3a-a724b4f1218so287550366b.2;
+        Tue, 25 Jun 2024 01:29:43 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCW6dRYe16N8shlcnscZfBJ0EKSUXausfGhwzsMly1oWHVNEFC2VJOdNTDcH79zVpEaOAkCx11aV9RfrkRo+vNkDCeUfpxXoNEaoTMyPlv7bnsbwuU/bu+D44JbDWgG5P/XoQGNEs9+QNMoORkg1MrQyu21RK3JiVBsWC03U
+X-Gm-Message-State: AOJu0YxagXTvkFUmukU6vpqcYGws9ITGucygywmKVlO+bvdJf5GHE5yn
+	ltC7gW4gBy9alYw2/ud1Z1BlctFY+JfSz585ohVp0qP95wAZOAvG76lKb6FcGPdpf/3ZjbPiRNV
+	RhiHiSMe4uTDr0E9saTUXkijpNhs=
+X-Google-Smtp-Source: AGHT+IE9aNDiEGwi8jpig5AP06aUULAS82uewuRyRYeIo+yG1ElOUkJaw7gKuAFyWwqavI0X9kdSXzMEgwvKrtTV2ws=
+X-Received: by 2002:a17:906:a1b:b0:a6f:b58f:ae3c with SMTP id
+ a640c23a62f3a-a7242c9c261mr394471966b.26.1719304182050; Tue, 25 Jun 2024
+ 01:29:42 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZnnijsMAQYgCnrZF@slm.duckdns.org>
+References: <cover.1719302367.git.tanggeliang@kylinos.cn>
+In-Reply-To: <cover.1719302367.git.tanggeliang@kylinos.cn>
+From: Huacai Chen <chenhuacai@kernel.org>
+Date: Tue, 25 Jun 2024 16:29:30 +0800
+X-Gmail-Original-Message-ID: <CAAhV-H6=xEKDFS4f5hiOqw-gx1nKiXkQq8Kmr8ZsgQe9A3gbtw@mail.gmail.com>
+Message-ID: <CAAhV-H6=xEKDFS4f5hiOqw-gx1nKiXkQq8Kmr8ZsgQe9A3gbtw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2 0/4] Fixes for BPF selftests on Loongarch
+To: Geliang Tang <geliang@kernel.org>
+Cc: John Fastabend <john.fastabend@gmail.com>, Jakub Sitnicki <jakub@cloudflare.com>, 
+	"David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, David Ahern <dsahern@kernel.org>, 
+	Andrii Nakryiko <andrii@kernel.org>, Eduard Zingerman <eddyz87@gmail.com>, Mykola Lysenko <mykolal@fb.com>, 
+	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
+	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Shuah Khan <shuah@kernel.org>, Mykyta Yatsenko <yatsenko@meta.com>, Miao Xu <miaxu@meta.com>, 
+	Yuran Pereira <yuran.pereira@hotmail.com>, Tiezhu Yang <yangtiezhu@loongson.cn>, 
+	Geliang Tang <tanggeliang@kylinos.cn>, netdev@vger.kernel.org, bpf@vger.kernel.org, 
+	linux-kselftest@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Jun 24, 2024 at 11:18:06AM -1000, Tejun Heo wrote:
-> Hello, Peter.
-> 
-> On Mon, Jun 24, 2024 at 01:32:12PM +0200, Peter Zijlstra wrote:
-> > On Wed, May 01, 2024 at 05:09:44AM -1000, Tejun Heo wrote:
-> > > ->rq_{on|off}line are called either during CPU hotplug or cpuset partition
-> > > updates. A planned BPF extensible sched_class wants to tell the BPF
-> > > scheduler progs about CPU hotplug events in a way that's synchronized with
-> > > rq state changes.
-> > > 
-> > > As the BPF scheduler progs aren't necessarily affected by cpuset partition
-> > > updates, we need a way to distinguish the two types of events. Let's add an
-> > > argument to tell them apart.
-> > 
-> > That would be a bug. Must not be able to ignore partitions.
-> 
-> So, first of all, this implementation was brittle in assuming CPU hotplug
-> events would be called in first and broke after recent cpuset changes. In
-> v7, it's replaced by hooks in sched_cpu_[de]activate(), which has the extra
-> benefit of allowing the BPF hotplug methods to be sleepable.
+On Tue, Jun 25, 2024 at 4:25=E2=80=AFPM Geliang Tang <geliang@kernel.org> w=
+rote:
+>
+> From: Geliang Tang <tanggeliang@kylinos.cn>
+>
+> v2:
+>  - add patch 2, a new fix for sk_msg_memcopy_from_iter.
+>  - update patch 3, only test "sk->sk_prot->close" as Eric suggested.
+>  - update patch 4, use "goto err" instead of "return" as Eduard
+>    suggested.
+>  - add "fixes" tag for patch 1-3.
+>  - change subject prefixes as "bpf-next" to trigger BPF CI.
+>  - cc Loongarch maintainers too.
+>
+> BPF selftests seem to have not been fully tested on Loongarch. When I
+> ran these tests on Loongarch recently, some errors occur. This patch set
+> contains some null-check related fixes for these errors.
+Is the root cause that LoongArch lacks bpf trampoline?
 
-Urgh, I suppose I should go stare at v7 then.
+Huacai
 
-> Taking a step back to the sched domains. They don't translate well to
-> sched_ext schedulers where task to CPU associations are often more dynamic
-> (e.g. multiple CPUs sharing a task queue) and load balancing operations can
-> be implemented pretty differently from CFS. The benefits of exposing sched
-> domains directly to the BPF schedulers is unclear as most of relevant
-> information can be obtained from userspace already.
-
-Either which way around you want to turn it, you must not violate
-partitions. If a bpf thing isn't capable of handling partitions, you
-must refuse loading it when a partition exists and equally disallow
-creation of partitions when it does load.
-
-For partitions specifically, you only need the root_domain, not the full
-sched_domain trees.
-
-I'm aware you have these shared runqueues, but you don't *have* to do
-that. Esp. so if the user explicitly requested partitions.
+>
+> Geliang Tang (4):
+>   skmsg: null check for sg_page in sk_msg_recvmsg
+>   skmsg: null check for sg_page in sk_msg_memcopy_from_iter
+>   inet: null check for close in inet_release
+>   selftests/bpf: Null checks for link in bpf_tcp_ca
+>
+>  net/core/skmsg.c                                 |  4 ++++
+>  net/ipv4/af_inet.c                               |  3 ++-
+>  .../selftests/bpf/prog_tests/bpf_tcp_ca.c        | 16 ++++++++++++----
+>  3 files changed, 18 insertions(+), 5 deletions(-)
+>
+> --
+> 2.43.0
+>
 
