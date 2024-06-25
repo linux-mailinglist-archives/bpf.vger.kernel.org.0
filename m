@@ -1,180 +1,137 @@
-Return-Path: <bpf+bounces-32977-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-32978-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 515EE915B6B
-	for <lists+bpf@lfdr.de>; Tue, 25 Jun 2024 03:02:18 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9FD65915B77
+	for <lists+bpf@lfdr.de>; Tue, 25 Jun 2024 03:03:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7505A1C21A5E
-	for <lists+bpf@lfdr.de>; Tue, 25 Jun 2024 01:02:17 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 11201B20314
+	for <lists+bpf@lfdr.de>; Tue, 25 Jun 2024 01:03:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 059C461FD1;
-	Tue, 25 Jun 2024 00:59:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B158D2744A;
+	Tue, 25 Jun 2024 01:02:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="csw79foC"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UqhoR+/2"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f178.google.com (mail-pf1-f178.google.com [209.85.210.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF4EE61FDA;
-	Tue, 25 Jun 2024 00:59:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 32378DDC3;
+	Tue, 25 Jun 2024 01:02:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719277197; cv=none; b=DYkz0xVbtLln6AC7eqVknc0hgKbh1gzuKRED85mVQllcP+GYnT/LWnjVuApX76NEGmoQoR1nTp+MXvato2CVzHY5RS36/gVHDM+RQi5PnJXXACQLZZTEjfUMu8lQlhqtwqssU9+nH9XRp5YwZ8UP4a+cY78Zr1zxFxWESKVwL/s=
+	t=1719277361; cv=none; b=ndTk7MTeDRFbkubauoyGxmQgSUK+5/YCkNsC9Y7BUKpUOzjia4ToPdjjMi/uOJQFJBPlsYzmeoaOap0OvvWB1OEfzVzcFjppoe6dyr4uAghZqK3py84XL9xdIKdWE67KyzvVdc9zG34cKvHqGPwm3xJbQTaa7gSUfijrREtv3Ig=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719277197; c=relaxed/simple;
-	bh=tbz3fx9me8RYml1zryPFQj2py4/NfAXIo8V2StbotcE=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=b638vbLPgtufn5enZgidroAspB9kXkM1q+Jrdc5JGi4g22le0Leq2X4g0lljuTG00FgCSveChmHmWnJtFgS+nN6pwortsXRqtkD4Klw7pu9mENKiTJuv49IObYyhJlOLU+WqaYPYUWz0TpbHXYDyJQuitfsBQrUvqmN96cHOnIA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=csw79foC; arc=none smtp.client-ip=209.85.210.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f178.google.com with SMTP id d2e1a72fcca58-7066f68e22cso1661904b3a.2;
-        Mon, 24 Jun 2024 17:59:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1719277195; x=1719881995; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=3wYKLT5pUxWJteCWlaUFu6bWDIbS5wMf88srHW9IbAA=;
-        b=csw79foCOkW66iSNezErJOBkPxMnYV26NTmBOM27yy9i9tWuPk7HA0Qs8K7ZKNOUGP
-         c7u8iExxe1fyawTTSci8qFoZL4yDyNYF6kdZR7rB4tUndSbehvKEj/MAV8AXNgjOrkKI
-         afXWz5H2RZHR/UWjt2e+SaMUkZcOcrm92XiHXg7Gs4iQDKzuuGmOv4h/ghA4yBYSYrsS
-         7XNlvCCt+aVdg5wlsAj+M37eMoTy9CwfO2SMXLa9fGzxDMvK/jCN9yG4etlxgn3SjK2C
-         s8RRpVNO4dwzraC6JPhx92cgxd48fHx+j+QDCWT50VyWhV+hHLC8wYOA0fTIC4V+ODJw
-         br+Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1719277195; x=1719881995;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=3wYKLT5pUxWJteCWlaUFu6bWDIbS5wMf88srHW9IbAA=;
-        b=XCunR3Cvt1FtsFEAzDRuAaIIVsGpxVnyWF+Vf6ll5NWW1DeHOiZqqCA0OFXYJnnJ1r
-         HYLWoiDbGkk61N6ldGGidwXsceVkeh/SloXIDxZizYSB8eQFLRGmDkeywFxO+GC/tNFD
-         uF7BGx+lPot7f/PhhwANId7m0msRdnvKblj4sv+emnBnbrviOVJbwWIPQYAlN/dASaKD
-         mXPJrKqanfMiGutJzKm6TQDdxXz2dQ1osUaGXK5GC61q0M1ZpDHFaxOkU5bKlKeaIlZV
-         7n9FIUcZYzeel4CooJ60bgsCp0plCktyGw/UXYN22Vn6CDgiKeUl7Ibfp6CuToUAAQXd
-         t38w==
-X-Forwarded-Encrypted: i=1; AJvYcCVw09m5HbP6I4hLwU5wTQ3hTIEyy8w7EGQDKtG0W035RIEbb5erLym/gH53JEbIKFxhxuDvD4i7y7uKKTKPAL+y19gD0S4SzNOnBFbWnXL5e590LEh+1hK8ixO6pBpn5PLsUW6g
-X-Gm-Message-State: AOJu0Yw0go8UVKm1/3vPts67DExexgJwSt8M/d+5rkLaHzlQ87WSCUEU
-	ocM76usedJbwmSqASgApH4/F2BMDrXCubBYDmDzOuR7ZSCjml4tR
-X-Google-Smtp-Source: AGHT+IHGa2tKvL95CnD4d2dMG+FPrJgmmHFTE4PF578YR4xqF6UNkGuscVsvV+X7E2HkPYzMlhlDFQ==
-X-Received: by 2002:a05:6a00:d0:b0:705:d9e3:6179 with SMTP id d2e1a72fcca58-70670fd4148mr5679603b3a.26.1719277195024;
-        Mon, 24 Jun 2024 17:59:55 -0700 (PDT)
-Received: from [192.168.0.31] ([38.34.87.7])
-        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-716ba6aa524sm5987566a12.63.2024.06.24.17.59.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 24 Jun 2024 17:59:54 -0700 (PDT)
-Message-ID: <003488efcca0c1205d3091242b2a106bc971f8a1.camel@gmail.com>
-Subject: Re: [PATCH bpf-next v4 6/9] selftests/bpf: Invoke attach_reuseport
- out of make_server
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Geliang Tang <geliang@kernel.org>, Andrii Nakryiko <andrii@kernel.org>, 
- Mykola Lysenko <mykolal@fb.com>, Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>, Martin KaFai Lau
- <martin.lau@linux.dev>, Song Liu <song@kernel.org>, Yonghong Song
- <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, KP
- Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo
- <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,  Shuah Khan
- <shuah@kernel.org>
-Cc: Geliang Tang <tanggeliang@kylinos.cn>, bpf@vger.kernel.org, 
-	linux-kselftest@vger.kernel.org
-Date: Mon, 24 Jun 2024 17:59:49 -0700
-In-Reply-To: <f846835a758f2e531026083253eeb747205bd0dd.1719203293.git.tanggeliang@kylinos.cn>
-References: <cover.1719203293.git.tanggeliang@kylinos.cn>
-	 <f846835a758f2e531026083253eeb747205bd0dd.1719203293.git.tanggeliang@kylinos.cn>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.44.4-0ubuntu2 
+	s=arc-20240116; t=1719277361; c=relaxed/simple;
+	bh=cNul+CjnJxu3p3xp/0OzfRTbo9IvW9F4g1jY4fo1kbo=;
+	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
+	 Mime-Version:Content-Type; b=spIJL9enMDTvicMt9VnERWzFtohIaPUcp/hYFCeCXgZyb9QuodkSZvd99hdcSTnXYJpry/wlKqOGmjuuqJsAEr2ZBf2MjBkS2uLb9TYkC2BQQ/et3vRZi4rfh0uYKJSBZb9dLltiwKnJV4wQFaH2Bz2G4/tiqER8X9CxSA3hFdI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UqhoR+/2; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 92978C2BBFC;
+	Tue, 25 Jun 2024 01:02:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1719277361;
+	bh=cNul+CjnJxu3p3xp/0OzfRTbo9IvW9F4g1jY4fo1kbo=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=UqhoR+/20BMq9LaSp6XFqCeZxDTtbqSbcPPKxxa5hVmdOiz1GVe50eNnE6vxvL6Pc
+	 Zc5fUXT5iCti8oNmbc1OACdSTeg0rCNNVpLuPTo7O1eaHszmQf0bsOP/QNPCxJKi23
+	 mHwtpRhauwSgwFGm1RycHC3KI017gMzNJYAPlixFnQgrR9DkDy0NO3H4/+dc6bP6gg
+	 WOdHvlnewPBxeo8HBBlc/BNqbrBxugeUBO+C+RZXIT/hsj6qPnbM0ceoWouQ6DCgNR
+	 R6okR5hZ/ffqzglPjauaw0uLQkBwyl0hl3MyoOzi9uXoutseq84xuoy3sqnxgbfr89
+	 nZdjjSF9W6Xpw==
+Date: Tue, 25 Jun 2024 10:02:36 +0900
+From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To: Andrii Nakryiko <andrii@kernel.org>
+Cc: linux-trace-kernel@vger.kernel.org, rostedt@goodmis.org, x86@kernel.org,
+ peterz@infradead.org, mingo@redhat.com, tglx@linutronix.de,
+ bpf@vger.kernel.org, rihams@fb.com, linux-perf-users@vger.kernel.org
+Subject: Re: [PATCH v2 1/4] uprobes: rename get_trampoline_vaddr() and make
+ it global
+Message-Id: <20240625100236.75d923b42d1bcf5a2f15fb9b@kernel.org>
+In-Reply-To: <20240522013845.1631305-2-andrii@kernel.org>
+References: <20240522013845.1631305-1-andrii@kernel.org>
+	<20240522013845.1631305-2-andrii@kernel.org>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Mon, 2024-06-24 at 12:33 +0800, Geliang Tang wrote:
-> From: Geliang Tang <tanggeliang@kylinos.cn>
->=20
-> In order to facilitate subsequent commits to drop make_server(), this pat=
-ch
-> invokes attach_reuseport() out of make_server(), right after invoking
-> make_server() if the passed "reuseport_prog" argument is not NULL.
->=20
-> Signed-off-by: Geliang Tang <tanggeliang@kylinos.cn>
+On Tue, 21 May 2024 18:38:42 -0700
+Andrii Nakryiko <andrii@kernel.org> wrote:
+
+> This helper is needed in another file, so make it a bit more uniquely
+> named and expose it internally.
+> 
+> Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+
+Sorry, I think this conflicts with
+
+https://lore.kernel.org/all/20240611112158.40795-4-jolsa@kernel.org/
+
+And that is already picked.
+
+Thanks,
+
 > ---
->  .../selftests/bpf/prog_tests/sk_lookup.c      | 21 +++++++++----------
->  1 file changed, 10 insertions(+), 11 deletions(-)
->=20
-> diff --git a/tools/testing/selftests/bpf/prog_tests/sk_lookup.c b/tools/t=
-esting/selftests/bpf/prog_tests/sk_lookup.c
-> index de2466547efe..d87dfcf5db07 100644
+>  include/linux/uprobes.h | 1 +
+>  kernel/events/uprobes.c | 6 +++---
+>  2 files changed, 4 insertions(+), 3 deletions(-)
+> 
+> diff --git a/include/linux/uprobes.h b/include/linux/uprobes.h
+> index f46e0ca0169c..0c57eec85339 100644
+> --- a/include/linux/uprobes.h
+> +++ b/include/linux/uprobes.h
+> @@ -138,6 +138,7 @@ extern bool arch_uretprobe_is_alive(struct return_instance *ret, enum rp_check c
+>  extern bool arch_uprobe_ignore(struct arch_uprobe *aup, struct pt_regs *regs);
+>  extern void arch_uprobe_copy_ixol(struct page *page, unsigned long vaddr,
+>  					 void *src, unsigned long len);
+> +extern unsigned long uprobe_get_trampoline_vaddr(void);
+>  #else /* !CONFIG_UPROBES */
+>  struct uprobes_state {
+>  };
+> diff --git a/kernel/events/uprobes.c b/kernel/events/uprobes.c
+> index 8ae0eefc3a34..d60d24f0f2f4 100644
+> --- a/kernel/events/uprobes.c
+> +++ b/kernel/events/uprobes.c
+> @@ -1827,7 +1827,7 @@ void uprobe_copy_process(struct task_struct *t, unsigned long flags)
+>   *
+>   * Returns -1 in case the xol_area is not allocated.
+>   */
+> -static unsigned long get_trampoline_vaddr(void)
+> +unsigned long uprobe_get_trampoline_vaddr(void)
+>  {
+>  	struct xol_area *area;
+>  	unsigned long trampoline_vaddr = -1;
+> @@ -1878,7 +1878,7 @@ static void prepare_uretprobe(struct uprobe *uprobe, struct pt_regs *regs)
+>  	if (!ri)
+>  		return;
+>  
+> -	trampoline_vaddr = get_trampoline_vaddr();
+> +	trampoline_vaddr = uprobe_get_trampoline_vaddr();
+>  	orig_ret_vaddr = arch_uretprobe_hijack_return_addr(trampoline_vaddr, regs);
+>  	if (orig_ret_vaddr == -1)
+>  		goto fail;
+> @@ -2187,7 +2187,7 @@ static void handle_swbp(struct pt_regs *regs)
+>  	int is_swbp;
+>  
+>  	bp_vaddr = uprobe_get_swbp_addr(regs);
+> -	if (bp_vaddr == get_trampoline_vaddr())
+> +	if (bp_vaddr == uprobe_get_trampoline_vaddr())
+>  		return handle_trampoline(regs);
+>  
+>  	uprobe = find_active_uprobe(bp_vaddr, &is_swbp);
+> -- 
+> 2.43.0
+> 
 
-Tbh, I don't like this refactoring for sk_lookup, it does not seem to
-make the code clearer or shorter (e.g. 1414 LOC vs 1409).
-If anything, it looks like reuseport_prog, callbacks setup and
-start_server_str could be hidden insider make_server().
 
-> --- a/tools/testing/selftests/bpf/prog_tests/sk_lookup.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/sk_lookup.c
-> @@ -204,15 +204,6 @@ static int make_server(int sotype, const char *ip, i=
-nt port,
->  		}
->  	}
-> =20
-> -	/* Late attach reuseport prog so we can have one init path */
-> -	if (reuseport_prog) {
-> -		err =3D attach_reuseport(fd, reuseport_prog);
-> -		if (CHECK(err, "attach_reuseport", "failed\n")) {
-> -			log_err("failed to attach reuseport prog");
-> -			goto fail;
-> -		}
-> -	}
-> -
->  	return fd;
->  fail:
->  	close(fd);
-> @@ -610,7 +601,8 @@ static void run_lookup_prog(const struct test *t)
->  		server_fds[i] =3D make_server(t->sotype, t->listen_at.ip,
->  					    t->listen_at.port,
->  					    t->reuseport_prog);
-> -		if (server_fds[i] < 0)
-> +		if (server_fds[i] < 0 ||
-> +		    attach_reuseport(server_fds[i], t->reuseport_prog))
->  			goto close;
-> =20
->  		err =3D update_lookup_map(t->sock_map, i, server_fds[i]);
-> @@ -636,7 +628,8 @@ static void run_lookup_prog(const struct test *t)
->  		reuse_conn_fd =3D make_server(t->sotype, t->listen_at.ip,
->  					    t->listen_at.port,
->  					    t->reuseport_prog);
-> -		if (reuse_conn_fd < 0)
-> +		if (reuse_conn_fd < 0 ||
-> +		    attach_reuseport(reuse_conn_fd, t->reuseport_prog))
->  			goto close;
-> =20
->  		/* Connect the extra socket to itself */
-> @@ -878,6 +871,9 @@ static void drop_on_lookup(const struct test *t)
->  	if (server_fd < 0)
->  		goto detach;
-> =20
-> +	if (attach_reuseport(server_fd, t->reuseport_prog))
-> +		goto close_srv;
-> +
->  	client_fd =3D make_socket(t->sotype, t->connect_to.ip,
->  				t->connect_to.port, &dst);
->  	if (client_fd < 0)
-> @@ -992,6 +988,9 @@ static void drop_on_reuseport(const struct test *t)
->  	if (server1 < 0)
->  		goto detach;
-> =20
-> +	if (attach_reuseport(server1, t->reuseport_prog))
-> +		goto close_srv1;
-> +
->  	err =3D update_lookup_map(t->sock_map, SERVER_A, server1);
->  	if (err)
->  		goto close_srv1;
-
+-- 
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
