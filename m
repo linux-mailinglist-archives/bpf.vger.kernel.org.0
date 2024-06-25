@@ -1,47 +1,47 @@
-Return-Path: <bpf+bounces-32979-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-32980-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9D8FC915B86
-	for <lists+bpf@lfdr.de>; Tue, 25 Jun 2024 03:14:58 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6F7F8915B92
+	for <lists+bpf@lfdr.de>; Tue, 25 Jun 2024 03:22:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BC5611C212D7
-	for <lists+bpf@lfdr.de>; Tue, 25 Jun 2024 01:14:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EDD4F1F22254
+	for <lists+bpf@lfdr.de>; Tue, 25 Jun 2024 01:22:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6253312B82;
-	Tue, 25 Jun 2024 01:14:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C0FF168B7;
+	Tue, 25 Jun 2024 01:22:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="f6wxVwWn"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="p8iiGkCZ"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE96A1D54F;
-	Tue, 25 Jun 2024 01:14:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9DDA4101D5;
+	Tue, 25 Jun 2024 01:22:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719278092; cv=none; b=gvBpwFjCRSjksiL7b7g2LA/yR1WIQHD82U1lHRO5m/1YcO7B+XyJNXFgvNV3gZvh3qz1JVi3Fvcslvc726Ty/o373J7g3aWVRW4ohndGOQZ+oJY6yqsFTZ3BKPU5qb4Jxl2Qt9fDY96J1XxnEeP2VaUPxrJ0r2X0DnvAFzSbyQ0=
+	t=1719278532; cv=none; b=W3Prn2ATi4SuDuBPsbcEnEB9K4PujrYz3D1boolf4JQhLpTv1nMAXZG8XlaUgwY78eBVBDxRXkPMkS5nPOT8R5sw5gyDEBWkD8tenQkfOGj0auKzrU/GgZ7T8FJUmWhiz312NU005g9uifMihvXy7H7V+U4bDwXRqCrQtj+V/aQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719278092; c=relaxed/simple;
-	bh=V7woCnDJIt5FXltY3SGt5B/sUDtrMfLtaeLuuDjex6A=;
+	s=arc-20240116; t=1719278532; c=relaxed/simple;
+	bh=2f0aAV9cj3g9bVBBTB4nxdJL5pwRf0+xwfRd3YeDNoY=;
 	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
-	 Mime-Version:Content-Type; b=jDfGjcMW9swbQVV+goCXTq6Q0lWu4uQWRGxD4izEIPQm4rd/bbxgWPiLpWy7Hnls7fV/ySBDrwsR+yze9eEESLJwyrwyibmRteP8xxrR98zxVGDsYA2Hc0ThYajalf4HDXflNacDQXdMPewGbkbpYprfnlZ2UBjXQ2bas40fBhg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=f6wxVwWn; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 01884C2BBFC;
-	Tue, 25 Jun 2024 01:14:48 +0000 (UTC)
+	 Mime-Version:Content-Type; b=jk/2ELSRz6sOPgA/8bRn+F3o6dKAwyu9RH1pNRDTHLEtoVJe/tzuBKyhOVvpBIOynJ0aGUBxMYnGSenY8YnrV1jsixTGhESuth2FmnUYj0H3Oh6CP69+TZBTkfxEZXEXLb+7n3QWa9zAtMls3VszeTSIHn8bHR5HzICuPir4SDI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=p8iiGkCZ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B9DCFC2BBFC;
+	Tue, 25 Jun 2024 01:22:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1719278091;
-	bh=V7woCnDJIt5FXltY3SGt5B/sUDtrMfLtaeLuuDjex6A=;
+	s=k20201202; t=1719278532;
+	bh=2f0aAV9cj3g9bVBBTB4nxdJL5pwRf0+xwfRd3YeDNoY=;
 	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=f6wxVwWnpDYm65qHScbt6t863aCOxWeVjNNj8pfBrs8vbstB9kdlmvTRhgp4OOpG5
-	 1DyJ6b2eZOeh/lGw6yiD6/J00yQxsSdH+lFBBOiAbmahP1R+0JPqCj4XRxFhsAauLg
-	 OUd0BXA6JfOL9HWnjJFGGl7Da0FJCaHG5oXI/X2GWxqfaKS28gtdVPKajDiX2bTlJw
-	 Z4whLGwMWB16PkNfx33m1FgGVAVofrxSPPmmWLgFlmLc5EndtI4ENHI3/4bvkP2xYy
-	 58UbUvFf+BguzabsMcg84zdKzb5jfT/sjfFZhCzfdbGXtbimmnqTqeEwNJa1tTXee/
-	 38VsXe+o5Z3ig==
-Date: Tue, 25 Jun 2024 10:14:46 +0900
+	b=p8iiGkCZIssd5YSQuP2OqjPUKv11/HjYIdo6UKT76VBc8sHjqQQVYxF5twJyRr4Y+
+	 VeNWkOR3QNC95Myf6slQavq3yyP7/bH+2HG1sOwqD8KsYG1sHkLde/lHoJofLCT6SO
+	 JJCZaedCUA18bRrl4jluegMHHaYPoktANUKHb6+QUcCOnIG+NPAe6MwEiyxyubV+Gw
+	 GmKE3NAmB2mByzmDwcVeqvyCLEO+8KTpxCLuzKIL02NSehf6LdaSyL2ILseCeehCRQ
+	 QfeU8m0ZacsYUri1gpsVoUReN+tv7/yoUXXrFHle3M0d992NUda67UbkHhBFJ86S6/
+	 mfPDBNZmeLElA==
+Date: Tue, 25 Jun 2024 10:22:07 +0900
 From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
 To: Andrii Nakryiko <andrii@kernel.org>
 Cc: linux-trace-kernel@vger.kernel.org, rostedt@goodmis.org, x86@kernel.org,
@@ -49,7 +49,7 @@ Cc: linux-trace-kernel@vger.kernel.org, rostedt@goodmis.org, x86@kernel.org,
  bpf@vger.kernel.org, rihams@fb.com, linux-perf-users@vger.kernel.org
 Subject: Re: [PATCH v2 4/4] selftests/bpf: add test validating
  uprobe/uretprobe stack traces
-Message-Id: <20240625101446.9dd0f4767392462e9923f0ba@kernel.org>
+Message-Id: <20240625102207.0e2c09c4417d881b35fba653@kernel.org>
 In-Reply-To: <20240522013845.1631305-5-andrii@kernel.org>
 References: <20240522013845.1631305-1-andrii@kernel.org>
 	<20240522013845.1631305-5-andrii@kernel.org>
@@ -76,6 +76,11 @@ Andrii Nakryiko <andrii@kernel.org> wrote:
 > 
 > Without fixes in this patch set, we get something like this for one of
 > the scenarios:
+
+I changed it to;
+
+    If there is no fixes, we get something like this for one of the scenarios:
+
 > 
 >  caller: 0x758fff - 0x7595ab
 >  target_1: 0x758fd5 - 0x758fff
@@ -96,7 +101,9 @@ Andrii Nakryiko <andrii@kernel.org> wrote:
 > note that between entry #0 and entry #1 we are missing an entry for
 > target_3, which is fixed in patch #2.
 
-Please avoid using `patch #2` because after commit, this means nothing.
+And remove ", which is fixed in patch #2".
+
+Is that OK?
 
 Thank you,
 
