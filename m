@@ -1,154 +1,89 @@
-Return-Path: <bpf+bounces-33057-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-33056-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A3FBB916A19
-	for <lists+bpf@lfdr.de>; Tue, 25 Jun 2024 16:18:27 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8FF99916A13
+	for <lists+bpf@lfdr.de>; Tue, 25 Jun 2024 16:18:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 574DF1F21276
-	for <lists+bpf@lfdr.de>; Tue, 25 Jun 2024 14:18:27 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C220C1C22551
+	for <lists+bpf@lfdr.de>; Tue, 25 Jun 2024 14:18:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F03A616C69F;
-	Tue, 25 Jun 2024 14:18:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 382CF169AD0;
+	Tue, 25 Jun 2024 14:17:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="SQXqTN4S"
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="Syo3/vBZ";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="qnlv1E6Q"
 X-Original-To: bpf@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E2FC7169AD0
-	for <bpf@vger.kernel.org>; Tue, 25 Jun 2024 14:18:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 64F28BE71;
+	Tue, 25 Jun 2024 14:17:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719325091; cv=none; b=knR0i+iTzT/RWUtevk8jO6xRGAAExKRs7YtLOVXUSZqTnOAWvLPqPQIYLn1eb5lV4AzO5nNbe6mCWnncfCgjxLkFWDLXu6J19e9D2H3NONvL989mCZswVGYVDTmpDybxCpsQwTAxvYbmYevWrRbJ4k8Evto55fyJht5oIOGUGFg=
+	t=1719325075; cv=none; b=t1gDhpAsMY9b76+yhf+tcy4X2iX+mccWEUm1VWWUEh0KdGMM7kYcmtlUIhX5NZXYDRFJqUyaqDomfAhb4dKPm49UYK8dku29Z2n2+RTe+q+V3E1yIYDYhwmenFIkx2n5soN/w/m3/hgo86jKw9rUV84hIwnde7t5IG65CKAY7Qo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719325091; c=relaxed/simple;
-	bh=258aHTwJ8PHNVShdBmlRwFk5MhWBCxeonA2f0yI3uGw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=VYe7VIdl64DcA7IZDVla39MoyDT3uBhUkQjQ06dBkNeurlKnhdvExKro1tbI29oxN7CeXkP+mIF7r+OJIU1hLqxkQ1j40N81+Tv3Fum+LAU3yG3gvumR+yMw69cIDIFFPCn47MDHG7BOAgKfDwC0b/YlFBHkYn9KiOfwl5J7cQo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=SQXqTN4S; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1719325088;
+	s=arc-20240116; t=1719325075; c=relaxed/simple;
+	bh=e0Xxg3bDdJc8OeBXVF1Qhji37otgW7Fb1gXHSU9f6nQ=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=RVoIhwVwEjuAfn+q9MkheQAR+AFjkQXOxQweCV/m+xuMjgBs+LCDWROUggCvcn92snaZ9fuapRyDU+qVd8r4/01d7+la8Vk0GO+3nSc/zquniQ4SQHZHD5Ct7kQ+FfPyZ5ED6E6uPHXWB9QsjtSlqUP1oweCbCUmvJsx8jaPXpE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=Syo3/vBZ; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=qnlv1E6Q; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+From: John Ogness <john.ogness@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1719325072;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=JDJanHJKnbiJNPYotPkVO2c6RbIzDk3MVlTTgVCykxk=;
-	b=SQXqTN4St4YLwrqePXiDxgLc7iRQLuDYk81viqRKYPCaj4/RoAQ93F48e1JcoxbmUDJLG8
-	rJpBGIgslYXSCTBDB+ToJnaTPC4zoO8yjDB8YXJy3DfXPYf8Mr9dShfQdAzBtCcyzuWWYR
-	8dQxSGmgMiJyOtv4Z2Ydl6ItWTkLKeQ=
-Received: from mx-prod-mc-03.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-458-KsnVk9qGMTCAI2eoQhCkRg-1; Tue,
- 25 Jun 2024 10:18:04 -0400
-X-MC-Unique: KsnVk9qGMTCAI2eoQhCkRg-1
-Received: from mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.4])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mx-prod-mc-03.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id F28E318DB6FA;
-	Tue, 25 Jun 2024 14:17:14 +0000 (UTC)
-Received: from [10.22.10.23] (unknown [10.22.10.23])
-	by mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id 9BD18301BD32;
-	Tue, 25 Jun 2024 14:16:16 +0000 (UTC)
-Message-ID: <80e87513-aa48-4548-893e-ed339690c941@redhat.com>
-Date: Tue, 25 Jun 2024 10:16:15 -0400
+	bh=e0Xxg3bDdJc8OeBXVF1Qhji37otgW7Fb1gXHSU9f6nQ=;
+	b=Syo3/vBZppV+N4Yfd5J59zbH/jFH4hVQJ3Ec5X1ioqP4TmjBKwJuAjXcYiY7DpNzD3ZAjA
+	PWAMeOGWeOPsHfstvWTdE/ScTw6NDVWh0A6k+MxgqJLGq3bo5sQ3ReyjAgXNx6lN7vCIvw
+	H9V4xqAdI5FAwMtR+CLa8c6WjIKYg9uzJKfMFCkgMfFLn+oBVZhf/x+NegvgTJrqBRdV1j
+	OhEnMU169ESQ11gwHGy0wFAPbh69Z7dlZ3bji4myaL7oze3+hFqZsArtPWStbzhoGECHXv
+	Cb6/CB4APcsbtwc4KBUEBRxwiqJPm/biQ1LixL2HTz9dN1CDCUpT9AZ3Hdmjrg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1719325072;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=e0Xxg3bDdJc8OeBXVF1Qhji37otgW7Fb1gXHSU9f6nQ=;
+	b=qnlv1E6QbDAsN0TCNUO8AGqWmgOtATmaBtF2bNZBh17dGTZVCoZm2sSTZB9vZKCfAm3K+a
+	6ol4/GEE7R1tgzAQ==
+To: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>, Alexei Starovoitov
+ <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko
+ <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, Eduard
+ Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, Yonghong Song
+ <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, KP
+ Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>, Hao Luo
+ <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, Petr Mladek
+ <pmladek@suse.com>, Steven Rostedt <rostedt@goodmis.org>, Sergey
+ Senozhatsky <senozhatsky@chromium.org>
+Cc: bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] bpf: defer printk() inside __bpf_prog_run()
+In-Reply-To: <345098dc-8cb4-4808-98cf-fa9ab3af4fc4@I-love.SAKURA.ne.jp>
+References: <345098dc-8cb4-4808-98cf-fa9ab3af4fc4@I-love.SAKURA.ne.jp>
+Date: Tue, 25 Jun 2024 16:23:51 +0206
+Message-ID: <87ed8lxg1c.fsf@jogness.linutronix.de>
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH -next] cgroup: fix uaf when proc_cpuset_show
-To: chenridong <chenridong@huawei.com>, =?UTF-8?Q?Michal_Koutn=C3=BD?=
- <mkoutny@suse.com>
-Cc: tj@kernel.org, lizefan.x@bytedance.com, hannes@cmpxchg.org,
- bpf@vger.kernel.org, cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20240622113814.120907-1-chenridong@huawei.com>
- <19648b9c-6df7-45cd-a5ae-624a3e4d860f@redhat.com>
- <52f72d1d-602e-4dca-85a3-adade925b056@huawei.com>
- <71a9cc3a-1b58-4051-984b-dd4f18dabf84@redhat.com>
- <8f83ecb3-4afa-4e0b-be37-35b168eb3c7c@huawei.com>
- <ee30843f-2579-4dcf-9688-6541fd892678@redhat.com>
- <3322ce46-78a1-45c5-ad07-a982dec21c8e@huawei.com>
- <gke4hn67e2js2wcia4gopr6u26uy5epwpu7r6sepjwvp5eetql@nuwvwzg2k4dy>
- <920bbfaa-bb76-4aa1-bd07-9a552e3bfdf2@huawei.com>
-Content-Language: en-US
-From: Waiman Long <longman@redhat.com>
-In-Reply-To: <920bbfaa-bb76-4aa1-bd07-9a552e3bfdf2@huawei.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.4
+Content-Type: text/plain
 
-On 6/25/24 10:11, chenridong wrote:
+On 2024-06-25, Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp> wrote:
+> syzbot is reporting circular locking dependency inside __bpf_prog_run(),
+> for fault injection calls printk() despite rq lock is already held.
 >
->
-> On 2024/6/25 18:10, Michal Koutný wrote:
->> Hello.
->>
->> On Tue, Jun 25, 2024 at 11:12:20AM GMT, chenridong<chenridong@huawei.com>  wrote:
->>> I am considering whether the cgroup framework has a method to fix this
->>> issue, as other subsystems may also have the same underlying problem.
->>> Since the root css will not be released, but the css->cgrp will be
->>> released.
->> <del>First part is already done in
->> 	d23b5c5777158 ("cgroup: Make operations on the cgroup root_list RCU safe")
->> second part is that</del>
->> you need to take RCU read lock and check for NULL, similar to
->> 	9067d90006df0 ("cgroup: Eliminate the need for cgroup_mutex in proc_cgroup_show()")
->>
->> Does that make sense to you?
->>
->> A Fixes: tag would be nice, it seems at least
->> 	a79a908fd2b08 ("cgroup: introduce cgroup namespaces")
->> played some role. (Here the RCU lock is not for cgroup_roots list but to
->> preserve the root cgrp itself css_free_rwork_fn/cgroup_destroy_root.
->>
->> HTH,
->> Michal
->
-> Thank you, Michal, that is a good idea. Do you mean as below?
->
-> diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
->
-> index c12b9fdb22a4..2ce0542067f1 100644
-> --- a/kernel/cgroup/cpuset.c
-> +++ b/kernel/cgroup/cpuset.c
-> @@ -5051,10 +5051,17 @@ int proc_cpuset_show(struct seq_file *m, 
-> struct pid_namespace *ns,
->         if (!buf)
->                 goto out;
->
-> +       rcu_read_lock();
-> +       spin_lock_irq(&css_set_lock);
->         css = task_get_css(tsk, cpuset_cgrp_id);
-> -       retval = cgroup_path_ns(css->cgroup, buf, PATH_MAX,
-> - current->nsproxy->cgroup_ns);
-> +
-> +       retval = cgroup_path_ns_locked(css->cgroup, buf, PATH_MAX,
-> +               current->nsproxy->cgroup_ns);
->         css_put(css);
-> +
-> +       spin_unlock_irq(&css_set_lock);
-> +       cgroup_unlock();
-> +
->         if (retval == -E2BIG)
->                 retval = -ENAMETOOLONG;
->
->         if (retval < 0)
->
-That should work. However, I would suggest that you take task_get_css() 
-and css_put() outside of the critical section. The task_get_css() is a 
-while loop that may take a while to execute and you don't want run it 
-with interrupt disabled.
+> Guard __bpf_prog_run() using printk_deferred_{enter,exit}() (and
+> preempt_{disable,enable}() if CONFIG_PREEMPT_RT=n) in order to defer any
+> printk() messages.
 
-Cheers,
-Longman
+Why is the reason for disabling preemption?
 
+John Ogness
 
