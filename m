@@ -1,49 +1,49 @@
-Return-Path: <bpf+bounces-33191-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-33188-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C847B9193F9
-	for <lists+bpf@lfdr.de>; Wed, 26 Jun 2024 21:00:24 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2AED69193EF
+	for <lists+bpf@lfdr.de>; Wed, 26 Jun 2024 21:00:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EBD571C233CE
-	for <lists+bpf@lfdr.de>; Wed, 26 Jun 2024 19:00:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C79D71F23236
+	for <lists+bpf@lfdr.de>; Wed, 26 Jun 2024 19:00:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 49482192B74;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 17CB8192B64;
 	Wed, 26 Jun 2024 18:59:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b="wA0zd7b1"
+	dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b="EzCbArCh"
 X-Original-To: bpf@vger.kernel.org
 Received: from smtpout.efficios.com (smtpout.efficios.com [167.114.26.122])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DAA4A191481;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA95A19147E;
 	Wed, 26 Jun 2024 18:59:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=167.114.26.122
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719428364; cv=none; b=EnBoXc5RmmBDo4YipMITDQHDHTS9d0nJUlbRj5IxZgmjH4LJdRXrACcvJzZTs/5NykcoGrq7O7Rgc9ZuW3GVl22qaIJxqsYkmbZ6Wxj+xyplSGvFoBYG1prGzrmwDhhpEcchfHXdIMHeuAjBWqDSE2kHv0BwdZFsMY0BWElKjmc=
+	t=1719428364; cv=none; b=BLzq3Attby1hlOiTaUOYuV7GrQixEXgh0C4NC3uWNfqC6dx3/oC+xkFnICqBn+A+hijf2a7YqY5L0N887IC8qOSvyvpsIO52iPZBXu09MYt/RUBQN16KFIwBI+wvLbdYkNYb6gswuhGrvvUKfAr5rUdM7Y99OvBY9R/GT90y+c4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1719428364; c=relaxed/simple;
-	bh=Ii+cxjz0MLUIaEg5tcYbEKz1AeI5UWrbwUMe27azAqI=;
+	bh=PLilsDQe1SB8Sc5yvuTGO9LSAXut9VnHgr6OZBAMHIQ=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=i9X3VMJeDop13QvmjuO78Pq4l7bvHUe+2YQ+P+t7hvB4hd193o0ynXbBhBucjghyz+wbAET3Dt7F4vEc0oDsA9+LgcZvRuKAxQ2i/S5dIHgwam9nfQ0bWuyGZt+Zim6+y7K5mgphDXCVD7g+nGPyO/uL0caCwzflYIcOIMvrFM4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com; spf=pass smtp.mailfrom=efficios.com; dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b=wA0zd7b1; arc=none smtp.client-ip=167.114.26.122
+	 MIME-Version; b=m5wQV2megoGYWHW2Q1jDfE8BtZifM85SzEuGbTeYjJvtcb4rXfRefm8SvcyGgeN9zZb7WvKJCytvnXkMtnbS9/voixRkuIx3upTK7J5pj2jcGjcvSdzexhvk+Appg6DGAmTh95CYUI1QNPnPWcYDLcIE6GnhSl3c7M5zcKwRESg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com; spf=pass smtp.mailfrom=efficios.com; dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b=EzCbArCh; arc=none smtp.client-ip=167.114.26.122
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=efficios.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=efficios.com;
 	s=smtpout1; t=1719428355;
-	bh=Ii+cxjz0MLUIaEg5tcYbEKz1AeI5UWrbwUMe27azAqI=;
+	bh=PLilsDQe1SB8Sc5yvuTGO9LSAXut9VnHgr6OZBAMHIQ=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=wA0zd7b1/dZnXXwMP1KlkiWG3Ud7Q3K2yNDDBYqn5VFlS8Q1bdBL+RAoe4H2s8S0g
-	 mkj8MLq129ZbrM2BwaY6MSfTayemr7Gx+/i0MhwCPkaBI0i9cqHOrw/thvMTv7poD5
-	 ipzTogztWbtzUy3WidWH0HcfVyVY5Qfn5j8fgf4q6bdZ5sHw/g05e3OyLZ307OBAym
-	 niyn0neFJjVsPLgD06s+rWHnDtniND2KpKoZ0JFiiMX7g9x7EPBLGnehozbeCYeTGE
-	 ls8aodr2C7d79iwZ6078WzQoWgdMYRJRo1KXcp5UUTV28LeyF1BM1iBbr2ljf5TviX
-	 EQDRPPdQPh4yg==
+	b=EzCbArChhc3NsLvxGaThRyKwskcbSC81OAQ5gKqYqOj4EK2+fPS7sSqIZl304ehdW
+	 SvLALdDpA4NBRASg8zYfGRaF8EFuGmW7Jkm66rb1KGEzUPnsWj9GlGz6K7OTKCMJRm
+	 0CZunPN8raOYyQSX2qCcn5a4ZEH7HINkVF8k+6cxTr2Ni27+FGKuAgqfPs7WjkQRMa
+	 GUzY6cP2nLS06JhjsbYzhTFzv1dhwXHMjTjt9tLPJ0qbHGmdWWUTzIERUwMS4WIeWf
+	 bAjzy7fcaDZQSVgsPOhFZDX8mF+loRU+Ck+Cb4/QyuRq1ywaN3eJNHz/APKgEE06Hv
+	 PaNaqAWW+jq6A==
 Received: from thinkos.internal.efficios.com (192-222-143-198.qc.cable.ebox.net [192.222.143.198])
-	by smtpout.efficios.com (Postfix) with ESMTPSA id 4W8WFt5zV5z17d1;
-	Wed, 26 Jun 2024 14:59:14 -0400 (EDT)
+	by smtpout.efficios.com (Postfix) with ESMTPSA id 4W8WFv1cBvz17XY;
+	Wed, 26 Jun 2024 14:59:15 -0400 (EDT)
 From: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
 To: Steven Rostedt <rostedt@goodmis.org>,
 	Masami Hiramatsu <mhiramat@kernel.org>
@@ -62,9 +62,9 @@ Cc: linux-kernel@vger.kernel.org,
 	bpf@vger.kernel.org,
 	Joel Fernandes <joel@joelfernandes.org>,
 	Michael Jeanson <mjeanson@efficios.com>
-Subject: [PATCH v5 6/8] tracing/bpf-trace: Add support for faultable tracepoints
-Date: Wed, 26 Jun 2024 14:59:39 -0400
-Message-Id: <20240626185941.68420-7-mathieu.desnoyers@efficios.com>
+Subject: [PATCH v5 7/8] tracing/perf: Add support for faultable tracepoints
+Date: Wed, 26 Jun 2024 14:59:40 -0400
+Message-Id: <20240626185941.68420-8-mathieu.desnoyers@efficios.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20240626185941.68420-1-mathieu.desnoyers@efficios.com>
 References: <20240626185941.68420-1-mathieu.desnoyers@efficios.com>
@@ -77,13 +77,13 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
 In preparation for converting system call enter/exit instrumentation
-into faultable tracepoints, make sure that bpf can handle registering to
-such tracepoints by explicitly disabling preemption within the bpf
-tracepoint probes to respect the current expectations within bpf tracing
-code.
+into faultable tracepoints, make sure that perf can handle registering
+to such tracepoints by explicitly disabling preemption within the perf
+tracepoint probes to respect the current expectations within perf ring
+buffer code.
 
-This change does not yet allow bpf to take page faults per se within its
-probe, but allows its existing probes to connect to faultable
+This change does not yet allow perf to take page faults per se within
+its probe, but allows its existing probes to connect to faultable
 tracepoints.
 
 Link: https://lore.kernel.org/lkml/20231002202531.3160-1-mathieu.desnoyers@efficios.com/
@@ -107,87 +107,57 @@ Cc: Joel Fernandes <joel@joelfernandes.org>
 ---
 Changes since v4:
 - Use DEFINE_INACTIVE_GUARD.
-- Add brackets to multiline 'if' statements.
 ---
- include/trace/bpf_probe.h | 20 ++++++++++++++++----
- kernel/trace/bpf_trace.c  | 12 +++++++++---
- 2 files changed, 25 insertions(+), 7 deletions(-)
+ include/trace/perf.h | 22 ++++++++++++++++++++--
+ 1 file changed, 20 insertions(+), 2 deletions(-)
 
-diff --git a/include/trace/bpf_probe.h b/include/trace/bpf_probe.h
-index e609cd7da47e..96c1269dd88c 100644
---- a/include/trace/bpf_probe.h
-+++ b/include/trace/bpf_probe.h
-@@ -42,17 +42,29 @@
- /* tracepoints with more than 12 arguments will hit build error */
- #define CAST_TO_U64(...) CONCATENATE(__CAST, COUNT_ARGS(__VA_ARGS__))(__VA_ARGS__)
+diff --git a/include/trace/perf.h b/include/trace/perf.h
+index 2c11181c82e0..161e1655b953 100644
+--- a/include/trace/perf.h
++++ b/include/trace/perf.h
+@@ -12,8 +12,8 @@
+ #undef __perf_task
+ #define __perf_task(t)	(__task = (t))
  
--#define __BPF_DECLARE_TRACE(call, proto, args)				\
-+#define __BPF_DECLARE_TRACE(call, proto, args, tp_flags)		\
+-#undef DECLARE_EVENT_CLASS
+-#define DECLARE_EVENT_CLASS(call, proto, args, tstruct, assign, print)	\
++#undef _DECLARE_EVENT_CLASS
++#define _DECLARE_EVENT_CLASS(call, proto, args, tstruct, assign, print, tp_flags) \
  static notrace void							\
- __bpf_trace_##call(void *__data, proto)					\
+ perf_trace_##call(void *__data, proto)					\
  {									\
- 	struct bpf_prog *prog = __data;					\
-+									\
-+	DEFINE_INACTIVE_GUARD(preempt_notrace, bpf_trace_guard);	\
+@@ -28,6 +28,13 @@ perf_trace_##call(void *__data, proto)					\
+ 	int __data_size;						\
+ 	int rctx;							\
+ 									\
++	DEFINE_INACTIVE_GUARD(preempt_notrace, trace_event_guard);	\
 +									\
 +	if ((tp_flags) & TRACEPOINT_MAY_FAULT) {			\
 +		might_fault();						\
-+		activate_guard(preempt_notrace, bpf_trace_guard)();	\
++		activate_guard(preempt_notrace, trace_event_guard)();	\
 +	}								\
 +									\
- 	CONCATENATE(bpf_trace_run, COUNT_ARGS(args))(prog, CAST_TO_U64(args));	\
+ 	__data_size = trace_event_get_offsets_##call(&__data_offsets, args); \
+ 									\
+ 	head = this_cpu_ptr(event_call->perf_events);			\
+@@ -55,6 +62,17 @@ perf_trace_##call(void *__data, proto)					\
+ 				  head, __task);			\
  }
  
- #undef DECLARE_EVENT_CLASS
- #define DECLARE_EVENT_CLASS(call, proto, args, tstruct, assign, print)	\
--	__BPF_DECLARE_TRACE(call, PARAMS(proto), PARAMS(args))
-+	__BPF_DECLARE_TRACE(call, PARAMS(proto), PARAMS(args), 0)
++#undef DECLARE_EVENT_CLASS
++#define DECLARE_EVENT_CLASS(call, proto, args, tstruct, assign, print)	\
++	_DECLARE_EVENT_CLASS(call, PARAMS(proto), PARAMS(args),		\
++			     PARAMS(tstruct), PARAMS(assign), PARAMS(print), 0)
 +
 +#undef DECLARE_EVENT_CLASS_MAY_FAULT
 +#define DECLARE_EVENT_CLASS_MAY_FAULT(call, proto, args, tstruct, assign, print) \
-+	__BPF_DECLARE_TRACE(call, PARAMS(proto), PARAMS(args), TRACEPOINT_MAY_FAULT)
- 
++	_DECLARE_EVENT_CLASS(call, PARAMS(proto), PARAMS(args),		\
++			     PARAMS(tstruct), PARAMS(assign), PARAMS(print), \
++			     TRACEPOINT_MAY_FAULT)
++
  /*
   * This part is compiled out, it is only here as a build time check
-@@ -106,13 +118,13 @@ static inline void bpf_test_buffer_##call(void)				\
- 
- #undef DECLARE_TRACE
- #define DECLARE_TRACE(call, proto, args)				\
--	__BPF_DECLARE_TRACE(call, PARAMS(proto), PARAMS(args))		\
-+	__BPF_DECLARE_TRACE(call, PARAMS(proto), PARAMS(args), 0)	\
- 	__DEFINE_EVENT(call, call, PARAMS(proto), PARAMS(args), 0)
- 
- #undef DECLARE_TRACE_WRITABLE
- #define DECLARE_TRACE_WRITABLE(call, proto, args, size) \
- 	__CHECK_WRITABLE_BUF_SIZE(call, PARAMS(proto), PARAMS(args), size) \
--	__BPF_DECLARE_TRACE(call, PARAMS(proto), PARAMS(args)) \
-+	__BPF_DECLARE_TRACE(call, PARAMS(proto), PARAMS(args), 0) \
- 	__DEFINE_EVENT(call, call, PARAMS(proto), PARAMS(args), size)
- 
- #include TRACE_INCLUDE(TRACE_INCLUDE_FILE)
-diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-index 192de33d961f..873b0e885677 100644
---- a/kernel/trace/bpf_trace.c
-+++ b/kernel/trace/bpf_trace.c
-@@ -2443,9 +2443,15 @@ static int __bpf_probe_register(struct bpf_raw_event_map *btp, struct bpf_prog *
- 	if (prog->aux->max_tp_access > btp->writable_size)
- 		return -EINVAL;
- 
--	return tracepoint_probe_register_prio_flags(tp, (void *)btp->bpf_func,
--						    prog, TRACEPOINT_DEFAULT_PRIO,
--						    TRACEPOINT_MAY_EXIST);
-+	if (tp->flags & TRACEPOINT_MAY_FAULT) {
-+		return tracepoint_probe_register_prio_flags(tp, (void *)btp->bpf_func,
-+							    prog, TRACEPOINT_DEFAULT_PRIO,
-+							    TRACEPOINT_MAY_EXIST | TRACEPOINT_MAY_FAULT);
-+	} else {
-+		return tracepoint_probe_register_prio_flags(tp, (void *)btp->bpf_func,
-+							    prog, TRACEPOINT_DEFAULT_PRIO,
-+							    TRACEPOINT_MAY_EXIST);
-+	}
- }
- 
- int bpf_probe_register(struct bpf_raw_event_map *btp, struct bpf_prog *prog)
+  * to make sure that if the tracepoint handling changes, the
 -- 
 2.39.2
 
