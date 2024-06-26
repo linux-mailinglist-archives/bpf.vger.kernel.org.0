@@ -1,157 +1,186 @@
-Return-Path: <bpf+bounces-33182-lists+bpf=lfdr.de@vger.kernel.org>
+Return-Path: <bpf+bounces-33183-lists+bpf=lfdr.de@vger.kernel.org>
 X-Original-To: lists+bpf@lfdr.de
 Delivered-To: lists+bpf@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C8178918DD1
-	for <lists+bpf@lfdr.de>; Wed, 26 Jun 2024 20:01:44 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id EB7EC91936F
+	for <lists+bpf@lfdr.de>; Wed, 26 Jun 2024 20:59:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7DC7D288AAF
-	for <lists+bpf@lfdr.de>; Wed, 26 Jun 2024 18:01:43 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 59B2EB218E9
+	for <lists+bpf@lfdr.de>; Wed, 26 Jun 2024 18:59:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5757D19046A;
-	Wed, 26 Jun 2024 18:01:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 83FF7191462;
+	Wed, 26 Jun 2024 18:59:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bb0Am2uZ"
+	dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b="gE2LaqHc"
 X-Original-To: bpf@vger.kernel.org
-Received: from mail-pf1-f179.google.com (mail-pf1-f179.google.com [209.85.210.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtpout.efficios.com (smtpout.efficios.com [167.114.26.122])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8926218A93E;
-	Wed, 26 Jun 2024 18:01:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 54D5919005C;
+	Wed, 26 Jun 2024 18:59:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=167.114.26.122
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719424895; cv=none; b=lfePISk13WMy94F5ac2MC5IYYODISCNKi6d0Dxfmt26XIjGlRCGTtNIJJCQUV3UNjhGQanvswgp8/mrapt6v0bRUbuaJm/AuKcHDI9ncfBZq2sHsiqxqnO71mBNrAjTCCpgdTbZKdOI5ys0OadstJf7fGcstK+krtapSKlKpYAA=
+	t=1719428362; cv=none; b=sjhVEFoS7RKC8KUACLuY9SXWNlB2M116oioKksmmT7zLUoFJDF+1rDB2zS6JkP/wXu1wUo4CPL/iUNRSKcNL27WUgBCt0I3x8zzD8Zu/JOZVEtaOqofKP6sWVKZjTIzEa/S+S3gAnwFhFvwZPnUu5CmnNBpXQs6Pnaj9gDXq3dM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719424895; c=relaxed/simple;
-	bh=VH9eTlbey4YEknBPwZDg/V86C5yDehMvjvBBOP4nxvo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=RQ86AFHtvYM+4qU97H0s6fRGu2JYElgWlDU5jE40V4Q9KLUWpEFIQ5hT9kx8wWevPHfFdD/AbYS5BmPEbK8ICZm94gsg693d9gJBzg7K7X5UdVlcPCRRZlj4qztj0WSnUZXhs6oz/Qi5E1ICGR2Wy4bUfSTgT+xa82OEQT1xt28=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=bb0Am2uZ; arc=none smtp.client-ip=209.85.210.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f179.google.com with SMTP id d2e1a72fcca58-7041053c0fdso4178878b3a.3;
-        Wed, 26 Jun 2024 11:01:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1719424894; x=1720029694; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=f35yjTzW3qs/RVmB7ro2MWDbHt/eSZTbqia8JUbmZI4=;
-        b=bb0Am2uZNxUio4G4hvPfBPxTgXcAxctcDTM2XxVKuOBnH+/W7q6oKF5l+LYSHtJk6w
-         nUzUq/VilWs+qoIbFsCdvw18duG0etNL2BzkW0txisawDo4vEDzVwAmvlxXsK7kWo2fz
-         zv7giEycHr0i+Wah63xju9zJPvYRehkDif12Gw98iyIOkxI/4SJKA17GC7qQM95N/TeW
-         elJf8eekBA/VQ92yG2K0+73sLBoDM23xssdATNdE3I/wLlzeUbiavNXZADWdolPJfb6F
-         RdoCKm5vGAkLAwPsPwYdYDoJRxj+ai6t0BbYkwq0qhhIlXRhHisPUKfQNvXMOBc2lB1D
-         4t2A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1719424894; x=1720029694;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=f35yjTzW3qs/RVmB7ro2MWDbHt/eSZTbqia8JUbmZI4=;
-        b=tS82fwt4Q3zbpBoECZCGaJzpSgPHCgpb3Pxwd5RVIM10/m+cIPDqwYfH014bV6ruP/
-         WeNcrrtjdKPsPb/phBbxFnCBDwtLF8rXdHyz/byixFWhTDyhL/GmGBRmqIgD50jSquC5
-         y2iWeN0spnlYxejUweJ4aJIyYO5zGlQW96TlrJGwkXTmlg6WOEv4J2SksMKSsOmNxzwe
-         G9hUJ9NAlD/qf7ziyZnF7ifY1Z9gEKIHzwWr6XAMTEJGgL4k8Pkw/phrP34jK6zEJsmc
-         BsXeWwVYNYIrJVBDFVdSX4QI3chuMRVM9lleUM48Joe0A4djzSz0wk6JlqcPiA1xZvfY
-         WT0Q==
-X-Forwarded-Encrypted: i=1; AJvYcCW5MUQ2b7t3ogx7OREM1oDOt7qwjFWj6dVFRfhJur/F8Zre+2hLxeycWnXE/Asy6zOaTtNNigXItqT74GXYsvsZpbidp8sFMqMapwyNlchYQ1XnY/vWTfTGrv38MNJVxPzA
-X-Gm-Message-State: AOJu0Ywi4HsT6GNr5uvIB5HKYjSryXD1aLfPKOLzi3EMzuVXHs9HEgZc
-	5wXqwptvY/Qh99fWmZnYuQyoMcihWWoZAtteCVGYVYot3+Q+PYus
-X-Google-Smtp-Source: AGHT+IFLyjjoTP1GIASZ81awOilBOorYy6Hhb0RvvL/scejGbcauCj0fjkfpTYUVlylNF7av/eBnTw==
-X-Received: by 2002:a05:6a00:928b:b0:706:82d7:9394 with SMTP id d2e1a72fcca58-70682d79858mr10611541b3a.34.1719424893723;
-        Wed, 26 Jun 2024 11:01:33 -0700 (PDT)
-Received: from localhost (dhcp-141-239-159-203.hawaiiantel.net. [141.239.159.203])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-706a0af2278sm2672027b3a.170.2024.06.26.11.01.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 26 Jun 2024 11:01:33 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date: Wed, 26 Jun 2024 08:01:30 -1000
-From: Tejun Heo <tj@kernel.org>
-To: Peter Zijlstra <peterz@infradead.org>
-Cc: torvalds@linux-foundation.org, mingo@redhat.com, juri.lelli@redhat.com,
-	vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-	rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-	bristot@redhat.com, vschneid@redhat.com, ast@kernel.org,
-	daniel@iogearbox.net, andrii@kernel.org, martin.lau@kernel.org,
-	joshdon@google.com, brho@google.com, pjt@google.com,
-	derkling@google.com, haoluo@google.com, dvernet@meta.com,
-	dschatzberg@meta.com, dskarlat@cs.cmu.edu, riel@surriel.com,
-	changwoo@igalia.com, himadrics@inria.fr, memxor@gmail.com,
-	andrea.righi@canonical.com, joel@joelfernandes.org,
-	linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-	kernel-team@meta.com
-Subject: Re: [PATCH 09/39] sched: Add @reason to
- sched_class->rq_{on|off}line()
-Message-ID: <ZnxXej8h46lmzrAP@slm.duckdns.org>
-References: <20240501151312.635565-1-tj@kernel.org>
- <20240501151312.635565-10-tj@kernel.org>
- <20240624113212.GL31592@noisy.programming.kicks-ass.net>
- <ZnnijsMAQYgCnrZF@slm.duckdns.org>
- <20240625082926.GT31592@noisy.programming.kicks-ass.net>
- <ZntVjZ3a2k5IGbzE@slm.duckdns.org>
- <20240626082342.GY31592@noisy.programming.kicks-ass.net>
+	s=arc-20240116; t=1719428362; c=relaxed/simple;
+	bh=5+b8aWZO+wYMW95/3/7a4Rw1GpZfUelw6aGT8D3zXCs=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=f96Osd1ZwdC03Z+3dm9dBecFP9xTSiWxtkRKD/084aZAoE+pRGcAzAVWGKLEpPsnIXrZw6xjZMRopsONKd+hHv8XuSooW01vsyOctM9ZloIcgfR+AbW05Nhiv7Nva3AqvI75fbXiuvxFHt0nHgwrmpydhgKw9pRdVtIIDmt9JE0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com; spf=pass smtp.mailfrom=efficios.com; dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b=gE2LaqHc; arc=none smtp.client-ip=167.114.26.122
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=efficios.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=efficios.com;
+	s=smtpout1; t=1719428352;
+	bh=5+b8aWZO+wYMW95/3/7a4Rw1GpZfUelw6aGT8D3zXCs=;
+	h=From:To:Cc:Subject:Date:From;
+	b=gE2LaqHc44okkoRzav42NIKNH8gouinZkpgrxFXcwd6GCZyWkqbeY6P4awe7mKLwt
+	 RM1pje9SpQxgX5iRF7z323qJC0BnM+27kmniPbG4hGET8uzD/umVZ+IzlGMSUw/qZ6
+	 DZZ+WmJW/4iQTcAJYPtTBVCitivRexXY6yTIClflPNoIW8UxWGIXh1U9lJv4WZ8R3X
+	 Bbtk4zKPyrfJjWFpWYB/Jebc/tfbS4vtv0wlOVBGIOPNCfQTPwW0WoNL4j86AUG4Ml
+	 JSrPk+DBaRHEoJOiEHq4rI9K6IH0lKVO1Gk9nloDf9uL6yZqehXpD4sdcLD/BGHj8S
+	 kbApItQ/3JRag==
+Received: from thinkos.internal.efficios.com (192-222-143-198.qc.cable.ebox.net [192.222.143.198])
+	by smtpout.efficios.com (Postfix) with ESMTPSA id 4W8WFr3SkPz17fj;
+	Wed, 26 Jun 2024 14:59:12 -0400 (EDT)
+From: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+To: Steven Rostedt <rostedt@goodmis.org>,
+	Masami Hiramatsu <mhiramat@kernel.org>
+Cc: linux-kernel@vger.kernel.org,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Yonghong Song <yhs@fb.com>,
+	"Paul E . McKenney" <paulmck@kernel.org>,
+	Ingo Molnar <mingo@redhat.com>,
+	Arnaldo Carvalho de Melo <acme@kernel.org>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+	Jiri Olsa <jolsa@redhat.com>,
+	Namhyung Kim <namhyung@kernel.org>,
+	bpf@vger.kernel.org,
+	Joel Fernandes <joel@joelfernandes.org>
+Subject: [PATCH v5 0/8] Faultable Tracepoints
+Date: Wed, 26 Jun 2024 14:59:33 -0400
+Message-Id: <20240626185941.68420-1-mathieu.desnoyers@efficios.com>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: bpf@vger.kernel.org
 List-Id: <bpf.vger.kernel.org>
 List-Subscribe: <mailto:bpf+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:bpf+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240626082342.GY31592@noisy.programming.kicks-ass.net>
+Content-Transfer-Encoding: 8bit
 
-Hello,
+Wire up the system call tracepoints with Tasks Trace RCU to allow
+the ftrace, perf, and eBPF tracers to handle page faults.
 
-On Wed, Jun 26, 2024 at 10:23:42AM +0200, Peter Zijlstra wrote:
-...
->  - cpuset
->  - cpuset-v2
->  - isolcpus boot crap
-> 
-> And they're all subtly different iirc, but IIRC the cpuset ones are
-> simplest since the task is part of a cgroup and the cgroup cpumask is
-> imposed on them and things should be fairly straight forward.
-> 
-> The isolcpus thing creates a pile of single CPU partitions and people
-> have to manually set cpu-affinity, and here we have some hysterical
-> behaviour that I would love to change but have not yet dared do --
-> because I know there's people doing dodgy things because they've been
-> sending 'bug' reports.
-> 
-> Specifically it is possible to set a cpumask that spans multiple
-> partitions :-( Traditionally the behaviour was that it would place the
-> task on the lowest cpu number, the current behaviour is the task it
-> placed randomly on any CPU in the given mask.
+This series does the initial wire-up allowing tracers to handle page
+faults, but leaves out the actual handling of said page faults as future
+work.
 
-This is what I was missing. I was just thinking cpuset case and as cpuset
-partitions are always reflected in the task cpumasks, there isn't whole lot
-to do.
+I have tested this against a feature branch of lttng-modules which
+implements handling of page faults for the filename argument of the
+openat(2) system call.
 
-...
-> > While it would
-> > make sense to communicate partitions to the BPF scheduler, would it make
-> > sense to reject BPF scheduler based on it? ie. Assuming that the feature is
-> > implemented, what would distinguish between one BPF scheduler which handles
-> > partitions specially and the other which doesn't care?
-> 
-> Correctness? Anyway, can't you handle this in the kernel part, simply
-> never allow a shared runqueue to cross a root_domain's mask and put some
-> WARNs on to ensure constraints are respected etc.? Should be fairly
-> simple to check prev_cpu and new_cpu are having the same root_domain for
-> instance.
+This v5 addresses comments from the previous round of review [1].
 
-Yeah, I'll plug it. It might as well be just reject and ejecting BPF
-schedulers when conditions are detected. The BPF scheduler doesn't have to
-use the built-in DSQs and can decide to dispatch to any CPU from its BPF
-queues (however that may be implemented, it can also be in userspace), so
-it's a bit tricky to enforce correctness dynamically after the fact. I'll
-think more on it.
+Steven Rostedt suggested separating tracepoints into two separate
+sections. It is unclear how that approach would prove to be an
+improvement over the currently proposed approach, so those changes were
+not incorporated. See [2] for my detailed reply.
 
-Thanks.
+In the previous round, Peter Zijlstra suggested use of SRCU rather than
+Tasks Trace RCU. See my reply about the distinction between SRCU and
+Tasks Trace RCU [3] and this explanation from Paul E. McKenney about the
+purpose of Tasks Trace RCU [4].
+
+The macros DEFINE_INACTIVE_GUARD and activate_guard are added to
+cleanup.h for use in the __DO_TRACE() macro. Those appear to be more
+flexible than the guard_if() proposed by Peter Zijlstra in the previous
+round of review [5].
+
+This series is based on kernel v6.9.6.
+
+Thanks,
+
+Mathieu
+
+Link: https://lore.kernel.org/lkml/20231120205418.334172-1-mathieu.desnoyers@efficios.com/ # [1]
+Link: https://lore.kernel.org/lkml/e4e9a2bc-1776-4b51-aba4-a147795a5de1@efficios.com/ # [2]
+Link: https://lore.kernel.org/lkml/a0ac5f77-411e-4562-9863-81196238f3f5@efficios.com/ # [3]
+Link: https://lore.kernel.org/lkml/ba543d44-9302-4115-ac4f-d4e9f8d98a90@paulmck-laptop/ # [4]
+Link: https://lore.kernel.org/lkml/20231120221524.GD8262@noisy.programming.kicks-ass.net/ # [5]
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Alexei Starovoitov <ast@kernel.org>
+Cc: Yonghong Song <yhs@fb.com>
+Cc: Paul E. McKenney <paulmck@kernel.org>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
+Cc: Jiri Olsa <jolsa@redhat.com>
+Cc: Namhyung Kim <namhyung@kernel.org>
+Cc: bpf@vger.kernel.org
+Cc: Joel Fernandes <joel@joelfernandes.org>
+
+Mathieu Desnoyers (8):
+  cleanup.h: Header include guard should match header name
+  cleanup.h guard: Rename DEFINE_ prefix to DECLARE_
+  cleanup.h: Introduce DEFINE_INACTIVE_GUARD and activate_guard
+  tracing: Introduce faultable tracepoints
+  tracing/ftrace: Add support for faultable tracepoints
+  tracing/bpf-trace: Add support for faultable tracepoints
+  tracing/perf: Add support for faultable tracepoints
+  tracing: Convert sys_enter/exit to faultable tracepoints
+
+ drivers/cxl/core/cdat.c                     |  2 +-
+ drivers/cxl/cxl.h                           |  2 +-
+ drivers/gpio/gpiolib.h                      |  2 +-
+ drivers/platform/x86/intel/pmc/core_ssram.c |  2 +-
+ fs/fuse/virtio_fs.c                         |  2 +-
+ fs/pstore/inode.c                           |  4 +-
+ include/linux/bitmap.h                      |  2 +-
+ include/linux/cleanup.h                     | 85 ++++++++++++--------
+ include/linux/cpu.h                         |  2 +-
+ include/linux/cpumask.h                     |  2 +-
+ include/linux/device.h                      |  6 +-
+ include/linux/file.h                        |  4 +-
+ include/linux/firmware.h                    |  2 +-
+ include/linux/gpio/driver.h                 |  4 +-
+ include/linux/iio/iio.h                     |  4 +-
+ include/linux/irqflags.h                    |  4 +-
+ include/linux/mutex.h                       |  6 +-
+ include/linux/of.h                          |  2 +-
+ include/linux/pci.h                         |  4 +-
+ include/linux/percpu.h                      |  2 +-
+ include/linux/preempt.h                     |  6 +-
+ include/linux/rcupdate.h                    |  2 +-
+ include/linux/rwsem.h                       | 10 +--
+ include/linux/sched/task.h                  |  4 +-
+ include/linux/slab.h                        |  4 +-
+ include/linux/spinlock.h                    | 38 ++++-----
+ include/linux/srcu.h                        |  2 +-
+ include/linux/tracepoint-defs.h             | 14 ++++
+ include/linux/tracepoint.h                  | 88 +++++++++++++++------
+ include/sound/pcm.h                         |  6 +-
+ include/trace/bpf_probe.h                   | 20 ++++-
+ include/trace/define_trace.h                |  7 ++
+ include/trace/events/syscalls.h             |  4 +-
+ include/trace/perf.h                        | 22 +++++-
+ include/trace/trace_events.h                | 68 +++++++++++++++-
+ init/Kconfig                                |  1 +
+ kernel/sched/core.c                         |  4 +-
+ kernel/sched/sched.h                        | 16 ++--
+ kernel/trace/bpf_trace.c                    | 11 ++-
+ kernel/trace/trace_events.c                 | 28 +++++--
+ kernel/trace/trace_fprobe.c                 |  5 +-
+ kernel/trace/trace_syscalls.c               | 52 ++++++++++--
+ kernel/tracepoint.c                         | 65 +++++++++------
+ lib/locking-selftest.c                      | 12 +--
+ sound/core/control_led.c                    |  2 +-
+ 45 files changed, 441 insertions(+), 193 deletions(-)
 
 -- 
-tejun
+2.39.2
 
